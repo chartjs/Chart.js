@@ -1,6 +1,6 @@
 Chart.js
 =======
-*Simple HTML5 Charts using the <canvas> tag* [chartjs.org](http://www.chartjs.org)
+*Simple HTML5 Charts using the canvas element* [chartjs.org](http://www.chartjs.org)
 
 
 Documentation
