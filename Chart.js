@@ -307,7 +307,7 @@ var Chart = function(context){
 		var config = (options) ? mergeChartConfig(chart.Line.defaults,options) : chart.Line.defaults;
 		
 		return new Line(data,config,context);
-	}
+	};
 	
 	this.Bar = function(data,options){
 		chart.Bar.defaults = {
@@ -339,7 +339,7 @@ var Chart = function(context){
 		var config = (options) ? mergeChartConfig(chart.Bar.defaults,options) : chart.Bar.defaults;
 		
 		return new Bar(data,config,context);		
-	}
+	};
 	
 	var clear = function(c){
 		c.clearRect(0, 0, width, height);
@@ -366,7 +366,7 @@ var Chart = function(context){
 				stepValue : config.scaleStepWidth,
 				graphMin : config.scaleStartValue,
 				labels : []
-			}
+			};
 			for (var i=0; i<calculatedScale.steps; i++){
 				if(labelTemplateString){
 				calculatedScale.labels.push(tmpl(labelTemplateString,{value:(config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces (config.scaleStepWidth))}));
@@ -481,7 +481,7 @@ var Chart = function(context){
 			
 
 		}
-	}
+	};
 
 	var Radar = function (data,config,ctx) {
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString;	
@@ -506,7 +506,7 @@ var Chart = function(context){
 				stepValue : config.scaleStepWidth,
 				graphMin : config.scaleStartValue,
 				labels : []
-			}
+			};
 			for (var i=0; i<calculatedScale.steps; i++){
 				if(labelTemplateString){
 				calculatedScale.labels.push(tmpl(labelTemplateString,{value:(config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces (config.scaleStepWidth))}));
@@ -671,8 +671,8 @@ var Chart = function(context){
 			
 			for (var i=0; i<data.datasets.length; i++){
 				for (var j=0; j<data.datasets[i].data.length; j++){
-					if (data.datasets[i].data[j] > upperValue){upperValue = data.datasets[i].data[j]}
-					if (data.datasets[i].data[j] < lowerValue){lowerValue = data.datasets[i].data[j]}
+					if (data.datasets[i].data[j] > upperValue){upperValue = data.datasets[i].data[j];}
+					if (data.datasets[i].data[j] < lowerValue){lowerValue = data.datasets[i].data[j];}
 				}
 			}
 
@@ -688,7 +688,7 @@ var Chart = function(context){
 			
 
 		}
-	}
+	};
 
 	var Pie = function(data,config,ctx){
 		var segmentTotal = 0;
@@ -732,7 +732,7 @@ var Chart = function(context){
 				cumulativeAngle += segmentAngle;
 			}			
 		}		
-	}
+	};
 
 	var Doughnut = function(data,config,ctx){
 		var segmentTotal = 0;
@@ -782,7 +782,7 @@ var Chart = function(context){
 		
 		
 		
-	}
+	};
 
 	var Line = function(data,config,ctx){
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop,widestXLabel, xAxisLength,yAxisPosX,xAxisPosY, rotateLabels = 0;
@@ -802,7 +802,7 @@ var Chart = function(context){
 				stepValue : config.scaleStepWidth,
 				graphMin : config.scaleStartValue,
 				labels : []
-			}
+			};
 			for (var i=0; i<calculatedScale.steps; i++){
 				if(labelTemplateString){
 				calculatedScale.labels.push(tmpl(labelTemplateString,{value:(config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces (config.scaleStepWidth))}));
@@ -819,7 +819,7 @@ var Chart = function(context){
 				ctx.strokeStyle = data.datasets[i].strokeColor;
 				ctx.lineWidth = config.datasetStrokeWidth;
 				ctx.beginPath();
-				ctx.moveTo(yAxisPosX, xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[0],calculatedScale,scaleHop)))
+				ctx.moveTo(yAxisPosX, xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[0],calculatedScale,scaleHop)));
 
 				for (var j=1; j<data.datasets[i].data.length; j++){
 					if (config.bezierCurve){
@@ -999,8 +999,8 @@ var Chart = function(context){
 			var lowerValue = Number.MAX_VALUE;
 			for (var i=0; i<data.datasets.length; i++){
 				for (var j=0; j<data.datasets[i].data.length; j++){
-					if ( data.datasets[i].data[j] > upperValue) { upperValue = data.datasets[i].data[j] };
-					if ( data.datasets[i].data[j] < lowerValue) { lowerValue = data.datasets[i].data[j] };
+					if ( data.datasets[i].data[j] > upperValue) { upperValue = data.datasets[i].data[j]; };
+					if ( data.datasets[i].data[j] < lowerValue) { lowerValue = data.datasets[i].data[j]; };
 				}
 			};
 	
@@ -1018,7 +1018,7 @@ var Chart = function(context){
 		}
 
 		
-	}
+	};
 	
 	var Bar = function(data,config,ctx){
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop,widestXLabel, xAxisLength,yAxisPosX,xAxisPosY,barWidth, rotateLabels = 0;
@@ -1038,7 +1038,7 @@ var Chart = function(context){
 				stepValue : config.scaleStepWidth,
 				graphMin : config.scaleStartValue,
 				labels : []
-			}
+			};
 			for (var i=0; i<calculatedScale.steps; i++){
 				if(labelTemplateString){
 				calculatedScale.labels.push(tmpl(labelTemplateString,{value:(config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces (config.scaleStepWidth))}));
@@ -1207,8 +1207,8 @@ var Chart = function(context){
 			var lowerValue = Number.MAX_VALUE;
 			for (var i=0; i<data.datasets.length; i++){
 				for (var j=0; j<data.datasets[i].data.length; j++){
-					if ( data.datasets[i].data[j] > upperValue) { upperValue = data.datasets[i].data[j] };
-					if ( data.datasets[i].data[j] < lowerValue) { lowerValue = data.datasets[i].data[j] };
+					if ( data.datasets[i].data[j] > upperValue) { upperValue = data.datasets[i].data[j]; };
+					if ( data.datasets[i].data[j] < lowerValue) { lowerValue = data.datasets[i].data[j]; };
 				}
 			};
 	
@@ -1224,7 +1224,7 @@ var Chart = function(context){
 			
 	
 		}
-	}
+	};
 	
 	function calculateOffset(val,calculatedScale,scaleHop){
 		var outerValue = calculatedScale.steps * calculatedScale.stepValue;
@@ -1334,7 +1334,7 @@ var Chart = function(context){
 				graphMin : graphMin,
 				labels : labels		        
 		        
-	        }
+	        };
 		
 			function calculateOrderOfMagnitude(val){
 			  return Math.floor(Math.log(val) / Math.LN10);
@@ -1380,7 +1380,7 @@ var Chart = function(context){
 	function getDecimalPlaces (num){
 		var numberOfDecimalPlaces;
 		if (num%1!=0){
-			return num.toString().split(".")[1].length
+			return num.toString().split(".")[1].length;
 		}
 		else{
 			return 0;
@@ -1401,7 +1401,7 @@ var Chart = function(context){
 	  function tmpl(str, data){
 	    // Figure out if we're getting a template, or if we need to
 	    // load the template - and be sure to cache the result.
-	    var fn = !/\W/.test(str) ?
+	    var fn = !(/\W/.test(str)) ?
 	      cache[str] = cache[str] ||
 	        tmpl(document.getElementById(str).innerHTML) :
 	     
@@ -1427,7 +1427,7 @@ var Chart = function(context){
 	    // Provide some basic currying to the user
 	    return data ? fn( data ) : fn;
 	  };
-}
+};
 
 
 
