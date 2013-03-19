@@ -302,7 +302,14 @@ var Chart = function(context){
 			animation : true,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			cutDataset : false,
+			cutOptions : {
+				w : 1,
+				h : 1,
+				y : 0,
+				fill : '#FFFFFF'
+			},
 		};		
 		var config = (options) ? mergeChartConfig(chart.Line.defaults,options) : chart.Line.defaults;
 		
@@ -850,6 +857,16 @@ var Chart = function(context){
 						ctx.fill();
 						ctx.stroke();
 					}
+				}
+				if(config.cutDataset)
+				{
+					for (var k=0; k<data.datasets[i].data.length; k++){
+						ctx.beginPath();
+					    ctx.rect((yAxisPosX + (valueHop *k))-(config.cutOptions.w/2), 0, config.cutOptions.w, (config.cutOptions.h - config.cutOptions.y));
+					    ctx.fillStyle = config.cutOptions.fill;
+					    ctx.fill();
+					}
+					
 				}
 			}
 			
