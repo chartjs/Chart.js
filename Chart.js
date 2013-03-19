@@ -244,7 +244,11 @@ var Chart = function(context){
 			animationEasing : "easeOutBounce",
 			animateRotate : true,
 			animateScale : false,
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			labelFontFamily : "'Arial'",
+			labelFontStyle : "normal",
+			labelFontSize : 12,
+			labelFontColor : "#666",
 		};		
 
 		var config = (options)? mergeChartConfig(chart.Pie.defaults,options) : chart.Pie.defaults;
@@ -694,12 +698,23 @@ var Chart = function(context){
 		var segmentTotal = 0;
 		
 		//In case we have a canvas that is not a square. Minus 5 pixels as padding round the edge.
-		var pieRadius = Min([height/2,width/2]) - 5;
+		var pieRadius = Min([height/2,width/2]) - 5,
+			labels = [];
 		
 		for (var i=0; i<data.length; i++){
 			segmentTotal += data[i].value;
+			if(data[i].label) {
+				labels.push({
+					'label': data[i].label,
+					'start': segmentTotal-data[i].value,
+					'end': segmentTotal
+				});
+			}
 		}
-		
+
+		ctx.font = config.labelFontStyle + " " + config.labelFontSize+"px " + config.labelFontFamily;
+		ctx.fillStyle = 'black';
+		ctx.textBaseline = 'middle';
 		
 		animationLoop(config,null,drawPieSegments,ctx);
 				
@@ -715,6 +730,7 @@ var Chart = function(context){
 					rotateAnimation = animationDecimal;
 				}
 			}
+
 			for (var i=0; i<data.length; i++){
 				var segmentAngle = rotateAnimation * ((data[i].value/segmentTotal) * (Math.PI*2));
 				ctx.beginPath();
@@ -723,6 +739,25 @@ var Chart = function(context){
 				ctx.closePath();
 				ctx.fillStyle = data[i].color;
 				ctx.fill();
+
+				if(data[i].label && scaleAnimation*pieRadius*2*segmentAngle/(2*Math.PI) > config.labelFontSize) {
+					ctx.fillStyle = data[i].labelColor || 'black';
+					// rotate text, so it perfectly fits in segments
+					var textRotation = -(cumulativeAngle + segmentAngle)+segmentAngle/2,
+						tX = width/2+scaleAnimation*pieRadius*Math.cos(textRotation)-10,
+						tY = height/2-scaleAnimation*pieRadius*Math.sin(textRotation);
+					ctx.textAlign = 'right';
+					if(textRotation < -Math.PI/2) {
+						textRotation -= Math.PI;
+						ctx.textAlign = 'left';
+						tX += 20;
+					}
+					ctx.translate(tX, tY);
+					ctx.rotate(-textRotation);
+					ctx.fillText(data[i].label, 0, 0);
+					ctx.rotate(textRotation);
+					ctx.translate(-tX, -tY);
+				}
 				
 				if(config.segmentShowStroke){
 					ctx.lineWidth = config.segmentStrokeWidth;

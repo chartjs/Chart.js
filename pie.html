@@ -17,21 +17,29 @@
 
 		var pieData = [
 				{
-					value: 30,
-					color:"#F38630"
+					value : 30,
+					color : "#F38630",
+					label : 'Sleep',
+					labelColor : '#0C8ACF'
 				},
 				{
 					value : 50,
-					color : "#E0E4CC"
+					color : "#E0E4CC",
+					label : 'Music',
+					labelColor : '#1F1B33'
 				},
 				{
 					value : 100,
-					color : "#69D2E7"
+					color : "#69D2E7",
+					label : 'Work',
+					labelColor : '#A72D19'
 				}
-			
 			];
 
-	var myPie = new Chart(document.getElementById("canvas").getContext("2d")).Pie(pieData);
+	var myPie = new Chart(document.getElementById("canvas").getContext("2d")).Pie(pieData, {
+		animationSteps: 100,
+		animationEasing: 'easeInOutQuart'
+	});
 	
 	</script>
 	</body>
