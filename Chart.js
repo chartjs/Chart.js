@@ -643,7 +643,7 @@ var Chart = function(context, tooltipOptions){
 						var curX = width/2+offset*Math.cos(j*rotationDegree-Math.PI/2),
 							curY = height/2+offset*Math.sin(j*rotationDegree-Math.PI/2),
 							pointRadius = config.pointDot ? config.pointDotRadius+config.pointDotStrokeWidth : 10,
-							ttData = data.labels[j].trim() != "" ? data.labels[0]+": "+data.datasets[i].data[j] : data.datasets[i].data[j];
+							ttData = data.labels[j].trim() != "" ? data.labels[j]+": "+data.datasets[i].data[j] : data.datasets[i].data[j];
 						registerTooltip(ctx,curX-pointRadius,curY-pointRadius,2*pointRadius,2*pointRadius,ttData,'Radar');
 					}
 				}
