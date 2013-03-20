@@ -177,18 +177,20 @@ var Chart = function(context){
 	var savedState = null;
 
 	context.canvas.onmousemove = function(e) {
-		savedState = savedState == null ? context.getImageData(0,0,context.canvas.width,context.canvas.height) : savedState;
-		var rendered = 0;
-		for(var i in tooltips) {
-			if(tooltips[i].inRange(e.x, e.y)) {
-				tooltips[i].render();
-				rendered++;
-			} else {
-				tooltips[i].isRendered = false;
+		if(tooltips.length > 0) {
+			savedState = savedState == null ? context.getImageData(0,0,context.canvas.width,context.canvas.height) : savedState;
+			var rendered = 0;
+			for(var i in tooltips) {
+				if(tooltips[i].inRange(e.x-context.canvas.offsetLeft, e.y-context.canvas.offsetTop)) {
+					tooltips[i].render();
+					rendered++;
+				} else {
+					tooltips[i].isRendered = false;
+				}
 			}
-		}
-		if(rendered == 0) {
-			context.putImageData(savedState,0,0);
+			if(rendered == 0) {
+				context.putImageData(savedState,0,0);
+			}
 		}
 	}
 
@@ -915,8 +917,8 @@ var Chart = function(context){
 						tooltips.push(
 							new Tooltip(
 								ctx,
-								xPos(j),
-								yPos(i,j),
+								xPos(j)-10,
+								yPos(i,j)-10,
 								20,
 								20,
 								data.labels[j]+": "+data.datasets[i].data[j],
