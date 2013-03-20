@@ -1,5 +1,5 @@
 //Define the global Chart Variable as a class.
-var Chart = function(context){
+var Chart = function(context, tooltipOptions){
 
 	var chart = this;
 	
@@ -139,7 +139,7 @@ var Chart = function(context){
 	};
 
 	var tooltips = [],
-		tooltipOptions = {
+		tooltipDefaults = {
 			background: 'rgba(0,0,0,0.6)',
 			fontColor: 'white',
 			fontSize: '12px',
@@ -149,7 +149,8 @@ var Chart = function(context){
 				bottom: 10,
 				left: 10
 			}
-		};
+		},
+		tooltipOptions = (tooltipOptions) ? mergeChartConfig(tooltipDefaults, tooltipOptions) : tooltipDefaults;
 
 	var Tooltip = function(ctx, x, y, width, height, data, type) {
 		this.ctx = ctx;
@@ -167,18 +168,21 @@ var Chart = function(context){
 
 		this.render = function() {
 			if(!this.isRendered) {
-				var posX = this.x+this.width,
+				var posX = this.x+this.width/2,
+					posY = this.y+this.height/2,
 					rectWidth = tooltipOptions.padding.left+this.ctx.measureText(this.data).width+tooltipOptions.padding.right;
-				if(posX + ctx.measureText(this.data).width > ctx.canvas.width) {
-					posX = this.x-ctx.measureText(this.data).width;
+				if(posX + rectWidth > ctx.canvas.width) {
+					posX -= rectWidth;
 				}
-				console.log(tooltipOptions);
+				if(posY + 24 > ctx.canvas.height) {
+					posY -= 24;
+				}
 				this.ctx.fillStyle = tooltipOptions.background;
-				this.ctx.fillRect(posX, this.y, rectWidth, 24);
+				this.ctx.fillRect(posX, posY, rectWidth, 24);
 				this.ctx.fillStyle = tooltipOptions.fontColor;
 				this.ctx.textAlign = 'center';
 				this.ctx.textBaseline = 'middle';
-				this.ctx.fillText(data, posX+rectWidth/2, this.y+12);
+				this.ctx.fillText(data, posX+rectWidth/2, posY+12);
 				this.isRendered = true;
 			}
 		}
@@ -928,6 +932,7 @@ var Chart = function(context){
 				for(var j = 0; j < data.datasets[i].data.length; j++) {
 					if(animPc == 1) {
 						// register tooltips
+						var ttData = data.labels[j].trim() != "" ? data.labels[j]+": "+data.datasets[i].data[j] : data.datasets[i].data[j];
 						tooltips.push(
 							new Tooltip(
 								ctx,
@@ -935,7 +940,7 @@ var Chart = function(context){
 								yPos(i,j)-pointRadius,
 								2*pointRadius,
 								2*pointRadius,
-								data.labels[j]+": "+data.datasets[i].data[j],
+								ttData,
 								'Line'
 							)
 						);
@@ -1581,10 +1586,6 @@ var Chart = function(context){
 	    	gCur = parseInt((gP-gS)*percent+gS),
 	    	bCur = parseInt((bP-bS)*percent+bS);
 	    return "rgb("+rCur+','+gCur+','+bCur+')';
-	}
-
-	function initTooltip(ctx, x, y, data) {
-
 	}
 }
 
