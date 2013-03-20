@@ -559,6 +559,7 @@ var Chart = function(context){
 					}					
 					
 				}
+				ctx.rotate(rotationDegree);
 				
 			}
 			ctx.restore();
