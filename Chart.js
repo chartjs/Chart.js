@@ -923,7 +923,6 @@ var Chart = function(context){
 								'Line'
 							)
 						);
-						console.log(tooltips);
 					}
 				}
 				ctx.stroke();
@@ -1172,12 +1171,6 @@ var Chart = function(context){
 							height = calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2),
 							y = xAxisPosY-height,
 							width = barWidth;
-						var fS = ctx.fillStyle;
-						ctx.fillStyle = 'black';
-						ctx.fillRect(barOffset, xAxisPosY-calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2), barWidth, 1);
-						ctx.fillStyle = fS;
-
-						console.log(barOffset,xAxisPosY,barWidth, -calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
 						tooltips.push(
 							new Tooltip(
 								ctx,
@@ -1189,7 +1182,6 @@ var Chart = function(context){
 								'Line'
 							)
 						);
-						console.log(tooltips);
 					}
 				}
 			}
