@@ -711,10 +711,8 @@ var Chart = function(context){
 				});
 			}
 		}
-
-		ctx.font = config.labelFontStyle + " " + config.labelFontSize+"px " + config.labelFontFamily;
 		ctx.fillStyle = 'black';
-		ctx.textBaseline = 'middle';
+		ctx.textBaseline = 'base';
 		
 		animationLoop(config,null,drawPieSegments,ctx);
 				
@@ -741,7 +739,9 @@ var Chart = function(context){
 				ctx.fill();
 
 				if(data[i].label && scaleAnimation*pieRadius*2*segmentAngle/(2*Math.PI) > config.labelFontSize) {
-					ctx.fillStyle = data[i].labelColor || 'black';
+					var fontSize = data[i].labelFontSize || config.labelFontSize;
+					ctx.font = config.labelFontStyle+ " " +fontSize+"px " + config.labelFontFamily;
+					ctx.fillStyle = getFadeColor(animationDecimal, data[i].labelColor || 'black', data[i].color);
 					// rotate text, so it perfectly fits in segments
 					var textRotation = -(cumulativeAngle + segmentAngle)+segmentAngle/2,
 						tX = width/2+scaleAnimation*pieRadius*Math.cos(textRotation)-10,
@@ -1462,6 +1462,31 @@ var Chart = function(context){
 	    // Provide some basic currying to the user
 	    return data ? fn( data ) : fn;
 	  };
+
+	function getFadeColor(percent, primColor, secColor) {
+		var pseudoEl = document.createElement('div'),
+			rgbPrim,
+			rgbSec;
+		pseudoEl.style.color = primColor;
+		document.body.appendChild(pseudoEl);
+		rgbPrim = window.getComputedStyle(pseudoEl).color;
+		pseudoEl.style.color = secColor;
+		rgbSec = window.getComputedStyle(pseudoEl).color;
+		var regex = /rgb *\( *([0-9]{1,3}) *, *([0-9]{1,3}) *, *([0-9]{1,3}) *\)/,
+	    	valuesP = regex.exec(rgbPrim),
+	    	valuesS = regex.exec(rgbSec),
+	    	rP = Math.round(parseFloat(valuesP[1])),
+	    	gP = Math.round(parseFloat(valuesP[2])),
+	    	bP = Math.round(parseFloat(valuesP[3])),
+	    	rS = Math.round(parseFloat(valuesS[1])),
+	    	gS = Math.round(parseFloat(valuesS[2])),
+	    	bS = Math.round(parseFloat(valuesS[3])),
+	    	rCur = parseInt((rP-rS)*percent+rS),
+	    	gCur = parseInt((gP-gS)*percent+gS),
+	    	bCur = parseInt((bP-bS)*percent+bS);
+	    	console.log(rgbPrim, rgbSec, "rgb("+rCur+','+gCur+','+bCur+')');
+	    return "rgb("+rCur+','+gCur+','+bCur+')';
+	}
 }
 
 
