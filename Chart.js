@@ -138,7 +138,18 @@ var Chart = function(context){
 		}
 	};
 
-	var tooltips = [];
+	var tooltips = [],
+		tooltipOptions = {
+			background: 'rgba(0,0,0,0.6)',
+			fontColor: 'white',
+			fontSize: '12px',
+			padding: {
+				top: 10,
+				right: 10,
+				bottom: 10,
+				left: 10
+			}
+		};
 
 	var Tooltip = function(ctx, x, y, width, height, data, type) {
 		this.ctx = ctx;
@@ -156,16 +167,18 @@ var Chart = function(context){
 
 		this.render = function() {
 			if(!this.isRendered) {
-				var posX = this.x+this.width;
+				var posX = this.x+this.width,
+					rectWidth = tooltipOptions.padding.left+this.ctx.measureText(this.data).width+tooltipOptions.padding.right;
 				if(posX + ctx.measureText(this.data).width > ctx.canvas.width) {
 					posX = this.x-ctx.measureText(this.data).width;
 				}
-				this.ctx.fillStyle = 'rgba(0,0,0,0.6)';
-				this.ctx.fillRect(posX, this.y, this.ctx.measureText(this.data).width+10, 24);
-				this.ctx.fillStyle = 'white';
+				console.log(tooltipOptions);
+				this.ctx.fillStyle = tooltipOptions.background;
+				this.ctx.fillRect(posX, this.y, rectWidth, 24);
+				this.ctx.fillStyle = tooltipOptions.fontColor;
 				this.ctx.textAlign = 'center';
 				this.ctx.textBaseline = 'middle';
-				this.ctx.fillText(data, posX+(this.ctx.measureText(this.data).width+10)/2, this.y+12);
+				this.ctx.fillText(data, posX+rectWidth/2, this.y+12);
 				this.isRendered = true;
 			}
 		}
@@ -911,16 +924,17 @@ var Chart = function(context){
 						ctx.lineTo(xPos(j),yPos(i,j));
 					}
 				}
+				var pointRadius = config.pointDot ? config.pointDotRadius+config.pointDotStrokeWidth : 10;
 				for(var j = 0; j < data.datasets[i].data.length; j++) {
 					if(animPc == 1) {
 						// register tooltips
 						tooltips.push(
 							new Tooltip(
 								ctx,
-								xPos(j)-10,
-								yPos(i,j)-10,
-								20,
-								20,
+								xPos(j)-pointRadius,
+								yPos(i,j)-pointRadius,
+								2*pointRadius,
+								2*pointRadius,
 								data.labels[j]+": "+data.datasets[i].data[j],
 								'Line'
 							)
