@@ -138,9 +138,59 @@ var Chart = function(context){
 		}
 	};
 
+	var tooltips = [];
+
+	var Tooltip = function(ctx, x, y, width, height, data, type) {
+		this.ctx = ctx;
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+		this.data = data;
+		this.isRendered = false;
+
+		this.inRange = function(x,y) {
+			return (x >= this.x && x <= this.x+this.width) &&
+				   (y >= this.y && y <= this.y+this.height);
+		}
+
+		this.render = function() {
+			if(!this.isRendered) {
+				var posX = this.x+this.width;
+				if(posX + ctx.measureText(this.data).width > ctx.canvas.width) {
+					posX = this.x-ctx.measureText(this.data).width;
+				}
+				this.ctx.fillStyle = 'rgba(0,0,0,0.6)';
+				this.ctx.fillRect(posX, this.y, this.ctx.measureText(this.data).width+10, 24);
+				this.ctx.fillStyle = 'white';
+				this.ctx.textAlign = 'center';
+				this.ctx.textBaseline = 'middle';
+				this.ctx.fillText(data, posX+(this.ctx.measureText(this.data).width+10)/2, this.y+12);
+				this.isRendered = true;
+			}
+		}
+	}
+
 	//Variables global to the chart
 	var width = context.canvas.width;
 	var height = context.canvas.height;
+	var savedState = null;
+
+	context.canvas.onmousemove = function(e) {
+		savedState = savedState == null ? context.getImageData(0,0,context.canvas.width,context.canvas.height) : savedState;
+		var rendered = 0;
+		for(var i in tooltips) {
+			if(tooltips[i].inRange(e.x, e.y)) {
+				tooltips[i].render();
+				rendered++;
+			} else {
+				tooltips[i].isRendered = false;
+			}
+		}
+		if(rendered == 0) {
+			context.putImageData(savedState,0,0);
+		}
+	}
 
 
 	//High pixel density displays - multiply the size of the canvas height/width by the device pixel ratio, then scale.
@@ -842,7 +892,7 @@ var Chart = function(context){
 		
 		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
 		calculateXAxisSize();
-		animationLoop(config,drawScale,drawLines,ctx);		
+		animationLoop(config,drawScale,drawLines,ctx);
 		
 		function drawLines(animPc){
 			for (var i=0; i<data.datasets.length; i++){
@@ -857,6 +907,23 @@ var Chart = function(context){
 					}
 					else{
 						ctx.lineTo(xPos(j),yPos(i,j));
+					}
+				}
+				for(var j = 0; j < data.datasets[i].data.length; j++) {
+					if(animPc == 1) {
+						// register tooltips
+						tooltips.push(
+							new Tooltip(
+								ctx,
+								xPos(j),
+								yPos(i,j),
+								20,
+								20,
+								data.labels[j]+": "+data.datasets[i].data[j],
+								'Line'
+							)
+						);
+						console.log(tooltips);
 					}
 				}
 				ctx.stroke();
@@ -1098,6 +1165,32 @@ var Chart = function(context){
 					}
 					ctx.closePath();
 					ctx.fill();
+
+					if(animPc == 1) {
+						// register tooltips
+						var x = barOffset,
+							height = calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2),
+							y = xAxisPosY-height,
+							width = barWidth;
+						var fS = ctx.fillStyle;
+						ctx.fillStyle = 'black';
+						ctx.fillRect(barOffset, xAxisPosY-calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2), barWidth, 1);
+						ctx.fillStyle = fS;
+
+						console.log(barOffset,xAxisPosY,barWidth, -calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+						tooltips.push(
+							new Tooltip(
+								ctx,
+								x,
+								y,
+								width,
+								height,
+								data.labels[j]+": "+data.datasets[i].data[j],
+								'Line'
+							)
+						);
+						console.log(tooltips);
+					}
 				}
 			}
 			
@@ -1480,6 +1573,10 @@ var Chart = function(context){
 	    	gCur = parseInt((gP-gS)*percent+gS),
 	    	bCur = parseInt((bP-bS)*percent+bS);
 	    return "rgb("+rCur+','+gCur+','+bCur+')';
+	}
+
+	function initTooltip(ctx, x, y, data) {
+
 	}
 }
 
