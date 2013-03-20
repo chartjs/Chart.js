@@ -1011,7 +1011,7 @@ var Chart = function(context){
 				maxValue : config.maxValue || upperValue,
 				minValue : config.minValue || lowerValue,
 				maxSteps : config.maxSteps || maxSteps,
-				minSteps : config,minSteps || minSteps
+				minSteps : config.minSteps || minSteps
 			};
 			
 	
