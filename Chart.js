@@ -731,8 +731,11 @@ var Chart = function(context){
 				ctx.fill();
 
 				if(data[i].label && scaleAnimation*pieRadius*2*segmentAngle/(2*Math.PI) > config.labelFontSize) {
-					var fontSize = data[i].labelFontSize || config.labelFontSize;
-					ctx.font = config.labelFontStyle+ " " +fontSize+"px " + config.labelFontFamily;
+					var fontSize = data[i].labelFontSize || config.labelFontSize+'px';
+					if(fontSize.match(/^[0-9]+$/g) != null) {
+						fontSize = fontSize+'px';
+					}
+					ctx.font = config.labelFontStyle+ " " +fontSize+" " + config.labelFontFamily;
 					ctx.fillStyle = getFadeColor(animationDecimal, data[i].labelColor || 'black', data[i].color);
 					// rotate text, so it perfectly fits in segments
 					var textRotation = -(cumulativeAngle + segmentAngle)+segmentAngle/2,
