@@ -148,9 +148,29 @@ var Chart = function(context, tooltipOptions){
 				right: 10,
 				bottom: 10,
 				left: 10
+			},
+			offset: {
+				left: 0,
+				top: 0
+			},
+			stroke: {
+				width: 0,
+				color: '#000'
 			}
 		},
 		tooltipOptions = (tooltipOptions) ? mergeChartConfig(tooltipDefaults, tooltipOptions) : tooltipDefaults;
+
+	function registerTooltip(ctx,x,y,width,height,data,type) {
+		tooltips.push(new Tooltip(
+			ctx,
+			x,
+			y,
+			width,
+			height,
+			data,
+			type
+		));
+	}
 
 	var Tooltip = function(ctx, x, y, width, height, data, type) {
 		this.ctx = ctx;
@@ -168,8 +188,8 @@ var Chart = function(context, tooltipOptions){
 
 		this.render = function() {
 			if(!this.isRendered) {
-				var posX = this.x+this.width/2,
-					posY = this.y+this.height/2,
+				var posX = this.x+this.width/2+tooltipOptions.offset.left,
+					posY = this.y+this.height/2+tooltipOptions.offset.top,
 					rectWidth = tooltipOptions.padding.left+this.ctx.measureText(this.data).width+tooltipOptions.padding.right;
 				if(posX + rectWidth > ctx.canvas.width) {
 					posX -= rectWidth;
@@ -179,6 +199,11 @@ var Chart = function(context, tooltipOptions){
 				}
 				this.ctx.fillStyle = tooltipOptions.background;
 				this.ctx.fillRect(posX, posY, rectWidth, 24);
+				if(tooltipOptions.stroke.width > 0) {
+					this.ctx.fillStyle = tooltipOptions.stroke.color;
+					this.ctx.lineWidth = tooltipOptions.stroke.width;
+					this.ctx.strokeRect(posX, posY, rectWidth, 24);
+				}
 				this.ctx.fillStyle = tooltipOptions.fontColor;
 				this.ctx.textAlign = 'center';
 				this.ctx.textBaseline = 'middle';
@@ -605,16 +630,10 @@ var Chart = function(context, tooltipOptions){
 				ctx.moveTo(0,animationDecimal*(-1*offset));
 				if(animationDecimal == 1) {
 					var curX = width/2+offset*Math.cos(0-Math.PI/2),
-						curY = height/2+offset*Math.sin(0-Math.PI/2);
-					tooltips.push(new Tooltip(
-						ctx,
-						curX-5,
-						curY-5,
-						10,
-						10,
-						data.datasets[i].data[0],
-						'Radar'
-					));
+						curY = height/2+offset*Math.sin(0-Math.PI/2),
+						pointRadius = config.pointDot ? config.pointDotRadius+config.pointDotStrokeWidth : 10,
+						ttData = data.labels[0].trim() != "" ? data.labels[0]+": "+data.datasets[i].data[0] : data.datasets[i].data[0];
+					registerTooltip(ctx,curX-pointRadius,curY-pointRadius,2*pointRadius,2*pointRadius,ttData,'Radar');
 				}
 				for (var j=1; j<data.datasets[i].data.length; j++){
 					offset = calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop);
@@ -622,16 +641,10 @@ var Chart = function(context, tooltipOptions){
 					ctx.lineTo(0,animationDecimal*(-1*offset));
 					if(animationDecimal == 1) {
 						var curX = width/2+offset*Math.cos(j*rotationDegree-Math.PI/2),
-							curY = height/2+offset*Math.sin(j*rotationDegree-Math.PI/2);
-						tooltips.push(new Tooltip(
-							ctx,
-							curX-5,
-							curY-5,
-							10,
-							10,
-							data.datasets[i].data[j],
-							'Radar'
-						));
+							curY = height/2+offset*Math.sin(j*rotationDegree-Math.PI/2),
+							pointRadius = config.pointDot ? config.pointDotRadius+config.pointDotStrokeWidth : 10,
+							ttData = data.labels[j].trim() != "" ? data.labels[0]+": "+data.datasets[i].data[j] : data.datasets[i].data[j];
+						registerTooltip(ctx,curX-pointRadius,curY-pointRadius,2*pointRadius,2*pointRadius,ttData,'Radar');
 					}
 				}
 				ctx.closePath();
@@ -958,17 +971,7 @@ var Chart = function(context, tooltipOptions){
 					if(animPc == 1) {
 						// register tooltips
 						var ttData = data.labels[j].trim() != "" ? data.labels[j]+": "+data.datasets[i].data[j] : data.datasets[i].data[j];
-						tooltips.push(
-							new Tooltip(
-								ctx,
-								xPos(j)-pointRadius,
-								yPos(i,j)-pointRadius,
-								2*pointRadius,
-								2*pointRadius,
-								ttData,
-								'Line'
-							)
-						);
+						registerTooltip(ctx,xPos(j)-pointRadius,yPos(i,j)-pointRadius,2*pointRadius,2*pointRadius,ttData,'Line');
 					}
 				}
 				ctx.stroke();
@@ -1216,18 +1219,9 @@ var Chart = function(context, tooltipOptions){
 						var x = barOffset,
 							height = calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2),
 							y = xAxisPosY-height,
-							width = barWidth;
-						tooltips.push(
-							new Tooltip(
-								ctx,
-								x,
-								y,
-								width,
-								height,
-								data.labels[j]+": "+data.datasets[i].data[j],
-								'Line'
-							)
-						);
+							width = barWidth,
+							ttData = data.labels[j] != "" ? data.labels[j]+": "+data.datasets[i].data[j] : data.datasets[i].data[j];
+						registerTooltip(ctx,x,y,width,height,ttData,'Bar');
 					}
 				}
 			}
