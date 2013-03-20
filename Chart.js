@@ -698,18 +698,10 @@ var Chart = function(context){
 		var segmentTotal = 0;
 		
 		//In case we have a canvas that is not a square. Minus 5 pixels as padding round the edge.
-		var pieRadius = Min([height/2,width/2]) - 5,
-			labels = [];
+		var pieRadius = Min([height/2,width/2]) - 5;
 		
 		for (var i=0; i<data.length; i++){
 			segmentTotal += data[i].value;
-			if(data[i].label) {
-				labels.push({
-					'label': data[i].label,
-					'start': segmentTotal-data[i].value,
-					'end': segmentTotal
-				});
-			}
 		}
 		ctx.fillStyle = 'black';
 		ctx.textBaseline = 'base';
@@ -1484,7 +1476,6 @@ var Chart = function(context){
 	    	rCur = parseInt((rP-rS)*percent+rS),
 	    	gCur = parseInt((gP-gS)*percent+gS),
 	    	bCur = parseInt((bP-bS)*percent+bS);
-	    	console.log(rgbPrim, rgbSec, "rgb("+rCur+','+gCur+','+bCur+')');
 	    return "rgb("+rCur+','+gCur+','+bCur+')';
 	}
 }
