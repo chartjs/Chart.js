@@ -598,16 +598,41 @@ var Chart = function(context, tooltipOptions){
 			ctx.save();
 			//translate to the centre of the canvas.
 			ctx.translate(width/2,height/2);
-			ctx.rotate(rotationDegree);				
 			//We accept multiple data sets for radar charts, so show loop through each set
 			for (var i=0; i<data.datasets.length; i++){
+				var offset = calculateOffset(data.datasets[i].data[0],calculatedScale,scaleHop);
 				ctx.beginPath();
-
-				ctx.moveTo(0,animationDecimal*(-1*calculateOffset(data.datasets[i].data[0],calculatedScale,scaleHop)));
+				ctx.moveTo(0,animationDecimal*(-1*offset));
+				if(animationDecimal == 1) {
+					var curX = width/2+offset*Math.cos(0-Math.PI/2),
+						curY = height/2+offset*Math.sin(0-Math.PI/2);
+					tooltips.push(new Tooltip(
+						ctx,
+						curX-5,
+						curY-5,
+						10,
+						10,
+						data.datasets[i].data[0],
+						'Radar'
+					));
+				}
 				for (var j=1; j<data.datasets[i].data.length; j++){
-					ctx.rotate(rotationDegree);	
-					ctx.lineTo(0,animationDecimal*(-1*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)));
-			
+					offset = calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop);
+					ctx.rotate(rotationDegree);
+					ctx.lineTo(0,animationDecimal*(-1*offset));
+					if(animationDecimal == 1) {
+						var curX = width/2+offset*Math.cos(j*rotationDegree-Math.PI/2),
+							curY = height/2+offset*Math.sin(j*rotationDegree-Math.PI/2);
+						tooltips.push(new Tooltip(
+							ctx,
+							curX-5,
+							curY-5,
+							10,
+							10,
+							data.datasets[i].data[j],
+							'Radar'
+						));
+					}
 				}
 				ctx.closePath();
 				
@@ -632,7 +657,7 @@ var Chart = function(context, tooltipOptions){
 					}					
 					
 				}
-				
+				ctx.rotate(rotationDegree);
 			}
 			ctx.restore();
 			
