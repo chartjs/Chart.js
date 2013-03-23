@@ -258,6 +258,9 @@ var Chart = function(context, tooltipOptions){
             }
         }
     }
+    context.canvas.onmouseout = function(e) {
+        context.putImageData(chart.savedState,0,0);
+    }
 
 
     //High pixel density displays - multiply the size of the canvas height/width by the device pixel ratio, then scale.
@@ -952,6 +955,21 @@ var Chart = function(context, tooltipOptions){
                 ctx.closePath();
                 ctx.fillStyle = data[i].color;
                 ctx.fill();
+
+                if(animationDecimal > 0.9999999) {
+                    var ttData = data[i].label != undefined && data[i].label != "" ? data[i].label+": "+data[i].value : data[i].value,
+                        points = [],
+                        pAmount = 50;
+                    points.push({x:width/2+doughnutRadius*Math.cos(cumulativeAngle),y:height/2+doughnutRadius*Math.sin(cumulativeAngle)});
+                    for(var p = 0; p <= pAmount; p++) {
+                        points.push({x:width/2+doughnutRadius*Math.cos(cumulativeAngle+p/pAmount*segmentAngle),y:height/2+doughnutRadius*Math.sin(cumulativeAngle+p/pAmount*segmentAngle)});
+                    }
+                    points.push({x:width/2+cutoutRadius*Math.cos(cumulativeAngle+segmentAngle),y:height/2+cutoutRadius*Math.sin(cumulativeAngle+segmentAngle)});
+                    for(var p = pAmount; p >= 0; p--) {
+                        points.push({x:width/2+cutoutRadius*Math.cos(cumulativeAngle+p/pAmount*segmentAngle),y:height/2+cutoutRadius*Math.sin(cumulativeAngle+p/pAmount*segmentAngle)});
+                    }
+                    registerTooltip(ctx,{type:'shape',points:points},ttData,'Doughnut');
+                }
                 
                 if(config.segmentShowStroke){
                     ctx.lineWidth = config.segmentStrokeWidth;
