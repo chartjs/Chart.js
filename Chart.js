@@ -574,6 +574,18 @@ var Chart = function(context, tooltipOptions){
                 ctx.fillStyle = data[i].color;
                 ctx.fill();
 
+                if(animationDecimal > 0.9999999) {
+                    var ttData = data[i].label != undefined && data[i].label != "" ? data[i].label+": "+data[i].value : data[i].value,
+                        points = [{x:width/2,y:height/2}],
+                        pAmount = 50,
+                        radius = calculateOffset(data[i].value,calculatedScale,scaleHop);
+                    points.push({x:width/2+radius*Math.cos(startAngle),y:height/2+radius*Math.sin(startAngle)});
+                    for(var p = 0; p <= pAmount; p++) {
+                        points.push({x:width/2+radius*Math.cos(startAngle+p/pAmount*rotateAnimation*angleStep),y:height/2+radius*Math.sin(startAngle+p/pAmount*rotateAnimation*angleStep)});
+                    }
+                    registerTooltip(ctx,{type:'shape',points:points},ttData,'PolarArea');
+                }
+
                 if(config.segmentShowStroke){
                     ctx.strokeStyle = config.segmentStrokeColor;
                     ctx.lineWidth = config.segmentStrokeWidth;
