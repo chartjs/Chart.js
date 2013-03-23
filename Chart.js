@@ -155,7 +155,7 @@ var Chart = function(context, tooltipOptions){
                 left: 0,
                 top: 0
             },
-            stroke: {
+            border: {
                 width: 0,
                 color: '#000'
             }
@@ -219,9 +219,9 @@ var Chart = function(context, tooltipOptions){
                 }
                 this.ctx.fillStyle = tooltipOptions.background;
                 this.ctx.fillRect(posX, posY, rectWidth, 24);
-                if(tooltipOptions.stroke.width > 0) {
-                    this.ctx.fillStyle = tooltipOptions.stroke.color;
-                    this.ctx.lineWidth = tooltipOptions.stroke.width;
+                if(tooltipOptions.border.width > 0) {
+                    this.ctx.fillStyle = tooltipOptions.border.color;
+                    this.ctx.lineWidth = tooltipOptions.border.width;
                     this.ctx.strokeRect(posX, posY, rectWidth, 24);
                 }
                 this.ctx.font = tooltipOptions.fontStyle+ " " +tooltipOptions.fontSize+" " + tooltipOptions.fontFamily;
@@ -301,7 +301,8 @@ var Chart = function(context, tooltipOptions){
             animationEasing : "easeOutBounce",
             animateRotate : true,
             animateScale : false,
-            onAnimationComplete : null
+            onAnimationComplete : null,
+            showTooltips : true
         };
         
         var config = (options)? mergeChartConfig(chart.PolarArea.defaults,options) : chart.PolarArea.defaults;
@@ -346,7 +347,8 @@ var Chart = function(context, tooltipOptions){
             animation : true,
             animationSteps : 60,
             animationEasing : "easeOutQuart",
-            onAnimationComplete : null
+            onAnimationComplete : null,
+            showTooltips : true
         };
         
         var config = (options)? mergeChartConfig(chart.Radar.defaults,options) : chart.Radar.defaults;
@@ -369,6 +371,7 @@ var Chart = function(context, tooltipOptions){
             labelFontStyle : "normal",
             labelFontSize : 12,
             labelFontColor : "#666",
+            showTooltips : true
         };        
 
         var config = (options)? mergeChartConfig(chart.Pie.defaults,options) : chart.Pie.defaults;
@@ -388,7 +391,8 @@ var Chart = function(context, tooltipOptions){
             animationEasing : "easeOutBounce",
             animateRotate : true,
             animateScale : false,
-            onAnimationComplete : null
+            onAnimationComplete : null,
+            showTooltips : true
         };        
 
         var config = (options)? mergeChartConfig(chart.Doughnut.defaults,options) : chart.Doughnut.defaults;
@@ -426,7 +430,8 @@ var Chart = function(context, tooltipOptions){
             animation : true,
             animationSteps : 60,
             animationEasing : "easeOutQuart",
-            onAnimationComplete : null
+            onAnimationComplete : null,
+            showTooltips : true
         };        
         var config = (options) ? mergeChartConfig(chart.Line.defaults,options) : chart.Line.defaults;
         
@@ -458,7 +463,8 @@ var Chart = function(context, tooltipOptions){
             animation : true,
             animationSteps : 60,
             animationEasing : "easeOutQuart",
-            onAnimationComplete : null
+            onAnimationComplete : null,
+            showTooltips : true
         };        
         var config = (options) ? mergeChartConfig(chart.Bar.defaults,options) : chart.Bar.defaults;
         
