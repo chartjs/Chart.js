@@ -2,6 +2,11 @@ Chart.js
 =======
 *Simple HTML5 Charts using the canvas element* [chartjs.org](http://www.chartjs.org)
 
+Further plans
+-------
+* Tooltips (see Branch [tooltips](https://github.com/Regaddi/Chart.js/tree/tooltips))
+* Label positioning (inside, outside, legend)
+* code refactoring for more object-oriented programming style and better extendability
 
 Documentation
 -------
