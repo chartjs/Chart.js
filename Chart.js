@@ -560,11 +560,7 @@ var Chart = function(context, tooltipOptions){
 				graphMin : config.scaleStartValue,
 				labels : []
 			}
-			for (var i=0; i<calculatedScale.steps; i++){
-				if(labelTemplateString){
-				calculatedScale.labels.push(tmpl(labelTemplateString,{value:(config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces (config.scaleStepWidth))}));
-				}
-			}
+			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
 		}
 		
 		scaleHop = maxSize/(calculatedScale.steps);
@@ -712,11 +708,7 @@ var Chart = function(context, tooltipOptions){
 				graphMin : config.scaleStartValue,
 				labels : []
 			}
-			for (var i=0; i<calculatedScale.steps; i++){
-				if(labelTemplateString){
-				calculatedScale.labels.push(tmpl(labelTemplateString,{value:(config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces (config.scaleStepWidth))}));
-				}
-			}
+			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
 		}
 		
 		scaleHop = maxSize/(calculatedScale.steps);
@@ -1072,11 +1064,7 @@ var Chart = function(context, tooltipOptions){
 				graphMin : config.scaleStartValue,
 				labels : []
 			}
-			for (var i=0; i<calculatedScale.steps; i++){
-				if(labelTemplateString){
-				calculatedScale.labels.push(tmpl(labelTemplateString,{value:(config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces (config.scaleStepWidth))}));
-				}
-			}
+			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
 		}
 		
 		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
@@ -1316,11 +1304,7 @@ var Chart = function(context, tooltipOptions){
 				graphMin : config.scaleStartValue,
 				labels : []
 			}
-			for (var i=0; i<calculatedScale.steps; i++){
-				if(labelTemplateString){
-				calculatedScale.labels.push(tmpl(labelTemplateString,{value:(config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces (config.scaleStepWidth))}));
-				}
-			}
+			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
 		}
 		
 		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
@@ -1580,40 +1564,30 @@ var Chart = function(context, tooltipOptions){
 			
 			rangeOrderOfMagnitude = calculateOrderOfMagnitude(valueRange);
 
-			graphMin = Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
-			
-			graphMax = Math.ceil(maxValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
-			
-			graphRange = graphMax - graphMin;
-			
-			stepValue = Math.pow(10, rangeOrderOfMagnitude);
-			
-			numberOfSteps = Math.round(graphRange / stepValue);
-			
-			//Compare number of steps to the max and min for that size graph, and add in half steps if need be.			
-			while(numberOfSteps < minSteps || numberOfSteps > maxSteps) {
-				if (numberOfSteps < minSteps){
-					stepValue /= 2;
-					numberOfSteps = Math.round(graphRange/stepValue);
-				}
-				else{
-					stepValue *=2;
-					numberOfSteps = Math.round(graphRange/stepValue);
-				}
-			};
-			
+        	graphMin = Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
+            
+            graphMax = Math.ceil(maxValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
+            
+            graphRange = graphMax - graphMin;
+            
+            stepValue = Math.pow(10, rangeOrderOfMagnitude);
+            
+	        numberOfSteps = Math.round(graphRange / stepValue);
+	        
+	        //Compare number of steps to the max and min for that size graph, and add in half steps if need be.	        
+	        while(numberOfSteps < minSteps || numberOfSteps > maxSteps) {
+	        	if (numberOfSteps < minSteps){
+			        stepValue /= 2;
+			        numberOfSteps = Math.round(graphRange/stepValue);
+		        }
+		        else{
+			        stepValue *=2;
+			        numberOfSteps = Math.round(graphRange/stepValue);
+		        }
+	        };
 
-			
-			//Create an array of all the labels by interpolating the string.
-			
-			var labels = [];
-			
-			if(labelTemplateString){
-				//Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
-				for (var i=1; i<numberOfSteps+1; i++){
-					labels.push(tmpl(labelTemplateString,{value:(graphMin + (stepValue*i)).toFixed(getDecimalPlaces (stepValue))}));
-				}
-			}
+	        var labels = [];
+	        populateLabels(labelTemplateString, labels, numberOfSteps, graphMin, stepValue);
 		
 			return {
 				steps : numberOfSteps,
@@ -1629,6 +1603,16 @@ var Chart = function(context, tooltipOptions){
 
 
 	}
+
+    //Populate an array of all the labels by interpolating the string.
+    function populateLabels(labelTemplateString, labels, numberOfSteps, graphMin, stepValue) {
+        if (labelTemplateString) {
+            //Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
+            for (var i = 1; i < numberOfSteps + 1; i++) {
+                labels.push(tmpl(labelTemplateString, {value: (graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue))}));
+            }
+        }
+    }
 	
 	//Max value from array
 	function Max( array ){
