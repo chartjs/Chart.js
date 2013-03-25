@@ -1,3 +1,12 @@
+/*!
+ * Chart.js
+ * http://chartjs.org/
+ *
+ * Copyright 2013 Nick Downie
+ * Released under the MIT license
+ * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
+ */
+
 //Define the global Chart Variable as a class.
 var Chart = function(context){
 
@@ -253,6 +262,7 @@ var Chart = function(context){
 	};
 	
 	this.Doughnut = function(data,options){
+	
 		chart.Doughnut.defaults = {
 			segmentShowStroke : true,
 			segmentStrokeColor : "#fff",
@@ -524,7 +534,7 @@ var Chart = function(context){
 			ctx.save();
 			//translate to the centre of the canvas.
 			ctx.translate(width/2,height/2);
-			ctx.rotate(rotationDegree);				
+			
 			//We accept multiple data sets for radar charts, so show loop through each set
 			for (var i=0; i<data.datasets.length; i++){
 				ctx.beginPath();
@@ -558,6 +568,7 @@ var Chart = function(context){
 					}					
 					
 				}
+				ctx.rotate(rotationDegree);
 				
 			}
 			ctx.restore();
@@ -1271,6 +1282,8 @@ var Chart = function(context){
 	}
 
 	//Declare global functions to be called within this namespace here.
+	
+	
 	// shim layer with setTimeout fallback
 	var requestAnimFrame = (function(){
 		return window.requestAnimationFrame ||
@@ -1289,17 +1302,18 @@ var Chart = function(context){
 			valueRange = maxValue - minValue;
 			
 			rangeOrderOfMagnitude = calculateOrderOfMagnitude(valueRange);
-			//var graphRange = (Math.ceil(rangeMultipland) * Math.pow(10, rangeOrderOfMagnitude));
-        	graphMin = (Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude));
+
+        	graphMin = Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
             
-            graphMax = (Math.ceil(maxValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude));
+            graphMax = Math.ceil(maxValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
             
             graphRange = graphMax - graphMin;
             
             stepValue = Math.pow(10, rangeOrderOfMagnitude);
+            
 	        numberOfSteps = Math.round(graphRange / stepValue);
 	        
-
+	        //Compare number of steps to the max and min for that size graph, and add in half steps if need be.	        
 	        while(numberOfSteps < minSteps || numberOfSteps > maxSteps) {
 	        	if (numberOfSteps < minSteps){
 			        stepValue /= 2;
@@ -1311,11 +1325,12 @@ var Chart = function(context){
 		        }
 	        };
 	        
-	        //Compare number of steps to the max and min for that size graph, and add in half steps if need be.
+
 	        
 	        //Create an array of all the labels by interpolating the string.
 	        
 	        var labels = [];
+	        
 	        if(labelTemplateString){
 		        //Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
 		        for (var i=1; i<numberOfSteps+1; i++){
@@ -1382,12 +1397,14 @@ var Chart = function(context){
 		}
 		
 	} 
+	
 	function mergeChartConfig(defaults,userDefined){
 		var returnObj = {};
 	    for (var attrname in defaults) { returnObj[attrname] = defaults[attrname]; }
 	    for (var attrname in userDefined) { returnObj[attrname] = userDefined[attrname]; }
 	    return returnObj;
 	}
+	
 	//Javascript micro templating by John Resig - source at http://ejohn.org/blog/javascript-micro-templating/
 	  var cache = {};
 	 
