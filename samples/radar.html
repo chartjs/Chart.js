@@ -1,8 +1,8 @@
 <!doctype html>
 <html>
 	<head>
-		<title>Line Chart</title>
-		<script src="Chart.js"></script>
+		<title>Radar Chart</title>
+		<script src="../Chart.js"></script>
 		<meta name = "viewport" content = "initial-scale = 1, user-scalable = no">
 		<style>
 			canvas{
@@ -10,13 +10,13 @@
 		</style>
 	</head>
 	<body>
-		<canvas id="canvas" height="450" width="600"></canvas>
+		<canvas id="canvas" height="450" width="450"></canvas>
 
 
 	<script>
 
-		var lineChartData = {
-			labels : ["January","February","March","April","May","June","July"],
+		var radarChartData = {
+			labels : ["Eating","Drinking","Sleeping","Designing","Coding","Partying","Running"],
 			datasets : [
 				{
 					fillColor : "rgba(220,220,220,0.5)",
@@ -36,7 +36,7 @@
 			
 		}
 
-	var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Line(lineChartData);
+	var myRadar = new Chart(document.getElementById("canvas").getContext("2d")).Radar(radarChartData,{scaleShowLabels : false, pointLabelFontSize : 10});
 	
 	</script>
 	</body>
