@@ -534,7 +534,7 @@ var Chart = function(context){
 			ctx.save();
 			//translate to the centre of the canvas.
 			ctx.translate(width/2,height/2);
-			ctx.rotate(rotationDegree);				
+			
 			//We accept multiple data sets for radar charts, so show loop through each set
 			for (var i=0; i<data.datasets.length; i++){
 				ctx.beginPath();
@@ -568,6 +568,7 @@ var Chart = function(context){
 					}					
 					
 				}
+				ctx.rotate(rotationDegree);
 				
 			}
 			ctx.restore();
