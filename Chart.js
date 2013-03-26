@@ -212,7 +212,7 @@ var Chart = function(context, tooltipOptions){
                     posY = y+tooltipOptions.offset.top,
                     rectWidth = tooltipOptions.padding.left+this.ctx.measureText(this.data).width+tooltipOptions.padding.right;
                 if(posX + rectWidth > ctx.canvas.width) {
-                    posX -= rectWidth;
+                    posX -= posX-rectWidth < 0 ? posX : rectWidth;
                 }
                 if(posY + 24 > ctx.canvas.height) {
                     posY -= 24;
@@ -241,13 +241,26 @@ var Chart = function(context, tooltipOptions){
 
     this.savedState = null;
 
+    function getPosition(e) {
+        var xPosition = 0;
+        var yPosition = 0;
+
+        while(e) {
+            xPosition += (e.offsetLeft - e.scrollLeft + e.clientLeft);
+            yPosition += (e.offsetTop - e.scrollTop + e.clientTop);
+            e = e.offsetParent;
+        }
+        return { x: xPosition, y: yPosition };
+    }
+
     context.canvas.onmousemove = function(e) {
         if(chart.tooltips.length > 0) {
             chart.savedState = chart.savedState == null ? context.getImageData(0,0,context.canvas.width,context.canvas.height) : chart.savedState;
             var rendered = 0;
             for(var i in chart.tooltips) {
-                var mx = e.x-context.canvas.offsetLeft,
-                    my = e.y-context.canvas.offsetTop;
+                var position = getPosition(context.canvas),
+                    mx = (e.clientX)-position.x,
+                    my = (e.clientY)-position.y;
                 if(chart.tooltips[i].inRange(mx,my)) {
                     chart.tooltips[i].render(mx,my);
                     rendered++;
@@ -259,7 +272,9 @@ var Chart = function(context, tooltipOptions){
         }
     }
     context.canvas.onmouseout = function(e) {
-        context.putImageData(chart.savedState,0,0);
+        if(chart.savedState != null) {
+            context.putImageData(chart.savedState,0,0);
+        }
     }
 
 
