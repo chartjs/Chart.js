@@ -250,8 +250,13 @@ var Chart = function(context, tooltipOptions){
             yPosition += (e.offsetTop + e.clientTop);
             e = e.offsetParent;
         }
-        xPosition -= window.pageXOffset;
-        yPosition -= window.pageYOffset;
+        if(window.pageXOffset > 0 || window.pageYOffset > 0) {
+            xPosition -= window.pageXOffset;
+            yPosition -= window.pageYOffset;
+        } else if(document.body.scrollLeft > 0 || document.body.scrollTop > 0) {
+            xPosition -= document.body.scrollLeft;
+            yPosition -= document.body.scrollTop;
+        }
         return { x: xPosition, y: yPosition };
     }
 
