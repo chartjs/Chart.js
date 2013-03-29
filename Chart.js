@@ -183,6 +183,10 @@ var Chart = function(context){
 			animateScale : false,
 			onAnimationComplete : null
 		};
+
+		if(typeof data[0] == "number") {
+			formatData1(data);
+		}
 		
 		var config = (options)? mergeChartConfig(chart.PolarArea.defaults,options) : chart.PolarArea.defaults;
 		
@@ -228,6 +232,10 @@ var Chart = function(context){
 			animationEasing : "easeOutQuart",
 			onAnimationComplete : null
 		};
+
+		if (data.labels == undefined){
+			formatData2(data);
+		}
 		
 		var config = (options)? mergeChartConfig(chart.Radar.defaults,options) : chart.Radar.defaults;
 
@@ -245,7 +253,11 @@ var Chart = function(context){
 			animateRotate : true,
 			animateScale : false,
 			onAnimationComplete : null
-		};		
+		};
+
+		if(typeof data[0] == "number") {
+			formatData1(data);
+		}
 
 		var config = (options)? mergeChartConfig(chart.Pie.defaults,options) : chart.Pie.defaults;
 		
@@ -265,7 +277,11 @@ var Chart = function(context){
 			animateRotate : true,
 			animateScale : false,
 			onAnimationComplete : null
-		};		
+		};	
+
+		if(typeof data[0] == "number") {
+			formatData1(data);
+		}	
 
 		var config = (options)? mergeChartConfig(chart.Doughnut.defaults,options) : chart.Doughnut.defaults;
 		
@@ -303,7 +319,12 @@ var Chart = function(context){
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
 			onAnimationComplete : null
-		};		
+		};
+
+		if (data.labels == undefined){
+			formatData2(data);
+		}
+
 		var config = (options) ? mergeChartConfig(chart.Line.defaults,options) : chart.Line.defaults;
 		
 		return new Line(data,config,context);
@@ -335,7 +356,12 @@ var Chart = function(context){
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
 			onAnimationComplete : null
-		};		
+		};	
+
+		if (data.labels == undefined){
+			formatData2(data);
+		}
+
 		var config = (options) ? mergeChartConfig(chart.Bar.defaults,options) : chart.Bar.defaults;
 		
 		return new Bar(data,config,context);		
@@ -779,9 +805,6 @@ var Chart = function(context){
 				cumulativeAngle += segmentAngle;
 			}			
 		}			
-		
-		
-		
 	}
 
 	var Line = function(data,config,ctx){
@@ -1016,8 +1039,6 @@ var Chart = function(context){
 			
 	
 		}
-
-		
 	}
 	
 	var Bar = function(data,config,ctx){
@@ -1225,6 +1246,51 @@ var Chart = function(context){
 	
 		}
 	}
+
+	function formatData1(data){                // for pie chart, doughnut, and polar
+		var data_size = data.length;
+		var colors = colorPicker(data_size);         // total colors required to plot the data
+		for( var i = 0; i < data_size; i++ ){
+			data[i] = { 
+				value : data[i],
+				color : colors[i]
+			}
+		}
+	}
+
+	function formatData2(data){                   // for line, bar and radar
+		var data_size = data.length;
+		data["labels"] = data[0];
+		var colors = colorPicker(data_size - 1);
+		data["datasets"] = [];
+		for ( var i = 0; i < (data_size-1); i++ ){
+			for_fillColor = colors[i].replace(",1)",",0.5)");
+			data["datasets"][i] = {
+				fillColor : for_fillColor,
+				strokeColor : colors[i],
+				pointColor : colors[i],
+				pointStrokeColor : "#fff",
+				data : data[i+1]
+			}
+		}
+	}
+	// its a random color picker, but we could pick in a better way, as
+	// sometimes contrasting colors may be picked. 
+	function colorPicker(total){                      
+		colors = [];
+		if (total <= 2){                               // for data upto 2, pleasing colors are already decided.
+			colors[0] = "rgba(220,220,220,1)";			// we can predecide more colors.
+			colors[1] = "rgba(151,187,205,1)";
+		}
+		else{
+			for(var i = 0; i <= total; i++){
+				colors[i] = "rgba(" + (Math.floor(Math.random()*256)).toString() + "," + 
+							(Math.floor(Math.random()*256)).toString() + "," +
+							(Math.floor(Math.random()*256)).toString() + ",1)";
+			}
+		}
+		return colors;
+	}
 	
 	function calculateOffset(val,calculatedScale,scaleHop){
 		var outerValue = calculatedScale.steps * calculatedScale.stepValue;
@@ -1268,7 +1334,6 @@ var Chart = function(context){
 				}
 			
 		}		
-		
 	}
 
 	//Declare global functions to be called within this namespace here.
