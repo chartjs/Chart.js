@@ -246,10 +246,12 @@ var Chart = function(context, tooltipOptions){
         var yPosition = 0;
 
         while(e) {
-            xPosition += (e.offsetLeft - e.scrollLeft + e.clientLeft);
-            yPosition += (e.offsetTop - e.scrollTop + e.clientTop);
+            xPosition += (e.offsetLeft + e.clientLeft);
+            yPosition += (e.offsetTop + e.clientTop);
             e = e.offsetParent;
         }
+        xPosition -= window.pageXOffset;
+        yPosition -= window.pageYOffset;
         return { x: xPosition, y: yPosition };
     }
 
