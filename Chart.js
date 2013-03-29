@@ -1695,6 +1695,7 @@ var Chart = function(context, tooltipOptions){
             rCur = parseInt((rP-rS)*percent+rS),
             gCur = parseInt((gP-gS)*percent+gS),
             bCur = parseInt((bP-bS)*percent+bS);
+        pseudoEl.parentNode.removeChild(pseudoEl);
         return "rgb("+rCur+','+gCur+','+bCur+')';
     }
 }
