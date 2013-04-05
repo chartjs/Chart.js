@@ -1147,7 +1147,7 @@ var Chart = function(context){
 				
 				ctx.stroke();
 				if (config.scaleShowLabels){
-					ctx.fillText(calculatedScale.labels[j],yAxisPosX-8,xAxisPosY - ((j+1) * scaleHop));
+					ctx.fillText(calculatedScale.labels[j],yAxisPosX-8,xAxisPosY - ((j) * scaleHop));
 				}
 			}
 			
