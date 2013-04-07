@@ -218,8 +218,9 @@ var Chart = function(context, tooltipOptions){
             this.ctx.putImageData(this.savedState,0,0);
             if(tooltipOptions.showHighlight) {
                 if(this.highlightState == null) {
-                    this.ctx.fillStyle = tooltipOptions.highlight.stroke.color;
+                    this.ctx.strokeStyle = tooltipOptions.highlight.stroke.color;
                     this.ctx.lineWidth = tooltipOptions.highlight.stroke.width;
+                    this.ctx.fillStyle = tooltipOptions.highlight.fill;
                     switch(this.areaObj.type) {
                         case 'rect':
                             this.ctx.strokeRect(this.areaObj.x, this.areaObj.y, this.areaObj.width, this.areaObj.height);
@@ -230,7 +231,6 @@ var Chart = function(context, tooltipOptions){
                             this.ctx.beginPath();
                             this.ctx.arc(this.areaObj.x, this.areaObj.y, this.areaObj.r, 0, 2*Math.PI, false);
                             this.ctx.stroke();
-                            this.ctx.fillStyle = tooltipOptions.highlight.fill;
                             this.ctx.fill();
                             break;
                         case 'shape':
@@ -240,7 +240,6 @@ var Chart = function(context, tooltipOptions){
                                 this.ctx.lineTo(this.areaObj.points[p].x, this.areaObj.points[p].y);
                             }
                             this.ctx.stroke();
-                            this.ctx.fillStyle = tooltipOptions.highlight.fill;
                             this.ctx.fill();
                             break;
                     }
