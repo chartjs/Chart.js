@@ -158,6 +158,14 @@ var Chart = function(context, tooltipOptions){
             border: {
                 width: 0,
                 color: '#000'
+            },
+            showHighlight: true,
+            highlight: {
+                stroke: {
+                    width: 3,
+                    color: 'rgba(230,230,230,0.25)'
+                },
+                fill: 'rgba(255,255,255,0.25)'
             }
         },
         tooltipOptions = (tooltipOptions) ? mergeChartConfig(tooltipDefaults, tooltipOptions) : tooltipDefaults;
@@ -176,6 +184,7 @@ var Chart = function(context, tooltipOptions){
         this.areaObj = areaObj;
         this.data = data;
         this.savedState = null;
+        this.highlightState = null;
         this.x = null;
         this.y = null;
 
@@ -207,6 +216,39 @@ var Chart = function(context, tooltipOptions){
                 this.savedState = this.ctx.getImageData(0,0,this.ctx.canvas.width,this.ctx.canvas.height);
             }
             this.ctx.putImageData(this.savedState,0,0);
+            if(tooltipOptions.showHighlight) {
+                if(this.highlightState == null) {
+                    this.ctx.fillStyle = tooltipOptions.highlight.stroke.color;
+                    this.ctx.lineWidth = tooltipOptions.highlight.stroke.width;
+                    switch(this.areaObj.type) {
+                        case 'rect':
+                            this.ctx.strokeRect(this.areaObj.x, this.areaObj.y, this.areaObj.width, this.areaObj.height);
+                            this.ctx.fillStyle = tooltipOptions.highlight.fill;
+                            this.ctx.fillRect(this.areaObj.x, this.areaObj.y, this.areaObj.width, this.areaObj.height);
+                            break;
+                        case 'circle':
+                            this.ctx.beginPath();
+                            this.ctx.arc(this.areaObj.x, this.areaObj.y, this.areaObj.r, 0, 2*Math.PI, false);
+                            this.ctx.stroke();
+                            this.ctx.fillStyle = tooltipOptions.highlight.fill;
+                            this.ctx.fill();
+                            break;
+                        case 'shape':
+                            this.ctx.beginPath();
+                            this.ctx.moveTo(this.areaObj.points[0].x, this.areaObj.points[0].y);
+                            for(var p in this.areaObj.points) {
+                                this.ctx.lineTo(this.areaObj.points[p].x, this.areaObj.points[p].y);
+                            }
+                            this.ctx.stroke();
+                            this.ctx.fillStyle = tooltipOptions.highlight.fill;
+                            this.ctx.fill();
+                            break;
+                    }
+                    this.highlightState = this.ctx.getImageData(0,0,this.ctx.canvas.width,this.ctx.canvas.height);
+                } else {
+                    this.ctx.putImageData(this.highlightState,0,0);
+                }
+            }
             if(this.x != x || this.y != y) {
                 var posX = x+tooltipOptions.offset.left,
                     posY = y+tooltipOptions.offset.top,
