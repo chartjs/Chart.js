@@ -162,7 +162,7 @@ var Chart = function(context, tooltipOptions){
             showHighlight: true,
             highlight: {
                 stroke: {
-                    width: 3,
+                    width: 1,
                     color: 'rgba(230,230,230,0.25)'
                 },
                 fill: 'rgba(255,255,255,0.25)'
@@ -1350,7 +1350,7 @@ var Chart = function(context, tooltipOptions){
                     if(animPc == 1) {
                         // register tooltips
                         var x = barOffset,
-                            height = calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2),
+                            height = calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop),
                             y = xAxisPosY-height,
                             width = barWidth,
                             ttData = data.labels[j] != "" ? data.labels[j]+": "+data.datasets[i].data[j] : data.datasets[i].data[j];
