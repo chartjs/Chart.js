@@ -1102,7 +1102,7 @@ var Chart = function(context, tooltipOptions){
                 for(var j = 0; j < data.datasets[i].data.length; j++) {
                     if(animPc == 1) {
                         // register tooltips
-                        var ttData = data.labels[j].trim() != "" ? data.labels[j]+": "+data.datasets[i].data[j] : data.datasets[i].data[j];
+                        var ttData = data.labels[j].toString().trim() != "" ? data.labels[j]+": "+data.datasets[i].data[j] : data.datasets[i].data[j];
                         registerTooltip(ctx,{type:'circle',x:xPos(j),y:yPos(i,j),r:pointRadius},ttData,'Line');
                     }
                 }
