@@ -915,21 +915,22 @@ var Chart = function(context){
 			ctx.textAlign = "right";
 			ctx.textBaseline = "middle";
 			for (var j=0; j<calculatedScale.steps; j++){
+				var yPos = xAxisPosY - j * scaleHop;
 				ctx.beginPath();
-				ctx.moveTo(yAxisPosX-3,xAxisPosY - ((j+1) * scaleHop));
+				ctx.moveTo(yAxisPosX-3,yPos);
 				if (config.scaleShowGridLines){
 					ctx.lineWidth = config.scaleGridLineWidth;
 					ctx.strokeStyle = config.scaleGridLineColor;
-					ctx.lineTo(yAxisPosX + xAxisLength + 5,xAxisPosY - ((j+1) * scaleHop));					
+					ctx.lineTo(yAxisPosX + xAxisLength + 5,yPos);					
 				}
 				else{
-					ctx.lineTo(yAxisPosX-0.5,xAxisPosY - ((j+1) * scaleHop));
+					ctx.lineTo(yAxisPosX-0.5,yPos);
 				}
 				
 				ctx.stroke();
 				
 				if (config.scaleShowLabels){
-					ctx.fillText(calculatedScale.labels[j],yAxisPosX-8,xAxisPosY - ((j+1) * scaleHop));
+					ctx.fillText(calculatedScale.labels[j],yAxisPosX-8,yPos);
 				}
 			}
 			
