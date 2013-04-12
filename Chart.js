@@ -376,11 +376,7 @@ var Chart = function(context){
 				graphMin : config.scaleStartValue,
 				labels : []
 			}
-			for (var i=0; i<calculatedScale.steps; i++){
-				if(labelTemplateString){
-				calculatedScale.labels.push(tmpl(labelTemplateString,{value:(config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces (config.scaleStepWidth))}));
-				}
-			}
+			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
 		}
 		
 		scaleHop = maxSize/(calculatedScale.steps);
@@ -516,11 +512,7 @@ var Chart = function(context){
 				graphMin : config.scaleStartValue,
 				labels : []
 			}
-			for (var i=0; i<calculatedScale.steps; i++){
-				if(labelTemplateString){
-				calculatedScale.labels.push(tmpl(labelTemplateString,{value:(config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces (config.scaleStepWidth))}));
-				}
-			}
+			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
 		}
 		
 		scaleHop = maxSize/(calculatedScale.steps);
@@ -813,11 +805,7 @@ var Chart = function(context){
 				graphMin : config.scaleStartValue,
 				labels : []
 			}
-			for (var i=0; i<calculatedScale.steps; i++){
-				if(labelTemplateString){
-				calculatedScale.labels.push(tmpl(labelTemplateString,{value:(config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces (config.scaleStepWidth))}));
-				}
-			}
+			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
 		}
 		
 		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
@@ -1049,11 +1037,7 @@ var Chart = function(context){
 				graphMin : config.scaleStartValue,
 				labels : []
 			}
-			for (var i=0; i<calculatedScale.steps; i++){
-				if(labelTemplateString){
-				calculatedScale.labels.push(tmpl(labelTemplateString,{value:(config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces (config.scaleStepWidth))}));
-				}
-			}
+			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
 		}
 		
 		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
@@ -1324,19 +1308,9 @@ var Chart = function(context){
 			        numberOfSteps = Math.round(graphRange/stepValue);
 		        }
 	        };
-	        
 
-	        
-	        //Create an array of all the labels by interpolating the string.
-	        
 	        var labels = [];
-	        
-	        if(labelTemplateString){
-		        //Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
-		        for (var i=1; i<numberOfSteps+1; i++){
-		        	labels.push(tmpl(labelTemplateString,{value:(graphMin + (stepValue*i)).toFixed(getDecimalPlaces (stepValue))}));
-		        }
-	        }
+	        populateLabels(labelTemplateString, labels, numberOfSteps, graphMin, stepValue);
 		
 	        return {
 		        steps : numberOfSteps,
@@ -1352,6 +1326,16 @@ var Chart = function(context){
 
 
 	}
+
+    //Populate an array of all the labels by interpolating the string.
+    function populateLabels(labelTemplateString, labels, numberOfSteps, graphMin, stepValue) {
+        if (labelTemplateString) {
+            //Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
+            for (var i = 1; i < numberOfSteps + 1; i++) {
+                labels.push(tmpl(labelTemplateString, {value: (graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue))}));
+            }
+        }
+    }
 	
 	//Max value from array
 	function Max( array ){
@@ -1438,6 +1422,5 @@ var Chart = function(context){
 	    return data ? fn( data ) : fn;
 	  };
 }
-
 
 
