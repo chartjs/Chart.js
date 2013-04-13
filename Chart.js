@@ -8,7 +8,7 @@
  */
 
 //Define the global Chart Variable as a class.
-var Chart = function(context){
+window.Chart = function(context){
 
 	var chart = this;
 	
