@@ -145,6 +145,7 @@ var Chart = function(context, tooltipOptions){
 			fontStyle : "normal",
 			fontColor: 'white',
 			fontSize: '12px',
+			labelTemplate: '<%=label%>: <%=value%>',
 			padding: {
 				top: 10,
 				right: 10,
@@ -248,10 +249,11 @@ var Chart = function(context, tooltipOptions){
 					this.ctx.putImageData(this.highlightState,0,0);
 				}
 			}
-			if(this.x != x || this.y != y) {
+			//if(this.x != x || this.y != y) {
 				var posX = x+tooltipOptions.offset.left,
 					posY = y+tooltipOptions.offset.top,
-					rectWidth = tooltipOptions.padding.left+this.ctx.measureText(this.data).width+tooltipOptions.padding.right;
+					tpl = tmpl(tooltipOptions.labelTemplate, this.data),
+					rectWidth = tooltipOptions.padding.left+this.ctx.measureText(tpl).width+tooltipOptions.padding.right;
 				if(posX + rectWidth > ctx.canvas.width) {
 					posX -= posX-rectWidth < 0 ? posX : rectWidth;
 				}
@@ -269,10 +271,10 @@ var Chart = function(context, tooltipOptions){
 				this.ctx.fillStyle = tooltipOptions.fontColor;
 				this.ctx.textAlign = 'center';
 				this.ctx.textBaseline = 'middle';
-				this.ctx.fillText(data, posX+rectWidth/2, posY+12);
+				this.ctx.fillText(tpl, posX+rectWidth/2, posY+12);
 				this.x = x;
 				this.y = y;
-			}
+			//}
 		}
 	}
 
@@ -643,15 +645,14 @@ var Chart = function(context, tooltipOptions){
 				ctx.fill();
 
 				if(animationDecimal > 0.9999999) {
-					var ttData = data[i].label != undefined && data[i].label != "" ? data[i].label+": "+data[i].value : data[i].value,
-						points = [{x:width/2,y:height/2}],
+					var points = [{x:width/2,y:height/2}],
 						pAmount = 50,
 						radius = calculateOffset(data[i].value,calculatedScale,scaleHop);
 					points.push({x:width/2+radius*Math.cos(startAngle),y:height/2+radius*Math.sin(startAngle)});
 					for(var p = 0; p <= pAmount; p++) {
 						points.push({x:width/2+radius*Math.cos(startAngle+p/pAmount*rotateAnimation*angleStep),y:height/2+radius*Math.sin(startAngle+p/pAmount*rotateAnimation*angleStep)});
 					}
-					registerTooltip(ctx,{type:'shape',points:points},ttData,'PolarArea');
+					registerTooltip(ctx,{type:'shape',points:points},{label:data[i].label,value:data[i].value},'PolarArea');
 				}
 
 				if(config.segmentShowStroke){
@@ -732,7 +733,7 @@ var Chart = function(context, tooltipOptions){
 						curY = height/2+offset*Math.sin(0-Math.PI/2),
 						pointRadius = config.pointDot ? config.pointDotRadius+config.pointDotStrokeWidth : 10,
 						ttData = data.labels[0].trim() != "" ? data.labels[0]+": "+data.datasets[i].data[0] : data.datasets[i].data[0];
-					registerTooltip(ctx,{type:'circle',x:curX,y:curY,r:pointRadius},ttData,'Radar');
+					registerTooltip(ctx,{type:'circle',x:curX,y:curY,r:pointRadius},{label:data.labels[0],value:data.datasets[i].data[0]},'Radar');
 				}
 				for (var j=1; j<data.datasets[i].data.length; j++){
 					offset = calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop);
@@ -743,7 +744,7 @@ var Chart = function(context, tooltipOptions){
 							curY = height/2+offset*Math.sin(j*rotationDegree-Math.PI/2),
 							pointRadius = config.pointDot ? config.pointDotRadius+config.pointDotStrokeWidth : 10,
 							ttData = data.labels[j].trim() != "" ? data.labels[j]+": "+data.datasets[i].data[j] : data.datasets[i].data[j];
-						registerTooltip(ctx,{type:'circle',x:curX,y:curY,r:pointRadius},ttData,'Radar');
+						registerTooltip(ctx,{type:'circle',x:curX,y:curY,r:pointRadius},{label:data.labels[j],value:data.datasets[i].data[j]},'Radar');
 					}
 				}
 				ctx.closePath();
@@ -960,14 +961,13 @@ var Chart = function(context, tooltipOptions){
 					ctx.translate(-tX, -tY);
 				}
 				if(animationDecimal > 0.9999999) {
-					var ttData = data[i].label != undefined && data[i].label != "" ? data[i].label+": "+data[i].value : data[i].value,
-						points = [{x:width/2,y:height/2}],
+					var points = [{x:width/2,y:height/2}],
 						pAmount = 50;
 					points.push({x:width/2+pieRadius*Math.cos(cumulativeAngle),y:height/2+pieRadius*Math.sin(cumulativeAngle)});
 					for(var p = 0; p <= pAmount; p++) {
 						points.push({x:width/2+pieRadius*Math.cos(cumulativeAngle+p/pAmount*segmentAngle),y:height/2+pieRadius*Math.sin(cumulativeAngle+p/pAmount*segmentAngle)});
 					}
-					registerTooltip(ctx,{type:'shape',points:points},ttData,'Pie');
+					registerTooltip(ctx,{type:'shape',points:points},{label:data[i].label,value:data[i].value},'Pie');
 				}
 				
 				if(config.segmentShowStroke){
@@ -1018,8 +1018,7 @@ var Chart = function(context, tooltipOptions){
 				ctx.fill();
 
 				if(animationDecimal > 0.9999999) {
-					var ttData = data[i].label != undefined && data[i].label != "" ? data[i].label+": "+data[i].value : data[i].value,
-						points = [],
+					var points = [],
 						pAmount = 50;
 					points.push({x:width/2+doughnutRadius*Math.cos(cumulativeAngle),y:height/2+doughnutRadius*Math.sin(cumulativeAngle)});
 					for(var p = 0; p <= pAmount; p++) {
@@ -1029,7 +1028,7 @@ var Chart = function(context, tooltipOptions){
 					for(var p = pAmount; p >= 0; p--) {
 						points.push({x:width/2+cutoutRadius*Math.cos(cumulativeAngle+p/pAmount*segmentAngle),y:height/2+cutoutRadius*Math.sin(cumulativeAngle+p/pAmount*segmentAngle)});
 					}
-					registerTooltip(ctx,{type:'shape',points:points},ttData,'Doughnut');
+					registerTooltip(ctx,{type:'shape',points:points},{label:data[i].label,value:data[i].value},'Doughnut');
 				}
 				
 				if(config.segmentShowStroke){
@@ -1090,8 +1089,7 @@ var Chart = function(context, tooltipOptions){
 				for(var j = 0; j < data.datasets[i].data.length; j++) {
 					if(animPc == 1) {
 						// register tooltips
-						var ttData = data.labels[j].toString().trim() != "" ? data.labels[j]+": "+data.datasets[i].data[j] : data.datasets[i].data[j];
-						registerTooltip(ctx,{type:'circle',x:xPos(j),y:yPos(i,j),r:pointRadius},ttData,'Line');
+						registerTooltip(ctx,{type:'circle',x:xPos(j),y:yPos(i,j),r:pointRadius},{label:data.labels[j],value:data.datasets[i].data[j]},'Line');
 					}
 				}
 				ctx.stroke();
@@ -1335,9 +1333,8 @@ var Chart = function(context, tooltipOptions){
 						var x = barOffset,
 							height = calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop),
 							y = xAxisPosY-height,
-							width = barWidth,
-							ttData = data.labels[j] != "" ? data.labels[j]+": "+data.datasets[i].data[j] : data.datasets[i].data[j];
-						registerTooltip(ctx,{type:'rect',x:x,y:y,width:width,height:height},ttData,'Bar');
+							width = barWidth;
+						registerTooltip(ctx,{type:'rect',x:x,y:y,width:width,height:height},{label:data.labels[j],value:data.datasets[i].data[j]},'Bar');
 					}
 				}
 			}
@@ -1662,7 +1659,13 @@ var Chart = function(context, tooltipOptions){
 	function mergeChartConfig(defaults,userDefined){
 		var returnObj = {};
 		for (var attrname in defaults) { returnObj[attrname] = defaults[attrname]; }
-		for (var attrname in userDefined) { returnObj[attrname] = userDefined[attrname]; }
+		for (var attrname in userDefined) {
+			if(typeof(userDefined[attrname]) === "object" && defaults[attrname]) {
+				returnObj[attrname] = mergeChartConfig(defaults[attrname], userDefined[attrname]);
+			} else {
+				returnObj[attrname] = userDefined[attrname];
+			}
+		}
 		return returnObj;
 	}
 	
