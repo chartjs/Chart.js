@@ -1,5 +1,5 @@
 //Define the global Chart Variable as a class.
-var Chart = function(context, tooltipOptions){
+var Chart = function(context, options){
 	
 	var chart = this;
 	
@@ -139,37 +139,39 @@ var Chart = function(context, tooltipOptions){
 	};
 
 	this.tooltips = [],
-		tooltipDefaults = {
-			background: 'rgba(0,0,0,0.6)',
-			fontFamily : "'Arial'",
-			fontStyle : "normal",
-			fontColor: 'white',
-			fontSize: '12px',
-			labelTemplate: '<%=label%>: <%=value%>',
-			padding: {
-				top: 10,
-				right: 10,
-				bottom: 10,
-				left: 10
-			},
-			offset: {
-				left: 0,
-				top: 0
-			},
-			border: {
-				width: 0,
-				color: '#000'
-			},
-			showHighlight: true,
-			highlight: {
-				stroke: {
-					width: 1,
-					color: 'rgba(230,230,230,0.25)'
+		defaults = {
+			tooltips: {
+				background: 'rgba(0,0,0,0.6)',
+				fontFamily : "'Arial'",
+				fontStyle : "normal",
+				fontColor: 'white',
+				fontSize: '12px',
+				labelTemplate: '<%=label%>: <%=value%>',
+				padding: {
+					top: 10,
+					right: 10,
+					bottom: 10,
+					left: 10
 				},
-				fill: 'rgba(255,255,255,0.25)'
+				offset: {
+					left: 0,
+					top: 0
+				},
+				border: {
+					width: 0,
+					color: '#000'
+				},
+				showHighlight: true,
+				highlight: {
+					stroke: {
+						width: 1,
+						color: 'rgba(230,230,230,0.25)'
+					},
+					fill: 'rgba(255,255,255,0.25)'
+				}
 			}
 		},
-		tooltipOptions = (tooltipOptions) ? mergeChartConfig(tooltipDefaults, tooltipOptions) : tooltipDefaults;
+		options = (options) ? mergeChartConfig(defaults, options) : defaults;
 
 	function registerTooltip(ctx,areaObj,data,type) {
 		chart.tooltips.push(new Tooltip(
@@ -217,15 +219,15 @@ var Chart = function(context, tooltipOptions){
 				this.savedState = this.ctx.getImageData(0,0,this.ctx.canvas.width,this.ctx.canvas.height);
 			}
 			this.ctx.putImageData(this.savedState,0,0);
-			if(tooltipOptions.showHighlight) {
+			if(options.tooltips.showHighlight) {
 				if(this.highlightState == null) {
-					this.ctx.strokeStyle = tooltipOptions.highlight.stroke.color;
-					this.ctx.lineWidth = tooltipOptions.highlight.stroke.width;
-					this.ctx.fillStyle = tooltipOptions.highlight.fill;
+					this.ctx.strokeStyle = options.tooltips.highlight.stroke.color;
+					this.ctx.lineWidth = options.tooltips.highlight.stroke.width;
+					this.ctx.fillStyle = options.tooltips.highlight.fill;
 					switch(this.areaObj.type) {
 						case 'rect':
 							this.ctx.strokeRect(this.areaObj.x, this.areaObj.y, this.areaObj.width, this.areaObj.height);
-							this.ctx.fillStyle = tooltipOptions.highlight.fill;
+							this.ctx.fillStyle = options.tooltips.highlight.fill;
 							this.ctx.fillRect(this.areaObj.x, this.areaObj.y, this.areaObj.width, this.areaObj.height);
 							break;
 						case 'circle':
@@ -250,25 +252,25 @@ var Chart = function(context, tooltipOptions){
 				}
 			}
 			//if(this.x != x || this.y != y) {
-				var posX = x+tooltipOptions.offset.left,
-					posY = y+tooltipOptions.offset.top,
-					tpl = tmpl(tooltipOptions.labelTemplate, this.data),
-					rectWidth = tooltipOptions.padding.left+this.ctx.measureText(tpl).width+tooltipOptions.padding.right;
+				var posX = x+options.tooltips.offset.left,
+					posY = y+options.tooltips.offset.top,
+					tpl = tmpl(options.tooltips.labelTemplate, this.data),
+					rectWidth = options.tooltips.padding.left+this.ctx.measureText(tpl).width+options.tooltips.padding.right;
 				if(posX + rectWidth > ctx.canvas.width) {
 					posX -= posX-rectWidth < 0 ? posX : rectWidth;
 				}
 				if(posY + 24 > ctx.canvas.height) {
 					posY -= 24;
 				}
-				this.ctx.fillStyle = tooltipOptions.background;
+				this.ctx.fillStyle = options.tooltips.background;
 				this.ctx.fillRect(posX, posY, rectWidth, 24);
-				if(tooltipOptions.border.width > 0) {
-					this.ctx.fillStyle = tooltipOptions.border.color;
-					this.ctx.lineWidth = tooltipOptions.border.width;
+				if(options.tooltips.border.width > 0) {
+					this.ctx.fillStyle = options.tooltips.order.color;
+					this.ctx.lineWidth = options.tooltips.border.width;
 					this.ctx.strokeRect(posX, posY, rectWidth, 24);
 				}
-				this.ctx.font = tooltipOptions.fontStyle+ " " +tooltipOptions.fontSize+" " + tooltipOptions.fontFamily;
-				this.ctx.fillStyle = tooltipOptions.fontColor;
+				this.ctx.font = options.tooltips.fontStyle+ " "+options.tooltips.fontSize+" " + options.tooltips.fontFamily;
+				this.ctx.fillStyle = options.tooltips.fontColor;
 				this.ctx.textAlign = 'center';
 				this.ctx.textBaseline = 'middle';
 				this.ctx.fillText(tpl, posX+rectWidth/2, posY+12);
