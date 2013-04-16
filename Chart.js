@@ -436,6 +436,7 @@ var Chart = function(context, tooltipOptions){
 			labelFontStyle : "normal",
 			labelFontSize : 12,
 			labelFontColor : "#666",
+			labelAlign : 'right',
 			showTooltips : true
 		};		
 
@@ -938,28 +939,52 @@ var Chart = function(context, tooltipOptions){
 				ctx.fill();
 
 				if(data[i].label && scaleAnimation*pieRadius*2*segmentAngle/(2*Math.PI) > config.labelFontSize) {
+					function getPieLabelX(align, r) {
+						switch(align) {
+							case 'left':
+								return -r+20;
+								break;
+							case 'center':
+								return -r/2;
+								break;
+						}
+						return -10;
+					}
+					
+					function reversePieLabelAlign(align) {
+						switch(align) {
+							case 'left': return 'right'; break;
+							case 'right': return 'left'; break;
+							case 'center': return align; break;
+						}
+					}
+					
 					var fontSize = data[i].labelFontSize || config.labelFontSize+'px';
+					
 					if(fontSize.match(/^[0-9]+$/g) != null) {
 						fontSize = fontSize+'px';
 					}
 					ctx.font = config.labelFontStyle+ " " +fontSize+" " + config.labelFontFamily;
 					ctx.fillStyle = getFadeColor(animationDecimal, data[i].labelColor || 'black', data[i].color);
+					ctx.textBaseline = 'middle';
 					// rotate text, so it perfectly fits in segments
 					var textRotation = -(cumulativeAngle + segmentAngle)+segmentAngle/2,
-						tX = width/2+scaleAnimation*pieRadius*Math.cos(textRotation)-10,
+						tX = width/2+scaleAnimation*pieRadius*Math.cos(textRotation),
 						tY = height/2-scaleAnimation*pieRadius*Math.sin(textRotation);
-					ctx.textAlign = 'right';
+					ctx.textAlign = data[i].labelAlign || config.labelAlign;
+					textX = getPieLabelX(ctx.textAlign, scaleAnimation*pieRadius);
 					if(textRotation < -Math.PI/2) {
 						textRotation -= Math.PI;
-						ctx.textAlign = 'left';
-						tX += 20;
+						ctx.textAlign = reversePieLabelAlign(ctx.textAlign);
+						textX = -textX;
 					}
 					ctx.translate(tX, tY);
 					ctx.rotate(-textRotation);
-					ctx.fillText(data[i].label, 0, 0);
+					ctx.fillText(data[i].label, textX, 0);
 					ctx.rotate(textRotation);
 					ctx.translate(-tX, -tY);
 				}
+				
 				if(animationDecimal > 0.9999999) {
 					var points = [{x:width/2,y:height/2}],
 						pAmount = 50;
