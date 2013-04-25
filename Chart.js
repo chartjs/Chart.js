@@ -337,6 +337,7 @@ window.Chart = function(context){
 			scaleGridLineColor : "rgba(0,0,0,.05)",
 			scaleGridLineWidth : 1,
 			barShowStroke : true,
+			barBorderRadius : 0,
 			barStrokeWidth : 2,
 			barValueSpacing : 5,
 			barDatasetSpacing : 1,
@@ -1050,22 +1051,55 @@ window.Chart = function(context){
 					ctx.fillStyle = data.datasets[i].fillColor;
 					ctx.strokeStyle = data.datasets[i].strokeColor;
 				for (var j=0; j<data.datasets[i].data.length; j++){
+
 					var barOffset = yAxisPosX + config.barValueSpacing + valueHop*j + barWidth*i + config.barDatasetSpacing*i + config.barStrokeWidth*i;
 
-					ctx.beginPath();
-					ctx.moveTo(barOffset, xAxisPosY);
-					ctx.lineTo(barOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
-					ctx.lineTo(barOffset + barWidth, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
-					ctx.lineTo(barOffset + barWidth, xAxisPosY);
-					if(config.barShowStroke){
-						ctx.stroke();
-					}
-					ctx.closePath();
-					ctx.fill();
+					var barHeight = animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2);
+
+					roundRect( ctx, barOffset, xAxisPosY, barWidth, barHeight, config.barShowStroke, config.barBorderRadius );
+
 				}
 			}
 
 		}
+
+		function roundRect(ctx, x, y, w, h, stroke, radius ) {
+
+			ctx.beginPath();
+
+			if ( typeof stroke === "undefined" ) {
+				stroke = true;
+			}
+			if ( typeof radius === "undefined" ) {
+
+				ctx.moveTo(x, y);
+				ctx.lineTo(x, y - h);
+				ctx.lineTo(x + w, y - h);
+				ctx.lineTo(x + w, y);
+
+			} else {
+
+				ctx.beginPath();
+				ctx.moveTo(x + radius, y);
+				ctx.lineTo(x + w - radius, y);
+				ctx.quadraticCurveTo(x + w, y, x + w, y);
+				ctx.lineTo(x + w, y - h + radius);
+				ctx.quadraticCurveTo(x + w, y - h, x + w - radius, y - h);
+				ctx.lineTo(x + radius, y - h);
+				ctx.quadraticCurveTo(x, y - h, x, y - h + radius);
+				ctx.lineTo(x, y);
+				ctx.quadraticCurveTo(x, y, x + radius, y);
+
+			}
+
+			if(stroke){
+				ctx.stroke();
+			}
+			ctx.closePath();
+			ctx.fill();
+
+		}
+
 		function drawScale(){
 			//X axis line
 			ctx.lineWidth = config.scaleLineWidth;
@@ -1422,5 +1456,3 @@ window.Chart = function(context){
 	    return data ? fn( data ) : fn;
 	  };
 }
-
-
