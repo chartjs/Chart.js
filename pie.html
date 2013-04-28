@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 	<head>
-		<title>Radar Chart</title>
+		<title>Pie Chart</title>
 		<script src="Chart.js"></script>
 		<meta name = "viewport" content = "initial-scale = 1, user-scalable = no">
 		<style>
@@ -38,8 +38,10 @@
 					labelFontSize : '175%'
 				}
 			];
+		var options = {
+		};
 
-	var myChart = new Chart(document.getElementById("canvas").getContext("2d"));
+	var myChart = new Chart(document.getElementById("canvas").getContext("2d"), options);
 	var myPie = myChart.Pie(pieData, {
 		animationSteps: 100,
 		animationEasing: 'easeOutBounce'
