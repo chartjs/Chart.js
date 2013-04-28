@@ -8,10 +8,8 @@
  */
 
 //Define the global Chart Variable as a class.
-var Chart = function(context, options){
-	
+window.Chart = function(context){
 	var chart = this;
-	
 	
 	//Easing functions adapted from Robert Penner's easing equations
 	//http://www.robertpenner.com/easing/
