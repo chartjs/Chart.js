@@ -147,11 +147,12 @@ var Chart = function(context, options){
 			fontColor: 'white',
 			fontSize: '12px',
 			labelTemplate: '<%=label%>: <%=value%>',
+			height: 24,
 			padding: {
-				top: 10,
-				right: 10,
-				bottom: 10,
-				left: 10
+				top: 4,
+				right: 8,
+				bottom: 4,
+				left: 8
 			},
 			position: 'bottom center',
 			offset: {
@@ -268,15 +269,41 @@ var Chart = function(context, options){
 				posY = y+options.tooltips.offset.top,
 				tpl = tmpl(options.tooltips.labelTemplate, this.data),
 				rectWidth = options.tooltips.padding.left+this.ctx.measureText(tpl).width+options.tooltips.padding.right,
-				position = options.tooltips.position.split(" ");
+				position = options.tooltips.position.split(" "),
+				height = options.tooltips.height;
+
+			// adjust height on fontsize
+			if(options.tooltips.fontSize.match(/[0-9]+(.[0-9]+)?px/)) {
+				height = parseInt(options.tooltips.fontSize);
+			} else if(options.tooltips.fontSize.match(/[0-9]+(.[0-9]+)?(\%|em)/)) {
+				function getDefaultFontSize(pa) {
+					pa = pa || document.body;
+					var who = document.createElement('div');
+
+					who.style.cssText='display:inline-block; padding:0; line-height:1; position:absolute; visibility:hidden; font-size:1em';
+
+					who.appendChild(document.createTextNode('M'));
+					pa.appendChild(who);
+					var fs = [who.offsetWidth, who.offsetHeight];
+					pa.removeChild(who);
+					return fs[1];
+				}
+				var size = parseFloat(options.tooltips.fontSize);
+				if(options.tooltips.fontSize.match(/[0-9]+(.[0-9]+)?\%/)) {
+					size /= 100;
+				}
+				height = size*getDefaultFontSize(this.ctx.canvas.parentNode);
+			}
+
+			height += options.tooltips.padding.top+options.tooltips.padding.bottom;
 
 			// check relative position
 			for(var i in position) {
 				if(i == 0) {
 					if(position[i] == "bottom") {
-						posY -= 24;
+						posY -= height;
 					} else if(position[i] == "center") {
-						posY -= 12;
+						posY -= height/2;
 						if(position.length == 1) {
 							posX -= rectWidth/2;
 						}
@@ -298,8 +325,8 @@ var Chart = function(context, options){
 			if(posX < 0) {
 				posX = 0;
 			}
-			if(posY + 24 > ctx.canvas.height) {
-				posY -= posY+24-ctx.canvas.height;
+			if(posY + height > ctx.canvas.height) {
+				posY -= posY+height-ctx.canvas.height;
 			}
 			if(posY < 0) {
 				posY = 0;
@@ -312,11 +339,11 @@ var Chart = function(context, options){
 				this.ctx.shadowOffsetY = options.tooltips.shadow.offsetY;
 			}
 			if(!options.tooltips.border.radius) {
-				this.ctx.fillRect(posX, posY, rectWidth, 24);
+				this.ctx.fillRect(posX, posY, rectWidth, height);
 				if(options.tooltips.border.width > 0) {
 					this.ctx.fillStyle = options.tooltips.border.color;
 					this.ctx.lineWidth = options.tooltips.border.width;
-					this.ctx.strokeRect(posX, posY, rectWidth, 24);
+					this.ctx.strokeRect(posX, posY, rectWidth, height);
 				}
 			} else {
 				var radius = options.tooltips.border.radius > 12 ? 12 : options.tooltips.border.radius;
@@ -324,10 +351,10 @@ var Chart = function(context, options){
 				this.ctx.moveTo(posX+radius, posY);
 				this.ctx.lineTo(posX+rectWidth-radius, posY);
 				this.ctx.quadraticCurveTo(posX+rectWidth, posY, posX+rectWidth, posY+radius);
-				this.ctx.lineTo(posX+rectWidth, posY+24-radius);
-				this.ctx.quadraticCurveTo(posX+rectWidth, posY+24, posX+rectWidth-radius, posY+24);
-				this.ctx.lineTo(posX+radius, posY+24);
-				this.ctx.quadraticCurveTo(posX, posY+24, posX, posY+24-radius);
+				this.ctx.lineTo(posX+rectWidth, posY+height-radius);
+				this.ctx.quadraticCurveTo(posX+rectWidth, posY+height, posX+rectWidth-radius, posY+height);
+				this.ctx.lineTo(posX+radius, posY+height);
+				this.ctx.quadraticCurveTo(posX, posY+height, posX, posY+height-radius);
 				this.ctx.lineTo(posX, posY+radius);
 				this.ctx.quadraticCurveTo(posX, posY, posX+radius, posY);
 				this.ctx.fill();
@@ -342,7 +369,7 @@ var Chart = function(context, options){
 			this.ctx.fillStyle = options.tooltips.fontColor;
 			this.ctx.textAlign = 'center';
 			this.ctx.textBaseline = 'middle';
-			this.ctx.fillText(tpl, posX+rectWidth/2, posY+12);
+			this.ctx.fillText(tpl, posX+rectWidth/2, posY+height/2);
 			this.x = x;
 			this.y = y;
 		}
