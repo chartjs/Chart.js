@@ -1,0 +1,205 @@
+* {
+  padding: 0;
+  margin: 0;
+  color: inherit;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+body {
+  color: #282b36;
+  border-top: 8px solid #282b36;
+}
+canvas {
+  font-family: "proxima-nova", sans-serif sans-serif;
+}
+.redBorder,
+.greenBorder,
+.yellowBorder {
+  width: 33.33%;
+  float: left;
+  height: 8px;
+}
+.redBorder {
+  background-color: #f33e6f;
+}
+.greenBorder {
+  background-color: #46bfbd;
+}
+.yellowBorder {
+  background-color: #fdb45c;
+}
+h1 {
+  font-family: "proxima-nova", sans-serif;
+  font-weight: 600;
+  font-size: 55px;
+  margin-top: 40px;
+}
+h2 {
+  font-family: "proxima-nova", sans-serif;
+  font-weight: 400;
+  margin-top: 20px;
+  font-size: 26px;
+  line-height: 40px;
+}
+h3 {
+  font-family: "proxima-nova", sans-serif;
+  font-weight: 600;
+  text-align: center;
+  margin: 20px 0;
+}
+h3 a {
+  color: #2d91ea;
+  text-decoration: none;
+  border-bottom: 1px solid #2d91ea;
+}
+p {
+  font-family: "proxima-nova", sans-serif;
+  line-height: 24px;
+  font-size: 18px;
+  color: #767c8d;
+}
+.btn {
+  display: inline-block;
+  padding: 20px;
+  font-family: "proxima-nova", sans-serif;
+  font-weight: 600;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 18px;
+  -webkit-transition-property: background-color box-shadow;
+  -webkit-transition-duration: 200ms;
+  -webkit-transition-timing-function: ease-in-out;
+  -moz-transition-property: background-color box-shadow;
+  -moz-transition-duration: 200ms;
+  -moz-transition-timing-function: ease-in-out;
+  -ms-transition-property: background-color box-shadow;
+  -ms-transition-duration: 200ms;
+  -ms-transition-timing-function: ease-in-out;
+  -o-transition-property: background-color box-shadow;
+  -o-transition-duration: 200ms;
+  -o-transition-timing-function: ease-in-out;
+  transition-property: background-color box-shadow;
+  transition-duration: 200ms;
+  transition-timing-function: ease-in-out;
+}
+.btn:active {
+  box-shadow: inset 1px 1px 4px rgba(0, 0, 0, 0.25);
+}
+.btn.red {
+  background-color: #f33e6f;
+}
+.btn.red:hover {
+  background-color: #f2265d;
+}
+.btn.blue {
+  background-color: #2d91ea;
+}
+.btn.blue:hover {
+  background-color: #1785e6;
+}
+header {
+  width: 978px;
+  margin: 20px auto;
+  display: block;
+  position: relative;
+}
+header hgroup {
+  width: 50%;
+  padding: 20px 0;
+}
+header #introChart {
+  position: absolute;
+  top: 60px;
+  right: 0;
+}
+header .btn {
+  margin-right: 10px;
+  width: 180px;
+}
+footer {
+  width: 100%;
+  text-align: center;
+  background-color: #ebebeb;
+}
+footer p {
+  color: #767c8d;
+  font-family: "proxima-nova", sans-serif;
+  font-size: 16px;
+  padding: 20px 0;
+}
+section {
+  width: 978px;
+  margin: 40px auto;
+}
+section:before {
+  content: '';
+  width: 600px;
+  margin: 0 auto;
+  border-top: 1px solid #ebebeb;
+  height: 20px;
+  display: block;
+}
+section:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+*section {
+  zoom: 1;
+}
+#features article {
+  width: 33.33%;
+  float: left;
+}
+#features article p {
+  display: block;
+  width: 90%;
+  margin: 0 auto;
+  text-align: center;
+}
+#features article img {
+  width: 250px;
+  height: 250px;
+  margin: 0 auto;
+  display: block;
+}
+#examples article {
+  -webkit-transition: opacity 200ms ease-in-out;
+  -ms-transition: opacity 200ms ease-in-out;
+  -moz-transition: opacity 200ms ease-in-out;
+  -o-transition: opacity 200ms ease-in-out;
+  transition: opacity 200ms ease-in-out;
+  position: relative;
+  margin-top: 20px;
+  clear: both;
+}
+#examples article:after {
+  content: '';
+  width: 600px;
+  padding-top: 40px;
+  margin: 40px auto;
+  border-bottom: 1px solid #ebebeb;
+  height: 20px;
+  display: block;
+  clear: both;
+}
+#examples article p {
+  margin-top: 10px;
+}
+#examples article .half {
+  width: 50%;
+  float: left;
+}
+#examples article .canvasWrapper {
+  float: left;
+  width: 449px;
+  padding: 0 20px;
+}
+#examples h3 {
+  clear: both;
+}
+#examples .hidden {
+  opacity: 0;
+}
