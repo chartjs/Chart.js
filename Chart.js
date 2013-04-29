@@ -301,6 +301,7 @@ window.Chart = function(context){
 			scaleShowGridLines : true,
 			scaleGridLineColor : "rgba(0,0,0,.05)",
 			scaleGridLineWidth : 1,
+			scaleXAxisPoint: 0,
 			bezierCurve : true,
 			pointDot : true,
 			pointDotRadius : 4,
@@ -336,6 +337,7 @@ window.Chart = function(context){
 			scaleShowGridLines : true,
 			scaleGridLineColor : "rgba(0,0,0,.05)",
 			scaleGridLineWidth : 1,
+			scaleXAxisPoint: 0,
 			barShowStroke : true,
 			barStrokeWidth : 2,
 			barValueSpacing : 5,
@@ -368,6 +370,7 @@ window.Chart = function(context){
 			scaleShowGridLines: true,
 			scaleGridLineColor: "rgba(0,0,0,.05)",
 			scaleGridLineWidth: 1,
+			scaleXAxisPoint: 0,
 			barValueSpacing: 5,
 			barDatasetSpacing: 1,
 			bezierCurve: true,
@@ -824,7 +827,7 @@ window.Chart = function(context){
 	}
 
 	var Line = function(data,config,ctx){
-		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop,widestXLabel, xAxisLength,yAxisPosX,xAxisPosY, rotateLabels = 0;
+		var xAxisPosY, maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop,widestXLabel, xAxisLength,yAxisPosX, yAxisPosMin,xAxisPosY, rotateLabels = 0;
 			
 		calculateDrawingSizes();
 		
@@ -847,6 +850,11 @@ window.Chart = function(context){
 		
 		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
 		calculateXAxisSize();
+        xAxisPosY = yAxisPosMin;
+        if (calculatedScale.graphMin < config.scaleXAxisPoint && (calculatedScale.graphMin + calculatedScale.steps * calculatedScale.stepValue) > config.scaleXAxisPoint) {
+            xAxisPosY = yAxisPosMin - Math.floor(scaleHeight * (((calculatedScale.graphMin - config.scaleXAxisPoint) * -1) / (calculatedScale.steps * calculatedScale.stepValue))) + 3;
+            calculatedScale.graphMin = config.scaleXAxisPoint;
+        }		
 		animationLoop(config,drawScale,drawLines,ctx);		
 		
 		function drawLines(animPc){
@@ -900,8 +908,8 @@ window.Chart = function(context){
 			ctx.lineWidth = config.scaleLineWidth;
 			ctx.strokeStyle = config.scaleLineColor;
 			ctx.beginPath();
-			ctx.moveTo(width-widestXLabel/2+5,xAxisPosY);
-			ctx.lineTo(width-(widestXLabel/2)-xAxisLength-5,xAxisPosY);
+			ctx.moveTo(width-widestXLabel/2+5,xAxisPosY-1);
+			ctx.lineTo(width-(widestXLabel/2)-xAxisLength-5,xAxisPosY-1);
 			ctx.stroke();
 			
 			
@@ -916,18 +924,18 @@ window.Chart = function(context){
 			for (var i=0; i<data.labels.length; i++){
 				ctx.save();
 				if (rotateLabels > 0){
-					ctx.translate(yAxisPosX + i*valueHop,xAxisPosY + config.scaleFontSize);
+					ctx.translate(yAxisPosX + i*valueHop,yAxisPosMin + config.scaleFontSize);
 					ctx.rotate(-(rotateLabels * (Math.PI/180)));
 					ctx.fillText(data.labels[i], 0,0);
 					ctx.restore();
 				}
 				
 				else{
-					ctx.fillText(data.labels[i], yAxisPosX + i*valueHop,xAxisPosY + config.scaleFontSize+3);					
+					ctx.fillText(data.labels[i], yAxisPosX + i*valueHop,yAxisPosMin + config.scaleFontSize+3);					
 				}
 
 				ctx.beginPath();
-				ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY+3);
+				ctx.moveTo(yAxisPosX + i * valueHop, yAxisPosMin+3);
 				
 				//Check i isnt 0, so we dont go over the Y axis twice.
 				if(config.scaleShowGridLines && i>0){
@@ -936,7 +944,7 @@ window.Chart = function(context){
 					ctx.lineTo(yAxisPosX + i * valueHop, 5);
 				}
 				else{
-					ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY+3);				
+					ctx.lineTo(yAxisPosX + i * valueHop, yAxisPosMin+3);				
 				}
 				ctx.stroke();
 			}
@@ -945,7 +953,7 @@ window.Chart = function(context){
 			ctx.lineWidth = config.scaleLineWidth;
 			ctx.strokeStyle = config.scaleLineColor;
 			ctx.beginPath();
-			ctx.moveTo(yAxisPosX,xAxisPosY+5);
+			ctx.moveTo(yAxisPosX,yAxisPosMin+5);
 			ctx.lineTo(yAxisPosX,5);
 			ctx.stroke();
 			
@@ -953,20 +961,20 @@ window.Chart = function(context){
 			ctx.textBaseline = "middle";
 			for (var j=0; j<calculatedScale.steps; j++){
 				ctx.beginPath();
-				ctx.moveTo(yAxisPosX-3,xAxisPosY - ((j+1) * scaleHop));
+				ctx.moveTo(yAxisPosX-3,yAxisPosMin - (j * scaleHop));
 				if (config.scaleShowGridLines){
 					ctx.lineWidth = config.scaleGridLineWidth;
 					ctx.strokeStyle = config.scaleGridLineColor;
-					ctx.lineTo(yAxisPosX + xAxisLength + 5,xAxisPosY - ((j+1) * scaleHop));					
+					ctx.lineTo(yAxisPosX + xAxisLength + 5,yAxisPosMin - (j * scaleHop));					
 				}
 				else{
-					ctx.lineTo(yAxisPosX-0.5,xAxisPosY - ((j+1) * scaleHop));
+					ctx.lineTo(yAxisPosX-0.5,yAxisPosMin - (j * scaleHop));
 				}
 				
 				ctx.stroke();
 				
 				if (config.scaleShowLabels){
-					ctx.fillText(calculatedScale.labels[j],yAxisPosX-8,xAxisPosY - ((j+1) * scaleHop));
+					ctx.fillText(calculatedScale.labels[j],yAxisPosX-8,yAxisPosMin - (j * scaleHop));
 				}
 			}
 			
@@ -988,7 +996,7 @@ window.Chart = function(context){
 			valueHop = Math.floor(xAxisLength/(data.labels.length-1));	
 				
 			yAxisPosX = width-widestXLabel/2-xAxisLength;
-			xAxisPosY = scaleHeight + config.scaleFontSize/2;				
+			yAxisPosMin = scaleHeight + config.scaleFontSize/2;				
 		}		
 		function calculateDrawingSizes(){
 			maxSize = height;
@@ -1056,7 +1064,7 @@ window.Chart = function(context){
 	}
 	
 	var Bar = function(data,config,ctx){
-		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop,widestXLabel, xAxisLength,yAxisPosX,xAxisPosY,barWidth, rotateLabels = 0;
+		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop,widestXLabel, xAxisLength,yAxisPosX, yAxisPosMin,xAxisPosY,barWidth, rotateLabels = 0;
 			
 		calculateDrawingSizes();
 		
@@ -1079,6 +1087,11 @@ window.Chart = function(context){
 		
 		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
 		calculateXAxisSize();
+        xAxisPosY = yAxisPosMin;
+        if (calculatedScale.graphMin < config.scaleXAxisPoint && (calculatedScale.graphMin + calculatedScale.steps * calculatedScale.stepValue) > config.scaleXAxisPoint) {
+            xAxisPosY = yAxisPosMin - Math.floor(scaleHeight * (((calculatedScale.graphMin - config.scaleXAxisPoint) * -1) / (calculatedScale.steps * calculatedScale.stepValue))) + 3;
+            calculatedScale.graphMin = config.scaleXAxisPoint;
+        }
 		animationLoop(config,drawScale,drawBars,ctx);		
 		
 		function drawBars(animPc){
@@ -1108,8 +1121,8 @@ window.Chart = function(context){
 			ctx.lineWidth = config.scaleLineWidth;
 			ctx.strokeStyle = config.scaleLineColor;
 			ctx.beginPath();
-			ctx.moveTo(width-widestXLabel/2+5,xAxisPosY);
-			ctx.lineTo(width-(widestXLabel/2)-xAxisLength-5,xAxisPosY);
+			ctx.moveTo(width-widestXLabel/2+5,xAxisPosY - 1);
+			ctx.lineTo(width-(widestXLabel/2)-xAxisLength-5,xAxisPosY - 1);
 			ctx.stroke();
 			
 			
@@ -1124,18 +1137,18 @@ window.Chart = function(context){
 			for (var i=0; i<data.labels.length; i++){
 				ctx.save();
 				if (rotateLabels > 0){
-					ctx.translate(yAxisPosX + i*valueHop,xAxisPosY + config.scaleFontSize);
+					ctx.translate(yAxisPosX + i*valueHop,yAxisPosMin + config.scaleFontSize);
 					ctx.rotate(-(rotateLabels * (Math.PI/180)));
 					ctx.fillText(data.labels[i], 0,0);
 					ctx.restore();
 				}
 				
 				else{
-					ctx.fillText(data.labels[i], yAxisPosX + i*valueHop + valueHop/2,xAxisPosY + config.scaleFontSize+3);					
+					ctx.fillText(data.labels[i], yAxisPosX + i*valueHop + valueHop/2,yAxisPosMin + config.scaleFontSize+3);					
 				}
 
 				ctx.beginPath();
-				ctx.moveTo(yAxisPosX + (i+1) * valueHop, xAxisPosY+3);
+				ctx.moveTo(yAxisPosX + (i+1) * valueHop, yAxisPosMin+3);
 				
 				//Check i isnt 0, so we dont go over the Y axis twice.
 					ctx.lineWidth = config.scaleGridLineWidth;
@@ -1148,7 +1161,7 @@ window.Chart = function(context){
 			ctx.lineWidth = config.scaleLineWidth;
 			ctx.strokeStyle = config.scaleLineColor;
 			ctx.beginPath();
-			ctx.moveTo(yAxisPosX,xAxisPosY+5);
+			ctx.moveTo(yAxisPosX,yAxisPosMin+5);
 			ctx.lineTo(yAxisPosX,5);
 			ctx.stroke();
 			
@@ -1156,19 +1169,19 @@ window.Chart = function(context){
 			ctx.textBaseline = "middle";
 			for (var j=0; j<calculatedScale.steps; j++){
 				ctx.beginPath();
-				ctx.moveTo(yAxisPosX-3,xAxisPosY - ((j+1) * scaleHop));
+				ctx.moveTo(yAxisPosX-3,yAxisPosMin - (j * scaleHop));
 				if (config.scaleShowGridLines){
 					ctx.lineWidth = config.scaleGridLineWidth;
 					ctx.strokeStyle = config.scaleGridLineColor;
-					ctx.lineTo(yAxisPosX + xAxisLength + 5,xAxisPosY - ((j+1) * scaleHop));					
+					ctx.lineTo(yAxisPosX + xAxisLength + 5,yAxisPosMin - (j * scaleHop));					
 				}
 				else{
-					ctx.lineTo(yAxisPosX-0.5,xAxisPosY - ((j+1) * scaleHop));
+					ctx.lineTo(yAxisPosX-0.5,yAxisPosMin - (j * scaleHop));
 				}
 				
 				ctx.stroke();
 				if (config.scaleShowLabels){
-					ctx.fillText(calculatedScale.labels[j],yAxisPosX-8,xAxisPosY - ((j+1) * scaleHop));
+					ctx.fillText(calculatedScale.labels[j],yAxisPosX-8,yAxisPosMin - (j * scaleHop));
 				}
 			}
 			
@@ -1192,7 +1205,7 @@ window.Chart = function(context){
 			barWidth = (valueHop - config.scaleGridLineWidth*2 - (config.barValueSpacing*2) - (config.barDatasetSpacing*data.datasets.length-1) - ((config.barStrokeWidth/2)*data.datasets.length-1))/data.datasets.length;
 			
 			yAxisPosX = width-widestXLabel/2-xAxisLength;
-			xAxisPosY = scaleHeight + config.scaleFontSize/2;				
+			yAxisPosMin = scaleHeight + config.scaleFontSize/2;				
 		}		
 		function calculateDrawingSizes(){
 			maxSize = height;
@@ -1256,7 +1269,7 @@ window.Chart = function(context){
 	}
 	
 	var BarAndLine = function (data, config, ctx) {
-		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, xAxisPosY, barWidth, rotateLabels = 0;
+		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop, widestXLabel, xAxisLength, yAxisPosX, yAxisPosMin, xAxisPosY, barWidth, rotateLabels = 0;
 
 		calculateDrawingSizes();
 
@@ -1279,6 +1292,11 @@ window.Chart = function(context){
 
 		scaleHop = Math.floor(scaleHeight / calculatedScale.steps);
 		calculateXAxisSize();
+		xAxisPosY = yAxisPosMin;
+        if (calculatedScale.graphMin < config.scaleXAxisPoint && (calculatedScale.graphMin + calculatedScale.steps * calculatedScale.stepValue) > config.scaleXAxisPoint) {
+            xAxisPosY = yAxisPosMin - Math.floor(scaleHeight * (((calculatedScale.graphMin - config.scaleXAxisPoint) * -1) / (calculatedScale.steps * calculatedScale.stepValue))) + 3;
+            calculatedScale.graphMin = config.scaleXAxisPoint;
+        }
 		animationLoop(config, drawScale, drawBarsAndLines, ctx);
 
 		function drawBarsAndLines(animPc) {
@@ -1319,7 +1337,7 @@ window.Chart = function(context){
 			ctx.strokeStyle = dataset.strokeColor;
 			ctx.lineWidth = config.datasetStrokeWidth;
 			ctx.beginPath();
-			ctx.moveTo(yAxisPosX, xAxisPosY - animPc * (calculateOffset(dataset.data[0], calculatedScale, scaleHop)))
+			ctx.moveTo(yAxisPosX + (valueHop * 0.5), xAxisPosY - animPc * (calculateOffset(dataset.data[0], calculatedScale, scaleHop)))
 
 			for (var j = 1; j < dataset.data.length; j++) {
 
@@ -1333,7 +1351,7 @@ window.Chart = function(context){
 			ctx.stroke();
 			if (config.datasetFill) {
 				ctx.lineTo(yAxisPosX + (valueHop * (dataset.data.length - 1) + (valueHop * 0.5)), xAxisPosY);
-				ctx.lineTo(yAxisPosX, xAxisPosY);
+				ctx.lineTo(yAxisPosX + (valueHop * 0.5), xAxisPosY);
 				ctx.closePath();
 				ctx.fillStyle = dataset.fillColor;
 				ctx.fill();
@@ -1365,8 +1383,8 @@ window.Chart = function(context){
 			ctx.lineWidth = config.scaleLineWidth;
 			ctx.strokeStyle = config.scaleLineColor;
 			ctx.beginPath();
-			ctx.moveTo(width - widestXLabel / 2 + 5, xAxisPosY);
-			ctx.lineTo(width - (widestXLabel / 2) - xAxisLength - 5, xAxisPosY);
+			ctx.moveTo(width - widestXLabel / 2 + 5, xAxisPosY - 1);
+			ctx.lineTo(width - (widestXLabel / 2) - xAxisLength - 5, xAxisPosY - 1);
 			ctx.stroke();
 
 
@@ -1381,18 +1399,18 @@ window.Chart = function(context){
 			for (var i = 0; i < data.labels.length; i++) {
 				ctx.save();
 				if (rotateLabels > 0) {
-					ctx.translate(yAxisPosX + i * valueHop, xAxisPosY + config.scaleFontSize);
+					ctx.translate(yAxisPosX + i * valueHop, yAxisPosMin + config.scaleFontSize);
 					ctx.rotate(-(rotateLabels * (Math.PI / 180)));
 					ctx.fillText(data.labels[i], 0, 0);
 					ctx.restore();
 				}
 
 				else {
-					ctx.fillText(data.labels[i], yAxisPosX + i * valueHop + valueHop / 2, xAxisPosY + config.scaleFontSize + 3);
+					ctx.fillText(data.labels[i], yAxisPosX + i * valueHop + valueHop / 2, yAxisPosMin + config.scaleFontSize + 3);
 				}
 
 				ctx.beginPath();
-				ctx.moveTo(yAxisPosX + (i + 1) * valueHop, xAxisPosY + 3);
+				ctx.moveTo(yAxisPosX + (i + 1) * valueHop, yAxisPosMin + 3);
 
 				//Check i isnt 0, so we dont go over the Y axis twice.
 				if (config.scaleShowGridLines) {
@@ -1401,7 +1419,7 @@ window.Chart = function(context){
 					ctx.lineTo(yAxisPosX + (i + 1) * valueHop, 5);
 				}
 				else {
-					ctx.lineTo(yAxisPosX + (i + 1) * valueHop, xAxisPosY + 3);
+					ctx.lineTo(yAxisPosX + (i + 1) * valueHop, yAxisPosMin + 3);
 				}
 				ctx.stroke();
 			}
@@ -1410,7 +1428,7 @@ window.Chart = function(context){
 			ctx.lineWidth = config.scaleLineWidth;
 			ctx.strokeStyle = config.scaleLineColor;
 			ctx.beginPath();
-			ctx.moveTo(yAxisPosX, xAxisPosY + 5);
+			ctx.moveTo(yAxisPosX, yAxisPosMin + 5);
 			ctx.lineTo(yAxisPosX, 5);
 			ctx.stroke();
 
@@ -1418,19 +1436,19 @@ window.Chart = function(context){
 			ctx.textBaseline = "middle";
 			for (var j = 0; j < calculatedScale.steps; j++) {
 				ctx.beginPath();
-				ctx.moveTo(yAxisPosX - 3, xAxisPosY - ((j + 1) * scaleHop));
+				ctx.moveTo(yAxisPosX - 3, yAxisPosMin - (j * scaleHop));
 				if (config.scaleShowGridLines) {
 					ctx.lineWidth = config.scaleGridLineWidth;
 					ctx.strokeStyle = config.scaleGridLineColor;
-					ctx.lineTo(yAxisPosX + xAxisLength + 5, xAxisPosY - ((j + 1) * scaleHop));
+					ctx.lineTo(yAxisPosX + xAxisLength + 5, yAxisPosMin - (j * scaleHop));
 				}
 				else {
-					ctx.lineTo(yAxisPosX - 0.5, xAxisPosY - ((j + 1) * scaleHop));
+					ctx.lineTo(yAxisPosX - 0.5, yAxisPosMin - (j * scaleHop));
 				}
 				ctx.stroke();
 
 				if (config.scaleShowLabels) {
-					ctx.fillText(calculatedScale.labels[j], yAxisPosX - 8, xAxisPosY - ((j + 1) * scaleHop));
+					ctx.fillText(calculatedScale.labels[j], yAxisPosX - 8, yAxisPosMin - (j * scaleHop));
 				}
 			}
 		}
@@ -1458,7 +1476,7 @@ window.Chart = function(context){
 			barWidth = (valueHop - config.scaleGridLineWidth * 2 - (config.barValueSpacing * 2) - (config.barDatasetSpacing * numberOfBarCharts - 1) - ((config.datasetStrokeWidth / 2) * numberOfBarCharts - 1)) / numberOfBarCharts;
 
 			yAxisPosX = width - widestXLabel / 2 - xAxisLength;
-			xAxisPosY = scaleHeight + config.scaleFontSize / 2;
+			yAxisPosMin = scaleHeight + config.scaleFontSize / 2;
 		}
 		function calculateDrawingSizes() {
 			maxSize = height;
@@ -1519,7 +1537,7 @@ window.Chart = function(context){
 	function calculateOffset(val,calculatedScale,scaleHop){
 		var outerValue = calculatedScale.steps * calculatedScale.stepValue;
 		var adjustedValue = val - calculatedScale.graphMin;
-		var scalingFactor = CapValue(adjustedValue/outerValue,1,0);
+		var scalingFactor = CapValue(adjustedValue/outerValue,1,-1);
 		return (scaleHop*calculatedScale.steps) * scalingFactor;
 	}
 	
@@ -1597,11 +1615,11 @@ window.Chart = function(context){
 	        while(numberOfSteps < minSteps || numberOfSteps > maxSteps) {
 	        	if (numberOfSteps < minSteps){
 			        stepValue /= 2;
-			        numberOfSteps = Math.round(graphRange/stepValue);
+			        numberOfSteps = Math.round(graphRange/stepValue) + 1;
 		        }
 		        else{
 			        stepValue *=2;
-			        numberOfSteps = Math.round(graphRange/stepValue);
+			        numberOfSteps = Math.round(graphRange/stepValue) + 1;
 		        }
 	        };
 
@@ -1627,7 +1645,7 @@ window.Chart = function(context){
 	function populateLabels(labelTemplateString, labels, numberOfSteps, graphMin, stepValue) {
 		if (labelTemplateString) {
 			//Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
-			for (var i = 1; i < numberOfSteps + 1; i++) {
+			for (var i = 0; i < numberOfSteps; i++) {
 				labels.push(tmpl(labelTemplateString, {value: (graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue))}));
 			}
 		}
