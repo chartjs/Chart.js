@@ -1,0 +1,29 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Mocha Tests</title>
+    <link rel="stylesheet" href="lib/mocha.css" />
+</head>
+<body>
+    <div id="mocha"></div>
+  
+    <script src="lib/chai.js"></script>
+  
+    <script src="lib/mocha.js"></script>
+    <script>
+        mocha.setup('bdd');
+        expect = chai.expect;    
+    </script>
+    
+    <!-- source files -->
+    <script src="../Chart.js"></script>
+    
+    <!-- spec files -->
+    <script src="spec/ChartSpec.js"></script>
+  
+    <script>
+        mocha.checkLeaks();
+        mocha.run();
+    </script>
+</body>
+</html>

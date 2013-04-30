@@ -1410,7 +1410,7 @@ window.Chart = function(context){
         }
         
         if(typeof options.animationEasing !== 'undefined' && !animationOptions.hasOwnProperty( options.animationEasing ) ){
-            throw( new Error('Easing option not a valid value.'));
+            throw( new Error( options.animationEasing + ' is not a valid animationEasing option.  Please visit http://www.chartjs.org/docs/ for documentation.'));
         }
     }
 	//Javascript micro templating by John Resig - source at http://ejohn.org/blog/javascript-micro-templating/
