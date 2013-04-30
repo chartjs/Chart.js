@@ -162,7 +162,9 @@ window.Chart = function(context){
 	}
 
 	this.PolarArea = function(data,options){
-	
+	    
+        validateArguments(options);
+        
 		chart.PolarArea.defaults = {
 			scaleOverlay : true,
 			scaleOverride : false,
@@ -199,7 +201,9 @@ window.Chart = function(context){
 	};
 
 	this.Radar = function(data,options){
-	
+	    
+        validateArguments(options);
+        
 		chart.Radar.defaults = {
 			scaleOverlay : false,
 			scaleOverride : false,
@@ -244,6 +248,9 @@ window.Chart = function(context){
 	};
 	
 	this.Pie = function(data,options){
+        
+        validateArguments( options );
+        
 		chart.Pie.defaults = {
 			segmentShowStroke : true,
 			segmentStrokeColor : "#fff",
@@ -262,7 +269,9 @@ window.Chart = function(context){
 	};
 	
 	this.Doughnut = function(data,options){
-	
+	    
+        validateArguments(options);
+        
 		chart.Doughnut.defaults = {
 			segmentShowStroke : true,
 			segmentStrokeColor : "#fff",
@@ -283,7 +292,9 @@ window.Chart = function(context){
 	};
 
 	this.Line = function(data,options){
-	
+	    
+        validateArguments(options);
+        
 		chart.Line.defaults = {
 			scaleOverlay : false,
 			scaleOverride : false,
@@ -319,6 +330,9 @@ window.Chart = function(context){
 	}
 	
 	this.Bar = function(data,options){
+        
+        validateArguments( options );
+        
 		chart.Bar.defaults = {
 			scaleOverlay : false,
 			scaleOverride : false,
@@ -1389,6 +1403,16 @@ window.Chart = function(context){
 	    return returnObj;
 	}
 	
+    function validateArguments(options){
+  
+        if( typeof options === 'undefined'){
+            return;
+        }
+        
+        if(typeof options.animationEasing !== 'undefined' && !animationOptions.hasOwnProperty( options.animationEasing ) ){
+            throw( new Error('Easing option not a valid value.'));
+        }
+    }
 	//Javascript micro templating by John Resig - source at http://ejohn.org/blog/javascript-micro-templating/
 	  var cache = {};
 	 
