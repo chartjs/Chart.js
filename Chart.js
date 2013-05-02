@@ -959,7 +959,7 @@ window.Chart = function(context){
 			
 			ctx.textAlign = "right";
 			ctx.textBaseline = "middle";
-			for (var j=0; j<calculatedScale.steps; j++){
+			for (var j=0; j<=calculatedScale.steps; j++){
 				ctx.beginPath();
 				ctx.moveTo(yAxisPosX-3,yAxisPosMin - (j * scaleHop));
 				if (config.scaleShowGridLines){
@@ -1167,7 +1167,7 @@ window.Chart = function(context){
 			
 			ctx.textAlign = "right";
 			ctx.textBaseline = "middle";
-			for (var j=0; j<calculatedScale.steps; j++){
+			for (var j=0; j<=calculatedScale.steps; j++){
 				ctx.beginPath();
 				ctx.moveTo(yAxisPosX-3,yAxisPosMin - (j * scaleHop));
 				if (config.scaleShowGridLines){
@@ -1434,7 +1434,7 @@ window.Chart = function(context){
 
 			ctx.textAlign = "right";
 			ctx.textBaseline = "middle";
-			for (var j = 0; j < calculatedScale.steps; j++) {
+			for (var j = 0; j <= calculatedScale.steps; j++) {
 				ctx.beginPath();
 				ctx.moveTo(yAxisPosX - 3, yAxisPosMin - (j * scaleHop));
 				if (config.scaleShowGridLines) {
@@ -1615,11 +1615,11 @@ window.Chart = function(context){
 	        while(numberOfSteps < minSteps || numberOfSteps > maxSteps) {
 	        	if (numberOfSteps < minSteps){
 			        stepValue /= 2;
-			        numberOfSteps = Math.round(graphRange/stepValue) + 1;
+			        numberOfSteps = Math.round(graphRange/stepValue);
 		        }
 		        else{
 			        stepValue *=2;
-			        numberOfSteps = Math.round(graphRange/stepValue) + 1;
+			        numberOfSteps = Math.round(graphRange/stepValue);
 		        }
 	        };
 
@@ -1645,7 +1645,7 @@ window.Chart = function(context){
 	function populateLabels(labelTemplateString, labels, numberOfSteps, graphMin, stepValue) {
 		if (labelTemplateString) {
 			//Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
-			for (var i = 0; i < numberOfSteps; i++) {
+			for (var i = 0; i <= numberOfSteps; i++) {
 				labels.push(tmpl(labelTemplateString, {value: (graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue))}));
 			}
 		}
