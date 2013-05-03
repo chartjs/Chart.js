@@ -406,8 +406,8 @@ window.Chart = function(context, options){
 		}
 		return { x: xPosition, y: yPosition };
 	}
-
-	context.canvas.onmousemove = function(e) {
+	
+	function tooltipEventHandler(e) {
 		if(chart.tooltips.length > 0) {
 			chart.savedState = chart.savedState == null ? context.getImageData(0,0,context.canvas.width,context.canvas.height) : chart.savedState;
 			var rendered = 0;
@@ -423,6 +423,23 @@ window.Chart = function(context, options){
 			if(rendered == 0) {
 				context.putImageData(chart.savedState,0,0);
 			}
+		}
+	}
+
+	if(window.Touch) {
+		context.canvas.ontouchstart = function(e) {
+			e.clientX = e.targetTouches[0].clientX;
+			e.clientY = e.targetTouches[0].clientY;
+			tooltipEventHandler(e);
+		}
+		context.canvas.ontouchmove = function(e) {
+			e.clientX = e.targetTouches[0].clientX;
+			e.clientY = e.targetTouches[0].clientY;
+			tooltipEventHandler(e);
+		}
+	} else {
+		context.canvas.onmousemove = function(e) {
+			tooltipEventHandler(e);
 		}
 	}
 	context.canvas.onmouseout = function(e) {
