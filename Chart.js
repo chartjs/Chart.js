@@ -671,7 +671,7 @@ window.Chart = function(context, options){
 				ctx.fillStyle = data[i].color;
 				ctx.fill();
 
-				if(animationDecimal > 0.9999999) {
+				if(animationDecimal >= 1 && config.showTooltips) {
 					var points = [{x:width/2,y:height/2}],
 						pAmount = 50,
 						radius = calculateOffset(data[i].value,calculatedScale,scaleHop);
@@ -755,7 +755,7 @@ window.Chart = function(context, options){
 				var offset = calculateOffset(data.datasets[i].data[0],calculatedScale,scaleHop);
 				ctx.beginPath();
 				ctx.moveTo(0,animationDecimal*(-1*offset));
-				if(animationDecimal == 1) {
+				if(animationDecimal >= 1 && config.showTooltips) {
 					var curX = width/2+offset*Math.cos(0-Math.PI/2),
 						curY = height/2+offset*Math.sin(0-Math.PI/2),
 						pointRadius = config.pointDot ? config.pointDotRadius+config.pointDotStrokeWidth : 10,
@@ -766,7 +766,7 @@ window.Chart = function(context, options){
 					offset = calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop);
 					ctx.rotate(rotationDegree);
 					ctx.lineTo(0,animationDecimal*(-1*offset));
-					if(animationDecimal == 1) {
+					if(animationDecimal >= 1 && config.showTooltips) {
 						var curX = width/2+offset*Math.cos(j*rotationDegree-Math.PI/2),
 							curY = height/2+offset*Math.sin(j*rotationDegree-Math.PI/2),
 							pointRadius = config.pointDot ? config.pointDotRadius+config.pointDotStrokeWidth : 10,
@@ -1011,7 +1011,7 @@ window.Chart = function(context, options){
 					ctx.translate(-tX, -tY);
 				}
 				
-				if(animationDecimal > 0.9999999) {
+				if(animationDecimal >= 1 && config.showTooltips) {
 					var points = [{x:width/2,y:height/2}],
 						pAmount = 50;
 					points.push({x:width/2+pieRadius*Math.cos(cumulativeAngle),y:height/2+pieRadius*Math.sin(cumulativeAngle)});
@@ -1068,7 +1068,7 @@ window.Chart = function(context, options){
 				ctx.fillStyle = data[i].color;
 				ctx.fill();
 
-				if(animationDecimal > 0.9999999) {
+				if(animationDecimal >= 1 && config.showTooltips) {
 					var points = [],
 						pAmount = 50;
 					points.push({x:width/2+doughnutRadius*Math.cos(cumulativeAngle),y:height/2+doughnutRadius*Math.sin(cumulativeAngle)});
@@ -1138,7 +1138,7 @@ window.Chart = function(context, options){
 				}
 				var pointRadius = config.pointDot ? config.pointDotRadius+config.pointDotStrokeWidth : 10;
 				for(var j = 0; j < data.datasets[i].data.length; j++) {
-					if(animPc == 1) {
+					if(animPc >= 1 && config.showTooltips) {
 						// register tooltips
 						registerTooltip(ctx,{type:'circle',x:xPos(j),y:yPos(i,j),r:pointRadius},{label:data.labels[j],value:data.datasets[i].data[j]},'Line');
 					}
@@ -1379,7 +1379,7 @@ window.Chart = function(context, options){
 					ctx.closePath();
 					ctx.fill();
 
-					if(animPc == 1) {
+					if(animPc >= 1 && config.showTooltips) {
 						// register tooltips
 						var x = barOffset,
 							height = calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop),
