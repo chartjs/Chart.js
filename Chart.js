@@ -1373,13 +1373,29 @@ window.Chart = function(context){
 	}
 	function getDecimalPlaces (num){
 		var numberOfDecimalPlaces;
+
 		if (num%1!=0){
-			return num.toString().split(".")[1].length
+
+			num = num.toString();
+			
+			// Decimal
+			splitted = num.split(".")
+			if ( splitted.length > 1 )
+				return splitted[1].length
+				
+			// Scientific notation
+			splitted = num.split("e-")
+			if ( splitted.length > 1 )
+				return parseInt( splitted[1] )
+				
+			// Error
+			throw 	"I am trying to find the decimal places of " + num + 
+					" as it seems to be smaller than 0, but it doesn't contain" +
+					" a dot (.) and is not in scientific ( baseE-places ) notation."
 		}
 		else{
 			return 0;
 		}
-		
 	} 
 	
 	function mergeChartConfig(defaults,userDefined){
