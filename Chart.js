@@ -201,6 +201,7 @@ window.Chart = function(context){
 	this.Radar = function(data,options){
 	
 		chart.Radar.defaults = {
+			labelTruncate : false,
 			scaleOverlay : false,
 			scaleOverride : false,
 			scaleSteps : null,
@@ -654,6 +655,14 @@ window.Chart = function(context){
 			var labelLength = 0;
 			for (var i=0; i<data.labels.length; i++){
 				ctx.font = config.pointLabelFontStyle + " " + config.pointLabelFontSize+"px " + config.pointLabelFontFamily;
+				if(data.labels[i].length > 15 && config.labelTruncate){
+					var labelTxt = data.labels[i].split(" ")[0];
+					if(labelTxt.length > 15){
+						data.labels[i] = labelTxt.substring(0, 15) + "...";
+					}else{
+						data.labels[i] = labelTxt + "...";
+					}
+				}
 				var textMeasurement = ctx.measureText(data.labels[i]).width;
 				if(textMeasurement>labelLength) labelLength = textMeasurement;
 			}
