@@ -165,7 +165,6 @@ window.Chart = function(context){
 	
 		chart.PolarArea.defaults = {
 			scaleOverlay : true,
-			scaleOverride : false,
 			scaleSteps : null,
 			scaleStepWidth : null,
 			scaleStartValue : null,
@@ -202,7 +201,6 @@ window.Chart = function(context){
 	
 		chart.Radar.defaults = {
 			scaleOverlay : false,
-			scaleOverride : false,
 			scaleSteps : null,
 			scaleStepWidth : null,
 			scaleStartValue : null,
@@ -286,7 +284,6 @@ window.Chart = function(context){
 	
 		chart.Line.defaults = {
 			scaleOverlay : false,
-			scaleOverride : false,
 			scaleSteps : null,
 			scaleStepWidth : null,
 			scaleStartValue : null,
@@ -321,7 +318,6 @@ window.Chart = function(context){
 	this.Bar = function(data,options){
 		chart.Bar.defaults = {
 			scaleOverlay : false,
-			scaleOverride : false,
 			scaleSteps : null,
 			scaleStepWidth : null,
 			scaleStartValue : null,
@@ -365,20 +361,8 @@ window.Chart = function(context){
 		labelTemplateString = (config.scaleShowLabels)? config.scaleLabel : null;
 
 		//Check and set the scale
-		if (!config.scaleOverride){
-			
-			calculatedScale = calculateScale(scaleHeight,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
-		}
-		else {
-			calculatedScale = {
-				steps : config.scaleSteps,
-				stepValue : config.scaleStepWidth,
-				graphMin : config.scaleStartValue,
-				labels : []
-			}
-			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
-		}
-		
+                calculatedScale = calculateScale(scaleHeight,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString,config);
+
 		scaleHop = maxSize/(calculatedScale.steps);
 
 		//Wrap in an animation loop wrapper
@@ -500,21 +484,8 @@ window.Chart = function(context){
 
 		labelTemplateString = (config.scaleShowLabels)? config.scaleLabel : null;
 
-		//Check and set the scale
-		if (!config.scaleOverride){
-			
-			calculatedScale = calculateScale(scaleHeight,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
-		}
-		else {
-			calculatedScale = {
-				steps : config.scaleSteps,
-				stepValue : config.scaleStepWidth,
-				graphMin : config.scaleStartValue,
-				labels : []
-			}
-			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
-		}
-		
+                calculatedScale = calculateScale(scaleHeight,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString,config);
+
 		scaleHop = maxSize/(calculatedScale.steps);
 		
 		animationLoop(config,drawScale,drawAllDataPoints,ctx);
@@ -794,20 +765,8 @@ window.Chart = function(context){
 		valueBounds = getValueBounds();
 		//Check and set the scale
 		labelTemplateString = (config.scaleShowLabels)? config.scaleLabel : "";
-		if (!config.scaleOverride){
-			
-			calculatedScale = calculateScale(scaleHeight,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
-		}
-		else {
-			calculatedScale = {
-				steps : config.scaleSteps,
-				stepValue : config.scaleStepWidth,
-				graphMin : config.scaleStartValue,
-				labels : []
-			}
-			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
-		}
-		
+                calculatedScale = calculateScale(scaleHeight,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString,config);
+
 		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
 		calculateXAxisSize();
 		animationLoop(config,drawScale,drawLines,ctx);		
@@ -1026,20 +985,8 @@ window.Chart = function(context){
 		valueBounds = getValueBounds();
 		//Check and set the scale
 		labelTemplateString = (config.scaleShowLabels)? config.scaleLabel : "";
-		if (!config.scaleOverride){
-			
-			calculatedScale = calculateScale(scaleHeight,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
-		}
-		else {
-			calculatedScale = {
-				steps : config.scaleSteps,
-				stepValue : config.scaleStepWidth,
-				graphMin : config.scaleStartValue,
-				labels : []
-			}
-			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
-		}
-		
+                calculatedScale = calculateScale(scaleHeight,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString,config);
+
 		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
 		calculateXAxisSize();
 		animationLoop(config,drawScale,drawBars,ctx);		
@@ -1280,34 +1227,46 @@ window.Chart = function(context){
 			};
 	})();
 
-	function calculateScale(drawingHeight,maxSteps,minSteps,maxValue,minValue,labelTemplateString){
+	function calculateScale(drawingHeight,maxSteps,minSteps,maxValue,minValue,labelTemplateString,defaults){
 			var graphMin,graphMax,graphRange,stepValue,numberOfSteps,valueRange,rangeOrderOfMagnitude,decimalNum;
 			
 			valueRange = maxValue - minValue;
 			
 			rangeOrderOfMagnitude = calculateOrderOfMagnitude(valueRange);
 
-        	graphMin = Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
-            
+                if(defaults.scaleStartValue != null) {
+                    graphMin = defaults.scaleStartValue;
+                } else {
+                    graphMin = Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
+                }
+
             graphMax = Math.ceil(maxValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
             
             graphRange = graphMax - graphMin;
-            
-            stepValue = Math.pow(10, rangeOrderOfMagnitude);
-            
-	        numberOfSteps = Math.round(graphRange / stepValue);
-	        
-	        //Compare number of steps to the max and min for that size graph, and add in half steps if need be.	        
-	        while(numberOfSteps < minSteps || numberOfSteps > maxSteps) {
-	        	if (numberOfSteps < minSteps){
-			        stepValue /= 2;
-			        numberOfSteps = Math.round(graphRange/stepValue);
-		        }
-		        else{
-			        stepValue *=2;
-			        numberOfSteps = Math.round(graphRange/stepValue);
-		        }
-	        };
+
+            if(defaults.scaleStepWidth != null) {
+                stepValue = defaults.scaleStepWidth;
+            } else {
+                stepValue = Math.pow(10, rangeOrderOfMagnitude);
+            }
+
+                if(defaults.scaleSteps != null) {
+                    numberOfSteps = config.scaleSteps;
+                } else {
+                    numberOfSteps = Math.round(graphRange / stepValue);
+
+                    //Compare number of steps to the max and min for that size graph, and add in half steps if need be.
+                    while(numberOfSteps < minSteps || numberOfSteps > maxSteps) {
+                            if (numberOfSteps < minSteps){
+                                    stepValue /= 2;
+                                    numberOfSteps = Math.round(graphRange/stepValue);
+                            }
+                            else{
+                                    stepValue *=2;
+                                    numberOfSteps = Math.round(graphRange/stepValue);
+                            }
+                    };
+                }
 
 	        var labels = [];
 	        populateLabels(labelTemplateString, labels, numberOfSteps, graphMin, stepValue);
