@@ -730,7 +730,6 @@ window.Chart = function(context){
 					rotateAnimation = animationDecimal;
 				}
 			}
-      console.dir(config);
 			for (var i=0; i<data.length; i++){
 				var segmentAngle = rotateAnimation * ((data[i].value/segmentTotal) * (Math.PI*2));
 				ctx.beginPath();
@@ -746,12 +745,13 @@ window.Chart = function(context){
           ctx.textAlign = 'center';
           ctx.font = config.scaleFontStyle + ' ' + config.scaleFontSize + 'px ' + config.scaleFontFamily;
           ctx.textBaselne = 'middle';
-          var a = (cumulativeAngle + cumulativeAngle + segmentAngle) / 2
-            , w = ctx.measureText(data[i].value).width;
+          var a = (cumulativeAngle + cumulativeAngle + segmentAngle) / 2,
+              w = ctx.measureText(data[i].value).width,
+              b = Math.PI / 2 < a && a < Math.PI * 3 / 2;
           ctx.translate(Math.cos(a) * pieRadius, Math.sin(a) * pieRadius);
-          ctx.rotate(a - Math.PI);
+          ctx.rotate(a - (b ? Math.PI : 0));
           ctx.fillStyle = config.scaleFontColor;
-          ctx.fillText(data[i].value, w / 2 + config.scaleValuePaddingX, config.scaleFontSize / 2);
+          ctx.fillText(data[i].value, (b ? 1 : -1) * (w / 2 + config.scaleValuePaddingX), config.scaleFontSize / 2);
           ctx.restore();
         }
 				
@@ -808,12 +808,13 @@ window.Chart = function(context){
         ctx.textAlign = 'center';
         ctx.font = config.scaleFontStyle + ' ' + config.scaleFontSize + 'px ' + config.scaleFontFamily;
         ctx.textBaselne = 'middle';
-        var a = (cumulativeAngle + cumulativeAngle + segmentAngle) / 2
-          , w = ctx.measureText(data[i].value).width;
+        var a = (cumulativeAngle + cumulativeAngle + segmentAngle) / 2,
+            w = ctx.measureText(data[i].value).width,
+            b = Math.PI / 2 < a && a < Math.PI * 3 / 2;
         ctx.translate(Math.cos(a) * doughnutRadius, Math.sin(a) * doughnutRadius);
-        ctx.rotate(a - Math.PI);
+        ctx.rotate(a - (b ? Math.PI : 0));
         ctx.fillStyle = config.scaleFontColor;
-        ctx.fillText(data[i].value, w / 2 + config.scaleValuePaddingX, config.scaleFontSize / 2);
+        ctx.fillText(data[i].value, (b ? 1 : -1) * (w / 2 + config.scaleValuePaddingX), config.scaleFontSize / 2);
         ctx.restore();
       }
 				
