@@ -11,14 +11,23 @@
 		</style>
 	</head>
 	<body>
-		<div style="width:600px;height:600px;">
-			<canvas id="doughnut" height="300" width="200"></canvas>
-			<canvas id="line" height="300" width="200"></canvas>
-			<canvas id="polarArea" height="300" width="200"></canvas>
-			<canvas id="bar" height="300" width="200"></canvas>
-			<canvas id="pie" height="300" width="200"></canvas>
-			<canvas id="radar" height="300" width="200"></canvas>
+		<div style="width:1000px;height:600px;">
+			<canvas id="doughnut" height="300" width="300"></canvas>
+			<canvas id="line" height="300" width="300"></canvas>
+			<canvas id="polarArea" height="300" width="300"></canvas>
+			<canvas id="bar" height="300" width="300"></canvas>
+			<canvas id="pie" height="300" width="300"></canvas>
+			<canvas id="radar" height="300" width="300"></canvas>
 		</div>
+
+        <div style="width:1000px;height:600px;">
+            <canvas id="doughnut-with-title" height="300" width="300"></canvas>
+            <canvas id="line-with-title" height="300" width="300"></canvas>
+            <canvas id="polarArea-with-title" height="300" width="300"></canvas>
+            <canvas id="bar-with-title" height="300" width="300"></canvas>
+            <canvas id="pie-with-title" height="300" width="300"></canvas>
+            <canvas id="radar-with-title" height="300" width="300"></canvas>
+        </div>
 
 
 	<script>
@@ -143,12 +152,19 @@
 			]
 			
 		};
-	new Chart(document.getElementById("doughnut").getContext("2d")).Doughnut(doughnutData);
-	new Chart(document.getElementById("line").getContext("2d")).Line(lineChartData);
-	new Chart(document.getElementById("radar").getContext("2d")).Radar(radarChartData);
-	new Chart(document.getElementById("polarArea").getContext("2d")).PolarArea(chartData);
-	new Chart(document.getElementById("bar").getContext("2d")).Bar(barChartData);
-	new Chart(document.getElementById("pie").getContext("2d")).Pie(pieData);
+        new Chart(document.getElementById("doughnut").getContext("2d")).Doughnut(doughnutData);
+        new Chart(document.getElementById("line").getContext("2d")).Line(lineChartData);
+        new Chart(document.getElementById("radar").getContext("2d")).Radar(radarChartData);
+        new Chart(document.getElementById("polarArea").getContext("2d")).PolarArea(chartData);
+        new Chart(document.getElementById("bar").getContext("2d")).Bar(barChartData);
+        new Chart(document.getElementById("pie").getContext("2d")).Pie(pieData);
+
+        new Chart(document.getElementById("doughnut-with-title").getContext("2d")).Doughnut(doughnutData,{showTitle: true},"Doughnut");
+        new Chart(document.getElementById("line-with-title").getContext("2d")).Line(lineChartData,{showTitle: true},"Line");
+        new Chart(document.getElementById("radar-with-title").getContext("2d")).Radar(radarChartData,{showTitle: true},"Radar");
+        new Chart(document.getElementById("polarArea-with-title").getContext("2d")).PolarArea(chartData,{showTitle: true},"Polar");
+        new Chart(document.getElementById("bar-with-title").getContext("2d")).Bar(barChartData,{showTitle: true},"Bar");
+        new Chart(document.getElementById("pie-with-title").getContext("2d")).Pie(pieData,{showTitle: true},"Pie");
 	
 	</script>
 	</body>
