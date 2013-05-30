@@ -195,7 +195,8 @@ window.Chart = function(context){
             titleFontFamily : "'Arial'",
             titleFontSize : 12,
             titleFontStyle : "normal",
-            titleFontColor : "rgba(0, 0, 0, 1)"
+            titleFontColor : "rgba(0, 0, 0, 1)",
+            titleOffset : 80
         };
 
         var config = (options)? mergeChartConfig(chart.PolarArea.defaults,options) : chart.PolarArea.defaults;
@@ -245,7 +246,8 @@ window.Chart = function(context){
             titleFontFamily : "'Arial'",
             titleFontSize : 12,
             titleFontStyle : "normal",
-            titleFontColor : "rgba(0, 0, 0, 1)"
+            titleFontColor : "rgba(0, 0, 0, 1)",
+            titleOffset : 100
         };
 
         var config = (options)? mergeChartConfig(chart.Radar.defaults,options) : chart.Radar.defaults;
@@ -271,7 +273,8 @@ window.Chart = function(context){
             titleFontFamily : "'Arial'",
             titleFontSize : 12,
             titleFontStyle : "normal",
-            titleFontColor : "rgba(0, 0, 0, 1)"
+            titleFontColor : "rgba(0, 0, 0, 1)",
+            titleOffset : 60
         };
 
         var config = (options)? mergeChartConfig(chart.Pie.defaults,options) : chart.Pie.defaults;
@@ -296,7 +299,8 @@ window.Chart = function(context){
             titleFontFamily : "'Arial'",
             titleFontSize : 12,
             titleFontStyle : "normal",
-            titleFontColor : "rgba(0, 0, 0, 1)"
+            titleFontColor : "rgba(0, 0, 0, 1)",
+            titleOffset : 100
         };
 
         var config = (options)? mergeChartConfig(chart.Doughnut.defaults,options) : chart.Doughnut.defaults;
@@ -339,7 +343,8 @@ window.Chart = function(context){
             titleFontFamily : "'Arial'",
             titleFontSize : 12,
             titleFontStyle : "normal",
-            titleFontColor : "rgba(0, 0, 0, 1)"
+            titleFontColor : "rgba(0, 0, 0, 1)",
+            titleOffset : 40
         };
         var config = (options) ? mergeChartConfig(chart.Line.defaults,options) : chart.Line.defaults;
 
@@ -376,7 +381,8 @@ window.Chart = function(context){
             titleFontFamily : "'Arial'",
             titleFontSize : 12,
             titleFontStyle : "normal",
-            titleFontColor : "rgba(0, 0, 0, 1)"
+            titleFontColor : "rgba(0, 0, 0, 1)",
+            titleOffset : 60
         };
         var config = (options) ? mergeChartConfig(chart.Bar.defaults,options) : chart.Bar.defaults;
 
@@ -469,13 +475,11 @@ window.Chart = function(context){
             }
         }
         function drawTitle() {
-            if(title != undefined) {
-                ctx.fillStyle = config.titleFontColor;
-                ctx.font = "bold " + config.titleFontSize+"px " + config.titleFontFamily;
-                ctx.fillText(title, width - title.length * config.titleFontSize/4, 20);
-                ctx.stroke();
-                ctx.save();
-            }
+            ctx.fillStyle = config.titleFontColor;
+            ctx.font = "bold " + config.titleFontSize+"px " + config.titleFontFamily;
+            ctx.fillText(title, width - config.titleOffset, 20);
+            ctx.stroke();
+            ctx.save();
         }
         function drawAllSegments(animationDecimal){
             var startAngle = -Math.PI/2,
@@ -610,13 +614,11 @@ window.Chart = function(context){
 
         }
         function drawTitle() {
-            if(title != undefined) {
-                ctx.fillStyle = config.titleFontColor;
-                ctx.font = "bold " + config.titleFontSize+"px " + config.titleFontFamily;
-                ctx.fillText(title, width - title.length * config.titleFontSize*0.6, 20);
-                ctx.stroke();
-                ctx.save();
-            }
+            ctx.fillStyle = config.titleFontColor;
+            ctx.font = "bold " + config.titleFontSize+"px " + config.titleFontFamily;
+            ctx.fillText(title, width - config.titleOffset, 20);
+            ctx.stroke();
+            ctx.save();
         }
         function drawScale(){
             var rotationDegree = (2*Math.PI)/data.datasets[0].data.length;
@@ -757,13 +759,11 @@ window.Chart = function(context){
         animationLoop(config,null,drawTitle,drawPieSegments,ctx);
 
         function drawTitle() {
-            if(title != undefined) {
-                ctx.fillStyle = config.titleFontColor;
-                ctx.font = "bold " + config.scaleFontSize+"px " + config.scaleFontFamily;
-                ctx.fillText(title, width - title.length * config.titleFontSize*0.6, 20);
-                ctx.stroke();
-                ctx.save();
-            }
+            ctx.fillStyle = config.titleFontColor;
+            ctx.font = "bold " + config.scaleFontSize+"px " + config.scaleFontFamily;
+            ctx.fillText(title, width - config.titleOffset, 20);
+            ctx.stroke();
+            ctx.save();
         }
         function drawPieSegments (animationDecimal){
             var cumulativeAngle = -Math.PI/2,
@@ -842,13 +842,11 @@ window.Chart = function(context){
             }
         }
         function drawTitle() {
-            if(title != undefined) {
-                ctx.fillStyle = config.titleFontColor;
-                ctx.font = "bold " + config.titleFontSize+"px " + config.titleFontFamily;
-                ctx.fillText(title, width - title.length * config.titleFontSize*0.6, 20);
-                ctx.stroke();
-                ctx.save();
-            }
+            ctx.fillStyle = config.titleFontColor;
+            ctx.font = "bold " + config.titleFontSize+"px " + config.titleFontFamily;
+            ctx.fillText(title, width - config.titleOffset, 20);
+            ctx.stroke();
+            ctx.save();
         }
 
 
@@ -1003,13 +1001,11 @@ window.Chart = function(context){
             }
         }
         function drawTitle() {
-            if(title != undefined) {
-                ctx.fillStyle = config.titleFontColor;
-                ctx.font = "bold " + config.titleFontSize+"px " + config.titleFontFamily;
-                ctx.fillText(title, width - title.length * config.titleFontSize*0.6, 20);
-                ctx.stroke();
-                ctx.save();
-            }
+            ctx.fillStyle = config.titleFontColor;
+            ctx.font = "bold " + config.titleFontSize+"px " + config.titleFontFamily;
+            ctx.fillText(title, width - config.titleOffset, 20);
+            ctx.stroke();
+            ctx.save();
         }
         function calculateXAxisSize(){
             var longestText = 1;
@@ -1212,13 +1208,12 @@ window.Chart = function(context){
             }
         }
         function drawTitle() {
-            if(title != undefined) {
-                ctx.fillStyle = config.titleFontColor;
-                ctx.font = "bold " + config.titleFontSize+"px " + config.titleFontFamily;
-                ctx.fillText(title, width - title.length * config.titleFontSize *0.7, 20);
-                ctx.stroke();
-                ctx.save();
-            }
+            ctx.fillStyle = config.titleFontColor;
+            ctx.font = "bold " + config.titleFontSize+"px " + config.titleFontFamily;
+            console.log(config.titleFontSize)
+            ctx.fillText(title, width - config.titleOffset, 20);
+            ctx.stroke();
+            ctx.save();
         }
         function calculateXAxisSize(){
             var longestText = 1;
@@ -1468,6 +1463,9 @@ window.Chart = function(context){
             return 0;
         }
 
+    }
+
+    function drawTitle() {
     }
 
     function mergeChartConfig(defaults,userDefined){
