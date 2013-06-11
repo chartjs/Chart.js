@@ -2,6 +2,9 @@ Chart.js
 =======
 *Simple HTML5 Charts using the canvas element* [chartjs.org](http://www.chartjs.org)
 
+Competition!
+-------
+The guys at Challenge Post are running a competition to design and build a personal deashboard using Chart.js, and are offering some great prizes for winning. Take a look at [chartjs.challengepost.com](http://chartjs.challengepost.com/).
 
 Documentation
 -------
