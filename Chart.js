@@ -1047,11 +1047,12 @@ window.Chart = function(context){
 		function drawBars(animPc){
 			ctx.lineWidth = config.barStrokeWidth;
 			for (var i=0; i<data.datasets.length; i++){
-					ctx.fillStyle = data.datasets[i].fillColor;
-					ctx.strokeStyle = data.datasets[i].strokeColor;
 				for (var j=0; j<data.datasets[i].data.length; j++){
 					var barOffset = yAxisPosX + config.barValueSpacing + valueHop*j + barWidth*i + config.barDatasetSpacing*i + config.barStrokeWidth*i;
-					
+
+					ctx.fillStyle = cycleColor(data.datasets[i].fillColor, j);
+					ctx.strokeStyle = cycleColor(data.datasets[i].strokeColor, j);
+
 					ctx.beginPath();
 					ctx.moveTo(barOffset, xAxisPosY);
 					ctx.lineTo(barOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
@@ -1335,6 +1336,11 @@ window.Chart = function(context){
                 labels.push(tmpl(labelTemplateString, {value: (graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue))}));
             }
         }
+    }
+
+    // Cycle a given array of colours (for multi coloured bars in bargraphs)
+    function cycleColor(colors, i) {
+    	return (colors && colors.constructor.name == "Array") ? colors[i % colors.length] : colors;
     }
 	
 	//Max value from array
