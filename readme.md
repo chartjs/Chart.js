@@ -4,7 +4,7 @@ Chart.js
 
 Competition!
 -------
-The guys at Challenge Post are running a competition to design and build a personal deashboard using Chart.js, and are offering some great prizes for winning. Take a look at [chartjs.challengepost.com](http://chartjs.challengepost.com/).
+The guys at ChallengePost are running a competition to design and build a personal dashboard using Chart.js, and are offering some great prizes for winning. Take a look at [chartjs.challengepost.com](http://chartjs.challengepost.com/).
 
 Documentation
 -------
