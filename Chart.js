@@ -311,7 +311,8 @@ window.Chart = function(context){
 			animation : true,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			onlyHorizontalGridLines: false
 		};		
 		var config = (options) ? mergeChartConfig(chart.Line.defaults,options) : chart.Line.defaults;
 		
@@ -889,19 +890,21 @@ window.Chart = function(context){
 					ctx.fillText(data.labels[i], yAxisPosX + i*valueHop,xAxisPosY + config.scaleFontSize+3);					
 				}
 
-				ctx.beginPath();
-				ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY+3);
-				
-				//Check i isnt 0, so we dont go over the Y axis twice.
-				if(config.scaleShowGridLines && i>0){
-					ctx.lineWidth = config.scaleGridLineWidth;
-					ctx.strokeStyle = config.scaleGridLineColor;					
-					ctx.lineTo(yAxisPosX + i * valueHop, 5);
+				if(!config.onlyHorizontalGridLines){
+					ctx.beginPath();
+					ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY+3);
+					
+					//Check i isnt 0, so we dont go over the Y axis twice.
+					if(config.scaleShowGridLines && i>0){
+						ctx.lineWidth = config.scaleGridLineWidth;
+						ctx.strokeStyle = config.scaleGridLineColor;					
+						ctx.lineTo(yAxisPosX + i * valueHop, 5);
+					}
+					else{
+						ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY+3);				
+					}
+					ctx.stroke();
 				}
-				else{
-					ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY+3);				
-				}
-				ctx.stroke();
 			}
 			
 			//Y axis
