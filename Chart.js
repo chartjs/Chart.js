@@ -344,7 +344,8 @@ window.Chart = function(context){
 			animation : true,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			onlyHorizontalGridLines: false
 		};		
 		var config = (options) ? mergeChartConfig(chart.Bar.defaults,options) : chart.Bar.defaults;
 		
@@ -1099,15 +1100,14 @@ window.Chart = function(context){
 				else{
 					ctx.fillText(data.labels[i], yAxisPosX + i*valueHop + valueHop/2,xAxisPosY + config.scaleFontSize+3);					
 				}
-
-				ctx.beginPath();
-				ctx.moveTo(yAxisPosX + (i+1) * valueHop, xAxisPosY+3);
-				
-				//Check i isnt 0, so we dont go over the Y axis twice.
+				if(!config.onlyHorizontalGridLines && config.scaleShowGridLines){
+					ctx.beginPath();
+					ctx.moveTo(yAxisPosX + (i+1) * valueHop, xAxisPosY+3);
 					ctx.lineWidth = config.scaleGridLineWidth;
-					ctx.strokeStyle = config.scaleGridLineColor;					
+					ctx.strokeStyle = config.scaleGridLineColor;
 					ctx.lineTo(yAxisPosX + (i+1) * valueHop, 5);
-				ctx.stroke();
+					ctx.stroke();
+				}
 			}
 			
 			//Y axis
