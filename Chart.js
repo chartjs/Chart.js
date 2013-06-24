@@ -1100,11 +1100,12 @@ window.Chart = function(context){
 				ctx.beginPath();
 				ctx.moveTo(yAxisPosX + (i+1) * valueHop, xAxisPosY+3);
 				
-				//Check i isnt 0, so we dont go over the Y axis twice.
+				if(config.scaleShowGridLines){
 					ctx.lineWidth = config.scaleGridLineWidth;
 					ctx.strokeStyle = config.scaleGridLineColor;					
 					ctx.lineTo(yAxisPosX + (i+1) * valueHop, 5);
-				ctx.stroke();
+					ctx.stroke();
+				}
 			}
 			
 			//Y axis
