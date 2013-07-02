@@ -253,7 +253,11 @@ window.Chart = function(context){
 			animationEasing : "easeOutBounce",
 			animateRotate : true,
 			animateScale : false,
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			labelFontFamily: "Arial",
+			labelFontSize: "12",
+			labelFontStyle: "normal",
+			labelFontColor: "#666"
 		};		
 
 		var config = (options)? mergeChartConfig(chart.Pie.defaults,options) : chart.Pie.defaults;
@@ -731,6 +735,14 @@ window.Chart = function(context){
 					ctx.strokeStyle = config.segmentStrokeColor;
 					ctx.stroke();
 				}
+				
+				/* draw text only if the data has a label */
+				if (data[i].label) {
+					ctx.font = config.labelFontStyle + " " + config.labelFontSize+"px " + config.labelFontFamily;
+					ctx.fillStyle = config.labelFontColor;
+					ctx.fillText(data[i].label, width/2 + Math.cos(cumulativeAngle + segmentAngle/2)*pieRadius/2 - data[i].label.length/2*(config.labelFontSize*.6), height/2 + Math.sin(cumulativeAngle + segmentAngle/2)*pieRadius/2);
+				}
+				
 				cumulativeAngle += segmentAngle;
 			}			
 		}		
