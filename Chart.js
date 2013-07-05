@@ -285,7 +285,7 @@ window.Chart = function(context){
 	this.Line = function(data,options){
 	
 		chart.Line.defaults = {
-			scaleShowValues: true,
+			scaleShowValues: false,
 			scaleValuePaddingX: 13,
 			scaleValuePaddingY: 13,
 			scaleOverlay : false,
