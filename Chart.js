@@ -925,14 +925,14 @@ window.Chart = function(context){
 					}
 					
 					if (iteration == -0.5) {
-							var myDate=data.labels[0].split(".");				
-							var timestamp = new Date(myDate[1]+"/"+myDate[0]+"/"+myDate[2]).getTime();
-							var myDate=data.labels[iteration+1.5].split(".");				
-							var l_timestamp = new Date(myDate[1]+"/"+myDate[0]+"/"+myDate[2]).getTime();
-							var dif_time = (timestamp - l_timestamp);
-						
-							var abs_x = (dif_time/max_dif)*xAxisLength;
-							result = yAxisPosX + abs_x;					
+						var myDate=data.labels[0].split(".");				
+						var timestamp = new Date(myDate[1]+"/"+myDate[0]+"/"+myDate[2]).getTime();
+						var myDate=data.labels[iteration+1.5].split(".");				
+						var l_timestamp = new Date(myDate[1]+"/"+myDate[0]+"/"+myDate[2]).getTime();
+						var dif_time = (timestamp - l_timestamp);
+					
+						var abs_x = (dif_time/max_dif)*xAxisLength;
+						result = yAxisPosX + abs_x;					
 					}
 					
 					return result;
@@ -973,12 +973,10 @@ window.Chart = function(context){
 			if (count_years >= 1000) {
 				dis_years = 200;		
 			}
-			//alert(data.labels[0].split(".")[2]);
-			//alert(dis_years);
+			
 			
 			xAxisLabel = new Array(); 
 			if (LabelIsDate === true) {
-				//alert(parseInt(data.labels[0].split(".")[2])+" "+parseInt(data.labels[data.labels.length-1].split(".")[2]));
 				for (var i = parseInt(data.labels[0].split(".")[2]); i <= parseInt(data.labels[data.labels.length-1].split(".")[2]); i++) {
 					if (i%dis_years == 0) {
 						xAxisLabel.push(i);
