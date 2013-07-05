@@ -788,7 +788,9 @@ window.Chart = function(context){
 
 	var Line = function(data,config,ctx){
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop,widestXLabel, xAxisLength,yAxisPosX,xAxisPosY, rotateLabels = 0;
-			
+		var xAxisLabel = new Array();
+		var LabelIsDate = true;
+		
 		calculateDrawingSizes();
 		
 		valueBounds = getValueBounds();
@@ -812,8 +814,45 @@ window.Chart = function(context){
 		calculateXAxisSize();
 		animationLoop(config,drawScale,drawLines,ctx);		
 		
+		// YYYY in DD.MM.YYYY || MM.YYYY in DD.MM.YYYY
+		if (data.labels[0].match(/^((0?[1-9])|10|11|12)\.(1|2)[0-9]{3}$/)) {
+			for (var i = 0; i < data.labels.length; i++) {
+				data.labels[i] = '01.'+data.labels[i];
+			}
+		}
+		
+		if (data.labels[0].match(/^(1|2)[0-9]{3}$/)) {
+			for (var i = 0; i < data.labels.length; i++) {
+				data.labels[i] = '01.01.'+data.labels[i];
+			}
+		}
+		
+		// Test if all labels are dates
+		for (var i = 0; i < data.labels.length; i++) {
+			myDate=data.labels[i].split(".");
+			var test_timestamp = new Date(myDate[1]+"/"+myDate[0]+"/"+myDate[2]).getTime();
+			if (isNaN(test_timestamp)) {
+				LabelIsDate = false;
+				break;
+			}
+		}
+		
+		
+		// difference max_date and min_date
+		if (LabelIsDate === true) {
+			myDate=data.labels[0].split(".");
+			var min_timestamp = new Date(myDate[1]+"/"+myDate[0]+"/"+myDate[2]).getTime();
+			myDate=data.labels[data.labels.length-1].split(".");
+			var max_timestamp = new Date(myDate[1]+"/"+myDate[0]+"/"+myDate[2]).getTime();
+			
+			var max_dif = max_timestamp-min_timestamp;
+		}
+		
+		
 		function drawLines(animPc){
+		
 			for (var i=0; i<data.datasets.length; i++){
+		
 				ctx.strokeStyle = data.datasets[i].strokeColor;
 				ctx.lineWidth = config.datasetStrokeWidth;
 				ctx.beginPath();
@@ -829,7 +868,7 @@ window.Chart = function(context){
 				}
 				ctx.stroke();
 				if (config.datasetFill){
-					ctx.lineTo(yAxisPosX + (valueHop*(data.datasets[i].data.length-1)),xAxisPosY);
+					ctx.lineTo(xPos(data.datasets[i].data.length-1),xAxisPosY);
 					ctx.lineTo(yAxisPosX,xAxisPosY);
 					ctx.closePath();
 					ctx.fillStyle = data.datasets[i].fillColor;
@@ -844,7 +883,7 @@ window.Chart = function(context){
 					ctx.lineWidth = config.pointDotStrokeWidth;
 					for (var k=0; k<data.datasets[i].data.length; k++){
 						ctx.beginPath();
-						ctx.arc(yAxisPosX + (valueHop *k),xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[k],calculatedScale,scaleHop)),config.pointDotRadius,0,Math.PI*2,true);
+						ctx.arc(xPos(k),xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[k],calculatedScale,scaleHop)),config.pointDotRadius,0,Math.PI*2,true);
 						ctx.fill();
 						ctx.stroke();
 					}
@@ -855,7 +894,53 @@ window.Chart = function(context){
 				return xAxisPosY - animPc*(calculateOffset(data.datasets[dataSet].data[iteration],calculatedScale,scaleHop));			
 			}
 			function xPos(iteration){
-				return yAxisPosX + (valueHop * iteration);
+				var result;
+				if (LabelIsDate === true) {
+					if ((iteration != 0) && (iteration != -0.5)) {
+						if (Math.round(iteration) != iteration) { // bezier-curve
+							var myDate=data.labels[iteration+0.5].split(".");				
+							var timestamp = new Date(myDate[1]+"/"+myDate[0]+"/"+myDate[2]).getTime();
+							var myDate=data.labels[iteration-0.5].split(".");				
+							var l_timestamp = new Date(myDate[1]+"/"+myDate[0]+"/"+myDate[2]).getTime();
+							var dif_time = (timestamp - l_timestamp);
+						
+							var abs_x = (dif_time/max_dif)*xAxisLength;
+							result = xPos(iteration-1) + abs_x;
+						}
+						else {
+							var myDate=data.labels[iteration].split(".");				
+							var timestamp = new Date(myDate[1]+"/"+myDate[0]+"/"+myDate[2]).getTime();
+							var myDate=data.labels[iteration-1].split(".");				
+							var l_timestamp = new Date(myDate[1]+"/"+myDate[0]+"/"+myDate[2]).getTime();
+							var dif_time = timestamp - l_timestamp;
+						
+							var abs_x = (dif_time/max_dif)*xAxisLength;
+							result = xPos(iteration-1) + abs_x;
+						}
+						
+					}
+					else
+					{
+						result = yAxisPosX;
+					}
+					
+					if (iteration == -0.5) {
+							var myDate=data.labels[0].split(".");				
+							var timestamp = new Date(myDate[1]+"/"+myDate[0]+"/"+myDate[2]).getTime();
+							var myDate=data.labels[iteration+1.5].split(".");				
+							var l_timestamp = new Date(myDate[1]+"/"+myDate[0]+"/"+myDate[2]).getTime();
+							var dif_time = (timestamp - l_timestamp);
+						
+							var abs_x = (dif_time/max_dif)*xAxisLength;
+							result = yAxisPosX + abs_x;					
+					}
+					
+					return result;
+				}
+				else
+				{
+					return yAxisPosX + (valueHop * iteration);
+				}
 			}
 		}
 		function drawScale(){
@@ -866,6 +951,46 @@ window.Chart = function(context){
 			ctx.moveTo(width-widestXLabel/2+5,xAxisPosY);
 			ctx.lineTo(width-(widestXLabel/2)-xAxisLength-5,xAxisPosY);
 			ctx.stroke();
+			
+			
+			var count_years = Math.round(max_dif/31540000000); // millisec per year
+			var dis_years;
+			if (count_years >= 1) {
+				dis_years = 1;		
+			}
+			if (count_years >= 10) {
+				dis_years = 2;		
+			}
+			if (count_years >= 50) {
+				dis_years = 10;		
+			}
+			if (count_years >= 100) {
+				dis_years = 20;		
+			}
+			if (count_years >= 500) {
+				dis_years = 100;		
+			}
+			if (count_years >= 1000) {
+				dis_years = 200;		
+			}
+			//alert(data.labels[0].split(".")[2]);
+			//alert(dis_years);
+			
+			xAxisLabel = new Array(); 
+			if (LabelIsDate === true) {
+				//alert(parseInt(data.labels[0].split(".")[2])+" "+parseInt(data.labels[data.labels.length-1].split(".")[2]));
+				for (var i = parseInt(data.labels[0].split(".")[2]); i <= parseInt(data.labels[data.labels.length-1].split(".")[2]); i++) {
+					if (i%dis_years == 0) {
+						xAxisLabel.push(i);
+					}
+				}
+			}
+			else
+			{
+				for (var i=0; i<data.labels.length; i++){ 
+					xAxisLabel.push(data.labels[i]);
+				}			
+			}
 			
 			
 			if (rotateLabels > 0){
@@ -879,29 +1004,58 @@ window.Chart = function(context){
 			for (var i=0; i<data.labels.length; i++){
 				ctx.save();
 				if (rotateLabels > 0){
-					ctx.translate(yAxisPosX + i*valueHop,xAxisPosY + config.scaleFontSize);
-					ctx.rotate(-(rotateLabels * (Math.PI/180)));
-					ctx.fillText(data.labels[i], 0,0);
-					ctx.restore();
+					if (LabelIsDate === true) {					
+						ctx.translate(xLabel(xAxisLabel[i]),xAxisPosY + config.scaleFontSize);
+						ctx.rotate(-(rotateLabels * (Math.PI/180)));
+						ctx.fillText(xAxisLabel[i], 0,0);
+						ctx.restore();
+					} else {
+						ctx.translate(yAxisPosX + i*valueHop,xAxisPosY + config.scaleFontSize);
+						ctx.rotate(-(rotateLabels * (Math.PI/180)));
+						ctx.fillText(data.labels[i], 0,0);
+						ctx.restore();
+					}
 				}
-				
 				else{
-					ctx.fillText(data.labels[i], yAxisPosX + i*valueHop,xAxisPosY + config.scaleFontSize+3);					
+					if (LabelIsDate === true) {					
+						ctx.fillText(xAxisLabel[i],xLabel(xAxisLabel[i]),xAxisPosY + config.scaleFontSize+3);					
+					} else {
+						ctx.fillText(data.labels[i], yAxisPosX + i*valueHop,xAxisPosY + config.scaleFontSize+3);					
+					}				
 				}
 
 				ctx.beginPath();
-				ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY+3);
+				if (LabelIsDate === true) {					
+					ctx.moveTo(xLabel(xAxisLabel[i]), xAxisPosY+3);
+				} else {
+					ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY+3);
+				}
 				
-				//Check i isnt 0, so we dont go over the Y axis twice.
-				if(config.scaleShowGridLines && i>0){
+				
+				if(config.scaleShowGridLines){
 					ctx.lineWidth = config.scaleGridLineWidth;
-					ctx.strokeStyle = config.scaleGridLineColor;					
-					ctx.lineTo(yAxisPosX + i * valueHop, 5);
+					ctx.strokeStyle = config.scaleGridLineColor;
+					if (LabelIsDate === true) {					
+						ctx.lineTo(xLabel(xAxisLabel[i]), 5);
+					} else {
+						ctx.lineTo(yAxisPosX + i * valueHop, 5);
+					}
 				}
 				else{
-					ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY+3);				
+					if (LabelIsDate === true) {
+						ctx.lineTo(xLabel(xAxisLabel[i]), xAxisPosY+3);	
+					} else {
+						ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY+3);	
+					}
 				}
 				ctx.stroke();
+			}
+			
+			function xLabel(year){
+					
+					var year_timestamp = new Date("01/01/"+year).getTime();
+			
+					return yAxisPosX+((year_timestamp-min_timestamp)/max_dif)*xAxisLength;
 			}
 			
 			//Y axis
@@ -929,7 +1083,7 @@ window.Chart = function(context){
 				ctx.stroke();
 				
 				if (config.scaleShowLabels){
-					ctx.fillText(thousand_separator(calculatedScale.labels[j]),yAxisPosX-8,xAxisPosY - ((j+1) * scaleHop));
+					ctx.fillText(calculatedScale.labels[j],yAxisPosX-8,xAxisPosY - ((j+1) * scaleHop));
 				}
 			}
 			
@@ -1422,23 +1576,7 @@ window.Chart = function(context){
 	    return data ? fn( data ) : fn;
 	  };
 	  
-	  function thousand_separator(input) {
-				var number = input.split('.');
-				num = number[0];
-				num = num.split("").reverse().join("");
-				var numpoint = '';
-				for (var i = 0; i < num.length; i++) {
-					numpoint += num.substr(i,1);	
-					if (((i+1)%3 == 0) && i != num.length-1)  {
-						numpoint += ',';
-					}						
-				}
-				num = numpoint.split("").reverse().join("");
-				if (number[1] != undefined) {
-					num = num+'.'+number[1];
-				}
-			return num;
-	}
+
 }
 
 
