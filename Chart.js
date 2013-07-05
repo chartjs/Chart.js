@@ -285,6 +285,9 @@ window.Chart = function(context){
 	this.Line = function(data,options){
 	
 		chart.Line.defaults = {
+			scaleShowValues: true,
+			scaleValuePaddingX: 13,
+			scaleValuePaddingY: 13,
 			scaleOverlay : false,
 			scaleOverride : false,
 			scaleSteps : null,
@@ -847,6 +850,20 @@ window.Chart = function(context){
 						ctx.arc(yAxisPosX + (valueHop *k),xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[k],calculatedScale,scaleHop)),config.pointDotRadius,0,Math.PI*2,true);
 						ctx.fill();
 						ctx.stroke();
+
+						// Added option to display labels on line dots
+						if (config.scaleShowValues) {
+							ctx.save();
+							ctx.textAlign = 'center';
+							ctx.font = config.scaleFontStyle + ' ' + config.scaleFontSize + 'px ' + config.scaleFontFamily;
+							ctx.fillStyle = config.scaleFontColor;
+							var dotX = yAxisPosX + (valueHop *k),
+								dotY = xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[k],calculatedScale,scaleHop)),
+								paddingTextX = config.scaleValuePaddingX,
+								paddingTextY = config.scaleValuePaddingY;
+							ctx.fillText(data.datasets[i].data[k], dotX + paddingTextX, dotY - paddingTextY, null);
+							ctx.restore();
+						} 
 					}
 				}
 			}
