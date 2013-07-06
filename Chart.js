@@ -1,11 +1,101 @@
-/*!
- * Chart.js
+/* This is a fork of Chart.js
  * http://chartjs.org/
  *
  * Copyright 2013 Nick Downie
  * Released under the MIT license
  * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
  */
+
+/*The chart calculator acts a wrapper around window.Chart. It allows arrays to be
+passed in place of individual data points. The median (in the case of Box plots) or
+mean (in other cases) is calculated, along with appropriate error bars, and all of this 
+is passed along to the main Chart object.
+It is not necessary to use the Chart calculator, but in that case data points and actual
+error info (if desired) must be passed directly to the Chart object.
+*/
+window.ChartCalculator = function(context) {
+	
+	this.Box = function(data, options) {
+		for (var x = 0; x < data.datasets.length; x++) {
+			for (var y = 0; y < data.datasets[x].data.length; y++) {
+				var values = data.datasets[x].data[y]
+				values.sort(function(a, b){return a - b});
+				var n = values.length;
+				//get the minimum value
+				var q0 = values[0]
+				//get the median (q2) value
+				var q2n = Math.floor(n / 2);
+				if (n % 2 == 1) { //odd sample size
+					var q2 = values[q2n];
+				} else {
+					var q2 = (values[q2n] + values[q2n + 1]) / 2;
+				}
+				var q1n = Math.floor(n / 4) + 1;
+				var q3n = Math.floor(n * 3 / 4);
+				var q1 = values[q1n];
+				var q3 = values[q3n];
+				var q4 = values[n - 1];
+				qArr = [q0, q1, q2, q3, q4];
+				data.datasets[x].data[y] = qArr;
+			}
+		}
+		return new Chart(context).Box(data, options);	
+	}
+	
+	this.Bar = function(data, options){
+		var repackagedData = calculateMeans(data, options);
+		return new Chart(context).Bar(repackagedData, options);
+	}
+	
+	this.Line = function(data, options){
+		var repackagedData = calculateMeans(data, options);
+		return new Chart(context).Line(repackagedData, options);
+	}
+	
+	this.Scatter = function(data, options){
+		var repackagedData = calculateMeans(data, options);
+		return new Chart(context).Scatter(repackagedData, options);
+	}
+	
+	function calculateMeans(data, options) {
+		for (var x = 0; x < data.datasets.length; x++) {
+			var errorValues = [];
+			for (var y = 0; y < data.datasets[x].data.length; y++) {
+				var values = data.datasets[x].data[y]
+				var n = values.length;
+				//calculate the average value 
+				var sum = 0;
+				for (var z = 0; z < n; z++) {
+					sum = sum + values[z];
+				}
+				var avg = sum/n;
+				//put the average value into data in place of the array 
+				data.datasets[x].data[y] = avg;
+				if (options.error){
+					if (options.error == "range"){
+						//get the maximum value 
+						values.sort(function(a, b){return a - b});
+						var maximum = values[n - 1];
+						var error = maximum - avg;
+					} else if (options.error == "stdev" && n > 2) {
+						//find the sum of the squares of the diffs from the mean
+						var sum = 0;
+						for (var z = 0; z < n; z++) {
+							sum = sum + Math.pow(values[z] - avg, 2);
+						}
+						var error = Math.sqrt(sum / (n - 1));
+					}
+					errorValues.push(error);
+				}
+			}
+			if (options.error) data.datasets[x].error = errorValues;
+		}
+		return data;
+	}
+	
+}
+
+
 
 //Define the global Chart Variable as a class.
 window.Chart = function(context){
@@ -160,7 +250,7 @@ window.Chart = function(context){
 		context.canvas.width = width * window.devicePixelRatio;
 		context.scale(window.devicePixelRatio, window.devicePixelRatio);
 	}
-
+	
 	this.PolarArea = function(data,options){
 	
 		chart.PolarArea.defaults = {
@@ -282,9 +372,18 @@ window.Chart = function(context){
 		
 	};
 
+	//MODIFIED by CY. Now supports error bars. This is still a "line graph" in the 
+	//traditional sense: X points are not supplied directly, but instead the x-axis
+	//represents a series of categories that are evenly spaced.
 	this.Line = function(data,options){
 	
 		chart.Line.defaults = {
+			chartType: "Line",
+			//added by CY
+			errorStrokeWidth : 1,
+			errorStrokeColor : "#333",
+			errorCapWidth : 2,
+			
 			scaleOverlay : false,
 			scaleOverride : false,
 			scaleSteps : null,
@@ -301,13 +400,15 @@ window.Chart = function(context){
 			scaleShowGridLines : true,
 			scaleGridLineColor : "rgba(0,0,0,.05)",
 			scaleGridLineWidth : 1,
-			bezierCurve : true,
+			//changed bezierCurve option default to false
+			bezierCurve : false,
 			pointDot : true,
 			pointDotRadius : 4,
 			pointDotStrokeWidth : 2,
 			datasetStroke : true,
 			datasetStrokeWidth : 2,
-			datasetFill : true,
+			//changed dataset fill default option to false
+			datasetFill : false,
 			animation : true,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
@@ -318,8 +419,91 @@ window.Chart = function(context){
 		return new Line(data,config,context);
 	}
 	
+	
+	//ADDED by CY. This is a scatter plot as a opposed to a line graph. X and Y data is 
+	//supplied seperately as two different arrays: xVal : [] and data : []. These arrays 
+	//should therefore be the same length. Labels (values on the x-axis) can now be supplied
+	//seperately from the actual data. Alternatively, the axis can be specified by the xScale
+	//information in the options.
+
+	this.Scatter = function(data,options){
+	
+		chart.Line.defaults = {
+			//set the chart type
+			chartType : "Scatter",
+			errorStrokeWidth : 1,
+			errorStrokeColor : "#333",
+			errorCapWidth : 2,
+			
+			//y-scale information is still called "scale" to maintain compatibility with the
+			//original Chart.js
+			scaleOverlay : false,
+			scaleOverride : false,
+			scaleSteps : null,
+			scaleStepWidth : null,
+			scaleStartValue : null,
+			//the next 4 defaults were added by CY
+			xScaleOverride: false,
+			xScaleSteps: null,
+			xScaleStepWidth: null,
+			xScaleStartValue: null,
+			scaleLineColor : "rgba(0,0,0,.1)",
+			scaleLineWidth : 1,
+			scaleShowLabels : true,
+			scaleLabel : "<%=value%>",
+			scaleFontFamily : "'Arial'",
+			scaleFontSize : 12,
+			scaleFontStyle : "normal",
+			scaleFontColor : "#666",
+			scaleShowGridLines : true,
+			scaleGridLineColor : "rgba(0,0,0,.05)",
+			scaleGridLineWidth : 1,
+			//added option for a connecting line, set default to false
+			connectingLine : false,
+			//changed bezierCurve option default to false
+			bezierCurve : false,
+			pointDot : true,
+			pointDotRadius : 4,
+			pointDotStrokeWidth : 2,
+			datasetStroke : true,
+			datasetStrokeWidth : 2,
+			//changed dataset fill default option to false
+			datasetFill : false,
+			animation : true,
+			animationSteps : 60,
+			animationEasing : "easeOutQuart",
+			onAnimationComplete : null
+		};		
+		var config = (options) ? mergeChartConfig(chart.Line.defaults,options) : chart.Line.defaults;
+		
+		var labels = [];
+		
+		if (config.xScaleOverride){
+			//populate this.labels
+			var x = config.xScaleStartValue;
+			for (i = 0; i < config.xScaleSteps; i++){
+				labels.push(x);
+				x = x + config.xScaleStepWidth;
+			}
+		}
+		
+		data.labels = labels;
+		
+		return new Line(data,config,context);
+	}
+	
+	//MODIFIED by CY. Now supports error bars, either supplied directly or calculated via
+	//the ChartCalculator. 
 	this.Bar = function(data,options){
 		chart.Bar.defaults = {
+			chartType : "Bar",
+			//stroke width of the error bars
+			errorStrokeWidth : 5,
+			//stroke color of the error bars 
+			errorStrokeColor : "#333",
+			//cap width of the error bars relative to bar width
+			errorCapWidth : 0.75,
+			
 			scaleOverlay : false,
 			scaleOverride : false,
 			scaleSteps : null,
@@ -347,8 +531,51 @@ window.Chart = function(context){
 		};		
 		var config = (options) ? mergeChartConfig(chart.Bar.defaults,options) : chart.Bar.defaults;
 		
+		return new Bar(data,config,context);
+				
+	}
+	
+	//ADDED by CY. Box plots seperate the data into 4 quartiles, which are represented
+	//in a "box-and-whisker" arrangement. The best way to calculate the quartiles is by 
+	//using the chart calculator, and pass the entire population as an array. Alternatively, 
+	//the "breakpoints" of each quartiles can be passed in the data object as [q0, q1, q2, q3, q4]
+	this.Box = function(data,options){
+		chart.Bar.defaults = {
+			//new variables added by CY
+			chartType : "Box",
+			//if false, whiskerWidth is the same as barWidth
+			whiskerWidth : false,
+			
+			scaleOverlay : false,
+			scaleOverride : false,
+			scaleSteps : null,
+			scaleStepWidth : null,
+			scaleStartValue : null,
+			scaleLineColor : "rgba(0,0,0,.1)",
+			scaleLineWidth : 1,
+			scaleShowLabels : true,
+			scaleLabel : "<%=value%>",
+			scaleFontFamily : "'Arial'",
+			scaleFontSize : 12,
+			scaleFontStyle : "normal",
+			scaleFontColor : "#666",
+			scaleShowGridLines : true,
+			scaleGridLineColor : "rgba(0,0,0,.05)",
+			scaleGridLineWidth : 1,
+			barShowStroke : true,
+			barStrokeWidth : 5,
+			barValueSpacing : 5,
+			barDatasetSpacing : 0,
+			animation : true,
+			animationSteps : 60,
+			animationEasing : "easeOutQuart",
+			onAnimationComplete : null
+		};		
+		var config = (options) ? mergeChartConfig(chart.Bar.defaults,options) : chart.Bar.defaults;
+		
 		return new Bar(data,config,context);		
 	}
+	
 	
 	var clear = function(c){
 		c.clearRect(0, 0, width, height);
@@ -780,14 +1007,11 @@ window.Chart = function(context){
 				}
 				cumulativeAngle += segmentAngle;
 			}			
-		}			
-		
-		
-		
+		}				
 	}
-
+	
 	var Line = function(data,config,ctx){
-		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop,widestXLabel, xAxisLength,yAxisPosX,xAxisPosY, rotateLabels = 0;
+		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop,widestXLabel, xAxisLength, xAspectRatio, yAxisPosX,xAxisPosY, rotateLabels = 0;
 			
 		calculateDrawingSizes();
 		
@@ -810,10 +1034,15 @@ window.Chart = function(context){
 		
 		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
 		calculateXAxisSize();
-		animationLoop(config,drawScale,drawLines,ctx);		
+		if (config.chartType == "Line"){
+			animationLoop(config,drawScale,drawLines,ctx);
+		} else {
+			animationLoop(config,drawScale,drawPoints,ctx);
+		}
 		
 		function drawLines(animPc){
 			for (var i=0; i<data.datasets.length; i++){
+				
 				ctx.strokeStyle = data.datasets[i].strokeColor;
 				ctx.lineWidth = config.datasetStrokeWidth;
 				ctx.beginPath();
@@ -839,16 +1068,42 @@ window.Chart = function(context){
 					ctx.closePath();
 				}
 				if(config.pointDot){
-					ctx.fillStyle = data.datasets[i].pointColor;
-					ctx.strokeStyle = data.datasets[i].pointStrokeColor;
-					ctx.lineWidth = config.pointDotStrokeWidth;
 					for (var k=0; k<data.datasets[i].data.length; k++){
+						ctx.fillStyle = data.datasets[i].pointColor;
+						ctx.strokeStyle = data.datasets[i].pointStrokeColor;
+						ctx.lineWidth = config.pointDotStrokeWidth;
 						ctx.beginPath();
-						ctx.arc(yAxisPosX + (valueHop *k),xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[k],calculatedScale,scaleHop)),config.pointDotRadius,0,Math.PI*2,true);
+						var xPos = yAxisPosX + (valueHop *k);
+						var yPos = xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[k],calculatedScale,scaleHop));
+						ctx.arc( xPos, yPos, config.pointDotRadius, 0 ,Math.PI*2, true );
 						ctx.fill();
 						ctx.stroke();
+						//the if block below was added by CY to draw error bars in line charts
+						if (data.datasets[i].error){
+							ctx.lineWidth = config.errorStrokeWidth;
+							ctx.strokeStyle = config.errorStrokeColor;
+							ctx.beginPath();
+							ctx.moveTo(xPos,yPos);
+							var yTopError = xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[k] + data.datasets[i].error[k],calculatedScale,scaleHop));
+							var yBottomError = xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[k] - data.datasets[i].error[k],calculatedScale,scaleHop));
+							ctx.lineTo(xPos, yTopError)
+							ctx.stroke();
+							ctx.beginPath();
+							var cap = (config.errorCapWidth * config.pointDotRadius);
+							ctx.moveTo(xPos - cap/2, yTopError);
+							ctx.lineTo(xPos + cap/2, yTopError);
+							ctx.stroke();
+							ctx.beginPath();
+							ctx.moveTo(xPos, yPos);
+							ctx.lineTo(xPos, yBottomError);
+							ctx.stroke();
+							ctx.beginPath();
+							ctx.moveTo(xPos - cap/2, yBottomError);
+							ctx.lineTo(xPos + cap/2, yBottomError);
+							ctx.stroke();
+						}
 					}
-				}
+				}			
 			}
 			
 			function yPos(dataSet,iteration){
@@ -858,6 +1113,122 @@ window.Chart = function(context){
 				return yAxisPosX + (valueHop * iteration);
 			}
 		}
+		
+		//this function was added to draw scatter plots. The xPosition and 
+		//yPosition functions were modified slighly to support this. 
+		function drawPoints(animPc) {
+			for (var i=0; i<data.datasets.length; i++){
+				//xAspectRatio = , yAxisPosX, config.xScaleStartValue
+				for (var k=0; k<data.datasets[i].data.length; k++){					
+					var xPos = xPosition(i, k);
+					var yPos = yPosition(i, k);
+					if(config.pointDot){
+						ctx.fillStyle = data.datasets[i].pointColor;
+						ctx.strokeStyle = data.datasets[i].pointStrokeColor;
+						ctx.lineWidth = config.pointDotStrokeWidth;
+						ctx.beginPath();
+						ctx.arc(xPos, yPos,config.pointDotRadius,0,Math.PI*2,true);
+						ctx.fill();
+						ctx.stroke();
+					}
+					//draw the error bars
+					if (data.datasets[i].error){				
+						ctx.lineWidth = config.errorStrokeWidth;
+						ctx.strokeStyle = config.errorStrokeColor;
+						ctx.beginPath();
+						ctx.moveTo(xPos, yPos);
+						var yTopError = xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[k] + data.datasets[i].error[k],calculatedScale,scaleHop));
+						var yBottomError = xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[k] - data.datasets[i].error[k],calculatedScale,scaleHop));
+						ctx.lineTo(xPos, yTopError)
+						ctx.stroke();
+						ctx.beginPath();
+						var cap = (config.errorCapWidth * config.pointDotRadius);
+						ctx.moveTo(xPos - cap/2, yTopError);
+						ctx.lineTo(xPos + cap/2, yTopError);
+						ctx.stroke();
+						ctx.beginPath();
+						ctx.moveTo(xPos, yPos);
+						ctx.lineTo(xPos, yBottomError);
+						ctx.stroke();
+						ctx.beginPath();
+						ctx.moveTo(xPos - cap/2, yBottomError);
+						ctx.lineTo(xPos + cap/2, yBottomError);
+						ctx.stroke();
+					}
+					if (config.connectingLine) {
+						ctx.strokeStyle = data.datasets[i].strokeColor;
+						ctx.lineWidth = config.datasetStrokeWidth;
+						ctx.beginPath();
+						ctx.moveTo(xPos, yPos);
+						var newXPos = xPosition(i, k + 1);
+						var newYPos = yPosition(i, k + 1);
+						if (!config.bezierCurve && k + 1 < data.datasets[i].data.length) {
+							ctx.lineTo(newXPos, newYPos);
+							ctx.stroke();
+						} else if (k + 1 < data.datasets[i].data.length) {
+							var halfX = (xPos + newXPos) / 2;
+							ctx.bezierCurveTo(halfX, yPos, halfX, newYPos, newXPos, newYPos);
+							ctx.stroke();
+						}
+					}	
+				}
+				if (data.datasets[i].trendline) {
+					//determine the equation of the trendline from a least-squares method
+					var sumX = 0;
+					var sumY = 0;
+					var sumXY = 0;
+					var sumXX = 0; 
+					var sumYY = 0;
+					for (var z = 0; z < data.datasets[i].data.length; z++) {
+						var X = data.datasets[i].xVal[z];
+						var Y = data.datasets[i].data[z];
+						sumX = sumX + X;
+						sumY = sumY + Y;
+						sumXY = sumXY + X * Y;
+						sumXX = sumXX + X * X;
+						sumYY = sumYY + Y * Y;
+					}
+					var m = (z * sumXY - sumX * sumY) / (z * sumXX - sumX * sumX);
+					var b = (sumY - m * sumX) / z;
+					/*R-sqaured value. Not currently used for anything but might be valuable
+					if equation display function is added in future.
+					var r2 = Math.pow((z * sumXY - sumX * sumY)/Math.sqrt((z * sumXX - sumX * sumX) * (z * sumYY - sumY * sumY)), 2)*/
+					
+					//determine the starting and ending x points;
+					if (typeof data.datasets[i].trendlineStart == 'undefined') {
+						var startX = data.datasets[i].xVal[0];
+					} else {
+						var startX = data.datasets[i].trendlineStart;
+					}
+					if (typeof data.datasets[i].trendlineEnd == 'undefined') {
+						var endX = data.datasets[i].xVal[data.datasets[i].xVal.length - 1];
+					} else {
+						var endX = data.datasets[i].trendlineEnd;
+					}
+					var startY = m * startX + b;
+					var endY = m * endX + b;
+					
+					//draw the trendline
+					ctx.strokeStyle = data.datasets[i].strokeColor;
+					ctx.lineWidth = config.datasetStrokeWidth;					
+					ctx.beginPath();
+					ctx.moveTo(yAxisPosX + startX / xAspectRatio, xAxisPosY - animPc*(calculateOffset(startY,calculatedScale,scaleHop)));
+					ctx.lineTo(yAxisPosX + endX / xAspectRatio, xAxisPosY - animPc*(calculateOffset(endY,calculatedScale,scaleHop)));
+					ctx.stroke();
+				}
+			}
+			
+			function yPosition(dataSet,iteration){
+				return xAxisPosY - animPc*(calculateOffset(data.datasets[dataSet].data[iteration],calculatedScale,scaleHop));			
+			}
+			//modified by CY. The key is xAspectRatio, which is the ratio between 
+			//the data spread represented by the x-axis and the actual size of the 
+			//x-axis in pixels.
+			function xPosition(dataSet, iteration){
+				return yAxisPosX + data.datasets[dataSet].xVal[iteration] / xAspectRatio;
+			}
+		}
+		
 		function drawScale(){
 			//X axis line
 			ctx.lineWidth = config.scaleLineWidth;
@@ -948,8 +1319,11 @@ window.Chart = function(context){
 				longestText +=10;
 			}
 			xAxisLength = width - longestText - widestXLabel;
-			valueHop = Math.floor(xAxisLength/(data.labels.length-1));	
-				
+			//took out Math.floor - no reason valueHop can't be a decimal
+			valueHop = xAxisLength/(data.labels.length-1);	
+			//added by CY
+			var xValueSpread = (config.xScaleSteps - 1) * config.xScaleStepWidth;
+			xAspectRatio = xValueSpread / xAxisLength;
 			yAxisPosX = width-widestXLabel/2-xAxisLength;
 			xAxisPosY = scaleHeight + config.scaleFontSize/2;				
 		}		
@@ -1042,30 +1416,109 @@ window.Chart = function(context){
 		
 		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
 		calculateXAxisSize();
-		animationLoop(config,drawScale,drawBars,ctx);		
-		
+		if (config.chartType == "Box") {
+			animationLoop(config,drawScale,drawBoxes,ctx);
+		} else {
+			animationLoop(config,drawScale,drawBars,ctx);
+		}
+		//arg animPc is the fraction-complete of the animation - ie
+		//it has a value of 1 for the final chart
 		function drawBars(animPc){
 			ctx.lineWidth = config.barStrokeWidth;
+			//i is looping through the datasets ...
 			for (var i=0; i<data.datasets.length; i++){
 					ctx.fillStyle = data.datasets[i].fillColor;
 					ctx.strokeStyle = data.datasets[i].strokeColor;
+				//... wheras j is looping through the individual data points
 				for (var j=0; j<data.datasets[i].data.length; j++){
 					var barOffset = yAxisPosX + config.barValueSpacing + valueHop*j + barWidth*i + config.barDatasetSpacing*i + config.barStrokeWidth*i;
 					
 					ctx.beginPath();
+					//bottom left corner
 					ctx.moveTo(barOffset, xAxisPosY);
+					//top left corner
 					ctx.lineTo(barOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					//top right corner
 					ctx.lineTo(barOffset + barWidth, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					//bottom right corner
 					ctx.lineTo(barOffset + barWidth, xAxisPosY);
 					if(config.barShowStroke){
 						ctx.stroke();
 					}
 					ctx.closePath();
 					ctx.fill();
+					//This function was added by CY to support error bars			
+					if ( data.datasets[i].error ){
+						//draw the error bars
+						ctx.strokeStyle = config.errorStrokeWidth;
+						ctx.beginPath();
+						ctx.moveTo(barOffset + barWidth/2, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+						ctx.lineTo(barOffset + barWidth/2, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j] + data.datasets[i].error[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2))
+						ctx.stroke();
+						ctx.beginPath();
+						var cap = (config.errorCapWidth * barWidth) || 1;
+						capOffset = (barWidth - cap)/2;
+						ctx.moveTo(barOffset + capOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j] + data.datasets[i].error[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+						ctx.lineTo(barOffset + barWidth - capOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j] + data.datasets[i].error[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+						ctx.stroke();
+					}
 				}
 			}
-			
 		}
+		
+		//This function was added by CY to draw Box Plots
+		function drawBoxes(animPc) {
+			ctx.lineWidth = config.barStrokeWidth;
+			//i is looping through the datasets ...
+			for (var i=0; i<data.datasets.length; i++){
+				ctx.fillStyle = data.datasets[i].fillColor;
+				ctx.strokeStyle = data.datasets[i].strokeColor;
+				//... wheras j is looping through the individual data points
+				for (var j=0; j<data.datasets[i].data.length; j++){
+					var barOffset = yAxisPosX + config.barValueSpacing + valueHop*j + barWidth*i + config.barDatasetSpacing*i + config.barStrokeWidth*i;
+					ctx.beginPath();
+					//bottom left corner
+					ctx.moveTo(barOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j][1],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					//top left corner
+					ctx.lineTo(barOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j][3],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					//top right corner
+					ctx.lineTo(barOffset + barWidth, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j][3],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					//bottom right corner
+					ctx.lineTo(barOffset + barWidth, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j][1],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					ctx.closePath();
+					ctx.stroke();
+					if(config.barFillColor){
+						ctx.fill();
+					}
+					//draw the median crossling line
+					ctx.beginPath();
+					ctx.moveTo(barOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j][2],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					ctx.lineTo(barOffset + barWidth, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j][2],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					ctx.stroke();
+					//draw the lower whisker
+					var wis = (config.whiskerWidth * barWidth) || 1;
+					wisOffset = (barWidth - wis)/2;
+					ctx.beginPath();
+					ctx.moveTo(barOffset + barWidth/2, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j][0],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					ctx.lineTo(barOffset + barWidth/2, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j][1],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					ctx.stroke();
+					ctx.beginPath();
+					ctx.moveTo(barOffset + wisOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j][0],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					ctx.lineTo(barOffset + barWidth - wisOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j][0],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					ctx.stroke();
+					//draw the upper whisker
+					ctx.beginPath();
+					ctx.moveTo(barOffset + barWidth/2, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j][3],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					ctx.lineTo(barOffset + barWidth/2, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j][4],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					ctx.stroke();
+					ctx.beginPath();
+					ctx.moveTo(barOffset + wisOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j][4],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					ctx.lineTo(barOffset + barWidth - wisOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j][4],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					ctx.stroke();
+				}
+			}
+		}
+		
 		function drawScale(){
 			//X axis line
 			ctx.lineWidth = config.scaleLineWidth;
@@ -1420,7 +1873,7 @@ window.Chart = function(context){
 	   
 	    // Provide some basic currying to the user
 	    return data ? fn( data ) : fn;
-	  };
+	 }
 }
 
 
