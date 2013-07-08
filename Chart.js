@@ -161,6 +161,45 @@ window.Chart = function(context){
 		context.scale(window.devicePixelRatio, window.devicePixelRatio);
 	}
 
+	// see http://stackoverflow.com/questions/11120840/hash-string-into-rgb-color for more info
+	function djb2(str){
+	  var hash = 5381;
+	  for (var i = 0; i < str.length; i++) {
+	    hash = ((hash << 5) + hash) + str.charCodeAt(i); /* hash * 33 + c */
+	  }
+	  return hash;
+	}
+
+	function hashStringToColor(str) {
+	  var hash = djb2(str);
+	  var r = (hash & 0xFF0000) >> 16;
+	  var g = (hash & 0x00FF00) >> 8;
+	  var b = hash & 0x0000FF;
+	  return r + ',' + g + ',' + b;
+	}
+
+	/**
+	* provides a default color if color is missing.
+	* groups color based on key and returns different opacity based on type
+	**/
+	function defaultColor(color, type, key) {
+		if(color === undefined) {
+			var colorCode = hashStringToColor(key+"random");
+			var opacity;
+			switch(type) {
+				case 'fill':
+					opacity = 0.5;
+					break;
+				case 'stroke':
+				default:
+					opacity = 0.5;
+					break;
+			}
+			color = "rgba("+colorCode+","+opacity+")";			
+		}
+		return color;
+	}
+
 	this.PolarArea = function(data,options){
 	
 		chart.PolarArea.defaults = {
@@ -455,7 +494,7 @@ window.Chart = function(context){
 				ctx.arc(width/2,height/2,scaleAnimation * calculateOffset(data[i].value,calculatedScale,scaleHop),startAngle, startAngle + rotateAnimation*angleStep, false);
 				ctx.lineTo(width/2,height/2);
 				ctx.closePath();
-				ctx.fillStyle = data[i].color;
+				ctx.fillStyle = defaultColor(data[i].color, 'fill', i);
 				ctx.fill();
 
 				if(config.segmentShowStroke){
@@ -540,16 +579,16 @@ window.Chart = function(context){
 				ctx.closePath();
 				
 				
-				ctx.fillStyle = data.datasets[i].fillColor;
-				ctx.strokeStyle = data.datasets[i].strokeColor;
+				ctx.fillStyle = defaultColor(data.datasets[i].fillColor, 'fill', i);
+				ctx.strokeStyle = defaultColor(data.datasets[i].strokeColor, 'stoke', i);
 				ctx.lineWidth = config.datasetStrokeWidth;
 				ctx.fill();
 				ctx.stroke();
 				
 								
 				if (config.pointDot){
-					ctx.fillStyle = data.datasets[i].pointColor;
-					ctx.strokeStyle = data.datasets[i].pointStrokeColor;
+					ctx.fillStyle = defaultColor(data.datasets[i].pointColor, 'fill', i);
+					ctx.strokeStyle = defaultColor(data.datasets[i].pointStrokeColor, 'stroke', i);
 					ctx.lineWidth = config.pointDotStrokeWidth;
 					for (var k=0; k<data.datasets[i].data.length; k++){
 						ctx.rotate(rotationDegree);
@@ -723,7 +762,7 @@ window.Chart = function(context){
 				ctx.arc(width/2,height/2,scaleAnimation * pieRadius,cumulativeAngle,cumulativeAngle + segmentAngle);
 				ctx.lineTo(width/2,height/2);
 				ctx.closePath();
-				ctx.fillStyle = data[i].color;
+				ctx.fillStyle = defaultColor(data[i].color, 'fill', i);
 				ctx.fill();
 				
 				if(config.segmentShowStroke){
@@ -770,7 +809,7 @@ window.Chart = function(context){
 				ctx.arc(width/2,height/2,scaleAnimation * doughnutRadius,cumulativeAngle,cumulativeAngle + segmentAngle,false);
 				ctx.arc(width/2,height/2,scaleAnimation * cutoutRadius,cumulativeAngle + segmentAngle,cumulativeAngle,true);
 				ctx.closePath();
-				ctx.fillStyle = data[i].color;
+				ctx.fillStyle = defaultColor(data[i].color, 'fill', i);
 				ctx.fill();
 				
 				if(config.segmentShowStroke){
@@ -814,7 +853,7 @@ window.Chart = function(context){
 		
 		function drawLines(animPc){
 			for (var i=0; i<data.datasets.length; i++){
-				ctx.strokeStyle = data.datasets[i].strokeColor;
+				ctx.strokeStyle = defaultColor(data.datasets[i].strokeColor, 'stroke', i);
 				ctx.lineWidth = config.datasetStrokeWidth;
 				ctx.beginPath();
 				ctx.moveTo(yAxisPosX, xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[0],calculatedScale,scaleHop)))
@@ -832,15 +871,15 @@ window.Chart = function(context){
 					ctx.lineTo(yAxisPosX + (valueHop*(data.datasets[i].data.length-1)),xAxisPosY);
 					ctx.lineTo(yAxisPosX,xAxisPosY);
 					ctx.closePath();
-					ctx.fillStyle = data.datasets[i].fillColor;
+					ctx.fillStyle = defaultColor(data.datasets[i].fillColor, 'fill', i);
 					ctx.fill();
 				}
 				else{
 					ctx.closePath();
 				}
 				if(config.pointDot){
-					ctx.fillStyle = data.datasets[i].pointColor;
-					ctx.strokeStyle = data.datasets[i].pointStrokeColor;
+					ctx.fillStyle = defaultColor(data.datasets[i].pointColor, 'fill', i);
+					ctx.strokeStyle = defaultColor(data.datasets[i].pointStrokeColor, 'stroke', i);
 					ctx.lineWidth = config.pointDotStrokeWidth;
 					for (var k=0; k<data.datasets[i].data.length; k++){
 						ctx.beginPath();
@@ -1047,8 +1086,8 @@ window.Chart = function(context){
 		function drawBars(animPc){
 			ctx.lineWidth = config.barStrokeWidth;
 			for (var i=0; i<data.datasets.length; i++){
-					ctx.fillStyle = data.datasets[i].fillColor;
-					ctx.strokeStyle = data.datasets[i].strokeColor;
+					ctx.fillStyle = defaultColor(data.datasets[i].fillColor, 'fill', i);
+					ctx.strokeStyle = defaultColor(data.datasets[i].strokeColor, 'stroke', i);
 				for (var j=0; j<data.datasets[i].data.length; j++){
 					var barOffset = yAxisPosX + config.barValueSpacing + valueHop*j + barWidth*i + config.barDatasetSpacing*i + config.barStrokeWidth*i;
 					
