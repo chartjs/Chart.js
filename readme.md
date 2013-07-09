@@ -9,16 +9,11 @@ the data point is calculated from the average (or median) of the data in
 the array and the error bars are calculated as range or Standard 
 Deviaiton.
 
-Pleas be patient while I work on the documentation; in the meantime 
-check out the examples - they show most of what you need to know.
+Documentation of the new features is available at http://www.brittle-star.com/portfolio/readme/?readme=chart.js.
 
 Chart.js
 =======
 *Simple HTML5 Charts using the canvas element* [chartjs.org](http://www.chartjs.org)
-
-Competition!
--------
-The guys at ChallengePost are running a competition to design and build a personal dashboard using Chart.js, and are offering some great prizes for winning. Take a look at [chartjs.challengepost.com](http://chartjs.challengepost.com/).
 
 Documentation
 -------
