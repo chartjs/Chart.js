@@ -235,7 +235,9 @@ window.Chart = function(context){
 			animation : true,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
-			onAnimationComplete : null
+			onAnimationComplete : null,
+                        overflowLineIndex: null,
+                        overflowLineColor: 'rgba(200,0,0,0.5)'
 		};
 
 		var config = (options)? mergeChartConfig(chart.Radar.defaults,options) : chart.Radar.defaults;
@@ -589,8 +591,19 @@ window.Chart = function(context){
 				ctx.beginPath();
 
 				if(config.scaleShowLine){
-					ctx.strokeStyle = config.scaleLineColor;
-					ctx.lineWidth = config.scaleLineWidth;
+
+                                        // draw the maximum line if applicable
+                                        if (config.overflowLineIndex && i === config.overflowLineIndex) {
+                                            ctx.strokeStyle = config.overflowLineColor;
+                                            ctx.lineWidth = config.scaleLineWidth * 2;
+                                        }
+
+                                        // draw the standard lines
+                                        else {
+                                            ctx.strokeStyle = config.scaleLineColor;
+                                            ctx.lineWidth = config.scaleLineWidth;
+                                        }
+                                    
 					ctx.moveTo(0,-scaleHop * (i+1));
 					for (var j=0; j<data.datasets[0].data.length; j++){
 					    ctx.rotate(rotationDegree);
