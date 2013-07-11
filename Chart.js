@@ -1057,8 +1057,7 @@ window.Chart = function(context){
 				}
 				
 				ctx.stroke();
-				ctx.fillText(data.labels[j],yAxisPosX - widestXLabel/2,xAxisPosY - ((j+1) * valueHop));
-
+				ctx.fillText(data.labels[j],yAxisPosX - widestXLabel/2,xAxisPosY - ((j+1) * valueHop)+(data.datasets.length*barWidth)/2);
 			}			
 			
 			//Y axis
