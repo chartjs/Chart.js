@@ -813,6 +813,8 @@ window.Chart = function(context){
 		animationLoop(config,drawScale,drawLines,ctx);		
 		
 		function drawLines(animPc){
+			var points_max = [];
+
 			for (var i=0; i<data.datasets.length; i++){
 				ctx.strokeStyle = data.datasets[i].strokeColor;
 				ctx.lineWidth = config.datasetStrokeWidth;
@@ -824,7 +826,21 @@ window.Chart = function(context){
 						ctx.bezierCurveTo(xPos(j-0.5),yPos(i,j-1),xPos(j-0.5),yPos(i,j),xPos(j),yPos(i,j));
 					}
 					else{
-						ctx.lineTo(xPos(j),yPos(i,j));
+						if(config.stacked){
+							last_value = points_max[j];
+							y_pos = yPos(i,j);
+
+							if (last_value == undefined) {
+								points_max[j] = y_pos;
+								ctx.lineTo(xPos(j),y_pos);
+							}
+							else{
+								ctx.lineTo(xPos(j),(last_value-(xAxisPosY-y_pos)));
+							}
+						}
+						else{
+							ctx.lineTo(xPos(j),yPos(i,j));
+						}
 					}
 				}
 				ctx.stroke();
