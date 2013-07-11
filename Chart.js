@@ -349,6 +349,43 @@ window.Chart = function(context){
 		
 		return new Bar(data,config,context);		
 	}
+
+	this.Concentric = function(data,options){
+		chart.Concentric.defaults = {
+			segmentShowStroke : true,
+			segmentStrokeColor : "rgba(0,0,0,.1)",
+			segmentStrokeWidth : 1,
+			scaleOverlay : true,
+			scaleOverride : false,
+			scaleSteps : null,
+			scaleStepWidth : null,
+			scaleStartValue : null,
+			scaleShowLine : true,
+			scaleLineColor : "rgba(0,0,0,.1)",
+			scaleLineWidth : 1,
+			scaleShowLabels : true,
+			scaleLabel : "<%=value%>",
+			scaleFontFamily : "'Arial'",
+			scaleFontSize : 12,
+			scaleFontStyle : "normal",
+			scaleFontColor : "#666",
+			scaleShowLabelBackdrop : true,
+			scaleBackdropColor : "rgba(255,255,255,0.75)",
+			scaleBackdropPaddingY : 2,
+			scaleBackdropPaddingX : 2,
+			segmentShowLabels: true,
+			animation : true,
+			animationSteps : 30,
+			animationEasing : "easeOutBounce",
+			animateRotate : false,
+			animateScale : true,
+			onAnimationComplete : null
+		};		
+
+		var config = (options)? mergeChartConfig(chart.Concentric.defaults,options) : chart.Concentric.defaults;
+		
+		return new Concentric(data,config,context);
+	};
 	
 	var clear = function(c){
 		c.clearRect(0, 0, width, height);
@@ -1234,6 +1271,79 @@ window.Chart = function(context){
 			
 	
 		}
+	}
+
+	var Concentric = function(data,config,ctx){		
+		//In case we have a canvas that is not a square. Minus 5 pixels as padding round the edge.
+		var maxRadius = Min([height/2,width/2]) - 5;
+
+		var maxValue = Number.MIN_VALUE;
+		var minValue = Number.MAX_VALUE;
+		
+		for (var i=0; i<data.length; i++){
+			if(data[i].value > maxValue) { maxValue = data[i].value };
+			if(data[i].value < minValue) { minValue = data[i].value };
+		}
+
+		animationLoop(config,false,drawConcentricCircles,ctx);
+		
+		function drawConcentricCircles (animationDecimal){
+			var scaleAnimation = 1,
+			rotateAnimation = 1;
+			if (config.animation) {
+				if (config.animateScale) {
+					scaleAnimation = animationDecimal;
+				}
+				if (config.animateRotate){
+					rotateAnimation = animationDecimal;
+				}
+			}
+
+			for (var i=0; i<data.length; i++){
+				var segmentSize = ((data[i].value * maxRadius) / maxValue) * 0.9;
+				ctx.beginPath();
+
+				//console.log("center: "+(width/2)+","+(height/2)+" - segment: "+segmentSize);
+
+				if (config.tangent == "bottom") {
+					ctx.arc(width/2, height-segmentSize, segmentSize * scaleAnimation, 0, (Math.PI * 2), false);
+				}else{
+					ctx.arc(width/2, height/2, segmentSize * scaleAnimation, 0, (Math.PI * 2), false);
+				}
+
+				ctx.closePath();
+				ctx.fillStyle = data[i].fillColor;
+				ctx.fill();
+				
+				if(config.segmentShowStroke){
+					ctx.lineWidth = config.segmentStrokeWidth;
+					ctx.strokeStyle = config.segmentStrokeColor;
+					ctx.stroke();
+				}
+
+				if (config.segmentShowLabels){
+					ctx.textAlign = "center";
+					ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
+ 					var label =  data[i].label + " ("+ data[i].value +")";
+					//If the backdrop object is within the font object
+					if (config.scaleShowLabelBackdrop){
+						var textWidth = ctx.measureText(label).width;
+						ctx.fillStyle = config.scaleBackdropColor;
+						ctx.beginPath();
+						ctx.rect(
+							Math.round(width/2 - textWidth/2 - config.scaleBackdropPaddingX),     //X
+							Math.round(height - segmentSize - config.scaleFontSize*0.5 - config.scaleBackdropPaddingY),//Y
+							Math.round(textWidth + (config.scaleBackdropPaddingX*2)), //Width
+							Math.round(config.scaleFontSize + (config.scaleBackdropPaddingY*2)) //Height
+						);
+						ctx.fill();
+					}
+					ctx.textBaseline = "middle";
+					ctx.fillStyle = config.scaleFontColor;
+					ctx.fillText(label,width/2,height - segmentSize);
+				}
+			}
+		}		
 	}
 	
 	function calculateOffset(val,calculatedScale,scaleHop){
