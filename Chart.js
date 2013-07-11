@@ -386,6 +386,43 @@ window.Chart = function(context){
 		
 		return new Concentric(data,config,context);
 	};
+
+	this.Weekly = function(data,options){
+		chart.Weekly.defaults = {
+			segmentShowStroke : true,
+			segmentStrokeColor : "rgba(0,0,0,.1)",
+			segmentStrokeWidth : 1,
+			scaleOverlay : true,
+			scaleOverride : false,
+			scaleSteps : null,
+			scaleStepWidth : null,
+			scaleStartValue : null,
+			scaleShowLine : true,
+			scaleLineColor : "rgba(0,0,0,.1)",
+			scaleLineWidth : 1,
+			scaleShowLabels : true,
+			scaleLabel : "<%=value%>",
+			scaleFontFamily : "'Arial'",
+			scaleFontSize : 12,
+			scaleFontStyle : "normal",
+			scaleFontColor : "#666",
+			scaleShowLabelBackdrop : true,
+			scaleBackdropColor : "rgba(255,255,255,0.75)",
+			scaleBackdropPaddingY : 2,
+			scaleBackdropPaddingX : 2,
+			segmentShowLabels: true,
+			animation : true,
+			animationSteps : 30,
+			animationEasing : "easeOutBounce",
+			animateRotate : false,
+			animateScale : true,
+			onAnimationComplete : null
+		};		
+
+		var config = (options)? mergeChartConfig(chart.Weekly.defaults,options) : chart.Weekly.defaults;
+		
+		return new Weekly(data,config,context);
+	};
 	
 	var clear = function(c){
 		c.clearRect(0, 0, width, height);
@@ -1343,6 +1380,87 @@ window.Chart = function(context){
 					ctx.fillText(label,width/2,height - segmentSize);
 				}
 			}
+		}		
+	}
+
+	var Weekly = function(data,config,ctx){
+		var segmentTotal = 0;
+		
+		var maxRadius = (Min([(width/25),(height/8)])/2)-2;
+		var maxValue = Number.MIN_VALUE;
+		
+		for (var i=0; i<data.length; i++){				
+			// Iterating over hours
+			for (var j=0; j<data[i].length; j++){
+				if(data[i][j] > maxValue) { maxValue = data[i][j] };
+			}
+		}
+
+		var scaleDownFactor = maxRadius/maxValue;
+		
+		animationLoop(config,drawScale,drawWeeklyChart,ctx);
+
+		function drawScale (){
+			var weekdays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+			for (var i=0; i<weekdays.length; i++){
+				ctx.textAlign = "center";
+				ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
+ 				var label = weekdays[i];
+				ctx.textBaseline = "middle";
+				ctx.fillStyle = config.scaleFontColor;
+				ctx.fillText(label,maxRadius,(i*(maxRadius*2))+maxRadius);
+			}
+
+			for (var i=1; i<25; i++){
+				ctx.textAlign = "center";
+				ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
+ 				var label = i-1;
+				ctx.textBaseline = "middle";
+				ctx.fillStyle = config.scaleFontColor;
+				ctx.fillText(label,(i*(maxRadius*2))+maxRadius,15*maxRadius);
+			}
+		}
+				
+		function drawWeeklyChart (animationDecimal){
+			var scaleAnimation = 1,
+			rotateAnimation = 1;
+			if (config.animation) {
+				if (config.animateScale) {
+					scaleAnimation = animationDecimal;
+				}
+				if (config.animateRotate){
+					rotateAnimation = animationDecimal;
+				}
+			}
+			// Iterating over weekdays
+			for (var i=0; i<data.length; i++){				
+				// Iterating over hours
+				for (var j=0; j<data[i].length; j++){
+					var x = ((maxRadius*2)*(j+2))-maxRadius;
+					var y = ((maxRadius*2)*(i+1))-maxRadius;
+					var diff = maxValue - data[i][j];
+
+					ctx.beginPath();
+					ctx.arc(x, y, (data[i][j] * scaleDownFactor) * scaleAnimation, 0, (Math.PI * 2), false);
+					ctx.closePath();
+
+					if (diff < 5) {
+						ctx.fillStyle = "rgba(0,0,0,.8)";
+					}else if (diff < 20) {
+						ctx.fillStyle = "rgba(0,0,0,.7)";
+					}else if (diff < 30) {
+						ctx.fillStyle = "rgba(0,0,0,.6)";
+					}else if (diff < 40) {
+						ctx.fillStyle = "rgba(0,0,0,.5)";
+					}else if (diff < 50) {
+						ctx.fillStyle = "rgba(0,0,0,.4)";
+					}else{
+						ctx.fillStyle = "rgba(0,0,0,.3)";
+					}
+					
+					ctx.fill();
+				}
+			}			
 		}		
 	}
 	
