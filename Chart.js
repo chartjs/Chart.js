@@ -1492,8 +1492,8 @@ window.Chart = function(context){
 
                     ctx.beginPath();
                     ctx.moveTo(barOffset, xAxisPosY - calculateOffset(data.datasets[i].data[j][0], calculatedScale, scaleHop));
-                    ctx.lineTo(barOffset, xAxisPosY - animPc * calculateOffset(data.datasets[i].data[j][1], calculatedScale, scaleHop) + (config.barStrokeWidth / 2));
-                    ctx.lineTo(barOffset + barWidth, xAxisPosY - animPc * calculateOffset(data.datasets[i].data[j][1], calculatedScale, scaleHop) + (config.barStrokeWidth / 2));
+                    ctx.lineTo(barOffset, xAxisPosY - calculateOffset(data.datasets[i].data[j][0], calculatedScale, scaleHop) - animPc * (calculateOffset(data.datasets[i].data[j][1], calculatedScale, scaleHop) - calculateOffset(data.datasets[i].data[j][0], calculatedScale, scaleHop)) + (config.barStrokeWidth / 2));
+                    ctx.lineTo(barOffset + barWidth, xAxisPosY - calculateOffset(data.datasets[i].data[j][0], calculatedScale, scaleHop) - animPc * (calculateOffset(data.datasets[i].data[j][1], calculatedScale, scaleHop) - calculateOffset(data.datasets[i].data[j][0], calculatedScale, scaleHop)) + (config.barStrokeWidth / 2));
                     ctx.lineTo(barOffset + barWidth, xAxisPosY - calculateOffset(data.datasets[i].data[j][0], calculatedScale, scaleHop));
                     ctx.closePath();
                     if (config.barShowStroke) {
