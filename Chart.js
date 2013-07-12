@@ -818,7 +818,8 @@ window.Chart = function(context){
 			// Init some legend variables
 			if (config.showLegend) {
 				var gap = 1,
-				legendY = 5;
+					legendY = 5,
+					z = 0;
 			}
 			for (var i=0; i<data.datasets.length; i++){
 				ctx.strokeStyle = data.datasets[i].strokeColor;
@@ -859,22 +860,23 @@ window.Chart = function(context){
 				// Show legend code here
 				if (config.showLegend) {
 					ctx.textAlign = 'left';
-					var space = 20,
+					var space = 20 * z,
 						x = yAxisPosX,
 						sqrSize = 10;
-					if (i == 0) space = 0;
 					// Add some simple text wrapping logic
 					if (calculateLegendWidth() + ctx.measureText(data.datasets[i].title).width > ctx.canvas.width) {
 						legendY += 12;
 						x = yAxisPosX;
 						gap = 1;
 						space = 0;
+						z = 0;
 					}
 					// Draw legend
 					ctx.rect(x + gap + space + 2, legendY-sqrSize/2, sqrSize, sqrSize);
 					ctx.fill();
 					ctx.fillText(data.datasets[i].title, calculateLegendWidth(), legendY);
 					gap += ctx.measureText(data.datasets[i].title).width;
+					z++;
 					// Wrapping width calculation in function to reduce duplication
 					function calculateLegendWidth() {
 						return x + gap + space + sqrSize+5;
