@@ -816,7 +816,8 @@ window.Chart = function(context){
 		animationLoop(config,drawScale,drawLines,ctx);		
 		
 		function drawLines(animPc){
-			var textWidth = 1;
+			// Init the gap value for showing legend
+			var gap = 1;
 			for (var i=0; i<data.datasets.length; i++){
 				ctx.strokeStyle = data.datasets[i].strokeColor;
 				ctx.lineWidth = config.datasetStrokeWidth;
@@ -856,15 +857,15 @@ window.Chart = function(context){
 				// Show legend code here
 				if (config.showLegend) {
 					ctx.textAlign = 'left';
+					ctx.fillStyle = data.datasets[i].fillColor;
 					var space = 25 * i,
-						x = 60,
+						x = yAxisPosX,
 						y = 5,
-						gap = i * textWidth,
 						sqrSize = 10;
 					ctx.rect(x + gap + space + 2, y-sqrSize/2, sqrSize, sqrSize);
 					ctx.fill();
-					ctx.fillText(data.datasets[i].title, x + textWidth + space + sqrSize+5, y);
-					textWidth = ctx.measureText(data.datasets[i].title).width;		
+					ctx.fillText(data.datasets[i].title, x + gap + space + sqrSize+5, y);
+					gap += ctx.measureText(data.datasets[i].title).width;		
 				}
 			}
 			
