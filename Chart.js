@@ -816,6 +816,7 @@ window.Chart = function(context){
 		animationLoop(config,drawScale,drawLines,ctx);		
 		
 		function drawLines(animPc){
+			var textWidth = 1;
 			for (var i=0; i<data.datasets.length; i++){
 				ctx.strokeStyle = data.datasets[i].strokeColor;
 				ctx.lineWidth = config.datasetStrokeWidth;
@@ -854,14 +855,17 @@ window.Chart = function(context){
 				}
 				// Show legend code here
 				if (config.showLegend) {
-					var gap = i * 75,
-						space = 5,
-						x = 100,
-						y = 5
+					ctx.textAlign = 'left';
+					var space = 25 * i,
+						x = 60,
+						y = 5,
+						gap = i * textWidth,
 						sqrSize = 10;
-					ctx.rect(x + gap + space, y-sqrSize/2, sqrSize, sqrSize);
+					ctx.rect(x + gap + space + 2, y-sqrSize/2, sqrSize, sqrSize);
 					ctx.fill();
-					ctx.fillText(data.datasets[i].title, x + gap, y);
+					ctx.fillText(data.datasets[i].title, x + textWidth + space + sqrSize+5, y);
+					textWidth = ctx.measureText(data.datasets[i].title).width
+					console.log(textWidth);				
 				}
 			}
 			
