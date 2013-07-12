@@ -864,8 +864,7 @@ window.Chart = function(context){
 					ctx.rect(x + gap + space + 2, y-sqrSize/2, sqrSize, sqrSize);
 					ctx.fill();
 					ctx.fillText(data.datasets[i].title, x + textWidth + space + sqrSize+5, y);
-					textWidth = ctx.measureText(data.datasets[i].title).width
-					console.log(textWidth);				
+					textWidth = ctx.measureText(data.datasets[i].title).width;		
 				}
 			}
 			
