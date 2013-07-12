@@ -808,16 +808,18 @@ window.Chart = function(context){
 			}
 			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
 		}
-		
-		
+			
 		
 		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
 		calculateXAxisSize();
 		animationLoop(config,drawScale,drawLines,ctx);		
 		
 		function drawLines(animPc){
-			// Init the gap value for showing legend
-			var gap = 1;
+			// Init some legend variables
+			if (config.showLegend) {
+				var gap = 1,
+				legendY = 5;
+			}
 			for (var i=0; i<data.datasets.length; i++){
 				ctx.strokeStyle = data.datasets[i].strokeColor;
 				ctx.lineWidth = config.datasetStrokeWidth;
@@ -857,15 +859,26 @@ window.Chart = function(context){
 				// Show legend code here
 				if (config.showLegend) {
 					ctx.textAlign = 'left';
-					ctx.fillStyle = data.datasets[i].fillColor;
-					var space = 25 * i,
+					var space = 20,
 						x = yAxisPosX,
-						y = 5,
 						sqrSize = 10;
-					ctx.rect(x + gap + space + 2, y-sqrSize/2, sqrSize, sqrSize);
+					if (i == 0) space = 0;
+					// Add some simple text wrapping logic
+					if (calculateLegendWidth() + ctx.measureText(data.datasets[i].title).width > ctx.canvas.width) {
+						legendY += 12;
+						x = yAxisPosX;
+						gap = 1;
+						space = 0;
+					}
+					// Draw legend
+					ctx.rect(x + gap + space + 2, legendY-sqrSize/2, sqrSize, sqrSize);
 					ctx.fill();
-					ctx.fillText(data.datasets[i].title, x + gap + space + sqrSize+5, y);
-					gap += ctx.measureText(data.datasets[i].title).width;		
+					ctx.fillText(data.datasets[i].title, calculateLegendWidth(), legendY);
+					gap += ctx.measureText(data.datasets[i].title).width;
+					// Wrapping width calculation in function to reduce duplication
+					function calculateLegendWidth() {
+						return x + gap + space + sqrSize+5;
+					}
 				}
 			}
 			
