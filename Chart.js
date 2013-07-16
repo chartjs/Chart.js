@@ -863,6 +863,10 @@ window.Chart = function(context){
 					var space = 20 * z,
 						x = yAxisPosX,
 						sqrSize = 10;
+					// Wrapping width calculation in function to reduce duplication
+					function calculateLegendWidth() {
+						return x + gap + space + sqrSize+5;
+					}
 					// Add some simple text wrapping logic
 					if (calculateLegendWidth() + ctx.measureText(data.datasets[i].title).width > ctx.canvas.width) {
 						legendY += 12;
@@ -877,10 +881,6 @@ window.Chart = function(context){
 					ctx.fillText(data.datasets[i].title, calculateLegendWidth(), legendY);
 					gap += ctx.measureText(data.datasets[i].title).width;
 					z++;
-					// Wrapping width calculation in function to reduce duplication
-					function calculateLegendWidth() {
-						return x + gap + space + sqrSize+5;
-					}
 				}
 			}
 			
