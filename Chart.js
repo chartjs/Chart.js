@@ -810,7 +810,7 @@ window.Chart = function(context){
 			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
 		}
 		
-		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
+		scaleHop = scaleHeight/calculatedScale.steps;
 		calculateXAxisSize();
 		animationLoop(config,drawScale,drawLines,ctx);		
 		
@@ -1271,7 +1271,7 @@ window.Chart = function(context){
 			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
 		}
 		
-		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
+		scaleHop = scaleHeight/calculatedScale.steps;
 		calculateXAxisSize();
 		animationLoop(config,drawScale,drawBars,ctx);		
 		
