@@ -1126,7 +1126,7 @@ window.Chart = function(context){
 						}
 					}
 				return like_rank;
-			}s
+			}
 			
 			function xLabel(year){
 					
