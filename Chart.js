@@ -985,9 +985,53 @@ window.Chart = function(context){
 			}
 			else
 			{
-				for (var i=0; i<data.labels.length; i++){ 
-					xAxisLabel.push(data.labels[i]);
-				}			
+				is_like_rank = is_like_rank();
+				if (is_like_rank !== false) {
+					xLabelDisFactor = is_like_rank;
+					is_like_rank = true;
+				}
+				
+				if (is_like_rank) {
+					if (data.labels.length >= 1) {
+						xLabelDis = 1;		
+					}
+					if (data.labels.length >= 10) {
+						xLabelDis = 2;		
+					}
+					if (data.labels.length >= 50) {
+						xLabelDis = 10;		
+					}
+					if (data.labels.length >= 100) {
+						xLabelDis = 20;		
+					}
+					if (data.labels.length >= 500) {
+						xLabelDis = 100;		
+					}
+					if (data.labels.length >= 1000) {
+						xLabelDis = 200;		
+					}
+					
+					disLabelYAxis = -1;
+				
+					
+					var mod = 0;
+					while (xAxisLabel.length == 0) {
+						for (var i=0; i<data.labels.length; i++){ 
+							if (data.labels[i]%(xLabelDis*xLabelDisFactor) === mod) {
+								xAxisLabel.push(data.labels[i]);
+								if (disLabelYAxis == -1) {
+									disLabelYAxis = i;
+								}
+							}
+						}
+						mod++; // if there is no normal 5,10,15 label but something like a 4,9,14 the while loop is needed.
+					}
+				}
+				else {
+					for (var i=0; i<data.labels.length; i++){ 
+						xAxisLabel.push(data.labels[i]);
+					}	
+				}
 			}
 			
 			
@@ -1008,17 +1052,28 @@ window.Chart = function(context){
 						ctx.fillText(xAxisLabel[i], 0,0);
 						ctx.restore();
 					} else {
-						ctx.translate(yAxisPosX + i*valueHop,xAxisPosY + config.scaleFontSize);
-						ctx.rotate(-(rotateLabels * (Math.PI/180)));
-						ctx.fillText(data.labels[i], 0,0);
-						ctx.restore();
+						if (is_like_rank === true) {
+							ctx.translate(yAxisPosX + disLabelYAxis*valueHop+xLabelDis*i*valueHop,xAxisPosY + config.scaleFontSize);
+							ctx.rotate(-(rotateLabels * (Math.PI/180)));
+							ctx.fillText(xAxisLabel[i], 0,0);
+							ctx.restore();
+						} else {
+							ctx.translate(yAxisPosX + xLabelDis*valueHop,xAxisPosY + config.scaleFontSize);
+							ctx.rotate(-(rotateLabels * (Math.PI/180)));
+							ctx.fillText(xAxisLabel[i], 0,0);
+							ctx.restore();
+						}
 					}
 				}
 				else{
 					if (LabelIsDate === true) {					
 						ctx.fillText(xAxisLabel[i],xLabel(xAxisLabel[i]),xAxisPosY + config.scaleFontSize+3);					
 					} else {
-						ctx.fillText(data.labels[i], yAxisPosX + i*valueHop,xAxisPosY + config.scaleFontSize+3);					
+						if (is_like_rank === true) {
+							ctx.fillText(xAxisLabel[i], yAxisPosX +  disLabelYAxis*valueHop+xLabelDis*i*valueHop,xAxisPosY + config.scaleFontSize+3);
+						} else {
+							ctx.fillText(xAxisLabel[i], yAxisPosX + i*valueHop,xAxisPosY + config.scaleFontSize+3);
+						}
 					}				
 				}
 
@@ -1026,7 +1081,11 @@ window.Chart = function(context){
 				if (LabelIsDate === true) {					
 					ctx.moveTo(xLabel(xAxisLabel[i]), xAxisPosY+3);
 				} else {
-					ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY+3);
+					if (is_like_rank === true) {
+						ctx.moveTo(yAxisPosX +  disLabelYAxis*valueHop+ xLabelDis * i * valueHop, xAxisPosY+3);
+					} else {
+						ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY+3);
+					}
 				}
 				
 				
@@ -1036,18 +1095,38 @@ window.Chart = function(context){
 					if (LabelIsDate === true) {					
 						ctx.lineTo(xLabel(xAxisLabel[i]), 5);
 					} else {
-						ctx.lineTo(yAxisPosX + i * valueHop, 5);
+						if (is_like_rank === true) {
+							ctx.lineTo(yAxisPosX +  disLabelYAxis*valueHop+ xLabelDis * i * valueHop, 5);
+						} else {
+							ctx.lineTo(yAxisPosX + i * valueHop, 5);
+						}
 					}
 				}
 				else{
 					if (LabelIsDate === true) {
 						ctx.lineTo(xLabel(xAxisLabel[i]), xAxisPosY+3);	
 					} else {
-						ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY+3);	
+						if (is_like_rank === true) {
+							ctx.lineTo(yAxisPosX +  disLabelYAxis*valueHop+ xLabelDis * i * valueHop, xAxisPosY+3);	
+						} else {
+							ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY+3);	
+						}
 					}
 				}
 				ctx.stroke();
 			}
+			
+			function is_like_rank() {
+				var distance = data.labels[1]-data.labels[0];
+				var like_rank = distance;
+				for (var i=2; i<data.labels.length; i++){ 
+						if (data.labels[i]-data.labels[i-1] != distance) {
+							like_rank = false;
+							break;
+						}
+					}
+				return like_rank;
+			}s
 			
 			function xLabel(year){
 					
