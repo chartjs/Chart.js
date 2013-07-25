@@ -1123,7 +1123,7 @@ window.Chart = function(context){
 			function is_like_rank() {
 				var distance = data.labels[1]-data.labels[0];
 				var round = get_round_dec(distance);
-				alert(round);
+	
 				var like_rank = distance;
 				for (var i=2; i<data.labels.length; i++){ 
 						if (round_dec(data.labels[i]-data.labels[i-1],round) != distance) {
