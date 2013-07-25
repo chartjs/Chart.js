@@ -815,13 +815,13 @@ window.Chart = function(context){
 		animationLoop(config,drawScale,drawLines,ctx);		
 		
 		// YYYY in DD.MM.YYYY || MM.YYYY in DD.MM.YYYY
-		if (data.labels[0].match(/^((0?[1-9])|10|11|12)\.(1|2)[0-9]{3}$/)) {
+		if (data.labels[0].toString().match(/^((0?[1-9])|10|11|12)\.(1|2)[0-9]{3}$/)) {
 			for (var i = 0; i < data.labels.length; i++) {
 				data.labels[i] = '01.'+data.labels[i];
 			}
 		}
 		
-		if (data.labels[0].match(/^(1|2)[0-9]{3}$/)) {
+		if (data.labels[0].toString().match(/^(1|2)[0-9]{3}$/)) {
 			for (var i = 0; i < data.labels.length; i++) {
 				data.labels[i] = '01.01.'+data.labels[i];
 			}
@@ -829,7 +829,7 @@ window.Chart = function(context){
 		
 		// Test if all labels are dates
 		for (var i = 0; i < data.labels.length; i++) {
-			myDate=data.labels[i].split(".");
+			myDate=data.labels[i].toString().split(".");
 			var test_timestamp = new Date(myDate[1]+"/"+myDate[0]+"/"+myDate[2]).getTime();
 			if (isNaN(test_timestamp)) {
 				LabelIsDate = false;
@@ -974,10 +974,10 @@ window.Chart = function(context){
 				dis_years = 200;		
 			}
 			
-			
+			var xLabelDis = 0;
 			xAxisLabel = new Array(); 
 			if (LabelIsDate === true) {
-				for (var i = parseInt(data.labels[0].split(".")[2]); i <= parseInt(data.labels[data.labels.length-1].split(".")[2]); i++) {
+				for (var i = parseInt(data.labels[0].toString().split(".")[2]); i <= parseInt(data.labels[data.labels.length-1].toString().split(".")[2]); i++) {
 					if (i%dis_years == 0) {
 						xAxisLabel.push(i);
 					}
