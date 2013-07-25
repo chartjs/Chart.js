@@ -1128,7 +1128,6 @@ window.Chart = function(context){
 				for (var i=2; i<data.labels.length; i++){ 
 						if (round_dec(data.labels[i]-data.labels[i-1],round) != distance) {
 							like_rank = false;
-							alert(data.labels[i]-data.labels[i-1]+" != "+round_dec(data.labels[i]-data.labels[i-1],round)+" != "+distance);
 							break;
 							
 						}
