@@ -312,7 +312,7 @@ window.Chart = function(context){
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
 			onAnimationComplete : null,
-			logarithm: true
+			logarithmic: 'fuzzy'
 		};		
 		var config = (options) ? mergeChartConfig(chart.Line.defaults,options) : chart.Line.defaults;
 		
@@ -345,7 +345,7 @@ window.Chart = function(context){
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
 			onAnimationComplete : null,
-			logarithm: true
+			logarithmic: 'fuzzy'
 		};		
 		var config = (options) ? mergeChartConfig(chart.Bar.defaults,options) : chart.Bar.defaults;
 		
@@ -795,10 +795,17 @@ window.Chart = function(context){
 		
 		valueBounds = getValueBounds();
 		
-		// Check if logarithm is meanigful
+		// true or fuzzy (error for negativ values (included 0))
+		if (config.logarithmic !== false) {
+			if (valueBounds.minValue <= 0) {
+				config.logarithmic = false;
+			}
+		}
+		
+		 // Check if logarithmic is meanigful
 		var OrderOfMagnitude = calculateOrderOfMagnitude(Math.pow(10,calculateOrderOfMagnitude(valueBounds.maxValue)+1))-calculateOrderOfMagnitude(Math.pow(10,calculateOrderOfMagnitude(valueBounds.minValue)));
-		if ((config.logarithm && OrderOfMagnitude < 4) || config.scaleOverride) {
-			config.logarithm = false;
+		if ((config.logarithmic == 'fuzzy' && OrderOfMagnitude < 4) || config.scaleOverride) {
+		  config.logarithmic = false;
 		}
 		
 		//Check and set the scale
@@ -1034,10 +1041,17 @@ window.Chart = function(context){
 		
 		valueBounds = getValueBounds();
 		
-		// Check if logarithm is meanigful
+		// true or fuzzy (error for negativ values (included 0))
+		if (config.logarithmic !== false) {
+			if (valueBounds.minValue <= 0) {
+				config.logarithmic = false;
+			}
+		}
+		
+		 // Check if logarithmic is meanigful
 		var OrderOfMagnitude = calculateOrderOfMagnitude(Math.pow(10,calculateOrderOfMagnitude(valueBounds.maxValue)+1))-calculateOrderOfMagnitude(Math.pow(10,calculateOrderOfMagnitude(valueBounds.minValue)));
-		if ((config.logarithm && OrderOfMagnitude < 4) || config.scaleOverride) {
-			config.logarithm = false;
+		if ((config.logarithmic == 'fuzzy' && OrderOfMagnitude < 4) || config.scaleOverride) {
+		  config.logarithmic = false;
 		}
 		
 		//Check and set the scale
@@ -1237,7 +1251,7 @@ window.Chart = function(context){
 	}
 	
 	function calculateOffset(config,val,calculatedScale,scaleHop){
-		if (!config.logarithm) {
+		if (!config.logarithmic) {
 			var outerValue = calculatedScale.steps * calculatedScale.stepValue;
 			var adjustedValue = val - calculatedScale.graphMin;
 			var scalingFactor = CapValue(adjustedValue/outerValue,1,0);
@@ -1304,7 +1318,7 @@ window.Chart = function(context){
 		var graphMin,graphMax,graphRange,stepValue,numberOfSteps,valueRange,rangeOrderOfMagnitude,decimalNum;
 		
 		
-		if (!config.logarithm) {
+		if (!config.logarithmic) {
 			valueRange = maxValue - minValue;
 			rangeOrderOfMagnitude = calculateOrderOfMagnitude(valueRange);
 			graphMin = Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);       
@@ -1322,7 +1336,7 @@ window.Chart = function(context){
 
 		
 		
-		if (!config.logarithm) {
+		if (!config.logarithmic) {
 			//Compare number of steps to the max and min for that size graph, and add in half steps if need be.	        
 			while(numberOfSteps < minSteps || numberOfSteps > maxSteps) {
 				if (numberOfSteps < minSteps){
@@ -1361,7 +1375,7 @@ window.Chart = function(context){
 	function populateLabels(config,labelTemplateString, labels, numberOfSteps, graphMin, graphMax, stepValue) {
 		if (labelTemplateString) {
 			//Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
-			if (!config.logarithm) {
+			if (!config.logarithmic) {
 				for (var i = 1; i < numberOfSteps + 1; i++) {
 					labels.push(tmpl(labelTemplateString, {value: (graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue))}));
 				}
