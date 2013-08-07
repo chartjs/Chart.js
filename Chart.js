@@ -1047,11 +1047,12 @@ window.Chart = function(context){
 		function drawBars(animPc){
 			ctx.lineWidth = config.barStrokeWidth;
 			for (var i=0; i<data.datasets.length; i++){
-					ctx.fillStyle = data.datasets[i].fillColor;
 					ctx.strokeStyle = data.datasets[i].strokeColor;
 				for (var j=0; j<data.datasets[i].data.length; j++){
 					var barOffset = yAxisPosX + config.barValueSpacing + valueHop*j + barWidth*i + config.barDatasetSpacing*i + config.barStrokeWidth*i;
+					var color = typeof data.datasets[i].fillColor == "object" ? data.datasets[i].fillColor[j] : data.datasets[i].fillColor;
 					
+					ctx.fillStyle = color;	
 					ctx.beginPath();
 					ctx.moveTo(barOffset, xAxisPosY);
 					ctx.lineTo(barOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
