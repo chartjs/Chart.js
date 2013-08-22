@@ -1240,6 +1240,9 @@ window.Chart = function(context){
 
         function animateFrame(){
             var easeAdjustedAnimationPercent =(config.animation)? CapValue(easingFunction(percentAnimComplete),null,0) : 1;
+
+            if (typeof config.onAnimationProgress === "function") config.onAnimationProgress(easeAdjustedAnimationPercent);
+
             clear(ctx);
             if(config.scaleOverlay){
                 drawData(easeAdjustedAnimationPercent);
