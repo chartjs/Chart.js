@@ -16,6 +16,23 @@ Hang tight - it'll be worth it.
 
 PS. If you're interested in reviewing some code or trying out writing extensions, shoot me an email.
 
+###Update - 8th September
+Just a quick update on the refactor. 
+
+Just wanted to let you guys know it's making really good progress, and it'll be well worth the wait.
+
+The new version is being broken up into Chart type modules, with each of the current 6 chart types using documented and extendable classes and helper methods from the Chart.js core. This means the community will be able to build new chart types using existing components, or extend existing types to do something a bit different. 
+
+By splitting the different charts into modules will mean the ability to use AMD if appropriate, but I'll also be writing a simple web interface for concatenating chart types into a minified production ready custom build.
+
+The syntax for creating charts **will not change**, so the upgrade should be a drop in replacement, but give you the ability to have a whole new level of interactivity and animated data updates.
+
+Right now I've wrote 80% of the core, and refactored the Doughnut and Pie charts, and I'm a good way through the Line and Bar charts. I hope to have the new version ready to release with some new docs late September/early October.
+
+I know PR and issues are racking up in the repo, and I'll do my best to sort them ASAP, but I think this update is really important for creating flexibility and extensibility to cater for these new features in an elegant way, rather than introducing scope creep into an architecture that wasn't designed to deliver this extra functionality.
+
+Big thanks for all the support - it's been totally overwhelming.
+
 Documentation
 -------
 You can find documentation at [chartjs.org/docs](http://www.chartjs.org/docs).
