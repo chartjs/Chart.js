@@ -36,7 +36,12 @@
 			
 		}
 
-	var myRadar = new Chart(document.getElementById("canvas").getContext("2d")).Radar(radarChartData,{scaleShowLabels : false, pointLabelFontSize : 10});
+	var myRadar = new Chart(document.getElementById("canvas").getContext("2d"), {
+		offset: {
+			left: 10,
+			top: 0
+		}
+	}).Radar(radarChartData,{scaleShowLabels : false, pointLabelFontSize : 10});
 	
 	</script>
 	</body>

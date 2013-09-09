@@ -8,10 +8,8 @@
  */
 
 //Define the global Chart Variable as a class.
-window.Chart = function(context){
-
+window.Chart = function(context, options){
 	var chart = this;
-	
 	
 	//Easing functions adapted from Robert Penner's easing equations
 	//http://www.robertpenner.com/easing/
@@ -147,9 +145,308 @@ window.Chart = function(context){
 		}
 	};
 
+	this.tooltips = [],
+	defaults = {
+		tooltips: {
+			background: 'black',
+			fontFamily : "'Arial'",
+			fontStyle : "normal",
+			fontColor: 'white',
+			fontSize: '12px',
+			labelTemplate: '<%=label%>: <%=value%>',
+			height: 24,
+			padding: {
+				top: 4,
+				right: 8,
+				bottom: 4,
+				left: 8
+			},
+			position: 'bottom center',
+			offset: {
+				left: 0,
+				top: 0
+			},
+			border: {
+				width: 0,
+				color: 'black',
+				radius: 4
+			},
+			showShadow: true,
+			shadow: {
+				color: 'rgba(0,0,0,0.9)',
+				blur: 8,
+				offsetX: 0,
+				offsetY: 0
+			},
+			showHighlight: true,
+			highlight: {
+				stroke: {
+					width: 1,
+					color: 'rgba(230,230,230,0.25)'
+				},
+				fill: 'rgba(255,255,255,0.25)'
+			}
+		}
+	},
+	options = (options) ? mergeChartConfig(defaults, options) : defaults;
+
+	function registerTooltip(ctx,areaObj,data,type) {
+		chart.tooltips.push(new Tooltip(
+			ctx,
+			areaObj,
+			data,
+			type
+		));
+	}
+
+	var Tooltip = function(ctx, areaObj, data, type) {
+		this.ctx = ctx;
+		this.areaObj = areaObj;
+		this.data = data;
+		this.savedState = null;
+		this.highlightState = null;
+		this.x = null;
+		this.y = null;
+
+		this.inRange = function(x,y) {
+			if(this.areaObj.type) {
+				switch(this.areaObj.type) {
+					case 'rect':
+						return (x >= this.areaObj.x && x <= this.areaObj.x+this.areaObj.width) &&
+						   (y >= this.areaObj.y && y <= this.areaObj.y+this.areaObj.height);
+						   break;
+					case 'circle':
+						return ((Math.pow(x-this.areaObj.x, 2)+Math.pow(y-this.areaObj.y, 2)) < Math.pow(this.areaObj.r,2));
+						break;
+					case 'shape':
+						var poly = this.areaObj.points;
+						for(var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
+							((poly[i].y <= y && y < poly[j].y) || (poly[j].y <= y && y < poly[i].y))
+							&& (x < (poly[j].x - poly[i].x) * (y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
+							&& (c = !c);
+						return c;
+						break;
+				}
+			}
+		}
+
+		this.render = function(x,y) {
+			this.ctx.shadowColor = undefined;
+			this.ctx.shadowBlur = 0;
+			this.ctx.shadowOffsetX = 0;
+			this.ctx.shadowOffsetY = 0;
+			if(this.savedState == null) {
+				this.ctx.putImageData(chart.savedState,0,0);
+				this.savedState = this.ctx.getImageData(0,0,this.ctx.canvas.width,this.ctx.canvas.height);
+			}
+			this.ctx.putImageData(this.savedState,0,0);
+			if(options.tooltips.showHighlight) {
+				if(this.highlightState == null) {
+					this.ctx.strokeStyle = options.tooltips.highlight.stroke.color;
+					this.ctx.lineWidth = options.tooltips.highlight.stroke.width;
+					this.ctx.fillStyle = options.tooltips.highlight.fill;
+					switch(this.areaObj.type) {
+						case 'rect':
+							this.ctx.strokeRect(this.areaObj.x, this.areaObj.y, this.areaObj.width, this.areaObj.height);
+							this.ctx.fillStyle = options.tooltips.highlight.fill;
+							this.ctx.fillRect(this.areaObj.x, this.areaObj.y, this.areaObj.width, this.areaObj.height);
+							break;
+						case 'circle':
+							this.ctx.beginPath();
+							this.ctx.arc(this.areaObj.x, this.areaObj.y, this.areaObj.r, 0, 2*Math.PI, false);
+							this.ctx.stroke();
+							this.ctx.fill();
+							break;
+						case 'shape':
+							this.ctx.beginPath();
+							this.ctx.moveTo(this.areaObj.points[0].x, this.areaObj.points[0].y);
+							for(var p in this.areaObj.points) {
+								this.ctx.lineTo(this.areaObj.points[p].x, this.areaObj.points[p].y);
+							}
+							this.ctx.stroke();
+							this.ctx.fill();
+							break;
+					}
+					this.highlightState = this.ctx.getImageData(0,0,this.ctx.canvas.width,this.ctx.canvas.height);
+				} else {
+					this.ctx.putImageData(this.highlightState,0,0);
+				}
+			}
+			var posX = x+options.tooltips.offset.left,
+				posY = y+options.tooltips.offset.top,
+				tpl = tmpl(options.tooltips.labelTemplate, this.data),
+				rectWidth = options.tooltips.padding.left+this.ctx.measureText(tpl).width+options.tooltips.padding.right,
+				position = options.tooltips.position.split(" "),
+				height = options.tooltips.height;
+
+			// adjust height on fontsize
+			if(options.tooltips.fontSize.match(/[0-9]+(.[0-9]+)?px/)) {
+				height = parseInt(options.tooltips.fontSize);
+			} else if(options.tooltips.fontSize.match(/[0-9]+(.[0-9]+)?(\%|em)/)) {
+				function getDefaultFontSize(pa) {
+					pa = pa || document.body;
+					var who = document.createElement('div');
+
+					who.style.cssText='display:inline-block; padding:0; line-height:1; position:absolute; visibility:hidden; font-size:1em';
+
+					who.appendChild(document.createTextNode('M'));
+					pa.appendChild(who);
+					var fs = [who.offsetWidth, who.offsetHeight];
+					pa.removeChild(who);
+					return fs[1];
+				}
+				var size = parseFloat(options.tooltips.fontSize);
+				if(options.tooltips.fontSize.match(/[0-9]+(.[0-9]+)?\%/)) {
+					size /= 100;
+				}
+				height = size*getDefaultFontSize(this.ctx.canvas.parentNode);
+			}
+
+			height += options.tooltips.padding.top+options.tooltips.padding.bottom;
+
+			// check relative position
+			for(var i in position) {
+				if(i == 0) {
+					if(position[i] == "bottom") {
+						posY -= height;
+					} else if(position[i] == "center") {
+						posY -= height/2;
+						if(position.length == 1) {
+							posX -= rectWidth/2;
+						}
+					}
+				}
+				if(i == 1) {
+					if(position[i] == "right") {
+						posX -= rectWidth;
+					} else if(position[i] == "center") {
+						posX -= rectWidth/2;
+					}
+				}
+			}
+
+			// check edges
+			if(posX + rectWidth > ctx.canvas.width) {
+				posX -= posX+rectWidth-ctx.canvas.width;
+			}
+			if(posX < 0) {
+				posX = 0;
+			}
+			if(posY + height > ctx.canvas.height) {
+				posY -= posY+height-ctx.canvas.height;
+			}
+			if(posY < 0) {
+				posY = 0;
+			}
+			this.ctx.fillStyle = options.tooltips.background;
+			if(options.tooltips.showShadow) {
+				this.ctx.shadowColor = options.tooltips.shadow.color;
+				this.ctx.shadowBlur = options.tooltips.shadow.blur;
+				this.ctx.shadowOffsetX = options.tooltips.shadow.offsetX;
+				this.ctx.shadowOffsetY = options.tooltips.shadow.offsetY;
+			}
+			if(!options.tooltips.border.radius) {
+				this.ctx.fillRect(posX, posY, rectWidth, height);
+				if(options.tooltips.border.width > 0) {
+					this.ctx.fillStyle = options.tooltips.border.color;
+					this.ctx.lineWidth = options.tooltips.border.width;
+					this.ctx.strokeRect(posX, posY, rectWidth, height);
+				}
+			} else {
+				var radius = options.tooltips.border.radius > 12 ? 12 : options.tooltips.border.radius;
+				this.ctx.beginPath();
+				this.ctx.moveTo(posX+radius, posY);
+				this.ctx.lineTo(posX+rectWidth-radius, posY);
+				this.ctx.quadraticCurveTo(posX+rectWidth, posY, posX+rectWidth, posY+radius);
+				this.ctx.lineTo(posX+rectWidth, posY+height-radius);
+				this.ctx.quadraticCurveTo(posX+rectWidth, posY+height, posX+rectWidth-radius, posY+height);
+				this.ctx.lineTo(posX+radius, posY+height);
+				this.ctx.quadraticCurveTo(posX, posY+height, posX, posY+height-radius);
+				this.ctx.lineTo(posX, posY+radius);
+				this.ctx.quadraticCurveTo(posX, posY, posX+radius, posY);
+				this.ctx.fill();
+				if(options.tooltips.border.width > 0) {
+					this.ctx.strokeStyle = options.tooltips.border.color;
+					this.ctx.lineWidth = options.tooltips.border.width;
+					this.ctx.stroke();
+				}
+				this.ctx.closePath();
+			}
+			this.ctx.font = options.tooltips.fontStyle+ " "+options.tooltips.fontSize+" " + options.tooltips.fontFamily;
+			this.ctx.fillStyle = options.tooltips.fontColor;
+			this.ctx.textAlign = 'center';
+			this.ctx.textBaseline = 'middle';
+			this.ctx.fillText(tpl, posX+rectWidth/2, posY+height/2);
+			this.x = x;
+			this.y = y;
+		}
+	}
+
 	//Variables global to the chart
-	var width = context.canvas.width;
-	var height = context.canvas.height;
+	var width = context.canvas.width,
+		height = context.canvas.height;
+
+	this.savedState = null;
+
+	function getPosition(e) {
+		var xPosition = 0;
+		var yPosition = 0;
+
+		while(e) {
+			xPosition += (e.offsetLeft + e.clientLeft);
+			yPosition += (e.offsetTop + e.clientTop);
+			e = e.offsetParent;
+		}
+		if(window.pageXOffset > 0 || window.pageYOffset > 0) {
+			xPosition -= window.pageXOffset;
+			yPosition -= window.pageYOffset;
+		} else if(document.body.scrollLeft > 0 || document.body.scrollTop > 0) {
+			xPosition -= document.body.scrollLeft;
+			yPosition -= document.body.scrollTop;
+		}
+		return { x: xPosition, y: yPosition };
+	}
+	
+	function tooltipEventHandler(e) {
+		if(chart.tooltips.length > 0) {
+			chart.savedState = chart.savedState == null ? context.getImageData(0,0,context.canvas.width,context.canvas.height) : chart.savedState;
+			var rendered = 0;
+			for(var i in chart.tooltips) {
+				var position = getPosition(context.canvas),
+					mx = (e.clientX)-position.x,
+					my = (e.clientY)-position.y;
+				if(chart.tooltips[i].inRange(mx,my)) {
+					chart.tooltips[i].render(mx,my);
+					rendered++;
+				}
+			}
+			if(rendered == 0) {
+				context.putImageData(chart.savedState,0,0);
+			}
+		}
+	}
+
+	if(window.Touch) {
+		context.canvas.ontouchstart = function(e) {
+			e.clientX = e.targetTouches[0].clientX;
+			e.clientY = e.targetTouches[0].clientY;
+			tooltipEventHandler(e);
+		}
+		context.canvas.ontouchmove = function(e) {
+			e.clientX = e.targetTouches[0].clientX;
+			e.clientY = e.targetTouches[0].clientY;
+			tooltipEventHandler(e);
+		}
+	} else {
+		context.canvas.onmousemove = function(e) {
+			tooltipEventHandler(e);
+		}
+	}
+	context.canvas.onmouseout = function(e) {
+		if(chart.savedState != null) {
+			context.putImageData(chart.savedState,0,0);
+		}
+	}
 
 
 	//High pixel density displays - multiply the size of the canvas height/width by the device pixel ratio, then scale.
@@ -190,7 +487,8 @@ window.Chart = function(context){
 			animationEasing : "easeOutBounce",
 			animateRotate : true,
 			animateScale : false,
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			showTooltips : true
 		};
 		
 		var config = (options)? mergeChartConfig(chart.PolarArea.defaults,options) : chart.PolarArea.defaults;
@@ -235,7 +533,8 @@ window.Chart = function(context){
 			animation : true,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			showTooltips : true
 		};
 		
 		var config = (options)? mergeChartConfig(chart.Radar.defaults,options) : chart.Radar.defaults;
@@ -253,7 +552,13 @@ window.Chart = function(context){
 			animationEasing : "easeOutBounce",
 			animateRotate : true,
 			animateScale : false,
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			labelFontFamily : "'Arial'",
+			labelFontStyle : "normal",
+			labelFontSize : 12,
+			labelFontColor : "#666",
+			labelAlign : 'right',
+			showTooltips : true
 		};		
 
 		var config = (options)? mergeChartConfig(chart.Pie.defaults,options) : chart.Pie.defaults;
@@ -273,7 +578,8 @@ window.Chart = function(context){
 			animationEasing : "easeOutBounce",
 			animateRotate : true,
 			animateScale : false,
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			showTooltips : true
 		};		
 
 		var config = (options)? mergeChartConfig(chart.Doughnut.defaults,options) : chart.Doughnut.defaults;
@@ -311,7 +617,8 @@ window.Chart = function(context){
 			animation : true,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			showTooltips : true
 		};		
 		var config = (options) ? mergeChartConfig(chart.Line.defaults,options) : chart.Line.defaults;
 		
@@ -343,7 +650,8 @@ window.Chart = function(context){
 			animation : true,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			showTooltips : true
 		};		
 		var config = (options) ? mergeChartConfig(chart.Bar.defaults,options) : chart.Bar.defaults;
 		
@@ -415,14 +723,14 @@ window.Chart = function(context){
 				if (config.scaleShowLabels){
 					ctx.textAlign = "center";
 					ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
- 					var label =  calculatedScale.labels[i];
+					 var label =  calculatedScale.labels[i];
 					//If the backdrop object is within the font object
 					if (config.scaleShowLabelBackdrop){
 						var textWidth = ctx.measureText(label).width;
 						ctx.fillStyle = config.scaleBackdropColor;
 						ctx.beginPath();
 						ctx.rect(
-							Math.round(width/2 - textWidth/2 - config.scaleBackdropPaddingX),     //X
+							Math.round(width/2 - textWidth/2 - config.scaleBackdropPaddingX),	 //X
 							Math.round(height/2 - (scaleHop * (i + 1)) - config.scaleFontSize*0.5 - config.scaleBackdropPaddingY),//Y
 							Math.round(textWidth + (config.scaleBackdropPaddingX*2)), //Width
 							Math.round(config.scaleFontSize + (config.scaleBackdropPaddingY*2)) //Height
@@ -457,6 +765,17 @@ window.Chart = function(context){
 				ctx.closePath();
 				ctx.fillStyle = data[i].color;
 				ctx.fill();
+
+				if(animationDecimal >= 1 && config.showTooltips) {
+					var points = [{x:width/2,y:height/2}],
+						pAmount = 50,
+						radius = calculateOffset(data[i].value,calculatedScale,scaleHop);
+					points.push({x:width/2+radius*Math.cos(startAngle),y:height/2+radius*Math.sin(startAngle)});
+					for(var p = 0; p <= pAmount; p++) {
+						points.push({x:width/2+radius*Math.cos(startAngle+p/pAmount*rotateAnimation*angleStep),y:height/2+radius*Math.sin(startAngle+p/pAmount*rotateAnimation*angleStep)});
+					}
+					registerTooltip(ctx,{type:'shape',points:points},{label:data[i].label,value:data[i].value},'PolarArea');
+				}
 
 				if(config.segmentShowStroke){
 					ctx.strokeStyle = config.segmentStrokeColor;
@@ -526,16 +845,29 @@ window.Chart = function(context){
 			ctx.save();
 			//translate to the centre of the canvas.
 			ctx.translate(width/2,height/2);
-			
 			//We accept multiple data sets for radar charts, so show loop through each set
 			for (var i=0; i<data.datasets.length; i++){
+				var offset = calculateOffset(data.datasets[i].data[0],calculatedScale,scaleHop);
 				ctx.beginPath();
-
-				ctx.moveTo(0,animationDecimal*(-1*calculateOffset(data.datasets[i].data[0],calculatedScale,scaleHop)));
+				ctx.moveTo(0,animationDecimal*(-1*offset));
+				if(animationDecimal >= 1 && config.showTooltips) {
+					var curX = width/2+offset*Math.cos(0-Math.PI/2),
+						curY = height/2+offset*Math.sin(0-Math.PI/2),
+						pointRadius = config.pointDot ? config.pointDotRadius+config.pointDotStrokeWidth : 10,
+						ttData = data.labels[0].trim() != "" ? data.labels[0]+": "+data.datasets[i].data[0] : data.datasets[i].data[0];
+					registerTooltip(ctx,{type:'circle',x:curX,y:curY,r:pointRadius},{label:data.labels[0],value:data.datasets[i].data[0]},'Radar');
+				}
 				for (var j=1; j<data.datasets[i].data.length; j++){
-					ctx.rotate(rotationDegree);	
-					ctx.lineTo(0,animationDecimal*(-1*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)));
-			
+					offset = calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop);
+					ctx.rotate(rotationDegree);
+					ctx.lineTo(0,animationDecimal*(-1*offset));
+					if(animationDecimal >= 1 && config.showTooltips) {
+						var curX = width/2+offset*Math.cos(j*rotationDegree-Math.PI/2),
+							curY = height/2+offset*Math.sin(j*rotationDegree-Math.PI/2),
+							pointRadius = config.pointDot ? config.pointDotRadius+config.pointDotStrokeWidth : 10,
+							ttData = data.labels[j].trim() != "" ? data.labels[j]+": "+data.datasets[i].data[j] : data.datasets[i].data[j];
+						registerTooltip(ctx,{type:'circle',x:curX,y:curY,r:pointRadius},{label:data.labels[j],value:data.datasets[i].data[j]},'Radar');
+					}
 				}
 				ctx.closePath();
 				
@@ -561,7 +893,6 @@ window.Chart = function(context){
 					
 				}
 				ctx.rotate(rotationDegree);
-				
 			}
 			ctx.restore();
 			
@@ -570,14 +901,14 @@ window.Chart = function(context){
 		function drawScale(){
 			var rotationDegree = (2*Math.PI)/data.datasets[0].data.length;
 			ctx.save();
-		    ctx.translate(width / 2, height / 2);	
+			ctx.translate(width / 2, height / 2);	
 			
 			if (config.angleShowLineOut){
-				ctx.strokeStyle = config.angleLineColor;		    	    
+				ctx.strokeStyle = config.angleLineColor;					
 				ctx.lineWidth = config.angleLineWidth;
 				for (var h=0; h<data.datasets[0].data.length; h++){
 					
-				    ctx.rotate(rotationDegree);
+					ctx.rotate(rotationDegree);
 					ctx.beginPath();
 					ctx.moveTo(0,0);
 					ctx.lineTo(0,-maxSize);
@@ -593,7 +924,7 @@ window.Chart = function(context){
 					ctx.lineWidth = config.scaleLineWidth;
 					ctx.moveTo(0,-scaleHop * (i+1));					
 					for (var j=0; j<data.datasets[0].data.length; j++){
-					    ctx.rotate(rotationDegree);
+						ctx.rotate(rotationDegree);
 						ctx.lineTo(0,-scaleHop * (i+1));
 					}
 					ctx.closePath();
@@ -611,7 +942,7 @@ window.Chart = function(context){
 						ctx.fillStyle = config.scaleBackdropColor;
 						ctx.beginPath();
 						ctx.rect(
-							Math.round(- textWidth/2 - config.scaleBackdropPaddingX),     //X
+							Math.round(- textWidth/2 - config.scaleBackdropPaddingX),	 //X
 							Math.round((-scaleHop * (i + 1)) - config.scaleFontSize*0.5 - config.scaleBackdropPaddingY),//Y
 							Math.round(textWidth + (config.scaleBackdropPaddingX*2)), //Width
 							Math.round(config.scaleFontSize + (config.scaleBackdropPaddingY*2)) //Height
@@ -701,7 +1032,8 @@ window.Chart = function(context){
 		for (var i=0; i<data.length; i++){
 			segmentTotal += data[i].value;
 		}
-		
+		ctx.fillStyle = 'black';
+		ctx.textBaseline = 'base';
 		
 		animationLoop(config,null,drawPieSegments,ctx);
 				
@@ -717,6 +1049,7 @@ window.Chart = function(context){
 					rotateAnimation = animationDecimal;
 				}
 			}
+
 			for (var i=0; i<data.length; i++){
 				var segmentAngle = rotateAnimation * ((data[i].value/segmentTotal) * (Math.PI*2));
 				ctx.beginPath();
@@ -725,6 +1058,63 @@ window.Chart = function(context){
 				ctx.closePath();
 				ctx.fillStyle = data[i].color;
 				ctx.fill();
+
+				if(data[i].label && scaleAnimation*pieRadius*2*segmentAngle/(2*Math.PI) > config.labelFontSize) {
+					function getPieLabelX(align, r) {
+						switch(align) {
+							case 'left':
+								return -r+20;
+								break;
+							case 'center':
+								return -r/2;
+								break;
+						}
+						return -10;
+					}
+					
+					function reversePieLabelAlign(align) {
+						switch(align) {
+							case 'left': return 'right'; break;
+							case 'right': return 'left'; break;
+							case 'center': return align; break;
+						}
+					}
+					
+					var fontSize = data[i].labelFontSize || config.labelFontSize+'px';
+					
+					if(fontSize.match(/^[0-9]+$/g) != null) {
+						fontSize = fontSize+'px';
+					}
+					ctx.font = config.labelFontStyle+ " " +fontSize+" " + config.labelFontFamily;
+					ctx.fillStyle = getFadeColor(animationDecimal, data[i].labelColor || 'black', data[i].color);
+					ctx.textBaseline = 'middle';
+					// rotate text, so it perfectly fits in segments
+					var textRotation = -(cumulativeAngle + segmentAngle)+segmentAngle/2,
+						tX = width/2+scaleAnimation*pieRadius*Math.cos(textRotation),
+						tY = height/2-scaleAnimation*pieRadius*Math.sin(textRotation);
+					ctx.textAlign = data[i].labelAlign || config.labelAlign;
+					textX = getPieLabelX(ctx.textAlign, scaleAnimation*pieRadius);
+					if(textRotation < -Math.PI/2) {
+						textRotation -= Math.PI;
+						ctx.textAlign = reversePieLabelAlign(ctx.textAlign);
+						textX = -textX;
+					}
+					ctx.translate(tX, tY);
+					ctx.rotate(-textRotation);
+					ctx.fillText(data[i].label, textX, 0);
+					ctx.rotate(textRotation);
+					ctx.translate(-tX, -tY);
+				}
+				
+				if(animationDecimal >= 1 && config.showTooltips) {
+					var points = [{x:width/2,y:height/2}],
+						pAmount = 50;
+					points.push({x:width/2+pieRadius*Math.cos(cumulativeAngle),y:height/2+pieRadius*Math.sin(cumulativeAngle)});
+					for(var p = 0; p <= pAmount; p++) {
+						points.push({x:width/2+pieRadius*Math.cos(cumulativeAngle+p/pAmount*segmentAngle),y:height/2+pieRadius*Math.sin(cumulativeAngle+p/pAmount*segmentAngle)});
+					}
+					registerTooltip(ctx,{type:'shape',points:points},{label:data[i].label,value:data[i].value},'Pie');
+				}
 				
 				if(config.segmentShowStroke){
 					ctx.lineWidth = config.segmentStrokeWidth;
@@ -772,6 +1162,20 @@ window.Chart = function(context){
 				ctx.closePath();
 				ctx.fillStyle = data[i].color;
 				ctx.fill();
+
+				if(animationDecimal >= 1 && config.showTooltips) {
+					var points = [],
+						pAmount = 50;
+					points.push({x:width/2+doughnutRadius*Math.cos(cumulativeAngle),y:height/2+doughnutRadius*Math.sin(cumulativeAngle)});
+					for(var p = 0; p <= pAmount; p++) {
+						points.push({x:width/2+doughnutRadius*Math.cos(cumulativeAngle+p/pAmount*segmentAngle),y:height/2+doughnutRadius*Math.sin(cumulativeAngle+p/pAmount*segmentAngle)});
+					}
+					points.push({x:width/2+cutoutRadius*Math.cos(cumulativeAngle+segmentAngle),y:height/2+cutoutRadius*Math.sin(cumulativeAngle+segmentAngle)});
+					for(var p = pAmount; p >= 0; p--) {
+						points.push({x:width/2+cutoutRadius*Math.cos(cumulativeAngle+p/pAmount*segmentAngle),y:height/2+cutoutRadius*Math.sin(cumulativeAngle+p/pAmount*segmentAngle)});
+					}
+					registerTooltip(ctx,{type:'shape',points:points},{label:data[i].label,value:data[i].value},'Doughnut');
+				}
 				
 				if(config.segmentShowStroke){
 					ctx.lineWidth = config.segmentStrokeWidth;
@@ -810,7 +1214,7 @@ window.Chart = function(context){
 		
 		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
 		calculateXAxisSize();
-		animationLoop(config,drawScale,drawLines,ctx);		
+		animationLoop(config,drawScale,drawLines,ctx);
 		
 		function drawLines(animPc){
 			for (var i=0; i<data.datasets.length; i++){
@@ -825,6 +1229,13 @@ window.Chart = function(context){
 					}
 					else{
 						ctx.lineTo(xPos(j),yPos(i,j));
+					}
+				}
+				var pointRadius = config.pointDot ? config.pointDotRadius+config.pointDotStrokeWidth : 10;
+				for(var j = 0; j < data.datasets[i].data.length; j++) {
+					if(animPc >= 1 && config.showTooltips) {
+						// register tooltips
+						registerTooltip(ctx,{type:'circle',x:xPos(j),y:yPos(i,j),r:pointRadius},{label:data.labels[j],value:data.datasets[i].data[j]},'Line');
 					}
 				}
 				ctx.stroke();
@@ -1062,6 +1473,15 @@ window.Chart = function(context){
 					}
 					ctx.closePath();
 					ctx.fill();
+
+					if(animPc >= 1 && config.showTooltips) {
+						// register tooltips
+						var x = barOffset,
+							height = calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop),
+							y = xAxisPosY-height,
+							width = barWidth;
+						registerTooltip(ctx,{type:'rect',x:x,y:y,width:width,height:height},{label:data.labels[j],value:data.datasets[i].data[j]},'Bar');
+					}
 				}
 			}
 			
@@ -1281,50 +1701,50 @@ window.Chart = function(context){
 	})();
 
 	function calculateScale(drawingHeight,maxSteps,minSteps,maxValue,minValue,labelTemplateString){
-			var graphMin,graphMax,graphRange,stepValue,numberOfSteps,valueRange,rangeOrderOfMagnitude,decimalNum;
-			
-			valueRange = maxValue - minValue;
-			
-			rangeOrderOfMagnitude = calculateOrderOfMagnitude(valueRange);
-
-        	graphMin = Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
-            
-            graphMax = Math.ceil(maxValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
-            
-            graphRange = graphMax - graphMin;
-            
-            stepValue = Math.pow(10, rangeOrderOfMagnitude);
-            
-	        numberOfSteps = Math.round(graphRange / stepValue);
+		var graphMin,graphMax,graphRange,stepValue,numberOfSteps,valueRange,rangeOrderOfMagnitude,decimalNum;
+		valueRange = maxValue - minValue;
+		rangeOrderOfMagnitude = calculateOrderOfMagnitude(valueRange);
+		graphMin = Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);       
+		graphMax = Math.ceil(maxValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
+		graphRange = graphMax - graphMin;
+		stepValue = Math.pow(10, rangeOrderOfMagnitude);
+		numberOfSteps = Math.round(graphRange / stepValue);
 	        
-	        //Compare number of steps to the max and min for that size graph, and add in half steps if need be.	        
-	        while(numberOfSteps < minSteps || numberOfSteps > maxSteps) {
-	        	if (numberOfSteps < minSteps){
-			        stepValue /= 2;
-			        numberOfSteps = Math.round(graphRange/stepValue);
-		        }
-		        else{
-			        stepValue *=2;
-			        numberOfSteps = Math.round(graphRange/stepValue);
-		        }
-	        };
+		//Compare number of steps to the max and min for that size graph, and add in half steps if need be.	        
+		while(numberOfSteps < minSteps || numberOfSteps > maxSteps) {
+			if (numberOfSteps < minSteps){
+				stepValue /= 2;
+				numberOfSteps = Math.round(graphRange/stepValue);
+			}
+			else{
+				stepValue *=2;
+				numberOfSteps = Math.round(graphRange/stepValue);
+			}
+		}
 
-	        var labels = [];
-	        populateLabels(labelTemplateString, labels, numberOfSteps, graphMin, stepValue);
+		var labels = [];
+		populateLabels(labelTemplateString, labels, numberOfSteps, graphMin, stepValue);
+
+		return {
+			steps : numberOfSteps,
+			stepValue : stepValue,
+			graphMin : graphMin,
+			labels : labels				
+		}
 		
-	        return {
-		        steps : numberOfSteps,
-				stepValue : stepValue,
-				graphMin : graphMin,
-				labels : labels		        
-		        
-	        }
-		
-			function calculateOrderOfMagnitude(val){
-			  return Math.floor(Math.log(val) / Math.LN10);
-			}		
+		function calculateOrderOfMagnitude(val){
+		  return Math.floor(Math.log(val) / Math.LN10);
+		}
+	}
 
-
+	//Populate an array of all the labels by interpolating the string.
+	function populateLabels(labelTemplateString, labels, numberOfSteps, graphMin, stepValue) {
+		if (labelTemplateString) {
+			//Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
+			for (var i = 1; i < numberOfSteps + 1; i++) {
+				labels.push(tmpl(labelTemplateString, {value: (graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue))}));
+			}
+		}
 	}
 
     //Populate an array of all the labels by interpolating the string.
@@ -1384,43 +1804,72 @@ window.Chart = function(context){
 	
 	function mergeChartConfig(defaults,userDefined){
 		var returnObj = {};
-	    for (var attrname in defaults) { returnObj[attrname] = defaults[attrname]; }
-	    for (var attrname in userDefined) { returnObj[attrname] = userDefined[attrname]; }
-	    return returnObj;
+		for (var attrname in defaults) { returnObj[attrname] = defaults[attrname]; }
+		for (var attrname in userDefined) {
+			if(typeof(userDefined[attrname]) === "object" && defaults[attrname]) {
+				returnObj[attrname] = mergeChartConfig(defaults[attrname], userDefined[attrname]);
+			} else {
+				returnObj[attrname] = userDefined[attrname];
+			}
+		}
+		return returnObj;
 	}
 	
 	//Javascript micro templating by John Resig - source at http://ejohn.org/blog/javascript-micro-templating/
 	  var cache = {};
 	 
 	  function tmpl(str, data){
-	    // Figure out if we're getting a template, or if we need to
-	    // load the template - and be sure to cache the result.
-	    var fn = !/\W/.test(str) ?
-	      cache[str] = cache[str] ||
-	        tmpl(document.getElementById(str).innerHTML) :
-	     
-	      // Generate a reusable function that will serve as a template
-	      // generator (and which will be cached).
-	      new Function("obj",
-	        "var p=[],print=function(){p.push.apply(p,arguments);};" +
-	       
-	        // Introduce the data as local variables using with(){}
-	        "with(obj){p.push('" +
-	       
-	        // Convert the template into pure JavaScript
-	        str
-	          .replace(/[\r\t\n]/g, " ")
-	          .split("<%").join("\t")
-	          .replace(/((^|%>)[^\t]*)'/g, "$1\r")
-	          .replace(/\t=(.*?)%>/g, "',$1,'")
-	          .split("\t").join("');")
-	          .split("%>").join("p.push('")
-	          .split("\r").join("\\'")
-	      + "');}return p.join('');");
+		// Figure out if we're getting a template, or if we need to
+		// load the template - and be sure to cache the result.
+		var fn = !/\W/.test(str) ?
+		  cache[str] = cache[str] ||
+			tmpl(document.getElementById(str).innerHTML) :
+		 
+		  // Generate a reusable function that will serve as a template
+		  // generator (and which will be cached).
+		  new Function("obj",
+			"var p=[],print=function(){p.push.apply(p,arguments);};" +
+		   
+			// Introduce the data as local variables using with(){}
+			"with(obj){p.push('" +
+		   
+			// Convert the template into pure JavaScript
+			str
+			  .replace(/[\r\t\n]/g, " ")
+			  .split("<%").join("\t")
+			  .replace(/((^|%>)[^\t]*)'/g, "$1\r")
+			  .replace(/\t=(.*?)%>/g, "',$1,'")
+			  .split("\t").join("');")
+			  .split("%>").join("p.push('")
+			  .split("\r").join("\\'")
+		  + "');}return p.join('');");
 	   
-	    // Provide some basic currying to the user
-	    return data ? fn( data ) : fn;
+		// Provide some basic currying to the user
+		return data ? fn( data ) : fn;
 	  };
+
+	function getFadeColor(percent, primColor, secColor) {
+		var pseudoEl = document.createElement('div'),
+			rgbPrim,
+			rgbSec;
+		pseudoEl.style.color = primColor;
+		document.body.appendChild(pseudoEl);
+		rgbPrim = window.getComputedStyle(pseudoEl).color;
+		pseudoEl.style.color = secColor;
+		rgbSec = window.getComputedStyle(pseudoEl).color;
+		var regex = /rgb *\( *([0-9]{1,3}) *, *([0-9]{1,3}) *, *([0-9]{1,3}) *\)/,
+			valuesP = regex.exec(rgbPrim),
+			valuesS = regex.exec(rgbSec),
+			rP = Math.round(parseFloat(valuesP[1])),
+			gP = Math.round(parseFloat(valuesP[2])),
+			bP = Math.round(parseFloat(valuesP[3])),
+			rS = Math.round(parseFloat(valuesS[1])),
+			gS = Math.round(parseFloat(valuesS[2])),
+			bS = Math.round(parseFloat(valuesS[3])),
+			rCur = parseInt((rP-rS)*percent+rS),
+			gCur = parseInt((gP-gS)*percent+gS),
+			bCur = parseInt((bP-bS)*percent+bS);
+		pseudoEl.parentNode.removeChild(pseudoEl);
+		return "rgb("+rCur+','+gCur+','+bCur+')';
+	}
 }
-
-
