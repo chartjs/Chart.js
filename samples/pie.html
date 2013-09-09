@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 	<head>
-		<title>Radar Chart</title>
+		<title>Pie Chart</title>
 		<script src="../Chart.js"></script>
 		<meta name = "viewport" content = "initial-scale = 1, user-scalable = no">
 		<style>
@@ -14,24 +14,42 @@
 
 
 	<script>
-
 		var pieData = [
 				{
-					value: 30,
-					color:"#F38630"
+					value : 30,
+					color : "#F38630",
+					label : 'Sleep',
+					labelColor : 'white',
+					labelFontSize : '10',
+					labelAlign : 'left'
 				},
 				{
 					value : 50,
-					color : "#E0E4CC"
+					color : "#E0E4CC",
+					label : 'Music',
+					labelColor : '#444',
+					labelFontSize : '1.4em',
+					labelAlign: 'center'
 				},
 				{
 					value : 100,
-					color : "#69D2E7"
+					color : "#69D2E7",
+					label : 'Work',
+					labelColor : 'rgb(0,0,0)',
+					labelFontSize : '175%'
 				}
-			
 			];
+		var options = {
+			tooltips: {
+				fontSize: '75.4%'
+			}
+		};
 
-	var myPie = new Chart(document.getElementById("canvas").getContext("2d")).Pie(pieData);
+	var myChart = new Chart(document.getElementById("canvas").getContext("2d"), options);
+	var myPie = myChart.Pie(pieData, {
+		animationSteps: 100,
+		animationEasing: 'easeOutBounce'
+	});
 	
 	</script>
 	</body>
