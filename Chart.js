@@ -11,7 +11,7 @@
 window.Chart = function(context){
 
 	var chart = this;
-	
+	var int_language = "en-EN";
 	
 	//Easing functions adapted from Robert Penner's easing equations
 	//http://www.robertpenner.com/easing/
@@ -1423,21 +1423,7 @@ window.Chart = function(context){
 	  };
 	  
 	  function thousand_separator(input) {
-				var number = input.split('.');
-				num = number[0];
-				num = num.split("").reverse().join("");
-				var numpoint = '';
-				for (var i = 0; i < num.length; i++) {
-					numpoint += num.substr(i,1);	
-					if (((i+1)%3 == 0) && i != num.length-1)  {
-						numpoint += ',';
-					}						
-				}
-				num = numpoint.split("").reverse().join("");
-				if (number[1] != undefined) {
-					num = num+'.'+number[1];
-				}
-			return num;
+			return parseFloat(input).toLocaleString(int_language);
 	}
 }
 
