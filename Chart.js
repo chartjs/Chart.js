@@ -325,6 +325,14 @@ window.Chart = function(context){
 			scaleOverlay : false,
 			scaleLineColor : "rgba(0,0,0,.1)",
 			scaleLineWidth : 1,
+			Y1_scaleOverride: false,
+			Y2_scaleOverride: false,
+			Y1_scaleSteps: null,
+			Y2_scaleSteps: null,
+			Y1_scaleStepWidth : null,
+			Y2_scaleStepWidth : null,
+			Y1_scaleStartValue : null,
+			Y2_scaleStartValue : null,
 			scaleShowLabels : true,
 			scaleLabel : "<%=value%>",
 			scaleFontFamily : "'Arial'",
@@ -410,7 +418,7 @@ window.Chart = function(context){
 				graphMin : config.scaleStartValue,
 				labels : []
 			}
-			populateLabels(config,labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
+			populateLabels(config,labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStepWidth,config.scaleStartValue);
 		}
 		
 		scaleHop = maxSize/(calculatedScale.steps);
@@ -546,7 +554,7 @@ window.Chart = function(context){
 				graphMin : config.scaleStartValue,
 				labels : []
 			}
-			populateLabels(config,labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
+			populateLabels(config,labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStepWidth,config.scaleStartValue);
 		}
 		
 		scaleHop = maxSize/(calculatedScale.steps);
@@ -853,7 +861,7 @@ window.Chart = function(context){
 				graphMin : config.scaleStartValue,
 				labels : []
 			}
-			populateLabels(config,labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
+			populateLabels(config,labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStepWidth,config.scaleStartValue);
 		}
 		
 		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
@@ -1077,9 +1085,43 @@ window.Chart = function(context){
 		
 		//Check and set the scale
 		labelTemplateString = (config.scaleShowLabels)? config.scaleLabel : "";
-		calculatedScale_Y1 = calculateScale(config,scaleHeight,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue_Y1,valueBounds.minValue_Y1,labelTemplateString);
-		calculatedScale_Y2 = calculateScale(config,scaleHeight,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue_Y2,valueBounds.minValue_Y2,labelTemplateString);
-		calculatedScale = calculatedScale_Y1; // if it is only important for x-Axis
+	
+		
+		if (!config.Y1_scaleOverride) {	
+				calculatedScale_Y1 = calculateScale(config,scaleHeight,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue_Y1,valueBounds.minValue_Y1,labelTemplateString);
+		}
+		else {
+			if (config.Y1_scaleSteps == null) {
+				config.Y1_scaleSteps = Math.ceil((valueBounds.maxValue_Y1-config.Y1_scaleStartValue)/config.Y1_scaleStepWidth);
+			}
+			calculatedScale_Y1 = {
+				steps : config.Y1_scaleSteps,
+				stepValue : config.Y1_scaleStepWidth,
+				graphMin : config.Y1_scaleStartValue,
+				labels : []
+			}
+			populateLabels(config,labelTemplateString, calculatedScale_Y1.labels,calculatedScale_Y1.steps,config.Y1_scaleStepWidth,config.Y1_scaleStartValue);
+		}
+		
+		if (!config.Y2_scaleOverride) {	
+				calculatedScale_Y2 = calculateScale(config,scaleHeight,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue_Y2,valueBounds.minValue_Y2,labelTemplateString);
+		}
+		else {
+			if (config.Y2_scaleSteps == null) {
+				config.Y2_scaleSteps = Math.ceil((valueBounds.maxValue_Y2-config.Y2_scaleStartValue)/config.Y2_scaleStepWidth);
+			}
+			calculatedScale_Y2 = {
+				steps : config.Y2_scaleSteps,
+				stepValue : config.Y2_scaleStepWidth,
+				graphMin : config.Y2_scaleStartValue,
+				labels : []
+			}
+			populateLabels(config,labelTemplateString, calculatedScale_Y2.labels,calculatedScale_Y2.steps,config.Y2_scaleStepWidth,config.Y2_scaleStartValue);
+		}
+		
+		
+		
+		calculatedScale = calculatedScale_Y1; // it is only important for x-Axis
 		
 		
 		scaleHop_Y1 = Math.floor(scaleHeight/calculatedScale_Y1.steps);
@@ -1369,7 +1411,7 @@ window.Chart = function(context){
 				graphMin : config.scaleStartValue,
 				labels : []
 			}
-			populateLabels(config,labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
+			populateLabels(config,labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStepWidth,config.scaleStartValue);
 		}
 		
 		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
@@ -1656,7 +1698,7 @@ window.Chart = function(context){
 
 		var labels = [];
 		
-		populateLabels(config,labelTemplateString, labels, numberOfSteps, graphMin, graphMax, stepValue);
+		populateLabels(config,labelTemplateString, labels, numberOfSteps, stepValue, graphMin, graphMax);
 
 		return {
 			steps : numberOfSteps,
@@ -1674,7 +1716,10 @@ window.Chart = function(context){
 	}
 	
 	//Populate an array of all the labels by interpolating the string.
-	function populateLabels(config,labelTemplateString, labels, numberOfSteps, graphMin, graphMax, stepValue) {
+	function populateLabels(config,labelTemplateString, labels, numberOfSteps, stepValue, graphMin, graphMax) {
+		if(graphMax==null) {
+			graphMax = graphMin+numberOfSteps*stepValue;
+		}
 		if (labelTemplateString) {
 			//Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
 			if (!config.logarithmic) {

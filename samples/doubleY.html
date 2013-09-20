@@ -37,7 +37,7 @@
 			]	
 		}
 
-	var myLine = new Chart(document.getElementById("canvas").getContext("2d")).LineDoubleY(lineChartData);
+	var myLine = new Chart(document.getElementById("canvas").getContext("2d")).LineDoubleY(lineChartData,{Y1_scaleOverride:true,Y2_scaleOverride:true,Y1_scaleStepWidth:100,Y1_scaleStartValue:0,Y2_scaleStepWidth:40,Y2_scaleStartValue:0});
 	
 	</script>
 	</body>
