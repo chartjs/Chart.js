@@ -235,7 +235,8 @@ window.Chart = function(context){
 			animation : true,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			pointLabelSeperator: "\n"
 		};
 		
 		var config = (options)? mergeChartConfig(chart.Radar.defaults,options) : chart.Radar.defaults;
@@ -623,6 +624,8 @@ window.Chart = function(context){
 				}
 
 			}
+			
+			var label = null;
 			for (var k=0; k<data.labels.length; k++){				
 			ctx.font = config.pointLabelFontStyle + " " + config.pointLabelFontSize+"px " + config.pointLabelFontFamily;
 			ctx.fillStyle = config.pointLabelFontColor;
@@ -641,7 +644,11 @@ window.Chart = function(context){
 				
 				ctx.textBaseline = "middle";
 				
-				ctx.fillText(data.labels[k],opposite,-adjacent);
+				//split label into new lines
+				label = data.labels[k].split(config.pointLabelSeperator);
+				for(var l = 0; l < label.length; l++) {
+					ctx.fillText(label[l],opposite,-adjacent + (l*10));
+				}
 				
 			}
 			ctx.restore();
@@ -652,10 +659,17 @@ window.Chart = function(context){
 			labelHeight = config.scaleFontSize*2;
 			
 			var labelLength = 0;
+			var label = null;
+			var textMeasurement = null;
 			for (var i=0; i<data.labels.length; i++){
 				ctx.font = config.pointLabelFontStyle + " " + config.pointLabelFontSize+"px " + config.pointLabelFontFamily;
-				var textMeasurement = ctx.measureText(data.labels[i]).width;
-				if(textMeasurement>labelLength) labelLength = textMeasurement;
+				
+				//split labels into new lines
+				label = data.labels[i].split(config.pointLabelSeperator);
+				for(var l = 0; l < label.length; l++) {
+					textMeasurement = ctx.measureText(label[l]).width;
+					if(textMeasurement>labelLength) labelLength = textMeasurement;
+				}
 			}
 			
 			//Figure out whats the largest - the height of the text or the width of what's there, and minus it from the maximum usable size.
