@@ -1228,6 +1228,9 @@ window.Chart = function(context){
 	}
 	
 	function animationLoop(config,drawScale,drawData,ctx){
+		// If no animation is required, then just draw now to avoid lag
+		if(!config.animation) return animLoop();
+
 		var animFrameAmount = (config.animation)? 1/CapValue(config.animationSteps,Number.MAX_VALUE,1) : 1,
 			easingFunction = animationOptions[config.animationEasing],
 			percentAnimComplete =(config.animation)? 0 : 1;
