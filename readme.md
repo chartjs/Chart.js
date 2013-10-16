@@ -33,6 +33,14 @@ I know PR and issues are racking up in the repo, and I'll do my best to sort the
 
 Big thanks for all the support - it's been totally overwhelming.
 
+###Another Quick Update - 16th October
+First of all - my apologies, early October has drifted away from me and we're moving towards late October. This last month has been really unexpectedly busy, and I've had a lot of stuff going on, so I haven't quite managed to find as much time to work on Chart.js as I'd hoped.
+
+In terms of an updated ETA, I'm really aiming for a pre-November release, and I'll be having some late nights and a few days off to try my best to make this happen.
+
+Again, really appreciate the support and cheers for your patience for the new version.
+
+
 Documentation
 -------
 You can find documentation at [chartjs.org/docs](http://www.chartjs.org/docs).
