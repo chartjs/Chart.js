@@ -343,11 +343,17 @@ window.Chart = function(context){
 			animation : true,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			align:'v'
 		};		
 		var config = (options) ? mergeChartConfig(chart.Bar.defaults,options) : chart.Bar.defaults;
+		var alignment = config.align;
+		if(alignment == "h"){
+			return new HorizontalBar(data,config,context);
+		} else {
+			return new Bar(data,config,context);			
+		}
 		
-		return new Bar(data,config,context);		
 	}
 	
 	var clear = function(c){
@@ -1017,10 +1023,160 @@ window.Chart = function(context){
 
 		
 	}
+
+	var HorizontalBar = function(data,config,ctx){
+		var maxSize, labelSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop,widestXLabel, yAxisLength,yAxisPosX,xAxisPosY,barWidth, rotateLabels = 0;
+		calculateDrawingSizes();
+		valueBounds = getValueBounds();
+		labelTemplateString = (config.scaleShowLabels)? config.scaleLabel : "";
+		calculatedScale = calculateScale(scaleHeight,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
+		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
+		calculateYAxisSize();
+		animationLoop(config,drawScale,drawBars,ctx);	
+
+		function drawScale(){
+			//X axis line
+			ctx.lineWidth = config.scaleLineWidth;
+			ctx.strokeStyle = config.scaleLineColor;
+			ctx.beginPath();
+			ctx.moveTo(yAxisPosX,xAxisPosY);
+			ctx.lineTo(width, xAxisPosY);
+			ctx.stroke();
+			ctx.textAlign = "center";
+			ctx.fillStyle = config.scaleFontColor;
+			for (var j=0; j<data.labels.length; j++){
+				ctx.beginPath();
+				ctx.moveTo(yAxisPosX ,xAxisPosY -((j+1) * valueHop));
+				if (config.scaleShowGridLines){
+					ctx.lineWidth = config.scaleGridLineWidth;
+					ctx.strokeStyle = config.scaleGridLineColor;
+					ctx.lineTo(width,xAxisPosY - ((j+1) * valueHop));					
+				}
+				else{
+					ctx.lineTo(yAxisPosX-2,xAxisPosY - ((j+1) * valueHop));
+				}
+				
+				ctx.stroke();
+				ctx.fillText(data.labels[j],yAxisPosX - widestXLabel/2,xAxisPosY - ((j+1) * valueHop)+(data.datasets.length*barWidth)/2);
+			}			
+			
+			//Y axis
+			ctx.lineWidth = config.scaleLineWidth;
+			ctx.strokeStyle = config.scaleLineColor;
+			ctx.beginPath();
+			ctx.moveTo(yAxisPosX, xAxisPosY);
+			ctx.lineTo(yAxisPosX,height - yAxisLength - 20);
+			ctx.stroke();
+			
+			ctx.textAlign = "right";
+			ctx.textBaseline = "middle";
+			for (var i=0; i<calculatedScale.labels.length; i=i+4){
+				ctx.save();
+				if (config.scaleShowLabels){
+					ctx.fillText(calculatedScale.labels[i], yAxisPosX + i*scaleHop + scaleHop,xAxisPosY + config.scaleFontSize);					
+				}
+
+				ctx.beginPath();
+				ctx.moveTo(yAxisPosX + (i) * scaleHop, xAxisPosY);
+				
+				//Check i isnt 0, so we dont go over the Y axis twice.
+					ctx.lineWidth = config.scaleGridLineWidth;
+					ctx.strokeStyle = config.scaleGridLineColor;					
+					ctx.lineTo(yAxisPosX + (i) * scaleHop, height - yAxisLength -20);
+				ctx.stroke();
+			}
+			
+			
+		}
+		function drawBars(animPc){
+			ctx.lineWidth = config.barStrokeWidth;
+			for (var i=0; i<data.datasets.length; i++){
+					ctx.fillStyle = data.datasets[i].fillColor;
+					ctx.strokeStyle = data.datasets[i].strokeColor;
+				for (var j=0; j<data.datasets[i].data.length; j++){
+					var barOffset = xAxisPosY -20 - (config.barValueSpacing + valueHop*j + barWidth*i + config.barDatasetSpacing*i + config.barStrokeWidth*i);
+					
+					ctx.beginPath();
+					ctx.moveTo(yAxisPosX, barOffset);
+					ctx.lineTo(yAxisPosX + animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2), barOffset);
+					ctx.lineTo(yAxisPosX + animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2),barOffset + barWidth);
+					ctx.lineTo(yAxisPosX,barOffset + barWidth);
+					if(config.barShowStroke){
+						ctx.stroke();
+					}
+					ctx.closePath();
+					ctx.fill();
+				}
+			}
+			
+		}
+
+		function calculateYAxisSize(){
+			var longestText = 1;
+			//if we are showing the labels
+			if (config.scaleShowLabels){
+				longestText = labelHeight;
+				//Add a little extra padding from the y axis
+				longestText +=10;
+			}
+			yAxisLength = height - 30;
+			valueHop = Math.floor(yAxisLength/(data.labels.length));	
+			
+			barWidth = (valueHop - config.scaleGridLineWidth*2 - (config.barValueSpacing*2) - (config.barDatasetSpacing*data.datasets.length) - ((config.barStrokeWidth/2)*data.datasets.length))/data.datasets.length;
+			
+			xAxisPosY = height - config.scaleFontSize - 10 ;
+			yAxisPosX = width - maxSize ;				
+		}			
+
+		function getValueBounds() {
+			var upperValue = Number.MIN_VALUE;
+			var lowerValue = Number.MAX_VALUE;
+			for (var i=0; i<data.datasets.length; i++){
+				for (var j=0; j<data.datasets[i].data.length; j++){
+					if ( data.datasets[i].data[j] > upperValue) { upperValue = data.datasets[i].data[j] };
+					if ( data.datasets[i].data[j] < lowerValue) { lowerValue = data.datasets[i].data[j] };
+				}
+			};
+	
+			var maxSteps = Math.floor((scaleHeight / (config.scaleFontSize*0.66)));
+			var minSteps = Math.floor((scaleHeight / config.scaleFontSize*0.5));
+			
+			return {
+				maxValue : upperValue,
+				minValue : lowerValue,
+				maxSteps : maxSteps,
+				minSteps : minSteps
+			};
+
+		}
+
+		function calculateDrawingSizes(){
+			labelSize = 40;
+			yMargin = labelSize + 10
+			
+
+			//Need to check the X axis first - measure the length of each text metric, and figure out if we need to rotate by 45 degrees.
+			ctx.font = config.scaleFontStyle + " " + config.scaleFontSize+"px " + config.scaleFontFamily;
+			widestXLabel = 1;config.scaleFontSize
+			for (var i=0; i<data.labels.length; i++){
+				var textLength = ctx.measureText(data.labels[i]).width;
+				//If the text length is longer - make that equal to longest text!
+				widestXLabel = (textLength > widestXLabel)? textLength : widestXLabel;
+			}
+
+			//How many horizontal lines will the label take
+			labelHeight = (widestXLabel/labelSize) * config.scaleFontSize;
+			
+			//Add a little padding between the x line and the text
+			maxSize = width - (widestXLabel);
+			maxSize -= 5;
+			scaleHeight = maxSize;
+			//Then get the area above we can safely draw on.
+		}
+	}
 	
 	var Bar = function(data,config,ctx){
-		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop,widestXLabel, xAxisLength,yAxisPosX,xAxisPosY,barWidth, rotateLabels = 0;
-			
+		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop,widestXLabel, xAxisLength,yAxisPosX,xAxisPosY,barWidth, rotateLabels = 0;		
 		calculateDrawingSizes();
 		
 		valueBounds = getValueBounds();
