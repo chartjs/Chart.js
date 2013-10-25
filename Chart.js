@@ -1207,8 +1207,11 @@ window.Chart = function(context){
 			var lowerValue = Number.MAX_VALUE;
 			for (var i=0; i<data.datasets.length; i++){
 				for (var j=0; j<data.datasets[i].data.length; j++){
-					if ( data.datasets[i].data[j] > upperValue) { upperValue = data.datasets[i].data[j] };
-					if ( data.datasets[i].data[j] < lowerValue) { lowerValue = data.datasets[i].data[j] };
+                    var barData = data.datasets[i].data[j];
+                    var barValue = typeof barData.value !== 'undefined' ? barData.value : barData;
+
+					if ( barValue > upperValue) { upperValue = barValue };
+					if ( barValue < lowerValue) { lowerValue = barValue };					
 				}
 			};
 	
