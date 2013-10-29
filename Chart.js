@@ -1,3 +1,5 @@
+"use strict";
+
 /* This is a fork of Chart.js
  * http://chartjs.org/
  *
@@ -101,7 +103,6 @@ window.ChartCalculator = function(context) {
 window.Chart = function(context){
 
 	var chart = this;
-	
 	
 	//Easing functions adapted from Robert Penner's easing equations
 	//http://www.robertpenner.com/easing/
@@ -1050,10 +1051,10 @@ window.Chart = function(context){
 
 				for (var j=1; j<data.datasets[i].data.length; j++){
 					if (config.bezierCurve){
-						ctx.bezierCurveTo(xPos(j-0.5),yPos(i,j-1),xPos(j-0.5),yPos(i,j),xPos(j),yPos(i,j));
+                        ctx.bezierCurveTo(getXPos(j-0.5),getYPos(i,j-1),getXPos(j-0.5),getYPos(i,j),getXPos(j),getYPos(i,j));
 					}
 					else{
-						ctx.lineTo(xPos(j),yPos(i,j));
+                        ctx.lineTo(getXPos(j),getYPos(i,j));
 					}
 				}
 				ctx.stroke();
@@ -1106,10 +1107,10 @@ window.Chart = function(context){
 				}			
 			}
 			
-			function yPos(dataSet,iteration){
+            function getYPos(dataSet,iteration){
 				return xAxisPosY - animPc*(calculateOffset(data.datasets[dataSet].data[iteration],calculatedScale,scaleHop));			
 			}
-			function xPos(iteration){
+            function getXPos(iteration){
 				return yAxisPosX + (valueHop * iteration);
 			}
 		}
