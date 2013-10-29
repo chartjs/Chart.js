@@ -1458,7 +1458,7 @@ window.Chart = function(context){
 						ctx.stroke();
 						ctx.beginPath();
 						var cap = (config.errorCapWidth * barWidth) || 1;
-						capOffset = (barWidth - cap)/2;
+						var capOffset = (barWidth - cap)/2;
 						ctx.moveTo(barOffset + capOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j] + data.datasets[i].error[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
 						ctx.lineTo(barOffset + barWidth - capOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j] + data.datasets[i].error[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
 						ctx.stroke();

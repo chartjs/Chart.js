@@ -9,7 +9,7 @@ the data point is calculated from the average (or median) of the data in
 the array and the error bars are calculated as range or Standard 
 Deviaiton.
 
-Documentation of the new features is available at http://www.brittle-star.com/portfolio/readme/?readme=chart.js.
+[Documentation of the new features is available here.](http://www.brittle-star.com/portfolio/readme/)
 
 Chart.js
 =======
