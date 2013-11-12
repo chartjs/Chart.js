@@ -32,8 +32,9 @@
 			
 		}
 
-	var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Bar(barChartData);
 	
+	var options={showLabelsOnBars:true,barLabelFontColor:"gray"}
+	var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Bar(barChartData,options);
 	</script>
 	</body>
 </html>

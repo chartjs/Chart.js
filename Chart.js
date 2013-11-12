@@ -343,8 +343,12 @@ window.Chart = function(context){
 			animation : true,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
-			onAnimationComplete : null
-		};		
+			onAnimationComplete : null,
+			showLabelsOnBars : false,
+			barLabelFontSize:10,
+			barLabelFontColor:"#6D6D6D"
+		};	
+
 		var config = (options) ? mergeChartConfig(chart.Bar.defaults,options) : chart.Bar.defaults;
 		
 		return new Bar(data,config,context);		
@@ -1054,17 +1058,31 @@ window.Chart = function(context){
 					
 					ctx.beginPath();
 					ctx.moveTo(barOffset, xAxisPosY);
-					ctx.lineTo(barOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					var currentBarTop=xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2);
+					
+					ctx.lineTo(barOffset, currentBarTop);
 					ctx.lineTo(barOffset + barWidth, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
 					ctx.lineTo(barOffset + barWidth, xAxisPosY);
 					if(config.barShowStroke){
 						ctx.stroke();
 					}
 					ctx.closePath();
-					ctx.fill();
+					ctx.fill();					
+					if(config.showLabelsOnBars){
+						drawBarText(ctx,currentBarTop,barOffset+(barWidth/2) ,config.barLabelFontSize,data.datasets[i].data[j],config.barLabelFontColor);
+					}
 				}
 			}
 			
+		}
+		function drawBarText(ctx,top,left,fontSize,text,textColor) {
+		    var existingFill=ctx.fillStyle;
+			top=top+fontSize-(fontSize+fontSize*6/10);			
+		    ctx.fillStyle = textColor;		   
+		    ctx.textAlign = "center";		  
+		    ctx.font = fontSize+"pt";
+		    ctx.fillText(text, left,top );
+		    ctx.fillStyle=existingFill;
 		}
 		function drawScale(){
 			//X axis line
