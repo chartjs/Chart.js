@@ -10,7 +10,7 @@ This is a fork of the original chart.js repo by nnnick. Special Thanks to him fo
 ###Changes added
 **1) Added support for bar labels** : Now you can show the data value just above the bars in bar chart. By default this option is disabled and you can updated the plugin options to bring it up to the chart.
 
-####Sample code bring bar labels.
+####Sample code to bring bar labels.
 
 ```
 var options={showLabelsOnBars:true,barLabelFontColor:"gray"}
