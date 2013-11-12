@@ -1208,7 +1208,10 @@ window.Chart = function(context){
 			
 			maxSize -= labelHeight;
 			//Set 5 pixels greater than the font size to allow for a little padding from the X axis.
-			
+			//If we are showing the bar labels, remove it's height also
+			if(config.showLabelsOnBars)
+				maxSize-=config.barLabelFontSize;
+
 			scaleHeight = maxSize;
 			
 			//Then get the area above we can safely draw on.
