@@ -294,8 +294,6 @@ window.Chart = function(context){
 			scaleLineWidth : 1,
 			scaleShowLabels : true,
 			scaleLabel : "<%=value%>",
-			dataLabel : false,
-			dataLabelColor : "#666",
 			scaleFontFamily : "'Arial'",
 			scaleFontSize : 12,
 			scaleFontStyle : "normal",
@@ -849,7 +847,7 @@ window.Chart = function(context){
 						ctx.arc(yAxisPosX + (valueHop *k),xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[k],calculatedScale,scaleHop)),config.pointDotRadius,0,Math.PI*2,true);
 						ctx.fill();
 						ctx.stroke();
-						if(data.datasets[i].dataLabel){
+						if(config.dataLabel){
 							if(data.datasets[i].data[k] != 0){ // Dont show the labels if the data is 0
 								fillstyleBackup = "#000000"; // Default color. Used if no other colors are given
 								if(typeof data.datasets[i].pointColor == "undefined"){
@@ -860,7 +858,7 @@ window.Chart = function(context){
 								else{
 									fillstyleBackup = data.datasets[i].pointColor;
 								}
-								ctx.fillStyle = data.datasets[i].dataLabelColor;
+								ctx.fillStyle = config.dataLabelColor;
 								ctx.textAlign = "center"; 
 								ctx.fillText(data.datasets[i].data[k],yAxisPosX + (valueHop *k),xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[k],calculatedScale,scaleHop)) - (config.pointDotRadius + config.pointDotRadius + config.pointDotRadius));
 								ctx.fillStyle = fillstyleBackup; // Reverting the fillstyle back
