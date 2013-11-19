@@ -847,6 +847,23 @@ window.Chart = function(context){
 						ctx.arc(yAxisPosX + (valueHop *k),xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[k],calculatedScale,scaleHop)),config.pointDotRadius,0,Math.PI*2,true);
 						ctx.fill();
 						ctx.stroke();
+						if(config.dataLabel){
+							if(data.datasets[i].data[k] != 0){ // Dont show the labels if the data is 0
+								fillstyleBackup = "#000000"; // Default color. Used if no other colors are given
+								if(typeof data.datasets[i].pointColor == "undefined"){
+									if(typeof data.datasets[i].fillColor != "undefined"){
+										fillstyleBackup = data.datasets[i].fillColor;
+									}
+								}
+								else{
+									fillstyleBackup = data.datasets[i].pointColor;
+								}
+								ctx.fillStyle = config.dataLabelColor;
+								ctx.textAlign = "center"; 
+								ctx.fillText(data.datasets[i].data[k],yAxisPosX + (valueHop *k),xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[k],calculatedScale,scaleHop)) - (config.pointDotRadius + config.pointDotRadius + config.pointDotRadius));
+								ctx.fillStyle = fillstyleBackup; // Reverting the fillstyle back
+							}
+						}
 					}
 				}
 			}
