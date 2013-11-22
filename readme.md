@@ -2,6 +2,23 @@ Chart.js
 =======
 *Simple HTML5 Charts using the canvas element* [chartjs.org](http://www.chartjs.org)
 
+Fork Info
+-------
+
+This is a fork of the original chart.js repo by nnnick. Special Thanks to him for creating this wonderful library.
+
+###Changes added
+**1) Added support for bar labels** : Now you can show the data value just above the bars in bar chart. By default this option is disabled and you can updated the plugin options to bring it up to the chart.
+
+####Sample code to bring bar labels.
+
+```
+var options={showLabelsOnBars:true,barLabelFontColor:"gray"}
+var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Bar(barChartData,options);
+```
+
+The below part of readme is from the original repo. Cheers :)
+
 Quick FYI
 -------
 I'm currently working on a big refactor of the library into a more object oriented structure. 

@@ -343,8 +343,12 @@ window.Chart = function(context){
 			animation : true,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
-			onAnimationComplete : null
-		};		
+			onAnimationComplete : null,
+			showLabelsOnBars : false,
+			barLabelFontSize:10,
+			barLabelFontColor:"#6D6D6D"
+		};	
+
 		var config = (options) ? mergeChartConfig(chart.Bar.defaults,options) : chart.Bar.defaults;
 		
 		return new Bar(data,config,context);		
@@ -1028,7 +1032,7 @@ window.Chart = function(context){
 		labelTemplateString = (config.scaleShowLabels)? config.scaleLabel : "";
 		if (!config.scaleOverride){
 			
-			calculatedScale = calculateScale(scaleHeight,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
+			calculatedScale = calculateScale(scaleHeight,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString,config);
 		}
 		else {
 			calculatedScale = {
@@ -1041,7 +1045,8 @@ window.Chart = function(context){
 		}
 		
 		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
-		calculateXAxisSize();
+		calculateXAxisSize();		
+
 		animationLoop(config,drawScale,drawBars,ctx);		
 		
 		function drawBars(animPc){
@@ -1054,17 +1059,31 @@ window.Chart = function(context){
 					
 					ctx.beginPath();
 					ctx.moveTo(barOffset, xAxisPosY);
-					ctx.lineTo(barOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					var currentBarTop=xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2);
+					
+					ctx.lineTo(barOffset, currentBarTop);
 					ctx.lineTo(barOffset + barWidth, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
 					ctx.lineTo(barOffset + barWidth, xAxisPosY);
 					if(config.barShowStroke){
 						ctx.stroke();
 					}
 					ctx.closePath();
-					ctx.fill();
+					ctx.fill();					
+					if(config.showLabelsOnBars){
+						drawBarText(ctx,currentBarTop,barOffset+(barWidth/2) ,config.barLabelFontSize,data.datasets[i].data[j],config.barLabelFontColor);
+					}
 				}
 			}
 			
+		}
+		function drawBarText(ctx,top,left,fontSize,text,textColor) {
+		    var existingFill=ctx.fillStyle;
+			top=top+fontSize-(fontSize+fontSize*6/10);			
+		    ctx.fillStyle = textColor;		   
+		    ctx.textAlign = "center";		  
+		    ctx.font = fontSize+"pt";
+		    ctx.fillText(text, left,top );
+		    ctx.fillStyle=existingFill;
 		}
 		function drawScale(){
 			//X axis line
@@ -1117,6 +1136,7 @@ window.Chart = function(context){
 			
 			ctx.textAlign = "right";
 			ctx.textBaseline = "middle";
+			
 			for (var j=0; j<calculatedScale.steps; j++){
 				ctx.beginPath();
 				ctx.moveTo(yAxisPosX-3,xAxisPosY - ((j+1) * scaleHop));
@@ -1158,8 +1178,7 @@ window.Chart = function(context){
 			xAxisPosY = scaleHeight + config.scaleFontSize/2;				
 		}		
 		function calculateDrawingSizes(){
-			maxSize = height;
-
+			maxSize = height;           
 			//Need to check the X axis first - measure the length of each text metric, and figure out if we need to rotate by 45 degrees.
 			ctx.font = config.scaleFontStyle + " " + config.scaleFontSize+"px " + config.scaleFontFamily;
 			widestXLabel = 1;
@@ -1180,17 +1199,18 @@ window.Chart = function(context){
 			}
 			else{
 				maxSize -= config.scaleFontSize;
-			}
-			
+			}			
 			//Add a little padding between the x line and the text
-			maxSize -= 5;
+			maxSize -= 5;			
 			
-			
-			labelHeight = config.scaleFontSize;
-			
+			labelHeight = config.scaleFontSize;			
 			maxSize -= labelHeight;
 			//Set 5 pixels greater than the font size to allow for a little padding from the X axis.
-			
+			//If we are showing the bar labels, remove it's height+5px also
+				
+			if(config.showLabelsOnBars)
+				maxSize=maxSize-config.barLabelFontSize;			
+		
 			scaleHeight = maxSize;
 			
 			//Then get the area above we can safely draw on.
@@ -1280,7 +1300,7 @@ window.Chart = function(context){
 			};
 	})();
 
-	function calculateScale(drawingHeight,maxSteps,minSteps,maxValue,minValue,labelTemplateString){
+	function calculateScale(drawingHeight,maxSteps,minSteps,maxValue,minValue,labelTemplateString,config){
 			var graphMin,graphMax,graphRange,stepValue,numberOfSteps,valueRange,rangeOrderOfMagnitude,decimalNum;
 			
 			valueRange = maxValue - minValue;
@@ -1307,7 +1327,12 @@ window.Chart = function(context){
 			        stepValue *=2;
 			        numberOfSteps = Math.round(graphRange/stepValue);
 		        }
-	        };
+	        };	       
+
+	        //If we need to show the bar labels, Let's add an extra Step so that the label will be fitting there.
+	        
+	        if(config.showLabelsOnBars)
+	        	numberOfSteps+=1;
 
 	        var labels = [];
 	        populateLabels(labelTemplateString, labels, numberOfSteps, graphMin, stepValue);
