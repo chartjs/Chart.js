@@ -1032,7 +1032,7 @@ window.Chart = function(context){
 		labelTemplateString = (config.scaleShowLabels)? config.scaleLabel : "";
 		if (!config.scaleOverride){
 			
-			calculatedScale = calculateScale(scaleHeight,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
+			calculatedScale = calculateScale(scaleHeight,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString,config);
 		}
 		else {
 			calculatedScale = {
@@ -1045,7 +1045,8 @@ window.Chart = function(context){
 		}
 		
 		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
-		calculateXAxisSize();
+		calculateXAxisSize();		
+
 		animationLoop(config,drawScale,drawBars,ctx);		
 		
 		function drawBars(animPc){
@@ -1135,6 +1136,7 @@ window.Chart = function(context){
 			
 			ctx.textAlign = "right";
 			ctx.textBaseline = "middle";
+			
 			for (var j=0; j<calculatedScale.steps; j++){
 				ctx.beginPath();
 				ctx.moveTo(yAxisPosX-3,xAxisPosY - ((j+1) * scaleHop));
@@ -1205,9 +1207,10 @@ window.Chart = function(context){
 			maxSize -= labelHeight;
 			//Set 5 pixels greater than the font size to allow for a little padding from the X axis.
 			//If we are showing the bar labels, remove it's height+5px also
+				
 			if(config.showLabelsOnBars)
-				maxSize-=(config.barLabelFontSize+5);
-			
+				maxSize=maxSize-config.barLabelFontSize;			
+		
 			scaleHeight = maxSize;
 			
 			//Then get the area above we can safely draw on.
@@ -1297,7 +1300,7 @@ window.Chart = function(context){
 			};
 	})();
 
-	function calculateScale(drawingHeight,maxSteps,minSteps,maxValue,minValue,labelTemplateString){
+	function calculateScale(drawingHeight,maxSteps,minSteps,maxValue,minValue,labelTemplateString,config){
 			var graphMin,graphMax,graphRange,stepValue,numberOfSteps,valueRange,rangeOrderOfMagnitude,decimalNum;
 			
 			valueRange = maxValue - minValue;
@@ -1324,7 +1327,12 @@ window.Chart = function(context){
 			        stepValue *=2;
 			        numberOfSteps = Math.round(graphRange/stepValue);
 		        }
-	        };
+	        };	       
+
+	        //If we need to show the bar labels, Let's add an extra Step so that the label will be fitting there.
+	        
+	        if(config.showLabelsOnBars)
+	        	numberOfSteps+=1;
 
 	        var labels = [];
 	        populateLabels(labelTemplateString, labels, numberOfSteps, graphMin, stepValue);
