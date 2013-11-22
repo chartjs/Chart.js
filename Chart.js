@@ -1176,8 +1176,7 @@ window.Chart = function(context){
 			xAxisPosY = scaleHeight + config.scaleFontSize/2;				
 		}		
 		function calculateDrawingSizes(){
-			maxSize = height;
-
+			maxSize = height;           
 			//Need to check the X axis first - measure the length of each text metric, and figure out if we need to rotate by 45 degrees.
 			ctx.font = config.scaleFontStyle + " " + config.scaleFontSize+"px " + config.scaleFontFamily;
 			widestXLabel = 1;
@@ -1198,20 +1197,17 @@ window.Chart = function(context){
 			}
 			else{
 				maxSize -= config.scaleFontSize;
-			}
-			
+			}			
 			//Add a little padding between the x line and the text
-			maxSize -= 5;
+			maxSize -= 5;			
 			
-			
-			labelHeight = config.scaleFontSize;
-			
+			labelHeight = config.scaleFontSize;			
 			maxSize -= labelHeight;
 			//Set 5 pixels greater than the font size to allow for a little padding from the X axis.
-			//If we are showing the bar labels, remove it's height also
+			//If we are showing the bar labels, remove it's height+5px also
 			if(config.showLabelsOnBars)
-				maxSize-=config.barLabelFontSize;
-
+				maxSize-=(config.barLabelFontSize+5);
+			
 			scaleHeight = maxSize;
 			
 			//Then get the area above we can safely draw on.
