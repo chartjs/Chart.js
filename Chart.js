@@ -929,7 +929,7 @@ window.Chart = function(context){
 				ctx.stroke();
 				
 				if (config.scaleShowLabels){
-					ctx.fillText(calculatedScale.labels[j],yAxisPosX-8,xAxisPosY - ((j+1) * scaleHop));
+					ctx.fillText(thousand_separator(calculatedScale.labels[j]),yAxisPosX-8,xAxisPosY - ((j+1) * scaleHop));
 				}
 			}
 			
@@ -1042,7 +1042,15 @@ window.Chart = function(context){
 		
 		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
 		calculateXAxisSize();
-		animationLoop(config,drawScale,drawBars,ctx);		
+		
+		var zeroY = 0;
+		if (valueBounds.minValue < 0) {
+			var zeroY = calculateOffset(0,calculatedScale,scaleHop);
+		}
+		
+		
+		animationLoop(config,drawScale,drawBars,ctx);	
+
 		
 		function drawBars(animPc){
 			ctx.lineWidth = config.barStrokeWidth;
@@ -1053,10 +1061,10 @@ window.Chart = function(context){
 					var barOffset = yAxisPosX + config.barValueSpacing + valueHop*j + barWidth*i + config.barDatasetSpacing*i + config.barStrokeWidth*i;
 					
 					ctx.beginPath();
-					ctx.moveTo(barOffset, xAxisPosY);
+					ctx.moveTo(barOffset, xAxisPosY-zeroY);
 					ctx.lineTo(barOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
 					ctx.lineTo(barOffset + barWidth, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
-					ctx.lineTo(barOffset + barWidth, xAxisPosY);
+					ctx.lineTo(barOffset + barWidth, xAxisPosY-zeroY);
 					if(config.barShowStroke){
 						ctx.stroke();
 					}
@@ -1075,6 +1083,7 @@ window.Chart = function(context){
 			ctx.lineTo(width-(widestXLabel/2)-xAxisLength-5,xAxisPosY);
 			ctx.stroke();
 			
+		
 			
 			if (rotateLabels > 0){
 				ctx.save();
@@ -1106,7 +1115,7 @@ window.Chart = function(context){
 					ctx.lineTo(yAxisPosX + (i+1) * valueHop, 5);
 				ctx.stroke();
 			}
-			
+						
 			//Y axis
 			ctx.lineWidth = config.scaleLineWidth;
 			ctx.strokeStyle = config.scaleLineColor;
@@ -1133,6 +1142,15 @@ window.Chart = function(context){
 				if (config.scaleShowLabels){
 					ctx.fillText(calculatedScale.labels[j],yAxisPosX-8,xAxisPosY - ((j+1) * scaleHop));
 				}
+			}
+			
+			if (zeroY != 0) {
+				ctx.strokeStyle = '#aaa';
+				ctx.lineWidth = 1;
+				ctx.beginPath();
+				ctx.moveTo(yAxisPosX, xAxisPosY-zeroY);
+				ctx.lineTo(yAxisPosX+xAxisLength, xAxisPosY-zeroY);
+				ctx.stroke();
 			}
 			
 			
@@ -1421,6 +1439,24 @@ window.Chart = function(context){
 	    // Provide some basic currying to the user
 	    return data ? fn( data ) : fn;
 	  };
+	  
+	  function thousand_separator(input) {
+				var number = input.split('.');
+				num = number[0];
+				num = num.split("").reverse().join("");
+				var numpoint = '';
+				for (var i = 0; i < num.length; i++) {
+					numpoint += num.substr(i,1);	
+					if (((i+1)%3 == 0) && i != num.length-1)  {
+						numpoint += ',';
+					}						
+				}
+				num = numpoint.split("").reverse().join("");
+				if (number[1] != undefined) {
+					num = num+'.'+number[1];
+				}
+			return num;
+	}
 }
 
 
