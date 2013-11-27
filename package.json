@@ -1,0 +1,17 @@
+{
+    "name": "Chart",
+    "version": "0.2.1",
+    "dependencies": {
+    },
+    "devDependencies": {
+        "grunt": "*",
+
+        "grunt-contrib-concat": "*",
+        "grunt-contrib-uglify": "*",
+        "grunt-contrib-connect": "*",
+        "grunt-contrib-watch": "*",
+        "grunt-contrib-copy": "*",
+        "grunt-contrib-clean": "*"
+
+    }
+}

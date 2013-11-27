@@ -2,6 +2,22 @@ Chart.js
 =======
 *Simple HTML5 Charts using the canvas element* [chartjs.org](http://www.chartjs.org)
 
+
+Update by Morlay
+-------
+
+add grunt for package，so need [Node.js](http://nodejs.org/) and 'npm install -g grunt' first
+
+`npm install` on project path fisrt
+
+and `grunt package` to get js files in build/js
+
+of course `grunt watch` can be used
+
+and `grunt` for server on 127.0.0.1:80 to see docs
+
+
+
 Quick FYI
 -------
 I'm currently working on a big refactor of the library into a more object oriented structure. 
