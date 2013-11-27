@@ -1,2 +1,59 @@
+# Linux
+# backup files
+*~
 
+# Windows
+# thumbnails
+Thumbs.db
+
+# Mac OS X
+# metadata
 .DS_Store
+# thumbnails
+
+
+._*
+
+# Visual Studio PHP
+*.sln
+*.phpproj
+*.puo
+*.suo
+*.cache
+
+# Netbeans
+nbproject/
+catalog.xml
+nbactions.xml
+
+# Eclipse
+.settings/
+.buildpath
+.classpath
+.project
+
+# SVN
+# svn folders
+.svn/
+
+# PHPStorm
+.idea/
+.nameencodings
+.xmlmisc
+.xmlmodules
+.xmlprojectCodeStyle
+.xmlvcs.xml
+*.imlworkspace
+.xml
+
+# Jekyll
+_site/
+
+
+# node and bower
+node_modules/
+bower_components/
+
+# develop files
+build/js
+dist/
