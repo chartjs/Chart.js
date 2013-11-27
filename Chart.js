@@ -290,14 +290,17 @@ window.Chart = function(context){
 			scaleSteps : null,
 			scaleStepWidth : null,
 			scaleStartValue : null,
+			scaleShowStartValue : false,
 			scaleLineColor : "rgba(0,0,0,.1)",
 			scaleLineWidth : 1,
 			scaleShowLabels : true,
 			scaleLabel : "<%=value%>",
+			scaleLabelPosition : 'left',
 			scaleFontFamily : "'Arial'",
 			scaleFontSize : 12,
 			scaleFontStyle : "normal",
 			scaleFontColor : "#666",
+			labelsFontColor : "#666",
 			scaleShowGridLines : true,
 			scaleGridLineColor : "rgba(0,0,0,.05)",
 			scaleGridLineWidth : 1,
@@ -313,9 +316,9 @@ window.Chart = function(context){
 			animationEasing : "easeOutQuart",
 			onAnimationComplete : null
 		};
-		var config = (options) ? mergeChartConfig(chart.Line.defaults,options) : chart.Line.defaults;
+		var config = (options) ? mergeChartConfig(chart.Line.defaults, options) : chart.Line.defaults;
 
-		return new Line(data,config,context);
+		return new Line(data, config, context);
 	}
 
 	this.Bar = function(data,options){
@@ -789,8 +792,8 @@ window.Chart = function(context){
 
 	}
 
-	var Line = function(data,config,ctx){
-		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop,widestXLabel, xAxisLength,yAxisPosX,xAxisPosY, rotateLabels = 0;
+	var Line = function(data, config, ctx){
+		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop,widestXLabel, widestYLabel, xAxisLength,yAxisPosX,xAxisPosY, rotateLabels = 0;
 
 		calculateDrawingSizes();
 
@@ -808,7 +811,7 @@ window.Chart = function(context){
 				graphMin : config.scaleStartValue,
 				labels : []
 			}
-			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
+			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth, config.scaleShowStartValue);
 		}
 
 		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
@@ -879,7 +882,7 @@ window.Chart = function(context){
 			else{
 				ctx.textAlign = "center";
 			}
-			ctx.fillStyle = config.scaleFontColor;
+			ctx.fillStyle = config.labelsFontColor;
 			for (var i=0; i<data.labels.length; i++){
 				ctx.save();
 				if (rotateLabels > 0){
@@ -897,7 +900,7 @@ window.Chart = function(context){
 				ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY+3);
 
 				//Check i isnt 0, so we dont go over the Y axis twice.
-				if(config.scaleShowGridLines && i>0){
+				if((config.scaleShowGridLines == 'vertical' || config.scaleShowGridLines === true) && i > 0){
 					ctx.lineWidth = config.scaleGridLineWidth;
 					ctx.strokeStyle = config.scaleGridLineColor;
 					ctx.lineTo(yAxisPosX + i * valueHop, 5);
@@ -911,29 +914,38 @@ window.Chart = function(context){
 			//Y axis
 			ctx.lineWidth = config.scaleLineWidth;
 			ctx.strokeStyle = config.scaleLineColor;
+			ctx.fillStyle = config.scaleFontColor;
 			ctx.beginPath();
 			ctx.moveTo(yAxisPosX,xAxisPosY+5);
 			ctx.lineTo(yAxisPosX,5);
 			ctx.stroke();
 
-			ctx.textAlign = "right";
+			ctx.textAlign = config.scaleLabelPosition == "right" ? 'left' : 'right';
 			ctx.textBaseline = "middle";
-			for (var j=0; j<calculatedScale.steps; j++){
+
+			var k = calculatedScale.steps;
+			if (config.scaleShowStartValue) {
+				++k;
+			}
+			for (var j = +!config.scaleShowStartValue; j < k; j++){
 				ctx.beginPath();
-				ctx.moveTo(yAxisPosX-3,xAxisPosY - ((j+1) * scaleHop));
-				if (config.scaleShowGridLines){
+				ctx.moveTo(yAxisPosX - 3, xAxisPosY - (j * scaleHop));
+				if (config.scaleShowGridLines == 'horizontal' || config.scaleShowGridLines === true){
 					ctx.lineWidth = config.scaleGridLineWidth;
 					ctx.strokeStyle = config.scaleGridLineColor;
-					ctx.lineTo(yAxisPosX + xAxisLength + 5,xAxisPosY - ((j+1) * scaleHop));
-				}
-				else{
-					ctx.lineTo(yAxisPosX-0.5,xAxisPosY - ((j+1) * scaleHop));
+					ctx.lineTo(yAxisPosX + xAxisLength + 5, xAxisPosY - (j * scaleHop));
+				} else {
+					ctx.lineTo(yAxisPosX - 0.5, xAxisPosY - (j * scaleHop));
 				}
 
 				ctx.stroke();
 
-				if (config.scaleShowLabels){
-					ctx.fillText(calculatedScale.labels[j],yAxisPosX-8,xAxisPosY - ((j+1) * scaleHop));
+				if (config.scaleShowLabels) {
+					ctx.fillText(
+						calculatedScale.labels[j],
+						yAxisPosX - 8 + (config.scaleLabelPosition == 'right' ? xAxisLength + 20 : 0),
+						xAxisPosY - (j * scaleHop)
+					);
 				}
 			}
 
@@ -951,10 +963,11 @@ window.Chart = function(context){
 				//Add a little extra padding from the y axis
 				longestText +=10;
 			}
+			widestYLabel = longestText;
 			xAxisLength = width - longestText - widestXLabel;
 			valueHop = Math.floor(xAxisLength/(data.labels.length-1));
 
-			yAxisPosX = width-widestXLabel/2-xAxisLength;
+			yAxisPosX = width - widestXLabel / 2 - xAxisLength - (config.scaleLabelPosition == "right" ? longestText : 0);
 			xAxisPosY = scaleHeight + config.scaleFontSize/2;
 		}
 		function calculateDrawingSizes(){
@@ -1332,11 +1345,19 @@ window.Chart = function(context){
 	}
 
     //Populate an array of all the labels by interpolating the string.
-    function populateLabels(labelTemplateString, labels, numberOfSteps, graphMin, stepValue) {
-        if (labelTemplateString) {
+    function populateLabels(labelTemplate, labels, numberOfSteps, graphMin, stepValue, showStartValue) {
+        if (labelTemplate) {
+        	var labelFn = (
+        		typeof labelTemplate == 'function'
+        			? function (labelTemplate, options) {
+        				return labelTemplate(options.value);
+        			}
+        			: tmpl
+    		);
+
             //Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
-            for (var i = 1; i < numberOfSteps + 1; i++) {
-                labels.push(tmpl(labelTemplateString, {value: (graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue))}));
+            for (var i = +!showStartValue; i < numberOfSteps + 1; i++) {
+                labels.push(labelFn(labelTemplate, {value: (graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue))}));
             }
         }
     }
