@@ -1,2 +1,5 @@
+# ignore netbeans folder
+nbproject/*
 
 .DS_Store
+/nbproject/private/
