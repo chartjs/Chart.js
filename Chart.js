@@ -537,6 +537,38 @@ window.Chart = function(context){
 					ctx.lineTo(0,animationDecimal*(-1*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)));
 			
 				}
+
+				// Update the color depending on the size of the area covered by the data
+				// data.colorProgressive: boolean defining if you want to enable this feature
+				// data.colorMin, data.colorMax: RGBA values to range from. They replace the existing data.fillColor, data.pointColor, data.strokeColor
+				if (data.datasets[i].colorProgressive) {
+					var polygonArea = 0;
+					var sideMax = data.datasets[i].data[0];
+
+					for (var j=1; j<data.datasets[i].data.length; j++){
+						var sideA = data.datasets[i].data[j-1];
+						var sideB = data.datasets[i].data[j];
+						var triangleArea = 0.5 * sideA * sideB * Math.sin(2*Math.PI/data.datasets[i].data.length);
+						polygonArea += triangleArea;
+
+						// get max side length
+						sideMax = Math.max(sideMax, data.datasets[i].data[j]);
+					}
+					var polygonMax =  0.5 * sideMax * sideMax * Math.sin(2*Math.PI/data.datasets[i].data.length) * data.datasets[i].data.length;
+					var coeff = polygonArea / polygonMax;
+
+					var rgbMin = data.datasets[i].colorMin.replace('rgba(', '').replace(')', '').replace(' ', '').split(',');
+					var rgbMax = data.datasets[i].colorMax.replace('rgba(', '').replace(')', '').replace(' ', '').split(',');
+
+					var red = Math.floor(parseInt(rgbMin[0], 10) + coeff * (parseInt(rgbMax[0], 10) - parseInt(rgbMin[0], 10)));
+					var green = Math.floor(parseInt(rgbMin[1], 10) + coeff * (parseInt(rgbMax[1], 10) - parseInt(rgbMin[1], 10)));
+					var blue = Math.floor(parseInt(rgbMin[2], 10) + coeff * (parseInt(rgbMax[2], 10) - parseInt(rgbMin[2], 10)));
+
+					data.datasets[i].fillColor = 'rgba(' + red + ',' + green + ',' + blue + ',' + rgbMin[3] + ')';
+					data.datasets[i].pointColor = 'rgba(' + red + ',' + green + ',' + blue + ', 1)';
+					data.datasets[i].strokeColor = 'rgba(' + red + ',' + green + ',' + blue + ', 1)';
+				}
+
 				ctx.closePath();
 				
 				
