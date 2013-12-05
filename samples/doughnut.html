@@ -11,36 +11,34 @@
 	</head>
 	<body>
 		<canvas id="canvas" height="450" width="450"></canvas>
+        <canvas id="canvas-with-title" height="450" width="450"></canvas>
 
+        <script>
+            var doughnutData = [
+                    {
+                        value: 30,
+                        color:"#F7464A"
+                    },
+                    {
+                        value : 50,
+                        color : "#46BFBD"
+                    },
+                    {
+                        value : 100,
+                        color : "#FDB45C"
+                    },
+                    {
+                        value : 40,
+                        color : "#949FB1"
+                    },
+                    {
+                        value : 120,
+                        color : "#4D5360"
+                    }
+                ];
 
-	<script>
-
-		var doughnutData = [
-				{
-					value: 30,
-					color:"#F7464A"
-				},
-				{
-					value : 50,
-					color : "#46BFBD"
-				},
-				{
-					value : 100,
-					color : "#FDB45C"
-				},
-				{
-					value : 40,
-					color : "#949FB1"
-				},
-				{
-					value : 120,
-					color : "#4D5360"
-				}
-			
-			];
-
-	var myDoughnut = new Chart(document.getElementById("canvas").getContext("2d")).Doughnut(doughnutData);
-	
-	</script>
+            new Chart(document.getElementById("canvas").getContext("2d")).Doughnut(doughnutData);
+            new Chart(document.getElementById("canvas-with-title").getContext("2d")).Doughnut(doughnutData, {showTitle: true}, "Doughnut chart");
+        </script>
 	</body>
 </html>

@@ -11,7 +11,7 @@
 	</head>
 	<body>
 		<canvas id="canvas" height="450" width="450"></canvas>
-
+        <canvas id="canvas-with-title" height="450" width="450"></canvas>
 
 	<script>
 
@@ -31,7 +31,8 @@
 			
 			];
 
-	var myPie = new Chart(document.getElementById("canvas").getContext("2d")).Pie(pieData);
+        var myPie = new Chart(document.getElementById("canvas").getContext("2d")).Pie(pieData);
+        var myPie = new Chart(document.getElementById("canvas-with-title").getContext("2d")).Pie(pieData, {showTitle: true}, "Pie chart");
 	
 	</script>
 	</body>

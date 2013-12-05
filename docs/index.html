@@ -3,7 +3,7 @@
 	<head>
 		<title>Chart.js Documentation</title>
 		<link href="styles.css" rel="stylesheet">
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<script src="prettify.js"></script>
 		<script src="Chart.js"></script>
 		<script type="text/javascript" src="//use.typekit.net/puc1imu.js"></script>
@@ -40,8 +40,8 @@ var ctx = $("#myChart").get(0).getContext("2d");
 var myNewChart = new Chart(ctx);</code></pre>
 				<p>After we've instantiated the Chart class on the canvas we want to draw on, Chart.js will handle the scaling for retina displays.</p>
 				<p>With the Chart class set up, we can go on to create one of the charts Chart.js has available. In the example below, we would be drawing a Polar area chart.</p>
-				<pre data-type="javascript"><code>new Chart(ctx).PolarArea(data,options);</code></pre>
-				<p>We call a method of the name of the chart we want to create. We pass in the data for that chart type, and the options for that chart as parameters. Chart.js will merge the options you pass in with the default options for that chart type.</p>
+				<pre data-type="javascript"><code>new Chart(ctx).PolarArea(data,options,title);</code></pre>
+				<p>We call a method of the name of the chart we want to create. We pass in the data for that chart type, the options and the title for that chart as parameters. Chart.js will merge the options you pass in with the default options for that chart type.</p>
 			</article>	
 			
 <article id="lineChart">
@@ -51,7 +51,7 @@ var myNewChart = new Chart(ctx);</code></pre>
 				<p>Often, it is used to show trend data, and the comparison of two data sets.</p>
 				<h2>Example usage</h2>
 				<canvas id="line" data-type="Line" width="600" height="400"></canvas>
-				<pre data-type="javascript"><code>new Chart(ctx).Line(data,options);</code></pre>
+				<pre data-type="javascript"><code>new Chart(ctx).Line(data,options,title);</code></pre>
 				<h2>Data structure</h2>	
 				<pre data-type="javascript"><code data-for="line">var data = {
 	labels : ["January","February","March","April","May","June","July"],
@@ -72,6 +72,10 @@ var myNewChart = new Chart(ctx);</code></pre>
 		}
 	]
 }</code></pre>
+    <pre data-type="javascript"><code options-for="line">var options = {
+    showTitle: true
+}</code></pre>
+    <pre data-type="javascript"><code title-for="line">var title = "Line chart"</code></pre>
 				<p>The line chart requires an array of labels for each of the data points. This is show on the X axis.</p>
 				<p>The data for line charts is broken up into an array of datasets. Each dataset has a colour for the fill, a colour for the line and colours for the points and strokes of the points. These colours are strings just like CSS. You can use RGBA, RGB, HEX or HSL notation.</p>
 				
@@ -157,7 +161,25 @@ var myNewChart = new Chart(ctx);</code></pre>
 
 	//Function - Fires when the animation is complete
 	onAnimationComplete : null
-	
+
+	//Boolean - Whether to show the title
+	showTitle : false,
+
+	//String - Title label font declaration for the title label
+	titleFontFamily : "'Arial'",
+
+	//Number - Title label font size in pixels
+	titleFontSize : 12,
+
+	//String - Title label font weight style
+	titleFontStyle : "normal",
+
+	//String - Scale label font colour
+	titleFontColor : "rgba(0, 0, 0, 1)"
+
+	//Number - Title label offset from the right
+	titleOffset : 40
+
 }</code></pre>
 			</article>	
 			
@@ -168,7 +190,7 @@ var myNewChart = new Chart(ctx);</code></pre>
 				<p>It is sometimes used to show trend data, and the comparison of multiple data sets side by side.</p>
 				<h2>Example usage</h2>
 				<canvas id="bar" data-type="Bar" width="600" height="400"></canvas>
-				<pre data-type="javascript"><code>new Chart(ctx).Bar(data,options);</code></pre>
+				<pre data-type="javascript"><code>new Chart(ctx).Bar(data,options,title);</code></pre>
 				<h2>Data structure</h2>	
 				<pre data-type="javascript"><code data-for="bar">var data = {
 	labels : ["January","February","March","April","May","June","July"],
@@ -184,7 +206,10 @@ var myNewChart = new Chart(ctx);</code></pre>
 			data : [28,48,40,19,96,27,100]
 		}
 	]
+}</code></pre><pre data-type="javascript"><code options-for="bar">var options = {
+    showTitle: true
 }</code></pre>
+    <pre data-type="javascript"><code title-for="bar">var title = "Bar chart"</code></pre>
 				<p>The bar chart has the a very similar data structure to the line chart, and has an array of datasets, each with colours and an array of data. Again, colours are in CSS format.</p>
 				<p>We have an array of labels too for display. In the example, we are showing the same data as the previous line chart example.</p>
 				
@@ -261,7 +286,25 @@ var myNewChart = new Chart(ctx);</code></pre>
 
 	//Function - Fires when the animation is complete
 	onAnimationComplete : null
-	
+
+	//Boolean - Whether to show the title
+	showTitle : false,
+
+	//String - Title label font declaration for the title label
+	titleFontFamily : "'Arial'",
+
+	//Number - Title label font size in pixels
+	titleFontSize : 12,
+
+	//String - Title label font weight style
+	titleFontStyle : "normal",
+
+	//String - Scale label font colour
+	titleFontColor : "rgba(0, 0, 0, 1)"
+
+	//Number - Title label offset from the right
+	titleOffset : 60
+
 }</code></pre>
 			</article>						
 			
@@ -272,7 +315,7 @@ var myNewChart = new Chart(ctx);</code></pre>
 				<p>They are often useful for comparing the points of two or more different data sets</p>
 				<h2>Example usage</h2>
 				<canvas id="radar" data-type="Radar" width="400" height="400"></canvas>
-				<pre data-type="javascript"><code>new Chart(ctx).Radar(data,options);</code></pre>
+				<pre data-type="javascript"><code>new Chart(ctx).Radar(data,options,title);</code></pre>
 				<h2>Data structure</h2>	
 				<pre data-type="javascript"><code data-for="radar">var data = {
 	labels : ["Eating","Drinking","Sleeping","Designing","Coding","Partying","Running"],
@@ -292,7 +335,10 @@ var myNewChart = new Chart(ctx);</code></pre>
 			data : [28,48,40,19,96,27,100]
 		}
 	]
+}</code></pre><pre data-type="javascript"><code options-for="radar">var options = {
+    showTitle: true
 }</code></pre>
+                <pre data-type="javascript"><code title-for="radar">var title = "Radar chart"</code></pre>
 				<p>For a radar chart, usually you will want to show a label on each point of the chart, so we include an array of strings that we show around each point in the chart. If you do not want this, you can either not include the array of labels, or choose to hide them in the chart options.</p>
 				<p>For the radar chart data, we have an array of datasets. Each of these is an object, with a fill colour, a stroke colour, a colour for the fill of each point, and a colour for the stroke of each point. We also have an array of data values.</p>
 				
@@ -402,6 +448,24 @@ var myNewChart = new Chart(ctx);</code></pre>
 
 	//Function - Fires when the animation is complete
 	onAnimationComplete : null
+
+	//Boolean - Whether to show the title
+	showTitle : false,
+
+	//String - Title label font declaration for the title label
+	titleFontFamily : "'Arial'",
+
+	//Number - Title label font size in pixels
+	titleFontSize : 12,
+
+	//String - Title label font weight style
+	titleFontStyle : "normal",
+
+	//String - Scale label font colour
+	titleFontColor : "rgba(0, 0, 0, 1)"
+
+	//Number - Title label offset from the right
+	titleOffset : 100
 	
 }</code></pre>
 			</article>			
@@ -413,7 +477,7 @@ var myNewChart = new Chart(ctx);</code></pre>
 				<p>This type of chart is often useful when we want to show a comparison data similar to a pie chart, but also show a scale of values for context.</p>
 				<h2>Example usage</h2>
 				<canvas id="polarArea" data-type="PolarArea" width="300" height="300"></canvas>
-				<pre data-type="javascript"><code>new Chart(ctx).PolarArea(data,options);</code></pre>
+				<pre data-type="javascript"><code>new Chart(ctx).PolarArea(data,options,title);</code></pre>
 				<h2>Data structure</h2>
 				<pre data-type="javascript"><code data-for="polarArea">var data = [
 	{
@@ -440,7 +504,10 @@ var myNewChart = new Chart(ctx);</code></pre>
 		value : 8,
 		color: "#584A5E"
 	}
-]</code></pre>
+]</code></pre><pre data-type="javascript"><code options-for="polarArea">var options = {
+    showTitle: true
+}</code></pre>
+                <pre data-type="javascript"><code title-for="polarArea">var title = "PolarArea chart"</code></pre>
 				<p>As you can see, for the chart data you pass in an array of objects, with a value and a colour. The <code>value</code> attribute should be a number, while the <code>color</code> attribute should be a string. Similar to CSS, for this string you can use HEX notation, RGB, RGBA or HSL.</p>
 				<h2>Chart options</h2>
 				<p>These are the default chart options. By passing in an object with any of these attributes, Chart.js will merge these objects and the graph accordingly. Explanations of each option are commented in the code below.</p>
@@ -525,6 +592,25 @@ var myNewChart = new Chart(ctx);</code></pre>
 
 	//Function - This will fire when the animation of the chart is complete.
 	onAnimationComplete : null
+                   
+	//Boolean - Whether to show the title
+	showTitle : false,
+
+	//String - Title label font declaration for the title label
+	titleFontFamily : "'Arial'",
+
+	//Number - Title label font size in pixels
+	titleFontSize : 12,
+
+	//String - Title label font weight style
+	titleFontStyle : "normal",
+
+	//String - Scale label font colour
+	titleFontColor : "rgba(0, 0, 0, 1)"
+
+	//Number - Title label offset from the right
+	titleOffset : 80
+
 }</code></pre>
 			</article>
 			<article id="pieChart">
@@ -534,7 +620,7 @@ var myNewChart = new Chart(ctx);</code></pre>
 				<p>They are excellent at showing the relational proportions between data.</p>
 				<h2>Example usage</h2>
 				<canvas id="pie" data-type="Pie" width="400" height="400"></canvas>
-				<pre data-type="javascript"><code>new Chart(ctx).Pie(data,options);</code></pre>
+				<pre data-type="javascript"><code>new Chart(ctx).Pie(data,options,title);</code></pre>
 				<h2>Data structure</h2>
 				<pre data-type="javascript"><code data-for="pie">var data = [
 	{
@@ -549,7 +635,10 @@ var myNewChart = new Chart(ctx);</code></pre>
 		value : 100,
 		color : "#69D2E7"
 	}			
-]</code></pre>
+]</code></pre><pre data-type="javascript"><code options-for="pie">var options = {
+    showTitle: true
+}</code></pre>
+                <pre data-type="javascript"><code title-for="pie">var title = "Pie chart"</code></pre>
 				<p>For a pie chart, you must pass in an array of objects with a <code>value</code> and a <code>color</code> property. The <code>value</code> attribute should be a number, Chart.js will total all of the numbers and calculate the relative proportion of each. The <code>color</code> attribute should be a string. Similar to CSS, for this string you can use HEX notation, RGB, RGBA or HSL.</p>
 				<h2>Chart options</h2>
 				<p>These are the default options for the Pie chart. Pass in an object with any of these attributes to override them.
@@ -580,6 +669,25 @@ var myNewChart = new Chart(ctx);</code></pre>
 	
 	//Function - Will fire on animation completion.
 	onAnimationComplete : null
+
+	//Boolean - Whether to show the title
+	showTitle : false,
+
+	//String - Title label font declaration for the title label
+	titleFontFamily : "'Arial'",
+
+	//Number - Title label font size in pixels
+	titleFontSize : 12,
+
+	//String - Title label font weight style
+	titleFontStyle : "normal",
+
+	//String - Scale label font colour
+	titleFontColor : "rgba(0, 0, 0, 1)"
+
+	//Number - Title label offset from the right
+	titleOffset : 60
+                
 }</code></pre>
 			</article>
 			<article id="doughnutChart">
@@ -589,7 +697,7 @@ var myNewChart = new Chart(ctx);</code></pre>
 				<p>They are aso excellent at showing the relational proportions between data.</p>
 				<h2>Example usage</h2>
 				<canvas id="doughnut" data-type="Doughnut" width="400" height="400"></canvas>
-				<pre data-type="javascript"><code>new Chart(ctx).Doughnut(data,options);</code></pre>
+				<pre data-type="javascript"><code>new Chart(ctx).Doughnut(data,options,title);</code></pre>
 				<h2>Data structure</h2>
 				<pre data-type="javascript"><code data-for="doughnut">var data = [
 	{
@@ -613,7 +721,10 @@ var myNewChart = new Chart(ctx);</code></pre>
 		color : "#4D5360"
 	}
 
-]</code></pre>
+]</code></pre><pre data-type="javascript"><code options-for="doughnut">var options = {
+    showTitle: true
+}</code></pre>
+                <pre data-type="javascript"><code title-for="doughnut">var title = "Doughnut chart"</code></pre>
 				<p>For a doughnut chart, you must pass in an array of objects with a <code>value</code> and a <code>color</code> property. The <code>value</code> attribute should be a number, Chart.js will total all of the numbers and calculate the relative proportion of each. The <code>color</code> attribute should be a string. Similar to CSS, for this string you can use HEX notation, RGB, RGBA or HSL.</p>
 				<h2>Chart options</h2>
 				<p>These are the default options for the doughnut chart. Pass in an object with any of these attributes to override them.
@@ -647,6 +758,25 @@ var myNewChart = new Chart(ctx);</code></pre>
 	
 	//Function - Will fire on animation completion.
 	onAnimationComplete : null
+
+	//Boolean - Whether to show the title
+	showTitle : false,
+
+	//String - Title label font declaration for the title label
+	titleFontFamily : "'Arial'",
+
+	//Number - Title label font size in pixels
+	titleFontSize : 12,
+
+	//String - Title label font weight style
+	titleFontStyle : "normal",
+
+	//String - Scale label font colour
+	titleFontColor : "rgba(0, 0, 0, 1)"
+
+	//Number - Title label offset from the right
+	titleOffset : 100
+
 }</code></pre>
 			</article>
 			<article id="generalIssues">
@@ -727,9 +857,10 @@ var myNewChart = new Chart(ctx);</code></pre>
 			
 			
 			eval($("code[data-for='" + $canvas.attr("id") + "']").text());
-			
-			
-			var evalString = "new Chart(ctx)." + $canvas.data("type") + "(data);";
+            eval($("code[options-for='" + $canvas.attr("id") + "']").text());
+            eval($("code[title-for='" + $canvas.attr("id") + "']").text());
+
+			var evalString = "new Chart(ctx)." + $canvas.data("type") + "(data,options,title);";
 			
 			eval(evalString);
 						

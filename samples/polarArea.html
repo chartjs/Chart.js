@@ -9,6 +9,7 @@
 	</head>
 	<body>
 		<canvas id="canvas" height="400" width="400"></canvas>
+        <canvas id="canvas-with-title" height="400" width="400"></canvas>
 
 
 	<script>
@@ -38,7 +39,8 @@
 				color: "#584A5E"
 			}
 		];
-	var myPolarArea = new Chart(document.getElementById("canvas").getContext("2d")).PolarArea(chartData);
+	    new Chart(document.getElementById("canvas").getContext("2d")).PolarArea(chartData);
+        new Chart(document.getElementById("canvas-with-title").getContext("2d")).PolarArea(chartData, {showTitle: true}, "Polar chart");
 	</script>
 	</body>
 </html>

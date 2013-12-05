@@ -11,9 +11,10 @@
 	</head>
 	<body>
 		<canvas id="canvas" height="450" width="450"></canvas>
+        <canvas id="canvas-with-title" height="450" width="450"></canvas>
 
 
-	<script>
+        <script>
 
 		var radarChartData = {
 			labels : ["Eating","Drinking","Sleeping","Designing","Coding","Partying","Running"],
@@ -36,8 +37,9 @@
 			
 		}
 
-	var myRadar = new Chart(document.getElementById("canvas").getContext("2d")).Radar(radarChartData,{scaleShowLabels : false, pointLabelFontSize : 10});
-	
+	    new Chart(document.getElementById("canvas").getContext("2d")).Radar(radarChartData,{scaleShowLabels : false, pointLabelFontSize : 10});
+        new Chart(document.getElementById("canvas-with-title").getContext("2d")).Radar(radarChartData,{scaleShowLabels : false, pointLabelFontSize : 10, showTitle: true}, "Radar chart");
+
 	</script>
 	</body>
 </html>
