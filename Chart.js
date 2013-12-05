@@ -8,11 +8,14 @@
  */
 
 //Define the global Chart Variable as a class.
-window.Chart = function(context){
-
+window.Chart = function(element){
 	var chart = this;
 	
-	
+	this.element = element;
+	var context = this.ctx = this.element.getContext("2d");
+
+	this.dataset = [];
+
 	//Easing functions adapted from Robert Penner's easing equations
 	//http://www.robertpenner.com/easing/
 	
@@ -283,7 +286,6 @@ window.Chart = function(context){
 	};
 
 	this.Line = function(data,options){
-	
 		chart.Line.defaults = {
 			scaleOverlay : false,
 			scaleOverride : false,
@@ -551,6 +553,7 @@ window.Chart = function(context){
 					ctx.fillStyle = data.datasets[i].pointColor;
 					ctx.strokeStyle = data.datasets[i].pointStrokeColor;
 					ctx.lineWidth = config.pointDotStrokeWidth;
+
 					for (var k=0; k<data.datasets[i].data.length; k++){
 						ctx.rotate(rotationDegree);
 						ctx.beginPath();
@@ -787,6 +790,15 @@ window.Chart = function(context){
 	}
 
 	var Line = function(data,config,ctx){
+		if (!data.initialized) {
+			data.initialized = true;
+			lineHover();
+		}
+
+		chart.data = data;
+		chart.config = config;
+		chart.ctx = ctx;
+
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString, valueHop,widestXLabel, xAxisLength,yAxisPosX,xAxisPosY, rotateLabels = 0;
 			
 		calculateDrawingSizes();
@@ -838,13 +850,35 @@ window.Chart = function(context){
 				else{
 					ctx.closePath();
 				}
+
 				if(config.pointDot){
-					ctx.fillStyle = data.datasets[i].pointColor;
-					ctx.strokeStyle = data.datasets[i].pointStrokeColor;
-					ctx.lineWidth = config.pointDotStrokeWidth;
+					chart.dataset[i] = data.datasets[i];
+					chart.dataset[i]['points'] = [];
+
 					for (var k=0; k<data.datasets[i].data.length; k++){
+						var point = {
+							x: yAxisPosX + (valueHop * k),
+							y: xAxisPosY - animPc * (calculateOffset(data.datasets[i].data[k], calculatedScale, scaleHop)),
+							radius: config.pointDotRadius,
+							start: 0,
+							end: Math.PI * 2,
+							counter: true
+						};
+
+						if (chart.mouseover == i + ':' + k) {
+							ctx.fillStyle = (data.datasets[i].pointColorHover ? data.datasets[i].pointColorHover : data.datasets[i].pointColor);
+							ctx.strokeStyle = (data.datasets[i].pointStrokeColorHover ? data.datasets[i].pointStrokeColorHover : data.datasets[i].pointStrokeColor);
+							ctx.lineWidth = (config.pointDotStrokeWidthHover ? config.pointDotStrokeWidthHover : config.pointDotStrokeWidth);
+						} else {
+							ctx.fillStyle = data.datasets[i].pointColor;
+							ctx.strokeStyle = data.datasets[i].pointStrokeColor;
+							ctx.lineWidth = config.pointDotStrokeWidth;
+						}
+
+						chart.dataset[i]['points'][k] = point;
+
 						ctx.beginPath();
-						ctx.arc(yAxisPosX + (valueHop *k),xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[k],calculatedScale,scaleHop)),config.pointDotRadius,0,Math.PI*2,true);
+						ctx.arc(point.x, point.y, point.radius, point.start, point.end, point.counter);
 						ctx.fill();
 						ctx.stroke();
 					}
@@ -1220,6 +1254,95 @@ window.Chart = function(context){
 		}
 	}
 	
+	function lineHover() {
+		chart.mouseover = null;
+
+		chart.element.addEventListener('mousemove', function(event) {
+			var ctx = chart.ctx;
+			var point_size = 1;
+
+			var mouse_x = event.offsetX
+			var mouse_y = event.offsetY;
+			
+
+			var new_mouseover = null;
+
+			for (var k in chart.dataset) {
+				var dataset = chart.dataset[k];
+
+				for (var i in dataset.points) {
+					var point = dataset.points[i];
+					var updated = false;
+
+					var bounds = (chart.config.pointDotStrokeWidth / 2);
+					bounds += point.radius;
+
+					if (
+						mouse_x >= point.x - bounds && mouse_y >= point.y - bounds &&
+						mouse_x <= point.x + bounds && mouse_y <= point.y + bounds
+					) {
+						new_mouseover = k + ':' + i;
+						updated = true;
+
+						if (chart.mouseover != new_mouseover) {
+							if (dataset.mouseover) {
+								dataset.mouseover({
+									dataset: dataset,
+
+									mouse: {
+										x: mouse_x,
+										y: mouse_y
+									},
+
+									point: {
+										index: i,
+										x: point.x,
+										y: point.y
+									}
+								});
+							}
+						}
+					}
+
+					if (k + ':' + i == chart.mouseover && new_mouseover != chart.mouseover) {
+						updated = true;
+
+						if (dataset.mouseout) {
+							dataset.mouseout({
+								dataset: dataset,
+
+								mouse: {
+									x: mouse_x,
+									y: mouse_y
+								},
+
+								point: {
+									index: i,
+									x: point.x,
+									y: point.y
+								}
+							});
+						}
+					}
+					
+					if (updated) {
+						chart.ctx.clearRect(point.x, point.y, point.radius + point_size, point.radius + point_size);
+						chart.config.animation = false;
+						chart.Line(chart.data, chart.config, chart.ctx);
+					}
+				}
+			}
+
+			chart.mouseover = new_mouseover;
+
+			if (chart.mouseover) {
+				chart.element.style.cursor = 'pointer';
+			} else {
+				chart.element.style.cursor = 'default';
+			}
+		});
+	}
+	
 	function calculateOffset(val,calculatedScale,scaleHop){
 		var outerValue = calculatedScale.steps * calculatedScale.stepValue;
 		var adjustedValue = val - calculatedScale.graphMin;
@@ -1422,5 +1545,3 @@ window.Chart = function(context){
 	    return data ? fn( data ) : fn;
 	  };
 }
-
-
