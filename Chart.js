@@ -349,6 +349,80 @@ window.Chart = function(context){
 		
 		return new Bar(data,config,context);		
 	}
+
+	this.Concentric = function(data,options){
+		chart.Concentric.defaults = {
+			segmentShowStroke : true,
+			segmentStrokeColor : "rgba(0,0,0,.1)",
+			segmentStrokeWidth : 1,
+			scaleOverlay : true,
+			scaleOverride : false,
+			scaleSteps : null,
+			scaleStepWidth : null,
+			scaleStartValue : null,
+			scaleShowLine : true,
+			scaleLineColor : "rgba(0,0,0,.1)",
+			scaleLineWidth : 1,
+			scaleShowLabels : true,
+			scaleLabel : "<%=value%>",
+			scaleFontFamily : "'Arial'",
+			scaleFontSize : 12,
+			scaleFontStyle : "normal",
+			scaleFontColor : "#666",
+			scaleShowLabelBackdrop : true,
+			scaleBackdropColor : "rgba(255,255,255,0.75)",
+			scaleBackdropPaddingY : 2,
+			scaleBackdropPaddingX : 2,
+			segmentShowLabels: true,
+			animation : true,
+			animationSteps : 30,
+			animationEasing : "easeOutBounce",
+			animateRotate : false,
+			animateScale : true,
+			onAnimationComplete : null
+		};		
+
+		var config = (options)? mergeChartConfig(chart.Concentric.defaults,options) : chart.Concentric.defaults;
+		
+		return new Concentric(data,config,context);
+	};
+
+	this.Weekly = function(data,options){
+		chart.Weekly.defaults = {
+			segmentShowStroke : true,
+			segmentStrokeColor : "rgba(0,0,0,.1)",
+			segmentStrokeWidth : 1,
+			scaleOverlay : true,
+			scaleOverride : false,
+			scaleSteps : null,
+			scaleStepWidth : null,
+			scaleStartValue : null,
+			scaleShowLine : true,
+			scaleLineColor : "rgba(0,0,0,.1)",
+			scaleLineWidth : 1,
+			scaleShowLabels : true,
+			scaleLabel : "<%=value%>",
+			scaleFontFamily : "'Arial'",
+			scaleFontSize : 12,
+			scaleFontStyle : "normal",
+			scaleFontColor : "#666",
+			scaleShowLabelBackdrop : true,
+			scaleBackdropColor : "rgba(255,255,255,0.75)",
+			scaleBackdropPaddingY : 2,
+			scaleBackdropPaddingX : 2,
+			segmentShowLabels: true,
+			animation : true,
+			animationSteps : 30,
+			animationEasing : "easeOutBounce",
+			animateRotate : false,
+			animateScale : true,
+			onAnimationComplete : null
+		};		
+
+		var config = (options)? mergeChartConfig(chart.Weekly.defaults,options) : chart.Weekly.defaults;
+		
+		return new Weekly(data,config,context);
+	};
 	
 	var clear = function(c){
 		c.clearRect(0, 0, width, height);
@@ -813,6 +887,8 @@ window.Chart = function(context){
 		animationLoop(config,drawScale,drawLines,ctx);		
 		
 		function drawLines(animPc){
+			var points_max = [];
+
 			for (var i=0; i<data.datasets.length; i++){
 				ctx.strokeStyle = data.datasets[i].strokeColor;
 				ctx.lineWidth = config.datasetStrokeWidth;
@@ -824,7 +900,21 @@ window.Chart = function(context){
 						ctx.bezierCurveTo(xPos(j-0.5),yPos(i,j-1),xPos(j-0.5),yPos(i,j),xPos(j),yPos(i,j));
 					}
 					else{
-						ctx.lineTo(xPos(j),yPos(i,j));
+						if(config.stacked){
+							last_value = points_max[j];
+							y_pos = yPos(i,j);
+
+							if (last_value == undefined) {
+								points_max[j] = y_pos;
+								ctx.lineTo(xPos(j),y_pos);
+							}
+							else{
+								ctx.lineTo(xPos(j),(last_value-(xAxisPosY-y_pos)));
+							}
+						}
+						else{
+							ctx.lineTo(xPos(j),yPos(i,j));
+						}
 					}
 				}
 				ctx.stroke();
@@ -1218,6 +1308,160 @@ window.Chart = function(context){
 			
 	
 		}
+	}
+
+	var Concentric = function(data,config,ctx){		
+		//In case we have a canvas that is not a square. Minus 5 pixels as padding round the edge.
+		var maxRadius = Min([height/2,width/2]) - 5;
+
+		var maxValue = Number.MIN_VALUE;
+		var minValue = Number.MAX_VALUE;
+		
+		for (var i=0; i<data.length; i++){
+			if(data[i].value > maxValue) { maxValue = data[i].value };
+			if(data[i].value < minValue) { minValue = data[i].value };
+		}
+
+		animationLoop(config,false,drawConcentricCircles,ctx);
+		
+		function drawConcentricCircles (animationDecimal){
+			var scaleAnimation = 1,
+			rotateAnimation = 1;
+			if (config.animation) {
+				if (config.animateScale) {
+					scaleAnimation = animationDecimal;
+				}
+				if (config.animateRotate){
+					rotateAnimation = animationDecimal;
+				}
+			}
+
+			for (var i=0; i<data.length; i++){
+				var segmentSize = ((data[i].value * maxRadius) / maxValue) * 0.9;
+				ctx.beginPath();
+
+				//console.log("center: "+(width/2)+","+(height/2)+" - segment: "+segmentSize);
+
+				if (config.tangent == "bottom") {
+					ctx.arc(width/2, height-segmentSize, segmentSize * scaleAnimation, 0, (Math.PI * 2), false);
+				}else{
+					ctx.arc(width/2, height/2, segmentSize * scaleAnimation, 0, (Math.PI * 2), false);
+				}
+
+				ctx.closePath();
+				ctx.fillStyle = data[i].fillColor;
+				ctx.fill();
+				
+				if(config.segmentShowStroke){
+					ctx.lineWidth = config.segmentStrokeWidth;
+					ctx.strokeStyle = config.segmentStrokeColor;
+					ctx.stroke();
+				}
+
+				if (config.segmentShowLabels){
+					ctx.textAlign = "center";
+					ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
+ 					var label =  data[i].label + " ("+ data[i].value +")";
+					//If the backdrop object is within the font object
+					if (config.scaleShowLabelBackdrop){
+						var textWidth = ctx.measureText(label).width;
+						ctx.fillStyle = config.scaleBackdropColor;
+						ctx.beginPath();
+						ctx.rect(
+							Math.round(width/2 - textWidth/2 - config.scaleBackdropPaddingX),     //X
+							Math.round(height - segmentSize - config.scaleFontSize*0.5 - config.scaleBackdropPaddingY),//Y
+							Math.round(textWidth + (config.scaleBackdropPaddingX*2)), //Width
+							Math.round(config.scaleFontSize + (config.scaleBackdropPaddingY*2)) //Height
+						);
+						ctx.fill();
+					}
+					ctx.textBaseline = "middle";
+					ctx.fillStyle = config.scaleFontColor;
+					ctx.fillText(label,width/2,height - segmentSize);
+				}
+			}
+		}		
+	}
+
+	var Weekly = function(data,config,ctx){
+		var segmentTotal = 0;
+		
+		var maxRadius = (Min([(width/25),(height/8)])/2)-2;
+		var maxValue = Number.MIN_VALUE;
+		
+		for (var i=0; i<data.length; i++){				
+			// Iterating over hours
+			for (var j=0; j<data[i].length; j++){
+				if(data[i][j] > maxValue) { maxValue = data[i][j] };
+			}
+		}
+
+		var scaleDownFactor = maxRadius/maxValue;
+		
+		animationLoop(config,drawScale,drawWeeklyChart,ctx);
+
+		function drawScale (){
+			var weekdays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+			for (var i=0; i<weekdays.length; i++){
+				ctx.textAlign = "center";
+				ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
+ 				var label = weekdays[i];
+				ctx.textBaseline = "middle";
+				ctx.fillStyle = config.scaleFontColor;
+				ctx.fillText(label,maxRadius,(i*(maxRadius*2))+maxRadius);
+			}
+
+			for (var i=1; i<25; i++){
+				ctx.textAlign = "center";
+				ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
+ 				var label = i-1;
+				ctx.textBaseline = "middle";
+				ctx.fillStyle = config.scaleFontColor;
+				ctx.fillText(label,(i*(maxRadius*2))+maxRadius,15*maxRadius);
+			}
+		}
+				
+		function drawWeeklyChart (animationDecimal){
+			var scaleAnimation = 1,
+			rotateAnimation = 1;
+			if (config.animation) {
+				if (config.animateScale) {
+					scaleAnimation = animationDecimal;
+				}
+				if (config.animateRotate){
+					rotateAnimation = animationDecimal;
+				}
+			}
+			// Iterating over weekdays
+			for (var i=0; i<data.length; i++){				
+				// Iterating over hours
+				for (var j=0; j<data[i].length; j++){
+					var x = ((maxRadius*2)*(j+2))-maxRadius;
+					var y = ((maxRadius*2)*(i+1))-maxRadius;
+					var diff = maxValue - data[i][j];
+
+					ctx.beginPath();
+					ctx.arc(x, y, (data[i][j] * scaleDownFactor) * scaleAnimation, 0, (Math.PI * 2), false);
+					ctx.closePath();
+
+					if (diff < 5) {
+						ctx.fillStyle = "rgba(0,0,0,.8)";
+					}else if (diff < 20) {
+						ctx.fillStyle = "rgba(0,0,0,.7)";
+					}else if (diff < 30) {
+						ctx.fillStyle = "rgba(0,0,0,.6)";
+					}else if (diff < 40) {
+						ctx.fillStyle = "rgba(0,0,0,.5)";
+					}else if (diff < 50) {
+						ctx.fillStyle = "rgba(0,0,0,.4)";
+					}else{
+						ctx.fillStyle = "rgba(0,0,0,.3)";
+					}
+					
+					ctx.fill();
+				}
+			}			
+		}		
 	}
 	
 	function calculateOffset(val,calculatedScale,scaleHop){
