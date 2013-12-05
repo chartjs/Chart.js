@@ -148,17 +148,19 @@ window.Chart = function(context){
 	};
 
 	//Variables global to the chart
-	var width = context.canvas.width;
-	var height = context.canvas.height;
+	var pixelRatio = Default(context.canvas.getAttribute('data-chartjs-pixelRatio'), 1);
+	var width = context.canvas.width / pixelRatio;
+	var height = context.canvas.height / pixelRatio;
 
 
 	//High pixel density displays - multiply the size of the canvas height/width by the device pixel ratio, then scale.
-	if (window.devicePixelRatio) {
+	if (Default(window.devicePixelRatio, 1) != pixelRatio) {
 		context.canvas.style.width = width + "px";
 		context.canvas.style.height = height + "px";
 		context.canvas.height = height * window.devicePixelRatio;
 		context.canvas.width = width * window.devicePixelRatio;
 		context.scale(window.devicePixelRatio, window.devicePixelRatio);
+		context.canvas.setAttribute('data-chartjs-pixelRatio', window.devicePixelRatio);
 	}
 
 	this.PolarArea = function(data,options){
