@@ -311,7 +311,8 @@ window.Chart = function(context){
 			animation : true,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			onlyHorizontalGridLines: false
 		};		
 		var config = (options) ? mergeChartConfig(chart.Line.defaults,options) : chart.Line.defaults;
 		
@@ -343,7 +344,8 @@ window.Chart = function(context){
 			animation : true,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			onlyHorizontalGridLines: false
 		};		
 		var config = (options) ? mergeChartConfig(chart.Bar.defaults,options) : chart.Bar.defaults;
 		
@@ -889,19 +891,21 @@ window.Chart = function(context){
 					ctx.fillText(data.labels[i], yAxisPosX + i*valueHop,xAxisPosY + config.scaleFontSize+3);					
 				}
 
-				ctx.beginPath();
-				ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY+3);
-				
-				//Check i isnt 0, so we dont go over the Y axis twice.
-				if(config.scaleShowGridLines && i>0){
-					ctx.lineWidth = config.scaleGridLineWidth;
-					ctx.strokeStyle = config.scaleGridLineColor;					
-					ctx.lineTo(yAxisPosX + i * valueHop, 5);
+				if(!config.onlyHorizontalGridLines){
+					ctx.beginPath();
+					ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY+3);
+					
+					//Check i isnt 0, so we dont go over the Y axis twice.
+					if(config.scaleShowGridLines && i>0){
+						ctx.lineWidth = config.scaleGridLineWidth;
+						ctx.strokeStyle = config.scaleGridLineColor;					
+						ctx.lineTo(yAxisPosX + i * valueHop, 5);
+					}
+					else{
+						ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY+3);				
+					}
+					ctx.stroke();
 				}
-				else{
-					ctx.lineTo(yAxisPosX + i * valueHop, xAxisPosY+3);				
-				}
-				ctx.stroke();
 			}
 			
 			//Y axis
@@ -1096,15 +1100,14 @@ window.Chart = function(context){
 				else{
 					ctx.fillText(data.labels[i], yAxisPosX + i*valueHop + valueHop/2,xAxisPosY + config.scaleFontSize+3);					
 				}
-
-				ctx.beginPath();
-				ctx.moveTo(yAxisPosX + (i+1) * valueHop, xAxisPosY+3);
-				
-				//Check i isnt 0, so we dont go over the Y axis twice.
+				if(!config.onlyHorizontalGridLines && config.scaleShowGridLines){
+					ctx.beginPath();
+					ctx.moveTo(yAxisPosX + (i+1) * valueHop, xAxisPosY+3);
 					ctx.lineWidth = config.scaleGridLineWidth;
-					ctx.strokeStyle = config.scaleGridLineColor;					
+					ctx.strokeStyle = config.scaleGridLineColor;
 					ctx.lineTo(yAxisPosX + (i+1) * valueHop, 5);
-				ctx.stroke();
+					ctx.stroke();
+				}
 			}
 			
 			//Y axis
