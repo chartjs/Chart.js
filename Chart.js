@@ -1006,10 +1006,10 @@ window.Chart = function(context){
 			var minSteps = Math.floor((scaleHeight / labelHeight*0.5));
 			
 			return {
-				maxValue : upperValue,
-				minValue : lowerValue,
-				maxSteps : maxSteps,
-				minSteps : minSteps
+				maxValue : config.maxValue || upperValue,
+				minValue : config.minValue || lowerValue,
+				maxSteps : config.maxSteps || maxSteps,
+				minSteps : config.minSteps || minSteps
 			};
 			
 	
