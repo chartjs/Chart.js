@@ -11,7 +11,7 @@
 window.Chart = function(context){
 
 	var chart = this;
-	
+	var int_language = "en-EN";
 	
 	//Easing functions adapted from Robert Penner's easing equations
 	//http://www.robertpenner.com/easing/
@@ -929,7 +929,7 @@ window.Chart = function(context){
 				ctx.stroke();
 				
 				if (config.scaleShowLabels){
-					ctx.fillText(calculatedScale.labels[j],yAxisPosX-8,xAxisPosY - ((j+1) * scaleHop));
+					ctx.fillText(thousand_separator(calculatedScale.labels[j]),yAxisPosX-8,xAxisPosY - ((j+1) * scaleHop));
 				}
 			}
 			
@@ -1421,6 +1421,10 @@ window.Chart = function(context){
 	    // Provide some basic currying to the user
 	    return data ? fn( data ) : fn;
 	  };
+	  
+	  function thousand_separator(input) {
+			return parseFloat(input).toLocaleString(int_language);
+	}
 }
 
 
