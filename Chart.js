@@ -814,20 +814,25 @@ window.Chart = function(context){
 		
 		function drawLines(animPc){
 			for (var i=0; i<data.datasets.length; i++){
-				ctx.strokeStyle = data.datasets[i].strokeColor;
-				ctx.lineWidth = config.datasetStrokeWidth;
-				ctx.beginPath();
-				ctx.moveTo(yAxisPosX, xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[0],calculatedScale,scaleHop)))
 
-				for (var j=1; j<data.datasets[i].data.length; j++){
-					if (config.bezierCurve){
-						ctx.bezierCurveTo(xPos(j-0.5),yPos(i,j-1),xPos(j-0.5),yPos(i,j),xPos(j),yPos(i,j));
+				if (config.datasetStroke){
+					ctx.strokeStyle = data.datasets[i].strokeColor;
+					ctx.lineWidth = config.datasetStrokeWidth;
+					ctx.beginPath();
+					ctx.moveTo(yAxisPosX, xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[0],calculatedScale,scaleHop)))
+
+					for (var j=1; j<data.datasets[i].data.length; j++){
+						if (config.bezierCurve){
+							ctx.bezierCurveTo(xPos(j-0.5),yPos(i,j-1),xPos(j-0.5),yPos(i,j),xPos(j),yPos(i,j));
+						}
+						else{
+							ctx.lineTo(xPos(j),yPos(i,j));
+						}
 					}
-					else{
-						ctx.lineTo(xPos(j),yPos(i,j));
-					}
+					ctx.stroke();
 				}
-				ctx.stroke();
+
+
 				if (config.datasetFill){
 					ctx.lineTo(yAxisPosX + (valueHop*(data.datasets[i].data.length-1)),xAxisPosY);
 					ctx.lineTo(yAxisPosX,xAxisPosY);
