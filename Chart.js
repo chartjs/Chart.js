@@ -350,6 +350,29 @@ window.Chart = function(context){
 		return new Bar(data,config,context);		
 	}
 	
+	this.TreeMap = function(data, options) {
+		chart.TreeMap.defaults = {
+			segmentShowStroke : false,
+			segmentStrokeColor : "#fff",
+			segmentStrokeWidth : 2,
+			squareShowLabels : false,
+			squareLabel : "<%=value%>",
+			squareFontFamily : "'Arial'",
+			squareFontSize : 12,
+			squareFontStyle : "normal",
+			animation : true,
+			animationSteps : 100,
+			animationEasing : "easeOutBounce",
+			animateRotate : true,
+			animateScale : false,
+			onAnimationComplete : null
+		};	
+			
+		var config = (options) ? mergeChartConfig(chart.TreeMap.defaults, options) : chart.TreeMap.defaults;
+		
+		return new TreeMap(data, config, context);
+	}
+	
 	var clear = function(c){
 		c.clearRect(0, 0, width, height);
 	};
@@ -1218,6 +1241,126 @@ window.Chart = function(context){
 			
 	
 		}
+	}
+	
+	var TreeMap = function(data, config, ctx){
+		var depth, rectX, rectY, rectW, rectH, nodes;
+		nodes = data;
+		rectW = width;
+		rectH = height;
+		animationLoop(config,null,drawSquares,ctx);
+		
+		function drawSquares(animPc) {
+			calculateAndDrawSquares(animPc, data, 0, 0, width, height, 0);
+		};
+		
+		function calculateAndDrawSquares(animPc, nodes, rectX, rectY, rectW, rectH, depth) {
+			if(animPc > 1)
+				animPc = 1;
+			if(nodes.length <= 1) {
+				ctx.lineWidth = config.segmentStrokeWidth;
+				ctx.fillStyle = nodes[0].color;
+				ctx.strokeStyle = config.segmentStrokeColor;
+				ctx.beginPath();
+				ctx.moveTo(rectX, rectY);
+				ctx.lineTo(rectX + animPc * rectW, rectY);
+				ctx.lineTo(rectX + animPc * rectW, rectY + animPc * rectH);
+				ctx.lineTo(rectX, rectY + animPc * rectH);
+				if(config.segmentShowStroke){
+					ctx.stroke();
+				}
+				ctx.closePath();
+				ctx.fill();
+				if (config.squareShowLabels && animPc == 1) {
+					ctx.fillStyle = nodes[0].labelColor;
+					ctx.textAlign = "center";
+					ctx.textBaseline = "middle";
+					ctx.font = config.squareFontStyle + " " + config.squareFontSize + "px " + config.squareFontFamily;
+					ctx.fillText(nodes[0].label, rectX + rectW / 2, rectY + rectH / 2 - config.squareFontSize / 2 - 2);
+					ctx.fillText(nodes[0].value, rectX + rectW / 2, rectY + rectH / 2 + config.squareFontSize / 2 + 2);
+				}
+				return;
+			}
+			
+			var total = 0;
+			for (var i=0;i<nodes.length;i++) {
+				total += nodes[i].value;
+			}
+			var half = total / 2;
+			
+			var m  = nodes.length - 1;
+			total = 0;
+			for(var i=0;i<nodes.length;i++) {
+				if(total>half) {
+					m = i;
+					break;
+				}
+				total  += nodes[i].value;
+				if (m<1) m = 1;
+			}
+			
+			var aArray = nodes.slice(0, m);
+			var bArray = nodes.slice(m, nodes.length);
+			
+			var aTotal = 0;
+			for(var i=0;i<aArray.length;i++) {
+				aTotal += aArray[i].value;
+			}
+			var bTotal = 0;
+			for(var i=0;i<bArray.length;i++) {
+				bTotal += bArray[i].value;
+			}
+			
+			var aRatio;
+			if(aTotal + bTotal > 0.0) 
+				aRatio = aTotal / (aTotal + bTotal);
+			else
+				aRatio = 0.5;
+				
+			var aRect = new Array();
+			var bRect = new Array();
+			var aWidth, aHeight, bWidth, bHeight;
+			var horizontal = (rectW > rectH)
+			
+			if(horizontal) {
+				aWidth = Math.ceil(rectW * aRatio);
+				bWidth = rectW - aWidth;
+				aHeight = bHeight = rectH;
+				aRect["x"] = rectX;
+				aRect["y"] = rectY;
+				aRect["width"] = aWidth;
+				aRect["height"] = aHeight;
+				bRect["x"] = rectX + aWidth;
+				bRect["y"] = rectY;
+				bRect["width"] = bWidth;
+				bRect["height"] = bHeight;
+			}
+			else { // vertical layout
+				if (total == 0) {
+					aWidth = aHeight = bWidth = bHeight = 0.0;
+					aRect["x"] = bRect["x"] = rectX;
+					aRect["y"] = bRect["y"] = rectY;
+					aRect["width"] = bRect["width"] = 0;
+					aRect["height"] = bRect["height"] = 0;
+				}
+				else {
+					aWidth = bWidth = rectW;
+					aHeight = Math.ceil(rectH * aRatio);
+					bHeight = rectH - aHeight;
+					aRect["x"] = rectX;
+					aRect["y"] = rectY;
+					aRect["width"] = aWidth;
+					aRect["height"] = aHeight;
+					bRect["x"] = rectX;
+					bRect["y"] = rectY + aHeight;
+					bRect["width"] = bWidth;
+					bRect["height"] = bHeight;
+				}
+			}
+			
+			calculateAndDrawSquares(animPc, aArray, aRect["x"], aRect["y"], aRect["width"], aRect["height"], depth+1);
+			calculateAndDrawSquares(animPc, bArray, bRect["x"], bRect["y"], bRect["width"], bRect["height"], depth+1);
+		};
 	}
 	
 	function calculateOffset(val,calculatedScale,scaleHop){
