@@ -813,13 +813,20 @@ window.Chart = function(context){
 		animationLoop(config,drawScale,drawLines,ctx);		
 		
 		function drawLines(animPc){
+			var j;
+			var start;
+
 			for (var i=0; i<data.datasets.length; i++){
 				ctx.strokeStyle = data.datasets[i].strokeColor;
 				ctx.lineWidth = config.datasetStrokeWidth;
 				ctx.beginPath();
-				ctx.moveTo(yAxisPosX, xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[0],calculatedScale,scaleHop)))
 
-				for (var j=1; j<data.datasets[i].data.length; j++){
+				for (j=0; j<data.datasets[i].data.length && (typeof(data.datasets[i].data[j]) == 'null' || typeof(data.datasets[i].data[j]) == 'undefined'); j++);
+				start = j;
+
+				ctx.moveTo(xPos(start), xAxisPosY - animPc*(calculateOffset(data.datasets[i].data[start],calculatedScale,scaleHop)))
+
+				for (j++; j<data.datasets[i].data.length; j++){
 					if (config.bezierCurve){
 						ctx.bezierCurveTo(xPos(j-0.5),yPos(i,j-1),xPos(j-0.5),yPos(i,j),xPos(j),yPos(i,j));
 					}
@@ -829,8 +836,8 @@ window.Chart = function(context){
 				}
 				ctx.stroke();
 				if (config.datasetFill){
-					ctx.lineTo(yAxisPosX + (valueHop*(data.datasets[i].data.length-1)),xAxisPosY);
-					ctx.lineTo(yAxisPosX,xAxisPosY);
+					ctx.lineTo(xPos(start) + (valueHop*(data.datasets[i].data.length-1-start)),xAxisPosY);
+					ctx.lineTo(xPos(start),xAxisPosY);
 					ctx.closePath();
 					ctx.fillStyle = data.datasets[i].fillColor;
 					ctx.fill();
