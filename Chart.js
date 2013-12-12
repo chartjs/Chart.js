@@ -1165,7 +1165,7 @@ window.Chart = function(context){
 			xAxisLength = width - longestText - widestXLabel;
 			valueHop = Math.floor(xAxisLength/(data.labels.length));	
 			if(config.stacked){
-				barWidth = valueHop - config.scaleGridLineWidth*2 - (config.barValueSpacing*2) - ((config.barStrokeWidth/2)*data.datasets.length-1);
+				barWidth = valueHop - config.scaleGridLineWidth*2 - (config.barValueSpacing*2);
 			}
 			else{
 				barWidth = (valueHop - config.scaleGridLineWidth*2 - (config.barValueSpacing*2) - (config.barDatasetSpacing*data.datasets.length-1) - ((config.barStrokeWidth/2)*data.datasets.length-1))/data.datasets.length;
