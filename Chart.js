@@ -1242,13 +1242,13 @@ window.Chart = function(context){
 			var maxSteps = Math.floor((scaleHeight / (labelHeight*0.66)));
 			var minSteps = Math.floor((scaleHeight / labelHeight*0.5));
 			
-			return {
+			var bounds = {
 				maxValue : upperValue,
-				minValue : lowerValue,
+				minValue : config.stacked ? 0 : lowerValue,
 				maxSteps : maxSteps,
 				minSteps : minSteps
 			};
-			
+			return bounds;
 	
 		}
 	}
