@@ -1058,7 +1058,7 @@ window.Chart = function(context){
 				ctx.strokeStyle = data.datasets[i].strokeColor;
 				for (var j=0; j<data.datasets[i].data.length; j++){
 					barHeight = animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop);
-					barOffset = yAxisPosX + config.barValueSpacing + valueHop*j;
+					barOffset = yAxisPosX + config.barValueSpacing + valueHop*j + config.scaleGridLineWidth;
 					if(!config.stacked){
 						barOffset += barWidth*i + config.barDatasetSpacing*i + config.barStrokeWidth*i;
 					}
