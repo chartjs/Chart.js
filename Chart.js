@@ -993,7 +993,7 @@ window.Chart = function(context){
 			
 		}		
 		function getValueBounds() {
-			var upperValue = Number.MIN_VALUE;
+			var upperValue = -Number.MAX_VALUE;
 			var lowerValue = Number.MAX_VALUE;
 			for (var i=0; i<data.datasets.length; i++){
 				for (var j=0; j<data.datasets[i].data.length; j++){
@@ -1288,9 +1288,10 @@ window.Chart = function(context){
 			rangeOrderOfMagnitude = calculateOrderOfMagnitude(valueRange);
 
         	graphMin = Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
-            
+           
             graphMax = Math.ceil(maxValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
-            
+           
+		
             graphRange = graphMax - graphMin;
             
             stepValue = Math.pow(10, rangeOrderOfMagnitude);
