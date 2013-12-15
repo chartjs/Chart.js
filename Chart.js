@@ -11,7 +11,7 @@
 window.Chart = function(context){
 
 	var chart = this;
-	
+	var int_language = "en-EN";
 	
 	//Easing functions adapted from Robert Penner's easing equations
 	//http://www.robertpenner.com/easing/
@@ -929,7 +929,7 @@ window.Chart = function(context){
 				ctx.stroke();
 				
 				if (config.scaleShowLabels){
-					ctx.fillText(calculatedScale.labels[j],yAxisPosX-8,xAxisPosY - ((j+1) * scaleHop));
+					ctx.fillText(thousand_separator(calculatedScale.labels[j]),yAxisPosX-8,xAxisPosY - ((j+1) * scaleHop));
 				}
 			}
 			
@@ -993,7 +993,7 @@ window.Chart = function(context){
 			
 		}		
 		function getValueBounds() {
-			var upperValue = Number.MIN_VALUE;
+			var upperValue = -Number.MAX_VALUE;
 			var lowerValue = Number.MAX_VALUE;
 			for (var i=0; i<data.datasets.length; i++){
 				for (var j=0; j<data.datasets[i].data.length; j++){
@@ -1288,9 +1288,10 @@ window.Chart = function(context){
 			rangeOrderOfMagnitude = calculateOrderOfMagnitude(valueRange);
 
         	graphMin = Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
-            
+           
             graphMax = Math.ceil(maxValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
-            
+           
+		
             graphRange = graphMax - graphMin;
             
             stepValue = Math.pow(10, rangeOrderOfMagnitude);
@@ -1421,6 +1422,10 @@ window.Chart = function(context){
 	    // Provide some basic currying to the user
 	    return data ? fn( data ) : fn;
 	  };
+	  
+	  function thousand_separator(input) {
+			return parseFloat(input).toLocaleString(int_language);
+	}
 }
 
 
