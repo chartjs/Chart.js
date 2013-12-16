@@ -1046,12 +1046,18 @@ window.Chart = function(context){
 		
 		function drawBars(animPc){
 			ctx.lineWidth = config.barStrokeWidth;
-			for (var i=0; i<data.datasets.length; i++){
-					ctx.fillStyle = data.datasets[i].fillColor;
-					ctx.strokeStyle = data.datasets[i].strokeColor;
+			for (var i=0; i<data.datasets.length; i++){				
 				for (var j=0; j<data.datasets[i].data.length; j++){
 					var barOffset = yAxisPosX + config.barValueSpacing + valueHop*j + barWidth*i + config.barDatasetSpacing*i + config.barStrokeWidth*i;
 					
+					if (data.datasets[i].highlight && data.datasets[i].highlight[j]) {
+						ctx.fillStyle = data.datasets[i].highlight[j].fillColor;
+						ctx.strokeStyle = data.datasets[i].highlight[j].strokeColor;
+					} else {
+						ctx.fillStyle = data.datasets[i].fillColor;
+						ctx.strokeStyle = data.datasets[i].strokeColor;
+					}
+
 					ctx.beginPath();
 					ctx.moveTo(barOffset, xAxisPosY);
 					ctx.lineTo(barOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
