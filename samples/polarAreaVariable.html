@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Variable Arc Polar Area Chart</title>
+		<script src="../Chart.js"></script>
+		<meta name = "viewport" content = "initial-scale = 1, user-scalable = no">
+		<style>
+		</style>
+	</head>
+	<body>
+		<canvas id="canvas" height="400" width="400"></canvas>
+
+
+	<script>
+	var chartData = [
+			{
+				value : Math.random() * 0.8 + 0.2,
+				fraction : Math.random() * 0.95 + 0.05,
+				color: "#D97041"
+			},
+			{
+				value : Math.random() * 0.8 + 0.2,
+				fraction : Math.random() * 0.95 + 0.05,
+				color: "#C7604C"
+			},
+			{
+				value : Math.random() * 0.8 + 0.2,
+				fraction : Math.random() * 0.95 + 0.05,
+				color: "#21323D"
+			},
+			{
+				value : Math.random() * 0.8 + 0.2,
+				fraction : Math.random() * 0.95 + 0.05,
+				color: "#9D9B7F"
+			},
+			{
+				value : Math.random() * 0.8 + 0.2,
+				fraction : Math.random() * 0.95 + 0.05,
+				color: "#7D4F6D"
+			},
+			{
+				value : Math.random() * 0.8 + 0.2,
+				fraction : Math.random() * 0.95 + 0.05,
+				color: "#584A5E"
+			}
+		];
+	var options = {
+		scaleShowLabels : true,
+		scaleOverride: true,
+		scaleSteps: 10,
+		scaleStepWidth: 0.1,
+		scaleStartValue: 0.0,
+	};
+	var myPolarArea = new Chart(document.getElementById("canvas").getContext("2d")).PolarArea(chartData,options);
+	</script>
+	</body>
+</html>

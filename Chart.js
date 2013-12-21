@@ -356,7 +356,7 @@ window.Chart = function(context){
 
 	var PolarArea = function(data,config,ctx){
 		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString;		
-		
+		var angleSteps = new Array();
 		
 		calculateDrawingSizes();
 		
@@ -380,6 +380,20 @@ window.Chart = function(context){
 		}
 		
 		scaleHop = maxSize/(calculatedScale.steps);
+
+		// Compute arc angles
+		var totalFraction = 0.0;
+		for (var i=0; i<data.length; i++) {
+			angleSteps[i] = (Math.PI*2);
+			if ( data[i].fraction ) {
+				totalFraction += data[i].fraction;
+				angleSteps[i] *= data[i].fraction;
+			}
+		}
+		if ( 0.0 == totalFraction )
+			totalFraction = data.length;
+		for (var i=0; i<data.length; i++)
+			angleSteps[i] /= totalFraction;
 
 		//Wrap in an animation loop wrapper
 		animationLoop(config,drawScale,drawAllSegments,ctx);
@@ -437,7 +451,6 @@ window.Chart = function(context){
 		}
 		function drawAllSegments(animationDecimal){
 			var startAngle = -Math.PI/2,
-			angleStep = (Math.PI*2)/data.length,
 			scaleAnimation = 1,
 			rotateAnimation = 1;
 			if (config.animation) {
@@ -452,7 +465,7 @@ window.Chart = function(context){
 			for (var i=0; i<data.length; i++){
 
 				ctx.beginPath();
-				ctx.arc(width/2,height/2,scaleAnimation * calculateOffset(data[i].value,calculatedScale,scaleHop),startAngle, startAngle + rotateAnimation*angleStep, false);
+				ctx.arc(width/2,height/2,scaleAnimation * calculateOffset(data[i].value,calculatedScale,scaleHop),startAngle, startAngle + rotateAnimation*angleSteps[i], false);
 				ctx.lineTo(width/2,height/2);
 				ctx.closePath();
 				ctx.fillStyle = data[i].color;
@@ -463,7 +476,7 @@ window.Chart = function(context){
 					ctx.lineWidth = config.segmentStrokeWidth;
 					ctx.stroke();
 				}
-				startAngle += rotateAnimation*angleStep;
+				startAngle += rotateAnimation*angleSteps[i];
 			}
 		}
 		function getValueBounds() {
