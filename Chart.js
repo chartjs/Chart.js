@@ -467,24 +467,22 @@ window.Chart = function(context){
 			}
 		}
 		function getValueBounds() {
-			var upperValue = Number.MIN_VALUE;
-			var lowerValue = Number.MAX_VALUE;
+			var upperValue = (-1) * Number.MAX_VALUE,
+				lowerValue = Number.MAX_VALUE,
+				maxSteps = Math.floor((scaleHeight / (labelHeight*0.66))),
+				minSteps = Math.floor((scaleHeight / labelHeight*0.5));
+
 			for (var i=0; i<data.length; i++){
 				if (data[i].value > upperValue) {upperValue = data[i].value;}
 				if (data[i].value < lowerValue) {lowerValue = data[i].value;}
 			};
 
-			var maxSteps = Math.floor((scaleHeight / (labelHeight*0.66)));
-			var minSteps = Math.floor((scaleHeight / labelHeight*0.5));
-			
 			return {
 				maxValue : upperValue,
 				minValue : lowerValue,
 				maxSteps : maxSteps,
 				minSteps : minSteps
 			};
-			
-
 		}
 	}
 
@@ -668,9 +666,11 @@ window.Chart = function(context){
 			labelHeight = Default(labelHeight,5);
 		};
 		function getValueBounds() {
-			var upperValue = Number.MIN_VALUE;
-			var lowerValue = Number.MAX_VALUE;
-			
+			var upperValue = (-1) * Number.MAX_VALUE,
+				lowerValue = Number.MAX_VALUE,
+				maxSteps = Math.floor((scaleHeight / (labelHeight*0.66))),
+				minSteps = Math.floor((scaleHeight / labelHeight*0.5));
+
 			for (var i=0; i<data.datasets.length; i++){
 				for (var j=0; j<data.datasets[i].data.length; j++){
 					if (data.datasets[i].data[j] > upperValue){upperValue = data.datasets[i].data[j]}
@@ -678,9 +678,6 @@ window.Chart = function(context){
 				}
 			}
 
-			var maxSteps = Math.floor((scaleHeight / (labelHeight*0.66)));
-			var minSteps = Math.floor((scaleHeight / labelHeight*0.5));
-			
 			return {
 				maxValue : upperValue,
 				minValue : lowerValue,
@@ -993,8 +990,11 @@ window.Chart = function(context){
 			
 		}		
 		function getValueBounds() {
-			var upperValue = Number.MIN_VALUE;
-			var lowerValue = Number.MAX_VALUE;
+			var upperValue = (-1) * Number.MAX_VALUE,
+				lowerValue = Number.MAX_VALUE,
+				maxSteps = Math.floor((scaleHeight / (labelHeight*0.66))),
+				minSteps = Math.floor((scaleHeight / labelHeight*0.5));
+
 			for (var i=0; i<data.datasets.length; i++){
 				for (var j=0; j<data.datasets[i].data.length; j++){
 					if ( data.datasets[i].data[j] > upperValue) { upperValue = data.datasets[i].data[j] };
@@ -1002,9 +1002,6 @@ window.Chart = function(context){
 				}
 			};
 	
-			var maxSteps = Math.floor((scaleHeight / (labelHeight*0.66)));
-			var minSteps = Math.floor((scaleHeight / labelHeight*0.5));
-			
 			return {
 				maxValue : upperValue,
 				minValue : lowerValue,
@@ -1197,26 +1194,24 @@ window.Chart = function(context){
 			
 		}		
 		function getValueBounds() {
-			var upperValue = Number.MIN_VALUE;
-			var lowerValue = Number.MAX_VALUE;
+			var upperValue = (-1) * Number.MAX_VALUE,
+				lowerValue = Number.MAX_VALUE,
+				maxSteps = Math.floor((scaleHeight / (labelHeight*0.66))),
+				minSteps = Math.floor((scaleHeight / labelHeight*0.5));
+
 			for (var i=0; i<data.datasets.length; i++){
 				for (var j=0; j<data.datasets[i].data.length; j++){
 					if ( data.datasets[i].data[j] > upperValue) { upperValue = data.datasets[i].data[j] };
 					if ( data.datasets[i].data[j] < lowerValue) { lowerValue = data.datasets[i].data[j] };
 				}
 			};
-	
-			var maxSteps = Math.floor((scaleHeight / (labelHeight*0.66)));
-			var minSteps = Math.floor((scaleHeight / labelHeight*0.5));
-			
+
 			return {
 				maxValue : upperValue,
 				minValue : lowerValue,
 				maxSteps : maxSteps,
 				minSteps : minSteps
 			};
-			
-	
 		}
 	}
 	
@@ -1295,7 +1290,7 @@ window.Chart = function(context){
             
             stepValue = Math.pow(10, rangeOrderOfMagnitude);
             
-	        numberOfSteps = Math.round(graphRange / stepValue);
+	        numberOfSteps = Math.round(graphRange / stepValue) || minSteps;
 	        
 	        //Compare number of steps to the max and min for that size graph, and add in half steps if need be.	        
 	        while(numberOfSteps < minSteps || numberOfSteps > maxSteps) {
@@ -1321,7 +1316,7 @@ window.Chart = function(context){
 	        }
 		
 			function calculateOrderOfMagnitude(val){
-			  return Math.floor(Math.log(val) / Math.LN10);
+				return val == 0 ? 1 : Math.floor(Math.log(val) / Math.LN10);
 			}		
 
 
