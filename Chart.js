@@ -467,7 +467,7 @@ window.Chart = function(context){
 			}
 		}
 		function getValueBounds() {
-			var upperValue = Number.MIN_VALUE,
+			var upperValue = (-1) * Number.MAX_VALUE,
 				lowerValue = Number.MAX_VALUE,
 				maxSteps = Math.floor((scaleHeight / (labelHeight*0.66))),
 				minSteps = Math.floor((scaleHeight / labelHeight*0.5));
@@ -666,7 +666,7 @@ window.Chart = function(context){
 			labelHeight = Default(labelHeight,5);
 		};
 		function getValueBounds() {
-			var upperValue = Number.MIN_VALUE,
+			var upperValue = (-1) * Number.MAX_VALUE,
 				lowerValue = Number.MAX_VALUE,
 				maxSteps = Math.floor((scaleHeight / (labelHeight*0.66))),
 				minSteps = Math.floor((scaleHeight / labelHeight*0.5));
@@ -990,7 +990,7 @@ window.Chart = function(context){
 			
 		}		
 		function getValueBounds() {
-			var upperValue = Number.MIN_VALUE,
+			var upperValue = (-1) * Number.MAX_VALUE,
 				lowerValue = Number.MAX_VALUE,
 				maxSteps = Math.floor((scaleHeight / (labelHeight*0.66))),
 				minSteps = Math.floor((scaleHeight / labelHeight*0.5));
@@ -1194,7 +1194,7 @@ window.Chart = function(context){
 			
 		}		
 		function getValueBounds() {
-			var upperValue = Number.MIN_VALUE,
+			var upperValue = (-1) * Number.MAX_VALUE,
 				lowerValue = Number.MAX_VALUE,
 				maxSteps = Math.floor((scaleHeight / (labelHeight*0.66))),
 				minSteps = Math.floor((scaleHeight / labelHeight*0.5));
