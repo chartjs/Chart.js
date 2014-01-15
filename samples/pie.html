@@ -18,20 +18,23 @@
 		var pieData = [
 				{
 					value: 30,
-					color:"#F38630"
+					color:"#F38630",
+          label : 'PTS-<%=value%>'
 				},
 				{
 					value : 50,
-					color : "#E0E4CC"
+					color : "#E0E4CC",
+          label : 'LTC-<%=value%>'
 				},
 				{
 					value : 100,
-					color : "#69D2E7"
+					color : "#69D2E7",
+          label : 'BTC-<%=value%>'
 				}
 			
 			];
 
-      var myPie = new Chart(document.getElementById("canvas").getContext("2d")).Pie(pieData, { scaleShowValues: true });
+      var myPie = new Chart(document.getElementById("canvas").getContext("2d")).Pie(pieData, { scaleShowLabels: true });
 	
 	</script>
 	</body>

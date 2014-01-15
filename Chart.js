@@ -245,12 +245,13 @@ window.Chart = function(context){
 	
 	this.Pie = function(data,options){
 		chart.Pie.defaults = {
-      scaleShowValues: false,
-      scaleValuePaddingX: 35,
+      scaleShowLabels: false,
+      scaleLabelPaddingX: 35,
       scaleFontFamily : "'Arial'",
       scaleFontSize : 12,
       scaleFontStyle : "normal",
       scaleFontColor : "#666",
+		  scaleLabel : "<%=value%>",
 			segmentShowStroke : true,
 			segmentStrokeColor : "#fff",
 			segmentStrokeWidth : 2,
@@ -270,12 +271,13 @@ window.Chart = function(context){
 	this.Doughnut = function(data,options){
 	
 		chart.Doughnut.defaults = {
-    scaleShowValues: false,
-    scaleValuePaddingX: 35,
-    scaleFontFamily : "'Arial'",
-    scaleFontSize : 12,
-    scaleFontStyle : "normal",
-    scaleFontColor : "#666",
+      scaleShowLabels: false,
+      scaleLabelPaddingX: 35,
+      scaleFontFamily : "'Arial'",
+      scaleFontSize : 12,
+      scaleFontStyle : "normal",
+      scaleFontColor : "#666",
+		  scaleLabel : "<%=value%>",
     //Boolean - Whether we should show a stroke on each segment
 			segmentShowStroke : true,
 			segmentStrokeColor : "#fff",
@@ -739,7 +741,7 @@ window.Chart = function(context){
 				ctx.fillStyle = data[i].color;
 				ctx.fill();
 
-        if (config.scaleShowValues) {
+        if (config.scaleShowLabels) {
           ctx.save()
           ctx.translate(width / 2, height / 2);
           ctx.textAlign = 'center';
@@ -751,7 +753,9 @@ window.Chart = function(context){
           ctx.translate(Math.cos(a) * pieRadius, Math.sin(a) * pieRadius);
           ctx.rotate(a - (b ? Math.PI : 0));
           ctx.fillStyle = config.scaleFontColor;
-          ctx.fillText(data[i].value, (b ? 1 : -1) * (w / 2 + config.scaleValuePaddingX), config.scaleFontSize / 2);
+          var labelTemplateString = data[i].label || config.scaleLabel;
+          var text = tmpl(labelTemplateString, { value: data[i].value });
+          ctx.fillText(text, (b ? 1 : -1) * (w / 2 + config.scaleLabelPaddingX), config.scaleFontSize / 2);
           ctx.restore();
         }
 				
@@ -802,7 +806,7 @@ window.Chart = function(context){
 				ctx.fillStyle = data[i].color;
 				ctx.fill();
 
-      if (config.scaleShowValues) {
+      if (config.scaleShowLabels) {
         ctx.save()
         ctx.translate(width / 2, height / 2);
         ctx.textAlign = 'center';
@@ -814,7 +818,9 @@ window.Chart = function(context){
         ctx.translate(Math.cos(a) * doughnutRadius, Math.sin(a) * doughnutRadius);
         ctx.rotate(a - (b ? Math.PI : 0));
         ctx.fillStyle = config.scaleFontColor;
-        ctx.fillText(data[i].value, (b ? 1 : -1) * (w / 2 + config.scaleValuePaddingX), config.scaleFontSize / 2);
+        var labelTemplateString = data[i].label || config.scaleLabel;
+        var text = tmpl(labelTemplateString, { value: data[i].value });
+        ctx.fillText(text, (b ? 1 : -1) * (w / 2 + config.scaleLabelPaddingX), config.scaleFontSize / 2);
         ctx.restore();
       }
 				

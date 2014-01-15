@@ -26,20 +26,23 @@
 				},
 				{
 					value : 100,
-					color : "#FDB45C"
+					color : "#FDB45C",
+          label : 'LTC-<%=value%>'
 				},
 				{
 					value : 40,
-					color : "#949FB1"
+					color : "#949FB1",
+          label : 'PTS-<%=value%>'
 				},
 				{
 					value : 120,
-					color : "#4D5360"
+					color : "#4D5360",
+          label : 'BTC-<%=value%>'
 				}
 			
 			];
 
-      var myDoughnut = new Chart(document.getElementById("canvas").getContext("2d")).Doughnut(doughnutData, { scaleShowValues: true });
+      var myDoughnut = new Chart(document.getElementById("canvas").getContext("2d")).Doughnut(doughnutData, { scaleShowLabels: true });
 	
 	</script>
 	</body>
