@@ -1287,6 +1287,8 @@ window.Chart = function(context){
 			
 			rangeOrderOfMagnitude = calculateOrderOfMagnitude(valueRange);
 
+      rangeOrderOfMagnitude = (rangeOrderOfMagnitude > 0) ? rangeOrderOfMagnitude : 1
+
         	graphMin = Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
             
             graphMax = Math.ceil(maxValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude);
