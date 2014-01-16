@@ -343,7 +343,8 @@ window.Chart = function(context){
 			animation : true,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			showHighlights: true
 		};		
 		var config = (options) ? mergeChartConfig(chart.Bar.defaults,options) : chart.Bar.defaults;
 		
@@ -1050,7 +1051,7 @@ window.Chart = function(context){
 				for (var j=0; j<data.datasets[i].data.length; j++){
 					var barOffset = yAxisPosX + config.barValueSpacing + valueHop*j + barWidth*i + config.barDatasetSpacing*i + config.barStrokeWidth*i;
 					
-					if (data.datasets[i].highlight && data.datasets[i].highlight[j]) {
+					if (config.showHighlights && data.datasets[i].highlight && data.datasets[i].highlight[j]) {
 						ctx.fillStyle = data.datasets[i].highlight[j].fillColor;
 						ctx.strokeStyle = data.datasets[i].highlight[j].strokeColor;
 					} else {
