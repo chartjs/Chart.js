@@ -311,7 +311,8 @@ window.Chart = function(context){
 			animation : true,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			showLegend: false
 		};		
 		var config = (options) ? mergeChartConfig(chart.Line.defaults,options) : chart.Line.defaults;
 		
@@ -807,12 +808,21 @@ window.Chart = function(context){
 			}
 			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
 		}
+			
 		
 		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
 		calculateXAxisSize();
 		animationLoop(config,drawScale,drawLines,ctx);		
 		
 		function drawLines(animPc){
+			// Init some legend variables
+			if (config.showLegend) {
+				var spacer = {
+					gap: 1,
+					legendY: 5,
+					z: 0
+				};
+			}
 			for (var i=0; i<data.datasets.length; i++){
 				ctx.strokeStyle = data.datasets[i].strokeColor;
 				ctx.lineWidth = config.datasetStrokeWidth;
@@ -849,6 +859,10 @@ window.Chart = function(context){
 						ctx.stroke();
 					}
 				}
+				// Show legend code here
+				if (config.showLegend) {
+					spacer = drawLegend(i, yAxisPosX, spacer, data, ctx);
+				}
 			}
 			
 			function yPos(dataSet,iteration){
@@ -866,7 +880,6 @@ window.Chart = function(context){
 			ctx.moveTo(width-widestXLabel/2+5,xAxisPosY);
 			ctx.lineTo(width-(widestXLabel/2)-xAxisLength-5,xAxisPosY);
 			ctx.stroke();
-			
 			
 			if (rotateLabels > 0){
 				ctx.save();
@@ -914,6 +927,7 @@ window.Chart = function(context){
 			
 			ctx.textAlign = "right";
 			ctx.textBaseline = "middle";
+			
 			for (var j=0; j<calculatedScale.steps; j++){
 				ctx.beginPath();
 				ctx.moveTo(yAxisPosX-3,xAxisPosY - ((j+1) * scaleHop));
@@ -1013,8 +1027,7 @@ window.Chart = function(context){
 			};
 			
 	
-		}
-
+		}	
 		
 	}
 	
@@ -1045,6 +1058,14 @@ window.Chart = function(context){
 		animationLoop(config,drawScale,drawBars,ctx);		
 		
 		function drawBars(animPc){
+			// Init some legend variables
+			if (config.showLegend) {
+				var spacer = {
+					gap: 1,
+					legendY: 5,
+					z: 0
+				};
+			}
 			ctx.lineWidth = config.barStrokeWidth;
 			for (var i=0; i<data.datasets.length; i++){
 					ctx.fillStyle = data.datasets[i].fillColor;
@@ -1062,6 +1083,10 @@ window.Chart = function(context){
 					}
 					ctx.closePath();
 					ctx.fill();
+				}
+				// Show legend code here
+				if (config.showLegend) {
+					spacer = drawLegend(i, yAxisPosX, spacer, data, ctx);
 				}
 			}
 			
@@ -1387,6 +1412,33 @@ window.Chart = function(context){
 	    for (var attrname in defaults) { returnObj[attrname] = defaults[attrname]; }
 	    for (var attrname in userDefined) { returnObj[attrname] = userDefined[attrname]; }
 	    return returnObj;
+	}
+	
+	function drawLegend(i, yAxisPosX, spacer, data, ctx) {
+		ctx.textAlign = 'left';
+		var space = 20 * spacer.z,
+			x = yAxisPosX,
+			sqrSize = 10;
+		// Wrapping width calculation in function to reduce duplication
+		function calculateLegendWidth() {
+			return x + spacer.gap + space + sqrSize+5;
+		}
+		// Add some simple text wrapping logic
+		if (calculateLegendWidth() + ctx.measureText(data.datasets[i].title).width > ctx.canvas.width) {
+			spacer.legendY += 12;
+			x = yAxisPosX;
+			spacer.gap = 1;
+			space = 0;
+			z = 0;
+		}
+		// Draw legend
+		ctx.rect(x + spacer.gap + space + 2, spacer.legendY-sqrSize/2, sqrSize, sqrSize);
+		ctx.fill();
+		ctx.fillText(data.datasets[i].title, calculateLegendWidth(), spacer.legendY);
+		spacer.gap += ctx.measureText(data.datasets[i].title).width;
+		spacer.z++;
+		return spacer;
+		
 	}
 	
 	//Javascript micro templating by John Resig - source at http://ejohn.org/blog/javascript-micro-templating/
