@@ -253,6 +253,7 @@ var Chart = function(context){
 			animationEasing : "easeOutBounce",
 			animateRotate : true,
 			animateScale : false,
+			cumulativeAngle : null,
 			onAnimationComplete : null
 		};		
 
@@ -273,6 +274,7 @@ var Chart = function(context){
 			animationEasing : "easeOutBounce",
 			animateRotate : true,
 			animateScale : false,
+			cumulativeAngle : null,
 			onAnimationComplete : null
 		};		
 
@@ -725,6 +727,9 @@ var Chart = function(context){
 					rotateAnimation = animationDecimal;
 				}
 			}
+			if (config.cumulativeAngle) {
+				cumulativeAngle = config.cumulativeAngle;
+			}
 			for (var i=0; i<data.length; i++){
 				var segmentAngle = rotateAnimation * ((data[i].value/segmentTotal) * (Math.PI*2));
 				ctx.beginPath();
@@ -771,6 +776,9 @@ var Chart = function(context){
 				if (config.animateRotate){
 					rotateAnimation = animationDecimal;
 				}
+			}
+			if (config.cumulativeAngle) {
+				cumulativeAngle = config.cumulativeAngle;
 			}
 			for (var i=0; i<data.length; i++){
 				var segmentAngle = rotateAnimation * ((data[i].value/segmentTotal) * (Math.PI*2));
@@ -1351,6 +1359,16 @@ var Chart = function(context){
 			}		
 
 
+	}
+
+    //Populate an array of all the labels by interpolating the string.
+    function populateLabels(labelTemplateString, labels, numberOfSteps, graphMin, stepValue) {
+        if (labelTemplateString) {
+            //Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
+            for (var i = 1; i < numberOfSteps + 1; i++) {
+                labels.push(tmpl(labelTemplateString, {value: (graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue))}));
+            }
+        }
 	}
 	
 	//Max value from array
