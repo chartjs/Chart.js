@@ -253,6 +253,7 @@ window.Chart = function(context){
 			animationEasing : "easeOutBounce",
 			animateRotate : true,
 			animateScale : false,
+			cumulativeAngle : null,
 			onAnimationComplete : null
 		};		
 
@@ -273,6 +274,7 @@ window.Chart = function(context){
 			animationEasing : "easeOutBounce",
 			animateRotate : true,
 			animateScale : false,
+			cumulativeAngle : null,
 			onAnimationComplete : null
 		};		
 
@@ -717,6 +719,9 @@ window.Chart = function(context){
 					rotateAnimation = animationDecimal;
 				}
 			}
+			if (config.cumulativeAngle) {
+				cumulativeAngle = config.cumulativeAngle;
+			}
 			for (var i=0; i<data.length; i++){
 				var segmentAngle = rotateAnimation * ((data[i].value/segmentTotal) * (Math.PI*2));
 				ctx.beginPath();
@@ -763,6 +768,9 @@ window.Chart = function(context){
 				if (config.animateRotate){
 					rotateAnimation = animationDecimal;
 				}
+			}
+			if (config.cumulativeAngle) {
+				cumulativeAngle = config.cumulativeAngle;
 			}
 			for (var i=0; i<data.length; i++){
 				var segmentAngle = rotateAnimation * ((data[i].value/segmentTotal) * (Math.PI*2));
