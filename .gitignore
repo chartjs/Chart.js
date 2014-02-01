@@ -1,2 +1,6 @@
 
 .DS_Store
+/.project
+/.gitignore
+
+.gitignore
