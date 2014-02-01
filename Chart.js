@@ -1205,6 +1205,14 @@ window.Chart = function(context){
 					if ( data.datasets[i].data[j] < lowerValue) { lowerValue = data.datasets[i].data[j] };
 				}
 			};
+			
+			if(data.datasets.length === 1){
+				if(config.scaleStartValue === null){
+					lowerValue = 0;
+				}else{
+					lowerValue = config.scaleStartValue;
+				}
+			}
 	
 			var maxSteps = Math.floor((scaleHeight / (labelHeight*0.66)));
 			var minSteps = Math.floor((scaleHeight / labelHeight*0.5));
