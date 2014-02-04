@@ -192,7 +192,7 @@ window.Chart = function(context){
 			animateScale : false,
 			onAnimationComplete : null,
 			minYtop : 0,
-                        roundYaxis: false
+                       roundYaxis: false
 		};
 		
 		var config = (options)? mergeChartConfig(chart.PolarArea.defaults,options) : chart.PolarArea.defaults;
