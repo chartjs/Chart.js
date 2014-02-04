@@ -239,7 +239,7 @@ window.Chart = function(context){
 			animationEasing : "easeOutQuart",
 			onAnimationComplete : null,
 			minYtop : 0,
-                        roundYaxis: false
+                       roundYaxis: false
 		};
 		
 		var config = (options)? mergeChartConfig(chart.Radar.defaults,options) : chart.Radar.defaults;
@@ -259,7 +259,7 @@ window.Chart = function(context){
 			animateScale : false,
 			onAnimationComplete : null,
 			minYtop : 0,
-                        roundYaxis: false
+                       roundYaxis: false
 		};		
 
 		var config = (options)? mergeChartConfig(chart.Pie.defaults,options) : chart.Pie.defaults;
@@ -281,7 +281,7 @@ window.Chart = function(context){
 			animateScale : false,
 			onAnimationComplete : null,
 			minYtop : 0,
-                        roundYaxis: false
+                       roundYaxis: false
 		};		
 
 		var config = (options)? mergeChartConfig(chart.Doughnut.defaults,options) : chart.Doughnut.defaults;
@@ -321,7 +321,7 @@ window.Chart = function(context){
 			animationEasing : "easeOutQuart",
 			onAnimationComplete : null,
 			minYtop : 0,
-                        roundYaxis: false
+                       roundYaxis: false
 		};		
 		var config = (options) ? mergeChartConfig(chart.Line.defaults,options) : chart.Line.defaults;
 		
@@ -355,7 +355,7 @@ window.Chart = function(context){
 			animationEasing : "easeOutQuart",
 			onAnimationComplete : null,
 			minYtop : 0,
-                        roundYaxis: false
+                       roundYaxis: false
 		};		
 		var config = (options) ? mergeChartConfig(chart.Bar.defaults,options) : chart.Bar.defaults;
 		
