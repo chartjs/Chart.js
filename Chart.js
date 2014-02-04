@@ -190,7 +190,9 @@ window.Chart = function(context){
 			animationEasing : "easeOutBounce",
 			animateRotate : true,
 			animateScale : false,
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			minYtop : 0,
+                       roundYaxis: false
 		};
 		
 		var config = (options)? mergeChartConfig(chart.PolarArea.defaults,options) : chart.PolarArea.defaults;
@@ -235,7 +237,9 @@ window.Chart = function(context){
 			animation : true,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			minYtop : 0,
+                       roundYaxis: false
 		};
 		
 		var config = (options)? mergeChartConfig(chart.Radar.defaults,options) : chart.Radar.defaults;
@@ -253,7 +257,9 @@ window.Chart = function(context){
 			animationEasing : "easeOutBounce",
 			animateRotate : true,
 			animateScale : false,
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			minYtop : 0,
+                       roundYaxis: false
 		};		
 
 		var config = (options)? mergeChartConfig(chart.Pie.defaults,options) : chart.Pie.defaults;
@@ -273,7 +279,9 @@ window.Chart = function(context){
 			animationEasing : "easeOutBounce",
 			animateRotate : true,
 			animateScale : false,
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			minYtop : 0,
+                       roundYaxis: false
 		};		
 
 		var config = (options)? mergeChartConfig(chart.Doughnut.defaults,options) : chart.Doughnut.defaults;
@@ -311,7 +319,9 @@ window.Chart = function(context){
 			animation : true,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			minYtop : 0,
+                       roundYaxis: false
 		};		
 		var config = (options) ? mergeChartConfig(chart.Line.defaults,options) : chart.Line.defaults;
 		
@@ -343,7 +353,9 @@ window.Chart = function(context){
 			animation : true,
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
-			onAnimationComplete : null
+			onAnimationComplete : null,
+			minYtop : 0,
+                       roundYaxis: false
 		};		
 		var config = (options) ? mergeChartConfig(chart.Bar.defaults,options) : chart.Bar.defaults;
 		
@@ -473,9 +485,16 @@ window.Chart = function(context){
 				if (data[i].value > upperValue) {upperValue = data[i].value;}
 				if (data[i].value < lowerValue) {lowerValue = data[i].value;}
 			};
+			
+	                if (upperValue < config.minYtop) { upperValue = config.minYtop; }
 
 			var maxSteps = Math.floor((scaleHeight / (labelHeight*0.66)));
-			var minSteps = Math.floor((scaleHeight / labelHeight*0.5));
+			var minSteps;
+			if (config.roundYaxis) {
+                		minSteps = (upperValue < Math.floor((scaleHeight / labelHeight*0.5))) ? upperValue : Math.floor((scaleHeight / labelHeight*0.5));
+			} else {
+				minSteps = Math.floor((scaleHeight / labelHeight*0.5));
+			}
 			
 			return {
 				maxValue : upperValue,
@@ -677,9 +696,16 @@ window.Chart = function(context){
 					if (data.datasets[i].data[j] < lowerValue){lowerValue = data.datasets[i].data[j]}
 				}
 			}
+			
+			if (upperValue < config.minYtop) { upperValue = config.minYtop; }
 
 			var maxSteps = Math.floor((scaleHeight / (labelHeight*0.66)));
-			var minSteps = Math.floor((scaleHeight / labelHeight*0.5));
+			var minSteps;
+			if (config.roundYaxis) {
+                		minSteps = (upperValue < Math.floor((scaleHeight / labelHeight*0.5))) ? upperValue : Math.floor((scaleHeight / labelHeight*0.5));
+			} else {
+				minSteps = Math.floor((scaleHeight / labelHeight*0.5));
+			}
 			
 			return {
 				maxValue : upperValue,
@@ -1001,9 +1027,16 @@ window.Chart = function(context){
 					if ( data.datasets[i].data[j] < lowerValue) { lowerValue = data.datasets[i].data[j] };
 				}
 			};
+			
+			if (upperValue < config.minYtop) { upperValue = config.minYtop; }
 	
 			var maxSteps = Math.floor((scaleHeight / (labelHeight*0.66)));
-			var minSteps = Math.floor((scaleHeight / labelHeight*0.5));
+			var minSteps;
+			if (config.roundYaxis) {
+                		minSteps = (upperValue < Math.floor((scaleHeight / labelHeight*0.5))) ? upperValue : Math.floor((scaleHeight / labelHeight*0.5));
+			} else {
+				minSteps = Math.floor((scaleHeight / labelHeight*0.5));
+			}
 			
 			return {
 				maxValue : upperValue,
@@ -1205,9 +1238,16 @@ window.Chart = function(context){
 					if ( data.datasets[i].data[j] < lowerValue) { lowerValue = data.datasets[i].data[j] };
 				}
 			};
+			
+			if (upperValue < config.minYtop) { upperValue = config.minYtop; }
 	
 			var maxSteps = Math.floor((scaleHeight / (labelHeight*0.66)));
-			var minSteps = Math.floor((scaleHeight / labelHeight*0.5));
+			var minSteps;
+			if (config.roundYaxis) {
+                		minSteps = (upperValue < Math.floor((scaleHeight / labelHeight*0.5))) ? upperValue : Math.floor((scaleHeight / labelHeight*0.5));
+			} else {
+				minSteps = Math.floor((scaleHeight / labelHeight*0.5));
+			}
 			
 			return {
 				maxValue : upperValue,
@@ -1300,7 +1340,11 @@ window.Chart = function(context){
 	        //Compare number of steps to the max and min for that size graph, and add in half steps if need be.	        
 	        while(numberOfSteps < minSteps || numberOfSteps > maxSteps) {
 	        	if (numberOfSteps < minSteps){
-			        stepValue /= 2;
+				if (config.roundYaxis) {
+                			stepValue = Math.round(stepValue / 2);
+				} else {
+					stepValue /= 2;
+				}
 			        numberOfSteps = Math.round(graphRange/stepValue);
 		        }
 		        else{
