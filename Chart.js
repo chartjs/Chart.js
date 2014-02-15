@@ -344,7 +344,8 @@ window.Chart = function(context){
 			animationSteps : 60,
 			animationEasing : "easeOutQuart",
 			onAnimationComplete : null,
-			stacked : false
+			stacked : false,
+			stackedShowZero : false
 		};		
 		var config = (options) ? mergeChartConfig(chart.Bar.defaults,options) : chart.Bar.defaults;
 		
@@ -1057,23 +1058,25 @@ window.Chart = function(context){
 				ctx.fillStyle = data.datasets[i].fillColor;
 				ctx.strokeStyle = data.datasets[i].strokeColor;
 				for (var j=0; j<data.datasets[i].data.length; j++){
-					barHeight = animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop);
-					barOffset = yAxisPosX + config.barValueSpacing + valueHop*j + config.scaleGridLineWidth;
-					if(!config.stacked){
-						barOffset += barWidth*i + config.barDatasetSpacing*i + config.barStrokeWidth*i;
-					}
-					ctx.beginPath();
-					ctx.moveTo(barOffset, xAxisPosY - yOffset[j]);
-					ctx.lineTo(barOffset, xAxisPosY - yOffset[j] - barHeight + (config.barStrokeWidth/2));
-					ctx.lineTo(barOffset + barWidth, xAxisPosY - yOffset[j] - barHeight + (config.barStrokeWidth/2));
-					ctx.lineTo(barOffset + barWidth, xAxisPosY - yOffset[j]);
-					if(config.barShowStroke){
-						ctx.stroke();
-					}
-					ctx.closePath();
-					ctx.fill();
-					if(config.stacked){
-						yOffset[j] += barHeight;
+					if(config.stackedShowZero || data.datasets[i].data[j]) {
+						barHeight = animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop);
+						barOffset = yAxisPosX + config.barValueSpacing + valueHop*j + config.scaleGridLineWidth;
+						if(!config.stacked){
+							barOffset += barWidth*i + config.barDatasetSpacing*i + config.barStrokeWidth*i;
+						}
+						ctx.beginPath();
+						ctx.moveTo(barOffset, xAxisPosY - yOffset[j]);
+						ctx.lineTo(barOffset, xAxisPosY - yOffset[j] - barHeight + (config.barStrokeWidth/2));
+						ctx.lineTo(barOffset + barWidth, xAxisPosY - yOffset[j] - barHeight + (config.barStrokeWidth/2));
+						ctx.lineTo(barOffset + barWidth, xAxisPosY - yOffset[j]);
+						if(config.barShowStroke){
+							ctx.stroke();
+						}
+						ctx.closePath();
+						ctx.fill();
+						if(config.stacked){
+							yOffset[j] += barHeight;
+						}
 					}
 				}
 			}
