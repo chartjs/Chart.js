@@ -15,7 +15,7 @@ Chart.js was taken down on the 19th March. It is now back online for good and IS
 Fork
 -------
 
-A few features have been added. See relevant samples pages for a demo. See also [http://www.brittle-star.com/http://www.brittle-star.com/code/a-stem-fork-of-chart-js/](http://www.brittle-star.com/code/a-stem-fork-of-chart-js/)
+A few features have been added. See relevant samples pages for a demo. [View the new Chart types here.](http://www.caseyy.org/code/a-stem-fork-of-chart-js/)
 
 ### box-and-whisker plots (special case of bar charts)
 
