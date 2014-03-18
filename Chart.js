@@ -717,8 +717,12 @@ window.Chart = function(context){
 					rotateAnimation = animationDecimal;
 				}
 			}
+			var zeroFlag = true
 			for (var i=0; i<data.length; i++){
 				var segmentAngle = rotateAnimation * ((data[i].value/segmentTotal) * (Math.PI*2));
+
+				if (data[i].value != 0) { zeroFlag = false; };
+
 				ctx.beginPath();
 				ctx.arc(width/2,height/2,scaleAnimation * pieRadius,cumulativeAngle,cumulativeAngle + segmentAngle);
 				ctx.lineTo(width/2,height/2);
@@ -732,7 +736,13 @@ window.Chart = function(context){
 					ctx.stroke();
 				}
 				cumulativeAngle += segmentAngle;
-			}			
+			}
+			if (zeroFlag) {
+				for (var i = data.length - 1; i >= 0; i--) {
+					data[i].value = 1;
+				}
+				return new Pie(data, config, ctx);
+			};			
 		}		
 	}
 
