@@ -8,7 +8,7 @@
  */
 
 //Define the global Chart Variable as a class.
-var Chart = function(context){
+window.Chart = function(context){
 
 	var chart = this;
 	
@@ -253,7 +253,12 @@ var Chart = function(context){
 			animationEasing : "easeOutBounce",
 			animateRotate : true,
 			animateScale : false,
-			onAnimationComplete : null
+			animateLabels: true,
+			onAnimationComplete : null,
+			LabelFontFamily : "'Arial'",
+			LabelFontStyle : "normal",
+			LabelFontSize : 12,
+			LabelFontColor : "#666"
 		};		
 
 		var config = (options)? mergeChartConfig(chart.Pie.defaults,options) : chart.Pie.defaults;
@@ -273,7 +278,12 @@ var Chart = function(context){
 			animationEasing : "easeOutBounce",
 			animateRotate : true,
 			animateScale : false,
-			onAnimationComplete : null
+			animateLabels: true,
+			onAnimationComplete : null,
+			LabelFontFamily : "'Arial'",
+			LabelFontStyle : "normal",
+			LabelFontSize : 12,
+			LabelFontColor : "#666"
 		};		
 
 		var config = (options)? mergeChartConfig(chart.Doughnut.defaults,options) : chart.Doughnut.defaults;
@@ -376,11 +386,7 @@ var Chart = function(context){
 				graphMin : config.scaleStartValue,
 				labels : []
 			}
-			for (var i=0; i<calculatedScale.steps; i++){
-				if(labelTemplateString){
-				calculatedScale.labels.push(tmpl(labelTemplateString,{value:(config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces (config.scaleStepWidth))}));
-				}
-			}
+			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
 		}
 		
 		scaleHop = maxSize/(calculatedScale.steps);
@@ -516,11 +522,7 @@ var Chart = function(context){
 				graphMin : config.scaleStartValue,
 				labels : []
 			}
-			for (var i=0; i<calculatedScale.steps; i++){
-				if(labelTemplateString){
-				calculatedScale.labels.push(tmpl(labelTemplateString,{value:(config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces (config.scaleStepWidth))}));
-				}
-			}
+			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
 		}
 		
 		scaleHop = maxSize/(calculatedScale.steps);
@@ -701,22 +703,26 @@ var Chart = function(context){
 	}
 
 	var Pie = function(data,config,ctx){
-		var segmentTotal = 0;
+		var segmentTotal = 0,
+			labelColorRgb = hexToRgb(config.LabelFontColor),
+			pieRadius;
 		
-		//In case we have a canvas that is not a square. Minus 5 pixels as padding round the edge.
-		var pieRadius = Min([height/2,width/2]) - 5;
+		calculateDrawingSizes();
 		
 		for (var i=0; i<data.length; i++){
 			segmentTotal += data[i].value;
 		}
-		
-		
+
 		animationLoop(config,null,drawPieSegments,ctx);
 				
 		function drawPieSegments (animationDecimal){
 			var cumulativeAngle = -Math.PI/2,
-			scaleAnimation = 1,
-			rotateAnimation = 1;
+				labelAngle = -Math.PI/2,
+				scaleAnimation = 1,
+				rotateAnimation = 1,
+				labelOpacity = 1,
+				angleStep,
+				segmentAngle;
 			if (config.animation) {
 				if (config.animateScale) {
 					scaleAnimation = animationDecimal;
@@ -724,9 +730,13 @@ var Chart = function(context){
 				if (config.animateRotate){
 					rotateAnimation = animationDecimal;
 				}
+				if (config.animateLabels){
+					labelOpacity = animationDecimal;
+				}
 			}
 			for (var i=0; i<data.length; i++){
-				var segmentAngle = rotateAnimation * ((data[i].value/segmentTotal) * (Math.PI*2));
+				angleStep = (data[i].value/segmentTotal) * (Math.PI);
+				segmentAngle = rotateAnimation * angleStep * 2;
 				ctx.beginPath();
 				ctx.arc(width/2,height/2,scaleAnimation * pieRadius,cumulativeAngle,cumulativeAngle + segmentAngle);
 				ctx.lineTo(width/2,height/2);
@@ -739,16 +749,54 @@ var Chart = function(context){
 					ctx.strokeStyle = config.segmentStrokeColor;
 					ctx.stroke();
 				}
+
+				labelAngle += angleStep;
+				if (data[i].label) {
+					ctx.font = config.LabelFontStyle + " " + config.LabelFontSize+"px " + config.LabelFontFamily;
+					ctx.fillStyle = "rgba(" + labelColorRgb.join(",") + "," + labelOpacity + ")";
+
+					if(Math.abs(labelAngle) == Math.PI/2) {
+						ctx.textAlign = "center";
+					}
+					else if(Math.abs(labelAngle) > Math.PI/2){
+						ctx.textAlign = "right";
+					}
+					else{
+						ctx.textAlign = "left";
+					}
+					ctx.textBaseline = "middle";
+					ctx.fillText(data[i].label,width/2 + Math.cos(labelAngle)*(pieRadius+config.LabelFontSize),height/2 + Math.sin(labelAngle)*(pieRadius+config.LabelFontSize));
+
+				}
+				labelAngle += angleStep;
 				cumulativeAngle += segmentAngle;
 			}			
 		}		
+		function calculateDrawingSizes(){
+			pieRadius = (Min([width,height])/2);
+			
+			//Measure the longest label width.
+			var labelLength = 0;
+			for (var i=0; i<data.length; i++){
+				ctx.font = config.LabelFontStyle + " " + config.LabelFontSize+"px " + config.LabelFontFamily;
+				var textMeasurement = ctx.measureText(data[i].label).width;
+				if(textMeasurement>labelLength) labelLength = textMeasurement;
+			}
+			
+			//Figure out whats the largest - the height of the text or the width of what's there, and minus it from the maximum usable size.
+			pieRadius -= Max([labelLength,((config.LabelFontSize/2)*1.5)]);				
+			
+			pieRadius -= config.LabelFontSize;
+			pieRadius = CapValue(pieRadius, null, 0);
+		};
 	}
 
 	var Doughnut = function(data,config,ctx){
-		var segmentTotal = 0;
-		
-		//In case we have a canvas that is not a square. Minus 5 pixels as padding round the edge.
-		var doughnutRadius = Min([height/2,width/2]) - 5;
+		var segmentTotal = 0,
+			labelColorRgb = hexToRgb(config.LabelFontColor),
+			doughnutRadius;
+
+		calculateDrawingSizes();
 		
 		var cutoutRadius = doughnutRadius * (config.percentageInnerCutout/100);
 		
@@ -756,14 +804,16 @@ var Chart = function(context){
 			segmentTotal += data[i].value;
 		}
 		
-		
 		animationLoop(config,null,drawPieSegments,ctx);
-		
 		
 		function drawPieSegments (animationDecimal){
 			var cumulativeAngle = -Math.PI/2,
-			scaleAnimation = 1,
-			rotateAnimation = 1;
+				labelAngle = -Math.PI/2,
+				scaleAnimation = 1,
+				rotateAnimation = 1,
+				labelOpacity = 1,
+				angleStep,
+				segmentAngle;
 			if (config.animation) {
 				if (config.animateScale) {
 					scaleAnimation = animationDecimal;
@@ -771,9 +821,14 @@ var Chart = function(context){
 				if (config.animateRotate){
 					rotateAnimation = animationDecimal;
 				}
+				if (config.animateLabels) {
+					labelOpacity = animationDecimal;
+				}
 			}
+
 			for (var i=0; i<data.length; i++){
-				var segmentAngle = rotateAnimation * ((data[i].value/segmentTotal) * (Math.PI*2));
+				angleStep = (data[i].value/segmentTotal) * Math.PI;
+				segmentAngle = rotateAnimation * angleStep * 2;
 				ctx.beginPath();
 				ctx.arc(width/2,height/2,scaleAnimation * doughnutRadius,cumulativeAngle,cumulativeAngle + segmentAngle,false);
 				ctx.arc(width/2,height/2,scaleAnimation * cutoutRadius,cumulativeAngle + segmentAngle,cumulativeAngle,true);
@@ -786,12 +841,45 @@ var Chart = function(context){
 					ctx.strokeStyle = config.segmentStrokeColor;
 					ctx.stroke();
 				}
+
+				labelAngle += angleStep;
+				if(data[i].label){
+					ctx.font = config.LabelFontStyle + " " + config.LabelFontSize+"px " + config.LabelFontFamily;
+					ctx.fillStyle = "rgba(" + labelColorRgb.join(",") + "," + labelOpacity + ")";
+					
+					if(Math.abs(labelAngle) == Math.PI/2) {
+						ctx.textAlign = "center";
+					}
+					else if(Math.abs(labelAngle) > Math.PI/2){
+						ctx.textAlign = "right";
+					}
+					else{
+						ctx.textAlign = "left";
+					}
+					ctx.textBaseline = "middle";
+					ctx.fillText(data[i].label,width/2 + Math.cos(labelAngle)*(doughnutRadius+config.LabelFontSize),height/2 + Math.sin(labelAngle)*(doughnutRadius+config.LabelFontSize));
+				}
+				labelAngle += angleStep;
 				cumulativeAngle += segmentAngle;
-			}			
+			}
 		}			
-		
-		
-		
+		function calculateDrawingSizes(){
+			doughnutRadius = (Min([width,height])/2);
+			
+			//Measure the longest label width.
+			var labelLength = 0;
+			for (var i=0; i<data.length; i++){
+				ctx.font = config.LabelFontStyle + " " + config.LabelFontSize+"px " + config.LabelFontFamily;
+				var textMeasurement = ctx.measureText(data[i].label).width;
+				if(textMeasurement>labelLength) labelLength = textMeasurement;
+			}
+			
+			//Figure out whats the largest - the height of the text or the width of what's there, and minus it from the maximum usable size.
+			doughnutRadius -= Max([labelLength,((config.LabelFontSize/2)*1.5)]);				
+			
+			doughnutRadius -= config.LabelFontSize;
+			doughnutRadius = CapValue(doughnutRadius, null, 0);
+		};
 	}
 
 	var Line = function(data,config,ctx){
@@ -813,11 +901,7 @@ var Chart = function(context){
 				graphMin : config.scaleStartValue,
 				labels : []
 			}
-			for (var i=0; i<calculatedScale.steps; i++){
-				if(labelTemplateString){
-				calculatedScale.labels.push(tmpl(labelTemplateString,{value:(config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces (config.scaleStepWidth))}));
-				}
-			}
+			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
 		}
 		
 		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
@@ -1049,11 +1133,7 @@ var Chart = function(context){
 				graphMin : config.scaleStartValue,
 				labels : []
 			}
-			for (var i=0; i<calculatedScale.steps; i++){
-				if(labelTemplateString){
-				calculatedScale.labels.push(tmpl(labelTemplateString,{value:(config.scaleStartValue + (config.scaleStepWidth * i)).toFixed(getDecimalPlaces (config.scaleStepWidth))}));
-				}
-			}
+			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
 		}
 		
 		scaleHop = Math.floor(scaleHeight/calculatedScale.steps);
@@ -1324,19 +1404,9 @@ var Chart = function(context){
 			        numberOfSteps = Math.round(graphRange/stepValue);
 		        }
 	        };
-	        
 
-	        
-	        //Create an array of all the labels by interpolating the string.
-	        
 	        var labels = [];
-	        
-	        if(labelTemplateString){
-		        //Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
-		        for (var i=1; i<numberOfSteps+1; i++){
-		        	labels.push(tmpl(labelTemplateString,{value:(graphMin + (stepValue*i)).toFixed(getDecimalPlaces (stepValue))}));
-		        }
-	        }
+	        populateLabels(labelTemplateString, labels, numberOfSteps, graphMin, stepValue);
 		
 	        return {
 		        steps : numberOfSteps,
@@ -1352,6 +1422,16 @@ var Chart = function(context){
 
 
 	}
+
+    //Populate an array of all the labels by interpolating the string.
+    function populateLabels(labelTemplateString, labels, numberOfSteps, graphMin, stepValue) {
+        if (labelTemplateString) {
+            //Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
+            for (var i = 1; i < numberOfSteps + 1; i++) {
+                labels.push(tmpl(labelTemplateString, {value: (graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue))}));
+            }
+        }
+    }
 	
 	//Max value from array
 	function Max( array ){
@@ -1404,6 +1484,17 @@ var Chart = function(context){
 	    for (var attrname in userDefined) { returnObj[attrname] = userDefined[attrname]; }
 	    return returnObj;
 	}
+
+	function hexToRgb(hex) {
+	    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+	    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+	    hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+	        return r + r + g + g + b + b;
+	    });
+
+	    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	    return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)]: null;
+	}
 	
 	//Javascript micro templating by John Resig - source at http://ejohn.org/blog/javascript-micro-templating/
 	  var cache = {};
@@ -1438,6 +1529,5 @@ var Chart = function(context){
 	    return data ? fn( data ) : fn;
 	  };
 }
-
 
 

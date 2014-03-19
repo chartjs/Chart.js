@@ -539,18 +539,21 @@ var myNewChart = new Chart(ctx);</code></pre>
 				<pre data-type="javascript"><code data-for="pie">var data = [
 	{
 		value: 30,
-		color:"#F38630"
+		color: "#F38630",
+		label: "A"
 	},
 	{
-		value : 50,
-		color : "#E0E4CC"
+		value: 50,
+		color: "#E0E4CC",
+		label: "B"
 	},
 	{
-		value : 100,
-		color : "#69D2E7"
+		value: 100,
+		color: "#69D2E7",
+		label: "C"
 	}			
 ]</code></pre>
-				<p>For a pie chart, you must pass in an array of objects with a <code>value</code> and a <code>color</code> property. The <code>value</code> attribute should be a number, Chart.js will total all of the numbers and calculate the relative proportion of each. The <code>color</code> attribute should be a string. Similar to CSS, for this string you can use HEX notation, RGB, RGBA or HSL.</p>
+				<p>For a pie chart, you must pass in an array of objects with a <code>value</code>, <code>color</code> and optional <code>label</code> property. The <code>value</code> attribute should be a number, Chart.js will total all of the numbers and calculate the relative proportion of each. The <code>color</code> attribute should be a string. Similar to CSS, for this string you must use HEX notation.</p>
 				<h2>Chart options</h2>
 				<p>These are the default options for the Pie chart. Pass in an object with any of these attributes to override them.
 				<pre data-type="javascript"><code>Pie.defaults = {
@@ -577,6 +580,9 @@ var myNewChart = new Chart(ctx);</code></pre>
 
 	//Boolean - Whether we animate scaling the Pie from the centre
 	animateScale : false,
+
+	//Boolean - Whether we animate fading in the labels
+	animateLabels : true,
 	
 	//Function - Will fire on animation completion.
 	onAnimationComplete : null
@@ -594,27 +600,32 @@ var myNewChart = new Chart(ctx);</code></pre>
 				<pre data-type="javascript"><code data-for="doughnut">var data = [
 	{
 		value: 30,
-		color:"#F7464A"
+		color: "#F7464A",
+		label: "A"
 	},
 	{
-		value : 50,
-		color : "#E2EAE9"
+		value: 50,
+		color: "#E2EAE9",
+		label: "B"
 	},
 	{
-		value : 100,
-		color : "#D4CCC5"
+		value: 100,
+		color: "#D4CCC5",
+		label: "C"
 	},
 	{
-		value : 40,
-		color : "#949FB1"
+		value: 40,
+		color: "#949FB1",
+		label: "D"
 	},
 	{
-		value : 120,
-		color : "#4D5360"
+		value: 120,
+		color: "#4D5360",
+		label: "E"
 	}
 
 ]</code></pre>
-				<p>For a doughnut chart, you must pass in an array of objects with a <code>value</code> and a <code>color</code> property. The <code>value</code> attribute should be a number, Chart.js will total all of the numbers and calculate the relative proportion of each. The <code>color</code> attribute should be a string. Similar to CSS, for this string you can use HEX notation, RGB, RGBA or HSL.</p>
+				<p>For a doughnut chart, you must pass in an array of objects with a <code>value</code>, <code>color</code> and optional <code>label</code> property. The <code>value</code> attribute should be a number, Chart.js will total all of the numbers and calculate the relative proportion of each. The <code>color</code> attribute should be a string. Similar to CSS, for this string you must use HEX notation.</p>
 				<h2>Chart options</h2>
 				<p>These are the default options for the doughnut chart. Pass in an object with any of these attributes to override them.
 				<pre data-type="javascript"><code>Doughnut.defaults = {
@@ -644,6 +655,9 @@ var myNewChart = new Chart(ctx);</code></pre>
 
 	//Boolean - Whether we animate scaling the Doughnut from the centre
 	animateScale : false,
+
+	//Boolean - Whether we animate fading in the labels
+	animateLabels : true,
 	
 	//Function - Will fire on animation completion.
 	onAnimationComplete : null
