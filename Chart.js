@@ -253,7 +253,12 @@ window.Chart = function(context){
 			animationEasing : "easeOutBounce",
 			animateRotate : true,
 			animateScale : false,
-			onAnimationComplete : null
+			animateLabels: true,
+			onAnimationComplete : null,
+			labelFontFamily : "'Arial'",
+			labelFontStyle : "normal",
+			labelFontSize : 12,
+			labelFontColor : "#666"
 		};		
 
 		var config = (options)? mergeChartConfig(chart.Pie.defaults,options) : chart.Pie.defaults;
@@ -273,7 +278,12 @@ window.Chart = function(context){
 			animationEasing : "easeOutBounce",
 			animateRotate : true,
 			animateScale : false,
-			onAnimationComplete : null
+			animateLabels: true,
+			onAnimationComplete : null,
+			labelFontFamily : "'Arial'",
+			labelFontStyle : "normal",
+			labelFontSize : 12,
+			labelFontColor : "#666"
 		};		
 
 		var config = (options)? mergeChartConfig(chart.Doughnut.defaults,options) : chart.Doughnut.defaults;
@@ -693,22 +703,26 @@ window.Chart = function(context){
 	}
 
 	var Pie = function(data,config,ctx){
-		var segmentTotal = 0;
+		var segmentTotal = 0,
+			labelColorRgb = hexToRgb(config.labelFontColor),
+			pieRadius;
 		
-		//In case we have a canvas that is not a square. Minus 5 pixels as padding round the edge.
-		var pieRadius = Min([height/2,width/2]) - 5;
+		calculateDrawingSizes();
 		
 		for (var i=0; i<data.length; i++){
 			segmentTotal += data[i].value;
 		}
-		
-		
+
 		animationLoop(config,null,drawPieSegments,ctx);
 				
 		function drawPieSegments (animationDecimal){
 			var cumulativeAngle = -Math.PI/2,
-			scaleAnimation = 1,
-			rotateAnimation = 1;
+				labelAngle = -Math.PI/2,
+				scaleAnimation = 1,
+				rotateAnimation = 1,
+				labelOpacity = 1,
+				angleStep,
+				segmentAngle;
 			if (config.animation) {
 				if (config.animateScale) {
 					scaleAnimation = animationDecimal;
@@ -716,9 +730,13 @@ window.Chart = function(context){
 				if (config.animateRotate){
 					rotateAnimation = animationDecimal;
 				}
+				if (config.animateLabels){
+					labelOpacity = animationDecimal;
+				}
 			}
 			for (var i=0; i<data.length; i++){
-				var segmentAngle = rotateAnimation * ((data[i].value/segmentTotal) * (Math.PI*2));
+				angleStep = (data[i].value/segmentTotal) * (Math.PI);
+				segmentAngle = rotateAnimation * angleStep * 2;
 				ctx.beginPath();
 				ctx.arc(width/2,height/2,scaleAnimation * pieRadius,cumulativeAngle,cumulativeAngle + segmentAngle);
 				ctx.lineTo(width/2,height/2);
@@ -731,16 +749,54 @@ window.Chart = function(context){
 					ctx.strokeStyle = config.segmentStrokeColor;
 					ctx.stroke();
 				}
+
+				labelAngle += angleStep;
+				if (data[i].label) {
+					ctx.font = config.labelFontStyle + " " + config.labelFontSize+"px " + config.labelFontFamily;
+					ctx.fillStyle = "rgba(" + labelColorRgb.join(",") + "," + labelOpacity + ")";
+
+					if(Math.abs(labelAngle) == Math.PI/2) {
+						ctx.textAlign = "center";
+					}
+					else if(Math.abs(labelAngle) > Math.PI/2){
+						ctx.textAlign = "right";
+					}
+					else{
+						ctx.textAlign = "left";
+					}
+					ctx.textBaseline = "middle";
+					ctx.fillText(data[i].label,width/2 + Math.cos(labelAngle)*(pieRadius+config.labelFontSize),height/2 + Math.sin(labelAngle)*(pieRadius+config.labelFontSize));
+
+				}
+				labelAngle += angleStep;
 				cumulativeAngle += segmentAngle;
 			}			
 		}		
+		function calculateDrawingSizes(){
+			pieRadius = (Min([width,height])/2);
+			
+			//Measure the longest label width.
+			var labelLength = 0;
+			for (var i=0; i<data.length; i++){
+				ctx.font = config.labelFontStyle + " " + config.labelFontSize+"px " + config.labelFontFamily;
+				var textMeasurement = ctx.measureText(data[i].label).width;
+				if(textMeasurement>labelLength) labelLength = textMeasurement;
+			}
+			
+			//Figure out whats the largest - the height of the text or the width of what's there, and minus it from the maximum usable size.
+			pieRadius -= Max([labelLength,((config.labelFontSize/2)*1.5)]);				
+			
+			pieRadius -= config.labelFontSize;
+			pieRadius = CapValue(pieRadius, null, 0);
+		};
 	}
 
 	var Doughnut = function(data,config,ctx){
-		var segmentTotal = 0;
-		
-		//In case we have a canvas that is not a square. Minus 5 pixels as padding round the edge.
-		var doughnutRadius = Min([height/2,width/2]) - 5;
+		var segmentTotal = 0,
+			labelColorRgb = hexToRgb(config.labelFontColor),
+			doughnutRadius;
+
+		calculateDrawingSizes();
 		
 		var cutoutRadius = doughnutRadius * (config.percentageInnerCutout/100);
 		
@@ -748,14 +804,16 @@ window.Chart = function(context){
 			segmentTotal += data[i].value;
 		}
 		
-		
 		animationLoop(config,null,drawPieSegments,ctx);
-		
 		
 		function drawPieSegments (animationDecimal){
 			var cumulativeAngle = -Math.PI/2,
-			scaleAnimation = 1,
-			rotateAnimation = 1;
+				labelAngle = -Math.PI/2,
+				scaleAnimation = 1,
+				rotateAnimation = 1,
+				labelOpacity = 1,
+				angleStep,
+				segmentAngle;
 			if (config.animation) {
 				if (config.animateScale) {
 					scaleAnimation = animationDecimal;
@@ -763,9 +821,14 @@ window.Chart = function(context){
 				if (config.animateRotate){
 					rotateAnimation = animationDecimal;
 				}
+				if (config.animateLabels) {
+					labelOpacity = animationDecimal;
+				}
 			}
+
 			for (var i=0; i<data.length; i++){
-				var segmentAngle = rotateAnimation * ((data[i].value/segmentTotal) * (Math.PI*2));
+				angleStep = (data[i].value/segmentTotal) * Math.PI;
+				segmentAngle = rotateAnimation * angleStep * 2;
 				ctx.beginPath();
 				ctx.arc(width/2,height/2,scaleAnimation * doughnutRadius,cumulativeAngle,cumulativeAngle + segmentAngle,false);
 				ctx.arc(width/2,height/2,scaleAnimation * cutoutRadius,cumulativeAngle + segmentAngle,cumulativeAngle,true);
@@ -778,12 +841,45 @@ window.Chart = function(context){
 					ctx.strokeStyle = config.segmentStrokeColor;
 					ctx.stroke();
 				}
+
+				labelAngle += angleStep;
+				if(data[i].label){
+					ctx.font = config.labelFontStyle + " " + config.labelFontSize+"px " + config.labelFontFamily;
+					ctx.fillStyle = "rgba(" + labelColorRgb.join(",") + "," + labelOpacity + ")";
+					
+					if(Math.abs(labelAngle) == Math.PI/2) {
+						ctx.textAlign = "center";
+					}
+					else if(Math.abs(labelAngle) > Math.PI/2){
+						ctx.textAlign = "right";
+					}
+					else{
+						ctx.textAlign = "left";
+					}
+					ctx.textBaseline = "middle";
+					ctx.fillText(data[i].label,width/2 + Math.cos(labelAngle)*(doughnutRadius+config.labelFontSize),height/2 + Math.sin(labelAngle)*(doughnutRadius+config.labelFontSize));
+				}
+				labelAngle += angleStep;
 				cumulativeAngle += segmentAngle;
-			}			
+			}
 		}			
-		
-		
-		
+		function calculateDrawingSizes(){
+			doughnutRadius = (Min([width,height])/2);
+			
+			//Measure the longest label width.
+			var labelLength = 0;
+			for (var i=0; i<data.length; i++){
+				ctx.font = config.labelFontStyle + " " + config.labelFontSize+"px " + config.labelFontFamily;
+				var textMeasurement = ctx.measureText(data[i].label).width;
+				if(textMeasurement>labelLength) labelLength = textMeasurement;
+			}
+			
+			//Figure out whats the largest - the height of the text or the width of what's there, and minus it from the maximum usable size.
+			doughnutRadius -= Max([labelLength,((config.labelFontSize/2)*1.5)]);				
+			
+			doughnutRadius -= config.labelFontSize;
+			doughnutRadius = CapValue(doughnutRadius, null, 0);
+		};
 	}
 
 	var Line = function(data,config,ctx){
@@ -1387,6 +1483,17 @@ window.Chart = function(context){
 	    for (var attrname in defaults) { returnObj[attrname] = defaults[attrname]; }
 	    for (var attrname in userDefined) { returnObj[attrname] = userDefined[attrname]; }
 	    return returnObj;
+	}
+
+	function hexToRgb(hex) {
+	    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+	    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+	    hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+	        return r + r + g + g + b + b;
+	    });
+
+	    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	    return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)]: null;
 	}
 	
 	//Javascript micro templating by John Resig - source at http://ejohn.org/blog/javascript-micro-templating/
