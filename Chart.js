@@ -209,6 +209,7 @@ window.Chart = function(context){
 			scaleShowLine : true,
 			scaleLineColor : "rgba(0,0,0,.1)",
 			scaleLineWidth : 1,
+			scaleStyle : "web",
 			scaleShowLabels : false,
 			scaleLabel : "<%=value%>",
 			scaleFontFamily : "'Arial'",
@@ -591,14 +592,21 @@ window.Chart = function(context){
 				if(config.scaleShowLine){
 					ctx.strokeStyle = config.scaleLineColor;
 					ctx.lineWidth = config.scaleLineWidth;
-					ctx.moveTo(0,-scaleHop * (i+1));					
-					for (var j=0; j<data.datasets[0].data.length; j++){
-					    ctx.rotate(rotationDegree);
-						ctx.lineTo(0,-scaleHop * (i+1));
+
+					if (config.scaleStyle == "web"){
+						ctx.moveTo(0,-scaleHop * (i+1));
+						for (var j=0; j<data.datasets[0].data.length; j++){
+							ctx.rotate(rotationDegree);
+							ctx.lineTo(0,-scaleHop * (i+1));
+						}
 					}
+
+					if (config.scaleStyle == "scope"){
+						ctx.arc(0,0,scaleHop * (i+1),0,-360,true);
+					}
+
 					ctx.closePath();
-					ctx.stroke();			
-							
+					ctx.stroke();
 				}
 				
 				if (config.scaleShowLabels){				
