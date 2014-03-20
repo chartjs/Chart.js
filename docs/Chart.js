@@ -255,10 +255,10 @@ window.Chart = function(context){
 			animateScale : false,
 			animateLabels: true,
 			onAnimationComplete : null,
-			LabelFontFamily : "'Arial'",
-			LabelFontStyle : "normal",
-			LabelFontSize : 12,
-			LabelFontColor : "#666"
+			labelFontFamily : "'Arial'",
+			labelFontStyle : "normal",
+			labelFontSize : 12,
+			labelFontColor : "#666"
 		};		
 
 		var config = (options)? mergeChartConfig(chart.Pie.defaults,options) : chart.Pie.defaults;
@@ -280,10 +280,10 @@ window.Chart = function(context){
 			animateScale : false,
 			animateLabels: true,
 			onAnimationComplete : null,
-			LabelFontFamily : "'Arial'",
-			LabelFontStyle : "normal",
-			LabelFontSize : 12,
-			LabelFontColor : "#666"
+			labelFontFamily : "'Arial'",
+			labelFontStyle : "normal",
+			labelFontSize : 12,
+			labelFontColor : "#666"
 		};		
 
 		var config = (options)? mergeChartConfig(chart.Doughnut.defaults,options) : chart.Doughnut.defaults;
@@ -704,7 +704,7 @@ window.Chart = function(context){
 
 	var Pie = function(data,config,ctx){
 		var segmentTotal = 0,
-			labelColorRgb = hexToRgb(config.LabelFontColor),
+			labelColorRgb = hexToRgb(config.labelFontColor),
 			pieRadius;
 		
 		calculateDrawingSizes();
@@ -752,7 +752,7 @@ window.Chart = function(context){
 
 				labelAngle += angleStep;
 				if (data[i].label) {
-					ctx.font = config.LabelFontStyle + " " + config.LabelFontSize+"px " + config.LabelFontFamily;
+					ctx.font = config.labelFontStyle + " " + config.labelFontSize+"px " + config.labelFontFamily;
 					ctx.fillStyle = "rgba(" + labelColorRgb.join(",") + "," + labelOpacity + ")";
 
 					if(Math.abs(labelAngle) == Math.PI/2) {
@@ -765,7 +765,7 @@ window.Chart = function(context){
 						ctx.textAlign = "left";
 					}
 					ctx.textBaseline = "middle";
-					ctx.fillText(data[i].label,width/2 + Math.cos(labelAngle)*(pieRadius+config.LabelFontSize),height/2 + Math.sin(labelAngle)*(pieRadius+config.LabelFontSize));
+					ctx.fillText(data[i].label,width/2 + Math.cos(labelAngle)*(pieRadius+config.labelFontSize),height/2 + Math.sin(labelAngle)*(pieRadius+config.labelFontSize));
 
 				}
 				labelAngle += angleStep;
@@ -778,22 +778,22 @@ window.Chart = function(context){
 			//Measure the longest label width.
 			var labelLength = 0;
 			for (var i=0; i<data.length; i++){
-				ctx.font = config.LabelFontStyle + " " + config.LabelFontSize+"px " + config.LabelFontFamily;
+				ctx.font = config.labelFontStyle + " " + config.labelFontSize+"px " + config.labelFontFamily;
 				var textMeasurement = ctx.measureText(data[i].label).width;
 				if(textMeasurement>labelLength) labelLength = textMeasurement;
 			}
 			
 			//Figure out whats the largest - the height of the text or the width of what's there, and minus it from the maximum usable size.
-			pieRadius -= Max([labelLength,((config.LabelFontSize/2)*1.5)]);				
+			pieRadius -= Max([labelLength,((config.labelFontSize/2)*1.5)]);				
 			
-			pieRadius -= config.LabelFontSize;
+			pieRadius -= config.labelFontSize;
 			pieRadius = CapValue(pieRadius, null, 0);
 		};
 	}
 
 	var Doughnut = function(data,config,ctx){
 		var segmentTotal = 0,
-			labelColorRgb = hexToRgb(config.LabelFontColor),
+			labelColorRgb = hexToRgb(config.labelFontColor),
 			doughnutRadius;
 
 		calculateDrawingSizes();
@@ -844,7 +844,7 @@ window.Chart = function(context){
 
 				labelAngle += angleStep;
 				if(data[i].label){
-					ctx.font = config.LabelFontStyle + " " + config.LabelFontSize+"px " + config.LabelFontFamily;
+					ctx.font = config.labelFontStyle + " " + config.labelFontSize+"px " + config.labelFontFamily;
 					ctx.fillStyle = "rgba(" + labelColorRgb.join(",") + "," + labelOpacity + ")";
 					
 					if(Math.abs(labelAngle) == Math.PI/2) {
@@ -857,7 +857,7 @@ window.Chart = function(context){
 						ctx.textAlign = "left";
 					}
 					ctx.textBaseline = "middle";
-					ctx.fillText(data[i].label,width/2 + Math.cos(labelAngle)*(doughnutRadius+config.LabelFontSize),height/2 + Math.sin(labelAngle)*(doughnutRadius+config.LabelFontSize));
+					ctx.fillText(data[i].label,width/2 + Math.cos(labelAngle)*(doughnutRadius+config.labelFontSize),height/2 + Math.sin(labelAngle)*(doughnutRadius+config.labelFontSize));
 				}
 				labelAngle += angleStep;
 				cumulativeAngle += segmentAngle;
@@ -869,15 +869,15 @@ window.Chart = function(context){
 			//Measure the longest label width.
 			var labelLength = 0;
 			for (var i=0; i<data.length; i++){
-				ctx.font = config.LabelFontStyle + " " + config.LabelFontSize+"px " + config.LabelFontFamily;
+				ctx.font = config.labelFontStyle + " " + config.labelFontSize+"px " + config.labelFontFamily;
 				var textMeasurement = ctx.measureText(data[i].label).width;
 				if(textMeasurement>labelLength) labelLength = textMeasurement;
 			}
 			
 			//Figure out whats the largest - the height of the text or the width of what's there, and minus it from the maximum usable size.
-			doughnutRadius -= Max([labelLength,((config.LabelFontSize/2)*1.5)]);				
+			doughnutRadius -= Max([labelLength,((config.labelFontSize/2)*1.5)]);				
 			
-			doughnutRadius -= config.LabelFontSize;
+			doughnutRadius -= config.labelFontSize;
 			doughnutRadius = CapValue(doughnutRadius, null, 0);
 		};
 	}
