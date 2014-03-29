@@ -849,6 +849,17 @@ window.Chart = function(context){
 						ctx.stroke();
 					}
 				}
+				if(config.errorBars){
+					ctx.strokeStyle = data.datasets[i].errorStrokeColor;
+					ctx.strokeWidth = data.datasets[i].errorStrokeWidth;
+					for(var k=0; k<data.datasets[i].errorData.length; k++){
+						ctx.beginPath();
+						ctx.moveTo(yAxisPosX + (valueHop *k), xAxisPosY - animPc*(calculateOffset(data.datasets[i].errorData[k][1],calculatedScale,scaleHop)));
+						ctx.lineTo(yAxisPosX + (valueHop *k), xAxisPosY - animPc*(calculateOffset(data.datasets[i].errorData[k][0],calculatedScale,scaleHop)));
+						ctx.stroke();
+						ctx.closePath();
+					}
+				}
 			}
 			
 			function yPos(dataSet,iteration){
