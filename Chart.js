@@ -4122,6 +4122,6 @@ window.Chart = function(context){
 
 			};
 	 }
-}
+};
 
 
