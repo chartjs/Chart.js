@@ -5,6 +5,7 @@
  * Copyright 2013 Nick Downie
  * Released under the MIT license
  * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
+ * Windrose added by Daniel Forstner
  */
 
 //Define the global Chart Variable as a class.
@@ -197,6 +198,56 @@ window.Chart = function(context){
 		
 		return new PolarArea(data,config,context);
 	};
+
+	this.WindRose = function(data,options){
+	
+		chart.WindRose.defaults = {
+			scaleOverlay : true,
+			scaleOverride : false,
+			scaleSteps : null,
+			scaleStepWidth : null,
+			scaleStartValue : null,
+			scaleShowLine : true,
+			scaleLineColor : "rgba(0,0,0,.1)",
+			scaleLineWidth : 1,
+			scaleShowLabels : true,
+			scaleLabel : "<%=value>%",
+			scaleFontFamily : "'Arial'",
+			scaleFontSize : 12,
+			scaleFontStyle : "normal",
+			scaleFontColor : "#666",
+			scaleShowLabelBackdrop : false,
+			scaleBackdropColor : "rgba(255,255,255,0.75)",
+			scaleBackdropPaddingY : 2,
+			scaleBackdropPaddingX : 2,
+			segmentShowStroke : true,
+			segmentStrokeColor : "rgba(0,0,0,0.25)",
+			segmentStrokeWidth : 2,
+			animation : true,
+			animationSteps : 100,
+			animationEasing : "easeOutBounce",
+			animateRotate : true,
+			animateScale : false,
+			onAnimationComplete : null,
+			colors: ["#6767dc", "#7deeee", "#5bec5b", "#f5f55c", "#f5995a", "#f57d7d"],
+			captions: ["1", "2", "3", "4", "5", "6"],
+			scaleShowCrosslines: true,
+			crossLineCaptions: ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'],
+			crossLineCapColor: "#22d000",
+			directions: 16,
+			drawLegend: true,
+			legendCaption: 'Legend:',
+			legendFontFamily : "'Arial'",
+			legendFontSize : 10,
+			legendFontStyle : "italic",
+			legendFontColor : "#666"
+		};
+		
+		var config = (options)? mergeChartConfig(chart.WindRose.defaults,options) : chart.WindRose.defaults;
+		
+		return new WindRose(data,config,context);
+	};
+
 
 	this.Radar = function(data,options){
 	
@@ -437,7 +488,7 @@ window.Chart = function(context){
 		}
 		function drawAllSegments(animationDecimal){
 			var startAngle = -Math.PI/2,
-			angleStep = (Math.PI*2)/data.length,
+			angleStep = (Math.PI*2)/config.directions,
 			scaleAnimation = 1,
 			rotateAnimation = 1;
 			if (config.animation) {
@@ -474,6 +525,244 @@ window.Chart = function(context){
 				if (data[i].value < lowerValue) {lowerValue = data[i].value;}
 			};
 
+			var maxSteps = Math.floor((scaleHeight / (labelHeight*0.66)));
+			var minSteps = Math.floor((scaleHeight / labelHeight*0.5));
+			
+			return {
+				maxValue : upperValue,
+				minValue : lowerValue,
+				maxSteps : maxSteps,
+				minSteps : minSteps
+			};
+			
+
+		}
+	}
+
+var WindRose = function(data,config,ctx){
+		var maxSize, scaleHop, calculatedScale, labelHeight, scaleHeight, valueBounds, labelTemplateString;		
+		var centerX, centerY;
+		
+		calculateDrawingSizes();
+		
+		valueBounds = getValueBounds();
+
+		labelTemplateString = (config.scaleShowLabels)? config.scaleLabel : null;
+
+		//Check and set the scale
+		if (!config.scaleOverride){
+			
+			calculatedScale = calculateScale(scaleHeight,valueBounds.maxSteps,valueBounds.minSteps,valueBounds.maxValue,valueBounds.minValue,labelTemplateString);
+		}
+		else {
+			calculatedScale = {
+				steps : config.scaleSteps,
+				stepValue : config.scaleStepWidth,
+				graphMin : config.scaleStartValue,
+				labels : []
+			}
+			populateLabels(labelTemplateString, calculatedScale.labels,calculatedScale.steps,config.scaleStartValue,config.scaleStepWidth);
+		}
+		
+		scaleHop = maxSize/(calculatedScale.steps);
+
+		//Wrap in an animation loop wrapper
+		animationLoop(config,drawScale,drawAllSegments,ctx);
+
+		function calculateDrawingSizes(){
+			maxSize = (Min([width,height])/2) - 2 * config.scaleFontSize;
+			//Remove whatever is larger - the font size or line width.
+			
+			maxSize -= Max([config.scaleFontSize*0.5,config.scaleLineWidth*0.5]);
+			
+			labelHeight = config.scaleFontSize*2;
+			//If we're drawing the backdrop - add the Y padding to the label height and remove from drawing region.
+			if (config.scaleShowLabelBackdrop){
+				labelHeight += (2 * config.scaleBackdropPaddingY);
+				maxSize -= config.scaleBackdropPaddingY*1.5;
+			}
+			centerX = width/2;
+			centerY = height/2;
+			if (config.drawLegend) {
+				if ((height - width) <= 100) {
+					centerY = centerY - 25;
+				}
+				if (height <= width) {
+					maxSize = maxSize - 25;
+				}
+
+			}
+			
+			scaleHeight = maxSize;
+			//If the label height is less than 5, set it to 5 so we don't have lines on top of each other.
+			labelHeight = Default(labelHeight,5);
+		}
+		function drawScale(){
+			if (config.scaleShowCrosslines){
+				ctx.beginPath();
+				for (i = 0; i <= 15; i++) {
+					var opposite = Math.sin((Math.PI*2)/16*i) * ((scaleHop * calculatedScale.steps) + config.scaleFontSize);
+					var adjacent = Math.cos((Math.PI*2)/16*i) * ((scaleHop * calculatedScale.steps)+ config.scaleFontSize);				
+					ctx.moveTo(centerX + opposite, centerY - adjacent);
+					ctx.strokeStyle = config.scaleLineColor;
+					ctx.lineWidth = 1;
+					ctx.lineTo(centerX, centerY);
+
+					var opposite = Math.sin((Math.PI*2)/16*i) * ((scaleHop * calculatedScale.steps) + 2 * config.scaleFontSize);
+					var adjacent = Math.cos((Math.PI*2)/16*i) * ((scaleHop * calculatedScale.steps)+ 2 * config.scaleFontSize);				
+					ctx.textAlign = "center";
+					ctx.fillStyle = config.crossLineCapColor;
+					ctx.fillText(config.crossLineCaptions[i], centerX + opposite, centerY - adjacent);
+				}
+				ctx.stroke();
+			}
+
+			for (var i=0; i<calculatedScale.steps; i++){
+				//If the line object is there
+				if (config.scaleShowLine){
+					ctx.beginPath();
+					ctx.arc(centerX, centerY, scaleHop * (i + 1), 0, (Math.PI * 2), true);
+					ctx.strokeStyle = config.scaleLineColor;
+					ctx.lineWidth = config.scaleLineWidth;
+					ctx.stroke();
+				}
+				if (config.scaleShowLabels){
+					ctx.textAlign = "center";
+					ctx.font = config.scaleFontStyle + " " + config.scaleFontSize + "px " + config.scaleFontFamily;
+					var opposite = Math.sin((Math.PI*2)/config.directions/2) * (scaleHop * (i + 1));
+					var adjacent = Math.cos((Math.PI*2)/config.directions/2) * (scaleHop * (i + 1));
+
+ 					var label =  calculatedScale.labels[i];
+					//If the backdrop object is within the font object
+					if (config.scaleShowLabelBackdrop){
+						var textWidth = ctx.measureText(label).width;
+						ctx.fillStyle = config.scaleBackdropColor;
+						ctx.beginPath();
+						ctx.rect(
+							Math.round(centerX + opposite- textWidth/2 - config.scaleBackdropPaddingX),     //X
+							Math.round(centerY - (scaleHop * (i + 1)) - config.scaleFontSize*0.5 - config.scaleBackdropPaddingY),//Y
+							Math.round(textWidth + (config.scaleBackdropPaddingX*2)), //Width
+							Math.round(config.scaleFontSize + (config.scaleBackdropPaddingY*2)) //Height
+						);
+						ctx.fill();
+					}
+					ctx.textBaseline = "middle";
+					ctx.fillStyle = config.scaleFontColor;
+					ctx.fillText(label,centerX + opposite, centerY - adjacent);
+				}
+			}
+			if (config.drawLegend)
+			{	
+				ctx.font = config.legendFontStyle + " " + config.legendFontSize + "px " + config.legendFontFamily;
+				ctx.textAlign = "left";
+				ctx.fillStyle = config.scaleFontColor;
+				ctx.rect(10, height - 35, width - 10, 35);
+				ctx.stroke();
+				ctx.fillText(config.legendCaption,15, height - 35);
+				var symwidth = (width - 35) / config.colors.length;
+				for (var i=0; i < config.colors.length; i++)
+				{
+					ctx.beginPath();
+					ctx.fillStyle = config.colors[i];
+					ctx.rect(20 +(symwidth * i), height - 25, symwidth, 10);
+					ctx.closePath();			
+					ctx.fill();	
+					ctx.fillStyle = config.legendFontColor;	
+					ctx.fillText(config.captions[i],20 +(symwidth * i), height - config.legendFontSize / 2);
+				}
+				
+			}
+		}
+		function drawAllSegments(animationDecimal){
+			var angleStep = (Math.PI*2)/config.directions,
+			startAngle = (-Math.PI/2) - angleStep/4,
+			rotationDegree = angleStep,
+			scaleAnimation = 1,
+			rotateAnimation = 1;
+			if (config.animation) {
+				if (config.animateScale) {
+					scaleAnimation = animationDecimal;
+				}
+				if (config.animateRotate){
+					rotateAnimation = animationDecimal;
+				}
+			}
+			for (var i=0; i<data.length; i++){
+				var base = 0;				
+				for (var j=0; j < data[i].value.length; j++){
+					base = base + data[i].value[j];
+				}
+				var curbase = base;
+
+				for (var j=data[i].value.length - 1; j >= 0; j--){
+					if (data[i].value[j] != 0)
+					{
+						ctx.beginPath();
+
+						if(config.barShowStroke){
+							ctx.stroke();
+						}
+						
+						ctx.arc(centerX,centerY,scaleAnimation * calculateOffset(curbase,calculatedScale,scaleHop), startAngle, startAngle + angleStep / 2 * rotateAnimation, false);
+						ctx.lineTo(centerX,centerY);
+						ctx.closePath();
+						ctx.fillStyle = config.colors[j];
+						ctx.fill();
+						curbase = curbase - data[i].value[j];
+						if(config.segmentShowStroke){
+							ctx.strokeStyle = config.segmentStrokeColor;
+							ctx.lineWidth = config.segmentStrokeWidth;
+							ctx.stroke();
+						}
+					}
+				}
+				if (base != 0) {
+					var scalepos = calculateOffset(calculatedScale.steps * scaleHop,calculatedScale,scaleHop);
+					var opposite = Math.sin(rotationDegree*i*rotateAnimation) * (scalepos);
+					var adjacent = Math.cos(rotationDegree*i*rotateAnimation) * (scalepos);
+					ctx.textAlign = "center";					
+					ctx.textBaseline = "middle";
+					ctx.strokeStyle = config.scaleLineColor;
+					ctx.fillStyle = config.scaleBackdropColor;
+					ctx.lineWidth = config.scaleLineWidth;
+					ctx.beginPath();
+					ctx.arc(centerX + opposite, centerY - adjacent, config.scaleFontSize, 0, 360, false);
+					ctx.stroke();
+					ctx.fill();
+					ctx.fillStyle = config.scaleFontColor;
+					ctx.fillText(base,centerX + opposite, centerY - adjacent);
+					if ((base + (calculatedScale.stepValue/2)) < 
+						(calculatedScale.steps * calculatedScale.stepValue))
+					{
+						ctx.beginPath();
+						scalepos = calculateOffset(calculatedScale.steps *
+							scaleHop,calculatedScale,scaleHop) - config.scaleFontSize;
+						opposite = Math.sin(rotationDegree*i*rotateAnimation) * (scalepos);
+						adjacent = Math.cos(rotationDegree*i*rotateAnimation) * (scalepos);
+						ctx.moveTo(centerX + opposite, centerY - adjacent);
+						ctx.strokeStyle = config.segmentStrokeColor;
+						ctx.lineWidth = config.segmentStrokeWidth;
+						scalepos = calculateOffset(base,calculatedScale,scaleHop);
+						opposite = Math.sin(rotationDegree*i*rotateAnimation) * (scalepos);
+						adjacent = Math.cos(rotationDegree*i*rotateAnimation) * (scalepos);
+						ctx.lineTo(centerX + opposite, centerY - adjacent);
+						ctx.stroke();			
+					}
+				}
+				startAngle += rotateAnimation*angleStep;
+			}
+		}
+		function getValueBounds() {
+			var upperValue = 60;
+			var lowerValue = 0;
+			for (var i=0; i<data.length; i++){
+				upval = 0;
+				for (var j=0; j<data[i].value.length; j++){
+					upval += data[i].value[j];
+					if (data[i].value[j] < lowerValue) {lowerValue = data[i].value[j];}
+				}
+				if (upval >= upperValue) {upperValue = upval;}
+			};
 			var maxSteps = Math.floor((scaleHeight / (labelHeight*0.66)));
 			var minSteps = Math.floor((scaleHeight / labelHeight*0.5));
 			
@@ -1422,5 +1711,4 @@ window.Chart = function(context){
 	    return data ? fn( data ) : fn;
 	  };
 }
-
 
