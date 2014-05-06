@@ -5,7 +5,6 @@
  * Copyright 2013 Nick Downie
  * Released under the MIT license
  * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
- * Windrose added by Daniel Forstner
  */
 
 //Define the global Chart Variable as a class.
@@ -488,7 +487,7 @@ window.Chart = function(context){
 		}
 		function drawAllSegments(animationDecimal){
 			var startAngle = -Math.PI/2,
-			angleStep = (Math.PI*2)/config.directions,
+			angleStep = (Math.PI*2)/data.length,
 			scaleAnimation = 1,
 			rotateAnimation = 1;
 			if (config.animation) {
