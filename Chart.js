@@ -1370,8 +1370,16 @@ window.Chart = function (context, options) {
                 for (var j = 0; j < data.datasets[i].data.length; j++) {
                     var barOffset = yAxisPosX + config.barValueSpacing + valueHop * j + barWidth * i + config.barDatasetSpacing * i + config.barStrokeWidth * i;
                     
-                    ctx.fillStyle = cycleColor(data.datasets[i].fillColor, j);
-                    ctx.strokeStyle = cycleColor(data.datasets[i].strokeColor, j);
+                    //Added a check for dataset vs single color bars
+                    if (data.datasets[i].fillColor.length == 1)
+                        ctx.fillStyle = data.datasets[i].fillColor;
+                    else
+                        ctx.fillStyle = cycleColor(data.datasets[i].fillColor, j);
+
+                    if (data.datasets[i].strokeColor.length == 1)
+                        ctx.strokeStyle = data.datasets[i].strokeColor;
+                    else
+                        ctx.strokeStyle = cycleColor(data.datasets[i].strokeColor, j);
 
                     ctx.beginPath();
                     ctx.moveTo(barOffset, xAxisPosY);
