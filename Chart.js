@@ -548,6 +548,7 @@ window.Chart = function (context, options) {
             scaleShowGridLines: true,
             scaleGridLineColor: "rgba(0,0,0,.05)",
             scaleGridLineWidth: 1,
+            scaleValueFontColor: "#666",
             scaleShowValues: false,
             scaleValuePaddingX: 13,
             scaleValuePaddingY: 13,
@@ -1397,7 +1398,7 @@ window.Chart = function (context, options) {
                         ctx.save();
                         ctx.textAlign = 'center';
                         ctx.font = config.scaleFontStyle + ' ' + config.scaleFontSize + 'px ' + config.scaleFontFamily;
-                        ctx.fillStyle = config.scaleFontColor;
+                        ctx.fillStyle = config.scaleValueFontColor;
                         ctx.fillText(data.datasets[i].data[j], barOffset + config.barValueSpacing, xAxisPosY - animPc * calculateOffset(data.datasets[i].data[j], calculatedScale, scaleHop) + (config.barStrokeWidth / 2) - config.scaleValuePaddingY);
                         ctx.restore();
                     }
