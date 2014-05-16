@@ -13,7 +13,7 @@ script:
   - cmp /tmp/tmp Chart.min.js
 
   # VALIDATE HTML
-  - java -jar node_modules/grunt-html/vnu.jar --format text --verbose valid.html 2> >(tee VALIDATE.txt >&2)
+  - java -jar node_modules/grunt-html/vnu.jar --format text --verbose */*.html 2> >(tee VALIDATE.txt >&2)
   - perl -e '@_=<>; exit $#_' VALIDATE.txt
 
 notifications:
