@@ -13,8 +13,8 @@ script:
   - cmp /tmp/tmp Chart.min.js
 
   # VALIDATE HTML
-  - java -jar node_modules/grunt-html/vnu.jar */*.html
-
+  - java -jar node_modules/grunt-html/vnu.jar --format text --verbose valid.html 2> >(tee VALIDATE.txt >&2)
+  - [ $(cat VALIDATE.txt | wc -l) -eq "1" ]
 notifications:
   email:
     chartjs@phor.net
