@@ -6,12 +6,12 @@ Samples:
 --------------------
 Here are samples of the project. These will be rendered with `<canvas>` (and yes! they support animation)
 
-<a href="http://imgur.com/F0hp5fl"><img src="http://i.imgur.com/F0hp5fl.gif"/></a>
-<a href="http://imgur.com/OLFRJTN"><img src="http://i.imgur.com/OLFRJTN.gif"/></a>
-<a href="http://imgur.com/ffOZApy"><img src="http://i.imgur.com/ffOZApy.gif"/></a>
-<a href="http://imgur.com/g06MZff"><img src="http://i.imgur.com/g06MZff.gif"/></a>
-<a href="http://imgur.com/RUADCOJ"><img src="http://i.imgur.com/RUADCOJ.gif"/></a>
-<a href="http://imgur.com/OPNAB1L"><img src="http://i.imgur.com/OPNAB1L.gif"/></a>
+<a href="http://imgur.com/F0hp5fl"><img src="http://i.imgur.com/F0hp5fl.gif" width=320 /></a>
+<a href="http://imgur.com/OLFRJTN"><img src="http://i.imgur.com/OLFRJTN.gif" width=320 /></a>
+<a href="http://imgur.com/ffOZApy"><img src="http://i.imgur.com/ffOZApy.gif" width=300 /></a>
+<a href="http://imgur.com/g06MZff"><img src="http://i.imgur.com/g06MZff.gif" width=300 /></a>
+<a href="http://imgur.com/RUADCOJ"><img src="http://i.imgur.com/RUADCOJ.gif" width=300 /></a>
+<a href="http://imgur.com/OPNAB1L"><img src="http://i.imgur.com/OPNAB1L.gif" width=300 /></a>
 
 
 Project information:
