@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - "0.11"
+  - "0.10"
+  - "0.8"
+  - "0.6"
+
+script:
+  # MAKE SURE THE MIN IS A MIN OF THE LATEST Chart.js
+  - npm install uglify-js
+  - node_modules/uglify-js/bin/uglifyjs Chart.js > /tmp/tmp
+  - cmp /tmp/tmp Chart.min.js
+
+notifications:
+  email:
+    chartjs@phor.net
