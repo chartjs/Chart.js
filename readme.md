@@ -14,7 +14,7 @@ Here are samples of the project. These will be rendered with `<canvas>` (and yes
 <a href="http://imgur.com/OPNAB1L"><img src="http://i.imgur.com/OPNAB1L.gif" width=300 /></a>
 
 
-Project information:
+Project goal:
 --------------------
 This project is maintained as the canonical fork of mature <a href="https://github.com/nnnick/Chart.js">nnnick/Chart.js</a> project because the author has gone missing to work on an even-stalled rewrite but many contributors are ready to help out now. The <a href="https://github.com/fulldecent/Chart.js/tree/master">master branch</a> here is solely a continuation of the original Chart.js project and allows contributors to submit pull requests to an active project. Only the following are in-scope for master:
 
