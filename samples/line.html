@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Line Chart</title>
+		<script src="../Chart.js"></script>
+		<meta name = "viewport" content = "initial-scale = 1, user-scalable = no">
+		<style>
+			canvas{
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="canvas" height="450" width="600"></canvas>
+
+		<canvas id="complex-line" height="450" width="600"></canvas>
+
+	<script>
+
+		var lineChartData = {
+			labels : ["January","February","March","April","May","June","July"],
+			datasets : [
+				{
+					fillColor : "rgba(220,220,220,0.5)",
+					strokeColor : "rgba(220,220,220,1)",
+					pointColor : "rgba(220,220,220,1)",
+					pointStrokeColor : "#fff",
+					data : [65,59,90,81,56,55,40]
+				},
+				{
+					fillColor : "rgba(151,187,205,0.5)",
+					strokeColor : "rgba(151,187,205,1)",
+					pointColor : "rgba(151,187,205,1)",
+					pointStrokeColor : "#fff",
+					data : [28,48,40,19,96,27,100]
+				}
+			]
+
+		}
+
+		var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Line(lineChartData);
+
+
+		var data = {
+			labels: ['10 Ago', '', '', '24 Ago', '', '', 'Hoje'],
+			datasets: [
+				{
+					fillColor: 'rgba(49, 191, 0, 0.3)',
+					data: [11900, 11900, 11500, 11650, 9000, 8900, 7900]
+				},
+				{
+					fillColor: 'rgba(180, 180, 180, 0.3)',
+					data: [12300, 12300, 12900, 11900, 11800, 11700, 11700]
+				}
+			]
+		};
+
+		var options = {
+			scaleOverride: true,
+			scaleSteps: 5,
+			scaleStepWidth: 3000,
+			scaleStartValue: 0,
+			scaleShowStartValue: true,
+			scaleShowGridLines: 'horizontal',
+			scaleGridLineColor: 'rgba(0, 0, 0, .15)',
+			scaleLineWidth: 0,
+			scaleLineColor: 'rgba(0, 0, 0, 0)',
+			bezierCurve: false,
+			pointDot: false,
+			datasetStroke: false,
+			scaleLabel: function (value) {
+				// Check if it's an odd step
+				if ((value / 3000 % 2) == 1) {
+					return '';
+				} else if (value < 10000) {
+					return 'R$ ' + value;
+				} else {
+					return 'R$ ' + Math.abs(value / 1000) + ' mil';
+				}
+			},
+			scaleLabelPosition: 'right'
+		};
+
+		var myComplexLine = new Chart(document.getElementById("complex-line").getContext("2d")).Line(data, options);
+
+	</script>
+	</body>
+</html>
