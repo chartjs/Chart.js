@@ -1,0 +1,21 @@
+language: node_js
+node_js:
+  - "0.11"
+  - "0.10"
+
+before_script:
+  - npm install uglify-js
+  - npm install grunt-html
+
+script:
+  # MAKE SURE THE MIN IS A MIN OF THE LATEST Chart.js
+  - node_modules/uglify-js/bin/uglifyjs Chart.js > /tmp/tmp
+  - cmp /tmp/tmp Chart.min.js
+
+  # VALIDATE HTML
+  - java -jar node_modules/grunt-html/vnu.jar --format text --verbose */*.html 2> >(tee VALIDATE.txt >&2)
+  - perl -e '@_=<>; exit $#_' VALIDATE.txt
+
+notifications:
+  email:
+    chartjs@phor.net

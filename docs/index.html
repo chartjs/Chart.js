@@ -72,7 +72,7 @@ var myNewChart = new Chart(ctx);</code></pre>
 		}
 	]
 }</code></pre>
-				<p>The line chart requires an array of labels for each of the data points. This is show on the X axis.</p>
+				<p>The line chart requires an array of labels for each of the data points. This is shown on the X axis.</p>
 				<p>The data for line charts is broken up into an array of datasets. Each dataset has a colour for the fill, a colour for the line and colours for the points and strokes of the points. These colours are strings just like CSS. You can use RGBA, RGB, HEX or HSL notation.</p>
 				
 				<h2>Chart options</h2>
@@ -102,7 +102,7 @@ var myNewChart = new Chart(ctx);</code></pre>
 	scaleShowLabels : true,
 	
 	//Interpolated JS string - can access value
-	scaleLabel : "<%=value%>",
+	scaleLabel : "&lt;%=value%&gt;",
 	
 	//String - Scale label font declaration for the scale label
 	scaleFontFamily : "'Arial'",
@@ -215,7 +215,7 @@ var myNewChart = new Chart(ctx);</code></pre>
 	scaleShowLabels : true,
 	
 	//Interpolated JS string - can access value
-	scaleLabel : "<%=value%>",
+	scaleLabel : "&lt;%=value%&gt;",
 	
 	//String - Scale label font declaration for the scale label
 	scaleFontFamily : "'Arial'",
@@ -326,7 +326,7 @@ var myNewChart = new Chart(ctx);</code></pre>
 	scaleShowLabels : false,
 	
 	//Interpolated JS string - can access value
-	scaleLabel : "<%=value%>",
+	scaleLabel : "&lt;%=value%&gt;",
 	
 	//String - Scale label font declaration for the scale label
 	scaleFontFamily : "'Arial'",
@@ -473,7 +473,7 @@ var myNewChart = new Chart(ctx);</code></pre>
 	scaleShowLabels : true,
 	
 	//Interpolated JS string - can access value
-	scaleLabel : "<%=value%>",
+	scaleLabel : "&lt;%=value%&gt;",
 	
 	//String - Scale label font declaration for the scale label
 	scaleFontFamily : "'Arial'",
@@ -667,7 +667,7 @@ var myNewChart = new Chart(ctx);</code></pre>
 				<p>Some important points to note in my experience using ExplorerCanvas as a fallback.</p>
 				<ul>
 					<li>Initialise charts on load rather than DOMContentReady when using the library, as sometimes a race condition will occur, and it will result in an error when trying to get the 2d context of a canvas.</li>
-					<li>New VML DOM elements are being created for each animation frame and there is no hardware acceleration. As a result animation is usually slow and jerky, with flashing text. It is a good idea to dynamically turn off animation based on canvas support. I recommend using the excellent <a href="http://modernizr.com/" targer="_blank">Modernizr</a> to do this.</li>
+					<li>New VML DOM elements are being created for each animation frame and there is no hardware acceleration. As a result animation is usually slow and jerky, with flashing text. It is a good idea to dynamically turn off animation based on canvas support. I recommend using the excellent <a href="http://modernizr.com/" target="_blank">Modernizr</a> to do this.</li>
 					<li>When declaring fonts, the library explorercanvas requires the font name to be in single quotes inside the string. For example, instead of your scaleFontFamily property being simply "Arial", explorercanvas support, use "'Arial'" instead. Chart.js does this for default values.</li>
 					
 				</ul>
@@ -679,7 +679,6 @@ var myNewChart = new Chart(ctx);</code></pre>
 			</article>
 		</div>
 	</div>
-	</body>
 	<script>
 	$(document).ready(function(){
 	
@@ -763,4 +762,5 @@ var myNewChart = new Chart(ctx);</code></pre>
 	  })();
 	
 	</script>
+	</body>
 </html>
