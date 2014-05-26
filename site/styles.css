@@ -105,7 +105,7 @@ header {
   display: block;
   position: relative;
 }
-header hgroup {
+header div {
   width: 50%;
   padding: 20px 0;
 }
