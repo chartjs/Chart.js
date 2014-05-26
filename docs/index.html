@@ -72,7 +72,7 @@ var myNewChart = new Chart(ctx);</code></pre>
 		}
 	]
 }</code></pre>
-				<p>The line chart requires an array of labels for each of the data points. This is show on the X axis.</p>
+				<p>The line chart requires an array of labels for each of the data points. This is shown on the X axis.</p>
 				<p>The data for line charts is broken up into an array of datasets. Each dataset has a colour for the fill, a colour for the line and colours for the points and strokes of the points. These colours are strings just like CSS. You can use RGBA, RGB, HEX or HSL notation.</p>
 				
 				<h2>Chart options</h2>
@@ -102,7 +102,7 @@ var myNewChart = new Chart(ctx);</code></pre>
 	scaleShowLabels : true,
 	
 	//Interpolated JS string - can access value
-	scaleLabel : "<%=value%>",
+	scaleLabel : "&lt;%=value%&gt;",
 	
 	//String - Scale label font declaration for the scale label
 	scaleFontFamily : "'Arial'",
@@ -215,7 +215,7 @@ var myNewChart = new Chart(ctx);</code></pre>
 	scaleShowLabels : true,
 	
 	//Interpolated JS string - can access value
-	scaleLabel : "<%=value%>",
+	scaleLabel : "&lt;%=value%&gt;",
 	
 	//String - Scale label font declaration for the scale label
 	scaleFontFamily : "'Arial'",
@@ -326,7 +326,7 @@ var myNewChart = new Chart(ctx);</code></pre>
 	scaleShowLabels : false,
 	
 	//Interpolated JS string - can access value
-	scaleLabel : "<%=value%>",
+	scaleLabel : "&lt;%=value%&gt;",
 	
 	//String - Scale label font declaration for the scale label
 	scaleFontFamily : "'Arial'",
@@ -473,7 +473,7 @@ var myNewChart = new Chart(ctx);</code></pre>
 	scaleShowLabels : true,
 	
 	//Interpolated JS string - can access value
-	scaleLabel : "<%=value%>",
+	scaleLabel : "&lt;%=value%&gt;",
 	
 	//String - Scale label font declaration for the scale label
 	scaleFontFamily : "'Arial'",
@@ -657,17 +657,19 @@ var myNewChart = new Chart(ctx);</code></pre>
 				<p>In SVG, all of the lines, data points and everything you see is a DOM node. As a result of this, complex charts with a lot of intricacies, or many charts on the page will often see dips in performance when scrolling or generating the chart, especially when there are multiple on the page. SVG also has relatively poor mobile support, with Android not supporting SVG at all before version 3.0, and iOS before 5.0. (<a href="http://caniuse.com/svg-html5" target="_blank">caniuse.com/svg-html5</a>).</p>
 				<h2>Browser support</h2>
 				<p>Browser support for the canvas element is available in all modern & major mobile browsers (<a href="http://caniuse.com/canvas" target="_blank">caniuse.com/canvas</a>).</p>
-				<p>For IE8 & below, I would recommend using the polyfill ExplorerCanvas - available at <a href="https://code.google.com/p/explorercanvas/" target="_blank">https://code.google.com/p/explorercanvas/</a>. It falls back to Internet explorer's format VML when canvas support is not available. Example use:</p>
+				<p>For IE8 & below, I would recommend using the polyfill ExplorerCanvas - available at <a href="https://code.google.com/p/explorercanvas/" target="_blank">https://code.google.com/p/explorercanvas/</a>. It falls back to Internet explorer's format VML when canvas support is not available, together with canvas-text - available at <a href="https://code.google.com/p/canvas-text/" target="_blank">https://code.google.com/p/canvas-text/</a> (and its dependencies). Example use:</p>
 				<pre data-type="html"><code>&lt;head&gt;
 	&lt;!--[if lte IE 8]&gt;
 		&lt;script src=&quot;excanvas.js&quot;&gt;&lt;/script&gt;
+		&lt;script src=&quot;canvas.text.js&quot;&gt;&lt;/script&gt;
+		&lt;script src=&quot;optimer-normal-normal.js&quot;&gt;&lt;/script&gt;
 	&lt;![endif]--&gt;
 &lt;/head&gt;</code></pre>
 				<p>Usually I would recommend feature detection to choose whether or not to load a polyfill, rather than IE conditional comments, however in this case, VML is a Microsoft proprietary format, so it will only work in IE.</p>
 				<p>Some important points to note in my experience using ExplorerCanvas as a fallback.</p>
 				<ul>
 					<li>Initialise charts on load rather than DOMContentReady when using the library, as sometimes a race condition will occur, and it will result in an error when trying to get the 2d context of a canvas.</li>
-					<li>New VML DOM elements are being created for each animation frame and there is no hardware acceleration. As a result animation is usually slow and jerky, with flashing text. It is a good idea to dynamically turn off animation based on canvas support. I recommend using the excellent <a href="http://modernizr.com/" targer="_blank">Modernizr</a> to do this.</li>
+					<li>New VML DOM elements are being created for each animation frame and there is no hardware acceleration. As a result animation is usually slow and jerky, with flashing text. It is a good idea to dynamically turn off animation based on canvas support. I recommend using the excellent <a href="http://modernizr.com/" target="_blank">Modernizr</a> to do this.</li>
 					<li>When declaring fonts, the library explorercanvas requires the font name to be in single quotes inside the string. For example, instead of your scaleFontFamily property being simply "Arial", explorercanvas support, use "'Arial'" instead. Chart.js does this for default values.</li>
 					
 				</ul>
@@ -679,7 +681,6 @@ var myNewChart = new Chart(ctx);</code></pre>
 			</article>
 		</div>
 	</div>
-	</body>
 	<script>
 	$(document).ready(function(){
 	
@@ -763,4 +764,5 @@ var myNewChart = new Chart(ctx);</code></pre>
 	  })();
 	
 	</script>
+	</body>
 </html>
