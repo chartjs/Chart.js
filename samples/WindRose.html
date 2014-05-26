@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Windrose Chart</title>
+		<script src="../Chart.js"></script>
+		<meta name = "viewport" content = "initial-scale = 1, user-scalable = no">
+		<style>
+		</style>
+	</head>
+	<body>
+		<canvas id="canvas" height="400" width="400"></canvas>
+
+
+	<script>
+	var chartData = [
+			{
+				value : [0,5,0,0,0,0]
+			},
+			{
+				value : [5,10,10,0,0,0]
+			},
+			{
+				value : [0,0,0,0,0,0]
+			},
+			{
+				value : [0,0,0,0,0,0]
+			},
+			{
+				value : [0,0,0,0,0,0]
+			},
+			{
+				value : [0,0,0,0,0,0]
+			},
+			{
+				value : [0,0,0,5,10,5]
+			},
+			{
+				value : [1,2,0,0,0,0]
+			},
+			{
+				value : [0,0,0,0,0,0]
+			},
+			{
+				value : [0,0,0,0,0,0]
+			},
+			{
+				value : [0,0,0,0,0,0]
+			},
+			{
+				value : [0,0,0,0,0,0]
+			},
+			{
+				value : [0,0,0,0,0,0]
+			},
+			{
+				value : [0,0,0,0,0,0]
+			},
+			{
+				value : [0,0,0,0,0,0]
+			},
+			{
+				value : [10,20,7,10,0,0]
+			}
+		];
+	var config = {
+		captions: ["<= 1.5 m/s", "<= 3 m/s", "<= 5 m/s", "<= 8 m/s", "<= 10 m/s", "> 10 m/s"],
+		scaleLabel : "<%=value%>%",
+		MinUpperScale : 30,
+		};
+	var myWindRose = new Chart(document.getElementById("canvas").getContext("2d")).WindRose(chartData, config);
+	</script>
+	</body>
+</html>
