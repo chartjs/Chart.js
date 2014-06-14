@@ -1,4 +1,5 @@
-Chart.js [![Build Status](https://travis-ci.org/fulldecent/Chart.js.svg?branch=master)](https://travis-ci.org/fulldecent/Chart.js)
+Chart.js 
+
 =======
 *Simple HTML5 Charts using the canvas element* [chartjs.org](http://www.chartjs.org)
 
@@ -16,15 +17,11 @@ Here are samples of the project. These will be rendered with `<canvas>` (and yes
 
 For some additional samples see http://www.caseyy.org/code/a-stem-fork-of-chart-js/
 
-Project goal:
+Status:
 --------------------
-This project is maintained as the canonical fork of mature <a href="https://github.com/nnnick/Chart.js">nnnick/Chart.js</a> project because the author has gone missing to work on an even-stalled rewrite but many contributors are ready to help out now. The <a href="https://github.com/fulldecent/Chart.js/tree/master">master branch</a> here is solely a continuation of the original Chart.js project and allows contributors to submit pull requests to an active project. Only the following are in-scope for master:
 
- * Bug fixes
- * Documentation improvements
- * Stabitily fixes
- * Continuous integration testing
+This is an extension of the functionality of nnnick/Chart.js which adds the features above. Out of necessity, it represents a significant addition to the functionality of that original library and therefore is likely to be incompatible with other versions of Chart.js.
 
-Don't even think about submitting code that changes functionality without updating ALL relevant documentation and unit tests.
+I have stopped maintaining this branch due to the fact that the project appears to be dead. Nnnick is MIA and the other active branches appear primarily interested in extending the capabilities without refactoring the codebase to give it a real API. IMO, branches like mine simply can't be merged into the main project as it currently stands.
 
-You are welcome to discuss refactoring here and we will make branches for collaboration on any cool ideas. But remember, the main goal of this project is to wait for Nick to come back from hibernation and say "thanks for all your hard work, here is a patchset to fix all your issues which has no controversy and is ready and field tested."
+If you want to take a look at my own attempt to start refactor, change the branch to OOrefactor or check out the Wiki. If there's a critical mass of people interested in contributing I may start working on that again. But I won't do the grunt work of merging this into another Chart.js branch without the groundwork being laid first.
