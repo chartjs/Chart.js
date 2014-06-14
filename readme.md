@@ -24,4 +24,6 @@ This is an extension of the functionality of nnnick/Chart.js which adds the feat
 
 I have stopped maintaining this branch due to the fact that the project appears to be dead. Nnnick is MIA and the other active branches appear primarily interested in extending the capabilities without refactoring the codebase to give it a real API. IMO, branches like mine simply can't be merged into the main project as it currently stands.
 
+To see other active branches check out fulldecent/Chart.js and FVANCOP/ChartNew.js.
+
 If you want to take a look at my own attempt to start refactor, change the branch to OOrefactor or check out the Wiki. If there's a critical mass of people interested in contributing I may start working on that again. But I won't do the grunt work of merging this into another Chart.js branch without the groundwork being laid first.
