@@ -111,7 +111,7 @@ Chart.types.Line.extend({
 	name: "LineAlt",
 	initialize: function(data){
 		console.log('My Line chart extension');
-		Chart.types.Line.prototype.apply(this, arguments);
+		Chart.types.Line.prototype.initialize.apply(this, arguments);
 	}
 });
 
