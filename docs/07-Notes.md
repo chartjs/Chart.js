@@ -26,7 +26,7 @@ Some important points to note in my experience using ExplorerCanvas as a fallbac
 
 ### Bugs & issues
 
-Please report these on the Github page - at <a href="https://github.com/nnnick/Chart.js" target="_blank">github.com/nnnick/Chart.js</a>. If you could include a link to a simple <a href="http://jsbin.com/" target="_blank">jsbin</a> or similar to demonstrate the issue, that'd be really helpful.
+Please report these on the GitHub page - at <a href="https://github.com/nnnick/Chart.js" target="_blank">github.com/nnnick/Chart.js</a>. If you could include a link to a simple <a href="http://jsbin.com/" target="_blank">jsbin</a> or similar to demonstrate the issue, that'd be really helpful.
 
 
 ### Contributing
