@@ -1042,7 +1042,8 @@
 
 
 	Chart.Point = Chart.Element.extend({
-		inRange : function(chartX,chartY){
+		display: true,
+		inRange: function(chartX,chartY){
 			var hitDetectionRange = this.hitDetectionRadius + this.radius;
 			return ((Math.pow(chartX-this.x, 2)+Math.pow(chartY-this.y, 2)) < Math.pow(hitDetectionRange,2));
 		},
