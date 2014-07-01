@@ -1187,6 +1187,7 @@
 		draw : function(){
 
 			var ctx = this.chart.ctx;
+			ctx.save();
 
 			ctx.font = fontString(this.fontSize,this.fontStyle,this.fontFamily);
 
@@ -1257,6 +1258,8 @@
 			ctx.textAlign = "center";
 			ctx.textBaseline = "middle";
 			ctx.fillText(this.text, tooltipX + tooltipWidth/2, tooltipY + tooltipRectHeight/2);
+
+			ctx.restore();
 		}
 	});
 
