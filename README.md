@@ -23,3 +23,4 @@ New contributions to the library are welcome, just a couple of guidelines:
 - Please check that your code will pass `jshint` code standards, `gulp jshint` will run this for you.
 - Please keep pull requests concise, and document new functionality in the relevant `.md` file.
 - Consider whether your changes are useful for all users, or if creating a Chart.js extension would be more appropriate.
+- For new chart types or functional changes, please add a demo link using [jsbin](http://jsbin.com) or similar.
