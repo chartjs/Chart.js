@@ -873,7 +873,9 @@
 								yMin;
 							helpers.each(this.datasets, function(dataset){
 								dataCollection = dataset.points || dataset.bars || dataset.segments;
-								Elements.push(dataCollection[dataIndex]);
+								if (dataCollection[dataIndex]){
+									Elements.push(dataCollection[dataIndex]);
+								}
 							});
 
 							helpers.each(Elements, function(element) {
@@ -1996,6 +1998,7 @@
 						datasetObject.bars.push(new this.BarClass({
 							value : dataPoint,
 							label : data.labels[index],
+							datasetLabel: dataset.label,
 							strokeColor : dataset.strokeColor,
 							fillColor : dataset.fillColor,
 							highlightFill : dataset.highlightFill || dataset.fillColor,
@@ -2470,8 +2473,7 @@
 						datasetObject.points.push(new this.PointClass({
 							value : dataPoint,
 							label : data.labels[index],
-							// x: this.scale.calculateX(index),
-							// y: this.scale.endPoint,
+							datasetLabel: dataset.label,
 							strokeColor : dataset.pointStrokeColor,
 							fillColor : dataset.pointColor,
 							highlightFill : dataset.pointHighlightFill || dataset.pointColor,
@@ -3079,6 +3081,7 @@
 						datasetObject.points.push(new this.PointClass({
 							value : dataPoint,
 							label : data.labels[index],
+							datasetLabel: dataset.label,
 							x: (this.options.animation) ? this.scale.xCenter : pointPosition.x,
 							y: (this.options.animation) ? this.scale.yCenter : pointPosition.y,
 							strokeColor : dataset.pointStrokeColor,
@@ -3233,6 +3236,7 @@
 			this.eachPoints(function(point){
 				point.save();
 			});
+			this.reflow();
 			this.render();
 		},
 		reflow: function(){
