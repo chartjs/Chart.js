@@ -104,8 +104,7 @@
 						datasetObject.points.push(new this.PointClass({
 							value : dataPoint,
 							label : data.labels[index],
-							// x: this.scale.calculateX(index),
-							// y: this.scale.endPoint,
+							datasetLabel: dataset.label,
 							strokeColor : dataset.pointStrokeColor,
 							fillColor : dataset.pointColor,
 							highlightFill : dataset.pointHighlightFill || dataset.pointColor,

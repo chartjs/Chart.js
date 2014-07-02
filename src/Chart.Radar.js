@@ -121,6 +121,7 @@
 						datasetObject.points.push(new this.PointClass({
 							value : dataPoint,
 							label : data.labels[index],
+							datasetLabel: dataset.label,
 							x: (this.options.animation) ? this.scale.xCenter : pointPosition.x,
 							y: (this.options.animation) ? this.scale.yCenter : pointPosition.y,
 							strokeColor : dataset.pointStrokeColor,
