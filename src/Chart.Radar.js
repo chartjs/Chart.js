@@ -276,6 +276,7 @@
 			this.eachPoints(function(point){
 				point.save();
 			});
+			this.reflow();
 			this.render();
 		},
 		reflow: function(){
