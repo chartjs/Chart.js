@@ -109,6 +109,7 @@
 						datasetObject.bars.push(new this.BarClass({
 							value : dataPoint,
 							label : data.labels[index],
+							datasetLabel: dataset.label,
 							strokeColor : dataset.strokeColor,
 							fillColor : dataset.fillColor,
 							highlightFill : dataset.highlightFill || dataset.fillColor,
