@@ -873,7 +873,9 @@
 								yMin;
 							helpers.each(this.datasets, function(dataset){
 								dataCollection = dataset.points || dataset.bars || dataset.segments;
-								Elements.push(dataCollection[dataIndex]);
+								if (dataCollection[dataIndex]){
+									Elements.push(dataCollection[dataIndex]);
+								}
 							});
 
 							helpers.each(Elements, function(element) {
