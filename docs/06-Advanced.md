@@ -120,6 +120,10 @@ new Chart(ctx).LineAlt(data);
 // but this logs 'My Line chart extension' in the console.
 ```
 
+### Community extensions
+
+- <a href="https://github.com/Regaddi/Chart.StackedBar.js" target"_blank">Stacked Bar Chart</a> by <a href="https://twitter.com/Regaddi" target="_blank">@Regaddi</a>
+
 ### Creating custom builds
 
 Chart.js uses <a href="http://gulpjs.com/" target="_blank">gulp</a> to build the library into a single JavaScript file. We can use this same build script with custom parameters in order to build a custom version.
