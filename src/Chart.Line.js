@@ -275,19 +275,20 @@
 				// Control points need to be calculated in a seperate loop, because we need to know the current x/y of the point
 				// This would cause issues when there is no animation, because the y of the next point would be 0, so beziers would be skewed
 				if (this.options.bezierCurve){
-					helpers.each(dataset.points,function(point,index){
-						//If we're at the start or end, we don't have a previous/next point
-						//By setting the tension to 0 here, the curve will transition to straight at the end
-						if (index === 0){
-							point.controlPoints = helpers.splineCurve(point,point,dataset.points[index+1],0);
-						}
-						else if (index >= dataset.points.length-1){
-							point.controlPoints = helpers.splineCurve(dataset.points[index-1],point,point,0);
-						}
-						else{
-							point.controlPoints = helpers.splineCurve(dataset.points[index-1],point,dataset.points[index+1],this.options.bezierCurveTension);
-						}
-					},this);
+					if(dataset.points.length != 1)
+						helpers.each(dataset.points,function(point,index){
+							//If we're at the start or end, we don't have a previous/next point
+							//By setting the tension to 0 here, the curve will transition to straight at the end
+							if (index === 0){
+								point.controlPoints = helpers.splineCurve(point,point,dataset.points[index+1],0);
+							}
+							else if (index >= dataset.points.length-1){
+								point.controlPoints = helpers.splineCurve(dataset.points[index-1],point,point,0);
+							}
+							else{
+								point.controlPoints = helpers.splineCurve(dataset.points[index-1],point,dataset.points[index+1],this.options.bezierCurveTension);
+							}
+						},this);
 				}
 
 
