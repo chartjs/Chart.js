@@ -98,19 +98,16 @@
 
 
 				helpers.each(dataset.data,function(dataPoint,index){
-					//Best way to do this? or in draw sequence...?
-					if (helpers.isNumber(dataPoint)){
 					//Add a new point for each piece of data, passing any required data to draw.
-						datasetObject.points.push(new this.PointClass({
-							value : dataPoint,
-							label : data.labels[index],
-							datasetLabel: dataset.label,
-							strokeColor : dataset.pointStrokeColor,
-							fillColor : dataset.pointColor,
-							highlightFill : dataset.pointHighlightFill || dataset.pointColor,
-							highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor
-						}));
-					}
+					datasetObject.points.push(new this.PointClass({
+						value : dataPoint,
+						label : data.labels[index],
+						datasetLabel: dataset.label,
+						strokeColor : dataset.pointStrokeColor,
+						fillColor : dataset.pointColor,
+						highlightFill : dataset.pointHighlightFill || dataset.pointColor,
+						highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor
+					}));
 				},this);
 
 				this.buildScale(data.labels);
@@ -217,17 +214,15 @@
 			//Map the values array for each of the datasets
 
 			helpers.each(valuesArray,function(value,datasetIndex){
-					if (helpers.isNumber(value)){
-					//Add a new point for each piece of data, passing any required data to draw.
-						this.datasets[datasetIndex].points.push(new this.PointClass({
-							value : value,
-							label : label,
-							x: this.scale.calculateX(this.scale.valuesCount+1),
-							y: this.scale.endPoint,
-							strokeColor : this.datasets[datasetIndex].pointStrokeColor,
-							fillColor : this.datasets[datasetIndex].pointColor
-						}));
-					}
+				//Add a new point for each piece of data, passing any required data to draw.
+				this.datasets[datasetIndex].points.push(new this.PointClass({
+					value : value,
+					label : label,
+					x: this.scale.calculateX(this.scale.valuesCount+1),
+					y: this.scale.endPoint,
+					strokeColor : this.datasets[datasetIndex].pointStrokeColor,
+					fillColor : this.datasets[datasetIndex].pointColor
+				}));
 			},this);
 
 			this.scale.addXLabel(label);
@@ -264,10 +259,12 @@
 				//We can use this extra loop to calculate the control points of this dataset also in this loop
 
 				helpers.each(dataset.points,function(point,index){
-					point.transition({
-						y : this.scale.calculateY(point.value),
-						x : this.scale.calculateX(index)
-					}, easingDecimal);
+					if (helpers.isNumber(point.value)){
+						point.transition({
+							y : this.scale.calculateY(point.value),
+							x : this.scale.calculateX(index)
+						}, easingDecimal);
+					}
 
 				},this);
 
@@ -296,24 +293,26 @@
 				ctx.strokeStyle = dataset.strokeColor;
 				ctx.beginPath();
 				helpers.each(dataset.points,function(point,index){
-					if (index>0){
-						if(this.options.bezierCurve){
-							ctx.bezierCurveTo(
-								dataset.points[index-1].controlPoints.outer.x,
-								dataset.points[index-1].controlPoints.outer.y,
-								point.controlPoints.inner.x,
-								point.controlPoints.inner.y,
-								point.x,
-								point.y
-							);
+					if (helpers.isNumber(point.value)){
+						if (index>0){
+							if(this.options.bezierCurve){
+								ctx.bezierCurveTo(
+									dataset.points[index-1].controlPoints.outer.x,
+									dataset.points[index-1].controlPoints.outer.y,
+									point.controlPoints.inner.x,
+									point.controlPoints.inner.y,
+									point.x,
+									point.y
+								);
+							}
+							else{
+								ctx.lineTo(point.x,point.y);
+							}
+
 						}
 						else{
-							ctx.lineTo(point.x,point.y);
+							ctx.moveTo(point.x,point.y);
 						}
-
-					}
-					else{
-						ctx.moveTo(point.x,point.y);
 					}
 				},this);
 				ctx.stroke();
@@ -332,7 +331,9 @@
 				//A little inefficient double looping, but better than the line
 				//lagging behind the point positions
 				helpers.each(dataset.points,function(point){
-					point.draw();
+					if (helpers.isNumber(point.value)){
+						point.draw();
+					}
 				});
 
 			},this);
