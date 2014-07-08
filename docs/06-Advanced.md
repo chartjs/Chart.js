@@ -92,6 +92,9 @@ Chart.Type.extend({
 	initialize:  function(data){
 		this.chart.ctx // The drawing context for this chart
 		this.chart.canvas // the canvas node for this chart
+	},
+	// Used to draw something on the canvas
+	draw: function() {
 	}
 });
 
