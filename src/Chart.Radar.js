@@ -111,25 +111,22 @@
 				this.datasets.push(datasetObject);
 
 				helpers.each(dataset.data,function(dataPoint,index){
-					//Best way to do this? or in draw sequence...?
-					if (helpers.isNumber(dataPoint)){
 					//Add a new point for each piece of data, passing any required data to draw.
-						var pointPosition;
-						if (!this.scale.animation){
-							pointPosition = this.scale.getPointPosition(index, this.scale.calculateCenterOffset(dataPoint));
-						}
-						datasetObject.points.push(new this.PointClass({
-							value : dataPoint,
-							label : data.labels[index],
-							datasetLabel: dataset.label,
-							x: (this.options.animation) ? this.scale.xCenter : pointPosition.x,
-							y: (this.options.animation) ? this.scale.yCenter : pointPosition.y,
-							strokeColor : dataset.pointStrokeColor,
-							fillColor : dataset.pointColor,
-							highlightFill : dataset.pointHighlightFill || dataset.pointColor,
-							highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor
-						}));
+					var pointPosition;
+					if (!this.scale.animation){
+						pointPosition = this.scale.getPointPosition(index, this.scale.calculateCenterOffset(dataPoint));
 					}
+					datasetObject.points.push(new this.PointClass({
+						value : dataPoint,
+						label : data.labels[index],
+						datasetLabel: dataset.label,
+						x: (this.options.animation) ? this.scale.xCenter : pointPosition.x,
+						y: (this.options.animation) ? this.scale.yCenter : pointPosition.y,
+						strokeColor : dataset.pointStrokeColor,
+						fillColor : dataset.pointColor,
+						highlightFill : dataset.pointHighlightFill || dataset.pointColor,
+						highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor
+					}));
 				},this);
 
 			},this);
@@ -244,17 +241,15 @@
 			//Map the values array for each of the datasets
 			this.scale.valuesCount++;
 			helpers.each(valuesArray,function(value,datasetIndex){
-					if (helpers.isNumber(value)){
-						var pointPosition = this.scale.getPointPosition(this.scale.valuesCount, this.scale.calculateCenterOffset(value));
-						this.datasets[datasetIndex].points.push(new this.PointClass({
-							value : value,
-							label : label,
-							x: pointPosition.x,
-							y: pointPosition.y,
-							strokeColor : this.datasets[datasetIndex].pointStrokeColor,
-							fillColor : this.datasets[datasetIndex].pointColor
-						}));
-					}
+				var pointPosition = this.scale.getPointPosition(this.scale.valuesCount, this.scale.calculateCenterOffset(value));
+				this.datasets[datasetIndex].points.push(new this.PointClass({
+					value : value,
+					label : label,
+					x: pointPosition.x,
+					y: pointPosition.y,
+					strokeColor : this.datasets[datasetIndex].pointStrokeColor,
+					fillColor : this.datasets[datasetIndex].pointColor
+				}));
 			},this);
 
 			this.scale.labels.push(label);
@@ -301,7 +296,9 @@
 
 				//Transition each point first so that the line and point drawing isn't out of sync
 				helpers.each(dataset.points,function(point,index){
-					point.transition(this.scale.getPointPosition(index, this.scale.calculateCenterOffset(point.value)), easeDecimal);
+					if (point.hasValue()){
+						point.transition(this.scale.getPointPosition(index, this.scale.calculateCenterOffset(point.value)), easeDecimal);
+					}
 				},this);
 
 
@@ -328,7 +325,9 @@
 				//A little inefficient double looping, but better than the line
 				//lagging behind the point positions
 				helpers.each(dataset.points,function(point){
-					point.draw();
+					if (point.hasValue()){
+						point.draw();
+					}
 				});
 
 			},this);
