@@ -275,7 +275,7 @@
 			//Draw all the bars for each dataset
 			helpers.each(this.datasets,function(dataset,datasetIndex){
 				helpers.each(dataset.bars,function(bar,index){
-					if (helpers.isNumber(bar.value)){
+					if (bar.hasValue()){
 						bar.base = this.scale.endPoint;
 						//Transition then draw
 						bar.transition({

@@ -259,7 +259,7 @@
 				//We can use this extra loop to calculate the control points of this dataset also in this loop
 
 				helpers.each(dataset.points,function(point,index){
-					if (helpers.isNumber(point.value)){
+					if (point.hasValue()){
 						point.transition({
 							y : this.scale.calculateY(point.value),
 							x : this.scale.calculateX(index)
@@ -293,7 +293,7 @@
 				ctx.strokeStyle = dataset.strokeColor;
 				ctx.beginPath();
 				helpers.each(dataset.points,function(point,index){
-					if (helpers.isNumber(point.value)){
+					if (point.hasValue()){
 						if (index>0){
 							if(this.options.bezierCurve){
 								ctx.bezierCurveTo(
@@ -331,7 +331,7 @@
 				//A little inefficient double looping, but better than the line
 				//lagging behind the point positions
 				helpers.each(dataset.points,function(point){
-					if (helpers.isNumber(point.value)){
+					if (point.hasValue()){
 						point.draw();
 					}
 				});

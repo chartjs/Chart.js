@@ -873,7 +873,7 @@
 								yMin;
 							helpers.each(this.datasets, function(dataset){
 								dataCollection = dataset.points || dataset.bars || dataset.segments;
-								if (dataCollection[dataIndex] && helpers.isNumber(dataCollection[dataIndex].value)){
+								if (dataCollection[dataIndex] && dataCollection[dataIndex].hasValue()){
 									Elements.push(dataCollection[dataIndex]);
 								}
 							});
@@ -1037,6 +1037,9 @@
 				x : this.x,
 				y : this.y
 			};
+		},
+		hasValue: function(){
+			return isNumber(this.value);
 		}
 	});
 
