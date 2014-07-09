@@ -402,6 +402,10 @@
 		//Templating methods
 		//Javascript micro templating by John Resig - source at http://ejohn.org/blog/javascript-micro-templating/
 		template = helpers.template = function(templateString, valuesObject){
+			 // If templateString is function rather than string-template - call the function for valuesObject
+			 if(templateString instanceof Function)
+			 	return templateString(valuesObject);
+			 
 			var cache = {};
 			function tmpl(str, data){
 				// Figure out if we're getting a template, or if we need to
