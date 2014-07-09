@@ -274,7 +274,7 @@
 
 				// Control points need to be calculated in a seperate loop, because we need to know the current x/y of the point
 				// This would cause issues when there is no animation, because the y of the next point would be 0, so beziers would be skewed
-				if (this.options.bezierCurve){
+				if (this.options.bezierCurve && dataset.points.length > 1){
 					helpers.each(dataset.points,function(point,index){
 						//If we're at the start or end, we don't have a previous/next point
 						//By setting the tension to 0 here, the curve will transition to straight at the end
