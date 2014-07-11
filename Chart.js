@@ -91,6 +91,9 @@
 			// Boolean - whether or not the chart should be responsive and resize when the browser does.
 			responsive: false,
 
+                        // Boolean - whether to maintain the starting aspect ratio or not when responsive
+                        maintainAspectRatio: true,
+
 			// Boolean - Determines whether to draw tooltips on the canvas or not - attaches events to touchmove & mousemove
 			showTooltips: true,
 
@@ -693,11 +696,17 @@
 				removeEvent(chartInstance.chart.canvas, eventName, handler);
 			});
 		},
-		getMaximumSize = helpers.getMaximumSize = function(domNode){
+		getMaximumWidth = helpers.getMaximumWidth = function(domNode){
 			var container = domNode.parentNode;
 			// TODO = check cross browser stuff with this.
 			return container.clientWidth;
 		},
+		getMaximumHeight = helpers.getMaximumHeight = function(domNode){
+			var container = domNode.parentNode;
+			// TODO = check cross browser stuff with this.
+			return container.clientHeight;
+		},
+		getMaximumSize = helpers.getMaximumSize = helpers.getMaximumWidth, // legacy support
 		retinaScale = helpers.retinaScale = function(chart){
 			var ctx = chart.ctx,
 				width = chart.canvas.width,
@@ -776,8 +785,8 @@
 		resize : function(callback){
 			this.stop();
 			var canvas = this.chart.canvas,
-				newWidth = getMaximumSize(this.chart.canvas),
-				newHeight = newWidth / this.chart.aspectRatio;
+				newWidth = getMaximumWidth(this.chart.canvas),
+				newHeight = this.options.maintainAspectRatio ? newWidth / this.chart.aspectRatio : getMaximumHeight(this.chart.canvas);
 
 			canvas.width = this.chart.width = newWidth;
 			canvas.height =  this.chart.height = newHeight;
@@ -1887,6 +1896,7 @@
 	};
 
 }).call(this);
+
 (function(){
 	"use strict";
 
