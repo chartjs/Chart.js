@@ -16,6 +16,9 @@
 		//Number - Width of the grid lines
 		scaleGridLineWidth : 1,
 
+		//Boolean - Whether to show a second y axis on the right side of the chart
+		doubleY: true,
+
 		//Boolean - Whether the line is curved between points
 		bezierCurve : true,
 
@@ -197,6 +200,7 @@
 				gridLineColor : (this.options.scaleShowGridLines) ? this.options.scaleGridLineColor : "rgba(0,0,0,0)",
 				padding: (this.options.showScale) ? 0 : this.options.pointDotRadius + this.options.pointDotStrokeWidth,
 				showLabels : this.options.scaleShowLabels,
+				doubleY : this.options.doubleY,
 				display : this.options.showScale
 			};
 

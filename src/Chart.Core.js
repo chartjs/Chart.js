@@ -1429,7 +1429,7 @@
 				lastRotated;
 
 
-			this.xScalePaddingRight = lastWidth/2 + 3;
+			this.xScalePaddingRight = (lastWidth/2 > this.yLabelWidth + 10) ? lastWidth/2 : this.yLabelWidth + 10;
 			this.xScalePaddingLeft = (firstWidth/2 > this.yLabelWidth + 10) ? firstWidth/2 : this.yLabelWidth + 10;
 
 			this.xLabelRotation = 0;
@@ -1500,6 +1500,7 @@
 		draw : function(){
 			var ctx = this.ctx,
 				yLabelGap = (this.endPoint - this.startPoint) / this.steps,
+				xEnd = Math.round(this.width),
 				xStart = Math.round(this.xScalePaddingLeft);
 			if (this.display){
 				ctx.fillStyle = this.textColor;
@@ -1512,6 +1513,7 @@
 					ctx.textBaseline = "middle";
 					if (this.showLabels){
 						ctx.fillText(labelString,xStart - 10,yLabelCenter);
+						this.doubleY && ctx.fillText(labelString,xEnd,yLabelCenter);
 					}
 					ctx.beginPath();
 					if (index > 0){
@@ -1527,7 +1529,7 @@
 					linePositionY += helpers.aliasPixel(ctx.lineWidth);
 
 					ctx.moveTo(xStart, linePositionY);
-					ctx.lineTo(this.width, linePositionY);
+					ctx.lineTo(this.width - this.xScalePaddingRight + 6, linePositionY);
 					ctx.stroke();
 					ctx.closePath();
 
