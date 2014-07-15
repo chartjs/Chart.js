@@ -76,6 +76,10 @@ These are the customisation options specific to Bar charts. These options are me
 
 	//Number - Spacing between data sets within X values
 	barDatasetSpacing : 1,
+
+	//Boolean - Determines if the bars should be overlaid (true) or drawn side-by-side (false)
+	overlay: false,
+
 	{% raw %}
 	//String - A legend template
 	legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
