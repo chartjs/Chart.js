@@ -152,6 +152,9 @@
 			// String - Colour behind the legend colour block
 			multiTooltipKeyBackground: '#fff',
 
+			// String - 'left' or 'right'; alignment of labels on multi tooltip
+			multiTooltipTextAlign: 'left',
+
 			// Function - Will fire on animation progression.
 			onAnimationProgress: function(){},
 
@@ -940,6 +943,7 @@
 						legendColors: tooltipColors,
 						legendColorBackground : this.options.multiTooltipKeyBackground,
 						title: ChartElements[0].label,
+						textAlign: this.options.multiTooltipTextAlign,
 						chart: this.chart,
 						ctx: this.chart.ctx
 					}).draw();
@@ -1334,7 +1338,11 @@
 			ctx.fill();
 			ctx.closePath();
 
-			ctx.textAlign = "left";
+			var xLabelOffset = this.x + this.xPadding + this.fontSize + 3;	// offset for 'left' elignment
+			if(this.textAlign === 'right')
+				xLabelOffset = this.x + this.width - this.xPadding;	// ofset for 'right' alignment
+
+			ctx.textAlign = this.textAlign === undefined ? "left" : this.textAlign;	// defaults to 'left'
 			ctx.textBaseline = "middle";
 			ctx.fillStyle = this.titleTextColor;
 			ctx.font = this.titleFont;
@@ -1344,7 +1352,7 @@
 			ctx.font = this.font;
 			helpers.each(this.labels,function(label,index){
 				ctx.fillStyle = this.textColor;
-				ctx.fillText(label,this.x + this.xPadding + this.fontSize + 3, this.getLineHeight(index + 1));
+				ctx.fillText(label, xLabelOffset, this.getLineHeight(index + 1));
 
 				//A bit gnarly, but clearing this rectangle breaks when using explorercanvas (clears whole canvas)
 				//ctx.clearRect(this.x + this.xPadding, this.getLineHeight(index + 1) - this.fontSize/2, this.fontSize, this.fontSize);
