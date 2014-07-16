@@ -96,6 +96,9 @@ These are the customisation options specific to Line charts. These options are m
 	//String - A legend template
 	legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
 	{% endraw %}
+	
+	//Number - how much padding there is around the chart
+	padding: 0
 };
 ```
 
