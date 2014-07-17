@@ -1358,6 +1358,7 @@
 				this.yLabels.push(template(this.templateString,{value:(this.min + (i * this.stepValue)).toFixed(stepDecimalPlaces)}));
 			}
 			this.yLabelWidth = (this.display && this.showLabels) ? longestText(this.ctx,this.font,this.yLabels) : 0;
+			this.yLabelWidth += 40 * 2; // for y axis label
 		},
 		addXLabel : function(label){
 			this.xLabels.push(label);
@@ -1462,6 +1463,7 @@
 				if (this.xLabelRotation > 0){
 					this.endPoint -= Math.sin(toRadians(this.xLabelRotation))*originalLabelWidth + 3;
 				}
+				this.endPoint -= 40; // for x axis label
 			}
 			else{
 				this.xLabelWidth = 0;
@@ -1585,6 +1587,28 @@
 					ctx.restore();
 				},this);
 
+				// Print X axis
+				if (this.xAxisLabel) {
+					ctx.save();
+					var yPos = this.endPoint + 40;
+					ctx.font = this.font;
+					ctx.textAlign = "center";
+					ctx.textBaseline = "top";
+					ctx.translate(this.width * 0.57, yPos);
+					ctx.fillText(this.xAxisLabel, 0, 0);
+					ctx.restore();
+				}
+
+				// Print Y axis
+				if (this.yAxisLabel) {
+					ctx.save();
+					ctx.font = this.font;
+					ctx.textAlign = "center";
+					ctx.textBaseline = "top";
+					ctx.translate(40, this.height * 0.41);
+					ctx.fillText(this.yAxisLabel, 0, 0);
+					ctx.restore();
+				}
 			}
 		}
 
