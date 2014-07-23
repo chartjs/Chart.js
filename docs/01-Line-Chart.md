@@ -158,3 +158,53 @@ Calling `removeData()` on your Chart instance will remove the first value for al
 myLineChart.removeData();
 // The chart will remove the first point and animate other points into place
 ```
+#### .addDataset( dataset[, update(boolean)] )
+
+Calling `addDataset()` on your Chart instance will add a single dataset to the chart.
+
+The first argument should be a dataset and the second optional argument determines if you want the chart to update immediately.
+
+```javascript
+myLineChart.addDataset({
+	label: "My dynamically added dataset",
+	fillColor: "rgba(110,110,110,0.2)",
+	strokeColor: "rgba(110,110,110,1)",
+	pointColor: "rgba(110,110,110,1)",
+	pointStrokeColor: "#fff",
+	pointHighlightFill: "#fff",
+	pointHighlightStroke: "rgba(110,110,110,1)",
+	data: [35, 49, 60, 61, 36, 35, 20]
+}, true);
+// The chart will add the given dataset and update
+```
+
+#### .removeDataset( <index or id>[, update(boolean)] )
+
+Calling `removeDataset()` on your Chart instance will remove a single dataset from the chart.
+
+The first argument should be an index or an id (which should match either the id you specified for the dataset, or its label) and the second optional argument determines if you want the chart to update immediately.
+
+```javascript
+myLineChart.removeDataset(2, true);
+// The chart will remove the dataset with index 2 from the chart and update
+```
+#### .clearDatasets( [update(boolean)] )
+
+Calling `clearDatasets()` on your Chart instance will remove *all* datasets from the chart.
+
+The optional argument determines if you want the chart to update immediately.
+
+```javascript
+myLineChart.clearDatasets(true);
+// The chart will remove all datasets and update
+```
+#### .setLabels( labels[, update(boolean)] )
+
+Calling `setLabels()` on your Chart instance will set the X-axis labels.
+
+The first argument should be an array of labels, the second optional argument determines if you want the chart to update immediately.
+
+```javascript
+myLineChart.setLabels(['foo', 'bar', 'baz']);
+// The chart set the x-axis labels to 'foo', 'bar' and 'baz'
+```

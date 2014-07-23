@@ -48,6 +48,14 @@
 
 	};
 
+	function randomId() {
+		function s4() {
+			return Math.floor((1 + Math.random()) * 0x10000)
+			.toString(16)
+			.substring(1);
+		}
+		return s4() + s4();
+	}
 
 	Chart.Type.extend({
 		name: "Line",
@@ -66,6 +74,7 @@
 			});
 
 			this.datasets = [];
+			this.buildScale(data.labels || []); // initialize an empty scale in case we have an empty chart
 
 			//Set up tooltip events on the chart
 			if (this.options.showTooltips){
@@ -83,50 +92,8 @@
 			}
 
 			//Iterate through each of the datasets, and build this into a property of the chart
-			helpers.each(data.datasets,function(dataset){
-
-				var datasetObject = {
-					label : dataset.label || null,
-					fillColor : dataset.fillColor,
-					strokeColor : dataset.strokeColor,
-					pointColor : dataset.pointColor,
-					pointStrokeColor : dataset.pointStrokeColor,
-					points : []
-				};
-
-				this.datasets.push(datasetObject);
-
-
-				helpers.each(dataset.data,function(dataPoint,index){
-					//Best way to do this? or in draw sequence...?
-					if (helpers.isNumber(dataPoint)){
-					//Add a new point for each piece of data, passing any required data to draw.
-						datasetObject.points.push(new this.PointClass({
-							value : dataPoint,
-							label : data.labels[index],
-							datasetLabel: dataset.label,
-							strokeColor : dataset.pointStrokeColor,
-							fillColor : dataset.pointColor,
-							highlightFill : dataset.pointHighlightFill || dataset.pointColor,
-							highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor
-						}));
-					}
-				},this);
-
-				this.buildScale(data.labels);
-
-
-				this.eachPoints(function(point, index){
-					helpers.extend(point, {
-						x: this.scale.calculateX(index),
-						y: this.scale.endPoint
-					});
-					point.save();
-				}, this);
-
-			},this);
-
-
+			helpers.each(data.datasets, this.addDataset.bind(this));
+			
 			this.render();
 		},
 		update : function(){
@@ -210,7 +177,6 @@
 				});
 			}
 
-
 			this.scale = new Chart.Scale(scaleOptions);
 		},
 		addData : function(valuesArray,label){
@@ -241,6 +207,73 @@
 				dataset.points.shift();
 			},this);
 			this.update();
+		},
+		addDataset : function(dataset, update) {
+			var datasetObject = {
+				id: dataset.id || dataset.label || randomId(),
+				label : dataset.label || null,
+				fillColor : dataset.fillColor,
+				strokeColor : dataset.strokeColor,
+				pointColor : dataset.pointColor,
+				pointStrokeColor : dataset.pointStrokeColor,
+				points : []
+			};
+
+			this.datasets.push(datasetObject);
+
+			helpers.each(dataset.data,function(dataPoint,index){
+				//Best way to do this? or in draw sequence...?
+				if (helpers.isNumber(dataPoint)){
+					//Add a new point for each piece of data, passing any required data to draw.
+					datasetObject.points.push(new this.PointClass({
+						value : dataPoint,
+						label : this.scale.getXLabel(index),
+						datasetLabel: dataset.label,
+						strokeColor : dataset.pointStrokeColor,
+						fillColor : dataset.pointColor,
+						highlightFill : dataset.pointHighlightFill || dataset.pointColor,
+						highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor,
+						x: this.scale.calculateX(index),
+						y: this.scale.endPoint
+					}));
+				}
+			},this);
+
+			if (update) {
+				this.update();
+			}
+			
+			return datasetObject;
+		},
+		removeDataset : function(id, update) {
+			if (typeof(id) === 'number' && id > -1 && id < this.datasets.length) {
+				this.datasets.splice(id, 1);
+			} else {
+				for (var index = 0; index < this.datasets.length; ++index) {
+					if (this.datasets[index].id === id ) {
+						this.datasets.splice(index, 1);
+						break;
+					}
+				}
+			}
+			
+			if (update) {
+				this.update();
+			}
+		},
+		clearDatasets : function(update) {
+			this.datasets = [];
+
+			if (update) {
+				this.update();
+			}
+		},
+		setLabels : function(labels, update) {
+			this.buildScale(labels);
+			
+			if (update) {
+				this.update();
+			}
 		},
 		reflow : function(){
 			var newScaleProps = helpers.extend({
