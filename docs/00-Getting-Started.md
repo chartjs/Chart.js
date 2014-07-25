@@ -126,6 +126,9 @@ Chart.defaults.global = {
 	// Boolean - whether or not the chart should be responsive and resize when the browser does.
 	responsive: false,
 
+	// Boolean - multiply the size of the canvas height/width by the device pixel ratio
+	autoMultipleResize: true,
+
 	// Boolean - Determines whether to draw tooltips on the canvas or not
 	showTooltips: true,
 
