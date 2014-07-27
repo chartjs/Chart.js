@@ -195,3 +195,44 @@ Chart.defaults.global.responsive = true;
 ```
 
 Now, every time we create a chart, `options.responsive` will be `true`.
+
+#### Example: Putting it all together
+
+```html
+<canvas class="calorie-graph" width="400" height="300"></canvas>
+```
+
+```javascript
+var el = $('.calorie-graph').get(0).getContext('2d'),
+
+  goalCals = 1400,
+
+  barChartData = {
+    labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    datasets: [{
+      fillColor: '#ccf',
+      data: [1650, 1200, 1400, 1800, 2300, 1100, 1400]
+    }, {
+      fillColor: '#f66',
+      data: [goalCals, goalCals, goalCals, goalCals, goalCals, goalCals, goalCals]
+    }]
+  },
+
+  options = {
+
+    scaleOverride: true,
+    scaleSteps: 2,
+    scaleStepWidth: goalCals,
+    scaleStartValue: 0,
+
+    scaleBeginAtZero: true,
+    scaleGridLineWidth: 0,
+
+    barShowStroke: false,
+    barValueSpacing: 10,
+    barDatasetSpacing: 0,
+    responsive: true
+  };
+
+var bar = new Chart(el).Bar(barChartData, options);
+```
