@@ -2705,7 +2705,7 @@
 				ctx.stroke();
 
 
-				if (this.options.datasetFill){
+				if (this.options.datasetFill && dataset.points.length > 0){
 					//Round off the line by going to the base of the chart, back to the start, then fill.
 					ctx.lineTo(dataset.points[dataset.points.length-1].x, this.scale.endPoint);
 					ctx.lineTo(this.scale.calculateX(0), this.scale.endPoint);
