@@ -276,17 +276,22 @@
 				// This would cause issues when there is no animation, because the y of the next point would be 0, so beziers would be skewed
 				if (this.options.bezierCurve){
 					helpers.each(dataset.points,function(point,index){
-						//If we're at the start or end, we don't have a previous/next point
+						//Don't assume there is a previous/next point
 						//By setting the tension to 0 here, the curve will transition to straight at the end
-						if (index === 0){
-							point.controlPoints = helpers.splineCurve(point,point,dataset.points[index+1],0);
+						var curveTension = this.options.bezierCurveTension;
+						if (typeof dataset.points[index-1] == 'undefined') {
+							var previous = point;
+							curveTension = 0;
+						} else {
+							var previous = dataset.points[index-1];
 						}
-						else if (index >= dataset.points.length-1){
-							point.controlPoints = helpers.splineCurve(dataset.points[index-1],point,point,0);
+						if (typeof dataset.points[index+1] == 'undefined') {
+							var following = point;
+							curveTension = 0;
+						} else {
+							var following = dataset.points[index+1];
 						}
-						else{
-							point.controlPoints = helpers.splineCurve(dataset.points[index-1],point,dataset.points[index+1],this.options.bezierCurveTension);
-						}
+						point.controlPoints = helpers.splineCurve(previous,point,following,curveTension);
 					},this);
 				}
 
