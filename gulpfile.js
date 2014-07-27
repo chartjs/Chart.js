@@ -81,7 +81,7 @@ gulp.task('bump', function(complete){
 });
 
 gulp.task('release', ['build'], function(){
-	exec('git tag -a v' + newVersion);
+	exec('git tag -a v' + package.version);
 });
 
 gulp.task('jshint', function(){
