@@ -1342,13 +1342,14 @@
 			if(this.textAlign === 'right')
 				xLabelOffset = this.x + this.width - this.xPadding;	// ofset for 'right' alignment
 
-			ctx.textAlign = this.textAlign === undefined ? "left" : this.textAlign;	// defaults to 'left'
 			ctx.textBaseline = "middle";
 			ctx.fillStyle = this.titleTextColor;
 			ctx.font = this.titleFont;
 
+			ctx.textAlign = 'left';
 			ctx.fillText(this.title,this.x + this.xPadding, this.getLineHeight(0));
 
+			ctx.textAlign = this.textAlign === undefined ? "left" : this.textAlign;	// defaults to 'left'
 			ctx.font = this.font;
 			helpers.each(this.labels,function(label,index){
 				ctx.fillStyle = this.textColor;
