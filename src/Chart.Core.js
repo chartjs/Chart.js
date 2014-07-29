@@ -717,14 +717,17 @@
 		retinaScale = helpers.retinaScale = function(chart){
 			var ctx = chart.ctx,
 				width = chart.canvas.width,
-				height = chart.canvas.height;
+				height = chart.canvas.height,
+				style = chart.canvas.style;
 			//console.log(width + " x " + height);
 			if (window.devicePixelRatio) {
-				ctx.canvas.style.width = width + "px";
-				ctx.canvas.style.height = height + "px";
-				ctx.canvas.height = height * window.devicePixelRatio;
-				ctx.canvas.width = width * window.devicePixelRatio;
-				ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+				if (style.width.length === 0) style.width = width + "px";
+				if (style.height.length === 0) style.height = height + "px";
+				if (Number(/\d+(?=px)/.exec(style.width)) * window.devicePixelRatio != width && 
+					Number(/\d+(?=px)/.exec(style.height)) * window.devicePixelRatio != height) {
+					ctx.canvas.width = chart.width = width * window.devicePixelRatio;
+					ctx.canvas.height = chart.height =  height * window.devicePixelRatio;
+				}
 			}
 		},
 		//-- Canvas methods
@@ -1206,6 +1209,7 @@
 
 			var ctx = this.chart.ctx;
 
+			if (window.devicePixelRatio) this.fontSize *= window.devicePixelRatio;
 			ctx.font = fontString(this.fontSize,this.fontStyle,this.fontFamily);
 
 			this.xAlign = "center";
@@ -1280,6 +1284,10 @@
 
 	Chart.MultiTooltip = Chart.Element.extend({
 		initialize : function(){
+			if (window.devicePixelRatio) {
+				this.fontSize *= window.devicePixelRatio;
+				this.titleFontSize *= window.devicePixelRatio;
+			}
 			this.font = fontString(this.fontSize,this.fontStyle,this.fontFamily);
 
 			this.titleFont = fontString(this.titleFontSize,this.titleFontStyle,this.titleFontFamily);
@@ -1364,6 +1372,7 @@
 	Chart.Scale = Chart.Element.extend({
 		initialize : function(){
 			this.fit();
+			if (window.devicePixelRatio) this.font.replace(/\d+(?=px)/, Number(/\d+(?=px)/.exec(this.font)) * window.devicePixelRatio);
 		},
 		buildYLabels : function(){
 			this.yLabels = [];
@@ -1609,6 +1618,10 @@
 	Chart.RadialScale = Chart.Element.extend({
 		initialize: function(){
 			this.size = min([this.height, this.width]);
+			if (window.devicePixelRatio) {
+				this.fontSize *= window.devicePixelRatio;
+				this.pointLabelFontSize *= window.devicePixelRatio;
+			}
 			this.drawingArea = (this.display) ? (this.size/2) - (this.fontSize/2 + this.backdropPaddingY) : (this.size/2);
 		},
 		calculateCenterOffset: function(value){
