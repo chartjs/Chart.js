@@ -228,6 +228,8 @@
 			this.scale = new this.ScaleClass(scaleOptions);
 		},
 		addData : function(valuesArray,label){
+			this.scale.addXLabel(label);
+			
 			//Map the values array for each of the datasets
 			helpers.each(valuesArray,function(value,datasetIndex){
 					if (helpers.isNumber(value)){
@@ -245,7 +247,6 @@
 					}
 			},this);
 
-			this.scale.addXLabel(label);
 			//Then re-render the chart.
 			this.update();
 		},
