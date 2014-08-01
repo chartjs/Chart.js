@@ -48,15 +48,6 @@
 
 	};
 
-	function randomId() {
-		function s4() {
-			return Math.floor((1 + Math.random()) * 0x10000)
-			.toString(16)
-			.substring(1);
-		}
-		return s4() + s4();
-	}
-
 	Chart.Type.extend({
 		name: "Line",
 		defaults : defaultConfig,
@@ -92,7 +83,7 @@
 			}
 
 			//Iterate through each of the datasets, and build this into a property of the chart
-			helpers.each(data.datasets, this.addDataset.bind(this));
+			helpers.each(data.datasets, this.addDataset, this);
 			
 			this.render();
 		},
@@ -210,7 +201,7 @@
 		},
 		addDataset : function(dataset, update) {
 			var datasetObject = {
-				id: dataset.id || dataset.label || randomId(),
+				id: dataset.id || dataset.label || -1,
 				label : dataset.label || null,
 				fillColor : dataset.fillColor,
 				strokeColor : dataset.strokeColor,
