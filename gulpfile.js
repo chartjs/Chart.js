@@ -5,7 +5,13 @@ var gulp = require('gulp'),
 	jshint = require('gulp-jshint'),
 	size = require('gulp-size'),
 	connect = require('gulp-connect'),
-	exec = require('child_process').exec;
+	replace = require('gulp-replace'),
+	inquirer = require('inquirer'),
+	semver = require('semver'),
+	exec = require('child_process').exec,
+	fs = require('fs'),
+	package = require('./package.json'),
+	bower = require('./bower.json');
 
 var srcDir = './src/';
 /*
@@ -28,8 +34,10 @@ gulp.task('build', function(){
 		// So we can use this to sort out dependency order - aka include Core first!
 		srcFiles.push(srcDir+'*');
 	}
+
 	return gulp.src(srcFiles)
 		.pipe(concat('Chart.js'))
+		.pipe(replace('{{ version }}', package.version))
 		.pipe(gulp.dest(outputDir))
 		.pipe(uglify({preserveComments:'some'}))
 		.pipe(concat('Chart.min.js'))
@@ -38,6 +46,42 @@ gulp.task('build', function(){
 	function FileName(moduleName){
 		return srcDir+'Chart.'+moduleName+'.js';
 	};
+});
+
+/*
+ *	Usage : gulp bump
+ *	Prompts: Version increment to bump
+ *	Output: - New version number written into package.json & bower.json
+ */
+
+gulp.task('bump', function(complete){
+	util.log('Current version:', util.colors.cyan(package.version));
+	var choices = ['major', 'premajor', 'minor', 'preminor', 'patch', 'prepatch', 'prerelease'].map(function(versionType){
+		return versionType + ' (v' + semver.inc(package.version, versionType) + ')';
+	});
+	inquirer.prompt({
+		type: 'list',
+		name: 'version',
+		message: 'What version update would you like?',
+		choices: choices
+	}, function(res){
+		var increment = res.version.split(' ')[0],
+			newVersion = semver.inc(package.version, increment);
+
+		// Set the new versions into the bower/package object
+		package.version = newVersion;
+		bower.version = newVersion;
+
+		// Write these to their own files, then build the output
+		fs.writeFileSync('package.json', JSON.stringify(package, null, 2));
+		fs.writeFileSync('bower.json', JSON.stringify(bower, null, 2));
+
+		complete();
+	});
+});
+
+gulp.task('release', ['build'], function(){
+	exec('git tag -a v' + package.version);
 });
 
 gulp.task('jshint', function(){

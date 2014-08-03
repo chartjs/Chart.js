@@ -1,6 +1,7 @@
 /*!
  * Chart.js
  * http://chartjs.org/
+ * Version: 1.0.1-beta.3
  *
  * Copyright 2014 Nick Downie
  * Released under the MIT license
@@ -90,6 +91,9 @@
 
 			// Boolean - whether or not the chart should be responsive and resize when the browser does.
 			responsive: false,
+
+                        // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+                        maintainAspectRatio: true,
 
 			// Boolean - Determines whether to draw tooltips on the canvas or not - attaches events to touchmove & mousemove
 			showTooltips: true,
@@ -402,6 +406,12 @@
 		//Templating methods
 		//Javascript micro templating by John Resig - source at http://ejohn.org/blog/javascript-micro-templating/
 		template = helpers.template = function(templateString, valuesObject){
+			 // If templateString is function rather than string-template - call the function for valuesObject
+			 if(templateString instanceof Function)
+			 	{
+			 	return templateString(valuesObject);
+			 	}
+			 
 			var cache = {};
 			function tmpl(str, data){
 				// Figure out if we're getting a template, or if we need to
@@ -693,11 +703,17 @@
 				removeEvent(chartInstance.chart.canvas, eventName, handler);
 			});
 		},
-		getMaximumSize = helpers.getMaximumSize = function(domNode){
+		getMaximumWidth = helpers.getMaximumWidth = function(domNode){
 			var container = domNode.parentNode;
 			// TODO = check cross browser stuff with this.
 			return container.clientWidth;
 		},
+		getMaximumHeight = helpers.getMaximumHeight = function(domNode){
+			var container = domNode.parentNode;
+			// TODO = check cross browser stuff with this.
+			return container.clientHeight;
+		},
+		getMaximumSize = helpers.getMaximumSize = helpers.getMaximumWidth, // legacy support
 		retinaScale = helpers.retinaScale = function(chart){
 			var ctx = chart.ctx,
 				width = chart.canvas.width,
@@ -776,8 +792,8 @@
 		resize : function(callback){
 			this.stop();
 			var canvas = this.chart.canvas,
-				newWidth = getMaximumSize(this.chart.canvas),
-				newHeight = newWidth / this.chart.aspectRatio;
+				newWidth = getMaximumWidth(this.chart.canvas),
+				newHeight = this.options.maintainAspectRatio ? newWidth / this.chart.aspectRatio : getMaximumHeight(this.chart.canvas);
 
 			canvas.width = this.chart.width = newWidth;
 			canvas.height =  this.chart.height = newHeight;
@@ -1890,6 +1906,7 @@
 	};
 
 }).call(this);
+
 (function(){
 	"use strict";
 

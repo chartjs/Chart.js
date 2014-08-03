@@ -2,7 +2,8 @@
   "name": "chart.js",
   "homepage": "http://www.chartjs.org",
   "description": "Simple HTML5 charts using the canvas element.",
-  "version": "1.0.1-beta.2",
+  "version": "1.0.1-beta.3",
+  "main": "Chart.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/nnnick/Chart.js.git"
@@ -11,10 +12,13 @@
   "devDependencies": {
     "gulp": "3.5.x",
     "gulp-concat": "~2.1.x",
+    "gulp-connect": "~2.0.5",
+    "gulp-jshint": "~1.5.1",
+    "gulp-replace": "^0.4.0",
+    "gulp-size": "~0.4.0",
     "gulp-uglify": "~0.2.x",
     "gulp-util": "~2.2.x",
-    "gulp-jshint": "~1.5.1",
-    "gulp-size": "~0.4.0",
-    "gulp-connect": "~2.0.5"
+    "inquirer": "^0.5.1",
+    "semver": "^3.0.1"
   }
 }
