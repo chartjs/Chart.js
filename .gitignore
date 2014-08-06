@@ -5,3 +5,6 @@ node_modules/*
 custom/*
 
 docs/index.md
+
+**/Chart.js
+**/Chart.min.js

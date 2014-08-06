@@ -1,4 +1,4 @@
-/*!
+/*! 
  * Chart.js
  * http://chartjs.org/
  *
@@ -8,19 +8,17 @@
  */
 
 
-(function(){
-
-	"use strict";
+(function () {
+	'use strict';
 
 	//Declare root variable - window in the browser, global on the server
 	var root = this,
-		previous = root.Chart;
+		  previous = root.Chart;
 
 	//Occupy the global variable of Chart, and create a simple base class
-	var Chart = function(context){
+	var Chart = function (context) {
 		var chart = this;
 		this.canvas = context.canvas;
-
 		this.ctx = context;
 
 		//Variables global to the chart
@@ -32,7 +30,8 @@
 
 		return this;
 	};
-	//Globally expose the defaults to allow for user updating/changing
+	
+  //Globally expose the defaults to allow for user updating/changing
 	Chart.defaults = {
 		global: {
 			// Boolean - Whether to animate the chart
@@ -149,10 +148,10 @@
 			multiTooltipKeyBackground: '#fff',
 
 			// Function - Will fire on animation progression.
-			onAnimationProgress: function(){},
+			onAnimationProgress: function () {},
 
 			// Function - Will fire on animation completion.
-			onAnimationComplete: function(){}
+			onAnimationComplete: function () {}
 
 		}
 	};
@@ -164,7 +163,7 @@
 	var helpers = Chart.helpers = {};
 
 		//-- Basic js utility methods
-	var each = helpers.each = function(loopable,callback,self){
+	var each = helpers.each = function (loopable, callback, self) {
 			var additionalArgs = Array.prototype.slice.call(arguments, 3);
 			// Check to see if null or undefined firstly.
 			if (loopable){
