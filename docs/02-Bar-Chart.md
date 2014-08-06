@@ -53,9 +53,9 @@ These are the customisation options specific to Bar charts. These options are me
 
 ```javascript
 {
-	//Boolean or Number - Number of labels to be shown on X-Axis -- if skipXLabels: true => no labels on X-Axis, if skipXLabels: 10 => 10 labels only will be shown, if skipXLabels: 0 or false, all labels will be shown
-	skipXLabels: 10,
-
+	//Boolean or Number - Number of labels to be shown on X-Axis -- if showXLabels: false => no labels on X-Axis, if showXLabels: 10 => 10 labels only will be shown, if showXLabels: true, all labels will be shown
+	showXLabels: 10,
+    	
 	//Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
 	scaleBeginAtZero : true,
 

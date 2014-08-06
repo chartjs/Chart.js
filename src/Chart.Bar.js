@@ -205,7 +205,7 @@
 					helpers.extend(this, updatedRanges);
 				},
 				xLabels : labels,
-				skipXLabels: (this.options.skipXLabels) ? this.options.skipXLabels : false,
+				showXLabels: (this.options.showXLabels) ? this.options.showXLabels : true,
 				font : helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.scaleFontFamily),
 				lineWidth : this.options.scaleLineWidth,
 				lineColor : this.options.scaleLineColor,
