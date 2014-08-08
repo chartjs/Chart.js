@@ -179,7 +179,6 @@ Chart.defaults.global = {
 
 	// Number - Pixel offset from point x to tooltip edge
 	tooltipXOffset: 10,
-
 	{% raw %}
 	// String - Template string for single tooltips
 	tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",

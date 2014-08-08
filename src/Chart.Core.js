@@ -778,7 +778,7 @@
 				draw = !draw;
 			}
 			ctx.restore();
-		}
+		};
 
 
 	//Store a reference to each instance - allowing us to globally resize chart instances on window resize.

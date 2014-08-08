@@ -102,9 +102,6 @@ These are the customization options specific to Line charts. These options are m
 	//Boolean - Whether to fill the dataset with a colour
 	datasetFill : true,
 
-	//Boolean - Whether to draw the lines as dashed
-	dashedLines : false,
-
 	//Boolean - Whether to show candles for each point
 	candles : false,
 

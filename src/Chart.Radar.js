@@ -64,9 +64,6 @@
 			//Boolean - Whether to fill the dataset with a colour
 			datasetFill : true,
 
-			//Boolean - Whether to draw the lines as dashed
-			dashedLines : false,
-
 			//String - A legend template
 			legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
 
@@ -112,7 +109,7 @@
 					strokeColor : dataset.strokeColor,
 					pointColor : dataset.pointColor,
 					pointStrokeColor : dataset.pointStrokeColor,
-					dashStyle : dataset.dashStyle || [10, 5],
+					dashStyle : dataset.dashStyle,
 					points : []
 				};
 
@@ -322,14 +319,14 @@
 					if (index === 0){
 						ctx.moveTo(point.x,point.y);
 					}
-					else if (this.options.dashedLines){
+					else if (dataset.dashStyle instanceof Array){
 						helpers.drawDashedLine(ctx, dataset.points[index-1].x, dataset.points[index-1].y, point.x, point.y, dataset.dashStyle);
 					} else{
 						ctx.lineTo(point.x,point.y);
 					}
 				},this);
 
-				if (this.options.dashedLines) {
+				if (dataset.dashStyle instanceof Array) {
 					helpers.drawDashedLine(
 						ctx,
 						 dataset.points[0].x,
