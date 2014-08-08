@@ -108,7 +108,8 @@
 							strokeColor : dataset.pointStrokeColor,
 							fillColor : dataset.pointColor,
 							highlightFill : dataset.pointHighlightFill || dataset.pointColor,
-							highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor
+							highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor,
+                            				display: (typeof dataset.pointDot === 'undefined') ? this.options.pointDot : dataset.pointDot
 						}));
 					}
 				},this);

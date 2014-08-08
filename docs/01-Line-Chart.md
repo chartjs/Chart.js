@@ -35,8 +35,7 @@ var data = {
 			label: "My Second dataset",
 			fillColor: "rgba(151,187,205,0.2)",
 			strokeColor: "rgba(151,187,205,1)",
-			pointColor: "rgba(151,187,205,1)",
-			pointStrokeColor: "#fff",
+			pointDot:false,
 			pointHighlightFill: "#fff",
 			pointHighlightStroke: "rgba(151,187,205,1)",
 			data: [28, 48, 40, 19, 86, 27, 90]
@@ -46,7 +45,7 @@ var data = {
 ```
 
 The line chart requires an array of labels for each of the data points. This is shown on the X axis.
-The data for line charts is broken up into an array of datasets. Each dataset has a colour for the fill, a colour for the line and colours for the points and strokes of the points. These colours are strings just like CSS. You can use RGBA, RGB, HEX or HSL notation.
+The data for line charts is broken up into an array of datasets. Each dataset has a colour for the fill, a colour for the line and colours for the points and strokes of the points. These colours are strings just like CSS. You can use RGBA, RGB, HEX or HSL notation. You can hide points on a line by setting pointDot:false.
 
 The label key on each dataset is optional, and can be used when generating a scale for the chart.
 
