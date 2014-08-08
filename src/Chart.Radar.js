@@ -43,6 +43,9 @@
 			//Boolean - Whether to show a dot for each point
 			pointDot : true,
 
+			//Boolean - Whether to show a square for each point
+			pointSquare : false,
+
 			//Number - Radius of each point dot in pixels
 			pointDotRadius : 3,
 
@@ -61,6 +64,9 @@
 			//Boolean - Whether to fill the dataset with a colour
 			datasetFill : true,
 
+			//Boolean - Whether to draw the lines as dashed
+			dashedLines : false,
+
 			//String - A legend template
 			legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
 
@@ -71,6 +77,7 @@
 				strokeWidth : this.options.pointDotStrokeWidth,
 				radius : this.options.pointDotRadius,
 				display: this.options.pointDot,
+				square : this.options.pointSquare,
 				hitDetectionRadius : this.options.pointHitDetectionRadius,
 				ctx : this.chart.ctx
 			});
@@ -105,6 +112,7 @@
 					strokeColor : dataset.strokeColor,
 					pointColor : dataset.pointColor,
 					pointStrokeColor : dataset.pointStrokeColor,
+					dashStyle : dataset.dashStyle || [10, 5],
 					points : []
 				};
 
@@ -314,12 +322,41 @@
 					if (index === 0){
 						ctx.moveTo(point.x,point.y);
 					}
-					else{
+					else if (this.options.dashedLines){
+						helpers.drawDashedLine(ctx, dataset.points[index-1].x, dataset.points[index-1].y, point.x, point.y, dataset.dashStyle);
+					} else{
 						ctx.lineTo(point.x,point.y);
 					}
 				},this);
-				ctx.closePath();
-				ctx.stroke();
+
+				if (this.options.dashedLines) {
+					helpers.drawDashedLine(
+						ctx,
+						 dataset.points[0].x,
+						 dataset.points[0].y,
+						 dataset.points[dataset.points.length-1].x,
+						 dataset.points[dataset.points.length-1].y,
+						 dataset.dashStyle
+					);
+
+					ctx.closePath();
+					ctx.stroke();
+
+					ctx.beginPath();
+					helpers.each(dataset.points,function(point,index){
+						if (index === 0){
+							ctx.moveTo(point.x, point.y);
+						} else{
+							ctx.lineTo(point.x,point.y);
+						}
+					},this);
+					ctx.closePath();
+
+				} else {
+					ctx.closePath();
+					ctx.stroke();
+				}
+
 
 				ctx.fillStyle = dataset.fillColor;
 				ctx.fill();
@@ -332,13 +369,7 @@
 				});
 
 			},this);
-
 		}
-
 	});
-
-
-
-
 
 }).call(this);

@@ -26,9 +26,11 @@ var data = {
 			fillColor: "rgba(220,220,220,0.2)",
 			strokeColor: "rgba(220,220,220,1)",
 			pointColor: "rgba(220,220,220,1)",
+			candleStrokeColor : "rgba(220,220,220,1)",
 			pointStrokeColor: "#fff",
 			pointHighlightFill: "#fff",
 			pointHighlightStroke: "rgba(220,220,220,1)",
+			dashStyle : [10, 5],
 			data: [65, 59, 80, 81, 56, 55, 40]
 		},
 		{
@@ -36,9 +38,11 @@ var data = {
 			fillColor: "rgba(151,187,205,0.2)",
 			strokeColor: "rgba(151,187,205,1)",
 			pointColor: "rgba(151,187,205,1)",
+			candleStrokeColor : "rgba(151,187,205,1)",
 			pointStrokeColor: "#fff",
 			pointHighlightFill: "#fff",
 			pointHighlightStroke: "rgba(151,187,205,1)",
+			dashStyle : [10, 5],
 			data: [28, 48, 40, 19, 86, 27, 90]
 		}
 	]
@@ -48,11 +52,13 @@ var data = {
 The line chart requires an array of labels for each of the data points. This is shown on the X axis.
 The data for line charts is broken up into an array of datasets. Each dataset has a colour for the fill, a colour for the line and colours for the points and strokes of the points. These colours are strings just like CSS. You can use RGBA, RGB, HEX or HSL notation.
 
+The dashStyle property is an array of integers that describes the dash pattern such that the odd indices describe the length of the dashes and the even indices describe the length between the dashes. For example a dash pattern of ```[5, 2, 10, 3]``` describes a pattern of 1 dash of length 5px followed by a gap of 2px, then a dash of length 2px followed by a gap of 3px.
+
 The label key on each dataset is optional, and can be used when generating a scale for the chart.
 
 ### Chart options
 
-These are the customisation options specific to Line charts. These options are merged with the [global chart configuration options](#getting-started-global-chart-configuration), and form the options of the chart.
+These are the customization options specific to Line charts. These options are merged with the [global chart configuration options](#getting-started-global-chart-configuration), and form the options of the chart.
 
 ```javascript
 {
@@ -75,6 +81,9 @@ These are the customisation options specific to Line charts. These options are m
 	//Boolean - Whether to show a dot for each point
 	pointDot : true,
 
+	//Boolean - Whether to show each dot as a square
+	pointSquare : false,
+
 	//Number - Radius of each point dot in pixels
 	pointDotRadius : 4,
 
@@ -92,6 +101,15 @@ These are the customisation options specific to Line charts. These options are m
 
 	//Boolean - Whether to fill the dataset with a colour
 	datasetFill : true,
+
+	//Boolean - Whether to draw the lines as dashed
+	dashedLines : false,
+
+	//Boolean - Whether to show candles for each point
+	candles : false,
+
+	//Number - Pixel width of candle stroke
+	candleStrokeWidth : 3,
 	{% raw %}
 	//String - A legend template
 	legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"

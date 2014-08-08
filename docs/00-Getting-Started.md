@@ -174,8 +174,12 @@ Chart.defaults.global = {
 	// Number - Pixel radius of the tooltip border
 	tooltipCornerRadius: 6,
 
+	// Number - Pixel offset from point y to tooltip edge
+	tooltipYOffset: 0,
+
 	// Number - Pixel offset from point x to tooltip edge
 	tooltipXOffset: 10,
+
 	{% raw %}
 	// String - Template string for single tooltips
 	tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",

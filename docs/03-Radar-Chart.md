@@ -31,6 +31,7 @@ var data = {
 			pointStrokeColor: "#fff",
 			pointHighlightFill: "#fff",
 			pointHighlightStroke: "rgba(220,220,220,1)",
+			dashStyle : [10, 5],
 			data: [65, 59, 90, 81, 56, 55, 40]
 		},
 		{
@@ -41,6 +42,7 @@ var data = {
 			pointStrokeColor: "#fff",
 			pointHighlightFill: "#fff",
 			pointHighlightStroke: "rgba(151,187,205,1)",
+			dashStyle : [10, 5],
 			data: [28, 48, 40, 19, 96, 27, 100]
 		}
 	]
@@ -48,6 +50,8 @@ var data = {
 ```
 For a radar chart, to provide context of what each point means, we include an array of strings that show around each point in the chart.
 For the radar chart data, we have an array of datasets. Each of these is an object, with a fill colour, a stroke colour, a colour for the fill of each point, and a colour for the stroke of each point. We also have an array of data values.
+
+The dashStyle property is an array of integers that describes the dash pattern such that the odd indices describe the length of the dashes and the even indices describe the length between the dashes. For example a dash pattern of ```[5, 2, 10, 3]``` describes a pattern of 1 dash of length 5px followed by a gap of 2px, then a dash of length 2px followed by a gap of 3px.
 
 The label key on each dataset is optional, and can be used when generating a scale for the chart.
 
@@ -91,6 +95,9 @@ These are the customisation options specific to Radar charts. These options are 
 	//Boolean - Whether to show a dot for each point
 	pointDot : true,
 
+	//Boolean - Whether to show a square for each point
+	pointSquare : false,
+
 	//Number - Radius of each point dot in pixels
 	pointDotRadius : 3,
 
@@ -108,6 +115,9 @@ These are the customisation options specific to Radar charts. These options are 
 
 	//Boolean - Whether to fill the dataset with a colour
 	datasetFill : true,
+
+	//Boolean - Whether to draw the lines as dashed
+	dashedLines : false,
 	{% raw %}
 	//String - A legend template
 	legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
