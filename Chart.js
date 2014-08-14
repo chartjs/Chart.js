@@ -411,7 +411,7 @@
 			 	{
 			 	return templateString(valuesObject);
 			 	}
-			 
+
 			var cache = {};
 			function tmpl(str, data){
 				// Figure out if we're getting a template, or if we need to
@@ -2448,6 +2448,9 @@
 				ctx : this.chart.ctx,
 				inRange : function(mouseX){
 					return (Math.pow(mouseX-this.x, 2) < Math.pow(this.radius + this.hitDetectionRadius,2));
+				},
+				inRangeY : function(mouseY){
+					return (Math.pow(mouseY-this.y, 2) < Math.pow(this.radius + this.hitDetectionRadius,2));
 				}
 			});
 
@@ -2540,6 +2543,19 @@
 				});
 			},this);
 			return pointsArray;
+		},
+		getPointAtEvent : function(e){
+			var selectedPoint = '',
+				eventPosition = helpers.getRelativePosition(e);
+			helpers.each(this.datasets,function(dataset){
+				helpers.each(dataset.points,function(point){
+					if (point.inRange(eventPosition.x) && point.inRangeY(eventPosition.y)){
+						selectedPoint = point;
+					}
+				});
+			},this);
+
+			return selectedPoint;
 		},
 		buildScale : function(labels){
 			var self = this;
