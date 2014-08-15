@@ -1,0 +1,15 @@
+{
+    "name": "chart.js",
+    "repo": "nnnick/chart.js",
+    "version": "v1.0.1-beta.3",
+    "description": "Simple HTML5 charts using the canvas element.",
+    "keywords": [
+        "chart",
+        "js"
+    ],
+    "main": "chart.js",
+    "scripts": [
+        "chart.js"
+    ],
+    "license": "MIT"
+}
