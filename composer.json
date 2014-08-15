@@ -1,17 +1,14 @@
 {
     "name": "nnnick/chartjs",
-    "repo": "nnnick/chartjs",
-    "version": "v1.0.1-beta.3",
+    "type": "library",
     "description": "Simple HTML5 charts using the canvas element.",
+    "license": "MIT",
     "keywords": [
         "chart",
         "js"
     ],
-    "main": "chartjs",
-    "scripts": [
-        "chart.js"
-    ],
-    "license": "MIT",
+    "homepage": "http://www.chartjs.org/",
+    "minimum-stability": "dev",
     "extra": {
         "branch-alias": {
             "dev-master": "1.0.1-dev"
