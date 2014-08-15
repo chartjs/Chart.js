@@ -1,5 +1,5 @@
 {
-    "name": "chartjs",
+    "name": "nnnick/chartjs",
     "repo": "nnnick/chartjs",
     "version": "v1.0.1-beta.3",
     "description": "Simple HTML5 charts using the canvas element.",
