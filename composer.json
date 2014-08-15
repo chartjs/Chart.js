@@ -14,7 +14,7 @@
     "license": "MIT",
     "extra": {
         "branch-alias": {
-            "dev-master": "dev-master "
+            "dev-master": "1.2-dev"
         }
     }
 }
