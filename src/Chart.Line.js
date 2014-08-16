@@ -95,6 +95,9 @@
 				};
 
 				this.datasets.push(datasetObject);
+				
+				this.datasets.hasNegative = this.datasets.hasNegative || false;
+				//object property to track negative values in datasets
 
 
 				helpers.each(dataset.data,function(dataPoint,index){
@@ -110,6 +113,8 @@
 							highlightFill : dataset.pointHighlightFill || dataset.pointColor,
 							highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor
 						}));
+						
+						if(dataPoint < 0) this.datasets.hasNegative = true ;
 					}
 				},this);
 
@@ -119,7 +124,7 @@
 				this.eachPoints(function(point, index){
 					helpers.extend(point, {
 						x: this.scale.calculateX(index),
-						y: this.scale.endPoint
+						y: (this.datasets.hasNegative === true) ? this.scale.calculateY(0) : this.scale.endPoint
 					});
 					point.save();
 				}, this);
