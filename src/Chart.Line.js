@@ -98,19 +98,16 @@
 
 
 				helpers.each(dataset.data,function(dataPoint,index){
-					//Best way to do this? or in draw sequence...?
-					if (helpers.isNumber(dataPoint)){
 					//Add a new point for each piece of data, passing any required data to draw.
-						datasetObject.points.push(new this.PointClass({
-							value : dataPoint,
-							label : data.labels[index],
-							datasetLabel: dataset.label,
-							strokeColor : dataset.pointStrokeColor,
-							fillColor : dataset.pointColor,
-							highlightFill : dataset.pointHighlightFill || dataset.pointColor,
-							highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor
-						}));
-					}
+					datasetObject.points.push(new this.PointClass({
+						value : dataPoint,
+						label : data.labels[index],
+						datasetLabel: dataset.label,
+						strokeColor : dataset.pointStrokeColor,
+						fillColor : dataset.pointColor,
+						highlightFill : dataset.pointHighlightFill || dataset.pointColor,
+						highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor
+					}));
 				},this);
 
 				this.buildScale(data.labels);
@@ -217,17 +214,15 @@
 			//Map the values array for each of the datasets
 
 			helpers.each(valuesArray,function(value,datasetIndex){
-					if (helpers.isNumber(value)){
-					//Add a new point for each piece of data, passing any required data to draw.
-						this.datasets[datasetIndex].points.push(new this.PointClass({
-							value : value,
-							label : label,
-							x: this.scale.calculateX(this.scale.valuesCount+1),
-							y: this.scale.endPoint,
-							strokeColor : this.datasets[datasetIndex].pointStrokeColor,
-							fillColor : this.datasets[datasetIndex].pointColor
-						}));
-					}
+				//Add a new point for each piece of data, passing any required data to draw.
+				this.datasets[datasetIndex].points.push(new this.PointClass({
+					value : value,
+					label : label,
+					x: this.scale.calculateX(this.scale.valuesCount+1),
+					y: this.scale.endPoint,
+					strokeColor : this.datasets[datasetIndex].pointStrokeColor,
+					fillColor : this.datasets[datasetIndex].pointColor
+				}));
 			},this);
 
 			this.scale.addXLabel(label);
@@ -255,37 +250,64 @@
 
 			var ctx = this.chart.ctx;
 
+			// Some helper methods for getting the next/prev points
+			var hasValue = function(item){
+				return item.value !== null;
+			},
+			nextPoint = function(point, collection, index){
+				return helpers.findNextWhere(collection, hasValue, index) || point;
+			},
+			previousPoint = function(point, collection, index){
+				return helpers.findPreviousWhere(collection, hasValue, index) || point;
+			};
+
 			this.scale.draw(easingDecimal);
 
 
 			helpers.each(this.datasets,function(dataset){
+				var pointsWithValues = helpers.where(dataset.points, hasValue);
 
 				//Transition each point first so that the line and point drawing isn't out of sync
 				//We can use this extra loop to calculate the control points of this dataset also in this loop
 
-				helpers.each(dataset.points,function(point,index){
-					point.transition({
-						y : this.scale.calculateY(point.value),
-						x : this.scale.calculateX(index)
-					}, easingDecimal);
-
+				helpers.each(dataset.points, function(point, index){
+					if (point.hasValue()){
+						point.transition({
+							y : this.scale.calculateY(point.value),
+							x : this.scale.calculateX(index)
+						}, easingDecimal);
+					}
 				},this);
 
 
 				// Control points need to be calculated in a seperate loop, because we need to know the current x/y of the point
 				// This would cause issues when there is no animation, because the y of the next point would be 0, so beziers would be skewed
 				if (this.options.bezierCurve){
-					helpers.each(dataset.points,function(point,index){
-						//If we're at the start or end, we don't have a previous/next point
-						//By setting the tension to 0 here, the curve will transition to straight at the end
-						if (index === 0){
-							point.controlPoints = helpers.splineCurve(point,point,dataset.points[index+1],0);
+					helpers.each(pointsWithValues, function(point, index){
+						var tension = (index > 0 && index < pointsWithValues.length - 1) ? this.options.bezierCurveTension : 0;
+						point.controlPoints = helpers.splineCurve(
+							previousPoint(point, pointsWithValues, index),
+							point,
+							nextPoint(point, pointsWithValues, index),
+							tension
+						);
+
+						// Prevent the bezier going outside of the bounds of the graph
+
+						// Cap puter bezier handles to the upper/lower scale bounds
+						if (point.controlPoints.outer.y > this.scale.endPoint){
+							point.controlPoints.outer.y = this.scale.endPoint;
 						}
-						else if (index >= dataset.points.length-1){
-							point.controlPoints = helpers.splineCurve(dataset.points[index-1],point,point,0);
+						else if (point.controlPoints.outer.y < this.scale.startPoint){
+							point.controlPoints.outer.y = this.scale.startPoint;
 						}
-						else{
-							point.controlPoints = helpers.splineCurve(dataset.points[index-1],point,dataset.points[index+1],this.options.bezierCurveTension);
+
+						// Cap inner bezier handles to the upper/lower scale bounds
+						if (point.controlPoints.inner.y > this.scale.endPoint){
+							point.controlPoints.inner.y = this.scale.endPoint;
+						}
+						else if (point.controlPoints.inner.y < this.scale.startPoint){
+							point.controlPoints.inner.y = this.scale.startPoint;
 						}
 					},this);
 				}
@@ -295,12 +317,18 @@
 				ctx.lineWidth = this.options.datasetStrokeWidth;
 				ctx.strokeStyle = dataset.strokeColor;
 				ctx.beginPath();
-				helpers.each(dataset.points,function(point,index){
-					if (index>0){
+
+				helpers.each(pointsWithValues, function(point, index){
+					if (index === 0){
+						ctx.moveTo(point.x, point.y);
+					}
+					else{
 						if(this.options.bezierCurve){
+							var previous = previousPoint(point, pointsWithValues, index);
+
 							ctx.bezierCurveTo(
-								dataset.points[index-1].controlPoints.outer.x,
-								dataset.points[index-1].controlPoints.outer.y,
+								previous.controlPoints.outer.x,
+								previous.controlPoints.outer.y,
 								point.controlPoints.inner.x,
 								point.controlPoints.inner.y,
 								point.x,
@@ -310,19 +338,15 @@
 						else{
 							ctx.lineTo(point.x,point.y);
 						}
+					}
+				}, this);
 
-					}
-					else{
-						ctx.moveTo(point.x,point.y);
-					}
-				},this);
 				ctx.stroke();
 
-
-				if (this.options.datasetFill){
+				if (this.options.datasetFill && pointsWithValues.length > 0){
 					//Round off the line by going to the base of the chart, back to the start, then fill.
-					ctx.lineTo(dataset.points[dataset.points.length-1].x, this.scale.endPoint);
-					ctx.lineTo(this.scale.calculateX(0), this.scale.endPoint);
+					ctx.lineTo(pointsWithValues[pointsWithValues.length - 1].x, this.scale.endPoint);
+					ctx.lineTo(pointsWithValues[0].x, this.scale.endPoint);
 					ctx.fillStyle = dataset.fillColor;
 					ctx.closePath();
 					ctx.fill();
@@ -331,10 +355,9 @@
 				//Now draw the points over the line
 				//A little inefficient double looping, but better than the line
 				//lagging behind the point positions
-				helpers.each(dataset.points,function(point){
+				helpers.each(pointsWithValues,function(point){
 					point.draw();
 				});
-
 			},this);
 		}
 	});

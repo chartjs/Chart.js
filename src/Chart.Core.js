@@ -217,6 +217,41 @@
 				return -1;
 			}
 		},
+		where = helpers.where = function(collection, filterCallback){
+			var filtered = [];
+
+			helpers.each(collection, function(item){
+				if (filterCallback(item)){
+					filtered.push(item);
+				}
+			});
+
+			return filtered;
+		},
+		findNextWhere = helpers.findNextWhere = function(arrayToSearch, filterCallback, startIndex){
+			// Default to start of the array
+			if (!startIndex){
+				startIndex = -1;
+			}
+			for (var i = startIndex + 1; i < arrayToSearch.length; i++) {
+				var currentItem = arrayToSearch[i];
+				if (filterCallback(currentItem)){
+					return currentItem;
+				}
+			};
+		},
+		findPreviousWhere = helpers.findPreviousWhere = function(arrayToSearch, filterCallback, startIndex){
+			// Default to end of the array
+			if (!startIndex){
+				startIndex = arrayToSearch.length;
+			}
+			for (var i = startIndex - 1; i >= 0; i--) {
+				var currentItem = arrayToSearch[i];
+				if (filterCallback(currentItem)){
+					return currentItem;
+				}
+			};
+		},
 		inherits = helpers.inherits = function(extensions){
 			//Basic javascript inheritance based on the model created in Backbone.js
 			var parent = this;
@@ -407,11 +442,10 @@
 		//Javascript micro templating by John Resig - source at http://ejohn.org/blog/javascript-micro-templating/
 		template = helpers.template = function(templateString, valuesObject){
 			 // If templateString is function rather than string-template - call the function for valuesObject
-			 if(templateString instanceof Function)
-			 	{
+			if(templateString instanceof Function){
 			 	return templateString(valuesObject);
-			 	}
-			 
+		 	}
+
 			var cache = {};
 			function tmpl(str, data){
 				// Figure out if we're getting a template, or if we need to
@@ -718,7 +752,7 @@
 			var ctx = chart.ctx,
 				width = chart.canvas.width,
 				height = chart.canvas.height;
-			//console.log(width + " x " + height);
+
 			if (window.devicePixelRatio) {
 				ctx.canvas.style.width = width + "px";
 				ctx.canvas.style.height = height + "px";
@@ -889,7 +923,7 @@
 								yMin;
 							helpers.each(this.datasets, function(dataset){
 								dataCollection = dataset.points || dataset.bars || dataset.segments;
-								if (dataCollection[dataIndex]){
+								if (dataCollection[dataIndex] && dataCollection[dataIndex].hasValue()){
 									Elements.push(dataCollection[dataIndex]);
 								}
 							});
@@ -1053,6 +1087,9 @@
 				x : this.x,
 				y : this.y
 			};
+		},
+		hasValue: function(){
+			return isNumber(this.value);
 		}
 	});
 
@@ -1099,6 +1136,7 @@
 			// ctx.fill();
 
 			// ctx.moveTo(this.controlPoints.inner.x,this.controlPoints.inner.y);
+			// ctx.lineTo(this.x, this.y);
 			// ctx.lineTo(this.controlPoints.outer.x,this.controlPoints.outer.y);
 			// ctx.stroke();
 
