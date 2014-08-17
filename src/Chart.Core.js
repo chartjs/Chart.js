@@ -1136,6 +1136,7 @@
 			// ctx.fill();
 
 			// ctx.moveTo(this.controlPoints.inner.x,this.controlPoints.inner.y);
+			// ctx.lineTo(this.x, this.y);
 			// ctx.lineTo(this.controlPoints.outer.x,this.controlPoints.outer.y);
 			// ctx.stroke();
 
