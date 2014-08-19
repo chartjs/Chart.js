@@ -1,4 +1,4 @@
-# Chart.js [![Build Status](https://travis-ci.org/fulldecent/Chart.js.svg?branch=master)](https://travis-ci.org/fulldecent/Chart.js)
+# Chart.js [![Build Status](https://travis-ci.org/nnnick/Chart.js.svg?branch=master)](https://travis-ci.org/nnnick/Chart.js)
 
 *Simple HTML5 Charts using the canvas element* [chartjs.org](http://www.chartjs.org)
 
