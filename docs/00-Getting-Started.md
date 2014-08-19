@@ -180,7 +180,7 @@ Chart.defaults.global = {
 	// String - Template string for single tooltips
 	tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",
 	{% endraw %}
-	// String - Template string for single tooltips
+	// String - Template string for multiple tooltips
 	multiTooltipTemplate: "<%= value %>",
 
 	// Function - Will fire on animation progression.
