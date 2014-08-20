@@ -7,6 +7,10 @@
 
 
 	var defaultConfig = {
+		//Function - Whether the current x-axis label should be filtered out, takes in current label and 
+		//index, return true to filter out the label return false to keep the label
+		labelsFilter : function(label,index){return false},
+
 		//Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
 		scaleBeginAtZero : true,
 
@@ -41,7 +45,6 @@
 		name: "Bar",
 		defaults : defaultConfig,
 		initialize:  function(data){
-
 			//Expose options as a scope variable here so we can access it in the ScaleClass
 			var options = this.options;
 
@@ -181,6 +184,7 @@
 			};
 
 			var scaleOptions = {
+				labelsFilter: this.options.labelsFilter,
 				templateString : this.options.scaleLabel,
 				height : this.chart.height,
 				width : this.chart.width,
