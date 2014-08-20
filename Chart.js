@@ -1204,7 +1204,8 @@
 				leftX = this.x - halfWidth,
 				rightX = this.x + halfWidth,
 				top = this.base - (this.base - this.y),
-				halfStroke = this.strokeWidth / 2;
+				halfStroke = this.strokeWidth / 2,
+				endPoint = this.scale.calculateY(0);
 
 			// Canvas doesn't allow us to stroke inside the width so we can
 			// adjust the sizes to fit if we're setting a stroke on the line
@@ -1222,10 +1223,10 @@
 
 			// It'd be nice to keep this class totally generic to any rectangle
 			// and simply specify which border to miss out.
-			ctx.moveTo(leftX, this.base);
+			ctx.moveTo(leftX, endPoint);
 			ctx.lineTo(leftX, top);
 			ctx.lineTo(rightX, top);
-			ctx.lineTo(rightX, this.base);
+			ctx.lineTo(rightX, endPoint);
 			ctx.fill();
 			if (this.showStroke){
 				ctx.stroke();
@@ -2065,12 +2066,13 @@
 			this.buildScale(data.labels);
 
 			this.BarClass.prototype.base = this.scale.endPoint;
+			this.BarClass.prototype.scale = this.scale;
 
 			this.eachBars(function(bar, index, datasetIndex){
 				helpers.extend(bar, {
 					width : this.scale.calculateBarWidth(this.datasets.length),
 					x: this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
-					y: this.scale.endPoint
+					y: this.scale.calculateY(0)
 				});
 				bar.save();
 			}, this);
