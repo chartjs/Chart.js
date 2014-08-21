@@ -1244,9 +1244,6 @@
 
 			var ctx = this.chart.ctx;
 
-			//Keep track of the previous font used to restore it after drawing
-			var oldFont = ctx.font;
-
 			ctx.font = fontString(this.fontSize,this.fontStyle,this.fontFamily);
 
 			this.xAlign = "center";
@@ -1316,9 +1313,6 @@
 			ctx.textAlign = "center";
 			ctx.textBaseline = "middle";
 			ctx.fillText(this.text, tooltipX + tooltipWidth/2, tooltipY + tooltipRectHeight/2);
-
-			//Restore old font
-			ctx.font = this.oldFont;
 		}
 	});
 
@@ -1329,9 +1323,6 @@
 			this.titleFont = fontString(this.titleFontSize,this.titleFontStyle,this.titleFontFamily);
 
 			this.height = (this.labels.length * this.fontSize) + ((this.labels.length-1) * (this.fontSize/2)) + (this.yPadding*2) + this.titleFontSize *1.5;
-
-			//Keep track of the previous font used to restore it after drawing
-			this.oldFont = this.ctx.font;
 
 			this.ctx.font = this.titleFont;
 
@@ -1405,9 +1396,6 @@
 
 
 			},this);
-
-			//Restore old font
-			ctx.font = this.oldFont;
 		}
 	});
 
