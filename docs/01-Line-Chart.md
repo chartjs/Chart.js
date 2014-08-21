@@ -58,7 +58,7 @@ These are the customisation options specific to Line charts. These options are m
 {
 	//Function - Whether the current x-axis label should be filtered out, takes in current label and 
 	//index, returns true to filter out the label returns false to keep the label
-	labelsFilter : function(label,index){return false},
+	labelsFilter : function(label,index){return false;},
 
 	//Boolean - Whether grid lines are shown across the chart
 	scaleShowGridLines : true,

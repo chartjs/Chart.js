@@ -55,7 +55,7 @@ These are the customisation options specific to Bar charts. These options are me
 {	
 	//Function - Whether the current x-axis label should be filtered out, takes in current label and 
 	//index, returns true to filter out the label returns false to keep the label
-	labelsFilter : function(label,index){return false},
+	labelsFilter : function(label,index){return false;},
 
 	//Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
 	scaleBeginAtZero : true,
