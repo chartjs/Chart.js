@@ -69,6 +69,25 @@ Returns an HTML string of a legend for that chart. The template for this legend 
 myLineChart.generateLegend();
 // => returns HTML string of a legend for this chart
 ```
+### Providing a custom interpolator
+If you can not use chart.js because the template interpolator conflicts with an existing template frame work in your stack then you can provide your own interpolator. 
+
+**Note:** There are currently limitations on what can be provided. Do not use parenthesise such as `{` or `}` because they will conflict with the way the template function address the template string.
+
+To use this feature declare the interpolator you wish to use after including the chart.js library.
+
+    Chart.defaults.global.templateInterpolators = {
+        start: "[[",
+        end: "]]"
+    };
+
+You must also ensure you override the default templates making use of your new interpolator
+
+    Chart.defaults.global.scaleLabel = "[[= value ]]";
+    Chart.defaults.global.tooltipTemplate = "[[if (label){]][[= label ]]: [[}]][[= value ]]";
+    Chart.defaults.global.multiTooltipTemplate = "[[= value ]]";
+
+This will also include providing legend tempaltes specifcally for any graph you wish to use the lengend for. Once this is done you can use chart.js as normal
 
 ### Writing new chart types
 
