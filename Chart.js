@@ -152,6 +152,13 @@
 			// String - Colour behind the legend colour block
 			multiTooltipKeyBackground: '#fff',
 
+			// Object - Start and End Interpolators to be used with
+			// 			with template function
+			templateInterpolators: {
+         	start: "<%",
+            end: "%>"
+         },		
+
 			// Function - Will fire on animation progression.
 			onAnimationProgress: function(){},
 
@@ -238,7 +245,7 @@
 				if (filterCallback(currentItem)){
 					return currentItem;
 				}
-			};
+			}
 		},
 		findPreviousWhere = helpers.findPreviousWhere = function(arrayToSearch, filterCallback, startIndex){
 			// Default to end of the array
@@ -250,7 +257,7 @@
 				if (filterCallback(currentItem)){
 					return currentItem;
 				}
-			};
+			}
 		},
 		inherits = helpers.inherits = function(extensions){
 			//Basic javascript inheritance based on the model created in Backbone.js
@@ -445,7 +452,7 @@
 			if(templateString instanceof Function){
 			 	return templateString(valuesObject);
 		 	}
-
+		 	var interpolators = Chart.defaults.global.templateInterpolators;
 			var cache = {};
 			function tmpl(str, data){
 				// Figure out if we're getting a template, or if we need to
@@ -462,15 +469,14 @@
 					"with(obj){p.push('" +
 
 					// Convert the template into pure JavaScript
-					str
-						.replace(/[\r\t\n]/g, " ")
-						.split("<%").join("\t")
-						.replace(/((^|%>)[^\t]*)'/g, "$1\r")
-						.replace(/\t=(.*?)%>/g, "',$1,'")
-						.split("\t").join("');")
-						.split("%>").join("p.push('")
-						.split("\r").join("\\'") +
-					"');}return p.join('');"
+	            str.replace(/[\r\t\n]/g, " ")
+	                .split(interpolators.start).join("\t")
+	                .replace(new RegExp("((^|" + interpolators.end + ")[^\t]*)'", "g"), "$1\r")
+	                .replace(new RegExp("\t=(.*?)" + interpolators.end, "g"), "',$1,'")
+	                .split("\t").join("');")
+	                .split(interpolators.end).join("p.push('")
+	                .split("\r").join("\\'") +
+	                "');}return p.join('');"
 				);
 
 				// Provide some basic currying to the user
@@ -1596,6 +1602,10 @@
 				},this);
 
 				each(this.xLabels,function(label,index){
+					//if filter returns true do not draw this label
+					if(this.labelsFilter(label, index)){
+						return;
+					}
 					var xPos = this.calculateX(index) + aliasPixel(this.lineWidth),
 						// Check to see if line/bar here and decide where to place the line
 						linePos = this.calculateX(index - (this.offsetGridLines ? 0.5 : 0)) + aliasPixel(this.lineWidth),
@@ -1951,6 +1961,10 @@
 
 
 	var defaultConfig = {
+		//Function - Whether the current x-axis label should be filtered out, takes in current label and 
+		//index, return true to filter out the label return false to keep the label
+		labelsFilter : function(label,index){return false;},
+
 		//Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
 		scaleBeginAtZero : true,
 
@@ -1985,7 +1999,6 @@
 		name: "Bar",
 		defaults : defaultConfig,
 		initialize:  function(data){
-
 			//Expose options as a scope variable here so we can access it in the ScaleClass
 			var options = this.options;
 
@@ -2125,6 +2138,7 @@
 			};
 
 			var scaleOptions = {
+				labelsFilter: this.options.labelsFilter,
 				templateString : this.options.scaleLabel,
 				height : this.chart.height,
 				width : this.chart.width,
@@ -2428,6 +2442,9 @@
 		helpers = Chart.helpers;
 
 	var defaultConfig = {
+		//Function - Whether the current x-axis label should be filtered out, takes in current label and 
+		//index, return true to filter out the label return false to keep the label
+		labelsFilter : function(label,index){return false;},
 
 		///Boolean - Whether grid lines are shown across the chart
 		scaleShowGridLines : true,
@@ -2591,6 +2608,7 @@
 				height : this.chart.height,
 				width : this.chart.width,
 				ctx : this.chart.ctx,
+				labelsFilter: this.options.labelsFilter,
 				textColor : this.options.scaleFontColor,
 				fontSize : this.options.scaleFontSize,
 				fontStyle : this.options.scaleFontStyle,
