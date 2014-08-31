@@ -1538,7 +1538,8 @@
 			var isRotated = (this.xLabelRotation > 0),
 				// innerWidth = (this.offsetGridLines) ? this.width - offsetLeft - this.padding : this.width - (offsetLeft + halfLabelWidth * 2) - this.padding,
 				innerWidth = this.width - (this.xScalePaddingLeft + this.xScalePaddingRight),
-				valueWidth = innerWidth/(this.valuesCount - ((this.offsetGridLines) ? 0 : 1)),
+				//check to ensure data is in chart otherwise we will get inifinity
+				valueWidth = this.valuesCount === 0 ? 0 : innerWidth / (this.valuesCount - ((this.offsetGridLines) ? 0 : 1)),
 				valueOffset = (valueWidth * index) + this.xScalePaddingLeft;
 
 			if (this.offsetGridLines){

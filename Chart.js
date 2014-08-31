@@ -238,7 +238,7 @@
 				if (filterCallback(currentItem)){
 					return currentItem;
 				}
-			};
+			}
 		},
 		findPreviousWhere = helpers.findPreviousWhere = function(arrayToSearch, filterCallback, startIndex){
 			// Default to end of the array
@@ -250,7 +250,7 @@
 				if (filterCallback(currentItem)){
 					return currentItem;
 				}
-			};
+			}
 		},
 		inherits = helpers.inherits = function(extensions){
 			//Basic javascript inheritance based on the model created in Backbone.js
@@ -1538,7 +1538,8 @@
 			var isRotated = (this.xLabelRotation > 0),
 				// innerWidth = (this.offsetGridLines) ? this.width - offsetLeft - this.padding : this.width - (offsetLeft + halfLabelWidth * 2) - this.padding,
 				innerWidth = this.width - (this.xScalePaddingLeft + this.xScalePaddingRight),
-				valueWidth = innerWidth/(this.valuesCount - ((this.offsetGridLines) ? 0 : 1)),
+				//check to ensure data is in chart otherwise we will get inifinity
+				valueWidth = this.valuesCount === 0 ? 0 : innerWidth / (this.valuesCount - ((this.offsetGridLines) ? 0 : 1)),
 				valueOffset = (valueWidth * index) + this.xScalePaddingLeft;
 
 			if (this.offsetGridLines){
@@ -1596,6 +1597,10 @@
 				},this);
 
 				each(this.xLabels,function(label,index){
+					//if filter returns true do not draw this label
+					if(this.labelsFilter(label, index)){
+						return;
+					}
 					var xPos = this.calculateX(index) + aliasPixel(this.lineWidth),
 						// Check to see if line/bar here and decide where to place the line
 						linePos = this.calculateX(index - (this.offsetGridLines ? 0.5 : 0)) + aliasPixel(this.lineWidth),
@@ -1951,6 +1956,10 @@
 
 
 	var defaultConfig = {
+		//Function - Whether the current x-axis label should be filtered out, takes in current label and 
+		//index, return true to filter out the label return false to keep the label
+		labelsFilter : function(label,index){return false;},
+
 		//Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
 		scaleBeginAtZero : true,
 
@@ -1985,7 +1994,6 @@
 		name: "Bar",
 		defaults : defaultConfig,
 		initialize:  function(data){
-
 			//Expose options as a scope variable here so we can access it in the ScaleClass
 			var options = this.options;
 
@@ -2125,6 +2133,7 @@
 			};
 
 			var scaleOptions = {
+				labelsFilter: this.options.labelsFilter,
 				templateString : this.options.scaleLabel,
 				height : this.chart.height,
 				width : this.chart.width,
@@ -2428,6 +2437,9 @@
 		helpers = Chart.helpers;
 
 	var defaultConfig = {
+		//Function - Whether the current x-axis label should be filtered out, takes in current label and 
+		//index, return true to filter out the label return false to keep the label
+		labelsFilter : function(label,index){return false;},
 
 		///Boolean - Whether grid lines are shown across the chart
 		scaleShowGridLines : true,
@@ -2591,6 +2603,7 @@
 				height : this.chart.height,
 				width : this.chart.width,
 				ctx : this.chart.ctx,
+				labelsFilter: this.options.labelsFilter,
 				textColor : this.options.scaleFontColor,
 				fontSize : this.options.scaleFontSize,
 				fontStyle : this.options.scaleFontStyle,
