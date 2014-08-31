@@ -152,6 +152,13 @@
 			// String - Colour behind the legend colour block
 			multiTooltipKeyBackground: '#fff',
 
+			// Object - Start and End Interpolators to be used with
+			// 			with template function
+			templateInterpolators: {
+         	start: "<%",
+            end: "%>"
+         },		
+
 			// Function - Will fire on animation progression.
 			onAnimationProgress: function(){},
 
@@ -445,7 +452,7 @@
 			if(templateString instanceof Function){
 			 	return templateString(valuesObject);
 		 	}
-
+		 	var interpolators = Chart.defaults.global.templateInterpolators;
 			var cache = {};
 			function tmpl(str, data){
 				// Figure out if we're getting a template, or if we need to
@@ -462,15 +469,14 @@
 					"with(obj){p.push('" +
 
 					// Convert the template into pure JavaScript
-					str
-						.replace(/[\r\t\n]/g, " ")
-						.split("<%").join("\t")
-						.replace(/((^|%>)[^\t]*)'/g, "$1\r")
-						.replace(/\t=(.*?)%>/g, "',$1,'")
-						.split("\t").join("');")
-						.split("%>").join("p.push('")
-						.split("\r").join("\\'") +
-					"');}return p.join('');"
+	            str.replace(/[\r\t\n]/g, " ")
+	                .split(interpolators.start).join("\t")
+	                .replace(new RegExp("((^|" + interpolators.end + ")[^\t]*)'", "g"), "$1\r")
+	                .replace(new RegExp("\t=(.*?)" + interpolators.end, "g"), "',$1,'")
+	                .split("\t").join("');")
+	                .split(interpolators.end).join("p.push('")
+	                .split("\r").join("\\'") +
+	                "');}return p.join('');"
 				);
 
 				// Provide some basic currying to the user
