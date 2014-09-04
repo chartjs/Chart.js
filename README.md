@@ -4,7 +4,7 @@
 
 ## Documentation
 
-You can find documentation at [chartjs.org/docs](http://www.chartjs.org/docs). The markdown files that build the site are available under `/docs`. Please note - in some of the json examples of configuration you might notice some liquid tags - this is just for the generating the site html, please disregard.
+You can find documentation at [chartjs.org/docs](http://www.chartjs.org/docs/). The markdown files that build the site are available under `/docs`. Please note - in some of the json examples of configuration you might notice some liquid tags - this is just for the generating the site html, please disregard.
 
 ## License
 
