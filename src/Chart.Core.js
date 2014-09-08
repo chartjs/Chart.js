@@ -1560,14 +1560,24 @@
 				ctx.font = this.font;
 				each(this.yLabels,function(labelString,index){
 					var yLabelCenter = this.endPoint - (yLabelGap * index),
-						linePositionY = Math.round(yLabelCenter);
+						linePositionY = Math.round(yLabelCenter),
+						drawHorizontalLine = this.showHorizontalLines;
 
 					ctx.textAlign = "right";
 					ctx.textBaseline = "middle";
 					if (this.showLabels){
 						ctx.fillText(labelString,xStart - 10,yLabelCenter);
 					}
-					ctx.beginPath();
+
+					// This is X axis, so draw it
+					if (index === 0 && !drawHorizontalLine){
+						drawHorizontalLine = true;
+					}
+
+					if (drawHorizontalLine){
+						ctx.beginPath();
+					}
+
 					if (index > 0){
 						// This is a grid line in the centre, so drop that
 						ctx.lineWidth = this.gridLineWidth;
@@ -1580,10 +1590,12 @@
 
 					linePositionY += helpers.aliasPixel(ctx.lineWidth);
 
-					ctx.moveTo(xStart, linePositionY);
-					ctx.lineTo(this.width, linePositionY);
-					ctx.stroke();
-					ctx.closePath();
+					if(drawHorizontalLine){
+						ctx.moveTo(xStart, linePositionY);
+						ctx.lineTo(this.width, linePositionY);
+						ctx.stroke();
+						ctx.closePath();
+					}
 
 					ctx.lineWidth = this.lineWidth;
 					ctx.strokeStyle = this.lineColor;
@@ -1599,9 +1611,17 @@
 					var xPos = this.calculateX(index) + aliasPixel(this.lineWidth),
 						// Check to see if line/bar here and decide where to place the line
 						linePos = this.calculateX(index - (this.offsetGridLines ? 0.5 : 0)) + aliasPixel(this.lineWidth),
-						isRotated = (this.xLabelRotation > 0);
+						isRotated = (this.xLabelRotation > 0),
+						drawVerticalLine = this.showVerticalLines;
 
-					ctx.beginPath();
+					// This is Y axis, so draw it
+					if (index === 0 && !drawVerticalLine){
+						drawVerticalLine = true;
+					}
+
+					if (drawVerticalLine){
+						ctx.beginPath();
+					}
 
 					if (index > 0){
 						// This is a grid line in the centre, so drop that
@@ -1612,10 +1632,13 @@
 						ctx.lineWidth = this.lineWidth;
 						ctx.strokeStyle = this.lineColor;
 					}
-					ctx.moveTo(linePos,this.endPoint);
-					ctx.lineTo(linePos,this.startPoint - 3);
-					ctx.stroke();
-					ctx.closePath();
+
+					if (drawVerticalLine){
+						ctx.moveTo(linePos,this.endPoint);
+						ctx.lineTo(linePos,this.startPoint - 3);
+						ctx.stroke();
+						ctx.closePath();
+					}
 
 
 					ctx.lineWidth = this.lineWidth;
