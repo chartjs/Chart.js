@@ -737,15 +737,32 @@
 				removeEvent(chartInstance.chart.canvas, eventName, handler);
 			});
 		},
+        getStyleInteger = helpers.getStyleInteger = function(oElm, strCssRule) {
+            var strValue = "";
+            if(document.defaultView && document.defaultView.getComputedStyle){
+                strValue = document.defaultView.getComputedStyle(oElm, "").getPropertyValue(strCssRule);
+            }
+            else if(oElm.currentStyle){
+                strCssRule = strCssRule.replace(/\-(\w)/g, function (strMatch, p1){
+                    return p1.toUpperCase();
+                });
+                strValue = oElm.currentStyle[strCssRule];
+            }
+            return parseInt(strValue.replace('px'));
+        },
 		getMaximumWidth = helpers.getMaximumWidth = function(domNode){
 			var container = domNode.parentNode;
 			// TODO = check cross browser stuff with this.
-			return container.clientWidth;
+            var width = container.clientWidth;
+            var padding = getStyleInteger(container, 'padding-left') + getStyleInteger(container, 'padding-right');
+            return width - padding;
 		},
 		getMaximumHeight = helpers.getMaximumHeight = function(domNode){
 			var container = domNode.parentNode;
 			// TODO = check cross browser stuff with this.
-			return container.clientHeight;
+            var height = container.clientHeight;
+            var padding = getStyleInteger(container, 'padding-top') + getStyleInteger(container, 'padding-bottom');
+			return height - padding;
 		},
 		getMaximumSize = helpers.getMaximumSize = helpers.getMaximumWidth, // legacy support
 		retinaScale = helpers.retinaScale = function(chart){
@@ -820,7 +837,7 @@
 		},
 		stop : function(){
 			// Stops any current animation loop occuring
-			helpers.cancelAnimFrame.call(root, this.animationFrame);
+			helpers.cancelAnimFrame.call(window, this.animationFrame);
 			return this;
 		},
 		resize : function(callback){
