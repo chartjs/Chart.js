@@ -226,6 +226,9 @@
 			this.scale = new this.ScaleClass(scaleOptions);
 		},
 		addData : function(valuesArray,label){
+			// Add label to X axis
+			this.scale.addXLabel(label);
+
 			//Map the values array for each of the datasets
 			helpers.each(valuesArray,function(value,datasetIndex){
 				//Add a new point for each piece of data, passing any required data to draw.
@@ -241,7 +244,6 @@
 				}));
 			},this);
 
-			this.scale.addXLabel(label);
 			//Then re-render the chart.
 			this.update();
 		},
