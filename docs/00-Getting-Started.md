@@ -106,7 +106,7 @@ Chart.defaults.global = {
 	scaleLabel: "<%=value%>",
 
 	// Number - How many X-Axis labels that should be skipped 
-	showLabelInterval: 1,
+	scaleLabelInterval: 1,
 
 	// Boolean - Whether the scale should stick to integers, not floats even if drawing space is there
 	scaleIntegersOnly: true,
