@@ -6,6 +6,9 @@
 		helpers = Chart.helpers;
 
 	var defaultConfig = {
+		//Function - Whether the current x-axis label should be filtered out, takes in current label and 
+		//index, return true to filter out the label return false to keep the label
+		labelsFilter : function(label,index){return false;},
 
 		///Boolean - Whether grid lines are shown across the chart
 		scaleShowGridLines : true,
@@ -169,6 +172,7 @@
 				height : this.chart.height,
 				width : this.chart.width,
 				ctx : this.chart.ctx,
+				labelsFilter: this.options.labelsFilter,
 				textColor : this.options.scaleFontColor,
 				fontSize : this.options.scaleFontSize,
 				fontStyle : this.options.scaleFontStyle,
@@ -244,10 +248,10 @@
 			});
 			this.scale.update(newScaleProps);
 		},
-		draw : function(ease){
-			var easingDecimal = ease || 1;
-			this.clear();
 
+		//extracted from draw() so it can be used to draw any line datasets
+		drawDatasets: function(datasets, easingDecimal)
+		{
 			var ctx = this.chart.ctx;
 
 			// Some helper methods for getting the next/prev points
@@ -260,9 +264,6 @@
 			previousPoint = function(point, collection, index){
 				return helpers.findPreviousWhere(collection, hasValue, index) || point;
 			};
-
-			this.scale.draw(easingDecimal);
-
 
 			helpers.each(this.datasets,function(dataset){
 				var pointsWithValues = helpers.where(dataset.points, hasValue);
@@ -359,6 +360,13 @@
 					point.draw();
 				});
 			},this);
+		},
+		draw : function(ease){
+			var easingDecimal = ease || 1;
+			this.clear();
+
+			this.scale.draw(easingDecimal);
+			this.drawDatasets(this.datasets, easingDecimal);
 		}
 	});
 

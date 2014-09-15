@@ -2,6 +2,12 @@
 
 *Simple HTML5 Charts using the canvas element* [chartjs.org](http://www.chartjs.org)
 
+##New Features In My Fork
+ - labelsFilter to filter x-axis labels based on user provided function
+ - Template interpolator can be changed from default `<%` `%>` to what ever you want
+ - New chart - overlay chart - for combing both bar and line charts on the same chart
+ - new chart options for pie and dougnut to allow the creation of semi circle (or any size) charts drawn at user defined starting angle ()
+ 
 ## Documentation
 
 You can find documentation at [chartjs.org/docs](http://www.chartjs.org/docs/). The markdown files that build the site are available under `/docs`. Please note - in some of the json examples of configuration you might notice some liquid tags - this is just for the generating the site html, please disregard.
@@ -24,3 +30,5 @@ New contributions to the library are welcome, just a couple of guidelines:
 - Please keep pull requests concise, and document new functionality in the relevant `.md` file.
 - Consider whether your changes are useful for all users, or if creating a Chart.js extension would be more appropriate.
 - Please avoid committing in the build Chart.js & Chart.min.js file, as it causes conflicts when merging.
+
+

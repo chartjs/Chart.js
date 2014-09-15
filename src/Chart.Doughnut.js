@@ -28,6 +28,12 @@
 		//Boolean - Whether we animate the rotation of the Doughnut
 		animateRotate : true,
 
+		//Number - How much of 360 should be used to display the doughnut
+		scale : 1,
+
+		//Number - At what angle to start drawing 0 = 90, 0.5 = 180, 1 = 270, 1.5 = 0
+		startAngle : 1.5,
+
 		//Boolean - Whether we animate scaling the Doughnut from the centre
 		animateScale : false,
 
@@ -70,6 +76,7 @@
 					this.showTooltip(activeSegments);
 				});
 			}
+
 			this.calculateTotal(data);
 
 			helpers.each(data,function(datapoint, index){
@@ -99,7 +106,7 @@
 				showStroke : this.options.segmentShowStroke,
 				strokeWidth : this.options.segmentStrokeWidth,
 				strokeColor : this.options.segmentStrokeColor,
-				startAngle : Math.PI * 1.5,
+				startAngle : Math.PI * this.options.startAngle,
 				circumference : (this.options.animateRotate) ? 0 : this.calculateCircumference(segment.value),
 				label : segment.label
 			}));
@@ -116,6 +123,7 @@
 			helpers.each(data,function(segment){
 				this.total += segment.value;
 			},this);
+			this.total = this.total/this.options.scale;
 		},
 		update : function(){
 			this.calculateTotal(this.segments);
@@ -165,7 +173,7 @@
 
 				segment.draw();
 				if (index === 0){
-					segment.startAngle = Math.PI * 1.5;
+					segment.startAngle = Math.PI * this.options.startAngle;
 				}
 				//Check to see if it's the last segment, if not get the next and update the start angle
 				if (index < this.segments.length-1){

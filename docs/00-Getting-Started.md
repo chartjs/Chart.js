@@ -182,6 +182,16 @@ Chart.defaults.global = {
 	{% endraw %}
 	// String - Template string for single tooltips
 	multiTooltipTemplate: "<%= value %>",
+	
+	// String - Colour behind the legend colour block
+	multiTooltipKeyBackground: '#fff',
+
+	// Object - Start and End Interpolators to be used with
+	// 			with template function
+	templateInterpolators: {
+   	start: "<%",
+      end: "%>"
+   },
 
 	// Function - Will fire on animation progression.
 	onAnimationProgress: function(){},

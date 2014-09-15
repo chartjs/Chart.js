@@ -84,6 +84,12 @@ These are the customisation options specific to Pie & Doughnut charts. These opt
 	//Boolean - Whether we animate the rotation of the Doughnut
 	animateRotate : true,
 
+	//Number - How much of 360 should be used to display the doughnut 0 = 0, 0.5 = 180, 1 = 360
+	scale : 1,
+
+	//Number - At what angle to start drawing 0 = 90, 0.5 = 180, 1 = 270, 1.5 = 0
+	startAngle : 1.5,
+
 	//Boolean - Whether we animate scaling the Doughnut from the centre
 	animateScale : false,
 	{% raw %}
@@ -102,6 +108,15 @@ new Chart(ctx).Doughnut(data, {
 });
 // This will create a chart with all of the default options, merged from the global config,
 // and the Doughnut chart defaults but this particular instance will have `animateScale` set to `true`.
+```
+
+```javascript
+new Chart(ctx).Doughnut(data, {
+	scale: 0.5,
+	startAngle: 1
+});
+// This will create a chart with all of the default options, merged from the global config,
+// and the Doughnut chart defaults but this particular instance will be a semi circle (180) and start drawing from left of the canvas not the top.
 ```
 
 We can also change these defaults values for each Doughnut type that is created, this object is available at `Chart.defaults.Doughnut`. Pie charts also have a clone of these defaults available to change at `Chart.defaults.Pie`, with the only difference being `percentageInnerCutout` being set to 0.

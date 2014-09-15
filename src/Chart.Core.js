@@ -152,6 +152,13 @@
 			// String - Colour behind the legend colour block
 			multiTooltipKeyBackground: '#fff',
 
+			// Object - Start and End Interpolators to be used with
+			// 			with template function
+			templateInterpolators: {
+         	start: "<%",
+      		end: "%>"
+      },		
+
 			// Function - Will fire on animation progression.
 			onAnimationProgress: function(){},
 
@@ -238,7 +245,7 @@
 				if (filterCallback(currentItem)){
 					return currentItem;
 				}
-			};
+			}
 		},
 		findPreviousWhere = helpers.findPreviousWhere = function(arrayToSearch, filterCallback, startIndex){
 			// Default to end of the array
@@ -250,7 +257,7 @@
 				if (filterCallback(currentItem)){
 					return currentItem;
 				}
-			};
+			}
 		},
 		inherits = helpers.inherits = function(extensions){
 			//Basic javascript inheritance based on the model created in Backbone.js
@@ -445,7 +452,7 @@
 			if(templateString instanceof Function){
 			 	return templateString(valuesObject);
 		 	}
-
+		 	var interpolators = Chart.defaults.global.templateInterpolators;
 			var cache = {};
 			function tmpl(str, data){
 				// Figure out if we're getting a template, or if we need to
@@ -462,15 +469,14 @@
 					"with(obj){p.push('" +
 
 					// Convert the template into pure JavaScript
-					str
-						.replace(/[\r\t\n]/g, " ")
-						.split("<%").join("\t")
-						.replace(/((^|%>)[^\t]*)'/g, "$1\r")
-						.replace(/\t=(.*?)%>/g, "',$1,'")
-						.split("\t").join("');")
-						.split("%>").join("p.push('")
-						.split("\r").join("\\'") +
-					"');}return p.join('');"
+	            str.replace(/[\r\t\n]/g, " ")
+	                .split(interpolators.start).join("\t")
+	                .replace(new RegExp("((^|" + interpolators.end + ")[^\t]*)'", "g"), "$1\r")
+	                .replace(new RegExp("\t=(.*?)" + interpolators.end, "g"), "',$1,'")
+	                .split("\t").join("');")
+	                .split(interpolators.end).join("p.push('")
+	                .split("\r").join("\\'") +
+	                "');}return p.join('');"
 				);
 
 				// Provide some basic currying to the user
@@ -1538,7 +1544,8 @@
 			var isRotated = (this.xLabelRotation > 0),
 				// innerWidth = (this.offsetGridLines) ? this.width - offsetLeft - this.padding : this.width - (offsetLeft + halfLabelWidth * 2) - this.padding,
 				innerWidth = this.width - (this.xScalePaddingLeft + this.xScalePaddingRight),
-				valueWidth = innerWidth/(this.valuesCount - ((this.offsetGridLines) ? 0 : 1)),
+				//check to ensure data is in chart otherwise we will get inifinity
+				valueWidth = this.valuesCount === 0 ? 0 : innerWidth / (this.valuesCount - ((this.offsetGridLines) ? 0 : 1)),
 				valueOffset = (valueWidth * index) + this.xScalePaddingLeft;
 
 			if (this.offsetGridLines){
@@ -1596,6 +1603,10 @@
 				},this);
 
 				each(this.xLabels,function(label,index){
+					//if filter returns true do not draw this label
+					if(this.labelsFilter(label, index)){
+						return;
+					}
 					var xPos = this.calculateX(index) + aliasPixel(this.lineWidth),
 						// Check to see if line/bar here and decide where to place the line
 						linePos = this.calculateX(index - (this.offsetGridLines ? 0.5 : 0)) + aliasPixel(this.lineWidth),
