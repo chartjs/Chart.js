@@ -18,6 +18,7 @@
     "gulp-size": "~0.4.0",
     "gulp-uglify": "~0.2.x",
     "gulp-util": "~2.2.x",
+    "gulp-html-validator": "^0.0.2",
     "inquirer": "^0.5.1",
     "semver": "^3.0.1"
   }
