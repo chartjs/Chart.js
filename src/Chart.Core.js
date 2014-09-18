@@ -1540,19 +1540,22 @@
 			var scalingFactor = this.drawingArea() / (this.min - this.max);
 			return this.endPoint - (scalingFactor * (value - this.min));
 		},
-		calculateX : function(index){
-			var isRotated = (this.xLabelRotation > 0),
-				// innerWidth = (this.offsetGridLines) ? this.width - offsetLeft - this.padding : this.width - (offsetLeft + halfLabelWidth * 2) - this.padding,
-				innerWidth = this.width - (this.xScalePaddingLeft + this.xScalePaddingRight),
-				//check to ensure data is in chart otherwise we will get inifinity
-				valueWidth = this.valuesCount === 0 ? 0 : innerWidth / (this.valuesCount - ((this.offsetGridLines) ? 0 : 1)),
-				valueOffset = (valueWidth * index) + this.xScalePaddingLeft;
-
-			if (this.offsetGridLines){
-				valueOffset += (valueWidth/2);
-			}
-
-			return Math.round(valueOffset);
+		calculateX: function (index) {
+	        	//check to ensure data is in chart otherwise we will get inifinity
+			if (!(this.valuesCount - (this.offsetGridLines ? 0 : 1))) {
+		            return 0;
+		        }
+		        var isRotated = (this.xLabelRotation > 0),
+		            // innerWidth = (this.offsetGridLines) ? this.width - offsetLeft - this.padding : this.width - (offsetLeft + halfLabelWidth * 2) - this.padding,
+		            innerWidth = this.width - (this.xScalePaddingLeft + this.xScalePaddingRight),
+		            valueWidth = this.valuesCount === 0 ? 0 : innerWidth / (this.valuesCount - ((this.offsetGridLines) ? 0 : 1)),
+		            valueOffset = (valueWidth * index) + this.xScalePaddingLeft;
+		
+		        if (this.offsetGridLines) {
+		            valueOffset += (valueWidth / 2);
+		        }
+		
+		        return Math.round(valueOffset);
 		},
 		update : function(newProps){
 			helpers.extend(this, newProps);
