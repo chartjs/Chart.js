@@ -1451,6 +1451,9 @@
 			 */
 			this.calculateYRange(cachedHeight);
 
+			// The Zero coordinate of Y axis
+			this.zeroPoint = (this.min<0) ? (this.startPoint + (this.max/this.stepValue)*(this.endPoint-this.startPoint)/this.steps).toFixed(2) : this.endPoint;
+
 			// With these properties set we can now build the array of yLabels
 			// and also the width of the largest yLabel
 			this.buildYLabels();
