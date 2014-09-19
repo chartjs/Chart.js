@@ -1235,7 +1235,10 @@
 			return this.base - this.y;
 		},
 		inRange : function(chartX,chartY){
-			return (chartX >= this.x - this.width/2 && chartX <= this.x + this.width/2) && (chartY >= this.y && chartY <= this.base);
+			if(this.value > 0)
+				return (chartX >= this.x - this.width/2 && chartX <= this.x + this.width/2) && (chartY >= this.y && chartY <= this.base);
+			else
+				return (chartX >= this.x - this.width/2 && chartX <= this.x + this.width/2) && (chartY <= this.y && chartY >= this.base);
 		}
 	});
 
