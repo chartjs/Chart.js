@@ -98,9 +98,6 @@
 			// Boolean - Determines whether to draw tooltips on the canvas or not - attaches events to touchmove & mousemove
 			showTooltips: true,
 
-			// Boolean - Determines whether to draw tooltips that contain no text.
-			showEmptyTooltips: true,
-
 			// Array - Array of string names to attach tooltip events
 			tooltipEvents: ["mousemove", "touchstart", "touchmove", "mouseout"],
 
@@ -985,7 +982,7 @@
 					each(ChartElements, function(Element) {
 						var tooltipPosition = Element.tooltipPosition();
 						var text = template(this.options.tooltipTemplate, Element);
-						if(text != '' || this.options.showEmptyTooltips) {
+						if(text != '') {
 							new Chart.Tooltip({
 								x: Math.round(tooltipPosition.x),
 								y: Math.round(tooltipPosition.y),
