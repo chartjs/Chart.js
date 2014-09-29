@@ -359,7 +359,7 @@
 						rangeEnd = dataset.fillTo;
 					}
 					if(dataset.fillFrom > defaultRangeStart && dataset.fillFrom < defaultRangeEnd) {
-						rangeStart = dataset.fillFrom
+						rangeStart = dataset.fillFrom;
 					}
 					//Draw routine for selective chart fill
 					if(rangeEnd != defaultRangeEnd || rangeStart != defaultRangeStart) {
@@ -368,8 +368,8 @@
 						ctx.moveTo(pointsWithValues[rangeEnd].x, this.scale.endPoint);
 						ctx.lineTo(pointsWithValues[rangeEnd].x, this.scale.endPoint);
 						ctx.lineTo(pointsWithValues[rangeStart].x, this.scale.endPoint);
-						for(var ii = rangeStart; ii <= rangeEnd; ii++){
-							ctx.lineTo(pointsWithValues[ii].x, pointsWithValues[ii].y);
+						for(var index = rangeStart; index <= rangeEnd; index++){
+							ctx.lineTo(pointsWithValues[index].x, pointsWithValues[index].y);
 						}
 					} else { //Fill the whole chart
 						//Round off the line by going to the base of the chart, back to the start, then fill.
