@@ -43,6 +43,10 @@
 		//Boolean - Whether to fill the dataset with a colour
 		datasetFill : true,
 
+		datasetFillStart : 0,
+
+		datasetFillEnd : Infinity,
+
 		//String - A legend template
 		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
 
@@ -91,6 +95,8 @@
 					strokeColor : dataset.strokeColor,
 					pointColor : dataset.pointColor,
 					pointStrokeColor : dataset.pointStrokeColor,
+					fillFrom : dataset.fillFrom,
+					fillTo : dataset.fillTo,
 					points : []
 				};
 
@@ -345,8 +351,30 @@
 
 				if (this.options.datasetFill && pointsWithValues.length > 0){
 					//Round off the line by going to the base of the chart, back to the start, then fill.
-					ctx.lineTo(pointsWithValues[pointsWithValues.length - 1].x, this.scale.endPoint);
-					ctx.lineTo(pointsWithValues[0].x, this.scale.endPoint);
+					var defaultRangeEnd = pointsWithValues.length - 1;
+					var defaultRangeStart = 0;
+					var rangeEnd = defaultRangeEnd;
+					var rangeStart = defaultRangeStart;
+					if(dataset.fillTo < defaultRangeEnd  && dataset.fillTo > defaultRangeStart) {
+						rangeEnd = dataset.fillTo;
+					}
+					if(dataset.fillFrom > defaultRangeStart && dataset.fillFrom < defaultRangeEnd) {
+						rangeStart = dataset.fillFrom
+					}
+
+					if(rangeEnd != defaultRangeEnd || rangeStart != defaultRangeStart) {
+						ctx.closePath();
+						ctx.beginPath();
+						ctx.moveTo(pointsWithValues[rangeEnd].x, this.scale.endPoint);
+						ctx.lineTo(pointsWithValues[rangeEnd].x, this.scale.endPoint);
+						ctx.lineTo(pointsWithValues[rangeStart].x, this.scale.endPoint);
+						for(var ii = rangeStart; ii <= rangeEnd; ii++){
+							ctx.lineTo(pointsWithValues[ii].x, pointsWithValues[ii].y);
+						}
+					} else {
+						ctx.lineTo(pointsWithValues[rangeEnd].x, this.scale.endPoint);
+						ctx.lineTo(pointsWithValues[rangeStart].x, this.scale.endPoint);
+					}
 					ctx.fillStyle = dataset.fillColor;
 					ctx.closePath();
 					ctx.fill();
