@@ -2068,10 +2068,10 @@
 			this.buildScale(data.labels);
 
 			if (this.options.barBeginAtOrigin && this.scale.min < 0) {
-				this.BarClass.prototype.base = (-1 * parseFloat(this.scale.min) /
+				this.BarClass.prototype.base = (this.scale.endPoint -
+					(-1 * parseFloat(this.scale.min)) /
 					((this.scale.max - this.scale.min) * 1.00) *
-					(this.scale.endPoint - this.scale.startPoint) +
-					this.scale.startPoint);
+					(this.scale.endPoint - this.scale.startPoint));
 			}
 			else {
 				this.BarClass.prototype.base = this.scale.endPoint;
