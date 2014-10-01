@@ -1235,7 +1235,7 @@
 			return this.base - this.y;
 		},
 		inRange : function(chartX,chartY){
-			return (chartX >= this.x - this.width/2 && chartX <= this.x + this.width/2) && (chartY >= this.y && chartY <= this.base);
+			return (chartX >= this.x - this.width/2 && chartX <= this.x + this.width/2) && (chartY >= Math.min(this.y, this.base) && chartY <= Math.max(this.y, this.base));
 		}
 	});
 
@@ -1963,6 +1963,9 @@
 		//Number - Width of the grid lines
 		scaleGridLineWidth : 1,
 
+		//Boolean - Whether the bars should start at the origin, or the bottom of the scale.
+		barBeginAtOrigin: true,
+
 		//Boolean - If there is a stroke on each bar
 		barShowStroke : true,
 
@@ -2064,13 +2067,21 @@
 
 			this.buildScale(data.labels);
 
-			this.BarClass.prototype.base = this.scale.endPoint;
+			if (this.options.barBeginAtOrigin && this.scale.min < 0) {
+				this.BarClass.prototype.base = (-1 * parseFloat(this.scale.min) /
+					((this.scale.max - this.scale.min) * 1.00) *
+					(this.scale.endPoint - this.scale.startPoint) +
+					this.scale.startPoint);
+			}
+			else {
+				this.BarClass.prototype.base = this.scale.endPoint;
+			}
 
 			this.eachBars(function(bar, index, datasetIndex){
 				helpers.extend(bar, {
 					width : this.scale.calculateBarWidth(this.datasets.length),
 					x: this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
-					y: this.scale.endPoint
+					y: bar.base
 				});
 				bar.save();
 			}, this);
@@ -2135,6 +2146,7 @@
 				fontFamily : this.options.scaleFontFamily,
 				valuesCount : labels.length,
 				beginAtZero : this.options.scaleBeginAtZero,
+				beginAtOrigin : this.options.barBeginAtOrigin,
 				integersOnly : this.options.scaleIntegersOnly,
 				calculateYRange: function(currentHeight){
 					var updatedRanges = helpers.calculateScaleRange(
@@ -2220,7 +2232,12 @@
 			helpers.each(this.datasets,function(dataset,datasetIndex){
 				helpers.each(dataset.bars,function(bar,index){
 					if (bar.hasValue()){
-						bar.base = this.scale.endPoint;
+						if (this.options.barBeginAtOrigin && this.scale.min < 0) {
+							helpers.noop();
+						}
+						else {
+							bar.base = this.scale.endPoint;
+						}
 						//Transition then draw
 						bar.transition({
 							x : this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
