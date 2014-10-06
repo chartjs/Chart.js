@@ -104,6 +104,10 @@
 				this.datasets.push(datasetObject);
 
 				helpers.each(dataset.data,function(dataPoint,index){
+					console.log (typeof dataPoint === "array") {
+						dataPoint = dataPoint.average();
+					}
+
 					//Add a new point for each piece of data, passing any required data to draw.
 					datasetObject.bars.push(new this.BarClass({
 						value : dataPoint,

@@ -2,7 +2,8 @@
 <html>
 	<head>
 		<title>Bar Chart with error bars</title>
-		<script src="../Chart.js"></script>
+		<script src="../src/Chart.Core.js"></script>
+		<script src="../src/Chart.Bar.js"></script>
 		<meta name = "viewport" content = "initial-scale = 1, user-scalable = no">
 		<style>
 			canvas{
@@ -15,7 +16,7 @@
 
 	<script>
 
-		var lineChartData = {
+		var barChartData = {
 			labels : ["0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100", "110"],
 			datasets : [
 				{
@@ -55,7 +56,7 @@
 			animation : true
 		}
 
-	var myLine = new ChartCalculator(document.getElementById("canvas").getContext("2d")).Bar(lineChartData, options);
+	var myBar = new Chart(document.getElementById("canvas").getContext("2d")).Bar(barChartData, options);
 	
 	</script>
 	</body>
