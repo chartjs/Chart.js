@@ -32,7 +32,10 @@
 		barDatasetSpacing : 1,
 
 		//String - A legend template
-		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+
+		//String - value of error bars: "none", "range", "stdev", "stderror"
+		error: "none"
 
 	};
 
@@ -104,13 +107,22 @@
 				this.datasets.push(datasetObject);
 
 				helpers.each(dataset.data,function(dataPoint,index){
-					console.log (typeof dataPoint === "array") {
-						dataPoint = dataPoint.average();
-					}
+					console.log(options);					
+					//
+					if (typeof dataPoint === "number") var mean = dataPoint;
+					else var mean = helpers.average(dataPoint);
+					//calculate the error bars, if we're using them
+					//be sure there's at least 2 values in dataPoint or we might get a
+					//fatal error
+					var errorVal = 0;
+					if (options.error === "stdev" && dataPoint.length > 1) errorVal = helpers.stdev(dataPoint);
+					else if (options.error === "range" && dataPoint.length > 1) errorVal = helpers.range(dataPoint);
+					else if (options.error === "stderr" && dataPoint.length > 1) errorVal = helpers.stderr(dataPoint);
 
 					//Add a new point for each piece of data, passing any required data to draw.
 					datasetObject.bars.push(new this.BarClass({
-						value : dataPoint,
+						value : average,
+						errorVal : errorVal,
 						label : data.labels[index],
 						datasetLabel: dataset.label,
 						strokeColor : dataset.strokeColor,
