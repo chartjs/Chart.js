@@ -59,43 +59,7 @@ window.ChartCalculator = function(context) {
 		return new Chart(context).Scatter(repackagedData, options);
 	}
 	
-	function calculateMeans(data, options) {
-		for (var x = 0; x < data.datasets.length; x++) {
-			var errorValues = [];
-			for (var y = 0; y < data.datasets[x].data.length; y++) {
-				var values = data.datasets[x].data[y]
-				var n = values.length;
-				//calculate the average value 
-				var sum = 0;
-				for (var z = 0; z < n; z++) {
-					sum = sum + values[z];
-				}
-				var avg = sum/n;
-				//put the average value into data in place of the array 
-				data.datasets[x].data[y] = avg;
-				if (options.error){
-					if (options.error == "range"){
-						//get the maximum value 
-						values.sort(function(a, b){return a - b});
-						var maximum = values[n - 1];
-						var error = maximum - avg;
-					} else if (options.error == "stdev" && n > 2) {
-						//find the sum of the squares of the diffs from the mean
-						var sum = 0;
-						for (var z = 0; z < n; z++) {
-							sum = sum + Math.pow(values[z] - avg, 2);
-						}
-						var error = Math.sqrt(sum / (n - 1));
-					}
-					errorValues.push(error);
-				}
-			}
-			if (options.error) data.datasets[x].error = errorValues;
-		}
-		return data;
-	}
-	
-}
+
 
 
 
@@ -486,10 +450,7 @@ window.Chart = function(context) {
 	this.Bar = function(data,options){
 		chart.Bar.defaults = {
 			chartType : "Bar",
-			//error bars
-			errorStrokeWidth : 5,
-			errorStrokeColor : "#333",
-			errorCapWidth : 0.75,
+			
 			// scale 
 			scaleOverlay : false,
 			scaleOverride : false,

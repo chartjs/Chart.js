@@ -1267,6 +1267,48 @@
 		}
 	});
 
+	Chart.ErrorBar = Chart.Rectangle.extend({
+		draw : function() {
+			console.log(this);
+			return;
+			var ctx = this.ctx,
+				halfWidth = this.width/2,
+				leftX = this.x - halfWidth,
+				rightX = this.x + halfWidth,
+				top = this.base - (this.base - this.y1),
+				bottom = this.base - (this.base - this.y2)
+			if ( data.datasets[i].error && config.errorDir != "none"){
+				//draw upper error bar
+				if ( config.errorDir != "down") {		
+					ctx.strokeStyle = config.errorStrokeWidth;
+					ctx.beginPath();
+					ctx.moveTo(barOffset + barWidth/2, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					ctx.lineTo(barOffset + barWidth/2, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j] + data.datasets[i].error[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2))
+					ctx.stroke();
+					ctx.beginPath();
+					var cap = (config.errorCapWidth * barWidth) || 1;
+					capOffset = (barWidth - cap)/2;
+					ctx.moveTo(barOffset + capOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j] + data.datasets[i].error[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					ctx.lineTo(barOffset + barWidth - capOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j] + data.datasets[i].error[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					ctx.stroke();
+				}			
+				//draw lower error bar
+				if (config.errorDir != "up") {						
+					ctx.beginPath();
+					ctx.moveTo(barOffset + barWidth/2, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					ctx.lineTo(barOffset + barWidth/2, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j] - data.datasets[i].error[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2))
+					ctx.stroke();
+					ctx.beginPath();
+					var cap = (config.errorCapWidth * barWidth) || 1;
+					capOffset = (barWidth - cap)/2;
+					ctx.moveTo(barOffset + capOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j] - data.datasets[i].error[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					ctx.lineTo(barOffset + barWidth - capOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j] - data.datasets[i].error[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					ctx.stroke();					
+				}
+			}
+		}
+	})
+
 	Chart.Tooltip = Chart.Element.extend({
 		draw : function(){
 
