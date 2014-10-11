@@ -1269,17 +1269,16 @@
 
 	Chart.ErrorBar = Chart.Rectangle.extend({
 		draw : function() {
-			console.log(this);
-			return;
-			var ctx = this.ctx,
+			console.log(this.errorDir);
 				halfWidth = this.width/2,
 				leftX = this.x - halfWidth,
 				rightX = this.x + halfWidth,
-				top = this.base - (this.base - this.y1),
-				bottom = this.base - (this.base - this.y2)
-			if ( data.datasets[i].error && config.errorDir != "none"){
+				top = this.base - (this.base - this.yUp),
+				bottom = this.base - (this.base - this.yDown),
+				middle = this.base - (this.base - this.yStart)
+			if ( this.errorDir != "none" ) {
 				//draw upper error bar
-				if ( config.errorDir != "down") {		
+				if ( this.errorDir != "down") {		
 					ctx.strokeStyle = config.errorStrokeWidth;
 					ctx.beginPath();
 					ctx.moveTo(barOffset + barWidth/2, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));

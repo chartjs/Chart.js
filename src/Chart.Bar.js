@@ -110,9 +110,9 @@
 			this.ErrorClass = Chart.ErrorBar.extend({
 				errorDir : this.options.errorDir,
 				errorStrokeWidth : this.options.errorStrokeWidth,
-				errorStrokeColor : this.options.errorStrokeColor
+				errorStrokeColor : this.options.errorStrokeColor,
+				ctx : this.chart.ctx
 			})
-
 
 			//Iterate through each of the datasets, and build this into a property of the chart
 			helpers.each(data.datasets,function(dataset,datasetIndex){
@@ -168,7 +168,16 @@
 					y: this.scale.endPoint
 				});
 				bar.save();
-
+				if (bar.errorBar) {
+					helpers.extend(bar.errorBar, {
+						x : this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
+						yStart : this.scale.calculateY(bar.value),
+						yDown : this.scale.calculateY(bar.value - bar.errorBar.errorVal),
+						yUp : this.scale.calculateY(bar.value + bar.errorBar.errorVal),
+						width: this.scale.calculateBarWidth(this.datasets.length) * this.options.errorCapWidth
+					});
+					bar.errorBar.save();
+				}
 			}, this);
 
 			this.render();
@@ -318,7 +327,6 @@
 					if (bar.hasValue()){
 						bar.base = this.scale.endPoint;
 						//Transition then draw
-						console.log(bar); 
 						bar.transition({
 							x : this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
 							y : this.scale.calculateY(bar.value),
@@ -327,9 +335,10 @@
 						if (bar.errorBar) {
 							bar.errorBar.transition({
 								x : this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
-								//y1 : this.scale.calculateY(bar.value - bar.errorBar.errorVal),
-								//y2 : this.scale.calculateY(bar.value + bar.errorBar.errorVal),
-								//width: this.scale.calculateBarWidth(this.datasets.length) * this.options.errorCapWidth
+								yStart : this.scale.calculateY(bar.value),
+								yDown : this.scale.calculateY(bar.value - bar.errorBar.errorVal),
+								yUp : this.scale.calculateY(bar.value + bar.errorBar.errorVal),
+								width: this.scale.calculateBarWidth(this.datasets.length) * this.options.errorCapWidth
 							}, easingDecimal).draw();
 						}
 					}
