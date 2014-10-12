@@ -1240,7 +1240,6 @@
 				rightX -= halfStroke;
 				top += halfStroke;
 			}
-			console.log(this.y);
 			ctx.beginPath();
 
 			ctx.fillStyle = this.fillColor;
@@ -1275,30 +1274,29 @@
 				top = this.base - (this.base - this.yUp),
 				bottom = this.base - (this.base - this.yDown),
 				middle = this.base - (this.base - this.y)
-			if (this.errorDir != "none") {
-				//draw upper error bar
-				if (this.errorDir != "down") {		
-					ctx.strokeStyle = this.errorStrokeWidth;
-					ctx.beginPath();
-					ctx.moveTo(this.x, middle);
-					ctx.lineTo(this.x, top);
-					ctx.stroke();
-					ctx.beginPath();
-					ctx.moveTo(leftX, top);
-					ctx.lineTo(rightX, top);
-					ctx.stroke();
-				}			
-				//draw lower error bar
-				if (this.errorDir != "up") {						
-					ctx.beginPath();
-					ctx.moveTo(this.x, middle);
-					ctx.lineTo(this.x, bottom);
-					ctx.stroke();
-					ctx.beginPath();
-					ctx.moveTo(leftX, bottom);
-					ctx.lineTo(rightX, bottom);
-					ctx.stroke();					
-				}
+			ctx.strokeStyle = this.errorStrokeColor;
+			ctx.lineWidth = this.errorStrokeWidth;
+			//draw upper error bar
+			if (this.errorDir != "down") {		
+				ctx.beginPath();
+				ctx.moveTo(this.x, middle);
+				ctx.lineTo(this.x, top);
+				ctx.stroke();
+				ctx.beginPath();
+				ctx.moveTo(leftX, top);
+				ctx.lineTo(rightX, top);
+				ctx.stroke();
+			}			
+			//draw lower error bar
+			if (this.errorDir != "up") {						
+				ctx.beginPath();
+				ctx.moveTo(this.x, middle);
+				ctx.lineTo(this.x, bottom);
+				ctx.stroke();
+				ctx.beginPath();
+				ctx.moveTo(leftX, bottom);
+				ctx.lineTo(rightX, bottom);
+				ctx.stroke();					
 			}
 		}
 	})

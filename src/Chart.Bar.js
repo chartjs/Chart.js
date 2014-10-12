@@ -41,11 +41,7 @@
 		errorDir : "both",
 
 		//Number - stroke width of the error bars
-		errorStrokeWidth : 5,
-
-		//String - color of the error bars
-		//(actually it would be cool if this could inherit the bar color)
-		errorStrokeColor : "#333",
+		errorStrokeWidth : 1,
 
 		//Number - ratio of the width of the error bar caps to the width of the bar
 		errorCapWidth : 0.75,
@@ -110,7 +106,6 @@
 			this.ErrorClass = Chart.ErrorBar.extend({
 				errorDir : this.options.errorDir,
 				errorStrokeWidth : this.options.errorStrokeWidth,
-				errorStrokeColor : this.options.errorStrokeColor,
 				ctx : this.chart.ctx
 			})
 
@@ -140,7 +135,8 @@
 						var errorBar = new this.ErrorClass({ errorVal: helpers.stderr(dataPoint) });
 					} else {
 						var errorBar = false;
-					}			
+					}
+					if (errorBar) errorBar.errorStrokeColor = dataset.errorStrokeColor || dataset.strokeColor;
 					//Add a new point for each piece of data, passing any required data to draw.
 					datasetObject.bars.push(new this.BarClass({
 						value : mean,
