@@ -10,12 +10,14 @@
 				<canvas id="canvas" height="450" width="600"></canvas>
 			</div>
 		</div>
+		<button onclick="addData()">Add data point</button>
 
 
 	<script>
 		var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
+		var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 		var lineChartData = {
-			labels : ["January","February","March","April","May","June","July"],
+			labels : [months[0],months[1],months[2],months[3],months[4],months[5],months[6]],
 			datasets : [
 				{
 					label: "My First dataset",
@@ -37,16 +39,34 @@
 					pointHighlightStroke : "rgba(151,187,205,1)",
 					data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
 				}
+			],
+			plotLinesYAxis: [
+				{
+					label: "my first plot line",
+					strokeColor: "rgb(109, 191, 109)",
+					value: 30
+				},
+				{
+					label: "my second plot line",
+					strokeColor: "rgb(252, 101, 101)",
+					value: 82
+				}
 			]
-
 		}
 
-	window.onload = function(){
-		var ctx = document.getElementById("canvas").getContext("2d");
-		window.myLine = new Chart(ctx).Line(lineChartData, {
-			responsive: true
-		});
-	}
+		window.onload = function(){
+			var ctx = document.getElementById("canvas").getContext("2d");
+			window.myLine = new Chart(ctx).Line(lineChartData, {
+				responsive: true
+			});
+		}
+
+		function addData() {
+			window.myLine.addData(
+				[randomScalingFactor(), randomScalingFactor()],
+				months[window.myLine.datasets[0].points.length%12]
+			);
+		}
 
 
 	</script>

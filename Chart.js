@@ -238,7 +238,7 @@
 				if (filterCallback(currentItem)){
 					return currentItem;
 				}
-			};
+			}
 		},
 		findPreviousWhere = helpers.findPreviousWhere = function(arrayToSearch, filterCallback, startIndex){
 			// Default to end of the array
@@ -250,7 +250,7 @@
 				if (filterCallback(currentItem)){
 					return currentItem;
 				}
-			};
+			}
 		},
 		inherits = helpers.inherits = function(extensions){
 			//Basic javascript inheritance based on the model created in Backbone.js
@@ -2466,7 +2466,10 @@
 		datasetFill : true,
 
 		//String - A legend template
-		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+
+		//Boolean - Whether the value of the plotlines should be considered when scaling the grid (not having this flag could result in not showing the plotline)
+		scalePlotLines: true
 
 	};
 
@@ -2486,6 +2489,17 @@
 					return (Math.pow(mouseX-this.x, 2) < Math.pow(this.radius + this.hitDetectionRadius,2));
 				}
 			});
+			
+			//Displays horizontal lines, like threashold to reach
+			this.plotLinesYAxis = [];
+			helpers.each(data.plotLinesYAxis, function(plotLineY) {
+				var plotLineYObject = {
+					label : plotLineY.label || null,
+					strokeColor : plotLineY.strokeColor,
+					value: plotLineY.value
+				};
+				this.plotLinesYAxis.push(plotLineYObject);
+			}, this);
 
 			this.datasets = [];
 
@@ -2564,6 +2578,9 @@
 				helpers.each(dataset.points,callback,this);
 			},this);
 		},
+		eachPlotLineY : function(callback){
+			helpers.each(this.plotLinesYAxis, callback, this);
+		},
 		getPointsAtEvent : function(e){
 			var pointsArray = [],
 				eventPosition = helpers.getRelativePosition(e);
@@ -2583,6 +2600,12 @@
 					values.push(point.value);
 				});
 
+				//If we scale including plotLines then we need to add these points sent to calculateScaleRange
+				if(self.options.scalePlotLines) {
+					self.eachPlotLineY(function(line) {
+						values.push(line.value);
+					});
+				}
 				return values;
 			};
 
@@ -2781,10 +2804,26 @@
 					point.draw();
 				});
 			},this);
+
+			// making sure that there are enough point to draw a Y plotLine (min 2)
+			if(this.datasets.length > 0 && this.datasets[0].points.length > 1) {
+				var numberOfPoints = this.datasets[0].points.length;
+
+				helpers.each(this.plotLinesYAxis,function(plotLineY){
+					var value = plotLineY.value;
+
+					//Draw the line between all the points
+					ctx.lineWidth = this.options.datasetStrokeWidth;
+					ctx.strokeStyle = plotLineY.strokeColor;
+					ctx.beginPath();
+					ctx.moveTo(this.scale.calculateX(0), this.scale.calculateY(value));
+					ctx.lineTo(this.scale.calculateX(numberOfPoints-1), this.scale.calculateY(value));
+					ctx.stroke();
+				},this);
+			}
+			
 		}
 	});
-
-
 }).call(this);
 (function(){
 	"use strict";

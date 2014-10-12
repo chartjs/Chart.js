@@ -10,7 +10,7 @@
   },
   "dependences": {},
   "devDependencies": {
-    "gulp": "3.5.x",
+    "gulp": "^3.8.8",
     "gulp-concat": "~2.1.x",
     "gulp-connect": "~2.0.5",
     "gulp-jshint": "~1.5.1",
