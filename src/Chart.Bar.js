@@ -34,7 +34,7 @@
 		//String - A legend template
 		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
 
-		//String - value of error bars: "none", "range", "stdev", "stderror"
+		//String - value of error bars: "none", "range", "stdev", "stderr"
 		error : "none",
 
 		//String - direction of the error bars. "Up", "down", or "both"

@@ -810,7 +810,7 @@
 			//return the standard deviation of an array of numbers
 			var sum = 0;
 			for (var x = 0; x < data.length; x++) {
-				sum = sum + Math.pow(values[x] - helpers.average(data), 2);
+				sum = sum + Math.pow(data[x] - helpers.average(data), 2);
 			}
 			return Math.sqrt(sum / (data.length - 1));
 		},
