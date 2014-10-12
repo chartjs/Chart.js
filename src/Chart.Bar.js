@@ -160,6 +160,7 @@
 			this.buildScale(data.labels);
 
 			this.BarClass.prototype.base = this.scale.endPoint;
+			this.ErrorClass.prototype.base = this.scale.endPoint;
 
 			this.eachBars(function(bar, index, datasetIndex){
 				helpers.extend(bar, {
@@ -171,9 +172,9 @@
 				if (bar.errorBar) {
 					helpers.extend(bar.errorBar, {
 						x : this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
-						yStart : this.scale.calculateY(bar.value),
-						yDown : this.scale.calculateY(bar.value - bar.errorBar.errorVal),
-						yUp : this.scale.calculateY(bar.value + bar.errorBar.errorVal),
+						y : this.scale.endPoint,
+						yDown : this.scale.endPoint,
+						yUp : this.scale.endPoint,
 						width: this.scale.calculateBarWidth(this.datasets.length) * this.options.errorCapWidth
 					});
 					bar.errorBar.save();
@@ -191,6 +192,7 @@
 
 			this.eachBars(function(bar){
 				bar.save();
+				bar.errorBar.save();
 			});
 			this.render();
 		},
@@ -307,6 +309,12 @@
 				y: this.scale.endPoint,
 				base : this.scale.endPoint
 			});
+			helpers.extend(this.ErrorClass.prototype,{
+				y: this.scale.endPoint,
+				base : this.scale.endPoint,
+				yDown : this.scale.endPoint,
+				yUp : this.scale.endPoint
+			})
 			var newScaleProps = helpers.extend({
 				height : this.chart.height,
 				width : this.chart.width
@@ -327,15 +335,17 @@
 					if (bar.hasValue()){
 						bar.base = this.scale.endPoint;
 						//Transition then draw
+						console.log(this.scale.calculateY(bar.value));
 						bar.transition({
 							x : this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
 							y : this.scale.calculateY(bar.value),
 							width : this.scale.calculateBarWidth(this.datasets.length)
 						}, easingDecimal).draw();
 						if (bar.errorBar) {
+							bar.errorBar.base = this.scale.endPoint;
 							bar.errorBar.transition({
 								x : this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
-								yStart : this.scale.calculateY(bar.value),
+								y : this.scale.calculateY(bar.value),
 								yDown : this.scale.calculateY(bar.value - bar.errorBar.errorVal),
 								yUp : this.scale.calculateY(bar.value + bar.errorBar.errorVal),
 								width: this.scale.calculateBarWidth(this.datasets.length) * this.options.errorCapWidth

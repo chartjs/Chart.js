@@ -1233,7 +1233,6 @@
 				rightX = this.x + halfWidth,
 				top = this.base - (this.base - this.y),
 				halfStroke = this.strokeWidth / 2;
-
 			// Canvas doesn't allow us to stroke inside the width so we can
 			// adjust the sizes to fit if we're setting a stroke on the line
 			if (this.showStroke){
@@ -1241,7 +1240,7 @@
 				rightX -= halfStroke;
 				top += halfStroke;
 			}
-
+			console.log(this.y);
 			ctx.beginPath();
 
 			ctx.fillStyle = this.fillColor;
@@ -1269,39 +1268,35 @@
 
 	Chart.ErrorBar = Chart.Rectangle.extend({
 		draw : function() {
-			console.log(this.errorDir);
+			var ctx = this.ctx,
 				halfWidth = this.width/2,
 				leftX = this.x - halfWidth,
 				rightX = this.x + halfWidth,
 				top = this.base - (this.base - this.yUp),
 				bottom = this.base - (this.base - this.yDown),
-				middle = this.base - (this.base - this.yStart)
-			if ( this.errorDir != "none" ) {
+				middle = this.base - (this.base - this.y)
+			if (this.errorDir != "none") {
 				//draw upper error bar
-				if ( this.errorDir != "down") {		
-					ctx.strokeStyle = config.errorStrokeWidth;
+				if (this.errorDir != "down") {		
+					ctx.strokeStyle = this.errorStrokeWidth;
 					ctx.beginPath();
-					ctx.moveTo(barOffset + barWidth/2, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
-					ctx.lineTo(barOffset + barWidth/2, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j] + data.datasets[i].error[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2))
+					ctx.moveTo(this.x, middle);
+					ctx.lineTo(this.x, top);
 					ctx.stroke();
 					ctx.beginPath();
-					var cap = (config.errorCapWidth * barWidth) || 1;
-					capOffset = (barWidth - cap)/2;
-					ctx.moveTo(barOffset + capOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j] + data.datasets[i].error[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
-					ctx.lineTo(barOffset + barWidth - capOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j] + data.datasets[i].error[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					ctx.moveTo(leftX, top);
+					ctx.lineTo(rightX, top);
 					ctx.stroke();
 				}			
 				//draw lower error bar
-				if (config.errorDir != "up") {						
+				if (this.errorDir != "up") {						
 					ctx.beginPath();
-					ctx.moveTo(barOffset + barWidth/2, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
-					ctx.lineTo(barOffset + barWidth/2, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j] - data.datasets[i].error[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2))
+					ctx.moveTo(this.x, middle);
+					ctx.lineTo(this.x, bottom);
 					ctx.stroke();
 					ctx.beginPath();
-					var cap = (config.errorCapWidth * barWidth) || 1;
-					capOffset = (barWidth - cap)/2;
-					ctx.moveTo(barOffset + capOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j] - data.datasets[i].error[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
-					ctx.lineTo(barOffset + barWidth - capOffset, xAxisPosY - animPc*calculateOffset(data.datasets[i].data[j] - data.datasets[i].error[j],calculatedScale,scaleHop)+(config.barStrokeWidth/2));
+					ctx.moveTo(leftX, bottom);
+					ctx.lineTo(rightX, bottom);
 					ctx.stroke();					
 				}
 			}
