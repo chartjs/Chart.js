@@ -44,7 +44,19 @@
 		datasetFill : true,
 
 		//String - A legend template
-		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+
+		//String - value of error bars. "None", "stdev", "stderr", or "range"
+		error : "none",
+
+		//Number - Ratio of error bar cap length to the diameter of the points.
+		errorCapWidth : 2,
+
+		//Number. Pixel width of the error bars
+		errorStrokeWidth : 1,
+
+		//String - direction of error bars. "Both", "up", or "down"
+		errorDir : "both",
 
 	};
 
@@ -53,6 +65,8 @@
 		name: "Line",
 		defaults : defaultConfig,
 		initialize:  function(data){
+			var options = this.options;
+
 			//Declare the extension of the default point, to cater for the options passed in to the constructor
 			this.PointClass = Chart.Point.extend({
 				strokeWidth : this.options.pointDotStrokeWidth,
@@ -65,6 +79,11 @@
 				}
 			});
 
+			this.ErrorClass = Chart.ErrorBar.extend({
+				errorDir : this.options.errorDir,
+				errorStrokeWidth : this.options.errorStrokeWidth,
+				ctx : this.chart.ctx
+			})
 			this.datasets = [];
 
 			//Set up tooltip events on the chart
@@ -98,9 +117,28 @@
 
 
 				helpers.each(dataset.data,function(dataPoint,index){
+					if (typeof dataPoint === "number") var mean = dataPoint;
+					else var mean = helpers.average(dataPoint);
+					//calculate the error bars, if we're using them
+					//be sure there's at least 2 values in dataPoint or we might get a
+					//fatal error
+					if (options.error === "stdev" && dataPoint.length > 1) {
+						var errorBar = new this.ErrorClass({ errorVal : helpers.stdev(dataPoint) });
+					} else if (options.error === "range" && dataPoint.length > 1) {
+						var errorBar = new this.ErrorClass({ errorVal : helpers.range(dataPoint) });
+					} else if (options.error === "stderr" && dataPoint.length > 1) {
+						var errorBar = new this.ErrorClass({ errorVal: helpers.stderr(dataPoint) });
+					} else {
+						var errorBar = false;
+					}
+					if (errorBar) {
+						errorBar.errorStrokeColor = dataset.errorStrokeColor || dataset.strokeColor;
+						errorBar.width = options.pointDotRadius * 2 * options.errorCapWidth;
+					}
 					//Add a new point for each piece of data, passing any required data to draw.
 					datasetObject.points.push(new this.PointClass({
-						value : dataPoint,
+						value : mean,
+						errorBar : errorBar || false,
 						label : data.labels[index],
 						datasetLabel: dataset.label,
 						strokeColor : dataset.pointStrokeColor,
@@ -111,7 +149,7 @@
 				},this);
 
 				this.buildScale(data.labels);
-
+				this.ErrorClass.prototype.base = this.scale.endPoint;
 
 				this.eachPoints(function(point, index){
 					helpers.extend(point, {
@@ -119,6 +157,15 @@
 						y: this.scale.endPoint
 					});
 					point.save();
+					if (point.errorBar) {
+						helpers.extend(point.errorBar, {
+							x : this.scale.calculateX(index),
+							y : this.scale.endPoint,
+							yUp : this.scale.endPoint,
+							yDown : this.scale.endPoint
+						})
+						point.errorBar.save();
+					}
 				}, this);
 
 			},this);
@@ -134,6 +181,7 @@
 			});
 			this.eachPoints(function(point){
 				point.save();
+				point.errorBar.save();
 			});
 			this.render();
 		},
@@ -276,6 +324,13 @@
 							y : this.scale.calculateY(point.value),
 							x : this.scale.calculateX(index)
 						}, easingDecimal);
+						if (point.errorBar) point.errorBar.transition({
+							x : this.scale.calculateX(index),
+							y : this.scale.calculateY(point.value),
+							yUp : this.scale.calculateY(point.value + point.errorBar.errorVal),
+							yDown : this.scale.calculateY(point.value - point.errorBar.errorVal),
+							width : point.errorBar.width,
+						}, easingDecimal);
 					}
 				},this);
 
@@ -356,6 +411,7 @@
 				//A little inefficient double looping, but better than the line
 				//lagging behind the point positions
 				helpers.each(pointsWithValues,function(point){
+					if (point.errorBar) point.errorBar.draw();
 					point.draw();
 				});
 			},this);
