@@ -331,7 +331,6 @@
 					if (bar.hasValue()){
 						bar.base = this.scale.endPoint;
 						//Transition then draw
-						console.log(this.scale.calculateY(bar.value));
 						bar.transition({
 							x : this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
 							y : this.scale.calculateY(bar.value),
