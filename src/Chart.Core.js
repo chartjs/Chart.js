@@ -1274,7 +1274,6 @@
 				top = this.base - (this.base - this.yUp),
 				bottom = this.base - (this.base - this.yDown),
 				middle = this.base - (this.base - this.y)
-			console.log(leftX);
 			ctx.strokeStyle = this.errorStrokeColor;
 			ctx.lineWidth = this.errorStrokeWidth;
 			//draw upper error bar

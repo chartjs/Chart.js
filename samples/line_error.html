@@ -21,6 +21,7 @@
 					label: "My First dataset",
 					fillColor : "rgba(220,220,220,0.2)",
 					strokeColor : "rgba(220,220,220,1)",
+					errorStrokeColor : "#32CD99",
 					pointColor : "rgba(220,220,220,1)",
 					pointStrokeColor : "#fff",
 					pointHighlightFill : "#fff",
@@ -45,7 +46,7 @@
 	window.onload = function(){
 		var ctx = document.getElementById("canvas").getContext("2d");
 		window.myLine = new Chart(ctx).Line(lineChartData, {
-			responsive: true
+			responsive: true, error: "range"
 		});
 	}
 
