@@ -2,8 +2,7 @@
 <html>
 	<head>
 		<title>Line Chart with error bars</title>
-		<script src="../src/Chart.Core.js"></script>
-		<script src="../src/Chart.Line.js"></script>
+		<script src="../Chart.js"></script>
 		<meta name = "viewport" content = "initial-scale = 1, user-scalable = no">
 		<style>
 			canvas{
@@ -22,9 +21,8 @@
 				{
 					fillColor : "rgba(220,220,220,0.5)",
 					strokeColor : "rgba(0,0,0,1)",
-					errorStrokeColor: "#f00",
 					pointColor : "rgba(0,0,0,1)",
-					pointStrokeColor : "#333",
+					pointStrokeColor : "#fff",
 					data : [
 						[],
 						[30.33, 29.33, 36.5, 29.5, 27.0],
@@ -47,7 +45,6 @@
 	
 		options = {
 			error: "range",
-			errorStrokeWidth: 1,
 			scaleOverride: true,
 			scaleStartValue: 0,
 			scaleSteps: 6,
@@ -58,7 +55,7 @@
 			animation : true
 		}
 
-	var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Line(lineChartData, options);
+	var myLine = new ChartCalculator(document.getElementById("canvas").getContext("2d")).Line(lineChartData, options);
 	
 	</script>
 	</body>
