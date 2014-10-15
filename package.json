@@ -20,5 +20,8 @@
     "gulp-util": "~2.2.x",
     "inquirer": "^0.5.1",
     "semver": "^3.0.1"
+  },
+  "spm": {
+    "main": "Chart.js"
   }
 }
