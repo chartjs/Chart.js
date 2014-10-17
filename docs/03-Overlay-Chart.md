@@ -31,6 +31,7 @@ var data = {
 			pointStrokeColor: "#fff",
 			pointHighlightFill: "#fff",
 			pointHighlightStroke: "rgba(220,220,220,1)",
+			showTooltip: true, //optional default is true
 			data: [65, 59, 80, 81, 56, 55, 40]
 		},
 		{
@@ -40,6 +41,7 @@ var data = {
 			strokeColor: "rgba(151,187,205,0.8)",
 			highlightFill: "rgba(151,187,205,0.75)",
 			highlightStroke: "rgba(151,187,205,1)",
+			showTooltip: true, //optional default is true
 			data: [28, 48, 40, 19, 86, 27, 90]
 		}
 	]
@@ -47,6 +49,7 @@ var data = {
 ```
 The overlay chart has the a very similar data structure to the line chart and bar chart, and has an array of datasets, each with colours and an array of data. Again, colours are in CSS format. The only extra option that needs to be provided is `type` which cn be either `line` or `bar`. Of no type is provided the chart will default to bars
 We have an array of labels too for display. In the example, we are showing the same data as the previous line chart example.
+For fine control of the displaying of tooltips ```showTooltip``` can be passed as either true or flase (default is true). If flase is passed that datasets tooltip will not be dispayed.
 
 The label key on each dataset is optional, and can be used when generating a scale for the chart.
 
