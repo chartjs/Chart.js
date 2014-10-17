@@ -930,7 +930,7 @@
                                 yMin;
                             helpers.each(this.datasets, function(dataset) {
                                 dataCollection = dataset.points || dataset.bars || dataset.segments;
-                                if (dataCollection[dataIndex] && dataCollection[dataIndex].hasValue()) {
+                                if (dataCollection[dataIndex] && dataCollection[dataIndex].hasValue() && (dataCollection[dataIndex].showTooltip === undefined || dataCollection[dataIndex].showTooltip)) {
                                     Elements.push(dataCollection[dataIndex]);
                                 }
                             });

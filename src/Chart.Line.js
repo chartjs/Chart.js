@@ -87,13 +87,13 @@
 
 			//Iterate through each of the datasets, and build this into a property of the chart
 			helpers.each(data.datasets,function(dataset){
-
 				var datasetObject = {
 					label : dataset.label || null,
 					fillColor : dataset.fillColor,
 					strokeColor : dataset.strokeColor,
 					pointColor : dataset.pointColor,
 					pointStrokeColor : dataset.pointStrokeColor,
+					showTooltip: dataset.showTooltip,
 					points : []
 				};
 
@@ -103,8 +103,10 @@
 				helpers.each(dataset.data,function(dataPoint,index){
 					//Add a new point for each piece of data, passing any required data to draw.
 					datasetObject.points.push(new this.PointClass({
+
 						//if datapoint is null add a flag to ignore this point
 						ignore: dataPoint === null,
+						showTooltip:dataset.showTooltip === undefined?true:dataset.showTooltip,
 						value : dataPoint,
 						label : data.labels[index],
 						datasetLabel: dataset.label,
@@ -152,7 +154,7 @@
 				eventPosition = helpers.getRelativePosition(e);
 			helpers.each(this.datasets,function(dataset){
 				helpers.each(dataset.points,function(point){
-					if (point.inRange(eventPosition.x,eventPosition.y)) pointsArray.push(point);
+					if (point.inRange(eventPosition.x,eventPosition.y) && point.showTooltip) pointsArray.push(point);
 				});
 			},this);
 			return pointsArray;

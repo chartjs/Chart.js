@@ -103,6 +103,7 @@
                     label: dataset.label || null,
                     fillColor: dataset.fillColor,
                     strokeColor: dataset.strokeColor,
+                    showTooltip: dataset.showTooltip,
                     bars: []
                 };
 
@@ -112,10 +113,12 @@
                     //Add a new point for each piece of data, passing any required data to draw.
                     datasetObject.bars.push(new this.BarClass({
                         value: dataPoint,
+                        showTooltip:dataset.showTooltip === undefined?true:dataset.showTooltip,
                         label: data.labels[index],
                         datasetLabel: dataset.label,
                         strokeColor: dataset.strokeColor,
                         fillColor: dataset.fillColor,
+
                         highlightFill: dataset.highlightFill || dataset.fillColor,
                         highlightStroke: dataset.highlightStroke || dataset.strokeColor
                     }));
@@ -165,7 +168,7 @@
 
             for (var datasetIndex = 0; datasetIndex < this.datasets.length; datasetIndex++) {
                 for (barIndex = 0; barIndex < this.datasets[datasetIndex].bars.length; barIndex++) {
-                    if (this.datasets[datasetIndex].bars[barIndex].inRange(eventPosition.x, eventPosition.y)) {
+                    if (this.datasets[datasetIndex].bars[barIndex].inRange(eventPosition.x, eventPosition.y)&& this.datasets[datasetIndex].bars[barIndex].showTooltip) {
                         helpers.each(this.datasets, datasetIterator);
                         return barsArray;
                     }
