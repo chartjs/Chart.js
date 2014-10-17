@@ -102,6 +102,7 @@
 					helpers.each(dataset.data,function(dataPoint,index){
 						//Add a new point for each piece of data, passing any required data to draw.
 						datasetObject.points.push(new this.PointClass({
+							ignore: dataPoint === null,
 							value : dataPoint,
 							label : data.labels[index],
 							datasetLabel: dataset.label,
