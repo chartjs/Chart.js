@@ -7,7 +7,8 @@
  - Template interpolator can be changed from default `<%` `%>` to what ever you want
  - New chart - overlay chart - for combing both bar and line charts on the same chart
  - new chart options for pie and dougnut to allow the creation of semi circle (or any size) charts drawn at user defined starting angle ()
- - line and overlay charts can handle sparse dataset, just include null in the dataset where no data is avliable, this can be seen in the samples
+ - line and overlay charts can handle sparse datasets, just include null in the dataset where no data is avaliable, this can be seen in the samples.
+ - line,bar and overlay charts can have the tooltip display finely tuned. For each dataset an option called showTooltip can be passed to turn off the displaying off tooltips for that one dataset but not the whole chart
  
 ## Documentation
 
