@@ -820,7 +820,9 @@
 		},
 		stop : function(){
 			// Stops any current animation loop occuring
-			helpers.cancelAnimFrame.call(root, this.animationFrame);
+			if(this.animationFrame){
+				helpers.cancelAnimFrame.call(root, this.animationFrame);
+			}
 			return this;
 		},
 		resize : function(callback){
