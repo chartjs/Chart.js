@@ -905,7 +905,7 @@
 
 					for (var i = this.datasets.length - 1; i >= 0; i--) {
 						dataArray = this.datasets[i].points || this.datasets[i].bars || this.datasets[i].segments;
-						dataIndex = indexOf(dataArray, ChartElements[0]);
+						dataIndex = indexOf(dataArray, ChartElements[i]);
 						if (dataIndex !== -1){
 							break;
 						}
