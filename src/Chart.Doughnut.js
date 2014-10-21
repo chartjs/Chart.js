@@ -152,7 +152,7 @@
 				value : segment.value,
 				outerRadius : (this.options.animateScale) ? 0 : this.outerRadius,
 				innerRadius : (this.options.animateScale) ? 0 : (this.outerRadius/100) * this.options.percentageInnerCutout,
-				fillColor : segment.color || hue(index, this.segments.length),
+				fillColor : segment.color,
 				highlightColor : segment.highlight || segment.color,
 				showStroke : this.options.segmentShowStroke,
 				strokeWidth : this.options.segmentStrokeWidth,
