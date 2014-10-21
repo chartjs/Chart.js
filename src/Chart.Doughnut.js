@@ -36,6 +36,14 @@
 
 	};
 
+	function hue(part, total) {
+		var h, s, v, c, x, m,
+			r = '00',
+			g = '00',
+			b = '00';
+		
+		return '#' + r + g + b;
+	}
 
 	Chart.Type.extend({
 		//Passing in a name registers this chart in the Chart namespace
@@ -94,7 +102,7 @@
 				value : segment.value,
 				outerRadius : (this.options.animateScale) ? 0 : this.outerRadius,
 				innerRadius : (this.options.animateScale) ? 0 : (this.outerRadius/100) * this.options.percentageInnerCutout,
-				fillColor : segment.color,
+				fillColor : segment.color || hue(index, this.segments.length),
 				highlightColor : segment.highlight || segment.color,
 				showStroke : this.options.segmentShowStroke,
 				strokeWidth : this.options.segmentStrokeWidth,
