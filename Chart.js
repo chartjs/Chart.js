@@ -903,9 +903,15 @@
 					var dataArray,
 						dataIndex;
 
+					for (var i = ChartElements.length - 1; i >= 0; i--) {
+						if (ChartElements[i] === undefined) {
+							ChartElements.splice(i, 1);
+						}
+					}
+
 					for (var i = this.datasets.length - 1; i >= 0; i--) {
 						dataArray = this.datasets[i].points || this.datasets[i].bars || this.datasets[i].segments;
-						dataIndex = indexOf(dataArray, ChartElements[i]);
+						dataIndex = indexOf(dataArray, ChartElements[0]);
 						if (dataIndex !== -1){
 							break;
 						}
