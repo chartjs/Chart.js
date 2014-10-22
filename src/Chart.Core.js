@@ -476,8 +476,10 @@
 					"');}return p.join('');"
 				);
 
-				// Provide some basic currying to the user
-				return data ? fn( data ) : fn;
+		        var tempData = { label: data.label, datasetLabel: data.datasetLabel, value: data.customLabel ? data.customLabel : parseInt(data.value).toLocaleString() };
+
+		        // Provide some basic currying to the user
+		        return data ? fn(tempData) : fn;
 			}
 			return tmpl(templateString,valuesObject);
 		},

@@ -114,7 +114,7 @@
 
 				helpers.each(dataset.data,function(dataPoint,index){
 					//Add a new point for each piece of data, passing any required data to draw.
-					datasetObject.points.push(new this.PointClass({
+                    var _point = new this.PointClass({
 						value : dataPoint,
 						label : data.labels[index],
 						datasetLabel: dataset.label,
@@ -122,7 +122,13 @@
 						fillColor : dataset.pointColor,
 						highlightFill : dataset.pointHighlightFill || dataset.pointColor,
 						highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor
-					}));
+                    });
+
+                    if (!helpers.isNumber(dataPoint) && dataPoint != null) {
+                        _point.customLabel = dataPoint;
+                        _point.value = null;
+                    }
+                    datasetObject.points.push(_point);
 				},this);
 
 				this.buildScale(data.labels);
