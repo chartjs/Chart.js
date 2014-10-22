@@ -143,6 +143,9 @@
 			// Number - Pixel offset from point x to tooltip edge
 			tooltipXOffset: 10,
 
+            // string - Color of the shadow effect on the tooltip. Null if no shadow desired
+            tooltipShadowColor: null,
+
 			// String - Template string for single tooltips
 			tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",
 
@@ -965,6 +968,7 @@
 						fontFamily: this.options.tooltipFontFamily,
 						fontStyle: this.options.tooltipFontStyle,
 						fontSize: this.options.tooltipFontSize,
+                        shadowColor: this.options.tooltipShadowColor,
 						titleTextColor: this.options.tooltipTitleFontColor,
 						titleFontFamily: this.options.tooltipTitleFontFamily,
 						titleFontStyle: this.options.tooltipTitleFontStyle,
@@ -991,6 +995,7 @@
 							fontFamily: this.options.tooltipFontFamily,
 							fontStyle: this.options.tooltipFontStyle,
 							fontSize: this.options.tooltipFontSize,
+                            shadowColor: this.options.tooltipShadowColor,
 							caretHeight: this.options.tooltipCaretSize,
 							cornerRadius: this.options.tooltipCornerRadius,
 							text: template(this.options.tooltipTemplate, Element),
@@ -1272,6 +1277,12 @@
 
 			ctx.fillStyle = this.fillColor;
 
+            if (this.shadowColor) {
+                ctx.save();
+                ctx.shadowColor = this.shadowColor;
+                ctx.shadowBlur = 4;
+            }
+
 			switch(this.yAlign)
 			{
 			case "above":
@@ -1295,6 +1306,8 @@
 				break;
 			}
 
+ 
+
 			switch(this.xAlign)
 			{
 			case "left":
@@ -1308,6 +1321,8 @@
 			drawRoundedRectangle(ctx,tooltipX,tooltipY,tooltipWidth,tooltipRectHeight,this.cornerRadius);
 
 			ctx.fill();
+            if (this.shadowColor)
+                ctx.restore();
 
 			ctx.fillStyle = this.textColor;
 			ctx.textAlign = "center";
@@ -1351,6 +1366,13 @@
 				this.x += this.xOffset;
 			}
 
+            // For long labels on tooltips, ensures they're not cut off
+            if (this.x < 0) {
+                this.x = this.xOffset;
+            }
+            if (this.x + this.width > this.chart.width) {
+                this.x = this.chart.width - this.width - this.xOffset;
+            }
 
 		},
 		getLineHeight : function(index){
@@ -1369,8 +1391,19 @@
 			drawRoundedRectangle(this.ctx,this.x,this.y - this.height/2,this.width,this.height,this.cornerRadius);
 			var ctx = this.ctx;
 			ctx.fillStyle = this.fillColor;
+
+            if (this.shadowColor) {
+                ctx.save();
+                ctx.shadowColor = this.shadowColor;
+                ctx.shadowBlur = 4;
 			ctx.fill();
 			ctx.closePath();
+                ctx.restore();
+            }
+            else {
+                ctx.fill();
+                ctx.closePath();
+            }
 
 			ctx.textAlign = "left";
 			ctx.textBaseline = "middle";
