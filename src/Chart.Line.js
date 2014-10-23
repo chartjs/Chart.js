@@ -142,7 +142,7 @@
 						highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor
                     });
 
-                    if (!helpers.isNumber(dataPoint) && dataPoint != null) {
+                    if (!helpers.isNumber(dataPoint) && dataPoint !== null) {
                         _point.customLabel = dataPoint;
                         _point.value = null;
                     }
