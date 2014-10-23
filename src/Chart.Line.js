@@ -44,22 +44,7 @@
 		datasetFill : true,
 
 		//String - A legend template
-		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
-		
-		// String - Value to display as a header above the Y axis
-		yScaleLabel: null,
-
-		// String - Scale header label font declaration for the scale label
-		yScaleLabelFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-
-		// Number - Scale header label font size in pixels
-		yScaleLabelFontSize: 12,
-
-		// String - Scale header label font weight style
-		yScaleLabelFontStyle: "normal",
-
-		// String - Scale header label font colour
-		yScaleLabelFontColor: "#666"
+		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
 
 	};
 

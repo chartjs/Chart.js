@@ -92,8 +92,8 @@
 			// Boolean - whether or not the chart should be responsive and resize when the browser does.
 			responsive: false,
 
-                        // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
-                        maintainAspectRatio: true,
+            // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+            maintainAspectRatio: true,
 
 			// Boolean - Determines whether to draw tooltips on the canvas or not - attaches events to touchmove & mousemove
 			showTooltips: true,
@@ -151,6 +151,21 @@
 
 			// String - Colour behind the legend colour block
 			multiTooltipKeyBackground: '#fff',
+			
+			// String - Value to display as a header above the Y axis
+			yScaleLabel: null,
+
+			// String - Scale header label font declaration for the scale label
+			yScaleLabelFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+
+			// Number - Scale header label font size in pixels
+			yScaleLabelFontSize: 12,
+
+			// String - Scale header label font weight style
+			yScaleLabelFontStyle: "normal",
+
+			// String - Scale header label font colour
+			yScaleLabelFontColor: "#666",
 
 			// Function - Will fire on animation progression.
 			onAnimationProgress: function(){},
