@@ -144,7 +144,13 @@
 			tooltipXOffset: 10,
 
             // string - Color of the shadow effect on the tooltip. Null if no shadow desired
-            tooltipShadowColor: null,
+			tooltipShadowColor: null,
+
+            // Boolean - True to only display tooltips for data points in the area of cursor
+			tooltipCursorSensitive: false,
+
+            // number - The number of pixels within which to display tooltips for the approiate data point(s).
+            tooltipCursorHitPixels: 10,
 
 			// String - Template string for single tooltips
 			tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",
@@ -900,14 +906,26 @@
 				this.activeElements = ChartElements;
 			}
 			this.draw();
-			if (ChartElements.length > 0){
+
+			if (ChartElements.length > 0) {
+                // Only show the datasets that have been selected (within mouse range)
+			    var datasetsToShow = [];
+			    helpers.each(this.datasets, function (ds) {
+			        helpers.each(ChartElements, function (el) {
+			            if (ds.label === el.datasetLabel) {
+			                datasetsToShow.push(ds);
+			                return false;
+			            }
+			        });
+			    });
+
 				// If we have multiple datasets, show a MultiTooltip for all of the data points at that index
-				if (this.datasets && this.datasets.length > 1) {
+				if (datasetsToShow && datasetsToShow.length > 0) {
 					var dataArray,
 						dataIndex;
 
-					for (var i = this.datasets.length - 1; i >= 0; i--) {
-						dataArray = this.datasets[i].points || this.datasets[i].bars || this.datasets[i].segments;
+					for (var i = datasetsToShow.length - 1; i >= 0; i--) {
+					    dataArray = datasetsToShow[i].points || datasetsToShow[i].bars || datasetsToShow.segments;
 						dataIndex = indexOf(dataArray, ChartElements[0]);
 						if (dataIndex !== -1){
 							break;
@@ -926,7 +944,7 @@
 								yMax,
 								xMin,
 								yMin;
-							helpers.each(this.datasets, function(dataset){
+							helpers.each(datasetsToShow, function (dataset) {
 								dataCollection = dataset.points || dataset.bars || dataset.segments;
 								if (dataCollection[dataIndex] && dataCollection[dataIndex].hasValue()){
 									Elements.push(dataCollection[dataIndex]);
@@ -970,7 +988,7 @@
 						fontFamily: this.options.tooltipFontFamily,
 						fontStyle: this.options.tooltipFontStyle,
 						fontSize: this.options.tooltipFontSize,
-                        shadowColor: this.options.tooltipShadowColor,
+						shadowColor: this.options.tooltipShadowColor,
 						titleTextColor: this.options.tooltipTitleFontColor,
 						titleFontFamily: this.options.tooltipTitleFontFamily,
 						titleFontStyle: this.options.tooltipTitleFontStyle,
@@ -997,7 +1015,7 @@
 							fontFamily: this.options.tooltipFontFamily,
 							fontStyle: this.options.tooltipFontStyle,
 							fontSize: this.options.tooltipFontSize,
-                            shadowColor: this.options.tooltipShadowColor,
+							shadowColor: this.options.tooltipShadowColor,
 							caretHeight: this.options.tooltipCaretSize,
 							cornerRadius: this.options.tooltipCornerRadius,
 							text: template(this.options.tooltipTemplate, Element),
@@ -1096,7 +1114,7 @@
 			};
 		},
 		hasValue: function(){
-			return isNumber(this.value);
+		    return isNumber(this.value) || this.customLabel;
 		}
 	});
 
@@ -1353,12 +1371,13 @@
 
 			var halfHeight = this.height/2;
 
+			var shadowBuffer = this.shadowColor ? 4 : 0;
 			//Check to ensure the height will fit on the canvas
 			//The three is to buffer form the very
-			if (this.y - halfHeight < 0 ){
-				this.y = halfHeight;
-			} else if (this.y + halfHeight > this.chart.height){
-				this.y = this.chart.height - halfHeight;
+			if (this.y - halfHeight - shadowBuffer < 0 ){
+				this.y = halfHeight + shadowBuffer;
+			} else if (this.y + halfHeight + shadowBuffer > this.chart.height){
+				this.y = this.chart.height - halfHeight - shadowBuffer;
 			}
 
 			//Decide whether to align left or right based on position on canvas
