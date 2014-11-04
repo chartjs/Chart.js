@@ -32,7 +32,19 @@
 		barDatasetSpacing : 1,
 
 		//String - A legend template
-		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+
+		//String - value of error bars: "none", "range", "stdev", "stderr"
+		error : "none",
+
+		//String - direction of the error bars. "Up", "down", or "both"
+		errorDir : "both",
+
+		//Number - stroke width of the error bars
+		errorStrokeWidth : 1,
+
+		//Number - ratio of the width of the error bar caps to the width of the bar
+		errorCapWidth : 0.75,
 
 	};
 
@@ -91,6 +103,12 @@
 				ctx : this.chart.ctx
 			});
 
+			this.ErrorClass = Chart.ErrorBar.extend({
+				errorDir : this.options.errorDir,
+				errorStrokeWidth : this.options.errorStrokeWidth,
+				ctx : this.chart.ctx
+			})
+
 			//Iterate through each of the datasets, and build this into a property of the chart
 			helpers.each(data.datasets,function(dataset,datasetIndex){
 
@@ -104,9 +122,25 @@
 				this.datasets.push(datasetObject);
 
 				helpers.each(dataset.data,function(dataPoint,index){
+					if (typeof dataPoint === "number") var mean = dataPoint;
+					else var mean = helpers.average(dataPoint);
+					//calculate the error bars, if we're using them
+					//be sure there's at least 2 values in dataPoint or we might get a
+					//fatal error
+					if (options.error === "stdev" && dataPoint.length > 1) {
+						var errorBar = new this.ErrorClass({ errorVal : helpers.stdev(dataPoint) });
+					} else if (options.error === "range" && dataPoint.length > 1) {
+						var errorBar = new this.ErrorClass({ errorVal : helpers.range(dataPoint) });
+					} else if (options.error === "stderr" && dataPoint.length > 1) {
+						var errorBar = new this.ErrorClass({ errorVal: helpers.stderr(dataPoint) });
+					} else {
+						var errorBar = false;
+					}
+					if (errorBar) errorBar.errorStrokeColor = dataset.errorStrokeColor || dataset.strokeColor;
 					//Add a new point for each piece of data, passing any required data to draw.
 					datasetObject.bars.push(new this.BarClass({
-						value : dataPoint,
+						value : mean,
+						errorBar : errorBar || false,
 						label : data.labels[index],
 						datasetLabel: dataset.label,
 						strokeColor : dataset.strokeColor,
@@ -114,6 +148,7 @@
 						highlightFill : dataset.highlightFill || dataset.fillColor,
 						highlightStroke : dataset.highlightStroke || dataset.strokeColor
 					}));
+
 				},this);
 
 			},this);
@@ -121,6 +156,7 @@
 			this.buildScale(data.labels);
 
 			this.BarClass.prototype.base = this.scale.endPoint;
+			this.ErrorClass.prototype.base = this.scale.endPoint;
 
 			this.eachBars(function(bar, index, datasetIndex){
 				helpers.extend(bar, {
@@ -129,6 +165,16 @@
 					y: this.scale.endPoint
 				});
 				bar.save();
+				if (bar.errorBar) {
+					helpers.extend(bar.errorBar, {
+						x : this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
+						y : this.scale.endPoint,
+						yDown : this.scale.endPoint,
+						yUp : this.scale.endPoint,
+						width: this.scale.calculateBarWidth(this.datasets.length) * this.options.errorCapWidth
+					});
+					bar.errorBar.save();
+				}
 			}, this);
 
 			this.render();
@@ -142,6 +188,7 @@
 
 			this.eachBars(function(bar){
 				bar.save();
+				bar.errorBar.save();
 			});
 			this.render();
 		},
@@ -258,6 +305,12 @@
 				y: this.scale.endPoint,
 				base : this.scale.endPoint
 			});
+			helpers.extend(this.ErrorClass.prototype,{
+				y: this.scale.endPoint,
+				base : this.scale.endPoint,
+				yDown : this.scale.endPoint,
+				yUp : this.scale.endPoint
+			})
 			var newScaleProps = helpers.extend({
 				height : this.chart.height,
 				width : this.chart.width
@@ -283,6 +336,16 @@
 							y : this.scale.calculateY(bar.value),
 							width : this.scale.calculateBarWidth(this.datasets.length)
 						}, easingDecimal).draw();
+						if (bar.errorBar) {
+							bar.errorBar.base = this.scale.endPoint;
+							bar.errorBar.transition({
+								x : this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
+								y : this.scale.calculateY(bar.value),
+								yDown : this.scale.calculateY(bar.value - bar.errorBar.errorVal),
+								yUp : this.scale.calculateY(bar.value + bar.errorBar.errorVal),
+								width: this.scale.calculateBarWidth(this.datasets.length) * this.options.errorCapWidth
+							}, easingDecimal).draw();
+						}
 					}
 				},this);
 
