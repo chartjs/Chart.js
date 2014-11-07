@@ -238,7 +238,7 @@
 				if (filterCallback(currentItem)){
 					return currentItem;
 				}
-			};
+			}
 		},
 		findPreviousWhere = helpers.findPreviousWhere = function(arrayToSearch, filterCallback, startIndex){
 			// Default to end of the array
@@ -250,7 +250,7 @@
 				if (filterCallback(currentItem)){
 					return currentItem;
 				}
-			};
+			}
 		},
 		inherits = helpers.inherits = function(extensions){
 			//Basic javascript inheritance based on the model created in Backbone.js
@@ -405,7 +405,11 @@
 					//If user has declared ints only, and the step value isn't a decimal
 					if (integersOnly && rangeOrderOfMagnitude >= 0){
 						//If the user has said integers only, we need to check that making the scale more granular wouldn't make it a float
-						if(stepValue/2 % 1 === 0){
+						if((numberOfSteps * 5) < maxSteps && stepValue/5 % 1 === 0){  // If we have even more space, let's make even more steps
+							stepValue /=5;
+							numberOfSteps = Math.round(graphRange/stepValue);
+						}
+						else if(stepValue/2 % 1 === 0){
 							stepValue /=2;
 							numberOfSteps = Math.round(graphRange/stepValue);
 						}
@@ -427,6 +431,20 @@
 				numberOfSteps = minSteps;
 				stepValue = graphRange / numberOfSteps;
 			}
+			
+			// Drop unnecessary steps
+			if(!startFromZero) {
+				while(minValue > graphMin + stepValue) {
+					numberOfSteps--;
+					graphMin += stepValue;
+				}
+			}
+
+			while(maxValue < graphMax - stepValue) {
+				numberOfSteps--;
+				graphMax -= stepValue;
+			}
+
 
 			return {
 				steps : numberOfSteps,
