@@ -789,7 +789,7 @@
 			ctx.lineTo(x, y + radius);
 			ctx.quadraticCurveTo(x, y, x + radius, y);
 			ctx.closePath();
-		}
+		};
 
 
 	//Store a reference to each instance - allowing us to globally resize chart instances on window resize.
@@ -1205,6 +1205,7 @@
 				rightX = this.x + halfWidth,
 				top = this.base - (this.base - this.y),
 				halfStroke = this.strokeWidth / 2;
+
 			// Canvas doesn't allow us to stroke inside the width so we can
 			// adjust the sizes to fit if we're setting a stroke on the line
 			if (this.showStroke){
@@ -1212,6 +1213,7 @@
 				rightX -= halfStroke;
 				top += halfStroke;
 			}
+
 			ctx.beginPath();
 
 			ctx.fillStyle = this.fillColor;
@@ -1236,8 +1238,6 @@
 			return (chartX >= this.x - this.width/2 && chartX <= this.x + this.width/2) && (chartY >= this.y && chartY <= this.base);
 		}
 	});
-
-
 
 	Chart.Tooltip = Chart.Element.extend({
 		draw : function(){
