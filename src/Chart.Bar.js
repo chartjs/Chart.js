@@ -34,9 +34,6 @@
 		//String - A legend template
 		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
 
-		//String - value of error bars: "none", "range", "stdev", "stderr"
-		error : "none",
-
 		//String - direction of the error bars. "Up", "down", or "both"
 		errorDir : "both",
 
@@ -103,11 +100,15 @@
 				ctx : this.chart.ctx
 			});
 
-			this.ErrorClass = Chart.ErrorBar.extend({
-				errorDir : this.options.errorDir,
-				errorStrokeWidth : this.options.errorStrokeWidth,
-				ctx : this.chart.ctx
-			})
+			if (typeof Chart.ErrorBar !== 'undefined') {
+				this.ErrorClass = Chart.ErrorBar.extend({
+					errorDir : this.options.errorDir,
+					errorStrokeWidth : this.options.errorStrokeWidth,
+					ctx : this.chart.ctx
+				});
+			} else {
+				this.ErrorClass = false;
+			}
 
 			//Iterate through each of the datasets, and build this into a property of the chart
 			helpers.each(data.datasets,function(dataset,datasetIndex){
@@ -122,24 +123,17 @@
 				this.datasets.push(datasetObject);
 
 				helpers.each(dataset.data,function(dataPoint,index){
-					if (typeof dataPoint === "number") var mean = dataPoint;
-					else var mean = helpers.average(dataPoint);
-					//calculate the error bars, if we're using them
-					//be sure there's at least 2 values in dataPoint or we might get a
-					//fatal error
-					if (options.error === "stdev" && dataPoint.length > 1) {
-						var errorBar = new this.ErrorClass({ errorVal : helpers.stdev(dataPoint) });
-					} else if (options.error === "range" && dataPoint.length > 1) {
-						var errorBar = new this.ErrorClass({ errorVal : helpers.range(dataPoint) });
-					} else if (options.error === "stderr" && dataPoint.length > 1) {
-						var errorBar = new this.ErrorClass({ errorVal: helpers.stderr(dataPoint) });
+					if (typeof dataset.error !== 'undefined' && this.ErrorClass) {
+						var errorBar = new this.ErrorClass({
+							errorVal : dataset.error[index],
+							errorStrokeColor : dataset.errorStrokeColor || dataset.strokeColor
+						})
 					} else {
 						var errorBar = false;
 					}
-					if (errorBar) errorBar.errorStrokeColor = dataset.errorStrokeColor || dataset.strokeColor;
 					//Add a new point for each piece of data, passing any required data to draw.
 					datasetObject.bars.push(new this.BarClass({
-						value : mean,
+						value : dataPoint,
 						errorBar : errorBar || false,
 						label : data.labels[index],
 						datasetLabel: dataset.label,
@@ -156,7 +150,7 @@
 			this.buildScale(data.labels);
 
 			this.BarClass.prototype.base = this.scale.endPoint;
-			this.ErrorClass.prototype.base = this.scale.endPoint;
+			if (Chart.ErrorBar) this.ErrorClass.prototype.base = this.scale.endPoint;
 
 			this.eachBars(function(bar, index, datasetIndex){
 				helpers.extend(bar, {

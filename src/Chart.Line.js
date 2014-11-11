@@ -46,11 +46,8 @@
 		//String - A legend template
 		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
 
-		//String - value of error bars. "None", "stdev", "stderr", or "range"
-		error : "none",
-
 		//Number - Ratio of error bar cap length to the diameter of the points.
-		errorCapWidth : 2,
+		errorCapWidth : 2.5,
 
 		//Number. Pixel width of the error bars
 		errorStrokeWidth : 1,
@@ -79,11 +76,16 @@
 				}
 			});
 
-			this.ErrorClass = Chart.ErrorBar.extend({
-				errorDir : this.options.errorDir,
-				errorStrokeWidth : this.options.errorStrokeWidth,
-				ctx : this.chart.ctx
-			})
+			if (typeof Chart.ErrorBar !== 'undefined') {
+				this.ErrorClass = Chart.ErrorBar.extend({
+					errorDir : this.options.errorDir,
+					errorStrokeWidth : this.options.errorStrokeWidth,
+					ctx : this.chart.ctx
+				})
+			} else {
+				this.ErrorClass = false;
+			}
+
 			this.datasets = [];
 
 			//Set up tooltip events on the chart
@@ -117,27 +119,17 @@
 
 
 				helpers.each(dataset.data,function(dataPoint,index){
-					if (typeof dataPoint === "number") var mean = dataPoint;
-					else var mean = helpers.average(dataPoint);
-					//calculate the error bars, if we're using them
-					//be sure there's at least 2 values in dataPoint or we might get a
-					//fatal error
-					if (options.error === "stdev" && dataPoint.length > 1) {
-						var errorBar = new this.ErrorClass({ errorVal : helpers.stdev(dataPoint) });
-					} else if (options.error === "range" && dataPoint.length > 1) {
-						var errorBar = new this.ErrorClass({ errorVal : helpers.range(dataPoint) });
-					} else if (options.error === "stderr" && dataPoint.length > 1) {
-						var errorBar = new this.ErrorClass({ errorVal: helpers.stderr(dataPoint) });
+					if (typeof dataset.error !== 'undefined' && this.ErrorClass) {
+						var errorBar = new this.ErrorClass({
+							errorVal : dataset.error[index],
+							errorStrokeColor : dataset.errorStrokeColor || dataset.strokeColor
+						})
 					} else {
 						var errorBar = false;
 					}
-					if (errorBar) {
-						errorBar.errorStrokeColor = dataset.errorStrokeColor || dataset.strokeColor;
-						errorBar.width = options.pointDotRadius * 2 * options.errorCapWidth;
-					}
 					//Add a new point for each piece of data, passing any required data to draw.
 					datasetObject.points.push(new this.PointClass({
-						value : mean,
+						value : dataPoint,
 						errorBar : errorBar || false,
 						label : data.labels[index],
 						datasetLabel: dataset.label,
@@ -149,7 +141,7 @@
 				},this);
 
 				this.buildScale(data.labels);
-				this.ErrorClass.prototype.base = this.scale.endPoint;
+				if (this.ErrorClass) this.ErrorClass.prototype.base = this.scale.endPoint;
 
 				this.eachPoints(function(point, index){
 					helpers.extend(point, {
@@ -162,7 +154,8 @@
 							x : this.scale.calculateX(index),
 							y : this.scale.endPoint,
 							yUp : this.scale.endPoint,
-							yDown : this.scale.endPoint
+							yDown : this.scale.endPoint,
+							width : this.options.pointDotRadius * this.options.errorStrokeWidth
 						})
 						point.errorBar.save();
 					}
@@ -329,7 +322,7 @@
 							y : this.scale.calculateY(point.value),
 							yUp : this.scale.calculateY(point.value + point.errorBar.errorVal),
 							yDown : this.scale.calculateY(point.value - point.errorBar.errorVal),
-							width : point.errorBar.width,
+							width : this.options.pointDotRadius * this.options.errorCapWidth
 						}, easingDecimal);
 					}
 				},this);
