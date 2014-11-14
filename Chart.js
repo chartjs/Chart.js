@@ -2067,15 +2067,7 @@
 
 			this.buildScale(data.labels);
 
-			if (this.options.barBeginAtOrigin && this.scale.min < 0) {
-				this.BarClass.prototype.base = (this.scale.endPoint -
-					(-1 * parseFloat(this.scale.min)) /
-					((this.scale.max - this.scale.min) * 1.00) *
-					(this.scale.endPoint - this.scale.startPoint));
-			}
-			else {
-				this.BarClass.prototype.base = this.scale.endPoint;
-			}
+			this.BarClass.prototype.base = this.getBase();
 
 			this.eachBars(function(bar, index, datasetIndex){
 				helpers.extend(bar, {
@@ -2087,6 +2079,19 @@
 			}, this);
 
 			this.render();
+		},
+		getBase : function () {
+			if (this.options.barBeginAtOrigin && this.scale.min < 0) {
+				return (
+					this.scale.endPoint -
+					(-1 * parseFloat(this.scale.min)) /
+					((this.scale.max - this.scale.min) * 1.00) *
+					(this.scale.endPoint - this.scale.startPoint)
+				);
+			}
+			else {
+				return this.scale.endPoint;
+			}
 		},
 		update : function(){
 			this.scale.update();
@@ -2189,9 +2194,9 @@
 					value : value,
 					label : label,
 					x: this.scale.calculateBarX(this.datasets.length, datasetIndex, this.scale.valuesCount+1),
-					y: this.scale.endPoint,
+					y: this.getBase(),
 					width : this.scale.calculateBarWidth(this.datasets.length),
-					base : this.scale.endPoint,
+					base : this.getBase(),
 					strokeColor : this.datasets[datasetIndex].strokeColor,
 					fillColor : this.datasets[datasetIndex].fillColor
 				}));
@@ -2211,8 +2216,8 @@
 		},
 		reflow : function(){
 			helpers.extend(this.BarClass.prototype,{
-				y: this.scale.endPoint,
-				base : this.scale.endPoint
+				y: this.getBase(),
+				base : this.getBase()
 			});
 			var newScaleProps = helpers.extend({
 				height : this.chart.height,
@@ -2232,12 +2237,7 @@
 			helpers.each(this.datasets,function(dataset,datasetIndex){
 				helpers.each(dataset.bars,function(bar,index){
 					if (bar.hasValue()){
-						if (this.options.barBeginAtOrigin && this.scale.min < 0) {
-							helpers.noop();
-						}
-						else {
-							bar.base = this.scale.endPoint;
-						}
+						bar.base = this.getBase();
 						//Transition then draw
 						bar.transition({
 							x : this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
