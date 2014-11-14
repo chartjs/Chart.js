@@ -2,7 +2,7 @@
 
 *Simple HTML5 Charts using the canvas element* [chartjs.org](http://www.chartjs.org)
 
-##New Features In My Fork
+##New Features In This Fork
  - labelsFilter to filter x-axis labels based on user provided function
  - Template interpolator can be changed from default `<%` `%>` to what ever you want
  - New chart - overlay chart - for combing both bar and line charts on the same chart
@@ -10,6 +10,8 @@
  - line and overlay charts can handle sparse datasets, just include null in the dataset where no data is avaliable, this can be seen in the samples.
  - line,bar and overlay charts can have the tooltip display finely tuned. For each dataset an option called showTooltip can be passed to turn off the displaying off tooltips for that one dataset but not the whole chart
  
+
+All new features are all documented the forks docs section.
 ## Documentation
 
 You can find documentation at [chartjs.org/docs](http://www.chartjs.org/docs/). The markdown files that build the site are available under `/docs`. Please note - in some of the json examples of configuration you might notice some liquid tags - this is just for the generating the site html, please disregard.
