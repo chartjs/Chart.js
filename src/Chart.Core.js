@@ -88,12 +88,18 @@
 
 			// String - Scale label font colour
 			scaleFontColor: "#666",
+			
+			// Boolean - Limit number of x labels
+			scaleLimitXLabels: false,
+			
+			// Number - Limit number of x labels to
+			scaleLimitXLabelsTo: 5,
 
 			// Boolean - whether or not the chart should be responsive and resize when the browser does.
 			responsive: false,
 
-                        // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
-                        maintainAspectRatio: true,
+			// Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+			maintainAspectRatio: true,
 
 			// Boolean - Determines whether to draw tooltips on the canvas or not - attaches events to touchmove & mousemove
 			showTooltips: true,
@@ -1613,6 +1619,13 @@
 
 				},this);
 
+				if(this.limitXLabels) {
+					var xDrawEvery = Math.ceil(this.xLabels.length / (this.limitXLabelsTo-1));
+				}
+				else {
+					var xDrawEvery = 1;
+				}
+				
 				each(this.xLabels,function(label,index){
 					var xPos = this.calculateX(index) + aliasPixel(this.lineWidth),
 						// Check to see if line/bar here and decide where to place the line
@@ -1630,11 +1643,14 @@
 						ctx.lineWidth = this.lineWidth;
 						ctx.strokeStyle = this.lineColor;
 					}
-					ctx.moveTo(linePos,this.endPoint);
-					ctx.lineTo(linePos,this.startPoint - 3);
-					ctx.stroke();
-					ctx.closePath();
-
+					
+					if(index == 0 || (index+1) % xDrawEvery == 0 || index == this.xLabels.length-1)
+					{
+						ctx.moveTo(linePos,this.endPoint);
+						ctx.lineTo(linePos,this.startPoint - 3);
+						ctx.stroke();
+						ctx.closePath();
+					}
 
 					ctx.lineWidth = this.lineWidth;
 					ctx.strokeStyle = this.lineColor;
@@ -1647,14 +1663,19 @@
 					ctx.stroke();
 					ctx.closePath();
 
-					ctx.save();
-					ctx.translate(xPos,(isRotated) ? this.endPoint + 12 : this.endPoint + 8);
-					ctx.rotate(toRadians(this.xLabelRotation)*-1);
-					ctx.font = this.font;
-					ctx.textAlign = (isRotated) ? "right" : "center";
-					ctx.textBaseline = (isRotated) ? "middle" : "top";
-					ctx.fillText(label, 0, 0);
-					ctx.restore();
+					if((index == 0 && !(this.limitXLabels && this.limitXLabelsTo == 0))
+						|| ((index+1) % xDrawEvery == 0 && index < this.xLabels.length-1)
+						|| (index == this.xLabels.length-1 && !(this.limitXLabels && this.limitXLabelsTo < 2)))
+					{
+						ctx.save();
+						ctx.translate(xPos,(isRotated) ? this.endPoint + 12 : this.endPoint + 8);
+						ctx.rotate(toRadians(this.xLabelRotation)*-1);
+						ctx.font = this.font;
+						ctx.textAlign = (isRotated) ? "right" : "center";
+						ctx.textBaseline = (isRotated) ? "middle" : "top";
+						ctx.fillText(label, 0, 0);
+						ctx.restore();
+					}	
 				},this);
 
 			}
