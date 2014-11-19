@@ -2,7 +2,7 @@ Contributing
 ============
 
 New contributions to the library are welcome, just a couple of guidelines:
-새로운 컨트리뷰터님들을 환영합니다. 몇가지 주의 사항을 지켜주세요.:
+> 새로운 컨트리뷰터님들을 환영합니다. 몇가지 주의 사항을 지켜주세요.:
 
  * Tabs for indentation, not spaces please.
  > 인덴트는 스페이스말고 탭으로 해주세요
