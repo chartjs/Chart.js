@@ -1620,7 +1620,7 @@
 				},this);
 
 				if(this.limitXLabels) {
-					var xDrawEvery = Math.ceil(this.xLabels.length / (this.limitXLabelsTo-1));
+					var xDrawEvery = Math.round(this.xLabels.length / (this.limitXLabelsTo-1));
 				}
 				else {
 					var xDrawEvery = 1;
@@ -1662,10 +1662,11 @@
 					ctx.lineTo(linePos,this.endPoint + 5);
 					ctx.stroke();
 					ctx.closePath();
-
-					if((index == 0 && !(this.limitXLabels && this.limitXLabelsTo == 0))
-						|| ((index+1) % xDrawEvery == 0 && index < this.xLabels.length-1)
-						|| (index == this.xLabels.length-1 && !(this.limitXLabels && this.limitXLabelsTo < 2)))
+					
+					if((index == 0 && !(this.limitXLabels && this.limitXLabelsTo == 0))  // First element, when limit >= 1
+						|| ((index % xDrawEvery == 0 && index < this.xLabels.length-1)  // Label every X elements
+						&& this.width - this.width/(this.xLabels.length-index-1) > this.fontSize)  // but skip when it's too close to the last one
+						|| (index == this.xLabels.length-1 && !(this.limitXLabels && this.limitXLabelsTo < 2)))  // Last element, when limit >= 2
 					{
 						ctx.save();
 						ctx.translate(xPos,(isRotated) ? this.endPoint + 12 : this.endPoint + 8);
