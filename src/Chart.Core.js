@@ -90,10 +90,10 @@
 			scaleFontColor: "#666",
 			
 			// Boolean - Limit number of x labels
-			scaleLimitXLabels: false,
+			scaleLimitXLabels: true,
 			
 			// Number - Limit number of x labels to
-			scaleLimitXLabelsTo: 5,
+			scaleLimitXLabelsTo: 32,
 
 			// Boolean - whether or not the chart should be responsive and resize when the browser does.
 			responsive: false,
