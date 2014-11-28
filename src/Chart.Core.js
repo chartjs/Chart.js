@@ -45,6 +45,9 @@
 			// String - Animation easing effect
 			animationEasing: "easeOutQuart",
 
+		    // Number - Number of x-axis labels skipped from showing
+			skipXLabels: 1,
+
 			// Boolean - If we should show the scale at all
 			showScale: true,
 
@@ -1635,7 +1638,13 @@
 					ctx.font = this.font;
 					ctx.textAlign = (isRotated) ? "right" : "center";
 					ctx.textBaseline = (isRotated) ? "middle" : "top";
-					ctx.fillText(label, 0, 0);
+					if (typeof this.xLabelsSkip === 'undefined') {
+					    ctx.fillText(label, 0, 0);
+					} else {
+					    if (index % this.xLabelsSkip === 0) {
+					        ctx.fillText(label, 0, 0);
+					    }
+					}
 					ctx.restore();
 				},this);
 
