@@ -1204,11 +1204,20 @@
 				leftX = this.x - halfWidth,
 				rightX = this.x + halfWidth,
 				top = this.base - (this.base - this.y),
+				bottom = this.base,
 				halfStroke = this.strokeWidth / 2;
+
+			var hasZeroHeight = (bottom - top) === 0;
 
 			// Canvas doesn't allow us to stroke inside the width so we can
 			// adjust the sizes to fit if we're setting a stroke on the line
 			if (this.showStroke){
+				// Adjustment to keep the zero bars aligned with the
+				// non-zero bars
+				if (hasZeroHeight) {
+					top    -= this.strokeWidth;
+					bottom -= this.strokeWidth;
+				}
 				leftX += halfStroke;
 				rightX -= halfStroke;
 				top += halfStroke;
@@ -1222,10 +1231,10 @@
 
 			// It'd be nice to keep this class totally generic to any rectangle
 			// and simply specify which border to miss out.
-			ctx.moveTo(leftX, this.base);
+			ctx.moveTo(leftX, bottom);
 			ctx.lineTo(leftX, top);
 			ctx.lineTo(rightX, top);
-			ctx.lineTo(rightX, this.base);
+			ctx.lineTo(rightX, bottom);
 			ctx.fill();
 			if (this.showStroke){
 				ctx.stroke();
