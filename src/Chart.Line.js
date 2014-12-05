@@ -296,7 +296,11 @@
                         //By setting the tension to 0 here, the curve will transition to straight at the end
                         if (index === 0) {
                             point.controlPoints = helpers.splineCurve(point, point, dataset.points[index + 1], 0);
-                        } else if (index >= dataset.points.length - 1) {
+                        } else if(dataset.points[index - 1].ignore && index !== dataset.points.length-1){
+                            point.controlPoints = helpers.splineCurve(point, point, dataset.points[index + 1], 0);
+                        }else if( index !== dataset.points.length-1 && dataset.points[index + 1].ignore){
+                            point.controlPoints = helpers.splineCurve(dataset.points[index - 1], point, point, 0);
+                        }else if (index >= dataset.points.length - 1) {
                             point.controlPoints = helpers.splineCurve(dataset.points[index - 1], point, point, 0);
                         } else {
                             point.controlPoints = helpers.splineCurve(dataset.points[index - 1], point, dataset.points[index + 1], this.options.bezierCurveTension);
