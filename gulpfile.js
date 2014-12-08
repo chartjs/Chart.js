@@ -11,7 +11,8 @@ var gulp = require('gulp'),
 	exec = require('child_process').exec,
 	fs = require('fs'),
 	package = require('./package.json'),
-	bower = require('./bower.json');
+	bower = require('./bower.json'),
+	mocha = require('gulp-mocha');
 
 var srcDir = './src/';
 /*
@@ -90,6 +91,11 @@ gulp.task('jshint', function(){
 		.pipe(jshint.reporter('default'));
 });
 
+gulp.task('uitest', function(){
+	return gulp.src('test/ui/*.js', { read : false })
+		.pipe(mocha({ reporter : 'spec' }));
+});
+
 gulp.task('library-size', function(){
 	return gulp.src('Chart.min.js')
 		.pipe(size({
@@ -110,7 +116,7 @@ gulp.task('watch', function(){
 	gulp.watch('./src/*', ['build']);
 });
 
-gulp.task('test', ['jshint']);
+gulp.task('test', ['jshint', 'uitest']);
 
 gulp.task('size', ['library-size', 'module-sizes']);
 
@@ -118,7 +124,7 @@ gulp.task('default', ['build', 'watch']);
 
 gulp.task('server', function(){
 	connect.server({
-		port: 8000,
+		port: 8000
 	});
 });
 

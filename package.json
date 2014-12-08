@@ -8,17 +8,24 @@
     "type": "git",
     "url": "https://github.com/nnnick/Chart.js.git"
   },
+  "scripts": {
+    "test": "gulp test"
+  },
   "dependences": {},
   "devDependencies": {
+    "buffertools": "^2.1.2",
+    "chai": "^1.10.0",
     "gulp": "3.5.x",
     "gulp-concat": "~2.1.x",
     "gulp-connect": "~2.0.5",
     "gulp-jshint": "~1.5.1",
+    "gulp-mocha": "^2.0.0",
     "gulp-replace": "^0.4.0",
     "gulp-size": "~0.4.0",
     "gulp-uglify": "~0.2.x",
     "gulp-util": "~2.2.x",
     "inquirer": "^0.5.1",
+    "phantomjs": "^1.9.12",
     "semver": "^3.0.1"
   }
 }
