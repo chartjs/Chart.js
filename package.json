@@ -13,20 +13,19 @@
   },
   "dependences": {},
   "devDependencies": {
-    "buffertools": "^2.1.2",
     "chai": "^1.10.0",
     "gm": "^1.17.0",
-    "gulp": "3.5.x",
-    "gulp-concat": "~2.1.x",
-    "gulp-connect": "~2.0.5",
-    "gulp-jshint": "~1.5.1",
+    "gulp": "^3.8.10",
+    "gulp-concat": "^2.4.2",
+    "gulp-connect": "^2.2.0",
+    "gulp-jshint": "^1.9.0",
     "gulp-mocha": "^2.0.0",
-    "gulp-replace": "^0.4.0",
-    "gulp-size": "~0.4.0",
-    "gulp-uglify": "~0.2.x",
-    "gulp-util": "~2.2.x",
-    "inquirer": "^0.5.1",
+    "gulp-replace": "^0.5.0",
+    "gulp-size": "^1.1.0",
+    "gulp-uglify": "^1.0.2",
+    "gulp-util": "^3.0.1",
+    "inquirer": "^0.8.0",
     "phantomjs": "^1.9.12",
-    "semver": "^3.0.1"
+    "semver": "^4.1.0"
   }
 }
