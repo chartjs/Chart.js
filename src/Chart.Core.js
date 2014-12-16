@@ -1591,11 +1591,13 @@
 
 
 					// Small lines at the bottom of the base grid line
-					ctx.beginPath();
-					ctx.moveTo(linePos,this.endPoint);
-					ctx.lineTo(linePos,this.endPoint + 5);
-					ctx.stroke();
-					ctx.closePath();
+			                if(index % this.xLabelsSkipper === 0) {
+			                        ctx.beginPath();
+			                        ctx.moveTo(linePos,this.endPoint);
+			                        ctx.lineTo(linePos,this.endPoint + 5);
+			                        ctx.stroke();
+			                	ctx.closePath();
+			                }
 
 					ctx.save();
 					ctx.translate(xPos,(isRotated) ? this.endPoint + 12 : this.endPoint + 8);
