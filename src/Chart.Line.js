@@ -44,7 +44,22 @@
 		datasetFill : true,
 
 		//String - A legend template
-		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+		
+		// String - Value to display as a header above the Y axis
+		yScaleLabel: null,
+
+		// String - Scale header label font declaration for the scale label
+		yScaleLabelFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+
+		// Number - Scale header label font size in pixels
+		yScaleLabelFontSize: 12,
+
+		// String - Scale header label font weight style
+		yScaleLabelFontStyle: "normal",
+
+		// String - Scale header label font colour
+		yScaleLabelFontColor: "#666"
 
 	};
 
@@ -69,16 +84,34 @@
 
 			//Set up tooltip events on the chart
 			if (this.options.showTooltips){
-				helpers.bindEvents(this, this.options.tooltipEvents, function(evt){
-					var activePoints = (evt.type !== 'mouseout') ? this.getPointsAtEvent(evt) : [];
-					this.eachPoints(function(point){
-						point.restore(['fillColor', 'strokeColor']);
-					});
-					helpers.each(activePoints, function(activePoint){
-						activePoint.fillColor = activePoint.highlightFill;
-						activePoint.strokeColor = activePoint.highlightStroke;
-					});
-					this.showTooltip(activePoints);
+			    helpers.bindEvents(this, this.options.tooltipEvents, function(evt){
+			        var activePoints = (evt.type !== 'mouseout') ? this.getPointsAtEvent(evt) : [];
+			        this.eachPoints(function(point){
+			            point.restore(['fillColor', 'strokeColor']);
+			        });
+			        helpers.each(activePoints, function(activePoint){
+			            activePoint.fillColor = activePoint.highlightFill;
+			            activePoint.strokeColor = activePoint.highlightStroke;
+			        });
+					
+			        if (this.options.tooltipCursorSensitive) {
+			            // Only show labels of dataset within mouse range in multi tooltip OR if the data point has a custom label (because it is not plotted so "invisible")
+			            var pointsInTooltip = [];
+			            var baseY = this.scale.endPoint;
+			            var tooltipCursorHitPixels = this.options.tooltipCursorHitPixels;
+			            helpers.each(activePoints, function (point) {
+			                if ((Math.round(point.x) > Math.round(helpers.getRelativePosition(evt).x - tooltipCursorHitPixels) &&
+                                Math.round(point.x) < Math.round(helpers.getRelativePosition(evt).x + tooltipCursorHitPixels) &&
+                                (Math.round(point.y) > Math.round(helpers.getRelativePosition(evt).y - tooltipCursorHitPixels) &&
+                                Math.round(point.y) < Math.round(helpers.getRelativePosition(evt).y + tooltipCursorHitPixels)) || point.customLabel)) {
+			                    pointsInTooltip.push(point);
+			                }
+			            });
+
+			            this.showTooltip(pointsInTooltip);
+			        }
+			        else
+                        this.showTooltip(activePoints);
 				});
 			}
 
@@ -99,7 +132,7 @@
 
 				helpers.each(dataset.data,function(dataPoint,index){
 					//Add a new point for each piece of data, passing any required data to draw.
-					datasetObject.points.push(new this.PointClass({
+                    var _point = new this.PointClass({
 						value : dataPoint,
 						label : data.labels[index],
 						datasetLabel: dataset.label,
@@ -107,7 +140,13 @@
 						fillColor : dataset.pointColor,
 						highlightFill : dataset.pointHighlightFill || dataset.pointColor,
 						highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor
-					}));
+                    });
+
+                    if (!helpers.isNumber(dataPoint) && dataPoint !== null) {
+                        _point.customLabel = dataPoint;
+                        _point.value = null;
+                    }
+                    datasetObject.points.push(_point);
 				},this);
 
 				this.buildScale(data.labels);
@@ -194,7 +233,12 @@
 				gridLineColor : (this.options.scaleShowGridLines) ? this.options.scaleGridLineColor : "rgba(0,0,0,0)",
 				padding: (this.options.showScale) ? 0 : this.options.pointDotRadius + this.options.pointDotStrokeWidth,
 				showLabels : this.options.scaleShowLabels,
-				display : this.options.showScale
+				display : this.options.showScale,
+				yScaleLabel: this.options.yScaleLabel,
+				yScaleLabelFontFamily: this.options.yScaleLabelFontFamily,
+				yScaleLabelFontSize: this.options.yScaleLabelFontSize,
+				yScaleLabelFontStyle: this.options.yScaleLabelFontStyle,
+				yScaleLabelFontColor: this.options.yScaleLabelFontColor
 			};
 
 			if (this.options.scaleOverride){
