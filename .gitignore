@@ -5,3 +5,4 @@ node_modules/*
 custom/*
 
 docs/index.md
+*.bak
