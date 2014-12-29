@@ -17,4 +17,4 @@ Chart.js is designed to be modular. See http://www.chartjs.org/docs/#advanced-us
 
 All discussion of new chart types (horizontal bar charts, X-Y scatter plot, etc.) should be done in the Chart.js Google Group at https://groups.google.com/forum/#!forum/chartjs-user-discussion This will get the most exposure for getting people to help define requirements, complete programming and documentation of your vision.
 
-Please do not request new chart types in the project issues. Fully implemented, documented, and useful new charts may be added to the project via a Pull Request.
+Please do not request new chart types in the project issues. Fully implemented, documented, and useful new charts may be maintained in a new repository. Later, we may add a link to selected external repositories from this project.
