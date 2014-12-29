@@ -280,7 +280,7 @@
 			//Method for warning of errors
 			if (window.console && typeof window.console.warn == "function") console.warn(str);
 		},
-		amd = helpers.amd = (typeof root.define == 'function' && root.define.amd),
+		amd = helpers.amd = (typeof define == 'function' && define.amd),
 		//-- Math methods
 		isNumber = helpers.isNumber = function(n){
 			return !isNaN(parseFloat(n)) && isFinite(n);
