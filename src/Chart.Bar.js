@@ -31,6 +31,9 @@
 		//Number - Spacing between data sets within X values
 		barDatasetSpacing : 1,
 
+		//Boolean - Determines if the bars should be overlaid (true) or drawn side-by-side (false)
+		overlay: false,
+		
 		//String - A legend template
 		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
 
@@ -53,16 +56,15 @@
 						xAbsolute = this.calculateX(barIndex) - (xWidth/2),
 						barWidth = this.calculateBarWidth(datasetCount);
 
-					return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * options.barDatasetSpacing) + barWidth/2;
+					return options.overlay ? (xAbsolute + (barWidth/2)) : (xAbsolute + (barWidth * datasetIndex) + (datasetIndex * options.barDatasetSpacing) + barWidth/2);
 				},
 				calculateBaseWidth : function(){
 					return (this.calculateX(1) - this.calculateX(0)) - (2*options.barValueSpacing);
 				},
 				calculateBarWidth : function(datasetCount){
 					//The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
-					var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * options.barDatasetSpacing);
-
-					return (baseWidth / datasetCount);
+					var width = options.overlay ? (this.calculateBaseWidth() - options.barDatasetSpacing) : ((this.calculateBaseWidth() - ((datasetCount - 1) * options.barDatasetSpacing)) / datasetCount);
+					return width;
 				}
 			});
 
