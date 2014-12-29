@@ -92,8 +92,8 @@
 			// Boolean - whether or not the chart should be responsive and resize when the browser does.
 			responsive: false,
 
-                        // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
-                        maintainAspectRatio: true,
+            // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+            maintainAspectRatio: true,
 
 			// Boolean - Determines whether to draw tooltips on the canvas or not - attaches events to touchmove & mousemove
 			showTooltips: true,
@@ -151,6 +151,21 @@
 
 			// String - Colour behind the legend colour block
 			multiTooltipKeyBackground: '#fff',
+			
+			// String - Value to display as a header above the Y axis
+			yScaleLabel: null,
+
+			// String - Scale header label font declaration for the scale label
+			yScaleLabelFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+
+			// Number - Scale header label font size in pixels
+			yScaleLabelFontSize: 12,
+
+			// String - Scale header label font weight style
+			yScaleLabelFontStyle: "normal",
+
+			// String - Scale header label font colour
+			yScaleLabelFontColor: "#666",
 
 			// Function - Will fire on animation progression.
 			onAnimationProgress: function(){},
@@ -238,7 +253,7 @@
 				if (filterCallback(currentItem)){
 					return currentItem;
 				}
-			};
+			}
 		},
 		findPreviousWhere = helpers.findPreviousWhere = function(arrayToSearch, filterCallback, startIndex){
 			// Default to end of the array
@@ -250,7 +265,7 @@
 				if (filterCallback(currentItem)){
 					return currentItem;
 				}
-			};
+			}
 		},
 		inherits = helpers.inherits = function(extensions){
 			//Basic javascript inheritance based on the model created in Backbone.js
@@ -1492,18 +1507,18 @@
 					cosRotation,
 					firstRotatedWidth;
 				this.xLabelWidth = originalLabelWidth;
-				//Allow 3 pixels x2 padding either side for label readability
-				var xGridWidth = Math.floor(this.calculateX(1) - this.calculateX(0)) - 6;
+				//Allow 5 pixels x2 padding either side for label readability
+				var xGridWidth = Math.floor(this.calculateX(1) - this.calculateX(0)) - 10;
 
 				//Max label rotate should be 90 - also act as a loop counter
-				while ((this.xLabelWidth > xGridWidth && this.xLabelRotation === 0) || (this.xLabelWidth > xGridWidth && this.xLabelRotation <= 90 && this.xLabelRotation > 0)){
+				while ((this.xLabelWidth > xGridWidth + 8 && this.xLabelRotation === 0) || (this.xLabelWidth > xGridWidth + 2 && this.xLabelRotation <= 90 && this.xLabelRotation > 0)){
 					cosRotation = Math.cos(toRadians(this.xLabelRotation));
 
 					firstRotated = cosRotation * firstWidth;
 					lastRotated = cosRotation * lastWidth;
 
 					// We're right aligning the text now.
-					if (firstRotated + this.fontSize / 2 > this.yLabelWidth + 8){
+					if (firstRotated + this.fontSize / 2 > this.yLabelWidth + 10){
 						this.xScalePaddingLeft = firstRotated + this.fontSize / 2;
 					}
 					this.xScalePaddingRight = this.fontSize/2;
@@ -1523,6 +1538,8 @@
 				this.xScalePaddingLeft = this.padding;
 			}
 
+			if (this.yScaleLabel)
+		        this.xScalePaddingLeft += this.yScaleLabelFontSize * 2;
 		},
 		// Needs to be overidden in each Chart type
 		// Otherwise we need to pass all the data into the scale class
@@ -1552,12 +1569,26 @@
 			this.fit();
 		},
 		draw : function(){
-			var ctx = this.ctx,
-				yLabelGap = (this.endPoint - this.startPoint) / this.steps,
-				xStart = Math.round(this.xScalePaddingLeft);
+			var ctx = this.ctx;
+			
 			if (this.display){
-				ctx.fillStyle = this.textColor;
-				ctx.font = this.font;
+			    ctx.fillStyle = this.textColor;
+				
+			    if (this.yScaleLabel) {
+			        ctx.save();
+			        ctx.font = fontString(this.yScaleLabelFontSize, this.yScaleLabelFontStyle, this.yScaleLabelFontFamily);
+			        ctx.translate(0, 5);
+			        ctx.rotate(-Math.PI / 2);
+			        ctx.textAlign = "end";
+			        ctx.textBaseline = "top";
+			        ctx.fillText(this.yScaleLabel, 0, 0);
+			        ctx.restore();
+			    }
+
+			    var xStart = Math.round(this.xScalePaddingLeft);
+			    ctx.font = this.font;
+			    var yLabelGap = (this.endPoint -this.startPoint) / this.steps;
+
 				each(this.yLabels,function(labelString,index){
 					var yLabelCenter = this.endPoint - (yLabelGap * index),
 						linePositionY = Math.round(yLabelCenter);

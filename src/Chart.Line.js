@@ -194,7 +194,12 @@
 				gridLineColor : (this.options.scaleShowGridLines) ? this.options.scaleGridLineColor : "rgba(0,0,0,0)",
 				padding: (this.options.showScale) ? 0 : this.options.pointDotRadius + this.options.pointDotStrokeWidth,
 				showLabels : this.options.scaleShowLabels,
-				display : this.options.showScale
+				display : this.options.showScale,
+				yScaleLabel: this.options.yScaleLabel,
+				yScaleLabelFontFamily: this.options.yScaleLabelFontFamily,
+				yScaleLabelFontSize: this.options.yScaleLabelFontSize,
+				yScaleLabelFontStyle: this.options.yScaleLabelFontStyle,
+				yScaleLabelFontColor: this.options.yScaleLabelFontColor
 			};
 
 			if (this.options.scaleOverride){
