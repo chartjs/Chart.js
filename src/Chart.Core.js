@@ -98,6 +98,9 @@
 			// Boolean - Determines whether to draw tooltips on the canvas or not - attaches events to touchmove & mousemove
 			showTooltips: true,
 
+			// Boolean - Determines whether to draw built-in tooltip or call custom tooltip function
+			externalTooltips: false,
+
 			// Array - Array of string names to attach tooltip events
 			tooltipEvents: ["mousemove", "touchstart", "touchmove", "mouseout"],
 
@@ -895,6 +898,9 @@
 				this.activeElements = ChartElements;
 			}
 			this.draw();
+			if(this.options.externalTooltips){
+				this.options.externalTooltips(false);
+			}
 			if (ChartElements.length > 0){
 				// If we have multiple datasets, show a MultiTooltip for all of the data points at that index
 				if (this.datasets && this.datasets.length > 1) {
@@ -975,7 +981,8 @@
 						legendColorBackground : this.options.multiTooltipKeyBackground,
 						title: ChartElements[0].label,
 						chart: this.chart,
-						ctx: this.chart.ctx
+						ctx: this.chart.ctx,
+						external: this.options.externalTooltips
 					}).draw();
 
 				} else {
@@ -994,7 +1001,8 @@
 							caretHeight: this.options.tooltipCaretSize,
 							cornerRadius: this.options.tooltipCornerRadius,
 							text: template(this.options.tooltipTemplate, Element),
-							chart: this.chart
+							chart: this.chart,
+							external: this.options.externalTooltips
 						}).draw();
 					}, this);
 				}
@@ -1250,7 +1258,7 @@
 			this.yAlign = "above";
 
 			//Distance between the actual element.y position and the start of the tooltip caret
-			var caretPadding = 2;
+			var caretPadding = this.caretPadding = 2;
 
 			var tooltipWidth = ctx.measureText(this.text).width + 2*this.xPadding,
 				tooltipRectHeight = this.fontSize + 2*this.yPadding,
@@ -1272,47 +1280,53 @@
 
 			ctx.fillStyle = this.fillColor;
 
-			switch(this.yAlign)
-			{
-			case "above":
-				//Draw a caret above the x/y
-				ctx.beginPath();
-				ctx.moveTo(this.x,this.y - caretPadding);
-				ctx.lineTo(this.x + this.caretHeight, this.y - (caretPadding + this.caretHeight));
-				ctx.lineTo(this.x - this.caretHeight, this.y - (caretPadding + this.caretHeight));
-				ctx.closePath();
-				ctx.fill();
-				break;
-			case "below":
-				tooltipY = this.y + caretPadding + this.caretHeight;
-				//Draw a caret below the x/y
-				ctx.beginPath();
-				ctx.moveTo(this.x, this.y + caretPadding);
-				ctx.lineTo(this.x + this.caretHeight, this.y + caretPadding + this.caretHeight);
-				ctx.lineTo(this.x - this.caretHeight, this.y + caretPadding + this.caretHeight);
-				ctx.closePath();
-				ctx.fill();
-				break;
+			// Custom Tooltips
+			if(this.external){
+				this.external(this);
 			}
+			else{
+				switch(this.yAlign)
+				{
+				case "above":
+					//Draw a caret above the x/y
+					ctx.beginPath();
+					ctx.moveTo(this.x,this.y - caretPadding);
+					ctx.lineTo(this.x + this.caretHeight, this.y - (caretPadding + this.caretHeight));
+					ctx.lineTo(this.x - this.caretHeight, this.y - (caretPadding + this.caretHeight));
+					ctx.closePath();
+					ctx.fill();
+					break;
+				case "below":
+					tooltipY = this.y + caretPadding + this.caretHeight;
+					//Draw a caret below the x/y
+					ctx.beginPath();
+					ctx.moveTo(this.x, this.y + caretPadding);
+					ctx.lineTo(this.x + this.caretHeight, this.y + caretPadding + this.caretHeight);
+					ctx.lineTo(this.x - this.caretHeight, this.y + caretPadding + this.caretHeight);
+					ctx.closePath();
+					ctx.fill();
+					break;
+				}
 
-			switch(this.xAlign)
-			{
-			case "left":
-				tooltipX = this.x - tooltipWidth + (this.cornerRadius + this.caretHeight);
-				break;
-			case "right":
-				tooltipX = this.x - (this.cornerRadius + this.caretHeight);
-				break;
+				switch(this.xAlign)
+				{
+				case "left":
+					tooltipX = this.x - tooltipWidth + (this.cornerRadius + this.caretHeight);
+					break;
+				case "right":
+					tooltipX = this.x - (this.cornerRadius + this.caretHeight);
+					break;
+				}
+
+				drawRoundedRectangle(ctx,tooltipX,tooltipY,tooltipWidth,tooltipRectHeight,this.cornerRadius);
+
+				ctx.fill();
+
+				ctx.fillStyle = this.textColor;
+				ctx.textAlign = "center";
+				ctx.textBaseline = "middle";
+				ctx.fillText(this.text, tooltipX + tooltipWidth/2, tooltipY + tooltipRectHeight/2);
 			}
-
-			drawRoundedRectangle(ctx,tooltipX,tooltipY,tooltipWidth,tooltipRectHeight,this.cornerRadius);
-
-			ctx.fill();
-
-			ctx.fillStyle = this.textColor;
-			ctx.textAlign = "center";
-			ctx.textBaseline = "middle";
-			ctx.fillText(this.text, tooltipX + tooltipWidth/2, tooltipY + tooltipRectHeight/2);
 		}
 	});
 
@@ -1366,36 +1380,42 @@
 
 		},
 		draw : function(){
-			drawRoundedRectangle(this.ctx,this.x,this.y - this.height/2,this.width,this.height,this.cornerRadius);
-			var ctx = this.ctx;
-			ctx.fillStyle = this.fillColor;
-			ctx.fill();
-			ctx.closePath();
+			// Custom Tooltips
+			if(this.external){
+				this.external(this);
+			}
+			else{
+				drawRoundedRectangle(this.ctx,this.x,this.y - this.height/2,this.width,this.height,this.cornerRadius);
+				var ctx = this.ctx;
+				ctx.fillStyle = this.fillColor;
+				ctx.fill();
+				ctx.closePath();
 
-			ctx.textAlign = "left";
-			ctx.textBaseline = "middle";
-			ctx.fillStyle = this.titleTextColor;
-			ctx.font = this.titleFont;
+				ctx.textAlign = "left";
+				ctx.textBaseline = "middle";
+				ctx.fillStyle = this.titleTextColor;
+				ctx.font = this.titleFont;
 
-			ctx.fillText(this.title,this.x + this.xPadding, this.getLineHeight(0));
+				ctx.fillText(this.title,this.x + this.xPadding, this.getLineHeight(0));
 
-			ctx.font = this.font;
-			helpers.each(this.labels,function(label,index){
-				ctx.fillStyle = this.textColor;
-				ctx.fillText(label,this.x + this.xPadding + this.fontSize + 3, this.getLineHeight(index + 1));
+				ctx.font = this.font;
+				helpers.each(this.labels,function(label,index){
+					ctx.fillStyle = this.textColor;
+					ctx.fillText(label,this.x + this.xPadding + this.fontSize + 3, this.getLineHeight(index + 1));
 
-				//A bit gnarly, but clearing this rectangle breaks when using explorercanvas (clears whole canvas)
-				//ctx.clearRect(this.x + this.xPadding, this.getLineHeight(index + 1) - this.fontSize/2, this.fontSize, this.fontSize);
-				//Instead we'll make a white filled block to put the legendColour palette over.
+					//A bit gnarly, but clearing this rectangle breaks when using explorercanvas (clears whole canvas)
+					//ctx.clearRect(this.x + this.xPadding, this.getLineHeight(index + 1) - this.fontSize/2, this.fontSize, this.fontSize);
+					//Instead we'll make a white filled block to put the legendColour palette over.
 
-				ctx.fillStyle = this.legendColorBackground;
-				ctx.fillRect(this.x + this.xPadding, this.getLineHeight(index + 1) - this.fontSize/2, this.fontSize, this.fontSize);
+					ctx.fillStyle = this.legendColorBackground;
+					ctx.fillRect(this.x + this.xPadding, this.getLineHeight(index + 1) - this.fontSize/2, this.fontSize, this.fontSize);
 
-				ctx.fillStyle = this.legendColors[index].fill;
-				ctx.fillRect(this.x + this.xPadding, this.getLineHeight(index + 1) - this.fontSize/2, this.fontSize, this.fontSize);
+					ctx.fillStyle = this.legendColors[index].fill;
+					ctx.fillRect(this.x + this.xPadding, this.getLineHeight(index + 1) - this.fontSize/2, this.fontSize, this.fontSize);
 
 
-			},this);
+				},this);
+			}
 		}
 	});
 
