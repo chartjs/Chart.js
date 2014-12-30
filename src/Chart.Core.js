@@ -1318,6 +1318,9 @@
 
 	Chart.MultiTooltip = Chart.Element.extend({
 		initialize : function(){
+			
+			if(!this.text) return;
+			
 			this.font = fontString(this.fontSize,this.fontStyle,this.fontFamily);
 
 			this.titleFont = fontString(this.titleFontSize,this.titleFontStyle,this.titleFontFamily);
