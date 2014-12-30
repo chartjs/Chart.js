@@ -1,4 +1,7 @@
-# Chart.js[![Code Climate](https://codeclimate.com/github/nnnick/Chart.js/badges/gpa.svg)](https://codeclimate.com/github/nnnick/Chart.js)
+# Chart.js
+
+[![Code Climate](https://codeclimate.com/github/nnnick/Chart.js/badges/gpa.svg)](https://codeclimate.com/github/nnnick/Chart.js)
+
 
 *Simple HTML5 Charts using the canvas element* [chartjs.org](http://www.chartjs.org)
 
