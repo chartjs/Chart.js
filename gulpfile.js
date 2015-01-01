@@ -6,6 +6,7 @@ var gulp = require('gulp'),
 	size = require('gulp-size'),
 	connect = require('gulp-connect'),
 	replace = require('gulp-replace'),
+	htmlv = require('gulp-html-validator'),
 	inquirer = require('inquirer'),
 	semver = require('semver'),
 	exec = require('child_process').exec,
@@ -88,6 +89,11 @@ gulp.task('jshint', function(){
 	return gulp.src(srcDir + '*.js')
 		.pipe(jshint())
 		.pipe(jshint.reporter('default'));
+});
+
+gulp.task('valid', function(){
+	return gulp.src('samples/*.html')
+    .pipe(htmlv());
 });
 
 gulp.task('library-size', function(){
