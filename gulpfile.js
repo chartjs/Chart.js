@@ -11,7 +11,7 @@ var gulp = require('gulp'),
 	semver = require('semver'),
 	exec = require('child_process').exec,
 	fs = require('fs'),
-  package = require('./package.json'),
+	package = require('./package.json'),
 	bower = require('./bower.json');
 
 var srcDir = './src/';
