@@ -13,6 +13,8 @@ You can find documentation at [chartjs.org/docs](http://www.chartjs.org/docs/). 
 
 Before submitting an issue or a pull request to the project, please take a moment to look over the [contributing guidelines](https://github.com/nnnick/Chart.js/blob/master/CONTRIBUTING.md) first.
 
+For support using Chart.js, please post questions with the [`chartjs` tag on Stack Overflow](http://stackoverflow.com/questions/tagged/chartjs).
+
 ## License
 
 Chart.js is available under the [MIT license](http://opensource.org/licenses/MIT).
