@@ -14,7 +14,15 @@
 	"use strict";
 
 	//Declare root variable - window in the browser, global on the server
-	var root = globalContext();
+	var root = (function() {
+		try {
+			global = Function('return this')() || (42, eval)('this');
+			return global;
+		} catch(e) {
+			return window;
+		}
+	})();
+
 	var previous = root.Chart;
 
 	//Occupy the global variable of Chart, and create a simple base class
@@ -270,15 +278,6 @@
 			return ChartElement;
 		},
 		noop = helpers.noop = function(){},
-		globalContext = helpers.globalContext = function () { //http://stackoverflow.com/questions/3277182/how-to-get-the-global-object-in-javascript#answer-6930376
-			var global;
-
-			try {
-				global = Function('return this')() || (42, eval)('this');
-			} catch(e) {
-				global = window;
-			}
-		},
 		uid = helpers.uid = (function(){
 			var id=0;
 			return function(){
