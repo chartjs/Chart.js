@@ -7,11 +7,4 @@ before_script:
   - npm install
 
 script:
-  - gulp jshint
-  - cp Chart.min.js /tmp/OLD
-  - gulp build
-  - cmp Chart.min.js /tmp/OLD # ensure build was run before commit
-
-notifications:
-  email:
-    hello@nickdownie.com
+  - gulp test

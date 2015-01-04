@@ -116,7 +116,7 @@ gulp.task('watch', function(){
 	gulp.watch('./src/*', ['build']);
 });
 
-gulp.task('test', ['jshint']);
+gulp.task('test', ['jshint', 'valid']);
 
 gulp.task('size', ['library-size', 'module-sizes']);
 
