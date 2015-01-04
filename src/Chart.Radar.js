@@ -1,8 +1,15 @@
 (function(){
 	"use strict";
 
-	var root = this,
-		Chart = root.Chart,
+	var root = (function() {
+		try {
+			global = Function('return this')() || (42, eval)('this');
+			return global;
+		} catch(e) {
+			return window;
+		}
+	})();
+	var Chart = root.Chart,
 		helpers = Chart.helpers;
 
 
