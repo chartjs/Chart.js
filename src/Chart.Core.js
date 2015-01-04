@@ -1940,9 +1940,9 @@
 		});
 	} else if (typeof module === 'object' && module.exports) {
 		module.exports = Chart;
+	}else{
+		root.Chart = Chart;
 	}
-
-	root.Chart = Chart;
 
 	Chart.noConflict = function(){
 		root.Chart = previous;
