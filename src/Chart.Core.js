@@ -866,6 +866,16 @@
 			return template(this.options.legendTemplate,this);
 		},
 		destroy : function(){
+			// If we scaled for a retina screen, undo that action here
+			if (window.devicePixelRatio) {
+				var ctx = this.chart.ctx,
+				width = this.chart.canvas.width,
+				height = this.chart.canvas.height;
+				ctx.canvas.height = height / window.devicePixelRatio;
+				ctx.canvas.width = width / window.devicePixelRatio;
+				ctx.scale(1 / window.devicePixelRatio, 1 / window.devicePixelRatio);
+			}
+		
 			this.clear();
 			unbindEvents(this, this.events);
 			delete Chart.instances[this.id];
