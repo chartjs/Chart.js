@@ -3,8 +3,7 @@
 
 	var root = (function() {
 		try {
-			global = Function('return this')() || (42, eval)('this');
-			return global;
+			return Function('return this')() || (42, eval)('this');
 		} catch(e) {
 			return window;
 		}
