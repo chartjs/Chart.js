@@ -32,7 +32,7 @@
 		pointDotStrokeWidth : 1,
 
 		//Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-		pointHitDetectionRadius : 20,
+		pointHitDetectionRadius : 0,
 
 		//Boolean - Whether to show a stroke for datasets
 		datasetStroke : true,
@@ -187,6 +187,8 @@
 					helpers.extend(this, updatedRanges);
 				},
 				xLabels : labels,
+				limitXLabels: this.options.scaleLimitXLabels,
+				limitXLabelsTo: this.options.scaleLimitXLabelsTo,
 				font : helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.scaleFontFamily),
 				lineWidth : this.options.scaleLineWidth,
 				lineColor : this.options.scaleLineColor,

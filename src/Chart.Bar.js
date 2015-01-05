@@ -25,7 +25,7 @@
 		//Number - Pixel width of the bar stroke
 		barStrokeWidth : 2,
 
-		//Number - Spacing between each of the X value sets
+			//Number - Spacing between each of the X value sets
 		barValueSpacing : 5,
 
 		//Number - Spacing between data sets within X values
@@ -203,6 +203,8 @@
 					helpers.extend(this, updatedRanges);
 				},
 				xLabels : labels,
+				limitXLabels: this.options.scaleLimitXLabels,
+				limitXLabelsTo: this.options.scaleLimitXLabelsTo,
 				font : helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.scaleFontFamily),
 				lineWidth : this.options.scaleLineWidth,
 				lineColor : this.options.scaleLineColor,

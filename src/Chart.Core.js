@@ -88,6 +88,12 @@
 
 			// String - Scale label font colour
 			scaleFontColor: "#666",
+			
+			// Boolean - Limit number of x labels
+			scaleLimitXLabels: false,
+			
+			// Number - Limit number of x labels to
+			scaleLimitXLabelsTo: 5,
 
 			// Boolean - whether or not the chart should be responsive and resize when the browser does.
 			responsive: false,
@@ -405,7 +411,11 @@
 					//If user has declared ints only, and the step value isn't a decimal
 					if (integersOnly && rangeOrderOfMagnitude >= 0){
 						//If the user has said integers only, we need to check that making the scale more granular wouldn't make it a float
-						if(stepValue/2 % 1 === 0){
+						if((numberOfSteps * 5) < maxSteps && stepValue/5 % 1 === 0){  // If we have even more space, let's make even more steps
+							stepValue /=5;
+							numberOfSteps = Math.round(graphRange/stepValue);
+						}
+						else if(stepValue/2 % 1 === 0){
 							stepValue /=2;
 							numberOfSteps = Math.round(graphRange/stepValue);
 						}
@@ -427,6 +437,20 @@
 				numberOfSteps = minSteps;
 				stepValue = graphRange / numberOfSteps;
 			}
+			
+			// Drop unnecessary steps
+			if(!startFromZero) {
+				while(minValue > graphMin + stepValue) {
+					numberOfSteps--;
+					graphMin += stepValue;
+				}
+			}
+
+			while(maxValue < graphMax - stepValue) {
+				numberOfSteps--;
+				graphMax -= stepValue;
+			}
+
 
 			return {
 				steps : numberOfSteps,
@@ -1597,6 +1621,13 @@
 
 				},this);
 
+				if(this.limitXLabels) {
+					var xDrawEvery = Math.round(this.xLabels.length / (this.limitXLabelsTo-1));
+				}
+				else {
+					var xDrawEvery = 1;
+				}
+				
 				each(this.xLabels,function(label,index){
 					var xPos = this.calculateX(index) + aliasPixel(this.lineWidth),
 						// Check to see if line/bar here and decide where to place the line
@@ -1614,11 +1645,14 @@
 						ctx.lineWidth = this.lineWidth;
 						ctx.strokeStyle = this.lineColor;
 					}
-					ctx.moveTo(linePos,this.endPoint);
-					ctx.lineTo(linePos,this.startPoint - 3);
-					ctx.stroke();
-					ctx.closePath();
-
+					
+					if(index == 0 || (index+1) % xDrawEvery == 0 || index == this.xLabels.length-1)
+					{
+						ctx.moveTo(linePos,this.endPoint);
+						ctx.lineTo(linePos,this.startPoint - 3);
+						ctx.stroke();
+						ctx.closePath();
+					}
 
 					ctx.lineWidth = this.lineWidth;
 					ctx.strokeStyle = this.lineColor;
@@ -1630,15 +1664,21 @@
 					ctx.lineTo(linePos,this.endPoint + 5);
 					ctx.stroke();
 					ctx.closePath();
-
-					ctx.save();
-					ctx.translate(xPos,(isRotated) ? this.endPoint + 12 : this.endPoint + 8);
-					ctx.rotate(toRadians(this.xLabelRotation)*-1);
-					ctx.font = this.font;
-					ctx.textAlign = (isRotated) ? "right" : "center";
-					ctx.textBaseline = (isRotated) ? "middle" : "top";
-					ctx.fillText(label, 0, 0);
-					ctx.restore();
+					
+					if((index == 0 && !(this.limitXLabels && this.limitXLabelsTo == 0))  // First element, when limit >= 1
+						|| ((index % xDrawEvery == 0 && index < this.xLabels.length-1)  // Label every X elements
+						&& this.width - this.width/(this.xLabels.length-index-1) > this.fontSize)  // but skip when it's too close to the last one
+						|| (index == this.xLabels.length-1 && !(this.limitXLabels && this.limitXLabelsTo < 2)))  // Last element, when limit >= 2
+					{
+						ctx.save();
+						ctx.translate(xPos,(isRotated) ? this.endPoint + 12 : this.endPoint + 8);
+						ctx.rotate(toRadians(this.xLabelRotation)*-1);
+						ctx.font = this.font;
+						ctx.textAlign = (isRotated) ? "right" : "center";
+						ctx.textBaseline = (isRotated) ? "middle" : "top";
+						ctx.fillText(label, 0, 0);
+						ctx.restore();
+					}	
 				},this);
 
 			}
