@@ -2513,6 +2513,8 @@
 					strokeColor : dataset.strokeColor,
 					pointColor : dataset.pointColor,
 					pointStrokeColor : dataset.pointStrokeColor,
+					fillFrom : dataset.fillFrom,
+					fillTo : dataset.fillTo,
 					points : []
 				};
 
@@ -2766,9 +2768,32 @@
 				ctx.stroke();
 
 				if (this.options.datasetFill && pointsWithValues.length > 0){
-					//Round off the line by going to the base of the chart, back to the start, then fill.
-					ctx.lineTo(pointsWithValues[pointsWithValues.length - 1].x, this.scale.endPoint);
-					ctx.lineTo(pointsWithValues[0].x, this.scale.endPoint);
+					var defaultRangeEnd = pointsWithValues.length - 1;
+					var defaultRangeStart = 0;
+					var rangeEnd = defaultRangeEnd;
+					var rangeStart = defaultRangeStart;
+					//Establish fill boundries
+					if(dataset.fillTo < defaultRangeEnd  && dataset.fillTo > defaultRangeStart) {
+						rangeEnd = dataset.fillTo;
+					}
+					if(dataset.fillFrom > defaultRangeStart && dataset.fillFrom < defaultRangeEnd) {
+						rangeStart = dataset.fillFrom;
+					}
+					//Draw routine for selective chart fill
+					if(rangeEnd != defaultRangeEnd || rangeStart != defaultRangeStart) {
+						ctx.closePath();
+						ctx.beginPath();
+						ctx.moveTo(pointsWithValues[rangeEnd].x, this.scale.endPoint);
+						ctx.lineTo(pointsWithValues[rangeEnd].x, this.scale.endPoint);
+						ctx.lineTo(pointsWithValues[rangeStart].x, this.scale.endPoint);
+						for(var index = rangeStart; index <= rangeEnd; index++){
+							ctx.lineTo(pointsWithValues[index].x, pointsWithValues[index].y);
+						}
+					} else { //Fill the whole chart
+						//Round off the line by going to the base of the chart, back to the start, then fill.
+						ctx.lineTo(pointsWithValues[rangeEnd].x, this.scale.endPoint);
+						ctx.lineTo(pointsWithValues[rangeStart].x, this.scale.endPoint);
+					}
 					ctx.fillStyle = dataset.fillColor;
 					ctx.closePath();
 					ctx.fill();
@@ -2786,6 +2811,7 @@
 
 
 }).call(this);
+
 (function(){
 	"use strict";
 
