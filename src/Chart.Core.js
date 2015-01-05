@@ -71,6 +71,9 @@
 			// Interpolated JS string - can access value
 			scaleLabel: "<%=value%>",
 
+			// Number - How many X-Axis labels that should be skipped 
+			scaleLabelInterval: 1,
+
 			// Boolean - Whether the scale should stick to integers, and not show any floats even if drawing space is there
 			scaleIntegersOnly: true,
 
@@ -1495,7 +1498,7 @@
 					firstRotatedWidth;
 				this.xLabelWidth = originalLabelWidth;
 				//Allow 3 pixels x2 padding either side for label readability
-				var xGridWidth = Math.floor(this.calculateX(1) - this.calculateX(0)) - 6;
+				var xGridWidth = Math.floor(this.calculateX(this.scaleLabelInterval) - this.calculateX(0)) - 6;
 
 				//Max label rotate should be 90 - also act as a loop counter
 				while ((this.xLabelWidth > xGridWidth && this.xLabelRotation === 0) || (this.xLabelWidth > xGridWidth && this.xLabelRotation <= 90 && this.xLabelRotation > 0)){
@@ -1598,6 +1601,9 @@
 				},this);
 
 				each(this.xLabels,function(label,index){
+					if(index % this.scaleLabelInterval){
+						return;
+					}
 					var xPos = this.calculateX(index) + aliasPixel(this.lineWidth),
 						// Check to see if line/bar here and decide where to place the line
 						linePos = this.calculateX(index - (this.offsetGridLines ? 0.5 : 0)) + aliasPixel(this.lineWidth),

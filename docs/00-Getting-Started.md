@@ -105,6 +105,9 @@ Chart.defaults.global = {
 	// Interpolated JS string - can access value
 	scaleLabel: "<%=value%>",
 
+	// Number - How many X-Axis labels that should be skipped 
+	scaleLabelInterval: 1,
+
 	// Boolean - Whether the scale should stick to integers, not floats even if drawing space is there
 	scaleIntegersOnly: true,
 
