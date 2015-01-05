@@ -77,8 +77,10 @@
 						bar.restore(['fillColor', 'strokeColor']);
 					});
 					helpers.each(activeBars, function(activeBar){
-						activeBar.fillColor = activeBar.highlightFill;
-						activeBar.strokeColor = activeBar.highlightStroke;
+						if (activeBar) {
+							activeBar.fillColor = activeBar.highlightFill;
+							activeBar.strokeColor = activeBar.highlightStroke;
+						}
 					});
 					this.showTooltip(activeBars);
 				});

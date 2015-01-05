@@ -820,7 +820,9 @@
 		},
 		stop : function(){
 			// Stops any current animation loop occuring
-			helpers.cancelAnimFrame.call(root, this.animationFrame);
+			if(this.animationFrame){
+				helpers.cancelAnimFrame.call(root, this.animationFrame);
+			}
 			return this;
 		},
 		resize : function(callback){
@@ -900,6 +902,12 @@
 				if (this.datasets && this.datasets.length > 1) {
 					var dataArray,
 						dataIndex;
+
+					for (var i = ChartElements.length - 1; i >= 0; i--) {
+						if (ChartElements[i] === undefined) {
+							ChartElements.splice(i, 1);
+						}
+					}
 
 					for (var i = this.datasets.length - 1; i >= 0; i--) {
 						dataArray = this.datasets[i].points || this.datasets[i].bars || this.datasets[i].segments;
@@ -2021,8 +2029,10 @@
 						bar.restore(['fillColor', 'strokeColor']);
 					});
 					helpers.each(activeBars, function(activeBar){
-						activeBar.fillColor = activeBar.highlightFill;
-						activeBar.strokeColor = activeBar.highlightStroke;
+						if (activeBar) {
+							activeBar.fillColor = activeBar.highlightFill;
+							activeBar.strokeColor = activeBar.highlightStroke;
+						}
 					});
 					this.showTooltip(activeBars);
 				});
