@@ -41,6 +41,18 @@ var data = {
 			pointHighlightStroke: "rgba(151,187,205,1)",
 			data: [28, 48, 40, 19, 86, 27, 90]
 		}
+	],
+	plotLinesYAxis: [ //Optional array of horizontal lines
+		{
+			label: "my first plot line",
+			strokeColor: "rgb(109, 191, 109)",
+			value: 30
+		},
+		{
+			label: "my second plot line",
+			strokeColor: "rgb(252, 101, 101)",
+			value: 82
+		}
 	]
 };
 ```
@@ -95,7 +107,10 @@ These are the customisation options specific to Line charts. These options are m
 	{% raw %}
 	//String - A legend template
 	legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-	{% endraw %}
+	{% endraw %},
+
+	//Boolean - Whether the value of the plotlines should be considered when scaling the grid (not having this flag could result in not showing the plotline)
+	scalePlotLines: true
 };
 ```
 
