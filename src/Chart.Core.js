@@ -99,7 +99,7 @@
 			showTooltips: true,
 
 			// Boolean - Determines whether to draw built-in tooltip or call custom tooltip function
-			externalTooltips: false,
+			customTooltips: false,
 
 			// Array - Array of string names to attach tooltip events
 			tooltipEvents: ["mousemove", "touchstart", "touchmove", "mouseout"],
@@ -898,8 +898,8 @@
 				this.activeElements = ChartElements;
 			}
 			this.draw();
-			if(this.options.externalTooltips){
-				this.options.externalTooltips(false);
+			if(this.options.customTooltips){
+				this.options.customTooltips(false);
 			}
 			if (ChartElements.length > 0){
 				// If we have multiple datasets, show a MultiTooltip for all of the data points at that index
@@ -982,7 +982,7 @@
 						title: ChartElements[0].label,
 						chart: this.chart,
 						ctx: this.chart.ctx,
-						external: this.options.externalTooltips
+						custom: this.options.customTooltips
 					}).draw();
 
 				} else {
@@ -1002,7 +1002,7 @@
 							cornerRadius: this.options.tooltipCornerRadius,
 							text: template(this.options.tooltipTemplate, Element),
 							chart: this.chart,
-							external: this.options.externalTooltips
+							custom: this.options.customTooltips
 						}).draw();
 					}, this);
 				}
@@ -1281,8 +1281,8 @@
 			ctx.fillStyle = this.fillColor;
 
 			// Custom Tooltips
-			if(this.external){
-				this.external(this);
+			if(this.custom){
+				this.custom(this);
 			}
 			else{
 				switch(this.yAlign)
@@ -1381,8 +1381,8 @@
 		},
 		draw : function(){
 			// Custom Tooltips
-			if(this.external){
-				this.external(this);
+			if(this.custom){
+				this.custom(this);
 			}
 			else{
 				drawRoundedRectangle(this.ctx,this.x,this.y - this.height/2,this.width,this.height,this.cornerRadius);

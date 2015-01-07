@@ -132,8 +132,8 @@ Chart.defaults.global = {
 	// Boolean - Determines whether to draw tooltips on the canvas or not
 	showTooltips: true,
 
-	// Function - Determines whether to execute the externalTooltips function instead of drawing the built in tooltips (See [Advanced - External Tooltips](#advanced-usage-external-tooltips))
-	externalTooltips: false,
+	// Function - Determines whether to execute the customTooltips function instead of drawing the built in tooltips (See [Advanced - External Tooltips](#advanced-usage-custom-tooltips))
+	customTooltips: false,
 
 	// Array - Array of string names to attach tooltip events
 	tooltipEvents: ["mousemove", "touchstart", "touchmove"],

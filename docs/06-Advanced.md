@@ -72,11 +72,11 @@ myLineChart.generateLegend();
 
 ### External Tooltips
 
-You can enable external tooltips in the global or chart configuration like so:
+You can enable custom tooltips in the global or chart configuration like so:
 
 ```javascript
 var myPieChart = new Chart(ctx).Pie(data, {
-	externalTooltips: function(tooltip) {
+	customTooltips: function(tooltip) {
 
         // tooltip will be false if tooltip is not visible or should be hidden
         if (!tooltip) {
@@ -100,7 +100,7 @@ var myPieChart = new Chart(ctx).Pie(data, {
 });
 ```
 
-See files `sample/pie-externalTooltips.html` and `sample/line-externalTooltips.html` for examples on how to get started.
+See files `sample/pie-customTooltips.html` and `sample/line-customTooltips.html` for examples on how to get started.
 
 
 ### Writing new chart types
