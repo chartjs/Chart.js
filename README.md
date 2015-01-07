@@ -1,4 +1,4 @@
-# Chart.js
+# Chart.js with Error Bars
 
 *This is an fork of [Chart.js](http://www.chartjs.org) which supports error bars. It can be used as a stand-alone library or as an extension of the original library.
 
