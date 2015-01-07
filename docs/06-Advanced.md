@@ -126,6 +126,7 @@ new Chart(ctx).LineAlt(data);
 ### Community extensions
 
 - <a href="https://github.com/Regaddi/Chart.StackedBar.js" target"_blank">Stacked Bar Chart</a> by <a href="https://twitter.com/Regaddi" target="_blank">@Regaddi</a>
+- <a href="https://github.com/CAYdenberg/Chart.js" target"_blank">Error bars (bar and line charts)</a> by <a href="https://twitter.com/CAYdenberg" target="_blank">@CAYdenberg</a>
 
 ### Creating custom builds
 

@@ -6,6 +6,7 @@ var gulp = require('gulp'),
 	size = require('gulp-size'),
 	connect = require('gulp-connect'),
 	replace = require('gulp-replace'),
+	htmlv = require('gulp-html-validator'),
 	inquirer = require('inquirer'),
 	semver = require('semver'),
 	exec = require('child_process').exec,
@@ -90,6 +91,11 @@ gulp.task('jshint', function(){
 		.pipe(jshint.reporter('default'));
 });
 
+gulp.task('valid', function(){
+	return gulp.src('samples/*.html')
+    .pipe(htmlv());
+});
+
 gulp.task('library-size', function(){
 	return gulp.src('Chart.min.js')
 		.pipe(size({
@@ -110,7 +116,7 @@ gulp.task('watch', function(){
 	gulp.watch('./src/*', ['build']);
 });
 
-gulp.task('test', ['jshint']);
+gulp.task('test', ['jshint', 'valid']);
 
 gulp.task('size', ['library-size', 'module-sizes']);
 
