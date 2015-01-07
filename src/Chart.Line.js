@@ -163,7 +163,9 @@
 
 				return values;
 			};
-
+			if (typeof this.options.skipXLabels !== 'undefined') {
+			    this.options.skipXLabels = this.options.skipXLabels + 1;
+			}
 			var scaleOptions = {
 				templateString : this.options.scaleLabel,
 				height : this.chart.height,
@@ -186,6 +188,7 @@
 					);
 					helpers.extend(this, updatedRanges);
 				},
+				xLabelsSkip: this.options.skipXLabels,
 				xLabels : labels,
 				font : helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.scaleFontFamily),
 				lineWidth : this.options.scaleLineWidth,
