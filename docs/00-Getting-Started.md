@@ -183,14 +183,20 @@ Chart.defaults.global = {
 	// String - Template string for single tooltips
 	tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",
 	{% endraw %}
-	// String - Template string for single tooltips
+	// String - Template string for multi value tooltips
 	multiTooltipTemplate: "<%= value %>",
 
 	// Function - Will fire on animation progression.
 	onAnimationProgress: function(){},
 
 	// Function - Will fire on animation completion.
-	onAnimationComplete: function(){}
+	onAnimationComplete: function(){},
+	
+	// Boolean - Determines whether to show the sum of the values or not
+	tooltipShowSum: false,
+	
+	// String - Template string for sum in multi value tooltips
+	tooltipSumTemplate: "Sum: <%= sum %>"
 }
 ```
 
