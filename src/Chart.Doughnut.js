@@ -46,6 +46,9 @@
 		//Config is automatically merged by the core of Chart.js, and is available at this.options
 		initialize:  function(data){
 
+			// Save data as a source for updating of values & methods
+			this.data = data;
+
 			//Declare segments as a static property to prevent inheriting across the Chart type prototype
 			this.segments = [];
 			this.outerRadius = (helpers.min([this.chart.width,this.chart.height]) -	this.options.segmentStrokeWidth/2)/2;
@@ -118,6 +121,26 @@
 			},this);
 		},
 		update : function(){
+
+			// Map new data to data points
+			if(this.data.length == this.segments.length){
+				helpers.each(this.data, function(segment, i){
+					helpers.extend(this.segments[i], {
+						value : segment.value,
+						fillColor : segment.color,
+						highlightColor : segment.highlight || segment.color,
+						showStroke : this.options.segmentShowStroke,
+						strokeWidth : this.options.segmentStrokeWidth,
+						strokeColor : this.options.segmentStrokeColor,
+						label : segment.label
+					});
+				}, this);
+				console.log(this.data, this.segments);
+			} else{
+				// Data size changed without properly inserting, just redraw the chart
+				this.initialize(this.data);
+			}
+
 			this.calculateTotal(this.segments);
 
 			// Reset any highlight colours before updating.
