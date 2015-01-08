@@ -96,7 +96,7 @@ var myPieChart = new Chart(ctx).Pie(data, {
         // tooltip.y
         // etc...
 
-    };
+    }
 });
 ```
 
