@@ -204,7 +204,6 @@
 						value: segment.value,
 					});
 				},this);
-				console.log(this.data, this.segments);
 			} else{
 				// Data size changed without properly inserting, just redraw the chart
 				this.initialize(this.data);
