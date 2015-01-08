@@ -159,7 +159,7 @@
 			onAnimationProgress: function(){},
 
 			// Function - Will fire on animation completion.
-			onAnimationComplete: function(){}
+			onAnimationComplete: function(){},
 			
 			// Boolean - Determines whether to show the Sum of the values or not
 			tooltipShowSum: false,
@@ -1380,7 +1380,8 @@
 			var titleWidth = this.ctx.measureText(this.title).width,
 				//Label has a legend square as well so account for this.
 				labelWidth = longestText(this.ctx,this.font,this.labels) + this.fontSize + 3,
-				longestTextWidth = max([labelWidth,titleWidth]);
+				sumWidth = this.ctx.measureText(this.sumLabel).width,
+				longestTextWidth = max([labelWidth,titleWidth,sumWidth]);
 
 			this.width = longestTextWidth + (this.xPadding*2);
 
