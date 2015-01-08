@@ -794,35 +794,7 @@
 			ctx.lineTo(x, y + radius);
 			ctx.quadraticCurveTo(x, y, x + radius, y);
 			ctx.closePath();
-		},
-		//mathematical funcitons for handling error bars
-		average = helpers.average = function( data ) {
-			//calculate the average value 
-			var sum = 0;
-			for (var x = 0; x < data.length; x++) {
-				sum = sum + data[x];
-			}
-			return sum / data.length;
-		},
-		range = helpers.range = function(data) {
-			//calculate the range of the data 
-			//(the difference between the maximum and average value) 
-			data.sort(function(a, b){return a - b}); //sorts highest to lowest
-			var maximum = data[data.length - 1];
-			return maximum - helpers.average(data);
-		},
-		stdev = helpers.stdev = function(data) {
-			//return the standard deviation of an array of numbers
-			var sum = 0;
-			for (var x = 0; x < data.length; x++) {
-				sum = sum + Math.pow(data[x] - helpers.average(data), 2);
-			}
-			return Math.sqrt(sum / (data.length - 1));
-		},
-		stderr = helpers.stderr = function(data) {
-			return helpers.stdev(data) / Math.sqrt(data.length);
 		};
-
 
 
 	//Store a reference to each instance - allowing us to globally resize chart instances on window resize.
@@ -1258,6 +1230,7 @@
 				rightX = this.x + halfWidth,
 				top = this.base - (this.base - this.y),
 				halfStroke = this.strokeWidth / 2;
+
 			// Canvas doesn't allow us to stroke inside the width so we can
 			// adjust the sizes to fit if we're setting a stroke on the line
 			if (this.showStroke){
@@ -1265,6 +1238,7 @@
 				rightX -= halfStroke;
 				top += halfStroke;
 			}
+
 			ctx.beginPath();
 
 			ctx.fillStyle = this.fillColor;
@@ -1289,42 +1263,6 @@
 			return (chartX >= this.x - this.width/2 && chartX <= this.x + this.width/2) && (chartY >= this.y && chartY <= this.base);
 		}
 	});
-
-	Chart.ErrorBar = Chart.Rectangle.extend({
-		draw : function() {
-			var ctx = this.ctx,
-				halfWidth = this.width/2,
-				leftX = this.x - halfWidth,
-				rightX = this.x + halfWidth,
-				top = this.base - (this.base - this.yUp),
-				bottom = this.base - (this.base - this.yDown),
-				middle = this.base - (this.base - this.y)
-			ctx.strokeStyle = this.errorStrokeColor;
-			ctx.lineWidth = this.errorStrokeWidth;
-			//draw upper error bar
-			if (this.errorDir != "down") {		
-				ctx.beginPath();
-				ctx.moveTo(this.x, middle);
-				ctx.lineTo(this.x, top);
-				ctx.stroke();
-				ctx.beginPath();
-				ctx.moveTo(leftX, top);
-				ctx.lineTo(rightX, top);
-				ctx.stroke();
-			}			
-			//draw lower error bar
-			if (this.errorDir != "up") {						
-				ctx.beginPath();
-				ctx.moveTo(this.x, middle);
-				ctx.lineTo(this.x, bottom);
-				ctx.stroke();
-				ctx.beginPath();
-				ctx.moveTo(leftX, bottom);
-				ctx.lineTo(rightX, bottom);
-				ctx.stroke();					
-			}
-		}
-	})
 
 	Chart.Tooltip = Chart.Element.extend({
 		draw : function(){
@@ -2106,9 +2044,6 @@
 		//String - A legend template
 		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
 
-		//String - value of error bars: "none", "range", "stdev", "stderr"
-		error : "none",
-
 		//String - direction of the error bars. "Up", "down", or "both"
 		errorDir : "both",
 
@@ -2175,11 +2110,15 @@
 				ctx : this.chart.ctx
 			});
 
-			this.ErrorClass = Chart.ErrorBar.extend({
-				errorDir : this.options.errorDir,
-				errorStrokeWidth : this.options.errorStrokeWidth,
-				ctx : this.chart.ctx
-			})
+			if (typeof Chart.ErrorBar !== 'undefined') {
+				this.ErrorClass = Chart.ErrorBar.extend({
+					errorDir : this.options.errorDir,
+					errorStrokeWidth : this.options.errorStrokeWidth,
+					ctx : this.chart.ctx
+				});
+			} else {
+				this.ErrorClass = false;
+			}
 
 			//Iterate through each of the datasets, and build this into a property of the chart
 			helpers.each(data.datasets,function(dataset,datasetIndex){
@@ -2194,24 +2133,17 @@
 				this.datasets.push(datasetObject);
 
 				helpers.each(dataset.data,function(dataPoint,index){
-					if (typeof dataPoint === "number") var mean = dataPoint;
-					else var mean = helpers.average(dataPoint);
-					//calculate the error bars, if we're using them
-					//be sure there's at least 2 values in dataPoint or we might get a
-					//fatal error
-					if (options.error === "stdev" && dataPoint.length > 1) {
-						var errorBar = new this.ErrorClass({ errorVal : helpers.stdev(dataPoint) });
-					} else if (options.error === "range" && dataPoint.length > 1) {
-						var errorBar = new this.ErrorClass({ errorVal : helpers.range(dataPoint) });
-					} else if (options.error === "stderr" && dataPoint.length > 1) {
-						var errorBar = new this.ErrorClass({ errorVal: helpers.stderr(dataPoint) });
+					if (typeof dataset.error !== 'undefined' && this.ErrorClass) {
+						var errorBar = new this.ErrorClass({
+							errorVal : dataset.error[index],
+							errorStrokeColor : dataset.errorStrokeColor || dataset.strokeColor
+						})
 					} else {
 						var errorBar = false;
 					}
-					if (errorBar) errorBar.errorStrokeColor = dataset.errorStrokeColor || dataset.strokeColor;
 					//Add a new point for each piece of data, passing any required data to draw.
 					datasetObject.bars.push(new this.BarClass({
-						value : mean,
+						value : dataPoint,
 						errorBar : errorBar || false,
 						label : data.labels[index],
 						datasetLabel: dataset.label,
@@ -2228,7 +2160,7 @@
 			this.buildScale(data.labels);
 
 			this.BarClass.prototype.base = this.scale.endPoint;
-			this.ErrorClass.prototype.base = this.scale.endPoint;
+			if (Chart.ErrorBar) this.ErrorClass.prototype.base = this.scale.endPoint;
 
 			this.eachBars(function(bar, index, datasetIndex){
 				helpers.extend(bar, {
@@ -2668,11 +2600,8 @@
 		//String - A legend template
 		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
 
-		//String - value of error bars. "None", "stdev", "stderr", or "range"
-		error : "none",
-
 		//Number - Ratio of error bar cap length to the diameter of the points.
-		errorCapWidth : 2,
+		errorCapWidth : 2.5,
 
 		//Number. Pixel width of the error bars
 		errorStrokeWidth : 1,
@@ -2701,11 +2630,16 @@
 				}
 			});
 
-			this.ErrorClass = Chart.ErrorBar.extend({
-				errorDir : this.options.errorDir,
-				errorStrokeWidth : this.options.errorStrokeWidth,
-				ctx : this.chart.ctx
-			})
+			if (typeof Chart.ErrorBar !== 'undefined') {
+				this.ErrorClass = Chart.ErrorBar.extend({
+					errorDir : this.options.errorDir,
+					errorStrokeWidth : this.options.errorStrokeWidth,
+					ctx : this.chart.ctx
+				})
+			} else {
+				this.ErrorClass = false;
+			}
+
 			this.datasets = [];
 
 			//Set up tooltip events on the chart
@@ -2739,27 +2673,17 @@
 
 
 				helpers.each(dataset.data,function(dataPoint,index){
-					if (typeof dataPoint === "number") var mean = dataPoint;
-					else var mean = helpers.average(dataPoint);
-					//calculate the error bars, if we're using them
-					//be sure there's at least 2 values in dataPoint or we might get a
-					//fatal error
-					if (options.error === "stdev" && dataPoint.length > 1) {
-						var errorBar = new this.ErrorClass({ errorVal : helpers.stdev(dataPoint) });
-					} else if (options.error === "range" && dataPoint.length > 1) {
-						var errorBar = new this.ErrorClass({ errorVal : helpers.range(dataPoint) });
-					} else if (options.error === "stderr" && dataPoint.length > 1) {
-						var errorBar = new this.ErrorClass({ errorVal: helpers.stderr(dataPoint) });
+					if (typeof dataset.error !== 'undefined' && this.ErrorClass) {
+						var errorBar = new this.ErrorClass({
+							errorVal : dataset.error[index],
+							errorStrokeColor : dataset.errorStrokeColor || dataset.strokeColor
+						})
 					} else {
 						var errorBar = false;
 					}
-					if (errorBar) {
-						errorBar.errorStrokeColor = dataset.errorStrokeColor || dataset.strokeColor;
-						errorBar.width = options.pointDotRadius * 2 * options.errorCapWidth;
-					}
 					//Add a new point for each piece of data, passing any required data to draw.
 					datasetObject.points.push(new this.PointClass({
-						value : mean,
+						value : dataPoint,
 						errorBar : errorBar || false,
 						label : data.labels[index],
 						datasetLabel: dataset.label,
@@ -2771,7 +2695,7 @@
 				},this);
 
 				this.buildScale(data.labels);
-				this.ErrorClass.prototype.base = this.scale.endPoint;
+				if (this.ErrorClass) this.ErrorClass.prototype.base = this.scale.endPoint;
 
 				this.eachPoints(function(point, index){
 					helpers.extend(point, {
@@ -2784,7 +2708,8 @@
 							x : this.scale.calculateX(index),
 							y : this.scale.endPoint,
 							yUp : this.scale.endPoint,
-							yDown : this.scale.endPoint
+							yDown : this.scale.endPoint,
+							width : this.options.pointDotRadius * this.options.errorStrokeWidth
 						})
 						point.errorBar.save();
 					}
@@ -2953,7 +2878,7 @@
 							y : this.scale.calculateY(point.value),
 							yUp : this.scale.calculateY(point.value + point.errorBar.errorVal),
 							yDown : this.scale.calculateY(point.value - point.errorBar.errorVal),
-							width : point.errorBar.width,
+							width : this.options.pointDotRadius * this.options.errorCapWidth
 						}, easingDecimal);
 					}
 				},this);
@@ -3636,3 +3561,71 @@
 
 
 }).call(this);
+(function() {
+	//add an error bar class to the basic chart elements
+	Chart.ErrorBar = Chart.Rectangle.extend({
+		draw : function() {
+			var ctx = this.ctx,
+				halfWidth = this.width/2,
+				leftX = this.x - halfWidth,
+				rightX = this.x + halfWidth,
+				top = this.base - (this.base - this.yUp),
+				bottom = this.base - (this.base - this.yDown),
+				middle = this.base - (this.base - this.y)
+			ctx.strokeStyle = this.errorStrokeColor;
+			ctx.lineWidth = this.errorStrokeWidth;
+			//draw upper error bar
+			if (this.errorDir != "down") {		
+				ctx.beginPath();
+				ctx.moveTo(this.x, middle);
+				ctx.lineTo(this.x, top);
+				ctx.stroke();
+				ctx.beginPath();
+				ctx.moveTo(leftX, top);
+				ctx.lineTo(rightX, top);
+				ctx.stroke();
+			}			
+			//draw lower error bar
+			if (this.errorDir != "up") {						
+				ctx.beginPath();
+				ctx.moveTo(this.x, middle);
+				ctx.lineTo(this.x, bottom);
+				ctx.stroke();
+				ctx.beginPath();
+				ctx.moveTo(leftX, bottom);
+				ctx.lineTo(rightX, bottom);
+				ctx.stroke();					
+			}
+		}
+	})
+}).call(this);	
+
+/*
+//mathematical funcitons for handling error bars
+average = helpers.average = function( data ) {
+	//calculate the average value 
+	var sum = 0;
+	for (var x = 0; x < data.length; x++) {
+		sum = sum + data[x];
+	}
+	return sum / data.length;
+},
+range = helpers.range = function(data) {
+	//calculate the range of the data 
+	//(the difference between the maximum and average value) 
+	data.sort(function(a, b){return a - b}); //sorts highest to lowest
+	var maximum = data[data.length - 1];
+	return maximum - helpers.average(data);
+},
+stdev = helpers.stdev = function(data) {
+	//return the standard deviation of an array of numbers
+	var sum = 0;
+	for (var x = 0; x < data.length; x++) {
+		sum = sum + Math.pow(data[x] - helpers.average(data), 2);
+	}
+	return Math.sqrt(sum / (data.length - 1));
+},
+stderr = helpers.stderr = function(data) {
+	return helpers.stdev(data) / Math.sqrt(data.length);
+};
+*/
