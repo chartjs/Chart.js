@@ -149,7 +149,7 @@
 			// String - Template string for single tooltips
 			tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",
 
-			// String - Template string for single tooltips
+			// String - Template string for multi value tooltips
 			multiTooltipTemplate: "<%= value %>",
 
 			// String - Colour behind the legend colour block
@@ -159,7 +159,13 @@
 			onAnimationProgress: function(){},
 
 			// Function - Will fire on animation completion.
-			onAnimationComplete: function(){}
+			onAnimationComplete: function(){},
+			
+			// Boolean - Determines whether to show the Sum of the values or not
+			tooltipShowSum: false,
+			
+			// String - Template string for single tooltips
+			tooltipSumTemplate: "Sum: <%= sum %>",
 
 		}
 	};
@@ -933,6 +939,10 @@
 					}
 					var tooltipLabels = [],
 						tooltipColors = [],
+						tooltipSumObj = {
+							sum: 0
+						},
+						tooltipSumLabel = '',
 						medianPosition = (function(index) {
 
 							// Get all the points at that particular index
@@ -962,8 +972,12 @@
 									fill: element._saved.fillColor || element.fillColor,
 									stroke: element._saved.strokeColor || element.strokeColor
 								});
+								
+								tooltipSumObj.sum += element.value;
 
 							}, this);
+							
+							tooltipSumLabel = (helpers.template(this.options.tooltipSumTemplate, tooltipSumObj));
 
 							yMin = min(yPositions);
 							yMax = max(yPositions);
@@ -993,6 +1007,8 @@
 						titleFontStyle: this.options.tooltipTitleFontStyle,
 						titleFontSize: this.options.tooltipTitleFontSize,
 						cornerRadius: this.options.tooltipCornerRadius,
+						showSum: this.options.tooltipShowSum,
+						sumLabel: tooltipSumLabel,
 						labels: tooltipLabels,
 						legendColors: tooltipColors,
 						legendColorBackground : this.options.multiTooltipKeyBackground,
@@ -1353,14 +1369,19 @@
 
 			this.titleFont = fontString(this.titleFontSize,this.titleFontStyle,this.titleFontFamily);
 
-			this.height = (this.labels.length * this.fontSize) + ((this.labels.length-1) * (this.fontSize/2)) + (this.yPadding*2) + this.titleFontSize *1.5;
+			var labelsCount = this.labels.length;
+			if (this.showSum) {
+				labelsCount++;
+			}
+			this.height = (labelsCount * this.fontSize) + ((labelsCount-1) * (this.fontSize/2)) + (this.yPadding*2) + this.titleFontSize *1.5;
 
 			this.ctx.font = this.titleFont;
 
 			var titleWidth = this.ctx.measureText(this.title).width,
 				//Label has a legend square as well so account for this.
 				labelWidth = longestText(this.ctx,this.font,this.labels) + this.fontSize + 3,
-				longestTextWidth = max([labelWidth,titleWidth]);
+				sumWidth = this.ctx.measureText(this.sumLabel).width,
+				longestTextWidth = max([labelWidth,titleWidth,sumWidth]);
 
 			this.width = longestTextWidth + (this.xPadding*2);
 
@@ -1403,7 +1424,8 @@
 			}
 			else{
 				drawRoundedRectangle(this.ctx,this.x,this.y - this.height/2,this.width,this.height,this.cornerRadius);
-				var ctx = this.ctx;
+				var ctx = this.ctx,
+					lastIndex = 0;
 				ctx.fillStyle = this.fillColor;
 				ctx.fill();
 				ctx.closePath();
@@ -1429,9 +1451,16 @@
 
 					ctx.fillStyle = this.legendColors[index].fill;
 					ctx.fillRect(this.x + this.xPadding, this.getLineHeight(index + 1) - this.fontSize/2, this.fontSize, this.fontSize);
-
+					
+					lastIndex = index + 1;
 
 				},this);
+				
+				if (this.showSum) {
+					ctx.fillStyle = this.textColor;
+					ctx.fillText(this.sumLabel,this.x + this.xPadding, this.getLineHeight(lastIndex + 1));
+				}
+				
 			}
 		}
 	});
