@@ -39,7 +39,7 @@ Guidlines:
 
  - Please ask before starting significant work on a pull request to check it's a change within the project scope, and isn't a duplicate effort
  - Please make changes to the files in [`/src`](https://github.com/nnnick/Chart.js/tree/master/src), not `Chart.js` or `Chart.min.js` in the repo root directory
- - Tabs for indentation, not spaces please.
+ - Tabs for indentation, not spaces please
  - If adding new functionality, please also update the relevant `.md` file in [`/docs`](https://github.com/nnnick/Chart.js/tree/master/docs)
  - Please make your commits in logical sections with clear commit messages
  - Please avoid committing in the build Chart.js & Chart.min.js file, as it may cause conflicts when merging back
