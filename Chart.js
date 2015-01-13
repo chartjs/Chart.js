@@ -89,6 +89,9 @@
 			// String - Scale label font colour
 			scaleFontColor: "#666",
 
+			// Number - Set the max height of the x-scale. Rotation and Label Skipping will auto fit to this height.
+			scaleXMaxHeight: false,
+
 			// Boolean - whether or not the chart should be responsive and resize when the browser does.
 			responsive: false,
 
@@ -1516,6 +1519,7 @@
 
 			var firstWidth = this.ctx.measureText(this.xLabels[0]).width,
 				lastWidth = this.ctx.measureText(this.xLabels[this.xLabels.length - 1]).width,
+				maxRotation = 90,
 				firstRotated,
 				lastRotated;
 
@@ -1523,17 +1527,22 @@
 			this.xScalePaddingRight = lastWidth/2 + 3;
 			this.xScalePaddingLeft = (firstWidth/2 > this.yLabelWidth + 10) ? firstWidth/2 : this.yLabelWidth + 10;
 
+
 			this.xLabelRotation = 0;
 			if (this.display){
 				var originalLabelWidth = longestText(this.ctx,this.font,this.xLabels),
 					cosRotation,
 					firstRotatedWidth;
 				this.xLabelWidth = originalLabelWidth;
+				if(this.xLabelWidth > this.scaleXMaxHeight){
+					this.labelFrequency = this.xLabelWidth / this.scaleXMaxHeight;
+					maxRotation = maxRotation / this.labelFrequency;
+				}
 				//Allow 3 pixels x2 padding either side for label readability
 				var xGridWidth = Math.floor(this.calculateX(1) - this.calculateX(0)) - 6;
 
 				//Max label rotate should be 90 - also act as a loop counter
-				while ((this.xLabelWidth > xGridWidth && this.xLabelRotation === 0) || (this.xLabelWidth > xGridWidth && this.xLabelRotation <= 90 && this.xLabelRotation > 0)){
+				while ((this.xLabelWidth > xGridWidth && this.xLabelRotation === 0) || (this.xLabelWidth > xGridWidth && this.xLabelRotation <= maxRotation && this.xLabelRotation > 0)){
 					cosRotation = Math.cos(toRadians(this.xLabelRotation));
 
 					firstRotated = cosRotation * firstWidth;
@@ -1645,6 +1654,9 @@
 				},this);
 
 				each(this.xLabels,function(label,index){
+					if(index % Math.ceil(this.labelFrequency)){
+						return;
+					}
 					var xPos = this.calculateX(index) + aliasPixel(this.lineWidth),
 						// Check to see if line/bar here and decide where to place the line
 						linePos = this.calculateX(index - (this.offsetGridLines ? 0.5 : 0)) + aliasPixel(this.lineWidth),
@@ -2222,7 +2234,8 @@
 				gridLineColor : (this.options.scaleShowGridLines) ? this.options.scaleGridLineColor : "rgba(0,0,0,0)",
 				padding : (this.options.showScale) ? 0 : (this.options.barShowStroke) ? this.options.barStrokeWidth : 0,
 				showLabels : this.options.scaleShowLabels,
-				display : this.options.showScale
+				display : this.options.showScale,
+				scaleXMaxHeight : this.options.scaleXMaxHeight
 			};
 
 			if (this.options.scaleOverride){
@@ -2693,7 +2706,8 @@
 				gridLineColor : (this.options.scaleShowGridLines) ? this.options.scaleGridLineColor : "rgba(0,0,0,0)",
 				padding: (this.options.showScale) ? 0 : this.options.pointDotRadius + this.options.pointDotStrokeWidth,
 				showLabels : this.options.scaleShowLabels,
-				display : this.options.showScale
+				display : this.options.showScale,
+				scaleXMaxHeight : this.options.scaleXMaxHeight
 			};
 
 			if (this.options.scaleOverride){
