@@ -67,6 +67,9 @@ These are the customisation options specific to Radar charts. These options are 
 	//Boolean - Whether to show labels on the scale
 	scaleShowLabels : false,
 
+	//Boolean - Whether to show labels on the x-axis
+	scaleShowXLabels : false,
+
 	// Boolean - Whether the scale should begin at zero
 	scaleBeginAtZero : true,
 

@@ -102,6 +102,9 @@ Chart.defaults.global = {
 	// Boolean - Whether to show labels on the scale
 	scaleShowLabels: true,
 
+	// Boolean - Whether to show labels on the x-axis
+	scaleXShowLabels: true,
+
 	// Interpolated JS string - can access value
 	scaleLabel: "<%=value%>",
 

@@ -68,6 +68,9 @@
 			// Boolean - Whether to show labels on the scale
 			scaleShowLabels: true,
 
+			// Boolean - Whether to show labels on the x-axis
+			scaleShowXLabels: true,
+
 			// Interpolated JS string - can access value
 			scaleLabel: "<%=value%>",
 
@@ -1695,7 +1698,9 @@
 					ctx.font = this.font;
 					ctx.textAlign = (isRotated) ? "right" : "center";
 					ctx.textBaseline = (isRotated) ? "middle" : "top";
-					ctx.fillText(label, 0, 0);
+          if (this.showXLabels){
+            ctx.fillText(label, 0, 0);
+          }
 					ctx.restore();
 				},this);
 
@@ -2222,6 +2227,7 @@
 				gridLineColor : (this.options.scaleShowGridLines) ? this.options.scaleGridLineColor : "rgba(0,0,0,0)",
 				padding : (this.options.showScale) ? 0 : (this.options.barShowStroke) ? this.options.barStrokeWidth : 0,
 				showLabels : this.options.scaleShowLabels,
+				showXLabels : this.options.scaleShowXLabels,
 				display : this.options.showScale
 			};
 
@@ -2693,6 +2699,7 @@
 				gridLineColor : (this.options.scaleShowGridLines) ? this.options.scaleGridLineColor : "rgba(0,0,0,0)",
 				padding: (this.options.showScale) ? 0 : this.options.pointDotRadius + this.options.pointDotStrokeWidth,
 				showLabels : this.options.scaleShowLabels,
+				showXLabels : this.options.scaleShowXLabels,
 				display : this.options.showScale
 			};
 
