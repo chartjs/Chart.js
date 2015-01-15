@@ -109,12 +109,12 @@
 			}
 		},
 		calculateCircumference : function(value){
-			return (Math.PI*2)*(value / this.total);
+			return (Math.PI*2)*(Math.abs(value) / this.total);
 		},
 		calculateTotal : function(data){
 			this.total = 0;
 			helpers.each(data,function(segment){
-				this.total += segment.value;
+				this.total += Math.abs(segment.value);
 			},this);
 		},
 		update : function(){
