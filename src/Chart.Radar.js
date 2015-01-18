@@ -185,6 +185,7 @@
 				pointLabelFontSize : this.options.pointLabelFontSize,
 				pointLabelFontFamily : this.options.pointLabelFontFamily,
 				pointLabelFontStyle : this.options.pointLabelFontStyle,
+				pointLabelDelimiter: this.options.pointLabelDelimiter,
 				height : this.chart.height,
 				width: this.chart.width,
 				xCenter: this.chart.width/2,

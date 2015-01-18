@@ -202,7 +202,11 @@ Chart.defaults.global = {
 	onAnimationProgress: function(){},
 
 	// Function - Will fire on animation completion.
-	onAnimationComplete: function(){}
+	onAnimationComplete: function(){},
+
+	// String - Label delimiter
+	pointLabelDelimiter: "\n"
+	
 }
 ```
 
