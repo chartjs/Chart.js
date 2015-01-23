@@ -160,8 +160,8 @@
             this.BarClass.prototype.base = this.scale.endPoint;
             this.eachBars(function(bar, index, datasetIndex) {
                 helpers.extend(bar, {
-                    width: this.scale.calculateBarWidth(this.barDatasets.length),
-                    x: this.scale.calculateBarX(this.barDatasets.length, datasetIndex, index),
+                    width: this.scale.calculateBarWidth(this.barDatasets.length,this.options.stacked),
+                    x: this.scale.calculateBarX(this.barDatasets.length, datasetIndex, index,this.options.stacked),
                     y: this.scale.endPoint
                 });
                 bar.save();

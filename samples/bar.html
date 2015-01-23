@@ -2,9 +2,9 @@
 <html>
 	<head>
 		<title>Bar Chart</title>
-		<!-- <script src="../Chart.js"></script> -->
-     <script src="../src/Chart.Core.js"></script>
-     <script src="../src/Chart.Bar.js"></script>
+		<script src="../Chart.js"></script>
+     <!-- <script src="../src/Chart.Core.js"></script> -->
+     <!-- <script src="../src/Chart.Bar.js"></script> -->
 	</head>
 	<body>
 		<div style="width: 50%">
@@ -46,7 +46,6 @@
 		var ctx = document.getElementById("canvas").getContext("2d");
 		window.myBar = new Chart(ctx).Bar(barChartData, {
 			stacked : true,
-			animation:false
 		});
 	}
 
