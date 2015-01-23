@@ -304,9 +304,8 @@
 
 
             helpers.each(this.datasets, function(dataset) {
-
-                //Transition each point first so that the line and point drawing isn't out of sync
-                //We can use this extra loop to calculate the control points of this dataset also in this loop
+                    //Transition each point first so that the line and point drawing isn't out of sync
+                    //We can use this extra loop to calculate the control points of this dataset also in this loop
 
                 helpers.each(dataset.points, function(point, index) {
                     point.transition({
@@ -347,6 +346,7 @@
 
                 var penDown = false;
                 var start = null;
+                var started = false;
 
                 helpers.each(dataset.points, function(point, index) {
 
@@ -355,25 +355,30 @@
                      * or if this point is ignore
                      * or if it's the first
                      */
-                    if ((!point.ignore || this.options.populateSparseData) && !penDown) {
+                    if ((!point.ignore || (this.options.populateSparseData && started)) && !penDown) {
                         ctx.beginPath();
                         penDown = true;
                         start = point;
+                        started = true;
                     }
                     if (index > 0 && (!dataset.points[index - 1].ignore || this.options.populateSparseData) && (!point.ignore || this.options.populateSparseData)) {
-
                         if (dataset.points[index].ignore) {
 
-                        } else
-                        if (this.options.bezierCurve) {
-                            ctx.bezierCurveTo(
-                                dataset.points[index - 1].controlPoints.outer.x,
-                                dataset.points[index - 1].controlPoints.outer.y,
-                                point.controlPoints.inner.x,
-                                point.controlPoints.inner.y,
-                                point.x,
-                                point.y
-                            );
+                        } else if (this.options.bezierCurve) {
+                            var lastDataPoint = this.getLastDataPoint(dataset, index);
+                            if (lastDataPoint) {
+
+                                ctx.bezierCurveTo(
+                                    lastDataPoint.controlPoints.outer.x,
+                                    lastDataPoint.controlPoints.outer.y,
+                                    point.controlPoints.inner.x,
+                                    point.controlPoints.inner.y,
+                                    point.x,
+                                    point.y
+                                );
+                            } else {
+                                ctx.moveTo(point.x, point.y);
+                            }
                         } else {
                             ctx.lineTo(point.x, point.y);
                         }
@@ -424,26 +429,39 @@
 
         getLastDataPoint: function(dataset, index) {
             var lastPointWithData = null;
-            for (var i = index - 1; i >= 0; i--) {
-                if (!dataset.points[i].ignore) {
-                    lastPointWithData = dataset.points[i];
-                    break;
+            if (this.options.populateSparseData) {
+                for (var i = index - 1; i >= 0; i--) {
+                    if (!dataset.points[i].ignore) {
+                        lastPointWithData = dataset.points[i];
+                        break;
+                    }
+                }
+            } else {
+                index--;
+                if (index >= 0 && !dataset.points[index].ignore) {
+                    lastPointWithData = dataset.points[index];
                 }
             }
-
-            console.log("last for %s is %s", index, i)
             return lastPointWithData;
         },
 
         getNextDataPoint: function(dataset, index) {
             var nextDataPoint = null;
-            for (var i = index + 1; i < dataset.points.length; i++) {
-                if (!dataset.points[i].ignore) {
-                    nextDataPoint = dataset.points[i];
-                    break;
+            if (this.options.populateSparseData) {
+                for (var i = index + 1; i < dataset.points.length; i++) {
+                    if (!dataset.points[i].ignore) {
+                        nextDataPoint = dataset.points[i];
+                        break;
+                    }
+                }
+
+
+            } else {
+                index++;
+                if (index < dataset.points.length && !dataset.points[index].ignore) {
+                    nextDataPoint = dataset.points[index];
                 }
             }
-            console.log("next for %s is %s", index, i)
             return nextDataPoint;
         },
 
