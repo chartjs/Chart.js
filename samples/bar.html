@@ -2,7 +2,9 @@
 <html>
 	<head>
 		<title>Bar Chart</title>
-		<script src="../Chart.js"></script>
+		<!-- <script src="../Chart.js"></script> -->
+     <script src="../src/Chart.Core.js"></script>
+     <script src="../src/Chart.Bar.js"></script>
 	</head>
 	<body>
 		<div style="width: 50%">
@@ -29,6 +31,13 @@
 				highlightFill : "rgba(151,187,205,0.75)",
 				highlightStroke : "rgba(151,187,205,1)",
 				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+			},
+			{
+				fillColor : "rgba(15,18,20,0.5)",
+				strokeColor : "rgba(15,18,20,0.8)",
+				highlightFill : "rgba(15,18,20,0.75)",
+				highlightStroke : "rgba(15,18,20,1)",
+				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
 			}
 		]
 
@@ -36,7 +45,8 @@
 	window.onload = function(){
 		var ctx = document.getElementById("canvas").getContext("2d");
 		window.myBar = new Chart(ctx).Bar(barChartData, {
-			responsive : true
+			stacked : true,
+			animation:false
 		});
 	}
 

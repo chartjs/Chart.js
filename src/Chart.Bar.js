@@ -37,8 +37,12 @@
         //Number - Spacing between data sets within X values
         barDatasetSpacing: 1,
 
+        //Boolean - bars are stacked behind each other (smallest at front)
+        stacked: false,
+
         //String - A legend template
         legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+
 
     };
 
@@ -49,21 +53,27 @@
         initialize: function(data) {
             //Expose options as a scope variable here so we can access it in the ScaleClass
             var options = this.options;
-
             this.ScaleClass = Chart.Scale.extend({
                 offsetGridLines: true,
-                calculateBarX: function(datasetCount, datasetIndex, barIndex) {
+                calculateBarX: function(datasetCount, datasetIndex, barIndex, stacked) {
+
+                    if (stacked) {
+                        datasetIndex = 0;
+                    }
                     //Reusable method for calculating the xPosition of a given bar based on datasetIndex & width of the bar
                     var xWidth = this.calculateBaseWidth(),
                         xAbsolute = this.calculateX(barIndex) - (xWidth / 2),
-                        barWidth = this.calculateBarWidth(datasetCount);
+                        barWidth = this.calculateBarWidth(datasetCount, stacked);
 
                     return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * options.barDatasetSpacing) + barWidth / 2;
                 },
                 calculateBaseWidth: function() {
                     return (this.calculateX(1) - this.calculateX(0)) - (2 * options.barValueSpacing);
                 },
-                calculateBarWidth: function(datasetCount) {
+                calculateBarWidth: function(datasetCount, stacked) {
+                    if (stacked) {
+                        datasetCount = 1;
+                    }
                     //The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
                     var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * options.barDatasetSpacing);
 
@@ -113,7 +123,7 @@
                     //Add a new point for each piece of data, passing any required data to draw.
                     datasetObject.bars.push(new this.BarClass({
                         value: dataPoint,
-                        showTooltip:dataset.showTooltip === undefined?true:dataset.showTooltip,
+                        showTooltip: dataset.showTooltip === undefined ? true : dataset.showTooltip,
                         label: data.labels[index],
                         datasetLabel: dataset.label,
                         strokeColor: dataset.strokeColor,
@@ -132,8 +142,8 @@
 
             this.eachBars(function(bar, index, datasetIndex) {
                 helpers.extend(bar, {
-                    width: this.scale.calculateBarWidth(this.datasets.length),
-                    x: this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
+                    width: this.scale.calculateBarWidth(this.datasets.length, this.options.stacked),
+                    x: this.scale.calculateBarX(this.datasets.length, datasetIndex, index, this.options.stacked),
                     y: this.scale.endPoint
                 });
                 bar.save();
@@ -168,7 +178,7 @@
 
             for (var datasetIndex = 0; datasetIndex < this.datasets.length; datasetIndex++) {
                 for (barIndex = 0; barIndex < this.datasets[datasetIndex].bars.length; barIndex++) {
-                    if (this.datasets[datasetIndex].bars[barIndex].inRange(eventPosition.x, eventPosition.y)&& this.datasets[datasetIndex].bars[barIndex].showTooltip) {
+                    if (this.datasets[datasetIndex].bars[barIndex].inRange(eventPosition.x, eventPosition.y) && this.datasets[datasetIndex].bars[barIndex].showTooltip) {
                         helpers.each(this.datasets, datasetIterator);
                         return barsArray;
                     }
@@ -241,9 +251,9 @@
                 this.datasets[datasetIndex].bars.push(new this.BarClass({
                     value: value,
                     label: label,
-                    x: this.scale.calculateBarX(this.datasets.length, datasetIndex, this.scale.valuesCount + 1),
+                    x: this.scale.calculateBarX(this.datasets.length, datasetIndex, this.scale.valuesCount + 1, this.options.stacked),
                     y: this.scale.endPoint,
-                    width: this.scale.calculateBarWidth(this.datasets.length),
+                    width: this.scale.calculateBarWidth(this.datasets.length, this.options.stacked),
                     base: this.scale.endPoint,
                     strokeColor: this.datasets[datasetIndex].strokeColor,
                     fillColor: this.datasets[datasetIndex].fillColor
@@ -274,23 +284,83 @@
             this.scale.update(newScaleProps);
         },
 
+
+        getLargestValue: function(array) {
+            var largest = array[0]
+
+            for (var i = 1; i < array.length; i++) {
+                if (array[i].value > largest.value) {
+                    largest = array[i];
+                }
+            }
+
+            return largest;
+        },
         //extracted from draw so it can be used to draw any bar datasets
         drawDatasets: function(datasets, easingDecimal) {
-            //Draw all the bars for each dataset
-            helpers.each(datasets, function(dataset, datasetIndex) {
-                helpers.each(dataset.bars, function(bar, index) {
-                    if (bar.hasValue()) {
-                        bar.base = this.scale.endPoint;
-                        //Transition then draw
-                        bar.transition({
-                            x: this.scale.calculateBarX(datasets.length, datasetIndex, index),
-                            y: this.scale.calculateY(bar.value),
-                            width: this.scale.calculateBarWidth(datasets.length)
-                        }, easingDecimal).draw();
-                    }
-                }, this);
 
-            }, this);
+            if (this.options.stacked && datasets[0]) {
+
+                //go through each data set and sort in order of value size
+
+                for (var index = 0; index < datasets[0].bars.length; index++) {
+                    var drawBucket = [];
+                    for (var datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
+                        var value = datasets[datasetIndex].bars[index].value;
+                        drawBucket.push({
+                            value: value,
+                            index: index,
+                            datasetIndex: datasetIndex
+                        });
+                    }
+
+                    while (drawBucket.length > 0 ) {
+                        var bucketInfo = this.getLargestValue(drawBucket);
+                        var bar = datasets[bucketInfo.datasetIndex].bars[bucketInfo.index];
+                        if (bar.hasValue()) {
+                            bar.base = this.scale.endPoint;
+                            //Transition then draw
+                            bar.transition({
+                                x: this.scale.calculateBarX(datasets.length, datasetIndex, index, this.options.stacked),
+                                y: this.scale.calculateY(bar.value),
+                                width: this.scale.calculateBarWidth(datasets.length, this.options.stacked)
+                            }, easingDecimal).draw();
+                        }
+                        var objectIndex = helpers.indexOf(drawBucket, bucketInfo);
+                        if (objectIndex === 0) {
+                            if (drawBucket.length === 1)
+                            {
+                                drawBucket = [];
+                            }else{
+                                drawBucket = drawBucket.slice((drawBucket.length * -1) +1);
+
+                            }
+                        } else {
+                            drawBucket = drawBucket.slice(0, objectIndex).concat(drawBucket.slice(objectIndex + 1, drawBucket.length));
+                        }
+                    }
+                }
+
+
+
+            } else {
+                //Draw all the bars for each dataset
+                helpers.each(datasets, function(dataset, datasetIndex) {
+                    helpers.each(dataset.bars, function(bar, index) {
+                        if (bar.hasValue()) {
+                            bar.base = this.scale.endPoint;
+                            //Transition then draw
+                            bar.transition({
+                                x: this.scale.calculateBarX(datasets.length, datasetIndex, index, this.options.stacked),
+                                y: this.scale.calculateY(bar.value),
+                                width: this.scale.calculateBarWidth(datasets.length, this.options.stacked)
+                            }, easingDecimal).draw();
+                        }
+                    }, this);
+
+                }, this);
+            }
+
 
         },
         draw: function(ease) {

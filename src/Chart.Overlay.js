@@ -20,20 +20,27 @@
             this.lineDatasets = [];
 
             //generate the scale, let bar take control here as he needs the width.
-            this.ScaleClass = Chart.Scale.extend({
+           this.ScaleClass = Chart.Scale.extend({
                 offsetGridLines: true,
-                calculateBarX: function(datasetCount, datasetIndex, barIndex) {
+                calculateBarX: function(datasetCount, datasetIndex, barIndex, stacked) {
+
+                    if (stacked) {
+                        datasetIndex = 0;
+                    }
                     //Reusable method for calculating the xPosition of a given bar based on datasetIndex & width of the bar
                     var xWidth = this.calculateBaseWidth(),
                         xAbsolute = this.calculateX(barIndex) - (xWidth / 2),
-                        barWidth = this.calculateBarWidth(datasetCount);
+                        barWidth = this.calculateBarWidth(datasetCount, stacked);
 
                     return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * options.barDatasetSpacing) + barWidth / 2;
                 },
                 calculateBaseWidth: function() {
                     return (this.calculateX(1) - this.calculateX(0)) - (2 * options.barValueSpacing);
                 },
-                calculateBarWidth: function(datasetCount) {
+                calculateBarWidth: function(datasetCount, stacked) {
+                    if (stacked) {
+                        datasetCount = 1;
+                    }
                     //The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
                     var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * options.barDatasetSpacing);
 
@@ -357,9 +364,8 @@
             this.clear();
 
             this.scale.draw(easingDecimal);
-
-            Chart.types.Line.prototype.drawDatasets.call(this, this.lineDatasets, easingDecimal);
             Chart.types.Bar.prototype.drawDatasets.call(this, this.barDatasets, easingDecimal);
+            Chart.types.Line.prototype.drawDatasets.call(this, this.lineDatasets, easingDecimal);
 
         },
         showTooltip: function(ChartElements, forceRedraw) {
