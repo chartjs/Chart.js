@@ -162,6 +162,10 @@
 
             this.render();
         },
+
+        getLastDataPoint: Chart.types.Line.prototype.getLastDataPoint,
+        getNextDataPoint: Chart.types.Line.prototype.getNextDataPoint,
+        getThisPoint: Chart.types.Line.prototype.getThisPoint,
         buildScale: function(labels) {
             var self = this;
 
@@ -170,9 +174,9 @@
                 self.eachBars(function(bar) {
                     values.push(bar.value);
                 });
-                self.eachPoints(function(point){
-					values.push(point.value);
-				});
+                self.eachPoints(function(point) {
+                    values.push(point.value);
+                });
                 return values;
             };
 
@@ -222,6 +226,7 @@
 
             this.scale = new this.ScaleClass(scaleOptions);
         },
+
         update: function() {
             this.scale.update();
             // Reset any highlight colours before updating.

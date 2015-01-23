@@ -3,7 +3,11 @@
 
 <head>
     <title>Overlay Chart</title>
-    <script src="../Chart.js"></script>
+    <!-- <script src="../Chart.js"></script> -->
+     <script src="../src/Chart.Core.js"></script>
+     <script src="../src/Chart.Line.js"></script>
+     <script src="../src/Chart.Bar.js"></script>
+    <script src="../src/Chart.Overlay.js"></script>
     <meta name="viewport" content="initial-scale = 1, user-scalable = no">
     <style>
         canvas {}
@@ -28,7 +32,7 @@
                 pointStrokeColor: "#fff",
                 pointHighlightFill: "#fff",
                 pointHighlightStroke: "rgba(220,220,220,1)",
-                data: [65, 159, null, 81, 56, 55, 40]
+                data: [65, null, null, 81, 56, 55, 40]
             }, {
                 label: "My Second dataset",
                 type: "bar",
@@ -41,7 +45,10 @@
         };
 
         window.onload = function() {
-            window.myOverlayChart = new Chart(document.getElementById("canvas").getContext("2d")).Overlay(overlayData);
+            window.myOverlayChart = new Chart(document.getElementById("canvas").getContext("2d")).Overlay(overlayData,{
+            animation:false,
+            populateSparseData: true,
+        });
         }
     </script>
 </body>
