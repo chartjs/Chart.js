@@ -825,7 +825,7 @@
 		},
 		stop : function(){
 			// Stops any current animation loop occuring
-			helpers.cancelAnimFrame.call(root, this.animationFrame);
+			helpers.cancelAnimFrame(this.animationFrame);
 			return this;
 		},
 		resize : function(callback){
