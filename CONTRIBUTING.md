@@ -44,6 +44,9 @@ Guidlines:
  - Please make your commits in logical sections with clear commit messages
  - Please avoid committing in the build Chart.js & Chart.min.js file, as it may cause conflicts when merging back
 
+Joining the Project
+-------------
+ - Active committers and contributors are invited to introduce yourself and request commit access to this project.  Please send an email to hello@nickdownie.com or file an issue. 
 
 License
 -------
