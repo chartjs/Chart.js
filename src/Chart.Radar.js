@@ -110,13 +110,20 @@
 
 				this.datasets.push(datasetObject);
 
+                var templateVars = {};
+                helpers.each(dataset, function (value, key) {
+                    if (key.indexOf('tpl_var') ==0) {
+                        templateVars[key] = value;
+                    }
+                }, this);
+
 				helpers.each(dataset.data,function(dataPoint,index){
 					//Add a new point for each piece of data, passing any required data to draw.
 					var pointPosition;
 					if (!this.scale.animation){
 						pointPosition = this.scale.getPointPosition(index, this.scale.calculateCenterOffset(dataPoint));
 					}
-					datasetObject.points.push(new this.PointClass({
+					datasetObject.points.push(new this.PointClass(helpers.merge(templateVars, {
 						value : dataPoint,
 						label : data.labels[index],
 						datasetLabel: dataset.label,
@@ -126,7 +133,7 @@
 						fillColor : dataset.pointColor,
 						highlightFill : dataset.pointHighlightFill || dataset.pointColor,
 						highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor
-					}));
+					})));
 				},this);
 
 			},this);

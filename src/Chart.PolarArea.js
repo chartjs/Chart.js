@@ -130,7 +130,14 @@
 		addData : function(segment, atIndex, silent){
 			var index = atIndex || this.segments.length;
 
-			this.segments.splice(index, 0, new this.SegmentArc({
+            var templateVars = {};
+            helpers.each(segment, function (value, key) {
+                if (key.indexOf('tpl_var') ==0) {
+                    templateVars[key] = value;
+                }
+            }, this);
+
+			this.segments.splice(index, 0, new this.SegmentArc(helpers.merge(templateVars, {
 				fillColor: segment.color,
 				highlightColor: segment.highlight || segment.color,
 				label: segment.label,
@@ -138,7 +145,7 @@
 				outerRadius: (this.options.animateScale) ? 0 : this.scale.calculateCenterOffset(segment.value),
 				circumference: (this.options.animateRotate) ? 0 : this.scale.getCircumference(),
 				startAngle: Math.PI * 1.5
-			}));
+			})));
 			if (!silent){
 				this.reflow();
 				this.update();

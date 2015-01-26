@@ -90,7 +90,15 @@
 		},
 		addData : function(segment, atIndex, silent){
 			var index = atIndex || this.segments.length;
-			this.segments.splice(index, 0, new this.SegmentArc({
+
+            var templateVars = {};
+            helpers.each(segment, function (value, key) {
+                if (key.indexOf('tpl_var') == 0) {
+                    templateVars[key] = value;
+                }
+            }, this);
+
+			this.segments.splice(index, 0, new this.SegmentArc(helpers.merge(templateVars,{
 				value : segment.value,
 				outerRadius : (this.options.animateScale) ? 0 : this.outerRadius,
 				innerRadius : (this.options.animateScale) ? 0 : (this.outerRadius/100) * this.options.percentageInnerCutout,
@@ -102,7 +110,7 @@
 				startAngle : Math.PI * 1.5,
 				circumference : (this.options.animateRotate) ? 0 : this.calculateCircumference(segment.value),
 				label : segment.label
-			}));
+			})));
 			if (!silent){
 				this.reflow();
 				this.update();

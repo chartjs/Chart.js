@@ -109,9 +109,16 @@
 
 				this.datasets.push(datasetObject);
 
+                var templateVars = {};
+                helpers.each(dataset, function (value, key) {
+                    if (key.indexOf('tpl_var') ==0) {
+                        templateVars[key] = value;
+                    }
+                }, this);
+
 				helpers.each(dataset.data,function(dataPoint,index){
 					//Add a new point for each piece of data, passing any required data to draw.
-					datasetObject.bars.push(new this.BarClass({
+					datasetObject.bars.push(new this.BarClass(helpers.merge(templateVars,{
 						value : dataPoint,
 						label : data.labels[index],
 						datasetLabel: dataset.label,
@@ -119,7 +126,7 @@
 						fillColor : dataset.fillColor,
 						highlightFill : dataset.highlightFill || dataset.fillColor,
 						highlightStroke : dataset.highlightStroke || dataset.strokeColor
-					}));
+					})));
 				},this);
 
 			},this);
