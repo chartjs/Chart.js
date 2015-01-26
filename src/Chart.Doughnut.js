@@ -36,58 +36,6 @@
 
 	};
 
-	function hue(part, total) {
-		// Given the total number of segments (total) and the index of a segment (part) returns a #rrggbb color for the segment
-		var h = (part / total) * 360,
-			s = 1,
-			v = 1,
-			c = v * s,
-			x =  c * (1 - Math.abs((h / 60) % 2 - 1)),
-			m = v - c,
-			r,
-			g,
-			b;
-
-		switch (Math.floor(h / 60)) {
-			case 0: // 0 <= h < 60
-				r = c + m;
-				g = x + m;
-				b = 0 + m;
-			break;
-			case 1: // 60 <= h < 120
-				r = x + m;
-				g = c + m;
-				b = 0 + m;
-			break;
-			case 2: // 120 <= h < 180
-				r = 0 + m;
-				g = c + m;
-				b = x + m;
-			break;
-			case 3: // 180 <= h < 240
-				r = 0 + m;
-				g = x + m;
-				b = c + m;
-			break;
-			case 4: // 240 <= h < 300
-				r = x + m;
-				g = 0 + m;
-				b = c + m;
-			break;
-			case 5: // 300 <= h < 360
-				r = c + m;
-				g = 0 + m;
-				b = x + m;
-			break;
-		}
-
-		r = '00' + Math.round(r * 255).toString(16);
-		g = '00' + Math.round(g * 255).toString(16);
-		b = '00' + Math.round(b * 255).toString(16);
-
-		return '#' + r.substr(r.length - 2) + g.substr(g.length - 2) + b.substr(b.length - 2);
-	}
-
 	Chart.Type.extend({
 		//Passing in a name registers this chart in the Chart namespace
 		name: "Doughnut",
@@ -125,7 +73,7 @@
 
 			data = data.map(function (v, i, a){
 				if (!v.color) {
-					v.color = hue(i, a.length);
+					v.color = 'hsl(' + (360 * i / a.length) * 360 + ', 100%, 50%)';
 					return v;
 				}
 			});
