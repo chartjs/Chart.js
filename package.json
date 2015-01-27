@@ -21,5 +21,8 @@
     "gulp-html-validator": "^0.0.2",
     "inquirer": "^0.5.1",
     "semver": "^3.0.1"
+  },
+  "spm": {
+    "main": "Chart.js"
   }
 }
