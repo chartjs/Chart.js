@@ -32,8 +32,10 @@
 		animateScale : false,
 
 		//String - A legend template
-		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
+		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>",
 
+        //Number - multiplier factor for chart start angle
+        startAngleFactor : 1.5
 	};
 
 
@@ -99,7 +101,7 @@
 				showStroke : this.options.segmentShowStroke,
 				strokeWidth : this.options.segmentStrokeWidth,
 				strokeColor : this.options.segmentStrokeColor,
-				startAngle : Math.PI * 1.5,
+				startAngle : Math.PI * this.options.startAngleFactor,
 				circumference : (this.options.animateRotate) ? 0 : this.calculateCircumference(segment.value),
 				label : segment.label
 			}));
@@ -165,7 +167,7 @@
 
 				segment.draw();
 				if (index === 0){
-					segment.startAngle = Math.PI * 1.5;
+					segment.startAngle = Math.PI * this.options.startAngleFactor;
 				}
 				//Check to see if it's the last segment, if not get the next and update the start angle
 				if (index < this.segments.length-1){

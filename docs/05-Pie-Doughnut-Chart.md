@@ -90,6 +90,9 @@ These are the customisation options specific to Pie & Doughnut charts. These opt
 	//String - A legend template
 	legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
 	{% endraw %}
+
+	//Number - multiplier factor for chart start angle
+    startAngleFactor : 1.5
 }
 ```
 You can override these for your `Chart` instance by passing a second argument into the `Doughnut` method as an object with the keys you want to override.

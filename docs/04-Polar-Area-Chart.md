@@ -102,8 +102,11 @@ These are the customisation options specific to Polar Area charts. These options
 	animateScale : false,
 	{% raw %}
 	//String - A legend template
-	legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
+	legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>",
 	{% endraw %}
+
+	//Number - multiplier factor for chart start angle
+	startAngleFactor : 1.5
 }
 ```
 
