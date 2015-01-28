@@ -33,7 +33,7 @@ Please provide any additional details associated with the bug, if it's browser o
 Pull requests
 -------------
 
-Clear, concise pull requests are excellent at continuing the project's community driven growth. But please review the guidelines below before starting work on the project.
+Clear, concise pull requests are excellent at continuing the project's community driven growth. But please review [these guidelines](https://github.com/blog/1943-how-to-write-the-perfect-pull-request) and the guidelines below before starting work on the project.
 
 Guidlines:
 
