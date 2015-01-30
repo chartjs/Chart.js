@@ -71,13 +71,6 @@
 			}
 			this.calculateTotal(data);
 
-			data = data.map(function (v, i, a){
-				if (!v.color) {
-					v.color = 'hsl(' + (360 * i / a.length) * 360 + ', 100%, 50%)';
-					return v;
-				}
-			});
-
 			helpers.each(data,function(datapoint, index){
 				if (!datapoint.color) {
 					datapoint.color = 'hsl(' + (360 * index / data.length) + ', 100%, 50%)';
