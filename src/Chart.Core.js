@@ -443,7 +443,7 @@
 		// Blows up jshint errors based on the new Function constructor
 		//Templating methods
 		//Javascript micro templating by John Resig - source at http://ejohn.org/blog/javascript-micro-templating/
-		template = helpers.template = function(templateString, valuesObject){
+		helpers.template = function(templateString, valuesObject){
 
 			// If templateString is function rather than string-template - call the function for valuesObject
 
@@ -488,7 +488,7 @@
 			var labelsArray = new Array(numberOfSteps);
 			if (labelTemplateString){
 				each(labelsArray,function(val,index){
-					labelsArray[index] = template(templateString,{value: (graphMin + (stepValue*(index+1)))});
+					labelsArray[index] = helpers.template(templateString,{value: (graphMin + (stepValue*(index+1)))});
 				});
 			}
 			return labelsArray;
@@ -866,7 +866,7 @@
 			return this;
 		},
 		generateLegend : function(){
-			return template(this.options.legendTemplate,this);
+			return helpers.template(this.options.legendTemplate,this);
 		},
 		destroy : function(){
 			this.clear();
@@ -1017,7 +1017,7 @@
 							fontSize: this.options.tooltipFontSize,
 							caretHeight: this.options.tooltipCaretSize,
 							cornerRadius: this.options.tooltipCornerRadius,
-							text: template(this.options.tooltipTemplate, Element),
+							text: helpers.template(this.options.tooltipTemplate, Element),
 							chart: this.chart,
 							custom: this.options.customTooltips
 						}).draw();
@@ -1446,7 +1446,7 @@
 			var stepDecimalPlaces = getDecimalPlaces(this.stepValue);
 
 			for (var i=0; i<=this.steps; i++){
-				this.yLabels.push(template(this.templateString,{value:(this.min + (i * this.stepValue)).toFixed(stepDecimalPlaces)}));
+				this.yLabels.push(helpers.template(this.templateString,{value:(this.min + (i * this.stepValue)).toFixed(stepDecimalPlaces)}));
 			}
 			this.yLabelWidth = (this.display && this.showLabels) ? longestText(this.ctx,this.font,this.yLabels) : 0;
 		},
@@ -1729,7 +1729,7 @@
 			var stepDecimalPlaces = getDecimalPlaces(this.stepValue);
 
 			for (var i=0; i<=this.steps; i++){
-				this.yLabels.push(template(this.templateString,{value:(this.min + (i * this.stepValue)).toFixed(stepDecimalPlaces)}));
+				this.yLabels.push(helpers.template(this.templateString,{value:(this.min + (i * this.stepValue)).toFixed(stepDecimalPlaces)}));
 			}
 		},
 		getCircumference : function(){
@@ -1787,7 +1787,7 @@
 			for (i=0;i<this.valuesCount;i++){
 				// 5px to space the text slightly out - similar to what we do in the draw function.
 				pointPosition = this.getPointPosition(i, largestPossibleRadius);
-				textWidth = this.ctx.measureText(template(this.templateString, { value: this.labels[i] })).width + 5;
+				textWidth = this.ctx.measureText(helpers.template(this.templateString, { value: this.labels[i] })).width + 5;
 				if (i === 0 || i === this.valuesCount/2){
 					// If we're at index zero, or exactly the middle, we're at exactly the top/bottom
 					// of the radar chart, so text will be aligned centrally, so we'll half it and compare
