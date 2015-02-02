@@ -5,7 +5,7 @@
   "homepage": "https://github.com/nnnick/Chart.js",
   "author": "nnnick",
   "main": [
-    "Chart.min.js"
+    "Chart.js"
   ],
   "dependencies": {}
 }
