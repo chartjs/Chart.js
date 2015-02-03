@@ -272,6 +272,10 @@
 
 			return ChartElement;
 		},
+		nthOrIdentity = helpers.nthOrIdentity = function(potentialArray, nthIndex){
+			// Return the nth item if potentialArray is an array, else return potentialArray
+			return (potentialArray.constructor === Array) ?  potentialArray[nthIndex] : potentialArray;
+		},
 		noop = helpers.noop = function(){},
 		uid = helpers.uid = (function(){
 			var id=0;
