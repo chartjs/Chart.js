@@ -28,7 +28,7 @@ require(['path/to/Chartjs'], function(Chart){
 You can also grab Chart.js using bower:
 
 ```bash
-bower install chartjs --save
+bower install Chart.js --save
 ```
 
 ###Creating a chart
