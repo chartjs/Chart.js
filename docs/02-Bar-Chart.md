@@ -42,7 +42,7 @@ var data = {
 	]
 };
 ```
-The bar chart has the a very similar data structure to the line chart, and has an array of datasets, each with colours and an array of data. Again, colours are in CSS format.
+The bar chart has the a very similar data structure to the line chart, and has an array of datasets, each with colours and an array of data. The style options -- fillColor, strokeColor, highlightFill, and highlightStroke -- can also be arrays, depending on which of the bars you want unique styling for. For example, if you want each data point to have a different fill color, but the other style options to be the same for each bar in that dataset, simply give fillColor an array, one entry per data point. Again, colours are in CSS format.
 We have an array of labels too for display. In the example, we are showing the same data as the previous line chart example.
 
 The label key on each dataset is optional, and can be used when generating a scale for the chart.
