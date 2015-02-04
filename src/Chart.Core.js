@@ -272,9 +272,14 @@
 
 			return ChartElement;
 		},
+		isArray = helpers.isArray = Array.isArray || function(potentialArray){
+			// Array.isArray is the only 'correct' solution, but not all browsers will have this,
+			// so here's a shim. Influenced by underscore.js
+			return potentialArray.constructor === 'Array';
+		},
 		nthOrIdentity = helpers.nthOrIdentity = function(potentialArray, nthIndex){
 			// Return the nth item if potentialArray is an array, else return potentialArray
-			return (potentialArray.constructor === Array) ?  potentialArray[nthIndex] : potentialArray;
+			return isArray(potentialArray) ? potentialArray[nthIndex] : potentialArray;
 		},
 		noop = helpers.noop = function(){},
 		uid = helpers.uid = (function(){
