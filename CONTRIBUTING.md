@@ -42,7 +42,7 @@ Guidlines:
    - For enhancements, we can discuss if it is within the project scope and avoid duplicate effort
  - Please make changes to the files in [`/src`](https://github.com/nnnick/Chart.js/tree/master/src), not `Chart.js` or `Chart.min.js` in the repo root directory, this avoids merge conflicts
  - Tabs for indentation, not spaces please
- - If adding new functionality, please also update the relevant `.md` file in [`/docs`](https://github.com/nnnick/Chart.js/tree/master/docs)
+ - If adding new functionality, please also update the relevant `.md` file in the  [`/docs`](https://github.com/nnnick/Chart.js/tree/master/docs) folder
  - Please make your commits in logical sections with clear commit messages
 
 Joining the Project
