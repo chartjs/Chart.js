@@ -117,10 +117,8 @@
 						datasetLabel: dataset.label,
 						strokeColor : helpers.nthOrIdentity(dataset.strokeColor, index),
 						fillColor : helpers.nthOrIdentity(dataset.fillColor, index),
-						highlightFill : helpers.nthOrIdentity(dataset.highlightFill, index) ||
-										helpers.nthOrIdentity(dataset.fillColor, index),
-						highlightStroke : helpers.nthOrIdentity(dataset.highlightStroke, index) ||
-											helpers.nthOrIdentity(dataset.strokeColor, index),
+						highlightFill : helpers.nthOrIdentity((dataset.highlightFill || dataset.fillColor), index),
+						highlightStroke : helpers.nthOrIdentity((dataset.highlightStroke || dataset.strokeColor), index),
 					}));
 				},this);
 
