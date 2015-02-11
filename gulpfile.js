@@ -124,7 +124,7 @@ gulp.task('default', ['build', 'watch']);
 
 gulp.task('server', function(){
 	connect.server({
-		port: 8000,
+		port: 8000
 	});
 });
 
