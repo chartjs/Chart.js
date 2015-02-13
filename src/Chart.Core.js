@@ -825,7 +825,7 @@
 		},
 		stop : function(){
 			// Stops any current animation loop occuring
-			helpers.cancelAnimFrame(this.animationFrame);
+			helpers.cancelAnimFrame.call(window,this.animationFrame);
 			return this;
 		},
 		resize : function(callback){
@@ -1260,7 +1260,7 @@
 			return this.base - this.y;
 		},
 		inRange : function(chartX,chartY){
-			return (chartX >= this.x - this.width/2 && chartX <= this.x + this.width/2) && (chartY >= this.y && chartY <= this.base);
+			return (chartX >= this.x - this.width/2 && chartX <= this.x + this.width/2) && (chartY >= this.y && (chartY <= this.base || chartY > this.base));
 		}
 	});
 
