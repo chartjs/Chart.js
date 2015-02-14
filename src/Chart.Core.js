@@ -18,15 +18,23 @@
 		previous = root.Chart;
 
 	//Occupy the global variable of Chart, and create a simple base class
-	var Chart = function(context){
+	var Chart = function(context, sizes){
 		var chart = this;
 		this.canvas = context.canvas;
 
 		this.ctx = context;
 
 		//Variables global to the chart
-		var width = this.width = context.canvas.width;
-		var height = this.height = context.canvas.height;
+        if (sizes && typeof sizes === 'object' && sizes.width && sizes.height) {
+            // Firefox requires this to work correctly
+            context.canvas.width = this.width = sizes.width;
+            context.canvas.height = this.height = sizes.height;
+        } else {
+            // Firefox requires this to work correctly
+            context.canvas.width  = this.width = computeDimension(context.canvas,'Width');
+            context.canvas.height = this.height = computeDimension(context.canvas,'Height');
+        }
+
 		this.aspectRatio = this.width / this.height;
 		//High pixel density displays - multiply the size of the canvas height/width by the device pixel ratio, then scale.
 		helpers.retinaScale(this);
