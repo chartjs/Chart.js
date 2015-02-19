@@ -18,3 +18,7 @@ For support using Chart.js, please post questions with the [`chartjs` tag on Sta
 ## License
 
 Chart.js is available under the [MIT license](http://opensource.org/licenses/MIT).
+
+About this fork
+-------
+- Support for multi colored bar charts
