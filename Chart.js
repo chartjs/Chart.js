@@ -25,25 +25,8 @@
 		this.ctx = context;
 
 		//Variables global to the chart
-		var computeDimension = function(element,dimension)
-		{
-			if (element['offset'+dimension])
-			{
-				return element['offset'+dimension];
-			}
-			else
-			{
-				return document.defaultView.getComputedStyle(element).getPropertyValue(dimension);
-			}
-		}
-
-		var width = this.width = computeDimension(context.canvas,'Width');
-		var height = this.height = computeDimension(context.canvas,'Height');
-
-		// Firefox requires this to work correctly
-		context.canvas.width  = width;
-		context.canvas.height = height;
-
+		var width = this.width = context.canvas.width;
+		var height = this.height = context.canvas.height;
 		this.aspectRatio = this.width / this.height;
 		//High pixel density displays - multiply the size of the canvas height/width by the device pixel ratio, then scale.
 		helpers.retinaScale(this);
@@ -2131,15 +2114,18 @@
 				this.datasets.push(datasetObject);
 
 				helpers.each(dataset.data,function(dataPoint,index){
+					var highlightFill = dataset.highlightFill || dataset.fillColor;
+					var highlightStroke = dataset.highlightStroke || dataset.strokeColor;
+
 					//Add a new point for each piece of data, passing any required data to draw.
 					datasetObject.bars.push(new this.BarClass({
 						value : dataPoint,
 						label : data.labels[index],
 						datasetLabel: dataset.label,
-						strokeColor : dataset.strokeColor,
-						fillColor : dataset.fillColor,
-						highlightFill : dataset.highlightFill || dataset.fillColor,
-						highlightStroke : dataset.highlightStroke || dataset.strokeColor
+						strokeColor : dataset.strokeColor.constructor === Array ? dataset.strokeColor[index] : dataset.strokeColor,
+						fillColor : dataset.fillColor.constructor === Array ? dataset.fillColor[index] : dataset.fillColor,
+						highlightFill : highlightFill.constructor === Array ? highlightFill[index] : highlightFill,
+						highlightStroke : highlightStroke.constructor === Array ? highlightStroke[index] : highlightStroke
 					}));
 				},this);
 
