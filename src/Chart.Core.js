@@ -1368,7 +1368,6 @@
 			var halfHeight = this.height/2;
 
 			//Check to ensure the height will fit on the canvas
-			//The three is to buffer form the very
 			if (this.y - halfHeight < 0 ){
 				this.y = halfHeight;
 			} else if (this.y + halfHeight > this.chart.height){
