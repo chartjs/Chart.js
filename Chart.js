@@ -85,6 +85,9 @@
 			// Boolean - Whether to show labels on the scale
 			scaleShowLabels: true,
 
+			// Boolean - Whether to show labels on the x-axis
+			scaleShowXLabels: true,
+
 			// Interpolated JS string - can access value
 			scaleLabel: "<%=value%>",
 
@@ -1567,7 +1570,7 @@
 					this.xLabelWidth = cosRotation * originalLabelWidth;
 
 				}
-				if (this.xLabelRotation > 0){
+				if (this.xLabelRotation > 0 && this.showXLabels){
 					this.endPoint -= Math.sin(toRadians(this.xLabelRotation))*originalLabelWidth + 3;
 				}
 			}
@@ -1661,60 +1664,62 @@
 
 				},this);
 
-				each(this.xLabels,function(label,index){
-					var xPos = this.calculateX(index) + aliasPixel(this.lineWidth),
-						// Check to see if line/bar here and decide where to place the line
-						linePos = this.calculateX(index - (this.offsetGridLines ? 0.5 : 0)) + aliasPixel(this.lineWidth),
-						isRotated = (this.xLabelRotation > 0),
-						drawVerticalLine = this.showVerticalLines;
+        if (this.showXLabels){
+          each(this.xLabels,function(label,index){
+            var xPos = this.calculateX(index) + aliasPixel(this.lineWidth),
+              // Check to see if line/bar here and decide where to place the line
+              linePos = this.calculateX(index - (this.offsetGridLines ? 0.5 : 0)) + aliasPixel(this.lineWidth),
+              isRotated = (this.xLabelRotation > 0),
+              drawVerticalLine = this.showVerticalLines;
 
-					// This is Y axis, so draw it
-					if (index === 0 && !drawVerticalLine){
-						drawVerticalLine = true;
-					}
+            // This is Y axis, so draw it
+            if (index === 0 && !drawVerticalLine){
+              drawVerticalLine = true;
+            }
 
-					if (drawVerticalLine){
-						ctx.beginPath();
-					}
+            if (drawVerticalLine){
+              ctx.beginPath();
+            }
 
-					if (index > 0){
-						// This is a grid line in the centre, so drop that
-						ctx.lineWidth = this.gridLineWidth;
-						ctx.strokeStyle = this.gridLineColor;
-					} else {
-						// This is the first line on the scale
-						ctx.lineWidth = this.lineWidth;
-						ctx.strokeStyle = this.lineColor;
-					}
+            if (index > 0){
+              // This is a grid line in the centre, so drop that
+              ctx.lineWidth = this.gridLineWidth;
+              ctx.strokeStyle = this.gridLineColor;
+            } else {
+              // This is the first line on the scale
+              ctx.lineWidth = this.lineWidth;
+              ctx.strokeStyle = this.lineColor;
+            }
 
-					if (drawVerticalLine){
-						ctx.moveTo(linePos,this.endPoint);
-						ctx.lineTo(linePos,this.startPoint - 3);
-						ctx.stroke();
-						ctx.closePath();
-					}
-
-
-					ctx.lineWidth = this.lineWidth;
-					ctx.strokeStyle = this.lineColor;
+            if (drawVerticalLine){
+              ctx.moveTo(linePos,this.endPoint);
+              ctx.lineTo(linePos,this.startPoint - 3);
+              ctx.stroke();
+              ctx.closePath();
+            }
 
 
-					// Small lines at the bottom of the base grid line
-					ctx.beginPath();
-					ctx.moveTo(linePos,this.endPoint);
-					ctx.lineTo(linePos,this.endPoint + 5);
-					ctx.stroke();
-					ctx.closePath();
+            ctx.lineWidth = this.lineWidth;
+            ctx.strokeStyle = this.lineColor;
 
-					ctx.save();
-					ctx.translate(xPos,(isRotated) ? this.endPoint + 12 : this.endPoint + 8);
-					ctx.rotate(toRadians(this.xLabelRotation)*-1);
-					ctx.font = this.font;
-					ctx.textAlign = (isRotated) ? "right" : "center";
-					ctx.textBaseline = (isRotated) ? "middle" : "top";
-					ctx.fillText(label, 0, 0);
-					ctx.restore();
-				},this);
+
+            // Small lines at the bottom of the base grid line
+            ctx.beginPath();
+            ctx.moveTo(linePos,this.endPoint);
+            ctx.lineTo(linePos,this.endPoint + 5);
+            ctx.stroke();
+            ctx.closePath();
+
+            ctx.save();
+            ctx.translate(xPos,(isRotated) ? this.endPoint + 12 : this.endPoint + 8);
+            ctx.rotate(toRadians(this.xLabelRotation)*-1);
+            ctx.font = this.font;
+            ctx.textAlign = (isRotated) ? "right" : "center";
+            ctx.textBaseline = (isRotated) ? "middle" : "top";
+            ctx.fillText(label, 0, 0);
+            ctx.restore();
+          },this);
+        }
 
 			}
 		}
@@ -2239,6 +2244,7 @@
 				gridLineColor : (this.options.scaleShowGridLines) ? this.options.scaleGridLineColor : "rgba(0,0,0,0)",
 				padding : (this.options.showScale) ? 0 : (this.options.barShowStroke) ? this.options.barStrokeWidth : 0,
 				showLabels : this.options.scaleShowLabels,
+				showXLabels : this.options.scaleShowXLabels,
 				display : this.options.showScale
 			};
 
@@ -2710,6 +2716,7 @@
 				gridLineColor : (this.options.scaleShowGridLines) ? this.options.scaleGridLineColor : "rgba(0,0,0,0)",
 				padding: (this.options.showScale) ? 0 : this.options.pointDotRadius + this.options.pointDotStrokeWidth,
 				showLabels : this.options.scaleShowLabels,
+				showXLabels : this.options.scaleShowXLabels,
 				display : this.options.showScale
 			};
 
