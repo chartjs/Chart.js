@@ -134,11 +134,11 @@
 				fillColor: segment.color,
 				highlightColor: segment.highlight || segment.color,
 				label: segment.label,
-				percent: ((segment.value/this.total)*100).toFixed(2)
 				value: segment.value,
 				outerRadius: (this.options.animateScale) ? 0 : this.scale.calculateCenterOffset(segment.value),
 				circumference: (this.options.animateRotate) ? 0 : this.scale.getCircumference(),
-				startAngle: Math.PI * 1.5
+				startAngle: Math.PI * 1.5,
+				percent: ((segment.value/this.total)*100).toFixed((typeof this.options.tooltipPercentPrecision === 'number' ?  this.options.tooltipPercentPrecision : 2))
 			}));
 			if (!silent){
 				this.reflow();
@@ -196,8 +196,6 @@
 			helpers.each(this.segments,function(segment){
 				segment.save();
 			});
-			
-			this.reflow();
 			this.render();
 		},
 		reflow : function(){
