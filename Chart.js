@@ -25,6 +25,25 @@
 		this.ctx = context;
 
 		//Variables global to the chart
+		var computeDimension = function(element,dimension)
+		{
+			if (element['offset'+dimension])
+			{
+				return element['offset'+dimension];
+			}
+			else
+			{
+				return document.defaultView.getComputedStyle(element).getPropertyValue(dimension);
+			}
+		}
+
+		var width = this.width = computeDimension(context.canvas,'Width');
+		var height = this.height = computeDimension(context.canvas,'Height');
+
+		// Firefox requires this to work correctly
+		context.canvas.width  = width;
+		context.canvas.height = height;
+
 		var width = this.width = context.canvas.width;
 		var height = this.height = context.canvas.height;
 		this.aspectRatio = this.width / this.height;
@@ -825,7 +844,7 @@
 		},
 		stop : function(){
 			// Stops any current animation loop occuring
-			helpers.cancelAnimFrame(this.animationFrame);
+			cancelAnimFrame(this.animationFrame);
 			return this;
 		},
 		resize : function(callback){
@@ -1368,7 +1387,6 @@
 			var halfHeight = this.height/2;
 
 			//Check to ensure the height will fit on the canvas
-			//The three is to buffer form the very
 			if (this.y - halfHeight < 0 ){
 				this.y = halfHeight;
 			} else if (this.y + halfHeight > this.chart.height){
@@ -2408,8 +2426,7 @@
 				strokeColor : this.options.segmentStrokeColor,
 				startAngle : Math.PI * 1.5,
 				circumference : (this.options.animateRotate) ? 0 : this.calculateCircumference(segment.value),
-				label : segment.label,
-				percent: ((segment.value/this.total)*100).toFixed((typeof this.options.tooltipPercentPrecision === 'number' ?  this.options.tooltipPercentPrecision : 2))
+				label : segment.label
 			}));
 			if (!silent){
 				this.reflow();
@@ -2490,7 +2507,6 @@
 	});
 
 }).call(this);
-
 (function(){
 	"use strict";
 
@@ -3005,8 +3021,7 @@
 				value: segment.value,
 				outerRadius: (this.options.animateScale) ? 0 : this.scale.calculateCenterOffset(segment.value),
 				circumference: (this.options.animateRotate) ? 0 : this.scale.getCircumference(),
-				startAngle: Math.PI * 1.5,
-				percent: ((segment.value/this.total)*100).toFixed((typeof this.options.tooltipPercentPrecision === 'number' ?  this.options.tooltipPercentPrecision : 2))
+				startAngle: Math.PI * 1.5
 			}));
 			if (!silent){
 				this.reflow();
@@ -3064,6 +3079,8 @@
 			helpers.each(this.segments,function(segment){
 				segment.save();
 			});
+			
+			this.reflow();
 			this.render();
 		},
 		reflow : function(){
