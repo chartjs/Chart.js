@@ -11,7 +11,7 @@
 
 
 	<script>
-	var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
+	var randomScalingFactor = function(){ return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random()*100)};
 
 	var barChartData = {
 		labels : ["January","February","March","April","May","June","July"],
@@ -36,7 +36,8 @@
 	window.onload = function(){
 		var ctx = document.getElementById("canvas").getContext("2d");
 		window.myBar = new Chart(ctx).Bar(barChartData, {
-			responsive : true
+			responsive : true,
+			scaleBeginAtZero: false,
 		});
 	}
 

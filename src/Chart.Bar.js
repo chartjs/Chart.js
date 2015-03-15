@@ -126,18 +126,37 @@
 
 			this.buildScale(data.labels);
 
-			this.BarClass.prototype.base = this.scale.endPoint;
+			this.BarClass.prototype.base = this.calculateBarBase();
 
 			this.eachBars(function(bar, index, datasetIndex){
 				helpers.extend(bar, {
 					width : this.scale.calculateBarWidth(this.datasets.length),
 					x: this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
-					y: this.scale.endPoint
+					y: this.calculateBarBase() // so that we animate from the baseline
 				});
 				bar.save();
 			}, this);
 
 			this.render();
+		},
+		// Calculate the base point for the bar.
+		// If the scale has a 0 point, use that as the base
+		// If the scale min and max are both positive, use the bottom as a base
+		// If the scale min and max are both negative, use the top as a base
+		calculateBarBase: function() {
+			var base = this.scale.endPoint;
+			
+			if (this.scale.beginAtZero || Math.sign(this.scale.min) != Math.sign(this.scale.max))
+			{
+				base = this.scale.calculateY(0);
+			}
+			else if (Math.sign(this.scale.min) < 0 && Math.sign(this.scale.max) < 0)
+			{
+				// All values are negative. Use the top as the base
+				base = this.scale.startPoint;
+			}
+			
+			return base;
 		},
 		update : function(){
 			this.scale.update();
@@ -241,9 +260,9 @@
 					value : value,
 					label : label,
 					x: this.scale.calculateBarX(this.datasets.length, datasetIndex, this.scale.valuesCount+1),
-					y: this.scale.endPoint,
+					y: this.calculateBarBase(), // so that we animate from the 0 point
 					width : this.scale.calculateBarWidth(this.datasets.length),
-					base : this.scale.endPoint,
+					base : this.calculateBarBase(),
 					strokeColor : this.datasets[datasetIndex].strokeColor,
 					fillColor : this.datasets[datasetIndex].fillColor
 				}));
@@ -263,8 +282,8 @@
 		},
 		reflow : function(){
 			helpers.extend(this.BarClass.prototype,{
-				y: this.scale.endPoint,
-				base : this.scale.endPoint
+				y: this.calculateBarBase(), // so that we animate from the baseline
+				base : this.calculateBarBase()
 			});
 			var newScaleProps = helpers.extend({
 				height : this.chart.height,
@@ -284,7 +303,8 @@
 			helpers.each(this.datasets,function(dataset,datasetIndex){
 				helpers.each(dataset.bars,function(bar,index){
 					if (bar.hasValue()){
-						bar.base = this.scale.endPoint;
+						bar.base = this.calculateBarBase()
+						
 						//Transition then draw
 						bar.transition({
 							x : this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
