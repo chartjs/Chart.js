@@ -24,11 +24,11 @@ var srcDir = './src/';
 gulp.task('build', function(){
 
 	// Default to all of the chart types, with Chart.Core first
-	var srcFiles = [FileName('Core')],
+	var srcFiles = [new FileName('Core')],
 		isCustom = !!(util.env.types),
 		outputDir = (isCustom) ? 'custom' : '.';
 	if (isCustom){
-		util.env.types.split(',').forEach(function(type){ return srcFiles.push(FileName(type))});
+		util.env.types.split(',').forEach(function(type){ return srcFiles.push(new FileName(type));});
 	}
 	else{
 		// Seems gulp-concat remove duplicates - nice!
@@ -46,7 +46,7 @@ gulp.task('build', function(){
 
 	function FileName(moduleName){
 		return srcDir+'Chart.'+moduleName+'.js';
-	};
+	}
 });
 
 /*
@@ -109,7 +109,7 @@ gulp.task('module-sizes', function(){
 	.pipe(size({
 		showFiles: true,
 		gzip: true
-	}))
+	}));
 });
 
 gulp.task('watch', function(){
