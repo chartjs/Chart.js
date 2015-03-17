@@ -31,6 +31,10 @@ You can also grab Chart.js using bower:
 bower install Chart.js --save
 ```
 
+Also, Chart.js is available from CDN:
+
+https://cdnjs.com/libraries/chart.js
+
 ###Creating a chart
 
 To create a chart, we need to instantiate the `Chart` class. To do this, we need to pass in the 2d context of where we want to draw the chart. Here's an example.
