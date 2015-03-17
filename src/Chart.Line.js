@@ -1,8 +1,14 @@
 (function(){
 	"use strict";
 
-	var root = this,
-		Chart = root.Chart,
+	var root = (function() {
+		try {
+			return Function('return this')() || (42, eval)('this');
+		} catch(e) {
+			return window;
+		}
+	})();
+	var Chart = root.Chart,
 		helpers = Chart.helpers;
 
 	var defaultConfig = {

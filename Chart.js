@@ -14,8 +14,15 @@
 	"use strict";
 
 	//Declare root variable - window in the browser, global on the server
-	var root = this,
-		previous = root.Chart;
+	var root = (function() {
+		try {
+			return Function('return this')() || (42, eval)('this');
+		} catch(e) {
+			return window;
+		}
+	})();
+
+	var previous = root.Chart;
 
 	//Occupy the global variable of Chart, and create a simple base class
 	var Chart = function(context){
@@ -1945,8 +1952,14 @@
 (function(){
 	"use strict";
 
-	var root = this,
-		Chart = root.Chart,
+	var root = (function() {
+		try {
+			return Function('return this')() || (42, eval)('this');
+		} catch(e) {
+			return window;
+		}
+	})();
+	var Chart = root.Chart,
 		helpers = Chart.helpers;
 
 
@@ -2236,11 +2249,18 @@
 
 
 }).call(this);
+
 (function(){
 	"use strict";
 
-	var root = this,
-		Chart = root.Chart,
+	var root = (function() {
+		try {
+			return Function('return this')() || (42, eval)('this');
+		} catch(e) {
+			return window;
+		}
+	})();
+	var Chart = root.Chart,
 		//Cache a local reference to Chart.helpers
 		helpers = Chart.helpers;
 
@@ -2420,11 +2440,18 @@
 	});
 
 }).call(this);
+
 (function(){
 	"use strict";
 
-	var root = this,
-		Chart = root.Chart,
+	var root = (function() {
+		try {
+			return Function('return this')() || (42, eval)('this');
+		} catch(e) {
+			return window;
+		}
+	})();
+	var Chart = root.Chart,
 		helpers = Chart.helpers;
 
 	var defaultConfig = {
@@ -2786,11 +2813,18 @@
 
 
 }).call(this);
+
 (function(){
 	"use strict";
 
-	var root = this,
-		Chart = root.Chart,
+	var root = (function() {
+		try {
+			return Function('return this')() || (42, eval)('this');
+		} catch(e) {
+			return window;
+		}
+	})();
+	var Chart = root.Chart,
 		//Cache a local reference to Chart.helpers
 		helpers = Chart.helpers;
 
@@ -3034,11 +3068,18 @@
 	});
 
 }).call(this);
+
 (function(){
 	"use strict";
 
-	var root = this,
-		Chart = root.Chart,
+	var root = (function() {
+		try {
+			return Function('return this')() || (42, eval)('this');
+		} catch(e) {
+			return window;
+		}
+	})();
+	var Chart = root.Chart,
 		helpers = Chart.helpers;
 
 
