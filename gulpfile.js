@@ -24,11 +24,11 @@ var srcDir = './src/';
 gulp.task('build', function(){
 
 	// Default to all of the chart types, with Chart.Core first
-	var srcFiles = [new FileName('Core')],
+	var srcFiles = [FileName('Core')],
 		isCustom = !!(util.env.types),
 		outputDir = (isCustom) ? 'custom' : '.';
 	if (isCustom){
-		util.env.types.split(',').forEach(function(type){ return srcFiles.push(new FileName(type));});
+		util.env.types.split(',').forEach(function(type){ return srcFiles.push(FileName(type));});
 	}
 	else{
 		// Seems gulp-concat remove duplicates - nice!
