@@ -25,26 +25,26 @@
 		this.ctx = context;
 
 		//Variables global to the chart
-		var computeDimension = function(element,dimension)
-		{
-			if (element['offset'+dimension])
-			{
-				return element['offset'+dimension];
-			}
-			else
-			{
-				return document.defaultView.getComputedStyle(element).getPropertyValue(dimension);
-			}
+		var computeDimension = function(element, dimension){
+			var offset 	= element['offset'+dimension],
+				el 		= element[dimension],
+				system 	= document.defaultView
+			.getComputedStyle(element)
+			.getPropertyValue(dimension) || '';
+
+			if (offset) return offset;
+			if (system && system !== 'auto') return defaults;
+			return el;
 		};
 
-		var width = this.width = computeDimension(context.canvas,'Width') || context.canvas.width;
-		var height = this.height = computeDimension(context.canvas,'Height') || context.canvas.height;
+		var width = this.width = computeDimension(this.canvas, 'width');
+		var height = this.height = computeDimension(this.canvas,'height');
 
 		// Firefox requires this to work correctly
 		context.canvas.width  = width;
 		context.canvas.height = height;
 
-		width = this.width = context.canvas.width;
+		width  = this.width = context.canvas.width;
 		height = this.height = context.canvas.height;
 		this.aspectRatio = this.width / this.height;
 		//High pixel density displays - multiply the size of the canvas height/width by the device pixel ratio, then scale.
