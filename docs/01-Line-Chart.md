@@ -57,9 +57,9 @@ These are the customisation options specific to Line charts. These options are m
 ```javascript
 {
 
-	//Function - Whether the current x-axis label should be filtered out, takes in current label and 
-	//index, returns true to filter out the label returns false to keep the label
-	labelsFilter : function(label,index){return false},
+	//Function - Whether the current x-axis label should be filtered out, takes in current label,  
+	//index and full label array, returns true to filter out the label returns false to keep the label
+	labelsFilter : function(label, index, labels){return false},
 	
 	///Boolean - Whether grid lines are shown across the chart
 	scaleShowGridLines : true,
@@ -116,7 +116,7 @@ For example, we could have a line chart without bezier curves between points by 
 ```javascript
 new Chart(ctx).Line(data, {
 	bezierCurve: false,
-	labelsFilter: function(value, index)
+	labelsFilter: function(value, index, labels)
 	{	
 		return (index+1)%5 !== 0;
 	}

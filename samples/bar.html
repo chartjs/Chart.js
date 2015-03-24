@@ -37,8 +37,9 @@
 		var ctx = document.getElementById("canvas").getContext("2d");
 		window.myBar = new Chart(ctx).Bar(barChartData, {
 			responsive : true,
-			labelsFilter: function(value, index)
+			labelsFilter: function(value, index, labels)
 			{	
+				console.log(labels)
 				return (index+1)%2 !== 0;
 			}
 		});

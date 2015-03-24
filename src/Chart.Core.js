@@ -1729,7 +1729,7 @@
 				each(this.xLabels,function(label,index){
 
 					//if filter returns true do not draw this label
-					if (this.labelsFilter(label, index)){
+					if (this.labelsFilter(label, index, this.xLabels)){
 						return;
 					}
 					var xPos = this.calculateX(index) + aliasPixel(this.lineWidth),

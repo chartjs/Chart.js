@@ -7,9 +7,9 @@
 
 	var defaultConfig = {
 
-		//Function - Whether the current x-axis label should be filtered out, takes in current label and 
-		//index, returns true to filter out the label returns false to keep the label
-		labelsFilter : function(label,index){return false},
+		//Function - Whether the current x-axis label should be filtered out, takes in current label,  
+		//index and full label array, returns true to filter out the label returns false to keep the label
+		labelsFilter : function(label, index, labels){return false},
 
 		///Boolean - Whether grid lines are shown across the chart
 		scaleShowGridLines : true,

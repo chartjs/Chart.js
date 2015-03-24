@@ -53,9 +53,9 @@ These are the customisation options specific to Bar charts. These options are me
 
 ```javascript
 {
-	//Function - Whether the current x-axis label should be filtered out, takes in current label and 
-	//index, returns true to filter out the label returns false to keep the label
-	labelsFilter : function(label,index){return false},
+	//Function - Whether the current x-axis label should be filtered out, takes in current label,  
+	//index and full label array, returns true to filter out the label returns false to keep the label
+	labelsFilter : function(label, index, labels){return false},
 	
 	//Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
 	scaleBeginAtZero : true,
@@ -100,7 +100,7 @@ For example, we could have a bar chart without a stroke on each bar by doing the
 ```javascript
 new Chart(ctx).Bar(data, {
 	barShowStroke: false,
-	labelsFilter: function(value, index)
+	labelsFilter: function(value, index, labels)
 	{	
 		return (index+1)%5 !== 0;
 	}
