@@ -83,6 +83,15 @@ Chart.defaults.global = {
 	// String - Animation easing effect
 	animationEasing: "easeOutQuart",
 
+	// Possible effects are:
+	// [easeInOutQuart, linear, easeOutBounce, easeInBack, easeInOutQuad,
+	//  easeOutQuart, easeOutQuad, easeInOutBounce, easeOutSine, easeInOutCubic,
+	//  easeInExpo, easeInOutBack, easeInCirc, easeInOutElastic, easeOutBack,
+	//  easeInQuad, easeInOutExpo, easeInQuart, easeOutQuint, easeInOutCirc,
+	//  easeInSine, easeOutExpo, easeOutCirc, easeOutCubic, easeInQuint,
+	//  easeInElastic, easeInOutSine, easeInOutQuint, easeInBounce,
+	//  easeOutElastic, easeInCubic]
+
 	// Boolean - If we should show the scale at all
 	showScale: true,
 
