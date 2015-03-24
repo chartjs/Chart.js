@@ -44,7 +44,11 @@
 	window.onload = function(){
 		var ctx = document.getElementById("canvas").getContext("2d");
 		window.myLine = new Chart(ctx).Line(lineChartData, {
-			responsive: true
+			responsive: true,
+			labelsFilter: function(value, index)
+			{	
+				return (index+1)%2 !== 0;
+			}
 		});
 	}
 
