@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - "0.11"
+  - "0.10"
+
+before_script:
+  - npm install
+
+script:
+  - gulp test
+
+notifications:
+  slack: chartjs:pcfCZR6ugg5TEcaLtmIfQYuA

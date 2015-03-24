@@ -28,8 +28,12 @@ require(['path/to/Chartjs'], function(Chart){
 You can also grab Chart.js using bower:
 
 ```bash
-bower install chartjs --save
+bower install Chart.js --save
 ```
+
+Also, Chart.js is available from CDN:
+
+https://cdnjs.com/libraries/chart.js
 
 ###Creating a chart
 
@@ -77,6 +81,14 @@ Chart.defaults.global = {
 	animationSteps: 60,
 
 	// String - Animation easing effect
+	// Possible effects are:
+	// [easeInOutQuart, linear, easeOutBounce, easeInBack, easeInOutQuad,
+	//  easeOutQuart, easeOutQuad, easeInOutBounce, easeOutSine, easeInOutCubic,
+	//  easeInExpo, easeInOutBack, easeInCirc, easeInOutElastic, easeOutBack,
+	//  easeInQuad, easeInOutExpo, easeInQuart, easeOutQuint, easeInOutCirc,
+	//  easeInSine, easeOutExpo, easeOutCirc, easeOutCubic, easeInQuint,
+	//  easeInElastic, easeInOutSine, easeInOutQuint, easeInBounce,
+	//  easeOutElastic, easeInCubic]
 	animationEasing: "easeOutQuart",
 
 	// Boolean - If we should show the scale at all
@@ -132,6 +144,9 @@ Chart.defaults.global = {
 	// Boolean - Determines whether to draw tooltips on the canvas or not
 	showTooltips: true,
 
+	// Function - Determines whether to execute the customTooltips function instead of drawing the built in tooltips (See [Advanced - External Tooltips](#advanced-usage-custom-tooltips))
+	customTooltips: false,
+
 	// Array - Array of string names to attach tooltip events
 	tooltipEvents: ["mousemove", "touchstart", "touchmove"],
 
@@ -180,7 +195,7 @@ Chart.defaults.global = {
 	// String - Template string for single tooltips
 	tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",
 	{% endraw %}
-	// String - Template string for single tooltips
+	// String - Template string for multiple tooltips
 	multiTooltipTemplate: "<%= value %>",
 
 	// Function - Will fire on animation progression.
