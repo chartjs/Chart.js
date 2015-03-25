@@ -405,7 +405,7 @@
 				skipFitting = (minSteps >= maxSteps);
 
 			var maxValue = max(valuesArray),
-				minValue = min(valuesArray);
+				minValue = min(valuesArray.filter(function(val) { return val !== null; }));
 
 			// We need some degree of seperation here to calculate the scales if all the values are the same
 			// Adding/minusing 0.5 will give us a range of 1.
