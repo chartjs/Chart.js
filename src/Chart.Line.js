@@ -59,6 +59,8 @@
 		name: "Line",
 		defaults : defaultConfig,
 		initialize:  function(data){
+			this.options.xAxisLabel = data.xAxisLabel || false;
+			this.options.yAxisLabel = data.yAxisLabel || false;
 			//Declare the extension of the default point, to cater for the options passed in to the constructor
 			this.PointClass = Chart.Point.extend({
 				strokeWidth : this.options.pointDotStrokeWidth,
@@ -171,6 +173,8 @@
 			};
 
 			var scaleOptions = {
+				xAxisLabel: this.options.xAxisLabel,
+				yAxisLabel: this.options.yAxisLabel,
 				templateString : this.options.scaleLabel,
 				height : this.chart.height,
 				width : this.chart.width,
