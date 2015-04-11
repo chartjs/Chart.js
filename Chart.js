@@ -1984,6 +1984,58 @@
 		}
 	});
 
+	Chart.animationService = {
+		animations: [],
+		addAnimation: function(chart, animationObject) {
+			for (var index = 0; index < this.animations.length; ++ index){
+				if (this.animations[index].chart === chart){
+					// replacing an in progress animation
+					this.animations[index].lastTimeRun = null;
+					this.animations[index].animationObject = animationObject;
+					return;
+				}
+			}
+			
+			this.animations.push({
+				chart: chart,
+				animationObject: animationObject,
+				lastTimeRun: null
+			});
+
+			// If there are no animations queued, manually kickstart a digest, for lack of a better word
+			if(!this.animations.length){
+				helpers.requestAnimFrame(this.startDigest);
+			}
+		},
+		startDigest: function() {
+
+			for (var i = 0; i < this.animations.length; i++) {
+
+				var currentAnimation = this.animations[i];
+
+				if (currentAnimation.animationObject.currentStep === null){
+					currentAnimation.animationObject.currentStep = 0;
+				} else {
+					currentAnimation.animationObject.currentStep++;
+				}
+				
+				currentAnimation.animationObject.render(currentAnimation.animationObject);
+				
+				if (currentAnimation.animationObject.currentStep == currentAnimation.animationObject.numSteps){
+					// executed the last frame. Remove the animation.
+					this.animations.splice(i, 1);
+					// Keep the index in place to offset the splice
+					i--;
+				}
+			}
+
+			// Do we have more stuff to animate?
+			if (this.animations.length > 0){
+				requestAnimationFrame(this.startDigest);
+			}
+		}
+	};
+
 	// Attach global event to resize each chart instance when the browser resizes
 	helpers.addEvent(window, "resize", (function(){
 		// Basic debounce of resize function so it doesn't hurt performance when resizing browser.
