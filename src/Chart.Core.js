@@ -2093,7 +2093,7 @@
 			});
 
 			// If there are no animations queued, manually kickstart a digest, for lack of a better word
-			if(!this.animations.length){
+			if (this.animations.length) {
 				helpers.requestAnimFrame(this.startDigest);
 			}
 		},
