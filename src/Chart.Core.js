@@ -60,6 +60,9 @@
 
 			// Number - Number of animation steps
 			animationSteps: 60,
+			
+			// Number - Minimum number of animation steps to complete regardless of frame rate
+			minAnimationSteps: 10,
 
 			// String - Animation easing effect
 			animationEasing: "easeOutQuart",
@@ -936,7 +939,7 @@
 			if (this.options.animation && !reflow){
 				var animation = new Chart.Animation();
 				animation.numSteps = this.options.animationSteps;
-				animation.minSteps = 10; // TODO: add an option for this
+				animation.minSteps = this.options.minAnimationSteps;
 				animation.easing = this.options.animationEasing;
 				
 				// render function
@@ -1362,7 +1365,7 @@
 	Chart.Animation = Chart.Element.extend({
 		currentStep: null, // the current animation step
 		numSteps: 60, // default number of steps
-		minSteps: 10, // TODO: create an option for this
+		minSteps: 10, // default minimum number of steps. 
 		easing: "", // the easing to use for this animation
 		render: null, // render function used by the animation service
 		
