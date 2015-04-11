@@ -2076,9 +2076,9 @@
 
 	Chart.animationService = {
 		animations: [],
-		addAnimation: function(chart, animationObject) {
+		addAnimation: function(chartInstance, animationObject) {
 			for (var index = 0; index < this.animations.length; ++ index){
-				if (this.animations[index].chart === chart){
+				if (this.animations[index].chartInstance === chartInstance){
 					// replacing an in progress animation
 					this.animations[index].lastTimeRun = null;
 					this.animations[index].animationObject = animationObject;
@@ -2087,7 +2087,7 @@
 			}
 			
 			this.animations.push({
-				chart: chart,
+				chartInstance: chartInstance,
 				animationObject: animationObject,
 				lastTimeRun: null
 			});
@@ -2109,7 +2109,7 @@
 					currentAnimation.animationObject.currentStep++;
 				}
 				
-				currentAnimation.animationObject.render(currentAnimation.animationObject);
+				currentAnimation.animationObject.render(currentAnimation.chartInstance, currentAnimation.animationObject);
 				
 				if (currentAnimation.animationObject.currentStep == currentAnimation.animationObject.numSteps){
 					// executed the last frame. Remove the animation.
