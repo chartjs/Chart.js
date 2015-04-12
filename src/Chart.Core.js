@@ -2098,7 +2098,7 @@
 				return animationWrapper.chartInstance === chartInstance;
 			});
 			
-			if (index != -1)
+			if (index)
 			{
 				this.animations.splice(index, 1);
 			}
