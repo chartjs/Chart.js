@@ -2132,6 +2132,9 @@
 					currentAnimation.animationObject.currentStep = 0;
 				} else {
 					currentAnimation.animationObject.currentStep += 1 + framesToDrop;
+					if(currentAnimation.animationObject.currentStep > currentAnimation.animationObject.numSteps){
+						currentAnimation.animationObject.currentStep = currentAnimation.animationObject.numSteps;
+					}
 				}
 				
 				currentAnimation.animationObject.render(currentAnimation.chartInstance, currentAnimation.animationObject);
