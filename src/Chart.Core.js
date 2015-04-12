@@ -2082,7 +2082,6 @@
 			for (var index = 0; index < this.animations.length; ++ index){
 				if (this.animations[index].chartInstance === chartInstance){
 					// replacing an in progress animation
-					this.animations[index].lastTimeRun = null;
 					this.animations[index].animationObject = animationObject;
 					return;
 				}
@@ -2090,8 +2089,7 @@
 			
 			this.animations.push({
 				chartInstance: chartInstance,
-				animationObject: animationObject,
-				lastTimeRun: null
+				animationObject: animationObject
 			});
 
 			// If there are no animations queued, manually kickstart a digest, for lack of a better word
