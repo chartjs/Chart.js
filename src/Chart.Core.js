@@ -2075,7 +2075,9 @@
 	});
 
 	Chart.animationService = {
+		frameDuration: 17,
 		animations: [],
+		dropFrames: 0,
 		addAnimation: function(chart, animationObject) {
 			for (var index = 0; index < this.animations.length; ++ index){
 				if (this.animations[index].chart === chart){
@@ -2099,6 +2101,14 @@
 		},
 		startDigest: function() {
 
+			var startTime = Date.now();
+			var framesToDrop = 0;
+
+			if(this.dropFrames > 1){
+				framesToDrop = Math.floor(this.dropFrames);
+				this.dropFrames -= framesToDrop;
+			}
+
 			for (var i = 0; i < this.animations.length; i++) {
 
 				var currentAnimation = this.animations[i];
@@ -2106,7 +2116,7 @@
 				if (currentAnimation.animationObject.currentStep === null){
 					currentAnimation.animationObject.currentStep = 0;
 				} else {
-					currentAnimation.animationObject.currentStep++;
+					currentAnimation.animationObject.currentStep += 1 + framesToDrop;
 				}
 				
 				currentAnimation.animationObject.render(currentAnimation.animationObject);
@@ -2117,6 +2127,14 @@
 					// Keep the index in place to offset the splice
 					i--;
 				}
+			}
+
+			var endTime = Date.now();
+			var delay = endTime - startTime - this.frameDuration;
+			var frameDelay = delay / this.frameDuration;
+
+			if(frameDelay > 1){
+				this.dropFrames += frameDelay;
 			}
 
 			// Do we have more stuff to animate?
