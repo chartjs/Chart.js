@@ -2088,7 +2088,7 @@
 			});
 
 			// If there are no animations queued, manually kickstart a digest, for lack of a better word
-			if (this.animations.length) {
+			if (this.animations.length == 1) {
 				helpers.requestAnimFrame.call(window, this.digestWrapper);
 			}
 		},
@@ -2119,20 +2119,18 @@
 
 			for (var i = 0; i < this.animations.length; i++) {
 
-				var currentAnimation = this.animations[i];
+				if (this.animations[i].animationObject.currentStep === null){
+					this.animations[i].animationObject.currentStep = 0;
+				}
 
-				if (currentAnimation.animationObject.currentStep === null){
-					currentAnimation.animationObject.currentStep = 0;
-				} else {
-					currentAnimation.animationObject.currentStep += 1 + framesToDrop;
-					if(currentAnimation.animationObject.currentStep > currentAnimation.animationObject.numSteps){
-						currentAnimation.animationObject.currentStep = currentAnimation.animationObject.numSteps;
-					}
+				this.animations[i].animationObject.currentStep += 1 + framesToDrop;
+				if(this.animations[i].animationObject.currentStep > this.animations[i].animationObject.numSteps){
+					this.animations[i].animationObject.currentStep = this.animations[i].animationObject.numSteps;
 				}
 				
-				currentAnimation.animationObject.render(currentAnimation.chartInstance, currentAnimation.animationObject);
+				this.animations[i].animationObject.render(this.animations[i].chartInstance, this.animations[i].animationObject);
 				
-				if (currentAnimation.animationObject.currentStep == currentAnimation.animationObject.numSteps){
+				if (this.animations[i].animationObject.currentStep == this.animations[i].animationObject.numSteps){
 					// executed the last frame. Remove the animation.
 					this.animations.splice(i, 1);
 					// Keep the index in place to offset the splice
