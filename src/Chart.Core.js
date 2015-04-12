@@ -948,7 +948,7 @@
 					var stepDecimal = animationObject.currentStep / animationObject.numSteps;
 					var easeDecimal = easingFunction(stepDecimal);
 					
-					chartInstance.draw(chartInstance, easeDecimal, stepDecimal, currentStep);
+					chartInstance.draw(easeDecimal, stepDecimal, animationObject.currentStep);
 				};
 				
 				// user events
@@ -2094,8 +2094,12 @@
 
 			// If there are no animations queued, manually kickstart a digest, for lack of a better word
 			if (this.animations.length) {
-				helpers.requestAnimFrame(this.startDigest);
+				helpers.requestAnimFrame.call(window, this.digestWrapper);
 			}
+		},
+		// calls startDigest with the proper context
+		digestWrapper: function() {
+			Chart.animationService.startDigest.call(Chart.animationService);
 		},
 		startDigest: function() {
 
@@ -2121,7 +2125,7 @@
 
 			// Do we have more stuff to animate?
 			if (this.animations.length > 0){
-				requestAnimationFrame(this.startDigest);
+				helpers.requestAnimFrame.call(window, this.digestWrapper);
 			}
 		}
 	};
