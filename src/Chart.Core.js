@@ -911,7 +911,7 @@
 		},
 		stop : function(){
 			// Stops any current animation loop occuring
-			cancelAnimFrame(this.animationFrame);
+			Chart.animationService.cancelAnimation(this);
 			return this;
 		},
 		resize : function(callback){
@@ -2095,6 +2095,17 @@
 			// If there are no animations queued, manually kickstart a digest, for lack of a better word
 			if (this.animations.length) {
 				helpers.requestAnimFrame.call(window, this.digestWrapper);
+			}
+		},
+		// Cancel the animation for a given chart instance
+		cancelAnimation: function(chartInstance) {
+			var index = helpers.findNextWhere(this.animations, function(animationWrapper) {
+				return animationWrapper.chartInstance === chartInstance;
+			});
+			
+			if (index != -1)
+			{
+				this.animations.splice(index, 1);
 			}
 		},
 		// calls startDigest with the proper context
