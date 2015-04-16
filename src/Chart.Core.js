@@ -2011,6 +2011,23 @@
 							ctx.lineTo(outerPosition.x, outerPosition.y);
 							ctx.stroke();
 							ctx.closePath();
+
+							if (this.backgroundColors) {
+								var previousOuterPosition = this.getPointPosition(i === 0 ? this.valuesCount - 1 : i - 1, this.calculateCenterOffset(this.max));
+								var nextOuterPosition = this.getPointPosition(i === this.valuesCount - 1 ? 0 : i + 1, this.calculateCenterOffset(this.max));
+
+								var previousOuterHalfway = { x: (previousOuterPosition.x + outerPosition.x) / 2, y: (previousOuterPosition.y + outerPosition.y) / 2 };
+								var nextOuterHalfway = { x: (outerPosition.x + nextOuterPosition.x) / 2, y: (outerPosition.y + nextOuterPosition.y) / 2 };
+
+								ctx.beginPath();
+								ctx.moveTo(this.xCenter, this.yCenter);
+								ctx.lineTo(previousOuterHalfway.x, previousOuterHalfway.y);
+								ctx.lineTo(outerPosition.x, outerPosition.y);
+								ctx.lineTo(nextOuterHalfway.x, nextOuterHalfway.y);
+								ctx.fillStyle = this.backgroundColors[i];
+								ctx.fill();
+								ctx.closePath();
+							}
 						}
 						// Extra 3px out for some label spacing
 						var pointLabelPosition = this.getPointPosition(i, this.calculateCenterOffset(this.max) + 5);

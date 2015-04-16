@@ -174,6 +174,7 @@
 				showLabels: this.options.scaleShowLabels,
 				showLabelBackdrop: this.options.scaleShowLabelBackdrop,
 				backdropColor: this.options.scaleBackdropColor,
+				backgroundColors: this.options.scaleBackgroundColors,
 				backdropPaddingY : this.options.scaleBackdropPaddingY,
 				backdropPaddingX: this.options.scaleBackdropPaddingX,
 				lineWidth: (this.options.scaleShowLine) ? this.options.scaleLineWidth : 0,
