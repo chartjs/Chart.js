@@ -2005,16 +2005,17 @@
 					ctx.strokeStyle = this.angleLineColor;
 					for (var i = this.valuesCount - 1; i >= 0; i--) {
 						if (this.angleLineWidth > 0){
-							var outerPosition = this.getPointPosition(i, this.calculateCenterOffset(this.max));
+							var centerOffset = this.calculateCenterOffset(this.max);
+							var outerPosition = this.getPointPosition(i, centerOffset);
 							ctx.beginPath();
 							ctx.moveTo(this.xCenter, this.yCenter);
 							ctx.lineTo(outerPosition.x, outerPosition.y);
 							ctx.stroke();
 							ctx.closePath();
 
-							if (this.backgroundColors) {
-								var previousOuterPosition = this.getPointPosition(i === 0 ? this.valuesCount - 1 : i - 1, this.calculateCenterOffset(this.max));
-								var nextOuterPosition = this.getPointPosition(i === this.valuesCount - 1 ? 0 : i + 1, this.calculateCenterOffset(this.max));
+							if (this.backgroundColors && this.backgroundColors.length == this.valuesCount) {
+								var previousOuterPosition = this.getPointPosition(i === 0 ? this.valuesCount - 1 : i - 1, centerOffset);
+								var nextOuterPosition = this.getPointPosition(i === this.valuesCount - 1 ? 0 : i + 1, centerOffset);
 
 								var previousOuterHalfway = { x: (previousOuterPosition.x + outerPosition.x) / 2, y: (previousOuterPosition.y + outerPosition.y) / 2 };
 								var nextOuterHalfway = { x: (outerPosition.x + nextOuterPosition.x) / 2, y: (outerPosition.y + nextOuterPosition.y) / 2 };
