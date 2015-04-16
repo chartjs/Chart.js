@@ -159,6 +159,7 @@ new Chart(ctx).LineAlt(data);
 ### Community extensions
 
 - <a href="https://github.com/Regaddi/Chart.StackedBar.js" target="_blank">Stacked Bar Chart</a> by <a href="https://twitter.com/Regaddi" target="_blank">@Regaddi</a>
+- <a href="https://github.com/tannerlinsley/Chart.StackedArea.js" target="_blank">Stacked Bar Chart</a> by <a href="https://twitter.com/tannerlinsley" target="_blank">@tannerlinsley</a>
 - <a href="https://github.com/CAYdenberg/Chart.js" target="_blank">Error bars (bar and line charts)</a> by <a href="https://twitter.com/CAYdenberg" target="_blank">@CAYdenberg</a>
 - <a href="http://dima117.github.io/Chart.Scatter/" target="_blank">Scatter chart (number & date scales are supported)</a> by <a href="https://github.com/dima117" target="_blank">@dima117</a>
 
