@@ -952,6 +952,7 @@
 			return template(this.options.legendTemplate,this);
 		},
 		destroy : function(){
+			this.stop();
 			this.clear();
 			unbindEvents(this, this.events);
 			var canvas = this.chart.canvas;
