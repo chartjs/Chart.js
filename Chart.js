@@ -327,6 +327,9 @@
 			return valueToCap;
 		},
 		getDecimalPlaces = helpers.getDecimalPlaces = function(num){
+			if (num.toString().indexOf('e') !== -1){
+				return Math.abs(num.toString().split('e')[1]);
+			}
 			if (num%1!==0 && isNumber(num)){
 				return num.toString().split(".")[1].length;
 			}
