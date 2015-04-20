@@ -398,81 +398,90 @@
 			return Math.floor(Math.log(val) / Math.LN10);
 		},
 		calculateScaleRange = helpers.calculateScaleRange = function(valuesArray, drawingSize, textSize, startFromZero, integersOnly){
+			if(valuesArray.length > 0) {
+				//Set a minimum step of two - a point at the top of the graph, and a point at the base
+				var minSteps = 2,
+					maxSteps = Math.floor(drawingSize/(textSize * 1.5)),
+					skipFitting = (minSteps >= maxSteps);
 
-			//Set a minimum step of two - a point at the top of the graph, and a point at the base
-			var minSteps = 2,
-				maxSteps = Math.floor(drawingSize/(textSize * 1.5)),
-				skipFitting = (minSteps >= maxSteps);
+				var maxValue = max(valuesArray),
+					minValue = min(valuesArray);
 
-			var maxValue = max(valuesArray),
-				minValue = min(valuesArray);
-
-			// We need some degree of seperation here to calculate the scales if all the values are the same
-			// Adding/minusing 0.5 will give us a range of 1.
-			if (maxValue === minValue){
-				maxValue += 0.5;
-				// So we don't end up with a graph with a negative start value if we've said always start from zero
-				if (minValue >= 0.5 && !startFromZero){
-					minValue -= 0.5;
-				}
-				else{
-					// Make up a whole number above the values
+				// We need some degree of seperation here to calculate the scales if all the values are the same
+				// Adding/minusing 0.5 will give us a range of 1.
+				if (maxValue === minValue){
 					maxValue += 0.5;
-				}
-			}
-
-			var	valueRange = Math.abs(maxValue - minValue),
-				rangeOrderOfMagnitude = calculateOrderOfMagnitude(valueRange),
-				graphMax = Math.ceil(maxValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude),
-				graphMin = (startFromZero) ? 0 : Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude),
-				graphRange = graphMax - graphMin,
-				stepValue = Math.pow(10, rangeOrderOfMagnitude),
-				numberOfSteps = Math.round(graphRange / stepValue);
-
-			//If we have more space on the graph we'll use it to give more definition to the data
-			while((numberOfSteps > maxSteps || (numberOfSteps * 2) < maxSteps) && !skipFitting) {
-				if(numberOfSteps > maxSteps){
-					stepValue *=2;
-					numberOfSteps = Math.round(graphRange/stepValue);
-					// Don't ever deal with a decimal number of steps - cancel fitting and just use the minimum number of steps.
-					if (numberOfSteps % 1 !== 0){
-						skipFitting = true;
+					// So we don't end up with a graph with a negative start value if we've said always start from zero
+					if (minValue >= 0.5 && !startFromZero){
+						minValue -= 0.5;
+					}
+					else{
+						// Make up a whole number above the values
+						maxValue += 0.5;
 					}
 				}
-				//We can fit in double the amount of scale points on the scale
-				else{
-					//If user has declared ints only, and the step value isn't a decimal
-					if (integersOnly && rangeOrderOfMagnitude >= 0){
-						//If the user has said integers only, we need to check that making the scale more granular wouldn't make it a float
-						if(stepValue/2 % 1 === 0){
+
+				var	valueRange = Math.abs(maxValue - minValue),
+					rangeOrderOfMagnitude = calculateOrderOfMagnitude(valueRange),
+					graphMax = Math.ceil(maxValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude),
+					graphMin = (startFromZero) ? 0 : Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude),
+					graphRange = graphMax - graphMin,
+					stepValue = Math.pow(10, rangeOrderOfMagnitude),
+					numberOfSteps = Math.round(graphRange / stepValue);
+
+				//If we have more space on the graph we'll use it to give more definition to the data
+				while((numberOfSteps > maxSteps || (numberOfSteps * 2) < maxSteps) && !skipFitting) {
+					if(numberOfSteps > maxSteps){
+						stepValue *=2;
+						numberOfSteps = Math.round(graphRange/stepValue);
+						// Don't ever deal with a decimal number of steps - cancel fitting and just use the minimum number of steps.
+						if (numberOfSteps % 1 !== 0){
+							skipFitting = true;
+						}
+					}
+					//We can fit in double the amount of scale points on the scale
+					else{
+						//If user has declared ints only, and the step value isn't a decimal
+						if (integersOnly && rangeOrderOfMagnitude >= 0){
+							//If the user has said integers only, we need to check that making the scale more granular wouldn't make it a float
+							if(stepValue/2 % 1 === 0){
+								stepValue /=2;
+								numberOfSteps = Math.round(graphRange/stepValue);
+							}
+							//If it would make it a float break out of the loop
+							else{
+								break;
+							}
+						}
+						//If the scale doesn't have to be an int, make the scale more granular anyway.
+						else{
 							stepValue /=2;
 							numberOfSteps = Math.round(graphRange/stepValue);
 						}
-						//If it would make it a float break out of the loop
-						else{
-							break;
-						}
-					}
-					//If the scale doesn't have to be an int, make the scale more granular anyway.
-					else{
-						stepValue /=2;
-						numberOfSteps = Math.round(graphRange/stepValue);
-					}
 
+					}
 				}
-			}
 
-			if (skipFitting){
-				numberOfSteps = minSteps;
-				stepValue = graphRange / numberOfSteps;
-			}
+				if (skipFitting){
+					numberOfSteps = minSteps;
+					stepValue = graphRange / numberOfSteps;
+				}
 
-			return {
-				steps : numberOfSteps,
-				stepValue : stepValue,
-				min : graphMin,
-				max	: graphMin + (numberOfSteps * stepValue)
-			};
+				return {
+					steps : numberOfSteps,
+					stepValue : stepValue,
+					min : graphMin,
+					max	: graphMin + (numberOfSteps * stepValue)
+				};
+
+			}else{
+				return {
+					steps : 0,
+					stepValue : 0,
+					min : 0,
+					max	: 0
+				};
+			}
 
 		},
 		/* jshint ignore:start */
@@ -1517,20 +1526,24 @@
 			}
 		}
 	});
-
+	
 	Chart.Scale = Chart.Element.extend({
 		initialize : function(){
+			this.leftY = new Chart.Element();
+			this.rightY = new Chart.Element();
 			this.fit();
+
 		},
-		buildYLabels : function(){
-			this.yLabels = [];
+		buildYLabels : function(left){
+			var side = left? "leftY": "rightY";
+			this[side].yLabels = [];
 
-			var stepDecimalPlaces = getDecimalPlaces(this.stepValue);
+			var stepDecimalPlaces = getDecimalPlaces(this[side].stepValue);
 
-			for (var i=0; i<=this.steps; i++){
-				this.yLabels.push(template(this.templateString,{value:(this.min + (i * this.stepValue)).toFixed(stepDecimalPlaces)}));
+			for (var i=0; i<=this[side].steps; i++){
+				this[side].yLabels.push(template(this.templateString,{value:(this[side].min + (i * this[side].stepValue)).toFixed(stepDecimalPlaces)}));
 			}
-			this.yLabelWidth = (this.display && this.showLabels) ? longestText(this.ctx,this.font,this.yLabels) + 10 : 0;
+			this[side].yLabelWidth = (this.display && this.showLabels) ? longestText(this.ctx,this.font,this[side].yLabels) + 10 : 0;
 		},
 		addXLabel : function(label){
 			this.xLabels.push(label);
@@ -1575,23 +1588,30 @@
 
 			// With these properties set we can now build the array of yLabels
 			// and also the width of the largest yLabel
-			this.buildYLabels();
+			this.buildYLabels(true);
+			this.buildYLabels(false);
 
 			this.calculateXLabelRotation();
 
 			while((cachedHeight > this.endPoint - this.startPoint)){
 				cachedHeight = this.endPoint - this.startPoint;
-				cachedYLabelWidth = this.yLabelWidth;
+				cachedYLabelWidth = this.leftY.yLabelWidth;
 
 				this.calculateYRange(cachedHeight);
-				this.buildYLabels();
+
+				// With these properties set we can now build the array of yLabels
+				// and also the width of the largest yLabel
+				this.buildYLabels(true);
+				this.buildYLabels(false);
 
 				// Only go through the xLabel loop again if the yLabel width has changed
-				if (cachedYLabelWidth < this.yLabelWidth){
+				if (cachedYLabelWidth < this.leftY.yLabelWidth){
 					this.endPoint = cachedEndPoint;
 					this.calculateXLabelRotation();
 				}
 			}
+
+
 
 		},
 		calculateXLabelRotation : function(){
@@ -1606,11 +1626,14 @@
 				lastRotated;
 
 
-			this.xScalePaddingRight = lastWidth/2 + 3;
-			this.xScalePaddingLeft = (firstWidth/2 > this.yLabelWidth) ? firstWidth/2 : this.yLabelWidth;
+			this.xScalePaddingRight = (lastWidth/2 + 3 > this.rightY.yLabelWidth)? lastWidth/2 + 3 : this.rightY.yLabelWidth;
+			this.xScalePaddingLeft = (firstWidth/2 > this.leftY.yLabelWidth) ? firstWidth/2 : this.leftY.yLabelWidth;
+			console.log(this.leftY.yLabelWidth);
+			console.log(this.rightY);
 
 			this.xLabelRotation = 0;
 			if (this.display){
+				console.log("display");
 				var originalLabelWidth = longestText(this.ctx,this.font,this.xLabels),
 					cosRotation,
 					firstRotatedWidth;
@@ -1626,10 +1649,10 @@
 					lastRotated = cosRotation * lastWidth;
 
 					// We're right aligning the text now.
-					if (firstRotated + this.fontSize / 2 > this.yLabelWidth){
+					if (firstRotated + this.fontSize / 2 > this.leftY.yLabelWidth){
 						this.xScalePaddingLeft = firstRotated + this.fontSize / 2;
 					}
-					this.xScalePaddingRight = this.fontSize/2;
+					// this.xScalePaddingRight = this.fontSize/2;
 
 
 					this.xLabelRotation++;
@@ -1653,9 +1676,10 @@
 		drawingArea: function(){
 			return this.startPoint - this.endPoint;
 		},
-		calculateY : function(value){
-			var scalingFactor = this.drawingArea() / (this.min - this.max);
-			return this.endPoint - (scalingFactor * (value - this.min));
+		calculateY : function(point){
+			var side = point.yIndex?"rightY":"leftY";
+			var scalingFactor = this.drawingArea() / (this[side].min - this[side].max);
+			return this.endPoint - (scalingFactor * (point.value - this[side].min));
 		},
 		calculateX : function(index){
 			var isRotated = (this.xLabelRotation > 0),
@@ -1663,7 +1687,6 @@
 				innerWidth = this.width - (this.xScalePaddingLeft + this.xScalePaddingRight),
 				valueWidth = innerWidth/Math.max((this.valuesCount - ((this.offsetGridLines) ? 0 : 1)), 1),
 				valueOffset = (valueWidth * index) + this.xScalePaddingLeft;
-
 			if (this.offsetGridLines){
 				valueOffset += (valueWidth/2);
 			}
@@ -1674,62 +1697,84 @@
 			helpers.extend(this, newProps);
 			this.fit();
 		},
-		draw : function(){
+
+		drawY: function(leftY)
+		{
+			var side = leftY? "leftY": "rightY";
 			var ctx = this.ctx,
-				yLabelGap = (this.endPoint - this.startPoint) / this.steps,
-				xStart = Math.round(this.xScalePaddingLeft);
-			if (this.display){
-				ctx.fillStyle = this.textColor;
-				ctx.font = this.font;
-				each(this.yLabels,function(labelString,index){
-					var yLabelCenter = this.endPoint - (yLabelGap * index),
-						linePositionY = Math.round(yLabelCenter),
-						drawHorizontalLine = this.showHorizontalLines;
+			yLabelGap = (this.endPoint - this.startPoint) / this[side].steps,
+			xStart = Math.round(this.xScalePaddingLeft),
+			xEnd = Math.round(this.width - this.xScalePaddingRight);
+			ctx.fillStyle = this.textColor;
+			ctx.font = this.font;
+			each(this[side].yLabels,function(labelString,index){
+				var yLabelCenter = this.endPoint - (yLabelGap * index),
+					linePositionY = Math.round(yLabelCenter),
+					drawHorizontalLine = this.showHorizontalLines;
 
-					ctx.textAlign = "right";
-					ctx.textBaseline = "middle";
-					if (this.showLabels){
+
+				ctx.textAlign = "right";
+				ctx.textBaseline = "middle";
+				if (this.showLabels){
+					ctx.fillStyle = this.strokeColor;
+					if(side === "leftY")
+					{
 						ctx.fillText(labelString,xStart - 10,yLabelCenter);
+					}else{
+						ctx.fillText(labelString,xEnd+this[side].yLabelWidth,yLabelCenter);
 					}
+				}
 
-					// This is X axis, so draw it
-					if (index === 0 && !drawHorizontalLine){
-						drawHorizontalLine = true;
-					}
+				// This is X axis, so draw it
+				if (index === 0 && !drawHorizontalLine){
+					drawHorizontalLine = true;
+				}
 
-					if (drawHorizontalLine){
-						ctx.beginPath();
-					}
+				if (drawHorizontalLine){
+					ctx.beginPath();
+				}
 
-					if (index > 0){
-						// This is a grid line in the centre, so drop that
-						ctx.lineWidth = this.gridLineWidth;
-						ctx.strokeStyle = this.gridLineColor;
-					} else {
-						// This is the first line on the scale
-						ctx.lineWidth = this.lineWidth;
-						ctx.strokeStyle = this.lineColor;
-					}
-
-					linePositionY += helpers.aliasPixel(ctx.lineWidth);
-
-					if(drawHorizontalLine){
-						ctx.moveTo(xStart, linePositionY);
-						ctx.lineTo(this.width, linePositionY);
-						ctx.stroke();
-						ctx.closePath();
-					}
-
+				if (index > 0){
+					// This is a grid line in the centre, so drop that
+					ctx.lineWidth = this.gridLineWidth;
+					ctx.strokeStyle = this.gridLineColor;
+				} else {
+					// This is the first line on the scale
 					ctx.lineWidth = this.lineWidth;
 					ctx.strokeStyle = this.lineColor;
-					ctx.beginPath();
-					ctx.moveTo(xStart - 5, linePositionY);
-					ctx.lineTo(xStart, linePositionY);
+				}
+
+				linePositionY += helpers.aliasPixel(ctx.lineWidth);
+
+				if(drawHorizontalLine && side === "leftY"){
+					ctx.moveTo(xStart, linePositionY);
+					ctx.lineTo(xEnd, linePositionY);
 					ctx.stroke();
 					ctx.closePath();
+				}
 
-				},this);
+				if(side === "leftY"){
 
+				ctx.lineWidth = this.lineWidth;
+				ctx.strokeStyle = this.lineColor;
+				ctx.beginPath();
+				ctx.moveTo(xStart - 5, linePositionY);
+				ctx.lineTo(xStart, linePositionY);
+				ctx.stroke();
+				ctx.closePath();
+			}
+
+			},this);
+			
+		},
+		draw : function(){
+			var ctx = this.ctx,
+				xStart = Math.round(this.xScalePaddingLeft);
+			
+
+			if(this.display) {
+				this.drawY(true);
+				this.drawY(false);
 				each(this.xLabels,function(label,index){
 					var xPos = this.calculateX(index) + aliasPixel(this.lineWidth),
 						// Check to see if line/bar here and decide where to place the line
