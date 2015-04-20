@@ -166,7 +166,7 @@
 
 			if (this.options.showSingleTooltip) {
 				var singlePointIndex = Math.ceil(pointsArray.length / 2);
-				pointsArray = [pointsArray[singlePointIndex]];
+				pointsArray = [pointsArray[singlePointIndex - 1]];
 			}
 
 			return pointsArray;
