@@ -50,7 +50,13 @@
 		datasetFill : true,
 
 		//String - A legend template
-		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+
+		//Boolean - Whether to horizontally center the label and point dot inside the grid
+		offsetGridLines : false,
+
+		//Boolean - Whether the graph will show one or multiples tooltips
+		showSingleTooltip: false
 
 	};
 
@@ -61,6 +67,7 @@
 		initialize:  function(data){
 			//Declare the extension of the default point, to cater for the options passed in to the constructor
 			this.PointClass = Chart.Point.extend({
+				offsetGridLines : this.options.offsetGridLines,
 				strokeWidth : this.options.pointDotStrokeWidth,
 				radius : this.options.pointDotRadius,
 				display: this.options.pointDot,
@@ -156,6 +163,12 @@
 					if (point.inRange(eventPosition.x,eventPosition.y)) pointsArray.push(point);
 				});
 			},this);
+
+			if (this.options.showSingleTooltip) {
+				var singlePointIndex = Math.ceil(pointsArray.length / 2);
+				pointsArray = [pointsArray[singlePointIndex - 1]];
+			}
+
 			return pointsArray;
 		},
 		buildScale : function(labels){
@@ -176,6 +189,7 @@
 				width : this.chart.width,
 				ctx : this.chart.ctx,
 				textColor : this.options.scaleFontColor,
+				offsetGridLines : this.options.offsetGridLines,
 				fontSize : this.options.scaleFontSize,
 				fontStyle : this.options.scaleFontStyle,
 				fontFamily : this.options.scaleFontFamily,
