@@ -53,7 +53,10 @@
 		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
 
 		//Boolean - Whether to horizontally center the label and point dot inside the grid
-		offsetGridLines : false
+		offsetGridLines : false,
+
+		//Boolean - Whether the graph will show one or multiples tooltips
+		showSingleTooltip: false
 
 	};
 
@@ -160,6 +163,12 @@
 					if (point.inRange(eventPosition.x,eventPosition.y)) pointsArray.push(point);
 				});
 			},this);
+
+			if (this.options.showSingleTooltip) {
+				var singlePointIndex = Math.ceil(pointsArray.length / 2);
+				pointsArray = [pointsArray[singlePointIndex]];
+			}
+
 			return pointsArray;
 		},
 		buildScale : function(labels){

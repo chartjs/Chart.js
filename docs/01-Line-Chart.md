@@ -104,7 +104,10 @@ These are the customisation options specific to Line charts. These options are m
 	{% endraw %}
 
 	//Boolean - Whether to horizontally center the label and point dot inside the grid
-	offsetGridLines : false
+	offsetGridLines : false,
+
+	//Boolean - Whether the graph will show one or multiples tooltips
+	showSingleTooltip : false
 };
 ```
 
