@@ -1270,8 +1270,15 @@
 				y: chartY
 			});
 
+			//Normalize Arc to start from PI*1.5 to support custom start angle.
+			var diff = (Math.PI * 1.5 - this.startAngle),
+				endAngle = this.endAngle + diff,
+				angle = pointRelativePosition.angle + diff;
+			if (angle > Math.PI * 3.5) {
+				angle -= Math.PI * 2;
+			}
 			//Check if within the range of the open/close angle
-			var betweenAngles = (pointRelativePosition.angle >= this.startAngle && pointRelativePosition.angle <= this.endAngle),
+			var betweenAngles = (angle >= Math.PI * 1.5 && angle <= endAngle),
 				withinRadius = (pointRelativePosition.distance >= this.innerRadius && pointRelativePosition.distance <= this.outerRadius);
 
 			return (betweenAngles && withinRadius);
