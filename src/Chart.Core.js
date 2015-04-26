@@ -1270,8 +1270,13 @@
 				y: chartY
 			});
 
+			//Normalize values to support custom start angle.
+			var startAngle = this.startAngle % (Math.PI * 2),
+				endAngle = this.endAngle % (Math.PI * 2),
+				angle = pointRelativePosition.angle % (Math.PI * 2);
+			endAngle = startAngle > endAngle ? Math.PI * 2 + endAngle : endAngle;
 			//Check if within the range of the open/close angle
-			var betweenAngles = (pointRelativePosition.angle >= this.startAngle && pointRelativePosition.angle <= this.endAngle),
+			var betweenAngles = (angle >= startAngle && angle <= endAngle),
 				withinRadius = (pointRelativePosition.distance >= this.innerRadius && pointRelativePosition.distance <= this.outerRadius);
 
 			return (betweenAngles && withinRadius);
