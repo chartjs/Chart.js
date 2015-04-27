@@ -161,6 +161,7 @@ new Chart(ctx).LineAlt(data);
 - <a href="https://github.com/Regaddi/Chart.StackedBar.js" target="_blank">Stacked Bar Chart</a> by <a href="https://twitter.com/Regaddi" target="_blank">@Regaddi</a>
 - <a href="https://github.com/CAYdenberg/Chart.js" target="_blank">Error bars (bar and line charts)</a> by <a href="https://twitter.com/CAYdenberg" target="_blank">@CAYdenberg</a>
 - <a href="http://dima117.github.io/Chart.Scatter/" target="_blank">Scatter chart (number & date scales are supported)</a> by <a href="https://github.com/dima117" target="_blank">@dima117</a>
+- <a href="https://github.com/chartjs/Chart.LinearGauge.js" target="_blank">Linear Gauge</a> by <a href="http://www.tapintu.com" target="_blank">A. Scott McCulloch, PhD</a> and <a href="https://www.elance.com/s/alexj874/">Alexander V.</a>
 
 ### Creating custom builds
 
