@@ -1659,7 +1659,6 @@
             };
             each(this.yAxes, function(yAxis) {
                 this._yAxes.push(new Chart.YAxis({
-
                     name: yAxis.name,
                     positionLeft: yAxis.scalePositionLeft !== undefined ? yAxis.scalePositionLeft : this.positionLeft,
                     fontSize: yAxis.scaleFontSize !== undefined ? yaxis.scaleFontSize : this.fontSize,
@@ -1667,7 +1666,6 @@
                     integersOnly: yAxis.scaleIntegersOnly !== undefined ? yAxis.scaleIntegersOnly : this.integersOnly,
                     templateString: yAxis.scaleLabel !== undefined ? yAxis.scaleLabel : this.templateString,
                     textColor: yAxis.scaleFontColor !== undefined ? yAxis.scaleFontColor : this.textColor,
-
                     showLabels: yAxis.scaleShowLabels !== undefined ? yaxis.scaleShowLabels : this.showLabels,
                     showHorizontalLines: yAxis.showHorizontalLines !== undefined ? yaxis.showHorizontalLines : this.showHorizontalLines,
                     gridLineWidth: (yAxis.scaleShowGridLines !== undefined) ? yAxis.scaleShowGridLines : this.gridLineWidth,
@@ -1691,7 +1689,7 @@
             }, this);
             if (this._yAxes.length === 0) {
                 this._yAxes.push(new Chart.YAxis(helpers.extend({
-                    name: data.yAxesGroup
+                    name: "default"
                 }, defaultConfig)));
             }
             each(this.datasets, function(data) {
