@@ -53,7 +53,13 @@
         legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
 
         //Boolean - Whether to horizontally center the label and point dot inside the grid
-        offsetGridLines: false
+        offsetGridLines: false,
+
+        //Array - specific yAxis details
+        yAxes: [],
+
+        //Boolean - set default yAxis on the left of chart
+        scalePositionLeft: true,
 
     };
 
@@ -76,6 +82,7 @@
             });
 
             this.datasets = [];
+            this.yAxes = data.yAxes;
 
             //Set up tooltip events on the chart
             if (this.options.showTooltips) {
@@ -101,13 +108,16 @@
                     strokeColor: dataset.strokeColor,
                     pointColor: dataset.pointColor,
                     pointStrokeColor: dataset.pointStrokeColor,
-                    points: []
+                    points: [],
+                    yAxesGroup: dataset.yAxesGroup,
+                    values:dataset.data
                 };
 
                 this.datasets.push(datasetObject);
 
 
                 helpers.each(dataset.data, function(dataPoint, index) {
+
                     //Add a new point for each piece of data, passing any required data to draw.
                     datasetObject.points.push(new this.PointClass({
                         value: dataPoint,
@@ -117,7 +127,7 @@
                         fillColor: dataset.pointColor,
                         highlightFill: dataset.pointHighlightFill || dataset.pointColor,
                         highlightStroke: dataset.pointHighlightStroke || dataset.pointStrokeColor,
-                        yIndex: dataset.yIndex
+                        yAxesGroup: dataset.yAxesGroup
                     }));
                 }, this);
 
@@ -166,16 +176,6 @@
         buildScale: function(labels) {
             var self = this;
 
-            var dataTotal = function() {
-                var values = [];
-                values[0] = [];
-                values[1] = [];
-                self.eachPoints(function(point) {
-                    values[point.yIndex ? 1 : 0].push(point.value);
-                });
-                return values;
-            };
-
             var scaleOptions = {
                 templateString: this.options.scaleLabel,
                 height: this.chart.height,
@@ -189,25 +189,7 @@
                 valuesCount: labels.length,
                 beginAtZero: this.options.scaleBeginAtZero,
                 integersOnly: this.options.scaleIntegersOnly,
-                calculateYRange: function(currentHeight) {
-                	var data = dataTotal();
-                    var updatedRangesLeft = helpers.calculateScaleRange(
-                        dataTotal()[0],
-                        currentHeight,
-                        this.fontSize,
-                        this.beginAtZero,
-                        this.integersOnly
-                    );
-                     var updatedRangesRight = helpers.calculateScaleRange(
-                        dataTotal()[1],
-                        currentHeight,
-                        this.fontSize,
-                        this.beginAtZero,
-                        this.integersOnly
-                    );
-                    helpers.extend(this.leftY, updatedRangesLeft);
-                    helpers.extend( this.rightY, updatedRangesRight);
-                },
+               	datasets: this.datasets,
                 xLabels: labels,
                 font: helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.scaleFontFamily),
                 lineWidth: this.options.scaleLineWidth,
@@ -218,7 +200,10 @@
                 gridLineColor: (this.options.scaleShowGridLines) ? this.options.scaleGridLineColor : "rgba(0,0,0,0)",
                 padding: (this.options.showScale) ? 0 : this.options.pointDotRadius + this.options.pointDotStrokeWidth,
                 showLabels: this.options.scaleShowLabels,
-                display: this.options.showScale
+                display: this.options.showScale,
+                yAxes: this.yAxes,
+                positionLeft: this.options.scalePositionLeft
+
             };
 
             if (this.options.scaleOverride) {
@@ -245,7 +230,8 @@
                     x: this.scale.calculateX(this.scale.valuesCount + 1),
                     y: this.scale.endPoint,
                     strokeColor: this.datasets[datasetIndex].pointStrokeColor,
-                    fillColor: this.datasets[datasetIndex].pointColor
+                    fillColor: this.datasets[datasetIndex].pointColor,
+                    yAxesGroup:this.datasets[datasetIndex].yAxesGroup
                 }));
             }, this);
 
