@@ -1700,7 +1700,7 @@
                         yAxis.addData(data.values);
                     } else {
                         yAxis = new Chart.YAxis(new Chart.YAxis(helpers.extend({
-                            name: data.yAxisGroup
+                            name: data.yAxesGroup
                         }, defaultConfig)));
                         this._yAxes.push(yAxis);
                         yAxis.addData(data.values);
@@ -1742,6 +1742,7 @@
 
         getYAxisByGroupName: function(groupName) {
             var axis = null;
+
             each(this._yAxes, function(yAxis) {
                 if (yAxis.name === groupName) {
                     axis = yAxis;

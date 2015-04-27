@@ -110,7 +110,7 @@
                     pointStrokeColor: dataset.pointStrokeColor,
                     points: [],
                     yAxesGroup: dataset.yAxesGroup,
-                    values:dataset.data
+                    values: dataset.data
                 };
 
                 this.datasets.push(datasetObject);
@@ -131,18 +131,21 @@
                     }));
                 }, this);
 
-                this.buildScale(data.labels);
 
-
-                this.eachPoints(function(point, index) {
-                    helpers.extend(point, {
-                        x: this.scale.calculateX(index),
-                        y: this.scale.endPoint
-                    });
-                    point.save();
-                }, this);
 
             }, this);
+
+            this.buildScale(data.labels);
+            
+            this.eachPoints(function(point, index) {
+                helpers.extend(point, {
+                    x: this.scale.calculateX(index),
+                    y: this.scale.endPoint
+                });
+                point.save();
+            }, this);
+
+
 
 
             this.render();
@@ -189,7 +192,7 @@
                 valuesCount: labels.length,
                 beginAtZero: this.options.scaleBeginAtZero,
                 integersOnly: this.options.scaleIntegersOnly,
-               	datasets: this.datasets,
+                datasets: this.datasets,
                 xLabels: labels,
                 font: helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.scaleFontFamily),
                 lineWidth: this.options.scaleLineWidth,
@@ -216,7 +219,6 @@
                 });
             }
 
-
             this.scale = new Chart.Scale(scaleOptions);
         },
         addData: function(valuesArray, label) {
@@ -231,7 +233,7 @@
                     y: this.scale.endPoint,
                     strokeColor: this.datasets[datasetIndex].pointStrokeColor,
                     fillColor: this.datasets[datasetIndex].pointColor,
-                    yAxesGroup:this.datasets[datasetIndex].yAxesGroup
+                    yAxesGroup: this.datasets[datasetIndex].yAxesGroup
                 }));
             }, this);
 
