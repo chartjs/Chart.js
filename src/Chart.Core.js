@@ -1674,9 +1674,9 @@
                     lineColor: yAxis.scaleLineColor !== undefined ? yAxis.scaleLineColor : this.lineColor,
                     padding: yAxis.showScale !== undefined && yAxis.showScale? 0 : this.padding,
                     font: helpers.fontString(
-                        yAxis.scaleFontSize ? yAxis.scaleFontSize : this.scaleFontSize,
-                        yAxis.scaleFontStyle ? yAxis.scaleFontStyle : this.scaleFontStyle,
-                        yAxis.scaleFontFamily ? yAxis.scaleFontFamily : this.scaleFontFamily),
+                        yAxis.scaleFontSize ? yAxis.scaleFontSize : this.fontSize,
+                        yAxis.scaleFontStyle ? yAxis.scaleFontStyle : this.fontStyle,
+                        yAxis.scaleFontFamily ? yAxis.scaleFontFamily : this.fontFamily),
                     scaleOverride: yAxis.scaleOverride !== undefined ? yaxis.scaleOverride : this.scaleOverride,
                     steps: yAxis.scaleOverride ? yaxis.scaleSteps : this.scaleSteps,
                     stepValue: yAxis.scaleOverride ? yaxis.scaleStepWidth : this.stepValue,
