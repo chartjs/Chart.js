@@ -31,6 +31,9 @@
 		//Boolean - Whether we animate scaling the Doughnut from the centre
 		animateScale : false,
 
+		//Number - The angle where the first segment will start (0-360)
+		startAngle: 0,
+
 		//String - A legend template
 		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
 
@@ -101,7 +104,7 @@
 				showStroke : this.options.segmentShowStroke,
 				strokeWidth : this.options.segmentStrokeWidth,
 				strokeColor : this.options.segmentStrokeColor,
-				startAngle : Math.PI * 1.5,
+				startAngle : 0,
 				circumference : (this.options.animateRotate) ? 0 : this.calculateCircumference(segment.value),
 				label : segment.label
 			}));
@@ -171,7 +174,7 @@
 
 				segment.draw();
 				if (index === 0){
-					segment.startAngle = Math.PI * 1.5;
+					segment.startAngle = Math.PI * 1.5 + helpers.toRadians(this.options.startAngle)
 				}
 				//Check to see if it's the last segment, if not get the next and update the start angle
 				if (index < this.segments.length-1){
