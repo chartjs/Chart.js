@@ -146,7 +146,7 @@
 		calculateBarBase: function() {
 			var base = this.scale.endPoint;
 			
-			if (this.scale.beginAtZero || ((this.scale.min < 0 && this.scale.max > 0) || (this.scale.min > 0 && this.scale.max < 0)))
+			if (this.scale.beginAtZero || ((this.scale.min <= 0 && this.scale.max >= 0) || (this.scale.min >= 0 && this.scale.max <= 0)))
 			{
 				base = this.scale.calculateY(0);
 			}
