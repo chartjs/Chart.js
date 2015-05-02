@@ -8,6 +8,9 @@
     "type": "git",
     "url": "https://github.com/nnnick/Chart.js.git"
   },
+  "scripts": {
+    "test": "gulp test"
+  },
   "dependences": {},
   "devDependencies": {
     "gulp": "3.5.x",

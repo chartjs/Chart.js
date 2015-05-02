@@ -1,6 +1,7 @@
 /* global describe, it */
 (function () {
   describe('Bar Chart Function Test', function () {
+    this.timeout(5000);
     beforeEach(function() {
       this.canvasElement = document.createElement('canvas');
       this.canvasElement.id = 'canvas';
@@ -11,6 +12,17 @@
 
     afterEach(function() {
       document.body.removeChild(this.canvasElement);
+    });
+
+    it('test width', function(done) {
+      var canvas = document.getElementById("canvas")
+      expect(canvas.width).to.equal(500);
+      var ctx = document.getElementById("canvas").getContext("2d");
+      var moveToSpy = sinon.spy(ctx, 'moveTo');
+      ctx.moveTo(10,20);
+      expect(moveToSpy.calledWith(10, 20)).to.equal(true);
+
+      done();
     });
 
     it('should run here few assertions', function(done) {
