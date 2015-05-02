@@ -71,6 +71,9 @@ These are the customisation options specific to Bar charts. These options are me
 	//Boolean - Whether to show vertical lines (except Y axis)
 	scaleShowVerticalLines: true,
 
+	//Boolean - Whether the bars should start at the origin, or the bottom of the scale
+	barBeginAtOrigin: true,
+
 	//Boolean - If there is a stroke on each bar
 	barShowStroke : true,
 
