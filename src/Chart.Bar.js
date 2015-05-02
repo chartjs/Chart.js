@@ -146,11 +146,11 @@
 		calculateBarBase: function() {
 			var base = this.scale.endPoint;
 			
-			if (this.scale.beginAtZero || Math.sign(this.scale.min) != Math.sign(this.scale.max))
+			if (this.scale.beginAtZero || ((this.scale.min < 0 && this.scale.max > 0) || (this.scale.min > 0 && this.scale.max < 0)))
 			{
 				base = this.scale.calculateY(0);
 			}
-			else if (Math.sign(this.scale.min) < 0 && Math.sign(this.scale.max) < 0)
+			else if (this.scale.min < 0 && this.scale.max < 0)
 			{
 				// All values are negative. Use the top as the base
 				base = this.scale.startPoint;
