@@ -3,42 +3,47 @@
 	<head>
 		<title>Polar Area Chart</title>
 		<script src="../Chart.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 	</head>
 	<body>
 		<div id="canvas-holder" style="width:30%">
 			<canvas id="chart-area" width="300" height="300"/>
 		</div>
+		<button id="randomizeData">Randomize Data</button>
 
 
 	<script>
 
+		var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
+		var randomColorFactor = function(){ return Math.round(Math.random()*255)};
+
 		var polarData = [
 				{
-					value: 300,
+					value: randomScalingFactor(),
 					color:"#F7464A",
 					highlight: "#FF5A5E",
 					label: "Red"
 				},
 				{
-					value: 50,
+					value: randomScalingFactor(),
 					color: "#46BFBD",
 					highlight: "#5AD3D1",
 					label: "Green"
 				},
 				{
-					value: 100,
+					value: randomScalingFactor(),
 					color: "#FDB45C",
 					highlight: "#FFC870",
 					label: "Yellow"
 				},
 				{
-					value: 40,
+					value: randomScalingFactor(),
 					color: "#949FB1",
 					highlight: "#A8B3C5",
 					label: "Grey"
 				},
 				{
-					value: 120,
+					value: randomScalingFactor(),
 					color: "#4D5360",
 					highlight: "#616774",
 					label: "Dark Grey"
@@ -52,6 +57,14 @@
 					responsive:true
 				});
 			};
+
+			$('#randomizeData').click(function(){
+				$.each(polarData, function(i, piece){
+					polarData[i].value = randomScalingFactor();
+			    	polarData[i].color = 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
+				});
+		    	window.myPolarArea.update();
+		    });
 
 
 

@@ -59,6 +59,9 @@
 		//Initialize is fired when the chart is initialized - Data is passed in as a parameter
 		//Config is automatically merged by the core of Chart.js, and is available at this.options
 		initialize:  function(data){
+			// Save data as a source for updating of values & methods
+			this.data = data;
+
 			this.segments = [];
 			//Declare segment class as a chart instance specific class, so it can share props for this instance
 			this.SegmentArc = Chart.Arc.extend({
@@ -190,6 +193,22 @@
 
 		},
 		update : function(){
+
+			// Map new data to data points
+			if(this.data.length == this.segments.length){
+				helpers.each(this.data, function(segment, i){
+					helpers.extend(this.segments[i], {
+						fillColor: segment.color,
+						highlightColor: segment.highlight || segment.color,
+						label: segment.label,
+						value: segment.value,
+					});
+				},this);
+			} else{
+				// Data size changed without properly inserting, just redraw the chart
+				this.initialize(this.data);
+			}
+
 			this.calculateTotal(this.segments);
 
 			helpers.each(this.segments,function(segment){
