@@ -83,7 +83,7 @@ These are the customisation options specific to Polar Area charts. These options
 	//Boolean - Stroke a line around each segment in the chart
 	segmentShowStroke : true,
 
-	//String - The colour of the stroke on each segement.
+	//String - The colour of the stroke on each segment.
 	segmentStrokeColor : "#fff",
 
 	//Number - The width of the stroke value in pixels
