@@ -22,6 +22,9 @@
 		//Boolean - Whether to show vertical lines (except Y axis)
 		scaleShowVerticalLines: true,
 
+		// Number - If we want a limit on the string length for labels on x-axis (0 for no limit)
+		maxXLabelLength: 0,
+
 		//Boolean - Whether the line is curved between points
 		bezierCurve : true,
 
@@ -193,6 +196,15 @@
 		buildScale : function(labels){
 			var self = this;
 
+			if (this.options.maxXLabelLength != 0) {
+				var xAxisLabels = [];
+				for (var i = 0, l = labels.length; i < l; i++) {
+					xAxisLabels[i] = labels[i].substring(0, this.options.maxXLabelLength);
+				}    
+			} else {
+				var xAxisLabels = labels;
+			}
+
 			var dataTotal = function(){
 				var values = [];
 				self.eachPoints(function(point){
@@ -225,7 +237,7 @@
 					);
 					helpers.extend(this, updatedRanges);
 				},
-				xLabels : labels,
+				xLabels : xAxisLabels,
 				font : helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.scaleFontFamily),
 				lineWidth : this.options.scaleLineWidth,
 				lineColor : this.options.scaleLineColor,
