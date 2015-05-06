@@ -199,7 +199,11 @@
 			if (this.options.maxXLabelLength != 0) {
 				var xAxisLabels = [];
 				for (var i = 0, l = labels.length; i < l; i++) {
-					xAxisLabels[i] = labels[i].substring(0, this.options.maxXLabelLength);
+					if (labels[i].substring(0, this.options.maxXLabelLength) == labels[i]) {
+						xAxisLabels[i] = labels[i].substring(0, this.options.maxXLabelLength);
+					} else {
+						xAxisLabels[i] = labels[i].substring(0, this.options.maxXLabelLength) + '...';
+					}
 				}    
 			} else {
 				var xAxisLabels = labels;
