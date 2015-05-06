@@ -72,6 +72,9 @@ These are the customisation options specific to Line charts. These options are m
 	//Boolean - Whether to show vertical lines (except Y axis)
 	scaleShowVerticalLines: true,
 
+	// Number - If we want a limit on the string length for labels on x-axis (0 for no limit)
+	maxXLabelLength: 0,
+
 	//Boolean - Whether the line is curved between points
 	bezierCurve : true,
 
