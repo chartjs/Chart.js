@@ -466,7 +466,6 @@
 				numberOfSteps = minSteps;
 				stepValue = graphRange / numberOfSteps;
 			}
-
 			return {
 				steps : numberOfSteps,
 				stepValue : stepValue,
@@ -1021,12 +1020,12 @@
 			}
 			if (ChartElements.length > 0){
 				// If we have multiple datasets, show a MultiTooltip for all of the data points at that index
-				if (this.datasets && this.datasets.length > 1) {
+				if (this.data.datasets && this.data.datasets.length > 1) {
 					var dataArray,
 						dataIndex;
 
-					for (var i = this.datasets.length - 1; i >= 0; i--) {
-						dataArray = this.datasets[i].points || this.datasets[i].bars || this.datasets[i].segments;
+					for (var i = this.data.datasets.length - 1; i >= 0; i--) {
+						dataArray = this.data.datasets[i].points || this.data.datasets[i].bars || this.data.datasets[i].segments;
 						dataIndex = indexOf(dataArray, ChartElements[0]);
 						if (dataIndex !== -1){
 							break;
@@ -1045,7 +1044,7 @@
 								yMax,
 								xMin,
 								yMin;
-							helpers.each(this.datasets, function(dataset){
+							helpers.each(this.data.datasets, function(dataset){
 								dataCollection = dataset.points || dataset.bars || dataset.segments;
 								if (dataCollection[dataIndex] && dataCollection[dataIndex].hasValue()){
 									Elements.push(dataCollection[dataIndex]);
@@ -1060,8 +1059,8 @@
 								//Include any colour information about the element
 								tooltipLabels.push(helpers.template(this.options.multiTooltipTemplate, element));
 								tooltipColors.push({
-									fill: element._saved.fillColor || element.fillColor,
-									stroke: element._saved.strokeColor || element.strokeColor
+									fill: element._vm.fillColor || element.fillColor,
+									stroke: element._vm.strokeColor || element.strokeColor
 								});
 
 							}, this);
@@ -1182,29 +1181,29 @@
 		initialize : function(){},
 		restore : function(props){
 			if (!props){
-				extend(this,this._saved);
+				extend(this,this._vm);
 			} else {
 				each(props,function(key){
-					this[key] = this._saved[key];
+					this[key] = this._vm[key];
 				},this);
 			}
 			return this;
 		},
 		save : function(){
-			this._saved = clone(this);
-			delete this._saved._saved;
+			this._vm = clone(this);
+			delete this._vm._vm;
 			return this;
 		},
 		update : function(newProps){
 			each(newProps,function(value,key){
-				this._saved[key] = this[key];
+				this._vm[key] = this[key];
 				this[key] = value;
 			},this);
 			return this;
 		},
 		transition : function(props,ease){
 			each(props,function(value,key){
-				this[key] = ((value - this._saved[key]) * ease) + this._saved[key];
+				this._vm[key] = ((value - this._vm[key]) * ease) + this._vm[key];
 			},this);
 			return this;
 		},
@@ -1325,16 +1324,19 @@
 
 	Chart.Rectangle = Chart.Element.extend({
 		draw : function(){
+
+			var vm = this._vm;
+
 			var ctx = this.ctx,
-				halfWidth = this.width/2,
-				leftX = this.x - halfWidth,
-				rightX = this.x + halfWidth,
-				top = this.base - (this.base - this.y),
-				halfStroke = this.strokeWidth / 2;
+				halfWidth = vm.width/2,
+				leftX = vm.x - halfWidth,
+				rightX = vm.x + halfWidth,
+				top = this.base - (this.base - vm.y),
+				halfStroke = vm.strokeWidth / 2;
 
 			// Canvas doesn't allow us to stroke inside the width so we can
 			// adjust the sizes to fit if we're setting a stroke on the line
-			if (this.showStroke){
+			if (vm.showStroke){
 				leftX += halfStroke;
 				rightX -= halfStroke;
 				top += halfStroke;
@@ -1342,9 +1344,9 @@
 
 			ctx.beginPath();
 
-			ctx.fillStyle = this.fillColor;
-			ctx.strokeStyle = this.strokeColor;
-			ctx.lineWidth = this.strokeWidth;
+			ctx.fillStyle = vm.fillColor;
+			ctx.strokeStyle = vm.strokeColor;
+			ctx.lineWidth = vm.strokeWidth;
 
 			// It'd be nice to keep this class totally generic to any rectangle
 			// and simply specify which border to miss out.
@@ -1353,15 +1355,15 @@
 			ctx.lineTo(rightX, top);
 			ctx.lineTo(rightX, this.base);
 			ctx.fill();
-			if (this.showStroke){
+			if (vm.showStroke){
 				ctx.stroke();
 			}
 		},
 		height : function(){
-			return this.base - this.y;
+			return this.base - vm.y;
 		},
 		inRange : function(chartX,chartY){
-			return (chartX >= this.x - this.width/2 && chartX <= this.x + this.width/2) && (chartY >= this.y && chartY <= this.base);
+			return (chartX >= vm.x - vm.width/2 && chartX <= vm.x + vm.width/2) && (chartY >= vm.y && chartY <= this.base);
 		}
 	});
 
