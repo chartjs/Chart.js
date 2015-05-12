@@ -59,7 +59,7 @@
 			animation: true,
 
 			// Number - Number of animation steps
-			animationDuration: 1000,
+			animationSteps: 60,
 
 			// String - Animation easing effect
 			animationEasing: "easeOutQuart",
@@ -124,7 +124,7 @@
 			tooltipEvents: ["mousemove", "touchstart", "touchmove", "mouseout"],
 
 			// String - Tooltip background colour
-			tooltipBackgroundColor: "rgba(0,0,0,0.8)",
+			tooltipFillColor: "rgba(0,0,0,0.8)",
 
 			// String - Tooltip label font declaration for the scale label
 			tooltipFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
@@ -934,14 +934,14 @@
 			return this;
 		},
 		reflow : noop,
-		render : function(reflow, customDuration){
+		render : function(reflow){
 			if (reflow){
 				this.reflow();
 			}
 			
 			if (this.options.animation && !reflow){
 				var animation = new Chart.Animation();
-				animation.numSteps = (customDuration || this.options.animationDuration) / 16.66; //60 fps
+				animation.numSteps = this.options.animationSteps;
 				animation.easing = this.options.animationEasing;
 				
 				// render function
@@ -1059,8 +1059,8 @@
 								//Include any colour information about the element
 								tooltipLabels.push(helpers.template(this.options.multiTooltipTemplate, element));
 								tooltipColors.push({
-									fill: element._vm.backgroundColor || element.backgroundColor,
-									stroke: element._vm.borderColor || element.borderColor
+									fill: element._vm.fillColor || element.fillColor,
+									stroke: element._vm.strokeColor || element.strokeColor
 								});
 
 							}, this);
@@ -1083,7 +1083,7 @@
 						xPadding: this.options.tooltipXPadding,
 						yPadding: this.options.tooltipYPadding,
 						xOffset: this.options.tooltipXOffset,
-						backgroundColor: this.options.tooltipBackgroundColor,
+						fillColor: this.options.tooltipFillColor,
 						textColor: this.options.tooltipFontColor,
 						fontFamily: this.options.tooltipFontFamily,
 						fontStyle: this.options.tooltipFontStyle,
@@ -1110,7 +1110,7 @@
 							y: Math.round(tooltipPosition.y),
 							xPadding: this.options.tooltipXPadding,
 							yPadding: this.options.tooltipYPadding,
-							backgroundColor: this.options.tooltipBackgroundColor,
+							fillColor: this.options.tooltipFillColor,
 							textColor: this.options.tooltipFontColor,
 							fontFamily: this.options.tooltipFontFamily,
 							fontStyle: this.options.tooltipFontStyle,
@@ -1205,12 +1205,7 @@
 				if(props.indexOf(key) > -1){
 					// Color transitions if possible
 					if(typeof value === 'string'){
-						try{	
-							var color = Color(this._start[key]).mix(Color(this[key]), ease);
-							this._vm[key] = color.rgbString();
-						} catch(err){
-							this._vm[key] = value;
-						}
+						// TODO support color transitions
 						return;
 					}
 					// Everything else, presumably numbers
@@ -1255,10 +1250,10 @@
 				ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
 				ctx.closePath();
 
-				ctx.strokeStyle = this.borderColor;
-				ctx.lineWidth = this.borderWidth;
+				ctx.strokeStyle = this.strokeColor;
+				ctx.lineWidth = this.strokeWidth;
 
-				ctx.fillStyle = this.backgroundColor;
+				ctx.fillStyle = this.fillColor;
 
 				ctx.fill();
 				ctx.stroke();
@@ -1328,15 +1323,15 @@
 			ctx.arc(this.x, this.y, this.innerRadius, this.endAngle, this.startAngle, true);
 
 			ctx.closePath();
-			ctx.strokeStyle = this.borderColor;
-			ctx.lineWidth = this.borderWidth;
+			ctx.strokeStyle = this.strokeColor;
+			ctx.lineWidth = this.strokeWidth;
 
-			ctx.fillStyle = this.backgroundColor;
+			ctx.fillStyle = this.fillColor;
 
 			ctx.fill();
 			ctx.lineJoin = 'bevel';
 
-			if (this.showBorder){
+			if (this.showStroke){
 				ctx.stroke();
 			}
 		}
@@ -1352,11 +1347,11 @@
 				leftX = vm.x - halfWidth,
 				rightX = vm.x + halfWidth,
 				top = vm.base - (vm.base - vm.y),
-				halfStroke = vm.borderWidth / 2;
+				halfStroke = vm.strokeWidth / 2;
 
 			// Canvas doesn't allow us to stroke inside the width so we can
 			// adjust the sizes to fit if we're setting a stroke on the line
-			if (vm.borderWidth){
+			if (vm.showStroke){
 				leftX += halfStroke;
 				rightX -= halfStroke;
 				top += halfStroke;
@@ -1364,9 +1359,9 @@
 
 			ctx.beginPath();
 
-			ctx.fillStyle = vm.backgroundColor;
-			ctx.strokeStyle = vm.borderColor;
-			ctx.lineWidth = vm.borderWidth;
+			ctx.fillStyle = vm.fillColor;
+			ctx.strokeStyle = vm.strokeColor;
+			ctx.lineWidth = vm.strokeWidth;
 
 			// It'd be nice to keep this class totally generic to any rectangle
 			// and simply specify which border to miss out.
@@ -1375,7 +1370,7 @@
 			ctx.lineTo(rightX, top);
 			ctx.lineTo(rightX, vm.base);
 			ctx.fill();
-			if (vm.borderWidth){
+			if (vm.showStroke){
 				ctx.stroke();
 			}
 		},
@@ -1430,7 +1425,7 @@
 			var tooltipX = this.x - tooltipWidth/2,
 				tooltipY = this.y - tooltipHeight;
 
-			ctx.fillStyle = this.backgroundColor;
+			ctx.fillStyle = this.fillColor;
 
 			// Custom Tooltips
 			if(this.custom){
@@ -1538,7 +1533,7 @@
 			else{
 				drawRoundedRectangle(this.ctx,this.x,this.y - this.height/2,this.width,this.height,this.cornerRadius);
 				var ctx = this.ctx;
-				ctx.fillStyle = this.backgroundColor;
+				ctx.fillStyle = this.fillColor;
 				ctx.fill();
 				ctx.closePath();
 
@@ -2109,8 +2104,6 @@
 		animations: [],
 		dropFrames: 0,
 		addAnimation: function(chartInstance, animationObject) {
-			chartInstance.animating = true;
-
 			for (var index = 0; index < this.animations.length; ++ index){
 				if (this.animations[index].chartInstance === chartInstance){
 					// replacing an in progress animation
@@ -2137,7 +2130,6 @@
 			
 			if (index){
 				this.animations.splice(index, 1);
-				chartInstance.animating = false;
 			}
 		},
 		// calls startDigest with the proper context
@@ -2169,7 +2161,6 @@
 				
 				if (this.animations[i].animationObject.currentStep == this.animations[i].animationObject.numSteps){
 					// executed the last frame. Remove the animation.
-					this.animations[i].chartInstance.animating = false;
 					this.animations.splice(i, 1);
 					// Keep the index in place to offset the splice
 					i--;
@@ -2254,8 +2245,11 @@
 		//Boolean - Whether to show vertical lines (except Y axis)
 		scaleShowVerticalLines: true,
 
-		//Number - Pixel width of the bar border
-		barBorderWidth : 2,
+		//Boolean - If there is a stroke on each bar
+		barShowStroke : true,
+
+		//Number - Pixel width of the bar stroke
+		barStrokeWidth : 2,
 
 		//Number - Spacing between each of the X value sets
 		barValueSpacing : 5,
@@ -2269,11 +2263,8 @@
 		//Function - Custom hover handler
 		onHover : null,
 
-		//Function - Custom hover handler
-		hoverDuration : 400,
-
 		//String - A legend template
-		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].backgroundColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
 
 	};
 
@@ -2312,7 +2303,28 @@
 
 			//Set up tooltip events on the chart
 			if (this.options.showTooltips){
-				helpers.bindEvents(this, this.options.tooltipEvents, this.onHover);
+				helpers.bindEvents(this, this.options.tooltipEvents, function(e){
+					var active;
+					if(e.type == 'mouseout'){
+						return false;
+					}
+					if(this.options.hoverMode == 'bar'){
+						active = this.getBarAtEvent(e);
+						// TODO: tooltips for single items
+					}
+					else if(this.options.hoverMode == 'bars'){
+						active = this.getBarsAtEvent(e);
+					}
+					else {
+						// TODO: active = this.getDatasetAtEvent(e); 
+					}
+					
+					if(this.options.onHover){
+						this.options.onHover.call(this, active);
+					}
+
+					this.showTooltip(active);
+				});
 			}
 
 
@@ -2347,63 +2359,6 @@
 
 			this.update();
 		},
-		onHover: function(e){
-
-			var active;
-			if(e.type == 'mouseout'){
-				return false;
-			}
-			if(this.options.hoverMode == 'bar'){
-				active = this.getBarAtEvent(e);
-			}
-			else if(this.options.hoverMode == 'bars'){}
-
-
-			// Remove styling for last active
-			if(this.lastActive){
-				if(this.options.hoverMode == 'bar'){
-					this.lastActive.rectangle.backgroundColor = this.data.datasets[this.lastActive.datasetIndex].backgroundColor;
-					this.lastActive.rectangle.borderColor = this.data.datasets[this.lastActive.datasetIndex].borderColor;
-					this.lastActive.rectangle.borderWidth = 0;
-				}
-				else if(this.options.hoverMode == 'bars'){}
-			}
-
-			// Custom Hover actions
-			if(this.options.onHover){
-				this.options.onHover.call(this, active);
-			}
-			else if(active){
-				// or default hover action
-				if(this.options.hoverMode == 'bar'){
-					active.rectangle.backgroundColor = this.data.datasets[active.datasetIndex].hoverBackgroundColor || Color(active.rectangle.backgroundColor).saturate(0.5).darken(0.25).rgbString();
-					active.rectangle.borderColor = this.data.datasets[active.datasetIndex].hoverBorderColor || Color(active.rectangle.borderColor).saturate(0.5).darken(0.25).rgbString();
-				}
-				else if(this.options.hoverMode == 'bars'){}
-
-			}
-
-			if(!this.animating){
-				// If entering
-				if(!this.lastActive && active){
-					this.render(false, this.options.hoverDuration);
-				}
-
-				// If different bar
-				if(this.lastActive && active && this.lastActive.rectangle !== active.rectangle){
-					this.render(false, this.options.hoverDuration);
-				}
-
-				// if Leaving
-				if (this.lastActive && !active){
-					this.render(false, this.options.hoverDuration);
-				}
-			}
-
-			this.lastActive = active;
-
-			//this.showTooltip(active);
-		},
 		update : function(){
 
 			this.scale.update();
@@ -2416,9 +2371,10 @@
 					value : this.data.datasets[datasetIndex].data[index],
 					label : this.data.labels[index],
 					datasetLabel: this.data.datasets[datasetIndex].label,
-					borderColor : this.data.datasets[datasetIndex].borderColor,
-					borderWidth : this.data.datasets[datasetIndex].borderWidth,
-					backgroundColor : this.data.datasets[datasetIndex].backgroundColor,
+					strokeColor : this.data.datasets[datasetIndex].strokeColor,
+					fillColor : this.data.datasets[datasetIndex].fillColor,
+					highlightFill : this.data.datasets[datasetIndex].highlightFill || this.data.datasets[datasetIndex].fillColor,
+					highlightStroke : this.data.datasets[datasetIndex].highlightStroke || this.data.datasets[datasetIndex].strokeColor,
 					_start: undefined
 				});
 			}, this);
@@ -2461,11 +2417,11 @@
 			var bar;
 			var eventPosition = helpers.getRelativePosition(e);
 			
-			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; ++datasetIndex) {
-				for (var barIndex = 0; barIndex < this.data.datasets[datasetIndex].metaData.length; ++barIndex) {
-					if (this.data.datasets[datasetIndex].metaData[barIndex].inRange(eventPosition.x, eventPosition.y)) {
+			for (var datasetIndex = 0; datasetIndex < this.datasets.length; ++datasetIndex) {
+				for (var barIndex = 0; barIndex < this.datasets[datasetIndex].metaData.length; ++barIndex) {
+					if (this.datasets[datasetIndex].metaData[barIndex].inRange(eventPosition.x, eventPosition.y)) {
 						bar = {
-							rectangle : this.data.datasets[datasetIndex].metaData[barIndex],
+							rectangle : this.datasets[datasetIndex].metaData[barIndex],
 							datasetIndex : datasetIndex,
 							barIndex : barIndex,
 						};
@@ -2517,7 +2473,7 @@
 				showVerticalLines : this.options.scaleShowVerticalLines,
 				gridLineWidth : (this.options.scaleShowGridLines) ? this.options.scaleGridLineWidth : 0,
 				gridLineColor : (this.options.scaleShowGridLines) ? this.options.scaleGridLineColor : "rgba(0,0,0,0)",
-				padding : (this.options.showScale) ? 0 : this.options.borderWidth,
+				padding : (this.options.showScale) ? 0 : (this.options.barShowStroke) ? this.options.barStrokeWidth : 0,
 				showLabels : this.options.scaleShowLabels,
 				display : this.options.showScale
 			};
@@ -2546,8 +2502,8 @@
 					y: this.scale.endPoint,
 					width : this.scale.calculateBarWidth(this.data.datasets.length),
 					base : this.scale.endPoint,
-					borderColor : this.data.datasets[datasetIndex].borderColor,
-					backgroundColor : this.data.datasets[datasetIndex].backgroundColor
+					strokeColor : this.data.datasets[datasetIndex].strokeColor,
+					fillColor : this.data.datasets[datasetIndex].fillColor
 				}));
 			},this);
 
@@ -2587,14 +2543,7 @@
 					// Update the bar basepoint
 					bar.base = this.scale.endPoint;
 					//Transition 
-					bar.transition([
-						'x',
-						'y',
-						'width',
-						'backgroundColor',
-						'borderColor',
-					 	'borderWidth'
-					], easingDecimal).draw();
+					bar.transition(['x','y','width'], easingDecimal).draw();
 				}
 			}, this);
 		}
