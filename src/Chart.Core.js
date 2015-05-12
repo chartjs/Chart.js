@@ -1025,7 +1025,7 @@
 						dataIndex;
 
 					for (var i = this.data.datasets.length - 1; i >= 0; i--) {
-						dataArray = this.data.datasets[i].points || this.data.datasets[i].bars || this.data.datasets[i].segments;
+						dataArray = this.data.datasets[i].metaData;
 						dataIndex = indexOf(dataArray, ChartElements[0]);
 						if (dataIndex !== -1){
 							break;
@@ -1045,7 +1045,7 @@
 								xMin,
 								yMin;
 							helpers.each(this.data.datasets, function(dataset){
-								dataCollection = dataset.points || dataset.bars || dataset.segments;
+								dataCollection = dataset.metaData;
 								if (dataCollection[dataIndex] && dataCollection[dataIndex].hasValue()){
 									Elements.push(dataCollection[dataIndex]);
 								}
@@ -1175,36 +1175,50 @@
 	Chart.Element = function(configuration){
 		extend(this,configuration);
 		this.initialize.apply(this,arguments);
-		this.save();
 	};
 	extend(Chart.Element.prototype,{
 		initialize : function(){},
-		restore : function(props){
-			if (!props){
-				extend(this,this._vm);
-			} else {
-				each(props,function(key){
-					this[key] = this._vm[key];
-				},this);
-			}
-			return this;
-		},
-		save : function(){
+		save: function(){
 			this._vm = clone(this);
 			delete this._vm._vm;
 			return this;
 		},
-		update : function(newProps){
-			each(newProps,function(value,key){
-				this._vm[key] = this[key];
-				this[key] = value;
+		transition : function(props, ease){
+			if(!this._start){
+				this._start = clone(this._vm);
+			}
+			each(this,function(value, key){
+
+				// Only non-vm properties
+				if(key === '_vm' || !this.hasOwnProperty(key)){
+					return;
+				}
+
+				// Init if doesn't exist
+				if(!this._vm[key]){
+					this._vm[key] = value || null;
+					return;
+				}
+
+				// If transition property, do transition with ease (no pun intended)
+				if(props.indexOf(key) > -1){
+					// Color transitions if possible
+					if(typeof value === 'string'){
+						// TODO support color transitions
+						return;
+					}
+					// Everything else, presumably numbers
+					this._vm[key] = ((this[key] - this._start[key]) * ease) + this._start[key];
+					return;
+				}
+
+				// Non-transitionals
+				this._vm[key] = value;
+				
 			},this);
-			return this;
-		},
-		transition : function(props,ease){
-			each(props,function(value,key){
-				this._vm[key] = ((value - this._vm[key]) * ease) + this._vm[key];
-			},this);
+			if(ease === 1){
+				delete this._start;
+			}
 			return this;
 		},
 		tooltipPosition : function(){
@@ -1331,7 +1345,7 @@
 				halfWidth = vm.width/2,
 				leftX = vm.x - halfWidth,
 				rightX = vm.x + halfWidth,
-				top = this.base - (this.base - vm.y),
+				top = vm.base - (vm.base - vm.y),
 				halfStroke = vm.strokeWidth / 2;
 
 			// Canvas doesn't allow us to stroke inside the width so we can
@@ -1350,20 +1364,22 @@
 
 			// It'd be nice to keep this class totally generic to any rectangle
 			// and simply specify which border to miss out.
-			ctx.moveTo(leftX, this.base);
+			ctx.moveTo(leftX, vm.base);
 			ctx.lineTo(leftX, top);
 			ctx.lineTo(rightX, top);
-			ctx.lineTo(rightX, this.base);
+			ctx.lineTo(rightX, vm.base);
 			ctx.fill();
 			if (vm.showStroke){
 				ctx.stroke();
 			}
 		},
 		height : function(){
-			return this.base - vm.y;
+			var vm = this._vm;
+			return vm.base - vm.y;
 		},
 		inRange : function(chartX,chartY){
-			return (chartX >= vm.x - vm.width/2 && chartX <= vm.x + vm.width/2) && (chartY >= vm.y && chartY <= this.base);
+			var vm = this._vm;
+			return (chartX >= vm.x - vm.width/2 && chartX <= vm.x + vm.width/2) && (chartY >= vm.y && chartY <= vm.base);
 		}
 	});
 
@@ -2111,8 +2127,7 @@
 				return animationWrapper.chartInstance === chartInstance;
 			});
 			
-			if (index)
-			{
+			if (index){
 				this.animations.splice(index, 1);
 			}
 		},
