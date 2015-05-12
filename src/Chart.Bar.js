@@ -106,6 +106,8 @@
 					width : this.scale.calculateBarWidth(this.data.datasets.length),
 					x: this.scale.calculateBarX(this.data.datasets.length, datasetIndex, index),
 					y: this.calculateBarBase(),
+					_datasetIndex: datasetIndex,
+					_index: index,
 				});
 				// Copy to view model
 				bar.save();
@@ -114,6 +116,7 @@
 			// Create tooltip instance exclusively for this chart with some defaults.
 			this.tooltip = new Chart.Tooltip({
 				_chart: this.chart,
+				_data: this.data,
 				_options: this.options,
 				opacity:0,
 				xPadding: this.options.tooltipXPadding,
@@ -144,6 +147,7 @@
 				return false;
 			}
 
+			// Find Active Elements
 			this.active = function(){
 				switch(this.options.hoverMode){
 					case 'single':
@@ -157,14 +161,18 @@
 				}
 			}.call(this);
 
+			// On Hover hook
+			if(this.options.onHover){
+				this.options.onHover.call(this, this.active);
+			}
 
 			// Remove styling for last active (even if it may still be active)
 			if(this.lastActive){
 				switch(this.options.hoverMode){
 					case 'single':
-						this.lastActive.element.backgroundColor = this.data.datasets[this.lastActive.datasetIndex].backgroundColor;
-						this.lastActive.element.borderColor = this.data.datasets[this.lastActive.datasetIndex].borderColor;
-						this.lastActive.element.borderWidth = 0;
+						this.lastActive[0].backgroundColor = this.data.datasets[this.lastActive[0]._datasetIndex].backgroundColor;
+						this.lastActive[0].borderColor = this.data.datasets[this.lastActive[0]._datasetIndex].borderColor;
+						this.lastActive[0].borderWidth = 0;
 						break;
 					case 'label':
 						break;
@@ -174,18 +182,13 @@
 						// do nothing
 				}
 			}
-
-			// On Hover hook
-			if(this.options.onHover){
-				this.options.onHover.call(this, this.active);
-			}
 			
 			// Built in hover actions
 			if(this.active && this.options.hoverMode){
 				switch(this.options.hoverMode){
 					case 'single':
-						this.active.element.backgroundColor = this.data.datasets[this.active.datasetIndex].hoverBackgroundColor || helpers.color(this.active.element.backgroundColor).saturate(0.5).darken(0.25).rgbString();
-						this.active.element.borderColor = this.data.datasets[this.active.datasetIndex].hoverBorderColor || helpers.color(this.active.element.borderColor).saturate(0.5).darken(0.25).rgbString();
+						this.active[0].backgroundColor = this.data.datasets[this.active[0]._datasetIndex].hoverBackgroundColor || helpers.color(this.active[0].backgroundColor).saturate(0.5).darken(0.25).rgbString();
+						this.active[0].borderColor = this.data.datasets[this.active[0]._datasetIndex].hoverBorderColor || helpers.color(this.active[0].borderColor).saturate(0.5).darken(0.25).rgbString();
 						break;
 					case 'label':
 						break;
@@ -200,22 +203,20 @@
 			// Built in Tooltips
 			if(this.options.showTooltips){
 
-				// The usual
+				// The usual updates
 				this.tooltip.initialize();
 
-				// Active Details
+				// Active
 				if(this.active){
-					var tooltipPosition = this.active.element.tooltipPosition();
 					helpers.extend(this.tooltip, {
 						opacity: 1,
-						x: Math.round(tooltipPosition.x),
-						y: Math.round(tooltipPosition.y),
-						_active: this.active.element,
+						_active: this.active,
 					});
-					this.tooltip.updateContent();
+
+					this.tooltip.update();
 				}
 				else{
-					// Inactive Details
+					// Inactive
 					helpers.extend(this.tooltip, {
 						opacity: 0,
 						_active: false,
@@ -227,16 +228,31 @@
 			if(!this.animating){
 				// If entering
 				if(!this.lastActive && this.active){
+					console.log('entering');
 					this.render(false, this.options.hoverAnimationDuration);
 				}
 
+				var changed = false;
+
+				if (this.active.length !== this.lastActive.length){
+						changed = true;
+				}
+				
+				helpers.each(this.active, function(element, index){
+					if (element !== this.lastActive[index]){
+						changed = true;
+					}
+				}, this);
+
 				// If different element
-				if(this.lastActive && this.active && this.lastActive.element !== this.active.element){
+				if(this.lastActive && this.active && changed){
+					console.log('changing');
 					this.render(false, this.options.hoverAnimationDuration);
 				}
 
 				// if Leaving
 				if (this.lastActive && !this.active){
+					console.log('leaving');
 					this.render(false, this.options.hoverAnimationDuration);
 				}
 			}
@@ -279,6 +295,8 @@
 					borderColor : this.data.datasets[datasetIndex].borderColor,
 					borderWidth : this.data.datasets[datasetIndex].borderWidth,
 					backgroundColor : this.data.datasets[datasetIndex].backgroundColor,
+					_datasetIndex: datasetIndex,
+					_index: index,
 					_start: undefined
 				});
 			}, this);
@@ -308,33 +326,28 @@
 				for (elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; elementIndex++) {
 					if (this.data.datasets[datasetIndex].metaData[elementIndex].inRange(eventPosition.x,eventPosition.y)){
 						helpers.each(this.data.datasets, datasetIterator);
-						return barsArray;
 					}
 				}
 			}
 
-			return barsArray;
+			return barsArray.length ? barsArray : false;
 		},
 		// Get the single bar that was clicked on
 		// @return : An object containing the dataset index and bar index of the matching bar. Also contains the rectangle that was drawn
 		getBarAtEvent : function(e) {
-			var bar;
+			var bar = [];
 			var eventPosition = helpers.getRelativePosition(e);
 			
 			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; ++datasetIndex) {
 				for (var elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; ++elementIndex) {
 					if (this.data.datasets[datasetIndex].metaData[elementIndex].inRange(eventPosition.x, eventPosition.y)) {
-						bar = {
-							element : this.data.datasets[datasetIndex].metaData[elementIndex],
-							datasetIndex : datasetIndex,
-							elementIndex : elementIndex,
-						};
+						bar.push(this.data.datasets[datasetIndex].metaData[elementIndex]);
 						return bar;
 					}
 				}
 			}
 			
-			return bar;
+			return false;
 		},
 		buildScale : function(labels){
 			var self = this;

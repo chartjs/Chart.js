@@ -1300,102 +1300,82 @@
 	});
 	
 	Chart.Tooltip = Chart.Element.extend({
-		updateContent: function(){
-
+		update: function(){
 			switch(this._options.hoverMode){
 				case 'single':
 					helpers.extend(this, {
-						text: template(this._options.tooltipTemplate, this._active)
+						text: template(this._options.tooltipTemplate, this._active),
+					});
+					var tooltipPosition = this._active[0].tooltipPosition();
+					helpers.extend(this.tooltip, {
+						x: Math.round(tooltipPosition.x),
+						y: Math.round(tooltipPosition.y),
 					});
 					return this;
+				case 'label':
 
-			}
+					var dataArray,
+						dataIndex;
 
-			return;
+					var tooltipLabels = [],
+						tooltipColors = [];
 
-
-			var dataArray,
-				dataIndex;
-
-			for (var i = this.data.datasets.length - 1; i >= 0; i--) {
-				dataArray = this.data.datasets[i].metaData;
-				dataIndex = indexOf(dataArray, this.active[0]);
-				if (dataIndex !== -1){
-					break;
-				}
-			}
-			var tooltipLabels = [],
-				tooltipColors = [],
-				medianPosition = (function(index) {
-
-					// Get all the points at that particular index
-					var Elements = [],
-						dataCollection,
-						xPositions = [],
-						yPositions = [],
-						xMax,
-						yMax,
-						xMin,
-						yMin;
-					helpers.each(this.data.datasets, function(dataset){
-						dataCollection = dataset.metaData;
-						if (dataCollection[dataIndex] && dataCollection[dataIndex].hasValue()){
-							Elements.push(dataCollection[dataIndex]);
+					for (var i = this._data.datasets.length - 1; i >= 0; i--) {
+						dataArray = this._data.datasets[i].metaData;
+						dataIndex = indexOf(dataArray, this._active[0]);
+						if (dataIndex !== -1){
+							break;
 						}
-					});
+					}
 
-					helpers.each(Elements, function(element) {
-						xPositions.push(element.x);
-						yPositions.push(element.y);
-
-
-						//Include any colour information about the element
-						tooltipLabels.push(helpers.template(this.multiTooltipTemplate, element));
-						tooltipColors.push({
-							fill: element._vm.backgroundColor || element.backgroundColor,
-							stroke: element._vm.borderColor || element.borderColor
+					var medianPosition = (function(index) {
+						// Get all the points at that particular index
+						var elements = [],
+							dataCollection,
+							xPositions = [],
+							yPositions = [],
+							xMax,
+							yMax,
+							xMin,
+							yMin;
+						helpers.each(this._data.datasets, function(dataset){
+							dataCollection = dataset.metaData;
+							if (dataCollection[dataIndex] && dataCollection[dataIndex].hasValue()){
+								elements.push(dataCollection[dataIndex]);
+							}
 						});
 
-					}, this);
+						helpers.each(elements, function(element) {
+							xPositions.push(element._vm.x);
+							yPositions.push(element._vm.y);
 
-					yMin = min(yPositions);
-					yMax = max(yPositions);
+							//Include any colour information about the element
+							tooltipLabels.push(helpers.template(this._options.multiTooltipTemplate, element));
+							tooltipColors.push({
+								fill: element._vm.backgroundColor,
+								stroke: element._vm.borderColor
+							});
 
-					xMin = min(xPositions);
-					xMax = max(xPositions);
+						}, this);
 
-					return {
-						x: (xMin > this.chart.width/2) ? xMin : xMax,
-						y: (yMin + yMax)/2
-					};
-				}).call(this, dataIndex);
+						yMin = min(yPositions);
+						yMax = max(yPositions);
 
-			new Chart.MultiTooltip({
-				x: medianPosition.x,
-				y: medianPosition.y,
-				xPadding: this.tooltipXPadding,
-				yPadding: this.tooltipYPadding,
-				xOffset: this.tooltipXOffset,
-				backgroundColor: this.tooltipBackgroundColor,
-				textColor: this.tooltipFontColor,
-				fontFamily: this.tooltipFontFamily,
-				fontStyle: this.tooltipFontStyle,
-				fontSize: this.tooltipFontSize,
-				titleTextColor: this.tooltipTitleFontColor,
-				titleFontFamily: this.tooltipTitleFontFamily,
-				titleFontStyle: this.tooltipTitleFontStyle,
-				titleFontSize: this.tooltipTitleFontSize,
-				cornerRadius: this.tooltipCornerRadius,
-				labels: tooltipLabels,
-				legendColors: tooltipColors,
-				legendColorBackground : this.multiTooltipKeyBackground,
-				title: this.data.datasets[0].label,
-				chart: this.chart,
-				ctx: this.chart.ctx,
-				custom: this.customTooltips
-			}).draw();
+						xMin = min(xPositions);
+						xMax = max(xPositions);
 
-			return this;
+						return {
+							x: (xMin > this._chart.width/2) ? xMin : xMax,
+							y: (yMin + yMax)/2
+						};
+					}).call(this, dataIndex);
+
+					helpers.extend(this, {
+						x: medianPosition.x,
+						y: medianPosition.y,
+					});
+					return this;
+			}
 		},
 		draw : function(){
 
