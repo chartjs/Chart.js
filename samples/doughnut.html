@@ -3,7 +3,6 @@
 	<head>
 		<title>Doughnut Chart</title>
 		<script src="../Chart.js"></script>
-		<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 		<style>
 			body{
 				padding: 0;
@@ -18,41 +17,37 @@
 		<div id="canvas-holder">
 			<canvas id="chart-area" width="500" height="500"/>
 		</div>
-		<button id="randomizeData">Randomize Data</button>
 
 
 	<script>
 
-		var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
-		var randomColorFactor = function(){ return Math.round(Math.random()*255)};
-
 		var doughnutData = [
 				{
-					value: randomScalingFactor(),
+					value: 300,
 					color:"#F7464A",
 					highlight: "#FF5A5E",
 					label: "Red"
 				},
 				{
-					value: randomScalingFactor(),
+					value: 50,
 					color: "#46BFBD",
 					highlight: "#5AD3D1",
 					label: "Green"
 				},
 				{
-					value: randomScalingFactor(),
+					value: 100,
 					color: "#FDB45C",
 					highlight: "#FFC870",
 					label: "Yellow"
 				},
 				{
-					value: randomScalingFactor(),
+					value: 40,
 					color: "#949FB1",
 					highlight: "#A8B3C5",
 					label: "Grey"
 				},
 				{
-					value: randomScalingFactor(),
+					value: 120,
 					color: "#4D5360",
 					highlight: "#616774",
 					label: "Dark Grey"
@@ -64,14 +59,6 @@
 				var ctx = document.getElementById("chart-area").getContext("2d");
 				window.myDoughnut = new Chart(ctx).Doughnut(doughnutData, {responsive : true});
 			};
-
-			$('#randomizeData').click(function(){
-				$.each(doughnutData, function(i, piece){
-					doughnutData[i].value = randomScalingFactor();
-			    	doughnutData[i].color = 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
-				});
-		    	window.myDoughnut.update();
-		    });
 
 
 

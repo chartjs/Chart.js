@@ -62,9 +62,6 @@
 		name: "Line",
 		defaults : defaultConfig,
 		initialize:  function(data){
-			// Save data as a source for updating of values & methods
-			this.data = data;
-
 			//Declare the extension of the default point, to cater for the options passed in to the constructor
 			this.PointClass = Chart.Point.extend({
 				offsetGridLines : this.options.offsetGridLines,
@@ -140,31 +137,6 @@
 			this.render();
 		},
 		update : function(){
-			//Iterate through each of the datasets, and build this into a property of the chart
-			helpers.each(this.data.datasets,function(dataset,datasetIndex){
-
-				helpers.extend(this.datasets[datasetIndex], {
-					label : dataset.label || null,
-					fillColor : dataset.fillColor,
-					strokeColor : dataset.strokeColor,
-					pointColor : dataset.pointColor,
-					pointStrokeColor : dataset.pointStrokeColor,
-				});
-
-				helpers.each(dataset.data,function(dataPoint,index){
-					helpers.extend(this.datasets[datasetIndex].points[index], {
-						value : dataPoint,
-						label : this.data.labels[index],
-						datasetLabel: dataset.label,
-						strokeColor : dataset.pointStrokeColor,
-						fillColor : dataset.pointColor,
-						highlightFill : dataset.pointHighlightFill || dataset.pointColor,
-						highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor
-					});
-				},this);
-
-			},this);
-
 			this.scale.update();
 			// Reset any highlight colours before updating.
 			helpers.each(this.activeElements, function(activeElement){

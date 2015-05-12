@@ -3,20 +3,19 @@
 	<head>
 		<title>Radar Chart</title>
 		<script src="../Chart.js"></script>
-		<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+		<meta name = "viewport" content = "initial-scale = 1, user-scalable = no">
+		<style>
+			canvas{
+			}
+		</style>
 	</head>
 	<body>
 		<div style="width:30%">
 			<canvas id="canvas" height="450" width="450"></canvas>
 		</div>
-		<button id="randomizeData">Randomize Data</button>
 
 
 	<script>
-
-	var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
-	var randomColorFactor = function(){ return Math.round(Math.random()*255)};
-
 	var radarChartData = {
 		labels: ["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling", "Running"],
 		datasets: [
@@ -28,7 +27,7 @@
 				pointStrokeColor: "#fff",
 				pointHighlightFill: "#fff",
 				pointHighlightStroke: "rgba(220,220,220,1)",
-				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+				data: [65,59,90,81,56,55,40]
 			},
 			{
 				label: "My Second dataset",
@@ -38,7 +37,7 @@
 				pointStrokeColor: "#fff",
 				pointHighlightFill: "#fff",
 				pointHighlightStroke: "rgba(151,187,205,1)",
-				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+				data: [28,48,40,19,96,27,100]
 			}
 		]
 	};
@@ -48,16 +47,6 @@
 			responsive: true
 		});
 	}
-
-	$('#randomizeData').click(function(){
-    	radarChartData.datasets[0].fillColor = 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.3)';
-    	radarChartData.datasets[0].data = [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()];
-
-    	radarChartData.datasets[1].fillColor = 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.3)';
-    	radarChartData.datasets[1].data = [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()];
-
-    	window.myRadar.update();
-    });
 
 	</script>
 	</body>
