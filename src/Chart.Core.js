@@ -1181,6 +1181,7 @@
 		save: function(){
 			this._vm = clone(this);
 			delete this._vm._vm;
+			delete this._vm._start;
 			return this;
 		},
 		transition : function(props, ease){
