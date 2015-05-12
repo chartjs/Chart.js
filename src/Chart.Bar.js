@@ -110,7 +110,7 @@
 				helpers.extend(bar, {
 					width : this.scale.calculateBarWidth(this.data.datasets.length),
 					x: this.scale.calculateBarX(this.data.datasets.length, datasetIndex, index),
-					y: this.scale.endPoint,
+					y: this.calculateBarBase(),
 				});
 				// Copy to view model
 				bar.save();
@@ -174,6 +174,26 @@
 			this.lastActive = active;
 
 			//this.showTooltip(active);
+		},
+		// Calculate the base point for the bar.
+		// If the scale has a 0 point, use that as the base
+		// If the scale min and max are both positive, use the bottom as a base
+		// If the scale min and max are both negative, use the top as a base
+		calculateBarBase: function() {
+			var base = this.scale.endPoint;
+			
+			if (this.scale.beginAtZero || ((this.scale.min <= 0 && this.scale.max >= 0) || (this.scale.min >= 0 && this.scale.max <= 0)))
+			{
+				base = this.scale.calculateY(0);
+				base += this.options.scaleGridLineWidth;
+			}
+			else if (this.scale.min < 0 && this.scale.max < 0)
+			{
+				// All values are negative. Use the top as the base
+				base = this.scale.startPoint;
+			}
+			
+			return base;
 		},
 		update : function(){
 
@@ -314,9 +334,9 @@
 					label : label,
 					datasetLabel: this.data.datasets[datasetIndex].label,
 					x: this.scale.calculateBarX(this.data.datasets.length, datasetIndex, this.scale.valuesCount+1),
-					y: this.scale.endPoint,
+					y: this.calculateBarBase(),
 					width : this.scale.calculateBarWidth(this.data.datasets.length),
-					base : this.scale.endPoint,
+					base : this.calculateBarBase(),
 					borderColor : this.data.datasets[datasetIndex].borderColor,
 					backgroundColor : this.data.datasets[datasetIndex].backgroundColor
 				}));
@@ -336,8 +356,8 @@
 		},
 		reflow : function(){
 			helpers.extend(this.BarClass.prototype,{
-				y: this.scale.endPoint,
-				base : this.scale.endPoint
+				y: this.calculateBarBase(), // so that we animate from the baseline
+				base : this.calculateBarBase()
 			});
 			var newScaleProps = helpers.extend({
 				height : this.chart.height,
@@ -356,7 +376,7 @@
 			this.eachBars(function(bar, index, datasetIndex){
 				if (bar.hasValue()){
 					// Update the bar basepoint
-					bar.base = this.scale.endPoint;
+					bar.base = this.calculateBarBase();
 					//Transition 
 					bar.transition([
 						'x',

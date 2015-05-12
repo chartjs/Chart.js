@@ -1384,8 +1384,14 @@
 			return vm.base - vm.y;
 		},
 		inRange : function(chartX,chartY){
-			var vm = this._vm;
-			return (chartX >= vm.x - vm.width/2 && chartX <= vm.x + vm.width/2) && (chartY >= vm.y && chartY <= vm.base);
+			if (this.y < this.base)
+			{
+				return (chartX >= this.x - this.width/2 && chartX <= this.x + this.width/2) && (chartY >= this.y && chartY <= this.base);
+			}
+			else
+			{
+				return (chartX >= this.x - this.width / 2 && chartX <= this.x + this.width / 2) && (chartY >= this.base && chartY <= this.y);
+			}
 		}
 	});
 
