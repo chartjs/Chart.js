@@ -35,6 +35,7 @@ gulp.task('build', function(){
 		// So we can use this to sort out dependency order - aka include Core first!
 		srcFiles.push(srcDir+'*');
 	}
+	srcFiles.push('./node_modules/color/dist/color.min.js');
 
 	return gulp.src(srcFiles)
 		.pipe(concat('Chart.js'))

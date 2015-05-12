@@ -25,11 +25,8 @@
 		//Boolean - Whether to show vertical lines (except Y axis)
 		scaleShowVerticalLines: true,
 
-		//Boolean - If there is a stroke on each bar
-		barShowStroke : true,
-
-		//Number - Pixel width of the bar stroke
-		barStrokeWidth : 2,
+		//Number - Pixel width of the bar border
+		barBorderWidth : 2,
 
 		//Number - Spacing between each of the X value sets
 		barValueSpacing : 5,
@@ -43,8 +40,11 @@
 		//Function - Custom hover handler
 		onHover : null,
 
+		//Function - Custom hover handler
+		hoverDuration : 400,
+
 		//String - A legend template
-		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].backgroundColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
 
 	};
 
@@ -83,28 +83,7 @@
 
 			//Set up tooltip events on the chart
 			if (this.options.showTooltips){
-				helpers.bindEvents(this, this.options.tooltipEvents, function(e){
-					var active;
-					if(e.type == 'mouseout'){
-						return false;
-					}
-					if(this.options.hoverMode == 'bar'){
-						active = this.getBarAtEvent(e);
-						// TODO: tooltips for single items
-					}
-					else if(this.options.hoverMode == 'bars'){
-						active = this.getBarsAtEvent(e);
-					}
-					else {
-						// TODO: active = this.getDatasetAtEvent(e); 
-					}
-					
-					if(this.options.onHover){
-						this.options.onHover.call(this, active);
-					}
-
-					this.showTooltip(active);
-				});
+				helpers.bindEvents(this, this.options.tooltipEvents, this.onHover);
 			}
 
 
@@ -139,6 +118,63 @@
 
 			this.update();
 		},
+		onHover: function(e){
+
+			var active;
+			if(e.type == 'mouseout'){
+				return false;
+			}
+			if(this.options.hoverMode == 'bar'){
+				active = this.getBarAtEvent(e);
+			}
+			else if(this.options.hoverMode == 'bars'){}
+
+
+			// Remove styling for last active
+			if(this.lastActive){
+				if(this.options.hoverMode == 'bar'){
+					this.lastActive.rectangle.backgroundColor = this.data.datasets[this.lastActive.datasetIndex].backgroundColor;
+					this.lastActive.rectangle.borderColor = this.data.datasets[this.lastActive.datasetIndex].borderColor;
+					this.lastActive.rectangle.borderWidth = 0;
+				}
+				else if(this.options.hoverMode == 'bars'){}
+			}
+
+			// Custom Hover actions
+			if(this.options.onHover){
+				this.options.onHover.call(this, active);
+			}
+			else if(active){
+				// or default hover action
+				if(this.options.hoverMode == 'bar'){
+					active.rectangle.backgroundColor = this.data.datasets[active.datasetIndex].hoverBackgroundColor || Color(active.rectangle.backgroundColor).saturate(0.5).darken(0.25).rgbString();
+					active.rectangle.borderColor = this.data.datasets[active.datasetIndex].hoverBorderColor || Color(active.rectangle.borderColor).saturate(0.5).darken(0.25).rgbString();
+				}
+				else if(this.options.hoverMode == 'bars'){}
+
+			}
+
+			if(!this.animating){
+				// If entering
+				if(!this.lastActive && active){
+					this.render(false, this.options.hoverDuration);
+				}
+
+				// If different bar
+				if(this.lastActive && active && this.lastActive.rectangle !== active.rectangle){
+					this.render(false, this.options.hoverDuration);
+				}
+
+				// if Leaving
+				if (this.lastActive && !active){
+					this.render(false, this.options.hoverDuration);
+				}
+			}
+
+			this.lastActive = active;
+
+			//this.showTooltip(active);
+		},
 		update : function(){
 
 			this.scale.update();
@@ -151,10 +187,9 @@
 					value : this.data.datasets[datasetIndex].data[index],
 					label : this.data.labels[index],
 					datasetLabel: this.data.datasets[datasetIndex].label,
-					strokeColor : this.data.datasets[datasetIndex].strokeColor,
-					fillColor : this.data.datasets[datasetIndex].fillColor,
-					highlightFill : this.data.datasets[datasetIndex].highlightFill || this.data.datasets[datasetIndex].fillColor,
-					highlightStroke : this.data.datasets[datasetIndex].highlightStroke || this.data.datasets[datasetIndex].strokeColor,
+					borderColor : this.data.datasets[datasetIndex].borderColor,
+					borderWidth : this.data.datasets[datasetIndex].borderWidth,
+					backgroundColor : this.data.datasets[datasetIndex].backgroundColor,
 					_start: undefined
 				});
 			}, this);
@@ -197,11 +232,11 @@
 			var bar;
 			var eventPosition = helpers.getRelativePosition(e);
 			
-			for (var datasetIndex = 0; datasetIndex < this.datasets.length; ++datasetIndex) {
-				for (var barIndex = 0; barIndex < this.datasets[datasetIndex].metaData.length; ++barIndex) {
-					if (this.datasets[datasetIndex].metaData[barIndex].inRange(eventPosition.x, eventPosition.y)) {
+			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; ++datasetIndex) {
+				for (var barIndex = 0; barIndex < this.data.datasets[datasetIndex].metaData.length; ++barIndex) {
+					if (this.data.datasets[datasetIndex].metaData[barIndex].inRange(eventPosition.x, eventPosition.y)) {
 						bar = {
-							rectangle : this.datasets[datasetIndex].metaData[barIndex],
+							rectangle : this.data.datasets[datasetIndex].metaData[barIndex],
 							datasetIndex : datasetIndex,
 							barIndex : barIndex,
 						};
@@ -253,7 +288,7 @@
 				showVerticalLines : this.options.scaleShowVerticalLines,
 				gridLineWidth : (this.options.scaleShowGridLines) ? this.options.scaleGridLineWidth : 0,
 				gridLineColor : (this.options.scaleShowGridLines) ? this.options.scaleGridLineColor : "rgba(0,0,0,0)",
-				padding : (this.options.showScale) ? 0 : (this.options.barShowStroke) ? this.options.barStrokeWidth : 0,
+				padding : (this.options.showScale) ? 0 : this.options.borderWidth,
 				showLabels : this.options.scaleShowLabels,
 				display : this.options.showScale
 			};
@@ -282,8 +317,8 @@
 					y: this.scale.endPoint,
 					width : this.scale.calculateBarWidth(this.data.datasets.length),
 					base : this.scale.endPoint,
-					strokeColor : this.data.datasets[datasetIndex].strokeColor,
-					fillColor : this.data.datasets[datasetIndex].fillColor
+					borderColor : this.data.datasets[datasetIndex].borderColor,
+					backgroundColor : this.data.datasets[datasetIndex].backgroundColor
 				}));
 			},this);
 
@@ -323,7 +358,14 @@
 					// Update the bar basepoint
 					bar.base = this.scale.endPoint;
 					//Transition 
-					bar.transition(['x','y','width'], easingDecimal).draw();
+					bar.transition([
+						'x',
+						'y',
+						'width',
+						'backgroundColor',
+						'borderColor',
+					 	'borderWidth'
+					], easingDecimal).draw();
 				}
 			}, this);
 		}

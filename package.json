@@ -10,16 +10,18 @@
   },
   "dependences": {},
   "devDependencies": {
+    "color": "file:../../../../var/folders/rv/vd7mrb5j0hnbrr_2f3q2p6m00000gn/T/npm-53789-2bfe35a6/git-cache-40335d988a8e/54fd04acedef6ccdc54a9929be298945a8093496",
     "gulp": "3.5.x",
     "gulp-concat": "~2.1.x",
     "gulp-connect": "~2.0.5",
+    "gulp-html-validator": "^0.0.2",
     "gulp-jshint": "~1.5.1",
     "gulp-replace": "^0.4.0",
     "gulp-size": "~0.4.0",
     "gulp-uglify": "~0.2.x",
     "gulp-util": "~2.2.x",
-    "gulp-html-validator": "^0.0.2",
     "inquirer": "^0.5.1",
+    "onecolor": "^2.5.0",
     "semver": "^3.0.1"
   },
   "spm": {

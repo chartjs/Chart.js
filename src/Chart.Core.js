@@ -59,7 +59,7 @@
 			animation: true,
 
 			// Number - Number of animation steps
-			animationSteps: 60,
+			animationDuration: 1000,
 
 			// String - Animation easing effect
 			animationEasing: "easeOutQuart",
@@ -124,7 +124,7 @@
 			tooltipEvents: ["mousemove", "touchstart", "touchmove", "mouseout"],
 
 			// String - Tooltip background colour
-			tooltipFillColor: "rgba(0,0,0,0.8)",
+			tooltipBackgroundColor: "rgba(0,0,0,0.8)",
 
 			// String - Tooltip label font declaration for the scale label
 			tooltipFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
@@ -934,14 +934,14 @@
 			return this;
 		},
 		reflow : noop,
-		render : function(reflow){
+		render : function(reflow, customDuration){
 			if (reflow){
 				this.reflow();
 			}
 			
 			if (this.options.animation && !reflow){
 				var animation = new Chart.Animation();
-				animation.numSteps = this.options.animationSteps;
+				animation.numSteps = (customDuration || this.options.animationDuration) / 16.66; //60 fps
 				animation.easing = this.options.animationEasing;
 				
 				// render function
@@ -1059,8 +1059,8 @@
 								//Include any colour information about the element
 								tooltipLabels.push(helpers.template(this.options.multiTooltipTemplate, element));
 								tooltipColors.push({
-									fill: element._vm.fillColor || element.fillColor,
-									stroke: element._vm.strokeColor || element.strokeColor
+									fill: element._vm.backgroundColor || element.backgroundColor,
+									stroke: element._vm.borderColor || element.borderColor
 								});
 
 							}, this);
@@ -1083,7 +1083,7 @@
 						xPadding: this.options.tooltipXPadding,
 						yPadding: this.options.tooltipYPadding,
 						xOffset: this.options.tooltipXOffset,
-						fillColor: this.options.tooltipFillColor,
+						backgroundColor: this.options.tooltipBackgroundColor,
 						textColor: this.options.tooltipFontColor,
 						fontFamily: this.options.tooltipFontFamily,
 						fontStyle: this.options.tooltipFontStyle,
@@ -1110,7 +1110,7 @@
 							y: Math.round(tooltipPosition.y),
 							xPadding: this.options.tooltipXPadding,
 							yPadding: this.options.tooltipYPadding,
-							fillColor: this.options.tooltipFillColor,
+							backgroundColor: this.options.tooltipBackgroundColor,
 							textColor: this.options.tooltipFontColor,
 							fontFamily: this.options.tooltipFontFamily,
 							fontStyle: this.options.tooltipFontStyle,
@@ -1205,7 +1205,12 @@
 				if(props.indexOf(key) > -1){
 					// Color transitions if possible
 					if(typeof value === 'string'){
-						// TODO support color transitions
+						try{	
+							var color = Color(this._start[key]).mix(Color(this[key]), ease);
+							this._vm[key] = color.rgbString();
+						} catch(err){
+							this._vm[key] = value;
+						}
 						return;
 					}
 					// Everything else, presumably numbers
@@ -1250,10 +1255,10 @@
 				ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
 				ctx.closePath();
 
-				ctx.strokeStyle = this.strokeColor;
-				ctx.lineWidth = this.strokeWidth;
+				ctx.strokeStyle = this.borderColor;
+				ctx.lineWidth = this.borderWidth;
 
-				ctx.fillStyle = this.fillColor;
+				ctx.fillStyle = this.backgroundColor;
 
 				ctx.fill();
 				ctx.stroke();
@@ -1323,15 +1328,15 @@
 			ctx.arc(this.x, this.y, this.innerRadius, this.endAngle, this.startAngle, true);
 
 			ctx.closePath();
-			ctx.strokeStyle = this.strokeColor;
-			ctx.lineWidth = this.strokeWidth;
+			ctx.strokeStyle = this.borderColor;
+			ctx.lineWidth = this.borderWidth;
 
-			ctx.fillStyle = this.fillColor;
+			ctx.fillStyle = this.backgroundColor;
 
 			ctx.fill();
 			ctx.lineJoin = 'bevel';
 
-			if (this.showStroke){
+			if (this.showBorder){
 				ctx.stroke();
 			}
 		}
@@ -1347,11 +1352,11 @@
 				leftX = vm.x - halfWidth,
 				rightX = vm.x + halfWidth,
 				top = vm.base - (vm.base - vm.y),
-				halfStroke = vm.strokeWidth / 2;
+				halfStroke = vm.borderWidth / 2;
 
 			// Canvas doesn't allow us to stroke inside the width so we can
 			// adjust the sizes to fit if we're setting a stroke on the line
-			if (vm.showStroke){
+			if (vm.borderWidth){
 				leftX += halfStroke;
 				rightX -= halfStroke;
 				top += halfStroke;
@@ -1359,9 +1364,9 @@
 
 			ctx.beginPath();
 
-			ctx.fillStyle = vm.fillColor;
-			ctx.strokeStyle = vm.strokeColor;
-			ctx.lineWidth = vm.strokeWidth;
+			ctx.fillStyle = vm.backgroundColor;
+			ctx.strokeStyle = vm.borderColor;
+			ctx.lineWidth = vm.borderWidth;
 
 			// It'd be nice to keep this class totally generic to any rectangle
 			// and simply specify which border to miss out.
@@ -1370,7 +1375,7 @@
 			ctx.lineTo(rightX, top);
 			ctx.lineTo(rightX, vm.base);
 			ctx.fill();
-			if (vm.showStroke){
+			if (vm.borderWidth){
 				ctx.stroke();
 			}
 		},
@@ -1425,7 +1430,7 @@
 			var tooltipX = this.x - tooltipWidth/2,
 				tooltipY = this.y - tooltipHeight;
 
-			ctx.fillStyle = this.fillColor;
+			ctx.fillStyle = this.backgroundColor;
 
 			// Custom Tooltips
 			if(this.custom){
@@ -1533,7 +1538,7 @@
 			else{
 				drawRoundedRectangle(this.ctx,this.x,this.y - this.height/2,this.width,this.height,this.cornerRadius);
 				var ctx = this.ctx;
-				ctx.fillStyle = this.fillColor;
+				ctx.fillStyle = this.backgroundColor;
 				ctx.fill();
 				ctx.closePath();
 
@@ -2104,6 +2109,8 @@
 		animations: [],
 		dropFrames: 0,
 		addAnimation: function(chartInstance, animationObject) {
+			chartInstance.animating = true;
+
 			for (var index = 0; index < this.animations.length; ++ index){
 				if (this.animations[index].chartInstance === chartInstance){
 					// replacing an in progress animation
@@ -2130,6 +2137,7 @@
 			
 			if (index){
 				this.animations.splice(index, 1);
+				chartInstance.animating = false;
 			}
 		},
 		// calls startDigest with the proper context
@@ -2161,6 +2169,7 @@
 				
 				if (this.animations[i].animationObject.currentStep == this.animations[i].animationObject.numSteps){
 					// executed the last frame. Remove the animation.
+					this.animations[i].chartInstance.animating = false;
 					this.animations.splice(i, 1);
 					// Keep the index in place to offset the splice
 					i--;

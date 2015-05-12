@@ -35,17 +35,17 @@
 			{
 				return document.defaultView.getComputedStyle(element).getPropertyValue(dimension);
 			}
-		}
+		};
 
-		var width = this.width = computeDimension(context.canvas,'Width');
-		var height = this.height = computeDimension(context.canvas,'Height');
+		var width = this.width = computeDimension(context.canvas,'Width') || context.canvas.width;
+		var height = this.height = computeDimension(context.canvas,'Height') || context.canvas.height;
 
 		// Firefox requires this to work correctly
 		context.canvas.width  = width;
 		context.canvas.height = height;
 
-		var width = this.width = context.canvas.width;
-		var height = this.height = context.canvas.height;
+		width = this.width = context.canvas.width;
+		height = this.height = context.canvas.height;
 		this.aspectRatio = this.width / this.height;
 		//High pixel density displays - multiply the size of the canvas height/width by the device pixel ratio, then scale.
 		helpers.retinaScale(this);
@@ -59,7 +59,7 @@
 			animation: true,
 
 			// Number - Number of animation steps
-			animationSteps: 60,
+			animationDuration: 1000,
 
 			// String - Animation easing effect
 			animationEasing: "easeOutQuart",
@@ -124,7 +124,7 @@
 			tooltipEvents: ["mousemove", "touchstart", "touchmove", "mouseout"],
 
 			// String - Tooltip background colour
-			tooltipFillColor: "rgba(0,0,0,0.8)",
+			tooltipBackgroundColor: "rgba(0,0,0,0.8)",
 
 			// String - Tooltip label font declaration for the scale label
 			tooltipFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
@@ -210,14 +210,18 @@
 		clone = helpers.clone = function(obj){
 			var objClone = {};
 			each(obj,function(value,key){
-				if (obj.hasOwnProperty(key)) objClone[key] = value;
+				if (obj.hasOwnProperty(key)){
+					objClone[key] = value;
+				}
 			});
 			return objClone;
 		},
 		extend = helpers.extend = function(base){
 			each(Array.prototype.slice.call(arguments,1), function(extensionObject) {
 				each(extensionObject,function(value,key){
-					if (extensionObject.hasOwnProperty(key)) base[key] = value;
+					if (extensionObject.hasOwnProperty(key)){
+						base[key] = value;
+					}
 				});
 			});
 			return base;
@@ -300,9 +304,9 @@
 		})(),
 		warn = helpers.warn = function(str){
 			//Method for warning of errors
-			if (window.console && typeof window.console.warn == "function") console.warn(str);
+			if (window.console && typeof window.console.warn === "function") console.warn(str);
 		},
-		amd = helpers.amd = (typeof define == 'function' && define.amd),
+		amd = helpers.amd = (typeof define === 'function' && define.amd),
 		//-- Math methods
 		isNumber = helpers.isNumber = function(n){
 			return !isNaN(parseFloat(n)) && isFinite(n);
@@ -328,7 +332,20 @@
 		},
 		getDecimalPlaces = helpers.getDecimalPlaces = function(num){
 			if (num%1!==0 && isNumber(num)){
-				return num.toString().split(".")[1].length;
+				var s = num.toString();
+				if(s.indexOf("e-") < 0){
+					// no exponent, e.g. 0.01
+					return s.split(".")[1].length;
+				}
+				else if(s.indexOf(".") < 0) {
+					// no decimal point, e.g. 1e-9
+					return parseInt(s.split("e-")[1]);
+				}
+				else {
+					// exponent and decimal point, e.g. 1.23e-9
+					var parts = s.split(".")[1].split("e-");
+					return parts[0].length + parseInt(parts[1]);
+				}
 			}
 			else {
 				return 0;
@@ -449,7 +466,6 @@
 				numberOfSteps = minSteps;
 				stepValue = graphRange / numberOfSteps;
 			}
-
 			return {
 				steps : numberOfSteps,
 				stepValue : stepValue,
@@ -505,7 +521,7 @@
 		/* jshint ignore:end */
 		generateLabels = helpers.generateLabels = function(templateString,numberOfSteps,graphMin,stepValue){
 			var labelsArray = new Array(numberOfSteps);
-			if (labelTemplateString){
+			if (templateString){
 				each(labelsArray,function(val,index){
 					labelsArray[index] = template(templateString,{value: (graphMin + (stepValue*(index+1)))});
 				});
@@ -526,7 +542,9 @@
 				return -1 * t * (t - 2);
 			},
 			easeInOutQuad: function (t) {
-				if ((t /= 1 / 2) < 1) return 1 / 2 * t * t;
+				if ((t /= 1 / 2) < 1){
+					return 1 / 2 * t * t;
+				}
 				return -1 / 2 * ((--t) * (t - 2) - 1);
 			},
 			easeInCubic: function (t) {
@@ -536,7 +554,9 @@
 				return 1 * ((t = t / 1 - 1) * t * t + 1);
 			},
 			easeInOutCubic: function (t) {
-				if ((t /= 1 / 2) < 1) return 1 / 2 * t * t * t;
+				if ((t /= 1 / 2) < 1){
+					return 1 / 2 * t * t * t;
+				}
 				return 1 / 2 * ((t -= 2) * t * t + 2);
 			},
 			easeInQuart: function (t) {
@@ -546,7 +566,9 @@
 				return -1 * ((t = t / 1 - 1) * t * t * t - 1);
 			},
 			easeInOutQuart: function (t) {
-				if ((t /= 1 / 2) < 1) return 1 / 2 * t * t * t * t;
+				if ((t /= 1 / 2) < 1){
+					return 1 / 2 * t * t * t * t;
+				}
 				return -1 / 2 * ((t -= 2) * t * t * t - 2);
 			},
 			easeInQuint: function (t) {
@@ -556,7 +578,9 @@
 				return 1 * ((t = t / 1 - 1) * t * t * t * t + 1);
 			},
 			easeInOutQuint: function (t) {
-				if ((t /= 1 / 2) < 1) return 1 / 2 * t * t * t * t * t;
+				if ((t /= 1 / 2) < 1){
+					return 1 / 2 * t * t * t * t * t;
+				}
 				return 1 / 2 * ((t -= 2) * t * t * t * t + 2);
 			},
 			easeInSine: function (t) {
@@ -575,60 +599,95 @@
 				return (t === 1) ? 1 : 1 * (-Math.pow(2, -10 * t / 1) + 1);
 			},
 			easeInOutExpo: function (t) {
-				if (t === 0) return 0;
-				if (t === 1) return 1;
-				if ((t /= 1 / 2) < 1) return 1 / 2 * Math.pow(2, 10 * (t - 1));
+				if (t === 0){
+					return 0;
+				}
+				if (t === 1){
+					return 1;
+				}
+				if ((t /= 1 / 2) < 1){
+					return 1 / 2 * Math.pow(2, 10 * (t - 1));
+				}
 				return 1 / 2 * (-Math.pow(2, -10 * --t) + 2);
 			},
 			easeInCirc: function (t) {
-				if (t >= 1) return t;
+				if (t >= 1){
+					return t;
+				}
 				return -1 * (Math.sqrt(1 - (t /= 1) * t) - 1);
 			},
 			easeOutCirc: function (t) {
 				return 1 * Math.sqrt(1 - (t = t / 1 - 1) * t);
 			},
 			easeInOutCirc: function (t) {
-				if ((t /= 1 / 2) < 1) return -1 / 2 * (Math.sqrt(1 - t * t) - 1);
+				if ((t /= 1 / 2) < 1){
+					return -1 / 2 * (Math.sqrt(1 - t * t) - 1);
+				}
 				return 1 / 2 * (Math.sqrt(1 - (t -= 2) * t) + 1);
 			},
 			easeInElastic: function (t) {
 				var s = 1.70158;
 				var p = 0;
 				var a = 1;
-				if (t === 0) return 0;
-				if ((t /= 1) == 1) return 1;
-				if (!p) p = 1 * 0.3;
+				if (t === 0){
+					return 0;
+				}
+				if ((t /= 1) == 1){
+					return 1;
+				}
+				if (!p){
+					p = 1 * 0.3;
+				}
 				if (a < Math.abs(1)) {
 					a = 1;
 					s = p / 4;
-				} else s = p / (2 * Math.PI) * Math.asin(1 / a);
+				} else{
+					s = p / (2 * Math.PI) * Math.asin(1 / a);
+				}
 				return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * 1 - s) * (2 * Math.PI) / p));
 			},
 			easeOutElastic: function (t) {
 				var s = 1.70158;
 				var p = 0;
 				var a = 1;
-				if (t === 0) return 0;
-				if ((t /= 1) == 1) return 1;
-				if (!p) p = 1 * 0.3;
+				if (t === 0){
+					return 0;
+				}
+				if ((t /= 1) == 1){
+					return 1;
+				}
+				if (!p){
+					p = 1 * 0.3;
+				}
 				if (a < Math.abs(1)) {
 					a = 1;
 					s = p / 4;
-				} else s = p / (2 * Math.PI) * Math.asin(1 / a);
+				} else{
+					s = p / (2 * Math.PI) * Math.asin(1 / a);
+				}
 				return a * Math.pow(2, -10 * t) * Math.sin((t * 1 - s) * (2 * Math.PI) / p) + 1;
 			},
 			easeInOutElastic: function (t) {
 				var s = 1.70158;
 				var p = 0;
 				var a = 1;
-				if (t === 0) return 0;
-				if ((t /= 1 / 2) == 2) return 1;
-				if (!p) p = 1 * (0.3 * 1.5);
+				if (t === 0){
+					return 0;
+				}
+				if ((t /= 1 / 2) == 2){
+					return 1;
+				}
+				if (!p){
+					p = 1 * (0.3 * 1.5);
+				}
 				if (a < Math.abs(1)) {
 					a = 1;
 					s = p / 4;
-				} else s = p / (2 * Math.PI) * Math.asin(1 / a);
-				if (t < 1) return -0.5 * (a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * 1 - s) * (2 * Math.PI) / p));
+				} else {
+					s = p / (2 * Math.PI) * Math.asin(1 / a);
+				}
+				if (t < 1){
+					return -0.5 * (a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * 1 - s) * (2 * Math.PI) / p));}
 				return a * Math.pow(2, -10 * (t -= 1)) * Math.sin((t * 1 - s) * (2 * Math.PI) / p) * 0.5 + 1;
 			},
 			easeInBack: function (t) {
@@ -641,7 +700,9 @@
 			},
 			easeInOutBack: function (t) {
 				var s = 1.70158;
-				if ((t /= 1 / 2) < 1) return 1 / 2 * (t * t * (((s *= (1.525)) + 1) * t - s));
+				if ((t /= 1 / 2) < 1){
+					return 1 / 2 * (t * t * (((s *= (1.525)) + 1) * t - s));
+				}
 				return 1 / 2 * ((t -= 2) * t * (((s *= (1.525)) + 1) * t + s) + 2);
 			},
 			easeInBounce: function (t) {
@@ -659,7 +720,9 @@
 				}
 			},
 			easeInOutBounce: function (t) {
-				if (t < 1 / 2) return easingEffects.easeInBounce(t * 2) * 0.5;
+				if (t < 1 / 2){
+					return easingEffects.easeInBounce(t * 2) * 0.5;
+				}
 				return easingEffects.easeOutBounce(t * 2 - 1) * 0.5 + 1 * 0.5;
 			}
 		},
@@ -762,14 +825,21 @@
 			});
 		},
 		getMaximumWidth = helpers.getMaximumWidth = function(domNode){
-			var container = domNode.parentNode;
+			var container = domNode.parentNode,
+			    padding = parseInt(getStyle(container, 'padding-left')) + parseInt(getStyle(container, 'padding-right'));
 			// TODO = check cross browser stuff with this.
-			return container.clientWidth;
+			return container.clientWidth - padding;
 		},
 		getMaximumHeight = helpers.getMaximumHeight = function(domNode){
-			var container = domNode.parentNode;
+			var container = domNode.parentNode,
+			    padding = parseInt(getStyle(container, 'padding-bottom')) + parseInt(getStyle(container, 'padding-top'));
 			// TODO = check cross browser stuff with this.
-			return container.clientHeight;
+			return container.clientHeight - padding;
+		},
+		getStyle = helpers.getStyle = function (el, property) {
+			return el.currentStyle ?
+				el.currentStyle[property] :
+				document.defaultView.getComputedStyle(el, null).getPropertyValue(property);
 		},
 		getMaximumSize = helpers.getMaximumSize = helpers.getMaximumWidth, // legacy support
 		retinaScale = helpers.retinaScale = function(chart){
@@ -844,7 +914,7 @@
 		},
 		stop : function(){
 			// Stops any current animation loop occuring
-			cancelAnimFrame(this.animationFrame);
+			Chart.animationService.cancelAnimation(this);
 			return this;
 		},
 		resize : function(callback){
@@ -864,19 +934,30 @@
 			return this;
 		},
 		reflow : noop,
-		render : function(reflow){
+		render : function(reflow, customDuration){
 			if (reflow){
 				this.reflow();
 			}
+			
 			if (this.options.animation && !reflow){
-				helpers.animationLoop(
-					this.draw,
-					this.options.animationSteps,
-					this.options.animationEasing,
-					this.options.onAnimationProgress,
-					this.options.onAnimationComplete,
-					this
-				);
+				var animation = new Chart.Animation();
+				animation.numSteps = (customDuration || this.options.animationDuration) / 16.66; //60 fps
+				animation.easing = this.options.animationEasing;
+				
+				// render function
+				animation.render = function(chartInstance, animationObject) {
+					var easingFunction = helpers.easingEffects[animationObject.easing];
+					var stepDecimal = animationObject.currentStep / animationObject.numSteps;
+					var easeDecimal = easingFunction(stepDecimal);
+					
+					chartInstance.draw(easeDecimal, stepDecimal, animationObject.currentStep);
+				};
+				
+				// user events
+				animation.onAnimationProgress = this.options.onAnimationProgress;
+				animation.onAnimationComplete = this.options.onAnimationComplete;
+				
+				Chart.animationService.addAnimation(this, animation);
 			}
 			else{
 				this.draw();
@@ -939,12 +1020,12 @@
 			}
 			if (ChartElements.length > 0){
 				// If we have multiple datasets, show a MultiTooltip for all of the data points at that index
-				if (this.datasets && this.datasets.length > 1) {
+				if (this.data.datasets && this.data.datasets.length > 1) {
 					var dataArray,
 						dataIndex;
 
-					for (var i = this.datasets.length - 1; i >= 0; i--) {
-						dataArray = this.datasets[i].points || this.datasets[i].bars || this.datasets[i].segments;
+					for (var i = this.data.datasets.length - 1; i >= 0; i--) {
+						dataArray = this.data.datasets[i].metaData;
 						dataIndex = indexOf(dataArray, ChartElements[0]);
 						if (dataIndex !== -1){
 							break;
@@ -963,8 +1044,8 @@
 								yMax,
 								xMin,
 								yMin;
-							helpers.each(this.datasets, function(dataset){
-								dataCollection = dataset.points || dataset.bars || dataset.segments;
+							helpers.each(this.data.datasets, function(dataset){
+								dataCollection = dataset.metaData;
 								if (dataCollection[dataIndex] && dataCollection[dataIndex].hasValue()){
 									Elements.push(dataCollection[dataIndex]);
 								}
@@ -978,8 +1059,8 @@
 								//Include any colour information about the element
 								tooltipLabels.push(helpers.template(this.options.multiTooltipTemplate, element));
 								tooltipColors.push({
-									fill: element._saved.fillColor || element.fillColor,
-									stroke: element._saved.strokeColor || element.strokeColor
+									fill: element._vm.backgroundColor || element.backgroundColor,
+									stroke: element._vm.borderColor || element.borderColor
 								});
 
 							}, this);
@@ -1002,7 +1083,7 @@
 						xPadding: this.options.tooltipXPadding,
 						yPadding: this.options.tooltipYPadding,
 						xOffset: this.options.tooltipXOffset,
-						fillColor: this.options.tooltipFillColor,
+						backgroundColor: this.options.tooltipBackgroundColor,
 						textColor: this.options.tooltipFontColor,
 						fontFamily: this.options.tooltipFontFamily,
 						fontStyle: this.options.tooltipFontStyle,
@@ -1029,7 +1110,7 @@
 							y: Math.round(tooltipPosition.y),
 							xPadding: this.options.tooltipXPadding,
 							yPadding: this.options.tooltipYPadding,
-							fillColor: this.options.tooltipFillColor,
+							backgroundColor: this.options.tooltipBackgroundColor,
 							textColor: this.options.tooltipFontColor,
 							fontFamily: this.options.tooltipFontFamily,
 							fontStyle: this.options.tooltipFontStyle,
@@ -1094,36 +1175,56 @@
 	Chart.Element = function(configuration){
 		extend(this,configuration);
 		this.initialize.apply(this,arguments);
-		this.save();
 	};
 	extend(Chart.Element.prototype,{
 		initialize : function(){},
-		restore : function(props){
-			if (!props){
-				extend(this,this._saved);
-			} else {
-				each(props,function(key){
-					this[key] = this._saved[key];
-				},this);
+		save: function(){
+			this._vm = clone(this);
+			delete this._vm._vm;
+			delete this._vm._start;
+			return this;
+		},
+		transition : function(props, ease){
+			if(!this._start){
+				this._start = clone(this._vm);
 			}
-			return this;
-		},
-		save : function(){
-			this._saved = clone(this);
-			delete this._saved._saved;
-			return this;
-		},
-		update : function(newProps){
-			each(newProps,function(value,key){
-				this._saved[key] = this[key];
-				this[key] = value;
+			each(this,function(value, key){
+
+				// Only non-vm properties
+				if(key === '_vm' || !this.hasOwnProperty(key)){
+					return;
+				}
+
+				// Init if doesn't exist
+				if(!this._vm[key]){
+					this._vm[key] = value || null;
+					return;
+				}
+
+				// If transition property, do transition with ease (no pun intended)
+				if(props.indexOf(key) > -1){
+					// Color transitions if possible
+					if(typeof value === 'string'){
+						try{	
+							var color = Color(this._start[key]).mix(Color(this[key]), ease);
+							this._vm[key] = color.rgbString();
+						} catch(err){
+							this._vm[key] = value;
+						}
+						return;
+					}
+					// Everything else, presumably numbers
+					this._vm[key] = ((this[key] - this._start[key]) * ease) + this._start[key];
+					return;
+				}
+
+				// Non-transitionals
+				this._vm[key] = value;
+				
 			},this);
-			return this;
-		},
-		transition : function(props,ease){
-			each(props,function(value,key){
-				this[key] = ((value - this._saved[key]) * ease) + this._saved[key];
-			},this);
+			if(ease === 1){
+				delete this._start;
+			}
 			return this;
 		},
 		tooltipPosition : function(){
@@ -1154,10 +1255,10 @@
 				ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
 				ctx.closePath();
 
-				ctx.strokeStyle = this.strokeColor;
-				ctx.lineWidth = this.strokeWidth;
+				ctx.strokeStyle = this.borderColor;
+				ctx.lineWidth = this.borderWidth;
 
-				ctx.fillStyle = this.fillColor;
+				ctx.fillStyle = this.backgroundColor;
 
 				ctx.fill();
 				ctx.stroke();
@@ -1227,15 +1328,15 @@
 			ctx.arc(this.x, this.y, this.innerRadius, this.endAngle, this.startAngle, true);
 
 			ctx.closePath();
-			ctx.strokeStyle = this.strokeColor;
-			ctx.lineWidth = this.strokeWidth;
+			ctx.strokeStyle = this.borderColor;
+			ctx.lineWidth = this.borderWidth;
 
-			ctx.fillStyle = this.fillColor;
+			ctx.fillStyle = this.backgroundColor;
 
 			ctx.fill();
 			ctx.lineJoin = 'bevel';
 
-			if (this.showStroke){
+			if (this.showBorder){
 				ctx.stroke();
 			}
 		}
@@ -1243,16 +1344,19 @@
 
 	Chart.Rectangle = Chart.Element.extend({
 		draw : function(){
+
+			var vm = this._vm;
+
 			var ctx = this.ctx,
-				halfWidth = this.width/2,
-				leftX = this.x - halfWidth,
-				rightX = this.x + halfWidth,
-				top = this.base - (this.base - this.y),
-				halfStroke = this.strokeWidth / 2;
+				halfWidth = vm.width/2,
+				leftX = vm.x - halfWidth,
+				rightX = vm.x + halfWidth,
+				top = vm.base - (vm.base - vm.y),
+				halfStroke = vm.borderWidth / 2;
 
 			// Canvas doesn't allow us to stroke inside the width so we can
 			// adjust the sizes to fit if we're setting a stroke on the line
-			if (this.showStroke){
+			if (vm.borderWidth){
 				leftX += halfStroke;
 				rightX -= halfStroke;
 				top += halfStroke;
@@ -1260,29 +1364,41 @@
 
 			ctx.beginPath();
 
-			ctx.fillStyle = this.fillColor;
-			ctx.strokeStyle = this.strokeColor;
-			ctx.lineWidth = this.strokeWidth;
+			ctx.fillStyle = vm.backgroundColor;
+			ctx.strokeStyle = vm.borderColor;
+			ctx.lineWidth = vm.borderWidth;
 
 			// It'd be nice to keep this class totally generic to any rectangle
 			// and simply specify which border to miss out.
-			ctx.moveTo(leftX, this.base);
+			ctx.moveTo(leftX, vm.base);
 			ctx.lineTo(leftX, top);
 			ctx.lineTo(rightX, top);
-			ctx.lineTo(rightX, this.base);
+			ctx.lineTo(rightX, vm.base);
 			ctx.fill();
-			if (this.showStroke){
+			if (vm.borderWidth){
 				ctx.stroke();
 			}
 		},
 		height : function(){
-			return this.base - this.y;
+			var vm = this._vm;
+			return vm.base - vm.y;
 		},
 		inRange : function(chartX,chartY){
-			return (chartX >= this.x - this.width/2 && chartX <= this.x + this.width/2) && (chartY >= this.y && chartY <= this.base);
+			var vm = this._vm;
+			return (chartX >= vm.x - vm.width/2 && chartX <= vm.x + vm.width/2) && (chartY >= vm.y && chartY <= vm.base);
 		}
 	});
 
+	Chart.Animation = Chart.Element.extend({
+		currentStep: null, // the current animation step
+		numSteps: 60, // default number of steps
+		easing: "", // the easing to use for this animation
+		render: null, // render function used by the animation service
+		
+		onAnimationProgress: null, // user specified callback to fire on each step of the animation 
+		onAnimationComplete: null, // user specified callback to fire when the animation finishes
+	});
+	
 	Chart.Tooltip = Chart.Element.extend({
 		draw : function(){
 
@@ -1314,7 +1430,7 @@
 			var tooltipX = this.x - tooltipWidth/2,
 				tooltipY = this.y - tooltipHeight;
 
-			ctx.fillStyle = this.fillColor;
+			ctx.fillStyle = this.backgroundColor;
 
 			// Custom Tooltips
 			if(this.custom){
@@ -1422,7 +1538,7 @@
 			else{
 				drawRoundedRectangle(this.ctx,this.x,this.y - this.height/2,this.width,this.height,this.cornerRadius);
 				var ctx = this.ctx;
-				ctx.fillStyle = this.fillColor;
+				ctx.fillStyle = this.backgroundColor;
 				ctx.fill();
 				ctx.closePath();
 
@@ -1466,7 +1582,7 @@
 			for (var i=0; i<=this.steps; i++){
 				this.yLabels.push(template(this.templateString,{value:(this.min + (i * this.stepValue)).toFixed(stepDecimalPlaces)}));
 			}
-			this.yLabelWidth = (this.display && this.showLabels) ? longestText(this.ctx,this.font,this.yLabels) : 0;
+			this.yLabelWidth = (this.display && this.showLabels) ? longestText(this.ctx,this.font,this.yLabels) + 10 : 0;
 		},
 		addXLabel : function(label){
 			this.xLabels.push(label);
@@ -1489,6 +1605,9 @@
 			// Apply padding settings to the start and end point.
 			this.startPoint += this.padding;
 			this.endPoint -= this.padding;
+
+			// Cache the starting endpoint, excluding the space for x labels
+			var cachedEndPoint = this.endPoint;
 
 			// Cache the starting height, so can determine if we need to recalculate the scale yAxis
 			var cachedHeight = this.endPoint - this.startPoint,
@@ -1521,6 +1640,7 @@
 
 				// Only go through the xLabel loop again if the yLabel width has changed
 				if (cachedYLabelWidth < this.yLabelWidth){
+					this.endPoint = cachedEndPoint;
 					this.calculateXLabelRotation();
 				}
 			}
@@ -1539,7 +1659,7 @@
 
 
 			this.xScalePaddingRight = lastWidth/2 + 3;
-			this.xScalePaddingLeft = (firstWidth/2 > this.yLabelWidth + 10) ? firstWidth/2 : this.yLabelWidth + 10;
+			this.xScalePaddingLeft = (firstWidth/2 > this.yLabelWidth) ? firstWidth/2 : this.yLabelWidth;
 
 			this.xLabelRotation = 0;
 			if (this.display){
@@ -1558,7 +1678,7 @@
 					lastRotated = cosRotation * lastWidth;
 
 					// We're right aligning the text now.
-					if (firstRotated + this.fontSize / 2 > this.yLabelWidth + 8){
+					if (firstRotated + this.fontSize / 2 > this.yLabelWidth){
 						this.xScalePaddingLeft = firstRotated + this.fontSize / 2;
 					}
 					this.xScalePaddingRight = this.fontSize/2;
@@ -1984,6 +2104,93 @@
 		}
 	});
 
+	Chart.animationService = {
+		frameDuration: 17,
+		animations: [],
+		dropFrames: 0,
+		addAnimation: function(chartInstance, animationObject) {
+			chartInstance.animating = true;
+
+			for (var index = 0; index < this.animations.length; ++ index){
+				if (this.animations[index].chartInstance === chartInstance){
+					// replacing an in progress animation
+					this.animations[index].animationObject = animationObject;
+					return;
+				}
+			}
+			
+			this.animations.push({
+				chartInstance: chartInstance,
+				animationObject: animationObject
+			});
+
+			// If there are no animations queued, manually kickstart a digest, for lack of a better word
+			if (this.animations.length == 1) {
+				helpers.requestAnimFrame.call(window, this.digestWrapper);
+			}
+		},
+		// Cancel the animation for a given chart instance
+		cancelAnimation: function(chartInstance) {
+			var index = helpers.findNextWhere(this.animations, function(animationWrapper) {
+				return animationWrapper.chartInstance === chartInstance;
+			});
+			
+			if (index){
+				this.animations.splice(index, 1);
+				chartInstance.animating = false;
+			}
+		},
+		// calls startDigest with the proper context
+		digestWrapper: function() {
+			Chart.animationService.startDigest.call(Chart.animationService);
+		},
+		startDigest: function() {
+
+			var startTime = Date.now();
+			var framesToDrop = 0;
+
+			if(this.dropFrames > 1){
+				framesToDrop = Math.floor(this.dropFrames);
+				this.dropFrames -= framesToDrop;
+			}
+
+			for (var i = 0; i < this.animations.length; i++) {
+
+				if (this.animations[i].animationObject.currentStep === null){
+					this.animations[i].animationObject.currentStep = 0;
+				}
+
+				this.animations[i].animationObject.currentStep += 1 + framesToDrop;
+				if(this.animations[i].animationObject.currentStep > this.animations[i].animationObject.numSteps){
+					this.animations[i].animationObject.currentStep = this.animations[i].animationObject.numSteps;
+				}
+				
+				this.animations[i].animationObject.render(this.animations[i].chartInstance, this.animations[i].animationObject);
+				
+				if (this.animations[i].animationObject.currentStep == this.animations[i].animationObject.numSteps){
+					// executed the last frame. Remove the animation.
+					this.animations[i].chartInstance.animating = false;
+					this.animations.splice(i, 1);
+					// Keep the index in place to offset the splice
+					i--;
+				}
+			}
+
+			var endTime = Date.now();
+			var delay = endTime - startTime - this.frameDuration;
+			var frameDelay = delay / this.frameDuration;
+
+			if(frameDelay > 1){
+				this.dropFrames += frameDelay;
+			}
+
+			// Do we have more stuff to animate?
+			if (this.animations.length > 0){
+				helpers.requestAnimFrame.call(window, this.digestWrapper);
+			}
+		}
+	};
+
 	// Attach global event to resize each chart instance when the browser resizes
 	helpers.addEvent(window, "resize", (function(){
 		// Basic debounce of resize function so it doesn't hurt performance when resizing browser.
@@ -2047,11 +2254,8 @@
 		//Boolean - Whether to show vertical lines (except Y axis)
 		scaleShowVerticalLines: true,
 
-		//Boolean - If there is a stroke on each bar
-		barShowStroke : true,
-
-		//Number - Pixel width of the bar stroke
-		barStrokeWidth : 2,
+		//Number - Pixel width of the bar border
+		barBorderWidth : 2,
 
 		//Number - Spacing between each of the X value sets
 		barValueSpacing : 5,
@@ -2059,8 +2263,17 @@
 		//Number - Spacing between data sets within X values
 		barDatasetSpacing : 1,
 
+		//String - Hover mode for events
+		hoverMode : 'bars', // 'bar', 'dataset'
+
+		//Function - Custom hover handler
+		onHover : null,
+
+		//Function - Custom hover handler
+		hoverDuration : 400,
+
 		//String - A legend template
-		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].backgroundColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
 
 	};
 
@@ -2069,6 +2282,9 @@
 		name: "Bar",
 		defaults : defaultConfig,
 		initialize:  function(data){
+
+			// Save data as a source for updating of values & methods
+			this.data = data;
 
 			//Expose options as a scope variable here so we can access it in the ScaleClass
 			var options = this.options;
@@ -2094,102 +2310,144 @@
 				}
 			});
 
-			this.datasets = [];
-
 			//Set up tooltip events on the chart
 			if (this.options.showTooltips){
-				helpers.bindEvents(this, this.options.tooltipEvents, function(evt){
-					var activeBars = (evt.type !== 'mouseout') ? this.getBarsAtEvent(evt) : [];
-
-					this.eachBars(function(bar){
-						bar.restore(['fillColor', 'strokeColor']);
-					});
-					helpers.each(activeBars, function(activeBar){
-						activeBar.fillColor = activeBar.highlightFill;
-						activeBar.strokeColor = activeBar.highlightStroke;
-					});
-					this.showTooltip(activeBars);
-				});
+				helpers.bindEvents(this, this.options.tooltipEvents, this.onHover);
 			}
 
+
+			
 			//Declare the extension of the default point, to cater for the options passed in to the constructor
 			this.BarClass = Chart.Rectangle.extend({
-				strokeWidth : this.options.barStrokeWidth,
-				showStroke : this.options.barShowStroke,
-				ctx : this.chart.ctx
+				ctx : this.chart.ctx,
+				_vm: {}
 			});
 
-			//Iterate through each of the datasets, and build this into a property of the chart
-			helpers.each(data.datasets,function(dataset,datasetIndex){
-
-				var datasetObject = {
-					label : dataset.label || null,
-					fillColor : dataset.fillColor,
-					strokeColor : dataset.strokeColor,
-					bars : []
-				};
-
-				this.datasets.push(datasetObject);
-
-				helpers.each(dataset.data,function(dataPoint,index){
-					//Add a new point for each piece of data, passing any required data to draw.
-					datasetObject.bars.push(new this.BarClass({
-						value : dataPoint,
-						label : data.labels[index],
-						datasetLabel: dataset.label,
-						strokeColor : dataset.strokeColor,
-						fillColor : dataset.fillColor,
-						highlightFill : dataset.highlightFill || dataset.fillColor,
-						highlightStroke : dataset.highlightStroke || dataset.strokeColor
-					}));
-				},this);
-
-			},this);
-
+			// Build Scale
 			this.buildScale(data.labels);
 
-			this.BarClass.prototype.base = this.scale.endPoint;
+			//Create a new bar for each piece of data
+			helpers.each(this.data.datasets,function(dataset,datasetIndex){
+				dataset.metaData = [];
+				helpers.each(dataset.data,function(dataPoint,index){
+					dataset.metaData.push(new this.BarClass());
+				},this);
+			},this);
 
+			// Set defaults for bars
 			this.eachBars(function(bar, index, datasetIndex){
 				helpers.extend(bar, {
-					width : this.scale.calculateBarWidth(this.datasets.length),
-					x: this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
-					y: this.scale.endPoint
+					width : this.scale.calculateBarWidth(this.data.datasets.length),
+					x: this.scale.calculateBarX(this.data.datasets.length, datasetIndex, index),
+					y: this.scale.endPoint,
 				});
+				// Copy to view model
 				bar.save();
 			}, this);
 
-			this.render();
+			this.update();
+		},
+		onHover: function(e){
+
+			var active;
+			if(e.type == 'mouseout'){
+				return false;
+			}
+			if(this.options.hoverMode == 'bar'){
+				active = this.getBarAtEvent(e);
+			}
+			else if(this.options.hoverMode == 'bars'){}
+
+
+			// Remove styling for last active
+			if(this.lastActive){
+				if(this.options.hoverMode == 'bar'){
+					this.lastActive.rectangle.backgroundColor = this.data.datasets[this.lastActive.datasetIndex].backgroundColor;
+					this.lastActive.rectangle.borderColor = this.data.datasets[this.lastActive.datasetIndex].borderColor;
+					this.lastActive.rectangle.borderWidth = 0;
+				}
+				else if(this.options.hoverMode == 'bars'){}
+			}
+
+			// Custom Hover actions
+			if(this.options.onHover){
+				this.options.onHover.call(this, active);
+			}
+			else if(active){
+				// or default hover action
+				if(this.options.hoverMode == 'bar'){
+					active.rectangle.backgroundColor = this.data.datasets[active.datasetIndex].hoverBackgroundColor || Color(active.rectangle.backgroundColor).saturate(0.5).darken(0.25).rgbString();
+					active.rectangle.borderColor = this.data.datasets[active.datasetIndex].hoverBorderColor || Color(active.rectangle.borderColor).saturate(0.5).darken(0.25).rgbString();
+				}
+				else if(this.options.hoverMode == 'bars'){}
+
+			}
+
+			if(!this.animating){
+				// If entering
+				if(!this.lastActive && active){
+					this.render(false, this.options.hoverDuration);
+				}
+
+				// If different bar
+				if(this.lastActive && active && this.lastActive.rectangle !== active.rectangle){
+					this.render(false, this.options.hoverDuration);
+				}
+
+				// if Leaving
+				if (this.lastActive && !active){
+					this.render(false, this.options.hoverDuration);
+				}
+			}
+
+			this.lastActive = active;
+
+			//this.showTooltip(active);
 		},
 		update : function(){
-			this.scale.update();
-			// Reset any highlight colours before updating.
-			helpers.each(this.activeElements, function(activeElement){
-				activeElement.restore(['fillColor', 'strokeColor']);
-			});
 
-			this.eachBars(function(bar){
-				bar.save();
-			});
+			this.scale.update();
+
+			this.eachBars(function(bar, index, datasetIndex){
+				helpers.extend(bar, {
+					width : this.scale.calculateBarWidth(this.data.datasets.length),
+					x: this.scale.calculateBarX(this.data.datasets.length, datasetIndex, index),
+					y: this.scale.calculateY(this.data.datasets[datasetIndex].data[index]),
+					value : this.data.datasets[datasetIndex].data[index],
+					label : this.data.labels[index],
+					datasetLabel: this.data.datasets[datasetIndex].label,
+					borderColor : this.data.datasets[datasetIndex].borderColor,
+					borderWidth : this.data.datasets[datasetIndex].borderWidth,
+					backgroundColor : this.data.datasets[datasetIndex].backgroundColor,
+					_start: undefined
+				});
+			}, this);
+
+
 			this.render();
 		},
 		eachBars : function(callback){
-			helpers.each(this.datasets,function(dataset, datasetIndex){
-				helpers.each(dataset.bars, callback, this, datasetIndex);
+			helpers.each(this.data.datasets,function(dataset, datasetIndex){
+				helpers.each(dataset.metaData, callback, this, datasetIndex);
+			},this);
+		},
+		eachValue : function(callback){
+			helpers.each(this.data.datasets,function(dataset, datasetIndex){
+				helpers.each(dataset.data, callback, this, datasetIndex);
 			},this);
 		},
 		getBarsAtEvent : function(e){
 			var barsArray = [],
 				eventPosition = helpers.getRelativePosition(e),
 				datasetIterator = function(dataset){
-					barsArray.push(dataset.bars[barIndex]);
+					barsArray.push(dataset.metaData[barIndex]);
 				},
 				barIndex;
 
-			for (var datasetIndex = 0; datasetIndex < this.datasets.length; datasetIndex++) {
-				for (barIndex = 0; barIndex < this.datasets[datasetIndex].bars.length; barIndex++) {
-					if (this.datasets[datasetIndex].bars[barIndex].inRange(eventPosition.x,eventPosition.y)){
-						helpers.each(this.datasets, datasetIterator);
+			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; datasetIndex++) {
+				for (barIndex = 0; barIndex < this.data.datasets[datasetIndex].metaData.length; barIndex++) {
+					if (this.data.datasets[datasetIndex].metaData[barIndex].inRange(eventPosition.x,eventPosition.y)){
+						helpers.each(this.data.datasets, datasetIterator);
 						return barsArray;
 					}
 				}
@@ -2197,13 +2455,34 @@
 
 			return barsArray;
 		},
+		// Get the single bar that was clicked on
+		// @return : An object containing the dataset index and bar index of the matching bar. Also contains the rectangle that was drawn
+		getBarAtEvent : function(e) {
+			var bar;
+			var eventPosition = helpers.getRelativePosition(e);
+			
+			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; ++datasetIndex) {
+				for (var barIndex = 0; barIndex < this.data.datasets[datasetIndex].metaData.length; ++barIndex) {
+					if (this.data.datasets[datasetIndex].metaData[barIndex].inRange(eventPosition.x, eventPosition.y)) {
+						bar = {
+							rectangle : this.data.datasets[datasetIndex].metaData[barIndex],
+							datasetIndex : datasetIndex,
+							barIndex : barIndex,
+						};
+						return bar;
+					}
+				}
+			}
+			
+			return bar;
+		},
 		buildScale : function(labels){
 			var self = this;
 
 			var dataTotal = function(){
 				var values = [];
-				self.eachBars(function(bar){
-					values.push(bar.value);
+				self.eachValue(function(value){
+					values.push(value);
 				});
 				return values;
 			};
@@ -2238,7 +2517,7 @@
 				showVerticalLines : this.options.scaleShowVerticalLines,
 				gridLineWidth : (this.options.scaleShowGridLines) ? this.options.scaleGridLineWidth : 0,
 				gridLineColor : (this.options.scaleShowGridLines) ? this.options.scaleGridLineColor : "rgba(0,0,0,0)",
-				padding : (this.options.showScale) ? 0 : (this.options.barShowStroke) ? this.options.barStrokeWidth : 0,
+				padding : (this.options.showScale) ? 0 : this.options.borderWidth,
 				showLabels : this.options.scaleShowLabels,
 				display : this.options.showScale
 			};
@@ -2259,15 +2538,16 @@
 			//Map the values array for each of the datasets
 			helpers.each(valuesArray,function(value,datasetIndex){
 				//Add a new point for each piece of data, passing any required data to draw.
-				this.datasets[datasetIndex].bars.push(new this.BarClass({
+				this.data.datasets[datasetIndex].bars.push(new this.BarClass({
 					value : value,
 					label : label,
-					x: this.scale.calculateBarX(this.datasets.length, datasetIndex, this.scale.valuesCount+1),
+					datasetLabel: this.data.datasets[datasetIndex].label,
+					x: this.scale.calculateBarX(this.data.datasets.length, datasetIndex, this.scale.valuesCount+1),
 					y: this.scale.endPoint,
-					width : this.scale.calculateBarWidth(this.datasets.length),
+					width : this.scale.calculateBarWidth(this.data.datasets.length),
 					base : this.scale.endPoint,
-					strokeColor : this.datasets[datasetIndex].strokeColor,
-					fillColor : this.datasets[datasetIndex].fillColor
+					borderColor : this.data.datasets[datasetIndex].borderColor,
+					backgroundColor : this.data.datasets[datasetIndex].backgroundColor
 				}));
 			},this);
 
@@ -2278,7 +2558,7 @@
 		removeData : function(){
 			this.scale.removeXLabel();
 			//Then re-render the chart.
-			helpers.each(this.datasets,function(dataset){
+			helpers.each(this.data.datasets,function(dataset){
 				dataset.bars.shift();
 			},this);
 			this.update();
@@ -2295,28 +2575,28 @@
 			this.scale.update(newScaleProps);
 		},
 		draw : function(ease){
+
 			var easingDecimal = ease || 1;
 			this.clear();
-
-			var ctx = this.chart.ctx;
 
 			this.scale.draw(easingDecimal);
 
 			//Draw all the bars for each dataset
-			helpers.each(this.datasets,function(dataset,datasetIndex){
-				helpers.each(dataset.bars,function(bar,index){
-					if (bar.hasValue()){
-						bar.base = this.scale.endPoint;
-						//Transition then draw
-						bar.transition({
-							x : this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
-							y : this.scale.calculateY(bar.value),
-							width : this.scale.calculateBarWidth(this.datasets.length)
-						}, easingDecimal).draw();
-					}
-				},this);
-
-			},this);
+			this.eachBars(function(bar, index, datasetIndex){
+				if (bar.hasValue()){
+					// Update the bar basepoint
+					bar.base = this.scale.endPoint;
+					//Transition 
+					bar.transition([
+						'x',
+						'y',
+						'width',
+						'backgroundColor',
+						'borderColor',
+					 	'borderWidth'
+					], easingDecimal).draw();
+				}
+			}, this);
 		}
 	});
 
@@ -2361,7 +2641,6 @@
 
 	};
 
-
 	Chart.Type.extend({
 		//Passing in a name registers this chart in the Chart namespace
 		name: "Doughnut",
@@ -2370,6 +2649,9 @@
 		//Initialize is fired when the chart is initialized - Data is passed in as a parameter
 		//Config is automatically merged by the core of Chart.js, and is available at this.options
 		initialize:  function(data){
+
+			// Save data as a source for updating of values & methods
+			this.data = data;
 
 			//Declare segments as a static property to prevent inheriting across the Chart type prototype
 			this.segments = [];
@@ -2398,6 +2680,9 @@
 			this.calculateTotal(data);
 
 			helpers.each(data,function(datapoint, index){
+				if (!datapoint.color) {
+					datapoint.color = 'hsl(' + (360 * index / data.length) + ', 100%, 50%)';
+				}
 				this.addData(datapoint, index, true);
 			},this);
 
@@ -2433,8 +2718,12 @@
 				this.update();
 			}
 		},
-		calculateCircumference : function(value){
-			return (Math.PI*2)*(Math.abs(value) / this.total);
+		calculateCircumference : function(value) {
+			if ( this.total > 0 ) {
+				return (Math.PI*2)*(value / this.total);
+			} else {
+				return 0;
+			}
 		},
 		calculateTotal : function(data){
 			this.total = 0;
@@ -2443,6 +2732,25 @@
 			},this);
 		},
 		update : function(){
+
+			// Map new data to data points
+			if(this.data.length == this.segments.length){
+				helpers.each(this.data, function(segment, i){
+					helpers.extend(this.segments[i], {
+						value : segment.value,
+						fillColor : segment.color,
+						highlightColor : segment.highlight || segment.color,
+						showStroke : this.options.segmentShowStroke,
+						strokeWidth : this.options.segmentStrokeWidth,
+						strokeColor : this.options.segmentStrokeColor,
+						label : segment.label
+					});
+				}, this);
+			} else{
+				// Data size changed without properly inserting, just redraw the chart
+				this.initialize(this.data);
+			}
+
 			this.calculateTotal(this.segments);
 
 			// Reset any highlight colours before updating.
@@ -2507,6 +2815,7 @@
 	});
 
 }).call(this);
+
 (function(){
 	"use strict";
 
@@ -2559,7 +2868,10 @@
 		datasetFill : true,
 
 		//String - A legend template
-		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+
+		//Boolean - Whether to horizontally center the label and point dot inside the grid
+		offsetGridLines : false
 
 	};
 
@@ -2568,8 +2880,12 @@
 		name: "Line",
 		defaults : defaultConfig,
 		initialize:  function(data){
+			// Save data as a source for updating of values & methods
+			this.data = data;
+
 			//Declare the extension of the default point, to cater for the options passed in to the constructor
 			this.PointClass = Chart.Point.extend({
+				offsetGridLines : this.options.offsetGridLines,
 				strokeWidth : this.options.pointDotStrokeWidth,
 				radius : this.options.pointDotRadius,
 				display: this.options.pointDot,
@@ -2642,6 +2958,31 @@
 			this.render();
 		},
 		update : function(){
+			//Iterate through each of the datasets, and build this into a property of the chart
+			helpers.each(this.data.datasets,function(dataset,datasetIndex){
+
+				helpers.extend(this.datasets[datasetIndex], {
+					label : dataset.label || null,
+					fillColor : dataset.fillColor,
+					strokeColor : dataset.strokeColor,
+					pointColor : dataset.pointColor,
+					pointStrokeColor : dataset.pointStrokeColor,
+				});
+
+				helpers.each(dataset.data,function(dataPoint,index){
+					helpers.extend(this.datasets[datasetIndex].points[index], {
+						value : dataPoint,
+						label : this.data.labels[index],
+						datasetLabel: dataset.label,
+						strokeColor : dataset.pointStrokeColor,
+						fillColor : dataset.pointColor,
+						highlightFill : dataset.pointHighlightFill || dataset.pointColor,
+						highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor
+					});
+				},this);
+
+			},this);
+
 			this.scale.update();
 			// Reset any highlight colours before updating.
 			helpers.each(this.activeElements, function(activeElement){
@@ -2685,6 +3026,7 @@
 				width : this.chart.width,
 				ctx : this.chart.ctx,
 				textColor : this.options.scaleFontColor,
+				offsetGridLines : this.options.offsetGridLines,
 				fontSize : this.options.scaleFontSize,
 				fontStyle : this.options.scaleFontStyle,
 				fontFamily : this.options.scaleFontFamily,
@@ -2735,6 +3077,7 @@
 				this.datasets[datasetIndex].points.push(new this.PointClass({
 					value : value,
 					label : label,
+					datasetLabel: this.datasets[datasetIndex].label,
 					x: this.scale.calculateX(this.scale.valuesCount+1),
 					y: this.scale.endPoint,
 					strokeColor : this.datasets[datasetIndex].pointStrokeColor,
@@ -2912,7 +3255,7 @@
 		//Boolean - Stroke a line around each segment in the chart
 		segmentShowStroke : true,
 
-		//String - The colour of the stroke on each segement.
+		//String - The colour of the stroke on each segment.
 		segmentStrokeColor : "#fff",
 
 		//Number - The width of the stroke value in pixels
@@ -2943,6 +3286,9 @@
 		//Initialize is fired when the chart is initialized - Data is passed in as a parameter
 		//Config is automatically merged by the core of Chart.js, and is available at this.options
 		initialize:  function(data){
+			// Save data as a source for updating of values & methods
+			this.data = data;
+
 			this.segments = [];
 			//Declare segment class as a chart instance specific class, so it can share props for this instance
 			this.SegmentArc = Chart.Arc.extend({
@@ -3074,6 +3420,22 @@
 
 		},
 		update : function(){
+
+			// Map new data to data points
+			if(this.data.length == this.segments.length){
+				helpers.each(this.data, function(segment, i){
+					helpers.extend(this.segments[i], {
+						fillColor: segment.color,
+						highlightColor: segment.highlight || segment.color,
+						label: segment.label,
+						value: segment.value,
+					});
+				},this);
+			} else{
+				// Data size changed without properly inserting, just redraw the chart
+				this.initialize(this.data);
+			}
+
 			this.calculateTotal(this.segments);
 
 			helpers.each(this.segments,function(segment){
@@ -3132,6 +3494,7 @@
 	});
 
 }).call(this);
+
 (function(){
 	"use strict";
 
@@ -3201,6 +3564,9 @@
 		},
 
 		initialize: function(data){
+			// Save data as a source for updating of values & methods
+			this.data = data;
+
 			this.PointClass = Chart.Point.extend({
 				strokeWidth : this.options.pointDotStrokeWidth,
 				radius : this.options.pointDotRadius,
@@ -3379,6 +3745,7 @@
 				this.datasets[datasetIndex].points.push(new this.PointClass({
 					value : value,
 					label : label,
+					datasetLabel: this.datasets[datasetIndex].label,
 					x: pointPosition.x,
 					y: pointPosition.y,
 					strokeColor : this.datasets[datasetIndex].pointStrokeColor,
@@ -3402,6 +3769,31 @@
 			this.update();
 		},
 		update : function(){
+			//Iterate through each of the datasets, and build this into a property of the chart
+			helpers.each(this.data.datasets,function(dataset,datasetIndex){
+
+				helpers.extend(this.datasets[datasetIndex], {
+					label : dataset.label || null,
+					fillColor : dataset.fillColor,
+					strokeColor : dataset.strokeColor,
+					pointColor : dataset.pointColor,
+					pointStrokeColor : dataset.pointStrokeColor,
+				});
+
+				helpers.each(dataset.data,function(dataPoint,index){
+					helpers.extend(this.datasets[datasetIndex].points[index], {
+						value : dataPoint,
+						label : this.data.labels[index],
+						datasetLabel: dataset.label,
+						strokeColor : dataset.pointStrokeColor,
+						fillColor : dataset.pointColor,
+						highlightFill : dataset.pointHighlightFill || dataset.pointColor,
+						highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor
+					});
+				},this);
+
+			},this);
+			
 			this.eachPoints(function(point){
 				point.save();
 			});
@@ -3475,3 +3867,5 @@
 
 
 }).call(this);
+
+!function e(r,t,n){function a(i,u){if(!t[i]){if(!r[i]){var l="function"==typeof require&&require;if(!u&&l)return l(i,!0);if(s)return s(i,!0);var h=new Error("Cannot find module '"+i+"'");throw h.code="MODULE_NOT_FOUND",h}var o=t[i]={exports:{}};r[i][0].call(o.exports,function(e){var t=r[i][1][e];return a(t?t:e)},o,o.exports,e,r,t,n)}return t[i].exports}for(var s="function"==typeof require&&require,i=0;i<n.length;i++)a(n[i]);return a}({1:[function(e,r,t){!function(){var t=e("color-convert"),n=e("color-string"),a=function(e){if(e instanceof a)return e;if(!(this instanceof a))return new a(e);if(this.values={rgb:[0,0,0],hsl:[0,0,0],hsv:[0,0,0],hwb:[0,0,0],cmyk:[0,0,0,0],alpha:1},"string"==typeof e){var r=n.getRgba(e);if(r)this.setValues("rgb",r);else if(r=n.getHsla(e))this.setValues("hsl",r);else{if(!(r=n.getHwb(e)))throw new Error('Unable to parse color from string "'+e+'"');this.setValues("hwb",r)}}else if("object"==typeof e){var r=e;if(void 0!==r.r||void 0!==r.red)this.setValues("rgb",r);else if(void 0!==r.l||void 0!==r.lightness)this.setValues("hsl",r);else if(void 0!==r.v||void 0!==r.value)this.setValues("hsv",r);else if(void 0!==r.w||void 0!==r.whiteness)this.setValues("hwb",r);else{if(void 0===r.c&&void 0===r.cyan)throw new Error("Unable to parse color from object "+JSON.stringify(e));this.setValues("cmyk",r)}}};a.prototype={rgb:function(e){return this.setSpace("rgb",arguments)},hsl:function(e){return this.setSpace("hsl",arguments)},hsv:function(e){return this.setSpace("hsv",arguments)},hwb:function(e){return this.setSpace("hwb",arguments)},cmyk:function(e){return this.setSpace("cmyk",arguments)},rgbArray:function(){return this.values.rgb},hslArray:function(){return this.values.hsl},hsvArray:function(){return this.values.hsv},hwbArray:function(){return 1!==this.values.alpha?this.values.hwb.concat([this.values.alpha]):this.values.hwb},cmykArray:function(){return this.values.cmyk},rgbaArray:function(){var e=this.values.rgb;return e.concat([this.values.alpha])},hslaArray:function(){var e=this.values.hsl;return e.concat([this.values.alpha])},alpha:function(e){return void 0===e?this.values.alpha:(this.setValues("alpha",e),this)},red:function(e){return this.setChannel("rgb",0,e)},green:function(e){return this.setChannel("rgb",1,e)},blue:function(e){return this.setChannel("rgb",2,e)},hue:function(e){return this.setChannel("hsl",0,e)},saturation:function(e){return this.setChannel("hsl",1,e)},lightness:function(e){return this.setChannel("hsl",2,e)},saturationv:function(e){return this.setChannel("hsv",1,e)},whiteness:function(e){return this.setChannel("hwb",1,e)},blackness:function(e){return this.setChannel("hwb",2,e)},value:function(e){return this.setChannel("hsv",2,e)},cyan:function(e){return this.setChannel("cmyk",0,e)},magenta:function(e){return this.setChannel("cmyk",1,e)},yellow:function(e){return this.setChannel("cmyk",2,e)},black:function(e){return this.setChannel("cmyk",3,e)},hexString:function(){return n.hexString(this.values.rgb)},rgbString:function(){return n.rgbString(this.values.rgb,this.values.alpha)},rgbaString:function(){return n.rgbaString(this.values.rgb,this.values.alpha)},percentString:function(){return n.percentString(this.values.rgb,this.values.alpha)},hslString:function(){return n.hslString(this.values.hsl,this.values.alpha)},hslaString:function(){return n.hslaString(this.values.hsl,this.values.alpha)},hwbString:function(){return n.hwbString(this.values.hwb,this.values.alpha)},keyword:function(){return n.keyword(this.values.rgb,this.values.alpha)},rgbNumber:function(){return this.values.rgb[0]<<16|this.values.rgb[1]<<8|this.values.rgb[2]},luminosity:function(){for(var e=this.values.rgb,r=[],t=0;t<e.length;t++){var n=e[t]/255;r[t]=.03928>=n?n/12.92:Math.pow((n+.055)/1.055,2.4)}return.2126*r[0]+.7152*r[1]+.0722*r[2]},contrast:function(e){var r=this.luminosity(),t=e.luminosity();return r>t?(r+.05)/(t+.05):(t+.05)/(r+.05)},level:function(e){var r=this.contrast(e);return r>=7.1?"AAA":r>=4.5?"AA":""},dark:function(){var e=this.values.rgb,r=(299*e[0]+587*e[1]+114*e[2])/1e3;return 128>r},light:function(){return!this.dark()},negate:function(){for(var e=[],r=0;3>r;r++)e[r]=255-this.values.rgb[r];return this.setValues("rgb",e),this},lighten:function(e){return this.values.hsl[2]+=this.values.hsl[2]*e,this.setValues("hsl",this.values.hsl),this},darken:function(e){return this.values.hsl[2]-=this.values.hsl[2]*e,this.setValues("hsl",this.values.hsl),this},saturate:function(e){return this.values.hsl[1]+=this.values.hsl[1]*e,this.setValues("hsl",this.values.hsl),this},desaturate:function(e){return this.values.hsl[1]-=this.values.hsl[1]*e,this.setValues("hsl",this.values.hsl),this},whiten:function(e){return this.values.hwb[1]+=this.values.hwb[1]*e,this.setValues("hwb",this.values.hwb),this},blacken:function(e){return this.values.hwb[2]+=this.values.hwb[2]*e,this.setValues("hwb",this.values.hwb),this},greyscale:function(){var e=this.values.rgb,r=.3*e[0]+.59*e[1]+.11*e[2];return this.setValues("rgb",[r,r,r]),this},clearer:function(e){return this.setValues("alpha",this.values.alpha-this.values.alpha*e),this},opaquer:function(e){return this.setValues("alpha",this.values.alpha+this.values.alpha*e),this},rotate:function(e){var r=this.values.hsl[0];return r=(r+e)%360,r=0>r?360+r:r,this.values.hsl[0]=r,this.setValues("hsl",this.values.hsl),this},mix:function(e,r){r=1-(null==r?.5:r);for(var t=2*r-1,n=this.alpha()-e.alpha(),a=((t*n==-1?t:(t+n)/(1+t*n))+1)/2,s=1-a,i=this.rgbArray(),u=e.rgbArray(),l=0;l<i.length;l++)i[l]=i[l]*a+u[l]*s;this.setValues("rgb",i);var h=this.alpha()*r+e.alpha()*(1-r);return this.setValues("alpha",h),this},toJSON:function(){return this.rgb()},clone:function(){return new a(this.rgb())}},a.prototype.getValues=function(e){for(var r={},t=0;t<e.length;t++)r[e.charAt(t)]=this.values[e][t];return 1!=this.values.alpha&&(r.a=this.values.alpha),r},a.prototype.setValues=function(e,r){var n={rgb:["red","green","blue"],hsl:["hue","saturation","lightness"],hsv:["hue","saturation","value"],hwb:["hue","whiteness","blackness"],cmyk:["cyan","magenta","yellow","black"]},a={rgb:[255,255,255],hsl:[360,100,100],hsv:[360,100,100],hwb:[360,100,100],cmyk:[100,100,100,100]},s=1;if("alpha"==e)s=r;else if(r.length)this.values[e]=r.slice(0,e.length),s=r[e.length];else if(void 0!==r[e.charAt(0)]){for(var i=0;i<e.length;i++)this.values[e][i]=r[e.charAt(i)];s=r.a}else if(void 0!==r[n[e][0]]){for(var u=n[e],i=0;i<e.length;i++)this.values[e][i]=r[u[i]];s=r.alpha}if(this.values.alpha=Math.max(0,Math.min(1,void 0!==s?s:this.values.alpha)),"alpha"!=e){for(var i=0;i<e.length;i++){var l=Math.max(0,Math.min(a[e][i],this.values[e][i]));this.values[e][i]=Math.round(l)}for(var h in n){h!=e&&(this.values[h]=t[e][h](this.values[e]));for(var i=0;i<h.length;i++){var l=Math.max(0,Math.min(a[h][i],this.values[h][i]));this.values[h][i]=Math.round(l)}}return!0}},a.prototype.setSpace=function(e,r){var t=r[0];return void 0===t?this.getValues(e):("number"==typeof t&&(t=Array.prototype.slice.call(r)),this.setValues(e,t),this)},a.prototype.setChannel=function(e,r,t){return void 0===t?this.values[e][r]:(this.values[e][r]=t,this.setValues(e,this.values[e]),this)},window.Color=r.exports=a}()},{"color-convert":3,"color-string":4}],2:[function(e,t,n){function a(e){var r,t,n,a=e[0]/255,s=e[1]/255,i=e[2]/255,u=Math.min(a,s,i),l=Math.max(a,s,i),h=l-u;return l==u?r=0:a==l?r=(s-i)/h:s==l?r=2+(i-a)/h:i==l&&(r=4+(a-s)/h),r=Math.min(60*r,360),0>r&&(r+=360),n=(u+l)/2,t=l==u?0:.5>=n?h/(l+u):h/(2-l-u),[r,100*t,100*n]}function s(e){var r,t,n,a=e[0],s=e[1],i=e[2],u=Math.min(a,s,i),l=Math.max(a,s,i),h=l-u;return t=0==l?0:h/l*1e3/10,l==u?r=0:a==l?r=(s-i)/h:s==l?r=2+(i-a)/h:i==l&&(r=4+(a-s)/h),r=Math.min(60*r,360),0>r&&(r+=360),n=l/255*1e3/10,[r,t,n]}function i(e){var r=e[0],t=e[1],n=e[2],s=a(e)[0],i=1/255*Math.min(r,Math.min(t,n)),n=1-1/255*Math.max(r,Math.max(t,n));return[s,100*i,100*n]}function u(e){var r,t,n,a,s=e[0]/255,i=e[1]/255,u=e[2]/255;return a=Math.min(1-s,1-i,1-u),r=(1-s-a)/(1-a)||0,t=(1-i-a)/(1-a)||0,n=(1-u-a)/(1-a)||0,[100*r,100*t,100*n,100*a]}function l(e){return X[JSON.stringify(e)]}function h(e){var r=e[0]/255,t=e[1]/255,n=e[2]/255;r=r>.04045?Math.pow((r+.055)/1.055,2.4):r/12.92,t=t>.04045?Math.pow((t+.055)/1.055,2.4):t/12.92,n=n>.04045?Math.pow((n+.055)/1.055,2.4):n/12.92;var a=.4124*r+.3576*t+.1805*n,s=.2126*r+.7152*t+.0722*n,i=.0193*r+.1192*t+.9505*n;return[100*a,100*s,100*i]}function o(e){var r,t,n,a=h(e),s=a[0],i=a[1],u=a[2];return s/=95.047,i/=100,u/=108.883,s=s>.008856?Math.pow(s,1/3):7.787*s+16/116,i=i>.008856?Math.pow(i,1/3):7.787*i+16/116,u=u>.008856?Math.pow(u,1/3):7.787*u+16/116,r=116*i-16,t=500*(s-i),n=200*(i-u),[r,t,n]}function c(e){return J(o(e))}function v(e){var r,t,n,a,s,i=e[0]/360,u=e[1]/100,l=e[2]/100;if(0==u)return s=255*l,[s,s,s];t=.5>l?l*(1+u):l+u-l*u,r=2*l-t,a=[0,0,0];for(var h=0;3>h;h++)n=i+1/3*-(h-1),0>n&&n++,n>1&&n--,s=1>6*n?r+6*(t-r)*n:1>2*n?t:2>3*n?r+(t-r)*(2/3-n)*6:r,a[h]=255*s;return a}function f(e){var r,t,n=e[0],a=e[1]/100,s=e[2]/100;return s*=2,a*=1>=s?s:2-s,t=(s+a)/2,r=2*a/(s+a),[n,100*r,100*t]}function d(e){return i(v(e))}function p(e){return u(v(e))}function m(e){return l(v(e))}function y(e){var r=e[0]/60,t=e[1]/100,n=e[2]/100,a=Math.floor(r)%6,s=r-Math.floor(r),i=255*n*(1-t),u=255*n*(1-t*s),l=255*n*(1-t*(1-s)),n=255*n;switch(a){case 0:return[n,l,i];case 1:return[u,n,i];case 2:return[i,n,l];case 3:return[i,u,n];case 4:return[l,i,n];case 5:return[n,i,u]}}function w(e){var r,t,n=e[0],a=e[1]/100,s=e[2]/100;return t=(2-a)*s,r=a*s,r/=1>=t?t:2-t,r=r||0,t/=2,[n,100*r,100*t]}function k(e){return i(y(e))}function M(e){return u(y(e))}function S(e){return l(y(e))}function x(e){var t,n,a,s,i=e[0]/360,u=e[1]/100,l=e[2]/100,h=u+l;switch(h>1&&(u/=h,l/=h),t=Math.floor(6*i),n=1-l,a=6*i-t,0!=(1&t)&&(a=1-a),s=u+a*(n-u),t){default:case 6:case 0:r=n,g=s,b=u;break;case 1:r=s,g=n,b=u;break;case 2:r=u,g=n,b=s;break;case 3:r=u,g=s,b=n;break;case 4:r=s,g=u,b=n;break;case 5:r=n,g=u,b=s}return[255*r,255*g,255*b]}function V(e){return a(x(e))}function q(e){return s(x(e))}function A(e){return u(x(e))}function C(e){return l(x(e))}function F(e){var r,t,n,a=e[0]/100,s=e[1]/100,i=e[2]/100,u=e[3]/100;return r=1-Math.min(1,a*(1-u)+u),t=1-Math.min(1,s*(1-u)+u),n=1-Math.min(1,i*(1-u)+u),[255*r,255*t,255*n]}function N(e){return a(F(e))}function z(e){return s(F(e))}function I(e){return i(F(e))}function O(e){return l(F(e))}function E(e){var r,t,n,a=e[0]/100,s=e[1]/100,i=e[2]/100;return r=3.2406*a+-1.5372*s+i*-.4986,t=a*-.9689+1.8758*s+.0415*i,n=.0557*a+s*-.204+1.057*i,r=r>.0031308?1.055*Math.pow(r,1/2.4)-.055:r=12.92*r,t=t>.0031308?1.055*Math.pow(t,1/2.4)-.055:t=12.92*t,n=n>.0031308?1.055*Math.pow(n,1/2.4)-.055:n=12.92*n,r=Math.min(Math.max(0,r),1),t=Math.min(Math.max(0,t),1),n=Math.min(Math.max(0,n),1),[255*r,255*t,255*n]}function H(e){var r,t,n,a=e[0],s=e[1],i=e[2];return a/=95.047,s/=100,i/=108.883,a=a>.008856?Math.pow(a,1/3):7.787*a+16/116,s=s>.008856?Math.pow(s,1/3):7.787*s+16/116,i=i>.008856?Math.pow(i,1/3):7.787*i+16/116,r=116*s-16,t=500*(a-s),n=200*(s-i),[r,t,n]}function U(e){return J(H(e))}function j(e){var r,t,n,a,s=e[0],i=e[1],u=e[2];return 8>=s?(t=100*s/903.3,a=7.787*(t/100)+16/116):(t=100*Math.pow((s+16)/116,3),a=Math.pow(t/100,1/3)),r=.008856>=r/95.047?r=95.047*(i/500+a-16/116)/7.787:95.047*Math.pow(i/500+a,3),n=.008859>=n/108.883?n=108.883*(a-u/200-16/116)/7.787:108.883*Math.pow(a-u/200,3),[r,t,n]}function J(e){var r,t,n,a=e[0],s=e[1],i=e[2];return r=Math.atan2(i,s),t=360*r/2/Math.PI,0>t&&(t+=360),n=Math.sqrt(s*s+i*i),[a,n,t]}function R(e){return E(j(e))}function $(e){var r,t,n,a=e[0],s=e[1],i=e[2];return n=i/360*2*Math.PI,r=s*Math.cos(n),t=s*Math.sin(n),[a,r,t]}function D(e){return j($(e))}function P(e){return R($(e))}function _(e){return W[e]}function L(e){return a(_(e))}function T(e){return s(_(e))}function B(e){return i(_(e))}function G(e){return u(_(e))}function K(e){return o(_(e))}function Q(e){return h(_(e))}t.exports={rgb2hsl:a,rgb2hsv:s,rgb2hwb:i,rgb2cmyk:u,rgb2keyword:l,rgb2xyz:h,rgb2lab:o,rgb2lch:c,hsl2rgb:v,hsl2hsv:f,hsl2hwb:d,hsl2cmyk:p,hsl2keyword:m,hsv2rgb:y,hsv2hsl:w,hsv2hwb:k,hsv2cmyk:M,hsv2keyword:S,hwb2rgb:x,hwb2hsl:V,hwb2hsv:q,hwb2cmyk:A,hwb2keyword:C,cmyk2rgb:F,cmyk2hsl:N,cmyk2hsv:z,cmyk2hwb:I,cmyk2keyword:O,keyword2rgb:_,keyword2hsl:L,keyword2hsv:T,keyword2hwb:B,keyword2cmyk:G,keyword2lab:K,keyword2xyz:Q,xyz2rgb:E,xyz2lab:H,xyz2lch:U,lab2xyz:j,lab2rgb:R,lab2lch:J,lch2lab:$,lch2xyz:D,lch2rgb:P};var W={aliceblue:[240,248,255],antiquewhite:[250,235,215],aqua:[0,255,255],aquamarine:[127,255,212],azure:[240,255,255],beige:[245,245,220],bisque:[255,228,196],black:[0,0,0],blanchedalmond:[255,235,205],blue:[0,0,255],blueviolet:[138,43,226],brown:[165,42,42],burlywood:[222,184,135],cadetblue:[95,158,160],chartreuse:[127,255,0],chocolate:[210,105,30],coral:[255,127,80],cornflowerblue:[100,149,237],cornsilk:[255,248,220],crimson:[220,20,60],cyan:[0,255,255],darkblue:[0,0,139],darkcyan:[0,139,139],darkgoldenrod:[184,134,11],darkgray:[169,169,169],darkgreen:[0,100,0],darkgrey:[169,169,169],darkkhaki:[189,183,107],darkmagenta:[139,0,139],darkolivegreen:[85,107,47],darkorange:[255,140,0],darkorchid:[153,50,204],darkred:[139,0,0],darksalmon:[233,150,122],darkseagreen:[143,188,143],darkslateblue:[72,61,139],darkslategray:[47,79,79],darkslategrey:[47,79,79],darkturquoise:[0,206,209],darkviolet:[148,0,211],deeppink:[255,20,147],deepskyblue:[0,191,255],dimgray:[105,105,105],dimgrey:[105,105,105],dodgerblue:[30,144,255],firebrick:[178,34,34],floralwhite:[255,250,240],forestgreen:[34,139,34],fuchsia:[255,0,255],gainsboro:[220,220,220],ghostwhite:[248,248,255],gold:[255,215,0],goldenrod:[218,165,32],gray:[128,128,128],green:[0,128,0],greenyellow:[173,255,47],grey:[128,128,128],honeydew:[240,255,240],hotpink:[255,105,180],indianred:[205,92,92],indigo:[75,0,130],ivory:[255,255,240],khaki:[240,230,140],lavender:[230,230,250],lavenderblush:[255,240,245],lawngreen:[124,252,0],lemonchiffon:[255,250,205],lightblue:[173,216,230],lightcoral:[240,128,128],lightcyan:[224,255,255],lightgoldenrodyellow:[250,250,210],lightgray:[211,211,211],lightgreen:[144,238,144],lightgrey:[211,211,211],lightpink:[255,182,193],lightsalmon:[255,160,122],lightseagreen:[32,178,170],lightskyblue:[135,206,250],lightslategray:[119,136,153],lightslategrey:[119,136,153],lightsteelblue:[176,196,222],lightyellow:[255,255,224],lime:[0,255,0],limegreen:[50,205,50],linen:[250,240,230],magenta:[255,0,255],maroon:[128,0,0],mediumaquamarine:[102,205,170],mediumblue:[0,0,205],mediumorchid:[186,85,211],mediumpurple:[147,112,219],mediumseagreen:[60,179,113],mediumslateblue:[123,104,238],mediumspringgreen:[0,250,154],mediumturquoise:[72,209,204],mediumvioletred:[199,21,133],midnightblue:[25,25,112],mintcream:[245,255,250],mistyrose:[255,228,225],moccasin:[255,228,181],navajowhite:[255,222,173],navy:[0,0,128],oldlace:[253,245,230],olive:[128,128,0],olivedrab:[107,142,35],orange:[255,165,0],orangered:[255,69,0],orchid:[218,112,214],palegoldenrod:[238,232,170],palegreen:[152,251,152],paleturquoise:[175,238,238],palevioletred:[219,112,147],papayawhip:[255,239,213],peachpuff:[255,218,185],peru:[205,133,63],pink:[255,192,203],plum:[221,160,221],powderblue:[176,224,230],purple:[128,0,128],rebeccapurple:[102,51,153],red:[255,0,0],rosybrown:[188,143,143],royalblue:[65,105,225],saddlebrown:[139,69,19],salmon:[250,128,114],sandybrown:[244,164,96],seagreen:[46,139,87],seashell:[255,245,238],sienna:[160,82,45],silver:[192,192,192],skyblue:[135,206,235],slateblue:[106,90,205],slategray:[112,128,144],slategrey:[112,128,144],snow:[255,250,250],springgreen:[0,255,127],steelblue:[70,130,180],tan:[210,180,140],teal:[0,128,128],thistle:[216,191,216],tomato:[255,99,71],turquoise:[64,224,208],violet:[238,130,238],wheat:[245,222,179],white:[255,255,255],whitesmoke:[245,245,245],yellow:[255,255,0],yellowgreen:[154,205,50]},X={};for(var Y in W)X[JSON.stringify(W[Y])]=Y},{}],3:[function(e,r,t){var n=e("./conversions"),a=function(){return new h};for(var s in n){a[s+"Raw"]=function(e){return function(r){return"number"==typeof r&&(r=Array.prototype.slice.call(arguments)),n[e](r)}}(s);var i=/(\w+)2(\w+)/.exec(s),u=i[1],l=i[2];a[u]=a[u]||{},a[u][l]=a[s]=function(e){return function(r){"number"==typeof r&&(r=Array.prototype.slice.call(arguments));var t=n[e](r);if("string"==typeof t||void 0===t)return t;for(var a=0;a<t.length;a++)t[a]=Math.round(t[a]);return t}}(s)}var h=function(){this.convs={}};h.prototype.routeSpace=function(e,r){var t=r[0];return void 0===t?this.getValues(e):("number"==typeof t&&(t=Array.prototype.slice.call(r)),this.setValues(e,t))},h.prototype.setValues=function(e,r){return this.space=e,this.convs={},this.convs[e]=r,this},h.prototype.getValues=function(e){var r=this.convs[e];if(!r){var t=this.space,n=this.convs[t];r=a[t][e](n),this.convs[e]=r}return r},["rgb","hsl","hsv","cmyk","keyword"].forEach(function(e){h.prototype[e]=function(r){return this.routeSpace(e,arguments)}}),r.exports=a},{"./conversions":2}],4:[function(e,r,t){function n(e){if(e){var r=/^#([a-fA-F0-9]{3})$/,t=/^#([a-fA-F0-9]{6})$/,n=/^rgba?\(\s*([+-]?\d+)\s*,\s*([+-]?\d+)\s*,\s*([+-]?\d+)\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)$/,a=/^rgba?\(\s*([+-]?[\d\.]+)\%\s*,\s*([+-]?[\d\.]+)\%\s*,\s*([+-]?[\d\.]+)\%\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)$/,s=/(\D+)/,i=[0,0,0],u=1,l=e.match(r);if(l){l=l[1];for(var h=0;h<i.length;h++)i[h]=parseInt(l[h]+l[h],16)}else if(l=e.match(t)){l=l[1];for(var h=0;h<i.length;h++)i[h]=parseInt(l.slice(2*h,2*h+2),16)}else if(l=e.match(n)){for(var h=0;h<i.length;h++)i[h]=parseInt(l[h+1]);u=parseFloat(l[4])}else if(l=e.match(a)){for(var h=0;h<i.length;h++)i[h]=Math.round(2.55*parseFloat(l[h+1]));u=parseFloat(l[4])}else if(l=e.match(s)){if("transparent"==l[1])return[0,0,0,0];if(i=w[l[1]],!i)return}for(var h=0;h<i.length;h++)i[h]=m(i[h],0,255);return u=u||0==u?m(u,0,1):1,i[3]=u,i}}function a(e){if(e){var r=/^hsla?\(\s*([+-]?\d+)(?:deg)?\s*,\s*([+-]?[\d\.]+)%\s*,\s*([+-]?[\d\.]+)%\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)/,t=e.match(r);if(t){var n=parseFloat(t[4]),a=m(parseInt(t[1]),0,360),s=m(parseFloat(t[2]),0,100),i=m(parseFloat(t[3]),0,100),u=m(isNaN(n)?1:n,0,1);return[a,s,i,u]}}}function s(e){if(e){var r=/^hwb\(\s*([+-]?\d+)(?:deg)?\s*,\s*([+-]?[\d\.]+)%\s*,\s*([+-]?[\d\.]+)%\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)/,t=e.match(r);if(t){var n=parseFloat(t[4]),a=m(parseInt(t[1]),0,360),s=m(parseFloat(t[2]),0,100),i=m(parseFloat(t[3]),0,100),u=m(isNaN(n)?1:n,0,1);return[a,s,i,u]}}}function i(e){var r=n(e);return r&&r.slice(0,3)}function u(e){var r=a(e);return r&&r.slice(0,3)}function l(e){var r=n(e);return r?r[3]:(r=a(e))?r[3]:(r=s(e))?r[3]:void 0}function h(e){return"#"+y(e[0])+y(e[1])+y(e[2])}function o(e,r){return 1>r||e[3]&&e[3]<1?c(e,r):"rgb("+e[0]+", "+e[1]+", "+e[2]+")"}function c(e,r){return void 0===r&&(r=void 0!==e[3]?e[3]:1),"rgba("+e[0]+", "+e[1]+", "+e[2]+", "+r+")"}function g(e,r){if(1>r||e[3]&&e[3]<1)return v(e,r);var t=Math.round(e[0]/255*100),n=Math.round(e[1]/255*100),a=Math.round(e[2]/255*100);return"rgb("+t+"%, "+n+"%, "+a+"%)"}function v(e,r){var t=Math.round(e[0]/255*100),n=Math.round(e[1]/255*100),a=Math.round(e[2]/255*100);return"rgba("+t+"%, "+n+"%, "+a+"%, "+(r||e[3]||1)+")"}function f(e,r){return 1>r||e[3]&&e[3]<1?d(e,r):"hsl("+e[0]+", "+e[1]+"%, "+e[2]+"%)"}function d(e,r){return void 0===r&&(r=void 0!==e[3]?e[3]:1),"hsla("+e[0]+", "+e[1]+"%, "+e[2]+"%, "+r+")"}function b(e,r){return void 0===r&&(r=void 0!==e[3]?e[3]:1),"hwb("+e[0]+", "+e[1]+"%, "+e[2]+"%"+(void 0!==r&&1!==r?", "+r:"")+")"}function p(e){return k[e.slice(0,3)]}function m(e,r,t){return Math.min(Math.max(r,e),t)}function y(e){var r=e.toString(16).toUpperCase();return r.length<2?"0"+r:r}var w=e("color-name");r.exports={getRgba:n,getHsla:a,getRgb:i,getHsl:u,getHwb:s,getAlpha:l,hexString:h,rgbString:o,rgbaString:c,percentString:g,percentaString:v,hslString:f,hslaString:d,hwbString:b,keyword:p};var k={};for(var M in w)k[w[M]]=M},{"color-name":5}],5:[function(e,r,t){r.exports={aliceblue:[240,248,255],antiquewhite:[250,235,215],aqua:[0,255,255],aquamarine:[127,255,212],azure:[240,255,255],beige:[245,245,220],bisque:[255,228,196],black:[0,0,0],blanchedalmond:[255,235,205],blue:[0,0,255],blueviolet:[138,43,226],brown:[165,42,42],burlywood:[222,184,135],cadetblue:[95,158,160],chartreuse:[127,255,0],chocolate:[210,105,30],coral:[255,127,80],cornflowerblue:[100,149,237],cornsilk:[255,248,220],crimson:[220,20,60],cyan:[0,255,255],darkblue:[0,0,139],darkcyan:[0,139,139],darkgoldenrod:[184,134,11],darkgray:[169,169,169],darkgreen:[0,100,0],darkgrey:[169,169,169],darkkhaki:[189,183,107],darkmagenta:[139,0,139],darkolivegreen:[85,107,47],darkorange:[255,140,0],darkorchid:[153,50,204],darkred:[139,0,0],darksalmon:[233,150,122],darkseagreen:[143,188,143],darkslateblue:[72,61,139],darkslategray:[47,79,79],darkslategrey:[47,79,79],darkturquoise:[0,206,209],darkviolet:[148,0,211],deeppink:[255,20,147],deepskyblue:[0,191,255],dimgray:[105,105,105],dimgrey:[105,105,105],dodgerblue:[30,144,255],firebrick:[178,34,34],floralwhite:[255,250,240],forestgreen:[34,139,34],fuchsia:[255,0,255],gainsboro:[220,220,220],ghostwhite:[248,248,255],gold:[255,215,0],goldenrod:[218,165,32],gray:[128,128,128],green:[0,128,0],greenyellow:[173,255,47],grey:[128,128,128],honeydew:[240,255,240],hotpink:[255,105,180],indianred:[205,92,92],indigo:[75,0,130],ivory:[255,255,240],khaki:[240,230,140],lavender:[230,230,250],lavenderblush:[255,240,245],lawngreen:[124,252,0],lemonchiffon:[255,250,205],lightblue:[173,216,230],lightcoral:[240,128,128],lightcyan:[224,255,255],lightgoldenrodyellow:[250,250,210],lightgray:[211,211,211],lightgreen:[144,238,144],lightgrey:[211,211,211],lightpink:[255,182,193],lightsalmon:[255,160,122],lightseagreen:[32,178,170],lightskyblue:[135,206,250],lightslategray:[119,136,153],lightslategrey:[119,136,153],lightsteelblue:[176,196,222],lightyellow:[255,255,224],lime:[0,255,0],limegreen:[50,205,50],linen:[250,240,230],magenta:[255,0,255],maroon:[128,0,0],mediumaquamarine:[102,205,170],mediumblue:[0,0,205],mediumorchid:[186,85,211],mediumpurple:[147,112,219],mediumseagreen:[60,179,113],mediumslateblue:[123,104,238],mediumspringgreen:[0,250,154],mediumturquoise:[72,209,204],mediumvioletred:[199,21,133],midnightblue:[25,25,112],mintcream:[245,255,250],mistyrose:[255,228,225],moccasin:[255,228,181],navajowhite:[255,222,173],navy:[0,0,128],oldlace:[253,245,230],olive:[128,128,0],olivedrab:[107,142,35],orange:[255,165,0],orangered:[255,69,0],orchid:[218,112,214],palegoldenrod:[238,232,170],palegreen:[152,251,152],paleturquoise:[175,238,238],palevioletred:[219,112,147],papayawhip:[255,239,213],peachpuff:[255,218,185],peru:[205,133,63],pink:[255,192,203],plum:[221,160,221],powderblue:[176,224,230],purple:[128,0,128],rebeccapurple:[102,51,153],red:[255,0,0],rosybrown:[188,143,143],royalblue:[65,105,225],saddlebrown:[139,69,19],salmon:[250,128,114],sandybrown:[244,164,96],seagreen:[46,139,87],seashell:[255,245,238],sienna:[160,82,45],silver:[192,192,192],skyblue:[135,206,235],slateblue:[106,90,205],slategray:[112,128,144],slategrey:[112,128,144],snow:[255,250,250],springgreen:[0,255,127],steelblue:[70,130,180],tan:[210,180,140],teal:[0,128,128],thistle:[216,191,216],tomato:[255,99,71],turquoise:[64,224,208],violet:[238,130,238],wheat:[245,222,179],white:[255,255,255],whitesmoke:[245,245,245],yellow:[255,255,0],yellowgreen:[154,205,50]}},{}]},{},[1]);

@@ -1,59 +1,56 @@
 <!doctype html>
 <html>
-	<head>
-		<title>Bar Chart</title>
-		<script src="../Chart.js"></script>
-		<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-	</head>
-	<body>
-		<div style="width: 50%">
-			<canvas id="canvas" height="450" width="600"></canvas>
-		</div>
-		<button id="randomizeData">Randomize Data</button>
 
-	<script>
-	var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
-	var randomColorFactor = function(){ return Math.round(Math.random()*255)};
+<head>
+    <title>Bar Chart</title>
+    <script src="../Chart.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+</head>
 
-	var barChartData = {
-		labels : ["January","February","March","April","May","June","July"],
-		datasets : [
-			{
-				fillColor : "rgba(220,220,220,0.5)",
-				strokeColor : "rgba(220,220,220,0.8)",
-				highlightFill: "rgba(220,220,220,0.75)",
-				highlightStroke: "rgba(220,220,220,1)",
-				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
-			},
-			{
-				fillColor : "rgba(151,187,205,0.5)",
-				strokeColor : "rgba(151,187,205,0.8)",
-				highlightFill : "rgba(151,187,205,0.75)",
-				highlightStroke : "rgba(151,187,205,1)",
-				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
-			}
-		]
+<body>
+    <div style="width: 100%">
+        <canvas id="canvas" height="450" width="600"></canvas>
+    </div>
+    <button id="randomizeData">Randomize Data</button>
+    <script>
+    var randomScalingFactor = function() {
+        return Math.round(Math.random() * 100)
+    };
+    var randomColorFactor = function() {
+        return Math.round(Math.random() * 255)
+    };
 
-	}
-	window.onload = function(){
-		var ctx = document.getElementById("canvas").getContext("2d");
-		window.myBar = new Chart(ctx).Bar(barChartData, {
-			responsive : true
-		});
-	}
+    var barChartData = {
+        labels: ["January", "February", "March", "April", "May", "June", "July"],
+        datasets: [{
+            backgroundColor: "rgba(220,220,220,0.5)",
+            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+        }, {
+            backgroundColor: "rgba(151,187,205,0.5)",
+            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+        }]
 
-	$('#randomizeData').click(function(){
-    	barChartData.datasets[0].fillColor = 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
-    	barChartData.datasets[0].data = [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()];
+    }
+    window.onload = function() {
+        var ctx = document.getElementById("canvas").getContext("2d");
+        window.myBar = new Chart(ctx).Bar(barChartData, {
+            responsive: true,
+            hoverMode: 'bar'
+        });
+    }
 
-    	barChartData.datasets[1].fillColor = 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
-    	barChartData.datasets[1].data = [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()];
+    $('#randomizeData').click(function() {
+        barChartData.datasets[0].backgroundColor = 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
+        barChartData.datasets[0].data = [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()];
 
-    	window.myBar.update();
+        barChartData.datasets[1].backgroundColor = 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
+        barChartData.datasets[1].data = [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()];
 
-    	console.log(window.barChartData);
+        window.myBar.update();
+
+        console.log(window.barChartData);
     });
+    </script>
+</body>
 
-	</script>
-	</body>
 </html>
