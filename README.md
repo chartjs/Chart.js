@@ -1,7 +1,8 @@
 # Chart.js 
 
-[![Build Status](https://travis-ci.org/nnnick/Chart.js.svg?branch=master)](https://travis-ci.org/nnnick/Chart.js) [![Code Climate](https://codeclimate.com/github/nnnick/Chart.js/badges/gpa.svg)](https://codeclimate.com/github/nnnick/Chart.js)
+[![Build Status](https://travis-ci.org/nnnick/Chart.js.svg?branch=v2.0-dev)](https://travis-ci.org/nnnick/Chart.js) [![Code Climate](https://codeclimate.com/github/nnnick/Chart.js/badges/gpa.svg)](https://codeclimate.com/github/nnnick/Chart.js)
 
+# Version 2.0 is in early alpha. We are changing the internal data model to reduce copying, increase performance and expose a more flexible API.
 
 *Simple HTML5 Charts using the canvas element* [chartjs.org](http://www.chartjs.org)
 
