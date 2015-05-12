@@ -34,14 +34,14 @@
 		//Number - Spacing between data sets within X values
 		barDatasetSpacing : 1,
 
-		//String - Hover mode for events
-		hoverMode : 'bars', // 'bar', 'dataset'
+		//String / Boolean - Hover mode for events.
+		hoverMode : 'single', // 'label', 'dataset', 'false'
 
 		//Function - Custom hover handler
 		onHover : null,
 
 		//Function - Custom hover handler
-		hoverDuration : 400,
+		hoverAnimationDuration : 400,
 
 		//String - A legend template
 		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].backgroundColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
@@ -62,10 +62,10 @@
 
 			this.ScaleClass = Chart.Scale.extend({
 				offsetGridLines : true,
-				calculateBarX : function(datasetCount, datasetIndex, barIndex){
+				calculateBarX : function(datasetCount, datasetIndex, elementIndex){
 					//Reusable method for calculating the xPosition of a given bar based on datasetIndex & width of the bar
 					var xWidth = this.calculateBaseWidth(),
-						xAbsolute = this.calculateX(barIndex) - (xWidth/2),
+						xAbsolute = this.calculateX(elementIndex) - (xWidth/2),
 						barWidth = this.calculateBarWidth(datasetCount);
 
 					return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * options.barDatasetSpacing) + barWidth/2;
@@ -116,61 +116,87 @@
 		},
 		onHover: function(e){
 
-			var active;
+
+			// If exiting chart
 			if(e.type == 'mouseout'){
 				return false;
 			}
-			if(this.options.hoverMode == 'bar'){
-				active = this.getBarAtEvent(e);
-			}
-			else if(this.options.hoverMode == 'bars'){}
 
-
-			// Remove styling for last active
-			if(this.lastActive){
-				if(this.options.hoverMode == 'bar'){
-					this.lastActive.rectangle.backgroundColor = this.data.datasets[this.lastActive.datasetIndex].backgroundColor;
-					this.lastActive.rectangle.borderColor = this.data.datasets[this.lastActive.datasetIndex].borderColor;
-					this.lastActive.rectangle.borderWidth = 0;
+			var active = function(){
+				switch(this.options.hoverMode){
+					case 'single':
+						return this.getBarAtEvent(e);
+					case 'label':
+						return this.getBarsAtEvent(e);
+					case 'dataset':
+						return this.getDatasetAtEvent(e);
+					default:
+						return e;
 				}
-				else if(this.options.hoverMode == 'bars'){}
+			}.call(this);
+
+
+			// Remove styling for last active (even if it may still be active)
+			if(this.lastActive){
+				switch(this.options.hoverMode){
+					case 'single':
+						this.lastActive.element.backgroundColor = this.data.datasets[this.lastActive.datasetIndex].backgroundColor;
+						this.lastActive.element.borderColor = this.data.datasets[this.lastActive.datasetIndex].borderColor;
+						this.lastActive.element.borderWidth = 0;
+						break;
+					case 'label':
+						break;
+					case 'dataset':
+						break;
+					default:
+						// do nothing
+				}
 			}
 
-			// Custom Hover actions
+			// On Hover hook
 			if(this.options.onHover){
 				this.options.onHover.call(this, active);
 			}
-			else if(active){
-				// or default hover action
-				if(this.options.hoverMode == 'bar'){
-					active.rectangle.backgroundColor = this.data.datasets[active.datasetIndex].hoverBackgroundColor || Color(active.rectangle.backgroundColor).saturate(0.5).darken(0.25).rgbString();
-					active.rectangle.borderColor = this.data.datasets[active.datasetIndex].hoverBorderColor || Color(active.rectangle.borderColor).saturate(0.5).darken(0.25).rgbString();
+			
+			// Built in hover actions
+			if(active && this.options.hoverMode){
+				switch(this.options.hoverMode){
+					case 'single':
+						active.element.backgroundColor = this.data.datasets[active.datasetIndex].hoverBackgroundColor || helpers.color(active.element.backgroundColor).saturate(0.5).darken(0.25).rgbString();
+						active.element.borderColor = this.data.datasets[active.datasetIndex].hoverBorderColor || helpers.color(active.element.borderColor).saturate(0.5).darken(0.25).rgbString();
+						break;
+					case 'label':
+						break;
+					case 'dataset':
+						break;
+					default:
+						// do nothing
 				}
-				else if(this.options.hoverMode == 'bars'){}
-
 			}
 
+			// Only animate for major events
 			if(!this.animating){
 				// If entering
 				if(!this.lastActive && active){
-					this.render(false, this.options.hoverDuration);
+					this.render(false, this.options.hoverAnimationDuration);
 				}
 
-				// If different bar
-				if(this.lastActive && active && this.lastActive.rectangle !== active.rectangle){
-					this.render(false, this.options.hoverDuration);
+				// If different element
+				if(this.lastActive && active && this.lastActive.element !== active.element){
+					this.render(false, this.options.hoverAnimationDuration);
 				}
 
 				// if Leaving
 				if (this.lastActive && !active){
-					this.render(false, this.options.hoverDuration);
+					this.render(false, this.options.hoverAnimationDuration);
 				}
 			}
 
+			// Remember Last Active
 			this.lastActive = active;
 
 			if (this.options.showTooltips){
-				this.showTooltip(active);
+				this.showTooltip(active, this.options.hoverMode);
 			}
 		},
 		// Calculate the base point for the bar.
@@ -229,13 +255,13 @@
 			var barsArray = [],
 				eventPosition = helpers.getRelativePosition(e),
 				datasetIterator = function(dataset){
-					barsArray.push(dataset.metaData[barIndex]);
+					barsArray.push(dataset.metaData[elementIndex]);
 				},
-				barIndex;
+				elementIndex;
 
 			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; datasetIndex++) {
-				for (barIndex = 0; barIndex < this.data.datasets[datasetIndex].metaData.length; barIndex++) {
-					if (this.data.datasets[datasetIndex].metaData[barIndex].inRange(eventPosition.x,eventPosition.y)){
+				for (elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; elementIndex++) {
+					if (this.data.datasets[datasetIndex].metaData[elementIndex].inRange(eventPosition.x,eventPosition.y)){
 						helpers.each(this.data.datasets, datasetIterator);
 						return barsArray;
 					}
@@ -251,12 +277,12 @@
 			var eventPosition = helpers.getRelativePosition(e);
 			
 			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; ++datasetIndex) {
-				for (var barIndex = 0; barIndex < this.data.datasets[datasetIndex].metaData.length; ++barIndex) {
-					if (this.data.datasets[datasetIndex].metaData[barIndex].inRange(eventPosition.x, eventPosition.y)) {
+				for (var elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; ++elementIndex) {
+					if (this.data.datasets[datasetIndex].metaData[elementIndex].inRange(eventPosition.x, eventPosition.y)) {
 						bar = {
-							rectangle : this.data.datasets[datasetIndex].metaData[barIndex],
+							element : this.data.datasets[datasetIndex].metaData[elementIndex],
 							datasetIndex : datasetIndex,
-							barIndex : barIndex,
+							elementIndex : elementIndex,
 						};
 						return bar;
 					}

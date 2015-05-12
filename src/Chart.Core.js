@@ -883,8 +883,20 @@
 			ctx.lineTo(x, y + radius);
 			ctx.quadraticCurveTo(x, y, x + radius, y);
 			ctx.closePath();
+		},
+		color = helpers.color = function(color){
+			if(!window.Color){
+				console.log('Color.js not found!');
+				return color;
+			}
+			return window.Color(color);
+		},
+		isArray = helpers.isArray = function(obj){
+			if (!Array.isArray) {
+				return Object.prototype.toString.call(arg) === '[object Array]';
+			}
+			return Array.isArray(obj);
 		};
-
 
 	//Store a reference to each instance - allowing us to globally resize chart instances on window resize.
 	//Destroy method on the chart will remove the instance of the chart from this reference.
@@ -988,45 +1000,46 @@
 
 			delete Chart.instances[this.id];
 		},
-		showTooltip : function(ChartElements, forceRedraw){
-			// Only redraw the chart if we've actually changed what we're hovering on.
-			if (typeof this.activeElements === 'undefined') this.activeElements = [];
+		showTooltip : function(elements, hoverMode){
 
-			var isChanged = (function(Elements){
-				var changed = false;
-
-				if (Elements.length !== this.activeElements.length){
-					changed = true;
-					return changed;
+			// Hide if no elements
+			if(!elements){
+				if(this.options.customTooltips){
+					this.options.customTooltips(false);
 				}
-
-				each(Elements, function(element, index){
-					if (element !== this.activeElements[index]){
-						changed = true;
-					}
-				}, this);
-				return changed;
-			}).call(this, ChartElements);
-
-			if (!isChanged && !forceRedraw){
+				if(!this.animating){	
+					this.render(false, this.options.hoverAnimationDuration);
+				}
 				return;
 			}
-			else{
-				this.activeElements = ChartElements;
-			}
-			this.draw();
-			if(this.options.customTooltips){
-				this.options.customTooltips(false);
-			}
-			if (ChartElements.length > 0){
-				// If we have multiple datasets, show a MultiTooltip for all of the data points at that index
-				if (this.data.datasets && this.data.datasets.length > 1) {
+
+			switch(hoverMode){
+				case 'single':
+					var tooltipPosition = elements.element.tooltipPosition();
+					new Chart.Tooltip({
+						x: Math.round(tooltipPosition.x),
+						y: Math.round(tooltipPosition.y),
+						xPadding: this.options.tooltipXPadding,
+						yPadding: this.options.tooltipYPadding,
+						backgroundColor: this.options.tooltipBackgroundColor,
+						textColor: this.options.tooltipFontColor,
+						fontFamily: this.options.tooltipFontFamily,
+						fontStyle: this.options.tooltipFontStyle,
+						fontSize: this.options.tooltipFontSize,
+						caretHeight: this.options.tooltipCaretSize,
+						cornerRadius: this.options.tooltipCornerRadius,
+						text: template(this.options.tooltipTemplate, elements.element),
+						chart: this.chart,
+						custom: this.options.customTooltips
+					}).draw();
+					break;
+				case 'label':
 					var dataArray,
 						dataIndex;
 
 					for (var i = this.data.datasets.length - 1; i >= 0; i--) {
 						dataArray = this.data.datasets[i].metaData;
-						dataIndex = indexOf(dataArray, ChartElements[0]);
+						dataIndex = indexOf(dataArray, elements[0]);
 						if (dataIndex !== -1){
 							break;
 						}
@@ -1096,34 +1109,17 @@
 						labels: tooltipLabels,
 						legendColors: tooltipColors,
 						legendColorBackground : this.options.multiTooltipKeyBackground,
-						title: ChartElements[0].label,
+						title: elements[0].label,
 						chart: this.chart,
 						ctx: this.chart.ctx,
 						custom: this.options.customTooltips
 					}).draw();
-
-				} else {
-					each(ChartElements, function(Element) {
-						var tooltipPosition = Element.tooltipPosition();
-						new Chart.Tooltip({
-							x: Math.round(tooltipPosition.x),
-							y: Math.round(tooltipPosition.y),
-							xPadding: this.options.tooltipXPadding,
-							yPadding: this.options.tooltipYPadding,
-							backgroundColor: this.options.tooltipBackgroundColor,
-							textColor: this.options.tooltipFontColor,
-							fontFamily: this.options.tooltipFontFamily,
-							fontStyle: this.options.tooltipFontStyle,
-							fontSize: this.options.tooltipFontSize,
-							caretHeight: this.options.tooltipCaretSize,
-							cornerRadius: this.options.tooltipCornerRadius,
-							text: template(this.options.tooltipTemplate, Element),
-							chart: this.chart,
-							custom: this.options.customTooltips
-						}).draw();
-					}, this);
-				}
+					break;
+				case 'dataset':
+					break;
+				default:
 			}
+
 			return this;
 		},
 		toBase64Image : function(){
@@ -1206,7 +1202,7 @@
 					// Color transitions if possible
 					if(typeof value === 'string'){
 						try{	
-							var color = Color(this._start[key]).mix(Color(this[key]), ease);
+							var color = helpers.color(this._start[key]).mix(helpers.color(this[key]), ease);
 							this._vm[key] = color.rgbString();
 						} catch(err){
 							this._vm[key] = value;
@@ -1392,7 +1388,21 @@
 			{
 				return (chartX >= this.x - this.width / 2 && chartX <= this.x + this.width / 2) && (chartY >= this.base && chartY <= this.y);
 			}
-		}
+		},
+		tooltipPosition : function(){
+			if (this.y < this.base){
+				return {
+					x : this.x,
+					y : this.y
+				};
+			}
+			else{
+				return {
+					x : this.x,
+					y : this.base
+				};
+			}
+		},
 	});
 
 	Chart.Animation = Chart.Element.extend({
