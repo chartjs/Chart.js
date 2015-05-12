@@ -75,8 +75,6 @@
 				}
 			});
 
-			this.datasets = [];
-
 			//Set up tooltip events on the chart
 			if (this.options.showTooltips){
 				helpers.bindEvents(this, this.options.tooltipEvents, function(evt){
@@ -85,6 +83,7 @@
 					this.eachBars(function(bar){
 						bar.restore(['fillColor', 'strokeColor']);
 					});
+
 					helpers.each(activeBars, function(activeBar){
 						activeBar.fillColor = activeBar.highlightFill;
 						activeBar.strokeColor = activeBar.highlightStroke;
@@ -93,107 +92,83 @@
 				});
 			}
 
+
+			
 			//Declare the extension of the default point, to cater for the options passed in to the constructor
 			this.BarClass = Chart.Rectangle.extend({
-				strokeWidth : this.options.barStrokeWidth,
-				showStroke : this.options.barShowStroke,
-				ctx : this.chart.ctx
+				ctx : this.chart.ctx,
+				_vm: {}
 			});
 
-			//Iterate through each of the datasets, and build this into a property of the chart
-			helpers.each(data.datasets,function(dataset,datasetIndex){
-
-				var datasetObject = {
-					label : dataset.label || null,
-					fillColor : dataset.fillColor,
-					strokeColor : dataset.strokeColor,
-					bars : []
-				};
-
-				this.datasets.push(datasetObject);
-
-				helpers.each(dataset.data,function(dataPoint,index){
-					//Add a new point for each piece of data, passing any required data to draw.
-					datasetObject.bars.push(new this.BarClass({
-						value : dataPoint,
-						label : data.labels[index],
-						datasetLabel: dataset.label,
-						strokeColor : dataset.strokeColor,
-						fillColor : dataset.fillColor,
-						highlightFill : dataset.highlightFill || dataset.fillColor,
-						highlightStroke : dataset.highlightStroke || dataset.strokeColor
-					}));
-				},this);
-
-			},this);
-
+			// Build Scale
 			this.buildScale(data.labels);
 
-			this.BarClass.prototype.base = this.scale.endPoint;
+			//Create a new bar for each piece of data
+			helpers.each(this.data.datasets,function(dataset,datasetIndex){
+				dataset.metaData = [];
+				helpers.each(dataset.data,function(dataPoint,index){
+					dataset.metaData.push(new this.BarClass());
+				},this);
+			},this);
 
+			// Set defaults for bars
 			this.eachBars(function(bar, index, datasetIndex){
 				helpers.extend(bar, {
-					width : this.scale.calculateBarWidth(this.datasets.length),
-					x: this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
-					y: this.scale.endPoint
+					width : this.scale.calculateBarWidth(this.data.datasets.length),
+					x: this.scale.calculateBarX(this.data.datasets.length, datasetIndex, index),
+					y: this.scale.endPoint,
 				});
+				// Copy to view model
 				bar.save();
 			}, this);
 
-			this.render();
+			this.update();
 		},
 		update : function(){
-			//Iterate through each of the datasets, and build this into a property of the chart
-			helpers.each(this.data.datasets,function(dataset,datasetIndex){
-
-				helpers.extend(this.datasets[datasetIndex], {
-					label : dataset.label || null,
-					fillColor : dataset.fillColor,
-					strokeColor : dataset.strokeColor,
-				});
-
-				helpers.each(dataset.data,function(dataPoint,index){
-					helpers.extend(this.datasets[datasetIndex].bars[index], {
-						value : dataPoint,
-						label : this.data.labels[index],
-						datasetLabel: dataset.label,
-						strokeColor : dataset.strokeColor,
-						fillColor : dataset.fillColor,
-						highlightFill : dataset.highlightFill || dataset.fillColor,
-						highlightStroke : dataset.highlightStroke || dataset.strokeColor
-					});
-				},this);
-
-			},this);
 
 			this.scale.update();
-			// Reset any highlight colours before updating.
-			helpers.each(this.activeElements, function(activeElement){
-				activeElement.restore(['fillColor', 'strokeColor']);
-			});
 
-			this.eachBars(function(bar){
-				bar.save();
-			});
+			this.eachBars(function(bar, index, datasetIndex){
+				helpers.extend(bar, {
+					width : this.scale.calculateBarWidth(this.data.datasets.length),
+					x: this.scale.calculateBarX(this.data.datasets.length, datasetIndex, index),
+					y: this.scale.calculateY(this.data.datasets[datasetIndex].data[index]),
+					value : this.data.datasets[datasetIndex].data[index],
+					label : this.data.labels[index],
+					datasetLabel: this.data.datasets[datasetIndex].label,
+					strokeColor : this.data.datasets[datasetIndex].strokeColor,
+					fillColor : this.data.datasets[datasetIndex].fillColor,
+					highlightFill : this.data.datasets[datasetIndex].highlightFill || this.data.datasets[datasetIndex].fillColor,
+					highlightStroke : this.data.datasets[datasetIndex].highlightStroke || this.data.datasets[datasetIndex].strokeColor,
+					_start: undefined
+				});
+			}, this);
+
+
 			this.render();
 		},
 		eachBars : function(callback){
-			helpers.each(this.datasets,function(dataset, datasetIndex){
-				helpers.each(dataset.bars, callback, this, datasetIndex);
+			helpers.each(this.data.datasets,function(dataset, datasetIndex){
+				helpers.each(dataset.metaData, callback, this, datasetIndex);
+			},this);
+		},
+		eachValue : function(callback){
+			helpers.each(this.data.datasets,function(dataset, datasetIndex){
+				helpers.each(dataset.data, callback, this, datasetIndex);
 			},this);
 		},
 		getBarsAtEvent : function(e){
 			var barsArray = [],
 				eventPosition = helpers.getRelativePosition(e),
 				datasetIterator = function(dataset){
-					barsArray.push(dataset.bars[barIndex]);
+					barsArray.push(dataset.metaData[barIndex]);
 				},
 				barIndex;
 
-			for (var datasetIndex = 0; datasetIndex < this.datasets.length; datasetIndex++) {
-				for (barIndex = 0; barIndex < this.datasets[datasetIndex].bars.length; barIndex++) {
-					if (this.datasets[datasetIndex].bars[barIndex].inRange(eventPosition.x,eventPosition.y)){
-						helpers.each(this.datasets, datasetIterator);
+			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; datasetIndex++) {
+				for (barIndex = 0; barIndex < this.data.datasets[datasetIndex].metaData.length; barIndex++) {
+					if (this.data.datasets[datasetIndex].metaData[barIndex].inRange(eventPosition.x,eventPosition.y)){
+						helpers.each(this.data.datasets, datasetIterator);
 						return barsArray;
 					}
 				}
@@ -206,8 +181,8 @@
 
 			var dataTotal = function(){
 				var values = [];
-				self.eachBars(function(bar){
-					values.push(bar.value);
+				self.eachValue(function(value){
+					values.push(value);
 				});
 				return values;
 			};
@@ -263,16 +238,16 @@
 			//Map the values array for each of the datasets
 			helpers.each(valuesArray,function(value,datasetIndex){
 				//Add a new point for each piece of data, passing any required data to draw.
-				this.datasets[datasetIndex].bars.push(new this.BarClass({
+				this.data.datasets[datasetIndex].bars.push(new this.BarClass({
 					value : value,
 					label : label,
-					datasetLabel: this.datasets[datasetIndex].label,
-					x: this.scale.calculateBarX(this.datasets.length, datasetIndex, this.scale.valuesCount+1),
+					datasetLabel: this.data.datasets[datasetIndex].label,
+					x: this.scale.calculateBarX(this.data.datasets.length, datasetIndex, this.scale.valuesCount+1),
 					y: this.scale.endPoint,
-					width : this.scale.calculateBarWidth(this.datasets.length),
+					width : this.scale.calculateBarWidth(this.data.datasets.length),
 					base : this.scale.endPoint,
-					strokeColor : this.datasets[datasetIndex].strokeColor,
-					fillColor : this.datasets[datasetIndex].fillColor
+					strokeColor : this.data.datasets[datasetIndex].strokeColor,
+					fillColor : this.data.datasets[datasetIndex].fillColor
 				}));
 			},this);
 
@@ -283,7 +258,7 @@
 		removeData : function(){
 			this.scale.removeXLabel();
 			//Then re-render the chart.
-			helpers.each(this.datasets,function(dataset){
+			helpers.each(this.data.datasets,function(dataset){
 				dataset.bars.shift();
 			},this);
 			this.update();
@@ -300,28 +275,21 @@
 			this.scale.update(newScaleProps);
 		},
 		draw : function(ease){
+
 			var easingDecimal = ease || 1;
 			this.clear();
-
-			var ctx = this.chart.ctx;
 
 			this.scale.draw(easingDecimal);
 
 			//Draw all the bars for each dataset
-			helpers.each(this.datasets,function(dataset,datasetIndex){
-				helpers.each(dataset.bars,function(bar,index){
-					if (bar.hasValue()){
-						bar.base = this.scale.endPoint;
-						//Transition then draw
-						bar.transition({
-							x : this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
-							y : this.scale.calculateY(bar.value),
-							width : this.scale.calculateBarWidth(this.datasets.length)
-						}, easingDecimal).draw();
-					}
-				},this);
-
-			},this);
+			this.eachBars(function(bar, index, datasetIndex){
+				if (bar.hasValue()){
+					// Update the bar basepoint
+					bar.base = this.scale.endPoint;
+					//Transition 
+					bar.transition(['x','y','width'], easingDecimal).draw();
+				}
+			}, this);
 		}
 	});
 
