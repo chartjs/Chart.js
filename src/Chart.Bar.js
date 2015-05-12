@@ -87,7 +87,6 @@
 			//Declare the extension of the default point, to cater for the options passed in to the constructor
 			this.BarClass = Chart.Rectangle.extend({
 				ctx : this.chart.ctx,
-				_vm: {}
 			});
 
 			// Build Scale
@@ -112,6 +111,29 @@
 				bar.save();
 			}, this);
 
+			// Create tooltip instance exclusively for this chart with some defaults.
+			this.tooltip = new Chart.Tooltip({
+				_chart: this.chart,
+				_options: this.options,
+				opacity:0,
+				xPadding: this.options.tooltipXPadding,
+				yPadding: this.options.tooltipYPadding,
+				xOffset: this.options.tooltipXOffset,
+				backgroundColor: this.options.tooltipBackgroundColor,
+				textColor: this.options.tooltipFontColor,
+				_fontFamily: this.options.tooltipFontFamily,
+				_fontStyle: this.options.tooltipFontStyle,
+				fontSize: this.options.tooltipFontSize,
+				titleTextColor: this.options.tooltipTitleFontColor,
+				_titleFontFamily: this.options.tooltipTitleFontFamily,
+				_titleFontStyle: this.options.tooltipTitleFontStyle,
+				titleFontSize: this.options.tooltipTitleFontSize,
+				caretHeight: this.options.tooltipCaretSize,
+				cornerRadius: this.options.tooltipCornerRadius,
+				legendColorBackground : this.options.multiTooltipKeyBackground,
+			}, this);
+
+			// Update the chart with the latest data.
 			this.update();
 		},
 		onHover: function(e){
@@ -122,7 +144,7 @@
 				return false;
 			}
 
-			var active = function(){
+			this.active = function(){
 				switch(this.options.hoverMode){
 					case 'single':
 						return this.getBarAtEvent(e);
@@ -155,15 +177,15 @@
 
 			// On Hover hook
 			if(this.options.onHover){
-				this.options.onHover.call(this, active);
+				this.options.onHover.call(this, this.active);
 			}
 			
 			// Built in hover actions
-			if(active && this.options.hoverMode){
+			if(this.active && this.options.hoverMode){
 				switch(this.options.hoverMode){
 					case 'single':
-						active.element.backgroundColor = this.data.datasets[active.datasetIndex].hoverBackgroundColor || helpers.color(active.element.backgroundColor).saturate(0.5).darken(0.25).rgbString();
-						active.element.borderColor = this.data.datasets[active.datasetIndex].hoverBorderColor || helpers.color(active.element.borderColor).saturate(0.5).darken(0.25).rgbString();
+						this.active.element.backgroundColor = this.data.datasets[this.active.datasetIndex].hoverBackgroundColor || helpers.color(this.active.element.backgroundColor).saturate(0.5).darken(0.25).rgbString();
+						this.active.element.borderColor = this.data.datasets[this.active.datasetIndex].hoverBorderColor || helpers.color(this.active.element.borderColor).saturate(0.5).darken(0.25).rgbString();
 						break;
 					case 'label':
 						break;
@@ -174,30 +196,53 @@
 				}
 			}
 
+
+			// Built in Tooltips
+			if(this.options.showTooltips){
+
+				// The usual
+				this.tooltip.initialize();
+
+				// Active Details
+				if(this.active){
+					var tooltipPosition = this.active.element.tooltipPosition();
+					helpers.extend(this.tooltip, {
+						opacity: 1,
+						x: Math.round(tooltipPosition.x),
+						y: Math.round(tooltipPosition.y),
+						_active: this.active.element,
+					});
+					this.tooltip.updateContent();
+				}
+				else{
+					// Inactive Details
+					helpers.extend(this.tooltip, {
+						opacity: 0,
+						_active: false,
+					});
+				}
+			}
+
 			// Only animate for major events
 			if(!this.animating){
 				// If entering
-				if(!this.lastActive && active){
+				if(!this.lastActive && this.active){
 					this.render(false, this.options.hoverAnimationDuration);
 				}
 
 				// If different element
-				if(this.lastActive && active && this.lastActive.element !== active.element){
+				if(this.lastActive && this.active && this.lastActive.element !== this.active.element){
 					this.render(false, this.options.hoverAnimationDuration);
 				}
 
 				// if Leaving
-				if (this.lastActive && !active){
+				if (this.lastActive && !this.active){
 					this.render(false, this.options.hoverAnimationDuration);
 				}
 			}
 
 			// Remember Last Active
-			this.lastActive = active;
-
-			if (this.options.showTooltips){
-				this.showTooltip(active, this.options.hoverMode);
-			}
+			this.lastActive = this.active;
 		},
 		// Calculate the base point for the bar.
 		// If the scale has a 0 point, use that as the base
@@ -349,36 +394,8 @@
 
 			this.scale = new this.ScaleClass(scaleOptions);
 		},
-		addData : function(valuesArray,label){
-			//Map the values array for each of the datasets
-			helpers.each(valuesArray,function(value,datasetIndex){
-				//Add a new point for each piece of data, passing any required data to draw.
-				this.data.datasets[datasetIndex].bars.push(new this.BarClass({
-					value : value,
-					label : label,
-					datasetLabel: this.data.datasets[datasetIndex].label,
-					x: this.scale.calculateBarX(this.data.datasets.length, datasetIndex, this.scale.valuesCount+1),
-					y: this.calculateBarBase(),
-					width : this.scale.calculateBarWidth(this.data.datasets.length),
-					base : this.calculateBarBase(),
-					borderColor : this.data.datasets[datasetIndex].borderColor,
-					backgroundColor : this.data.datasets[datasetIndex].backgroundColor
-				}));
-			},this);
-
-			this.scale.addXLabel(label);
-			//Then re-render the chart.
-			this.update();
-		},
-		removeData : function(){
-			this.scale.removeXLabel();
-			//Then re-render the chart.
-			helpers.each(this.data.datasets,function(dataset){
-				dataset.bars.shift();
-			},this);
-			this.update();
-		},
-		reflow : function(){
+		// This should be incorportated into the init as something like a default value. "Reflow" seems like a weird word for a fredraw function
+		/*reflow : function(){
 			helpers.extend(this.BarClass.prototype,{
 				y: this.calculateBarBase(), // so that we animate from the baseline
 				base : this.calculateBarBase()
@@ -388,7 +405,7 @@
 				width : this.chart.width
 			});
 			this.scale.update(newScaleProps);
-		},
+		},*/
 		draw : function(ease){
 
 			var easingDecimal = ease || 1;
@@ -402,16 +419,12 @@
 					// Update the bar basepoint
 					bar.base = this.calculateBarBase();
 					//Transition 
-					bar.transition([
-						'x',
-						'y',
-						'width',
-						'backgroundColor',
-						'borderColor',
-					 	'borderWidth'
-					], easingDecimal).draw();
+					bar.transition(easingDecimal).draw();
 				}
 			}, this);
+
+			// Finally draw the tooltip
+			this.tooltip.transition(easingDecimal).draw();
 		}
 	});
 
