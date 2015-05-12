@@ -10,7 +10,7 @@
   },
   "dependences": {},
   "devDependencies": {
-    "color": "file:../../../../var/folders/rv/vd7mrb5j0hnbrr_2f3q2p6m00000gn/T/npm-53789-2bfe35a6/git-cache-40335d988a8e/54fd04acedef6ccdc54a9929be298945a8093496",
+    "color": "git://github.com/chartjs/color",
     "gulp": "3.5.x",
     "gulp-concat": "~2.1.x",
     "gulp-connect": "~2.0.5",
