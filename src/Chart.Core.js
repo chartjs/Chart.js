@@ -1305,7 +1305,7 @@
 			switch(this._options.hoverMode){
 				case 'single':
 					helpers.extend(this, {
-						text: template(this._tooltipTemplate, this._active)
+						text: template(this._options.tooltipTemplate, this._active)
 					});
 					return this;
 
