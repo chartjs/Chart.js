@@ -37,6 +37,12 @@
 		//Number - Spacing between data sets within X values
 		barDatasetSpacing : 1,
 
+		//String - Hover mode for events
+		hoverMode : 'bars', // 'bar', 'dataset'
+
+		//Function - Custom hover handler
+		onHover : null,
+
 		//String - A legend template
 		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
 
@@ -77,18 +83,27 @@
 
 			//Set up tooltip events on the chart
 			if (this.options.showTooltips){
-				helpers.bindEvents(this, this.options.tooltipEvents, function(evt){
-					var activeBars = (evt.type !== 'mouseout') ? this.getBarsAtEvent(evt) : [];
+				helpers.bindEvents(this, this.options.tooltipEvents, function(e){
+					var active;
+					if(e.type == 'mouseout'){
+						return false;
+					}
+					if(this.options.hoverMode == 'bar'){
+						active = this.getBarAtEvent(e);
+						// TODO: tooltips for single items
+					}
+					else if(this.options.hoverMode == 'bars'){
+						active = this.getBarsAtEvent(e);
+					}
+					else {
+						// TODO: active = this.getDatasetAtEvent(e); 
+					}
+					
+					if(this.options.onHover){
+						this.options.onHover.call(this, active);
+					}
 
-					this.eachBars(function(bar){
-						bar.restore(['fillColor', 'strokeColor']);
-					});
-
-					helpers.each(activeBars, function(activeBar){
-						activeBar.fillColor = activeBar.highlightFill;
-						activeBar.strokeColor = activeBar.highlightStroke;
-					});
-					this.showTooltip(activeBars);
+					this.showTooltip(active);
 				});
 			}
 
@@ -183,10 +198,10 @@
 			var eventPosition = helpers.getRelativePosition(e);
 			
 			for (var datasetIndex = 0; datasetIndex < this.datasets.length; ++datasetIndex) {
-				for (var barIndex = 0; barIndex < this.datasets[datasetIndex].bars.length; ++barIndex) {
-					if (this.datasets[datasetIndex].bars[barIndex].inRange(eventPosition.x, eventPosition.y)) {
+				for (var barIndex = 0; barIndex < this.datasets[datasetIndex].metaData.length; ++barIndex) {
+					if (this.datasets[datasetIndex].metaData[barIndex].inRange(eventPosition.x, eventPosition.y)) {
 						bar = {
-							rectangle : this.datasets[datasetIndex].bars[barIndex],
+							rectangle : this.datasets[datasetIndex].metaData[barIndex],
 							datasetIndex : datasetIndex,
 							barIndex : barIndex,
 						};
