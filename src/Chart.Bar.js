@@ -81,12 +81,8 @@
 				}
 			});
 
-			//Set up tooltip events on the chart
-			if (this.options.showTooltips){
-				helpers.bindEvents(this, this.options.tooltipEvents, this.onHover);
-			}
-
-
+			// Events
+			helpers.bindEvents(this, this.options.tooltipEvents, this.onHover);
 			
 			//Declare the extension of the default point, to cater for the options passed in to the constructor
 			this.BarClass = Chart.Rectangle.extend({
@@ -173,7 +169,9 @@
 
 			this.lastActive = active;
 
-			//this.showTooltip(active);
+			if (this.options.showTooltips){
+				this.showTooltip(active);
+			}
 		},
 		// Calculate the base point for the bar.
 		// If the scale has a 0 point, use that as the base
