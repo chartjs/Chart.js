@@ -169,7 +169,7 @@
 			tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",
 
 			// String - Template string for single tooltips
-			multiTooltipTemplate: "<%= value %>",
+			multiTooltipTemplate: "<%if (datasetLabel){%><%=datasetLabel%>: <%}%><%= value %>",
 
 			// String - Colour behind the legend colour block
 			multiTooltipKeyBackground: '#fff',
@@ -1065,6 +1065,7 @@
 			if(!this._start){
 				this._start = clone(this._vm);
 			}
+
 			each(this,function(value, key){
 
 				// Only non-vm properties
@@ -1300,7 +1301,33 @@
 	});
 	
 	Chart.Tooltip = Chart.Element.extend({
+		initialize : function(){
+			var options = this._options;
+			extend(this, {
+				opacity:0,
+				xPadding: options.tooltipXPadding,
+				yPadding: options.tooltipYPadding,
+				xOffset: options.tooltipXOffset,
+				backgroundColor: options.tooltipBackgroundColor,
+				textColor: options.tooltipFontColor,
+				_fontFamily: options.tooltipFontFamily,
+				_fontStyle: options.tooltipFontStyle,
+				fontSize: options.tooltipFontSize,
+				titleTextColor: options.tooltipTitleFontColor,
+				_titleFontFamily: options.tooltipTitleFontFamily,
+				_titleFontStyle: options.tooltipTitleFontStyle,
+				titleFontSize: options.tooltipTitleFontSize,
+				caretHeight: options.tooltipCaretSize,
+				cornerRadius: options.tooltipCornerRadius,
+				legendColorBackground : options.multiTooltipKeyBackground,
+				labels: [],
+				colors: [],
+			});
+		},
 		update: function(){
+
+			var ctx = this._chart.ctx;
+
 			switch(this._options.hoverMode){
 				case 'single':
 					helpers.extend(this, {
@@ -1311,14 +1338,17 @@
 						x: Math.round(tooltipPosition.x),
 						y: Math.round(tooltipPosition.y),
 					});
-					return this;
+					break;
+
 				case 'label':
+
+					// Tooltip Content
 
 					var dataArray,
 						dataIndex;
 
-					var tooltipLabels = [],
-						tooltipColors = [];
+					var labels = [],
+						colors = [];
 
 					for (var i = this._data.datasets.length - 1; i >= 0; i--) {
 						dataArray = this._data.datasets[i].metaData;
@@ -1350,8 +1380,8 @@
 							yPositions.push(element._vm.y);
 
 							//Include any colour information about the element
-							tooltipLabels.push(helpers.template(this._options.multiTooltipTemplate, element));
-							tooltipColors.push({
+							labels.push(helpers.template(this._options.multiTooltipTemplate, element));
+							colors.push({
 								fill: element._vm.backgroundColor,
 								stroke: element._vm.borderColor
 							});
@@ -1366,134 +1396,168 @@
 
 						return {
 							x: (xMin > this._chart.width/2) ? xMin : xMax,
-							y: (yMin + yMax)/2
+							y: (yMin + yMax)/2,
 						};
 					}).call(this, dataIndex);
 
+					// Apply for now
 					helpers.extend(this, {
 						x: medianPosition.x,
 						y: medianPosition.y,
+						labels: labels,
+						title: this._active[0].label,
+						legendColors: colors,
+						legendBackgroundColor : this._options.multiTooltipKeyBackground,
 					});
-					return this;
+
+
+					// Calculate Appearance Tweaks
+
+					this.height = (labels.length * this.fontSize) + ((labels.length-1) * (this.fontSize/2)) + (this.yPadding*2) + this.titleFontSize *1.5;
+
+					var titleWidth = ctx.measureText(this.title).width,
+						//Label has a legend square as well so account for this.
+						labelWidth = longestText(ctx,this.font,labels) + this.fontSize + 3,
+						longestTextWidth = max([labelWidth,titleWidth]);
+
+					this.width = longestTextWidth + (this.xPadding*2);
+
+
+					var halfHeight = this.height/2;
+
+					//Check to ensure the height will fit on the canvas
+					if (this.y - halfHeight < 0 ){
+						this.y = halfHeight;
+					} else if (this.y + halfHeight > this._chart.height){
+						this.y = this._chart.height - halfHeight;
+					}
+
+					//Decide whether to align left or right based on position on canvas
+					if (this.x > this._chart.width/2){
+						this.x -= this.xOffset + this.width;
+					} else {
+						this.x += this.xOffset;
+					}
+				break;
 			}
+
+			return this;
 		},
 		draw : function(){
-
 
 			var ctx = this._chart.ctx;
 			var vm = this._vm;
 
-			ctx.font = fontString(vm.fontSize,vm.fontStyle,vm.fontFamily);
+			switch(this._options.hoverMode){
+				case 'single':
 
-			vm.xAlign = "center";
-			vm.yAlign = "above";
+					ctx.font = fontString(vm.fontSize,vm.fontStyle,vm.fontFamily);
 
-			//Distance between the actual element.y position and the start of the tooltip caret
-			var caretPadding = vm.caretPadding = 2;
+					vm.xAlign = "center";
+					vm.yAlign = "above";
 
-			var tooltipWidth = ctx.measureText(vm.text).width + 2*vm.xPadding,
-				tooltipRectHeight = vm.fontSize + 2*vm.yPadding,
-				tooltipHeight = tooltipRectHeight + vm.caretHeight + caretPadding;
+					//Distance between the actual element.y position and the start of the tooltip caret
+					var caretPadding = vm.caretPadding = 2;
 
-			if (vm.x + tooltipWidth/2 >this._chart.width){
-				vm.xAlign = "left";
-			} else if (vm.x - tooltipWidth/2 < 0){
-				vm.xAlign = "right";
-			}
+					var tooltipWidth = ctx.measureText(vm.text).width + 2*vm.xPadding,
+						tooltipRectHeight = vm.fontSize + 2*vm.yPadding,
+						tooltipHeight = tooltipRectHeight + vm.caretHeight + caretPadding;
 
-			if (vm.y - tooltipHeight < 0){
-				vm.yAlign = "below";
-			}
+					if (vm.x + tooltipWidth/2 >this._chart.width){
+						vm.xAlign = "left";
+					} else if (vm.x - tooltipWidth/2 < 0){
+						vm.xAlign = "right";
+					}
 
-			var tooltipX = vm.x - tooltipWidth/2,
-				tooltipY = vm.y - tooltipHeight;
+					if (vm.y - tooltipHeight < 0){
+						vm.yAlign = "below";
+					}
 
-			ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
+					var tooltipX = vm.x - tooltipWidth/2,
+						tooltipY = vm.y - tooltipHeight;
 
-			// Custom Tooltips
-			if(this._custom){
-				this._custom(this._vm);
-			}
-			else{
-				switch(vm.yAlign){
-					case "above":
-						//Draw a caret above the x/y
-						ctx.beginPath();
-						ctx.moveTo(vm.x,vm.y - caretPadding);
-						ctx.lineTo(vm.x + vm.caretHeight, vm.y - (caretPadding + vm.caretHeight));
-						ctx.lineTo(vm.x - vm.caretHeight, vm.y - (caretPadding + vm.caretHeight));
-						ctx.closePath();
+					ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
+
+					// Custom Tooltips
+					if(this._custom){
+						this._custom(this._vm);
+					}
+					else{
+						switch(vm.yAlign){
+							case "above":
+								//Draw a caret above the x/y
+								ctx.beginPath();
+								ctx.moveTo(vm.x,vm.y - caretPadding);
+								ctx.lineTo(vm.x + vm.caretHeight, vm.y - (caretPadding + vm.caretHeight));
+								ctx.lineTo(vm.x - vm.caretHeight, vm.y - (caretPadding + vm.caretHeight));
+								ctx.closePath();
+								ctx.fill();
+								break;
+							case "below":
+								tooltipY = vm.y + caretPadding + vm.caretHeight;
+								//Draw a caret below the x/y
+								ctx.beginPath();
+								ctx.moveTo(vm.x, vm.y + caretPadding);
+								ctx.lineTo(vm.x + vm.caretHeight, vm.y + caretPadding + vm.caretHeight);
+								ctx.lineTo(vm.x - vm.caretHeight, vm.y + caretPadding + vm.caretHeight);
+								ctx.closePath();
+								ctx.fill();
+								break;
+						}
+
+						switch(vm.xAlign){
+							case "left":
+								tooltipX = vm.x - tooltipWidth + (vm.cornerRadius + vm.caretHeight);
+								break;
+							case "right":
+								tooltipX = vm.x - (vm.cornerRadius + vm.caretHeight);
+								break;
+						}
+
+						drawRoundedRectangle(ctx,tooltipX,tooltipY,tooltipWidth,tooltipRectHeight,vm.cornerRadius);
+
 						ctx.fill();
-						break;
-					case "below":
-						tooltipY = vm.y + caretPadding + vm.caretHeight;
-						//Draw a caret below the x/y
-						ctx.beginPath();
-						ctx.moveTo(vm.x, vm.y + caretPadding);
-						ctx.lineTo(vm.x + vm.caretHeight, vm.y + caretPadding + vm.caretHeight);
-						ctx.lineTo(vm.x - vm.caretHeight, vm.y + caretPadding + vm.caretHeight);
-						ctx.closePath();
-						ctx.fill();
-						break;
-				}
 
-				switch(vm.xAlign){
-					case "left":
-						tooltipX = vm.x - tooltipWidth + (vm.cornerRadius + vm.caretHeight);
-						break;
-					case "right":
-						tooltipX = vm.x - (vm.cornerRadius + vm.caretHeight);
-						break;
-				}
+						ctx.fillStyle = helpers.color(vm.textColor).alpha(vm.opacity).rgbString();
+						ctx.textAlign = "center";
+						ctx.textBaseline = "middle";
+						ctx.fillText(vm.text, tooltipX + tooltipWidth/2, tooltipY + tooltipRectHeight/2);
 
-				drawRoundedRectangle(ctx,tooltipX,tooltipY,tooltipWidth,tooltipRectHeight,vm.cornerRadius);
+					}
+					break;	
+				case 'label':
 
-				ctx.fill();
+					drawRoundedRectangle(ctx,vm.x,vm.y - vm.height/2,vm.width,vm.height,vm.cornerRadius);
+					ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
+					ctx.fill();
+					ctx.closePath();
 
-				ctx.fillStyle = helpers.color(vm.textColor).alpha(vm.opacity).rgbString();
-				ctx.textAlign = "center";
-				ctx.textBaseline = "middle";
-				ctx.fillText(vm.text, tooltipX + tooltipWidth/2, tooltipY + tooltipRectHeight/2);
+					ctx.textAlign = "left";
+					ctx.textBaseline = "middle";
+					ctx.fillStyle = helpers.color(vm.titleTextColor).alpha(vm.opacity).rgbString();
+					ctx.font = vm.titleFont;
 
+					ctx.fillText(vm.title,vm.x + vm.xPadding, this.getLineHeight(0));
+
+					ctx.font = vm.font;
+					helpers.each(vm.labels,function(label,index){
+						ctx.fillStyle = helpers.color(vm.textColor).alpha(vm.opacity).rgbString();
+						ctx.fillText(label,vm.x + vm.xPadding + vm.fontSize + 3, this.getLineHeight(index + 1));
+
+						//A bit gnarly, but clearing this rectangle breaks when using explorercanvas (clears whole canvas)
+						//ctx.clearRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.fontSize/2, vm.fontSize, vm.fontSize);
+						//Instead we'll make a white filled block to put the legendColour palette over.
+
+						ctx.fillStyle = helpers.color(vm.legendBackgroundColor).alpha(vm.opacity).rgbString();
+						ctx.fillRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.fontSize/2, vm.fontSize, vm.fontSize);
+
+						ctx.fillStyle = helpers.color(vm.legendColors[index].fill).alpha(vm.opacity).rgbString();
+						ctx.fillRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.fontSize/2, vm.fontSize, vm.fontSize);
+
+
+					},this);
+				break;
 			}
-		}
-	});
-
-	Chart.MultiTooltip = Chart.Element.extend({
-		initialize : function(){
-			this.font = fontString(this.fontSize,this.fontStyle,this.fontFamily);
-
-			this.titleFont = fontString(this.titleFontSize,this.titleFontStyle,this.titleFontFamily);
-
-			this.height = (this.labels.length * this.fontSize) + ((this.labels.length-1) * (this.fontSize/2)) + (this.yPadding*2) + this.titleFontSize *1.5;
-
-			this.ctx.font = this.titleFont;
-
-			var titleWidth = this.ctx.measureText(this.title).width,
-				//Label has a legend square as well so account for this.
-				labelWidth = longestText(this.ctx,this.font,this.labels) + this.fontSize + 3,
-				longestTextWidth = max([labelWidth,titleWidth]);
-
-			this.width = longestTextWidth + (this.xPadding*2);
-
-
-			var halfHeight = this.height/2;
-
-			//Check to ensure the height will fit on the canvas
-			if (this.y - halfHeight < 0 ){
-				this.y = halfHeight;
-			} else if (this.y + halfHeight > this.chart.height){
-				this.y = this.chart.height - halfHeight;
-			}
-
-			//Decide whether to align left or right based on position on canvas
-			if (this.x > this.chart.width/2){
-				this.x -= this.xOffset + this.width;
-			} else {
-				this.x += this.xOffset;
-			}
-
-
 		},
 		getLineHeight : function(index){
 			var baseLineHeight = this.y - (this.height/2) + this.yPadding,
@@ -1507,44 +1571,6 @@
 			}
 
 		},
-		draw : function(){
-			// Custom Tooltips
-			if(this.custom){
-				this.custom(this);
-			}
-			else{
-				drawRoundedRectangle(this.ctx,this.x,this.y - this.height/2,this.width,this.height,this.cornerRadius);
-				var ctx = this.ctx;
-				ctx.fillStyle = this.backgroundColor;
-				ctx.fill();
-				ctx.closePath();
-
-				ctx.textAlign = "left";
-				ctx.textBaseline = "middle";
-				ctx.fillStyle = this.titleTextColor;
-				ctx.font = this.titleFont;
-
-				ctx.fillText(this.title,this.x + this.xPadding, this.getLineHeight(0));
-
-				ctx.font = this.font;
-				helpers.each(this.labels,function(label,index){
-					ctx.fillStyle = this.textColor;
-					ctx.fillText(label,this.x + this.xPadding + this.fontSize + 3, this.getLineHeight(index + 1));
-
-					//A bit gnarly, but clearing this rectangle breaks when using explorercanvas (clears whole canvas)
-					//ctx.clearRect(this.x + this.xPadding, this.getLineHeight(index + 1) - this.fontSize/2, this.fontSize, this.fontSize);
-					//Instead we'll make a white filled block to put the legendColour palette over.
-
-					ctx.fillStyle = this.legendColorBackground;
-					ctx.fillRect(this.x + this.xPadding, this.getLineHeight(index + 1) - this.fontSize/2, this.fontSize, this.fontSize);
-
-					ctx.fillStyle = this.legendColors[index].fill;
-					ctx.fillRect(this.x + this.xPadding, this.getLineHeight(index + 1) - this.fontSize/2, this.fontSize, this.fontSize);
-
-
-				},this);
-			}
-		}
 	});
 
 	Chart.Scale = Chart.Element.extend({

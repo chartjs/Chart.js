@@ -118,22 +118,6 @@
 				_chart: this.chart,
 				_data: this.data,
 				_options: this.options,
-				opacity:0,
-				xPadding: this.options.tooltipXPadding,
-				yPadding: this.options.tooltipYPadding,
-				xOffset: this.options.tooltipXOffset,
-				backgroundColor: this.options.tooltipBackgroundColor,
-				textColor: this.options.tooltipFontColor,
-				_fontFamily: this.options.tooltipFontFamily,
-				_fontStyle: this.options.tooltipFontStyle,
-				fontSize: this.options.tooltipFontSize,
-				titleTextColor: this.options.tooltipTitleFontColor,
-				_titleFontFamily: this.options.tooltipTitleFontFamily,
-				_titleFontStyle: this.options.tooltipTitleFontStyle,
-				titleFontSize: this.options.tooltipTitleFontSize,
-				caretHeight: this.options.tooltipCaretSize,
-				cornerRadius: this.options.tooltipCornerRadius,
-				legendColorBackground : this.options.multiTooltipKeyBackground,
 			}, this);
 
 			// Update the chart with the latest data.
