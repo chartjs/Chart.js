@@ -101,11 +101,11 @@
 			},this);
 
 			// Set defaults for bars
-			this.eachBars(function(bar, index, datasetIndex){
+			this.eachElement(function(bar, index, datasetIndex){
 				helpers.extend(bar, {
 					width : this.scale.calculateBarWidth(this.data.datasets.length),
 					x: this.scale.calculateBarX(this.data.datasets.length, datasetIndex, index),
-					y: this.calculateBarBase(),
+					y: this.calculateBaseY(),
 					_datasetIndex: datasetIndex,
 					_index: index,
 				});
@@ -128,7 +128,7 @@
 
 			// If exiting chart
 			if(e.type == 'mouseout'){
-				return false;
+				return this;
 			}
 
 			this.lastActive = this.lastActive || [];
@@ -137,9 +137,9 @@
 			this.active = function(){
 				switch(this.options.hoverMode){
 					case 'single':
-						return this.getBarAtEvent(e);
+						return this.getElementAtEvent(e);
 					case 'label':
-						return this.getBarsAtEvent(e);
+						return this.getElementsAtEvent(e);
 					case 'dataset':
 						return this.getDatasetAtEvent(e);
 					default:
@@ -153,7 +153,7 @@
 			}
 
 			// Remove styling for last active (even if it may still be active)
-			if(this.lastActive){
+			if(this.lastActive.length){
 				switch(this.options.hoverMode){
 					case 'single':
 						this.lastActive[0].backgroundColor = this.data.datasets[this.lastActive[0]._datasetIndex].backgroundColor;
@@ -170,11 +170,11 @@
 					case 'dataset':
 						break;
 					default:
-						// do nothing
+						// Don't change anything
 				}
 			}
 			
-			// Built in hover actions
+			// Built in hover styling
 			if(this.active.length && this.options.hoverMode){
 				switch(this.options.hoverMode){
 					case 'single':
@@ -190,7 +190,7 @@
 					case 'dataset':
 						break;
 					default:
-						// do nothing
+						// Don't change anything
 				}
 			}
 
@@ -219,16 +219,8 @@
 			}
 
 
+			// Hover animations
 			if(!this.animating){
-
-				// If entering
-				if(!this.lastActive.length && this.active.length){
-					console.log('entering');
-					this.tooltip.pivot();
-					this.stop();
-					this.render(false, this.options.hoverAnimationDuration);
-				}
-
 				var changed;
 				
 				helpers.each(this.active, function(element, index){
@@ -237,33 +229,22 @@
 					}
 				}, this);
 
-				// If different element
-				if(this.lastActive.length && this.active.length && changed){
-					console.log('changing');
-					this.tooltip.pivot();
-					this.stop();
-					this.render(false, this.options.hoverAnimationDuration);
-				}
+				// If entering, leaving, or changing elements, animate the change via pivot
+				if ((!this.lastActive.length && this.active.length) ||
+					(this.lastActive.length && !this.active.length)||
+					(this.lastActive.length && this.active.length && changed)){
 
-				// if Leaving
-				if (this.lastActive.length && !this.active.length){
-					console.log('leaving');
 					this.tooltip.pivot();
-					this.stop();
-					this.render(false, this.options.hoverAnimationDuration);
+					this.render(this.options.hoverAnimationDuration);
 				}
-
 			}	
 
 			// Remember Last Active
-			
 			this.lastActive = this.active;
+			return this;
 		},
 		// Calculate the base point for the bar.
-		// If the scale has a 0 point, use that as the base
-		// If the scale min and max are both positive, use the bottom as a base
-		// If the scale min and max are both negative, use the top as a base
-		calculateBarBase: function() {
+		calculateBaseY: function() {
 			var base = this.scale.endPoint;
 			
 			if (this.scale.beginAtZero || ((this.scale.min <= 0 && this.scale.max >= 0) || (this.scale.min >= 0 && this.scale.max <= 0)))
@@ -283,7 +264,7 @@
 
 			this.scale.update();
 
-			this.eachBars(function(bar, index, datasetIndex){
+			this.eachElement(function(bar, index, datasetIndex){
 				helpers.extend(bar, {
 					width : this.scale.calculateBarWidth(this.data.datasets.length),
 					x: this.scale.calculateBarX(this.data.datasets.length, datasetIndex, index),
@@ -301,51 +282,6 @@
 			}, this);
 
 			this.render();
-		},
-		eachBars : function(callback){
-			helpers.each(this.data.datasets,function(dataset, datasetIndex){
-				helpers.each(dataset.metaData, callback, this, datasetIndex);
-			},this);
-		},
-		eachValue : function(callback){
-			helpers.each(this.data.datasets,function(dataset, datasetIndex){
-				helpers.each(dataset.data, callback, this, datasetIndex);
-			},this);
-		},
-		getBarsAtEvent : function(e){
-			var barsArray = [],
-				eventPosition = helpers.getRelativePosition(e),
-				datasetIterator = function(dataset){
-					barsArray.push(dataset.metaData[elementIndex]);
-				},
-				elementIndex;
-
-			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; datasetIndex++) {
-				for (elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; elementIndex++) {
-					if (this.data.datasets[datasetIndex].metaData[elementIndex].inRange(eventPosition.x,eventPosition.y)){
-						helpers.each(this.data.datasets, datasetIterator);
-					}
-				}
-			}
-
-			return barsArray.length ? barsArray : [];
-		},
-		// Get the single bar that was clicked on
-		// @return : An object containing the dataset index and bar index of the matching bar. Also contains the rectangle that was drawn
-		getBarAtEvent : function(e) {
-			var bar = [];
-			var eventPosition = helpers.getRelativePosition(e);
-			
-			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; ++datasetIndex) {
-				for (var elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; ++elementIndex) {
-					if (this.data.datasets[datasetIndex].metaData[elementIndex].inRange(eventPosition.x, eventPosition.y)) {
-						bar.push(this.data.datasets[datasetIndex].metaData[elementIndex]);
-						return bar;
-					}
-				}
-			}
-			
-			return [];
 		},
 		buildScale : function(labels){
 			var self = this;
@@ -406,17 +342,16 @@
 			this.scale = new this.ScaleClass(scaleOptions);
 		},
 		// This should be incorportated into the init as something like a default value. "Reflow" seems like a weird word for a fredraw function
-		/*reflow : function(){
-			helpers.extend(this.BarClass.prototype,{
-				y: this.calculateBarBase(), // so that we animate from the baseline
-				base : this.calculateBarBase()
+		redraw : function(){
+			var base = this.calculateBaseY();
+			this.eachElement(function(element, index, datasetIndex){
+				helpers.extend(element,{
+					y: base,
+					base : base
+				});
 			});
-			var newScaleProps = helpers.extend({
-				height : this.chart.height,
-				width : this.chart.width
-			});
-			this.scale.update(newScaleProps);
-		},*/
+			render();
+		},
 		draw : function(ease){
 
 			var easingDecimal = ease || 1;
@@ -425,10 +360,10 @@
 			this.scale.draw(easingDecimal);
 
 			//Draw all the bars for each dataset
-			this.eachBars(function(bar, index, datasetIndex){
+			this.eachElement(function(bar, index, datasetIndex){
 				if (bar.hasValue()){
 					// Update the bar basepoint
-					bar.base = this.calculateBarBase();
+					bar.base = this.calculateBaseY();
 					//Transition 
 					bar.transition(easingDecimal).draw();
 				}

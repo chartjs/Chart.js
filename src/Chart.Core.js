@@ -945,15 +945,12 @@
 			}
 			return this;
 		},
-		reflow : noop,
-		render : function(reflow, customDuration){
-			if (reflow){
-				this.reflow();
-			}
+		redraw : noop,
+		render : function(duration){
 			
-			if (this.options.animation && !reflow){
+			if (this.options.animation){
 				var animation = new Chart.Animation();
-				animation.numSteps = (customDuration || this.options.animationDuration) / 16.66; //60 fps
+				animation.numSteps = (duration || this.options.animationDuration) / 16.66; //60 fps
 				animation.easing = this.options.animationEasing;
 				
 				// render function
@@ -969,13 +966,58 @@
 				animation.onAnimationProgress = this.options.onAnimationProgress;
 				animation.onAnimationComplete = this.options.onAnimationComplete;
 				
-				Chart.animationService.addAnimation(this, animation, customDuration);
+				Chart.animationService.addAnimation(this, animation, duration);
 			}
 			else{
 				this.draw();
 				this.options.onAnimationComplete.call(this);
 			}
 			return this;
+		},
+		eachElement : function(callback){
+			helpers.each(this.data.datasets,function(dataset, datasetIndex){
+				helpers.each(dataset.metaData, callback, this, datasetIndex);
+			},this);
+		},
+		eachValue : function(callback){
+			helpers.each(this.data.datasets,function(dataset, datasetIndex){
+				helpers.each(dataset.data, callback, this, datasetIndex);
+			},this);
+		},
+		getElementsAtEvent : function(e){
+			var elementsArray = [],
+				eventPosition = helpers.getRelativePosition(e),
+				datasetIterator = function(dataset){
+					elementsArray.push(dataset.metaData[elementIndex]);
+				},
+				elementIndex;
+
+			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; datasetIndex++) {
+				for (elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; elementIndex++) {
+					if (this.data.datasets[datasetIndex].metaData[elementIndex].inRange(eventPosition.x,eventPosition.y)){
+						helpers.each(this.data.datasets, datasetIterator);
+					}
+				}
+			}
+
+			return elementsArray.length ? elementsArray : [];
+		},
+		// Get the single element that was clicked on
+		// @return : An object containing the dataset index and element index of the matching element. Also contains the rectangle that was drawn
+		getElementAtEvent : function(e) {
+			var element = [];
+			var eventPosition = helpers.getRelativePosition(e);
+			
+			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; ++datasetIndex) {
+				for (var elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; ++elementIndex) {
+					if (this.data.datasets[datasetIndex].metaData[elementIndex].inRange(eventPosition.x, eventPosition.y)) {
+						element.push(this.data.datasets[datasetIndex].metaData[elementIndex]);
+						return element;
+					}
+				}
+			}
+			
+			return [];
 		},
 		generateLegend : function(){
 			return template(this.options.legendTemplate,this);
@@ -1337,10 +1379,10 @@
 			switch(this._options.hoverMode){
 				case 'single':
 					helpers.extend(this, {
-						text: template(this._options.tooltipTemplate, this._active),
+						text: template(this._options.tooltipTemplate, this._active[0]),
 					});
 					var tooltipPosition = this._active[0].tooltipPosition();
-					helpers.extend(this.tooltip, {
+					helpers.extend(this, {
 						x: Math.round(tooltipPosition.x),
 						y: Math.round(tooltipPosition.y),
 					});
@@ -2116,9 +2158,9 @@
 		frameDuration: 17,
 		animations: [],
 		dropFrames: 0,
-		addAnimation: function(chartInstance, animationObject, customDuration) {
+		addAnimation: function(chartInstance, animationObject, duration) {
 
-			if(!customDuration){
+			if(!duration){
 				chartInstance.animating = true;
 			}
 
