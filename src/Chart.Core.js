@@ -114,6 +114,15 @@
 			// Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
 			maintainAspectRatio: true,
 
+			//String / Boolean - Hover mode for events.
+			hoverMode : 'single', // 'label', 'dataset', 'false'
+
+			//Function - Custom hover handler
+			onHover : null,
+
+			//Function - Custom hover handler
+			hoverAnimationDuration : 400,
+
 			// Boolean - Determines whether to draw tooltips on the canvas or not - attaches events to touchmove & mousemove
 			showTooltips: true,
 
@@ -178,7 +187,10 @@
 			onAnimationProgress: function(){},
 
 			// Function - Will fire on animation completion.
-			onAnimationComplete: function(){}
+			onAnimationComplete: function(){},
+
+			// Color String - Used for undefined Colros
+			colorFallback: 'rgba(0,0,0,0.1)',
 
 		}
 	};
@@ -384,11 +396,11 @@
 				fa=t*d01/(d01+d12),// scaling factor for triangle Ta
 				fb=t*d12/(d01+d12);
 			return {
-				inner : {
+				next : {
 					x : MiddlePoint.x-fa*(AfterPoint.x-FirstPoint.x),
 					y : MiddlePoint.y-fa*(AfterPoint.y-FirstPoint.y)
 				},
-				outer : {
+				previous : {
 					x: MiddlePoint.x+fb*(AfterPoint.x-FirstPoint.x),
 					y : MiddlePoint.y+fb*(AfterPoint.y-FirstPoint.y)
 				}
@@ -976,13 +988,16 @@
 		},
 		eachElement : function(callback){
 			helpers.each(this.data.datasets,function(dataset, datasetIndex){
-				helpers.each(dataset.metaData, callback, this, datasetIndex);
+				helpers.each(dataset.metaData, callback, this, dataset.metaData, datasetIndex);
 			},this);
 		},
 		eachValue : function(callback){
 			helpers.each(this.data.datasets,function(dataset, datasetIndex){
 				helpers.each(dataset.data, callback, this, datasetIndex);
 			},this);
+		},
+		eachDataset : function(callback){
+			helpers.each(this.data.datasets, callback, this);
 		},
 		getElementsAtEvent : function(e){
 			var elementsArray = [],
@@ -1112,29 +1127,30 @@
 		},
 		transition : function(ease){
 			if(!this._start){
+				if(!this._vm){
+					this.save();
+				}
 				this._start = clone(this._vm);
 			}
 
 			each(this,function(value, key){
 
-				// Only non-vm properties
 				if(key[0] === '_' || !this.hasOwnProperty(key)){
-					return;
+				// Only non-underscored properties
 				}
 
 				// Init if doesn't exist
-				if(!this._vm[key]){
+				else if(!this._vm[key]){
 					this._vm[key] = value || null;
-					return;
 				}
 
 				// No unnecessary computations
-				if(this[key] === this._vm[key]){
-					return;
+				else if(this[key] === this._vm[key]){
+					// It's the same! Woohoo!
 				}
 				
 				// Color transitions if possible
-				if(typeof value === 'string'){
+				else if(typeof value === 'string'){
 					try{	
 						var color = helpers.color(this._start[key]).mix(helpers.color(this[key]), ease);
 						this._vm[key] = color.rgbString();
@@ -1144,14 +1160,16 @@
 				}
 				// Number transitions
 				else if(typeof value === 'number'){	
+
 					this._vm[key] = ((this[key] - this._start[key]) * ease) + this._start[key];
 				}
-				// Non-transitionals or strings
 				else{
+					// Everything else
 					this._vm[key] = value;
 				}
 				
 			},this);
+
 			if(ease === 1){
 				delete this._start;
 			}
@@ -1172,54 +1190,90 @@
 
 
 	Chart.Point = Chart.Element.extend({
-		display: true,
 		inRange: function(chartX,chartY){
-			var hitDetectionRange = this.hitDetectionRadius + this.radius;
-			return ((Math.pow(chartX-this.x, 2)+Math.pow(chartY-this.y, 2)) < Math.pow(hitDetectionRange,2));
+			var vm = this._vm;
+			var hoverRange = vm.hoverRadius + vm.radius;
+			return ((Math.pow(chartX - vm.x, 2)+Math.pow(chartY - vm.y, 2)) < Math.pow(hoverRange,2));
+		},
+		tooltipPosition : function(){
+			var vm = this._vm;
+			return {
+				x : vm.x,
+				y : vm.y
+			};
 		},
 		draw : function(){
-			if (this.display){
-				var ctx = this.ctx;
+
+			var vm = this._vm;
+			var ctx = this._chart.ctx;
+
+			if (vm.radius > 0 || vm.borderWidth > 0){
+				
 				ctx.beginPath();
 
-				ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
+				ctx.arc(vm.x, vm.y, vm.radius, 0, Math.PI*2);
 				ctx.closePath();
 
-				ctx.strokeStyle = this.borderColor;
-				ctx.lineWidth = this.borderWidth;
+				ctx.strokeStyle = vm.borderColor || Chart.defaults.global.colorFallback;
+				ctx.lineWidth = vm.borderWidth || Chart.defaults.global.colorFallback;
 
-				ctx.fillStyle = this.backgroundColor;
+				ctx.fillStyle = vm.backgroundColor || Chart.defaults.global.colorFallback;
 
 				ctx.fill();
 				ctx.stroke();
 			}
-
-
-			//Quick debug for bezier curve splining
-			//Highlights control points and the line between them.
-			//Handy for dev - stripped in the min version.
-
-			// ctx.save();
-			// ctx.fillStyle = "black";
-			// ctx.strokeStyle = "black"
-			// ctx.beginPath();
-			// ctx.arc(this.controlPoints.inner.x,this.controlPoints.inner.y, 2, 0, Math.PI*2);
-			// ctx.fill();
-
-			// ctx.beginPath();
-			// ctx.arc(this.controlPoints.outer.x,this.controlPoints.outer.y, 2, 0, Math.PI*2);
-			// ctx.fill();
-
-			// ctx.moveTo(this.controlPoints.inner.x,this.controlPoints.inner.y);
-			// ctx.lineTo(this.x, this.y);
-			// ctx.lineTo(this.controlPoints.outer.x,this.controlPoints.outer.y);
-			// ctx.stroke();
-
-			// ctx.restore();
-
-
-
 		}
+	});
+
+
+	Chart.Line = Chart.Element.extend({
+		draw : function(){
+
+			var vm = this._vm;
+			var ctx = this._chart.ctx;
+
+			//Draw the line between all the points
+			ctx.lineWidth = vm.borderWidth || Chart.defaults.global.colorFallback;
+			ctx.strokeStyle = vm.borderColor || Chart.defaults.global.colorFallback;
+			ctx.beginPath();
+
+			helpers.each(vm._points, function(point, index){
+				if (index === 0){
+					ctx.moveTo(point._vm.x, point._vm.y);
+				}
+				else{
+					if(vm._tension > 0 || 1){
+						var previous = this.previousPoint(point, vm._points, index);
+
+						ctx.bezierCurveTo(
+							previous._vm.controlPointNextX,
+							previous._vm.controlPointNextY,
+							point._vm.controlPointPreviousX,
+							point._vm.controlPointPreviousY,
+							point._vm.x,
+							point._vm.y
+						);
+					}
+					else{
+						ctx.lineTo(point._vm.x,point._vm.y);
+					}
+				}
+			}, this);
+
+			ctx.stroke();
+
+			if (vm._points.length > 0){
+				//Round off the line by going to the base of the chart, back to the start, then fill.
+				ctx.lineTo(vm._points[vm._points.length - 1].x, vm.scaleBottom);
+				ctx.lineTo(vm._points[0].x, vm.scaleBottom);
+				ctx.fillStyle = vm.backgroundColor || Chart.defaults.global.colorFallback;
+				ctx.closePath();
+				ctx.fill();
+			}
+		},
+		previousPoint: function(point, collection, index){
+			return helpers.findPreviousWhere(collection, function(){return true;}, index) || point;
+		},
 	});
 
 	Chart.Arc = Chart.Element.extend({

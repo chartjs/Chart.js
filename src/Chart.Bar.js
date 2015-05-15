@@ -34,15 +34,6 @@
 		//Number - Spacing between data sets within X values
 		barDatasetSpacing : 1,
 
-		//String / Boolean - Hover mode for events.
-		hoverMode : 'single', // 'label', 'dataset', 'false'
-
-		//Function - Custom hover handler
-		onHover : null,
-
-		//Function - Custom hover handler
-		hoverAnimationDuration : 400,
-
 		//String - A legend template
 		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].backgroundColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
 
@@ -57,9 +48,9 @@
 			// Save data as a source for updating of values & methods
 			this.data = data;
 
-			//Expose options as a scope variable here so we can access it in the ScaleClass
 			var options = this.options;
 
+			// Custom Scale Methods and Options
 			this.ScaleClass = Chart.Scale.extend({
 				offsetGridLines : true,
 				calculateBarX : function(datasetCount, datasetIndex, elementIndex){
@@ -90,7 +81,7 @@
 			});
 
 			// Build Scale
-			this.buildScale(data.labels);
+			this.buildScale(this.data.labels);
 
 			//Create a new bar for each piece of data
 			helpers.each(this.data.datasets,function(dataset,datasetIndex){
@@ -158,13 +149,11 @@
 					case 'single':
 						this.lastActive[0].backgroundColor = this.data.datasets[this.lastActive[0]._datasetIndex].backgroundColor;
 						this.lastActive[0].borderColor = this.data.datasets[this.lastActive[0]._datasetIndex].borderColor;
-						this.lastActive[0].borderWidth = 0;
 						break;
 					case 'label':
 						for (var i = 0; i < this.lastActive.length; i++) {
 							this.lastActive[i].backgroundColor = this.data.datasets[this.lastActive[i]._datasetIndex].backgroundColor;
 							this.lastActive[i].borderColor = this.data.datasets[this.lastActive[i]._datasetIndex].borderColor;
-							this.lastActive[i].borderWidth = 0;
 						}
 						break;
 					case 'dataset':
@@ -235,6 +224,7 @@
 					(this.lastActive.length && this.active.length && changed)){
 
 					this.tooltip.pivot();
+					this.stop();
 					this.render(this.options.hoverAnimationDuration);
 				}
 			}	
@@ -277,7 +267,6 @@
 					backgroundColor : this.data.datasets[datasetIndex].backgroundColor,
 					_datasetIndex: datasetIndex,
 					_index: index,
-					_start: undefined
 				});
 			}, this);
 
@@ -350,7 +339,7 @@
 					base : base
 				});
 			});
-			render();
+			this.render();
 		},
 		draw : function(ease){
 
