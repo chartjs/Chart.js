@@ -269,6 +269,7 @@
 					_datasetIndex: datasetIndex,
 					_index: index,
 				});
+				bar.pivot();
 			}, this);
 
 			this.render();
