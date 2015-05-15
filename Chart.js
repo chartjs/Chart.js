@@ -169,7 +169,7 @@
 			tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",
 
 			// String - Template string for single tooltips
-			multiTooltipTemplate: "<%= value %>",
+			multiTooltipTemplate: "<%if (datasetLabel){%><%=datasetLabel%>: <%}%><%= value %>",
 
 			// String - Colour behind the legend colour block
 			multiTooltipKeyBackground: '#fff',
@@ -883,8 +883,20 @@
 			ctx.lineTo(x, y + radius);
 			ctx.quadraticCurveTo(x, y, x + radius, y);
 			ctx.closePath();
+		},
+		color = helpers.color = function(color){
+			if(!window.Color){
+				console.log('Color.js not found!');
+				return color;
+			}
+			return window.Color(color);
+		},
+		isArray = helpers.isArray = function(obj){
+			if (!Array.isArray) {
+				return Object.prototype.toString.call(arg) === '[object Array]';
+			}
+			return Array.isArray(obj);
 		};
-
 
 	//Store a reference to each instance - allowing us to globally resize chart instances on window resize.
 	//Destroy method on the chart will remove the instance of the chart from this reference.
@@ -957,7 +969,7 @@
 				animation.onAnimationProgress = this.options.onAnimationProgress;
 				animation.onAnimationComplete = this.options.onAnimationComplete;
 				
-				Chart.animationService.addAnimation(this, animation);
+				Chart.animationService.addAnimation(this, animation, customDuration);
 			}
 			else{
 				this.draw();
@@ -987,144 +999,6 @@
 			}
 
 			delete Chart.instances[this.id];
-		},
-		showTooltip : function(ChartElements, forceRedraw){
-			// Only redraw the chart if we've actually changed what we're hovering on.
-			if (typeof this.activeElements === 'undefined') this.activeElements = [];
-
-			var isChanged = (function(Elements){
-				var changed = false;
-
-				if (Elements.length !== this.activeElements.length){
-					changed = true;
-					return changed;
-				}
-
-				each(Elements, function(element, index){
-					if (element !== this.activeElements[index]){
-						changed = true;
-					}
-				}, this);
-				return changed;
-			}).call(this, ChartElements);
-
-			if (!isChanged && !forceRedraw){
-				return;
-			}
-			else{
-				this.activeElements = ChartElements;
-			}
-			this.draw();
-			if(this.options.customTooltips){
-				this.options.customTooltips(false);
-			}
-			if (ChartElements.length > 0){
-				// If we have multiple datasets, show a MultiTooltip for all of the data points at that index
-				if (this.data.datasets && this.data.datasets.length > 1) {
-					var dataArray,
-						dataIndex;
-
-					for (var i = this.data.datasets.length - 1; i >= 0; i--) {
-						dataArray = this.data.datasets[i].metaData;
-						dataIndex = indexOf(dataArray, ChartElements[0]);
-						if (dataIndex !== -1){
-							break;
-						}
-					}
-					var tooltipLabels = [],
-						tooltipColors = [],
-						medianPosition = (function(index) {
-
-							// Get all the points at that particular index
-							var Elements = [],
-								dataCollection,
-								xPositions = [],
-								yPositions = [],
-								xMax,
-								yMax,
-								xMin,
-								yMin;
-							helpers.each(this.data.datasets, function(dataset){
-								dataCollection = dataset.metaData;
-								if (dataCollection[dataIndex] && dataCollection[dataIndex].hasValue()){
-									Elements.push(dataCollection[dataIndex]);
-								}
-							});
-
-							helpers.each(Elements, function(element) {
-								xPositions.push(element.x);
-								yPositions.push(element.y);
-
-
-								//Include any colour information about the element
-								tooltipLabels.push(helpers.template(this.options.multiTooltipTemplate, element));
-								tooltipColors.push({
-									fill: element._vm.backgroundColor || element.backgroundColor,
-									stroke: element._vm.borderColor || element.borderColor
-								});
-
-							}, this);
-
-							yMin = min(yPositions);
-							yMax = max(yPositions);
-
-							xMin = min(xPositions);
-							xMax = max(xPositions);
-
-							return {
-								x: (xMin > this.chart.width/2) ? xMin : xMax,
-								y: (yMin + yMax)/2
-							};
-						}).call(this, dataIndex);
-
-					new Chart.MultiTooltip({
-						x: medianPosition.x,
-						y: medianPosition.y,
-						xPadding: this.options.tooltipXPadding,
-						yPadding: this.options.tooltipYPadding,
-						xOffset: this.options.tooltipXOffset,
-						backgroundColor: this.options.tooltipBackgroundColor,
-						textColor: this.options.tooltipFontColor,
-						fontFamily: this.options.tooltipFontFamily,
-						fontStyle: this.options.tooltipFontStyle,
-						fontSize: this.options.tooltipFontSize,
-						titleTextColor: this.options.tooltipTitleFontColor,
-						titleFontFamily: this.options.tooltipTitleFontFamily,
-						titleFontStyle: this.options.tooltipTitleFontStyle,
-						titleFontSize: this.options.tooltipTitleFontSize,
-						cornerRadius: this.options.tooltipCornerRadius,
-						labels: tooltipLabels,
-						legendColors: tooltipColors,
-						legendColorBackground : this.options.multiTooltipKeyBackground,
-						title: ChartElements[0].label,
-						chart: this.chart,
-						ctx: this.chart.ctx,
-						custom: this.options.customTooltips
-					}).draw();
-
-				} else {
-					each(ChartElements, function(Element) {
-						var tooltipPosition = Element.tooltipPosition();
-						new Chart.Tooltip({
-							x: Math.round(tooltipPosition.x),
-							y: Math.round(tooltipPosition.y),
-							xPadding: this.options.tooltipXPadding,
-							yPadding: this.options.tooltipYPadding,
-							backgroundColor: this.options.tooltipBackgroundColor,
-							textColor: this.options.tooltipFontColor,
-							fontFamily: this.options.tooltipFontFamily,
-							fontStyle: this.options.tooltipFontStyle,
-							fontSize: this.options.tooltipFontSize,
-							caretHeight: this.options.tooltipCaretSize,
-							cornerRadius: this.options.tooltipCornerRadius,
-							text: template(this.options.tooltipTemplate, Element),
-							chart: this.chart,
-							custom: this.options.customTooltips
-						}).draw();
-					}, this);
-				}
-			}
-			return this;
 		},
 		toBase64Image : function(){
 			return this.chart.canvas.toDataURL.apply(this.chart.canvas, arguments);
@@ -1173,6 +1047,9 @@
 	};
 
 	Chart.Element = function(configuration){
+		extend(this,{
+			_vm: {},
+		});
 		extend(this,configuration);
 		this.initialize.apply(this,arguments);
 	};
@@ -1184,14 +1061,22 @@
 			delete this._vm._start;
 			return this;
 		},
-		transition : function(props, ease){
+		pivot: function(){
+			if(this._start){
+				this._start = clone(this);
+				helpers.extend(this._start, this._vm);
+			}
+			return this;
+		},
+		transition : function(ease){
 			if(!this._start){
 				this._start = clone(this._vm);
 			}
+
 			each(this,function(value, key){
 
 				// Only non-vm properties
-				if(key === '_vm' || !this.hasOwnProperty(key)){
+				if(key[0] === '_' || !this.hasOwnProperty(key)){
 					return;
 				}
 
@@ -1201,25 +1086,28 @@
 					return;
 				}
 
-				// If transition property, do transition with ease (no pun intended)
-				if(props.indexOf(key) > -1){
-					// Color transitions if possible
-					if(typeof value === 'string'){
-						try{	
-							var color = Color(this._start[key]).mix(Color(this[key]), ease);
-							this._vm[key] = color.rgbString();
-						} catch(err){
-							this._vm[key] = value;
-						}
-						return;
-					}
-					// Everything else, presumably numbers
-					this._vm[key] = ((this[key] - this._start[key]) * ease) + this._start[key];
+				// No unnecessary computations
+				if(this[key] === this._vm[key]){
 					return;
 				}
-
-				// Non-transitionals
-				this._vm[key] = value;
+				
+				// Color transitions if possible
+				if(typeof value === 'string'){
+					try{	
+						var color = helpers.color(this._start[key]).mix(helpers.color(this[key]), ease);
+						this._vm[key] = color.rgbString();
+					} catch(err){
+						this._vm[key] = value;
+					}
+				}
+				// Number transitions
+				else if(typeof value === 'number'){	
+					this._vm[key] = ((this[key] - this._start[key]) * ease) + this._start[key];
+				}
+				// Non-transitionals or strings
+				else{
+					this._vm[key] = value;
+				}
 				
 			},this);
 			if(ease === 1){
@@ -1385,8 +1273,27 @@
 		},
 		inRange : function(chartX,chartY){
 			var vm = this._vm;
-			return (chartX >= vm.x - vm.width/2 && chartX <= vm.x + vm.width/2) && (chartY >= vm.y && chartY <= vm.base);
-		}
+			if (vm.y < vm.base){
+				return (chartX >= vm.x - vm.width/2 && chartX <= vm.x + vm.width/2) && (chartY >= vm.y && chartY <= vm.base);
+			} else{
+				return (chartX >= vm.x - vm.width / 2 && chartX <= vm.x + vm.width / 2) && (chartY >= vm.base && chartY <= vm.y);
+			}
+		},
+		tooltipPosition : function(){
+			var vm = this._vm;
+			if (vm.y < vm.base){
+				return {
+					x : vm.x,
+					y : vm.y
+				};
+			}
+			else{
+				return {
+					x : vm.x,
+					y : vm.base
+				};
+			}
+		},
 	});
 
 	Chart.Animation = Chart.Element.extend({
@@ -1400,174 +1307,275 @@
 	});
 	
 	Chart.Tooltip = Chart.Element.extend({
+		initialize : function(){
+			var options = this._options;
+			extend(this, {
+				opacity:0,
+				xPadding: options.tooltipXPadding,
+				yPadding: options.tooltipYPadding,
+				xOffset: options.tooltipXOffset,
+				backgroundColor: options.tooltipBackgroundColor,
+				textColor: options.tooltipFontColor,
+				_fontFamily: options.tooltipFontFamily,
+				_fontStyle: options.tooltipFontStyle,
+				fontSize: options.tooltipFontSize,
+				titleTextColor: options.tooltipTitleFontColor,
+				_titleFontFamily: options.tooltipTitleFontFamily,
+				_titleFontStyle: options.tooltipTitleFontStyle,
+				titleFontSize: options.tooltipTitleFontSize,
+				caretHeight: options.tooltipCaretSize,
+				cornerRadius: options.tooltipCornerRadius,
+				legendColorBackground : options.multiTooltipKeyBackground,
+				labels: [],
+				colors: [],
+			});
+		},
+		update: function(){
+
+			var ctx = this._chart.ctx;
+
+			switch(this._options.hoverMode){
+				case 'single':
+					helpers.extend(this, {
+						text: template(this._options.tooltipTemplate, this._active),
+					});
+					var tooltipPosition = this._active[0].tooltipPosition();
+					helpers.extend(this.tooltip, {
+						x: Math.round(tooltipPosition.x),
+						y: Math.round(tooltipPosition.y),
+					});
+					break;
+
+				case 'label':
+
+					// Tooltip Content
+
+					var dataArray,
+						dataIndex;
+
+					var labels = [],
+						colors = [];
+
+					for (var i = this._data.datasets.length - 1; i >= 0; i--) {
+						dataArray = this._data.datasets[i].metaData;
+						dataIndex = indexOf(dataArray, this._active[0]);
+						if (dataIndex !== -1){
+							break;
+						}
+					}
+
+					var medianPosition = (function(index) {
+						// Get all the points at that particular index
+						var elements = [],
+							dataCollection,
+							xPositions = [],
+							yPositions = [],
+							xMax,
+							yMax,
+							xMin,
+							yMin;
+						helpers.each(this._data.datasets, function(dataset){
+							dataCollection = dataset.metaData;
+							if (dataCollection[dataIndex] && dataCollection[dataIndex].hasValue()){
+								elements.push(dataCollection[dataIndex]);
+							}
+						});
+
+						helpers.each(elements, function(element) {
+							xPositions.push(element._vm.x);
+							yPositions.push(element._vm.y);
+
+							//Include any colour information about the element
+							labels.push(helpers.template(this._options.multiTooltipTemplate, element));
+							colors.push({
+								fill: element._vm.backgroundColor,
+								stroke: element._vm.borderColor
+							});
+
+						}, this);
+
+						yMin = min(yPositions);
+						yMax = max(yPositions);
+
+						xMin = min(xPositions);
+						xMax = max(xPositions);
+
+						return {
+							x: (xMin > this._chart.width/2) ? xMin : xMax,
+							y: (yMin + yMax)/2,
+						};
+					}).call(this, dataIndex);
+
+					// Apply for now
+					helpers.extend(this, {
+						x: medianPosition.x,
+						y: medianPosition.y,
+						labels: labels,
+						title: this._active.length ? this._active[0].label : '',
+						legendColors: colors,
+						legendBackgroundColor : this._options.multiTooltipKeyBackground,
+					});
+
+
+					// Calculate Appearance Tweaks
+
+					this.height = (labels.length * this.fontSize) + ((labels.length-1) * (this.fontSize/2)) + (this.yPadding*2) + this.titleFontSize *1.5;
+
+					var titleWidth = ctx.measureText(this.title).width,
+						//Label has a legend square as well so account for this.
+						labelWidth = longestText(ctx,this.font,labels) + this.fontSize + 3,
+						longestTextWidth = max([labelWidth,titleWidth]);
+
+					this.width = longestTextWidth + (this.xPadding*2);
+
+
+					var halfHeight = this.height/2;
+
+					//Check to ensure the height will fit on the canvas
+					if (this.y - halfHeight < 0 ){
+						this.y = halfHeight;
+					} else if (this.y + halfHeight > this._chart.height){
+						this.y = this._chart.height - halfHeight;
+					}
+
+					//Decide whether to align left or right based on position on canvas
+					if (this.x > this._chart.width/2){
+						this.x -= this.xOffset + this.width;
+					} else {
+						this.x += this.xOffset;
+					}
+				break;
+			}
+
+			return this;
+		},
 		draw : function(){
 
-			var ctx = this.chart.ctx;
+			var ctx = this._chart.ctx;
+			var vm = this._vm;
 
-			ctx.font = fontString(this.fontSize,this.fontStyle,this.fontFamily);
+			switch(this._options.hoverMode){
+				case 'single':
 
-			this.xAlign = "center";
-			this.yAlign = "above";
+					ctx.font = fontString(vm.fontSize,vm._fontStyle,vm._fontFamily);
 
-			//Distance between the actual element.y position and the start of the tooltip caret
-			var caretPadding = this.caretPadding = 2;
+					vm.xAlign = "center";
+					vm.yAlign = "above";
 
-			var tooltipWidth = ctx.measureText(this.text).width + 2*this.xPadding,
-				tooltipRectHeight = this.fontSize + 2*this.yPadding,
-				tooltipHeight = tooltipRectHeight + this.caretHeight + caretPadding;
+					//Distance between the actual element.y position and the start of the tooltip caret
+					var caretPadding = vm.caretPadding = 2;
 
-			if (this.x + tooltipWidth/2 >this.chart.width){
-				this.xAlign = "left";
-			} else if (this.x - tooltipWidth/2 < 0){
-				this.xAlign = "right";
-			}
+					var tooltipWidth = ctx.measureText(vm.text).width + 2*vm.xPadding,
+						tooltipRectHeight = vm.fontSize + 2*vm.yPadding,
+						tooltipHeight = tooltipRectHeight + vm.caretHeight + caretPadding;
 
-			if (this.y - tooltipHeight < 0){
-				this.yAlign = "below";
-			}
+					if (vm.x + tooltipWidth/2 >this._chart.width){
+						vm.xAlign = "left";
+					} else if (vm.x - tooltipWidth/2 < 0){
+						vm.xAlign = "right";
+					}
 
+					if (vm.y - tooltipHeight < 0){
+						vm.yAlign = "below";
+					}
 
-			var tooltipX = this.x - tooltipWidth/2,
-				tooltipY = this.y - tooltipHeight;
+					var tooltipX = vm.x - tooltipWidth/2,
+						tooltipY = vm.y - tooltipHeight;
 
-			ctx.fillStyle = this.backgroundColor;
+					ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
 
-			// Custom Tooltips
-			if(this.custom){
-				this.custom(this);
-			}
-			else{
-				switch(this.yAlign)
-				{
-				case "above":
-					//Draw a caret above the x/y
-					ctx.beginPath();
-					ctx.moveTo(this.x,this.y - caretPadding);
-					ctx.lineTo(this.x + this.caretHeight, this.y - (caretPadding + this.caretHeight));
-					ctx.lineTo(this.x - this.caretHeight, this.y - (caretPadding + this.caretHeight));
-					ctx.closePath();
+					// Custom Tooltips
+					if(this._custom){
+						this._custom(this._vm);
+					}
+					else{
+						switch(vm.yAlign){
+							case "above":
+								//Draw a caret above the x/y
+								ctx.beginPath();
+								ctx.moveTo(vm.x,vm.y - caretPadding);
+								ctx.lineTo(vm.x + vm.caretHeight, vm.y - (caretPadding + vm.caretHeight));
+								ctx.lineTo(vm.x - vm.caretHeight, vm.y - (caretPadding + vm.caretHeight));
+								ctx.closePath();
+								ctx.fill();
+								break;
+							case "below":
+								tooltipY = vm.y + caretPadding + vm.caretHeight;
+								//Draw a caret below the x/y
+								ctx.beginPath();
+								ctx.moveTo(vm.x, vm.y + caretPadding);
+								ctx.lineTo(vm.x + vm.caretHeight, vm.y + caretPadding + vm.caretHeight);
+								ctx.lineTo(vm.x - vm.caretHeight, vm.y + caretPadding + vm.caretHeight);
+								ctx.closePath();
+								ctx.fill();
+								break;
+						}
+
+						switch(vm.xAlign){
+							case "left":
+								tooltipX = vm.x - tooltipWidth + (vm.cornerRadius + vm.caretHeight);
+								break;
+							case "right":
+								tooltipX = vm.x - (vm.cornerRadius + vm.caretHeight);
+								break;
+						}
+
+						drawRoundedRectangle(ctx,tooltipX,tooltipY,tooltipWidth,tooltipRectHeight,vm.cornerRadius);
+
+						ctx.fill();
+
+						ctx.fillStyle = helpers.color(vm.textColor).alpha(vm.opacity).rgbString();
+						ctx.textAlign = "center";
+						ctx.textBaseline = "middle";
+						ctx.fillText(vm.text, tooltipX + tooltipWidth/2, tooltipY + tooltipRectHeight/2);
+
+					}
+					break;	
+				case 'label':
+
+					drawRoundedRectangle(ctx, vm.x, vm.y - vm.height/2, vm.width, vm.height, vm.cornerRadius);
+					ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
 					ctx.fill();
-					break;
-				case "below":
-					tooltipY = this.y + caretPadding + this.caretHeight;
-					//Draw a caret below the x/y
-					ctx.beginPath();
-					ctx.moveTo(this.x, this.y + caretPadding);
-					ctx.lineTo(this.x + this.caretHeight, this.y + caretPadding + this.caretHeight);
-					ctx.lineTo(this.x - this.caretHeight, this.y + caretPadding + this.caretHeight);
 					ctx.closePath();
-					ctx.fill();
-					break;
-				}
 
-				switch(this.xAlign)
-				{
-				case "left":
-					tooltipX = this.x - tooltipWidth + (this.cornerRadius + this.caretHeight);
-					break;
-				case "right":
-					tooltipX = this.x - (this.cornerRadius + this.caretHeight);
-					break;
-				}
+					ctx.textAlign = "left";
+					ctx.textBaseline = "middle";
+					ctx.fillStyle = helpers.color(vm.titleTextColor).alpha(vm.opacity).rgbString();
+					ctx.font = fontString(vm.fontSize, vm._titleFontStyle, vm._titleFontFamily);
+					ctx.fillText(vm.title, vm.x + vm.xPadding, this.getLineHeight(0));
 
-				drawRoundedRectangle(ctx,tooltipX,tooltipY,tooltipWidth,tooltipRectHeight,this.cornerRadius);
+					ctx.font = fontString(vm.fontSize, vm._fontStyle, vm._fontFamily);
+					helpers.each(vm.labels,function(label,index){
+						ctx.fillStyle = helpers.color(vm.textColor).alpha(vm.opacity).rgbString();
+						ctx.fillText(label,vm.x + vm.xPadding + vm.fontSize + 3, this.getLineHeight(index + 1));
 
-				ctx.fill();
+						//A bit gnarly, but clearing this rectangle breaks when using explorercanvas (clears whole canvas)
+						//ctx.clearRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.fontSize/2, vm.fontSize, vm.fontSize);
+						//Instead we'll make a white filled block to put the legendColour palette over.
 
-				ctx.fillStyle = this.textColor;
-				ctx.textAlign = "center";
-				ctx.textBaseline = "middle";
-				ctx.fillText(this.text, tooltipX + tooltipWidth/2, tooltipY + tooltipRectHeight/2);
+						ctx.fillStyle = helpers.color(vm.legendBackgroundColor).alpha(vm.opacity).rgbString();
+						ctx.fillRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.fontSize / 2, vm.fontSize, vm.fontSize);
+
+						ctx.fillStyle = helpers.color(vm.legendColors[index].fill).alpha(vm.opacity).rgbString();
+						ctx.fillRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.fontSize / 2, vm.fontSize, vm.fontSize);
+
+
+					},this);
+				break;
 			}
-		}
-	});
-
-	Chart.MultiTooltip = Chart.Element.extend({
-		initialize : function(){
-			this.font = fontString(this.fontSize,this.fontStyle,this.fontFamily);
-
-			this.titleFont = fontString(this.titleFontSize,this.titleFontStyle,this.titleFontFamily);
-
-			this.height = (this.labels.length * this.fontSize) + ((this.labels.length-1) * (this.fontSize/2)) + (this.yPadding*2) + this.titleFontSize *1.5;
-
-			this.ctx.font = this.titleFont;
-
-			var titleWidth = this.ctx.measureText(this.title).width,
-				//Label has a legend square as well so account for this.
-				labelWidth = longestText(this.ctx,this.font,this.labels) + this.fontSize + 3,
-				longestTextWidth = max([labelWidth,titleWidth]);
-
-			this.width = longestTextWidth + (this.xPadding*2);
-
-
-			var halfHeight = this.height/2;
-
-			//Check to ensure the height will fit on the canvas
-			if (this.y - halfHeight < 0 ){
-				this.y = halfHeight;
-			} else if (this.y + halfHeight > this.chart.height){
-				this.y = this.chart.height - halfHeight;
-			}
-
-			//Decide whether to align left or right based on position on canvas
-			if (this.x > this.chart.width/2){
-				this.x -= this.xOffset + this.width;
-			} else {
-				this.x += this.xOffset;
-			}
-
-
 		},
 		getLineHeight : function(index){
-			var baseLineHeight = this.y - (this.height/2) + this.yPadding,
+			var baseLineHeight = this._vm.y - (this._vm.height/2) + this._vm.yPadding,
 				afterTitleIndex = index-1;
 
 			//If the index is zero, we're getting the title
 			if (index === 0){
-				return baseLineHeight + this.titleFontSize/2;
+				return baseLineHeight + this._vm.titleFontSize/2;
 			} else{
-				return baseLineHeight + ((this.fontSize*1.5*afterTitleIndex) + this.fontSize/2) + this.titleFontSize * 1.5;
+				return baseLineHeight + ((this._vm.fontSize*1.5*afterTitleIndex) + this._vm.fontSize/2) + this._vm.titleFontSize * 1.5;
 			}
 
 		},
-		draw : function(){
-			// Custom Tooltips
-			if(this.custom){
-				this.custom(this);
-			}
-			else{
-				drawRoundedRectangle(this.ctx,this.x,this.y - this.height/2,this.width,this.height,this.cornerRadius);
-				var ctx = this.ctx;
-				ctx.fillStyle = this.backgroundColor;
-				ctx.fill();
-				ctx.closePath();
-
-				ctx.textAlign = "left";
-				ctx.textBaseline = "middle";
-				ctx.fillStyle = this.titleTextColor;
-				ctx.font = this.titleFont;
-
-				ctx.fillText(this.title,this.x + this.xPadding, this.getLineHeight(0));
-
-				ctx.font = this.font;
-				helpers.each(this.labels,function(label,index){
-					ctx.fillStyle = this.textColor;
-					ctx.fillText(label,this.x + this.xPadding + this.fontSize + 3, this.getLineHeight(index + 1));
-
-					//A bit gnarly, but clearing this rectangle breaks when using explorercanvas (clears whole canvas)
-					//ctx.clearRect(this.x + this.xPadding, this.getLineHeight(index + 1) - this.fontSize/2, this.fontSize, this.fontSize);
-					//Instead we'll make a white filled block to put the legendColour palette over.
-
-					ctx.fillStyle = this.legendColorBackground;
-					ctx.fillRect(this.x + this.xPadding, this.getLineHeight(index + 1) - this.fontSize/2, this.fontSize, this.fontSize);
-
-					ctx.fillStyle = this.legendColors[index].fill;
-					ctx.fillRect(this.x + this.xPadding, this.getLineHeight(index + 1) - this.fontSize/2, this.fontSize, this.fontSize);
-
-
-				},this);
-			}
-		}
 	});
 
 	Chart.Scale = Chart.Element.extend({
@@ -2037,7 +2045,7 @@
 							}
 						}
 						if(this.showLabels){
-							ctx.font = fontString(this.fontSize,this.fontStyle,this.fontFamily);
+							ctx.font = fontString(this.fontSize,this._fontStyle,this._fontFamily);
 							if (this.showLabelBackdrop){
 								var labelWidth = ctx.measureText(label).width;
 								ctx.fillStyle = this.backdropColor;
@@ -2108,8 +2116,11 @@
 		frameDuration: 17,
 		animations: [],
 		dropFrames: 0,
-		addAnimation: function(chartInstance, animationObject) {
-			chartInstance.animating = true;
+		addAnimation: function(chartInstance, animationObject, customDuration) {
+
+			if(!customDuration){
+				chartInstance.animating = true;
+			}
 
 			for (var index = 0; index < this.animations.length; ++ index){
 				if (this.animations[index].chartInstance === chartInstance){
@@ -2263,14 +2274,14 @@
 		//Number - Spacing between data sets within X values
 		barDatasetSpacing : 1,
 
-		//String - Hover mode for events
-		hoverMode : 'bars', // 'bar', 'dataset'
+		//String / Boolean - Hover mode for events.
+		hoverMode : 'single', // 'label', 'dataset', 'false'
 
 		//Function - Custom hover handler
 		onHover : null,
 
 		//Function - Custom hover handler
-		hoverDuration : 400,
+		hoverAnimationDuration : 400,
 
 		//String - A legend template
 		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].backgroundColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
@@ -2291,10 +2302,10 @@
 
 			this.ScaleClass = Chart.Scale.extend({
 				offsetGridLines : true,
-				calculateBarX : function(datasetCount, datasetIndex, barIndex){
+				calculateBarX : function(datasetCount, datasetIndex, elementIndex){
 					//Reusable method for calculating the xPosition of a given bar based on datasetIndex & width of the bar
 					var xWidth = this.calculateBaseWidth(),
-						xAbsolute = this.calculateX(barIndex) - (xWidth/2),
+						xAbsolute = this.calculateX(elementIndex) - (xWidth/2),
 						barWidth = this.calculateBarWidth(datasetCount);
 
 					return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * options.barDatasetSpacing) + barWidth/2;
@@ -2316,7 +2327,6 @@
 			//Declare the extension of the default point, to cater for the options passed in to the constructor
 			this.BarClass = Chart.Rectangle.extend({
 				ctx : this.chart.ctx,
-				_vm: {}
 			});
 
 			// Build Scale
@@ -2335,72 +2345,179 @@
 				helpers.extend(bar, {
 					width : this.scale.calculateBarWidth(this.data.datasets.length),
 					x: this.scale.calculateBarX(this.data.datasets.length, datasetIndex, index),
-					y: this.scale.endPoint,
+					y: this.calculateBarBase(),
+					_datasetIndex: datasetIndex,
+					_index: index,
 				});
 				// Copy to view model
 				bar.save();
 			}, this);
 
+			// Create tooltip instance exclusively for this chart with some defaults.
+			this.tooltip = new Chart.Tooltip({
+				_chart: this.chart,
+				_data: this.data,
+				_options: this.options,
+			}, this);
+
+			// Update the chart with the latest data.
 			this.update();
 		},
 		onHover: function(e){
 
-			var active;
+
+			// If exiting chart
 			if(e.type == 'mouseout'){
 				return false;
 			}
-			if(this.options.hoverMode == 'bar'){
-				active = this.getBarAtEvent(e);
-			}
-			else if(this.options.hoverMode == 'bars'){}
 
+			this.lastActive = this.lastActive || [];
 
-			// Remove styling for last active
-			if(this.lastActive){
-				if(this.options.hoverMode == 'bar'){
-					this.lastActive.rectangle.backgroundColor = this.data.datasets[this.lastActive.datasetIndex].backgroundColor;
-					this.lastActive.rectangle.borderColor = this.data.datasets[this.lastActive.datasetIndex].borderColor;
-					this.lastActive.rectangle.borderWidth = 0;
+			// Find Active Elements
+			this.active = function(){
+				switch(this.options.hoverMode){
+					case 'single':
+						return this.getBarAtEvent(e);
+					case 'label':
+						return this.getBarsAtEvent(e);
+					case 'dataset':
+						return this.getDatasetAtEvent(e);
+					default:
+						return e;
 				}
-				else if(this.options.hoverMode == 'bars'){}
-			}
+			}.call(this);
 
-			// Custom Hover actions
+			// On Hover hook
 			if(this.options.onHover){
-				this.options.onHover.call(this, active);
+				this.options.onHover.call(this, this.active);
 			}
-			else if(active){
-				// or default hover action
-				if(this.options.hoverMode == 'bar'){
-					active.rectangle.backgroundColor = this.data.datasets[active.datasetIndex].hoverBackgroundColor || Color(active.rectangle.backgroundColor).saturate(0.5).darken(0.25).rgbString();
-					active.rectangle.borderColor = this.data.datasets[active.datasetIndex].hoverBorderColor || Color(active.rectangle.borderColor).saturate(0.5).darken(0.25).rgbString();
-				}
-				else if(this.options.hoverMode == 'bars'){}
 
+			// Remove styling for last active (even if it may still be active)
+			if(this.lastActive){
+				switch(this.options.hoverMode){
+					case 'single':
+						this.lastActive[0].backgroundColor = this.data.datasets[this.lastActive[0]._datasetIndex].backgroundColor;
+						this.lastActive[0].borderColor = this.data.datasets[this.lastActive[0]._datasetIndex].borderColor;
+						this.lastActive[0].borderWidth = 0;
+						break;
+					case 'label':
+						for (var i = 0; i < this.lastActive.length; i++) {
+							this.lastActive[i].backgroundColor = this.data.datasets[this.lastActive[i]._datasetIndex].backgroundColor;
+							this.lastActive[i].borderColor = this.data.datasets[this.lastActive[i]._datasetIndex].borderColor;
+							this.lastActive[i].borderWidth = 0;
+						}
+						break;
+					case 'dataset':
+						break;
+					default:
+						// do nothing
+				}
 			}
+			
+			// Built in hover actions
+			if(this.active.length && this.options.hoverMode){
+				switch(this.options.hoverMode){
+					case 'single':
+						this.active[0].backgroundColor = this.data.datasets[this.active[0]._datasetIndex].hoverBackgroundColor || helpers.color(this.active[0].backgroundColor).saturate(0.5).darken(0.35).rgbString();
+						this.active[0].borderColor = this.data.datasets[this.active[0]._datasetIndex].hoverBorderColor || helpers.color(this.active[0].borderColor).saturate(0.5).darken(0.35).rgbString();
+						break;
+					case 'label':
+						for (var i = 0; i < this.active.length; i++) {
+							this.active[i].backgroundColor = this.data.datasets[this.active[i]._datasetIndex].hoverBackgroundColor || helpers.color(this.active[i].backgroundColor).saturate(0.5).darken(0.35).rgbString();
+							this.active[i].borderColor = this.data.datasets[this.active[i]._datasetIndex].hoverBorderColor || helpers.color(this.active[i].borderColor).saturate(0.5).darken(0.35).rgbString();
+						}
+						break;
+					case 'dataset':
+						break;
+					default:
+						// do nothing
+				}
+			}
+
+
+			// Built in Tooltips
+			if(this.options.showTooltips){
+
+				// The usual updates
+				this.tooltip.initialize();
+
+				// Active
+				if(this.active.length){
+					helpers.extend(this.tooltip, {
+						opacity: 1,
+						_active: this.active,
+					});
+
+					this.tooltip.update();
+				}
+				else{
+					// Inactive
+					helpers.extend(this.tooltip, {
+						opacity: 0,
+					});
+				}
+			}
+
 
 			if(!this.animating){
+
 				// If entering
-				if(!this.lastActive && active){
-					this.render(false, this.options.hoverDuration);
+				if(!this.lastActive.length && this.active.length){
+					console.log('entering');
+					this.tooltip.pivot();
+					this.stop();
+					this.render(false, this.options.hoverAnimationDuration);
 				}
 
-				// If different bar
-				if(this.lastActive && active && this.lastActive.rectangle !== active.rectangle){
-					this.render(false, this.options.hoverDuration);
+				var changed;
+				
+				helpers.each(this.active, function(element, index){
+					if (element !== this.lastActive[index]){
+						changed = true;
+					}
+				}, this);
+
+				// If different element
+				if(this.lastActive.length && this.active.length && changed){
+					console.log('changing');
+					this.tooltip.pivot();
+					this.stop();
+					this.render(false, this.options.hoverAnimationDuration);
 				}
 
 				// if Leaving
-				if (this.lastActive && !active){
-					this.render(false, this.options.hoverDuration);
+				if (this.lastActive.length && !this.active.length){
+					console.log('leaving');
+					this.tooltip.pivot();
+					this.stop();
+					this.render(false, this.options.hoverAnimationDuration);
 				}
-			}
 
-			this.lastActive = active;
+			}	
 
-			if (this.options.showTooltips){
-				this.showTooltip(active);
+			// Remember Last Active
+			
+			this.lastActive = this.active;
+		},
+		// Calculate the base point for the bar.
+		// If the scale has a 0 point, use that as the base
+		// If the scale min and max are both positive, use the bottom as a base
+		// If the scale min and max are both negative, use the top as a base
+		calculateBarBase: function() {
+			var base = this.scale.endPoint;
+			
+			if (this.scale.beginAtZero || ((this.scale.min <= 0 && this.scale.max >= 0) || (this.scale.min >= 0 && this.scale.max <= 0)))
+			{
+				base = this.scale.calculateY(0);
+				base += this.options.scaleGridLineWidth;
 			}
+			else if (this.scale.min < 0 && this.scale.max < 0)
+			{
+				// All values are negative. Use the top as the base
+				base = this.scale.startPoint;
+			}
+			
+			return base;
 		},
 		update : function(){
 
@@ -2417,10 +2534,11 @@
 					borderColor : this.data.datasets[datasetIndex].borderColor,
 					borderWidth : this.data.datasets[datasetIndex].borderWidth,
 					backgroundColor : this.data.datasets[datasetIndex].backgroundColor,
+					_datasetIndex: datasetIndex,
+					_index: index,
 					_start: undefined
 				});
 			}, this);
-
 
 			this.render();
 		},
@@ -2438,41 +2556,36 @@
 			var barsArray = [],
 				eventPosition = helpers.getRelativePosition(e),
 				datasetIterator = function(dataset){
-					barsArray.push(dataset.metaData[barIndex]);
+					barsArray.push(dataset.metaData[elementIndex]);
 				},
-				barIndex;
+				elementIndex;
 
 			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; datasetIndex++) {
-				for (barIndex = 0; barIndex < this.data.datasets[datasetIndex].metaData.length; barIndex++) {
-					if (this.data.datasets[datasetIndex].metaData[barIndex].inRange(eventPosition.x,eventPosition.y)){
+				for (elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; elementIndex++) {
+					if (this.data.datasets[datasetIndex].metaData[elementIndex].inRange(eventPosition.x,eventPosition.y)){
 						helpers.each(this.data.datasets, datasetIterator);
-						return barsArray;
 					}
 				}
 			}
 
-			return barsArray;
+			return barsArray.length ? barsArray : [];
 		},
 		// Get the single bar that was clicked on
 		// @return : An object containing the dataset index and bar index of the matching bar. Also contains the rectangle that was drawn
 		getBarAtEvent : function(e) {
-			var bar;
+			var bar = [];
 			var eventPosition = helpers.getRelativePosition(e);
 			
 			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; ++datasetIndex) {
-				for (var barIndex = 0; barIndex < this.data.datasets[datasetIndex].metaData.length; ++barIndex) {
-					if (this.data.datasets[datasetIndex].metaData[barIndex].inRange(eventPosition.x, eventPosition.y)) {
-						bar = {
-							rectangle : this.data.datasets[datasetIndex].metaData[barIndex],
-							datasetIndex : datasetIndex,
-							barIndex : barIndex,
-						};
+				for (var elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; ++elementIndex) {
+					if (this.data.datasets[datasetIndex].metaData[elementIndex].inRange(eventPosition.x, eventPosition.y)) {
+						bar.push(this.data.datasets[datasetIndex].metaData[elementIndex]);
 						return bar;
 					}
 				}
 			}
 			
-			return bar;
+			return [];
 		},
 		buildScale : function(labels){
 			var self = this;
@@ -2532,46 +2645,18 @@
 
 			this.scale = new this.ScaleClass(scaleOptions);
 		},
-		addData : function(valuesArray,label){
-			//Map the values array for each of the datasets
-			helpers.each(valuesArray,function(value,datasetIndex){
-				//Add a new point for each piece of data, passing any required data to draw.
-				this.data.datasets[datasetIndex].bars.push(new this.BarClass({
-					value : value,
-					label : label,
-					datasetLabel: this.data.datasets[datasetIndex].label,
-					x: this.scale.calculateBarX(this.data.datasets.length, datasetIndex, this.scale.valuesCount+1),
-					y: this.scale.endPoint,
-					width : this.scale.calculateBarWidth(this.data.datasets.length),
-					base : this.scale.endPoint,
-					borderColor : this.data.datasets[datasetIndex].borderColor,
-					backgroundColor : this.data.datasets[datasetIndex].backgroundColor
-				}));
-			},this);
-
-			this.scale.addXLabel(label);
-			//Then re-render the chart.
-			this.update();
-		},
-		removeData : function(){
-			this.scale.removeXLabel();
-			//Then re-render the chart.
-			helpers.each(this.data.datasets,function(dataset){
-				dataset.bars.shift();
-			},this);
-			this.update();
-		},
-		reflow : function(){
+		// This should be incorportated into the init as something like a default value. "Reflow" seems like a weird word for a fredraw function
+		/*reflow : function(){
 			helpers.extend(this.BarClass.prototype,{
-				y: this.scale.endPoint,
-				base : this.scale.endPoint
+				y: this.calculateBarBase(), // so that we animate from the baseline
+				base : this.calculateBarBase()
 			});
 			var newScaleProps = helpers.extend({
 				height : this.chart.height,
 				width : this.chart.width
 			});
 			this.scale.update(newScaleProps);
-		},
+		},*/
 		draw : function(ease){
 
 			var easingDecimal = ease || 1;
@@ -2583,18 +2668,14 @@
 			this.eachBars(function(bar, index, datasetIndex){
 				if (bar.hasValue()){
 					// Update the bar basepoint
-					bar.base = this.scale.endPoint;
+					bar.base = this.calculateBarBase();
 					//Transition 
-					bar.transition([
-						'x',
-						'y',
-						'width',
-						'backgroundColor',
-						'borderColor',
-					 	'borderWidth'
-					], easingDecimal).draw();
+					bar.transition(easingDecimal).draw();
 				}
 			}, this);
+
+			// Finally draw the tooltip
+			this.tooltip.transition(easingDecimal).draw();
 		}
 	});
 

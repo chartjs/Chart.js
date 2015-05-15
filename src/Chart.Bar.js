@@ -131,6 +131,8 @@
 				return false;
 			}
 
+			this.lastActive = this.lastActive || [];
+
 			// Find Active Elements
 			this.active = function(){
 				switch(this.options.hoverMode){
@@ -159,6 +161,11 @@
 						this.lastActive[0].borderWidth = 0;
 						break;
 					case 'label':
+						for (var i = 0; i < this.lastActive.length; i++) {
+							this.lastActive[i].backgroundColor = this.data.datasets[this.lastActive[i]._datasetIndex].backgroundColor;
+							this.lastActive[i].borderColor = this.data.datasets[this.lastActive[i]._datasetIndex].borderColor;
+							this.lastActive[i].borderWidth = 0;
+						}
 						break;
 					case 'dataset':
 						break;
@@ -168,13 +175,17 @@
 			}
 			
 			// Built in hover actions
-			if(this.active && this.options.hoverMode){
+			if(this.active.length && this.options.hoverMode){
 				switch(this.options.hoverMode){
 					case 'single':
-						this.active[0].backgroundColor = this.data.datasets[this.active[0]._datasetIndex].hoverBackgroundColor || helpers.color(this.active[0].backgroundColor).saturate(0.5).darken(0.25).rgbString();
-						this.active[0].borderColor = this.data.datasets[this.active[0]._datasetIndex].hoverBorderColor || helpers.color(this.active[0].borderColor).saturate(0.5).darken(0.25).rgbString();
+						this.active[0].backgroundColor = this.data.datasets[this.active[0]._datasetIndex].hoverBackgroundColor || helpers.color(this.active[0].backgroundColor).saturate(0.5).darken(0.35).rgbString();
+						this.active[0].borderColor = this.data.datasets[this.active[0]._datasetIndex].hoverBorderColor || helpers.color(this.active[0].borderColor).saturate(0.5).darken(0.35).rgbString();
 						break;
 					case 'label':
+						for (var i = 0; i < this.active.length; i++) {
+							this.active[i].backgroundColor = this.data.datasets[this.active[i]._datasetIndex].hoverBackgroundColor || helpers.color(this.active[i].backgroundColor).saturate(0.5).darken(0.35).rgbString();
+							this.active[i].borderColor = this.data.datasets[this.active[i]._datasetIndex].hoverBorderColor || helpers.color(this.active[i].borderColor).saturate(0.5).darken(0.35).rgbString();
+						}
 						break;
 					case 'dataset':
 						break;
@@ -191,7 +202,7 @@
 				this.tooltip.initialize();
 
 				// Active
-				if(this.active){
+				if(this.active.length){
 					helpers.extend(this.tooltip, {
 						opacity: 1,
 						_active: this.active,
@@ -203,24 +214,22 @@
 					// Inactive
 					helpers.extend(this.tooltip, {
 						opacity: 0,
-						_active: false,
 					});
 				}
 			}
 
-			// Only animate for major events
+
 			if(!this.animating){
+
 				// If entering
-				if(!this.lastActive && this.active){
+				if(!this.lastActive.length && this.active.length){
 					console.log('entering');
+					this.tooltip.pivot();
+					this.stop();
 					this.render(false, this.options.hoverAnimationDuration);
 				}
 
-				var changed = false;
-
-				if (this.active.length !== this.lastActive.length){
-						changed = true;
-				}
+				var changed;
 				
 				helpers.each(this.active, function(element, index){
 					if (element !== this.lastActive[index]){
@@ -229,19 +238,25 @@
 				}, this);
 
 				// If different element
-				if(this.lastActive && this.active && changed){
+				if(this.lastActive.length && this.active.length && changed){
 					console.log('changing');
+					this.tooltip.pivot();
+					this.stop();
 					this.render(false, this.options.hoverAnimationDuration);
 				}
 
 				// if Leaving
-				if (this.lastActive && !this.active){
+				if (this.lastActive.length && !this.active.length){
 					console.log('leaving');
+					this.tooltip.pivot();
+					this.stop();
 					this.render(false, this.options.hoverAnimationDuration);
 				}
-			}
+
+			}	
 
 			// Remember Last Active
+			
 			this.lastActive = this.active;
 		},
 		// Calculate the base point for the bar.
@@ -285,7 +300,6 @@
 				});
 			}, this);
 
-
 			this.render();
 		},
 		eachBars : function(callback){
@@ -314,7 +328,7 @@
 				}
 			}
 
-			return barsArray.length ? barsArray : false;
+			return barsArray.length ? barsArray : [];
 		},
 		// Get the single bar that was clicked on
 		// @return : An object containing the dataset index and bar index of the matching bar. Also contains the rectangle that was drawn
@@ -331,7 +345,7 @@
 				}
 			}
 			
-			return false;
+			return [];
 		},
 		buildScale : function(labels){
 			var self = this;

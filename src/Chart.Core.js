@@ -969,7 +969,7 @@
 				animation.onAnimationProgress = this.options.onAnimationProgress;
 				animation.onAnimationComplete = this.options.onAnimationComplete;
 				
-				Chart.animationService.addAnimation(this, animation);
+				Chart.animationService.addAnimation(this, animation, customDuration);
 			}
 			else{
 				this.draw();
@@ -1059,6 +1059,13 @@
 			this._vm = clone(this);
 			delete this._vm._vm;
 			delete this._vm._start;
+			return this;
+		},
+		pivot: function(){
+			if(this._start){
+				this._start = clone(this);
+				helpers.extend(this._start, this._vm);
+			}
 			return this;
 		},
 		transition : function(ease){
@@ -1265,26 +1272,25 @@
 			return vm.base - vm.y;
 		},
 		inRange : function(chartX,chartY){
-			if (this.y < this.base)
-			{
-				return (chartX >= this.x - this.width/2 && chartX <= this.x + this.width/2) && (chartY >= this.y && chartY <= this.base);
-			}
-			else
-			{
-				return (chartX >= this.x - this.width / 2 && chartX <= this.x + this.width / 2) && (chartY >= this.base && chartY <= this.y);
+			var vm = this._vm;
+			if (vm.y < vm.base){
+				return (chartX >= vm.x - vm.width/2 && chartX <= vm.x + vm.width/2) && (chartY >= vm.y && chartY <= vm.base);
+			} else{
+				return (chartX >= vm.x - vm.width / 2 && chartX <= vm.x + vm.width / 2) && (chartY >= vm.base && chartY <= vm.y);
 			}
 		},
 		tooltipPosition : function(){
-			if (this.y < this.base){
+			var vm = this._vm;
+			if (vm.y < vm.base){
 				return {
-					x : this.x,
-					y : this.y
+					x : vm.x,
+					y : vm.y
 				};
 			}
 			else{
 				return {
-					x : this.x,
-					y : this.base
+					x : vm.x,
+					y : vm.base
 				};
 			}
 		},
@@ -1405,7 +1411,7 @@
 						x: medianPosition.x,
 						y: medianPosition.y,
 						labels: labels,
-						title: this._active[0].label,
+						title: this._active.length ? this._active[0].label : '',
 						legendColors: colors,
 						legendBackgroundColor : this._options.multiTooltipKeyBackground,
 					});
@@ -1451,7 +1457,7 @@
 			switch(this._options.hoverMode){
 				case 'single':
 
-					ctx.font = fontString(vm.fontSize,vm.fontStyle,vm.fontFamily);
+					ctx.font = fontString(vm.fontSize,vm._fontStyle,vm._fontFamily);
 
 					vm.xAlign = "center";
 					vm.yAlign = "above";
@@ -1527,7 +1533,7 @@
 					break;	
 				case 'label':
 
-					drawRoundedRectangle(ctx,vm.x,vm.y - vm.height/2,vm.width,vm.height,vm.cornerRadius);
+					drawRoundedRectangle(ctx, vm.x, vm.y - vm.height/2, vm.width, vm.height, vm.cornerRadius);
 					ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
 					ctx.fill();
 					ctx.closePath();
@@ -1535,11 +1541,10 @@
 					ctx.textAlign = "left";
 					ctx.textBaseline = "middle";
 					ctx.fillStyle = helpers.color(vm.titleTextColor).alpha(vm.opacity).rgbString();
-					ctx.font = vm.titleFont;
+					ctx.font = fontString(vm.fontSize, vm._titleFontStyle, vm._titleFontFamily);
+					ctx.fillText(vm.title, vm.x + vm.xPadding, this.getLineHeight(0));
 
-					ctx.fillText(vm.title,vm.x + vm.xPadding, this.getLineHeight(0));
-
-					ctx.font = vm.font;
+					ctx.font = fontString(vm.fontSize, vm._fontStyle, vm._fontFamily);
 					helpers.each(vm.labels,function(label,index){
 						ctx.fillStyle = helpers.color(vm.textColor).alpha(vm.opacity).rgbString();
 						ctx.fillText(label,vm.x + vm.xPadding + vm.fontSize + 3, this.getLineHeight(index + 1));
@@ -1549,10 +1554,10 @@
 						//Instead we'll make a white filled block to put the legendColour palette over.
 
 						ctx.fillStyle = helpers.color(vm.legendBackgroundColor).alpha(vm.opacity).rgbString();
-						ctx.fillRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.fontSize/2, vm.fontSize, vm.fontSize);
+						ctx.fillRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.fontSize / 2, vm.fontSize, vm.fontSize);
 
 						ctx.fillStyle = helpers.color(vm.legendColors[index].fill).alpha(vm.opacity).rgbString();
-						ctx.fillRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.fontSize/2, vm.fontSize, vm.fontSize);
+						ctx.fillRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.fontSize / 2, vm.fontSize, vm.fontSize);
 
 
 					},this);
@@ -1560,14 +1565,14 @@
 			}
 		},
 		getLineHeight : function(index){
-			var baseLineHeight = this.y - (this.height/2) + this.yPadding,
+			var baseLineHeight = this._vm.y - (this._vm.height/2) + this._vm.yPadding,
 				afterTitleIndex = index-1;
 
 			//If the index is zero, we're getting the title
 			if (index === 0){
-				return baseLineHeight + this.titleFontSize/2;
+				return baseLineHeight + this._vm.titleFontSize/2;
 			} else{
-				return baseLineHeight + ((this.fontSize*1.5*afterTitleIndex) + this.fontSize/2) + this.titleFontSize * 1.5;
+				return baseLineHeight + ((this._vm.fontSize*1.5*afterTitleIndex) + this._vm.fontSize/2) + this._vm.titleFontSize * 1.5;
 			}
 
 		},
@@ -2040,7 +2045,7 @@
 							}
 						}
 						if(this.showLabels){
-							ctx.font = fontString(this.fontSize,this.fontStyle,this.fontFamily);
+							ctx.font = fontString(this.fontSize,this._fontStyle,this._fontFamily);
 							if (this.showLabelBackdrop){
 								var labelWidth = ctx.measureText(label).width;
 								ctx.fillStyle = this.backdropColor;
@@ -2111,8 +2116,11 @@
 		frameDuration: 17,
 		animations: [],
 		dropFrames: 0,
-		addAnimation: function(chartInstance, animationObject) {
-			chartInstance.animating = true;
+		addAnimation: function(chartInstance, animationObject, customDuration) {
+
+			if(!customDuration){
+				chartInstance.animating = true;
+			}
 
 			for (var index = 0; index < this.animations.length; ++ index){
 				if (this.animations[index].chartInstance === chartInstance){
