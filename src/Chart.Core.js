@@ -1009,7 +1009,7 @@
 
 			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; datasetIndex++) {
 				for (elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; elementIndex++) {
-					if (this.data.datasets[datasetIndex].metaData[elementIndex].inRange(eventPosition.x,eventPosition.y)){
+					if (this.data.datasets[datasetIndex].metaData[elementIndex].inGroupRange(eventPosition.x,eventPosition.y)){
 						helpers.each(this.data.datasets, datasetIterator);
 					}
 				}
@@ -1190,10 +1190,14 @@
 
 
 	Chart.Point = Chart.Element.extend({
-		inRange: function(chartX,chartY){
+		inRange: function(mouseX,mouseY){
 			var vm = this._vm;
 			var hoverRange = vm.hoverRadius + vm.radius;
-			return ((Math.pow(chartX - vm.x, 2)+Math.pow(chartY - vm.y, 2)) < Math.pow(hoverRange,2));
+			return ((Math.pow(mouseX - vm.x, 2)+Math.pow(mouseY - vm.y, 2)) < Math.pow(hoverRange,2));
+		},
+		inGroupRange: function(mouseX){
+			var vm = this._vm;
+			return (Math.pow(mouseX-vm.x, 2) < Math.pow(vm.radius + this.hoverRadius,2));
 		},
 		tooltipPosition : function(){
 			var vm = this._vm;

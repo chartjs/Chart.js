@@ -225,6 +225,8 @@
 
 
 			// Hover animations
+			this.tooltip.pivot();
+			
 			if(!this.animating){
 				var changed;
 				
@@ -239,7 +241,6 @@
 					(this.lastActive.length && !this.active.length)||
 					(this.lastActive.length && this.active.length && changed)){
 
-					this.tooltip.pivot();
 					this.stop();
 					this.render(this.options.hoverAnimationDuration);
 				}
