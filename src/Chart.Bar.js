@@ -208,6 +208,8 @@
 			}
 
 
+			this.tooltip.pivot();
+
 			// Hover animations
 			if(!this.animating){
 				var changed;
@@ -223,7 +225,6 @@
 					(this.lastActive.length && !this.active.length)||
 					(this.lastActive.length && this.active.length && changed)){
 
-					this.tooltip.pivot();
 					this.stop();
 					this.render(this.options.hoverAnimationDuration);
 				}
@@ -254,7 +255,7 @@
 
 			this.scale.update();
 
-			this.eachElement(function(bar, index, datasetIndex){
+			this.eachElement(function(bar, index, dataset, datasetIndex){
 				helpers.extend(bar, {
 					width : this.scale.calculateBarWidth(this.data.datasets.length),
 					x: this.scale.calculateBarX(this.data.datasets.length, datasetIndex, index),

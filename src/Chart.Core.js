@@ -1371,13 +1371,17 @@
 			var vm = this._vm;
 			return vm.base - vm.y;
 		},
-		inRange : function(chartX,chartY){
+		inRange : function(mouseX,mouseY){
 			var vm = this._vm;
 			if (vm.y < vm.base){
-				return (chartX >= vm.x - vm.width/2 && chartX <= vm.x + vm.width/2) && (chartY >= vm.y && chartY <= vm.base);
+				return (mouseX >= vm.x - vm.width/2 && mouseX <= vm.x + vm.width/2) && (mouseY >= vm.y && mouseY <= vm.base);
 			} else{
-				return (chartX >= vm.x - vm.width / 2 && chartX <= vm.x + vm.width / 2) && (chartY >= vm.base && chartY <= vm.y);
+				return (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2) && (mouseY >= vm.base && mouseY <= vm.y);
 			}
+		},
+		inGroupRange: function(mouseX){
+			var vm = this._vm;
+			return (mouseX >= vm.x - vm.width/2 && mouseX <= vm.x + vm.width/2);
 		},
 		tooltipPosition : function(){
 			var vm = this._vm;
