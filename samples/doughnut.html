@@ -30,34 +30,36 @@
         return Math.round(Math.random() * 255)
     };
 
-    var doughnutData = [{
-            value: randomScalingFactor(),
-            color: "#F7464A",
-            highlight: "#FF5A5E",
-            label: "Red"
-        }, {
-            value: randomScalingFactor(),
-            color: "#46BFBD",
-            highlight: "#5AD3D1",
-            label: "Green"
-        }, {
-            value: randomScalingFactor(),
-            color: "#FDB45C",
-            highlight: "#FFC870",
-            label: "Yellow"
-        }, {
-            value: randomScalingFactor(),
-            color: "#949FB1",
-            highlight: "#A8B3C5",
-            label: "Grey"
-        }, {
-            value: randomScalingFactor(),
-            color: "#4D5360",
-            highlight: "#616774",
-            label: "Dark Grey"
-        }
+    var doughnutData = {
+        data: [{
+                value: randomScalingFactor(),
+                backgroundColor: "#F7464A",
+                hoverBackgroundColor: "#FF5A5E",
+                label: "Red"
+            }, {
+                value: randomScalingFactor(),
+                backgroundColor: "#46BFBD",
+                hoverBackgroundColor: "#5AD3D1",
+                label: "Green"
+            }, {
+                value: randomScalingFactor(),
+                backgroundColor: "#FDB45C",
+                hoverBackgroundColor: "#FFC870",
+                label: "Yellow"
+            }, {
+                value: randomScalingFactor(),
+                backgroundColor: "#949FB1",
+                hoverBackgroundColor: "#A8B3C5",
+                label: "Grey"
+            }, {
+                value: randomScalingFactor(),
+                backgroundColor: "#4D5360",
+                hoverBackgroundColor: "#616774",
+                label: "Dark Grey"
+            }
 
-    ];
+        ]
+    };
 
     window.onload = function() {
         var ctx = document.getElementById("chart-area").getContext("2d");
@@ -67,9 +69,9 @@
     };
 
     $('#randomizeData').click(function() {
-        $.each(doughnutData, function(i, piece) {
-            doughnutData[i].value = randomScalingFactor();
-            doughnutData[i].color = 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
+        $.each(doughnutData.data, function(i, datapoint) {
+            datapoint.value = randomScalingFactor();
+            datapoint.backgroundColor = 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
         });
         window.myDoughnut.update();
     });

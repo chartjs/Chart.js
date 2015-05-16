@@ -1299,28 +1299,27 @@
                 y: this.y + (Math.sin(centreAngle) * rangeFromCentre)
             };
         },
-        draw: function(animationPercent) {
+        draw: function() {
 
-            var easingDecimal = animationPercent || 1;
-
-            var ctx = this.ctx;
+            var ctx = this._chart.ctx;
+            var vm = this._vm;
 
             ctx.beginPath();
 
-            ctx.arc(this.x, this.y, this.outerRadius, this.startAngle, this.endAngle);
+            ctx.arc(vm.x, vm.y, vm.outerRadius, vm.startAngle, vm.endAngle);
 
-            ctx.arc(this.x, this.y, this.innerRadius, this.endAngle, this.startAngle, true);
+            ctx.arc(vm.x, vm.y, vm.innerRadius, vm.endAngle, vm.startAngle, true);
 
             ctx.closePath();
-            ctx.strokeStyle = this.borderColor;
-            ctx.lineWidth = this.borderWidth;
+            ctx.strokeStyle = vm.borderColor;
+            ctx.lineWidth = vm.borderWidth;
 
-            ctx.fillStyle = this.backgroundColor;
+            ctx.fillStyle = vm.backgroundColor;
 
             ctx.fill();
             ctx.lineJoin = 'bevel';
 
-            if (this.showBorder) {
+            if (vm.borderWidth) {
                 ctx.stroke();
             }
         }
