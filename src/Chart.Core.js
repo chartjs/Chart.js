@@ -939,7 +939,7 @@
             Chart.animationService.cancelAnimation(this);
             return this;
         },
-        resize: function(callback) {
+        resize: function() {
             this.stop();
             var canvas = this.chart.canvas,
                 newWidth = getMaximumWidth(this.chart.canvas),
@@ -950,9 +950,6 @@
 
             retinaScale(this.chart);
 
-            if (typeof callback === "function") {
-                callback.apply(this, Array.prototype.slice.call(arguments, 1));
-            }
             return this;
         },
         redraw: noop,
@@ -1279,24 +1276,28 @@
     Chart.Arc = Chart.Element.extend({
         inRange: function(chartX, chartY) {
 
-            var pointRelativePosition = helpers.getAngleFromPoint(this, {
+            var vm = this._vm;
+
+            var pointRelativePosition = helpers.getAngleFromPoint(vm, {
                 x: chartX,
                 y: chartY
             });
 
             //Check if within the range of the open/close angle
-            var betweenAngles = (pointRelativePosition.angle >= this.startAngle && pointRelativePosition.angle <= this.endAngle),
-                withinRadius = (pointRelativePosition.distance >= this.innerRadius && pointRelativePosition.distance <= this.outerRadius);
+            var betweenAngles = (pointRelativePosition.angle >= vm.startAngle && pointRelativePosition.angle <= vm.endAngle),
+                withinRadius = (pointRelativePosition.distance >= vm.innerRadius && pointRelativePosition.distance <= vm.outerRadius);
 
             return (betweenAngles && withinRadius);
             //Ensure within the outside of the arc centre, but inside arc outer
         },
         tooltipPosition: function() {
-            var centreAngle = this.startAngle + ((this.endAngle - this.startAngle) / 2),
-                rangeFromCentre = (this.outerRadius - this.innerRadius) / 2 + this.innerRadius;
+            var vm = this._vm;
+
+            var centreAngle = vm.startAngle + ((vm.endAngle - vm.startAngle) / 2),
+                rangeFromCentre = (vm.outerRadius - vm.innerRadius) / 2 + vm.innerRadius;
             return {
-                x: this.x + (Math.cos(centreAngle) * rangeFromCentre),
-                y: this.y + (Math.sin(centreAngle) * rangeFromCentre)
+                x: vm.x + (Math.cos(centreAngle) * rangeFromCentre),
+                y: vm.y + (Math.sin(centreAngle) * rangeFromCentre)
             };
         },
         draw: function() {
@@ -2312,7 +2313,9 @@
                     // If the responsive flag is set in the chart instance config
                     // Cascade the resize event down to the chart.
                     if (instance.options.responsive) {
-                        instance.resize(instance.render, true);
+                        instance.resize();
+                        instance.update();
+                        instance.render();
                     }
                 });
             }, 50);
