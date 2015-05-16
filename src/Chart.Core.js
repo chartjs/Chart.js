@@ -360,6 +360,9 @@
         toRadians = helpers.radians = function(degrees) {
             return degrees * (Math.PI / 180);
         },
+		toDegrees = helpers.toDegrees = function(radians) {
+			return radians * (180 / Math.PI);
+		},
         // Gets the angle from vertical upright to the point about a centre.
         getAngleFromPoint = helpers.getAngleFromPoint = function(centrePoint, anglePoint) {
             var distanceFromXCenter = anglePoint.x - centrePoint.x,
@@ -479,6 +482,36 @@
             };
 
         },
+		// Implementation of the nice number algorithm used in determining where axis labels will go
+		niceNum = helpers.niceNum = function(range, round) {
+			var exponent = Math.floor(Math.log10(range));
+			var fraction = range / Math.pow(10, exponent);
+			var niceFraction;
+			
+			if (round) {
+				if (fraction < 1.5) {
+					niceFraction = 1;
+				} else if (fraction < 3) {
+					niceFraction = 2;
+				} else if (fraction < 7) {
+					niceFraction = 5;
+				} else {
+					niceFraction = 10;
+				}
+			} else {
+				if (fraction <= 1.0) {
+					niceFraction = 1;
+				} else if (fraction <= 2) {
+					niceFraction = 2;
+				} else if (fraction <= 5) {
+					niceFraction = 5;
+				} else {
+					niceFraction = 10;
+				}
+			}
+			
+			return niceFraction * Math.pow(10, exponent);
+		},
         /* jshint ignore:start */
         // Blows up jshint errors based on the new Function constructor
         //Templating methods
