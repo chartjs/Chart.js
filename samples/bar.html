@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+
 <head>
     <title>Bar Chart</title>
     <script src="../Chart.js"></script>
@@ -12,8 +13,8 @@
     </div>
     <button id="randomizeData">Randomize Data</button>
     <script>
-    var randomScalingFactor = function(){ 
-        return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random()*100)
+    var randomScalingFactor = function() {
+        return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 100)
     };
     var randomColorFactor = function() {
         return Math.round(Math.random() * 255)
@@ -53,4 +54,5 @@
     });
     </script>
 </body>
+
 </html>
