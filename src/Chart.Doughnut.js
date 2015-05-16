@@ -117,7 +117,7 @@
 
             // Built in hover styling
             if (this.active.length && this.options.hoverMode) {
-                this.active[0].backgroundColor = this.data.data[this.active[0]._index].hoverBackgroundColor || helpers.color(this.active[0].backgroundColor).saturate(0.5).darken(0.35).rgbString();
+                this.active[0].backgroundColor = this.data.data[this.active[0]._index].hoverBackgroundColor || helpers.color(this.data.data[this.active[0]._index].backgroundColor).saturate(0.5).darken(0.35).rgbString();
             }
 
             // Built in Tooltips
