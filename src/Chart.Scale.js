@@ -337,6 +337,9 @@
 					maxTicks = Math.min(11, Math.ceil(height / (2 * this.options.labels.fontSize)));
 				}
 				
+				// Make sure we always have at least 2 ticks 
+				maxTicks = Math.max(2, maxTicks);
+				
 				// To get a "nice" value for the tick spacing, we will use the appropriately named 
 				// "nice number" algorithm. See http://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
 				// for details.
