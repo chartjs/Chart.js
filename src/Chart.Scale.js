@@ -55,6 +55,8 @@
 		// The interesting function
 		fitScalesForChart: function(chartInstance, width, height) {
 			var chartScaleWrapper = this.getWrapperForChart(chartInstance);
+			var xPadding = 10;
+			var yPadding = 10;
 			
 			if (chartScaleWrapper) {
 				var leftScales = helpers.where(chartScaleWrapper.scales, function(scaleInstance) {
@@ -69,6 +71,31 @@
 				var bottomScales = helpers.where(chartScaleWrapper.scales, function(scaleInstance) {
 					return scaleInstance.options.position == "bottom";
 				});
+				
+				// Adjust the padding to take into account displaying labels
+				if (topScales.length == 0 || bottomScales.length == 0) {
+					var maxFontHeight = 0;
+					
+					var maxFontHeightFunction = function(scaleInstance) {
+						if (scaleInstance.options.labels.show) {
+							// Only consider font sizes for axes that actually show labels
+							maxFontHeight = Math.max(maxFontHeight, scaleInstance.options.labels.fontSize);
+						}
+					};
+					
+					helpers.each(leftScales, maxFontHeightFunction);
+					helpers.each(rightScales, maxFontHeightFunction);
+					
+					if (topScales.length == 0) {
+						// Add padding so that we can handle drawing the top nicely
+						yPadding += 0.75 * maxFontHeight; // 0.75 since padding added on both sides
+					}
+					
+					if (bottomScales.length == 0) {
+						// Add padding so that we can handle drawing the bottom nicely
+						yPadding += 1.5 * maxFontHeight;
+					}
+				}
 				
 				// Essentially we now have any number of scales on each of the 4 sides.
 				// Our canvas looks like the following.
@@ -111,6 +138,9 @@
 					}
 				}
 				
+				chartWidth -= (2 * xPadding);
+				chartHeight-= (2 * yPadding);
+				
 				// Step 2
 				var verticalScaleWidth = (width - chartWidth) / (leftScales.length + rightScales.length);
 				
@@ -139,8 +169,8 @@
 				helpers.each(bottomScales, horizontalScaleMinSizeFunction);
 				
 				// Step 5
-				var maxChartHeight = height;
-				var maxChartWidth = width;
+				var maxChartHeight = height - (2 * yPadding);
+				var maxChartWidth = width - (2 * xPadding);
 				
 				var chartWidthReduceFunction = function(scaleInstance) {
 					maxChartWidth -= scalesToMinSize[scaleInstance].width;
@@ -189,8 +219,8 @@
 				helpers.each(bottomScales, horizontalScaleFitFunction);
 				
 				// Step 7 
-				var totalLeftWidth = 0;
-				var totalTopHeight = 0;
+				var totalLeftWidth = xPadding;
+				var totalTopHeight = yPadding;
 				
 				// Calculate total width of all left axes
 				helpers.each(leftScales, function(scaleInstance) {
@@ -203,8 +233,8 @@
 				});
 				
 				// Position the scales
-				var left = 0;
-				var top = 0;
+				var left = xPadding;
+				var top = yPadding;
 				var right = 0;
 				var bottom = 0;
 				
@@ -303,7 +333,8 @@
 				if (this.isHorizontal()) {
 					maxTicks = Math.min(11, Math.ceil(width / 50));
 				} else {
-					maxTicks = Math.min(11, Math.ceil(height / 50));
+					// The factor of 2 used to scale the font size has been experimentally determined.
+					maxTicks = Math.min(11, Math.ceil(height / (2 * this.options.labels.fontSize)));
 				}
 				
 				// To get a "nice" value for the tick spacing, we will use the appropriately named 
@@ -332,6 +363,11 @@
 				// We are in a vertical orientation. The top value is the highest. So reverse the array
 				this.ticks.reverse();
 			}
+			
+			// At this point, we need to update our max and min given the tick values since we have expanded the
+			// range of the scale
+			this.max = helpers.max(this.ticks);
+			this.min = helpers.min(this.ticks);
 		},
 		buildLabels: function() {
 			// We assume that this has been run after ticks have been generated. We try to figure out
@@ -497,6 +533,9 @@
 				
 				var setContextLineSettings;
 				var hasZero;
+				
+				// Make sure we draw text in the correct color
+				this.ctx.fillStyle = this.options.labels.fontColor;
 				
 				if (this.isHorizontal()) {
 					if (this.options.gridLines.show) {
