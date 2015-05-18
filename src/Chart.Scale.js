@@ -348,7 +348,16 @@
 				// do nothing since that would make the chart weird. If the user really wants a weird chart
 				// axis, they can manually override it
 				if (this.options.beginAtZero) {
-					this.min = Math.min(this.min, 0);
+					var minSign = helpers.sign(this.min);
+					var maxSign = helpers.sign(this.max);
+					
+					if (minSign < 0 && maxSign < 0) {
+						// move the top up to 0
+						this.max = 0;
+					} else if (minSign > 0 && maxSign > 0) {
+						// move the botttom down to 0
+						this.min = 0;
+					}
 				}
 				
 				var niceRange = helpers.niceNum(this.max - this.min, false);

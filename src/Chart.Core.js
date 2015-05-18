@@ -327,6 +327,17 @@
         min = helpers.min = function(array) {
             return Math.min.apply(Math, array);
         },
+		sign = helpers.sign = function(x) {
+			if (Math.sign) {
+				return Math.sign(x);
+			} else {
+				x = +x; // convert to a number
+				if (x === 0 || isNaN(x)) {
+					return x;
+				}
+				return x > 0 ? 1 : -1;
+			}
+		},
         cap = helpers.cap = function(valueToCap, maxValue, minValue) {
             if (isNumber(maxValue)) {
                 if (valueToCap > maxValue) {
