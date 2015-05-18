@@ -355,6 +355,8 @@
 					color: "rgba(0, 0, 0, 0.05)",
 					lineWidth: 1,
 					drawOnChartArea: true,
+                    zeroLineWidth: 1,
+                    zeroLineColor: "rgba(0,0,0,0.25)",
 				},
 
 				// scale numbers
@@ -387,6 +389,8 @@
 					color: "rgba(0, 0, 0, 0.05)",
 					lineWidth: 1,
 					drawOnChartArea: true,
+                    zeroLineWidth: 1,
+                    zeroLineColor: "rgba(0,0,0,0.25)",
 				},
 
 				// scale numbers

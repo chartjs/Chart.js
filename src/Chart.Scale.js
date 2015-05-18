@@ -506,20 +506,6 @@
 						hasZero = helpers.findNextWhere(this.ticks, function(tick) { return tick === 0; }) !== undefined;
 						var yTickStart = this.options.position == "bottom" ? this.top : this.bottom - 10;
 						var yTickEnd = this.options.position == "bottom" ? this.top + 10 : this.bottom;
-						
-						this.ctx.lineWidth = this.options.gridLines.zeroLineWidth;
-						this.ctx.strokeStyle = this.options.gridLines.zeroLineColor;
-						
-						this.ctx.beginPath();
-						
-						if (this.options.position == "top") {
-							this.ctx.moveTo(this.left, this.bottom - 5);
-							this.ctx.lineTo(this.right, this.bottom - 5);
-						} else {
-							// On bottom, so draw horizontal line on the top
-							this.ctx.moveTo(this.left, this.top + 5);
-							this.ctx.lineTo(this.right, this.top + 5);
-						}
 
 						helpers.each(this.ticks, function(tick, index) {
 							// Grid lines are vertical
@@ -539,6 +525,7 @@
 							xValue += helpers.aliasPixel(this.ctx.lineWidth);
 							
 							// Draw the label area
+							this.ctx.beginPath();
 							this.ctx.moveTo(xValue, yTickStart);
 							this.ctx.lineTo(xValue, yTickEnd);
 							
@@ -547,9 +534,10 @@
 								this.ctx.moveTo(xValue, chartArea.top);
 								this.ctx.lineTo(xValue, chartArea.bottom);
 							}
+
+							// Need to stroke in the loop because we are potentially changing line widths & colours
+							this.ctx.stroke();
 						}, this);
-						
-						this.ctx.stroke();
 					}
 
 					if (this.options.labels.show) {
@@ -580,22 +568,8 @@
 						// Draw the vertical line
 						setContextLineSettings = true;
 						hasZero = helpers.findNextWhere(this.ticks, function(tick) { return tick === 0; }) !== undefined;
-						var xTickStart = this.options.position == "left" ? this.left : this.right - 10;
-						var xTickEnd = this.options.position == "left" ? this.left + 10 : this.right;
-						
-						this.ctx.lineWidth = this.options.gridLines.zeroLineWidth;
-						this.ctx.strokeStyle = this.options.gridLines.zeroLineColor;
-						
-						this.ctx.beginPath();
-						
-						if (this.options.position == "left") {
-							this.ctx.moveTo(this.right - 5, this.top);
-							this.ctx.lineTo(this.right - 5, this.bottom);
-						} else {
-							// On right, so draw vertical line on left size of axis block
-							this.ctx.moveTo(this.left + 5, this.top);
-							this.ctx.lineTo(this.left + 5, this.bottom);
-						}
+						var xTickStart = this.options.position == "right" ? this.left : this.right - 10;
+						var xTickEnd = this.options.position == "right" ? this.left + 10 : this.right;
 						
 						helpers.each(this.ticks, function(tick, index) {
 							// Grid lines are horizontal
@@ -609,10 +583,13 @@
 							} else if (setContextLineSettings) {
 								this.ctx.lineWidth = this.options.gridLines.lineWidth;
 								this.ctx.strokeStyle = this.options.gridLines.color;
-								setContextLineSettings = false;
+								setContextLineSettings = false; // use boolean to indicate that we only want to do this once
 							}
 							
+							yValue += helpers.aliasPixel(this.ctx.lineWidth);
+
 							// Draw the label area
+							this.ctx.beginPath();
 							this.ctx.moveTo(xTickStart, yValue);
 							this.ctx.lineTo(xTickEnd, yValue);
 							
@@ -621,9 +598,9 @@
 								this.ctx.moveTo(chartArea.left, yValue);
 								this.ctx.lineTo(chartArea.right, yValue);
 							}
+
+							this.ctx.stroke();
 						}, this);
-						
-						this.ctx.stroke();
 					}
 					
 					if (this.options.labels.show) {
