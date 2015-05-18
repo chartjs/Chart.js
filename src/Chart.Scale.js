@@ -148,16 +148,24 @@
 				var horizontalScaleHeight = (height - chartHeight) / (topScales.length + bottomScales.length);
 				
 				// Step 4;
-				var scalesToMinSize = {};
+				var minimumScaleSizes = [];
 				
 				var verticalScaleMinSizeFunction = function(scaleInstance) {
 					var minSize = scaleInstance.fit(verticalScaleWidth, chartHeight);
-					scalesToMinSize[scaleInstance] = minSize;
+					minimumScaleSizes.push({
+						horizontal: false,
+						minSize: minSize,
+						scale: scaleInstance,
+					});
 				};
 				
 				var horizontalScaleMinSizeFunction = function(scaleInstance) {
 					var minSize = scaleInstance.fit(chartWidth, horizontalScaleHeight);
-					scalesToMinSize[scaleInstance] = minSize;
+					minimumScaleSizes.push({
+						horizontal: true,
+						minSize: minSize,
+						scale: scaleInstance,
+					});
 				};
 				
 				// vertical scales
@@ -172,18 +180,13 @@
 				var maxChartHeight = height - (2 * yPadding);
 				var maxChartWidth = width - (2 * xPadding);
 				
-				var chartWidthReduceFunction = function(scaleInstance) {
-					maxChartWidth -= scalesToMinSize[scaleInstance].width;
-				};
-				
-				var chartHeightReduceFunction = function(scaleInstance) {
-					maxChartHeight -= scalesToMinSize[scaleInstance].height;
-				};
-				
-				helpers.each(leftScales, chartWidthReduceFunction);
-				helpers.each(rightScales, chartWidthReduceFunction);
-				helpers.each(topScales, chartHeightReduceFunction);
-				helpers.each(bottomScales, chartHeightReduceFunction);
+				helpers.each(minimumScaleSizes, function(wrapper) {
+					if (wrapper.horizontal) {
+						maxChartHeight -= wrapper.minSize.height;
+					} else {
+						maxChartWidth -= wrapper.minSize.width;
+					}
+				});
 				
 				// At this point, maxChartHeight and maxChartWidth are the size the chart area could
 				// be if the axes are drawn at their minimum sizes.
@@ -204,13 +207,23 @@
 				
 				// Step 6
 				var verticalScaleFitFunction = function(scaleInstance) {
-					var minSize = scalesToMinSize[scaleInstance];
-					scaleInstance.fit(minSize.width, maxChartHeight);
+					var wrapper = helpers.findNextWhere(minimumScaleSizes, function(wrapper) {
+						return wrapper.scale === scaleInstance;
+					});
+
+					if (wrapper) {
+						scaleInstance.fit(wrapper.minSize.width, maxChartHeight);
+					}
 				};
 				
 				var horizontalScaleFitFunction = function(scaleInstance) {
-					var minSize = scalesToMinSize[scaleInstance];
-					scaleInstance.fit(maxChartWidth, minSize.width);
+					var wrapper = helpers.findNextWhere(minimumScaleSizes, function(wrapper) {
+						return wrapper.scale === scaleInstance;
+					});
+
+					if (wrapper) {
+						scaleInstance.fit(maxChartWidth, wrapper.minSize.width);
+					}
 				};
 				
 				helpers.each(leftScales, verticalScaleFitFunction);
