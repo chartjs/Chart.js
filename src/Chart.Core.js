@@ -239,6 +239,37 @@
             args.unshift({});
             return extend.apply(null, args);
         },
+        // Need a special merge function to chart configs since they are now grouped
+        configMerge = helpers.configMerge = function(base) {
+            helpers.each(Array.prototype.slice.call(arguments, 1), function(extension) {
+                helpers.each(extension, function(value, key) {
+                    if (extension.hasOwnProperty(key)) {
+                        if (base.hasOwnProperty(key) && helpers.isArray(base[key]) && helpers.isArray(value)) {
+                            // In this case we have an array of objects replacing another array. Rather than doing a strict replace,
+                            // merge. This allows easy scale option merging
+                            var baseArray = base[key];
+
+                            helpers.each(value, function(valueObj, index) {
+                                if (index < baseArray.length) {
+                                    baseArray[index] = helpers.configMerge(baseArray[index], valueObj);
+                                } else {
+                                    baseArray.push(valueObj); // nothing to merge
+                                }
+                            });
+                        }
+                        else if (base.hasOwnProperty(key) && typeof base[key] == "object" && typeof value == "object") {
+                            // If we are overwriting an object with an object, do a merge of the properties.
+                            base[key] = helpers.configMerge(base[key], value);
+                        } else {
+                            // can just overwrite the value in this case
+                            base[key] = value;
+                        }
+                    }
+                });
+            });
+            
+            return base;
+        },
         indexOf = helpers.indexOf = function(arrayToSearch, item) {
             if (Array.prototype.indexOf) {
                 return arrayToSearch.indexOf(item);
@@ -1126,13 +1157,13 @@
 
             var baseDefaults = (Chart.defaults[parent.prototype.name]) ? clone(Chart.defaults[parent.prototype.name]) : {};
 
-            Chart.defaults[chartName] = extend(baseDefaults, extensions.defaults);
+            Chart.defaults[chartName] = helpers.configMerge(baseDefaults, extensions.defaults);
 
             Chart.types[chartName] = ChartType;
 
             //Register this new chart type in the Chart prototype
             Chart.prototype[chartName] = function(data, options) {
-                var config = merge(Chart.defaults.global, Chart.defaults[chartName], options || {});
+                var config = helpers.configMerge(Chart.defaults.global, Chart.defaults[chartName], options || {});
                 return new ChartType(data, config, this);
             };
         } else {

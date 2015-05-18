@@ -7,20 +7,72 @@
 
     var defaultConfig = {
 
-        ///Boolean - Whether grid lines are shown across the chart
-        scaleShowGridLines: true,
+        scales: {
+            xAxes: [{
+                scaleType: "linear", // scatter should not use a dataset axis
+                show: true,
+                position: "bottom",
+                horizontal: true,
+                id: "x-axis-1", // need an ID so datasets can reference the scale
+                
+                // grid line settings
+                gridLines: {
+                    show: true,
+                    color: "rgba(0, 0, 0, 0.05)",
+                    lineWidth: 1,
+                    drawOnChartArea: true,
+                    zeroLineWidth: 1,
+                    zeroLineColor: "rgba(0,0,0,0.25)",
+                },
 
-        //String - Colour of the grid lines
-        scaleGridLineColor: "rgba(0,0,0,.05)",
+                // scale numbers
+                beginAtZero: false,
+                integersOnly: false,
+                override: null,
 
-        //Number - Width of the grid lines
-        scaleGridLineWidth: 1,
+                // label settings
+                labels: {
+                    show: true,
+                    template: "<%=value%>",
+                    fontSize: 12,
+                    fontStyle: "normal",
+                    fontColor: "#666",
+                    fontFamily: "Helvetica Neue",
+                },
+            }],
+            yAxes: [{
+                scaleType: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                show: true,
+                position: "left",
+                horizontal: false, 
+                id: "y-axis-1",
+        
+                // grid line settings
+                gridLines: {
+                    show: true,
+                    color: "rgba(0, 0, 0, 0.05)",
+                    lineWidth: 1,
+                    drawOnChartArea: true,
+                    zeroLineWidth: 1,
+                    zeroLineColor: "rgba(0,0,0,0.25)",
+                },
 
-        //Boolean - Whether to show horizontal lines (except X axis)
-        scaleShowHorizontalLines: true,
+                // scale numbers
+                beginAtZero: false,
+                integersOnly: false,
+                override: null,
 
-        //Boolean - Whether to show vertical lines (except Y axis)
-        scaleShowVerticalLines: true,
+                // label settings
+                labels: {
+                    show: true,
+                    template: "<%=value%>",
+                    fontSize: 12,
+                    fontStyle: "normal",
+                    fontColor: "#666",
+                    fontFamily: "Helvetica Neue",
+                }
+            }],
+        },
 
         //Number - Tension of the bezier curve between points
         tension: 0.4,
@@ -39,9 +91,6 @@
 
         //String - A legend template
         legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].borderColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
-
-        //Boolean - Whether to horizontally center the label and point dot inside the grid
-        offsetGridLines: false
 
     };
 
@@ -66,7 +115,7 @@
             helpers.bindEvents(this, this.options.tooltipEvents, this.onHover);
 
             // Build Scale
-            this.buildScale(this.data.labels);
+            this.buildScale();
 			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
 
             //Create a new line and its points for each dataset and piece of data
@@ -76,6 +125,15 @@
                 helpers.each(dataset.data, function(dataPoint, index) {
                     dataset.metaData.push(new this.PointClass());
                 }, this);
+
+                // Make sure each dataset is bound to an x and a y axis
+                if (!dataset.xAxisID) {
+                    dataset.xAxisID = this.options.scales.xAxes[0].id;
+                }
+
+                if (!dataset.yAxisID) {
+                    dataset.yAxisID = this.options.scales.yAxes[0].id;
+                }
             }, this);
 
             // Set defaults for lines
@@ -92,8 +150,10 @@
 
             // Set defaults for points
             this.eachElement(function(point, index, dataset, datasetIndex) {
+                var xScale = this.scales[this.data.datasets[datasetIndex].xAxisID];
+
                 helpers.extend(point, {
-                    x: this.xScale.getPixelForValue(index),
+                    x: xScale.getPixelForValue(index),
                     y: this.chartArea.bottom,
                     _datasetIndex: datasetIndex,
                     _index: index,
@@ -266,9 +326,12 @@
 
             // Update the points
             this.eachElement(function(point, index, dataset, datasetIndex) {
+                var xScale = this.scales[this.data.datasets[datasetIndex].xAxisID];
+                var yScale = this.scales[this.data.datasets[datasetIndex].yAxisID];
+
                 helpers.extend(point, {
-                    x: this.xScale.getPixelForValue(this.data.datasets[datasetIndex].data[index].x),
-                    y: this.yScale.getPixelForValue(this.data.datasets[datasetIndex].data[index].y),
+                    x: xScale.getPixelForValue(this.data.datasets[datasetIndex].data[index].x),
+                    y: yScale.getPixelForValue(this.data.datasets[datasetIndex].data[index].y),
                     value: this.data.datasets[datasetIndex].data[index].y,
                     label: this.data.datasets[datasetIndex].data[index].x,
                     datasetLabel: this.data.datasets[datasetIndex].label,
@@ -323,137 +386,84 @@
 
             this.render();
         },
-        buildScale: function(labels) {
+        buildScale: function() {
             var self = this;
 
-            var dataTotal = function() {
-                var values = [];
-                self.eachValue(function(value) {
-                    values.push(value);
-                });
-
-                return values;
+            var calculateXRange = function() {
+                this.min = null;
+                this.max = null;
+                
+                helpers.each(self.data.datasets, function(dataset) {
+                    // Only set the scale range for datasets that actually use this axis
+                    if (dataset.xAxisID === this.id) {
+                        helpers.each(dataset.data, function(value) {
+                            if (this.min === null) {
+                                this.min = value.x;
+                            } else if (value.x < this.min) {
+                                this.min = value.x;
+                            }
+                            
+                            if (this.max === null) {
+                                this.max = value.x;
+                            } else if (value.x > this.max) {
+                                this.max = value.x;
+                            }
+                        }, this);
+                    }
+                }, this);
             };
 
-			var XScaleClass = Chart.scales.getScaleConstructor("linear");
-			var YScaleClass = Chart.scales.getScaleConstructor("linear");
-			
-			this.xScale = new XScaleClass({
-				ctx: this.chart.ctx,
-			});
-			
-			// Eventually this will be referenced from the user supplied config options.
-			this.xScale.options = {
-				scaleType: "dataset", // default options are 'dataset', 'linear'. 
-				show: true,
-				position: "bottom",
-				horizontal: true,
-				
-				// grid line settings
-				gridLines: {
-					show: true,
-					color: "rgba(0, 0, 0, 0.05)",
-					lineWidth: 1,
-					drawOnChartArea: true,
-                    zeroLineWidth: 1,
-                    zeroLineColor: "rgba(0,0,0,0.25)",
-				},
+            var calculateYRange = function() {
+                this.min = null;
+                this.max = null;
+                
+                helpers.each(self.data.datasets, function(dataset) {
+                    if (dataset.yAxisID === this.id) {
+                        helpers.each(dataset.data, function(value) {
+                            if (this.min === null) {
+                                this.min = value.y;
+                            } else if (value.y < this.min) {
+                                this.min = value.y;
+                            }
+                            
+                            if (this.max === null) {
+                                this.max = value.y;
+                            } else if (value.y > this.max) {
+                                this.max = value.y;
+                            }
+                        }, this);
+                    }
+                }, this);
+            };
 
-				// scale numbers
-				beginAtZero: false,
-				integersOnly: false,
-				override: null,
+            // Map of scale ID to scale object so we can lookup later 
+            this.scales = {};
 
-				// label settings
-				labels: {
-					show: true,
-					template: "<%=value%>",
-					fontSize: 12,
-					fontStyle: "normal",
-					fontColor: "#666",
-					fontFamily: "Helvetica Neue",
-				},
-			};
-			this.yScale = new YScaleClass({
-				ctx: this.chart.ctx,
-			});
-			this.yScale.options = {
-				scaleType: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-				show: true,
-				position: "left",
-				horizontal: false, 
-		
-				// grid line settings
-				gridLines: {
-					show: true,
-					color: "rgba(0, 0, 0, 0.05)",
-					lineWidth: 1,
-					drawOnChartArea: true,
-                    zeroLineWidth: 1,
-                    zeroLineColor: "rgba(0,0,0,0.25)",
-				},
+            helpers.each(this.options.scales.xAxes, function(xAxisOptions) {
+                var ScaleClass = Chart.scales.getScaleConstructor(xAxisOptions.scaleType);
+                var scale = new ScaleClass({
+                    ctx: this.chart.ctx,
+                    options: xAxisOptions,
+                    calculateRange: calculateXRange,
+                    id: xAxisOptions.id,
+                });
 
-				// scale numbers
-				beginAtZero: false,
-				integersOnly: false,
-				override: null,
+                this.scales[scale.id] = scale;
+                Chart.scaleService.registerChartScale(this, scale);
+            }, this);
 
-				// label settings
-				labels: {
-					show: true,
-					template: "<%=value%>",
-					fontSize: 12,
-					fontStyle: "normal",
-					fontColor: "#666",
-					fontFamily: "Helvetica Neue",
-				},
-			};
-			
-			this.xScale.calculateRange = function() {
-				this.min = null;
-				this.max = null;
-				
-				helpers.each(self.data.datasets, function(dataset) {
-					helpers.each(dataset.data, function(value) {
-						if (this.min === null) {
-							this.min = value.x;
-						} else if (value.x < this.min) {
-							this.min = value.x;
-						}
-						
-						if (this.max === null) {
-							this.max = value.x;
-						} else if (value.x > this.max) {
-							this.max = value.x;
-						}
-					}, this);
-				}, this);
-			};
-			
-			this.yScale.calculateRange = function() {
-				this.min = null;
-				this.max = null;
-				
-				helpers.each(self.data.datasets, function(dataset) {
-					helpers.each(dataset.data, function(value) {
-						if (this.min === null) {
-							this.min = value.y;
-						} else if (value.y < this.min) {
-							this.min = value.y;
-						}
-						
-						if (this.max === null) {
-							this.max = value.y;
-						} else if (value.y > this.max) {
-							this.max = value.y;
-						}
-					}, this);
-				}, this);
-			};
-			
-			// Register the axes with the scale service
-			Chart.scaleService.registerChartScale(this, this.xScale);
-			Chart.scaleService.registerChartScale(this, this.yScale);
+            helpers.each(this.options.scales.yAxes, function(yAxisOptions) {
+                var ScaleClass = Chart.scales.getScaleConstructor(yAxisOptions.scaleType);
+                var scale = new ScaleClass({
+                    ctx: this.chart.ctx,
+                    options: yAxisOptions,
+                    calculateRange: calculateYRange,
+                    id: yAxisOptions.id,
+                });
+
+                this.scales[scale.id] = scale;
+                Chart.scaleService.registerChartScale(this, scale);
+            }, this);
         },
         redraw: function() {
 

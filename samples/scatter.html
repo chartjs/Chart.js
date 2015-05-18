@@ -88,7 +88,14 @@
         var ctx = document.getElementById("canvas").getContext("2d");
         window.myScatter = new Chart(ctx).Scatter(scatterChartData, {
             responsive: true,
-            hoverMode: 'single'
+            hoverMode: 'single',
+            scales: {
+            	xAxes: [{
+            		gridLines: {
+            			zeroLineColor: "rgba(0,0,0,1)"
+            		}
+            	}]
+            }
         });
     };
 
