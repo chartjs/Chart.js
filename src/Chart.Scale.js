@@ -73,7 +73,7 @@
 				});
 				
 				// Adjust the padding to take into account displaying labels
-				if (topScales.length == 0 || bottomScales.length == 0) {
+				if (topScales.length === 0 || bottomScales.length === 0) {
 					var maxFontHeight = 0;
 					
 					var maxFontHeightFunction = function(scaleInstance) {
@@ -86,12 +86,12 @@
 					helpers.each(leftScales, maxFontHeightFunction);
 					helpers.each(rightScales, maxFontHeightFunction);
 					
-					if (topScales.length == 0) {
+					if (topScales.length === 0) {
 						// Add padding so that we can handle drawing the top nicely
 						yPadding += 0.75 * maxFontHeight; // 0.75 since padding added on both sides
 					}
 					
-					if (bottomScales.length == 0) {
+					if (bottomScales.length === 0) {
 						// Add padding so that we can handle drawing the bottom nicely
 						yPadding += 1.5 * maxFontHeight;
 					}
