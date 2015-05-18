@@ -457,9 +457,7 @@
 				if (this.isHorizontal()) {
 					// A horizontal axis is more constrained by the height.
 					var maxLabelHeight = maxHeight - minSize.height;
-					
-					// Calculate the label rotation
-					var labelHeight = this.calculateLabelRotation(minSize.width, maxLabelHeight);
+					var labelHeight = 1.5 * this.options.labels.fontSize;
 					minSize.height = Math.min(maxHeight, minSize.height + labelHeight);
 				} else {
 					// A vertical axis is more constrained by the width. Labels are the dominant factor 
@@ -481,54 +479,6 @@
 			this.height = minSize.height;
 			return minSize;
 		},
-		// Function calculate the needed rotation of the labels. Should only be used in horizontal mode
-		// @param {number} width : the available width
-		// @param {number} height: the available height
-		// @return {number} : the height needed by the labels
-		calculateLabelRotation : function(width, height){
-			//Get the width of each grid by calculating the difference
-			//between x offsets between 0 and 1.
-
-			var labelFont = helpers.fontString(this.options.labels.fontSize, 
-				this.options.labels.fontStyle, this.options.labels.fontFamily);
-			
-			this.labelRotation = 0; // reset
-			
-			// Steps
-			// 1. determine if we need to overlap
-			// 2. if overlap, determine max rotation
-			// 3. Rotate until no overlap
-			// 4. Save rotation
-			// 5. Return height needed for rotation
-			var longestTextWidth = helpers.longestText(this.ctx, labelFont, this.lables);
-			var maxAvailableWidth = (width / (this.ticks.length - 1)) - 6;
-			
-			// 6 adds 3px of padding on each end of the label
-			if (longestTextWidth > maxAvailableWidth) {
-				// Ok, we need to rotate. Do steps 2-4
-				var idealRotation = Math.floor(helpers.toDegrees(Math.asin(height / longestTextWidth)));
-				var maxRotation = Math.min(90, idealRotation);
-				
-				// Increment the rotation in 1 degree steps (step 3)
-				for (var rotation = 1; rotation < maxRotation; ++rotation) {
-					var cosRotation = Math.cos(helpers.toRadians(rotation));
-					this.labelRotation = rotation; // step 4
-					
-					if (cosRotation * longestTextWidth <= maxAvailableWidth) {
-						// Rotated enough
-						break;
-					}
-				}
-				
-				// step 5
-				return Math.min(height, longestTextWidth * Math.sin(this.labelRotation));
-			} else {
-				// Height only constrained by text font size and padding
-				var idealHeight = this.options.labels.fontSize + 10; // add 10 for padding
-				return Math.min(height, idealHeight);
-			}
-		},
-		
 		// Actualy draw the scale on the canvas
 		// @param {rectangle} chartArea : the area of the chart to draw full grid lines on
 		draw: function(chartArea) {
