@@ -21,6 +21,7 @@
                     color: "rgba(0, 0, 0, 0.05)",
                     lineWidth: 1,
                     drawOnChartArea: true,
+                    drawTicks: true,
                     zeroLineWidth: 1,
                     zeroLineColor: "rgba(0,0,0,0.25)",
                 },
@@ -53,6 +54,7 @@
                     color: "rgba(0, 0, 0, 0.05)",
                     lineWidth: 1,
                     drawOnChartArea: true,
+                    drawTicks: true, // draw ticks extending towards the label
                     zeroLineWidth: 1,
                     zeroLineColor: "rgba(0,0,0,0.25)",
                 },
