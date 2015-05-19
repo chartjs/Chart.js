@@ -451,7 +451,6 @@
                 });
 
                 this.scales[scale.id] = scale;
-                Chart.scaleService.registerChartScale(this, scale);
             }, this);
 
             helpers.each(this.options.scales.yAxes, function(yAxisOptions) {
@@ -464,7 +463,6 @@
                 });
 
                 this.scales[scale.id] = scale;
-                Chart.scaleService.registerChartScale(this, scale);
             }, this);
         },
         redraw: function() {
@@ -475,10 +473,8 @@
             var easingDecimal = ease || 1;
             this.clear();
 			
-			var chartScaleWrapper = Chart.scaleService.getWrapperForChart(this);
-			
 			// Draw all the scales
-			helpers.each(chartScaleWrapper.scales, function(scale) {
+			helpers.each(this.scales, function(scale) {
 				scale.draw(this.chartArea);
 			}, this);
 

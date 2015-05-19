@@ -9,66 +9,22 @@
 	// a service where scales are registered with their respective charts so that changing the 
 	// scales does not require 
 	Chart.scaleService = {
-		registeredCharts: [],
-		getWrapperForChart: function(chartInstance) {
-			var wrapper = helpers.findNextWhere(this.registeredCharts, function(charScaleWrapper) {
-				return charScaleWrapper.chartInstance == chartInstance;
-			});
-			
-			return wrapper;
-		},
-		registerChartScale: function(chartInstance, scaleInstance) {
-			var chartScaleWrapper = this.getWrapperForChart(chartInstance);
-			
-			if (!chartScaleWrapper) {
-				chartScaleWrapper = {
-					scales: [],
-					chartInstance: chartInstance,
-				};
-				
-				this.registeredCharts.push(chartScaleWrapper);
-			}
-			
-			chartScaleWrapper.scales.push(scaleInstance);
-		},
-		removeChartScale: function(chartInstance, scaleInstance) {
-			var chartScaleWrapper = this.getWrapperForChart(chartInstance);
-			
-			if (chartScaleWrapper) {
-				var scaleIndex = helpers.indexOf(scaleWrapper.scales, scaleInstance);
-				
-				if (scaleIndex) {
-					scaleWrapper.scales.splice(scaleIndex, 1);
-				}
-			}
-		},
-		// Remove a chart instance from the scale service. Useful when a chart is destroyed
-		removeChartInstance: function(chartInstance) {
-			var index = helpers.findNextWhere(this.registeredCharts, function(scaleWrapper) {
-				return scaleWrapper.chartInstance == chartInstance;
-			});
-			
-			if (index) {
-				this.registeredCharts.splice(index, 1);
-			}
-		},
 		// The interesting function
 		fitScalesForChart: function(chartInstance, width, height) {
-			var chartScaleWrapper = this.getWrapperForChart(chartInstance);
 			var xPadding = 10;
 			var yPadding = 10;
 			
-			if (chartScaleWrapper) {
-				var leftScales = helpers.where(chartScaleWrapper.scales, function(scaleInstance) {
+			if (chartInstance) {
+				var leftScales = helpers.where(chartInstance.scales, function(scaleInstance) {
 					return scaleInstance.options.position == "left";
 				});
-				var rightScales = helpers.where(chartScaleWrapper.scales, function(scaleInstance) {
+				var rightScales = helpers.where(chartInstance.scales, function(scaleInstance) {
 					return scaleInstance.options.position == "right";
 				});
-				var topScales = helpers.where(chartScaleWrapper.scales, function(scaleInstance) {
+				var topScales = helpers.where(chartInstance.scales, function(scaleInstance) {
 					return scaleInstance.options.position == "top";
 				});
-				var bottomScales = helpers.where(chartScaleWrapper.scales, function(scaleInstance) {
+				var bottomScales = helpers.where(chartInstance.scales, function(scaleInstance) {
 					return scaleInstance.options.position == "bottom";
 				});
 				
@@ -282,7 +238,7 @@
 				helpers.each(bottomScales, horizontalScalePlacer);
 				
 				// Step 8
-				chartScaleWrapper.chartInstance.chartArea = {
+				chartInstance.chartArea = {
 					left: totalLeftWidth,
 					top: totalTopHeight,
 					right: totalLeftWidth + maxChartWidth,
