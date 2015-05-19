@@ -538,8 +538,9 @@
 							xValue += helpers.aliasPixel(this.ctx.lineWidth);
 							
 							// Draw the label area
-							if (this.options.gridLines.drawTicks) {
-								this.ctx.beginPath();
+							this.ctx.beginPath();
+
+							if (this.options.gridLines.drawTicks) {	
 								this.ctx.moveTo(xValue, yTickStart);
 								this.ctx.lineTo(xValue, yTickEnd);
 							}
@@ -604,8 +605,9 @@
 							yValue += helpers.aliasPixel(this.ctx.lineWidth);
 
 							// Draw the label area
+							this.ctx.beginPath();
+							
 							if (this.options.gridLines.drawTicks) {
-								this.ctx.beginPath();
 								this.ctx.moveTo(xTickStart, yValue);
 								this.ctx.lineTo(xTickEnd, yValue);
 							}
