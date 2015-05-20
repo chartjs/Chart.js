@@ -58,10 +58,7 @@
 		defaults : defaultConfig,
 		//Initialize is fired when the chart is initialized - Data is passed in as a parameter
 		//Config is automatically merged by the core of Chart.js, and is available at this.options
-		initialize:  function(data){
-			// Save data as a source for updating of values & methods
-			this.data = data;
-
+		initialize:  function(){
 			this.segments = [];
 			//Declare segment class as a chart instance specific class, so it can share props for this instance
 			this.SegmentArc = Chart.Arc.extend({
@@ -93,14 +90,14 @@
 				yCenter: this.chart.height/2,
 				ctx : this.chart.ctx,
 				templateString: this.options.scaleLabel,
-				valuesCount: data.length
+				valuesCount: this.data.length
 			});
 
-			this.updateScaleRange(data);
+			this.updateScaleRange(this.data);
 
 			this.scale.update();
 
-			helpers.each(data,function(segment,index){
+			helpers.each(this.data,function(segment,index){
 				this.addData(segment,index,true);
 			},this);
 

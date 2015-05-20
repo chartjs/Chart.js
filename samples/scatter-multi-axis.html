@@ -90,82 +90,85 @@
 
     window.onload = function() {
         var ctx = document.getElementById("canvas").getContext("2d");
-        window.myScatter = new Chart(ctx).Scatter(scatterChartData, {
-            responsive: true,
-            hoverMode: 'single',
-            scales: {
-            	xAxes: [{
-            		position: "bottom",
-            		gridLines: {
-            			zeroLineColor: "rgba(0,0,0,1)"
-            		}
-            	}],
-            	yAxes: [{
-	                scaleType: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-	                show: true,
-	                position: "left",
-	                horizontal: false, 
-	                id: "y-axis-1",
-	        
-	                // grid line settings
-	                gridLines: {
-	                    show: true,
-	                    color: "rgba(0, 0, 0, 0.05)",
-	                    lineWidth: 1,
-	                    drawOnChartArea: true,
-	                    drawTicks: true,
-	                    zeroLineWidth: 1,
-	                    zeroLineColor: "rgba(0,0,0,0.25)",
-	                },
+        window.myScatter = new Chart(ctx).Scatter({
+        	data: scatterChartData,
+        	options: {
+	            responsive: true,
+	            hoverMode: 'single',
+	            scales: {
+	            	xAxes: [{
+	            		position: "bottom",
+	            		gridLines: {
+	            			zeroLineColor: "rgba(0,0,0,1)"
+	            		}
+	            	}],
+	            	yAxes: [{
+		                scaleType: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+		                show: true,
+		                position: "left",
+		                horizontal: false, 
+		                id: "y-axis-1",
+		        
+		                // grid line settings
+		                gridLines: {
+		                    show: true,
+		                    color: "rgba(0, 0, 0, 0.05)",
+		                    lineWidth: 1,
+		                    drawOnChartArea: true,
+		                    drawTicks: true,
+		                    zeroLineWidth: 1,
+		                    zeroLineColor: "rgba(0,0,0,0.25)",
+		                },
 
-	                // scale numbers
-	                beginAtZero: false,
-	                integersOnly: false,
-	                override: null,
+		                // scale numbers
+		                beginAtZero: false,
+		                integersOnly: false,
+		                override: null,
 
-	                // label settings
-	                labels: {
-	                    show: true,
-	                    template: "<%=value%>",
-	                    fontSize: 12,
-	                    fontStyle: "normal",
-	                    fontColor: "#666",
-	                    fontFamily: "Helvetica Neue",
-	                }
-	            }, {
-	                scaleType: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-	                show: true,
-	                position: "right",
-	                horizontal: false, 
-	                id: "y-axis-2",
-	        
-	                // grid line settings
-	                gridLines: {
-	                    show: true,
-	                    color: "rgba(0, 0, 0, 0.05)",
-	                    lineWidth: 1,
-	                    drawOnChartArea: false, // only want the grid lines for one axis to show up
-	                    drawTicks: false,
-	                    zeroLineWidth: 1,
-	                    zeroLineColor: "rgba(0,0,0,0.25)",
-	                },
+		                // label settings
+		                labels: {
+		                    show: true,
+		                    template: "<%=value%>",
+		                    fontSize: 12,
+		                    fontStyle: "normal",
+		                    fontColor: "#666",
+		                    fontFamily: "Helvetica Neue",
+		                }
+		            }, {
+		                scaleType: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+		                show: true,
+		                position: "right",
+		                horizontal: false, 
+		                id: "y-axis-2",
+		        
+		                // grid line settings
+		                gridLines: {
+		                    show: true,
+		                    color: "rgba(0, 0, 0, 0.05)",
+		                    lineWidth: 1,
+		                    drawOnChartArea: false, // only want the grid lines for one axis to show up
+		                    drawTicks: false,
+		                    zeroLineWidth: 1,
+		                    zeroLineColor: "rgba(0,0,0,0.25)",
+		                },
 
-	                // scale numbers
-	                beginAtZero: false,
-	                integersOnly: false,
-	                override: null,
+		                // scale numbers
+		                beginAtZero: false,
+		                integersOnly: false,
+		                override: null,
 
-	                // label settings
-	                labels: {
-	                    show: true,
-	                    template: "<%=value%>",
-	                    fontSize: 12,
-	                    fontStyle: "normal",
-	                    fontColor: "#666",
-	                    fontFamily: "Helvetica Neue",
-	                }
-	            }],
-            }
+		                // label settings
+		                labels: {
+		                    show: true,
+		                    template: "<%=value%>",
+		                    fontSize: 12,
+		                    fontStyle: "normal",
+		                    fontColor: "#666",
+		                    fontFamily: "Helvetica Neue",
+		                }
+		            }],
+	            }
+	        }
         });
     };
 

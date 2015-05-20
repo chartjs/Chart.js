@@ -5,3 +5,5 @@ node_modules/*
 custom/*
 
 docs/index.md
+
+bower_components/

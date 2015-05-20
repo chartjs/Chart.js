@@ -113,8 +113,11 @@
             //String / Boolean - Hover mode for events.
             hoverMode: 'single', // 'label', 'dataset', 'false'
 
-            //Function - Custom hover handler
+            //Function(event) - Custom hover handler
             onHover: null,
+
+            //Function(event, clickedElements) - Custom click handler 
+            onClick: null,
 
             //Function - Custom hover handler
             hoverAnimationDuration: 400,
@@ -125,8 +128,8 @@
             // Boolean - Determines whether to draw built-in tooltip or call custom tooltip function
             customTooltips: false,
 
-            // Array - Array of string names to attach tooltip events
-            tooltipEvents: ["mousemove", "touchstart", "touchmove", "mouseout"],
+            // Array - Array of string names to attach interaction events
+            events: ["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"],
 
             // String - Tooltip background colour
             tooltipBackgroundColor: "rgba(0,0,0,0.8)",
@@ -186,7 +189,7 @@
             onAnimationComplete: function() {},
 
             // Color String - Used for undefined Colros
-            colorFallback: 'rgba(0,0,0,0.1)',
+            defaultColor: 'rgba(0,0,0,0.1)',
 
         }
     };
@@ -985,19 +988,20 @@
     //Destroy method on the chart will remove the instance of the chart from this reference.
     Chart.instances = {};
 
-    Chart.Type = function(data, options, chart) {
-        this.options = options;
-        this.chart = chart;
+    Chart.Type = function(config, instance) {
+        this.data = config.data;
+        this.options = config.options;
+        this.chart = instance;
         this.id = uid();
         //Add the chart instance to the global namespace
         Chart.instances[this.id] = this;
 
         // Initialize is always called when a chart type is created
         // By default it is a no op, but it should be extended
-        if (options.responsive) {
+        if (this.options.responsive) {
             this.resize();
         }
-        this.initialize.call(this, data);
+        this.initialize.call(this);
     };
 
     //Core methods that'll be a part of every chart type
@@ -1162,9 +1166,9 @@
             Chart.types[chartName] = ChartType;
 
             //Register this new chart type in the Chart prototype
-            Chart.prototype[chartName] = function(data, options) {
-                var config = helpers.configMerge(Chart.defaults.global, Chart.defaults[chartName], options || {});
-                return new ChartType(data, config, this);
+            Chart.prototype[chartName] = function(config) {
+                config.options = helpers.configMerge(Chart.defaults.global, Chart.defaults[chartName], config.options || {});
+                return new ChartType(config, this);
             };
         } else {
             warn("Name not provided for this chart, so it hasn't been registered");
@@ -1271,7 +1275,8 @@
             var vm = this._vm;
             return {
                 x: vm.x,
-                y: vm.y
+                y: vm.y,
+                padding: vm.radius + vm.borderWidth
             };
         },
         draw: function() {
@@ -1286,10 +1291,10 @@
                 ctx.arc(vm.x, vm.y, vm.radius, 0, Math.PI * 2);
                 ctx.closePath();
 
-                ctx.strokeStyle = vm.borderColor || Chart.defaults.global.colorFallback;
-                ctx.lineWidth = vm.borderWidth || Chart.defaults.global.colorFallback;
+                ctx.strokeStyle = vm.borderColor || Chart.defaults.global.defaultColor;
+                ctx.lineWidth = vm.borderWidth || Chart.defaults.global.defaultColor;
 
-                ctx.fillStyle = vm.backgroundColor || Chart.defaults.global.colorFallback;
+                ctx.fillStyle = vm.backgroundColor || Chart.defaults.global.defaultColor;
 
                 ctx.fill();
                 ctx.stroke();
@@ -1304,9 +1309,41 @@
             var vm = this._vm;
             var ctx = this._chart.ctx;
 
-            //Draw the line between all the points
-            ctx.lineWidth = vm.borderWidth || Chart.defaults.global.colorFallback;
-            ctx.strokeStyle = vm.borderColor || Chart.defaults.global.colorFallback;
+            // Draw the background first (so the border is always on top)
+            helpers.each(vm._points, function(point, index) {
+                if (index === 0) {
+                    ctx.moveTo(point._vm.x, point._vm.y);
+                } else {
+                    if (vm._tension > 0 || 1) {
+                        var previous = this.previousPoint(point, vm._points, index);
+
+                        ctx.bezierCurveTo(
+                            previous._vm.controlPointNextX,
+                            previous._vm.controlPointNextY,
+                            point._vm.controlPointPreviousX,
+                            point._vm.controlPointPreviousY,
+                            point._vm.x,
+                            point._vm.y
+                        );
+                    } else {
+                        ctx.lineTo(point._vm.x, point._vm.y);
+                    }
+                }
+            }, this);
+
+            if (vm._points.length > 0) {
+                //Round off the line by going to the base of the chart, back to the start, then fill.
+                ctx.lineTo(vm._points[vm._points.length - 1].x, vm.scaleZero);
+                ctx.lineTo(vm._points[0].x, vm.scaleZero);
+                ctx.fillStyle = vm.backgroundColor || Chart.defaults.global.defaultColor;
+                ctx.closePath();
+                ctx.fill();
+            }
+
+
+            // Now draw the line between all the points with any borders
+            ctx.lineWidth = vm.borderWidth || Chart.defaults.global.defaultColor;
+            ctx.strokeStyle = vm.borderColor || Chart.defaults.global.defaultColor;
             ctx.beginPath();
 
             helpers.each(vm._points, function(point, index) {
@@ -1330,16 +1367,9 @@
                 }
             }, this);
 
+
             ctx.stroke();
 
-            if (vm._points.length > 0) {
-                //Round off the line by going to the base of the chart, back to the start, then fill.
-                ctx.lineTo(vm._points[vm._points.length - 1].x, vm.scaleBottom);
-                ctx.lineTo(vm._points[0].x, vm.scaleBottom);
-                ctx.fillStyle = vm.backgroundColor || Chart.defaults.global.colorFallback;
-                ctx.closePath();
-                ctx.fill();
-            }
         },
         previousPoint: function(point, collection, index) {
             return helpers.findPreviousWhere(collection, function() {
@@ -1517,6 +1547,7 @@
                     helpers.extend(this, {
                         x: Math.round(tooltipPosition.x),
                         y: Math.round(tooltipPosition.y),
+                        caretPadding: tooltipPosition.padding
                     });
                     break;
 
@@ -1637,7 +1668,7 @@
                     vm.yAlign = "above";
 
                     //Distance between the actual element.y position and the start of the tooltip caret
-                    var caretPadding = vm.caretPadding = 2;
+                    var caretPadding = vm.caretPadding || 2;
 
                     var tooltipWidth = ctx.measureText(vm.text).width + 2 * vm.xPadding,
                         tooltipRectHeight = vm.fontSize + 2 * vm.yPadding,
@@ -1798,14 +1829,14 @@
 
             // Build the current yLabels so we have an idea of what size they'll be to start
             /*
-			 *	This sets what is returned from calculateScaleRange as static properties of this class:
-			 *
-				this.steps;
-				this.stepValue;
-				this.min;
-				this.max;
-			 *
-			 */
+             *  This sets what is returned from calculateScaleRange as static properties of this class:
+             *
+                this.steps;
+                this.stepValue;
+                this.min;
+                this.max;
+             *
+             */
             this.calculateYRange(cachedHeight);
 
             // With these properties set we can now build the array of yLabels

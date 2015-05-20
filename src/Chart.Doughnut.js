@@ -43,11 +43,7 @@
         defaults: defaultConfig,
         //Initialize is fired when the chart is initialized - Data is passed in as a parameter
         //Config is automatically merged by the core of Chart.js, and is available at this.options
-        initialize: function(data) {
-
-            // Save data as a source for updating of values & methods
-            this.data = data;
-
+        initialize: function() {
             // Slice Type and defaults
             this.Slice = Chart.Arc.extend({
                 _chart: this.chart,

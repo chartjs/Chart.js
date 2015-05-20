@@ -103,10 +103,7 @@
     Chart.Type.extend({
         name: "Scatter",
         defaults: defaultConfig,
-        initialize: function(data) {
-            // Save data as a source for updating of values & methods
-            this.data = data;
-
+        initialize: function() {
             //Custom Point Defaults
             this.PointClass = Chart.Point.extend({
                 _chart: this.chart,

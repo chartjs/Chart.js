@@ -112,10 +112,13 @@
 
     window.onload = function() {
         var ctx1 = document.getElementById("chart1").getContext("2d");
-        window.myLine = new Chart(ctx1).Line(lineChartData, {
-        	showScale: false,
-        	pointDot : true,
-            responsive: true
+        window.myLine = new Chart(ctx1).Line({
+            data: lineChartData, 
+            options: {
+        	   showScale: false,
+        	   pointDot : true,
+                responsive: true
+            }
         });
 
         var ctx2 = document.getElementById("chart2").getContext("2d");

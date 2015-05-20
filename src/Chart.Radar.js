@@ -66,10 +66,7 @@
 
 		},
 
-		initialize: function(data){
-			// Save data as a source for updating of values & methods
-			this.data = data;
-
+		initialize: function(){
 			this.PointClass = Chart.Point.extend({
 				strokeWidth : this.options.pointDotStrokeWidth,
 				radius : this.options.pointDotRadius,
@@ -80,7 +77,7 @@
 
 			this.datasets = [];
 
-			this.buildScale(data);
+			this.buildScale(this.data);
 
 			//Set up tooltip events on the chart
 			if (this.options.showTooltips){
@@ -100,7 +97,7 @@
 			}
 
 			//Iterate through each of the datasets, and build this into a property of the chart
-			helpers.each(data.datasets,function(dataset){
+			helpers.each(this.data.datasets,function(dataset){
 
 				var datasetObject = {
 					label: dataset.label || null,
@@ -121,7 +118,7 @@
 					}
 					datasetObject.points.push(new this.PointClass({
 						value : dataPoint,
-						label : data.labels[index],
+						label : this.data.labels[index],
 						datasetLabel: dataset.label,
 						x: (this.options.animation) ? this.scale.xCenter : pointPosition.x,
 						y: (this.options.animation) ? this.scale.yCenter : pointPosition.y,
