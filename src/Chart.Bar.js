@@ -175,6 +175,27 @@
 
 			return barsArray;
 		},
+		// Get the single bar that was clicked on
+		// @return : An object containing the dataset index and bar index of the matching bar. Also contains the rectangle that was drawn
+		getBarAtEvent : function(e) {
+			var bar;
+			var eventPosition = helpers.getRelativePosition(e);
+			
+			for (var datasetIndex = 0; datasetIndex < this.datasets.length; ++datasetIndex) {
+				for (var barIndex = 0; barIndex < this.datasets[datasetIndex].bars.length; ++barIndex) {
+					if (this.datasets[datasetIndex].bars[barIndex].inRange(eventPosition.x, eventPosition.y)) {
+						bar = {
+							rectangle : this.datasets[datasetIndex].bars[barIndex],
+							datasetIndex : datasetIndex,
+							barIndex : barIndex,
+						};
+						return bar;
+					}
+				}
+			}
+			
+			return bar;
+		},
 		buildScale : function(labels){
 			var self = this;
 
