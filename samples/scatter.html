@@ -88,7 +88,7 @@
         var ctx = document.getElementById("canvas").getContext("2d");
         window.myScatter = new Chart(ctx).Scatter(scatterChartData, {
             responsive: true,
-            hoverMode: 'single',
+            hoverMode: 'single', // should always use single for a scatter chart
             scales: {
             	xAxes: [{
             		gridLines: {

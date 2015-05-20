@@ -6,7 +6,7 @@
         helpers = Chart.helpers;
 
     var defaultConfig = {
-
+        hoverMode: 'single',
         scales: {
             xAxes: [{
                 scaleType: "linear", // scatter should not use a dataset axis
@@ -93,6 +93,9 @@
 
         //String - A legend template
         legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].borderColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+
+        tooltipTemplate: "(<%= dataX %>, <%= dataY %>)",
+        multiTooltipTemplate: "<%if (datasetLabel){%><%=datasetLabel%>: <%}%>(<%= dataX %>, <%= dataY %>)",
 
     };
 
@@ -334,8 +337,10 @@
                 helpers.extend(point, {
                     x: xScale.getPixelForValue(this.data.datasets[datasetIndex].data[index].x),
                     y: yScale.getPixelForValue(this.data.datasets[datasetIndex].data[index].y),
-                    value: this.data.datasets[datasetIndex].data[index].y,
-                    label: this.data.datasets[datasetIndex].data[index].x,
+                    dataX: this.data.datasets[datasetIndex].data[index].x,
+                    dataY: this.data.datasets[datasetIndex].data[index].y,
+                    label: '', // so that the multitooltip looks ok
+                    value: this.data.datasets[datasetIndex].data[index].y, // for legacy reasons
                     datasetLabel: this.data.datasets[datasetIndex].label,
                     // Appearance
                     hoverBackgroundColor: this.data.datasets[datasetIndex].pointHoverBackgroundColor || this.options.pointHoverBackgroundColor,
