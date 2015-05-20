@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Line Chart</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../bower_components/flatstrap/dist/css/flatstrap.min.css" rel="stylesheet" type="text/css" />
+    <style>
+    input[type="color"] {
+        border: none;
+        color: transparent;
+        padding: 0;
+        margin: 0;
+        width: 60px;
+        height: 20px;
+    }
+    
+    .options,
+    .datasets {
+        width: 50%;
+        float: left;
+        padding: 10px;
+    }
+    </style>
+</head>
+
+<body ng-app="app" ng-controller="mainController" class="container">
+    <div style="width:100%">
+        <div>
+            <canvas id="canvas" height="350" width="600"></canvas>
+        </div>
+    </div>
+    <hr>
+    <label>Chart Type: </label>
+    <select ng-model="chartType" ng-change="init()">
+        <option ng-repeat="type in chartTypes" ng-selected="type.selected" value="{{type.value}}">{{type.name}}</option>
+    </select>
+    <hr>
+    <div class="options">
+        <textarea ng-model="options" style="width:100%;height:400px;"></textarea>
+    </div>
+    <div class="datasets">
+        <button ng-click="randomizeData()" class="btn btn-primary">Randomize Data</button>
+        <hr>
+        <div ng-repeat="dataset in chart.data.datasets">
+            <pre>{{dataset.data}}</pre>
+            <div>
+                borderWidth:
+                <input type="number" ng-model="dataset.borderWidth" ng-change="_chart.update()" />
+            </div>
+            <div>
+                hoverBorderWidth:
+                <input type="number" ng-model="dataset.hoverBorderWidth" ng-change="_chart.update()" />
+            </div>
+            <div>
+                pointBorderWidth:
+                <input type="number" ng-model="dataset.pointBorderWidth" ng-change="_chart.update()" />
+            </div>
+            <div>
+                pointHoverBorderWidth:
+                <input type="number" ng-model="dataset.pointHoverBorderWidth" ng-change="_chart.update()" />
+            </div>
+            <hr>
+        </div>
+    </div>
+    <script src="../Chart.js"></script>
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="playground.js"></script>
+</body>
+
+</html>
