@@ -605,4 +605,102 @@
 		}
 	});
 	Chart.scales.registerScaleType("linear", LinearScale);
+
+	var DatasetScale = Chart.Element.extend({
+		// overridden in the chart. Will set min and max as properties of the scale for later use. Min will always be 0 when using a dataset and max will be the number of items in the dataset
+		calculateRange: helpers.noop, 
+		isHorizontal: function() {
+			return this.options.position == "top" || this.options.position == "bottom";
+		},
+		buildLabels: function() {
+			// We assume that this has been run after ticks have been generated. We try to figure out
+			// a label for each tick. 
+			
+		},
+		getPixelForValue: function(value, datasetIndex) {
+			// This must be called after fit has been run so that 
+			//		this.left, this.top, this.right, and this.bottom have been defined
+			if (this.isHorizontal()) {
+
+			} else {
+
+			}
+
+			var isRotated = (this.labelRotation > 0);
+            var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
+            var valueWidth = innerWidth / Math.max((this.max - ((this.options.offsetGridLines) ? 0 : 1)), 1);
+            var valueOffset = (valueWidth * index) + this.paddingLeft;
+
+            if (this.options.offsetGridLines) {
+                valueOffset += (valueWidth / 2);
+            }
+
+            return Math.round(valueOffset);
+			
+		},
+		calculateXLabelRotation: function() {
+            //Get the width of each grid by calculating the difference
+            //between x offsets between 0 and 1.
+
+            this.ctx.font = this.font;
+
+            var firstWidth = this.ctx.measureText(this.labels[0]).width;
+            var lastWidth = this.ctx.measureText(this.labels[this.labels.length - 1]).width;
+			var firstRotated;
+			var lastRotated;
+
+
+            this.paddingRight = lastWidth / 2 + 3;
+            this.paddingLeft = firstWidth / 2 + 3;
+
+            this.xLabelRotation = 0;
+            if (this.display) {
+                var originalLabelWidth = longestText(this.ctx, this.font, this.labels),
+                    cosRotation,
+                    firstRotatedWidth;
+                this.xLabelWidth = originalLabelWidth;
+                //Allow 3 pixels x2 padding either side for label readability
+                var xGridWidth = Math.floor(this.calculateX(1) - this.calculateX(0)) - 6;
+
+                //Max label rotate should be 90 - also act as a loop counter
+                while ((this.xLabelWidth > xGridWidth && this.xLabelRotation === 0) || (this.xLabelWidth > xGridWidth && this.xLabelRotation <= 90 && this.xLabelRotation > 0)) {
+                    cosRotation = Math.cos(toRadians(this.xLabelRotation));
+
+                    firstRotated = cosRotation * firstWidth;
+                    lastRotated = cosRotation * lastWidth;
+
+                    // We're right aligning the text now.
+                    if (firstRotated + this.fontSize / 2 > this.yLabelWidth) {
+                        this.xScalePaddingLeft = firstRotated + this.fontSize / 2;
+                    }
+                    this.xScalePaddingRight = this.fontSize / 2;
+
+
+                    this.xLabelRotation++;
+                    this.xLabelWidth = cosRotation * originalLabelWidth;
+
+                }
+                if (this.xLabelRotation > 0) {
+                    this.endPoint -= Math.sin(toRadians(this.xLabelRotation)) * originalLabelWidth + 3;
+                }
+            } else {
+                this.xLabelWidth = 0;
+                this.xScalePaddingRight = this.padding;
+                this.xScalePaddingLeft = this.padding;
+            }
+
+        },
+		// Fit this axis to the given size
+		// @param {number} maxWidth : the max width the axis can be
+		// @param {number} maxHeight: the max height the axis can be
+		// @return {object} minSize : the minimum size needed to draw the axis
+		fit: function(maxWidth, maxHeight) {
+			
+		},
+		// Actualy draw the scale on the canvas
+		// @param {rectangle} chartArea : the area of the chart to draw full grid lines on
+		draw: function(chartArea) {
+		}
+	});
+	Chart.scales.registerScaleType("dataset", DatasetScale);
 }).call(this);
