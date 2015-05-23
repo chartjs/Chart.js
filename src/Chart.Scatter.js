@@ -114,7 +114,7 @@
             });
 
             // Events
-            helpers.bindEvents(this, this.options.tooltipEvents, this.events);
+            helpers.bindEvents(this, this.options.events, this.events);
 
             // Build Scale
             this.buildScale();

@@ -81,7 +81,7 @@
 
 			//Set up tooltip events on the chart
 			if (this.options.showTooltips){
-				helpers.bindEvents(this, this.options.tooltipEvents, function(evt){
+				helpers.bindEvents(this, this.options.events, function(evt){
 					var activePointsCollection = (evt.type !== 'mouseout') ? this.getPointsAtEvent(evt) : [];
 
 					this.eachPoints(function(point){

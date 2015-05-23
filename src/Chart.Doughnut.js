@@ -53,7 +53,7 @@
 
             //Set up tooltip events on the chart
             if (this.options.showTooltips) {
-                helpers.bindEvents(this, this.options.tooltipEvents, this.onHover);
+                helpers.bindEvents(this, this.options.events, this.onHover);
             }
 
             // Create new slice for each piece of data
