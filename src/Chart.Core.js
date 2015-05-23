@@ -402,7 +402,7 @@
                 return 0;
             }
         },
-        toRadians = helpers.radians = function(degrees) {
+        toRadians = helpers.toRadians = function(degrees) {
             return degrees * (Math.PI / 180);
         },
 		toDegrees = helpers.toDegrees = function(radians) {
