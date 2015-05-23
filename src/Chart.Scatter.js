@@ -114,7 +114,7 @@
             });
 
             // Events
-            helpers.bindEvents(this, this.options.tooltipEvents, this.onHover);
+            helpers.bindEvents(this, this.options.tooltipEvents, this.events);
 
             // Build Scale
             this.buildScale();
@@ -188,7 +188,7 @@
         previousPoint: function(collection, index) {
             return collection[index + 1] || collection[index];
         },
-        onHover: function(e) {
+        events: function(e) {
             // If exiting chart
             if (e.type == 'mouseout') {
                 return this;
