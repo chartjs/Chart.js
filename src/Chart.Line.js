@@ -43,7 +43,7 @@
             }],
             yAxes: [{
                 scaleType: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-                show: true,
+                display: true,
                 position: "left",
                 id: "y-axis-1",
         
