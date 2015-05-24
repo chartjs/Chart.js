@@ -10,47 +10,88 @@
 	Chart.Type.extend({
 		name: "Radar",
 		defaults:{
-			//Boolean - Whether to show lines for each scale point
-			scaleShowLine : true,
 
-			//Boolean - Whether we show the angle lines out of the radar
-			angleShowLineOut : true,
+			scale: {
+				scaleType: "radialLinear",
+				display: true,
+				
+				//Boolean - Whether to animate scaling the chart from the centre
+				animate : false,
 
-			//Boolean - Whether to show labels on the scale
-			scaleShowLabels : false,
+				lineArc: false,
 
-			// Boolean - Whether the scale should begin at zero
-			scaleBeginAtZero : true,
+				// grid line settings
+				gridLines: {
+					show: true,
+					color: "rgba(0, 0, 0, 0.05)",
+					lineWidth: 1,
+				},
 
-			//String - Colour of the angle line
-			angleLineColor : "rgba(0,0,0,.1)",
+				angleLines: {
+					show: true,
+					color: "rgba(0,0,0,.1)",
+					lineWidth: 1
+				},
 
-			//Number - Pixel width of the angle line
-			angleLineWidth : 1,
+				// scale numbers
+				beginAtZero: true,
 
-			//String - Point label font declaration
-			pointLabelFontFamily : "'Arial'",
+				// label settings
+				labels: {
+					show: true,
+					template: "<%=value%>",
+					fontSize: 12,
+					fontStyle: "normal",
+					fontColor: "#666",
+					fontFamily: "Helvetica Neue",
 
-			//String - Point label font weight
-			pointLabelFontStyle : "normal",
+					//Boolean - Show a backdrop to the scale label
+					showLabelBackdrop : true,
 
-			//Number - Point label font size in pixels
-			pointLabelFontSize : 10,
+					//String - The colour of the label backdrop
+					backdropColor : "rgba(255,255,255,0.75)",
 
-			//String - Point label font colour
-			pointLabelFontColor : "#666",
+					//Number - The backdrop padding above & below the label in pixels
+					backdropPaddingY : 2,
+
+					//Number - The backdrop padding to the side of the label in pixels
+					backdropPaddingX : 2,
+				},
+				
+				pointLabels: {
+					//String - Point label font declaration
+					fontFamily : "'Arial'",
+
+					//String - Point label font weight
+					fontStyle : "normal",
+
+					//Number - Point label font size in pixels
+					fontSize : 10,
+
+					//String - Point label font colour
+					fontColor : "#666",
+				},
+			},
 
 			//Boolean - Whether to show a dot for each point
 			pointDot : true,
 
 			//Number - Radius of each point dot in pixels
-			pointDotRadius : 3,
+	        pointRadius: 3,
 
-			//Number - Pixel width of point dot stroke
-			pointDotStrokeWidth : 1,
+	        //Number - Pixel width of point dot border
+	        pointBorderWidth: 1,
 
-			//Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-			pointHitDetectionRadius : 20,
+	        //Number - Pixel width of point on hover
+	        pointHoverRadius: 5,
+
+	        //Number - Pixel width of point dot border on hover
+	        pointHoverBorderWidth: 2,
+	        pointBackgroundColor: Chart.defaults.global.defaultColor,
+	        pointBorderColor: Chart.defaults.global.defaultColor,
+
+	        //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
+	        pointHitRadius: 20,
 
 			//Boolean - Whether to show a stroke for datasets
 			datasetStroke : true,
@@ -68,11 +109,8 @@
 
 		initialize: function(){
 			this.PointClass = Chart.Point.extend({
-				strokeWidth : this.options.pointDotStrokeWidth,
-				radius : this.options.pointDotRadius,
 				display: this.options.pointDot,
-				hitDetectionRadius : this.options.pointHitDetectionRadius,
-				ctx : this.chart.ctx
+				_chart: this.chart
 			});
 
 			this.datasets = [];
@@ -125,7 +163,15 @@
 						strokeColor : dataset.pointStrokeColor,
 						fillColor : dataset.pointColor,
 						highlightFill : dataset.pointHighlightFill || dataset.pointColor,
-						highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor
+						highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor,
+
+						// Appearance
+                    	radius: dataset.pointRadius || this.options.pointRadius,
+                    	backgroundColor: dataset.pointBackgroundColor || this.options.pointBackgroundColor,
+                    	borderWidth: dataset.pointBorderWidth || this.options.pointBorderWidth,
+                    
+                    	// Tooltip
+                    	hoverRadius: dataset.pointHitRadius || this.options.pointHitRadius,
 					}));
 				},this);
 
@@ -165,77 +211,46 @@
 		},
 
 		buildScale : function(data){
-			this.scale = new Chart.RadialScale({
-				display: this.options.showScale,
-				fontStyle: this.options.scaleFontStyle,
-				fontSize: this.options.scaleFontSize,
-				fontFamily: this.options.scaleFontFamily,
-				fontColor: this.options.scaleFontColor,
-				showLabels: this.options.scaleShowLabels,
-				showLabelBackdrop: this.options.scaleShowLabelBackdrop,
-				backdropColor: this.options.scaleBackdropColor,
-				backdropPaddingY : this.options.scaleBackdropPaddingY,
-				backdropPaddingX: this.options.scaleBackdropPaddingX,
-				lineWidth: (this.options.scaleShowLine) ? this.options.scaleLineWidth : 0,
-				lineColor: this.options.scaleLineColor,
-				angleLineColor : this.options.angleLineColor,
-				angleLineWidth : (this.options.angleShowLineOut) ? this.options.angleLineWidth : 0,
-				// Point labels at the edge of each line
-				pointLabelFontColor : this.options.pointLabelFontColor,
-				pointLabelFontSize : this.options.pointLabelFontSize,
-				pointLabelFontFamily : this.options.pointLabelFontFamily,
-				pointLabelFontStyle : this.options.pointLabelFontStyle,
+			var self = this;
+
+			var ScaleConstructor = Chart.scales.getScaleConstructor(this.options.scale.scaleType);
+			this.scale = new ScaleConstructor({
+				options: this.options.scale,
 				height : this.chart.height,
 				width: this.chart.width,
 				xCenter: this.chart.width/2,
 				yCenter: this.chart.height/2,
 				ctx : this.chart.ctx,
-				templateString: this.options.scaleLabel,
 				labels: data.labels,
-				valuesCount: data.datasets[0].data.length
+				valuesCount: data.datasets[0].data.length,
+				calculateRange: function() {
+					this.min = null;
+					this.max = null;
+
+					helpers.each(self.data.datasets, function(dataset) {
+                        if (dataset.yAxisID === this.id) {
+                            helpers.each(dataset.data, function(value, index) {
+                                if (this.min === null) {
+                                    this.min = value;
+                                } else if (value < this.min) {
+                                    this.min = value;
+                                }
+                                
+                                if (this.max === null) {
+                                    this.max = value;
+                                } else if (value > this.max) {
+                                    this.max = value;
+                                }
+                            }, this);
+                        }
+                    }, this);
+				}
 			});
 
 			this.scale.setScaleSize();
-			this.updateScaleRange(data.datasets);
+			this.scale.calculateRange();
+			this.scale.generateTicks();
 			this.scale.buildYLabels();
-		},
-		updateScaleRange: function(datasets){
-			var valuesArray = (function(){
-				var totalDataArray = [];
-				helpers.each(datasets,function(dataset){
-					if (dataset.data){
-						totalDataArray = totalDataArray.concat(dataset.data);
-					}
-					else {
-						helpers.each(dataset.points, function(point){
-							totalDataArray.push(point.value);
-						});
-					}
-				});
-				return totalDataArray;
-			})();
-
-
-			var scaleSizes = (this.options.scaleOverride) ?
-				{
-					steps: this.options.scaleSteps,
-					stepValue: this.options.scaleStepWidth,
-					min: this.options.scaleStartValue,
-					max: this.options.scaleStartValue + (this.options.scaleSteps * this.options.scaleStepWidth)
-				} :
-				helpers.calculateScaleRange(
-					valuesArray,
-					helpers.min([this.chart.width, this.chart.height])/2,
-					this.options.scaleFontSize,
-					this.options.scaleBeginAtZero,
-					this.options.scaleIntegersOnly
-				);
-
-			helpers.extend(
-				this.scale,
-				scaleSizes
-			);
-
 		},
 		addData : function(valuesArray,label){
 			//Map the values array for each of the datasets
@@ -308,8 +323,9 @@
 				xCenter: this.chart.width/2,
 				yCenter: this.chart.height/2
 			});
-			this.updateScaleRange(this.datasets);
-			this.scale.setScaleSize();
+			
+			this.scale.calculateRange();
+			this.scale.generateTicks();
 			this.scale.buildYLabels();
 		},
 		draw : function(ease){
@@ -323,7 +339,7 @@
 				//Transition each point first so that the line and point drawing isn't out of sync
 				helpers.each(dataset.points,function(point,index){
 					if (point.hasValue()){
-						point.transition(this.scale.getPointPosition(index, this.scale.calculateCenterOffset(point.value)), easeDecimal);
+						point.transition(easeDecimal);
 					}
 				},this);
 
