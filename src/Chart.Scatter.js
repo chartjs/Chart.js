@@ -10,9 +10,8 @@
         scales: {
             xAxes: [{
                 scaleType: "linear", // scatter should not use a dataset axis
-                show: true,
+                display: true,
                 position: "bottom",
-                horizontal: true,
                 id: "x-axis-1", // need an ID so datasets can reference the scale
                 
                 // grid line settings
@@ -45,7 +44,6 @@
                 scaleType: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
                 show: true,
                 position: "left",
-                horizontal: false, 
                 id: "y-axis-1",
         
                 // grid line settings

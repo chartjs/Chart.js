@@ -460,7 +460,7 @@
 		// Actualy draw the scale on the canvas
 		// @param {rectangle} chartArea : the area of the chart to draw full grid lines on
 		draw: function(chartArea) {
-			if (this.options.show) {
+			if (this.options.display) {
 				
 				var setContextLineSettings;
 				var hasZero;
@@ -646,7 +646,7 @@
 
             this.labelRotation = 0;
 
-            if (this.options.show) {
+            if (this.options.display) {
                 var originalLabelWidth = helpers.longestText(this.ctx, labelFont, this.labels);
                 var cosRotation;
                 var sinRotation;
@@ -726,7 +726,7 @@
 		// Actualy draw the scale on the canvas
 		// @param {rectangle} chartArea : the area of the chart to draw full grid lines on
 		draw: function(chartArea) {
-			if (this.options.show) {
+			if (this.options.display) {
 				
 				var setContextLineSettings;
 				
