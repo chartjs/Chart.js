@@ -32,9 +32,9 @@
 			.getComputedStyle(element)
 			.getPropertyValue(dimension) || '';
 
-			if (offset) return offset;
-			if (system && system !== 'auto') return defaults;
-			return el;
+			if (offset) return parseInt(offset);
+			if (system && system !== 'auto') return parseInt(defaults);
+			return parseInt(el);
 		};
 
 		var width = this.width = computeDimension(this.canvas, 'width');
