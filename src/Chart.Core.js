@@ -51,58 +51,21 @@
     //Globally expose the defaults to allow for user updating/changing
     Chart.defaults = {
         global: {
-            // Boolean - Whether to animate the chart
-            animation: true,
 
-            // Number - Number of animation steps
-            animationDuration: 1000,
+            // Animation defaults
+            animation: {
+                // Number - Number of animation steps
+                duration: 1000,
 
-            // String - Animation easing effect
-            animationEasing: "easeOutQuart",
+                // String - Animation easing effect
+                easing: "easeOutQuart",
 
-            // Boolean - If we should show the scale at all
-            showScale: true,
+                // Function - Will fire on animation progression.
+                onProgress: function() {},
 
-            // Boolean - If we want to override with a hard coded scale
-            scaleOverride: false,
-
-            // ** Required if scaleOverride is true **
-            // Number - The number of steps in a hard coded scale
-            scaleSteps: null,
-            // Number - The value jump in the hard coded scale
-            scaleStepWidth: null,
-            // Number - The scale starting value
-            scaleStartValue: null,
-
-            // String - Colour of the scale line
-            scaleLineColor: "rgba(0,0,0,.1)",
-
-            // Number - Pixel width of the scale line
-            scaleLineWidth: 1,
-
-            // Boolean - Whether to show labels on the scale
-            scaleShowLabels: true,
-
-            // Interpolated JS string - can access value
-            scaleLabel: "<%=value%>",
-
-            // Boolean - Whether the scale should stick to integers, and not show any floats even if drawing space is there
-            scaleIntegersOnly: true,
-
-            // Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
-            scaleBeginAtZero: false,
-
-            // String - Scale label font declaration for the scale label
-            scaleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-
-            // Number - Scale label font size in pixels
-            scaleFontSize: 12,
-
-            // String - Scale label font weight style
-            scaleFontStyle: "normal",
-
-            // String - Scale label font colour
-            scaleFontColor: "#666",
+                // Function - Will fire on animation completion.
+                onComplete: function() {},
+            },
 
             // Boolean - whether or not the chart should be responsive and resize when the browser does.
             responsive: false,
@@ -110,83 +73,86 @@
             // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
             maintainAspectRatio: true,
 
-            //String / Boolean - Hover mode for events.
-            hoverMode: 'single', // 'label', 'dataset', 'false'
+            // Array - Array of string names to attach interaction events
+            events: ["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"],
 
-            //Function(event) - Custom hover handler
-            onHover: null,
+            // Hover defaults
+            hover: {
+
+                // String || boolean
+                mode: 'single', // 'label', 'dataset', 'false'
+
+                //Function(event, activeElements) - Custom hover handler
+                onHover: null,
+
+                //Function - Custom hover handler
+                animationDuration: 400,
+            },
 
             //Function(event, clickedElements) - Custom click handler 
             onClick: null,
 
-            //Function - Custom hover handler
-            hoverAnimationDuration: 400,
+            // Tooltip Defaults
+            tooltips: {
 
-            // Boolean - Determines whether to draw tooltips on the canvas or not - attaches events to touchmove & mousemove
-            showTooltips: true,
+                // Boolean - Determines whether to draw tooltips on the canvas or not - attaches events to touchmove & mousemove
+                enabled: true,
 
-            // Boolean - Determines whether to draw built-in tooltip or call custom tooltip function
-            customTooltips: false,
+                // Function - Determines whether to draw built-in tooltip or call custom tooltip function
+                custom: null,
 
-            // Array - Array of string names to attach interaction events
-            events: ["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"],
+                // String - Tooltip background colour
+                backgroundColor: "rgba(0,0,0,0.8)",
 
-            // String - Tooltip background colour
-            tooltipBackgroundColor: "rgba(0,0,0,0.8)",
+                // String - Tooltip label font declaration for the scale label
+                fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 
-            // String - Tooltip label font declaration for the scale label
-            tooltipFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                // Number - Tooltip label font size in pixels
+                fontSize: 14,
 
-            // Number - Tooltip label font size in pixels
-            tooltipFontSize: 14,
+                // String - Tooltip font weight style
+                fontStyle: "normal",
 
-            // String - Tooltip font weight style
-            tooltipFontStyle: "normal",
+                // String - Tooltip label font colour
+                fontColor: "#fff",
 
-            // String - Tooltip label font colour
-            tooltipFontColor: "#fff",
+                // String - Tooltip title font declaration for the scale label
+                titleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 
-            // String - Tooltip title font declaration for the scale label
-            tooltipTitleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                // Number - Tooltip title font size in pixels
+                titleFontSize: 14,
 
-            // Number - Tooltip title font size in pixels
-            tooltipTitleFontSize: 14,
+                // String - Tooltip title font weight style
+                titleFontStyle: "bold",
 
-            // String - Tooltip title font weight style
-            tooltipTitleFontStyle: "bold",
+                // String - Tooltip title font colour
+                titleFontColor: "#fff",
 
-            // String - Tooltip title font colour
-            tooltipTitleFontColor: "#fff",
+                // Number - pixel width of padding around text
+                yPadding: 6,
 
-            // Number - pixel width of padding around tooltip text
-            tooltipYPadding: 6,
+                // Number - pixel width of padding around text
+                xPadding: 6,
 
-            // Number - pixel width of padding around tooltip text
-            tooltipXPadding: 6,
+                // Number - Size of the caret on the
+                caretSize: 8,
 
-            // Number - Size of the caret on the tooltip
-            tooltipCaretSize: 8,
+                // Number - Pixel radius of the border
+                cornerRadius: 6,
 
-            // Number - Pixel radius of the tooltip border
-            tooltipCornerRadius: 6,
+                // Number - Pixel offset from point x to edge
+                xOffset: 10,
 
-            // Number - Pixel offset from point x to tooltip edge
-            tooltipXOffset: 10,
+                // String - Template string for singles
+                template: "<%if (label){%><%=label%>: <%}%><%= value %>",
 
-            // String - Template string for single tooltips
-            tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",
+                // String - Template string for singles
+                multiTemplate: "<%if (datasetLabel){%><%=datasetLabel%>: <%}%><%= value %>",
 
-            // String - Template string for single tooltips
-            multiTooltipTemplate: "<%if (datasetLabel){%><%=datasetLabel%>: <%}%><%= value %>",
+                // String - Colour behind the legend colour block
+                multiKeyBackground: '#fff',
 
-            // String - Colour behind the legend colour block
-            multiTooltipKeyBackground: '#fff',
-
-            // Function - Will fire on animation progression.
-            onAnimationProgress: function() {},
-
-            // Function - Will fire on animation completion.
-            onAnimationComplete: function() {},
+            },
 
             // Color String - Used for undefined Colros
             defaultColor: 'rgba(0,0,0,0.1)',
@@ -259,8 +225,7 @@
                                     baseArray.push(valueObj); // nothing to merge
                                 }
                             });
-                        }
-                        else if (base.hasOwnProperty(key) && typeof base[key] == "object" && typeof value == "object") {
+                        } else if (base.hasOwnProperty(key) && typeof base[key] == "object" && typeof value == "object") {
                             // If we are overwriting an object with an object, do a merge of the properties.
                             base[key] = helpers.configMerge(base[key], value);
                         } else {
@@ -270,7 +235,7 @@
                     }
                 });
             });
-            
+
             return base;
         },
         indexOf = helpers.indexOf = function(arrayToSearch, item) {
@@ -361,17 +326,17 @@
         min = helpers.min = function(array) {
             return Math.min.apply(Math, array);
         },
-		sign = helpers.sign = function(x) {
-			if (Math.sign) {
-				return Math.sign(x);
-			} else {
-				x = +x; // convert to a number
-				if (x === 0 || isNaN(x)) {
-					return x;
-				}
-				return x > 0 ? 1 : -1;
-			}
-		},
+        sign = helpers.sign = function(x) {
+            if (Math.sign) {
+                return Math.sign(x);
+            } else {
+                x = +x; // convert to a number
+                if (x === 0 || isNaN(x)) {
+                    return x;
+                }
+                return x > 0 ? 1 : -1;
+            }
+        },
         cap = helpers.cap = function(valueToCap, maxValue, minValue) {
             if (isNumber(maxValue)) {
                 if (valueToCap > maxValue) {
@@ -405,9 +370,9 @@
         toRadians = helpers.toRadians = function(degrees) {
             return degrees * (Math.PI / 180);
         },
-		toDegrees = helpers.toDegrees = function(radians) {
-			return radians * (180 / Math.PI);
-		},
+        toDegrees = helpers.toDegrees = function(radians) {
+            return radians * (180 / Math.PI);
+        },
         // Gets the angle from vertical upright to the point about a centre.
         getAngleFromPoint = helpers.getAngleFromPoint = function(centrePoint, anglePoint) {
             var distanceFromXCenter = anglePoint.x - centrePoint.x,
@@ -527,36 +492,36 @@
             };
 
         },
-		// Implementation of the nice number algorithm used in determining where axis labels will go
-		niceNum = helpers.niceNum = function(range, round) {
-			var exponent = Math.floor(Math.log10(range));
-			var fraction = range / Math.pow(10, exponent);
-			var niceFraction;
-			
-			if (round) {
-				if (fraction < 1.5) {
-					niceFraction = 1;
-				} else if (fraction < 3) {
-					niceFraction = 2;
-				} else if (fraction < 7) {
-					niceFraction = 5;
-				} else {
-					niceFraction = 10;
-				}
-			} else {
-				if (fraction <= 1.0) {
-					niceFraction = 1;
-				} else if (fraction <= 2) {
-					niceFraction = 2;
-				} else if (fraction <= 5) {
-					niceFraction = 5;
-				} else {
-					niceFraction = 10;
-				}
-			}
-			
-			return niceFraction * Math.pow(10, exponent);
-		},
+        // Implementation of the nice number algorithm used in determining where axis labels will go
+        niceNum = helpers.niceNum = function(range, round) {
+            var exponent = Math.floor(Math.log10(range));
+            var fraction = range / Math.pow(10, exponent);
+            var niceFraction;
+
+            if (round) {
+                if (fraction < 1.5) {
+                    niceFraction = 1;
+                } else if (fraction < 3) {
+                    niceFraction = 2;
+                } else if (fraction < 7) {
+                    niceFraction = 5;
+                } else {
+                    niceFraction = 10;
+                }
+            } else {
+                if (fraction <= 1.0) {
+                    niceFraction = 1;
+                } else if (fraction <= 2) {
+                    niceFraction = 2;
+                } else if (fraction <= 5) {
+                    niceFraction = 5;
+                } else {
+                    niceFraction = 10;
+                }
+            }
+
+            return niceFraction * Math.pow(10, exponent);
+        },
         /* jshint ignore:start */
         // Blows up jshint errors based on the new Function constructor
         //Templating methods
