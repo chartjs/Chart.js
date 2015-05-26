@@ -43,11 +43,7 @@
         defaults: defaultConfig,
         //Initialize is fired when the chart is initialized - Data is passed in as a parameter
         //Config is automatically merged by the core of Chart.js, and is available at this.options
-        initialize: function(data) {
-
-            // Save data as a source for updating of values & methods
-            this.data = data;
-
+        initialize: function() {
             // Slice Type and defaults
             this.Slice = Chart.Arc.extend({
                 _chart: this.chart,
@@ -57,7 +53,7 @@
 
             //Set up tooltip events on the chart
             if (this.options.showTooltips) {
-                helpers.bindEvents(this, this.options.tooltipEvents, this.onHover);
+                helpers.bindEvents(this, this.options.events, this.onHover);
             }
 
             // Create new slice for each piece of data

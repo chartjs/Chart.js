@@ -53,8 +53,11 @@
 
 			window.onload = function(){
 				var ctx = document.getElementById("chart-area").getContext("2d");
-				window.myPolarArea = new Chart(ctx).PolarArea(polarData, {
-					responsive:true
+				window.myPolarArea = new Chart(ctx).PolarArea({
+					data: polarData, 
+					options: {
+						responsive:true
+					}
 				});
 			};
 

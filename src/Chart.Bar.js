@@ -7,23 +7,73 @@
 
 
     var defaultConfig = {
-        //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
-        scaleBeginAtZero: true,
+        scales: {
+            xAxes: [{
+                scaleType: "dataset", // scatter should not use a dataset axis
+                display: true,
+                position: "bottom",
+                id: "x-axis-1", // need an ID so datasets can reference the scale
+                
+                // grid line settings
+                gridLines: {
+                    show: true,
+                    color: "rgba(0, 0, 0, 0.05)",
+                    lineWidth: 1,
+                    drawOnChartArea: true,
+                    drawTicks: true,
+                    zeroLineWidth: 1,
+                    zeroLineColor: "rgba(0,0,0,0.25)",
+                    offsetGridLines: true,
+                },
 
-        //Boolean - Whether grid lines are shown across the chart
-        scaleShowGridLines: true,
+                // scale numbers
+                beginAtZero: false,
+                integersOnly: false,
+                override: null,
 
-        //String - Colour of the grid lines
-        scaleGridLineColor: "rgba(0,0,0,.05)",
+                // label settings
+                labels: {
+                    show: true,
+                    template: "<%=value%>",
+                    fontSize: 12,
+                    fontStyle: "normal",
+                    fontColor: "#666",
+                    fontFamily: "Helvetica Neue",
+                },
+            }],
+            yAxes: [{
+                scaleType: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                display: true,
+                position: "left",
+                id: "y-axis-1",
+        
+                // grid line settings
+                gridLines: {
+                    show: true,
+                    color: "rgba(0, 0, 0, 0.05)",
+                    lineWidth: 1,
+                    drawOnChartArea: true,
+                    drawTicks: true, // draw ticks extending towards the label
+                    zeroLineWidth: 1,
+                    zeroLineColor: "rgba(0,0,0,0.25)",
+                },
 
-        //Number - Width of the grid lines
-        scaleGridLineWidth: 1,
+                // scale numbers
+                beginAtZero: false,
+                integersOnly: false,
+                override: null,
 
-        //Boolean - Whether to show horizontal lines (except X axis)
-        scaleShowHorizontalLines: true,
-
-        //Boolean - Whether to show vertical lines (except Y axis)
-        scaleShowVerticalLines: true,
+                // label settings
+                labels: {
+                    show: true,
+                    template: "<%=value%>",
+                    fontSize: 12,
+                    fontStyle: "normal",
+                    fontColor: "#666",
+                    fontFamily: "Helvetica Neue",
+                }
+            }],
+        },
 
         //Number - Pixel width of the bar border
         barBorderWidth: 2,
@@ -46,128 +96,14 @@
     Chart.Type.extend({
         name: "Bar",
         defaults: defaultConfig,
-        initialize: function(data) {
-
-            // Save data as a source for updating of values & methods
-            this.data = data;
-
-            var options = this.options;
-
-            var _this = this;
-
-            // Custom Scale Methods and Options
-            this.ScaleClass = Chart.Scale.extend({
-                offsetGridLines: true,
-                calculateBarBase: function(datasetIndex, index) {
-
-                    var base = 0;
-
-                    if (_this.options.stacked) {
-                        var bar = _this.data.datasets[datasetIndex].metaData[index];
-                        if (bar.value < 0) {
-                            for (var i = 0; i < datasetIndex; i++) {
-                                base += _this.data.datasets[i].metaData[index].value < base ? _this.data.datasets[i].metaData[index].value : 0;
-                            }
-                        } else {
-                            for (var i = 0; i < datasetIndex; i++) {
-                                base += _this.data.datasets[i].metaData[index].value > base ? _this.data.datasets[i].metaData[index].value : 0;
-                            }
-                        }
-                        return this.calculateY(base);
-                    }
-
-                    base = this.endPoint;
-
-                    if (this.beginAtZero || ((this.min <= 0 && this.max >= 0) || (this.min >= 0 && this.max <= 0))) {
-                        base = this.calculateY(0);
-                        base += _this.options.scaleGridLineWidth;
-                    } else if (this.min < 0 && this.max < 0) {
-                        // All values are negative. Use the top as the base
-                        base = this.startPoint;
-                    }
-
-                    return base;
-
-                },
-                calculateBarX: function(datasetCount, datasetIndex, elementIndex) {
-                    var xWidth = this.calculateBaseWidth(),
-                        xAbsolute = this.calculateX(elementIndex) - (xWidth / 2),
-                        barWidth = this.calculateBarWidth(datasetCount);
-
-                    if (_this.options.stacked) {
-                        return xAbsolute + barWidth / 2;
-                    }
-
-                    return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * options.barDatasetSpacing) + barWidth / 2;
-                },
-                calculateBarY: function(datasets, datasetIndex, barIndex, value) {
-
-                    if (_this.options.stacked) {
-
-                        var sumPos = 0,
-                            sumNeg = 0;
-
-                        for (var i = 0; i < datasetIndex; i++) {
-                            if (datasets[i].metaData[barIndex].value < 0) {
-                                sumNeg += datasets[i].metaData[barIndex].value || 0;
-                            } else {
-                                sumPos += datasets[i].metaData[barIndex].value || 0;
-                            }
-                        }
-
-                        if (value < 0) {
-                            return this.calculateY(sumNeg + value);
-                        } else {
-                            return this.calculateY(sumPos + value);
-                        }
-
-                        /*if (options.relativeBars) {
-                            offset = offset / sum * 100;
-                        }*/
-
-                        return this.calculateY(0);
-                    }
-
-                    var offset = 0;
-
-                    for (i = datasetIndex; i < datasets.length; i++) {
-                        if (i === datasetIndex && value) {
-                            offset += value;
-                        } else {
-                            offset = offset + (datasets[i].metaData[barIndex].value);
-                        }
-                    }
-
-                    return this.calculateY(value);
-                },
-                calculateBaseWidth: function() {
-                    return (this.calculateX(1) - this.calculateX(0)) - (2 * options.barValueSpacing);
-                },
-                calculateBaseHeight: function() {
-                    return (this.calculateY(1) - this.calculateY(0));
-                },
-                calculateBarWidth: function(datasetCount) {
-
-                    //The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
-                    var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * options.barDatasetSpacing);
-
-                    if (_this.options.stacked) {
-                        return baseWidth;
-                    }
-                    return (baseWidth / datasetCount);
-                },
-            });
-
+        initialize: function() {
             // Events
-            helpers.bindEvents(this, this.options.tooltipEvents, this.onHover);
+            helpers.bindEvents(this, this.options.events, this.onHover);
 
             //Declare the extension of the default point, to cater for the options passed in to the constructor
             this.BarClass = Chart.Rectangle.extend({
                 ctx: this.chart.ctx,
             });
-
-            // Build Scale
-            this.buildScale(this.data.labels);
 
             //Create a new bar for each piece of data
             helpers.each(this.data.datasets, function(dataset, datasetIndex) {
@@ -175,15 +111,29 @@
                 helpers.each(dataset.data, function(dataPoint, index) {
                     dataset.metaData.push(new this.BarClass());
                 }, this);
+
+                 // The bar chart only supports a single x axis because the x axis is always a dataset axis
+                dataset.xAxisID = this.options.scales.xAxes[0].id;
+
+                if (!dataset.yAxisID) {
+                    dataset.yAxisID = this.options.scales.yAxes[0].id;
+                }
             }, this);
+
+            // Build and fit the scale. Needs to happen after the axis IDs have been set
+            this.buildScale();
+            Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
 
             // Set defaults for bars
             this.eachElement(function(bar, index, dataset, datasetIndex) {
+                var xScale = this.scales[this.data.datasets[datasetIndex].xAxisID];
+                var yScale = this.scales[this.data.datasets[datasetIndex].yAxisID];
+
                 helpers.extend(bar, {
-                    base: this.scale.zeroPoint,
-                    width: this.scale.calculateBarWidth(this.data.datasets.length),
-                    x: this.scale.calculateBarX(this.data.datasets.length, datasetIndex, index),
-                    y: this.scale.calculateBarY(this.data.datasets, datasetIndex, index, this.data.datasets[datasetIndex].data[index]),
+                    base: yScale.getPixelForValue(0),
+                    width: xScale.calculateBarWidth(this.data.datasets.length),
+                    x: xScale.calculateBarX(this.data.datasets.length, datasetIndex, index),
+                    y: yScale.calculateBarY(this.data.datasets, datasetIndex, index, this.data.datasets[datasetIndex].data[index]),
                     _datasetIndex: datasetIndex,
                     _index: index,
                 });
@@ -321,22 +271,26 @@
             return this;
         },
         update: function() {
-
-            this.scale.update();
+            // Update the scale sizes
+            Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
 
             this.eachElement(function(bar, index, dataset, datasetIndex) {
                 helpers.extend(bar, {
                     value: this.data.datasets[datasetIndex].data[index],
                 });
+
                 bar.pivot();
             }, this);
 
             this.eachElement(function(bar, index, dataset, datasetIndex) {
+                var xScale = this.scales[this.data.datasets[datasetIndex].xAxisID];
+                var yScale = this.scales[this.data.datasets[datasetIndex].yAxisID];
+
                 helpers.extend(bar, {
-                    base: this.scale.calculateBarBase(datasetIndex, index),
-                    x: this.scale.calculateBarX(this.data.datasets.length, datasetIndex, index),
-                    y: this.scale.calculateBarY(this.data.datasets, datasetIndex, index, this.data.datasets[datasetIndex].data[index]),
-                    width: this.scale.calculateBarWidth(this.data.datasets.length),
+                    base: yScale.calculateBarBase(datasetIndex, index),
+                    x: xScale.calculateBarX(this.data.datasets.length, datasetIndex, index),
+                    y: yScale.calculateBarY(this.data.datasets, datasetIndex, index, this.data.datasets[datasetIndex].data[index]),
+                    width: xScale.calculateBarWidth(this.data.datasets.length),
                     label: this.data.labels[index],
                     datasetLabel: this.data.datasets[datasetIndex].label,
                     borderColor: this.data.datasets[datasetIndex].borderColor,
@@ -345,94 +299,214 @@
                     _datasetIndex: datasetIndex,
                     _index: index,
                 });
+
                 bar.pivot();
             }, this);
 
             this.render();
         },
         buildScale: function(labels) {
-            var self = this;
+             var self = this;
 
-            var dataTotal = function() {
-                var values = [];
+            // Function to determine the range of all the 
+            var calculateYRange = function() {
+                this.min = null;
+                this.max = null;
+
+                var positiveValues = [];
                 var negativeValues = [];
 
                 if (self.options.stacked) {
-                    self.eachValue(function(value, index) {
-                        values[index] = values[index] || 0;
-                        negativeValues[index] = negativeValues[index] || 0;
-                        if (self.options.relativeBars) {
-                            values[index] = 100;
-                        } else {
-                            if (value < 0) {
-                                negativeValues[index] += value;
+                    helpers.each(self.data.datasets, function(dataset) {
+                        if (dataset.yAxisID === this.id) {
+                            helpers.each(dataset.data, function(value, index) {
+                                positiveValues[index] = positiveValues[index] || 0;
+                                negativeValues[index] = negativeValues[index] || 0;
+
+                                if (self.options.relativePoints) {
+                                    positiveValues[index] = 100;
+                                } else {
+                                    if (value < 0) {
+                                        negativeValues[index] += value;
+                                    } else {
+                                        positiveValues[index] += value;
+                                    }
+                                }
+                            }, this);
+                        }
+                    }, this);
+
+                    var values = positiveValues.concat(negativeValues);
+                    this.min = helpers.min(values);
+                    this.max = helpers.max(values);
+                } else {
+                    helpers.each(self.data.datasets, function(dataset) {
+                        if (dataset.yAxisID === this.id) {
+                            helpers.each(dataset.data, function(value, index) {
+                                if (this.min === null) {
+                                    this.min = value;
+                                } else if (value < this.min) {
+                                    this.min = value;
+                                }
+                                
+                                if (this.max === null) {
+                                    this.max = value;
+                                } else if (value > this.max) {
+                                    this.max = value;
+                                }
+                            }, this);
+                        }
+                    }, this);
+                }
+            };
+
+            // Map of scale ID to scale object so we can lookup later 
+            this.scales = {};
+
+            // Build the x axis. The line chart only supports a single x axis
+            var ScaleClass = Chart.scales.getScaleConstructor(this.options.scales.xAxes[0].scaleType);
+            var xScale = new ScaleClass({
+                ctx: this.chart.ctx,
+                options: this.options.scales.xAxes[0],
+                id: this.options.scales.xAxes[0].id,
+                calculateRange: function() {
+                    this.labels = self.data.labels;
+                    this.min = 0;
+                    this.max = this.labels.length;
+                },
+                calculateBaseWidth: function() {
+                    return (this.getPixelForValue(null, 1, true) - this.getPixelForValue(null, 0, true)) - (2 * self.options.barValueSpacing);
+                },
+                calculateBarWidth: function(datasetCount) {
+                    //The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
+                    var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * self.options.barDatasetSpacing);
+
+                    if (self.options.stacked) {
+                        return baseWidth;
+                    }
+                    return (baseWidth / datasetCount);
+                },
+                calculateBarX: function(datasetCount, datasetIndex, elementIndex) {
+                    var xWidth = this.calculateBaseWidth(),
+                        xAbsolute = this.getPixelForValue(null, elementIndex, true) - (xWidth / 2),
+                        barWidth = this.calculateBarWidth(datasetCount);
+
+                    if (self.options.stacked) {
+                        return xAbsolute + barWidth / 2;
+                    }
+
+                    return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * self.options.barDatasetSpacing) + barWidth / 2;
+                },
+            });
+            this.scales[xScale.id] = xScale;
+
+            // Build up all the y scales
+            helpers.each(this.options.scales.yAxes, function(yAxisOptions) {
+                var ScaleClass = Chart.scales.getScaleConstructor(yAxisOptions.scaleType);
+                var scale = new ScaleClass({
+                    ctx: this.chart.ctx,
+                    options: yAxisOptions,
+                    calculateRange: calculateYRange,
+                    calculateBarBase: function(datasetIndex, index) {
+                        var base = 0;
+
+                        if (self.options.stacked) {
+                            var bar = self.data.datasets[datasetIndex].metaData[index];
+
+                            if (bar.value < 0) {
+                                for (var i = 0; i < datasetIndex; i++) {
+                                    if (self.data.datasets[i].yAxisID === this.id) {
+                                        base += self.data.datasets[i].metaData[index].value < base ? self.data.datasets[i].metaData[index].value : 0;
+                                    }
+                                }
                             } else {
-                                values[index] += value;
+                                for (var i = 0; i < datasetIndex; i++) {
+                                    if (self.data.datasets[i].yAxisID === this.id) {
+                                        base += self.data.datasets[i].metaData[index].value > base ? self.data.datasets[i].metaData[index].value : 0;
+                                    }
+                                }
+                            }
+
+                            return this.getPixelForValue(base);
+                        }
+
+                        base = this.getPixelForValue(this.min);
+
+                        if (this.beginAtZero || ((this.min <= 0 && this.max >= 0) || (this.min >= 0 && this.max <= 0))) {
+                            base = this.getPixelForValue(0);
+                            base += this.options.gridLines.lineWidth;
+                        } else if (this.min < 0 && this.max < 0) {
+                            // All values are negative. Use the top as the base
+                            base = this.getPixelForValue(this.max);
+                        }
+
+                        return base;
+
+                    },
+                    calculateBarY: function(datasets, datasetIndex, barIndex, value) {
+
+                        if (self.options.stacked) {
+
+                            var sumPos = 0,
+                                sumNeg = 0;
+
+                            for (var i = 0; i < datasetIndex; i++) {
+                                if (datasets[i].metaData[barIndex].value < 0) {
+                                    sumNeg += datasets[i].metaData[barIndex].value || 0;
+                                } else {
+                                    sumPos += datasets[i].metaData[barIndex].value || 0;
+                                }
+                            }
+
+                            if (value < 0) {
+                                return this.getPixelForValue(sumNeg + value);
+                            } else {
+                                return this.getPixelForValue(sumPos + value);
+                            }
+
+                            /*if (options.relativeBars) {
+                                offset = offset / sum * 100;
+                            }*/
+
+                            return this.getPixelForValue(0);
+                        }
+
+                        var offset = 0;
+
+                        for (i = datasetIndex; i < datasets.length; i++) {
+                            if (i === datasetIndex && value) {
+                                offset += value;
+                            } else {
+                                offset = offset + (datasets[i].metaData[barIndex].value);
                             }
                         }
-                    });
-                    return values.concat(negativeValues);
-                }
 
-                self.eachValue(function(value, index) {
-                    values.push(value);
+                        return this.getPixelForValue(value);
+                    },
+                    
+                    calculateBaseHeight: function() {
+                        return (this.getPixelForValue(1) - this.getPixelForValue(0));
+                    },
+                    id: yAxisOptions.id,
                 });
 
-                return values;
-
-            };
-
-            var scaleOptions = {
-                templateString: this.options.scaleLabel,
-                height: this.chart.height,
-                width: this.chart.width,
-                ctx: this.chart.ctx,
-                textColor: this.options.scaleFontColor,
-                fontSize: this.options.scaleFontSize,
-                fontStyle: this.options.scaleFontStyle,
-                fontFamily: this.options.scaleFontFamily,
-                valuesCount: labels.length,
-                beginAtZero: this.options.scaleBeginAtZero,
-                integersOnly: this.options.scaleIntegersOnly,
-                calculateYRange: function(currentHeight) {
-                    var updatedRanges = helpers.calculateScaleRange(
-                        dataTotal(),
-                        currentHeight,
-                        this.fontSize,
-                        this.beginAtZero,
-                        this.integersOnly
-                    );
-                    helpers.extend(this, updatedRanges);
-                },
-                xLabels: labels,
-                font: helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.scaleFontFamily),
-                lineWidth: this.options.scaleLineWidth,
-                lineColor: this.options.scaleLineColor,
-                showHorizontalLines: this.options.scaleShowHorizontalLines,
-                showVerticalLines: this.options.scaleShowVerticalLines,
-                gridLineWidth: (this.options.scaleShowGridLines) ? this.options.scaleGridLineWidth : 0,
-                gridLineColor: (this.options.scaleShowGridLines) ? this.options.scaleGridLineColor : "rgba(0,0,0,0)",
-                padding: (this.options.showScale) ? 0 : this.options.borderWidth,
-                showLabels: this.options.scaleShowLabels,
-                display: this.options.showScale
-            };
-
-            if (this.options.scaleOverride) {
-                helpers.extend(scaleOptions, {
-                    calculateYRange: helpers.noop,
-                    steps: this.options.scaleSteps,
-                    stepValue: this.options.scaleStepWidth,
-                    min: this.options.scaleStartValue,
-                    max: this.options.scaleStartValue + (this.options.scaleSteps * this.options.scaleStepWidth)
-                });
-            }
-
-            this.scale = new this.ScaleClass(scaleOptions);
+                this.scales[scale.id] = scale;
+            }, this);
         },
         // This should be incorportated into the init as something like a default value. "Reflow" seems like a weird word for a fredraw function
         redraw: function() {
-            var base = this.scale.zeroPoint;
             this.eachElement(function(element, index, datasetIndex) {
+                var yScale = this.scales[this.data.datasets[datasetIndex].yAxisID];
+                var base = yScale.getPixelForValue(yScale.min);
+
+                if (yScale.min <= 0 && yScale.max >= 0) {
+                    // have a 0 point
+                    base = yScale.getPixelForValue(0);
+                } else if (yScale.min < 0 && yScale.max < 0) {
+                    // all megative
+                    base = yScale.getPixelForValue(yScale.max);
+                }
+
                 helpers.extend(element, {
                     y: base,
                     base: base
@@ -445,7 +519,10 @@
             var easingDecimal = ease || 1;
             this.clear();
 
-            this.scale.draw(easingDecimal);
+            // Draw all the scales
+            helpers.each(this.scales, function(scale) {
+                scale.draw(this.chartArea);
+            }, this);
 
             //Draw all the bars for each dataset
             this.eachElement(function(bar, index, datasetIndex) {

@@ -145,10 +145,14 @@
 
     window.onload = function() {
         var ctx1 = document.getElementById("chart-area1").getContext("2d");
-        window.myPie = new Chart(ctx1).Pie(pieData);
+        window.myPie = new Chart(ctx1).Pie({
+            data: pieData
+        });
 
         var ctx2 = document.getElementById("chart-area2").getContext("2d");
-        window.myPie = new Chart(ctx2).Pie(pieData);
+        window.myPie = new Chart(ctx2).Pie({
+            data: pieData
+        });
     };
     </script>
 </body>

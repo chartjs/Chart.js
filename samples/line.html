@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <div style="width:100%">
+    <div style="width:50%">
         <div>
             <canvas id="canvas" height="450" width="600"></canvas>
         </div>
@@ -45,10 +45,20 @@
 
     window.onload = function() {
         var ctx = document.getElementById("canvas").getContext("2d");
-        window.myLine = new Chart(ctx).Line(lineChartData, {
-            responsive: true,
-            hoverMode: 'label',
-            stacked: true
+        window.myLine = new Chart(ctx).Line({
+            data: lineChartData, 
+            options: {
+                responsive: true,
+                hoverMode: 'label',
+                stacked: false,
+                scales: {
+                    xAxes: [{
+                        gridLines: {
+                            offsetGridLines: false
+                        }
+                    }]
+                }
+            }
         });
     };
 

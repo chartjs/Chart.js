@@ -7,24 +7,6 @@
 		helpers = Chart.helpers;
 
 	var defaultConfig = {
-		//Boolean - Show a backdrop to the scale label
-		scaleShowLabelBackdrop : true,
-
-		//String - The colour of the label backdrop
-		scaleBackdropColor : "rgba(255,255,255,0.75)",
-
-		// Boolean - Whether the scale should begin at zero
-		scaleBeginAtZero : true,
-
-		//Number - The backdrop padding above & below the label in pixels
-		scaleBackdropPaddingY : 2,
-
-		//Number - The backdrop padding to the side of the label in pixels
-		scaleBackdropPaddingX : 2,
-
-		//Boolean - Show line for each value in the scale
-		scaleShowLine : true,
-
 		//Boolean - Stroke a line around each segment in the chart
 		segmentShowStroke : true,
 
@@ -34,6 +16,48 @@
 		//Number - The width of the stroke value in pixels
 		segmentStrokeWidth : 2,
 
+		scale: {
+			scaleType: "radialLinear",
+			display: true,
+			
+			//Boolean - Whether to animate scaling the chart from the centre
+			animate : false,
+
+			lineArc: true,
+    
+            // grid line settings
+            gridLines: {
+                show: true,
+                color: "rgba(0, 0, 0, 0.05)",
+                lineWidth: 1,
+            },
+
+            // scale numbers
+            beginAtZero: true,
+
+            // label settings
+            labels: {
+                show: true,
+                template: "<%=value%>",
+                fontSize: 12,
+                fontStyle: "normal",
+                fontColor: "#666",
+                fontFamily: "Helvetica Neue",
+
+				//Boolean - Show a backdrop to the scale label
+				showLabelBackdrop : true,
+
+				//String - The colour of the label backdrop
+				backdropColor : "rgba(255,255,255,0.75)",
+
+				//Number - The backdrop padding above & below the label in pixels
+				backdropPaddingY : 2,
+
+				//Number - The backdrop padding to the side of the label in pixels
+				backdropPaddingX : 2,
+            }
+		},
+
 		//Number - Amount of animation steps
 		animationSteps : 100,
 
@@ -42,9 +66,6 @@
 
 		//Boolean - Whether to animate the rotation of the chart
 		animateRotate : true,
-
-		//Boolean - Whether to animate scaling the chart from the centre
-		animateScale : false,
 
 		//String - A legend template
 		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
@@ -58,10 +79,7 @@
 		defaults : defaultConfig,
 		//Initialize is fired when the chart is initialized - Data is passed in as a parameter
 		//Config is automatically merged by the core of Chart.js, and is available at this.options
-		initialize:  function(data){
-			// Save data as a source for updating of values & methods
-			this.data = data;
-
+		initialize:  function(){
 			this.segments = [];
 			//Declare segment class as a chart instance specific class, so it can share props for this instance
 			this.SegmentArc = Chart.Arc.extend({
@@ -73,47 +91,59 @@
 				x : this.chart.width/2,
 				y : this.chart.height/2
 			});
-			this.scale = new Chart.RadialScale({
-				display: this.options.showScale,
-				fontStyle: this.options.scaleFontStyle,
-				fontSize: this.options.scaleFontSize,
-				fontFamily: this.options.scaleFontFamily,
-				fontColor: this.options.scaleFontColor,
-				showLabels: this.options.scaleShowLabels,
-				showLabelBackdrop: this.options.scaleShowLabelBackdrop,
-				backdropColor: this.options.scaleBackdropColor,
-				backdropPaddingY : this.options.scaleBackdropPaddingY,
-				backdropPaddingX: this.options.scaleBackdropPaddingX,
-				lineWidth: (this.options.scaleShowLine) ? this.options.scaleLineWidth : 0,
-				lineColor: this.options.scaleLineColor,
+
+			var self = this;
+			var ScaleClass = Chart.scales.getScaleConstructor(this.options.scale.scaleType);
+			this.scale = new ScaleClass({
+				options: this.options.scale,
 				lineArc: true,
 				width: this.chart.width,
 				height: this.chart.height,
 				xCenter: this.chart.width/2,
 				yCenter: this.chart.height/2,
 				ctx : this.chart.ctx,
-				templateString: this.options.scaleLabel,
-				valuesCount: data.length
+				valuesCount: this.data.length,
+				calculateRange: function() {
+					this.min = null;
+					this.max = null;
+
+					helpers.each(self.data, function(data) {
+                        if (this.min === null) {
+                            this.min = data.value;
+                        } else if (data.value < this.min) {
+                            this.min = data.value;
+                        }
+                        
+                        if (this.max === null) {
+                            this.max = data.value;
+                        } else if (data.value > this.max) {
+                            this.max = data.value;
+                        }
+                    }, this);
+				}
 			});
 
-			this.updateScaleRange(data);
+			this.updateScaleRange();
+			this.scale.calculateRange();
+			this.scale.generateTicks();
+			this.scale.buildYLabels();
 
-			this.scale.update();
-
-			helpers.each(data,function(segment,index){
+			helpers.each(this.data,function(segment,index){
 				this.addData(segment,index,true);
 			},this);
 
 			//Set up tooltip events on the chart
 			if (this.options.showTooltips){
-				helpers.bindEvents(this, this.options.tooltipEvents, function(evt){
+				helpers.bindEvents(this, this.options.events, function(evt){
 					var activeSegments = (evt.type !== 'mouseout') ? this.getSegmentsAtEvent(evt) : [];
 					helpers.each(this.segments,function(segment){
 						segment.restore(["fillColor"]);
 					});
+
 					helpers.each(activeSegments,function(activeSegment){
 						activeSegment.fillColor = activeSegment.highlightColor;
 					});
+
 					this.showTooltip(activeSegments);
 				});
 			}
@@ -122,12 +152,12 @@
 		},
 		getSegmentsAtEvent : function(e){
 			var segmentsArray = [];
-
 			var location = helpers.getRelativePosition(e);
 
 			helpers.each(this.segments,function(segment){
 				if (segment.inRange(location.x,location.y)) segmentsArray.push(segment);
 			},this);
+
 			return segmentsArray;
 		},
 		addData : function(segment, atIndex, silent){
@@ -160,36 +190,12 @@
 			},this);
 			this.scale.valuesCount = this.segments.length;
 		},
-		updateScaleRange: function(datapoints){
-			var valuesArray = [];
-			helpers.each(datapoints,function(segment){
-				valuesArray.push(segment.value);
+		updateScaleRange: function(){
+			helpers.extend(this.scale, {
+				size: helpers.min([this.chart.width, this.chart.height]),
+				xCenter: this.chart.width/2,
+				yCenter: this.chart.height/2
 			});
-
-			var scaleSizes = (this.options.scaleOverride) ?
-				{
-					steps: this.options.scaleSteps,
-					stepValue: this.options.scaleStepWidth,
-					min: this.options.scaleStartValue,
-					max: this.options.scaleStartValue + (this.options.scaleSteps * this.options.scaleStepWidth)
-				} :
-				helpers.calculateScaleRange(
-					valuesArray,
-					helpers.min([this.chart.width, this.chart.height])/2,
-					this.options.scaleFontSize,
-					this.options.scaleBeginAtZero,
-					this.options.scaleIntegersOnly
-				);
-
-			helpers.extend(
-				this.scale,
-				scaleSizes,
-				{
-					size: helpers.min([this.chart.width, this.chart.height]),
-					xCenter: this.chart.width/2,
-					yCenter: this.chart.height/2
-				}
-			);
 
 		},
 		update : function(){
@@ -223,8 +229,11 @@
 				x : this.chart.width/2,
 				y : this.chart.height/2
 			});
-			this.updateScaleRange(this.segments);
-			this.scale.update();
+			
+			this.updateScaleRange();
+			this.scale.calculateRange();
+			this.scale.generateTicks();
+			this.scale.buildYLabels();
 
 			helpers.extend(this.scale,{
 				xCenter: this.chart.width/2,
@@ -232,8 +241,11 @@
 			});
 
 			helpers.each(this.segments, function(segment){
-				segment.update({
-					outerRadius : this.scale.calculateCenterOffset(segment.value)
+				//segment.update({
+				//	outerRadius : this.scale.calculateCenterOffset(segment.value)
+				//});
+				helpers.extend(segment, {
+					outerRadius: this.scale.calculateCenterOffset(segment.value)
 				});
 			}, this);
 
