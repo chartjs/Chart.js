@@ -1712,7 +1712,9 @@
 				each(this.yLabels,function(labelString,index){
 					var yLabelCenter = this.endPoint - (yLabelGap * index),
 						linePositionY = Math.round(yLabelCenter),
-						drawHorizontalLine = this.showHorizontalLines;
+						drawHorizontalLine = this.showHorizontalLines,
+						drawXAxis = this.showXAxis,
+						drawYAxis = this.showYAxis;
 
 					ctx.textAlign = "right";
 					ctx.textBaseline = "middle";
@@ -1720,16 +1722,16 @@
 						ctx.fillText(labelString,xStart - 10,yLabelCenter);
 					}
 
-					// This is X axis, so draw it
-					if (index === 0 && !drawHorizontalLine){
-						drawHorizontalLine = true;
+					// Draw X axis depending of the settings
+					if(index === 0) {
+						drawHorizontalLine = drawXAxis;
 					}
 
-					if (drawHorizontalLine){
+					if(drawHorizontalLine) {
 						ctx.beginPath();
 					}
 
-					if (index > 0){
+					if(index > 0) {
 						// This is a grid line in the centre, so drop that
 						ctx.lineWidth = this.gridLineWidth;
 						ctx.strokeStyle = this.gridLineColor;
@@ -1741,20 +1743,22 @@
 
 					linePositionY += helpers.aliasPixel(ctx.lineWidth);
 
-					if(drawHorizontalLine){
+					if(drawHorizontalLine) {
 						ctx.moveTo(xStart, linePositionY);
 						ctx.lineTo(this.width, linePositionY);
 						ctx.stroke();
 						ctx.closePath();
 					}
-
-					ctx.lineWidth = this.lineWidth;
-					ctx.strokeStyle = this.lineColor;
-					ctx.beginPath();
-					ctx.moveTo(xStart - 5, linePositionY);
-					ctx.lineTo(xStart, linePositionY);
-					ctx.stroke();
-					ctx.closePath();
+					
+					if(drawYAxis) {
+						ctx.lineWidth = this.lineWidth;
+						ctx.strokeStyle = this.lineColor;
+						ctx.beginPath();
+						ctx.moveTo(xStart - 5, linePositionY);
+						ctx.lineTo(xStart, linePositionY);
+						ctx.stroke();
+						ctx.closePath();
+					}
 
 				},this);
 
@@ -1763,18 +1767,20 @@
 						// Check to see if line/bar here and decide where to place the line
 						linePos = this.calculateX(index - (this.offsetGridLines ? 0.5 : 0)) + aliasPixel(this.lineWidth),
 						isRotated = (this.xLabelRotation > 0),
-						drawVerticalLine = this.showVerticalLines;
+						drawVerticalLine = this.showVerticalLines,
+						drawXAxis = this.showXAxis,
+						drawYAxis = this.showYAxis;
 
-					// This is Y axis, so draw it
-					if (index === 0 && !drawVerticalLine){
-						drawVerticalLine = true;
+					// Draw Y axis depending of the settings
+					if(index === 0) {
+						drawVerticalLine = drawYAxis;
 					}
 
-					if (drawVerticalLine){
+					if(drawVerticalLine) {
 						ctx.beginPath();
 					}
 
-					if (index > 0){
+					if(index > 0) {
 						// This is a grid line in the centre, so drop that
 						ctx.lineWidth = this.gridLineWidth;
 						ctx.strokeStyle = this.gridLineColor;
@@ -1784,7 +1790,7 @@
 						ctx.strokeStyle = this.lineColor;
 					}
 
-					if (drawVerticalLine){
+					if(drawVerticalLine) {
 						ctx.moveTo(linePos,this.endPoint);
 						ctx.lineTo(linePos,this.startPoint - 3);
 						ctx.stroke();
@@ -1797,11 +1803,13 @@
 
 
 					// Small lines at the bottom of the base grid line
-					ctx.beginPath();
-					ctx.moveTo(linePos,this.endPoint);
-					ctx.lineTo(linePos,this.endPoint + 5);
-					ctx.stroke();
-					ctx.closePath();
+					if(drawXAxis) {
+						ctx.beginPath();
+						ctx.moveTo(linePos,this.endPoint);
+						ctx.lineTo(linePos,this.endPoint + 5);
+						ctx.stroke();
+						ctx.closePath();
+					}
 
 					ctx.save();
 					ctx.translate(xPos,(isRotated) ? this.endPoint + 12 : this.endPoint + 8);
