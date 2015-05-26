@@ -75,17 +75,16 @@
             }],
         },
 
-        //Number - Pixel width of the bar border
-        barBorderWidth: 2,
+        bars: {
+            //Number - Pixel width of the bar border
+            borderWidth: 2,
 
-        //Number - Spacing between each of the X value sets
-        barValueSpacing: 5,
+            //Number - Spacing between each of the X value sets
+            valueSpacing: 5,
 
-        //Number - Spacing between data sets within X values
-        barDatasetSpacing: 1,
-
-        //Boolean - Whether bars should be rendered on a percentage base
-        relativeBars: false,
+            //Number - Spacing between data sets within X values
+            datasetSpacing: 1,
+        }
 
         //String - A legend template
         legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].backgroundColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
@@ -375,11 +374,11 @@
                     this.max = this.labels.length;
                 },
                 calculateBaseWidth: function() {
-                    return (this.getPixelForValue(null, 1, true) - this.getPixelForValue(null, 0, true)) - (2 * self.options.barValueSpacing);
+                    return (this.getPixelForValue(null, 1, true) - this.getPixelForValue(null, 0, true)) - (2 * self.options.bars.valueSpacing);
                 },
                 calculateBarWidth: function(datasetCount) {
                     //The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
-                    var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * self.options.barDatasetSpacing);
+                    var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * self.options.bars.datasetSpacing);
 
                     if (self.options.stacked) {
                         return baseWidth;
@@ -395,7 +394,7 @@
                         return xAbsolute + barWidth / 2;
                     }
 
-                    return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * self.options.barDatasetSpacing) + barWidth / 2;
+                    return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * self.options.bars.datasetSpacing) + barWidth / 2;
                 },
             });
             this.scales[xScale.id] = xScale;
@@ -463,10 +462,6 @@
                             } else {
                                 return this.getPixelForValue(sumPos + value);
                             }
-
-                            /*if (options.relativeBars) {
-                                offset = offset / sum * 100;
-                            }*/
 
                             return this.getPixelForValue(0);
                         }
