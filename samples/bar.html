@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <div style="width: 100%">
+    <div style="width: 50%">
         <canvas id="canvas" height="450" width="600"></canvas>
     </div>
     <button id="randomizeData">Randomize Data</button>
@@ -47,12 +47,15 @@
     };
     window.onload = function() {
         var ctx = document.getElementById("canvas").getContext("2d");
-        window.myBar = new Chart(ctx).Bar(barChartData, {
-            responsive: true,
-            hoverMode: 'label',
-            scaleBeginAtZero: false,
-            hoverAnimationDuration: 400,
-            stacked: true,
+        window.myBar = new Chart(ctx).Bar({
+            data: barChartData, 
+            options: {
+                responsive: true,
+                hoverMode: 'label',
+                scaleBeginAtZero: false,
+                hoverAnimationDuration: 400,
+                stacked: true,
+            }
         });
     };
 

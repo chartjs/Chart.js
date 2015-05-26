@@ -1,0 +1,140 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Line Chart Multiple Axes</title>
+    <script src="../Chart.js"></script>
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+</head>
+
+<body>
+    <div style="width:50%">
+        <div>
+            <canvas id="canvas" height="450" width="600"></canvas>
+        </div>
+    </div>
+    <button id="randomizeData">Randomize Data</button>
+    <script>
+    var randomScalingFactor = function() {
+        return Math.round(Math.random() * 100 * (Math.random() > 0.5 ? -1 : 1));
+    };
+    var randomColor = function(opacity) {
+        return 'rgba(' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + (opacity || '.3') + ')';
+    };
+
+    var lineChartData = {
+        labels: ["January", "February", "March", "April", "May", "June", "July"],
+        datasets: [{
+            label: "My First dataset",
+            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
+            yAxisID: "y-axis-1",
+        }, {
+            label: "My Second dataset",
+            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
+            yAxisID: "y-axis-2"
+        }]
+    };
+
+    $.each(lineChartData.datasets, function(i, dataset) {
+        dataset.borderColor = randomColor(0.4);
+        dataset.backgroundColor = randomColor(1);
+        dataset.pointBorderColor = randomColor(0.7);
+        dataset.pointBackgroundColor = randomColor(0.5);
+        dataset.pointBorderWidth = 1;
+    });
+
+    console.log(lineChartData);
+
+    window.onload = function() {
+        var ctx = document.getElementById("canvas").getContext("2d");
+        window.myLine = new Chart(ctx).Line({
+            data: lineChartData, 
+            options: {
+                responsive: true,
+                hoverMode: 'label',
+                stacked: false,
+                scales: {
+                    xAxes: [{
+                        gridLines: {
+                            offsetGridLines: false
+                        }
+                    }],
+                    yAxes: [{
+                        scaleType: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                        display: true,
+                        position: "left",
+                        id: "y-axis-1",
+                
+                        // grid line settings
+                        gridLines: {
+                            show: true,
+                            color: "rgba(0, 0, 0, 0.05)",
+                            lineWidth: 1,
+                            drawOnChartArea: true,
+                            drawTicks: true,
+                            zeroLineWidth: 1,
+                            zeroLineColor: "rgba(0,0,0,0.25)",
+                        },
+
+                        // scale numbers
+                        beginAtZero: false,
+                        integersOnly: false,
+                        override: null,
+
+                        // label settings
+                        labels: {
+                            show: true,
+                            template: "<%=value%>",
+                            fontSize: 12,
+                            fontStyle: "normal",
+                            fontColor: "#666",
+                            fontFamily: "Helvetica Neue",
+                        }
+                    }, {
+                        scaleType: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                        display: true,
+                        position: "right",
+                        id: "y-axis-2",
+                
+                        // grid line settings
+                        gridLines: {
+                            show: true,
+                            color: "rgba(0, 0, 0, 0.05)",
+                            lineWidth: 1,
+                            drawOnChartArea: false, // only want the grid lines for one axis to show up
+                            drawTicks: false,
+                            zeroLineWidth: 1,
+                            zeroLineColor: "rgba(0,0,0,0.25)",
+                        },
+
+                        // scale numbers
+                        beginAtZero: false,
+                        integersOnly: false,
+                        override: null,
+
+                        // label settings
+                        labels: {
+                            show: true,
+                            template: "<%=value%>",
+                            fontSize: 12,
+                            fontStyle: "normal",
+                            fontColor: "#666",
+                            fontFamily: "Helvetica Neue",
+                        }
+                    }],
+                }
+            }
+        });
+    };
+
+    $('#randomizeData').click(function() {
+        lineChartData.datasets[0].data = [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()];
+
+        lineChartData.datasets[1].data = [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()];
+
+        window.myLine.update();
+    });
+    </script>
+</body>
+
+</html>
