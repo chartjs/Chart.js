@@ -999,10 +999,10 @@
         redraw: noop,
         render: function(duration) {
 
-            if (this.options.animation) {
+            if (this.options.animation.duration !== 0) {
                 var animation = new Chart.Animation();
-                animation.numSteps = (duration || this.options.animationDuration) / 16.66; //60 fps
-                animation.easing = this.options.animationEasing;
+                animation.numSteps = (duration || this.options.animation.duration) / 16.66; //60 fps
+                animation.easing = this.options.animation.easing;
 
                 // render function
                 animation.render = function(chartInstance, animationObject) {
