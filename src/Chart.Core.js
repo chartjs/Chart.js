@@ -1273,6 +1273,8 @@
 
             var vm = this._vm;
             var ctx = this._chart.ctx;
+            var first = vm._points[0];
+            var last = vm._points[vm._points.length - 1];
 
             // Draw the background first (so the border is always on top)
             helpers.each(vm._points, function(point, index) {
@@ -1295,6 +1297,23 @@
                     }
                 }
             }, this);
+
+            if (vm.loop) {
+
+                if (vm._tension > 0 || 1) {
+
+                    ctx.bezierCurveTo(
+                        last._vm.controlPointNextX,
+                        last._vm.controlPointNextY,
+                        first._vm.controlPointPreviousX,
+                        first._vm.controlPointPreviousY,
+                        first._vm.x,
+                        first._vm.y
+                    );
+                } else {
+                    ctx.lineTo(first._vm.x, first._vm.y);
+                }
+            }
 
             if (vm._points.length > 0) {
                 //Round off the line by going to the base of the chart, back to the start, then fill.
@@ -1331,6 +1350,21 @@
                     }
                 }
             }, this);
+            if (vm.loop) {
+                if (vm._tension > 0 || 1) {
+
+                    ctx.bezierCurveTo(
+                        last._vm.controlPointNextX,
+                        last._vm.controlPointNextY,
+                        first._vm.controlPointPreviousX,
+                        first._vm.controlPointPreviousY,
+                        first._vm.x,
+                        first._vm.y
+                    );
+                } else {
+                    ctx.lineTo(first._vm.x, first._vm.y);
+                }
+            }
 
 
             ctx.stroke();

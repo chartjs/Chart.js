@@ -13,7 +13,7 @@
                 display: true,
                 position: "bottom",
                 id: "x-axis-1", // need an ID so datasets can reference the scale
-                
+
                 // grid line settings
                 gridLines: {
                     show: true,
@@ -46,7 +46,7 @@
                 display: true,
                 position: "left",
                 id: "y-axis-1",
-        
+
                 // grid line settings
                 gridLines: {
                     show: true,
@@ -78,22 +78,22 @@
         //Boolean - Whether to stack the lines essentially creating a stacked area chart.
         stacked: false,
 
-        points: {
+        point: {
             // Number - Radius of each point dot in pixels
             radius: 3,
-            
+
             // Number - Pixel width of point dot border
             borderWidth: 1,
-            
+
             // Number - Pixel width of point on hover
             hoverRadius: 5,
-            
+
             // Number - Pixel width of point dot border on hover
             hoverBorderWidth: 2,
-            
+
             // Color
             backgroundColor: Chart.defaults.global.defaultColor,
-            
+
             // Color
             borderColor: Chart.defaults.global.defaultColor,
 
@@ -101,7 +101,7 @@
             hitRadius: 6,
         },
 
-        lines: {
+        line: {
             //Number - Tension of the bezier curve between points. Use 0 to turn off bezier tension
             tension: 0.4,
         },
@@ -207,17 +207,17 @@
                 helpers.extend(dataset.metaDataset, {
                     // Utility
                     _datasetIndex: datasetIndex,
-                    
+
                     // Data
                     _points: dataset.metaData,
-                    
+
                     // Geometry
                     scaleTop: yScale.top,
                     scaleBottom: yScale.bottom,
                     scaleZero: yScale.getPixelForValue(0),
-                    
+
                     // Appearance
-                    tension: dataset.tension || this.options.lines.tension,
+                    tension: dataset.tension || this.options.line.tension,
                     backgroundColor: dataset.backgroundColor || this.options.backgroundColor,
                     borderWidth: dataset.borderWidth || this.options.borderWidth,
                     borderColor: dataset.borderColor || this.options.borderColor,
@@ -235,25 +235,25 @@
                     _chart: this.chart,
                     _datasetIndex: datasetIndex,
                     _index: index,
-                    
+
                     // Data
                     label: this.data.labels[index],
                     value: this.data.datasets[datasetIndex].data[index],
                     datasetLabel: this.data.datasets[datasetIndex].label,
-                    
+
                     // Geometry
                     offsetGridLines: this.options.offsetGridLines,
                     x: xScale.getPixelForValue(null, index, true), // value not used in dataset scale, but we want a consistent API between scales
                     y: yScale.getPointPixelForValue(this.data.datasets[datasetIndex].data[index], index, datasetIndex),
                     tension: this.data.datasets[datasetIndex].metaDataset.tension,
-                    
+
                     // Appearnce
-                    radius: this.data.datasets[datasetIndex].pointRadius || this.options.points.radius,
-                    backgroundColor: this.data.datasets[datasetIndex].pointBackgroundColor || this.options.points.backgroundColor,
-                    borderWidth: this.data.datasets[datasetIndex].pointBorderWidth || this.options.pointsborderWidth,
-                    
+                    radius: this.data.datasets[datasetIndex].pointRadius || this.options.point.radius,
+                    backgroundColor: this.data.datasets[datasetIndex].pointBackgroundColor || this.options.point.backgroundColor,
+                    borderWidth: this.data.datasets[datasetIndex].pointBorderWidth || this.options.point.borderWidth,
+
                     // Tooltip
-                    hoverRadius: this.data.datasets[datasetIndex].pointHitRadius || this.options.points.hitRadius,
+                    hoverRadius: this.data.datasets[datasetIndex].pointHitRadius || this.options.point.hitRadius,
                 });
             }, this);
 
@@ -337,7 +337,7 @@
                                 } else if (value < this.min) {
                                     this.min = value;
                                 }
-                                
+
                                 if (this.max === null) {
                                     this.max = value;
                                 } else if (value > this.max) {
