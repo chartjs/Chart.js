@@ -1,30 +1,30 @@
-(function(){
-	"use strict";
+(function() {
+    "use strict";
 
-	var root = this,
-		Chart = root.Chart,
-		//Cache a local reference to Chart.helpers
-		helpers = Chart.helpers;
+    var root = this,
+        Chart = root.Chart,
+        //Cache a local reference to Chart.helpers
+        helpers = Chart.helpers;
 
-	var defaultConfig = {
-		//Boolean - Stroke a line around each segment in the chart
-		segmentShowStroke : true,
+    var defaultConfig = {
 
-		//String - The colour of the stroke on each segment.
-		segmentStrokeColor : "#fff",
+        segment: {
+            //String - The colour of the border on each segment.
+            borderColor: "#fff",
 
-		//Number - The width of the stroke value in pixels
-		segmentStrokeWidth : 2,
+            //Number - The width of the border value in pixels
+            borderWidth: 2,
+        },
 
-		scale: {
-			scaleType: "radialLinear",
-			display: true,
-			
-			//Boolean - Whether to animate scaling the chart from the centre
-			animate : false,
+        scale: {
+            scaleType: "radialLinear",
+            display: true,
 
-			lineArc: true,
-    
+            //Boolean - Whether to animate scaling the chart from the centre
+            animate: false,
+
+            lineArc: true,
+
             // grid line settings
             gridLines: {
                 show: true,
@@ -44,238 +44,172 @@
                 fontColor: "#666",
                 fontFamily: "Helvetica Neue",
 
-				//Boolean - Show a backdrop to the scale label
-				showLabelBackdrop : true,
+                //Boolean - Show a backdrop to the scale label
+                showLabelBackdrop: true,
 
-				//String - The colour of the label backdrop
-				backdropColor : "rgba(255,255,255,0.75)",
+                //String - The colour of the label backdrop
+                backdropColor: "rgba(255,255,255,0.75)",
 
-				//Number - The backdrop padding above & below the label in pixels
-				backdropPaddingY : 2,
+                //Number - The backdrop padding above & below the label in pixels
+                backdropPaddingY: 2,
 
-				//Number - The backdrop padding to the side of the label in pixels
-				backdropPaddingX : 2,
+                //Number - The backdrop padding to the side of the label in pixels
+                backdropPaddingX: 2,
             }
-		},
+        },
 
-		//Number - Amount of animation steps
-		animationSteps : 100,
+        //Boolean - Whether to animate the rotation of the chart
+        animateRotate: true,
 
-		//String - Animation easing effect.
-		animationEasing : "easeOutBounce",
-
-		//Boolean - Whether to animate the rotation of the chart
-		animateRotate : true,
-
-		//String - A legend template
-		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
-	};
+        //String - A legend template
+        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
+    };
 
 
-	Chart.Type.extend({
-		//Passing in a name registers this chart in the Chart namespace
-		name: "PolarArea",
-		//Providing a defaults will also register the deafults in the chart namespace
-		defaults : defaultConfig,
-		//Initialize is fired when the chart is initialized - Data is passed in as a parameter
-		//Config is automatically merged by the core of Chart.js, and is available at this.options
-		initialize:  function(){
-			this.segments = [];
-			//Declare segment class as a chart instance specific class, so it can share props for this instance
-			this.SegmentArc = Chart.Arc.extend({
-				showStroke : this.options.segmentShowStroke,
-				strokeWidth : this.options.segmentStrokeWidth,
-				strokeColor : this.options.segmentStrokeColor,
-				ctx : this.chart.ctx,
-				innerRadius : 0,
-				x : this.chart.width/2,
-				y : this.chart.height/2
-			});
+    Chart.Type.extend({
+        //Passing in a name registers this chart in the Chart namespace
+        name: "PolarArea",
+        //Providing a defaults will also register the deafults in the chart namespace
+        defaults: defaultConfig,
+        //Initialize is fired when the chart is initialized - Data is passed in as a parameter
+        //Config is automatically merged by the core of Chart.js, and is available at this.options
+        initialize: function() {
 
-			var self = this;
-			var ScaleClass = Chart.scales.getScaleConstructor(this.options.scale.scaleType);
-			this.scale = new ScaleClass({
-				options: this.options.scale,
-				lineArc: true,
-				width: this.chart.width,
-				height: this.chart.height,
-				xCenter: this.chart.width/2,
-				yCenter: this.chart.height/2,
-				ctx : this.chart.ctx,
-				valuesCount: this.data.length,
-				calculateRange: function() {
-					this.min = null;
-					this.max = null;
+            // Scale setup
+            var self = this;
+            var ScaleClass = Chart.scales.getScaleConstructor(this.options.scale.scaleType);
+            this.scale = new ScaleClass({
+                options: this.options.scale,
+                lineArc: true,
+                width: this.chart.width,
+                height: this.chart.height,
+                xCenter: this.chart.width / 2,
+                yCenter: this.chart.height / 2,
+                ctx: this.chart.ctx,
+                valuesCount: this.data.length,
+                calculateRange: function() {
+                    this.min = null;
+                    this.max = null;
 
-					helpers.each(self.data, function(data) {
+                    helpers.each(self.data.data, function(data) {
                         if (this.min === null) {
                             this.min = data.value;
                         } else if (data.value < this.min) {
                             this.min = data.value;
                         }
-                        
+
                         if (this.max === null) {
                             this.max = data.value;
                         } else if (data.value > this.max) {
                             this.max = data.value;
                         }
                     }, this);
-				}
-			});
+                }
+            });
 
-			this.updateScaleRange();
-			this.scale.calculateRange();
-			this.scale.generateTicks();
-			this.scale.buildYLabels();
+            //Declare segment class as a chart instance specific class, so it can share props for this instance
+            this.Slice = Chart.Arc.extend();
 
-			helpers.each(this.data,function(segment,index){
-				this.addData(segment,index,true);
-			},this);
+            //Set up tooltip events on the chart
+            if (this.options.showTooltips) {
+                helpers.bindEvents(this, this.options.events, this.onHover);
+            }
 
-			//Set up tooltip events on the chart
-			if (this.options.showTooltips){
-				helpers.bindEvents(this, this.options.events, function(evt){
-					var activeSegments = (evt.type !== 'mouseout') ? this.getSegmentsAtEvent(evt) : [];
-					helpers.each(this.segments,function(segment){
-						segment.restore(["fillColor"]);
-					});
+            // Create new slice for each piece of data
+            this.data.metaData = [];
+            helpers.each(this.data.data, function(slice, index) {
+                var metaSlice = new this.Slice({
+                    _chart: this.chart,
+                    innerRadius: 0,
+                    startAngle: Math.PI * 1.5,
+                    endAngle: Math.PI * 1.5,
+                    x: this.chart.width / 2,
+                    y: this.chart.height / 2
+                });
+                if (typeof slice == 'number') {
+                    helpers.extend(metaSlice, {
+                        value: slice
+                    });
+                } else {
+                    helpers.extend(metaSlice, slice);
+                }
+                if (!metaSlice.backgroundColor) {
+                    slice.backgroundColor = 'hsl(' + (360 * index / this.data.data.length) + ', 100%, 50%)';
+                }
+                metaSlice.save();
+                this.data.metaData.push(metaSlice);
+            }, this);
 
-					helpers.each(activeSegments,function(activeSegment){
-						activeSegment.fillColor = activeSegment.highlightColor;
-					});
 
-					this.showTooltip(activeSegments);
-				});
-			}
+            // Create tooltip instance exclusively for this chart with some defaults.
+            this.tooltip = new Chart.Tooltip({
+                _chart: this.chart,
+                _data: this.data,
+                _options: this.options,
+            }, this);
 
-			this.render();
-		},
-		getSegmentsAtEvent : function(e){
-			var segmentsArray = [];
-			var location = helpers.getRelativePosition(e);
+            this.update();
 
-			helpers.each(this.segments,function(segment){
-				if (segment.inRange(location.x,location.y)) segmentsArray.push(segment);
-			},this);
+        },
+        updateScaleRange: function() {
+            helpers.extend(this.scale, {
+                size: helpers.min([this.chart.width, this.chart.height]),
+                xCenter: this.chart.width / 2,
+                yCenter: this.chart.height / 2
+            });
+        },
+        update: function() {
 
-			return segmentsArray;
-		},
-		addData : function(segment, atIndex, silent){
-			var index = atIndex || this.segments.length;
+            this.updateScaleRange();
+            this.scale.calculateRange();
+            this.scale.generateTicks();
+            this.scale.buildYLabels();
 
-			this.segments.splice(index, 0, new this.SegmentArc({
-				fillColor: segment.color,
-				highlightColor: segment.highlight || segment.color,
-				label: segment.label,
-				value: segment.value,
-				outerRadius: (this.options.animateScale) ? 0 : this.scale.calculateCenterOffset(segment.value),
-				circumference: (this.options.animateRotate) ? 0 : this.scale.getCircumference(),
-				startAngle: Math.PI * 1.5
-			}));
-			if (!silent){
-				this.reflow();
-				this.update();
-			}
-		},
-		removeData: function(atIndex){
-			var indexToDelete = (helpers.isNumber(atIndex)) ? atIndex : this.segments.length-1;
-			this.segments.splice(indexToDelete, 1);
-			this.reflow();
-			this.update();
-		},
-		calculateTotal: function(data){
-			this.total = 0;
-			helpers.each(data,function(segment){
-				this.total += segment.value;
-			},this);
-			this.scale.valuesCount = this.segments.length;
-		},
-		updateScaleRange: function(){
-			helpers.extend(this.scale, {
-				size: helpers.min([this.chart.width, this.chart.height]),
-				xCenter: this.chart.width/2,
-				yCenter: this.chart.height/2
-			});
+            this.outerRadius = (helpers.min([this.chart.width, this.chart.height]) - this.options.segment.borderWidth / 2) / 2;
 
-		},
-		update : function(){
+            var circumference = 1 / this.data.data.length * 2;
 
-			// Map new data to data points
-			if(this.data.length == this.segments.length){
-				helpers.each(this.data, function(segment, i){
-					helpers.extend(this.segments[i], {
-						fillColor: segment.color,
-						highlightColor: segment.highlight || segment.color,
-						label: segment.label,
-						value: segment.value,
-					});
-				},this);
-			} else{
-				// Data size changed without properly inserting, just redraw the chart
-				this.initialize(this.data);
-			}
+            // Map new data to data points
+            helpers.each(this.data.metaData, function(slice, index) {
 
-			this.calculateTotal(this.segments);
+                var datapoint = this.data.data[index];
 
-			helpers.each(this.segments,function(segment){
-				segment.save();
-			});
-			
-			this.reflow();
-			this.render();
-		},
-		reflow : function(){
-			helpers.extend(this.SegmentArc.prototype,{
-				x : this.chart.width/2,
-				y : this.chart.height/2
-			});
-			
-			this.updateScaleRange();
-			this.scale.calculateRange();
-			this.scale.generateTicks();
-			this.scale.buildYLabels();
+                var startAngle = Math.PI * 1.5 + (Math.PI * circumference) * index;
+                var endAngle = startAngle + (circumference * Math.PI);
 
-			helpers.extend(this.scale,{
-				xCenter: this.chart.width/2,
-				yCenter: this.chart.height/2
-			});
+                helpers.extend(slice, {
+                    _index: index,
+                    x: this.chart.width / 2,
+                    y: this.chart.height / 2,
+                    value: datapoint.value,
+                    label: datapoint.label,
+                    innerRadius: 0,
+                    outerRadius: this.scale.calculateCenterOffset(slice.value),
+                    startAngle: startAngle,
+                    endAngle: endAngle,
 
-			helpers.each(this.segments, function(segment){
-				//segment.update({
-				//	outerRadius : this.scale.calculateCenterOffset(segment.value)
-				//});
-				helpers.extend(segment, {
-					outerRadius: this.scale.calculateCenterOffset(segment.value)
-				});
-			}, this);
+                    backgroundColor: datapoint.backgroundColor,
+                    hoverBackgroundColor: datapoint.hoverBackgroundColor || datapoint.backgroundColor,
+                    borderWidth: this.options.borderWidth,
+                    borderColor: this.options.segmentStrokeColor,
+                });
+                slice.pivot();
 
-		},
-		draw : function(ease){
-			var easingDecimal = ease || 1;
-			//Clear & draw the canvas
-			this.clear();
-			helpers.each(this.segments,function(segment, index){
-				segment.transition({
-					circumference : this.scale.getCircumference(),
-					outerRadius : this.scale.calculateCenterOffset(segment.value)
-				},easingDecimal);
+            }, this);
 
-				segment.endAngle = segment.startAngle + segment.circumference;
+            this.render();
+        },
+        draw: function(ease) {
+            var easingDecimal = ease || 1;
 
-				// If we've removed the first segment we need to set the first one to
-				// start at the top.
-				if (index === 0){
-					segment.startAngle = Math.PI * 1.5;
-				}
+            this.clear();
 
-				//Check to see if it's the last segment, if not get the next and update the start angle
-				if (index < this.segments.length - 1){
-					this.segments[index+1].startAngle = segment.endAngle;
-				}
-				segment.draw();
-			}, this);
-			this.scale.draw();
-		}
-	});
+            helpers.each(this.data.metaData, function(segment, index) {
+                segment.transition(easingDecimal).draw();
+            }, this);
+
+            this.scale.draw();
+        }
+    });
 
 }).call(this);

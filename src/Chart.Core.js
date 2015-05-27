@@ -1372,7 +1372,7 @@
         },
         draw: function() {
 
-            var ctx = this.ctx;
+            var ctx = this._chart.ctx;
             var vm = this._vm;
 
             ctx.beginPath();

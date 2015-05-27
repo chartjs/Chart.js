@@ -74,7 +74,7 @@
                     innerRadius: (this.options.animateScale) ? 0 : (this.outerRadius / 100) * this.options.percentageInnerCutout,
                 });
                 if (!metaSlice.backgroundColor) {
-                    slice.backgroundColor = 'hsl(' + (360 * index / data.length) + ', 100%, 50%)';
+                    slice.backgroundColor = 'hsl(' + (360 * index / this.data.data.length) + ', 100%, 50%)';
                 }
                 metaSlice.save();
                 this.data.metaData.push(metaSlice);
