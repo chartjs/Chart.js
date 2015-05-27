@@ -7,30 +7,33 @@
         helpers = Chart.helpers;
 
     var defaultConfig = {
-        //Boolean - Whether we should show a stroke on each segment
-        segmentShowStroke: true,
+        segments: {
+            //Boolean - Whether we should show a stroke on each segment
+            showStroke: true,
 
-        //String - The colour of each segment stroke
-        segmentStrokeColor: "#fff",
+            //String - The colour of each segment stroke
+            strokeColor: "#fff",
 
-        //Number - The width of each segment stroke
-        borderWidth: 2,
+            //Number - The width of each segment stroke
+            borderWidth: 2,
+        },
+
+        hover: {
+             // The duration of animations triggered by hover events
+            animationDuration: 400,
+        },
+
+        animation: {
+            //Boolean - Whether we animate the rotation of the Doughnut
+            animateRotate: true,
+
+            //Boolean - Whether we animate scaling the Doughnut from the centre
+            animateScale: false,
+        },
 
         //The percentage of the chart that we cut out of the middle.
         cutoutPercentage: 50,
-
-        // The duration of animations triggered by hover events
-        hoverAnimationDuration: 400,
-
-        //String - Animation easing effect
-        animationEasing: "easeOutQuart",
-
-        //Boolean - Whether we animate the rotation of the Doughnut
-        animateRotate: true,
-
-        //Boolean - Whether we animate scaling the Doughnut from the centre
-        animateScale: false,
-
+        
         //String - A legend template
         legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].backgroundColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
 
@@ -52,7 +55,7 @@
             });
 
             //Set up tooltip events on the chart
-            if (this.options.showTooltips) {
+            if (this.options.tooltips.enabled) {
                 helpers.bindEvents(this, this.options.events, this.onHover);
             }
 
@@ -69,9 +72,9 @@
                 }
                 helpers.extend(metaSlice, {
                     startAngle: Math.PI * 1.5,
-                    circumference: (this.options.animateRotate) ? 0 : this.calculateCircumference(metaSlice.value),
-                    outerRadius: (this.options.animateScale) ? 0 : this.outerRadius,
-                    innerRadius: (this.options.animateScale) ? 0 : (this.outerRadius / 100) * this.options.percentageInnerCutout,
+                    circumference: (this.options.animation.animateRotate) ? 0 : this.calculateCircumference(metaSlice.value),
+                    outerRadius: (this.options.animation.animateScale) ? 0 : this.outerRadius,
+                    innerRadius: (this.options.animation.animateScale) ? 0 : (this.outerRadius / 100) * this.options.percentageInnerCutout,
                 });
                 if (!metaSlice.backgroundColor) {
                     slice.backgroundColor = 'hsl(' + (360 * index / this.data.data.length) + ', 100%, 50%)';
@@ -112,12 +115,12 @@
             }
 
             // Built in hover styling
-            if (this.active.length && this.options.hoverMode) {
+            if (this.active.length && this.options.hover.mode) {
                 this.active[0].backgroundColor = this.data.data[this.active[0]._index].hoverBackgroundColor || helpers.color(this.data.data[this.active[0]._index].backgroundColor).saturate(0.5).darken(0.35).rgbString();
             }
 
             // Built in Tooltips
-            if (this.options.showTooltips) {
+            if (this.options.tooltips.enabled) {
 
                 // The usual updates
                 this.tooltip.initialize();
@@ -157,7 +160,7 @@
                     (this.lastActive.length && this.active.length && changed)) {
 
                     this.stop();
-                    this.render(this.options.hoverAnimationDuration);
+                    this.render(this.options.hover.animationDuration);
                 }
             }
 
@@ -191,7 +194,7 @@
                 this.total += Math.abs(slice.value);
             }, this);
 
-            this.outerRadius = (helpers.min([this.chart.width, this.chart.height]) - this.options.borderWidth / 2) / 2;
+            this.outerRadius = (helpers.min([this.chart.width, this.chart.height]) - this.options.segments.borderWidth / 2) / 2;
 
             // Map new data to data points
             helpers.each(this.data.metaData, function(slice, index) {
@@ -210,8 +213,8 @@
 
                     backgroundColor: datapoint.backgroundColor,
                     hoverBackgroundColor: datapoint.hoverBackgroundColor || datapoint.backgroundColor,
-                    borderWidth: this.options.borderWidth,
-                    borderColor: this.options.segmentStrokeColor,
+                    borderWidth: this.options.segments.borderWidth,
+                    borderColor: this.options.segments.strokeColor,
                 });
 
                 helpers.extend(slice, {

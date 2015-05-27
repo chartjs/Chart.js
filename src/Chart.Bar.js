@@ -75,17 +75,16 @@
             }],
         },
 
-        //Number - Pixel width of the bar border
-        barBorderWidth: 2,
+        bars: {
+            //Number - Pixel width of the bar border
+            borderWidth: 2,
 
-        //Number - Spacing between each of the X value sets
-        barValueSpacing: 5,
+            //Number - Spacing between each of the X value sets
+            valueSpacing: 5,
 
-        //Number - Spacing between data sets within X values
-        barDatasetSpacing: 1,
-
-        //Boolean - Whether bars should be rendered on a percentage base
-        relativeBars: false,
+            //Number - Spacing between data sets within X values
+            datasetSpacing: 1,
+        },
 
         //String - A legend template
         legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].backgroundColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
@@ -163,7 +162,7 @@
 
             // Find Active Elements
             this.active = function() {
-                switch (this.options.hoverMode) {
+                switch (this.options.hover.mode) {
                     case 'single':
                         return this.getElementAtEvent(e);
                     case 'label':
@@ -182,7 +181,7 @@
 
             // Remove styling for last active (even if it may still be active)
             if (this.lastActive.length) {
-                switch (this.options.hoverMode) {
+                switch (this.options.hover.mode) {
                     case 'single':
                         this.lastActive[0].backgroundColor = this.data.datasets[this.lastActive[0]._datasetIndex].backgroundColor;
                         this.lastActive[0].borderColor = this.data.datasets[this.lastActive[0]._datasetIndex].borderColor;
@@ -201,8 +200,8 @@
             }
 
             // Built in hover styling
-            if (this.active.length && this.options.hoverMode) {
-                switch (this.options.hoverMode) {
+            if (this.active.length && this.options.hover.mode) {
+                switch (this.options.hover.mode) {
                     case 'single':
                         this.active[0].backgroundColor = this.data.datasets[this.active[0]._datasetIndex].hoverBackgroundColor || helpers.color(this.active[0].backgroundColor).saturate(0.8).darken(0.2).rgbString();
                         this.active[0].borderColor = this.data.datasets[this.active[0]._datasetIndex].hoverBorderColor || helpers.color(this.active[0].borderColor).saturate(0.8).darken(0.2).rgbString();
@@ -222,7 +221,7 @@
 
 
             // Built in Tooltips
-            if (this.options.showTooltips) {
+            if (this.options.tooltips.enabled) {
 
                 // The usual updates
                 this.tooltip.initialize();
@@ -375,11 +374,11 @@
                     this.max = this.labels.length;
                 },
                 calculateBaseWidth: function() {
-                    return (this.getPixelForValue(null, 1, true) - this.getPixelForValue(null, 0, true)) - (2 * self.options.barValueSpacing);
+                    return (this.getPixelForValue(null, 1, true) - this.getPixelForValue(null, 0, true)) - (2 * self.options.bars.valueSpacing);
                 },
                 calculateBarWidth: function(datasetCount) {
                     //The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
-                    var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * self.options.barDatasetSpacing);
+                    var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * self.options.bars.datasetSpacing);
 
                     if (self.options.stacked) {
                         return baseWidth;
@@ -395,7 +394,7 @@
                         return xAbsolute + barWidth / 2;
                     }
 
-                    return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * self.options.barDatasetSpacing) + barWidth / 2;
+                    return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * self.options.bars.datasetSpacing) + barWidth / 2;
                 },
             });
             this.scales[xScale.id] = xScale;
@@ -463,10 +462,6 @@
                             } else {
                                 return this.getPixelForValue(sumPos + value);
                             }
-
-                            /*if (options.relativeBars) {
-                                offset = offset / sum * 100;
-                            }*/
 
                             return this.getPixelForValue(0);
                         }

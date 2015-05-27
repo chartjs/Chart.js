@@ -80,7 +80,7 @@
             hover: {
 
                 // String || boolean
-                mode: 'single', // 'label', 'dataset', 'false'
+                mode: 'label', // 'label', 'dataset', 'false'
 
                 //Function(event, activeElements) - Custom hover handler
                 onHover: null,
@@ -1480,21 +1480,21 @@
             var options = this._options;
             extend(this, {
                 opacity: 0,
-                xPadding: options.tooltipXPadding,
-                yPadding: options.tooltipYPadding,
-                xOffset: options.tooltipXOffset,
-                backgroundColor: options.tooltipBackgroundColor,
-                textColor: options.tooltipFontColor,
-                _fontFamily: options.tooltipFontFamily,
-                _fontStyle: options.tooltipFontStyle,
-                fontSize: options.tooltipFontSize,
-                titleTextColor: options.tooltipTitleFontColor,
-                _titleFontFamily: options.tooltipTitleFontFamily,
-                _titleFontStyle: options.tooltipTitleFontStyle,
-                titleFontSize: options.tooltipTitleFontSize,
-                caretHeight: options.tooltipCaretSize,
-                cornerRadius: options.tooltipCornerRadius,
-                legendColorBackground: options.multiTooltipKeyBackground,
+                xPadding: options.tooltips.xPadding,
+                yPadding: options.tooltips.yPadding,
+                xOffset: options.tooltips.xOffset,
+                backgroundColor: options.tooltips.backgroundColor,
+                textColor: options.tooltips.fontColor,
+                _fontFamily: options.tooltips.fontFamily,
+                _fontStyle: options.tooltips.fontStyle,
+                fontSize: options.tooltips.fontSize,
+                titleTextColor: options.tooltips.titleFontColor,
+                _titleFontFamily: options.tooltips.titleFontFamily,
+                _titleFontStyle: options.tooltips.titleFontStyle,
+                titleFontSize: options.tooltips.titleFontSize,
+                caretHeight: options.tooltips.caretSize,
+                cornerRadius: options.tooltips.cornerRadius,
+                legendColorBackground: options.tooltips.multiKeyBackground,
                 labels: [],
                 colors: [],
             });
@@ -1503,10 +1503,10 @@
 
             var ctx = this._chart.ctx;
 
-            switch (this._options.hoverMode) {
+            switch (this._options.hover.mode) {
                 case 'single':
                     helpers.extend(this, {
-                        text: template(this._options.tooltipTemplate, this._active[0]),
+                        text: template(this._options.tooltips.template, this._active[0]),
                     });
                     var tooltipPosition = this._active[0].tooltipPosition();
                     helpers.extend(this, {
@@ -1556,7 +1556,7 @@
                             yPositions.push(element._vm.y);
 
                             //Include any colour information about the element
-                            labels.push(helpers.template(this._options.multiTooltipTemplate, element));
+                            labels.push(helpers.template(this._options.tooltips.multiTemplate, element));
                             colors.push({
                                 fill: element._vm.backgroundColor,
                                 stroke: element._vm.borderColor
@@ -1583,7 +1583,7 @@
                         labels: labels,
                         title: this._active.length ? this._active[0].label : '',
                         legendColors: colors,
-                        legendBackgroundColor: this._options.multiTooltipKeyBackground,
+                        legendBackgroundColor: this._options.tooltips.multiKeyBackground,
                     });
 
 
@@ -1624,7 +1624,7 @@
             var ctx = this._chart.ctx;
             var vm = this._vm;
 
-            switch (this._options.hoverMode) {
+            switch (this._options.hover.mode) {
                 case 'single':
 
                     ctx.font = fontString(vm.fontSize, vm._fontStyle, vm._fontFamily);
