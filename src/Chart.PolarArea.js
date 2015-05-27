@@ -133,7 +133,7 @@
 			},this);
 
 			//Set up tooltip events on the chart
-			if (this.options.showTooltips){
+			if (this.options.tooltips.enabled){
 				helpers.bindEvents(this, this.options.events, function(evt){
 					var activeSegments = (evt.type !== 'mouseout') ? this.getSegmentsAtEvent(evt) : [];
 					helpers.each(this.segments,function(segment){

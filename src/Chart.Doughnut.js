@@ -55,7 +55,7 @@
             });
 
             //Set up tooltip events on the chart
-            if (this.options.showTooltips) {
+            if (this.options.tooltips.enabled) {
                 helpers.bindEvents(this, this.options.events, this.onHover);
             }
 
@@ -115,12 +115,12 @@
             }
 
             // Built in hover styling
-            if (this.active.length && this.options.hoverMode) {
+            if (this.active.length && this.options.hover.mode) {
                 this.active[0].backgroundColor = this.data.data[this.active[0]._index].hoverBackgroundColor || helpers.color(this.data.data[this.active[0]._index].backgroundColor).saturate(0.5).darken(0.35).rgbString();
             }
 
             // Built in Tooltips
-            if (this.options.showTooltips) {
+            if (this.options.tooltips.enabled) {
 
                 // The usual updates
                 this.tooltip.initialize();

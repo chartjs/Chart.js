@@ -78,22 +78,33 @@
         //Boolean - Whether to stack the lines essentially creating a stacked area chart.
         stacked: false,
 
-        //Number - Tension of the bezier curve between points
-        tension: 0.4,
+        points: {
+            // Number - Radius of each point dot in pixels
+            radius: 3,
+            
+            // Number - Pixel width of point dot border
+            borderWidth: 1,
+            
+            // Number - Pixel width of point on hover
+            hoverRadius: 5,
+            
+            // Number - Pixel width of point dot border on hover
+            hoverBorderWidth: 2,
+            
+            // Color
+            backgroundColor: Chart.defaults.global.defaultColor,
+            
+            // Color
+            borderColor: Chart.defaults.global.defaultColor,
 
-        //Number - Radius of each point dot in pixels
-        pointRadius: 3,
-        //Number - Pixel width of point dot border
-        pointBorderWidth: 1,
-        //Number - Pixel width of point on hover
-        pointHoverRadius: 5,
-        //Number - Pixel width of point dot border on hover
-        pointHoverBorderWidth: 2,
-        pointBackgroundColor: Chart.defaults.global.defaultColor,
-        pointBorderColor: Chart.defaults.global.defaultColor,
+            //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
+            hitRadius: 6,
+        },
 
-        //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-        pointHitRadius: 6,
+        lines: {
+            //Number - Tension of the bezier curve between points. Use 0 to turn off bezier tension
+            tension: 0.4,
+        },
 
         //Number - Pixel width of dataset border
         borderWidth: 2,
@@ -206,7 +217,7 @@
                     scaleZero: yScale.getPixelForValue(0),
                     
                     // Appearance
-                    tension: dataset.tension || this.options.tension,
+                    tension: dataset.tension || this.options.lines.tension,
                     backgroundColor: dataset.backgroundColor || this.options.backgroundColor,
                     borderWidth: dataset.borderWidth || this.options.borderWidth,
                     borderColor: dataset.borderColor || this.options.borderColor,
@@ -237,12 +248,12 @@
                     tension: this.data.datasets[datasetIndex].metaDataset.tension,
                     
                     // Appearnce
-                    radius: this.data.datasets[datasetIndex].pointRadius || this.options.pointRadius,
-                    backgroundColor: this.data.datasets[datasetIndex].pointBackgroundColor || this.options.pointBackgroundColor,
-                    borderWidth: this.data.datasets[datasetIndex].pointBorderWidth || this.options.pointBorderWidth,
+                    radius: this.data.datasets[datasetIndex].pointRadius || this.options.points.radius,
+                    backgroundColor: this.data.datasets[datasetIndex].pointBackgroundColor || this.options.points.backgroundColor,
+                    borderWidth: this.data.datasets[datasetIndex].pointBorderWidth || this.options.pointsborderWidth,
                     
                     // Tooltip
-                    hoverRadius: this.data.datasets[datasetIndex].pointHitRadius || this.options.pointHitRadius,
+                    hoverRadius: this.data.datasets[datasetIndex].pointHitRadius || this.options.points.hitRadius,
                 });
             }, this);
 
@@ -437,7 +448,7 @@
 
             // Find Active Elements
             this.active = function() {
-                switch (this.options.hoverMode) {
+                switch (this.options.hover.mode) {
                     case 'single':
                         return this.getElementAtEvent(e);
                     case 'label':
@@ -463,7 +474,7 @@
             var dataset;
             // Remove styling for last active (even if it may still be active)
             if (this.lastActive.length) {
-                switch (this.options.hoverMode) {
+                switch (this.options.hover.mode) {
                     case 'single':
                         dataset = this.data.datasets[this.lastActive[0]._datasetIndex];
 
@@ -490,8 +501,8 @@
             }
 
             // Built in hover styling
-            if (this.active.length && this.options.hoverMode) {
-                switch (this.options.hoverMode) {
+            if (this.active.length && this.options.hover.mode) {
+                switch (this.options.hover.mode) {
                     case 'single':
                         dataset = this.data.datasets[this.active[0]._datasetIndex];
 
@@ -519,7 +530,7 @@
 
 
             // Built in Tooltips
-            if (this.options.showTooltips) {
+            if (this.options.tooltips.enabled) {
 
                 // The usual updates
                 this.tooltip.initialize();
