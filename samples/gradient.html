@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Line Chart with Gradient</title>
+    <script src="../Chart.js"></script>
+  </head>
+  <body>
+    <div style="width:90%; margin: 100px auto;">
+      <div>
+        <canvas id="canvas" height="50" width="100"></canvas>
+      </div>
+    </div>
+
+
+  <script>
+    var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
+    var lineChartData = {
+      labels : ["January","February","March","April","May","June","July"],
+      datasets : [
+        {
+          label: "My First dataset",
+          fillColorStart : "rgba(251, 176, 59, 0.25)",
+          fillColorEnd : "rgba(251, 176, 59, 0)",
+          strokeColor: "rgba(251, 176, 59, 1)",
+          pointColor: "#fff",
+          pointStrokeColor: "rgba(251, 176, 59, 1)",
+          pointHighlightFill: "rgba(225, 225, 225, 1)",
+          pointHighlightStroke : "rgba(220,220,220,1)",
+          data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+        }
+      ]
+
+    }
+
+  window.onload = function(){
+    var ctx = document.getElementById("canvas").getContext("2d");
+    window.myLine = new Chart(ctx).Line(lineChartData, {
+      pointDotRadius: 5,
+      pointDotStrokeWidth: 2.2,
+      bezierCurve: false,
+      responsive: true,
+      animation: false,
+      showScale: false,
+      showTooltips: false
+    });
+  }
+
+
+  </script>
+  </body>
+</html>
