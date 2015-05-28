@@ -375,11 +375,7 @@
 						return heighest;
 					})();
 
-					var gradient = ctx.createLinearGradient(0, highestPoint, 0, 0);
-					gradient.addColorStop(1, dataset.fillColorStart);
-					gradient.addColorStop(0, dataset.fillColorEnd);
-
-					if (!dataset.hasOwnProperty('fillColor')) {
+					if (typeof dataset.fillColor !== 'undefined') {
 						ctx.fillStyle = dataset.fillColor;
 					} else {
 						var gradient = ctx.createLinearGradient(0, highestPoint, 0, 0);
