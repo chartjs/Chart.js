@@ -122,7 +122,7 @@ gulp.task('watch', function(){
 	  livereload.changed(evt.path);
 	};
 
-	gulp.watch('Chart.js', reloadPage);
+	gulp.watch(['Chart.js', 'samples/*'], reloadPage);
 
 });
 
