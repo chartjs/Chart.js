@@ -99,6 +99,8 @@
                     backgroundColor: defaultColor,
                     borderWidth: 3,
                     borderColor: defaultColor,
+                    fill: true, // do we fill in the area between the line and the x axis
+
                     // Hover
                     hitRadius: 6,
                     hoverBorderWidth: 2,
@@ -1271,10 +1273,11 @@
                 }
             }
 
-            if (this._children.length > 0) {
+            // If we had points and want to fill this line, do so.
+            if (this._children.length > 0 && vm.fill) {
                 //Round off the line by going to the base of the chart, back to the start, then fill.
-                ctx.lineTo(this._children[this._children.length - 1].x, vm.scaleZero);
-                ctx.lineTo(this._children[0].x, vm.scaleZero);
+                ctx.lineTo(this._children[this._children.length - 1]._view.x, vm.scaleZero);
+                ctx.lineTo(this._children[0]._view.x, vm.scaleZero);
                 ctx.fillStyle = vm.backgroundColor || Chart.defaults.global.defaultColor;
                 ctx.closePath();
                 ctx.fill();

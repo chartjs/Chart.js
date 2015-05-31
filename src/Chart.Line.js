@@ -170,6 +170,8 @@
                         backgroundColor: dataset.backgroundColor || this.options.elements.line.backgroundColor,
                         borderWidth: dataset.borderWidth || this.options.elements.line.borderWidth,
                         borderColor: dataset.borderColor || this.options.elements.line.borderColor,
+                        fill: dataset.fill !== undefined ? dataset.fill : this.options.elements.line.fill, // use the value from the dataset if it was provided. else fall back to the default
+
                         // Scale
                         scaleTop: yScale.top,
                         scaleBottom: yScale.bottom,
