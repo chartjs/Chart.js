@@ -7,6 +7,13 @@
 
     var defaultConfig = {
 
+        stacked: false,
+
+        hover: {
+            mode: "label"
+        },
+
+        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].borderColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
         scales: {
             xAxes: [{
                 scaleType: "dataset", // scatter should not use a dataset axis
@@ -74,45 +81,6 @@
                 }
             }],
         },
-
-        //Boolean - Whether to stack the lines essentially creating a stacked area chart.
-        stacked: false,
-
-        point: {
-            // Number - Radius of each point dot in pixels
-            radius: 3,
-
-            // Number - Pixel width of point dot border
-            borderWidth: 1,
-
-            // Number - Pixel width of point on hover
-            hoverRadius: 5,
-
-            // Number - Pixel width of point dot border on hover
-            hoverBorderWidth: 2,
-
-            // Color
-            backgroundColor: Chart.defaults.global.defaultColor,
-
-            // Color
-            borderColor: Chart.defaults.global.defaultColor,
-
-            //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-            hitRadius: 6,
-        },
-
-        line: {
-            //Number - Tension of the bezier curve between points. Use 0 to turn off bezier tension
-            tension: 0.4,
-        },
-
-        //Number - Pixel width of dataset border
-        borderWidth: 2,
-        //Number - Pixel width of dataset border on hover
-        hoverBorderWidth: 2,
-
-        //String - A legend template
-        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].borderColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
     };
 
 
@@ -121,66 +89,49 @@
         defaults: defaultConfig,
         initialize: function() {
 
+            var _this = this;
+
             // Events
             helpers.bindEvents(this, this.options.events, this.events);
 
-            var _this = this;
-
-            //Create a new line and its points for each dataset and piece of data
+            // Create a new line and its points for each dataset and piece of data
             helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-                dataset.metaDataset = new Chart.Line();
+
+                dataset.metaDataset = new Chart.Line({
+                    _chart: this.chart,
+                    _datasetIndex: datasetIndex,
+                    _points: dataset.metaData,
+                });
+
                 dataset.metaData = [];
+
                 helpers.each(dataset.data, function(dataPoint, index) {
-                    dataset.metaData.push(new Chart.Point());
+                    dataset.metaData.push(new Chart.Point({
+                        _datasetIndex: datasetIndex,
+                        _index: index,
+                        _chart: this.chart,
+                        _model: {
+                            x: 0,//xScale.getPixelForValue(null, index, true),
+                            y: 0, //this.chartArea.bottom,
+                            controlPointPreviousX: this.previousPoint(dataset.data, index).x,
+                            controlPointPreviousY: this.nextPoint(dataset.data, index).y,
+                            controlPointNextX: this.previousPoint(dataset.data, index).x,
+                            controlPointNextY: this.nextPoint(dataset.data, index).y,
+                        },
+                    }));
                 }, this);
 
-                // The line chart only supports a single x axis because the x axis is always a dataset axis
+                // The line chart onlty supports a single x axis because the x axis is always a dataset axis
                 dataset.xAxisID = this.options.scales.xAxes[0].id;
 
                 if (!dataset.yAxisID) {
                     dataset.yAxisID = this.options.scales.yAxes[0].id;
                 }
+
             }, this);
 
             // Build and fit the scale. Needs to happen after the axis IDs have been set
             this.buildScale();
-            Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
-
-            // Set defaults for lines
-            this.eachDataset(function(dataset, datasetIndex) {
-                helpers.extend(dataset.metaDataset, {
-                    _points: dataset.metaData,
-                    _datasetIndex: datasetIndex,
-                    _chart: this.chart,
-                });
-                // Fill in dataset defaults from options
-                helpers.extend(dataset, helpers.merge(this.options, dataset));
-                // Copy to view modele
-                dataset.metaDataset.save();
-            }, this);
-
-            // Set defaults for points
-            this.eachElement(function(point, index, dataset, datasetIndex) {
-                var xScale = this.scales[this.data.datasets[datasetIndex].xAxisID];
-
-                helpers.extend(point, {
-                    x: xScale.getPixelForValue(null, index, true),
-                    y: this.chartArea.bottom,
-                    _datasetIndex: datasetIndex,
-                    _index: index,
-                    _chart: this.chart
-                });
-
-                // Default bezier control points
-                helpers.extend(point, {
-                    controlPointPreviousX: this.previousPoint(dataset, index).x,
-                    controlPointPreviousY: this.nextPoint(dataset, index).y,
-                    controlPointNextX: this.previousPoint(dataset, index).x,
-                    controlPointNextY: this.nextPoint(dataset, index).y,
-                });
-                // Copy to view model
-                point.save();
-            }, this);
 
             // Create tooltip instance exclusively for this chart with some defaults.
             this.tooltip = new Chart.Tooltip({
@@ -189,6 +140,7 @@
                 _options: this.options,
             }, this);
 
+            // Update that shiz
             this.update();
         },
         nextPoint: function(collection, index) {
@@ -198,6 +150,7 @@
             return collection[index + 1] || collection[index];
         },
         update: function() {
+
             Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
 
             // Update the lines
@@ -206,22 +159,24 @@
 
                 helpers.extend(dataset.metaDataset, {
                     // Utility
+                    _scale: yScale,
                     _datasetIndex: datasetIndex,
-
                     // Data
-                    _points: dataset.metaData,
-
-                    // Geometry
-                    scaleTop: yScale.top,
-                    scaleBottom: yScale.bottom,
-                    scaleZero: yScale.getPixelForValue(0),
-
-                    // Appearance
-                    tension: dataset.tension || this.options.line.tension,
-                    backgroundColor: dataset.backgroundColor || this.options.backgroundColor,
-                    borderWidth: dataset.borderWidth || this.options.borderWidth,
-                    borderColor: dataset.borderColor || this.options.borderColor,
+                    _children: dataset.metaData,
+                    // Model
+                    _model: {
+                        // Appearance
+                        tension: dataset.tension || this.options.elements.line.tension,
+                        backgroundColor: dataset.backgroundColor || this.options.elements.line.backgroundColor,
+                        borderWidth: dataset.borderWidth || this.options.elements.line.borderWidth,
+                        borderColor: dataset.borderColor || this.options.elements.line.borderColor,
+                        // Scale
+                        scaleTop: yScale.top,
+                        scaleBottom: yScale.bottom,
+                        scaleZero: yScale.getPixelForValue(0),
+                    },
                 });
+
                 dataset.metaDataset.pivot();
             });
 
@@ -233,61 +188,61 @@
                 helpers.extend(point, {
                     // Utility
                     _chart: this.chart,
+                    _xScale: xScale,
+                    _yScale: yScale,
                     _datasetIndex: datasetIndex,
                     _index: index,
 
-                    // Data
-                    label: this.data.labels[index],
-                    value: this.data.datasets[datasetIndex].data[index],
-                    datasetLabel: this.data.datasets[datasetIndex].label,
+                    // Desired view properties
+                    _model: {
+                        x: xScale.getPixelForValue(null, index, true), // value not used in dataset scale, but we want a consistent API between scales
+                        y: yScale.getPointPixelForValue(this.data.datasets[datasetIndex].data[index], index, datasetIndex),
 
-                    // Geometry
-                    offsetGridLines: this.options.offsetGridLines,
-                    x: xScale.getPixelForValue(null, index, true), // value not used in dataset scale, but we want a consistent API between scales
-                    y: yScale.getPointPixelForValue(this.data.datasets[datasetIndex].data[index], index, datasetIndex),
-                    tension: this.data.datasets[datasetIndex].metaDataset.tension,
+                        // Appearance
+                        tension: point.custom && point.custom.tension ? point.custom.tension : this.options.elements.line.tension,
+                        radius: point.custom && point.custom.radius ? point.custom.pointRadius : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointRadius, index, this.options.elements.point.radius),
+                        backgroundColor: point.custom && point.custom.backgroundColor ? point.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointBackgroundColor, index, this.options.elements.point.backgroundColor),
+                        borderColor: point.custom && point.custom.borderColor ? point.custom.borderColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointBorderColor, index, this.options.elements.point.borderColor),
+                        borderWidth: point.custom && point.custom.borderWidth ? point.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointBorderWidth, index, this.options.elements.point.borderWidth),
 
-                    // Appearnce
-                    radius: this.data.datasets[datasetIndex].pointRadius || this.options.point.radius,
-                    backgroundColor: this.data.datasets[datasetIndex].pointBackgroundColor || this.options.point.backgroundColor,
-                    borderWidth: this.data.datasets[datasetIndex].pointBorderWidth || this.options.point.borderWidth,
-
-                    // Tooltip
-                    hoverRadius: this.data.datasets[datasetIndex].pointHitRadius || this.options.point.hitRadius,
+                        // Tooltip
+                        hoverRadius: point.custom && point.custom.hoverRadius ? point.custom.hoverRadius : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointHitRadius, index, this.options.elements.point.hitRadius),
+                    },
                 });
             }, this);
 
             // Update control points for the bezier curve
             this.eachElement(function(point, index, dataset, datasetIndex) {
                 var controlPoints = helpers.splineCurve(
-                    this.previousPoint(dataset, index),
-                    point,
-                    this.nextPoint(dataset, index),
-                    point.tension
+                    this.previousPoint(dataset, index)._model,
+                    point._model,
+                    this.nextPoint(dataset, index)._model,
+                    point._model.tension
                 );
 
-                point.controlPointPreviousX = controlPoints.previous.x;
-                point.controlPointNextX = controlPoints.next.x;
+                point._model.controlPointPreviousX = controlPoints.previous.x;
+                point._model.controlPointNextX = controlPoints.next.x;
 
                 // Prevent the bezier going outside of the bounds of the graph
 
                 // Cap puter bezier handles to the upper/lower scale bounds
                 if (controlPoints.next.y > this.chartArea.bottom) {
-                    point.controlPointNextY = this.chartArea.bottom;
+                    point._model.controlPointNextY = this.chartArea.bottom;
                 } else if (controlPoints.next.y < this.chartArea.top) {
-                    point.controlPointNextY = this.chartArea.top;
+                    point._model.controlPointNextY = this.chartArea.top;
                 } else {
-                    point.controlPointNextY = controlPoints.next.y;
+                    point._model.controlPointNextY = controlPoints.next.y;
                 }
 
                 // Cap inner bezier handles to the upper/lower scale bounds
                 if (controlPoints.previous.y > this.chartArea.bottom) {
-                    point.controlPointPreviousY = this.chartArea.bottom;
+                    point._model.controlPointPreviousY = this.chartArea.bottom;
                 } else if (controlPoints.previous.y < this.chartArea.top) {
-                    point.controlPointPreviousY = this.chartArea.top;
+                    point._model.controlPointPreviousY = this.chartArea.top;
                 } else {
-                    point.controlPointPreviousY = controlPoints.previous.y;
+                    point._model.controlPointPreviousY = controlPoints.previous.y;
                 }
+
                 // Now pivot the point for animation
                 point.pivot();
             }, this);
@@ -401,9 +356,6 @@
                 this.scales[scale.id] = scale;
             }, this);
         },
-        redraw: function() {
-
-        },
         draw: function(ease) {
 
             var easingDecimal = ease || 1;
@@ -472,25 +424,28 @@
             }
 
             var dataset;
+            var index;
             // Remove styling for last active (even if it may still be active)
             if (this.lastActive.length) {
                 switch (this.options.hover.mode) {
                     case 'single':
                         dataset = this.data.datasets[this.lastActive[0]._datasetIndex];
+                        index = this.lastActive[0]._index;
 
-                        this.lastActive[0].radius = dataset.pointRadius;
-                        this.lastActive[0].backgroundColor = dataset.pointBackgroundColor;
-                        this.lastActive[0].borderColor = dataset.pointBorderColor;
-                        this.lastActive[0].borderWidth = dataset.pointBorderWidth;
+                        this.lastActive[0]._model.radius = this.lastActive[0].custom && this.lastActive[0].custom.radius ? this.lastActive[0].custom.pointRadius : helpers.getValueAtIndexOrDefault(dataset.pointRadius, index, this.options.elements.point.radius);
+                        this.lastActive[0]._model.backgroundColor = this.lastActive[0].custom && this.lastActive[0].custom.backgroundColor ? this.lastActive[0].custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointBackgroundColor, index, this.options.elements.point.backgroundColor);
+                        this.lastActive[0]._model.borderColor = this.lastActive[0].custom && this.lastActive[0].custom.borderColor ? this.lastActive[0].custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.pointBorderColor, index, this.options.elements.point.borderColor);
+                        this.lastActive[0]._model.borderWidth = this.lastActive[0].custom && this.lastActive[0].custom.borderWidth ? this.lastActive[0].custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, this.options.elements.point.borderWidth);
                         break;
                     case 'label':
                         for (var i = 0; i < this.lastActive.length; i++) {
                             dataset = this.data.datasets[this.lastActive[i]._datasetIndex];
+                            index = this.lastActive[i]._index;
 
-                            this.lastActive[i].radius = dataset.pointRadius;
-                            this.lastActive[i].backgroundColor = dataset.pointBackgroundColor;
-                            this.lastActive[i].borderColor = dataset.pointBorderColor;
-                            this.lastActive[i].borderWidth = dataset.pointBorderWidth;
+                            this.lastActive[i]._model.radius = this.lastActive[i].custom && this.lastActive[i].custom.radius ? this.lastActive[i].custom.pointRadius : helpers.getValueAtIndexOrDefault(dataset.pointRadius, index, this.options.elements.point.radius);
+                            this.lastActive[i]._model.backgroundColor = this.lastActive[i].custom && this.lastActive[i].custom.backgroundColor ? this.lastActive[i].custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointBackgroundColor, index, this.options.elements.point.backgroundColor);
+                            this.lastActive[i]._model.borderColor = this.lastActive[i].custom && this.lastActive[i].custom.borderColor ? this.lastActive[i].custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.pointBorderColor, index, this.options.elements.point.borderColor);
+                            this.lastActive[i]._model.borderWidth = this.lastActive[i].custom && this.lastActive[i].custom.borderWidth ? this.lastActive[i].custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, this.options.elements.point.borderWidth);
                         }
                         break;
                     case 'dataset':
@@ -505,20 +460,22 @@
                 switch (this.options.hover.mode) {
                     case 'single':
                         dataset = this.data.datasets[this.active[0]._datasetIndex];
+                        index = this.active[0]._index;
 
-                        this.active[0].radius = dataset.pointHoverRadius || dataset.pointRadius + 2;
-                        this.active[0].backgroundColor = dataset.pointHoverBackgroundColor || helpers.color(dataset.pointBackgroundColor).saturate(0.5).darken(0.35).rgbString();
-                        this.active[0].borderColor = dataset.pointHoverBorderColor || helpers.color(dataset.pointBorderColor).saturate(0.5).darken(0.35).rgbString();
-                        this.active[0].borderWidth = dataset.pointHoverBorderWidth || dataset.pointBorderWidth + 2;
+                        this.active[0]._model.radius = this.active[0].custom && this.active[0].custom.hoverRadius ? this.active[0].custom.hoverRadius : helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.active[0]._model.radius + 2);
+                        this.active[0]._model.backgroundColor = this.active[0].custom && this.active[0].custom.hoverBackgroundColor ? this.active[0].custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.color(this.active[0]._model.backgroundColor).saturate(0.5).darken(0.35).rgbString());
+                        this.active[0]._model.borderColor = this.active[0].custom && this.active[0].custom.hoverBorderColor ? this.active[0].custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.color(this.active[0]._model.borderColor).saturate(0.5).darken(0.35).rgbString());
+                        this.active[0]._model.borderWidth = this.active[0].custom && this.active[0].custom.hoverBorderWidth ? this.active[0].custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, this.active[0]._model.borderWidth + 2);
                         break;
                     case 'label':
                         for (var i = 0; i < this.active.length; i++) {
                             dataset = this.data.datasets[this.active[i]._datasetIndex];
+                            index = this.active[i]._index;
 
-                            this.active[i].radius = dataset.pointHoverRadius || dataset.pointRadius + 2;
-                            this.active[i].backgroundColor = dataset.pointHoverBackgroundColor || helpers.color(dataset.pointBackgroundColor).saturate(0.5).darken(0.35).rgbString();
-                            this.active[i].borderColor = dataset.pointHoverBorderColor || helpers.color(dataset.pointBorderColor).saturate(0.5).darken(0.35).rgbString();
-                            this.active[i].borderWidth = dataset.pointHoverBorderWidth || dataset.pointBorderWidth + 2;
+                            this.active[i]._model.radius = this.active[i].custom && this.active[i].custom.hoverRadius ? this.active[i].custom.hoverRadius : helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.active[i]._model.radius + 2);
+                            this.active[i]._model.backgroundColor = this.active[i].custom && this.active[i].custom.hoverBackgroundColor ? this.active[i].custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.color(this.active[i]._model.backgroundColor).saturate(0.5).darken(0.35).rgbString());
+                            this.active[i]._model.borderColor = this.active[i].custom && this.active[i].custom.hoverBorderColor ? this.active[i].custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.color(this.active[i]._model.borderColor).saturate(0.5).darken(0.35).rgbString());
+                            this.active[i]._model.borderWidth = this.active[i].custom && this.active[i].custom.hoverBorderWidth ? this.active[i].custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, this.active[i]._model.borderWidth + 2);
                         }
                         break;
                     case 'dataset':

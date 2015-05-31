@@ -48,116 +48,73 @@
 
         return this;
     };
+
+    var defaultColor = 'rgba(0,0,0,0.1)';
+
     //Globally expose the defaults to allow for user updating/changing
     Chart.defaults = {
         global: {
-
-            // Animation defaults
             animation: {
-                // Number - Number of animation steps
                 duration: 1000,
-
-                // String - Animation easing effect
                 easing: "easeOutQuart",
-
-                // Function - Will fire on animation progression.
                 onProgress: function() {},
-
-                // Function - Will fire on animation completion.
                 onComplete: function() {},
             },
-
-            // Boolean - whether or not the chart should be responsive and resize when the browser does.
             responsive: false,
-
-            // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
             maintainAspectRatio: true,
-
-            // Array - Array of string names to attach interaction events
             events: ["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"],
-
-            // Hover defaults
             hover: {
-
-                // String || boolean
-                mode: 'label', // 'label', 'dataset', 'false'
-
-                //Function(event, activeElements) - Custom hover handler
                 onHover: null,
-
-                //Function - Custom hover handler
                 animationDuration: 400,
             },
-
-            //Function(event, clickedElements) - Custom click handler 
             onClick: null,
-
-            // Tooltip Defaults
             tooltips: {
-
-                // Boolean - Determines whether to draw tooltips on the canvas or not - attaches events to touchmove & mousemove
                 enabled: true,
-
-                // Function - Determines whether to draw built-in tooltip or call custom tooltip function
                 custom: null,
-
-                // String - Tooltip background colour
                 backgroundColor: "rgba(0,0,0,0.8)",
-
-                // String - Tooltip label font declaration for the scale label
                 fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-
-                // Number - Tooltip label font size in pixels
                 fontSize: 14,
-
-                // String - Tooltip font weight style
                 fontStyle: "normal",
-
-                // String - Tooltip label font colour
                 fontColor: "#fff",
-
-                // String - Tooltip title font declaration for the scale label
                 titleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-
-                // Number - Tooltip title font size in pixels
                 titleFontSize: 14,
-
-                // String - Tooltip title font weight style
                 titleFontStyle: "bold",
-
-                // String - Tooltip title font colour
                 titleFontColor: "#fff",
-
-                // Number - pixel width of padding around text
                 yPadding: 6,
-
-                // Number - pixel width of padding around text
                 xPadding: 6,
-
-                // Number - Size of the caret on the
                 caretSize: 8,
-
-                // Number - Pixel radius of the border
                 cornerRadius: 6,
-
-                // Number - Pixel offset from point x to edge
                 xOffset: 10,
-
-                // String - Template string for singles
                 template: "<%if (label){%><%=label%>: <%}%><%= value %>",
-
-                // String - Template string for singles
                 multiTemplate: "<%if (datasetLabel){%><%=datasetLabel%>: <%}%><%= value %>",
-
-                // String - Colour behind the legend colour block
                 multiKeyBackground: '#fff',
 
             },
+            defaultColor: defaultColor,
 
-            // Color String - Used for undefined Colros
-            defaultColor: 'rgba(0,0,0,0.1)',
-
-        }
+            // Element defaults
+            elements: {
+                line: {
+                    tension: 0.4,
+                    backgroundColor: defaultColor,
+                    borderWidth: 3,
+                    borderColor: defaultColor,
+                    // Hover
+                    hitRadius: 6,
+                    hoverBorderWidth: 2,
+                },
+                point: {
+                    radius: 3,
+                    backgroundColor: defaultColor,
+                    borderWidth: 1,
+                    borderColor: defaultColor,
+                    // Hover
+                    hitRadius: 6,
+                    hoverRadius: 5,
+                    hoverBorderWidth: 2,
+                },
+            }
+        },
     };
 
     //Create a dictionary of chart types, to allow for extension of existing types
@@ -237,6 +194,17 @@
             });
 
             return base;
+        },
+        getValueAtIndexOrDefault = helpers.getValueAtIndexOrDefault = function(value, index, defaultValue) {
+            if (!value) {
+                return defaultValue;
+            }
+
+            if (helpers.isArray(value) && index < value.length) {
+                return value[index];
+            }
+
+            return value;
         },
         indexOf = helpers.indexOf = function(arrayToSearch, item) {
             if (Array.prototype.indexOf) {
@@ -1142,48 +1110,36 @@
     };
 
     Chart.Element = function(configuration) {
-        extend(this, {
-            _vm: {},
-        });
         extend(this, configuration);
         this.initialize.apply(this, arguments);
     };
     extend(Chart.Element.prototype, {
         initialize: function() {},
-        save: function() {
-            this._vm = clone(this);
-            delete this._vm._vm;
-            delete this._vm._start;
-            return this;
-        },
         pivot: function() {
-            if (this._start) {
-                this._start = clone(this);
-                helpers.extend(this._start, this._vm);
-            }
+            this._start = clone(this._view);
             return this;
         },
         transition: function(ease) {
+            if (!this._view) {
+                this._view = clone(this._model);
+            }
             if (!this._start) {
-                if (!this._vm) {
-                    this.save();
-                }
-                this._start = clone(this._vm);
+                this.pivot();
             }
 
-            each(this, function(value, key) {
+            each(this._model, function(value, key) {
 
                 if (key[0] === '_' || !this.hasOwnProperty(key)) {
                     // Only non-underscored properties
                 }
 
                 // Init if doesn't exist
-                else if (!this._vm[key]) {
-                    this._vm[key] = value || null;
+                else if (!this._view[key]) {
+                    this._view[key] = value || null;
                 }
 
                 // No unnecessary computations
-                else if (this[key] === this._vm[key]) {
+                else if (this[key] === this._view[key]) {
                     // It's the same! Woohoo!
                 }
 
@@ -1191,18 +1147,18 @@
                 else if (typeof value === 'string') {
                     try {
                         var color = helpers.color(this._start[key]).mix(helpers.color(this[key]), ease);
-                        this._vm[key] = color.rgbString();
+                        this._view[key] = color.rgbString();
                     } catch (err) {
-                        this._vm[key] = value;
+                        this._view[key] = value;
                     }
                 }
                 // Number transitions
                 else if (typeof value === 'number') {
-
-                    this._vm[key] = ((this[key] - this._start[key]) * ease) + this._start[key];
-                } else {
-                    // Everything else
-                    this._vm[key] = value;
+                    this._view[key] = ((this[key] - this._start[key]) * ease) + this._start[key];
+                }
+                // Everything else
+                else {
+                    this._view[key] = value;
                 }
 
             }, this);
@@ -1228,16 +1184,16 @@
 
     Chart.Point = Chart.Element.extend({
         inRange: function(mouseX, mouseY) {
-            var vm = this._vm;
+            var vm = this._view;
             var hoverRange = vm.hoverRadius + vm.radius;
             return ((Math.pow(mouseX - vm.x, 2) + Math.pow(mouseY - vm.y, 2)) < Math.pow(hoverRange, 2));
         },
         inGroupRange: function(mouseX) {
-            var vm = this._vm;
+            var vm = this._view;
             return (Math.pow(mouseX - vm.x, 2) < Math.pow(vm.radius + this.hoverRadius, 2));
         },
         tooltipPosition: function() {
-            var vm = this._vm;
+            var vm = this._view;
             return {
                 x: vm.x,
                 y: vm.y,
@@ -1246,7 +1202,7 @@
         },
         draw: function() {
 
-            var vm = this._vm;
+            var vm = this._view;
             var ctx = this._chart.ctx;
 
             if (vm.radius > 0 || vm.borderWidth > 0) {
@@ -1271,29 +1227,29 @@
     Chart.Line = Chart.Element.extend({
         draw: function() {
 
-            var vm = this._vm;
+            var vm = this._view;
             var ctx = this._chart.ctx;
-            var first = vm._points[0];
-            var last = vm._points[vm._points.length - 1];
+            var first = this._children[0];
+            var last = this._children[this._children.length - 1];
 
             // Draw the background first (so the border is always on top)
-            helpers.each(vm._points, function(point, index) {
+            helpers.each(this._children, function(point, index) {
                 if (index === 0) {
-                    ctx.moveTo(point._vm.x, point._vm.y);
+                    ctx.moveTo(point._view.x, point._view.y);
                 } else {
                     if (vm._tension > 0 || 1) {
-                        var previous = this.previousPoint(point, vm._points, index);
+                        var previous = this.previousPoint(point, this._children, index);
 
                         ctx.bezierCurveTo(
-                            previous._vm.controlPointNextX,
-                            previous._vm.controlPointNextY,
-                            point._vm.controlPointPreviousX,
-                            point._vm.controlPointPreviousY,
-                            point._vm.x,
-                            point._vm.y
+                            previous._view.controlPointNextX,
+                            previous._view.controlPointNextY,
+                            point._view.controlPointPreviousX,
+                            point._view.controlPointPreviousY,
+                            point._view.x,
+                            point._view.y
                         );
                     } else {
-                        ctx.lineTo(point._vm.x, point._vm.y);
+                        ctx.lineTo(point._view.x, point._view.y);
                     }
                 }
             }, this);
@@ -1303,22 +1259,22 @@
                 if (vm._tension > 0 || 1) {
 
                     ctx.bezierCurveTo(
-                        last._vm.controlPointNextX,
-                        last._vm.controlPointNextY,
-                        first._vm.controlPointPreviousX,
-                        first._vm.controlPointPreviousY,
-                        first._vm.x,
-                        first._vm.y
+                        last._view.controlPointNextX,
+                        last._view.controlPointNextY,
+                        first._view.controlPointPreviousX,
+                        first._view.controlPointPreviousY,
+                        first._view.x,
+                        first._view.y
                     );
                 } else {
-                    ctx.lineTo(first._vm.x, first._vm.y);
+                    ctx.lineTo(first._view.x, first._view.y);
                 }
             }
 
-            if (vm._points.length > 0) {
+            if (this._children.length > 0) {
                 //Round off the line by going to the base of the chart, back to the start, then fill.
-                ctx.lineTo(vm._points[vm._points.length - 1].x, vm.scaleZero);
-                ctx.lineTo(vm._points[0].x, vm.scaleZero);
+                ctx.lineTo(this._children[this._children.length - 1].x, vm.scaleZero);
+                ctx.lineTo(this._children[0].x, vm.scaleZero);
                 ctx.fillStyle = vm.backgroundColor || Chart.defaults.global.defaultColor;
                 ctx.closePath();
                 ctx.fill();
@@ -1330,23 +1286,23 @@
             ctx.strokeStyle = vm.borderColor || Chart.defaults.global.defaultColor;
             ctx.beginPath();
 
-            helpers.each(vm._points, function(point, index) {
+            helpers.each(this._children, function(point, index) {
                 if (index === 0) {
-                    ctx.moveTo(point._vm.x, point._vm.y);
+                    ctx.moveTo(point._view.x, point._view.y);
                 } else {
                     if (vm._tension > 0 || 1) {
-                        var previous = this.previousPoint(point, vm._points, index);
+                        var previous = this.previousPoint(point, this._children, index);
 
                         ctx.bezierCurveTo(
-                            previous._vm.controlPointNextX,
-                            previous._vm.controlPointNextY,
-                            point._vm.controlPointPreviousX,
-                            point._vm.controlPointPreviousY,
-                            point._vm.x,
-                            point._vm.y
+                            previous._view.controlPointNextX,
+                            previous._view.controlPointNextY,
+                            point._view.controlPointPreviousX,
+                            point._view.controlPointPreviousY,
+                            point._view.x,
+                            point._view.y
                         );
                     } else {
-                        ctx.lineTo(point._vm.x, point._vm.y);
+                        ctx.lineTo(point._view.x, point._view.y);
                     }
                 }
             }, this);
@@ -1354,15 +1310,15 @@
                 if (vm._tension > 0 || 1) {
 
                     ctx.bezierCurveTo(
-                        last._vm.controlPointNextX,
-                        last._vm.controlPointNextY,
-                        first._vm.controlPointPreviousX,
-                        first._vm.controlPointPreviousY,
-                        first._vm.x,
-                        first._vm.y
+                        last._view.controlPointNextX,
+                        last._view.controlPointNextY,
+                        first._view.controlPointPreviousX,
+                        first._view.controlPointPreviousY,
+                        first._view.x,
+                        first._view.y
                     );
                 } else {
-                    ctx.lineTo(first._vm.x, first._vm.y);
+                    ctx.lineTo(first._view.x, first._view.y);
                 }
             }
 
@@ -1380,7 +1336,7 @@
     Chart.Arc = Chart.Element.extend({
         inRange: function(chartX, chartY) {
 
-            var vm = this._vm;
+            var vm = this._view;
 
             var pointRelativePosition = helpers.getAngleFromPoint(vm, {
                 x: chartX,
@@ -1395,7 +1351,7 @@
             //Ensure within the outside of the arc centre, but inside arc outer
         },
         tooltipPosition: function() {
-            var vm = this._vm;
+            var vm = this._view;
 
             var centreAngle = vm.startAngle + ((vm.endAngle - vm.startAngle) / 2),
                 rangeFromCentre = (vm.outerRadius - vm.innerRadius) / 2 + vm.innerRadius;
@@ -1407,7 +1363,7 @@
         draw: function() {
 
             var ctx = this._chart.ctx;
-            var vm = this._vm;
+            var vm = this._view;
 
             ctx.beginPath();
 
@@ -1433,7 +1389,7 @@
     Chart.Rectangle = Chart.Element.extend({
         draw: function() {
 
-            var vm = this._vm;
+            var vm = this._view;
 
             var ctx = this.ctx,
                 halfWidth = vm.width / 2,
@@ -1468,11 +1424,11 @@
             }
         },
         height: function() {
-            var vm = this._vm;
+            var vm = this._view;
             return vm.base - vm.y;
         },
         inRange: function(mouseX, mouseY) {
-            var vm = this._vm;
+            var vm = this._view;
             if (vm.y < vm.base) {
                 return (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2) && (mouseY >= vm.y && mouseY <= vm.base);
             } else {
@@ -1480,11 +1436,11 @@
             }
         },
         inGroupRange: function(mouseX) {
-            var vm = this._vm;
+            var vm = this._view;
             return (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2);
         },
         tooltipPosition: function() {
-            var vm = this._vm;
+            var vm = this._view;
             if (vm.y < vm.base) {
                 return {
                     x: vm.x,
@@ -1586,14 +1542,14 @@
                         });
 
                         helpers.each(elements, function(element) {
-                            xPositions.push(element._vm.x);
-                            yPositions.push(element._vm.y);
+                            xPositions.push(element._view.x);
+                            yPositions.push(element._view.y);
 
                             //Include any colour information about the element
                             labels.push(helpers.template(this._options.tooltips.multiTemplate, element));
                             colors.push({
-                                fill: element._vm.backgroundColor,
-                                stroke: element._vm.borderColor
+                                fill: element._view.backgroundColor,
+                                stroke: element._view.borderColor
                             });
 
                         }, this);
@@ -1656,7 +1612,7 @@
         draw: function() {
 
             var ctx = this._chart.ctx;
-            var vm = this._vm;
+            var vm = this._view;
 
             switch (this._options.hover.mode) {
                 case 'single':
@@ -1690,7 +1646,7 @@
 
                     // Custom Tooltips
                     if (this._custom) {
-                        this._custom(this._vm);
+                        this._custom(this._view);
                     } else {
                         switch (vm.yAlign) {
                             case "above":
@@ -1768,14 +1724,14 @@
             }
         },
         getLineHeight: function(index) {
-            var baseLineHeight = this._vm.y - (this._vm.height / 2) + this._vm.yPadding,
+            var baseLineHeight = this._view.y - (this._view.height / 2) + this._view.yPadding,
                 afterTitleIndex = index - 1;
 
             //If the index is zero, we're getting the title
             if (index === 0) {
-                return baseLineHeight + this._vm.titleFontSize / 2;
+                return baseLineHeight + this._view.titleFontSize / 2;
             } else {
-                return baseLineHeight + ((this._vm.fontSize * 1.5 * afterTitleIndex) + this._vm.fontSize / 2) + this._vm.titleFontSize * 1.5;
+                return baseLineHeight + ((this._view.fontSize * 1.5 * afterTitleIndex) + this._view.fontSize / 2) + this._view.titleFontSize * 1.5;
             }
 
         },
