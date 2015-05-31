@@ -1131,7 +1131,7 @@
 
             each(this._model, function(value, key) {
 
-                if (key[0] === '_' || !this.hasOwnProperty(key)) {
+                if (key[0] === '_' || !this._model.hasOwnProperty(key)) {
                     // Only non-underscored properties
                 }
 
@@ -1141,14 +1141,14 @@
                 }
 
                 // No unnecessary computations
-                else if (this[key] === this._view[key]) {
+                else if (this._model[key] === this._view[key]) {
                     // It's the same! Woohoo!
                 }
 
                 // Color transitions if possible
                 else if (typeof value === 'string') {
                     try {
-                        var color = helpers.color(this._start[key]).mix(helpers.color(this[key]), ease);
+                        var color = helpers.color(this._start[key]).mix(helpers.color(this._model[key]), ease);
                         this._view[key] = color.rgbString();
                     } catch (err) {
                         this._view[key] = value;
@@ -1156,7 +1156,7 @@
                 }
                 // Number transitions
                 else if (typeof value === 'number') {
-                    this._view[key] = ((this[key] - this._start[key]) * ease) + this._start[key];
+                    this._view[key] = ((this._model[key] - this._start[key]) * ease) + this._start[key];
                 }
                 // Everything else
                 else {
@@ -1172,12 +1172,12 @@
         },
         tooltipPosition: function() {
             return {
-                x: this.x,
-                y: this.y
+                x: this._model.x,
+                y: this._model.y
             };
         },
         hasValue: function() {
-            return isNumber(this.value);
+            return isNumber(this._model.x) && isNumber(this._model.y);
         }
     });
 
@@ -1192,7 +1192,12 @@
         },
         inGroupRange: function(mouseX) {
             var vm = this._view;
-            return (Math.pow(mouseX - vm.x, 2) < Math.pow(vm.radius + this.hoverRadius, 2));
+
+            if (vm) {
+                return (Math.pow(mouseX - vm.x, 2) < Math.pow(vm.radius + vm.hoverRadius, 2));
+            } else {
+                return false;
+            }
         },
         tooltipPosition: function() {
             var vm = this._view;
@@ -1472,24 +1477,31 @@
         initialize: function() {
             var options = this._options;
             extend(this, {
-                opacity: 0,
-                xPadding: options.tooltips.xPadding,
-                yPadding: options.tooltips.yPadding,
-                xOffset: options.tooltips.xOffset,
-                backgroundColor: options.tooltips.backgroundColor,
-                textColor: options.tooltips.fontColor,
-                _fontFamily: options.tooltips.fontFamily,
-                _fontStyle: options.tooltips.fontStyle,
-                fontSize: options.tooltips.fontSize,
-                titleTextColor: options.tooltips.titleFontColor,
-                _titleFontFamily: options.tooltips.titleFontFamily,
-                _titleFontStyle: options.tooltips.titleFontStyle,
-                titleFontSize: options.tooltips.titleFontSize,
-                caretHeight: options.tooltips.caretSize,
-                cornerRadius: options.tooltips.cornerRadius,
-                legendColorBackground: options.tooltips.multiKeyBackground,
-                labels: [],
-                colors: [],
+                _model: {
+                    // Positioning
+                    xPadding: options.tooltips.xPadding,
+                    yPadding: options.tooltips.yPadding,
+                    xOffset: options.tooltips.xOffset,
+
+                    // Labels
+                    textColor: options.tooltips.fontColor,
+                    _fontFamily: options.tooltips.fontFamily,
+                    _fontStyle: options.tooltips.fontStyle,
+                    fontSize: options.tooltips.fontSize,
+
+                    // Title
+                    titleTextColor: options.tooltips.titleFontColor,
+                    _titleFontFamily: options.tooltips.titleFontFamily,
+                    _titleFontStyle: options.tooltips.titleFontStyle,
+                    titleFontSize: options.tooltips.titleFontSize,
+
+                    // Appearance
+                    caretHeight: options.tooltips.caretSize,
+                    cornerRadius: options.tooltips.cornerRadius,
+                    backgroundColor: options.tooltips.backgroundColor,
+                    opacity: 0,
+                    legendColorBackground: options.tooltips.multiKeyBackground,
+                },
             });
         },
         update: function() {
@@ -1498,15 +1510,22 @@
 
             switch (this._options.hover.mode) {
                 case 'single':
-                    helpers.extend(this, {
-                        text: template(this._options.tooltips.template, this._active[0]),
+                    helpers.extend(this._model, {
+                        text: template(this._options.tooltips.template, {
+                            // These variables are available in the template function. Add others here
+                            element: this._active[0],
+                            value: this._data.datasets[this._active[0]._datasetIndex].data[this._active[0]._index],
+                            label: this._data.labels ? this._data.labels[this._active[0]._index] : '',
+                        }),
                     });
+
                     var tooltipPosition = this._active[0].tooltipPosition();
-                    helpers.extend(this, {
+                    helpers.extend(this._model, {
                         x: Math.round(tooltipPosition.x),
                         y: Math.round(tooltipPosition.y),
                         caretPadding: tooltipPosition.padding
                     });
+
                     break;
 
                 case 'label':
@@ -1542,14 +1561,19 @@
                             if (dataCollection[dataIndex] && dataCollection[dataIndex].hasValue()) {
                                 elements.push(dataCollection[dataIndex]);
                             }
-                        });
+                        }, this);
 
                         helpers.each(elements, function(element) {
                             xPositions.push(element._view.x);
                             yPositions.push(element._view.y);
 
                             //Include any colour information about the element
-                            labels.push(helpers.template(this._options.tooltips.multiTemplate, element));
+                            labels.push(helpers.template(this._options.tooltips.multiTemplate, {
+                                // These variables are available in the template function. Add others here
+                                element: element,
+                                datasetLabel: this._data.datasets[element._datasetIndex].label,
+                                value: this._data.datasets[element._datasetIndex].data[element._index],
+                            }));
                             colors.push({
                                 fill: element._view.backgroundColor,
                                 stroke: element._view.borderColor
@@ -1570,7 +1594,7 @@
                     }).call(this, dataIndex);
 
                     // Apply for now
-                    helpers.extend(this, {
+                    helpers.extend(this._model, {
                         x: medianPosition.x,
                         y: medianPosition.y,
                         labels: labels,
@@ -1582,30 +1606,30 @@
 
                     // Calculate Appearance Tweaks
 
-                    this.height = (labels.length * this.fontSize) + ((labels.length - 1) * (this.fontSize / 2)) + (this.yPadding * 2) + this.titleFontSize * 1.5;
+                    this._model.height = (labels.length * this._model.fontSize) + ((labels.length - 1) * (this._model.fontSize / 2)) + (this._model.yPadding * 2) + this._model.titleFontSize * 1.5;
 
                     var titleWidth = ctx.measureText(this.title).width,
                         //Label has a legend square as well so account for this.
-                        labelWidth = longestText(ctx, this.font, labels) + this.fontSize + 3,
+                        labelWidth = longestText(ctx, this.font, labels) + this._model.fontSize + 3,
                         longestTextWidth = max([labelWidth, titleWidth]);
 
-                    this.width = longestTextWidth + (this.xPadding * 2);
+                    this._model.width = longestTextWidth + (this._model.xPadding * 2);
 
 
-                    var halfHeight = this.height / 2;
+                    var halfHeight = this._model.height / 2;
 
                     //Check to ensure the height will fit on the canvas
-                    if (this.y - halfHeight < 0) {
-                        this.y = halfHeight;
-                    } else if (this.y + halfHeight > this._chart.height) {
-                        this.y = this._chart.height - halfHeight;
+                    if (this._model.y - halfHeight < 0) {
+                        this._model.y = halfHeight;
+                    } else if (this._model.y + halfHeight > this._chart.height) {
+                        this._model.y = this._chart.height - halfHeight;
                     }
 
                     //Decide whether to align left or right based on position on canvas
-                    if (this.x > this._chart.width / 2) {
-                        this.x -= this.xOffset + this.width;
+                    if (this._model.x > this._chart.width / 2) {
+                        this._model.x -= this._model.xOffset + this._model.width;
                     } else {
-                        this.x += this.xOffset;
+                        this._model.x += this._model.xOffset;
                     }
                     break;
             }

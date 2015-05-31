@@ -415,8 +415,8 @@
             }.call(this);
 
             // On Hover hook
-            if (this.options.onHover) {
-                this.options.onHover.call(this, this.active);
+            if (this.options.hover.onHover) {
+                this.options.hover.onHover.call(this, this.active);
             }
 
             if (e.type == 'mouseup' || e.type == 'click') {
@@ -496,17 +496,16 @@
 
                 // Active
                 if (this.active.length) {
+                    this.tooltip._model.opacity = 1;
+                    
                     helpers.extend(this.tooltip, {
-                        opacity: 1,
                         _active: this.active,
                     });
 
                     this.tooltip.update();
                 } else {
                     // Inactive
-                    helpers.extend(this.tooltip, {
-                        opacity: 0,
-                    });
+                    this.tooltip._model.opacity = 0;
                 }
             }
 
@@ -529,7 +528,7 @@
                     (this.lastActive.length && this.active.length && changed)) {
 
                     this.stop();
-                    this.render(this.options.hoverAnimationDuration);
+                    this.render(this.options.hover.animationDuration);
                 }
             }
 
