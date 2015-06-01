@@ -1598,7 +1598,7 @@
                         x: medianPosition.x,
                         y: medianPosition.y,
                         labels: labels,
-                        title: this._active.length ? this._active[0].label : '',
+                        title: this._data.labels && this._data.labels.length ? this._data.labels[this._active[0]._index] : '',
                         legendColors: colors,
                         legendBackgroundColor: this._options.tooltips.multiKeyBackground,
                     });
