@@ -65,6 +65,7 @@
             events: ["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"],
             hover: {
                 onHover: null,
+                mode: 'single',
                 animationDuration: 400,
             },
             onClick: null,
@@ -126,6 +127,13 @@
                     hitRadius: 6,
                     hoverRadius: 4,
                     hoverBorderWidth: 2,
+                },
+                bar: {
+                    backgroundColor: defaultColor,
+                    borderWidth: 2,
+                    borderColor: defaultColor,
+                    valueSpacing: 5,
+                    datasetSpacing: 1,
                 },
             }
         },
@@ -1467,9 +1475,9 @@
         draw: function() {
 
             var vm = this._view;
+            var ctx = this._chart.ctx;
 
-            var ctx = this.ctx,
-                halfWidth = vm.width / 2,
+            var halfWidth = vm.width / 2,
                 leftX = vm.x - halfWidth,
                 rightX = vm.x + halfWidth,
                 top = vm.base - (vm.base - vm.y),
