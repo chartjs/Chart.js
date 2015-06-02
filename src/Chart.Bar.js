@@ -201,7 +201,6 @@
                     this.min = helpers.min(values);
                     this.max = helpers.max(values);
 
-                    console.log(this.min, this.max);
                 } else {
                     helpers.each(self.data.datasets, function(dataset) {
                         if (dataset.yAxisID === this.id) {
@@ -290,8 +289,6 @@
                                     }
                                 }
                             }
-
-                            console.log(base);
 
                             return this.getPixelForValue(base);
                         }
