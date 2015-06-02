@@ -1131,14 +1131,14 @@
         initialize: function() {},
         pivot: function() {
             if (!this._view) {
-                this._view = clone(this._model);
+                this._view = {};
             }
             this._start = clone(this._view);
             return this;
         },
         transition: function(ease) {
             if (!this._view) {
-                this._view = clone(this._model);
+                this._view = {};
             }
             if (!this._start) {
                 this.pivot();
@@ -1152,7 +1152,11 @@
 
                 // Init if doesn't exist
                 else if (!this._view[key]) {
-                    this._view[key] = value || null;
+                    if (typeof value === 'number') {
+                        this._view[key] = value * ease;
+                    } else {
+                        this._view[key] = value || null;
+                    }
                 }
 
                 // No unnecessary computations
@@ -1171,7 +1175,8 @@
                 }
                 // Number transitions
                 else if (typeof value === 'number') {
-                    this._view[key] = ((this._model[key] - this._start[key]) * ease) + this._start[key];
+                    var startVal = this._start[key] !== undefined ? this._start[key] : 0;
+                    this._view[key] = ((this._model[key] - startVal) * ease) + startVal;
                 }
                 // Everything else
                 else {
