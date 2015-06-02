@@ -13,7 +13,6 @@
             mode: "label"
         },
 
-        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].borderColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
         scales: {
             xAxes: [{
                 scaleType: "dataset", // scatter should not use a dataset axis
@@ -113,12 +112,9 @@
                         _model: {
                             x: 0, //xScale.getPixelForValue(null, index, true),
                             y: 0, //this.chartArea.bottom,
-                            //controlPointPreviousX: this.previousPoint(dataset.data, index).x,
-                            //controlPointPreviousY: this.previousPoint(dataset.data, index).y,
-                            //controlPointNextX: this.nextPoint(dataset.data, index).x,
-                            //controlPointNextY: this.nextPoint(dataset.data, index).y,
                         },
                     }));
+
                 }, this);
 
                 // The line chart onlty supports a single x axis because the x axis is always a dataset axis
@@ -214,6 +210,7 @@
                     },
                 });
             }, this);
+
 
             // Update control points for the bezier curve
             this.eachElement(function(point, index, dataset, datasetIndex) {
@@ -374,7 +371,6 @@
             for (var i = this.data.datasets.length - 1; i >= 0; i--) {
 
                 var dataset = this.data.datasets[i];
-                var datasetIndex = i;
 
                 // Transition Point Locations
                 helpers.each(dataset.metaData, function(point, index) {

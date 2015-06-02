@@ -73,11 +73,11 @@
                 custom: null,
                 backgroundColor: "rgba(0,0,0,0.8)",
                 fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-                fontSize: 14,
+                fontSize: 10,
                 fontStyle: "normal",
                 fontColor: "#fff",
                 titleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-                titleFontSize: 14,
+                titleFontSize: 12,
                 titleFontStyle: "bold",
                 titleFontColor: "#fff",
                 yPadding: 6,
@@ -85,8 +85,30 @@
                 caretSize: 8,
                 cornerRadius: 6,
                 xOffset: 10,
-                template: "<%if (label){%><%=label%>: <%}%><%= value %>",
-                multiTemplate: "<%if (datasetLabel){%><%=datasetLabel%>: <%}%><%= value %>",
+                template: [
+                    '<% if(label){ %>',
+                    '    <%=label %>:',
+                    '<% } %>',
+                    '<%=value %>',
+                ].join(''),
+                multiTemplate: [
+                    '<%if (datasetLabel){ %>',
+                    '   <%=datasetLabel %>:',
+                    '<% } %>',
+                    '<%=value %>'
+                ].join(''),
+                legendTemplate: [
+                    '<ul class="<% =name.toLowerCase() %>-legend">',
+                    '    <% for (var i=0; i<datasets.length; i++){ %>',
+                    '        <li>',
+                    '           <span style="background-color:<%=datasets[i].borderColor%>"></span>',
+                    '           <% if(datasets[i].label){ %>',
+                    '               <%=datasets[i].label %>',
+                    '           <% } %>',
+                    '        </li>',
+                    '    <% } %>',
+                    '</ul>',
+                ].join(''),
                 multiKeyBackground: '#fff',
 
             },
@@ -114,7 +136,7 @@
                     borderColor: defaultColor,
                     // Hover
                     hitRadius: 6,
-                    hoverRadius: 5,
+                    hoverRadius: 4,
                     hoverBorderWidth: 2,
                 },
             }
@@ -1120,6 +1142,9 @@
     extend(Chart.Element.prototype, {
         initialize: function() {},
         pivot: function() {
+            if (!this._view) {
+                this._view = clone(this._model);
+            }
             this._start = clone(this._view);
             return this;
         },
@@ -1790,8 +1815,8 @@
                         //ctx.clearRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.fontSize/2, vm.fontSize, vm.fontSize);
                         //Instead we'll make a white filled block to put the legendColour palette over.
 
-                        ctx.fillStyle = helpers.color(vm.legendBackgroundColor).alpha(vm.opacity).rgbString();
-                        ctx.fillRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.fontSize / 2, vm.fontSize, vm.fontSize);
+                        ctx.fillStyle = helpers.color(vm.legendColors[index].stroke).alpha(vm.opacity).rgbString();
+                        ctx.fillRect(vm.x + vm.xPadding - 1, this.getLineHeight(index + 1) - vm.fontSize / 2 - 1, vm.fontSize + 2, vm.fontSize + 2);
 
                         ctx.fillStyle = helpers.color(vm.legendColors[index].fill).alpha(vm.opacity).rgbString();
                         ctx.fillRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.fontSize / 2, vm.fontSize, vm.fontSize);
