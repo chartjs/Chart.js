@@ -111,12 +111,12 @@
                         _index: index,
                         _chart: this.chart,
                         _model: {
-                            x: 0,//xScale.getPixelForValue(null, index, true),
+                            x: 0, //xScale.getPixelForValue(null, index, true),
                             y: 0, //this.chartArea.bottom,
-                            controlPointPreviousX: this.previousPoint(dataset.data, index).x,
-                            controlPointPreviousY: this.nextPoint(dataset.data, index).y,
-                            controlPointNextX: this.previousPoint(dataset.data, index).x,
-                            controlPointNextY: this.nextPoint(dataset.data, index).y,
+                            //controlPointPreviousX: this.previousPoint(dataset.data, index).x,
+                            //controlPointPreviousY: this.previousPoint(dataset.data, index).y,
+                            //controlPointNextX: this.nextPoint(dataset.data, index).x,
+                            //controlPointNextY: this.nextPoint(dataset.data, index).y,
                         },
                     }));
                 }, this);
@@ -144,10 +144,10 @@
             this.update();
         },
         nextPoint: function(collection, index) {
-            return collection[index - 1] || collection[index];
+            return collection[index + 1] || collection[index];
         },
         previousPoint: function(collection, index) {
-            return collection[index + 1] || collection[index];
+            return collection[index - 1] || collection[index];
         },
         update: function() {
 
@@ -171,7 +171,8 @@
                         borderWidth: dataset.borderWidth || this.options.elements.line.borderWidth,
                         borderColor: dataset.borderColor || this.options.elements.line.borderColor,
                         fill: dataset.fill !== undefined ? dataset.fill : this.options.elements.line.fill, // use the value from the dataset if it was provided. else fall back to the default
-
+                        skipNull: dataset.skipNull !== undefined ? dataset.skipNull : this.options.elements.line.skipNull,
+                        drawNull: dataset.drawNull !== undefined ? dataset.drawNull : this.options.elements.line.drawNull,
                         // Scale
                         scaleTop: yScale.top,
                         scaleBottom: yScale.bottom,
@@ -206,6 +207,7 @@
                         backgroundColor: point.custom && point.custom.backgroundColor ? point.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointBackgroundColor, index, this.options.elements.point.backgroundColor),
                         borderColor: point.custom && point.custom.borderColor ? point.custom.borderColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointBorderColor, index, this.options.elements.point.borderColor),
                         borderWidth: point.custom && point.custom.borderWidth ? point.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointBorderWidth, index, this.options.elements.point.borderWidth),
+                        skip: typeof this.data.datasets[datasetIndex].data[index] != 'number',
 
                         // Tooltip
                         hoverRadius: point.custom && point.custom.hoverRadius ? point.custom.hoverRadius : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointHitRadius, index, this.options.elements.point.hitRadius),
@@ -497,7 +499,7 @@
                 // Active
                 if (this.active.length) {
                     this.tooltip._model.opacity = 1;
-                    
+
                     helpers.extend(this.tooltip, {
                         _active: this.active,
                     });

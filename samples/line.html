@@ -26,11 +26,11 @@
         labels: ["January", "February", "March", "April", "May", "June", "July"],
         datasets: [{
             label: "My First dataset",
-            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
-            fill: false
+            data: [null, randomScalingFactor(), randomScalingFactor(), null, randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
+            fill: false,
         }, {
             label: "My Second dataset",
-            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+            data: [null, randomScalingFactor(), randomScalingFactor(), null, randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
         }]
     };
 
@@ -47,7 +47,7 @@
     window.onload = function() {
         var ctx = document.getElementById("canvas").getContext("2d");
         window.myLine = new Chart(ctx).Line({
-            data: lineChartData, 
+            data: lineChartData,
             options: {
                 responsive: true,
                 hover: {
