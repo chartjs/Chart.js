@@ -95,7 +95,7 @@
                     _chart: this.chart,
                     _datasetIndex: datasetIndex,
                     _points: dataset.metaData,
-                    loop: true,
+                    _loop: true
                 });
 
                 dataset.metaData = [];
@@ -134,12 +134,13 @@
             this.update();
         },
         nextPoint: function(collection, index) {
-            return collection[index + 1] || collection[collection.length - 1];
+            return collection[index + 1] || collection[0];
         },
         previousPoint: function(collection, index) {
-            return collection[index - 1] || collection[0];
+            return collection[index - 1] || collection[collection.length - 1];
         },
         resetElements: function() {
+
             // Update the points
             this.eachElement(function(point, index, dataset, datasetIndex) {
                 helpers.extend(point, {
@@ -147,6 +148,7 @@
                     _chart: this.chart,
                     _datasetIndex: datasetIndex,
                     _index: index,
+                    _scale: this.scale,
 
                     // Desired view properties
                     _model: {
@@ -176,28 +178,10 @@
                     point._model.tension
                 );
 
-                point._model.controlPointPreviousX = controlPoints.previous.x;
-                point._model.controlPointNextX = controlPoints.next.x;
-
-                // Prevent the bezier going outside of the bounds of the graph
-
-                // Cap puter bezier handles to the upper/lower scale bounds
-                if (controlPoints.next.y > this.chartArea.bottom) {
-                    point._model.controlPointNextY = this.chartArea.bottom;
-                } else if (controlPoints.next.y < this.chartArea.top) {
-                    point._model.controlPointNextY = this.chartArea.top;
-                } else {
-                    point._model.controlPointNextY = controlPoints.next.y;
-                }
-
-                // Cap inner bezier handles to the upper/lower scale bounds
-                if (controlPoints.previous.y > this.chartArea.bottom) {
-                    point._model.controlPointPreviousY = this.chartArea.bottom;
-                } else if (controlPoints.previous.y < this.chartArea.top) {
-                    point._model.controlPointPreviousY = this.chartArea.top;
-                } else {
-                    point._model.controlPointPreviousY = controlPoints.previous.y;
-                }
+                point._model.controlPointPreviousX = this.scale.xCenter;
+                point._model.controlPointPreviousY = this.scale.yCenter;
+                point._model.controlPointNextX = this.scale.xCenter;
+                point._model.controlPointNextY = this.scale.yCenter;
 
                 // Now pivot the point for animation
                 point.pivot();
@@ -211,10 +195,10 @@
                 helpers.extend(dataset.metaDataset, {
                     // Utility
                     _datasetIndex: datasetIndex,
-                    
+
                     // Data
                     _children: dataset.metaData,
-                    
+
                     // Model
                     _model: {
                         // Appearance
@@ -225,7 +209,7 @@
                         fill: dataset.fill !== undefined ? dataset.fill : this.options.elements.line.fill, // use the value from the dataset if it was provided. else fall back to the default
                         skipNull: dataset.skipNull !== undefined ? dataset.skipNull : this.options.elements.line.skipNull,
                         drawNull: dataset.drawNull !== undefined ? dataset.drawNull : this.options.elements.line.drawNull,
-                        
+
                         // Scale
                         scaleTop: this.scale.top,
                         scaleBottom: this.scale.bottom,
@@ -351,9 +335,7 @@
             this.clear();
 
             // Draw all the scales
-            helpers.each(this.scales, function(scale) {
-                scale.draw(this.chartArea);
-            }, this);
+            this.scale.draw(this.chartArea);
 
             // reverse for-loop for proper stacking
             for (var i = this.data.datasets.length - 1; i >= 0; i--) {

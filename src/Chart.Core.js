@@ -1274,32 +1274,32 @@
 
             // Draw the background first (so the border is always on top)
             helpers.each(this._children, function(point, index) {
-                var scaleZero = point._yScale.getPointPixelForValue(0);
+                var previous = this.previousPoint(point, this._children, index);
+                var next = this.nextPoint(point, this._children, index);
 
                 // First point only
                 if (index === 0) {
-                    if (point._view.skip && vm.skipNull) {
-                        ctx.moveTo(point._view.x, scaleZero);
-                    } else {
-                        ctx.moveTo(point._view.x, point._view.y);
-                    }
+                    ctx.moveTo(point._view.x, point._view.y);
                     return;
                 }
 
                 // Start Skip and drag along scale baseline
-                if (point._view.skip && vm.skipNull) {
-                    ctx.lineTo(this.previousPoint(point, this._children, index)._view.x, scaleZero);
-                    ctx.moveTo(this.nextPoint(point, this._children, index)._view.x, scaleZero);
+                if (point._view.skip && vm.skipNull && !this._loop) {
+                    ctx.lineTo(previous._view.x, point._view.y);
+                    ctx.moveTo(next._view.x, point._view.y);
                 }
                 // End Skip Stright line from the base line
-                else if (this.previousPoint(point, this._children, index)._view.skip && vm.skipNull) {
-                    ctx.moveTo(point._view.x, scaleZero);
+                else if (previous._view.skip && vm.skipNull && !this._loop) {
+                    ctx.moveTo(point._view.x, previous._view.y);
                     ctx.lineTo(point._view.x, point._view.y);
+                }
+
+                if (previous._view.skip && vm.skipNull) {
+                    ctx.moveTo(point._view.x, point._view.y);
                 }
                 // Normal Bezier Curve
                 else {
-                    if (vm._tension > 0 || 1) {
-                        var previous = this.previousPoint(point, this._children, index);
+                    if (vm.tension > 0) {
                         ctx.bezierCurveTo(
                             previous._view.controlPointNextX,
                             previous._view.controlPointNextY,
@@ -1315,8 +1315,8 @@
             }, this);
 
             // For radial scales, loop back around to the first point
-            if (vm.loop) {
-                if (vm._tension > 0 || 1) {
+            if (this._loop) {
+                if (vm.tension > 0 && !first._view.skip) {
 
                     ctx.bezierCurveTo(
                         last._view.controlPointNextX,
@@ -1348,46 +1348,49 @@
             ctx.beginPath();
 
             helpers.each(this._children, function(point, index) {
-                var scaleZero = point._yScale.getPointPixelForValue(0);
+                var previous = this.previousPoint(point, this._children, index);
+                var next = this.nextPoint(point, this._children, index);
+
                 // First point only
                 if (index === 0) {
-                    if (point._view.skip && vm.skipNull) {
-                        ctx.moveTo(point._view.x, scaleZero);
-                    } else {
-                        ctx.moveTo(point._view.x, point._view.y);
-                    }
+                    ctx.moveTo(point._view.x, point._view.y);
                     return;
                 }
 
                 // Start Skip and drag along scale baseline
-                if (point._view.skip && vm.skipNull) {
-                    ctx.moveTo(this.previousPoint(point, this._children, index)._view.x, scaleZero);
-                    ctx.moveTo(this.nextPoint(point, this._children, index)._view.x, scaleZero);
+                if (point._view.skip && vm.skipNull && !this._loop) {
+                    ctx.moveTo(previous._view.x, point._view.y);
+                    ctx.moveTo(next._view.x, point._view.y);
+                    return;
                 }
                 // End Skip Stright line from the base line
-                else if (this.previousPoint(point, this._children, index)._view.skip && vm.skipNull) {
-                    ctx.moveTo(point._view.x, scaleZero);
+                if (previous._view.skip && vm.skipNull && !this._loop) {
+                    ctx.moveTo(point._view.x, previous._view.y);
                     ctx.moveTo(point._view.x, point._view.y);
+                    return;
+                }
+
+                if (previous._view.skip && vm.skipNull) {
+                    ctx.moveTo(point._view.x, point._view.y);
+                    return;
                 }
                 // Normal Bezier Curve
-                else {
-                    if (vm._tension > 0 || 1) {
-                        var previous = this.previousPoint(point, this._children, index);
-                        ctx.bezierCurveTo(
-                            previous._view.controlPointNextX,
-                            previous._view.controlPointNextY,
-                            point._view.controlPointPreviousX,
-                            point._view.controlPointPreviousY,
-                            point._view.x,
-                            point._view.y
-                        );
-                    } else {
-                        ctx.lineTo(point._view.x, point._view.y);
-                    }
+                if (vm.tension > 0) {
+                    ctx.bezierCurveTo(
+                        previous._view.controlPointNextX,
+                        previous._view.controlPointNextY,
+                        point._view.controlPointPreviousX,
+                        point._view.controlPointPreviousY,
+                        point._view.x,
+                        point._view.y
+                    );
+                } else {
+                    ctx.lineTo(point._view.x, point._view.y);
                 }
             }, this);
-            if (vm.loop) {
-                if (vm._tension > 0 || 1) {
+
+            if (this._loop && !first._view.skip) {
+                if (vm.tension > 0) {
 
                     ctx.bezierCurveTo(
                         last._view.controlPointNextX,
@@ -1406,15 +1409,17 @@
             ctx.stroke();
 
         },
-        previousPoint: function(point, collection, index) {
-            return helpers.findPreviousWhere(collection, function() {
-                return true;
-            }, index) || point;
-        },
         nextPoint: function(point, collection, index) {
-            return helpers.findNextWhere(collection, function() {
-                return true;
-            }, index) || point;
+            if (this.loop) {
+                return collection[index + 1] || collection[0];
+            }
+            return collection[index + 1] || collection[collection.length - 1];
+        },
+        previousPoint: function(point, collection, index) {
+            if (this.loop) {
+                return collection[index - 1] || collection[collection.length - 1];
+            }
+            return collection[index - 1] || collection[0];
         },
     });
 
