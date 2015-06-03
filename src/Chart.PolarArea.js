@@ -8,14 +8,6 @@
 
     var defaultConfig = {
 
-        segment: {
-            //String - The colour of the border on each segment.
-            borderColor: "#fff",
-
-            //Number - The width of the border value in pixels
-            borderWidth: 2,
-        },
-
         scale: {
             scaleType: "radialLinear",
             display: true,
@@ -60,9 +52,6 @@
 
         //Boolean - Whether to animate the rotation of the chart
         animateRotate: true,
-
-        //String - A legend template
-        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
     };
 
 
@@ -91,55 +80,39 @@
                     this.min = null;
                     this.max = null;
 
-                    helpers.each(self.data.data, function(data) {
+                    helpers.each(self.data.datasets[0].data, function(value) {
                         if (this.min === null) {
-                            this.min = data.value;
-                        } else if (data.value < this.min) {
-                            this.min = data.value;
+                            this.min = value;
+                        } else if (value < this.min) {
+                            this.min = value;
                         }
 
                         if (this.max === null) {
-                            this.max = data.value;
-                        } else if (data.value > this.max) {
-                            this.max = data.value;
+                            this.max = value;
+                        } else if (value > this.max) {
+                            this.max = value;
                         }
                     }, this);
                 }
             });
 
-            //Declare segment class as a chart instance specific class, so it can share props for this instance
-            this.Slice = Chart.Arc.extend();
+            helpers.bindEvents(this, this.options.events, this.events);
 
             //Set up tooltip events on the chart
-            if (this.options.showTooltips) {
-                helpers.bindEvents(this, this.options.events, this.onHover);
-            }
+            helpers.bindEvents(this, this.options.events, this.events);
 
-            // Create new slice for each piece of data
-            this.data.metaData = [];
-            helpers.each(this.data.data, function(slice, index) {
-                var metaSlice = new this.Slice({
-                    _chart: this.chart,
-                    innerRadius: 0,
-                    startAngle: Math.PI * 1.5,
-                    endAngle: Math.PI * 1.5,
-                    x: this.chart.width / 2,
-                    y: this.chart.height / 2
-                });
-                if (typeof slice == 'number') {
-                    helpers.extend(metaSlice, {
-                        value: slice
-                    });
-                } else {
-                    helpers.extend(metaSlice, slice);
-                }
-                if (!metaSlice.backgroundColor) {
-                    slice.backgroundColor = 'hsl(' + (360 * index / this.data.data.length) + ', 100%, 50%)';
-                }
-                metaSlice.save();
-                this.data.metaData.push(metaSlice);
+            //Create a new bar for each piece of data
+            helpers.each(this.data.datasets, function(dataset, datasetIndex) {
+                dataset.metaData = [];
+                helpers.each(dataset.data, function(dataPoint, index) {
+                    dataset.metaData.push(new Chart.Arc({
+                        _chart: this.chart,
+                        _datasetIndex: datasetIndex,
+                        _index: index,
+                        _model: {}
+                    }));
+                }, this);
             }, this);
-
 
             // Create tooltip instance exclusively for this chart with some defaults.
             this.tooltip = new Chart.Tooltip({
@@ -148,6 +121,7 @@
                 _options: this.options,
             }, this);
 
+            // Update the chart with the latest data.
             this.update();
 
         },
@@ -165,35 +139,39 @@
             this.scale.generateTicks();
             this.scale.buildYLabels();
 
-            this.outerRadius = (helpers.min([this.chart.width, this.chart.height]) - this.options.segment.borderWidth / 2) / 2;
+            Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
 
-            var circumference = 1 / this.data.data.length * 2;
+            var circumference = 1 / this.data.datasets[0].data.length * 2;
 
             // Map new data to data points
-            helpers.each(this.data.metaData, function(slice, index) {
+            helpers.each(this.data.datasets[0].metaData, function(slice, index) {
 
-                var datapoint = this.data.data[index];
+                var value = this.data.datasets[0].data[index];
 
                 var startAngle = Math.PI * 1.5 + (Math.PI * circumference) * index;
                 var endAngle = startAngle + (circumference * Math.PI);
 
                 helpers.extend(slice, {
                     _index: index,
-                    x: this.chart.width / 2,
-                    y: this.chart.height / 2,
-                    value: datapoint.value,
-                    label: datapoint.label,
-                    innerRadius: 0,
-                    outerRadius: this.scale.calculateCenterOffset(slice.value),
-                    startAngle: startAngle,
-                    endAngle: endAngle,
+                    _model: {
+                        x: this.chart.width / 2,
+                        y: this.chart.height / 2,
+                        innerRadius: 0,
+                        outerRadius: this.scale.calculateCenterOffset(value),
+                        startAngle: startAngle,
+                        endAngle: endAngle,
 
-                    backgroundColor: datapoint.backgroundColor,
-                    hoverBackgroundColor: datapoint.hoverBackgroundColor || datapoint.backgroundColor,
-                    borderWidth: this.options.borderWidth,
-                    borderColor: this.options.segmentStrokeColor,
+                        backgroundColor: slice.custom && slice.custom.backgroundColor ? slice.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[0].backgroundColor, index, this.options.elements.slice.backgroundColor),
+                        hoverBackgroundColor: slice.custom && slice.custom.hoverBackgroundColor ? slice.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[0].hoverBackgroundColor, index, this.options.elements.slice.hoverBackgroundColor),
+                        borderWidth: slice.custom && slice.custom.borderWidth ? slice.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.data.datasets[0].borderWidth, index, this.options.elements.slice.borderWidth),
+                        borderColor: slice.custom && slice.custom.borderColor ? slice.custom.borderColor : helpers.getValueAtIndexOrDefault(this.data.datasets[0].borderColor, index, this.options.elements.slice.borderColor),
+
+                        label: helpers.getValueAtIndexOrDefault(this.data.datasets[0].labels, index, this.data.datasets[0].labels[index])
+                    },
                 });
                 slice.pivot();
+
+                console.log(slice);
 
             }, this);
 
@@ -204,12 +182,99 @@
 
             this.clear();
 
-            helpers.each(this.data.metaData, function(segment, index) {
-                segment.transition(easingDecimal).draw();
+            helpers.each(this.data.datasets[0].metaData, function(slice, index) {
+                slice.transition(easingDecimal).draw();
             }, this);
 
             this.scale.draw();
-        }
+        },
+        events: function(e) {
+
+            // If exiting chart
+            if (e.type == 'mouseout') {
+                return this;
+            }
+
+            this.lastActive = this.lastActive || [];
+
+            // Find Active Elements
+            this.active = this.getSliceAtEvent(e);
+
+            // On Hover hook
+            if (this.options.onHover) {
+                this.options.onHover.call(this, this.active);
+            }
+
+            // Remove styling for last active (even if it may still be active)
+            if (this.lastActive.length) {
+                this.lastActive[0].backgroundColor = this.data.data[this.lastActive[0]._index].backgroundColor;
+            }
+
+            // Built in hover styling
+            if (this.active.length && this.options.hover.mode) {
+                this.active[0].backgroundColor = this.data.data[this.active[0]._index].hoverBackgroundColor || helpers.color(this.data.data[this.active[0]._index].backgroundColor).saturate(0.5).darken(0.35).rgbString();
+            }
+
+            // Built in Tooltips
+            if (this.options.tooltips.enabled) {
+
+                // The usual updates
+                this.tooltip.initialize();
+
+                // Active
+                if (this.active.length) {
+                    helpers.extend(this.tooltip, {
+                        opacity: 1,
+                        _active: this.active,
+                    });
+
+                    this.tooltip.update();
+                } else {
+                    // Inactive
+                    helpers.extend(this.tooltip, {
+                        opacity: 0,
+                    });
+                }
+            }
+
+
+            // Hover animations
+            this.tooltip.pivot();
+
+            if (!this.animating) {
+                var changed;
+
+                helpers.each(this.active, function(element, index) {
+                    if (element !== this.lastActive[index]) {
+                        changed = true;
+                    }
+                }, this);
+
+                // If entering, leaving, or changing elements, animate the change via pivot
+                if ((!this.lastActive.length && this.active.length) ||
+                    (this.lastActive.length && !this.active.length) ||
+                    (this.lastActive.length && this.active.length && changed)) {
+
+                    this.stop();
+                    this.render(this.options.hover.animationDuration);
+                }
+            }
+
+            // Remember Last Active
+            this.lastActive = this.active;
+            return this;
+
+        },
+        getSliceAtEvent: function(e) {
+            var elements = [];
+
+            var location = helpers.getRelativePosition(e);
+
+            helpers.each(this.data.metaData, function(slice, index) {
+                if (slice.inRange(location.x, location.y)) elements.push(slice);
+            }, this);
+            return elements;
+        },
     });
 
 }).call(this);
