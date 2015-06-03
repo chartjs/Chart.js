@@ -54,6 +54,8 @@
                 _options: this.options,
             }, this);
 
+            this.resetElements();
+
             // Update the chart with the latest data.
             this.update();
 
@@ -65,6 +67,46 @@
             } else {
                 return 0;
             }
+        },
+        resetElements: function() {
+            this.outerRadius = (helpers.min([this.chart.width, this.chart.height]) - this.options.elements.slice.borderWidth / 2) / 2;
+            this.innerRadius = this.options.cutoutPercentage ? (this.outerRadius / 100) * (this.options.cutoutPercentage) : 1;
+            this.radiusLength = (this.outerRadius - this.innerRadius) / this.data.datasets.length;
+
+            // Update the points
+            helpers.each(this.data.datasets, function(dataset, datasetIndex) {
+                // So that calculateCircumference works
+                dataset.total = 0;
+                helpers.each(dataset.data, function(value) {
+                    dataset.total += Math.abs(value);
+                }, this);
+
+                dataset.outerRadius = this.outerRadius - (this.radiusLength * datasetIndex);
+                dataset.innerRadius = dataset.outerRadius - this.radiusLength;
+
+                helpers.each(dataset.metaData, function(slice, index) {
+                    helpers.extend(slice, {
+                        _model: {
+                            x: this.chart.width / 2,
+                            y: this.chart.height / 2,
+                            startAngle: Math.PI * -0.5, // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
+                            circumference: (this.options.animation.animateRotate) ? 0 : this.calculateCircumference(metaSlice.value),
+                            outerRadius: (this.options.animation.animateScale) ? 0 : dataset.outerRadius,
+                            innerRadius: (this.options.animation.animateScale) ? 0 : dataset.innerRadius,
+
+                            backgroundColor: slice.custom && slice.custom.backgroundColor ? slice.custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.slice.backgroundColor),
+                            hoverBackgroundColor: slice.custom && slice.custom.hoverBackgroundColor ? slice.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, this.options.elements.slice.hoverBackgroundColor),
+                            borderWidth: slice.custom && slice.custom.borderWidth ? slice.custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.slice.borderWidth),
+                            borderColor: slice.custom && slice.custom.borderColor ? slice.custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.slice.borderColor),
+
+                            label: helpers.getValueAtIndexOrDefault(dataset.label, index, this.data.labels[index])
+                        },
+                    });
+
+                    slice.pivot();
+                }, this);
+
+            }, this);
         },
         update: function() {
 
@@ -112,7 +154,7 @@
                     });
 
                     if (index === 0) {
-                        slice._model.startAngle = Math.PI * 1.5;
+                        slice._model.startAngle = Math.PI * -0.5; // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
                     } else {
                         slice._model.startAngle = dataset.metaData[index - 1]._model.endAngle;
                     }
