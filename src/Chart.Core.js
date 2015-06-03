@@ -130,7 +130,7 @@
                 },
                 bar: {
                     backgroundColor: defaultColor,
-                    borderWidth: 2,
+                    borderWidth: 0,
                     borderColor: defaultColor,
                     valueSpacing: 5,
                     datasetSpacing: 1,
@@ -1474,8 +1474,8 @@
     Chart.Rectangle = Chart.Element.extend({
         draw: function() {
 
-            var vm = this._view;
             var ctx = this._chart.ctx;
+            var vm = this._view;
 
             var halfWidth = vm.width / 2,
                 leftX = vm.x - halfWidth,

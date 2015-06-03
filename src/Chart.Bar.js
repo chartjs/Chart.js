@@ -102,6 +102,7 @@
                     dataset.metaData.push(new Chart.Rectangle({
                         _chart: this.chart,
                         _datasetIndex: datasetIndex,
+                        _index: index,
                     }));
                 }, this);
 
