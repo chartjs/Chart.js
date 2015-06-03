@@ -1685,13 +1685,15 @@
 			var scalingFactor = this.drawingArea() / (this.min - this.max);
 			return this.endPoint - (scalingFactor * (value - this.min));
 		},
-		calculateX : function(index){
+		calculateX : function(index, percentPosition){
 			var isRotated = (this.xLabelRotation > 0),
 				// innerWidth = (this.offsetGridLines) ? this.width - offsetLeft - this.padding : this.width - (offsetLeft + halfLabelWidth * 2) - this.padding,
 				innerWidth = this.width - (this.xScalePaddingLeft + this.xScalePaddingRight),
 				valueWidth = innerWidth/Math.max((this.valuesCount - ((this.offsetGridLines) ? 0 : 1)), 1),
 				valueOffset = (valueWidth * index) + this.xScalePaddingLeft;
-
+				if(percentPosition) {
+					valueOffset = innerWidth * percentPosition / 100 + this.xScalePaddingLeft;
+				}
 			if (this.offsetGridLines){
 				valueOffset += (valueWidth/2);
 			}
