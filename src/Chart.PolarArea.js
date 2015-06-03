@@ -121,6 +121,14 @@
                 _options: this.options,
             }, this);
 
+            // Fit the scale before we animate
+            this.updateScaleRange();
+            this.scale.calculateRange();
+            Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
+
+            // so that we animate nicely
+            this.resetElements();
+
             // Update the chart with the latest data.
             this.update();
 
@@ -131,6 +139,39 @@
                 xCenter: this.chart.width / 2,
                 yCenter: this.chart.height / 2
             });
+        },
+        resetElements: function() {
+            var circumference = 1 / this.data.datasets[0].data.length * 2;
+
+            // Map new data to data points
+            helpers.each(this.data.datasets[0].metaData, function(slice, index) {
+
+                var value = this.data.datasets[0].data[index];
+
+                var startAngle = Math.PI * 1.5 + (Math.PI * circumference) * index;
+                var endAngle = startAngle + (circumference * Math.PI);
+
+                helpers.extend(slice, {
+                    _index: index,
+                    _model: {
+                        x: this.chart.width / 2,
+                        y: this.chart.height / 2,
+                        innerRadius: 0,
+                        outerRadius: 0,
+                        startAngle: Math.PI * 1.5,
+                        endAngle: Math.PI * 1.5,
+
+                        backgroundColor: slice.custom && slice.custom.backgroundColor ? slice.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[0].backgroundColor, index, this.options.elements.slice.backgroundColor),
+                        hoverBackgroundColor: slice.custom && slice.custom.hoverBackgroundColor ? slice.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[0].hoverBackgroundColor, index, this.options.elements.slice.hoverBackgroundColor),
+                        borderWidth: slice.custom && slice.custom.borderWidth ? slice.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.data.datasets[0].borderWidth, index, this.options.elements.slice.borderWidth),
+                        borderColor: slice.custom && slice.custom.borderColor ? slice.custom.borderColor : helpers.getValueAtIndexOrDefault(this.data.datasets[0].borderColor, index, this.options.elements.slice.borderColor),
+
+                        label: helpers.getValueAtIndexOrDefault(this.data.datasets[0].labels, index, this.data.datasets[0].labels[index])
+                    },
+                });
+
+                slice.pivot();
+            }, this);
         },
         update: function() {
 
