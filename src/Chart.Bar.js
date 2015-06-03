@@ -124,8 +124,59 @@
                 _options: this.options,
             }, this);
 
+            // Need to fit scales before we reset elements. 
+            Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
+
+            // So that we animate from the baseline
+            this.resetElements();
+
             // Update the chart with the latest data.
             this.update();
+        },
+        resetElements: function() {
+            // Update the points
+            this.eachElement(function(bar, index, dataset, datasetIndex) {
+                var xScale = this.scales[this.data.datasets[datasetIndex].xAxisID];
+                var yScale = this.scales[this.data.datasets[datasetIndex].yAxisID];
+
+                var yScalePoint;
+
+                if (yScale.min < 0 && yScale.max <0) {
+                    // all less than 0. use the top
+                    yScalePoint = yScale.getPixelForValue(yScale.max);
+                } else if (yScale.min > 0 && yScale.max > 0) {
+                    yScalePoint = yScale.getPixelForValue(yScale.min);
+                } else {
+                    yScalePoint = yScale.getPixelForValue(0);
+                }
+
+                helpers.extend(bar, {
+                    // Utility
+                    _chart: this.chart,
+                    _xScale: xScale,
+                    _yScale: yScale,
+                    _datasetIndex: datasetIndex,
+                    _index: index,
+
+                    // Desired view properties
+                    _model: {
+                        x: xScale.calculateBarX(this.data.datasets.length, datasetIndex, index),
+                        y: yScalePoint,
+
+                        // Appearance
+                        base: yScale.calculateBarBase(datasetIndex, index),
+                        width: xScale.calculateBarWidth(this.data.datasets.length),
+                        backgroundColor: bar.custom && bar.custom.backgroundColor ? bar.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].backgroundColor, index, this.options.elements.bar.backgroundColor),
+                        borderColor: bar.custom && bar.custom.borderColor ? bar.custom.borderColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].borderColor, index, this.options.elements.bar.borderColor),
+                        borderWidth: bar.custom && bar.custom.borderWidth ? bar.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].borderWidth, index, this.options.elements.bar.borderWidth),
+
+                        // Tooltip
+                        label: this.data.labels[index],
+                        datasetLabel: this.data.datasets[datasetIndex].label,
+                    },
+                });
+                bar.pivot();
+            }, this);
         },
         update: function() {
             // Update the scale sizes
