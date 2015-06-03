@@ -18,7 +18,7 @@
 
         //The percentage of the chart that we cut out of the middle.
 
-        cutoutPercentage: 1,
+        cutoutPercentage: 50,
 
     };
 
@@ -78,7 +78,7 @@
         update: function() {
 
             this.outerRadius = (helpers.min([this.chart.width, this.chart.height]) - this.options.elements.slice.borderWidth / 2) / 2;
-            this.innerRadius = (this.outerRadius / 100) * this.options.cutoutPercentage;
+            this.innerRadius = this.options.cutoutPercentage ? (this.outerRadius / 100) * (this.options.cutoutPercentage) : 1;
             this.radiusLength = (this.outerRadius - this.innerRadius) / this.data.datasets.length;
 
 
