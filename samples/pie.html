@@ -20,46 +20,78 @@
         return Math.round(Math.random() * 255);
     };
 
-    var pieData = [{
-            value: randomScalingFactor(),
-            color: "#F7464A",
-            highlight: "#FF5A5E",
-            label: "Red"
-        }, {
-            value: randomScalingFactor(),
-            color: "#46BFBD",
-            highlight: "#5AD3D1",
-            label: "Green"
-        }, {
-            value: randomScalingFactor(),
-            color: "#FDB45C",
-            highlight: "#FFC870",
-            label: "Yellow"
-        }, {
-            value: randomScalingFactor(),
-            color: "#949FB1",
-            highlight: "#A8B3C5",
-            label: "Grey"
-        }, {
-            value: randomScalingFactor(),
-            color: "#4D5360",
-            highlight: "#616774",
-            label: "Dark Grey"
+    var config = {
+        data: {
+            datasets: [{
+                data: [
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                ],
+                backgroundColor: [
+                    "#F7464A",
+                    "#46BFBD",
+                    "#FDB45C",
+                    "#949FB1",
+                    "#4D5360",
+                ],
+            }, {
+                data: [
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                ],
+                backgroundColor: [
+                    "#F7464A",
+                    "#46BFBD",
+                    "#FDB45C",
+                    "#949FB1",
+                    "#4D5360",
+                ],
+            }, {
+                data: [
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                ],
+                backgroundColor: [
+                    "#F7464A",
+                    "#46BFBD",
+                    "#FDB45C",
+                    "#949FB1",
+                    "#4D5360",
+                ],
+            }],
+            labels: [
+                "Red",
+                "Green",
+                "Yellow",
+                "Grey",
+                "Dark Grey"
+            ]
+        },
+        options: {
+            responsive: true
         }
-
-    ];
+    };
 
     window.onload = function() {
         var ctx = document.getElementById("chart-area").getContext("2d");
-        window.myPie = new Chart(ctx).Pie({
-            data: pieData
-        });
+        window.myPie = new Chart(ctx).Pie(config);
     };
 
     $('#randomizeData').click(function() {
-        $.each(pieData, function(i, piece) {
-            pieData[i].value = randomScalingFactor();
-            pieData[i].color = 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
+        $.each(config.data.datasets, function(i, piece) {
+            $.each(piece.data, function(j, value) {
+                config.data.datasets[i].data[j] = randomScalingFactor();
+                //config.data.datasets.backgroundColor[i] = 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
+            });
         });
         window.myPie.update();
     });

@@ -97,9 +97,10 @@
     };
 
     $('#randomizeData').click(function() {
-        $.each(config.data, function(i, datapoint) {
-            datapoint.value = randomScalingFactor();
-            datapoint.backgroundColor = 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
+        $.each(config.data.datasets, function(i, piece) {
+            $.each(piece.data, function(j, value) {
+                config.data.datasets[i].data[j] = randomScalingFactor();
+            });
         });
         window.myDoughnut.update();
     });
