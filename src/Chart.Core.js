@@ -88,13 +88,13 @@
                 xOffset: 10,
                 template: [
                     '<% if(label){ %>',
-                    '    <%=label %>:',
+                    '<%=label %>:',
                     '<% } %>',
                     '<%=value %>',
                 ].join(''),
                 multiTemplate: [
                     '<%if (datasetLabel){ %>',
-                    '   <%=datasetLabel %>:',
+                    '<%=datasetLabel %>:',
                     '<% } %>',
                     '<%=value %>'
                 ].join(''),
@@ -1429,6 +1429,15 @@
     });
 
     Chart.Arc = Chart.Element.extend({
+        inGroupRange: function(mouseX) {
+            var vm = this._view;
+
+            if (vm) {
+                return (Math.pow(mouseX - vm.x, 2) < Math.pow(vm.radius + vm.hoverRadius, 2));
+            } else {
+                return false;
+            }
+        },
         inRange: function(chartX, chartY) {
 
             var vm = this._view;
