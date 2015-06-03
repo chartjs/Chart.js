@@ -92,6 +92,10 @@
         name: "Scatter",
         defaults: defaultConfig,
         initialize: function() {
+
+            // Events
+            helpers.bindEvents(this, this.options.events, this.events);
+
             //Custom Point Defaults
             helpers.each(this.data.datasets, function(dataset, datasetIndex) {
                 dataset.metaDataset = new Chart.Line({
