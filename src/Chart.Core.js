@@ -135,6 +135,11 @@
                     valueSpacing: 5,
                     datasetSpacing: 1,
                 },
+                slice: {
+                    backgroundColor: defaultColor,
+                    borderColor: "#fff",
+                    borderWidth: 2,
+                },
             }
         },
     };

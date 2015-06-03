@@ -7,21 +7,6 @@
         helpers = Chart.helpers;
 
     var defaultConfig = {
-        segments: {
-            //Boolean - Whether we should show a stroke on each segment
-            showStroke: true,
-
-            //String - The colour of each segment stroke
-            strokeColor: "#fff",
-
-            //Number - The width of each segment stroke
-            borderWidth: 2,
-        },
-
-        hover: {
-             // The duration of animations triggered by hover events
-            animationDuration: 400,
-        },
 
         animation: {
             //Boolean - Whether we animate the rotation of the Doughnut
@@ -32,10 +17,8 @@
         },
 
         //The percentage of the chart that we cut out of the middle.
-        cutoutPercentage: 50,
-        
-        //String - A legend template
-        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].backgroundColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
+
+        cutoutPercentage: 1,
 
     };
 
@@ -47,40 +30,21 @@
         //Initialize is fired when the chart is initialized - Data is passed in as a parameter
         //Config is automatically merged by the core of Chart.js, and is available at this.options
         initialize: function() {
-            // Slice Type and defaults
-            this.Slice = Chart.Arc.extend({
-                _chart: this.chart,
-                x: this.chart.width / 2,
-                y: this.chart.height / 2
-            });
 
             //Set up tooltip events on the chart
-            if (this.options.tooltips.enabled) {
-                helpers.bindEvents(this, this.options.events, this.onHover);
-            }
+            helpers.bindEvents(this, this.options.events, this.events);
 
-            // Create new slice for each piece of data
-            this.data.metaData = [];
-            helpers.each(this.data.data, function(slice, index) {
-                var metaSlice = new this.Slice();
-                if (typeof slice == 'number') {
-                    helpers.extend(metaSlice, {
-                        value: slice
-                    });
-                } else {
-                    helpers.extend(metaSlice, slice);
-                }
-                helpers.extend(metaSlice, {
-                    startAngle: Math.PI * 1.5,
-                    circumference: (this.options.animation.animateRotate) ? 0 : this.calculateCircumference(metaSlice.value),
-                    outerRadius: (this.options.animation.animateScale) ? 0 : this.outerRadius,
-                    innerRadius: (this.options.animation.animateScale) ? 0 : (this.outerRadius / 100) * this.options.percentageInnerCutout,
-                });
-                if (!metaSlice.backgroundColor) {
-                    slice.backgroundColor = 'hsl(' + (360 * index / this.data.data.length) + ', 100%, 50%)';
-                }
-                metaSlice.save();
-                this.data.metaData.push(metaSlice);
+            //Create a new bar for each piece of data
+            helpers.each(this.data.datasets, function(dataset, datasetIndex) {
+                dataset.metaData = [];
+                helpers.each(dataset.data, function(dataPoint, index) {
+                    dataset.metaData.push(new Chart.Arc({
+                        _chart: this.chart,
+                        _datasetIndex: datasetIndex,
+                        _index: index,
+                        _model: {}
+                    }));
+                }, this);
             }, this);
 
             // Create tooltip instance exclusively for this chart with some defaults.
@@ -90,9 +54,104 @@
                 _options: this.options,
             }, this);
 
+            // Update the chart with the latest data.
             this.update();
+
         },
-        onHover: function(e) {
+        getSliceAtEvent: function(e) {
+            var elements = [];
+
+            var location = helpers.getRelativePosition(e);
+
+            helpers.each(this.data.metaData, function(slice, index) {
+                if (slice.inRange(location.x, location.y)) elements.push(slice);
+            }, this);
+            return elements;
+        },
+        calculateCircumference: function(dataset, value) {
+            if (dataset.total > 0) {
+                return (Math.PI * 2) * (value / dataset.total);
+            } else {
+                return 0;
+            }
+        },
+        update: function() {
+
+            this.outerRadius = (helpers.min([this.chart.width, this.chart.height]) - this.options.elements.slice.borderWidth / 2) / 2;
+            this.innerRadius = (this.outerRadius / 100) * this.options.cutoutPercentage;
+            this.radiusLength = (this.outerRadius - this.innerRadius) / this.data.datasets.length;
+
+
+            // Update the points
+            helpers.each(this.data.datasets, function(dataset, datasetIndex) {
+
+                dataset.total = 0;
+                helpers.each(dataset.data, function(value) {
+                    dataset.total += Math.abs(value);
+                }, this);
+
+
+                dataset.outerRadius = this.outerRadius - (this.radiusLength * datasetIndex);
+
+                dataset.innerRadius = dataset.outerRadius - this.radiusLength;
+
+                helpers.each(dataset.metaData, function(slice, index) {
+
+                    helpers.extend(slice, {
+                        // Utility
+                        _chart: this.chart,
+                        _datasetIndex: datasetIndex,
+                        _index: index,
+
+                        // Desired view properties
+                        _model: {
+                            x: this.chart.width / 2,
+                            y: this.chart.height / 2,
+                            circumference: this.calculateCircumference(dataset, dataset.data[index]),
+                            outerRadius: dataset.outerRadius,
+                            innerRadius: dataset.innerRadius,
+
+                            backgroundColor: slice.custom && slice.custom.backgroundColor ? slice.custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.slice.backgroundColor),
+                            hoverBackgroundColor: slice.custom && slice.custom.hoverBackgroundColor ? slice.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, this.options.elements.slice.hoverBackgroundColor),
+                            borderWidth: slice.custom && slice.custom.borderWidth ? slice.custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.slice.borderWidth),
+                            borderColor: slice.custom && slice.custom.borderColor ? slice.custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.slice.borderColor),
+
+                            label: helpers.getValueAtIndexOrDefault(dataset.label, index, this.data.labels[index])
+                        },
+                    });
+
+                    if (index === 0) {
+                        slice._model.startAngle = Math.PI * 1.5;
+                    } else {
+                        slice._model.startAngle = dataset.metaData[index - 1]._model.endAngle;
+                    }
+
+                    slice._model.endAngle = slice._model.startAngle + slice._model.circumference;
+
+
+                    //Check to see if it's the last slice, if not get the next and update its start angle
+                    if (index < dataset.data.length - 1) {
+                        dataset.metaData[index + 1]._model.startAngle = slice._model.endAngle;
+                    }
+
+                    slice.pivot();
+                }, this);
+
+            }, this);
+
+            this.render();
+        },
+        draw: function(easeDecimal) {
+            easeDecimal = easeDecimal || 1;
+            this.clear();
+
+            this.eachElement(function(slice) {
+                slice.transition(easeDecimal).draw();
+            }, this);
+
+            this.tooltip.transition(easeDecimal).draw();
+        },
+        events: function(e) {
 
             // If exiting chart
             if (e.type == 'mouseout') {
@@ -169,83 +228,6 @@
             return this;
 
         },
-        getSliceAtEvent: function(e) {
-            var elements = [];
-
-            var location = helpers.getRelativePosition(e);
-
-            helpers.each(this.data.metaData, function(slice, index) {
-                if (slice.inRange(location.x, location.y)) elements.push(slice);
-            }, this);
-            return elements;
-        },
-        calculateCircumference: function(value) {
-            if (this.total > 0) {
-                return (Math.PI * 2) * (value / this.total);
-            } else {
-                return 0;
-            }
-        },
-        update: function() {
-
-            // Calc Total
-            this.total = 0;
-            helpers.each(this.data.data, function(slice) {
-                this.total += Math.abs(slice.value);
-            }, this);
-
-            this.outerRadius = (helpers.min([this.chart.width, this.chart.height]) - this.options.segments.borderWidth / 2) / 2;
-
-            // Map new data to data points
-            helpers.each(this.data.metaData, function(slice, index) {
-
-                var datapoint = this.data.data[index];
-
-                helpers.extend(slice, {
-                    _index: index,
-                    x: this.chart.width / 2,
-                    y: this.chart.height / 2,
-                    value: datapoint.value,
-                    label: datapoint.label,
-                    circumference: this.calculateCircumference(datapoint.value),
-                    outerRadius: this.outerRadius,
-                    innerRadius: (this.outerRadius / 100) * this.options.cutoutPercentage,
-
-                    backgroundColor: datapoint.backgroundColor,
-                    hoverBackgroundColor: datapoint.hoverBackgroundColor || datapoint.backgroundColor,
-                    borderWidth: this.options.segments.borderWidth,
-                    borderColor: this.options.segments.strokeColor,
-                });
-
-                helpers.extend(slice, {
-                    endAngle: slice.startAngle + slice.circumference,
-                });
-
-                if (index === 0) {
-                    slice.startAngle = Math.PI * 1.5;
-                }
-
-                //Check to see if it's the last slice, if not get the next and update its start angle
-                if (index < this.data.data.length - 1) {
-                    this.data.metaData[index + 1].startAngle = slice.endAngle;
-                }
-
-                slice.pivot();
-
-            }, this);
-
-            this.render();
-        },
-        draw: function(easeDecimal) {
-            easeDecimal = easeDecimal || 1;
-            this.clear();
-
-            helpers.each(this.data.metaData, function(slice, index) {
-                slice.transition(easeDecimal).draw();
-            }, this);
-
-            this.tooltip.transition(easeDecimal).draw();
-        }
     });
 
     Chart.types.Doughnut.extend({
