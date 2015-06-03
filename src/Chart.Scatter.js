@@ -547,17 +547,16 @@
 
                 // Active
                 if (this.active.length) {
+                    this.tooltip._model.opacity = 1;
+
                     helpers.extend(this.tooltip, {
-                        opacity: 1,
                         _active: this.active,
                     });
 
                     this.tooltip.update();
                 } else {
                     // Inactive
-                    helpers.extend(this.tooltip, {
-                        opacity: 0,
-                    });
+                    this.tooltip._model.opacity = 0;
                 }
             }
 
