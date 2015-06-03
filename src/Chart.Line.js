@@ -165,8 +165,6 @@
 		buildScale : function(labels, xAxisLabels){
 			var self = this;
 
-			var xAxisLabels = xAxisLabels || labels;
-
 			var dataTotal = function(){
 				var values = [];
 				self.eachPoints(function(point){
@@ -199,7 +197,7 @@
 					);
 					helpers.extend(this, updatedRanges);
 				},
-				xLabels : xAxisLabels,
+				xLabels : xAxisLabels || labels,
 				font : helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.scaleFontFamily),
 				lineWidth : this.options.scaleLineWidth,
 				lineColor : this.options.scaleLineColor,
