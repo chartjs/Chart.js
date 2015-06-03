@@ -335,7 +335,7 @@
 
                         var offset = 0;
 
-                        for (j = datasetIndex; j < datasets.length; j++) {
+                        for (var j = datasetIndex; j < self.data.datasets.length; j++) {
                             if (j === datasetIndex && value) {
                                 offset += value;
                             } else {
