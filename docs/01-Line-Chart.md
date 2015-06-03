@@ -19,6 +19,12 @@ var myLineChart = new Chart(ctx).Line(data, options);
 
 ```javascript
 var data = {
+	xAxisLabels: [ // Optional
+		{ text: "Winter", position: 10 },
+		{ text: "Spring", position: 40 },
+		{ text: "Summer", position: 60 },
+		{ text: "Fall",   position: 85 }
+	],
 	labels: ["January", "February", "March", "April", "May", "June", "July"],
 	datasets: [
 		{
