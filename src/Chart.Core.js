@@ -113,10 +113,6 @@
                     fill: true, // do we fill in the area between the line and the x axis
                     skipNull: true,
                     drawNull: false,
-
-                    // Hover
-                    hitRadius: 6,
-                    hoverBorderWidth: 2,
                 },
                 point: {
                     radius: 3,
