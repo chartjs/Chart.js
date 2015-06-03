@@ -1139,14 +1139,14 @@
         initialize: function() {},
         pivot: function() {
             if (!this._view) {
-                this._view = {};
+                this._view = clone(this._model);
             }
             this._start = clone(this._view);
             return this;
         },
         transition: function(ease) {
             if (!this._view) {
-                this._view = {};
+                this._view = clone(this._model);
             }
             if (!this._start) {
                 this.pivot();

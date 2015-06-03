@@ -136,6 +136,12 @@
                 _options: this.options,
             }, this);
 
+            // Need to fit scales before we reset elements. 
+            Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
+
+            // Reset so that we animation from the baseline
+            this.resetElements();
+
             // Update that shiz
             this.update();
         },
@@ -144,6 +150,86 @@
         },
         previousPoint: function(collection, index) {
             return collection[index - 1] || collection[index];
+        },
+        resetElements: function() {
+            // Update the points
+            this.eachElement(function(point, index, dataset, datasetIndex) {
+                var xScale = this.scales[this.data.datasets[datasetIndex].xAxisID];
+                var yScale = this.scales[this.data.datasets[datasetIndex].yAxisID];
+
+                var yScalePoint;
+
+                if (yScale.min < 0 && yScale.max <0) {
+                    // all less than 0. use the top
+                    yScalePoint = yScale.getPixelForValue(yScale.max);
+                } else if (yScale.min > 0 && yScale.max > 0) {
+                    yScalePoint = yScale.getPixelForValue(yScale.min);
+                } else {
+                    yScalePoint = yScale.getPixelForValue(0);
+                }
+
+                helpers.extend(point, {
+                    // Utility
+                    _chart: this.chart,
+                    _xScale: xScale,
+                    _yScale: yScale,
+                    _datasetIndex: datasetIndex,
+                    _index: index,
+
+                    // Desired view properties
+                    _model: {
+                        x: xScale.getPixelForValue(null, index, true), // value not used in dataset scale, but we want a consistent API between scales
+                        y: yScalePoint,
+
+                        // Appearance
+                        tension: point.custom && point.custom.tension ? point.custom.tension : this.options.elements.line.tension,
+                        radius: point.custom && point.custom.radius ? point.custom.pointRadius : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointRadius, index, this.options.elements.point.radius),
+                        backgroundColor: point.custom && point.custom.backgroundColor ? point.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointBackgroundColor, index, this.options.elements.point.backgroundColor),
+                        borderColor: point.custom && point.custom.borderColor ? point.custom.borderColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointBorderColor, index, this.options.elements.point.borderColor),
+                        borderWidth: point.custom && point.custom.borderWidth ? point.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointBorderWidth, index, this.options.elements.point.borderWidth),
+                        skip: typeof this.data.datasets[datasetIndex].data[index] != 'number',
+
+                        // Tooltip
+                        hoverRadius: point.custom && point.custom.hoverRadius ? point.custom.hoverRadius : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointHitRadius, index, this.options.elements.point.hitRadius),
+                    },
+                });
+            }, this);
+
+            // Update control points for the bezier curve
+            this.eachElement(function(point, index, dataset, datasetIndex) {
+                var controlPoints = helpers.splineCurve(
+                    this.previousPoint(dataset, index)._model,
+                    point._model,
+                    this.nextPoint(dataset, index)._model,
+                    point._model.tension
+                );
+
+                point._model.controlPointPreviousX = controlPoints.previous.x;
+                point._model.controlPointNextX = controlPoints.next.x;
+
+                // Prevent the bezier going outside of the bounds of the graph
+
+                // Cap puter bezier handles to the upper/lower scale bounds
+                if (controlPoints.next.y > this.chartArea.bottom) {
+                    point._model.controlPointNextY = this.chartArea.bottom;
+                } else if (controlPoints.next.y < this.chartArea.top) {
+                    point._model.controlPointNextY = this.chartArea.top;
+                } else {
+                    point._model.controlPointNextY = controlPoints.next.y;
+                }
+
+                // Cap inner bezier handles to the upper/lower scale bounds
+                if (controlPoints.previous.y > this.chartArea.bottom) {
+                    point._model.controlPointPreviousY = this.chartArea.bottom;
+                } else if (controlPoints.previous.y < this.chartArea.top) {
+                    point._model.controlPointPreviousY = this.chartArea.top;
+                } else {
+                    point._model.controlPointPreviousY = controlPoints.previous.y;
+                }
+
+                // Now pivot the point for animation
+                point.pivot();
+            }, this);
         },
         update: function() {
 
