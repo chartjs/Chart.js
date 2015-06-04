@@ -23,13 +23,29 @@ var data = {
 	datasets: [
 		{
 			label: "My First dataset",
+
+			// String or array - if an array is specified, allows changing the value for the point at the given index
 			fillColor: "rgba(220,220,220,0.2)",
+
+			// String or array - if an array is specified, allows changing the value for the point at the given index
 			strokeColor: "rgba(220,220,220,1)",
+
+			// String or array - if an array is specified, allows changing the value for the point at the given index
 			pointColor: "rgba(220,220,220,1)",
+
+			// String or array - if an array is specified, allows changing the value for the point at the given index
 			pointStrokeColor: "#fff",
+
+			// String or array - if an array is specified, allows changing the value for the point at the given index
 			pointHighlightFill: "#fff",
+
+			// String or array - if an array is specified, allows changing the value for the point at the given index
 			pointHighlightStroke: "rgba(220,220,220,1)",
-			data: [65, 59, 80, 81, 56, 55, 40]
+
+			data: [65, 59, 80, 81, 56, 55, 40],
+
+			// String - If specified, binds the dataset to a certain y-axis. If not specified, the first y-axis is used.
+			yAxisID: "y-axis-1",
 		},
 		{
 			label: "My Second dataset",
@@ -56,65 +72,159 @@ These are the customisation options specific to Line charts. These options are m
 
 ```javascript
 {
+	// Boolean - if true, line stack on top of each other along the y axis
+	stacked: false,
 
-	///Boolean - Whether grid lines are shown across the chart
-	scaleShowGridLines : true,
+	hover: {
+		// String - We use a label hover mode since the x axis displays data by the index in the dataset
+		mode: "label"
+	},
 
-	//String - Colour of the grid lines
-	scaleGridLineColor : "rgba(0,0,0,.05)",
+	scales: {
+		// The line chart officially supports only 1 x-axis but uses an array to keep the API consistent. Use a scatter chart if you need multiple x axes. 
+		xAxes: [{
+			// String - type of axis to use. Should not be changed from 'dataset'. To use a 'linear' axis on the x, use the scatter chart type
+			scaleType: "dataset", // scatter should not use a dataset axis
 
-	//Number - Width of the grid lines
-	scaleGridLineWidth : 1,
+			// Boolean - if true, show the scale
+			display: true,
 
-	//Boolean - Whether to show horizontal lines (except X axis)
-	scaleShowHorizontalLines: true,
+			// String - position of the scale. possible options are "top" and "bottom" for dataset scales
+			position: "bottom",
 
-	//Boolean - Whether to show vertical lines (except Y axis)
-	scaleShowVerticalLines: true,
+			// String - id of the axis so that data can bind to it
+			id: "x-axis-1", // need an ID so datasets can reference the scale
 
-	//Boolean - Whether the line is curved between points
-	bezierCurve : true,
+			// grid line settings
+			gridLines: {
+				// Boolean - if true, show the grid lines
+				show: true,
 
-	//Number - Tension of the bezier curve between points
-	bezierCurveTension : 0.4,
+				// String - color of the grid lines
+				color: "rgba(0, 0, 0, 0.05)",
 
-	//Boolean - Whether to show a dot for each point
-	pointDot : true,
+				// Number - width of the grid lines
+				lineWidth: 1,
 
-	//Number - Radius of each point dot in pixels
-	pointDotRadius : 4,
+				// Boolean - if true draw lines on the chart area
+				drawOnChartArea: true,
 
-	//Number - Pixel width of point dot stroke
-	pointDotStrokeWidth : 1,
+				// Boolean - if true draw ticks in the axis area
+				drawTicks: true,
 
-	//Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-	pointHitDetectionRadius : 20,
+				// Number - width of the grid line for the first index (index 0)
+				zeroLineWidth: 1,
 
-	//Boolean - Whether to show a stroke for datasets
-	datasetStroke : true,
+				// String - color of the grid line for the first index
+				zeroLineColor: "rgba(0,0,0,0.25)",
 
-	//Number - Pixel width of dataset stroke
-	datasetStrokeWidth : 2,
+				// Boolean - if true, offset labels from grid lines
+				offsetGridLines: false,
+			},
 
-	//Boolean - Whether to fill the dataset with a colour
-	datasetFill : true,
-	{% raw %}
-	//String - A legend template
-	legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-	{% endraw %}
+			// label settings
+			labels: {
+				// Boolean - if true show labels
+				show: true,
 
-	//Boolean - Whether to horizontally center the label and point dot inside the grid
-	offsetGridLines : false
+				// String - template string for labels
+				template: "<%=value%>",
+
+				// Number - label font size
+				fontSize: 12,
+
+				// String - label font style
+				fontStyle: "normal",
+
+				// String - label font color
+				fontColor: "#666",
+
+				// String - label font family
+				fontFamily: "Helvetica Neue",
+			},
+		}],
+		yAxes: [{
+			// String - type of axis. 'linear' is the default but extensions may provide other types such as logarithmic
+			scaleType: "linear",
+
+			// Boolean - if true, show the scale
+			display: true,
+
+			// String - position of axis. Vertical axes can have either "left" or "right"
+			position: "left",
+
+			// ID of the axis for data binding
+			id: "y-axis-1",
+
+			// grid line settings
+			gridLines: {
+				// Boolean - if true, show the grid lines
+				show: true,
+
+				// String - color of the grid lines
+				color: "rgba(0, 0, 0, 0.05)",
+
+				// Number - width of the grid lines
+				lineWidth: 1,
+
+				// Boolean - if true draw lines on the chart area
+				drawOnChartArea: true,
+
+				// Boolean - if true draw ticks in the axis area
+				drawTicks: true,
+
+				// Number - width of the grid line representing a numerical value of 0
+				zeroLineWidth: 1,
+
+				// String - color of the grid line representing a numerical value of 0
+				zeroLineColor: "rgba(0,0,0,0.25)",
+			},
+
+			// scale numbers
+			beginAtZero: false,
+			integersOnly: false,
+			override: null,
+
+			// label settings
+			labels: {
+				// Boolean - if true show labels
+				show: true,
+
+				// String - template string for labels
+				template: "<%=value%>",
+
+				// Function - if specified this is passed the tick value, index, and the array of all tick values. Returns a string that is used as the label for that value
+				userCallback: null,
+
+				// Number - label font size
+				fontSize: 12,
+
+				// String - label font style
+				fontStyle: "normal",
+
+				// String - label font color
+				fontColor: "#666",
+
+				// String - label font family
+				fontFamily: "Helvetica Neue",
+			},
+		}],
+	}
 };
 ```
 
-You can override these for your `Chart` instance by passing a second argument into the `Line` method as an object with the keys you want to override.
+You can override these for your `Chart` instance by passing a member `options` into the `Line` method.
 
-For example, we could have a line chart without bezier curves between points by doing the following:
+For example, we could have a line chart display without an x axis by doing the following. The config merge is smart enough to handle arrays so that you do not need to specify all axis settings to change one thing.
 
 ```javascript
-new Chart(ctx).Line(data, {
-	bezierCurve: false
+new Chart(ctx).Line({
+	data: data, 
+	options: {
+		xAxes: [{
+			show: false
+		}]
+	}
 });
 // This will create a chart with all of the default options, merged from the global config,
 // and the Line chart defaults, but this particular instance will have `bezierCurve` set to false.

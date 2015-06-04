@@ -32,11 +32,6 @@
                     offsetGridLines: false,
                 },
 
-                // scale numbers
-                beginAtZero: false,
-                integersOnly: false,
-                override: null,
-
                 // label settings
                 labels: {
                     show: true,
@@ -66,7 +61,6 @@
 
                 // scale numbers
                 beginAtZero: false,
-                integersOnly: false,
                 override: null,
 
                 // label settings
