@@ -5,7 +5,6 @@
         Chart = root.Chart,
         helpers = Chart.helpers;
 
-
     var defaultConfig = {
 
         stacked: false,
@@ -32,11 +31,6 @@
                     zeroLineColor: "rgba(0,0,0,0.25)",
                     offsetGridLines: true,
                 },
-
-                // scale numbers
-                beginAtZero: false,
-                integersOnly: false,
-                override: null,
 
                 // label settings
                 labels: {
@@ -67,7 +61,6 @@
 
                 // scale numbers
                 beginAtZero: false,
-                integersOnly: false,
                 override: null,
 
                 // label settings
