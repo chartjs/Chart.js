@@ -48,13 +48,13 @@ var data = {
 			pointBorderWidth: 1,
 
 			// Number or array - Radius of point when hovered
-			pointHoverRadius: 5
+			pointHoverRadius: 5,
 
 			// String or array - point background color when hovered
-			pointHoverBackgroundColor: "rgba(220,220,220,1)"
+			pointHoverBackgroundColor: "rgba(220,220,220,1)",
 
 			// Point border color when hovered
-			pointHoverBorderColor: "rgba(220,220,220,1)"
+			pointHoverBorderColor: "rgba(220,220,220,1)",
 
 			// Number or array - border width of point when hovered
 			pointBorderWidth: 2,
