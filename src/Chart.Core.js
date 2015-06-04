@@ -60,7 +60,7 @@
                 onProgress: function() {},
                 onComplete: function() {},
             },
-            responsive: false,
+            responsive: true,
             maintainAspectRatio: true,
             events: ["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"],
             hover: {
