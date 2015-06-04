@@ -48,116 +48,96 @@
 
         return this;
     };
+
+    var defaultColor = 'rgba(0,0,0,0.1)';
+
     //Globally expose the defaults to allow for user updating/changing
     Chart.defaults = {
         global: {
-
-            // Animation defaults
             animation: {
-                // Number - Number of animation steps
                 duration: 1000,
-
-                // String - Animation easing effect
                 easing: "easeOutQuart",
-
-                // Function - Will fire on animation progression.
                 onProgress: function() {},
-
-                // Function - Will fire on animation completion.
                 onComplete: function() {},
             },
-
-            // Boolean - whether or not the chart should be responsive and resize when the browser does.
-            responsive: false,
-
-            // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+            responsive: true,
             maintainAspectRatio: true,
-
-            // Array - Array of string names to attach interaction events
             events: ["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"],
-
-            // Hover defaults
             hover: {
-
-                // String || boolean
-                mode: 'label', // 'label', 'dataset', 'false'
-
-                //Function(event, activeElements) - Custom hover handler
                 onHover: null,
-
-                //Function - Custom hover handler
+                mode: 'single',
                 animationDuration: 400,
             },
-
-            //Function(event, clickedElements) - Custom click handler 
             onClick: null,
-
-            // Tooltip Defaults
             tooltips: {
-
-                // Boolean - Determines whether to draw tooltips on the canvas or not - attaches events to touchmove & mousemove
                 enabled: true,
-
-                // Function - Determines whether to draw built-in tooltip or call custom tooltip function
                 custom: null,
-
-                // String - Tooltip background colour
                 backgroundColor: "rgba(0,0,0,0.8)",
-
-                // String - Tooltip label font declaration for the scale label
                 fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-
-                // Number - Tooltip label font size in pixels
-                fontSize: 14,
-
-                // String - Tooltip font weight style
+                fontSize: 10,
                 fontStyle: "normal",
-
-                // String - Tooltip label font colour
                 fontColor: "#fff",
-
-                // String - Tooltip title font declaration for the scale label
                 titleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-
-                // Number - Tooltip title font size in pixels
-                titleFontSize: 14,
-
-                // String - Tooltip title font weight style
+                titleFontSize: 12,
                 titleFontStyle: "bold",
-
-                // String - Tooltip title font colour
                 titleFontColor: "#fff",
-
-                // Number - pixel width of padding around text
                 yPadding: 6,
-
-                // Number - pixel width of padding around text
                 xPadding: 6,
-
-                // Number - Size of the caret on the
                 caretSize: 8,
-
-                // Number - Pixel radius of the border
                 cornerRadius: 6,
-
-                // Number - Pixel offset from point x to edge
                 xOffset: 10,
-
-                // String - Template string for singles
-                template: "<%if (label){%><%=label%>: <%}%><%= value %>",
-
-                // String - Template string for singles
-                multiTemplate: "<%if (datasetLabel){%><%=datasetLabel%>: <%}%><%= value %>",
-
-                // String - Colour behind the legend colour block
+                template: [
+                    '<% if(label){ %>',
+                    '<%=label %>:',
+                    '<% } %>',
+                    '<%=value %>',
+                ].join(''),
+                multiTemplate: [
+                    '<%if (datasetLabel){ %>',
+                    '<%=datasetLabel %>:',
+                    '<% } %>',
+                    '<%=value %>'
+                ].join(''),
                 multiKeyBackground: '#fff',
 
             },
+            defaultColor: defaultColor,
 
-            // Color String - Used for undefined Colros
-            defaultColor: 'rgba(0,0,0,0.1)',
-
-        }
+            // Element defaults
+            elements: {
+                line: {
+                    tension: 0.4,
+                    backgroundColor: defaultColor,
+                    borderWidth: 3,
+                    borderColor: defaultColor,
+                    fill: true, // do we fill in the area between the line and the x axis
+                    skipNull: true,
+                    drawNull: false,
+                },
+                point: {
+                    radius: 3,
+                    backgroundColor: defaultColor,
+                    borderWidth: 1,
+                    borderColor: defaultColor,
+                    // Hover
+                    hitRadius: 6,
+                    hoverRadius: 4,
+                    hoverBorderWidth: 2,
+                },
+                bar: {
+                    backgroundColor: defaultColor,
+                    borderWidth: 0,
+                    borderColor: defaultColor,
+                    valueSpacing: 5,
+                    datasetSpacing: 1,
+                },
+                slice: {
+                    backgroundColor: defaultColor,
+                    borderColor: "#fff",
+                    borderWidth: 2,
+                },
+            }
+        },
     };
 
     //Create a dictionary of chart types, to allow for extension of existing types
@@ -237,6 +217,17 @@
             });
 
             return base;
+        },
+        getValueAtIndexOrDefault = helpers.getValueAtIndexOrDefault = function(value, index, defaultValue) {
+            if (!value) {
+                return defaultValue;
+            }
+
+            if (helpers.isArray(value) && index < value.length) {
+                return value[index];
+            }
+
+            return value;
         },
         indexOf = helpers.indexOf = function(arrayToSearch, item) {
             if (Array.prototype.indexOf) {
@@ -403,11 +394,11 @@
                 fa = t * d01 / (d01 + d12), // scaling factor for triangle Ta
                 fb = t * d12 / (d01 + d12);
             return {
-                next: {
+                previous: {
                     x: MiddlePoint.x - fa * (AfterPoint.x - FirstPoint.x),
                     y: MiddlePoint.y - fa * (AfterPoint.y - FirstPoint.y)
                 },
-                previous: {
+                next: {
                     x: MiddlePoint.x + fb * (AfterPoint.x - FirstPoint.x),
                     y: MiddlePoint.y + fb * (AfterPoint.y - FirstPoint.y)
                 }
@@ -1142,67 +1133,63 @@
     };
 
     Chart.Element = function(configuration) {
-        extend(this, {
-            _vm: {},
-        });
         extend(this, configuration);
         this.initialize.apply(this, arguments);
     };
     extend(Chart.Element.prototype, {
         initialize: function() {},
-        save: function() {
-            this._vm = clone(this);
-            delete this._vm._vm;
-            delete this._vm._start;
-            return this;
-        },
         pivot: function() {
-            if (this._start) {
-                this._start = clone(this);
-                helpers.extend(this._start, this._vm);
+            if (!this._view) {
+                this._view = clone(this._model);
             }
+            this._start = clone(this._view);
             return this;
         },
         transition: function(ease) {
+            if (!this._view) {
+                this._view = clone(this._model);
+            }
             if (!this._start) {
-                if (!this._vm) {
-                    this.save();
-                }
-                this._start = clone(this._vm);
+                this.pivot();
             }
 
-            each(this, function(value, key) {
+            each(this._model, function(value, key) {
 
-                if (key[0] === '_' || !this.hasOwnProperty(key)) {
+                if (key[0] === '_' || !this._model.hasOwnProperty(key)) {
                     // Only non-underscored properties
                 }
 
                 // Init if doesn't exist
-                else if (!this._vm[key]) {
-                    this._vm[key] = value || null;
+                else if (!this._view[key]) {
+                    if (typeof value === 'number') {
+                        this._view[key] = value * ease;
+                    } else {
+                        this._view[key] = value || null;
+                    }
                 }
 
                 // No unnecessary computations
-                else if (this[key] === this._vm[key]) {
+                else if (this._model[key] === this._view[key]) {
                     // It's the same! Woohoo!
                 }
 
                 // Color transitions if possible
                 else if (typeof value === 'string') {
                     try {
-                        var color = helpers.color(this._start[key]).mix(helpers.color(this[key]), ease);
-                        this._vm[key] = color.rgbString();
+                        var color = helpers.color(this._start[key]).mix(helpers.color(this._model[key]), ease);
+                        this._view[key] = color.rgbString();
                     } catch (err) {
-                        this._vm[key] = value;
+                        this._view[key] = value;
                     }
                 }
                 // Number transitions
                 else if (typeof value === 'number') {
-
-                    this._vm[key] = ((this[key] - this._start[key]) * ease) + this._start[key];
-                } else {
-                    // Everything else
-                    this._vm[key] = value;
+                    var startVal = this._start[key] !== undefined ? this._start[key] : 0;
+                    this._view[key] = ((this._model[key] - startVal) * ease) + startVal;
+                }
+                // Everything else
+                else {
+                    this._view[key] = value;
                 }
 
             }, this);
@@ -1214,12 +1201,12 @@
         },
         tooltipPosition: function() {
             return {
-                x: this.x,
-                y: this.y
+                x: this._model.x,
+                y: this._model.y
             };
         },
         hasValue: function() {
-            return isNumber(this.value);
+            return isNumber(this._model.x) && isNumber(this._model.y);
         }
     });
 
@@ -1228,16 +1215,21 @@
 
     Chart.Point = Chart.Element.extend({
         inRange: function(mouseX, mouseY) {
-            var vm = this._vm;
+            var vm = this._view;
             var hoverRange = vm.hoverRadius + vm.radius;
             return ((Math.pow(mouseX - vm.x, 2) + Math.pow(mouseY - vm.y, 2)) < Math.pow(hoverRange, 2));
         },
         inGroupRange: function(mouseX) {
-            var vm = this._vm;
-            return (Math.pow(mouseX - vm.x, 2) < Math.pow(vm.radius + this.hoverRadius, 2));
+            var vm = this._view;
+
+            if (vm) {
+                return (Math.pow(mouseX - vm.x, 2) < Math.pow(vm.radius + vm.hoverRadius, 2));
+            } else {
+                return false;
+            }
         },
         tooltipPosition: function() {
-            var vm = this._vm;
+            var vm = this._view;
             return {
                 x: vm.x,
                 y: vm.y,
@@ -1246,8 +1238,13 @@
         },
         draw: function() {
 
-            var vm = this._vm;
+            var vm = this._view;
             var ctx = this._chart.ctx;
+
+
+            if (vm.skip) {
+                return;
+            }
 
             if (vm.radius > 0 || vm.borderWidth > 0) {
 
@@ -1271,54 +1268,75 @@
     Chart.Line = Chart.Element.extend({
         draw: function() {
 
-            var vm = this._vm;
+            var vm = this._view;
             var ctx = this._chart.ctx;
-            var first = vm._points[0];
-            var last = vm._points[vm._points.length - 1];
+            var first = this._children[0];
+            var last = this._children[this._children.length - 1];
 
             // Draw the background first (so the border is always on top)
-            helpers.each(vm._points, function(point, index) {
-                if (index === 0) {
-                    ctx.moveTo(point._vm.x, point._vm.y);
-                } else {
-                    if (vm._tension > 0 || 1) {
-                        var previous = this.previousPoint(point, vm._points, index);
+            helpers.each(this._children, function(point, index) {
+                var previous = this.previousPoint(point, this._children, index);
+                var next = this.nextPoint(point, this._children, index);
 
+                // First point only
+                if (index === 0) {
+                    ctx.moveTo(point._view.x, point._view.y);
+                    return;
+                }
+
+                // Start Skip and drag along scale baseline
+                if (point._view.skip && vm.skipNull && !this._loop) {
+                    ctx.lineTo(previous._view.x, point._view.y);
+                    ctx.moveTo(next._view.x, point._view.y);
+                }
+                // End Skip Stright line from the base line
+                else if (previous._view.skip && vm.skipNull && !this._loop) {
+                    ctx.moveTo(point._view.x, previous._view.y);
+                    ctx.lineTo(point._view.x, point._view.y);
+                }
+
+                if (previous._view.skip && vm.skipNull) {
+                    ctx.moveTo(point._view.x, point._view.y);
+                }
+                // Normal Bezier Curve
+                else {
+                    if (vm.tension > 0) {
                         ctx.bezierCurveTo(
-                            previous._vm.controlPointNextX,
-                            previous._vm.controlPointNextY,
-                            point._vm.controlPointPreviousX,
-                            point._vm.controlPointPreviousY,
-                            point._vm.x,
-                            point._vm.y
+                            previous._view.controlPointNextX,
+                            previous._view.controlPointNextY,
+                            point._view.controlPointPreviousX,
+                            point._view.controlPointPreviousY,
+                            point._view.x,
+                            point._view.y
                         );
                     } else {
-                        ctx.lineTo(point._vm.x, point._vm.y);
+                        ctx.lineTo(point._view.x, point._view.y);
                     }
                 }
             }, this);
 
-            if (vm.loop) {
-
-                if (vm._tension > 0 || 1) {
+            // For radial scales, loop back around to the first point
+            if (this._loop) {
+                if (vm.tension > 0 && !first._view.skip) {
 
                     ctx.bezierCurveTo(
-                        last._vm.controlPointNextX,
-                        last._vm.controlPointNextY,
-                        first._vm.controlPointPreviousX,
-                        first._vm.controlPointPreviousY,
-                        first._vm.x,
-                        first._vm.y
+                        last._view.controlPointNextX,
+                        last._view.controlPointNextY,
+                        first._view.controlPointPreviousX,
+                        first._view.controlPointPreviousY,
+                        first._view.x,
+                        first._view.y
                     );
                 } else {
-                    ctx.lineTo(first._vm.x, first._vm.y);
+                    ctx.lineTo(first._view.x, first._view.y);
                 }
             }
 
-            if (vm._points.length > 0) {
+            // If we had points and want to fill this line, do so.
+            if (this._children.length > 0 && vm.fill) {
                 //Round off the line by going to the base of the chart, back to the start, then fill.
-                ctx.lineTo(vm._points[vm._points.length - 1].x, vm.scaleZero);
-                ctx.lineTo(vm._points[0].x, vm.scaleZero);
+                ctx.lineTo(this._children[this._children.length - 1]._view.x, vm.scaleZero);
+                ctx.lineTo(this._children[0]._view.x, vm.scaleZero);
                 ctx.fillStyle = vm.backgroundColor || Chart.defaults.global.defaultColor;
                 ctx.closePath();
                 ctx.fill();
@@ -1330,39 +1348,61 @@
             ctx.strokeStyle = vm.borderColor || Chart.defaults.global.defaultColor;
             ctx.beginPath();
 
-            helpers.each(vm._points, function(point, index) {
+            helpers.each(this._children, function(point, index) {
+                var previous = this.previousPoint(point, this._children, index);
+                var next = this.nextPoint(point, this._children, index);
+
+                // First point only
                 if (index === 0) {
-                    ctx.moveTo(point._vm.x, point._vm.y);
-                } else {
-                    if (vm._tension > 0 || 1) {
-                        var previous = this.previousPoint(point, vm._points, index);
-
-                        ctx.bezierCurveTo(
-                            previous._vm.controlPointNextX,
-                            previous._vm.controlPointNextY,
-                            point._vm.controlPointPreviousX,
-                            point._vm.controlPointPreviousY,
-                            point._vm.x,
-                            point._vm.y
-                        );
-                    } else {
-                        ctx.lineTo(point._vm.x, point._vm.y);
-                    }
+                    ctx.moveTo(point._view.x, point._view.y);
+                    return;
                 }
-            }, this);
-            if (vm.loop) {
-                if (vm._tension > 0 || 1) {
 
+                // Start Skip and drag along scale baseline
+                if (point._view.skip && vm.skipNull && !this._loop) {
+                    ctx.moveTo(previous._view.x, point._view.y);
+                    ctx.moveTo(next._view.x, point._view.y);
+                    return;
+                }
+                // End Skip Stright line from the base line
+                if (previous._view.skip && vm.skipNull && !this._loop) {
+                    ctx.moveTo(point._view.x, previous._view.y);
+                    ctx.moveTo(point._view.x, point._view.y);
+                    return;
+                }
+
+                if (previous._view.skip && vm.skipNull) {
+                    ctx.moveTo(point._view.x, point._view.y);
+                    return;
+                }
+                // Normal Bezier Curve
+                if (vm.tension > 0) {
                     ctx.bezierCurveTo(
-                        last._vm.controlPointNextX,
-                        last._vm.controlPointNextY,
-                        first._vm.controlPointPreviousX,
-                        first._vm.controlPointPreviousY,
-                        first._vm.x,
-                        first._vm.y
+                        previous._view.controlPointNextX,
+                        previous._view.controlPointNextY,
+                        point._view.controlPointPreviousX,
+                        point._view.controlPointPreviousY,
+                        point._view.x,
+                        point._view.y
                     );
                 } else {
-                    ctx.lineTo(first._vm.x, first._vm.y);
+                    ctx.lineTo(point._view.x, point._view.y);
+                }
+            }, this);
+
+            if (this._loop && !first._view.skip) {
+                if (vm.tension > 0) {
+
+                    ctx.bezierCurveTo(
+                        last._view.controlPointNextX,
+                        last._view.controlPointNextY,
+                        first._view.controlPointPreviousX,
+                        first._view.controlPointPreviousY,
+                        first._view.x,
+                        first._view.y
+                    );
+                } else {
+                    ctx.lineTo(first._view.x, first._view.y);
                 }
             }
 
@@ -1370,17 +1410,33 @@
             ctx.stroke();
 
         },
+        nextPoint: function(point, collection, index) {
+            if (this.loop) {
+                return collection[index + 1] || collection[0];
+            }
+            return collection[index + 1] || collection[collection.length - 1];
+        },
         previousPoint: function(point, collection, index) {
-            return helpers.findPreviousWhere(collection, function() {
-                return true;
-            }, index) || point;
+            if (this.loop) {
+                return collection[index - 1] || collection[collection.length - 1];
+            }
+            return collection[index - 1] || collection[0];
         },
     });
 
     Chart.Arc = Chart.Element.extend({
+        inGroupRange: function(mouseX) {
+            var vm = this._view;
+
+            if (vm) {
+                return (Math.pow(mouseX - vm.x, 2) < Math.pow(vm.radius + vm.hoverRadius, 2));
+            } else {
+                return false;
+            }
+        },
         inRange: function(chartX, chartY) {
 
-            var vm = this._vm;
+            var vm = this._view;
 
             var pointRelativePosition = helpers.getAngleFromPoint(vm, {
                 x: chartX,
@@ -1395,7 +1451,7 @@
             //Ensure within the outside of the arc centre, but inside arc outer
         },
         tooltipPosition: function() {
-            var vm = this._vm;
+            var vm = this._view;
 
             var centreAngle = vm.startAngle + ((vm.endAngle - vm.startAngle) / 2),
                 rangeFromCentre = (vm.outerRadius - vm.innerRadius) / 2 + vm.innerRadius;
@@ -1407,7 +1463,7 @@
         draw: function() {
 
             var ctx = this._chart.ctx;
-            var vm = this._vm;
+            var vm = this._view;
 
             ctx.beginPath();
 
@@ -1433,10 +1489,10 @@
     Chart.Rectangle = Chart.Element.extend({
         draw: function() {
 
-            var vm = this._vm;
+            var ctx = this._chart.ctx;
+            var vm = this._view;
 
-            var ctx = this.ctx,
-                halfWidth = vm.width / 2,
+            var halfWidth = vm.width / 2,
                 leftX = vm.x - halfWidth,
                 rightX = vm.x + halfWidth,
                 top = vm.base - (vm.base - vm.y),
@@ -1468,11 +1524,11 @@
             }
         },
         height: function() {
-            var vm = this._vm;
+            var vm = this._view;
             return vm.base - vm.y;
         },
         inRange: function(mouseX, mouseY) {
-            var vm = this._vm;
+            var vm = this._view;
             if (vm.y < vm.base) {
                 return (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2) && (mouseY >= vm.y && mouseY <= vm.base);
             } else {
@@ -1480,11 +1536,11 @@
             }
         },
         inGroupRange: function(mouseX) {
-            var vm = this._vm;
+            var vm = this._view;
             return (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2);
         },
         tooltipPosition: function() {
-            var vm = this._vm;
+            var vm = this._view;
             if (vm.y < vm.base) {
                 return {
                     x: vm.x,
@@ -1513,24 +1569,31 @@
         initialize: function() {
             var options = this._options;
             extend(this, {
-                opacity: 0,
-                xPadding: options.tooltips.xPadding,
-                yPadding: options.tooltips.yPadding,
-                xOffset: options.tooltips.xOffset,
-                backgroundColor: options.tooltips.backgroundColor,
-                textColor: options.tooltips.fontColor,
-                _fontFamily: options.tooltips.fontFamily,
-                _fontStyle: options.tooltips.fontStyle,
-                fontSize: options.tooltips.fontSize,
-                titleTextColor: options.tooltips.titleFontColor,
-                _titleFontFamily: options.tooltips.titleFontFamily,
-                _titleFontStyle: options.tooltips.titleFontStyle,
-                titleFontSize: options.tooltips.titleFontSize,
-                caretHeight: options.tooltips.caretSize,
-                cornerRadius: options.tooltips.cornerRadius,
-                legendColorBackground: options.tooltips.multiKeyBackground,
-                labels: [],
-                colors: [],
+                _model: {
+                    // Positioning
+                    xPadding: options.tooltips.xPadding,
+                    yPadding: options.tooltips.yPadding,
+                    xOffset: options.tooltips.xOffset,
+
+                    // Labels
+                    textColor: options.tooltips.fontColor,
+                    _fontFamily: options.tooltips.fontFamily,
+                    _fontStyle: options.tooltips.fontStyle,
+                    fontSize: options.tooltips.fontSize,
+
+                    // Title
+                    titleTextColor: options.tooltips.titleFontColor,
+                    _titleFontFamily: options.tooltips.titleFontFamily,
+                    _titleFontStyle: options.tooltips.titleFontStyle,
+                    titleFontSize: options.tooltips.titleFontSize,
+
+                    // Appearance
+                    caretHeight: options.tooltips.caretSize,
+                    cornerRadius: options.tooltips.cornerRadius,
+                    backgroundColor: options.tooltips.backgroundColor,
+                    opacity: 0,
+                    legendColorBackground: options.tooltips.multiKeyBackground,
+                },
             });
         },
         update: function() {
@@ -1539,15 +1602,22 @@
 
             switch (this._options.hover.mode) {
                 case 'single':
-                    helpers.extend(this, {
-                        text: template(this._options.tooltips.template, this._active[0]),
+                    helpers.extend(this._model, {
+                        text: template(this._options.tooltips.template, {
+                            // These variables are available in the template function. Add others here
+                            element: this._active[0],
+                            value: this._data.datasets[this._active[0]._datasetIndex].data[this._active[0]._index],
+                            label: this._data.labels ? this._data.labels[this._active[0]._index] : '',
+                        }),
                     });
+
                     var tooltipPosition = this._active[0].tooltipPosition();
-                    helpers.extend(this, {
+                    helpers.extend(this._model, {
                         x: Math.round(tooltipPosition.x),
                         y: Math.round(tooltipPosition.y),
                         caretPadding: tooltipPosition.padding
                     });
+
                     break;
 
                 case 'label':
@@ -1583,17 +1653,22 @@
                             if (dataCollection[dataIndex] && dataCollection[dataIndex].hasValue()) {
                                 elements.push(dataCollection[dataIndex]);
                             }
-                        });
+                        }, this);
 
                         helpers.each(elements, function(element) {
-                            xPositions.push(element._vm.x);
-                            yPositions.push(element._vm.y);
+                            xPositions.push(element._view.x);
+                            yPositions.push(element._view.y);
 
                             //Include any colour information about the element
-                            labels.push(helpers.template(this._options.tooltips.multiTemplate, element));
+                            labels.push(helpers.template(this._options.tooltips.multiTemplate, {
+                                // These variables are available in the template function. Add others here
+                                element: element,
+                                datasetLabel: this._data.datasets[element._datasetIndex].label,
+                                value: this._data.datasets[element._datasetIndex].data[element._index],
+                            }));
                             colors.push({
-                                fill: element._vm.backgroundColor,
-                                stroke: element._vm.borderColor
+                                fill: element._view.backgroundColor,
+                                stroke: element._view.borderColor
                             });
 
                         }, this);
@@ -1611,11 +1686,11 @@
                     }).call(this, dataIndex);
 
                     // Apply for now
-                    helpers.extend(this, {
+                    helpers.extend(this._model, {
                         x: medianPosition.x,
                         y: medianPosition.y,
                         labels: labels,
-                        title: this._active.length ? this._active[0].label : '',
+                        title: this._data.labels && this._data.labels.length ? this._data.labels[this._active[0]._index] : '',
                         legendColors: colors,
                         legendBackgroundColor: this._options.tooltips.multiKeyBackground,
                     });
@@ -1623,30 +1698,30 @@
 
                     // Calculate Appearance Tweaks
 
-                    this.height = (labels.length * this.fontSize) + ((labels.length - 1) * (this.fontSize / 2)) + (this.yPadding * 2) + this.titleFontSize * 1.5;
+                    this._model.height = (labels.length * this._model.fontSize) + ((labels.length - 1) * (this._model.fontSize / 2)) + (this._model.yPadding * 2) + this._model.titleFontSize * 1.5;
 
                     var titleWidth = ctx.measureText(this.title).width,
                         //Label has a legend square as well so account for this.
-                        labelWidth = longestText(ctx, this.font, labels) + this.fontSize + 3,
+                        labelWidth = longestText(ctx, this.font, labels) + this._model.fontSize + 3,
                         longestTextWidth = max([labelWidth, titleWidth]);
 
-                    this.width = longestTextWidth + (this.xPadding * 2);
+                    this._model.width = longestTextWidth + (this._model.xPadding * 2);
 
 
-                    var halfHeight = this.height / 2;
+                    var halfHeight = this._model.height / 2;
 
                     //Check to ensure the height will fit on the canvas
-                    if (this.y - halfHeight < 0) {
-                        this.y = halfHeight;
-                    } else if (this.y + halfHeight > this._chart.height) {
-                        this.y = this._chart.height - halfHeight;
+                    if (this._model.y - halfHeight < 0) {
+                        this._model.y = halfHeight;
+                    } else if (this._model.y + halfHeight > this._chart.height) {
+                        this._model.y = this._chart.height - halfHeight;
                     }
 
                     //Decide whether to align left or right based on position on canvas
-                    if (this.x > this._chart.width / 2) {
-                        this.x -= this.xOffset + this.width;
+                    if (this._model.x > this._chart.width / 2) {
+                        this._model.x -= this._model.xOffset + this._model.width;
                     } else {
-                        this.x += this.xOffset;
+                        this._model.x += this._model.xOffset;
                     }
                     break;
             }
@@ -1656,7 +1731,7 @@
         draw: function() {
 
             var ctx = this._chart.ctx;
-            var vm = this._vm;
+            var vm = this._view;
 
             switch (this._options.hover.mode) {
                 case 'single':
@@ -1690,7 +1765,7 @@
 
                     // Custom Tooltips
                     if (this._custom) {
-                        this._custom(this._vm);
+                        this._custom(this._view);
                     } else {
                         switch (vm.yAlign) {
                             case "above":
@@ -1756,8 +1831,8 @@
                         //ctx.clearRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.fontSize/2, vm.fontSize, vm.fontSize);
                         //Instead we'll make a white filled block to put the legendColour palette over.
 
-                        ctx.fillStyle = helpers.color(vm.legendBackgroundColor).alpha(vm.opacity).rgbString();
-                        ctx.fillRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.fontSize / 2, vm.fontSize, vm.fontSize);
+                        ctx.fillStyle = helpers.color(vm.legendColors[index].stroke).alpha(vm.opacity).rgbString();
+                        ctx.fillRect(vm.x + vm.xPadding - 1, this.getLineHeight(index + 1) - vm.fontSize / 2 - 1, vm.fontSize + 2, vm.fontSize + 2);
 
                         ctx.fillStyle = helpers.color(vm.legendColors[index].fill).alpha(vm.opacity).rgbString();
                         ctx.fillRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.fontSize / 2, vm.fontSize, vm.fontSize);
@@ -1768,14 +1843,14 @@
             }
         },
         getLineHeight: function(index) {
-            var baseLineHeight = this._vm.y - (this._vm.height / 2) + this._vm.yPadding,
+            var baseLineHeight = this._view.y - (this._view.height / 2) + this._view.yPadding,
                 afterTitleIndex = index - 1;
 
             //If the index is zero, we're getting the title
             if (index === 0) {
-                return baseLineHeight + this._vm.titleFontSize / 2;
+                return baseLineHeight + this._view.titleFontSize / 2;
             } else {
-                return baseLineHeight + ((this._vm.fontSize * 1.5 * afterTitleIndex) + this._vm.fontSize / 2) + this._vm.titleFontSize * 1.5;
+                return baseLineHeight + ((this._view.fontSize * 1.5 * afterTitleIndex) + this._view.fontSize / 2) + this._view.titleFontSize * 1.5;
             }
 
         },

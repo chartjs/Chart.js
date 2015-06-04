@@ -74,135 +74,207 @@ This concept was introduced in Chart.js 1.0 to keep configuration DRY, and allow
 
 ```javascript
 Chart.defaults.global = {
-	// Boolean - Whether to animate the chart
-	animation: true,
+    // Animation settings
+    animation: {
+    	// Length that animation should take in ms assuming 60fps. 
+    	// Set to 0 to disable animation
+        duration: 1000,
 
-	// Number - Number of animation steps
-	animationSteps: 60,
+        // Easing type. Possible values are:
+        // [easeInOutQuart, linear, easeOutBounce, easeInBack, easeInOutQuad,
+        //  easeOutQuart, easeOutQuad, easeInOutBounce, easeOutSine, easeInOutCubic,
+        //  easeInExpo, easeInOutBack, easeInCirc, easeInOutElastic, easeOutBack,
+        //  easeInQuad, easeInOutExpo, easeInQuart, easeOutQuint, easeInOutCirc,
+        //  easeInSine, easeOutExpo, easeOutCirc, easeOutCubic, easeInQuint,
+        //  easeInElastic, easeInOutSine, easeInOutQuint, easeInBounce,
+        //  easeOutElastic, easeInCubic]
+        easing: "easeOutQuart",
 
-	// String - Animation easing effect
-	// Possible effects are:
-	// [easeInOutQuart, linear, easeOutBounce, easeInBack, easeInOutQuad,
-	//  easeOutQuart, easeOutQuad, easeInOutBounce, easeOutSine, easeInOutCubic,
-	//  easeInExpo, easeInOutBack, easeInCirc, easeInOutElastic, easeOutBack,
-	//  easeInQuad, easeInOutExpo, easeInQuart, easeOutQuint, easeInOutCirc,
-	//  easeInSine, easeOutExpo, easeOutCirc, easeOutCubic, easeInQuint,
-	//  easeInElastic, easeInOutSine, easeInOutQuint, easeInBounce,
-	//  easeOutElastic, easeInCubic]
-	animationEasing: "easeOutQuart",
+        // Function - function to call each time an animation step occurs
+        onProgress: function() {},
 
-	// Boolean - If we should show the scale at all
-	showScale: true,
+        // Function - function to call when animations finish
+        onComplete: function() {},
+    },
 
-	// Boolean - If we want to override with a hard coded scale
-	scaleOverride: false,
+    // Boolean - if true, resize the charts when the page resizes
+    responsive: false,
 
-	// ** Required if scaleOverride is true **
-	// Number - The number of steps in a hard coded scale
-	scaleSteps: null,
-	// Number - The value jump in the hard coded scale
-	scaleStepWidth: null,
-	// Number - The scale starting value
-	scaleStartValue: null,
+    // Boolean - if true, try to maintain the screen aspect ratio
+    maintainAspectRatio: true,
 
-	// String - Colour of the scale line
-	scaleLineColor: "rgba(0,0,0,.1)",
+    // Array - events to bind tooltips to
+    events: ["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"],
 
-	// Number - Pixel width of the scale line
-	scaleLineWidth: 1,
+    // Hover settings
+    hover: {
+    	// Function - called when the user hovers over the items.
+    	// Parameters: array of active elements
+        onHover: null,
 
-	// Boolean - Whether to show labels on the scale
-	scaleShowLabels: true,
+        // String - hover mode. Options are 'single', 'label', and 'dataset'
+        // 		'single' gets the nearest element
+        //		'label' gets all of the elements at the given dataset index (do not use for scatter charts)
+        //		'dataset' gets all the elements in the given dataset
+        mode: 'single',
 
-	// Interpolated JS string - can access value
-	scaleLabel: "<%=value%>",
+        // Number - duration (in ms) of the tooltip animation. 0 to disable
+        animationDuration: 400,
+    },
 
-	// Boolean - Whether the scale should stick to integers, not floats even if drawing space is there
-	scaleIntegersOnly: true,
+    // Function - click handler to bind to chart area
+    onClick: null,
 
-	// Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
-	scaleBeginAtZero: false,
+    // Tooltip configuration
+    tooltips: {
+    	// Boolean - if true show tooltips
+        enabled: true,
 
-	// String - Scale label font declaration for the scale label
-	scaleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+        // Function - custom tooltip function to use
+        custom: null,
 
-	// Number - Scale label font size in pixels
-	scaleFontSize: 12,
+        // String - color of tooltip background
+        backgroundColor: "rgba(0,0,0,0.8)",
 
-	// String - Scale label font weight style
-	scaleFontStyle: "normal",
+        // String - fonts to use
+        fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 
-	// String - Scale label font colour
-	scaleFontColor: "#666",
+        // Number - font size
+        fontSize: 10,
 
-	// Boolean - whether or not the chart should be responsive and resize when the browser does.
-	responsive: false,
+        // String - font style
+        fontStyle: "normal",
 
-	// Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
-	maintainAspectRatio: true,
+        // String - font color
+        fontColor: "#fff",
 
-	// Boolean - Determines whether to draw tooltips on the canvas or not
-	showTooltips: true,
+        // String - title fonts
+        titleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 
-	// Function - Determines whether to execute the customTooltips function instead of drawing the built in tooltips (See [Advanced - External Tooltips](#advanced-usage-custom-tooltips))
-	customTooltips: false,
+        // Number - title font size
+        titleFontSize: 12,
 
-	// Array - Array of string names to attach tooltip events
-	tooltipEvents: ["mousemove", "touchstart", "touchmove"],
+        // String - title font style
+        titleFontStyle: "bold",
 
-	// String - Tooltip background colour
-	tooltipFillColor: "rgba(0,0,0,0.8)",
+        // String - title font color
+        titleFontColor: "#fff",
 
-	// String - Tooltip label font declaration for the scale label
-	tooltipFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+        // Number - 
+        yPadding: 6,
 
-	// Number - Tooltip label font size in pixels
-	tooltipFontSize: 14,
+        // Number - 
+        xPadding: 6,
 
-	// String - Tooltip font weight style
-	tooltipFontStyle: "normal",
+        // Number - 
+        caretSize: 8,
 
-	// String - Tooltip label font colour
-	tooltipFontColor: "#fff",
+        // Number - radius of rounded corners
+        cornerRadius: 6,
 
-	// String - Tooltip title font declaration for the scale label
-	tooltipTitleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+        // Number - 
+        xOffset: 10,
 
-	// Number - Tooltip title font size in pixels
-	tooltipTitleFontSize: 14,
+        // String - template string to use for tooltips in single mode
+        template: [
+            '<% if(label){ %>',
+            '<%=label %>:',
+            '<% } %>',
+            '<%=value %>',
+        ].join(''),
 
-	// String - Tooltip title font weight style
-	tooltipTitleFontStyle: "bold",
+        // String - template string to use for tooltips in label mode
+        multiTemplate: [
+            '<%if (datasetLabel){ %>',
+            '<%=datasetLabel %>:',
+            '<% } %>',
+            '<%=value %>'
+        ].join(''),
 
-	// String - Tooltip title font colour
-	tooltipTitleFontColor: "#fff",
+        // String -
+        multiKeyBackground: '#fff',
+    },
 
-	// Number - pixel width of padding around tooltip text
-	tooltipYPadding: 6,
+    // String - default grey color. 'rgba(0,0,0,0.1)'
+    defaultColor: defaultColor, 
 
-	// Number - pixel width of padding around tooltip text
-	tooltipXPadding: 6,
+    // Element defaults
+    elements: {
+    	// Default settings for all line elements
+        line: {
+        	// Number - Bezier curve tension. Set to 0 for no bezier curves
+            tension: 0.4,
 
-	// Number - Size of the caret on the tooltip
-	tooltipCaretSize: 8,
+            // String - the fill color
+            backgroundColor: defaultColor,
 
-	// Number - Pixel radius of the tooltip border
-	tooltipCornerRadius: 6,
+            // Number - width of the line
+            borderWidth: 3,
 
-	// Number - Pixel offset from point x to tooltip edge
-	tooltipXOffset: 10,
-	{% raw %}
-	// String - Template string for single tooltips
-	tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",
-	{% endraw %}
-	// String - Template string for multiple tooltips
-	multiTooltipTemplate: "<%= value %>",
+            // String = color of the line
+            borderColor: defaultColor,
+            
+            // Boolean - if true fill in the area between the line and the x axis with the background color
+            fill: true,
 
-	// Function - Will fire on animation progression.
-	onAnimationProgress: function(){},
+            // Boolean - 
+            skipNull: true,
 
-	// Function - Will fire on animation completion.
-	onAnimationComplete: function(){}
+            // Boolean - 
+            drawNull: false,
+        },
+        // Settings for all point elements
+        point: {
+        	// Number - radius of point circle
+            radius: 3,
+
+            // String - fill color of point
+            backgroundColor: defaultColor,
+
+            // Number - width of stroke of point circle
+            borderWidth: 1,
+
+            // String - stroke color for point
+            borderColor: defaultColor,
+
+            // Number - extra radius added to radius for hit detection
+            hitRadius: 6,
+
+            // Number - radius of point circle when hovered
+            hoverRadius: 4,
+
+            // Number - radius of circle stroke when hovered
+            hoverBorderWidth: 2,
+        },
+        // Settings for all bar elements
+        bar: {
+        	// String - fill color of bar
+            backgroundColor: defaultColor,
+
+            // Number - width of stroke of line surrounding bar fill
+            borderWidth: 0,
+
+            // String - Border color
+            borderColor: defaultColor,
+
+            // Number - 
+            valueSpacing: 5,
+
+            // Number - 
+            datasetSpacing: 1,
+        },
+        // Settings for all slice elements
+        slice: {
+        	// String - fill color
+            backgroundColor: defaultColor,
+
+            // String - border color
+            borderColor: "#fff",
+
+            // Number - border stroke width
+            borderWidth: 2,
+        },
+    }
 }
 ```
 

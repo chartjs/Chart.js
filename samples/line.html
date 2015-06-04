@@ -22,50 +22,42 @@
         return 'rgba(' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + (opacity || '.3') + ')';
     };
 
-    var lineChartData = {
-        labels: ["January", "February", "March", "April", "May", "June", "July"],
-        datasets: [{
-            label: "My First dataset",
-            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
-        }, {
-            label: "My Second dataset",
-            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
-        }]
+    var config = {
+        data: {
+            labels: ["January", "February", "March", "April", "May", "June", "July"],
+            datasets: [{
+                label: "My First dataset",
+                data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
+                fill: false,
+            }, {
+                label: "My Second dataset",
+                data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
+            }]
+        },
+        options: {
+            responsive: true
+        }
     };
 
-    $.each(lineChartData.datasets, function(i, dataset) {
+    $.each(config.data.datasets, function(i, dataset) {
         dataset.borderColor = randomColor(0.4);
-        dataset.backgroundColor = randomColor(1);
+        dataset.backgroundColor = randomColor(0.5);
         dataset.pointBorderColor = randomColor(0.7);
         dataset.pointBackgroundColor = randomColor(0.5);
         dataset.pointBorderWidth = 1;
     });
 
-    console.log(lineChartData);
+    console.log(config.data);
 
     window.onload = function() {
         var ctx = document.getElementById("canvas").getContext("2d");
-        window.myLine = new Chart(ctx).Line({
-            data: lineChartData, 
-            options: {
-                responsive: true,
-                hoverMode: 'label',
-                stacked: false,
-                scales: {
-                    xAxes: [{
-                        gridLines: {
-                            offsetGridLines: false
-                        }
-                    }]
-                }
-            }
-        });
+        window.myLine = new Chart(ctx).Line(config);
     };
 
     $('#randomizeData').click(function() {
-        lineChartData.datasets[0].data = [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()];
+        config.data.datasets[0].data = [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()];
 
-        lineChartData.datasets[1].data = [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()];
+        config.data.datasets[1].data = [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()];
 
         window.myLine.update();
     });

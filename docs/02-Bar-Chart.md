@@ -14,7 +14,10 @@ It is sometimes used to show trend data, and the comparison of multiple data set
 
 ### Example usage
 ```javascript
-var myBarChart = new Chart(ctx).Bar(data, options);
+var myBarChart = new Chart(ctx).Bar({
+	data: data, 
+	options: options
+});
 ```
 
 ### Data structure
@@ -25,18 +28,36 @@ var data = {
 	datasets: [
 		{
 			label: "My First dataset",
-			fillColor: "rgba(220,220,220,0.5)",
-			strokeColor: "rgba(220,220,220,0.8)",
-			highlightFill: "rgba(220,220,220,0.75)",
-			highlightStroke: "rgba(220,220,220,1)",
-			data: [65, 59, 80, 81, 56, 55, 40]
+
+			// The properties below allow an array to be specified to change the value of the item at the given index
+			// String  or array - the bar color
+			backgroundColor: "rgba(220,220,220,0.2)",
+
+			// String or array - bar stroke color
+			borderColor: "rgba(220,220,220,1)",
+
+			// Number or array - bar border width
+			borderWidth: 1,
+
+			// String or array - fill color when hovered
+			hoverBackgroundColor: "rgba(220,220,220,0.2)",
+
+			// String or array - border color when hovered
+			hoverBorderColor: "rgba(220,220,220,1)",
+
+			// The actual data
+			data: [65, 59, 80, 81, 56, 55, 40],
+
+			// String - If specified, binds the dataset to a certain y-axis. If not specified, the first y-axis is used.
+			yAxisID: "y-axis-1",
 		},
 		{
 			label: "My Second dataset",
-			fillColor: "rgba(151,187,205,0.5)",
-			strokeColor: "rgba(151,187,205,0.8)",
-			highlightFill: "rgba(151,187,205,0.75)",
-			highlightStroke: "rgba(151,187,205,1)",
+			backgroundColor: "rgba(220,220,220,0.2)",
+			borderColor: "rgba(220,220,220,1)",
+			borderWidth: 1,
+			hoverBackgroundColor: "rgba(220,220,220,0.2)",
+			hoverBorderColor: "rgba(220,220,220,1)",
 			data: [28, 48, 40, 19, 86, 27, 90]
 		}
 	]
@@ -53,40 +74,150 @@ These are the customisation options specific to Bar charts. These options are me
 
 ```javascript
 {
-	//Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
-	scaleBeginAtZero : true,
+	// Boolean - if true, bars stack on top of each other
+	stacked: false,
 
-	//Boolean - Whether grid lines are shown across the chart
-	scaleShowGridLines : true,
+	hover: {
+		// String - We use a label hover mode since the x axis displays data by the index in the dataset
+		mode: "label"
+	},
 
-	//String - Colour of the grid lines
-	scaleGridLineColor : "rgba(0,0,0,.05)",
+	scales: {
+		// The bar chart officially supports only 1 x-axis but uses an array to keep the API consistent. Use a scatter chart if you need multiple x axes. 
+		xAxes: [{
+			// String - type of axis to use. Should not be changed from 'dataset'.
+			scaleType: "dataset", // scatter should not use a dataset axis
 
-	//Number - Width of the grid lines
-	scaleGridLineWidth : 1,
+			// Boolean - if true, show the scale
+			display: true,
 
-	//Boolean - Whether to show horizontal lines (except X axis)
-	scaleShowHorizontalLines: true,
+			// String - position of the scale. possible options are "top" and "bottom" for dataset scales
+			position: "bottom",
 
-	//Boolean - Whether to show vertical lines (except Y axis)
-	scaleShowVerticalLines: true,
+			// String - id of the axis so that data can bind to it
+			id: "x-axis-1", // need an ID so datasets can reference the scale
 
-	//Boolean - If there is a stroke on each bar
-	barShowStroke : true,
+			// grid line settings
+			gridLines: {
+				// Boolean - if true, show the grid lines
+				show: true,
 
-	//Number - Pixel width of the bar stroke
-	barStrokeWidth : 2,
+				// String - color of the grid lines
+				color: "rgba(0, 0, 0, 0.05)",
 
-	//Number - Spacing between each of the X value sets
-	barValueSpacing : 5,
+				// Number - width of the grid lines
+				lineWidth: 1,
 
-	//Number - Spacing between data sets within X values
-	barDatasetSpacing : 1,
-	{% raw %}
-	//String - A legend template
-	legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-	{% endraw %}
-}
+				// Boolean - if true draw lines on the chart area
+				drawOnChartArea: true,
+
+				// Boolean - if true draw ticks in the axis area
+				drawTicks: true,
+
+				// Number - width of the grid line for the first index (index 0)
+				zeroLineWidth: 1,
+
+				// String - color of the grid line for the first index
+				zeroLineColor: "rgba(0,0,0,0.25)",
+
+				// Boolean - if true, offset labels from grid lines
+				offsetGridLines: false,
+			},
+
+			// label settings
+			labels: {
+				// Boolean - if true show labels
+				show: true,
+
+				// String - template string for labels
+				template: "<%=value%>",
+
+				// Number - label font size
+				fontSize: 12,
+
+				// String - label font style
+				fontStyle: "normal",
+
+				// String - label font color
+				fontColor: "#666",
+
+				// String - label font family
+				fontFamily: "Helvetica Neue",
+			},
+		}],
+		yAxes: [{
+			// String - type of axis. 'linear' is the default but extensions may provide other types such as logarithmic
+			scaleType: "linear",
+
+			// Boolean - if true, show the scale
+			display: true,
+
+			// String - position of axis. Vertical axes can have either "left" or "right"
+			position: "left",
+
+			// ID of the axis for data binding
+			id: "y-axis-1",
+
+			// grid line settings
+			gridLines: {
+				// Boolean - if true, show the grid lines
+				show: true,
+
+				// String - color of the grid lines
+				color: "rgba(0, 0, 0, 0.05)",
+
+				// Number - width of the grid lines
+				lineWidth: 1,
+
+				// Boolean - if true draw lines on the chart area
+				drawOnChartArea: true,
+
+				// Boolean - if true draw ticks in the axis area
+				drawTicks: true,
+
+				// Number - width of the grid line representing a numerical value of 0
+				zeroLineWidth: 1,
+
+				// String - color of the grid line representing a numerical value of 0
+				zeroLineColor: "rgba(0,0,0,0.25)",
+			},
+
+			// Boolean - if true ensures that the scale always has a 0 point
+			beginAtZero: false,
+
+			// Object - if specified, allows the user to override the step generation algorithm.
+			//			Contains the following values
+			//				start: // number to start at
+			//				stepWidth: // size of step
+			//				steps: // number of steps
+			override: null,
+
+			// label settings
+			labels: {
+				// Boolean - if true show labels
+				show: true,
+
+				// String - template string for labels
+				template: "<%=value%>",
+
+				// Function - if specified this is passed the tick value, index, and the array of all tick values. Returns a string that is used as the label for that value
+				userCallback: null,
+
+				// Number - label font size
+				fontSize: 12,
+
+				// String - label font style
+				fontStyle: "normal",
+
+				// String - label font color
+				fontColor: "#666",
+
+				// String - label font family
+				fontFamily: "Helvetica Neue",
+			},
+		}],
+	},
+};
 ```
 
 You can override these for your `Chart` instance by passing a second argument into the `Bar` method as an object with the keys you want to override.
@@ -94,8 +225,11 @@ You can override these for your `Chart` instance by passing a second argument in
 For example, we could have a bar chart without a stroke on each bar by doing the following:
 
 ```javascript
-new Chart(ctx).Bar(data, {
-	barShowStroke: false
+new Chart(ctx).Bar({
+	data: data, 
+	options: {
+		barShowStroke: false
+	}
 });
 // This will create a chart with all of the default options, merged from the global config,
 //  and the Bar chart defaults but this particular instance will have `barShowStroke` set to false.

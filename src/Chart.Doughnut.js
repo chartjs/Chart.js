@@ -7,21 +7,6 @@
         helpers = Chart.helpers;
 
     var defaultConfig = {
-        segments: {
-            //Boolean - Whether we should show a stroke on each segment
-            showStroke: true,
-
-            //String - The colour of each segment stroke
-            strokeColor: "#fff",
-
-            //Number - The width of each segment stroke
-            borderWidth: 2,
-        },
-
-        hover: {
-             // The duration of animations triggered by hover events
-            animationDuration: 400,
-        },
 
         animation: {
             //Boolean - Whether we animate the rotation of the Doughnut
@@ -32,10 +17,8 @@
         },
 
         //The percentage of the chart that we cut out of the middle.
+
         cutoutPercentage: 50,
-        
-        //String - A legend template
-        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].backgroundColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
 
     };
 
@@ -47,40 +30,21 @@
         //Initialize is fired when the chart is initialized - Data is passed in as a parameter
         //Config is automatically merged by the core of Chart.js, and is available at this.options
         initialize: function() {
-            // Slice Type and defaults
-            this.Slice = Chart.Arc.extend({
-                _chart: this.chart,
-                x: this.chart.width / 2,
-                y: this.chart.height / 2
-            });
 
             //Set up tooltip events on the chart
-            if (this.options.tooltips.enabled) {
-                helpers.bindEvents(this, this.options.events, this.onHover);
-            }
+            helpers.bindEvents(this, this.options.events, this.events);
 
-            // Create new slice for each piece of data
-            this.data.metaData = [];
-            helpers.each(this.data.data, function(slice, index) {
-                var metaSlice = new this.Slice();
-                if (typeof slice == 'number') {
-                    helpers.extend(metaSlice, {
-                        value: slice
-                    });
-                } else {
-                    helpers.extend(metaSlice, slice);
-                }
-                helpers.extend(metaSlice, {
-                    startAngle: Math.PI * 1.5,
-                    circumference: (this.options.animation.animateRotate) ? 0 : this.calculateCircumference(metaSlice.value),
-                    outerRadius: (this.options.animation.animateScale) ? 0 : this.outerRadius,
-                    innerRadius: (this.options.animation.animateScale) ? 0 : (this.outerRadius / 100) * this.options.percentageInnerCutout,
-                });
-                if (!metaSlice.backgroundColor) {
-                    slice.backgroundColor = 'hsl(' + (360 * index / this.data.data.length) + ', 100%, 50%)';
-                }
-                metaSlice.save();
-                this.data.metaData.push(metaSlice);
+            //Create a new bar for each piece of data
+            helpers.each(this.data.datasets, function(dataset, datasetIndex) {
+                dataset.metaData = [];
+                helpers.each(dataset.data, function(dataPoint, index) {
+                    dataset.metaData.push(new Chart.Arc({
+                        _chart: this.chart,
+                        _datasetIndex: datasetIndex,
+                        _index: index,
+                        _model: {}
+                    }));
+                }, this);
             }, this);
 
             // Create tooltip instance exclusively for this chart with some defaults.
@@ -90,9 +54,137 @@
                 _options: this.options,
             }, this);
 
+            this.resetElements();
+
+            // Update the chart with the latest data.
             this.update();
+
         },
-        onHover: function(e) {
+
+        calculateCircumference: function(dataset, value) {
+            if (dataset.total > 0) {
+                return (Math.PI * 2) * (value / dataset.total);
+            } else {
+                return 0;
+            }
+        },
+        resetElements: function() {
+            this.outerRadius = (helpers.min([this.chart.width, this.chart.height]) - this.options.elements.slice.borderWidth / 2) / 2;
+            this.innerRadius = this.options.cutoutPercentage ? (this.outerRadius / 100) * (this.options.cutoutPercentage) : 1;
+            this.radiusLength = (this.outerRadius - this.innerRadius) / this.data.datasets.length;
+
+            // Update the points
+            helpers.each(this.data.datasets, function(dataset, datasetIndex) {
+                // So that calculateCircumference works
+                dataset.total = 0;
+                helpers.each(dataset.data, function(value) {
+                    dataset.total += Math.abs(value);
+                }, this);
+
+                dataset.outerRadius = this.outerRadius - (this.radiusLength * datasetIndex);
+                dataset.innerRadius = dataset.outerRadius - this.radiusLength;
+
+                helpers.each(dataset.metaData, function(slice, index) {
+                    helpers.extend(slice, {
+                        _model: {
+                            x: this.chart.width / 2,
+                            y: this.chart.height / 2,
+                            startAngle: Math.PI * -0.5, // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
+                            circumference: (this.options.animation.animateRotate) ? 0 : this.calculateCircumference(metaSlice.value),
+                            outerRadius: (this.options.animation.animateScale) ? 0 : dataset.outerRadius,
+                            innerRadius: (this.options.animation.animateScale) ? 0 : dataset.innerRadius,
+
+                            backgroundColor: slice.custom && slice.custom.backgroundColor ? slice.custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.slice.backgroundColor),
+                            hoverBackgroundColor: slice.custom && slice.custom.hoverBackgroundColor ? slice.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, this.options.elements.slice.hoverBackgroundColor),
+                            borderWidth: slice.custom && slice.custom.borderWidth ? slice.custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.slice.borderWidth),
+                            borderColor: slice.custom && slice.custom.borderColor ? slice.custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.slice.borderColor),
+
+                            label: helpers.getValueAtIndexOrDefault(dataset.label, index, this.data.labels[index])
+                        },
+                    });
+
+                    slice.pivot();
+                }, this);
+
+            }, this);
+        },
+        update: function() {
+
+            this.outerRadius = (helpers.min([this.chart.width, this.chart.height]) - this.options.elements.slice.borderWidth / 2) / 2;
+            this.innerRadius = this.options.cutoutPercentage ? (this.outerRadius / 100) * (this.options.cutoutPercentage) : 1;
+            this.radiusLength = (this.outerRadius - this.innerRadius) / this.data.datasets.length;
+
+
+            // Update the points
+            helpers.each(this.data.datasets, function(dataset, datasetIndex) {
+
+                dataset.total = 0;
+                helpers.each(dataset.data, function(value) {
+                    dataset.total += Math.abs(value);
+                }, this);
+
+
+                dataset.outerRadius = this.outerRadius - (this.radiusLength * datasetIndex);
+
+                dataset.innerRadius = dataset.outerRadius - this.radiusLength;
+
+                helpers.each(dataset.metaData, function(slice, index) {
+
+                    helpers.extend(slice, {
+                        // Utility
+                        _chart: this.chart,
+                        _datasetIndex: datasetIndex,
+                        _index: index,
+
+                        // Desired view properties
+                        _model: {
+                            x: this.chart.width / 2,
+                            y: this.chart.height / 2,
+                            circumference: this.calculateCircumference(dataset, dataset.data[index]),
+                            outerRadius: dataset.outerRadius,
+                            innerRadius: dataset.innerRadius,
+
+                            backgroundColor: slice.custom && slice.custom.backgroundColor ? slice.custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.slice.backgroundColor),
+                            hoverBackgroundColor: slice.custom && slice.custom.hoverBackgroundColor ? slice.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, this.options.elements.slice.hoverBackgroundColor),
+                            borderWidth: slice.custom && slice.custom.borderWidth ? slice.custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.slice.borderWidth),
+                            borderColor: slice.custom && slice.custom.borderColor ? slice.custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.slice.borderColor),
+
+                            label: helpers.getValueAtIndexOrDefault(dataset.label, index, this.data.labels[index])
+                        },
+                    });
+
+                    if (index === 0) {
+                        slice._model.startAngle = Math.PI * -0.5; // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
+                    } else {
+                        slice._model.startAngle = dataset.metaData[index - 1]._model.endAngle;
+                    }
+
+                    slice._model.endAngle = slice._model.startAngle + slice._model.circumference;
+
+
+                    //Check to see if it's the last slice, if not get the next and update its start angle
+                    if (index < dataset.data.length - 1) {
+                        dataset.metaData[index + 1]._model.startAngle = slice._model.endAngle;
+                    }
+
+                    slice.pivot();
+                }, this);
+
+            }, this);
+
+            this.render();
+        },
+        draw: function(easeDecimal) {
+            easeDecimal = easeDecimal || 1;
+            this.clear();
+
+            this.eachElement(function(slice) {
+                slice.transition(easeDecimal).draw();
+            }, this);
+
+            this.tooltip.transition(easeDecimal).draw();
+        },
+        events: function(e) {
 
             // If exiting chart
             if (e.type == 'mouseout') {
@@ -102,22 +194,90 @@
             this.lastActive = this.lastActive || [];
 
             // Find Active Elements
-            this.active = this.getSliceAtEvent(e);
+            this.active = function() {
+                switch (this.options.hover.mode) {
+                    case 'single':
+                        return this.getSliceAtEvent(e);
+                    case 'label':
+                        return this.getSlicesAtEvent(e);
+                    case 'dataset':
+                        return this.getDatasetAtEvent(e);
+                    default:
+                        return e;
+                }
+            }.call(this);
 
             // On Hover hook
-            if (this.options.onHover) {
-                this.options.onHover.call(this, this.active);
+            if (this.options.hover.onHover) {
+                this.options.hover.onHover.call(this, this.active);
             }
 
+            if (e.type == 'mouseup' || e.type == 'click') {
+                if (this.options.onClick) {
+                    this.options.onClick.call(this, e, this.active);
+                }
+            }
+
+            var dataset;
+            var index;
             // Remove styling for last active (even if it may still be active)
             if (this.lastActive.length) {
-                this.lastActive[0].backgroundColor = this.data.data[this.lastActive[0]._index].backgroundColor;
+                switch (this.options.hover.mode) {
+                    case 'single':
+                        dataset = this.data.datasets[this.lastActive[0]._datasetIndex];
+                        index = this.lastActive[0]._index;
+
+                        this.lastActive[0]._model.backgroundColor = this.lastActive[0].custom && this.lastActive[0].custom.backgroundColor ? this.lastActive[0].custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.slice.backgroundColor);
+                        this.lastActive[0]._model.borderColor = this.lastActive[0].custom && this.lastActive[0].custom.borderColor ? this.lastActive[0].custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.slice.borderColor);
+                        this.lastActive[0]._model.borderWidth = this.lastActive[0].custom && this.lastActive[0].custom.borderWidth ? this.lastActive[0].custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.slice.borderWidth);
+                        break;
+                    case 'label':
+                        for (var i = 0; i < this.lastActive.length; i++) {
+                            dataset = this.data.datasets[this.lastActive[i]._datasetIndex];
+                            index = this.lastActive[i]._index;
+
+                            this.lastActive[i]._model.backgroundColor = this.lastActive[i].custom && this.lastActive[i].custom.backgroundColor ? this.lastActive[i].custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.slice.backgroundColor);
+                            this.lastActive[i]._model.borderColor = this.lastActive[i].custom && this.lastActive[i].custom.borderColor ? this.lastActive[i].custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.slice.borderColor);
+                            this.lastActive[i]._model.borderWidth = this.lastActive[i].custom && this.lastActive[i].custom.borderWidth ? this.lastActive[i].custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.slice.borderWidth);
+                        }
+                        break;
+                    case 'dataset':
+                        break;
+                    default:
+                        // Don't change anything
+                }
             }
 
             // Built in hover styling
             if (this.active.length && this.options.hover.mode) {
-                this.active[0].backgroundColor = this.data.data[this.active[0]._index].hoverBackgroundColor || helpers.color(this.data.data[this.active[0]._index].backgroundColor).saturate(0.5).darken(0.35).rgbString();
+                switch (this.options.hover.mode) {
+                    case 'single':
+                        dataset = this.data.datasets[this.active[0]._datasetIndex];
+                        index = this.active[0]._index;
+
+                        this.active[0]._model.radius = this.active[0].custom && this.active[0].custom.hoverRadius ? this.active[0].custom.hoverRadius : helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.active[0]._model.radius + 2);
+                        this.active[0]._model.backgroundColor = this.active[0].custom && this.active[0].custom.hoverBackgroundColor ? this.active[0].custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.color(this.active[0]._model.backgroundColor).saturate(0.5).darken(0.35).rgbString());
+                        this.active[0]._model.borderColor = this.active[0].custom && this.active[0].custom.hoverBorderColor ? this.active[0].custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.color(this.active[0]._model.borderColor).saturate(0.5).darken(0.35).rgbString());
+                        this.active[0]._model.borderWidth = this.active[0].custom && this.active[0].custom.hoverBorderWidth ? this.active[0].custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, this.active[0]._model.borderWidth + 2);
+                        break;
+                    case 'label':
+                        for (var i = 0; i < this.active.length; i++) {
+                            dataset = this.data.datasets[this.active[i]._datasetIndex];
+                            index = this.active[i]._index;
+
+                            this.active[i]._model.radius = this.active[i].custom && this.active[i].custom.hoverRadius ? this.active[i].custom.hoverRadius : helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.active[i]._model.radius + 2);
+                            this.active[i]._model.backgroundColor = this.active[i].custom && this.active[i].custom.hoverBackgroundColor ? this.active[i].custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.color(this.active[i]._model.backgroundColor).saturate(0.5).darken(0.35).rgbString());
+                            this.active[i]._model.borderColor = this.active[i].custom && this.active[i].custom.hoverBorderColor ? this.active[i].custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.color(this.active[i]._model.borderColor).saturate(0.5).darken(0.35).rgbString());
+                            this.active[i]._model.borderWidth = this.active[i].custom && this.active[i].custom.hoverBorderWidth ? this.active[i].custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, this.active[i]._model.borderWidth + 2);
+                        }
+                        break;
+                    case 'dataset':
+                        break;
+                    default:
+                        // Don't change anything
+                }
             }
+
 
             // Built in Tooltips
             if (this.options.tooltips.enabled) {
@@ -127,17 +287,16 @@
 
                 // Active
                 if (this.active.length) {
+                    this.tooltip._model.opacity = 1;
+
                     helpers.extend(this.tooltip, {
-                        opacity: 1,
                         _active: this.active,
                     });
 
                     this.tooltip.update();
                 } else {
                     // Inactive
-                    helpers.extend(this.tooltip, {
-                        opacity: 0,
-                    });
+                    this.tooltip._model.opacity = 0;
                 }
             }
 
@@ -167,85 +326,31 @@
             // Remember Last Active
             this.lastActive = this.active;
             return this;
-
         },
         getSliceAtEvent: function(e) {
             var elements = [];
 
             var location = helpers.getRelativePosition(e);
 
-            helpers.each(this.data.metaData, function(slice, index) {
-                if (slice.inRange(location.x, location.y)) elements.push(slice);
+            this.eachElement(function(slice, index) {
+                if (slice.inRange(location.x, location.y)) {
+                    elements.push(slice);
+                }
             }, this);
             return elements;
         },
-        calculateCircumference: function(value) {
-            if (this.total > 0) {
-                return (Math.PI * 2) * (value / this.total);
-            } else {
-                return 0;
-            }
-        },
-        update: function() {
+        /*getSlicesAtEvent: function(e) {
+            var elements = [];
 
-            // Calc Total
-            this.total = 0;
-            helpers.each(this.data.data, function(slice) {
-                this.total += Math.abs(slice.value);
-            }, this);
+            var location = helpers.getRelativePosition(e);
 
-            this.outerRadius = (helpers.min([this.chart.width, this.chart.height]) - this.options.segments.borderWidth / 2) / 2;
-
-            // Map new data to data points
-            helpers.each(this.data.metaData, function(slice, index) {
-
-                var datapoint = this.data.data[index];
-
-                helpers.extend(slice, {
-                    _index: index,
-                    x: this.chart.width / 2,
-                    y: this.chart.height / 2,
-                    value: datapoint.value,
-                    label: datapoint.label,
-                    circumference: this.calculateCircumference(datapoint.value),
-                    outerRadius: this.outerRadius,
-                    innerRadius: (this.outerRadius / 100) * this.options.cutoutPercentage,
-
-                    backgroundColor: datapoint.backgroundColor,
-                    hoverBackgroundColor: datapoint.hoverBackgroundColor || datapoint.backgroundColor,
-                    borderWidth: this.options.segments.borderWidth,
-                    borderColor: this.options.segments.strokeColor,
-                });
-
-                helpers.extend(slice, {
-                    endAngle: slice.startAngle + slice.circumference,
-                });
-
-                if (index === 0) {
-                    slice.startAngle = Math.PI * 1.5;
+            this.eachElement(function(slice, index) {
+                if (slice.inGroupRange(location.x, location.y)) {
+                    elements.push(slice);
                 }
-
-                //Check to see if it's the last slice, if not get the next and update its start angle
-                if (index < this.data.data.length - 1) {
-                    this.data.metaData[index + 1].startAngle = slice.endAngle;
-                }
-
-                slice.pivot();
-
             }, this);
-
-            this.render();
-        },
-        draw: function(easeDecimal) {
-            easeDecimal = easeDecimal || 1;
-            this.clear();
-
-            helpers.each(this.data.metaData, function(slice, index) {
-                slice.transition(easeDecimal).draw();
-            }, this);
-
-            this.tooltip.transition(easeDecimal).draw();
-        }
+            return elements;
+        },*/
     });
 
     Chart.types.Doughnut.extend({

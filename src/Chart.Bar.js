@@ -5,15 +5,21 @@
         Chart = root.Chart,
         helpers = Chart.helpers;
 
-
     var defaultConfig = {
+
+        stacked: false,
+
+        hover: {
+            mode: "label"
+        },
+
         scales: {
             xAxes: [{
                 scaleType: "dataset", // scatter should not use a dataset axis
                 display: true,
                 position: "bottom",
                 id: "x-axis-1", // need an ID so datasets can reference the scale
-                
+
                 // grid line settings
                 gridLines: {
                     show: true,
@@ -25,11 +31,6 @@
                     zeroLineColor: "rgba(0,0,0,0.25)",
                     offsetGridLines: true,
                 },
-
-                // scale numbers
-                beginAtZero: false,
-                integersOnly: false,
-                override: null,
 
                 // label settings
                 labels: {
@@ -46,7 +47,7 @@
                 display: true,
                 position: "left",
                 id: "y-axis-1",
-        
+
                 // grid line settings
                 gridLines: {
                     show: true,
@@ -60,7 +61,6 @@
 
                 // scale numbers
                 beginAtZero: false,
-                integersOnly: false,
                 override: null,
 
                 // label settings
@@ -75,20 +75,6 @@
             }],
         },
 
-        bars: {
-            //Number - Pixel width of the bar border
-            borderWidth: 2,
-
-            //Number - Spacing between each of the X value sets
-            valueSpacing: 5,
-
-            //Number - Spacing between data sets within X values
-            datasetSpacing: 1,
-        },
-
-        //String - A legend template
-        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].backgroundColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-
     };
 
 
@@ -96,22 +82,24 @@
         name: "Bar",
         defaults: defaultConfig,
         initialize: function() {
-            // Events
-            helpers.bindEvents(this, this.options.events, this.onHover);
 
-            //Declare the extension of the default point, to cater for the options passed in to the constructor
-            this.BarClass = Chart.Rectangle.extend({
-                ctx: this.chart.ctx,
-            });
+            var _this = this;
+
+            // Events
+            helpers.bindEvents(this, this.options.events, this.events);
 
             //Create a new bar for each piece of data
             helpers.each(this.data.datasets, function(dataset, datasetIndex) {
                 dataset.metaData = [];
                 helpers.each(dataset.data, function(dataPoint, index) {
-                    dataset.metaData.push(new this.BarClass());
+                    dataset.metaData.push(new Chart.Rectangle({
+                        _chart: this.chart,
+                        _datasetIndex: datasetIndex,
+                        _index: index,
+                    }));
                 }, this);
 
-                 // The bar chart only supports a single x axis because the x axis is always a dataset axis
+                // The bar chart only supports a single x axis because the x axis is always a dataset axis
                 dataset.xAxisID = this.options.scales.xAxes[0].id;
 
                 if (!dataset.yAxisID) {
@@ -121,24 +109,6 @@
 
             // Build and fit the scale. Needs to happen after the axis IDs have been set
             this.buildScale();
-            Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
-
-            // Set defaults for bars
-            this.eachElement(function(bar, index, dataset, datasetIndex) {
-                var xScale = this.scales[this.data.datasets[datasetIndex].xAxisID];
-                var yScale = this.scales[this.data.datasets[datasetIndex].yAxisID];
-
-                helpers.extend(bar, {
-                    base: yScale.getPixelForValue(0),
-                    width: xScale.calculateBarWidth(this.data.datasets.length),
-                    x: xScale.calculateBarX(this.data.datasets.length, datasetIndex, index),
-                    y: yScale.calculateBarY(this.data.datasets, datasetIndex, index, this.data.datasets[datasetIndex].data[index]),
-                    _datasetIndex: datasetIndex,
-                    _index: index,
-                });
-                // Copy to view model
-                bar.save();
-            }, this);
 
             // Create tooltip instance exclusively for this chart with some defaults.
             this.tooltip = new Chart.Tooltip({
@@ -147,165 +117,102 @@
                 _options: this.options,
             }, this);
 
+            // Need to fit scales before we reset elements. 
+            Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
+
+            // So that we animate from the baseline
+            this.resetElements();
+
             // Update the chart with the latest data.
             this.update();
         },
-        onHover: function(e) {
+        resetElements: function() {
+            // Update the points
+            this.eachElement(function(bar, index, dataset, datasetIndex) {
+                var xScale = this.scales[this.data.datasets[datasetIndex].xAxisID];
+                var yScale = this.scales[this.data.datasets[datasetIndex].yAxisID];
 
+                var yScalePoint;
 
-            // If exiting chart
-            if (e.type == 'mouseout') {
-                return this;
-            }
-
-            this.lastActive = this.lastActive || [];
-
-            // Find Active Elements
-            this.active = function() {
-                switch (this.options.hover.mode) {
-                    case 'single':
-                        return this.getElementAtEvent(e);
-                    case 'label':
-                        return this.getElementsAtEvent(e);
-                    case 'dataset':
-                        return this.getDatasetAtEvent(e);
-                    default:
-                        return e;
-                }
-            }.call(this);
-
-            // On Hover hook
-            if (this.options.onHover) {
-                this.options.onHover.call(this, this.active);
-            }
-
-            // Remove styling for last active (even if it may still be active)
-            if (this.lastActive.length) {
-                switch (this.options.hover.mode) {
-                    case 'single':
-                        this.lastActive[0].backgroundColor = this.data.datasets[this.lastActive[0]._datasetIndex].backgroundColor;
-                        this.lastActive[0].borderColor = this.data.datasets[this.lastActive[0]._datasetIndex].borderColor;
-                        break;
-                    case 'label':
-                        for (var i = 0; i < this.lastActive.length; i++) {
-                            this.lastActive[i].backgroundColor = this.data.datasets[this.lastActive[i]._datasetIndex].backgroundColor;
-                            this.lastActive[i].borderColor = this.data.datasets[this.lastActive[i]._datasetIndex].borderColor;
-                        }
-                        break;
-                    case 'dataset':
-                        break;
-                    default:
-                        // Don't change anything
-                }
-            }
-
-            // Built in hover styling
-            if (this.active.length && this.options.hover.mode) {
-                switch (this.options.hover.mode) {
-                    case 'single':
-                        this.active[0].backgroundColor = this.data.datasets[this.active[0]._datasetIndex].hoverBackgroundColor || helpers.color(this.active[0].backgroundColor).saturate(0.8).darken(0.2).rgbString();
-                        this.active[0].borderColor = this.data.datasets[this.active[0]._datasetIndex].hoverBorderColor || helpers.color(this.active[0].borderColor).saturate(0.8).darken(0.2).rgbString();
-                        break;
-                    case 'label':
-                        for (var i = 0; i < this.active.length; i++) {
-                            this.active[i].backgroundColor = this.data.datasets[this.active[i]._datasetIndex].hoverBackgroundColor || helpers.color(this.active[i].backgroundColor).saturate(0.8).darken(0.2).rgbString();
-                            this.active[i].borderColor = this.data.datasets[this.active[i]._datasetIndex].hoverBorderColor || helpers.color(this.active[i].borderColor).saturate(0.8).darken(0.2).rgbString();
-                        }
-                        break;
-                    case 'dataset':
-                        break;
-                    default:
-                        // Don't change anything
-                }
-            }
-
-
-            // Built in Tooltips
-            if (this.options.tooltips.enabled) {
-
-                // The usual updates
-                this.tooltip.initialize();
-
-                // Active
-                if (this.active.length) {
-                    helpers.extend(this.tooltip, {
-                        opacity: 1,
-                        _active: this.active,
-                    });
-
-                    this.tooltip.update();
+                if (yScale.min < 0 && yScale.max <0) {
+                    // all less than 0. use the top
+                    yScalePoint = yScale.getPixelForValue(yScale.max);
+                } else if (yScale.min > 0 && yScale.max > 0) {
+                    yScalePoint = yScale.getPixelForValue(yScale.min);
                 } else {
-                    // Inactive
-                    helpers.extend(this.tooltip, {
-                        opacity: 0,
-                    });
+                    yScalePoint = yScale.getPixelForValue(0);
                 }
-            }
 
+                helpers.extend(bar, {
+                    // Utility
+                    _chart: this.chart,
+                    _xScale: xScale,
+                    _yScale: yScale,
+                    _datasetIndex: datasetIndex,
+                    _index: index,
 
-            this.tooltip.pivot();
+                    // Desired view properties
+                    _model: {
+                        x: xScale.calculateBarX(this.data.datasets.length, datasetIndex, index),
+                        y: yScalePoint,
 
-            // Hover animations
-            if (!this.animating) {
-                var changed;
+                        // Appearance
+                        base: yScale.calculateBarBase(datasetIndex, index),
+                        width: xScale.calculateBarWidth(this.data.datasets.length),
+                        backgroundColor: bar.custom && bar.custom.backgroundColor ? bar.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].backgroundColor, index, this.options.elements.bar.backgroundColor),
+                        borderColor: bar.custom && bar.custom.borderColor ? bar.custom.borderColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].borderColor, index, this.options.elements.bar.borderColor),
+                        borderWidth: bar.custom && bar.custom.borderWidth ? bar.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].borderWidth, index, this.options.elements.bar.borderWidth),
 
-                helpers.each(this.active, function(element, index) {
-                    if (element !== this.lastActive[index]) {
-                        changed = true;
-                    }
-                }, this);
-
-                // If entering, leaving, or changing elements, animate the change via pivot
-                if ((!this.lastActive.length && this.active.length) ||
-                    (this.lastActive.length && !this.active.length) ||
-                    (this.lastActive.length && this.active.length && changed)) {
-
-                    this.stop();
-                    this.render(this.options.hoverAnimationDuration);
-                }
-            }
-
-            // Remember Last Active
-            this.lastActive = this.active;
-            return this;
+                        // Tooltip
+                        label: this.data.labels[index],
+                        datasetLabel: this.data.datasets[datasetIndex].label,
+                    },
+                });
+                bar.pivot();
+            }, this);
         },
         update: function() {
             // Update the scale sizes
             Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
 
-            this.eachElement(function(bar, index, dataset, datasetIndex) {
-                helpers.extend(bar, {
-                    value: this.data.datasets[datasetIndex].data[index],
-                });
-
-                bar.pivot();
-            }, this);
-
+            // Update the points
             this.eachElement(function(bar, index, dataset, datasetIndex) {
                 var xScale = this.scales[this.data.datasets[datasetIndex].xAxisID];
                 var yScale = this.scales[this.data.datasets[datasetIndex].yAxisID];
 
                 helpers.extend(bar, {
-                    base: yScale.calculateBarBase(datasetIndex, index),
-                    x: xScale.calculateBarX(this.data.datasets.length, datasetIndex, index),
-                    y: yScale.calculateBarY(this.data.datasets, datasetIndex, index, this.data.datasets[datasetIndex].data[index]),
-                    width: xScale.calculateBarWidth(this.data.datasets.length),
-                    label: this.data.labels[index],
-                    datasetLabel: this.data.datasets[datasetIndex].label,
-                    borderColor: this.data.datasets[datasetIndex].borderColor,
-                    borderWidth: this.data.datasets[datasetIndex].borderWidth,
-                    backgroundColor: this.data.datasets[datasetIndex].backgroundColor,
+                    // Utility
+                    _chart: this.chart,
+                    _xScale: xScale,
+                    _yScale: yScale,
                     _datasetIndex: datasetIndex,
                     _index: index,
-                });
 
+                    // Desired view properties
+                    _model: {
+                        x: xScale.calculateBarX(this.data.datasets.length, datasetIndex, index),
+                        y: yScale.calculateBarY(datasetIndex, index),
+
+                        // Appearance
+                        base: yScale.calculateBarBase(datasetIndex, index),
+                        width: xScale.calculateBarWidth(this.data.datasets.length),
+                        backgroundColor: bar.custom && bar.custom.backgroundColor ? bar.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].backgroundColor, index, this.options.elements.bar.backgroundColor),
+                        borderColor: bar.custom && bar.custom.borderColor ? bar.custom.borderColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].borderColor, index, this.options.elements.bar.borderColor),
+                        borderWidth: bar.custom && bar.custom.borderWidth ? bar.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].borderWidth, index, this.options.elements.bar.borderWidth),
+
+                        // Tooltip
+                        label: this.data.labels[index],
+                        datasetLabel: this.data.datasets[datasetIndex].label,
+                    },
+                });
                 bar.pivot();
             }, this);
+
 
             this.render();
         },
         buildScale: function(labels) {
-             var self = this;
+            var self = this;
 
             // Function to determine the range of all the 
             var calculateYRange = function() {
@@ -338,6 +245,7 @@
                     var values = positiveValues.concat(negativeValues);
                     this.min = helpers.min(values);
                     this.max = helpers.max(values);
+
                 } else {
                     helpers.each(self.data.datasets, function(dataset) {
                         if (dataset.yAxisID === this.id) {
@@ -347,7 +255,7 @@
                                 } else if (value < this.min) {
                                     this.min = value;
                                 }
-                                
+
                                 if (this.max === null) {
                                     this.max = value;
                                 } else if (value > this.max) {
@@ -374,11 +282,11 @@
                     this.max = this.labels.length;
                 },
                 calculateBaseWidth: function() {
-                    return (this.getPixelForValue(null, 1, true) - this.getPixelForValue(null, 0, true)) - (2 * self.options.bars.valueSpacing);
+                    return (this.getPixelForValue(null, 1, true) - this.getPixelForValue(null, 0, true)) - (2 * self.options.elements.bar.valueSpacing);
                 },
                 calculateBarWidth: function(datasetCount) {
                     //The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
-                    var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * self.options.bars.datasetSpacing);
+                    var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * self.options.elements.bar.datasetSpacing);
 
                     if (self.options.stacked) {
                         return baseWidth;
@@ -394,7 +302,7 @@
                         return xAbsolute + barWidth / 2;
                     }
 
-                    return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * self.options.bars.datasetSpacing) + barWidth / 2;
+                    return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * self.options.elements.bar.datasetSpacing) + barWidth / 2;
                 },
             });
             this.scales[xScale.id] = xScale;
@@ -410,18 +318,19 @@
                         var base = 0;
 
                         if (self.options.stacked) {
-                            var bar = self.data.datasets[datasetIndex].metaData[index];
 
-                            if (bar.value < 0) {
+                            var value = self.data.datasets[datasetIndex].data[index];
+
+                            if (value < 0) {
                                 for (var i = 0; i < datasetIndex; i++) {
                                     if (self.data.datasets[i].yAxisID === this.id) {
-                                        base += self.data.datasets[i].metaData[index].value < base ? self.data.datasets[i].metaData[index].value : 0;
+                                        base += self.data.datasets[i].data[index] < 0 ? self.data.datasets[i].data[index] : 0;
                                     }
                                 }
                             } else {
-                                for (var i = 0; i < datasetIndex; i++) {
-                                    if (self.data.datasets[i].yAxisID === this.id) {
-                                        base += self.data.datasets[i].metaData[index].value > base ? self.data.datasets[i].metaData[index].value : 0;
+                                for (var j = 0; j < datasetIndex; j++) {
+                                    if (self.data.datasets[j].yAxisID === this.id) {
+                                        base += self.data.datasets[j].data[index] > 0 ? self.data.datasets[j].data[index] : 0;
                                     }
                                 }
                             }
@@ -442,7 +351,9 @@
                         return base;
 
                     },
-                    calculateBarY: function(datasets, datasetIndex, barIndex, value) {
+                    calculateBarY: function(datasetIndex, index) {
+
+                        var value = self.data.datasets[datasetIndex].data[index];
 
                         if (self.options.stacked) {
 
@@ -450,10 +361,10 @@
                                 sumNeg = 0;
 
                             for (var i = 0; i < datasetIndex; i++) {
-                                if (datasets[i].metaData[barIndex].value < 0) {
-                                    sumNeg += datasets[i].metaData[barIndex].value || 0;
+                                if (self.data.datasets[i].data[index] < 0) {
+                                    sumNeg += self.data.datasets[i].data[index] || 0;
                                 } else {
-                                    sumPos += datasets[i].metaData[barIndex].value || 0;
+                                    sumPos += self.data.datasets[i].data[index] || 0;
                                 }
                             }
 
@@ -463,51 +374,26 @@
                                 return this.getPixelForValue(sumPos + value);
                             }
 
-                            return this.getPixelForValue(0);
+                            return this.getPixelForValue(value);
                         }
 
                         var offset = 0;
 
-                        for (i = datasetIndex; i < datasets.length; i++) {
-                            if (i === datasetIndex && value) {
+                        for (var j = datasetIndex; j < self.data.datasets.length; j++) {
+                            if (j === datasetIndex && value) {
                                 offset += value;
                             } else {
-                                offset = offset + (datasets[i].metaData[barIndex].value);
+                                offset = offset + value;
                             }
                         }
 
                         return this.getPixelForValue(value);
-                    },
-                    
-                    calculateBaseHeight: function() {
-                        return (this.getPixelForValue(1) - this.getPixelForValue(0));
                     },
                     id: yAxisOptions.id,
                 });
 
                 this.scales[scale.id] = scale;
             }, this);
-        },
-        // This should be incorportated into the init as something like a default value. "Reflow" seems like a weird word for a fredraw function
-        redraw: function() {
-            this.eachElement(function(element, index, datasetIndex) {
-                var yScale = this.scales[this.data.datasets[datasetIndex].yAxisID];
-                var base = yScale.getPixelForValue(yScale.min);
-
-                if (yScale.min <= 0 && yScale.max >= 0) {
-                    // have a 0 point
-                    base = yScale.getPixelForValue(0);
-                } else if (yScale.min < 0 && yScale.max < 0) {
-                    // all megative
-                    base = yScale.getPixelForValue(yScale.max);
-                }
-
-                helpers.extend(element, {
-                    y: base,
-                    base: base
-                });
-            });
-            this.render();
         },
         draw: function(ease) {
 
@@ -526,7 +412,149 @@
 
             // Finally draw the tooltip
             this.tooltip.transition(easingDecimal).draw();
-        }
+        },
+        events: function(e) {
+
+
+            // If exiting chart
+            if (e.type == 'mouseout') {
+                return this;
+            }
+
+            this.lastActive = this.lastActive || [];
+
+            // Find Active Elements
+            this.active = function() {
+                switch (this.options.hover.mode) {
+                    case 'single':
+                        return this.getElementAtEvent(e);
+                    case 'label':
+                        return this.getElementsAtEvent(e);
+                    case 'dataset':
+                        return this.getDatasetAtEvent(e);
+                    default:
+                        return e;
+                }
+            }.call(this);
+
+            // On Hover hook
+            if (this.options.hover.onHover) {
+                this.options.hover.onHover.call(this, this.active);
+            }
+
+            if (e.type == 'mouseup' || e.type == 'click') {
+                if (this.options.onClick) {
+                    this.options.onClick.call(this, e, this.active);
+                }
+            }
+
+            var dataset;
+            var index;
+            // Remove styling for last active (even if it may still be active)
+            if (this.lastActive.length) {
+                switch (this.options.hover.mode) {
+                    case 'single':
+                        dataset = this.data.datasets[this.lastActive[0]._datasetIndex];
+                        index = this.lastActive[0]._index;
+
+                        this.lastActive[0]._model.backgroundColor = this.lastActive[0].custom && this.lastActive[0].custom.backgroundColor ? this.lastActive[0].custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.bar.backgroundColor);
+                        this.lastActive[0]._model.borderColor = this.lastActive[0].custom && this.lastActive[0].custom.borderColor ? this.lastActive[0].custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.bar.borderColor);
+                        this.lastActive[0]._model.borderWidth = this.lastActive[0].custom && this.lastActive[0].custom.borderWidth ? this.lastActive[0].custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.bar.borderWidth);
+                        break;
+                    case 'label':
+                        for (var i = 0; i < this.lastActive.length; i++) {
+                            dataset = this.data.datasets[this.lastActive[i]._datasetIndex];
+                            index = this.lastActive[i]._index;
+
+                            this.lastActive[i]._model.backgroundColor = this.lastActive[i].custom && this.lastActive[i].custom.backgroundColor ? this.lastActive[i].custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.bar.backgroundColor);
+                            this.lastActive[i]._model.borderColor = this.lastActive[i].custom && this.lastActive[i].custom.borderColor ? this.lastActive[i].custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.bar.borderColor);
+                            this.lastActive[i]._model.borderWidth = this.lastActive[i].custom && this.lastActive[i].custom.borderWidth ? this.lastActive[i].custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.bar.borderWidth);
+                        }
+                        break;
+                    case 'dataset':
+                        break;
+                    default:
+                        // Don't change anything
+                }
+            }
+
+            // Built in hover styling
+            if (this.active.length && this.options.hover.mode) {
+                switch (this.options.hover.mode) {
+                    case 'single':
+                        dataset = this.data.datasets[this.active[0]._datasetIndex];
+                        index = this.active[0]._index;
+
+                        this.active[0]._model.backgroundColor = this.active[0].custom && this.active[0].custom.hoverBackgroundColor ? this.active[0].custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.color(this.active[0]._model.backgroundColor).saturate(0.5).darken(0.35).rgbString());
+                        this.active[0]._model.borderColor = this.active[0].custom && this.active[0].custom.hoverBorderColor ? this.active[0].custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.color(this.active[0]._model.borderColor).saturate(0.5).darken(0.35).rgbString());
+                        this.active[0]._model.borderWidth = this.active[0].custom && this.active[0].custom.hoverBorderWidth ? this.active[0].custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.active[0]._model.borderWidth);
+                        break;
+                    case 'label':
+                        for (var i = 0; i < this.active.length; i++) {
+                            dataset = this.data.datasets[this.active[i]._datasetIndex];
+                            index = this.active[i]._index;
+
+                            this.active[i]._model.backgroundColor = this.active[i].custom && this.active[i].custom.hoverBackgroundColor ? this.active[i].custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.color(this.active[i]._model.backgroundColor).saturate(0.5).darken(0.35).rgbString());
+                            this.active[i]._model.borderColor = this.active[i].custom && this.active[i].custom.hoverBorderColor ? this.active[i].custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.color(this.active[i]._model.borderColor).saturate(0.5).darken(0.35).rgbString());
+                            this.active[i]._model.borderWidth = this.active[i].custom && this.active[i].custom.hoverBorderWidth ? this.active[i].custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.active[i]._model.borderWidth);
+                        }
+                        break;
+                    case 'dataset':
+                        break;
+                    default:
+                        // Don't change anything
+                }
+            }
+
+
+            // Built in Tooltips
+            if (this.options.tooltips.enabled) {
+
+                // The usual updates
+                this.tooltip.initialize();
+
+                // Active
+                if (this.active.length) {
+                    this.tooltip._model.opacity = 1;
+
+                    helpers.extend(this.tooltip, {
+                        _active: this.active,
+                    });
+
+                    this.tooltip.update();
+                } else {
+                    // Inactive
+                    this.tooltip._model.opacity = 0;
+                }
+            }
+
+
+            this.tooltip.pivot();
+
+            // Hover animations
+            if (!this.animating) {
+                var changed;
+
+                helpers.each(this.active, function(element, index) {
+                    if (element !== this.lastActive[index]) {
+                        changed = true;
+                    }
+                }, this);
+
+                // If entering, leaving, or changing elements, animate the change via pivot
+                if ((!this.lastActive.length && this.active.length) ||
+                    (this.lastActive.length && !this.active.length) ||
+                    (this.lastActive.length && this.active.length && changed)) {
+
+                    this.stop();
+                    this.render(this.options.hoverAnimationDuration);
+                }
+            }
+
+            // Remember Last Active
+            this.lastActive = this.active;
+            return this;
+        },
     });
 
 

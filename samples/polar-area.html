@@ -22,27 +22,29 @@
 
     var config = {
         data: {
-            data: [{
-                value: randomScalingFactor(),
-                backgroundColor: "#F7464A",
-                label: "Red"
-            }, {
-                value: randomScalingFactor(),
-                backgroundColor: "#46BFBD",
-                label: "Green"
-            }, {
-                value: randomScalingFactor(),
-                backgroundColor: "#FDB45C",
-                label: "Yellow"
-            }, {
-                value: randomScalingFactor(),
-                backgroundColor: "#949FB1",
-                label: "Grey"
-            }, {
-                value: randomScalingFactor(),
-                backgroundColor: "#4D5360",
-                label: "Dark Grey"
-            }]
+            datasets: [{
+                data: [
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                ],
+                backgroundColor: [
+                    "#F7464A",
+                    "#46BFBD",
+                    "#FDB45C",
+                    "#949FB1",
+                    "#4D5360",
+                ],
+                labels: [
+                    "Red",
+                    "Green",
+                    "Yellow",
+                    "Grey",
+                    "Dark Grey"
+                ]
+            }],
         },
         options: {
             responsive: true
@@ -55,9 +57,11 @@
     };
 
     $('#randomizeData').click(function() {
-        $.each(polarData, function(i, piece) {
-            polarData[i].value = randomScalingFactor();
-            polarData[i].color = 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
+        $.each(config.data.datasets, function(i, piece) {
+            $.each(piece.data, function(j, value) {
+                config.data.datasets[i].data[j] = randomScalingFactor();
+                //config.data.datasets.backgroundColor[i] = 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
+            });
         });
         window.myPolarArea.update();
     });

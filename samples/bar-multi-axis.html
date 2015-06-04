@@ -19,6 +19,9 @@
     var randomColorFactor = function() {
         return Math.round(Math.random() * 255);
     };
+    var randomColor = function() {
+        return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
+    };
 
     var barChartData = {
         labels: ["January", "February", "March", "April", "May", "June", "July"],
@@ -34,7 +37,7 @@
             data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
         }, {
             label: 'Dataset 3',
-            backgroundColor: "rgba(151,187,205,0.5)",
+            backgroundColor: [randomColor(), randomColor(), randomColor(), randomColor(), randomColor(), randomColor(), randomColor()],
             yAxisID: "y-axis-1",
             data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
         }]
@@ -120,7 +123,12 @@
 
     $('#randomizeData').click(function() {
         $.each(barChartData.datasets, function(i, dataset) {
-            dataset.backgroundColor = 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
+            if (Chart.helpers.isArray(dataset.backgroundColor)) {
+                dataset.backgroundColor= [randomColor(), randomColor(), randomColor(), randomColor(), randomColor(), randomColor(), randomColor()];
+            } else {
+                dataset.backgroundColor= randomColor();
+            }
+
             dataset.data = [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()];
 
         });
