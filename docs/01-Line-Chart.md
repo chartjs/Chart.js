@@ -13,7 +13,10 @@ Often, it is used to show trend data, and the comparison of two data sets.
 
 ###Example usage
 ```javascript
-var myLineChart = new Chart(ctx).Line(data, options);
+var myLineChart = new Chart(ctx).Line({
+	data: data, 
+	options: options
+});
 ```
 ###Data structure
 
@@ -180,9 +183,14 @@ These are the customisation options specific to Line charts. These options are m
 				zeroLineColor: "rgba(0,0,0,0.25)",
 			},
 
-			// scale numbers
+			// Boolean - if true ensures that the scale always has a 0 point
 			beginAtZero: false,
-			integersOnly: false,
+
+			// Object - if specified, allows the user to override the step generation algorithm.
+			//			Contains the following values
+			//				start: // number to start at
+			//				stepWidth: // size of step
+			//				steps: // number of steps
 			override: null,
 
 			// label settings
