@@ -687,8 +687,8 @@
                 }
             } else {
                 this.labelWidth = 0;
-                this.paddingRight = this.padding;
-                this.paddingLeft = this.padding;
+                this.paddingRight = 0;
+                this.paddingLeft = 0;
             }
 
         },
