@@ -5535,7 +5535,7 @@
                                     this.xCenter - labelWidth / 2 - this.options.labels.backdropPaddingX,
                                     yHeight - this.fontSize / 2 - this.options.labels.backdropPaddingY,
                                     labelWidth + this.options.labels.backdropPaddingX * 2,
-                                    this.options.labels.fontSize + this.options.lables.backdropPaddingY * 2
+                                    this.options.labels.fontSize + this.options.labels.backdropPaddingY * 2
                                 );
                             }
 
