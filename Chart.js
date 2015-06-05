@@ -4802,7 +4802,7 @@
 
                 if (this.options.labels.userCallback) {
                     // If the user provided a callback for label generation, use that as first priority
-                    label = this.options.lables.userCallback(tick, index, ticks);
+                    label = this.options.labels.userCallback(tick, index, ticks);
                 } else if (this.options.labels.template) {
                     // else fall back to the template string
                     label = helpers.template(this.options.labels.template, {
@@ -5535,7 +5535,7 @@
                                     this.xCenter - labelWidth / 2 - this.options.labels.backdropPaddingX,
                                     yHeight - this.fontSize / 2 - this.options.labels.backdropPaddingY,
                                     labelWidth + this.options.labels.backdropPaddingX * 2,
-                                    this.options.labels.fontSize + this.options.lables.backdropPaddingY * 2
+                                    this.options.labels.fontSize + this.options.labels.backdropPaddingY * 2
                                 );
                             }
 
