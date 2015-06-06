@@ -11,8 +11,8 @@
     Chart.scaleService = {
         // The interesting function
         fitScalesForChart: function(chartInstance, width, height) {
-            var xPadding = 10;
-            var yPadding = 10;
+            var xPadding = 5;
+            var yPadding = 5;
 
             if (chartInstance) {
                 var leftScales = helpers.where(chartInstance.scales, function(scaleInstance) {
@@ -518,14 +518,15 @@
                         var labelStartY;
 
                         if (this.options.position == "top") {
-                            labelStartY = this.top;
+                            labelStartY = this.bottom - 10;
+                            this.ctx.textBaseline = "bottom";
                         } else {
                             // bottom side
-                            labelStartY = this.top + 20;
+                            labelStartY = this.top + 10;
+                            this.ctx.textBaseline = "top";
                         }
 
                         this.ctx.textAlign = "center";
-                        this.ctx.textBaseline = "top";
                         this.ctx.font = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
 
                         helpers.each(this.labels, function(label, index) {
@@ -584,7 +585,7 @@
                         // Draw the labels
 
                         var labelStartX;
-                        
+
                         if (this.options.position == "left") {
                             labelStartX = this.right - 10;
                             this.ctx.textAlign = "right";
