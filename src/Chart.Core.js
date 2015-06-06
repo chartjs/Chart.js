@@ -370,12 +370,10 @@
                 distanceFromYCenter = anglePoint.y - centrePoint.y,
                 radialDistanceFromCenter = Math.sqrt(distanceFromXCenter * distanceFromXCenter + distanceFromYCenter * distanceFromYCenter);
 
+            var angle = Math.atan2(distanceFromYCenter, distanceFromXCenter);
 
-            var angle = Math.PI * 2 + Math.atan2(distanceFromYCenter, distanceFromXCenter);
-
-            //If the segment is in the top left quadrant, we need to add another rotation to the angle
-            if (distanceFromXCenter < 0 && distanceFromYCenter < 0) {
-                angle += Math.PI * 2;
+            if (angle < (-0.5 * Math.PI)) {
+                angle += 2.0 * Math.PI; // make sure the returned angle is in the range of (-PI/2, 3PI/2]
             }
 
             return {
@@ -1443,8 +1441,12 @@
                 y: chartY
             });
 
+            // Put into the range of (-PI/2, 3PI/2]
+            var startAngle = vm.startAngle < (-0.5 * Math.PI) ? vm.startAngle + (2.0 * Math.PI) : vm.startAngle;
+            var endAngle = vm.endAngle < (-0.5 * Math.PI) ? vm.endAngle + (2.0 * Math.PI) : vm.endAngle
+
             //Check if within the range of the open/close angle
-            var betweenAngles = (pointRelativePosition.angle >= vm.startAngle && pointRelativePosition.angle <= vm.endAngle),
+            var betweenAngles = (pointRelativePosition.angle >= startAngle && pointRelativePosition.angle <= endAngle),
                 withinRadius = (pointRelativePosition.distance >= vm.innerRadius && pointRelativePosition.distance <= vm.outerRadius);
 
             return (betweenAngles && withinRadius);
