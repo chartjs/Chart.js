@@ -406,7 +406,7 @@
                 //		-----------------------------------------------------
                 //			|			|			|			|			|
                 //
-                minSize.height = this.options.gridLines.show ? 25 : 0;
+                minSize.height = this.options.gridLines.show ? 10 : 0;
             } else {
                 minSize.height = maxHeight; // fill all the height
 
@@ -422,7 +422,7 @@
                 //	    |
                 //		|
                 //	   -|
-                minSize.width = this.options.gridLines.show ? 25 : 0;
+                minSize.width = this.options.gridLines.show ? 10 : 0;
             }
 
             if (this.options.labels.show) {
@@ -473,8 +473,8 @@
                         hasZero = helpers.findNextWhere(this.ticks, function(tick) {
                             return tick === 0;
                         }) !== undefined;
-                        var yTickStart = this.options.position == "bottom" ? this.top : this.bottom - 10;
-                        var yTickEnd = this.options.position == "bottom" ? this.top + 10 : this.bottom;
+                        var yTickStart = this.options.position == "bottom" ? this.top : this.bottom - 5;
+                        var yTickEnd = this.options.position == "bottom" ? this.top + 5 : this.bottom;
 
                         helpers.each(this.ticks, function(tick, index) {
                             // Grid lines are vertical
@@ -542,8 +542,8 @@
                         hasZero = helpers.findNextWhere(this.ticks, function(tick) {
                             return tick === 0;
                         }) !== undefined;
-                        var xTickStart = this.options.position == "right" ? this.left : this.right - 10;
-                        var xTickEnd = this.options.position == "right" ? this.left + 10 : this.right;
+                        var xTickStart = this.options.position == "right" ? this.left : this.right - 5;
+                        var xTickEnd = this.options.position == "right" ? this.left + 5 : this.right;
 
                         helpers.each(this.ticks, function(tick, index) {
                             // Grid lines are horizontal
@@ -584,22 +584,22 @@
                         // Draw the labels
 
                         var labelStartX;
-                        var maxLabelWidth = this.width - 25;
-
+                        
                         if (this.options.position == "left") {
-                            labelStartX = this.left;
+                            labelStartX = this.right - 10;
+                            this.ctx.textAlign = "right";
                         } else {
                             // right side
-                            labelStartX = this.left + 20;
+                            labelStartX = this.left + 5;
+                            this.ctx.textAlign = "left"
                         }
 
-                        this.ctx.textAlign = "left";
                         this.ctx.textBaseline = "middle";
                         this.ctx.font = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
 
                         helpers.each(this.labels, function(label, index) {
                             var yValue = this.getPixelForValue(this.ticks[index]);
-                            this.ctx.fillText(label, labelStartX, yValue, maxLabelWidth);
+                            this.ctx.fillText(label, labelStartX, yValue);
                         }, this);
                     }
                 }
