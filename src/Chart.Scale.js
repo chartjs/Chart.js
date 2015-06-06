@@ -176,30 +176,81 @@
                         return wrapper.scale === scaleInstance;
                     });
 
+                    var scaleMargin = {
+                        left: totalLeftWidth,
+                        right: totalRightWidth,
+                        top: 0,
+                        bottom: 0,
+                    };
+
                     if (wrapper) {
-                        scaleInstance.fit(maxChartWidth, wrapper.minSize.width);
+                        scaleInstance.fit(maxChartWidth, wrapper.minSize.height, scaleMargin);
                     }
                 };
 
+                var totalLeftWidth = xPadding;
+                var totalRightWidth = xPadding;
+                var totalTopHeight = yPadding;
+                var totalBottomHeight = yPadding;
+
                 helpers.each(leftScales, verticalScaleFitFunction);
                 helpers.each(rightScales, verticalScaleFitFunction);
-                helpers.each(topScales, horizontalScaleFitFunction);
-                helpers.each(bottomScales, horizontalScaleFitFunction);
 
-                // Step 7 
-                var totalLeftWidth = xPadding;
-                var totalTopHeight = yPadding;
-
-                // Calculate total width of all left axes
+                // Figure out how much margin is on the left and right of the horizontal axes
                 helpers.each(leftScales, function(scaleInstance) {
                     totalLeftWidth += scaleInstance.width;
                 });
 
-                // Calculate total height of all top axes
+                helpers.each(rightScales, function(scaleInstance) {
+                    totalRightWidth += scaleInstance.width;
+                });
+
+                helpers.each(topScales, horizontalScaleFitFunction);
+                helpers.each(bottomScales, horizontalScaleFitFunction);
+
                 helpers.each(topScales, function(scaleInstance) {
                     totalTopHeight += scaleInstance.height;
                 });
+                helpers.each(bottomScales, function(scaleInstance) {
+                    totalBottomHeight += scaleInstance.height;
+                });
 
+                // Let the left scale know the final margin
+                helpers.each(leftScales, function(scaleInstance) {
+                    var wrapper = helpers.findNextWhere(minimumScaleSizes, function(wrapper) {
+                        return wrapper.scale === scaleInstance;
+                    });
+
+                    var scaleMargin = {
+                        left: 0,
+                        right: 0,
+                        top: totalTopHeight,
+                        bottom: totalBottomHeight
+                    };
+
+                    if (wrapper) {
+                        scaleInstance.fit(wrapper.minSize.width, maxChartHeight, scaleMargin);
+                    }
+                });
+
+                helpers.each(rightScales, function(scaleInstance) {
+                    var wrapper = helpers.findNextWhere(minimumScaleSizes, function(wrapper) {
+                        return wrapper.scale === scaleInstance;
+                    });
+
+                    var scaleMargin = {
+                        left: 0,
+                        right: 0,
+                        top: totalTopHeight,
+                        bottom: totalBottomHeight
+                    };
+
+                    if (wrapper) {
+                        scaleInstance.fit(wrapper.minSize.width, maxChartHeight, scaleMargin);
+                    }
+                });
+
+                // Step 7 
                 // Position the scales
                 var left = xPadding;
                 var top = yPadding;
@@ -592,7 +643,7 @@
                         } else {
                             // right side
                             labelStartX = this.left + 5;
-                            this.ctx.textAlign = "left"
+                            this.ctx.textAlign = "left";
                         }
 
                         this.ctx.textBaseline = "middle";
@@ -633,7 +684,7 @@
                 return this.top + (index * (this.height / this.max));
             }
         },
-        calculateLabelRotation: function(maxHeight) {
+        calculateLabelRotation: function(maxHeight, margins) {
             //Get the width of each grid by calculating the difference
             //between x offsets between 0 and 1.
             var labelFont = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
@@ -688,8 +739,16 @@
                 }
             } else {
                 this.labelWidth = 0;
-                this.paddingRight = this.padding;
-                this.paddingLeft = this.padding;
+                this.paddingRight = 0;
+                this.paddingLeft = 0;
+            }
+
+            if (margins) {
+                this.paddingLeft -= margins.left;
+                this.paddingRight -= margins.right;
+
+                this.paddingLeft = Math.max(this.paddingLeft, 0);
+                this.paddingRight = Math.max(this.paddingRight, 0);
             }
 
         },
@@ -697,9 +756,9 @@
         // @param {number} maxWidth : the max width the axis can be
         // @param {number} maxHeight: the max height the axis can be
         // @return {object} minSize : the minimum size needed to draw the axis
-        fit: function(maxWidth, maxHeight) {
+        fit: function(maxWidth, maxHeight, margins) {
             this.calculateRange();
-            this.calculateLabelRotation();
+            this.calculateLabelRotation(maxHeight, margins);
 
             var minSize = {
                 width: 0,
