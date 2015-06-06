@@ -11,8 +11,8 @@
     Chart.scaleService = {
         // The interesting function
         fitScalesForChart: function(chartInstance, width, height) {
-            var xPadding = 10;
-            var yPadding = 10;
+            var xPadding = 5;
+            var yPadding = 5;
 
             if (chartInstance) {
                 var leftScales = helpers.where(chartInstance.scales, function(scaleInstance) {
@@ -176,30 +176,81 @@
                         return wrapper.scale === scaleInstance;
                     });
 
+                    var scaleMargin = {
+                        left: totalLeftWidth,
+                        right: totalRightWidth,
+                        top: 0,
+                        bottom: 0,
+                    };
+
                     if (wrapper) {
-                        scaleInstance.fit(maxChartWidth, wrapper.minSize.width);
+                        scaleInstance.fit(maxChartWidth, wrapper.minSize.height, scaleMargin);
                     }
                 };
 
+                var totalLeftWidth = xPadding;
+                var totalRightWidth = xPadding;
+                var totalTopHeight = yPadding;
+                var totalBottomHeight = yPadding;
+
                 helpers.each(leftScales, verticalScaleFitFunction);
                 helpers.each(rightScales, verticalScaleFitFunction);
-                helpers.each(topScales, horizontalScaleFitFunction);
-                helpers.each(bottomScales, horizontalScaleFitFunction);
 
-                // Step 7 
-                var totalLeftWidth = xPadding;
-                var totalTopHeight = yPadding;
-
-                // Calculate total width of all left axes
+                // Figure out how much margin is on the left and right of the horizontal axes
                 helpers.each(leftScales, function(scaleInstance) {
                     totalLeftWidth += scaleInstance.width;
                 });
 
-                // Calculate total height of all top axes
+                helpers.each(rightScales, function(scaleInstance) {
+                    totalRightWidth += scaleInstance.width;
+                });
+
+                helpers.each(topScales, horizontalScaleFitFunction);
+                helpers.each(bottomScales, horizontalScaleFitFunction);
+
                 helpers.each(topScales, function(scaleInstance) {
                     totalTopHeight += scaleInstance.height;
                 });
+                helpers.each(bottomScales, function(scaleInstance) {
+                    totalBottomHeight += scaleInstance.height;
+                });
 
+                // Let the left scale know the final margin
+                helpers.each(leftScales, function(scaleInstance) {
+                    var wrapper = helpers.findNextWhere(minimumScaleSizes, function(wrapper) {
+                        return wrapper.scale === scaleInstance;
+                    });
+
+                    var scaleMargin = {
+                        left: 0,
+                        right: 0,
+                        top: totalTopHeight,
+                        bottom: totalBottomHeight
+                    };
+
+                    if (wrapper) {
+                        scaleInstance.fit(wrapper.minSize.width, maxChartHeight, scaleMargin);
+                    }
+                });
+
+                helpers.each(rightScales, function(scaleInstance) {
+                    var wrapper = helpers.findNextWhere(minimumScaleSizes, function(wrapper) {
+                        return wrapper.scale === scaleInstance;
+                    });
+
+                    var scaleMargin = {
+                        left: 0,
+                        right: 0,
+                        top: totalTopHeight,
+                        bottom: totalBottomHeight
+                    };
+
+                    if (wrapper) {
+                        scaleInstance.fit(wrapper.minSize.width, maxChartHeight, scaleMargin);
+                    }
+                });
+
+                // Step 7 
                 // Position the scales
                 var left = xPadding;
                 var top = yPadding;
@@ -406,7 +457,7 @@
                 //		-----------------------------------------------------
                 //			|			|			|			|			|
                 //
-                minSize.height = this.options.gridLines.show ? 25 : 0;
+                minSize.height = this.options.gridLines.show ? 10 : 0;
             } else {
                 minSize.height = maxHeight; // fill all the height
 
@@ -422,7 +473,7 @@
                 //	    |
                 //		|
                 //	   -|
-                minSize.width = this.options.gridLines.show ? 25 : 0;
+                minSize.width = this.options.gridLines.show ? 10 : 0;
             }
 
             if (this.options.labels.show) {
@@ -473,8 +524,8 @@
                         hasZero = helpers.findNextWhere(this.ticks, function(tick) {
                             return tick === 0;
                         }) !== undefined;
-                        var yTickStart = this.options.position == "bottom" ? this.top : this.bottom - 10;
-                        var yTickEnd = this.options.position == "bottom" ? this.top + 10 : this.bottom;
+                        var yTickStart = this.options.position == "bottom" ? this.top : this.bottom - 5;
+                        var yTickEnd = this.options.position == "bottom" ? this.top + 5 : this.bottom;
 
                         helpers.each(this.ticks, function(tick, index) {
                             // Grid lines are vertical
@@ -518,14 +569,15 @@
                         var labelStartY;
 
                         if (this.options.position == "top") {
-                            labelStartY = this.top;
+                            labelStartY = this.bottom - 10;
+                            this.ctx.textBaseline = "bottom";
                         } else {
                             // bottom side
-                            labelStartY = this.top + 20;
+                            labelStartY = this.top + 10;
+                            this.ctx.textBaseline = "top";
                         }
 
                         this.ctx.textAlign = "center";
-                        this.ctx.textBaseline = "top";
                         this.ctx.font = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
 
                         helpers.each(this.labels, function(label, index) {
@@ -542,8 +594,8 @@
                         hasZero = helpers.findNextWhere(this.ticks, function(tick) {
                             return tick === 0;
                         }) !== undefined;
-                        var xTickStart = this.options.position == "right" ? this.left : this.right - 10;
-                        var xTickEnd = this.options.position == "right" ? this.left + 10 : this.right;
+                        var xTickStart = this.options.position == "right" ? this.left : this.right - 5;
+                        var xTickEnd = this.options.position == "right" ? this.left + 5 : this.right;
 
                         helpers.each(this.ticks, function(tick, index) {
                             // Grid lines are horizontal
@@ -584,22 +636,22 @@
                         // Draw the labels
 
                         var labelStartX;
-                        var maxLabelWidth = this.width - 25;
 
                         if (this.options.position == "left") {
-                            labelStartX = this.left;
+                            labelStartX = this.right - 10;
+                            this.ctx.textAlign = "right";
                         } else {
                             // right side
-                            labelStartX = this.left + 20;
+                            labelStartX = this.left + 5;
+                            this.ctx.textAlign = "left";
                         }
 
-                        this.ctx.textAlign = "left";
                         this.ctx.textBaseline = "middle";
                         this.ctx.font = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
 
                         helpers.each(this.labels, function(label, index) {
                             var yValue = this.getPixelForValue(this.ticks[index]);
-                            this.ctx.fillText(label, labelStartX, yValue, maxLabelWidth);
+                            this.ctx.fillText(label, labelStartX, yValue);
                         }, this);
                     }
                 }
@@ -632,7 +684,7 @@
                 return this.top + (index * (this.height / this.max));
             }
         },
-        calculateLabelRotation: function(maxHeight) {
+        calculateLabelRotation: function(maxHeight, margins) {
             //Get the width of each grid by calculating the difference
             //between x offsets between 0 and 1.
             var labelFont = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
@@ -687,8 +739,16 @@
                 }
             } else {
                 this.labelWidth = 0;
-                this.paddingRight = this.padding;
-                this.paddingLeft = this.padding;
+                this.paddingRight = 0;
+                this.paddingLeft = 0;
+            }
+
+            if (margins) {
+                this.paddingLeft -= margins.left;
+                this.paddingRight -= margins.right;
+
+                this.paddingLeft = Math.max(this.paddingLeft, 0);
+                this.paddingRight = Math.max(this.paddingRight, 0);
             }
 
         },
@@ -696,9 +756,9 @@
         // @param {number} maxWidth : the max width the axis can be
         // @param {number} maxHeight: the max height the axis can be
         // @return {object} minSize : the minimum size needed to draw the axis
-        fit: function(maxWidth, maxHeight) {
+        fit: function(maxWidth, maxHeight, margins) {
             this.calculateRange();
-            this.calculateLabelRotation();
+            this.calculateLabelRotation(maxHeight, margins);
 
             var minSize = {
                 width: 0,
