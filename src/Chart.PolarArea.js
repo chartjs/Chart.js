@@ -148,9 +148,6 @@
 
                 var value = this.data.datasets[0].data[index];
 
-                var startAngle = Math.PI * 1.5 + (Math.PI * circumference) * index;
-                var endAngle = startAngle + (circumference * Math.PI);
-
                 helpers.extend(slice, {
                     _index: index,
                     _model: {
@@ -158,8 +155,8 @@
                         y: this.chart.height / 2,
                         innerRadius: 0,
                         outerRadius: 0,
-                        startAngle: Math.PI * 1.5,
-                        endAngle: Math.PI * 1.5,
+                        startAngle: Math.PI * -0.5,
+                        endAngle: Math.PI * -0.5,
 
                         backgroundColor: slice.custom && slice.custom.backgroundColor ? slice.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[0].backgroundColor, index, this.options.elements.slice.backgroundColor),
                         hoverBackgroundColor: slice.custom && slice.custom.hoverBackgroundColor ? slice.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[0].hoverBackgroundColor, index, this.options.elements.slice.hoverBackgroundColor),
@@ -189,7 +186,7 @@
 
                 var value = this.data.datasets[0].data[index];
 
-                var startAngle = Math.PI * 1.5 + (Math.PI * circumference) * index;
+                var startAngle = (-0.5 * Math.PI) + (Math.PI * circumference) * index;
                 var endAngle = startAngle + (circumference * Math.PI);
 
                 helpers.extend(slice, {
