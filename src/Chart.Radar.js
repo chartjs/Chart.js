@@ -192,6 +192,16 @@
 
             // Update the lines
             this.eachDataset(function(dataset, datasetIndex) {
+                var scaleBase;
+
+                if (this.scale.min < 0 && this.scale.max < 0) {
+                    scaleBase = this.scale.getPointPosition(0, this.scale.max);
+                } else if (this.scale.min > 0 && this.scale.max > 0) {
+                    scaleBase = this.scale.getPointPosition(0, this.scale.min);
+                } else {
+                    scaleBase = this.scale.getPointPosition(0, 0);
+                }
+
                 helpers.extend(dataset.metaDataset, {
                     // Utility
                     _datasetIndex: datasetIndex,
@@ -213,7 +223,7 @@
                         // Scale
                         scaleTop: this.scale.top,
                         scaleBottom: this.scale.bottom,
-                        scaleZero: this.scale.getPointPosition(0),
+                        scaleZero: scaleBase,
                     },
                 });
 
