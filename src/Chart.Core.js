@@ -189,7 +189,8 @@
             return extend.apply(null, args);
         },
         // Need a special merge function to chart configs since they are now grouped
-        configMerge = helpers.configMerge = function(base) {
+        configMerge = helpers.configMerge = function(_base) {
+            var base = clone(_base);
             helpers.each(Array.prototype.slice.call(arguments, 1), function(extension) {
                 helpers.each(extension, function(value, key) {
                     if (extension.hasOwnProperty(key)) {
@@ -1442,7 +1443,7 @@
             });
 
             // Put into the range of (-PI/2, 3PI/2]
-            var startAngle = vm.startAngle < (-0.5 * Math.PI) ? vm.startAngle + (2.0 * Math.PI) : vm.startAngle > (1.5 * Math.PI) ? vm.startAngle - (2.0 * Math.PI): vm.startAngle;
+            var startAngle = vm.startAngle < (-0.5 * Math.PI) ? vm.startAngle + (2.0 * Math.PI) : vm.startAngle > (1.5 * Math.PI) ? vm.startAngle - (2.0 * Math.PI) : vm.startAngle;
             var endAngle = vm.endAngle < (-0.5 * Math.PI) ? vm.endAngle + (2.0 * Math.PI) : vm.endAngle > (1.5 * Math.PI) ? vm.endAngle - (2.0 * Math.PI) : vm.endAngle
 
             //Check if within the range of the open/close angle
