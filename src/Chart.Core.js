@@ -989,7 +989,7 @@
         redraw: noop,
         render: function(duration) {
 
-            if (this.options.animation.duration !== 0) {
+            if (this.options.animation.duration !== 0 || duration) {
                 var animation = new Chart.Animation();
                 animation.numSteps = (duration || this.options.animation.duration) / 16.66; //60 fps
                 animation.easing = this.options.animation.easing;

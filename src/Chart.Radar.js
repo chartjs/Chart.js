@@ -187,7 +187,7 @@
                 point.pivot();
             }, this);
         },
-        update: function() {
+        update: function(animationDuration) {
             Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
 
             // Update the lines
@@ -286,7 +286,7 @@
                 point.pivot();
             }, this);
 
-            this.render();
+            this.render(animationDuration);
         },
         buildScale: function() {
             var self = this;

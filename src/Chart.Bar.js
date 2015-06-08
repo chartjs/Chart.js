@@ -134,7 +134,7 @@
 
                 var yScalePoint;
 
-                if (yScale.min < 0 && yScale.max <0) {
+                if (yScale.min < 0 && yScale.max < 0) {
                     // all less than 0. use the top
                     yScalePoint = yScale.getPixelForValue(yScale.max);
                 } else if (yScale.min > 0 && yScale.max > 0) {
@@ -171,7 +171,7 @@
                 bar.pivot();
             }, this);
         },
-        update: function() {
+        update: function(animationDuration) {
             // Update the scale sizes
             Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
 
@@ -209,7 +209,7 @@
             }, this);
 
 
-            this.render();
+            this.render(animationDuration);
         },
         buildScale: function(labels) {
             var self = this;

@@ -153,7 +153,7 @@
 
                 var yScalePoint;
 
-                if (yScale.min < 0 && yScale.max <0) {
+                if (yScale.min < 0 && yScale.max < 0) {
                     // all less than 0. use the top
                     yScalePoint = yScale.getPixelForValue(yScale.max);
                 } else if (yScale.min > 0 && yScale.max > 0) {
@@ -225,7 +225,7 @@
                 point.pivot();
             }, this);
         },
-        update: function() {
+        update: function(animationDuration) {
 
             Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
 
@@ -328,7 +328,7 @@
                 point.pivot();
             }, this);
 
-            this.render();
+            this.render(animationDuration);
         },
         buildScale: function() {
             var self = this;

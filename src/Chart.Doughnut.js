@@ -112,7 +112,7 @@
 
             }, this);
         },
-        update: function() {
+        update: function(animationDuration) {
 
             this.outerRadius = (helpers.min([this.chart.width, this.chart.height]) - this.options.elements.slice.borderWidth / 2) / 2;
             this.innerRadius = this.options.cutoutPercentage ? (this.outerRadius / 100) * (this.options.cutoutPercentage) : 1;
@@ -176,7 +176,7 @@
 
             }, this);
 
-            this.render();
+            this.render(animationDuration);
         },
         draw: function(easeDecimal) {
             easeDecimal = easeDecimal || 1;

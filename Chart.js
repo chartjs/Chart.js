@@ -989,7 +989,7 @@
         redraw: noop,
         render: function(duration) {
 
-            if (this.options.animation.duration !== 0) {
+            if (this.options.animation.duration !== 0 || duration) {
                 var animation = new Chart.Animation();
                 animation.numSteps = (duration || this.options.animation.duration) / 16.66; //60 fps
                 animation.easing = this.options.animation.easing;
@@ -2123,7 +2123,7 @@
 
                 var yScalePoint;
 
-                if (yScale.min < 0 && yScale.max <0) {
+                if (yScale.min < 0 && yScale.max < 0) {
                     // all less than 0. use the top
                     yScalePoint = yScale.getPixelForValue(yScale.max);
                 } else if (yScale.min > 0 && yScale.max > 0) {
@@ -2160,7 +2160,7 @@
                 bar.pivot();
             }, this);
         },
-        update: function() {
+        update: function(animationDuration) {
             // Update the scale sizes
             Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
 
@@ -2198,7 +2198,7 @@
             }, this);
 
 
-            this.render();
+            this.render(animationDuration);
         },
         buildScale: function(labels) {
             var self = this;
@@ -2663,7 +2663,7 @@
 
             }, this);
         },
-        update: function() {
+        update: function(animationDuration) {
 
             this.outerRadius = (helpers.min([this.chart.width, this.chart.height]) - this.options.elements.slice.borderWidth / 2) / 2;
             this.innerRadius = this.options.cutoutPercentage ? (this.outerRadius / 100) * (this.options.cutoutPercentage) : 1;
@@ -2727,7 +2727,7 @@
 
             }, this);
 
-            this.render();
+            this.render(animationDuration);
         },
         draw: function(easeDecimal) {
             easeDecimal = easeDecimal || 1;
@@ -3072,7 +3072,7 @@
 
                 var yScalePoint;
 
-                if (yScale.min < 0 && yScale.max <0) {
+                if (yScale.min < 0 && yScale.max < 0) {
                     // all less than 0. use the top
                     yScalePoint = yScale.getPixelForValue(yScale.max);
                 } else if (yScale.min > 0 && yScale.max > 0) {
@@ -3144,7 +3144,7 @@
                 point.pivot();
             }, this);
         },
-        update: function() {
+        update: function(animationDuration) {
 
             Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
 
@@ -3247,7 +3247,7 @@
                 point.pivot();
             }, this);
 
-            this.render();
+            this.render(animationDuration);
         },
         buildScale: function() {
             var self = this;
@@ -3710,7 +3710,7 @@
                 slice.pivot();
             }, this);
         },
-        update: function() {
+        update: function(animationDuration) {
 
             this.updateScaleRange();
             this.scale.calculateRange();
@@ -3753,7 +3753,7 @@
 
             }, this);
 
-            this.render();
+            this.render(animationDuration);
         },
         draw: function(ease) {
             var easingDecimal = ease || 1;
@@ -4128,7 +4128,7 @@
                 point.pivot();
             }, this);
         },
-        update: function() {
+        update: function(animationDuration) {
             Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
 
             // Update the lines
@@ -4227,7 +4227,7 @@
                 point.pivot();
             }, this);
 
-            this.render();
+            this.render(animationDuration);
         },
         buildScale: function() {
             var self = this;

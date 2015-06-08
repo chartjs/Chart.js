@@ -170,7 +170,7 @@
                 slice.pivot();
             }, this);
         },
-        update: function() {
+        update: function(animationDuration) {
 
             this.updateScaleRange();
             this.scale.calculateRange();
@@ -213,7 +213,7 @@
 
             }, this);
 
-            this.render();
+            this.render(animationDuration);
         },
         draw: function(ease) {
             var easingDecimal = ease || 1;
