@@ -206,7 +206,7 @@
                                     baseArray.push(valueObj); // nothing to merge
                                 }
                             });
-                        } else if (base.hasOwnProperty(key) && typeof base[key] == "object" && typeof value == "object") {
+                        } else if (base.hasOwnProperty(key) && typeof base[key] == "object" && base[key] !== null && typeof value == "object") {
                             // If we are overwriting an object with an object, do a merge of the properties.
                             base[key] = helpers.configMerge(base[key], value);
                         } else {
