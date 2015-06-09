@@ -329,6 +329,13 @@
                 return x > 0 ? 1 : -1;
             }
         },
+        log10 = helpers.log10 = function(x) {
+            if (Math.log10) {
+                return Math.log10(x)
+            } else {
+                return Math.log(x) / Math.LN10;
+            }
+        },
         cap = helpers.cap = function(valueToCap, maxValue, minValue) {
             if (isNumber(maxValue)) {
                 if (valueToCap > maxValue) {
@@ -484,7 +491,7 @@
         },
         // Implementation of the nice number algorithm used in determining where axis labels will go
         niceNum = helpers.niceNum = function(range, round) {
-            var exponent = Math.floor(Math.log10(range));
+            var exponent = Math.floor(helpers.log10(range));
             var fraction = range / Math.pow(10, exponent);
             var niceFraction;
 
