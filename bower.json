@@ -7,5 +7,15 @@
   "main": [
     "Chart.js"
   ],
+  "ignore": [
+    "**/*",
+    ".travis.yml",
+    "CONTRIBUTING.md",
+    "Chart.js",
+    "LICENSE.md",
+    "README.md",
+    "gulpfile.js",
+    "package.json"
+  ],
   "dependencies": {}
 }
