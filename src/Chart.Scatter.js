@@ -241,6 +241,15 @@
             // Update the lines
             this.eachDataset(function(dataset, datasetIndex) {
                 var yScale = this.scales[dataset.yAxisID];
+                var scaleBase;
+
+                if (yScale.min < 0 && yScale.max < 0) {
+                    scaleBase = yScale.getPixelForValue(yScale.max);
+                } else if (yScale.min > 0 && yScale.max > 0) {
+                    scaleBase = yScale.getPixelForValue(yScale.min);
+                } else {
+                    scaleBase = yScale.getPixelForValue(0);
+                }
 
                 helpers.extend(dataset.metaDataset, {
                     // Utility
@@ -261,7 +270,7 @@
                         // Scale
                         scaleTop: yScale.top,
                         scaleBottom: yScale.bottom,
-                        scaleZero: yScale.getPixelForValue(0),
+                        scaleZero: scaleBase,
                     },
                 });
 
