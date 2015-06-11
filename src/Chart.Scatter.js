@@ -16,7 +16,7 @@
                 display: true,
                 position: "bottom",
                 id: "x-axis-1", // need an ID so datasets can reference the scale
-                
+
                 // grid line settings
                 gridLines: {
                     show: true,
@@ -48,7 +48,7 @@
                 display: true,
                 position: "left",
                 id: "y-axis-1",
-        
+
                 // grid line settings
                 gridLines: {
                     show: true,
@@ -292,7 +292,7 @@
 
                     // Desired view properties
                     _model: {
-                        x: xScale.getPixelForValue(this.data.datasets[datasetIndex].data[index].x), 
+                        x: xScale.getPixelForValue(this.data.datasets[datasetIndex].data[index].x),
                         y: yScale.getPixelForValue(this.data.datasets[datasetIndex].data[index].y),
 
                         // Appearance
@@ -354,7 +354,7 @@
             var calculateXRange = function() {
                 this.min = null;
                 this.max = null;
-                
+
                 helpers.each(self.data.datasets, function(dataset) {
                     // Only set the scale range for datasets that actually use this axis
                     if (dataset.xAxisID === this.id) {
@@ -364,7 +364,7 @@
                             } else if (value.x < this.min) {
                                 this.min = value.x;
                             }
-                            
+
                             if (this.max === null) {
                                 this.max = value.x;
                             } else if (value.x > this.max) {
@@ -378,7 +378,7 @@
             var calculateYRange = function() {
                 this.min = null;
                 this.max = null;
-                
+
                 helpers.each(self.data.datasets, function(dataset) {
                     if (dataset.yAxisID === this.id) {
                         helpers.each(dataset.data, function(value) {
@@ -387,7 +387,7 @@
                             } else if (value.y < this.min) {
                                 this.min = value.y;
                             }
-                            
+
                             if (this.max === null) {
                                 this.max = value.y;
                             } else if (value.y > this.max) {
@@ -486,7 +486,7 @@
                 this.options.hover.onHover.call(this, this.active);
             }
 
-             var dataset;
+            var dataset;
             var index;
             // Remove styling for last active (even if it may still be active)
             if (this.lastActive.length) {
@@ -525,20 +525,20 @@
                         dataset = this.data.datasets[this.active[0]._datasetIndex];
                         index = this.active[0]._index;
 
-                        this.active[0]._model.radius = this.active[0].custom && this.active[0].custom.hoverRadius ? this.active[0].custom.hoverRadius : helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.active[0]._model.radius + 2);
-                        this.active[0]._model.backgroundColor = this.active[0].custom && this.active[0].custom.hoverBackgroundColor ? this.active[0].custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.color(this.active[0]._model.backgroundColor).saturate(0.5).darken(0.35).rgbString());
-                        this.active[0]._model.borderColor = this.active[0].custom && this.active[0].custom.hoverBorderColor ? this.active[0].custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.color(this.active[0]._model.borderColor).saturate(0.5).darken(0.35).rgbString());
-                        this.active[0]._model.borderWidth = this.active[0].custom && this.active[0].custom.hoverBorderWidth ? this.active[0].custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, this.active[0]._model.borderWidth + 2);
+                        this.active[0]._model.radius = this.active[0].custom && this.active[0].custom.hoverRadius ? this.active[0].custom.hoverRadius : helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.active[0]._model.radius + 1);
+                        this.active[0]._model.backgroundColor = this.active[0].custom && this.active[0].custom.hoverBackgroundColor ? this.active[0].custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.color(this.active[0]._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
+                        this.active[0]._model.borderColor = this.active[0].custom && this.active[0].custom.hoverBorderColor ? this.active[0].custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.color(this.active[0]._model.borderColor).saturate(0.5).darken(0.1).rgbString());
+                        this.active[0]._model.borderWidth = this.active[0].custom && this.active[0].custom.hoverBorderWidth ? this.active[0].custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, this.active[0]._model.borderWidth);
                         break;
                     case 'label':
                         for (var i = 0; i < this.active.length; i++) {
                             dataset = this.data.datasets[this.active[i]._datasetIndex];
                             index = this.active[i]._index;
 
-                            this.active[i]._model.radius = this.active[i].custom && this.active[i].custom.hoverRadius ? this.active[i].custom.hoverRadius : helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.active[i]._model.radius + 2);
-                            this.active[i]._model.backgroundColor = this.active[i].custom && this.active[i].custom.hoverBackgroundColor ? this.active[i].custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.color(this.active[i]._model.backgroundColor).saturate(0.5).darken(0.35).rgbString());
-                            this.active[i]._model.borderColor = this.active[i].custom && this.active[i].custom.hoverBorderColor ? this.active[i].custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.color(this.active[i]._model.borderColor).saturate(0.5).darken(0.35).rgbString());
-                            this.active[i]._model.borderWidth = this.active[i].custom && this.active[i].custom.hoverBorderWidth ? this.active[i].custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, this.active[i]._model.borderWidth + 2);
+                            this.active[i]._model.radius = this.active[i].custom && this.active[i].custom.hoverRadius ? this.active[i].custom.hoverRadius : helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.active[i]._model.radius + 1);
+                            this.active[i]._model.backgroundColor = this.active[i].custom && this.active[i].custom.hoverBackgroundColor ? this.active[i].custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.color(this.active[i]._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
+                            this.active[i]._model.borderColor = this.active[i].custom && this.active[i].custom.hoverBorderColor ? this.active[i].custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.color(this.active[i]._model.borderColor).saturate(0.5).darken(0.1).rgbString());
+                            this.active[i]._model.borderWidth = this.active[i].custom && this.active[i].custom.hoverBorderWidth ? this.active[i].custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, this.active[i]._model.borderWidth);
                         }
                         break;
                     case 'dataset':

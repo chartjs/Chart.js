@@ -146,19 +146,6 @@
 
                 // At this point, maxChartHeight and maxChartWidth are the size the chart area could
                 // be if the axes are drawn at their minimum sizes.
-                if (chartInstance.options.maintainAspectRatio) {
-                    // Figure out what the real max size will be
-                    var maxAspectRatio = maxChartHeight / maxChartWidth;
-
-                    if (maxAspectRatio != screenAspectRatio) {
-                        // Need to adjust
-                        if (maxChartHeight < maxChartWidth) {
-                            maxChartWidth = maxChartHeight / screenAspectRatio;
-                        } else {
-                            maxChartHeight = maxChartWidth * screenAspectRatio;
-                        }
-                    }
-                }
 
                 // Step 6
                 var verticalScaleFitFunction = function(scaleInstance) {

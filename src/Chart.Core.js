@@ -120,9 +120,9 @@
                     borderWidth: 1,
                     borderColor: defaultColor,
                     // Hover
-                    hitRadius: 6,
+                    hitRadius: 1,
                     hoverRadius: 4,
-                    hoverBorderWidth: 2,
+                    hoverBorderWidth: 1,
                 },
                 bar: {
                     backgroundColor: defaultColor,
@@ -1222,14 +1222,14 @@
     Chart.Point = Chart.Element.extend({
         inRange: function(mouseX, mouseY) {
             var vm = this._view;
-            var hoverRange = vm.hoverRadius + vm.radius;
+            var hoverRange = vm.hitRadius + vm.radius;
             return ((Math.pow(mouseX - vm.x, 2) + Math.pow(mouseY - vm.y, 2)) < Math.pow(hoverRange, 2));
         },
         inGroupRange: function(mouseX) {
             var vm = this._view;
 
             if (vm) {
-                return (Math.pow(mouseX - vm.x, 2) < Math.pow(vm.radius + vm.hoverRadius, 2));
+                return (Math.pow(mouseX - vm.x, 2) < Math.pow(vm.radius + vm.hitRadius, 2));
             } else {
                 return false;
             }
@@ -1256,11 +1256,11 @@
 
                 ctx.beginPath();
 
-                ctx.arc(vm.x, vm.y, vm.radius, 0, Math.PI * 2);
+                ctx.arc(vm.x, vm.y, vm.radius || Chart.defaults.global.elements.point.radius, 0, Math.PI * 2);
                 ctx.closePath();
 
                 ctx.strokeStyle = vm.borderColor || Chart.defaults.global.defaultColor;
-                ctx.lineWidth = vm.borderWidth || Chart.defaults.global.defaultColor;
+                ctx.lineWidth = vm.borderWidth || Chart.defaults.global.elements.point.borderWidth;
 
                 ctx.fillStyle = vm.backgroundColor || Chart.defaults.global.defaultColor;
 
@@ -1665,7 +1665,8 @@
                             }
                         }, this);
 
-                        helpers.each(elements, function(element) {
+                        // Reverse labels if stacked
+                        helpers.each(this._options.stacked ? elements.reverse() : elements, function(element) {
                             xPositions.push(element._view.x);
                             yPositions.push(element._view.y);
 
