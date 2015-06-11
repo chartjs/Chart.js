@@ -3747,6 +3747,15 @@
 				ctx : this.chart.ctx,
 				inRange : function(mouseX){
 					return (Math.pow(mouseX-this.x, 2) < Math.pow(this.radius + this.hitDetectionRadius,2));
+				},
+				draw: function() {
+					var ctx = this.ctx;
+					ctx.beginPath();
+					ctx.arc(this.x, this.y, 1, 0, Math.PI * 2);
+					ctx.closePath();
+					ctx.strokeStyle = "rgba(24,205,229,0.5)";
+					ctx.lineWidth = 2;
+					ctx.stroke();
 				}
 			});
 
@@ -4004,7 +4013,7 @@
 
 				//Draw the line between all the points
 				ctx.lineWidth = this.options.datasetStrokeWidth;
-				ctx.strokeStyle = dataset.strokeColor;
+				ctx.strokeStyle = "transparent";
 				ctx.beginPath();
 
 				helpers.each(pointsWithValues, function(point, index){
@@ -4032,14 +4041,6 @@
 
 				ctx.stroke();
 
-				if (this.options.datasetFill && pointsWithValues.length > 0){
-					//Round off the line by going to the base of the chart, back to the start, then fill.
-					ctx.lineTo(pointsWithValues[pointsWithValues.length - 1].x, this.scale.endPoint);
-					ctx.lineTo(pointsWithValues[0].x, this.scale.endPoint);
-					ctx.fillStyle = dataset.fillColor;
-					ctx.closePath();
-					ctx.fill();
-				}
 
 				//Now draw the points over the line
 				//A little inefficient double looping, but better than the line
