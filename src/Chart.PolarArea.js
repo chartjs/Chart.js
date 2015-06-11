@@ -30,7 +30,7 @@
             // label settings
             labels: {
                 show: true,
-                template: "<%=value%>",
+                template: "<%=value.toLocaleString()%>",
                 fontSize: 12,
                 fontStyle: "normal",
                 fontColor: "#666",
