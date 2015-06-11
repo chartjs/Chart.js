@@ -3176,11 +3176,11 @@
                     // Model
                     _model: {
                         // Appearance
-                        tension: dataset.tension || this.options.elements.line.tension,
-                        backgroundColor: dataset.backgroundColor || this.options.elements.line.backgroundColor,
-                        borderWidth: dataset.borderWidth || this.options.elements.line.borderWidth,
-                        borderColor: dataset.borderColor || this.options.elements.line.borderColor,
-                        fill: dataset.fill !== undefined ? dataset.fill : this.options.elements.line.fill, // use the value from the dataset if it was provided. else fall back to the default
+                        tension: dataset.metaDataset.custom && dataset.metaDataset.custom.tension ? dataset.metaDataset.custom.tension : dataset.tension || this.options.elements.line.tension,
+                        backgroundColor: dataset.metaDataset.custom && dataset.metaDataset.custom.backgroundColor ? dataset.metaDataset.custom.backgroundColor : dataset.backgroundColor || this.options.elements.line.backgroundColor,
+                        borderWidth: dataset.metaDataset.custom && dataset.metaDataset.custom.borderWidth ? dataset.metaDataset.custom.borderWidth : dataset.borderWidth || this.options.elements.line.borderWidth,
+                        borderColor: dataset.metaDataset.custom && dataset.metaDataset.custom.borderColor ? dataset.metaDataset.custom.borderColor : dataset.borderColor || this.options.elements.line.borderColor,
+                        fill: dataset.metaDataset.custom && dataset.metaDataset.custom.fill ? dataset.metaDataset.custom.fill : dataset.fill !== undefined ? dataset.fill : this.options.elements.line.fill, // use the value from the dataset if it was provided. else fall back to the default
                         skipNull: dataset.skipNull !== undefined ? dataset.skipNull : this.options.elements.line.skipNull,
                         drawNull: dataset.drawNull !== undefined ? dataset.drawNull : this.options.elements.line.drawNull,
                         // Scale
