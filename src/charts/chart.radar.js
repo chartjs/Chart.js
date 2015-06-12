@@ -12,7 +12,7 @@
         defaults: {
 
             scale: {
-                scaleType: "radialLinear",
+                type: "radialLinear",
                 display: true,
 
                 //Boolean - Whether to animate scaling the chart from the centre
@@ -302,7 +302,7 @@
         buildScale: function() {
             var self = this;
 
-            var ScaleConstructor = Chart.scales.getScaleConstructor(this.options.scale.scaleType);
+            var ScaleConstructor = Chart.scales.getScaleConstructor(this.options.scale.type);
             this.scale = new ScaleConstructor({
                 options: this.options.scale,
                 height: this.chart.height,
