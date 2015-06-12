@@ -3400,7 +3400,7 @@
                 position: "bottom",
                 id: "x-axis-1", // need an ID so datasets can reference the scale
 
-                categorySpacing: 10,
+                categorySpacing: 5,
                 spacing: 1,
 
                 // grid line settings
