@@ -207,7 +207,7 @@
             }
         }
     });
-    Chart.scales.registerScaleType("dataset", DatasetScale);
+    Chart.scales.registerScaleType("category", DatasetScale);
 
 
 

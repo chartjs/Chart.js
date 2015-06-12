@@ -1206,450 +1206,112 @@
         Chart = root.Chart,
         helpers = Chart.helpers;
 
-    Chart.defaults.global.elements.arc = {
-        backgroundColor: Chart.defaults.global.defaultColor,
-        borderColor: "#fff",
-        borderWidth: 2
+    Chart.defaults.global.animation = {
+        duration: 1000,
+        easing: "easeOutQuart",
+        onProgress: function() {},
+        onComplete: function() {},
     };
 
-    Chart.Arc = Chart.Element.extend({
-        inGroupRange: function(mouseX) {
-            var vm = this._view;
+    Chart.Animation = Chart.Element.extend({
+        currentStep: null, // the current animation step
+        numSteps: 60, // default number of steps
+        easing: "", // the easing to use for this animation
+        render: null, // render function used by the animation service
 
-            if (vm) {
-                return (Math.pow(mouseX - vm.x, 2) < Math.pow(vm.radius + vm.hoverRadius, 2));
-            } else {
-                return false;
+        onAnimationProgress: null, // user specified callback to fire on each step of the animation 
+        onAnimationComplete: null, // user specified callback to fire when the animation finishes
+    });
+
+    Chart.animationService = {
+        frameDuration: 17,
+        animations: [],
+        dropFrames: 0,
+        addAnimation: function(chartInstance, animationObject, duration) {
+
+            if (!duration) {
+                chartInstance.animating = true;
             }
-        },
-        inRange: function(chartX, chartY) {
 
-            var vm = this._view;
+            for (var index = 0; index < this.animations.length; ++index) {
+                if (this.animations[index].chartInstance === chartInstance) {
+                    // replacing an in progress animation
+                    this.animations[index].animationObject = animationObject;
+                    return;
+                }
+            }
 
-            var pointRelativePosition = helpers.getAngleFromPoint(vm, {
-                x: chartX,
-                y: chartY
+            this.animations.push({
+                chartInstance: chartInstance,
+                animationObject: animationObject
             });
 
-            // Put into the range of (-PI/2, 3PI/2]
-            var startAngle = vm.startAngle < (-0.5 * Math.PI) ? vm.startAngle + (2.0 * Math.PI) : vm.startAngle > (1.5 * Math.PI) ? vm.startAngle - (2.0 * Math.PI) : vm.startAngle;
-            var endAngle = vm.endAngle < (-0.5 * Math.PI) ? vm.endAngle + (2.0 * Math.PI) : vm.endAngle > (1.5 * Math.PI) ? vm.endAngle - (2.0 * Math.PI) : vm.endAngle
-
-            //Check if within the range of the open/close angle
-            var betweenAngles = (pointRelativePosition.angle >= startAngle && pointRelativePosition.angle <= endAngle),
-                withinRadius = (pointRelativePosition.distance >= vm.innerRadius && pointRelativePosition.distance <= vm.outerRadius);
-
-            return (betweenAngles && withinRadius);
-            //Ensure within the outside of the arc centre, but inside arc outer
+            // If there are no animations queued, manually kickstart a digest, for lack of a better word
+            if (this.animations.length == 1) {
+                helpers.requestAnimFrame.call(window, this.digestWrapper);
+            }
         },
-        tooltipPosition: function() {
-            var vm = this._view;
+        // Cancel the animation for a given chart instance
+        cancelAnimation: function(chartInstance) {
+            var index = helpers.findNextWhere(this.animations, function(animationWrapper) {
+                return animationWrapper.chartInstance === chartInstance;
+            });
 
-            var centreAngle = vm.startAngle + ((vm.endAngle - vm.startAngle) / 2),
-                rangeFromCentre = (vm.outerRadius - vm.innerRadius) / 2 + vm.innerRadius;
-            return {
-                x: vm.x + (Math.cos(centreAngle) * rangeFromCentre),
-                y: vm.y + (Math.sin(centreAngle) * rangeFromCentre)
-            };
+            if (index) {
+                this.animations.splice(index, 1);
+                chartInstance.animating = false;
+            }
         },
-        draw: function() {
+        // calls startDigest with the proper context
+        digestWrapper: function() {
+            Chart.animationService.startDigest.call(Chart.animationService);
+        },
+        startDigest: function() {
 
-            var ctx = this._chart.ctx;
-            var vm = this._view;
+            var startTime = Date.now();
+            var framesToDrop = 0;
 
-            ctx.beginPath();
+            if (this.dropFrames > 1) {
+                framesToDrop = Math.floor(this.dropFrames);
+                this.dropFrames -= framesToDrop;
+            }
 
-            ctx.arc(vm.x, vm.y, vm.outerRadius, vm.startAngle, vm.endAngle);
+            for (var i = 0; i < this.animations.length; i++) {
 
-            ctx.arc(vm.x, vm.y, vm.innerRadius, vm.endAngle, vm.startAngle, true);
+                if (this.animations[i].animationObject.currentStep === null) {
+                    this.animations[i].animationObject.currentStep = 0;
+                }
 
-            ctx.closePath();
-            ctx.strokeStyle = vm.borderColor;
-            ctx.lineWidth = vm.borderWidth;
+                this.animations[i].animationObject.currentStep += 1 + framesToDrop;
+                if (this.animations[i].animationObject.currentStep > this.animations[i].animationObject.numSteps) {
+                    this.animations[i].animationObject.currentStep = this.animations[i].animationObject.numSteps;
+                }
 
-            ctx.fillStyle = vm.backgroundColor;
+                this.animations[i].animationObject.render(this.animations[i].chartInstance, this.animations[i].animationObject);
 
-            ctx.fill();
-            ctx.lineJoin = 'bevel';
+                if (this.animations[i].animationObject.currentStep == this.animations[i].animationObject.numSteps) {
+                    // executed the last frame. Remove the animation.
+                    this.animations[i].chartInstance.animating = false;
+                    this.animations.splice(i, 1);
+                    // Keep the index in place to offset the splice
+                    i--;
+                }
+            }
 
-            if (vm.borderWidth) {
-                ctx.stroke();
+            var endTime = Date.now();
+            var delay = endTime - startTime - this.frameDuration;
+            var frameDelay = delay / this.frameDuration;
+
+            if (frameDelay > 1) {
+                this.dropFrames += frameDelay;
+            }
+
+            // Do we have more stuff to animate?
+            if (this.animations.length > 0) {
+                helpers.requestAnimFrame.call(window, this.digestWrapper);
             }
         }
-    });
-
-
-}).call(this);
-
-/*!
- * Chart.js
- * http://chartjs.org/
- * Version: 2.0.0-alpha
- *
- * Copyright 2015 Nick Downie
- * Released under the MIT license
- * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
- */
-
-
-(function() {
-
-    "use strict";
-
-    var root = this,
-        Chart = root.Chart,
-        helpers = Chart.helpers;
-
-    Chart.defaults.global.elements.line = {
-        tension: 0.4,
-        backgroundColor: Chart.defaults.global.defaultColor,
-        borderWidth: 3,
-        borderColor: Chart.defaults.global.defaultColor,
-        fill: true, // do we fill in the area between the line and its base axis
-        skipNull: true,
-        drawNull: false,
     };
-
-
-    Chart.Line = Chart.Element.extend({
-        draw: function() {
-
-            var vm = this._view;
-            var ctx = this._chart.ctx;
-            var first = this._children[0];
-            var last = this._children[this._children.length - 1];
-
-            // Draw the background first (so the border is always on top)
-            helpers.each(this._children, function(point, index) {
-                var previous = this.previousPoint(point, this._children, index);
-                var next = this.nextPoint(point, this._children, index);
-
-                // First point only
-                if (index === 0) {
-                    ctx.moveTo(point._view.x, point._view.y);
-                    return;
-                }
-
-                // Start Skip and drag along scale baseline
-                if (point._view.skip && vm.skipNull && !this._loop) {
-                    ctx.lineTo(previous._view.x, point._view.y);
-                    ctx.moveTo(next._view.x, point._view.y);
-                }
-                // End Skip Stright line from the base line
-                else if (previous._view.skip && vm.skipNull && !this._loop) {
-                    ctx.moveTo(point._view.x, previous._view.y);
-                    ctx.lineTo(point._view.x, point._view.y);
-                }
-
-                if (previous._view.skip && vm.skipNull) {
-                    ctx.moveTo(point._view.x, point._view.y);
-                }
-                // Normal Bezier Curve
-                else {
-                    if (vm.tension > 0) {
-                        ctx.bezierCurveTo(
-                            previous._view.controlPointNextX,
-                            previous._view.controlPointNextY,
-                            point._view.controlPointPreviousX,
-                            point._view.controlPointPreviousY,
-                            point._view.x,
-                            point._view.y
-                        );
-                    } else {
-                        ctx.lineTo(point._view.x, point._view.y);
-                    }
-                }
-            }, this);
-
-            // For radial scales, loop back around to the first point
-            if (this._loop) {
-                if (vm.tension > 0 && !first._view.skip) {
-
-                    ctx.bezierCurveTo(
-                        last._view.controlPointNextX,
-                        last._view.controlPointNextY,
-                        first._view.controlPointPreviousX,
-                        first._view.controlPointPreviousY,
-                        first._view.x,
-                        first._view.y
-                    );
-                } else {
-                    ctx.lineTo(first._view.x, first._view.y);
-                }
-            }
-
-            // If we had points and want to fill this line, do so.
-            if (this._children.length > 0 && vm.fill) {
-                //Round off the line by going to the base of the chart, back to the start, then fill.
-                ctx.lineTo(this._children[this._children.length - 1]._view.x, vm.scaleZero);
-                ctx.lineTo(this._children[0]._view.x, vm.scaleZero);
-                ctx.fillStyle = vm.backgroundColor || Chart.defaults.global.defaultColor;
-                ctx.closePath();
-                ctx.fill();
-            }
-
-
-            // Now draw the line between all the points with any borders
-            ctx.lineWidth = vm.borderWidth || Chart.defaults.global.defaultColor;
-            ctx.strokeStyle = vm.borderColor || Chart.defaults.global.defaultColor;
-            ctx.beginPath();
-
-            helpers.each(this._children, function(point, index) {
-                var previous = this.previousPoint(point, this._children, index);
-                var next = this.nextPoint(point, this._children, index);
-
-                // First point only
-                if (index === 0) {
-                    ctx.moveTo(point._view.x, point._view.y);
-                    return;
-                }
-
-                // Start Skip and drag along scale baseline
-                if (point._view.skip && vm.skipNull && !this._loop) {
-                    ctx.moveTo(previous._view.x, point._view.y);
-                    ctx.moveTo(next._view.x, point._view.y);
-                    return;
-                }
-                // End Skip Stright line from the base line
-                if (previous._view.skip && vm.skipNull && !this._loop) {
-                    ctx.moveTo(point._view.x, previous._view.y);
-                    ctx.moveTo(point._view.x, point._view.y);
-                    return;
-                }
-
-                if (previous._view.skip && vm.skipNull) {
-                    ctx.moveTo(point._view.x, point._view.y);
-                    return;
-                }
-                // Normal Bezier Curve
-                if (vm.tension > 0) {
-                    ctx.bezierCurveTo(
-                        previous._view.controlPointNextX,
-                        previous._view.controlPointNextY,
-                        point._view.controlPointPreviousX,
-                        point._view.controlPointPreviousY,
-                        point._view.x,
-                        point._view.y
-                    );
-                } else {
-                    ctx.lineTo(point._view.x, point._view.y);
-                }
-            }, this);
-
-            if (this._loop && !first._view.skip) {
-                if (vm.tension > 0) {
-
-                    ctx.bezierCurveTo(
-                        last._view.controlPointNextX,
-                        last._view.controlPointNextY,
-                        first._view.controlPointPreviousX,
-                        first._view.controlPointPreviousY,
-                        first._view.x,
-                        first._view.y
-                    );
-                } else {
-                    ctx.lineTo(first._view.x, first._view.y);
-                }
-            }
-
-
-            ctx.stroke();
-
-        },
-        nextPoint: function(point, collection, index) {
-            if (this.loop) {
-                return collection[index + 1] || collection[0];
-            }
-            return collection[index + 1] || collection[collection.length - 1];
-        },
-        previousPoint: function(point, collection, index) {
-            if (this.loop) {
-                return collection[index - 1] || collection[collection.length - 1];
-            }
-            return collection[index - 1] || collection[0];
-        },
-    });
-
-}).call(this);
-
-/*!
- * Chart.js
- * http://chartjs.org/
- * Version: 2.0.0-alpha
- *
- * Copyright 2015 Nick Downie
- * Released under the MIT license
- * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
- */
-
-
-(function() {
-
-    "use strict";
-
-    var root = this,
-        Chart = root.Chart,
-        helpers = Chart.helpers;
-
-    Chart.defaults.global.elements.point = {
-        radius: 3,
-        backgroundColor: Chart.defaults.global.defaultColor,
-        borderWidth: 1,
-        borderColor: Chart.defaults.global.defaultColor,
-        // Hover
-        hitRadius: 1,
-        hoverRadius: 4,
-        hoverBorderWidth: 1,
-    };
-
-
-    Chart.Point = Chart.Element.extend({
-        inRange: function(mouseX, mouseY) {
-            var vm = this._view;
-            var hoverRange = vm.hitRadius + vm.radius;
-            return ((Math.pow(mouseX - vm.x, 2) + Math.pow(mouseY - vm.y, 2)) < Math.pow(hoverRange, 2));
-        },
-        inGroupRange: function(mouseX) {
-            var vm = this._view;
-
-            if (vm) {
-                return (Math.pow(mouseX - vm.x, 2) < Math.pow(vm.radius + vm.hitRadius, 2));
-            } else {
-                return false;
-            }
-        },
-        tooltipPosition: function() {
-            var vm = this._view;
-            return {
-                x: vm.x,
-                y: vm.y,
-                padding: vm.radius + vm.borderWidth
-            };
-        },
-        draw: function() {
-
-            var vm = this._view;
-            var ctx = this._chart.ctx;
-
-
-            if (vm.skip) {
-                return;
-            }
-
-            if (vm.radius > 0 || vm.borderWidth > 0) {
-
-                ctx.beginPath();
-
-                ctx.arc(vm.x, vm.y, vm.radius || Chart.defaults.global.elements.point.radius, 0, Math.PI * 2);
-                ctx.closePath();
-
-                ctx.strokeStyle = vm.borderColor || Chart.defaults.global.defaultColor;
-                ctx.lineWidth = vm.borderWidth || Chart.defaults.global.elements.point.borderWidth;
-
-                ctx.fillStyle = vm.backgroundColor || Chart.defaults.global.defaultColor;
-
-                ctx.fill();
-                ctx.stroke();
-            }
-        }
-    });
-
-
-}).call(this);
-
-/*!
- * Chart.js
- * http://chartjs.org/
- * Version: 2.0.0-alpha
- *
- * Copyright 2015 Nick Downie
- * Released under the MIT license
- * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
- */
-
-
-(function() {
-
-    "use strict";
-
-    var root = this,
-        Chart = root.Chart,
-        helpers = Chart.helpers;
-
-    Chart.defaults.global.elements.rectangle = {
-        backgroundColor: Chart.defaults.global.defaultColor,
-        borderWidth: 0,
-        borderColor: Chart.defaults.global.defaultColor,
-    };
-
-    Chart.Rectangle = Chart.Element.extend({
-        draw: function() {
-
-            var ctx = this._chart.ctx;
-            var vm = this._view;
-
-            var halfWidth = vm.width / 2,
-                leftX = vm.x - halfWidth,
-                rightX = vm.x + halfWidth,
-                top = vm.base - (vm.base - vm.y),
-                halfStroke = vm.borderWidth / 2;
-
-            // Canvas doesn't allow us to stroke inside the width so we can
-            // adjust the sizes to fit if we're setting a stroke on the line
-            if (vm.borderWidth) {
-                leftX += halfStroke;
-                rightX -= halfStroke;
-                top += halfStroke;
-            }
-
-            ctx.beginPath();
-
-            ctx.fillStyle = vm.backgroundColor;
-            ctx.strokeStyle = vm.borderColor;
-            ctx.lineWidth = vm.borderWidth;
-
-            // It'd be nice to keep this class totally generic to any rectangle
-            // and simply specify which border to miss out.
-            ctx.moveTo(leftX, vm.base);
-            ctx.lineTo(leftX, top);
-            ctx.lineTo(rightX, top);
-            ctx.lineTo(rightX, vm.base);
-            ctx.fill();
-            if (vm.borderWidth) {
-                ctx.stroke();
-            }
-        },
-        height: function() {
-            var vm = this._view;
-            return vm.base - vm.y;
-        },
-        inRange: function(mouseX, mouseY) {
-            var vm = this._view;
-            if (vm.y < vm.base) {
-                return (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2) && (mouseY >= vm.y && mouseY <= vm.base);
-            } else {
-                return (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2) && (mouseY >= vm.base && mouseY <= vm.y);
-            }
-        },
-        inGroupRange: function(mouseX) {
-            var vm = this._view;
-            return (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2);
-        },
-        tooltipPosition: function() {
-            var vm = this._view;
-            if (vm.y < vm.base) {
-                return {
-                    x: vm.x,
-                    y: vm.y
-                };
-            } else {
-                return {
-                    x: vm.x,
-                    y: vm.base
-                };
-            }
-        },
-    });
 
 }).call(this);
 
@@ -1666,8 +1328,8 @@
     Chart.scaleService = {
         // The interesting function
         fitScalesForChart: function(chartInstance, width, height) {
-            var xPadding = 5;
-            var yPadding = 5;
+            var xPadding = width > 30 ? 5 : 2;
+            var yPadding = height > 30 ? 5 : 2;
 
             if (chartInstance) {
                 var leftScales = helpers.where(chartInstance.scales, function(scaleInstance) {
@@ -1949,13 +1611,358 @@
         constructors: {},
         // Use a registration function so that we can move to an ES6 map when we no longer need to support
         // old browsers
-        registerScaleType: function(scaleType, scaleConstructor) {
-            this.constructors[scaleType] = scaleConstructor;
+        registerScaleType: function(type, scaleConstructor) {
+            this.constructors[type] = scaleConstructor;
         },
-        getScaleConstructor: function(scaleType) {
-            return this.constructors.hasOwnProperty(scaleType) ? this.constructors[scaleType] : undefined;
+        getScaleConstructor: function(type) {
+            return this.constructors.hasOwnProperty(type) ? this.constructors[type] : undefined;
         }
     };
+
+}).call(this);
+
+/*!
+ * Chart.js
+ * http://chartjs.org/
+ * Version: 2.0.0-alpha
+ *
+ * Copyright 2015 Nick Downie
+ * Released under the MIT license
+ * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
+ */
+
+
+(function() {
+
+    "use strict";
+
+    var root = this,
+        Chart = root.Chart,
+        helpers = Chart.helpers;
+
+    Chart.defaults.global.tooltips = {
+        enabled: true,
+        custom: null,
+        backgroundColor: "rgba(0,0,0,0.8)",
+        fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+        fontSize: 10,
+        fontStyle: "normal",
+        fontColor: "#fff",
+        titleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+        titleFontSize: 12,
+        titleFontStyle: "bold",
+        titleFontColor: "#fff",
+        yPadding: 6,
+        xPadding: 6,
+        caretSize: 8,
+        cornerRadius: 6,
+        xOffset: 10,
+        template: [
+            '<% if(label){ %>',
+            '<%=label %>: ',
+            '<% } %>',
+            '<%=value %>',
+        ].join(''),
+        multiTemplate: [
+            '<%if (datasetLabel){ %>',
+            '<%=datasetLabel %>: ',
+            '<% } %>',
+            '<%=value %>'
+        ].join(''),
+        multiKeyBackground: '#fff',
+    };
+
+    Chart.Tooltip = Chart.Element.extend({
+        initialize: function() {
+            var options = this._options;
+            helpers.extend(this, {
+                _model: {
+                    // Positioning
+                    xPadding: options.tooltips.xPadding,
+                    yPadding: options.tooltips.yPadding,
+                    xOffset: options.tooltips.xOffset,
+
+                    // Labels
+                    textColor: options.tooltips.fontColor,
+                    _fontFamily: options.tooltips.fontFamily,
+                    _fontStyle: options.tooltips.fontStyle,
+                    fontSize: options.tooltips.fontSize,
+
+                    // Title
+                    titleTextColor: options.tooltips.titleFontColor,
+                    _titleFontFamily: options.tooltips.titleFontFamily,
+                    _titleFontStyle: options.tooltips.titleFontStyle,
+                    titleFontSize: options.tooltips.titleFontSize,
+
+                    // Appearance
+                    caretHeight: options.tooltips.caretSize,
+                    cornerRadius: options.tooltips.cornerRadius,
+                    backgroundColor: options.tooltips.backgroundColor,
+                    opacity: 0,
+                    legendColorBackground: options.tooltips.multiKeyBackground,
+                },
+            });
+        },
+        update: function() {
+
+            var ctx = this._chart.ctx;
+
+            switch (this._options.hover.mode) {
+                case 'single':
+                    helpers.extend(this._model, {
+                        text: helpers.template(this._options.tooltips.template, {
+                            // These variables are available in the template function. Add others here
+                            element: this._active[0],
+                            value: this._data.datasets[this._active[0]._datasetIndex].data[this._active[0]._index],
+                            label: this._data.labels ? this._data.labels[this._active[0]._index] : '',
+                        }),
+                    });
+
+                    var tooltipPosition = this._active[0].tooltipPosition();
+                    helpers.extend(this._model, {
+                        x: Math.round(tooltipPosition.x),
+                        y: Math.round(tooltipPosition.y),
+                        caretPadding: tooltipPosition.padding
+                    });
+
+                    break;
+
+                case 'label':
+
+                    // Tooltip Content
+
+                    var dataArray,
+                        dataIndex;
+
+                    var labels = [],
+                        colors = [];
+
+                    for (var i = this._data.datasets.length - 1; i >= 0; i--) {
+                        dataArray = this._data.datasets[i].metaData;
+                        dataIndex = helpers.indexOf(dataArray, this._active[0]);
+                        if (dataIndex !== -1) {
+                            break;
+                        }
+                    }
+
+                    var medianPosition = (function(index) {
+                        // Get all the points at that particular index
+                        var elements = [],
+                            dataCollection,
+                            xPositions = [],
+                            yPositions = [],
+                            xMax,
+                            yMax,
+                            xMin,
+                            yMin;
+                        helpers.each(this._data.datasets, function(dataset) {
+                            dataCollection = dataset.metaData;
+                            if (dataCollection[dataIndex] && dataCollection[dataIndex].hasValue()) {
+                                elements.push(dataCollection[dataIndex]);
+                            }
+                        }, this);
+
+                        // Reverse labels if stacked
+                        helpers.each(this._options.stacked ? elements.reverse() : elements, function(element) {
+                            xPositions.push(element._view.x);
+                            yPositions.push(element._view.y);
+
+                            //Include any colour information about the element
+                            labels.push(helpers.template(this._options.tooltips.multiTemplate, {
+                                // These variables are available in the template function. Add others here
+                                element: element,
+                                datasetLabel: this._data.datasets[element._datasetIndex].label,
+                                value: this._data.datasets[element._datasetIndex].data[element._index],
+                            }));
+                            colors.push({
+                                fill: element._view.backgroundColor,
+                                stroke: element._view.borderColor
+                            });
+
+                        }, this);
+
+                        yMin = helpers.min(yPositions);
+                        yMax = helpers.max(yPositions);
+
+                        xMin = helpers.min(xPositions);
+                        xMax = helpers.max(xPositions);
+
+                        return {
+                            x: (xMin > this._chart.width / 2) ? xMin : xMax,
+                            y: (yMin + yMax) / 2,
+                        };
+                    }).call(this, dataIndex);
+
+                    // Apply for now
+                    helpers.extend(this._model, {
+                        x: medianPosition.x,
+                        y: medianPosition.y,
+                        labels: labels,
+                        title: this._data.labels && this._data.labels.length ? this._data.labels[this._active[0]._index] : '',
+                        legendColors: colors,
+                        legendBackgroundColor: this._options.tooltips.multiKeyBackground,
+                    });
+
+
+                    // Calculate Appearance Tweaks
+
+                    this._model.height = (labels.length * this._model.fontSize) + ((labels.length - 1) * (this._model.fontSize / 2)) + (this._model.yPadding * 2) + this._model.titleFontSize * 1.5;
+
+                    var titleWidth = ctx.measureText(this.title).width,
+                        //Label has a legend square as well so account for this.
+                        labelWidth = helpers.longestText(ctx, this.font, labels) + this._model.fontSize + 3,
+                        longestTextWidth = helpers.max([labelWidth, titleWidth]);
+
+                    this._model.width = longestTextWidth + (this._model.xPadding * 2);
+
+
+                    var halfHeight = this._model.height / 2;
+
+                    //Check to ensure the height will fit on the canvas
+                    if (this._model.y - halfHeight < 0) {
+                        this._model.y = halfHeight;
+                    } else if (this._model.y + halfHeight > this._chart.height) {
+                        this._model.y = this._chart.height - halfHeight;
+                    }
+
+                    //Decide whether to align left or right based on position on canvas
+                    if (this._model.x > this._chart.width / 2) {
+                        this._model.x -= this._model.xOffset + this._model.width;
+                    } else {
+                        this._model.x += this._model.xOffset;
+                    }
+                    break;
+            }
+
+            return this;
+        },
+        draw: function() {
+
+            var ctx = this._chart.ctx;
+            var vm = this._view;
+
+            switch (this._options.hover.mode) {
+                case 'single':
+
+                    ctx.font = helpers.fontString(vm.fontSize, vm._fontStyle, vm._fontFamily);
+
+                    vm.xAlign = "center";
+                    vm.yAlign = "above";
+
+                    //Distance between the actual element.y position and the start of the tooltip caret
+                    var caretPadding = vm.caretPadding || 2;
+
+                    var tooltipWidth = ctx.measureText(vm.text).width + 2 * vm.xPadding,
+                        tooltipRectHeight = vm.fontSize + 2 * vm.yPadding,
+                        tooltipHeight = tooltipRectHeight + vm.caretHeight + caretPadding;
+
+                    if (vm.x + tooltipWidth / 2 > this._chart.width) {
+                        vm.xAlign = "left";
+                    } else if (vm.x - tooltipWidth / 2 < 0) {
+                        vm.xAlign = "right";
+                    }
+
+                    if (vm.y - tooltipHeight < 0) {
+                        vm.yAlign = "below";
+                    }
+
+                    var tooltipX = vm.x - tooltipWidth / 2,
+                        tooltipY = vm.y - tooltipHeight;
+
+                    ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
+
+                    // Custom Tooltips
+                    if (this._custom) {
+                        this._custom(this._view);
+                    } else {
+                        switch (vm.yAlign) {
+                            case "above":
+                                //Draw a caret above the x/y
+                                ctx.beginPath();
+                                ctx.moveTo(vm.x, vm.y - caretPadding);
+                                ctx.lineTo(vm.x + vm.caretHeight, vm.y - (caretPadding + vm.caretHeight));
+                                ctx.lineTo(vm.x - vm.caretHeight, vm.y - (caretPadding + vm.caretHeight));
+                                ctx.closePath();
+                                ctx.fill();
+                                break;
+                            case "below":
+                                tooltipY = vm.y + caretPadding + vm.caretHeight;
+                                //Draw a caret below the x/y
+                                ctx.beginPath();
+                                ctx.moveTo(vm.x, vm.y + caretPadding);
+                                ctx.lineTo(vm.x + vm.caretHeight, vm.y + caretPadding + vm.caretHeight);
+                                ctx.lineTo(vm.x - vm.caretHeight, vm.y + caretPadding + vm.caretHeight);
+                                ctx.closePath();
+                                ctx.fill();
+                                break;
+                        }
+
+                        switch (vm.xAlign) {
+                            case "left":
+                                tooltipX = vm.x - tooltipWidth + (vm.cornerRadius + vm.caretHeight);
+                                break;
+                            case "right":
+                                tooltipX = vm.x - (vm.cornerRadius + vm.caretHeight);
+                                break;
+                        }
+
+                        helpers.drawRoundedRectangle(ctx, tooltipX, tooltipY, tooltipWidth, tooltipRectHeight, vm.cornerRadius);
+
+                        ctx.fill();
+
+                        ctx.fillStyle = helpers.color(vm.textColor).alpha(vm.opacity).rgbString();
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+                        ctx.fillText(vm.text, tooltipX + tooltipWidth / 2, tooltipY + tooltipRectHeight / 2);
+
+                    }
+                    break;
+                case 'label':
+
+                    helpers.drawRoundedRectangle(ctx, vm.x, vm.y - vm.height / 2, vm.width, vm.height, vm.cornerRadius);
+                    ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
+                    ctx.fill();
+                    ctx.closePath();
+
+                    ctx.textAlign = "left";
+                    ctx.textBaseline = "middle";
+                    ctx.fillStyle = helpers.color(vm.titleTextColor).alpha(vm.opacity).rgbString();
+                    ctx.font = helpers.fontString(vm.fontSize, vm._titleFontStyle, vm._titleFontFamily);
+                    ctx.fillText(vm.title, vm.x + vm.xPadding, this.getLineHeight(0));
+
+                    ctx.font = helpers.fontString(vm.fontSize, vm._fontStyle, vm._fontFamily);
+                    helpers.each(vm.labels, function(label, index) {
+                        ctx.fillStyle = helpers.color(vm.textColor).alpha(vm.opacity).rgbString();
+                        ctx.fillText(label, vm.x + vm.xPadding + vm.fontSize + 3, this.getLineHeight(index + 1));
+
+                        //A bit gnarly, but clearing this rectangle breaks when using explorercanvas (clears whole canvas)
+                        //ctx.clearRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.fontSize/2, vm.fontSize, vm.fontSize);
+                        //Instead we'll make a white filled block to put the legendColour palette over.
+
+                        ctx.fillStyle = helpers.color(vm.legendColors[index].stroke).alpha(vm.opacity).rgbString();
+                        ctx.fillRect(vm.x + vm.xPadding - 1, this.getLineHeight(index + 1) - vm.fontSize / 2 - 1, vm.fontSize + 2, vm.fontSize + 2);
+
+                        ctx.fillStyle = helpers.color(vm.legendColors[index].fill).alpha(vm.opacity).rgbString();
+                        ctx.fillRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.fontSize / 2, vm.fontSize, vm.fontSize);
+
+
+                    }, this);
+                    break;
+            }
+        },
+        getLineHeight: function(index) {
+            var baseLineHeight = this._view.y - (this._view.height / 2) + this._view.yPadding,
+                afterTitleIndex = index - 1;
+
+            //If the index is zero, we're getting the title
+            if (index === 0) {
+                return baseLineHeight + this._view.titleFontSize / 2;
+            } else {
+                return baseLineHeight + ((this._view.fontSize * 1.5 * afterTitleIndex) + this._view.fontSize / 2) + this._view.titleFontSize * 1.5;
+            }
+
+        },
+    });
 
 }).call(this);
 
@@ -2168,7 +2175,7 @@
             }
         }
     });
-    Chart.scales.registerScaleType("dataset", DatasetScale);
+    Chart.scales.registerScaleType("category", DatasetScale);
 
 
 
@@ -2921,112 +2928,78 @@
         Chart = root.Chart,
         helpers = Chart.helpers;
 
-    Chart.defaults.global.animation = {
-        duration: 1000,
-        easing: "easeOutQuart",
-        onProgress: function() {},
-        onComplete: function() {},
+    Chart.defaults.global.elements.arc = {
+        backgroundColor: Chart.defaults.global.defaultColor,
+        borderColor: "#fff",
+        borderWidth: 2
     };
 
-    Chart.Animation = Chart.Element.extend({
-        currentStep: null, // the current animation step
-        numSteps: 60, // default number of steps
-        easing: "", // the easing to use for this animation
-        render: null, // render function used by the animation service
+    Chart.Arc = Chart.Element.extend({
+        inGroupRange: function(mouseX) {
+            var vm = this._view;
 
-        onAnimationProgress: null, // user specified callback to fire on each step of the animation 
-        onAnimationComplete: null, // user specified callback to fire when the animation finishes
-    });
-
-    Chart.animationService = {
-        frameDuration: 17,
-        animations: [],
-        dropFrames: 0,
-        addAnimation: function(chartInstance, animationObject, duration) {
-
-            if (!duration) {
-                chartInstance.animating = true;
+            if (vm) {
+                return (Math.pow(mouseX - vm.x, 2) < Math.pow(vm.radius + vm.hoverRadius, 2));
+            } else {
+                return false;
             }
+        },
+        inRange: function(chartX, chartY) {
 
-            for (var index = 0; index < this.animations.length; ++index) {
-                if (this.animations[index].chartInstance === chartInstance) {
-                    // replacing an in progress animation
-                    this.animations[index].animationObject = animationObject;
-                    return;
-                }
-            }
+            var vm = this._view;
 
-            this.animations.push({
-                chartInstance: chartInstance,
-                animationObject: animationObject
+            var pointRelativePosition = helpers.getAngleFromPoint(vm, {
+                x: chartX,
+                y: chartY
             });
 
-            // If there are no animations queued, manually kickstart a digest, for lack of a better word
-            if (this.animations.length == 1) {
-                helpers.requestAnimFrame.call(window, this.digestWrapper);
-            }
+            // Put into the range of (-PI/2, 3PI/2]
+            var startAngle = vm.startAngle < (-0.5 * Math.PI) ? vm.startAngle + (2.0 * Math.PI) : vm.startAngle > (1.5 * Math.PI) ? vm.startAngle - (2.0 * Math.PI) : vm.startAngle;
+            var endAngle = vm.endAngle < (-0.5 * Math.PI) ? vm.endAngle + (2.0 * Math.PI) : vm.endAngle > (1.5 * Math.PI) ? vm.endAngle - (2.0 * Math.PI) : vm.endAngle
+
+            //Check if within the range of the open/close angle
+            var betweenAngles = (pointRelativePosition.angle >= startAngle && pointRelativePosition.angle <= endAngle),
+                withinRadius = (pointRelativePosition.distance >= vm.innerRadius && pointRelativePosition.distance <= vm.outerRadius);
+
+            return (betweenAngles && withinRadius);
+            //Ensure within the outside of the arc centre, but inside arc outer
         },
-        // Cancel the animation for a given chart instance
-        cancelAnimation: function(chartInstance) {
-            var index = helpers.findNextWhere(this.animations, function(animationWrapper) {
-                return animationWrapper.chartInstance === chartInstance;
-            });
+        tooltipPosition: function() {
+            var vm = this._view;
 
-            if (index) {
-                this.animations.splice(index, 1);
-                chartInstance.animating = false;
-            }
+            var centreAngle = vm.startAngle + ((vm.endAngle - vm.startAngle) / 2),
+                rangeFromCentre = (vm.outerRadius - vm.innerRadius) / 2 + vm.innerRadius;
+            return {
+                x: vm.x + (Math.cos(centreAngle) * rangeFromCentre),
+                y: vm.y + (Math.sin(centreAngle) * rangeFromCentre)
+            };
         },
-        // calls startDigest with the proper context
-        digestWrapper: function() {
-            Chart.animationService.startDigest.call(Chart.animationService);
-        },
-        startDigest: function() {
+        draw: function() {
 
-            var startTime = Date.now();
-            var framesToDrop = 0;
+            var ctx = this._chart.ctx;
+            var vm = this._view;
 
-            if (this.dropFrames > 1) {
-                framesToDrop = Math.floor(this.dropFrames);
-                this.dropFrames -= framesToDrop;
-            }
+            ctx.beginPath();
 
-            for (var i = 0; i < this.animations.length; i++) {
+            ctx.arc(vm.x, vm.y, vm.outerRadius, vm.startAngle, vm.endAngle);
 
-                if (this.animations[i].animationObject.currentStep === null) {
-                    this.animations[i].animationObject.currentStep = 0;
-                }
+            ctx.arc(vm.x, vm.y, vm.innerRadius, vm.endAngle, vm.startAngle, true);
 
-                this.animations[i].animationObject.currentStep += 1 + framesToDrop;
-                if (this.animations[i].animationObject.currentStep > this.animations[i].animationObject.numSteps) {
-                    this.animations[i].animationObject.currentStep = this.animations[i].animationObject.numSteps;
-                }
+            ctx.closePath();
+            ctx.strokeStyle = vm.borderColor;
+            ctx.lineWidth = vm.borderWidth;
 
-                this.animations[i].animationObject.render(this.animations[i].chartInstance, this.animations[i].animationObject);
+            ctx.fillStyle = vm.backgroundColor;
 
-                if (this.animations[i].animationObject.currentStep == this.animations[i].animationObject.numSteps) {
-                    // executed the last frame. Remove the animation.
-                    this.animations[i].chartInstance.animating = false;
-                    this.animations.splice(i, 1);
-                    // Keep the index in place to offset the splice
-                    i--;
-                }
-            }
+            ctx.fill();
+            ctx.lineJoin = 'bevel';
 
-            var endTime = Date.now();
-            var delay = endTime - startTime - this.frameDuration;
-            var frameDelay = delay / this.frameDuration;
-
-            if (frameDelay > 1) {
-                this.dropFrames += frameDelay;
-            }
-
-            // Do we have more stuff to animate?
-            if (this.animations.length > 0) {
-                helpers.requestAnimFrame.call(window, this.digestWrapper);
+            if (vm.borderWidth) {
+                ctx.stroke();
             }
         }
-    };
+    });
+
 
 }).call(this);
 
@@ -3049,327 +3022,354 @@
         Chart = root.Chart,
         helpers = Chart.helpers;
 
-    Chart.defaults.global.tooltips = {
-        enabled: true,
-        custom: null,
-        backgroundColor: "rgba(0,0,0,0.8)",
-        fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-        fontSize: 10,
-        fontStyle: "normal",
-        fontColor: "#fff",
-        titleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-        titleFontSize: 12,
-        titleFontStyle: "bold",
-        titleFontColor: "#fff",
-        yPadding: 6,
-        xPadding: 6,
-        caretSize: 8,
-        cornerRadius: 6,
-        xOffset: 10,
-        template: [
-            '<% if(label){ %>',
-            '<%=label %>: ',
-            '<% } %>',
-            '<%=value %>',
-        ].join(''),
-        multiTemplate: [
-            '<%if (datasetLabel){ %>',
-            '<%=datasetLabel %>: ',
-            '<% } %>',
-            '<%=value %>'
-        ].join(''),
-        multiKeyBackground: '#fff',
+    Chart.defaults.global.elements.line = {
+        tension: 0.4,
+        backgroundColor: Chart.defaults.global.defaultColor,
+        borderWidth: 3,
+        borderColor: Chart.defaults.global.defaultColor,
+        fill: true, // do we fill in the area between the line and its base axis
+        skipNull: true,
+        drawNull: false,
     };
 
-    Chart.Tooltip = Chart.Element.extend({
-        initialize: function() {
-            var options = this._options;
-            helpers.extend(this, {
-                _model: {
-                    // Positioning
-                    xPadding: options.tooltips.xPadding,
-                    yPadding: options.tooltips.yPadding,
-                    xOffset: options.tooltips.xOffset,
 
-                    // Labels
-                    textColor: options.tooltips.fontColor,
-                    _fontFamily: options.tooltips.fontFamily,
-                    _fontStyle: options.tooltips.fontStyle,
-                    fontSize: options.tooltips.fontSize,
+    Chart.Line = Chart.Element.extend({
+        draw: function() {
 
-                    // Title
-                    titleTextColor: options.tooltips.titleFontColor,
-                    _titleFontFamily: options.tooltips.titleFontFamily,
-                    _titleFontStyle: options.tooltips.titleFontStyle,
-                    titleFontSize: options.tooltips.titleFontSize,
-
-                    // Appearance
-                    caretHeight: options.tooltips.caretSize,
-                    cornerRadius: options.tooltips.cornerRadius,
-                    backgroundColor: options.tooltips.backgroundColor,
-                    opacity: 0,
-                    legendColorBackground: options.tooltips.multiKeyBackground,
-                },
-            });
-        },
-        update: function() {
-
+            var vm = this._view;
             var ctx = this._chart.ctx;
+            var first = this._children[0];
+            var last = this._children[this._children.length - 1];
 
-            switch (this._options.hover.mode) {
-                case 'single':
-                    helpers.extend(this._model, {
-                        text: helpers.template(this._options.tooltips.template, {
-                            // These variables are available in the template function. Add others here
-                            element: this._active[0],
-                            value: this._data.datasets[this._active[0]._datasetIndex].data[this._active[0]._index],
-                            label: this._data.labels ? this._data.labels[this._active[0]._index] : '',
-                        }),
-                    });
+            // Draw the background first (so the border is always on top)
+            helpers.each(this._children, function(point, index) {
+                var previous = this.previousPoint(point, this._children, index);
+                var next = this.nextPoint(point, this._children, index);
 
-                    var tooltipPosition = this._active[0].tooltipPosition();
-                    helpers.extend(this._model, {
-                        x: Math.round(tooltipPosition.x),
-                        y: Math.round(tooltipPosition.y),
-                        caretPadding: tooltipPosition.padding
-                    });
+                // First point only
+                if (index === 0) {
+                    ctx.moveTo(point._view.x, point._view.y);
+                    return;
+                }
 
-                    break;
+                // Start Skip and drag along scale baseline
+                if (point._view.skip && vm.skipNull && !this._loop) {
+                    ctx.lineTo(previous._view.x, point._view.y);
+                    ctx.moveTo(next._view.x, point._view.y);
+                }
+                // End Skip Stright line from the base line
+                else if (previous._view.skip && vm.skipNull && !this._loop) {
+                    ctx.moveTo(point._view.x, previous._view.y);
+                    ctx.lineTo(point._view.x, point._view.y);
+                }
 
-                case 'label':
-
-                    // Tooltip Content
-
-                    var dataArray,
-                        dataIndex;
-
-                    var labels = [],
-                        colors = [];
-
-                    for (var i = this._data.datasets.length - 1; i >= 0; i--) {
-                        dataArray = this._data.datasets[i].metaData;
-                        dataIndex = helpers.indexOf(dataArray, this._active[0]);
-                        if (dataIndex !== -1) {
-                            break;
-                        }
-                    }
-
-                    var medianPosition = (function(index) {
-                        // Get all the points at that particular index
-                        var elements = [],
-                            dataCollection,
-                            xPositions = [],
-                            yPositions = [],
-                            xMax,
-                            yMax,
-                            xMin,
-                            yMin;
-                        helpers.each(this._data.datasets, function(dataset) {
-                            dataCollection = dataset.metaData;
-                            if (dataCollection[dataIndex] && dataCollection[dataIndex].hasValue()) {
-                                elements.push(dataCollection[dataIndex]);
-                            }
-                        }, this);
-
-                        // Reverse labels if stacked
-                        helpers.each(this._options.stacked ? elements.reverse() : elements, function(element) {
-                            xPositions.push(element._view.x);
-                            yPositions.push(element._view.y);
-
-                            //Include any colour information about the element
-                            labels.push(helpers.template(this._options.tooltips.multiTemplate, {
-                                // These variables are available in the template function. Add others here
-                                element: element,
-                                datasetLabel: this._data.datasets[element._datasetIndex].label,
-                                value: this._data.datasets[element._datasetIndex].data[element._index],
-                            }));
-                            colors.push({
-                                fill: element._view.backgroundColor,
-                                stroke: element._view.borderColor
-                            });
-
-                        }, this);
-
-                        yMin = helpers.min(yPositions);
-                        yMax = helpers.max(yPositions);
-
-                        xMin = helpers.min(xPositions);
-                        xMax = helpers.max(xPositions);
-
-                        return {
-                            x: (xMin > this._chart.width / 2) ? xMin : xMax,
-                            y: (yMin + yMax) / 2,
-                        };
-                    }).call(this, dataIndex);
-
-                    // Apply for now
-                    helpers.extend(this._model, {
-                        x: medianPosition.x,
-                        y: medianPosition.y,
-                        labels: labels,
-                        title: this._data.labels && this._data.labels.length ? this._data.labels[this._active[0]._index] : '',
-                        legendColors: colors,
-                        legendBackgroundColor: this._options.tooltips.multiKeyBackground,
-                    });
-
-
-                    // Calculate Appearance Tweaks
-
-                    this._model.height = (labels.length * this._model.fontSize) + ((labels.length - 1) * (this._model.fontSize / 2)) + (this._model.yPadding * 2) + this._model.titleFontSize * 1.5;
-
-                    var titleWidth = ctx.measureText(this.title).width,
-                        //Label has a legend square as well so account for this.
-                        labelWidth = helpers.longestText(ctx, this.font, labels) + this._model.fontSize + 3,
-                        longestTextWidth = helpers.max([labelWidth, titleWidth]);
-
-                    this._model.width = longestTextWidth + (this._model.xPadding * 2);
-
-
-                    var halfHeight = this._model.height / 2;
-
-                    //Check to ensure the height will fit on the canvas
-                    if (this._model.y - halfHeight < 0) {
-                        this._model.y = halfHeight;
-                    } else if (this._model.y + halfHeight > this._chart.height) {
-                        this._model.y = this._chart.height - halfHeight;
-                    }
-
-                    //Decide whether to align left or right based on position on canvas
-                    if (this._model.x > this._chart.width / 2) {
-                        this._model.x -= this._model.xOffset + this._model.width;
+                if (previous._view.skip && vm.skipNull) {
+                    ctx.moveTo(point._view.x, point._view.y);
+                }
+                // Normal Bezier Curve
+                else {
+                    if (vm.tension > 0) {
+                        ctx.bezierCurveTo(
+                            previous._view.controlPointNextX,
+                            previous._view.controlPointNextY,
+                            point._view.controlPointPreviousX,
+                            point._view.controlPointPreviousY,
+                            point._view.x,
+                            point._view.y
+                        );
                     } else {
-                        this._model.x += this._model.xOffset;
+                        ctx.lineTo(point._view.x, point._view.y);
                     }
-                    break;
+                }
+            }, this);
+
+            // For radial scales, loop back around to the first point
+            if (this._loop) {
+                if (vm.tension > 0 && !first._view.skip) {
+
+                    ctx.bezierCurveTo(
+                        last._view.controlPointNextX,
+                        last._view.controlPointNextY,
+                        first._view.controlPointPreviousX,
+                        first._view.controlPointPreviousY,
+                        first._view.x,
+                        first._view.y
+                    );
+                } else {
+                    ctx.lineTo(first._view.x, first._view.y);
+                }
             }
 
-            return this;
+            // If we had points and want to fill this line, do so.
+            if (this._children.length > 0 && vm.fill) {
+                //Round off the line by going to the base of the chart, back to the start, then fill.
+                ctx.lineTo(this._children[this._children.length - 1]._view.x, vm.scaleZero);
+                ctx.lineTo(this._children[0]._view.x, vm.scaleZero);
+                ctx.fillStyle = vm.backgroundColor || Chart.defaults.global.defaultColor;
+                ctx.closePath();
+                ctx.fill();
+            }
+
+
+            // Now draw the line between all the points with any borders
+            ctx.lineWidth = vm.borderWidth || Chart.defaults.global.defaultColor;
+            ctx.strokeStyle = vm.borderColor || Chart.defaults.global.defaultColor;
+            ctx.beginPath();
+
+            helpers.each(this._children, function(point, index) {
+                var previous = this.previousPoint(point, this._children, index);
+                var next = this.nextPoint(point, this._children, index);
+
+                // First point only
+                if (index === 0) {
+                    ctx.moveTo(point._view.x, point._view.y);
+                    return;
+                }
+
+                // Start Skip and drag along scale baseline
+                if (point._view.skip && vm.skipNull && !this._loop) {
+                    ctx.moveTo(previous._view.x, point._view.y);
+                    ctx.moveTo(next._view.x, point._view.y);
+                    return;
+                }
+                // End Skip Stright line from the base line
+                if (previous._view.skip && vm.skipNull && !this._loop) {
+                    ctx.moveTo(point._view.x, previous._view.y);
+                    ctx.moveTo(point._view.x, point._view.y);
+                    return;
+                }
+
+                if (previous._view.skip && vm.skipNull) {
+                    ctx.moveTo(point._view.x, point._view.y);
+                    return;
+                }
+                // Normal Bezier Curve
+                if (vm.tension > 0) {
+                    ctx.bezierCurveTo(
+                        previous._view.controlPointNextX,
+                        previous._view.controlPointNextY,
+                        point._view.controlPointPreviousX,
+                        point._view.controlPointPreviousY,
+                        point._view.x,
+                        point._view.y
+                    );
+                } else {
+                    ctx.lineTo(point._view.x, point._view.y);
+                }
+            }, this);
+
+            if (this._loop && !first._view.skip) {
+                if (vm.tension > 0) {
+
+                    ctx.bezierCurveTo(
+                        last._view.controlPointNextX,
+                        last._view.controlPointNextY,
+                        first._view.controlPointPreviousX,
+                        first._view.controlPointPreviousY,
+                        first._view.x,
+                        first._view.y
+                    );
+                } else {
+                    ctx.lineTo(first._view.x, first._view.y);
+                }
+            }
+
+
+            ctx.stroke();
+
         },
+        nextPoint: function(point, collection, index) {
+            if (this.loop) {
+                return collection[index + 1] || collection[0];
+            }
+            return collection[index + 1] || collection[collection.length - 1];
+        },
+        previousPoint: function(point, collection, index) {
+            if (this.loop) {
+                return collection[index - 1] || collection[collection.length - 1];
+            }
+            return collection[index - 1] || collection[0];
+        },
+    });
+
+}).call(this);
+
+/*!
+ * Chart.js
+ * http://chartjs.org/
+ * Version: 2.0.0-alpha
+ *
+ * Copyright 2015 Nick Downie
+ * Released under the MIT license
+ * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
+ */
+
+
+(function() {
+
+    "use strict";
+
+    var root = this,
+        Chart = root.Chart,
+        helpers = Chart.helpers;
+
+    Chart.defaults.global.elements.point = {
+        radius: 3,
+        backgroundColor: Chart.defaults.global.defaultColor,
+        borderWidth: 1,
+        borderColor: Chart.defaults.global.defaultColor,
+        // Hover
+        hitRadius: 1,
+        hoverRadius: 4,
+        hoverBorderWidth: 1,
+    };
+
+
+    Chart.Point = Chart.Element.extend({
+        inRange: function(mouseX, mouseY) {
+            var vm = this._view;
+            var hoverRange = vm.hitRadius + vm.radius;
+            return ((Math.pow(mouseX - vm.x, 2) + Math.pow(mouseY - vm.y, 2)) < Math.pow(hoverRange, 2));
+        },
+        inGroupRange: function(mouseX) {
+            var vm = this._view;
+
+            if (vm) {
+                return (Math.pow(mouseX - vm.x, 2) < Math.pow(vm.radius + vm.hitRadius, 2));
+            } else {
+                return false;
+            }
+        },
+        tooltipPosition: function() {
+            var vm = this._view;
+            return {
+                x: vm.x,
+                y: vm.y,
+                padding: vm.radius + vm.borderWidth
+            };
+        },
+        draw: function() {
+
+            var vm = this._view;
+            var ctx = this._chart.ctx;
+
+
+            if (vm.skip) {
+                return;
+            }
+
+            if (vm.radius > 0 || vm.borderWidth > 0) {
+
+                ctx.beginPath();
+
+                ctx.arc(vm.x, vm.y, vm.radius || Chart.defaults.global.elements.point.radius, 0, Math.PI * 2);
+                ctx.closePath();
+
+                ctx.strokeStyle = vm.borderColor || Chart.defaults.global.defaultColor;
+                ctx.lineWidth = vm.borderWidth || Chart.defaults.global.elements.point.borderWidth;
+
+                ctx.fillStyle = vm.backgroundColor || Chart.defaults.global.defaultColor;
+
+                ctx.fill();
+                ctx.stroke();
+            }
+        }
+    });
+
+
+}).call(this);
+
+/*!
+ * Chart.js
+ * http://chartjs.org/
+ * Version: 2.0.0-alpha
+ *
+ * Copyright 2015 Nick Downie
+ * Released under the MIT license
+ * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
+ */
+
+
+(function() {
+
+    "use strict";
+
+    var root = this,
+        Chart = root.Chart,
+        helpers = Chart.helpers;
+
+    Chart.defaults.global.elements.rectangle = {
+        backgroundColor: Chart.defaults.global.defaultColor,
+        borderWidth: 0,
+        borderColor: Chart.defaults.global.defaultColor,
+    };
+
+    Chart.Rectangle = Chart.Element.extend({
         draw: function() {
 
             var ctx = this._chart.ctx;
             var vm = this._view;
 
-            switch (this._options.hover.mode) {
-                case 'single':
+            var halfWidth = vm.width / 2,
+                leftX = vm.x - halfWidth,
+                rightX = vm.x + halfWidth,
+                top = vm.base - (vm.base - vm.y),
+                halfStroke = vm.borderWidth / 2;
 
-                    ctx.font = helpers.fontString(vm.fontSize, vm._fontStyle, vm._fontFamily);
+            // Canvas doesn't allow us to stroke inside the width so we can
+            // adjust the sizes to fit if we're setting a stroke on the line
+            if (vm.borderWidth) {
+                leftX += halfStroke;
+                rightX -= halfStroke;
+                top += halfStroke;
+            }
 
-                    vm.xAlign = "center";
-                    vm.yAlign = "above";
+            ctx.beginPath();
 
-                    //Distance between the actual element.y position and the start of the tooltip caret
-                    var caretPadding = vm.caretPadding || 2;
+            ctx.fillStyle = vm.backgroundColor;
+            ctx.strokeStyle = vm.borderColor;
+            ctx.lineWidth = vm.borderWidth;
 
-                    var tooltipWidth = ctx.measureText(vm.text).width + 2 * vm.xPadding,
-                        tooltipRectHeight = vm.fontSize + 2 * vm.yPadding,
-                        tooltipHeight = tooltipRectHeight + vm.caretHeight + caretPadding;
-
-                    if (vm.x + tooltipWidth / 2 > this._chart.width) {
-                        vm.xAlign = "left";
-                    } else if (vm.x - tooltipWidth / 2 < 0) {
-                        vm.xAlign = "right";
-                    }
-
-                    if (vm.y - tooltipHeight < 0) {
-                        vm.yAlign = "below";
-                    }
-
-                    var tooltipX = vm.x - tooltipWidth / 2,
-                        tooltipY = vm.y - tooltipHeight;
-
-                    ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
-
-                    // Custom Tooltips
-                    if (this._custom) {
-                        this._custom(this._view);
-                    } else {
-                        switch (vm.yAlign) {
-                            case "above":
-                                //Draw a caret above the x/y
-                                ctx.beginPath();
-                                ctx.moveTo(vm.x, vm.y - caretPadding);
-                                ctx.lineTo(vm.x + vm.caretHeight, vm.y - (caretPadding + vm.caretHeight));
-                                ctx.lineTo(vm.x - vm.caretHeight, vm.y - (caretPadding + vm.caretHeight));
-                                ctx.closePath();
-                                ctx.fill();
-                                break;
-                            case "below":
-                                tooltipY = vm.y + caretPadding + vm.caretHeight;
-                                //Draw a caret below the x/y
-                                ctx.beginPath();
-                                ctx.moveTo(vm.x, vm.y + caretPadding);
-                                ctx.lineTo(vm.x + vm.caretHeight, vm.y + caretPadding + vm.caretHeight);
-                                ctx.lineTo(vm.x - vm.caretHeight, vm.y + caretPadding + vm.caretHeight);
-                                ctx.closePath();
-                                ctx.fill();
-                                break;
-                        }
-
-                        switch (vm.xAlign) {
-                            case "left":
-                                tooltipX = vm.x - tooltipWidth + (vm.cornerRadius + vm.caretHeight);
-                                break;
-                            case "right":
-                                tooltipX = vm.x - (vm.cornerRadius + vm.caretHeight);
-                                break;
-                        }
-
-                        helpers.drawRoundedRectangle(ctx, tooltipX, tooltipY, tooltipWidth, tooltipRectHeight, vm.cornerRadius);
-
-                        ctx.fill();
-
-                        ctx.fillStyle = helpers.color(vm.textColor).alpha(vm.opacity).rgbString();
-                        ctx.textAlign = "center";
-                        ctx.textBaseline = "middle";
-                        ctx.fillText(vm.text, tooltipX + tooltipWidth / 2, tooltipY + tooltipRectHeight / 2);
-
-                    }
-                    break;
-                case 'label':
-
-                    helpers.drawRoundedRectangle(ctx, vm.x, vm.y - vm.height / 2, vm.width, vm.height, vm.cornerRadius);
-                    ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
-                    ctx.fill();
-                    ctx.closePath();
-
-                    ctx.textAlign = "left";
-                    ctx.textBaseline = "middle";
-                    ctx.fillStyle = helpers.color(vm.titleTextColor).alpha(vm.opacity).rgbString();
-                    ctx.font = helpers.fontString(vm.fontSize, vm._titleFontStyle, vm._titleFontFamily);
-                    ctx.fillText(vm.title, vm.x + vm.xPadding, this.getLineHeight(0));
-
-                    ctx.font = helpers.fontString(vm.fontSize, vm._fontStyle, vm._fontFamily);
-                    helpers.each(vm.labels, function(label, index) {
-                        ctx.fillStyle = helpers.color(vm.textColor).alpha(vm.opacity).rgbString();
-                        ctx.fillText(label, vm.x + vm.xPadding + vm.fontSize + 3, this.getLineHeight(index + 1));
-
-                        //A bit gnarly, but clearing this rectangle breaks when using explorercanvas (clears whole canvas)
-                        //ctx.clearRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.fontSize/2, vm.fontSize, vm.fontSize);
-                        //Instead we'll make a white filled block to put the legendColour palette over.
-
-                        ctx.fillStyle = helpers.color(vm.legendColors[index].stroke).alpha(vm.opacity).rgbString();
-                        ctx.fillRect(vm.x + vm.xPadding - 1, this.getLineHeight(index + 1) - vm.fontSize / 2 - 1, vm.fontSize + 2, vm.fontSize + 2);
-
-                        ctx.fillStyle = helpers.color(vm.legendColors[index].fill).alpha(vm.opacity).rgbString();
-                        ctx.fillRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.fontSize / 2, vm.fontSize, vm.fontSize);
-
-
-                    }, this);
-                    break;
+            // It'd be nice to keep this class totally generic to any rectangle
+            // and simply specify which border to miss out.
+            ctx.moveTo(leftX, vm.base);
+            ctx.lineTo(leftX, top);
+            ctx.lineTo(rightX, top);
+            ctx.lineTo(rightX, vm.base);
+            ctx.fill();
+            if (vm.borderWidth) {
+                ctx.stroke();
             }
         },
-        getLineHeight: function(index) {
-            var baseLineHeight = this._view.y - (this._view.height / 2) + this._view.yPadding,
-                afterTitleIndex = index - 1;
-
-            //If the index is zero, we're getting the title
-            if (index === 0) {
-                return baseLineHeight + this._view.titleFontSize / 2;
+        height: function() {
+            var vm = this._view;
+            return vm.base - vm.y;
+        },
+        inRange: function(mouseX, mouseY) {
+            var vm = this._view;
+            if (vm.y < vm.base) {
+                return (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2) && (mouseY >= vm.y && mouseY <= vm.base);
             } else {
-                return baseLineHeight + ((this._view.fontSize * 1.5 * afterTitleIndex) + this._view.fontSize / 2) + this._view.titleFontSize * 1.5;
+                return (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2) && (mouseY >= vm.base && mouseY <= vm.y);
             }
-
+        },
+        inGroupRange: function(mouseX) {
+            var vm = this._view;
+            return (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2);
+        },
+        tooltipPosition: function() {
+            var vm = this._view;
+            if (vm.y < vm.base) {
+                return {
+                    x: vm.x,
+                    y: vm.y
+                };
+            } else {
+                return {
+                    x: vm.x,
+                    y: vm.base
+                };
+            }
         },
     });
 
@@ -4322,7 +4322,7 @@
 
         scales: {
             xAxes: [{
-                scaleType: "dataset", // scatter should not use a dataset axis
+                type: "category", // scatter should not use a dataset axis
                 display: true,
                 position: "bottom",
                 id: "x-axis-1", // need an ID so datasets can reference the scale
@@ -4350,7 +4350,7 @@
                 },
             }],
             yAxes: [{
-                scaleType: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
                 display: true,
                 position: "left",
                 id: "y-axis-1",
@@ -4705,7 +4705,7 @@
             this.scales = {};
 
             // Build the x axis. The line chart only supports a single x axis
-            var ScaleClass = Chart.scales.getScaleConstructor(this.options.scales.xAxes[0].scaleType);
+            var ScaleClass = Chart.scales.getScaleConstructor(this.options.scales.xAxes[0].type);
             var xScale = new ScaleClass({
                 ctx: this.chart.ctx,
                 options: this.options.scales.xAxes[0],
@@ -4720,7 +4720,7 @@
 
             // Build up all the y scales
             helpers.each(this.options.scales.yAxes, function(yAxisOptions) {
-                var ScaleClass = Chart.scales.getScaleConstructor(yAxisOptions.scaleType);
+                var ScaleClass = Chart.scales.getScaleConstructor(yAxisOptions.type);
                 var scale = new ScaleClass({
                     ctx: this.chart.ctx,
                     options: yAxisOptions,

@@ -11,8 +11,8 @@
     Chart.scaleService = {
         // The interesting function
         fitScalesForChart: function(chartInstance, width, height) {
-            var xPadding = 5;
-            var yPadding = 5;
+            var xPadding = width > 30 ? 5 : 2;
+            var yPadding = height > 30 ? 5 : 2;
 
             if (chartInstance) {
                 var leftScales = helpers.where(chartInstance.scales, function(scaleInstance) {
@@ -294,11 +294,11 @@
         constructors: {},
         // Use a registration function so that we can move to an ES6 map when we no longer need to support
         // old browsers
-        registerScaleType: function(scaleType, scaleConstructor) {
-            this.constructors[scaleType] = scaleConstructor;
+        registerScaleType: function(type, scaleConstructor) {
+            this.constructors[type] = scaleConstructor;
         },
-        getScaleConstructor: function(scaleType) {
-            return this.constructors.hasOwnProperty(scaleType) ? this.constructors[scaleType] : undefined;
+        getScaleConstructor: function(type) {
+            return this.constructors.hasOwnProperty(type) ? this.constructors[type] : undefined;
         }
     };
 

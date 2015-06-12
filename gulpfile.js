@@ -23,30 +23,17 @@ var srcDir = './src/';
 
 gulp.task('build', function() {
 
-    // Default to all of the chart types, with Chart.Core first
     var srcFiles = [
-            FileName('Core'),
-            FileName('Core.**'),
-            FileName('Scale'),
-            FileName('Scale.**'),
-            FileName('Animation'),
-            FileName('Tooltip'),
+            './src/core/core.js',
+            './src/core/**',
+            './src/scales/**',
+            './src/elements/**',
+            './src/charts/**',
+            './src/**',
+            './node_modules/color/dist/color.min.js'
         ],
         isCustom = !!(util.env.types),
         outputDir = (isCustom) ? 'custom' : '.';
-    if (isCustom) {
-        util.env.types.split(',').forEach(function(type) {
-            return srcFiles.push(FileName(type));
-        });
-    } else {
-        // Seems gulp-concat remove duplicates - nice!
-        // So we can use this to sort out dependency order - aka include Core first!
-        srcFiles.push(srcDir + '*');
-        srcFiles.push(srcDir + '*');
-        srcFiles.push(srcDir + '*');
-        srcFiles.push(srcDir + '*');
-    }
-    srcFiles.push('./node_modules/color/dist/color.min.js');
 
     return gulp.src(srcFiles)
         .pipe(concat('Chart.js'))
@@ -58,9 +45,6 @@ gulp.task('build', function() {
         .pipe(concat('Chart.min.js'))
         .pipe(gulp.dest(outputDir));
 
-    function FileName(moduleName) {
-        return srcDir + 'Chart.' + moduleName + '.js';
-    }
 });
 
 /*
