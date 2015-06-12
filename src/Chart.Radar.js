@@ -85,6 +85,7 @@
         },
 
         initialize: function() {
+
             // Events
             helpers.bindEvents(this, this.options.events, this.events);
 
@@ -164,7 +165,7 @@
                         skip: this.data.datasets[datasetIndex].data[index] === null,
 
                         // Tooltip
-                        hoverRadius: point.custom && point.custom.hoverRadius ? point.custom.hoverRadius : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointHitRadius, index, this.options.elements.point.hitRadius),
+                        hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].hitRadius, index, this.options.elements.point.hitRadius),
                     },
                 });
             }, this);
@@ -254,7 +255,7 @@
                         skip: this.data.datasets[datasetIndex].data[index] === null,
 
                         // Tooltip
-                        hoverRadius: point.custom && point.custom.hoverRadius ? point.custom.hoverRadius : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointHitRadius, index, this.options.elements.point.hitRadius),
+                        hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].hitRadius, index, this.options.elements.point.hitRadius),
                     },
                 });
             }, this);
@@ -371,26 +372,26 @@
         },
         events: function(e) {
 
-            // If exiting chart
-            if (e.type == 'mouseout') {
-                return this;
-            }
-
             this.lastActive = this.lastActive || [];
 
             // Find Active Elements
-            this.active = function() {
-                switch (this.options.hover.mode) {
-                    case 'single':
-                        return this.getElementAtEvent(e);
-                    case 'label':
-                        return this.getElementsAtEvent(e);
-                    case 'dataset':
-                        return this.getDatasetAtEvent(e);
-                    default:
-                        return e;
-                }
-            }.call(this);
+            // If exiting chart
+            if (e.type == 'mouseout') {
+                this.active = [];
+            } else {
+                this.active = function() {
+                    switch (this.options.hover.mode) {
+                        case 'single':
+                            return this.getElementAtEvent(e);
+                        case 'label':
+                            return this.getElementsAtEvent(e);
+                        case 'dataset':
+                            return this.getDatasetAtEvent(e);
+                        default:
+                            return e;
+                    }
+                }.call(this);
+            }
 
             // On Hover hook
             if (this.options.hover.onHover) {

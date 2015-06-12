@@ -73,7 +73,7 @@
             }
         },
         resetElements: function() {
-            this.outerRadius = (helpers.min([this.chart.width, this.chart.height]) - this.options.elements.slice.borderWidth / 2) / 2;
+            this.outerRadius = (helpers.min([this.chart.width, this.chart.height]) - this.options.elements.arc.borderWidth / 2) / 2;
             this.innerRadius = this.options.cutoutPercentage ? (this.outerRadius / 100) * (this.options.cutoutPercentage) : 1;
             this.radiusLength = (this.outerRadius - this.innerRadius) / this.data.datasets.length;
 
@@ -98,10 +98,10 @@
                             outerRadius: (this.options.animation.animateScale) ? 0 : dataset.outerRadius,
                             innerRadius: (this.options.animation.animateScale) ? 0 : dataset.innerRadius,
 
-                            backgroundColor: slice.custom && slice.custom.backgroundColor ? slice.custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.slice.backgroundColor),
-                            hoverBackgroundColor: slice.custom && slice.custom.hoverBackgroundColor ? slice.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, this.options.elements.slice.hoverBackgroundColor),
-                            borderWidth: slice.custom && slice.custom.borderWidth ? slice.custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.slice.borderWidth),
-                            borderColor: slice.custom && slice.custom.borderColor ? slice.custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.slice.borderColor),
+                            backgroundColor: slice.custom && slice.custom.backgroundColor ? slice.custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.arc.backgroundColor),
+                            hoverBackgroundColor: slice.custom && slice.custom.hoverBackgroundColor ? slice.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, this.options.elements.arc.hoverBackgroundColor),
+                            borderWidth: slice.custom && slice.custom.borderWidth ? slice.custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.arc.borderWidth),
+                            borderColor: slice.custom && slice.custom.borderColor ? slice.custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.arc.borderColor),
 
                             label: helpers.getValueAtIndexOrDefault(dataset.label, index, this.data.labels[index])
                         },
@@ -114,7 +114,7 @@
         },
         update: function(animationDuration) {
 
-            this.outerRadius = (helpers.min([this.chart.width, this.chart.height]) - this.options.elements.slice.borderWidth / 2) / 2;
+            this.outerRadius = (helpers.min([this.chart.width, this.chart.height]) - this.options.elements.arc.borderWidth / 2) / 2;
             this.innerRadius = this.options.cutoutPercentage ? (this.outerRadius / 100) * (this.options.cutoutPercentage) : 1;
             this.radiusLength = (this.outerRadius - this.innerRadius) / this.data.datasets.length;
 
@@ -148,10 +148,10 @@
                             outerRadius: dataset.outerRadius,
                             innerRadius: dataset.innerRadius,
 
-                            backgroundColor: slice.custom && slice.custom.backgroundColor ? slice.custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.slice.backgroundColor),
-                            hoverBackgroundColor: slice.custom && slice.custom.hoverBackgroundColor ? slice.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, this.options.elements.slice.hoverBackgroundColor),
-                            borderWidth: slice.custom && slice.custom.borderWidth ? slice.custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.slice.borderWidth),
-                            borderColor: slice.custom && slice.custom.borderColor ? slice.custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.slice.borderColor),
+                            backgroundColor: slice.custom && slice.custom.backgroundColor ? slice.custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.arc.backgroundColor),
+                            hoverBackgroundColor: slice.custom && slice.custom.hoverBackgroundColor ? slice.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, this.options.elements.arc.hoverBackgroundColor),
+                            borderWidth: slice.custom && slice.custom.borderWidth ? slice.custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.arc.borderWidth),
+                            borderColor: slice.custom && slice.custom.borderColor ? slice.custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.arc.borderColor),
 
                             label: helpers.getValueAtIndexOrDefault(dataset.label, index, this.data.labels[index])
                         },
@@ -194,8 +194,8 @@
 
             // Find Active Elements
             if (e.type == 'mouseout') {
-    this.active = [];
-} else {
+                this.active = [];
+            } else {
 
                 this.active = function() {
                     switch (this.options.hover.mode) {
@@ -231,18 +231,18 @@
                         dataset = this.data.datasets[this.lastActive[0]._datasetIndex];
                         index = this.lastActive[0]._index;
 
-                        this.lastActive[0]._model.backgroundColor = this.lastActive[0].custom && this.lastActive[0].custom.backgroundColor ? this.lastActive[0].custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.slice.backgroundColor);
-                        this.lastActive[0]._model.borderColor = this.lastActive[0].custom && this.lastActive[0].custom.borderColor ? this.lastActive[0].custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.slice.borderColor);
-                        this.lastActive[0]._model.borderWidth = this.lastActive[0].custom && this.lastActive[0].custom.borderWidth ? this.lastActive[0].custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.slice.borderWidth);
+                        this.lastActive[0]._model.backgroundColor = this.lastActive[0].custom && this.lastActive[0].custom.backgroundColor ? this.lastActive[0].custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.arc.backgroundColor);
+                        this.lastActive[0]._model.borderColor = this.lastActive[0].custom && this.lastActive[0].custom.borderColor ? this.lastActive[0].custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.arc.borderColor);
+                        this.lastActive[0]._model.borderWidth = this.lastActive[0].custom && this.lastActive[0].custom.borderWidth ? this.lastActive[0].custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.arc.borderWidth);
                         break;
                     case 'label':
                         for (var i = 0; i < this.lastActive.length; i++) {
                             dataset = this.data.datasets[this.lastActive[i]._datasetIndex];
                             index = this.lastActive[i]._index;
 
-                            this.lastActive[i]._model.backgroundColor = this.lastActive[i].custom && this.lastActive[i].custom.backgroundColor ? this.lastActive[i].custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.slice.backgroundColor);
-                            this.lastActive[i]._model.borderColor = this.lastActive[i].custom && this.lastActive[i].custom.borderColor ? this.lastActive[i].custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.slice.borderColor);
-                            this.lastActive[i]._model.borderWidth = this.lastActive[i].custom && this.lastActive[i].custom.borderWidth ? this.lastActive[i].custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.slice.borderWidth);
+                            this.lastActive[i]._model.backgroundColor = this.lastActive[i].custom && this.lastActive[i].custom.backgroundColor ? this.lastActive[i].custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.arc.backgroundColor);
+                            this.lastActive[i]._model.borderColor = this.lastActive[i].custom && this.lastActive[i].custom.borderColor ? this.lastActive[i].custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.arc.borderColor);
+                            this.lastActive[i]._model.borderWidth = this.lastActive[i].custom && this.lastActive[i].custom.borderWidth ? this.lastActive[i].custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.arc.borderWidth);
                         }
                         break;
                     case 'dataset':

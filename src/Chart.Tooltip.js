@@ -87,7 +87,7 @@
             switch (this._options.hover.mode) {
                 case 'single':
                     helpers.extend(this._model, {
-                        text: template(this._options.tooltips.template, {
+                        text: helpers.template(this._options.tooltips.template, {
                             // These variables are available in the template function. Add others here
                             element: this._active[0],
                             value: this._data.datasets[this._active[0]._datasetIndex].data[this._active[0]._index],
