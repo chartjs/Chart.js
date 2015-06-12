@@ -116,7 +116,7 @@
 
                     for (var i = this._data.datasets.length - 1; i >= 0; i--) {
                         dataArray = this._data.datasets[i].metaData;
-                        dataIndex = indexOf(dataArray, this._active[0]);
+                        dataIndex = helpers.indexOf(dataArray, this._active[0]);
                         if (dataIndex !== -1) {
                             break;
                         }
@@ -158,11 +158,11 @@
 
                         }, this);
 
-                        yMin = min(yPositions);
-                        yMax = max(yPositions);
+                        yMin = helpers.min(yPositions);
+                        yMax = helpers.max(yPositions);
 
-                        xMin = min(xPositions);
-                        xMax = max(xPositions);
+                        xMin = helpers.min(xPositions);
+                        xMax = helpers.max(xPositions);
 
                         return {
                             x: (xMin > this._chart.width / 2) ? xMin : xMax,
@@ -187,8 +187,8 @@
 
                     var titleWidth = ctx.measureText(this.title).width,
                         //Label has a legend square as well so account for this.
-                        labelWidth = longestText(ctx, this.font, labels) + this._model.fontSize + 3,
-                        longestTextWidth = max([labelWidth, titleWidth]);
+                        labelWidth = helpers.longestText(ctx, this.font, labels) + this._model.fontSize + 3,
+                        longestTextWidth = helpers.max([labelWidth, titleWidth]);
 
                     this._model.width = longestTextWidth + (this._model.xPadding * 2);
 

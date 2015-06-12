@@ -113,16 +113,19 @@
             var labelFont = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
             var longestLabelWidth = helpers.longestText(this.ctx, labelFont, this.labels);
 
+            // Width
             if (this.isHorizontal()) {
                 minSize.width = maxWidth;
                 this.width = maxWidth;
+            } else if (this.options.display) {
+                minSize.width = Math.min(longestLabelWidth + 6, maxWidth);
+            }
 
+            // Height
+            if (!this.isHorizontal()) {
                 var labelHeight = (Math.cos(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.labels.fontSize;
                 minSize.height = Math.min(labelHeight, maxHeight);
-            } else {
-                minSize.height = maxHeight;
-                this.height = maxHeight;
-
+            } else if (this.options.display) {
                 minSize.width = Math.min(longestLabelWidth + 6, maxWidth);
             }
 

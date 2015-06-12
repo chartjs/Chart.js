@@ -142,34 +142,42 @@
                 height: 0,
             };
 
+            // In a horizontal axis, we need some room for the scale to be drawn
+            //
+            //      -----------------------------------------------------
+            //          |           |           |           |           |
+            //
+
+            // In a vertical axis, we need some room for the scale to be drawn.
+            // The actual grid lines will be drawn on the chart area, however, we need to show 
+            // ticks where the axis actually is.
+            // We will allocate 25px for this width
+            //      |
+            //     -|
+            //      |
+            //      |
+            //     -|
+            //      |
+            //      |
+            //     -|
+
+
+            // Width
             if (this.isHorizontal()) {
                 minSize.width = maxWidth; // fill all the width
+            } else if (this.options.display) {
 
-                // In a horizontal axis, we need some room for the scale to be drawn
-                //
-                //      -----------------------------------------------------
-                //          |           |           |           |           |
-                //
-                minSize.height = this.options.gridLines.show ? 10 : 0;
-            } else {
-                minSize.height = maxHeight; // fill all the height
-
-                // In a vertical axis, we need some room for the scale to be drawn.
-                // The actual grid lines will be drawn on the chart area, however, we need to show 
-                // ticks where the axis actually is.
-                // We will allocate 25px for this width
-                //      |
-                //     -|
-                //      |
-                //      |
-                //     -|
-                //      |
-                //      |
-                //     -|
                 minSize.width = this.options.gridLines.show ? 10 : 0;
             }
 
-            if (this.options.labels.show) {
+            // height
+            if (!this.isHorizontal()) {
+                minSize.height = this.options.gridLines.show ? 10 : 0;
+            } else if (this.options.display) {
+                minSize.height = maxHeight; // fill all the height
+            }
+
+            if (this.options.labels.show && this.options.display) {
                 // Don't bother fitting the labels if we are not showing them
                 var labelFont = helpers.fontString(this.options.labels.fontSize,
                     this.options.labels.fontStyle, this.options.labels.fontFamily);

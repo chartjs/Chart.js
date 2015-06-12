@@ -1683,45 +1683,58 @@
                     return scaleInstance.options.position == "bottom";
                 });
 
-                // Adjust the padding to take into account displaying labels
-                if (topScales.length === 0 || bottomScales.length === 0) {
-                    var maxFontHeight = 0;
+                var visibleLeftScales = helpers.where(chartInstance.scales, function(scaleInstance) {
+                    return scaleInstance.options.position == "left";
+                });
+                var visibleRightScales = helpers.where(chartInstance.scales, function(scaleInstance) {
+                    return scaleInstance.options.position == "right";
+                });
+                var visibleTopScales = helpers.where(chartInstance.scales, function(scaleInstance) {
+                    return scaleInstance.options.position == "top";
+                });
+                var visibleBottomScales = helpers.where(chartInstance.scales, function(scaleInstance) {
+                    return scaleInstance.options.position == "bottom";
+                });
 
-                    var maxFontHeightFunction = function(scaleInstance) {
-                        if (scaleInstance.options.labels.show) {
-                            // Only consider font sizes for axes that actually show labels
-                            maxFontHeight = Math.max(maxFontHeight, scaleInstance.options.labels.fontSize);
-                        }
-                    };
+                // // Adjust the padding to take into account displaying labels
+                // if (topScales.length === 0 || bottomScales.length === 0) {
+                //     var maxFontHeight = 0;
 
-                    helpers.each(leftScales, maxFontHeightFunction);
-                    helpers.each(rightScales, maxFontHeightFunction);
+                //     var maxFontHeightFunction = function(scaleInstance) {
+                //         if (scaleInstance.options.labels.show) {
+                //             // Only consider font sizes for axes that actually show labels
+                //             maxFontHeight = Math.max(maxFontHeight, scaleInstance.options.labels.fontSize);
+                //         }
+                //     };
 
-                    if (topScales.length === 0) {
-                        // Add padding so that we can handle drawing the top nicely
-                        yPadding += 0.75 * maxFontHeight; // 0.75 since padding added on both sides
-                    }
+                //     helpers.each(leftScales, maxFontHeightFunction);
+                //     helpers.each(rightScales, maxFontHeightFunction);
 
-                    if (bottomScales.length === 0) {
-                        // Add padding so that we can handle drawing the bottom nicely
-                        yPadding += 1.5 * maxFontHeight;
-                    }
-                }
+                //     if (topScales.length === 0) {
+                //         // Add padding so that we can handle drawing the top nicely
+                //         yPadding += 0.75 * maxFontHeight; // 0.75 since padding added on both sides
+                //     }
+
+                //     if (bottomScales.length === 0) {
+                //         // Add padding so that we can handle drawing the bottom nicely
+                //         yPadding += 1.5 * maxFontHeight;
+                //     }
+                // }
 
                 // Essentially we now have any number of scales on each of the 4 sides.
                 // Our canvas looks like the following.
                 // The areas L1 and L2 are the left axes. R1 is the right axis, T1 is the top axis and 
                 // B1 is the bottom axis
                 // |------------------------------------------------------|
-                // |		  |				T1						|	  |
+                // |          |             T1                      |     |
                 // |----|-----|-------------------------------------|-----|
-                // |	|     |									    |     |
-                // | L1	|  L2 |			Chart area					|  R1 |
-                // |	|	  |										|     |
-                // |	|	  |										|     |
+                // |    |     |                                     |     |
+                // | L1 |  L2 |         Chart area                  |  R1 |
+                // |    |     |                                     |     |
+                // |    |     |                                     |     |
                 // |----|-----|-------------------------------------|-----|
-                // |		  |				B1						|	  |
-                // |		  |										|	  |
+                // |          |             B1                      |     |
+                // |          |                                     |     |
                 // |------------------------------------------------------|
 
                 // What we do to find the best sizing, we do the following
@@ -1737,20 +1750,10 @@
                 // Step 1
                 var chartWidth = width / 2; // min 50%
                 var chartHeight = height / 2; // min 50%
-                var aspectRatio = chartHeight / chartWidth;
-                var screenAspectRatio;
-
-                if (chartInstance.options.maintainAspectRatio) {
-                    screenAspectRatio = height / width;
-
-                    if (aspectRatio != screenAspectRatio) {
-                        chartHeight = chartWidth * screenAspectRatio;
-                        aspectRatio = screenAspectRatio;
-                    }
-                }
 
                 chartWidth -= (2 * xPadding);
                 chartHeight -= (2 * yPadding);
+
 
                 // Step 2
                 var verticalScaleWidth = (width - chartWidth) / (leftScales.length + rightScales.length);
@@ -2071,16 +2074,19 @@
             var labelFont = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
             var longestLabelWidth = helpers.longestText(this.ctx, labelFont, this.labels);
 
+            // Width
             if (this.isHorizontal()) {
                 minSize.width = maxWidth;
                 this.width = maxWidth;
+            } else if (this.options.display) {
+                minSize.width = Math.min(longestLabelWidth + 6, maxWidth);
+            }
 
+            // Height
+            if (!this.isHorizontal()) {
                 var labelHeight = (Math.cos(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.labels.fontSize;
                 minSize.height = Math.min(labelHeight, maxHeight);
-            } else {
-                minSize.height = maxHeight;
-                this.height = maxHeight;
-
+            } else if (this.options.display) {
                 minSize.width = Math.min(longestLabelWidth + 6, maxWidth);
             }
 
@@ -2312,34 +2318,42 @@
                 height: 0,
             };
 
+            // In a horizontal axis, we need some room for the scale to be drawn
+            //
+            //      -----------------------------------------------------
+            //          |           |           |           |           |
+            //
+
+            // In a vertical axis, we need some room for the scale to be drawn.
+            // The actual grid lines will be drawn on the chart area, however, we need to show 
+            // ticks where the axis actually is.
+            // We will allocate 25px for this width
+            //      |
+            //     -|
+            //      |
+            //      |
+            //     -|
+            //      |
+            //      |
+            //     -|
+
+
+            // Width
             if (this.isHorizontal()) {
                 minSize.width = maxWidth; // fill all the width
+            } else if (this.options.display) {
 
-                // In a horizontal axis, we need some room for the scale to be drawn
-                //
-                //      -----------------------------------------------------
-                //          |           |           |           |           |
-                //
-                minSize.height = this.options.gridLines.show ? 10 : 0;
-            } else {
-                minSize.height = maxHeight; // fill all the height
-
-                // In a vertical axis, we need some room for the scale to be drawn.
-                // The actual grid lines will be drawn on the chart area, however, we need to show 
-                // ticks where the axis actually is.
-                // We will allocate 25px for this width
-                //      |
-                //     -|
-                //      |
-                //      |
-                //     -|
-                //      |
-                //      |
-                //     -|
                 minSize.width = this.options.gridLines.show ? 10 : 0;
             }
 
-            if (this.options.labels.show) {
+            // height
+            if (!this.isHorizontal()) {
+                minSize.height = this.options.gridLines.show ? 10 : 0;
+            } else if (this.options.display) {
+                minSize.height = maxHeight; // fill all the height
+            }
+
+            if (this.options.labels.show && this.options.display) {
                 // Don't bother fitting the labels if we are not showing them
                 var labelFont = helpers.fontString(this.options.labels.fontSize,
                     this.options.labels.fontStyle, this.options.labels.fontFamily);
@@ -3134,7 +3148,7 @@
 
                     for (var i = this._data.datasets.length - 1; i >= 0; i--) {
                         dataArray = this._data.datasets[i].metaData;
-                        dataIndex = indexOf(dataArray, this._active[0]);
+                        dataIndex = helpers.indexOf(dataArray, this._active[0]);
                         if (dataIndex !== -1) {
                             break;
                         }
@@ -3176,11 +3190,11 @@
 
                         }, this);
 
-                        yMin = min(yPositions);
-                        yMax = max(yPositions);
+                        yMin = helpers.min(yPositions);
+                        yMax = helpers.max(yPositions);
 
-                        xMin = min(xPositions);
-                        xMax = max(xPositions);
+                        xMin = helpers.min(xPositions);
+                        xMax = helpers.max(xPositions);
 
                         return {
                             x: (xMin > this._chart.width / 2) ? xMin : xMax,
@@ -3205,8 +3219,8 @@
 
                     var titleWidth = ctx.measureText(this.title).width,
                         //Label has a legend square as well so account for this.
-                        labelWidth = longestText(ctx, this.font, labels) + this._model.fontSize + 3,
-                        longestTextWidth = max([labelWidth, titleWidth]);
+                        labelWidth = helpers.longestText(ctx, this.font, labels) + this._model.fontSize + 3,
+                        longestTextWidth = helpers.max([labelWidth, titleWidth]);
 
                     this._model.width = longestTextWidth + (this._model.xPadding * 2);
 
