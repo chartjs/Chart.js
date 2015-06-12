@@ -22,23 +22,11 @@
 		//Boolean - Whether to show vertical lines (except Y axis)
 		scaleShowVerticalLines: true,
 
-		//Boolean - Whether the line is curved between points
-		bezierCurve : true,
-
-		//Number - Tension of the bezier curve between points
-		bezierCurveTension : 0.4,
-
-		//Boolean - Whether to show a dot for each point
-		pointDot : true,
-
 		//Number - Radius of each point dot in pixels
-		pointDotRadius : 4,
-
-		//Number - Pixel width of point dot stroke
-		pointDotStrokeWidth : 1,
+		pointRadius : 1,
 
 		//Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-		pointHitDetectionRadius : 20,
+		pointHitDetectionRadius : 1,
 
 		//Boolean - Whether to show a stroke for datasets
 		datasetStroke : true,
@@ -62,25 +50,27 @@
 		name: "Scatter",
 		defaults : defaultConfig,
 		initialize:  function(data){
-			//Declare the extension of the default point, to cater for the options passed in to the constructor
+			//Declare th  extension of the default point, to cater for the options passed in to the constructor
+			var maxRadius = this.options.pointRadius;
+			helpers.each(data.datasets,function(dataset){
+				var radius = parseInt(dataset.pointRadius);
+				if (radius > maxRadius) maxRadius = radius;
+			});
 			this.PointClass = Chart.Point.extend({
 				offsetGridLines : this.options.offsetGridLines,
-				strokeWidth : this.options.pointDotStrokeWidth,
-				radius : this.options.pointDotRadius,
-				display: this.options.pointDot,
 				hitDetectionRadius : this.options.pointHitDetectionRadius,
+				radius: maxRadius,
 				ctx : this.chart.ctx,
 				inRange : function(mouseX){
 					return (Math.pow(mouseX-this.x, 2) < Math.pow(this.radius + this.hitDetectionRadius,2));
 				},
-				draw: function() {
+				draw: function(dataset) {
 					var ctx = this.ctx;
 					ctx.beginPath();
-					ctx.arc(this.x, this.y, 1, 0, Math.PI * 2);
+					ctx.arc(this.x, this.y, dataset.pointRadius, Math.PI * 2, false);
+					ctx.fillStyle = dataset.pointColor;
+					ctx.fill();
 					ctx.closePath();
-					ctx.strokeStyle = "rgba(24,205,229,0.5)";
-					ctx.lineWidth = 2;
-					ctx.stroke();
 				}
 			});
 
@@ -93,10 +83,6 @@
 					this.eachPoints(function(point){
 						point.restore(['fillColor', 'strokeColor']);
 					});
-					helpers.each(activePoints, function(activePoint){
-						activePoint.fillColor = activePoint.highlightFill;
-						activePoint.strokeColor = activePoint.highlightStroke;
-					});
 					this.showTooltip(activePoints);
 				});
 			}
@@ -106,8 +92,7 @@
 
 				var datasetObject = {
 					label : dataset.label || null,
-					fillColor : dataset.fillColor,
-					strokeColor : dataset.strokeColor,
+					pointRadius: parseInt(dataset.pointRadius),
 					pointColor : dataset.pointColor,
 					pointStrokeColor : dataset.pointStrokeColor,
 					points : []
@@ -122,10 +107,7 @@
 						value : dataPoint,
 						label : data.labels[index],
 						datasetLabel: dataset.label,
-						strokeColor : dataset.pointStrokeColor,
 						fillColor : dataset.pointColor,
-						highlightFill : dataset.pointHighlightFill || dataset.pointColor,
-						highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor
 					}));
 				},this);
 
@@ -243,7 +225,6 @@
 					datasetLabel: this.datasets[datasetIndex].label,
 					x: this.scale.calculateX(this.scale.valuesCount+1),
 					y: this.scale.endPoint,
-					strokeColor : this.datasets[datasetIndex].pointStrokeColor,
 					fillColor : this.datasets[datasetIndex].pointColor
 				}));
 			},this);
@@ -302,77 +283,10 @@
 					}
 				},this);
 
-
-				// Control points need to be calculated in a seperate loop, because we need to know the current x/y of the point
-				// This would cause issues when there is no animation, because the y of the next point would be 0, so beziers would be skewed
-				if (this.options.bezierCurve){
-					helpers.each(pointsWithValues, function(point, index){
-						var tension = (index > 0 && index < pointsWithValues.length - 1) ? this.options.bezierCurveTension : 0;
-						point.controlPoints = helpers.splineCurve(
-							previousPoint(point, pointsWithValues, index),
-							point,
-							nextPoint(point, pointsWithValues, index),
-							tension
-						);
-
-						// Prevent the bezier going outside of the bounds of the graph
-
-						// Cap puter bezier handles to the upper/lower scale bounds
-						if (point.controlPoints.outer.y > this.scale.endPoint){
-							point.controlPoints.outer.y = this.scale.endPoint;
-						}
-						else if (point.controlPoints.outer.y < this.scale.startPoint){
-							point.controlPoints.outer.y = this.scale.startPoint;
-						}
-
-						// Cap inner bezier handles to the upper/lower scale bounds
-						if (point.controlPoints.inner.y > this.scale.endPoint){
-							point.controlPoints.inner.y = this.scale.endPoint;
-						}
-						else if (point.controlPoints.inner.y < this.scale.startPoint){
-							point.controlPoints.inner.y = this.scale.startPoint;
-						}
-					},this);
-				}
-
-
-				//Draw the line between all the points
-				ctx.lineWidth = this.options.datasetStrokeWidth;
-				ctx.strokeStyle = "transparent";
-				ctx.beginPath();
-
-				helpers.each(pointsWithValues, function(point, index){
-					if (index === 0){
-						ctx.moveTo(point.x, point.y);
-					}
-					else{
-						if(this.options.bezierCurve){
-							var previous = previousPoint(point, pointsWithValues, index);
-
-							ctx.bezierCurveTo(
-								previous.controlPoints.outer.x,
-								previous.controlPoints.outer.y,
-								point.controlPoints.inner.x,
-								point.controlPoints.inner.y,
-								point.x,
-								point.y
-							);
-						}
-						else{
-							ctx.lineTo(point.x,point.y);
-						}
-					}
-				}, this);
-
-				ctx.stroke();
-
-
-				//Now draw the points over the line
-				//A little inefficient double looping, but better than the line
-				//lagging behind the point positions
 				helpers.each(pointsWithValues,function(point){
-					point.draw();
+					point.draw(dataset);
 				});
+
 			},this);
 		}
 	});
