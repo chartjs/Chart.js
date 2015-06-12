@@ -161,9 +161,9 @@
                         // Appearance
                         base: yScale.calculateBarBase(datasetIndex, index),
                         width: xScale.calculateBarWidth(this.data.datasets.length),
-                        backgroundColor: bar.custom && bar.custom.backgroundColor ? bar.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].backgroundColor, index, this.options.elements.bar.backgroundColor),
-                        borderColor: bar.custom && bar.custom.borderColor ? bar.custom.borderColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].borderColor, index, this.options.elements.bar.borderColor),
-                        borderWidth: bar.custom && bar.custom.borderWidth ? bar.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].borderWidth, index, this.options.elements.bar.borderWidth),
+                        backgroundColor: bar.custom && bar.custom.backgroundColor ? bar.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].backgroundColor, index, this.options.elements.rectangle.backgroundColor),
+                        borderColor: bar.custom && bar.custom.borderColor ? bar.custom.borderColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].borderColor, index, this.options.elements.rectangle.borderColor),
+                        borderWidth: bar.custom && bar.custom.borderWidth ? bar.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].borderWidth, index, this.options.elements.rectangle.borderWidth),
 
                         // Tooltip
                         label: this.data.labels[index],
@@ -198,9 +198,9 @@
                         // Appearance
                         base: yScale.calculateBarBase(datasetIndex, index),
                         width: xScale.calculateBarWidth(this.data.datasets.length),
-                        backgroundColor: bar.custom && bar.custom.backgroundColor ? bar.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].backgroundColor, index, this.options.elements.bar.backgroundColor),
-                        borderColor: bar.custom && bar.custom.borderColor ? bar.custom.borderColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].borderColor, index, this.options.elements.bar.borderColor),
-                        borderWidth: bar.custom && bar.custom.borderWidth ? bar.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].borderWidth, index, this.options.elements.bar.borderWidth),
+                        backgroundColor: bar.custom && bar.custom.backgroundColor ? bar.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].backgroundColor, index, this.options.elements.rectangle.backgroundColor),
+                        borderColor: bar.custom && bar.custom.borderColor ? bar.custom.borderColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].borderColor, index, this.options.elements.rectangle.borderColor),
+                        borderWidth: bar.custom && bar.custom.borderWidth ? bar.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].borderWidth, index, this.options.elements.rectangle.borderWidth),
 
                         // Tooltip
                         label: this.data.labels[index],
@@ -284,11 +284,11 @@
                     this.max = this.labels.length;
                 },
                 calculateBaseWidth: function() {
-                    return (this.getPixelForValue(null, 1, true) - this.getPixelForValue(null, 0, true)) - (2 * self.options.elements.bar.valueSpacing);
+                    return (this.getPixelForValue(null, 1, true) - this.getPixelForValue(null, 0, true)) - (2 * self.options.valueSpacing);
                 },
                 calculateBarWidth: function(datasetCount) {
                     //The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
-                    var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * self.options.elements.bar.datasetSpacing);
+                    var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * self.options.datasetSpacing);
 
                     if (self.options.stacked) {
                         return baseWidth;
@@ -304,7 +304,7 @@
                         return xAbsolute + barWidth / 2;
                     }
 
-                    return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * self.options.elements.bar.datasetSpacing) + barWidth / 2;
+                    return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * self.options.datasetSpacing) + barWidth / 2;
                 },
             });
             this.scales[xScale.id] = xScale;
@@ -459,18 +459,18 @@
                         dataset = this.data.datasets[this.lastActive[0]._datasetIndex];
                         index = this.lastActive[0]._index;
 
-                        this.lastActive[0]._model.backgroundColor = this.lastActive[0].custom && this.lastActive[0].custom.backgroundColor ? this.lastActive[0].custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.bar.backgroundColor);
-                        this.lastActive[0]._model.borderColor = this.lastActive[0].custom && this.lastActive[0].custom.borderColor ? this.lastActive[0].custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.bar.borderColor);
-                        this.lastActive[0]._model.borderWidth = this.lastActive[0].custom && this.lastActive[0].custom.borderWidth ? this.lastActive[0].custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.bar.borderWidth);
+                        this.lastActive[0]._model.backgroundColor = this.lastActive[0].custom && this.lastActive[0].custom.backgroundColor ? this.lastActive[0].custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.rectangle.backgroundColor);
+                        this.lastActive[0]._model.borderColor = this.lastActive[0].custom && this.lastActive[0].custom.borderColor ? this.lastActive[0].custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.rectangle.borderColor);
+                        this.lastActive[0]._model.borderWidth = this.lastActive[0].custom && this.lastActive[0].custom.borderWidth ? this.lastActive[0].custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.rectangle.borderWidth);
                         break;
                     case 'label':
                         for (var i = 0; i < this.lastActive.length; i++) {
                             dataset = this.data.datasets[this.lastActive[i]._datasetIndex];
                             index = this.lastActive[i]._index;
 
-                            this.lastActive[i]._model.backgroundColor = this.lastActive[i].custom && this.lastActive[i].custom.backgroundColor ? this.lastActive[i].custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.bar.backgroundColor);
-                            this.lastActive[i]._model.borderColor = this.lastActive[i].custom && this.lastActive[i].custom.borderColor ? this.lastActive[i].custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.bar.borderColor);
-                            this.lastActive[i]._model.borderWidth = this.lastActive[i].custom && this.lastActive[i].custom.borderWidth ? this.lastActive[i].custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.bar.borderWidth);
+                            this.lastActive[i]._model.backgroundColor = this.lastActive[i].custom && this.lastActive[i].custom.backgroundColor ? this.lastActive[i].custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.rectangle.backgroundColor);
+                            this.lastActive[i]._model.borderColor = this.lastActive[i].custom && this.lastActive[i].custom.borderColor ? this.lastActive[i].custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.rectangle.borderColor);
+                            this.lastActive[i]._model.borderWidth = this.lastActive[i].custom && this.lastActive[i].custom.borderWidth ? this.lastActive[i].custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.rectangle.borderWidth);
                         }
                         break;
                     case 'dataset':

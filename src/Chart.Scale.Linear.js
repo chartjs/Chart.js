@@ -147,7 +147,6 @@
             //      -----------------------------------------------------
             //          |           |           |           |           |
             //
-
             // In a vertical axis, we need some room for the scale to be drawn.
             // The actual grid lines will be drawn on the chart area, however, we need to show 
             // ticks where the axis actually is.
@@ -165,17 +164,18 @@
             // Width
             if (this.isHorizontal()) {
                 minSize.width = maxWidth; // fill all the width
-            } else if (this.options.display) {
-
-                minSize.width = this.options.gridLines.show ? 10 : 0;
+            } else {
+                minSize.width = this.options.gridLines.show && this.options.display ? 10 : 0;
             }
 
             // height
-            if (!this.isHorizontal()) {
-                minSize.height = this.options.gridLines.show ? 10 : 0;
-            } else if (this.options.display) {
+            if (this.isHorizontal()) {
+                minSize.height = this.options.gridLines.show && this.options.display ? 10 : 0;
+            } else {
                 minSize.height = maxHeight; // fill all the height
             }
+
+
 
             if (this.options.labels.show && this.options.display) {
                 // Don't bother fitting the labels if we are not showing them
