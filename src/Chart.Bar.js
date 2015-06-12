@@ -8,6 +8,8 @@
     var defaultConfig = {
 
         stacked: false,
+        valueSpacing: 5,
+        datasetSpacing: 1,
 
         hover: {
             mode: "label"

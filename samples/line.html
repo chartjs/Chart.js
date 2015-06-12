@@ -8,10 +8,8 @@
 </head>
 
 <body>
-    <div style="width:50%">
-        <div>
-            <canvas id="canvas" height="450" width="600"></canvas>
-        </div>
+    <div style="width:300px;height:30px">
+        <canvas id="canvas" style="width:100%;height:100%"></canvas>
     </div>
     <button id="randomizeData">Randomize Data</button>
     <script>
@@ -35,7 +33,15 @@
             }]
         },
         options: {
-            responsive: true
+            responsive: true,
+            scales: {
+                xAxes: [{
+                    display: false
+                }],
+                yAxes: [{
+                    display: false
+                }]
+            }
         }
     };
 
