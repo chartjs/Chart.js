@@ -3394,7 +3394,7 @@
 
         scales: {
             xAxes: [{
-                scaleType: "dataset", // scatter should not use a dataset axis
+                type: "category", // scatter should not use a dataset axis
                 display: true,
                 position: "bottom",
                 id: "x-axis-1", // need an ID so datasets can reference the scale
@@ -3422,7 +3422,7 @@
                 },
             }],
             yAxes: [{
-                scaleType: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
                 display: true,
                 position: "left",
                 id: "y-axis-1",
@@ -3650,7 +3650,7 @@
             this.scales = {};
 
             // Build the x axis. The line chart only supports a single x axis
-            var ScaleClass = Chart.scales.getScaleConstructor(this.options.scales.xAxes[0].scaleType);
+            var ScaleClass = Chart.scales.getScaleConstructor(this.options.scales.xAxes[0].type);
             var xScale = new ScaleClass({
                 ctx: this.chart.ctx,
                 options: this.options.scales.xAxes[0],
@@ -3688,7 +3688,7 @@
 
             // Build up all the y scales
             helpers.each(this.options.scales.yAxes, function(yAxisOptions) {
-                var ScaleClass = Chart.scales.getScaleConstructor(yAxisOptions.scaleType);
+                var ScaleClass = Chart.scales.getScaleConstructor(yAxisOptions.type);
                 var scale = new ScaleClass({
                     ctx: this.chart.ctx,
                     options: yAxisOptions,

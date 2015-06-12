@@ -113,7 +113,7 @@ gulp.task('module-sizes', function() {
 });
 
 gulp.task('watch', function() {
-    gulp.watch('./src/*', ['build']);
+    gulp.watch('./src/**', ['build']);
 });
 
 gulp.task('test', ['jshint', 'valid']);
