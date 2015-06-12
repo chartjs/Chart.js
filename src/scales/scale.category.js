@@ -132,21 +132,6 @@
                 this.height = maxHeight;
             }
 
-
-
-            /*if (this.isHorizontal()) {
-                minSize.width = maxWidth;
-                this.width = maxWidth;
-
-                var labelHeight = (Math.cos(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.labels.fontSize;
-                minSize.height = Math.min(labelHeight, maxHeight);
-            } else {
-                minSize.height = maxHeight;
-                this.height = maxHeight;
-
-                minSize.width = Math.min(longestLabelWidth + 6, maxWidth);
-            }*/
-
             this.width = minSize.width;
             this.height = minSize.height;
             return minSize;
