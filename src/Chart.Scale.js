@@ -284,8 +284,6 @@
                     right: totalLeftWidth + maxChartWidth,
                     bottom: totalTopHeight + maxChartHeight,
                 };
-
-                console.log(chartInstance);
             }
         }
     };
