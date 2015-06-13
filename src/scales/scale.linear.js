@@ -133,7 +133,7 @@
 
 				if (this.options.labels.userCallback) {
 					// If the user provided a callback for label generation, use that as first priority
-					label = this.options.lables.userCallback(tick, index, ticks);
+					label = this.options.labels.userCallback(tick, index, ticks);
 				} else if (this.options.labels.template) {
 					// else fall back to the template string
 					label = helpers.template(this.options.labels.template, {

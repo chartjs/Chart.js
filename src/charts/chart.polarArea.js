@@ -141,7 +141,7 @@
 						x: this.chart.width / 2,
 						y: this.chart.height / 2,
 						innerRadius: 0,
-						outerRadius: this.scale.calculateCenterOffset(value),
+						outerRadius: this.scale.getDistanceFromCenterForValue(value),
 						startAngle: startAngle,
 						endAngle: endAngle,
 
