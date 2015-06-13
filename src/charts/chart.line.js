@@ -6,9 +6,6 @@
         helpers = Chart.helpers;
 
     var defaultConfig = {
-
-        stacked: false,
-
         hover: {
             mode: "label"
         },
