@@ -71,11 +71,6 @@
 			this.size = helpers.min([this.height, this.width]);
 			this.drawingArea = (this.options.display) ? (this.size / 2) - (this.options.labels.fontSize / 2 + this.options.labels.backdropPaddingY) : (this.size / 2);
 		},
-		calculateCenterOffset: function(value) {
-			// Take into account half font size + the yPadding of the top value
-			var scalingFactor = this.drawingArea / (this.max - this.min);
-			return (value - this.min) * scalingFactor;
-		},
 		update: function() {
 			if (!this.options.lineArc) {
 				this.setScaleSize();
@@ -323,6 +318,11 @@
 
 			return index * angleMultiplier - (Math.PI / 2);
 		},
+		getDistanceFromCenterForValue: function(value) {
+			// Take into account half font size + the yPadding of the top value
+			var scalingFactor = this.drawingArea / (this.max - this.min);
+			return (value - this.min) * scalingFactor;
+		},
 		getPointPosition: function(index, distanceFromCenter) {
 			var thisAngle = this.getIndexAngle(index);
 			return {
@@ -330,15 +330,17 @@
 				y: (Math.sin(thisAngle) * distanceFromCenter) + this.yCenter
 			};
 		},
+		getPointPositionForValue: function(index, value) {
+			return this.getPointPosition(index, this.getDistanceFromCenterForValue(value));
+		},
 		draw: function() {
 			if (this.options.display) {
 				var ctx = this.ctx;
 				helpers.each(this.yLabels, function(label, index) {
 					// Don't draw a centre value
 					if (index > 0) {
-						var yCenterOffset = index * (this.drawingArea / Math.max(this.ticks.length, 1)),
-							yHeight = this.yCenter - yCenterOffset,
-							pointPosition;
+						var yCenterOffset = this.getDistanceFromCenterForValue(this.ticks[index]);
+						var yHeight = this.yCenter - yCenterOffset;
 
 						// Draw circular lines around the scale
 						if (this.options.gridLines.show) {
@@ -346,14 +348,16 @@
 							ctx.lineWidth = this.options.gridLines.lineWidth;
 
 							if (this.options.lineArc) {
+								// Draw circular arcs between the points
 								ctx.beginPath();
 								ctx.arc(this.xCenter, this.yCenter, yCenterOffset, 0, Math.PI * 2);
 								ctx.closePath();
 								ctx.stroke();
 							} else {
+								// Draw straight lines connecting each index
 								ctx.beginPath();
 								for (var i = 0; i < this.valuesCount; i++) {
-									pointPosition = this.getPointPosition(i, this.calculateCenterOffset(this.ticks[index]));
+									var pointPosition = this.getPointPosition(i, this.getDistanceFromCenterForValue(this.ticks[index]));
 									if (i === 0) {
 										ctx.moveTo(pointPosition.x, pointPosition.y);
 									} else {
@@ -368,14 +372,14 @@
 						if (this.options.labels.show) {
 							ctx.font = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
 
-							if (this.showLabelBackdrop) {
+							if (this.options.labels.showLabelBackdrop) {
 								var labelWidth = ctx.measureText(label).width;
 								ctx.fillStyle = this.options.labels.backdropColor;
 								ctx.fillRect(
 									this.xCenter - labelWidth / 2 - this.options.labels.backdropPaddingX,
 									yHeight - this.fontSize / 2 - this.options.labels.backdropPaddingY,
 									labelWidth + this.options.labels.backdropPaddingX * 2,
-									this.options.labels.fontSize + this.options.lables.backdropPaddingY * 2
+									this.options.labels.fontSize + this.options.labels.backdropPaddingY * 2
 								);
 							}
 
@@ -393,7 +397,7 @@
 
 					for (var i = this.valuesCount - 1; i >= 0; i--) {
 						if (this.options.angleLines.show) {
-							var outerPosition = this.getPointPosition(i, this.calculateCenterOffset(this.max));
+							var outerPosition = this.getPointPosition(i, this.getDistanceFromCenterForValue(this.max));
 							ctx.beginPath();
 							ctx.moveTo(this.xCenter, this.yCenter);
 							ctx.lineTo(outerPosition.x, outerPosition.y);
@@ -401,7 +405,7 @@
 							ctx.closePath();
 						}
 						// Extra 3px out for some label spacing
-						var pointLabelPosition = this.getPointPosition(i, this.calculateCenterOffset(this.max) + 5);
+						var pointLabelPosition = this.getPointPosition(i, this.getDistanceFromCenterForValue(this.max) + 5);
 						ctx.font = helpers.fontString(this.options.pointLabels.fontSize, this.options.pointLabels.fontStyle, this.options.pointLabels.fontFamily);
 						ctx.fillStyle = this.options.pointLabels.fontColor;
 

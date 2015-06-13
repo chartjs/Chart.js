@@ -131,6 +131,11 @@
 			}, this);
 		},
 		update: function(animationDuration) {
+			this.scale.setScaleSize();
+			this.scale.calculateRange();
+			this.scale.generateTicks();
+			this.scale.buildYLabels();
+			
 			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
 
 			// Update the lines
@@ -138,11 +143,11 @@
 				var scaleBase;
 
 				if (this.scale.min < 0 && this.scale.max < 0) {
-					scaleBase = this.scale.getPointPosition(0, this.scale.max);
+					scaleBase = this.scale.getPointPositionForValue(0, this.scale.max);
 				} else if (this.scale.min > 0 && this.scale.max > 0) {
-					scaleBase = this.scale.getPointPosition(0, this.scale.min);
+					scaleBase = this.scale.getPointPositionForValue(0, this.scale.min);
 				} else {
-					scaleBase = this.scale.getPointPosition(0, 0);
+					scaleBase = this.scale.getPointPositionForValue(0, 0);
 				}
 
 				helpers.extend(dataset.metaDataset, {
@@ -175,7 +180,7 @@
 
 			// Update the points
 			this.eachElement(function(point, index, dataset, datasetIndex) {
-				var pointPosition = this.scale.getPointPosition(index, this.scale.calculateCenterOffset(this.data.datasets[datasetIndex].data[index]));
+				var pointPosition = this.scale.getPointPositionForValue(index, this.data.datasets[datasetIndex].data[index]);
 
 				helpers.extend(point, {
 					// Utility
