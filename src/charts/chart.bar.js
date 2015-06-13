@@ -23,36 +23,6 @@
 			}],
 			yAxes: [{
 				type: "linear",
-				display: true,
-				position: "left",
-				id: "y-axis-1",
-
-				spacing: 1,
-
-				// grid line settings
-				gridLines: {
-					show: true,
-					color: "rgba(0, 0, 0, 0.05)",
-					lineWidth: 1,
-					drawOnChartArea: true,
-					drawTicks: true, // draw ticks extending towards the label
-					zeroLineWidth: 1,
-					zeroLineColor: "rgba(0,0,0,0.25)",
-				},
-
-				// scale numbers
-				beginAtZero: false,
-				override: null,
-
-				// label settings
-				labels: {
-					show: true,
-					template: "<%=value%>",
-					fontSize: 12,
-					fontStyle: "normal",
-					fontColor: "#666",
-					fontFamily: "Helvetica Neue",
-				}
 			}],
 		},
 

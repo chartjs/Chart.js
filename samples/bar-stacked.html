@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Bar Chart</title>
+    <title>Stacked Bar Chart</title>
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
     <script src="../Chart.js"></script>
 </head>
@@ -44,6 +44,9 @@
             options: {
                 responsive: true,
                 scales: {
+                    xAxes: [{
+                        stacked: true,
+                    }],
                     yAxes: [{
                         stacked: true
                     }]

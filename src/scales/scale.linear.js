@@ -5,6 +5,37 @@
 		Chart = root.Chart,
 		helpers = Chart.helpers;
 
+	var defaultConfig = {
+		display: true,
+		position: "left",
+		id: "y-axis-1",
+
+		// grid line settings
+		gridLines: {
+			show: true,
+			color: "rgba(0, 0, 0, 0.1)",
+			lineWidth: 1,
+			drawOnChartArea: true,
+			drawTicks: true, // draw ticks extending towards the label
+			zeroLineWidth: 1,
+			zeroLineColor: "rgba(0,0,0,0.25)",
+		},
+
+		// scale numbers
+		beginAtZero: false,
+		override: null,
+
+		// label settings
+		labels: {
+			show: true,
+			template: "<%=value.toLocaleString()%>",
+			fontSize: 12,
+			fontStyle: "normal",
+			fontColor: "#666",
+			fontFamily: "Helvetica Neue",
+		}
+	};
+
 	var LinearScale = Chart.Element.extend({
 		calculateRange: helpers.noop, // overridden in the chart. Will set min and max as properties of the scale for later use
 		isHorizontal: function() {
@@ -523,6 +554,6 @@
 			}
 		}
 	});
-	Chart.scaleService.registerScaleType("linear", LinearScale);
-	
+	Chart.scaleService.registerScaleType("linear", LinearScale, defaultConfig);
+
 }).call(this);
