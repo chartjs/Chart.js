@@ -20,6 +20,17 @@
     //Occupy the global variable of Chart, and create a simple base class
     var Chart = function(context) {
         var chart = this;
+
+        // Support a jQuery'd canvas element
+        if (context.length && context[0].getContext) {
+            context = context[0];
+        }
+
+        // Support a canvas domnode
+        if (context.getContext) {
+            context = context.getContext("2d");
+        }
+
         this.canvas = context.canvas;
 
         this.ctx = context;
