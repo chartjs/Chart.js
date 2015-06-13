@@ -281,34 +281,7 @@
                 ctx: this.chart.ctx,
                 options: this.options.scales.xAxes[0],
                 id: this.options.scales.xAxes[0].id,
-                calculateRange: function() {
-                    this.labels = self.data.labels;
-                    this.min = 0;
-                    this.max = this.labels.length;
-                },
-                calculateBaseWidth: function() {
-                    return (this.getPixelForValue(null, 1, true) - this.getPixelForValue(null, 0, true)) - (2 * this.options.categorySpacing);
-                },
-                calculateBarWidth: function(datasetCount) {
-                    //The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
-                    var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * this.options.spacing);
-
-                    if (self.options.stacked) {
-                        return baseWidth;
-                    }
-                    return (baseWidth / datasetCount);
-                },
-                calculateBarX: function(datasetCount, datasetIndex, elementIndex) {
-                    var xWidth = this.calculateBaseWidth(),
-                        xAbsolute = this.getPixelForValue(null, elementIndex, true) - (xWidth / 2),
-                        barWidth = this.calculateBarWidth(datasetCount);
-
-                    if (self.options.stacked) {
-                        return xAbsolute + barWidth / 2;
-                    }
-
-                    return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * this.options.spacing) + barWidth / 2;
-                },
+                data: this.data,
             });
             this.scales[xScale.id] = xScale;
 

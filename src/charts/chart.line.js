@@ -402,11 +402,7 @@
             var xScale = new ScaleClass({
                 ctx: this.chart.ctx,
                 options: this.options.scales.xAxes[0],
-                calculateRange: function() {
-                    this.labels = self.data.labels;
-                    this.min = 0;
-                    this.max = this.labels.length;
-                },
+                data: this.data,
                 id: this.options.scales.xAxes[0].id,
             });
             this.scales[xScale.id] = xScale;
