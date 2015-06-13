@@ -1161,7 +1161,7 @@
                     // Cascade the resize event down to the chart.
                     if (instance.options.responsive) {
                         instance.resize();
-                        instance.render();
+                        instance.update();
                     }
                 });
             }, 50);
