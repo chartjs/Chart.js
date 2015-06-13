@@ -108,7 +108,11 @@
             var objClone = {};
             each(obj, function(value, key) {
                 if (obj.hasOwnProperty(key)) {
-                    objClone[key] = value;
+                    if (typeof value === 'object' && value !== null) {
+                        objClone[key] = clone(value);
+                    } else {
+                        objClone[key] = value;
+                    }
                 }
             });
             return objClone;
