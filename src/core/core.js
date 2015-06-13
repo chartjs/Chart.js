@@ -108,7 +108,9 @@
 			var objClone = {};
 			each(obj, function(value, key) {
 				if (obj.hasOwnProperty(key)) {
-					if (typeof value === 'object' && value !== null) {
+					if (helpers.isArray(value)) {
+						objClone[key] = value.slice(0);
+					} else if (typeof value === 'object' && value !== null) {
 						objClone[key] = clone(value);
 					} else {
 						objClone[key] = value;
