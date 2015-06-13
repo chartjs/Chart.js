@@ -113,6 +113,10 @@
 				this.labels.push(label ? label : ""); // empty string will not render so we're good
 			}, this);
 		},
+		// Get the correct value. If the value type is object get the x or y based on whether we are horizontal or not
+		getRightValue: function(rawValue) {
+			return typeof rawValue === "object" ? (this.isHorizontal() ? rawValue.x : rawValue.y) : rawValue;
+		},
 		getPixelForValue: function(value) {
 			// This must be called after fit has been run so that 
 			//      this.left, this.top, this.right, and this.bottom have been defined
@@ -139,8 +143,11 @@
 
 			if (this.options.stacked) {
 				helpers.each(this.data.datasets, function(dataset) {
-					if (dataset.yAxisID === this.id) {
-						helpers.each(dataset.data, function(value, index) {
+					if (this.isHorizontal() ? dataset.xAxisID === this.id : dataset.yAxisID === this.id) {
+						helpers.each(dataset.data, function(rawValue, index) {
+
+							var value = this.getRightValue(rawValue);
+
 							positiveValues[index] = positiveValues[index] || 0;
 							negativeValues[index] = negativeValues[index] || 0;
 
@@ -163,8 +170,10 @@
 
 			} else {
 				helpers.each(this.data.datasets, function(dataset) {
-					if (dataset.yAxisID === this.id) {
-						helpers.each(dataset.data, function(value, index) {
+					if (this.isHorizontal() ? dataset.xAxisID === this.id : dataset.yAxisID === this.id) {
+						helpers.each(dataset.data, function(rawValue, index) {
+							var value = this.getRightValue(rawValue);
+
 							if (this.min === null) {
 								this.min = value;
 							} else if (value < this.min) {
@@ -182,7 +191,9 @@
 			}
 		},
 
-		getPointPixelForValue: function(value, index, datasetIndex) {
+		getPointPixelForValue: function(rawValue, index, datasetIndex) {
+			var value = this.getRightValue(rawValue);
+
 			if (this.options.stacked) {
 				var offsetPos = 0;
 				var offsetNeg = 0;

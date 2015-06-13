@@ -27,7 +27,9 @@
 				return this.top + (index * (this.height / this.data.labels.length));
 			}
 		},
-		// For bar charts
+
+
+		// Functions needed for bar charts
 		calculateBaseWidth: function() {
 			return (this.getPixelForValue(null, 1, true) - this.getPixelForValue(null, 0, true)) - (2 * this.options.categorySpacing);
 		},
