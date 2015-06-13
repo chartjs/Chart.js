@@ -6,9 +6,6 @@
         helpers = Chart.helpers;
 
     var defaultConfig = {
-
-        stacked: false,
-
         hover: {
             mode: "label"
         },
@@ -219,59 +216,6 @@
         buildScale: function(labels) {
             var self = this;
 
-            // Function to determine the range of all the 
-            var calculateYRange = function() {
-                this.min = null;
-                this.max = null;
-
-                var positiveValues = [];
-                var negativeValues = [];
-
-                if (self.options.stacked) {
-                    helpers.each(self.data.datasets, function(dataset) {
-                        if (dataset.yAxisID === this.id) {
-                            helpers.each(dataset.data, function(value, index) {
-                                positiveValues[index] = positiveValues[index] || 0;
-                                negativeValues[index] = negativeValues[index] || 0;
-
-                                if (self.options.relativePoints) {
-                                    positiveValues[index] = 100;
-                                } else {
-                                    if (value < 0) {
-                                        negativeValues[index] += value;
-                                    } else {
-                                        positiveValues[index] += value;
-                                    }
-                                }
-                            }, this);
-                        }
-                    }, this);
-
-                    var values = positiveValues.concat(negativeValues);
-                    this.min = helpers.min(values);
-                    this.max = helpers.max(values);
-
-                } else {
-                    helpers.each(self.data.datasets, function(dataset) {
-                        if (dataset.yAxisID === this.id) {
-                            helpers.each(dataset.data, function(value, index) {
-                                if (this.min === null) {
-                                    this.min = value;
-                                } else if (value < this.min) {
-                                    this.min = value;
-                                }
-
-                                if (this.max === null) {
-                                    this.max = value;
-                                } else if (value > this.max) {
-                                    this.max = value;
-                                }
-                            }, this);
-                        }
-                    }, this);
-                }
-            };
-
             // Map of scale ID to scale object so we can lookup later 
             this.scales = {};
 
@@ -281,34 +225,7 @@
                 ctx: this.chart.ctx,
                 options: this.options.scales.xAxes[0],
                 id: this.options.scales.xAxes[0].id,
-                calculateRange: function() {
-                    this.labels = self.data.labels;
-                    this.min = 0;
-                    this.max = this.labels.length;
-                },
-                calculateBaseWidth: function() {
-                    return (this.getPixelForValue(null, 1, true) - this.getPixelForValue(null, 0, true)) - (2 * this.options.categorySpacing);
-                },
-                calculateBarWidth: function(datasetCount) {
-                    //The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
-                    var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * this.options.spacing);
-
-                    if (self.options.stacked) {
-                        return baseWidth;
-                    }
-                    return (baseWidth / datasetCount);
-                },
-                calculateBarX: function(datasetCount, datasetIndex, elementIndex) {
-                    var xWidth = this.calculateBaseWidth(),
-                        xAbsolute = this.getPixelForValue(null, elementIndex, true) - (xWidth / 2),
-                        barWidth = this.calculateBarWidth(datasetCount);
-
-                    if (self.options.stacked) {
-                        return xAbsolute + barWidth / 2;
-                    }
-
-                    return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * this.options.spacing) + barWidth / 2;
-                },
+                data: this.data,
             });
             this.scales[xScale.id] = xScale;
 
@@ -318,82 +235,7 @@
                 var scale = new ScaleClass({
                     ctx: this.chart.ctx,
                     options: yAxisOptions,
-                    calculateRange: calculateYRange,
-                    calculateBarBase: function(datasetIndex, index) {
-                        var base = 0;
-
-                        if (self.options.stacked) {
-
-                            var value = self.data.datasets[datasetIndex].data[index];
-
-                            if (value < 0) {
-                                for (var i = 0; i < datasetIndex; i++) {
-                                    if (self.data.datasets[i].yAxisID === this.id) {
-                                        base += self.data.datasets[i].data[index] < 0 ? self.data.datasets[i].data[index] : 0;
-                                    }
-                                }
-                            } else {
-                                for (var j = 0; j < datasetIndex; j++) {
-                                    if (self.data.datasets[j].yAxisID === this.id) {
-                                        base += self.data.datasets[j].data[index] > 0 ? self.data.datasets[j].data[index] : 0;
-                                    }
-                                }
-                            }
-
-                            return this.getPixelForValue(base);
-                        }
-
-                        base = this.getPixelForValue(this.min);
-
-                        if (this.beginAtZero || ((this.min <= 0 && this.max >= 0) || (this.min >= 0 && this.max <= 0))) {
-                            base = this.getPixelForValue(0);
-                            base += this.options.gridLines.lineWidth;
-                        } else if (this.min < 0 && this.max < 0) {
-                            // All values are negative. Use the top as the base
-                            base = this.getPixelForValue(this.max);
-                        }
-
-                        return base;
-
-                    },
-                    calculateBarY: function(datasetIndex, index) {
-
-                        var value = self.data.datasets[datasetIndex].data[index];
-
-                        if (self.options.stacked) {
-
-                            var sumPos = 0,
-                                sumNeg = 0;
-
-                            for (var i = 0; i < datasetIndex; i++) {
-                                if (self.data.datasets[i].data[index] < 0) {
-                                    sumNeg += self.data.datasets[i].data[index] || 0;
-                                } else {
-                                    sumPos += self.data.datasets[i].data[index] || 0;
-                                }
-                            }
-
-                            if (value < 0) {
-                                return this.getPixelForValue(sumNeg + value);
-                            } else {
-                                return this.getPixelForValue(sumPos + value);
-                            }
-
-                            return this.getPixelForValue(value);
-                        }
-
-                        var offset = 0;
-
-                        for (var j = datasetIndex; j < self.data.datasets.length; j++) {
-                            if (j === datasetIndex && value) {
-                                offset += value;
-                            } else {
-                                offset = offset + value;
-                            }
-                        }
-
-                        return this.getPixelForValue(value);
-                    },
+                    data: this.data,
                     id: yAxisOptions.id,
                 });
 
