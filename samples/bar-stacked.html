@@ -43,7 +43,11 @@
             data: barChartData,
             options: {
                 responsive: true,
-                stacked: true,
+                scales: {
+                    yAxes: [{
+                        stacked: true
+                    }]
+                }
             }
         });
     };

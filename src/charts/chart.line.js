@@ -342,58 +342,6 @@
         buildScale: function() {
             var self = this;
 
-            // Function to determine the range of all the 
-            var calculateYRange = function() {
-                this.min = null;
-                this.max = null;
-
-                var positiveValues = [];
-                var negativeValues = [];
-
-                if (self.options.stacked) {
-                    helpers.each(self.data.datasets, function(dataset) {
-                        if (dataset.yAxisID === this.id) {
-                            helpers.each(dataset.data, function(value, index) {
-                                positiveValues[index] = positiveValues[index] || 0;
-                                negativeValues[index] = negativeValues[index] || 0;
-
-                                if (self.options.relativePoints) {
-                                    positiveValues[index] = 100;
-                                } else {
-                                    if (value < 0) {
-                                        negativeValues[index] += value;
-                                    } else {
-                                        positiveValues[index] += value;
-                                    }
-                                }
-                            }, this);
-                        }
-                    }, this);
-
-                    var values = positiveValues.concat(negativeValues);
-                    this.min = helpers.min(values);
-                    this.max = helpers.max(values);
-                } else {
-                    helpers.each(self.data.datasets, function(dataset) {
-                        if (dataset.yAxisID === this.id) {
-                            helpers.each(dataset.data, function(value, index) {
-                                if (this.min === null) {
-                                    this.min = value;
-                                } else if (value < this.min) {
-                                    this.min = value;
-                                }
-
-                                if (this.max === null) {
-                                    this.max = value;
-                                } else if (value > this.max) {
-                                    this.max = value;
-                                }
-                            }, this);
-                        }
-                    }, this);
-                }
-            };
-
             // Map of scale ID to scale object so we can lookup later 
             this.scales = {};
 
@@ -413,29 +361,7 @@
                 var scale = new ScaleClass({
                     ctx: this.chart.ctx,
                     options: yAxisOptions,
-                    calculateRange: calculateYRange,
-                    getPointPixelForValue: function(value, index, datasetIndex) {
-                        if (self.options.stacked) {
-                            var offsetPos = 0;
-                            var offsetNeg = 0;
-
-                            for (var i = 0; i < datasetIndex; ++i) {
-                                if (self.data.datasets[i].data[index] < 0) {
-                                    offsetNeg += self.data.datasets[i].data[index];
-                                } else {
-                                    offsetPos += self.data.datasets[i].data[index];
-                                }
-                            }
-
-                            if (value < 0) {
-                                return this.getPixelForValue(offsetNeg + value);
-                            } else {
-                                return this.getPixelForValue(offsetPos + value);
-                            }
-                        } else {
-                            return this.getPixelForValue(value);
-                        }
-                    },
+                    data: this.data,
                     id: yAxisOptions.id,
                 });
 
