@@ -141,27 +141,72 @@
 			helpers.each(Array.prototype.slice.call(arguments, 1), function(extension) {
 				helpers.each(extension, function(value, key) {
 					if (extension.hasOwnProperty(key)) {
-						if (base.hasOwnProperty(key) && helpers.isArray(base[key]) && helpers.isArray(value)) {
+						if (key === 'scales') {
+							// Scale config merging is complex. Add out own function here for that
+							base[key] = helpers.scaleMerge(base.hasOwnProperty(key) ? base[key] : {}, value);
+
+						} else if (base.hasOwnProperty(key) && helpers.isArray(base[key]) && helpers.isArray(value)) {
 							// In this case we have an array of objects replacing another array. Rather than doing a strict replace,
 							// merge. This allows easy scale option merging
 							var baseArray = base[key];
 
 							helpers.each(value, function(valueObj, index) {
+								
 								if (index < baseArray.length) {
 									baseArray[index] = helpers.configMerge(baseArray[index], valueObj);
 								} else {
 									baseArray.push(valueObj); // nothing to merge
 								}
 							});
+
 						} else if (base.hasOwnProperty(key) && typeof base[key] == "object" && base[key] !== null && typeof value == "object") {
 							// If we are overwriting an object with an object, do a merge of the properties.
 							base[key] = helpers.configMerge(base[key], value);
+
 						} else {
 							// can just overwrite the value in this case
 							base[key] = value;
 						}
 					}
 				});
+			});
+
+			return base;
+		},
+		scaleMerge = helpers.scaleMerge = function(_base, extension) {
+			var base = clone(_base);
+
+			helpers.each(extension, function(value, key) {
+				if (extension.hasOwnProperty(key)) {
+					if (key === 'xAxes' || key === 'yAxes') {
+						// These properties are arrays of items
+						if (base.hasOwnProperty(key)) {
+							helpers.each(value, function(valueObj, index) {
+								if (index >= base[key].length || !base[key][index].type) {
+									base[key].push(helpers.configMerge(valueObj.type ? Chart.scaleService.getScaleDefaults(valueObj.type) : {}, valueObj));
+								} else  if (valueObj.type !== base[key][index].type) {
+									// Type changed. Bring in the new defaults before we bring in valueObj so that valueObj can override the correct scale defaults
+									base[key][index] = helpers.configMerge(base[key][index], valueObj.type ? Chart.scaleService.getScaleDefaults(valueObj.type) : {}, valueObj)
+								} else {
+									// Type is the same
+									base[key][index] = helpers.configMerge(base[key][index], valueObj);
+								}
+							});
+						} else {
+							base[key] = [];
+							helpers.each(value, function(valueObj) {
+								base[key].push(helpers.configMerge(valueObj.type ? Chart.scaleService.getScaleDefaults(valueObj.type) : {}, valueObj));
+							});
+						}
+					} else if (base.hasOwnProperty(key) && typeof base[key] == "object" && base[key] !== null && typeof value == "object") {
+						// If we are overwriting an object with an object, do a merge of the properties.
+						base[key] = helpers.configMerge(base[key], value);
+
+					} else {
+						// can just overwrite the value in this case
+						base[key] = value;
+					}
+				}
 			});
 
 			return base;

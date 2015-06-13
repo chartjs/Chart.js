@@ -14,13 +14,18 @@
 		constructors: {},
 		// Use a registration function so that we can move to an ES6 map when we no longer need to support
 		// old browsers
-		registerScaleType: function(type, scaleConstructor) {
+		// Scale config defaults
+		defaults: {},
+		registerScaleType: function(type, scaleConstructor, defaults) {
 			this.constructors[type] = scaleConstructor;
+			this.defaults[type] = defaults;
 		},
 		getScaleConstructor: function(type) {
 			return this.constructors.hasOwnProperty(type) ? this.constructors[type] : undefined;
 		},
-
+		getScaleDefaults: function(type) {
+			return this.defaults.hasOwnProperty(type) ? this.defaults[type] : {};
+		},
 		// The interesting function
 		fitScalesForChart: function(chartInstance, width, height) {
 			var xPadding = width > 30 ? 5 : 2;

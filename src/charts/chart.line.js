@@ -13,31 +13,6 @@
 		scales: {
 			xAxes: [{
 				type: "category", // scatter should not use a dataset axis
-				display: true,
-				position: "bottom",
-				id: "x-axis-1", // need an ID so datasets can reference the scale
-
-				// grid line settings
-				gridLines: {
-					show: true,
-					color: "rgba(0, 0, 0, 0.05)",
-					lineWidth: 1,
-					drawOnChartArea: true,
-					drawTicks: true,
-					zeroLineWidth: 1,
-					zeroLineColor: "rgba(0,0,0,0.25)",
-					offsetGridLines: false,
-				},
-
-				// label settings
-				labels: {
-					show: true,
-					template: "<%=value%>",
-					fontSize: 12,
-					fontStyle: "normal",
-					fontColor: "#666",
-					fontFamily: "Helvetica Neue",
-				},
 			}],
 			yAxes: [{
 				type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
