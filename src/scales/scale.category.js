@@ -5,6 +5,35 @@
 		Chart = root.Chart,
 		helpers = Chart.helpers;
 
+	// Default config for a category scale
+	var defaultConfig = {
+		display: true,
+		position: "bottom",
+		id: "x-axis-1", // need an ID so datasets can reference the scale
+
+		// grid line settings
+		gridLines: {
+			show: true,
+			color: "rgba(0, 0, 0, 0.1)",
+			lineWidth: 1,
+			drawOnChartArea: true,
+			drawTicks: true,
+			zeroLineWidth: 1,
+			zeroLineColor: "rgba(0,0,0,0.25)",
+			offsetGridLines: false,
+		},
+
+		// label settings
+		labels: {
+			show: true,
+			template: "<%=value%>",
+			fontSize: 12,
+			fontStyle: "normal",
+			fontColor: "#666",
+			fontFamily: "Helvetica Neue",
+		},
+	};
+
 	var DatasetScale = Chart.Element.extend({
 		isHorizontal: function() {
 			return this.options.position == "top" || this.options.position == "bottom";
@@ -233,5 +262,5 @@
 			}
 		}
 	});
-	Chart.scaleService.registerScaleType("category", DatasetScale);
+	Chart.scaleService.registerScaleType("category", DatasetScale, defaultConfig);
 }).call(this);

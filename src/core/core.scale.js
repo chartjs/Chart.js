@@ -14,13 +14,18 @@
 		constructors: {},
 		// Use a registration function so that we can move to an ES6 map when we no longer need to support
 		// old browsers
-		registerScaleType: function(type, scaleConstructor) {
+		// Scale config defaults
+		defaults: {},
+		registerScaleType: function(type, scaleConstructor, defaults) {
 			this.constructors[type] = scaleConstructor;
+			this.defaults[type] = defaults;
 		},
 		getScaleConstructor: function(type) {
 			return this.constructors.hasOwnProperty(type) ? this.constructors[type] : undefined;
 		},
-
+		getScaleDefaults: function(type) {
+			return this.defaults.hasOwnProperty(type) ? this.defaults[type] : {};
+		},
 		// The interesting function
 		fitScalesForChart: function(chartInstance, width, height) {
 			var xPadding = width > 30 ? 5 : 2;
@@ -39,44 +44,6 @@
 				var bottomScales = helpers.where(chartInstance.scales, function(scaleInstance) {
 					return scaleInstance.options.position == "bottom";
 				});
-
-				var visibleLeftScales = helpers.where(chartInstance.scales, function(scaleInstance) {
-					return scaleInstance.options.position == "left";
-				});
-				var visibleRightScales = helpers.where(chartInstance.scales, function(scaleInstance) {
-					return scaleInstance.options.position == "right";
-				});
-				var visibleTopScales = helpers.where(chartInstance.scales, function(scaleInstance) {
-					return scaleInstance.options.position == "top";
-				});
-				var visibleBottomScales = helpers.where(chartInstance.scales, function(scaleInstance) {
-					return scaleInstance.options.position == "bottom";
-				});
-
-				// // Adjust the padding to take into account displaying labels
-				// if (topScales.length === 0 || bottomScales.length === 0) {
-				//     var maxFontHeight = 0;
-
-				//     var maxFontHeightFunction = function(scaleInstance) {
-				//         if (scaleInstance.options.labels.show) {
-				//             // Only consider font sizes for axes that actually show labels
-				//             maxFontHeight = Math.max(maxFontHeight, scaleInstance.options.labels.fontSize);
-				//         }
-				//     };
-
-				//     helpers.each(leftScales, maxFontHeightFunction);
-				//     helpers.each(rightScales, maxFontHeightFunction);
-
-				//     if (topScales.length === 0) {
-				//         // Add padding so that we can handle drawing the top nicely
-				//         yPadding += 0.75 * maxFontHeight; // 0.75 since padding added on both sides
-				//     }
-
-				//     if (bottomScales.length === 0) {
-				//         // Add padding so that we can handle drawing the bottom nicely
-				//         yPadding += 1.5 * maxFontHeight;
-				//     }
-				// }
 
 				// Essentially we now have any number of scales on each of the 4 sides.
 				// Our canvas looks like the following.
