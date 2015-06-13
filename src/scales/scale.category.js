@@ -146,7 +146,7 @@
 			}
 
 			// Height
-			if (this.isHorizontal()) {
+			if (this.isHorizontal() && this.options.display) {
 				var labelHeight = (Math.cos(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.labels.fontSize;
 				minSize.height = Math.min(labelHeight, maxHeight);
 			} else if (this.options.display) {
