@@ -233,8 +233,5 @@
 			}
 		}
 	});
-	Chart.scales.registerScaleType("category", DatasetScale);
-
-
-
+	Chart.scaleService.registerScaleType("category", DatasetScale);
 }).call(this);

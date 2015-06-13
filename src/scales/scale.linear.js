@@ -523,7 +523,6 @@
 			}
 		}
 	});
-	Chart.scales.registerScaleType("linear", LinearScale);
-
-
+	Chart.scaleService.registerScaleType("linear", LinearScale);
+	
 }).call(this);
