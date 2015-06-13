@@ -8,8 +8,8 @@
 </head>
 
 <body>
-    <div style="width: 50%">
-        <canvas id="canvas" height="450" width="600"></canvas>
+    <div style="width: 200px; height:30px;">
+        <canvas id="canvas" style="width:100%;height:100%"></canvas>
     </div>
     <button id="randomizeData">Randomize Data</button>
     <script>
@@ -43,6 +43,15 @@
             data: barChartData,
             options: {
                 responsive: true,
+                scales: {
+                    xAxes: [{
+                        display: false,
+                        categorySpacing: 1
+                    }],
+                    yAxes: [{
+                        display: false
+                    }]
+                }
             }
         });
     };

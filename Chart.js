@@ -2091,10 +2091,13 @@
 
             // Height
             if (this.isHorizontal()) {
-                var labelHeight = (Math.cos(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.labels.fontSize;
-                minSize.height = Math.min(labelHeight, maxHeight);
-            } else if (this.options.display) {
-                minSize.width = Math.min(longestLabelWidth + 6, maxWidth);
+                if (this.options.display) {
+                    var labelHeight = (Math.cos(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.labels.fontSize;
+                    minSize.height = Math.min(labelHeight, maxHeight);
+                }
+            } else {
+                minSize.height = maxHeight;
+                this.height = maxHeight;
             }
 
             this.width = minSize.width;
@@ -3385,8 +3388,6 @@
     var defaultConfig = {
 
         stacked: false,
-        valueSpacing: 5,
-        datasetSpacing: 1,
 
         hover: {
             mode: "label"
@@ -3398,6 +3399,9 @@
                 display: true,
                 position: "bottom",
                 id: "x-axis-1", // need an ID so datasets can reference the scale
+
+                categorySpacing: 5,
+                spacing: 1,
 
                 // grid line settings
                 gridLines: {
@@ -3426,6 +3430,8 @@
                 display: true,
                 position: "left",
                 id: "y-axis-1",
+
+                spacing: 1,
 
                 // grid line settings
                 gridLines: {
@@ -3661,11 +3667,11 @@
                     this.max = this.labels.length;
                 },
                 calculateBaseWidth: function() {
-                    return (this.getPixelForValue(null, 1, true) - this.getPixelForValue(null, 0, true)) - (2 * self.options.valueSpacing);
+                    return (this.getPixelForValue(null, 1, true) - this.getPixelForValue(null, 0, true)) - (2 * this.options.categorySpacing);
                 },
                 calculateBarWidth: function(datasetCount) {
                     //The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
-                    var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * self.options.datasetSpacing);
+                    var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * this.options.spacing);
 
                     if (self.options.stacked) {
                         return baseWidth;
@@ -3681,7 +3687,7 @@
                         return xAbsolute + barWidth / 2;
                     }
 
-                    return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * self.options.datasetSpacing) + barWidth / 2;
+                    return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * this.options.spacing) + barWidth / 2;
                 },
             });
             this.scales[xScale.id] = xScale;
