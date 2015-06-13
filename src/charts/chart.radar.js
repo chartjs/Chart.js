@@ -302,7 +302,7 @@
 		buildScale: function() {
 			var self = this;
 
-			var ScaleConstructor = Chart.scales.getScaleConstructor(this.options.scale.type);
+			var ScaleConstructor = Chart.scaleService.getScaleConstructor(this.options.scale.type);
 			this.scale = new ScaleConstructor({
 				options: this.options.scale,
 				height: this.chart.height,

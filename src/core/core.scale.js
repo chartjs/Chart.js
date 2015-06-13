@@ -9,6 +9,18 @@
     // a service where scales are registered with their respective charts so that changing the 
     // scales does not require 
     Chart.scaleService = {
+        // Scale registration object. Extensions can register new scale types (such as log or DB scales) and then
+        // use the new chart options to grab the correct scale
+        constructors: {},
+        // Use a registration function so that we can move to an ES6 map when we no longer need to support
+        // old browsers
+        registerScaleType: function(type, scaleConstructor) {
+            this.constructors[type] = scaleConstructor;
+        },
+        getScaleConstructor: function(type) {
+            return this.constructors.hasOwnProperty(type) ? this.constructors[type] : undefined;
+        },
+
         // The interesting function
         fitScalesForChart: function(chartInstance, width, height) {
             var xPadding = width > 30 ? 5 : 2;
@@ -287,19 +299,4 @@
             }
         }
     };
-
-    // Scale registration object. Extensions can register new scale types (such as log or DB scales) and then
-    // use the new chart options to grab the correct scale
-    Chart.scales = {
-        constructors: {},
-        // Use a registration function so that we can move to an ES6 map when we no longer need to support
-        // old browsers
-        registerScaleType: function(type, scaleConstructor) {
-            this.constructors[type] = scaleConstructor;
-        },
-        getScaleConstructor: function(type) {
-            return this.constructors.hasOwnProperty(type) ? this.constructors[type] : undefined;
-        }
-    };
-
 }).call(this);

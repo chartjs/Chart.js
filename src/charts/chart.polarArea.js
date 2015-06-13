@@ -66,7 +66,7 @@
 
 			// Scale setup
 			var self = this;
-			var ScaleClass = Chart.scales.getScaleConstructor(this.options.scale.type);
+			var ScaleClass = Chart.scaleService.getScaleConstructor(this.options.scale.type);
 			this.scale = new ScaleClass({
 				options: this.options.scale,
 				lineArc: true,

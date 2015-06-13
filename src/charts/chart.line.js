@@ -344,7 +344,7 @@
 
 			// Build the x axes
 			helpers.each(this.options.scales.xAxes, function(xAxisOptions) {
-				var ScaleClass = Chart.scales.getScaleConstructor(xAxisOptions.type);
+				var ScaleClass = Chart.scaleService.getScaleConstructor(xAxisOptions.type);
 				var scale = new ScaleClass({
 					ctx: this.chart.ctx,
 					options: xAxisOptions,
@@ -357,7 +357,7 @@
 
 			// Build the y axes
 			helpers.each(this.options.scales.yAxes, function(yAxisOptions) {
-				var ScaleClass = Chart.scales.getScaleConstructor(yAxisOptions.type);
+				var ScaleClass = Chart.scaleService.getScaleConstructor(yAxisOptions.type);
 				var scale = new ScaleClass({
 					ctx: this.chart.ctx,
 					options: yAxisOptions,

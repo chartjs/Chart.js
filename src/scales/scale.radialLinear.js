@@ -374,7 +374,7 @@
 			}
 		}
 	});
-	Chart.scales.registerScaleType("radialLinear", LinearRadialScale);
+	Chart.scaleService.registerScaleType("radialLinear", LinearRadialScale);
 
 
 }).call(this);

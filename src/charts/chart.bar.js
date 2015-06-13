@@ -220,7 +220,7 @@
             this.scales = {};
 
             // Build the x axis. The line chart only supports a single x axis
-            var ScaleClass = Chart.scales.getScaleConstructor(this.options.scales.xAxes[0].type);
+            var ScaleClass = Chart.scaleService.getScaleConstructor(this.options.scales.xAxes[0].type);
             var xScale = new ScaleClass({
                 ctx: this.chart.ctx,
                 options: this.options.scales.xAxes[0],
@@ -231,7 +231,7 @@
 
             // Build up all the y scales
             helpers.each(this.options.scales.yAxes, function(yAxisOptions) {
-                var ScaleClass = Chart.scales.getScaleConstructor(yAxisOptions.type);
+                var ScaleClass = Chart.scaleService.getScaleConstructor(yAxisOptions.type);
                 var scale = new ScaleClass({
                     ctx: this.chart.ctx,
                     options: yAxisOptions,
