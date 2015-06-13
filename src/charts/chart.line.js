@@ -12,38 +12,10 @@
 
 		scales: {
 			xAxes: [{
-				type: "category", // scatter should not use a dataset axis
+				type: "category",
 			}],
 			yAxes: [{
-				type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-				display: true,
-				position: "left",
-				id: "y-axis-1",
-
-				// grid line settings
-				gridLines: {
-					show: true,
-					color: "rgba(0, 0, 0, 0.05)",
-					lineWidth: 1,
-					drawOnChartArea: true,
-					drawTicks: true, // draw ticks extending towards the label
-					zeroLineWidth: 1,
-					zeroLineColor: "rgba(0,0,0,0.25)",
-				},
-
-				// scale numbers
-				beginAtZero: false,
-				override: null,
-
-				// label settings
-				labels: {
-					show: true,
-					template: "<%=value.toLocaleString()%>",
-					fontSize: 12,
-					fontStyle: "normal",
-					fontColor: "#666",
-					fontFamily: "Helvetica Neue",
-				}
+				type: "linear",
 			}],
 		},
 	};
