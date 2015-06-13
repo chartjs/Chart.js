@@ -9,7 +9,7 @@
 		isHorizontal: function() {
 			return this.options.position == "top" || this.options.position == "bottom";
 		},
-		getPixelForValue: function(value, index, includeOffset) {
+		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
 			// This must be called after fit has been run so that 
 			//      this.left, this.top, this.right, and this.bottom have been defined
 			if (this.isHorizontal()) {
@@ -27,11 +27,13 @@
 				return this.top + (index * (this.height / this.data.labels.length));
 			}
 		},
-
+		getPointPixelForValue: function(value, index, datasetIndex) {
+			return this.getPixelForValue(value, index, datasetIndex, true);
+		},
 
 		// Functions needed for bar charts
 		calculateBaseWidth: function() {
-			return (this.getPixelForValue(null, 1, true) - this.getPixelForValue(null, 0, true)) - (2 * this.options.categorySpacing);
+			return (this.getPixelForValue(null, 1, 0, true) - this.getPixelForValue(null, 0, 0, true)) - (2 * this.options.categorySpacing);
 		},
 		calculateBarWidth: function(datasetCount) {
 			//The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
@@ -44,7 +46,7 @@
 		},
 		calculateBarX: function(datasetCount, datasetIndex, elementIndex) {
 			var xWidth = this.calculateBaseWidth(),
-				xAbsolute = this.getPixelForValue(null, elementIndex, true) - (xWidth / 2),
+				xAbsolute = this.getPixelForValue(null, elementIndex, datasetIndex, true) - (xWidth / 2),
 				barWidth = this.calculateBarWidth(datasetCount);
 
 			if (this.options.stacked) {
@@ -174,8 +176,8 @@
 					var isRotated = this.labelRotation !== 0;
 
 					helpers.each(this.data.labels, function(label, index) {
-						var xLineValue = this.getPixelForValue(label, index, false); // xvalues for grid lines
-						var xLabelValue = this.getPixelForValue(label, index, true); // x values for labels (need to consider offsetLabel option)
+						var xLineValue = this.getPixelForValue(label, index, null, false); // xvalues for grid lines
+						var xLabelValue = this.getPixelForValue(label, index, null, true); // x values for labels (need to consider offsetLabel option)
 
 						if (this.options.gridLines.show) {
 							if (index === 0) {

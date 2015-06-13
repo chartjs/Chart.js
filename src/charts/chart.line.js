@@ -101,15 +101,17 @@
 						_index: index,
 						_chart: this.chart,
 						_model: {
-							x: 0, //xScale.getPixelForValue(null, index, true),
-							y: 0, //this.chartArea.bottom,
+							x: 0, 
+							y: 0, 
 						},
 					}));
 
 				}, this);
 
 				// The line chart onlty supports a single x axis because the x axis is always a dataset axis
-				dataset.xAxisID = this.options.scales.xAxes[0].id;
+				if (!dataset.xAxisID) {
+					dataset.xAxisID = this.options.scales.xAxes[0].id;
+				}
 
 				if (!dataset.yAxisID) {
 					dataset.yAxisID = this.options.scales.yAxes[0].id;
@@ -169,7 +171,7 @@
 
 					// Desired view properties
 					_model: {
-						x: xScale.getPixelForValue(null, index, true), // value not used in dataset scale, but we want a consistent API between scales
+						x: xScale.getPointPixelForValue(this.data.datasets[datasetIndex].data[index], index, datasetIndex),
 						y: yScalePoint,
 
 						// Appearance
@@ -280,7 +282,7 @@
 
 					// Desired view properties
 					_model: {
-						x: xScale.getPixelForValue(null, index, true), // value not used in dataset scale, but we want a consistent API between scales
+						x: xScale.getPointPixelForValue(this.data.datasets[datasetIndex].data[index], index, datasetIndex),
 						y: yScale.getPointPixelForValue(this.data.datasets[datasetIndex].data[index], index, datasetIndex),
 
 						// Appearance
@@ -337,22 +339,23 @@
 			this.render(animationDuration);
 		},
 		buildScale: function() {
-			var self = this;
-
 			// Map of scale ID to scale object so we can lookup later 
 			this.scales = {};
 
-			// Build the x axis. The line chart only supports a single x axis
-			var ScaleClass = Chart.scales.getScaleConstructor(this.options.scales.xAxes[0].type);
-			var xScale = new ScaleClass({
-				ctx: this.chart.ctx,
-				options: this.options.scales.xAxes[0],
-				data: this.data,
-				id: this.options.scales.xAxes[0].id,
-			});
-			this.scales[xScale.id] = xScale;
+			// Build the x axes
+			helpers.each(this.options.scales.xAxes, function(xAxisOptions) {
+				var ScaleClass = Chart.scales.getScaleConstructor(xAxisOptions.type);
+				var scale = new ScaleClass({
+					ctx: this.chart.ctx,
+					options: xAxisOptions,
+					data: this.data,
+					id: xAxisOptions.id,
+				});
 
-			// Build up all the y scales
+				this.scales[scale.id] = scale;
+			}, this);
+
+			// Build the y axes
 			helpers.each(this.options.scales.yAxes, function(yAxisOptions) {
 				var ScaleClass = Chart.scales.getScaleConstructor(yAxisOptions.type);
 				var scale = new ScaleClass({
