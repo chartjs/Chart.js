@@ -263,26 +263,26 @@
         events: function(e) {
 
 
-            // If exiting chart
-            if (e.type == 'mouseout') {
-                return this;
-            }
 
             this.lastActive = this.lastActive || [];
 
             // Find Active Elements
-            this.active = function() {
-                switch (this.options.hover.mode) {
-                    case 'single':
-                        return this.getElementAtEvent(e);
-                    case 'label':
-                        return this.getElementsAtEvent(e);
-                    case 'dataset':
-                        return this.getDatasetAtEvent(e);
-                    default:
-                        return e;
-                }
-            }.call(this);
+            if (e.type == 'mouseout') {
+                this.active = [];
+            } else {
+                this.active = function() {
+                    switch (this.options.hover.mode) {
+                        case 'single':
+                            return this.getElementAtEvent(e);
+                        case 'label':
+                            return this.getElementsAtEvent(e);
+                        case 'dataset':
+                            return this.getDatasetAtEvent(e);
+                        default:
+                            return e;
+                    }
+                }.call(this);
+            }
 
             // On Hover hook
             if (this.options.hover.onHover) {
