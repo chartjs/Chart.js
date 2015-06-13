@@ -145,7 +145,10 @@
 							// Scale config merging is complex. Add out own function here for that
 							base[key] = helpers.scaleMerge(base.hasOwnProperty(key) ? base[key] : {}, value);
 
-						} else if (base.hasOwnProperty(key) && helpers.isArray(base[key]) && helpers.isArray(value)) {
+						} else if (key === 'scale') {
+							// Used in polar area & radar charts since there is only one scale
+							base[key] = helpers.configMerge(base.hasOwnProperty(key) ? base[key] : {}, Chart.scaleService.getScaleDefaults(value.type), value);
+						}else if (base.hasOwnProperty(key) && helpers.isArray(base[key]) && helpers.isArray(value)) {
 							// In this case we have an array of objects replacing another array. Rather than doing a strict replace,
 							// merge. This allows easy scale option merging
 							var baseArray = base[key];

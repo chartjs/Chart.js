@@ -18,6 +18,8 @@
 			}],
 			yAxes: [{
 				type: "linear",
+				position: "left",
+				id: "y-axis-1",
 			}],
 		},
 

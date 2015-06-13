@@ -13,64 +13,6 @@
 
 			scale: {
 				type: "radialLinear",
-				display: true,
-
-				//Boolean - Whether to animate scaling the chart from the centre
-				animate: false,
-
-				lineArc: false,
-
-				// grid line settings
-				gridLines: {
-					show: true,
-					color: "rgba(0, 0, 0, 0.05)",
-					lineWidth: 1,
-				},
-
-				angleLines: {
-					show: true,
-					color: "rgba(0,0,0,.1)",
-					lineWidth: 1
-				},
-
-				// scale numbers
-				beginAtZero: true,
-
-				// label settings
-				labels: {
-					show: true,
-					template: "<%=value.toLocaleString()%>",
-					fontSize: 12,
-					fontStyle: "normal",
-					fontColor: "#666",
-					fontFamily: "Helvetica Neue",
-
-					//Boolean - Show a backdrop to the scale label
-					showLabelBackdrop: true,
-
-					//String - The colour of the label backdrop
-					backdropColor: "rgba(255,255,255,0.75)",
-
-					//Number - The backdrop padding above & below the label in pixels
-					backdropPaddingY: 2,
-
-					//Number - The backdrop padding to the side of the label in pixels
-					backdropPaddingX: 2,
-				},
-
-				pointLabels: {
-					//String - Point label font declaration
-					fontFamily: "'Arial'",
-
-					//String - Point label font weight
-					fontStyle: "normal",
-
-					//Number - Point label font size in pixels
-					fontSize: 10,
-
-					//String - Point label font colour
-					fontColor: "#666",
-				},
 			},
 
 			elements: {
