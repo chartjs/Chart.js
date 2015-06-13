@@ -6,8 +6,6 @@
         helpers = Chart.helpers;
 
     var DatasetScale = Chart.Element.extend({
-        // overridden in the chart. Will set min and max as properties of the scale for later use. Min will always be 0 when using a dataset and max will be the number of items in the dataset
-        calculateRange: helpers.noop,
         isHorizontal: function() {
             return this.options.position == "top" || this.options.position == "bottom";
         },
@@ -17,7 +15,7 @@
             if (this.isHorizontal()) {
                 var isRotated = (this.labelRotation > 0);
                 var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
-                var valueWidth = innerWidth / Math.max((this.max - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
+                var valueWidth = innerWidth / Math.max((this.data.labels.length - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
                 var valueOffset = (valueWidth * index) + this.paddingLeft;
 
                 if (this.options.gridLines.offsetGridLines && includeOffset) {
@@ -26,17 +24,44 @@
 
                 return this.left + Math.round(valueOffset);
             } else {
-                return this.top + (index * (this.height / this.max));
+                return this.top + (index * (this.height / this.data.labels.length));
             }
         },
+
+
+        // Functions needed for bar charts
+        calculateBaseWidth: function() {
+            return (this.getPixelForValue(null, 1, true) - this.getPixelForValue(null, 0, true)) - (2 * this.options.categorySpacing);
+        },
+        calculateBarWidth: function(datasetCount) {
+            //The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
+            var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * this.options.spacing);
+
+            if (this.options.stacked) {
+                return baseWidth;
+            }
+            return (baseWidth / datasetCount);
+        },
+        calculateBarX: function(datasetCount, datasetIndex, elementIndex) {
+            var xWidth = this.calculateBaseWidth(),
+                xAbsolute = this.getPixelForValue(null, elementIndex, true) - (xWidth / 2),
+                barWidth = this.calculateBarWidth(datasetCount);
+
+            if (this.options.stacked) {
+                return xAbsolute + barWidth / 2;
+            }
+
+            return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * this.options.spacing) + barWidth / 2;
+        },
+
         calculateLabelRotation: function(maxHeight, margins) {
             //Get the width of each grid by calculating the difference
             //between x offsets between 0 and 1.
             var labelFont = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
             this.ctx.font = labelFont;
 
-            var firstWidth = this.ctx.measureText(this.labels[0]).width;
-            var lastWidth = this.ctx.measureText(this.labels[this.labels.length - 1]).width;
+            var firstWidth = this.ctx.measureText(this.data.labels[0]).width;
+            var lastWidth = this.ctx.measureText(this.data.labels[this.data.labels.length - 1]).width;
             var firstRotated;
             var lastRotated;
 
@@ -46,7 +71,7 @@
             this.labelRotation = 0;
 
             if (this.options.display) {
-                var originalLabelWidth = helpers.longestText(this.ctx, labelFont, this.labels);
+                var originalLabelWidth = helpers.longestText(this.ctx, labelFont, this.data.labels);
                 var cosRotation;
                 var sinRotation;
                 var firstRotatedWidth;
@@ -102,7 +127,6 @@
         // @param {number} maxHeight: the max height the axis can be
         // @return {object} minSize : the minimum size needed to draw the axis
         fit: function(maxWidth, maxHeight, margins) {
-            this.calculateRange();
             this.calculateLabelRotation(maxHeight, margins);
 
             var minSize = {
@@ -111,7 +135,7 @@
             };
 
             var labelFont = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
-            var longestLabelWidth = helpers.longestText(this.ctx, labelFont, this.labels);
+            var longestLabelWidth = helpers.longestText(this.ctx, labelFont, this.data.labels);
 
             // Width
             if (this.isHorizontal()) {
@@ -123,13 +147,10 @@
 
             // Height
             if (this.isHorizontal()) {
-                if (this.options.display) {
-                    var labelHeight = (Math.cos(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.labels.fontSize;
-                    minSize.height = Math.min(labelHeight, maxHeight);
-                }
-            } else {
-                minSize.height = maxHeight;
-                this.height = maxHeight;
+                var labelHeight = (Math.cos(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.labels.fontSize;
+                minSize.height = Math.min(labelHeight, maxHeight);
+            } else if (this.options.display) {
+                minSize.width = Math.min(longestLabelWidth + 6, maxWidth);
             }
 
             this.width = minSize.width;
@@ -152,7 +173,7 @@
                     var yTickEnd = this.options.position == "bottom" ? this.top + 10 : this.bottom;
                     var isRotated = this.labelRotation !== 0;
 
-                    helpers.each(this.labels, function(label, index) {
+                    helpers.each(this.data.labels, function(label, index) {
                         var xLineValue = this.getPixelForValue(label, index, false); // xvalues for grid lines
                         var xLabelValue = this.getPixelForValue(label, index, true); // x values for labels (need to consider offsetLabel option)
 
