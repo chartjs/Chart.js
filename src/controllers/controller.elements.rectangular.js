@@ -23,13 +23,19 @@
 
 	Chart.RectangularElementController.prototype.eachLine = function eachLine(callback) {
 		helpers.each(this.chartInstance.data.datasets, function(dataset, datasetIndex) {
-			callback.call(this, dataset, datasetIndex)
+			if (dataset.metaDataset && dataset.metaDataset instanceof Chart.Line) {
+				callback.call(this, dataset, datasetIndex)
+			}
 		}, this);
 	};
 
-	Chart.RectangularElementController.prototype.eachPoint = function eachPoint(callback) {
+	Chart.RectangularElementController.prototype.eachRectangle = function(callback) {
 		helpers.each(this.chartInstance.data.datasets, function(dataset, datasetIndex) {
-			helpers.each(dataset.metaData, callback, this, dataset.metaData, datasetIndex);
+			helpers.each(dataset.metaData, function(element, index) {
+				if (element instanceof Chart.Rectangle) {
+					callback(element, index, dataset, datasetIndex);
+				}
+			}, this);
 		}, this);
 	};
 
@@ -61,13 +67,35 @@
 		}
 	};
 
+	Chart.RectangularElementController.prototype.addRectangle = function(dataset, datasetIndex, index) {
+		if (dataset) {
+			dataset.metaData = dataset.metaData || new Array(this.chartInstance.data.datasets[datasetIndex].data.length);
+
+			if (index < dataset.metaData.length) {
+				dataset.metaData[index] = new Chart.Rectangle({
+					_chart: this.chartInstance.chart,
+					_datasetIndex: datasetIndex,
+					_index: index,
+				});
+			}
+		}
+	};
+
 	Chart.RectangularElementController.prototype.resetElements = function resetElements() {
-		// Update the points
-		this.resetPoints();
+		helpers.each(this.chartInstance.data.datasets, function(dataset, datasetIndex) {
+			// All elements must be the same type for the given dataset so we are fine to check just the first one
+			if (dataset.metaData[0] instanceof Chart.Point) {
+				// Have points. Update all of them
+				this.resetDatasetPoints(dataset, datasetIndex);
+			} else if (dataset.metaData[0] instanceof Chart.Rectangle) {
+				// Have rectangles (bars)
+				this.resetDatasetRectangles(dataset, datasetIndex);
+			}
+		}, this);
 	};
 	
-	Chart.RectangularElementController.prototype.resetPoints = function() {
-		this.eachPoint(function(point, index, dataset, datasetIndex) {
+	Chart.RectangularElementController.prototype.resetDatasetPoints = function resetDatasetPoints(dataset, datasetIndex) {
+		helpers.each(dataset.metaData, function(point, index){
 			var xScale = this.getScaleForId(this.chartInstance.data.datasets[datasetIndex].xAxisID);
 			var yScale = this.getScaleForId(this.chartInstance.data.datasets[datasetIndex].yAxisID);
 
@@ -100,15 +128,75 @@
 			this.updatePointElementAppearance(point, datasetIndex, index);
 		}, this);
 
-		this.updateBezierControlPoints();
+		this.updateBezierControlPoints(dataset);
+	};
+
+	Chart.RectangularElementController.prototype.resetDatasetRectangles = function resetDatasetRectangles(dataset, datasetIndex) {
+		helpers.each(dataset.metaData, function(rectangle, index) {
+			var xScale = this.getScaleForId(this.chartInstance.data.datasets[datasetIndex].xAxisID);
+			var yScale = this.getScaleForId(this.chartInstance.data.datasets[datasetIndex].yAxisID);
+
+			var yScalePoint;
+
+			if (yScale.min < 0 && yScale.max < 0) {
+				// all less than 0. use the top
+				yScalePoint = yScale.getPixelForValue(yScale.max);
+			} else if (yScale.min > 0 && yScale.max > 0) {
+				yScalePoint = yScale.getPixelForValue(yScale.min);
+			} else {
+				yScalePoint = yScale.getPixelForValue(0);
+			}
+
+			helpers.extend(rectangle, {
+				// Utility
+				_chart: this.chartInstance.chart,
+				_xScale: xScale,
+				_yScale: yScale,
+				_datasetIndex: datasetIndex,
+				_index: index,
+
+				// Desired view properties
+				_model: {
+					x: xScale.calculateBarX(this.chartInstance.data.datasets.length, datasetIndex, index),
+					y: yScalePoint,
+
+					// Tooltip
+					label: this.chartInstance.data.labels[index],
+					datasetLabel: this.chartInstance.data.datasets[datasetIndex].label,
+
+					// Appearance
+					base: yScale.calculateBarBase(datasetIndex, index),
+					width: xScale.calculateBarWidth(this.chartInstance.data.datasets.length),
+				},
+			});
+
+			this.updateRectangleElementAppearance(rectangle, datasetIndex, index);
+			rectangle.pivot();
+		}, this);
+	};
+
+	Chart.RectangularElementController.prototype.resetElementAppearance = function(element, datasetIndex, index) {
+		if (element instanceof Chart.Point) {
+			this.updatePointElementAppearance(element, datasetIndex, index);
+		} else if (element instanceof Chart.Rectangle) {
+			this.updateRectangleElementAppearance(element, datasetIndex, index);
+		}
 	};
 
 	Chart.RectangularElementController.prototype.updateElements = function updateElements() {
 		// Update the lines
 		this.updateLines();
 
-		// Update the points
-		this.updatePoints();
+		helpers.each(this.chartInstance.data.datasets, function(dataset, datasetIndex) {
+			// All elements must be the same type for the given dataset so we are fine to check just the first one
+			if (dataset.metaData[0] instanceof Chart.Point) {
+				// Have points. Update all of them
+				this.updatePoints(dataset, datasetIndex);
+			} else if (dataset.metaData[0] instanceof Chart.Rectangle) {
+				// Have rectangles (bars)
+				this.updateRectangles(dataset, datasetIndex);
+			}
+		}, this);
 	};
 
 	Chart.RectangularElementController.prototype.updateLines = function updateLines() {
@@ -151,8 +239,8 @@
 		});
 	};
 
-	Chart.RectangularElementController.prototype.updatePoints = function() {
-		this.eachPoint(function(point, index, dataset, datasetIndex) {
+	Chart.RectangularElementController.prototype.updatePoints = function updatePoints(dataset, datasetIndex) {
+		helpers.each(dataset.metaData, function(point, index) {
 			var xScale = this.getScaleForId(this.chartInstance.data.datasets[datasetIndex].xAxisID);
 			var yScale = this.getScaleForId(this.chartInstance.data.datasets[datasetIndex].yAxisID);
 
@@ -174,10 +262,10 @@
 			this.updatePointElementAppearance(point, datasetIndex, index);
 		}, this);
 
-		this.updateBezierControlPoints();
+		this.updateBezierControlPoints(dataset);
 	};
 
-	Chart.RectangularElementController.prototype.updatePointElementAppearance = function(point, datasetIndex, index) {
+	Chart.RectangularElementController.prototype.updatePointElementAppearance = function updatePointElementAppearance(point, datasetIndex, index) {
 		helpers.extend(point._model, {
 			// Appearance
 			tension: point.custom && point.custom.tension ? point.custom.tension : this.chartInstance.options.elements.line.tension,
@@ -192,7 +280,57 @@
 		});
 	};
 
-	Chart.RectangularElementController.prototype.setPointHoverStyle = function(point) {
+	Chart.RectangularElementController.prototype.updateRectangles = function updateRectangles(dataset, datasetIndex) {
+		helpers.each(dataset.metaData, function(rectangle, index){
+			var xScale = this.getScaleForId(this.chartInstance.data.datasets[datasetIndex].xAxisID);
+			var yScale = this.getScaleForId(this.chartInstance.data.datasets[datasetIndex].yAxisID);
+
+			helpers.extend(rectangle, {
+				// Utility
+				_chart: this.chartInstance.chart,
+				_xScale: xScale,
+				_yScale: yScale,
+				_datasetIndex: datasetIndex,
+				_index: index,
+
+				// Desired view properties
+				_model: {
+					x: xScale.calculateBarX(this.chartInstance.data.datasets.length, datasetIndex, index),
+					y: yScale.calculateBarY(datasetIndex, index),
+
+					// Appearance
+					base: yScale.calculateBarBase(datasetIndex, index),
+					width: xScale.calculateBarWidth(this.chartInstance.data.datasets.length),
+
+					// Tooltip
+					label: this.chartInstance.data.labels[index],
+					datasetLabel: this.chartInstance.data.datasets[datasetIndex].label,
+				},
+			});
+
+			this.updateRectangleElementAppearance(rectangle, datasetIndex, index);
+			rectangle.pivot();
+		}, this);
+	};
+
+	Chart.RectangularElementController.prototype.updateRectangleElementAppearance = function updateRectangleElementAppearance(rectangle, datasetIndex, index) {
+		helpers.extend(rectangle._model, {
+			// Appearance
+			backgroundColor: rectangle.custom && rectangle.custom.backgroundColor ? rectangle.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.chartInstance.data.datasets[datasetIndex].backgroundColor, index, this.chartInstance.options.elements.rectangle.backgroundColor),
+			borderColor: rectangle.custom && rectangle.custom.borderColor ? rectangle.custom.borderColor : helpers.getValueAtIndexOrDefault(this.chartInstance.data.datasets[datasetIndex].borderColor, index, this.chartInstance.options.elements.rectangle.borderColor),
+			borderWidth: rectangle.custom && rectangle.custom.borderWidth ? rectangle.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.chartInstance.data.datasets[datasetIndex].borderWidth, index, this.chartInstance.options.elements.rectangle.borderWidth),
+		});
+	};
+
+	Chart.RectangularElementController.prototype.setElementHoverStyle = function setElementHoverStyle(element) {
+		if (element instanceof Chart.Point) {
+			this.setPointHoverStyle(element);
+		} else if (element instanceof Chart.Rectangle) {
+			this.setRectangleHoverStyle(element);
+		}
+	};
+
+	Chart.RectangularElementController.prototype.setPointHoverStyle = function setPointHoverStyle(point) {
 		var dataset = this.chartInstance.data.datasets[point._datasetIndex];
 		var index = point._index;
 
@@ -202,13 +340,22 @@
 		point._model.borderWidth = point.custom && point.custom.hoverBorderWidth ? point.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, point._model.borderWidth);
 	};
 
-	Chart.RectangularElementController.prototype.updateBezierControlPoints = function updateBezierControlPoints() {
+	Chart.RectangularElementController.prototype.setRectangleHoverStyle = function(rectangle) {
+		var dataset = this.chartInstance.data.datasets[rectangle._datasetIndex];
+		var index = rectangle._index;
+
+		rectangle._model.backgroundColor = rectangle.custom && rectangle.custom.hoverBackgroundColor ? rectangle.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.color(rectangle._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
+		rectangle._model.borderColor = rectangle.custom && rectangle.custom.hoverBorderColor ? rectangle.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.color(rectangle._model.borderColor).saturate(0.5).darken(0.1).rgbString());
+		rectangle._model.borderWidth = rectangle.custom && rectangle.custom.hoverBorderWidth ? rectangle.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, rectangle._model.borderWidth);
+	};
+
+	Chart.RectangularElementController.prototype.updateBezierControlPoints = function updateBezierControlPoints(dataset) {
 		// Update control points for the bezier curve
-		this.eachPoint(function(point, index, dataset, datasetIndex) {
+		helpers.each(dataset.metaData, function(point, index) {
 			var controlPoints = helpers.splineCurve(
-				this.previousPoint(dataset, index)._model,
+				this.previousPoint(dataset.metaData, index)._model,
 				point._model,
-				this.nextPoint(dataset, index)._model,
+				this.nextPoint(dataset.metaData, index)._model,
 				point._model.tension
 			);
 

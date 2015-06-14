@@ -68,11 +68,11 @@
 		if (this.lastActive.length) {
 			switch (this.chartInstance.options.hover.mode) {
 				case 'single':
-					this.elementController.updatePointElementAppearance(this.lastActive[0], this.lastActive[0]._datasetIndex, this.lastActive[0]._index);
+					this.elementController.resetElementAppearance(this.lastActive[0], this.lastActive[0]._datasetIndex, this.lastActive[0]._index);
 					break;
 				case 'label':
 					for (var i = 0; i < this.lastActive.length; i++) {
-						this.elementController.updatePointElementAppearance(this.lastActive[i], this.lastActive[i]._datasetIndex, this.lastActive[i]._index);
+						this.elementController.resetElementAppearance(this.lastActive[i], this.lastActive[i]._datasetIndex, this.lastActive[i]._index);
 					}
 					break;
 				case 'dataset':
@@ -86,11 +86,11 @@
 		if (this.active.length && this.chartInstance.options.hover.mode) {
 			switch (this.chartInstance.options.hover.mode) {
 				case 'single':
-					this.elementController.setPointHoverStyle(this.active[0]);
+					this.elementController.setElementHoverStyle(this.active[0]);
 					break;
 				case 'label':
 					for (var i = 0; i < this.active.length; i++) {
-						this.elementController.setPointHoverStyle(this.active[i]);
+						this.elementController.setElementHoverStyle(this.active[i]);
 					}
 					break;
 				case 'dataset':
