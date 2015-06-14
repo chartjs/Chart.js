@@ -37,7 +37,6 @@
 	};
 
 	var LinearScale = Chart.Element.extend({
-		calculateRange: helpers.noop, // overridden in the chart. Will set min and max as properties of the scale for later use
 		isHorizontal: function() {
 			return this.options.position == "top" || this.options.position == "bottom";
 		},
