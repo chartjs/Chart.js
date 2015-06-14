@@ -1102,8 +1102,11 @@
 
 		//Copy the prototype object of the this class
 		ChartType.prototype = clone(parent.prototype);
+		ChartType.prototype.__super__ = clone(parent.prototype);
+		
 		//Now overwrite some of the properties in the base class with the new extensions
 		extend(ChartType.prototype, extensions);
+
 
 		ChartType.extend = Chart.Type.extend;
 
