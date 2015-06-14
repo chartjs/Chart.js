@@ -26,14 +26,15 @@
 		defaults: defaultConfig,
 		initialize: function() {
 
-			this.controller = new Chart.RectangularElementController(this);
+			this.elementController = new Chart.RectangularElementController(this);
+			this.canvasController = new Chart.RectangularCanvasController(this, this.elementController);
 
 			// Create a new line and its points for each dataset and piece of data
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				this.controller.addLine(dataset, datasetIndex);
+				this.elementController.addLine(dataset, datasetIndex);
 				
 				helpers.each(dataset.data, function(dataPoint, index) {
-					this.controller.addPoint(dataset, datasetIndex, index);
+					this.elementController.addPoint(dataset, datasetIndex, index);
 				}, this);
 
 				// The line chart onlty supports a single x axis because the x axis is always a dataset axis
@@ -46,7 +47,7 @@
 				}
 			}, this);
 
-			this.__super__.initialize.call(this);
+			this.canvasController.initialize();
 		},
 		draw: function(ease) {
 

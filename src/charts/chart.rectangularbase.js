@@ -13,67 +13,9 @@
 	Chart.Type.extend({
 		name: "RectangularBase",
 		defaults: defaultConfig,
-		initialize: function() {
-			// Events
-			helpers.bindEvents(this, this.options.events, this.events);
-
-			// Build and fit the scale. Needs to happen after the axis IDs have been set
-			this.buildScales();
-
-			// Create tooltip instance exclusively for this chart with some defaults.
-			this.tooltip = new Chart.Tooltip({
-				_chart: this.chart,
-				_data: this.data,
-				_options: this.options,
-			}, this);
-
-			// Need to fit scales before we reset elements. 
-			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
-
-			// Reset so that we animation from the baseline
-			this.resetElements();
-
-			// Update that shiz
-			this.update();
-		},
-		resetElements: function() {
-			this.controller.resetElements();
-		},
 		update: function(animationDuration) {
-
-			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
-			this.controller.updateElements();
+			this.canvasController.update();
 			this.render(animationDuration);
-		},
-		buildScales: function() {
-			// Map of scale ID to scale object so we can lookup later 
-			this.scales = {};
-
-			// Build the x axes
-			helpers.each(this.options.scales.xAxes, function(xAxisOptions) {
-				var ScaleClass = Chart.scaleService.getScaleConstructor(xAxisOptions.type);
-				var scale = new ScaleClass({
-					ctx: this.chart.ctx,
-					options: xAxisOptions,
-					data: this.data,
-					id: xAxisOptions.id,
-				});
-
-				this.scales[scale.id] = scale;
-			}, this);
-
-			// Build the y axes
-			helpers.each(this.options.scales.yAxes, function(yAxisOptions) {
-				var ScaleClass = Chart.scaleService.getScaleConstructor(yAxisOptions.type);
-				var scale = new ScaleClass({
-					ctx: this.chart.ctx,
-					options: yAxisOptions,
-					data: this.data,
-					id: yAxisOptions.id,
-				});
-
-				this.scales[scale.id] = scale;
-			}, this);
 		},
 		draw: helpers.noop,
 		events: function(e) {
