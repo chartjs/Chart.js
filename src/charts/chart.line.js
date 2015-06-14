@@ -21,7 +21,7 @@
 	};
 
 
-	Chart.types.RectangularBase.extend({
+	Chart.Type.extend({
 		name: "Line",
 		defaults: defaultConfig,
 		initialize: function() {

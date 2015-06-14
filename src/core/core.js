@@ -990,7 +990,10 @@
 
 			return this;
 		},
-		redraw: noop,
+		update: function(animationDuration) {
+			this.canvasController.update();
+			this.render(animationDuration);
+		},
 		render: function(duration) {
 
 			if (this.options.animation.duration !== 0 || duration) {

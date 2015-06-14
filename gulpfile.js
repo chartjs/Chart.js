@@ -29,7 +29,6 @@ gulp.task('build', function() {
             './src/controllers/**',
             './src/scales/**',
             './src/elements/**',
-            './src/charts/chart.rectangularbase.js', // need this before the other chart types
             './src/charts/**',
             './src/**',
             './node_modules/color/dist/color.min.js'
