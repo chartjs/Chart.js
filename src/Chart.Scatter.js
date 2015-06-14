@@ -57,7 +57,6 @@
 				if (radius > maxRadius) maxRadius = radius;
 			});
 			this.PointClass = Chart.Point.extend({
-				offsetGridLines : this.options.offsetGridLines,
 				hitDetectionRadius : this.options.pointHitDetectionRadius,
 				radius: maxRadius,
 				ctx : this.chart.ctx,
