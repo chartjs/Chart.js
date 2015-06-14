@@ -26,6 +26,7 @@ gulp.task('build', function() {
     var srcFiles = [
             './src/core/core.js',
             './src/core/**',
+            './src/controllers/**',
             './src/scales/**',
             './src/elements/**',
             './src/charts/**',

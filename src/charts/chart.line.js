@@ -27,32 +27,17 @@
 		initialize: function() {
 
 			var _this = this;
+			this.controller = new Chart.RectangularController(this);
 
 			// Events
 			helpers.bindEvents(this, this.options.events, this.events);
 
 			// Create a new line and its points for each dataset and piece of data
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-
-				dataset.metaDataset = new Chart.Line({
-					_chart: this.chart,
-					_datasetIndex: datasetIndex,
-					_points: dataset.metaData,
-				});
-
-				dataset.metaData = [];
-
+				this.controller.addLine(dataset, datasetIndex);
+				
 				helpers.each(dataset.data, function(dataPoint, index) {
-					dataset.metaData.push(new Chart.Point({
-						_datasetIndex: datasetIndex,
-						_index: index,
-						_chart: this.chart,
-						_model: {
-							x: 0, 
-							y: 0, 
-						},
-					}));
-
+					this.controller.addPoint(dataset, datasetIndex, index);
 				}, this);
 
 				// The line chart onlty supports a single x axis because the x axis is always a dataset axis
@@ -63,7 +48,6 @@
 				if (!dataset.yAxisID) {
 					dataset.yAxisID = this.options.scales.yAxes[0].id;
 				}
-
 			}, this);
 
 			// Build and fit the scale. Needs to happen after the axis IDs have been set
@@ -92,84 +76,7 @@
 			return collection[index - 1] || collection[index];
 		},
 		resetElements: function() {
-			// Update the points
-			this.eachElement(function(point, index, dataset, datasetIndex) {
-				var xScale = this.scales[this.data.datasets[datasetIndex].xAxisID];
-				var yScale = this.scales[this.data.datasets[datasetIndex].yAxisID];
-
-				var yScalePoint;
-
-				if (yScale.min < 0 && yScale.max < 0) {
-					// all less than 0. use the top
-					yScalePoint = yScale.getPixelForValue(yScale.max);
-				} else if (yScale.min > 0 && yScale.max > 0) {
-					yScalePoint = yScale.getPixelForValue(yScale.min);
-				} else {
-					yScalePoint = yScale.getPixelForValue(0);
-				}
-
-				helpers.extend(point, {
-					// Utility
-					_chart: this.chart,
-					_xScale: xScale,
-					_yScale: yScale,
-					_datasetIndex: datasetIndex,
-					_index: index,
-
-					// Desired view properties
-					_model: {
-						x: xScale.getPointPixelForValue(this.data.datasets[datasetIndex].data[index], index, datasetIndex),
-						y: yScalePoint,
-
-						// Appearance
-						tension: point.custom && point.custom.tension ? point.custom.tension : this.options.elements.line.tension,
-						radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].radius, index, this.options.elements.point.radius),
-						backgroundColor: point.custom && point.custom.backgroundColor ? point.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointBackgroundColor, index, this.options.elements.point.backgroundColor),
-						borderColor: point.custom && point.custom.borderColor ? point.custom.borderColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointBorderColor, index, this.options.elements.point.borderColor),
-						borderWidth: point.custom && point.custom.borderWidth ? point.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointBorderWidth, index, this.options.elements.point.borderWidth),
-						skip: this.data.datasets[datasetIndex].data[index] === null,
-
-						// Tooltip
-						hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].hitRadius, index, this.options.elements.point.hitRadius),
-					},
-				});
-			}, this);
-
-			// Update control points for the bezier curve
-			this.eachElement(function(point, index, dataset, datasetIndex) {
-				var controlPoints = helpers.splineCurve(
-					this.previousPoint(dataset, index)._model,
-					point._model,
-					this.nextPoint(dataset, index)._model,
-					point._model.tension
-				);
-
-				point._model.controlPointPreviousX = controlPoints.previous.x;
-				point._model.controlPointNextX = controlPoints.next.x;
-
-				// Prevent the bezier going outside of the bounds of the graph
-
-				// Cap puter bezier handles to the upper/lower scale bounds
-				if (controlPoints.next.y > this.chartArea.bottom) {
-					point._model.controlPointNextY = this.chartArea.bottom;
-				} else if (controlPoints.next.y < this.chartArea.top) {
-					point._model.controlPointNextY = this.chartArea.top;
-				} else {
-					point._model.controlPointNextY = controlPoints.next.y;
-				}
-
-				// Cap inner bezier handles to the upper/lower scale bounds
-				if (controlPoints.previous.y > this.chartArea.bottom) {
-					point._model.controlPointPreviousY = this.chartArea.bottom;
-				} else if (controlPoints.previous.y < this.chartArea.top) {
-					point._model.controlPointPreviousY = this.chartArea.top;
-				} else {
-					point._model.controlPointPreviousY = controlPoints.previous.y;
-				}
-
-				// Now pivot the point for animation
-				point.pivot();
-			}, this);
+			this.controller.resetElements();
 		},
 		update: function(animationDuration) {
 
