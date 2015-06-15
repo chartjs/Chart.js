@@ -43,6 +43,18 @@
 	helpers.extend(Chart.Controller.prototype, {
 
 		initialize: function initialize() {
+
+			this.bindEvents();
+			this.buildScales();
+
+			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
+
+			this.resetElements();
+
+			this.initToolTip();
+
+			this.update();
+
 			return this;
 		},
 
@@ -71,9 +83,43 @@
 			return this;
 		},
 
+		buildScales: function buildScales() {
+			// Map of scale ID to scale object so we can lookup later 
+			this.scales = {};
+
+			// Build the x axes
+			helpers.each(this.options.scales.xAxes, function(xAxisOptions) {
+				var ScaleClass = Chart.scaleService.getScaleConstructor(xAxisOptions.type);
+				var scale = new ScaleClass({
+					ctx: this.chart.ctx,
+					options: xAxisOptions,
+					data: this.data,
+					id: xAxisOptions.id,
+				});
+
+				this.scales[scale.id] = scale;
+			}, this);
+
+			// Build the y axes
+			helpers.each(this.options.scales.yAxes, function(yAxisOptions) {
+				var ScaleClass = Chart.scaleService.getScaleConstructor(yAxisOptions.type);
+				var scale = new ScaleClass({
+					ctx: this.chart.ctx,
+					options: yAxisOptions,
+					data: this.data,
+					id: yAxisOptions.id,
+				});
+
+				this.scales[scale.id] = scale;
+			}, this);
+		},
+
+		resetElements: function resetElements() {
+			// This will loop through any data and do the appropriate element reset for the type
+		},
 		update: function update(animationDuration) {
-			this.canvasController.update();
-			this.render(animationDuration);
+			// This will loop through any data and do the appropriate element update for the type
+			//this.render(animationDuration);
 		},
 
 		render: function render(duration) {
@@ -104,15 +150,15 @@
 			return this;
 		},
 
-		eachElement: function eachElement(callback) {
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				helpers.each(dataset.metaData, callback, this, dataset.metaData, datasetIndex);
-			}, this);
-		},
-
 		eachValue: function eachValue(callback) {
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				helpers.each(dataset.data, callback, this, datasetIndex);
+			}, this);
+		},
+
+		eachElement: function eachElement(callback) {
+			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
+				helpers.each(dataset.metaData, callback, this, dataset.metaData, datasetIndex);
 			}, this);
 		},
 
@@ -120,7 +166,27 @@
 			helpers.each(this.data.datasets, callback, this);
 		},
 
+		// Get the single element that was clicked on
+		// @return : An object containing the dataset index and element index of the matching element. Also contains the rectangle that was draw
+		getElementAtEvent: function getElementAtEvent(e) {
+
+			var element = [];
+			var eventPosition = helpers.getRelativePosition(e);
+
+			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; ++datasetIndex) {
+				for (var elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; ++elementIndex) {
+					if (this.data.datasets[datasetIndex].metaData[elementIndex].inRange(eventPosition.x, eventPosition.y)) {
+						element.push(this.data.datasets[datasetIndex].metaData[elementIndex]);
+						return element;
+					}
+				}
+			}
+
+			return [];
+		},
+
 		getElementsAtEvent: function getElementsAtEvent(e) {
+
 			var elementsArray = [],
 				eventPosition = helpers.getRelativePosition(e),
 				datasetIterator = function(dataset) {
@@ -139,31 +205,13 @@
 			return elementsArray.length ? elementsArray : [];
 		},
 
-		// Get the single element that was clicked on
-		// @return : An object containing the dataset index and element index of the matching element. Also contains the rectangle that was draw
-		getElementAtEvent: function getElementAtEvent(e) {
-			var element = [];
-			var eventPosition = helpers.getRelativePosition(e);
-
-			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; ++datasetIndex) {
-				for (var elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; ++elementIndex) {
-					if (this.data.datasets[datasetIndex].metaData[elementIndex].inRange(eventPosition.x, eventPosition.y)) {
-						element.push(this.data.datasets[datasetIndex].metaData[elementIndex]);
-						return element;
-					}
-				}
-			}
-
-			return [];
-		},
-
 		generateLegend: function generateLegend() {
 			return template(this.options.legendTemplate, this);
 		},
 
 		destroy: function destroy() {
 			this.clear();
-			unbindEvents(this, this.events);
+			helpers.unbindEvents(this, this.events);
 			var canvas = this.chart.canvas;
 
 			// Reset canvas height/width attributes starts a fresh with the canvas context
@@ -185,19 +233,6 @@
 		toBase64Image: function toBase64Image() {
 			return this.chart.canvas.toDataURL.apply(this.chart.canvas, arguments);
 		},
-		initialize: function initialize() {
-			this.bindEvents();
-			this.buildScales();
-
-			// Need to fit scales before we reset elements. 
-			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
-			this.elementController.resetElements();
-
-			this.initToolTip();
-
-			this.update();
-		},
-
 		bindEvents: function bindEvents() {
 			helpers.bindEvents(this, this.options.events, function(evt) {
 				// this will be the chart instance
@@ -332,36 +367,7 @@
 			}, this);
 		},
 
-		buildScales: function buildScales() {
-			// Map of scale ID to scale object so we can lookup later 
-			this.scales = {};
 
-			// Build the x axes
-			helpers.each(this.options.scales.xAxes, function(xAxisOptions) {
-				var ScaleClass = Chart.scaleService.getScaleConstructor(xAxisOptions.type);
-				var scale = new ScaleClass({
-					ctx: this.chart.ctx,
-					options: xAxisOptions,
-					data: this.data,
-					id: xAxisOptions.id,
-				});
-
-				this.scales[scale.id] = scale;
-			}, this);
-
-			// Build the y axes
-			helpers.each(this.options.scales.yAxes, function(yAxisOptions) {
-				var ScaleClass = Chart.scaleService.getScaleConstructor(yAxisOptions.type);
-				var scale = new ScaleClass({
-					ctx: this.chart.ctx,
-					options: yAxisOptions,
-					data: this.data,
-					id: yAxisOptions.id,
-				});
-
-				this.scales[scale.id] = scale;
-			}, this);
-		},
 		update: function update() {
 			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
 			this.elementController.updateElements();
