@@ -103,7 +103,7 @@
 					// Desired view properties
 					_model: {
 						x: xScale.calculateBarX(this.chart.data.datasets.length, this.index, index),
-						y: reset ? yScalePoint : yScale.getPixelForValue(this.getDataset().data[index]),
+						y: reset ? yScalePoint : yScale.calculateBarY(this.index, index),
 
 						// Tooltip
 						label: this.chart.data.labels[index],

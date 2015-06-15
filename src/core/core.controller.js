@@ -47,8 +47,11 @@
 			// If BeforeInit(this) doesn't return false, proceed
 
 			this.bindEvents();
-			this.buildScales();
+
+			// Make sure controllers are built first so that each dataset is bound to an axis before the scales
+			// are built
 			this.buildControllers();
+			this.buildScales();
 			this.resetElements();
 			this.initToolTip();
 			this.update();

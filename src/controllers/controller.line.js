@@ -132,7 +132,7 @@
 					// Desired view properties
 					_model: {
 						x: xScale.getPointPixelForValue(this.getDataset().data[index], index, this.index),
-						y: yScale.getPointPixelForValue(this.getDataset().data[index], index, this.index),
+						y: reset ? scaleBase : yScale.getPointPixelForValue(this.getDataset().data[index], index, this.index),
 						// Appearance
 						tension: point.custom && point.custom.tension ? point.custom.tension : this.chart.options.elements.line.tension,
 						radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().radius, index, this.chart.options.elements.point.radius),
