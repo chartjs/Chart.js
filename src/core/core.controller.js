@@ -331,7 +331,7 @@
 						break;
 					case 'label':
 						for (var i = 0; i < this.lastActive.length; i++) {
-							this.data.datasets[this.lastActive[0]._datasetIndex].controller.removeHoverStyle(this.lastActive[i], this.lastActive[i]._datasetIndex, this.lastActive[i]._index);
+							this.data.datasets[this.lastActive[i]._datasetIndex].controller.removeHoverStyle(this.lastActive[i], this.lastActive[i]._datasetIndex, this.lastActive[i]._index);
 						}
 						break;
 					case 'dataset':
@@ -349,7 +349,7 @@
 						break;
 					case 'label':
 						for (var i = 0; i < this.active.length; i++) {
-							this.data.datasets[this.active[0]._datasetIndex].controller.setHoverStyle(this.active[i]);
+							this.data.datasets[this.active[i]._datasetIndex].controller.setHoverStyle(this.active[i]);
 						}
 						break;
 					case 'dataset':
