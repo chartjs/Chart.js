@@ -15,21 +15,20 @@
 	//Destroy method on the chart will remove the instance of the chart from this reference.
 	Chart.instances = {};
 
+	// Controllers available for dataset visualization eg. bar, line, slice, etc.
+	Chart.controllers = {};
+
+	// The main controller of a chart
 	Chart.Controller = function(instance) {
 
 		this.chart = instance;
-		var config = instance.config;
-		this.data = config.data;
-		this.options = config.options = helpers.configMerge(Chart.defaults.global, Chart.defaults[config.type], config.options || {});
+		this.config = instance.config;
+		this.data = this.config.data;
+		this.options = this.config.options = helpers.configMerge(Chart.defaults.global, Chart.defaults[this.config.type], this.config.options || {});
 		this.id = helpers.uid();
-
-		console.log(this.options);
 
 		//Add the chart instance to the global namespace
 		Chart.instances[this.id] = this;
-
-		// Initialize is always called when a chart type is created
-		// By default it is a no op, but it should be extended
 
 		if (this.options.responsive) {
 			this.resize();
@@ -44,11 +43,18 @@
 
 		initialize: function initialize() {
 
+			// TODO
+			// If BeforeInit(this) doesn't return false, proceed
+
 			this.bindEvents();
 			this.buildScales();
+			this.buildControllers();
 			this.resetElements();
 			this.initToolTip();
 			this.update();
+
+			// TODO
+			// If AfterInit(this) doesn't return false, proceed
 
 			return this;
 		},
@@ -111,12 +117,30 @@
 			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
 		},
 
-		resetElements: function resetElements() {
-			// This will loop through any data and do the appropriate element reset for the type
+		buildControllers: function() {
+			this.eachDataset(function(dataset, datasetIndex) {
+				var type = dataset.type || this.config.type;
+				if (dataset.controller) {
+					dataset.controller.updateIndex(datasetIndex);
+					return;
+				}
+				dataset.controller = new Chart.controllers[type](this, datasetIndex);
+			});
 		},
+
+		resetElements: function resetElements() {
+			this.eachDataset(function(dataset, datasetIndex) {
+				dataset.controller.reset();
+			});
+		},
+
+
 		update: function update(animationDuration) {
 			// This will loop through any data and do the appropriate element update for the type
 			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
+			this.eachDataset(function(dataset, datasetIndex) {
+				dataset.controller.update();
+			});
 			this.render(animationDuration);
 		},
 
@@ -148,6 +172,25 @@
 			return this;
 		},
 
+		draw: function(ease) {
+			var easingDecimal = ease || 1;
+			this.clear();
+
+			// Draw all the scales
+			helpers.each(this.scales, function(scale) {
+				scale.draw(this.chartArea);
+			}, this);
+
+			// Draw each dataset via its respective controller
+			// TODO: needs support for reverse stacking (line chart)
+			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
+				dataset.controller.draw(ease);
+			}, this);
+
+			// Finally draw the tooltip
+			this.tooltip.transition(easingDecimal).draw();
+		},
+
 		eachValue: function eachValue(callback) {
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				helpers.each(dataset.data, callback, this, datasetIndex);
@@ -162,6 +205,20 @@
 
 		eachDataset: function eachDataset(callback) {
 			helpers.each(this.data.datasets, callback, this);
+		},
+
+		// 2 helper functions to get next/previous elements in datasets
+		nextElement: function nextElement(datasets, index, loop) {
+			if (this.loop) {
+				return dataset[index + 1] || dataset[0];
+			}
+			return datasets[index + 1] || datasets[index];
+		},
+		previousElement: function previousElement(datasets, index, loop) {
+			if (this.loop) {
+				return dataset[index - 1] || dataset[dataset.length - 1];
+			}
+			return datasets[index - 1] || datasets[index];
 		},
 
 		// Get the single element that was clicked on

@@ -7,6 +7,7 @@
 		previous = root.Chart,
 		helpers = Chart.helpers;
 
+	Chart.elements = {};
 
 	Chart.Element = function(configuration) {
 		helpers.extend(this, configuration);

@@ -58,12 +58,14 @@
 		//High pixel density displays - multiply the size of the canvas height/width by the device pixel ratio, then scale.
 		Chart.helpers.retinaScale(this);
 
-		this.controller = new Chart.Controller(this);
+		if (config) {
+			this.controller = new Chart.Controller(this);
+			return this.controller;
+		}
 
-		return this.controller;
+		return this;
+
 	};
-
-	var defaultColor = 'rgba(0,0,0,0.1)';
 
 	//Globally expose the defaults to allow for user updating/changing
 	Chart.defaults = {
@@ -77,7 +79,7 @@
 				animationDuration: 400,
 			},
 			onClick: null,
-			defaultColor: defaultColor,
+			defaultColor: 'rgba(0,0,0,0.1)',
 
 			// Element defaults defined in element extensions
 			elements: {}
