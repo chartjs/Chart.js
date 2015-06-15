@@ -35,7 +35,7 @@
 			var hoverRange = vm.hitRadius + vm.radius;
 			return ((Math.pow(mouseX - vm.x, 2) + Math.pow(mouseY - vm.y, 2)) < Math.pow(hoverRange, 2));
 		},
-		inGroupRange: function(mouseX) {
+		inLabelRange: function(mouseX) {
 			var vm = this._view;
 
 			if (vm) {

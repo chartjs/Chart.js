@@ -61,7 +61,7 @@
 				return (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2) && (mouseY >= vm.base && mouseY <= vm.y);
 			}
 		},
-		inGroupRange: function(mouseX) {
+		inLabelRange: function(mouseX) {
 			var vm = this._view;
 			return (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2);
 		},

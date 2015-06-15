@@ -1,6 +1,8 @@
 (function() {
 	"use strict";
 
+	return;
+
 	var root = this,
 		Chart = root.Chart,
 		helpers = Chart.helpers;

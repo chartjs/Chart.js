@@ -24,7 +24,7 @@
 	};
 
 	Chart.Arc = Chart.Element.extend({
-		inGroupRange: function(mouseX) {
+		inLabelRange: function(mouseX) {
 			var vm = this._view;
 
 			if (vm) {

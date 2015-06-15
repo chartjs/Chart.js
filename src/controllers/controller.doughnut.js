@@ -1,6 +1,8 @@
 (function() {
 	"use strict";
 
+	return;
+
 	var root = this,
 		Chart = root.Chart,
 		//Cache a local reference to Chart.helpers
@@ -347,7 +349,7 @@
 			var location = helpers.getRelativePosition(e);
 
 			this.eachElement(function(slice, index) {
-				if (slice.inGroupRange(location.x, location.y)) {
+				if (slice.inLabelRange(location.x, location.y)) {
 					elements.push(slice);
 				}
 			}, this);

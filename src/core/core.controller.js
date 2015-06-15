@@ -118,29 +118,29 @@
 		},
 
 		buildControllers: function() {
-			this.eachDataset(function(dataset, datasetIndex) {
+			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				var type = dataset.type || this.config.type;
 				if (dataset.controller) {
 					dataset.controller.updateIndex(datasetIndex);
 					return;
 				}
 				dataset.controller = new Chart.controllers[type](this, datasetIndex);
-			});
+			}, this);
 		},
 
 		resetElements: function resetElements() {
-			this.eachDataset(function(dataset, datasetIndex) {
+			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				dataset.controller.reset();
-			});
+			}, this);
 		},
 
 
 		update: function update(animationDuration) {
 			// This will loop through any data and do the appropriate element update for the type
 			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
-			this.eachDataset(function(dataset, datasetIndex) {
+			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				dataset.controller.update();
-			});
+			}, this);
 			this.render(animationDuration);
 		},
 
@@ -195,90 +195,48 @@
 
 
 
-
-
-		eachValue: function eachValue(callback) {
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				helpers.each(dataset.data, callback, this, datasetIndex);
-			}, this);
-		},
-
-		eachElement: function eachElement(callback) {
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				helpers.each(dataset.metaData, callback, this, dataset.metaData, datasetIndex);
-			}, this);
-		},
-
-		eachDataset: function eachDataset(callback) {
-			helpers.each(this.data.datasets, callback, this);
-		},
-
-		// 2 helper functions to get next/previous elements in datasets
-		nextElement: function nextElement(datasets, index, loop) {
-			if (this.loop) {
-				return dataset[index + 1] || dataset[0];
-			}
-			return datasets[index + 1] || datasets[index];
-		},
-		previousElement: function previousElement(datasets, index, loop) {
-			if (this.loop) {
-				return dataset[index - 1] || dataset[dataset.length - 1];
-			}
-			return datasets[index - 1] || datasets[index];
-		},
-
 		// Get the single element that was clicked on
 		// @return : An object containing the dataset index and element index of the matching element. Also contains the rectangle that was draw
-		getElementAtEvent: function getElementAtEvent(e) {
+		getElementAtEvent: function(e) {
 
-			var element = [];
 			var eventPosition = helpers.getRelativePosition(e);
+			var element = [];
 
-			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; ++datasetIndex) {
-				for (var elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; ++elementIndex) {
-					if (this.data.datasets[datasetIndex].metaData[elementIndex].inRange(eventPosition.x, eventPosition.y)) {
-						element.push(this.data.datasets[datasetIndex].metaData[elementIndex]);
+			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
+				helpers.each(dataset.metaData, function(element, index) {
+					if (this.chart.data.datasets[datasetIndex].metaData[elementIndex].inRange(eventPosition.x, eventPosition.y)) {
+						element.push(this.chart.data.datasets[datasetIndex].metaData[elementIndex]);
 						return element;
 					}
-				}
-			}
+				}, this);
+			}, this);
 
 			return [];
 		},
 
-		getElementsAtEvent: function getElementsAtEvent(e) {
+		getElementsAtEvent: function(e) {
+			var eventPosition = helpers.getRelativePosition(e);
+			var elementsArray = [];
 
-			var elementsArray = [],
-				eventPosition = helpers.getRelativePosition(e),
-				datasetIterator = function(dataset) {
-					elementsArray.push(dataset.metaData[elementIndex]);
-				},
-				elementIndex;
-
-			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; datasetIndex++) {
-				for (elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; elementIndex++) {
-					if (this.data.datasets[datasetIndex].metaData[elementIndex].inGroupRange(eventPosition.x, eventPosition.y)) {
-						helpers.each(this.data.datasets, datasetIterator);
+			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
+				helpers.each(dataset.metaData, function(element, index) {
+					if (element.inRange(eventPosition.x, eventPosition.y)) {
+						elementsArray.push(element);
 					}
-				}
-			}
+				}, this);
+			}, this);
 
-			return elementsArray.length ? elementsArray : [];
+			return elementsArray;
 		},
 
-		getDatasetAtEvent: function getDatasetAtEvent(e) {
+		getDatasetAtEvent: function(e) {
+			var eventPosition = helpers.getRelativePosition(e);
+			var elementsArray = [];
 
-			var elementsArray = [],
-				eventPosition = helpers.getRelativePosition(e),
-				datasetIterator = function(dataset) {
-					elementsArray.push(dataset.metaData[elementIndex]);
-				},
-				elementIndex;
-
-			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; datasetIndex++) {
-				for (elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; elementIndex++) {
-					if (this.data.datasets[datasetIndex].metaData[elementIndex].inGroupRange(eventPosition.x, eventPosition.y)) {
-						helpers.each(this.data.datasets, datasetIterator);
+			for (var datasetIndex = 0; datasetIndex < this.chart.data.datasets.length; datasetIndex++) {
+				for (elementIndex = 0; elementIndex < this.chart.data.datasets[datasetIndex].metaData.length; elementIndex++) {
+					if (this.chart.data.datasets[datasetIndex].metaData[elementIndex].inLabelRange(eventPosition.x, eventPosition.y)) {
+						helpers.each(this.chart.data.datasets, datasetIterator);
 					}
 				}
 			}
@@ -338,11 +296,11 @@
 				this.active = function() {
 					switch (this.options.hover.mode) {
 						case 'single':
-							return this.elementController.getElementAtEvent(e);
+							return this.getElementAtEvent(e);
 						case 'label':
-							return this.elementController.getElementsAtEvent(e);
+							return this.getElementsAtEvent(e);
 						case 'dataset':
-							return this.elementController.getDatasetAtEvent(e);
+							return this.getDatasetAtEvent(e);
 						default:
 							return e;
 					}
@@ -366,11 +324,11 @@
 			if (this.lastActive.length) {
 				switch (this.options.hover.mode) {
 					case 'single':
-						this.elementController.resetElementAppearance(this.lastActive[0], this.lastActive[0]._datasetIndex, this.lastActive[0]._index);
+						this.data.datasets[this.lastActive[0]._datasetIndex].controller.removeHoverStyle(this.lastActive[0], this.lastActive[0]._datasetIndex, this.lastActive[0]._index);
 						break;
 					case 'label':
 						for (var i = 0; i < this.lastActive.length; i++) {
-							this.elementController.resetElementAppearance(this.lastActive[i], this.lastActive[i]._datasetIndex, this.lastActive[i]._index);
+							this.data.datasets[this.lastActive[0]._datasetIndex].controller.removeHoverStyle(this.lastActive[i], this.lastActive[i]._datasetIndex, this.lastActive[i]._index);
 						}
 						break;
 					case 'dataset':
@@ -384,11 +342,11 @@
 			if (this.active.length && this.options.hover.mode) {
 				switch (this.options.hover.mode) {
 					case 'single':
-						this.elementController.setElementHoverStyle(this.active[0]);
+						this.data.datasets[this.active[0]._datasetIndex].controller.setHoverStyle(this.active[0]);
 						break;
 					case 'label':
 						for (var i = 0; i < this.active.length; i++) {
-							this.elementController.setElementHoverStyle(this.active[i]);
+							this.data.datasets[this.active[0]._datasetIndex].controller.setHoverStyle(this.active[i]);
 						}
 						break;
 					case 'dataset':

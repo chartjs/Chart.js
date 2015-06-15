@@ -1,6 +1,8 @@
 (function() {
 	"use strict";
 
+	return;
+
 	var root = this,
 		Chart = root.Chart,
 		helpers = Chart.helpers;
@@ -135,7 +137,7 @@
 			this.scale.calculateRange();
 			this.scale.generateTicks();
 			this.scale.buildYLabels();
-			
+
 			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
 
 			// Update the lines
