@@ -32,7 +32,7 @@ gulp.task('build', function() {
             './src/controllers/**',
             './src/scales/**',
             './src/elements/**',
-            './src/charts/**',
+            './src/charts/chart.bar.js',
             './node_modules/color/dist/color.min.js'
         ],
         isCustom = !!(util.env.types),

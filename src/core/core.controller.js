@@ -46,13 +46,8 @@
 
 			this.bindEvents();
 			this.buildScales();
-
-			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
-
 			this.resetElements();
-
 			this.initToolTip();
-
 			this.update();
 
 			return this;
@@ -112,6 +107,8 @@
 
 				this.scales[scale.id] = scale;
 			}, this);
+
+			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
 		},
 
 		resetElements: function resetElements() {
@@ -119,7 +116,8 @@
 		},
 		update: function update(animationDuration) {
 			// This will loop through any data and do the appropriate element update for the type
-			//this.render(animationDuration);
+			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
+			this.render(animationDuration);
 		},
 
 		render: function render(duration) {
@@ -205,6 +203,26 @@
 			return elementsArray.length ? elementsArray : [];
 		},
 
+		getDatasetAtEvent: function getDatasetAtEvent(e) {
+
+			var elementsArray = [],
+				eventPosition = helpers.getRelativePosition(e),
+				datasetIterator = function(dataset) {
+					elementsArray.push(dataset.metaData[elementIndex]);
+				},
+				elementIndex;
+
+			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; datasetIndex++) {
+				for (elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; elementIndex++) {
+					if (this.data.datasets[datasetIndex].metaData[elementIndex].inGroupRange(eventPosition.x, eventPosition.y)) {
+						helpers.each(this.data.datasets, datasetIterator);
+					}
+				}
+			}
+
+			return elementsArray.length ? elementsArray : [];
+		},
+
 		generateLegend: function generateLegend() {
 			return template(this.options.legendTemplate, this);
 		},
@@ -233,13 +251,20 @@
 		toBase64Image: function toBase64Image() {
 			return this.chart.canvas.toDataURL.apply(this.chart.canvas, arguments);
 		},
-		bindEvents: function bindEvents() {
-			helpers.bindEvents(this, this.options.events, function(evt) {
-				// this will be the chart instance
-				this.canvasController.eventHandler(evt);
-			});
+
+		initToolTip: function initToolTip() {
+			this.tooltip = new Chart.Tooltip({
+				_chart: this.chart,
+				_data: this.data,
+				_options: this.options,
+			}, this);
 		},
 
+		bindEvents: function bindEvents() {
+			helpers.bindEvents(this, this.options.events, function(evt) {
+				this.eventHandler(evt);
+			});
+		},
 		eventHandler: function eventHandler(e) {
 			this.lastActive = this.lastActive || [];
 
@@ -358,20 +383,6 @@
 			this.lastActive = this.active;
 			return this;
 		},
-
-		initToolTip: function initToolTip() {
-			this.tooltip = new Chart.Tooltip({
-				_chart: this.chart,
-				_data: this.data,
-				_options: this.options,
-			}, this);
-		},
-
-
-		update: function update() {
-			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
-			this.elementController.updateElements();
-		}
 	});
 
 }).call(this);
