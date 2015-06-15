@@ -29,7 +29,7 @@
 	};
 
 
-	Chart.Point = Chart.Element.extend({
+	Chart.elements.Point = Chart.Element.extend({
 		inRange: function(mouseX, mouseY) {
 			var vm = this._view;
 			var hoverRange = vm.hitRadius + vm.radius;

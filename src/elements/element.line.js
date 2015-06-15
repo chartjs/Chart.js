@@ -28,7 +28,7 @@
 	};
 
 
-	Chart.Line = Chart.Element.extend({
+	Chart.elements.Line = Chart.Element.extend({
 		draw: function() {
 
 			var vm = this._view;
@@ -38,8 +38,8 @@
 
 			// Draw the background first (so the border is always on top)
 			helpers.each(this._children, function(point, index) {
-				var previous = this.previousPoint(point, this._children, index);
-				var next = this.nextPoint(point, this._children, index);
+				var previous = helpers.previousItem(this._children, index);
+				var next = helpers.nextItem(this._children, index);
 
 				// First point only
 				if (index === 0) {
@@ -112,8 +112,8 @@
 			ctx.beginPath();
 
 			helpers.each(this._children, function(point, index) {
-				var previous = this.previousPoint(point, this._children, index);
-				var next = this.nextPoint(point, this._children, index);
+				var previous = helpers.previousItem(this._children, index);
+				var next = helpers.nextItem(this._children, index);
 
 				// First point only
 				if (index === 0) {
@@ -172,18 +172,6 @@
 
 			ctx.stroke();
 
-		},
-		nextPoint: function(point, collection, index) {
-			if (this.loop) {
-				return collection[index + 1] || collection[0];
-			}
-			return collection[index + 1] || collection[collection.length - 1];
-		},
-		previousPoint: function(point, collection, index) {
-			if (this.loop) {
-				return collection[index - 1] || collection[collection.length - 1];
-			}
-			return collection[index - 1] || collection[0];
 		},
 	});
 

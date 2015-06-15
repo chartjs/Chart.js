@@ -191,6 +191,12 @@
 			this.tooltip.transition(easingDecimal).draw();
 		},
 
+
+
+
+
+
+
 		eachValue: function eachValue(callback) {
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				helpers.each(dataset.data, callback, this, datasetIndex);

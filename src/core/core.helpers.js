@@ -327,6 +327,18 @@
 				}
 			};
 		},
+		nextItem = helpers.nextItem = function(collection, index, loop) {
+			if (loop) {
+				return collection[index + 1] || collection[0];
+			}
+			return collection[index + 1] || collection[collection.length - 1];
+		},
+		previousItem = helpers.previousItem = function(collection, index, loop) {
+			if (loop) {
+				return collection[index - 1] || collection[collection.length - 1];
+			}
+			return collection[index - 1] || collection[0];
+		},
 		calculateOrderOfMagnitude = helpers.calculateOrderOfMagnitude = function(val) {
 			return Math.floor(Math.log(val) / Math.LN10);
 		},

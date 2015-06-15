@@ -6,11 +6,11 @@
 		Chart = root.Chart,
 		helpers = Chart.helpers;
 
-	Chart.controllers.bar = function(chart, datasetIndex) {
+	Chart.controllers.line = function(chart, datasetIndex) {
 		this.initialize.call(this, chart, datasetIndex);
 	};
 
-	helpers.extend(Chart.controllers.bar.prototype, {
+	helpers.extend(Chart.controllers.line.prototype, {
 
 		initialize: function(chart, datasetIndex) {
 			this.chart = chart;
@@ -38,9 +38,17 @@
 		},
 
 		addElements: function() {
+
 			this.getDataset().metaData = this.getDataset().metaData || [];
+
+			this.getDataset().metaDataset = this.getDataset().metaDataset || new Chart.elements.Line({
+				_chart: this.chart.chart,
+				_datasetIndex: this.index,
+				_points: this.getDataset().metaData,
+			});
+
 			helpers.each(this.getDataset().data, function(value, index) {
-				this.getDataset().metaData[index] = this.getDataset().metaData[index] || new Chart.elements.Rectangle({
+				this.getDataset().metaData[index] = this.getDataset().metaData[index] || new Chart.elements.Point({
 					_chart: this.chart.chart,
 					_datasetIndex: this.index,
 					_index: index,
@@ -54,22 +62,50 @@
 
 		update: function(reset) {
 
-			var xScale = this.getScaleForId(this.getDataset().xAxisID);
+			var line = this.getDataset().metaDataset;
+			var points = this.getDataset().metaData;
+
 			var yScale = this.getScaleForId(this.getDataset().yAxisID);
-			helpers.each(this.getDataset().metaData, function(rectangle, index) {
+			var xScale = this.getScaleForId(this.getDataset().xAxisID);
+			var scaleBase;
 
-				var yScalePoint;
+			if (yScale.min < 0 && yScale.max < 0) {
+				scaleBase = yScale.getPixelForValue(yScale.max);
+			} else if (yScale.min > 0 && yScale.max > 0) {
+				scaleBase = yScale.getPixelForValue(yScale.min);
+			} else {
+				scaleBase = yScale.getPixelForValue(0);
+			}
 
-				if (yScale.min < 0 && yScale.max < 0) {
-					// all less than 0. use the top
-					yScalePoint = yScale.getPixelForValue(yScale.max);
-				} else if (yScale.min > 0 && yScale.max > 0) {
-					yScalePoint = yScale.getPixelForValue(yScale.min);
-				} else {
-					yScalePoint = yScale.getPixelForValue(0);
-				}
 
-				helpers.extend(rectangle, {
+			// Update Line
+			helpers.extend(line, {
+				// Utility
+				_scale: yScale,
+				_datasetIndex: this.index,
+				// Data
+				_children: points,
+				// Model
+				_model: {
+					// Appearance
+					tension: line.custom && line.custom.tension ? line.custom.tension : (this.getDataset().tension || this.chart.options.elements.line.tension),
+					backgroundColor: line.custom && line.custom.backgroundColor ? line.custom.backgroundColor : (this.getDataset().backgroundColor || this.chart.options.elements.line.backgroundColor),
+					borderWidth: line.custom && line.custom.borderWidth ? line.custom.borderWidth : (this.getDataset().borderWidth || this.chart.options.elements.line.borderWidth),
+					borderColor: line.custom && line.custom.borderColor ? line.custom.borderColor : (this.getDataset().borderColor || this.chart.options.elements.line.borderColor),
+					fill: line.custom && line.custom.fill ? line.custom.fill : (this.getDataset().fill !== undefined ? this.getDataset().fill : this.chart.options.elements.line.fill),
+					skipNull: this.getDataset().skipNull !== undefined ? this.getDataset().skipNull : this.chart.options.elements.line.skipNull,
+					drawNull: this.getDataset().drawNull !== undefined ? this.getDataset().drawNull : this.chart.options.elements.line.drawNull,
+					// Scale
+					scaleTop: yScale.top,
+					scaleBottom: yScale.bottom,
+					scaleZero: scaleBase,
+				},
+			});
+			line.pivot();
+
+			// Update Points
+			helpers.each(points, function(point, index) {
+				helpers.extend(point, {
 					// Utility
 					_chart: this.chart.chart,
 					_xScale: xScale,
@@ -77,33 +113,78 @@
 					_datasetIndex: this.index,
 					_index: index,
 
-
 					// Desired view properties
 					_model: {
-						x: xScale.calculateBarX(this.chart.data.datasets.length, this.index, index),
-						y: reset ? yScalePoint : yScale.getPixelForValue(this.getDataset().data[index]),
+						x: xScale.getPointPixelForValue(this.getDataset().data[index], index, this.index),
+						y: yScale.getPointPixelForValue(this.getDataset().data[index], index, this.index),
+						// Appearance
+						tension: point.custom && point.custom.tension ? point.custom.tension : this.chart.options.elements.line.tension,
+						radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().radius, index, this.chart.options.elements.point.radius),
+						backgroundColor: point.custom && point.custom.backgroundColor ? point.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBackgroundColor, index, this.chart.options.elements.point.backgroundColor),
+						borderColor: point.custom && point.custom.borderColor ? point.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderColor, index, this.chart.options.elements.point.borderColor),
+						borderWidth: point.custom && point.custom.borderWidth ? point.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderWidth, index, this.chart.options.elements.point.borderWidth),
+						skip: this.getDataset().data[index] === null,
 
 						// Tooltip
-						label: this.chart.data.labels[index],
-						datasetLabel: this.getDataset().label,
-
-						// Appearance
-						base: yScale.calculateBarBase(this.index, index),
-						width: xScale.calculateBarWidth(this.chart.data.datasets.length),
-						backgroundColor: rectangle.custom && rectangle.custom.backgroundColor ? rectangle.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.rectangle.backgroundColor),
-						borderColor: rectangle.custom && rectangle.custom.borderColor ? rectangle.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.rectangle.borderColor),
-						borderWidth: rectangle.custom && rectangle.custom.borderWidth ? rectangle.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.rectangle.borderWidth),
+						hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.getDataset().hitRadius, index, this.chart.options.elements.point.hitRadius),
 					},
+
 				});
-				rectangle.pivot();
 			}, this);
+
+			// Update bezier control points
+			helpers.each(this.getDataset().metaData, function(point, index) {
+				var controlPoints = helpers.splineCurve(
+					helpers.previousItem(this.getDataset().metaData, index)._model,
+					point._model,
+					helpers.nextItem(this.getDataset().metaData, index)._model,
+					point._model.tension
+				);
+
+				point._model.controlPointPreviousX = controlPoints.previous.x;
+				point._model.controlPointNextX = controlPoints.next.x;
+
+				// Prevent the bezier going outside of the bounds of the graph
+
+				// Cap puter bezier handles to the upper/lower scale bounds
+				if (controlPoints.next.y > this.chart.chartArea.bottom) {
+					point._model.controlPointNextY = this.chart.chartArea.bottom;
+				} else if (controlPoints.next.y < this.chart.chartArea.top) {
+					point._model.controlPointNextY = this.chart.chartArea.top;
+				} else {
+					point._model.controlPointNextY = controlPoints.next.y;
+				}
+
+				// Cap inner bezier handles to the upper/lower scale bounds
+				if (controlPoints.previous.y > this.chart.chartArea.bottom) {
+					point._model.controlPointPreviousY = this.chart.chartArea.bottom;
+				} else if (controlPoints.previous.y < this.chart.chartArea.top) {
+					point._model.controlPointPreviousY = this.chart.chartArea.top;
+				} else {
+					point._model.controlPointPreviousY = controlPoints.previous.y;
+				}
+
+				// Now pivot the point for animation
+				point.pivot();
+			}, this);
+
 		},
 
 		draw: function(ease) {
 			var easingDecimal = ease || 1;
-			helpers.each(this.getDataset().metaData, function(rectangle, index) {
-				rectangle.transition(easingDecimal).draw();
+
+			// Transition Point Locations
+			helpers.each(this.getDataset().metaData, function(point, index) {
+				point.transition(easingDecimal);
 			}, this);
+
+			// Transition and Draw the line
+			this.getDataset().metaDataset.transition(easingDecimal).draw();
+
+			// Draw the points
+			helpers.each(this.getDataset().metaData, function(point) {
+				point.draw();
+			});
 		},
 
 
@@ -119,16 +200,6 @@
 		// 			callback.call(this, dataset, datasetIndex);
 		// 		}
 		// 	}, this);
-		// },
-
-		// addLine: function addLine(dataset, datasetIndex) {
-		// 	if (dataset) {
-		// 		dataset.metaDataset = new Chart.Line({
-		// 			_chart: this.chart.chart,
-		// 			_datasetIndex: datasetIndex,
-		// 			_points: dataset.metaData,
-		// 		});
-		// 	}
 		// },
 
 		// addPoint: function addPoint(dataset, datasetIndex, index) {
@@ -158,7 +229,7 @@
 		// 			// Have points. Update all of them
 		// 			this.resetDatasetPoints(dataset, datasetIndex);
 		// 		} else if (dataset.metaData[0] instanceof Chart.Rectangle) {
-		// 			// Have rectangles (bars)
+		// 			// Have rectangles (lines)
 		// 			this.resetDatasetRectangles(dataset, datasetIndex);
 		// 		}
 		// 	}, this);
@@ -223,91 +294,10 @@
 		// 			// Have points. Update all of them
 		// 			this.updatePoints(dataset, datasetIndex);
 		// 		} else if (dataset.metaData[0] instanceof Chart.Rectangle) {
-		// 			// Have rectangles (bars)
+		// 			// Have rectangles (lines)
 		// 			this.updateRectangles(dataset, datasetIndex);
 		// 		}
 		// 	}, this);
-		// },
-
-		// updateLines: function updateLines() {
-		// 	this.eachLine(function(dataset, datasetIndex) {
-		// 		var yScale = this.getScaleForId(dataset.yAxisID);
-		// 		var scaleBase;
-
-		// 		if (yScale.min < 0 && yScale.max < 0) {
-		// 			scaleBase = yScale.getPixelForValue(yScale.max);
-		// 		} else if (yScale.min > 0 && yScale.max > 0) {
-		// 			scaleBase = yScale.getPixelForValue(yScale.min);
-		// 		} else {
-		// 			scaleBase = yScale.getPixelForValue(0);
-		// 		}
-
-		// 		helpers.extend(dataset.metaDataset, {
-		// 			// Utility
-		// 			_scale: yScale,
-		// 			_datasetIndex: datasetIndex,
-		// 			// Data
-		// 			_children: dataset.metaData,
-		// 			// Model
-		// 			_model: {
-		// 				// Appearance
-		// 				tension: dataset.metaDataset.custom && dataset.metaDataset.custom.tension ? dataset.metaDataset.custom.tension : (dataset.tension || this.chart.options.elements.line.tension),
-		// 				backgroundColor: dataset.metaDataset.custom && dataset.metaDataset.custom.backgroundColor ? dataset.metaDataset.custom.backgroundColor : (dataset.backgroundColor || this.chart.options.elements.line.backgroundColor),
-		// 				borderWidth: dataset.metaDataset.custom && dataset.metaDataset.custom.borderWidth ? dataset.metaDataset.custom.borderWidth : (dataset.borderWidth || this.chart.options.elements.line.borderWidth),
-		// 				borderColor: dataset.metaDataset.custom && dataset.metaDataset.custom.borderColor ? dataset.metaDataset.custom.borderColor : (dataset.borderColor || this.chart.options.elements.line.borderColor),
-		// 				fill: dataset.metaDataset.custom && dataset.metaDataset.custom.fill ? dataset.metaDataset.custom.fill : (dataset.fill !== undefined ? dataset.fill : this.chart.options.elements.line.fill),
-		// 				skipNull: dataset.skipNull !== undefined ? dataset.skipNull : this.chart.options.elements.line.skipNull,
-		// 				drawNull: dataset.drawNull !== undefined ? dataset.drawNull : this.chart.options.elements.line.drawNull,
-		// 				// Scale
-		// 				scaleTop: yScale.top,
-		// 				scaleBottom: yScale.bottom,
-		// 				scaleZero: scaleBase,
-		// 			},
-		// 		});
-
-		// 		dataset.metaDataset.pivot();
-		// 	});
-		// },
-
-		// updatePoints: function updatePoints(dataset, datasetIndex) {
-		// 	helpers.each(dataset.metaData, function(point, index) {
-		// 		var xScale = this.getScaleForId(this.chart.data.datasets[datasetIndex].xAxisID);
-		// 		var yScale = this.getScaleForId(this.chart.data.datasets[datasetIndex].yAxisID);
-
-		// 		helpers.extend(point, {
-		// 			// Utility
-		// 			_chart: this.chart.chart,
-		// 			_xScale: xScale,
-		// 			_yScale: yScale,
-		// 			_datasetIndex: datasetIndex,
-		// 			_index: index,
-
-		// 			// Desired view properties
-		// 			_model: {
-		// 				x: xScale.getPointPixelForValue(this.chart.data.datasets[datasetIndex].data[index], index, datasetIndex),
-		// 				y: yScale.getPointPixelForValue(this.chart.data.datasets[datasetIndex].data[index], index, datasetIndex),
-		// 			},
-		// 		});
-
-		// 		this.updatePointElementAppearance(point, datasetIndex, index);
-		// 	}, this);
-
-		// 	this.updateBezierControlPoints(dataset);
-		// },
-
-		// updatePointElementAppearance: function updatePointElementAppearance(point, datasetIndex, index) {
-		// 	helpers.extend(point._model, {
-		// 		// Appearance
-		// 		tension: point.custom && point.custom.tension ? point.custom.tension : this.chart.options.elements.line.tension,
-		// 		radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.chart.data.datasets[datasetIndex].radius, index, this.chart.options.elements.point.radius),
-		// 		backgroundColor: point.custom && point.custom.backgroundColor ? point.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.chart.data.datasets[datasetIndex].pointBackgroundColor, index, this.chart.options.elements.point.backgroundColor),
-		// 		borderColor: point.custom && point.custom.borderColor ? point.custom.borderColor : helpers.getValueAtIndexOrDefault(this.chart.data.datasets[datasetIndex].pointBorderColor, index, this.chart.options.elements.point.borderColor),
-		// 		borderWidth: point.custom && point.custom.borderWidth ? point.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.chart.data.datasets[datasetIndex].pointBorderWidth, index, this.chart.options.elements.point.borderWidth),
-		// 		skip: this.chart.data.datasets[datasetIndex].data[index] === null,
-
-		// 		// Tooltip
-		// 		hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.chart.data.datasets[datasetIndex].hitRadius, index, this.chart.options.elements.point.hitRadius),
-		// 	});
 		// },
 
 
@@ -336,44 +326,6 @@
 		// 	rectangle._model.backgroundColor = rectangle.custom && rectangle.custom.hoverBackgroundColor ? rectangle.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.color(rectangle._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
 		// 	rectangle._model.borderColor = rectangle.custom && rectangle.custom.hoverBorderColor ? rectangle.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.color(rectangle._model.borderColor).saturate(0.5).darken(0.1).rgbString());
 		// 	rectangle._model.borderWidth = rectangle.custom && rectangle.custom.hoverBorderWidth ? rectangle.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, rectangle._model.borderWidth);
-		// },
-
-		// updateBezierControlPoints: function updateBezierControlPoints(dataset) {
-		// 	// Update control points for the bezier curve
-		// 	helpers.each(dataset.metaData, function(point, index) {
-		// 		var controlPoints = helpers.splineCurve(
-		// 			this.previousPoint(dataset.metaData, index)._model,
-		// 			point._model,
-		// 			this.nextPoint(dataset.metaData, index)._model,
-		// 			point._model.tension
-		// 		);
-
-		// 		point._model.controlPointPreviousX = controlPoints.previous.x;
-		// 		point._model.controlPointNextX = controlPoints.next.x;
-
-		// 		// Prevent the bezier going outside of the bounds of the graph
-
-		// 		// Cap puter bezier handles to the upper/lower scale bounds
-		// 		if (controlPoints.next.y > this.chart.chartArea.bottom) {
-		// 			point._model.controlPointNextY = this.chart.chartArea.bottom;
-		// 		} else if (controlPoints.next.y < this.chart.chartArea.top) {
-		// 			point._model.controlPointNextY = this.chart.chartArea.top;
-		// 		} else {
-		// 			point._model.controlPointNextY = controlPoints.next.y;
-		// 		}
-
-		// 		// Cap inner bezier handles to the upper/lower scale bounds
-		// 		if (controlPoints.previous.y > this.chart.chartArea.bottom) {
-		// 			point._model.controlPointPreviousY = this.chart.chartArea.bottom;
-		// 		} else if (controlPoints.previous.y < this.chart.chartArea.top) {
-		// 			point._model.controlPointPreviousY = this.chart.chartArea.top;
-		// 		} else {
-		// 			point._model.controlPointPreviousY = controlPoints.previous.y;
-		// 		}
-
-		// 		// Now pivot the point for animation
-		// 		point.pivot();
-		// 	}, this);
 		// },
 
 		getElementsAtEvent: function(e) {
