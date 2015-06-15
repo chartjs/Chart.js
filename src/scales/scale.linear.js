@@ -22,6 +22,7 @@
 		},
 
 		// scale numbers
+		reverse: false,
 		beginAtZero: false,
 		override: null,
 
@@ -122,6 +123,16 @@
 			// range of the scale
 			this.max = helpers.max(this.ticks);
 			this.min = helpers.min(this.ticks);
+
+			if (this.options.reverse) {
+				this.ticks.reverse();
+
+				this.start = this.max;
+				this.end = this.min;
+			} else {
+				this.start = this.min;
+				this.end = this.max;
+			}
 		},
 		buildLabels: function() {
 			// We assume that this has been run after ticks have been generated. We try to figure out
@@ -152,13 +163,13 @@
 			// This must be called after fit has been run so that 
 			//      this.left, this.top, this.right, and this.bottom have been defined
 			var pixel;
-			var range = this.max - this.min;
+			var range = this.end - this.start;
 
 			if (this.isHorizontal()) {
-				pixel = this.left + (this.width / range * (value - this.min));
+				pixel = this.left + (this.width / range * (value - this.start));
 			} else {
 				// Bottom - top since pixels increase downard on a screen
-				pixel = this.bottom - (this.height / range * (value - this.min));
+				pixel = this.bottom - (this.height / range * (value - this.start));
 			}
 
 			return pixel;
