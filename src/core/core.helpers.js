@@ -1,14 +1,3 @@
-/*!
- * Chart.js
- * http://chartjs.org/
- * Version: {{ version }}
- *
- * Copyright 2015 Nick Downie
- * Released under the MIT license
- * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
- */
-
-
 (function() {
 
 	"use strict";
@@ -16,73 +5,6 @@
 	//Declare root variable - window in the browser, global on the server
 	var root = this,
 		previous = root.Chart;
-
-	//Occupy the global variable of Chart, and create a simple base class
-	var Chart = function(context) {
-		var chart = this;
-
-		// Support a jQuery'd canvas element
-		if (context.length && context[0].getContext) {
-			context = context[0];
-		}
-
-		// Support a canvas domnode
-		if (context.getContext) {
-			context = context.getContext("2d");
-		}
-
-		this.canvas = context.canvas;
-
-		this.ctx = context;
-
-		//Variables global to the chart
-		var computeDimension = function(element, dimension) {
-			if (element['offset' + dimension]) {
-				return element['offset' + dimension];
-			} else {
-				return document.defaultView.getComputedStyle(element).getPropertyValue(dimension);
-			}
-		};
-
-		var width = this.width = computeDimension(context.canvas, 'Width') || context.canvas.width;
-		var height = this.height = computeDimension(context.canvas, 'Height') || context.canvas.height;
-
-		// Firefox requires this to work correctly
-		context.canvas.width = width;
-		context.canvas.height = height;
-
-		width = this.width = context.canvas.width;
-		height = this.height = context.canvas.height;
-		this.aspectRatio = this.width / this.height;
-		//High pixel density displays - multiply the size of the canvas height/width by the device pixel ratio, then scale.
-		helpers.retinaScale(this);
-
-		return this;
-	};
-
-	var defaultColor = 'rgba(0,0,0,0.1)';
-
-	//Globally expose the defaults to allow for user updating/changing
-	Chart.defaults = {
-		global: {
-			responsive: true,
-			maintainAspectRatio: true,
-			events: ["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"],
-			hover: {
-				onHover: null,
-				mode: 'single',
-				animationDuration: 400,
-			},
-			onClick: null,
-			defaultColor: defaultColor,
-
-			// Element defaults defined in element extensions
-			elements: {}
-		},
-	};
-
-	//Create a dictionary of chart types, to allow for extension of existing types
-	Chart.types = {};
 
 	//Global Chart helpers object for utility methods and classes
 	var helpers = Chart.helpers = {};
@@ -148,13 +70,13 @@
 						} else if (key === 'scale') {
 							// Used in polar area & radar charts since there is only one scale
 							base[key] = helpers.configMerge(base.hasOwnProperty(key) ? base[key] : {}, Chart.scaleService.getScaleDefaults(value.type), value);
-						}else if (base.hasOwnProperty(key) && helpers.isArray(base[key]) && helpers.isArray(value)) {
+						} else if (base.hasOwnProperty(key) && helpers.isArray(base[key]) && helpers.isArray(value)) {
 							// In this case we have an array of objects replacing another array. Rather than doing a strict replace,
 							// merge. This allows easy scale option merging
 							var baseArray = base[key];
 
 							helpers.each(value, function(valueObj, index) {
-								
+
 								if (index < baseArray.length) {
 									baseArray[index] = helpers.configMerge(baseArray[index], valueObj);
 								} else {
@@ -187,7 +109,7 @@
 							helpers.each(value, function(valueObj, index) {
 								if (index >= base[key].length || !base[key][index].type) {
 									base[key].push(helpers.configMerge(valueObj.type ? Chart.scaleService.getScaleDefaults(valueObj.type) : {}, valueObj));
-								} else  if (valueObj.type !== base[key][index].type) {
+								} else if (valueObj.type !== base[key][index].type) {
 									// Type changed. Bring in the new defaults before we bring in valueObj so that valueObj can override the correct scale defaults
 									base[key][index] = helpers.configMerge(base[key][index], valueObj.type ? Chart.scaleService.getScaleDefaults(valueObj.type) : {}, valueObj)
 								} else {
@@ -285,9 +207,7 @@
 
 			ChartElement.extend = inherits;
 
-			if (extensions) {
-				extend(ChartElement.prototype, extensions);
-			}
+			if (extensions) extend(ChartElement.prototype, extensions);
 
 			ChartElement.__super__ = parent.prototype;
 
@@ -942,316 +862,5 @@
 			}
 			return Array.isArray(obj);
 		};
-
-	//Store a reference to each instance - allowing us to globally resize chart instances on window resize.
-	//Destroy method on the chart will remove the instance of the chart from this reference.
-	Chart.instances = {};
-
-	Chart.Type = function(config, instance) {
-		this.data = config.data;
-		this.options = config.options;
-		this.chart = instance;
-		this.id = uid();
-		//Add the chart instance to the global namespace
-		Chart.instances[this.id] = this;
-
-		// Initialize is always called when a chart type is created
-		// By default it is a no op, but it should be extended
-		if (this.options.responsive) {
-			this.resize();
-		}
-		this.initialize.call(this);
-	};
-
-	//Core methods that'll be a part of every chart type
-	extend(Chart.Type.prototype, {
-		initialize: function() {
-			return this;
-		},
-		clear: function() {
-			clear(this.chart);
-			return this;
-		},
-		stop: function() {
-			// Stops any current animation loop occuring
-			Chart.animationService.cancelAnimation(this);
-			return this;
-		},
-		resize: function() {
-			this.stop();
-			var canvas = this.chart.canvas,
-				newWidth = getMaximumWidth(this.chart.canvas),
-				newHeight = this.options.maintainAspectRatio ? newWidth / this.chart.aspectRatio : getMaximumHeight(this.chart.canvas);
-
-			canvas.width = this.chart.width = newWidth;
-			canvas.height = this.chart.height = newHeight;
-
-			retinaScale(this.chart);
-
-			return this;
-		},
-		update: function(animationDuration) {
-			this.canvasController.update();
-			this.render(animationDuration);
-		},
-		render: function(duration) {
-
-			if (this.options.animation.duration !== 0 || duration) {
-				var animation = new Chart.Animation();
-				animation.numSteps = (duration || this.options.animation.duration) / 16.66; //60 fps
-				animation.easing = this.options.animation.easing;
-
-				// render function
-				animation.render = function(chartInstance, animationObject) {
-					var easingFunction = helpers.easingEffects[animationObject.easing];
-					var stepDecimal = animationObject.currentStep / animationObject.numSteps;
-					var easeDecimal = easingFunction(stepDecimal);
-
-					chartInstance.draw(easeDecimal, stepDecimal, animationObject.currentStep);
-				};
-
-				// user events
-				animation.onAnimationProgress = this.options.onAnimationProgress;
-				animation.onAnimationComplete = this.options.onAnimationComplete;
-
-				Chart.animationService.addAnimation(this, animation, duration);
-			} else {
-				this.draw();
-				this.options.onAnimationComplete.call(this);
-			}
-			return this;
-		},
-		eachElement: function(callback) {
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				helpers.each(dataset.metaData, callback, this, dataset.metaData, datasetIndex);
-			}, this);
-		},
-		eachValue: function(callback) {
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				helpers.each(dataset.data, callback, this, datasetIndex);
-			}, this);
-		},
-		eachDataset: function(callback) {
-			helpers.each(this.data.datasets, callback, this);
-		},
-		getElementsAtEvent: function(e) {
-			var elementsArray = [],
-				eventPosition = helpers.getRelativePosition(e),
-				datasetIterator = function(dataset) {
-					elementsArray.push(dataset.metaData[elementIndex]);
-				},
-				elementIndex;
-
-			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; datasetIndex++) {
-				for (elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; elementIndex++) {
-					if (this.data.datasets[datasetIndex].metaData[elementIndex].inGroupRange(eventPosition.x, eventPosition.y)) {
-						helpers.each(this.data.datasets, datasetIterator);
-					}
-				}
-			}
-
-			return elementsArray.length ? elementsArray : [];
-		},
-		// Get the single element that was clicked on
-		// @return : An object containing the dataset index and element index of the matching element. Also contains the rectangle that was drawn
-		getElementAtEvent: function(e) {
-			var element = [];
-			var eventPosition = helpers.getRelativePosition(e);
-
-			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; ++datasetIndex) {
-				for (var elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; ++elementIndex) {
-					if (this.data.datasets[datasetIndex].metaData[elementIndex].inRange(eventPosition.x, eventPosition.y)) {
-						element.push(this.data.datasets[datasetIndex].metaData[elementIndex]);
-						return element;
-					}
-				}
-			}
-
-			return [];
-		},
-		generateLegend: function() {
-			return template(this.options.legendTemplate, this);
-		},
-		destroy: function() {
-			this.clear();
-			unbindEvents(this, this.events);
-			var canvas = this.chart.canvas;
-
-			// Reset canvas height/width attributes starts a fresh with the canvas context
-			canvas.width = this.chart.width;
-			canvas.height = this.chart.height;
-
-			// < IE9 doesn't support removeProperty
-			if (canvas.style.removeProperty) {
-				canvas.style.removeProperty('width');
-				canvas.style.removeProperty('height');
-			} else {
-				canvas.style.removeAttribute('width');
-				canvas.style.removeAttribute('height');
-			}
-
-			delete Chart.instances[this.id];
-		},
-		toBase64Image: function() {
-			return this.chart.canvas.toDataURL.apply(this.chart.canvas, arguments);
-		}
-	});
-
-	Chart.Type.extend = function(extensions) {
-
-		var parent = this;
-
-		var ChartType = function() {
-			return parent.apply(this, arguments);
-		};
-
-		//Copy the prototype object of the this class
-		ChartType.prototype = clone(parent.prototype);
-
-		//Now overwrite some of the properties in the base class with the new extensions
-		extend(ChartType.prototype, extensions);
-		ChartType.extend = Chart.Type.extend;
-
-		if (extensions.name || parent.prototype.name) {
-
-			var chartName = extensions.name || parent.prototype.name;
-			//Assign any potential default values of the new chart type
-
-			//If none are defined, we'll use a clone of the chart type this is being extended from.
-			//I.e. if we extend a line chart, we'll use the defaults from the line chart if our new chart
-			//doesn't define some defaults of their own.
-
-			var baseDefaults = (Chart.defaults[parent.prototype.name]) ? clone(Chart.defaults[parent.prototype.name]) : {};
-
-			Chart.defaults[chartName] = helpers.configMerge(baseDefaults, extensions.defaults);
-
-			Chart.types[chartName] = ChartType;
-
-			//Register this new chart type in the Chart prototype
-			Chart.prototype[chartName] = function(config) {
-				config.options = helpers.configMerge(Chart.defaults.global, Chart.defaults[chartName], config.options || {});
-				return new ChartType(config, this);
-			};
-		} else {
-			warn("Name not provided for this chart, so it hasn't been registered");
-		}
-		return parent;
-	};
-
-	Chart.Element = function(configuration) {
-		extend(this, configuration);
-		this.initialize.apply(this, arguments);
-	};
-	extend(Chart.Element.prototype, {
-		initialize: function() {},
-		pivot: function() {
-			if (!this._view) {
-				this._view = clone(this._model);
-			}
-			this._start = clone(this._view);
-			return this;
-		},
-		transition: function(ease) {
-			if (!this._view) {
-				this._view = clone(this._model);
-			}
-			if (!this._start) {
-				this.pivot();
-			}
-
-			each(this._model, function(value, key) {
-
-				if (key[0] === '_' || !this._model.hasOwnProperty(key)) {
-					// Only non-underscored properties
-				}
-
-				// Init if doesn't exist
-				else if (!this._view[key]) {
-					if (typeof value === 'number') {
-						this._view[key] = value * ease;
-					} else {
-						this._view[key] = value || null;
-					}
-				}
-
-				// No unnecessary computations
-				else if (this._model[key] === this._view[key]) {
-					// It's the same! Woohoo!
-				}
-
-				// Color transitions if possible
-				else if (typeof value === 'string') {
-					try {
-						var color = helpers.color(this._start[key]).mix(helpers.color(this._model[key]), ease);
-						this._view[key] = color.rgbString();
-					} catch (err) {
-						this._view[key] = value;
-					}
-				}
-				// Number transitions
-				else if (typeof value === 'number') {
-					var startVal = this._start[key] !== undefined ? this._start[key] : 0;
-					this._view[key] = ((this._model[key] - startVal) * ease) + startVal;
-				}
-				// Everything else
-				else {
-					this._view[key] = value;
-				}
-
-			}, this);
-
-			if (ease === 1) {
-				delete this._start;
-			}
-			return this;
-		},
-		tooltipPosition: function() {
-			return {
-				x: this._model.x,
-				y: this._model.y
-			};
-		},
-		hasValue: function() {
-			return isNumber(this._model.x) && isNumber(this._model.y);
-		}
-	});
-
-	Chart.Element.extend = inherits;
-
-
-	// Attach global event to resize each chart instance when the browser resizes
-	helpers.addEvent(window, "resize", (function() {
-		// Basic debounce of resize function so it doesn't hurt performance when resizing browser.
-		var timeout;
-		return function() {
-			clearTimeout(timeout);
-			timeout = setTimeout(function() {
-				each(Chart.instances, function(instance) {
-					// If the responsive flag is set in the chart instance config
-					// Cascade the resize event down to the chart.
-					if (instance.options.responsive) {
-						instance.resize();
-						instance.update();
-					}
-				});
-			}, 50);
-		};
-	})());
-
-
-	if (amd) {
-		define(function() {
-			return Chart;
-		});
-	} else if (typeof module === 'object' && module.exports) {
-		module.exports = Chart;
-	}
-
-	root.Chart = Chart;
-
-	Chart.noConflict = function() {
-		root.Chart = previous;
-		return Chart;
-	};
 
 }).call(this);
