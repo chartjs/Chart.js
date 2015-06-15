@@ -18,8 +18,9 @@
 		previous = root.Chart;
 
 	//Occupy the global variable of Chart, and create a simple base class
-	var Chart = function(context) {
+	var Chart = function(context, config) {
 		var chart = this;
+		this.config = config;
 
 		// Support a jQuery'd canvas element
 		if (context.length && context[0].getContext) {
@@ -57,7 +58,9 @@
 		//High pixel density displays - multiply the size of the canvas height/width by the device pixel ratio, then scale.
 		Chart.helpers.retinaScale(this);
 
-		return this;
+		this.controller = new Chart.Controller(this);
+
+		return this.controller;
 	};
 
 	var defaultColor = 'rgba(0,0,0,0.1)';

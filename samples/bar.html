@@ -39,7 +39,7 @@
     };
     window.onload = function() {
         var ctx = document.getElementById("canvas").getContext("2d");
-        window.myBar = new Chart(ctx).Bar({
+        window.myBar = new Chart(ctx, {
             data: barChartData,
             options: {
                 responsive: true,
