@@ -223,7 +223,7 @@
 
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				helpers.each(dataset.metaData, function(element, index) {
-					if (element.inRange(eventPosition.x, eventPosition.y)) {
+					if (element.inLabelRange(eventPosition.x, eventPosition.y)) {
 						elementsArray.push(element);
 					}
 				}, this);
