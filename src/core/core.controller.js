@@ -51,6 +51,7 @@
 
 			// Make sure controllers are built first so that each dataset is bound to an axis before the scales
 			// are built
+			this.ensureScalesHaveIDs();
 			this.buildControllers();
 			this.buildScales();
 			this.resetElements();
@@ -91,7 +92,25 @@
 
 			return this;
 		},
+		ensureScalesHaveIDs: function ensureScalesHaveIDs() {
+			var defaultXAxisID = 'x-axis-';
+			var defaultYAxisID = 'y-axis-';
 
+			if (this.options.scales) {
+				if (this.options.scales.xAxes && this.options.scales.xAxes.length) {
+					helpers.each(this.options.scales.xAxes, function(xAxisOptions, index) {
+						xAxisOptions.id = xAxisOptions.id || (defaultXAxisID + index);
+					}, this);
+				}
+
+				if (this.options.scales.yAxes && this.options.scales.yAxes.length) {
+					// Build the y axes
+					helpers.each(this.options.scales.yAxes, function(yAxisOptions, index) {
+						yAxisOptions.id = yAxisOptions.id || (defaultYAxisID + index);
+					}, this);
+				}
+			}
+		},
 		buildScales: function buildScales() {
 			// Map of scale ID to scale object so we can lookup later 
 			this.scales = {};
@@ -99,7 +118,7 @@
 			// Build the x axes
 			if (this.options.scales) {
 				if (this.options.scales.xAxes && this.options.scales.xAxes.length) {
-					helpers.each(this.options.scales.xAxes, function(xAxisOptions) {
+					helpers.each(this.options.scales.xAxes, function(xAxisOptions, index) {
 						var ScaleClass = Chart.scaleService.getScaleConstructor(xAxisOptions.type);
 						var scale = new ScaleClass({
 							ctx: this.chart.ctx,
@@ -114,7 +133,7 @@
 
 				if (this.options.scales.yAxes && this.options.scales.yAxes.length) {
 					// Build the y axes
-					helpers.each(this.options.scales.yAxes, function(yAxisOptions) {
+					helpers.each(this.options.scales.yAxes, function(yAxisOptions, index) {
 						var ScaleClass = Chart.scaleService.getScaleConstructor(yAxisOptions.type);
 						var scale = new ScaleClass({
 							ctx: this.chart.ctx,

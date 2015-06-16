@@ -90,7 +90,7 @@
 
     window.onload = function() {
         var ctx = document.getElementById("canvas").getContext("2d");
-        window.myScatter = new Chart(ctx).Scatter({
+        window.myScatter = Chart.Scatter(ctx, {
         	data: scatterChartData,
         	options: {
 	            responsive: true,

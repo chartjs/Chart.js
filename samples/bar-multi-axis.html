@@ -45,8 +45,7 @@
     };
     window.onload = function() {
         var ctx = document.getElementById("canvas").getContext("2d");
-        window.myBar = new Chart(ctx, {
-            type: 'bar',
+        window.myBar = Chart.Bar(ctx, {
             data: barChartData, 
             options: {
                 responsive: true,

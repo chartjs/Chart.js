@@ -14,9 +14,11 @@
 		scales: {
 			xAxes: [{
 				type: "category",
+				id: 'x-axis-0'
 			}],
 			yAxes: [{
 				type: "linear",
+				id: 'y-axis-0'
 			}],
 		},
 	};

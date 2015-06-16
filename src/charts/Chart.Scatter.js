@@ -1,11 +1,9 @@
 (function() {
 	"use strict";
 
-	return;
-
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
+	var root = this;
+	var Chart = root.Chart;
+	var helpers = Chart.helpers;
 
 	var defaultConfig = {
 		hover: {
@@ -35,9 +33,10 @@
 
 	};
 
-
-	Chart.types.Line.extend({
-		name: "Scatter",
-		defaults: defaultConfig,
-	});
+	Chart.Scatter = function(context, config) {
+		config.options = helpers.configMerge(defaultConfig, config.options);
+		config.type = 'line';
+		return new Chart(context, config);
+	}
+	
 }).call(this);
