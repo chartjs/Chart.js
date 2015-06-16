@@ -21,6 +21,7 @@
     };
 
     var config = {
+        type: 'polarArea',
         data: {
             datasets: [{
                 data: [
@@ -52,8 +53,8 @@
     };
 
     window.onload = function() {
-        var ctx = document.getElementById("chart-area").getContext("2d");
-        window.myPolarArea = new Chart(ctx).PolarArea(config);
+        var ctx = document.getElementById("chart-area");
+        window.myPolarArea = new Chart(ctx, config);
     };
 
     $('#randomizeData').click(function() {
