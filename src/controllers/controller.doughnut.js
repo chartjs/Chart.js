@@ -18,11 +18,15 @@
 		},
 		//The percentage of the chart that we cut out of the middle.
 		cutoutPercentage: 50,
-
 	};
 
+	Chart.defaults.pie = helpers.clone(Chart.defaults.doughnut);
+	helpers.extend(Chart.defaults.pie, {
+		cutoutPercentage: 0
+	});
 
-	Chart.controllers.doughnut = function(chart, datasetIndex) {
+
+	Chart.controllers.doughnut = Chart.controllers.pie = function(chart, datasetIndex) {
 		this.initialize.call(this, chart, datasetIndex);
 	};
 
