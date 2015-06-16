@@ -2587,7 +2587,7 @@
 
 		calculateCircumference: function(value) {
 			if (this.getDataset().total > 0) {
-				return (Math.PI * 2) * (value / this.getDataset().total);
+				return (Math.PI * 1.999999) * (value / this.getDataset().total);
 			} else {
 				return 0;
 			}
