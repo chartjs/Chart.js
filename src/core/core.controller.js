@@ -209,18 +209,18 @@
 		getElementAtEvent: function(e) {
 
 			var eventPosition = helpers.getRelativePosition(e);
-			var element = [];
+			var elementsArray = [];
 
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				helpers.each(dataset.metaData, function(element, index) {
-					if (this.chart.data.datasets[datasetIndex].metaData[elementIndex].inRange(eventPosition.x, eventPosition.y)) {
-						element.push(this.chart.data.datasets[datasetIndex].metaData[elementIndex]);
-						return element;
+					if (element.inRange(eventPosition.x, eventPosition.y)) {
+						elementsArray.push(element);
+						return elementsArray;
 					}
 				}, this);
 			}, this);
 
-			return [];
+			return elementsArray;
 		},
 
 		getElementsAtEvent: function(e) {
