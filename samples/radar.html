@@ -21,6 +21,7 @@
     };
 
     var config = {
+        type: 'radar',
         data: {
             labels: ["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling", "Running"],
             datasets: [{
@@ -36,14 +37,11 @@
                 pointHighlightStroke: "rgba(151,187,205,1)",
                 data: [null, randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
             }]
-        },
-        options: {
-            responsive: true
         }
     };
 
     window.onload = function() {
-        window.myRadar = new Chart(document.getElementById("canvas").getContext("2d")).Radar(config);
+        window.myRadar = new Chart(document.getElementById("canvas"), config);
     };
 
     $('#randomizeData').click(function() {

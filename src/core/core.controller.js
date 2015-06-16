@@ -121,20 +121,18 @@
 						this.scales[scale.id] = scale;
 					}, this);
 				}
+			}
+			if (this.options.scale) {
+				// Build radial axes
+				var ScaleClass = Chart.scaleService.getScaleConstructor(this.options.scale.type);
+				var scale = new ScaleClass({
+					ctx: this.chart.ctx,
+					options: this.options.scale,
+					data: this.data,
+					chart: this.chart,
+				});
 
-				if (this.options.scale) {
-					// Build radial axes
-					var ScaleClass = Chart.scaleService.getScaleConstructor(this.options.scale.type);
-					var scale = new ScaleClass({
-						ctx: this.chart.ctx,
-						options: axisOptions,
-						data: this.data,
-						id: axisOptions.id,
-						chart: this.chart,
-					});
-
-					this.scale = scale;
-				}
+				this.scale = scale;
 			}
 
 			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
@@ -203,6 +201,9 @@
 			helpers.each(this.scales, function(scale) {
 				scale.draw(this.chartArea);
 			}, this);
+			if (this.scale) {
+				this.scale.draw();
+			}
 
 			// Draw each dataset via its respective controller
 			// TODO: needs support for reverse stacking (line chart)
