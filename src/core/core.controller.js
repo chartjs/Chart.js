@@ -47,8 +47,11 @@
 			// If BeforeInit(this) doesn't return false, proceed
 
 			this.bindEvents();
-			this.buildScales();
+
+			// Make sure controllers are built first so that each dataset is bound to an axis before the scales
+			// are built
 			this.buildControllers();
+			this.buildScales();
 			this.resetElements();
 			this.initToolTip();
 			this.update();
@@ -226,7 +229,7 @@
 
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				helpers.each(dataset.metaData, function(element, index) {
-					if (element.inRange(eventPosition.x, eventPosition.y)) {
+					if (element.inLabelRange(eventPosition.x, eventPosition.y)) {
 						elementsArray.push(element);
 					}
 				}, this);
@@ -334,7 +337,7 @@
 						break;
 					case 'label':
 						for (var i = 0; i < this.lastActive.length; i++) {
-							this.data.datasets[this.lastActive[0]._datasetIndex].controller.removeHoverStyle(this.lastActive[i], this.lastActive[i]._datasetIndex, this.lastActive[i]._index);
+							this.data.datasets[this.lastActive[i]._datasetIndex].controller.removeHoverStyle(this.lastActive[i], this.lastActive[i]._datasetIndex, this.lastActive[i]._index);
 						}
 						break;
 					case 'dataset':
@@ -352,7 +355,7 @@
 						break;
 					case 'label':
 						for (var i = 0; i < this.active.length; i++) {
-							this.data.datasets[this.active[0]._datasetIndex].controller.setHoverStyle(this.active[i]);
+							this.data.datasets[this.active[i]._datasetIndex].controller.setHoverStyle(this.active[i]);
 						}
 						break;
 					case 'dataset':

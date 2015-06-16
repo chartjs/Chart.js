@@ -132,7 +132,7 @@
 					// Desired view properties
 					_model: {
 						x: xScale.getPointPixelForValue(this.getDataset().data[index], index, this.index),
-						y: yScale.getPointPixelForValue(this.getDataset().data[index], index, this.index),
+						y: reset ? scaleBase : yScale.getPointPixelForValue(this.getDataset().data[index], index, this.index),
 						// Appearance
 						tension: point.custom && point.custom.tension ? point.custom.tension : this.chart.options.elements.line.tension,
 						radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().radius, index, this.chart.options.elements.point.radius),
@@ -215,7 +215,13 @@
 		},
 
 		removeHoverStyle: function(point) {
-			// TODO
+			var dataset = this.chart.data.datasets[point._datasetIndex];
+			var index = point._index;
+
+			point._model.radius = point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().radius, index, this.chart.options.elements.point.radius);
+			point._model.backgroundColor = point.custom && point.custom.backgroundColor ? point.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBackgroundColor, index, this.chart.options.elements.point.backgroundColor);
+			point._model.borderColor = point.custom && point.custom.borderColor ? point.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderColor, index, this.chart.options.elements.point.borderColor);
+			point._model.borderWidth = point.custom && point.custom.borderWidth ? point.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderWidth, index, this.chart.options.elements.point.borderWidth);
 		}
 
 	});
