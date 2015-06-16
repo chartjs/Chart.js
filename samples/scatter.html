@@ -86,15 +86,14 @@
 
     window.onload = function() {
         var ctx = document.getElementById("canvas").getContext("2d");
-        window.myScatter = new Chart(ctx).Scatter({
+        window.myScatter = Chart.Scatter(ctx, {
         	data: scatterChartData,
         	options: {
-	            responsive: true,
-	            hoverMode: 'single', // should always use single for a scatter chart
 	            scales: {
 	            	xAxes: [{
+	            		position: 'top',
 	            		gridLines: {
-	            			zeroLineColor: "rgba(0,0,0,1)"
+	            			zeroLineColor: "rgba(0,255,0,1)"
 	            		}
 	            	}]
 	            }

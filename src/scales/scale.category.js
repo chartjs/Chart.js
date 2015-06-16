@@ -9,7 +9,6 @@
 	var defaultConfig = {
 		display: true,
 		position: "bottom",
-		id: "x-axis-1", // need an ID so datasets can reference the scale
 
 		// grid line settings
 		gridLines: {

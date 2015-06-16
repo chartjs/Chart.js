@@ -8,7 +8,6 @@
 	var defaultConfig = {
 		display: true,
 		position: "left",
-		id: "y-axis-1",
 
 		// grid line settings
 		gridLines: {
