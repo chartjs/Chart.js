@@ -16,20 +16,23 @@ var gulp = require('gulp'),
 
 var srcDir = './src/';
 /*
- *	Usage : gulp build --types=Bar,Line,Doughnut
- *	Output: - A built Chart.js file with Core and types Bar, Line and Doughnut concatenated together
- *			- A minified version of this code, in Chart.min.js
+ *  Usage : gulp build --types=Bar,Line,Doughnut
+ *  Output: - A built Chart.js file with Core and types Bar, Line and Doughnut concatenated together
+ *          - A minified version of this code, in Chart.min.js
  */
 
 gulp.task('build', function() {
 
     var srcFiles = [
             './src/core/core.js',
+            './src/core/core.helpers.js',
+            './src/core/core.chart.js',
+            './src/core/core.element.js',
             './src/core/**',
+            './src/controllers/**',
             './src/scales/**',
             './src/elements/**',
-            './src/charts/**',
-            './src/**',
+            './src/charts/chart.bar.js',
             './node_modules/color/dist/color.min.js'
         ],
         isCustom = !!(util.env.types),
@@ -48,9 +51,9 @@ gulp.task('build', function() {
 });
 
 /*
- *	Usage : gulp bump
- *	Prompts: Version increment to bump
- *	Output: - New version number written into package.json & bower.json
+ *  Usage : gulp bump
+ *  Prompts: Version increment to bump
+ *  Output: - New version number written into package.json & bower.json
  */
 
 gulp.task('bump', function(complete) {

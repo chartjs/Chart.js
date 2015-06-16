@@ -1,14 +1,3 @@
-/*!
- * Chart.js
- * http://chartjs.org/
- * Version: {{ version }}
- *
- * Copyright 2015 Nick Downie
- * Released under the MIT license
- * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
- */
-
-
 (function() {
 
 	"use strict";
@@ -23,7 +12,7 @@
 		borderColor: Chart.defaults.global.defaultColor,
 	};
 
-	Chart.Rectangle = Chart.Element.extend({
+	Chart.elements.Rectangle = Chart.Element.extend({
 		draw: function() {
 
 			var ctx = this._chart.ctx;
@@ -72,7 +61,7 @@
 				return (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2) && (mouseY >= vm.base && mouseY <= vm.y);
 			}
 		},
-		inGroupRange: function(mouseX) {
+		inLabelRange: function(mouseX) {
 			var vm = this._view;
 			return (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2);
 		},
@@ -91,5 +80,7 @@
 			}
 		},
 	});
+
+
 
 }).call(this);

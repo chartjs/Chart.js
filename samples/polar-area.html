@@ -21,6 +21,7 @@
     };
 
     var config = {
+        type: 'polarArea',
         data: {
             datasets: [{
                 data: [
@@ -37,14 +38,14 @@
                     "#949FB1",
                     "#4D5360",
                 ],
-                labels: [
-                    "Red",
-                    "Green",
-                    "Yellow",
-                    "Grey",
-                    "Dark Grey"
-                ]
             }],
+            labels: [
+                "Red",
+                "Green",
+                "Yellow",
+                "Grey",
+                "Dark Grey"
+            ]
         },
         options: {
             responsive: true
@@ -52,8 +53,8 @@
     };
 
     window.onload = function() {
-        var ctx = document.getElementById("chart-area").getContext("2d");
-        window.myPolarArea = new Chart(ctx).PolarArea(config);
+        var ctx = document.getElementById("chart-area");
+        window.myPolarArea = new Chart(ctx, config);
     };
 
     $('#randomizeData').click(function() {

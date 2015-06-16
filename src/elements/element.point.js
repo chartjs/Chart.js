@@ -29,13 +29,13 @@
 	};
 
 
-	Chart.Point = Chart.Element.extend({
+	Chart.elements.Point = Chart.Element.extend({
 		inRange: function(mouseX, mouseY) {
 			var vm = this._view;
 			var hoverRange = vm.hitRadius + vm.radius;
 			return ((Math.pow(mouseX - vm.x, 2) + Math.pow(mouseY - vm.y, 2)) < Math.pow(hoverRange, 2));
 		},
-		inGroupRange: function(mouseX) {
+		inLabelRange: function(mouseX) {
 			var vm = this._view;
 
 			if (vm) {

@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Stacked Bar Chart</title>
+    <title>Bar Chart</title>
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
     <script src="../Chart.js"></script>
 </head>
@@ -23,6 +23,7 @@
     var barChartData = {
         labels: ["January", "February", "March", "April", "May", "June", "July"],
         datasets: [{
+            type: 'line',
             label: 'Dataset 1',
             backgroundColor: "rgba(220,220,220,0.5)",
             data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
@@ -44,14 +45,6 @@
             data: barChartData,
             options: {
                 responsive: true,
-                scales: {
-                    xAxes: [{
-                        stacked: true,
-                    }],
-                    yAxes: [{
-                        stacked: true
-                    }]
-                }
             }
         });
     };

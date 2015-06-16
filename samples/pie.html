@@ -21,6 +21,7 @@
     };
 
     var config = {
+        type: 'pie',
         data: {
             datasets: [{
                 data: [
@@ -83,7 +84,7 @@
 
     window.onload = function() {
         var ctx = document.getElementById("chart-area").getContext("2d");
-        window.myPie = new Chart(ctx).Pie(config);
+        window.myPie = new Chart(ctx, config);
     };
 
     $('#randomizeData').click(function() {

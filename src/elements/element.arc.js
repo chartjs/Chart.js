@@ -23,8 +23,8 @@
 		borderWidth: 2
 	};
 
-	Chart.Arc = Chart.Element.extend({
-		inGroupRange: function(mouseX) {
+	Chart.elements.Arc = Chart.Element.extend({
+		inLabelRange: function(mouseX) {
 			var vm = this._view;
 
 			if (vm) {

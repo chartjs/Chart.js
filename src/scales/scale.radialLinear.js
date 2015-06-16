@@ -9,7 +9,7 @@
 		display: true,
 
 		//Boolean - Whether to animate scaling the chart from the centre
-		animate: false,
+		animate: true,
 
 		lineArc: false,
 
@@ -68,7 +68,13 @@
 
 	var LinearRadialScale = Chart.Element.extend({
 		initialize: function() {
+			this.height = this.chart.height;
+			this.width = this.chart.width;
+			this.xCenter = this.chart.width / 2;
+			this.yCenter = this.chart.height / 2;
 			this.size = helpers.min([this.height, this.width]);
+			this.valuesCount = this.data.labels.length;
+			this.labels = this.data.labels;
 			this.drawingArea = (this.options.display) ? (this.size / 2) - (this.options.labels.fontSize / 2 + this.options.labels.backdropPaddingY) : (this.size / 2);
 		},
 		update: function() {
