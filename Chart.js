@@ -115,14 +115,20 @@
 	var helpers = Chart.helpers = {};
 
 	//-- Basic js utility methods
-	var each = helpers.each = function(loopable, callback, self) {
+	var each = helpers.each = function(loopable, callback, self, reverse) {
 			var additionalArgs = Array.prototype.slice.call(arguments, 3);
 			// Check to see if null or undefined firstly.
 			if (loopable) {
 				if (loopable.length === +loopable.length) {
 					var i;
-					for (i = 0; i < loopable.length; i++) {
-						callback.apply(self, [loopable[i], i].concat(additionalArgs));
+					if (reverse) {
+						for (i = loopable.length - 1; i >= 0; i--) {
+							callback.apply(self, [loopable[i], i].concat(additionalArgs));
+						}
+					} else {
+						for (i = 0; i < loopable.length; i++) {
+							callback.apply(self, [loopable[i], i].concat(additionalArgs));
+						}
 					}
 				} else {
 					for (var item in loopable) {
