@@ -71,6 +71,7 @@
 	Chart.defaults = {
 		global: {
 			responsive: true,
+			responsiveAnimationDuration: 0,
 			maintainAspectRatio: true,
 			events: ["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"],
 			hover: {
@@ -83,6 +84,7 @@
 
 			// Element defaults defined in element extensions
 			elements: {}
+
 		},
 	};
 
@@ -1092,7 +1094,7 @@
 		dropFrames: 0,
 		addAnimation: function(chartInstance, animationObject, duration) {
 
-			if (!duration) {
+			if (typeof duration !== 'number' || duration === 0) {
 				chartInstance.animating = true;
 			}
 
@@ -1633,10 +1635,10 @@
 					// Cascade the resize event down to the chart.
 					if (instance.options.responsive) {
 						instance.resize();
-						instance.update();
+						instance.update(Chart.defaults.global.responsiveAnimationDuration);
 					}
 				});
-			}, 50);
+			}, 16);
 		};
 	})());
 

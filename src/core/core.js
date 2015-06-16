@@ -71,6 +71,7 @@
 	Chart.defaults = {
 		global: {
 			responsive: true,
+			responsiveAnimationDuration: 0,
 			maintainAspectRatio: true,
 			events: ["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"],
 			hover: {
@@ -83,6 +84,7 @@
 
 			// Element defaults defined in element extensions
 			elements: {}
+
 		},
 	};
 

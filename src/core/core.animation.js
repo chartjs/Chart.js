@@ -29,7 +29,7 @@
 		dropFrames: 0,
 		addAnimation: function(chartInstance, animationObject, duration) {
 
-			if (!duration) {
+			if (typeof duration !== 'number' || duration === 0) {
 				chartInstance.animating = true;
 			}
 
