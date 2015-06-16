@@ -124,7 +124,7 @@
 
 				if (this.options.scale) {
 					// Build radial axes
-					var ScaleClass = Chart.scaleService.getScaleConstructor(axisOptions.type);
+					var ScaleClass = Chart.scaleService.getScaleConstructor(this.options.scale.type);
 					var scale = new ScaleClass({
 						ctx: this.chart.ctx,
 						options: axisOptions,
