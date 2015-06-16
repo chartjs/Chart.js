@@ -121,6 +121,20 @@
 						this.scales[scale.id] = scale;
 					}, this);
 				}
+
+				if (this.options.scale) {
+					// Build radial axes
+					var ScaleClass = Chart.scaleService.getScaleConstructor(axisOptions.type);
+					var scale = new ScaleClass({
+						ctx: this.chart.ctx,
+						options: axisOptions,
+						data: this.data,
+						id: axisOptions.id,
+						chart: this.chart,
+					});
+
+					this.scale = scale;
+				}
 			}
 
 			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
