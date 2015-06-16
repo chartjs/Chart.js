@@ -1405,11 +1405,10 @@
 				this.scale.draw();
 			}
 
-			// Draw each dataset via its respective controller
-			// TODO: needs support for reverse stacking (line chart)
+			// Draw each dataset via its respective controller (reversed to support proper line stacking)
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				dataset.controller.draw(ease);
-			}, this);
+			}, this, true);
 
 			// Finally draw the tooltip
 			this.tooltip.transition(easingDecimal).draw();
