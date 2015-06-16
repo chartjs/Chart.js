@@ -89,30 +89,36 @@
 			this.scales = {};
 
 			// Build the x axes
-			helpers.each(this.options.scales.xAxes, function(xAxisOptions) {
-				var ScaleClass = Chart.scaleService.getScaleConstructor(xAxisOptions.type);
-				var scale = new ScaleClass({
-					ctx: this.chart.ctx,
-					options: xAxisOptions,
-					data: this.data,
-					id: xAxisOptions.id,
-				});
+			if (this.options.scales) {
+				if (this.options.scales.xAxes && this.options.scales.xAxes.length) {
+					helpers.each(this.options.scales.xAxes, function(xAxisOptions) {
+						var ScaleClass = Chart.scaleService.getScaleConstructor(xAxisOptions.type);
+						var scale = new ScaleClass({
+							ctx: this.chart.ctx,
+							options: xAxisOptions,
+							data: this.data,
+							id: xAxisOptions.id,
+						});
 
-				this.scales[scale.id] = scale;
-			}, this);
+						this.scales[scale.id] = scale;
+					}, this);
+				}
 
-			// Build the y axes
-			helpers.each(this.options.scales.yAxes, function(yAxisOptions) {
-				var ScaleClass = Chart.scaleService.getScaleConstructor(yAxisOptions.type);
-				var scale = new ScaleClass({
-					ctx: this.chart.ctx,
-					options: yAxisOptions,
-					data: this.data,
-					id: yAxisOptions.id,
-				});
+				if (this.options.scales.yAxes && this.options.scales.yAxes.length) {
+					// Build the y axes
+					helpers.each(this.options.scales.yAxes, function(yAxisOptions) {
+						var ScaleClass = Chart.scaleService.getScaleConstructor(yAxisOptions.type);
+						var scale = new ScaleClass({
+							ctx: this.chart.ctx,
+							options: yAxisOptions,
+							data: this.data,
+							id: yAxisOptions.id,
+						});
 
-				this.scales[scale.id] = scale;
-			}, this);
+						this.scales[scale.id] = scale;
+					}, this);
+				}
+			}
 
 			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
 		},

@@ -31,6 +31,7 @@
     };
 
     var config = {
+        type: 'doughnut',
         data: {
             datasets: [{
                 data: [
@@ -93,7 +94,8 @@
 
     window.onload = function() {
         var ctx = document.getElementById("chart-area").getContext("2d");
-        window.myDoughnut = new Chart(ctx).Doughnut(config);
+        window.myDoughnut = new Chart(ctx, config);
+        console.log(window.myDoughnut);
     };
 
     $('#randomizeData').click(function() {
