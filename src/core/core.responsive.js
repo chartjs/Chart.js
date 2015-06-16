@@ -20,7 +20,6 @@
 					// Cascade the resize event down to the chart.
 					if (instance.options.responsive) {
 						instance.resize();
-						instance.update(Chart.defaults.global.responsiveAnimationDuration);
 					}
 				});
 			}, 16);

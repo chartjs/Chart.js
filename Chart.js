@@ -1213,7 +1213,8 @@
 		Chart.instances[this.id] = this;
 
 		if (this.options.responsive) {
-			this.resize();
+			// Silent resize before chart draws
+			this.resize(true);
 		}
 
 		this.initialize.call(this);
@@ -1255,7 +1256,7 @@
 			return this;
 		},
 
-		resize: function resize() {
+		resize: function resize(silent) {
 			this.stop();
 			var canvas = this.chart.canvas,
 				newWidth = helpers.getMaximumWidth(this.chart.canvas),
@@ -1265,6 +1266,10 @@
 			canvas.height = this.chart.height = newHeight;
 
 			helpers.retinaScale(this.chart);
+
+			if (!silent) {
+				this.update(this.options.responsiveAnimationDuration);
+			}
 
 			return this;
 		},
@@ -1635,7 +1640,6 @@
 					// Cascade the resize event down to the chart.
 					if (instance.options.responsive) {
 						instance.resize();
-						instance.update(Chart.defaults.global.responsiveAnimationDuration);
 					}
 				});
 			}, 16);
