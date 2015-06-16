@@ -49,9 +49,10 @@
     };
 
     $('#randomizeData').click(function() {
+        var zero = Math.random() < 0.2 ? [0, 0, 0, 0, 0, 0, 0] : false;
         $.each(barChartData.datasets, function(i, dataset) {
             dataset.backgroundColor = 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
-            dataset.data = [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()];
+            dataset.data = zero || [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()];
 
         });
         window.myBar.update();

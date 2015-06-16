@@ -731,26 +731,6 @@
 					return window.clearTimeout(callback, 1000 / 60);
 				};
 		})(),
-		animationLoop = helpers.animationLoop = function(callback, totalSteps, easingString, onProgress, onComplete, chartInstance) {
-
-			var currentStep = 0,
-				easingFunction = easingEffects[easingString] || easingEffects.linear;
-
-			var animationFrame = function() {
-				currentStep++;
-				var stepDecimal = currentStep / totalSteps;
-				var easeDecimal = easingFunction(stepDecimal);
-
-				callback.call(chartInstance, easeDecimal, stepDecimal, currentStep);
-				onProgress.call(chartInstance, easeDecimal, stepDecimal);
-				if (currentStep < totalSteps) {
-					chartInstance.animationFrame = requestAnimFrame(animationFrame);
-				} else {
-					onComplete.apply(chartInstance);
-				}
-			};
-			requestAnimFrame(animationFrame);
-		},
 		//-- DOM methods
 		getRelativePosition = helpers.getRelativePosition = function(evt) {
 			var mouseX, mouseY;
