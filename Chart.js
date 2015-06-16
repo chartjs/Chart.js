@@ -1241,8 +1241,11 @@
 			// If BeforeInit(this) doesn't return false, proceed
 
 			this.bindEvents();
-			this.buildScales();
+
+			// Make sure controllers are built first so that each dataset is bound to an axis before the scales
+			// are built
 			this.buildControllers();
+			this.buildScales();
 			this.resetElements();
 			this.initToolTip();
 			this.update();
@@ -1283,30 +1286,48 @@
 			this.scales = {};
 
 			// Build the x axes
-			helpers.each(this.options.scales.xAxes, function(xAxisOptions) {
-				var ScaleClass = Chart.scaleService.getScaleConstructor(xAxisOptions.type);
+			if (this.options.scales) {
+				if (this.options.scales.xAxes && this.options.scales.xAxes.length) {
+					helpers.each(this.options.scales.xAxes, function(xAxisOptions) {
+						var ScaleClass = Chart.scaleService.getScaleConstructor(xAxisOptions.type);
+						var scale = new ScaleClass({
+							ctx: this.chart.ctx,
+							options: xAxisOptions,
+							data: this.data,
+							id: xAxisOptions.id,
+						});
+
+						this.scales[scale.id] = scale;
+					}, this);
+				}
+
+				if (this.options.scales.yAxes && this.options.scales.yAxes.length) {
+					// Build the y axes
+					helpers.each(this.options.scales.yAxes, function(yAxisOptions) {
+						var ScaleClass = Chart.scaleService.getScaleConstructor(yAxisOptions.type);
+						var scale = new ScaleClass({
+							ctx: this.chart.ctx,
+							options: yAxisOptions,
+							data: this.data,
+							id: yAxisOptions.id,
+						});
+
+						this.scales[scale.id] = scale;
+					}, this);
+				}
+			}
+			if (this.options.scale) {
+				// Build radial axes
+				var ScaleClass = Chart.scaleService.getScaleConstructor(this.options.scale.type);
 				var scale = new ScaleClass({
 					ctx: this.chart.ctx,
-					options: xAxisOptions,
+					options: this.options.scale,
 					data: this.data,
-					id: xAxisOptions.id,
+					chart: this.chart,
 				});
 
-				this.scales[scale.id] = scale;
-			}, this);
-
-			// Build the y axes
-			helpers.each(this.options.scales.yAxes, function(yAxisOptions) {
-				var ScaleClass = Chart.scaleService.getScaleConstructor(yAxisOptions.type);
-				var scale = new ScaleClass({
-					ctx: this.chart.ctx,
-					options: yAxisOptions,
-					data: this.data,
-					id: yAxisOptions.id,
-				});
-
-				this.scales[scale.id] = scale;
-			}, this);
+				this.scale = scale;
+			}
 
 			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
 		},
@@ -1374,6 +1395,9 @@
 			helpers.each(this.scales, function(scale) {
 				scale.draw(this.chartArea);
 			}, this);
+			if (this.scale) {
+				this.scale.draw();
+			}
 
 			// Draw each dataset via its respective controller
 			// TODO: needs support for reverse stacking (line chart)
@@ -1394,18 +1418,18 @@
 		getElementAtEvent: function(e) {
 
 			var eventPosition = helpers.getRelativePosition(e);
-			var element = [];
+			var elementsArray = [];
 
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				helpers.each(dataset.metaData, function(element, index) {
-					if (this.chart.data.datasets[datasetIndex].metaData[elementIndex].inRange(eventPosition.x, eventPosition.y)) {
-						element.push(this.chart.data.datasets[datasetIndex].metaData[elementIndex]);
-						return element;
+					if (element.inRange(eventPosition.x, eventPosition.y)) {
+						elementsArray.push(element);
+						return elementsArray;
 					}
 				}, this);
 			}, this);
 
-			return [];
+			return elementsArray;
 		},
 
 		getElementsAtEvent: function(e) {
@@ -1414,7 +1438,7 @@
 
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				helpers.each(dataset.metaData, function(element, index) {
-					if (element.inRange(eventPosition.x, eventPosition.y)) {
+					if (element.inLabelRange(eventPosition.x, eventPosition.y)) {
 						elementsArray.push(element);
 					}
 				}, this);
@@ -1522,7 +1546,7 @@
 						break;
 					case 'label':
 						for (var i = 0; i < this.lastActive.length; i++) {
-							this.data.datasets[this.lastActive[0]._datasetIndex].controller.removeHoverStyle(this.lastActive[i], this.lastActive[i]._datasetIndex, this.lastActive[i]._index);
+							this.data.datasets[this.lastActive[i]._datasetIndex].controller.removeHoverStyle(this.lastActive[i], this.lastActive[i]._datasetIndex, this.lastActive[i]._index);
 						}
 						break;
 					case 'dataset':
@@ -1540,7 +1564,7 @@
 						break;
 					case 'label':
 						for (var i = 0; i < this.active.length; i++) {
-							this.data.datasets[this.active[0]._datasetIndex].controller.setHoverStyle(this.active[i]);
+							this.data.datasets[this.active[i]._datasetIndex].controller.setHoverStyle(this.active[i]);
 						}
 						break;
 					case 'dataset':
@@ -1619,7 +1643,7 @@
 		return function() {
 			clearTimeout(timeout);
 			timeout = setTimeout(function() {
-				each(Chart.instances, function(instance) {
+				helpers.each(Chart.instances, function(instance) {
 					// If the responsive flag is set in the chart instance config
 					// Cascade the resize event down to the chart.
 					if (instance.options.responsive) {
@@ -2342,7 +2366,7 @@
 					// Desired view properties
 					_model: {
 						x: xScale.calculateBarX(this.chart.data.datasets.length, this.index, index),
-						y: reset ? yScalePoint : yScale.getPixelForValue(this.getDataset().data[index]),
+						y: reset ? yScalePoint : yScale.calculateBarY(this.index, index),
 
 						// Tooltip
 						label: this.chart.data.labels[index],
@@ -2367,8 +2391,6 @@
 			}, this);
 		},
 
-
-
 		setHoverStyle: function(rectangle) {
 			var dataset = this.chart.data.datasets[rectangle._datasetIndex];
 			var index = rectangle._index;
@@ -2379,7 +2401,12 @@
 		},
 
 		removeHoverStyle: function(rectangle) {
-			// TODO
+			var dataset = this.chart.data.datasets[rectangle._datasetIndex];
+			var index = rectangle._index;
+
+			rectangle._model.backgroundColor = rectangle.custom && rectangle.custom.backgroundColor ? rectangle.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.rectangle.backgroundColor);
+			rectangle._model.borderColor = rectangle.custom && rectangle.custom.borderColor ? rectangle.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.rectangle.borderColor);
+			rectangle._model.borderWidth = rectangle.custom && rectangle.custom.borderWidth ? rectangle.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.rectangle.borderWidth);
 		}
 
 	});
@@ -2391,368 +2418,178 @@
 (function() {
 	"use strict";
 
-	return;
-
 	var root = this,
 		Chart = root.Chart,
 		//Cache a local reference to Chart.helpers
 		helpers = Chart.helpers;
 
-	var defaultConfig = {
-
+	Chart.defaults.doughnut = {
 		animation: {
 			//Boolean - Whether we animate the rotation of the Doughnut
 			animateRotate: true,
-
 			//Boolean - Whether we animate scaling the Doughnut from the centre
 			animateScale: false,
 		},
-
 		hover: {
 			mode: 'single'
 		},
-
 		//The percentage of the chart that we cut out of the middle.
-
 		cutoutPercentage: 50,
-
 	};
 
-	Chart.Type.extend({
-		//Passing in a name registers this chart in the Chart namespace
-		name: "Doughnut",
-		//Providing a defaults will also register the deafults in the chart namespace
-		defaults: defaultConfig,
-		//Initialize is fired when the chart is initialized - Data is passed in as a parameter
-		//Config is automatically merged by the core of Chart.js, and is available at this.options
-		initialize: function() {
+	Chart.defaults.pie = helpers.clone(Chart.defaults.doughnut);
+	helpers.extend(Chart.defaults.pie, {
+		cutoutPercentage: 0
+	});
 
-			//Set up tooltip events on the chart
-			helpers.bindEvents(this, this.options.events, this.events);
 
-			//Create a new bar for each piece of data
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				dataset.metaData = [];
-				helpers.each(dataset.data, function(dataPoint, index) {
-					dataset.metaData.push(new Chart.Arc({
-						_chart: this.chart,
-						_datasetIndex: datasetIndex,
-						_index: index,
-						_model: {}
-					}));
-				}, this);
-			}, this);
+	Chart.controllers.doughnut = Chart.controllers.pie = function(chart, datasetIndex) {
+		this.initialize.call(this, chart, datasetIndex);
+	};
 
-			// Create tooltip instance exclusively for this chart with some defaults.
-			this.tooltip = new Chart.Tooltip({
-				_chart: this.chart,
-				_data: this.data,
-				_options: this.options,
-			}, this);
+	helpers.extend(Chart.controllers.doughnut.prototype, {
 
-			this.resetElements();
-
-			// Update the chart with the latest data.
-			this.update();
-
+		initialize: function(chart, datasetIndex) {
+			this.chart = chart;
+			this.index = datasetIndex;
+			this.linkScales();
+			this.addElements();
 		},
 
-		calculateCircumference: function(dataset, value) {
-			if (dataset.total > 0) {
-				return (Math.PI * 2) * (value / dataset.total);
+		linkScales: function() {
+			// no scales for doughnut
+		},
+
+		getDataset: function() {
+			return this.chart.data.datasets[this.index];
+		},
+
+		getScaleForId: function(scaleID) {
+			return this.chart.scales[scaleID];
+		},
+
+		addElements: function() {
+			this.getDataset().metaData = this.getDataset().metaData || [];
+			helpers.each(this.getDataset().data, function(value, index) {
+				this.getDataset().metaData[index] = this.getDataset().metaData[index] || new Chart.elements.Arc({
+					_chart: this.chart.chart,
+					_datasetIndex: this.index,
+					_index: index,
+				});
+			}, this);
+		},
+
+		reset: function() {
+			this.update(true);
+		},
+
+		update: function(reset) {
+
+			this.chart.outerRadius = (helpers.min([this.chart.chart.width, this.chart.chart.height]) - this.chart.options.elements.arc.borderWidth / 2) / 2;
+			this.chart.innerRadius = this.chart.options.cutoutPercentage ? (this.chart.outerRadius / 100) * (this.chart.options.cutoutPercentage) : 1;
+			this.chart.radiusLength = (this.chart.outerRadius - this.chart.innerRadius) / this.chart.data.datasets.length;
+
+
+			this.getDataset().total = 0;
+			helpers.each(this.getDataset().data, function(value) {
+				this.getDataset().total += Math.abs(value);
+			}, this);
+
+			this.outerRadius = this.chart.outerRadius - (this.chart.radiusLength * this.index);
+			this.innerRadius = this.outerRadius - this.chart.radiusLength;
+
+			helpers.each(this.getDataset().metaData, function(arc, index) {
+
+				var resetModel = {
+					x: this.chart.chart.width / 2,
+					y: this.chart.chart.height / 2,
+					startAngle: Math.PI * -0.5, // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
+					circumference: (this.chart.options.animation.animateRotate) ? 0 : this.calculateCircumference(this.getDataset().data[index]),
+					outerRadius: (this.chart.options.animation.animateScale) ? 0 : this.outerRadius,
+					innerRadius: (this.chart.options.animation.animateScale) ? 0 : this.innerRadius,
+				};
+
+				helpers.extend(arc, {
+					// Utility
+					_chart: this.chart.chart,
+					_datasetIndex: this.index,
+					_index: index,
+
+					// Desired view properties
+					_model: reset ? resetModel : {
+						x: this.chart.chart.width / 2,
+						y: this.chart.chart.height / 2,
+						circumference: this.calculateCircumference(this.getDataset().data[index]),
+						outerRadius: this.outerRadius,
+						innerRadius: this.innerRadius,
+
+						backgroundColor: arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor),
+						hoverBackgroundColor: arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().hoverBackgroundColor, index, this.chart.options.elements.arc.hoverBackgroundColor),
+						borderWidth: arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.arc.borderWidth),
+						borderColor: arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor),
+
+						label: helpers.getValueAtIndexOrDefault(this.getDataset().label, index, this.chart.data.labels[index])
+					},
+				});
+
+				if (!reset) {
+
+					if (index === 0) {
+						arc._model.startAngle = Math.PI * -0.5; // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
+					} else {
+						arc._model.startAngle = this.getDataset().metaData[index - 1]._model.endAngle;
+					}
+
+					arc._model.endAngle = arc._model.startAngle + arc._model.circumference;
+
+
+					//Check to see if it's the last arc, if not get the next and update its start angle
+					if (index < this.getDataset().data.length - 1) {
+						this.getDataset().metaData[index + 1]._model.startAngle = arc._model.endAngle;
+					}
+				}
+
+				arc.pivot();
+			}, this);
+		},
+
+		draw: function(ease) {
+			var easingDecimal = ease || 1;
+			helpers.each(this.getDataset().metaData, function(arc, index) {
+				arc.transition(easingDecimal).draw();
+			}, this);
+		},
+
+
+
+		setHoverStyle: function(arc) {
+			var dataset = this.chart.data.datasets[arc._datasetIndex];
+			var index = arc._index;
+
+			arc._model.backgroundColor = arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.color(arc._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
+			arc._model.borderColor = arc.custom && arc.custom.hoverBorderColor ? arc.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.color(arc._model.borderColor).saturate(0.5).darken(0.1).rgbString());
+			arc._model.borderWidth = arc.custom && arc.custom.hoverBorderWidth ? arc.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, arc._model.borderWidth);
+		},
+
+		removeHoverStyle: function(arc) {
+			var dataset = this.chart.data.datasets[arc._datasetIndex];
+			var index = arc._index;
+
+			arc._model.backgroundColor = arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor);
+			arc._model.borderColor = arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor);
+			arc._model.borderWidth = arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.arc.borderWidth);
+		},
+
+		calculateCircumference: function(value) {
+			if (this.getDataset().total > 0) {
+				return (Math.PI * 2) * (value / this.getDataset().total);
 			} else {
 				return 0;
 			}
 		},
-		resetElements: function() {
-			this.outerRadius = (helpers.min([this.chart.width, this.chart.height]) - this.options.elements.arc.borderWidth / 2) / 2;
-			this.innerRadius = this.options.cutoutPercentage ? (this.outerRadius / 100) * (this.options.cutoutPercentage) : 1;
-			this.radiusLength = (this.outerRadius - this.innerRadius) / this.data.datasets.length;
 
-			// Update the points
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				// So that calculateCircumference works
-				dataset.total = 0;
-				helpers.each(dataset.data, function(value) {
-					dataset.total += Math.abs(value);
-				}, this);
-
-				dataset.outerRadius = this.outerRadius - (this.radiusLength * datasetIndex);
-				dataset.innerRadius = dataset.outerRadius - this.radiusLength;
-
-				helpers.each(dataset.metaData, function(slice, index) {
-					helpers.extend(slice, {
-						_model: {
-							x: this.chart.width / 2,
-							y: this.chart.height / 2,
-							startAngle: Math.PI * -0.5, // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
-							circumference: (this.options.animation.animateRotate) ? 0 : this.calculateCircumference(metaSlice.value),
-							outerRadius: (this.options.animation.animateScale) ? 0 : dataset.outerRadius,
-							innerRadius: (this.options.animation.animateScale) ? 0 : dataset.innerRadius,
-
-							backgroundColor: slice.custom && slice.custom.backgroundColor ? slice.custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.arc.backgroundColor),
-							hoverBackgroundColor: slice.custom && slice.custom.hoverBackgroundColor ? slice.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, this.options.elements.arc.hoverBackgroundColor),
-							borderWidth: slice.custom && slice.custom.borderWidth ? slice.custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.arc.borderWidth),
-							borderColor: slice.custom && slice.custom.borderColor ? slice.custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.arc.borderColor),
-
-							label: helpers.getValueAtIndexOrDefault(dataset.label, index, this.data.labels[index])
-						},
-					});
-
-					slice.pivot();
-				}, this);
-
-			}, this);
-		},
-		update: function(animationDuration) {
-
-			this.outerRadius = (helpers.min([this.chart.width, this.chart.height]) - this.options.elements.arc.borderWidth / 2) / 2;
-			this.innerRadius = this.options.cutoutPercentage ? (this.outerRadius / 100) * (this.options.cutoutPercentage) : 1;
-			this.radiusLength = (this.outerRadius - this.innerRadius) / this.data.datasets.length;
-
-
-			// Update the points
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-
-				dataset.total = 0;
-				helpers.each(dataset.data, function(value) {
-					dataset.total += Math.abs(value);
-				}, this);
-
-
-				dataset.outerRadius = this.outerRadius - (this.radiusLength * datasetIndex);
-
-				dataset.innerRadius = dataset.outerRadius - this.radiusLength;
-
-				helpers.each(dataset.metaData, function(slice, index) {
-
-					helpers.extend(slice, {
-						// Utility
-						_chart: this.chart,
-						_datasetIndex: datasetIndex,
-						_index: index,
-
-						// Desired view properties
-						_model: {
-							x: this.chart.width / 2,
-							y: this.chart.height / 2,
-							circumference: this.calculateCircumference(dataset, dataset.data[index]),
-							outerRadius: dataset.outerRadius,
-							innerRadius: dataset.innerRadius,
-
-							backgroundColor: slice.custom && slice.custom.backgroundColor ? slice.custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.arc.backgroundColor),
-							hoverBackgroundColor: slice.custom && slice.custom.hoverBackgroundColor ? slice.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, this.options.elements.arc.hoverBackgroundColor),
-							borderWidth: slice.custom && slice.custom.borderWidth ? slice.custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.arc.borderWidth),
-							borderColor: slice.custom && slice.custom.borderColor ? slice.custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.arc.borderColor),
-
-							label: helpers.getValueAtIndexOrDefault(dataset.label, index, this.data.labels[index])
-						},
-					});
-
-					if (index === 0) {
-						slice._model.startAngle = Math.PI * -0.5; // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
-					} else {
-						slice._model.startAngle = dataset.metaData[index - 1]._model.endAngle;
-					}
-
-					slice._model.endAngle = slice._model.startAngle + slice._model.circumference;
-
-
-					//Check to see if it's the last slice, if not get the next and update its start angle
-					if (index < dataset.data.length - 1) {
-						dataset.metaData[index + 1]._model.startAngle = slice._model.endAngle;
-					}
-
-					slice.pivot();
-				}, this);
-
-			}, this);
-
-			this.render(animationDuration);
-		},
-		draw: function(easeDecimal) {
-			easeDecimal = easeDecimal || 1;
-			this.clear();
-
-			this.eachElement(function(slice) {
-				slice.transition(easeDecimal).draw();
-			}, this);
-
-			this.tooltip.transition(easeDecimal).draw();
-		},
-		events: function(e) {
-
-			this.lastActive = this.lastActive || [];
-
-			// Find Active Elements
-			if (e.type == 'mouseout') {
-				this.active = [];
-			} else {
-
-				this.active = function() {
-					switch (this.options.hover.mode) {
-						case 'single':
-							return this.getSliceAtEvent(e);
-						case 'label':
-							return this.getSlicesAtEvent(e);
-						case 'dataset':
-							return this.getDatasetAtEvent(e);
-						default:
-							return e;
-					}
-				}.call(this);
-			}
-
-			// On Hover hook
-			if (this.options.hover.onHover) {
-				this.options.hover.onHover.call(this, this.active);
-			}
-
-			if (e.type == 'mouseup' || e.type == 'click') {
-				if (this.options.onClick) {
-					this.options.onClick.call(this, e, this.active);
-				}
-			}
-
-			var dataset;
-			var index;
-			// Remove styling for last active (even if it may still be active)
-			if (this.lastActive.length) {
-				switch (this.options.hover.mode) {
-					case 'single':
-						dataset = this.data.datasets[this.lastActive[0]._datasetIndex];
-						index = this.lastActive[0]._index;
-
-						this.lastActive[0]._model.backgroundColor = this.lastActive[0].custom && this.lastActive[0].custom.backgroundColor ? this.lastActive[0].custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.arc.backgroundColor);
-						this.lastActive[0]._model.borderColor = this.lastActive[0].custom && this.lastActive[0].custom.borderColor ? this.lastActive[0].custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.arc.borderColor);
-						this.lastActive[0]._model.borderWidth = this.lastActive[0].custom && this.lastActive[0].custom.borderWidth ? this.lastActive[0].custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.arc.borderWidth);
-						break;
-					case 'label':
-						for (var i = 0; i < this.lastActive.length; i++) {
-							dataset = this.data.datasets[this.lastActive[i]._datasetIndex];
-							index = this.lastActive[i]._index;
-
-							this.lastActive[i]._model.backgroundColor = this.lastActive[i].custom && this.lastActive[i].custom.backgroundColor ? this.lastActive[i].custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.arc.backgroundColor);
-							this.lastActive[i]._model.borderColor = this.lastActive[i].custom && this.lastActive[i].custom.borderColor ? this.lastActive[i].custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.arc.borderColor);
-							this.lastActive[i]._model.borderWidth = this.lastActive[i].custom && this.lastActive[i].custom.borderWidth ? this.lastActive[i].custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.arc.borderWidth);
-						}
-						break;
-					case 'dataset':
-						break;
-					default:
-						// Don't change anything
-				}
-			}
-
-			// Built in hover styling
-			if (this.active.length && this.options.hover.mode) {
-				switch (this.options.hover.mode) {
-					case 'single':
-						dataset = this.data.datasets[this.active[0]._datasetIndex];
-						index = this.active[0]._index;
-
-						this.active[0]._model.backgroundColor = this.active[0].custom && this.active[0].custom.hoverBackgroundColor ? this.active[0].custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.color(this.active[0]._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
-						this.active[0]._model.borderColor = this.active[0].custom && this.active[0].custom.hoverBorderColor ? this.active[0].custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, this.active[0]._model.borderColor);
-						this.active[0]._model.borderWidth = this.active[0].custom && this.active[0].custom.hoverBorderWidth ? this.active[0].custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.hoverBorderWidth, index, this.active[0]._model.borderWidth);
-						break;
-					case 'label':
-						for (var i = 0; i < this.active.length; i++) {
-							dataset = this.data.datasets[this.active[i]._datasetIndex];
-							index = this.active[i]._index;
-
-							this.active[i]._model.backgroundColor = this.active[i].custom && this.active[i].custom.hoverBackgroundColor ? this.active[i].custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.color(this.active[i]._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
-							this.active[i]._model.borderColor = this.active[i].custom && this.active[i].custom.hoverBorderColor ? this.active[i].custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, this.active[0]._model.borderColor);
-							this.active[i]._model.borderWidth = this.active[i].custom && this.active[i].custom.hoverBorderWidth ? this.active[i].custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.hoverBorderWidth, index, this.active[i]._model.borderWidth);
-						}
-						break;
-					case 'dataset':
-						break;
-					default:
-						// Don't change anything
-				}
-			}
-
-
-			// Built in Tooltips
-			if (this.options.tooltips.enabled) {
-
-				// The usual updates
-				this.tooltip.initialize();
-
-				// Active
-				if (this.active.length) {
-					this.tooltip._model.opacity = 1;
-
-					helpers.extend(this.tooltip, {
-						_active: this.active,
-					});
-
-					this.tooltip.update();
-				} else {
-					// Inactive
-					this.tooltip._model.opacity = 0;
-				}
-			}
-
-
-			// Hover animations
-			this.tooltip.pivot();
-
-			if (!this.animating) {
-				var changed;
-
-				helpers.each(this.active, function(element, index) {
-					if (element !== this.lastActive[index]) {
-						changed = true;
-					}
-				}, this);
-
-				// If entering, leaving, or changing elements, animate the change via pivot
-				if ((!this.lastActive.length && this.active.length) ||
-					(this.lastActive.length && !this.active.length) ||
-					(this.lastActive.length && this.active.length && changed)) {
-
-					this.stop();
-					this.render(this.options.hover.animationDuration);
-				}
-			}
-
-			// Remember Last Active
-			this.lastActive = this.active;
-			return this;
-		},
-		getSliceAtEvent: function(e) {
-			var elements = [];
-
-			var location = helpers.getRelativePosition(e);
-
-			this.eachElement(function(slice, index) {
-				if (slice.inRange(location.x, location.y)) {
-					elements.push(slice);
-				}
-			}, this);
-			return elements;
-		},
-		/*getSlicesAtEvent: function(e) {
-			var elements = [];
-
-			var location = helpers.getRelativePosition(e);
-
-			this.eachElement(function(slice, index) {
-				if (slice.inLabelRange(location.x, location.y)) {
-					elements.push(slice);
-				}
-			}, this);
-			return elements;
-		},*/
 	});
 
-	Chart.types.Doughnut.extend({
-		name: "Pie",
-		defaults: helpers.merge(defaultConfig, {
-			cutoutPercentage: 0
-		})
-	});
 
 }).call(this);
 
@@ -2890,7 +2727,7 @@
 					// Desired view properties
 					_model: {
 						x: xScale.getPointPixelForValue(this.getDataset().data[index], index, this.index),
-						y: yScale.getPointPixelForValue(this.getDataset().data[index], index, this.index),
+						y: reset ? scaleBase : yScale.getPointPixelForValue(this.getDataset().data[index], index, this.index),
 						// Appearance
 						tension: point.custom && point.custom.tension ? point.custom.tension : this.chart.options.elements.line.tension,
 						radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().radius, index, this.chart.options.elements.point.radius),
@@ -2973,7 +2810,13 @@
 		},
 
 		removeHoverStyle: function(point) {
-			// TODO
+			var dataset = this.chart.data.datasets[point._datasetIndex];
+			var index = point._index;
+
+			point._model.radius = point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().radius, index, this.chart.options.elements.point.radius);
+			point._model.backgroundColor = point.custom && point.custom.backgroundColor ? point.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBackgroundColor, index, this.chart.options.elements.point.backgroundColor);
+			point._model.borderColor = point.custom && point.custom.borderColor ? point.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderColor, index, this.chart.options.elements.point.borderColor);
+			point._model.borderWidth = point.custom && point.custom.borderWidth ? point.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderWidth, index, this.chart.options.elements.point.borderWidth);
 		}
 
 	});
@@ -2985,14 +2828,13 @@
 (function() {
 	"use strict";
 
-	return;
-
 	var root = this,
 		Chart = root.Chart,
 		//Cache a local reference to Chart.helpers
 		helpers = Chart.helpers;
 
-	var defaultConfig = {
+
+	Chart.defaults.polarArea = {
 
 		scale: {
 			type: "radialLinear",
@@ -3003,338 +2845,174 @@
 		animateRotate: true,
 	};
 
+	Chart.controllers.polarArea = function(chart, datasetIndex) {
+		this.initialize.call(this, chart, datasetIndex);
+	};
 
-	Chart.Type.extend({
-		//Passing in a name registers this chart in the Chart namespace
-		name: "PolarArea",
-		//Providing a defaults will also register the deafults in the chart namespace
-		defaults: defaultConfig,
-		//Initialize is fired when the chart is initialized - Data is passed in as a parameter
-		//Config is automatically merged by the core of Chart.js, and is available at this.options
-		initialize: function() {
+	helpers.extend(Chart.controllers.polarArea.prototype, {
 
-			// Scale setup
-			var self = this;
-			var ScaleClass = Chart.scaleService.getScaleConstructor(this.options.scale.type);
-			this.scale = new ScaleClass({
-				options: this.options.scale,
-				lineArc: true,
-				width: this.chart.width,
-				height: this.chart.height,
-				xCenter: this.chart.width / 2,
-				yCenter: this.chart.height / 2,
-				ctx: this.chart.ctx,
-				valuesCount: this.data.length,
-				data: this.data
-			});
+		initialize: function(chart, datasetIndex) {
+			this.chart = chart;
+			this.index = datasetIndex;
+			this.linkScales();
+			this.addElements();
+		},
 
-			helpers.bindEvents(this, this.options.events, this.events);
+		linkScales: function() {
+			// no scales for doughnut
+		},
 
-			//Set up tooltip events on the chart
-			helpers.bindEvents(this, this.options.events, this.events);
+		getDataset: function() {
+			return this.chart.data.datasets[this.index];
+		},
 
-			//Create a new bar for each piece of data
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				dataset.metaData = [];
-				helpers.each(dataset.data, function(dataPoint, index) {
-					dataset.metaData.push(new Chart.Arc({
-						_chart: this.chart,
-						_datasetIndex: datasetIndex,
-						_index: index,
-						_model: {}
-					}));
-				}, this);
+		getScaleForId: function(scaleID) {
+			return this.chart.scales[scaleID];
+		},
+
+		addElements: function() {
+			this.getDataset().metaData = this.getDataset().metaData || [];
+			helpers.each(this.getDataset().data, function(value, index) {
+				this.getDataset().metaData[index] = this.getDataset().metaData[index] || new Chart.elements.Arc({
+					_chart: this.chart.chart,
+					_datasetIndex: this.index,
+					_index: index,
+				});
 			}, this);
+		},
 
-			// Create tooltip instance exclusively for this chart with some defaults.
-			this.tooltip = new Chart.Tooltip({
-				_chart: this.chart,
-				_data: this.data,
-				_options: this.options,
-			}, this);
+		reset: function() {
+			this.update(true);
+		},
 
-			// Fit the scale before we animate
-			this.updateScaleRange();
-			this.scale.calculateRange();
+		update: function(reset) {
+
 			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
+			//this.chart.scale.setScaleSize();
+			this.chart.scale.calculateRange();
+			this.chart.scale.generateTicks();
+			this.chart.scale.buildYLabels();
 
-			// so that we animate nicely
-			this.resetElements();
+			this.chart.outerRadius = (helpers.min([this.chart.chart.width, this.chart.chart.height]) - this.chart.options.elements.arc.borderWidth / 2) / 2;
+			this.chart.innerRadius = this.chart.options.cutoutPercentage ? (this.chart.outerRadius / 100) * (this.chart.options.cutoutPercentage) : 1;
+			this.chart.radiusLength = (this.chart.outerRadius - this.chart.innerRadius) / this.chart.data.datasets.length;
 
-			// Update the chart with the latest data.
-			this.update();
+			this.getDataset().total = 0;
+			helpers.each(this.getDataset().data, function(value) {
+				this.getDataset().total += Math.abs(value);
+			}, this);
 
+			this.outerRadius = this.chart.outerRadius - (this.chart.radiusLength * this.index);
+			this.innerRadius = this.outerRadius - this.chart.radiusLength;
+
+			helpers.each(this.getDataset().metaData, function(arc, index) {
+
+				var resetModel = {
+					x: this.chart.chart.width / 2,
+					y: this.chart.chart.height / 2,
+					innerRadius: 0,
+					outerRadius: 0,
+					startAngle: Math.PI * -0.5,
+					endAngle: Math.PI * -0.5,
+
+					backgroundColor: arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor),
+					hoverBackgroundColor: arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().hoverBackgroundColor, index, this.chart.options.elements.arc.hoverBackgroundColor),
+					borderWidth: arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.arc.borderWidth),
+					borderColor: arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor),
+
+					label: helpers.getValueAtIndexOrDefault(this.chart.data.labels, index, this.chart.data.labels[index])
+				};
+
+				var circumference = 1 / this.getDataset().data.length * 2;
+				var startAngle = (-0.5 * Math.PI) + (Math.PI * circumference) * index;
+				var endAngle = startAngle + (circumference * Math.PI);
+
+				console.log()
+
+				helpers.extend(arc, {
+					// Utility
+					_chart: this.chart.chart,
+					_datasetIndex: this.index,
+					_index: index,
+
+					// Desired view properties
+					_model: reset ? resetModel : {
+						x: this.chart.chart.width / 2,
+						y: this.chart.chart.height / 2,
+						innerRadius: 0,
+						outerRadius: this.chart.scale.getDistanceFromCenterForValue(this.getDataset().data[index]),
+						startAngle: startAngle,
+						endAngle: endAngle,
+
+						backgroundColor: arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor),
+						hoverBackgroundColor: arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().hoverBackgroundColor, index, this.chart.options.elements.arc.hoverBackgroundColor),
+						borderWidth: arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.arc.borderWidth),
+						borderColor: arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor),
+
+						label: helpers.getValueAtIndexOrDefault(this.chart.data.labels, index, this.chart.data.labels[index])
+					},
+				});
+
+				arc.pivot();
+			}, this);
+		},
+
+		draw: function(ease) {
+			var easingDecimal = ease || 1;
+			helpers.each(this.getDataset().metaData, function(arc, index) {
+				arc.transition(easingDecimal).draw();
+				console.log(arc);
+			}, this);
+		},
+
+
+
+		setHoverStyle: function(arc) {
+			var dataset = this.chart.data.datasets[arc._datasetIndex];
+			var index = arc._index;
+
+			arc._model.backgroundColor = arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.color(arc._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
+			arc._model.borderColor = arc.custom && arc.custom.hoverBorderColor ? arc.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.color(arc._model.borderColor).saturate(0.5).darken(0.1).rgbString());
+			arc._model.borderWidth = arc.custom && arc.custom.hoverBorderWidth ? arc.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, arc._model.borderWidth);
+		},
+
+		removeHoverStyle: function(arc) {
+			var dataset = this.chart.data.datasets[arc._datasetIndex];
+			var index = arc._index;
+
+			arc._model.backgroundColor = arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor);
+			arc._model.borderColor = arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor);
+			arc._model.borderWidth = arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.arc.borderWidth);
+		},
+
+		calculateCircumference: function(value) {
+			if (this.getDataset().total > 0) {
+				return (Math.PI * 2) * (value / this.getDataset().total);
+			} else {
+				return 0;
+			}
 		},
 		updateScaleRange: function() {
-			helpers.extend(this.scale, {
+			helpers.extend(this.chart.scale, {
 				size: helpers.min([this.chart.width, this.chart.height]),
 				xCenter: this.chart.width / 2,
 				yCenter: this.chart.height / 2
 			});
 		},
-		resetElements: function() {
-			var circumference = 1 / this.data.datasets[0].data.length * 2;
 
-			// Map new data to data points
-			helpers.each(this.data.datasets[0].metaData, function(slice, index) {
-
-				var value = this.data.datasets[0].data[index];
-
-				helpers.extend(slice, {
-					_index: index,
-					_model: {
-						x: this.chart.width / 2,
-						y: this.chart.height / 2,
-						innerRadius: 0,
-						outerRadius: 0,
-						startAngle: Math.PI * -0.5,
-						endAngle: Math.PI * -0.5,
-
-						backgroundColor: slice.custom && slice.custom.backgroundColor ? slice.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[0].backgroundColor, index, this.options.elements.arc.backgroundColor),
-						hoverBackgroundColor: slice.custom && slice.custom.hoverBackgroundColor ? slice.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[0].hoverBackgroundColor, index, this.options.elements.arc.hoverBackgroundColor),
-						borderWidth: slice.custom && slice.custom.borderWidth ? slice.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.data.datasets[0].borderWidth, index, this.options.elements.arc.borderWidth),
-						borderColor: slice.custom && slice.custom.borderColor ? slice.custom.borderColor : helpers.getValueAtIndexOrDefault(this.data.datasets[0].borderColor, index, this.options.elements.arc.borderColor),
-
-						label: helpers.getValueAtIndexOrDefault(this.data.datasets[0].labels, index, this.data.datasets[0].labels[index])
-					},
-				});
-
-				slice.pivot();
-			}, this);
-		},
-		update: function(animationDuration) {
-
-			this.updateScaleRange();
-			this.scale.calculateRange();
-			this.scale.generateTicks();
-			this.scale.buildYLabels();
-
-			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
-
-			var circumference = 1 / this.data.datasets[0].data.length * 2;
-
-			// Map new data to data points
-			helpers.each(this.data.datasets[0].metaData, function(slice, index) {
-
-				var value = this.data.datasets[0].data[index];
-
-				var startAngle = (-0.5 * Math.PI) + (Math.PI * circumference) * index;
-				var endAngle = startAngle + (circumference * Math.PI);
-
-				helpers.extend(slice, {
-					_index: index,
-					_model: {
-						x: this.chart.width / 2,
-						y: this.chart.height / 2,
-						innerRadius: 0,
-						outerRadius: this.scale.getDistanceFromCenterForValue(value),
-						startAngle: startAngle,
-						endAngle: endAngle,
-
-						backgroundColor: slice.custom && slice.custom.backgroundColor ? slice.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[0].backgroundColor, index, this.options.elements.arc.backgroundColor),
-						hoverBackgroundColor: slice.custom && slice.custom.hoverBackgroundColor ? slice.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[0].hoverBackgroundColor, index, this.options.elements.arc.hoverBackgroundColor),
-						borderWidth: slice.custom && slice.custom.borderWidth ? slice.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.data.datasets[0].borderWidth, index, this.options.elements.arc.borderWidth),
-						borderColor: slice.custom && slice.custom.borderColor ? slice.custom.borderColor : helpers.getValueAtIndexOrDefault(this.data.datasets[0].borderColor, index, this.options.elements.arc.borderColor),
-
-						label: helpers.getValueAtIndexOrDefault(this.data.datasets[0].labels, index, this.data.datasets[0].labels[index])
-					},
-				});
-				slice.pivot();
-
-				console.log(slice);
-
-			}, this);
-
-			this.render(animationDuration);
-		},
-		draw: function(ease) {
-			var easingDecimal = ease || 1;
-
-			this.clear();
-
-			helpers.each(this.data.datasets[0].metaData, function(slice, index) {
-				slice.transition(easingDecimal).draw();
-			}, this);
-
-			this.scale.draw();
-
-			this.tooltip.transition(easingDecimal).draw();
-		},
-		events: function(e) {
-
-			// If exiting chart
-			if (e.type == 'mouseout') {
-				return this;
-			}
-
-			this.lastActive = this.lastActive || [];
-
-			// Find Active Elements
-			this.active = function() {
-				switch (this.options.hover.mode) {
-					case 'single':
-						return this.getSliceAtEvent(e);
-					case 'label':
-						return this.getSlicesAtEvent(e);
-					case 'dataset':
-						return this.getDatasetAtEvent(e);
-					default:
-						return e;
-				}
-			}.call(this);
-
-			// On Hover hook
-			if (this.options.hover.onHover) {
-				this.options.hover.onHover.call(this, this.active);
-			}
-
-			if (e.type == 'mouseup' || e.type == 'click') {
-				if (this.options.onClick) {
-					this.options.onClick.call(this, e, this.active);
-				}
-			}
-
-			var dataset;
-			var index;
-			// Remove styling for last active (even if it may still be active)
-			if (this.lastActive.length) {
-				switch (this.options.hover.mode) {
-					case 'single':
-						dataset = this.data.datasets[this.lastActive[0]._datasetIndex];
-						index = this.lastActive[0]._index;
-
-						this.lastActive[0]._model.backgroundColor = this.lastActive[0].custom && this.lastActive[0].custom.backgroundColor ? this.lastActive[0].custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.arc.backgroundColor);
-						this.lastActive[0]._model.borderColor = this.lastActive[0].custom && this.lastActive[0].custom.borderColor ? this.lastActive[0].custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.arc.borderColor);
-						this.lastActive[0]._model.borderWidth = this.lastActive[0].custom && this.lastActive[0].custom.borderWidth ? this.lastActive[0].custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.arc.borderWidth);
-						break;
-					case 'label':
-						for (var i = 0; i < this.lastActive.length; i++) {
-							dataset = this.data.datasets[this.lastActive[i]._datasetIndex];
-							index = this.lastActive[i]._index;
-
-							this.lastActive[i]._model.backgroundColor = this.lastActive[i].custom && this.lastActive[i].custom.backgroundColor ? this.lastActive[i].custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, this.options.elements.arc.backgroundColor);
-							this.lastActive[i]._model.borderColor = this.lastActive[i].custom && this.lastActive[i].custom.borderColor ? this.lastActive[i].custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, this.options.elements.arc.borderColor);
-							this.lastActive[i]._model.borderWidth = this.lastActive[i].custom && this.lastActive[i].custom.borderWidth ? this.lastActive[i].custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, this.options.elements.arc.borderWidth);
-						}
-						break;
-					case 'dataset':
-						break;
-					default:
-						// Don't change anything
-				}
-			}
-
-			// Built in hover styling
-			if (this.active.length && this.options.hover.mode) {
-				switch (this.options.hover.mode) {
-					case 'single':
-						dataset = this.data.datasets[this.active[0]._datasetIndex];
-						index = this.active[0]._index;
-
-						this.active[0]._model.radius = this.active[0].custom && this.active[0].custom.hoverRadius ? this.active[0].custom.hoverRadius : helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.active[0]._model.radius + 1);
-						this.active[0]._model.backgroundColor = this.active[0].custom && this.active[0].custom.hoverBackgroundColor ? this.active[0].custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.color(this.active[0]._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
-						this.active[0]._model.borderColor = this.active[0].custom && this.active[0].custom.hoverBorderColor ? this.active[0].custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.color(this.active[0]._model.borderColor).saturate(0.5).darken(0.1).rgbString());
-						this.active[0]._model.borderWidth = this.active[0].custom && this.active[0].custom.hoverBorderWidth ? this.active[0].custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, this.active[0]._model.borderWidth);
-						break;
-					case 'label':
-						for (var i = 0; i < this.active.length; i++) {
-							dataset = this.data.datasets[this.active[i]._datasetIndex];
-							index = this.active[i]._index;
-
-							this.active[i]._model.radius = this.active[i].custom && this.active[i].custom.hoverRadius ? this.active[i].custom.hoverRadius : helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.active[i]._model.radius + 1);
-							this.active[i]._model.backgroundColor = this.active[i].custom && this.active[i].custom.hoverBackgroundColor ? this.active[i].custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.color(this.active[i]._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
-							this.active[i]._model.borderColor = this.active[i].custom && this.active[i].custom.hoverBorderColor ? this.active[i].custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.color(this.active[i]._model.borderColor).saturate(0.5).darken(0.1).rgbString());
-							this.active[i]._model.borderWidth = this.active[i].custom && this.active[i].custom.hoverBorderWidth ? this.active[i].custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, this.active[i]._model.borderWidth);
-						}
-						break;
-					case 'dataset':
-						break;
-					default:
-						// Don't change anything
-				}
-			}
-
-
-			// Built in Tooltips
-			if (this.options.tooltips.enabled) {
-
-				// The usual updates
-				this.tooltip.initialize();
-
-				// Active
-				if (this.active.length) {
-					this.tooltip._model.opacity = 1;
-
-					helpers.extend(this.tooltip, {
-						_active: this.active,
-					});
-
-					this.tooltip.update();
-				} else {
-					// Inactive
-					this.tooltip._model.opacity = 0;
-				}
-			}
-
-
-			// Hover animations
-			this.tooltip.pivot();
-
-			if (!this.animating) {
-				var changed;
-
-				helpers.each(this.active, function(element, index) {
-					if (element !== this.lastActive[index]) {
-						changed = true;
-					}
-				}, this);
-
-				// If entering, leaving, or changing elements, animate the change via pivot
-				if ((!this.lastActive.length && this.active.length) ||
-					(this.lastActive.length && !this.active.length) ||
-					(this.lastActive.length && this.active.length && changed)) {
-
-					this.stop();
-					this.render(this.options.hover.animationDuration);
-				}
-			}
-
-			// Remember Last Active
-			this.lastActive = this.active;
-			return this;
-		},
-		getSliceAtEvent: function(e) {
-			var elements = [];
-
-			var location = helpers.getRelativePosition(e);
-
-			this.eachElement(function(slice, index) {
-				if (slice.inRange(location.x, location.y)) {
-					elements.push(slice);
-				}
-			}, this);
-			return elements;
-		},
-		/*getSlicesAtEvent: function(e) {
-			var elements = [];
-
-			var location = helpers.getRelativePosition(e);
-
-			this.eachElement(function(slice, index) {
-				if (slice.inLabelRange(location.x, location.y)) {
-					elements.push(slice);
-				}
-			}, this);
-			return elements;
-		},*/
 	});
+
+
+
+	return;
+
+
+	Chart.Type.extend({});
 
 }).call(this);
 
 (function() {
 	"use strict";
-
-	return;
 
 	var root = this,
 		Chart = root.Chart,
@@ -3342,213 +3020,152 @@
 
 
 
-	Chart.Type.extend({
-		name: "Radar",
-		defaults: {
+	Chart.defaults.radar = {
+		scale: {
+			type: "radialLinear",
+		},
+		elements: {
+			line: {
+				tension: 0, // no bezier in radar
+			}
+		},
+	};
 
-			scale: {
-				type: "radialLinear",
-			},
+	Chart.controllers.radar = function(chart, datasetIndex) {
+		this.initialize.call(this, chart, datasetIndex);
+	};
 
-			elements: {
-				line: {
-					tension: 0, // no bezier in radar
-				}
-			},
 
-			//String - A legend template
-			legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+	helpers.extend(Chart.controllers.radar.prototype, {
 
+		initialize: function(chart, datasetIndex) {
+			this.chart = chart;
+			this.index = datasetIndex;
+			this.linkScales();
+			this.addElements();
 		},
 
-		initialize: function() {
-
-			// Events
-			helpers.bindEvents(this, this.options.events, this.events);
-
-			// Create a new line and its points for each dataset and piece of data
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-
-				dataset.metaDataset = new Chart.Line({
-					_chart: this.chart,
-					_datasetIndex: datasetIndex,
-					_points: dataset.metaData,
-					_loop: true
-				});
-
-				dataset.metaData = [];
-
-				helpers.each(dataset.data, function(dataPoint, index) {
-					dataset.metaData.push(new Chart.Point({
-						_datasetIndex: datasetIndex,
-						_index: index,
-						_chart: this.chart,
-						_model: {
-							x: 0, //xScale.getPixelForValue(null, index, true),
-							y: 0, //this.chartArea.bottom,
-						},
-					}));
-
-				}, this);
-			}, this);
-
-			// Build the scale.
-			this.buildScale();
-
-			// Create tooltip instance exclusively for this chart with some defaults.
-			this.tooltip = new Chart.Tooltip({
-				_chart: this.chart,
-				_data: this.data,
-				_options: this.options,
-			}, this);
-
-			// Need to fit scales before we reset elements. 
-			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
-
-			// Reset so that we animation from the baseline
-			this.resetElements();
-
-			// Update that shiz
-			this.update();
+		linkScales: function() {
+			// No need. Single scale only
 		},
-		nextPoint: function(collection, index) {
-			return collection[index + 1] || collection[0];
+
+		getDataset: function() {
+			return this.chart.data.datasets[this.index];
 		},
-		previousPoint: function(collection, index) {
-			return collection[index - 1] || collection[collection.length - 1];
+
+		getScaleForId: function(scaleID) {
+			return this.chart.scales[scaleID];
 		},
-		resetElements: function() {
 
-			// Update the points
-			this.eachElement(function(point, index, dataset, datasetIndex) {
-				helpers.extend(point, {
-					// Utility
-					_chart: this.chart,
-					_datasetIndex: datasetIndex,
-					_index: index,
-					_scale: this.scale,
+		addElements: function() {
 
-					// Desired view properties
-					_model: {
-						x: this.scale.xCenter,
-						y: this.scale.yCenter,
+			this.getDataset().metaData = this.getDataset().metaData || [];
 
-						// Appearance
-						tension: point.custom && point.custom.tension ? point.custom.tension : this.options.elements.line.tension,
-						radius: point.custom && point.custom.radius ? point.custom.pointRadius : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointRadius, index, this.options.elements.point.radius),
-						backgroundColor: point.custom && point.custom.backgroundColor ? point.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointBackgroundColor, index, this.options.elements.point.backgroundColor),
-						borderColor: point.custom && point.custom.borderColor ? point.custom.borderColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointBorderColor, index, this.options.elements.point.borderColor),
-						borderWidth: point.custom && point.custom.borderWidth ? point.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointBorderWidth, index, this.options.elements.point.borderWidth),
-						skip: this.data.datasets[datasetIndex].data[index] === null,
-
-						// Tooltip
-						hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].hitRadius, index, this.options.elements.point.hitRadius),
-					},
-				});
-			}, this);
-
-			// Update control points for the bezier curve
-			this.eachElement(function(point, index, dataset, datasetIndex) {
-				var controlPoints = helpers.splineCurve(
-					this.previousPoint(dataset, index)._model,
-					point._model,
-					this.nextPoint(dataset, index)._model,
-					point._model.tension
-				);
-
-				point._model.controlPointPreviousX = this.scale.xCenter;
-				point._model.controlPointPreviousY = this.scale.yCenter;
-				point._model.controlPointNextX = this.scale.xCenter;
-				point._model.controlPointNextY = this.scale.yCenter;
-
-				// Now pivot the point for animation
-				point.pivot();
-			}, this);
-		},
-		update: function(animationDuration) {
-			this.scale.setScaleSize();
-			this.scale.calculateRange();
-			this.scale.generateTicks();
-			this.scale.buildYLabels();
-
-			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
-
-			// Update the lines
-			this.eachDataset(function(dataset, datasetIndex) {
-				var scaleBase;
-
-				if (this.scale.min < 0 && this.scale.max < 0) {
-					scaleBase = this.scale.getPointPositionForValue(0, this.scale.max);
-				} else if (this.scale.min > 0 && this.scale.max > 0) {
-					scaleBase = this.scale.getPointPositionForValue(0, this.scale.min);
-				} else {
-					scaleBase = this.scale.getPointPositionForValue(0, 0);
-				}
-
-				helpers.extend(dataset.metaDataset, {
-					// Utility
-					_datasetIndex: datasetIndex,
-
-					// Data
-					_children: dataset.metaData,
-
-					// Model
-					_model: {
-						// Appearance
-						tension: dataset.tension || this.options.elements.line.tension,
-						backgroundColor: dataset.backgroundColor || this.options.elements.line.backgroundColor,
-						borderWidth: dataset.borderWidth || this.options.elements.line.borderWidth,
-						borderColor: dataset.borderColor || this.options.elements.line.borderColor,
-						fill: dataset.fill !== undefined ? dataset.fill : this.options.elements.line.fill, // use the value from the dataset if it was provided. else fall back to the default
-						skipNull: dataset.skipNull !== undefined ? dataset.skipNull : this.options.elements.line.skipNull,
-						drawNull: dataset.drawNull !== undefined ? dataset.drawNull : this.options.elements.line.drawNull,
-
-						// Scale
-						scaleTop: this.scale.top,
-						scaleBottom: this.scale.bottom,
-						scaleZero: scaleBase,
-					},
-				});
-
-				dataset.metaDataset.pivot();
+			this.getDataset().metaDataset = this.getDataset().metaDataset || new Chart.elements.Line({
+				_chart: this.chart.chart,
+				_datasetIndex: this.index,
+				_points: this.getDataset().metaData,
+				_loop: true
 			});
 
-			// Update the points
-			this.eachElement(function(point, index, dataset, datasetIndex) {
-				var pointPosition = this.scale.getPointPositionForValue(index, this.data.datasets[datasetIndex].data[index]);
+			helpers.each(this.getDataset().data, function(value, index) {
+				this.getDataset().metaData[index] = this.getDataset().metaData[index] || new Chart.elements.Point({
+					_chart: this.chart.chart,
+					_datasetIndex: this.index,
+					_index: index,
+					_model: {
+						x: 0, //xScale.getPixelForValue(null, index, true),
+						y: 0, //this.chartArea.bottom,
+					},
+				});
+			}, this);
+		},
+
+		reset: function() {
+			this.update(true);
+		},
+
+		update: function(reset) {
+
+			var line = this.getDataset().metaDataset;
+			var points = this.getDataset().metaData;
+
+			var scale = this.chart.scale;
+			var scaleBase;
+
+			scale.setScaleSize();
+			scale.calculateRange();
+			scale.generateTicks();
+			scale.buildYLabels();
+
+			if (scale.min < 0 && scale.max < 0) {
+				scaleBase = scale.getPointPositionForValue(0, scale.max);
+			} else if (scale.min > 0 && scale.max > 0) {
+				scaleBase = scale.getPointPositionForValue(0, scale.min);
+			} else {
+				scaleBase = scale.getPointPositionForValue(0, 0);
+			}
+
+			helpers.extend(this.getDataset().metaDataset, {
+				// Utility
+				_datasetIndex: this.index,
+				// Data
+				_children: this.getDataset().metaData,
+				// Model
+				_model: {
+					// Appearance
+					tension: this.getDataset().tension || this.chart.options.elements.line.tension,
+					backgroundColor: this.getDataset().backgroundColor || this.chart.options.elements.line.backgroundColor,
+					borderWidth: this.getDataset().borderWidth || this.chart.options.elements.line.borderWidth,
+					borderColor: this.getDataset().borderColor || this.chart.options.elements.line.borderColor,
+					fill: this.getDataset().fill !== undefined ? this.getDataset().fill : this.chart.options.elements.line.fill, // use the value from the this.getDataset() if it was provided. else fall back to the default
+					skipNull: this.getDataset().skipNull !== undefined ? this.getDataset().skipNull : this.chart.options.elements.line.skipNull,
+					drawNull: this.getDataset().drawNull !== undefined ? this.getDataset().drawNull : this.chart.options.elements.line.drawNull,
+
+					// Scale
+					scaleTop: scale.top,
+					scaleBottom: scale.bottom,
+					scaleZero: scaleBase,
+				},
+			});
+
+			this.getDataset().metaDataset.pivot();
+
+			// Update Points
+			helpers.each(points, function(point, index) {
+				var pointPosition = scale.getPointPositionForValue(index, this.getDataset().data[index]);
 
 				helpers.extend(point, {
 					// Utility
-					_chart: this.chart,
-					_datasetIndex: datasetIndex,
+					_datasetIndex: this.index,
 					_index: index,
 
 					// Desired view properties
 					_model: {
-						x: pointPosition.x, // value not used in dataset scale, but we want a consistent API between scales
-						y: pointPosition.y,
+						x: reset ? scale.xCenter : pointPosition.x, // value not used in dataset scale, but we want a consistent API between scales
+						y: reset ? scale.yCenter : pointPosition.y,
 
 						// Appearance
-						tension: point.custom && point.custom.tension ? point.custom.tension : this.options.elements.line.tension,
-						radius: point.custom && point.custom.radius ? point.custom.pointRadius : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointRadius, index, this.options.elements.point.radius),
-						backgroundColor: point.custom && point.custom.backgroundColor ? point.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointBackgroundColor, index, this.options.elements.point.backgroundColor),
-						borderColor: point.custom && point.custom.borderColor ? point.custom.borderColor : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointBorderColor, index, this.options.elements.point.borderColor),
-						borderWidth: point.custom && point.custom.borderWidth ? point.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].pointBorderWidth, index, this.options.elements.point.borderWidth),
-						skip: this.data.datasets[datasetIndex].data[index] === null,
+						tension: point.custom && point.custom.tension ? point.custom.tension : this.chart.options.elements.line.tension,
+						radius: point.custom && point.custom.radius ? point.custom.pointRadius : helpers.getValueAtIndexOrDefault(this.getDataset().pointRadius, index, this.chart.options.elements.point.radius),
+						backgroundColor: point.custom && point.custom.backgroundColor ? point.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBackgroundColor, index, this.chart.options.elements.point.backgroundColor),
+						borderColor: point.custom && point.custom.borderColor ? point.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderColor, index, this.chart.options.elements.point.borderColor),
+						borderWidth: point.custom && point.custom.borderWidth ? point.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderWidth, index, this.chart.options.elements.point.borderWidth),
+						skip: this.getDataset().data[index] === null,
 
 						// Tooltip
-						hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.data.datasets[datasetIndex].hitRadius, index, this.options.elements.point.hitRadius),
+						hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.getDataset().hitRadius, index, this.chart.options.elements.point.hitRadius),
 					},
 				});
 			}, this);
 
 
-			// Update control points for the bezier curve
-			this.eachElement(function(point, index, dataset, datasetIndex) {
+			// Update bezier control points
+			helpers.each(this.getDataset().metaData, function(point, index) {
 				var controlPoints = helpers.splineCurve(
-					this.previousPoint(dataset, index)._model,
+					helpers.previousItem(this.getDataset().metaData, index, true)._model,
 					point._model,
-					this.nextPoint(dataset, index)._model,
+					helpers.nextItem(this.getDataset().metaData, index, true)._model,
 					point._model.tension
 				);
 
@@ -3558,19 +3175,19 @@
 				// Prevent the bezier going outside of the bounds of the graph
 
 				// Cap puter bezier handles to the upper/lower scale bounds
-				if (controlPoints.next.y > this.chartArea.bottom) {
-					point._model.controlPointNextY = this.chartArea.bottom;
-				} else if (controlPoints.next.y < this.chartArea.top) {
-					point._model.controlPointNextY = this.chartArea.top;
+				if (controlPoints.next.y > this.chart.chartArea.bottom) {
+					point._model.controlPointNextY = this.chart.chartArea.bottom;
+				} else if (controlPoints.next.y < this.chart.chartArea.top) {
+					point._model.controlPointNextY = this.chart.chartArea.top;
 				} else {
 					point._model.controlPointNextY = controlPoints.next.y;
 				}
 
 				// Cap inner bezier handles to the upper/lower scale bounds
-				if (controlPoints.previous.y > this.chartArea.bottom) {
-					point._model.controlPointPreviousY = this.chartArea.bottom;
-				} else if (controlPoints.previous.y < this.chartArea.top) {
-					point._model.controlPointPreviousY = this.chartArea.top;
+				if (controlPoints.previous.y > this.chart.chartArea.bottom) {
+					point._model.controlPointPreviousY = this.chart.chartArea.bottom;
+				} else if (controlPoints.previous.y < this.chart.chartArea.top) {
+					point._model.controlPointPreviousY = this.chart.chartArea.top;
 				} else {
 					point._model.controlPointPreviousY = controlPoints.previous.y;
 				}
@@ -3579,202 +3196,50 @@
 				point.pivot();
 			}, this);
 
-			this.render(animationDuration);
 		},
-		buildScale: function() {
-			var self = this;
 
-			var ScaleConstructor = Chart.scaleService.getScaleConstructor(this.options.scale.type);
-			this.scale = new ScaleConstructor({
-				options: this.options.scale,
-				height: this.chart.height,
-				width: this.chart.width,
-				xCenter: this.chart.width / 2,
-				yCenter: this.chart.height / 2,
-				ctx: this.chart.ctx,
-				labels: this.data.labels,
-				valuesCount: this.data.datasets[0].data.length,
-				data: this.data,
-			});
-
-			this.scale.setScaleSize();
-			this.scale.calculateRange();
-			this.scale.generateTicks();
-			this.scale.buildYLabels();
-		},
 		draw: function(ease) {
 			var easingDecimal = ease || 1;
-			this.clear();
 
-			// Draw all the scales
-			this.scale.draw(this.chartArea);
+			// Transition Point Locations
+			helpers.each(this.getDataset().metaData, function(point, index) {
+				point.transition(easingDecimal);
+			}, this);
 
-			// reverse for-loop for proper stacking
-			for (var i = this.data.datasets.length - 1; i >= 0; i--) {
+			// Transition and Draw the line
+			this.getDataset().metaDataset.transition(easingDecimal).draw();
 
-				var dataset = this.data.datasets[i];
-
-				// Transition Point Locations
-				helpers.each(dataset.metaData, function(point, index) {
-					point.transition(easingDecimal);
-				}, this);
-
-				// Transition and Draw the line
-				dataset.metaDataset.transition(easingDecimal).draw();
-
-				// Draw the points
-				helpers.each(dataset.metaData, function(point) {
-					point.draw();
-				});
-			}
-
-			// Finally draw the tooltip
-			this.tooltip.transition(easingDecimal).draw();
+			// Draw the points
+			helpers.each(this.getDataset().metaData, function(point) {
+				point.draw();
+			});
 		},
-		events: function(e) {
 
-			this.lastActive = this.lastActive || [];
+		setHoverStyle: function(point) {
+			// Point
+			var dataset = this.chart.data.datasets[point._datasetIndex];
+			var index = point._index;
 
-			// Find Active Elements
-			// If exiting chart
-			if (e.type == 'mouseout') {
-				this.active = [];
-			} else {
-				this.active = function() {
-					switch (this.options.hover.mode) {
-						case 'single':
-							return this.getElementAtEvent(e);
-						case 'label':
-							return this.getElementsAtEvent(e);
-						case 'dataset':
-							return this.getDatasetAtEvent(e);
-						default:
-							return e;
-					}
-				}.call(this);
-			}
-
-			// On Hover hook
-			if (this.options.hover.onHover) {
-				this.options.hover.onHover.call(this, this.active);
-			}
-
-			if (e.type == 'mouseup' || e.type == 'click') {
-				if (this.options.onClick) {
-					this.options.onClick.call(this, e, this.active);
-				}
-			}
-
-			var dataset;
-			var index;
-			// Remove styling for last active (even if it may still be active)
-			if (this.lastActive.length) {
-				switch (this.options.hover.mode) {
-					case 'single':
-						dataset = this.data.datasets[this.lastActive[0]._datasetIndex];
-						index = this.lastActive[0]._index;
-
-						this.lastActive[0]._model.radius = this.lastActive[0].custom && this.lastActive[0].custom.radius ? this.lastActive[0].custom.pointRadius : helpers.getValueAtIndexOrDefault(dataset.pointRadius, index, this.options.elements.point.radius);
-						this.lastActive[0]._model.backgroundColor = this.lastActive[0].custom && this.lastActive[0].custom.backgroundColor ? this.lastActive[0].custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointBackgroundColor, index, this.options.elements.point.backgroundColor);
-						this.lastActive[0]._model.borderColor = this.lastActive[0].custom && this.lastActive[0].custom.borderColor ? this.lastActive[0].custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.pointBorderColor, index, this.options.elements.point.borderColor);
-						this.lastActive[0]._model.borderWidth = this.lastActive[0].custom && this.lastActive[0].custom.borderWidth ? this.lastActive[0].custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, this.options.elements.point.borderWidth);
-						break;
-					case 'label':
-						for (var i = 0; i < this.lastActive.length; i++) {
-							dataset = this.data.datasets[this.lastActive[i]._datasetIndex];
-							index = this.lastActive[i]._index;
-
-							this.lastActive[i]._model.radius = this.lastActive[i].custom && this.lastActive[i].custom.radius ? this.lastActive[i].custom.pointRadius : helpers.getValueAtIndexOrDefault(dataset.pointRadius, index, this.options.elements.point.radius);
-							this.lastActive[i]._model.backgroundColor = this.lastActive[i].custom && this.lastActive[i].custom.backgroundColor ? this.lastActive[i].custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointBackgroundColor, index, this.options.elements.point.backgroundColor);
-							this.lastActive[i]._model.borderColor = this.lastActive[i].custom && this.lastActive[i].custom.borderColor ? this.lastActive[i].custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.pointBorderColor, index, this.options.elements.point.borderColor);
-							this.lastActive[i]._model.borderWidth = this.lastActive[i].custom && this.lastActive[i].custom.borderWidth ? this.lastActive[i].custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, this.options.elements.point.borderWidth);
-						}
-						break;
-					case 'dataset':
-						break;
-					default:
-						// Don't change anything
-				}
-			}
-
-			// Built in hover styling
-			if (this.active.length && this.options.hover.mode) {
-				switch (this.options.hover.mode) {
-					case 'single':
-						dataset = this.data.datasets[this.active[0]._datasetIndex];
-						index = this.active[0]._index;
-
-						this.active[0]._model.radius = this.active[0].custom && this.active[0].custom.hoverRadius ? this.active[0].custom.hoverRadius : helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.active[0]._model.radius + 2);
-						this.active[0]._model.backgroundColor = this.active[0].custom && this.active[0].custom.hoverBackgroundColor ? this.active[0].custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.color(this.active[0]._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
-						this.active[0]._model.borderColor = this.active[0].custom && this.active[0].custom.hoverBorderColor ? this.active[0].custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.color(this.active[0]._model.borderColor).saturate(0.5).darken(0.1).rgbString());
-						this.active[0]._model.borderWidth = this.active[0].custom && this.active[0].custom.hoverBorderWidth ? this.active[0].custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, this.active[0]._model.borderWidth + 2);
-						break;
-					case 'label':
-						for (var i = 0; i < this.active.length; i++) {
-							dataset = this.data.datasets[this.active[i]._datasetIndex];
-							index = this.active[i]._index;
-
-							this.active[i]._model.radius = this.active[i].custom && this.active[i].custom.hoverRadius ? this.active[i].custom.hoverRadius : helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.active[i]._model.radius + 2);
-							this.active[i]._model.backgroundColor = this.active[i].custom && this.active[i].custom.hoverBackgroundColor ? this.active[i].custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.color(this.active[i]._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
-							this.active[i]._model.borderColor = this.active[i].custom && this.active[i].custom.hoverBorderColor ? this.active[i].custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.color(this.active[i]._model.borderColor).saturate(0.5).darken(0.1).rgbString());
-							this.active[i]._model.borderWidth = this.active[i].custom && this.active[i].custom.hoverBorderWidth ? this.active[i].custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, this.active[i]._model.borderWidth + 2);
-						}
-						break;
-					case 'dataset':
-						break;
-					default:
-						// Don't change anything
-				}
-			}
-
-			// Built in Tooltips
-			if (this.options.tooltips.enabled) {
-
-				// The usual updates
-				this.tooltip.initialize();
-
-				// Active
-				if (this.active.length) {
-					this.tooltip._model.opacity = 1;
-
-					helpers.extend(this.tooltip, {
-						_active: this.active,
-					});
-
-					this.tooltip.update();
-				} else {
-					// Inactive
-					this.tooltip._model.opacity = 0;
-				}
-			}
-
-			// Hover animations
-			this.tooltip.pivot();
-
-			if (!this.animating) {
-				var changed;
-
-				helpers.each(this.active, function(element, index) {
-					if (element !== this.lastActive[index]) {
-						changed = true;
-					}
-				}, this);
-
-				// If entering, leaving, or changing elements, animate the change via pivot
-				if ((!this.lastActive.length && this.active.length) ||
-					(this.lastActive.length && !this.active.length) ||
-					(this.lastActive.length && this.active.length && changed)) {
-
-					this.stop();
-					this.render(this.options.hover.animationDuration);
-				}
-			}
-
-			// Remember Last Active
-			this.lastActive = this.active;
-			return this;
+			point._model.radius = point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.chart.options.elements.point.hoverRadius);
+			point._model.backgroundColor = point.custom && point.custom.hoverBackgroundColor ? point.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.color(point._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
+			point._model.borderColor = point.custom && point.custom.hoverBorderColor ? point.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.color(point._model.borderColor).saturate(0.5).darken(0.1).rgbString());
+			point._model.borderWidth = point.custom && point.custom.hoverBorderWidth ? point.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, point._model.borderWidth);
 		},
+
+		removeHoverStyle: function(point) {
+			var dataset = this.chart.data.datasets[point._datasetIndex];
+			var index = point._index;
+
+			point._model.radius = point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().radius, index, this.chart.options.elements.point.radius);
+			point._model.backgroundColor = point.custom && point.custom.backgroundColor ? point.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBackgroundColor, index, this.chart.options.elements.point.backgroundColor);
+			point._model.borderColor = point.custom && point.custom.borderColor ? point.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderColor, index, this.chart.options.elements.point.borderColor);
+			point._model.borderWidth = point.custom && point.custom.borderWidth ? point.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderWidth, index, this.chart.options.elements.point.borderWidth);
+		}
+
 	});
+
+
+
 }).call(this);
 
 (function() {
@@ -4112,6 +3577,7 @@
 		},
 
 		// scale numbers
+		reverse: false,
 		beginAtZero: false,
 		override: null,
 
@@ -4211,6 +3677,16 @@
 			// range of the scale
 			this.max = helpers.max(this.ticks);
 			this.min = helpers.min(this.ticks);
+
+			if (this.options.reverse) {
+				this.ticks.reverse();
+
+				this.start = this.max;
+				this.end = this.min;
+			} else {
+				this.start = this.min;
+				this.end = this.max;
+			}
 		},
 		buildLabels: function() {
 			// We assume that this has been run after ticks have been generated. We try to figure out
@@ -4241,13 +3717,13 @@
 			// This must be called after fit has been run so that 
 			//      this.left, this.top, this.right, and this.bottom have been defined
 			var pixel;
-			var range = this.max - this.min;
+			var range = this.end - this.start;
 
 			if (this.isHorizontal()) {
-				pixel = this.left + (this.width / range * (value - this.min));
+				pixel = this.left + (this.width / range * (value - this.start));
 			} else {
 				// Bottom - top since pixels increase downard on a screen
-				pixel = this.bottom - (this.height / range * (value - this.min));
+				pixel = this.bottom - (this.height / range * (value - this.start));
 			}
 
 			return pixel;
@@ -4658,7 +4134,7 @@
 		display: true,
 
 		//Boolean - Whether to animate scaling the chart from the centre
-		animate: false,
+		animate: true,
 
 		lineArc: false,
 
@@ -4717,7 +4193,13 @@
 
 	var LinearRadialScale = Chart.Element.extend({
 		initialize: function() {
+			this.height = this.chart.height;
+			this.width = this.chart.width;
+			this.xCenter = this.chart.width / 2;
+			this.yCenter = this.chart.height / 2;
 			this.size = helpers.min([this.height, this.width]);
+			this.valuesCount = this.data.labels.length;
+			this.labels = this.data.labels;
 			this.drawingArea = (this.options.display) ? (this.size / 2) - (this.options.labels.fontSize / 2 + this.options.labels.backdropPaddingY) : (this.size / 2);
 		},
 		update: function() {
@@ -5118,7 +4600,7 @@
 		borderWidth: 2
 	};
 
-	Chart.Arc = Chart.Element.extend({
+	Chart.elements.Arc = Chart.Element.extend({
 		inLabelRange: function(mouseX) {
 			var vm = this._view;
 
