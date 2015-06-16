@@ -180,7 +180,6 @@
 			// range of the scale
 			this.max = helpers.max(this.ticks);
 			this.min = helpers.min(this.ticks);
-			console.log(this);
 		},
 		buildYLabels: function() {
 			this.yLabels = [];
