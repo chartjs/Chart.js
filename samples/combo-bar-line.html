@@ -23,19 +23,23 @@
     var barChartData = {
         labels: ["January", "February", "March", "April", "May", "June", "July"],
         datasets: [{
-            type: 'line',
             label: 'Dataset 1',
-            backgroundColor: "rgba(220,220,220,0.5)",
-            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+            backgroundColor: "rgba(151,187,205,0.5)",
+            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
+            borderColor: 'white',
+            borderWidth: 2
         }, {
             label: 'Dataset 2',
             backgroundColor: "rgba(151,187,205,0.5)",
-            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
+            borderColor: 'white',
+            borderWidth: 2
         }, {
+            type: 'line',
             label: 'Dataset 3',
-            backgroundColor: "rgba(151,187,205,0.5)",
+            backgroundColor: "rgba(220,220,220,0.5)",
             data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
-        }]
+        }, ]
 
     };
     window.onload = function() {
