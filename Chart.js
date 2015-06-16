@@ -3770,6 +3770,11 @@
 					}
 				}, this);
 			}
+
+			if (this.min === this.max) {
+				this.min--;
+				this.max++;
+			}
 		},
 
 		getPointPixelForValue: function(rawValue, index, datasetIndex) {
