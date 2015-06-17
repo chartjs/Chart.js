@@ -12,12 +12,17 @@
         <canvas id="canvas" height="450" width="600"></canvas>
     </div>
     <button id="randomizeData">Randomize Data</button>
+    <button id="addDataset">Add Dataset</button>
+    <button id="removeDataset">Remove Dataset</button>
     <script>
     var randomScalingFactor = function() {
         return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 100);
     };
     var randomColorFactor = function() {
         return Math.round(Math.random() * 255);
+    };
+    var randomColor = function() {
+        return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
     };
 
     var barChartData = {
@@ -51,11 +56,25 @@
     $('#randomizeData').click(function() {
         var zero = Math.random() < 0.2 ? [0, 0, 0, 0, 0, 0, 0] : false;
         $.each(barChartData.datasets, function(i, dataset) {
-            dataset.backgroundColor = 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
+            dataset.backgroundColor = randomColor();
             dataset.data = zero || [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()];
 
         });
         window.myBar.update();
+    });
+
+    $('#addDataset').click(function() {
+        var newDataset = {
+            label: 'Dataset ' + barChartData.datasets.length,
+            backgroundColor: randomColor(),
+            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+        };
+
+        window.myBar.addDataset(newDataset, 1);
+    });
+
+    $('#removeDataset').click(function() {
+        window.myBar.removeDataset(0);
     });
     </script>
 </body>
