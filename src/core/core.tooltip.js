@@ -207,6 +207,10 @@
 			var ctx = this._chart.ctx;
 			var vm = this._view;
 
+			if (this._options.tooltips.custom) {
+				this._options.tooltips.custom(this);
+			}
+
 			switch (this._options.hover.mode) {
 				case 'single':
 
@@ -238,50 +242,46 @@
 					ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
 
 					// Custom Tooltips
-					if (this._options.tooltips.custom) {
-						this._options.tooltips.custom(this._view);
-					} else {
-						switch (vm.yAlign) {
-							case "above":
-								//Draw a caret above the x/y
-								ctx.beginPath();
-								ctx.moveTo(vm.x, vm.y - caretPadding);
-								ctx.lineTo(vm.x + vm.caretHeight, vm.y - (caretPadding + vm.caretHeight));
-								ctx.lineTo(vm.x - vm.caretHeight, vm.y - (caretPadding + vm.caretHeight));
-								ctx.closePath();
-								ctx.fill();
-								break;
-							case "below":
-								tooltipY = vm.y + caretPadding + vm.caretHeight;
-								//Draw a caret below the x/y
-								ctx.beginPath();
-								ctx.moveTo(vm.x, vm.y + caretPadding);
-								ctx.lineTo(vm.x + vm.caretHeight, vm.y + caretPadding + vm.caretHeight);
-								ctx.lineTo(vm.x - vm.caretHeight, vm.y + caretPadding + vm.caretHeight);
-								ctx.closePath();
-								ctx.fill();
-								break;
-						}
 
-						switch (vm.xAlign) {
-							case "left":
-								tooltipX = vm.x - tooltipWidth + (vm.cornerRadius + vm.caretHeight);
-								break;
-							case "right":
-								tooltipX = vm.x - (vm.cornerRadius + vm.caretHeight);
-								break;
-						}
-
-						helpers.drawRoundedRectangle(ctx, tooltipX, tooltipY, tooltipWidth, tooltipRectHeight, vm.cornerRadius);
-
-						ctx.fill();
-
-						ctx.fillStyle = helpers.color(vm.textColor).alpha(vm.opacity).rgbString();
-						ctx.textAlign = "center";
-						ctx.textBaseline = "middle";
-						ctx.fillText(vm.text, tooltipX + tooltipWidth / 2, tooltipY + tooltipRectHeight / 2);
-
+					switch (vm.yAlign) {
+						case "above":
+							//Draw a caret above the x/y
+							ctx.beginPath();
+							ctx.moveTo(vm.x, vm.y - caretPadding);
+							ctx.lineTo(vm.x + vm.caretHeight, vm.y - (caretPadding + vm.caretHeight));
+							ctx.lineTo(vm.x - vm.caretHeight, vm.y - (caretPadding + vm.caretHeight));
+							ctx.closePath();
+							ctx.fill();
+							break;
+						case "below":
+							tooltipY = vm.y + caretPadding + vm.caretHeight;
+							//Draw a caret below the x/y
+							ctx.beginPath();
+							ctx.moveTo(vm.x, vm.y + caretPadding);
+							ctx.lineTo(vm.x + vm.caretHeight, vm.y + caretPadding + vm.caretHeight);
+							ctx.lineTo(vm.x - vm.caretHeight, vm.y + caretPadding + vm.caretHeight);
+							ctx.closePath();
+							ctx.fill();
+							break;
 					}
+
+					switch (vm.xAlign) {
+						case "left":
+							tooltipX = vm.x - tooltipWidth + (vm.cornerRadius + vm.caretHeight);
+							break;
+						case "right":
+							tooltipX = vm.x - (vm.cornerRadius + vm.caretHeight);
+							break;
+					}
+
+					helpers.drawRoundedRectangle(ctx, tooltipX, tooltipY, tooltipWidth, tooltipRectHeight, vm.cornerRadius);
+
+					ctx.fill();
+
+					ctx.fillStyle = helpers.color(vm.textColor).alpha(vm.opacity).rgbString();
+					ctx.textAlign = "center";
+					ctx.textBaseline = "middle";
+					ctx.fillText(vm.text, tooltipX + tooltipWidth / 2, tooltipY + tooltipRectHeight / 2);
 					break;
 				case 'label':
 
