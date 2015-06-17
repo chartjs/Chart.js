@@ -238,8 +238,8 @@
 					ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
 
 					// Custom Tooltips
-					if (this._custom) {
-						this._custom(this._view);
+					if (this._options.tooltips.custom) {
+						this._options.tooltips.custom(this._view);
 					} else {
 						switch (vm.yAlign) {
 							case "above":
