@@ -19,12 +19,17 @@
     <br>
     <br>
     <button id="randomizeData">Randomize Data</button>
+    <button id="addDataset">Add Dataset</button>
+    <button id="removeDataset">Remove Dataset</button>
     <script>
     var randomScalingFactor = function() {
         return Math.round(Math.random() * 100 * (Math.random() > 0.5 ? -1 : 1));
     };
+    var randomColorFactor = function() {
+        return Math.round(Math.random() * 255);
+    };
     var randomColor = function(opacity) {
-        return 'rgba(' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + (opacity || '.3') + ')';
+        return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
     };
 
     var config = {
@@ -70,10 +75,27 @@
 
     $('#randomizeData').click(function() {
         config.data.datasets[0].data = [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()];
-
         config.data.datasets[1].data = [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()];
 
         window.myLine.update();
+    });
+
+    $('#addDataset').click(function() {
+        var newDataset = {
+            label: 'Dataset ' + config.data.datasets.length,
+            borderColor: randomColor(0.4),
+            backgroundColor: randomColor(0.5),
+            pointBorderColor: randomColor(0.7),
+            pointBackgroundColor: randomColor(0.5),
+            pointBorderWidth: 1,
+            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+        };
+
+        window.myLine.addDataset(newDataset);
+    });
+
+    $('#removeDataset').click(function() {
+        window.myLine.removeDataset(0);
     });
     </script>
 </body>

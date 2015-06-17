@@ -38,7 +38,9 @@
 			this.linkScales();
 			this.addElements();
 		},
-
+		updateIndex: function(datasetIndex) {
+			this.index = datasetIndex;
+		},
 		linkScales: function() {
 			// no scales for doughnut
 		},

@@ -8,16 +8,21 @@
 </head>
 
 <body>
-    <div style="width:100%">
+    <div style="width:50%">
         <canvas id="canvas" height="450" width="450"></canvas>
     </div>
     <button id="randomizeData">Randomize Data</button>
+    <button id="addDataset">Add Dataset</button>
+    <button id="removeDataset">Remove Dataset</button>
     <script>
     var randomScalingFactor = function() {
         return Math.round(Math.random() * 100);
     };
     var randomColorFactor = function() {
         return Math.round(Math.random() * 255);
+    };
+    var randomColor = function(opacity) {
+        return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
     };
 
     var config = {
@@ -52,6 +57,24 @@
         config.data.datasets[1].data = [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()];
 
         window.myRadar.update();
+    });
+
+    $('#addDataset').click(function() {
+        var newDataset = {
+            label: 'Dataset ' + config.data.datasets.length,
+            borderColor: randomColor(0.4),
+            backgroundColor: randomColor(0.5),
+            pointBorderColor: randomColor(0.7),
+            pointBackgroundColor: randomColor(0.5),
+            pointBorderWidth: 1,
+            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+        };
+
+        window.myRadar.addDataset(newDataset);
+    });
+
+    $('#removeDataset').click(function() {
+        window.myRadar.removeDataset(0);
     });
     </script>
 </body>

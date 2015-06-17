@@ -52,7 +52,7 @@
 			// Make sure controllers are built first so that each dataset is bound to an axis before the scales
 			// are built
 			this.ensureScalesHaveIDs();
-			this.buildControllers();
+			this.buildOrUpdateControllers();
 			this.buildScales();
 			this.resetElements();
 			this.initToolTip();
@@ -73,6 +73,23 @@
 			// Stops any current animation loop occuring
 			Chart.animationService.cancelAnimation(this);
 			return this;
+		},
+
+		addDataset: function addDataset(dataset, index) {
+			if (index !== undefined) {
+				this.data.datasets.splice(index, 0, dataset);
+			} else {
+				this.data.datasets.push(dataset);
+			}
+			
+			this.buildOrUpdateControllers();
+			dataset.controller.reset(); // so that animation looks ok
+			this.update();
+		},
+		removeDataset: function removeDataset(index) {
+			this.data.datasets.splice(index, 1);
+			this.buildOrUpdateControllers();
+			this.update();
 		},
 
 		resize: function resize(silent) {
@@ -162,7 +179,7 @@
 			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
 		},
 
-		buildControllers: function() {
+		buildOrUpdateControllers: function() {
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				var type = dataset.type || this.config.type;
 				if (dataset.controller) {

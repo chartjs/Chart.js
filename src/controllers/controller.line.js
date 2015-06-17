@@ -36,6 +36,9 @@
 			this.linkScales();
 			this.addElements();
 		},
+		updateIndex: function(datasetIndex) {
+			this.index = datasetIndex;
+		},
 
 		linkScales: function() {
 			if (!this.getDataset().xAxisID) {

@@ -18,16 +18,21 @@
 </head>
 
 <body>
-    <div id="canvas-holder" style="width:100%">
+    <div id="canvas-holder" style="width:50%">
         <canvas id="chart-area" width="500" height="500" />
     </div>
     <button id="randomizeData">Randomize Data</button>
+    <button id="addDataset">Add Dataset</button>
+    <button id="removeDataset">Remove Dataset</button>
     <script>
     var randomScalingFactor = function() {
         return Math.round(Math.random() * 100);
     };
     var randomColorFactor = function() {
         return Math.round(Math.random() * 255);
+    };
+    var randomColor = function(opacity) {
+        return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
     };
 
     var config = {
@@ -105,6 +110,19 @@
             });
         });
         window.myDoughnut.update();
+    });
+
+    $('#addDataset').click(function() {
+        var newDataset = {
+            backgroundColor: [randomColor(0.7), randomColor(0.7), randomColor(0.7), randomColor(0.7), randomColor(0.7)],
+            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+        };
+
+        window.myDoughnut.addDataset(newDataset);
+    });
+
+    $('#removeDataset').click(function() {
+        window.myDoughnut.removeDataset(0);
     });
     </script>
 </body>

@@ -31,6 +31,9 @@
 			this.linkScales();
 			this.addElements();
 		},
+		updateIndex: function(datasetIndex) {
+			this.index = datasetIndex;
+		},
 
 		linkScales: function() {
 			// No need. Single scale only
