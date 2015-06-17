@@ -40,7 +40,9 @@
 			this.linkScales();
 			this.addElements();
 		},
-
+		updateIndex: function(datasetIndex) {
+			this.index = datasetIndex;
+		},
 		linkScales: function() {
 			if (!this.getDataset().xAxisID) {
 				this.getDataset().xAxisID = this.chart.options.scales.xAxes[0].id;
