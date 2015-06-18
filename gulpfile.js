@@ -28,7 +28,7 @@ gulp.task('build', function(){
 		isCustom = !!(util.env.types),
 		outputDir = (isCustom) ? 'custom' : '.';
 	if (isCustom){
-		util.env.types.split(',').forEach(function(type){ return srcFiles.push(FileName(type))});
+		util.env.types.split(',').forEach(function(type){ return srcFiles.push(FileName(type));});
 	}
 	else{
 		// Seems gulp-concat remove duplicates - nice!
@@ -46,7 +46,7 @@ gulp.task('build', function(){
 
 	function FileName(moduleName){
 		return srcDir+'Chart.'+moduleName+'.js';
-	};
+	}
 });
 
 /*
@@ -109,7 +109,7 @@ gulp.task('module-sizes', function(){
 	.pipe(size({
 		showFiles: true,
 		gzip: true
-	}))
+	}));
 });
 
 gulp.task('watch', function(){

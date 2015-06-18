@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Doughnut Chart</title>
+		<script src="../src/Chart.Core.js"></script>
+		<script src="../src/Chart.Doughnut.js"></script>
+		<style>
+			body{
+				padding: 0;
+				margin: 0;
+			}
+			#canvas-holder{
+				width:30%;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="canvas-holder">
+			<canvas id="chart-area" width="500" height="500"/>
+		</div>
+
+
+	<script>
+
+		var doughnutData = [
+				{
+					value: 1,
+					label: "One"
+				},
+				{
+					value: 2,
+					label: "Two"
+				},
+				{
+					value: 3,
+					label: "Three"
+				},
+				{
+					value: 4,
+					label: "Four"
+				},
+				{
+					value: 5,
+					label: "Five"
+				}
+
+			];
+
+			window.onload = function(){
+				var ctx = document.getElementById("chart-area").getContext("2d");
+				window.myDoughnut = new Chart(ctx).Doughnut(doughnutData, {responsive : true});
+			};
+
+
+
+	</script>
+	</body>
+</html>
