@@ -73,9 +73,11 @@
 			this.xCenter = this.chart.width / 2;
 			this.yCenter = this.chart.height / 2;
 			this.size = helpers.min([this.height, this.width]);
-			this.valuesCount = this.data.labels.length;
 			this.labels = this.data.labels;
 			this.drawingArea = (this.options.display) ? (this.size / 2) - (this.options.labels.fontSize / 2 + this.options.labels.backdropPaddingY) : (this.size / 2);
+		},
+		getValueCount: function() {
+			return this.data.labels.length;
 		},
 		update: function() {
 			if (!this.options.lineArc) {
@@ -201,7 +203,7 @@
 			}, this);
 		},
 		getCircumference: function() {
-			return ((Math.PI * 2) / this.valuesCount);
+			return ((Math.PI * 2) / this.getValueCount());
 		},
 		setScaleSize: function() {
 			/*
@@ -252,13 +254,13 @@
 				radiusReductionLeft,
 				maxWidthRadius;
 			this.ctx.font = helpers.fontString(this.options.pointLabels.fontSize, this.options.pointLabels.fontStyle, this.options.pointLabels.fontFamily);
-			for (i = 0; i < this.valuesCount; i++) {
+			for (i = 0; i < this.getValueCount(); i++) {
 				// 5px to space the text slightly out - similar to what we do in the draw function.
 				pointPosition = this.getPointPosition(i, largestPossibleRadius);
 				textWidth = this.ctx.measureText(helpers.template(this.options.labels.template, {
 					value: this.labels[i]
 				})).width + 5;
-				if (i === 0 || i === this.valuesCount / 2) {
+				if (i === 0 || i === this.getValueCount() / 2) {
 					// If we're at index zero, or exactly the middle, we're at exactly the top/bottom
 					// of the radar chart, so text will be aligned centrally, so we'll half it and compare
 					// w/left and right text sizes
@@ -271,13 +273,13 @@
 						furthestLeft = pointPosition.x - halfTextWidth;
 						furthestLeftIndex = i;
 					}
-				} else if (i < this.valuesCount / 2) {
+				} else if (i < this.getValueCount() / 2) {
 					// Less than half the values means we'll left align the text
 					if (pointPosition.x + textWidth > furthestRight) {
 						furthestRight = pointPosition.x + textWidth;
 						furthestRightIndex = i;
 					}
-				} else if (i > this.valuesCount / 2) {
+				} else if (i > this.getValueCount() / 2) {
 					// More than half the values means we'll right align the text
 					if (pointPosition.x - textWidth < furthestLeft) {
 						furthestLeft = pointPosition.x - textWidth;
@@ -319,7 +321,7 @@
 		},
 
 		getIndexAngle: function(index) {
-			var angleMultiplier = (Math.PI * 2) / this.valuesCount;
+			var angleMultiplier = (Math.PI * 2) / this.getValueCount();
 			// Start from the top instead of right, so remove a quarter of the circle
 
 			return index * angleMultiplier - (Math.PI / 2);
@@ -362,7 +364,7 @@
 							} else {
 								// Draw straight lines connecting each index
 								ctx.beginPath();
-								for (var i = 0; i < this.valuesCount; i++) {
+								for (var i = 0; i < this.getValueCount(); i++) {
 									var pointPosition = this.getPointPosition(i, this.getDistanceFromCenterForValue(this.ticks[index]));
 									if (i === 0) {
 										ctx.moveTo(pointPosition.x, pointPosition.y);
@@ -401,7 +403,7 @@
 					ctx.lineWidth = this.options.angleLines.lineWidth;
 					ctx.strokeStyle = this.options.angleLines.color;
 
-					for (var i = this.valuesCount - 1; i >= 0; i--) {
+					for (var i = this.getValueCount() - 1; i >= 0; i--) {
 						if (this.options.angleLines.show) {
 							var outerPosition = this.getPointPosition(i, this.getDistanceFromCenterForValue(this.max));
 							ctx.beginPath();
