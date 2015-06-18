@@ -177,6 +177,9 @@ Chart.defaults.global = {
 	// String - Tooltip title font colour
 	tooltipTitleFontColor: "#fff",
 
+	// Number - Sets the number of decimal places of the tooltip `percent` template property
+	tooltipPercentPrecision: 2,
+
 	// Number - pixel width of padding around tooltip text
 	tooltipYPadding: 6,
 

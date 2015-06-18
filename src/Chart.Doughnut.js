@@ -104,7 +104,7 @@
 				startAngle : Math.PI * 1.5,
 				circumference : (this.options.animateRotate) ? 0 : this.calculateCircumference(segment.value),
 				label : segment.label,
-				percent: ((segment.value/this.total)*100).toFixed((typeof this.options.tooltipPercentPrecision === 'number' ?  this.options.tooltipPercentPrecision : 2))
+				percent: ((segment.value/this.total)*100).toFixed((typeof this.options.tooltipPercentPrecision === 'number' ?  this.options.tooltipPercentPrecision : 2)) 
 			}));
 			if (!silent){
 				this.reflow();
