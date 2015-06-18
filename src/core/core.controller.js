@@ -92,6 +92,30 @@
 			this.update();
 		},
 
+		// Add data to the given dataset
+		// @param data: the data to add
+		// @param {Number} datasetIndex : the index of the dataset to add to
+		// @param {Number} index : the index of the data
+		addData: function addData(data, datasetIndex, index) {
+			if (datasetIndex < this.data.datasets.length) {
+				if (index === undefined) {
+					index = this.data.datasets[datasetIndex].data.length;
+				}
+				
+				this.data.datasets[datasetIndex].data.splice(index, 0, data);
+				this.data.datasets[datasetIndex].controller.addElementAndReset(index);
+				this.update();
+			}
+		},
+
+		removeData: function removeData(datasetIndex, index) {
+			if (datasetIndex < this.data.datasets.length) {
+				this.data.datasets[datasetIndex].data.splice(index, 1);
+				this.data.datasets[datasetIndex].controller.removeElement(index);
+				this.update();
+			}
+		},
+
 		resize: function resize(silent) {
 			this.stop();
 			var canvas = this.chart.canvas,

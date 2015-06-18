@@ -14,6 +14,8 @@
     <button id="randomizeData">Randomize Data</button>
     <button id="addDataset">Add Dataset</button>
     <button id="removeDataset">Remove Dataset</button>
+    <button id="addData">Add Data</button>
+    <button id="removeData">Remove Data</button>
     <script>
     var randomScalingFactor = function() {
         return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 100);
@@ -54,10 +56,12 @@
     };
 
     $('#randomizeData').click(function() {
-        var zero = Math.random() < 0.2 ? [0, 0, 0, 0, 0, 0, 0] : false;
+        var zero = Math.random() < 0.2 ? true : false;
         $.each(barChartData.datasets, function(i, dataset) {
             dataset.backgroundColor = randomColor();
-            dataset.data = zero || [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()];
+            dataset.data = dataset.data.map(function() {
+                return zero ? 0.0 : randomScalingFactor();
+            });
 
         });
         window.myBar.update();
@@ -67,14 +71,36 @@
         var newDataset = {
             label: 'Dataset ' + barChartData.datasets.length,
             backgroundColor: randomColor(),
-            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+            data: []
         };
+
+        for (var index = 0; index < barChartData.labels.length; ++index) {
+            newDataset.data.push(randomScalingFactor());
+        }
 
         window.myBar.addDataset(newDataset, 1);
     });
 
+    $('#addData').click(function() {
+        if (barChartData.datasets.length > 0) {
+            barChartData.labels.push('dataset #' + barChartData.labels.length);
+
+            for (var index = 0; index < barChartData.datasets.length; ++index) {
+                window.myBar.addData(randomScalingFactor(), index);
+            }
+        }
+    });
+
     $('#removeDataset').click(function() {
         window.myBar.removeDataset(0);
+    });
+
+    $('#removeData').click(function() {
+        barChartData.labels.splice(-1, 1); // remove the label first
+
+        barChartData.datasets.forEach(function(dataset, datasetIndex) {
+            window.myBar.removeData(datasetIndex, -1);
+        });
     });
     </script>
 </body>

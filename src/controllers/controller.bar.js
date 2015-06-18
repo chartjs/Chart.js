@@ -71,56 +71,71 @@
 				});
 			}, this);
 		},
+		addElementAndReset: function(index) {
+			this.getDataset().metaData = this.getDataset().metaData || [];
+			var rectangle = new Chart.elements.Rectangle({
+				_chart: this.chart.chart,
+				_datasetIndex: this.index,
+				_index: index,
+			});
+			this.updateElement(rectangle, index, true);
+			this.getDataset().metaData.splice(index, 0, rectangle);
+		},
+		removeElement: function(index) {
+			this.getDataset().metaData.splice(index, 1);
+		},
 
 		reset: function() {
 			this.update(true);
 		},
 
 		update: function(reset) {
+			helpers.each(this.getDataset().metaData, function(rectangle, index) {
+				this.updateElement(rectangle, index, reset);
+			}, this);
+		},
 
+		updateElement: function updateElement(rectangle, index, reset) {
 			var xScale = this.getScaleForId(this.getDataset().xAxisID);
 			var yScale = this.getScaleForId(this.getDataset().yAxisID);
-			helpers.each(this.getDataset().metaData, function(rectangle, index) {
+			var yScalePoint;
 
-				var yScalePoint;
+			if (yScale.min < 0 && yScale.max < 0) {
+				// all less than 0. use the top
+				yScalePoint = yScale.getPixelForValue(yScale.max);
+			} else if (yScale.min > 0 && yScale.max > 0) {
+				yScalePoint = yScale.getPixelForValue(yScale.min);
+			} else {
+				yScalePoint = yScale.getPixelForValue(0);
+			}
 
-				if (yScale.min < 0 && yScale.max < 0) {
-					// all less than 0. use the top
-					yScalePoint = yScale.getPixelForValue(yScale.max);
-				} else if (yScale.min > 0 && yScale.max > 0) {
-					yScalePoint = yScale.getPixelForValue(yScale.min);
-				} else {
-					yScalePoint = yScale.getPixelForValue(0);
-				}
-
-				helpers.extend(rectangle, {
-					// Utility
-					_chart: this.chart.chart,
-					_xScale: xScale,
-					_yScale: yScale,
-					_datasetIndex: this.index,
-					_index: index,
+			helpers.extend(rectangle, {
+				// Utility
+				_chart: this.chart.chart,
+				_xScale: xScale,
+				_yScale: yScale,
+				_datasetIndex: this.index,
+				_index: index,
 
 
-					// Desired view properties
-					_model: {
-						x: xScale.calculateBarX(this.chart.data.datasets.length, this.index, index),
-						y: reset ? yScalePoint : yScale.calculateBarY(this.index, index),
+				// Desired view properties
+				_model: {
+					x: xScale.calculateBarX(this.chart.data.datasets.length, this.index, index),
+					y: reset ? yScalePoint : yScale.calculateBarY(this.index, index),
 
-						// Tooltip
-						label: this.chart.data.labels[index],
-						datasetLabel: this.getDataset().label,
+					// Tooltip
+					label: this.chart.data.labels[index],
+					datasetLabel: this.getDataset().label,
 
-						// Appearance
-						base: yScale.calculateBarBase(this.index, index),
-						width: xScale.calculateBarWidth(this.chart.data.datasets.length),
-						backgroundColor: rectangle.custom && rectangle.custom.backgroundColor ? rectangle.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.rectangle.backgroundColor),
-						borderColor: rectangle.custom && rectangle.custom.borderColor ? rectangle.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.rectangle.borderColor),
-						borderWidth: rectangle.custom && rectangle.custom.borderWidth ? rectangle.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.rectangle.borderWidth),
-					},
-				});
-				rectangle.pivot();
-			}, this);
+					// Appearance
+					base: yScale.calculateBarBase(this.index, index),
+					width: xScale.calculateBarWidth(this.chart.data.datasets.length),
+					backgroundColor: rectangle.custom && rectangle.custom.backgroundColor ? rectangle.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.rectangle.backgroundColor),
+					borderColor: rectangle.custom && rectangle.custom.borderColor ? rectangle.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.rectangle.borderColor),
+					borderWidth: rectangle.custom && rectangle.custom.borderWidth ? rectangle.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.rectangle.borderWidth),
+				},
+			});
+			rectangle.pivot();
 		},
 
 		draw: function(ease) {
