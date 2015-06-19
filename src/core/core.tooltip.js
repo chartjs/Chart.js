@@ -174,7 +174,7 @@
 
 					this._model.height = (labels.length * this._model.fontSize) + ((labels.length - 1) * (this._model.fontSize / 2)) + (this._model.yPadding * 2) + this._model.titleFontSize * 1.5;
 
-					var titleWidth = ctx.measureText(this.title).width,
+					var titleWidth = ctx.measureText(this._model.title).width,
 						//Label has a legend square as well so account for this.
 						labelWidth = helpers.longestText(ctx, this.font, labels) + this._model.fontSize + 3,
 						longestTextWidth = helpers.max([labelWidth, titleWidth]);

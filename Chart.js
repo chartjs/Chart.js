@@ -2154,7 +2154,7 @@
 
 					this._model.height = (labels.length * this._model.fontSize) + ((labels.length - 1) * (this._model.fontSize / 2)) + (this._model.yPadding * 2) + this._model.titleFontSize * 1.5;
 
-					var titleWidth = ctx.measureText(this.title).width,
+					var titleWidth = ctx.measureText(this._model.title).width,
 						//Label has a legend square as well so account for this.
 						labelWidth = helpers.longestText(ctx, this.font, labels) + this._model.fontSize + 3,
 						longestTextWidth = helpers.max([labelWidth, titleWidth]);
@@ -2741,13 +2741,32 @@
 				});
 			}, this);
 		},
+		addElementAndReset: function(index) {
+			this.getDataset().metaData = this.getDataset().metaData || [];
+			var point = new Chart.elements.Point({
+				_chart: this.chart.chart,
+				_datasetIndex: this.index,
+				_index: index,
+			});
+
+			// Reset the point
+			this.updateElement(point, index, true);
+
+			// Add to the points array
+			this.getDataset().metaData.splice(index, 0, point);
+
+			// Make sure bezier control points are updated
+			this.updateBezierControlPoints();
+		},
+		removeElement: function(index) {
+			this.getDataset().metaData.splice(index, 1);
+		},
 
 		reset: function() {
 			this.update(true);
 		},
 
 		update: function(reset) {
-
 			var line = this.getDataset().metaDataset;
 			var points = this.getDataset().metaData;
 
@@ -2762,7 +2781,6 @@
 			} else {
 				scaleBase = yScale.getPixelForValue(0);
 			}
-
 
 			// Update Line
 			helpers.extend(line, {
@@ -2791,33 +2809,52 @@
 
 			// Update Points
 			helpers.each(points, function(point, index) {
-				helpers.extend(point, {
-					// Utility
-					_chart: this.chart.chart,
-					_xScale: xScale,
-					_yScale: yScale,
-					_datasetIndex: this.index,
-					_index: index,
-
-					// Desired view properties
-					_model: {
-						x: xScale.getPointPixelForValue(this.getDataset().data[index], index, this.index),
-						y: reset ? scaleBase : yScale.getPointPixelForValue(this.getDataset().data[index], index, this.index),
-						// Appearance
-						tension: point.custom && point.custom.tension ? point.custom.tension : this.chart.options.elements.line.tension,
-						radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().radius, index, this.chart.options.elements.point.radius),
-						backgroundColor: point.custom && point.custom.backgroundColor ? point.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBackgroundColor, index, this.chart.options.elements.point.backgroundColor),
-						borderColor: point.custom && point.custom.borderColor ? point.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderColor, index, this.chart.options.elements.point.borderColor),
-						borderWidth: point.custom && point.custom.borderWidth ? point.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderWidth, index, this.chart.options.elements.point.borderWidth),
-						skip: point.custom && point.custom.skip ? point.custom.skip : this.getDataset().data[index] === null,
-
-						// Tooltip
-						hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.getDataset().hitRadius, index, this.chart.options.elements.point.hitRadius),
-					},
-
-				});
+				this.updateElement(point, index, reset);
 			}, this);
 
+			this.updateBezierControlPoints();
+		},
+
+		updateElement: function(point, index, reset) {
+			var yScale = this.getScaleForId(this.getDataset().yAxisID);
+			var xScale = this.getScaleForId(this.getDataset().xAxisID);
+			var scaleBase;
+
+			if (yScale.min < 0 && yScale.max < 0) {
+				scaleBase = yScale.getPixelForValue(yScale.max);
+			} else if (yScale.min > 0 && yScale.max > 0) {
+				scaleBase = yScale.getPixelForValue(yScale.min);
+			} else {
+				scaleBase = yScale.getPixelForValue(0);
+			}
+
+			helpers.extend(point, {
+				// Utility
+				_chart: this.chart.chart,
+				_xScale: xScale,
+				_yScale: yScale,
+				_datasetIndex: this.index,
+				_index: index,
+
+				// Desired view properties
+				_model: {
+					x: xScale.getPointPixelForValue(this.getDataset().data[index], index, this.index),
+					y: reset ? scaleBase : yScale.getPointPixelForValue(this.getDataset().data[index], index, this.index),
+					// Appearance
+					tension: point.custom && point.custom.tension ? point.custom.tension : this.chart.options.elements.line.tension,
+					radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().radius, index, this.chart.options.elements.point.radius),
+					backgroundColor: point.custom && point.custom.backgroundColor ? point.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBackgroundColor, index, this.chart.options.elements.point.backgroundColor),
+					borderColor: point.custom && point.custom.borderColor ? point.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderColor, index, this.chart.options.elements.point.borderColor),
+					borderWidth: point.custom && point.custom.borderWidth ? point.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderWidth, index, this.chart.options.elements.point.borderWidth),
+					skip: point.custom && point.custom.skip ? point.custom.skip : this.getDataset().data[index] === null,
+
+					// Tooltip
+					hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.getDataset().hitRadius, index, this.chart.options.elements.point.hitRadius),
+				},
+			});
+		},
+
+		updateBezierControlPoints: function() {
 			// Update bezier control points
 			helpers.each(this.getDataset().metaData, function(point, index) {
 				var controlPoints = helpers.splineCurve(
@@ -2832,7 +2869,7 @@
 
 				// Prevent the bezier going outside of the bounds of the graph
 
-				// Cap puter bezier handles to the upper/lower scale bounds
+				// Cap outer bezier handles to the upper/lower scale bounds
 				if (controlPoints.next.y > this.chart.chartArea.bottom) {
 					point._model.controlPointNextY = this.chart.chartArea.bottom;
 				} else if (controlPoints.next.y < this.chart.chartArea.top) {
@@ -2853,7 +2890,6 @@
 				// Now pivot the point for animation
 				point.pivot();
 			}, this);
-
 		},
 
 		draw: function(ease) {
@@ -2918,6 +2954,7 @@
 
 		//Boolean - Whether to animate the rotation of the chart
 		animateRotate: true,
+		animateScale: true,
 	};
 
 	Chart.controllers.polarArea = function(chart, datasetIndex) {
@@ -2958,6 +2995,23 @@
 				});
 			}, this);
 		},
+		addElementAndReset: function(index) {
+			this.getDataset().metaData = this.getDataset().metaData || [];
+			var arc = new Chart.elements.Arc({
+				_chart: this.chart.chart,
+				_datasetIndex: this.index,
+				_index: index,
+			});
+
+			// Reset the point
+			this.updateElement(arc, index, true);
+
+			// Add to the points array
+			this.getDataset().metaData.splice(index, 0, arc);
+		},
+		removeElement: function(index) {
+			this.getDataset().metaData.splice(index, 1);
+		},
 
 		reset: function() {
 			this.update(true);
@@ -2984,14 +3038,44 @@
 			this.innerRadius = this.outerRadius - this.chart.radiusLength;
 
 			helpers.each(this.getDataset().metaData, function(arc, index) {
+				this.updateElement(arc, index, reset);
+			}, this);
+		},
+		updateElement: function(arc, index, reset) {
+			var circumference = 1 / this.getDataset().data.length * 2;
+			var startAngle = (-0.5 * Math.PI) + (Math.PI * circumference) * index;
+			var endAngle = startAngle + (circumference * Math.PI);
 
-				var resetModel = {
+			var resetModel = {
+				x: this.chart.chart.width / 2,
+				y: this.chart.chart.height / 2,
+				innerRadius: 0,
+				outerRadius: this.chart.options.animateScale ? 0 : this.chart.scale.getDistanceFromCenterForValue(this.getDataset().data[index]),
+				startAngle: this.chart.options.animateRotate ? Math.PI * -0.5 : startAngle,
+				endAngle: this.chart.options.animateRotate ? Math.PI * -0.5 : endAngle,
+
+				backgroundColor: arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor),
+				hoverBackgroundColor: arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().hoverBackgroundColor, index, this.chart.options.elements.arc.hoverBackgroundColor),
+				borderWidth: arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.arc.borderWidth),
+				borderColor: arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor),
+
+				label: helpers.getValueAtIndexOrDefault(this.chart.data.labels, index, this.chart.data.labels[index])
+			};
+
+			helpers.extend(arc, {
+				// Utility
+				_chart: this.chart.chart,
+				_datasetIndex: this.index,
+				_index: index,
+
+				// Desired view properties
+				_model: reset ? resetModel : {
 					x: this.chart.chart.width / 2,
 					y: this.chart.chart.height / 2,
 					innerRadius: 0,
-					outerRadius: 0,
-					startAngle: Math.PI * -0.5,
-					endAngle: Math.PI * -0.5,
+					outerRadius: this.chart.scale.getDistanceFromCenterForValue(this.getDataset().data[index]),
+					startAngle: startAngle,
+					endAngle: endAngle,
 
 					backgroundColor: arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor),
 					hoverBackgroundColor: arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().hoverBackgroundColor, index, this.chart.options.elements.arc.hoverBackgroundColor),
@@ -2999,40 +3083,10 @@
 					borderColor: arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor),
 
 					label: helpers.getValueAtIndexOrDefault(this.chart.data.labels, index, this.chart.data.labels[index])
-				};
+				},
+			});
 
-				var circumference = 1 / this.getDataset().data.length * 2;
-				var startAngle = (-0.5 * Math.PI) + (Math.PI * circumference) * index;
-				var endAngle = startAngle + (circumference * Math.PI);
-
-				console.log()
-
-				helpers.extend(arc, {
-					// Utility
-					_chart: this.chart.chart,
-					_datasetIndex: this.index,
-					_index: index,
-
-					// Desired view properties
-					_model: reset ? resetModel : {
-						x: this.chart.chart.width / 2,
-						y: this.chart.chart.height / 2,
-						innerRadius: 0,
-						outerRadius: this.chart.scale.getDistanceFromCenterForValue(this.getDataset().data[index]),
-						startAngle: startAngle,
-						endAngle: endAngle,
-
-						backgroundColor: arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor),
-						hoverBackgroundColor: arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().hoverBackgroundColor, index, this.chart.options.elements.arc.hoverBackgroundColor),
-						borderWidth: arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.arc.borderWidth),
-						borderColor: arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor),
-
-						label: helpers.getValueAtIndexOrDefault(this.chart.data.labels, index, this.chart.data.labels[index])
-					},
-				});
-
-				arc.pivot();
-			}, this);
+			arc.pivot();
 		},
 
 		draw: function(ease) {
@@ -3042,8 +3096,6 @@
 				console.log(arc);
 			}, this);
 		},
-
-
 
 		setHoverStyle: function(arc) {
 			var dataset = this.chart.data.datasets[arc._datasetIndex];
@@ -3161,6 +3213,26 @@
 				});
 			}, this);
 		},
+		addElementAndReset: function(index) {
+			this.getDataset().metaData = this.getDataset().metaData || [];
+			var point = new Chart.elements.Point({
+				_chart: this.chart.chart,
+				_datasetIndex: this.index,
+				_index: index,
+			});
+
+			// Reset the point
+			this.updateElement(point, index, true);
+
+			// Add to the points array
+			this.getDataset().metaData.splice(index, 0, point);
+
+			// Make sure bezier control points are updated
+			this.updateBezierControlPoints();
+		},
+		removeElement: function(index) {
+			this.getDataset().metaData.splice(index, 1);
+		},
 
 		reset: function() {
 			this.update(true);
@@ -3214,34 +3286,40 @@
 
 			// Update Points
 			helpers.each(points, function(point, index) {
-				var pointPosition = scale.getPointPositionForValue(index, this.getDataset().data[index]);
-
-				helpers.extend(point, {
-					// Utility
-					_datasetIndex: this.index,
-					_index: index,
-
-					// Desired view properties
-					_model: {
-						x: reset ? scale.xCenter : pointPosition.x, // value not used in dataset scale, but we want a consistent API between scales
-						y: reset ? scale.yCenter : pointPosition.y,
-
-						// Appearance
-						tension: point.custom && point.custom.tension ? point.custom.tension : this.chart.options.elements.line.tension,
-						radius: point.custom && point.custom.radius ? point.custom.pointRadius : helpers.getValueAtIndexOrDefault(this.getDataset().pointRadius, index, this.chart.options.elements.point.radius),
-						backgroundColor: point.custom && point.custom.backgroundColor ? point.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBackgroundColor, index, this.chart.options.elements.point.backgroundColor),
-						borderColor: point.custom && point.custom.borderColor ? point.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderColor, index, this.chart.options.elements.point.borderColor),
-						borderWidth: point.custom && point.custom.borderWidth ? point.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderWidth, index, this.chart.options.elements.point.borderWidth),
-						skip: point.custom && point.custom.skip ? point.custom.skip : this.getDataset().data[index] === null,
-
-						// Tooltip
-						hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.getDataset().hitRadius, index, this.chart.options.elements.point.hitRadius),
-					},
-				});
+				this.updateElement(point, index, reset);
 			}, this);
 
 
 			// Update bezier control points
+			this.updateBezierControlPoints();
+		},
+		updateElement: function(point, index, reset) {
+			var pointPosition = this.chart.scale.getPointPositionForValue(index, this.getDataset().data[index]);
+
+			helpers.extend(point, {
+				// Utility
+				_datasetIndex: this.index,
+				_index: index,
+
+				// Desired view properties
+				_model: {
+					x: reset ? this.chart.scale.xCenter : pointPosition.x, // value not used in dataset scale, but we want a consistent API between scales
+					y: reset ? this.chart.scale.yCenter : pointPosition.y,
+
+					// Appearance
+					tension: point.custom && point.custom.tension ? point.custom.tension : this.chart.options.elements.line.tension,
+					radius: point.custom && point.custom.radius ? point.custom.pointRadius : helpers.getValueAtIndexOrDefault(this.getDataset().pointRadius, index, this.chart.options.elements.point.radius),
+					backgroundColor: point.custom && point.custom.backgroundColor ? point.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBackgroundColor, index, this.chart.options.elements.point.backgroundColor),
+					borderColor: point.custom && point.custom.borderColor ? point.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderColor, index, this.chart.options.elements.point.borderColor),
+					borderWidth: point.custom && point.custom.borderWidth ? point.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderWidth, index, this.chart.options.elements.point.borderWidth),
+					skip: point.custom && point.custom.skip ? point.custom.skip : this.getDataset().data[index] === null,
+
+					// Tooltip
+					hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.getDataset().hitRadius, index, this.chart.options.elements.point.hitRadius),
+				},
+			});
+		},
+		updateBezierControlPoints: function() {
 			helpers.each(this.getDataset().metaData, function(point, index) {
 				var controlPoints = helpers.splineCurve(
 					helpers.previousItem(this.getDataset().metaData, index, true)._model,
@@ -3255,7 +3333,7 @@
 
 				// Prevent the bezier going outside of the bounds of the graph
 
-				// Cap puter bezier handles to the upper/lower scale bounds
+				// Cap outer bezier handles to the upper/lower scale bounds
 				if (controlPoints.next.y > this.chart.chartArea.bottom) {
 					point._model.controlPointNextY = this.chart.chartArea.bottom;
 				} else if (controlPoints.next.y < this.chart.chartArea.top) {
@@ -3276,7 +3354,6 @@
 				// Now pivot the point for animation
 				point.pivot();
 			}, this);
-
 		},
 
 		draw: function(ease) {
@@ -4238,9 +4315,11 @@
 			this.xCenter = this.chart.width / 2;
 			this.yCenter = this.chart.height / 2;
 			this.size = helpers.min([this.height, this.width]);
-			this.valuesCount = this.data.labels.length;
 			this.labels = this.data.labels;
 			this.drawingArea = (this.options.display) ? (this.size / 2) - (this.options.labels.fontSize / 2 + this.options.labels.backdropPaddingY) : (this.size / 2);
+		},
+		getValueCount: function() {
+			return this.data.labels.length;
 		},
 		update: function() {
 			if (!this.options.lineArc) {
@@ -4366,7 +4445,7 @@
 			}, this);
 		},
 		getCircumference: function() {
-			return ((Math.PI * 2) / this.valuesCount);
+			return ((Math.PI * 2) / this.getValueCount());
 		},
 		setScaleSize: function() {
 			/*
@@ -4417,13 +4496,13 @@
 				radiusReductionLeft,
 				maxWidthRadius;
 			this.ctx.font = helpers.fontString(this.options.pointLabels.fontSize, this.options.pointLabels.fontStyle, this.options.pointLabels.fontFamily);
-			for (i = 0; i < this.valuesCount; i++) {
+			for (i = 0; i < this.getValueCount(); i++) {
 				// 5px to space the text slightly out - similar to what we do in the draw function.
 				pointPosition = this.getPointPosition(i, largestPossibleRadius);
 				textWidth = this.ctx.measureText(helpers.template(this.options.labels.template, {
 					value: this.labels[i]
 				})).width + 5;
-				if (i === 0 || i === this.valuesCount / 2) {
+				if (i === 0 || i === this.getValueCount() / 2) {
 					// If we're at index zero, or exactly the middle, we're at exactly the top/bottom
 					// of the radar chart, so text will be aligned centrally, so we'll half it and compare
 					// w/left and right text sizes
@@ -4436,13 +4515,13 @@
 						furthestLeft = pointPosition.x - halfTextWidth;
 						furthestLeftIndex = i;
 					}
-				} else if (i < this.valuesCount / 2) {
+				} else if (i < this.getValueCount() / 2) {
 					// Less than half the values means we'll left align the text
 					if (pointPosition.x + textWidth > furthestRight) {
 						furthestRight = pointPosition.x + textWidth;
 						furthestRightIndex = i;
 					}
-				} else if (i > this.valuesCount / 2) {
+				} else if (i > this.getValueCount() / 2) {
 					// More than half the values means we'll right align the text
 					if (pointPosition.x - textWidth < furthestLeft) {
 						furthestLeft = pointPosition.x - textWidth;
@@ -4484,7 +4563,7 @@
 		},
 
 		getIndexAngle: function(index) {
-			var angleMultiplier = (Math.PI * 2) / this.valuesCount;
+			var angleMultiplier = (Math.PI * 2) / this.getValueCount();
 			// Start from the top instead of right, so remove a quarter of the circle
 
 			return index * angleMultiplier - (Math.PI / 2);
@@ -4527,7 +4606,7 @@
 							} else {
 								// Draw straight lines connecting each index
 								ctx.beginPath();
-								for (var i = 0; i < this.valuesCount; i++) {
+								for (var i = 0; i < this.getValueCount(); i++) {
 									var pointPosition = this.getPointPosition(i, this.getDistanceFromCenterForValue(this.ticks[index]));
 									if (i === 0) {
 										ctx.moveTo(pointPosition.x, pointPosition.y);
@@ -4566,7 +4645,7 @@
 					ctx.lineWidth = this.options.angleLines.lineWidth;
 					ctx.strokeStyle = this.options.angleLines.color;
 
-					for (var i = this.valuesCount - 1; i >= 0; i--) {
+					for (var i = this.getValueCount() - 1; i >= 0; i--) {
 						if (this.options.angleLines.show) {
 							var outerPosition = this.getPointPosition(i, this.getDistanceFromCenterForValue(this.max));
 							ctx.beginPath();
