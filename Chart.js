@@ -1092,9 +1092,9 @@
 		frameDuration: 17,
 		animations: [],
 		dropFrames: 0,
-		addAnimation: function(chartInstance, animationObject, duration) {
+		addAnimation: function(chartInstance, animationObject, duration, lazy) {
 
-			if (typeof duration !== 'number' || duration === 0) {
+			if (!lazy) {
 				chartInstance.animating = true;
 			}
 
@@ -1263,7 +1263,7 @@
 			} else {
 				this.data.datasets.push(dataset);
 			}
-			
+
 			this.buildOrUpdateControllers();
 			dataset.controller.reset(); // so that animation looks ok
 			this.update();
@@ -1283,7 +1283,7 @@
 				if (index === undefined) {
 					index = this.data.datasets[datasetIndex].data.length;
 				}
-				
+
 				this.data.datasets[datasetIndex].data.splice(index, 0, data);
 				this.data.datasets[datasetIndex].controller.addElementAndReset(index);
 				this.update();
@@ -1403,16 +1403,16 @@
 		},
 
 
-		update: function update(animationDuration) {
+		update: function update(animationDuration, lazy) {
 			// This will loop through any data and do the appropriate element update for the type
 			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				dataset.controller.update();
 			}, this);
-			this.render(animationDuration);
+			this.render(animationDuration, lazy);
 		},
 
-		render: function render(duration) {
+		render: function render(duration, lazy) {
 
 			if (this.options.animation.duration !== 0 || duration) {
 				var animation = new Chart.Animation();
@@ -1432,7 +1432,7 @@
 				animation.onAnimationProgress = this.options.onAnimationProgress;
 				animation.onAnimationComplete = this.options.onAnimationComplete;
 
-				Chart.animationService.addAnimation(this, animation, duration);
+				Chart.animationService.addAnimation(this, animation, duration, lazy);
 			} else {
 				this.draw();
 				this.options.onAnimationComplete.call(this);
@@ -1666,7 +1666,7 @@
 					(this.lastActive.length && this.active.length && changed)) {
 
 					this.stop();
-					this.render(this.options.hover.animationDuration);
+					this.update(this.options.hover.animationDuration, true);
 				}
 			}
 

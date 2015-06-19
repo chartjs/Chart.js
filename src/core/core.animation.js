@@ -27,9 +27,9 @@
 		frameDuration: 17,
 		animations: [],
 		dropFrames: 0,
-		addAnimation: function(chartInstance, animationObject, duration) {
+		addAnimation: function(chartInstance, animationObject, duration, lazy) {
 
-			if (typeof duration !== 'number' || duration === 0) {
+			if (!lazy) {
 				chartInstance.animating = true;
 			}
 
