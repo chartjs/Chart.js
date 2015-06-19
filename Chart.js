@@ -1455,7 +1455,7 @@
 			// Draw each dataset via its respective controller (reversed to support proper line stacking)
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				dataset.controller.draw(ease);
-			}, this, true);
+			}, this);
 
 			// Finally draw the tooltip
 			this.tooltip.transition(easingDecimal).draw();
@@ -3911,7 +3911,7 @@
 				var offsetPos = 0;
 				var offsetNeg = 0;
 
-				for (var i = 0; i < datasetIndex; ++i) {
+				for (var i = this.data.datasets.length - 1; i > datasetIndex; --i) {
 					if (this.data.datasets[i].data[index] < 0) {
 						offsetNeg += this.data.datasets[i].data[index];
 					} else {

@@ -243,7 +243,7 @@
 				var offsetPos = 0;
 				var offsetNeg = 0;
 
-				for (var i = 0; i < datasetIndex; ++i) {
+				for (var i = this.data.datasets.length - 1; i > datasetIndex; --i) {
 					if (this.data.datasets[i].data[index] < 0) {
 						offsetNeg += this.data.datasets[i].data[index];
 					} else {
