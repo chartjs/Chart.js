@@ -314,3 +314,174 @@ Chart.defaults.global.responsive = true;
 ```
 
 Now, every time we create a chart, `options.responsive` will be `true`.
+
+## Scales
+
+Scales in v2.0 of Chart.js are significantly different than those of v1.0. Multiple x & y axes are now supported. Datasets include 
+additional properties to bind themselves to a specific axis.
+
+
+### Category Scale
+The category scale will be familiar to those who have used v1.0. Labels are drawn in from the labels array included in the chart data. The category scale has 
+the following options.
+
+```javascript
+{
+    // Boolean - if true, show the scale
+    display: true,
+
+    // String - position of the scale. possible options are "top" and "bottom" for category scales
+    position: "bottom",
+
+    // grid line settings
+    gridLines: {
+        // Boolean - if true, show the grid lines
+        show: true,
+
+        // String - color of the grid lines
+        color: "rgba(0, 0, 0, 0.05)",
+
+        // Number - width of the grid lines
+        lineWidth: 1,
+
+        // Boolean - if true draw lines on the chart area
+        drawOnChartArea: true,
+
+        // Boolean - if true draw ticks in the axis area
+        drawTicks: true,
+
+        // Number - width of the grid line for the first index (index 0)
+        zeroLineWidth: 1,
+
+        // String - color of the grid line for the first index
+        zeroLineColor: "rgba(0,0,0,0.25)",
+
+        // Boolean - if true, offset labels from grid lines
+        offsetGridLines: false,
+    },
+
+    // label settings
+    labels: {
+        // Boolean - if true show labels
+        show: true,
+
+        // String - template string for labels
+        template: "<%=value%>",
+
+        // Number - label font size
+        fontSize: 12,
+
+        // String - label font style
+        fontStyle: "normal",
+
+        // String - label font color
+        fontColor: "#666",
+
+        // String - label font family
+        fontFamily: "Helvetica Neue",
+
+        // Function - Can be used to filter the labels. Passed the data label & index
+        userCallback: null,
+    },
+}
+
+```
+
+The `userCallback` method may be useful when there are a lot of labels. The following callback would filter out every second label on a category scale
+```javascript
+{
+    scales: {
+        xAxes: [{
+            labels: {
+                userCallback: function(labelString, index) {
+                    return (index % 2 === 0) ? labelString : '';
+                }
+            }
+        }]
+    }
+}
+```
+
+### Linear Scale
+The linear scale can be used to display numerical data. It can be placed on either the x or y axis. The scatter chart type automatically configures a line chart to
+use one of these scales for the x axis.
+
+The linear scale supports the following options
+```javascript
+{
+    // Boolean - if true, show the scale
+    display: true,
+
+    // String - position of axis. Vertical axes can have either "left" or "right"
+    position: "left",
+
+    // grid line settings
+    gridLines: {
+        // Boolean - if true, show the grid lines
+        show: true,
+
+        // String - color of the grid lines
+        color: "rgba(0, 0, 0, 0.05)",
+
+        // Number - width of the grid lines
+        lineWidth: 1,
+
+        // Boolean - if true draw lines on the chart area
+        drawOnChartArea: true,
+
+        // Boolean - if true draw ticks in the axis area
+        drawTicks: true,
+
+        // Number - width of the grid line representing a numerical value of 0
+        zeroLineWidth: 1,
+
+        // String - color of the grid line representing a numerical value of 0
+        zeroLineColor: "rgba(0,0,0,0.25)",
+    },
+
+    // Boolean - if true ensures that the scale always has a 0 point
+    beginAtZero: false,
+
+    // Object - if specified, allows the user to override the step generation algorithm.
+    //          Contains the following values
+    //              start: // number to start at
+    //              stepWidth: // size of step
+    //              steps: // number of steps
+    override: null,
+
+    // label settings
+    labels: {
+        // Boolean - if true show labels
+        show: true,
+
+        // String - template string for labels
+        template: "<%=value%>",
+
+        // Function - if specified this is passed the tick value, index, and the array of all tick values. Returns a string that is used as the label for that value
+        userCallback: null,
+
+        // Number - label font size
+        fontSize: 12,
+
+        // String - label font style
+        fontStyle: "normal",
+
+        // String - label font color
+        fontColor: "#666",
+
+        // String - label font family
+        fontFamily: "Helvetica Neue",
+    },
+}
+```
+
+The `userCallback` function allows the user fine grained control over how labels are generated. For instance, to generate every second labels in scientific notation, one could do the following
+```javascript
+{
+    labels: {
+        userCallback: function(value, index, values) {
+            return (index % 2 === 0) ? values.toExponential() : '';
+        }
+    }
+}
+```
