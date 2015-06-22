@@ -46,7 +46,10 @@ To create a chart, we need to instantiate the `Chart` class. To do this, we need
 ```javascript
 // Get the context of the canvas element we want to select
 var ctx = document.getElementById("myChart").getContext("2d");
-var myNewChart = new Chart(ctx).PolarArea(data);
+var myNewChart = Chart.PolarArea(chart, {
+    data: data,
+    options: config
+});
 ```
 
 We can also get the context of our canvas with jQuery. To do this, we need to get the DOM node out of the jQuery collection, and call the `getContext("2d")` method on that.
@@ -63,7 +66,27 @@ After we've instantiated the Chart class on the canvas we want to draw on, Chart
 With the Chart class set up, we can go on to create one of the charts Chart.js has available. In the example below, we would be drawing a Polar area chart.
 
 ```javascript
-new Chart(ctx).PolarArea(data, options);
+var myChart = Chart.PolarArea(ctx, {
+    data: data, 
+    options: options
+});
+```
+
+To create a scatter chart, which is a special configuration of a line chart, we use the following.
+```javascript
+var myScatterChart = Chart.Scatter(ctx, {
+    data: data,
+    options: options 
+});
+```
+
+Alternatively, we can use the more advanced API to create simple chart types. . In the example below, we are creating a line chart
+```javascript
+var myChart = new Chart(ctx, {
+    type: 'line', // built in types are 'line', 'bar', 'radar', 'polarArea', 'doughnut',
+    data: data,
+    options: options
+});
 ```
 
 We call a method of the name of the chart we want to create. We pass in the data for that chart type, and the options for that chart as parameters. Chart.js will merge the global defaults with chart type specific defaults, then merge any options passed in as a second argument after data.
@@ -211,8 +234,20 @@ Chart.defaults.global = {
             // Number - width of the line
             borderWidth: 3,
 
-            // String = color of the line
+            // String - color of the line
             borderColor: defaultColor,
+
+            // String - cap style of the line. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap
+            borderCapStyle: 'butt',
+
+            // Array - Length and spacing of dashes. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
+            borderDash: [],
+
+            // Number - Offset for line dashes. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
+            borderDashOffset: 0.0,
+
+            // String - line join style. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin
+            borderJoinStyle: 'miter',
             
             // Boolean - if true fill in the area between the line and the x axis with the background color
             fill: true,
@@ -238,7 +273,7 @@ Chart.defaults.global = {
             borderColor: defaultColor,
 
             // Number - extra radius added to radius for hit detection
-            hitRadius: 6,
+            hitRadius: 1,
 
             // Number - radius of point circle when hovered
             hoverRadius: 4,
@@ -247,7 +282,7 @@ Chart.defaults.global = {
             hoverBorderWidth: 2,
         },
         // Settings for all bar elements
-        bar: {
+        rectangle: {
         	// String - fill color of bar
             backgroundColor: defaultColor,
 
@@ -256,15 +291,9 @@ Chart.defaults.global = {
 
             // String - Border color
             borderColor: defaultColor,
-
-            // Number - 
-            valueSpacing: 5,
-
-            // Number - 
-            datasetSpacing: 1,
         },
-        // Settings for all slice elements
-        slice: {
+        // Settings for all arc elements
+        arc: {
         	// String - fill color
             backgroundColor: defaultColor,
 
