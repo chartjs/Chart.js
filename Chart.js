@@ -1284,8 +1284,13 @@
 					index = this.data.datasets[datasetIndex].data.length;
 				}
 
+				var addElementArgs = [index];
+				for (var i = 3; i < arguments.length; ++i) {
+					addElementArgs.push(arguments[i]);
+				}
+
 				this.data.datasets[datasetIndex].data.splice(index, 0, data);
-				this.data.datasets[datasetIndex].controller.addElementAndReset(index);
+				this.data.datasets[datasetIndex].controller.addElementAndReset.apply(this.data.datasets[datasetIndex].controller, addElementArgs);
 				this.update();
 			}
 		},
@@ -1628,7 +1633,7 @@
 
 
 			// Built in Tooltips
-			if (this.options.tooltips.enabled) {
+			if (this.options.tooltips.enabled || this.options.tooltips.custom) {
 
 				// The usual updates
 				this.tooltip.initialize();
@@ -2187,10 +2192,6 @@
 			var ctx = this._chart.ctx;
 			var vm = this._view;
 
-			if (this._options.tooltips.custom) {
-				this._options.tooltips.custom(this);
-			}
-
 			switch (this._options.hover.mode) {
 				case 'single':
 
@@ -2222,6 +2223,12 @@
 					ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
 
 					// Custom Tooltips
+					if (this._options.tooltips.custom) {
+						this._options.tooltips.custom(this);
+					}
+					if (!this._options.tooltips.enabled) {
+						return;
+					}
 
 					switch (vm.yAlign) {
 						case "above":
@@ -2264,6 +2271,14 @@
 					ctx.fillText(vm.text, tooltipX + tooltipWidth / 2, tooltipY + tooltipRectHeight / 2);
 					break;
 				case 'label':
+
+					// Custom Tooltips
+					if (this._options.tooltips.custom) {
+						this._options.tooltips.custom(this);
+					}
+					if (!this._options.tooltips.enabled) {
+						return;
+					}
 
 					helpers.drawRoundedRectangle(ctx, vm.x, vm.y - vm.height / 2, vm.width, vm.height, vm.cornerRadius);
 					ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
@@ -2548,7 +2563,25 @@
 				});
 			}, this);
 		},
+		addElementAndReset: function(index, colorForNewElement) {
+			this.getDataset().metaData = this.getDataset().metaData || [];
+			var arc = new Chart.elements.Arc({
+				_chart: this.chart.chart,
+				_datasetIndex: this.index,
+				_index: index,
+			});
 
+			this.getDataset().backgroundColor.splice(index, 0, colorForNewElement);
+
+			// Reset the point
+			this.updateElement(arc, index, true);
+
+			// Add to the points array
+			this.getDataset().metaData.splice(index, 0, arc);
+		},
+		removeElement: function(index) {
+			this.getDataset().metaData.splice(index, 1);
+		},
 		reset: function() {
 			this.update(true);
 		},
@@ -2569,58 +2602,60 @@
 			this.innerRadius = this.outerRadius - this.chart.radiusLength;
 
 			helpers.each(this.getDataset().metaData, function(arc, index) {
+				this.updateElement(arc, index, reset);
+			}, this);
+		},
+		updateElement: function(arc, index, reset) {
+			var resetModel = {
+				x: this.chart.chart.width / 2,
+				y: this.chart.chart.height / 2,
+				startAngle: Math.PI * -0.5, // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
+				circumference: (this.chart.options.animation.animateRotate) ? 0 : this.calculateCircumference(this.getDataset().data[index]),
+				outerRadius: (this.chart.options.animation.animateScale) ? 0 : this.outerRadius,
+				innerRadius: (this.chart.options.animation.animateScale) ? 0 : this.innerRadius,
+			};
 
-				var resetModel = {
+			helpers.extend(arc, {
+				// Utility
+				_chart: this.chart.chart,
+				_datasetIndex: this.index,
+				_index: index,
+
+				// Desired view properties
+				_model: reset ? resetModel : {
 					x: this.chart.chart.width / 2,
 					y: this.chart.chart.height / 2,
-					startAngle: Math.PI * -0.5, // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
-					circumference: (this.chart.options.animation.animateRotate) ? 0 : this.calculateCircumference(this.getDataset().data[index]),
-					outerRadius: (this.chart.options.animation.animateScale) ? 0 : this.outerRadius,
-					innerRadius: (this.chart.options.animation.animateScale) ? 0 : this.innerRadius,
-				};
+					circumference: this.calculateCircumference(this.getDataset().data[index]),
+					outerRadius: this.outerRadius,
+					innerRadius: this.innerRadius,
 
-				helpers.extend(arc, {
-					// Utility
-					_chart: this.chart.chart,
-					_datasetIndex: this.index,
-					_index: index,
+					backgroundColor: arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor),
+					hoverBackgroundColor: arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().hoverBackgroundColor, index, this.chart.options.elements.arc.hoverBackgroundColor),
+					borderWidth: arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.arc.borderWidth),
+					borderColor: arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor),
 
-					// Desired view properties
-					_model: reset ? resetModel : {
-						x: this.chart.chart.width / 2,
-						y: this.chart.chart.height / 2,
-						circumference: this.calculateCircumference(this.getDataset().data[index]),
-						outerRadius: this.outerRadius,
-						innerRadius: this.innerRadius,
+					label: helpers.getValueAtIndexOrDefault(this.getDataset().label, index, this.chart.data.labels[index])
+				},
+			});
 
-						backgroundColor: arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor),
-						hoverBackgroundColor: arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().hoverBackgroundColor, index, this.chart.options.elements.arc.hoverBackgroundColor),
-						borderWidth: arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.arc.borderWidth),
-						borderColor: arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor),
+			if (!reset) {
 
-						label: helpers.getValueAtIndexOrDefault(this.getDataset().label, index, this.chart.data.labels[index])
-					},
-				});
-
-				if (!reset) {
-
-					if (index === 0) {
-						arc._model.startAngle = Math.PI * -0.5; // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
-					} else {
-						arc._model.startAngle = this.getDataset().metaData[index - 1]._model.endAngle;
-					}
-
-					arc._model.endAngle = arc._model.startAngle + arc._model.circumference;
-
-
-					//Check to see if it's the last arc, if not get the next and update its start angle
-					if (index < this.getDataset().data.length - 1) {
-						this.getDataset().metaData[index + 1]._model.startAngle = arc._model.endAngle;
-					}
+				if (index === 0) {
+					arc._model.startAngle = Math.PI * -0.5; // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
+				} else {
+					arc._model.startAngle = this.getDataset().metaData[index - 1]._model.endAngle;
 				}
 
-				arc.pivot();
-			}, this);
+				arc._model.endAngle = arc._model.startAngle + arc._model.circumference;
+
+
+				//Check to see if it's the last arc, if not get the next and update its start angle
+				if (index < this.getDataset().data.length - 1) {
+					this.getDataset().metaData[index + 1]._model.startAngle = arc._model.endAngle;
+				}
+			}
+
+			arc.pivot();
 		},
 
 		draw: function(ease) {
@@ -2796,6 +2831,10 @@
 					backgroundColor: line.custom && line.custom.backgroundColor ? line.custom.backgroundColor : (this.getDataset().backgroundColor || this.chart.options.elements.line.backgroundColor),
 					borderWidth: line.custom && line.custom.borderWidth ? line.custom.borderWidth : (this.getDataset().borderWidth || this.chart.options.elements.line.borderWidth),
 					borderColor: line.custom && line.custom.borderColor ? line.custom.borderColor : (this.getDataset().borderColor || this.chart.options.elements.line.borderColor),
+					borderCapStyle: line.custom && line.custom.borderCapStyle ? line.custom.borderCapStyle : (this.getDataset().borderCapStyle || this.chart.options.elements.line.borderCapStyle),
+					borderDash: line.custom && line.custom.borderDash ? line.custom.borderDash : (this.getDataset().borderDash || this.chart.options.elements.line.borderDash),
+					borderDashOffset: line.custom && line.custom.borderDashOffset ? line.custom.borderDashOffset : (this.getDataset().borderDashOffset || this.chart.options.elements.line.borderDashOffset),
+					borderJoinStyle: line.custom && line.custom.borderJoinStyle ? line.custom.borderJoinStyle : (this.getDataset().borderJoinStyle || this.chart.options.elements.line.borderJoinStyle),
 					fill: line.custom && line.custom.fill ? line.custom.fill : (this.getDataset().fill !== undefined ? this.getDataset().fill : this.chart.options.elements.line.fill),
 					skipNull: this.getDataset().skipNull !== undefined ? this.getDataset().skipNull : this.chart.options.elements.line.skipNull,
 					drawNull: this.getDataset().drawNull !== undefined ? this.getDataset().drawNull : this.chart.options.elements.line.drawNull,
@@ -3515,7 +3554,7 @@
 				var gridWidth = Math.floor(this.getPixelForValue(0, 1) - this.getPixelForValue(0, 0)) - 6;
 
 				//Max label rotate should be 90 - also act as a loop counter
-				while ((this.labelWidth > gridWidth && this.labelRotation === 0) || (this.labelWidth > gridWidth && this.labelRotation <= 90 && this.labelRotation > 0)) {
+				while (this.labelWidth > gridWidth && this.labelRotation <= 90) {
 					cosRotation = Math.cos(helpers.toRadians(this.labelRotation));
 					sinRotation = Math.sin(helpers.toRadians(this.labelRotation));
 
@@ -3559,6 +3598,13 @@
 		// @param {number} maxHeight: the max height the axis can be
 		// @return {object} minSize : the minimum size needed to draw the axis
 		fit: function(maxWidth, maxHeight, margins) {
+			// Set the unconstrained dimension before label rotation
+			if (this.isHorizontal()) {
+				this.width = maxWidth;
+			} else {
+				this.height = maxHeight;
+			}
+
 			this.calculateLabelRotation(maxHeight, margins);
 
 			var minSize = {
@@ -3572,17 +3618,16 @@
 			// Width
 			if (this.isHorizontal()) {
 				minSize.width = maxWidth;
-				this.width = maxWidth;
 			} else if (this.options.display) {
 				minSize.width = Math.min(longestLabelWidth + 6, maxWidth);
 			}
 
 			// Height
 			if (this.isHorizontal() && this.options.display) {
-				var labelHeight = (Math.cos(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.labels.fontSize;
+				var labelHeight = (Math.sin(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.labels.fontSize;
 				minSize.height = Math.min(labelHeight, maxHeight);
 			} else if (this.options.display) {
-				minSize.width = Math.min(longestLabelWidth + 6, maxWidth);
+				minSize.height = maxHeight;
 			}
 
 			this.width = minSize.width;
@@ -3729,7 +3774,7 @@
 				// we get the final line
 				for (var i = 0; i <= this.options.override.steps; ++i) {
 					var value = this.options.override.start + (i * this.options.override.stepWidth);
-					ticks.push(value);
+					this.ticks.push(value);
 				}
 			} else {
 				// Figure out what the max number of ticks we can support it is based on the size of
@@ -4371,7 +4416,7 @@
 				// we get the final line
 				for (var i = 0; i <= this.options.override.steps; ++i) {
 					var value = this.options.override.start + (i * this.options.override.stepWidth);
-					ticks.push(value);
+					this.ticks.push(value);
 				}
 			} else {
 				// Figure out what the max number of ticks we can support it is based on the size of
@@ -4812,6 +4857,10 @@
 		backgroundColor: Chart.defaults.global.defaultColor,
 		borderWidth: 3,
 		borderColor: Chart.defaults.global.defaultColor,
+		borderCapStyle: 'butt',
+		borderDash: [],
+		borderDashOffset: 0.0,
+		borderJoinStyle: 'miter',
 		fill: true, // do we fill in the area between the line and its base axis
 		skipNull: true,
 		drawNull: false,
@@ -4825,6 +4874,8 @@
 			var ctx = this._chart.ctx;
 			var first = this._children[0];
 			var last = this._children[this._children.length - 1];
+
+			ctx.save();
 
 			// Draw the background first (so the border is always on top)
 			helpers.each(this._children, function(point, index) {
@@ -4897,6 +4948,10 @@
 
 
 			// Now draw the line between all the points with any borders
+			ctx.lineCap = vm.borderCapStyle || Chart.defaults.global.elements.line.borderCapStyle;
+			ctx.setLineDash(vm.borderDash || Chart.defaults.global.elements.line.borderDash);
+			ctx.lineDashOffset = vm.borderDashOffset || Chart.defaults.global.elements.line.borderDashOffset;
+			ctx.lineJoin = vm.borderJoinStyle || Chart.defaults.global.elements.line.borderJoinStyle;
 			ctx.lineWidth = vm.borderWidth || Chart.defaults.global.defaultColor;
 			ctx.strokeStyle = vm.borderColor || Chart.defaults.global.defaultColor;
 			ctx.beginPath();
@@ -4961,7 +5016,7 @@
 
 
 			ctx.stroke();
-
+			ctx.restore();
 		},
 	});
 
