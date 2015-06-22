@@ -63,7 +63,25 @@
 				});
 			}, this);
 		},
+		addElementAndReset: function(index, colorForNewElement) {
+			this.getDataset().metaData = this.getDataset().metaData || [];
+			var arc = new Chart.elements.Arc({
+				_chart: this.chart.chart,
+				_datasetIndex: this.index,
+				_index: index,
+			});
 
+			this.getDataset().backgroundColor.splice(index, 0, colorForNewElement);
+
+			// Reset the point
+			this.updateElement(arc, index, true);
+
+			// Add to the points array
+			this.getDataset().metaData.splice(index, 0, arc);
+		},
+		removeElement: function(index) {
+			this.getDataset().metaData.splice(index, 1);
+		},
 		reset: function() {
 			this.update(true);
 		},
@@ -84,58 +102,60 @@
 			this.innerRadius = this.outerRadius - this.chart.radiusLength;
 
 			helpers.each(this.getDataset().metaData, function(arc, index) {
+				this.updateElement(arc, index, reset);
+			}, this);
+		},
+		updateElement: function(arc, index, reset) {
+			var resetModel = {
+				x: this.chart.chart.width / 2,
+				y: this.chart.chart.height / 2,
+				startAngle: Math.PI * -0.5, // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
+				circumference: (this.chart.options.animation.animateRotate) ? 0 : this.calculateCircumference(this.getDataset().data[index]),
+				outerRadius: (this.chart.options.animation.animateScale) ? 0 : this.outerRadius,
+				innerRadius: (this.chart.options.animation.animateScale) ? 0 : this.innerRadius,
+			};
 
-				var resetModel = {
+			helpers.extend(arc, {
+				// Utility
+				_chart: this.chart.chart,
+				_datasetIndex: this.index,
+				_index: index,
+
+				// Desired view properties
+				_model: reset ? resetModel : {
 					x: this.chart.chart.width / 2,
 					y: this.chart.chart.height / 2,
-					startAngle: Math.PI * -0.5, // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
-					circumference: (this.chart.options.animation.animateRotate) ? 0 : this.calculateCircumference(this.getDataset().data[index]),
-					outerRadius: (this.chart.options.animation.animateScale) ? 0 : this.outerRadius,
-					innerRadius: (this.chart.options.animation.animateScale) ? 0 : this.innerRadius,
-				};
+					circumference: this.calculateCircumference(this.getDataset().data[index]),
+					outerRadius: this.outerRadius,
+					innerRadius: this.innerRadius,
 
-				helpers.extend(arc, {
-					// Utility
-					_chart: this.chart.chart,
-					_datasetIndex: this.index,
-					_index: index,
+					backgroundColor: arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor),
+					hoverBackgroundColor: arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().hoverBackgroundColor, index, this.chart.options.elements.arc.hoverBackgroundColor),
+					borderWidth: arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.arc.borderWidth),
+					borderColor: arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor),
 
-					// Desired view properties
-					_model: reset ? resetModel : {
-						x: this.chart.chart.width / 2,
-						y: this.chart.chart.height / 2,
-						circumference: this.calculateCircumference(this.getDataset().data[index]),
-						outerRadius: this.outerRadius,
-						innerRadius: this.innerRadius,
+					label: helpers.getValueAtIndexOrDefault(this.getDataset().label, index, this.chart.data.labels[index])
+				},
+			});
 
-						backgroundColor: arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor),
-						hoverBackgroundColor: arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().hoverBackgroundColor, index, this.chart.options.elements.arc.hoverBackgroundColor),
-						borderWidth: arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.arc.borderWidth),
-						borderColor: arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor),
+			if (!reset) {
 
-						label: helpers.getValueAtIndexOrDefault(this.getDataset().label, index, this.chart.data.labels[index])
-					},
-				});
-
-				if (!reset) {
-
-					if (index === 0) {
-						arc._model.startAngle = Math.PI * -0.5; // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
-					} else {
-						arc._model.startAngle = this.getDataset().metaData[index - 1]._model.endAngle;
-					}
-
-					arc._model.endAngle = arc._model.startAngle + arc._model.circumference;
-
-
-					//Check to see if it's the last arc, if not get the next and update its start angle
-					if (index < this.getDataset().data.length - 1) {
-						this.getDataset().metaData[index + 1]._model.startAngle = arc._model.endAngle;
-					}
+				if (index === 0) {
+					arc._model.startAngle = Math.PI * -0.5; // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
+				} else {
+					arc._model.startAngle = this.getDataset().metaData[index - 1]._model.endAngle;
 				}
 
-				arc.pivot();
-			}, this);
+				arc._model.endAngle = arc._model.startAngle + arc._model.circumference;
+
+
+				//Check to see if it's the last arc, if not get the next and update its start angle
+				if (index < this.getDataset().data.length - 1) {
+					this.getDataset().metaData[index + 1]._model.startAngle = arc._model.endAngle;
+				}
+			}
+
+			arc.pivot();
 		},
 
 		draw: function(ease) {

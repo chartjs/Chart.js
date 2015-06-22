@@ -24,6 +24,8 @@
     <button id="randomizeData">Randomize Data</button>
     <button id="addDataset">Add Dataset</button>
     <button id="removeDataset">Remove Dataset</button>
+    <button id="addData">Add Data</button>
+    <button id="removeData">Remove Data</button>
     <script>
     var randomScalingFactor = function() {
         return Math.round(Math.random() * 100);
@@ -104,25 +106,53 @@
     };
 
     $('#randomizeData').click(function() {
-        $.each(config.data.datasets, function(i, piece) {
-            $.each(piece.data, function(j, value) {
-                config.data.datasets[i].data[j] = randomScalingFactor();
+        $.each(config.data.datasets, function(i, dataset) {
+            dataset.data = dataset.data.map(function() {
+                return randomScalingFactor();
+            });
+
+            dataset.backgroundColor = dataset.backgroundColor.map(function() {
+                return randomColor(0.7);
             });
         });
+
         window.myDoughnut.update();
     });
 
     $('#addDataset').click(function() {
         var newDataset = {
-            backgroundColor: [randomColor(0.7), randomColor(0.7), randomColor(0.7), randomColor(0.7), randomColor(0.7)],
-            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+            backgroundColor: [],
+            data: [],
         };
+
+        for (var index = 0; index < config.data.labels.length; ++index) {
+            newDataset.data.push(randomScalingFactor());
+            newDataset.backgroundColor.push(randomColor(0.7));
+        }
 
         window.myDoughnut.addDataset(newDataset);
     });
 
+    $('#addData').click(function() {
+        if (config.data.datasets.length > 0) {
+            config.data.labels.push('data #' + config.data.labels.length);
+
+            $.each(config.data.datasets, function(index, dataset) {
+                window.myDoughnut.addData(randomScalingFactor(), index, dataset.data.length, randomColor(0.7));
+            });
+        }
+    });
+
     $('#removeDataset').click(function() {
         window.myDoughnut.removeDataset(0);
+    });
+
+    $('#removeData').click(function() {
+        config.data.labels.splice(-1, 1); // remove the label first
+
+        config.data.datasets.forEach(function(dataset, datasetIndex) {
+            window.myDoughnut.removeData(datasetIndex, -1);
+        });
     });
     </script>
 </body>

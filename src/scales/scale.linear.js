@@ -61,7 +61,7 @@
 				// we get the final line
 				for (var i = 0; i <= this.options.override.steps; ++i) {
 					var value = this.options.override.start + (i * this.options.override.stepWidth);
-					ticks.push(value);
+					this.ticks.push(value);
 				}
 			} else {
 				// Figure out what the max number of ticks we can support it is based on the size of

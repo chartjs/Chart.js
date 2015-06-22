@@ -22,6 +22,10 @@
 		backgroundColor: Chart.defaults.global.defaultColor,
 		borderWidth: 3,
 		borderColor: Chart.defaults.global.defaultColor,
+		borderCapStyle: 'butt',
+		borderDash: [],
+		borderDashOffset: 0.0,
+		borderJoinStyle: 'miter',
 		fill: true, // do we fill in the area between the line and its base axis
 		skipNull: true,
 		drawNull: false,
@@ -35,6 +39,8 @@
 			var ctx = this._chart.ctx;
 			var first = this._children[0];
 			var last = this._children[this._children.length - 1];
+
+			ctx.save();
 
 			// Draw the background first (so the border is always on top)
 			helpers.each(this._children, function(point, index) {
@@ -107,6 +113,10 @@
 
 
 			// Now draw the line between all the points with any borders
+			ctx.lineCap = vm.borderCapStyle || Chart.defaults.global.elements.line.borderCapStyle;
+			ctx.setLineDash(vm.borderDash || Chart.defaults.global.elements.line.borderDash);
+			ctx.lineDashOffset = vm.borderDashOffset || Chart.defaults.global.elements.line.borderDashOffset;
+			ctx.lineJoin = vm.borderJoinStyle || Chart.defaults.global.elements.line.borderJoinStyle;
 			ctx.lineWidth = vm.borderWidth || Chart.defaults.global.defaultColor;
 			ctx.strokeStyle = vm.borderColor || Chart.defaults.global.defaultColor;
 			ctx.beginPath();
@@ -171,7 +181,7 @@
 
 
 			ctx.stroke();
-
+			ctx.restore();
 		},
 	});
 

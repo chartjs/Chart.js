@@ -113,7 +113,7 @@
 				var gridWidth = Math.floor(this.getPixelForValue(0, 1) - this.getPixelForValue(0, 0)) - 6;
 
 				//Max label rotate should be 90 - also act as a loop counter
-				while ((this.labelWidth > gridWidth && this.labelRotation === 0) || (this.labelWidth > gridWidth && this.labelRotation <= 90 && this.labelRotation > 0)) {
+				while (this.labelWidth > gridWidth && this.labelRotation <= 90) {
 					cosRotation = Math.cos(helpers.toRadians(this.labelRotation));
 					sinRotation = Math.sin(helpers.toRadians(this.labelRotation));
 
@@ -157,6 +157,13 @@
 		// @param {number} maxHeight: the max height the axis can be
 		// @return {object} minSize : the minimum size needed to draw the axis
 		fit: function(maxWidth, maxHeight, margins) {
+			// Set the unconstrained dimension before label rotation
+			if (this.isHorizontal()) {
+				this.width = maxWidth;
+			} else {
+				this.height = maxHeight;
+			}
+
 			this.calculateLabelRotation(maxHeight, margins);
 
 			var minSize = {
@@ -170,17 +177,16 @@
 			// Width
 			if (this.isHorizontal()) {
 				minSize.width = maxWidth;
-				this.width = maxWidth;
 			} else if (this.options.display) {
 				minSize.width = Math.min(longestLabelWidth + 6, maxWidth);
 			}
 
 			// Height
 			if (this.isHorizontal() && this.options.display) {
-				var labelHeight = (Math.cos(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.labels.fontSize;
+				var labelHeight = (Math.sin(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.labels.fontSize;
 				minSize.height = Math.min(labelHeight, maxHeight);
 			} else if (this.options.display) {
-				minSize.width = Math.min(longestLabelWidth + 6, maxWidth);
+				minSize.height = maxHeight;
 			}
 
 			this.width = minSize.width;

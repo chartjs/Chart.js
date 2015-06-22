@@ -2,14 +2,9 @@
 <html>
 
 <head>
-    <title>Line Chart</title>
+    <title>Line Chart with Scale Override</title>
     <script src="../Chart.js"></script>
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
-    <style>
-    canvas {
-        -webkit-box-shadow: 0 0 20px 0 rgba(0, 0, 0, .5);
-    }
-    </style>
 </head>
 
 <body>
@@ -42,7 +37,6 @@
                 label: "My First dataset",
                 data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
                 fill: false,
-                borderDash: [5, 5],
             }, {
                 label: "My Second dataset",
                 data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
@@ -55,7 +49,12 @@
                     display: true
                 }],
                 yAxes: [{
-                    display: true
+                    display: true,
+                    override: {
+                        start: -100,
+                        stepWidth: 10,
+                        steps: 20
+                    }
                 }]
             }
         }

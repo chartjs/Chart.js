@@ -102,8 +102,13 @@
 					index = this.data.datasets[datasetIndex].data.length;
 				}
 
+				var addElementArgs = [index];
+				for (var i = 3; i < arguments.length; ++i) {
+					addElementArgs.push(arguments[i]);
+				}
+
 				this.data.datasets[datasetIndex].data.splice(index, 0, data);
-				this.data.datasets[datasetIndex].controller.addElementAndReset(index);
+				this.data.datasets[datasetIndex].controller.addElementAndReset.apply(this.data.datasets[datasetIndex].controller, addElementArgs);
 				this.update();
 			}
 		},
