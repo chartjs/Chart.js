@@ -5,22 +5,22 @@
     <title>Line Chart with Custom Tooltips</title>
     <script src="../Chart.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-
     <style>
     #canvas-holder1 {
         width: 300px;
         margin: 20px auto;
     }
+    
     #canvas-holder2 {
         width: 50%;
         margin: 20px 25%;
     }
+    
     #chartjs-tooltip {
         opacity: 1;
         position: absolute;
         background: rgba(0, 0, 0, .7);
         color: white;
-        padding: 3px;
         border-radius: 3px;
         -webkit-transition: all .1s ease;
         transition: all .1s ease;
@@ -28,11 +28,12 @@
         -webkit-transform: translate(-50%, 0);
         transform: translate(-50%, 0);
     }
-   	.chartjs-tooltip-key{
-   		display:inline-block;
-   		width:10px;
-   		height:10px;
-   	}
+    
+    .chartjs-tooltip-key {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+    }
     </style>
 </head>
 
@@ -40,48 +41,80 @@
     <div id="canvas-holder1">
         <canvas id="chart1" width="300" height="30" />
     </div>
-    <div id="canvas-holder2">
-        <canvas id="chart2" width="450" height="600" />
-    </div>
-
-    <div id="chartjs-tooltip"></div>
-
-
     <script>
-
     Chart.defaults.global.pointHitDetectionRadius = 1;
-    Chart.defaults.global.customTooltips = function(tooltip) {
+    var customTooltips = function(tooltip) {
 
+        console.log(tooltip._view);
+
+        // Tooltip Element
         var tooltipEl = $('#chartjs-tooltip');
 
-        if (!tooltip) {
+        if (!tooltipEl[0]) {
+            $('body').append('<div id="chartjs-tooltip"></div>');
+            tooltipEl = $('#chartjs-tooltip');
+        }
+
+        // Hide if no tooltip
+        if (!tooltip._view.opacity) {
             tooltipEl.css({
                 opacity: 0
             });
+            $('.chartjs-wrap canvas')
+                .each(function(index, el) {
+                    $(el).css('cursor', 'default');
+                });
             return;
         }
 
-        tooltipEl.removeClass('above below');
-        tooltipEl.addClass(tooltip.yAlign);
+        $(tooltip._chart.canvas).css('cursor', 'pointer');
 
-        var innerHtml = '';
-        for (var i = tooltip.labels.length - 1; i >= 0; i--) {
-        	innerHtml += [
-        		'<div class="chartjs-tooltip-section">',
-        		'	<span class="chartjs-tooltip-key" style="background-color:' + tooltip.legendColors[i].fill + '"></span>',
-        		'	<span class="chartjs-tooltip-value">' + tooltip.labels[i] + '</span>',
-        		'</div>'
-        	].join('');
+        // Set caret Position
+        tooltipEl.removeClass('above below no-transform');
+        if (tooltip._view.yAlign) {
+            tooltipEl.addClass(tooltip._view.yAlign);
+        } else {
+            tooltipEl.addClass('no-transform');
         }
-        tooltipEl.html(innerHtml);
 
+        // Set Text
+        if (tooltip._view.text) {
+            tooltipEl.html(tooltip._view.text);
+        } else if (tooltip._view.labels) {
+            var innerHtml = '<div class="title">' + tooltip._view.title + '</div>';
+            for (var i = 0; i < tooltip._view.labels.length; i++) {
+                innerHtml += [
+                    '<div class="section">',
+                    '   <span class="key" style="background-color:' + tooltip._view.legendColors[i].fill + '"></span>',
+                    '   <span class="value">' + tooltip._view.labels[i] + '</span>',
+                    '</div>'
+                ].join('');
+            }
+            tooltipEl.html(innerHtml);
+        }
+
+        // Find Y Location on page
+        var top = 0;
+        if (tooltip._view.yAlign) {
+            if (tooltip._view.yAlign == 'above') {
+                top = tooltip._view.y - tooltip._view.caretHeight - tooltip._view.caretPadding;
+            } else {
+                top = tooltip._view.y + tooltip._view.caretHeight + tooltip._view.caretPadding;
+            }
+        }
+
+        var offset = $(tooltip._chart.canvas).offset();
+
+        // Display, position, and set styles for font
         tooltipEl.css({
             opacity: 1,
-            left: tooltip.chart.canvas.offsetLeft + tooltip.x + 'px',
-            top: tooltip.chart.canvas.offsetTop + tooltip.y + 'px',
-            fontFamily: tooltip.fontFamily,
-            fontSize: tooltip.fontSize,
-            fontStyle: tooltip.fontStyle,
+            width: tooltip._view.width ? (tooltip._view.width + 'px') : 'auto',
+            left: offset.left + tooltip._view.x + 'px',
+            top: offset.top + top + 'px',
+            fontFamily: tooltip._view._fontFamily,
+            fontSize: tooltip._view.fontSize,
+            fontStyle: tooltip._view._fontStyle,
+            padding: tooltip._view.yPadding + 'px ' + tooltip._view.xPadding + 'px',
         });
     };
     var randomScalingFactor = function() {
@@ -91,39 +124,24 @@
         labels: ["January", "February", "March", "April", "May", "June", "July"],
         datasets: [{
             label: "My First dataset",
-            fillColor: "rgba(220,220,220,0.2)",
-            strokeColor: "rgba(220,220,220,1)",
-            pointColor: "rgba(220,220,220,1)",
-            pointStrokeColor: "#fff",
-            pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(220,220,220,1)",
             data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
         }, {
             label: "My Second dataset",
-            fillColor: "rgba(151,187,205,0.2)",
-            strokeColor: "rgba(151,187,205,1)",
-            pointColor: "rgba(151,187,205,1)",
-            pointStrokeColor: "#fff",
-            pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(151,187,205,1)",
             data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
         }]
     };
 
     window.onload = function() {
-        var ctx1 = document.getElementById("chart1").getContext("2d");
-        window.myLine = new Chart(ctx1).Line({
-            data: lineChartData, 
+        var chartEl = document.getElementById("chart1");
+        window.myLine = new Chart(chartEl, {
+            type: 'line',
+            data: lineChartData,
             options: {
-        	   showScale: false,
-        	   pointDot : true,
-                responsive: true
+                tooltips: {
+                    enabled: false,
+                    custom: customTooltips
+                }
             }
-        });
-
-        var ctx2 = document.getElementById("chart2").getContext("2d");
-        window.myLine = new Chart(ctx2).Line(lineChartData, {
-            responsive: true
         });
     };
     </script>

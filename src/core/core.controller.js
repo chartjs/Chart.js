@@ -446,7 +446,7 @@
 
 
 			// Built in Tooltips
-			if (this.options.tooltips.enabled) {
+			if (this.options.tooltips.enabled || this.options.tooltips.custom) {
 
 				// The usual updates
 				this.tooltip.initialize();

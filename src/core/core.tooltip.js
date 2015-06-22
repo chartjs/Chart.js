@@ -207,10 +207,6 @@
 			var ctx = this._chart.ctx;
 			var vm = this._view;
 
-			if (this._options.tooltips.custom) {
-				this._options.tooltips.custom(this);
-			}
-
 			switch (this._options.hover.mode) {
 				case 'single':
 
@@ -242,6 +238,12 @@
 					ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
 
 					// Custom Tooltips
+					if (this._options.tooltips.custom) {
+						this._options.tooltips.custom(this);
+					}
+					if (!this._options.tooltips.enabled) {
+						return;
+					}
 
 					switch (vm.yAlign) {
 						case "above":
@@ -284,6 +286,14 @@
 					ctx.fillText(vm.text, tooltipX + tooltipWidth / 2, tooltipY + tooltipRectHeight / 2);
 					break;
 				case 'label':
+
+					// Custom Tooltips
+					if (this._options.tooltips.custom) {
+						this._options.tooltips.custom(this);
+					}
+					if (!this._options.tooltips.enabled) {
+						return;
+					}
 
 					helpers.drawRoundedRectangle(ctx, vm.x, vm.y - vm.height / 2, vm.width, vm.height, vm.cornerRadius);
 					ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
