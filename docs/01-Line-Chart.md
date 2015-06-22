@@ -13,7 +13,16 @@ Often, it is used to show trend data, and the comparison of two data sets.
 
 ###Example usage
 ```javascript
-var myLineChart = new Chart(ctx).Line({
+var myLineChart = new Chart(ctx, {
+	type: 'line',
+	data: data, 
+	options: options
+});
+```
+
+Alternatively a line chart can be created using syntax similar to the v1.0 syntax
+```javascript
+var myLineChart = Chart.Line(ctx, {
 	data: data, 
 	options: options
 });
@@ -37,6 +46,18 @@ var data = {
 
 			// String or array - Line color
 			borderColor: "rgba(220,220,220,1)",
+
+			// String - cap style of the line. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap
+            borderCapStyle: 'butt',
+
+            // Array - Length and spacing of dashes. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
+            borderDash: [],
+
+            // Number - Offset for line dashes. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
+            borderDashOffset: 0.0,
+
+            // String - line join style. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin
+            borderJoinStyle: 'miter',
 
 			// String or array - Point stroke color
 			pointBorderColor: "rgba(220,220,220,1)",
@@ -245,7 +266,8 @@ You can override these for your `Chart` instance by passing a member `options` i
 For example, we could have a line chart display without an x axis by doing the following. The config merge is smart enough to handle arrays so that you do not need to specify all axis settings to change one thing.
 
 ```javascript
-new Chart(ctx).Line({
+new Chart(ctx, {
+	type: 'line',
 	data: data, 
 	options: {
 		xAxes: [{
@@ -262,13 +284,13 @@ We can also change these defaults values for each Line type that is created, thi
 
 ### Prototype methods
 
-#### .getPointsAtEvent( event )
+#### .getElementsAtEvent( event )
 
-Calling `getPointsAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the point elements that are at that the same position of that event.
+Calling `getElementsAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the point elements that are at that the same position of that event.
 
 ```javascript
 canvas.onclick = function(evt){
-	var activePoints = myLineChart.getPointsAtEvent(evt);
+	var activePoints = myLineChart.getElementsAtEvent(evt);
 	// => activePoints is an array of points on the canvas that are at the same position as the click event.
 };
 ```
