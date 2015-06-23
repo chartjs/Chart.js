@@ -104,7 +104,7 @@
 				startAngle : Math.PI * 1.5,
 				circumference : (this.options.animateRotate) ? 0 : this.calculateCircumference(segment.value),
 				label : segment.label,
-                tooltipFontColor : segment.tooltipFontColor
+				tooltipFontColor : segment.tooltipFontColor
 			}));
 			if (!silent){
 				this.reflow();
