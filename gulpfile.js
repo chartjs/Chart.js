@@ -15,6 +15,8 @@ var gulp = require('gulp'),
 	bower = require('./bower.json');
 
 var srcDir = './src/';
+var testDir = './test/spec/';
+
 /*
  *	Usage : gulp build --types=Bar,Line,Doughnut
  *	Output: - A built Chart.js file with Core and types Bar, Line and Doughnut concatenated together
@@ -86,7 +88,7 @@ gulp.task('release', ['build'], function(){
 });
 
 gulp.task('jshint', function(){
-	return gulp.src(srcDir + '*.js')
+	return gulp.src([srcDir + '*.js', testDir + '*.js'])
 		.pipe(jshint())
 		.pipe(jshint.reporter('default'));
 });
@@ -116,8 +118,6 @@ gulp.task('watch', function(){
 	gulp.watch('./src/*', ['build']);
 });
 
-gulp.task('test', ['jshint', 'valid']);
-
 gulp.task('size', ['library-size', 'module-sizes']);
 
 gulp.task('default', ['build', 'watch']);
@@ -135,3 +135,10 @@ gulp.task('_open', function(){
 });
 
 gulp.task('dev', ['server', 'default']);
+
+var mochaPhantomJS = require('gulp-mocha-phantomjs');
+gulp.task('test', ['jshint', 'valid'], function(){
+  return gulp
+  .src('test/runner.html')
+  .pipe(mochaPhantomJS());
+});
