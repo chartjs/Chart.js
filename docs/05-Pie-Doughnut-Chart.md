@@ -50,7 +50,8 @@ var data = [
 		value: 100,
 		color: "#FDB45C",
 		highlight: "#FFC870",
-		label: "Yellow"
+		label: "Yellow",
+        tooltipFontColor: "#FDB45C"
 	}
 ]
 ```
