@@ -51,7 +51,7 @@ var data = [
 		color: "#FDB45C",
 		highlight: "#FFC870",
 		label: "Yellow",
-        tooltipFontColor: "#FDB45C"
+		tooltipFontColor: "#FDB45C"
 	}
 ]
 ```
