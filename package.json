@@ -24,5 +24,6 @@
   },
   "spm": {
     "main": "Chart.js"
-  }
+  },
+  "keywords": ["chart", "canvas", "line", "bar", "radar", "plot"]
 }
