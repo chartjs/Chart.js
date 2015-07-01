@@ -8,6 +8,7 @@
     "type": "git",
     "url": "https://github.com/nnnick/Chart.js.git"
   },
+  "license" : "MIT",
   "dependences": {},
   "devDependencies": {
     "gulp": "3.5.x",
