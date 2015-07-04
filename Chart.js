@@ -3478,13 +3478,24 @@
 		isHorizontal: function() {
 			return this.options.position == "top" || this.options.position == "bottom";
 		},
+		buildLabels: function(index) {
+			this.labels = [];
+
+			if (this.options.labels.userCallback) {
+				this.data.labels.forEach(function(labelString, index) {
+					this.labels.push(this.options.labels.userCallback(labelString, index));
+				}, this);
+			} else {
+				this.labels = this.data.labels;
+			}
+		},
 		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
 			// This must be called after fit has been run so that 
 			//      this.left, this.top, this.right, and this.bottom have been defined
 			if (this.isHorizontal()) {
 				var isRotated = (this.labelRotation > 0);
 				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
-				var valueWidth = innerWidth / Math.max((this.data.labels.length - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
+				var valueWidth = innerWidth / Math.max((this.labels.length - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
 				var valueOffset = (valueWidth * index) + this.paddingLeft;
 
 				if (this.options.gridLines.offsetGridLines && includeOffset) {
@@ -3493,7 +3504,7 @@
 
 				return this.left + Math.round(valueOffset);
 			} else {
-				return this.top + (index * (this.height / this.data.labels.length));
+				return this.top + (index * (this.height / this.labels.length));
 			}
 		},
 		getPointPixelForValue: function(value, index, datasetIndex) {
@@ -3531,8 +3542,8 @@
 			var labelFont = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
 			this.ctx.font = labelFont;
 
-			var firstWidth = this.ctx.measureText(this.data.labels[0]).width;
-			var lastWidth = this.ctx.measureText(this.data.labels[this.data.labels.length - 1]).width;
+			var firstWidth = this.ctx.measureText(this.labels[0]).width;
+			var lastWidth = this.ctx.measureText(this.labels[this.labels.length - 1]).width;
 			var firstRotated;
 			var lastRotated;
 
@@ -3542,7 +3553,7 @@
 			this.labelRotation = 0;
 
 			if (this.options.display) {
-				var originalLabelWidth = helpers.longestText(this.ctx, labelFont, this.data.labels);
+				var originalLabelWidth = helpers.longestText(this.ctx, labelFont, this.labels);
 				var cosRotation;
 				var sinRotation;
 				var firstRotatedWidth;
@@ -3605,6 +3616,7 @@
 				this.height = maxHeight;
 			}
 
+			this.buildLabels();
 			this.calculateLabelRotation(maxHeight, margins);
 
 			var minSize = {
@@ -3613,7 +3625,7 @@
 			};
 
 			var labelFont = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
-			var longestLabelWidth = helpers.longestText(this.ctx, labelFont, this.data.labels);
+			var longestLabelWidth = helpers.longestText(this.ctx, labelFont, this.labels);
 
 			// Width
 			if (this.isHorizontal()) {
@@ -3650,7 +3662,7 @@
 					var yTickEnd = this.options.position == "bottom" ? this.top + 10 : this.bottom;
 					var isRotated = this.labelRotation !== 0;
 
-					helpers.each(this.data.labels, function(label, index) {
+					helpers.each(this.labels, function(label, index) {
 						var xLineValue = this.getPixelForValue(label, index, null, false); // xvalues for grid lines
 						var xLabelValue = this.getPixelForValue(label, index, null, true); // x values for labels (need to consider offsetLabel option)
 
