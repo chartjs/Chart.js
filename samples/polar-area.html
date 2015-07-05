@@ -8,12 +8,18 @@
 </head>
 
 <body>
-    <div id="canvas-holder" style="width:50%">
-        <canvas id="chart-area" width="300" height="300" />
+    <div id="canvas-holder" style="width:50%" width="50%">
+        <canvas id="chart-area"></canvas>
     </div>
     <button id="randomizeData">Randomize Data</button>
     <button id="addData">Add Data</button>
     <button id="removeData">Remove Data</button>
+    <div>
+        <h3>Legend</h3>
+        <div id="legendContainer">
+            
+        </div>
+    </div>
     <script>
     var randomScalingFactor = function() {
         return Math.round(Math.random() * 100);
@@ -59,7 +65,14 @@
     window.onload = function() {
         var ctx = document.getElementById("chart-area");
         window.myPolarArea = Chart.PolarArea(ctx, config);
+        updateLegend();
     };
+
+    function updateLegend() {
+        $legendContainer = $('#legendContainer');
+        $legendContainer.empty();
+        $legendContainer.append(window.myPolarArea.generateLegend());
+    }
 
     $('#randomizeData').click(function() {
         $.each(config.data.datasets, function(i, piece) {
@@ -69,6 +82,7 @@
             });
         });
         window.myPolarArea.update();
+        updateLegend();
     });
 
     $('#addData').click(function() {
@@ -79,6 +93,8 @@
                 config.data.datasets[index].backgroundColor.push(randomColor());
                 window.myPolarArea.addData(randomScalingFactor(), index);
             }
+
+            updateLegend();
         }
     });
 
@@ -89,6 +105,8 @@
             dataset.backgroundColor.splice(-1, 1);
             window.myPolarArea.removeData(datasetIndex, -1);
         });
+
+        updateLegend();
     });
     </script>
 </body>
