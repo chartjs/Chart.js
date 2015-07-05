@@ -23,6 +23,12 @@
     <button id="removeDataset">Remove Dataset</button>
     <button id="addData">Add Data</button>
     <button id="removeData">Remove Data</button>
+    <div>
+        <h3>Legend</h3>
+        <div id="legendContainer">
+            
+        </div>
+    </div>
     <script>
     var randomScalingFactor = function() {
         return Math.round(Math.random() * 100 * (Math.random() > 0.5 ? -1 : 1));
@@ -74,7 +80,15 @@
     window.onload = function() {
         var ctx = document.getElementById("canvas").getContext("2d");
         window.myLine = new Chart(ctx, config);
+
+        updateLegend();
     };
+
+    function updateLegend() {
+        $legendContainer = $('#legendContainer');
+        $legendContainer.empty();
+        $legendContainer.append(window.myLine.generateLegend());
+    }
 
     $('#randomizeData').click(function() {
         $.each(config.data.datasets, function(i, dataset) {
@@ -85,6 +99,7 @@
         });
 
         window.myLine.update();
+        updateLegend();
     });
 
     $('#addDataset').click(function() {
@@ -103,6 +118,7 @@
         }
 
         window.myLine.addDataset(newDataset);
+        updateLegend();
     });
 
     $('#addData').click(function() {
@@ -112,11 +128,14 @@
             for (var index = 0; index < config.data.datasets.length; ++index) {
                 window.myLine.addData(randomScalingFactor(), index);
             }
+
+            updateLegend();
         }
     });
 
     $('#removeDataset').click(function() {
         window.myLine.removeDataset(0);
+        updateLegend();
     });
 
     $('#removeData').click(function() {
@@ -125,6 +144,8 @@
         config.data.datasets.forEach(function(dataset, datasetIndex) {
             window.myLine.removeData(datasetIndex, -1);
         });
+
+        updateLegend();
     });
     </script>
 </body>

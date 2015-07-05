@@ -83,8 +83,10 @@
 			defaultColor: 'rgba(0,0,0,0.1)',
 
 			// Element defaults defined in element extensions
-			elements: {}
+			elements: {},
 
+			// Legend template string
+			legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i = 0; i < data.datasets.length; i++){%><li><span style=\"background-color:<%=data.datasets[i].backgroundColor%>\"><%if(data.datasets[i].label){%><%=data.datasets[i].label%><%}%></span></li><%}%></ul>",
 		},
 	};
 

@@ -16,6 +16,12 @@
     <button id="removeDataset">Remove Dataset</button>
     <button id="addData">Add Data</button>
     <button id="removeData">Remove Data</button>
+    <div>
+        <h3>Legend</h3>
+        <div id="legendContainer">
+            
+        </div>
+    </div>
     <script>
     var randomScalingFactor = function() {
         return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 100);
@@ -44,6 +50,13 @@
         }]
 
     };
+
+    function updateLegend() {
+        $legendContainer = $('#legendContainer');
+        $legendContainer.empty();
+        $legendContainer.append(window.myBar.generateLegend());
+    }
+
     window.onload = function() {
         var ctx = document.getElementById("canvas").getContext("2d");
         window.myBar = new Chart(ctx, {
@@ -53,6 +66,8 @@
                 responsive: true,
             }
         });
+
+        updateLegend();
     };
 
     $('#randomizeData').click(function() {
@@ -65,6 +80,7 @@
 
         });
         window.myBar.update();
+        updateLegend();
     });
 
     $('#addDataset').click(function() {
@@ -79,6 +95,7 @@
         }
 
         window.myBar.addDataset(newDataset, 1);
+        updateLegend();
     });
 
     $('#addData').click(function() {
@@ -88,11 +105,14 @@
             for (var index = 0; index < barChartData.datasets.length; ++index) {
                 window.myBar.addData(randomScalingFactor(), index);
             }
+
+            updateLegend();
         }
     });
 
     $('#removeDataset').click(function() {
         window.myBar.removeDataset(0);
+        updateLegend();
     });
 
     $('#removeData').click(function() {
@@ -101,6 +121,7 @@
         barChartData.datasets.forEach(function(dataset, datasetIndex) {
             window.myBar.removeData(datasetIndex, -1);
         });
+        updateLegend();
     });
     </script>
 </body>

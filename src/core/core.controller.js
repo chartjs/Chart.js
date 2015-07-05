@@ -338,7 +338,7 @@
 		},
 
 		generateLegend: function generateLegend() {
-			return template(this.options.legendTemplate, this);
+			return helpers.template(this.options.legendTemplate, this);
 		},
 
 		destroy: function destroy() {
