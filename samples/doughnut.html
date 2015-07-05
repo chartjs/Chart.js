@@ -26,6 +26,12 @@
     <button id="removeDataset">Remove Dataset</button>
     <button id="addData">Add Data</button>
     <button id="removeData">Remove Data</button>
+    <div>
+        <h3>Legend</h3>
+        <div id="legendContainer">
+            
+        </div>
+    </div>
     <script>
     var randomScalingFactor = function() {
         return Math.round(Math.random() * 100);
@@ -38,7 +44,6 @@
     };
 
     var config = {
-        type: 'doughnut',
         data: {
             datasets: [{
                 data: [
@@ -99,10 +104,18 @@
         }
     };
 
+    function updateLegend() {
+        $legendContainer = $('#legendContainer');
+        $legendContainer.empty();
+        $legendContainer.append(window.myDoughnut.generateLegend());
+    }
+
     window.onload = function() {
         var ctx = document.getElementById("chart-area").getContext("2d");
-        window.myDoughnut = new Chart(ctx, config);
+        window.myDoughnut = Chart.Doughnut(ctx, config);
         console.log(window.myDoughnut);
+
+        updateLegend();
     };
 
     $('#randomizeData').click(function() {
@@ -117,6 +130,7 @@
         });
 
         window.myDoughnut.update();
+        updateLegend();
     });
 
     $('#addDataset').click(function() {
@@ -131,6 +145,7 @@
         }
 
         window.myDoughnut.addDataset(newDataset);
+        updateLegend();
     });
 
     $('#addData').click(function() {
@@ -140,11 +155,14 @@
             $.each(config.data.datasets, function(index, dataset) {
                 window.myDoughnut.addData(randomScalingFactor(), index, dataset.data.length, randomColor(0.7));
             });
+
+            updateLegend();
         }
     });
 
     $('#removeDataset').click(function() {
         window.myDoughnut.removeDataset(0);
+        updateLegend();
     });
 
     $('#removeData').click(function() {
@@ -153,6 +171,8 @@
         config.data.datasets.forEach(function(dataset, datasetIndex) {
             window.myDoughnut.removeData(datasetIndex, -1);
         });
+
+        updateLegend();
     });
     </script>
 </body>
