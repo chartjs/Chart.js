@@ -78,7 +78,7 @@ var data = {
 			pointHoverBorderColor: "rgba(220,220,220,1)",
 
 			// Number or array - border width of point when hovered
-			pointBorderWidth: 2,
+			pointHoverBorderWidth: 2,
 
 			// The actual data
 			data: [65, 59, 80, 81, 56, 55, 40],
@@ -97,7 +97,7 @@ var data = {
 			pointHoverRadius: 5,
 			pointHoverBackgroundColor: "rgba(220,220,220,1)",
 			pointHoverBorderColor: "rgba(220,220,220,1)",
-			pointBorderWidth: 2,
+			pointHoverBorderWidth: 2,
 			data: [28, 48, 40, 19, 86, 27, 90]
 		}
 	]
