@@ -121,10 +121,11 @@
 
 				//Allow 3 pixels x2 padding either side for label readability
 				// only the index matters for a dataset scale, but we want a consistent interface between scales
-				var gridWidth = Math.floor(this.getPixelForValue(0, 1) - this.getPixelForValue(0, 0)) - 6;
+
+				var datasetWidth = Math.floor(this.getPixelForValue(0, 1) - this.getPixelForValue(0, 0)) - 6;
 
 				//Max label rotate should be 90 - also act as a loop counter
-				while (this.labelWidth > gridWidth && this.labelRotation <= 90) {
+				while (this.labelWidth > datasetWidth && this.labelRotation <= 40) {
 					cosRotation = Math.cos(helpers.toRadians(this.labelRotation));
 					sinRotation = Math.sin(helpers.toRadians(this.labelRotation));
 
@@ -220,8 +221,16 @@
 					var yTickStart = this.options.position == "bottom" ? this.top : this.bottom - 10;
 					var yTickEnd = this.options.position == "bottom" ? this.top + 10 : this.bottom;
 					var isRotated = this.labelRotation !== 0;
+					var skipRatio = false;
+
+					if ((this.options.labels.fontSize + 4) * this.labels.length > (this.width - (this.paddingLeft + this.paddingRight))) {
+						skipRatio = 1 + Math.floor(((this.options.labels.fontSize + 4) * this.labels.length) / (this.width - (this.paddingLeft + this.paddingRight)));
+					}
 
 					helpers.each(this.labels, function(label, index) {
+						if (skipRatio > 1 && index % skipRatio > 0) {
+							return;
+						}
 						var xLineValue = this.getPixelForValue(label, index, null, false); // xvalues for grid lines
 						var xLabelValue = this.getPixelForValue(label, index, null, true); // x values for labels (need to consider offsetLabel option)
 
