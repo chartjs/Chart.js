@@ -398,6 +398,10 @@
 			return Math.floor(Math.log(val) / Math.LN10);
 		},
 		calculateScaleRange = helpers.calculateScaleRange = function(valuesArray, drawingSize, textSize, startFromZero, integersOnly){
+			// Ignore null values
+			valuesArray = valuesArray.filter(function(value) {
+				return value !== null;
+			});
 
 			//Set a minimum step of two - a point at the top of the graph, and a point at the base
 			var minSteps = 2,
