@@ -1283,8 +1283,8 @@
 
 			// Normalize all angles to 0 - 2*PI (0 - 360°)
 			var pointRelativeAngle = pointRelativePosition.angle % (Math.PI * 2),
-			var startAngle = (Math.PI * 2 + this.startAngle) % (Math.PI * 2),
-			var endAngle = (Math.PI * 2 + this.endAngle) % (Math.PI * 2) || 360;
+			    startAngle = (Math.PI * 2 + this.startAngle) % (Math.PI * 2),
+			    endAngle = (Math.PI * 2 + this.endAngle) % (Math.PI * 2) || 360;
 
 			// Calculate wether the pointRelativeAngle is between the start and the end angle
 			var betweenAngles = (endAngle < startAngle) ?
