@@ -22,6 +22,15 @@
 		//Boolean - Whether to show vertical lines (except Y axis)
 		scaleShowVerticalLines: true,
 
+		// Boolean - Whether the scale should overflow a bit before the origin towards the labels or not
+		scaleOriginOverflow: true,
+
+		// Boolean - Whether the schale has a supplementary Y Axis at the end of the graph
+		scaleEndYAxis: false,
+
+		// Boolean - Whether the scale should have a separator between its labels on the horizontal Axis
+		scaleLabelDivider: true,
+
 		//Boolean - Whether the line is curved between points
 		bezierCurve : true,
 
@@ -186,6 +195,9 @@
 				fontFamily : this.options.scaleFontFamily,
 				valuesCount : labels.length,
 				beginAtZero : this.options.scaleBeginAtZero,
+				originOverflow: this.options.scaleOriginOverflow,
+				endYAxis: this.options.scaleEndYAxis,
+				labelDivider: this.options.scaleLabelDivider,
 				integersOnly : this.options.scaleIntegersOnly,
 				calculateYRange : function(currentHeight){
 					var updatedRanges = helpers.calculateScaleRange(
