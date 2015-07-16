@@ -25,6 +25,15 @@
 		//Boolean - Whether to show vertical lines (except Y axis)
 		scaleShowVerticalLines: true,
 
+		// Boolean - Whether the scale should overflow a bit before the origin towards the labels or not
+		scaleOriginOverflow: true,
+
+		// Boolean - Whether the schale has a supplementary Y Axis at the end of the graph
+		scaleEndYAxis: false,
+
+		// Boolean - Whether the scale should have a separator between its labels on the horizontal Axis
+		scaleLabelDivider: true,
+
 		//Boolean - If there is a stroke on each bar
 		barShowStroke : true,
 
@@ -196,6 +205,9 @@
 				fontStyle : this.options.scaleFontStyle,
 				fontFamily : this.options.scaleFontFamily,
 				valuesCount : labels.length,
+				originOverflow: this.options.scaleOriginOverflow,
+				endYAxis: this.options.scaleEndYAxis,
+				labelDivider: this.options.scaleLabelDivider,
 				beginAtZero : this.options.scaleBeginAtZero,
 				integersOnly : this.options.scaleIntegersOnly,
 				calculateYRange: function(currentHeight){

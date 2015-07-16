@@ -96,6 +96,15 @@
 			// Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
 			scaleBeginAtZero: false,
 
+			// Boolean - Whether the scale should overflow a bit before the origin towards the labels or not
+			scaleOriginOverflow: true,
+
+			// Boolean - Whether we show a supplementary Y Axis at the end of the graph too - Disable scaleOriginOverflow and enable this to get fully boxed scale
+			scaleEndYAxis: false,
+
+			// Boolean - Whether the scale should have a separator between its labels on the horizontal Axis
+			scaleLabelDivider: true,
+
 			// String - Scale label font declaration for the scale label
 			scaleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 
@@ -1654,11 +1663,14 @@
 
 					ctx.lineWidth = this.lineWidth;
 					ctx.strokeStyle = this.lineColor;
-					ctx.beginPath();
-					ctx.moveTo(xStart - 5, linePositionY);
-					ctx.lineTo(xStart, linePositionY);
-					ctx.stroke();
-					ctx.closePath();
+
+					if(this.originOverflow){
+						ctx.beginPath();
+						ctx.moveTo(xStart - 5, linePositionY);
+						ctx.lineTo(xStart, linePositionY);
+						ctx.stroke();
+						ctx.closePath();
+					}
 
 				},this);
 
@@ -1690,7 +1702,7 @@
 
 					if (drawVerticalLine){
 						ctx.moveTo(linePos,this.endPoint);
-						ctx.lineTo(linePos,this.startPoint - 3);
+						ctx.lineTo(linePos,this.startPoint - (this.originOverflow ? 3 : 0));
 						ctx.stroke();
 						ctx.closePath();
 					}
@@ -1701,11 +1713,13 @@
 
 
 					// Small lines at the bottom of the base grid line
-					ctx.beginPath();
-					ctx.moveTo(linePos,this.endPoint);
-					ctx.lineTo(linePos,this.endPoint + 5);
-					ctx.stroke();
-					ctx.closePath();
+					if ((index > 0 && this.labelDivider) || (index == 0 && this.originOverflow)){
+						ctx.beginPath();
+						ctx.moveTo(linePos,this.endPoint);
+						ctx.lineTo(linePos,this.endPoint + 5);
+						ctx.stroke();
+						ctx.closePath();
+					}
 
 					ctx.save();
 					ctx.translate(xPos,(isRotated) ? this.endPoint + 12 : this.endPoint + 8);
@@ -1716,7 +1730,14 @@
 					ctx.fillText(label, 0, 0);
 					ctx.restore();
 				},this);
-
+	
+				if(this.endYAxis){
+					ctx.beginPath();
+					ctx.moveTo(this.width,this.endPoint);
+					ctx.lineTo(this.width,this.startPoint - (this.originOverflow ? 3 : 0));
+					ctx.stroke();
+					ctx.closePath();
+				}
 			}
 		}
 
@@ -2035,6 +2056,15 @@
 		//Boolean - Whether grid lines are shown across the chart
 		scaleShowGridLines : true,
 
+		// Boolean - Whether the scale should overflow a bit before the origin towards the labels or not
+		scaleOriginOverflow: true,
+
+		// Boolean - Whether the schale has a supplementary Y Axis at the end of the graph
+		scaleEndYAxis: false,
+
+		// Boolean - Whether the scale should have a separator between its labels on the horizontal Axis
+		scaleLabelDivider: true,
+
 		//String - Colour of the grid lines
 		scaleGridLineColor : "rgba(0,0,0,.05)",
 
@@ -2218,6 +2248,9 @@
 				fontStyle : this.options.scaleFontStyle,
 				fontFamily : this.options.scaleFontFamily,
 				valuesCount : labels.length,
+				originOverflow: this.options.scaleOriginOverflow,
+				endYAxis: this.options.scaleEndYAxis,
+				labelDivider: this.options.scaleLabelDivider,
 				beginAtZero : this.options.scaleBeginAtZero,
 				integersOnly : this.options.scaleIntegersOnly,
 				calculateYRange: function(currentHeight){
@@ -2531,6 +2564,15 @@
 		//Boolean - Whether to show vertical lines (except Y axis)
 		scaleShowVerticalLines: true,
 
+		// Boolean - Whether the scale should overflow a bit before the origin towards the labels or not
+		scaleOriginOverflow: true,
+
+		// Boolean - Whether we show a supplementary Y Axis at the end of the graph too - Disable scaleOriginOverflow and enable this to get fully boxed scale
+		scaleEndYAxis: false,
+
+		// Boolean - Whether the scale should have a separator between its labels on the horizontal Axis
+		scaleLabelDivider: true,
+
 		//Boolean - Whether the line is curved between points
 		bezierCurve : true,
 
@@ -2690,6 +2732,9 @@
 				fontFamily : this.options.scaleFontFamily,
 				valuesCount : labels.length,
 				beginAtZero : this.options.scaleBeginAtZero,
+				originOverflow: this.options.scaleOriginOverflow,
+				endYAxis: this.options.scaleEndYAxis,
+				labelDivider: this.options.scaleLabelDivider,
 				integersOnly : this.options.scaleIntegersOnly,
 				calculateYRange : function(currentHeight){
 					var updatedRanges = helpers.calculateScaleRange(

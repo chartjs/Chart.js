@@ -1729,11 +1729,14 @@
 
 					ctx.lineWidth = this.lineWidth;
 					ctx.strokeStyle = this.lineColor;
-					ctx.beginPath();
-					ctx.moveTo(xStart - 5, linePositionY);
-					ctx.lineTo(xStart, linePositionY);
-					ctx.stroke();
-					ctx.closePath();
+
+					if(this.originOverflow){
+						ctx.beginPath();
+						ctx.moveTo(xStart - 5, linePositionY);
+						ctx.lineTo(xStart, linePositionY);
+						ctx.stroke();
+						ctx.closePath();
+					}
 
 				},this);
 
@@ -1765,7 +1768,7 @@
 
 					if (drawVerticalLine){
 						ctx.moveTo(linePos,this.endPoint);
-						ctx.lineTo(linePos,this.startPoint - 3);
+						ctx.lineTo(linePos,this.startPoint - (this.originOverflow ? 3 : 0));
 						ctx.stroke();
 						ctx.closePath();
 					}
@@ -1776,11 +1779,13 @@
 
 
 					// Small lines at the bottom of the base grid line
-					ctx.beginPath();
-					ctx.moveTo(linePos,this.endPoint);
-					ctx.lineTo(linePos,this.endPoint + 5);
-					ctx.stroke();
-					ctx.closePath();
+					if ((index > 0 && this.labelDivider) || (index == 0 && this.originOverflow)){
+						ctx.beginPath();
+						ctx.moveTo(linePos,this.endPoint);
+						ctx.lineTo(linePos,this.endPoint + 5);
+						ctx.stroke();
+						ctx.closePath();
+					}
 
 					ctx.save();
 					ctx.translate(xPos,(isRotated) ? this.endPoint + 12 : this.endPoint + 8);
@@ -1791,7 +1796,14 @@
 					ctx.fillText(label, 0, 0);
 					ctx.restore();
 				},this);
-
+	
+				if(this.endYAxis){
+					ctx.beginPath();
+					ctx.moveTo(this.width,this.endPoint);
+					ctx.lineTo(this.width,this.startPoint - (this.originOverflow ? 3 : 0));
+					ctx.stroke();
+					ctx.closePath();
+				}
 			}
 		}
 
