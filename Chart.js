@@ -1713,7 +1713,7 @@
 
 
 					// Small lines at the bottom of the base grid line
-					if ((index > 0 && this.labelDivider) || (index == 0 && this.originOverflow)){
+					if ((index > 0 && this.labelDivider) || (index === 0 && this.originOverflow)){
 						ctx.beginPath();
 						ctx.moveTo(linePos,this.endPoint);
 						ctx.lineTo(linePos,this.endPoint + 5);
