@@ -33,7 +33,7 @@ bower install Chart.js --save
 
 Also, Chart.js is available from CDN:
 
-https://cdnjs.com/libraries/chart.js
+https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js
 
 ###Creating a chart
 
