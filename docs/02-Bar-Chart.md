@@ -22,6 +22,7 @@ var myBarChart = new Chart(ctx).Bar(data, options);
 ```javascript
 var data = {
 	labels: ["January", "February", "March", "April", "May", "June", "July"],
+	labels_tooltip: ["Month of January", "Month of February", "Month of March", "Month of April", "Month of May", "Month of June", "Month of July"],
 	datasets: [
 		{
 			label: "My First dataset",
@@ -44,6 +45,8 @@ var data = {
 ```
 The bar chart has the a very similar data structure to the line chart, and has an array of datasets, each with colours and an array of data. Again, colours are in CSS format.
 We have an array of labels too for display. In the example, we are showing the same data as the previous line chart example.
+
+The `labels_tooltip` array is optional, and it is used for the tooltips.
 
 The label key on each dataset is optional, and can be used when generating a scale for the chart.
 
