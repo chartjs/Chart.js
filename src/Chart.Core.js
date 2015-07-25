@@ -1097,7 +1097,7 @@
 						labels: tooltipLabels,
 						legendColors: tooltipColors,
 						legendColorBackground : this.options.multiTooltipKeyBackground,
-						title: ChartElements[0].label,
+						title: ChartElements[0].label_tooltip || ChartElements[0].label,
 						chart: this.chart,
 						ctx: this.chart.ctx,
 						custom: this.options.customTooltips
