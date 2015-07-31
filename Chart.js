@@ -174,12 +174,6 @@
 			// String - Colour behind the legend colour block
 			multiTooltipKeyBackground: '#fff',
 
-			//have separate hover event for multiple datasets
-			separateHover: false,
-
-			//when separate hover event, the ability to have all data in tooltip still or not
-			seperateHoverDistinctTooltip: true,
-
 			// Function - Will fire on animation progression.
 			onAnimationProgress: function(){},
 
@@ -977,13 +971,6 @@
 							});
 
 							helpers.each(Elements, function(element) {
-								if (this.options.separateHover &&
-									this.options.seperateHoverDistinctTooltip &&
-									typeof element.datasetLabel != "undefined" &&
-									element.datasetLabel != ChartElements[0].datasetLabel) {
-									return;
-								}
-
 								xPositions.push(element.x);
 								yPositions.push(element.y);
 
@@ -2202,13 +2189,8 @@
 			for (var datasetIndex = 0; datasetIndex < this.datasets.length; datasetIndex++) {
 				for (barIndex = 0; barIndex < this.datasets[datasetIndex].bars.length; barIndex++) {
 					if (this.datasets[datasetIndex].bars[barIndex].inRange(eventPosition.x,eventPosition.y)){
-						if (this.options.separateHover) {
-							barsArray.push(this.datasets[datasetIndex].bars[barIndex]);
-							return barsArray;
-						} else {
-							helpers.each(this.datasets, datasetIterator);
-							return barsArray;
-						}
+						helpers.each(this.datasets, datasetIterator);
+						return barsArray;
 					}
 				}
 			}

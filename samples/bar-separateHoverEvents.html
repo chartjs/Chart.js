@@ -2,7 +2,8 @@
 <html>
 	<head>
 		<title>Bar Multi-data, Separate Hover/Tooltip Chart</title>
-		<script src="../Chart.js"></script>
+		<script src="../src/Chart.Core.js"></script>
+		<script src="../src/Chart.Bar.js"></script>
 	</head>
 	<body>
 		<div style="width: 50%">
@@ -48,7 +49,6 @@
 		window.myBar = new Chart(ctx).Bar(barChartData, {
 			responsive : true,
 			separateHover: true,
-			//seperateHoverDistinctTooltip: false
 		});
 	}
 
