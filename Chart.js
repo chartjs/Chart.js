@@ -174,6 +174,9 @@
 			// String - Colour behind the legend colour block
 			multiTooltipKeyBackground: '#fff',
 
+			//have separate hover event/tooltip for multiple datasets
+			separateHover: false,
+
 			// Function - Will fire on animation progression.
 			onAnimationProgress: function(){},
 
@@ -971,6 +974,12 @@
 							});
 
 							helpers.each(Elements, function(element) {
+								if (this.options.separateHover &&
+									typeof element.datasetLabel != "undefined" &&
+									element.datasetLabel != ChartElements[0].datasetLabel) {
+									return;
+								}
+
 								xPositions.push(element.x);
 								yPositions.push(element.y);
 
@@ -2189,8 +2198,13 @@
 			for (var datasetIndex = 0; datasetIndex < this.datasets.length; datasetIndex++) {
 				for (barIndex = 0; barIndex < this.datasets[datasetIndex].bars.length; barIndex++) {
 					if (this.datasets[datasetIndex].bars[barIndex].inRange(eventPosition.x,eventPosition.y)){
-						helpers.each(this.datasets, datasetIterator);
-						return barsArray;
+						if (this.options.separateHover) {
+							barsArray.push(this.datasets[datasetIndex].bars[barIndex]);
+							return barsArray;
+						} else {
+							helpers.each(this.datasets, datasetIterator);
+							return barsArray;
+						}
 					}
 				}
 			}
