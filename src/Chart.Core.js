@@ -1059,7 +1059,6 @@
 							});
 
 							helpers.each(Elements, function(element) {
-								console.log(this.options);
 								if (this.options.separateHover &&
 									this.options.seperateHoverDistinctTooltip &&
 									typeof element.datasetLabel != "undefined" &&
