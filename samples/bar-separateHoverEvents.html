@@ -47,7 +47,8 @@
 		var ctx = document.getElementById("canvas").getContext("2d");
 		window.myBar = new Chart(ctx).Bar(barChartData, {
 			responsive : true,
-			separateHover: true
+			separateHover: true,
+			//seperateHoverDistinctTooltip: false
 		});
 	}
 
