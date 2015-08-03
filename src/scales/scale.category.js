@@ -127,8 +127,6 @@
 
                 //Max label rotation can be set or default to 90 - also act as a loop counter
                 while (this.labelWidth > (datasetWidth + this.paddingLeft) && this.labelRotation <= this.options.labels.maxRotation) {
-                    console.log(this.labelWidth, datasetWidth, this.labelRotation, this.options.labels.maxRotation)
-                    console.log(this.paddingLeft);
                     cosRotation = Math.cos(helpers.toRadians(this.labelRotation));
                     sinRotation = Math.sin(helpers.toRadians(this.labelRotation));
 
