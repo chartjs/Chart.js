@@ -73,7 +73,7 @@
 
 			if (this.dropFrames > 1) {
 				framesToDrop = Math.floor(this.dropFrames);
-				this.dropFrames -= framesToDrop;
+				this.dropFrames = this.dropFrames % 1;
 			}
 
 			for (var i = 0; i < this.animations.length; i++) {
@@ -81,7 +81,6 @@
 				if (this.animations[i].animationObject.currentStep === null) {
 					this.animations[i].animationObject.currentStep = 0;
 				}
-
 				this.animations[i].animationObject.currentStep += 1 + framesToDrop;
 				if (this.animations[i].animationObject.currentStep > this.animations[i].animationObject.numSteps) {
 					this.animations[i].animationObject.currentStep = this.animations[i].animationObject.numSteps;
@@ -99,12 +98,9 @@
 			}
 
 			var endTime = Date.now();
-			var delay = endTime - startTime - this.frameDuration;
-			var frameDelay = delay / this.frameDuration;
+			var dropFrames = (endTime - startTime) / this.frameDuration;
 
-			if (frameDelay > 1) {
-				this.dropFrames += frameDelay;
-			}
+			this.dropFrames += dropFrames;
 
 			// Do we have more stuff to animate?
 			if (this.animations.length > 0) {
