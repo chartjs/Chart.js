@@ -116,7 +116,8 @@
 						strokeColor : dataset.pointStrokeColor,
 						fillColor : dataset.pointColor,
 						highlightFill : dataset.pointHighlightFill || dataset.pointColor,
-						highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor
+						highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor,
+						yIndex: dataset.yIndex
 					}));
 				},this);
 
@@ -165,14 +166,16 @@
 		buildScale : function(labels){
 			var self = this;
 
-			var dataTotal = function(){
-				var values = [];
-				self.eachPoints(function(point){
-					values.push(point.value);
-				});
+    		var dataTotal = function() {
+                var values = [];
+                values[0] = [];
+                values[1] = [];
+                self.eachPoints(function(point) {
+                    values[point.yIndex ? 1 : 0].push(point.value);
+                });
+                return values;
+            };
 
-				return values;
-			};
 
 			var scaleOptions = {
 				templateString : this.options.scaleLabel,
@@ -188,14 +191,31 @@
 				beginAtZero : this.options.scaleBeginAtZero,
 				integersOnly : this.options.scaleIntegersOnly,
 				calculateYRange : function(currentHeight){
-					var updatedRanges = helpers.calculateScaleRange(
+					var data = dataTotal();
+					/*var updatedRanges = helpers.calculateScaleRange(
 						dataTotal(),
 						currentHeight,
 						this.fontSize,
 						this.beginAtZero,
 						this.integersOnly
-					);
-					helpers.extend(this, updatedRanges);
+					);*/
+                    var updatedRangesLeft = helpers.calculateScaleRange(
+                        data[0],
+                        currentHeight,
+                        this.fontSize,
+                        this.beginAtZero,
+                        this.integersOnly
+                    );
+                    var updatedRangesRight = helpers.calculateScaleRange(
+                        data[1],
+                        currentHeight,
+                        this.fontSize,
+                        this.beginAtZero,
+                        this.integersOnly
+                    );
+					//helpers.extend(this, updatedRanges);
+                    helpers.extend(this.leftY, updatedRangesLeft);
+                    helpers.extend(this.rightY, updatedRangesRight);
 				},
 				xLabels : labels,
 				font : helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.scaleFontFamily),
@@ -287,7 +307,7 @@
 				helpers.each(dataset.points, function(point, index){
 					if (point.hasValue()){
 						point.transition({
-							y : this.scale.calculateY(point.value),
+							y : this.scale.calculateY(point),
 							x : this.scale.calculateX(index)
 						}, easingDecimal);
 					}

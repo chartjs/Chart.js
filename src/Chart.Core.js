@@ -1547,18 +1547,20 @@
 	});
 
 	Chart.Scale = Chart.Element.extend({
-		initialize : function(){
+		initialize : function(){			
+			this.leftY = new Chart.Element();
+			this.rightY = new Chart.Element();
 			this.fit();
 		},
-		buildYLabels : function(){
-			this.yLabels = [];
+		buildYLabels : function(side){
+			this[side].yLabels = [];
 
-			var stepDecimalPlaces = getDecimalPlaces(this.stepValue);
+			var stepDecimalPlaces = getDecimalPlaces(this[side].stepValue);
 
-			for (var i=0; i<=this.steps; i++){
-				this.yLabels.push(template(this.templateString,{value:(this.min + (i * this.stepValue)).toFixed(stepDecimalPlaces)}));
+			for (var i=0; i<=this[side].steps; i++){
+				this[side].yLabels.push(template(this.templateString,{value:(this[side].min + (i * this[side].stepValue)).toFixed(stepDecimalPlaces)}));
 			}
-			this.yLabelWidth = (this.display && this.showLabels) ? longestText(this.ctx,this.font,this.yLabels) + 10 : 0;
+			this[side].yLabelWidth = (this.display && this.showLabels) ? longestText(this.ctx,this.font,this[side].yLabels) + 10 : 0;
 		},
 		addXLabel : function(label){
 			this.xLabels.push(label);
@@ -1603,19 +1605,21 @@
 
 			// With these properties set we can now build the array of yLabels
 			// and also the width of the largest yLabel
-			this.buildYLabels();
+			this.buildYLabels("leftY");
+			this.buildYLabels("rightY");
 
 			this.calculateXLabelRotation();
 
 			while((cachedHeight > this.endPoint - this.startPoint)){
 				cachedHeight = this.endPoint - this.startPoint;
-				cachedYLabelWidth = this.yLabelWidth;
+				cachedYLabelWidth = this.leftY.yLabelWidth;
 
 				this.calculateYRange(cachedHeight);
-				this.buildYLabels();
+				this.buildYLabels("leftY");
+				this.buildYLabels("rightY");
 
 				// Only go through the xLabel loop again if the yLabel width has changed
-				if (cachedYLabelWidth < this.yLabelWidth){
+				if (cachedYLabelWidth < this.leftY.yLabelWidth){
 					this.endPoint = cachedEndPoint;
 					this.calculateXLabelRotation();
 				}
@@ -1634,8 +1638,10 @@
 				lastRotated;
 
 
-			this.xScalePaddingRight = lastWidth/2 + 3;
-			this.xScalePaddingLeft = (firstWidth/2 > this.yLabelWidth) ? firstWidth/2 : this.yLabelWidth;
+			//this.xScalePaddingRight = lastWidth/2 + 3;
+			//TESTME
+			this.xScalePaddingRight = (lastWidth/2 + 3 > this.rightY.yLabelWidth)? lastWidth/2 + 3 : this.rightY.yLabelWidth;
+			this.xScalePaddingLeft = (firstWidth/2 > this.leftY.yLabelWidth) ? firstWidth/2 : this.leftY.yLabelWidth;
 
 			this.xLabelRotation = 0;
 			if (this.display){
@@ -1654,10 +1660,10 @@
 					lastRotated = cosRotation * lastWidth;
 
 					// We're right aligning the text now.
-					if (firstRotated + this.fontSize / 2 > this.yLabelWidth){
+					if (firstRotated + this.fontSize / 2 > this.leftY.yLabelWidth){
 						this.xScalePaddingLeft = firstRotated + this.fontSize / 2;
 					}
-					this.xScalePaddingRight = this.fontSize/2;
+					//this.xScalePaddingRight = this.fontSize/2;
 
 
 					this.xLabelRotation++;
@@ -1681,9 +1687,16 @@
 		drawingArea: function(){
 			return this.startPoint - this.endPoint;
 		},
-		calculateY : function(value){
-			var scalingFactor = this.drawingArea() / (this.min - this.max);
-			return this.endPoint - (scalingFactor * (value - this.min));
+		//calculateY : function(value){
+		//	var scalingFactor = this.drawingArea() / (this.min - this.max);
+		//	return this.endPoint - (scalingFactor * (value - this.min));
+		//},
+		calculateY : function(point){
+ 			//var scalingFactor = this.drawingArea() / (this.min - this.max);
+ 			var side = point.yIndex?"rightY":"leftY";
+ 			//return this.endPoint - (scalingFactor * (value - this.min));
+ 			var scalingFactor = this.drawingArea() / (this[side].min - this[side].max);
+ 			return this.endPoint - (scalingFactor * (point.value - this[side].min));
 		},
 		calculateX : function(index){
 			var isRotated = (this.xLabelRotation > 0),
@@ -1702,14 +1715,90 @@
 			helpers.extend(this, newProps);
 			this.fit();
 		},
+		drawY: function(leftY)
+		{
+			var side = leftY? "leftY": "rightY";
+			var ctx = this.ctx,
+			yLabelGap = (this.endPoint - this.startPoint) / this[side].steps,
+			xStart = Math.round(this.xScalePaddingLeft),
+			xEnd = Math.round(this.width - this.xScalePaddingRight);
+			ctx.fillStyle = this.textColor;
+			ctx.font = this.font;
+			each(this[side].yLabels,function(labelString,index){
+				var yLabelCenter = this.endPoint - (yLabelGap * index),
+					linePositionY = Math.round(yLabelCenter),
+					drawHorizontalLine = this.showHorizontalLines;
+
+
+				ctx.textAlign = "right";
+				ctx.textBaseline = "middle";
+				if (this.showLabels){
+					ctx.fillStyle = this.strokeColor;
+					if(side === "leftY")
+					{
+						ctx.fillText(labelString,xStart - 10,yLabelCenter);
+					}else{
+						ctx.fillText(labelString,xEnd+this[side].yLabelWidth,yLabelCenter);
+					}
+				}
+
+				// This is X axis, so draw it
+				if (index === 0 && !drawHorizontalLine){
+					drawHorizontalLine = true;
+				}
+
+				if (drawHorizontalLine){
+					ctx.beginPath();
+				}
+
+				if (index > 0){
+					// This is a grid line in the centre, so drop that
+					ctx.lineWidth = this.gridLineWidth;
+					ctx.strokeStyle = this.gridLineColor;
+				} else {
+					// This is the first line on the scale
+					ctx.lineWidth = this.lineWidth;
+					ctx.strokeStyle = this.lineColor;
+				}
+
+				linePositionY += helpers.aliasPixel(ctx.lineWidth);
+
+				if(drawHorizontalLine && side === "leftY"){
+					ctx.moveTo(xStart, linePositionY);
+					ctx.lineTo(xEnd, linePositionY);
+					ctx.stroke();
+					ctx.closePath();
+				}
+
+				if(side === "leftY"){
+
+				ctx.lineWidth = this.lineWidth;
+				ctx.strokeStyle = this.lineColor;
+				ctx.beginPath();
+				ctx.moveTo(xStart - 5, linePositionY);
+				ctx.lineTo(xStart, linePositionY);
+				ctx.stroke();
+				ctx.closePath();
+			}
+
+			},this);
+			
+		},
 		draw : function(){
 			var ctx = this.ctx,
 				yLabelGap = (this.endPoint - this.startPoint) / this.steps,
+				//TESTME
+				xEnd = Math.round(this.width),
 				xStart = Math.round(this.xScalePaddingLeft);
+
 			if (this.display){
 				ctx.fillStyle = this.textColor;
 				ctx.font = this.font;
-				each(this.yLabels,function(labelString,index){
+				this.drawY(0);
+				this.drawY(1);
+
+
+				/*each(this.yLabels,function(labelString,index){
 					var yLabelCenter = this.endPoint - (yLabelGap * index),
 						linePositionY = Math.round(yLabelCenter),
 						drawHorizontalLine = this.showHorizontalLines;
@@ -1718,6 +1807,7 @@
 					ctx.textBaseline = "middle";
 					if (this.showLabels){
 						ctx.fillText(labelString,xStart - 10,yLabelCenter);
+						this.doubleY && ctx.fillText(labelString,xEnd,yLabelCenter);
 					}
 
 					// This is X axis, so draw it
@@ -1743,7 +1833,9 @@
 
 					if(drawHorizontalLine){
 						ctx.moveTo(xStart, linePositionY);
-						ctx.lineTo(this.width, linePositionY);
+						//TESTME
+						//ctx.lineTo(this.width, linePositionY);
+						ctx.lineTo(this.width - this.xScalePaddingRight + 6, linePositionY);
 						ctx.stroke();
 						ctx.closePath();
 					}
@@ -1756,7 +1848,7 @@
 					ctx.stroke();
 					ctx.closePath();
 
-				},this);
+				},this);*/
 
 				each(this.xLabels,function(label,index){
 					var xPos = this.calculateX(index) + aliasPixel(this.lineWidth),
