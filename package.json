@@ -8,27 +8,22 @@
     "type": "git",
     "url": "https://github.com/nnnick/Chart.js.git"
   },
-  "license": "MIT",
+  "license" : "MIT",
   "dependences": {},
   "devDependencies": {
     "gulp": "3.5.x",
     "gulp-concat": "~2.1.x",
     "gulp-connect": "~2.0.5",
-    "gulp-html-validator": "^0.0.2",
     "gulp-jshint": "~1.5.1",
     "gulp-replace": "^0.4.0",
-    "gulp-resolve-dependencies": "^2.1.0",
     "gulp-size": "~0.4.0",
     "gulp-uglify": "~0.2.x",
     "gulp-util": "~2.2.x",
+    "gulp-html-validator": "^0.0.2",
     "inquirer": "^0.5.1",
     "semver": "^3.0.1"
   },
   "spm": {
     "main": "Chart.js"
-  },
-  "dependencies": {
-    "gulp-install": "^0.4.0",
-    "is-my-json-valid": "^2.12.1"
   }
 }

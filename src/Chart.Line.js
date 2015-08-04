@@ -263,6 +263,7 @@
 					y: this.scale.endPoint,
 					strokeColor : this.datasets[datasetIndex].pointStrokeColor,
 					fillColor : this.datasets[datasetIndex].pointColor
+					yIndex: (this.options.scaleUse2Y && datasetIndex != 0 ) ? 1 : 0
 				}));
 			},this);
 
