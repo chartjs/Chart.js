@@ -237,7 +237,7 @@
 
 		render: function render(duration, lazy) {
 
-			if (this.options.animation.duration !== 0 || duration) {
+			if ((typeof duration !== 'undefined' && duration !== 0) || (typeof duration == 'undefined' && this.options.animation.duration !== 0)) {
 				var animation = new Chart.Animation();
 				animation.numSteps = (duration || this.options.animation.duration) / 16.66; //60 fps
 				animation.easing = this.options.animation.easing;
