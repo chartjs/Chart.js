@@ -7,6 +7,9 @@
 
 	var defaultConfig = {
 
+		//Use a second Y scale
+		scaleUse2Y: false,
+
 		///Boolean - Whether grid lines are shown across the chart
 		scaleShowGridLines : true,
 
@@ -93,6 +96,7 @@
 			}
 
 			//Iterate through each of the datasets, and build this into a property of the chart
+			var datasetIdx = 0;
 			helpers.each(data.datasets,function(dataset){
 
 				var datasetObject = {
@@ -101,6 +105,7 @@
 					strokeColor : dataset.strokeColor,
 					pointColor : dataset.pointColor,
 					pointStrokeColor : dataset.pointStrokeColor,
+					yIndex: (this.options.scaleUse2Y && datasetIdx != 0 ) ? 1 : 0,
 					points : []
 				};
 
@@ -117,7 +122,7 @@
 						fillColor : dataset.pointColor,
 						highlightFill : dataset.pointHighlightFill || dataset.pointColor,
 						highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor,
-						yIndex: dataset.yIndex
+						yIndex: (this.options.scaleUse2Y && datasetIdx != 0 ) ? 1 : 0
 					}));
 				},this);
 
@@ -131,6 +136,8 @@
 					});
 					point.save();
 				}, this);
+
+				datasetIdx++;
 
 			},this);
 
