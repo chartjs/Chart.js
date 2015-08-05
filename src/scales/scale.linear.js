@@ -28,11 +28,13 @@
 		// label settings
 		labels: {
 			show: true,
+			mirror: false,
+			padding: 10,
 			template: "<%=value.toLocaleString()%>",
 			fontSize: 12,
 			fontStyle: "normal",
 			fontColor: "#666",
-			fontFamily: "Helvetica Neue",
+			fontFamily: "Helvetica Neue"
 		}
 	};
 
@@ -548,12 +550,22 @@
 						var labelStartX;
 
 						if (this.options.position == "left") {
-							labelStartX = this.right - 10;
-							this.ctx.textAlign = "right";
+							if (this.options.labels.mirror) {
+								labelStartX = this.right + this.options.labels.padding;
+								this.ctx.textAlign = "left";
+							} else {
+								labelStartX = this.right - this.options.labels.padding;
+								this.ctx.textAlign = "right";
+							}
 						} else {
 							// right side
-							labelStartX = this.left + 5;
-							this.ctx.textAlign = "left";
+							if (this.options.labels.mirror) {
+								labelStartX = this.left - this.options.labels.padding;
+								this.ctx.textAlign = "right";
+							} else {
+								labelStartX = this.left + this.options.labels.padding;
+								this.ctx.textAlign = "left";
+							}
 						}
 
 						this.ctx.textBaseline = "middle";
