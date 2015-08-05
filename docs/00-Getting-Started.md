@@ -364,6 +364,12 @@ the following options.
     labels: {
         // Boolean - if true show labels
         show: true,
+        
+        // Boolean - if true the chart will mirror the axis labels. If the labels are on the left, mirroring the axis will render them to the right
+        mirror: false,
+        
+        // Number - controls the padding between the label and the axis
+        padding: 10,
 
         // String - template string for labels
         template: "<%=value%>",
