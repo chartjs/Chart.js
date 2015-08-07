@@ -258,7 +258,9 @@
 				Chart.animationService.addAnimation(this, animation, duration, lazy);
 			} else {
 				this.draw();
-				this.options.onAnimationComplete.call(this);
+				if (this.options.onAnimationComplete && this.options.onAnimationComplete.call) {
+					this.options.onAnimationComplete.call(this);
+				}
 			}
 			return this;
 		},
