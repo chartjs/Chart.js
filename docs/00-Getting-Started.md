@@ -46,7 +46,7 @@ To create a chart, we need to instantiate the `Chart` class. To do this, we need
 ```javascript
 // Get the context of the canvas element we want to select
 var ctx = document.getElementById("myChart").getContext("2d");
-var myNewChart = Chart.PolarArea(chart, {
+var myNewChart = Chart.PolarArea(ctx, {
     data: data,
     options: config
 });
