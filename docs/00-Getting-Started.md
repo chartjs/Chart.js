@@ -371,6 +371,9 @@ the following options.
         // Number - controls the padding between the label and the axis
         padding: 10,
 
+        // Number: maximum auto-rotation allowed for labels.
+        maxRotation: 90,
+
         // String - template string for labels
         template: "<%=value%>",
 
@@ -393,14 +396,15 @@ the following options.
 
 ```
 
-The `userCallback` method may be useful when there are a lot of labels. The following callback would filter out every second label on a category scale
+The `userCallback` method may be useful when there are a lot of labels. The following callback would show every fifth label on a category scale
 ```javascript
 {
     scales: {
         xAxes: [{
             labels: {
+                maxRotation: 0,    // set maxRotation to 0 to turn off auto-rotation
                 userCallback: function(labelString, index) {
-                    return (index % 2 === 0) ? labelString : '';
+                    return (index % 5 === 0) ? labelString : '';
                 }
             }
         }]
