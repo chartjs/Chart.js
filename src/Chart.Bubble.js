@@ -28,6 +28,12 @@
         //Boolean - Whether to show Y axis
         scaleShowYAxis: true,
 
+        //Boolean - Whether to show X labels
+        scaleShowXLabels: true,
+
+        //Boolean - Whether to show Y labels
+        scaleShowYLabels: true,
+
         //Boolean - Whether the line is curved between points
         bezierCurve : true,
 
@@ -72,7 +78,6 @@
             this.PointClass = Chart.Point.extend({
                 offsetGridLines : this.options.offsetGridLines,
                 strokeWidth : this.options.pointDotStrokeWidth,
-                radius : this.options.pointDotRadius,
                 display: this.options.pointDot,
                 hitDetectionRadius : this.options.pointHitDetectionRadius,
                 ctx : this.chart.ctx,
@@ -114,9 +119,13 @@
 
 
                 helpers.each(dataset.data,function(dataPoint,index){
+                    if(helpers.isNumber(dataPoint)) {
+                        dataPoint = [dataPoint, 0];
+                    }
                     //Add a new point for each piece of data, passing any required data to draw.
                     datasetObject.points.push(new this.PointClass({
-                        value : dataPoint,
+                        radius: dataPoint[0],
+                        value : dataPoint[1],
                         label : data.labels[index],
                         datasetLabel: dataset.label,
                         strokeColor : dataset.pointStrokeColor,
@@ -211,6 +220,8 @@
                 showVerticalLines : this.options.scaleShowVerticalLines,
                 showXAxis : this.options.scaleShowXAxis,
                 showYAxis : this.options.scaleShowYAxis,
+                showXLabels : this.options.scaleShowXLabels,
+                showYLabels : this.options.scaleShowYLabels,
                 gridLineWidth : (this.options.scaleShowGridLines) ? this.options.scaleGridLineWidth : 0,
                 gridLineColor : (this.options.scaleShowGridLines) ? this.options.scaleGridLineColor : "rgba(0,0,0,0)",
                 padding: (this.options.showScale) ? 0 : this.options.pointDotRadius + this.options.pointDotStrokeWidth,
@@ -235,9 +246,13 @@
             //Map the values array for each of the datasets
 
             helpers.each(valuesArray,function(value,datasetIndex){
+                if(helpers.isNumber(value)) {
+                    value = [value, 0];
+                }
                 //Add a new point for each piece of data, passing any required data to draw.
                 this.datasets[datasetIndex].points.push(new this.PointClass({
-                    value : value,
+                    radius: value[0],
+                    value : value[1],
                     label : label,
                     datasetLabel: this.datasets[datasetIndex].label,
                     x: this.scale.calculateX(this.scale.valuesCount+1),
@@ -337,42 +352,8 @@
 
                 //Draw the line between all the points
                 ctx.lineWidth = this.options.datasetStrokeWidth;
+                ctx.fillStyle = dataset.fillColor;
                 ctx.strokeStyle = dataset.strokeColor;
-                ctx.beginPath();
-
-                helpers.each(pointsWithValues, function(point, index){
-                    if (index === 0){
-                        ctx.moveTo(point.x, point.y);
-                    }
-                    else{
-                        if(this.options.bezierCurve){
-                            var previous = previousPoint(point, pointsWithValues, index);
-
-                            ctx.bezierCurveTo(
-                                previous.controlPoints.outer.x,
-                                previous.controlPoints.outer.y,
-                                point.controlPoints.inner.x,
-                                point.controlPoints.inner.y,
-                                point.x,
-                                point.y
-                            );
-                        }
-                        else{
-                            ctx.lineTo(point.x,point.y);
-                        }
-                    }
-                }, this);
-
-                ctx.stroke();
-
-                if (this.options.datasetFill && pointsWithValues.length > 0){
-                    //Round off the line by going to the base of the chart, back to the start, then fill.
-                    ctx.lineTo(pointsWithValues[pointsWithValues.length - 1].x, this.scale.endPoint);
-                    ctx.lineTo(pointsWithValues[0].x, this.scale.endPoint);
-                    ctx.fillStyle = dataset.fillColor;
-                    ctx.closePath();
-                    ctx.fill();
-                }
 
                 //Now draw the points over the line
                 //A little inefficient double looping, but better than the line
@@ -381,6 +362,11 @@
                     point.draw();
                 });
             },this);
+        },
+        _createBubble: function() {
+            var bubble;
+
+            return bubble;
         }
     });
 
