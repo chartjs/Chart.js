@@ -1438,7 +1438,9 @@
 				Chart.animationService.addAnimation(this, animation, duration, lazy);
 			} else {
 				this.draw();
-				this.options.onAnimationComplete.call(this);
+				if (this.options.onAnimationComplete && this.options.onAnimationComplete.call) {
+					this.options.onAnimationComplete.call(this);
+				}
 			}
 			return this;
 		},
@@ -1669,7 +1671,10 @@
 					(this.lastActive.length && this.active.length && changed)) {
 
 					this.stop();
-					this.update(this.options.hover.animationDuration, true);
+					
+					// We only need to render at this point. Updating will cause scales to be recomputed generating flicker & using more 
+					// memory than necessary.
+					this.render(this.options.hover.animationDuration, true);
 				}
 			}
 
@@ -2586,7 +2591,7 @@
 
 		update: function(reset) {
 
-			this.chart.outerRadius = (helpers.min([this.chart.chart.width, this.chart.chart.height]) - this.chart.options.elements.arc.borderWidth / 2) / 2;
+			this.chart.outerRadius = (helpers.min([this.chart.chart.width, this.chart.chart.height]) / 2) - this.chart.options.elements.arc.borderWidth / 2;
 			this.chart.innerRadius = this.chart.options.cutoutPercentage ? (this.chart.outerRadius / 100) * (this.chart.options.cutoutPercentage) : 1;
 			this.chart.radiusLength = (this.chart.outerRadius - this.chart.innerRadius) / this.chart.data.datasets.length;
 
@@ -3760,11 +3765,13 @@
 		// label settings
 		labels: {
 			show: true,
+			mirror: false,
+			padding: 10,
 			template: "<%=value.toLocaleString()%>",
 			fontSize: 12,
 			fontStyle: "normal",
 			fontColor: "#666",
-			fontFamily: "Helvetica Neue",
+			fontFamily: "Helvetica Neue"
 		}
 	};
 
@@ -3896,10 +3903,14 @@
 			var range = this.end - this.start;
 
 			if (this.isHorizontal()) {
-				pixel = this.left + (this.width / range * (value - this.start));
+				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
+				pixel = this.left + (innerWidth / range * (value - this.start));
+				pixel += this.paddingLeft;
 			} else {
 				// Bottom - top since pixels increase downard on a screen
-				pixel = this.bottom - (this.height / range * (value - this.start));
+				var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
+				pixel = this.bottom - (innerHeight / range * (value - this.start));
+				pixel += this.paddingTop;
 			}
 
 			return pixel;
@@ -4073,7 +4084,7 @@
 		// @param {number} maxWidth : the max width the axis can be
 		// @param {number} maxHeight: the max height the axis can be
 		// @return {object} minSize : the minimum size needed to draw the axis
-		fit: function(maxWidth, maxHeight) {
+		fit: function(maxWidth, maxHeight, margins) {
 			this.calculateRange();
 			this.generateTicks(maxWidth, maxHeight);
 			this.buildLabels();
@@ -4116,6 +4127,10 @@
 				minSize.height = maxHeight; // fill all the height
 			}
 
+			this.paddingLeft = 0;
+			this.paddingRight = 0;
+			this.paddingTop = 0;
+			this.paddingBottom = 0;
 
 
 			if (this.options.labels.show && this.options.display) {
@@ -4128,6 +4143,16 @@
 					var maxLabelHeight = maxHeight - minSize.height;
 					var labelHeight = 1.5 * this.options.labels.fontSize;
 					minSize.height = Math.min(maxHeight, minSize.height + labelHeight);
+
+					var labelFont = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
+					this.ctx.font = labelFont;
+
+					var firstLabelWidth = this.ctx.measureText(this.labels[0]).width;
+					var lastLabelWidth = this.ctx.measureText(this.labels[this.labels.length - 1]).width;
+
+					// Ensure that our labels are always inside the canvas
+					this.paddingLeft = firstLabelWidth / 2;
+					this.paddingRight = lastLabelWidth / 2;
 				} else {
 					// A vertical axis is more constrained by the width. Labels are the dominant factor 
 					// here, so get that length first
@@ -4137,11 +4162,27 @@
 					if (largestTextWidth < maxLabelWidth) {
 						// We don't need all the room
 						minSize.width += largestTextWidth;
+						minSize.width += 3; // extra padding
 					} else {
 						// Expand to max size
 						minSize.width = maxWidth;
 					}
+
+					this.paddingTop = this.options.labels.fontSize / 2;
+					this.paddingBottom = this.options.labels.fontSize / 2;
 				}
+			}
+
+			if (margins) {
+				this.paddingLeft -= margins.left;
+				this.paddingTop -= margins.top;
+				this.paddingRight -= margins.right;
+				this.paddingBottom -= margins.bottom;
+
+				this.paddingLeft = Math.max(this.paddingLeft, 0);
+				this.paddingTop = Math.max(this.paddingTop, 0);
+				this.paddingRight = Math.max(this.paddingRight, 0);
+				this.paddingBottom = Math.max(this.paddingBottom, 0);
 			}
 
 			this.width = minSize.width;
@@ -4280,12 +4321,22 @@
 						var labelStartX;
 
 						if (this.options.position == "left") {
-							labelStartX = this.right - 10;
-							this.ctx.textAlign = "right";
+							if (this.options.labels.mirror) {
+								labelStartX = this.right + this.options.labels.padding;
+								this.ctx.textAlign = "left";
+							} else {
+								labelStartX = this.right - this.options.labels.padding;
+								this.ctx.textAlign = "right";
+							}
 						} else {
 							// right side
-							labelStartX = this.left + 5;
-							this.ctx.textAlign = "left";
+							if (this.options.labels.mirror) {
+								labelStartX = this.left - this.options.labels.padding;
+								this.ctx.textAlign = "right";
+							} else {
+								labelStartX = this.left + this.options.labels.padding;
+								this.ctx.textAlign = "left";
+							}
 						}
 
 						this.ctx.textBaseline = "middle";
