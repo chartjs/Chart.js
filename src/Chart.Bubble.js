@@ -34,11 +34,8 @@
         //Boolean - Whether to show Y labels
         scaleShowYLabels: true,
 
-        //Boolean - Whether the line is curved between points
-        bezierCurve : true,
-
-        //Number - Tension of the bezier curve between points
-        bezierCurveTension : 0.4,
+        //Number - Maximum radius of the bubble on the chart
+        bubbleMaxRadius: 44,
 
         //Boolean - Whether to show a dot for each point
         pointDot : true,
@@ -117,14 +114,29 @@
 
                 this.datasets.push(datasetObject);
 
-
-                helpers.each(dataset.data,function(dataPoint,index){
+                // Нормализация данных c вычислением максимального значения пузыря.
+                // Данные должны быть представленны в виде массива массивов,
+                // В каждом элементе-массиве первое значение - занчение пузыря,
+                // а второе его смещение по оси Y.
+                var maxValue = 0;
+                helpers.each(dataset.data, function(dataPoint,index) {
                     if(helpers.isNumber(dataPoint)) {
                         dataPoint = [dataPoint, 0];
                     }
+                    if(dataPoint[0] > maxValue) {
+                        maxValue = dataPoint[0];
+                    }
+                });
+
+                // коэффициент для расчета радиуса пузыря
+                var radiusFactor = this.options.bubbleMaxRadius / maxValue;
+                console.log(this.options.bubbleMaxRadius, maxValue, radiusFactor);
+
+                helpers.each(dataset.data,function(dataPoint,index){
+                    console.log(Math.round(dataPoint[0] * radiusFactor));
                     //Add a new point for each piece of data, passing any required data to draw.
                     datasetObject.points.push(new this.PointClass({
-                        radius: dataPoint[0],
+                        radius: Math.round(dataPoint[0] * radiusFactor),
                         value : dataPoint[1],
                         label : data.labels[index],
                         datasetLabel: dataset.label,
