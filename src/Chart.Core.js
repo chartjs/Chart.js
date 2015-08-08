@@ -307,6 +307,12 @@
 			if (window.console && typeof window.console.warn === "function") console.warn(str);
 		},
 		amd = helpers.amd = (typeof define === 'function' && define.amd),
+        isArray = helpers.isArray = function(n){
+            return !isNaN(parseFloat(n)) && isFinite(n);
+        },
+        isArray = Array.isArray || function(obj) {
+            return ('' + obj) === '[object Array]';
+        },
 		//-- Math methods
 		isNumber = helpers.isNumber = function(n){
 			return !isNaN(parseFloat(n)) && isFinite(n);
@@ -1222,56 +1228,80 @@
 	Chart.Element.extend = inherits;
 
 
-	Chart.Point = Chart.Element.extend({
-		display: true,
-		inRange: function(chartX,chartY){
-			var hitDetectionRange = this.hitDetectionRadius + this.radius;
-			return ((Math.pow(chartX-this.x, 2)+Math.pow(chartY-this.y, 2)) < Math.pow(hitDetectionRange,2));
-		},
-		draw : function(){
-			if (this.display){
-				var ctx = this.ctx;
-				ctx.beginPath();
+    Chart.Point = Chart.Element.extend({
+        display: true,
+        inRange: function(chartX,chartY){
+            var hitDetectionRange = this.hitDetectionRadius + this.radius;
+            return ((Math.pow(chartX-this.x, 2)+Math.pow(chartY-this.y, 2)) < Math.pow(hitDetectionRange,2));
+        },
+        draw : function(){
+            if (this.display){
+                var ctx = this.ctx;
+                ctx.beginPath();
 
-				ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
-				ctx.closePath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
+                ctx.closePath();
 
-				ctx.strokeStyle = this.strokeColor;
-				ctx.lineWidth = this.strokeWidth;
+                ctx.strokeStyle = this.strokeColor;
+                ctx.lineWidth = this.strokeWidth;
 
-				ctx.fillStyle = this.fillColor;
+                ctx.fillStyle = this.fillColor;
 
-				ctx.fill();
-				ctx.stroke();
-			}
-
-
-			//Quick debug for bezier curve splining
-			//Highlights control points and the line between them.
-			//Handy for dev - stripped in the min version.
-
-			// ctx.save();
-			// ctx.fillStyle = "black";
-			// ctx.strokeStyle = "black"
-			// ctx.beginPath();
-			// ctx.arc(this.controlPoints.inner.x,this.controlPoints.inner.y, 2, 0, Math.PI*2);
-			// ctx.fill();
-
-			// ctx.beginPath();
-			// ctx.arc(this.controlPoints.outer.x,this.controlPoints.outer.y, 2, 0, Math.PI*2);
-			// ctx.fill();
-
-			// ctx.moveTo(this.controlPoints.inner.x,this.controlPoints.inner.y);
-			// ctx.lineTo(this.x, this.y);
-			// ctx.lineTo(this.controlPoints.outer.x,this.controlPoints.outer.y);
-			// ctx.stroke();
-
-			// ctx.restore();
+                ctx.fill();
+                ctx.stroke();
+            }
 
 
+            //Quick debug for bezier curve splining
+            //Highlights control points and the line between them.
+            //Handy for dev - stripped in the min version.
 
-		}
-	});
+            // ctx.save();
+            // ctx.fillStyle = "black";
+            // ctx.strokeStyle = "black"
+            // ctx.beginPath();
+            // ctx.arc(this.controlPoints.inner.x,this.controlPoints.inner.y, 2, 0, Math.PI*2);
+            // ctx.fill();
+
+            // ctx.beginPath();
+            // ctx.arc(this.controlPoints.outer.x,this.controlPoints.outer.y, 2, 0, Math.PI*2);
+            // ctx.fill();
+
+            // ctx.moveTo(this.controlPoints.inner.x,this.controlPoints.inner.y);
+            // ctx.lineTo(this.x, this.y);
+            // ctx.lineTo(this.controlPoints.outer.x,this.controlPoints.outer.y);
+            // ctx.stroke();
+
+            // ctx.restore();
+
+
+
+        }
+    });
+    Chart.Circle = Chart.Element.extend({
+        display: true,
+        inRange: function(chartX,chartY){
+            var hitDetectionRange = this.hitDetectionRadius + this.radius;
+            return ((Math.pow(chartX-this.x, 2)+Math.pow(chartY-this.y, 2)) < Math.pow(hitDetectionRange,2));
+        },
+        draw : function(){
+            if (this.display){
+                var ctx = this.ctx;
+                ctx.beginPath();
+
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
+                ctx.closePath();
+
+                ctx.strokeStyle = this.strokeColor;
+                ctx.lineWidth = this.strokeWidth;
+
+                ctx.fillStyle = this.fillColor;
+
+                ctx.fill();
+                ctx.stroke();
+            }
+        }
+    });
 
 	Chart.Arc = Chart.Element.extend({
 		inRange : function(chartX,chartY){
@@ -1603,7 +1633,7 @@
 
 			// With these properties set we can now build the array of yLabels
 			// and also the width of the largest yLabel
-			this.buildYLabels();
+            this.buildYLabels();
 
 			this.calculateXLabelRotation();
 
@@ -1709,117 +1739,124 @@
 			if (this.display){
 				ctx.fillStyle = this.textColor;
 				ctx.font = this.font;
-				each(this.yLabels,function(labelString,index){
-					var yLabelCenter = this.endPoint - (yLabelGap * index),
-						linePositionY = Math.round(yLabelCenter),
-						drawHorizontalLine = this.showHorizontalLines,
-						drawXAxis = this.showXAxis,
-						drawYAxis = this.showYAxis;
 
-					ctx.textAlign = "right";
-					ctx.textBaseline = "middle";
-					if (this.showLabels){
-						ctx.fillText(labelString,xStart - 10,yLabelCenter);
-					}
+                // Draw labels on Y axes
+                if(this.showYLabels) {
+                    each(this.yLabels,function(labelString,index){
+                        var yLabelCenter = this.endPoint - (yLabelGap * index),
+                            linePositionY = Math.round(yLabelCenter),
+                            drawHorizontalLine = this.showHorizontalLines,
+                            drawXAxis = this.showXAxis,
+                            drawYAxis = this.showYAxis;
 
-					// Draw X axis depending of the settings
-					if(index === 0) {
-						drawHorizontalLine = drawXAxis;
-					}
+                        ctx.textAlign = "right";
+                        ctx.textBaseline = "middle";
+                        if (this.showLabels){
+                            ctx.fillText(labelString,xStart - 10,yLabelCenter);
+                        }
 
-					if(drawHorizontalLine) {
-						ctx.beginPath();
-					}
+                        // Draw X axis depending of the settings
+                        if(index === 0) {
+                            drawHorizontalLine = drawXAxis;
+                        }
 
-					if(index > 0) {
-						// This is a grid line in the centre, so drop that
-						ctx.lineWidth = this.gridLineWidth;
-						ctx.strokeStyle = this.gridLineColor;
-					} else {
-						// This is the first line on the scale
-						ctx.lineWidth = this.lineWidth;
-						ctx.strokeStyle = this.lineColor;
-					}
+                        if(drawHorizontalLine) {
+                            ctx.beginPath();
+                        }
 
-					linePositionY += helpers.aliasPixel(ctx.lineWidth);
+                        if(index > 0) {
+                            // This is a grid line in the centre, so drop that
+                            ctx.lineWidth = this.gridLineWidth;
+                            ctx.strokeStyle = this.gridLineColor;
+                        } else {
+                            // This is the first line on the scale
+                            ctx.lineWidth = this.lineWidth;
+                            ctx.strokeStyle = this.lineColor;
+                        }
 
-					if(drawHorizontalLine) {
-						ctx.moveTo(xStart, linePositionY);
-						ctx.lineTo(this.width, linePositionY);
-						ctx.stroke();
-						ctx.closePath();
-					}
-					
-					if(drawYAxis) {
-						ctx.lineWidth = this.lineWidth;
-						ctx.strokeStyle = this.lineColor;
-						ctx.beginPath();
-						ctx.moveTo(xStart - 5, linePositionY);
-						ctx.lineTo(xStart, linePositionY);
-						ctx.stroke();
-						ctx.closePath();
-					}
+                        linePositionY += helpers.aliasPixel(ctx.lineWidth);
 
-				},this);
+                        if(drawHorizontalLine) {
+                            ctx.moveTo(xStart, linePositionY);
+                            ctx.lineTo(this.width, linePositionY);
+                            ctx.stroke();
+                            ctx.closePath();
+                        }
 
-				each(this.xLabels,function(label,index){
-					var xPos = this.calculateX(index) + aliasPixel(this.lineWidth),
-						// Check to see if line/bar here and decide where to place the line
-						linePos = this.calculateX(index - (this.offsetGridLines ? 0.5 : 0)) + aliasPixel(this.lineWidth),
-						isRotated = (this.xLabelRotation > 0),
-						drawVerticalLine = this.showVerticalLines,
-						drawXAxis = this.showXAxis,
-						drawYAxis = this.showYAxis;
+                        if(drawYAxis) {
+                            ctx.lineWidth = this.lineWidth;
+                            ctx.strokeStyle = this.lineColor;
+                            ctx.beginPath();
+                            ctx.moveTo(xStart - 5, linePositionY);
+                            ctx.lineTo(xStart, linePositionY);
+                            ctx.stroke();
+                            ctx.closePath();
+                        }
 
-					// Draw Y axis depending of the settings
-					if(index === 0) {
-						drawVerticalLine = drawYAxis;
-					}
+                    },this);
+                }
 
-					if(drawVerticalLine) {
-						ctx.beginPath();
-					}
+                // Draw labels on X axes
+                if(this.showXLabels) {
+                    each(this.xLabels, function (label, index) {
+                        var xPos = this.calculateX(index) + aliasPixel(this.lineWidth),
+                        // Check to see if line/bar here and decide where to place the line
+                            linePos = this.calculateX(index - (this.offsetGridLines ? 0.5 : 0)) + aliasPixel(this.lineWidth),
+                            isRotated = (this.xLabelRotation > 0),
+                            drawVerticalLine = this.showVerticalLines,
+                            drawXAxis = this.showXAxis,
+                            drawYAxis = this.showYAxis;
 
-					if(index > 0) {
-						// This is a grid line in the centre, so drop that
-						ctx.lineWidth = this.gridLineWidth;
-						ctx.strokeStyle = this.gridLineColor;
-					} else {
-						// This is the first line on the scale
-						ctx.lineWidth = this.lineWidth;
-						ctx.strokeStyle = this.lineColor;
-					}
+                        // Draw Y axis depending of the settings
+                        if (index === 0) {
+                            drawVerticalLine = drawYAxis;
+                        }
 
-					if(drawVerticalLine) {
-						ctx.moveTo(linePos,this.endPoint);
-						ctx.lineTo(linePos,this.startPoint - 3);
-						ctx.stroke();
-						ctx.closePath();
-					}
+                        if (drawVerticalLine) {
+                            ctx.beginPath();
+                        }
+
+                        if (index > 0) {
+                            // This is a grid line in the centre, so drop that
+                            ctx.lineWidth = this.gridLineWidth;
+                            ctx.strokeStyle = this.gridLineColor;
+                        } else {
+                            // This is the first line on the scale
+                            ctx.lineWidth = this.lineWidth;
+                            ctx.strokeStyle = this.lineColor;
+                        }
+
+                        if (drawVerticalLine) {
+                            ctx.moveTo(linePos, this.endPoint);
+                            ctx.lineTo(linePos, this.startPoint - 3);
+                            ctx.stroke();
+                            ctx.closePath();
+                        }
 
 
-					ctx.lineWidth = this.lineWidth;
-					ctx.strokeStyle = this.lineColor;
+                        ctx.lineWidth = this.lineWidth;
+                        ctx.strokeStyle = this.lineColor;
 
 
-					// Small lines at the bottom of the base grid line
-					if(drawXAxis) {
-						ctx.beginPath();
-						ctx.moveTo(linePos,this.endPoint);
-						ctx.lineTo(linePos,this.endPoint + 5);
-						ctx.stroke();
-						ctx.closePath();
-					}
+                        // Small lines at the bottom of the base grid line
+                        if (drawXAxis) {
+                            ctx.beginPath();
+                            ctx.moveTo(linePos, this.endPoint);
+                            ctx.lineTo(linePos, this.endPoint + 5);
+                            ctx.stroke();
+                            ctx.closePath();
+                        }
 
-					ctx.save();
-					ctx.translate(xPos,(isRotated) ? this.endPoint + 12 : this.endPoint + 8);
-					ctx.rotate(toRadians(this.xLabelRotation)*-1);
-					ctx.font = this.font;
-					ctx.textAlign = (isRotated) ? "right" : "center";
-					ctx.textBaseline = (isRotated) ? "middle" : "top";
-					ctx.fillText(label, 0, 0);
-					ctx.restore();
-				},this);
+                        ctx.save();
+                        ctx.translate(xPos, (isRotated) ? this.endPoint + 12 : this.endPoint + 8);
+                        ctx.rotate(toRadians(this.xLabelRotation) * -1);
+                        ctx.font = this.font;
+                        ctx.textAlign = (isRotated) ? "right" : "center";
+                        ctx.textBaseline = (isRotated) ? "middle" : "top";
+                        ctx.fillText(label, 0, 0);
+                        ctx.restore();
+                    }, this);
+                }
 
 			}
 		}

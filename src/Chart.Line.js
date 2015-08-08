@@ -28,6 +28,12 @@
 		//Boolean - Whether to show Y axis
 		scaleShowYAxis: true,
 
+        //Boolean - Whether to show X labels
+        scaleShowXLabels: true,
+
+        //Boolean - Whether to show Y labels
+        scaleShowYLabels: true,
+
 		//Boolean - Whether the line is curved between points
 		bezierCurve : true,
 
@@ -211,6 +217,8 @@
 				showVerticalLines : this.options.scaleShowVerticalLines,
 				showXAxis : this.options.scaleShowXAxis,
 				showYAxis : this.options.scaleShowYAxis,
+                showXLabels : this.options.scaleShowXLabels,
+                showYLabels : this.options.scaleShowYLabels,
 				gridLineWidth : (this.options.scaleShowGridLines) ? this.options.scaleGridLineWidth : 0,
 				gridLineColor : (this.options.scaleShowGridLines) ? this.options.scaleGridLineColor : "rgba(0,0,0,0)",
 				padding: (this.options.showScale) ? 0 : this.options.pointDotRadius + this.options.pointDotStrokeWidth,
