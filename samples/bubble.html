@@ -17,17 +17,18 @@
 
 
 <script>
-    var random = function(){ return Math.round(Math.random()*100)};
+    var random = function(){ return Math.round(Math.random()*100)},
+        weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
     var chartData = {
-        labels: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        labels: [0,1,2,3,4,5,6],
         datasets: [
             {
                 fillColor : "rgba(151,187,205,0.5)",
                 strokeColor : "rgba(151,187,205,0.8)",
                 highlightFill : "rgba(151,187,205,0.75)",
                 highlightStroke : "rgba(151,187,205,1)",
-                data: [[100,random()],[random(),random()],[random(),random()],[random(),random()],[random(),random()],[random(),random()],[100,random()]]
+                data: [100,[random(),random()],[random(),random()],[random(),random()],[random(),random()],[random(),random()],[100,100]]
             }
         ]
     };
@@ -48,6 +49,9 @@
     window.onload = function(){
         window.myBubble = new Chart(document.getElementById("canvas").getContext("2d")).Bubble(chartData, {
             responsive: true,
+            scaleFormatterXLabels: function(y) {
+                return weekdays[y];
+            },
             scaleShowHorizontalLines: true,
             scaleShowVerticalLines: false,
             scaleShowXAxis: true,

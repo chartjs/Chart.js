@@ -16,6 +16,9 @@
         //Number - Width of the grid lines
         scaleGridLineWidth : 1,
 
+        //
+        scaleFormatterXLabels: false,
+
         //Boolean - Whether to show horizontal lines (except X axis)
         scaleShowHorizontalLines: true,
 
@@ -101,12 +104,12 @@
 
                 // Нормализация данных c вычислением максимального значения пузыря.
                 // Данные должны быть представленны в виде массива массивов,
-                // В каждом элементе-массиве первое значение - занчение пузыря,
+                // В каждом элементе-массиве первое значение - радиус пузыря,
                 // а второе его смещение по оси Y.
                 var maxValue = 0;
                 helpers.each(dataset.data, function(dataPoint,index) {
                     if(helpers.isNumber(dataPoint)) {
-                        dataPoint = [dataPoint, 0];
+                        dataset.data[index] = dataPoint = [dataPoint, 0];
                     }
                     if(dataPoint[0] > maxValue) {
                         maxValue = dataPoint[0];
@@ -207,7 +210,7 @@
                     );
                     helpers.extend(this, updatedRanges);
                 },
-                xLabels : labels,
+                xLabels : helpers.isFunction(this.options.scaleFormatterXLabels) ? labels.map(this.options.scaleFormatterXLabels.bind(this)) : labels,
                 font : helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.scaleFontFamily),
                 lineWidth : this.options.scaleLineWidth,
                 lineColor : this.options.scaleLineColor,
@@ -219,7 +222,7 @@
                 showYLabels : this.options.scaleShowYLabels,
                 gridLineWidth : (this.options.scaleShowGridLines) ? this.options.scaleGridLineWidth : 0,
                 gridLineColor : (this.options.scaleShowGridLines) ? this.options.scaleGridLineColor : "rgba(0,0,0,0)",
-                padding: (this.options.showScale) ? 0 : this.options.bubbleMaxRadius + this.options.bubbleStrokeWidth,
+                padding: this.options.bubbleMaxRadius + this.options.bubbleStrokeWidth,
                 showLabels : this.options.scaleShowLabels,
                 display : this.options.showScale
             };
@@ -285,12 +288,6 @@
             // Some helper methods for getting the next/prev points
             var hasValue = function(item){
                     return item.value !== null;
-                },
-                nextPoint = function(point, collection, index){
-                    return helpers.findNextWhere(collection, hasValue, index) || point;
-                },
-                previousPoint = function(point, collection, index){
-                    return helpers.findPreviousWhere(collection, hasValue, index) || point;
                 };
 
             this.scale.draw(easingDecimal);
@@ -310,39 +307,6 @@
                         }, easingDecimal);
                     }
                 },this);
-
-
-                // Control points need to be calculated in a seperate loop, because we need to know the current x/y of the point
-                // This would cause issues when there is no animation, because the y of the next point would be 0, so beziers would be skewed
-                if (this.options.bezierCurve){
-                    helpers.each(pointsWithValues, function(point, index){
-                        var tension = (index > 0 && index < pointsWithValues.length - 1) ? this.options.bezierCurveTension : 0;
-                        point.controlPoints = helpers.splineCurve(
-                            previousPoint(point, pointsWithValues, index),
-                            point,
-                            nextPoint(point, pointsWithValues, index),
-                            tension
-                        );
-
-                        // Prevent the bezier going outside of the bounds of the graph
-
-                        // Cap puter bezier handles to the upper/lower scale bounds
-                        if (point.controlPoints.outer.y > this.scale.endPoint){
-                            point.controlPoints.outer.y = this.scale.endPoint;
-                        }
-                        else if (point.controlPoints.outer.y < this.scale.startPoint){
-                            point.controlPoints.outer.y = this.scale.startPoint;
-                        }
-
-                        // Cap inner bezier handles to the upper/lower scale bounds
-                        if (point.controlPoints.inner.y > this.scale.endPoint){
-                            point.controlPoints.inner.y = this.scale.endPoint;
-                        }
-                        else if (point.controlPoints.inner.y < this.scale.startPoint){
-                            point.controlPoints.inner.y = this.scale.startPoint;
-                        }
-                    },this);
-                }
 
 
                 //Draw the line between all the points
