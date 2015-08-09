@@ -37,26 +37,11 @@
         //Number - Maximum radius of the bubble on the chart
         bubbleMaxRadius: 44,
 
-        //Boolean - Whether to show a dot for each point
-        pointDot : true,
-
-        //Number - Radius of each point dot in pixels
-        pointDotRadius : 4,
-
-        //Number - Pixel width of point dot stroke
-        pointDotStrokeWidth : 1,
+        //Number - Pixel width of the bubble stroke
+        bubbleStrokeWidth: 1,
 
         //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-        pointHitDetectionRadius : 20,
-
-        //Boolean - Whether to show a stroke for datasets
-        datasetStroke : true,
-
-        //Number - Pixel width of dataset stroke
-        datasetStrokeWidth : 2,
-
-        //Boolean - Whether to fill the dataset with a colour
-        datasetFill : true,
+        bubbleHitDetectionRadius : 20,
 
         //String - A legend template
         legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"><%if(datasets[i].label){%><%=datasets[i].label%><%}%></span></li><%}%></ul>",
@@ -74,9 +59,9 @@
             //Declare the extension of the default point, to cater for the options passed in to the constructor
             this.PointClass = Chart.Point.extend({
                 offsetGridLines : this.options.offsetGridLines,
-                strokeWidth : this.options.pointDotStrokeWidth,
-                display: this.options.pointDot,
-                hitDetectionRadius : this.options.pointHitDetectionRadius,
+                strokeWidth : this.options.bubbleStrokeWidth,
+                display: true,
+                hitDetectionRadius : this.options.bubbleHitDetectionRadius,
                 ctx : this.chart.ctx,
                 inRange : function(mouseX){
                     return (Math.pow(mouseX-this.x, 2) < Math.pow(this.radius + this.hitDetectionRadius,2));
@@ -130,10 +115,8 @@
 
                 // коэффициент для расчета радиуса пузыря
                 var radiusFactor = this.options.bubbleMaxRadius / maxValue;
-                console.log(this.options.bubbleMaxRadius, maxValue, radiusFactor);
 
                 helpers.each(dataset.data,function(dataPoint,index){
-                    console.log(Math.round(dataPoint[0] * radiusFactor));
                     //Add a new point for each piece of data, passing any required data to draw.
                     datasetObject.points.push(new this.PointClass({
                         radius: Math.round(dataPoint[0] * radiusFactor),
@@ -236,7 +219,7 @@
                 showYLabels : this.options.scaleShowYLabels,
                 gridLineWidth : (this.options.scaleShowGridLines) ? this.options.scaleGridLineWidth : 0,
                 gridLineColor : (this.options.scaleShowGridLines) ? this.options.scaleGridLineColor : "rgba(0,0,0,0)",
-                padding: (this.options.showScale) ? 0 : this.options.pointDotRadius + this.options.pointDotStrokeWidth,
+                padding: (this.options.showScale) ? 0 : this.options.bubbleMaxRadius + this.options.bubbleStrokeWidth,
                 showLabels : this.options.scaleShowLabels,
                 display : this.options.showScale
             };

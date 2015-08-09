@@ -1697,8 +1697,7 @@
 				if (this.xLabelRotation > 0){
 					this.endPoint -= Math.sin(toRadians(this.xLabelRotation))*originalLabelWidth + 3;
 				}
-			}
-			else{
+			} else{
 				this.xLabelWidth = 0;
 				this.xScalePaddingRight = this.padding;
 				this.xScalePaddingLeft = this.padding;
@@ -1741,112 +1740,110 @@
 				ctx.font = this.font;
 
                 // Draw labels on Y axes
-                if(this.showYLabels) {
-                    each(this.yLabels,function(labelString,index){
-                        var yLabelCenter = this.endPoint - (yLabelGap * index),
-                            linePositionY = Math.round(yLabelCenter),
-                            drawHorizontalLine = this.showHorizontalLines,
-                            drawXAxis = this.showXAxis,
-                            drawYAxis = this.showYAxis;
+                each(this.yLabels,function(labelString,index){
+                    var yLabelCenter = this.endPoint - (yLabelGap * index),
+                        linePositionY = Math.round(yLabelCenter),
+                        drawHorizontalLine = this.showHorizontalLines,
+                        drawXAxis = this.showXAxis,
+                        drawYAxis = this.showYAxis;
 
-                        ctx.textAlign = "right";
-                        ctx.textBaseline = "middle";
-                        if (this.showLabels){
-                            ctx.fillText(labelString,xStart - 10,yLabelCenter);
-                        }
+                    ctx.textAlign = "right";
+                    ctx.textBaseline = "middle";
+                    if (this.showLabels && this.showYLabels){
+                        ctx.fillText(labelString,xStart - 10,yLabelCenter);
+                    }
 
-                        // Draw X axis depending of the settings
-                        if(index === 0) {
-                            drawHorizontalLine = drawXAxis;
-                        }
+                    // Draw X axis depending of the settings
+                    if(index === 0) {
+                        drawHorizontalLine = drawXAxis;
+                    }
 
-                        if(drawHorizontalLine) {
-                            ctx.beginPath();
-                        }
+                    if(drawHorizontalLine) {
+                        ctx.beginPath();
+                    }
 
-                        if(index > 0) {
-                            // This is a grid line in the centre, so drop that
-                            ctx.lineWidth = this.gridLineWidth;
-                            ctx.strokeStyle = this.gridLineColor;
-                        } else {
-                            // This is the first line on the scale
-                            ctx.lineWidth = this.lineWidth;
-                            ctx.strokeStyle = this.lineColor;
-                        }
-
-                        linePositionY += helpers.aliasPixel(ctx.lineWidth);
-
-                        if(drawHorizontalLine) {
-                            ctx.moveTo(xStart, linePositionY);
-                            ctx.lineTo(this.width, linePositionY);
-                            ctx.stroke();
-                            ctx.closePath();
-                        }
-
-                        if(drawYAxis) {
-                            ctx.lineWidth = this.lineWidth;
-                            ctx.strokeStyle = this.lineColor;
-                            ctx.beginPath();
-                            ctx.moveTo(xStart - 5, linePositionY);
-                            ctx.lineTo(xStart, linePositionY);
-                            ctx.stroke();
-                            ctx.closePath();
-                        }
-
-                    },this);
-                }
-
-                // Draw labels on X axes
-                if(this.showXLabels) {
-                    each(this.xLabels, function (label, index) {
-                        var xPos = this.calculateX(index) + aliasPixel(this.lineWidth),
-                        // Check to see if line/bar here and decide where to place the line
-                            linePos = this.calculateX(index - (this.offsetGridLines ? 0.5 : 0)) + aliasPixel(this.lineWidth),
-                            isRotated = (this.xLabelRotation > 0),
-                            drawVerticalLine = this.showVerticalLines,
-                            drawXAxis = this.showXAxis,
-                            drawYAxis = this.showYAxis;
-
-                        // Draw Y axis depending of the settings
-                        if (index === 0) {
-                            drawVerticalLine = drawYAxis;
-                        }
-
-                        if (drawVerticalLine) {
-                            ctx.beginPath();
-                        }
-
-                        if (index > 0) {
-                            // This is a grid line in the centre, so drop that
-                            ctx.lineWidth = this.gridLineWidth;
-                            ctx.strokeStyle = this.gridLineColor;
-                        } else {
-                            // This is the first line on the scale
-                            ctx.lineWidth = this.lineWidth;
-                            ctx.strokeStyle = this.lineColor;
-                        }
-
-                        if (drawVerticalLine) {
-                            ctx.moveTo(linePos, this.endPoint);
-                            ctx.lineTo(linePos, this.startPoint - 3);
-                            ctx.stroke();
-                            ctx.closePath();
-                        }
-
-
+                    if(index > 0) {
+                        // This is a grid line in the centre, so drop that
+                        ctx.lineWidth = this.gridLineWidth;
+                        ctx.strokeStyle = this.gridLineColor;
+                    } else {
+                        // This is the first line on the scale
                         ctx.lineWidth = this.lineWidth;
                         ctx.strokeStyle = this.lineColor;
+                    }
+
+                    linePositionY += helpers.aliasPixel(ctx.lineWidth);
+
+                    if(drawHorizontalLine) {
+                        ctx.moveTo(xStart, linePositionY);
+                        ctx.lineTo(this.width, linePositionY);
+                        ctx.stroke();
+                        ctx.closePath();
+                    }
+
+                    if(drawYAxis) {
+                        ctx.lineWidth = this.lineWidth;
+                        ctx.strokeStyle = this.lineColor;
+                        ctx.beginPath();
+                        ctx.moveTo(xStart - 5, linePositionY);
+                        ctx.lineTo(xStart, linePositionY);
+                        ctx.stroke();
+                        ctx.closePath();
+                    }
+
+                },this);
+
+                // Draw labels on X axes
+                each(this.xLabels, function (label, index) {
+                    var xPos = this.calculateX(index) + aliasPixel(this.lineWidth),
+                    // Check to see if line/bar here and decide where to place the line
+                        linePos = this.calculateX(index - (this.offsetGridLines ? 0.5 : 0)) + aliasPixel(this.lineWidth),
+                        isRotated = (this.xLabelRotation > 0),
+                        drawVerticalLine = this.showVerticalLines,
+                        drawXAxis = this.showXAxis,
+                        drawYAxis = this.showYAxis;
+
+                    // Draw Y axis depending of the settings
+                    if (index === 0) {
+                        drawVerticalLine = drawYAxis;
+                    }
+
+                    if (drawVerticalLine) {
+                        ctx.beginPath();
+                    }
+
+                    if (index > 0) {
+                        // This is a grid line in the centre, so drop that
+                        ctx.lineWidth = this.gridLineWidth;
+                        ctx.strokeStyle = this.gridLineColor;
+                    } else {
+                        // This is the first line on the scale
+                        ctx.lineWidth = this.lineWidth;
+                        ctx.strokeStyle = this.lineColor;
+                    }
+
+                    if (drawVerticalLine) {
+                        ctx.moveTo(linePos, this.endPoint);
+                        ctx.lineTo(linePos, this.startPoint - 3);
+                        ctx.stroke();
+                        ctx.closePath();
+                    }
 
 
-                        // Small lines at the bottom of the base grid line
-                        if (drawXAxis) {
-                            ctx.beginPath();
-                            ctx.moveTo(linePos, this.endPoint);
-                            ctx.lineTo(linePos, this.endPoint + 5);
-                            ctx.stroke();
-                            ctx.closePath();
-                        }
+                    ctx.lineWidth = this.lineWidth;
+                    ctx.strokeStyle = this.lineColor;
 
+
+                    // Small lines at the bottom of the base grid line
+                    if (drawXAxis) {
+                        ctx.beginPath();
+                        ctx.moveTo(linePos, this.endPoint);
+                        ctx.lineTo(linePos, this.endPoint + 5);
+                        ctx.stroke();
+                        ctx.closePath();
+                    }
+
+                    if(this.showXLabels) {
                         ctx.save();
                         ctx.translate(xPos, (isRotated) ? this.endPoint + 12 : this.endPoint + 8);
                         ctx.rotate(toRadians(this.xLabelRotation) * -1);
@@ -1855,8 +1852,8 @@
                         ctx.textBaseline = (isRotated) ? "middle" : "top";
                         ctx.fillText(label, 0, 0);
                         ctx.restore();
-                    }, this);
-                }
+                    }
+                }, this);
 
 			}
 		}
