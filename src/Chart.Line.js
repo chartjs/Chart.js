@@ -128,7 +128,6 @@
 
 				this.buildScale(data.labels);
 
-
 				this.eachPoints(function(point, index){
 					helpers.extend(point, {
 						x: this.scale.calculateX(index),
@@ -220,7 +219,15 @@
                         this.beginAtZero,
                         this.integersOnly
                     );
-					//helpers.extend(this, updatedRanges);
+                    
+                    /*Keep for other graph extension */
+                    this.steps = updatedRangesLeft.steps;
+					this.stepValue = updatedRangesLeft.stepValue;
+					this.min = updatedRangesLeft.min;
+					this.max = updatedRangesLeft.max;
+					helpers.extend(this, updatedRangesLeft);
+					/*Keep for other graph extension */
+
                     helpers.extend(this.leftY, updatedRangesLeft);
                     helpers.extend(this.rightY, updatedRangesRight);
 				},

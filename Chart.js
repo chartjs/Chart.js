@@ -35,17 +35,17 @@
 			{
 				return document.defaultView.getComputedStyle(element).getPropertyValue(dimension);
 			}
-		}
+		};
 
-		var width = this.width = computeDimension(context.canvas,'Width');
-		var height = this.height = computeDimension(context.canvas,'Height');
+		var width = this.width = computeDimension(context.canvas,'Width') || context.canvas.width;
+		var height = this.height = computeDimension(context.canvas,'Height') || context.canvas.height;
 
 		// Firefox requires this to work correctly
 		context.canvas.width  = width;
 		context.canvas.height = height;
 
-		var width = this.width = context.canvas.width;
-		var height = this.height = context.canvas.height;
+		width = this.width = context.canvas.width;
+		height = this.height = context.canvas.height;
 		this.aspectRatio = this.width / this.height;
 		//High pixel density displays - multiply the size of the canvas height/width by the device pixel ratio, then scale.
 		helpers.retinaScale(this);
@@ -210,14 +210,18 @@
 		clone = helpers.clone = function(obj){
 			var objClone = {};
 			each(obj,function(value,key){
-				if (obj.hasOwnProperty(key)) objClone[key] = value;
+				if (obj.hasOwnProperty(key)){
+					objClone[key] = value;
+				}
 			});
 			return objClone;
 		},
 		extend = helpers.extend = function(base){
 			each(Array.prototype.slice.call(arguments,1), function(extensionObject) {
 				each(extensionObject,function(value,key){
-					if (extensionObject.hasOwnProperty(key)) base[key] = value;
+					if (extensionObject.hasOwnProperty(key)){
+						base[key] = value;
+					}
 				});
 			});
 			return base;
@@ -300,9 +304,9 @@
 		})(),
 		warn = helpers.warn = function(str){
 			//Method for warning of errors
-			if (window.console && typeof window.console.warn == "function") console.warn(str);
+			if (window.console && typeof window.console.warn === "function") console.warn(str);
 		},
-		amd = helpers.amd = (typeof define == 'function' && define.amd),
+		amd = helpers.amd = (typeof define === 'function' && define.amd),
 		//-- Math methods
 		isNumber = helpers.isNumber = function(n){
 			return !isNaN(parseFloat(n)) && isFinite(n);
@@ -328,7 +332,20 @@
 		},
 		getDecimalPlaces = helpers.getDecimalPlaces = function(num){
 			if (num%1!==0 && isNumber(num)){
-				return num.toString().split(".")[1].length;
+				var s = num.toString();
+				if(s.indexOf("e-") < 0){
+					// no exponent, e.g. 0.01
+					return s.split(".")[1].length;
+				}
+				else if(s.indexOf(".") < 0) {
+					// no decimal point, e.g. 1e-9
+					return parseInt(s.split("e-")[1]);
+				}
+				else {
+					// exponent and decimal point, e.g. 1.23e-9
+					var parts = s.split(".")[1].split("e-");
+					return parts[0].length + parseInt(parts[1]);
+				}
 			}
 			else {
 				return 0;
@@ -390,7 +407,7 @@
 			var maxValue = max(valuesArray),
 				minValue = min(valuesArray);
 
-			// We need some degree of seperation here to calculate the scales if all the values are the same
+			// We need some degree of separation here to calculate the scales if all the values are the same
 			// Adding/minusing 0.5 will give us a range of 1.
 			if (maxValue === minValue){
 				maxValue += 0.5;
@@ -505,7 +522,7 @@
 		/* jshint ignore:end */
 		generateLabels = helpers.generateLabels = function(templateString,numberOfSteps,graphMin,stepValue){
 			var labelsArray = new Array(numberOfSteps);
-			if (labelTemplateString){
+			if (templateString){
 				each(labelsArray,function(val,index){
 					labelsArray[index] = template(templateString,{value: (graphMin + (stepValue*(index+1)))});
 				});
@@ -526,7 +543,9 @@
 				return -1 * t * (t - 2);
 			},
 			easeInOutQuad: function (t) {
-				if ((t /= 1 / 2) < 1) return 1 / 2 * t * t;
+				if ((t /= 1 / 2) < 1){
+					return 1 / 2 * t * t;
+				}
 				return -1 / 2 * ((--t) * (t - 2) - 1);
 			},
 			easeInCubic: function (t) {
@@ -536,7 +555,9 @@
 				return 1 * ((t = t / 1 - 1) * t * t + 1);
 			},
 			easeInOutCubic: function (t) {
-				if ((t /= 1 / 2) < 1) return 1 / 2 * t * t * t;
+				if ((t /= 1 / 2) < 1){
+					return 1 / 2 * t * t * t;
+				}
 				return 1 / 2 * ((t -= 2) * t * t + 2);
 			},
 			easeInQuart: function (t) {
@@ -546,7 +567,9 @@
 				return -1 * ((t = t / 1 - 1) * t * t * t - 1);
 			},
 			easeInOutQuart: function (t) {
-				if ((t /= 1 / 2) < 1) return 1 / 2 * t * t * t * t;
+				if ((t /= 1 / 2) < 1){
+					return 1 / 2 * t * t * t * t;
+				}
 				return -1 / 2 * ((t -= 2) * t * t * t - 2);
 			},
 			easeInQuint: function (t) {
@@ -556,7 +579,9 @@
 				return 1 * ((t = t / 1 - 1) * t * t * t * t + 1);
 			},
 			easeInOutQuint: function (t) {
-				if ((t /= 1 / 2) < 1) return 1 / 2 * t * t * t * t * t;
+				if ((t /= 1 / 2) < 1){
+					return 1 / 2 * t * t * t * t * t;
+				}
 				return 1 / 2 * ((t -= 2) * t * t * t * t + 2);
 			},
 			easeInSine: function (t) {
@@ -575,60 +600,95 @@
 				return (t === 1) ? 1 : 1 * (-Math.pow(2, -10 * t / 1) + 1);
 			},
 			easeInOutExpo: function (t) {
-				if (t === 0) return 0;
-				if (t === 1) return 1;
-				if ((t /= 1 / 2) < 1) return 1 / 2 * Math.pow(2, 10 * (t - 1));
+				if (t === 0){
+					return 0;
+				}
+				if (t === 1){
+					return 1;
+				}
+				if ((t /= 1 / 2) < 1){
+					return 1 / 2 * Math.pow(2, 10 * (t - 1));
+				}
 				return 1 / 2 * (-Math.pow(2, -10 * --t) + 2);
 			},
 			easeInCirc: function (t) {
-				if (t >= 1) return t;
+				if (t >= 1){
+					return t;
+				}
 				return -1 * (Math.sqrt(1 - (t /= 1) * t) - 1);
 			},
 			easeOutCirc: function (t) {
 				return 1 * Math.sqrt(1 - (t = t / 1 - 1) * t);
 			},
 			easeInOutCirc: function (t) {
-				if ((t /= 1 / 2) < 1) return -1 / 2 * (Math.sqrt(1 - t * t) - 1);
+				if ((t /= 1 / 2) < 1){
+					return -1 / 2 * (Math.sqrt(1 - t * t) - 1);
+				}
 				return 1 / 2 * (Math.sqrt(1 - (t -= 2) * t) + 1);
 			},
 			easeInElastic: function (t) {
 				var s = 1.70158;
 				var p = 0;
 				var a = 1;
-				if (t === 0) return 0;
-				if ((t /= 1) == 1) return 1;
-				if (!p) p = 1 * 0.3;
+				if (t === 0){
+					return 0;
+				}
+				if ((t /= 1) == 1){
+					return 1;
+				}
+				if (!p){
+					p = 1 * 0.3;
+				}
 				if (a < Math.abs(1)) {
 					a = 1;
 					s = p / 4;
-				} else s = p / (2 * Math.PI) * Math.asin(1 / a);
+				} else{
+					s = p / (2 * Math.PI) * Math.asin(1 / a);
+				}
 				return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * 1 - s) * (2 * Math.PI) / p));
 			},
 			easeOutElastic: function (t) {
 				var s = 1.70158;
 				var p = 0;
 				var a = 1;
-				if (t === 0) return 0;
-				if ((t /= 1) == 1) return 1;
-				if (!p) p = 1 * 0.3;
+				if (t === 0){
+					return 0;
+				}
+				if ((t /= 1) == 1){
+					return 1;
+				}
+				if (!p){
+					p = 1 * 0.3;
+				}
 				if (a < Math.abs(1)) {
 					a = 1;
 					s = p / 4;
-				} else s = p / (2 * Math.PI) * Math.asin(1 / a);
+				} else{
+					s = p / (2 * Math.PI) * Math.asin(1 / a);
+				}
 				return a * Math.pow(2, -10 * t) * Math.sin((t * 1 - s) * (2 * Math.PI) / p) + 1;
 			},
 			easeInOutElastic: function (t) {
 				var s = 1.70158;
 				var p = 0;
 				var a = 1;
-				if (t === 0) return 0;
-				if ((t /= 1 / 2) == 2) return 1;
-				if (!p) p = 1 * (0.3 * 1.5);
+				if (t === 0){
+					return 0;
+				}
+				if ((t /= 1 / 2) == 2){
+					return 1;
+				}
+				if (!p){
+					p = 1 * (0.3 * 1.5);
+				}
 				if (a < Math.abs(1)) {
 					a = 1;
 					s = p / 4;
-				} else s = p / (2 * Math.PI) * Math.asin(1 / a);
-				if (t < 1) return -0.5 * (a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * 1 - s) * (2 * Math.PI) / p));
+				} else {
+					s = p / (2 * Math.PI) * Math.asin(1 / a);
+				}
+				if (t < 1){
+					return -0.5 * (a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * 1 - s) * (2 * Math.PI) / p));}
 				return a * Math.pow(2, -10 * (t -= 1)) * Math.sin((t * 1 - s) * (2 * Math.PI) / p) * 0.5 + 1;
 			},
 			easeInBack: function (t) {
@@ -641,7 +701,9 @@
 			},
 			easeInOutBack: function (t) {
 				var s = 1.70158;
-				if ((t /= 1 / 2) < 1) return 1 / 2 * (t * t * (((s *= (1.525)) + 1) * t - s));
+				if ((t /= 1 / 2) < 1){
+					return 1 / 2 * (t * t * (((s *= (1.525)) + 1) * t - s));
+				}
 				return 1 / 2 * ((t -= 2) * t * (((s *= (1.525)) + 1) * t + s) + 2);
 			},
 			easeInBounce: function (t) {
@@ -659,7 +721,9 @@
 				}
 			},
 			easeInOutBounce: function (t) {
-				if (t < 1 / 2) return easingEffects.easeInBounce(t * 2) * 0.5;
+				if (t < 1 / 2){
+					return easingEffects.easeInBounce(t * 2) * 0.5;
+				}
 				return easingEffects.easeOutBounce(t * 2 - 1) * 0.5 + 1 * 0.5;
 			}
 		},
@@ -762,14 +826,21 @@
 			});
 		},
 		getMaximumWidth = helpers.getMaximumWidth = function(domNode){
-			var container = domNode.parentNode;
+			var container = domNode.parentNode,
+			    padding = parseInt(getStyle(container, 'padding-left')) + parseInt(getStyle(container, 'padding-right'));
 			// TODO = check cross browser stuff with this.
-			return container.clientWidth;
+			return container.clientWidth - padding;
 		},
 		getMaximumHeight = helpers.getMaximumHeight = function(domNode){
-			var container = domNode.parentNode;
+			var container = domNode.parentNode,
+			    padding = parseInt(getStyle(container, 'padding-bottom')) + parseInt(getStyle(container, 'padding-top'));
 			// TODO = check cross browser stuff with this.
-			return container.clientHeight;
+			return container.clientHeight - padding;
+		},
+		getStyle = helpers.getStyle = function (el, property) {
+			return el.currentStyle ?
+				el.currentStyle[property] :
+				document.defaultView.getComputedStyle(el, null).getPropertyValue(property);
 		},
 		getMaximumSize = helpers.getMaximumSize = helpers.getMaximumWidth, // legacy support
 		retinaScale = helpers.retinaScale = function(chart){
@@ -844,7 +915,7 @@
 		},
 		stop : function(){
 			// Stops any current animation loop occuring
-			cancelAnimFrame(this.animationFrame);
+			Chart.animationService.cancelAnimation(this);
 			return this;
 		},
 		resize : function(callback){
@@ -868,15 +939,26 @@
 			if (reflow){
 				this.reflow();
 			}
+			
 			if (this.options.animation && !reflow){
-				helpers.animationLoop(
-					this.draw,
-					this.options.animationSteps,
-					this.options.animationEasing,
-					this.options.onAnimationProgress,
-					this.options.onAnimationComplete,
-					this
-				);
+				var animation = new Chart.Animation();
+				animation.numSteps = this.options.animationSteps;
+				animation.easing = this.options.animationEasing;
+				
+				// render function
+				animation.render = function(chartInstance, animationObject) {
+					var easingFunction = helpers.easingEffects[animationObject.easing];
+					var stepDecimal = animationObject.currentStep / animationObject.numSteps;
+					var easeDecimal = easingFunction(stepDecimal);
+					
+					chartInstance.draw(easeDecimal, stepDecimal, animationObject.currentStep);
+				};
+				
+				// user events
+				animation.onAnimationProgress = this.options.onAnimationProgress;
+				animation.onAnimationComplete = this.options.onAnimationComplete;
+				
+				Chart.animationService.addAnimation(this, animation);
 			}
 			else{
 				this.draw();
@@ -1283,6 +1365,16 @@
 		}
 	});
 
+	Chart.Animation = Chart.Element.extend({
+		currentStep: null, // the current animation step
+		numSteps: 60, // default number of steps
+		easing: "", // the easing to use for this animation
+		render: null, // render function used by the animation service
+		
+		onAnimationProgress: null, // user specified callback to fire on each step of the animation 
+		onAnimationComplete: null, // user specified callback to fire when the animation finishes
+	});
+	
 	Chart.Tooltip = Chart.Element.extend({
 		draw : function(){
 
@@ -1455,18 +1547,20 @@
 	});
 
 	Chart.Scale = Chart.Element.extend({
-		initialize : function(){
+		initialize : function(){			
+			this.leftY = new Chart.Element();
+			this.rightY = new Chart.Element();
 			this.fit();
 		},
-		buildYLabels : function(){
-			this.yLabels = [];
+		buildYLabels : function(side){
+			this[side].yLabels = [];
 
-			var stepDecimalPlaces = getDecimalPlaces(this.stepValue);
+			var stepDecimalPlaces = getDecimalPlaces(this[side].stepValue);
 
-			for (var i=0; i<=this.steps; i++){
-				this.yLabels.push(template(this.templateString,{value:(this.min + (i * this.stepValue)).toFixed(stepDecimalPlaces)}));
+			for (var i=0; i<=this[side].steps; i++){
+				this[side].yLabels.push(template(this.templateString,{value:(this[side].min + (i * this[side].stepValue)).toFixed(stepDecimalPlaces)}));
 			}
-			this.yLabelWidth = (this.display && this.showLabels) ? longestText(this.ctx,this.font,this.yLabels) : 0;
+			this[side].yLabelWidth = (this.display && this.showLabels) ? longestText(this.ctx,this.font,this[side].yLabels) + 10 : 0;
 		},
 		addXLabel : function(label){
 			this.xLabels.push(label);
@@ -1490,6 +1584,9 @@
 			this.startPoint += this.padding;
 			this.endPoint -= this.padding;
 
+			// Cache the starting endpoint, excluding the space for x labels
+			var cachedEndPoint = this.endPoint;
+
 			// Cache the starting height, so can determine if we need to recalculate the scale yAxis
 			var cachedHeight = this.endPoint - this.startPoint,
 				cachedYLabelWidth;
@@ -1508,19 +1605,22 @@
 
 			// With these properties set we can now build the array of yLabels
 			// and also the width of the largest yLabel
-			this.buildYLabels();
+			this.buildYLabels("leftY");
+			this.buildYLabels("rightY");
 
 			this.calculateXLabelRotation();
 
 			while((cachedHeight > this.endPoint - this.startPoint)){
 				cachedHeight = this.endPoint - this.startPoint;
-				cachedYLabelWidth = this.yLabelWidth;
+				cachedYLabelWidth = this.leftY.yLabelWidth;
 
 				this.calculateYRange(cachedHeight);
-				this.buildYLabels();
+				this.buildYLabels("leftY");
+				this.buildYLabels("rightY");
 
 				// Only go through the xLabel loop again if the yLabel width has changed
-				if (cachedYLabelWidth < this.yLabelWidth){
+				if (cachedYLabelWidth < this.leftY.yLabelWidth){
+					this.endPoint = cachedEndPoint;
 					this.calculateXLabelRotation();
 				}
 			}
@@ -1538,8 +1638,15 @@
 				lastRotated;
 
 
-			this.xScalePaddingRight = lastWidth/2 + 3;
-			this.xScalePaddingLeft = (firstWidth/2 > this.yLabelWidth + 10) ? firstWidth/2 : this.yLabelWidth + 10;
+			//this.xScalePaddingRight = lastWidth/2 + 3;
+			//TESTME
+			if (this.rightY.yLabelWidth !== undefined) {
+				this.xScalePaddingRight = (lastWidth/2 + 3 > this.rightY.yLabelWidth)? lastWidth/2 + 3 : this.rightY.yLabelWidth;
+				this.xScalePaddingLeft = (firstWidth/2 > this.leftY.yLabelWidth) ? firstWidth/2 : this.leftY.yLabelWidth;
+			} else {
+				this.xScalePaddingRight = lastWidth/2 + 3;
+	            this.xScalePaddingLeft = (firstWidth/2 > this.yLabelWidth) ? firstWidth/2 : this.yLabelWidth;
+			}
 
 			this.xLabelRotation = 0;
 			if (this.display){
@@ -1558,10 +1665,10 @@
 					lastRotated = cosRotation * lastWidth;
 
 					// We're right aligning the text now.
-					if (firstRotated + this.fontSize / 2 > this.yLabelWidth + 8){
+					if (firstRotated + this.fontSize / 2 > this.leftY.yLabelWidth){
 						this.xScalePaddingLeft = firstRotated + this.fontSize / 2;
 					}
-					this.xScalePaddingRight = this.fontSize/2;
+					//this.xScalePaddingRight = this.fontSize/2;
 
 
 					this.xLabelRotation++;
@@ -1585,9 +1692,20 @@
 		drawingArea: function(){
 			return this.startPoint - this.endPoint;
 		},
-		calculateY : function(value){
-			var scalingFactor = this.drawingArea() / (this.min - this.max);
-			return this.endPoint - (scalingFactor * (value - this.min));
+		//calculateY : function(value){
+		//	var scalingFactor = this.drawingArea() / (this.min - this.max);
+		//	return this.endPoint - (scalingFactor * (value - this.min));
+		//},
+		calculateY : function(point){
+ 			//var scalingFactor = this.drawingArea() / (this.min - this.max);
+ 			if (point.yIndex === undefined) { 			
+ 				var scalingFactor = this.drawingArea() / (this.min - this.max);
+ 				return this.endPoint - (scalingFactor * (point.value - this.min));   }
+ 			else {
+	 			var side = point.yIndex?"rightY":"leftY";
+	 			var scalingFactor = this.drawingArea() / (this[side].min - this[side].max);
+	 			return this.endPoint - (scalingFactor * (point.value - this[side].min));
+ 			}
 		},
 		calculateX : function(index){
 			var isRotated = (this.xLabelRotation > 0),
@@ -1606,14 +1724,90 @@
 			helpers.extend(this, newProps);
 			this.fit();
 		},
+		drawY: function(leftY)
+		{
+			var side = leftY? "leftY": "rightY";
+			var ctx = this.ctx,
+			yLabelGap = (this.endPoint - this.startPoint) / this[side].steps,
+			xStart = Math.round(this.xScalePaddingLeft),
+			xEnd = Math.round(this.width - this.xScalePaddingRight);
+			ctx.fillStyle = this.textColor;
+			ctx.font = this.font;
+			each(this[side].yLabels,function(labelString,index){
+				var yLabelCenter = this.endPoint - (yLabelGap * index),
+					linePositionY = Math.round(yLabelCenter),
+					drawHorizontalLine = this.showHorizontalLines;
+
+
+				ctx.textAlign = "right";
+				ctx.textBaseline = "middle";
+				if (this.showLabels){
+					ctx.fillStyle = this.strokeColor;
+					if(side === "leftY")
+					{
+						ctx.fillText(labelString,xStart - 10,yLabelCenter);
+					}else{
+						ctx.fillText(labelString,xEnd+this[side].yLabelWidth,yLabelCenter);
+					}
+				}
+
+				// This is X axis, so draw it
+				if (index === 0 && !drawHorizontalLine){
+					drawHorizontalLine = true;
+				}
+
+				if (drawHorizontalLine){
+					ctx.beginPath();
+				}
+
+				if (index > 0){
+					// This is a grid line in the centre, so drop that
+					ctx.lineWidth = this.gridLineWidth;
+					ctx.strokeStyle = this.gridLineColor;
+				} else {
+					// This is the first line on the scale
+					ctx.lineWidth = this.lineWidth;
+					ctx.strokeStyle = this.lineColor;
+				}
+
+				linePositionY += helpers.aliasPixel(ctx.lineWidth);
+
+				if(drawHorizontalLine && side === "leftY"){
+					ctx.moveTo(xStart, linePositionY);
+					ctx.lineTo(xEnd, linePositionY);
+					ctx.stroke();
+					ctx.closePath();
+				}
+
+				if(side === "leftY"){
+
+				ctx.lineWidth = this.lineWidth;
+				ctx.strokeStyle = this.lineColor;
+				ctx.beginPath();
+				ctx.moveTo(xStart - 5, linePositionY);
+				ctx.lineTo(xStart, linePositionY);
+				ctx.stroke();
+				ctx.closePath();
+			}
+
+			},this);
+			
+		},
 		draw : function(){
 			var ctx = this.ctx,
 				yLabelGap = (this.endPoint - this.startPoint) / this.steps,
+				//TESTME
+				xEnd = Math.round(this.width),
 				xStart = Math.round(this.xScalePaddingLeft);
+
 			if (this.display){
 				ctx.fillStyle = this.textColor;
 				ctx.font = this.font;
-				each(this.yLabels,function(labelString,index){
+				this.drawY(0);
+				this.drawY(1);
+
+
+				/*each(this.yLabels,function(labelString,index){
 					var yLabelCenter = this.endPoint - (yLabelGap * index),
 						linePositionY = Math.round(yLabelCenter),
 						drawHorizontalLine = this.showHorizontalLines;
@@ -1622,6 +1816,7 @@
 					ctx.textBaseline = "middle";
 					if (this.showLabels){
 						ctx.fillText(labelString,xStart - 10,yLabelCenter);
+						this.doubleY && ctx.fillText(labelString,xEnd,yLabelCenter);
 					}
 
 					// This is X axis, so draw it
@@ -1647,7 +1842,9 @@
 
 					if(drawHorizontalLine){
 						ctx.moveTo(xStart, linePositionY);
-						ctx.lineTo(this.width, linePositionY);
+						//TESTME
+						//ctx.lineTo(this.width, linePositionY);
+						ctx.lineTo(this.width - this.xScalePaddingRight + 6, linePositionY);
 						ctx.stroke();
 						ctx.closePath();
 					}
@@ -1660,7 +1857,7 @@
 					ctx.stroke();
 					ctx.closePath();
 
-				},this);
+				},this);*/
 
 				each(this.xLabels,function(label,index){
 					var xPos = this.calculateX(index) + aliasPixel(this.lineWidth),
@@ -1984,6 +2181,90 @@
 		}
 	});
 
+	Chart.animationService = {
+		frameDuration: 17,
+		animations: [],
+		dropFrames: 0,
+		addAnimation: function(chartInstance, animationObject) {
+			for (var index = 0; index < this.animations.length; ++ index){
+				if (this.animations[index].chartInstance === chartInstance){
+					// replacing an in progress animation
+					this.animations[index].animationObject = animationObject;
+					return;
+				}
+			}
+			
+			this.animations.push({
+				chartInstance: chartInstance,
+				animationObject: animationObject
+			});
+
+			// If there are no animations queued, manually kickstart a digest, for lack of a better word
+			if (this.animations.length == 1) {
+				helpers.requestAnimFrame.call(window, this.digestWrapper);
+			}
+		},
+		// Cancel the animation for a given chart instance
+		cancelAnimation: function(chartInstance) {
+			var index = helpers.findNextWhere(this.animations, function(animationWrapper) {
+				return animationWrapper.chartInstance === chartInstance;
+			});
+			
+			if (index)
+			{
+				this.animations.splice(index, 1);
+			}
+		},
+		// calls startDigest with the proper context
+		digestWrapper: function() {
+			Chart.animationService.startDigest.call(Chart.animationService);
+		},
+		startDigest: function() {
+
+			var startTime = Date.now();
+			var framesToDrop = 0;
+
+			if(this.dropFrames > 1){
+				framesToDrop = Math.floor(this.dropFrames);
+				this.dropFrames -= framesToDrop;
+			}
+
+			for (var i = 0; i < this.animations.length; i++) {
+
+				if (this.animations[i].animationObject.currentStep === null){
+					this.animations[i].animationObject.currentStep = 0;
+				}
+
+				this.animations[i].animationObject.currentStep += 1 + framesToDrop;
+				if(this.animations[i].animationObject.currentStep > this.animations[i].animationObject.numSteps){
+					this.animations[i].animationObject.currentStep = this.animations[i].animationObject.numSteps;
+				}
+				
+				this.animations[i].animationObject.render(this.animations[i].chartInstance, this.animations[i].animationObject);
+				
+				if (this.animations[i].animationObject.currentStep == this.animations[i].animationObject.numSteps){
+					// executed the last frame. Remove the animation.
+					this.animations.splice(i, 1);
+					// Keep the index in place to offset the splice
+					i--;
+				}
+			}
+
+			var endTime = Date.now();
+			var delay = endTime - startTime - this.frameDuration;
+			var frameDelay = delay / this.frameDuration;
+
+			if(frameDelay > 1){
+				this.dropFrames += frameDelay;
+			}
+
+			// Do we have more stuff to animate?
+			if (this.animations.length > 0){
+				helpers.requestAnimFrame.call(window, this.digestWrapper);
+			}
+		}
+	};
+
 	// Attach global event to resize each chart instance when the browser resizes
 	helpers.addEvent(window, "resize", (function(){
 		// Basic debounce of resize function so it doesn't hurt performance when resizing browser.
@@ -2029,6 +2310,10 @@
 
 
 	var defaultConfig = {
+
+		//Use a second Y scale
+		scaleUse2Y: true,
+
 		//Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
 		scaleBeginAtZero : true,
 
@@ -2060,7 +2345,7 @@
 		barDatasetSpacing : 1,
 
 		//String - A legend template
-		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"><%if(datasets[i].label){%><%=datasets[i].label%><%}%></span></li><%}%></ul>"
 
 	};
 
@@ -2120,12 +2405,14 @@
 			});
 
 			//Iterate through each of the datasets, and build this into a property of the chart
+			var datasetIdx = 0;
 			helpers.each(data.datasets,function(dataset,datasetIndex){
 
 				var datasetObject = {
 					label : dataset.label || null,
 					fillColor : dataset.fillColor,
 					strokeColor : dataset.strokeColor,
+					yIndex: (this.options.scaleUse2Y && datasetIdx != 0 ) ? 1 : 0,
 					bars : []
 				};
 
@@ -2136,6 +2423,7 @@
 					datasetObject.bars.push(new this.BarClass({
 						value : dataPoint,
 						label : data.labels[index],
+						yIndex: (this.options.scaleUse2Y && datasetIdx != 0 ) ? 1 : 0,
 						datasetLabel: dataset.label,
 						strokeColor : dataset.strokeColor,
 						fillColor : dataset.fillColor,
@@ -2143,6 +2431,8 @@
 						highlightStroke : dataset.highlightStroke || dataset.strokeColor
 					}));
 				},this);
+
+							datasetIdx++;
 
 			},this);
 
@@ -2200,13 +2490,23 @@
 		buildScale : function(labels){
 			var self = this;
 
-			var dataTotal = function(){
+			/*var dataTotal = function(){
 				var values = [];
 				self.eachBars(function(bar){
 					values.push(bar.value);
 				});
 				return values;
-			};
+			};*/
+
+    		var dataTotal = function() {
+                var values = [];
+                values[0] = [];
+                values[1] = [];
+                self.eachBars(function(bar) {
+                    values[bar.yIndex ? 1 : 0].push(bar.value);
+                });
+                return values;
+            };
 
 			var scaleOptions = {
 				templateString : this.options.scaleLabel,
@@ -2221,14 +2521,34 @@
 				beginAtZero : this.options.scaleBeginAtZero,
 				integersOnly : this.options.scaleIntegersOnly,
 				calculateYRange: function(currentHeight){
-					var updatedRanges = helpers.calculateScaleRange(
-						dataTotal(),
-						currentHeight,
-						this.fontSize,
-						this.beginAtZero,
-						this.integersOnly
-					);
-					helpers.extend(this, updatedRanges);
+					var data = dataTotal();
+
+                    var updatedRangesLeft = helpers.calculateScaleRange(
+                        data[0],
+                        currentHeight,
+                        this.fontSize,
+                        this.beginAtZero,
+                        this.integersOnly
+                    );
+                    var updatedRangesRight = helpers.calculateScaleRange(
+                        data[1],
+                        currentHeight,
+                        this.fontSize,
+                        this.beginAtZero,
+                        this.integersOnly
+                    );
+
+                    /*Keep for other graph extension */
+                    this.steps = updatedRangesLeft.steps;
+					this.stepValue = updatedRangesLeft.stepValue;
+					this.min = updatedRangesLeft.min;
+					this.max = updatedRangesLeft.max;
+					helpers.extend(this, updatedRangesLeft);
+					/*Keep for other graph extension */
+
+                    helpers.extend(this.leftY, updatedRangesLeft);
+                    helpers.extend(this.rightY, updatedRangesRight);
+
 				},
 				xLabels : labels,
 				font : helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.scaleFontFamily),
@@ -2262,10 +2582,12 @@
 				this.datasets[datasetIndex].bars.push(new this.BarClass({
 					value : value,
 					label : label,
+					datasetLabel: this.datasets[datasetIndex].label,
 					x: this.scale.calculateBarX(this.datasets.length, datasetIndex, this.scale.valuesCount+1),
 					y: this.scale.endPoint,
 					width : this.scale.calculateBarWidth(this.datasets.length),
 					base : this.scale.endPoint,
+					yIndex: (this.options.scaleUse2Y && datasetIndex != 0 ) ? 1 : 0,
 					strokeColor : this.datasets[datasetIndex].strokeColor,
 					fillColor : this.datasets[datasetIndex].fillColor
 				}));
@@ -2310,7 +2632,7 @@
 						//Transition then draw
 						bar.transition({
 							x : this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
-							y : this.scale.calculateY(bar.value),
+							y : this.scale.calculateY(bar),
 							width : this.scale.calculateBarWidth(this.datasets.length)
 						}, easingDecimal).draw();
 					}
@@ -2357,10 +2679,9 @@
 		animateScale : false,
 
 		//String - A legend template
-		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
+		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"><%if(segments[i].label){%><%=segments[i].label%><%}%></span></li><%}%></ul>"
 
 	};
-
 
 	Chart.Type.extend({
 		//Passing in a name registers this chart in the Chart namespace
@@ -2398,6 +2719,9 @@
 			this.calculateTotal(data);
 
 			helpers.each(data,function(datapoint, index){
+				if (!datapoint.color) {
+					datapoint.color = 'hsl(' + (360 * index / data.length) + ', 100%, 50%)';
+				}
 				this.addData(datapoint, index, true);
 			},this);
 
@@ -2433,8 +2757,12 @@
 				this.update();
 			}
 		},
-		calculateCircumference : function(value){
-			return (Math.PI*2)*(Math.abs(value) / this.total);
+		calculateCircumference : function(value) {
+			if ( this.total > 0 ) {
+				return (Math.PI*2)*(value / this.total);
+			} else {
+				return 0;
+			}
 		},
 		calculateTotal : function(data){
 			this.total = 0;
@@ -2507,6 +2835,7 @@
 	});
 
 }).call(this);
+
 (function(){
 	"use strict";
 
@@ -2515,6 +2844,9 @@
 		helpers = Chart.helpers;
 
 	var defaultConfig = {
+
+		//Use a second Y scale
+		scaleUse2Y: false,
 
 		///Boolean - Whether grid lines are shown across the chart
 		scaleShowGridLines : true,
@@ -2559,7 +2891,10 @@
 		datasetFill : true,
 
 		//String - A legend template
-		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"><%if(datasets[i].label){%><%=datasets[i].label%><%}%></span></li><%}%></ul>",
+
+		//Boolean - Whether to horizontally center the label and point dot inside the grid
+		offsetGridLines : false
 
 	};
 
@@ -2570,6 +2905,7 @@
 		initialize:  function(data){
 			//Declare the extension of the default point, to cater for the options passed in to the constructor
 			this.PointClass = Chart.Point.extend({
+				offsetGridLines : this.options.offsetGridLines,
 				strokeWidth : this.options.pointDotStrokeWidth,
 				radius : this.options.pointDotRadius,
 				display: this.options.pointDot,
@@ -2598,6 +2934,7 @@
 			}
 
 			//Iterate through each of the datasets, and build this into a property of the chart
+			var datasetIdx = 0;
 			helpers.each(data.datasets,function(dataset){
 
 				var datasetObject = {
@@ -2606,6 +2943,7 @@
 					strokeColor : dataset.strokeColor,
 					pointColor : dataset.pointColor,
 					pointStrokeColor : dataset.pointStrokeColor,
+					yIndex: (this.options.scaleUse2Y && datasetIdx != 0 ) ? 1 : 0,
 					points : []
 				};
 
@@ -2621,12 +2959,12 @@
 						strokeColor : dataset.pointStrokeColor,
 						fillColor : dataset.pointColor,
 						highlightFill : dataset.pointHighlightFill || dataset.pointColor,
-						highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor
+						highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor,
+						yIndex: (this.options.scaleUse2Y && datasetIdx != 0 ) ? 1 : 0
 					}));
 				},this);
 
 				this.buildScale(data.labels);
-
 
 				this.eachPoints(function(point, index){
 					helpers.extend(point, {
@@ -2635,6 +2973,8 @@
 					});
 					point.save();
 				}, this);
+
+				datasetIdx++;
 
 			},this);
 
@@ -2670,14 +3010,16 @@
 		buildScale : function(labels){
 			var self = this;
 
-			var dataTotal = function(){
-				var values = [];
-				self.eachPoints(function(point){
-					values.push(point.value);
-				});
+    		var dataTotal = function() {
+                var values = [];
+                values[0] = [];
+                values[1] = [];
+                self.eachPoints(function(point) {
+                    values[point.yIndex ? 1 : 0].push(point.value);
+                });
+                return values;
+            };
 
-				return values;
-			};
 
 			var scaleOptions = {
 				templateString : this.options.scaleLabel,
@@ -2685,6 +3027,7 @@
 				width : this.chart.width,
 				ctx : this.chart.ctx,
 				textColor : this.options.scaleFontColor,
+				offsetGridLines : this.options.offsetGridLines,
 				fontSize : this.options.scaleFontSize,
 				fontStyle : this.options.scaleFontStyle,
 				fontFamily : this.options.scaleFontFamily,
@@ -2692,14 +3035,39 @@
 				beginAtZero : this.options.scaleBeginAtZero,
 				integersOnly : this.options.scaleIntegersOnly,
 				calculateYRange : function(currentHeight){
-					var updatedRanges = helpers.calculateScaleRange(
+					var data = dataTotal();
+					/*var updatedRanges = helpers.calculateScaleRange(
 						dataTotal(),
 						currentHeight,
 						this.fontSize,
 						this.beginAtZero,
 						this.integersOnly
-					);
-					helpers.extend(this, updatedRanges);
+					);*/
+                    var updatedRangesLeft = helpers.calculateScaleRange(
+                        data[0],
+                        currentHeight,
+                        this.fontSize,
+                        this.beginAtZero,
+                        this.integersOnly
+                    );
+                    var updatedRangesRight = helpers.calculateScaleRange(
+                        data[1],
+                        currentHeight,
+                        this.fontSize,
+                        this.beginAtZero,
+                        this.integersOnly
+                    );
+                    
+                    /*Keep for other graph extension */
+                    this.steps = updatedRangesLeft.steps;
+					this.stepValue = updatedRangesLeft.stepValue;
+					this.min = updatedRangesLeft.min;
+					this.max = updatedRangesLeft.max;
+					helpers.extend(this, updatedRangesLeft);
+					/*Keep for other graph extension */
+
+                    helpers.extend(this.leftY, updatedRangesLeft);
+                    helpers.extend(this.rightY, updatedRangesRight);
 				},
 				xLabels : labels,
 				font : helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.scaleFontFamily),
@@ -2735,10 +3103,12 @@
 				this.datasets[datasetIndex].points.push(new this.PointClass({
 					value : value,
 					label : label,
+					datasetLabel: this.datasets[datasetIndex].label,
 					x: this.scale.calculateX(this.scale.valuesCount+1),
 					y: this.scale.endPoint,
 					strokeColor : this.datasets[datasetIndex].pointStrokeColor,
-					fillColor : this.datasets[datasetIndex].pointColor
+					fillColor : this.datasets[datasetIndex].pointColor,
+					yIndex: (this.options.scaleUse2Y && datasetIndex != 0 ) ? 1 : 0
 				}));
 			},this);
 
@@ -2790,14 +3160,14 @@
 				helpers.each(dataset.points, function(point, index){
 					if (point.hasValue()){
 						point.transition({
-							y : this.scale.calculateY(point.value),
+							y : this.scale.calculateY(point),
 							x : this.scale.calculateX(index)
 						}, easingDecimal);
 					}
 				},this);
 
 
-				// Control points need to be calculated in a seperate loop, because we need to know the current x/y of the point
+				// Control points need to be calculated in a separate loop, because we need to know the current x/y of the point
 				// This would cause issues when there is no animation, because the y of the next point would be 0, so beziers would be skewed
 				if (this.options.bezierCurve){
 					helpers.each(pointsWithValues, function(point, index){
@@ -2912,7 +3282,7 @@
 		//Boolean - Stroke a line around each segment in the chart
 		segmentShowStroke : true,
 
-		//String - The colour of the stroke on each segement.
+		//String - The colour of the stroke on each segment.
 		segmentStrokeColor : "#fff",
 
 		//Number - The width of the stroke value in pixels
@@ -2931,7 +3301,7 @@
 		animateScale : false,
 
 		//String - A legend template
-		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
+		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"><%if(segments[i].label){%><%=segments[i].label%><%}%></span></li><%}%></ul>"
 	};
 
 
@@ -3132,6 +3502,7 @@
 	});
 
 }).call(this);
+
 (function(){
 	"use strict";
 
@@ -3196,7 +3567,7 @@
 			datasetFill : true,
 
 			//String - A legend template
-			legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+			legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"><%if(datasets[i].label){%><%=datasets[i].label%><%}%></span></li><%}%></ul>"
 
 		},
 
@@ -3379,6 +3750,7 @@
 				this.datasets[datasetIndex].points.push(new this.PointClass({
 					value : value,
 					label : label,
+					datasetLabel: this.datasets[datasetIndex].label,
 					x: pointPosition.x,
 					y: pointPosition.y,
 					strokeColor : this.datasets[datasetIndex].pointStrokeColor,
@@ -3453,8 +3825,9 @@
 				ctx.stroke();
 
 				ctx.fillStyle = dataset.fillColor;
-				ctx.fill();
-
+				if(this.options.datasetFill){
+					ctx.fill();
+				}
 				//Now draw the points over the line
 				//A little inefficient double looping, but better than the line
 				//lagging behind the point positions

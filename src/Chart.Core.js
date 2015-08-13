@@ -1640,8 +1640,13 @@
 
 			//this.xScalePaddingRight = lastWidth/2 + 3;
 			//TESTME
-			this.xScalePaddingRight = (lastWidth/2 + 3 > this.rightY.yLabelWidth)? lastWidth/2 + 3 : this.rightY.yLabelWidth;
-			this.xScalePaddingLeft = (firstWidth/2 > this.leftY.yLabelWidth) ? firstWidth/2 : this.leftY.yLabelWidth;
+			if (this.rightY.yLabelWidth !== undefined) {
+				this.xScalePaddingRight = (lastWidth/2 + 3 > this.rightY.yLabelWidth)? lastWidth/2 + 3 : this.rightY.yLabelWidth;
+				this.xScalePaddingLeft = (firstWidth/2 > this.leftY.yLabelWidth) ? firstWidth/2 : this.leftY.yLabelWidth;
+			} else {
+				this.xScalePaddingRight = lastWidth/2 + 3;
+	            this.xScalePaddingLeft = (firstWidth/2 > this.yLabelWidth) ? firstWidth/2 : this.yLabelWidth;
+			}
 
 			this.xLabelRotation = 0;
 			if (this.display){
@@ -1693,10 +1698,14 @@
 		//},
 		calculateY : function(point){
  			//var scalingFactor = this.drawingArea() / (this.min - this.max);
- 			var side = point.yIndex?"rightY":"leftY";
- 			//return this.endPoint - (scalingFactor * (value - this.min));
- 			var scalingFactor = this.drawingArea() / (this[side].min - this[side].max);
- 			return this.endPoint - (scalingFactor * (point.value - this[side].min));
+ 			if (point.yIndex === undefined) { 			
+ 				var scalingFactor = this.drawingArea() / (this.min - this.max);
+ 				return this.endPoint - (scalingFactor * (point.value - this.min));   }
+ 			else {
+	 			var side = point.yIndex?"rightY":"leftY";
+	 			var scalingFactor = this.drawingArea() / (this[side].min - this[side].max);
+	 			return this.endPoint - (scalingFactor * (point.value - this[side].min));
+ 			}
 		},
 		calculateX : function(index){
 			var isRotated = (this.xLabelRotation > 0),
