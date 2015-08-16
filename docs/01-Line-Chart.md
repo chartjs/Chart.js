@@ -100,8 +100,11 @@ These are the customisation options specific to Line charts. These options are m
 	datasetFill : true,
 	{% raw %}
 	//String - A legend template
-	legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+	legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
 	{% endraw %}
+
+	//Boolean - Whether to horizontally center the label and point dot inside the grid
+	offsetGridLines : false
 };
 ```
 

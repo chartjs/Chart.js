@@ -25,25 +25,29 @@ Guidlines for reporting bugs:
 
  - Check the issue search to see if it has already been reported
  - Isolate the problem to a simple test case
- - Provide a demonstration of the problem on [jsbin](http://jsbin.com) or similar
+ - Provide a demonstration of the problem on [JS Bin](http://jsbin.com) or similar
 
-Please provide any additional details associated with the bug, if it's browser of screen density specific, or only happens with a certain configuration or data.
+Please provide any additional details associated with the bug, if it's browser or screen density specific, or only happens with a certain configuration or data.
 
 
 Pull requests
 -------------
 
-Clear, concise pull requests are excellent at continuing the projects community driven growth. But please review the guidelines below before starting work on the project.
+Clear, concise pull requests are excellent at continuing the project's community driven growth. But please review [these guidelines](https://github.com/blog/1943-how-to-write-the-perfect-pull-request) and the guidelines below before starting work on the project.
 
 Guidlines:
 
- - Please ask before starting significant work on a pull request to check it's a change within the project scope, and isn't a duplicate effort
- - Please make changes to the files in [`/src`](https://github.com/nnnick/Chart.js/tree/master/src), not `Chart.js` or `Chart.min.js` in the repo root directory
- - Tabs for indentation, not spaces please.
+ - Please create an issue first:
+   - For bugs, we can discuss the fixing approach
+   - For enhancements, we can discuss if it is within the project scope and avoid duplicate effort
+ - Please make changes to the files in [`/src`](https://github.com/nnnick/Chart.js/tree/master/src), not `Chart.js` or `Chart.min.js` in the repo root directory, this avoids merge conflicts
+ - Tabs for indentation, not spaces please
  - If adding new functionality, please also update the relevant `.md` file in [`/docs`](https://github.com/nnnick/Chart.js/tree/master/docs)
  - Please make your commits in logical sections with clear commit messages
- - Please avoid committing in the build Chart.js & Chart.min.js file, as it may cause conflicts when merging back
 
+Joining the Project
+-------------
+ - Active committers and contributors are invited to introduce yourself and request commit access to this project.  Please send an email to hello@nickdownie.com or file an issue. 
 
 License
 -------

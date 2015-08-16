@@ -2,12 +2,13 @@
   "name": "chart.js",
   "homepage": "http://www.chartjs.org",
   "description": "Simple HTML5 charts using the canvas element.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "Chart.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/nnnick/Chart.js.git"
   },
+  "license" : "MIT",
   "dependences": {},
   "devDependencies": {
     "gulp": "3.5.x",
@@ -21,5 +22,8 @@
     "gulp-html-validator": "^0.0.2",
     "inquirer": "^0.5.1",
     "semver": "^3.0.1"
+  },
+  "spm": {
+    "main": "Chart.js"
   }
 }

@@ -32,10 +32,9 @@
 		animateScale : false,
 
 		//String - A legend template
-		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
+		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"><%if(segments[i].label){%><%=segments[i].label%><%}%></span></li><%}%></ul>"
 
 	};
-
 
 	Chart.Type.extend({
 		//Passing in a name registers this chart in the Chart namespace
@@ -73,6 +72,9 @@
 			this.calculateTotal(data);
 
 			helpers.each(data,function(datapoint, index){
+				if (!datapoint.color) {
+					datapoint.color = 'hsl(' + (360 * index / data.length) + ', 100%, 50%)';
+				}
 				this.addData(datapoint, index, true);
 			},this);
 
@@ -108,13 +110,17 @@
 				this.update();
 			}
 		},
-		calculateCircumference : function(value){
-			return (Math.PI*2)*(value / this.total);
+		calculateCircumference : function(value) {
+			if ( this.total > 0 ) {
+				return (Math.PI*2)*(value / this.total);
+			} else {
+				return 0;
+			}
 		},
 		calculateTotal : function(data){
 			this.total = 0;
 			helpers.each(data,function(segment){
-				this.total += segment.value;
+				this.total += Math.abs(segment.value);
 			},this);
 		},
 		update : function(){

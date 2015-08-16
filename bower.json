@@ -1,11 +1,11 @@
 {
   "name": "Chart.js",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Simple HTML5 Charts using the canvas element",
   "homepage": "https://github.com/nnnick/Chart.js",
   "author": "nnnick",
   "main": [
-    "Chart.min.js"
+    "Chart.js"
   ],
   "dependencies": {}
 }
