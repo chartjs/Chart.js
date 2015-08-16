@@ -25,20 +25,13 @@ Options included with this version of the library:
 		
 ## Compatibility
 
-This repo is compatible with @nnnick/Chart.js, so even if you are already using Chart.js on your site, switching to my version will not harm anything. I am not changing the core, so new updates to there will simply be merged in here.
+This repo is compatible with @nnnick/Chart.js, so even if you are already using Chart.js on your site, switching to my version will not harm anything.
 
-## Old version
+## Chart.js 2.0
 
 A previous version (based on the old, non-API version of Chart.js) also supported scatter plots, box plots, and trendlines. This version of the project is available in the "old" branch.
 
-I have no immediate plans to add these features to the new Chart.js, but contributions are welcome. I will test code and merge it.
-
-Any new code MUST maintain compatibility with @nnnick/Chart.js.
-
-## Roadmap
-
-1. Fix the scaling to account for all the new features (so they don't literally go off the charts)
-1. Include error in tooltips (?)
+At one point I made a attempt to integrate these features into the current project, but got frustrated because the API was constantly forcing me to write repetitive code. There has been a flurry of development recently toward Chartjs 2.0 which looks like it will address this - so stay tuned.
 
 ## License
 
