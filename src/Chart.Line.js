@@ -355,7 +355,9 @@
 					}
 				}, this);
 
-				ctx.stroke();
+				if (this.options.datasetStroke) {
+					ctx.stroke();
+				}
 
 				if (this.options.datasetFill && pointsWithValues.length > 0){
 					//Round off the line by going to the base of the chart, back to the start, then fill.
