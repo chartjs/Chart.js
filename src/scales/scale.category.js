@@ -75,19 +75,19 @@
         calculateBaseWidth: function() {
             return (this.getPixelForValue(null, 1, 0, true) - this.getPixelForValue(null, 0, 0, true)) - (2 * this.options.categorySpacing);
         },
-        calculateBarWidth: function(datasetCount) {
+        calculateBarWidth: function(barDatasetCount) {
             //The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
-            var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * this.options.spacing);
+            var baseWidth = this.calculateBaseWidth() - ((barDatasetCount - 1) * this.options.spacing);
 
             if (this.options.stacked) {
                 return baseWidth;
             }
-            return (baseWidth / datasetCount);
+            return (baseWidth / barDatasetCount);
         },
-        calculateBarX: function(datasetCount, datasetIndex, elementIndex) {
+        calculateBarX: function(barDatasetCount, datasetIndex, elementIndex) {
             var xWidth = this.calculateBaseWidth(),
                 xAbsolute = this.getPixelForValue(null, elementIndex, datasetIndex, true) - (xWidth / 2),
-                barWidth = this.calculateBarWidth(datasetCount);
+                barWidth = this.calculateBarWidth(barDatasetCount);
 
             if (this.options.stacked) {
                 return xAbsolute + barWidth / 2;

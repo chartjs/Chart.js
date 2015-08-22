@@ -61,6 +61,21 @@
 			return this.chart.scales[scaleID];
 		},
 
+		// Get the number of datasets that display bars. We use this to correctly calculate the bar width
+		getBarCount: function getBarCount() {
+			var barCount = 0;
+
+			helpers.each(this.chart.data.datasets, function(dataset) {
+				if (dataset.type === 'bar') {
+					++barCount;
+				} else if (dataset.type === undefined && this.chart.config.type === 'bar') {
+					++barCount;
+				}
+			}, this);
+
+			return barCount;
+		},
+
 		addElements: function() {
 			this.getDataset().metaData = this.getDataset().metaData || [];
 			helpers.each(this.getDataset().data, function(value, index) {
@@ -78,7 +93,10 @@
 				_datasetIndex: this.index,
 				_index: index,
 			});
-			this.updateElement(rectangle, index, true);
+
+			var numBars = this.getBarCount();
+
+			this.updateElement(rectangle, index, true, numBars);
 			this.getDataset().metaData.splice(index, 0, rectangle);
 		},
 		removeElement: function(index) {
@@ -90,12 +108,14 @@
 		},
 
 		update: function(reset) {
+			var numBars = this.getBarCount();
+
 			helpers.each(this.getDataset().metaData, function(rectangle, index) {
-				this.updateElement(rectangle, index, reset);
+				this.updateElement(rectangle, index, reset, numBars);
 			}, this);
 		},
 
-		updateElement: function updateElement(rectangle, index, reset) {
+		updateElement: function updateElement(rectangle, index, reset, numBars) {
 			var xScale = this.getScaleForId(this.getDataset().xAxisID);
 			var yScale = this.getScaleForId(this.getDataset().yAxisID);
 			var yScalePoint;
@@ -120,7 +140,7 @@
 
 				// Desired view properties
 				_model: {
-					x: xScale.calculateBarX(this.chart.data.datasets.length, this.index, index),
+					x: xScale.calculateBarX(numBars, this.index, index),
 					y: reset ? yScalePoint : yScale.calculateBarY(this.index, index),
 
 					// Tooltip
@@ -129,7 +149,7 @@
 
 					// Appearance
 					base: yScale.calculateBarBase(this.index, index),
-					width: xScale.calculateBarWidth(this.chart.data.datasets.length),
+					width: xScale.calculateBarWidth(numBars),
 					backgroundColor: rectangle.custom && rectangle.custom.backgroundColor ? rectangle.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.rectangle.backgroundColor),
 					borderColor: rectangle.custom && rectangle.custom.borderColor ? rectangle.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.rectangle.borderColor),
 					borderWidth: rectangle.custom && rectangle.custom.borderWidth ? rectangle.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.rectangle.borderWidth),
