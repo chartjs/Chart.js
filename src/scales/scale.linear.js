@@ -172,7 +172,7 @@
 			} else {
 				// Bottom - top since pixels increase downard on a screen
 				var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
-				pixel = this.bottom - (innerHeight / range * (value - this.start));
+				pixel = (this.bottom - this.paddingBottom) - (innerHeight / range * (value - this.start));
 				pixel += this.paddingTop;
 			}
 

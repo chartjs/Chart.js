@@ -192,13 +192,14 @@
             if (this.isHorizontal()) {
                 minSize.width = maxWidth;
             } else if (this.options.display) {
-                minSize.width = Math.min(longestLabelWidth + 6, maxWidth);
+                var labelWidth = this.options.labels.show ? longestLabelWidth + 6 : 0;
+                minSize.width = Math.min(labelWidth, maxWidth);
             }
 
             // Height
             if (this.isHorizontal() && this.options.display) {
                 var labelHeight = (Math.sin(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.labels.fontSize;
-                minSize.height = Math.min(labelHeight, maxHeight);
+                minSize.height = Math.min(this.options.labels.show ? labelHeight : 0, maxHeight);
             } else if (this.options.display) {
                 minSize.height = maxHeight;
             }
