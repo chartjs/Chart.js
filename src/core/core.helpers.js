@@ -458,6 +458,7 @@
 		// Blows up jshint errors based on the new Function constructor
 		//Templating methods
 		//Javascript micro templating by John Resig - source at http://ejohn.org/blog/javascript-micro-templating/
+		templateStringCache = {},
 		template = helpers.template = function(templateString, valuesObject) {
 
 			// If templateString is function rather than string-template - call the function for valuesObject
@@ -466,17 +467,17 @@
 				return templateString(valuesObject);
 			}
 
-			var cache = {};
-
 			function tmpl(str, data) {
 				// Figure out if we're getting a template, or if we need to
 				// load the template - and be sure to cache the result.
-				var fn = !/\W/.test(str) ?
-					cache[str] = cache[str] :
+				var fn;
 
+				if (templateStringCache.hasOwnProperty(str)) {
+					fn = templateStringCache[str];
+				} else {
 					// Generate a reusable function that will serve as a template
 					// generator (and which will be cached).
-					new Function("obj",
+					fn = new Function("obj",
 						"var p=[],print=function(){p.push.apply(p,arguments);};" +
 
 						// Introduce the data as local variables using with(){}
@@ -493,6 +494,10 @@
 						.split("\r").join("\\'") +
 						"');}return p.join('');"
 					);
+
+					// Cache the result
+					templateStringCache[str] = fn;
+				}
 
 				// Provide some basic currying to the user
 				return data ? fn(data) : fn;
