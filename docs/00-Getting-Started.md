@@ -403,6 +403,9 @@ The `userCallback` method may be useful when there are a lot of labels. The foll
         xAxes: [{
             labels: {
                 maxRotation: 0,    // set maxRotation to 0 to turn off auto-rotation
+
+                // Return an empty string to draw the grid line but hide the label
+                // Return `null` or `undefined` to hide the grid line
                 userCallback: function(labelString, index) {
                     return (index % 5 === 0) ? labelString : '';
                 }
