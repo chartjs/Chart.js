@@ -230,7 +230,8 @@
                     }
 
                     helpers.each(this.labels, function(label, index) {
-                        if (skipRatio > 1 && index % skipRatio > 0) {
+                        // Blank labels
+                        if ((skipRatio > 1 && index % skipRatio > 0) || (label === undefined || label === null)) {
                             return;
                         }
                         var xLineValue = this.getPixelForValue(label, index, null, false); // xvalues for grid lines
