@@ -107,11 +107,8 @@ gulp.task('unittest', function() {
 	return gulp.src(files)
 		.pipe(karma({
 			configFile: 'karma.conf.js',
-			action: 'run'
-		}))
-		.on('error', function(err) {
-			throw err;
-		});
+			action: 'watch'
+		}));
 });
 
 gulp.task('library-size', function() {
@@ -133,7 +130,7 @@ gulp.task('module-sizes', function() {
 });
 
 gulp.task('watch', function() {
-	gulp.watch('./src/**', ['build']);
+	gulp.watch('./src/**', ['build', 'unittest']);
 });
 
 gulp.task('test', ['jshint', 'valid']);
