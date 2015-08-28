@@ -111,6 +111,17 @@ gulp.task('unittest', function() {
 		}));
 });
 
+gulp.task('coverage', function() {
+	var files = srcFiles.slice();
+	files.push(testDir + '*.js');
+
+	return gulp.src(files)
+		.pipe(karma({
+			configFile: 'karma.coverage.conf.js',
+			action: 'run'
+		}));
+});
+
 gulp.task('library-size', function() {
 	return gulp.src('Chart.min.js')
 		.pipe(size({
