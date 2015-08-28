@@ -133,7 +133,7 @@ gulp.task('watch', function() {
 	gulp.watch('./src/**', ['build', 'unittest']);
 });
 
-gulp.task('test', ['jshint', 'valid']);
+gulp.task('test', ['jshint', 'valid', 'unittest']);
 
 gulp.task('size', ['library-size', 'module-sizes']);
 
