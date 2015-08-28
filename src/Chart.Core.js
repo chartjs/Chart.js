@@ -150,6 +150,9 @@
 			// String - Tooltip title font colour
 			tooltipTitleFontColor: "#fff",
 
+			// String - Tooltip title template
+			tooltipTitleTemplate: "<%= label%>",
+
 			// Number - pixel width of padding around tooltip text
 			tooltipYPadding: 6,
 
@@ -1097,7 +1100,7 @@
 						labels: tooltipLabels,
 						legendColors: tooltipColors,
 						legendColorBackground : this.options.multiTooltipKeyBackground,
-						title: ChartElements[0].label,
+						title: template(this.options.tooltipTitleTemplate,ChartElements[0]),
 						chart: this.chart,
 						ctx: this.chart.ctx,
 						custom: this.options.customTooltips
