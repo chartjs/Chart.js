@@ -38,6 +38,7 @@ var srcFiles = [
 
 
 gulp.task('build', buildTask);
+gulp.task('coverage', coverageTask);
 gulp.task('watch', watchTask);
 gulp.task('bump', bumpTask);
 gulp.task('release', ['build'], releaseTask);
@@ -145,6 +146,17 @@ function unittestWatchTask() {
 		}));
 }
 
+function coverageTask() {
+	var files = srcFiles.slice();
+	files.push(testDir + '*.js');
+
+	return gulp.src(files)
+		.pipe(karma({
+			configFile: 'karma.coverage.conf.js',
+			action: 'run'
+		}));
+}
+
 function librarySizeTask() {
 	return gulp.src('Chart.min.js')
 		.pipe(size({
@@ -163,12 +175,9 @@ function moduleSizesTask() {
 		}));
 }
 
-
 function watchTask() {
 	gulp.watch('./src/**', ['build', 'unittest', 'unittestWatch']);
 }
-
-
 
 function serverTask() {
 	connect.server({
