@@ -24,19 +24,40 @@ var testDir = './test/';
  */
 
 var srcFiles = [
-		'./src/core/core.js',
-		'./src/core/core.helpers.js',
-		'./src/core/core.chart.js',
-		'./src/core/core.element.js',
-		'./src/core/**',
-		'./src/controllers/**',
-		'./src/scales/**',
-		'./src/elements/**',
-		'./src/charts/**',
-		'./node_modules/color/dist/color.min.js'
-	];
+	'./src/core/core.js',
+	'./src/core/core.helpers.js',
+	'./src/core/core.chart.js',
+	'./src/core/core.element.js',
+	'./src/core/**',
+	'./src/controllers/**',
+	'./src/scales/**',
+	'./src/elements/**',
+	'./src/charts/**',
+	'./node_modules/color/dist/color.min.js'
+];
 
-gulp.task('build', function() {
+
+gulp.task('build', buildTask);
+gulp.task('coverage', coverageTask);
+gulp.task('watch', watchTask);
+gulp.task('bump', bumpTask);
+gulp.task('release', ['build'], releaseTask);
+gulp.task('jshint', jshintTask);
+gulp.task('test', ['jshint', 'validHTML', 'unittest']);
+gulp.task('size', ['library-size', 'module-sizes']);
+gulp.task('server', serverTask);
+gulp.task('validHTML', validHTMLTask);
+gulp.task('unittest', unittestTask);
+gulp.task('unittestWatch', unittestWatchTask);
+gulp.task('library-size', librarySizeTask);
+gulp.task('module-sizes', moduleSizesTask);
+gulp.task('_open', _openTask);
+gulp.task('dev', ['server', 'default']);
+
+gulp.task('default', ['build', 'watch']);
+
+
+function buildTask() {
 
 	var isCustom = !!(util.env.types),
 		outputDir = (isCustom) ? 'custom' : '.';
@@ -51,15 +72,14 @@ gulp.task('build', function() {
 		.pipe(concat('Chart.min.js'))
 		.pipe(gulp.dest(outputDir));
 
-});
+}
 
 /*
  *  Usage : gulp bump
  *  Prompts: Version increment to bump
  *  Output: - New version number written into package.json & bower.json
  */
-
-gulp.task('bump', function(complete) {
+function bumpTask(complete) {
 	util.log('Current version:', util.colors.cyan(package.version));
 	var choices = ['major', 'premajor', 'minor', 'preminor', 'patch', 'prepatch', 'prerelease'].map(function(versionType) {
 		return versionType + ' (v' + semver.inc(package.version, versionType) + ')';
@@ -83,24 +103,39 @@ gulp.task('bump', function(complete) {
 
 		complete();
 	});
-});
+}
 
-gulp.task('release', ['build'], function() {
+
+function releaseTask() {
 	exec('git tag -a v' + package.version);
-});
+}
 
-gulp.task('jshint', function() {
+
+function jshintTask() {
 	return gulp.src(srcDir + '*.js')
 		.pipe(jshint())
 		.pipe(jshint.reporter('default'));
-});
+}
 
-gulp.task('valid', function() {
+
+function validHTMLTask() {
 	return gulp.src('samples/*.html')
 		.pipe(htmlv());
-});
+}
 
-gulp.task('unittest', function() {
+
+function unittestTask() {
+	var files = srcFiles.slice();
+	files.push(testDir + '*.js');
+
+	return gulp.src(files)
+		.pipe(karma({
+			configFile: 'karma.conf.js',
+			action: 'run'
+		}));
+}
+
+function unittestWatchTask() {
 	var files = srcFiles.slice();
 	files.push(testDir + '*.js');
 
@@ -109,9 +144,9 @@ gulp.task('unittest', function() {
 			configFile: 'karma.conf.js',
 			action: 'watch'
 		}));
-});
+}
 
-gulp.task('coverage', function() {
+function coverageTask() {
 	var files = srcFiles.slice();
 	files.push(testDir + '*.js');
 
@@ -120,16 +155,16 @@ gulp.task('coverage', function() {
 			configFile: 'karma.coverage.conf.js',
 			action: 'run'
 		}));
-});
+}
 
-gulp.task('library-size', function() {
+function librarySizeTask() {
 	return gulp.src('Chart.min.js')
 		.pipe(size({
 			gzip: true
 		}));
-});
+}
 
-gulp.task('module-sizes', function() {
+function moduleSizesTask() {
 	return gulp.src(srcDir + '*.js')
 		.pipe(uglify({
 			preserveComments: 'some'
@@ -138,28 +173,21 @@ gulp.task('module-sizes', function() {
 			showFiles: true,
 			gzip: true
 		}));
-});
+}
 
-gulp.task('watch', function() {
-	gulp.watch('./src/**', ['build', 'unittest']);
-});
+function watchTask() {
+	gulp.watch('./src/**', ['build', 'unittest', 'unittestWatch']);
+}
 
-gulp.task('test', ['jshint', 'valid', 'unittest']);
-
-gulp.task('size', ['library-size', 'module-sizes']);
-
-gulp.task('default', ['build', 'watch']);
-
-gulp.task('server', function() {
+function serverTask() {
 	connect.server({
 		port: 8000
 	});
-});
+}
 
 // Convenience task for opening the project straight from the command line
-gulp.task('_open', function() {
+
+function _openTask() {
 	exec('open http://localhost:8000');
 	exec('subl .');
-});
-
-gulp.task('dev', ['server', 'default']);
+}
