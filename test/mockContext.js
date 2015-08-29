@@ -5,6 +5,7 @@
 		this._initMethods();
 
 		this._fillStyle = null;
+		this._lineJoin = null;
 		this._lineWidth = null;
 		this._strokeStyle = null;
 
@@ -15,6 +16,13 @@
 				'set': function(style) {
 					this._fillStyle = style;
 					this.record('setFillStyle', [style]);
+				}
+			},
+			'lineJoin': {
+				'get': function() { return this._lineJoin; },
+				'set': function(join) {
+					this._lineJoin = join;
+					this.record('setLineJoin', [join]);
 				}
 			},
 			'lineWidth': {
