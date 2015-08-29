@@ -5,6 +5,8 @@
 		this._initMethods();
 
 		this._fillStyle = null;
+		this._lineCap = null;
+		this._lineDashOffset = null;
 		this._lineJoin = null;
 		this._lineWidth = null;
 		this._strokeStyle = null;
@@ -16,6 +18,20 @@
 				'set': function(style) {
 					this._fillStyle = style;
 					this.record('setFillStyle', [style]);
+				}
+			},
+			'lineCap': {
+				'get': function() { return this._lineCap; },
+				'set': function(cap) {
+					this._lineCap = cap;
+					this.record('setLineCap', [cap]);
+				}
+			},
+			'lineDashOffset': {
+				'get': function() { return this._lineDashOffset; },
+				'set': function(offset) {
+					this._lineDashOffset = offset;
+					this.record('setLineDashOffset', [offset]);
 				}
 			},
 			'lineJoin': {
@@ -48,10 +64,14 @@
 		var methods = {
 			arc: function() {},
 			beginPath: function() {},
+			bezierCurveTo: function() {},
 			closePath: function() {},
 			fill: function() {},
 			lineTo: function(x, y) {},
 			moveTo: function(x, y) {},
+			restore: function() {},
+			save: function() {},
+			setLineDash: function() {},
 			stroke: function() {}
 		};
 
