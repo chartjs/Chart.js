@@ -37,21 +37,24 @@
 
 			var vm = this._view;
 
-			var pointRelativePosition = helpers.getAngleFromPoint(vm, {
-				x: chartX,
-				y: chartY
-			});
+			if (vm) {
+				var pointRelativePosition = helpers.getAngleFromPoint(vm, {
+					x: chartX,
+					y: chartY
+				});
 
-			// Put into the range of (-PI/2, 3PI/2]
-			var startAngle = vm.startAngle < (-0.5 * Math.PI) ? vm.startAngle + (2.0 * Math.PI) : vm.startAngle > (1.5 * Math.PI) ? vm.startAngle - (2.0 * Math.PI) : vm.startAngle;
-			var endAngle = vm.endAngle < (-0.5 * Math.PI) ? vm.endAngle + (2.0 * Math.PI) : vm.endAngle > (1.5 * Math.PI) ? vm.endAngle - (2.0 * Math.PI) : vm.endAngle
+				// Put into the range of (-PI/2, 3PI/2]
+				var startAngle = vm.startAngle < (-0.5 * Math.PI) ? vm.startAngle + (2.0 * Math.PI) : vm.startAngle > (1.5 * Math.PI) ? vm.startAngle - (2.0 * Math.PI) : vm.startAngle;
+				var endAngle = vm.endAngle < (-0.5 * Math.PI) ? vm.endAngle + (2.0 * Math.PI) : vm.endAngle > (1.5 * Math.PI) ? vm.endAngle - (2.0 * Math.PI) : vm.endAngle
 
-			//Check if within the range of the open/close angle
-			var betweenAngles = (pointRelativePosition.angle >= startAngle && pointRelativePosition.angle <= endAngle),
-				withinRadius = (pointRelativePosition.distance >= vm.innerRadius && pointRelativePosition.distance <= vm.outerRadius);
+				//Check if within the range of the open/close angle
+				var betweenAngles = (pointRelativePosition.angle >= startAngle && pointRelativePosition.angle <= endAngle),
+					withinRadius = (pointRelativePosition.distance >= vm.innerRadius && pointRelativePosition.distance <= vm.outerRadius);
 
-			return (betweenAngles && withinRadius);
-			//Ensure within the outside of the arc centre, but inside arc outer
+				return (betweenAngles && withinRadius);
+			} else {
+				return false;
+			}			
 		},
 		tooltipPosition: function() {
 			var vm = this._view;
