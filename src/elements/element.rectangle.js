@@ -55,15 +55,26 @@
 		},
 		inRange: function(mouseX, mouseY) {
 			var vm = this._view;
-			if (vm.y < vm.base) {
-				return (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2) && (mouseY >= vm.y && mouseY <= vm.base);
-			} else {
-				return (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2) && (mouseY >= vm.base && mouseY <= vm.y);
-			}
+			var inRange = false;
+
+			if (vm) {
+				if (vm.y < vm.base) {
+					inRange = (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2) && (mouseY >= vm.y && mouseY <= vm.base);
+				} else {
+					inRange = (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2) && (mouseY >= vm.base && mouseY <= vm.y);
+				}
+			} 
+
+			return inRange;
 		},
 		inLabelRange: function(mouseX) {
 			var vm = this._view;
-			return (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2);
+
+			if (vm) {
+				return (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2);
+			} else {
+				return false;
+			}
 		},
 		tooltipPosition: function() {
 			var vm = this._view;
