@@ -98,16 +98,21 @@ describe('Point element tests', function() {
 			name: 'closePath',
 			args: [],
 		}, {
+			name: 'setStrokeStyle',
+			args: ['rgba(1, 2, 3, 1)']
+		}, {
+			name: 'setLineWidth',
+			args: [6]
+		}, {
+			name: 'setFillStyle',
+			args: ['rgba(0, 255, 0)']
+		}, {
 			name: 'fill',
 			args: [],
 		}, {
 			name: 'stroke',
 			args: []
 		}]);
-
-		expect(mockContext.lineWidth).toBe(6);
-		expect(mockContext.strokeStyle).toBe('rgba(1, 2, 3, 1)');
-		expect(mockContext.fillStyle).toBe('rgba(0, 255, 0)');
 	});
 
 	it ('should draw correctly with default settings if necessary', function() {
@@ -141,16 +146,21 @@ describe('Point element tests', function() {
 			name: 'closePath',
 			args: [],
 		}, {
+			name: 'setStrokeStyle',
+			args: ['rgba(0,0,0,0.1)']
+		}, {
+			name: 'setLineWidth',
+			args: [1]
+		}, {
+			name: 'setFillStyle',
+			args: ['rgba(0,0,0,0.1)']
+		}, {
 			name: 'fill',
 			args: [],
 		}, {
 			name: 'stroke',
 			args: []
 		}]);
-
-		expect(mockContext.lineWidth).toBe(1);
-		expect(mockContext.strokeStyle).toBe('rgba(0,0,0,0.1)');
-		expect(mockContext.fillStyle).toBe('rgba(0,0,0,0.1)');
 	});
 
 	it ('should not draw if skipped', function() {

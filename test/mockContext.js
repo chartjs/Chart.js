@@ -3,6 +3,35 @@
 	var Context = function() {
 		this._calls = []; // names/args of recorded calls
 		this._initMethods();
+
+		this._fillStyle = null;
+		this._lineWidth = null;
+		this._strokeStyle = null;
+
+		// Define properties here so that we can record each time they are set
+		Object.defineProperties(this, {
+			"fillStyle": {
+				'get': function() { return this._fillStyle; },
+				'set': function(style) {
+					this._fillStyle = style;
+					this.record('setFillStyle', [style]);
+				}
+			},
+			'lineWidth': {
+				'get': function() { return this._lineWidth; },
+				'set': function (width) {
+					this._lineWidth = width;
+					this.record('setLineWidth', [width]);
+				}
+			},
+			'strokeStyle': {
+				'get': function() { return this._strokeStyle; },
+				'set': function(style) {
+					this._strokeStyle = style;
+					this.record('setStrokeStyle', [style]);
+				}
+			},
+		});
 	};
 	
 	Context.prototype._initMethods = function() {
