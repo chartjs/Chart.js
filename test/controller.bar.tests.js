@@ -277,4 +277,192 @@ describe('Bar controller tests', function() {
 		expect(chart.data.datasets[1].metaData[2].draw.calls.count()).toBe(1);
 		expect(chart.data.datasets[1].metaData[3].draw.calls.count()).toBe(1);
 	});
+
+	it ('should set hover styles on rectangles', function() {
+		var chart = {
+			data: {
+				datasets: [{}, {
+					data: [10, 15, 0, -4]
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4']
+			},
+			config: {
+				type: 'bar'
+			},
+			options: {
+				elements: {
+					rectangle: {
+						backgroundColor: 'rgb(255, 0, 0)',
+						borderColor: 'rgb(0, 0, 255)',
+						borderWidth: 2,
+					}
+				},
+				scales: {
+					xAxes: [{
+						id: 'firstXScaleID'
+					}],
+					yAxes: [{
+						id: 'firstYScaleID'
+					}]
+				}
+			},
+			scales: {
+				firstXScaleID: {
+					calculateBarWidth: function(numBars) { return numBars * 5; },
+					calculateBarX: function(numBars, datasetIndex, index) {
+						return chart.data.datasets[datasetIndex].data[index];
+					},
+				},
+				firstYScaleID: {
+					calculateBarBase: function(datasetIndex, index) {
+						return this.getPixelForValue(0);
+					},
+					calculateBarY: function(datasetIndex, index) {
+						return this.getPixelForValue(chart.data.datasets[datasetIndex].data[index]);
+					},
+					getPixelForValue: function(value) {
+						return value * 2;
+					},
+					max: 10,
+					min: -10,
+				}
+			}
+		};
+
+		var controller = new Chart.controllers.bar(chart, 1);
+		controller.update();
+		var bar = chart.data.datasets[1].metaData[0];
+		controller.setHoverStyle(bar);
+
+		expect(bar._model.backgroundColor).toBe('rgb(230, 0, 0)');
+		expect(bar._model.borderColor).toBe('rgb(0, 0, 230)');
+		expect(bar._model.borderWidth).toBe(2);
+
+		// Set a dataset style
+		chart.data.datasets[1].hoverBackgroundColor = 'rgb(128, 128, 128)';
+		chart.data.datasets[1].hoverBorderColor = 'rgb(0, 0, 0)';
+		chart.data.datasets[1].hoverBorderWidth = 5;
+
+		controller.setHoverStyle(bar);
+
+		expect(bar._model.backgroundColor).toBe('rgb(128, 128, 128)');
+		expect(bar._model.borderColor).toBe('rgb(0, 0, 0)');
+		expect(bar._model.borderWidth).toBe(5);
+
+		// Should work with array styles so that we can set per bar
+		chart.data.datasets[1].hoverBackgroundColor = ['rgb(255, 255, 255)', 'rgb(128, 128, 128)'];
+		chart.data.datasets[1].hoverBorderColor = ['rgb(9, 9, 9)', 'rgb(0, 0, 0)'];
+		chart.data.datasets[1].hoverBorderWidth = [2.5, 5];
+
+		controller.setHoverStyle(bar);
+
+		expect(bar._model.backgroundColor).toBe('rgb(255, 255, 255)');
+		expect(bar._model.borderColor).toBe('rgb(9, 9, 9)');
+		expect(bar._model.borderWidth).toBe(2.5);
+
+		// Should allow a custom style
+		bar.custom = {
+			hoverBackgroundColor: 'rgb(255, 0, 0)',
+			hoverBorderColor: 'rgb(0, 255, 0)',
+			hoverBorderWidth: 1.5
+		};
+
+		controller.setHoverStyle(bar);
+
+		expect(bar._model.backgroundColor).toBe('rgb(255, 0, 0)');
+		expect(bar._model.borderColor).toBe('rgb(0, 255, 0)');
+		expect(bar._model.borderWidth).toBe(1.5);
+	});
+
+	it ('should remove a hover style from a bar', function() {
+		var chart = {
+			data: {
+				datasets: [{}, {
+					data: [10, 15, 0, -4]
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4']
+			},
+			config: {
+				type: 'bar'
+			},
+			options: {
+				elements: {
+					rectangle: {
+						backgroundColor: 'rgb(255, 0, 0)',
+						borderColor: 'rgb(0, 0, 255)',
+						borderWidth: 2,
+					}
+				},
+				scales: {
+					xAxes: [{
+						id: 'firstXScaleID'
+					}],
+					yAxes: [{
+						id: 'firstYScaleID'
+					}]
+				}
+			},
+			scales: {
+				firstXScaleID: {
+					calculateBarWidth: function(numBars) { return numBars * 5; },
+					calculateBarX: function(numBars, datasetIndex, index) {
+						return chart.data.datasets[datasetIndex].data[index];
+					},
+				},
+				firstYScaleID: {
+					calculateBarBase: function(datasetIndex, index) {
+						return this.getPixelForValue(0);
+					},
+					calculateBarY: function(datasetIndex, index) {
+						return this.getPixelForValue(chart.data.datasets[datasetIndex].data[index]);
+					},
+					getPixelForValue: function(value) {
+						return value * 2;
+					},
+					max: 10,
+					min: -10,
+				}
+			}
+		};
+
+		var controller = new Chart.controllers.bar(chart, 1);
+		controller.update();
+		var bar = chart.data.datasets[1].metaData[0];
+
+		// Change default
+		chart.options.elements.rectangle.backgroundColor = 'rgb(128, 128, 128)';
+		chart.options.elements.rectangle.borderColor = 'rgb(15, 15, 15)';
+		chart.options.elements.rectangle.borderWidth = 3.14;
+
+		// Remove to defaults
+		controller.removeHoverStyle(bar);
+
+		expect(bar._model.backgroundColor).toBe('rgb(128, 128, 128)');
+		expect(bar._model.borderColor).toBe('rgb(15, 15, 15)');
+		expect(bar._model.borderWidth).toBe(3.14);
+
+		// Should work with array styles so that we can set per bar
+		chart.data.datasets[1].backgroundColor = ['rgb(255, 255, 255)', 'rgb(128, 128, 128)'];
+		chart.data.datasets[1].borderColor = ['rgb(9, 9, 9)', 'rgb(0, 0, 0)'];
+		chart.data.datasets[1].borderWidth = [2.5, 5];
+
+		controller.removeHoverStyle(bar);
+
+		expect(bar._model.backgroundColor).toBe('rgb(255, 255, 255)');
+		expect(bar._model.borderColor).toBe('rgb(9, 9, 9)');
+		expect(bar._model.borderWidth).toBe(2.5);
+
+		// Should allow a custom style
+		bar.custom = {
+			backgroundColor: 'rgb(255, 0, 0)',
+			borderColor: 'rgb(0, 255, 0)',
+			borderWidth: 1.5
+		};
+
+		controller.removeHoverStyle(bar);
+
+		expect(bar._model.backgroundColor).toBe('rgb(255, 0, 0)');
+		expect(bar._model.borderColor).toBe('rgb(0, 255, 0)');
+		expect(bar._model.borderWidth).toBe(1.5);
+	});	
 });
