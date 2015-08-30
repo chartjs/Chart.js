@@ -110,6 +110,20 @@
 		update: function(reset) {
 			var numBars = this.getBarCount();
 
+			var numData = this.getDataset().data.length;
+			var numRectangles = this.getDataset().metaData.length;
+
+			// Make sure that we handle number of datapoints changing
+			if (numData < numRectangles) {
+				// Remove excess bars for data points that have been removed
+				this.getDataset().metaData.splice(numData, numRectangles - numData)
+			} else if (numData > numRectangles) {
+				// Add new elements
+				for (var index = numRectangles; index < numData; ++index) {
+					this.addElementAndReset(index);
+				}
+			}
+
 			helpers.each(this.getDataset().metaData, function(rectangle, index) {
 				this.updateElement(rectangle, index, reset, numBars);
 			}, this);
@@ -171,7 +185,7 @@
 
 			rectangle._model.backgroundColor = rectangle.custom && rectangle.custom.hoverBackgroundColor ? rectangle.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.color(rectangle._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
 			rectangle._model.borderColor = rectangle.custom && rectangle.custom.hoverBorderColor ? rectangle.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.color(rectangle._model.borderColor).saturate(0.5).darken(0.1).rgbString());
-			rectangle._model.borderWidth = rectangle.custom && rectangle.custom.hoverBorderWidth ? rectangle.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, rectangle._model.borderWidth);
+			rectangle._model.borderWidth = rectangle.custom && rectangle.custom.hoverBorderWidth ? rectangle.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.hoverBorderWidth, index, rectangle._model.borderWidth);
 		},
 
 		removeHoverStyle: function(rectangle) {
