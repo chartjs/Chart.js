@@ -109,6 +109,21 @@
 			var xScale = this.getScaleForId(this.getDataset().xAxisID);
 			var scaleBase;
 
+			// Handle the number of data points changing
+			var numData = this.getDataset().data.length;
+			var numPoints = this.getDataset().metaData.length;
+
+			// Make sure that we handle number of datapoints changing
+			if (numData < numPoints) {
+				// Remove excess bars for data points that have been removed
+				this.getDataset().metaData.splice(numData, numPoints - numData)
+			} else if (numData > numPoints) {
+				// Add new elements
+				for (var index = numPoints; index < numData; ++index) {
+					this.addElementAndReset(index);
+				}
+			}
+
 			if (yScale.min < 0 && yScale.max < 0) {
 				scaleBase = yScale.getPixelForValue(yScale.max);
 			} else if (yScale.min > 0 && yScale.max > 0) {
@@ -180,7 +195,7 @@
 					x: xScale.getPointPixelForValue(this.getDataset().data[index], index, this.index),
 					y: reset ? scaleBase : yScale.getPointPixelForValue(this.getDataset().data[index], index, this.index),
 					// Appearance
-					tension: point.custom && point.custom.tension ? point.custom.tension : this.chart.options.elements.line.tension,
+					tension: point.custom && point.custom.tension ? point.custom.tension : (this.getDataset().tension || this.chart.options.elements.line.tension),
 					radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().radius, index, this.chart.options.elements.point.radius),
 					backgroundColor: point.custom && point.custom.backgroundColor ? point.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBackgroundColor, index, this.chart.options.elements.point.backgroundColor),
 					borderColor: point.custom && point.custom.borderColor ? point.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderColor, index, this.chart.options.elements.point.borderColor),
@@ -253,10 +268,10 @@
 			var dataset = this.chart.data.datasets[point._datasetIndex];
 			var index = point._index;
 
-			point._model.radius = point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.chart.options.elements.point.hoverRadius);
+			point._model.radius = point.custom && point.custom.hoverRadius ? point.custom.hoverRadius : helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.chart.options.elements.point.hoverRadius);
 			point._model.backgroundColor = point.custom && point.custom.hoverBackgroundColor ? point.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.color(point._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
 			point._model.borderColor = point.custom && point.custom.hoverBorderColor ? point.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.color(point._model.borderColor).saturate(0.5).darken(0.1).rgbString());
-			point._model.borderWidth = point.custom && point.custom.hoverBorderWidth ? point.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, point._model.borderWidth);
+			point._model.borderWidth = point.custom && point.custom.hoverBorderWidth ? point.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderWidth, index, point._model.borderWidth);
 		},
 
 		removeHoverStyle: function(point) {
@@ -268,9 +283,5 @@
 			point._model.borderColor = point.custom && point.custom.borderColor ? point.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderColor, index, this.chart.options.elements.point.borderColor);
 			point._model.borderWidth = point.custom && point.custom.borderWidth ? point.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderWidth, index, this.chart.options.elements.point.borderWidth);
 		}
-
 	});
-
-
-
 }).call(this);
