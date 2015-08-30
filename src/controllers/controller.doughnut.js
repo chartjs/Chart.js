@@ -49,10 +49,6 @@
 			return this.chart.data.datasets[this.index];
 		},
 
-		getScaleForId: function(scaleID) {
-			return this.chart.scales[scaleID];
-		},
-
 		addElements: function() {
 			this.getDataset().metaData = this.getDataset().metaData || [];
 			helpers.each(this.getDataset().data, function(value, index) {
@@ -71,7 +67,9 @@
 				_index: index,
 			});
 
-			this.getDataset().backgroundColor.splice(index, 0, colorForNewElement);
+			if (colorForNewElement && helpers.isArray(this.getDataset().backgroundColor)) {
+				this.getDataset().backgroundColor.splice(index, 0, colorForNewElement);
+			}
 
 			// Reset the point
 			this.updateElement(arc, index, true);
@@ -92,7 +90,6 @@
 			this.chart.innerRadius = this.chart.options.cutoutPercentage ? (this.chart.outerRadius / 100) * (this.chart.options.cutoutPercentage) : 1;
 			this.chart.radiusLength = (this.chart.outerRadius - this.chart.innerRadius) / this.chart.data.datasets.length;
 
-
 			this.getDataset().total = 0;
 			helpers.each(this.getDataset().data, function(value) {
 				this.getDataset().total += Math.abs(value);
@@ -100,6 +97,21 @@
 
 			this.outerRadius = this.chart.outerRadius - (this.chart.radiusLength * this.index);
 			this.innerRadius = this.outerRadius - this.chart.radiusLength;
+
+			// Make sure we have metaData for each data point
+			var numData = this.getDataset().data.length;
+			var numArcs = this.getDataset().metaData.length;
+
+			// Make sure that we handle number of datapoints changing
+			if (numData < numArcs) {
+				// Remove excess bars for data points that have been removed
+				this.getDataset().metaData.splice(numData, numArcs - numData)
+			} else if (numData > numArcs) {
+				// Add new elements
+				for (var index = numArcs; index < numData; ++index) {
+					this.addElementAndReset(index);
+				}
+			}
 
 			helpers.each(this.getDataset().metaData, function(arc, index) {
 				this.updateElement(arc, index, reset);
@@ -165,15 +177,13 @@
 			}, this);
 		},
 
-
-
 		setHoverStyle: function(arc) {
 			var dataset = this.chart.data.datasets[arc._datasetIndex];
 			var index = arc._index;
 
 			arc._model.backgroundColor = arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.color(arc._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
 			arc._model.borderColor = arc.custom && arc.custom.hoverBorderColor ? arc.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.color(arc._model.borderColor).saturate(0.5).darken(0.1).rgbString());
-			arc._model.borderWidth = arc.custom && arc.custom.hoverBorderWidth ? arc.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, arc._model.borderWidth);
+			arc._model.borderWidth = arc.custom && arc.custom.hoverBorderWidth ? arc.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.hoverBorderWidth, index, arc._model.borderWidth);
 		},
 
 		removeHoverStyle: function(arc) {
