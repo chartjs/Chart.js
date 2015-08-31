@@ -162,6 +162,47 @@ describe('Linear Scale', function() {
 		expect(scale.max).toBe(1);
 	});
 
+	it ('should forcibly include 0 in the range if the beginAtZero option is used', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [20, 30, 40, 50]
+			}]
+		};
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		
+
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var scale = new Constructor({
+			ctx: {},
+			options: config,
+			data: mockData,
+			id: scaleID
+		});
+
+		scale.calculateRange();
+		scale.generateTicks(400, 400);
+		expect(scale.ticks).toEqual([50, 45, 40, 35, 30, 25, 20]);
+
+		config.beginAtZero = true;
+		scale.calculateRange();
+		scale.generateTicks(400, 400);
+		expect(scale.ticks).toEqual([50, 45, 40, 35, 30, 25, 20, 15, 10, 5, 0]);
+
+		mockData.datasets[0].data = [-20, -30, -40, -50];
+		scale.calculateRange();
+		scale.generateTicks(400, 400);
+		expect(scale.ticks).toEqual([0, -5, -10, -15, -20, -25, -30, -35, -40, -45, -50]);
+
+		config.beginAtZero = false;
+		scale.calculateRange();
+		scale.generateTicks(400, 400);
+		expect(scale.ticks).toEqual([-20, -25, -30, -35, -40, -45, -50]);
+	});
+
 	it ('Should generate tick marks', function() {
 		var scaleID = 'myScale';
 
@@ -405,5 +446,87 @@ describe('Linear Scale', function() {
 		expect(horizontalScale.getPointPixelForValue(2, 0, 0)).toBe(105); // right - paddingRight
 		expect(horizontalScale.getPointPixelForValue(-2, 0, 0)).toBe(5); // left + paddingLeft
 		expect(horizontalScale.getPointPixelForValue(0, 0, 0)).toBe(55); // halfway
+	});
+
+	it ('should get the correct pixel value for a bar', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				xAxisID: scaleID, // for the horizontal scale
+				yAxisID: scaleID,
+				data: [-5, 0, 2, -3, 5]
+			}]
+		};
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var verticalScale = new Constructor({
+			ctx: {},
+			options: config,
+			data: mockData,
+			id: scaleID
+		});
+
+		verticalScale.calculateRange();
+		verticalScale.generateTicks(50, 100);
+
+		// Fake out positioning of the scale service
+		verticalScale.left = 0;
+		verticalScale.top = 0;
+		verticalScale.right = 50;
+		verticalScale.bottom = 110;
+		verticalScale.paddingTop = 5;
+		verticalScale.paddingBottom = 5;
+		verticalScale.width = 50;
+		verticalScale.height = 110;
+
+		expect(verticalScale.calculateBarBase()).toBe(56); // 0 point
+		expect(verticalScale.calculateBarY(0, 0)).toBe(96.66666666666667); // bottom
+	});
+
+	it ('should fit correctly', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				xAxisID: scaleID, // for the horizontal scale
+				yAxisID: scaleID,
+				data: [-5, 0, 2, -3, 5]
+			}]
+		};
+		var mockContext = window.createMockContext();
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var verticalScale = new Constructor({
+			ctx: mockContext,
+			options: config,
+			data: mockData,
+			id: scaleID
+		});
+
+		var minSize = verticalScale.fit(100, 300);
+		expect(minSize).toEqual({
+			width: 33,
+			height: 300,
+		});
+		expect(verticalScale.width).toBe(33);
+		expect(verticalScale.height).toBe(300);
+		expect(verticalScale.paddingTop).toBe(6);
+		expect(verticalScale.paddingBottom).toBe(6);
+		expect(verticalScale.paddingLeft).toBe(0);
+		expect(verticalScale.paddingRight).toBe(0);
+
+		// Refit with margins to see the padding go away
+		minSize = verticalScale.fit(33, 300, {left: 0, right: 0, top: 15, bottom: 3});
+		expect(minSize).toEqual({
+			width: 33,
+			height: 300,
+		});
+		expect(verticalScale.paddingTop).toBe(0);
+		expect(verticalScale.paddingBottom).toBe(3);
+		expect(verticalScale.paddingLeft).toBe(0);
+		expect(verticalScale.paddingRight).toBe(0);
 	});
 });
