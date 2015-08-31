@@ -380,6 +380,59 @@ describe('Core helper tests', function() {
 		expect(helpers.previousItem(testData, 0, true)).toEqual(2);
 		expect(helpers.previousItem(testData, 2, false)).toEqual(1);
 		expect(helpers.previousItem(testData, 1, true)).toEqual(0);
+	});
 
+	it ('should clear a canvas', function() {
+		var context = window.createMockContext();
+		helpers.clear({
+			width: 100,
+			height: 150,
+			ctx: context
+		});
+
+		expect(context.getCalls()).toEqual([{
+			name: 'clearRect',
+			args: [0, 0, 100, 150]
+		}]);
+	});
+
+	it ('should draw a rounded rectangle', function() {
+		var context = window.createMockContext();
+		helpers.drawRoundedRectangle(context, 10, 20, 30, 40, 5);
+
+		expect(context.getCalls()).toEqual([{
+			name: 'beginPath',
+			args: []
+		}, {
+			name: 'moveTo',
+			args: [15, 20]
+		}, {
+			name: 'lineTo',
+			args: [35, 20]
+		}, {
+			name: 'quadraticCurveTo',
+			args: [40, 20, 40, 25]
+		}, {
+			name: 'lineTo',
+			args: [40, 55]
+		}, {
+			name: 'quadraticCurveTo',
+			args: [40, 60, 35, 60]
+		}, {
+			name: 'lineTo',
+			args: [15, 60]
+		}, {
+			name: 'quadraticCurveTo',
+			args: [10, 60, 10, 55]
+		}, {
+			name: 'lineTo',
+			args: [10, 25]
+		}, {
+			name: 'quadraticCurveTo',
+			args: [10, 20, 15, 20]
+		}, {
+			name: 'closePath',
+			args: []
+		}])
 	});
 });
