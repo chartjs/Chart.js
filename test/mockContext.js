@@ -68,7 +68,12 @@
 			clearRect: function() {},
 			closePath: function() {},
 			fill: function() {},
+			fillText: function() {},
 			lineTo: function(x, y) {},
+			measureText: function(text) {
+				// return the number of characters * fixed size
+				return text ? { width: text.length * 10 } : {width: 0};
+			},
 			moveTo: function(x, y) {},
 			quadraticCurveTo: function() {},
 			restore: function() {},
@@ -82,7 +87,7 @@
 		var addMethod = function(name, method) {
 			scope[methodName] = function() {
 				scope.record(name, arguments);
-				method.apply(scope, arguments);
+				return method.apply(scope, arguments);
 			};
 		}
 
@@ -103,6 +108,10 @@
 	Context.prototype.getCalls = function() {
 		return this._calls;
 	}
+
+	Context.prototype.resetCalls = function() {
+		this._calls = [];
+	};
 
 	window.createMockContext = function() {
 		return new Context();

@@ -329,16 +329,6 @@
 				return this.getPixelForValue(value);
 			}
 
-			var offset = 0;
-
-			for (var j = datasetIndex; j < this.data.datasets.length; j++) {
-				if (j === datasetIndex && value) {
-					offset += value;
-				} else {
-					offset = offset + value;
-				}
-			}
-
 			return this.getPixelForValue(value);
 		},
 
