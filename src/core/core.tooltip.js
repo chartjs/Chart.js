@@ -80,7 +80,7 @@
 							// These variables are available in the template function. Add others here
 							element: this._active[0],
 							value: this._data.datasets[this._active[0]._datasetIndex].data[this._active[0]._index],
-							label: this._data.labels ? this._data.labels[this._active[0]._index] : '',
+							label: this._active[0]._model.label !== undefined ? this._active[0]._model.label : this._data.labels ? this._data.labels[this._active[0]._index] : '',
 						}),
 					});
 
