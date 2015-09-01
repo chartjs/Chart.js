@@ -68,6 +68,7 @@
 			clearRect: function() {},
 			closePath: function() {},
 			fill: function() {},
+			fillText: function() {},
 			lineTo: function(x, y) {},
 			measureText: function(text) {
 				// return the number of characters * fixed size
@@ -107,6 +108,10 @@
 	Context.prototype.getCalls = function() {
 		return this._calls;
 	}
+
+	Context.prototype.resetCalls = function() {
+		this._calls = [];
+	};
 
 	window.createMockContext = function() {
 		return new Context();
