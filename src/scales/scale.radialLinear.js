@@ -27,6 +27,7 @@
 		},
 
 		// scale numbers
+		reverse: false,
 		beginAtZero: true,
 
 		// label settings
@@ -94,6 +95,8 @@
 
 			helpers.each(this.data.datasets, function(dataset) {
 				helpers.each(dataset.data, function(value, index) {
+					if (value === null) return;
+
 					if (this.min === null) {
 						this.min = value;
 					} else if (value < this.min) {
@@ -327,9 +330,14 @@
 			return index * angleMultiplier - (Math.PI / 2);
 		},
 		getDistanceFromCenterForValue: function(value) {
+			if (value === null) return 0; // null always in center
 			// Take into account half font size + the yPadding of the top value
 			var scalingFactor = this.drawingArea / (this.max - this.min);
-			return (value - this.min) * scalingFactor;
+			if (this.options.reverse) {
+				return (this.max - value) * scalingFactor;
+			} else {
+				return (value - this.min) * scalingFactor;
+			}
 		},
 		getPointPosition: function(index, distanceFromCenter) {
 			var thisAngle = this.getIndexAngle(index);
@@ -345,8 +353,8 @@
 			if (this.options.display) {
 				var ctx = this.ctx;
 				helpers.each(this.yLabels, function(label, index) {
-					// Don't draw a centre value
-					if (index > 0) {
+					// Don't draw a centre value (if it is minimum)
+					if (index > 0 || this.options.reverse) {
 						var yCenterOffset = this.getDistanceFromCenterForValue(this.ticks[index]);
 						var yHeight = this.yCenter - yCenterOffset;
 
@@ -405,7 +413,7 @@
 
 					for (var i = this.getValueCount() - 1; i >= 0; i--) {
 						if (this.options.angleLines.show) {
-							var outerPosition = this.getPointPosition(i, this.getDistanceFromCenterForValue(this.max));
+							var outerPosition = this.getPointPosition(i, this.getDistanceFromCenterForValue(this.options.reverse ? this.min : this.max));
 							ctx.beginPath();
 							ctx.moveTo(this.xCenter, this.yCenter);
 							ctx.lineTo(outerPosition.x, outerPosition.y);
@@ -413,7 +421,7 @@
 							ctx.closePath();
 						}
 						// Extra 3px out for some label spacing
-						var pointLabelPosition = this.getPointPosition(i, this.getDistanceFromCenterForValue(this.max) + 5);
+						var pointLabelPosition = this.getPointPosition(i, this.getDistanceFromCenterForValue(this.options.reverse ? this.min : this.max) + 5);
 						ctx.font = helpers.fontString(this.options.pointLabels.fontSize, this.options.pointLabels.fontStyle, this.options.pointLabels.fontFamily);
 						ctx.fillStyle = this.options.pointLabels.fontColor;
 
