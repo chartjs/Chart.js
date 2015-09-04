@@ -54,7 +54,7 @@ myLineChart.destroy();
 
 #### .toBase64Image()
 
-This returns a base 64 encoded string of the chart in it's current state.
+This returns a base 64 encoded string of the chart in its current state.
 
 ```javascript
 myLineChart.toBase64Image();
