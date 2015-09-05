@@ -758,6 +758,15 @@
 			}
 			return window.Color(color);
 		},
+		addResizeListener = helpers.addResizeListener = function(node, callback) {
+			if (window.addResizeListener) {
+				if (node) {
+					window.addResizeListener(node, callback);
+				}
+			} else {
+				console.log('Add resize listener not found')
+			}
+		},
 		isArray = helpers.isArray = function(obj) {
 			if (!Array.isArray) {
 				return Object.prototype.toString.call(arg) === '[object Array]';
