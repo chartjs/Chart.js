@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Line Chart With Dashed Grid</title>
+		<style>
+			.examples {
+				width:30%; 
+				float:left; 
+				margin:10px;
+			}
+		</style>
+		<script src="../Chart.js"></script>
+	</head>
+	<body>
+		<div class="examples">
+			<div>
+				<canvas id="canvas0" height="450" width="600"></canvas>
+			</div>
+		</div>
+		<div class="examples">
+			<div>
+				<canvas id="canvas1" height="450" width="600"></canvas>
+			</div>
+		</div>
+		<div class="examples">
+			<div>
+				<canvas id="canvas2" height="450" width="600"></canvas>
+			</div>
+		</div>
+		<div class="examples">
+			<div>
+				<canvas id="canvas3" height="450" width="600"></canvas>
+			</div>
+		</div>
+
+
+	<script>
+		var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
+		var type = function(obj,type) {
+            var clas = Object.prototype.toString.call(obj).slice(8, -1).toLowerCase();
+            return type?obj !== undefined && obj !== null && clas === type:clas;
+        };
+        var mix = function(to, from){
+            if(!type(to, 'object')) {return to;}
+            from = from || {};
+
+            if(type(from, 'object')){
+                for( var key in from){
+                    if(type(from[key], 'object') && type(to[key], 'object')){
+                        to[key] = mix(to[key], from[key]);
+                    }else{
+                        to[key] = from[key];
+                    }
+                }
+            }
+
+            return to;
+        };
+
+        var basicLineChartData = {
+			labels : ["January","February","March","April","May","June","July"],
+			datasets : [
+				{
+					label: "My First dataset",
+					strokeColor : "rgba(220,220,220,1)",
+					data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+				}
+			]
+
+		};
+		var lineChartData1 = {
+			labels: basicLineChartData.labels,
+			datasets : [
+				mix(mix({}, basicLineChartData.datasets[0]),{
+					label: "My Second dataset",
+					strokeColor : "rgba(151,187,205,1)"
+				})
+			]
+		};
+		console.log(lineChartData1);
+		var lineChartData2 = {
+			labels: basicLineChartData.labels,
+			datasets : [
+				mix(mix({}, basicLineChartData.datasets[0]),{
+					label: "My Third dataset",
+					fillColor : "rgba(255,187,205,0.2)",
+					strokeColor : "rgba(255,187,205,1)",
+					pointColor : "rgba(255,187,205,1)",
+					pointStrokeColor : "#fff",
+					pointHighlightFill : "#fff",
+					pointHighlightStroke : "rgba(255,187,205,1)"
+				})
+			]
+
+		};
+
+	function createChart(canvasId, chartData, chartOptions){
+		var ctx = document.getElementById(canvasId).getContext("2d");
+		new Chart(ctx).Line(chartData, mix({
+			responsive: true,
+			scaleShowGridLines : true,
+			scaleGridLineColor : "rgba(155,155,155,0.5)",
+			scaleGridLineWidth : 1,
+			scaleShowHorizontalLines: true,
+			scaleShowVerticalLines: true,
+			bezierCurve : false,
+			datasetFill : false,
+			pointDot : false,
+			datasetStrokeWidth : 3,
+			showTooltips: false
+		}, chartOptions || {}));
+	}
+
+	window.onload = function(){
+		// default grid solid line
+		createChart('canvas0', basicLineChartData);
+
+		// default grid dash line
+		createChart('canvas1', basicLineChartData, {
+			scaleGridLineStyle: 'dashed'
+		});
+
+		// grid dotted line
+		createChart('canvas2', lineChartData1, {
+			scaleGridLineStyle: 'dashed',
+			scaleGridLineDashSetting : [1, 2]
+		});
+
+		// custom grid dash line
+		createChart('canvas3', lineChartData2, {
+			scaleGridLineStyle: 'dashed',
+			scaleGridLineDashSetting : [7, 3],
+			scaleGridLineColor : "rgba(255,155,155,0.5)",
+			bezierCurve : true,
+			datasetFill : true,
+			pointDot : true,
+			showTooltips: true
+		});
+	}
+
+
+	</script>
+	</body>
+</html>
