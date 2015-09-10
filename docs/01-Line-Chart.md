@@ -75,7 +75,7 @@ These are the customisation options specific to Line charts. These options are m
 	//String - grid lines style, solid[default] or dashed 
 	scaleGridLineStyle : 'solid',
 
-	//String - grid dashed line setting, [segment length, distance of segments]
+	//Array - grid dashed line setting, [segment length, distance of segments]
 	scaleGridLineDashSetting : [2, 2],
 
 	//Boolean - Whether the line is curved between points

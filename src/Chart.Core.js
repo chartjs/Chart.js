@@ -1769,7 +1769,9 @@
 						
 						ctx.stroke();
 						ctx.closePath();
-						ctx.setLineDash([]);
+						if(typeof ctx.setLineDash === 'function') {
+							ctx.setLineDash([]);
+						}
 					}
 
 					ctx.lineWidth = this.lineWidth;
@@ -1827,7 +1829,9 @@
 						
 						ctx.stroke();
 						ctx.closePath();
-						ctx.setLineDash([]);
+						if(typeof ctx.setLineDash === 'function') {
+							ctx.setLineDash([]);
+						}
 					}
 
 

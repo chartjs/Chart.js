@@ -19,7 +19,7 @@
 		//String - grid lines style
 		scaleGridLineStyle : 'solid',
 
-		//String - grid lines dash setting
+		//Array - grid lines dash setting
 		scaleGridLineDashSetting : [2, 2],
 
 		//Boolean - Whether to show horizontal lines (except X axis)
