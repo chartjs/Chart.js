@@ -16,6 +16,12 @@
 		//Number - Width of the grid lines
 		scaleGridLineWidth : 1,
 
+		//String - grid lines style
+		scaleGridLineStyle : 'solid',
+
+		//String - grid lines dash setting
+		scaleGridLineDashSetting : [2, 2],
+
 		//Boolean - Whether to show horizontal lines (except X axis)
 		scaleShowHorizontalLines: true,
 
@@ -205,6 +211,8 @@
 				showVerticalLines : this.options.scaleShowVerticalLines,
 				gridLineWidth : (this.options.scaleShowGridLines) ? this.options.scaleGridLineWidth : 0,
 				gridLineColor : (this.options.scaleShowGridLines) ? this.options.scaleGridLineColor : "rgba(0,0,0,0)",
+				gridLineStyle: (this.options.scaleGridLineStyle) ? this.options.scaleGridLineStyle : 'solid',
+				gridLineDashSetting: (this.options.scaleGridLineDashSetting) ? this.options.scaleGridLineDashSetting : [2,2],
 				padding: (this.options.showScale) ? 0 : this.options.pointDotRadius + this.options.pointDotStrokeWidth,
 				showLabels : this.options.scaleShowLabels,
 				display : this.options.showScale
