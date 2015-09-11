@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Line Chart</title>
+    <script src="../Chart.js"></script>
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <style>
+        canvas {
+            -webkit-box-shadow: 0 0 20px 0 rgba(0, 0, 0, .5);
+        }
+    </style>
+</head>
+
+<body>
+    <div style="width:100%;">
+        <canvas id="canvas" style="width:100%;height:100%"></canvas>
+    </div>
+    <br>
+    <br>
+    <button id="randomizeData">Randomize Data</button>
+    <button id="addDataset">Add Dataset</button>
+    <button id="removeDataset">Remove Dataset</button>
+    <button id="addData">Add Data</button>
+    <button id="removeData">Remove Data</button>
+    <div>
+        <h3>Legend</h3>
+        <div id="legendContainer">
+        </div>
+    </div>
+    <script>
+        var randomScalingFactor = function() {
+            return Math.round(Math.random() * 100 * (Math.random() > 0.5 ? -1 : 1));
+        };
+        var randomColorFactor = function() {
+            return Math.round(Math.random() * 255);
+        };
+        var randomColor = function(opacity) {
+            return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
+        };
+
+        var config = {
+            type: 'line',
+            data: {
+                // labels: ["01/01/2015 20:00", "01/02/2015 21:00", "01/03/2015 22:00", "01/06/2015 23:00", "01/15/2015 03:00", "01/17/2015 10:00", "01/30/2015 11:00"], // Hours
+                labels: ["01/01/2015", "01/02/2015", "01/03/2015", "01/06/2015", "01/15/2015", "01/17/2015", "01/30/2015"], // Days
+                // labels: ["12/25/2014", "01/08/2015", "01/15/2015", "01/22/2015", "01/29/2015", "02/05/2015", "02/12/2015"], // Weeks
+                datasets: [{
+                    label: "My First dataset",
+                    data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
+                    fill: false,
+                    borderDash: [5, 5],
+                }, {
+                    label: "My Second dataset",
+                    data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    xAxes: [{
+                        type: "time",
+                        display: true,
+                        time: {
+                            format: 'MM/DD/YYYY HH:mm',
+                        }
+                    }, ],
+                    yAxes: [{
+                        display: true
+                    }]
+                }
+            }
+        };
+
+        $.each(config.data.datasets, function(i, dataset) {
+            dataset.borderColor = randomColor(0.4);
+            dataset.backgroundColor = randomColor(0.5);
+            dataset.pointBorderColor = randomColor(0.7);
+            dataset.pointBackgroundColor = randomColor(0.5);
+            dataset.pointBorderWidth = 1;
+        });
+
+        console.log(config.data);
+
+        window.onload = function() {
+            var ctx = document.getElementById("canvas").getContext("2d");
+            window.myLine = new Chart(ctx, config);
+
+            updateLegend();
+        };
+
+        function updateLegend() {
+            $legendContainer = $('#legendContainer');
+            $legendContainer.empty();
+            $legendContainer.append(window.myLine.generateLegend());
+        }
+
+        $('#randomizeData').click(function() {
+            $.each(config.data.datasets, function(i, dataset) {
+                dataset.data = dataset.data.map(function() {
+                    return randomScalingFactor();
+                });
+            });
+
+            window.myLine.update();
+            updateLegend();
+        });
+
+        $('#addDataset').click(function() {
+            var newDataset = {
+                label: 'Dataset ' + config.data.datasets.length,
+                borderColor: randomColor(0.4),
+                backgroundColor: randomColor(0.5),
+                pointBorderColor: randomColor(0.7),
+                pointBackgroundColor: randomColor(0.5),
+                pointBorderWidth: 1,
+                data: [],
+            };
+
+            for (var index = 0; index < config.data.labels.length; ++index) {
+                newDataset.data.push(randomScalingFactor());
+            }
+
+            window.myLine.addDataset(newDataset);
+            updateLegend();
+        });
+
+        $('#addData').click(function() {
+            if (config.data.datasets.length > 0) {
+                config.data.labels.push(
+                    moment(
+                        config.data.labels[config.data.labels.length - 1], config.options.scales.xAxes[0].time.format
+                    ).add(1, 'day')
+                    .format('MM/DD/YYYY')
+                );
+
+                for (var index = 0; index < config.data.datasets.length; ++index) {
+                    window.myLine.addData(randomScalingFactor(), index);
+                }
+
+                updateLegend();
+            }
+        });
+
+        $('#removeDataset').click(function() {
+            window.myLine.removeDataset(0);
+            updateLegend();
+        });
+
+        $('#removeData').click(function() {
+            config.data.labels.splice(-1, 1); // remove the label first
+
+            config.data.datasets.forEach(function(dataset, datasetIndex) {
+                window.myLine.removeData(datasetIndex, -1);
+            });
+
+            updateLegend();
+        });
+    </script>
+</body>
+
+</html>
