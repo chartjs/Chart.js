@@ -69,6 +69,8 @@
 			this.labels = [];
 			// A map of original labelIndex to time labelIndex
 			this.timeLabelIndexMap = {};
+			// The time formatted versions of the labels for use by tooltips
+			this.data.timeLabels = [];
 
 			var definedMoments = [];
 
@@ -134,6 +136,10 @@
 
 			helpers.each(definedMoments, function(definedMoment, index) {
 				this.timeLabelIndexMap[index] = momentRangeLength - this.lastMoment.diff(definedMoment, this.timeUnit);
+				this.data.timeLabels.push(
+					definedMoment
+					.format(this.options.time.display ? this.options.time.display : this.displayFormat)
+				);
 			}, this);
 
 			// For every unit in between the first and last moment, create a moment and add it to the labels tick
