@@ -72,6 +72,10 @@ We call a method of the name of the chart we want to create. We pass in the data
 
 This concept was introduced in Chart.js 1.0 to keep configuration DRY, and allow for changing options globally across chart types, avoiding the need to specify options for each instance, or the default for a particular chart type.
 
+Templates are based on micro templating by John Resig:
+
+http://ejohn.org/blog/javascript-micro-templating/
+
 ```javascript
 Chart.defaults.global = {
 	// Boolean - Whether to animate the chart
