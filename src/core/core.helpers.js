@@ -691,17 +691,54 @@
 				removeEvent(chartInstance.chart.canvas, eventName, handler);
 			});
 		},
+		getConstraintWidth = helpers.getConstraintWidth = function(domNode) { // returns Number or undefined if no constraint
+			var constrainedWidth;
+			var constrainedWNode = document.defaultView.getComputedStyle(domNode)['max-width'];
+			var constrainedWContainer = document.defaultView.getComputedStyle(domNode.parentNode)['max-width'];
+			var hasCWNode = constrainedWNode !== null && constrainedWNode !== "none";
+			var hasCWContainer = constrainedWContainer !== null && constrainedWContainer !== "none";
+
+			if (hasCWNode || hasCWContainer) {
+				constrainedWidth = Math.min((hasCWNode ? parseInt(constrainedWNode, 10) : Number.POSITIVE_INFINITY), (hasCWContainer ? parseInt(constrainedWContainer, 10) : Number.POSITIVE_INFINITY));
+			}
+			return constrainedWidth;
+		},
+		getConstraintHeight = helpers.getConstraintHeight = function(domNode) { // returns Number or undefined if no constraint
+
+			var constrainedHeight;
+			var constrainedHNode = document.defaultView.getComputedStyle(domNode)['max-height'];
+			var constrainedHContainer = document.defaultView.getComputedStyle(domNode.parentNode)['max-height'];
+			var hasCHNode = constrainedHNode !== null && constrainedHNode !== "none";
+			var hasCHContainer = constrainedHContainer !== null && constrainedHContainer !== "none";
+
+			if (constrainedHNode || constrainedHContainer) {
+				constrainedHeight = Math.min((hasCHNode ? parseInt(constrainedHNode, 10) : Number.POSITIVE_INFINITY), (hasCHContainer ? parseInt(constrainedHContainer, 10) : Number.POSITIVE_INFINITY));
+			}
+			return constrainedHeight;
+		},
 		getMaximumWidth = helpers.getMaximumWidth = function(domNode) {
-			var container = domNode.parentNode,
-				padding = parseInt(getStyle(container, 'padding-left')) + parseInt(getStyle(container, 'padding-right'));
-			// TODO = check cross browser stuff with this.
-			return container.clientWidth - padding;
+			var container = domNode.parentNode;
+			var padding = parseInt(getStyle(container, 'padding-left')) + parseInt(getStyle(container, 'padding-right'));
+			
+			var w = container.clientWidth - padding;
+			var cw = getConstraintWidth(domNode);
+			if (cw !== undefined) {
+				w = Math.min(w, cw);
+			}
+
+			return w;
 		},
 		getMaximumHeight = helpers.getMaximumHeight = function(domNode) {
-			var container = domNode.parentNode,
-				padding = parseInt(getStyle(container, 'padding-bottom')) + parseInt(getStyle(container, 'padding-top'));
-			// TODO = check cross browser stuff with this.
-			return container.clientHeight - padding;
+			var container = domNode.parentNode;
+			var padding = parseInt(getStyle(container, 'padding-top')) + parseInt(getStyle(container, 'padding-bottom'));
+			
+			var h = container.clientHeight - padding;
+			var ch = getConstraintHeight(domNode);
+			if (ch !== undefined) {
+				h = Math.min(h, ch);
+			}
+
+			return h;
 		},
 		getStyle = helpers.getStyle = function(el, property) {
 			return el.currentStyle ?
@@ -710,16 +747,19 @@
 		},
 		getMaximumSize = helpers.getMaximumSize = helpers.getMaximumWidth, // legacy support
 		retinaScale = helpers.retinaScale = function(chart) {
-			var ctx = chart.ctx,
-				width = chart.canvas.width,
-				height = chart.canvas.height;
+			var ctx = chart.ctx;
+			var width = chart.canvas.width;
+			var height = chart.canvas.height;
 
-			if (window.devicePixelRatio) {
-				ctx.canvas.style.width = width + "px";
-				ctx.canvas.style.height = height + "px";
+			if (window.devicePixelRatio !== 1) {
 				ctx.canvas.height = height * window.devicePixelRatio;
 				ctx.canvas.width = width * window.devicePixelRatio;
 				ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+				// Store the device pixel ratio so that we can go backwards in `destroy`.
+				// The devicePixelRatio changes with zoom, so there are no guarantees that it is the same
+				// when destroy is called
+				chart.originalDevicePixelRatio = window.devicePixelRatio;
 			}
 		},
 		//-- Canvas methods

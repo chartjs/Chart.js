@@ -9,7 +9,7 @@
 
 
 	// Attach global event to resize each chart instance when the browser resizes
-	helpers.addEvent(window, "resize", (function() {
+	/*helpers.addEvent(window, "resize", (function() {
 		// Basic debounce of resize function so it doesn't hurt performance when resizing browser.
 		var timeout;
 		return function() {
@@ -24,6 +24,6 @@
 				});
 			}, 16);
 		};
-	})());
+	})());*/
 
 }).call(this);
