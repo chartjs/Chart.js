@@ -61,6 +61,21 @@
 			return this.chart.scales[scaleID];
 		},
 
+		// Get the number of datasets that display bars. We use this to correctly calculate the bar width
+		getBarCount: function getBarCount() {
+			var barCount = 0;
+
+			helpers.each(this.chart.data.datasets, function(dataset) {
+				if (dataset.type === 'bar') {
+					++barCount;
+				} else if (dataset.type === undefined && this.chart.config.type === 'bar') {
+					++barCount;
+				}
+			}, this);
+
+			return barCount;
+		},
+
 		addElements: function() {
 			this.getDataset().metaData = this.getDataset().metaData || [];
 			helpers.each(this.getDataset().data, function(value, index) {
@@ -78,7 +93,10 @@
 				_datasetIndex: this.index,
 				_index: index,
 			});
-			this.updateElement(rectangle, index, true);
+
+			var numBars = this.getBarCount();
+
+			this.updateElement(rectangle, index, true, numBars);
 			this.getDataset().metaData.splice(index, 0, rectangle);
 		},
 		removeElement: function(index) {
@@ -90,12 +108,28 @@
 		},
 
 		update: function(reset) {
+			var numBars = this.getBarCount();
+
+			var numData = this.getDataset().data.length;
+			var numRectangles = this.getDataset().metaData.length;
+
+			// Make sure that we handle number of datapoints changing
+			if (numData < numRectangles) {
+				// Remove excess bars for data points that have been removed
+				this.getDataset().metaData.splice(numData, numRectangles - numData)
+			} else if (numData > numRectangles) {
+				// Add new elements
+				for (var index = numRectangles; index < numData; ++index) {
+					this.addElementAndReset(index);
+				}
+			}
+
 			helpers.each(this.getDataset().metaData, function(rectangle, index) {
-				this.updateElement(rectangle, index, reset);
+				this.updateElement(rectangle, index, reset, numBars);
 			}, this);
 		},
 
-		updateElement: function updateElement(rectangle, index, reset) {
+		updateElement: function updateElement(rectangle, index, reset, numBars) {
 			var xScale = this.getScaleForId(this.getDataset().xAxisID);
 			var yScale = this.getScaleForId(this.getDataset().yAxisID);
 			var yScalePoint;
@@ -120,7 +154,7 @@
 
 				// Desired view properties
 				_model: {
-					x: xScale.calculateBarX(this.chart.data.datasets.length, this.index, index),
+					x: xScale.calculateBarX(numBars, this.index, index),
 					y: reset ? yScalePoint : yScale.calculateBarY(this.index, index),
 
 					// Tooltip
@@ -129,7 +163,7 @@
 
 					// Appearance
 					base: yScale.calculateBarBase(this.index, index),
-					width: xScale.calculateBarWidth(this.chart.data.datasets.length),
+					width: xScale.calculateBarWidth(numBars),
 					backgroundColor: rectangle.custom && rectangle.custom.backgroundColor ? rectangle.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.rectangle.backgroundColor),
 					borderColor: rectangle.custom && rectangle.custom.borderColor ? rectangle.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.rectangle.borderColor),
 					borderWidth: rectangle.custom && rectangle.custom.borderWidth ? rectangle.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.rectangle.borderWidth),
@@ -151,7 +185,7 @@
 
 			rectangle._model.backgroundColor = rectangle.custom && rectangle.custom.hoverBackgroundColor ? rectangle.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.color(rectangle._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
 			rectangle._model.borderColor = rectangle.custom && rectangle.custom.hoverBorderColor ? rectangle.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.color(rectangle._model.borderColor).saturate(0.5).darken(0.1).rgbString());
-			rectangle._model.borderWidth = rectangle.custom && rectangle.custom.hoverBorderWidth ? rectangle.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, rectangle._model.borderWidth);
+			rectangle._model.borderWidth = rectangle.custom && rectangle.custom.hoverBorderWidth ? rectangle.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.hoverBorderWidth, index, rectangle._model.borderWidth);
 		},
 
 		removeHoverStyle: function(rectangle) {

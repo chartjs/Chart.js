@@ -491,7 +491,10 @@
 					(this.lastActive.length && this.active.length && changed)) {
 
 					this.stop();
-					this.update(this.options.hover.animationDuration, true);
+					
+					// We only need to render at this point. Updating will cause scales to be recomputed generating flicker & using more 
+					// memory than necessary.
+					this.render(this.options.hover.animationDuration, true);
 				}
 			}
 

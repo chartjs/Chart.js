@@ -114,10 +114,15 @@
 
 			// Now draw the line between all the points with any borders
 			ctx.lineCap = vm.borderCapStyle || Chart.defaults.global.elements.line.borderCapStyle;
-			ctx.setLineDash(vm.borderDash || Chart.defaults.global.elements.line.borderDash);
+
+			// IE 9 and 10 do not support line dash
+			if (ctx.setLineDash) {
+				ctx.setLineDash(vm.borderDash || Chart.defaults.global.elements.line.borderDash);
+			}
+
 			ctx.lineDashOffset = vm.borderDashOffset || Chart.defaults.global.elements.line.borderDashOffset;
 			ctx.lineJoin = vm.borderJoinStyle || Chart.defaults.global.elements.line.borderJoinStyle;
-			ctx.lineWidth = vm.borderWidth || Chart.defaults.global.defaultColor;
+			ctx.lineWidth = vm.borderWidth || Chart.defaults.global.elements.line.borderWidth;
 			ctx.strokeStyle = vm.borderColor || Chart.defaults.global.defaultColor;
 			ctx.beginPath();
 
@@ -178,7 +183,6 @@
 					ctx.lineTo(first._view.x, first._view.y);
 				}
 			}
-
 
 			ctx.stroke();
 			ctx.restore();

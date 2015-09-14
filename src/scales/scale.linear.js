@@ -157,7 +157,7 @@
 		},
 		// Get the correct value. If the value type is object get the x or y based on whether we are horizontal or not
 		getRightValue: function(rawValue) {
-			return typeof rawValue === "object" ? (this.isHorizontal() ? rawValue.x : rawValue.y) : rawValue;
+			return (typeof (rawValue) === "object" && rawValue !== null) ? (this.isHorizontal() ? rawValue.x : rawValue.y) : rawValue;
 		},
 		getPixelForValue: function(value) {
 			// This must be called after fit has been run so that 
@@ -172,8 +172,7 @@
 			} else {
 				// Bottom - top since pixels increase downard on a screen
 				var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
-				pixel = this.bottom - (innerHeight / range * (value - this.start));
-				pixel += this.paddingTop;
+				pixel = (this.bottom - this.paddingBottom) - (innerHeight / range * (value - this.start));
 			}
 
 			return pixel;
@@ -328,16 +327,6 @@
 				}
 
 				return this.getPixelForValue(value);
-			}
-
-			var offset = 0;
-
-			for (var j = datasetIndex; j < this.data.datasets.length; j++) {
-				if (j === datasetIndex && value) {
-					offset += value;
-				} else {
-					offset = offset + value;
-				}
 			}
 
 			return this.getPixelForValue(value);

@@ -57,12 +57,6 @@
 			});
 			return base;
 		},
-		merge = helpers.merge = function(base, master) {
-			//Merge properties in left object over to a shallow clone of object right.
-			var args = Array.prototype.slice.call(arguments, 0);
-			args.unshift({});
-			return extend.apply(null, args);
-		},
 		// Need a special merge function to chart configs since they are now grouped
 		configMerge = helpers.configMerge = function(_base) {
 			var base = clone(_base);
@@ -84,7 +78,13 @@
 							helpers.each(value, function(valueObj, index) {
 
 								if (index < baseArray.length) {
-									baseArray[index] = helpers.configMerge(baseArray[index], valueObj);
+									if (typeof baseArray[index] == 'object' && baseArray[index] !== null && typeof valueObj == 'object' && valueObj !== null) {
+										// Two objects are coming together. Do a merge of them.
+										baseArray[index] = helpers.configMerge(baseArray[index], valueObj);
+									} else {
+										// Just overwrite in this case since there is nothing to merge
+										baseArray[index] = valueObj;
+									}
 								} else {
 									baseArray.push(valueObj); // nothing to merge
 								}
@@ -143,12 +143,12 @@
 			return base;
 		},
 		getValueAtIndexOrDefault = helpers.getValueAtIndexOrDefault = function(value, index, defaultValue) {
-			if (!value) {
+			if (value === undefined || value === null) {
 				return defaultValue;
 			}
 
-			if (helpers.isArray(value) && index < value.length) {
-				return value[index];
+			if (helpers.isArray(value)) {
+				return index < value.length ? value[index] : defaultValue;
 			}
 
 			return value;
@@ -176,7 +176,7 @@
 		},
 		findNextWhere = helpers.findNextWhere = function(arrayToSearch, filterCallback, startIndex) {
 			// Default to start of the array
-			if (!startIndex) {
+			if (startIndex === undefined || startIndex === null) {
 				startIndex = -1;
 			}
 			for (var i = startIndex + 1; i < arrayToSearch.length; i++) {
@@ -188,7 +188,7 @@
 		},
 		findPreviousWhere = helpers.findPreviousWhere = function(arrayToSearch, filterCallback, startIndex) {
 			// Default to end of the array
-			if (!startIndex) {
+			if (startIndex === undefined || startIndex === null) {
 				startIndex = arrayToSearch.length;
 			}
 			for (var i = startIndex - 1; i >= 0; i--) {
@@ -259,18 +259,6 @@
 				return Math.log(x) / Math.LN10;
 			}
 		},
-		cap = helpers.cap = function(valueToCap, maxValue, minValue) {
-			if (isNumber(maxValue)) {
-				if (valueToCap > maxValue) {
-					return maxValue;
-				}
-			} else if (isNumber(minValue)) {
-				if (valueToCap < minValue) {
-					return minValue;
-				}
-			}
-			return valueToCap;
-		},
 		getDecimalPlaces = helpers.getDecimalPlaces = function(num) {
 			if (num % 1 !== 0 && isNumber(num)) {
 				var s = num.toString();
@@ -335,94 +323,16 @@
 		},
 		nextItem = helpers.nextItem = function(collection, index, loop) {
 			if (loop) {
-				return collection[index + 1] || collection[0];
+				return index >= collection.length - 1 ? collection[0] : collection[index + 1];
 			}
-			return collection[index + 1] || collection[collection.length - 1];
+
+			return index >= collection.length - 1 ? collection[collection.length - 1] : collection[index + 1];
 		},
 		previousItem = helpers.previousItem = function(collection, index, loop) {
 			if (loop) {
-				return collection[index - 1] || collection[collection.length - 1];
+				return index <= 0 ? collection[collection.length - 1] : collection[index - 1];
 			}
-			return collection[index - 1] || collection[0];
-		},
-		calculateOrderOfMagnitude = helpers.calculateOrderOfMagnitude = function(val) {
-			return Math.floor(Math.log(val) / Math.LN10);
-		},
-		calculateScaleRange = helpers.calculateScaleRange = function(valuesArray, drawingSize, textSize, startFromZero, integersOnly) {
-
-			//Set a minimum step of two - a point at the top of the graph, and a point at the base
-			var minSteps = 2,
-				maxSteps = Math.floor(drawingSize / (textSize * 1.5)),
-				skipFitting = (minSteps >= maxSteps);
-
-			var maxValue = max(valuesArray),
-				minValue = min(valuesArray);
-
-			// We need some degree of seperation here to calculate the scales if all the values are the same
-			// Adding/minusing 0.5 will give us a range of 1.
-			if (maxValue === minValue) {
-				maxValue += 0.5;
-				// So we don't end up with a graph with a negative start value if we've said always start from zero
-				if (minValue >= 0.5 && !startFromZero) {
-					minValue -= 0.5;
-				} else {
-					// Make up a whole number above the values
-					maxValue += 0.5;
-				}
-			}
-
-			var valueRange = Math.abs(maxValue - minValue),
-				rangeOrderOfMagnitude = calculateOrderOfMagnitude(valueRange),
-				graphMax = Math.ceil(maxValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude),
-				graphMin = (startFromZero) ? 0 : Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude),
-				graphRange = graphMax - graphMin,
-				stepValue = Math.pow(10, rangeOrderOfMagnitude),
-				numberOfSteps = Math.round(graphRange / stepValue);
-
-			//If we have more space on the graph we'll use it to give more definition to the data
-			while ((numberOfSteps > maxSteps || (numberOfSteps * 2) < maxSteps) && !skipFitting) {
-				if (numberOfSteps > maxSteps) {
-					stepValue *= 2;
-					numberOfSteps = Math.round(graphRange / stepValue);
-					// Don't ever deal with a decimal number of steps - cancel fitting and just use the minimum number of steps.
-					if (numberOfSteps % 1 !== 0) {
-						skipFitting = true;
-					}
-				}
-				//We can fit in double the amount of scale points on the scale
-				else {
-					//If user has declared ints only, and the step value isn't a decimal
-					if (integersOnly && rangeOrderOfMagnitude >= 0) {
-						//If the user has said integers only, we need to check that making the scale more granular wouldn't make it a float
-						if (stepValue / 2 % 1 === 0) {
-							stepValue /= 2;
-							numberOfSteps = Math.round(graphRange / stepValue);
-						}
-						//If it would make it a float break out of the loop
-						else {
-							break;
-						}
-					}
-					//If the scale doesn't have to be an int, make the scale more granular anyway.
-					else {
-						stepValue /= 2;
-						numberOfSteps = Math.round(graphRange / stepValue);
-					}
-
-				}
-			}
-
-			if (skipFitting) {
-				numberOfSteps = minSteps;
-				stepValue = graphRange / numberOfSteps;
-			}
-			return {
-				steps: numberOfSteps,
-				stepValue: stepValue,
-				min: graphMin,
-				max: graphMin + (numberOfSteps * stepValue)
-			};
-
+			return index <= 0 ? collection[0] : collection[index - 1];
 		},
 		// Implementation of the nice number algorithm used in determining where axis labels will go
 		niceNum = helpers.niceNum = function(range, round) {
@@ -458,6 +368,7 @@
 		// Blows up jshint errors based on the new Function constructor
 		//Templating methods
 		//Javascript micro templating by John Resig - source at http://ejohn.org/blog/javascript-micro-templating/
+		templateStringCache = {},
 		template = helpers.template = function(templateString, valuesObject) {
 
 			// If templateString is function rather than string-template - call the function for valuesObject
@@ -466,17 +377,17 @@
 				return templateString(valuesObject);
 			}
 
-			var cache = {};
-
 			function tmpl(str, data) {
 				// Figure out if we're getting a template, or if we need to
 				// load the template - and be sure to cache the result.
-				var fn = !/\W/.test(str) ?
-					cache[str] = cache[str] :
+				var fn;
 
+				if (templateStringCache.hasOwnProperty(str)) {
+					fn = templateStringCache[str];
+				} else {
 					// Generate a reusable function that will serve as a template
 					// generator (and which will be cached).
-					new Function("obj",
+					fn = new Function("obj",
 						"var p=[],print=function(){p.push.apply(p,arguments);};" +
 
 						// Introduce the data as local variables using with(){}
@@ -494,23 +405,16 @@
 						"');}return p.join('');"
 					);
 
+					// Cache the result
+					templateStringCache[str] = fn;
+				}
+
 				// Provide some basic currying to the user
 				return data ? fn(data) : fn;
 			}
 			return tmpl(templateString, valuesObject);
 		},
 		/* jshint ignore:end */
-		generateLabels = helpers.generateLabels = function(templateString, numberOfSteps, graphMin, stepValue) {
-			var labelsArray = new Array(numberOfSteps);
-			if (templateString) {
-				each(labelsArray, function(val, index) {
-					labelsArray[index] = template(templateString, {
-						value: (graphMin + (stepValue * (index + 1)))
-					});
-				});
-			}
-			return labelsArray;
-		},
 		//--Animation methods
 		//Easing functions adapted from Robert Penner's easing equations
 		//http://www.robertpenner.com/easing/

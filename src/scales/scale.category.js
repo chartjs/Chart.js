@@ -75,19 +75,19 @@
         calculateBaseWidth: function() {
             return (this.getPixelForValue(null, 1, 0, true) - this.getPixelForValue(null, 0, 0, true)) - (2 * this.options.categorySpacing);
         },
-        calculateBarWidth: function(datasetCount) {
+        calculateBarWidth: function(barDatasetCount) {
             //The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
-            var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * this.options.spacing);
+            var baseWidth = this.calculateBaseWidth() - ((barDatasetCount - 1) * this.options.spacing);
 
             if (this.options.stacked) {
                 return baseWidth;
             }
-            return (baseWidth / datasetCount);
+            return (baseWidth / barDatasetCount);
         },
-        calculateBarX: function(datasetCount, datasetIndex, elementIndex) {
+        calculateBarX: function(barDatasetCount, datasetIndex, elementIndex) {
             var xWidth = this.calculateBaseWidth(),
                 xAbsolute = this.getPixelForValue(null, elementIndex, datasetIndex, true) - (xWidth / 2),
-                barWidth = this.calculateBarWidth(datasetCount);
+                barWidth = this.calculateBarWidth(barDatasetCount);
 
             if (this.options.stacked) {
                 return xAbsolute + barWidth / 2;
@@ -126,7 +126,7 @@
                 var datasetWidth = Math.floor(this.getPixelForValue(0, 1) - this.getPixelForValue(0, 0)) - 6;
 
                 //Max label rotation can be set or default to 90 - also act as a loop counter
-                while (this.labelWidth > (datasetWidth + this.paddingLeft) && this.labelRotation <= this.options.labels.maxRotation) {
+                while (this.labelWidth > datasetWidth && this.labelRotation <= this.options.labels.maxRotation) {
                     cosRotation = Math.cos(helpers.toRadians(this.labelRotation));
                     sinRotation = Math.sin(helpers.toRadians(this.labelRotation));
 
@@ -192,13 +192,14 @@
             if (this.isHorizontal()) {
                 minSize.width = maxWidth;
             } else if (this.options.display) {
-                minSize.width = Math.min(longestLabelWidth + 6, maxWidth);
+                var labelWidth = this.options.labels.show ? longestLabelWidth + 6 : 0;
+                minSize.width = Math.min(labelWidth, maxWidth);
             }
 
             // Height
             if (this.isHorizontal() && this.options.display) {
                 var labelHeight = (Math.sin(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.labels.fontSize;
-                minSize.height = Math.min(labelHeight, maxHeight);
+                minSize.height = Math.min(this.options.labels.show ? labelHeight : 0, maxHeight);
             } else if (this.options.display) {
                 minSize.height = maxHeight;
             }
@@ -229,7 +230,8 @@
                     }
 
                     helpers.each(this.labels, function(label, index) {
-                        if (skipRatio > 1 && index % skipRatio > 0) {
+                        // Blank labels
+                        if ((skipRatio > 1 && index % skipRatio > 0) || (label === undefined || label === null)) {
                             return;
                         }
                         var xLineValue = this.getPixelForValue(label, index, null, false); // xvalues for grid lines
