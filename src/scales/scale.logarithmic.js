@@ -75,9 +75,6 @@
 				var maxExponent = Math.ceil(helpers.log10(this.max));
 
 				for (var exponent = minExponent; exponent < maxExponent; ++exponent) {
-					/*this.ticks.push(1.0 * Math.pow(10, exponent));
-					this.ticks.push(2.0 * Math.pow(10, exponent));
-					this.ticks.push(5.0 * Math.pow(10, exponent));*/
 					for (var i = 1; i < 10; ++i) {
 						if (i === 1 || i === 2 || i === 3 || i === 5 || i === 7) {
 							this.ticks.push(i * Math.pow(10, exponent));
@@ -86,48 +83,6 @@
 				}
 
 				this.ticks.push(1.0 * Math.pow(10, maxExponent));
-
-				/*var maxTicks;
-
-				if (this.isHorizontal()) {
-					maxTicks = Math.min(11, Math.ceil(width / 50));
-				} else {
-					// The factor of 2 used to scale the font size has been experimentally determined.
-					maxTicks = Math.min(11, Math.ceil(height / (2 * this.options.labels.fontSize)));
-				}
-
-				// Make sure we always have at least 2 ticks 
-				maxTicks = Math.max(2, maxTicks);
-
-				// To get a "nice" value for the tick spacing, we will use the appropriately named 
-				// "nice number" algorithm. See http://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
-				// for details.
-
-				// If we are forcing it to begin at 0, but 0 will already be rendered on the chart,
-				// do nothing since that would make the chart weird. If the user really wants a weird chart
-				// axis, they can manually override it
-				if (this.options.beginAtZero) {
-					var minSign = helpers.sign(this.min);
-					var maxSign = helpers.sign(this.max);
-
-					if (minSign < 0 && maxSign < 0) {
-						// move the top up to 0
-						this.max = 0;
-					} else if (minSign > 0 && maxSign > 0) {
-						// move the botttom down to 0
-						this.min = 0;
-					}
-				}
-
-				var niceRange = helpers.niceNum(this.max - this.min, false);
-				var spacing = helpers.niceNum(niceRange / (maxTicks - 1), true);
-				var niceMin = Math.floor(this.min / spacing) * spacing;
-				var niceMax = Math.ceil(this.max / spacing) * spacing;
-
-				// Put the values into the ticks array
-				for (var j = niceMin; j <= niceMax; j += spacing) {
-					this.ticks.push(j);
-				}*/
 			}
 
 			if (this.options.position == "left" || this.options.position == "right") {
@@ -195,8 +150,7 @@
 					pixel = this.top + this.paddingTop;
 				} else  {
 					var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
-					pixel = this.bottom - (innerHeight / range * (helpers.log10(value) - helpers.log10(this.start)));
-					pixel += this.paddingTop;
+					pixel = (this.bottom - this.paddingBottom) - (innerHeight / range * (helpers.log10(value) - helpers.log10(this.start)));
 				}
 			}
 
