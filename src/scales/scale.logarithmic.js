@@ -453,6 +453,11 @@
 							// Grid lines are vertical
 							var xValue = this.getPixelForValue(tick);
 
+							if (this.labels[index] === null) {
+								// If the user specifically hid the label by returning null from the label function, do so
+								return;
+							}
+
 							if (tick === 0 || (!hasZero && index === 0)) {
 								// Draw the 0 point specially or the left if there is no 0
 								this.ctx.lineWidth = this.options.gridLines.zeroLineWidth;
