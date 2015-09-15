@@ -30,7 +30,7 @@
 			show: true,
 			mirror: false,
 			padding: 10,
-			template: "<%=value.toExponential()%>",
+			template: "<%var remain = value / (Math.pow(10, Math.floor(Chart.helpers.log10(value))));if (remain === 1 || remain === 2 || remain === 5) {%><%=value.toExponential()%><%} else {%><%= null %><%}%>",
 			fontSize: 12,
 			fontStyle: "normal",
 			fontColor: "#666",
@@ -76,9 +76,7 @@
 
 				for (var exponent = minExponent; exponent < maxExponent; ++exponent) {
 					for (var i = 1; i < 10; ++i) {
-						if (i === 1 || i === 2 || i === 3 || i === 5 || i === 7) {
-							this.ticks.push(i * Math.pow(10, exponent));
-						}
+						this.ticks.push(i * Math.pow(10, exponent));
 					}
 				}
 
@@ -123,7 +121,7 @@
 					});
 				}
 
-				this.labels.push(label ? label : ""); // empty string will not render so we're good
+				this.labels.push(label); // empty string will not render so we're good
 			}, this);
 		},
 		// Get the correct value. If the value type is object get the x or y based on whether we are horizontal or not
@@ -506,7 +504,9 @@
 
 						helpers.each(this.labels, function(label, index) {
 							var xValue = this.getPixelForValue(this.ticks[index]);
-							this.ctx.fillText(label, xValue, labelStartY);
+							if (label) {
+								this.ctx.fillText(label, xValue, labelStartY);
+							}
 						}, this);
 					}
 				} else {
