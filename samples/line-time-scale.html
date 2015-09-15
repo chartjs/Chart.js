@@ -38,12 +38,21 @@
         var randomColor = function(opacity) {
             return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
         };
+        var newDate = function(days) {
+            var date = new Date();
+            return date.setDate(date.getDate() + days);
+        };
+        var newTimestamp = function(days) {
+            return Date.now() - days * 100000;
+        };
 
         var config = {
             type: 'line',
             data: {
-                // labels: ["01/01/2015 20:00", "01/02/2015 21:00", "01/03/2015 22:00", "01/06/2015 23:00", "01/15/2015 03:00", "01/17/2015 10:00", "01/30/2015 11:00"], // Hours
-                labels: ["01/01/2015", "01/02/2015", "01/03/2015", "01/06/2015", "01/15/2015", "01/17/2015", "01/30/2015"], // Days
+                //labels: [newTimestamp(0), newTimestamp(1), newTimestamp(2), newTimestamp(3), newTimestamp(4), newTimestamp(5), newTimestamp(6)], // unix timestamps
+                // labels: [newDate(0), newDate(1), newDate(2), newDate(3), newDate(4), newDate(5), newDate(6)], // Date Objects
+                labels: ["01/01/2015 20:00", "01/02/2015 21:00", "01/03/2015 22:00", "01/05/2015 23:00", "01/07/2015 03:00", "01/08/2015 10:00", "02/1/2015"], // Hours
+                // labels: ["01/01/2015", "01/02/2015", "01/03/2015", "01/06/2015", "01/15/2015", "01/17/2015", "01/30/2015"], // Days
                 // labels: ["12/25/2014", "01/08/2015", "01/15/2015", "01/22/2015", "01/29/2015", "02/05/2015", "02/12/2015"], // Weeks
                 datasets: [{
                     label: "My First dataset",
@@ -61,14 +70,20 @@
                     xAxes: [{
                         type: "time",
                         display: true,
-                        time: {
+                        tick: {
                             format: 'MM/DD/YYYY HH:mm',
+                            // round: 'day'
                         }
                     }, ],
                     yAxes: [{
                         display: true
                     }]
-                }
+                },
+                elements: {
+                    line: {
+                        tension: 0
+                    }
+                },
             }
         };
 
