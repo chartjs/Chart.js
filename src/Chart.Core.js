@@ -181,7 +181,10 @@
 			onAnimationProgress: function(){},
 
 			// Function - Will fire on animation completion.
-			onAnimationComplete: function(){}
+			onAnimationComplete: function(){},
+
+			// String - Label delimiter
+			pointLabelDelimiter: "\n"
 
 		}
 	};
@@ -1097,6 +1100,7 @@
 						titleFontStyle: this.options.tooltipTitleFontStyle,
 						titleFontSize: this.options.tooltipTitleFontSize,
 						cornerRadius: this.options.tooltipCornerRadius,
+						pointLabelDelimiter: this.options.pointLabelDelimiter,
 						labels: tooltipLabels,
 						legendColors: tooltipColors,
 						legendColorBackground : this.options.multiTooltipKeyBackground,
@@ -1467,7 +1471,8 @@
 
 			this.titleFont = fontString(this.titleFontSize,this.titleFontStyle,this.titleFontFamily);
 
-			this.height = (this.labels.length * this.fontSize) + ((this.labels.length-1) * (this.fontSize/2)) + (this.yPadding*2) + this.titleFontSize *1.5;
+			var sepLabels = this.title.split(this.pointLabelDelimiter);
+			this.height = (this.labels.length * this.fontSize) + ((this.labels.length-1) * (this.fontSize/2)) + (this.yPadding*2) + this.titleFontSize * sepLabels.length + this.titleFontSize / 2;
 
 			this.ctx.font = this.titleFont;
 
@@ -1502,10 +1507,11 @@
 				afterTitleIndex = index-1;
 
 			//If the index is zero, we're getting the title
+			var sepLabels = this.title.split(this.pointLabelDelimiter);
 			if (index === 0){
 				return baseLineHeight + this.titleFontSize/2;
 			} else{
-				return baseLineHeight + ((this.fontSize*1.5*afterTitleIndex) + this.fontSize/2) + this.titleFontSize * 1.5;
+				return baseLineHeight + ((this.fontSize*1.5*afterTitleIndex) + this.fontSize/2) + this.titleFontSize * sepLabels.length + this.titleFontSize / 2;
 			}
 
 		},
@@ -1526,7 +1532,10 @@
 				ctx.fillStyle = this.titleTextColor;
 				ctx.font = this.titleFont;
 
-				ctx.fillText(this.title,this.x + this.xPadding, this.getLineHeight(0));
+				var sepLabels = this.title.split(this.pointLabelDelimiter);
+				for(var l=0;l<sepLabels.length;l++) {
+					ctx.fillText(sepLabels[l], this.x + this.xPadding, this.getLineHeight(0) + (l*this.fontSize));
+				}
 
 				ctx.font = this.font;
 				helpers.each(this.labels,function(label,index){
@@ -1577,9 +1586,17 @@
 		fit: function(){
 			// First we need the width of the yLabels, assuming the xLabels aren't rotated
 
+			var maxLabelLines = 1;
+			each(this.xLabels,function(label,index){
+				var sepLabels = label.split(this.pointLabelDelimiter);
+				if(sepLabels.length > maxLabelLines) {
+					maxLabelLines = sepLabels.length;
+				}
+			}, this);
+
 			// To do that we need the base line at the top and base of the chart, assuming there is no x label rotation
 			this.startPoint = (this.display) ? this.fontSize : 0;
-			this.endPoint = (this.display) ? this.height - (this.fontSize * 1.5) - 5 : this.height; // -5 to pad labels
+			this.endPoint = (this.display) ? this.height - (this.fontSize * maxLabelLines + this.fontSize / 2) - 5 : this.height; // -5 to pad labels
 
 			// Apply padding settings to the start and end point.
 			this.startPoint += this.padding;
@@ -1812,7 +1829,10 @@
 					ctx.font = this.font;
 					ctx.textAlign = (isRotated) ? "right" : "center";
 					ctx.textBaseline = (isRotated) ? "middle" : "top";
-					ctx.fillText(label, 0, 0);
+					var sepLabels = label.split(this.pointLabelDelimiter);
+					for(var l=0;l<sepLabels.length;l++) {
+						ctx.fillText(sepLabels[l], 0, l*this.fontSize);
+					}
 					ctx.restore();
 				},this);
 
@@ -2102,7 +2122,10 @@
 							ctx.textBaseline = 'top';
 						}
 
-						ctx.fillText(this.labels[i], pointLabelPosition.x, pointLabelPosition.y);
+						var sepLabels = this.labels[i].split(this.pointLabelDelimiter);
+						for(var l=0;l<sepLabels.length;l++) {
+							ctx.fillText(sepLabels[l], pointLabelPosition.x, pointLabelPosition.y + (l*this.fontSize));
+						}
 					}
 				}
 			}

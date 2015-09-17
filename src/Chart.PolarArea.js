@@ -90,7 +90,8 @@
 				yCenter: this.chart.height/2,
 				ctx : this.chart.ctx,
 				templateString: this.options.scaleLabel,
-				valuesCount: data.length
+				valuesCount: data.length,
+				pointLabelDelimiter: this.options.pointLabelDelimiter
 			});
 
 			this.updateScaleRange(data);
