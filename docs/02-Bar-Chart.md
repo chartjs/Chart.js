@@ -71,6 +71,9 @@ These are the customisation options specific to Bar charts. These options are me
 	//Boolean - Whether to show vertical lines (except Y axis)
 	scaleShowVerticalLines: true,
 
+	// Number - If we want a limit on the string length for labels on x-axis (0 for no limit)
+	maxXLabelLength: 0,
+
 	//Boolean - If there is a stroke on each bar
 	barShowStroke : true,
 
