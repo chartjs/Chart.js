@@ -98,6 +98,8 @@
 				var datasetObject = {
 					label : dataset.label || null,
 					fillColor : dataset.fillColor,
+					fillColorStart : dataset.fillColorStart,
+					fillColorEnd : dataset.fillColorEnd,
 					strokeColor : dataset.strokeColor,
 					pointColor : dataset.pointColor,
 					pointStrokeColor : dataset.pointStrokeColor,
@@ -115,6 +117,8 @@
 						datasetLabel: dataset.label,
 						strokeColor : dataset.pointStrokeColor,
 						fillColor : dataset.pointColor,
+						fillColorStart : dataset.fillColorStart,
+						fillColorEnd : dataset.fillColorEnd,
 						highlightFill : dataset.pointHighlightFill || dataset.pointColor,
 						highlightStroke : dataset.pointHighlightStroke || dataset.pointStrokeColor
 					}));
@@ -364,7 +368,25 @@
 					//Round off the line by going to the base of the chart, back to the start, then fill.
 					ctx.lineTo(pointsWithValues[pointsWithValues.length - 1].x, this.scale.endPoint);
 					ctx.lineTo(pointsWithValues[0].x, this.scale.endPoint);
-					ctx.fillStyle = dataset.fillColor;
+
+					// Get largest Y coord, use `pointsWithValues` value
+					var highestPoint = (function () {
+						var heighest = 0;
+						helpers.each(pointsWithValues, function (point) {
+							heighest = point.y > heighest ? point.y : heighest;
+						});
+						return heighest;
+					})();
+
+					if (typeof dataset.fillColor !== 'undefined') {
+						ctx.fillStyle = dataset.fillColor;
+					} else {
+						var gradient = ctx.createLinearGradient(0, highestPoint, 0, 0);
+						gradient.addColorStop(1, dataset.fillColorStart);
+						gradient.addColorStop(0, dataset.fillColorEnd);
+						ctx.fillStyle = gradient;
+					}
+
 					ctx.closePath();
 					ctx.fill();
 				}

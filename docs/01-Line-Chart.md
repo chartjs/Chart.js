@@ -45,6 +45,8 @@ var data = {
 };
 ```
 
+To fill with a linear vertical gradient, replace the `fillColor` attribute with `fillColorStart` and `fillColorEnd` attributes.
+
 The line chart requires an array of labels for each of the data points. This is shown on the X axis.
 The data for line charts is broken up into an array of datasets. Each dataset has a colour for the fill, a colour for the line and colours for the points and strokes of the points. These colours are strings just like CSS. You can use RGBA, RGB, HEX or HSL notation.
 
