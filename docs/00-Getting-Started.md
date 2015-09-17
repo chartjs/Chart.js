@@ -205,6 +205,12 @@ Chart.defaults.global = {
 	// String - Template string for multiple tooltips
 	multiTooltipTemplate: "<%= value %>",
 
+	//have separate hover event for multiple datasets
+	separateHover: false,
+
+	//when separate hover event, the ability to have all data in tooltip still or not
+	seperateHoverDistinctTooltip: true,
+
 	// Function - Will fire on animation progression.
 	onAnimationProgress: function(){},
 

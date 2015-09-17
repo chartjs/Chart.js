@@ -167,6 +167,13 @@
 			for (var datasetIndex = 0; datasetIndex < this.datasets.length; datasetIndex++) {
 				for (barIndex = 0; barIndex < this.datasets[datasetIndex].bars.length; barIndex++) {
 					if (this.datasets[datasetIndex].bars[barIndex].inRange(eventPosition.x,eventPosition.y)){
+						if (this.options.separateHover) {
+							barsArray.push(this.datasets[datasetIndex].bars[barIndex]);
+							return barsArray;
+						} else {
+							helpers.each(this.datasets, datasetIterator);
+							return barsArray;
+						}
 						helpers.each(this.datasets, datasetIterator);
 						return barsArray;
 					}
