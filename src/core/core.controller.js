@@ -328,10 +328,12 @@
 			var eventPosition = helpers.getRelativePosition(e);
 			var elementsArray = [];
 
-			for (var datasetIndex = 0; datasetIndex < this.chart.data.datasets.length; datasetIndex++) {
-				for (elementIndex = 0; elementIndex < this.chart.data.datasets[datasetIndex].metaData.length; elementIndex++) {
-					if (this.chart.data.datasets[datasetIndex].metaData[elementIndex].inLabelRange(eventPosition.x, eventPosition.y)) {
-						helpers.each(this.chart.data.datasets, datasetIterator);
+			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; datasetIndex++) {
+				for (var elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; elementIndex++) {
+					if (this.data.datasets[datasetIndex].metaData[elementIndex].inLabelRange(eventPosition.x, eventPosition.y)) {
+                                                helpers.each(this.data.datasets[datasetIndex].metaData, function(element, index) {
+                                                        elementsArray.push(element);
+                                                }, this);
 					}
 				}
 			}
@@ -422,11 +424,10 @@
 						this.data.datasets[this.lastActive[0]._datasetIndex].controller.removeHoverStyle(this.lastActive[0], this.lastActive[0]._datasetIndex, this.lastActive[0]._index);
 						break;
 					case 'label':
+					case 'dataset':
 						for (var i = 0; i < this.lastActive.length; i++) {
 							this.data.datasets[this.lastActive[i]._datasetIndex].controller.removeHoverStyle(this.lastActive[i], this.lastActive[i]._datasetIndex, this.lastActive[i]._index);
 						}
-						break;
-					case 'dataset':
 						break;
 					default:
 						// Don't change anything
@@ -440,11 +441,10 @@
 						this.data.datasets[this.active[0]._datasetIndex].controller.setHoverStyle(this.active[0]);
 						break;
 					case 'label':
+					case 'dataset':
 						for (var i = 0; i < this.active.length; i++) {
 							this.data.datasets[this.active[i]._datasetIndex].controller.setHoverStyle(this.active[i]);
 						}
-						break;
-					case 'dataset':
 						break;
 					default:
 						// Don't change anything
