@@ -120,7 +120,7 @@
 					}));
 				},this);
 
-				this.buildScale(data.labels);
+				this.buildScale(data.labels, data.xAxisLabels);
 
 
 				this.eachPoints(function(point, index){
@@ -162,7 +162,7 @@
 			},this);
 			return pointsArray;
 		},
-		buildScale : function(labels){
+		buildScale : function(labels, xAxisLabels){
 			var self = this;
 
 			var dataTotal = function(){
@@ -197,7 +197,7 @@
 					);
 					helpers.extend(this, updatedRanges);
 				},
-				xLabels : labels,
+				xLabels : xAxisLabels || labels,
 				font : helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.scaleFontFamily),
 				lineWidth : this.options.scaleLineWidth,
 				lineColor : this.options.scaleLineColor,

@@ -1688,13 +1688,15 @@
 			var scalingFactor = this.drawingArea() / (this.min - this.max);
 			return this.endPoint - (scalingFactor * (value - this.min));
 		},
-		calculateX : function(index){
+		calculateX : function(index, percentPosition){
 			var isRotated = (this.xLabelRotation > 0),
 				// innerWidth = (this.offsetGridLines) ? this.width - offsetLeft - this.padding : this.width - (offsetLeft + halfLabelWidth * 2) - this.padding,
 				innerWidth = this.width - (this.xScalePaddingLeft + this.xScalePaddingRight),
 				valueWidth = innerWidth/Math.max((this.valuesCount - ((this.offsetGridLines) ? 0 : 1)), 1),
 				valueOffset = (valueWidth * index) + this.xScalePaddingLeft;
-
+				if(percentPosition) {
+					valueOffset = innerWidth * percentPosition / 100 + this.xScalePaddingLeft;
+				}
 			if (this.offsetGridLines){
 				valueOffset += (valueWidth/2);
 			}
@@ -1762,9 +1764,9 @@
 				},this);
 
 				each(this.xLabels,function(label,index){
-					var xPos = this.calculateX(index) + aliasPixel(this.lineWidth),
+					var xPos = this.calculateX(index, label.position) + aliasPixel(this.lineWidth),
 						// Check to see if line/bar here and decide where to place the line
-						linePos = this.calculateX(index - (this.offsetGridLines ? 0.5 : 0)) + aliasPixel(this.lineWidth),
+						linePos = this.calculateX(index - (this.offsetGridLines ? 0.5 : 0), label.position) + aliasPixel(this.lineWidth),
 						isRotated = (this.xLabelRotation > 0),
 						drawVerticalLine = this.showVerticalLines;
 
@@ -1812,7 +1814,7 @@
 					ctx.font = this.font;
 					ctx.textAlign = (isRotated) ? "right" : "center";
 					ctx.textBaseline = (isRotated) ? "middle" : "top";
-					ctx.fillText(label, 0, 0);
+					ctx.fillText(label.text || label, 0, 0);
 					ctx.restore();
 				},this);
 
