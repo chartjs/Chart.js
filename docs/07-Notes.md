@@ -6,12 +6,13 @@ anchor: notes
 ### Browser support
 Browser support for the canvas element is available in all modern & major mobile browsers <a href="http://caniuse.com/canvas" target="_blank">(caniuse.com/canvas)</a>.
 
-For IE8 & below, I would recommend using the polyfill ExplorerCanvas - available at <a href="https://code.google.com/p/explorercanvas/" target="_blank">https://code.google.com/p/explorercanvas/</a>. It falls back to Internet explorer's format VML when canvas support is not available. Example use:
-
+For IE8 & below, I would recommend using the polyfill ExplorerCanvas - available at <a href="https://code.google.com/p/explorercanvas/" target="_blank">https://code.google.com/p/explorercanvas/</a>. It falls back to Internet explorer's format VML when canvas support is not available, together with <a href="https://code.google.com/p/canvas-text/" target="_blank">canvas-text</a> (and its dependencies: <a href="http://www.atmos.washington.edu/~carey/javascript/faces/optimer-normal-normal.js/" target="_blank">optimer-normal-normal</a>). Example use:
 ```html
 <head>
 	<!--[if lte IE 8]>
 		<script src="excanvas.js"></script>
+		<script src="canvas.text.js"></script>
+		<script src="optimer-normal-normal.js"></script>
 	<![endif]-->
 </head>
 ```
