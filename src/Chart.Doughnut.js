@@ -34,7 +34,7 @@
 		//Number - Angle of display if you want a demi pie for example (0 <= angle <= 2) 2 * pi = 360°
 		totalAngle: 2,
 
-		//Number - The start of the angle, 1.5 = North, 0.5 South,
+		//Number - The start of the angle, 1.5 = North, 1 = West, 0.5 = South, 0 = East,
 		startAngle: 1.5,
 
 		//String - A legend template
@@ -107,7 +107,7 @@
 				showStroke : this.options.segmentShowStroke,
 				strokeWidth : this.options.segmentStrokeWidth,
 				strokeColor : this.options.segmentStrokeColor,
-				startAngle : Math.PI * this.startAngle,
+				startAngle : Math.PI * this.options.startAngle,
 				circumference : (this.options.animateRotate) ? 0 : this.calculateCircumference(segment.value),
 				label : segment.label
 			}));
@@ -118,7 +118,7 @@
 		},
 		calculateCircumference : function(value) {
 			if ( this.total > 0 ) {
-				return (Math.PI * this.totalAngle)*(value / this.total);
+				return (Math.PI * this.options.totalAngle)*(value / this.total);
 			} else {
 				return 0;
 			}
@@ -177,7 +177,8 @@
 
 				segment.draw();
 				if (index === 0){
-					segment.startAngle = Math.PI * this.startAngle;
+					console.log(this.options.startAngle)
+					segment.startAngle = Math.PI * this.options.startAngle;
 				}
 				//Check to see if it's the last segment, if not get the next and update the start angle
 				if (index < this.segments.length-1){

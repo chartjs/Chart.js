@@ -364,12 +364,14 @@
 				radialDistanceFromCenter = Math.sqrt( distanceFromXCenter * distanceFromXCenter + distanceFromYCenter * distanceFromYCenter);
 
 
-			var angle = Math.PI * 2 + Math.atan2(distanceFromYCenter, distanceFromXCenter);
+			var angle = Math.PI * 2 + Math.atan2(distanceFromYCenter, distanceFromXCenter)
 
 			//If the segment is in the top left quadrant, we need to add another rotation to the angle
-			if (distanceFromXCenter < 0 && distanceFromYCenter < 0){
-				angle += Math.PI*2;
-			}
+
+			/*if (startAngle == 1.5 && distanceFromXCenter < 0 && distanceFromYCenter < 0){
+				angle += Math.PI * 2;
+			}*/
+
 
 			return {
 				angle: angle,
@@ -1285,7 +1287,9 @@
 			});
 
 			//Check if within the range of the open/close angle
-			var betweenAngles = (pointRelativePosition.angle >= this.startAngle && pointRelativePosition.angle <= this.endAngle),
+			var betweenAngles = (pointRelativePosition.angle >= this.startAngle && pointRelativePosition.angle <= this.endAngle) ||
+			(pointRelativePosition.angle + Math.PI * 2 >= this.startAngle && pointRelativePosition.angle + Math.PI * 2 <= this.endAngle) ||
+			(pointRelativePosition.angle - Math.PI * 2 >= this.startAngle && pointRelativePosition.angle - Math.PI * 2 <= this.endAngle),
 				withinRadius = (pointRelativePosition.distance >= this.innerRadius && pointRelativePosition.distance <= this.outerRadius);
 
 			return (betweenAngles && withinRadius);
