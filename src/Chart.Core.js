@@ -1712,6 +1712,12 @@
 			if (this.display){
 				ctx.fillStyle = this.textColor;
 				ctx.font = this.font;
+
+				//Set grid line dotted
+				if (this.gridLineStyle === 'dotted') {
+					this.gridLineDashedSetting = [1, 1];
+				}
+
 				each(this.yLabels,function(labelString,index){
 					var yLabelCenter = this.endPoint - (yLabelGap * index),
 						linePositionY = Math.round(yLabelCenter),
@@ -1745,10 +1751,27 @@
 					linePositionY += helpers.aliasPixel(ctx.lineWidth);
 
 					if(drawHorizontalLine){
-						ctx.moveTo(xStart, linePositionY);
-						ctx.lineTo(this.width, linePositionY);
+						if (this.gridLineStyle!=='solid'){
+							if(typeof ctx.setLineDash === 'function') {
+								ctx.setLineDash(this.gridLineDashedSetting);
+								ctx.moveTo(xStart, linePositionY);
+								ctx.lineTo(this.width, linePositionY);
+							} else if (typeof ctx.dashedLine === 'function'){
+								ctx.dashedLine(
+									xStart, linePositionY, //line start position
+									this.width, linePositionY, //line end position
+									this.gridLineDashedSetting);
+							}
+						} else {
+							ctx.moveTo(xStart, linePositionY);
+							ctx.lineTo(this.width, linePositionY);
+						}
+						
 						ctx.stroke();
 						ctx.closePath();
+						if(typeof ctx.setLineDash === 'function') {
+							ctx.setLineDash([]);
+						}
 					}
 
 					ctx.lineWidth = this.lineWidth;
@@ -1788,10 +1811,27 @@
 					}
 
 					if (drawVerticalLine){
-						ctx.moveTo(linePos,this.endPoint);
-						ctx.lineTo(linePos,this.startPoint - 3);
+						if (this.gridLineStyle!=='solid'){
+							if(typeof ctx.setLineDash === 'function') {
+								ctx.setLineDash(this.gridLineDashedSetting);
+								ctx.moveTo(linePos,this.endPoint);
+								ctx.lineTo(linePos,this.startPoint - 3);
+							} else if (typeof ctx.dashedLine === 'function'){
+								ctx.dashedLine(
+									linePos,this.startPoint - 3, //line start position
+									linePos,this.endPoint, //line end position
+									this.gridLineDashedSetting);
+							}
+						} else {
+							ctx.moveTo(linePos,this.endPoint);
+							ctx.lineTo(linePos,this.startPoint - 3);
+						}
+						
 						ctx.stroke();
 						ctx.closePath();
+						if(typeof ctx.setLineDash === 'function') {
+							ctx.setLineDash([]);
+						}
 					}
 
 
