@@ -177,6 +177,9 @@
 			// String - Colour behind the legend colour block
 			multiTooltipKeyBackground: '#fff',
 
+                        //Number - The amount of labels to show on X axis (<=0 to show all)
+                        showNLabels: 0,
+
 			// Function - Will fire on animation progression.
 			onAnimationProgress: function(){},
 
@@ -1761,6 +1764,10 @@
 
 				},this);
 
+                                var showInterval = 0;
+                                if (this.showNLabels && this.showNLabels > 0) {
+                                    showInterval = Math.floor(this.xLabels.length / this.showNLabels);
+                                }
 				each(this.xLabels,function(label,index){
 					var xPos = this.calculateX(index) + aliasPixel(this.lineWidth),
 						// Check to see if line/bar here and decide where to place the line
@@ -1812,7 +1819,9 @@
 					ctx.font = this.font;
 					ctx.textAlign = (isRotated) ? "right" : "center";
 					ctx.textBaseline = (isRotated) ? "middle" : "top";
-					ctx.fillText(label, 0, 0);
+                                        if (showInterval < 1 || index % showInterval == 0) {
+					    ctx.fillText(label, 0, 0);
+                                        }
 					ctx.restore();
 				},this);
 

@@ -53,7 +53,10 @@
 		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"><%if(datasets[i].label){%><%=datasets[i].label%><%}%></span></li><%}%></ul>",
 
 		//Boolean - Whether to horizontally center the label and point dot inside the grid
-		offsetGridLines : false
+		offsetGridLines : false,
+
+                //Number - The amount of labels to show on X axis (<=0 to show all)
+                showNLabels: 0
 
 	};
 
@@ -207,6 +210,7 @@
 				gridLineColor : (this.options.scaleShowGridLines) ? this.options.scaleGridLineColor : "rgba(0,0,0,0)",
 				padding: (this.options.showScale) ? 0 : this.options.pointDotRadius + this.options.pointDotStrokeWidth,
 				showLabels : this.options.scaleShowLabels,
+				showNLabels : this.options.showNLabels,
 				display : this.options.showScale
 			};
 
