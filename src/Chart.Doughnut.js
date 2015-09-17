@@ -31,6 +31,12 @@
 		//Boolean - Whether we animate scaling the Doughnut from the centre
 		animateScale : false,
 
+		//Number - Angle of display if you want a demi pie for example (0 <= angle <= 2) 2 * pi = 360°
+		totalAngle: 2,
+
+		//Number - The start of the angle, 1.5 = North, 0.5 South,
+		startAngle: 1.5,
+
 		//String - A legend template
 		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"><%if(segments[i].label){%><%=segments[i].label%><%}%></span></li><%}%></ul>"
 
@@ -101,7 +107,7 @@
 				showStroke : this.options.segmentShowStroke,
 				strokeWidth : this.options.segmentStrokeWidth,
 				strokeColor : this.options.segmentStrokeColor,
-				startAngle : Math.PI * 1.5,
+				startAngle : Math.PI * this.startAngle,
 				circumference : (this.options.animateRotate) ? 0 : this.calculateCircumference(segment.value),
 				label : segment.label
 			}));
@@ -112,7 +118,7 @@
 		},
 		calculateCircumference : function(value) {
 			if ( this.total > 0 ) {
-				return (Math.PI*2)*(value / this.total);
+				return (Math.PI * this.totalAngle)*(value / this.total);
 			} else {
 				return 0;
 			}
@@ -171,7 +177,7 @@
 
 				segment.draw();
 				if (index === 0){
-					segment.startAngle = Math.PI * 1.5;
+					segment.startAngle = Math.PI * this.startAngle;
 				}
 				//Check to see if it's the last segment, if not get the next and update the start angle
 				if (index < this.segments.length-1){
