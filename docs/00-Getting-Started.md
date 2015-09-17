@@ -139,6 +139,9 @@ Chart.defaults.global = {
 	// String - Scale label font colour
 	scaleFontColor: "#666",
 
+	// Number - Set the max height of the x-scale. Rotation and Label Skipping will auto fit to this height.
+	scaleXMaxHeight: false,
+
 	// Boolean - whether or not the chart should be responsive and resize when the browser does.
 	responsive: false,
 
