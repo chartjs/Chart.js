@@ -331,9 +331,9 @@
 			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; datasetIndex++) {
 				for (var elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; elementIndex++) {
 					if (this.data.datasets[datasetIndex].metaData[elementIndex].inLabelRange(eventPosition.x, eventPosition.y)) {
-                        helpers.each(this.data.datasets[datasetIndex].metaData, function(element, index) {
-                            elementsArray.push(this.data.datasets[datasetIndex].metaData);
-                        }, this);
+                                                helpers.each(this.data.datasets[datasetIndex].metaData, function(element, index) {
+                                                        elementsArray.push(element);
+                                                }, this);
 					}
 				}
 			}
