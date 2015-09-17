@@ -1,0 +1,53 @@
+<h1>Original</h1>
+<canvas id="myChart1" width="400" height="400"></canvas>
+<h1>Original + startAngle at 0</h1>
+<canvas id="myChart2" width="400" height="400"></canvas>
+<h1>Original + totalAngle at 0.75</h1>
+<canvas id="myChart3" width="400" height="400"></canvas>
+<h1>Original + startAngle at 0 + totalAngle at 0.75</h1>
+<canvas id="myChart4" width="400" height="400"></canvas>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="../src/Chart.Core.js" charset="utf-8"></script>
+<script src="../src/Chart.Doughnut.js" charset="utf-8"></script>
+<script>
+var data = [{
+    value: 30,
+    color: "#F7464A"
+}, {
+    value: 50,
+    color: "#E2EAE9"
+}, {
+    value: 100,
+    color: "#D4CCC5"
+}, {
+    value: 40,
+    color: "#949FB1"
+}, {
+    value: 120,
+    color: "#4D5360"
+}
+
+]
+//Get the context of the canvas element we want to select
+var ctx1 = document.getElementById("myChart1").getContext("2d");
+var ctx2 = document.getElementById("myChart2").getContext("2d");
+var ctx3 = document.getElementById("myChart3").getContext("2d");
+var ctx4 = document.getElementById("myChart4").getContext("2d");
+/*************************************************************************/
+myNewChart = new Chart(ctx1).Doughnut(data, {
+    animation: false
+});
+myNewChart = new Chart(ctx2).Doughnut(data, {
+    animation: false,
+    startAngle: 0
+});
+myNewChart = new Chart(ctx3).Doughnut(data, {
+    animation: false,
+    totalAngle: 0.75
+});
+myNewChart = new Chart(ctx4).Doughnut(data, {
+    animation: false,
+    startAngle: 0,
+    totalAngle: 0.75
+});
+</script>

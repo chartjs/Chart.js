@@ -16,6 +16,9 @@
 		//Number - Width of the grid lines
 		scaleGridLineWidth : 1,
 
+		//Number - Step of the grid lines
+		scaleGridLineStep : 1,
+
 		//Boolean - Whether to show horizontal lines (except X axis)
 		scaleShowHorizontalLines: true,
 
@@ -53,8 +56,10 @@
 		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"><%if(datasets[i].label){%><%=datasets[i].label%><%}%></span></li><%}%></ul>",
 
 		//Boolean - Whether to horizontally center the label and point dot inside the grid
-		offsetGridLines : false
+		offsetGridLines : false,
 
+		//Boolean - Prevent tooltip superposition
+		onlyOneToolTip : false,
 	};
 
 
@@ -160,6 +165,23 @@
 					if (point.inRange(eventPosition.x,eventPosition.y)) pointsArray.push(point);
 				});
 			},this);
+
+			//Show only one tooltip
+			//if(this.options.onlyOneToolTip && pointsArray.length > 0)
+			//	pointsArray = [ pointsArray[Math.round(pointsArray.length / 2)] ];
+
+			if(this.options.onlyOneToolTip && pointsArray.length > 1)
+			{
+				var myBestPoint = pointsArray[0];
+				for(var cpt = 1, myDiff = Math.abs(myBestPoint.x - eventPosition.x); cpt < pointsArray.length; cpt++)
+					if(Math.abs(pointsArray[cpt].x - eventPosition.x) < myDiff)
+					{
+						myBestPoint = pointsArray[cpt];
+						myDiff = Math.abs(pointsArray[cpt].x - eventPosition.x);
+					}
+
+				pointsArray = [ myBestPoint ];
+			}
 			return pointsArray;
 		},
 		buildScale : function(labels){
@@ -187,6 +209,7 @@
 				valuesCount : labels.length,
 				beginAtZero : this.options.scaleBeginAtZero,
 				integersOnly : this.options.scaleIntegersOnly,
+				scaleGridLineStep : this.options.scaleGridLineStep,
 				calculateYRange : function(currentHeight){
 					var updatedRanges = helpers.calculateScaleRange(
 						dataTotal(),
