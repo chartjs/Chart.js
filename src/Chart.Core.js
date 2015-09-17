@@ -1115,7 +1115,7 @@
 							xPadding: this.options.tooltipXPadding,
 							yPadding: this.options.tooltipYPadding,
 							fillColor: this.options.tooltipFillColor,
-							textColor: this.options.tooltipFontColor,
+							textColor: Element.tooltipFontColor || this.options.tooltipFontColor,
 							fontFamily: this.options.tooltipFontFamily,
 							fontStyle: this.options.tooltipFontStyle,
 							fontSize: this.options.tooltipFontSize,

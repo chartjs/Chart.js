@@ -50,12 +50,13 @@ var data = [
 		value: 100,
 		color: "#FDB45C",
 		highlight: "#FFC870",
-		label: "Yellow"
+		label: "Yellow",
+		tooltipFontColor: "#FDB45C"
 	}
 ]
 ```
 
-For a pie chart, you must pass in an array of objects with a value and an optional color property. The value attribute should be a number, Chart.js will total all of the numbers and calculate the relative proportion of each. The color attribute should be a string. Similar to CSS, for this string you can use HEX notation, RGB, RGBA or HSL.
+For a pie chart, you must pass in an array of objects with a value and optional color and tooltipFontColor properties. The value attribute should be a number, Chart.js will total all of the numbers and calculate the relative proportion of each. The color and fontTooltipColor attributes should be a string. Similar to CSS, for this string you can use HEX notation, RGB, RGBA or HSL.
 
 ### Chart options
 
