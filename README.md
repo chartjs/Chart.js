@@ -25,9 +25,9 @@ Chart.js is available under the [MIT license](http://opensource.org/licenses/MIT
 
 Two options are now available :
  - **startAngle** : A number between 0 and 2 (both included). Start your chart in your wanted angle. (1.5 = North, 1 = West, 0.5 = South, 0 = East);
- - **totalAngle** : A number between 0 and 2 (both included). It's corresponding to the total chart angle. (2 = 360°, 1 = 180°, 0 = 0°).
+ - **totalAngle** : A number between 0 and 2 (both included). It's corresponding to total chart angle. (2 = 360°, 1 = 180°, 0 = 0°).
 
-The methods that find angle (dataset) under mouse coordinates is more generic. Now, the test of angle is on `angle - 2Pi` or `angle` or `angle + 2Pi`. So, all cases are tested.
+The method that find angle (dataset) under mouse coordinates is more generic. Now, test of angle is on `angle - 2Pi` or `angle` or `angle + 2Pi`. So, all cases are tested.
 
 Look at `example/test.html` to a preview. 
 
