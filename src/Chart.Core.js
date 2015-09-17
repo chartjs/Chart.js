@@ -1762,6 +1762,11 @@
 				},this);
 
 				each(this.xLabels,function(label,index){
+
+					//if filter returns true do not draw this label
+					if (this.labelsFilter(label, index, this.xLabels)){
+						return;
+					}
 					var xPos = this.calculateX(index) + aliasPixel(this.lineWidth),
 						// Check to see if line/bar here and decide where to place the line
 						linePos = this.calculateX(index - (this.offsetGridLines ? 0.5 : 0)) + aliasPixel(this.lineWidth),

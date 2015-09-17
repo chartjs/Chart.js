@@ -7,6 +7,9 @@
 
 
 	var defaultConfig = {
+		//Function - Whether the current x-axis label should be filtered out, takes in current label,  
+		//index and full label array, returns true to filter out the label returns false to keep the label
+		labelsFilter : function(label, index, labels){return false},
 		//Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
 		scaleBeginAtZero : true,
 
@@ -187,6 +190,7 @@
 			};
 
 			var scaleOptions = {
+				labelsFilter: this.options.labelsFilter,
 				templateString : this.options.scaleLabel,
 				height : this.chart.height,
 				width : this.chart.width,
