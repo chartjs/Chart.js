@@ -1206,8 +1206,12 @@
 			return this;
 		},
 		transition : function(props,ease){
-			each(props,function(value,key){
-				this[key] = ((value - this._saved[key]) * ease) + this._saved[key];
+		    	each(props,function(value,key){
+			    	if (!isNaN(_saved[key])) {
+				    	this[key] = ((value - this._saved[key]) * ease) + this._saved[key];
+				} else {
+				    	this[key] = value;
+				}
 			},this);
 			return this;
 		},
