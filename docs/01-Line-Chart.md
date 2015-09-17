@@ -57,6 +57,9 @@ These are the customisation options specific to Line charts. These options are m
 ```javascript
 {
 
+//Boolean or Number - Number of labels to be shown on X-Axis. false: no label displayed, true: all labels displayed, 10: only 10 labels displayed
+	showXLabels: 10,
+
 	///Boolean - Whether grid lines are shown across the chart
 	scaleShowGridLines : true,
 
