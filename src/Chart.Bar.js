@@ -7,6 +7,10 @@
 
 
 	var defaultConfig = {
+
+		//Use a second Y scale
+		scaleUse2Y: true,
+
 		//Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
 		scaleBeginAtZero : true,
 
@@ -98,12 +102,14 @@
 			});
 
 			//Iterate through each of the datasets, and build this into a property of the chart
+			var datasetIdx = 0;
 			helpers.each(data.datasets,function(dataset,datasetIndex){
 
 				var datasetObject = {
 					label : dataset.label || null,
 					fillColor : dataset.fillColor,
 					strokeColor : dataset.strokeColor,
+					yIndex: (this.options.scaleUse2Y && datasetIdx != 0 ) ? 1 : 0,
 					bars : []
 				};
 
@@ -114,6 +120,7 @@
 					datasetObject.bars.push(new this.BarClass({
 						value : dataPoint,
 						label : data.labels[index],
+						yIndex: (this.options.scaleUse2Y && datasetIdx != 0 ) ? 1 : 0,
 						datasetLabel: dataset.label,
 						strokeColor : dataset.strokeColor,
 						fillColor : dataset.fillColor,
@@ -121,6 +128,8 @@
 						highlightStroke : dataset.highlightStroke || dataset.strokeColor
 					}));
 				},this);
+
+							datasetIdx++;
 
 			},this);
 
@@ -178,13 +187,23 @@
 		buildScale : function(labels){
 			var self = this;
 
-			var dataTotal = function(){
+			/*var dataTotal = function(){
 				var values = [];
 				self.eachBars(function(bar){
 					values.push(bar.value);
 				});
 				return values;
-			};
+			};*/
+
+    		var dataTotal = function() {
+                var values = [];
+                values[0] = [];
+                values[1] = [];
+                self.eachBars(function(bar) {
+                    values[bar.yIndex ? 1 : 0].push(bar.value);
+                });
+                return values;
+            };
 
 			var scaleOptions = {
 				templateString : this.options.scaleLabel,
@@ -199,14 +218,34 @@
 				beginAtZero : this.options.scaleBeginAtZero,
 				integersOnly : this.options.scaleIntegersOnly,
 				calculateYRange: function(currentHeight){
-					var updatedRanges = helpers.calculateScaleRange(
-						dataTotal(),
-						currentHeight,
-						this.fontSize,
-						this.beginAtZero,
-						this.integersOnly
-					);
-					helpers.extend(this, updatedRanges);
+					var data = dataTotal();
+
+                    var updatedRangesLeft = helpers.calculateScaleRange(
+                        data[0],
+                        currentHeight,
+                        this.fontSize,
+                        this.beginAtZero,
+                        this.integersOnly
+                    );
+                    var updatedRangesRight = helpers.calculateScaleRange(
+                        data[1],
+                        currentHeight,
+                        this.fontSize,
+                        this.beginAtZero,
+                        this.integersOnly
+                    );
+
+                    /*Keep for other graph extension */
+                    this.steps = updatedRangesLeft.steps;
+					this.stepValue = updatedRangesLeft.stepValue;
+					this.min = updatedRangesLeft.min;
+					this.max = updatedRangesLeft.max;
+					helpers.extend(this, updatedRangesLeft);
+					/*Keep for other graph extension */
+
+                    helpers.extend(this.leftY, updatedRangesLeft);
+                    helpers.extend(this.rightY, updatedRangesRight);
+
 				},
 				xLabels : labels,
 				font : helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.scaleFontFamily),
@@ -245,6 +284,7 @@
 					y: this.scale.endPoint,
 					width : this.scale.calculateBarWidth(this.datasets.length),
 					base : this.scale.endPoint,
+					yIndex: (this.options.scaleUse2Y && datasetIndex != 0 ) ? 1 : 0,
 					strokeColor : this.datasets[datasetIndex].strokeColor,
 					fillColor : this.datasets[datasetIndex].fillColor
 				}));
@@ -289,7 +329,7 @@
 						//Transition then draw
 						bar.transition({
 							x : this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
-							y : this.scale.calculateY(bar.value),
+							y : this.scale.calculateY(bar),
 							width : this.scale.calculateBarWidth(this.datasets.length)
 						}, easingDecimal).draw();
 					}

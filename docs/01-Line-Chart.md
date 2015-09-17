@@ -56,6 +56,8 @@ These are the customisation options specific to Line charts. These options are m
 
 ```javascript
 {
+	//Boolean - Show or not a second y axis for other curve than the first one
+	scaleUse2Y : false
 
 	///Boolean - Whether grid lines are shown across the chart
 	scaleShowGridLines : true,
