@@ -86,8 +86,8 @@
 
 		update: function(reset) {
 
-			this.chart.outerRadius = (helpers.min([this.chart.chart.width, this.chart.chart.height]) / 2) - this.chart.options.elements.arc.borderWidth / 2;
-			this.chart.innerRadius = this.chart.options.cutoutPercentage ? (this.chart.outerRadius / 100) * (this.chart.options.cutoutPercentage) : 1;
+			this.chart.outerRadius = Math.max((helpers.min([this.chart.chart.width, this.chart.chart.height]) / 2) - this.chart.options.elements.arc.borderWidth / 2, 0);
+			this.chart.innerRadius = Math.max(this.chart.options.cutoutPercentage ? (this.chart.outerRadius / 100) * (this.chart.options.cutoutPercentage) : 1, 0);
 			this.chart.radiusLength = (this.chart.outerRadius - this.chart.innerRadius) / this.chart.data.datasets.length;
 
 			this.getDataset().total = 0;
