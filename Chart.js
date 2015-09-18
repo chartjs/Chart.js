@@ -1841,54 +1841,6 @@
 					}
 				});
 
-				// Recalculate because the size of each scale might have changed slightly due to the margins (label rotation for instance)
-				totalLeftWidth = xPadding;
-				totalRightWidth = xPadding;
-				totalTopHeight = yPadding;
-				totalBottomHeight = yPadding;
-
-				helpers.each(leftScales, function(scaleInstance) {
-					totalLeftWidth += scaleInstance.width;
-				});
-
-				helpers.each(rightScales, function(scaleInstance) {
-					totalRightWidth += scaleInstance.width;
-				});
-
-				helpers.each(topScales, function(scaleInstance) {
-					totalTopHeight += scaleInstance.height;
-				});
-				helpers.each(bottomScales, function(scaleInstance) {
-					totalBottomHeight += scaleInstance.height;
-				});
-
-				// Figure out if our chart area changed. This would occur if the dataset scale label rotation
-				// changed due to the application of the margins in step 6. Since we can only get bigger, this is safe to do
-				// without calling `fit` again
-				var newMaxChartHeight = height - totalTopHeight - totalBottomHeight;
-				var newMaxChartWidth = width - totalLeftWidth - totalRightWidth;
-
-				if (newMaxChartWidth !== maxChartWidth || newMaxChartHeight !== maxChartHeight) {
-					helpers.each(leftScales, function(scale) {
-						scale.height = newMaxChartHeight;
-					});
-
-					helpers.each(rightScales, function(scale) {
-						scale.height = newMaxChartHeight;
-					});
-
-					helpers.each(topScales, function(scale) {
-						scale.width = newMaxChartWidth;
-					});
-
-					helpers.each(bottomScales, function(scale) {
-						scale.width = newMaxChartWidth;
-					});
-
-					maxChartHeight = newMaxChartHeight;
-					maxChartWidth = newMaxChartWidth;
-				}
-
 				// Step 7 
 				// Position the scales
 				var left = xPadding;
