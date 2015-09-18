@@ -160,6 +160,13 @@
 
 			this.firstTick.startOf(this.tickUnit);
 			this.lastTick.endOf(this.tickUnit);
+			this.smallestLabelSeparation = this.width;
+
+			var i = 0;
+
+			for (i = 1; i < this.labelMoments.length; i++) {
+				this.smallestLabelSeparation = Math.min(this.smallestLabelSeparation, this.labelMoments[i].diff(this.labelMoments[i - 1], this.tickUnit, true));
+			}
 
 
 			// Tick displayFormat override
@@ -168,7 +175,6 @@
 			}
 
 			// For every unit in between the first and last moment, create a moment and add it to the labels tick
-			var i = 0;
 			if (this.options.labels.userCallback) {
 				for (; i <= this.tickRange; i++) {
 					this.ticks.push(
@@ -192,12 +198,8 @@
 			//      this.left, this.top, this.right, and this.bottom have been defined
 			if (this.isHorizontal()) {
 				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
-				var valueWidth = innerWidth / Math.max((this.ticks.length - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
+				var valueWidth = innerWidth / Math.max(this.ticks.length - 1, 1);
 				var valueOffset = (innerWidth * decimal) + this.paddingLeft;
-
-				if (this.options.gridLines.offsetGridLines && includeOffset) {
-					valueOffset += (valueWidth / 2);
-				}
 
 				return this.left + Math.round(valueOffset);
 			} else {
@@ -212,7 +214,7 @@
 
 		// Functions needed for bar charts
 		calculateBaseWidth: function() {
-			return (this.getPixelForValue(null, this.ticks.length / 100, 0, true) - this.getPixelForValue(null, 0, 0, true)) - (2 * this.options.categorySpacing);
+			return (this.getPixelForValue(null, this.smallestLabelSeparation / this.tickRange, 0, true) - this.getPixelForValue(null, 0, 0, true)) - (2 * this.options.categorySpacing);
 		},
 		calculateBarWidth: function(barDatasetCount) {
 			//The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
@@ -226,7 +228,8 @@
 		calculateBarX: function(barDatasetCount, datasetIndex, elementIndex) {
 
 			var xWidth = this.calculateBaseWidth(),
-				xAbsolute = this.getPixelForValue(null, elementIndex, datasetIndex, true) - (xWidth / 2),
+				offset = this.labelMoments[elementIndex].diff(this.firstTick, this.tickUnit, true),
+				xAbsolute = this.getPixelForValue(null, offset / this.tickRange, datasetIndex, true) - (xWidth / 2),
 				barWidth = this.calculateBarWidth(barDatasetCount);
 
 			if (this.options.stacked) {

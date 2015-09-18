@@ -63,7 +63,7 @@
 				} else {
 					inRange = (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2) && (mouseY >= vm.base && mouseY <= vm.y);
 				}
-			} 
+			}
 
 			return inRange;
 		},
