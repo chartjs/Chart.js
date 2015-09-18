@@ -362,8 +362,8 @@
 
 				if (this.options.datasetFill && pointsWithValues.length > 0){
 					//Round off the line by going to the base of the chart, back to the start, then fill.
-					ctx.lineTo(pointsWithValues[pointsWithValues.length - 1].x, this.scale.endPoint);
-					ctx.lineTo(pointsWithValues[0].x, this.scale.endPoint);
+					ctx.lineTo(pointsWithValues[pointsWithValues.length - 1].x, this.scale.zeroPoint);
+					ctx.lineTo(pointsWithValues[0].x, this.scale.zeroPoint);
 					ctx.fillStyle = dataset.fillColor;
 					ctx.closePath();
 					ctx.fill();
