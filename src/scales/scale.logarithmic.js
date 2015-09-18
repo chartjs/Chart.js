@@ -22,7 +22,6 @@
 
 		// scale numbers
 		reverse: false,
-		beginAtZero: false,
 		override: null,
 
 		// label settings
@@ -160,8 +159,7 @@
 			this.min = null;
 			this.max = null;
 
-			var positiveValues = [];
-			var negativeValues = [];
+			var values = [];
 
 			if (this.options.stacked) {
 				helpers.each(this.data.datasets, function(dataset) {
@@ -170,23 +168,18 @@
 
 							var value = this.getRightValue(rawValue);
 
-							positiveValues[index] = positiveValues[index] || 0;
-							negativeValues[index] = negativeValues[index] || 0;
+							values[index] = values[index] || 0;
 
 							if (this.options.relativePoints) {
-								positiveValues[index] = 100;
+								values[index] = 100;
 							} else {
-								if (value < 0) {
-									negativeValues[index] += value;
-								} else {
-									positiveValues[index] += value;
-								}
+								// Don't need to split positive and negative since the log scale can't handle a 0 crossing
+								values[index] += value;
 							}
 						}, this);
 					}
 				}, this);
 
-				var values = positiveValues.concat(negativeValues);
 				this.min = helpers.min(values);
 				this.max = helpers.max(values);
 
@@ -213,8 +206,13 @@
 			}
 
 			if (this.min === this.max) {
-				this.min--;
-				this.max++;
+				if (this.min !== 0 && this.min !== null) {
+					this.min = Math.pow(10, Math.floor(helpers.log10(this.min)) - 1);
+					this.max = Math.pow(10, Math.floor(helpers.log10(this.max)) + 1);
+				} else {
+					this.min = 1;
+					this.max = 10;
+				}
 			}
 		},
 
@@ -251,17 +249,9 @@
 
 				var value = this.data.datasets[datasetIndex].data[index];
 
-				if (value < 0) {
-					for (var i = 0; i < datasetIndex; i++) {
-						if (this.data.datasets[i].yAxisID === this.id) {
-							base += this.data.datasets[i].data[index] < 0 ? this.data.datasets[i].data[index] : 0;
-						}
-					}
-				} else {
-					for (var j = 0; j < datasetIndex; j++) {
-						if (this.data.datasets[j].yAxisID === this.id) {
-							base += this.data.datasets[j].data[index] > 0 ? this.data.datasets[j].data[index] : 0;
-						}
+				for (var j = 0; j < datasetIndex; j++) {
+					if (this.data.datasets[j].yAxisID === this.id) {
+						base += this.data.datasets[j].data[index];
 					}
 				}
 
@@ -270,10 +260,7 @@
 
 			base = this.getPixelForValue(this.min);
 
-			if (this.beginAtZero || ((this.min <= 0 && this.max >= 0) || (this.min >= 0 && this.max <= 0))) {
-				base = this.getPixelForValue(0);
-				base += this.options.gridLines.lineWidth;
-			} else if (this.min < 0 && this.max < 0) {
+			if (this.min < 0 && this.max < 0) {
 				// All values are negative. Use the top as the base
 				base = this.getPixelForValue(this.max);
 			}
