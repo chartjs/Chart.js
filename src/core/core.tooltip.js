@@ -164,7 +164,11 @@
 						x: medianPosition.x,
 						y: medianPosition.y,
 						labels: labels,
-						title: this._data.labels && this._data.labels.length ? this._data.labels[this._active[0]._index] : '',
+						title: (function() {
+							return this._data.timeLabels ? this._data.timeLabels[this._active[0]._index] :
+								(this._data.labels && this._data.labels.length) ? this._data.labels[this._active[0]._index] :
+								'';
+						}).call(this),
 						legendColors: colors,
 						legendBackgroundColor: this._options.tooltips.multiKeyBackground,
 					});

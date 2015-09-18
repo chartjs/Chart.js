@@ -34,7 +34,8 @@ var srcFiles = [
 	'./src/elements/**',
 	'./src/charts/**',
 	'./node_modules/color/dist/color.min.js',
-	'./node_modules/javascript-detect-element-resize/detect-element-resize.js'
+	'./node_modules/javascript-detect-element-resize/detect-element-resize.js',
+	'./node_modules/moment/min/moment.min.js'
 ];
 
 
@@ -177,7 +178,10 @@ function moduleSizesTask() {
 }
 
 function watchTask() {
-	gulp.watch('./src/**', ['build', 'unittest', 'unittestWatch']);
+	if (util.env.test) {
+		return gulp.watch('./src/**', ['build', 'unittest', 'unittestWatch']);
+	}
+	return gulp.watch('./src/**', ['build']);
 }
 
 function serverTask() {

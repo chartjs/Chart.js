@@ -387,8 +387,7 @@
 				} else {
 					// Generate a reusable function that will serve as a template
 					// generator (and which will be cached).
-					fn = new Function("obj",
-						"var p=[],print=function(){p.push.apply(p,arguments);};" +
+					var functionCode = "var p=[],print=function(){p.push.apply(p,arguments);};" +
 
 						// Introduce the data as local variables using with(){}
 						"with(obj){p.push('" +
@@ -402,8 +401,8 @@
 						.split("\t").join("');")
 						.split("%>").join("p.push('")
 						.split("\r").join("\\'") +
-						"');}return p.join('');"
-					);
+						"');}return p.join('');";
+					fn = new Function("obj", functionCode);
 
 					// Cache the result
 					templateStringCache[str] = fn;
