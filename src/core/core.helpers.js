@@ -758,7 +758,7 @@
 				// Store the device pixel ratio so that we can go backwards in `destroy`.
 				// The devicePixelRatio changes with zoom, so there are no guarantees that it is the same
 				// when destroy is called
-				chart.originalDevicePixelRatio = window.devicePixelRatio;
+				chart.originalDevicePixelRatio = chart.originalDevicePixelRatio || window.devicePixelRatio;
 			}
 		},
 		//-- Canvas methods
