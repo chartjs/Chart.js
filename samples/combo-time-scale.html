@@ -47,22 +47,31 @@
         };
 
         var config = {
-            type: 'line',
+            type: 'bar',
             data: {
                 //labels: [newTimestamp(0), newTimestamp(1), newTimestamp(2), newTimestamp(3), newTimestamp(4), newTimestamp(5), newTimestamp(6)], // unix timestamps
                 // labels: [newDate(0), newDate(1), newDate(2), newDate(3), newDate(4), newDate(5), newDate(6)], // Date Objects
-                labels: ["01/01/2015 20:00", "01/02/2015 21:00", "01/03/2015 22:00", "01/05/2015 23:00", "01/07/2015 03:00", "01/08/2015 10:00", "01/10/2015"], // Hours
+                labels: ["01/01/2015 20:00", "01/02/2015 20:00", "01/03/2015 22:00", "01/05/2015 23:00", "01/07/2015 03:00", "01/08/2015 10:00", "01/10/2015"], // Hours
                 // labels: ["01/01/2015", "01/02/2015", "01/03/2015", "01/06/2015", "01/15/2015", "01/17/2015", "01/30/2015"], // Days
                 // labels: ["12/25/2014", "01/08/2015", "01/15/2015", "01/22/2015", "01/29/2015", "02/05/2015", "02/12/2015"], // Weeks
                 datasets: [{
-                    label: "My First dataset",
+                    label: 'Dataset 1',
+                    backgroundColor: "rgba(151,187,205,0.5)",
                     data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
-                    fill: false,
-                    borderDash: [5, 5],
+                    borderColor: 'white',
+                    borderWidth: 2
                 }, {
-                    label: "My Second dataset",
+                    label: 'Dataset 2',
+                    backgroundColor: "rgba(151,187,205,0.5)",
                     data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
-                }]
+                    borderColor: 'white',
+                    borderWidth: 2
+                }, {
+                    type: 'line',
+                    label: 'Dataset 3',
+                    backgroundColor: "rgba(220,220,220,0.5)",
+                    data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+                }, ]
             },
             options: {
                 responsive: true,
@@ -143,10 +152,10 @@
         $('#addData').click(function() {
             if (config.data.datasets.length > 0) {
                 config.data.labels.push(
-                    myLine.scales['x-axis-0'].labelMoments[myLine.scales['x-axis-0'].labelMoments.length - 1]
-                    .clone()
-                    .add(1, 'day')
-                    .format('MM/DD/YYYY HH:mm')
+                    moment(
+                        config.data.labels[config.data.labels.length - 1], config.options.scales.xAxes[0].time.format
+                    ).add(1, 'day')
+                    .format('MM/DD/YYYY')
                 );
 
                 for (var index = 0; index < config.data.datasets.length; ++index) {
