@@ -19,6 +19,7 @@
 
 	//Occupy the global variable of Chart, and create a simple base class
 	var Chart = function(context, config) {
+		var chart = this;
 		this.config = config;
 
 		// Support a jQuery'd canvas element
@@ -31,35 +32,31 @@
 			context = context.getContext("2d");
 		}
 
-		this.ctx = context;
 		this.canvas = context.canvas;
 
-		// Figure out what the size of the chart will be.
-		// If the canvas has a specified width and height, we use those else
-		// we look to see if the canvas node has a CSS width and height. 
-		// If there is still no height, fill the parent container
-		this.width = context.canvas.width || parseInt(Chart.helpers.getStyle(context.canvas, 'width')) || Chart.helpers.getMaximumWidth(context.canvas);
-		this.height = context.canvas.height || parseInt(Chart.helpers.getStyle(context.canvas, 'height')) || Chart.helpers.getMaximumHeight(context.canvas);
+		this.ctx = context;
 
-		this.aspectRatio = this.width / this.height;
-
-		if (isNaN(this.aspectRatio) || isFinite(this.aspectRatio) === false) {
-			// If the canvas has no size, try and figure out what the aspect ratio will be.
-			// Some charts prefer square canvases (pie, radar, etc). If that is specified, use that
-			// else use the canvas default ratio of 2
-			this.aspectRatio = config.aspectRatio !== undefined ? config.aspectRatio : 2;
-		}
-
-		// High pixel density displays - multiply the size of the canvas height/width by the device pixel ratio, then scale.
-		Chart.helpers.retinaScale(this);
-
-		// Always bind this so that if the responsive state changes we still work
-		var _this = this;
-		Chart.helpers.addResizeListener(context.canvas.parentNode, function() {
-			if (config.options.responsive) {
-				_this.controller.resize();
+		//Variables global to the chart
+		var computeDimension = function(element, dimension) {
+			if (element['offset' + dimension]) {
+				return element['offset' + dimension];
+			} else {
+				return document.defaultView.getComputedStyle(element).getPropertyValue(dimension);
 			}
-		});
+		};
+
+		var width = this.width = computeDimension(context.canvas, 'Width') || context.canvas.width;
+		var height = this.height = computeDimension(context.canvas, 'Height') || context.canvas.height;
+
+		// Firefox requires this to work correctly
+		context.canvas.width = width;
+		context.canvas.height = height;
+
+		width = this.width = context.canvas.width;
+		height = this.height = context.canvas.height;
+		this.aspectRatio = this.width / this.height;
+		//High pixel density displays - multiply the size of the canvas height/width by the device pixel ratio, then scale.
+		Chart.helpers.retinaScale(this);
 
 		if (config) {
 			this.controller = new Chart.Controller(this);
