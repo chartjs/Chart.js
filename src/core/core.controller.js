@@ -123,11 +123,9 @@
 
 		resize: function resize(silent) {
 			this.stop();
-			var canvas = this.chart.canvas;
-			var newWidth = helpers.getMaximumWidth(this.chart.canvas);
-			var newHeight = (this.options.maintainAspectRatio && isNaN(this.chart.aspectRatio) === false && isFinite(this.chart.aspectRatio) && this.chart.aspectRatio !== 0) 
-				? newWidth / this.chart.aspectRatio 
-				: helpers.getMaximumHeight(this.chart.canvas);
+			var canvas = this.chart.canvas,
+				newWidth = helpers.getMaximumWidth(this.chart.canvas),
+				newHeight = this.options.maintainAspectRatio ? newWidth / this.chart.aspectRatio : helpers.getMaximumHeight(this.chart.canvas);
 
 			canvas.width = this.chart.width = newWidth;
 			canvas.height = this.chart.height = newHeight;
@@ -350,15 +348,19 @@
 		destroy: function destroy() {
 			this.clear();
 			helpers.unbindEvents(this, this.events);
-
-			// Reset canvas height/width attributes
 			var canvas = this.chart.canvas;
+
+			// Reset canvas height/width attributes starts a fresh with the canvas context
 			canvas.width = this.chart.width;
 			canvas.height = this.chart.height;
 
-			// if we scaled the canvas in response to a devicePixelRatio !== 1, we need to undo that transform here
-			if (this.chart.originalDevicePixelRatio !== undefined) {
-				canvas.scale(1 / this.chart.originalDevicePixelRatio, 1 / this.chart.originalDevicePixelRatio);
+			// < IE9 doesn't support removeProperty
+			if (canvas.style.removeProperty) {
+				canvas.style.removeProperty('width');
+				canvas.style.removeProperty('height');
+			} else {
+				canvas.style.removeAttribute('width');
+				canvas.style.removeAttribute('height');
 			}
 
 			delete Chart.instances[this.id];
