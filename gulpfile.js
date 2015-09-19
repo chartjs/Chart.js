@@ -34,6 +34,7 @@ var srcFiles = [
 	'./src/elements/**',
 	'./src/charts/**',
 	'./node_modules/color/dist/color.min.js',
+	'./node_modules/javascript-detect-element-resize/detect-element-resize.js',
 	'./node_modules/moment/min/moment.min.js'
 ];
 

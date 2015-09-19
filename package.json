@@ -24,6 +24,7 @@
     "inquirer": "^0.5.1",
     "jasmine": "^2.3.2",
     "jasmine-core": "^2.3.4",
+    "javascript-detect-element-resize": "git://github.com/chartjs/javascript-detect-element-resize.git",
     "jquery": "^2.1.4",
     "karma": "^0.12.37",
     "karma-chrome-launcher": "^0.2.0",
