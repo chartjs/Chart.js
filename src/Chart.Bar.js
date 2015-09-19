@@ -102,8 +102,8 @@
 
 				var datasetObject = {
 					label : dataset.label || null,
-					fillColor : dataset.fillColor,
-					strokeColor : dataset.strokeColor,
+					fillColor : helpers.nthOrIdentity(dataset.fillColor, datasetIndex),
+					strokeColor : helpers.nthOrIdentity(dataset.strokeColor, datasetIndex),
 					bars : []
 				};
 
@@ -115,10 +115,10 @@
 						value : dataPoint,
 						label : data.labels[index],
 						datasetLabel: dataset.label,
-						strokeColor : dataset.strokeColor,
-						fillColor : dataset.fillColor,
-						highlightFill : dataset.highlightFill || dataset.fillColor,
-						highlightStroke : dataset.highlightStroke || dataset.strokeColor
+						strokeColor : helpers.nthOrIdentity(dataset.strokeColor, index),
+						fillColor : helpers.nthOrIdentity(dataset.fillColor, index),
+						highlightFill : helpers.nthOrIdentity((dataset.highlightFill || dataset.fillColor), index),
+						highlightStroke : helpers.nthOrIdentity((dataset.highlightStroke || dataset.strokeColor), index),
 					}));
 				},this);
 
