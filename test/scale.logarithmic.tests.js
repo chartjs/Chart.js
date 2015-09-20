@@ -20,6 +20,14 @@ describe('Logarithmic Scale tests', function() {
 				zeroLineWidth: 1,
 				zeroLineColor: "rgba(0,0,0,0.25)",
 			},
+			scaleLabel: {
+				fontColor: '#666',
+				fontFamily: 'Helvetica Neue',
+				fontSize: 12,
+				fontStyle: 'normal',
+				labelString: '',
+				show: false,
+			},
 			reverse: false,
 			override: null,
 			labels: {
