@@ -512,6 +512,13 @@ describe('Logarithmic Scale tests', function() {
 		expect(verticalScale.paddingBottom).toBe(3);
 		expect(verticalScale.paddingLeft).toBe(0);
 		expect(verticalScale.paddingRight).toBe(0);
+
+		config.scaleLabel.show = true;
+		minSize = verticalScale.fit(100, 300);
+		expect(minSize).toEqual({
+			width: 71,
+			height: 300,
+		});
 	});
 
 	it('should fit correctly when horizontal', function() {
@@ -563,6 +570,13 @@ describe('Logarithmic Scale tests', function() {
 		expect(verticalScale.paddingBottom).toBe(0);
 		expect(verticalScale.paddingLeft).toBe(10);
 		expect(verticalScale.paddingRight).toBe(14);
+
+		config.scaleLabel.show = true;
+		minSize = verticalScale.fit(100, 300);
+		expect(minSize).toEqual({
+			width: 100,
+			height: 46,
+		});
 	});
 
 	it('should draw correctly horizontally', function() {
@@ -1004,6 +1018,8 @@ describe('Logarithmic Scale tests', function() {
 		config.gridLines.drawTicks = false;
 		config.gridLines.drawOnChartArea = false;
 		config.labels.show = false;
+		config.scaleLabel.show = true;
+		config.scaleLabel.labelString = 'my label';
 
 		mockContext.resetCalls();
 
@@ -1137,6 +1153,9 @@ describe('Logarithmic Scale tests', function() {
 		}, {
 			"name": "stroke",
 			"args": []
+		}, {
+			"name": "fillText",
+			"args": ["my label", 50, 22]
 		}]);
 
 		// Turn off display
@@ -1485,6 +1504,8 @@ describe('Logarithmic Scale tests', function() {
 		config.gridLines.drawTicks = false;
 		config.gridLines.drawOnChartArea = false;
 		config.labels.show = false;
+		config.scaleLabel.show = true;
+		config.scaleLabel.labelString = 'my label';
 
 		mockContext.resetCalls();
 
@@ -1563,6 +1584,21 @@ describe('Logarithmic Scale tests', function() {
 			"args": []
 		}, {
 			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [6, 150]
+		}, {
+			"name": "rotate",
+			"args": [-1.5707963267948966]
+		}, {
+			"name": "fillText",
+			"args": ["my label", 0, 0]
+		}, {
+			"name": "restore",
 			"args": []
 		}]);
 	});

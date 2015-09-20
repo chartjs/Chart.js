@@ -77,9 +77,11 @@
 			moveTo: function(x, y) {},
 			quadraticCurveTo: function() {},
 			restore: function() {},
+			rotate: function() {},
 			save: function() {},
 			setLineDash: function() {},
-			stroke: function() {}
+			stroke: function() {},
+			translate: function() {},
 		};
 
 		// attach methods to the class itself
