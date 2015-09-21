@@ -152,9 +152,7 @@
         $('#addData').click(function() {
             if (config.data.datasets.length > 0) {
                 config.data.labels.push(
-                    moment(
-                        config.data.labels[config.data.labels.length - 1], config.options.scales.xAxes[0].time.format
-                    ).add(1, 'day')
+                    myLine.scales['x-axis-0'].labelMoments[myLine.scales['x-axis-0'].labelMoments.length - 1].add(1, 'day')
                     .format('MM/DD/YYYY')
                 );
 
