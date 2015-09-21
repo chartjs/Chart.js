@@ -21,6 +21,7 @@
 	var Chart = function(context){
 		var chart = this;
 		this.canvas = context.canvas;
+		this.int_language = "en_EN";
 
 		this.ctx = context;
 
@@ -52,6 +53,11 @@
 
 		return this;
 	};
+
+	// Will convert a given variable into a int or float if it's a string and return a locale-separated value.
+	// Wasn't sure where to put this as this code is massive and not well separated for new eyes. Put it w/e.
+	function thousand_divider(integer) { return parseFloat(integer).toLocaleString(Chart.int_language); };
+
 	//Globally expose the defaults to allow for user updating/changing
 	Chart.defaults = {
 		global: {
@@ -1621,7 +1627,8 @@
 					ctx.textAlign = "right";
 					ctx.textBaseline = "middle";
 					if (this.showLabels){
-						ctx.fillText(labelString,xStart - 10,yLabelCenter);
+						//ctx.fillText(labelString,xStart - 10,yLabelCenter);
+						ctx.fillText(thousand_divider(labelString), xStart - 5, yLabelCenter);
 					}
 
 					// This is X axis, so draw it
