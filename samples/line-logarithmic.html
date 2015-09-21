@@ -58,11 +58,19 @@
             responsive: true,
             scales: {
                 xAxes: [{
-                    display: true
+                    display: true,
+                    scaleLabel: {
+                        show: true,
+                        labelString: 'x axis'
+                    }
                 }],
                 yAxes: [{
                     display: true,
-                    type: 'logarithmic'
+                    type: 'logarithmic',
+                    scaleLabel: {
+                        show: true,
+                        labelString: 'y axis'
+                    }
                 }]
             }
         }

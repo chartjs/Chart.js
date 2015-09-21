@@ -20,6 +20,20 @@
 			zeroLineColor: "rgba(0,0,0,0.25)",
 		},
 
+		// scale label
+		scaleLabel: {
+			fontColor: '#666',
+			fontFamily: 'Helvetica Neue',
+			fontSize: 12,
+			fontStyle: 'normal',
+
+			// actual label
+			labelString: '',
+
+			// display property
+			show: false,
+		},
+
 		// scale numbers
 		reverse: false,
 		override: null,
@@ -353,6 +367,15 @@
 				minSize.height = maxHeight; // fill all the height
 			}
 
+			// Are we showing a label for the scale?
+			if (this.options.scaleLabel.show) {
+				if (this.isHorizontal()) {
+					minSize.height += (this.options.scaleLabel.fontSize * 1.5);
+				} else {
+					minSize.width += (this.options.scaleLabel.fontSize * 1.5);
+				}
+			}
+
 			this.paddingLeft = 0;
 			this.paddingRight = 0;
 			this.paddingTop = 0;
@@ -501,6 +524,18 @@
 							}
 						}, this);
 					}
+
+					if (this.options.scaleLabel.show) {
+						// Draw the scale label
+						this.ctx.textAlign = "center";
+						this.ctx.textBaseline = 'middle';
+						this.ctx.font = helpers.fontString(this.options.scaleLabel.fontSize, this.options.scaleLabel.fontStyle, this.options.scaleLabel.fontFamily);
+
+						var scaleLabelX = this.left + ((this.right - this.left) / 2); // midpoint of the width
+						var scaleLabelY = this.options.position == 'bottom' ? this.bottom - (this.options.scaleLabel.fontSize / 2) : this.top + (this.options.scaleLabel.fontSize / 2);
+
+						this.ctx.fillText(this.options.scaleLabel.labelString, scaleLabelX, scaleLabelY);
+					}
 				} else {
 					// Vertical
 					if (this.options.gridLines.show) {
@@ -579,6 +614,22 @@
 							var yValue = this.getPixelForValue(this.ticks[index]);
 							this.ctx.fillText(label, labelStartX, yValue);
 						}, this);
+					}
+
+					if (this.options.scaleLabel.show) {
+						// Draw the scale label
+						var scaleLabelX = this.options.position == 'left' ? this.left + (this.options.scaleLabel.fontSize / 2) : this.right - (this.options.scaleLabel.fontSize / 2);
+						var scaleLabelY = this.top + ((this.bottom - this.top) / 2);
+						var rotation = this.options.position == 'left' ? -0.5 * Math.PI : 0.5 * Math.PI;
+
+						this.ctx.save();
+						this.ctx.translate(scaleLabelX, scaleLabelY);
+						this.ctx.rotate(rotation);
+						this.ctx.textAlign = "center";
+						this.ctx.font = helpers.fontString(this.options.scaleLabel.fontSize, this.options.scaleLabel.fontStyle, this.options.scaleLabel.fontFamily);
+						this.ctx.textBaseline = 'middle';
+						this.ctx.fillText(this.options.scaleLabel.labelString, 0, 0);
+						this.ctx.restore();
 					}
 				}
 			}

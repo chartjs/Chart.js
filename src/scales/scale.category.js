@@ -22,6 +22,20 @@
             offsetGridLines: false,
         },
 
+        // scale label
+        scaleLabel: {
+            fontColor: '#666',
+            fontFamily: 'Helvetica Neue',
+            fontSize: 12,
+            fontStyle: 'normal',
+
+            // actual label
+            labelString: '',
+
+            // display property
+            show: false,
+        },
+
         // label settings
         labels: {
             show: true,
@@ -192,6 +206,15 @@
                 height: 0,
             };
 
+            // Are we showing a label for the scale?
+            if (this.options.scaleLabel.show) {
+                if (this.isHorizontal()) {
+                    minSize.height += (this.options.scaleLabel.fontSize * 1.5);
+                } else {
+                    minSize.width += (this.options.scaleLabel.fontSize * 1.5);
+                }
+            }
+
             var labelFont = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
             var longestLabelWidth = helpers.longestText(this.ctx, labelFont, this.labels);
 
@@ -200,13 +223,15 @@
                 minSize.width = maxWidth;
             } else if (this.options.display) {
                 var labelWidth = this.options.labels.show ? longestLabelWidth + 6 : 0;
-                minSize.width = Math.min(labelWidth, maxWidth);
+                minSize.width += labelWidth;
+                minSize.width = Math.min(minSize.width, maxWidth);
             }
 
             // Height
             if (this.isHorizontal() && this.options.display) {
                 var labelHeight = (Math.sin(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.labels.fontSize;
-                minSize.height = Math.min(this.options.labels.show ? labelHeight : 0, maxHeight);
+                minSize.height += this.options.labels.show ? labelHeight : 0;
+                minSize.height = Math.min(minSize.height, maxHeight);
             } else if (this.options.display) {
                 minSize.height = maxHeight;
             }
@@ -287,12 +312,40 @@
                             this.ctx.restore();
                         }
                     }, this);
+
+                    if (this.options.scaleLabel.show) {
+                        // Draw the scale label
+                        this.ctx.textAlign = "center";
+                        this.ctx.textBaseline = 'middle';
+                        this.ctx.font = helpers.fontString(this.options.scaleLabel.fontSize, this.options.scaleLabel.fontStyle, this.options.scaleLabel.fontFamily);
+
+                        var scaleLabelX = this.left + ((this.right - this.left) / 2); // midpoint of the width
+                        var scaleLabelY = this.options.position == 'bottom' ? this.bottom - (this.options.scaleLabel.fontSize / 2) : this.top + (this.options.scaleLabel.fontSize / 2);
+
+                        this.ctx.fillText(this.options.scaleLabel.labelString, scaleLabelX, scaleLabelY);
+                    }
                 } else {
                     // Vertical
                     if (this.options.gridLines.show) {}
 
                     if (this.options.labels.show) {
                         // Draw the labels
+                    }
+
+                    if (this.options.scaleLabel.show) {
+                        // Draw the scale label
+                        var scaleLabelX = this.options.position == 'left' ? this.left + (this.options.scaleLabel.fontSize / 2) : this.right - (this.options.scaleLabel.fontSize / 2);
+                        var scaleLabelY = this.top + ((this.bottom - this.top) / 2);
+                        var rotation = this.options.position == 'left' ? -0.5 * Math.PI : 0.5 * Math.PI;
+
+                        this.ctx.save();
+                        this.ctx.translate(scaleLabelX, scaleLabelY);
+                        this.ctx.rotate(rotation);
+                        this.ctx.textAlign = "center";
+                        this.ctx.font = helpers.fontString(this.options.scaleLabel.fontSize, this.options.scaleLabel.fontStyle, this.options.scaleLabel.fontFamily);
+                        this.ctx.textBaseline = 'middle';
+                        this.ctx.fillText(this.options.scaleLabel.labelString, 0, 0);
+                        this.ctx.restore();
                     }
                 }
             }

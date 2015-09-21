@@ -10,7 +10,7 @@
 <body>
     <div style="width:50%">
         <div>
-            <canvas id="canvas" height="450" width="600"></canvas>
+            <canvas id="canvas" height="450" width="600" style="border: 1px solid red;"></canvas>
         </div>
     </div>
     <script>
@@ -145,7 +145,11 @@
 	            					return tick.toString() + "Hz";
 	            				}
 	            				return '';
-	            			}
+	            			},
+	            		},
+	            		scaleLabel: {
+	            			labelString: 'Frequency',
+	            			show: true,
 	            		}
 	            	}],
 	            	yAxes: [{
@@ -154,6 +158,10 @@
 	            			userCallback: function(tick) {
 	            				return tick.toString() + "dB";
 	            			}
+	            		},
+	            		scaleLabel: {
+	            			labelString: 'Voltage',
+	            			show: true
 	            		}
 	            	}]
 	            }

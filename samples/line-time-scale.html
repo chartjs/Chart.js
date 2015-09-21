@@ -73,10 +73,18 @@
                         tick: {
                             format: 'MM/DD/YYYY HH:mm',
                             // round: 'day'
+                        },
+                        scaleLabel: {
+                            show: true,
+                            labelString: 'Date'
                         }
                     }, ],
                     yAxes: [{
-                        display: true
+                        display: true,
+                        scaleLabel: {
+                            show: true,
+                            labelString: 'value'
+                        }
                     }]
                 },
                 elements: {
