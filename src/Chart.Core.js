@@ -1695,6 +1695,11 @@
 				valueWidth = innerWidth/Math.max((this.valuesCount - ((this.offsetGridLines) ? 0 : 1)), 1),
 				valueOffset = (valueWidth * index) + this.xScalePaddingLeft;
 
+			if (this.valuesCount === 1 && !this.offsetGridLines) {
+				valueWidth = innerWidth;
+				valueOffset = (valueWidth * index) + this.xScalePaddingLeft;
+			}
+
 			if (this.offsetGridLines){
 				valueOffset += (valueWidth/2);
 			}
