@@ -73,11 +73,18 @@
 
         // Functions needed for bar charts
         calculateBaseWidth: function() {
-            return (this.getPixelForValue(null, 1, 0, true) - this.getPixelForValue(null, 0, 0, true)) - (2 * this.options.categorySpacing);
+            var base = this.getPixelForValue(null, 1, 0, true) - this.getPixelForValue(null, 0, 0, true);
+            var spacing = 2 * this.options.categorySpacing;
+            if (base < spacing * 2) {
+                var mod = Math.min((spacing * 2) / base, 1.5);
+                base = (base / 2) * mod;
+                return base;
+            }
+            return base - spacing;
         },
         calculateBarWidth: function(barDatasetCount) {
             //The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
-            var baseWidth = this.calculateBaseWidth() - ((barDatasetCount - 1) * this.options.spacing);
+            var baseWidth = Math.max(this.calculateBaseWidth() - (this.options.stacked ? 0 : (barDatasetCount - 1) * this.options.spacing), 1);
 
             if (this.options.stacked) {
                 return baseWidth;
