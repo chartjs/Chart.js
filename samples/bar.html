@@ -25,121 +25,120 @@
     <div>
         <h3>Legend</h3>
         <div id="legendContainer">
-            
         </div>
     </div>
     <script>
-    var randomScalingFactor = function() {
-        return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 100);
-    };
-    var randomColorFactor = function() {
-        return Math.round(Math.random() * 255);
-    };
-    var randomColor = function() {
-        return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
-    };
-
-    var barChartData = {
-        labels: ["January", "February", "March", "April", "May", "June", "July"],
-        datasets: [{
-            label: 'Dataset 1',
-            backgroundColor: "rgba(220,220,220,0.5)",
-            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
-        }, {
-            label: 'Dataset 2',
-            backgroundColor: "rgba(151,187,205,0.5)",
-            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
-        }, {
-            label: 'Dataset 3',
-            backgroundColor: "rgba(151,187,205,0.5)",
-            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
-        }]
-
-    };
-
-    function updateLegend() {
-        $legendContainer = $('#legendContainer');
-        $legendContainer.empty();
-        $legendContainer.append(window.myBar.generateLegend());
-    }
-
-    window.onload = function() {
-        var ctx = document.getElementById("canvas").getContext("2d");
-        window.myBar = new Chart(ctx, {
-            type: 'bar',
-            data: barChartData,
-            options: {
-                responsive: true,
-                scales: {
-                    xAxes: [{
-                        // So that bars fill the entire width of the grid
-                        categorySpacing: 0,
-                        spacing: 0
-                    }]
-                }
-            }
-        });
-
-        updateLegend();
-    };
-
-    $('#randomizeData').click(function() {
-        var zero = Math.random() < 0.2 ? true : false;
-        $.each(barChartData.datasets, function(i, dataset) {
-            dataset.backgroundColor = randomColor();
-            dataset.data = dataset.data.map(function() {
-                return zero ? 0.0 : randomScalingFactor();
-            });
-
-        });
-        window.myBar.update();
-        updateLegend();
-    });
-
-    $('#addDataset').click(function() {
-        var newDataset = {
-            label: 'Dataset ' + barChartData.datasets.length,
-            backgroundColor: randomColor(),
-            data: []
+        var randomScalingFactor = function() {
+            return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 100);
+        };
+        var randomColorFactor = function() {
+            return Math.round(Math.random() * 255);
+        };
+        var randomColor = function() {
+            return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
         };
 
-        for (var index = 0; index < barChartData.labels.length; ++index) {
-            newDataset.data.push(randomScalingFactor());
+        var barChartData = {
+            labels: ["January", "February", "March", "April", "May", "June", "July"],
+            datasets: [{
+                label: 'Dataset 1',
+                backgroundColor: "rgba(220,220,220,0.5)",
+                data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+            }, {
+                label: 'Dataset 2',
+                backgroundColor: "rgba(151,187,205,0.5)",
+                data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+            }, {
+                label: 'Dataset 3',
+                backgroundColor: "rgba(151,187,205,0.5)",
+                data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+            }]
+
+        };
+
+        function updateLegend() {
+            $legendContainer = $('#legendContainer');
+            $legendContainer.empty();
+            $legendContainer.append(window.myBar.generateLegend());
         }
 
-        window.myBar.addDataset(newDataset, 1);
-        updateLegend();
-    });
-
-    $('#addData').click(function() {
-        if (barChartData.datasets.length > 0) {
-            barChartData.labels.push('data #' + barChartData.labels.length);
-
-            for (var index = 0; index < barChartData.datasets.length; ++index) {
-                window.myBar.addData(randomScalingFactor(), index);
-            }
+        window.onload = function() {
+            var ctx = document.getElementById("canvas").getContext("2d");
+            window.myBar = new Chart(ctx, {
+                type: 'bar',
+                data: barChartData,
+                options: {
+                    responsive: true,
+                    scales: {
+                        xAxes: [{
+                            // So that bars fill the entire width of the grid
+                            categorySpacing: 10,
+                            spacing: 0
+                        }]
+                    }
+                }
+            });
 
             updateLegend();
-        }
-    });
+        };
 
-    $('#removeDataset').click(function() {
-        window.myBar.removeDataset(0);
-        updateLegend();
-    });
+        $('#randomizeData').click(function() {
+            var zero = Math.random() < 0.2 ? true : false;
+            $.each(barChartData.datasets, function(i, dataset) {
+                dataset.backgroundColor = randomColor();
+                dataset.data = dataset.data.map(function() {
+                    return zero ? 0.0 : randomScalingFactor();
+                });
 
-    $('#removeData').click(function() {
-        barChartData.labels.splice(-1, 1); // remove the label first
-
-        barChartData.datasets.forEach(function(dataset, datasetIndex) {
-            window.myBar.removeData(datasetIndex, -1);
+            });
+            window.myBar.update();
+            updateLegend();
         });
-        updateLegend();
-    });
 
-    $('#show').click(function() {
-        document.getElementById('container').style.display = '';
-    });
+        $('#addDataset').click(function() {
+            var newDataset = {
+                label: 'Dataset ' + barChartData.datasets.length,
+                backgroundColor: randomColor(),
+                data: []
+            };
+
+            for (var index = 0; index < barChartData.labels.length; ++index) {
+                newDataset.data.push(randomScalingFactor());
+            }
+
+            window.myBar.addDataset(newDataset, 1);
+            updateLegend();
+        });
+
+        $('#addData').click(function() {
+            if (barChartData.datasets.length > 0) {
+                barChartData.labels.push('data #' + barChartData.labels.length);
+
+                for (var index = 0; index < barChartData.datasets.length; ++index) {
+                    window.myBar.addData(randomScalingFactor(), index);
+                }
+
+                updateLegend();
+            }
+        });
+
+        $('#removeDataset').click(function() {
+            window.myBar.removeDataset(0);
+            updateLegend();
+        });
+
+        $('#removeData').click(function() {
+            barChartData.labels.splice(-1, 1); // remove the label first
+
+            barChartData.datasets.forEach(function(dataset, datasetIndex) {
+                window.myBar.removeData(datasetIndex, -1);
+            });
+            updateLegend();
+        });
+
+        $('#show').click(function() {
+            document.getElementById('container').style.display = '';
+        });
     </script>
 </body>
 
