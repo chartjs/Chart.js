@@ -176,7 +176,7 @@
 
 			// For every unit in between the first and last moment, create a moment and add it to the labels tick
 			if (this.options.labels.userCallback) {
-				for (; i <= this.tickRange; i++) {
+				for (i = 0; i <= this.tickRange; i++) {
 					this.ticks.push(
 						this.options.labels.userCallback(this.firstTick.clone()
 							.add(i, this.tickUnit)
@@ -185,7 +185,7 @@
 					);
 				}
 			} else {
-				for (; i <= this.tickRange; i++) {
+				for (i = 0; i <= this.tickRange; i++) {
 					this.ticks.push(this.firstTick.clone()
 						.add(i, this.tickUnit)
 						.format(this.options.tick.displayFormat ? this.options.tick.displayFormat : time.unit[this.tickUnit].display)
