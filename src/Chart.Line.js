@@ -263,6 +263,7 @@
 			this.clear();
 
 			var ctx = this.chart.ctx;
+			var yBase = 0; // base to draw area from
 
 			// Some helper methods for getting the next/prev points
 			var hasValue = function(item){
@@ -362,8 +363,13 @@
 
 				if (this.options.datasetFill && pointsWithValues.length > 0){
 					//Round off the line by going to the base of the chart, back to the start, then fill.
-					ctx.lineTo(pointsWithValues[pointsWithValues.length - 1].x, this.scale.endPoint);
-					ctx.lineTo(pointsWithValues[0].x, this.scale.endPoint);
+					if (this.scale.endPoint <= this.scale.calculateY(0)) {
+						yBase = this.scale.endPoint;
+					} else {
+						yBase = this.scale.calculateY(0);
+					}
+					ctx.lineTo(dataset.points[dataset.points.length-1].x, yBase);
+					ctx.lineTo(this.scale.calculateX(0), yBase);
 					ctx.fillStyle = dataset.fillColor;
 					ctx.closePath();
 					ctx.fill();
