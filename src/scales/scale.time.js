@@ -229,9 +229,9 @@
 			var baseWidth = this.calculateBaseWidth() - ((barDatasetCount - 1) * this.options.spacing);
 
 			if (this.options.stacked) {
-				return baseWidth;
+				return Math.max(baseWidth, 1);
 			}
-			return (baseWidth / barDatasetCount);
+			return Math.max((baseWidth / barDatasetCount), 1);
 		},
 		calculateBarX: function(barDatasetCount, datasetIndex, elementIndex) {
 
