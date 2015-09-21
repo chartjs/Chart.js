@@ -642,13 +642,19 @@
 				boundingRect = canvas.getBoundingClientRect();
 
 			if (e.touches) {
-				mouseX = e.touches[0].clientX - boundingRect.left;
-				mouseY = e.touches[0].clientY - boundingRect.top;
+				mouseX = e.touches[0].clientX;
+				mouseY = e.touches[0].clientY;
 
 			} else {
-				mouseX = e.clientX - boundingRect.left;
-				mouseY = e.clientY - boundingRect.top;
+				mouseX = e.clientX;
+				mouseY = e.clientY;
 			}
+
+			// Scale mouse coordinates into canvas coordinates
+			// by following the pattern laid out by 'jerryj' in the comments of 
+			// http://www.html5canvastutorials.com/advanced/html5-canvas-mouse-coordinates/
+			mouseX = Math.round((mouseX - boundingRect.left) / (boundingRect.right - boundingRect.left) * canvas.width);
+			mouseY = Math.round((mouseY - boundingRect.top) / (boundingRect.bottom - boundingRect.top) * canvas.height);
 
 			return {
 				x: mouseX,
