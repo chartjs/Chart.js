@@ -5,6 +5,27 @@
 
 *Simple HTML5 Charts using the canvas element* [chartjs.org](http://www.chartjs.org)
 
+## v2.0 Development
+The next generation and release of Chart.js has been well under way this year and we are very close to releasing some amazing new features including, but not limited to:
+- Rewritten, optimized, and unit-tested
+- New and improved scales (log, time, linear, category, multiple scales)
+- Improved responsiveness and resizing
+- Powerful new API for adding, removing, changing, and updating data
+- Animations on all elements, colors and tooltips
+- Powerful customization when you need it. Automatic and dynamic when you don't.
+- Excellent support for modern frameworks and modular build systems.
+- Even more extensible via new element controllers, combo chart support, and hook system
+- Bug fixes not addressed in 1.x, and much, much more...
+
+#####Contributing to 2.0
+Submit PR's to the v2.0-dev branch.
+
+#####Building and Testing
+`gulp build`, `gulp test`
+
+## v1.x Status: Feature Complete
+We are now treating v1.x to be feature complete.  PR's for bug fixes are welcome, but we urge any open PR's for features to 1.x to be refactored and resubmitted for v2.x (if the feature has not already been implemented).
+
 ## Documentation
 
 You can find documentation at [chartjs.org/docs](http://www.chartjs.org/docs/). The markdown files that build the site are available under `/docs`. Please note - in some of the json examples of configuration you might notice some liquid tags - this is just for the generating the site html, please disregard.
