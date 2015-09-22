@@ -79,7 +79,24 @@
 			this.update(true);
 		},
 
-		update: function(reset) {
+		buildOrUpdateElements: function buildOrUpdateElements() {
+			// Handle the number of data points changing
+			var numData = this.getDataset().data.length;
+			var numPoints = this.getDataset().metaData.length;
+
+			// Make sure that we handle number of datapoints changing
+			if (numData < numPoints) {
+				// Remove excess bars for data points that have been removed
+				this.getDataset().metaData.splice(numData, numPoints - numData)
+			} else if (numData > numPoints) {
+				// Add new elements
+				for (var index = numPoints; index < numData; ++index) {
+					this.addElementAndReset(index);
+				}
+			}
+		},
+
+		update: function update(reset) {
 
 			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
 			//this.chart.scale.setScaleSize();

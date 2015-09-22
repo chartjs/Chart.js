@@ -84,20 +84,7 @@
 			this.update(true);
 		},
 
-		update: function(reset) {
-
-			this.chart.outerRadius = Math.max((helpers.min([this.chart.chart.width, this.chart.chart.height]) / 2) - this.chart.options.elements.arc.borderWidth / 2, 0);
-			this.chart.innerRadius = Math.max(this.chart.options.cutoutPercentage ? (this.chart.outerRadius / 100) * (this.chart.options.cutoutPercentage) : 1, 0);
-			this.chart.radiusLength = (this.chart.outerRadius - this.chart.innerRadius) / this.chart.data.datasets.length;
-
-			this.getDataset().total = 0;
-			helpers.each(this.getDataset().data, function(value) {
-				this.getDataset().total += Math.abs(value);
-			}, this);
-
-			this.outerRadius = this.chart.outerRadius - (this.chart.radiusLength * this.index);
-			this.innerRadius = this.outerRadius - this.chart.radiusLength;
-
+		buildOrUpdateElements: function buildOrUpdateElements() {
 			// Make sure we have metaData for each data point
 			var numData = this.getDataset().data.length;
 			var numArcs = this.getDataset().metaData.length;
@@ -112,6 +99,21 @@
 					this.addElementAndReset(index);
 				}
 			}
+		},
+
+		update: function update(reset) {
+
+			this.chart.outerRadius = Math.max((helpers.min([this.chart.chart.width, this.chart.chart.height]) / 2) - this.chart.options.elements.arc.borderWidth / 2, 0);
+			this.chart.innerRadius = Math.max(this.chart.options.cutoutPercentage ? (this.chart.outerRadius / 100) * (this.chart.options.cutoutPercentage) : 1, 0);
+			this.chart.radiusLength = (this.chart.outerRadius - this.chart.innerRadius) / this.chart.data.datasets.length;
+
+			this.getDataset().total = 0;
+			helpers.each(this.getDataset().data, function(value) {
+				this.getDataset().total += Math.abs(value);
+			}, this);
+
+			this.outerRadius = this.chart.outerRadius - (this.chart.radiusLength * this.index);
+			this.innerRadius = this.outerRadius - this.chart.radiusLength;
 
 			helpers.each(this.getDataset().metaData, function(arc, index) {
 				this.updateElement(arc, index, reset);

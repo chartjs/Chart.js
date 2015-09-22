@@ -106,7 +106,8 @@
                 newDataset.data.push(randomScalingFactor());
             }
 
-            window.myBar.addDataset(newDataset, 1);
+            barChartData.datasets.push(newDataset);
+            window.myBar.update();
             updateLegend();
         });
 
@@ -115,15 +116,18 @@
                 barChartData.labels.push('data #' + barChartData.labels.length);
 
                 for (var index = 0; index < barChartData.datasets.length; ++index) {
-                    window.myBar.addData(randomScalingFactor(), index);
+                    //window.myBar.addData(randomScalingFactor(), index);
+                    barChartData.datasets[index].data.push(randomScalingFactor());
                 }
 
+                window.myBar.update();
                 updateLegend();
             }
         });
 
         $('#removeDataset').click(function() {
-            window.myBar.removeDataset(0);
+            barChartData.datasets.splice(0, 1);
+            window.myBar.update();
             updateLegend();
         });
 
@@ -131,8 +135,10 @@
             barChartData.labels.splice(-1, 1); // remove the label first
 
             barChartData.datasets.forEach(function(dataset, datasetIndex) {
-                window.myBar.removeData(datasetIndex, -1);
+                dataset.data.pop();
             });
+
+            window.myBar.update();
             updateLegend();
         });
 
