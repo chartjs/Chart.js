@@ -16,7 +16,7 @@
     <button id="removeDataset">Remove Dataset</button>
     <button id="addData">Add Data</button>
     <button id="removeData">Remove Data</button>
-    ]<div>
+    <div>
         <h3>Legend</h3>
         <div id="legendContainer">
             
@@ -97,7 +97,8 @@
             newDataset.data.push(randomScalingFactor());
         }
 
-        window.myRadar.addDataset(newDataset);
+        config.data.datasets.push(newDataset);
+        window.myRadar.update();
         updateLegend();
     });
 
@@ -105,26 +106,29 @@
         if (config.data.datasets.length > 0) {
             config.data.labels.push('dataset #' + config.data.labels.length);
 
-            for (var index = 0; index < config.data.datasets.length; ++index) {
-                window.myRadar.addData(randomScalingFactor(), index);
-            }
+            $.each(config.data.datasets, function (i, dataset) {
+                dataset.data.push(randomScalingFactor());
+            });
 
+            window.myRadar.update();
             updateLegend();
         }
     });
 
     $('#removeDataset').click(function() {
-        window.myRadar.removeDataset(0);
+        config.data.datasets.splice(0, 1);
+        window.myRadar.update();
         updateLegend();
     });
 
     $('#removeData').click(function() {
-        config.data.labels.splice(-1, 1); // remove the label first
+        config.data.labels.pop(); // remove the label first
 
-        config.data.datasets.forEach(function(dataset, datasetIndex) {
-            window.myRadar.removeData(datasetIndex, -1);
+        $.each(config.data.datasets, function(i, dataset) {
+            dataset.data.pop();
         });
 
+        window.myRadar.update();
         updateLegend();
     });
     </script>

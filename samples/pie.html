@@ -108,11 +108,13 @@
             data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
         };
 
-        window.myPie.addDataset(newDataset);
+        config.data.datasets.push(newDataset);
+        window.myPie.update();
     });
 
     $('#removeDataset').click(function() {
-        window.myPie.removeDataset(0);
+        config.data.datasets.splice(0, 1);
+        window.myPie.update();
     });
     </script>
 </body>

@@ -145,7 +145,8 @@
                 newDataset.data.push(randomScalingFactor());
             }
 
-            window.myLine.addDataset(newDataset);
+            config.data.datasets.push(newDataset);
+            window.myLine.update();
             updateLegend();
         });
 
@@ -157,15 +158,17 @@
                 );
 
                 for (var index = 0; index < config.data.datasets.length; ++index) {
-                    window.myLine.addData(randomScalingFactor(), index);
+                    config.data.datasets[index].data.push(randomScalingFactor());
                 }
 
+                window.myLine.update();
                 updateLegend();
             }
         });
 
         $('#removeDataset').click(function() {
-            window.myLine.removeDataset(0);
+            config.data.datasets.splice(0, 1);
+            window.myLine.update();
             updateLegend();
         });
 
@@ -173,9 +176,10 @@
             config.data.labels.splice(-1, 1); // remove the label first
 
             config.data.datasets.forEach(function(dataset, datasetIndex) {
-                window.myLine.removeData(datasetIndex, -1);
+                config.data.datasets[datasetIndex].data.pop();
             });
 
+            window.myLine.update();
             updateLegend();
         });
     </script>
