@@ -258,7 +258,7 @@
 		// @return : An object containing the dataset index and element index of the matching element. Also contains the rectangle that was draw
 		getElementAtEvent: function(e) {
 
-			var eventPosition = helpers.getRelativePosition(e);
+			var eventPosition = helpers.getRelativePosition(e, this.chart);
 			var elementsArray = [];
 
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
@@ -274,7 +274,7 @@
 		},
 
 		getElementsAtEvent: function(e) {
-			var eventPosition = helpers.getRelativePosition(e);
+			var eventPosition = helpers.getRelativePosition(e, this.chart);
 			var elementsArray = [];
 
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
@@ -289,7 +289,7 @@
 		},
 
 		getDatasetAtEvent: function(e) {
-			var eventPosition = helpers.getRelativePosition(e);
+			var eventPosition = helpers.getRelativePosition(e, this.chart);
 			var elementsArray = [];
 
 			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; datasetIndex++) {
@@ -321,8 +321,12 @@
 
 			// if we scaled the canvas in response to a devicePixelRatio !== 1, we need to undo that transform here
 			if (this.chart.originalDevicePixelRatio !== undefined) {
-				canvas.scale(1 / this.chart.originalDevicePixelRatio, 1 / this.chart.originalDevicePixelRatio);
+				this.chart.ctx.scale(1 / this.chart.originalDevicePixelRatio, 1 / this.chart.originalDevicePixelRatio);
 			}
+
+			// Reset to the old style since it may have been changed by the device pixel ratio changes
+			canvas.style.width = this.chart.originalCanvasStyleWidth;
+			canvas.style.height = this.chart.originalCanvasStyleHeight;
 
 			delete Chart.instances[this.id];
 		},
