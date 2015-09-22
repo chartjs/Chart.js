@@ -574,14 +574,14 @@ describe('Line controller tests', function() {
 
 		var controller = new Chart.controllers.line(chart, 0);
 		chart.data.datasets[0].data = [1, 2]; // remove 2 items
-
+		controller.buildOrUpdateElements();
 		controller.update();
 		expect(chart.data.datasets[0].metaData.length).toBe(2);
 		expect(chart.data.datasets[0].metaData[0] instanceof Chart.elements.Point).toBe(true);
 		expect(chart.data.datasets[0].metaData[1] instanceof Chart.elements.Point).toBe(true);
 
 		chart.data.datasets[0].data = [1, 2, 3, 4, 5]; // add 3 items
-
+		controller.buildOrUpdateElements();
 		controller.update();
 		expect(chart.data.datasets[0].metaData.length).toBe(5);
 		expect(chart.data.datasets[0].metaData[0] instanceof Chart.elements.Point).toBe(true);
