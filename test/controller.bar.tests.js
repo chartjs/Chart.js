@@ -194,6 +194,7 @@ describe('Bar controller tests', function() {
 		var controller = new Chart.controllers.bar(chart, 1);
 
 		chart.data.datasets[1].data = [1, 2]; // remove 2 items
+		controller.buildOrUpdateElements();
 		controller.update();
 
 		expect(chart.data.datasets[1].metaData.length).toBe(2);
@@ -236,6 +237,7 @@ describe('Bar controller tests', function() {
 		});
 
 		chart.data.datasets[1].data = [1, 2, 3];
+		controller.buildOrUpdateElements();
 		controller.update();
 
 		expect(chart.data.datasets[1].metaData.length).toBe(3); // should add a new meta data item

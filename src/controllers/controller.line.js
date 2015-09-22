@@ -101,14 +101,7 @@
 			this.update(true);
 		},
 
-		update: function(reset) {
-			var line = this.getDataset().metaDataset;
-			var points = this.getDataset().metaData;
-
-			var yScale = this.getScaleForId(this.getDataset().yAxisID);
-			var xScale = this.getScaleForId(this.getDataset().xAxisID);
-			var scaleBase;
-
+		buildOrUpdateElements: function buildOrUpdateElements() {
 			// Handle the number of data points changing
 			var numData = this.getDataset().data.length;
 			var numPoints = this.getDataset().metaData.length;
@@ -123,6 +116,15 @@
 					this.addElementAndReset(index);
 				}
 			}
+		},
+
+		update: function update(reset) {
+			var line = this.getDataset().metaDataset;
+			var points = this.getDataset().metaData;
+
+			var yScale = this.getScaleForId(this.getDataset().yAxisID);
+			var xScale = this.getScaleForId(this.getDataset().xAxisID);
+			var scaleBase;
 
 			if (yScale.min < 0 && yScale.max < 0) {
 				scaleBase = yScale.getPixelForValue(yScale.max);
