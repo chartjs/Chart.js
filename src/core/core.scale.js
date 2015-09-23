@@ -5,313 +5,281 @@
 		Chart = root.Chart,
 		helpers = Chart.helpers;
 
-	// The scale service is used to resize charts along with all of their axes. We make this as
-	// a service where scales are registered with their respective charts so that changing the 
-	// scales does not require 
-	Chart.scaleService = {
-		// Scale registration object. Extensions can register new scale types (such as log or DB scales) and then
-		// use the new chart options to grab the correct scale
-		constructors: {},
-		// Use a registration function so that we can move to an ES6 map when we no longer need to support
-		// old browsers
-		// Scale config defaults
-		defaults: {},
-		registerScaleType: function(type, scaleConstructor, defaults) {
-			this.constructors[type] = scaleConstructor;
-			this.defaults[type] = defaults;
+	Chart.defaults.scale = {
+		display: true,
+
+		// grid line settings
+		gridLines: {
+			show: true,
+			color: "rgba(0, 0, 0, 0.1)",
+			lineWidth: 1,
+			drawOnChartArea: true,
+			drawTicks: true,
+			zeroLineWidth: 1,
+			zeroLineColor: "rgba(0,0,0,0.25)",
+			offsetGridLines: false,
 		},
-		getScaleConstructor: function(type) {
-			return this.constructors.hasOwnProperty(type) ? this.constructors[type] : undefined;
+
+		// label settings
+		ticks: {
+			show: true,
+			minRotation: 20,
+			maxRotation: 90,
+			template: "<%=value%>",
+			fontSize: 12,
+			fontStyle: "normal",
+			fontColor: "#666",
+			fontFamily: "Helvetica Neue",
 		},
-		getScaleDefaults: function(type) {
-			return this.defaults.hasOwnProperty(type) ? this.defaults[type] : {};
+	};
+
+	Chart.Scale = Chart.Element.extend({
+		isHorizontal: function() {
+			return this.options.position == "top" || this.options.position == "bottom";
 		},
-		// The interesting function
-		fitScalesForChart: function(chartInstance, width, height) {
-			var xPadding = width > 30 ? 5 : 2;
-			var yPadding = height > 30 ? 5 : 2;
+		calculateTickRotation: function(maxHeight, margins) {
+			//Get the width of each grid by calculating the difference
+			//between x offsets between 0 and 1.
+			var labelFont = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
+			this.ctx.font = labelFont;
 
-			if (chartInstance) {
-				var leftScales = helpers.where(chartInstance.scales, function(scaleInstance) {
-					return scaleInstance.options.position == "left";
-				});
-				var rightScales = helpers.where(chartInstance.scales, function(scaleInstance) {
-					return scaleInstance.options.position == "right";
-				});
-				var topScales = helpers.where(chartInstance.scales, function(scaleInstance) {
-					return scaleInstance.options.position == "top";
-				});
-				var bottomScales = helpers.where(chartInstance.scales, function(scaleInstance) {
-					return scaleInstance.options.position == "bottom";
-				});
+			var firstWidth = this.ctx.measureText(this.ticks[0]).width;
+			var lastWidth = this.ctx.measureText(this.ticks[this.ticks.length - 1]).width;
+			var firstRotated;
+			var lastRotated;
 
-				// Essentially we now have any number of scales on each of the 4 sides.
-				// Our canvas looks like the following.
-				// The areas L1 and L2 are the left axes. R1 is the right axis, T1 is the top axis and 
-				// B1 is the bottom axis
-				// |------------------------------------------------------|
-				// |          |             T1                      |     |
-				// |----|-----|-------------------------------------|-----|
-				// |    |     |                                     |     |
-				// | L1 |  L2 |         Chart area                  |  R1 |
-				// |    |     |                                     |     |
-				// |    |     |                                     |     |
-				// |----|-----|-------------------------------------|-----|
-				// |          |             B1                      |     |
-				// |          |                                     |     |
-				// |------------------------------------------------------|
+			this.paddingRight = lastWidth / 2 + 3;
+			this.paddingLeft = firstWidth / 2 + 3;
 
-				// What we do to find the best sizing, we do the following
-				// 1. Determine the minimum size of the chart area. 
-				// 2. Split the remaining width equally between each vertical axis
-				// 3. Split the remaining height equally between each horizontal axis
-				// 4. Give each scale the maximum size it can be. The scale will return it's minimum size
-				// 5. Adjust the sizes of each axis based on it's minimum reported size. 
-				// 6. Refit each axis
-				// 7. Position each axis in the final location
-				// 8. Tell the chart the final location of the chart area
+			this.labelRotation = 0;
 
-				// Step 1
-				var chartWidth = width / 2; // min 50%
-				var chartHeight = height / 2; // min 50%
+			if (this.options.display) {
+				var originalLabelWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
+				var cosRotation;
+				var sinRotation;
+				var firstRotatedWidth;
 
-				chartWidth -= (2 * xPadding);
-				chartHeight -= (2 * yPadding);
+				this.labelWidth = originalLabelWidth;
 
+				//Allow 3 pixels x2 padding either side for label readability
+				// only the index matters for a dataset scale, but we want a consistent interface between scales
 
-				// Step 2
-				var verticalScaleWidth = (width - chartWidth) / (leftScales.length + rightScales.length);
+				var tickWidth = this.ruler.tick - 6;
 
-				// Step 3
-				var horizontalScaleHeight = (height - chartHeight) / (topScales.length + bottomScales.length);
+				//Max label rotation can be set or default to 90 - also act as a loop counter
+				while (this.labelWidth > tickWidth && this.labelRotation <= this.options.ticks.maxRotation) {
+					cosRotation = Math.cos(helpers.toRadians(this.labelRotation));
+					sinRotation = Math.sin(helpers.toRadians(this.labelRotation));
 
-				// Step 4;
-				var minimumScaleSizes = [];
+					firstRotated = cosRotation * firstWidth;
+					lastRotated = cosRotation * lastWidth;
 
-				var verticalScaleMinSizeFunction = function(scaleInstance) {
-					var minSize = scaleInstance.fit(verticalScaleWidth, chartHeight);
-					minimumScaleSizes.push({
-						horizontal: false,
-						minSize: minSize,
-						scale: scaleInstance,
-					});
-				};
-
-				var horizontalScaleMinSizeFunction = function(scaleInstance) {
-					var minSize = scaleInstance.fit(chartWidth, horizontalScaleHeight);
-					minimumScaleSizes.push({
-						horizontal: true,
-						minSize: minSize,
-						scale: scaleInstance,
-					});
-				};
-
-				// vertical scales
-				helpers.each(leftScales, verticalScaleMinSizeFunction);
-				helpers.each(rightScales, verticalScaleMinSizeFunction);
-
-				// horizontal scales
-				helpers.each(topScales, horizontalScaleMinSizeFunction);
-				helpers.each(bottomScales, horizontalScaleMinSizeFunction);
-
-				// Step 5
-				var maxChartHeight = height - (2 * yPadding);
-				var maxChartWidth = width - (2 * xPadding);
-
-				helpers.each(minimumScaleSizes, function(wrapper) {
-					if (wrapper.horizontal) {
-						maxChartHeight -= wrapper.minSize.height;
-					} else {
-						maxChartWidth -= wrapper.minSize.width;
+					// We're right aligning the text now.
+					if (firstRotated + this.options.ticks.fontSize / 2 > this.yLabelWidth) {
+						this.paddingLeft = firstRotated + this.options.ticks.fontSize / 2;
 					}
-				});
 
-				// At this point, maxChartHeight and maxChartWidth are the size the chart area could
-				// be if the axes are drawn at their minimum sizes.
+					this.paddingRight = this.options.ticks.fontSize / 2;
 
-				// Step 6
-				var verticalScaleFitFunction = function(scaleInstance) {
-					var wrapper = helpers.findNextWhere(minimumScaleSizes, function(wrapper) {
-						return wrapper.scale === scaleInstance;
-					});
-
-					if (wrapper) {
-						scaleInstance.fit(wrapper.minSize.width, maxChartHeight);
+					if (sinRotation * originalLabelWidth > maxHeight) {
+						// go back one step
+						this.labelRotation--;
+						break;
 					}
-				};
 
-				var horizontalScaleFitFunction = function(scaleInstance) {
-					var wrapper = helpers.findNextWhere(minimumScaleSizes, function(wrapper) {
-						return wrapper.scale === scaleInstance;
-					});
+					this.labelRotation++;
+					this.labelRotation = Math.max(this.labelRotation, this.options.ticks.minRotation);
+					this.labelWidth = cosRotation * originalLabelWidth;
 
-					var scaleMargin = {
-						left: totalLeftWidth,
-						right: totalRightWidth,
-						top: 0,
-						bottom: 0,
-					};
+				}
+			} else {
+				this.labelWidth = 0;
+				this.paddingRight = 0;
+				this.paddingLeft = 0;
+			}
 
-					if (wrapper) {
-						scaleInstance.fit(maxChartWidth, wrapper.minSize.height, scaleMargin);
-					}
-				};
+			if (margins) {
+				this.paddingLeft -= margins.left;
+				this.paddingRight -= margins.right;
 
-				var totalLeftWidth = xPadding;
-				var totalRightWidth = xPadding;
-				var totalTopHeight = yPadding;
-				var totalBottomHeight = yPadding;
+				this.paddingLeft = Math.max(this.paddingLeft, 0);
+				this.paddingRight = Math.max(this.paddingRight, 0);
+			}
 
-				helpers.each(leftScales, verticalScaleFitFunction);
-				helpers.each(rightScales, verticalScaleFitFunction);
+		},
+		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
+			// This must be called after fit has been run so that 
+			//      this.left, this.top, this.right, and this.bottom have been defined
+			if (this.isHorizontal()) {
+				var isRotated = (this.labelRotation > 0);
+				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
+				var valueWidth = innerWidth / Math.max((this.data.labels.length - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
+				var valueOffset = (valueWidth * index) + this.paddingLeft;
 
-				// Figure out how much margin is on the left and right of the horizontal axes
-				helpers.each(leftScales, function(scaleInstance) {
-					totalLeftWidth += scaleInstance.width;
-				});
-
-				helpers.each(rightScales, function(scaleInstance) {
-					totalRightWidth += scaleInstance.width;
-				});
-
-				helpers.each(topScales, horizontalScaleFitFunction);
-				helpers.each(bottomScales, horizontalScaleFitFunction);
-
-				helpers.each(topScales, function(scaleInstance) {
-					totalTopHeight += scaleInstance.height;
-				});
-				helpers.each(bottomScales, function(scaleInstance) {
-					totalBottomHeight += scaleInstance.height;
-				});
-
-				// Let the left scale know the final margin
-				helpers.each(leftScales, function(scaleInstance) {
-					var wrapper = helpers.findNextWhere(minimumScaleSizes, function(wrapper) {
-						return wrapper.scale === scaleInstance;
-					});
-
-					var scaleMargin = {
-						left: 0,
-						right: 0,
-						top: totalTopHeight,
-						bottom: totalBottomHeight
-					};
-
-					if (wrapper) {
-						scaleInstance.fit(wrapper.minSize.width, maxChartHeight, scaleMargin);
-					}
-				});
-
-				helpers.each(rightScales, function(scaleInstance) {
-					var wrapper = helpers.findNextWhere(minimumScaleSizes, function(wrapper) {
-						return wrapper.scale === scaleInstance;
-					});
-
-					var scaleMargin = {
-						left: 0,
-						right: 0,
-						top: totalTopHeight,
-						bottom: totalBottomHeight
-					};
-
-					if (wrapper) {
-						scaleInstance.fit(wrapper.minSize.width, maxChartHeight, scaleMargin);
-					}
-				});
-
-				// Recalculate because the size of each scale might have changed slightly due to the margins (label rotation for instance)
-				totalLeftWidth = xPadding;
-				totalRightWidth = xPadding;
-				totalTopHeight = yPadding;
-				totalBottomHeight = yPadding;
-
-				helpers.each(leftScales, function(scaleInstance) {
-					totalLeftWidth += scaleInstance.width;
-				});
-
-				helpers.each(rightScales, function(scaleInstance) {
-					totalRightWidth += scaleInstance.width;
-				});
-
-				helpers.each(topScales, function(scaleInstance) {
-					totalTopHeight += scaleInstance.height;
-				});
-				helpers.each(bottomScales, function(scaleInstance) {
-					totalBottomHeight += scaleInstance.height;
-				});
-
-				// Figure out if our chart area changed. This would occur if the dataset scale label rotation
-				// changed due to the application of the margins in step 6. Since we can only get bigger, this is safe to do
-				// without calling `fit` again
-				var newMaxChartHeight = height - totalTopHeight - totalBottomHeight;
-				var newMaxChartWidth = width - totalLeftWidth - totalRightWidth;
-
-				if (newMaxChartWidth !== maxChartWidth || newMaxChartHeight !== maxChartHeight) {
-					helpers.each(leftScales, function(scale) {
-						scale.height = newMaxChartHeight;
-					});
-
-					helpers.each(rightScales, function(scale) {
-						scale.height = newMaxChartHeight;
-					});
-
-					helpers.each(topScales, function(scale) {
-						scale.width = newMaxChartWidth;
-					});
-
-					helpers.each(bottomScales, function(scale) {
-						scale.width = newMaxChartWidth;
-					});
-
-					maxChartHeight = newMaxChartHeight;
-					maxChartWidth = newMaxChartWidth;
+				if (this.options.gridLines.offsetGridLines && includeOffset) {
+					valueOffset += (valueWidth / 2);
 				}
 
-				// Step 7 
-				// Position the scales
-				var left = xPadding;
-				var top = yPadding;
-				var right = 0;
-				var bottom = 0;
+				return this.left + Math.round(valueOffset);
+			} else {
+				return this.top + (index * (this.height / this.labels.length));
+			}
+		},
+		getPixelFromTickIndex: function(index, includeOffset) {
+			// This must be called after fit has been run so that 
+			//      this.left, this.top, this.right, and this.bottom have been defined
+			if (this.isHorizontal()) {
+				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
+				var tickWidth = innerWidth / Math.max((this.ticks.length - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
+				var pixel = (tickWidth * index) + this.paddingLeft;
 
-				var verticalScalePlacer = function(scaleInstance) {
-					scaleInstance.left = left;
-					scaleInstance.right = left + scaleInstance.width;
-					scaleInstance.top = totalTopHeight;
-					scaleInstance.bottom = totalTopHeight + maxChartHeight;
+				if (includeOffset) {
+					pixel += tickWidth / 2;
+				}
+				return this.left + Math.round(pixel);
+			} else {
+				return this.top + (index * (this.height / this.ticks.length));
+			}
+		},
+		getPixelFromDecimal: function(decimal, includeOffset) {
+			// This must be called after fit has been run so that 
+			//      this.left, this.top, this.right, and this.bottom have been defined
+			if (this.isHorizontal()) {
+				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
+				var valueOffset = (innerWidth * decimal) + this.paddingLeft;
 
-					// Move to next point
-					left = scaleInstance.right;
-				};
+				return this.left + Math.round(valueOffset);
+			} else {
+				return this.top + (decimal * (this.height / this.ticks.length));
+			}
+		},
+		// Fit this axis to the given size
+		// @param {number} maxWidth : the max width the axis can be
+		// @param {number} maxHeight: the max height the axis can be
+		// @return {object} minSize : the minimum size needed to draw the axis
+		fit: function(maxWidth, maxHeight, margins) {
+			// Set the unconstrained dimension before label rotation
+			if (this.isHorizontal()) {
+				this.width = maxWidth;
+			} else {
+				this.height = maxHeight;
+			}
 
-				var horizontalScalePlacer = function(scaleInstance) {
-					scaleInstance.left = totalLeftWidth;
-					scaleInstance.right = totalLeftWidth + maxChartWidth;
-					scaleInstance.top = top;
-					scaleInstance.bottom = top + scaleInstance.height;
+			this.buildTicks();
+			this.buildRuler();
+			this.calculateTickRotation(maxHeight, margins);
 
-					// Move to next point 
-					top = scaleInstance.bottom;
-				};
+			var minSize = {
+				width: 0,
+				height: 0,
+			};
 
-				helpers.each(leftScales, verticalScalePlacer);
-				helpers.each(topScales, horizontalScalePlacer);
+			var labelFont = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
+			var longestLabelWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
 
-				// Account for chart width and height
-				left += maxChartWidth;
-				top += maxChartHeight;
+			// Width
+			if (this.isHorizontal()) {
+				minSize.width = maxWidth;
+			} else if (this.options.display) {
+				var labelWidth = this.options.ticks.show ? longestLabelWidth + 6 : 0;
+				minSize.width = Math.min(labelWidth, maxWidth);
+			}
 
-				helpers.each(rightScales, verticalScalePlacer);
-				helpers.each(bottomScales, horizontalScalePlacer);
+			// Height
+			if (this.isHorizontal() && this.options.display) {
+				var labelHeight = (Math.sin(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.ticks.fontSize;
+				minSize.height = Math.min(this.options.ticks.show ? labelHeight : 0, maxHeight);
+			} else if (this.options.display) {
+				minSize.height = maxHeight;
+			}
 
-				// Step 8
-				chartInstance.chartArea = {
-					left: totalLeftWidth,
-					top: totalTopHeight,
-					right: totalLeftWidth + maxChartWidth,
-					bottom: totalTopHeight + maxChartHeight,
-				};
+
+			this.width = minSize.width;
+			this.height = minSize.height;
+			return minSize;
+		},
+		// Actualy draw the scale on the canvas
+		// @param {rectangle} chartArea : the area of the chart to draw full grid lines on
+		draw: function(chartArea) {
+			if (this.options.display) {
+
+				var setContextLineSettings;
+
+				// Make sure we draw text in the correct color
+				this.ctx.fillStyle = this.options.ticks.fontColor;
+
+				if (this.isHorizontal()) {
+					setContextLineSettings = true;
+					var yTickStart = this.options.position == "bottom" ? this.top : this.bottom - 10;
+					var yTickEnd = this.options.position == "bottom" ? this.top + 10 : this.bottom;
+					var isRotated = this.labelRotation !== 0;
+					var skipRatio = false;
+
+					if ((this.options.ticks.fontSize + 4) * this.ticks.length > (this.width - (this.paddingLeft + this.paddingRight))) {
+						skipRatio = 1 + Math.floor(((this.options.ticks.fontSize + 4) * this.ticks.length) / (this.width - (this.paddingLeft + this.paddingRight)));
+					}
+
+					helpers.each(this.ticks, function(label, index) {
+						// Blank ticks
+						if ((skipRatio > 1 && index % skipRatio > 0) || (label === undefined || label === null)) {
+							return;
+						}
+						var xLineValue = this.getPixelFromTickIndex(index); // xvalues for grid lines
+						var xLabelValue = this.getPixelFromTickIndex(index, this.options.gridLines.offsetGridLines); // x values for ticks (need to consider offsetLabel option)
+
+						if (this.options.gridLines.show) {
+							if (index === 0) {
+								// Draw the first index specially
+								this.ctx.lineWidth = this.options.gridLines.zeroLineWidth;
+								this.ctx.strokeStyle = this.options.gridLines.zeroLineColor;
+								setContextLineSettings = true; // reset next time
+							} else if (setContextLineSettings) {
+								this.ctx.lineWidth = this.options.gridLines.lineWidth;
+								this.ctx.strokeStyle = this.options.gridLines.color;
+								setContextLineSettings = false;
+							}
+
+							xLineValue += helpers.aliasPixel(this.ctx.lineWidth);
+
+							// Draw the label area
+							this.ctx.beginPath();
+
+							if (this.options.gridLines.drawTicks) {
+								this.ctx.moveTo(xLineValue, yTickStart);
+								this.ctx.lineTo(xLineValue, yTickEnd);
+							}
+
+							// Draw the chart area
+							if (this.options.gridLines.drawOnChartArea) {
+								this.ctx.moveTo(xLineValue, chartArea.top);
+								this.ctx.lineTo(xLineValue, chartArea.bottom);
+							}
+
+							// Need to stroke in the loop because we are potentially changing line widths & colours
+							this.ctx.stroke();
+						}
+
+						if (this.options.ticks.show) {
+							this.ctx.save();
+							this.ctx.translate(xLabelValue, (isRotated) ? this.top + 12 : this.top + 8);
+							this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
+							this.ctx.font = this.font;
+							this.ctx.textAlign = (isRotated) ? "right" : "center";
+							this.ctx.textBaseline = (isRotated) ? "middle" : "top";
+							this.ctx.fillText(label, 0, 0);
+							this.ctx.restore();
+						}
+					}, this);
+				} else {
+					// TODO Vertical
+					if (this.options.gridLines.show) {}
+
+					if (this.options.ticks.show) {
+						// Draw the ticks
+					}
+				}
 			}
 		}
-	};
+	});
+
 }).call(this);

@@ -9,6 +9,6 @@
 		config.type = 'bar';
 
 		return new Chart(context, config);
-	}
-	
+	};
+
 }).call(this);

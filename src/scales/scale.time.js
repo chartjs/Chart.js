@@ -77,26 +77,12 @@
 			displayFormat: false, // defaults to unit's corresponding unitFormat below or override using pattern string from http://momentjs.com/docs/#/displaying/format/
 		},
 
-		// scale label
-		scaleLabel: {
-			fontColor: '#666',
-			fontFamily: 'Helvetica Neue',
-			fontSize: 12,
-			fontStyle: 'normal',
-
-			// actual label
-			labelString: '',
-
-			// display property
-			show: false,
-		},
-
 		// scale numbers
 		reverse: false,
 		override: null,
 
 		// label settings
-		labels: {
+		ticks: {
 			show: true,
 			mirror: false,
 			padding: 10,
@@ -109,10 +95,7 @@
 		}
 	};
 
-	var TimeScale = Chart.Element.extend({
-		isHorizontal: function() {
-			return this.options.position == "top" || this.options.position == "bottom";
-		},
+	var TimeScale = Chart.Scale.extend({
 		parseTime: function(label) {
 			// Date objects
 			if (typeof label.getMonth === 'function' || typeof label == 'number') {
@@ -155,7 +138,7 @@
 			} else {
 				// Determine the smallest needed unit of the time
 				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
-				var labelCapacity = innerWidth / this.options.labels.fontSize + 4;
+				var labelCapacity = innerWidth / this.options.ticks.fontSize + 4;
 				var buffer = this.options.tick.round ? 0 : 2;
 
 				this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, true) + buffer);
@@ -188,11 +171,11 @@
 				this.displayFormat = this.options.tick.displayFormat;
 			}
 
-			// For every unit in between the first and last moment, create a moment and add it to the labels tick
-			if (this.options.labels.userCallback) {
+			// For every unit in between the first and last moment, create a moment and add it to the ticks tick
+			if (this.options.ticks.userCallback) {
 				for (i = 0; i <= this.tickRange; i++) {
 					this.ticks.push(
-						this.options.labels.userCallback(this.firstTick.clone()
+						this.options.ticks.userCallback(this.firstTick.clone()
 							.add(i, this.tickUnit)
 							.format(this.options.tick.displayFormat ? this.options.tick.displayFormat : time.unit[this.tickUnit].display)
 						)
@@ -261,76 +244,76 @@
 			return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * this.options.spacing) + barWidth / 2;
 		},
 
-		calculateTickRotation: function(maxHeight, margins) {
-			//Get the width of each grid by calculating the difference
-			//between x offsets between 0 and 1.
-			var labelFont = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
-			this.ctx.font = labelFont;
+		// calculateTickRotation: function(maxHeight, margins) {
+		// 	//Get the width of each grid by calculating the difference
+		// 	//between x offsets between 0 and 1.
+		// 	var labelFont = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
+		// 	this.ctx.font = labelFont;
 
-			var firstWidth = this.ctx.measureText(this.ticks[0]).width;
-			var lastWidth = this.ctx.measureText(this.ticks[this.ticks.length - 1]).width;
-			var firstRotated;
-			var lastRotated;
+		// 	var firstWidth = this.ctx.measureText(this.ticks[0]).width;
+		// 	var lastWidth = this.ctx.measureText(this.ticks[this.ticks.length - 1]).width;
+		// 	var firstRotated;
+		// 	var lastRotated;
 
-			this.paddingRight = lastWidth / 2 + 3;
-			this.paddingLeft = firstWidth / 2 + 3;
+		// 	this.paddingRight = lastWidth / 2 + 3;
+		// 	this.paddingLeft = firstWidth / 2 + 3;
 
-			this.labelRotation = 0;
+		// 	this.labelRotation = 0;
 
-			if (this.options.display) {
-				var originalLabelWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
-				var cosRotation;
-				var sinRotation;
-				var firstRotatedWidth;
+		// 	if (this.options.display) {
+		// 		var originalLabelWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
+		// 		var cosRotation;
+		// 		var sinRotation;
+		// 		var firstRotatedWidth;
 
-				this.labelWidth = originalLabelWidth;
+		// 		this.labelWidth = originalLabelWidth;
 
-				//Allow 3 pixels x2 padding either side for label readability
-				// only the index matters for a dataset scale, but we want a consistent interface between scales
+		// 		//Allow 3 pixels x2 padding either side for label readability
+		// 		// only the index matters for a dataset scale, but we want a consistent interface between scales
 
-				var datasetWidth = Math.floor(this.getPixelForValue(null, 1 / this.ticks.length) - this.getPixelForValue(null, 0)) - 6;
+		// 		var datasetWidth = Math.floor(this.getPixelForValue(null, 1 / this.ticks.length) - this.getPixelForValue(null, 0)) - 6;
 
-				//Max label rotation can be set or default to 90 - also act as a loop counter
-				while (this.labelWidth > datasetWidth && this.labelRotation <= this.options.labels.maxRotation) {
-					cosRotation = Math.cos(helpers.toRadians(this.labelRotation));
-					sinRotation = Math.sin(helpers.toRadians(this.labelRotation));
+		// 		//Max label rotation can be set or default to 90 - also act as a loop counter
+		// 		while (this.labelWidth > datasetWidth && this.labelRotation <= this.options.ticks.maxRotation) {
+		// 			cosRotation = Math.cos(helpers.toRadians(this.labelRotation));
+		// 			sinRotation = Math.sin(helpers.toRadians(this.labelRotation));
 
-					firstRotated = cosRotation * firstWidth;
-					lastRotated = cosRotation * lastWidth;
+		// 			firstRotated = cosRotation * firstWidth;
+		// 			lastRotated = cosRotation * lastWidth;
 
-					// We're right aligning the text now.
-					if (firstRotated + this.options.labels.fontSize / 2 > this.yLabelWidth) {
-						this.paddingLeft = firstRotated + this.options.labels.fontSize / 2;
-					}
+		// 			// We're right aligning the text now.
+		// 			if (firstRotated + this.options.ticks.fontSize / 2 > this.yLabelWidth) {
+		// 				this.paddingLeft = firstRotated + this.options.ticks.fontSize / 2;
+		// 			}
 
-					this.paddingRight = this.options.labels.fontSize / 2;
+		// 			this.paddingRight = this.options.ticks.fontSize / 2;
 
-					if (sinRotation * originalLabelWidth > maxHeight) {
-						// go back one step
-						this.labelRotation--;
-						break;
-					}
+		// 			if (sinRotation * originalLabelWidth > maxHeight) {
+		// 				// go back one step
+		// 				this.labelRotation--;
+		// 				break;
+		// 			}
 
-					this.labelRotation++;
-					this.labelWidth = cosRotation * originalLabelWidth;
+		// 			this.labelRotation++;
+		// 			this.labelWidth = cosRotation * originalLabelWidth;
 
 
-				}
-			} else {
-				this.labelWidth = 0;
-				this.paddingRight = 0;
-				this.paddingLeft = 0;
-			}
+		// 		}
+		// 	} else {
+		// 		this.labelWidth = 0;
+		// 		this.paddingRight = 0;
+		// 		this.paddingLeft = 0;
+		// 	}
 
-			if (margins) {
-				this.paddingLeft -= margins.left;
-				this.paddingRight -= margins.right;
+		// 	if (margins) {
+		// 		this.paddingLeft -= margins.left;
+		// 		this.paddingRight -= margins.right;
 
-				this.paddingLeft = Math.max(this.paddingLeft, 0);
-				this.paddingRight = Math.max(this.paddingRight, 0);
-			}
+		// 		this.paddingLeft = Math.max(this.paddingLeft, 0);
+		// 		this.paddingRight = Math.max(this.paddingRight, 0);
+		// 	}
 
-		},
+		// },
 		// Fit this axis to the given size
 		// @param {number} maxWidth : the max width the axis can be
 		// @param {number} maxHeight: the max height the axis can be
@@ -351,32 +334,21 @@
 				height: 0,
 			};
 
-			 // Are we showing a label for the scale?
-            if (this.options.scaleLabel.show) {
-                if (this.isHorizontal()) {
-                    minSize.height += (this.options.scaleLabel.fontSize * 1.5);
-                } else {
-                    minSize.width += (this.options.scaleLabel.fontSize * 1.5);
-                }
-            }
-
-			var labelFont = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
+			var labelFont = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
 			var longestLabelWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
 
 			// Width
 			if (this.isHorizontal()) {
 				minSize.width = maxWidth;
 			} else if (this.options.display) {
-				var labelWidth = this.options.labels.show ? longestLabelWidth + 6 : 0;
-				minSize.width += labelWidth;
-                minSize.width = Math.min(minSize.width, maxWidth);
+				var labelWidth = this.options.ticks.show ? longestLabelWidth + 6 : 0;
+				minSize.width = Math.min(labelWidth, maxWidth);
 			}
 
 			// Height
 			if (this.isHorizontal() && this.options.display) {
-				var labelHeight = (Math.sin(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.labels.fontSize;
-				minSize.height += this.options.labels.show ? labelHeight : 0;
-                minSize.height = Math.min(minSize.height, maxHeight);
+				var labelHeight = (Math.sin(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.ticks.fontSize;
+				minSize.height = Math.min(this.options.ticks.show ? labelHeight : 0, maxHeight);
 			} else if (this.options.display) {
 				minSize.height = maxHeight;
 			}
@@ -393,7 +365,7 @@
 				var setContextLineSettings;
 
 				// Make sure we draw text in the correct color
-				this.ctx.fillStyle = this.options.labels.fontColor;
+				this.ctx.fillStyle = this.options.ticks.fontColor;
 
 				if (this.isHorizontal()) {
 					setContextLineSettings = true;
@@ -402,8 +374,8 @@
 					var isRotated = this.labelRotation !== 0;
 					var skipRatio = false;
 
-					if ((this.options.labels.fontSize + 4) * this.ticks.length > (this.width - (this.paddingLeft + this.paddingRight))) {
-						skipRatio = 1 + Math.floor(((this.options.labels.fontSize + 4) * this.ticks.length) / (this.width - (this.paddingLeft + this.paddingRight)));
+					if ((this.options.ticks.fontSize + 4) * this.ticks.length > (this.width - (this.paddingLeft + this.paddingRight))) {
+						skipRatio = 1 + Math.floor(((this.options.ticks.fontSize + 4) * this.ticks.length) / (this.width - (this.paddingLeft + this.paddingRight)));
 					}
 
 					helpers.each(this.ticks, function(tick, index) {
@@ -446,7 +418,7 @@
 							this.ctx.stroke();
 						}
 
-						if (this.options.labels.show) {
+						if (this.options.ticks.show) {
 							this.ctx.save();
 							this.ctx.translate(xLabelValue, (isRotated) ? this.top + 12 : this.top + 8);
 							this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
@@ -457,41 +429,13 @@
 							this.ctx.restore();
 						}
 					}, this);
-
-					if (this.options.scaleLabel.show) {
-                        // Draw the scale label
-                        this.ctx.textAlign = "center";
-                        this.ctx.textBaseline = 'middle';
-                        this.ctx.font = helpers.fontString(this.options.scaleLabel.fontSize, this.options.scaleLabel.fontStyle, this.options.scaleLabel.fontFamily);
-
-                        var scaleLabelX = this.left + ((this.right - this.left) / 2); // midpoint of the width
-                        var scaleLabelY = this.options.position == 'bottom' ? this.bottom - (this.options.scaleLabel.fontSize / 2) : this.top + (this.options.scaleLabel.fontSize / 2);
-
-                        this.ctx.fillText(this.options.scaleLabel.labelString, scaleLabelX, scaleLabelY);
-                    }
 				} else {
 					// Vertical
 					if (this.options.gridLines.show) {}
 
-					if (this.options.labels.show) {
-						// Draw the labels
+					if (this.options.ticks.show) {
+						// Draw the ticks
 					}
-
-					if (this.options.scaleLabel.show) {
-                        // Draw the scale label
-                        var scaleLabelX = this.options.position == 'left' ? this.left + (this.options.scaleLabel.fontSize / 2) : this.right - (this.options.scaleLabel.fontSize / 2);
-                        var scaleLabelY = this.top + ((this.bottom - this.top) / 2);
-                        var rotation = this.options.position == 'left' ? -0.5 * Math.PI : 0.5 * Math.PI;
-
-                        this.ctx.save();
-                        this.ctx.translate(scaleLabelX, scaleLabelY);
-                        this.ctx.rotate(rotation);
-                        this.ctx.textAlign = "center";
-                        this.ctx.font = helpers.fontString(this.options.scaleLabel.fontSize, this.options.scaleLabel.fontStyle, this.options.scaleLabel.fontFamily);
-                        this.ctx.textBaseline = 'middle';
-                        this.ctx.fillText(this.options.scaleLabel.labelString, 0, 0);
-                        this.ctx.restore();
-                    }
 				}
 			}
 		}
