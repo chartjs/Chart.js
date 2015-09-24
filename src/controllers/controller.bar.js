@@ -16,8 +16,8 @@
 				type: "category",
 
 				// Specific to Bar Controller
-				categoryPercentage: 0.75,
-				barPercentage: 0.5,
+				categoryPercentage: 0.8,
+				barPercentage: 0.9,
 
 				// grid line settings
 				gridLines: {
@@ -160,8 +160,8 @@
 
 				// Desired view properties
 				_model: {
-					x: this.calculateBarX(this.index, index),
-					y: reset ? yScalePoint : this.calculateBarY(this.index, index),
+					x: this.calculateBarX(index, this.index),
+					y: reset ? yScalePoint : this.calculateBarY(index, this.index),
 
 					// Tooltip
 					label: this.chart.data.labels[index],
@@ -209,8 +209,8 @@
 			base = yScale.getPixelForValue(yScale.min);
 
 			if (yScale.beginAtZero || ((yScale.min <= 0 && yScale.max >= 0) || (yScale.min >= 0 && yScale.max <= 0))) {
-				base = yScale.getPixelForValue(0);
-				base += yScale.options.gridLines.lineWidth;
+				base = yScale.getPixelForValue(0, 0);
+				//base += yScale.options.gridLines.lineWidth;
 			} else if (yScale.min < 0 && yScale.max < 0) {
 				// All values are negative. Use the top as the base
 				base = yScale.getPixelForValue(yScale.max);
@@ -225,9 +225,10 @@
 			var xScale = this.getScaleForID(this.getDataset().xAxisID);
 			var yScale = this.getScaleForID(this.getDataset().yAxisID);
 
-			var datasetCount = this.chart.data.datasets.length;
-			var tickWidth = xScale.getSmallestDataDistance();
-			console.log(tickWidth);
+			var datasetCount = !this.chart.isCombo ? this.chart.data.datasets.length : helpers.where(this.chart.data.datasets, function(ds) {
+				return ds.type == 'bar';
+			}).length;
+			var tickWidth = xScale.getPixelForValue(null, 1) - xScale.getPixelForValue(null, 0);
 			var categoryWidth = tickWidth * xScale.options.categoryPercentage;
 			var categorySpacing = (tickWidth - (tickWidth * xScale.options.categoryPercentage)) / 2;
 			var fullBarWidth = categoryWidth / datasetCount;
@@ -259,16 +260,16 @@
 		},
 
 
-		calculateBarX: function(datasetIndex, elementIndex) {
+		calculateBarX: function(index, datasetIndex) {
 
 			var yScale = this.getScaleForID(this.getDataset().yAxisID);
 			var xScale = this.getScaleForID(this.getDataset().xAxisID);
 
-			var leftTick = xScale.getPixelFromTickIndex(elementIndex);
+			var leftTick = xScale.getPixelForValue(null, index);
 			var ruler = this.getRuler();
 
 			if (yScale.options.stacked) {
-				return ruler.leftTick + (ruler.categoryWidth / 2) + ruler.categorySpacing;
+				return leftTick + (ruler.categoryWidth / 2) + ruler.categorySpacing;
 			}
 
 			return leftTick +
@@ -279,7 +280,7 @@
 				(ruler.barSpacing * datasetIndex);
 		},
 
-		calculateBarY: function(datasetIndex, index) {
+		calculateBarY: function(index, datasetIndex) {
 
 			var xScale = this.getScaleForID(this.getDataset().xAxisID);
 			var yScale = this.getScaleForID(this.getDataset().yAxisID);

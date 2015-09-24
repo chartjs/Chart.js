@@ -46,11 +46,6 @@
 			this.beforeUpdate();
 
 			// Absorb the master measurements
-			if (!this.isHorizontal()) {
-				console.log(maxWidth);
-			}
-
-
 			this.maxWidth = maxWidth;
 			this.maxHeight = maxHeight;
 			this.margins = margins;
@@ -132,6 +127,7 @@
 
 				//Max label rotation can be set or default to 90 - also act as a loop counter
 				while (this.labelWidth > tickWidth && this.labelRotation <= this.options.ticks.maxRotation) {
+					console.log(this.labelWidth, tickWidth, ',', this.labelRotation, this.options.ticks.maxRotation);
 					cosRotation = Math.cos(helpers.toRadians(this.labelRotation));
 					sinRotation = Math.sin(helpers.toRadians(this.labelRotation));
 
@@ -145,6 +141,7 @@
 
 					this.paddingRight = this.options.ticks.fontSize / 2;
 
+					console.log(sinRotation * originalLabelWidth, this.maxHeight);
 					if (sinRotation * originalLabelWidth > this.maxHeight) {
 						// go back one step
 						this.labelRotation--;
@@ -152,7 +149,6 @@
 					}
 
 					this.labelRotation++;
-					this.labelRotation = Math.max(this.labelRotation, this.options.ticks.minRotation);
 					this.labelWidth = cosRotation * originalLabelWidth;
 
 				}
@@ -233,7 +229,6 @@
 						// Expand to max size
 						this.minSize.width = this.maxWidth;
 					}
-					this.minSize.width += 6; // extra padding
 
 					this.paddingTop = this.options.ticks.fontSize / 2;
 					this.paddingBottom = this.options.ticks.fontSize / 2;
@@ -283,7 +278,8 @@
 				}
 				return this.left + Math.round(pixel);
 			} else {
-				return this.top + (index * (this.height / this.ticks.length));
+				var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
+				return this.top + (index * (innerHeight / (this.ticks.length - 1)));
 			}
 		},
 
@@ -331,7 +327,7 @@
 						var xLabelValue = this.getPixelForTick(index, this.options.gridLines.offsetGridLines); // x values for ticks (need to consider offsetLabel option)
 
 						if (this.options.gridLines.show) {
-							if (index === 0) {
+							if (index === (typeof this.zeroLineIndex !== 'undefined' ? this.zeroLineIndex : 0)) {
 								// Draw the first index specially
 								this.ctx.lineWidth = this.options.gridLines.zeroLineWidth;
 								this.ctx.strokeStyle = this.options.gridLines.zeroLineColor;
@@ -391,9 +387,10 @@
 						// }
 						var yLineValue = this.getPixelForTick(index); // xvalues for grid lines
 						var yLabelValue = this.getPixelForTick(index, this.options.gridLines.offsetGridLines); // x values for ticks (need to consider offsetLabel option)
+						var xLabelValue = this.left + (this.width / 2);
 
 						if (this.options.gridLines.show) {
-							if (index === 0) {
+							if (index === (typeof this.zeroLineIndex !== 'undefined' ? this.zeroLineIndex : 0)) {
 								// Draw the first index specially
 								this.ctx.lineWidth = this.options.gridLines.zeroLineWidth;
 								this.ctx.strokeStyle = this.options.gridLines.zeroLineColor;
@@ -426,11 +423,11 @@
 
 						if (this.options.ticks.show) {
 							this.ctx.save();
-							this.ctx.translate(this.left + (isRotated ? 10 : 5) + 3, yLabelValue - (this.options.ticks.fontSize / 2) + (isRotated ? this.options.ticks.fontSize / 1.5 : 0));
+							this.ctx.translate(xLabelValue, yLabelValue);
 							this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
 							this.ctx.font = this.font;
-							this.ctx.textAlign = (isRotated) ? "right" : "center";
-							this.ctx.textBaseline = (isRotated) ? "middle" : "top";
+							this.ctx.textAlign = 'center';
+							this.ctx.textBaseline = "middle";
 							this.ctx.fillText(label, 0, 0);
 							this.ctx.restore();
 						}

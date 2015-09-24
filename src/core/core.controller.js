@@ -209,14 +209,24 @@
 		},
 
 		buildOrUpdateControllers: function() {
+			var types = [];
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				var type = dataset.type || this.config.type;
+				types.push(type);
 				if (dataset.controller) {
 					dataset.controller.updateIndex(datasetIndex);
 					return;
 				}
 				dataset.controller = new Chart.controllers[type](this, datasetIndex);
 			}, this);
+			if (types.length > 1) {
+				for (var i = 1; i < types.length; i++) {
+					if (types[i] != types[i - 1]) {
+						this.isCombo = true;
+						break;
+					}
+				}
+			}
 		},
 
 		resetElements: function resetElements() {
