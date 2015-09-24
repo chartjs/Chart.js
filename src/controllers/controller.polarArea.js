@@ -81,7 +81,7 @@
 
 		update: function(reset) {
 
-			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
+			Chart.scaleService.update(this, this.chart.width, this.chart.height);
 			//this.chart.scale.setScaleSize();
 			this.chart.scale.calculateRange();
 			this.chart.scale.generateTicks();
