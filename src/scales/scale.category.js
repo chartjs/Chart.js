@@ -12,30 +12,30 @@
 
     var DatasetScale = Chart.Scale.extend({
         buildTicks: function(index) {
-            this.ticks = [];
+            this.ticks = this.data.labels;
+        },
 
-            if (this.options.ticks.userCallback) {
-                this.data.labels.forEach(function(labelString, index) {
-                    this.ticks.push(this.options.ticks.userCallback(labelString, index));
-                }, this);
+        // Used to get data value locations.  Value can either be an index or a numerical value
+        getPixelForValue: function(value, index, datasetIndex, includeOffset) {
+            if (this.isHorizontal()) {
+                var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
+                var valueWidth = innerWidth / Math.max((this.data.labels.length - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
+                var toZero = this.max - this.min;
+                var newVal = value - toZero;
+                var decimal = newVal / (this.max - toZero);
+                var valueOffset = (valueWidth * decimal) + this.paddingLeft;
+
+                if (this.options.gridLines.offsetGridLines && includeOffset) {
+                    valueOffset += (valueWidth / 2);
+                }
+
+                return this.left + Math.round(valueOffset);
             } else {
-                this.ticks = this.data.labels;
+                return this.top + (index * (this.height / this.labels.length));
             }
         },
-        buildRuler: function() {
-            var datasetCount = this.data.datasets.length;
-
-            this.ruler = {};
-            this.ruler.tickWidth = this.getPixelFromTickIndex(1) - this.getPixelFromTickIndex(0) + 3; // TODO: Why is 2 needed here to make it take the full width?
-            this.ruler.categoryWidth = this.ruler.tickWidth * this.options.categoryPercentage;
-            this.ruler.categorySpacing = (this.ruler.tickWidth - (this.ruler.tickWidth * this.options.categoryPercentage)) / 2;
-            this.ruler.allBarsWidth = ((this.ruler.tickWidth - (this.ruler.categorySpacing * 2)) / datasetCount);
-            this.ruler.barWidth = this.ruler.allBarsWidth * this.options.barPercentage;
-            this.ruler.barSpacing = this.ruler.allBarsWidth - (this.ruler.allBarsWidth * this.options.barPercentage);
-        },
-
     });
 
-
     Chart.scaleService.registerScaleType("category", DatasetScale, defaultConfig);
+
 }).call(this);

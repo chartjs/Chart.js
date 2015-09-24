@@ -125,9 +125,7 @@
 			this.stop();
 			var canvas = this.chart.canvas;
 			var newWidth = helpers.getMaximumWidth(this.chart.canvas);
-			var newHeight = (this.options.maintainAspectRatio && isNaN(this.chart.aspectRatio) === false && isFinite(this.chart.aspectRatio) && this.chart.aspectRatio !== 0) 
-				? newWidth / this.chart.aspectRatio 
-				: helpers.getMaximumHeight(this.chart.canvas);
+			var newHeight = (this.options.maintainAspectRatio && isNaN(this.chart.aspectRatio) === false && isFinite(this.chart.aspectRatio) && this.chart.aspectRatio !== 0) ? newWidth / this.chart.aspectRatio : helpers.getMaximumHeight(this.chart.canvas);
 
 			canvas.width = this.chart.width = newWidth;
 			canvas.height = this.chart.height = newHeight;
@@ -207,7 +205,7 @@
 				this.scale = scale;
 			}
 
-			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
+			Chart.scaleService.update(this, this.chart.width, this.chart.height);
 		},
 
 		buildOrUpdateControllers: function() {
@@ -230,7 +228,7 @@
 
 		update: function update(animationDuration, lazy) {
 			// This will loop through any data and do the appropriate element update for the type
-			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
+			Chart.scaleService.update(this, this.chart.width, this.chart.height);
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				dataset.controller.update();
 			}, this);
@@ -333,9 +331,9 @@
 			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; datasetIndex++) {
 				for (var elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; elementIndex++) {
 					if (this.data.datasets[datasetIndex].metaData[elementIndex].inLabelRange(eventPosition.x, eventPosition.y)) {
-                                                helpers.each(this.data.datasets[datasetIndex].metaData, function(element, index) {
-                                                        elementsArray.push(element);
-                                                }, this);
+						helpers.each(this.data.datasets[datasetIndex].metaData, function(element, index) {
+							elementsArray.push(element);
+						}, this);
 					}
 				}
 			}
@@ -490,7 +488,7 @@
 					(this.lastActive.length && this.active.length && changed)) {
 
 					this.stop();
-					
+
 					// We only need to render at this point. Updating will cause scales to be recomputed generating flicker & using more 
 					// memory than necessary.
 					this.render(this.options.hover.animationDuration, true);

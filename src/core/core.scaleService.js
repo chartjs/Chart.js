@@ -6,7 +6,7 @@
 		helpers = Chart.helpers;
 
 	// The scale service is used to resize charts along with all of their axes. We make this as
-	// a service where scales are registered with their respective charts so that changing the 
+	// a service where scales are registered with their respective charts so that changing the
 	// scales does not require 
 	Chart.scaleService = {
 		// Scale registration object. Extensions can register new scale types (such as log or DB scales) and then
@@ -14,6 +14,7 @@
 		constructors: {},
 		// Use a registration function so that we can move to an ES6 map when we no longer need to support
 		// old browsers
+
 		// Scale config defaults
 		defaults: {},
 		registerScaleType: function(type, scaleConstructor, defaults) {
@@ -27,7 +28,7 @@
 			return this.defaults.hasOwnProperty(type) ? this.defaults[type] : {};
 		},
 		// The interesting function
-		fitScalesForChart: function(chartInstance, width, height) {
+		update: function(chartInstance, width, height) {
 			var xPadding = width > 30 ? 5 : 2;
 			var yPadding = height > 30 ? 5 : 2;
 
@@ -78,7 +79,6 @@
 				chartWidth -= (2 * xPadding);
 				chartHeight -= (2 * yPadding);
 
-
 				// Step 2
 				var verticalScaleWidth = (width - chartWidth) / (leftScales.length + rightScales.length);
 
@@ -89,7 +89,7 @@
 				var minimumScaleSizes = [];
 
 				var verticalScaleMinSizeFunction = function(scaleInstance) {
-					var minSize = scaleInstance.fit(verticalScaleWidth, chartHeight);
+					var minSize = scaleInstance.update(verticalScaleWidth, chartHeight);
 					minimumScaleSizes.push({
 						horizontal: false,
 						minSize: minSize,
@@ -98,7 +98,7 @@
 				};
 
 				var horizontalScaleMinSizeFunction = function(scaleInstance) {
-					var minSize = scaleInstance.fit(chartWidth, horizontalScaleHeight);
+					var minSize = scaleInstance.update(chartWidth, horizontalScaleHeight);
 					minimumScaleSizes.push({
 						horizontal: true,
 						minSize: minSize,
@@ -136,7 +136,7 @@
 					});
 
 					if (wrapper) {
-						scaleInstance.fit(wrapper.minSize.width, maxChartHeight);
+						scaleInstance.update(wrapper.minSize.width, maxChartHeight);
 					}
 				};
 
@@ -153,7 +153,7 @@
 					};
 
 					if (wrapper) {
-						scaleInstance.fit(maxChartWidth, wrapper.minSize.height, scaleMargin);
+						scaleInstance.update(maxChartWidth, wrapper.minSize.height, scaleMargin);
 					}
 				};
 
@@ -198,7 +198,7 @@
 					};
 
 					if (wrapper) {
-						scaleInstance.fit(wrapper.minSize.width, maxChartHeight, scaleMargin);
+						scaleInstance.update(wrapper.minSize.width, maxChartHeight, scaleMargin);
 					}
 				});
 
@@ -215,7 +215,7 @@
 					};
 
 					if (wrapper) {
-						scaleInstance.fit(wrapper.minSize.width, maxChartHeight, scaleMargin);
+						scaleInstance.update(wrapper.minSize.width, maxChartHeight, scaleMargin);
 					}
 				});
 

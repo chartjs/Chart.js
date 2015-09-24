@@ -58,41 +58,14 @@
 	};
 
 	var defaultConfig = {
-		display: true,
 		position: "bottom",
 
-		// grid line settings
-		gridLines: {
-			show: true,
-			color: "rgba(0, 0, 0, 0.1)",
-			lineWidth: 1,
-			drawOnChartArea: true,
-			drawTicks: true, // draw ticks extending towards the label
-		},
-
-		tick: {
+		time: {
 			format: false, // false == date objects or use pattern string from http://momentjs.com/docs/#/parsing/string-format/
 			unit: false, // false == automatic or override with week, month, year, etc.
 			round: false, // none, or override with week, month, year, etc.
 			displayFormat: false, // defaults to unit's corresponding unitFormat below or override using pattern string from http://momentjs.com/docs/#/displaying/format/
 		},
-
-		// scale numbers
-		reverse: false,
-		override: null,
-
-		// label settings
-		ticks: {
-			show: true,
-			mirror: false,
-			padding: 10,
-			template: "<%=value.toLocaleString()%>",
-			fontSize: 12,
-			fontStyle: "normal",
-			fontColor: "#666",
-			fontFamily: "Helvetica Neue",
-			maxRotation: 45,
-		}
 	};
 
 	var TimeScale = Chart.Scale.extend({
@@ -106,11 +79,11 @@
 				return label;
 			}
 			// Custom parsing (return an instance of moment)
-			if (typeof this.options.tick.format !== 'string' && this.options.tick.format.call) {
-				return this.options.tick.format(label);
+			if (typeof this.options.time.format !== 'string' && this.options.time.format.call) {
+				return this.options.time.format(label);
 			}
 			// Moment format parsing
-			return moment(label, this.options.tick.format);
+			return moment(label, this.options.time.format);
 		},
 		generateTicks: function(index) {
 
@@ -120,8 +93,8 @@
 			// Parse each label into a moment
 			this.data.labels.forEach(function(label, index) {
 				var labelMoment = this.parseTime(label);
-				if (this.options.tick.round) {
-					labelMoment.startOf(this.options.tick.round);
+				if (this.options.time.round) {
+					labelMoment.startOf(this.options.time.round);
 				}
 				this.labelMoments.push(labelMoment);
 			}, this);
@@ -131,15 +104,15 @@
 			this.lastTick = moment.max.call(this, this.labelMoments).clone();
 
 			// Set unit override if applicable
-			if (this.options.tick.unit) {
-				this.tickUnit = this.options.tick.unit || 'day';
+			if (this.options.time.unit) {
+				this.tickUnit = this.options.time.unit || 'day';
 				this.displayFormat = time.unit.day.display;
 				this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, this.tickUnit, true));
 			} else {
 				// Determine the smallest needed unit of the time
 				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
 				var labelCapacity = innerWidth / this.options.ticks.fontSize + 4;
-				var buffer = this.options.tick.round ? 0 : 2;
+				var buffer = this.options.time.round ? 0 : 2;
 
 				this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, true) + buffer);
 				var done;
@@ -167,8 +140,8 @@
 
 
 			// Tick displayFormat override
-			if (this.options.tick.displayFormat) {
-				this.displayFormat = this.options.tick.displayFormat;
+			if (this.options.time.displayFormat) {
+				this.displayFormat = this.options.time.displayFormat;
 			}
 
 			// For every unit in between the first and last moment, create a moment and add it to the ticks tick
@@ -177,7 +150,7 @@
 					this.ticks.push(
 						this.options.ticks.userCallback(this.firstTick.clone()
 							.add(i, this.tickUnit)
-							.format(this.options.tick.displayFormat ? this.options.tick.displayFormat : time.unit[this.tickUnit].display)
+							.format(this.options.time.displayFormat ? this.options.time.displayFormat : time.unit[this.tickUnit].display)
 						)
 					);
 				}
@@ -185,14 +158,20 @@
 				for (i = 0; i <= this.tickRange; i++) {
 					this.ticks.push(this.firstTick.clone()
 						.add(i, this.tickUnit)
-						.format(this.options.tick.displayFormat ? this.options.tick.displayFormat : time.unit[this.tickUnit].display)
+						.format(this.options.time.displayFormat ? this.options.time.displayFormat : time.unit[this.tickUnit].display)
 					);
 				}
 			}
 		},
-		getPixelForValue: function(value, decimal, datasetIndex, includeOffset) {
+		getSmallestDataDistance: function() {
+			return this.smallestLabelSeparation;
+		},
+		getPixelForValue: function(value, datasetIndex, includeOffset) {
 			// This must be called after fit has been run so that 
 			//      this.left, this.top, this.right, and this.bottom have been defined
+
+			var decimal = 0.5;
+
 			if (this.isHorizontal()) {
 				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
 				var valueWidth = innerWidth / Math.max(this.ticks.length - 1, 1);
@@ -203,46 +182,46 @@
 				return this.top + (decimal * (this.height / this.ticks.length));
 			}
 		},
-		getPointPixelForValue: function(value, index, datasetIndex) {
+		// getPointPixelForValue: function(value, index, datasetIndex) {
 
-			var offset = this.labelMoments[index].diff(this.firstTick, this.tickUnit, true);
-			return this.getPixelForValue(value, offset / this.tickRange, datasetIndex);
-		},
+		// 	var offset = this.labelMoments[index].diff(this.firstTick, this.tickUnit, true);
+		// 	return this.getPixelForValue(value, offset / this.tickRange, datasetIndex);
+		// },
 
-		// Functions needed for bar charts
-		calculateBaseWidth: function() {
+		// // Functions needed for bar charts
+		// calculateBaseWidth: function() {
 
-			var base = this.getPixelForValue(null, this.smallestLabelSeparation / this.tickRange, 0, true) - this.getPixelForValue(null, 0, 0, true);
-			var spacing = 2 * this.options.categorySpacing;
-			if (base < spacing * 2) {
-				var mod = Math.min((spacing * 2) / base, 1.5);
-				base = (base / 2) * mod;
-				return base;
-			}
-			return base - spacing;
-		},
-		calculateBarWidth: function(barDatasetCount) {
-			//The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
-			var baseWidth = this.calculateBaseWidth() - ((barDatasetCount - 1) * this.options.spacing);
+		// 	var base = this.getPixelForValue(null, this.smallestLabelSeparation / this.tickRange, 0, true) - this.getPixelForValue(null, 0, 0, true);
+		// 	var spacing = 2 * this.options.categorySpacing;
+		// 	if (base < spacing * 2) {
+		// 		var mod = Math.min((spacing * 2) / base, 1.5);
+		// 		base = (base / 2) * mod;
+		// 		return base;
+		// 	}
+		// 	return base - spacing;
+		// },
+		// calculateBarWidth: function(barDatasetCount) {
+		// 	//The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
+		// 	var baseWidth = this.calculateBaseWidth() - ((barDatasetCount - 1) * this.options.spacing);
 
-			if (this.options.stacked) {
-				return Math.max(baseWidth, 1);
-			}
-			return Math.max((baseWidth / barDatasetCount), 1);
-		},
-		calculateBarX: function(barDatasetCount, datasetIndex, elementIndex) {
+		// 	if (this.options.stacked) {
+		// 		return Math.max(baseWidth, 1);
+		// 	}
+		// 	return Math.max((baseWidth / barDatasetCount), 1);
+		// },
+		// calculateBarX: function(barDatasetCount, datasetIndex, elementIndex) {
 
-			var xWidth = this.calculateBaseWidth(),
-				offset = this.labelMoments[elementIndex].diff(this.firstTick, this.tickUnit, true),
-				xAbsolute = this.getPixelForValue(null, offset / this.tickRange, datasetIndex, true) - (xWidth / 2),
-				barWidth = this.calculateBarWidth(barDatasetCount);
+		// 	var xWidth = this.calculateBaseWidth(),
+		// 		offset = this.labelMoments[elementIndex].diff(this.firstTick, this.tickUnit, true),
+		// 		xAbsolute = this.getPixelForValue(null, offset / this.tickRange, datasetIndex, true) - (xWidth / 2),
+		// 		barWidth = this.calculateBarWidth(barDatasetCount);
 
-			if (this.options.stacked) {
-				return xAbsolute + barWidth / 2;
-			}
+		// 	if (this.options.stacked) {
+		// 		return xAbsolute + barWidth / 2;
+		// 	}
 
-			return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * this.options.spacing) + barWidth / 2;
-		},
+		// 	return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * this.options.spacing) + barWidth / 2;
+		// },
 
 		// calculateTickRotation: function(maxHeight, margins) {
 		// 	//Get the width of each grid by calculating the difference
