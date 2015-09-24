@@ -10,16 +10,18 @@ describe('Linear Scale', function() {
 			var defaultConfig = Chart.scaleService.getScaleDefaults('linear');
 			expect(defaultConfig).toEqual({
 				display: true,
-				position: "left",
+				
 				gridLines: {
-					show: true,
 					color: "rgba(0, 0, 0, 0.1)",
-					lineWidth: 1,
 					drawOnChartArea: true,
 					drawTicks: true, // draw ticks extending towards the label
-					zeroLineWidth: 1,
+					lineWidth: 1,
+					offsetGridLines: false,
+					show: true,
 					zeroLineColor: "rgba(0,0,0,0.25)",
+					zeroLineWidth: 1,
 				},
+				position: "left",
 				scaleLabel: {
 					fontColor: '#666',
 					fontFamily: 'Helvetica Neue',
@@ -28,18 +30,15 @@ describe('Linear Scale', function() {
 					labelString: '',
 					show: false,
 				},
-				reverse: false,
-				beginAtZero: false,
-				override: null,
-				labels: {
-					show: true,
-					mirror: false,
-					padding: 10,
-					template: "<%=value.toLocaleString()%>",
+				ticks: {
+					fontColor: "#666",
+					fontFamily: "Helvetica Neue",
 					fontSize: 12,
 					fontStyle: "normal",
-					fontColor: "#666",
-					fontFamily: "Helvetica Neue"
+					maxRotation: 90,
+					minRotation: 20,
+					show: true,
+					template: "<%=value%>"
 				}
 			});
 		});
@@ -72,7 +71,11 @@ describe('Linear Scale', function() {
 			expect(scale.min).toBe(undefined); // not yet set
 			expect(scale.max).toBe(undefined);
 
-			scale.calculateRange();
+			// Set arbitrary width and height for now
+			scale.width = 50;
+			scale.height = 400;
+
+			scale.buildTicks();
 			expect(scale.min).toBe(-100);
 			expect(scale.max).toBe(150);
 		});
@@ -109,7 +112,11 @@ describe('Linear Scale', function() {
 				id: scaleID
 			});
 
-			verticalScale.calculateRange();
+			// Set arbitrary width and height for now
+			verticalScale.width = 50;
+			verticalScale.height = 400;
+
+			verticalScale.buildTicks();
 			expect(verticalScale.min).toBe(0);
 			expect(verticalScale.max).toBe(100);
 
@@ -122,9 +129,13 @@ describe('Linear Scale', function() {
 				id: scaleID,
 			});
 
-			horizontalScale.calculateRange();
-			expect(horizontalScale.min).toBe(-10);
-			expect(horizontalScale.max).toBe(99);
+			// Set arbitrary width and height for now
+			horizontalScale.width = 400;
+			horizontalScale.height = 50;
+
+			horizontalScale.buildTicks();
+			expect(horizontalScale.min).toBe(-20);
+			expect(horizontalScale.max).toBe(100);
 		});
 
 		it('Should correctly determine the min and max data values when stacked mode is turned on', function() {
@@ -154,9 +165,13 @@ describe('Linear Scale', function() {
 				id: scaleID
 			});
 
-			scale.calculateRange();
-			expect(scale.min).toBe(-105);
-			expect(scale.max).toBe(160);
+			// Set arbitrary width and height for now
+			scale.width = 50;
+			scale.height = 400;
+
+			scale.buildTicks();
+			expect(scale.min).toBe(-150);
+			expect(scale.max).toBe(200);
 		});
 
 		it('Should ensure that the scale has a max and min that are not equal', function() {
@@ -175,50 +190,13 @@ describe('Linear Scale', function() {
 				id: scaleID
 			});
 
-			scale.calculateRange();
+			// Set arbitrary width and height for now
+			scale.width = 50;
+			scale.height = 400;
+
+			scale.buildTicks();
 			expect(scale.min).toBe(-1);
 			expect(scale.max).toBe(1);
-		});
-
-		it('should forcibly include 0 in the range if the beginAtZero option is used', function() {
-			var scaleID = 'myScale';
-
-			var mockData = {
-				datasets: [{
-					yAxisID: scaleID,
-					data: [20, 30, 40, 50]
-				}]
-			};
-
-			var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
-
-
-			var Constructor = Chart.scaleService.getScaleConstructor('linear');
-			var scale = new Constructor({
-				ctx: {},
-				options: config,
-				data: mockData,
-				id: scaleID
-			});
-
-			scale.calculateRange();
-			scale.generateTicks(400, 400);
-			expect(scale.ticks).toEqual([50, 45, 40, 35, 30, 25, 20]);
-
-			config.beginAtZero = true;
-			scale.calculateRange();
-			scale.generateTicks(400, 400);
-			expect(scale.ticks).toEqual([50, 45, 40, 35, 30, 25, 20, 15, 10, 5, 0]);
-
-			mockData.datasets[0].data = [-20, -30, -40, -50];
-			scale.calculateRange();
-			scale.generateTicks(400, 400);
-			expect(scale.ticks).toEqual([0, -5, -10, -15, -20, -25, -30, -35, -40, -45, -50]);
-
-			config.beginAtZero = false;
-			scale.calculateRange();
-			scale.generateTicks(400, 400);
-			expect(scale.ticks).toEqual([-20, -25, -30, -35, -40, -45, -50]);
 		});
 
 		it('Should generate tick marks', function() {
@@ -253,78 +231,6 @@ describe('Linear Scale', function() {
 			expect(scale.ticks).toEqual([80, 70, 60, 50, 40, 30, 20, 10, 0]);
 			expect(scale.start).toBe(0);
 			expect(scale.end).toBe(80);
-		});
-
-		it('Should generate tick marks in the correct order in reversed mode', function() {
-			var scaleID = 'myScale';
-
-			var mockData = {
-				datasets: [{
-					yAxisID: scaleID,
-					data: [10, 5, 0, 25, 78]
-				}, ]
-			};
-
-			var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
-			config.reverse = true;
-			var Constructor = Chart.scaleService.getScaleConstructor('linear');
-			var scale = new Constructor({
-				ctx: {},
-				options: config,
-				data: mockData,
-				id: scaleID
-			});
-
-			scale.calculateRange();
-
-			expect(scale.ticks).toBe(undefined); // not set
-
-			// Large enough to be unimportant
-			var maxWidth = 400;
-			var maxHeight = 400;
-			scale.generateTicks(maxWidth, maxHeight);
-
-			// Reverse mode makes this count up
-			expect(scale.ticks).toEqual([0, 10, 20, 30, 40, 50, 60, 70, 80]);
-			expect(scale.start).toBe(80);
-			expect(scale.end).toBe(0);
-		});
-
-		it('Should generate tick marks using the user supplied options', function() {
-			var scaleID = 'myScale';
-
-			var mockData = {
-				datasets: [{
-					yAxisID: scaleID,
-					data: [10, 5, 0, 25, 78]
-				}, ]
-			};
-
-			var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
-			config.override = {
-				steps: 10,
-				start: 0,
-				stepWidth: 10
-			};
-
-			var Constructor = Chart.scaleService.getScaleConstructor('linear');
-			var scale = new Constructor({
-				ctx: {},
-				options: config,
-				data: mockData,
-				id: scaleID
-			});
-
-			scale.calculateRange();
-
-			// Large enough to be unimportant
-			var maxWidth = 400;
-			var maxHeight = 400;
-			scale.generateTicks(maxWidth, maxHeight);
-
-			expect(scale.ticks).toEqual([100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0]);
-			expect(scale.start).toBe(0);
-			expect(scale.end).toBe(100);
 		});
 
 		it('Should build labels using the default template', function() {
