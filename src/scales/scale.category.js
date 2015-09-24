@@ -147,7 +147,7 @@
                 var datasetWidth = Math.floor(this.getPixelForValue(0, 1) - this.getPixelForValue(0, 0)) - 6;
 
                 //Max label rotation can be set or default to 90 - also act as a loop counter
-                while (this.labelWidth > datasetWidth && this.labelRotation <= this.options.labels.maxRotation) {
+                while (this.labelWidth > datasetWidth && this.labelRotation < this.options.labels.maxRotation) {
                     cosRotation = Math.cos(helpers.toRadians(this.labelRotation));
                     sinRotation = Math.sin(helpers.toRadians(this.labelRotation));
 
@@ -303,7 +303,7 @@
 
                         if (this.options.labels.show) {
                             this.ctx.save();
-                            this.ctx.translate(xLabelValue, (isRotated) ? this.top + 12 : this.top + 8);
+                            this.ctx.translate(xLabelValue, (isRotated) ? this.top + 12 + this.options.labels.padding : this.top + this.options.labels.padding);
                             this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
                             this.ctx.font = this.font;
                             this.ctx.textAlign = (isRotated) ? "right" : "center";
