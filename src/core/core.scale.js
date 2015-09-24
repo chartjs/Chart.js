@@ -127,7 +127,6 @@
 
 				//Max label rotation can be set or default to 90 - also act as a loop counter
 				while (this.labelWidth > tickWidth && this.labelRotation <= this.options.ticks.maxRotation) {
-					console.log(this.labelWidth, tickWidth, ',', this.labelRotation, this.options.ticks.maxRotation);
 					cosRotation = Math.cos(helpers.toRadians(this.labelRotation));
 					sinRotation = Math.sin(helpers.toRadians(this.labelRotation));
 
@@ -141,7 +140,6 @@
 
 					this.paddingRight = this.options.ticks.fontSize / 2;
 
-					console.log(sinRotation * originalLabelWidth, this.maxHeight);
 					if (sinRotation * originalLabelWidth > this.maxHeight) {
 						// go back one step
 						this.labelRotation--;

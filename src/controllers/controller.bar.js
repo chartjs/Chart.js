@@ -228,7 +228,13 @@
 			var datasetCount = !this.chart.isCombo ? this.chart.data.datasets.length : helpers.where(this.chart.data.datasets, function(ds) {
 				return ds.type == 'bar';
 			}).length;
-			var tickWidth = xScale.getPixelForValue(null, 1) - xScale.getPixelForValue(null, 0);
+			var tickWidth = (function() {
+				var min = xScale.getPixelForValue(null, 1) - xScale.getPixelForValue(null, 0);
+				for (var i = 2; i < this.getDataset().data.length; i++) {
+					min = Math.min(xScale.getPixelForValue(null, i) - xScale.getPixelForValue(null, i - 1), min);
+				}
+				return min;
+			}).call(this);
 			var categoryWidth = tickWidth * xScale.options.categoryPercentage;
 			var categorySpacing = (tickWidth - (tickWidth * xScale.options.categoryPercentage)) / 2;
 			var fullBarWidth = categoryWidth / datasetCount;
@@ -265,8 +271,9 @@
 			var yScale = this.getScaleForID(this.getDataset().yAxisID);
 			var xScale = this.getScaleForID(this.getDataset().xAxisID);
 
-			var leftTick = xScale.getPixelForValue(null, index);
 			var ruler = this.getRuler();
+			var leftTick = xScale.getPixelForValue(null, index, datasetIndex);
+			leftTick -= this.chart.isCombo ? (ruler.tickWidth / 2) : 0;
 
 			if (yScale.options.stacked) {
 				return leftTick + (ruler.categoryWidth / 2) + ruler.categorySpacing;

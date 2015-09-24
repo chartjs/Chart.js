@@ -211,7 +211,10 @@
 		buildOrUpdateControllers: function() {
 			var types = [];
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				var type = dataset.type || this.config.type;
+				if (!dataset.type) {
+					dataset.type = this.config.type;
+				}
+				var type = dataset.type;
 				types.push(type);
 				if (dataset.controller) {
 					dataset.controller.updateIndex(datasetIndex);

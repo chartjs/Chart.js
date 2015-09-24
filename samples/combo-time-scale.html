@@ -55,12 +55,14 @@
                 // labels: ["01/01/2015", "01/02/2015", "01/03/2015", "01/06/2015", "01/15/2015", "01/17/2015", "01/30/2015"], // Days
                 // labels: ["12/25/2014", "01/08/2015", "01/15/2015", "01/22/2015", "01/29/2015", "02/05/2015", "02/12/2015"], // Weeks
                 datasets: [{
+                    type: 'bar',
                     label: 'Dataset 1',
                     backgroundColor: "rgba(151,187,205,0.5)",
                     data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
                     borderColor: 'white',
                     borderWidth: 2
                 }, {
+                    type: 'bar',
                     label: 'Dataset 2',
                     backgroundColor: "rgba(151,187,205,0.5)",
                     data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
@@ -90,7 +92,7 @@
                 },
                 elements: {
                     line: {
-                        tension: 0
+                        tension: 0.3
                     }
                 },
             }
