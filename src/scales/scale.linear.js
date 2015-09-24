@@ -158,6 +158,7 @@
 			var range = this.end - this.start;
 
 			if (this.isHorizontal()) {
+
 				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
 				pixel = this.left + (innerWidth / range * (this.getRightValue(value) - this.start));
 				return Math.round(pixel + this.paddingLeft);

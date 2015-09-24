@@ -144,41 +144,39 @@
 
 				this.ticks.push(label); // empty string will not render so we're good
 			}, this);
-
-			console.log(this.tickValues, this.ticks);
 		},
 		// Get the correct value. If the value type is object get the x or y based on whether we are horizontal or not
 		getRightValue: function(rawValue) {
 			return typeof rawValue === "object" ? (this.isHorizontal() ? rawValue.x : rawValue.y) : rawValue;
 		},
 		getPixelForTick: function(index, includeOffset) {
-			return this.getPixelForValue(this.tickValues[index], includeOffset);
+			return this.getPixelForValue(this.tickValues[index], null, null, includeOffset);
 		},
-		getPixelForValue: function(value) {
-			// This must be called after fit has been run so that 
-			//      this.left, this.top, this.right, and this.bottom have been defined
+		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
 			var pixel;
+
+			var newVal = this.getRightValue(value);
 			var range = helpers.log10(this.end) - helpers.log10(this.start);
 
 			if (this.isHorizontal()) {
-				if (value === 0) {
+
+				if (newVal === 0) {
 					pixel = this.left + this.paddingLeft;
 				} else {
 					var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
-					pixel = this.left + (innerWidth / range * (helpers.log10(value) - helpers.log10(this.start)));
-					pixel += this.paddingLeft;
+					pixel = this.left + (innerWidth / range * (helpers.log10(newVal) - helpers.log10(this.start)));
+					return pixel + this.paddingLeft;
 				}
 			} else {
 				// Bottom - top since pixels increase downard on a screen
-				if (value === 0) {
+				if (newVal === 0) {
 					pixel = this.top + this.paddingTop;
 				} else {
 					var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
-					pixel = (this.bottom - this.paddingBottom) - (innerHeight / range * (helpers.log10(value) - helpers.log10(this.start)));
+					return (this.bottom - this.paddingBottom) - (innerHeight / range * (helpers.log10(newVal) - helpers.log10(this.start)));
 				}
 			}
 
-			return pixel;
 		},
 
 	});
