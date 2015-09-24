@@ -144,7 +144,8 @@
             newDataset.backgroundColor.push(randomColor(0.7));
         }
 
-        window.myDoughnut.addDataset(newDataset);
+        config.data.datasets.push(newDataset);
+        window.myDoughnut.update();
         updateLegend();
     });
 
@@ -153,15 +154,18 @@
             config.data.labels.push('data #' + config.data.labels.length);
 
             $.each(config.data.datasets, function(index, dataset) {
-                window.myDoughnut.addData(randomScalingFactor(), index, dataset.data.length, randomColor(0.7));
+                dataset.data.push(randomScalingFactor());
+                dataset.backgroundColor.push(randomColor(0.7));
             });
 
+            window.myDoughnut.update();
             updateLegend();
         }
     });
 
     $('#removeDataset').click(function() {
-        window.myDoughnut.removeDataset(0);
+        config.data.datasets.splice(0, 1);
+        window.myDoughnut.update();
         updateLegend();
     });
 
@@ -169,9 +173,11 @@
         config.data.labels.splice(-1, 1); // remove the label first
 
         config.data.datasets.forEach(function(dataset, datasetIndex) {
-            window.myDoughnut.removeData(datasetIndex, -1);
+            dataset.data.pop();
+            dataset.backgroundColor.pop();
         });
 
+        window.myDoughnut.update();
         updateLegend();
     });
     </script>

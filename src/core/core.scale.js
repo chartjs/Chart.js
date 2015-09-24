@@ -301,6 +301,8 @@
 				var setContextLineSettings;
 				var isRotated;
 				var skipRatio;
+				var scaleLabelX;
+				var scaleLabelY;
 
 				// Make sure we draw text in the correct color
 				this.ctx.fillStyle = this.options.ticks.fontColor;
@@ -367,6 +369,19 @@
 							this.ctx.restore();
 						}
 					}, this);
+
+					if (this.options.scaleLabel.show) {
+						// Draw the scale label
+						this.ctx.textAlign = "center";
+						this.ctx.textBaseline = 'middle';
+						this.ctx.font = helpers.fontString(this.options.scaleLabel.fontSize, this.options.scaleLabel.fontStyle, this.options.scaleLabel.fontFamily);
+
+						scaleLabelX = this.left + ((this.right - this.left) / 2); // midpoint of the width
+						scaleLabelY = this.options.position == 'bottom' ? this.bottom - (this.options.scaleLabel.fontSize / 2) : this.top + (this.options.scaleLabel.fontSize / 2);
+
+						this.ctx.fillText(this.options.scaleLabel.labelString, scaleLabelX, scaleLabelY);
+					}
+
 				} else {
 					setContextLineSettings = true;
 					var xTickStart = this.options.position == "left" ? this.right : this.left - 10;
@@ -430,6 +445,22 @@
 							this.ctx.restore();
 						}
 					}, this);
+
+					if (this.options.scaleLabel.show) {
+						// Draw the scale label
+						scaleLabelX = this.options.position == 'left' ? this.left + (this.options.scaleLabel.fontSize / 2) : this.right - (this.options.scaleLabel.fontSize / 2);
+						scaleLabelY = this.top + ((this.bottom - this.top) / 2);
+						var rotation = this.options.position == 'left' ? -0.5 * Math.PI : 0.5 * Math.PI;
+
+						this.ctx.save();
+						this.ctx.translate(scaleLabelX, scaleLabelY);
+						this.ctx.rotate(rotation);
+						this.ctx.textAlign = "center";
+						this.ctx.font = helpers.fontString(this.options.scaleLabel.fontSize, this.options.scaleLabel.fontStyle, this.options.scaleLabel.fontFamily);
+						this.ctx.textBaseline = 'middle';
+						this.ctx.fillText(this.options.scaleLabel.labelString, 0, 0);
+						this.ctx.restore();
+					}
 				}
 			}
 		}

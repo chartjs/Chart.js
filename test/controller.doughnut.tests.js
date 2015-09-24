@@ -205,6 +205,7 @@ describe('Doughnut controller tests', function() {
 
 		// Change the amount of data and ensure that arcs are updated accordingly
 		chart.data.datasets[0].data = [1, 2]; // remove 2 elements from dataset 0
+		controller.buildOrUpdateElements();
 		controller.update();
 
 		expect(chart.data.datasets[0].metaData.length).toBe(2);
@@ -213,6 +214,7 @@ describe('Doughnut controller tests', function() {
 
 		// Add data
 		chart.data.datasets[0].data = [1, 2, 3, 4];
+		controller.buildOrUpdateElements();
 		controller.update();
 
 		expect(chart.data.datasets[0].metaData.length).toBe(4);

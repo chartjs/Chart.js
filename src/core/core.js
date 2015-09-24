@@ -50,6 +50,10 @@
 			this.aspectRatio = config.aspectRatio !== undefined ? config.aspectRatio : 2;
 		}
 
+		// Store the original style of the element so we can set it back
+		this.originalCanvasStyleWidth = context.canvas.style.width;
+		this.originalCanvasStyleHeight = context.canvas.style.height;
+
 		// High pixel density displays - multiply the size of the canvas height/width by the device pixel ratio, then scale.
 		Chart.helpers.retinaScale(this);
 

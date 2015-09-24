@@ -110,10 +110,7 @@
 			this.update(true);
 		},
 
-		update: function(reset) {
-
-			var numBars = this.getBarCount();
-
+		buildOrUpdateElements: function buildOrUpdateElements() {
 			var numData = this.getDataset().data.length;
 			var numRectangles = this.getDataset().metaData.length;
 
@@ -127,6 +124,10 @@
 					this.addElementAndReset(index);
 				}
 			}
+		},
+
+		update: function update(reset) {
+			var numBars = this.getBarCount();
 
 			helpers.each(this.getDataset().metaData, function(rectangle, index) {
 				this.updateElement(rectangle, index, reset, numBars);

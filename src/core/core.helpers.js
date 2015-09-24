@@ -653,7 +653,7 @@
 				};
 		})(),
 		//-- DOM methods
-		getRelativePosition = helpers.getRelativePosition = function(evt) {
+		getRelativePosition = helpers.getRelativePosition = function(evt, chart) {
 			var mouseX, mouseY;
 			var e = evt.originalEvent || evt,
 				canvas = evt.currentTarget || evt.srcElement,
@@ -671,8 +671,11 @@
 			// Scale mouse coordinates into canvas coordinates
 			// by following the pattern laid out by 'jerryj' in the comments of 
 			// http://www.html5canvastutorials.com/advanced/html5-canvas-mouse-coordinates/
-			mouseX = Math.round((mouseX - boundingRect.left) / (boundingRect.right - boundingRect.left) * canvas.width);
-			mouseY = Math.round((mouseY - boundingRect.top) / (boundingRect.bottom - boundingRect.top) * canvas.height);
+
+			// We divide by the current device pixel ratio, because the canvas is scaled up by that amount in each direction. However
+			// the backend model is in unscaled coordinates. Since we are going to deal with our model coordinates, we go back here
+			mouseX = Math.round((mouseX - boundingRect.left) / (boundingRect.right - boundingRect.left) * canvas.width / chart.currentDevicePixelRatio);
+			mouseY = Math.round((mouseY - boundingRect.top) / (boundingRect.bottom - boundingRect.top) * canvas.height / chart.currentDevicePixelRatio);
 
 			return {
 				x: mouseX,
@@ -773,11 +776,15 @@
 			var ctx = chart.ctx;
 			var width = chart.canvas.width;
 			var height = chart.canvas.height;
+			chart.currentDevicePixelRatio = window.devicePixelRatio || 1;
 
 			if (window.devicePixelRatio !== 1) {
 				ctx.canvas.height = height * window.devicePixelRatio;
 				ctx.canvas.width = width * window.devicePixelRatio;
 				ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+				ctx.canvas.style.width = width + 'px';
+				ctx.canvas.style.height = height + 'px';
 
 				// Store the device pixel ratio so that we can go backwards in `destroy`.
 				// The devicePixelRatio changes with zoom, so there are no guarantees that it is the same

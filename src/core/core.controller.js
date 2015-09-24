@@ -75,52 +75,6 @@
 			return this;
 		},
 
-		addDataset: function addDataset(dataset, index) {
-			if (index !== undefined) {
-				this.data.datasets.splice(index, 0, dataset);
-			} else {
-				this.data.datasets.push(dataset);
-			}
-
-			this.buildOrUpdateControllers();
-			dataset.controller.reset(); // so that animation looks ok
-			this.update();
-		},
-		removeDataset: function removeDataset(index) {
-			this.data.datasets.splice(index, 1);
-			this.buildOrUpdateControllers();
-			this.update();
-		},
-
-		// Add data to the given dataset
-		// @param data: the data to add
-		// @param {Number} datasetIndex : the index of the dataset to add to
-		// @param {Number} index : the index of the data
-		addData: function addData(data, datasetIndex, index) {
-			if (datasetIndex < this.data.datasets.length) {
-				if (index === undefined) {
-					index = this.data.datasets[datasetIndex].data.length;
-				}
-
-				var addElementArgs = [index];
-				for (var i = 3; i < arguments.length; ++i) {
-					addElementArgs.push(arguments[i]);
-				}
-
-				this.data.datasets[datasetIndex].data.splice(index, 0, data);
-				this.data.datasets[datasetIndex].controller.addElementAndReset.apply(this.data.datasets[datasetIndex].controller, addElementArgs);
-				this.update();
-			}
-		},
-
-		removeData: function removeData(datasetIndex, index) {
-			if (datasetIndex < this.data.datasets.length) {
-				this.data.datasets[datasetIndex].data.splice(index, 1);
-				this.data.datasets[datasetIndex].controller.removeElement(index);
-				this.update();
-			}
-		},
-
 		resize: function resize(silent) {
 			this.stop();
 			var canvas = this.chart.canvas;
@@ -208,7 +162,7 @@
 			Chart.scaleService.update(this, this.chart.width, this.chart.height);
 		},
 
-		buildOrUpdateControllers: function() {
+		buildOrUpdateControllers: function buildOrUpdateControllers(resetNewControllers) {
 			var types = [];
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				if (!dataset.type) {
@@ -221,6 +175,10 @@
 					return;
 				}
 				dataset.controller = new Chart.controllers[type](this, datasetIndex);
+
+				if (resetNewControllers) {
+					dataset.controller.reset();
+				}
 			}, this);
 			if (types.length > 1) {
 				for (var i = 1; i < types.length; i++) {
@@ -238,10 +196,18 @@
 			}, this);
 		},
 
-
 		update: function update(animationDuration, lazy) {
-			// This will loop through any data and do the appropriate element update for the type
 			Chart.scaleService.update(this, this.chart.width, this.chart.height);
+
+			// Make sure dataset controllers are updated and new controllers are reset
+			this.buildOrUpdateControllers(true);
+
+			// Make sure all dataset controllers have correct meta data counts
+			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
+				dataset.controller.buildOrUpdateElements();
+			}, this);
+
+			// This will loop through any data and do the appropriate element update for the type
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				dataset.controller.update();
 			}, this);
@@ -299,15 +265,11 @@
 			this.tooltip.transition(easingDecimal).draw();
 		},
 
-
-
-
-
 		// Get the single element that was clicked on
 		// @return : An object containing the dataset index and element index of the matching element. Also contains the rectangle that was draw
 		getElementAtEvent: function(e) {
 
-			var eventPosition = helpers.getRelativePosition(e);
+			var eventPosition = helpers.getRelativePosition(e, this.chart);
 			var elementsArray = [];
 
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
@@ -323,7 +285,7 @@
 		},
 
 		getElementsAtEvent: function(e) {
-			var eventPosition = helpers.getRelativePosition(e);
+			var eventPosition = helpers.getRelativePosition(e, this.chart);
 			var elementsArray = [];
 
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
@@ -338,7 +300,7 @@
 		},
 
 		getDatasetAtEvent: function(e) {
-			var eventPosition = helpers.getRelativePosition(e);
+			var eventPosition = helpers.getRelativePosition(e, this.chart);
 			var elementsArray = [];
 
 			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; datasetIndex++) {
@@ -370,8 +332,12 @@
 
 			// if we scaled the canvas in response to a devicePixelRatio !== 1, we need to undo that transform here
 			if (this.chart.originalDevicePixelRatio !== undefined) {
-				canvas.scale(1 / this.chart.originalDevicePixelRatio, 1 / this.chart.originalDevicePixelRatio);
+				this.chart.ctx.scale(1 / this.chart.originalDevicePixelRatio, 1 / this.chart.originalDevicePixelRatio);
 			}
+
+			// Reset to the old style since it may have been changed by the device pixel ratio changes
+			canvas.style.width = this.chart.originalCanvasStyleWidth;
+			canvas.style.height = this.chart.originalCanvasStyleHeight;
 
 			delete Chart.instances[this.id];
 		},

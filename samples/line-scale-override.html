@@ -2,14 +2,9 @@
 <html>
 
 <head>
-    <title>Line Chart</title>
+    <title>Line Chart with Scale Override</title>
     <script src="../Chart.js"></script>
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
-    <style>
-    canvas {
-        -webkit-box-shadow: 0 0 20px 0 rgba(0, 0, 0, .5);
-    }
-    </style>
 </head>
 
 <body>
@@ -23,15 +18,9 @@
     <button id="removeDataset">Remove Dataset</button>
     <button id="addData">Add Data</button>
     <button id="removeData">Remove Data</button>
-    <div>
-        <h3>Legend</h3>
-        <div id="legendContainer">
-            
-        </div>
-    </div>
     <script>
     var randomScalingFactor = function() {
-        return Math.ceil(Math.random() * 10.0) * Math.pow(10, Math.ceil(Math.random() * 5));
+        return Math.round(Math.random() * 100 * (Math.random() > 0.5 ? -1 : 1));
     };
     var randomColorFactor = function() {
         return Math.round(Math.random() * 255);
@@ -48,7 +37,6 @@
                 label: "My First dataset",
                 data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
                 fill: false,
-                borderDash: [5, 5],
             }, {
                 label: "My Second dataset",
                 data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
@@ -58,18 +46,14 @@
             responsive: true,
             scales: {
                 xAxes: [{
-                    display: true,
-                    scaleLabel: {
-                        show: true,
-                        labelString: 'x axis'
-                    }
+                    display: true
                 }],
                 yAxes: [{
                     display: true,
-                    type: 'logarithmic',
-                    scaleLabel: {
-                        show: true,
-                        labelString: 'y axis'
+                    override: {
+                        start: -100,
+                        stepWidth: 10,
+                        steps: 20
                     }
                 }]
             }
@@ -89,15 +73,7 @@
     window.onload = function() {
         var ctx = document.getElementById("canvas").getContext("2d");
         window.myLine = new Chart(ctx, config);
-
-        updateLegend();
     };
-
-    function updateLegend() {
-        $legendContainer = $('#legendContainer');
-        $legendContainer.empty();
-        $legendContainer.append(window.myLine.generateLegend());
-    }
 
     $('#randomizeData').click(function() {
         $.each(config.data.datasets, function(i, dataset) {
@@ -108,7 +84,6 @@
         });
 
         window.myLine.update();
-        updateLegend();
     });
 
     $('#addDataset').click(function() {
@@ -128,7 +103,6 @@
 
         config.data.datasets.push(newDataset);
         window.myLine.update();
-        updateLegend();
     });
 
     $('#addData').click(function() {
@@ -140,14 +114,12 @@
             }
 
             window.myLine.update();
-            updateLegend();
         }
     });
 
     $('#removeDataset').click(function() {
         config.data.datasets.splice(0, 1);
         window.myLine.update();
-        updateLegend();
     });
 
     $('#removeData').click(function() {
@@ -158,7 +130,6 @@
         });
 
         window.myLine.update();
-        updateLegend();
     });
     </script>
 </body>
