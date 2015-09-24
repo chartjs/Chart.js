@@ -11,6 +11,70 @@
 
 	var LinearScale = Chart.Scale.extend({
 		buildTicks: function() {
+
+			// First Calculate the range
+			this.min = null;
+			this.max = null;
+
+			var positiveValues = [];
+			var negativeValues = [];
+
+			if (this.options.stacked) {
+				helpers.each(this.data.datasets, function(dataset) {
+					if (this.isHorizontal() ? dataset.xAxisID === this.id : dataset.yAxisID === this.id) {
+						helpers.each(dataset.data, function(rawValue, index) {
+
+							var value = this.getRightValue(rawValue);
+
+							positiveValues[index] = positiveValues[index] || 0;
+							negativeValues[index] = negativeValues[index] || 0;
+
+							if (this.options.relativePoints) {
+								positiveValues[index] = 100;
+							} else {
+								if (value < 0) {
+									negativeValues[index] += value;
+								} else {
+									positiveValues[index] += value;
+								}
+							}
+						}, this);
+					}
+				}, this);
+
+				var values = positiveValues.concat(negativeValues);
+				this.min = helpers.min(values);
+				this.max = helpers.max(values);
+
+			} else {
+				helpers.each(this.data.datasets, function(dataset) {
+					if (this.isHorizontal() ? dataset.xAxisID === this.id : dataset.yAxisID === this.id) {
+						helpers.each(dataset.data, function(rawValue, index) {
+							var value = this.getRightValue(rawValue);
+
+							if (this.min === null) {
+								this.min = value;
+							} else if (value < this.min) {
+								this.min = value;
+							}
+
+							if (this.max === null) {
+								this.max = value;
+							} else if (value > this.max) {
+								this.max = value;
+							}
+						}, this);
+					}
+				}, this);
+			}
+
+			if (this.min === this.max) {
+				this.min--;
+				this.max++;
+			}
+
+
+
 			// We need to decide how many ticks we are going to have. Each tick draws a grid line.
 			// There are two possibilities. The first is that the user has manually overridden the scale
 			// calculations in which case the job is easy. The other case is that we have to do it ourselves
@@ -281,268 +345,268 @@
 		// @param {number} maxWidth : the max width the axis can be
 		// @param {number} maxHeight: the max height the axis can be
 		// @return {object} minSize : the minimum size needed to draw the axis
-		// fit: function() {
+		/*fit: function() {
 
-		// 	this.minSize = {
-		// 		width: 0,
-		// 		height: 0,
-		// 	};
+			this.minSize = {
+				width: 0,
+				height: 0,
+			};
 
-		// 	// In a horizontal axis, we need some room for the scale to be drawn
-		// 	//
-		// 	//      -----------------------------------------------------
-		// 	//          |           |           |           |           |
-		// 	//
-		// 	// In a vertical axis, we need some room for the scale to be drawn.
-		// 	// The actual grid lines will be drawn on the chart area, however, we need to show 
-		// 	// ticks where the axis actually is.
-		// 	// We will allocate 25px for this width
-		// 	//      |
-		// 	//     -|
-		// 	//      |
-		// 	//      |
-		// 	//     -|
-		// 	//      |
-		// 	//      |
-		// 	//     -|
-
-
-		// 	// Width
-		// 	if (this.isHorizontal()) {
-		// 		this.minSize.width = this.maxWidth; // fill all the width
-		// 	} else {
-		// 		this.minSize.width = this.options.gridLines.show && this.options.display ? 10 : 0;
-		// 	}
-
-		// 	// height
-		// 	if (this.isHorizontal()) {
-		// 		this.minSize.height = this.options.gridLines.show && this.options.display ? 10 : 0;
-		// 	} else {
-		// 		this.minSize.height = this.maxHeight; // fill all the height
-		// 	}
-
-		// 	this.paddingLeft = 0;
-		// 	this.paddingRight = 0;
-		// 	this.paddingTop = 0;
-		// 	this.paddingBottom = 0;
+			// In a horizontal axis, we need some room for the scale to be drawn
+			//
+			//      -----------------------------------------------------
+			//          |           |           |           |           |
+			//
+			// In a vertical axis, we need some room for the scale to be drawn.
+			// The actual grid lines will be drawn on the chart area, however, we need to show 
+			// ticks where the axis actually is.
+			// We will allocate 25px for this width
+			//      |
+			//     -|
+			//      |
+			//      |
+			//     -|
+			//      |
+			//      |
+			//     -|
 
 
-		// 	if (this.options.ticks.show && this.options.display) {
-		// 		// Don't bother fitting the ticks if we are not showing them
-		// 		var labelFont = helpers.fontString(this.options.ticks.fontSize,
-		// 			this.options.ticks.fontStyle, this.options.ticks.fontFamily);
+			// Width
+			if (this.isHorizontal()) {
+				this.minSize.width = this.maxWidth; // fill all the width
+			} else {
+				this.minSize.width = this.options.gridLines.show && this.options.display ? 10 : 0;
+			}
 
-		// 		if (this.isHorizontal()) {
-		// 			// A horizontal axis is more constrained by the height.
-		// 			var maxLabelHeight = this.maxHeight - this.minSize.height;
-		// 			var labelHeight = 1.5 * this.options.ticks.fontSize;
-		// 			this.minSize.height = Math.min(this.maxHeight, this.minSize.height + labelHeight);
+			// height
+			if (this.isHorizontal()) {
+				this.minSize.height = this.options.gridLines.show && this.options.display ? 10 : 0;
+			} else {
+				this.minSize.height = this.maxHeight; // fill all the height
+			}
 
-		// 			var labelFont = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
-		// 			this.ctx.font = labelFont;
+			this.paddingLeft = 0;
+			this.paddingRight = 0;
+			this.paddingTop = 0;
+			this.paddingBottom = 0;
 
-		// 			var firstLabelWidth = this.ctx.measureText(this.ticks[0]).width;
-		// 			var lastLabelWidth = this.ctx.measureText(this.ticks[this.ticks.length - 1]).width;
 
-		// 			// Ensure that our ticks are always inside the canvas
-		// 			this.paddingLeft = firstLabelWidth / 2;
-		// 			this.paddingRight = lastLabelWidth / 2;
-		// 		} else {
-		// 			// A vertical axis is more constrained by the width. Labels are the dominant factor 
-		// 			// here, so get that length first
-		// 			var maxLabelWidth = this.maxWidth - this.minSize.width;
-		// 			var largestTextWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
+			if (this.options.ticks.show && this.options.display) {
+				// Don't bother fitting the ticks if we are not showing them
+				var labelFont = helpers.fontString(this.options.ticks.fontSize,
+					this.options.ticks.fontStyle, this.options.ticks.fontFamily);
 
-		// 			if (largestTextWidth < maxLabelWidth) {
-		// 				// We don't need all the room
-		// 				this.minSize.width += largestTextWidth;
-		// 				this.minSize.width += 3; // extra padding
-		// 			} else {
-		// 				// Expand to max size
-		// 				this.minSize.width = this.maxWidth;
-		// 			}
+				if (this.isHorizontal()) {
+					// A horizontal axis is more constrained by the height.
+					var maxLabelHeight = this.maxHeight - this.minSize.height;
+					var labelHeight = 1.5 * this.options.ticks.fontSize;
+					this.minSize.height = Math.min(this.maxHeight, this.minSize.height + labelHeight);
 
-		// 			this.paddingTop = this.options.ticks.fontSize / 2;
-		// 			this.paddingBottom = this.options.ticks.fontSize / 2;
-		// 		}
-		// 	}
+					var labelFont = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
+					this.ctx.font = labelFont;
 
-		// 	if (this.margins) {
-		// 		this.paddingLeft -= this.margins.left;
-		// 		this.paddingTop -= this.margins.top;
-		// 		this.paddingRight -= this.margins.right;
-		// 		this.paddingBottom -= this.margins.bottom;
+					var firstLabelWidth = this.ctx.measureText(this.ticks[0]).width;
+					var lastLabelWidth = this.ctx.measureText(this.ticks[this.ticks.length - 1]).width;
 
-		// 		this.paddingLeft = Math.max(this.paddingLeft, 0);
-		// 		this.paddingTop = Math.max(this.paddingTop, 0);
-		// 		this.paddingRight = Math.max(this.paddingRight, 0);
-		// 		this.paddingBottom = Math.max(this.paddingBottom, 0);
-		// 	}
+					// Ensure that our ticks are always inside the canvas
+					this.paddingLeft = firstLabelWidth / 2;
+					this.paddingRight = lastLabelWidth / 2;
+				} else {
+					// A vertical axis is more constrained by the width. Labels are the dominant factor 
+					// here, so get that length first
+					var maxLabelWidth = this.maxWidth - this.minSize.width;
+					var largestTextWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
 
-		// 	this.width = this.minSize.width;
-		// 	this.height = this.minSize.height;
-		// },
+					if (largestTextWidth < maxLabelWidth) {
+						// We don't need all the room
+						this.minSize.width += largestTextWidth;
+						this.minSize.width += 3; // extra padding
+					} else {
+						// Expand to max size
+						this.minSize.width = this.maxWidth;
+					}
+
+					this.paddingTop = this.options.ticks.fontSize / 2;
+					this.paddingBottom = this.options.ticks.fontSize / 2;
+				}
+			}
+
+			if (this.margins) {
+				this.paddingLeft -= this.margins.left;
+				this.paddingTop -= this.margins.top;
+				this.paddingRight -= this.margins.right;
+				this.paddingBottom -= this.margins.bottom;
+
+				this.paddingLeft = Math.max(this.paddingLeft, 0);
+				this.paddingTop = Math.max(this.paddingTop, 0);
+				this.paddingRight = Math.max(this.paddingRight, 0);
+				this.paddingBottom = Math.max(this.paddingBottom, 0);
+			}
+
+			this.width = this.minSize.width;
+			this.height = this.minSize.height;
+		},*/
 		// Actualy draw the scale on the canvas
 		// @param {rectangle} chartArea : the area of the chart to draw full grid lines on
-		// draw: function(chartArea) {
-		// 	if (this.options.display) {
+		_draw: function(chartArea) {
+			if (this.options.display) {
 
-		// 		var setContextLineSettings;
-		// 		var hasZero;
+				var setContextLineSettings;
+				var hasZero;
 
-		// 		// Make sure we draw text in the correct color
-		// 		this.ctx.fillStyle = this.options.ticks.fontColor;
+				// Make sure we draw text in the correct color
+				this.ctx.fillStyle = this.options.ticks.fontColor;
 
-		// 		if (this.isHorizontal()) {
-		// 			if (this.options.gridLines.show) {
-		// 				// Draw the horizontal line
-		// 				setContextLineSettings = true;
-		// 				hasZero = helpers.findNextWhere(this.ticks, function(tick) {
-		// 					return tick === 0;
-		// 				}) !== undefined;
-		// 				var yTickStart = this.options.position == "bottom" ? this.top : this.bottom - 5;
-		// 				var yTickEnd = this.options.position == "bottom" ? this.top + 5 : this.bottom;
+				if (this.isHorizontal()) {
+					if (this.options.gridLines.show) {
+						// Draw the horizontal line
+						setContextLineSettings = true;
+						hasZero = helpers.findNextWhere(this.ticks, function(tick) {
+							return tick === 0;
+						}) !== undefined;
+						var yTickStart = this.options.position == "bottom" ? this.top : this.bottom - 5;
+						var yTickEnd = this.options.position == "bottom" ? this.top + 5 : this.bottom;
 
-		// 				helpers.each(this.ticks, function(tick, index) {
-		// 					// Grid lines are vertical
-		// 					var xValue = this.getPixelForValue(tick);
+						helpers.each(this.ticks, function(tick, index) {
+							// Grid lines are vertical
+							var xValue = this.getPixelForValue(tick);
 
-		// 					if (tick === 0 || (!hasZero && index === 0)) {
-		// 						// Draw the 0 point specially or the left if there is no 0
-		// 						this.ctx.lineWidth = this.options.gridLines.zeroLineWidth;
-		// 						this.ctx.strokeStyle = this.options.gridLines.zeroLineColor;
-		// 						setContextLineSettings = true; // reset next time
-		// 					} else if (setContextLineSettings) {
-		// 						this.ctx.lineWidth = this.options.gridLines.lineWidth;
-		// 						this.ctx.strokeStyle = this.options.gridLines.color;
-		// 						setContextLineSettings = false;
-		// 					}
+							if (tick === 0 || (!hasZero && index === 0)) {
+								// Draw the 0 point specially or the left if there is no 0
+								this.ctx.lineWidth = this.options.gridLines.zeroLineWidth;
+								this.ctx.strokeStyle = this.options.gridLines.zeroLineColor;
+								setContextLineSettings = true; // reset next time
+							} else if (setContextLineSettings) {
+								this.ctx.lineWidth = this.options.gridLines.lineWidth;
+								this.ctx.strokeStyle = this.options.gridLines.color;
+								setContextLineSettings = false;
+							}
 
-		// 					xValue += helpers.aliasPixel(this.ctx.lineWidth);
+							xValue += helpers.aliasPixel(this.ctx.lineWidth);
 
-		// 					// Draw the label area
-		// 					this.ctx.beginPath();
+							// Draw the label area
+							this.ctx.beginPath();
 
-		// 					if (this.options.gridLines.drawTicks) {
-		// 						this.ctx.moveTo(xValue, yTickStart);
-		// 						this.ctx.lineTo(xValue, yTickEnd);
-		// 					}
+							if (this.options.gridLines.drawTicks) {
+								this.ctx.moveTo(xValue, yTickStart);
+								this.ctx.lineTo(xValue, yTickEnd);
+							}
 
-		// 					// Draw the chart area
-		// 					if (this.options.gridLines.drawOnChartArea) {
-		// 						this.ctx.moveTo(xValue, chartArea.top);
-		// 						this.ctx.lineTo(xValue, chartArea.bottom);
-		// 					}
+							// Draw the chart area
+							if (this.options.gridLines.drawOnChartArea) {
+								this.ctx.moveTo(xValue, chartArea.top);
+								this.ctx.lineTo(xValue, chartArea.bottom);
+							}
 
-		// 					// Need to stroke in the loop because we are potentially changing line widths & colours
-		// 					this.ctx.stroke();
-		// 				}, this);
-		// 			}
+							// Need to stroke in the loop because we are potentially changing line widths & colours
+							this.ctx.stroke();
+						}, this);
+					}
 
-		// 			if (this.options.ticks.show) {
-		// 				// Draw the ticks
+					if (this.options.ticks.show) {
+						// Draw the ticks
 
-		// 				var labelStartY;
+						var labelStartY;
 
-		// 				if (this.options.position == "top") {
-		// 					labelStartY = this.bottom - 10;
-		// 					this.ctx.textBaseline = "bottom";
-		// 				} else {
-		// 					// bottom side
-		// 					labelStartY = this.top + 10;
-		// 					this.ctx.textBaseline = "top";
-		// 				}
+						if (this.options.position == "top") {
+							labelStartY = this.bottom - 10;
+							this.ctx.textBaseline = "bottom";
+						} else {
+							// bottom side
+							labelStartY = this.top + 10;
+							this.ctx.textBaseline = "top";
+						}
 
-		// 				this.ctx.textAlign = "center";
-		// 				this.ctx.font = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
+						this.ctx.textAlign = "center";
+						this.ctx.font = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
 
-		// 				helpers.each(this.ticks, function(label, index) {
-		// 					var xValue = this.getPixelForValue(this.ticks[index]);
-		// 					this.ctx.fillText(label, xValue, labelStartY);
-		// 				}, this);
-		// 			}
-		// 		} else {
-		// 			// Vertical
-		// 			if (this.options.gridLines.show) {
+						helpers.each(this.ticks, function(label, index) {
+							var xValue = this.getPixelForValue(this.ticks[index]);
+							this.ctx.fillText(label, xValue, labelStartY);
+						}, this);
+					}
+				} else {
+					// Vertical
+					if (this.options.gridLines.show) {
 
-		// 				// Draw the vertical line
-		// 				setContextLineSettings = true;
-		// 				hasZero = helpers.findNextWhere(this.ticks, function(tick) {
-		// 					return tick === 0;
-		// 				}) !== undefined;
-		// 				var xTickStart = this.options.position == "right" ? this.left : this.right - 5;
-		// 				var xTickEnd = this.options.position == "right" ? this.left + 5 : this.right;
+						// Draw the vertical line
+						setContextLineSettings = true;
+						hasZero = helpers.findNextWhere(this.ticks, function(tick) {
+							return tick === 0;
+						}) !== undefined;
+						var xTickStart = this.options.position == "right" ? this.left : this.right - 5;
+						var xTickEnd = this.options.position == "right" ? this.left + 5 : this.right;
 
-		// 				helpers.each(this.ticks, function(tick, index) {
-		// 					// Grid lines are horizontal
-		// 					var yValue = this.getPixelForValue(tick);
+						helpers.each(this.ticks, function(tick, index) {
+							// Grid lines are horizontal
+							var yValue = this.getPixelForValue(tick);
 
-		// 					if (tick === 0 || (!hasZero && index === 0)) {
-		// 						// Draw the 0 point specially or the bottom if there is no 0
-		// 						this.ctx.lineWidth = this.options.gridLines.zeroLineWidth;
-		// 						this.ctx.strokeStyle = this.options.gridLines.zeroLineColor;
-		// 						setContextLineSettings = true; // reset next time
-		// 					} else if (setContextLineSettings) {
-		// 						this.ctx.lineWidth = this.options.gridLines.lineWidth;
-		// 						this.ctx.strokeStyle = this.options.gridLines.color;
-		// 						setContextLineSettings = false; // use boolean to indicate that we only want to do this once
-		// 					}
+							if (tick === 0 || (!hasZero && index === 0)) {
+								// Draw the 0 point specially or the bottom if there is no 0
+								this.ctx.lineWidth = this.options.gridLines.zeroLineWidth;
+								this.ctx.strokeStyle = this.options.gridLines.zeroLineColor;
+								setContextLineSettings = true; // reset next time
+							} else if (setContextLineSettings) {
+								this.ctx.lineWidth = this.options.gridLines.lineWidth;
+								this.ctx.strokeStyle = this.options.gridLines.color;
+								setContextLineSettings = false; // use boolean to indicate that we only want to do this once
+							}
 
-		// 					yValue += helpers.aliasPixel(this.ctx.lineWidth);
+							yValue += helpers.aliasPixel(this.ctx.lineWidth);
 
-		// 					// Draw the label area
-		// 					this.ctx.beginPath();
+							// Draw the label area
+							this.ctx.beginPath();
 
-		// 					if (this.options.gridLines.drawTicks) {
-		// 						this.ctx.moveTo(xTickStart, yValue);
-		// 						this.ctx.lineTo(xTickEnd, yValue);
-		// 					}
+							if (this.options.gridLines.drawTicks) {
+								this.ctx.moveTo(xTickStart, yValue);
+								this.ctx.lineTo(xTickEnd, yValue);
+							}
 
-		// 					// Draw the chart area
-		// 					if (this.options.gridLines.drawOnChartArea) {
-		// 						this.ctx.moveTo(chartArea.left, yValue);
-		// 						this.ctx.lineTo(chartArea.right, yValue);
-		// 					}
+							// Draw the chart area
+							if (this.options.gridLines.drawOnChartArea) {
+								this.ctx.moveTo(chartArea.left, yValue);
+								this.ctx.lineTo(chartArea.right, yValue);
+							}
 
-		// 					this.ctx.stroke();
-		// 				}, this);
-		// 			}
+							this.ctx.stroke();
+						}, this);
+					}
 
-		// 			if (this.options.ticks.show) {
-		// 				// Draw the ticks
+					if (this.options.ticks.show) {
+						// Draw the ticks
 
-		// 				var labelStartX;
+						var labelStartX;
 
-		// 				if (this.options.position == "left") {
-		// 					if (this.options.ticks.mirror) {
-		// 						labelStartX = this.right + this.options.ticks.padding;
-		// 						this.ctx.textAlign = "left";
-		// 					} else {
-		// 						labelStartX = this.right - this.options.ticks.padding;
-		// 						this.ctx.textAlign = "right";
-		// 					}
-		// 				} else {
-		// 					// right side
-		// 					if (this.options.ticks.mirror) {
-		// 						labelStartX = this.left - this.options.ticks.padding;
-		// 						this.ctx.textAlign = "right";
-		// 					} else {
-		// 						labelStartX = this.left + this.options.ticks.padding;
-		// 						this.ctx.textAlign = "left";
-		// 					}
-		// 				}
+						if (this.options.position == "left") {
+							if (this.options.ticks.mirror) {
+								labelStartX = this.right + this.options.ticks.padding;
+								this.ctx.textAlign = "left";
+							} else {
+								labelStartX = this.right - this.options.ticks.padding;
+								this.ctx.textAlign = "right";
+							}
+						} else {
+							// right side
+							if (this.options.ticks.mirror) {
+								labelStartX = this.left - this.options.ticks.padding;
+								this.ctx.textAlign = "right";
+							} else {
+								labelStartX = this.left + this.options.ticks.padding;
+								this.ctx.textAlign = "left";
+							}
+						}
 
-		// 				this.ctx.textBaseline = "middle";
-		// 				this.ctx.font = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
+						this.ctx.textBaseline = "middle";
+						this.ctx.font = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
 
-		// 				helpers.each(this.ticks, function(label, index) {
-		// 					var yValue = this.getPixelForValue(this.ticks[index]);
-		// 					this.ctx.fillText(label, labelStartX, yValue);
-		// 				}, this);
-		// 			}
-		// 		}
-		// 	}
-		// }
+						helpers.each(this.ticks, function(label, index) {
+							var yValue = this.getPixelForValue(this.ticks[index]);
+							this.ctx.fillText(label, labelStartX, yValue);
+						}, this);
+					}
+				}
+			}
+		}
 	});
 	Chart.scaleService.registerScaleType("linear", LinearScale, defaultConfig);
 

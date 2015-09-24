@@ -46,6 +46,11 @@
 			this.beforeUpdate();
 
 			// Absorb the master measurements
+			if (!this.isHorizontal()) {
+				console.log(maxWidth);
+			}
+
+
 			this.maxWidth = maxWidth;
 			this.maxHeight = maxHeight;
 			this.margins = margins;
@@ -112,7 +117,7 @@
 
 			this.labelRotation = 0;
 
-			if (this.options.display) {
+			if (this.options.display && this.isHorizontal()) {
 				var originalLabelWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
 				var cosRotation;
 				var sinRotation;
@@ -177,28 +182,79 @@
 				height: 0,
 			};
 
-			var labelFont = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
-			var longestLabelWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
-
-
 			// Width
 			if (this.isHorizontal()) {
-				this.minSize.width = this.maxWidth;
-			} else if (this.options.display) {
-				var labelWidth = this.options.ticks.show ? longestLabelWidth + 6 : 0;
-				this.minSize.width = Math.min(labelWidth, this.maxWidth);
+				this.minSize.width = this.maxWidth; // fill all the width
+			} else {
+				this.minSize.width = this.options.gridLines.show && this.options.display ? 10 : 0;
 			}
 
-			// Height
-			if (this.isHorizontal() && this.options.display) {
-				var labelHeight = (Math.sin(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.ticks.fontSize;
-				this.minSize.height = Math.min(this.options.ticks.show ? labelHeight : 0, this.maxHeight);
-			} else if (this.options.display) {
-				this.minSize.height = this.maxHeight;
+			// height
+			if (this.isHorizontal()) {
+				this.minSize.height = this.options.gridLines.show && this.options.display ? 10 : 0;
+			} else {
+				this.minSize.height = this.maxHeight; // fill all the height
+			}
+
+			this.paddingLeft = 0;
+			this.paddingRight = 0;
+			this.paddingTop = 0;
+			this.paddingBottom = 0;
+
+			if (this.options.ticks.show && this.options.display) {
+				// Don't bother fitting the ticks if we are not showing them
+				var labelFont = helpers.fontString(this.options.ticks.fontSize,
+					this.options.ticks.fontStyle, this.options.ticks.fontFamily);
+
+				if (this.isHorizontal()) {
+					// A horizontal axis is more constrained by the height.
+					var maxLabelHeight = this.maxHeight - this.minSize.height;
+					var labelHeight = 1.5 * this.options.ticks.fontSize;
+					this.minSize.height = Math.min(this.maxHeight, this.minSize.height + labelHeight);
+
+					labelFont = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
+					this.ctx.font = labelFont;
+
+					var firstLabelWidth = this.ctx.measureText(this.ticks[0]).width;
+					var lastLabelWidth = this.ctx.measureText(this.ticks[this.ticks.length - 1]).width;
+
+					// Ensure that our ticks are always inside the canvas
+					this.paddingLeft = firstLabelWidth / 2;
+					this.paddingRight = lastLabelWidth / 2;
+				} else {
+					// A vertical axis is more constrained by the width. Labels are the dominant factor here, so get that length first
+					var maxLabelWidth = this.maxWidth - this.minSize.width;
+					var largestTextWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
+
+					if (largestTextWidth < maxLabelWidth) {
+						// We don't need all the room
+						this.minSize.width += largestTextWidth;
+					} else {
+						// Expand to max size
+						this.minSize.width = this.maxWidth;
+					}
+					this.minSize.width += 6; // extra padding
+
+					this.paddingTop = this.options.ticks.fontSize / 2;
+					this.paddingBottom = this.options.ticks.fontSize / 2;
+				}
+			}
+
+			if (this.margins) {
+				this.paddingLeft -= this.margins.left;
+				this.paddingTop -= this.margins.top;
+				this.paddingRight -= this.margins.right;
+				this.paddingBottom -= this.margins.bottom;
+
+				this.paddingLeft = Math.max(this.paddingLeft, 0);
+				this.paddingTop = Math.max(this.paddingTop, 0);
+				this.paddingRight = Math.max(this.paddingRight, 0);
+				this.paddingBottom = Math.max(this.paddingBottom, 0);
 			}
 
 			this.width = this.minSize.width;
 			this.height = this.minSize.height;
+
 		},
 		afterFit: helpers.noop,
 
@@ -370,7 +426,7 @@
 
 						if (this.options.ticks.show) {
 							this.ctx.save();
-							this.ctx.translate(yLabelValue, (isRotated) ? this.top + 12 : this.top + 8);
+							this.ctx.translate(this.left + (isRotated ? 10 : 5) + 3, yLabelValue - (this.options.ticks.fontSize / 2) + (isRotated ? this.options.ticks.fontSize / 1.5 : 0));
 							this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
 							this.ctx.font = this.font;
 							this.ctx.textAlign = (isRotated) ? "right" : "center";
