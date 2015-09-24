@@ -20,6 +20,20 @@
 			offsetGridLines: false,
 		},
 
+		// scale label
+		scaleLabel: {
+			fontColor: '#666',
+			fontFamily: 'Helvetica Neue',
+			fontSize: 12,
+			fontStyle: 'normal',
+
+			// actual label
+			labelString: '',
+
+			// display property
+			show: false,
+		},
+
 		// label settings
 		ticks: {
 			show: true,
