@@ -204,6 +204,15 @@
 				this.minSize.height = this.maxHeight; // fill all the height
 			}
 
+			// Are we showing a title for the scale?
+            if (this.options.scaleLabel.show) {
+                if (this.isHorizontal()) {
+                    this.minSize.height += (this.options.scaleLabel.fontSize * 1.5);
+                } else {
+                    this.minSize.width += (this.options.scaleLabel.fontSize * 1.5);
+                }
+            }
+
 			this.paddingLeft = 0;
 			this.paddingRight = 0;
 			this.paddingTop = 0;
@@ -217,7 +226,9 @@
 				if (this.isHorizontal()) {
 					// A horizontal axis is more constrained by the height.
 					var maxLabelHeight = this.maxHeight - this.minSize.height;
-					var labelHeight = 1.5 * this.options.ticks.fontSize;
+					var longestLabelWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
+					var labelHeight = (Math.sin(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.ticks.fontSize;
+
 					this.minSize.height = Math.min(this.maxHeight, this.minSize.height + labelHeight);
 
 					labelFont = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
