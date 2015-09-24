@@ -68,6 +68,7 @@
 			clearRect: function() {},
 			closePath: function() {},
 			fill: function() {},
+			fillRect: function() {},
 			fillText: function() {},
 			lineTo: function(x, y) {},
 			measureText: function(text) {

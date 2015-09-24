@@ -110,6 +110,11 @@
 					}
 				}, this);
 			}, this);
+
+			if (this.min === this.max) {
+				this.min--;
+				this.max++;
+			}
 		},
 		generateTicks: function() {
 			// We need to decide how many ticks we are going to have. Each tick draws a grid line.
@@ -140,7 +145,7 @@
 				// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on 
 				// the graph
 
-				var maxTicks = Math.min(11, Math.ceil(this.drawingArea / (2 * this.options.labels.fontSize)));
+				var maxTicks = Math.min(11, Math.ceil(this.drawingArea / (1.5 * this.options.labels.fontSize)));
 
 				// Make sure we always have at least 2 ticks 
 				maxTicks = Math.max(2, maxTicks);
@@ -176,15 +181,20 @@
 				}
 			}
 
-			if (this.options.position == "left" || this.options.position == "right") {
-				// We are in a vertical orientation. The top value is the highest. So reverse the array
-				this.ticks.reverse();
-			}
-
 			// At this point, we need to update our max and min given the tick values since we have expanded the
 			// range of the scale
 			this.max = helpers.max(this.ticks);
 			this.min = helpers.min(this.ticks);
+
+			if (this.options.reverse) {
+				this.ticks.reverse();
+
+				this.start = this.max;
+				this.end = this.min;
+			} else {
+				this.start = this.min;
+				this.end = this.max;
+			}
 		},
 		buildYLabels: function() {
 			this.yLabels = [];
@@ -393,7 +403,7 @@
 								ctx.fillStyle = this.options.labels.backdropColor;
 								ctx.fillRect(
 									this.xCenter - labelWidth / 2 - this.options.labels.backdropPaddingX,
-									yHeight - this.fontSize / 2 - this.options.labels.backdropPaddingY,
+									yHeight - this.options.labels.fontSize / 2 - this.options.labels.backdropPaddingY,
 									labelWidth + this.options.labels.backdropPaddingX * 2,
 									this.options.labels.fontSize + this.options.labels.backdropPaddingY * 2
 								);
