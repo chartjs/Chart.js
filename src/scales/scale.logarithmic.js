@@ -89,8 +89,7 @@
 
 			// Reset the ticks array. Later on, we will draw a grid line at these positions
 			// The array simply contains the numerical value of the spots where ticks will be
-			this.ticks = [];
-
+			this.tickValues = [];
 
 			// Figure out what the max number of ticks we can support it is based on the size of
 			// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
@@ -102,24 +101,24 @@
 
 			for (var exponent = minExponent; exponent < maxExponent; ++exponent) {
 				for (var i = 1; i < 10; ++i) {
-					this.ticks.push(i * Math.pow(10, exponent));
+					this.tickValues.push(i * Math.pow(10, exponent));
 				}
 			}
 
-			this.ticks.push(1.0 * Math.pow(10, maxExponent));
+			this.tickValues.push(1.0 * Math.pow(10, maxExponent));
 
 			if (this.options.position == "left" || this.options.position == "right") {
 				// We are in a vertical orientation. The top value is the highest. So reverse the array
-				this.ticks.reverse();
+				this.tickValues.reverse();
 			}
 
 			// At this point, we need to update our max and min given the tick values since we have expanded the
 			// range of the scale
-			this.max = helpers.max(this.ticks);
-			this.min = helpers.min(this.ticks);
+			this.max = helpers.max(this.tickValues);
+			this.min = helpers.min(this.tickValues);
 
 			if (this.options.reverse) {
-				this.ticks.reverse();
+				this.tickValues.reverse();
 
 				this.start = this.max;
 				this.end = this.min;
@@ -128,14 +127,9 @@
 				this.end = this.max;
 			}
 
-			console.log(this.ticks);
-		},
-		buildLabels: function() {
-			// We assume that this has been run after ticks have been generated. We try to figure out
-			// a label for each tick. 
-			this.labels = [];
+			this.ticks = [];
 
-			helpers.each(this.ticks, function(tick, index, ticks) {
+			helpers.each(this.tickValues, function(tick, index, ticks) {
 				var label;
 
 				if (this.options.labels.userCallback) {
@@ -148,12 +142,17 @@
 					});
 				}
 
-				this.labels.push(label); // empty string will not render so we're good
+				this.ticks.push(label); // empty string will not render so we're good
 			}, this);
+
+			console.log(this.tickValues, this.ticks);
 		},
 		// Get the correct value. If the value type is object get the x or y based on whether we are horizontal or not
 		getRightValue: function(rawValue) {
 			return typeof rawValue === "object" ? (this.isHorizontal() ? rawValue.x : rawValue.y) : rawValue;
+		},
+		getPixelForTick: function(index, includeOffset) {
+			return this.getPixelForValue(this.tickValues[index], includeOffset);
 		},
 		getPixelForValue: function(value) {
 			// This must be called after fit has been run so that 
@@ -182,95 +181,6 @@
 			return pixel;
 		},
 
-		getPointPixelForValue: function(rawValue, index, datasetIndex) {
-			var value = this.getRightValue(rawValue);
-
-			if (this.options.stacked) {
-				var offsetPos = 0;
-				var offsetNeg = 0;
-
-				for (var i = this.data.datasets.length - 1; i > datasetIndex; --i) {
-					if (this.data.datasets[i].data[index] < 0) {
-						offsetNeg += this.data.datasets[i].data[index];
-					} else {
-						offsetPos += this.data.datasets[i].data[index];
-					}
-				}
-
-				if (value < 0) {
-					return this.getPixelForValue(offsetNeg + value);
-				} else {
-					return this.getPixelForValue(offsetPos + value);
-				}
-			} else {
-				return this.getPixelForValue(value);
-			}
-		},
-
-		// Functions needed for bar charts
-		calculateBarBase: function(datasetIndex, index) {
-			var base = 0;
-
-			if (this.options.stacked) {
-
-				var value = this.data.datasets[datasetIndex].data[index];
-
-				for (var j = 0; j < datasetIndex; j++) {
-					if (this.data.datasets[j].yAxisID === this.id) {
-						base += this.data.datasets[j].data[index];
-					}
-				}
-
-				return this.getPixelForValue(base);
-			}
-
-			base = this.getPixelForValue(this.min);
-
-			if (this.min < 0 && this.max < 0) {
-				// All values are negative. Use the top as the base
-				base = this.getPixelForValue(this.max);
-			}
-
-			return base;
-
-		},
-		calculateBarY: function(datasetIndex, index) {
-			var value = this.data.datasets[datasetIndex].data[index];
-
-			if (this.options.stacked) {
-
-				var sumPos = 0,
-					sumNeg = 0;
-
-				for (var i = 0; i < datasetIndex; i++) {
-					if (this.data.datasets[i].data[index] < 0) {
-						sumNeg += this.data.datasets[i].data[index] || 0;
-					} else {
-						sumPos += this.data.datasets[i].data[index] || 0;
-					}
-				}
-
-				if (value < 0) {
-					return this.getPixelForValue(sumNeg + value);
-				} else {
-					return this.getPixelForValue(sumPos + value);
-				}
-
-				return this.getPixelForValue(value);
-			}
-
-			var offset = 0;
-
-			for (var j = datasetIndex; j < this.data.datasets.length; j++) {
-				if (j === datasetIndex && value) {
-					offset += value;
-				} else {
-					offset = offset + value;
-				}
-			}
-
-			return this.getPixelForValue(value);
-		},
 	});
 	Chart.scaleService.registerScaleType("logarithmic", LogarithmicScale, defaultConfig);
 
