@@ -303,7 +303,7 @@
 
                         if (this.options.labels.show) {
                             this.ctx.save();
-                            this.ctx.translate(xLabelValue, (isRotated) ? this.top + 12 : this.top + 8);
+                            this.ctx.translate(xLabelValue, (isRotated) ? this.top + 12 + this.options.labels.padding : this.top + this.options.labels.padding);
                             this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
                             this.ctx.font = this.font;
                             this.ctx.textAlign = (isRotated) ? "right" : "center";
