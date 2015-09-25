@@ -24,7 +24,7 @@ Submit PR's to the v2.0-dev branch.
 `gulp build`, `gulp test`
 
 ## v1.x Status: Feature Complete
-We are now treating v1.x to be feature complete.  PR's for bug fixes are welcome, but we urge any open PR's for features to 1.x to be refactored and resubmitted for v2.x (if the feature has not already been implemented).
+We are now treating v1.x as feature complete.  PR's for bug fixes are welcome, but we urge any open PR's for v1.x features to be refactored and resubmitted for v2.x (if the feature has not already been implemented).
 
 ## Documentation
 
