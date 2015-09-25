@@ -140,17 +140,14 @@
 				this.start = this.max;
 				this.end = this.min;
 			} else {
-				this.start = this.max;
-				this.end = this.min;
+				this.start = this.min;
+				this.end = this.max;
 			}
 
 			this.zeroLineIndex = this.ticks.indexOf(0);
 		},
 
-
-
 		// Utils
-
 		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
 			// This must be called after fit has been run so that 
 			//      this.left, this.top, this.right, and this.bottom have been defined
@@ -164,8 +161,8 @@
 				return Math.round(pixel + this.paddingLeft);
 			} else {
 				var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
-				pixel = this.top + (innerHeight / range * (this.getRightValue(value) - this.start));
-				return Math.round(pixel + this.paddingTop);
+				pixel = (this.bottom - this.paddingBottom) - (innerHeight / range * (this.getRightValue(value) - this.start));
+				return Math.round(pixel);
 			}
 		},
 

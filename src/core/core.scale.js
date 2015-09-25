@@ -72,6 +72,11 @@
 			this.beforeBuildTicks();
 			this.buildTicks();
 			this.afterBuildTicks();
+
+			this.beforeTickToLabelConversion();
+			this.convertTicksToLabels();
+			this.afterTickToLabelConversion();
+
 			// Tick Rotation
 			this.beforeCalculateTickRotation();
 			this.calculateTickRotation();
@@ -106,6 +111,21 @@
 		beforeBuildTicks: helpers.noop,
 		buildTicks: helpers.noop,
 		afterBuildTicks: helpers.noop,
+
+		beforeTickToLabelConversion: helpers.noop,
+		convertTicksToLabels: function() {
+			// Convert ticks to strings
+			this.ticks = this.ticks.map(function(numericalTick, index, ticks) {
+				if (this.options.ticks.userCallback) {
+					return this.options.ticks.userCallback(numericalTick, index, ticks);
+				} else {
+					return helpers.template(this.options.ticks.template, {
+						value: numericalTick
+					});
+				}
+			}, this);
+		},
+		afterTickToLabelConversion: helpers.noop,
 
 		//
 
