@@ -101,7 +101,7 @@
 			// If we are forcing it to begin at 0, but 0 will already be rendered on the chart,
 			// do nothing since that would make the chart weird. If the user really wants a weird chart
 			// axis, they can manually override it
-			if (this.options.beginAtZero) {
+			if (this.options.ticks.beginAtZero) {
 				var minSign = helpers.sign(this.min);
 				var maxSign = helpers.sign(this.max);
 
@@ -134,7 +134,7 @@
 			this.max = helpers.max(this.ticks);
 			this.min = helpers.min(this.ticks);
 
-			if (this.options.reverse) {
+			if (this.options.ticks.reverse) {
 				this.ticks.reverse();
 
 				this.start = this.max;

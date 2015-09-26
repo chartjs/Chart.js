@@ -8,16 +8,8 @@
 	var defaultConfig = {
 		position: "left",
 
-		// scale label
-		scaleLabel: {
-			// actual label
-			labelString: '',
-			// display property
-			show: false,
-		},
-
 		// label settings
-		labels: {
+		ticks: {
 			template: "<%var remain = value / (Math.pow(10, Math.floor(Chart.helpers.log10(value))));if (remain === 1 || remain === 2 || remain === 5) {%><%=value.toExponential()%><%} else {%><%= null %><%}%>",
 		}
 	};
@@ -117,7 +109,7 @@
 			this.max = helpers.max(this.tickValues);
 			this.min = helpers.min(this.tickValues);
 
-			if (this.options.reverse) {
+			if (this.options.ticks.reverse) {
 				this.tickValues.reverse();
 
 				this.start = this.max;
@@ -127,23 +119,7 @@
 				this.end = this.max;
 			}
 
-			this.ticks = [];
-
-			helpers.each(this.tickValues, function(tick, index, ticks) {
-				var label;
-
-				if (this.options.labels.userCallback) {
-					// If the user provided a callback for label generation, use that as first priority
-					label = this.options.labels.userCallback(tick, index, ticks);
-				} else if (this.options.labels.template) {
-					// else fall back to the template string
-					label = helpers.template(this.options.labels.template, {
-						value: tick
-					});
-				}
-
-				this.ticks.push(label); // empty string will not render so we're good
-			}, this);
+			this.ticks = this.tickValues.slice();
 		},
 		// Get the correct value. If the value type is object get the x or y based on whether we are horizontal or not
 		getRightValue: function(rawValue) {

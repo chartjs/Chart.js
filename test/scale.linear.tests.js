@@ -1,1225 +1,1323 @@
 describe('Linear Scale', function() {
 
-		it('Should register the constructor with the scale service', function() {
-			var Constructor = Chart.scaleService.getScaleConstructor('linear');
-			expect(Constructor).not.toBe(undefined);
-			expect(typeof Constructor).toBe('function');
+	it('Should register the constructor with the scale service', function() {
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		expect(Constructor).not.toBe(undefined);
+		expect(typeof Constructor).toBe('function');
+	});
+
+	it('Should have the correct default config', function() {
+		var defaultConfig = Chart.scaleService.getScaleDefaults('linear');
+		expect(defaultConfig).toEqual({
+			display: true,
+
+			gridLines: {
+				color: "rgba(0, 0, 0, 0.1)",
+				drawOnChartArea: true,
+				drawTicks: true, // draw ticks extending towards the label
+				lineWidth: 1,
+				offsetGridLines: false,
+				show: true,
+				zeroLineColor: "rgba(0,0,0,0.25)",
+				zeroLineWidth: 1,
+			},
+			position: "left",
+			scaleLabel: {
+				fontColor: '#666',
+				fontFamily: 'Helvetica Neue',
+				fontSize: 12,
+				fontStyle: 'normal',
+				labelString: '',
+				show: false,
+			},
+			ticks: {
+				beginAtZero: false,
+				fontColor: "#666",
+				fontFamily: "Helvetica Neue",
+				fontSize: 12,
+				fontStyle: "normal",
+				maxRotation: 90,
+				minRotation: 20,
+				mirror: false,
+				padding: 10,
+				reverse: false,
+				show: true,
+				template: "<%=value%>"
+			}
+		});
+	});
+
+	it('Should correctly determine the max & min data values', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [10, 5, 0, -5, 78, -100]
+			}, {
+				yAxisID: 'second scale',
+				data: [-1000, 1000],
+			}, {
+				yAxisID: scaleID,
+				data: [150]
+			}]
+		};
+
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var scale = new Constructor({
+			ctx: {},
+			options: Chart.scaleService.getScaleDefaults('linear'), // use default config for scale
+			data: mockData,
+			id: scaleID
 		});
 
-		it('Should have the correct default config', function() {
-			var defaultConfig = Chart.scaleService.getScaleDefaults('linear');
-			expect(defaultConfig).toEqual({
-				display: true,
-				
-				gridLines: {
-					color: "rgba(0, 0, 0, 0.1)",
-					drawOnChartArea: true,
-					drawTicks: true, // draw ticks extending towards the label
-					lineWidth: 1,
-					offsetGridLines: false,
-					show: true,
-					zeroLineColor: "rgba(0,0,0,0.25)",
-					zeroLineWidth: 1,
-				},
-				position: "left",
-				scaleLabel: {
-					fontColor: '#666',
-					fontFamily: 'Helvetica Neue',
-					fontSize: 12,
-					fontStyle: 'normal',
-					labelString: '',
-					show: false,
-				},
-				ticks: {
-					fontColor: "#666",
-					fontFamily: "Helvetica Neue",
-					fontSize: 12,
-					fontStyle: "normal",
-					maxRotation: 90,
-					minRotation: 20,
-					show: true,
-					template: "<%=value%>"
-				}
-			});
-		});
+		expect(scale).not.toEqual(undefined); // must construct
+		expect(scale.min).toBe(undefined); // not yet set
+		expect(scale.max).toBe(undefined);
 
-		it('Should correctly determine the max & min data values', function() {
-			var scaleID = 'myScale';
+		// Set arbitrary width and height for now
+		scale.width = 50;
+		scale.height = 400;
 
-			var mockData = {
-				datasets: [{
-					yAxisID: scaleID,
-					data: [10, 5, 0, -5, 78, -100]
+		scale.buildTicks();
+		expect(scale.min).toBe(-100);
+		expect(scale.max).toBe(150);
+	});
+
+	it('Should correctly determine the max & min for scatter data', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				xAxisID: scaleID, // for the horizontal scale
+				yAxisID: scaleID,
+				data: [{
+					x: 10,
+					y: 100
 				}, {
-					yAxisID: 'second scale',
-					data: [-1000, 1000],
+					x: -10,
+					y: 0
 				}, {
-					yAxisID: scaleID,
-					data: [150]
+					x: 0,
+					y: 0
+				}, {
+					x: 99,
+					y: 7
 				}]
-			};
+			}]
+		};
 
-			var Constructor = Chart.scaleService.getScaleConstructor('linear');
-			var scale = new Constructor({
-				ctx: {},
-				options: Chart.scaleService.getScaleDefaults('linear'), // use default config for scale
-				data: mockData,
-				id: scaleID
-			});
-
-			expect(scale).not.toEqual(undefined); // must construct
-			expect(scale.min).toBe(undefined); // not yet set
-			expect(scale.max).toBe(undefined);
-
-			// Set arbitrary width and height for now
-			scale.width = 50;
-			scale.height = 400;
-
-			scale.buildTicks();
-			expect(scale.min).toBe(-100);
-			expect(scale.max).toBe(150);
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var verticalScale = new Constructor({
+			ctx: {},
+			options: config,
+			data: mockData,
+			id: scaleID
 		});
 
-		it('Should correctly determine the max & min for scatter data', function() {
-			var scaleID = 'myScale';
+		// Set arbitrary width and height for now
+		verticalScale.width = 50;
+		verticalScale.height = 400;
 
-			var mockData = {
-				datasets: [{
-					xAxisID: scaleID, // for the horizontal scale
-					yAxisID: scaleID,
-					data: [{
-						x: 10,
-						y: 100
-					}, {
-						x: -10,
-						y: 0
-					}, {
-						x: 0,
-						y: 0
-					}, {
-						x: 99,
-						y: 7
-					}]
-				}]
-			};
+		verticalScale.buildTicks();
+		expect(verticalScale.min).toBe(0);
+		expect(verticalScale.max).toBe(100);
 
-			var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
-			var Constructor = Chart.scaleService.getScaleConstructor('linear');
-			var verticalScale = new Constructor({
-				ctx: {},
-				options: config,
-				data: mockData,
-				id: scaleID
-			});
-
-			// Set arbitrary width and height for now
-			verticalScale.width = 50;
-			verticalScale.height = 400;
-
-			verticalScale.buildTicks();
-			expect(verticalScale.min).toBe(0);
-			expect(verticalScale.max).toBe(100);
-
-			var horizontalConfig = Chart.helpers.clone(config);
-			horizontalConfig.position = 'bottom';
-			var horizontalScale = new Constructor({
-				ctx: {},
-				options: horizontalConfig,
-				data: mockData,
-				id: scaleID,
-			});
-
-			// Set arbitrary width and height for now
-			horizontalScale.width = 400;
-			horizontalScale.height = 50;
-
-			horizontalScale.buildTicks();
-			expect(horizontalScale.min).toBe(-20);
-			expect(horizontalScale.max).toBe(100);
+		var horizontalConfig = Chart.helpers.clone(config);
+		horizontalConfig.position = 'bottom';
+		var horizontalScale = new Constructor({
+			ctx: {},
+			options: horizontalConfig,
+			data: mockData,
+			id: scaleID,
 		});
 
-		it('Should correctly determine the min and max data values when stacked mode is turned on', function() {
-			var scaleID = 'myScale';
+		// Set arbitrary width and height for now
+		horizontalScale.width = 400;
+		horizontalScale.height = 50;
 
-			var mockData = {
-				datasets: [{
-					yAxisID: scaleID,
-					data: [10, 5, 0, -5, 78, -100]
-				}, {
-					yAxisID: 'second scale',
-					data: [-1000, 1000],
-				}, {
-					yAxisID: scaleID,
-					data: [150, 0, 0, -100, -10, 9]
-				}]
-			};
+		horizontalScale.buildTicks();
+		expect(horizontalScale.min).toBe(-20);
+		expect(horizontalScale.max).toBe(100);
+	});
 
-			var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
-			config.stacked = true; // enable scale stacked mode
+	it('Should correctly determine the min and max data values when stacked mode is turned on', function() {
+		var scaleID = 'myScale';
 
-			var Constructor = Chart.scaleService.getScaleConstructor('linear');
-			var scale = new Constructor({
-				ctx: {},
-				options: config,
-				data: mockData,
-				id: scaleID
-			});
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [10, 5, 0, -5, 78, -100]
+			}, {
+				yAxisID: 'second scale',
+				data: [-1000, 1000],
+			}, {
+				yAxisID: scaleID,
+				data: [150, 0, 0, -100, -10, 9]
+			}]
+		};
 
-			// Set arbitrary width and height for now
-			scale.width = 50;
-			scale.height = 400;
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		config.stacked = true; // enable scale stacked mode
 
-			scale.buildTicks();
-			expect(scale.min).toBe(-150);
-			expect(scale.max).toBe(200);
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var scale = new Constructor({
+			ctx: {},
+			options: config,
+			data: mockData,
+			id: scaleID
 		});
 
-		it('Should ensure that the scale has a max and min that are not equal', function() {
-			var scaleID = 'myScale';
+		// Set arbitrary width and height for now
+		scale.width = 50;
+		scale.height = 400;
 
-			var mockData = {
-				datasets: []
-			};
+		scale.buildTicks();
+		expect(scale.min).toBe(-150);
+		expect(scale.max).toBe(200);
+	});
 
-			var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
-			var Constructor = Chart.scaleService.getScaleConstructor('linear');
-			var scale = new Constructor({
-				ctx: {},
-				options: config,
-				data: mockData,
-				id: scaleID
-			});
+	it('Should ensure that the scale has a max and min that are not equal', function() {
+		var scaleID = 'myScale';
 
-			// Set arbitrary width and height for now
-			scale.width = 50;
-			scale.height = 400;
+		var mockData = {
+			datasets: []
+		};
 
-			scale.buildTicks();
-			expect(scale.min).toBe(-1);
-			expect(scale.max).toBe(1);
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var scale = new Constructor({
+			ctx: {},
+			options: config,
+			data: mockData,
+			id: scaleID
 		});
 
-		it('should forcibly include 0 in the range if the beginAtZero option is used', function() {
-			var scaleID = 'myScale';
+		// Set arbitrary width and height for now
+		scale.width = 50;
+		scale.height = 400;
 
-			var mockData = {
-				datasets: [{
-					yAxisID: scaleID,
-					data: [20, 30, 40, 50]
-				}]
-			};
+		scale.buildTicks();
+		expect(scale.min).toBe(-1);
+		expect(scale.max).toBe(1);
+	});
 
-			var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+	it('should forcibly include 0 in the range if the beginAtZero option is used', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [20, 30, 40, 50]
+			}]
+		};
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
 
 
-			var Constructor = Chart.scaleService.getScaleConstructor('linear');
-			var scale = new Constructor({
-				ctx: {},
-				options: config,
-				data: mockData,
-				id: scaleID
-			});
-
-			// Set arbitrary width and height for now
-			scale.width = 50;
-			scale.height = 400;
-
-			scale.buildTicks();
-			expect(scale.ticks).toEqual([50, 45, 40, 35, 30, 25, 20]);
-
-			config.beginAtZero = true;
-			scale.buildTicks();
-			expect(scale.ticks).toEqual([50, 45, 40, 35, 30, 25, 20, 15, 10, 5, 0]);
-
-			mockData.datasets[0].data = [-20, -30, -40, -50];
-			scale.buildTicks();
-			expect(scale.ticks).toEqual([0, -5, -10, -15, -20, -25, -30, -35, -40, -45, -50]);
-
-			config.beginAtZero = false;
-			scale.buildTicks();
-			expect(scale.ticks).toEqual([-20, -25, -30, -35, -40, -45, -50]);
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var scale = new Constructor({
+			ctx: {},
+			options: config,
+			data: mockData,
+			id: scaleID
 		});
 
-		it('Should generate tick marks', function() {
-			var scaleID = 'myScale';
+		// Set arbitrary width and height for now
+		scale.width = 50;
+		scale.height = 400;
 
-			var mockData = {
-				datasets: [{
-					yAxisID: scaleID,
-					data: [10, 5, 0, 25, 78]
-				}, ]
-			};
+		scale.buildTicks();
+		expect(scale.ticks).toEqual([50, 45, 40, 35, 30, 25, 20]);
 
-			var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
-			var Constructor = Chart.scaleService.getScaleConstructor('linear');
-			var scale = new Constructor({
-				ctx: {},
-				options: config,
-				data: mockData,
-				id: scaleID
-			});
+		config.ticks.beginAtZero = true;
+		scale.buildTicks();
+		expect(scale.ticks).toEqual([50, 45, 40, 35, 30, 25, 20, 15, 10, 5, 0]);
 
-			// Set arbitrary width and height for now
-			scale.width = 50;
-			scale.height = 400;
+		mockData.datasets[0].data = [-20, -30, -40, -50];
+		scale.buildTicks();
+		expect(scale.ticks).toEqual([0, -5, -10, -15, -20, -25, -30, -35, -40, -45, -50]);
 
-			scale.buildTicks();
+		config.ticks.beginAtZero = false;
+		scale.buildTicks();
+		expect(scale.ticks).toEqual([-20, -25, -30, -35, -40, -45, -50]);
+	});
 
-			// Counts down because the lines are drawn top to bottom
-			expect(scale.ticks).toEqual([80, 70, 60, 50, 40, 30, 20, 10, 0]);
-			expect(scale.start).toBe(0);
-			expect(scale.end).toBe(80);
+	it('Should generate tick marks', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [10, 5, 0, 25, 78]
+			}, ]
+		};
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var scale = new Constructor({
+			ctx: {},
+			options: config,
+			data: mockData,
+			id: scaleID
 		});
 
-		it('Should generate tick marks in the correct order in reversed mode', function() {
-			var scaleID = 'myScale';
+		// Set arbitrary width and height for now
+		scale.width = 50;
+		scale.height = 400;
 
-			var mockData = {
-				datasets: [{
-					yAxisID: scaleID,
-					data: [10, 5, 0, 25, 78]
-				}, ]
-			};
+		scale.buildTicks();
 
-			var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
-			config.reverse = true;
-			var Constructor = Chart.scaleService.getScaleConstructor('linear');
-			var scale = new Constructor({
-				ctx: {},
-				options: config,
-				data: mockData,
-				id: scaleID
-			});
+		// Counts down because the lines are drawn top to bottom
+		expect(scale.ticks).toEqual([80, 70, 60, 50, 40, 30, 20, 10, 0]);
+		expect(scale.start).toBe(0);
+		expect(scale.end).toBe(80);
+	});
 
-			// Set arbitrary width and height for now
-			scale.width = 50;
-			scale.height = 400;
+	it('Should generate tick marks in the correct order in reversed mode', function() {
+		var scaleID = 'myScale';
 
-			scale.buildTicks();
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [10, 5, 0, 25, 78]
+			}, ]
+		};
 
-			// Reverse mode makes this count up
-			expect(scale.ticks).toEqual([0, 10, 20, 30, 40, 50, 60, 70, 80]);
-			expect(scale.start).toBe(80);
-			expect(scale.end).toBe(0);
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		config.ticks.reverse = true;
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var scale = new Constructor({
+			ctx: {},
+			options: config,
+			data: mockData,
+			id: scaleID
 		});
 
-		it('Should build labels using the default template', function() {
-			var scaleID = 'myScale';
+		// Set arbitrary width and height for now
+		scale.width = 50;
+		scale.height = 400;
 
-			var mockData = {
-				datasets: [{
-					yAxisID: scaleID,
-					data: [10, 5, 0, 25, 78]
-				}, ]
-			};
+		scale.buildTicks();
 
-			var mockContext = window.createMockContext();
-			var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
-			var Constructor = Chart.scaleService.getScaleConstructor('linear');
-			var scale = new Constructor({
-				ctx: mockContext,
-				options: config,
-				data: mockData,
-				id: scaleID
-			});
+		// Reverse mode makes this count up
+		expect(scale.ticks).toEqual([0, 10, 20, 30, 40, 50, 60, 70, 80]);
+		expect(scale.start).toBe(80);
+		expect(scale.end).toBe(0);
+	});
 
-			// Set arbitrary width and height for now
-			scale.update(50, 400);
-			expect(scale.ticks).toEqual(['80', '70', '60', '50', '40', '30', '20', '10', '0']);
+	it('Should build labels using the default template', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [10, 5, 0, 25, 78]
+			}, ]
+		};
+
+		var mockContext = window.createMockContext();
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: config,
+			data: mockData,
+			id: scaleID
 		});
 
-		it('Should build labels using the user supplied callback', function() {
-			var scaleID = 'myScale';
+		// Set arbitrary width and height for now
+		scale.update(50, 400);
+		expect(scale.ticks).toEqual(['80', '70', '60', '50', '40', '30', '20', '10', '0']);
+	});
 
-			var mockData = {
-				datasets: [{
-					yAxisID: scaleID,
-					data: [10, 5, 0, 25, 78]
-				}, ]
-			};
+	it('Should build labels using the user supplied callback', function() {
+		var scaleID = 'myScale';
 
-			var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
-			config.ticks.userCallback = function(value, index) {
-				return index.toString();
-			};
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [10, 5, 0, 25, 78]
+			}, ]
+		};
 
-			var mockContext = window.createMockContext();
-			var Constructor = Chart.scaleService.getScaleConstructor('linear');
-			var scale = new Constructor({
-				ctx: mockContext,
-				options: config,
-				data: mockData,
-				id: scaleID
-			});
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		config.ticks.userCallback = function(value, index) {
+			return index.toString();
+		};
 
-			scale.update(400, 400);
-
-			// Just the index
-			expect(scale.ticks).toEqual(['0', '1', '2', '3', '4', '5', '6', '7', '8']);
+		var mockContext = window.createMockContext();
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: config,
+			data: mockData,
+			id: scaleID
 		});
 
-		it('Should get the correct pixel value for a point', function() {
-			var scaleID = 'myScale';
+		scale.update(400, 400);
 
-			var mockData = {
-				datasets: [{
-					xAxisID: scaleID, // for the horizontal scale
-					yAxisID: scaleID,
-					data: []
-				}]
-			};
+		// Just the index
+		expect(scale.ticks).toEqual(['0', '1', '2', '3', '4', '5', '6', '7', '8']);
+	});
 
-			var mockContext = window.createMockContext();
-			var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
-			var Constructor = Chart.scaleService.getScaleConstructor('linear');
-			var verticalScale = new Constructor({
-				ctx: mockContext,
-				options: config,
-				data: mockData,
-				id: scaleID
-			});
+	it('Should get the correct pixel value for a point', function() {
+		var scaleID = 'myScale';
 
-			// Update
-			verticalScale.update(50, 100);
+		var mockData = {
+			datasets: [{
+				xAxisID: scaleID, // for the horizontal scale
+				yAxisID: scaleID,
+				data: []
+			}]
+		};
 
-			// Fake out positioning of the scale service
-			verticalScale.left = 0;
-			verticalScale.top = 0;
-			verticalScale.right = 50;
-			verticalScale.bottom = 110;
-			verticalScale.paddingTop = 5;
-			verticalScale.paddingBottom = 5;
-			verticalScale.width = 50;
-			verticalScale.height = 110;
-
-			expect(verticalScale.getPixelForValue(1, 0, 0)).toBe(5); // top + paddingTop
-			expect(verticalScale.getPixelForValue(-1, 0, 0)).toBe(105); // bottom - paddingBottom
-			expect(verticalScale.getPixelForValue(0, 0, 0)).toBe(55); // halfway
-
-			var horizontalConfig = Chart.helpers.clone(config);
-			horizontalConfig.position = 'bottom';
-			var horizontalScale = new Constructor({
-				ctx: mockContext,
-				options: horizontalConfig,
-				data: mockData,
-				id: scaleID,
-			});
-
-			horizontalScale.update(100, 50);
-
-			// Fake out positioning of the scale service
-			horizontalScale.left = 0;
-			horizontalScale.top = 0;
-			horizontalScale.right = 110;
-			horizontalScale.bottom = 50;
-			horizontalScale.paddingLeft = 5;
-			horizontalScale.paddingRight = 5;
-			horizontalScale.width = 110;
-			horizontalScale.height = 50;
-
-			// Range expands to [-2, 2] due to nicenum algorithm
-			expect(horizontalScale.getPixelForValue(2, 0, 0)).toBe(105); // right - paddingRight
-			expect(horizontalScale.getPixelForValue(-2, 0, 0)).toBe(5); // left + paddingLeft
-			expect(horizontalScale.getPixelForValue(0, 0, 0)).toBe(55); // halfway
+		var mockContext = window.createMockContext();
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var verticalScale = new Constructor({
+			ctx: mockContext,
+			options: config,
+			data: mockData,
+			id: scaleID
 		});
 
-		it('should fit correctly', function() {
-			var scaleID = 'myScale';
+		// Update
+		verticalScale.update(50, 100);
 
-			var mockData = {
-				datasets: [{
-					xAxisID: scaleID, // for the horizontal scale
-					yAxisID: scaleID,
-					data: [-5, 0, 2, -3, 5]
-				}]
-			};
-			var mockContext = window.createMockContext();
+		// Fake out positioning of the scale service
+		verticalScale.left = 0;
+		verticalScale.top = 0;
+		verticalScale.right = 50;
+		verticalScale.bottom = 110;
+		verticalScale.paddingTop = 5;
+		verticalScale.paddingBottom = 5;
+		verticalScale.width = 50;
+		verticalScale.height = 110;
 
-			var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
-			var Constructor = Chart.scaleService.getScaleConstructor('linear');
-			var verticalScale = new Constructor({
-				ctx: mockContext,
-				options: config,
-				data: mockData,
-				id: scaleID
-			});
+		expect(verticalScale.getPixelForValue(1, 0, 0)).toBe(5); // top + paddingTop
+		expect(verticalScale.getPixelForValue(-1, 0, 0)).toBe(105); // bottom - paddingBottom
+		expect(verticalScale.getPixelForValue(0, 0, 0)).toBe(55); // halfway
 
-			var minSize = verticalScale.update(100, 300);
-			expect(minSize).toEqual({
-				width: 33,
-				height: 300,
-			});
-			expect(verticalScale.width).toBe(33);
-			expect(verticalScale.height).toBe(300);
-			expect(verticalScale.paddingTop).toBe(6);
-			expect(verticalScale.paddingBottom).toBe(6);
-			expect(verticalScale.paddingLeft).toBe(0);
-			expect(verticalScale.paddingRight).toBe(0);
-
-			// Refit with margins to see the padding go away
-			minSize = verticalScale.update(33, 300, {
-				left: 0,
-				right: 0,
-				top: 15,
-				bottom: 3
-			});
-			expect(minSize).toEqual({
-				width: 33,
-				height: 300,
-			});
-			expect(verticalScale.paddingTop).toBe(0);
-			expect(verticalScale.paddingBottom).toBe(3);
-			expect(verticalScale.paddingLeft).toBe(0);
-			expect(verticalScale.paddingRight).toBe(0);
-
-			// Extra size when scale label showing
-			config.scaleLabel.show = true;
-			minSize = verticalScale.update(100, 300);
-			expect(minSize).toEqual({
-				width: 51,
-				height: 300,
-			});
+		var horizontalConfig = Chart.helpers.clone(config);
+		horizontalConfig.position = 'bottom';
+		var horizontalScale = new Constructor({
+			ctx: mockContext,
+			options: horizontalConfig,
+			data: mockData,
+			id: scaleID,
 		});
 
-		it('should fit correctly when horizontal', function() {
-			var scaleID = 'myScale';
+		horizontalScale.update(100, 50);
 
-			var mockData = {
-				datasets: [{
-					xAxisID: scaleID, // for the horizontal scale
-					yAxisID: scaleID,
-					data: [-5, 0, 2, -3, 5]
-				}]
-			};
-			var mockContext = window.createMockContext();
+		// Fake out positioning of the scale service
+		horizontalScale.left = 0;
+		horizontalScale.top = 0;
+		horizontalScale.right = 110;
+		horizontalScale.bottom = 50;
+		horizontalScale.paddingLeft = 5;
+		horizontalScale.paddingRight = 5;
+		horizontalScale.width = 110;
+		horizontalScale.height = 50;
 
-			var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
-			config.position = "bottom";
-			var Constructor = Chart.scaleService.getScaleConstructor('linear');
-			var verticalScale = new Constructor({
-				ctx: mockContext,
-				options: config,
-				data: mockData,
-				id: scaleID
-			});
+		// Range expands to [-2, 2] due to nicenum algorithm
+		expect(horizontalScale.getPixelForValue(2, 0, 0)).toBe(105); // right - paddingRight
+		expect(horizontalScale.getPixelForValue(-2, 0, 0)).toBe(5); // left + paddingLeft
+		expect(horizontalScale.getPixelForValue(0, 0, 0)).toBe(55); // halfway
+	});
 
-			var minSize = verticalScale.update(100, 300);
-			expect(minSize).toEqual({
-				width: 100,
-				height: 28,
-			});
-			expect(verticalScale.width).toBe(100);
-			expect(verticalScale.height).toBe(28);
-			expect(verticalScale.paddingTop).toBe(0);
-			expect(verticalScale.paddingBottom).toBe(0);
-			expect(verticalScale.paddingLeft).toBe(15);
-			expect(verticalScale.paddingRight).toBe(10);
+	it('should fit correctly', function() {
+		var scaleID = 'myScale';
 
-			// Refit with margins to see the padding go away
-			minSize = verticalScale.update(100, 28, {
-				left: 10,
-				right: 6,
-				top: 15,
-				bottom: 3
-			});
-			expect(minSize).toEqual({
-				width: 100,
-				height: 28,
-			});
-			expect(verticalScale.paddingTop).toBe(0);
-			expect(verticalScale.paddingBottom).toBe(0);
-			expect(verticalScale.paddingLeft).toBe(5);
-			expect(verticalScale.paddingRight).toBe(4);
+		var mockData = {
+			datasets: [{
+				xAxisID: scaleID, // for the horizontal scale
+				yAxisID: scaleID,
+				data: [-5, 0, 2, -3, 5]
+			}]
+		};
+		var mockContext = window.createMockContext();
 
-			// Extra size when scale label showing
-			config.scaleLabel.show = true;
-			minSize = verticalScale.update(100, 300);
-			expect(minSize).toEqual({
-				width: 100,
-				height: 46,
-			});
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var verticalScale = new Constructor({
+			ctx: mockContext,
+			options: config,
+			data: mockData,
+			id: scaleID
 		});
 
-		it('should draw correctly horizontally', function() {
-			var scaleID = 'myScale';
+		var minSize = verticalScale.update(100, 300);
+		expect(minSize).toEqual({
+			width: 30,
+			height: 300,
+		});
+		expect(verticalScale.width).toBe(30);
+		expect(verticalScale.height).toBe(300);
+		expect(verticalScale.paddingTop).toBe(6);
+		expect(verticalScale.paddingBottom).toBe(6);
+		expect(verticalScale.paddingLeft).toBe(0);
+		expect(verticalScale.paddingRight).toBe(0);
 
-			var mockData = {
-				datasets: [{
-					xAxisID: scaleID, // for the horizontal scale
-					yAxisID: scaleID,
-					data: [-5, 0, 2, -3, 5]
-				}]
-			};
-			var mockContext = window.createMockContext();
+		// Refit with margins to see the padding go away
+		minSize = verticalScale.update(30, 300, {
+			left: 0,
+			right: 0,
+			top: 15,
+			bottom: 3
+		});
+		expect(minSize).toEqual({
+			width: 30,
+			height: 300,
+		});
+		expect(verticalScale.paddingTop).toBe(0);
+		expect(verticalScale.paddingBottom).toBe(3);
+		expect(verticalScale.paddingLeft).toBe(0);
+		expect(verticalScale.paddingRight).toBe(0);
 
-			var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
-			config.position = "bottom";
-			var Constructor = Chart.scaleService.getScaleConstructor('linear');
-			var horizontalScale = new Constructor({
-				ctx: mockContext,
-				options: config,
-				data: mockData,
-				id: scaleID
-			});
+		// Extra size when scale label showing
+		config.scaleLabel.show = true;
+		minSize = verticalScale.update(100, 300);
+		expect(minSize).toEqual({
+			width: 48,
+			height: 300,
+		});
+	});
 
-			var minSize = horizontalScale.fit(100, 300);
-			minSize = horizontalScale.fit(100, 28, {
-				left: 10,
-				right: 6,
-				top: 15,
-				bottom: 3
-			});
+	it('should fit correctly when horizontal', function() {
+		var scaleID = 'myScale';
 
-			horizontalScale.left = 0;
-			horizontalScale.right = minSize.width;
-			horizontalScale.top = 0;
-			horizontalScale.bottom = minSize.height;
+		var mockData = {
+			datasets: [{
+				xAxisID: scaleID, // for the horizontal scale
+				yAxisID: scaleID,
+				data: [-5, 0, 2, -3, 5]
+			}]
+		};
+		var mockContext = window.createMockContext();
 
-			var chartArea = {
-				top: 100,
-				bottom: 0,
-				left: 0,
-				right: minSize.width
-			};
-			horizontalScale.draw(chartArea);
-
-			expect(mockContext.getCalls()).toEqual([{
-				"name": "measureText",
-				"args": ["-10"]
-			}, {
-				"name": "measureText",
-				"args": ["10"]
-			}, {
-				"name": "measureText",
-				"args": ["-10"]
-			}, {
-				"name": "measureText",
-				"args": ["10"]
-			}, {
-				"name": "setFillStyle",
-				"args": ["#666"]
-			}, {
-				"name": "setLineWidth",
-				"args": [1]
-			}, {
-				"name": "setStrokeStyle",
-				"args": ["rgba(0, 0, 0, 0.1)"]
-			}, {
-				"name": "beginPath",
-				"args": []
-			}, {
-				"name": "moveTo",
-				"args": [5.5, 0]
-			}, {
-				"name": "lineTo",
-				"args": [5.5, 5]
-			}, {
-				"name": "moveTo",
-				"args": [5.5, 100]
-			}, {
-				"name": "lineTo",
-				"args": [5.5, 0]
-			}, {
-				"name": "stroke",
-				"args": []
-			}, {
-				"name": "setLineWidth",
-				"args": [1]
-			}, {
-				"name": "setStrokeStyle",
-				"args": ["rgba(0,0,0,0.25)"]
-			}, {
-				"name": "beginPath",
-				"args": []
-			}, {
-				"name": "moveTo",
-				"args": [51, 0]
-			}, {
-				"name": "lineTo",
-				"args": [51, 5]
-			}, {
-				"name": "moveTo",
-				"args": [51, 100]
-			}, {
-				"name": "lineTo",
-				"args": [51, 0]
-			}, {
-				"name": "stroke",
-				"args": []
-			}, {
-				"name": "setLineWidth",
-				"args": [1]
-			}, {
-				"name": "setStrokeStyle",
-				"args": ["rgba(0, 0, 0, 0.1)"]
-			}, {
-				"name": "beginPath",
-				"args": []
-			}, {
-				"name": "moveTo",
-				"args": [96.5, 0]
-			}, {
-				"name": "lineTo",
-				"args": [96.5, 5]
-			}, {
-				"name": "moveTo",
-				"args": [96.5, 100]
-			}, {
-				"name": "lineTo",
-				"args": [96.5, 0]
-			}, {
-				"name": "stroke",
-				"args": []
-			}, {
-				"name": "fillText",
-				"args": ["-10", 5, 10]
-			}, {
-				"name": "fillText",
-				"args": ["0", 50.5, 10]
-			}, {
-				"name": "fillText",
-				"args": ["10", 96, 10]
-			}]);
-
-			// Turn off some drawing
-			config.gridLines.drawTicks = false;
-			config.gridLines.drawOnChartArea = false;
-			config.labels.show = false;
-			config.scaleLabel.show = true;
-			config.scaleLabel.labelString = 'myLabel'
-
-			mockContext.resetCalls();
-
-			horizontalScale.draw();
-			expect(mockContext.getCalls()).toEqual([{
-				"name": "setFillStyle",
-				"args": ["#666"]
-			}, {
-				"name": "setLineWidth",
-				"args": [1]
-			}, {
-				"name": "setStrokeStyle",
-				"args": ["rgba(0, 0, 0, 0.1)"]
-			}, {
-				"name": "beginPath",
-				"args": []
-			}, {
-				"name": "stroke",
-				"args": []
-			}, {
-				"name": "setLineWidth",
-				"args": [1]
-			}, {
-				"name": "setStrokeStyle",
-				"args": ["rgba(0,0,0,0.25)"]
-			}, {
-				"name": "beginPath",
-				"args": []
-			}, {
-				"name": "stroke",
-				"args": []
-			}, {
-				"name": "setLineWidth",
-				"args": [1]
-			}, {
-				"name": "setStrokeStyle",
-				"args": ["rgba(0, 0, 0, 0.1)"]
-			}, {
-				"name": "beginPath",
-				"args": []
-			}, {
-				"name": "stroke",
-				"args": []
-			}, {
-				"name": "fillText",
-				"args": ["myLabel", 50, 22]
-			}]);
-
-			// Turn off display
-
-			mockContext.resetCalls();
-			config.display = false;
-			horizontalScale.draw();
-			expect(mockContext.getCalls()).toEqual([]);
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		config.position = "bottom";
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var verticalScale = new Constructor({
+			ctx: mockContext,
+			options: config,
+			data: mockData,
+			id: scaleID
 		});
 
-		it('should draw correctly vertically', function() {
-				var scaleID = 'myScale';
-
-				var mockData = {
-					datasets: [{
-						xAxisID: scaleID, // for the horizontal scale
-						yAxisID: scaleID,
-						data: [-5, 0, 2, -3, 5]
-					}]
-				};
-				var mockContext = window.createMockContext();
-
-				var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
-				var Constructor = Chart.scaleService.getScaleConstructor('linear');
-				var verticalScale = new Constructor({
-					ctx: mockContext,
-					options: config,
-					data: mockData,
-					id: scaleID
-				});
-
-				var minSize = verticalScale.fit(100, 300);
-				minSize = verticalScale.fit(33, 300, {
-					left: 0,
-					right: 0,
-					top: 15,
-					bottom: 3
-				});
-				expect(minSize).toEqual({
-					width: 33,
-					height: 300,
-				});
-
-				verticalScale.left = 0;
-				verticalScale.right = minSize.width;
-				verticalScale.top = 0;
-				verticalScale.bottom = minSize.height;
-
-				var chartArea = {
-					top: 0,
-					bottom: minSize.height,
-					left: minSize.width,
-					right: minSize.width + 100
-				};
-				verticalScale.draw(chartArea);
-
-				expect(mockContext.getCalls()).toEqual([{
-					"name": "measureText",
-					"args": ["5"]
-				}, {
-					"name": "measureText",
-					"args": ["4"]
-				}, {
-					"name": "measureText",
-					"args": ["3"]
-				}, {
-					"name": "measureText",
-					"args": ["2"]
-				}, {
-					"name": "measureText",
-					"args": ["1"]
-				}, {
-					"name": "measureText",
-					"args": ["0"]
-				}, {
-					"name": "measureText",
-					"args": ["-1"]
-				}, {
-					"name": "measureText",
-					"args": ["-2"]
-				}, {
-					"name": "measureText",
-					"args": ["-3"]
-				}, {
-					"name": "measureText",
-					"args": ["-4"]
-				}, {
-					"name": "measureText",
-					"args": ["-5"]
-				}, {
-					"name": "measureText",
-					"args": ["5"]
-				}, {
-					"name": "measureText",
-					"args": ["4"]
-				}, {
-					"name": "measureText",
-					"args": ["3"]
-				}, {
-					"name": "measureText",
-					"args": ["2"]
-				}, {
-					"name": "measureText",
-					"args": ["1"]
-				}, {
-					"name": "measureText",
-					"args": ["0"]
-				}, {
-					"name": "measureText",
-					"args": ["-1"]
-				}, {
-					"name": "measureText",
-					"args": ["-2"]
-				}, {
-					"name": "measureText",
-					"args": ["-3"]
-				}, {
-					"name": "measureText",
-					"args": ["-4"]
-				}, {
-					"name": "measureText",
-					"args": ["-5"]
-				}, {
-					"name": "setFillStyle",
-					"args": ["#666"]
-				}, {
-					"name": "setLineWidth",
-					"args": [1]
-				}, {
-					"name": "setStrokeStyle",
-					"args": ["rgba(0, 0, 0, 0.1)"]
-				}, {
-					"name": "beginPath",
-					"args": []
-				}, {
-					"name": "moveTo",
-					"args": [28, 0.5]
-				}, {
-					"name": "lineTo",
-					"args": [33, 0.5]
-				}, {
-					"name": "moveTo",
-					"args": [33, 0.5]
-				}, {
-					"name": "lineTo",
-					"args": [133, 0.5]
-				}, {
-					"name": "stroke",
-					"args": []
-				}, {
-					"name": "beginPath",
-					"args": []
-				}, {
-					"name": "moveTo",
-					"args": [28, 30.19999999999999]
-				}, {
-					"name": "lineTo",
-					"args": [33, 30.19999999999999]
-				}, {
-					"name": "moveTo",
-					"args": [33, 30.19999999999999]
-				}, {
-					"name": "lineTo",
-					"args": [133, 30.19999999999999]
-				}, {
-					"name": "stroke",
-					"args": []
-				}, {
-					"name": "beginPath",
-					"args": []
-				}, {
-					"name": "moveTo",
-					"args": [28, 59.900000000000006]
-				}, {
-					"name": "lineTo",
-					"args": [33, 59.900000000000006]
-				}, {
-					"name": "moveTo",
-					"args": [33, 59.900000000000006]
-				}, {
-					"name": "lineTo",
-					"args": [133, 59.900000000000006]
-				}, {
-					"name": "stroke",
-					"args": []
-				}, {
-					"name": "beginPath",
-					"args": []
-				}, {
-					"name": "moveTo",
-					"args": [28, 89.6]
-				}, {
-					"name": "lineTo",
-					"args": [33, 89.6]
-				}, {
-					"name": "moveTo",
-					"args": [33, 89.6]
-				}, {
-					"name": "lineTo",
-					"args": [133, 89.6]
-				}, {
-					"name": "stroke",
-					"args": []
-				}, {
-					"name": "beginPath",
-					"args": []
-				}, {
-					"name": "moveTo",
-					"args": [28, 119.30000000000001]
-				}, {
-					"name": "lineTo",
-					"args": [33, 119.30000000000001]
-				}, {
-					"name": "moveTo",
-					"args": [33, 119.30000000000001]
-				}, {
-					"name": "lineTo",
-					"args": [133, 119.30000000000001]
-				}, {
-					"name": "stroke",
-					"args": []
-				}, {
-					"name": "setLineWidth",
-					"args": [1]
-				}, {
-					"name": "setStrokeStyle",
-					"args": ["rgba(0,0,0,0.25)"]
-				}, {
-					"name": "beginPath",
-					"args": []
-				}, {
-					"name": "moveTo",
-					"args": [28, 149]
-				}, {
-					"name": "lineTo",
-					"args": [33, 149]
-				}, {
-					"name": "moveTo",
-					"args": [33, 149]
-				}, {
-					"name": "lineTo",
-					"args": [133, 149]
-				}, {
-					"name": "stroke",
-					"args": []
-				}, {
-					"name": "setLineWidth",
-					"args": [1]
-				}, {
-					"name": "setStrokeStyle",
-					"args": ["rgba(0, 0, 0, 0.1)"]
-				}, {
-					"name": "beginPath",
-					"args": []
-				}, {
-					"name": "moveTo",
-					"args": [28, 178.7]
-				}, {
-					"name": "lineTo",
-					"args": [33, 178.7]
-				}, {
-					"name": "moveTo",
-					"args": [33, 178.7]
-				}, {
-					"name": "lineTo",
-					"args": [133, 178.7]
-				}, {
-					"name": "stroke",
-					"args": []
-				}, {
-					"name": "beginPath",
-					"args": []
-				}, {
-					"name": "moveTo",
-					"args": [28, 208.4]
-				}, {
-					"name": "lineTo",
-					"args": [33, 208.4]
-				}, {
-					"name": "moveTo",
-					"args": [33, 208.4]
-				}, {
-					"name": "lineTo",
-					"args": [133, 208.4]
-				}, {
-					"name": "stroke",
-					"args": []
-				}, {
-					"name": "beginPath",
-					"args": []
-				}, {
-					"name": "moveTo",
-					"args": [28, 238.1]
-				}, {
-					"name": "lineTo",
-					"args": [33, 238.1]
-				}, {
-					"name": "moveTo",
-					"args": [33, 238.1]
-				}, {
-					"name": "lineTo",
-					"args": [133, 238.1]
-				}, {
-					"name": "stroke",
-					"args": []
-				}, {
-					"name": "beginPath",
-					"args": []
-				}, {
-					"name": "moveTo",
-					"args": [28, 267.8]
-				}, {
-					"name": "lineTo",
-					"args": [33, 267.8]
-				}, {
-					"name": "moveTo",
-					"args": [33, 267.8]
-				}, {
-					"name": "lineTo",
-					"args": [133, 267.8]
-				}, {
-					"name": "stroke",
-					"args": []
-				}, {
-					"name": "beginPath",
-					"args": []
-				}, {
-					"name": "moveTo",
-					"args": [28, 297.5]
-				}, {
-					"name": "lineTo",
-					"args": [33, 297.5]
-				}, {
-					"name": "moveTo",
-					"args": [33, 297.5]
-				}, {
-					"name": "lineTo",
-					"args": [133, 297.5]
-				}, {
-					"name": "stroke",
-					"args": []
-				}, {
-					"name": "fillText",
-					"args": ["5", 23, 0]
-				}, {
-					"name": "fillText",
-					"args": ["4", 23, 29.69999999999999]
-				}, {
-					"name": "fillText",
-					"args": ["3", 23, 59.400000000000006]
-				}, {
-					"name": "fillText",
-					"args": ["2", 23, 89.1]
-				}, {
-					"name": "fillText",
-					"args": ["1", 23, 118.80000000000001]
-				}, {
-					"name": "fillText",
-					"args": ["0", 23, 148.5]
-				}, {
-					"name": "fillText",
-					"args": ["-1", 23, 178.2]
-				}, {
-					"name": "fillText",
-					"args": ["-2", 23, 207.9]
-				}, {
-					"name": "fillText",
-					"args": ["-3", 23, 237.6]
-				}, {
-					"name": "fillText",
-					"args": ["-4", 23, 267.3]
-				}, {
-					"name": "fillText",
-					"args": ["-5", 23, 297]
-				}]);
-
-				// Turn off some drawing
-				config.gridLines.drawTicks = false;
-				config.gridLines.drawOnChartArea = false;
-				config.labels.show = false;
-				config.scaleLabel.show = true;
-
-				mockContext.resetCalls();
-
-				verticalScale.draw();
-				expect(mockContext.getCalls()).toEqual([{
-						"name": "setFillStyle",
-						"args": ["#666"]
-					}, {
-						"name": "setLineWidth",
-						"args": [1]
-					}, {
-						"name": "setStrokeStyle",
-						"args": ["rgba(0, 0, 0, 0.1)"]
-					}, {
-						"name": "beginPath",
-						"args": []
-					}, {
-						"name": "stroke",
-						"args": []
-					}, {
-						"name": "beginPath",
-						"args": []
-					}, {
-						"name": "stroke",
-						"args": []
-					}, {
-						"name": "beginPath",
-						"args": []
-					}, {
-						"name": "stroke",
-						"args": []
-					}, {
-						"name": "beginPath",
-						"args": []
-					}, {
-						"name": "stroke",
-						"args": []
-					}, {
-						"name": "beginPath",
-						"args": []
-					}, {
-						"name": "stroke",
-						"args": []
-					}, {
-						"name": "setLineWidth",
-						"args": [1]
-					}, {
-						"name": "setStrokeStyle",
-						"args": ["rgba(0,0,0,0.25)"]
-					}, {
-						"name": "beginPath",
-						"args": []
-					}, {
-						"name": "stroke",
-						"args": []
-					}, {
-						"name": "setLineWidth",
-						"args": [1]
-					}, {
-						"name": "setStrokeStyle",
-						"args": ["rgba(0, 0, 0, 0.1)"]
-					}, {
-						"name": "beginPath",
-						"args": []
-					}, {
-						"name": "stroke",
-						"args": []
-					}, {
-						"name": "beginPath",
-						"args": []
-					}, {
-						"name": "stroke",
-						"args": []
-					}, {
-						"name": "beginPath",
-						"args": []
-					}, {
-						"name": "stroke",
-						"args": []
-					}, {
-						"name": "beginPath",
-						"args": []
-					}, {
-						"name": "stroke",
-						"args": []
-					}, {
-						"name": "beginPath",
-						"args": []
-					}, {
-						"name": "stroke",
-						"args": []
-					}, {
-						"name": "save",
-						"args": []
-					}, {
-						"name": "translate",
-						"args": [6, 150]
-					}, {
-						"name": "rotate",
-						"args": [-1.5707963267948966]
-					}, {
-						"name": "fillText",
-						"args": ["", 0, 0]
-					}, {
-						"name": "restore",
-						"args": []
-					}]);
-				});
+		var minSize = verticalScale.update(100, 300);
+		expect(minSize).toEqual({
+			width: 100,
+			height: 28,
 		});
+		expect(verticalScale.width).toBe(100);
+		expect(verticalScale.height).toBe(28);
+		expect(verticalScale.paddingTop).toBe(0);
+		expect(verticalScale.paddingBottom).toBe(0);
+		expect(verticalScale.paddingLeft).toBe(18);
+		expect(verticalScale.paddingRight).toBe(13);
+
+		// Refit with margins to see the padding go away
+		minSize = verticalScale.update(100, 28, {
+			left: 10,
+			right: 6,
+			top: 15,
+			bottom: 3
+		});
+		expect(minSize).toEqual({
+			width: 100,
+			height: 28,
+		});
+		expect(verticalScale.paddingTop).toBe(0);
+		expect(verticalScale.paddingBottom).toBe(0);
+		expect(verticalScale.paddingLeft).toBe(8);
+		expect(verticalScale.paddingRight).toBe(7);
+
+		// Extra size when scale label showing
+		config.scaleLabel.show = true;
+		minSize = verticalScale.update(100, 300);
+		expect(minSize).toEqual({
+			width: 100,
+			height: 46,
+		});
+	});
+
+	it('should draw correctly horizontally', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				xAxisID: scaleID, // for the horizontal scale
+				yAxisID: scaleID,
+				data: [-5, 0, 2, -3, 5]
+			}]
+		};
+		var mockContext = window.createMockContext();
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		config.position = "bottom";
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var horizontalScale = new Constructor({
+			ctx: mockContext,
+			options: config,
+			data: mockData,
+			id: scaleID
+		});
+
+		var minSize = horizontalScale.update(100, 300);
+		minSize = horizontalScale.update(100, 28, {
+			left: 10,
+			right: 6,
+			top: 15,
+			bottom: 3
+		});
+
+		horizontalScale.left = 0;
+		horizontalScale.right = minSize.width;
+		horizontalScale.top = 0;
+		horizontalScale.bottom = minSize.height;
+
+		var chartArea = {
+			top: 100,
+			bottom: 0,
+			left: 0,
+			right: minSize.width
+		};
+		mockContext.resetCalls();
+		horizontalScale.draw(chartArea);
+
+		var expected = [{
+			"name": "setFillStyle",
+			"args": ["#666"]
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0, 0, 0, 0.1)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [8.5, 0]
+		}, {
+			"name": "lineTo",
+			"args": [8.5, 10]
+		}, {
+			"name": "moveTo",
+			"args": [8.5, 100]
+		}, {
+			"name": "lineTo",
+			"args": [8.5, 0]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [8, 8]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["-10", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0,0,0,0.25)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [51.5, 0]
+		}, {
+			"name": "lineTo",
+			"args": [51.5, 10]
+		}, {
+			"name": "moveTo",
+			"args": [51.5, 100]
+		}, {
+			"name": "lineTo",
+			"args": [51.5, 0]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [51, 8]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["0", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0, 0, 0, 0.1)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [93.5, 0]
+		}, {
+			"name": "lineTo",
+			"args": [93.5, 10]
+		}, {
+			"name": "moveTo",
+			"args": [93.5, 100]
+		}, {
+			"name": "lineTo",
+			"args": [93.5, 0]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [93, 8]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["10", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}];
+		expect(mockContext.getCalls()).toEqual(expected);
+
+		// Turn off some drawing
+		config.gridLines.drawTicks = false;
+		config.gridLines.drawOnChartArea = false;
+		config.ticks.show = false;
+		config.scaleLabel.show = true;
+		config.scaleLabel.labelString = 'myLabel'
+
+		mockContext.resetCalls();
+
+		horizontalScale.draw();
+		expect(mockContext.getCalls()).toEqual([{
+			"name": "setFillStyle",
+			"args": ["#666"]
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0, 0, 0, 0.1)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0,0,0,0.25)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0, 0, 0, 0.1)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "fillText",
+			"args": ["myLabel", 50, 22]
+		}]);
+
+		// Turn off display
+
+		mockContext.resetCalls();
+		config.display = false;
+		horizontalScale.draw();
+		expect(mockContext.getCalls()).toEqual([]);
+	});
+
+	it('should draw correctly vertically', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				xAxisID: scaleID, // for the horizontal scale
+				yAxisID: scaleID,
+				data: [-5, 0, 2, -3, 5]
+			}]
+		};
+		var mockContext = window.createMockContext();
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var verticalScale = new Constructor({
+			ctx: mockContext,
+			options: config,
+			data: mockData,
+			id: scaleID
+		});
+
+		var minSize = verticalScale.update(100, 300);
+		minSize = verticalScale.update(30, 300, {
+			left: 0,
+			right: 0,
+			top: 15,
+			bottom: 3
+		});
+		expect(minSize).toEqual({
+			width: 30,
+			height: 300,
+		});
+
+		verticalScale.left = 0;
+		verticalScale.right = minSize.width;
+		verticalScale.top = 0;
+		verticalScale.bottom = minSize.height;
+
+		var chartArea = {
+			top: 0,
+			bottom: minSize.height,
+			left: minSize.width,
+			right: minSize.width + 100
+		};
+
+		mockContext.resetCalls();
+		verticalScale.draw(chartArea);
+
+		expect(mockContext.getCalls()).toEqual([{
+			"name": "setFillStyle",
+			"args": ["#666"]
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0, 0, 0, 0.1)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [25, 0.5]
+		}, {
+			"name": "lineTo",
+			"args": [30, 0.5]
+		}, {
+			"name": "moveTo",
+			"args": [30, 0.5]
+		}, {
+			"name": "lineTo",
+			"args": [130, 0.5]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [20, 0]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["5", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [25, 30.2]
+		}, {
+			"name": "lineTo",
+			"args": [30, 30.2]
+		}, {
+			"name": "moveTo",
+			"args": [30, 30.2]
+		}, {
+			"name": "lineTo",
+			"args": [130, 30.2]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [20, 29.7]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["4", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [25, 59.9]
+		}, {
+			"name": "lineTo",
+			"args": [30, 59.9]
+		}, {
+			"name": "moveTo",
+			"args": [30, 59.9]
+		}, {
+			"name": "lineTo",
+			"args": [130, 59.9]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [20, 59.4]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["3", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [25, 89.6]
+		}, {
+			"name": "lineTo",
+			"args": [30, 89.6]
+		}, {
+			"name": "moveTo",
+			"args": [30, 89.6]
+		}, {
+			"name": "lineTo",
+			"args": [130, 89.6]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [20, 89.1]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["2", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [25, 119.3]
+		}, {
+			"name": "lineTo",
+			"args": [30, 119.3]
+		}, {
+			"name": "moveTo",
+			"args": [30, 119.3]
+		}, {
+			"name": "lineTo",
+			"args": [130, 119.3]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [20, 118.8]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["1", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0,0,0,0.25)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [25, 149]
+		}, {
+			"name": "lineTo",
+			"args": [30, 149]
+		}, {
+			"name": "moveTo",
+			"args": [30, 149]
+		}, {
+			"name": "lineTo",
+			"args": [130, 149]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [20, 148.5]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["0", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0, 0, 0, 0.1)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [25, 178.7]
+		}, {
+			"name": "lineTo",
+			"args": [30, 178.7]
+		}, {
+			"name": "moveTo",
+			"args": [30, 178.7]
+		}, {
+			"name": "lineTo",
+			"args": [130, 178.7]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [20, 178.2]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["-1", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [25, 208.4]
+		}, {
+			"name": "lineTo",
+			"args": [30, 208.4]
+		}, {
+			"name": "moveTo",
+			"args": [30, 208.4]
+		}, {
+			"name": "lineTo",
+			"args": [130, 208.4]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [20, 207.9]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["-2", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [25, 238.1]
+		}, {
+			"name": "lineTo",
+			"args": [30, 238.1]
+		}, {
+			"name": "moveTo",
+			"args": [30, 238.1]
+		}, {
+			"name": "lineTo",
+			"args": [130, 238.1]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [20, 237.6]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["-3", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [25, 267.8]
+		}, {
+			"name": "lineTo",
+			"args": [30, 267.8]
+		}, {
+			"name": "moveTo",
+			"args": [30, 267.8]
+		}, {
+			"name": "lineTo",
+			"args": [130, 267.8]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [20, 267.3]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["-4", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [25, 297.5]
+		}, {
+			"name": "lineTo",
+			"args": [30, 297.5]
+		}, {
+			"name": "moveTo",
+			"args": [30, 297.5]
+		}, {
+			"name": "lineTo",
+			"args": [130, 297.5]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [20, 297]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["-5", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}]);
+
+		// Turn off some drawing
+		config.gridLines.drawTicks = false;
+		config.gridLines.drawOnChartArea = false;
+		config.ticks.show = false;
+		config.scaleLabel.show = true;
+
+		mockContext.resetCalls();
+
+		verticalScale.draw();
+		expect(mockContext.getCalls()).toEqual([{
+			"name": "setFillStyle",
+			"args": ["#666"]
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0, 0, 0, 0.1)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0,0,0,0.25)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0, 0, 0, 0.1)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [6, 150]
+		}, {
+			"name": "rotate",
+			"args": [-1.5707963267948966]
+		}, {
+			"name": "fillText",
+			"args": ["", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}]);
+	});
+});

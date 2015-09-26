@@ -19,7 +19,7 @@
 		defaults: {},
 		registerScaleType: function(type, scaleConstructor, defaults) {
 			this.constructors[type] = scaleConstructor;
-			this.defaults[type] = helpers.extendDeep({}, Chart.defaults.scale, defaults);
+			this.defaults[type] = helpers.scaleMerge(Chart.defaults.scale, defaults);
 		},
 		getScaleConstructor: function(type) {
 			return this.constructors.hasOwnProperty(type) ? this.constructors[type] : undefined;

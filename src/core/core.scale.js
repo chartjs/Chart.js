@@ -36,14 +36,18 @@
 
 		// label settings
 		ticks: {
-			show: true,
-			minRotation: 20,
-			maxRotation: 90,
-			template: "<%=value%>",
+			beginAtZero: false,
 			fontSize: 12,
 			fontStyle: "normal",
 			fontColor: "#666",
 			fontFamily: "Helvetica Neue",
+			maxRotation: 90,
+			minRotation: 20,
+			mirror: false,
+			padding: 10,
+			reverse: false,
+			show: true,
+			template: "<%=value%>",
 		},
 	};
 
@@ -103,6 +107,12 @@
 			} else {
 				this.height = this.maxHeight;
 			}
+
+			// Reset padding
+			this.paddingLeft = 0;
+			this.paddingTop = 0;
+			this.paddingRight = 0;
+			this.paddingBottom = 0;
 		},
 		afterSetDimensions: helpers.noop,
 
@@ -233,11 +243,6 @@
                 }
             }
 
-			this.paddingLeft = 0;
-			this.paddingRight = 0;
-			this.paddingTop = 0;
-			this.paddingBottom = 0;
-
 			if (this.options.ticks.show && this.options.display) {
 				// Don't bother fitting the ticks if we are not showing them
 				var labelFont = helpers.fontString(this.options.ticks.fontSize,
@@ -258,8 +263,9 @@
 					var lastLabelWidth = this.ctx.measureText(this.ticks[this.ticks.length - 1]).width;
 
 					// Ensure that our ticks are always inside the canvas
-					this.paddingLeft = firstLabelWidth / 2;
-					this.paddingRight = lastLabelWidth / 2;
+					var cosRotation = Math.cos(helpers.toRadians(this.labelRotation));
+					this.paddingLeft = (cosRotation * firstLabelWidth) / 2 + 3; // add 3 px to move away from canvas edges
+					this.paddingRight = (cosRotation * lastLabelWidth) / 2 + 3;
 				} else {
 					// A vertical axis is more constrained by the width. Labels are the dominant factor here, so get that length first
 					var maxLabelWidth = this.maxWidth - this.minSize.width;
@@ -295,11 +301,6 @@
 
 		},
 		afterFit: helpers.noop,
-
-
-
-
-
 
 		// Shared Methods
 		isHorizontal: function() {
@@ -344,7 +345,7 @@
 			if (this.options.display) {
 
 				var setContextLineSettings;
-				var isRotated;
+				var isRotated = this.labelRotation !== 0;
 				var skipRatio;
 				var scaleLabelX;
 				var scaleLabelY;
@@ -356,7 +357,6 @@
 					setContextLineSettings = true;
 					var yTickStart = this.options.position == "bottom" ? this.top : this.bottom - 10;
 					var yTickEnd = this.options.position == "bottom" ? this.top + 10 : this.bottom;
-					isRotated = this.labelRotation !== 0;
 					skipRatio = false;
 
 					if ((this.options.ticks.fontSize + 4) * this.ticks.length > (this.width - (this.paddingLeft + this.paddingRight))) {
@@ -429,23 +429,11 @@
 
 				} else {
 					setContextLineSettings = true;
-					var xTickStart = this.options.position == "left" ? this.right : this.left - 10;
-					var xTickEnd = this.options.position == "left" ? this.right + 10 : this.left;
-					isRotated = this.labelRotation !== 0;
-					//skipRatio = false;
-
-					// if ((this.options.ticks.fontSize + 4) * this.ticks.length > (this.width - (this.paddingLeft + this.paddingRight))) {
-					// 	skipRatio = 1 + Math.floor(((this.options.ticks.fontSize + 4) * this.ticks.length) / (this.width - (this.paddingLeft + this.paddingRight)));
-					// }
+					var xTickStart = this.options.position == "right" ? this.left : this.right - 5;
+					var xTickEnd = this.options.position == "right" ? this.left + 5 : this.right;
 
 					helpers.each(this.ticks, function(label, index) {
-						// Blank ticks
-						// if ((skipRatio > 1 && index % skipRatio > 0) || (label === undefined || label === null)) {
-						// 	return;
-						// }
 						var yLineValue = this.getPixelForTick(index); // xvalues for grid lines
-						var yLabelValue = this.getPixelForTick(index, this.options.gridLines.offsetGridLines); // x values for ticks (need to consider offsetLabel option)
-						var xLabelValue = this.left + (this.width / 2);
 
 						if (this.options.gridLines.show) {
 							if (index === (typeof this.zeroLineIndex !== 'undefined' ? this.zeroLineIndex : 0)) {
@@ -480,11 +468,34 @@
 						}
 
 						if (this.options.ticks.show) {
+							var xLabelValue;
+							var yLabelValue = this.getPixelForTick(index, this.options.gridLines.offsetGridLines); // x values for ticks (need to consider offsetLabel option)
+
 							this.ctx.save();
+
+							if (this.options.position == "left") {
+								if (this.options.ticks.mirror) {
+									xLabelValue = this.right + this.options.ticks.padding;
+									this.ctx.textAlign = "left";
+								} else {
+									xLabelValue = this.right - this.options.ticks.padding;
+									this.ctx.textAlign = "right";
+								}
+							} else {
+								// right side
+								if (this.options.ticks.mirror) {
+									xLabelValue = this.left - this.options.ticks.padding;
+									this.ctx.textAlign = "right";
+								} else {
+									xLabelValue = this.left + this.options.ticks.padding;
+									this.ctx.textAlign = "left";
+								}
+							}
+
+							
 							this.ctx.translate(xLabelValue, yLabelValue);
 							this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
 							this.ctx.font = this.font;
-							this.ctx.textAlign = 'center';
 							this.ctx.textBaseline = "middle";
 							this.ctx.fillText(label, 0, 0);
 							this.ctx.restore();
