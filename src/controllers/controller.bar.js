@@ -273,7 +273,7 @@
 			var xScale = this.getScaleForID(this.getDataset().xAxisID);
 
 			var ruler = this.getRuler();
-			var leftTick = xScale.getPixelForValue(null, index, datasetIndex, true);
+			var leftTick = xScale.getPixelForValue(null, index, datasetIndex, this.chart.isCombo);
 			leftTick -= this.chart.isCombo ? (ruler.tickWidth / 2) : 0;
 
 			if (yScale.options.stacked) {
