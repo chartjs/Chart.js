@@ -29,7 +29,15 @@
 
                 return this.left + Math.round(valueOffset);
             } else {
-                return this.top + (index * (this.height / this.labels.length));
+                var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
+                var valueHeight = innerHeight / Math.max((this.data.labels.length - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
+                var valueOffset = (valueHeight * index) + this.paddingTop;
+
+                if (this.options.gridLines.offsetGridLines && includeOffset) {
+                    valueOffset += (valueHeight / 2);
+                }
+
+                return this.top + Math.round(valueOffset);
             }
         },
     });
