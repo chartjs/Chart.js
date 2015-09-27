@@ -90,7 +90,7 @@
 			// Set unit override if applicable
 			if (this.options.time.unit) {
 				this.tickUnit = this.options.time.unit || 'day';
-				this.displayFormat = time.unit.day.display;
+				this.displayFormat = time.unit[this.tickUnit].display;
 				this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, this.tickUnit, true));
 			} else {
 				// Determine the smallest needed unit of the time
@@ -122,30 +122,26 @@
 				this.smallestLabelSeparation = Math.min(this.smallestLabelSeparation, this.labelMoments[i].diff(this.labelMoments[i - 1], this.tickUnit, true));
 			}
 
-
 			// Tick displayFormat override
 			if (this.options.time.displayFormat) {
 				this.displayFormat = this.options.time.displayFormat;
 			}
 
 			// For every unit in between the first and last moment, create a moment and add it to the ticks tick
-			if (this.options.ticks.userCallback) {
-				for (i = 0; i <= this.tickRange; i++) {
-					this.ticks.push(
-						this.options.ticks.userCallback(this.firstTick.clone()
-							.add(i, this.tickUnit)
-							.format(this.options.time.displayFormat ? this.options.time.displayFormat : time.unit[this.tickUnit].display)
-						)
-					);
-				}
-			} else {
-				for (i = 0; i <= this.tickRange; i++) {
-					this.ticks.push(this.firstTick.clone()
-						.add(i, this.tickUnit)
-						.format(this.options.time.displayFormat ? this.options.time.displayFormat : time.unit[this.tickUnit].display)
-					);
-				}
+			for (i = 0; i <= this.tickRange; ++i) {
+				this.ticks.push(this.firstTick.clone().add(i, this.tickUnit));
 			}
+		},
+		convertTicksToLabels: function() {
+			this.ticks = this.ticks.map(function(tick, index, ticks) {
+				var formattedTick = tick.format(this.options.time.displayFormat ? this.options.time.displayFormat : time.unit[this.tickUnit].display);
+
+				if (this.options.ticks.userCallback) {
+					return this.options.ticks.userCallback(formattedTick, index, ticks);
+				} else {
+					return formattedTick;
+				}
+			}, this);
 		},
 		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
 
@@ -160,7 +156,12 @@
 
 				return this.left + Math.round(valueOffset);
 			} else {
-				return this.top + (decimal * (this.height / this.ticks.length));
+				//return this.top + (decimal * (this.height / this.ticks.length));
+				var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
+				var valueHeight = innerHeight / Math.max(this.ticks.length - 1, 1);
+				var heightOffset = (innerHeight * decimal) + this.paddingTop;
+
+				return this.top + Math.round(heightOffset);
 			}
 		},
 		parseTime: function(label) {
