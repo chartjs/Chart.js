@@ -401,6 +401,13 @@ describe('Bar controller tests', function() {
 				type: 'bar'
 			},
 			options: {
+				elements: {
+					rectangle: {
+						backgroundColor: 'rgb(255, 0, 0)',
+						borderColor: 'rgb(0, 0, 255)',
+						borderWidth: 2,
+					}
+				},
 				scales: {
 					xAxes: [{
 						id: 'firstXScaleID'
@@ -462,13 +469,54 @@ describe('Bar controller tests', function() {
 	});
 
 	it ('should remove a hover style from a bar', function() {
+		var data = {
+			datasets: [{}, {
+				data: [10, 15, 0, -4],
+				label: 'dataset2',
+				xAxisID: 'firstXScaleID',
+				yAxisID: 'firstYScaleID'
+			}],
+			labels: ['label1', 'label2', 'label3', 'label4']
+		};
+		var mockContext = window.createMockContext();
+
+		var VerticalScaleConstructor = Chart.scaleService.getScaleConstructor('linear');
+		var verticalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		verticalScaleConfig = Chart.helpers.scaleMerge(verticalScaleConfig, Chart.defaults.bar.scales.yAxes[0]);
+		var yScale = new VerticalScaleConstructor({
+			ctx: mockContext,
+			options: verticalScaleConfig,
+			data: data,
+			id: 'firstYScaleID'
+		});
+
+		// Update ticks & set physical dimensions
+		var verticalSize = yScale.update(50, 200);
+		yScale.top = 0;
+		yScale.left = 0;
+		yScale.right = verticalSize.width;
+		yScale.bottom = verticalSize.height;
+
+		var HorizontalScaleConstructor = Chart.scaleService.getScaleConstructor('category');
+		var horizontalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
+		horizontalScaleConfig = Chart.helpers.scaleMerge(horizontalScaleConfig, Chart.defaults.bar.scales.xAxes[0]);
+		var xScale = new HorizontalScaleConstructor({
+			ctx: mockContext,
+			options: horizontalScaleConfig,
+			data: data,
+			id: 'firstXScaleID'
+		});
+
+		// Update ticks & set physical dimensions
+		var horizontalSize = xScale.update(200, 50);
+		xScale.left = yScale.right;
+		xScale.top = yScale.bottom;
+		xScale.right = horizontalSize.width + xScale.left;
+		xScale.bottom = horizontalSize.height + xScale.top;
+
+
 		var chart = {
-			data: {
-				datasets: [{}, {
-					data: [10, 15, 0, -4]
-				}],
-				labels: ['label1', 'label2', 'label3', 'label4']
-			},
+			data: data,
 			config: {
 				type: 'bar'
 			},
@@ -490,25 +538,8 @@ describe('Bar controller tests', function() {
 				}
 			},
 			scales: {
-				firstXScaleID: {
-					calculateBarWidth: function(numBars) { return numBars * 5; },
-					calculateBarX: function(numBars, datasetIndex, index) {
-						return chart.data.datasets[datasetIndex].data[index];
-					},
-				},
-				firstYScaleID: {
-					calculateBarBase: function(datasetIndex, index) {
-						return this.getPixelForValue(0);
-					},
-					calculateBarY: function(datasetIndex, index) {
-						return this.getPixelForValue(chart.data.datasets[datasetIndex].data[index]);
-					},
-					getPixelForValue: function(value) {
-						return value * 2;
-					},
-					max: 10,
-					min: -10,
-				}
+				firstXScaleID: xScale,
+				firstYScaleID: yScale,
 			}
 		};
 
