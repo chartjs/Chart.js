@@ -10,35 +10,17 @@
 
 		//Boolean - Whether to animate scaling the chart from the centre
 		animate: true,
-
 		lineArc: false,
-
-		// grid line settings
-		gridLines: {
-			show: true,
-			color: "rgba(0, 0, 0, 0.1)",
-			lineWidth: 1,
-		},
+		position: "chartArea",
 
 		angleLines: {
 			show: true,
-			color: "rgba(0,0,0, 0.1)",
+			color: "rgba(0, 0, 0, 0.1)",
 			lineWidth: 1
 		},
 
-		// scale numbers
-		reverse: false,
-		beginAtZero: true,
-
 		// label settings
-		labels: {
-			show: true,
-			template: "<%=value.toLocaleString()%>",
-			fontSize: 12,
-			fontStyle: "normal",
-			fontColor: "#666",
-			fontFamily: "Helvetica Neue",
-
+		ticks: {
 			//Boolean - Show a backdrop to the scale label
 			showLabelBackdrop: true,
 
@@ -67,29 +49,21 @@
 		},
 	};
 
-	var LinearRadialScale = Chart.Element.extend({
-		initialize: function() {
-			this.height = this.chart.height;
-			this.width = this.chart.width;
-			this.xCenter = this.chart.width / 2;
-			this.yCenter = this.chart.height / 2;
-			this.size = helpers.min([this.height, this.width]);
-			this.labels = this.data.labels;
-			this.drawingArea = (this.options.display) ? (this.size / 2) - (this.options.labels.fontSize / 2 + this.options.labels.backdropPaddingY) : (this.size / 2);
-		},
+	var LinearRadialScale = Chart.Scale.extend({
 		getValueCount: function() {
 			return this.data.labels.length;
 		},
-		update: function() {
-			if (!this.options.lineArc) {
-				this.setScaleSize();
-			} else {
-				this.drawingArea = (this.options.display) ? (this.size / 2) - (this.fontSize / 2 + this.backdropPaddingY) : (this.size / 2);
-			}
-
-			this.buildYLabels();
+		setDimensions: function() {
+			// Set the unconstrained dimension before label rotation
+			this.width = this.maxWidth;
+			this.height = this.maxHeight;
+			this.xCenter = Math.round(this.width / 2);
+			this.yCenter = Math.round(this.height / 2);
+			
+			var minSize = helpers.min([this.height, this.width]);
+			this.drawingArea = (this.options.display) ? (minSize / 2) - (this.options.ticks.fontSize / 2 + this.options.ticks.backdropPaddingY) : (minSize / 2);
 		},
-		calculateRange: function() {
+		buildTicks: function() {
 			this.min = null;
 			this.max = null;
 
@@ -110,105 +84,72 @@
 					}
 				}, this);
 			}, this);
-		},
-		generateTicks: function() {
-			// We need to decide how many ticks we are going to have. Each tick draws a grid line.
-			// There are two possibilities. The first is that the user has manually overridden the scale
-			// calculations in which case the job is easy. The other case is that we have to do it ourselves
-			// 
-			// We assume at this point that the scale object has been updated with the following values
-			// by the chart.
-			//  min: this is the minimum value of the scale
-			//  max: this is the maximum value of the scale
-			//  options: contains the options for the scale. This is referenced from the user settings
-			//      rather than being cloned. This ensures that updates always propogate to a redraw
 
-			// Reset the ticks array. Later on, we will draw a grid line at these positions
-			// The array simply contains the numerical value of the spots where ticks will be
+			if (this.min === this.max) {
+				this.min--;
+				this.max++;
+			}
+
 			this.ticks = [];
 
-			if (this.options.override) {
-				// The user has specified the manual override. We use <= instead of < so that 
-				// we get the final line
-				for (var i = 0; i <= this.options.override.steps; ++i) {
-					var value = this.options.override.start + (i * this.options.override.stepWidth);
-					this.ticks.push(value);
-				}
-			} else {
-				// Figure out what the max number of ticks we can support it is based on the size of
-				// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
-				// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on 
-				// the graph
+			// Figure out what the max number of ticks we can support it is based on the size of
+			// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
+			// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on 
+			// the graph
+			var maxTicks = Math.min(11, Math.ceil(this.drawingArea / (1.5 * this.options.ticks.fontSize)));
+			maxTicks = Math.max(2, maxTicks); // Make sure we always have at least 2 ticks 
 
-				var maxTicks = Math.min(11, Math.ceil(this.drawingArea / (2 * this.options.labels.fontSize)));
+			// To get a "nice" value for the tick spacing, we will use the appropriately named 
+			// "nice number" algorithm. See http://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
+			// for details.
 
-				// Make sure we always have at least 2 ticks 
-				maxTicks = Math.max(2, maxTicks);
+			// If we are forcing it to begin at 0, but 0 will already be rendered on the chart,
+			// do nothing since that would make the chart weird. If the user really wants a weird chart
+			// axis, they can manually override it
+			if (this.options.ticks.beginAtZero) {
+				var minSign = helpers.sign(this.min);
+				var maxSign = helpers.sign(this.max);
 
-				// To get a "nice" value for the tick spacing, we will use the appropriately named 
-				// "nice number" algorithm. See http://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
-				// for details.
-
-				// If we are forcing it to begin at 0, but 0 will already be rendered on the chart,
-				// do nothing since that would make the chart weird. If the user really wants a weird chart
-				// axis, they can manually override it
-				if (this.options.beginAtZero) {
-					var minSign = helpers.sign(this.min);
-					var maxSign = helpers.sign(this.max);
-
-					if (minSign < 0 && maxSign < 0) {
-						// move the top up to 0
-						this.max = 0;
-					} else if (minSign > 0 && maxSign > 0) {
-						// move the botttom down to 0
-						this.min = 0;
-					}
-				}
-
-				var niceRange = helpers.niceNum(this.max - this.min, false);
-				var spacing = helpers.niceNum(niceRange / (maxTicks - 1), true);
-				var niceMin = Math.floor(this.min / spacing) * spacing;
-				var niceMax = Math.ceil(this.max / spacing) * spacing;
-
-				// Put the values into the ticks array
-				for (var j = niceMin; j <= niceMax; j += spacing) {
-					this.ticks.push(j);
+				if (minSign < 0 && maxSign < 0) {
+					// move the top up to 0
+					this.max = 0;
+				} else if (minSign > 0 && maxSign > 0) {
+					// move the botttom down to 0
+					this.min = 0;
 				}
 			}
 
-			if (this.options.position == "left" || this.options.position == "right") {
-				// We are in a vertical orientation. The top value is the highest. So reverse the array
-				this.ticks.reverse();
+			var niceRange = helpers.niceNum(this.max - this.min, false);
+			var spacing = helpers.niceNum(niceRange / (maxTicks - 1), true);
+			var niceMin = Math.floor(this.min / spacing) * spacing;
+			var niceMax = Math.ceil(this.max / spacing) * spacing;
+
+			// Put the values into the ticks array
+			for (var j = niceMin; j <= niceMax; j += spacing) {
+				this.ticks.push(j);
 			}
 
 			// At this point, we need to update our max and min given the tick values since we have expanded the
 			// range of the scale
 			this.max = helpers.max(this.ticks);
 			this.min = helpers.min(this.ticks);
-		},
-		buildYLabels: function() {
-			this.yLabels = [];
 
-			helpers.each(this.ticks, function(tick, index, ticks) {
-				var label;
+			if (this.options.ticks.reverse) {
+				this.ticks.reverse();
 
-				if (this.options.labels.userCallback) {
-					// If the user provided a callback for label generation, use that as first priority
-					label = this.options.labels.userCallback(tick, index, ticks);
-				} else if (this.options.labels.template) {
-					// else fall back to the template string
-					label = helpers.template(this.options.labels.template, {
-						value: tick
-					});
-				}
+				this.start = this.max;
+				this.end = this.min;
+			} else {
+				this.start = this.min;
+				this.end = this.max;
+			}
 
-				this.yLabels.push(label ? label : "");
-			}, this);
+			this.zeroLineIndex = this.ticks.indexOf(0);
 		},
 		getCircumference: function() {
 			return ((Math.PI * 2) / this.getValueCount());
 		},
-		setScaleSize: function() {
+		fit: function() {
 			/*
 			 * Right, this is really confusing and there is a lot of maths going on here
 			 * The gist of the problem is here: https://gist.github.com/nnnick/696cc9c55f4b0beb8fe9
@@ -260,8 +201,8 @@
 			for (i = 0; i < this.getValueCount(); i++) {
 				// 5px to space the text slightly out - similar to what we do in the draw function.
 				pointPosition = this.getPointPosition(i, largestPossibleRadius);
-				textWidth = this.ctx.measureText(helpers.template(this.options.labels.template, {
-					value: this.labels[i]
+				textWidth = this.ctx.measureText(helpers.template(this.options.ticks.template, {
+					value: this.data.labels[i]
 				})).width + 5;
 				if (i === 0 || i === this.getValueCount() / 2) {
 					// If we're at index zero, or exactly the middle, we're at exactly the top/bottom
@@ -292,35 +233,29 @@
 			}
 
 			xProtrusionLeft = furthestLeft;
-
 			xProtrusionRight = Math.ceil(furthestRight - this.width);
 
 			furthestRightAngle = this.getIndexAngle(furthestRightIndex);
-
 			furthestLeftAngle = this.getIndexAngle(furthestLeftIndex);
 
 			radiusReductionRight = xProtrusionRight / Math.sin(furthestRightAngle + Math.PI / 2);
-
 			radiusReductionLeft = xProtrusionLeft / Math.sin(furthestLeftAngle + Math.PI / 2);
 
 			// Ensure we actually need to reduce the size of the chart
 			radiusReductionRight = (helpers.isNumber(radiusReductionRight)) ? radiusReductionRight : 0;
 			radiusReductionLeft = (helpers.isNumber(radiusReductionLeft)) ? radiusReductionLeft : 0;
 
-			this.drawingArea = largestPossibleRadius - (radiusReductionLeft + radiusReductionRight) / 2;
-
-			//this.drawingArea = min([maxWidthRadius, (this.height - (2 * (this.pointLabelFontSize + 5)))/2])
+			this.drawingArea = Math.round(largestPossibleRadius - (radiusReductionLeft + radiusReductionRight) / 2);
 			this.setCenterPoint(radiusReductionLeft, radiusReductionRight);
-
 		},
 		setCenterPoint: function(leftMovement, rightMovement) {
 
 			var maxRight = this.width - rightMovement - this.drawingArea,
 				maxLeft = leftMovement + this.drawingArea;
 
-			this.xCenter = (maxLeft + maxRight) / 2;
+			this.xCenter = Math.round(((maxLeft + maxRight) / 2) + this.left);
 			// Always vertically in the centre as the text height doesn't change
-			this.yCenter = (this.height / 2);
+			this.yCenter = Math.round((this.height / 2) + this.top);
 		},
 
 		getIndexAngle: function(index) {
@@ -352,7 +287,7 @@
 		draw: function() {
 			if (this.options.display) {
 				var ctx = this.ctx;
-				helpers.each(this.yLabels, function(label, index) {
+				helpers.each(this.ticks, function(label, index) {
 					// Don't draw a centre value (if it is minimum)
 					if (index > 0 || this.options.reverse) {
 						var yCenterOffset = this.getDistanceFromCenterForValue(this.ticks[index]);
@@ -385,23 +320,23 @@
 							}
 						}
 
-						if (this.options.labels.show) {
-							ctx.font = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
+						if (this.options.ticks.show) {
+							ctx.font = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
 
-							if (this.options.labels.showLabelBackdrop) {
+							if (this.options.ticks.showLabelBackdrop) {
 								var labelWidth = ctx.measureText(label).width;
-								ctx.fillStyle = this.options.labels.backdropColor;
+								ctx.fillStyle = this.options.ticks.backdropColor;
 								ctx.fillRect(
-									this.xCenter - labelWidth / 2 - this.options.labels.backdropPaddingX,
-									yHeight - this.fontSize / 2 - this.options.labels.backdropPaddingY,
-									labelWidth + this.options.labels.backdropPaddingX * 2,
-									this.options.labels.fontSize + this.options.labels.backdropPaddingY * 2
+									this.xCenter - labelWidth / 2 - this.options.ticks.backdropPaddingX,
+									yHeight - this.options.ticks.fontSize / 2 - this.options.ticks.backdropPaddingY,
+									labelWidth + this.options.ticks.backdropPaddingX * 2,
+									this.options.ticks.fontSize + this.options.ticks.backdropPaddingY * 2
 								);
 							}
 
 							ctx.textAlign = 'center';
 							ctx.textBaseline = "middle";
-							ctx.fillStyle = this.options.labels.fontColor;
+							ctx.fillStyle = this.options.ticks.fontColor;
 							ctx.fillText(label, this.xCenter, yHeight);
 						}
 					}
@@ -425,8 +360,8 @@
 						ctx.font = helpers.fontString(this.options.pointLabels.fontSize, this.options.pointLabels.fontStyle, this.options.pointLabels.fontFamily);
 						ctx.fillStyle = this.options.pointLabels.fontColor;
 
-						var labelsCount = this.labels.length,
-							halfLabelsCount = this.labels.length / 2,
+						var labelsCount = this.data.labels.length,
+							halfLabelsCount = this.data.labels.length / 2,
 							quarterLabelsCount = halfLabelsCount / 2,
 							upperHalf = (i < quarterLabelsCount || i > labelsCount - quarterLabelsCount),
 							exactQuarter = (i === quarterLabelsCount || i === labelsCount - quarterLabelsCount);
@@ -449,7 +384,7 @@
 							ctx.textBaseline = 'top';
 						}
 
-						ctx.fillText(this.labels[i], pointLabelPosition.x, pointLabelPosition.y);
+						ctx.fillText(this.data.labels[i], pointLabelPosition.x, pointLabelPosition.y);
 					}
 				}
 			}

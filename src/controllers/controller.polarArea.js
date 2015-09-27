@@ -97,13 +97,6 @@
 		},
 
 		update: function update(reset) {
-
-			Chart.scaleService.update(this, this.chart.width, this.chart.height);
-			//this.chart.scale.setScaleSize();
-			this.chart.scale.calculateRange();
-			this.chart.scale.generateTicks();
-			this.chart.scale.buildYLabels();
-
 			this.chart.outerRadius = Math.max((helpers.min([this.chart.chart.width, this.chart.chart.height]) - this.chart.options.elements.arc.borderWidth / 2) / 2, 0);
 			this.chart.innerRadius = Math.max(this.chart.options.cutoutPercentage ? (this.chart.outerRadius / 100) * (this.chart.options.cutoutPercentage) : 1, 0);
 			this.chart.radiusLength = (this.chart.outerRadius - this.chart.innerRadius) / this.chart.data.datasets.length;

@@ -157,6 +157,8 @@
 				});
 
 				this.scale = scale;
+
+				this.scales['radialScale'] = scale;
 			}
 
 			Chart.scaleService.update(this, this.chart.width, this.chart.height);

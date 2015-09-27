@@ -46,6 +46,11 @@
 					return scaleInstance.options.position == "bottom";
 				});
 
+				// Scales that overlay the chartarea such as the radialLinear scale
+				var chartAreaScales = helpers.where(chartInstance.scales, function(scaleInstance) {
+					return scaleInstance.options.position == "chartArea";
+				});
+
 				// Essentially we now have any number of scales on each of the 4 sides.
 				// Our canvas looks like the following.
 				// The areas L1 and L2 are the left axes. R1 is the right axis, T1 is the top axis and 
@@ -71,6 +76,7 @@
 				// 6. Refit each axis
 				// 7. Position each axis in the final location
 				// 8. Tell the chart the final location of the chart area
+				// 9. Tell any axes that overlay the chart area the positions of the chart area
 
 				// Step 1
 				var chartWidth = width / 2; // min 50%
@@ -311,6 +317,16 @@
 					right: totalLeftWidth + maxChartWidth,
 					bottom: totalTopHeight + maxChartHeight,
 				};
+
+				// Step 9
+				helpers.each(chartAreaScales, function(scaleInstance) {
+					scaleInstance.left = chartInstance.chartArea.left;
+					scaleInstance.top = chartInstance.chartArea.top;
+					scaleInstance.right = chartInstance.chartArea.right;
+					scaleInstance.bottom = chartInstance.chartArea.bottom;
+					
+					scaleInstance.update(maxChartWidth, maxChartHeight);
+				});
 			}
 		}
 	};
