@@ -24,6 +24,7 @@ var testDir = './test/';
  */
 
 var srcFiles = [
+	'./node_modules/color/dist/color.min.js',
 	'./src/core/core.js',
 	'./src/core/core.helpers.js',
 	'./src/core/core.chart.js',
@@ -33,8 +34,6 @@ var srcFiles = [
 	'./src/scales/**',
 	'./src/elements/**',
 	'./src/charts/**',
-	'./node_modules/color/dist/color.min.js',
-	'./node_modules/moment/min/moment.min.js'
 ];
 
 var testFiles = [
