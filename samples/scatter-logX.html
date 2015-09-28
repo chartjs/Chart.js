@@ -138,7 +138,7 @@
 	            	xAxes: [{
 	            		type: 'logarithmic',
 	            		position: 'bottom',
-	            		labels: {
+	            		ticks: {
 	            			userCallback: function(tick) {
 	            				var remain = tick / (Math.pow(10, Math.floor(Chart.helpers.log10(tick))));
 	            				if (remain === 1 || remain === 2 || remain === 5) {
@@ -154,7 +154,7 @@
 	            	}],
 	            	yAxes: [{
 	            		type: 'linear',
-	            		labels: {
+	            		ticks: {
 	            			userCallback: function(tick) {
 	            				return tick.toString() + "dB";
 	            			}

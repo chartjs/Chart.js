@@ -13,7 +13,7 @@
 </head>
 
 <body>
-    <div id="container" style="width: 50%; height: 25%; display:none;">
+    <div id="container" style="width: 50%; height: 25%;">
         <canvas id="canvas" height="450" width="600"></canvas>
     </div>
     <button id="randomizeData">Randomize Data</button>
@@ -69,13 +69,6 @@
                 data: barChartData,
                 options: {
                     responsive: true,
-                    scales: {
-                        xAxes: [{
-                            // So that bars fill the entire width of the grid
-                            categorySpacing: 10,
-                            spacing: 0
-                        }]
-                    }
                 }
             });
 

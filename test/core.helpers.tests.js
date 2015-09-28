@@ -210,18 +210,19 @@ describe('Core helper tests', function() {
 					type: 'linear',
 					axisProp: 456
 				}, {
-					type: 'linear',
 					display: true,
+
+					gridLines: {
+						color: "rgba(0, 0, 0, 0.1)",
+						drawOnChartArea: true,
+						drawTicks: true, // draw ticks extending towards the label
+						lineWidth: 1,
+						offsetGridLines: false,
+						show: true,
+						zeroLineColor: "rgba(0,0,0,0.25)",
+						zeroLineWidth: 1,
+					},
 					position: "right",
-					gridLines: {
-						show: true,
-						color: "rgba(0, 0, 0, 0.1)",
-						lineWidth: 1,
-						drawOnChartArea: true,
-						drawTicks: true,
-						zeroLineWidth: 1,
-						zeroLineColor: "rgba(0,0,0,0.25)",
-					},
 					scaleLabel: {
 						fontColor: '#666',
 						fontFamily: 'Helvetica Neue',
@@ -230,32 +231,35 @@ describe('Core helper tests', function() {
 						labelString: '',
 						show: false,
 					},
-					reverse: false,
-					beginAtZero: false,
-					override: null,
-					labels: {
-						show: true,
-						mirror: false,
-						padding: 10,
-						template: "<%=value.toLocaleString()%>",
+					ticks: {
+						beginAtZero: false,
+						fontColor: "#666",
+						fontFamily: "Helvetica Neue",
 						fontSize: 12,
 						fontStyle: "normal",
-						fontColor: "#666",
-						fontFamily: "Helvetica Neue"
-					}
+						maxRotation: 90,
+						minRotation: 20,
+						mirror: false,
+						padding: 10,
+						reverse: false,
+						show: true,
+						template: "<%=value%>"
+					},
+					type: 'linear'
 				}, {
-					type: 'linear',
 					display: true,
-					position: "left",
+
 					gridLines: {
-						show: true,
 						color: "rgba(0, 0, 0, 0.1)",
-						lineWidth: 1,
 						drawOnChartArea: true,
-						drawTicks: true,
-						zeroLineWidth: 1,
+						drawTicks: true, // draw ticks extending towards the label
+						lineWidth: 1,
+						offsetGridLines: false,
+						show: true,
 						zeroLineColor: "rgba(0,0,0,0.25)",
+						zeroLineWidth: 1,
 					},
+					position: "left",
 					scaleLabel: {
 						fontColor: '#666',
 						fontFamily: 'Helvetica Neue',
@@ -264,19 +268,21 @@ describe('Core helper tests', function() {
 						labelString: '',
 						show: false,
 					},
-					reverse: false,
-					beginAtZero: false,
-					override: null,
-					labels: {
-						show: true,
-						mirror: false,
-						padding: 10,
-						template: "<%=value.toLocaleString()%>",
+					ticks: {
+						beginAtZero: false,
+						fontColor: "#666",
+						fontFamily: "Helvetica Neue",
 						fontSize: 12,
 						fontStyle: "normal",
-						fontColor: "#666",
-						fontFamily: "Helvetica Neue"
-					}
+						maxRotation: 90,
+						minRotation: 20,
+						mirror: false,
+						padding: 10,
+						reverse: false,
+						show: true,
+						template: "<%=value%>"
+					},
+					type: 'linear'
 				}]
 			}
 		});

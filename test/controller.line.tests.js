@@ -1,4 +1,4 @@
-// Test the bar controller
+// Test the line controller
 describe('Line controller tests', function() {
 	it('Should be constructed', function() {
 		var chart = {
@@ -142,18 +142,60 @@ describe('Line controller tests', function() {
 	});
 
 	it ('should update elements', function() {
+		var data = {
+			datasets: [{
+				data: [10, 15, 0, -4],
+				label: 'dataset2',
+				xAxisID: 'firstXScaleID',
+				yAxisID: 'firstYScaleID'
+			}],
+			labels: ['label1', 'label2', 'label3', 'label4']
+		};
+		var mockContext = window.createMockContext();
+
+		var VerticalScaleConstructor = Chart.scaleService.getScaleConstructor('linear');
+		var verticalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		verticalScaleConfig = Chart.helpers.scaleMerge(verticalScaleConfig, Chart.defaults.line.scales.yAxes[0]);
+		var yScale = new VerticalScaleConstructor({
+			ctx: mockContext,
+			options: verticalScaleConfig,
+			data: data,
+			id: 'firstYScaleID'
+		});
+
+		// Update ticks & set physical dimensions
+		var verticalSize = yScale.update(50, 200);
+		yScale.top = 0;
+		yScale.left = 0;
+		yScale.right = verticalSize.width;
+		yScale.bottom = verticalSize.height;
+
+		var HorizontalScaleConstructor = Chart.scaleService.getScaleConstructor('category');
+		var horizontalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
+		horizontalScaleConfig = Chart.helpers.scaleMerge(horizontalScaleConfig, Chart.defaults.line.scales.xAxes[0]);
+		var xScale = new HorizontalScaleConstructor({
+			ctx: mockContext,
+			options: horizontalScaleConfig,
+			data: data,
+			id: 'firstXScaleID'
+		});
+
+		// Update ticks & set physical dimensions
+		var horizontalSize = xScale.update(200, 50);
+		xScale.left = yScale.right;
+		xScale.top = yScale.bottom;
+		xScale.right = horizontalSize.width + xScale.left;
+		xScale.bottom = horizontalSize.height + xScale.top;
+
+
 		var chart = {
 			chartArea: {
-				bottom: 100,
-				left: 0,
+				bottom: 200,
+				left: xScale.left,
 				right: 200,
 				top: 0
 			},
-			data: {
-				datasets: [{
-					data: [10, 15, 0, -4]
-				}]
-			},
+			data: data,
 			config: {
 				type: 'line'
 			},
@@ -191,24 +233,8 @@ describe('Line controller tests', function() {
 				}
 			},
 			scales: {
-				firstXScaleID: {
-					getPointPixelForValue: function(value, index) {
-						return index * 3;
-					}
-				},
-				firstYScaleID: {
-					calculateBarBase: function(datasetIndex, index) {
-						return this.getPixelForValue(0);
-					},
-					getPointPixelForValue: function(value, datasetIndex, index) {
-						return this.getPixelForValue(value);
-					},
-					getPixelForValue: function(value) {
-						return value * 2;
-					},
-					max: 10,
-					min: -10,
-				}
+				firstXScaleID: xScale,
+				firstYScaleID: yScale,
 			}
 		};
 
@@ -229,9 +255,9 @@ describe('Line controller tests', function() {
 			skipNull: true,
 			tension: 0.1,
 
-			scaleTop: undefined,
-			scaleBottom: undefined,
-			scaleZero: 0,
+			scaleTop: 0,
+			scaleBottom: 200,
+			scaleZero: 156,
 		});
 
 		expect(chart.data.datasets[0].metaData[0]._model).toEqual({
@@ -244,14 +270,14 @@ describe('Line controller tests', function() {
 			tension: 0.1,
 			
 			// Point
-			x: 0,
-			y: 20,
+			x: 63,
+			y: 62,
 
 			// Control points
-			controlPointPreviousX: 0,
-			controlPointPreviousY: 20,
-			controlPointNextX: 0.30000000000000004,
-			controlPointNextY: 21,
+			controlPointPreviousX: 63,
+			controlPointPreviousY: 62,
+			controlPointNextX: 67.5,
+			controlPointNextY: 57.3,
 		});
 
 		expect(chart.data.datasets[0].metaData[1]._model).toEqual({
@@ -264,14 +290,14 @@ describe('Line controller tests', function() {
 			tension: 0.1,
 			
 			// Point
-			x: 3,
-			y: 30,
+			x: 108,
+			y: 15,
 
 			// Control points
-			controlPointPreviousX: 2.845671490812908,
-			controlPointPreviousY: 30.514428363956974,
-			controlPointNextX: 3.4456714908129076,
-			controlPointNextY: 28.514428363956974,
+			controlPointPreviousX: 105.27827106822767,
+			controlPointPreviousY: 12.125364948465183,
+			controlPointNextX: 114.17827106822767,
+			controlPointNextY: 21.52536494846518,
 		});
 
 		expect(chart.data.datasets[0].metaData[2]._model).toEqual({
@@ -284,14 +310,14 @@ describe('Line controller tests', function() {
 			tension: 0.1,
 			
 			// Point
-			x: 6,
-			y: 0,
+			x: 152,
+			y: 156,
 
 			// Control points
-			controlPointPreviousX: 5.532486979550596,
-			controlPointPreviousY: 2.9609157961795605,
-			controlPointNextX: 6.132486979550595,
-			controlPointNextY: 0,
+			controlPointPreviousX: 145.63719249781943,
+			controlPointPreviousY: 143.20289277651324,
+			controlPointNextX: 154.53719249781943,
+			controlPointNextY: 161.10289277651324,
 		});
 
 		expect(chart.data.datasets[0].metaData[3]._model).toEqual({
@@ -304,14 +330,14 @@ describe('Line controller tests', function() {
 			tension: 0.1,
 			
 			// Point
-			x: 9,
-			y: -8,
+			x: 197,
+			y: 194,
 
 			// Control points
-			controlPointPreviousX: 8.7,
-			controlPointPreviousY: 0,
-			controlPointNextX: 9,
-			controlPointNextY: 0,
+			controlPointPreviousX: 192.5,
+			controlPointPreviousY: 190.2,
+			controlPointNextX: 197,
+			controlPointNextY: 194,
 		});
 
 		// Use dataset level styles for lines & points
@@ -349,9 +375,9 @@ describe('Line controller tests', function() {
 			skipNull: false,
 			tension: 0.2,
 
-			scaleTop: undefined,
-			scaleBottom: undefined,
-			scaleZero: 0,
+			scaleTop: 0,
+			scaleBottom: 200,
+			scaleZero: 156,
 		});
 
 		expect(chart.data.datasets[0].metaData[0]._model).toEqual({
@@ -364,14 +390,14 @@ describe('Line controller tests', function() {
 			tension: 0.2,
 			
 			// Point
-			x: 0,
-			y: 20,
+			x: 63,
+			y: 62,
 
 			// Control points
-			controlPointPreviousX: 0,
-			controlPointPreviousY: 20,
-			controlPointNextX: 0.6000000000000001,
-			controlPointNextY: 22,
+			controlPointPreviousX: 63,
+			controlPointPreviousY: 62,
+			controlPointNextX: 72,
+			controlPointNextY: 52.6,
 		});
 
 		expect(chart.data.datasets[0].metaData[1]._model).toEqual({
@@ -384,14 +410,14 @@ describe('Line controller tests', function() {
 			tension: 0.2,
 			
 			// Point
-			x: 3,
-			y: 30,
+			x: 108,
+			y: 15,
 
 			// Control points
-			controlPointPreviousX: 2.6913429816258154,
-			controlPointPreviousY: 31.028856727913947,
-			controlPointNextX: 3.891342981625815,
-			controlPointNextY: 27.028856727913947,
+			controlPointPreviousX: 102.55654213645535,
+			controlPointPreviousY: 9.250729896930364,
+			controlPointNextX: 120.35654213645535,
+			controlPointNextY: 28.050729896930367,
 		});
 
 		expect(chart.data.datasets[0].metaData[2]._model).toEqual({
@@ -404,14 +430,14 @@ describe('Line controller tests', function() {
 			tension: 0.2,
 			
 			// Point
-			x: 6,
-			y: 0,
+			x: 152,
+			y: 156,
 
 			// Control points
-			controlPointPreviousX: 5.0649739591011915,
-			controlPointPreviousY: 5.921831592359121,
-			controlPointNextX: 6.264973959101192,
-			controlPointNextY: 0,
+			controlPointPreviousX: 139.27438499563885,
+			controlPointPreviousY: 130.40578555302648,
+			controlPointNextX: 157.07438499563887,
+			controlPointNextY: 166.20578555302646,
 		});
 
 		expect(chart.data.datasets[0].metaData[3]._model).toEqual({
@@ -424,14 +450,14 @@ describe('Line controller tests', function() {
 			tension: 0.2,
 			
 			// Point
-			x: 9,
-			y: -8,
+			x: 197,
+			y: 194,
 
 			// Control points
-			controlPointPreviousX: 8.4,
-			controlPointPreviousY: 0,
-			controlPointNextX: 9,
-			controlPointNextY: 0,
+			controlPointPreviousX: 188,
+			controlPointPreviousY: 186.4,
+			controlPointNextX: 197,
+			controlPointNextY: 194,
 		});
 
 		// Use custom styles for lines & first point
@@ -475,9 +501,9 @@ describe('Line controller tests', function() {
 			skipNull: false,
 			tension: 0.25,
 
-			scaleTop: undefined,
-			scaleBottom: undefined,
-			scaleZero: 0,
+			scaleTop: 0,
+			scaleBottom: 200,
+			scaleZero: 156,
 		});
 
 		expect(chart.data.datasets[0].metaData[0]._model).toEqual({
@@ -490,30 +516,72 @@ describe('Line controller tests', function() {
 			tension: 0.15,
 			
 			// Point
-			x: 0,
-			y: 20,
+			x: 63,
+			y: 62,
 
 			// Control points
-			controlPointPreviousX: 0,
-			controlPointPreviousY: 20,
-			controlPointNextX: 0.44999999999999996,
-			controlPointNextY: 21.5,
+			controlPointPreviousX: 63,
+			controlPointPreviousY: 62,
+			controlPointNextX: 69.75,
+			controlPointNextY: 54.95,
 		});
 	});
 
 	it ('should handle number of data point changes in update', function() {
+		var data = {
+			datasets: [{
+				data: [10, 15, 0, -4],
+				label: 'dataset2',
+				xAxisID: 'firstXScaleID',
+				yAxisID: 'firstYScaleID'
+			}],
+			labels: ['label1', 'label2', 'label3', 'label4']
+		};
+		var mockContext = window.createMockContext();
+
+		var VerticalScaleConstructor = Chart.scaleService.getScaleConstructor('linear');
+		var verticalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		verticalScaleConfig = Chart.helpers.scaleMerge(verticalScaleConfig, Chart.defaults.line.scales.yAxes[0]);
+		var yScale = new VerticalScaleConstructor({
+			ctx: mockContext,
+			options: verticalScaleConfig,
+			data: data,
+			id: 'firstYScaleID'
+		});
+
+		// Update ticks & set physical dimensions
+		var verticalSize = yScale.update(50, 200);
+		yScale.top = 0;
+		yScale.left = 0;
+		yScale.right = verticalSize.width;
+		yScale.bottom = verticalSize.height;
+
+		var HorizontalScaleConstructor = Chart.scaleService.getScaleConstructor('category');
+		var horizontalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
+		horizontalScaleConfig = Chart.helpers.scaleMerge(horizontalScaleConfig, Chart.defaults.line.scales.xAxes[0]);
+		var xScale = new HorizontalScaleConstructor({
+			ctx: mockContext,
+			options: horizontalScaleConfig,
+			data: data,
+			id: 'firstXScaleID'
+		});
+
+		// Update ticks & set physical dimensions
+		var horizontalSize = xScale.update(200, 50);
+		xScale.left = yScale.right;
+		xScale.top = yScale.bottom;
+		xScale.right = horizontalSize.width + xScale.left;
+		xScale.bottom = horizontalSize.height + xScale.top;
+
+
 		var chart = {
 			chartArea: {
-				bottom: 100,
-				left: 0,
+				bottom: 200,
+				left: xScale.left,
 				right: 200,
 				top: 0
 			},
-			data: {
-				datasets: [{
-					data: [10, 15, 0, -4]
-				}]
-			},
+			data: data,
 			config: {
 				type: 'line'
 			},
@@ -551,24 +619,8 @@ describe('Line controller tests', function() {
 				}
 			},
 			scales: {
-				firstXScaleID: {
-					getPointPixelForValue: function(value, index) {
-						return index * 3;
-					}
-				},
-				firstYScaleID: {
-					calculateBarBase: function(datasetIndex, index) {
-						return this.getPixelForValue(0);
-					},
-					getPointPixelForValue: function(value, datasetIndex, index) {
-						return this.getPixelForValue(value);
-					},
-					getPixelForValue: function(value) {
-						return value * 2;
-					},
-					max: 10,
-					min: -10,
-				}
+				firstXScaleID: xScale,
+				firstYScaleID: yScale,
 			}
 		};
 
@@ -592,18 +644,60 @@ describe('Line controller tests', function() {
 	});
 
 	it ('should set point hover styles', function() {
+		var data = {
+			datasets: [{
+				data: [10, 15, 0, -4],
+				label: 'dataset2',
+				xAxisID: 'firstXScaleID',
+				yAxisID: 'firstYScaleID'
+			}],
+			labels: ['label1', 'label2', 'label3', 'label4']
+		};
+		var mockContext = window.createMockContext();
+
+		var VerticalScaleConstructor = Chart.scaleService.getScaleConstructor('linear');
+		var verticalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		verticalScaleConfig = Chart.helpers.scaleMerge(verticalScaleConfig, Chart.defaults.line.scales.yAxes[0]);
+		var yScale = new VerticalScaleConstructor({
+			ctx: mockContext,
+			options: verticalScaleConfig,
+			data: data,
+			id: 'firstYScaleID'
+		});
+
+		// Update ticks & set physical dimensions
+		var verticalSize = yScale.update(50, 200);
+		yScale.top = 0;
+		yScale.left = 0;
+		yScale.right = verticalSize.width;
+		yScale.bottom = verticalSize.height;
+
+		var HorizontalScaleConstructor = Chart.scaleService.getScaleConstructor('category');
+		var horizontalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
+		horizontalScaleConfig = Chart.helpers.scaleMerge(horizontalScaleConfig, Chart.defaults.line.scales.xAxes[0]);
+		var xScale = new HorizontalScaleConstructor({
+			ctx: mockContext,
+			options: horizontalScaleConfig,
+			data: data,
+			id: 'firstXScaleID'
+		});
+
+		// Update ticks & set physical dimensions
+		var horizontalSize = xScale.update(200, 50);
+		xScale.left = yScale.right;
+		xScale.top = yScale.bottom;
+		xScale.right = horizontalSize.width + xScale.left;
+		xScale.bottom = horizontalSize.height + xScale.top;
+
+
 		var chart = {
 			chartArea: {
-				bottom: 100,
-				left: 0,
+				bottom: 200,
+				left: xScale.left,
 				right: 200,
 				top: 0
 			},
-			data: {
-				datasets: [{
-					data: [10, 15, 0, -4]
-				}]
-			},
+			data: data,
 			config: {
 				type: 'line'
 			},
@@ -641,24 +735,8 @@ describe('Line controller tests', function() {
 				}
 			},
 			scales: {
-				firstXScaleID: {
-					getPointPixelForValue: function(value, index) {
-						return index * 3;
-					}
-				},
-				firstYScaleID: {
-					calculateBarBase: function(datasetIndex, index) {
-						return this.getPixelForValue(0);
-					},
-					getPointPixelForValue: function(value, datasetIndex, index) {
-						return this.getPixelForValue(value);
-					},
-					getPixelForValue: function(value) {
-						return value * 2;
-					},
-					max: 10,
-					min: -10,
-				}
+				firstXScaleID: xScale,
+				firstYScaleID: yScale,
 			}
 		};
 
@@ -700,18 +778,60 @@ describe('Line controller tests', function() {
 	});
 
 	it ('should remove hover styles', function() {
-				var chart = {
+		var data = {
+			datasets: [{
+				data: [10, 15, 0, -4],
+				label: 'dataset2',
+				xAxisID: 'firstXScaleID',
+				yAxisID: 'firstYScaleID'
+			}],
+			labels: ['label1', 'label2', 'label3', 'label4']
+		};
+		var mockContext = window.createMockContext();
+
+		var VerticalScaleConstructor = Chart.scaleService.getScaleConstructor('linear');
+		var verticalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		verticalScaleConfig = Chart.helpers.scaleMerge(verticalScaleConfig, Chart.defaults.line.scales.yAxes[0]);
+		var yScale = new VerticalScaleConstructor({
+			ctx: mockContext,
+			options: verticalScaleConfig,
+			data: data,
+			id: 'firstYScaleID'
+		});
+
+		// Update ticks & set physical dimensions
+		var verticalSize = yScale.update(50, 200);
+		yScale.top = 0;
+		yScale.left = 0;
+		yScale.right = verticalSize.width;
+		yScale.bottom = verticalSize.height;
+
+		var HorizontalScaleConstructor = Chart.scaleService.getScaleConstructor('category');
+		var horizontalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
+		horizontalScaleConfig = Chart.helpers.scaleMerge(horizontalScaleConfig, Chart.defaults.line.scales.xAxes[0]);
+		var xScale = new HorizontalScaleConstructor({
+			ctx: mockContext,
+			options: horizontalScaleConfig,
+			data: data,
+			id: 'firstXScaleID'
+		});
+
+		// Update ticks & set physical dimensions
+		var horizontalSize = xScale.update(200, 50);
+		xScale.left = yScale.right;
+		xScale.top = yScale.bottom;
+		xScale.right = horizontalSize.width + xScale.left;
+		xScale.bottom = horizontalSize.height + xScale.top;
+
+
+		var chart = {
 			chartArea: {
-				bottom: 100,
-				left: 0,
+				bottom: 200,
+				left: xScale.left,
 				right: 200,
 				top: 0
 			},
-			data: {
-				datasets: [{
-					data: [10, 15, 0, -4]
-				}]
-			},
+			data: data,
 			config: {
 				type: 'line'
 			},
@@ -749,24 +869,8 @@ describe('Line controller tests', function() {
 				}
 			},
 			scales: {
-				firstXScaleID: {
-					getPointPixelForValue: function(value, index) {
-						return index * 3;
-					}
-				},
-				firstYScaleID: {
-					calculateBarBase: function(datasetIndex, index) {
-						return this.getPixelForValue(0);
-					},
-					getPointPixelForValue: function(value, datasetIndex, index) {
-						return this.getPixelForValue(value);
-					},
-					getPixelForValue: function(value) {
-						return value * 2;
-					},
-					max: 10,
-					min: -10,
-				}
+				firstXScaleID: xScale,
+				firstYScaleID: yScale,
 			}
 		};
 

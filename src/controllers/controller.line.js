@@ -109,7 +109,7 @@
 			// Make sure that we handle number of datapoints changing
 			if (numData < numPoints) {
 				// Remove excess bars for data points that have been removed
-				this.getDataset().metaData.splice(numData, numPoints - numData)
+				this.getDataset().metaData.splice(numData, numPoints - numData);
 			} else if (numData > numPoints) {
 				// Add new elements
 				for (var index = numPoints; index < numData; ++index) {
@@ -194,8 +194,8 @@
 
 				// Desired view properties
 				_model: {
-					x: xScale.getPointPixelForValue(this.getDataset().data[index], index, this.index),
-					y: reset ? scaleBase : yScale.getPointPixelForValue(this.getDataset().data[index], index, this.index),
+					x: xScale.getPixelForValue(this.getDataset().data[index], index, this.index, this.chart.isCombo),
+					y: reset ? scaleBase : yScale.getPixelForValue(this.getDataset().data[index], index, this.index),
 					// Appearance
 					tension: point.custom && point.custom.tension ? point.custom.tension : (this.getDataset().tension || this.chart.options.elements.line.tension),
 					radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().radius, index, this.chart.options.elements.point.radius),

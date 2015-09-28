@@ -14,8 +14,10 @@
 		scales: {
 			xAxes: [{
 				type: "category",
-				categorySpacing: 10,
-				spacing: 1,
+
+				// Specific to Bar Controller
+				categoryPercentage: 0.8,
+				barPercentage: 0.9,
 
 				// grid line settings
 				gridLines: {
@@ -57,7 +59,7 @@
 			return this.chart.data.datasets[this.index];
 		},
 
-		getScaleForId: function(scaleID) {
+		getScaleForID: function(scaleID) {
 			return this.chart.scales[scaleID];
 		},
 
@@ -99,6 +101,7 @@
 			this.updateElement(rectangle, index, true, numBars);
 			this.getDataset().metaData.splice(index, 0, rectangle);
 		},
+
 		removeElement: function(index) {
 			this.getDataset().metaData.splice(index, 1);
 		},
@@ -114,7 +117,7 @@
 			// Make sure that we handle number of datapoints changing
 			if (numData < numRectangles) {
 				// Remove excess bars for data points that have been removed
-				this.getDataset().metaData.splice(numData, numRectangles - numData)
+				this.getDataset().metaData.splice(numData, numRectangles - numData);
 			} else if (numData > numRectangles) {
 				// Add new elements
 				for (var index = numRectangles; index < numData; ++index) {
@@ -132,8 +135,10 @@
 		},
 
 		updateElement: function updateElement(rectangle, index, reset, numBars) {
-			var xScale = this.getScaleForId(this.getDataset().xAxisID);
-			var yScale = this.getScaleForId(this.getDataset().yAxisID);
+
+			var xScale = this.getScaleForID(this.getDataset().xAxisID);
+			var yScale = this.getScaleForID(this.getDataset().yAxisID);
+
 			var yScalePoint;
 
 			if (yScale.min < 0 && yScale.max < 0) {
@@ -156,22 +161,163 @@
 
 				// Desired view properties
 				_model: {
-					x: xScale.calculateBarX(numBars, this.index, index),
-					y: reset ? yScalePoint : yScale.calculateBarY(this.index, index),
+					x: this.calculateBarX(index, this.index),
+					y: reset ? yScalePoint : this.calculateBarY(index, this.index),
 
 					// Tooltip
 					label: this.chart.data.labels[index],
 					datasetLabel: this.getDataset().label,
 
 					// Appearance
-					base: yScale.calculateBarBase(this.index, index),
-					width: xScale.calculateBarWidth(numBars),
+					base: this.calculateBarBase(this.index, index),
+					width: this.calculateBarWidth(numBars),
 					backgroundColor: rectangle.custom && rectangle.custom.backgroundColor ? rectangle.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.rectangle.backgroundColor),
 					borderColor: rectangle.custom && rectangle.custom.borderColor ? rectangle.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.rectangle.borderColor),
 					borderWidth: rectangle.custom && rectangle.custom.borderWidth ? rectangle.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.rectangle.borderWidth),
 				},
 			});
 			rectangle.pivot();
+		},
+
+		calculateBarBase: function(datasetIndex, index) {
+
+			var xScale = this.getScaleForID(this.getDataset().xAxisID);
+			var yScale = this.getScaleForID(this.getDataset().yAxisID);
+
+			var base = 0;
+
+			if (yScale.options.stacked) {
+
+				var value = this.chart.data.datasets[datasetIndex].data[index];
+
+				if (value < 0) {
+					for (var i = 0; i < datasetIndex; i++) {
+						if (this.chart.data.datasets[i].yAxisID === yScale.id) {
+							base += this.chart.data.datasets[i].data[index] < 0 ? this.chart.data.datasets[i].data[index] : 0;
+						}
+					}
+				} else {
+					for (var j = 0; j < datasetIndex; j++) {
+						if (this.chart.data.datasets[j].yAxisID === yScale.id) {
+							base += this.chart.data.datasets[j].data[index] > 0 ? this.chart.data.datasets[j].data[index] : 0;
+						}
+					}
+				}
+
+				return yScale.getPixelForValue(base);
+			}
+
+			base = yScale.getPixelForValue(yScale.min);
+
+			if (yScale.beginAtZero || ((yScale.min <= 0 && yScale.max >= 0) || (yScale.min >= 0 && yScale.max <= 0))) {
+				base = yScale.getPixelForValue(0, 0);
+				//base += yScale.options.gridLines.lineWidth;
+			} else if (yScale.min < 0 && yScale.max < 0) {
+				// All values are negative. Use the top as the base
+				base = yScale.getPixelForValue(yScale.max);
+			}
+
+			return base;
+
+		},
+
+		getRuler: function() {
+
+			var xScale = this.getScaleForID(this.getDataset().xAxisID);
+			var yScale = this.getScaleForID(this.getDataset().yAxisID);
+
+			var datasetCount = !this.chart.isCombo ? this.chart.data.datasets.length : helpers.where(this.chart.data.datasets, function(ds) {
+				return ds.type == 'bar';
+			}).length;
+			var tickWidth = (function() {
+				var min = xScale.getPixelForValue(null, 1) - xScale.getPixelForValue(null, 0);
+				for (var i = 2; i < this.getDataset().data.length; i++) {
+					min = Math.min(xScale.getPixelForValue(null, i) - xScale.getPixelForValue(null, i - 1), min);
+				}
+				return min;
+			}).call(this);
+			var categoryWidth = tickWidth * xScale.options.categoryPercentage;
+			var categorySpacing = (tickWidth - (tickWidth * xScale.options.categoryPercentage)) / 2;
+			var fullBarWidth = categoryWidth / datasetCount;
+			var barWidth = fullBarWidth * xScale.options.barPercentage;
+			var barSpacing = fullBarWidth - (fullBarWidth * xScale.options.barPercentage);
+
+			return {
+				datasetCount: datasetCount,
+				tickWidth: tickWidth,
+				categoryWidth: categoryWidth,
+				categorySpacing: categorySpacing,
+				fullBarWidth: fullBarWidth,
+				barWidth: barWidth,
+				barSpacing: barSpacing,
+			};
+		},
+
+		calculateBarWidth: function() {
+
+			var xScale = this.getScaleForID(this.getDataset().xAxisID);
+			var ruler = this.getRuler();
+
+			if (xScale.options.stacked) {
+				return ruler.categoryWidth;
+			}
+
+			return ruler.barWidth;
+
+		},
+
+
+		calculateBarX: function(index, datasetIndex) {
+
+			var yScale = this.getScaleForID(this.getDataset().yAxisID);
+			var xScale = this.getScaleForID(this.getDataset().xAxisID);
+
+			var ruler = this.getRuler();
+			var leftTick = xScale.getPixelForValue(null, index, datasetIndex, this.chart.isCombo);
+			leftTick -= this.chart.isCombo ? (ruler.tickWidth / 2) : 0;
+
+			if (yScale.options.stacked) {
+				return leftTick + (ruler.categoryWidth / 2) + ruler.categorySpacing;
+			}
+
+			return leftTick +
+				(ruler.barWidth / 2) +
+				ruler.categorySpacing +
+				(ruler.barWidth * datasetIndex) +
+				(ruler.barSpacing / 2) +
+				(ruler.barSpacing * datasetIndex);
+		},
+
+		calculateBarY: function(index, datasetIndex) {
+
+			var xScale = this.getScaleForID(this.getDataset().xAxisID);
+			var yScale = this.getScaleForID(this.getDataset().yAxisID);
+
+			var value = this.getDataset().data[index];
+
+			if (yScale.options.stacked) {
+
+				var sumPos = 0,
+					sumNeg = 0;
+
+				for (var i = 0; i < datasetIndex; i++) {
+					if (this.chart.data.datasets[i].data[index] < 0) {
+						sumNeg += this.chart.data.datasets[i].data[index] || 0;
+					} else {
+						sumPos += this.chart.data.datasets[i].data[index] || 0;
+					}
+				}
+
+				if (value < 0) {
+					return yScale.getPixelForValue(sumNeg + value);
+				} else {
+					return yScale.getPixelForValue(sumPos + value);
+				}
+
+				return yScale.getPixelForValue(value);
+			}
+
+			return yScale.getPixelForValue(value);
 		},
 
 		draw: function(ease) {

@@ -37,6 +37,10 @@ var srcFiles = [
 	'./node_modules/moment/min/moment.min.js'
 ];
 
+var testFiles = [
+	'./test/mockContext.js',
+	'./test/*.js'
+];
 
 gulp.task('build', buildTask);
 gulp.task('coverage', coverageTask);
@@ -127,7 +131,7 @@ function validHTMLTask() {
 
 function unittestTask() {
 	var files = srcFiles.slice();
-	files.push(testDir + '*.js');
+	Array.prototype.push.apply(files, testFiles);
 
 	return gulp.src(files)
 		.pipe(karma({
@@ -138,7 +142,7 @@ function unittestTask() {
 
 function unittestWatchTask() {
 	var files = srcFiles.slice();
-	files.push(testDir + '*.js');
+	Array.prototype.push.apply(files, testFiles);
 
 	return gulp.src(files)
 		.pipe(karma({
@@ -149,7 +153,7 @@ function unittestWatchTask() {
 
 function coverageTask() {
 	var files = srcFiles.slice();
-	files.push(testDir + '*.js');
+	Array.prototype.push.apply(files, testFiles);
 
 	return gulp.src(files)
 		.pipe(karma({

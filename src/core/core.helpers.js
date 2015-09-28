@@ -104,6 +104,24 @@
 
 			return base;
 		},
+		extendDeep = helpers.extendDeep = function(_base) {
+			return _extendDeep.apply(this, arguments);
+
+			function _extendDeep(dst) {
+				helpers.each(arguments, function(obj) {
+					if (obj !== dst) {
+						helpers.each(obj, function(value, key) {
+							if (dst[key] && dst[key].constructor && dst[key].constructor === Object) {
+								_extendDeep(dst[key], value);
+							} else {
+								dst[key] = value;
+							}
+						});
+					}
+				});
+				return dst;
+			}
+		},
 		scaleMerge = helpers.scaleMerge = function(_base, extension) {
 			var base = clone(_base);
 
@@ -727,7 +745,7 @@
 		getMaximumWidth = helpers.getMaximumWidth = function(domNode) {
 			var container = domNode.parentNode;
 			var padding = parseInt(getStyle(container, 'padding-left')) + parseInt(getStyle(container, 'padding-right'));
-			
+
 			var w = container.clientWidth - padding;
 			var cw = getConstraintWidth(domNode);
 			if (cw !== undefined) {
@@ -739,7 +757,7 @@
 		getMaximumHeight = helpers.getMaximumHeight = function(domNode) {
 			var container = domNode.parentNode;
 			var padding = parseInt(getStyle(container, 'padding-top')) + parseInt(getStyle(container, 'padding-bottom'));
-			
+
 			var h = container.clientHeight - padding;
 			var ch = getConstraintHeight(domNode);
 			if (ch !== undefined) {

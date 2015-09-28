@@ -79,9 +79,7 @@
 			this.stop();
 			var canvas = this.chart.canvas;
 			var newWidth = helpers.getMaximumWidth(this.chart.canvas);
-			var newHeight = (this.options.maintainAspectRatio && isNaN(this.chart.aspectRatio) === false && isFinite(this.chart.aspectRatio) && this.chart.aspectRatio !== 0) 
-				? newWidth / this.chart.aspectRatio 
-				: helpers.getMaximumHeight(this.chart.canvas);
+			var newHeight = (this.options.maintainAspectRatio && isNaN(this.chart.aspectRatio) === false && isFinite(this.chart.aspectRatio) && this.chart.aspectRatio !== 0) ? newWidth / this.chart.aspectRatio : helpers.getMaximumHeight(this.chart.canvas);
 
 			canvas.width = this.chart.width = newWidth;
 			canvas.height = this.chart.height = newHeight;
@@ -159,14 +157,21 @@
 				});
 
 				this.scale = scale;
+
+				this.scales['radialScale'] = scale;
 			}
 
-			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
+			Chart.scaleService.update(this, this.chart.width, this.chart.height);
 		},
 
 		buildOrUpdateControllers: function buildOrUpdateControllers(resetNewControllers) {
+			var types = [];
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				var type = dataset.type || this.config.type;
+				if (!dataset.type) {
+					dataset.type = this.config.type;
+				}
+				var type = dataset.type;
+				types.push(type);
 				if (dataset.controller) {
 					dataset.controller.updateIndex(datasetIndex);
 					return;
@@ -177,6 +182,14 @@
 					dataset.controller.reset();
 				}
 			}, this);
+			if (types.length > 1) {
+				for (var i = 1; i < types.length; i++) {
+					if (types[i] != types[i - 1]) {
+						this.isCombo = true;
+						break;
+					}
+				}
+			}
 		},
 
 		resetElements: function resetElements() {
@@ -186,7 +199,7 @@
 		},
 
 		update: function update(animationDuration, lazy) {
-			Chart.scaleService.fitScalesForChart(this, this.chart.width, this.chart.height);
+			Chart.scaleService.update(this, this.chart.width, this.chart.height);
 
 			// Make sure dataset controllers are updated and new controllers are reset
 			this.buildOrUpdateControllers(true);
@@ -456,7 +469,7 @@
 					(this.lastActive.length && this.active.length && changed)) {
 
 					this.stop();
-					
+
 					// We only need to render at this point. Updating will cause scales to be recomputed generating flicker & using more 
 					// memory than necessary.
 					this.render(this.options.hover.animationDuration, true);

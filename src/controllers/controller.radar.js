@@ -120,11 +120,6 @@
 			var scale = this.chart.scale;
 			var scaleBase;
 
-			scale.setScaleSize();
-			scale.calculateRange();
-			scale.generateTicks();
-			scale.buildYLabels();
-
 			if (scale.min < 0 && scale.max < 0) {
 				scaleBase = scale.getPointPositionForValue(0, scale.max);
 			} else if (scale.min > 0 && scale.max > 0) {
