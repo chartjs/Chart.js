@@ -3,6 +3,7 @@
 
 <head>
     <title>Line Chart</title>
+    <script src="../node_modules/moment/min/moment.min.js"></script>
     <script src="../Chart.js"></script>
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
     <style>
@@ -70,7 +71,7 @@
                     xAxes: [{
                         type: "time",
                         display: true,
-                        tick: {
+                        time: {
                             format: 'MM/DD/YYYY HH:mm',
                             // round: 'day'
                         },
