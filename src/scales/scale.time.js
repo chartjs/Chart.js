@@ -1,6 +1,11 @@
 (function() {
 	"use strict";
 
+	if (!window.moment) {
+		console.warn('Chart.js - Moment.js could not be found! You must include it before Chart.js to use the time scale. Download at http://momentjs.com/');
+		return;
+	}
+
 	var root = this,
 		Chart = root.Chart,
 		helpers = Chart.helpers;
