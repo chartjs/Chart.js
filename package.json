@@ -35,5 +35,8 @@
   },
   "spm": {
     "main": "Chart.js"
+  },
+  "dependencies": {
+    "moment": "^2.10.6"
   }
 }

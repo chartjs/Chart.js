@@ -37,6 +37,7 @@ var srcFiles = [
 ];
 
 var testFiles = [
+	'./node_modules/moment/min/moment.min.js',
 	'./test/mockContext.js',
 	'./test/*.js'
 ];
