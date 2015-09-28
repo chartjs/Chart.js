@@ -620,7 +620,7 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "translate",
-			"args": [8, 8]
+			"args": [8, 10]
 		}, {
 			"name": "rotate",
 			"args": [-0]
@@ -659,7 +659,7 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "translate",
-			"args": [51, 8]
+			"args": [51, 10]
 		}, {
 			"name": "rotate",
 			"args": [-0]
@@ -698,7 +698,7 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "translate",
-			"args": [93, 8]
+			"args": [93, 10]
 		}, {
 			"name": "rotate",
 			"args": [-0]
