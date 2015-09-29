@@ -5130,9 +5130,12 @@
 				var labelCapacity = innerWidth / this.options.ticks.fontSize + 4;
 				var buffer = this.options.time.round ? 0 : 2;
 
-				this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, true) + buffer);
-				var done;
+				// Start as small as possible
+				this.tickUnit = 'millisecond';
+				this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, this.tickUnit, true) + buffer);
+				this.displayFormat = time.unit[this.tickUnit].display;
 
+				// Work our way up to comfort
 				helpers.each(time.units, function(format) {
 					if (this.tickRange <= labelCapacity) {
 						return;
