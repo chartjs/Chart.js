@@ -13,7 +13,7 @@ The next generation and release of Chart.js has been well under way this year an
 - Rewritten, optimized, and unit-tested
 - New and improved scales (log, time, linear, category, multiple scales)
 - Improved responsiveness and resizing
-- Powerful new API for adding, removing, changing, and updating data
+- Powerful support for adding, removing, changing, and updating data on the fly
 - Animations on all elements, colors and tooltips
 - Powerful customization when you need it. Automatic and dynamic when you don't.
 - Excellent support for modern frameworks and modular build systems.
