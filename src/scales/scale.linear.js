@@ -22,29 +22,54 @@
 			if (this.options.stacked) {
 				helpers.each(this.data.datasets, function(dataset) {
 					if (this.isHorizontal() ? dataset.xAxisID === this.id : dataset.yAxisID === this.id) {
-						helpers.each(dataset.data, function(rawValue, index) {
+						var type = dataset.type || dataset.controller.chart.config.type;
+						if (type == "bar") {
+							helpers.each(dataset.data, function(rawValue, index) {
 
-							var value = this.getRightValue(rawValue);
+								var value = this.getRightValue(rawValue);
 
-							positiveValues[index] = positiveValues[index] || 0;
-							negativeValues[index] = negativeValues[index] || 0;
+								positiveValues[index] = positiveValues[index] || 0;
+								negativeValues[index] = negativeValues[index] || 0;
 
-							if (this.options.relativePoints) {
-								positiveValues[index] = 100;
-							} else {
-								if (value < 0) {
-									negativeValues[index] += value;
+								if (this.options.relativePoints) {
+									positiveValues[index] = 100;
 								} else {
-									positiveValues[index] += value;
+									if (value < 0) {
+										negativeValues[index] += value;
+									} else {
+										positiveValues[index] += value;
+									}
 								}
-							}
-						}, this);
+							}, this);
+						} else {
+							helpers.each(dataset.data, function(rawValue, index) {
+								var value = this.getRightValue(rawValue);
+
+								if (this.min === null) {
+									this.min = value;
+								} else if (value < this.min) {
+									this.min = value;
+								}
+
+								if (this.max === null) {
+									this.max = value;
+								} else if (value > this.max) {
+									this.max = value;
+								}
+							}, this);
+						}
 					}
 				}, this);
 
 				var values = positiveValues.concat(negativeValues);
-				this.min = helpers.min(values);
-				this.max = helpers.max(values);
+				var minStackedValue = helpers.min(values);
+				if (minStackedValue < this.min) {
+					this.min = minStackedValue;
+				}
+				var maxStackedValue = helpers.max(values);
+				if (maxStackedValue > this.max) {
+					this.max = maxStackedValue;
+				}
 
 			} else {
 				helpers.each(this.data.datasets, function(dataset) {
