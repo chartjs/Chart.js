@@ -875,6 +875,8 @@
 				return Object.prototype.toString.call(arg) === '[object Array]';
 			}
 			return Array.isArray(obj);
+		},
+		isDatasetVisible = helpers.isDatasetVisible = function(dataset) {
+			return !dataset.hidden;
 		};
-
 }).call(this);
