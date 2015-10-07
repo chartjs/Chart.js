@@ -59,7 +59,7 @@
 			this.height = this.maxHeight;
 			this.xCenter = Math.round(this.width / 2);
 			this.yCenter = Math.round(this.height / 2);
-			
+
 			var minSize = helpers.min([this.height, this.width]);
 			this.drawingArea = (this.options.display) ? (minSize / 2) - (this.options.ticks.fontSize / 2 + this.options.ticks.backdropPaddingY) : (minSize / 2);
 		},
@@ -201,9 +201,7 @@
 			for (i = 0; i < this.getValueCount(); i++) {
 				// 5px to space the text slightly out - similar to what we do in the draw function.
 				pointPosition = this.getPointPosition(i, largestPossibleRadius);
-				textWidth = this.ctx.measureText(helpers.template(this.options.ticks.template, {
-					value: this.data.labels[i]
-				})).width + 5;
+				textWidth = this.ctx.measureText(this.options.ticks.callback(this.data.labels[i])).width + 5;
 				if (i === 0 || i === this.getValueCount() / 2) {
 					// If we're at index zero, or exactly the middle, we're at exactly the top/bottom
 					// of the radar chart, so text will be aligned centrally, so we'll half it and compare

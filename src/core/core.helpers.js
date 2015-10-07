@@ -135,7 +135,7 @@
 									base[key].push(helpers.configMerge(valueObj.type ? Chart.scaleService.getScaleDefaults(valueObj.type) : {}, valueObj));
 								} else if (valueObj.type !== base[key][index].type) {
 									// Type changed. Bring in the new defaults before we bring in valueObj so that valueObj can override the correct scale defaults
-									base[key][index] = helpers.configMerge(base[key][index], valueObj.type ? Chart.scaleService.getScaleDefaults(valueObj.type) : {}, valueObj)
+									base[key][index] = helpers.configMerge(base[key][index], valueObj.type ? Chart.scaleService.getScaleDefaults(valueObj.type) : {}, valueObj);
 								} else {
 									// Type is the same
 									base[key][index] = helpers.configMerge(base[key][index], valueObj);
@@ -272,7 +272,7 @@
 		},
 		log10 = helpers.log10 = function(x) {
 			if (Math.log10) {
-				return Math.log10(x)
+				return Math.log10(x);
 			} else {
 				return Math.log(x) / Math.LN10;
 			}
@@ -382,57 +382,6 @@
 
 			return niceFraction * Math.pow(10, exponent);
 		},
-		/* jshint ignore:start */
-		// Blows up jshint errors based on the new Function constructor
-		//Templating methods
-		//Javascript micro templating by John Resig - source at http://ejohn.org/blog/javascript-micro-templating/
-		templateStringCache = {},
-		template = helpers.template = function(templateString, valuesObject) {
-
-			// If templateString is function rather than string-template - call the function for valuesObject
-
-			if (templateString instanceof Function) {
-				return templateString(valuesObject);
-			}
-
-			function tmpl(str, data) {
-				// Figure out if we're getting a template, or if we need to
-				// load the template - and be sure to cache the result.
-				var fn;
-
-				if (templateStringCache.hasOwnProperty(str)) {
-					fn = templateStringCache[str];
-				} else {
-					// Generate a reusable function that will serve as a template
-					// generator (and which will be cached).
-					var functionCode = "var p=[],print=function(){p.push.apply(p,arguments);};" +
-
-						// Introduce the data as local variables using with(){}
-						"with(obj){p.push('" +
-
-						// Convert the template into pure JavaScript
-						str
-						.replace(/[\r\t\n]/g, " ")
-						.split("<%").join("\t")
-						.replace(/((^|%>)[^\t]*)'/g, "$1\r")
-						.replace(/\t=(.*?)%>/g, "',$1,'")
-						.split("\t").join("');")
-						.split("%>").join("p.push('")
-						.split("\r").join("\\'") +
-						"');}return p.join('');";
-					fn = new Function("obj", functionCode);
-
-					// Cache the result
-					templateStringCache[str] = fn;
-				}
-
-				// Provide some basic currying to the user
-				return data ? fn(data) : fn;
-			}
-			return tmpl(templateString, valuesObject);
-		},
-		/* jshint ignore:end */
-		//--Animation methods
 		//Easing functions adapted from Robert Penner's easing equations
 		//http://www.robertpenner.com/easing/
 		easingEffects = helpers.easingEffects = {
@@ -837,7 +786,7 @@
 				// can use classlist
 				hiddenIframe.classlist.add(hiddenIframeClass);
 			} else {
-				hiddenIframe.setAttribute('class', hiddenIframeClass)
+				hiddenIframe.setAttribute('class', hiddenIframeClass);
 			}
 
 			// Set the style
@@ -860,7 +809,7 @@
 				if (callback) {
 					callback();
 				}
-			}
+			};
 		},
 		removeResizeListener = helpers.removeResizeListener = function(node) {
 			var hiddenIframe = node.querySelector('.chartjs-hidden-iframe');

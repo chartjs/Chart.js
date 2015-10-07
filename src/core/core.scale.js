@@ -47,7 +47,9 @@
 			padding: 10,
 			reverse: false,
 			show: true,
-			template: "<%=value%>",
+			callback: function(value) {
+				return value;
+			},
 		},
 	};
 
@@ -126,14 +128,12 @@
 		convertTicksToLabels: function() {
 			// Convert ticks to strings
 			this.ticks = this.ticks.map(function(numericalTick, index, ticks) {
-				if (this.options.ticks.userCallback) {
-					return this.options.ticks.userCallback(numericalTick, index, ticks);
-				} else {
-					return helpers.template(this.options.ticks.template, {
-						value: numericalTick
-					});
-				}
-			}, this);
+					if (this.options.ticks.userCallback) {
+						return this.options.ticks.userCallback(numericalTick, index, ticks);
+					}
+					return this.options.ticks.callback(numericalTick);
+				},
+				this);
 		},
 		afterTickToLabelConversion: helpers.noop,
 
@@ -235,13 +235,13 @@
 			}
 
 			// Are we showing a title for the scale?
-            if (this.options.scaleLabel.show) {
-                if (this.isHorizontal()) {
-                    this.minSize.height += (this.options.scaleLabel.fontSize * 1.5);
-                } else {
-                    this.minSize.width += (this.options.scaleLabel.fontSize * 1.5);
-                }
-            }
+			if (this.options.scaleLabel.show) {
+				if (this.isHorizontal()) {
+					this.minSize.height += (this.options.scaleLabel.fontSize * 1.5);
+				} else {
+					this.minSize.width += (this.options.scaleLabel.fontSize * 1.5);
+				}
+			}
 
 			if (this.options.ticks.show && this.options.display) {
 				// Don't bother fitting the ticks if we are not showing them
@@ -304,9 +304,20 @@
 		},
 		afterFit: helpers.noop,
 
+
+
+
+
 		// Shared Methods
 		isHorizontal: function() {
 			return this.options.position == "top" || this.options.position == "bottom";
+		},
+
+		getLabelForIndex: function(index, datasetIndex) {
+			if (this.isHorizontal()) {
+				return this.data.datasets[datasetIndex].label || this.data.labels[index];
+			}
+			return this.data.datasets[datasetIndex].data[index];
 		},
 
 		// Used to get data value locations.  Value can either be an index or a numerical value
@@ -494,7 +505,7 @@
 								}
 							}
 
-							
+
 							this.ctx.translate(xLabelValue, yLabelValue);
 							this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
 							this.ctx.font = this.font;
