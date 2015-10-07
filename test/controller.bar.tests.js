@@ -78,6 +78,39 @@ describe('Bar controller tests', function() {
 		expect(controller.getBarCount()).toBe(2);
 	});
 
+	it('should correctly get the bar index accounting for hidden datasets', function() {
+		var chart = {
+			data: {
+				datasets: [{
+					
+				}, {
+					hidden: true
+				}, {
+					type: 'line'
+				}, {
+					
+				}]
+			},
+			config: {
+				type: 'bar'
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'firstXScaleID'
+					}],
+					yAxes: [{
+						id: 'firstYScaleID'
+					}]
+				}
+			}
+		};
+
+		var controller = new Chart.controllers.bar(chart, 1);
+		expect(controller.getBarIndex(0)).toBe(0);
+		expect(controller.getBarIndex(3)).toBe(1);
+	});
+
 	it('Should create rectangle elements for each data item during initialization', function() {
 		var chart = {
 			data: {
