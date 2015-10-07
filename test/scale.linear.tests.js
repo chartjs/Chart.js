@@ -84,6 +84,44 @@ describe('Linear Scale', function() {
 		expect(scale.max).toBe(150);
 	});
 
+	it('Should correctly determine the max & min data values ignoring hidden datasets', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [10, 5, 0, -5, 78, -100]
+			}, {
+				yAxisID: 'second scale',
+				data: [-1000, 1000],
+			}, {
+				yAxisID: scaleID,
+				data: [150],
+				hidden: true
+			}]
+		};
+
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var scale = new Constructor({
+			ctx: {},
+			options: Chart.scaleService.getScaleDefaults('linear'), // use default config for scale
+			data: mockData,
+			id: scaleID
+		});
+
+		expect(scale).not.toEqual(undefined); // must construct
+		expect(scale.min).toBe(undefined); // not yet set
+		expect(scale.max).toBe(undefined);
+
+		// Set arbitrary width and height for now
+		scale.width = 50;
+		scale.height = 400;
+
+		scale.buildTicks();
+		expect(scale.min).toBe(-100);
+		expect(scale.max).toBe(80);
+	});
+
 	it('Should correctly determine the max & min for scatter data', function() {
 		var scaleID = 'myScale';
 
@@ -155,6 +193,46 @@ describe('Linear Scale', function() {
 			}, {
 				yAxisID: scaleID,
 				data: [150, 0, 0, -100, -10, 9]
+			}]
+		};
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		config.stacked = true; // enable scale stacked mode
+
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var scale = new Constructor({
+			ctx: {},
+			options: config,
+			data: mockData,
+			id: scaleID
+		});
+
+		// Set arbitrary width and height for now
+		scale.width = 50;
+		scale.height = 400;
+
+		scale.buildTicks();
+		expect(scale.min).toBe(-150);
+		expect(scale.max).toBe(200);
+	});
+
+	it('Should correctly determine the min and max data values when stacked mode is turned on and there are hidden datasets', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [10, 5, 0, -5, 78, -100]
+			}, {
+				yAxisID: 'second scale',
+				data: [-1000, 1000],
+			}, {
+				yAxisID: scaleID,
+				data: [150, 0, 0, -100, -10, 9]
+			}, {
+				yAxisID: scaleID,
+				data: [10, 20, 30, 40, 50, 60],
+				hidden: true
 			}]
 		};
 

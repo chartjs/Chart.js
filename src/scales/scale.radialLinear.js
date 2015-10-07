@@ -68,21 +68,23 @@
 			this.max = null;
 
 			helpers.each(this.data.datasets, function(dataset) {
-				helpers.each(dataset.data, function(value, index) {
-					if (value === null) return;
+				if (helpers.isDatasetVisible(dataset)) {
+					helpers.each(dataset.data, function(value, index) {
+						if (value === null) return;
 
-					if (this.min === null) {
-						this.min = value;
-					} else if (value < this.min) {
-						this.min = value;
-					}
+						if (this.min === null) {
+							this.min = value;
+						} else if (value < this.min) {
+							this.min = value;
+						}
 
-					if (this.max === null) {
-						this.max = value;
-					} else if (value > this.max) {
-						this.max = value;
-					}
-				}, this);
+						if (this.max === null) {
+							this.max = value;
+						} else if (value > this.max) {
+							this.max = value;
+						}
+					}, this);
+				}
 			}, this);
 
 			if (this.min === this.max) {
