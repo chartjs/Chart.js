@@ -68,6 +68,8 @@ describe('Doughnut controller tests', function() {
 			},
 			data: {
 				datasets: [{
+					hidden: true
+				}, {
 					data: [10, 15, 0, 4]
 				}, {
 					data: [1]
@@ -94,10 +96,10 @@ describe('Doughnut controller tests', function() {
 			}
 		};
 
-		var controller = new Chart.controllers.doughnut(chart, 0);
+		var controller = new Chart.controllers.doughnut(chart, 1);
 		controller.reset(); // reset first
 
-		expect(chart.data.datasets[0].metaData[0]._model).toEqual({
+		expect(chart.data.datasets[1].metaData[0]._model).toEqual({
 			x: 50,
 			y: 100,
 			startAngle: Math.PI * -0.5,
@@ -106,7 +108,7 @@ describe('Doughnut controller tests', function() {
 			innerRadius: 36.75,
 		});
 
-		expect(chart.data.datasets[0].metaData[1]._model).toEqual({
+		expect(chart.data.datasets[1].metaData[1]._model).toEqual({
 			x: 50,
 			y: 100,
 			startAngle: Math.PI * -0.5,
@@ -115,7 +117,7 @@ describe('Doughnut controller tests', function() {
 			innerRadius: 36.75,
 		});
 
-		expect(chart.data.datasets[0].metaData[2]._model).toEqual({
+		expect(chart.data.datasets[1].metaData[2]._model).toEqual({
 			x: 50,
 			y: 100,
 			startAngle: Math.PI * -0.5,
@@ -124,7 +126,7 @@ describe('Doughnut controller tests', function() {
 			innerRadius: 36.75,
 		});
 
-		expect(chart.data.datasets[0].metaData[3]._model).toEqual({
+		expect(chart.data.datasets[1].metaData[3]._model).toEqual({
 			x: 50,
 			y: 100,
 			startAngle: Math.PI * -0.5,
@@ -135,7 +137,7 @@ describe('Doughnut controller tests', function() {
 
 		controller.update();
 
-		expect(chart.data.datasets[0].metaData[0]._model).toEqual({
+		expect(chart.data.datasets[1].metaData[0]._model).toEqual({
 			x: 50,
 			y: 100,
 			startAngle: Math.PI * -0.5,
@@ -152,7 +154,7 @@ describe('Doughnut controller tests', function() {
 			label: 'label0',
 		});
 
-		expect(chart.data.datasets[0].metaData[1]._model).toEqual({
+		expect(chart.data.datasets[1].metaData[1]._model).toEqual({
 			x: 50,
 			y: 100,
 			startAngle: 0.5958182130626666,
@@ -169,7 +171,7 @@ describe('Doughnut controller tests', function() {
 			label: 'label1'
 		});
 
-		expect(chart.data.datasets[0].metaData[2]._model).toEqual({
+		expect(chart.data.datasets[1].metaData[2]._model).toEqual({
 			x: 50,
 			y: 100,
 			startAngle: 3.8457400228490113,
@@ -186,7 +188,7 @@ describe('Doughnut controller tests', function() {
 			label: 'label2'
 		});
 
-		expect(chart.data.datasets[0].metaData[3]._model).toEqual({
+		expect(chart.data.datasets[1].metaData[3]._model).toEqual({
 			x: 50,
 			y: 100,
 			startAngle: 3.8457400228490113,
@@ -204,24 +206,24 @@ describe('Doughnut controller tests', function() {
 		});
 
 		// Change the amount of data and ensure that arcs are updated accordingly
-		chart.data.datasets[0].data = [1, 2]; // remove 2 elements from dataset 0
+		chart.data.datasets[1].data = [1, 2]; // remove 2 elements from dataset 0
 		controller.buildOrUpdateElements();
 		controller.update();
 
-		expect(chart.data.datasets[0].metaData.length).toBe(2);
-		expect(chart.data.datasets[0].metaData[0] instanceof Chart.elements.Arc).toBe(true);
-		expect(chart.data.datasets[0].metaData[1] instanceof Chart.elements.Arc).toBe(true);
+		expect(chart.data.datasets[1].metaData.length).toBe(2);
+		expect(chart.data.datasets[1].metaData[0] instanceof Chart.elements.Arc).toBe(true);
+		expect(chart.data.datasets[1].metaData[1] instanceof Chart.elements.Arc).toBe(true);
 
 		// Add data
-		chart.data.datasets[0].data = [1, 2, 3, 4];
+		chart.data.datasets[1].data = [1, 2, 3, 4];
 		controller.buildOrUpdateElements();
 		controller.update();
 
-		expect(chart.data.datasets[0].metaData.length).toBe(4);
-		expect(chart.data.datasets[0].metaData[0] instanceof Chart.elements.Arc).toBe(true);
-		expect(chart.data.datasets[0].metaData[1] instanceof Chart.elements.Arc).toBe(true);
-		expect(chart.data.datasets[0].metaData[2] instanceof Chart.elements.Arc).toBe(true);
-		expect(chart.data.datasets[0].metaData[3] instanceof Chart.elements.Arc).toBe(true);
+		expect(chart.data.datasets[1].metaData.length).toBe(4);
+		expect(chart.data.datasets[1].metaData[0] instanceof Chart.elements.Arc).toBe(true);
+		expect(chart.data.datasets[1].metaData[1] instanceof Chart.elements.Arc).toBe(true);
+		expect(chart.data.datasets[1].metaData[2] instanceof Chart.elements.Arc).toBe(true);
+		expect(chart.data.datasets[1].metaData[3] instanceof Chart.elements.Arc).toBe(true);
 	});
 
 	it ('should draw all arcs', function() {

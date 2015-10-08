@@ -54,8 +54,8 @@
                     xAxes: [{
                         display: true,
                         ticks: {
-                            callback: function(dataLabel, index) {
-                                return dataLabel;
+                            userCallback: function(dataLabel, index) {
+                                return index % 2 === 0 ? dataLabel : '';
                             }
                         }
                     }],
