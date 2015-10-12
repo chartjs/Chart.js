@@ -57,11 +57,11 @@
 		// High pixel density displays - multiply the size of the canvas height/width by the device pixel ratio, then scale.
 		Chart.helpers.retinaScale(this);
 
-		// Always bind this so that if the responsive state changes we still work
 		if (config) {
 			this.controller = new Chart.Controller(this);
 		}
 
+		// Always bind this so that if the responsive state changes we still work
 		var _this = this;
 		Chart.helpers.addResizeListener(context.canvas.parentNode, function() {
 			if (_this.controller && _this.controller.config.options.responsive) {
