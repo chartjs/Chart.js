@@ -348,7 +348,7 @@
 
 				return this.left + Math.round(valueOffset);
 			} else {
-				return this.top + (decimal * (this.height / this.ticks.length));
+				return this.top + (decimal * this.height);
 			}
 		},
 

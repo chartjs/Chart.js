@@ -14,16 +14,21 @@
 		titleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 		titleFontSize: 12,
 		titleFontStyle: "bold",
+		titleSpacing: 2,
+		titleMarginBottom: 6,
 		titleColor: "#fff",
 		titleAlign: "left",
 		bodyFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 		bodyFontSize: 12,
 		bodyFontStyle: "normal",
+		bodySpacing: 2,
 		bodyColor: "#fff",
 		bodyAlign: "left",
 		footerFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 		footerFontSize: 12,
 		footerFontStyle: "bold",
+		footerSpacing: 2,
+		footerMarginTop: 6,
 		footerColor: "#fff",
 		footerAlign: "left",
 		yPadding: 6,
@@ -35,7 +40,7 @@
 		callbacks: {
 			beforeTitle: helpers.noop,
 			title: function(xLabel, yLabel, index, datasetIndex, data) {
-				return data.datasets[datasetIndex].label;
+				return this._options.tooltips.mode == 'single' ? data.datasets[datasetIndex].label : data.labels[index];
 			},
 			afterTitle: helpers.noop,
 
@@ -70,6 +75,7 @@
 					_bodyFontFamily: options.tooltips.bodyFontFamily,
 					_bodyFontStyle: options.tooltips.bodyFontStyle,
 					bodyFontSize: options.tooltips.bodyFontSize,
+					bodySpacing: options.tooltips.bodySpacing,
 					_bodposition: options.tooltips.bodposition,
 
 					// Title
@@ -78,6 +84,8 @@
 					_titleFontStyle: options.tooltips.titleFontStyle,
 					titleFontSize: options.tooltips.titleFontSize,
 					_titleAlign: options.tooltips.titleAlign,
+					titleSpacing: options.tooltips.titleSpacing,
+					titleMarginBottom: options.tooltips.titleMarginBottom,
 
 					// Footer
 					footerColor: options.tooltips.footerColor,
@@ -85,6 +93,8 @@
 					_footerFontStyle: options.tooltips.footerFontStyle,
 					footerFontSize: options.tooltips.footerFontSize,
 					_footerAlign: options.tooltips.footerAlign,
+					footerSpacing: options.tooltips.footerSpacing,
+					footerMarginTop: options.tooltips.footerMarginTop,
 
 					// Appearance
 					caretSize: options.tooltips.caretSize,
@@ -119,11 +129,6 @@
 
 			var lines = [];
 
-			var beforeBody = this._options.tooltips.callbacks.beforeBody.apply(this, arguments);
-			if (beforeBody) {
-				lines.push(beforeBody);
-			}
-
 			var beforeLabel,
 				afterLabel,
 				label;
@@ -135,10 +140,10 @@
 				// Run EACH label pair through the label callback this time.
 				for (var i = 0; i < xLabel.length; i++) {
 
-					beforeLabel = this._options.tooltips.callbacks.beforeLabel(xLabel[i], yLabel[i], index, datasetIndex);
-					afterLabel = this._options.tooltips.callbacks.afterLabel(xLabel[i], yLabel[i], index, datasetIndex);
+					beforeLabel = this._options.tooltips.callbacks.beforeLabel.call(this, xLabel[i], yLabel[i], index, datasetIndex);
+					afterLabel = this._options.tooltips.callbacks.afterLabel.call(this, xLabel[i], yLabel[i], index, datasetIndex);
 
-					labels.push((beforeLabel ? beforeLabel : '') + this._options.tooltips.callbacks.label(xLabel[i], yLabel[i], index, datasetIndex) + (afterLabel ? afterLabel : ''));
+					labels.push((beforeLabel ? beforeLabel : '') + this._options.tooltips.callbacks.label.call(this, xLabel[i], yLabel[i], index, datasetIndex) + (afterLabel ? afterLabel : ''));
 
 				}
 
@@ -157,11 +162,6 @@
 				if (beforeLabel || label || afterLabel) {
 					lines.push((beforeLabel ? afterLabel : '') + label + (afterLabel ? afterLabel : ''));
 				}
-			}
-
-			var afterBody = this._options.tooltips.callbacks.afterBody.apply(this, arguments);
-			if (afterBody) {
-				lines.push(afterBody);
 			}
 
 			return lines;
@@ -194,6 +194,7 @@
 			var element = this._active[0],
 				xLabel,
 				yLabel,
+				labelColors = [],
 				tooltipPosition;
 
 			if (this._options.tooltips.mode == 'single') {
@@ -206,138 +207,42 @@
 
 				xLabel = [];
 				yLabel = [];
+
+				console.log(this._active);
+
 				helpers.each(this._data.datasets, function(dataset, datasetIndex) {
+
 					xLabel.push(element._xScale.getLabelForIndex(element._index, datasetIndex));
 					yLabel.push(element._yScale.getLabelForIndex(element._index, datasetIndex));
 				});
+
+				helpers.each(this._active, function(active, i) {
+					labelColors.push({
+						borderColor: active._view.borderColor,
+						backgroundColor: active._view.backgroundColor
+					});
+				}, this);
+
 				tooltipPosition = this._active[0].tooltipPosition();
+				tooltipPosition.y = this._active[0]._yScale.getPixelForDecimal(0.5);
 
-				// for (var i = 0; i < this._data.datasets.length; i++) {
-				// 	this._data.datasets[i].data[index];
-				// };
-
-				// // Tooltip Content
-
-				// var dataArray,
-				// 	dataIndex;
-
-				// var labels = [],
-				// 	colors = [];
-
-				// for (var i = this._data.datasets.length - 1; i >= 0; i--) {
-				// 	dataArray = this._data.datasets[i].metaData;
-				// 	dataIndex = helpers.indexOf(dataArray, this._active[0]);
-				// 	if (dataIndex !== -1) {
-				// 		break;
-				// 	}
-				// }
-
-				// var medianPosition = (function(index) {
-				// 	// Get all the points at that particular index
-				// 	var elements = [],
-				// 		dataCollection,
-				// 		xPositions = [],
-				// 		yPositions = [],
-				// 		xMax,
-				// 		yMax,
-				// 		xMin,
-				// 		yMin;
-				// 	helpers.each(this._data.datasets, function(dataset) {
-				// 		dataCollection = dataset.metaData;
-				// 		if (dataCollection[dataIndex] && dataCollection[dataIndex].hasValue()) {
-				// 			elements.push(dataCollection[dataIndex]);
-				// 		}
-				// 	}, this);
-
-				// 	// Reverse labels if stacked
-				// 	helpers.each(this._options.stacked ? elements.reverse() : elements, function(element) {
-				// 		xPositions.push(element._view.x);
-				// 		yPositions.push(element._view.y);
-
-				// 		//Include any colour information about the element
-				// 		labels.push(
-				// 			this._options.tooltips.multiTemplate(
-				// 				element,
-				// 				this._data.datasets[element._datasetIndex].label,
-				// 				this._data.datasets[element._datasetIndex].data[element._index]
-				// 			)
-				// 		);
-
-				// 		colors.push({
-				// 			fill: element._view.backgroundColor,
-				// 			stroke: element._view.borderColor
-				// 		});
-
-				// 	}, this);
-
-				// 	yMin = helpers.min(yPositions);
-				// 	yMax = helpers.max(yPositions);
-
-				// 	xMin = helpers.min(xPositions);
-				// 	xMax = helpers.max(xPositions);
-
-				// 	return {
-				// 		x: (xMin > this._chart.width / 2) ? xMin : xMax,
-				// 		y: (yMin + yMax) / 2,
-				// 	};
-				// }).call(this, dataIndex);
-
-				// // Apply for now
-				// helpers.extend(this._model, {
-				// 	x: medianPosition.x,
-				// 	y: medianPosition.y,
-				// 	labels: labels,
-				// 	title: (function() {
-				// 		return this._data.timeLabels ? this._data.timeLabels[this._active[0]._index] :
-				// 			(this._data.labels && this._data.labels.length) ? this._data.labels[this._active[0]._index] :
-				// 			'';
-				// 	}).call(this),
-				// 	legendColors: colors,
-				// 	legendBackgroundColor: this._options.tooltips.multiKeyBackground,
-				// });
-
-
-				// // Calculate Appearance Tweaks
-
-				// this._model.height = (labels.length * this._model.bodyFontSize) + ((labels.length - 1) * (this._model.bodyFontSize / 2)) + (this._model.yPadding * 2) + this._model.titleFontSize * 1.5;
-
-				// var titleWidth = ctx.measureText(this._model.title).width,
-				// 	//Label has a legend square as well so account for this.
-				// 	labelWidth = helpers.longestText(ctx, this.font, labels) + this._model.bodyFontSize + 3,
-				// 	longestTextWidth = helpers.max([labelWidth, titleWidth]);
-
-				// this._model.width = longestTextWidth + (this._model.xPadding * 2);
-
-
-				// var halfHeight = this._model.height / 2;
-
-				// //Check to ensure the height will fit on the canvas
-				// if (this._model.y - halfHeight < 0) {
-				// 	this._model.y = halfHeight;
-				// } else if (this._model.y + halfHeight > this._chart.height) {
-				// 	this._model.y = this._chart.height - halfHeight;
-				// }
-
-				// //Decide whether to align left or right based on position on canvas
-				// if (this._model.x > this._chart.width / 2) {
-				// 	this._model.x -= this._model.xOffset + this._model.width;
-				// } else {
-				// 	this._model.x += this._model.xOffset;
-				// }
-				// break;
 			}
+
 
 			// Build the Text Lines
 			helpers.extend(this._model, {
 				title: this.getTitle(xLabel, yLabel, element._index, element._datasetIndex, this._data),
+				beforeBody: this._options.tooltips.callbacks.beforeBody.call(this, xLabel, yLabel, element._index, element._datasetIndex, this._data),
 				body: this.getBody(xLabel, yLabel, element._index, element._datasetIndex, this._data),
+				afterBody: this._options.tooltips.callbacks.afterBody.call(this, xLabel, yLabel, element._index, element._datasetIndex, this._data),
 				footer: this.getFooter(xLabel, yLabel, element._index, element._datasetIndex, this._data),
 			});
 
 			helpers.extend(this._model, {
 				x: Math.round(tooltipPosition.x),
 				y: Math.round(tooltipPosition.y),
-				caretPadding: tooltipPosition.padding
+				caretPadding: tooltipPosition.padding,
+				labelColors: labelColors,
 			});
 
 			return this;
@@ -352,15 +257,21 @@
 			vm.position = "top";
 
 			var caretPadding = vm.caretPadding || 2;
+			var combinedBodyLength = vm.body.length + (vm.beforeBody ? 1 : 0) + (vm.afterBody ? 1 : 0);
 
 			// Height
-			var tooltipHeight = vm.yPadding * 2;
+			var tooltipHeight = vm.yPadding * 2; // Tooltip Padding
 
-			tooltipHeight += vm.title.length * vm.titleFontSize; // Line Height
-			tooltipHeight += vm.title.length ? vm.yPadding : 0;
-			tooltipHeight += vm.body.length * (vm.bodyFontSize); // Line Height
-			tooltipHeight += vm.footer.length ? vm.yPadding : 0;
-			tooltipHeight += vm.footer.length * (vm.footerFontSize); // Line Height
+			tooltipHeight += vm.title.length * vm.titleFontSize; // Title Lines
+			tooltipHeight += (vm.title.length - 1) * vm.titleSpacing; // Title Line Spacing
+			tooltipHeight += vm.title.length ? vm.titleMarginBottom : 0; // Title's bottom Margin
+
+			tooltipHeight += combinedBodyLength * vm.bodyFontSize; // Body Lines
+			tooltipHeight += (combinedBodyLength - 1) * vm.bodySpacing; // Body Line Spacing
+
+			tooltipHeight += vm.footer.length ? vm.footerMarginTop : 0; // Footer Margin
+			tooltipHeight += vm.footer.length * (vm.footerFontSize); // Footer Lines
+			tooltipHeight += (vm.footer.length - 1) * vm.footerSpacing; // Footer Line Spacing
 
 			// Width
 			var tooltipWidth = 0;
@@ -370,8 +281,8 @@
 			});
 			helpers.each(vm.body, function(line, i) {
 				ctx.font = helpers.fontString(vm.bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
-				tooltipWidth = Math.max(tooltipWidth, ctx.measureText(line).width);
-			});
+				tooltipWidth = Math.max(tooltipWidth, ctx.measureText(line).width + (this._options.tooltips.mode != 'single' ? (vm.bodyFontSize + 2) : 0));
+			}, this);
 			helpers.each(vm.footer, function(line, i) {
 				ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
 				tooltipWidth = Math.max(tooltipWidth, ctx.measureText(line).width);
@@ -380,8 +291,8 @@
 			var tooltipTotalWidth = tooltipWidth + vm.caretSize + caretPadding;
 
 
-			// Smart Tooltip placement to stay on the canvas
 
+			// Smart Tooltip placement to stay on the canvas
 			// Top, center, or bottom
 			vm.yAlign = "center";
 			if (vm.y - (tooltipHeight / 2) < 0) {
@@ -453,22 +364,25 @@
 
 			if (this._options.tooltips.enabled) {
 
-				var bodyStart,
-					footerStart;
+				var yBase = tooltipY + vm.yPadding;
+				var xBase = tooltipX + vm.xPadding;
 
 				// Titles
-				ctx.textAlign = vm._titleAlign;
-				ctx.textBaseline = "top";
-				ctx.fillStyle = helpers.color(vm.titleColor).alpha(vm.opacity).rgbString();
-				ctx.font = helpers.fontString(vm.titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
 
-				helpers.each(vm.title, function(title, i) {
-					var yPos = tooltipY + vm.yPadding + (vm.titleFontSize * i);
-					ctx.fillText(title, tooltipX + vm.xPadding, yPos);
-					if (i + 1 == vm.title.length) {
-						bodyStart = yPos + vm.yPadding + vm.titleFontSize;
-					}
-				}, this);
+				if (vm.title.length) {
+					ctx.textAlign = vm._titleAlign;
+					ctx.textBaseline = "top";
+					ctx.fillStyle = helpers.color(vm.titleColor).alpha(vm.opacity).rgbString();
+					ctx.font = helpers.fontString(vm.titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
+
+					helpers.each(vm.title, function(title, i) {
+						ctx.fillText(title, xBase, yBase);
+						yBase += vm.titleFontSize + vm.titleSpacing; // Line Height and spacing
+						if (i + 1 == vm.title.length) {
+							yBase += vm.titleMarginBottom - vm.titleSpacing; // If Last, add margin, remove spacing
+						}
+					}, this);
+				}
 
 
 				// Body
@@ -477,85 +391,57 @@
 				ctx.fillStyle = helpers.color(vm.bodyColor).alpha(vm.opacity).rgbString();
 				ctx.font = helpers.fontString(vm.bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
 
-				console.log(bodyStart);
+				// Before Body
+				if (vm.beforeBody) {
+					ctx.fillText(vm.beforeBody, xBase, yBase);
+					yBase += vm.bodyFontSize + vm.bodySpacing;
+				}
 
 				helpers.each(vm.body, function(body, i) {
-					var yPos = bodyStart + (vm.bodyFontSize * i);
-					ctx.fillText(body, tooltipX + vm.xPadding, yPos);
-					if (i + 1 == vm.body.length) {
-						footerStart = yPos + vm.bodyFontSize;
+
+					// Draw Legend-like boxes if needed
+					if (this._options.tooltips.mode != 'single') {
+						ctx.fillStyle = helpers.color(vm.labelColors[i].borderColor).alpha(vm.opacity).rgbString();
+						ctx.fillRect(xBase, yBase, vm.bodyFontSize, vm.bodyFontSize);
+
+						ctx.fillStyle = helpers.color(vm.labelColors[i].backgroundColor).alpha(vm.opacity).rgbString();
+						ctx.fillRect(xBase + 1, yBase + 1, vm.bodyFontSize - 2, vm.bodyFontSize - 2);
+
+						ctx.fillStyle = helpers.color(vm.bodyColor).alpha(vm.opacity).rgbString(); // Return fill style for text
 					}
+
+					// Body Line
+					ctx.fillText(body, xBase + (this._options.tooltips.mode != 'single' ? (vm.bodyFontSize + 2) : 0), yBase);
+
+					yBase += vm.bodyFontSize + vm.bodySpacing;
+
 				}, this);
+
+				// After Body
+				if (vm.afterBody) {
+					ctx.fillText(vm.afterBody, xBase, yBase);
+					yBase += vm.bodyFontSize;
+				} else {
+					yBase -= vm.bodySpacing; // Remove last body spacing
+				}
+
 
 				// Footer
-				ctx.textAlign = vm._footerAlign;
-				ctx.textBaseline = "top";
-				ctx.fillStyle = helpers.color(vm.footerColor).alpha(vm.opacity).rgbString();
-				ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
+				if (vm.footer.length) {
 
-				helpers.each(vm.footer, function(footer, i) {
-					var yPos = footerStart + vm.yPadding + (vm.footerFontSize * i);
-					ctx.fillText(footer, tooltipX + vm.xPadding, yPos);
-				}, this);
+					yBase += vm.footerMarginTop;
 
-			}
+					ctx.textAlign = vm._footerAlign;
+					ctx.textBaseline = "top";
+					ctx.fillStyle = helpers.color(vm.footerColor).alpha(vm.opacity).rgbString();
+					ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
 
-			return;
-
-			// Draw Body
-			ctx.font = helpers.fontString(vm.bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
-
-			// Draw Footer
-
-			// Custom Tooltips
-
-			if (this._options.tooltips.custom) {
-				this._options.tooltips.custom(this);
-			}
-
-			switch (this._options.tooltips.mode) {
-				case 'single':
-
-
-
-					ctx.fillStyle = helpers.color(vm.textColor).alpha(vm.opacity).rgbString();
-					ctx.textAlign = "center";
-					ctx.textBaseline = "middle";
-					ctx.fillText(vm.text, tooltipX + tooltipWidth / 2, tooltipY + tooltipHeight / 2);
-					break;
-				case 'label':
-
-
-					//helpers.drawRoundedRectangle(ctx, vm.x, vm.y - vm.height / 2, vm.width, vm.height, vm.cornerRadius);
-					// ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
-					// ctx.fill();
-					// ctx.closePath();
-
-					// Title
-					ctx.textAlign = "left";
-					ctx.textBaseline = "middle";
-					ctx.fillStyle = helpers.color(vm.titleColor).alpha(vm.opacity).rgbString();
-					ctx.font = helpers.fontString(vm.bodyFontSize, vm._titleFontStyle, vm._titleFontFamily);
-					ctx.fillText(vm.title, vm.x + vm.xPadding, this.getLineHeight(0));
-
-					ctx.font = helpers.fontString(vm.bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
-					helpers.each(vm.labels, function(label, index) {
-						ctx.fillStyle = helpers.color(vm.textColor).alpha(vm.opacity).rgbString();
-						ctx.fillText(label, vm.x + vm.xPadding + vm.bodyFontSize + 3, this.getLineHeight(index + 1));
-
-						//A bit gnarly, but clearing this rectangle breaks when using explorercanvas (clears whole canvas)
-						//ctx.clearRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.bodyFontSize/2, vm.bodyFontSize, vm.bodyFontSize);
-						//Instead we'll make a white filled block to put the legendColour palette over.
-
-						ctx.fillStyle = helpers.color(vm.legendColors[index].stroke).alpha(vm.opacity).rgbString();
-						ctx.fillRect(vm.x + vm.xPadding - 1, this.getLineHeight(index + 1) - vm.bodyFontSize / 2 - 1, vm.bodyFontSize + 2, vm.bodyFontSize + 2);
-
-						ctx.fillStyle = helpers.color(vm.legendColors[index].fill).alpha(vm.opacity).rgbString();
-						ctx.fillRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.bodyFontSize / 2, vm.bodyFontSize, vm.bodyFontSize);
-
-
+					helpers.each(vm.footer, function(footer, i) {
+						ctx.fillText(footer, xBase, yBase);
+						yBase += vm.footerFontSize + vm.footerSpacing;
 					}, this);
-					break;
+				}
+
 			}
 		},
 	});
