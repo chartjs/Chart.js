@@ -19,13 +19,14 @@
 		defaults: {},
 		registerScaleType: function(type, scaleConstructor, defaults) {
 			this.constructors[type] = scaleConstructor;
-			this.defaults[type] = helpers.scaleMerge(Chart.defaults.scale, defaults);
+			this.defaults[type] = helpers.clone(defaults);
 		},
 		getScaleConstructor: function(type) {
 			return this.constructors.hasOwnProperty(type) ? this.constructors[type] : undefined;
 		},
 		getScaleDefaults: function(type) {
-			return this.defaults.hasOwnProperty(type) ? this.defaults[type] : {};
+			// Return the scale defaults merged with the global settings so that we always use the latest ones
+			return this.defaults.hasOwnProperty(type) ? helpers.scaleMerge(Chart.defaults.scale, this.defaults[type]) : {};
 		},
 		// The interesting function
 		update: function(chartInstance, width, height) {
