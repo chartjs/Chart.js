@@ -117,7 +117,7 @@ function releaseTask() {
 
 
 function jshintTask() {
-	return gulp.src(srcDir + '*.js')
+	return gulp.src(srcDir + '**/*.js')
 		.pipe(jshint())
 		.pipe(jshint.reporter('default'));
 }
