@@ -103,9 +103,16 @@
 		setDimensions: function() {
 			// Set the unconstrained dimension before label rotation
 			if (this.isHorizontal()) {
+				// Reset position before calculating rotation
 				this.width = this.maxWidth;
+				this.left = 0;
+				this.right = this.width;
 			} else {
 				this.height = this.maxHeight;
+
+				// Reset position before calculating rotation
+				this.top = 0;
+				this.bottom = this.height
 			}
 
 			// Reset padding

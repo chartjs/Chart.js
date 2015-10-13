@@ -578,46 +578,47 @@ describe('Linear Scale', function() {
 		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
 		config.position = "bottom";
 		var Constructor = Chart.scaleService.getScaleConstructor('linear');
-		var verticalScale = new Constructor({
+		var horizontalScale = new Constructor({
 			ctx: mockContext,
 			options: config,
 			data: mockData,
 			id: scaleID
 		});
 
-		var minSize = verticalScale.update(100, 300);
+		var minSize = horizontalScale.update(200, 300);
 		expect(minSize).toEqual({
-			width: 100,
+			width: 200,
 			height: 28,
 		});
-		expect(verticalScale.width).toBe(100);
-		expect(verticalScale.height).toBe(28);
-		expect(verticalScale.paddingTop).toBe(0);
-		expect(verticalScale.paddingBottom).toBe(0);
-		expect(verticalScale.paddingLeft).toBe(18);
-		expect(verticalScale.paddingRight).toBe(13);
+		expect(horizontalScale.width).toBe(200);
+		expect(horizontalScale.height).toBe(28);
+		expect(horizontalScale.paddingTop).toBe(0);
+		expect(horizontalScale.paddingBottom).toBe(0);
+		expect(horizontalScale.paddingLeft).toBe(13);
+		expect(horizontalScale.paddingRight).toBe(8);
+		expect(horizontalScale.labelRotation).toBe(0);
 
 		// Refit with margins to see the padding go away
-		minSize = verticalScale.update(100, 28, {
+		minSize = horizontalScale.update(200, 28, {
 			left: 10,
 			right: 6,
 			top: 15,
 			bottom: 3
 		});
 		expect(minSize).toEqual({
-			width: 100,
+			width: 200,
 			height: 28,
 		});
-		expect(verticalScale.paddingTop).toBe(0);
-		expect(verticalScale.paddingBottom).toBe(0);
-		expect(verticalScale.paddingLeft).toBe(8);
-		expect(verticalScale.paddingRight).toBe(7);
+		expect(horizontalScale.paddingTop).toBe(0);
+		expect(horizontalScale.paddingBottom).toBe(0);
+		expect(horizontalScale.paddingLeft).toBe(3);
+		expect(horizontalScale.paddingRight).toBe(2);
 
 		// Extra size when scale label showing
 		config.scaleLabel.show = true;
-		minSize = verticalScale.update(100, 300);
+		minSize = horizontalScale.update(200, 300);
 		expect(minSize).toEqual({
-			width: 100,
+			width: 200,
 			height: 46,
 		});
 	});
@@ -644,8 +645,8 @@ describe('Linear Scale', function() {
 			id: scaleID
 		});
 
-		var minSize = horizontalScale.update(100, 300);
-		minSize = horizontalScale.update(100, 28, {
+		var minSize = horizontalScale.update(200, 300);
+		minSize = horizontalScale.update(200, 28, {
 			left: 10,
 			right: 6,
 			top: 15,
@@ -654,12 +655,12 @@ describe('Linear Scale', function() {
 
 		horizontalScale.left = 0;
 		horizontalScale.right = minSize.width;
-		horizontalScale.top = 0;
-		horizontalScale.bottom = minSize.height;
+		horizontalScale.top = 100;
+		horizontalScale.bottom = 100 + minSize.height;
 
 		var chartArea = {
-			top: 100,
-			bottom: 0,
+			top: 0,
+			bottom: 100,
 			left: 0,
 			right: minSize.width
 		};
@@ -680,16 +681,16 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "moveTo",
-			"args": [8.5, 0]
+			"args": [3.5, 100]
 		}, {
 			"name": "lineTo",
-			"args": [8.5, 10]
+			"args": [3.5, 110]
 		}, {
 			"name": "moveTo",
-			"args": [8.5, 100]
+			"args": [3.5, 0]
 		}, {
 			"name": "lineTo",
-			"args": [8.5, 0]
+			"args": [3.5, 100]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -698,13 +699,13 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "translate",
-			"args": [8, 10]
+			"args": [3, 110]
 		}, {
 			"name": "rotate",
 			"args": [-0]
 		}, {
 			"name": "fillText",
-			"args": ["-10", 0, 0]
+			"args": ["-5", 0, 0]
 		}, {
 			"name": "restore",
 			"args": []
@@ -719,16 +720,16 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "moveTo",
-			"args": [51.5, 0]
+			"args": [101.5, 100]
 		}, {
 			"name": "lineTo",
-			"args": [51.5, 10]
+			"args": [101.5, 110]
 		}, {
 			"name": "moveTo",
-			"args": [51.5, 100]
+			"args": [101.5, 0]
 		}, {
 			"name": "lineTo",
-			"args": [51.5, 0]
+			"args": [101.5, 100]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -737,7 +738,7 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "translate",
-			"args": [51, 10]
+			"args": [101, 110]
 		}, {
 			"name": "rotate",
 			"args": [-0]
@@ -758,16 +759,16 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "moveTo",
-			"args": [93.5, 0]
+			"args": [198.5, 100]
 		}, {
 			"name": "lineTo",
-			"args": [93.5, 10]
+			"args": [198.5, 110]
 		}, {
 			"name": "moveTo",
-			"args": [93.5, 100]
+			"args": [198.5, 0]
 		}, {
 			"name": "lineTo",
-			"args": [93.5, 0]
+			"args": [198.5, 100]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -776,13 +777,13 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "translate",
-			"args": [93, 10]
+			"args": [198, 110]
 		}, {
 			"name": "rotate",
 			"args": [-0]
 		}, {
 			"name": "fillText",
-			"args": ["10", 0, 0]
+			"args": ["5", 0, 0]
 		}, {
 			"name": "restore",
 			"args": []
@@ -840,7 +841,7 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "fillText",
-			"args": ["myLabel", 50, 22]
+			"args": ["myLabel", 100, 122]
 		}]);
 
 		// Turn off display
