@@ -867,7 +867,7 @@
 
 			// Remove the resize detect iframe
 			if (hiddenIframe) {
-				hiddenIframe.remove();
+				hiddenIframe.parentNode.removeChild(hiddenIframe);
 			}
 		},
 		isArray = helpers.isArray = function(obj) {
