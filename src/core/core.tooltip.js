@@ -114,15 +114,32 @@
 			var lines = [];
 
 			if (beforeTitle) {
-				lines.push(beforeTitle);
+				if (helpers.isArray(beforeTitle)) {
+					lines = lines.concat(beforeTitle);
+				} else {
+					lines.push(beforeTitle);
+				}
 			}
 			if (title) {
-				lines.push(title);
+				if (helpers.isArray(title)) {
+					lines = lines.concat(title);
+				} else {
+					lines.push(title);
+				}
 			}
 			if (afterTitle) {
-				lines.push(afterTitle);
+				if (helpers.isArray(afterTitle)) {
+					lines = lines.concat(afterTitle);
+				} else {
+					lines.push(afterTitle);
+				}
 			}
 			return lines;
+		},
+
+		getBeforeBody: function(xLabel, yLabel, index, datasetIndex, data) {
+			var lines = this._options.tooltips.callbacks.beforeBody.call(this, xLabel, yLabel, index, datasetIndex, data);
+			return helpers.isArray(lines) ? lines : [lines];
 		},
 
 		getBody: function(xLabel, yLabel, index, datasetIndex) {
@@ -167,6 +184,11 @@
 			return lines;
 		},
 
+		getAfterBody: function(xLabel, yLabel, index, datasetIndex, data) {
+			var lines = this._options.tooltips.callbacks.afterBody.call(this, xLabel, yLabel, index, datasetIndex, data);
+			return helpers.isArray(lines) ? lines : [lines];
+		},
+
 		getFooter: function() {
 			var beforeFooter = this._options.tooltips.callbacks.beforeFooter.apply(this, arguments),
 				footer = this._options.tooltips.callbacks.footer.apply(this, arguments),
@@ -175,13 +197,25 @@
 			var lines = [];
 
 			if (beforeFooter) {
-				lines.push(beforeFooter);
+				if (helpers.isArray(beforeFooter)) {
+					lines = lines.concat(beforeFooter);
+				} else {
+					lines.push(beforeFooter);
+				}
 			}
 			if (footer) {
-				lines.push(footer);
+				if (helpers.isArray(footer)) {
+					lines = lines.concat(footer);
+				} else {
+					lines.push(footer);
+				}
 			}
 			if (afterFooter) {
-				lines.push(afterFooter);
+				if (helpers.isArray(afterFooter)) {
+					lines = lines.concat(afterFooter);
+				} else {
+					lines.push(afterFooter);
+				}
 			}
 
 			return lines;
@@ -208,8 +242,6 @@
 				xLabel = [];
 				yLabel = [];
 
-				console.log(this._active);
-
 				helpers.each(this._data.datasets, function(dataset, datasetIndex) {
 
 					xLabel.push(element._xScale.getLabelForIndex(element._index, datasetIndex));
@@ -232,9 +264,9 @@
 			// Build the Text Lines
 			helpers.extend(this._model, {
 				title: this.getTitle(xLabel, yLabel, element._index, element._datasetIndex, this._data),
-				beforeBody: this._options.tooltips.callbacks.beforeBody.call(this, xLabel, yLabel, element._index, element._datasetIndex, this._data),
+				beforeBody: this.getBeforeBody(xLabel, yLabel, element._index, element._datasetIndex, this._data),
 				body: this.getBody(xLabel, yLabel, element._index, element._datasetIndex, this._data),
-				afterBody: this._options.tooltips.callbacks.afterBody.call(this, xLabel, yLabel, element._index, element._datasetIndex, this._data),
+				afterBody: this.getBeforeBody(xLabel, yLabel, element._index, element._datasetIndex, this._data),
 				footer: this.getFooter(xLabel, yLabel, element._index, element._datasetIndex, this._data),
 			});
 
@@ -252,12 +284,17 @@
 			var ctx = this._chart.ctx;
 			var vm = this._view;
 
+			if (this._view.opacity === 0) {
+				return;
+			}
+
 			// Get Dimensions
 
 			vm.position = "top";
 
 			var caretPadding = vm.caretPadding || 2;
-			var combinedBodyLength = vm.body.length + (vm.beforeBody ? 1 : 0) + (vm.afterBody ? 1 : 0);
+
+			var combinedBodyLength = vm.body.length + vm.beforeBody.length + vm.afterBody.length;
 
 			// Height
 			var tooltipHeight = vm.yPadding * 2; // Tooltip Padding
@@ -392,10 +429,10 @@
 				ctx.font = helpers.fontString(vm.bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
 
 				// Before Body
-				if (vm.beforeBody) {
+				helpers.each(vm.beforeBody, function(beforeBody, i) {
 					ctx.fillText(vm.beforeBody, xBase, yBase);
 					yBase += vm.bodyFontSize + vm.bodySpacing;
-				}
+				});
 
 				helpers.each(vm.body, function(body, i) {
 
@@ -418,12 +455,12 @@
 				}, this);
 
 				// After Body
-				if (vm.afterBody) {
+				helpers.each(vm.afterBody, function(afterBody, i) {
 					ctx.fillText(vm.afterBody, xBase, yBase);
 					yBase += vm.bodyFontSize;
-				} else {
-					yBase -= vm.bodySpacing; // Remove last body spacing
-				}
+				});
+
+				yBase -= vm.bodySpacing; // Remove last body spacing
 
 
 				// Footer
