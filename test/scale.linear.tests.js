@@ -623,7 +623,7 @@ describe('Linear Scale', function() {
 		});
 	});
 
-	it('should draw correctly horizontally', function() {
+	it('Should draw correctly horizontally', function() {
 		var scaleID = 'myScale';
 
 		var mockData = {
@@ -795,7 +795,7 @@ describe('Linear Scale', function() {
 		config.gridLines.drawOnChartArea = false;
 		config.ticks.show = false;
 		config.scaleLabel.show = true;
-		config.scaleLabel.labelString = 'myLabel'
+		config.scaleLabel.labelString = 'myLabel';
 
 		mockContext.resetCalls();
 
@@ -852,7 +852,7 @@ describe('Linear Scale', function() {
 		expect(mockContext.getCalls()).toEqual([]);
 	});
 
-	it('should draw correctly vertically', function() {
+	it('Should draw correctly vertically', function() {
 		var scaleID = 'myScale';
 
 		var mockData = {

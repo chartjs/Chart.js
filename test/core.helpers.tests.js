@@ -150,17 +150,18 @@ describe('Core helper tests', function() {
 		var merged = helpers.configMerge(baseConfig, toMerge);
 		expect(merged).toEqual({
 			arrayProp: [{
-				prop1: 'myProp1',
-				prop2: 56,
-				prop3: 'prop3'
-			},
-			2, {
-				prop1: 'myProp1'
-			}],
+					prop1: 'myProp1',
+					prop2: 56,
+					prop3: 'prop3'
+				},
+				2, {
+					prop1: 'myProp1'
+				}
+			],
 		});
 	});
 
-	it ('Should merge scale configs', function() {
+	it('Should merge scale configs', function() {
 		var baseConfig = {
 			scales: {
 				prop1: {
@@ -288,17 +289,19 @@ describe('Core helper tests', function() {
 		});
 	});
 
-	it ('should get value or default', function() {
+	it('should get value or default', function() {
 		expect(helpers.getValueAtIndexOrDefault(98, 0, 56)).toBe(98);
-		expect(helpers.getValueAtIndexOrDefault(0, 0, 56)).toBe(0); 
+		expect(helpers.getValueAtIndexOrDefault(0, 0, 56)).toBe(0);
 		expect(helpers.getValueAtIndexOrDefault(undefined, undefined, 56)).toBe(56);
 		expect(helpers.getValueAtIndexOrDefault([1, 2, 3], 1, 100)).toBe(2);
 		expect(helpers.getValueAtIndexOrDefault([1, 2, 3], 3, 100)).toBe(100);
 	});
 
-	it ('should filter an array', function() {
+	it('should filter an array', function() {
 		var data = [-10, 0, 6, 0, 7];
-		var callback = function(item) { return item > 2};
+		var callback = function(item) {
+			return item > 2
+		};
 		expect(helpers.where(data, callback)).toEqual([6, 7]);
 		expect(helpers.findNextWhere(data, callback)).toEqual(6);
 		expect(helpers.findNextWhere(data, callback, 2)).toBe(7);
@@ -308,26 +311,26 @@ describe('Core helper tests', function() {
 		expect(helpers.findPreviousWhere(data, callback, 0)).toBe(undefined);
 	});
 
-	it ('Should get the correct sign', function() {
+	it('Should get the correct sign', function() {
 		expect(helpers.sign(0)).toBe(0);
 		expect(helpers.sign(10)).toBe(1);
 		expect(helpers.sign(-5)).toBe(-1);
 	});
 
-	it ('should do a log10 operation', function() {
+	it('should do a log10 operation', function() {
 		expect(helpers.log10(0)).toBe(-Infinity);
 		expect(helpers.log10(1)).toBe(0);
 		expect(helpers.log10(1000)).toBe(3);
 	});
 
-	it ('Should generate ids', function() {
+	it('Should generate ids', function() {
 		expect(helpers.uid()).toBe('chart-0');
 		expect(helpers.uid()).toBe('chart-1');
 		expect(helpers.uid()).toBe('chart-2');
 		expect(helpers.uid()).toBe('chart-3');
 	});
 
-	it ('should detect a number', function() {
+	it('should detect a number', function() {
 		expect(helpers.isNumber(123)).toBe(true);
 		expect(helpers.isNumber('123')).toBe(true);
 		expect(helpers.isNumber(null)).toBe(false);
@@ -336,37 +339,55 @@ describe('Core helper tests', function() {
 		expect(helpers.isNumber('cbc')).toBe(false);
 	});
 
-	it ('should convert between radians and degrees', function() {
+	it('should convert between radians and degrees', function() {
 		expect(helpers.toRadians(180)).toBe(Math.PI);
 		expect(helpers.toRadians(90)).toBe(0.5 * Math.PI);
 		expect(helpers.toDegrees(Math.PI)).toBe(180);
-		expect(helpers.toDegrees(Math.PI * 3 /2)).toBe(270);
+		expect(helpers.toDegrees(Math.PI * 3 / 2)).toBe(270);
 	});
 
-	it ('should get an angle from a point', function() {
+	it('should get an angle from a point', function() {
 		var center = {
 			x: 0,
 			y: 0
 		};
 
-		expect(helpers.getAngleFromPoint(center, {x: 0, y: 10})).toEqual({
+		expect(helpers.getAngleFromPoint(center, {
+			x: 0,
+			y: 10
+		})).toEqual({
 			angle: Math.PI / 2,
 			distance: 10,
 		});
 
-		expect(helpers.getAngleFromPoint(center, {x: Math.sqrt(2), y: Math.sqrt(2)})).toEqual({
+		expect(helpers.getAngleFromPoint(center, {
+			x: Math.sqrt(2),
+			y: Math.sqrt(2)
+		})).toEqual({
 			angle: Math.PI / 4,
 			distance: 2
 		});
 
-		expect(helpers.getAngleFromPoint(center, {x: -1.0 * Math.sqrt(2), y: -1.0 * Math.sqrt(2)})).toEqual({
+		expect(helpers.getAngleFromPoint(center, {
+			x: -1.0 * Math.sqrt(2),
+			y: -1.0 * Math.sqrt(2)
+		})).toEqual({
 			angle: Math.PI * 1.25,
 			distance: 2
 		});
 	});
 
-	it ('should spline curves', function() {
-		expect(helpers.splineCurve({x: 0, y: 0}, {x: 1, y: 1}, { x: 2, y: 0}, 0)).toEqual({
+	it('should spline curves', function() {
+		expect(helpers.splineCurve({
+			x: 0,
+			y: 0
+		}, {
+			x: 1,
+			y: 1
+		}, {
+			x: 2,
+			y: 0
+		}, 0)).toEqual({
 			previous: {
 				x: 1,
 				y: 1,
@@ -377,7 +398,16 @@ describe('Core helper tests', function() {
 			}
 		});
 
-		expect(helpers.splineCurve({x: 0, y: 0}, {x: 1, y: 1}, { x: 2, y: 0}, 1)).toEqual({
+		expect(helpers.splineCurve({
+			x: 0,
+			y: 0
+		}, {
+			x: 1,
+			y: 1
+		}, {
+			x: 2,
+			y: 0
+		}, 1)).toEqual({
 			previous: {
 				x: 0,
 				y: 1,
@@ -389,7 +419,7 @@ describe('Core helper tests', function() {
 		});
 	});
 
-	it ('should get the next or previous item in an array', function() {
+	it('should get the next or previous item in an array', function() {
 		var testData = [0, 1, 2];
 
 		expect(helpers.nextItem(testData, 0, false)).toEqual(1);
@@ -404,7 +434,7 @@ describe('Core helper tests', function() {
 		expect(helpers.previousItem(testData, 1, true)).toEqual(0);
 	});
 
-	it ('should clear a canvas', function() {
+	it('should clear a canvas', function() {
 		var context = window.createMockContext();
 		helpers.clear({
 			width: 100,
@@ -418,7 +448,7 @@ describe('Core helper tests', function() {
 		}]);
 	});
 
-	it ('should draw a rounded rectangle', function() {
+	it('should draw a rounded rectangle', function() {
 		var context = window.createMockContext();
 		helpers.drawRoundedRectangle(context, 10, 20, 30, 40, 5);
 

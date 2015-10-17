@@ -59,7 +59,7 @@
 			this.height = this.maxHeight;
 			this.xCenter = Math.round(this.width / 2);
 			this.yCenter = Math.round(this.height / 2);
-			
+
 			var minSize = helpers.min([this.height, this.width]);
 			this.drawingArea = (this.options.display) ? (minSize / 2) - (this.options.ticks.fontSize / 2 + this.options.ticks.backdropPaddingY) : (minSize / 2);
 		},
