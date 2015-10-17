@@ -8,7 +8,6 @@
     "type": "git",
     "url": "https://github.com/nnnick/Chart.js.git"
   },
-  "dependences": {},
   "devDependencies": {
     "color": "git://github.com/chartjs/color",
     "gulp": "3.5.x",
