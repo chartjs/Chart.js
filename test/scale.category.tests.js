@@ -43,9 +43,12 @@ describe('Category scale tests', function() {
 				padding: 10,
 				reverse: false,
 				show: true,
-				template: "<%=value%>"
+				callback: defaultConfig.ticks.callback,  // make this nicer, then check explicitly below
 			}
 		});
+
+		// Is this actually a function
+		expect(defaultConfig.ticks.callback).toEqual(jasmine.any(Function));
 	});
 
 	it('Should generate ticks from the data labales', function() {

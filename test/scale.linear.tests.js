@@ -42,9 +42,11 @@ describe('Linear Scale', function() {
 				padding: 10,
 				reverse: false,
 				show: true,
-				template: "<%=value%>"
+				callback: defaultConfig.ticks.callback, // make this work nicer, then check below
 			}
 		});
+
+		expect(defaultConfig.ticks.callback).toEqual(jasmine.any(Function));
 	});
 
 	it('Should correctly determine the max & min data values', function() {

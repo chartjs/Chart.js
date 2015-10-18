@@ -46,7 +46,7 @@ describe('Time scale tests', function() {
 				padding: 10,
 				reverse: false,
 				show: true,
-				template: "<%=value%>"
+				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
 			},
 			time: {
 				format: false,
@@ -55,6 +55,9 @@ describe('Time scale tests', function() {
 				displayFormat: false,
 			}
 		});
+
+		// Is this actually a function
+		expect(defaultConfig.ticks.callback).toEqual(jasmine.any(Function));
 	});
 
 	it('should build ticks using days', function() {
