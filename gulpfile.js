@@ -36,8 +36,11 @@ var srcFiles = [
 	'./src/charts/**',
 ];
 
-var testFiles = [
+var preTestFiles = [
 	'./node_modules/moment/min/moment.min.js',
+];
+
+var testFiles = [
 	'./test/mockContext.js',
 	'./test/*.js'
 ];
@@ -117,7 +120,7 @@ function releaseTask() {
 
 
 function jshintTask() {
-	return gulp.src(srcDir + '*.js')
+	return gulp.src(srcDir + '**/*.js')
 		.pipe(jshint())
 		.pipe(jshint.reporter('default'));
 }
@@ -131,6 +134,7 @@ function validHTMLTask() {
 
 function unittestTask() {
 	var files = srcFiles.slice();
+	Array.prototype.unshift.apply(files, preTestFiles);
 	Array.prototype.push.apply(files, testFiles);
 
 	return gulp.src(files)
@@ -142,6 +146,7 @@ function unittestTask() {
 
 function unittestWatchTask() {
 	var files = srcFiles.slice();
+	Array.prototype.unshift.apply(files, preTestFiles);
 	Array.prototype.push.apply(files, testFiles);
 
 	return gulp.src(files)
@@ -153,6 +158,7 @@ function unittestWatchTask() {
 
 function coverageTask() {
 	var files = srcFiles.slice();
+	Array.prototype.unshift.apply(files, preTestFiles);
 	Array.prototype.push.apply(files, testFiles);
 
 	return gulp.src(files)

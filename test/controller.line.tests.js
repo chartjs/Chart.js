@@ -270,13 +270,13 @@ describe('Line controller tests', function() {
 			tension: 0.1,
 			
 			// Point
-			x: 63,
+			x: 71,
 			y: 62,
 
 			// Control points
-			controlPointPreviousX: 63,
+			controlPointPreviousX: 71,
 			controlPointPreviousY: 62,
-			controlPointNextX: 67.5,
+			controlPointNextX: 76,
 			controlPointNextY: 57.3,
 		});
 
@@ -290,14 +290,14 @@ describe('Line controller tests', function() {
 			tension: 0.1,
 			
 			// Point
-			x: 108,
+			x: 121,
 			y: 15,
 
 			// Control points
-			controlPointPreviousX: 105.27827106822767,
-			controlPointPreviousY: 12.125364948465183,
-			controlPointNextX: 114.17827106822767,
-			controlPointNextY: 21.52536494846518,
+			controlPointPreviousX: 117.82889384189087,
+			controlPointPreviousY: 12.04867347661131,
+			controlPointNextX: 127.92889384189088,
+			controlPointNextY: 21.44867347661131,
 		});
 
 		expect(chart.data.datasets[0].metaData[2]._model).toEqual({
@@ -310,14 +310,14 @@ describe('Line controller tests', function() {
 			tension: 0.1,
 			
 			// Point
-			x: 152,
+			x: 172,
 			y: 156,
 
 			// Control points
-			controlPointPreviousX: 145.63719249781943,
-			controlPointPreviousY: 143.20289277651324,
-			controlPointNextX: 154.53719249781943,
-			controlPointNextY: 161.10289277651324,
+			controlPointPreviousX: 164.8815225337256,
+			controlPointPreviousY: 143.38408449046415,
+			controlPointNextX: 174.98152253372558,
+			controlPointNextY: 161.28408449046415,
 		});
 
 		expect(chart.data.datasets[0].metaData[3]._model).toEqual({
@@ -330,13 +330,13 @@ describe('Line controller tests', function() {
 			tension: 0.1,
 			
 			// Point
-			x: 197,
+			x: 222,
 			y: 194,
 
 			// Control points
-			controlPointPreviousX: 192.5,
+			controlPointPreviousX: 217,
 			controlPointPreviousY: 190.2,
-			controlPointNextX: 197,
+			controlPointNextX: 222,
 			controlPointNextY: 194,
 		});
 
@@ -390,13 +390,13 @@ describe('Line controller tests', function() {
 			tension: 0.2,
 			
 			// Point
-			x: 63,
+			x: 71,
 			y: 62,
 
 			// Control points
-			controlPointPreviousX: 63,
+			controlPointPreviousX: 71,
 			controlPointPreviousY: 62,
-			controlPointNextX: 72,
+			controlPointNextX: 81,
 			controlPointNextY: 52.6,
 		});
 
@@ -410,14 +410,14 @@ describe('Line controller tests', function() {
 			tension: 0.2,
 			
 			// Point
-			x: 108,
+			x: 121,
 			y: 15,
 
 			// Control points
-			controlPointPreviousX: 102.55654213645535,
-			controlPointPreviousY: 9.250729896930364,
-			controlPointNextX: 120.35654213645535,
-			controlPointNextY: 28.050729896930367,
+			controlPointPreviousX: 114.65778768378175,
+			controlPointPreviousY: 9.097346953222619,
+			controlPointNextX: 134.85778768378177,
+			controlPointNextY: 27.897346953222623,
 		});
 
 		expect(chart.data.datasets[0].metaData[2]._model).toEqual({
@@ -430,14 +430,14 @@ describe('Line controller tests', function() {
 			tension: 0.2,
 			
 			// Point
-			x: 152,
+			x: 172,
 			y: 156,
 
 			// Control points
-			controlPointPreviousX: 139.27438499563885,
-			controlPointPreviousY: 130.40578555302648,
-			controlPointNextX: 157.07438499563887,
-			controlPointNextY: 166.20578555302646,
+			controlPointPreviousX: 157.76304506745115,
+			controlPointPreviousY: 130.76816898092827,
+			controlPointNextX: 177.96304506745116,
+			controlPointNextY: 166.56816898092828,
 		});
 
 		expect(chart.data.datasets[0].metaData[3]._model).toEqual({
@@ -450,13 +450,13 @@ describe('Line controller tests', function() {
 			tension: 0.2,
 			
 			// Point
-			x: 197,
+			x: 222,
 			y: 194,
 
 			// Control points
-			controlPointPreviousX: 188,
+			controlPointPreviousX: 212,
 			controlPointPreviousY: 186.4,
-			controlPointNextX: 197,
+			controlPointNextX: 222,
 			controlPointNextY: 194,
 		});
 
@@ -516,13 +516,13 @@ describe('Line controller tests', function() {
 			tension: 0.15,
 			
 			// Point
-			x: 63,
+			x: 71,
 			y: 62,
 
 			// Control points
-			controlPointPreviousX: 63,
+			controlPointPreviousX: 71,
 			controlPointPreviousY: 62,
-			controlPointNextX: 69.75,
+			controlPointNextX: 78.5,
 			controlPointNextY: 54.95,
 		});
 	});

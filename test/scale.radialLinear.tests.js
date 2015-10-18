@@ -92,6 +92,38 @@ describe('Test the radial linear scale', function() {
 		expect(scale.max).toBe(200);
 	});
 
+	it('Should correctly determine the max & min data values when there are hidden datasets', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [10, 5, 0, -5, 78, -100]
+			}, {
+				yAxisID: scaleID,
+				data: [150]
+			}, {
+				yAxisID: scaleID,
+				data: [1000],
+				hidden: true
+			}],
+			labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
+		};
+
+		var mockContext = window.createMockContext();
+		var Constructor = Chart.scaleService.getScaleConstructor('radialLinear');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: Chart.scaleService.getScaleDefaults('radialLinear'), // use default config for scale
+			data: mockData,
+			id: scaleID,
+		});
+
+		scale.update(200, 300);
+		expect(scale.min).toBe(-100);
+		expect(scale.max).toBe(200);
+	});
+
 	it('Should ensure that the scale has a max and min that are not equal', function() {
 		var scaleID = 'myScale';
 

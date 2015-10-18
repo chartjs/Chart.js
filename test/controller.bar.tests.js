@@ -78,6 +78,39 @@ describe('Bar controller tests', function() {
 		expect(controller.getBarCount()).toBe(2);
 	});
 
+	it('should correctly get the bar index accounting for hidden datasets', function() {
+		var chart = {
+			data: {
+				datasets: [{
+					
+				}, {
+					hidden: true
+				}, {
+					type: 'line'
+				}, {
+					
+				}]
+			},
+			config: {
+				type: 'bar'
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'firstXScaleID'
+					}],
+					yAxes: [{
+						id: 'firstYScaleID'
+					}]
+				}
+			}
+		};
+
+		var controller = new Chart.controllers.bar(chart, 1);
+		expect(controller.getBarIndex(0)).toBe(0);
+		expect(controller.getBarIndex(3)).toBe(1);
+	});
+
 	it('Should create rectangle elements for each data item during initialization', function() {
 		var chart = {
 			data: {
@@ -229,13 +262,13 @@ describe('Bar controller tests', function() {
 		expect(bar1._xScale).toBe(chart.scales.firstXScaleID);
 		expect(bar1._yScale).toBe(chart.scales.firstYScaleID);
 		expect(bar1._model).toEqual({
-			x: 106.80000000000003,
+			x: 113.60000000000001,
 			y: 194,
 			label: 'label1',
 			datasetLabel: 'dataset2',
 
 			base: 194,
-			width: 12.240000000000002,
+			width: 13.680000000000001,
 			backgroundColor: 'rgb(255, 0, 0)',
 			borderColor: 'rgb(0, 0, 255)',
 			borderWidth: 2,
@@ -246,13 +279,13 @@ describe('Bar controller tests', function() {
 		expect(bar2._xScale).toBe(chart.scales.firstXScaleID);
 		expect(bar2._yScale).toBe(chart.scales.firstYScaleID);
 		expect(bar2._model).toEqual({
-			x: 140.8,
+			x: 151.60000000000002,
 			y: -15,
 			label: 'label2',
 			datasetLabel: 'dataset2',
 
 			base: 194,
-			width: 12.240000000000002,
+			width: 13.680000000000001,
 			backgroundColor: 'rgb(255, 0, 0)',
 			borderColor: 'rgb(0, 0, 255)',
 			borderWidth: 2,

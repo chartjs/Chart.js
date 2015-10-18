@@ -1,5 +1,10 @@
 // Time scale tests
 describe('Time scale tests', function() {
+
+	it('Should load moment.js as a dependency', function() {
+		expect(window.moment).not.toBe(undefined);
+	});
+
 	it('Should register the constructor with the scale service', function() {
 		var Constructor = Chart.scaleService.getScaleConstructor('time');
 		expect(Constructor).not.toBe(undefined);
@@ -52,7 +57,7 @@ describe('Time scale tests', function() {
 		});
 	});
 
-	it ('should build ticks using days', function() {
+	it('should build ticks using days', function() {
 		var scaleID = 'myScale';
 
 		var mockData = {
@@ -75,7 +80,7 @@ describe('Time scale tests', function() {
 		expect(scale.ticks).toEqual(['Jan 1, 2015', 'Jan 2, 2015', 'Jan 3, 2015', 'Jan 4, 2015', 'Jan 5, 2015', 'Jan 6, 2015', 'Jan 7, 2015', 'Jan 8, 2015', 'Jan 9, 2015', 'Jan 10, 2015', 'Jan 11, 2015']);
 	});
 
-	it ('should build ticks using the config unit', function() {
+	it('should build ticks using the config unit', function() {
 		var scaleID = 'myScale';
 
 		var mockData = {
@@ -98,7 +103,7 @@ describe('Time scale tests', function() {
 		expect(scale.ticks).toEqual(['Jan 1, 8PM', 'Jan 1, 9PM', 'Jan 1, 10PM', 'Jan 1, 11PM', 'Jan 2, 12AM', 'Jan 2, 1AM', 'Jan 2, 2AM', 'Jan 2, 3AM', 'Jan 2, 4AM', 'Jan 2, 5AM', 'Jan 2, 6AM', 'Jan 2, 7AM', 'Jan 2, 8AM', 'Jan 2, 9AM', 'Jan 2, 10AM', 'Jan 2, 11AM', 'Jan 2, 12PM', 'Jan 2, 1PM', 'Jan 2, 2PM', 'Jan 2, 3PM', 'Jan 2, 4PM', 'Jan 2, 5PM', 'Jan 2, 6PM', 'Jan 2, 7PM', 'Jan 2, 8PM', 'Jan 2, 9PM']);
 	});
 
-	it ('should build ticks using the config diff', function() {
+	it('should build ticks using the config diff', function() {
 		var scaleID = 'myScale';
 
 		var mockData = {
@@ -122,7 +127,7 @@ describe('Time scale tests', function() {
 		expect(scale.ticks).toEqual(['Dec 28, 2014', 'Jan 4, 2015', 'Jan 11, 2015', 'Jan 18, 2015', 'Jan 25, 2015', 'Feb 1, 2015', 'Feb 8, 2015', 'Feb 15, 2015']);
 	});
 
-	it ('should get the correct pixel for a value', function() {
+	it('should get the correct pixel for a value', function() {
 		var scaleID = 'myScale';
 
 		var mockData = {

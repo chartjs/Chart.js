@@ -101,18 +101,35 @@
 			}
 		},
 
+		getVisibleDatasetCount: function getVisibleDatasetCount() {
+			return helpers.where(this.chart.data.datasets, function(ds) { return helpers.isDatasetVisible(ds); }).length;
+		},
+
+		// Get index of the dataset in relation to the visible datasets. This allows determining the inner and outer radius correctly
+		getRingIndex: function getRingIndex(datasetIndex) {
+			var ringIndex = 0;
+
+			for (var j = 0; j < datasetIndex; ++j) {
+				if (helpers.isDatasetVisible(this.chart.data.datasets[j])) {
+					++ringIndex;
+				}
+			}
+
+			return ringIndex;
+		},
+
 		update: function update(reset) {
 
 			this.chart.outerRadius = Math.max((helpers.min([this.chart.chart.width, this.chart.chart.height]) / 2) - this.chart.options.elements.arc.borderWidth / 2, 0);
 			this.chart.innerRadius = Math.max(this.chart.options.cutoutPercentage ? (this.chart.outerRadius / 100) * (this.chart.options.cutoutPercentage) : 1, 0);
-			this.chart.radiusLength = (this.chart.outerRadius - this.chart.innerRadius) / this.chart.data.datasets.length;
+			this.chart.radiusLength = (this.chart.outerRadius - this.chart.innerRadius) / this.getVisibleDatasetCount();
 
 			this.getDataset().total = 0;
 			helpers.each(this.getDataset().data, function(value) {
 				this.getDataset().total += Math.abs(value);
 			}, this);
 
-			this.outerRadius = this.chart.outerRadius - (this.chart.radiusLength * this.index);
+			this.outerRadius = this.chart.outerRadius - (this.chart.radiusLength * this.getRingIndex(this.index));
 			this.innerRadius = this.outerRadius - this.chart.radiusLength;
 
 			helpers.each(this.getDataset().metaData, function(arc, index) {

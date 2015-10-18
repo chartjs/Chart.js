@@ -105,9 +105,16 @@
 		setDimensions: function() {
 			// Set the unconstrained dimension before label rotation
 			if (this.isHorizontal()) {
+				// Reset position before calculating rotation
 				this.width = this.maxWidth;
+				this.left = 0;
+				this.right = this.width;
 			} else {
 				this.height = this.maxHeight;
+
+				// Reset position before calculating rotation
+				this.top = 0;
+				this.bottom = this.height
 			}
 
 			// Reset padding
@@ -361,8 +368,9 @@
 				var scaleLabelX;
 				var scaleLabelY;
 
-				// Make sure we draw text in the correct color
+				// Make sure we draw text in the correct color and font
 				this.ctx.fillStyle = this.options.ticks.fontColor;
+				var labelFont = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
 
 				if (this.isHorizontal()) {
 					setContextLineSettings = true;
@@ -418,7 +426,7 @@
 							this.ctx.save();
 							this.ctx.translate(xLabelValue, (isRotated) ? this.top + 12 : this.options.position === "top" ? this.bottom - 10 : this.top + 10);
 							this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
-							this.ctx.font = this.font;
+							this.ctx.font = labelFont;
 							this.ctx.textAlign = (isRotated) ? "right" : "center";
 							this.ctx.textBaseline = (isRotated) ? "middle" : this.options.position === "top" ? "bottom" : "top";
 							this.ctx.fillText(label, 0, 0);
@@ -430,6 +438,7 @@
 						// Draw the scale label
 						this.ctx.textAlign = "center";
 						this.ctx.textBaseline = 'middle';
+						this.ctx.fillStyle = this.options.scaleLabel.fontColor; // render in correct colour
 						this.ctx.font = helpers.fontString(this.options.scaleLabel.fontSize, this.options.scaleLabel.fontStyle, this.options.scaleLabel.fontFamily);
 
 						scaleLabelX = this.left + ((this.right - this.left) / 2); // midpoint of the width
@@ -506,7 +515,7 @@
 
 							this.ctx.translate(xLabelValue, yLabelValue);
 							this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
-							this.ctx.font = this.font;
+							this.ctx.font = labelFont;
 							this.ctx.textBaseline = "middle";
 							this.ctx.fillText(label, 0, 0);
 							this.ctx.restore();
@@ -523,6 +532,7 @@
 						this.ctx.translate(scaleLabelX, scaleLabelY);
 						this.ctx.rotate(rotation);
 						this.ctx.textAlign = "center";
+						this.ctx.fillStyle = this.options.scaleLabel.fontColor; // render in correct colour
 						this.ctx.font = helpers.fontString(this.options.scaleLabel.fontSize, this.options.scaleLabel.fontStyle, this.options.scaleLabel.fontFamily);
 						this.ctx.textBaseline = 'middle';
 						this.ctx.fillText(this.options.scaleLabel.labelString, 0, 0);

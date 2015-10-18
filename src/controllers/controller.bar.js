@@ -66,15 +66,15 @@
 		// Get the number of datasets that display bars. We use this to correctly calculate the bar width
 		getBarCount: function getBarCount() {
 			var barCount = 0;
-
 			helpers.each(this.chart.data.datasets, function(dataset) {
-				if (dataset.type === 'bar') {
-					++barCount;
-				} else if (dataset.type === undefined && this.chart.config.type === 'bar') {
-					++barCount;
+				if (helpers.isDatasetVisible(dataset)) {
+					if (dataset.type === 'bar') {
+						++barCount;
+					} else if (dataset.type === undefined && this.chart.config.type === 'bar') {
+						++barCount;
+					}
 				}
 			}, this);
-
 			return barCount;
 		},
 
@@ -192,14 +192,16 @@
 
 				if (value < 0) {
 					for (var i = 0; i < datasetIndex; i++) {
-						if (this.chart.data.datasets[i].yAxisID === yScale.id) {
-							base += this.chart.data.datasets[i].data[index] < 0 ? this.chart.data.datasets[i].data[index] : 0;
+						var negDS = this.chart.data.datasets[i];
+						if (helpers.isDatasetVisible(negDS) && negDS.yAxisID === yScale.id) {
+							base += negDS.data[index] < 0 ? negDS.data[index] : 0;
 						}
 					}
 				} else {
 					for (var j = 0; j < datasetIndex; j++) {
-						if (this.chart.data.datasets[j].yAxisID === yScale.id) {
-							base += this.chart.data.datasets[j].data[index] > 0 ? this.chart.data.datasets[j].data[index] : 0;
+						var posDS = this.chart.data.datasets[j];
+						if (helpers.isDatasetVisible(posDS) && posDS.yAxisID === yScale.id) {
+							base += posDS.data[index] > 0 ? posDS.data[index] : 0;
 						}
 					}
 				}
@@ -225,10 +227,11 @@
 
 			var xScale = this.getScaleForID(this.getDataset().xAxisID);
 			var yScale = this.getScaleForID(this.getDataset().yAxisID);
-
-			var datasetCount = !this.chart.isCombo ? this.chart.data.datasets.length : helpers.where(this.chart.data.datasets, function(ds) {
+			/*var datasetCount = !this.chart.isCombo ? this.chart.data.datasets.length : helpers.where(this.chart.data.datasets, function(ds) {
 				return ds.type == 'bar';
-			}).length;
+			}).length;*/
+			var datasetCount = this.getBarCount();
+
 			var tickWidth = (function() {
 				var min = xScale.getPixelForValue(null, 1) - xScale.getPixelForValue(null, 0);
 				for (var i = 2; i < this.getDataset().data.length; i++) {
@@ -266,14 +269,28 @@
 
 		},
 
+		// Get bar index from the given dataset index accounting for the fact that not all bars are visible
+		getBarIndex: function(datasetIndex) {
+			var barIndex = 0;
+
+			for (var j = 0; j < datasetIndex; ++j) {
+				if (helpers.isDatasetVisible(this.chart.data.datasets[j]) &&
+					(this.chart.data.datasets[j].type === 'bar' || (this.chart.data.datasets[j].type === undefined && this.chart.config.type === 'bar'))) {
+					++barIndex;
+				}
+			}
+
+			return barIndex;
+		},
 
 		calculateBarX: function(index, datasetIndex) {
 
 			var yScale = this.getScaleForID(this.getDataset().yAxisID);
 			var xScale = this.getScaleForID(this.getDataset().xAxisID);
+			var barIndex = this.getBarIndex(datasetIndex);
 
 			var ruler = this.getRuler();
-			var leftTick = xScale.getPixelForValue(null, index, datasetIndex, this.chart.isCombo);
+			var leftTick = xScale.getPixelForValue(null, index, barIndex, this.chart.isCombo);
 			leftTick -= this.chart.isCombo ? (ruler.tickWidth / 2) : 0;
 
 			if (yScale.options.stacked) {
@@ -283,9 +300,9 @@
 			return leftTick +
 				(ruler.barWidth / 2) +
 				ruler.categorySpacing +
-				(ruler.barWidth * datasetIndex) +
+				(ruler.barWidth * barIndex) +
 				(ruler.barSpacing / 2) +
-				(ruler.barSpacing * datasetIndex);
+				(ruler.barSpacing * barIndex);
 		},
 
 		calculateBarY: function(index, datasetIndex) {
@@ -301,10 +318,13 @@
 					sumNeg = 0;
 
 				for (var i = 0; i < datasetIndex; i++) {
-					if (this.chart.data.datasets[i].data[index] < 0) {
-						sumNeg += this.chart.data.datasets[i].data[index] || 0;
-					} else {
-						sumPos += this.chart.data.datasets[i].data[index] || 0;
+					var ds = this.chart.data.datasets[i];
+					if (helpers.isDatasetVisible(ds)) {
+						if (ds.data[index] < 0) {
+							sumNeg += ds.data[index] || 0;
+						} else {
+							sumPos += ds.data[index] || 0;
+						}
 					}
 				}
 

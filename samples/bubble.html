@@ -1,0 +1,206 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Bar Chart</title>
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="../Chart.js"></script>
+    <style type="text/css">
+        canvas {
+            border: 1px solid red;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container" style="width: 100%; height: 25%;">
+        <canvas id="canvas"></canvas>
+    </div>
+    <button id="randomizeData">Randomize Data</button>
+    <button id="addDataset">Add Dataset</button>
+    <button id="removeDataset">Remove Dataset</button>
+    <button id="addData">Add Data</button>
+    <button id="removeData">Remove Data</button>
+    <button id="show">Show</button>
+    <div>
+        <h3>Legend</h3>
+        <div id="legendContainer">
+        </div>
+    </div>
+    <script>
+        var randomScalingFactor = function() {
+            return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 100);
+        };
+        var randomColorFactor = function() {
+            return Math.round(Math.random() * 255);
+        };
+        var randomColor = function() {
+            return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
+        };
+
+        var bubbleChartData = {
+            animation: {
+                duration: 10000
+            },
+            datasets: [{
+                label: "My First dataset",
+                backgroundColor: randomColor(),
+                data: [{
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }]
+            }, {
+                label: "My Second dataset",
+                backgroundColor: randomColor(),
+                data: [{
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }]
+            }]
+
+        };
+
+        function updateLegend() {
+            $legendContainer = $('#legendContainer');
+            $legendContainer.empty();
+            $legendContainer.append(window.myChart.generateLegend());
+        }
+
+        window.onload = function() {
+            var ctx = document.getElementById("canvas").getContext("2d");
+            window.myChart = new Chart(ctx, {
+                type: 'bubble',
+                data: bubbleChartData,
+                options: {
+                    responsive: true,
+                }
+            });
+
+            updateLegend();
+        };
+
+        $('#randomizeData').click(function() {
+            var zero = Math.random() < 0.2 ? true : false;
+            $.each(bubbleChartData.datasets, function(i, dataset) {
+                dataset.backgroundColor = randomColor();
+                dataset.data = dataset.data.map(function() {
+                    return {
+                        x: randomScalingFactor(),
+                        y: randomScalingFactor(),
+                        r: Math.abs(randomScalingFactor()) / 5,
+                    };
+                });
+            });
+            window.myChart.update();
+            updateLegend();
+        });
+
+        $('#addDataset').click(function() {
+            var newDataset = {
+                backgroundColor: randomColor(),
+                data: []
+            };
+
+            for (var index = 0; index < bubbleChartData.datasets[0].data.length; ++index) {
+                newDataset.data.push({
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                });
+            }
+
+            bubbleChartData.datasets.push(newDataset);
+            window.myChart.update();
+            updateLegend();
+        });
+
+        $('#addData').click(function() {
+            if (bubbleChartData.datasets.length > 0) {
+
+                for (var index = 0; index < bubbleChartData.datasets.length; ++index) {
+                    //window.myChart.addData(randomScalingFactor(), index);
+                    bubbleChartData.datasets[index].data.push({
+                        x: randomScalingFactor(),
+                        y: randomScalingFactor(),
+                        r: Math.abs(randomScalingFactor()) / 5,
+                    });
+                }
+
+                window.myChart.update();
+                updateLegend();
+            }
+        });
+
+        $('#removeDataset').click(function() {
+            bubbleChartData.datasets.splice(0, 1);
+            window.myChart.update();
+            updateLegend();
+        });
+
+        $('#removeData').click(function() {
+
+            bubbleChartData.datasets.forEach(function(dataset, datasetIndex) {
+                dataset.data.pop();
+            });
+
+            window.myChart.update();
+            updateLegend();
+        });
+
+        $('#show').click(function() {
+            document.getElementById('container').style.display = '';
+        });
+    </script>
+</body>
+
+</html>

@@ -94,9 +94,9 @@ describe('Category scale tests', function() {
 			id: scaleID
 		});
 
-		var minSize = scale.update(200, 100);
+		var minSize = scale.update(600, 100);
 
-		expect(scale.width).toBe(200);
+		expect(scale.width).toBe(600);
 		expect(scale.height).toBe(28);
 		expect(scale.paddingTop).toBe(0);
 		expect(scale.paddingBottom).toBe(0);
@@ -105,28 +105,28 @@ describe('Category scale tests', function() {
 		expect(scale.labelRotation).toBe(0);
 
 		expect(minSize).toEqual({
-			width: 200,
+			width: 600,
 			height: 28,
 		});
 
 		scale.left = 5;
 		scale.top = 5;
-		scale.right = 205;
+		scale.right = 605;
 		scale.bottom = 33;
 
 		expect(scale.getPixelForValue(0, 0, 0, false)).toBe(33);
-		expect(scale.getPixelForValue(0, 0, 0, true)).toBe(45);
+		expect(scale.getPixelForValue(0, 0, 0, true)).toBe(85);
 
-		expect(scale.getPixelForValue(0, 4, 0, false)).toBe(132);
-		expect(scale.getPixelForValue(0, 4, 0, true)).toBe(145);
+		expect(scale.getPixelForValue(0, 4, 0, false)).toBe(452);
+		expect(scale.getPixelForValue(0, 4, 0, true)).toBe(505);
 
 		config.gridLines.offsetGridLines = false;
 
 		expect(scale.getPixelForValue(0, 0, 0, false)).toBe(33);
 		expect(scale.getPixelForValue(0, 0, 0, true)).toBe(33);
 
-		expect(scale.getPixelForValue(0, 4, 0, false)).toBe(157);
-		expect(scale.getPixelForValue(0, 4, 0, true)).toBe(157);
+		expect(scale.getPixelForValue(0, 4, 0, false)).toBe(557);
+		expect(scale.getPixelForValue(0, 4, 0, true)).toBe(557);
 	});
 
 	it ('should get the correct pixel for a value when vertical', function() {

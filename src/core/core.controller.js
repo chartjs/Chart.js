@@ -260,7 +260,9 @@
 
 			// Draw each dataset via its respective controller (reversed to support proper line stacking)
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				dataset.controller.draw(ease);
+				if (helpers.isDatasetVisible(dataset)) {
+					dataset.controller.draw(ease);
+				}
 			}, this);
 
 			// Finally draw the tooltip
@@ -275,12 +277,14 @@
 			var elementsArray = [];
 
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				helpers.each(dataset.metaData, function(element, index) {
-					if (element.inRange(eventPosition.x, eventPosition.y)) {
-						elementsArray.push(element);
-						return elementsArray;
-					}
-				}, this);
+				if (helpers.isDatasetVisible(dataset)) {
+					helpers.each(dataset.metaData, function(element, index) {
+						if (element.inRange(eventPosition.x, eventPosition.y)) {
+							elementsArray.push(element);
+							return elementsArray;
+						}
+					}, this);
+				}
 			}, this);
 
 			return elementsArray;
@@ -291,11 +295,13 @@
 			var elementsArray = [];
 
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				helpers.each(dataset.metaData, function(element, index) {
-					if (element.inLabelRange(eventPosition.x, eventPosition.y)) {
-						elementsArray.push(element);
-					}
-				}, this);
+				if (helpers.isDatasetVisible(dataset)) {
+					helpers.each(dataset.metaData, function(element, index) {
+						if (element.inLabelRange(eventPosition.x, eventPosition.y)) {
+							elementsArray.push(element);
+						}
+					}, this);
+				}
 			}, this);
 
 			return elementsArray;
@@ -305,15 +311,17 @@
 			var eventPosition = helpers.getRelativePosition(e, this.chart);
 			var elementsArray = [];
 
-			for (var datasetIndex = 0; datasetIndex < this.data.datasets.length; datasetIndex++) {
-				for (var elementIndex = 0; elementIndex < this.data.datasets[datasetIndex].metaData.length; elementIndex++) {
-					if (this.data.datasets[datasetIndex].metaData[elementIndex].inLabelRange(eventPosition.x, eventPosition.y)) {
-						helpers.each(this.data.datasets[datasetIndex].metaData, function(element, index) {
-							elementsArray.push(element);
-						}, this);
+			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
+				if (helpers.isDatasetVisible(dataset)) {
+					for (var elementIndex = 0; elementIndex < dataset.metaData.length; elementIndex++) {
+						if (dataset.metaData[elementIndex].inLabelRange(eventPosition.x, eventPosition.y)) {
+							helpers.each(dataset.metaData, function(element, index) {
+								elementsArray.push(element);
+							}, this);
+						}
 					}
 				}
-			}
+			}, this);
 
 			return elementsArray.length ? elementsArray : [];
 		},
