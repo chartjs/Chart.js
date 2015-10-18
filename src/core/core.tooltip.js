@@ -60,6 +60,19 @@
 		},
 	};
 
+	// Helper to push or concat based on if the 2nd parameter is an array or not
+	function pushOrConcat(base, toPush) {
+		if (toPush) {
+			if (helpers.isArray(toPush)) {
+				base = base.concat(toPush);
+			} else {
+				base.push(toPush);
+			}
+		}
+
+		return base;
+	}
+
 	Chart.Tooltip = Chart.Element.extend({
 		initialize: function() {
 			var options = this._options;
@@ -106,34 +119,17 @@
 			});
 		},
 
+		// Get the title 
 		getTitle: function() {
 			var beforeTitle = this._options.tooltips.callbacks.beforeTitle.apply(this, arguments),
 				title = this._options.tooltips.callbacks.title.apply(this, arguments),
 				afterTitle = this._options.tooltips.callbacks.afterTitle.apply(this, arguments);
 
 			var lines = [];
+			lines = pushOrConcat(lines, beforeTitle);
+			lines = pushOrConcat(lines, title);
+			lines = pushOrConcat(lines, afterTitle);
 
-			if (beforeTitle) {
-				if (helpers.isArray(beforeTitle)) {
-					lines = lines.concat(beforeTitle);
-				} else {
-					lines.push(beforeTitle);
-				}
-			}
-			if (title) {
-				if (helpers.isArray(title)) {
-					lines = lines.concat(title);
-				} else {
-					lines.push(title);
-				}
-			}
-			if (afterTitle) {
-				if (helpers.isArray(afterTitle)) {
-					lines = lines.concat(afterTitle);
-				} else {
-					lines.push(afterTitle);
-				}
-			}
 			return lines;
 		},
 
@@ -189,34 +185,16 @@
 			return helpers.isArray(lines) ? lines : [lines];
 		},
 
+		// Get the footer and beforeFooter and afterFooter lines
 		getFooter: function() {
-			var beforeFooter = this._options.tooltips.callbacks.beforeFooter.apply(this, arguments),
-				footer = this._options.tooltips.callbacks.footer.apply(this, arguments),
-				afterFooter = this._options.tooltips.callbacks.afterFooter.apply(this, arguments);
+			var beforeFooter = this._options.tooltips.callbacks.beforeFooter.apply(this, arguments);
+			var footer = this._options.tooltips.callbacks.footer.apply(this, arguments);
+			var afterFooter = this._options.tooltips.callbacks.afterFooter.apply(this, arguments);
 
 			var lines = [];
-
-			if (beforeFooter) {
-				if (helpers.isArray(beforeFooter)) {
-					lines = lines.concat(beforeFooter);
-				} else {
-					lines.push(beforeFooter);
-				}
-			}
-			if (footer) {
-				if (helpers.isArray(footer)) {
-					lines = lines.concat(footer);
-				} else {
-					lines.push(footer);
-				}
-			}
-			if (afterFooter) {
-				if (helpers.isArray(afterFooter)) {
-					lines = lines.concat(afterFooter);
-				} else {
-					lines.push(afterFooter);
-				}
-			}
+			lines = pushOrConcat(lines, beforeFooter);
+			lines = pushOrConcat(lines, footer);
+			lines = pushOrConcat(lines, afterFooter);
 
 			return lines;
 		},
