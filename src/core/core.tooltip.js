@@ -266,7 +266,7 @@
 				title: this.getTitle(xLabel, yLabel, element._index, element._datasetIndex, this._data),
 				beforeBody: this.getBeforeBody(xLabel, yLabel, element._index, element._datasetIndex, this._data),
 				body: this.getBody(xLabel, yLabel, element._index, element._datasetIndex, this._data),
-				afterBody: this.getBeforeBody(xLabel, yLabel, element._index, element._datasetIndex, this._data),
+				afterBody: this.getAfterBody(xLabel, yLabel, element._index, element._datasetIndex, this._data),
 				footer: this.getFooter(xLabel, yLabel, element._index, element._datasetIndex, this._data),
 			});
 
