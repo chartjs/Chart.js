@@ -304,13 +304,14 @@
 		},
 		afterFit: helpers.noop,
 
-
-
-
-
 		// Shared Methods
 		isHorizontal: function() {
 			return this.options.position == "top" || this.options.position == "bottom";
+		},
+		
+		// Get the correct value. If the value type is object get the x or y based on whether we are horizontal or not
+		getRightValue: function(rawValue) {
+			return (typeof(rawValue) === "object" && rawValue !== null) ? (this.isHorizontal() ? rawValue.x : rawValue.y) : rawValue;
 		},
 
 		// Used to get the value to display in the tooltip for the data at the given index
