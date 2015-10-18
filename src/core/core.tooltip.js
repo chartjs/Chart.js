@@ -40,7 +40,8 @@
 		callbacks: {
 			beforeTitle: helpers.noop,
 			title: function(xLabel, yLabel, index, datasetIndex, data) {
-				return this._options.tooltips.mode == 'single' ? data.datasets[datasetIndex].label : data.labels[index];
+				// Pick first label for now
+				return helpers.isArray(xLabel) ? xLabel[0] : xLabel;
 			},
 			afterTitle: helpers.noop,
 
@@ -48,7 +49,7 @@
 
 			beforeLabel: helpers.noop,
 			label: function(xLabel, yLabel, index, datasetIndex, data) {
-				return xLabel + ': ' + yLabel;
+				return this._data.datasets[datasetIndex].label + ': ' + yLabel;
 			},
 			afterLabel: helpers.noop,
 
