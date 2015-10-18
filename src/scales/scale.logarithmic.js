@@ -10,7 +10,15 @@
 
 		// label settings
 		ticks: {
-			template: "<%var remain = value / (Math.pow(10, Math.floor(Chart.helpers.log10(value))));if (remain === 1 || remain === 2 || remain === 5) {%><%=value.toExponential()%><%} else {%><%= null %><%}%>",
+			callback: function(value) {
+				var remain = value / (Math.pow(10, Math.floor(Chart.helpers.log10(value))));
+
+				if (remain === 1 || remain === 2 || remain === 5) {
+					return value.toExponential()
+				} else {
+					return '';
+				}
+			}
 		}
 	};
 

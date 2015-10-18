@@ -48,7 +48,7 @@
 			reverse: false,
 			show: true,
 			callback: function(value) {
-				return value;
+				return '' + value;
 			},
 		},
 	};
