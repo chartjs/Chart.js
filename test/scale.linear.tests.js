@@ -842,6 +842,9 @@ describe('Linear Scale', function() {
 			"name": "stroke",
 			"args": []
 		}, {
+			"name": "setFillStyle",
+			"args": ["#666"]
+		}, {
 			"name": "fillText",
 			"args": ["myLabel", 100, 122]
 		}]);
@@ -1393,6 +1396,9 @@ describe('Linear Scale', function() {
 		}, {
 			"name": "rotate",
 			"args": [-1.5707963267948966]
+		}, {
+			"name": "setFillStyle",
+			"args": ["#666"]
 		}, {
 			"name": "fillText",
 			"args": ["", 0, 0]
