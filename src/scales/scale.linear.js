@@ -147,6 +147,10 @@
 			this.zeroLineIndex = this.ticks.indexOf(0);
 		},
 
+		getLabelForIndex: function(index, datasetIndex) {
+			return this.getRightValue(this.data.datasets[datasetIndex].data[index]);
+		},
+
 		// Utils
 		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
 			// This must be called after fit has been run so that 

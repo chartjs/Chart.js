@@ -121,6 +121,10 @@
 
 			this.ticks = this.tickValues.slice();
 		},
+		// Get the correct tooltip label
+		getLabelForIndex: function(index, datasetIndex) {
+			return this.getRightValue(this.data.datasets[datasetIndex].data[index]);
+		},
 		// Get the correct value. If the value type is object get the x or y based on whether we are horizontal or not
 		getRightValue: function(rawValue) {
 			return typeof rawValue === "object" ? (this.isHorizontal() ? rawValue.x : rawValue.y) : rawValue;

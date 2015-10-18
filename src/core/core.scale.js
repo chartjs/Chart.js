@@ -313,12 +313,9 @@
 			return this.options.position == "top" || this.options.position == "bottom";
 		},
 
-		getLabelForIndex: function(index, datasetIndex) {
-			if (this.isHorizontal()) {
-				return this.data.datasets[datasetIndex].label || this.data.labels[index];
-			}
-			return this.data.datasets[datasetIndex].data[index];
-		},
+		// Used to get the value to display in the tooltip for the data at the given index
+		// function getLabelForIndex(index, datasetIndex)
+		getLabelForIndex: helpers.noop,
 
 		// Used to get data value locations.  Value can either be an index or a numerical value
 		getPixelForValue: helpers.noop,

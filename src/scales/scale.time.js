@@ -140,6 +140,10 @@
 				this.ticks.push(this.firstTick.clone().add(i, this.tickUnit));
 			}
 		},
+		// Get tooltip label
+		getLabelForIndex: function(index, datasetIndex) {
+			return this.data.labels[index];
+		},
 		convertTicksToLabels: function() {
 			this.ticks = this.ticks.map(function(tick, index, ticks) {
 				var formattedTick = tick.format(this.options.time.displayFormat ? this.options.time.displayFormat : time.unit[this.tickUnit].display);

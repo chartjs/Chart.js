@@ -15,6 +15,10 @@
             this.ticks = this.data.labels;
         },
 
+        getLabelForIndex: function(index, datasetIndex) {
+            return this.ticks[index];
+        },
+
         // Used to get data value locations.  Value can either be an index or a numerical value
         getPixelForValue: function(value, index, datasetIndex, includeOffset) {
 
