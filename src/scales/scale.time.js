@@ -82,16 +82,21 @@
 			// Only parse these once. If the dataset does not have data as x,y pairs, we will use
 			// these 
 			var scaleLabelMoments = [];
-			helpers.each(this.data.labels, function(label, index) {
-				var labelMoment = this.parseTime(label);
-				if (this.options.time.round) {
-					labelMoment.startOf(this.options.time.round);
-				}
-				scaleLabelMoments.push(labelMoment);
-			}, this);
+			if (this.data.labels && this.data.labels.length > 0) {
+				helpers.each(this.data.labels, function(label, index) {
+					var labelMoment = this.parseTime(label);
+					if (this.options.time.round) {
+						labelMoment.startOf(this.options.time.round);
+					}
+					scaleLabelMoments.push(labelMoment);
+				}, this);
 
-			this.firstTick = moment.min.call(this, scaleLabelMoments);
-			this.lastTick = moment.max.call(this, scaleLabelMoments);
+				this.firstTick = moment.min.call(this, scaleLabelMoments);
+				this.lastTick = moment.max.call(this, scaleLabelMoments);
+			} else {
+				this.firstTick = null;
+				this.lastTick = null;
+			}
 
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				var momentsForDataset = [];
@@ -105,8 +110,8 @@
 						momentsForDataset.push(labelMoment);
 
 						// May have gone outside the scale ranges, make sure we keep the first and last ticks updated
-						this.firstTick = moment.min(this.firstTick, labelMoment);
-						this.lastTick = moment.max(this.lastTick, labelMoment);
+						this.firstTick = this.firstTick !== null ? moment.min(this.firstTick, labelMoment) : labelMoment;
+						this.lastTick = this.lastTick !== null ? moment.max(this.lastTick, labelMoment) : labelMoment;
 					}, this);
 				} else {
 					// We have no labels. Use the ones from the scale
@@ -178,7 +183,7 @@
 		},
 		// Get tooltip label
 		getLabelForIndex: function(index, datasetIndex) {
-			var label = this.data.labels[index];
+			var label = this.data.labels && index < this.data.labels.length ? this.data.labels[index] : '';
 
 			if (typeof this.data.datasets[datasetIndex].data[0] === 'object') {
 				label = this.getRightValue(this.data.datasets[datasetIndex].data[index]);
