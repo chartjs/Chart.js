@@ -91,8 +91,17 @@
 					scaleLabelMoments.push(labelMoment);
 				}, this);
 
-				this.firstTick = moment.min.call(this, scaleLabelMoments);
-				this.lastTick = moment.max.call(this, scaleLabelMoments);
+				if (this.options.time.min) {
+					this.firstTick = this.parseTime(this.options.time.min);
+				} else {
+					this.firstTick = moment.min.call(this, scaleLabelMoments);
+				}
+
+				if (this.options.time.max) {
+					this.lastTick = this.parseTime(this.options.time.max);
+				} else {
+					this.lastTick = moment.max.call(this, scaleLabelMoments);
+				}
 			} else {
 				this.firstTick = null;
 				this.lastTick = null;
