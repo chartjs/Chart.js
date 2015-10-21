@@ -15,6 +15,6 @@
 		config.type = 'doughnut';
 
 		return new Chart(context, config);
-	}
+	};
 	
 }).call(this);

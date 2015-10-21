@@ -135,7 +135,7 @@
 									base[key].push(helpers.configMerge(valueObj.type ? Chart.scaleService.getScaleDefaults(valueObj.type) : {}, valueObj));
 								} else if (valueObj.type !== base[key][index].type) {
 									// Type changed. Bring in the new defaults before we bring in valueObj so that valueObj can override the correct scale defaults
-									base[key][index] = helpers.configMerge(base[key][index], valueObj.type ? Chart.scaleService.getScaleDefaults(valueObj.type) : {}, valueObj)
+									base[key][index] = helpers.configMerge(base[key][index], valueObj.type ? Chart.scaleService.getScaleDefaults(valueObj.type) : {}, valueObj);
 								} else {
 									// Type is the same
 									base[key][index] = helpers.configMerge(base[key][index], valueObj);
@@ -272,7 +272,7 @@
 		},
 		log10 = helpers.log10 = function(x) {
 			if (Math.log10) {
-				return Math.log10(x)
+				return Math.log10(x);
 			} else {
 				return Math.log(x) / Math.LN10;
 			}
@@ -837,7 +837,7 @@
 				// can use classlist
 				hiddenIframe.classlist.add(hiddenIframeClass);
 			} else {
-				hiddenIframe.setAttribute('class', hiddenIframeClass)
+				hiddenIframe.setAttribute('class', hiddenIframeClass);
 			}
 
 			// Set the style
@@ -860,7 +860,7 @@
 				if (callback) {
 					callback();
 				}
-			}
+			};
 		},
 		removeResizeListener = helpers.removeResizeListener = function(node) {
 			var hiddenIframe = node.querySelector('.chartjs-hidden-iframe');

@@ -139,7 +139,7 @@ function unittestTask() {
 
 	return gulp.src(files)
 		.pipe(karma({
-			configFile: 'karma.conf.js',
+			configFile: 'karma.conf.ci.js',
 			action: 'run'
 		}));
 }
