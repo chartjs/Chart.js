@@ -15,6 +15,6 @@
 		config.type = 'polarArea';
 
 		return new Chart(context, config);
-	}
+	};
 	
 }).call(this);

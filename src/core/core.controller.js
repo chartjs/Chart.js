@@ -158,7 +158,7 @@
 
 				this.scale = scale;
 
-				this.scales['radialScale'] = scale;
+				this.scales.radialScale = scale;
 			}
 
 			Chart.scaleService.update(this, this.chart.width, this.chart.height);
@@ -313,13 +313,13 @@
 
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				if (helpers.isDatasetVisible(dataset)) {
-					for (var elementIndex = 0; elementIndex < dataset.metaData.length; elementIndex++) {
-						if (dataset.metaData[elementIndex].inLabelRange(eventPosition.x, eventPosition.y)) {
+					helpers.each(dataset.metaData, function(element, elementIndex) {
+						if (element.inLabelRange(eventPosition.x, eventPosition.y)) {
 							helpers.each(dataset.metaData, function(element, index) {
 								elementsArray.push(element);
 							}, this);
 						}
-					}
+					}, this);
 				}
 			}, this);
 
@@ -428,8 +428,8 @@
 						break;
 					case 'label':
 					case 'dataset':
-						for (var i = 0; i < this.active.length; i++) {
-							this.data.datasets[this.active[i]._datasetIndex].controller.setHoverStyle(this.active[i]);
+						for (var j = 0; j < this.active.length; j++) {
+							this.data.datasets[this.active[j]._datasetIndex].controller.setHoverStyle(this.active[j]);
 						}
 						break;
 					default:

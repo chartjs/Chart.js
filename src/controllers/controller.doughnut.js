@@ -92,7 +92,7 @@
 			// Make sure that we handle number of datapoints changing
 			if (numData < numArcs) {
 				// Remove excess bars for data points that have been removed
-				this.getDataset().metaData.splice(numData, numArcs - numData)
+				this.getDataset().metaData.splice(numData, numArcs - numData);
 			} else if (numData > numArcs) {
 				// Add new elements
 				for (var index = numArcs; index < numData; ++index) {
