@@ -34,6 +34,6 @@
 		config.options = helpers.configMerge(defaultConfig, config.options);
 		config.type = 'line';
 		return new Chart(context, config);
-	}
+	};
 	
 }).call(this);

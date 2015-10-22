@@ -87,7 +87,7 @@
 			// Make sure that we handle number of datapoints changing
 			if (numData < numPoints) {
 				// Remove excess bars for data points that have been removed
-				this.getDataset().metaData.splice(numData, numPoints - numData)
+				this.getDataset().metaData.splice(numData, numPoints - numData);
 			} else if (numData > numPoints) {
 				// Add new elements
 				for (var index = numPoints; index < numData; ++index) {
@@ -206,12 +206,4 @@
 		},
 
 	});
-
-
-
-	return;
-
-
-	Chart.Type.extend({});
-
 }).call(this);

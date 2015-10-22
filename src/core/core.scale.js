@@ -114,7 +114,7 @@
 
 				// Reset position before calculating rotation
 				this.top = 0;
-				this.bottom = this.height
+				this.bottom = this.height;
 			}
 
 			// Reset padding

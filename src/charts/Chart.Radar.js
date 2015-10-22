@@ -14,6 +14,6 @@
 		config.type = 'radar';
 
 		return new Chart(context, config);
-	}
+	};
 	
 }).call(this);

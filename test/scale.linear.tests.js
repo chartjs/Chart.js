@@ -1396,6 +1396,9 @@ describe('Linear Scale', function() {
 		}, {
 			"name": "rotate",
 			"args": [-1.5707963267948966]
+		},  {
+			"name": "setFillStyle",
+			"args": ["#666"]
 		}, {
 			"name": "setFillStyle",
 			"args": ["#666"]

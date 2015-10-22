@@ -9,6 +9,6 @@
 		config.type = 'line';
 
 		return new Chart(context, config);
-	}
+	};
 	
 }).call(this);
