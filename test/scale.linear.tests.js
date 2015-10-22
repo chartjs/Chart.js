@@ -1400,9 +1400,6 @@ describe('Linear Scale', function() {
 			"name": "setFillStyle",
 			"args": ["#666"]
 		}, {
-			"name": "setFillStyle",
-			"args": ["#666"]
-		}, {
 			"name": "fillText",
 			"args": ["", 0, 0]
 		}, {
