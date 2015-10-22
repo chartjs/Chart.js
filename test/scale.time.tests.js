@@ -135,6 +135,9 @@ describe('Time scale tests', function() {
 
 		var mockData = {
 			labels: ["2015-01-01T20:00:00", "2015-01-02T21:00:00", "2015-01-03T22:00:00", "2015-01-05T23:00:00", "2015-01-07T03:00", "2015-01-08T10:00", "2015-01-10T12:00"], // days
+			datasets: [{
+				data: [],
+			}]
 		};
 
 		var mockContext = window.createMockContext();
