@@ -1,7 +1,7 @@
 /*!
  * Chart.js
  * http://chartjs.org/
- * Version: 1.0.2
+ * Version: 1.0.2-outware
  *
  * Copyright 2015 Nick Downie
  * Released under the MIT license
@@ -2617,6 +2617,7 @@
 					datasetObject.points.push(new this.PointClass({
 						value : dataPoint,
 						label : data.labels[index],
+						hoverLabel : data.hoverLabels ? data.hoverLabels[index] : data.labels[index],
 						datasetLabel: dataset.label,
 						strokeColor : dataset.pointStrokeColor,
 						fillColor : dataset.pointColor,
