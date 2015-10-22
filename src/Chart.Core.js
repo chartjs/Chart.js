@@ -1103,6 +1103,7 @@
 						title: template(this.options.tooltipTitleTemplate,ChartElements[0]),
 						chart: this.chart,
 						ctx: this.chart.ctx,
+            element: Element,
 						custom: this.options.customTooltips
 					}).draw();
 
@@ -1123,6 +1124,7 @@
 							cornerRadius: this.options.tooltipCornerRadius,
 							text: template(this.options.tooltipTemplate, Element),
 							chart: this.chart,
+              element: Element,
 							custom: this.options.customTooltips
 						}).draw();
 					}, this);
