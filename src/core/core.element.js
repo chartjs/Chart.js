@@ -4,7 +4,7 @@
 
 	//Declare root variable - window in the browser, global on the server
 	var root = this,
-		previous = root.Chart,
+		Chart = root.Chart,
 		helpers = Chart.helpers;
 
 	Chart.elements = {};
