@@ -371,6 +371,7 @@
 		},
 		eventHandler: function eventHandler(e) {
 			this.lastActive = this.lastActive || [];
+			this.lastTooltipActive = this.lastTooltipActive || [];
 
 			// Find Active Elements for hover and tooltips
 			if (e.type == 'mouseout') {
@@ -484,10 +485,19 @@
 					}
 				}, this);
 
+				helpers.each(this.tooltipActive, function(element, index) {
+					if (element !== this.lastTooltipActive[index]) {
+						changed = true;
+					}
+				}, this);
+
 				// If entering, leaving, or changing elements, animate the change via pivot
 				if ((!this.lastActive.length && this.active.length) ||
 					(this.lastActive.length && !this.active.length) ||
-					(this.lastActive.length && this.active.length && changed)) {
+					(this.lastActive.length && this.active.length && changed) ||
+					(!this.lastTooltipActive.length && this.tooltipActive.length) ||
+					(this.lastTooltipActive.length && !this.tooltipActive.length) ||
+					(this.lastTooltipActive.length && this.tooltipActive.length && changed)) {
 
 					this.stop();
 
@@ -497,8 +507,9 @@
 				}
 			}
 
-			// Remember Last Active
+			// Remember Last Actives
 			this.lastActive = this.active;
+			this.lastTooltipActive = this.tooltipActive;
 			return this;
 		},
 	});
