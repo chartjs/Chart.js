@@ -3,9 +3,9 @@
 
 <head>
     <title>Time Scale Point Data</title>
-    <script src="../node_modules/moment/min/moment.min.js"></script>
+    <script src="../bower_components/moment/min/moment.min.js"></script>
     <script src="../Chart.js"></script>
-    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
     <style>
         canvas {
             -webkit-box-shadow: 0 0 20px 0 rgba(0, 0, 0, .5);
@@ -46,8 +46,15 @@
         };
 
         var config = {
-            type: 'line',
+            type: 'line',            
             data: {
+                labels: [
+                  "12/31/2014 06:00",
+                  "01/04/2015 13:00",
+                  "01/07/2015 01:15",
+                  "01/15/2015 01:15"
+                ],
+
                 datasets: [{
                     label: "Dataset with point data",
                     data: [{
