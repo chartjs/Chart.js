@@ -91,8 +91,21 @@
 			// Element defaults defined in element extensions
 			elements: {},
 
-			// Legend template string
-			legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i = 0; i < data.datasets.length; i++){%><li><span style=\"background-color:<%=data.datasets[i].backgroundColor%>\"><%if(data.datasets[i].label){%><%=data.datasets[i].label%><%}%></span></li><%}%></ul>",
+			// Legend callback string
+			legendCallback: function(chart) {
+				var text = [];
+				text.push('<ul class="' + chart.id + '-legend">');
+				for (var i = 0; i < chart.data.datasets.length; i++) {
+					text.push('<li><span style="background-color:' + chart.data.datasets[i].backgroundColor + '">');
+					if (chart.data.datasets[i].label) {
+						text.push(chart.data.datasets[i].label);
+					}
+					text.push('</span></li>');
+				}
+				text.push('</ul>');
+
+				return text.join("");
+			}
 		},
 	};
 

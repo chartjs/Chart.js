@@ -9,34 +9,70 @@
 	Chart.defaults.global.tooltips = {
 		enabled: true,
 		custom: null,
+		mode: 'single',
 		backgroundColor: "rgba(0,0,0,0.8)",
-		fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-		fontSize: 10,
-		fontStyle: "normal",
-		fontColor: "#fff",
 		titleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 		titleFontSize: 12,
 		titleFontStyle: "bold",
-		titleFontColor: "#fff",
+		titleSpacing: 2,
+		titleMarginBottom: 6,
+		titleColor: "#fff",
+		titleAlign: "left",
+		bodyFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+		bodyFontSize: 12,
+		bodyFontStyle: "normal",
+		bodySpacing: 2,
+		bodyColor: "#fff",
+		bodyAlign: "left",
+		footerFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+		footerFontSize: 12,
+		footerFontStyle: "bold",
+		footerSpacing: 2,
+		footerMarginTop: 6,
+		footerColor: "#fff",
+		footerAlign: "left",
 		yPadding: 6,
 		xPadding: 6,
-		caretSize: 8,
+		caretSize: 5,
 		cornerRadius: 6,
 		xOffset: 10,
-		template: [
-			'<% if(label){ %>',
-			'<%=label %>: ',
-			'<% } %>',
-			'<%=value %>',
-		].join(''),
-		multiTemplate: [
-			'<%if (datasetLabel){ %>',
-			'<%=datasetLabel %>: ',
-			'<% } %>',
-			'<%=value %>'
-		].join(''),
 		multiKeyBackground: '#fff',
+		callbacks: {
+			beforeTitle: helpers.noop,
+			title: function(xLabel, yLabel, index, datasetIndex, data) {
+				// Pick first label for now
+				return helpers.isArray(xLabel) ? xLabel[0] : xLabel;
+			},
+			afterTitle: helpers.noop,
+
+			beforeBody: helpers.noop,
+
+			beforeLabel: helpers.noop,
+			label: function(xLabel, yLabel, index, datasetIndex, data) {
+				return this._data.datasets[datasetIndex].label + ': ' + yLabel;
+			},
+			afterLabel: helpers.noop,
+
+			afterBody: helpers.noop,
+
+			beforeFooter: helpers.noop,
+			footer: helpers.noop,
+			afterFooter: helpers.noop,
+		},
 	};
+
+	// Helper to push or concat based on if the 2nd parameter is an array or not
+	function pushOrConcat(base, toPush) {
+		if (toPush) {
+			if (helpers.isArray(toPush)) {
+				base = base.concat(toPush);
+			} else {
+				base.push(toPush);
+			}
+		}
+
+		return base;
+	}
 
 	Chart.Tooltip = Chart.Element.extend({
 		initialize: function() {
@@ -48,20 +84,34 @@
 					yPadding: options.tooltips.yPadding,
 					xOffset: options.tooltips.xOffset,
 
-					// Labels
-					textColor: options.tooltips.fontColor,
-					_fontFamily: options.tooltips.fontFamily,
-					_fontStyle: options.tooltips.fontStyle,
-					fontSize: options.tooltips.fontSize,
+					// Body
+					bodyColor: options.tooltips.bodyColor,
+					_bodyFontFamily: options.tooltips.bodyFontFamily,
+					_bodyFontStyle: options.tooltips.bodyFontStyle,
+					bodyFontSize: options.tooltips.bodyFontSize,
+					bodySpacing: options.tooltips.bodySpacing,
+					_bodposition: options.tooltips.bodposition,
 
 					// Title
-					titleTextColor: options.tooltips.titleFontColor,
+					titleColor: options.tooltips.titleColor,
 					_titleFontFamily: options.tooltips.titleFontFamily,
 					_titleFontStyle: options.tooltips.titleFontStyle,
 					titleFontSize: options.tooltips.titleFontSize,
+					_titleAlign: options.tooltips.titleAlign,
+					titleSpacing: options.tooltips.titleSpacing,
+					titleMarginBottom: options.tooltips.titleMarginBottom,
+
+					// Footer
+					footerColor: options.tooltips.footerColor,
+					_footerFontFamily: options.tooltips.footerFontFamily,
+					_footerFontStyle: options.tooltips.footerFontStyle,
+					footerFontSize: options.tooltips.footerFontSize,
+					_footerAlign: options.tooltips.footerAlign,
+					footerSpacing: options.tooltips.footerSpacing,
+					footerMarginTop: options.tooltips.footerMarginTop,
 
 					// Appearance
-					caretHeight: options.tooltips.caretSize,
+					caretSize: options.tooltips.caretSize,
 					cornerRadius: options.tooltips.cornerRadius,
 					backgroundColor: options.tooltips.backgroundColor,
 					opacity: 0,
@@ -69,140 +119,144 @@
 				},
 			});
 		},
+
+		// Get the title 
+		getTitle: function() {
+			var beforeTitle = this._options.tooltips.callbacks.beforeTitle.apply(this, arguments),
+				title = this._options.tooltips.callbacks.title.apply(this, arguments),
+				afterTitle = this._options.tooltips.callbacks.afterTitle.apply(this, arguments);
+
+			var lines = [];
+			lines = pushOrConcat(lines, beforeTitle);
+			lines = pushOrConcat(lines, title);
+			lines = pushOrConcat(lines, afterTitle);
+
+			return lines;
+		},
+
+		getBeforeBody: function(xLabel, yLabel, index, datasetIndex, data) {
+			var lines = this._options.tooltips.callbacks.beforeBody.call(this, xLabel, yLabel, index, datasetIndex, data);
+			return helpers.isArray(lines) ? lines : [lines];
+		},
+
+		getBody: function(xLabel, yLabel, index, datasetIndex) {
+
+			var lines = [];
+
+			var beforeLabel,
+				afterLabel,
+				label;
+
+			if (helpers.isArray(xLabel)) {
+
+				var labels = [];
+
+				// Run EACH label pair through the label callback this time.
+				for (var i = 0; i < xLabel.length; i++) {
+
+					beforeLabel = this._options.tooltips.callbacks.beforeLabel.call(this, xLabel[i], yLabel[i], index, datasetIndex);
+					afterLabel = this._options.tooltips.callbacks.afterLabel.call(this, xLabel[i], yLabel[i], index, datasetIndex);
+
+					labels.push((beforeLabel ? beforeLabel : '') + this._options.tooltips.callbacks.label.call(this, xLabel[i], yLabel[i], index, datasetIndex) + (afterLabel ? afterLabel : ''));
+
+				}
+
+				if (labels.length) {
+					lines = lines.concat(labels);
+				}
+
+			} else {
+
+				// Run the single label through the callback
+
+				beforeLabel = this._options.tooltips.callbacks.beforeLabel.apply(this, arguments);
+				label = this._options.tooltips.callbacks.label.apply(this, arguments);
+				afterLabel = this._options.tooltips.callbacks.afterLabel.apply(this, arguments);
+
+				if (beforeLabel || label || afterLabel) {
+					lines.push((beforeLabel ? afterLabel : '') + label + (afterLabel ? afterLabel : ''));
+				}
+			}
+
+			return lines;
+		},
+
+		getAfterBody: function(xLabel, yLabel, index, datasetIndex, data) {
+			var lines = this._options.tooltips.callbacks.afterBody.call(this, xLabel, yLabel, index, datasetIndex, data);
+			return helpers.isArray(lines) ? lines : [lines];
+		},
+
+		// Get the footer and beforeFooter and afterFooter lines
+		getFooter: function() {
+			var beforeFooter = this._options.tooltips.callbacks.beforeFooter.apply(this, arguments);
+			var footer = this._options.tooltips.callbacks.footer.apply(this, arguments);
+			var afterFooter = this._options.tooltips.callbacks.afterFooter.apply(this, arguments);
+
+			var lines = [];
+			lines = pushOrConcat(lines, beforeFooter);
+			lines = pushOrConcat(lines, footer);
+			lines = pushOrConcat(lines, afterFooter);
+
+			return lines;
+		},
+
 		update: function() {
 
 			var ctx = this._chart.ctx;
 
-			switch (this._options.hover.mode) {
-				case 'single':
-					helpers.extend(this._model, {
-						text: helpers.template(this._options.tooltips.template, {
-							// These variables are available in the template function. Add others here
-							element: this._active[0],
-							value: this._data.datasets[this._active[0]._datasetIndex].data[this._active[0]._index],
-							label: this._active[0]._model.label !== undefined ? this._active[0]._model.label : this._data.labels ? this._data.labels[this._active[0]._index] : '',
-						}),
-					});
+			var element = this._active[0],
+				xLabel,
+				yLabel,
+				labelColors = [],
+				tooltipPosition;
 
-					var tooltipPosition = this._active[0].tooltipPosition();
-					helpers.extend(this._model, {
-						x: Math.round(tooltipPosition.x),
-						y: Math.round(tooltipPosition.y),
-						caretPadding: tooltipPosition.padding
-					});
+			if (this._options.tooltips.mode == 'single') {
 
-					break;
+				xLabel = element._xScale.getLabelForIndex(element._index, element._datasetIndex);
+				yLabel = element._yScale.getLabelForIndex(element._index, element._datasetIndex);
+				tooltipPosition = this._active[0].tooltipPosition();
 
-				case 'label':
+			} else {
 
-					// Tooltip Content
+				xLabel = [];
+				yLabel = [];
 
-					var dataArray,
-						dataIndex;
-
-					var labels = [],
-						colors = [];
-
-					for (var i = this._data.datasets.length - 1; i >= 0; i--) {
-						dataArray = this._data.datasets[i].metaData;
-						dataIndex = helpers.indexOf(dataArray, this._active[0]);
-						if (dataIndex !== -1) {
-							break;
-						}
+				helpers.each(this._data.datasets, function(dataset, datasetIndex) {
+					if (!helpers.isDatasetVisible(dataset)) {
+						return;
 					}
+					xLabel.push(element._xScale.getLabelForIndex(element._index, datasetIndex));
+					yLabel.push(element._yScale.getLabelForIndex(element._index, datasetIndex));
+				});
 
-					var medianPosition = (function(index) {
-						// Get all the points at that particular index
-						var elements = [],
-							dataCollection,
-							xPositions = [],
-							yPositions = [],
-							xMax,
-							yMax,
-							xMin,
-							yMin;
-						helpers.each(this._data.datasets, function(dataset) {
-							dataCollection = dataset.metaData;
-							if (dataCollection[dataIndex] && dataCollection[dataIndex].hasValue()) {
-								elements.push(dataCollection[dataIndex]);
-							}
-						}, this);
-
-						// Reverse labels if stacked
-						helpers.each(this._options.stacked ? elements.reverse() : elements, function(element) {
-							xPositions.push(element._view.x);
-							yPositions.push(element._view.y);
-
-							//Include any colour information about the element
-							labels.push(helpers.template(this._options.tooltips.multiTemplate, {
-								// These variables are available in the template function. Add others here
-								element: element,
-								datasetLabel: this._data.datasets[element._datasetIndex].label,
-								value: this._data.datasets[element._datasetIndex].data[element._index],
-							}));
-							colors.push({
-								fill: element._view.backgroundColor,
-								stroke: element._view.borderColor
-							});
-
-						}, this);
-
-						yMin = helpers.min(yPositions);
-						yMax = helpers.max(yPositions);
-
-						xMin = helpers.min(xPositions);
-						xMax = helpers.max(xPositions);
-
-						return {
-							x: (xMin > this._chart.width / 2) ? xMin : xMax,
-							y: (yMin + yMax) / 2,
-						};
-					}).call(this, dataIndex);
-
-					// Apply for now
-					helpers.extend(this._model, {
-						x: medianPosition.x,
-						y: medianPosition.y,
-						labels: labels,
-						title: (function() {
-							return this._data.timeLabels ? this._data.timeLabels[this._active[0]._index] :
-								(this._data.labels && this._data.labels.length) ? this._data.labels[this._active[0]._index] :
-								'';
-						}).call(this),
-						legendColors: colors,
-						legendBackgroundColor: this._options.tooltips.multiKeyBackground,
+				helpers.each(this._active, function(active, i) {
+					labelColors.push({
+						borderColor: active._view.borderColor,
+						backgroundColor: active._view.backgroundColor
 					});
+				}, this);
 
+				tooltipPosition = this._active[0].tooltipPosition();
+				tooltipPosition.y = this._active[0]._yScale.getPixelForDecimal(0.5);
 
-					// Calculate Appearance Tweaks
-
-					this._model.height = (labels.length * this._model.fontSize) + ((labels.length - 1) * (this._model.fontSize / 2)) + (this._model.yPadding * 2) + this._model.titleFontSize * 1.5;
-
-					var titleWidth = ctx.measureText(this._model.title).width,
-						//Label has a legend square as well so account for this.
-						labelWidth = helpers.longestText(ctx, this.font, labels) + this._model.fontSize + 3,
-						longestTextWidth = helpers.max([labelWidth, titleWidth]);
-
-					this._model.width = longestTextWidth + (this._model.xPadding * 2);
-
-
-					var halfHeight = this._model.height / 2;
-
-					//Check to ensure the height will fit on the canvas
-					if (this._model.y - halfHeight < 0) {
-						this._model.y = halfHeight;
-					} else if (this._model.y + halfHeight > this._chart.height) {
-						this._model.y = this._chart.height - halfHeight;
-					}
-
-					//Decide whether to align left or right based on position on canvas
-					if (this._model.x > this._chart.width / 2) {
-						this._model.x -= this._model.xOffset + this._model.width;
-					} else {
-						this._model.x += this._model.xOffset;
-					}
-					break;
 			}
+
+
+			// Build the Text Lines
+			helpers.extend(this._model, {
+				title: this.getTitle(xLabel, yLabel, element._index, element._datasetIndex, this._data),
+				beforeBody: this.getBeforeBody(xLabel, yLabel, element._index, element._datasetIndex, this._data),
+				body: this.getBody(xLabel, yLabel, element._index, element._datasetIndex, this._data),
+				afterBody: this.getAfterBody(xLabel, yLabel, element._index, element._datasetIndex, this._data),
+				footer: this.getFooter(xLabel, yLabel, element._index, element._datasetIndex, this._data),
+			});
+
+			helpers.extend(this._model, {
+				x: Math.round(tooltipPosition.x),
+				y: Math.round(tooltipPosition.y),
+				caretPadding: tooltipPosition.padding,
+				labelColors: labelColors,
+			});
 
 			return this;
 		},
@@ -211,136 +265,203 @@
 			var ctx = this._chart.ctx;
 			var vm = this._view;
 
-			switch (this._options.hover.mode) {
-				case 'single':
-
-					ctx.font = helpers.fontString(vm.fontSize, vm._fontStyle, vm._fontFamily);
-
-					vm.xAlign = "center";
-					vm.yAlign = "above";
-
-					//Distance between the actual element.y position and the start of the tooltip caret
-					var caretPadding = vm.caretPadding || 2;
-
-					var tooltipWidth = ctx.measureText(vm.text).width + 2 * vm.xPadding,
-						tooltipRectHeight = vm.fontSize + 2 * vm.yPadding,
-						tooltipHeight = tooltipRectHeight + vm.caretHeight + caretPadding;
-
-					if (vm.x + tooltipWidth / 2 > this._chart.width) {
-						vm.xAlign = "left";
-					} else if (vm.x - tooltipWidth / 2 < 0) {
-						vm.xAlign = "right";
-					}
-
-					if (vm.y - tooltipHeight < 0) {
-						vm.yAlign = "below";
-					}
-
-					var tooltipX = vm.x - tooltipWidth / 2,
-						tooltipY = vm.y - tooltipHeight;
-
-					ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
-
-					// Custom Tooltips
-					if (this._options.tooltips.custom) {
-						this._options.tooltips.custom(this);
-					}
-					if (!this._options.tooltips.enabled) {
-						return;
-					}
-
-					switch (vm.yAlign) {
-						case "above":
-							//Draw a caret above the x/y
-							ctx.beginPath();
-							ctx.moveTo(vm.x, vm.y - caretPadding);
-							ctx.lineTo(vm.x + vm.caretHeight, vm.y - (caretPadding + vm.caretHeight));
-							ctx.lineTo(vm.x - vm.caretHeight, vm.y - (caretPadding + vm.caretHeight));
-							ctx.closePath();
-							ctx.fill();
-							break;
-						case "below":
-							tooltipY = vm.y + caretPadding + vm.caretHeight;
-							//Draw a caret below the x/y
-							ctx.beginPath();
-							ctx.moveTo(vm.x, vm.y + caretPadding);
-							ctx.lineTo(vm.x + vm.caretHeight, vm.y + caretPadding + vm.caretHeight);
-							ctx.lineTo(vm.x - vm.caretHeight, vm.y + caretPadding + vm.caretHeight);
-							ctx.closePath();
-							ctx.fill();
-							break;
-					}
-
-					switch (vm.xAlign) {
-						case "left":
-							tooltipX = vm.x - tooltipWidth + (vm.cornerRadius + vm.caretHeight);
-							break;
-						case "right":
-							tooltipX = vm.x - (vm.cornerRadius + vm.caretHeight);
-							break;
-					}
-
-					helpers.drawRoundedRectangle(ctx, tooltipX, tooltipY, tooltipWidth, tooltipRectHeight, vm.cornerRadius);
-
-					ctx.fill();
-
-					ctx.fillStyle = helpers.color(vm.textColor).alpha(vm.opacity).rgbString();
-					ctx.textAlign = "center";
-					ctx.textBaseline = "middle";
-					ctx.fillText(vm.text, tooltipX + tooltipWidth / 2, tooltipY + tooltipRectHeight / 2);
-					break;
-				case 'label':
-
-					// Custom Tooltips
-					if (this._options.tooltips.custom) {
-						this._options.tooltips.custom(this);
-					}
-					if (!this._options.tooltips.enabled) {
-						return;
-					}
-
-					helpers.drawRoundedRectangle(ctx, vm.x, vm.y - vm.height / 2, vm.width, vm.height, vm.cornerRadius);
-					ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
-					ctx.fill();
-					ctx.closePath();
-
-					ctx.textAlign = "left";
-					ctx.textBaseline = "middle";
-					ctx.fillStyle = helpers.color(vm.titleTextColor).alpha(vm.opacity).rgbString();
-					ctx.font = helpers.fontString(vm.fontSize, vm._titleFontStyle, vm._titleFontFamily);
-					ctx.fillText(vm.title, vm.x + vm.xPadding, this.getLineHeight(0));
-
-					ctx.font = helpers.fontString(vm.fontSize, vm._fontStyle, vm._fontFamily);
-					helpers.each(vm.labels, function(label, index) {
-						ctx.fillStyle = helpers.color(vm.textColor).alpha(vm.opacity).rgbString();
-						ctx.fillText(label, vm.x + vm.xPadding + vm.fontSize + 3, this.getLineHeight(index + 1));
-
-						//A bit gnarly, but clearing this rectangle breaks when using explorercanvas (clears whole canvas)
-						//ctx.clearRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.fontSize/2, vm.fontSize, vm.fontSize);
-						//Instead we'll make a white filled block to put the legendColour palette over.
-
-						ctx.fillStyle = helpers.color(vm.legendColors[index].stroke).alpha(vm.opacity).rgbString();
-						ctx.fillRect(vm.x + vm.xPadding - 1, this.getLineHeight(index + 1) - vm.fontSize / 2 - 1, vm.fontSize + 2, vm.fontSize + 2);
-
-						ctx.fillStyle = helpers.color(vm.legendColors[index].fill).alpha(vm.opacity).rgbString();
-						ctx.fillRect(vm.x + vm.xPadding, this.getLineHeight(index + 1) - vm.fontSize / 2, vm.fontSize, vm.fontSize);
-
-
-					}, this);
-					break;
+			if (this._view.opacity === 0) {
+				return;
 			}
-		},
-		getLineHeight: function(index) {
-			var baseLineHeight = this._view.y - (this._view.height / 2) + this._view.yPadding,
-				afterTitleIndex = index - 1;
 
-			//If the index is zero, we're getting the title
-			if (index === 0) {
-				return baseLineHeight + this._view.titleFontSize / 2;
+			// Get Dimensions
+
+			vm.position = "top";
+
+			var caretPadding = vm.caretPadding || 2;
+
+			var combinedBodyLength = vm.body.length + vm.beforeBody.length + vm.afterBody.length;
+
+			// Height
+			var tooltipHeight = vm.yPadding * 2; // Tooltip Padding
+
+			tooltipHeight += vm.title.length * vm.titleFontSize; // Title Lines
+			tooltipHeight += (vm.title.length - 1) * vm.titleSpacing; // Title Line Spacing
+			tooltipHeight += vm.title.length ? vm.titleMarginBottom : 0; // Title's bottom Margin
+
+			tooltipHeight += combinedBodyLength * vm.bodyFontSize; // Body Lines
+			tooltipHeight += (combinedBodyLength - 1) * vm.bodySpacing; // Body Line Spacing
+
+			tooltipHeight += vm.footer.length ? vm.footerMarginTop : 0; // Footer Margin
+			tooltipHeight += vm.footer.length * (vm.footerFontSize); // Footer Lines
+			tooltipHeight += (vm.footer.length - 1) * vm.footerSpacing; // Footer Line Spacing
+
+			// Width
+			var tooltipWidth = 0;
+			helpers.each(vm.title, function(line, i) {
+				ctx.font = helpers.fontString(vm.titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
+				tooltipWidth = Math.max(tooltipWidth, ctx.measureText(line).width);
+			});
+			helpers.each(vm.body, function(line, i) {
+				ctx.font = helpers.fontString(vm.bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
+				tooltipWidth = Math.max(tooltipWidth, ctx.measureText(line).width + (this._options.tooltips.mode != 'single' ? (vm.bodyFontSize + 2) : 0));
+			}, this);
+			helpers.each(vm.footer, function(line, i) {
+				ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
+				tooltipWidth = Math.max(tooltipWidth, ctx.measureText(line).width);
+			});
+			tooltipWidth += 2 * vm.xPadding;
+			var tooltipTotalWidth = tooltipWidth + vm.caretSize + caretPadding;
+
+
+
+			// Smart Tooltip placement to stay on the canvas
+			// Top, center, or bottom
+			vm.yAlign = "center";
+			if (vm.y - (tooltipHeight / 2) < 0) {
+				vm.yAlign = "top";
+			} else if (vm.y + (tooltipHeight / 2) > this._chart.height) {
+				vm.yAlign = "bottom";
+			}
+
+
+			// Left or Right
+			vm.xAlign = "right";
+			if (vm.x + tooltipTotalWidth > this._chart.width) {
+				vm.xAlign = "left";
+			}
+
+
+			// Background Position
+			var tooltipX = vm.x,
+				tooltipY = vm.y;
+
+			if (vm.yAlign == 'top') {
+				tooltipY = vm.y - vm.caretSize - vm.cornerRadius;
+			} else if (vm.yAlign == 'bottom') {
+				tooltipY = vm.y - tooltipHeight + vm.caretSize + vm.cornerRadius;
 			} else {
-				return baseLineHeight + ((this._view.fontSize * 1.5 * afterTitleIndex) + this._view.fontSize / 2) + this._view.titleFontSize * 1.5;
+				tooltipY = vm.y - (tooltipHeight / 2);
 			}
 
+			if (vm.xAlign == 'left') {
+				tooltipX = vm.x - tooltipTotalWidth;
+			} else if (vm.xAlign == 'right') {
+				tooltipX = vm.x + caretPadding + vm.caretSize;
+			} else {
+				tooltipX = vm.x + (tooltipTotalWidth / 2);
+			}
+
+			// Draw Background
+
+			if (this._options.tooltips.enabled) {
+				ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
+				helpers.drawRoundedRectangle(ctx, tooltipX, tooltipY, tooltipWidth, tooltipHeight, vm.cornerRadius);
+				ctx.fill();
+			}
+
+
+			// Draw Caret
+			if (this._options.tooltips.enabled) {
+				ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
+
+				if (vm.xAlign == 'left') {
+
+					ctx.beginPath();
+					ctx.moveTo(vm.x - caretPadding, vm.y);
+					ctx.lineTo(vm.x - caretPadding - vm.caretSize, vm.y - vm.caretSize);
+					ctx.lineTo(vm.x - caretPadding - vm.caretSize, vm.y + vm.caretSize);
+					ctx.closePath();
+					ctx.fill();
+				} else {
+					ctx.beginPath();
+					ctx.moveTo(vm.x + caretPadding, vm.y);
+					ctx.lineTo(vm.x + caretPadding + vm.caretSize, vm.y - vm.caretSize);
+					ctx.lineTo(vm.x + caretPadding + vm.caretSize, vm.y + vm.caretSize);
+					ctx.closePath();
+					ctx.fill();
+				}
+			}
+
+			// Draw Title, Body, and Footer
+
+			if (this._options.tooltips.enabled) {
+
+				var yBase = tooltipY + vm.yPadding;
+				var xBase = tooltipX + vm.xPadding;
+
+				// Titles
+
+				if (vm.title.length) {
+					ctx.textAlign = vm._titleAlign;
+					ctx.textBaseline = "top";
+					ctx.fillStyle = helpers.color(vm.titleColor).alpha(vm.opacity).rgbString();
+					ctx.font = helpers.fontString(vm.titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
+
+					helpers.each(vm.title, function(title, i) {
+						ctx.fillText(title, xBase, yBase);
+						yBase += vm.titleFontSize + vm.titleSpacing; // Line Height and spacing
+						if (i + 1 == vm.title.length) {
+							yBase += vm.titleMarginBottom - vm.titleSpacing; // If Last, add margin, remove spacing
+						}
+					}, this);
+				}
+
+
+				// Body
+				ctx.textAlign = vm._bodyAlign;
+				ctx.textBaseline = "top";
+				ctx.fillStyle = helpers.color(vm.bodyColor).alpha(vm.opacity).rgbString();
+				ctx.font = helpers.fontString(vm.bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
+
+				// Before Body
+				helpers.each(vm.beforeBody, function(beforeBody, i) {
+					ctx.fillText(vm.beforeBody, xBase, yBase);
+					yBase += vm.bodyFontSize + vm.bodySpacing;
+				});
+
+				helpers.each(vm.body, function(body, i) {
+
+
+					// Draw Legend-like boxes if needed
+					if (this._options.tooltips.mode != 'single') {
+						ctx.fillStyle = helpers.color(vm.labelColors[i].borderColor).alpha(vm.opacity).rgbString();
+						ctx.fillRect(xBase, yBase, vm.bodyFontSize, vm.bodyFontSize);
+
+						ctx.fillStyle = helpers.color(vm.labelColors[i].backgroundColor).alpha(vm.opacity).rgbString();
+						ctx.fillRect(xBase + 1, yBase + 1, vm.bodyFontSize - 2, vm.bodyFontSize - 2);
+
+						ctx.fillStyle = helpers.color(vm.bodyColor).alpha(vm.opacity).rgbString(); // Return fill style for text
+					}
+
+					// Body Line
+					ctx.fillText(body, xBase + (this._options.tooltips.mode != 'single' ? (vm.bodyFontSize + 2) : 0), yBase);
+
+					yBase += vm.bodyFontSize + vm.bodySpacing;
+
+				}, this);
+
+				// After Body
+				helpers.each(vm.afterBody, function(afterBody, i) {
+					ctx.fillText(vm.afterBody, xBase, yBase);
+					yBase += vm.bodyFontSize;
+				});
+
+				yBase -= vm.bodySpacing; // Remove last body spacing
+
+
+				// Footer
+				if (vm.footer.length) {
+
+					yBase += vm.footerMarginTop;
+
+					ctx.textAlign = vm._footerAlign;
+					ctx.textBaseline = "top";
+					ctx.fillStyle = helpers.color(vm.footerColor).alpha(vm.opacity).rgbString();
+					ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
+
+					helpers.each(vm.footer, function(footer, i) {
+						ctx.fillText(footer, xBase, yBase);
+						yBase += vm.footerFontSize + vm.footerSpacing;
+					}, this);
+				}
+
+			}
 		},
 	});
 

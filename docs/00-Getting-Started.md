@@ -101,8 +101,22 @@ Chart.defaults.global = {
     // Element defaults defined in element extensions
     elements: {},
 
-    // Legend template string
-    legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i = 0; i < data.datasets.length; i++){%><li><span style=\"background-color:<%=data.datasets[i].backgroundColor%>\"><%if(data.datasets[i].label){%><%=data.datasets[i].label%><%}%></span></li><%}%></ul>",
+    // Legend callback function. 
+    // @param {Chart} chart : the chart object to generate a legend for
+    legendCallback: legendCallback: function(chart) {
+        var text = [];
+        text.push('<ul class="' + chart.id + '-legend">');
+        for (var i = 0; i < chart.data.datasets.length; i++) {
+            text.push('<li><span style="background-color:' + chart.data.datasets[i].backgroundColor + '">');
+            if (chart.data.datasets[i].label) {
+                text.push(chart.data.datasets[i].label);
+            }
+            text.push('</span></li>');
+        }
+        text.push('</ul>');
+
+        return text.join("");
+    }
 
     animation: {
         duration: 1000,
@@ -128,18 +142,38 @@ Chart.defaults.global = {
         caretSize: 8,
         cornerRadius: 6,
         xOffset: 10,
-        template: [
-            '<% if(label){ %>',
-            '<%=label %>: ',
-            '<% } %>',
-            '<%=value %>',
-        ].join(''),
-        multiTemplate: [
-            '<%if (datasetLabel){ %>',
-            '<%=datasetLabel %>: ',
-            '<% } %>',
-            '<%=value %>'
-        ].join(''),
+        // V2.0 introduces callback functions as a replacement for the template engine in v1. The tooltip
+        // has the following callbacks for providing text. For all functions, 'this' will be the tooltip object
+        // create from the Chart.Tooltip constructor
+        //
+        // All functions are called with the same arguments
+        // - xLabel : string or array of strings. This is the xDataValue for each item to be displayed in the tooltip
+        // - yLabel : string or array of strings. This is the yDataValue for each item to be displayed in the tooltip
+        // - index : number. Data index
+        // - datasetIndex : number. Dataset index 
+        // - data : object. Data object passed to chart
+        callbacks: {
+            beforeTitle: helpers.noop,
+            title: function(xLabel, yLabel, index, datasetIndex, data) {
+                // If there are multiple items, use the xLabel of the 
+                return helpers.isArray(xLabel) ? xLabel[0] : xLabel;
+            },
+            afterTitle: helpers.noop,
+
+            beforeBody: helpers.noop,
+
+            beforeLabel: helpers.noop,
+            label: function(xLabel, yLabel, index, datasetIndex, data) {
+                return this._data.datasets[datasetIndex].label + ': ' + yLabel;
+            },
+            afterLabel: helpers.noop,
+
+            afterBody: helpers.noop,
+
+            beforeFooter: helpers.noop,
+            footer: helpers.noop,
+            afterFooter: helpers.noop,
+        },
         multiKeyBackground: '#fff',
     },
 

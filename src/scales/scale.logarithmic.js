@@ -10,7 +10,15 @@
 
 		// label settings
 		ticks: {
-			template: "<%var remain = value / (Math.pow(10, Math.floor(Chart.helpers.log10(value))));if (remain === 1 || remain === 2 || remain === 5) {%><%=value.toExponential()%><%} else {%><%= null %><%}%>",
+			callback: function(value) {
+				var remain = value / (Math.pow(10, Math.floor(Chart.helpers.log10(value))));
+
+				if (remain === 1 || remain === 2 || remain === 5) {
+					return value.toExponential()
+				} else {
+					return '';
+				}
+			}
 		}
 	};
 
@@ -121,9 +129,9 @@
 
 			this.ticks = this.tickValues.slice();
 		},
-		// Get the correct value. If the value type is object get the x or y based on whether we are horizontal or not
-		getRightValue: function(rawValue) {
-			return typeof rawValue === "object" ? (this.isHorizontal() ? rawValue.x : rawValue.y) : rawValue;
+		// Get the correct tooltip label
+		getLabelForIndex: function(index, datasetIndex) {
+			return this.getRightValue(this.data.datasets[datasetIndex].data[index]);
 		},
 		getPixelForTick: function(index, includeOffset) {
 			return this.getPixelForValue(this.tickValues[index], null, null, includeOffset);

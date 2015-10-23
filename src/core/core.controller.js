@@ -327,7 +327,7 @@
 		},
 
 		generateLegend: function generateLegend() {
-			return helpers.template(this.options.legendTemplate, this);
+			return this.options.legendCallback(this);
 		},
 
 		destroy: function destroy() {
@@ -371,13 +371,26 @@
 		},
 		eventHandler: function eventHandler(e) {
 			this.lastActive = this.lastActive || [];
+			this.lastTooltipActive = this.lastTooltipActive || [];
 
-			// Find Active Elements
+			// Find Active Elements for hover and tooltips
 			if (e.type == 'mouseout') {
-				this.active = [];
+				this.active = this.tooltipActive = [];
 			} else {
 				this.active = function() {
 					switch (this.options.hover.mode) {
+						case 'single':
+							return this.getElementAtEvent(e);
+						case 'label':
+							return this.getElementsAtEvent(e);
+						case 'dataset':
+							return this.getDatasetAtEvent(e);
+						default:
+							return e;
+					}
+				}.call(this);
+				this.tooltipActive = function() {
+					switch (this.options.tooltips.mode) {
 						case 'single':
 							return this.getElementAtEvent(e);
 						case 'label':
@@ -403,6 +416,7 @@
 
 			var dataset;
 			var index;
+
 			// Remove styling for last active (even if it may still be active)
 			if (this.lastActive.length) {
 				switch (this.options.hover.mode) {
@@ -445,11 +459,11 @@
 				this.tooltip.initialize();
 
 				// Active
-				if (this.active.length) {
+				if (this.tooltipActive.length) {
 					this.tooltip._model.opacity = 1;
 
 					helpers.extend(this.tooltip, {
-						_active: this.active,
+						_active: this.tooltipActive,
 					});
 
 					this.tooltip.update();
@@ -471,10 +485,19 @@
 					}
 				}, this);
 
+				helpers.each(this.tooltipActive, function(element, index) {
+					if (element !== this.lastTooltipActive[index]) {
+						changed = true;
+					}
+				}, this);
+
 				// If entering, leaving, or changing elements, animate the change via pivot
 				if ((!this.lastActive.length && this.active.length) ||
 					(this.lastActive.length && !this.active.length) ||
-					(this.lastActive.length && this.active.length && changed)) {
+					(this.lastActive.length && this.active.length && changed) ||
+					(!this.lastTooltipActive.length && this.tooltipActive.length) ||
+					(this.lastTooltipActive.length && !this.tooltipActive.length) ||
+					(this.lastTooltipActive.length && this.tooltipActive.length && changed)) {
 
 					this.stop();
 
@@ -484,8 +507,9 @@
 				}
 			}
 
-			// Remember Last Active
+			// Remember Last Actives
 			this.lastActive = this.active;
+			this.lastTooltipActive = this.tooltipActive;
 			return this;
 		},
 	});

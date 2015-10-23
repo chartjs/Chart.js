@@ -74,23 +74,73 @@
 	};
 
 	var TimeScale = Chart.Scale.extend({
+		getLabelMoment: function(datasetIndex, index) {
+			return this.labelMoments[datasetIndex][index];
+		},
+
+		buildLabelMoments: function() {
+			// Only parse these once. If the dataset does not have data as x,y pairs, we will use
+			// these 
+			var scaleLabelMoments = [];
+			if (this.data.labels && this.data.labels.length > 0) {
+				helpers.each(this.data.labels, function(label, index) {
+					var labelMoment = this.parseTime(label);
+					if (this.options.time.round) {
+						labelMoment.startOf(this.options.time.round);
+					}
+					scaleLabelMoments.push(labelMoment);
+				}, this);
+
+				if (this.options.time.min) {
+					this.firstTick = this.parseTime(this.options.time.min);
+				} else {
+					this.firstTick = moment.min.call(this, scaleLabelMoments);
+				}
+
+				if (this.options.time.max) {
+					this.lastTick = this.parseTime(this.options.time.max);
+				} else {
+					this.lastTick = moment.max.call(this, scaleLabelMoments);
+				}
+			} else {
+				this.firstTick = null;
+				this.lastTick = null;
+			}
+
+			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
+				var momentsForDataset = [];
+
+				if (typeof dataset.data[0] === 'object') {
+					helpers.each(dataset.data, function(value, index) {
+						var labelMoment = this.parseTime(this.getRightValue(value));
+						if (this.options.time.round) {
+							labelMoment.startOf(this.options.time.round);
+						}
+						momentsForDataset.push(labelMoment);
+
+						// May have gone outside the scale ranges, make sure we keep the first and last ticks updated
+						this.firstTick = this.firstTick !== null ? moment.min(this.firstTick, labelMoment) : labelMoment;
+						this.lastTick = this.lastTick !== null ? moment.max(this.lastTick, labelMoment) : labelMoment;
+					}, this);
+				} else {
+					// We have no labels. Use the ones from the scale
+					momentsForDataset = scaleLabelMoments;
+				}
+
+				this.labelMoments.push(momentsForDataset);
+			}, this);
+
+			// We will modify these, so clone for later
+			this.firstTick = this.firstTick.clone();
+			this.lastTick = this.lastTick.clone();
+		},
+
 		buildTicks: function(index) {
 
 			this.ticks = [];
 			this.labelMoments = [];
 
-			// Parse each label into a moment
-			this.data.labels.forEach(function(label, index) {
-				var labelMoment = this.parseTime(label);
-				if (this.options.time.round) {
-					labelMoment.startOf(this.options.time.round);
-				}
-				this.labelMoments.push(labelMoment);
-			}, this);
-
-			// Find the first and last moments, and range
-			this.firstTick = moment.min.call(this, this.labelMoments).clone();
-			this.lastTick = moment.max.call(this, this.labelMoments).clone();
+			this.buildLabelMoments();
 
 			// Set unit override if applicable
 			if (this.options.time.unit) {
@@ -124,11 +174,11 @@
 			this.lastTick.endOf(this.tickUnit);
 			this.smallestLabelSeparation = this.width;
 
-			var i = 0;
-
-			for (i = 1; i < this.labelMoments.length; i++) {
-				this.smallestLabelSeparation = Math.min(this.smallestLabelSeparation, this.labelMoments[i].diff(this.labelMoments[i - 1], this.tickUnit, true));
-			}
+			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
+				for (var i = 1; i < this.labelMoments[datasetIndex].length; i++) {
+					this.smallestLabelSeparation = Math.min(this.smallestLabelSeparation, this.labelMoments[datasetIndex][i].diff(this.labelMoments[datasetIndex][i - 1], this.tickUnit, true));
+				}
+			}, this);
 
 			// Tick displayFormat override
 			if (this.options.time.displayFormat) {
@@ -136,9 +186,19 @@
 			}
 
 			// For every unit in between the first and last moment, create a moment and add it to the ticks tick
-			for (i = 0; i <= this.tickRange; ++i) {
+			for (var i = 0; i <= this.tickRange; ++i) {
 				this.ticks.push(this.firstTick.clone().add(i, this.tickUnit));
 			}
+		},
+		// Get tooltip label
+		getLabelForIndex: function(index, datasetIndex) {
+			var label = this.data.labels && index < this.data.labels.length ? this.data.labels[index] : '';
+
+			if (typeof this.data.datasets[datasetIndex].data[0] === 'object') {
+				label = this.getRightValue(this.data.datasets[datasetIndex].data[index]);
+			}
+
+			return label;
 		},
 		convertTicksToLabels: function() {
 			this.ticks = this.ticks.map(function(tick, index, ticks) {
@@ -152,8 +212,8 @@
 			}, this);
 		},
 		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
-
-			var offset = this.labelMoments[index].diff(this.firstTick, this.tickUnit, true);
+			var labelMoment = this.getLabelMoment(datasetIndex, index);
+			var offset = labelMoment.diff(this.firstTick, this.tickUnit, true);
 
 			var decimal = offset / this.tickRange;
 

@@ -3,7 +3,6 @@
 
 <head>
     <title>Line Chart</title>
-    <script src="../node_modules/moment/min/moment.min.js"></script>
     <script src="../Chart.js"></script>
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
     <style>
@@ -39,22 +38,11 @@
         var randomColor = function(opacity) {
             return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
         };
-        var newDate = function(days) {
-            var date = new Date();
-            return date.setDate(date.getDate() + days);
-        };
-        var newTimestamp = function(days) {
-            return Date.now() - days * 100000;
-        };
 
         var config = {
             type: 'line',
             data: {
-                //labels: [newTimestamp(0), newTimestamp(1), newTimestamp(2), newTimestamp(3), newTimestamp(4), newTimestamp(5), newTimestamp(6)], // unix timestamps
-                // labels: [newDate(0), newDate(1), newDate(2), newDate(3), newDate(4), newDate(5), newDate(6)], // Date Objects
-                labels: ["01/01/2015 20:00", "01/02/2015 21:00", "01/03/2015 22:00", "01/05/2015 23:00", "01/07/2015 03:00", "01/08/2015 10:00", "01/10/2015"], // Hours
-                // labels: ["01/01/2015", "01/02/2015", "01/03/2015", "01/06/2015", "01/15/2015", "01/17/2015", "01/30/2015"], // Days
-                // labels: ["12/25/2014", "01/08/2015", "01/15/2015", "01/22/2015", "01/29/2015", "02/05/2015", "02/12/2015"], // Weeks
+                labels: ["January", "February", "March", "April", "May", "June", "July"],
                 datasets: [{
                     label: "My First dataset",
                     data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
@@ -63,52 +51,55 @@
                 }, {
                     label: "My Second dataset",
                     data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
-                }, {
-                    label: "Dataset with point data",
-                    data: [{
-                        x: "12/31/2014 06:00",
-                        y: randomScalingFactor()
-                    }, {
-                        x: "01/04/2015 13:00",
-                        y: randomScalingFactor()
-                    }, {
-                        x: "01/07/2015 01:15",
-                        y: randomScalingFactor()
-                    }, {
-                        x: "01/15/2015 01:15",
-                        y: randomScalingFactor()
-                    }],
-                    fill: false
                 }]
             },
             options: {
                 responsive: true,
+                tooltips: {
+                    mode: 'label',
+                    callbacks: {
+                        beforeTitle: function() {
+                            return '...beforeTitle';
+                        },
+                        afterTitle: function() {
+                            return '...afterTitle';
+                        },
+                        beforeBody: function() {
+                            return '...beforeBody';
+                        },
+                        afterBody: function() {
+                            return '...afterBody';
+                        },
+                        beforeFooter: function() {
+                            return '...beforeFooter';
+                        },
+                        footer: function() {
+                            return 'Footer';
+                        },
+                        afterFooter: function() {
+                            return '...afterFooter';
+                        },
+                    }
+                },
+                hover: {
+                    mode: 'label'
+                },
                 scales: {
                     xAxes: [{
-                        type: "time",
                         display: true,
-                        time: {
-                            format: 'MM/DD/YYYY HH:mm',
-                            // round: 'day'
-                        },
                         scaleLabel: {
                             show: true,
-                            labelString: 'Date'
+                            labelString: 'Month'
                         }
-                    }, ],
+                    }],
                     yAxes: [{
                         display: true,
                         scaleLabel: {
                             show: true,
-                            labelString: 'value'
+                            labelString: 'Value'
                         }
                     }]
-                },
-                elements: {
-                    line: {
-                        tension: 0.3
-                    }
-                },
+                }
             }
         };
 
@@ -119,8 +110,6 @@
             dataset.pointBackgroundColor = randomColor(0.5);
             dataset.pointBorderWidth = 1;
         });
-
-        console.log(config.data);
 
         window.onload = function() {
             var ctx = document.getElementById("canvas").getContext("2d");
@@ -140,6 +129,7 @@
                 dataset.data = dataset.data.map(function() {
                     return randomScalingFactor();
                 });
+
             });
 
             window.myLine.update();
@@ -168,16 +158,11 @@
 
         $('#addData').click(function() {
             if (config.data.datasets.length > 0) {
-                config.data.labels.push(
-                    myLine.scales['x-axis-0'].labelMoments[myLine.scales['x-axis-0'].labelMoments.length - 1]
-                    .clone()
-                    .add(1, 'day')
-                    .format('MM/DD/YYYY HH:mm')
-                );
+                config.data.labels.push('dataset #' + config.data.labels.length);
 
-                for (var index = 0; index < config.data.datasets.length; ++index) {
-                    config.data.datasets[index].data.push(randomScalingFactor());
-                }
+                $.each(config.data.datasets, function(i, dataset) {
+                    dataset.data.push(randomScalingFactor());
+                });
 
                 window.myLine.update();
                 updateLegend();

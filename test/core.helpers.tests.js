@@ -244,7 +244,7 @@ describe('Core helper tests', function() {
 						padding: 10,
 						reverse: false,
 						show: true,
-						template: "<%=value%>"
+						callback: merged.scales.yAxes[1].ticks.callback, // make it nicer, then check explicitly below
 					},
 					type: 'linear'
 				}, {
@@ -281,12 +281,16 @@ describe('Core helper tests', function() {
 						padding: 10,
 						reverse: false,
 						show: true,
-						template: "<%=value%>"
+						callback: merged.scales.yAxes[2].ticks.callback, // make it nicer, then check explicitly below
 					},
 					type: 'linear'
 				}]
 			}
 		});
+
+		// Are these actually functions
+		expect(merged.scales.yAxes[1].ticks.callback).toEqual(jasmine.any(Function));
+		expect(merged.scales.yAxes[2].ticks.callback).toEqual(jasmine.any(Function));
 	});
 
 	it('should get value or default', function() {

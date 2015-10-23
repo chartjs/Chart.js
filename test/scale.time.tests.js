@@ -46,7 +46,7 @@ describe('Time scale tests', function() {
 				padding: 10,
 				reverse: false,
 				show: true,
-				template: "<%=value%>"
+				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
 			},
 			time: {
 				format: false,
@@ -55,6 +55,9 @@ describe('Time scale tests', function() {
 				displayFormat: false,
 			}
 		});
+
+		// Is this actually a function
+		expect(defaultConfig.ticks.callback).toEqual(jasmine.any(Function));
 	});
 
 	it('should build ticks using days', function() {
@@ -132,6 +135,9 @@ describe('Time scale tests', function() {
 
 		var mockData = {
 			labels: ["2015-01-01T20:00:00", "2015-01-02T21:00:00", "2015-01-03T22:00:00", "2015-01-05T23:00:00", "2015-01-07T03:00", "2015-01-08T10:00", "2015-01-10T12:00"], // days
+			datasets: [{
+				data: [],
+			}]
 		};
 
 		var mockContext = window.createMockContext();

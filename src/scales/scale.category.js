@@ -15,9 +15,12 @@
             this.ticks = this.data.labels;
         },
 
+        getLabelForIndex: function(index, datasetIndex) {
+            return this.ticks[index];
+        },
+
         // Used to get data value locations.  Value can either be an index or a numerical value
         getPixelForValue: function(value, index, datasetIndex, includeOffset) {
-
             if (this.isHorizontal()) {
                 var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
                 var valueWidth = innerWidth / Math.max((this.data.labels.length - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);

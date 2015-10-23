@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Line Chart</title>
+    <title>Time Scale Point Data</title>
     <script src="../node_modules/moment/min/moment.min.js"></script>
     <script src="../Chart.js"></script>
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
@@ -20,8 +20,6 @@
     <br>
     <br>
     <button id="randomizeData">Randomize Data</button>
-    <button id="addDataset">Add Dataset</button>
-    <button id="removeDataset">Remove Dataset</button>
     <button id="addData">Add Data</button>
     <button id="removeData">Remove Data</button>
     <div>
@@ -50,20 +48,7 @@
         var config = {
             type: 'line',
             data: {
-                //labels: [newTimestamp(0), newTimestamp(1), newTimestamp(2), newTimestamp(3), newTimestamp(4), newTimestamp(5), newTimestamp(6)], // unix timestamps
-                // labels: [newDate(0), newDate(1), newDate(2), newDate(3), newDate(4), newDate(5), newDate(6)], // Date Objects
-                labels: ["01/01/2015 20:00", "01/02/2015 21:00", "01/03/2015 22:00", "01/05/2015 23:00", "01/07/2015 03:00", "01/08/2015 10:00", "01/10/2015"], // Hours
-                // labels: ["01/01/2015", "01/02/2015", "01/03/2015", "01/06/2015", "01/15/2015", "01/17/2015", "01/30/2015"], // Days
-                // labels: ["12/25/2014", "01/08/2015", "01/15/2015", "01/22/2015", "01/29/2015", "02/05/2015", "02/12/2015"], // Weeks
                 datasets: [{
-                    label: "My First dataset",
-                    data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
-                    fill: false,
-                    borderDash: [5, 5],
-                }, {
-                    label: "My Second dataset",
-                    data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
-                }, {
                     label: "Dataset with point data",
                     data: [{
                         x: "12/31/2014 06:00",
@@ -146,37 +131,18 @@
             updateLegend();
         });
 
-        $('#addDataset').click(function() {
-            var newDataset = {
-                label: 'Dataset ' + config.data.datasets.length,
-                borderColor: randomColor(0.4),
-                backgroundColor: randomColor(0.5),
-                pointBorderColor: randomColor(0.7),
-                pointBackgroundColor: randomColor(0.5),
-                pointBorderWidth: 1,
-                data: [],
-            };
-
-            for (var index = 0; index < config.data.labels.length; ++index) {
-                newDataset.data.push(randomScalingFactor());
-            }
-
-            config.data.datasets.push(newDataset);
-            window.myLine.update();
-            updateLegend();
-        });
-
         $('#addData').click(function() {
             if (config.data.datasets.length > 0) {
-                config.data.labels.push(
-                    myLine.scales['x-axis-0'].labelMoments[myLine.scales['x-axis-0'].labelMoments.length - 1]
+                var newTime = myLine.scales['x-axis-0'].labelMoments[0][myLine.scales['x-axis-0'].labelMoments[0].length - 1]
                     .clone()
                     .add(1, 'day')
-                    .format('MM/DD/YYYY HH:mm')
-                );
+                    .format('MM/DD/YYYY HH:mm');
 
                 for (var index = 0; index < config.data.datasets.length; ++index) {
-                    config.data.datasets[index].data.push(randomScalingFactor());
+                    config.data.datasets[index].data.push({
+                        x: newTime,
+                        y: randomScalingFactor()
+                    });
                 }
 
                 window.myLine.update();
@@ -184,15 +150,7 @@
             }
         });
 
-        $('#removeDataset').click(function() {
-            config.data.datasets.splice(0, 1);
-            window.myLine.update();
-            updateLegend();
-        });
-
         $('#removeData').click(function() {
-            config.data.labels.splice(-1, 1); // remove the label first
-
             config.data.datasets.forEach(function(dataset, datasetIndex) {
                 dataset.data.pop();
             });

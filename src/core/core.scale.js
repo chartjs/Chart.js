@@ -47,7 +47,9 @@
 			padding: 10,
 			reverse: false,
 			show: true,
-			template: "<%=value%>",
+			callback: function(value) {
+				return '' + value;
+			},
 		},
 	};
 
@@ -133,14 +135,12 @@
 		convertTicksToLabels: function() {
 			// Convert ticks to strings
 			this.ticks = this.ticks.map(function(numericalTick, index, ticks) {
-				if (this.options.ticks.userCallback) {
-					return this.options.ticks.userCallback(numericalTick, index, ticks);
-				} else {
-					return helpers.template(this.options.ticks.template, {
-						value: numericalTick
-					});
-				}
-			}, this);
+					if (this.options.ticks.userCallback) {
+						return this.options.ticks.userCallback(numericalTick, index, ticks);
+					}
+					return this.options.ticks.callback(numericalTick);
+				},
+				this);
 		},
 		afterTickToLabelConversion: helpers.noop,
 
@@ -242,13 +242,13 @@
 			}
 
 			// Are we showing a title for the scale?
-            if (this.options.scaleLabel.show) {
-                if (this.isHorizontal()) {
-                    this.minSize.height += (this.options.scaleLabel.fontSize * 1.5);
-                } else {
-                    this.minSize.width += (this.options.scaleLabel.fontSize * 1.5);
-                }
-            }
+			if (this.options.scaleLabel.show) {
+				if (this.isHorizontal()) {
+					this.minSize.height += (this.options.scaleLabel.fontSize * 1.5);
+				} else {
+					this.minSize.width += (this.options.scaleLabel.fontSize * 1.5);
+				}
+			}
 
 			if (this.options.ticks.show && this.options.display) {
 				// Don't bother fitting the ticks if we are not showing them
@@ -315,6 +315,15 @@
 		isHorizontal: function() {
 			return this.options.position == "top" || this.options.position == "bottom";
 		},
+		
+		// Get the correct value. If the value type is object get the x or y based on whether we are horizontal or not
+		getRightValue: function(rawValue) {
+			return (typeof(rawValue) === "object" && rawValue !== null) ? (this.isHorizontal() ? rawValue.x : rawValue.y) : rawValue;
+		},
+
+		// Used to get the value to display in the tooltip for the data at the given index
+		// function getLabelForIndex(index, datasetIndex)
+		getLabelForIndex: helpers.noop,
 
 		// Used to get data value locations.  Value can either be an index or a numerical value
 		getPixelForValue: helpers.noop,
@@ -344,7 +353,7 @@
 
 				return this.left + Math.round(valueOffset);
 			} else {
-				return this.top + (decimal * (this.height / this.ticks.length));
+				return this.top + (decimal * this.height);
 			}
 		},
 
@@ -503,7 +512,7 @@
 								}
 							}
 
-							
+
 							this.ctx.translate(xLabelValue, yLabelValue);
 							this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
 							this.ctx.font = labelFont;

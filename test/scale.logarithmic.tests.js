@@ -41,9 +41,12 @@ describe('Logarithmic Scale tests', function() {
 				padding: 10,
 				reverse: false,
 				show: true,
-				template: "<%var remain = value / (Math.pow(10, Math.floor(Chart.helpers.log10(value))));if (remain === 1 || remain === 2 || remain === 5) {%><%=value.toExponential()%><%} else {%><%= null %><%}%>",
+				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
 			},
 		});
+
+		// Is this actually a function
+		expect(defaultConfig.ticks.callback).toEqual(jasmine.any(Function));
 	});
 
 	it('Should correctly determine the max & min data values', function() {

@@ -58,10 +58,13 @@ describe('Test the radial linear scale', function() {
 				reverse: false,
 				showLabelBackdrop: true,
 				show: true,
-				template: "<%=value%>",
+				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
 
 			},
 		});
+
+		// Is this actually a function
+		expect(defaultConfig.ticks.callback).toEqual(jasmine.any(Function));
 	});
 
 	it('Should correctly determine the max & min data values', function() {
