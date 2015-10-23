@@ -69,8 +69,11 @@
 
 			helpers.each(this.data.datasets, function(dataset) {
 				if (helpers.isDatasetVisible(dataset)) {
-					helpers.each(dataset.data, function(value, index) {
-						if (value === null) return;
+					helpers.each(dataset.data, function(rawValue, index) {
+						var value = this.getRightValue(rawValue);
+						if (isNaN(value)) {
+							return;
+						}
 
 						if (this.min === null) {
 							this.min = value;

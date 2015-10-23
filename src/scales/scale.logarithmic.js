@@ -14,7 +14,7 @@
 				var remain = value / (Math.pow(10, Math.floor(Chart.helpers.log10(value))));
 
 				if (remain === 1 || remain === 2 || remain === 5) {
-					return value.toExponential()
+					return value.toExponential();
 				} else {
 					return '';
 				}
@@ -38,6 +38,9 @@
 						helpers.each(dataset.data, function(rawValue, index) {
 
 							var value = this.getRightValue(rawValue);
+							if (isNaN(value)) {
+								return;
+							}
 
 							values[index] = values[index] || 0;
 
@@ -59,6 +62,9 @@
 					if (helpers.isDatasetVisible(dataset) && (this.isHorizontal() ? dataset.xAxisID === this.id : dataset.yAxisID === this.id)) {
 						helpers.each(dataset.data, function(rawValue, index) {
 							var value = this.getRightValue(rawValue);
+							if (isNaN(value)) {
+								return;
+							}
 
 							if (this.min === null) {
 								this.min = value;

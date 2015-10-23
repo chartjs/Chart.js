@@ -25,6 +25,9 @@
 						helpers.each(dataset.data, function(rawValue, index) {
 
 							var value = this.getRightValue(rawValue);
+							if (isNaN(value)) {
+								return;
+							}
 
 							positiveValues[index] = positiveValues[index] || 0;
 							negativeValues[index] = negativeValues[index] || 0;
@@ -51,6 +54,9 @@
 					if (helpers.isDatasetVisible(dataset) && (this.isHorizontal() ? dataset.xAxisID === this.id : dataset.yAxisID === this.id)) {
 						helpers.each(dataset.data, function(rawValue, index) {
 							var value = this.getRightValue(rawValue);
+							if (isNaN(value)) {
+								return;
+							}
 
 							if (this.min === null) {
 								this.min = value;
@@ -155,17 +161,18 @@
 		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
 			// This must be called after fit has been run so that 
 			//      this.left, this.top, this.right, and this.bottom have been defined
+			var rightValue = this.getRightValue(value);
 			var pixel;
 			var range = this.end - this.start;
 
 			if (this.isHorizontal()) {
 
 				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
-				pixel = this.left + (innerWidth / range * (this.getRightValue(value) - this.start));
+				pixel = this.left + (innerWidth / range * (rightValue - this.start));
 				return Math.round(pixel + this.paddingLeft);
 			} else {
 				var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
-				pixel = (this.bottom - this.paddingBottom) - (innerHeight / range * (this.getRightValue(value) - this.start));
+				pixel = (this.bottom - this.paddingBottom) - (innerHeight / range * (rightValue - this.start));
 				return Math.round(pixel);
 			}
 		},
