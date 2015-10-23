@@ -222,7 +222,9 @@
 				yLabel = [];
 
 				helpers.each(this._data.datasets, function(dataset, datasetIndex) {
-
+					if (!helpers.isDatasetVisible(dataset)) {
+						return;
+					}
 					xLabel.push(element._xScale.getLabelForIndex(element._index, datasetIndex));
 					yLabel.push(element._yScale.getLabelForIndex(element._index, datasetIndex));
 				});
@@ -414,6 +416,7 @@
 				});
 
 				helpers.each(vm.body, function(body, i) {
+
 
 					// Draw Legend-like boxes if needed
 					if (this._options.tooltips.mode != 'single') {
