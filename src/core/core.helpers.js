@@ -324,18 +324,32 @@
 		splineCurve = helpers.splineCurve = function(FirstPoint, MiddlePoint, AfterPoint, t) {
 			//Props to Rob Spencer at scaled innovation for his post on splining between points
 			//http://scaledinnovation.com/analytics/splines/aboutSplines.html
-			var d01 = Math.sqrt(Math.pow(MiddlePoint.x - FirstPoint.x, 2) + Math.pow(MiddlePoint.y - FirstPoint.y, 2)),
-				d12 = Math.sqrt(Math.pow(AfterPoint.x - MiddlePoint.x, 2) + Math.pow(AfterPoint.y - MiddlePoint.y, 2)),
+
+			// This function must also respect "skipped" points
+
+			var previous = FirstPoint,
+				current = MiddlePoint,
+				next = AfterPoint;
+
+			if (previous.skip) {
+				previous = current;
+			}
+			if (next.skip) {
+				next = current;
+			}
+
+			var d01 = Math.sqrt(Math.pow(current.x - previous.x, 2) + Math.pow(current.y - previous.y, 2)),
+				d12 = Math.sqrt(Math.pow(next.x - current.x, 2) + Math.pow(next.y - current.y, 2)),
 				fa = t * d01 / (d01 + d12), // scaling factor for triangle Ta
 				fb = t * d12 / (d01 + d12);
 			return {
 				previous: {
-					x: MiddlePoint.x - fa * (AfterPoint.x - FirstPoint.x),
-					y: MiddlePoint.y - fa * (AfterPoint.y - FirstPoint.y)
+					x: current.x - fa * (next.x - previous.x),
+					y: current.y - fa * (next.y - previous.y)
 				},
 				next: {
-					x: MiddlePoint.x + fb * (AfterPoint.x - FirstPoint.x),
-					y: MiddlePoint.y + fb * (AfterPoint.y - FirstPoint.y)
+					x: current.x + fb * (next.x - previous.x),
+					y: current.y + fb * (next.y - previous.y)
 				}
 			};
 		},
