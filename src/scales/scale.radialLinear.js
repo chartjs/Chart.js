@@ -280,8 +280,8 @@
 		getPointPosition: function(index, distanceFromCenter) {
 			var thisAngle = this.getIndexAngle(index);
 			return {
-				x: (Math.cos(thisAngle) * distanceFromCenter) + this.xCenter,
-				y: (Math.sin(thisAngle) * distanceFromCenter) + this.yCenter
+				x: Math.round(Math.cos(thisAngle) * distanceFromCenter) + this.xCenter,
+				y: Math.round(Math.sin(thisAngle) * distanceFromCenter) + this.yCenter
 			};
 		},
 		getPointPositionForValue: function(index, value) {
