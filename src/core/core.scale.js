@@ -317,11 +317,22 @@
 		},
 
 		// Get the correct value. NaN bad inputs, If the value type is object get the x or y based on whether we are horizontal or not
-		getRightValue: function(rawValue) {
-			if (isNaN(rawValue) || rawValue === null || typeof(rawValue) === 'undefined') {
+		getRightValue: function getRightValue(rawValue) {
+			// Null and undefined values first
+			if (rawValue === null || typeof(rawValue) === 'undefined') {
 				return NaN;
 			}
-			return typeof(rawValue) === "object" ? (this.isHorizontal() ? rawValue.x : rawValue.y) : rawValue;
+			// isNaN(object) returns true, so make sure NaN is checking for a number
+			if (typeof(rawValue) === 'number' && isNaN(rawValue)) {
+				return NaN;
+			}
+			// If it is in fact an object, dive in one more level
+			if (typeof(rawValue) === "object") {
+				return getRightValue(this.isHorizontal() ? rawValue.x : rawValue.y);
+			}
+
+			// Value is good, return it
+			return rawValue;
 		},
 
 		// Used to get the value to display in the tooltip for the data at the given index
