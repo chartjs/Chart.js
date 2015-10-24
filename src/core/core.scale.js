@@ -138,7 +138,7 @@
 					if (this.options.ticks.userCallback) {
 						return this.options.ticks.userCallback(numericalTick, index, ticks);
 					}
-					return this.options.ticks.callback(numericalTick);
+					return this.options.ticks.callback(numericalTick, index, ticks);
 				},
 				this);
 		},

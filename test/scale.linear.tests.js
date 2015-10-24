@@ -412,6 +412,31 @@ describe('Linear Scale', function() {
 		expect(scale.ticks).toEqual(['80', '70', '60', '50', '40', '30', '20', '10', '0']);
 	});
 
+	it('should use the correct number of decimal places in the default format function', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [0.06, 0.005, 0, 0.025, 0.0078]
+			}, ]
+		};
+
+		var mockContext = window.createMockContext();
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: config,
+			data: mockData,
+			id: scaleID
+		});
+
+		// Set arbitrary width and height for now
+		scale.update(50, 400);
+		expect(scale.ticks).toEqual(['0.06', '0.05', '0.04', '0.03', '0.02', '0.01', '0']);
+	});
+
 	it('Should build labels using the user supplied callback', function() {
 		var scaleID = 'myScale';
 
@@ -423,7 +448,7 @@ describe('Linear Scale', function() {
 		};
 
 		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
-		config.ticks.userCallback = function(value, index) {
+		config.ticks.callback = function(value, index) {
 			return index.toString();
 		};
 
