@@ -69,8 +69,11 @@
 
 			helpers.each(this.data.datasets, function(dataset) {
 				if (helpers.isDatasetVisible(dataset)) {
-					helpers.each(dataset.data, function(value, index) {
-						if (value === null) return;
+					helpers.each(dataset.data, function(rawValue, index) {
+						var value = this.getRightValue(rawValue);
+						if (isNaN(value)) {
+							return;
+						}
 
 						if (this.min === null) {
 							this.min = value;
@@ -277,8 +280,8 @@
 		getPointPosition: function(index, distanceFromCenter) {
 			var thisAngle = this.getIndexAngle(index);
 			return {
-				x: (Math.cos(thisAngle) * distanceFromCenter) + this.xCenter,
-				y: (Math.sin(thisAngle) * distanceFromCenter) + this.yCenter
+				x: Math.round(Math.cos(thisAngle) * distanceFromCenter) + this.xCenter,
+				y: Math.round(Math.sin(thisAngle) * distanceFromCenter) + this.yCenter
 			};
 		},
 		getPointPositionForValue: function(index, value) {

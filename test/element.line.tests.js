@@ -1,6 +1,6 @@
 // Tests for the line element
 describe('Line element tests', function() {
-	it ('should be constructed', function() {
+	it('should be constructed', function() {
 		var line = new Chart.elements.Line({
 			_datasetindex: 2,
 			_points: [1, 2, 3, 4]
@@ -11,7 +11,7 @@ describe('Line element tests', function() {
 		expect(line._points).toEqual([1, 2, 3, 4]);
 	});
 
-	it ('should draw with default settings', function() {
+	it('should draw with default settings', function() {
 		var mockContext = window.createMockContext();
 
 		// Create our points
@@ -21,7 +21,7 @@ describe('Line element tests', function() {
 			_index: 0,
 			_view: {
 				x: 0,
-				y: 10
+				y: 10,
 			}
 		}));
 		points.push(new Chart.elements.Point({
@@ -29,7 +29,7 @@ describe('Line element tests', function() {
 			_index: 1,
 			_view: {
 				x: 5,
-				y: 0
+				y: 0,
 			}
 		}));
 		points.push(new Chart.elements.Point({
@@ -37,7 +37,7 @@ describe('Line element tests', function() {
 			_index: 2,
 			_view: {
 				x: 15,
-				y: -10
+				y: -10,
 			}
 		}));
 		points.push(new Chart.elements.Point({
@@ -45,7 +45,7 @@ describe('Line element tests', function() {
 			_index: 3,
 			_view: {
 				x: 19,
-				y: -5
+				y: -5,
 			}
 		}));
 
@@ -59,8 +59,9 @@ describe('Line element tests', function() {
 			_view: {
 				fill: false, // don't want to fill
 				tension: 0.0, // no bezier curve for now
+				scaleZero: 0
 			}
-		})
+		});
 
 		line.draw();
 
@@ -69,6 +70,9 @@ describe('Line element tests', function() {
 			args: [],
 		}, {
 			name: 'moveTo',
+			args: [0, 0]
+		}, {
+			name: 'lineTo',
 			args: [0, 10]
 		}, {
 			name: 'lineTo',
@@ -84,7 +88,9 @@ describe('Line element tests', function() {
 			args: ['butt']
 		}, {
 			name: 'setLineDash',
-			args: [[]]
+			args: [
+				[]
+			]
 		}, {
 			name: 'setLineDashOffset',
 			args: [0.0]
@@ -102,6 +108,9 @@ describe('Line element tests', function() {
 			args: []
 		}, {
 			name: 'moveTo',
+			args: [0, 0]
+		}, {
+			name: 'lineTo',
 			args: [0, 10]
 		}, {
 			name: 'lineTo',
@@ -118,10 +127,10 @@ describe('Line element tests', function() {
 		}, {
 			name: 'restore',
 			args: []
-		}])
+		}]);
 	});
 
-	it ('should draw with custom settings', function() {
+	it('should draw with custom settings', function() {
 		var mockContext = window.createMockContext();
 
 		// Create our points
@@ -167,7 +176,7 @@ describe('Line element tests', function() {
 			_children: points,
 			// Need to provide some settings
 			_view: {
-				fill: true, 
+				fill: true,
 				scaleZero: 2, // for filling lines
 				tension: 0.0, // no bezier curve for now
 
@@ -179,7 +188,7 @@ describe('Line element tests', function() {
 				borderWidth: 4,
 				backgroundColor: 'rgb(0, 0, 0)'
 			}
-		})
+		});
 
 		line.draw();
 
@@ -188,6 +197,9 @@ describe('Line element tests', function() {
 			args: [],
 		}, {
 			name: 'moveTo',
+			args: [0, 2]
+		}, {
+			name: 'lineTo',
 			args: [0, 10]
 		}, {
 			name: 'lineTo',
@@ -218,7 +230,9 @@ describe('Line element tests', function() {
 			args: ['round']
 		}, {
 			name: 'setLineDash',
-			args: [[2, 2]]
+			args: [
+				[2, 2]
+			]
 		}, {
 			name: 'setLineDashOffset',
 			args: [1.5]
@@ -236,6 +250,9 @@ describe('Line element tests', function() {
 			args: []
 		}, {
 			name: 'moveTo',
+			args: [0, 2]
+		}, {
+			name: 'lineTo',
 			args: [0, 10]
 		}, {
 			name: 'lineTo',
@@ -253,10 +270,10 @@ describe('Line element tests', function() {
 			name: 'restore',
 			args: []
 		}];
-		expect(mockContext.getCalls()).toEqual(expected)
+		expect(mockContext.getCalls()).toEqual(expected);
 	});
 
-	it ('should be able to draw with a loop back to the beginning point', function() {
+	it('should be able to draw with a loop back to the beginning point', function() {
 		var mockContext = window.createMockContext();
 
 		// Create our points
@@ -305,8 +322,9 @@ describe('Line element tests', function() {
 			_view: {
 				fill: false, // don't want to fill
 				tension: 0.0, // no bezier curve for now
+				scaleZero: 0,
 			}
-		})
+		});
 
 		line.draw();
 
@@ -315,6 +333,9 @@ describe('Line element tests', function() {
 			args: [],
 		}, {
 			name: 'moveTo',
+			args: [0, 0]
+		}, {
+			name: 'lineTo',
 			args: [0, 10]
 		}, {
 			name: 'lineTo',
@@ -333,7 +354,9 @@ describe('Line element tests', function() {
 			args: ['butt']
 		}, {
 			name: 'setLineDash',
-			args: [[]]
+			args: [
+				[]
+			]
 		}, {
 			name: 'setLineDashOffset',
 			args: [0.0]
@@ -351,6 +374,9 @@ describe('Line element tests', function() {
 			args: []
 		}, {
 			name: 'moveTo',
+			args: [0, 0]
+		}, {
+			name: 'lineTo',
 			args: [0, 10]
 		}, {
 			name: 'lineTo',
@@ -370,10 +396,10 @@ describe('Line element tests', function() {
 		}, {
 			name: 'restore',
 			args: []
-		}])
+		}]);
 	});
 
-	it ('should draw with bezier curves if tension > 0', function() {
+	it('should draw with bezier curves if tension > 0', function() {
 		var mockContext = window.createMockContext();
 
 		// Create our points
@@ -435,7 +461,7 @@ describe('Line element tests', function() {
 			_children: points,
 			// Need to provide some settings
 			_view: {
-				fill: true, 
+				fill: true,
 				scaleZero: 2, // for filling lines
 				tension: 0.5, // have bezier curves
 
@@ -447,7 +473,7 @@ describe('Line element tests', function() {
 				borderWidth: 4,
 				backgroundColor: 'rgb(0, 0, 0)'
 			}
-		})
+		});
 
 		line.draw();
 
@@ -456,6 +482,9 @@ describe('Line element tests', function() {
 			args: [],
 		}, {
 			name: 'moveTo',
+			args: [0, 2]
+		}, {
+			name: 'lineTo',
 			args: [0, 10]
 		}, {
 			name: 'bezierCurveTo',
@@ -486,7 +515,9 @@ describe('Line element tests', function() {
 			args: ['round']
 		}, {
 			name: 'setLineDash',
-			args: [[2, 2]]
+			args: [
+				[2, 2]
+			]
 		}, {
 			name: 'setLineDashOffset',
 			args: [1.5]
@@ -504,6 +535,9 @@ describe('Line element tests', function() {
 			args: []
 		}, {
 			name: 'moveTo',
+			args: [0, 2]
+		}, {
+			name: 'lineTo',
 			args: [0, 10]
 		}, {
 			name: 'bezierCurveTo',
@@ -521,6 +555,6 @@ describe('Line element tests', function() {
 			name: 'restore',
 			args: []
 		}];
-		expect(mockContext.getCalls()).toEqual(expected)
+		expect(mockContext.getCalls()).toEqual(expected);
 	});
 });

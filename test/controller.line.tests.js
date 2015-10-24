@@ -103,7 +103,7 @@ describe('Line controller tests', function() {
 		expect(chart.data.datasets[0].metaData.length).toBe(3);
 	});
 
-	it ('should draw all elements', function() {
+	it('should draw all elements', function() {
 		var chart = {
 			data: {
 				datasets: [{
@@ -141,7 +141,7 @@ describe('Line controller tests', function() {
 		expect(chart.data.datasets[0].metaData[3].draw.calls.count()).toBe(1);
 	});
 
-	it ('should update elements', function() {
+	it('should update elements', function() {
 		var data = {
 			datasets: [{
 				data: [10, 15, 0, -4],
@@ -210,7 +210,6 @@ describe('Line controller tests', function() {
 						borderJoinStyle: 'bevel',
 						borderWidth: 1.2,
 						fill: true,
-						skipNull: true,
 						tension: 0.1,
 					},
 					point: {
@@ -251,8 +250,6 @@ describe('Line controller tests', function() {
 			borderJoinStyle: 'bevel',
 			borderWidth: 1.2,
 			fill: true,
-			drawNull: undefined,
-			skipNull: true,
 			tension: 0.1,
 
 			scaleTop: 0,
@@ -268,7 +265,7 @@ describe('Line controller tests', function() {
 			radius: 3,
 			skip: false,
 			tension: 0.1,
-			
+
 			// Point
 			x: 71,
 			y: 62,
@@ -288,7 +285,7 @@ describe('Line controller tests', function() {
 			radius: 3,
 			skip: false,
 			tension: 0.1,
-			
+
 			// Point
 			x: 121,
 			y: 15,
@@ -308,7 +305,7 @@ describe('Line controller tests', function() {
 			radius: 3,
 			skip: false,
 			tension: 0.1,
-			
+
 			// Point
 			x: 172,
 			y: 156,
@@ -328,7 +325,7 @@ describe('Line controller tests', function() {
 			radius: 3,
 			skip: false,
 			tension: 0.1,
-			
+
 			// Point
 			x: 222,
 			y: 194,
@@ -350,8 +347,6 @@ describe('Line controller tests', function() {
 		chart.data.datasets[0].borderDashOffset = 7;
 		chart.data.datasets[0].borderJoinStyle = 'miter';
 		chart.data.datasets[0].fill = false;
-		chart.data.datasets[0].skipNull = false;
-		chart.data.datasets[0].drawNull = true;
 
 		// point styles
 		chart.data.datasets[0].radius = 22;
@@ -371,8 +366,6 @@ describe('Line controller tests', function() {
 			borderJoinStyle: 'miter',
 			borderWidth: 0.55,
 			fill: false,
-			drawNull: true,
-			skipNull: false,
 			tension: 0.2,
 
 			scaleTop: 0,
@@ -388,7 +381,7 @@ describe('Line controller tests', function() {
 			radius: 22,
 			skip: false,
 			tension: 0.2,
-			
+
 			// Point
 			x: 71,
 			y: 62,
@@ -408,7 +401,7 @@ describe('Line controller tests', function() {
 			radius: 22,
 			skip: false,
 			tension: 0.2,
-			
+
 			// Point
 			x: 121,
 			y: 15,
@@ -428,7 +421,7 @@ describe('Line controller tests', function() {
 			radius: 22,
 			skip: false,
 			tension: 0.2,
-			
+
 			// Point
 			x: 172,
 			y: 156,
@@ -448,7 +441,7 @@ describe('Line controller tests', function() {
 			radius: 22,
 			skip: false,
 			tension: 0.2,
-			
+
 			// Point
 			x: 222,
 			y: 194,
@@ -471,8 +464,6 @@ describe('Line controller tests', function() {
 			borderDashOffset: 4.4,
 			borderJoinStyle: 'round',
 			fill: true,
-			skipNull: true,
-			drawNull: false,
 		};
 
 		// point styles
@@ -497,8 +488,6 @@ describe('Line controller tests', function() {
 			borderJoinStyle: 'round',
 			borderWidth: 0.3,
 			fill: true,
-			drawNull: true,
-			skipNull: false,
 			tension: 0.25,
 
 			scaleTop: 0,
@@ -514,7 +503,7 @@ describe('Line controller tests', function() {
 			radius: 2.2,
 			skip: true,
 			tension: 0.15,
-			
+
 			// Point
 			x: 71,
 			y: 62,
@@ -527,7 +516,7 @@ describe('Line controller tests', function() {
 		});
 	});
 
-	it ('should handle number of data point changes in update', function() {
+	it('should handle number of data point changes in update', function() {
 		var data = {
 			datasets: [{
 				data: [10, 15, 0, -4],
@@ -596,7 +585,6 @@ describe('Line controller tests', function() {
 						borderJoinStyle: 'bevel',
 						borderWidth: 1.2,
 						fill: true,
-						skipNull: true,
 						tension: 0.1,
 					},
 					point: {
@@ -643,7 +631,7 @@ describe('Line controller tests', function() {
 		expect(chart.data.datasets[0].metaData[4] instanceof Chart.elements.Point).toBe(true);
 	});
 
-	it ('should set point hover styles', function() {
+	it('should set point hover styles', function() {
 		var data = {
 			datasets: [{
 				data: [10, 15, 0, -4],
@@ -777,7 +765,7 @@ describe('Line controller tests', function() {
 		expect(point._model.radius).toBe(4.4);
 	});
 
-	it ('should remove hover styles', function() {
+	it('should remove hover styles', function() {
 		var data = {
 			datasets: [{
 				data: [10, 15, 0, -4],
@@ -846,7 +834,6 @@ describe('Line controller tests', function() {
 						borderJoinStyle: 'bevel',
 						borderWidth: 1.2,
 						fill: true,
-						skipNull: true,
 						tension: 0.1,
 					},
 					point: {

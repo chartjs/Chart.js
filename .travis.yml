@@ -15,3 +15,5 @@ script:
 
 notifications:
   slack: chartjs:pcfCZR6ugg5TEcaLtmIfQYuA
+
+sudo: false
