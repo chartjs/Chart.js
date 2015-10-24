@@ -5,29 +5,30 @@
 
 *Simple HTML5 Charts using the canvas element* [chartjs.org](http://www.chartjs.org)
 
-## v2.0 Development
+## v2.0 Beta
 
-Current Release: [2.0.0-alpha4](https://github.com/nnnick/Chart.js/releases/tag/2.0.0-alpha4)
+Current Release: [2.0.0-beta](https://github.com/nnnick/Chart.js/releases/tag/2.0.0-beta)
 
 The next generation and release of Chart.js has been well under way this year and we are very close to releasing some amazing new features including, but not limited to:
 - Rewritten, optimized, and unit-tested
 - New and improved scales (log, time, linear, category, multiple scales)
+- Improved Tooltips and tooltip callbacks for customization
 - Improved responsiveness and resizing
 - Powerful support for adding, removing, changing, and updating data on the fly
-- Animations on all elements, colors and tooltips
+- Animations for everything, including all elements, colors and tooltips
 - Powerful customization when you need it. Automatic and dynamic when you don't.
 - Excellent support for modern frameworks and modular build systems.
-- Even more extensible via new element controllers, combo chart support, and hook system
-- Bug fixes not addressed in 1.x, and much, much more...
+- Even more extensible via new element controllers, core scale classes, combo chart support, and hook systems
+- Bug fixes, stability improvements, etc.
 
 #####Contributing to 2.0
 Submit PR's to the v2.0-dev branch.
 
 #####Building and Testing
-`gulp build`, `gulp test`
+`gulp build`, `gulp test`, `gulp watch --test`
 
 ## v1.x Status: Feature Complete
-We are now treating v1.x as feature complete.  PR's for bug fixes are welcome, but we urge any open PR's for v1.x features to be refactored and resubmitted for v2.x (if the feature has not already been implemented).
+v1.x is now considered feature complete.  PR's for bug fixes are still extremely welcome.  Any open PR's for v1.x features will need to be reconsidered, refactored and resubmitted for v2.x (if the feature has not already been implemented). For questions on new features refer to the docs in the v2.0-dev branch
 
 ## Documentation
 
