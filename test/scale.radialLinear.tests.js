@@ -275,7 +275,7 @@ describe('Test the radial linear scale', function() {
 		scale.bottom = 305;
 		scale.update(200, 300);
 
-		expect(scale.drawingArea).toBe(36);
+		expect(scale.drawingArea).toBe(37);
 		expect(scale.xCenter).toBe(110);
 		expect(scale.yCenter).toBe(155);
 	});
@@ -308,17 +308,17 @@ describe('Test the radial linear scale', function() {
 		scale.update(200, 300);
 
 		expect(scale.getDistanceFromCenterForValue(scale.min)).toBe(0);
-		expect(scale.getDistanceFromCenterForValue(scale.max)).toBe(36);
+		expect(scale.getDistanceFromCenterForValue(scale.max)).toBe(37);
 		expect(scale.getPointPositionForValue(1, 5)).toEqual({
-			x: 102.13987716166409,
-			y: 149.30471176265638,
+			x: 102,
+			y: 149,
 		});
 
 		config.reverse = true;
 
 		scale.update(200, 300);
 
-		expect(scale.getDistanceFromCenterForValue(scale.min)).toBe(36);
+		expect(scale.getDistanceFromCenterForValue(scale.min)).toBe(37);
 		expect(scale.getDistanceFromCenterForValue(scale.max)).toBe(0);
 	});
 
@@ -384,7 +384,7 @@ describe('Test the radial linear scale', function() {
 			"args": []
 		}, {
 			"name": "arc",
-			"args": [100, 150, 9, 0, 6.283185307179586]
+			"args": [100, 150, 9.25, 0, 6.283185307179586]
 		}, {
 			"name": "closePath",
 			"args": []
@@ -399,13 +399,13 @@ describe('Test the radial linear scale', function() {
 			"args": ["rgba(255,255,255,0.75)"]
 		}, {
 			"name": "fillRect",
-			"args": [88, 133, 24, 16]
+			"args": [88, 132.75, 24, 16]
 		}, {
 			"name": "setFillStyle",
 			"args": ["#666"]
 		}, {
 			"name": "fillText",
-			"args": ["20", 100, 141]
+			"args": ["20", 100, 140.75]
 		}, {
 			"name": "setStrokeStyle",
 			"args": ["rgba(0, 0, 0, 0.1)"]
@@ -417,7 +417,7 @@ describe('Test the radial linear scale', function() {
 			"args": []
 		}, {
 			"name": "arc",
-			"args": [100, 150, 18, 0, 6.283185307179586]
+			"args": [100, 150, 18.5, 0, 6.283185307179586]
 		}, {
 			"name": "closePath",
 			"args": []
@@ -432,13 +432,13 @@ describe('Test the radial linear scale', function() {
 			"args": ["rgba(255,255,255,0.75)"]
 		}, {
 			"name": "fillRect",
-			"args": [88, 124, 24, 16]
+			"args": [88, 123.5, 24, 16]
 		}, {
 			"name": "setFillStyle",
 			"args": ["#666"]
 		}, {
 			"name": "fillText",
-			"args": ["40", 100, 132]
+			"args": ["40", 100, 131.5]
 		}, {
 			"name": "setStrokeStyle",
 			"args": ["rgba(0, 0, 0, 0.1)"]
@@ -450,7 +450,7 @@ describe('Test the radial linear scale', function() {
 			"args": []
 		}, {
 			"name": "arc",
-			"args": [100, 150, 27, 0, 6.283185307179586]
+			"args": [100, 150, 27.75, 0, 6.283185307179586]
 		}, {
 			"name": "closePath",
 			"args": []
@@ -465,13 +465,13 @@ describe('Test the radial linear scale', function() {
 			"args": ["rgba(255,255,255,0.75)"]
 		}, {
 			"name": "fillRect",
-			"args": [88, 115, 24, 16]
+			"args": [88, 114.25, 24, 16]
 		}, {
 			"name": "setFillStyle",
 			"args": ["#666"]
 		}, {
 			"name": "fillText",
-			"args": ["60", 100, 123]
+			"args": ["60", 100, 122.25]
 		}, {
 			"name": "setStrokeStyle",
 			"args": ["rgba(0, 0, 0, 0.1)"]
@@ -483,7 +483,7 @@ describe('Test the radial linear scale', function() {
 			"args": []
 		}, {
 			"name": "arc",
-			"args": [100, 150, 36, 0, 6.283185307179586]
+			"args": [100, 150, 37, 0, 6.283185307179586]
 		}, {
 			"name": "closePath",
 			"args": []
@@ -498,13 +498,13 @@ describe('Test the radial linear scale', function() {
 			"args": ["rgba(255,255,255,0.75)"]
 		}, {
 			"name": "fillRect",
-			"args": [88, 106, 24, 16]
+			"args": [88, 105, 24, 16]
 		}, {
 			"name": "setFillStyle",
 			"args": ["#666"]
 		}, {
 			"name": "fillText",
-			"args": ["80", 100, 114]
+			"args": ["80", 100, 113]
 		}];
 		expect(mockContext.getCalls()).toEqual(expected);
 
@@ -526,16 +526,16 @@ describe('Test the radial linear scale', function() {
 			"args": [100, 141]
 		}, {
 			"name": "lineTo",
-			"args": [108.55950864665638, 147.21884705062547]
+			"args": [109, 147]
 		}, {
 			"name": "lineTo",
-			"args": [105.29006727063226, 157.28115294937453]
+			"args": [105, 157]
 		}, {
 			"name": "lineTo",
-			"args": [94.70993272936774, 157.28115294937453]
+			"args": [95, 157]
 		}, {
 			"name": "lineTo",
-			"args": [91.44049135334362, 147.21884705062547]
+			"args": [91, 147]
 		}, {
 			"name": "closePath",
 			"args": []
@@ -550,13 +550,13 @@ describe('Test the radial linear scale', function() {
 			"args": ["rgba(255,255,255,0.75)"]
 		}, {
 			"name": "fillRect",
-			"args": [88, 133, 24, 16]
+			"args": [88, 132.75, 24, 16]
 		}, {
 			"name": "setFillStyle",
 			"args": ["#666"]
 		}, {
 			"name": "fillText",
-			"args": ["20", 100, 141]
+			"args": ["20", 100, 140.75]
 		}, {
 			"name": "setStrokeStyle",
 			"args": ["rgba(0, 0, 0, 0.1)"]
@@ -571,16 +571,16 @@ describe('Test the radial linear scale', function() {
 			"args": [100, 132]
 		}, {
 			"name": "lineTo",
-			"args": [117.11901729331277, 144.43769410125094]
+			"args": [118, 144]
 		}, {
 			"name": "lineTo",
-			"args": [110.58013454126451, 164.56230589874906]
+			"args": [111, 165]
 		}, {
 			"name": "lineTo",
-			"args": [89.41986545873549, 164.56230589874906]
+			"args": [89, 165]
 		}, {
 			"name": "lineTo",
-			"args": [82.88098270668723, 144.43769410125094]
+			"args": [82, 144]
 		}, {
 			"name": "closePath",
 			"args": []
@@ -595,13 +595,13 @@ describe('Test the radial linear scale', function() {
 			"args": ["rgba(255,255,255,0.75)"]
 		}, {
 			"name": "fillRect",
-			"args": [88, 124, 24, 16]
+			"args": [88, 123.5, 24, 16]
 		}, {
 			"name": "setFillStyle",
 			"args": ["#666"]
 		}, {
 			"name": "fillText",
-			"args": ["40", 100, 132]
+			"args": ["40", 100, 131.5]
 		}, {
 			"name": "setStrokeStyle",
 			"args": ["rgba(0, 0, 0, 0.1)"]
@@ -613,19 +613,19 @@ describe('Test the radial linear scale', function() {
 			"args": []
 		}, {
 			"name": "moveTo",
-			"args": [100, 123]
+			"args": [100, 122]
 		}, {
 			"name": "lineTo",
-			"args": [125.67852593996915, 141.6565411518764]
+			"args": [126, 141]
 		}, {
 			"name": "lineTo",
-			"args": [115.87020181189678, 171.8434588481236]
+			"args": [116, 172]
 		}, {
 			"name": "lineTo",
-			"args": [84.12979818810322, 171.8434588481236]
+			"args": [84, 172]
 		}, {
 			"name": "lineTo",
-			"args": [74.32147406003085, 141.6565411518764]
+			"args": [74, 141]
 		}, {
 			"name": "closePath",
 			"args": []
@@ -640,13 +640,13 @@ describe('Test the radial linear scale', function() {
 			"args": ["rgba(255,255,255,0.75)"]
 		}, {
 			"name": "fillRect",
-			"args": [88, 115, 24, 16]
+			"args": [88, 114.25, 24, 16]
 		}, {
 			"name": "setFillStyle",
 			"args": ["#666"]
 		}, {
 			"name": "fillText",
-			"args": ["60", 100, 123]
+			"args": ["60", 100, 122.25]
 		}, {
 			"name": "setStrokeStyle",
 			"args": ["rgba(0, 0, 0, 0.1)"]
@@ -658,19 +658,19 @@ describe('Test the radial linear scale', function() {
 			"args": []
 		}, {
 			"name": "moveTo",
-			"args": [100, 114]
+			"args": [100, 113]
 		}, {
 			"name": "lineTo",
-			"args": [134.23803458662553, 138.87538820250188]
+			"args": [135, 139]
 		}, {
 			"name": "lineTo",
-			"args": [121.16026908252903, 179.12461179749812]
+			"args": [122, 180]
 		}, {
 			"name": "lineTo",
-			"args": [78.83973091747097, 179.12461179749812]
+			"args": [78, 180]
 		}, {
 			"name": "lineTo",
-			"args": [65.76196541337447, 138.8753882025019]
+			"args": [65, 139]
 		}, {
 			"name": "closePath",
 			"args": []
@@ -685,13 +685,13 @@ describe('Test the radial linear scale', function() {
 			"args": ["rgba(255,255,255,0.75)"]
 		}, {
 			"name": "fillRect",
-			"args": [88, 106, 24, 16]
+			"args": [88, 105, 24, 16]
 		}, {
 			"name": "setFillStyle",
 			"args": ["#666"]
 		}, {
 			"name": "fillText",
-			"args": ["80", 100, 114]
+			"args": ["80", 100, 113]
 		}, {
 			"name": "setLineWidth",
 			"args": [1]
@@ -706,7 +706,7 @@ describe('Test the radial linear scale', function() {
 			"args": [100, 150]
 		}, {
 			"name": "lineTo",
-			"args": [65.76196541337447, 138.8753882025019]
+			"args": [65, 139]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -718,7 +718,7 @@ describe('Test the radial linear scale', function() {
 			"args": ["#666"]
 		}, {
 			"name": "fillText",
-			"args": ["point5", 61.0066828318987, 137.33030323062715]
+			"args": ["point5", 60, 137]
 		}, {
 			"name": "beginPath",
 			"args": []
@@ -727,7 +727,7 @@ describe('Test the radial linear scale', function() {
 			"args": [100, 150]
 		}, {
 			"name": "lineTo",
-			"args": [78.83973091747097, 179.12461179749812]
+			"args": [78, 180]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -739,7 +739,7 @@ describe('Test the radial linear scale', function() {
 			"args": ["#666"]
 		}, {
 			"name": "fillText",
-			"args": ["point4", 75.9008046560086, 183.16969676937285]
+			"args": ["point4", 75, 184]
 		}, {
 			"name": "beginPath",
 			"args": []
@@ -748,7 +748,7 @@ describe('Test the radial linear scale', function() {
 			"args": [100, 150]
 		}, {
 			"name": "lineTo",
-			"args": [121.16026908252903, 179.12461179749812]
+			"args": [122, 180]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -760,7 +760,7 @@ describe('Test the radial linear scale', function() {
 			"args": ["#666"]
 		}, {
 			"name": "fillText",
-			"args": ["point3", 124.0991953439914, 183.16969676937285]
+			"args": ["point3", 125, 184]
 		}, {
 			"name": "beginPath",
 			"args": []
@@ -769,7 +769,7 @@ describe('Test the radial linear scale', function() {
 			"args": [100, 150]
 		}, {
 			"name": "lineTo",
-			"args": [134.23803458662553, 138.87538820250188]
+			"args": [135, 139]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -781,7 +781,7 @@ describe('Test the radial linear scale', function() {
 			"args": ["#666"]
 		}, {
 			"name": "fillText",
-			"args": ["point2", 138.9933171681013, 137.33030323062715]
+			"args": ["point2", 140, 137]
 		}, {
 			"name": "beginPath",
 			"args": []
@@ -790,7 +790,7 @@ describe('Test the radial linear scale', function() {
 			"args": [100, 150]
 		}, {
 			"name": "lineTo",
-			"args": [100, 114]
+			"args": [100, 113]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -802,7 +802,7 @@ describe('Test the radial linear scale', function() {
 			"args": ["#666"]
 		}, {
 			"name": "fillText",
-			"args": ["point1", 100, 109]
+			"args": ["point1", 100, 108]
 		}]);
 	});
 });
