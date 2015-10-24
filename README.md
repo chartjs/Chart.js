@@ -1,4 +1,4 @@
-![](http://tannerlinsley.com/memes/chartjs.gif)
+[![](http://tannerlinsley.com/memes/chartjs.gif)](http://www.chartjs.org/docs/)
 
 # Chart.js 
 
