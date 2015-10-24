@@ -11,19 +11,21 @@
 - Bower: `bower install Chart.js --save`
 - Zip: [Download](https://github.com/nnnick/Chart.js/archive/master.zip)
 
+Examples and documentation can be found at [chartjs.org/docs](http://www.chartjs.org/docs/).
+
 ## v2.0 Beta
 
 - Release: [2.0.0-beta](https://github.com/nnnick/Chart.js/releases/tag/2.0.0-beta)
 - Zip: [Download](https://github.com/nnnick/Chart.js/archive/2.0.0-beta.zip)
+
+Documentation for v2.0 is currently located [here](https://github.com/nnnick/Chart.js/tree/v2.0-dev/docs).
 
 ## v2.0 Bleeding-Edge
 
 - Branch: [v2.0-dev](https://github.com/nnnick/Chart.js/tree/v2.0-dev)
 - Zip: [Download](https://github.com/nnnick/Chart.js/archive/v2.0-dev.zip)
 
-### v2.0 Development
-
-The next generation and release of Chart.js has been well under way this year and we are very close to releasing some amazing new features including, but not limited to:
+The next generation and release of Chart.js (v2.0) has been well under way this year and we are very close to releasing some amazing new features including, but not limited to:
 - Rewritten, optimized, and unit-tested
 - New and improved scales (log, time, linear, category, multiple scales)
 - Improved Tooltips and tooltip callbacks for customization
@@ -41,14 +43,11 @@ Submit PR's to the v2.0-dev branch.
 #####Building and Testing
 `gulp build`, `gulp test`, `gulp watch --test`
 
-## v1.x Status: Feature Complete
+#####v1.x Status: Feature Complete
 v1.x is now considered feature complete.  PR's for bug fixes are still extremely welcome.  Any open PR's for v1.x features will need to be reconsidered, refactored and resubmitted for v2.x (if the feature has not already been implemented). For questions on new features refer to the docs in the v2.0-dev branch
 
-## Documentation
 
-You can find documentation at [chartjs.org/docs](http://www.chartjs.org/docs/). The markdown files that build the site are available under `/docs`. Please note - in some of the json examples of configuration you might notice some liquid tags - this is just for the generating the site html, please disregard.
-
-## Bugs, issues and contributing
+## Bugs, Issues and Contributing
 
 Before submitting an issue or a pull request to the project, please take a moment to look over the [contributing guidelines](https://github.com/nnnick/Chart.js/blob/master/CONTRIBUTING.md) first.
 
