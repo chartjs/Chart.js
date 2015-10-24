@@ -7,6 +7,32 @@
 
 	var defaultConfig = {
 		position: "left",
+		ticks: {
+			callback: function(tickValue, index, ticks) {
+				var delta = ticks[1] - ticks[0];
+
+				// If we have a number like 2.5 as the delta, figure out how many decimal places we need
+				if (Math.abs(delta) > 1) {
+					if (tickValue !== Math.floor(tickValue)) {
+						// not an integer
+						delta = tickValue - Math.floor(tickValue);
+					}
+				}
+
+				var logDelta = helpers.log10(Math.abs(delta));
+				var tickString = '';
+
+				if (tickValue !== 0) {
+					var numDecimal = -1 * Math.floor(logDelta);
+					numDecimal = Math.max(Math.min(numDecimal, 20), 0); // toFixed has a max of 20 decimal places
+					tickString = tickValue.toFixed(numDecimal);
+				} else {
+					tickString = '0'; // never show decimal places for 0
+				}
+
+				return tickString;
+			}
+		}
 	};
 
 	var LinearScale = Chart.Scale.extend({
@@ -125,9 +151,11 @@
 			var niceMin = Math.floor(this.min / spacing) * spacing;
 			var niceMax = Math.ceil(this.max / spacing) * spacing;
 
+			var numSpaces = Math.ceil((niceMax - niceMin) / spacing);
+
 			// Put the values into the ticks array
-			for (var j = niceMin; j <= niceMax; j += spacing) {
-				this.ticks.push(j);
+			for (var j = 0; j <= numSpaces; ++j) {
+				this.ticks.push(niceMin + (j * spacing));
 			}
 
 			if (this.options.position == "left" || this.options.position == "right") {
