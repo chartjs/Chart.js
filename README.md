@@ -5,9 +5,23 @@
 
 *Simple HTML5 Charts using the canvas element* [chartjs.org](http://www.chartjs.org)
 
+## v1.0 Stable
+
+- NPM: `npm install chart.js --save`
+- Bower: `bower install Chart.js --save`
+- Zip: [Download](https://github.com/nnnick/Chart.js/archive/master.zip)
+
 ## v2.0 Beta
 
-Current Release: [2.0.0-beta](https://github.com/nnnick/Chart.js/releases/tag/2.0.0-beta)
+- Release: [2.0.0-beta](https://github.com/nnnick/Chart.js/releases/tag/2.0.0-beta)
+- Zip: [Download](https://github.com/nnnick/Chart.js/archive/2.0.0-beta.zip)
+
+## v2.0 Bleeding-Edge
+
+- Branch: [v2.0-dev](https://github.com/nnnick/Chart.js/tree/v2.0-dev)
+- Zip: [Download](https://github.com/nnnick/Chart.js/archive/v2.0-dev.zip)
+
+### v2.0 Development
 
 The next generation and release of Chart.js has been well under way this year and we are very close to releasing some amazing new features including, but not limited to:
 - Rewritten, optimized, and unit-tested
