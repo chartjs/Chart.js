@@ -13,8 +13,9 @@
 - Bower: `bower install Chart.js --save`
 - Zip: [Download](https://github.com/nnnick/Chart.js/archive/master.zip)
 
-- [Examples](https://github.com/nnnick/Chart.js/tree/master/samples).
-- [Documentation](http://www.chartjs.org/docs/).
+[Examples](https://github.com/nnnick/Chart.js/tree/master/samples).
+
+[Documentation](http://www.chartjs.org/docs/).
 
 ## v2.0 Beta
 
