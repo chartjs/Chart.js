@@ -7,7 +7,7 @@
 
 *Simple HTML5 Charts using the canvas element* [chartjs.org](http://www.chartjs.org)
 
-## v1.0 Stable
+## v1.0.2 Stable
 
 - NPM: `npm install chart.js --save`
 - Bower: `bower install Chart.js --save`
