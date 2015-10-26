@@ -54,6 +54,8 @@
 			this.ensureScalesHaveIDs();
 			this.buildOrUpdateControllers();
 			this.buildScales();
+			this.buildLegends();
+			this.updateLayout();
 			this.resetElements();
 			this.initToolTip();
 			this.update();
@@ -161,7 +163,25 @@
 				this.scales.radialScale = scale;
 			}
 
-			Chart.scaleService.update(this, this.chart.width, this.chart.height);
+			Chart.scaleService.addScalesToLayout(this);
+		},
+
+		buildLegends: function() {
+			if (!this.options.legend) {
+				return;
+			}
+
+			this.legend = new Chart.Legend({
+				ctx: this.chart.ctx,
+				options: this.options.legend,
+				chart: this,
+			});
+
+			Chart.layoutService.addBox(this, this.legend);
+		},
+
+		updateLayout: function() {
+			Chart.layoutService.update(this, this.chart.width, this.chart.height);
 		},
 
 		buildOrUpdateControllers: function buildOrUpdateControllers(resetNewControllers) {
@@ -199,7 +219,7 @@
 		},
 
 		update: function update(animationDuration, lazy) {
-			Chart.scaleService.update(this, this.chart.width, this.chart.height);
+			Chart.layoutService.update(this, this.chart.width, this.chart.height);
 
 			// Make sure dataset controllers are updated and new controllers are reset
 			this.buildOrUpdateControllers(true);
@@ -251,8 +271,8 @@
 			this.clear();
 
 			// Draw all the scales
-			helpers.each(this.scales, function(scale) {
-				scale.draw(this.chartArea);
+			helpers.each(this.boxes, function(box) {
+				box.draw(this.chartArea);
 			}, this);
 			if (this.scale) {
 				this.scale.draw();
