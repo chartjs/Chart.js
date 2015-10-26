@@ -11,6 +11,7 @@
 
 - NPM: `npm install chart.js --save`
 - Bower: `bower install Chart.js --save`
+- CDN: https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js
 - Zip: [Download](https://github.com/nnnick/Chart.js/archive/master.zip)
 
 [Examples](https://github.com/nnnick/Chart.js/tree/master/samples) | [Documentation](http://www.chartjs.org/docs/)
