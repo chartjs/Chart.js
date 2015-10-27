@@ -146,6 +146,11 @@
 					return;
 				}
 
+				// If First point, move to the point ahead of time (so a line doesn't get drawn up the left axis)
+				if (!index) {
+					ctx.moveTo(point._view.x, point._view.y);
+				}
+
 				// Draw a bezier line to the point
 				if (vm.tension > 0 && index) {
 					ctx.bezierCurveTo(
