@@ -110,6 +110,9 @@ describe('Line element tests', function() {
 			name: 'moveTo',
 			args: [0, 0]
 		}, {
+			name: 'moveTo',
+			args: [0, 10]
+		}, {
 			name: 'lineTo',
 			args: [0, 10]
 		}, {
@@ -252,6 +255,9 @@ describe('Line element tests', function() {
 			name: 'moveTo',
 			args: [0, 2]
 		}, {
+			name: 'moveTo',
+			args: [0, 10]
+		}, {
 			name: 'lineTo',
 			args: [0, 10]
 		}, {
@@ -375,6 +381,9 @@ describe('Line element tests', function() {
 		}, {
 			name: 'moveTo',
 			args: [0, 0]
+		}, {
+			name: 'moveTo',
+			args: [0, 10]
 		}, {
 			name: 'lineTo',
 			args: [0, 10]
@@ -536,6 +545,9 @@ describe('Line element tests', function() {
 		}, {
 			name: 'moveTo',
 			args: [0, 2]
+		}, {
+			name: 'moveTo',
+			args: [0, 10]
 		}, {
 			name: 'lineTo',
 			args: [0, 10]
