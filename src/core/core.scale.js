@@ -68,7 +68,12 @@
 			// Absorb the master measurements
 			this.maxWidth = maxWidth;
 			this.maxHeight = maxHeight;
-			this.margins = margins;
+			this.margins = helpers.extend({
+				left: 0,
+				right: 0,
+				top: 0,
+				bottom: 0
+			}, margins);
 
 			// Dimensions
 			this.beforeSetDimensions();
@@ -229,7 +234,8 @@
 
 			// Width
 			if (this.isHorizontal()) {
-				this.minSize.width = this.maxWidth; // fill all the width
+				// subtract the margins to line up with the chartArea
+				this.minSize.width = this.maxWidth - this.margins.left - this.margins.right;
 			} else {
 				this.minSize.width = this.options.gridLines.show && this.options.display ? 10 : 0;
 			}
@@ -352,7 +358,7 @@
 				if (includeOffset) {
 					pixel += tickWidth / 2;
 				}
-				return this.left + Math.round(pixel);
+				return this.left + this.margins.left + Math.round(pixel);
 			} else {
 				var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
 				return this.top + (index * (innerHeight / (this.ticks.length - 1)));
@@ -365,7 +371,7 @@
 				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
 				var valueOffset = (innerWidth * decimal) + this.paddingLeft;
 
-				return this.left + Math.round(valueOffset);
+				return this.left + this.margins.left + Math.round(valueOffset);
 			} else {
 				return this.top + (decimal * this.height);
 			}
