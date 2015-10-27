@@ -27,6 +27,7 @@
 		},
 
 		labels: {
+			boxWidth: 40,
 			fontSize: 12,
 			fontStyle: "normal",
 			fontColor: "#666",
@@ -106,6 +107,12 @@
 			this.paddingTop = 0;
 			this.paddingRight = 0;
 			this.paddingBottom = 0;
+
+			// Reset minSize
+			this.minSize = {
+				width: 0,
+				height: 0,
+			};
 		},
 		afterSetDimensions: helpers.noop,
 
@@ -128,13 +135,6 @@
 			var ctx = this.ctx;
 			var titleFont = helpers.fontString(this.options.title.fontSize, this.options.title.fontStyle, this.options.title.fontFamily);
 			var labelFont = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
-
-			this.minSize = {
-				width: 0,
-				height: 0,
-			};
-
-			// Legends can use all available space by default as no alignment to the chartArea is necessary	
 
 			// Width
 			if (this.isHorizontal()) {
@@ -160,18 +160,20 @@
 
 				// Labels
 
-				var totalWidth = 0;
+				this.labelWidths = [0];
 				var totalHeight = this.labels.length ? this.options.labels.fontSize + (this.options.labels.padding) : 0;
 
+				ctx.textAlign = "left";
+				ctx.textBaseline = 'top';
 				ctx.font = labelFont;
 
 				helpers.each(this.labels, function(label, i) {
-					var width = ctx.measureText(label).width;
-					if (totalWidth + width > this.width) {
+					var width = this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + ctx.measureText(label).width;
+					if (this.labelWidths[this.labelWidths.length - 1] + width >= this.width) {
 						totalHeight += this.options.labels.fontSize + (this.options.labels.padding);
-						totalWidth = 0;
+						this.labelWidths[this.labelWidths.length] = this.left;
 					}
-					totalWidth += width + this.options.labels.padding;
+					this.labelWidths[this.labelWidths.length - 1] += width + this.options.labels.padding;
 				}, this);
 
 				this.minSize.height += totalHeight;
@@ -195,11 +197,16 @@
 		draw: function() {
 			if (this.options.display) {
 
+				console.log(this.labelWidths);
+
 				var ctx = this.ctx;
 				var cursor = {
-					x: this.left,
+					x: this.left + ((this.width - this.labelWidths[0]) / 2),
 					y: this.top,
+					line: 0,
 				};
+
+				var labelFont = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
 
 				// Horizontal
 				if (this.isHorizontal()) {
@@ -213,18 +220,48 @@
 					ctx.textAlign = "left";
 					ctx.textBaseline = 'top';
 					ctx.fillStyle = this.options.labels.fontColor; // render in correct colour
-					ctx.font = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
+					ctx.font = labelFont;
 
 					helpers.each(this.labels, function(label, i) {
-						var width = ctx.measureText(label).width;
-						if (cursor.x + width > this.width) {
+
+						var dataset = this.chart.data.datasets[i];
+						var backgroundColor = dataset.backgroundColor;
+						var borderColor = dataset.borderColor;
+
+						var width = this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + ctx.measureText(label).width;
+						if (cursor.x + width >= this.width) {
 							cursor.y += this.options.labels.fontSize + (this.options.labels.padding);
-							cursor.x = this.left;
+							cursor.line++;
+							cursor.x = this.left + ((this.width - this.labelWidths[cursor.line]) / 2);
 						}
-						ctx.fillText(label, cursor.x, cursor.y);
+
+						// Set the ctx for the box
+						ctx.save();
+						ctx.lineCap = dataset.borderCapStyle || Chart.defaults.global.elements.line.borderCapStyle;
+						if (ctx.setLineDash) {
+							// IE 9 and 10 do not support line dash
+							ctx.setLineDash(dataset.borderDash || Chart.defaults.global.elements.line.borderDash);
+						}
+						ctx.strokeStyle = dataset.borderColor || Chart.defaults.global.defaultColor;
+						ctx.fillStyle = dataset.backgroundColor || Chart.defaults.global.defaultColor;
+						if (dataset.metaDataset) {
+							ctx.lineDashOffset = dataset.borderDashOffset || Chart.defaults.global.elements.line.borderDashOffset;
+							ctx.lineJoin = dataset.borderJoinStyle || Chart.defaults.global.elements.line.borderJoinStyle;
+							ctx.lineWidth = dataset.borderWidth || Chart.defaults.global.elements.line.borderWidth;
+						}
+						ctx.strokeRect(cursor.x, cursor.y, this.options.labels.boxWidth, this.options.labels.fontSize);
+						ctx.fillRect(cursor.x, cursor.y, this.options.labels.boxWidth, this.options.labels.fontSize);
+						ctx.restore();
+
+
+						ctx.fillText(label, this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + cursor.x, cursor.y);
 						cursor.x += width + (this.options.labels.padding);
 					}, this);
 
+					// Title Spacing if on bottom
+					if (this.options.title.display && this.options.title.position == 'bottom') {
+						cursor.y += this.options.title.fontSize + (this.options.title.padding * 2);
+					}
 
 					// Title
 					if (this.options.title.display) {
