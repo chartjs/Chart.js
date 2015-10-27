@@ -30,7 +30,7 @@
                     widthOffset += (valueWidth / 2);
                 }
 
-                return this.left + Math.round(widthOffset);
+                return this.left + this.margins.left + Math.round(widthOffset);
             } else {
                 var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
                 var valueHeight = innerHeight / Math.max((this.data.labels.length - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
