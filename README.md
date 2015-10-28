@@ -2,6 +2,10 @@
 
 *This is an fork of [Chart.js](http://www.chartjs.org) which supports error bars. It can be used as a stand-alone library or as an extension of the original library.
 
+![Bar chart with margin of error](samples/bar_error.png)
+
+![Line chart with margin of error](samples/line_error.png)
+
 ## Documentation
 
 You can find documentation for Chart.js at [chartjs.org/docs](http://www.chartjs.org/docs/). Usage of the extension is noted below.
