@@ -139,44 +139,15 @@
 			return helpers.isArray(lines) ? lines : [lines];
 		},
 
-		getBody: function(xLabel, yLabel, index, datasetIndex) {
-
+		getBody: function(items, data) {
 			var lines = [];
 
-			var beforeLabel,
-				afterLabel,
-				label;
+			helpers.each(items, function(bodyItem) {
+				var beforeLabel = this._options.tooltips.callbacks.beforeLabel.call(this, bodyItem.xLabel, bodyItem.yLabel, bodyItem.index, bodyItem.datasetIndex);
+				var afterLabel = this._options.tooltips.callbacks.afterLabel.call(this, bodyItem.xLabel, bodyItem.yLabel, bodyItem.index, bodyItem.datasetIndex);
 
-			if (helpers.isArray(xLabel)) {
-
-				var labels = [];
-
-				// Run EACH label pair through the label callback this time.
-				for (var i = 0; i < xLabel.length; i++) {
-
-					beforeLabel = this._options.tooltips.callbacks.beforeLabel.call(this, xLabel[i], yLabel[i], index, datasetIndex);
-					afterLabel = this._options.tooltips.callbacks.afterLabel.call(this, xLabel[i], yLabel[i], index, datasetIndex);
-
-					labels.push((beforeLabel ? beforeLabel : '') + this._options.tooltips.callbacks.label.call(this, xLabel[i], yLabel[i], index, datasetIndex) + (afterLabel ? afterLabel : ''));
-
-				}
-
-				if (labels.length) {
-					lines = lines.concat(labels);
-				}
-
-			} else {
-
-				// Run the single label through the callback
-
-				beforeLabel = this._options.tooltips.callbacks.beforeLabel.apply(this, arguments);
-				label = this._options.tooltips.callbacks.label.apply(this, arguments);
-				afterLabel = this._options.tooltips.callbacks.afterLabel.apply(this, arguments);
-
-				if (beforeLabel || label || afterLabel) {
-					lines.push((beforeLabel ? afterLabel : '') + label + (afterLabel ? afterLabel : ''));
-				}
-			}
+				lines.push((beforeLabel ? beforeLabel : '') + this._options.tooltips.callbacks.label.call(this, bodyItem.xLabel, bodyItem.yLabel, bodyItem.index, bodyItem.datasetIndex) + (afterLabel ? afterLabel : ''));
+			}, this);
 
 			return lines;
 		},
@@ -210,14 +181,19 @@
 				labelColors = [],
 				tooltipPosition;
 
+			var items = [];
+
 			if (this._options.tooltips.mode == 'single') {
-
-				xLabel = element._xScale.getLabelForIndex(element._index, element._datasetIndex);
-				yLabel = element._yScale.getLabelForIndex(element._index, element._datasetIndex);
+				items.push({
+					xLabel: element._xScale ? element._xScale.getLabelForIndex(element._index, element._datasetIndex) : '',
+					yLabel: element._yScale ? element._yScale.getLabelForIndex(element._index, element._datasetIndex) : '',
+					index: element._index,
+					datasetIndex: element._datasetIndex,
+				});
 				tooltipPosition = this._active[0].tooltipPosition();
-
+				xLabel = element._xScale ? element._xScale.getLabelForIndex(element._index, element._datasetIndex) : '';
+				yLabel = element._yScale ? element._yScale.getLabelForIndex(element._index, element._datasetIndex) : '';
 			} else {
-
 				xLabel = [];
 				yLabel = [];
 
@@ -225,8 +201,16 @@
 					if (!helpers.isDatasetVisible(dataset)) {
 						return;
 					}
-					xLabel.push(element._xScale.getLabelForIndex(element._index, datasetIndex));
-					yLabel.push(element._yScale.getLabelForIndex(element._index, datasetIndex));
+					var currentElement = dataset.data[element._index];
+					xLabel.push(currentElement._xScale ? currentElement._xScale.getLabelForIndex(element._index, datasetIndex) : '');
+					yLabel.push(currentElement._yScale ? currentElement._yScale.getLabelForIndex(element._index, datasetIndex) : '');
+
+					items.push({
+						xLabel: currentElement._xScale ? currentElement._xScale.getLabelForIndex(currentElement._index, currentElement._datasetIndex) : '',
+						yLabel: currentElement._yScale ? currentElement._yScale.getLabelForIndex(currentElement._index, currentElement._datasetIndex) : '',
+						index: element._index,
+						datasetIndex: datasetIndex,
+					});
 				});
 
 				helpers.each(this._active, function(active, i) {
@@ -238,15 +222,13 @@
 
 				tooltipPosition = this._active[0].tooltipPosition();
 				tooltipPosition.y = this._active[0]._yScale.getPixelForDecimal(0.5);
-
 			}
-
 
 			// Build the Text Lines
 			helpers.extend(this._model, {
 				title: this.getTitle(xLabel, yLabel, element._index, element._datasetIndex, this._data),
 				beforeBody: this.getBeforeBody(xLabel, yLabel, element._index, element._datasetIndex, this._data),
-				body: this.getBody(xLabel, yLabel, element._index, element._datasetIndex, this._data),
+				body: this.getBody(items, this._data),
 				afterBody: this.getAfterBody(xLabel, yLabel, element._index, element._datasetIndex, this._data),
 				footer: this.getFooter(xLabel, yLabel, element._index, element._datasetIndex, this._data),
 			});
