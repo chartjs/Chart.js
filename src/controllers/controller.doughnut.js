@@ -18,6 +18,16 @@
 		},
 		//The percentage of the chart that we cut out of the middle.
 		cutoutPercentage: 50,
+
+		// Need to override these to give a nice default
+		tooltips: {
+			callbacks: {
+				title: function() { return '' },
+				label: function(tooltipItem, data) {
+					return data.labels[tooltipItem.index] + ': ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+				}
+			}
+		}
 	};
 
 	Chart.defaults.pie = helpers.clone(Chart.defaults.doughnut);
