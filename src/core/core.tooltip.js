@@ -136,7 +136,7 @@
 			});
 		},
 
-		// Get the title 
+		// Get the title
 		// Args are: (tooltipItem, data)
 		getTitle: function() {
 			var beforeTitle = this._options.tooltips.callbacks.beforeTitle.apply(this, arguments),
@@ -197,7 +197,7 @@
 
 			var ctx = this._chart.ctx;
 
-			var element = this._active[0], 
+			var element = this._active[0],
 				labelColors = [],
 				tooltipPosition;
 
@@ -254,6 +254,10 @@
 				caretPadding: tooltipPosition.padding,
 				labelColors: labelColors,
 			});
+
+			if (this._options.tooltips.custom) {
+				this._options.tooltips.custom.call(this, this._model);
+			}
 
 			return this;
 		},
