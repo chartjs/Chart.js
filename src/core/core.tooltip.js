@@ -38,23 +38,29 @@
 		xOffset: 10,
 		multiKeyBackground: '#fff',
 		callbacks: {
+			// Args are: (tooltipItems, data)
 			beforeTitle: helpers.noop,
-			title: function(xLabel, yLabel, index, datasetIndex, data) {
-				// Pick first label for now
-				return helpers.isArray(xLabel) ? xLabel[0] : xLabel;
+			title: function(tooltipItems, data) {
+				// Pick first xLabel for now
+				return tooltipItems.length > 0 ? tooltipItems[0].xLabel : '';
 			},
 			afterTitle: helpers.noop,
 
+			// Args are: (tooltipItems, data)
 			beforeBody: helpers.noop,
 
+			// Args are: (tooltipItem, data)
 			beforeLabel: helpers.noop,
-			label: function(xLabel, yLabel, index, datasetIndex, data) {
-				return this._data.datasets[datasetIndex].label + ': ' + yLabel;
+			label: function(tooltipItem, data) {
+				var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
+				return datasetLabel + ': ' + tooltipItem.yLabel;
 			},
 			afterLabel: helpers.noop,
 
+			// Args are: (tooltipItems, data)
 			afterBody: helpers.noop,
 
+			// Args are: (tooltipItems, data)
 			beforeFooter: helpers.noop,
 			footer: helpers.noop,
 			afterFooter: helpers.noop,
@@ -121,6 +127,7 @@
 		},
 
 		// Get the title 
+		// Args are: (tooltipItem, data)
 		getTitle: function() {
 			var beforeTitle = this._options.tooltips.callbacks.beforeTitle.apply(this, arguments),
 				title = this._options.tooltips.callbacks.title.apply(this, arguments),
@@ -134,30 +141,35 @@
 			return lines;
 		},
 
-		getBeforeBody: function(xLabel, yLabel, index, datasetIndex, data) {
-			var lines = this._options.tooltips.callbacks.beforeBody.call(this, xLabel, yLabel, index, datasetIndex, data);
+		// Args are: (tooltipItem, data)
+		getBeforeBody: function() {
+			var lines = this._options.tooltips.callbacks.beforeBody.call(this, arguments);
 			return helpers.isArray(lines) ? lines : [lines];
 		},
 
-		getBody: function(items, data) {
+		// Args are: (tooltipItem, data)
+		getBody: function(tooltipItems, data) {
 			var lines = [];
 
-			helpers.each(items, function(bodyItem) {
-				var beforeLabel = this._options.tooltips.callbacks.beforeLabel.call(this, bodyItem.xLabel, bodyItem.yLabel, bodyItem.index, bodyItem.datasetIndex);
-				var afterLabel = this._options.tooltips.callbacks.afterLabel.call(this, bodyItem.xLabel, bodyItem.yLabel, bodyItem.index, bodyItem.datasetIndex);
+			helpers.each(tooltipItems, function(bodyItem) {
+				var beforeLabel = this._options.tooltips.callbacks.beforeLabel.call(this, bodyItem, data) || '';
+				var bodyLabel = this._options.tooltips.callbacks.label.call(this, bodyItem, data) || '';
+				var afterLabel = this._options.tooltips.callbacks.afterLabel.call(this, bodyItem, data) || '';
 
-				lines.push((beforeLabel ? beforeLabel : '') + this._options.tooltips.callbacks.label.call(this, bodyItem.xLabel, bodyItem.yLabel, bodyItem.index, bodyItem.datasetIndex) + (afterLabel ? afterLabel : ''));
+				lines.push(beforeLabel + bodyLabel + afterLabel);
 			}, this);
 
 			return lines;
 		},
 
-		getAfterBody: function(xLabel, yLabel, index, datasetIndex, data) {
-			var lines = this._options.tooltips.callbacks.afterBody.call(this, xLabel, yLabel, index, datasetIndex, data);
+		// Args are: (tooltipItem, data)
+		getAfterBody: function() {
+			var lines = this._options.tooltips.callbacks.afterBody.call(this, arguments);
 			return helpers.isArray(lines) ? lines : [lines];
 		},
 
 		// Get the footer and beforeFooter and afterFooter lines
+		// Args are: (tooltipItem, data)
 		getFooter: function() {
 			var beforeFooter = this._options.tooltips.callbacks.beforeFooter.apply(this, arguments);
 			var footer = this._options.tooltips.callbacks.footer.apply(this, arguments);
@@ -175,37 +187,28 @@
 
 			var ctx = this._chart.ctx;
 
-			var element = this._active[0],
-				xLabel,
-				yLabel,
+			var element = this._active[0], 
 				labelColors = [],
 				tooltipPosition;
 
-			var items = [];
+			var tooltipItems = [];
 
 			if (this._options.tooltips.mode == 'single') {
-				items.push({
+				tooltipItems.push({
 					xLabel: element._xScale ? element._xScale.getLabelForIndex(element._index, element._datasetIndex) : '',
 					yLabel: element._yScale ? element._yScale.getLabelForIndex(element._index, element._datasetIndex) : '',
 					index: element._index,
 					datasetIndex: element._datasetIndex,
 				});
 				tooltipPosition = this._active[0].tooltipPosition();
-				xLabel = element._xScale ? element._xScale.getLabelForIndex(element._index, element._datasetIndex) : '';
-				yLabel = element._yScale ? element._yScale.getLabelForIndex(element._index, element._datasetIndex) : '';
 			} else {
-				xLabel = [];
-				yLabel = [];
-
 				helpers.each(this._data.datasets, function(dataset, datasetIndex) {
 					if (!helpers.isDatasetVisible(dataset)) {
 						return;
 					}
-					var currentElement = dataset.data[element._index];
-					xLabel.push(currentElement._xScale ? currentElement._xScale.getLabelForIndex(element._index, datasetIndex) : '');
-					yLabel.push(currentElement._yScale ? currentElement._yScale.getLabelForIndex(element._index, datasetIndex) : '');
+					var currentElement = dataset.metaData[element._index];
 
-					items.push({
+					tooltipItems.push({
 						xLabel: currentElement._xScale ? currentElement._xScale.getLabelForIndex(currentElement._index, currentElement._datasetIndex) : '',
 						yLabel: currentElement._yScale ? currentElement._yScale.getLabelForIndex(currentElement._index, currentElement._datasetIndex) : '',
 						index: element._index,
@@ -226,11 +229,11 @@
 
 			// Build the Text Lines
 			helpers.extend(this._model, {
-				title: this.getTitle(xLabel, yLabel, element._index, element._datasetIndex, this._data),
-				beforeBody: this.getBeforeBody(xLabel, yLabel, element._index, element._datasetIndex, this._data),
-				body: this.getBody(items, this._data),
-				afterBody: this.getAfterBody(xLabel, yLabel, element._index, element._datasetIndex, this._data),
-				footer: this.getFooter(xLabel, yLabel, element._index, element._datasetIndex, this._data),
+				title: this.getTitle(tooltipItems, this._data),
+				beforeBody: this.getBeforeBody(tooltipItems, this._data),
+				body: this.getBody(tooltipItems, this._data),
+				afterBody: this.getAfterBody(tooltipItems, this._data),
+				footer: this.getFooter(tooltipItems, this._data),
 			});
 
 			helpers.extend(this._model, {
