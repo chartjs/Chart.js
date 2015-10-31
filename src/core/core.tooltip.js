@@ -104,9 +104,9 @@
 					bodyColor: options.tooltips.bodyColor,
 					_bodyFontFamily: options.tooltips.bodyFontFamily,
 					_bodyFontStyle: options.tooltips.bodyFontStyle,
+					_bodyAlign: options.tooltips.bodyAlign,
 					bodyFontSize: options.tooltips.bodyFontSize,
 					bodySpacing: options.tooltips.bodySpacing,
-					_bodposition: options.tooltips.bodposition,
 
 					// Title
 					titleColor: options.tooltips.titleColor,
