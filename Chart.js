@@ -2,7 +2,7 @@
 /*!
  * Chart.js
  * http://chartjs.org/
- * Version: 2.0.0-alpha
+ * Version: 2.0.0-beta
  *
  * Copyright 2015 Nick Downie
  * Released under the MIT license
@@ -1293,7 +1293,7 @@
 			}
 		},
 		buildScales: function buildScales() {
-			// Map of scale ID to scale object so we can lookup later 
+			// Map of scale ID to scale object so we can lookup later
 			this.scales = {};
 
 			// Build the x axes
@@ -1556,7 +1556,8 @@
 
 			// Find Active Elements for hover and tooltips
 			if (e.type == 'mouseout') {
-				this.active = this.tooltipActive = [];
+				this.active = this.lastActive = [];
+				this.tooltipActive = this.lastTooltipActive = [];
 			} else {
 				this.active = function() {
 					switch (this.options.hover.mode) {
@@ -1647,11 +1648,11 @@
 						_active: this.tooltipActive,
 					});
 
-					this.tooltip.update();
 				} else {
 					// Inactive
 					this.tooltip._model.opacity = 0;
 				}
+				this.tooltip.update();
 			}
 
 			// Hover animations
@@ -1673,16 +1674,15 @@
 				}, this);
 
 				// If entering, leaving, or changing elements, animate the change via pivot
-				if ((!this.lastActive.length && this.active.length) ||
-					(this.lastActive.length && !this.active.length) ||
-					(this.lastActive.length && this.active.length && changed) ||
-					(!this.lastTooltipActive.length && this.tooltipActive.length) ||
-					(this.lastTooltipActive.length && !this.tooltipActive.length) ||
-					(this.lastTooltipActive.length && this.tooltipActive.length && changed)) {
+				if ((this.lastActive.length !== this.active.length) ||
+					(this.lastActive.length === this.active.length && changed) ||
+					(this.lastTooltipActive.length !== this.tooltipActive.length) ||
+					(this.lastTooltipActive.length === this.tooltipActive.length && changed)) {
 
 					this.stop();
+					console.log('render');
 
-					// We only need to render at this point. Updating will cause scales to be recomputed generating flicker & using more 
+					// We only need to render at this point. Updating will cause scales to be recomputed generating flicker & using more
 					// memory than necessary.
 					this.render(this.options.hover.animationDuration, true);
 				}
@@ -2635,23 +2635,39 @@
 		xOffset: 10,
 		multiKeyBackground: '#fff',
 		callbacks: {
+			// Args are: (tooltipItems, data)
 			beforeTitle: helpers.noop,
-			title: function(xLabel, yLabel, index, datasetIndex, data) {
-				// Pick first label for now
-				return helpers.isArray(xLabel) ? xLabel[0] : xLabel;
+			title: function(tooltipItems, data) {
+				// Pick first xLabel for now
+				var title = '';
+
+				if (tooltipItems.length > 0) {
+					if (tooltipItems[0].xLabel) {
+						title = tooltipItems[0].xLabel;
+					} else if (data.labels.length > 0 && tooltipItems[0].index < data.labels.length) {
+						title = data.labels[tooltipItems[0].index];
+					}
+				}
+
+				return title;
 			},
 			afterTitle: helpers.noop,
 
+			// Args are: (tooltipItems, data)
 			beforeBody: helpers.noop,
 
+			// Args are: (tooltipItem, data)
 			beforeLabel: helpers.noop,
-			label: function(xLabel, yLabel, index, datasetIndex, data) {
-				return this._data.datasets[datasetIndex].label + ': ' + yLabel;
+			label: function(tooltipItem, data) {
+				var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
+				return datasetLabel + ': ' + tooltipItem.yLabel;
 			},
 			afterLabel: helpers.noop,
 
+			// Args are: (tooltipItems, data)
 			afterBody: helpers.noop,
 
+			// Args are: (tooltipItems, data)
 			beforeFooter: helpers.noop,
 			footer: helpers.noop,
 			afterFooter: helpers.noop,
@@ -2685,9 +2701,9 @@
 					bodyColor: options.tooltips.bodyColor,
 					_bodyFontFamily: options.tooltips.bodyFontFamily,
 					_bodyFontStyle: options.tooltips.bodyFontStyle,
+					_bodyAlign: options.tooltips.bodyAlign,
 					bodyFontSize: options.tooltips.bodyFontSize,
 					bodySpacing: options.tooltips.bodySpacing,
-					_bodposition: options.tooltips.bodposition,
 
 					// Title
 					titleColor: options.tooltips.titleColor,
@@ -2717,7 +2733,8 @@
 			});
 		},
 
-		// Get the title 
+		// Get the title
+		// Args are: (tooltipItem, data)
 		getTitle: function() {
 			var beforeTitle = this._options.tooltips.callbacks.beforeTitle.apply(this, arguments),
 				title = this._options.tooltips.callbacks.title.apply(this, arguments),
@@ -2731,59 +2748,35 @@
 			return lines;
 		},
 
-		getBeforeBody: function(xLabel, yLabel, index, datasetIndex, data) {
-			var lines = this._options.tooltips.callbacks.beforeBody.call(this, xLabel, yLabel, index, datasetIndex, data);
+		// Args are: (tooltipItem, data)
+		getBeforeBody: function() {
+			var lines = this._options.tooltips.callbacks.beforeBody.call(this, arguments);
 			return helpers.isArray(lines) ? lines : [lines];
 		},
 
-		getBody: function(xLabel, yLabel, index, datasetIndex) {
-
+		// Args are: (tooltipItem, data)
+		getBody: function(tooltipItems, data) {
 			var lines = [];
 
-			var beforeLabel,
-				afterLabel,
-				label;
+			helpers.each(tooltipItems, function(bodyItem) {
+				var beforeLabel = this._options.tooltips.callbacks.beforeLabel.call(this, bodyItem, data) || '';
+				var bodyLabel = this._options.tooltips.callbacks.label.call(this, bodyItem, data) || '';
+				var afterLabel = this._options.tooltips.callbacks.afterLabel.call(this, bodyItem, data) || '';
 
-			if (helpers.isArray(xLabel)) {
-
-				var labels = [];
-
-				// Run EACH label pair through the label callback this time.
-				for (var i = 0; i < xLabel.length; i++) {
-
-					beforeLabel = this._options.tooltips.callbacks.beforeLabel.call(this, xLabel[i], yLabel[i], index, datasetIndex);
-					afterLabel = this._options.tooltips.callbacks.afterLabel.call(this, xLabel[i], yLabel[i], index, datasetIndex);
-
-					labels.push((beforeLabel ? beforeLabel : '') + this._options.tooltips.callbacks.label.call(this, xLabel[i], yLabel[i], index, datasetIndex) + (afterLabel ? afterLabel : ''));
-
-				}
-
-				if (labels.length) {
-					lines = lines.concat(labels);
-				}
-
-			} else {
-
-				// Run the single label through the callback
-
-				beforeLabel = this._options.tooltips.callbacks.beforeLabel.apply(this, arguments);
-				label = this._options.tooltips.callbacks.label.apply(this, arguments);
-				afterLabel = this._options.tooltips.callbacks.afterLabel.apply(this, arguments);
-
-				if (beforeLabel || label || afterLabel) {
-					lines.push((beforeLabel ? afterLabel : '') + label + (afterLabel ? afterLabel : ''));
-				}
-			}
+				lines.push(beforeLabel + bodyLabel + afterLabel);
+			}, this);
 
 			return lines;
 		},
 
-		getAfterBody: function(xLabel, yLabel, index, datasetIndex, data) {
-			var lines = this._options.tooltips.callbacks.afterBody.call(this, xLabel, yLabel, index, datasetIndex, data);
+		// Args are: (tooltipItem, data)
+		getAfterBody: function() {
+			var lines = this._options.tooltips.callbacks.afterBody.call(this, arguments);
 			return helpers.isArray(lines) ? lines : [lines];
 		},
 
 		// Get the footer and beforeFooter and afterFooter lines
+		// Args are: (tooltipItem, data)
 		getFooter: function() {
 			var beforeFooter = this._options.tooltips.callbacks.beforeFooter.apply(this, arguments);
 			var footer = this._options.tooltips.callbacks.footer.apply(this, arguments);
@@ -2802,28 +2795,34 @@
 			var ctx = this._chart.ctx;
 
 			var element = this._active[0],
-				xLabel,
-				yLabel,
 				labelColors = [],
 				tooltipPosition;
 
+			var tooltipItems = [];
+
 			if (this._options.tooltips.mode == 'single') {
-
-				xLabel = element._xScale.getLabelForIndex(element._index, element._datasetIndex);
-				yLabel = element._yScale.getLabelForIndex(element._index, element._datasetIndex);
+				var yScale = element._yScale || element._scale; // handle radar || polarArea charts
+				tooltipItems.push({
+					xLabel: element._xScale ? element._xScale.getLabelForIndex(element._index, element._datasetIndex) : '',
+					yLabel: yScale ? yScale.getLabelForIndex(element._index, element._datasetIndex) : '',
+					index: element._index,
+					datasetIndex: element._datasetIndex,
+				});
 				tooltipPosition = this._active[0].tooltipPosition();
-
 			} else {
-
-				xLabel = [];
-				yLabel = [];
-
 				helpers.each(this._data.datasets, function(dataset, datasetIndex) {
 					if (!helpers.isDatasetVisible(dataset)) {
 						return;
 					}
-					xLabel.push(element._xScale.getLabelForIndex(element._index, datasetIndex));
-					yLabel.push(element._yScale.getLabelForIndex(element._index, datasetIndex));
+					var currentElement = dataset.metaData[element._index];
+					var yScale = element._yScale || element._scale; // handle radar || polarArea charts
+
+					tooltipItems.push({
+						xLabel: currentElement._xScale ? currentElement._xScale.getLabelForIndex(currentElement._index, currentElement._datasetIndex) : '',
+						yLabel: yScale ? yScale.getLabelForIndex(currentElement._index, currentElement._datasetIndex) : '',
+						index: element._index,
+						datasetIndex: datasetIndex,
+					});
 				});
 
 				helpers.each(this._active, function(active, i) {
@@ -2835,17 +2834,15 @@
 
 				tooltipPosition = this._active[0].tooltipPosition();
 				tooltipPosition.y = this._active[0]._yScale.getPixelForDecimal(0.5);
-
 			}
-
 
 			// Build the Text Lines
 			helpers.extend(this._model, {
-				title: this.getTitle(xLabel, yLabel, element._index, element._datasetIndex, this._data),
-				beforeBody: this.getBeforeBody(xLabel, yLabel, element._index, element._datasetIndex, this._data),
-				body: this.getBody(xLabel, yLabel, element._index, element._datasetIndex, this._data),
-				afterBody: this.getAfterBody(xLabel, yLabel, element._index, element._datasetIndex, this._data),
-				footer: this.getFooter(xLabel, yLabel, element._index, element._datasetIndex, this._data),
+				title: this.getTitle(tooltipItems, this._data),
+				beforeBody: this.getBeforeBody(tooltipItems, this._data),
+				body: this.getBody(tooltipItems, this._data),
+				afterBody: this.getAfterBody(tooltipItems, this._data),
+				footer: this.getFooter(tooltipItems, this._data),
 			});
 
 			helpers.extend(this._model, {
@@ -2854,6 +2851,10 @@
 				caretPadding: tooltipPosition.padding,
 				labelColors: labelColors,
 			});
+
+			if (this._options.tooltips.custom) {
+				this._options.tooltips.custom.call(this, this._model);
+			}
 
 			return this;
 		},
@@ -3677,6 +3678,16 @@
 		},
 		//The percentage of the chart that we cut out of the middle.
 		cutoutPercentage: 50,
+
+		// Need to override these to give a nice default
+		tooltips: {
+			callbacks: {
+				title: function() { return '';},
+				label: function(tooltipItem, data) {
+					return data.labels[tooltipItem.index] + ': ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+				}
+			}
+		}
 	};
 
 	Chart.defaults.pie = helpers.clone(Chart.defaults.doughnut);
@@ -4193,6 +4204,16 @@
 		//Boolean - Whether to animate the rotation of the chart
 		animateRotate: true,
 		animateScale: true,
+
+		// Need to override these to give a nice default
+		tooltips: {
+			callbacks: {
+				title: function() { return ''; },
+				label: function(tooltipItem, data) {
+					return data.labels[tooltipItem.index] + ': ' + tooltipItem.yLabel;
+				}
+			}
+		}
 	};
 
 	Chart.controllers.polarArea = function(chart, datasetIndex) {
@@ -4319,6 +4340,7 @@
 				_chart: this.chart.chart,
 				_datasetIndex: this.index,
 				_index: index,
+				_scale: this.chart.scale,
 
 				// Desired view properties
 				_model: reset ? resetModel : {
@@ -4553,6 +4575,7 @@
 				// Utility
 				_datasetIndex: this.index,
 				_index: index,
+				_scale: this.chart.scale,
 
 				// Desired view properties
 				_model: {
@@ -5245,6 +5268,9 @@
 
 			this.zeroLineIndex = this.ticks.indexOf(0);
 		},
+		getLabelForIndex: function(index, datasetIndex) {
+			return this.getRightValue(this.data.datasets[datasetIndex].data[index]);
+		},
 		getCircumference: function() {
 			return ((Math.PI * 2) / this.getValueCount());
 		},
@@ -5750,7 +5776,7 @@
 /*!
  * Chart.js
  * http://chartjs.org/
- * Version: 2.0.0-alpha
+ * Version: 2.0.0-beta
  *
  * Copyright 2015 Nick Downie
  * Released under the MIT license
@@ -5847,7 +5873,7 @@
 /*!
  * Chart.js
  * http://chartjs.org/
- * Version: 2.0.0-alpha
+ * Version: 2.0.0-beta
  *
  * Copyright 2015 Nick Downie
  * Released under the MIT license
@@ -5992,6 +6018,11 @@
 					return;
 				}
 
+				// If First point, move to the point ahead of time (so a line doesn't get drawn up the left axis)
+				if (!index) {
+					ctx.moveTo(point._view.x, point._view.y);
+				}
+
 				// Draw a bezier line to the point
 				if (vm.tension > 0 && index) {
 					ctx.bezierCurveTo(
@@ -6039,7 +6070,7 @@
 /*!
  * Chart.js
  * http://chartjs.org/
- * Version: 2.0.0-alpha
+ * Version: 2.0.0-beta
  *
  * Copyright 2015 Nick Downie
  * Released under the MIT license
