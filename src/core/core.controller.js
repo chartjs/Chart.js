@@ -112,7 +112,7 @@
 			}
 		},
 		buildScales: function buildScales() {
-			// Map of scale ID to scale object so we can lookup later 
+			// Map of scale ID to scale object so we can lookup later
 			this.scales = {};
 
 			// Build the x axes
@@ -375,7 +375,8 @@
 
 			// Find Active Elements for hover and tooltips
 			if (e.type == 'mouseout') {
-				this.active = this.tooltipActive = [];
+				this.active = this.lastActive = [];
+				this.tooltipActive = this.lastTooltipActive = [];
 			} else {
 				this.active = function() {
 					switch (this.options.hover.mode) {
@@ -466,11 +467,11 @@
 						_active: this.tooltipActive,
 					});
 
-					this.tooltip.update();
 				} else {
 					// Inactive
 					this.tooltip._model.opacity = 0;
 				}
+				this.tooltip.update();
 			}
 
 			// Hover animations
@@ -492,16 +493,15 @@
 				}, this);
 
 				// If entering, leaving, or changing elements, animate the change via pivot
-				if ((!this.lastActive.length && this.active.length) ||
-					(this.lastActive.length && !this.active.length) ||
-					(this.lastActive.length && this.active.length && changed) ||
-					(!this.lastTooltipActive.length && this.tooltipActive.length) ||
-					(this.lastTooltipActive.length && !this.tooltipActive.length) ||
-					(this.lastTooltipActive.length && this.tooltipActive.length && changed)) {
+				if ((this.lastActive.length !== this.active.length) ||
+					(this.lastActive.length === this.active.length && changed) ||
+					(this.lastTooltipActive.length !== this.tooltipActive.length) ||
+					(this.lastTooltipActive.length === this.tooltipActive.length && changed)) {
 
 					this.stop();
+					console.log('render');
 
-					// We only need to render at this point. Updating will cause scales to be recomputed generating flicker & using more 
+					// We only need to render at this point. Updating will cause scales to be recomputed generating flicker & using more
 					// memory than necessary.
 					this.render(this.options.hover.animationDuration, true);
 				}

@@ -21,7 +21,7 @@
 		// Need to override these to give a nice default
 		tooltips: {
 			callbacks: {
-				title: function() { return '' },
+				title: function() { return ''; },
 				label: function(tooltipItem, data) {
 					return data.labels[tooltipItem.index] + ': ' + tooltipItem.yLabel;
 				}
