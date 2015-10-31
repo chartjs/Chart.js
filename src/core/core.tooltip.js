@@ -42,7 +42,17 @@
 			beforeTitle: helpers.noop,
 			title: function(tooltipItems, data) {
 				// Pick first xLabel for now
-				return tooltipItems.length > 0 ? tooltipItems[0].xLabel : '';
+				var title = '';
+
+				if (tooltipItems.length > 0) {
+					if (tooltipItems[0].xLabel) {
+						title = tooltipItems[0].xLabel;
+					} else if (data.labels.length > 0 && tooltipItems[0].index < data.labels.length) {
+						title = data.labels[tooltipItems[0].index];
+					}
+				}
+
+				return title;
 			},
 			afterTitle: helpers.noop,
 
@@ -194,9 +204,10 @@
 			var tooltipItems = [];
 
 			if (this._options.tooltips.mode == 'single') {
+				var yScale = element._yScale || element._scale; // handle radar || polarArea charts
 				tooltipItems.push({
 					xLabel: element._xScale ? element._xScale.getLabelForIndex(element._index, element._datasetIndex) : '',
-					yLabel: element._yScale ? element._yScale.getLabelForIndex(element._index, element._datasetIndex) : '',
+					yLabel: yScale ? yScale.getLabelForIndex(element._index, element._datasetIndex) : '',
 					index: element._index,
 					datasetIndex: element._datasetIndex,
 				});
@@ -207,10 +218,11 @@
 						return;
 					}
 					var currentElement = dataset.metaData[element._index];
+					var yScale = element._yScale || element._scale; // handle radar || polarArea charts
 
 					tooltipItems.push({
 						xLabel: currentElement._xScale ? currentElement._xScale.getLabelForIndex(currentElement._index, currentElement._datasetIndex) : '',
-						yLabel: currentElement._yScale ? currentElement._yScale.getLabelForIndex(currentElement._index, currentElement._datasetIndex) : '',
+						yLabel: yScale ? yScale.getLabelForIndex(currentElement._index, currentElement._datasetIndex) : '',
 						index: element._index,
 						datasetIndex: datasetIndex,
 					});

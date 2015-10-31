@@ -167,6 +167,7 @@
 				// Utility
 				_datasetIndex: this.index,
 				_index: index,
+				_scale: this.chart.scale,
 
 				// Desired view properties
 				_model: {

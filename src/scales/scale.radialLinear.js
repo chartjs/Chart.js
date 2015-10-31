@@ -151,6 +151,9 @@
 
 			this.zeroLineIndex = this.ticks.indexOf(0);
 		},
+		getLabelForIndex: function(index, datasetIndex) {
+			return this.getRightValue(this.data.datasets[datasetIndex].data[index]);
+		},
 		getCircumference: function() {
 			return ((Math.PI * 2) / this.getValueCount());
 		},
