@@ -1,5 +1,5 @@
 // Tests of the scale service
-describe('Test the scale service', function() {
+describe('Test the layout service', function() {
 	it('should fit a simple chart with 2 scales', function() {
 		var chartInstance = {
 			scales: [],
@@ -39,7 +39,7 @@ describe('Test the scale service', function() {
 
 		var canvasWidth = 250;
 		var canvasHeight = 150;
-		Chart.scaleService.update(chartInstance, canvasWidth, canvasHeight);
+		Chart.layoutService.update(chartInstance, canvasWidth, canvasHeight);
 
 		expect(chartInstance.chartArea).toEqual({
 			left: 45,
@@ -103,7 +103,7 @@ describe('Test the scale service', function() {
 
 		var canvasWidth = 250;
 		var canvasHeight = 150;
-		Chart.scaleService.update(chartInstance, canvasWidth, canvasHeight);
+		Chart.layoutService.update(chartInstance, canvasWidth, canvasHeight);
 
 		expect(chartInstance.chartArea).toEqual({
 			left: 5,
@@ -176,7 +176,7 @@ describe('Test the scale service', function() {
 
 		var canvasWidth = 250;
 		var canvasHeight = 150;
-		Chart.scaleService.update(chartInstance, canvasWidth, canvasHeight);
+		Chart.layoutService.update(chartInstance, canvasWidth, canvasHeight);
 
 		expect(chartInstance.chartArea).toEqual({
 			left: 95,
@@ -238,7 +238,7 @@ describe('Test the scale service', function() {
 
 		var canvasWidth = 300;
 		var canvasHeight = 350;
-		Chart.scaleService.update(chartInstance, canvasWidth, canvasHeight);
+		Chart.layoutService.update(chartInstance, canvasWidth, canvasHeight);
 
 		expect(chartInstance.chartArea).toEqual({
 			left: 5,
