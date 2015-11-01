@@ -83,8 +83,10 @@
 
 				helpers.each(valuesPerType, function(valuesForType) {
 					var values = valuesForType.positiveValues.concat(valuesForType.negativeValues);
-					this.min = Math.min(this.min, helpers.min(values));
-					this.max = Math.max(this.max, helpers.max(values));
+					var minVal = helpers.min(values);
+					var maxVal = helpers.max(values);
+					this.min = this.min === null ? minVal : Math.min(this.min, minVal);
+					this.max = this.max === null ? maxVal : Math.max(this.max, maxVal);
 				}, this);
 
 			} else {
