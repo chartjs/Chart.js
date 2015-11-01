@@ -100,12 +100,6 @@
 				}, this);
 			}
 
-			if (this.min === this.max) {
-				this.min--;
-				this.max++;
-			}
-
-
 			// Then calulate the ticks
 			this.ticks = [];
 
@@ -144,6 +138,19 @@
 					// move the botttom down to 0
 					this.min = 0;
 				}
+			}
+
+			if (this.options.ticks.suggestedMin) {
+				this.min = Math.min(this.min, this.options.ticks.suggestedMin);
+			}
+
+			if (this.options.ticks.suggestedMax) {
+				this.max = Math.max(this.max, this.options.ticks.suggestedMax);
+			}
+
+			if (this.min === this.max) {
+				this.min--;
+				this.max++;
 			}
 
 			var niceRange = helpers.niceNum(this.max - this.min, false);

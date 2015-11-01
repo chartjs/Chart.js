@@ -30,7 +30,8 @@
     </div>
     <script>
         var randomScalingFactor = function() {
-            return Math.round(Math.random() * 100 * (Math.random() > 0.5 ? -1 : 1));
+            return Math.round(Math.random() * 100);
+            //return 0;
         };
         var randomColorFactor = function() {
             return Math.round(Math.random() * 255);
@@ -101,6 +102,10 @@
                         scaleLabel: {
                             show: true,
                             labelString: 'Value'
+                        },
+                        ticks: {
+                            suggestedMin: -10,
+                            suggestedMax: 250,
                         }
                     }]
                 }
