@@ -459,6 +459,7 @@
 				// The usual updates
 				this.tooltip.initialize();
 				this.tooltip._active = this.tooltipActive;
+				this.tooltip.update();
 			}
 
 			// Hover animations
@@ -484,10 +485,11 @@
 					(this.lastTooltipActive.length !== this.tooltipActive.length) ||
 					changed) {
 
-					if (this.options.tooltips.enabled || this.options.tooltips.custom) {
-						this.tooltip.update();
-					}
 					this.stop();
+
+					if (this.options.tooltips.enabled || this.options.tooltips.custom) {
+						this.tooltip.update(true);
+					}
 
 					// We only need to render at this point. Updating will cause scales to be recomputed generating flicker & using more
 					// memory than necessary.

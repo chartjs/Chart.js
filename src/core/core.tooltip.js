@@ -193,7 +193,7 @@
 			return lines;
 		},
 
-		update: function() {
+		update: function(changed) {
 
 			var ctx = this._chart.ctx;
 
@@ -262,13 +262,14 @@
 				this._model.opacity = 0;
 			}
 
-			if (this._options.tooltips.custom) {
+			if (changed && this._options.tooltips.custom) {
 				this._options.tooltips.custom.call(this, this._model);
 			}
 
 			return this;
 		},
 		draw: function() {
+
 
 			var ctx = this._chart.ctx;
 			var vm = this._view;

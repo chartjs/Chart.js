@@ -42,10 +42,11 @@
     <canvas id="chart1" width="300" height="100" />
   </div>
   <script>
+    window.count = 0;
     Chart.defaults.global.pointHitDetectionRadius = 1;
     var customTooltips = function(tooltip) {
 
-      console.log(tooltip);
+      console.log(window.count++, tooltip);
 
       // Tooltip Element
       var tooltipEl = $('#chartjs-tooltip');
