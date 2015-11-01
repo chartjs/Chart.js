@@ -484,6 +484,9 @@
 					(this.lastTooltipActive.length !== this.tooltipActive.length) ||
 					changed) {
 
+					if (this.options.tooltips.enabled || this.options.tooltips.custom) {
+						this.tooltip.update();
+					}
 					this.stop();
 					console.log('render');
 
