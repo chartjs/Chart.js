@@ -481,9 +481,8 @@
 
 				// If entering, leaving, or changing elements, animate the change via pivot
 				if ((this.lastActive.length !== this.active.length) ||
-					(this.lastActive.length === this.active.length && changed) ||
 					(this.lastTooltipActive.length !== this.tooltipActive.length) ||
-					(this.lastTooltipActive.length === this.tooltipActive.length && changed)) {
+					changed) {
 
 					this.stop();
 					console.log('render');
