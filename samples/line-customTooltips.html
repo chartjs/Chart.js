@@ -39,13 +39,13 @@
 
 <body>
   <div id="canvas-holder1">
-    <canvas id="chart1" width="300" height="30" />
+    <canvas id="chart1" width="300" height="100" />
   </div>
   <script>
     Chart.defaults.global.pointHitDetectionRadius = 1;
     var customTooltips = function(tooltip) {
 
-      console.log(tooltip.opacity);
+      console.log(tooltip);
 
       // Tooltip Element
       var tooltipEl = $('#chartjs-tooltip');
