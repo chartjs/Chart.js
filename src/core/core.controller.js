@@ -458,20 +458,7 @@
 
 				// The usual updates
 				this.tooltip.initialize();
-
-				// Active
-				if (this.tooltipActive.length) {
-					this.tooltip._model.opacity = 1;
-
-					helpers.extend(this.tooltip, {
-						_active: this.tooltipActive,
-					});
-
-				} else {
-					// Inactive
-					this.tooltip._model.opacity = 0;
-				}
-				this.tooltip.update();
+				this.tooltip._active = this.tooltipActive;
 			}
 
 			// Hover animations
