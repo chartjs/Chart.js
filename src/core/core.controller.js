@@ -375,8 +375,8 @@
 
 			// Find Active Elements for hover and tooltips
 			if (e.type == 'mouseout') {
-				this.active = this.lastActive = [];
-				this.tooltipActive = this.lastTooltipActive = [];
+				this.active = [];
+				this.tooltipActive = [];
 			} else {
 				this.active = function() {
 					switch (this.options.hover.mode) {
@@ -458,20 +458,7 @@
 
 				// The usual updates
 				this.tooltip.initialize();
-
-				// Active
-				if (this.tooltipActive.length) {
-					this.tooltip._model.opacity = 1;
-
-					helpers.extend(this.tooltip, {
-						_active: this.tooltipActive,
-					});
-
-				} else {
-					// Inactive
-					this.tooltip._model.opacity = 0;
-				}
-				this.tooltip.update();
+				this.tooltip._active = this.tooltipActive;
 			}
 
 			// Hover animations
@@ -494,12 +481,13 @@
 
 				// If entering, leaving, or changing elements, animate the change via pivot
 				if ((this.lastActive.length !== this.active.length) ||
-					(this.lastActive.length === this.active.length && changed) ||
 					(this.lastTooltipActive.length !== this.tooltipActive.length) ||
-					(this.lastTooltipActive.length === this.tooltipActive.length && changed)) {
+					changed) {
 
+					if (this.options.tooltips.enabled || this.options.tooltips.custom) {
+						this.tooltip.update();
+					}
 					this.stop();
-					console.log('render');
 
 					// We only need to render at this point. Updating will cause scales to be recomputed generating flicker & using more
 					// memory than necessary.

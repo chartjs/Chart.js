@@ -197,63 +197,70 @@
 
 			var ctx = this._chart.ctx;
 
-			var element = this._active[0],
-				labelColors = [],
-				tooltipPosition;
+			if(this._active.length){
+				this._model.opacity = 1;
 
-			var tooltipItems = [];
+				var element = this._active[0],
+					labelColors = [],
+					tooltipPosition;
 
-			if (this._options.tooltips.mode == 'single') {
-				var yScale = element._yScale || element._scale; // handle radar || polarArea charts
-				tooltipItems.push({
-					xLabel: element._xScale ? element._xScale.getLabelForIndex(element._index, element._datasetIndex) : '',
-					yLabel: yScale ? yScale.getLabelForIndex(element._index, element._datasetIndex) : '',
-					index: element._index,
-					datasetIndex: element._datasetIndex,
-				});
-				tooltipPosition = this._active[0].tooltipPosition();
-			} else {
-				helpers.each(this._data.datasets, function(dataset, datasetIndex) {
-					if (!helpers.isDatasetVisible(dataset)) {
-						return;
-					}
-					var currentElement = dataset.metaData[element._index];
+				var tooltipItems = [];
+
+				if (this._options.tooltips.mode == 'single') {
 					var yScale = element._yScale || element._scale; // handle radar || polarArea charts
-
 					tooltipItems.push({
-						xLabel: currentElement._xScale ? currentElement._xScale.getLabelForIndex(currentElement._index, currentElement._datasetIndex) : '',
-						yLabel: yScale ? yScale.getLabelForIndex(currentElement._index, currentElement._datasetIndex) : '',
+						xLabel: element._xScale ? element._xScale.getLabelForIndex(element._index, element._datasetIndex) : '',
+						yLabel: yScale ? yScale.getLabelForIndex(element._index, element._datasetIndex) : '',
 						index: element._index,
-						datasetIndex: datasetIndex,
+						datasetIndex: element._datasetIndex,
 					});
+					tooltipPosition = this._active[0].tooltipPosition();
+				} else {
+					helpers.each(this._data.datasets, function(dataset, datasetIndex) {
+						if (!helpers.isDatasetVisible(dataset)) {
+							return;
+						}
+						var currentElement = dataset.metaData[element._index];
+						var yScale = element._yScale || element._scale; // handle radar || polarArea charts
+
+						tooltipItems.push({
+							xLabel: currentElement._xScale ? currentElement._xScale.getLabelForIndex(currentElement._index, currentElement._datasetIndex) : '',
+							yLabel: yScale ? yScale.getLabelForIndex(currentElement._index, currentElement._datasetIndex) : '',
+							index: element._index,
+							datasetIndex: datasetIndex,
+						});
+					});
+
+					helpers.each(this._active, function(active, i) {
+						labelColors.push({
+							borderColor: active._view.borderColor,
+							backgroundColor: active._view.backgroundColor
+						});
+					}, this);
+
+					tooltipPosition = this._active[0].tooltipPosition();
+					tooltipPosition.y = this._active[0]._yScale.getPixelForDecimal(0.5);
+				}
+
+				// Build the Text Lines
+				helpers.extend(this._model, {
+					title: this.getTitle(tooltipItems, this._data),
+					beforeBody: this.getBeforeBody(tooltipItems, this._data),
+					body: this.getBody(tooltipItems, this._data),
+					afterBody: this.getAfterBody(tooltipItems, this._data),
+					footer: this.getFooter(tooltipItems, this._data),
 				});
 
-				helpers.each(this._active, function(active, i) {
-					labelColors.push({
-						borderColor: active._view.borderColor,
-						backgroundColor: active._view.backgroundColor
-					});
-				}, this);
-
-				tooltipPosition = this._active[0].tooltipPosition();
-				tooltipPosition.y = this._active[0]._yScale.getPixelForDecimal(0.5);
+				helpers.extend(this._model, {
+					x: Math.round(tooltipPosition.x),
+					y: Math.round(tooltipPosition.y),
+					caretPadding: tooltipPosition.padding,
+					labelColors: labelColors,
+				});
 			}
-
-			// Build the Text Lines
-			helpers.extend(this._model, {
-				title: this.getTitle(tooltipItems, this._data),
-				beforeBody: this.getBeforeBody(tooltipItems, this._data),
-				body: this.getBody(tooltipItems, this._data),
-				afterBody: this.getAfterBody(tooltipItems, this._data),
-				footer: this.getFooter(tooltipItems, this._data),
-			});
-
-			helpers.extend(this._model, {
-				x: Math.round(tooltipPosition.x),
-				y: Math.round(tooltipPosition.y),
-				caretPadding: tooltipPosition.padding,
-				labelColors: labelColors,
-			});
+			else{
+				this._model.opacity = 0;
+			}
 
 			if (this._options.tooltips.custom) {
 				this._options.tooltips.custom.call(this, this._model);
