@@ -188,13 +188,19 @@ describe('Linear Scale', function() {
 		var mockData = {
 			datasets: [{
 				yAxisID: scaleID,
-				data: [10, 5, 0, -5, 78, -100]
+				data: [10, 5, 0, -5, 78, -100],
+				type: 'bar'
 			}, {
 				yAxisID: 'second scale',
 				data: [-1000, 1000],
 			}, {
 				yAxisID: scaleID,
-				data: [150, 0, 0, -100, -10, 9]
+				data: [150, 0, 0, -100, -10, 9],
+				type: 'bar'
+			}, {
+				yAxisID: scaleID,
+				data: [10, 10, 10, 10, 10, 10],
+				type: 'line'
 			}]
 		};
 
