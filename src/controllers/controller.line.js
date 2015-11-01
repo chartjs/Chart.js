@@ -193,7 +193,7 @@
 				// Desired view properties
 				_model: {
 					x: xScale.getPixelForValue(this.getDataset().data[index], index, this.index, this.chart.isCombo),
-					y: reset ? scaleBase : yScale.getPixelForValue(this.getDataset().data[index], index, this.index),
+					y: reset ? scaleBase : this.calculatePointY(this.getDataset().data[index], index, this.index, this.chart.isCombo),
 					// Appearance
 					tension: point.custom && point.custom.tension ? point.custom.tension : (this.getDataset().tension || this.chart.options.elements.line.tension),
 					radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().radius, index, this.chart.options.elements.point.radius),
@@ -206,6 +206,39 @@
 			});
 
 			point._model.skip = point.custom && point.custom.skip ? point.custom.skip : (isNaN(point._model.x) || isNaN(point._model.y));
+		},
+
+		calculatePointY: function(value, index, datasetIndex, isCombo) {
+
+			var xScale = this.getScaleForId(this.getDataset().xAxisID);
+			var yScale = this.getScaleForId(this.getDataset().yAxisID);
+
+			if (yScale.options.stacked) {
+
+				var sumPos = 0,
+					sumNeg = 0;
+
+				for (var i = this.chart.data.datasets.length - 1; i > datasetIndex; i--) {
+					var ds = this.chart.data.datasets[i];
+					if (helpers.isDatasetVisible(ds)) {
+						if (ds.data[index] < 0) {
+							sumNeg += ds.data[index] || 0;
+						} else {
+							sumPos += ds.data[index] || 0;
+						}
+					}
+				}
+
+				if (value < 0) {
+					return yScale.getPixelForValue(sumNeg + value);
+				} else {
+					return yScale.getPixelForValue(sumPos + value);
+				}
+
+				return yScale.getPixelForValue(value);
+			}
+
+			return yScale.getPixelForValue(value);
 		},
 
 		updateBezierControlPoints: function() {
