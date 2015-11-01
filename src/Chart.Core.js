@@ -33,12 +33,13 @@
 			}
 			else
 			{
-				return document.defaultView.getComputedStyle(element).getPropertyValue(dimension);
+				var computed = document.defaultView.getComputedStyle(element).getPropertyValue(dimension);
+				return computed && computed !== 'auto' ? computed : element[dimension.toLowerCase()];
 			}
 		};
 
-		var width = this.width = computeDimension(context.canvas,'Width') || context.canvas.width;
-		var height = this.height = computeDimension(context.canvas,'Height') || context.canvas.height;
+		var width = this.width = computeDimension(context.canvas,'Width');
+		var height = this.height = computeDimension(context.canvas,'Height');
 
 		// Firefox requires this to work correctly
 		context.canvas.width  = width;
