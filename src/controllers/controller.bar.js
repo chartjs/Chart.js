@@ -293,7 +293,7 @@
 			var leftTick = xScale.getPixelForValue(null, index, barIndex, this.chart.isCombo);
 			leftTick -= this.chart.isCombo ? (ruler.tickWidth / 2) : 0;
 
-			if (yScale.options.stacked) {
+			if (xScale.options.stacked) {
 				return leftTick + (ruler.categoryWidth / 2) + ruler.categorySpacing;
 			}
 
