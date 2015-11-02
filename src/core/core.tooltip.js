@@ -193,6 +193,34 @@
 			return lines;
 		},
 
+		getAveragePosition: function(elements){
+
+			if(!elements.length){
+				return false;
+			}
+
+			var xPositions = [];
+			var yPositions = [];
+
+			helpers.each(elements, function(el){
+				var pos = el.tooltipPosition();
+				xPositions.push(pos.x);
+				yPositions.push(pos.y);
+			});
+
+			var x = 0, y = 0;
+			for (var i = 0; i < xPositions.length; i++) {
+				x += xPositions[i];
+				y += yPositions[i];
+			}
+
+			return {
+				x: Math.round(x / xPositions.length),
+				y: Math.round(y / xPositions.length)
+			};
+
+		},
+
 		update: function(changed) {
 
 			var ctx = this._chart.ctx;
@@ -214,7 +242,7 @@
 						index: element._index,
 						datasetIndex: element._datasetIndex,
 					});
-					tooltipPosition = this._active[0].tooltipPosition();
+					tooltipPosition = this.getAveragePosition(this._active);
 				} else {
 					helpers.each(this._data.datasets, function(dataset, datasetIndex) {
 						if (!helpers.isDatasetVisible(dataset)) {
@@ -238,7 +266,7 @@
 						});
 					}, this);
 
-					tooltipPosition = this._active[0].tooltipPosition();
+					tooltipPosition = this.getAveragePosition(this._active);
 					tooltipPosition.y = this._active[0]._yScale.getPixelForDecimal(0.5);
 				}
 
