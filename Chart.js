@@ -3355,7 +3355,7 @@
 			var leftTick = xScale.getPixelForValue(null, index, barIndex, this.chart.isCombo);
 			leftTick -= this.chart.isCombo ? (ruler.tickWidth / 2) : 0;
 
-			if (yScale.options.stacked) {
+			if (xScale.options.stacked) {
 				return leftTick + (ruler.categoryWidth / 2) + ruler.categorySpacing;
 			}
 
@@ -4087,7 +4087,7 @@
 				// Desired view properties
 				_model: {
 					x: xScale.getPixelForValue(this.getDataset().data[index], index, this.index, this.chart.isCombo),
-					y: reset ? scaleBase : yScale.getPixelForValue(this.getDataset().data[index], index, this.index),
+					y: reset ? scaleBase : this.calculatePointY(this.getDataset().data[index], index, this.index, this.chart.isCombo),
 					// Appearance
 					tension: point.custom && point.custom.tension ? point.custom.tension : (this.getDataset().tension || this.chart.options.elements.line.tension),
 					radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().radius, index, this.chart.options.elements.point.radius),
@@ -4100,6 +4100,39 @@
 			});
 
 			point._model.skip = point.custom && point.custom.skip ? point.custom.skip : (isNaN(point._model.x) || isNaN(point._model.y));
+		},
+
+		calculatePointY: function(value, index, datasetIndex, isCombo) {
+
+			var xScale = this.getScaleForId(this.getDataset().xAxisID);
+			var yScale = this.getScaleForId(this.getDataset().yAxisID);
+
+			if (yScale.options.stacked) {
+
+				var sumPos = 0,
+					sumNeg = 0;
+
+				for (var i = this.chart.data.datasets.length - 1; i > datasetIndex; i--) {
+					var ds = this.chart.data.datasets[i];
+					if (helpers.isDatasetVisible(ds)) {
+						if (ds.data[index] < 0) {
+							sumNeg += ds.data[index] || 0;
+						} else {
+							sumPos += ds.data[index] || 0;
+						}
+					}
+				}
+
+				if (value < 0) {
+					return yScale.getPixelForValue(sumNeg + value);
+				} else {
+					return yScale.getPixelForValue(sumPos + value);
+				}
+
+				return yScale.getPixelForValue(value);
+			}
+
+			return yScale.getPixelForValue(value);
 		},
 
 		updateBezierControlPoints: function() {
@@ -4825,12 +4858,6 @@
 				}, this);
 			}
 
-			if (this.min === this.max) {
-				this.min--;
-				this.max++;
-			}
-
-
 			// Then calulate the ticks
 			this.ticks = [];
 
@@ -4869,6 +4896,19 @@
 					// move the botttom down to 0
 					this.min = 0;
 				}
+			}
+
+			if (this.options.ticks.suggestedMin) {
+				this.min = Math.min(this.min, this.options.ticks.suggestedMin);
+			}
+
+			if (this.options.ticks.suggestedMax) {
+				this.max = Math.max(this.max, this.options.ticks.suggestedMax);
+			}
+
+			if (this.min === this.max) {
+				this.min--;
+				this.max++;
 			}
 
 			var niceRange = helpers.niceNum(this.max - this.min, false);
