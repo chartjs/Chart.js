@@ -311,7 +311,9 @@
 			}
 
 			helpers.each(this.data.datasets, function(dataset, dsIndex){
-				elementsArray.push(dataset.metaData[found._index]);
+				if(helpers.isDatasetVisible(dataset)){
+					elementsArray.push(dataset.metaData[found._index]);
+				}
 			}, this);
 
 			return elementsArray;
