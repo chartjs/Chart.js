@@ -294,14 +294,24 @@
 			var eventPosition = helpers.getRelativePosition(e, this.chart);
 			var elementsArray = [];
 
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				if (helpers.isDatasetVisible(dataset)) {
-					helpers.each(dataset.metaData, function(element, index) {
-						if (element.inLabelRange(eventPosition.x, eventPosition.y)) {
-							elementsArray.push(element);
+			var found = (function(){
+				for (var i = 0; i < this.data.datasets.length; i++) {
+					if (helpers.isDatasetVisible(this.data.datasets[i])) {
+						for (var j = 0; j < this.data.datasets[i].metaData.length; j++) {
+							if (this.data.datasets[i].metaData[j].inRange(eventPosition.x, eventPosition.y)) {
+								return this.data.datasets[i].metaData[j];
+							}
 						}
-					}, this);
+					}
 				}
+			}).call(this);
+
+			if(!found){
+				return elementsArray;
+			}
+
+			helpers.each(this.data.datasets, function(dataset, dsIndex){
+				elementsArray.push(dataset.metaData[found._index]);
 			}, this);
 
 			return elementsArray;
