@@ -294,13 +294,25 @@
 			var eventPosition = helpers.getRelativePosition(e, this.chart);
 			var elementsArray = [];
 
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				if (helpers.isDatasetVisible(dataset)) {
-					helpers.each(dataset.metaData, function(element, index) {
-						if (element.inLabelRange(eventPosition.x, eventPosition.y)) {
-							elementsArray.push(element);
+			var found = (function(){
+				for (var i = 0; i < this.data.datasets.length; i++) {
+					if (helpers.isDatasetVisible(this.data.datasets[i])) {
+						for (var j = 0; j < this.data.datasets[i].metaData.length; j++) {
+							if (this.data.datasets[i].metaData[j].inRange(eventPosition.x, eventPosition.y)) {
+								return this.data.datasets[i].metaData[j];
+							}
 						}
-					}, this);
+					}
+				}
+			}).call(this);
+
+			if(!found){
+				return elementsArray;
+			}
+
+			helpers.each(this.data.datasets, function(dataset, dsIndex){
+				if(helpers.isDatasetVisible(dataset)){
+					elementsArray.push(dataset.metaData[found._index]);
 				}
 			}, this);
 
@@ -459,6 +471,7 @@
 				// The usual updates
 				this.tooltip.initialize();
 				this.tooltip._active = this.tooltipActive;
+				this.tooltip.update();
 			}
 
 			// Hover animations
@@ -484,10 +497,11 @@
 					(this.lastTooltipActive.length !== this.tooltipActive.length) ||
 					changed) {
 
-					if (this.options.tooltips.enabled || this.options.tooltips.custom) {
-						this.tooltip.update();
-					}
 					this.stop();
+
+					if (this.options.tooltips.enabled || this.options.tooltips.custom) {
+						this.tooltip.update(true);
+					}
 
 					// We only need to render at this point. Updating will cause scales to be recomputed generating flicker & using more
 					// memory than necessary.
