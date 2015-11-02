@@ -103,7 +103,7 @@ Chart.defaults.global = {
 
     // Legend callback function. 
     // @param {Chart} chart : the chart object to generate a legend for
-    legendCallback: legendCallback: function(chart) {
+    legendCallback: function(chart) {
         var text = [];
         text.push('<ul class="' + chart.id + '-legend">');
         for (var i = 0; i < chart.data.datasets.length; i++) {
@@ -116,7 +116,7 @@ Chart.defaults.global = {
         text.push('</ul>');
 
         return text.join("");
-    }
+    },
 
     animation: {
         duration: 1000,
