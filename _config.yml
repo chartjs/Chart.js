@@ -3,4 +3,4 @@ collections:
   doc-parts:
     output: false
 
-highlighter: pygments
+markdown: redcarpet
