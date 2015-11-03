@@ -175,13 +175,19 @@ describe('Logarithmic Scale tests', function() {
 		var mockData = {
 			datasets: [{
 				yAxisID: scaleID,
-				data: [10, 5, 1, 5, 78, 100]
+				data: [10, 5, 1, 5, 78, 100],
+				type: 'bar'
 			}, {
 				yAxisID: 'second scale',
 				data: [-1000, 1000],
 			}, {
 				yAxisID: scaleID,
-				data: [150, 10, 10, 100, 10, 9]
+				data: [150, 10, 10, 100, 10, 9],
+				type: 'bar'
+			}, {
+				yAxisID: scaleID,
+				data: [100, 100, 100, 100, 100, 100],
+				type: 'line'
 			}]
 		};
 
@@ -208,17 +214,21 @@ describe('Logarithmic Scale tests', function() {
 		var mockData = {
 			datasets: [{
 				yAxisID: scaleID,
-				data: [10, 5, 1, 5, 78, 100]
+				data: [10, 5, 1, 5, 78, 100],
+				type: 'bar'
 			}, {
 				yAxisID: 'second scale',
 				data: [-1000, 1000],
+				type: 'bar'
 			}, {
 				yAxisID: scaleID,
-				data: [150, 10, 10, 100, 10, 9]
+				data: [150, 10, 10, 100, 10, 9],
+				type: 'bar'
 			}, {
 				yAxisID: scaleID,
 				data: [10000, 10000, 10000, 10000, 10000, 10000],
-				hidden: true
+				hidden: true,
+				type: 'bar'
 			}]
 		};
 

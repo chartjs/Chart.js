@@ -30,13 +30,17 @@
 			this.min = null;
 			this.max = null;
 
-			var values = [];
-
 			if (this.options.stacked) {
+				var valuesPerType = {};
+
 				helpers.each(this.data.datasets, function(dataset) {
 					if (helpers.isDatasetVisible(dataset) && (this.isHorizontal() ? dataset.xAxisID === this.id : dataset.yAxisID === this.id)) {
-						helpers.each(dataset.data, function(rawValue, index) {
+						if (valuesPerType[dataset.type] === undefined) {
+							valuesPerType[dataset.type] = [];
+						}
 
+						helpers.each(dataset.data, function(rawValue, index) {
+							var values = valuesPerType[dataset.type];
 							var value = this.getRightValue(rawValue);
 							if (isNaN(value)) {
 								return;
@@ -54,8 +58,12 @@
 					}
 				}, this);
 
-				this.min = helpers.min(values);
-				this.max = helpers.max(values);
+				helpers.each(valuesPerType, function(valuesForType) {
+					var minVal = helpers.min(valuesForType);
+					var maxVal = helpers.max(valuesForType);
+					this.min = this.min === null ? minVal : Math.min(this.min, minVal);
+					this.max = this.max === null ? maxVal : Math.max(this.max, maxVal);
+				}, this);
 
 			} else {
 				helpers.each(this.data.datasets, function(dataset) {

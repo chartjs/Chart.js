@@ -42,11 +42,21 @@
 			this.min = null;
 			this.max = null;
 
-			var positiveValues = [];
-			var negativeValues = [];
-
 			if (this.options.stacked) {
+				var valuesPerType = {};
+
 				helpers.each(this.data.datasets, function(dataset) {
+					if (valuesPerType[dataset.type] === undefined) {
+						valuesPerType[dataset.type] = {
+							positiveValues: [],
+							negativeValues: [],
+						};
+					}
+
+					// Store these per type
+					var positiveValues = valuesPerType[dataset.type].positiveValues;
+					var negativeValues = valuesPerType[dataset.type].negativeValues;
+
 					if (helpers.isDatasetVisible(dataset) && (this.isHorizontal() ? dataset.xAxisID === this.id : dataset.yAxisID === this.id)) {
 						helpers.each(dataset.data, function(rawValue, index) {
 
@@ -71,9 +81,13 @@
 					}
 				}, this);
 
-				var values = positiveValues.concat(negativeValues);
-				this.min = helpers.min(values);
-				this.max = helpers.max(values);
+				helpers.each(valuesPerType, function(valuesForType) {
+					var values = valuesForType.positiveValues.concat(valuesForType.negativeValues);
+					var minVal = helpers.min(values);
+					var maxVal = helpers.max(values);
+					this.min = this.min === null ? minVal : Math.min(this.min, minVal);
+					this.max = this.max === null ? maxVal : Math.max(this.max, maxVal);
+				}, this);
 
 			} else {
 				helpers.each(this.data.datasets, function(dataset) {
