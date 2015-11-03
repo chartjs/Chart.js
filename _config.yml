@@ -3,8 +3,4 @@ collections:
   doc-parts:
     output: false
 
-markdown:    kramdown
 highlighter: pygments
-lsi:         false
-excerpt_separator: "\n\n"
-incremental: false
