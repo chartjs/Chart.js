@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Line Chart With Backgrounds</title>
+    <script src="../Chart.js"></script>
+<script type="text/javascript"><!--
+Chart.defaults.global = {
+    animation: true,
+    animationSteps: 60,
+    animationEasing: "easeOutQuart",
+    showScale: true,
+    scaleOverride: false,
+    scaleSteps: null,
+    scaleStepWidth: null,
+    scaleStartValue: null,
+    scaleLineColor: "rgba(0,0,0,.1)",
+    scaleLineWidth: 1,
+    scaleShowLabels: true,
+    scaleLabel: "<%=value%>",
+    scaleIntegersOnly: false,
+    scaleBeginAtZero: false,
+    scaleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+    scaleFontSize: 12,
+    scaleFontStyle: "normal",
+    scaleFontColor: "#666",
+    responsive: false,
+    maintainAspectRatio: true,
+    showTooltips: true,
+    customTooltips: false,
+    tooltipEvents: ["mousemove", "touchstart", "touchmove"],
+    tooltipFillColor: "rgba(0,0,0,0.8)",
+    tooltipFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+    tooltipFontSize: 12,
+    tooltipFontStyle: "normal",
+    tooltipFontColor: "#fff",
+    tooltipTitleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+    tooltipTitleFontSize: 12,
+    tooltipTitleFontStyle: "bold",
+    tooltipTitleFontColor: "#fff",
+    tooltipYPadding: 4,
+    tooltipXPadding: 6,
+    tooltipCaretSize: 8,
+    tooltipCornerRadius: 6,
+    // Removes the color square key in the tool-tip.
+    tooltipSuppressColorSwatch: false,
+    tooltipXOffset: 10,
+    tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",
+    multiTooltipTemplate: "<%= value %>",
+    onAnimationProgress: function(){},
+    onAnimationComplete: function(){},
+};
+// -->
+</script>
+</head>
+<body>
+<canvas id="sampleChart" width="600" height="300" style="margin-bottom:-3px;"></canvas>
+<script type="text/javascript"><!--
+var COLOR1 = "#ffe2e2";
+var COLOR2 = "#dabbe8";
+var COLOR3 = "#e8cee5";
+var COLOR4 = "#8884ff";
+var COLOR5 = "#5d576b";
+var TRANSPARENT = "rgba(0,0,0,0)";
+var MAX_HEIGHT = 21;
+
+// This makes random data for a pretty sample chart.
+var first = [], second = [], third = [], fourth = [], fifth = [];
+var MAX_I = 16;
+var halfIScale = MAX_HEIGHT / (MAX_I * 2);
+for (var i = 0; i < MAX_I; i++) {
+    var remHeight = (MAX_HEIGHT / 2) - 1;
+    first[i] = (Math.random() * remHeight) + remHeight;
+    remHeight = first[i] - 6;
+    second[i] = (Math.random() * remHeight) + 3;
+    third[i] = Math.round(Math.random() * (MAX_HEIGHT / 2) + (i * halfIScale));
+    fourth[i] = Math.round(Math.random() * (MAX_HEIGHT / 2) + (MAX_HEIGHT / 2) - (i * halfIScale));
+}
+
+// Here is the chart definition.
+var data = {
+labels:[1800,1815,1830,1845,1860,1875,1890,1905,1920,1935,1950,1965,1980,1995,2010,2025],
+datasets:[
+{
+fillColor:COLOR1,
+strokeColor:COLOR1,
+pointColor:COLOR1,
+pointDot:false,
+data:[MAX_HEIGHT,MAX_HEIGHT,MAX_HEIGHT,MAX_HEIGHT,MAX_HEIGHT,MAX_HEIGHT,MAX_HEIGHT,MAX_HEIGHT,MAX_HEIGHT,MAX_HEIGHT,MAX_HEIGHT,MAX_HEIGHT,MAX_HEIGHT,MAX_HEIGHT,MAX_HEIGHT,MAX_HEIGHT]
+},
+{
+fillColor:COLOR2,
+strokeColor:COLOR2,
+pointColor:COLOR2,
+pointDot:false,
+data:first
+},
+{
+fillColor:COLOR3,
+strokeColor:COLOR3,
+pointColor:COLOR3,
+pointDot:false,
+data:second
+},
+{
+fillColor:TRANSPARENT,
+strokeColor:COLOR4,
+pointColor:COLOR4,
+pointStrokeColor:"#fff",
+pointHighlightFill:"#fff",
+pointHighlightStroke:"#318831",
+pointDot:true,
+data:third
+},
+{
+fillColor:TRANSPARENT,
+strokeColor:COLOR5,
+pointColor:COLOR5,
+pointStrokeColor:"#fff",
+pointHighlightFill:"#fff",
+pointHighlightStroke:"rgba(0,0,0,1)",
+pointDot:true,
+data:fourth
+},
+] // end datasets
+}; // end var data equals
+// Get the context of the canvas element we want to select
+var ctx = document.getElementById("sampleChart").getContext("2d");
+var myNewChart = new Chart(ctx).Line(data, {
+disableVerticalPadding:true,
+pointDotRadius:3,
+pointDotRadiusSelected:5,
+pointHitDetectionRadius:1,
+datasetStrokeWidth:1,
+scaleOverride:true,
+scaleSteps:MAX_HEIGHT,
+scaleStepWidth:1,
+scaleStartValue:0,
+pointDotSelectedIndex:Math.round(Math.random() * (MAX_I - 1)),
+limitedLabelsFn:function(){
+	var limitedLabels = [];
+	var targetObj = null;
+	var actualObj = null;
+	for (var i = 0; i < this.labels.length; i++) {
+		var color = this.legendColors[i];
+        // It only knows data points by their colors.
+		if (COLOR5 == color.fill) {
+			actualObj = {
+				labelText  : 'Ada: ' + this.labels[i],
+				legendColor: color
+			};
+		} else if (COLOR4 == color.fill) {
+			targetObj = {
+				labelText  : 'Grace: ' + this.labels[i],
+				legendColor: color
+			};
+		}
+	}
+	var lineIdx = 0;
+	if (actualObj != null) {
+		actualObj.lineHeight = this.getLineHeight(++lineIdx);
+		limitedLabels.push(actualObj);
+	}
+	if (targetObj != null) {
+		targetObj.lineHeight = this.getLineHeight(++lineIdx);
+		limitedLabels.push(targetObj);
+	}
+	return limitedLabels;
+}
+});
+// -->
+</script>
+</body></html>

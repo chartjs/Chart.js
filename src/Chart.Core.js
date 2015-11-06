@@ -1096,6 +1096,8 @@
 						titleFontFamily: this.options.tooltipTitleFontFamily,
 						titleFontStyle: this.options.tooltipTitleFontStyle,
 						titleFontSize: this.options.tooltipTitleFontSize,
+						limitedLabelsFn: this.options.limitedLabelsFn,
+						tooltipSuppressColorSwatch: this.options.tooltipSuppressColorSwatch,
 						cornerRadius: this.options.tooltipCornerRadius,
 						labels: tooltipLabels,
 						legendColors: tooltipColors,
@@ -1462,18 +1464,38 @@
 	});
 
 	Chart.MultiTooltip = Chart.Element.extend({
+		labelObjs : function(){
+			var result = [];
+			for (var i = 0; i < this.labels.length; i++) {
+				result.push({
+					labelText  : this.labels[i],
+					legendColor: this.legendColors[i],
+					lineHeight : this.getLineHeight(i + 1),
+				});
+			}
+		    return result;
+		},
+		labelsToText : function(ls){
+			var textStrs = [];
+			for (var i = 0; i < ls.length; i++) {
+				textStrs.push(ls[i].labelText);
+			}
+			return textStrs;
+		},
 		initialize : function(){
 			this.font = fontString(this.fontSize,this.fontStyle,this.fontFamily);
 
 			this.titleFont = fontString(this.titleFontSize,this.titleFontStyle,this.titleFontFamily);
 
-			this.height = (this.labels.length * this.fontSize) + ((this.labels.length-1) * (this.fontSize/2)) + (this.yPadding*2) + this.titleFontSize *1.5;
+			var limitedLabels = this.limitedLabelsFn ? this.limitedLabelsFn() : this.labelObjs();
+
+			this.height = (limitedLabels.length * this.fontSize) + ((limitedLabels.length-1) * (this.fontSize/2)) + (this.yPadding*2) + this.titleFontSize *1.5;
 
 			this.ctx.font = this.titleFont;
 
 			var titleWidth = this.ctx.measureText(this.title).width,
 				//Label has a legend square as well so account for this.
-				labelWidth = longestText(this.ctx,this.font,this.labels) + this.fontSize + 3,
+				labelWidth = longestText(this.ctx,this.font,this.labelsToText(limitedLabels)) + this.fontSize + 3,
 				longestTextWidth = max([labelWidth,titleWidth]);
 
 			this.width = longestTextWidth + (this.xPadding*2);
@@ -1529,19 +1551,23 @@
 				ctx.fillText(this.title,this.x + this.xPadding, this.getLineHeight(0));
 
 				ctx.font = this.font;
-				helpers.each(this.labels,function(label,index){
+				var theLabels = this.limitedLabelsFn ? this.limitedLabelsFn() : this.labelObjs();
+				var colorSwatchXOffset = this.tooltipSuppressColorSwatch ? 0 : this.fontSize + 3;
+				helpers.each(theLabels, function(label,index){
 					ctx.fillStyle = this.textColor;
-					ctx.fillText(label,this.x + this.xPadding + this.fontSize + 3, this.getLineHeight(index + 1));
+					ctx.fillText(label.labelText,this.x + this.xPadding + colorSwatchXOffset, label.lineHeight);
 
 					//A bit gnarly, but clearing this rectangle breaks when using explorercanvas (clears whole canvas)
 					//ctx.clearRect(this.x + this.xPadding, this.getLineHeight(index + 1) - this.fontSize/2, this.fontSize, this.fontSize);
 					//Instead we'll make a white filled block to put the legendColour palette over.
 
-					ctx.fillStyle = this.legendColorBackground;
-					ctx.fillRect(this.x + this.xPadding, this.getLineHeight(index + 1) - this.fontSize/2, this.fontSize, this.fontSize);
+					if (!this.tooltipSuppressColorSwatch) {
+						ctx.fillStyle = this.legendColorBackground;
+						ctx.fillRect(this.x + this.xPadding, label.lineHeight - this.fontSize/2, this.fontSize, this.fontSize);
 
-					ctx.fillStyle = this.legendColors[index].fill;
-					ctx.fillRect(this.x + this.xPadding, this.getLineHeight(index + 1) - this.fontSize/2, this.fontSize, this.fontSize);
+						ctx.fillStyle = label.legendColor.fill;
+						ctx.fillRect(this.x + this.xPadding, label.lineHeight - this.fontSize/2, this.fontSize, this.fontSize);
+					}
 
 
 				},this);
@@ -1582,8 +1608,10 @@
 			this.endPoint = (this.display) ? this.height - (this.fontSize * 1.5) - 5 : this.height; // -5 to pad labels
 
 			// Apply padding settings to the start and end point.
-			this.startPoint += this.padding;
-			this.endPoint -= this.padding;
+			if (!this.disableVerticalPadding) {
+				this.startPoint += this.padding;
+				this.endPoint -= this.padding;
+			}
 
 			// Cache the starting endpoint, excluding the space for x labels
 			var cachedEndPoint = this.endPoint;
