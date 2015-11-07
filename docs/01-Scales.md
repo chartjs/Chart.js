@@ -49,6 +49,7 @@ Chart.defaults.scale = {
 		fontStyle: "normal",
 		fontColor: "#666",
 		fontFamily: "Helvetica Neue",
+		maxTicksLimit: 11,
 		maxRotation: 90,
 		minRotation: 20,
 		mirror: false,
