@@ -324,7 +324,7 @@ describe('Core helper tests', function() {
 	it('should do a log10 operation', function() {
 		expect(helpers.log10(0)).toBe(-Infinity);
 		expect(helpers.log10(1)).toBe(0);
-		expect(helpers.log10(1000)).toBe(3);
+		expect(helpers.log10(1000)).toBeCloseTo(3, 1e-9);
 	});
 
 	it('Should generate ids', function() {
