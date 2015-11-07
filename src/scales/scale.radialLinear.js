@@ -101,7 +101,8 @@
 			// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
 			// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on 
 			// the graph
-			var maxTicks = Math.min(11, Math.ceil(this.drawingArea / (1.5 * this.options.ticks.fontSize)));
+			var maxTicks = Math.min(this.options.ticks.maxTicksLimit ? this.options.ticks.maxTicksLimit : 11,
+			                        Math.ceil(this.drawingArea / (1.5 * this.options.ticks.fontSize)));
 			maxTicks = Math.max(2, maxTicks); // Make sure we always have at least 2 ticks 
 
 			// To get a "nice" value for the tick spacing, we will use the appropriately named 
