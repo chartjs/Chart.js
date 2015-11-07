@@ -209,6 +209,9 @@ The radial linear scale extends the core scale class with the following tick tem
 
 		//Number - The backdrop padding to the side of the label in pixels
 		backdropPaddingX: 2,
+		
+		//Number - Limit the maximum number of ticks
+		maxTicksLimit: 11,
 	},
 
 	pointLabels: {
