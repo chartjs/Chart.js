@@ -203,9 +203,11 @@
 			var yPositions = [];
 
 			helpers.each(elements, function(el){
-				var pos = el.tooltipPosition();
-				xPositions.push(pos.x);
-				yPositions.push(pos.y);
+				if(el) {
+					var pos = el.tooltipPosition();
+					xPositions.push(pos.x);
+					yPositions.push(pos.y);
+				}
 			});
 
 			var x = 0, y = 0;
@@ -249,21 +251,25 @@
 							return;
 						}
 						var currentElement = dataset.metaData[element._index];
-						var yScale = element._yScale || element._scale; // handle radar || polarArea charts
+						if (currentElement) {
+							var yScale = element._yScale || element._scale; // handle radar || polarArea charts
 
-						tooltipItems.push({
-							xLabel: currentElement._xScale ? currentElement._xScale.getLabelForIndex(currentElement._index, currentElement._datasetIndex) : '',
-							yLabel: yScale ? yScale.getLabelForIndex(currentElement._index, currentElement._datasetIndex) : '',
-							index: element._index,
-							datasetIndex: datasetIndex,
-						});
+							tooltipItems.push({
+								xLabel: currentElement._xScale ? currentElement._xScale.getLabelForIndex(currentElement._index, currentElement._datasetIndex) : '',
+								yLabel: yScale ? yScale.getLabelForIndex(currentElement._index, currentElement._datasetIndex) : '',
+								index: element._index,
+								datasetIndex: datasetIndex,
+							});
+						}
 					});
 
 					helpers.each(this._active, function(active, i) {
-						labelColors.push({
-							borderColor: active._view.borderColor,
-							backgroundColor: active._view.backgroundColor
-						});
+						if (active) {
+						  labelColors.push({
+						  	borderColor: active._view.borderColor,
+						  	backgroundColor: active._view.backgroundColor
+						  });
+						}
 					}, this);
 
 					tooltipPosition = this.getAveragePosition(this._active);
