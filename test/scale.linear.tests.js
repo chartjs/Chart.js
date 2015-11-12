@@ -1458,7 +1458,7 @@ describe('Linear Scale', function() {
 		}, {
 			"name": "rotate",
 			"args": [-1.5707963267948966]
-		},  {
+		}, {
 			"name": "setFillStyle",
 			"args": ["#666"]
 		}, {
@@ -1468,5 +1468,245 @@ describe('Linear Scale', function() {
 			"name": "restore",
 			"args": []
 		}]);
+	});
+
+	it("should not draw lines where the callback function returned null or undefined", function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				xAxisID: scaleID, // for the horizontal scale
+				yAxisID: scaleID,
+				data: [-5, 0, 2, -3, 5]
+			}]
+		};
+		var mockContext = window.createMockContext();
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		config.ticks.callback = function(tickValue, index) {
+			return index % 2 === 0 ? null : tickValue.toString();
+		};
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var verticalScale = new Constructor({
+			ctx: mockContext,
+			options: config,
+			data: mockData,
+			id: scaleID
+		});
+
+		var minSize = verticalScale.update(100, 300);
+		minSize = verticalScale.update(30, 300, {
+			left: 0,
+			right: 0,
+			top: 15,
+			bottom: 3
+		});
+		expect(minSize).toEqual({
+			width: 30,
+			height: 300,
+		});
+
+		verticalScale.left = 0;
+		verticalScale.right = minSize.width;
+		verticalScale.top = 0;
+		verticalScale.bottom = minSize.height;
+
+		var chartArea = {
+			top: 0,
+			bottom: minSize.height,
+			left: minSize.width,
+			right: minSize.width + 100
+		};
+
+		mockContext.resetCalls();
+		verticalScale.draw(chartArea);
+
+		expect(mockContext.getCalls()).toEqual([{
+			"name": "setFillStyle",
+			"args": ["#666"]
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0, 0, 0, 0.1)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [25, 30.2]
+		}, {
+			"name": "lineTo",
+			"args": [30, 30.2]
+		}, {
+			"name": "moveTo",
+			"args": [30, 30.2]
+		}, {
+			"name": "lineTo",
+			"args": [130, 30.2]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [20, 29.7]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["4", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [25, 89.6]
+		}, {
+			"name": "lineTo",
+			"args": [30, 89.6]
+		}, {
+			"name": "moveTo",
+			"args": [30, 89.6]
+		}, {
+			"name": "lineTo",
+			"args": [130, 89.6]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [20, 89.1]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["2", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0,0,0,0.25)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [25, 149]
+		}, {
+			"name": "lineTo",
+			"args": [30, 149]
+		}, {
+			"name": "moveTo",
+			"args": [30, 149]
+		}, {
+			"name": "lineTo",
+			"args": [130, 149]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [20, 148.5]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["0", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0, 0, 0, 0.1)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [25, 208.4]
+		}, {
+			"name": "lineTo",
+			"args": [30, 208.4]
+		}, {
+			"name": "moveTo",
+			"args": [30, 208.4]
+		}, {
+			"name": "lineTo",
+			"args": [130, 208.4]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [20, 207.9]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["-2", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [25, 267.8]
+		}, {
+			"name": "lineTo",
+			"args": [30, 267.8]
+		}, {
+			"name": "moveTo",
+			"args": [30, 267.8]
+		}, {
+			"name": "lineTo",
+			"args": [130, 267.8]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [20, 267.3]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["-4", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}])
 	});
 });
