@@ -79,7 +79,7 @@
 			responsive: true,
 			responsiveAnimationDuration: 0,
 			maintainAspectRatio: true,
-			events: ["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"],
+			events: ["mousemove", "mouseout", "click", "touchstart", "touchmove"],
 			hover: {
 				onHover: null,
 				mode: 'single',
