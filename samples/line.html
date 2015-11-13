@@ -19,6 +19,7 @@
     <br>
     <br>
     <button id="randomizeData">Randomize Data</button>
+    <button id="changeDataObject">Change Data Object</button>
     <button id="addDataset">Add Dataset</button>
     <button id="removeDataset">Remove Dataset</button>
     <button id="addData">Add Data</button>
@@ -145,6 +146,32 @@
 
             window.myLine.update();
             updateLegend();
+        });
+
+        $('#changeDataObject').click(function() {
+            config.data = {
+                labels: ["July", "August", "September", "October", "November", "December"],
+                datasets: [{
+                    label: "My First dataset",
+                    data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
+                    fill: false,
+                }, {
+                    label: "My Second dataset",
+                    fill: false,
+                    data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
+                }]
+            };
+
+            $.each(config.data.datasets, function(i, dataset) {
+                dataset.borderColor = randomColor(0.4);
+                dataset.backgroundColor = randomColor(0.5);
+                dataset.pointBorderColor = randomColor(0.7);
+                dataset.pointBackgroundColor = randomColor(0.5);
+                dataset.pointBorderWidth = 1;
+            });
+
+            // Update the chart
+            window.myLine.update();
         });
 
         $('#addDataset').click(function() {
