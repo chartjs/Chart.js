@@ -262,7 +262,7 @@ describe('Bar controller tests', function() {
 		expect(bar1._xScale).toBe(chart.scales.firstXScaleID);
 		expect(bar1._yScale).toBe(chart.scales.firstYScaleID);
 		expect(bar1._model).toEqual({
-			x: 103.60000000000001,
+			x: 113.60000000000001,
 			y: 194,
 			label: 'label1',
 			datasetLabel: 'dataset2',
@@ -279,7 +279,7 @@ describe('Bar controller tests', function() {
 		expect(bar2._xScale).toBe(chart.scales.firstXScaleID);
 		expect(bar2._yScale).toBe(chart.scales.firstYScaleID);
 		expect(bar2._model).toEqual({
-			x: 141.6,
+			x: 151.60000000000002,
 			y: 6,
 			label: 'label2',
 			datasetLabel: 'dataset2',

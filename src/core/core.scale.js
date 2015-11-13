@@ -259,6 +259,8 @@
 					// A horizontal axis is more constrained by the height.
 					var maxLabelHeight = this.maxHeight - this.minSize.height;
 					var longestLabelWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
+
+					// TODO - improve this calculation
 					var labelHeight = (Math.sin(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.ticks.fontSize;
 
 					this.minSize.height = Math.min(this.maxHeight, this.minSize.height + labelHeight);
@@ -279,6 +281,11 @@
 					// A vertical axis is more constrained by the width. Labels are the dominant factor here, so get that length first
 					var maxLabelWidth = this.maxWidth - this.minSize.width;
 					var largestTextWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
+
+					// Account for padding
+					if (!this.options.ticks.mirror) {
+						largestTextWidth += this.options.ticks.padding;
+					}
 
 					if (largestTextWidth < maxLabelWidth) {
 						// We don't need all the room
