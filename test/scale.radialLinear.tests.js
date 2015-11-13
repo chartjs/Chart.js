@@ -86,7 +86,9 @@ describe('Test the radial linear scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: Chart.scaleService.getScaleDefaults('radialLinear'), // use default config for scale
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 
@@ -118,7 +120,9 @@ describe('Test the radial linear scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: Chart.scaleService.getScaleDefaults('radialLinear'), // use default config for scale
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 
@@ -140,7 +144,9 @@ describe('Test the radial linear scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: Chart.scaleService.getScaleDefaults('radialLinear'), // use default config for scale
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 
@@ -166,7 +172,9 @@ describe('Test the radial linear scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 
@@ -205,7 +213,9 @@ describe('Test the radial linear scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 
@@ -238,7 +248,9 @@ describe('Test the radial linear scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 
@@ -265,7 +277,9 @@ describe('Test the radial linear scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 
@@ -297,7 +311,9 @@ describe('Test the radial linear scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 
@@ -340,7 +356,9 @@ describe('Test the radial linear scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 

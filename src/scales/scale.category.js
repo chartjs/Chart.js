@@ -12,7 +12,7 @@
 
     var DatasetScale = Chart.Scale.extend({
         buildTicks: function(index) {
-            this.ticks = this.data.labels;
+            this.ticks = this.chart.data.labels;
         },
 
         getLabelForIndex: function(index, datasetIndex) {
@@ -23,7 +23,7 @@
         getPixelForValue: function(value, index, datasetIndex, includeOffset) {
             if (this.isHorizontal()) {
                 var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
-                var valueWidth = innerWidth / Math.max((this.data.labels.length - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
+                var valueWidth = innerWidth / Math.max((this.chart.data.labels.length - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
                 var widthOffset = (valueWidth * index) + this.paddingLeft;
 
                 if (this.options.gridLines.offsetGridLines && includeOffset) {
@@ -33,7 +33,7 @@
                 return this.left + Math.round(widthOffset);
             } else {
                 var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
-                var valueHeight = innerHeight / Math.max((this.data.labels.length - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
+                var valueHeight = innerHeight / Math.max((this.chart.data.labels.length - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
                 var heightOffset = (valueHeight * index) + this.paddingTop;
 
                 if (this.options.gridLines.offsetGridLines && includeOffset) {

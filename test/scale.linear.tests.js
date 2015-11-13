@@ -69,7 +69,9 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: {},
 			options: Chart.scaleService.getScaleDefaults('linear'), // use default config for scale
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -107,7 +109,9 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: {},
 			options: Chart.scaleService.getScaleDefaults('linear'), // use default config for scale
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -152,7 +156,9 @@ describe('Linear Scale', function() {
 		var verticalScale = new Constructor({
 			ctx: {},
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -169,7 +175,9 @@ describe('Linear Scale', function() {
 		var horizontalScale = new Constructor({
 			ctx: {},
 			options: horizontalConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 
@@ -211,7 +219,9 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: {},
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -251,7 +261,9 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: {},
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -276,7 +288,9 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: {},
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -307,7 +321,9 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: {},
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -337,7 +353,9 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: {},
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -376,7 +394,9 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: {},
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -408,7 +428,9 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: {},
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -440,7 +462,9 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -465,7 +489,9 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -494,7 +520,9 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -521,7 +549,9 @@ describe('Linear Scale', function() {
 		var verticalScale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -547,7 +577,9 @@ describe('Linear Scale', function() {
 		var horizontalScale = new Constructor({
 			ctx: mockContext,
 			options: horizontalConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 
@@ -586,7 +618,9 @@ describe('Linear Scale', function() {
 		var verticalScale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -645,7 +679,9 @@ describe('Linear Scale', function() {
 		var horizontalScale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -705,7 +741,9 @@ describe('Linear Scale', function() {
 		var horizontalScale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -936,7 +974,9 @@ describe('Linear Scale', function() {
 		var verticalScale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 

@@ -23,9 +23,14 @@
 
 		this.chart = instance;
 		this.config = instance.config;
-		this.data = this.config.data;
 		this.options = this.config.options = helpers.configMerge(Chart.defaults.global, Chart.defaults[this.config.type], this.config.options || {});
 		this.id = helpers.uid();
+
+		Object.defineProperty(this, 'data', {
+			get: function() {
+				return this.config.data;
+			},
+		});
 
 		//Add the chart instance to the global namespace
 		Chart.instances[this.id] = this;
@@ -123,7 +128,7 @@
 						var scale = new ScaleClass({
 							ctx: this.chart.ctx,
 							options: xAxisOptions,
-							data: this.data,
+							chart: this,
 							id: xAxisOptions.id,
 						});
 
@@ -138,7 +143,7 @@
 						var scale = new ScaleClass({
 							ctx: this.chart.ctx,
 							options: yAxisOptions,
-							data: this.data,
+							chart: this,
 							id: yAxisOptions.id,
 						});
 
@@ -152,8 +157,7 @@
 				var scale = new ScaleClass({
 					ctx: this.chart.ctx,
 					options: this.options.scale,
-					data: this.data,
-					chart: this.chart,
+					chart: this,
 				});
 
 				this.scale = scale;
@@ -170,18 +174,22 @@
 				if (!dataset.type) {
 					dataset.type = this.config.type;
 				}
+
 				var type = dataset.type;
 				types.push(type);
+
 				if (dataset.controller) {
 					dataset.controller.updateIndex(datasetIndex);
 					return;
 				}
+
 				dataset.controller = new Chart.controllers[type](this, datasetIndex);
 
 				if (resetNewControllers) {
 					dataset.controller.reset();
 				}
 			}, this);
+
 			if (types.length > 1) {
 				for (var i = 1; i < types.length; i++) {
 					if (types[i] != types[i - 1]) {
@@ -199,6 +207,9 @@
 		},
 
 		update: function update(animationDuration, lazy) {
+			// In case the entire data object changed
+			this.tooltip._data = this.data;
+
 			Chart.scaleService.update(this, this.chart.width, this.chart.height);
 
 			// Make sure dataset controllers are updated and new controllers are reset
