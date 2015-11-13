@@ -592,10 +592,10 @@ describe('Linear Scale', function() {
 
 		var minSize = verticalScale.update(100, 300);
 		expect(minSize).toEqual({
-			width: 30,
+			width: 40,
 			height: 300,
 		});
-		expect(verticalScale.width).toBe(30);
+		expect(verticalScale.width).toBe(40);
 		expect(verticalScale.height).toBe(300);
 		expect(verticalScale.paddingTop).toBe(6);
 		expect(verticalScale.paddingBottom).toBe(6);
@@ -622,7 +622,7 @@ describe('Linear Scale', function() {
 		config.scaleLabel.show = true;
 		minSize = verticalScale.update(100, 300);
 		expect(minSize).toEqual({
-			width: 48,
+			width: 58,
 			height: 300,
 		});
 	});
