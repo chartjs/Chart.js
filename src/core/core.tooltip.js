@@ -463,13 +463,19 @@
 
 					// Draw Legend-like boxes if needed
 					if (this._options.tooltips.mode != 'single') {
-						ctx.fillStyle = helpers.color(vm.labelColors[i].borderColor).alpha(vm.opacity).rgbString();
+						// Fill a white rect so that colours merge nicely if the opacity is < 1
+						ctx.fillStyle = helpers.color('#FFFFFF').alpha(vm.opacity).rgbaString();
 						ctx.fillRect(xBase, yBase, vm.bodyFontSize, vm.bodyFontSize);
 
-						ctx.fillStyle = helpers.color(vm.labelColors[i].backgroundColor).alpha(vm.opacity).rgbString();
+						// Border
+						ctx.strokeStyle = helpers.color(vm.labelColors[i].borderColor).alpha(vm.opacity).rgbaString();
+						ctx.strokeRect(xBase, yBase, vm.bodyFontSize, vm.bodyFontSize);
+
+						// Inner square
+						ctx.fillStyle = helpers.color(vm.labelColors[i].backgroundColor).alpha(vm.opacity).rgbaString();
 						ctx.fillRect(xBase + 1, yBase + 1, vm.bodyFontSize - 2, vm.bodyFontSize - 2);
 
-						ctx.fillStyle = helpers.color(vm.bodyColor).alpha(vm.opacity).rgbString(); // Return fill style for text
+						ctx.fillStyle = helpers.color(vm.bodyColor).alpha(vm.opacity).rgbaString(); // Return fill style for text
 					}
 
 					// Body Line
