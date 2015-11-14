@@ -46,19 +46,18 @@
 				ctx.lineTo(point._view.x, point._view.y);
 			} else {
 				// Line between points
-				//if (point !== nextPoint) {
-					ctx.bezierCurveTo(
-						previousPoint._view.controlPointNextX, 
-						previousPoint._view.controlPointNextY,
-						point._view.controlPointPreviousX,
-						point._view.controlPointPreviousY,
-						point._view.x,
-						point._view.y
-					);
-				//} else {
-					// Drawing to the last point in the line
+				if (point._index === 1) {
+					console.log("bezierCurveTo(" + previousPoint._view.controlPointNextX + ", " + previousPoint._view.controlPointNextY + ", " + point._view.controlPointPreviousX + ", " + point._view.controlPointPreviousY + ", " + point._view.x + ", " + point._view.y + ")");
+				}
 
-				//}
+				ctx.bezierCurveTo(
+					previousPoint._view.controlPointNextX, 
+					previousPoint._view.controlPointNextY,
+					point._view.controlPointPreviousX,
+					point._view.controlPointPreviousY,
+					point._view.x,
+					point._view.y
+				);
 			}
 		},
 
