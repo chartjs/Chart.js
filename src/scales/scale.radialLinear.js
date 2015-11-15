@@ -272,7 +272,7 @@
 			return index * angleMultiplier - (Math.PI / 2);
 		},
 		getDistanceFromCenterForValue: function(value) {
-			if (value === null || value === undefined || isNaN(value)) {
+			if (value === null) {
 				return 0; // null always in center	
 			} 
 			
