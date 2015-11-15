@@ -29,7 +29,6 @@
 		fill: true, // do we fill in the area between the line and its base axis
 	};
 
-
 	Chart.elements.Line = Chart.Element.extend({
 		lineToNextPoint: function(previousPoint, point, nextPoint, skipHandler, previousSkipHandler) {
 			var ctx = this._chart.ctx;
@@ -59,8 +58,8 @@
 			var first = this._children[0];
 			var last = this._children[this._children.length - 1];
 
-			function loopBackToStart() {
-				if (!first._view.skip) {
+			function loopBackToStart(drawLineToCenter) {
+				if (!first._view.skip && !last._view.skip) {
 					// Draw a bezier line from last to first
 					ctx.bezierCurveTo(
 						last._view.controlPointNextX,
@@ -70,7 +69,7 @@
 						first._view.x,
 						first._view.y
 					);
-				} else {
+				} else if (drawLineToCenter) {
 					// Go to center
 					ctx.lineTo(_this._view.scaleZero.x, _this._view.scaleZero.y);
 				}
@@ -84,16 +83,27 @@
 				ctx.beginPath();
 
 				helpers.each(this._children, function(point, index) {
-					var previous = helpers.previousItem(this._children, index/*, this._loop*/);
-					var next = helpers.nextItem(this._children, index/*, this._loop*/);
+					var previous = helpers.previousItem(this._children, index);
+					var next = helpers.nextItem(this._children, index);
 
 					// First point moves to it's starting position no matter what
 					if (index === 0) {
-						ctx.moveTo(point._view.x, vm.scaleZero);
-						ctx.lineTo(point._view.x, point._view.y);
+						if (this._loop) {
+							ctx.moveTo(vm.scaleZero.x, vm.scaleZero.y);
+						} else {
+							ctx.moveTo(point._view.x, vm.scaleZero);
+						}
+
+						if (point._view.skip) {
+							if (!this._loop) {
+								ctx.moveTo(next._view.x, this._view.scaleZero);
+							}
+						} else {
+							ctx.lineTo(point._view.x, point._view.y);
+						}
 					} else {
 						this.lineToNextPoint(previous, point, next, function(previousPoint, point, nextPoint) {
-							if (this.loop) {
+							if (this._loop) {
 								// Go to center
 								ctx.lineTo(this._view.scaleZero.x, this._view.scaleZero.y);
 							} else {
@@ -109,7 +119,7 @@
 
 				// For radial scales, loop back around to the first point
 				if (this._loop) {
-					loopBackToStart();
+					loopBackToStart(true);
 				} else {
 					//Round off the line by going to the base of the chart, back to the start, then fill.
 					ctx.lineTo(this._children[this._children.length - 1]._view.x, vm.scaleZero);
@@ -143,7 +153,7 @@
 					ctx.moveTo(point._view.x, point._view.y);
 				} else {
 					this.lineToNextPoint(previous, point, next, function(previousPoint, point, nextPoint) {
-						ctx.moveTo(nextPoint._view.x, this._view.scaleZero);
+						ctx.moveTo(nextPoint._view.x, nextPoint._view.y);
 					}, function(previousPoint, point, nextPoint) {
 						// If we skipped the last point, move up to our point preventing a line from being drawn
 						ctx.moveTo(point._view.x, point._view.y);
