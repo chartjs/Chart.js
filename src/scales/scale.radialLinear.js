@@ -272,7 +272,10 @@
 			return index * angleMultiplier - (Math.PI / 2);
 		},
 		getDistanceFromCenterForValue: function(value) {
-			if (value === null) return 0; // null always in center
+			if (value === null || value === undefined || isNaN(value)) {
+				return 0; // null always in center	
+			} 
+			
 			// Take into account half font size + the yPadding of the top value
 			var scalingFactor = this.drawingArea / (this.max - this.min);
 			if (this.options.reverse) {
