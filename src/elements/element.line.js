@@ -31,25 +31,15 @@
 
 
 	Chart.elements.Line = Chart.Element.extend({
-		lineToNextPoint: function(previousPoint, point, nextPoint) {
+		lineToNextPoint: function(previousPoint, point, nextPoint, skipHandler, previousSkipHandler) {
 			var ctx = this._chart.ctx;
 
 			if (point._view.skip) {
-				if (this.loop) {
-					// Go to center
-					ctx.lineTo(this._view.scaleZero.x, this._view.scaleZero.y);
-				} else {
-					ctx.lineTo(previousPoint._view.x, this._view.scaleZero);
-					ctx.moveTo(next._view.x, this._view.scaleZero);
-				}
+				skipHandler.call(this, previousPoint, point, nextPoint); 
 			} else if (previousPoint._view.skip) {
-				ctx.lineTo(point._view.x, point._view.y);
+				previousSkipHandler.call(this, previousPoint, point, nextPoint);
 			} else {
 				// Line between points
-				if (point._index === 1) {
-					console.log("bezierCurveTo(" + previousPoint._view.controlPointNextX + ", " + previousPoint._view.controlPointNextY + ", " + point._view.controlPointPreviousX + ", " + point._view.controlPointPreviousY + ", " + point._view.x + ", " + point._view.y + ")");
-				}
-
 				ctx.bezierCurveTo(
 					previousPoint._view.controlPointNextX, 
 					previousPoint._view.controlPointNextY,
@@ -84,7 +74,18 @@
 						ctx.moveTo(point._view.x, vm.scaleZero);
 						ctx.lineTo(point._view.x, point._view.y);
 					} else {
-						this.lineToNextPoint(previous, point, next);
+						this.lineToNextPoint(previous, point, next, function(previousPoint, point, nextPoint) {
+							if (this.loop) {
+								// Go to center
+								ctx.lineTo(this._view.scaleZero.x, this._view.scaleZero.y);
+							} else {
+								ctx.lineTo(previousPoint._view.x, this._view.scaleZero);
+								ctx.moveTo(nextPoint._view.x, this._view.scaleZero);
+							}
+						}, function(previousPoint, point, nextPoint) {
+							// If we skipped the last point, draw a line to ourselves so that the fill is nice
+							ctx.lineTo(point._view.x, point._view.y);
+						});
 					}
 				}, this);
 
@@ -136,7 +137,12 @@
 				if (index === 0) {
 					ctx.moveTo(point._view.x, point._view.y);
 				} else {
-					this.lineToNextPoint(previous, point, next);
+					this.lineToNextPoint(previous, point, next, function(previousPoint, point, nextPoint) {
+						ctx.moveTo(nextPoint._view.x, this._view.scaleZero);
+					}, function(previousPoint, point, nextPoint) {
+						// If we skipped the last point, move up to our point preventing a line from being drawn
+						ctx.moveTo(point._view.x, point._view.y);
+					});
 				}
 			}, this);
 
