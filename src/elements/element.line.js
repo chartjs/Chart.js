@@ -52,11 +52,29 @@
 		},
 
 		draw: function() {
+			var _this = this;
 
 			var vm = this._view;
 			var ctx = this._chart.ctx;
 			var first = this._children[0];
 			var last = this._children[this._children.length - 1];
+
+			function loopBackToStart() {
+				if (!first._view.skip) {
+					// Draw a bezier line from last to first
+					ctx.bezierCurveTo(
+						last._view.controlPointNextX,
+						last._view.controlPointNextY,
+						first._view.controlPointPreviousX,
+						first._view.controlPointPreviousY,
+						first._view.x,
+						first._view.y
+					);
+				} else {
+					// Go to center
+					ctx.lineTo(_this._view.scaleZero.x, _this._view.scaleZero.y);
+				}
+			}
 
 			ctx.save();
 
@@ -91,20 +109,7 @@
 
 				// For radial scales, loop back around to the first point
 				if (this._loop) {
-					if (!first._view.skip) {
-						// Draw a bezier line
-						ctx.bezierCurveTo(
-							last._view.controlPointNextX,
-							last._view.controlPointNextY,
-							first._view.controlPointPreviousX,
-							first._view.controlPointPreviousY,
-							first._view.x,
-							first._view.y
-						);
-					} else {
-						// Go to center
-						ctx.lineTo(this._view.scaleZero.x, this._view.scaleZero.y);
-					}
+					loopBackToStart();
 				} else {
 					//Round off the line by going to the base of the chart, back to the start, then fill.
 					ctx.lineTo(this._children[this._children.length - 1]._view.x, vm.scaleZero);
@@ -147,20 +152,7 @@
 			}, this);
 
 			if (this._loop) {
-				if (!first._view.skip) {
-					// Draw a bezier line
-					ctx.bezierCurveTo(
-						last._view.controlPointNextX,
-						last._view.controlPointNextY,
-						first._view.controlPointPreviousX,
-						first._view.controlPointPreviousY,
-						first._view.x,
-						first._view.y
-					);
-				} else {
-					// Go to center
-					ctx.lineTo(this._view.scaleZero.x, this._view.scaleZero.y);
-				}
+				loopBackToStart();
 			}
 
 			ctx.stroke();
