@@ -192,7 +192,7 @@ describe('Line controller tests', function() {
 			chartArea: {
 				bottom: 200,
 				left: xScale.left,
-				right: 200,
+				right: xScale.left + 200,
 				top: 0
 			},
 			data: data,
