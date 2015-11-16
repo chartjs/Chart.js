@@ -3,7 +3,7 @@
 	<head>
 		<title>Chart.js | Open source HTML5 Charts for your website</title>
 		<meta name="description" content="Simple, clean and engaging HTML5 based JavaScript charts. Chart.js is an easy way to include animated, interactive graphs on your website for free."/>
-		<link rel="stylesheet" type="text/css" href="/assets/styles.css">
+		<link rel="stylesheet" type="text/css" href="assets/styles.css">
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimal-ui">
 		<script type="text/javascript" src="//use.typekit.net/dqv7hih.js"></script>
 <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
@@ -46,7 +46,7 @@
 				<article>
 					<h3>Responsive <span class="badge new">new</span></h3>
 					<div class="canvas-holder">
-						<img width="400" height="250" src="/assets/responsive.svg"/>
+						<img width="400" height="250" src="assets/responsive.svg"/>
 					</div>
 					<p>Chart.js will resize your chart if the browser changes size, along with providing the perfect scale granularity for that size</p>
 				</article>
@@ -78,7 +78,7 @@
 				A project by <a href="http://www.nickdownie.com">Nick Downie</a>
 			</div>
 		</footer>
-		<script src="./assets/Chart.min.js"></script>
+		<script src="assets/Chart.min.js"></script>
 		<script>(function(){
 	// Colour variables
 	var red = "#bf616a",
@@ -383,53 +383,53 @@
 			};
 
 		var moduleData = [
-		
+
 			{
 				value: 7.57,
 				color: colours["Core"],
 				highlight: Colour(colours["Core"], 10),
 				label: "Core"
 			},
-		
+
 			{
 				value: 1.63,
 				color: colours["Bar"],
 				highlight: Colour(colours["Bar"], 10),
 				label: "Bar"
 			},
-		
+
 			{
 				value: 1.09,
 				color: colours["Doughnut"],
 				highlight: Colour(colours["Doughnut"], 10),
 				label: "Doughnut"
 			},
-		
+
 			{
 				value: 1.71,
 				color: colours["Radar"],
 				highlight: Colour(colours["Radar"], 10),
 				label: "Radar"
 			},
-		
+
 			{
 				value: 1.64,
 				color: colours["Line"],
 				highlight: Colour(colours["Line"], 10),
 				label: "Line"
 			},
-		
+
 			{
 				value: 1.37,
 				color: colours["Polar Area"],
 				highlight: Colour(colours["Polar Area"], 10),
 				label: "Polar Area"
 			}
-		
+
 		];
-		// 
+		//
 		var moduleDoughnut = new Chart(canvas.getContext('2d')).Doughnut(moduleData, { tooltipTemplate : "<%if (label){%><%=label%>: <%}%><%= value %>kb", animation: false });
-		// 
+		//
 		var legendHolder = document.createElement('div');
 		legendHolder.innerHTML = moduleDoughnut.generateLegend();
 		// Include a html legend template after the module doughnut itself
