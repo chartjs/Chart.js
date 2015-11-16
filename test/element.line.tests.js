@@ -22,6 +22,8 @@ describe('Line element tests', function() {
 			_view: {
 				x: 0,
 				y: 10,
+				controlPointNextX: 0,
+				controlPointNextY: 10
 			}
 		}));
 		points.push(new Chart.elements.Point({
@@ -30,6 +32,10 @@ describe('Line element tests', function() {
 			_view: {
 				x: 5,
 				y: 0,
+				controlPointPreviousX: 5,
+				controlPointPreviousY: 0,
+				controlPointNextX: 5,
+				controlPointNextY: 0
 			}
 		}));
 		points.push(new Chart.elements.Point({
@@ -38,6 +44,10 @@ describe('Line element tests', function() {
 			_view: {
 				x: 15,
 				y: -10,
+				controlPointPreviousX: 15,
+				controlPointPreviousY: -10,
+				controlPointNextX: 15,
+				controlPointNextY: -10
 			}
 		}));
 		points.push(new Chart.elements.Point({
@@ -46,6 +56,10 @@ describe('Line element tests', function() {
 			_view: {
 				x: 19,
 				y: -5,
+				controlPointPreviousX: 19,
+				controlPointPreviousY: -5,
+				controlPointNextX: 19,
+				controlPointNextY: -5
 			}
 		}));
 
@@ -69,21 +83,6 @@ describe('Line element tests', function() {
 			name: 'save',
 			args: [],
 		}, {
-			name: 'moveTo',
-			args: [0, 0]
-		}, {
-			name: 'lineTo',
-			args: [0, 10]
-		}, {
-			name: 'lineTo',
-			args: [5, 0]
-		}, {
-			name: 'lineTo',
-			args: [15, -10]
-		}, {
-			name: 'lineTo',
-			args: [19, -5]
-		}, {
 			name: 'setLineCap',
 			args: ['butt']
 		}, {
@@ -108,22 +107,16 @@ describe('Line element tests', function() {
 			args: []
 		}, {
 			name: 'moveTo',
-			args: [0, 0]
-		}, {
-			name: 'moveTo',
 			args: [0, 10]
 		}, {
-			name: 'lineTo',
-			args: [0, 10]
+			name: 'bezierCurveTo',
+			args: [0, 10, 5, 0, 5, 0]
 		}, {
-			name: 'lineTo',
-			args: [5, 0]
+			name: 'bezierCurveTo',
+			args: [5, 0, 15, -10, 15, -10]
 		}, {
-			name: 'lineTo',
-			args: [15, -10]
-		}, {
-			name: 'lineTo',
-			args: [19, -5]
+			name: 'bezierCurveTo',
+			args: [15, -10, 19, -5, 19, -5]
 		}, {
 			name: 'stroke',
 			args: [],
@@ -143,7 +136,9 @@ describe('Line element tests', function() {
 			_index: 0,
 			_view: {
 				x: 0,
-				y: 10
+				y: 10,
+				controlPointNextX: 0,
+				controlPointNextY: 10
 			}
 		}));
 		points.push(new Chart.elements.Point({
@@ -151,7 +146,11 @@ describe('Line element tests', function() {
 			_index: 1,
 			_view: {
 				x: 5,
-				y: 0
+				y: 0,
+				controlPointPreviousX: 5,
+				controlPointPreviousY: 0,
+				controlPointNextX: 5,
+				controlPointNextY: 0
 			}
 		}));
 		points.push(new Chart.elements.Point({
@@ -159,7 +158,11 @@ describe('Line element tests', function() {
 			_index: 2,
 			_view: {
 				x: 15,
-				y: -10
+				y: -10,
+				controlPointPreviousX: 15,
+				controlPointPreviousY: -10,
+				controlPointNextX: 15,
+				controlPointNextY: -10
 			}
 		}));
 		points.push(new Chart.elements.Point({
@@ -167,7 +170,11 @@ describe('Line element tests', function() {
 			_index: 3,
 			_view: {
 				x: 19,
-				y: -5
+				y: -5,
+				controlPointPreviousX: 19,
+				controlPointPreviousY: -5,
+				controlPointNextX: 19,
+				controlPointNextY: -5
 			}
 		}));
 
@@ -199,20 +206,23 @@ describe('Line element tests', function() {
 			name: 'save',
 			args: [],
 		}, {
+			name: 'beginPath',
+			args: []
+		}, {
 			name: 'moveTo',
 			args: [0, 2]
 		}, {
 			name: 'lineTo',
 			args: [0, 10]
 		}, {
-			name: 'lineTo',
-			args: [5, 0]
+			name: 'bezierCurveTo',
+			args: [0, 10, 5, 0, 5, 0]
 		}, {
-			name: 'lineTo',
-			args: [15, -10]
+			name: 'bezierCurveTo',
+			args: [5, 0, 15, -10, 15, -10]
 		}, {
-			name: 'lineTo',
-			args: [19, -5]
+			name: 'bezierCurveTo',
+			args: [15, -10, 19, -5, 19, -5]
 		}, {
 			name: 'lineTo',
 			args: [19, 2]
@@ -253,22 +263,169 @@ describe('Line element tests', function() {
 			args: []
 		}, {
 			name: 'moveTo',
+			args: [0, 10]
+		}, {
+			name: 'bezierCurveTo',
+			args: [0, 10, 5, 0, 5, 0]
+		}, {
+			name: 'bezierCurveTo',
+			args: [5, 0, 15, -10, 15, -10]
+		}, {
+			name: 'bezierCurveTo',
+			args: [15, -10, 19, -5, 19, -5]
+		}, {
+			name: 'stroke',
+			args: [],
+		}, {
+			name: 'restore',
+			args: []
+		}];
+		expect(mockContext.getCalls()).toEqual(expected);
+	});
+
+	it ('should skip points correctly', function() {
+		var mockContext = window.createMockContext();
+
+		// Create our points
+		var points = [];
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 0,
+			_view: {
+				x: 0,
+				y: 10,
+				controlPointNextX: 0,
+				controlPointNextY: 10
+			}
+		}));
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 1,
+			_view: {
+				x: 5,
+				y: 0,
+				controlPointPreviousX: 5,
+				controlPointPreviousY: 0,
+				controlPointNextX: 5,
+				controlPointNextY: 0
+			}
+		}));
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 2,
+			_view: {
+				x: 15,
+				y: -10,
+				controlPointPreviousX: 15,
+				controlPointPreviousY: -10,
+				controlPointNextX: 15,
+				controlPointNextY: -10,
+				skip: true
+			}
+		}));
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 3,
+			_view: {
+				x: 19,
+				y: -5,
+				controlPointPreviousX: 19,
+				controlPointPreviousY: -5,
+				controlPointNextX: 19,
+				controlPointNextY: -5
+			}
+		}));
+
+		var line = new Chart.elements.Line({
+			_datasetindex: 2,
+			_chart: {
+				ctx: mockContext,
+			},
+			_children: points,
+			// Need to provide some settings
+			_view: {
+				fill: true,
+				scaleZero: 2, // for filling lines
+				tension: 0.0, // no bezier curve for now
+			}
+		});
+
+		line.draw();
+
+		var expected = [{
+			name: 'save',
+			args: []
+		}, {
+			name: 'beginPath',
+			args: []
+		}, {
+			name: 'moveTo',
 			args: [0, 2]
+		}, {
+			name: 'lineTo',
+			args: [0, 10]
+		}, {
+			name: 'bezierCurveTo',
+			args: [0, 10, 5, 0, 5, 0]
+		}, {
+ 			name: 'lineTo',
+ 			args: [5, 2]
+		}, {
+			name: 'moveTo',
+			args: [19, 2]
+		}, {
+ 			name: 'lineTo',
+ 			args: [19, -5]
+		}, {
+ 			name: 'lineTo',
+ 			args: [19, 2]
+		}, {
+			name: 'lineTo',
+			args: [0, 2]
+		}, {
+			name: 'setFillStyle',
+			args: ['rgba(0,0,0,0.1)']
+		}, {
+			name: 'closePath',
+			args: []
+		}, {
+			name: 'fill',
+			args: []
+		}, {
+			name: 'setLineCap',
+			args: ['butt']
+		}, {
+			name: 'setLineDash',
+			args: [
+				[]
+			]
+		}, {
+			name: 'setLineDashOffset',
+			args: [0.0]
+		}, {
+			name: 'setLineJoin',
+			args: ['miter']
+		}, {
+			name: 'setLineWidth',
+			args: [3]
+		}, {
+			name: 'setStrokeStyle',
+			args: ['rgba(0,0,0,0.1)']
+		}, {
+			name: 'beginPath',
+			args: []
 		}, {
 			name: 'moveTo',
 			args: [0, 10]
 		}, {
-			name: 'lineTo',
-			args: [0, 10]
+			name: 'bezierCurveTo',
+			args: [0, 10, 5, 0, 5, 0]
 		}, {
-			name: 'lineTo',
-			args: [5, 0]
+ 			name: 'moveTo',
+ 			args: [19, -5]
 		}, {
-			name: 'lineTo',
-			args: [15, -10]
-		}, {
-			name: 'lineTo',
-			args: [19, -5]
+ 			name: 'moveTo',
+ 			args: [19, -5]
 		}, {
 			name: 'stroke',
 			args: [],
@@ -289,7 +446,11 @@ describe('Line element tests', function() {
 			_index: 0,
 			_view: {
 				x: 0,
-				y: 10
+				y: 10,
+				controlPointPreviousX: 0,
+				controlPointPreviousY: 10,
+				controlPointNextX: 0,
+				controlPointNextY: 10
 			}
 		}));
 		points.push(new Chart.elements.Point({
@@ -297,7 +458,11 @@ describe('Line element tests', function() {
 			_index: 1,
 			_view: {
 				x: 5,
-				y: 0
+				y: 0,
+				controlPointPreviousX: 5,
+				controlPointPreviousY: 0,
+				controlPointNextX: 5,
+				controlPointNextY: 0
 			}
 		}));
 		points.push(new Chart.elements.Point({
@@ -305,7 +470,11 @@ describe('Line element tests', function() {
 			_index: 2,
 			_view: {
 				x: 15,
-				y: -10
+				y: -10,
+				controlPointPreviousX: 15,
+				controlPointPreviousY: -10,
+				controlPointNextX: 15,
+				controlPointNextY: -10
 			}
 		}));
 		points.push(new Chart.elements.Point({
@@ -313,7 +482,11 @@ describe('Line element tests', function() {
 			_index: 3,
 			_view: {
 				x: 19,
-				y: -5
+				y: -5,
+				controlPointPreviousX: 19,
+				controlPointPreviousY: -5,
+				controlPointNextX: 19,
+				controlPointNextY: -5
 			}
 		}));
 
@@ -326,9 +499,12 @@ describe('Line element tests', function() {
 			_loop: true, // want the line to loop back to the first point
 			// Need to provide some settings
 			_view: {
-				fill: false, // don't want to fill
+				fill: true, // don't want to fill
 				tension: 0.0, // no bezier curve for now
-				scaleZero: 0,
+				scaleZero: {
+					x: 3,
+					y: 2
+				},
 			}
 		});
 
@@ -338,23 +514,35 @@ describe('Line element tests', function() {
 			name: 'save',
 			args: [],
 		}, {
+			name: 'beginPath',
+			args: []
+		}, {
 			name: 'moveTo',
-			args: [0, 0]
+			args: [3, 2]
 		}, {
 			name: 'lineTo',
 			args: [0, 10]
 		}, {
-			name: 'lineTo',
-			args: [5, 0]
+			name: 'bezierCurveTo',
+			args: [0, 10, 5, 0, 5, 0]
 		}, {
-			name: 'lineTo',
-			args: [15, -10]
+			name: 'bezierCurveTo',
+			args: [5, 0, 15, -10, 15, -10]
 		}, {
-			name: 'lineTo',
-			args: [19, -5]
+			name: 'bezierCurveTo',
+			args: [15, -10, 19, -5, 19, -5]
 		}, {
-			name: 'lineTo',
-			args: [0, 10]
+			name: 'bezierCurveTo',
+			args: [19, -5, 0, 10, 0, 10]
+		}, {
+			name: 'setFillStyle',
+			args: ['rgba(0,0,0,0.1)']
+		}, {
+			name: 'closePath',
+			args: []
+		}, {
+			name: 'fill',
+			args: []
 		}, {
 			name: 'setLineCap',
 			args: ['butt']
@@ -380,25 +568,19 @@ describe('Line element tests', function() {
 			args: []
 		}, {
 			name: 'moveTo',
-			args: [0, 0]
-		}, {
-			name: 'moveTo',
 			args: [0, 10]
 		}, {
-			name: 'lineTo',
-			args: [0, 10]
+			name: 'bezierCurveTo',
+			args: [0, 10, 5, 0, 5, 0]
 		}, {
-			name: 'lineTo',
-			args: [5, 0]
+			name: 'bezierCurveTo',
+			args: [5, 0, 15, -10, 15, -10]
 		}, {
-			name: 'lineTo',
-			args: [15, -10]
+			name: 'bezierCurveTo',
+			args: [15, -10, 19, -5, 19, -5]
 		}, {
-			name: 'lineTo',
-			args: [19, -5]
-		}, {
-			name: 'lineTo',
-			args: [0, 10]
+			name: 'bezierCurveTo',
+			args: [19, -5, 0, 10, 0, 10]
 		}, {
 			name: 'stroke',
 			args: [],
@@ -408,7 +590,7 @@ describe('Line element tests', function() {
 		}]);
 	});
 
-	it('should draw with bezier curves if tension > 0', function() {
+	it('should be able to draw with a loop back to the beginning point when there is a skip in the middle of the dataset', function() {
 		var mockContext = window.createMockContext();
 
 		// Create our points
@@ -419,10 +601,10 @@ describe('Line element tests', function() {
 			_view: {
 				x: 0,
 				y: 10,
-				controlPointNextX: 1,
-				controlPointNextY: 1,
 				controlPointPreviousX: 0,
-				controlPointPreviousY: 0,
+				controlPointPreviousY: 10,
+				controlPointNextX: 0,
+				controlPointNextY: 10
 			}
 		}));
 		points.push(new Chart.elements.Point({
@@ -431,10 +613,11 @@ describe('Line element tests', function() {
 			_view: {
 				x: 5,
 				y: 0,
-				controlPointNextX: 6,
-				controlPointNextY: 7,
-				controlPointPreviousX: 4,
-				controlPointPreviousY: 3,
+				controlPointPreviousX: 5,
+				controlPointPreviousY: 0,
+				controlPointNextX: 5,
+				controlPointNextY: 0,
+				skip: true
 			}
 		}));
 		points.push(new Chart.elements.Point({
@@ -443,10 +626,10 @@ describe('Line element tests', function() {
 			_view: {
 				x: 15,
 				y: -10,
-				controlPointNextX: 16,
-				controlPointNextY: 17,
-				controlPointPreviousX: 14,
-				controlPointPreviousY: 13,
+				controlPointPreviousX: 15,
+				controlPointPreviousY: -10,
+				controlPointNextX: 15,
+				controlPointNextY: -10
 			}
 		}));
 		points.push(new Chart.elements.Point({
@@ -455,10 +638,10 @@ describe('Line element tests', function() {
 			_view: {
 				x: 19,
 				y: -5,
-				controlPointNextX: 20,
-				controlPointNextY: 21,
-				controlPointPreviousX: 18,
-				controlPointPreviousY: 17,
+				controlPointPreviousX: 19,
+				controlPointPreviousY: -5,
+				controlPointNextX: 19,
+				controlPointNextY: -5
 			}
 		}));
 
@@ -468,51 +651,47 @@ describe('Line element tests', function() {
 				ctx: mockContext,
 			},
 			_children: points,
+			_loop: true, // want the line to loop back to the first point
 			// Need to provide some settings
 			_view: {
-				fill: true,
-				scaleZero: 2, // for filling lines
-				tension: 0.5, // have bezier curves
-
-				borderCapStyle: 'round',
-				borderColor: 'rgb(255, 255, 0)',
-				borderDash: [2, 2],
-				borderDashOffset: 1.5,
-				borderJoinStyle: 'bevel',
-				borderWidth: 4,
-				backgroundColor: 'rgb(0, 0, 0)'
+				fill: true, // don't want to fill
+				tension: 0.0, // no bezier curve for now
+				scaleZero: {
+					x: 3,
+					y: 2
+				},
 			}
 		});
 
 		line.draw();
 
-		var expected = [{
+		expect(mockContext.getCalls()).toEqual([{
 			name: 'save',
 			args: [],
 		}, {
+			name: 'beginPath',
+			args: []
+		}, {
 			name: 'moveTo',
-			args: [0, 2]
+			args: [3, 2]
 		}, {
 			name: 'lineTo',
 			args: [0, 10]
 		}, {
-			name: 'bezierCurveTo',
-			args: [1, 1, 4, 3, 5, 0]
-		}, {
-			name: 'bezierCurveTo',
-			args: [6, 7, 14, 13, 15, -10]
-		}, {
-			name: 'bezierCurveTo',
-			args: [16, 17, 18, 17, 19, -5]
+			name: 'lineTo',
+			args: [3, 2]
 		}, {
 			name: 'lineTo',
-			args: [19, 2]
+			args: [15, -10]
 		}, {
-			name: 'lineTo',
-			args: [0, 2]
+			name: 'bezierCurveTo',
+			args: [15, -10, 19, -5, 19, -5]
+		}, {
+			name: 'bezierCurveTo',
+			args: [19, -5, 0, 10, 0, 10]
 		}, {
 			name: 'setFillStyle',
-			args: ['rgb(0, 0, 0)']
+			args: ['rgba(0,0,0,0.1)']
 		}, {
 			name: 'closePath',
 			args: []
@@ -521,52 +700,349 @@ describe('Line element tests', function() {
 			args: []
 		}, {
 			name: 'setLineCap',
-			args: ['round']
+			args: ['butt']
 		}, {
 			name: 'setLineDash',
 			args: [
-				[2, 2]
+				[]
 			]
 		}, {
 			name: 'setLineDashOffset',
-			args: [1.5]
+			args: [0.0]
 		}, {
 			name: 'setLineJoin',
-			args: ['bevel']
+			args: ['miter']
 		}, {
 			name: 'setLineWidth',
-			args: [4]
+			args: [3]
 		}, {
 			name: 'setStrokeStyle',
-			args: ['rgb(255, 255, 0)']
+			args: ['rgba(0,0,0,0.1)']
 		}, {
 			name: 'beginPath',
 			args: []
 		}, {
 			name: 'moveTo',
-			args: [0, 2]
+			args: [0, 10]
 		}, {
 			name: 'moveTo',
-			args: [0, 10]
+			args: [15, -10]
 		}, {
-			name: 'lineTo',
-			args: [0, 10]
-		}, {
-			name: 'bezierCurveTo',
-			args: [1, 1, 4, 3, 5, 0]
+			name: 'moveTo',
+			args: [15, -10]
 		}, {
 			name: 'bezierCurveTo',
-			args: [6, 7, 14, 13, 15, -10]
+			args: [15, -10, 19, -5, 19, -5]
 		}, {
 			name: 'bezierCurveTo',
-			args: [16, 17, 18, 17, 19, -5]
+			args: [19, -5, 0, 10, 0, 10]
 		}, {
 			name: 'stroke',
 			args: [],
 		}, {
 			name: 'restore',
 			args: []
-		}];
-		expect(mockContext.getCalls()).toEqual(expected);
+		}]);
+	});
+
+	it('should be able to draw with a loop back to the beginning point when the first point is skipped', function() {
+		var mockContext = window.createMockContext();
+
+		// Create our points
+		var points = [];
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 0,
+			_view: {
+				x: 0,
+				y: 10,
+				controlPointPreviousX: 0,
+				controlPointPreviousY: 10,
+				controlPointNextX: 0,
+				controlPointNextY: 10,
+				skip: true
+			}
+		}));
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 1,
+			_view: {
+				x: 5,
+				y: 0,
+				controlPointPreviousX: 5,
+				controlPointPreviousY: 0,
+				controlPointNextX: 5,
+				controlPointNextY: 0,
+			}
+		}));
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 2,
+			_view: {
+				x: 15,
+				y: -10,
+				controlPointPreviousX: 15,
+				controlPointPreviousY: -10,
+				controlPointNextX: 15,
+				controlPointNextY: -10
+			}
+		}));
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 3,
+			_view: {
+				x: 19,
+				y: -5,
+				controlPointPreviousX: 19,
+				controlPointPreviousY: -5,
+				controlPointNextX: 19,
+				controlPointNextY: -5
+			}
+		}));
+
+		var line = new Chart.elements.Line({
+			_datasetindex: 2,
+			_chart: {
+				ctx: mockContext,
+			},
+			_children: points,
+			_loop: true, // want the line to loop back to the first point
+			// Need to provide some settings
+			_view: {
+				fill: true, // don't want to fill
+				tension: 0.0, // no bezier curve for now
+				scaleZero: {
+					x: 3,
+					y: 2
+				},
+			}
+		});
+
+		line.draw();
+
+		expect(mockContext.getCalls()).toEqual([{
+			name: 'save',
+			args: [],
+		}, {
+			name: 'beginPath',
+			args: []
+		}, {
+			name: 'moveTo',
+			args: [3, 2]
+		}, {
+			name: 'lineTo',
+			args: [5, 0]
+		}, {
+			name: 'bezierCurveTo',
+			args: [5, 0, 15, -10, 15, -10]
+		}, {
+			name: 'bezierCurveTo',
+			args: [15, -10, 19, -5, 19, -5]
+		}, {
+			name: 'lineTo',
+			args: [3, 2]
+		}, {
+			name: 'setFillStyle',
+			args: ['rgba(0,0,0,0.1)']
+		}, {
+			name: 'closePath',
+			args: []
+		}, {
+			name: 'fill',
+			args: []
+		}, {
+			name: 'setLineCap',
+			args: ['butt']
+		}, {
+			name: 'setLineDash',
+			args: [
+				[]
+			]
+		}, {
+			name: 'setLineDashOffset',
+			args: [0.0]
+		}, {
+			name: 'setLineJoin',
+			args: ['miter']
+		}, {
+			name: 'setLineWidth',
+			args: [3]
+		}, {
+			name: 'setStrokeStyle',
+			args: ['rgba(0,0,0,0.1)']
+		}, {
+			name: 'beginPath',
+			args: []
+		}, {
+			name: 'moveTo',
+			args: [0, 10]
+		}, {
+			name: 'moveTo',
+			args: [5, 0]
+		}, {
+			name: 'bezierCurveTo',
+			args: [5, 0, 15, -10, 15, -10]
+		}, {
+			name: 'bezierCurveTo',
+			args: [15, -10, 19, -5, 19, -5]
+		}, {
+			name: 'stroke',
+			args: [],
+		}, {
+			name: 'restore',
+			args: []
+		}]);
+	});
+
+	it('should be able to draw with a loop back to the beginning point when the last point is skipped', function() {
+		var mockContext = window.createMockContext();
+
+		// Create our points
+		var points = [];
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 0,
+			_view: {
+				x: 0,
+				y: 10,
+				controlPointPreviousX: 0,
+				controlPointPreviousY: 10,
+				controlPointNextX: 0,
+				controlPointNextY: 10
+			}
+		}));
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 1,
+			_view: {
+				x: 5,
+				y: 0,
+				controlPointPreviousX: 5,
+				controlPointPreviousY: 0,
+				controlPointNextX: 5,
+				controlPointNextY: 0,
+			}
+		}));
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 2,
+			_view: {
+				x: 15,
+				y: -10,
+				controlPointPreviousX: 15,
+				controlPointPreviousY: -10,
+				controlPointNextX: 15,
+				controlPointNextY: -10
+			}
+		}));
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 3,
+			_view: {
+				x: 19,
+				y: -5,
+				controlPointPreviousX: 19,
+				controlPointPreviousY: -5,
+				controlPointNextX: 19,
+				controlPointNextY: -5,
+				skip: true
+			}
+		}));
+
+		var line = new Chart.elements.Line({
+			_datasetindex: 2,
+			_chart: {
+				ctx: mockContext,
+			},
+			_children: points,
+			_loop: true, // want the line to loop back to the first point
+			// Need to provide some settings
+			_view: {
+				fill: true, // don't want to fill
+				tension: 0.0, // no bezier curve for now
+				scaleZero: {
+					x: 3,
+					y: 2
+				},
+			}
+		});
+
+		line.draw();
+
+		expect(mockContext.getCalls()).toEqual([{
+			name: 'save',
+			args: [],
+		}, {
+			name: 'beginPath',
+			args: []
+		}, {
+			name: 'moveTo',
+			args: [3, 2]
+		}, {
+			name: 'lineTo',
+			args: [0, 10]
+		}, {
+			name: 'bezierCurveTo',
+			args: [0, 10, 5, 0, 5, 0]
+		}, {
+			name: 'bezierCurveTo',
+			args: [5, 0, 15, -10, 15, -10]
+		}, {
+			name: 'lineTo',
+			args: [3, 2]
+		}, {
+			name: 'lineTo',
+			args: [3, 2]
+		}, {
+			name: 'setFillStyle',
+			args: ['rgba(0,0,0,0.1)']
+		}, {
+			name: 'closePath',
+			args: []
+		}, {
+			name: 'fill',
+			args: []
+		}, {
+			name: 'setLineCap',
+			args: ['butt']
+		}, {
+			name: 'setLineDash',
+			args: [
+				[]
+			]
+		}, {
+			name: 'setLineDashOffset',
+			args: [0.0]
+		}, {
+			name: 'setLineJoin',
+			args: ['miter']
+		}, {
+			name: 'setLineWidth',
+			args: [3]
+		}, {
+			name: 'setStrokeStyle',
+			args: ['rgba(0,0,0,0.1)']
+		}, {
+			name: 'beginPath',
+			args: []
+		}, {
+			name: 'moveTo',
+			args: [0, 10]
+		}, {
+			name: 'bezierCurveTo',
+			args: [0, 10, 5, 0, 5, 0]
+		}, {
+			name: 'bezierCurveTo',
+			args: [5, 0, 15, -10, 15, -10]
+		}, {
+			name: 'moveTo',
+			args: [19, -5]
+		}, {
+			name: 'stroke',
+			args: [],
+		}, {
+			name: 'restore',
+			args: []
+		}]);
 	});
 });

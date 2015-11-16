@@ -197,28 +197,12 @@
 					point._model.tension
 				);
 
-				point._model.controlPointPreviousX = controlPoints.previous.x;
-				point._model.controlPointNextX = controlPoints.next.x;
-
 				// Prevent the bezier going outside of the bounds of the graph
+				point._model.controlPointPreviousX = Math.max(Math.min(controlPoints.previous.x, this.chart.chartArea.right), this.chart.chartArea.left);
+				point._model.controlPointPreviousY = Math.max(Math.min(controlPoints.previous.y, this.chart.chartArea.bottom), this.chart.chartArea.top);
 
-				// Cap outer bezier handles to the upper/lower scale bounds
-				if (controlPoints.next.y > this.chart.chartArea.bottom) {
-					point._model.controlPointNextY = this.chart.chartArea.bottom;
-				} else if (controlPoints.next.y < this.chart.chartArea.top) {
-					point._model.controlPointNextY = this.chart.chartArea.top;
-				} else {
-					point._model.controlPointNextY = controlPoints.next.y;
-				}
-
-				// Cap inner bezier handles to the upper/lower scale bounds
-				if (controlPoints.previous.y > this.chart.chartArea.bottom) {
-					point._model.controlPointPreviousY = this.chart.chartArea.bottom;
-				} else if (controlPoints.previous.y < this.chart.chartArea.top) {
-					point._model.controlPointPreviousY = this.chart.chartArea.top;
-				} else {
-					point._model.controlPointPreviousY = controlPoints.previous.y;
-				}
+				point._model.controlPointNextX = Math.max(Math.min(controlPoints.next.x, this.chart.chartArea.right), this.chart.chartArea.left);
+				point._model.controlPointNextY = Math.max(Math.min(controlPoints.next.y, this.chart.chartArea.bottom), this.chart.chartArea.top);
 
 				// Now pivot the point for animation
 				point.pivot();

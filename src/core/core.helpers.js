@@ -321,27 +321,29 @@
 		aliasPixel = helpers.aliasPixel = function(pixelWidth) {
 			return (pixelWidth % 2 === 0) ? 0 : 0.5;
 		},
-		splineCurve = helpers.splineCurve = function(FirstPoint, MiddlePoint, AfterPoint, t) {
+		splineCurve = helpers.splineCurve = function(firstPoint, middlePoint, afterPoint, t) {
 			//Props to Rob Spencer at scaled innovation for his post on splining between points
 			//http://scaledinnovation.com/analytics/splines/aboutSplines.html
 
 			// This function must also respect "skipped" points
 
-			var previous = FirstPoint,
-				current = MiddlePoint,
-				next = AfterPoint;
+			var previous = firstPoint.skip ? middlePoint : firstPoint,
+				current = middlePoint,
+				next = afterPoint.skip ? middlePoint : afterPoint;
 
-			if (previous.skip) {
-				previous = current;
-			}
-			if (next.skip) {
-				next = current;
-			}
+			var d01 = Math.sqrt(Math.pow(current.x - previous.x, 2) + Math.pow(current.y - previous.y, 2));
+			var d12 = Math.sqrt(Math.pow(next.x - current.x, 2) + Math.pow(next.y - current.y, 2));
+			
+			var s01 = d01 / (d01 + d12);
+			var s12 = d12 / (d01 + d12);
 
-			var d01 = Math.sqrt(Math.pow(current.x - previous.x, 2) + Math.pow(current.y - previous.y, 2)),
-				d12 = Math.sqrt(Math.pow(next.x - current.x, 2) + Math.pow(next.y - current.y, 2)),
-				fa = t * d01 / (d01 + d12), // scaling factor for triangle Ta
-				fb = t * d12 / (d01 + d12);
+			// If all points are the same, s01 & s02 will be inf
+			s01 = isNaN(s01) ? 0 : s01;
+			s12 = isNaN(s12) ? 0 : s12;
+
+			var fa = t * s01; // scaling factor for triangle Ta
+			var fb = t * s12;
+
 			return {
 				previous: {
 					x: current.x - fa * (next.x - previous.x),
