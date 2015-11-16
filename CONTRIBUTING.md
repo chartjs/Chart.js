@@ -45,7 +45,7 @@ Guidlines:
  - If adding new functionality, please also update the relevant `.md` file in [`/docs`](https://github.com/nnnick/Chart.js/tree/master/docs)
  - Please make your commits in logical sections with clear commit messages
 
-Joining the Project
+Joining the project
 -------------
  - Active committers and contributors are invited to introduce yourself and request commit access to this project.  Please send an email to hello@nickdownie.com or file an issue. 
 
