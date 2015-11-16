@@ -474,6 +474,11 @@
 					var xTickEnd = this.options.position == "right" ? this.left + 5 : this.right;
 
 					helpers.each(this.ticks, function(label, index) {
+						// If the callback returned a null or undefined value, do not draw this line
+						if (label === undefined || label === null) {
+							return;
+						}
+
 						var yLineValue = this.getPixelForTick(index); // xvalues for grid lines
 
 						if (this.options.gridLines.show) {
