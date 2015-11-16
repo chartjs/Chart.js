@@ -21,7 +21,9 @@ describe('Test the scale service', function() {
 		var xScale = new XConstructor({
 			ctx: mockContext,
 			options: xScaleConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: xScaleID
 		});
 
@@ -30,7 +32,9 @@ describe('Test the scale service', function() {
 		var yScale = new YConstructor({
 			ctx: mockContext,
 			options: yScaleConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: yScaleID
 		});
 
@@ -84,7 +88,9 @@ describe('Test the scale service', function() {
 		var xScale = new XConstructor({
 			ctx: mockContext,
 			options: xScaleConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: xScaleID
 		});
 
@@ -94,7 +100,9 @@ describe('Test the scale service', function() {
 		var yScale = new YConstructor({
 			ctx: mockContext,
 			options: yScaleConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: yScaleID
 		});
 
@@ -151,7 +159,9 @@ describe('Test the scale service', function() {
 		var xScale = new XConstructor({
 			ctx: mockContext,
 			options: xScaleConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: xScaleID
 		});
 
@@ -160,13 +170,17 @@ describe('Test the scale service', function() {
 		var yScale1 = new YConstructor({
 			ctx: mockContext,
 			options: yScaleConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: yScaleID1
 		});
 		var yScale2 = new YConstructor({
 			ctx: mockContext,
 			options: yScaleConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: yScaleID2
 		});
 
@@ -230,7 +244,9 @@ describe('Test the scale service', function() {
 		var scale = new ScaleConstructor({
 			ctx: mockContext,
 			options: scaleConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 

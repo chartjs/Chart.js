@@ -72,7 +72,9 @@ describe('Time scale tests', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: Chart.scaleService.getScaleDefaults('time'), // use default config for scale
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -97,7 +99,9 @@ describe('Time scale tests', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config, // use default config for scale
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -121,7 +125,9 @@ describe('Time scale tests', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config, // use default config for scale
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -145,7 +151,9 @@ describe('Time scale tests', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: Chart.scaleService.getScaleDefaults('time'), // use default config for scale
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -168,7 +176,9 @@ describe('Time scale tests', function() {
 		var verticalScale = new Constructor({
 			ctx: mockContext,
 			options: verticalScaleConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 		verticalScale.update(50, 400);

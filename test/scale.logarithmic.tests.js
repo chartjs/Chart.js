@@ -70,7 +70,9 @@ describe('Logarithmic Scale tests', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: Chart.scaleService.getScaleDefaults('logarithmic'), // use default config for scale
-			data: mockData,
+			chart: {
+				data: mockData,
+			},
 			id: scaleID
 		});
 
@@ -105,7 +107,9 @@ describe('Logarithmic Scale tests', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: Chart.scaleService.getScaleDefaults('logarithmic'), // use default config for scale
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -147,7 +151,9 @@ describe('Logarithmic Scale tests', function() {
 		var verticalScale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -160,7 +166,9 @@ describe('Logarithmic Scale tests', function() {
 		var horizontalScale = new Constructor({
 			ctx: mockContext,
 			options: horizontalConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 
@@ -199,7 +207,9 @@ describe('Logarithmic Scale tests', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -240,7 +250,9 @@ describe('Logarithmic Scale tests', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -262,7 +274,9 @@ describe('Logarithmic Scale tests', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -295,7 +309,9 @@ describe('Logarithmic Scale tests', function() {
 		var scale = new Constructor({
 			ctx: {},
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -328,7 +344,9 @@ describe('Logarithmic Scale tests', function() {
 		var scale = new Constructor({
 			ctx: {},
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -360,7 +378,9 @@ describe('Logarithmic Scale tests', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -389,7 +409,9 @@ describe('Logarithmic Scale tests', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -416,7 +438,9 @@ describe('Logarithmic Scale tests', function() {
 		var verticalScale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -441,7 +465,9 @@ describe('Logarithmic Scale tests', function() {
 		var horizontalScale = new Constructor({
 			ctx: mockContext,
 			options: horizontalConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 

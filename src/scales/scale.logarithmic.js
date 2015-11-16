@@ -33,7 +33,7 @@
 			if (this.options.stacked) {
 				var valuesPerType = {};
 
-				helpers.each(this.data.datasets, function(dataset) {
+				helpers.each(this.chart.data.datasets, function(dataset) {
 					if (helpers.isDatasetVisible(dataset) && (this.isHorizontal() ? dataset.xAxisID === this.id : dataset.yAxisID === this.id)) {
 						if (valuesPerType[dataset.type] === undefined) {
 							valuesPerType[dataset.type] = [];
@@ -66,7 +66,7 @@
 				}, this);
 
 			} else {
-				helpers.each(this.data.datasets, function(dataset) {
+				helpers.each(this.chart.data.datasets, function(dataset) {
 					if (helpers.isDatasetVisible(dataset) && (this.isHorizontal() ? dataset.xAxisID === this.id : dataset.yAxisID === this.id)) {
 						helpers.each(dataset.data, function(rawValue, index) {
 							var value = this.getRightValue(rawValue);
@@ -145,7 +145,7 @@
 		},
 		// Get the correct tooltip label
 		getLabelForIndex: function(index, datasetIndex) {
-			return this.getRightValue(this.data.datasets[datasetIndex].data[index]);
+			return this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 		},
 		getPixelForTick: function(index, includeOffset) {
 			return this.getPixelForValue(this.tickValues[index], null, null, includeOffset);

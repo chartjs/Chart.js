@@ -82,8 +82,8 @@
 			// Only parse these once. If the dataset does not have data as x,y pairs, we will use
 			// these 
 			var scaleLabelMoments = [];
-			if (this.data.labels && this.data.labels.length > 0) {
-				helpers.each(this.data.labels, function(label, index) {
+			if (this.chart.data.labels && this.chart.data.labels.length > 0) {
+				helpers.each(this.chart.data.labels, function(label, index) {
 					var labelMoment = this.parseTime(label);
 					if (this.options.time.round) {
 						labelMoment.startOf(this.options.time.round);
@@ -107,7 +107,7 @@
 				this.lastTick = null;
 			}
 
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
+			helpers.each(this.chart.data.datasets, function(dataset, datasetIndex) {
 				var momentsForDataset = [];
 
 				if (typeof dataset.data[0] === 'object') {
@@ -174,7 +174,7 @@
 			this.lastTick.endOf(this.tickUnit);
 			this.smallestLabelSeparation = this.width;
 
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
+			helpers.each(this.chart.data.datasets, function(dataset, datasetIndex) {
 				for (var i = 1; i < this.labelMoments[datasetIndex].length; i++) {
 					this.smallestLabelSeparation = Math.min(this.smallestLabelSeparation, this.labelMoments[datasetIndex][i].diff(this.labelMoments[datasetIndex][i - 1], this.tickUnit, true));
 				}
@@ -192,10 +192,10 @@
 		},
 		// Get tooltip label
 		getLabelForIndex: function(index, datasetIndex) {
-			var label = this.data.labels && index < this.data.labels.length ? this.data.labels[index] : '';
+			var label = this.chart.data.labels && index < this.chart.data.labels.length ? this.chart.data.labels[index] : '';
 
-			if (typeof this.data.datasets[datasetIndex].data[0] === 'object') {
-				label = this.getRightValue(this.data.datasets[datasetIndex].data[index]);
+			if (typeof this.chart.data.datasets[datasetIndex].data[0] === 'object') {
+				label = this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 			}
 
 			return label;

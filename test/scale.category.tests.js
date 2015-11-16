@@ -67,7 +67,9 @@ describe('Category scale tests', function() {
 		var scale = new Constructor({
 			ctx: {},
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -93,7 +95,9 @@ describe('Category scale tests', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -151,7 +155,9 @@ describe('Category scale tests', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 

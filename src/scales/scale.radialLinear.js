@@ -51,7 +51,7 @@
 
 	var LinearRadialScale = Chart.Scale.extend({
 		getValueCount: function() {
-			return this.data.labels.length;
+			return this.chart.data.labels.length;
 		},
 		setDimensions: function() {
 			// Set the unconstrained dimension before label rotation
@@ -67,7 +67,7 @@
 			this.min = null;
 			this.max = null;
 
-			helpers.each(this.data.datasets, function(dataset) {
+			helpers.each(this.chart.data.datasets, function(dataset) {
 				if (helpers.isDatasetVisible(dataset)) {
 					helpers.each(dataset.data, function(rawValue, index) {
 						var value = this.getRightValue(rawValue);
@@ -153,7 +153,7 @@
 			this.zeroLineIndex = this.ticks.indexOf(0);
 		},
 		getLabelForIndex: function(index, datasetIndex) {
-			return this.getRightValue(this.data.datasets[datasetIndex].data[index]);
+			return this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 		},
 		getCircumference: function() {
 			return ((Math.PI * 2) / this.getValueCount());
@@ -210,7 +210,7 @@
 			for (i = 0; i < this.getValueCount(); i++) {
 				// 5px to space the text slightly out - similar to what we do in the draw function.
 				pointPosition = this.getPointPosition(i, largestPossibleRadius);
-				textWidth = this.ctx.measureText(this.options.ticks.callback(this.data.labels[i])).width + 5;
+				textWidth = this.ctx.measureText(this.options.ticks.callback(this.chart.data.labels[i])).width + 5;
 				if (i === 0 || i === this.getValueCount() / 2) {
 					// If we're at index zero, or exactly the middle, we're at exactly the top/bottom
 					// of the radar chart, so text will be aligned centrally, so we'll half it and compare
@@ -370,8 +370,8 @@
 						ctx.font = helpers.fontString(this.options.pointLabels.fontSize, this.options.pointLabels.fontStyle, this.options.pointLabels.fontFamily);
 						ctx.fillStyle = this.options.pointLabels.fontColor;
 
-						var labelsCount = this.data.labels.length,
-							halfLabelsCount = this.data.labels.length / 2,
+						var labelsCount = this.chart.data.labels.length,
+							halfLabelsCount = this.chart.data.labels.length / 2,
 							quarterLabelsCount = halfLabelsCount / 2,
 							upperHalf = (i < quarterLabelsCount || i > labelsCount - quarterLabelsCount),
 							exactQuarter = (i === quarterLabelsCount || i === labelsCount - quarterLabelsCount);
@@ -394,7 +394,7 @@
 							ctx.textBaseline = 'top';
 						}
 
-						ctx.fillText(this.data.labels[i], pointLabelPosition.x, pointLabelPosition.y);
+						ctx.fillText(this.chart.data.labels[i], pointLabelPosition.x, pointLabelPosition.y);
 					}
 				}
 			}
