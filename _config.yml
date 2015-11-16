@@ -1,0 +1,6 @@
+# Collections of files
+collections:
+  doc-parts:
+    output: false
+
+markdown: redcarpet
