@@ -1307,9 +1307,9 @@
 
 			ctx.beginPath();
 
-			ctx.arc(this.x, this.y, this.outerRadius, this.startAngle, this.endAngle);
+			ctx.arc(this.x, this.y, this.outerRadius < 0 ? 0 : this.outerRadius, this.startAngle, this.endAngle);
 
-			ctx.arc(this.x, this.y, this.innerRadius, this.endAngle, this.startAngle, true);
+            ctx.arc(this.x, this.y, this.innerRadius < 0 ? 0 : this.innerRadius, this.endAngle, this.startAngle, true);
 
 			ctx.closePath();
 			ctx.strokeStyle = this.strokeColor;
