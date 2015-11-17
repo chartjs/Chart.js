@@ -1530,7 +1530,9 @@ describe('Linear Scale', function() {
 		var verticalScale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
