@@ -60,7 +60,7 @@
 					if (helpers.isDatasetVisible(dataset) && (this.isHorizontal() ? dataset.xAxisID === this.id : dataset.yAxisID === this.id)) {
 						helpers.each(dataset.data, function(rawValue, index) {
 
-							var value = this.getRightValue(rawValue);
+							var value = +this.getRightValue(rawValue);
 							if (isNaN(value)) {
 								return;
 							}
@@ -93,7 +93,7 @@
 				helpers.each(this.chart.data.datasets, function(dataset) {
 					if (helpers.isDatasetVisible(dataset) && (this.isHorizontal() ? dataset.xAxisID === this.id : dataset.yAxisID === this.id)) {
 						helpers.each(dataset.data, function(rawValue, index) {
-							var value = this.getRightValue(rawValue);
+							var value = +this.getRightValue(rawValue);
 							if (isNaN(value)) {
 								return;
 							}
@@ -205,14 +205,14 @@
 		},
 
 		getLabelForIndex: function(index, datasetIndex) {
-			return this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
+			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 		},
 
 		// Utils
 		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
 			// This must be called after fit has been run so that 
 			//      this.left, this.top, this.right, and this.bottom have been defined
-			var rightValue = this.getRightValue(value);
+			var rightValue = +this.getRightValue(value);
 			var pixel;
 			var range = this.end - this.start;
 

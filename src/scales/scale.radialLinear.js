@@ -70,7 +70,7 @@
 			helpers.each(this.chart.data.datasets, function(dataset) {
 				if (helpers.isDatasetVisible(dataset)) {
 					helpers.each(dataset.data, function(rawValue, index) {
-						var value = this.getRightValue(rawValue);
+						var value = +this.getRightValue(rawValue);
 						if (isNaN(value)) {
 							return;
 						}
@@ -153,7 +153,7 @@
 			this.zeroLineIndex = this.ticks.indexOf(0);
 		},
 		getLabelForIndex: function(index, datasetIndex) {
-			return this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
+			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 		},
 		getCircumference: function() {
 			return ((Math.PI * 2) / this.getValueCount());

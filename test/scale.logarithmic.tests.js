@@ -85,6 +85,42 @@ describe('Logarithmic Scale tests', function() {
 		expect(scale.max).toBe(10000);
 	});
 
+	it('Should correctly determine the max & min of string data values', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: ['10', '5', '5000', '78', '450']
+			}, {
+				yAxisID: 'second scale',
+				data: ['1', '1000', '10', '100'],
+			}, {
+				yAxisID: scaleID,
+				data: ['150']
+			}]
+		};
+
+		var mockContext = window.createMockContext();
+		var Constructor = Chart.scaleService.getScaleConstructor('logarithmic');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: Chart.scaleService.getScaleDefaults('logarithmic'), // use default config for scale
+			chart: {
+				data: mockData,
+			},
+			id: scaleID
+		});
+
+		expect(scale).not.toEqual(undefined); // must construct
+		expect(scale.min).toBe(undefined); // not yet set
+		expect(scale.max).toBe(undefined);
+
+		scale.update(400, 400);
+		expect(scale.min).toBe(1);
+		expect(scale.max).toBe(10000);
+	});
+
 	it('Should correctly determine the max & min data values when there are hidden datasets', function() {
 		var scaleID = 'myScale';
 
