@@ -88,6 +88,45 @@ describe('Linear Scale', function() {
 		expect(scale.max).toBe(150);
 	});
 
+	it('Should correctly determine the max & min of string data values', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: ['10', '5', '0', '-5', '78', '-100']
+			}, {
+				yAxisID: 'second scale',
+				data: ['-1000', '1000'],
+			}, {
+				yAxisID: scaleID,
+				data: ['150']
+			}]
+		};
+
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var scale = new Constructor({
+			ctx: {},
+			options: Chart.scaleService.getScaleDefaults('linear'), // use default config for scale
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		expect(scale).not.toEqual(undefined); // must construct
+		expect(scale.min).toBe(undefined); // not yet set
+		expect(scale.max).toBe(undefined);
+
+		// Set arbitrary width and height for now
+		scale.width = 50;
+		scale.height = 400;
+
+		scale.buildTicks();
+		expect(scale.min).toBe(-100);
+		expect(scale.max).toBe(150);
+	});
+
 	it('Should correctly determine the max & min data values ignoring hidden datasets', function() {
 		var scaleID = 'myScale';
 
@@ -1530,7 +1569,9 @@ describe('Linear Scale', function() {
 		var verticalScale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 

@@ -41,7 +41,7 @@
 
 						helpers.each(dataset.data, function(rawValue, index) {
 							var values = valuesPerType[dataset.type];
-							var value = this.getRightValue(rawValue);
+							var value = +this.getRightValue(rawValue);
 							if (isNaN(value)) {
 								return;
 							}
@@ -69,7 +69,7 @@
 				helpers.each(this.chart.data.datasets, function(dataset) {
 					if (helpers.isDatasetVisible(dataset) && (this.isHorizontal() ? dataset.xAxisID === this.id : dataset.yAxisID === this.id)) {
 						helpers.each(dataset.data, function(rawValue, index) {
-							var value = this.getRightValue(rawValue);
+							var value = +this.getRightValue(rawValue);
 							if (isNaN(value)) {
 								return;
 							}
@@ -145,7 +145,7 @@
 		},
 		// Get the correct tooltip label
 		getLabelForIndex: function(index, datasetIndex) {
-			return this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
+			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 		},
 		getPixelForTick: function(index, includeOffset) {
 			return this.getPixelForValue(this.tickValues[index], null, null, includeOffset);
@@ -153,7 +153,7 @@
 		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
 			var pixel;
 
-			var newVal = this.getRightValue(value);
+			var newVal = +this.getRightValue(value);
 			var range = helpers.log10(this.end) - helpers.log10(this.start);
 
 			if (this.isHorizontal()) {

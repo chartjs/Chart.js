@@ -543,7 +543,9 @@ describe('Line controller tests', function() {
 		var yScale = new VerticalScaleConstructor({
 			ctx: mockContext,
 			options: verticalScaleConfig,
-			data: data,
+			chart: {
+				data: data
+			},
 			id: 'firstYScaleID'
 		});
 
@@ -560,7 +562,9 @@ describe('Line controller tests', function() {
 		var xScale = new HorizontalScaleConstructor({
 			ctx: mockContext,
 			options: horizontalScaleConfig,
-			data: data,
+			chart: {
+				data: data
+			},
 			id: 'firstXScaleID'
 		});
 
