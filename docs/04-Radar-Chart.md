@@ -15,7 +15,11 @@ They are often useful for comparing the points of two or more different data set
 ###Example usage
 
 ```javascript
-var myRadarChart = new Chart(ctx).Radar(data, options);
+var myRadarChart = new Chart(ctx,{
+	type:'radar',
+	data: data,
+	options: options
+});
 ```
 
 ###Data structure
@@ -25,22 +29,22 @@ var data = {
 	datasets: [
 		{
 			label: "My First dataset",
-			fillColor: "rgba(220,220,220,0.2)",
-			strokeColor: "rgba(220,220,220,1)",
-			pointColor: "rgba(220,220,220,1)",
-			pointStrokeColor: "#fff",
-			pointHighlightFill: "#fff",
-			pointHighlightStroke: "rgba(220,220,220,1)",
+			backgroundColor: "rgba(220,220,220,0.2)",
+			borderColor: "rgba(220,220,220,1)",
+			pointBackgroundColor: "rgba(220,220,220,1)",
+			pointBorderColor: "#fff",
+			pointHoverBackgroundColor: "#fff",
+			pointHoverBorderColor: "rgba(220,220,220,1)",
 			data: [65, 59, 90, 81, 56, 55, 40]
 		},
 		{
 			label: "My Second dataset",
-			fillColor: "rgba(151,187,205,0.2)",
-			strokeColor: "rgba(151,187,205,1)",
-			pointColor: "rgba(151,187,205,1)",
-			pointStrokeColor: "#fff",
-			pointHighlightFill: "#fff",
-			pointHighlightStroke: "rgba(151,187,205,1)",
+			backgroundColor: "rgba(151,187,205,0.2)",
+			borderColor: "rgba(151,187,205,1)",
+			pointBackgroundColor: "rgba(151,187,205,1)",
+			pointBorderColor: "#fff",
+			pointHoverBackgroundColor: "#fff",
+			pointHoverBorderColor: "rgba(151,187,205,1)",
 			data: [28, 48, 40, 19, 96, 27, 100]
 		}
 	]
