@@ -14,8 +14,9 @@ It is sometimes used to show trend data, and the comparison of multiple data set
 
 ### Example usage
 ```javascript
-var myBarChart = new Chart(ctx).Bar({
-	data: data, 
+var myBarChart = new Chart(ctx,{
+	type: 'bar',
+	data: data,
 	options: options
 });
 ```
@@ -83,7 +84,7 @@ These are the customisation options specific to Bar charts. These options are me
 	},
 
 	scales: {
-		// The bar chart officially supports only 1 x-axis but uses an array to keep the API consistent. Use a scatter chart if you need multiple x axes. 
+		// The bar chart officially supports only 1 x-axis but uses an array to keep the API consistent. Use a scatter chart if you need multiple x axes.
 		xAxes: [{
 			// String - type of axis to use. Should not be changed from 'dataset'.
 			scaleType: "dataset", // scatter should not use a dataset axis
@@ -226,7 +227,7 @@ For example, we could have a bar chart without a stroke on each bar by doing the
 
 ```javascript
 new Chart(ctx).Bar({
-	data: data, 
+	data: data,
 	options: {
 		barShowStroke: false
 	}
