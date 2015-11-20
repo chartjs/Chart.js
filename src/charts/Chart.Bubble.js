@@ -41,7 +41,6 @@
 	Chart.defaults.bubble = defaultConfig;
 
 	Chart.Bubble = function(context, config) {
-		//config.options = helpers.configMerge(defaultConfig, config.options);
 		config.type = 'bubble';
 		return new Chart(context, config);
 	};

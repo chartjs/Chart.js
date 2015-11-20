@@ -43,7 +43,6 @@
 	Chart.controllers.scatter = Chart.controllers.line;
 
 	Chart.Scatter = function(context, config) {
-		//config.options = helpers.configMerge(defaultConfig, config.options);
 		config.type = 'scatter';
 		return new Chart(context, config);
 	};
