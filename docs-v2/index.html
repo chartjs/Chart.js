@@ -19,7 +19,7 @@
 			</ul>
 			<nav>
 				<ul>
-					{% for doc in site.collections.doc-parts.docs %}
+					{% for doc in site.collections.doc-parts-v2.docs %}
 					<li id="link-{{ doc.anchor }}">
 						<a href="#{{ doc.anchor }}">{{ doc.title | escape }}</a>
 					</li>
@@ -29,21 +29,18 @@
 		</aside>
 		<section class="docs-container">
 			<article class="intro">
-				<h1>Chart.js V1 Documentation</h1>
+				<h1>Chart.js V2 Documentation</h1>
 				<h3>Everything you need to know to build great looking charts using Chart.js</h3>
 			</article>
 
-			{% for doc in site.collections.doc-parts.docs %}
+			{% for doc in site.collections.doc-parts-v2.docs %}
 			<article id="{{ doc.anchor }}">
 				<h2>{{ doc.title | escape }}</h2>
 				{{ doc.content }}
 			</article>
 			{% endfor %}
-
-
-
-
 		</section>
+
 		<script src="../assets/Chart.min.js"></script>
 		<script>!function(){var e=Chart.helpers;Chart.defaults.global.responsive=!0,Chart.defaults.global.animation=!1;var t=document.getElementById("js-toggle-menu");e.addEvent(t,"click",function(){document.body.className=-1!==document.body.className.indexOf("open-menu")?"closed-menu":"open-menu"});var n=document.getElementsByTagName("article");e.each(n,function(t){if(t.id){var n=t.getElementsByTagName("canvas"),a=t.getElementsByTagName("h3"),l=t.querySelectorAll(".javascript"),i=Array.prototype.slice.call(l,0,2);if(articleId=t.id,list=document.createElement("ul"),navigationItem=document.getElementById("link-"+articleId),list.className="subsection-navigation",e.each(a,function(e){var t=document.createElement("li");e.id=articleId+"-"+e.textContent.replace(/\s+/g,"-").toLowerCase(),t.innerHTML='<a href="#'+e.id+'">'+e.textContent+"</a>",list.appendChild(t)}),a.length>0&&navigationItem.appendChild(list),n.length>0){var o="",c=[];e.each(n,function(e){c.push(e.getContext("2d"))}),c=c.length>1?c:c[0];for(var d=i.length-1;d>=0;d--)o+=i[d].textContent;new Function("ctx","options",o)(c)}}})}();</script>
 		<script>  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
