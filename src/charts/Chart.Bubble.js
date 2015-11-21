@@ -24,14 +24,23 @@
 		},
 
 		tooltips: {
-			template: "(<%= value.x %>, <%= value.y %>)",
-			multiTemplate: "<%if (datasetLabel){%><%=datasetLabel%>: <%}%>(<%= value.x %>, <%= value.y %>)",
+			callbacks: {
+				title: function(tooltipItems, data) {
+					// Title doesn't make sense for scatter since we format the data as a point
+					return '';
+				},
+				label: function(tooltipItem, data) {
+					return '(' + tooltipItem.xLabel + ', ' + tooltipItem.yLabel + ')';
+				}
+			}
 		},
 
 	};
 
+	// Register the default config for this type
+	Chart.defaults.bubble = defaultConfig;
+
 	Chart.Bubble = function(context, config) {
-		config.options = helpers.configMerge(defaultConfig, config.options);
 		config.type = 'bubble';
 		return new Chart(context, config);
 	};
