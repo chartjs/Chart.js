@@ -159,7 +159,9 @@ describe('Line controller tests', function() {
 		var yScale = new VerticalScaleConstructor({
 			ctx: mockContext,
 			options: verticalScaleConfig,
-			data: data,
+			chart: {
+				data: data
+			},
 			id: 'firstYScaleID'
 		});
 
@@ -176,7 +178,9 @@ describe('Line controller tests', function() {
 		var xScale = new HorizontalScaleConstructor({
 			ctx: mockContext,
 			options: horizontalScaleConfig,
-			data: data,
+			chart: {
+				data: data
+			},
 			id: 'firstXScaleID'
 		});
 
@@ -192,7 +196,7 @@ describe('Line controller tests', function() {
 			chartArea: {
 				bottom: 200,
 				left: xScale.left,
-				right: 200,
+				right: xScale.left + 200,
 				top: 0
 			},
 			data: data,
@@ -267,13 +271,13 @@ describe('Line controller tests', function() {
 			tension: 0.1,
 
 			// Point
-			x: 71,
+			x: 81,
 			y: 62,
 
 			// Control points
-			controlPointPreviousX: 71,
+			controlPointPreviousX: 81,
 			controlPointPreviousY: 62,
-			controlPointNextX: 76,
+			controlPointNextX: 86,
 			controlPointNextY: 57.3,
 		});
 
@@ -287,13 +291,13 @@ describe('Line controller tests', function() {
 			tension: 0.1,
 
 			// Point
-			x: 121,
+			x: 131,
 			y: 15,
 
 			// Control points
-			controlPointPreviousX: 117.82889384189087,
+			controlPointPreviousX: 127.82889384189087,
 			controlPointPreviousY: 12.04867347661131,
-			controlPointNextX: 127.92889384189088,
+			controlPointNextX: 137.92889384189088,
 			controlPointNextY: 21.44867347661131,
 		});
 
@@ -307,13 +311,13 @@ describe('Line controller tests', function() {
 			tension: 0.1,
 
 			// Point
-			x: 172,
+			x: 182,
 			y: 156,
 
 			// Control points
-			controlPointPreviousX: 164.8815225337256,
+			controlPointPreviousX: 174.8815225337256,
 			controlPointPreviousY: 143.38408449046415,
-			controlPointNextX: 174.98152253372558,
+			controlPointNextX: 184.98152253372558,
 			controlPointNextY: 161.28408449046415,
 		});
 
@@ -327,13 +331,13 @@ describe('Line controller tests', function() {
 			tension: 0.1,
 
 			// Point
-			x: 222,
+			x: 232,
 			y: 194,
 
 			// Control points
-			controlPointPreviousX: 217,
+			controlPointPreviousX: 227,
 			controlPointPreviousY: 190.2,
-			controlPointNextX: 222,
+			controlPointNextX: 232,
 			controlPointNextY: 194,
 		});
 
@@ -383,13 +387,13 @@ describe('Line controller tests', function() {
 			tension: 0.2,
 
 			// Point
-			x: 71,
+			x: 81,
 			y: 62,
 
 			// Control points
-			controlPointPreviousX: 71,
+			controlPointPreviousX: 81,
 			controlPointPreviousY: 62,
-			controlPointNextX: 81,
+			controlPointNextX: 91,
 			controlPointNextY: 52.6,
 		});
 
@@ -403,13 +407,13 @@ describe('Line controller tests', function() {
 			tension: 0.2,
 
 			// Point
-			x: 121,
+			x: 131,
 			y: 15,
 
 			// Control points
-			controlPointPreviousX: 114.65778768378175,
+			controlPointPreviousX: 124.65778768378175,
 			controlPointPreviousY: 9.097346953222619,
-			controlPointNextX: 134.85778768378177,
+			controlPointNextX: 144.85778768378177,
 			controlPointNextY: 27.897346953222623,
 		});
 
@@ -423,13 +427,13 @@ describe('Line controller tests', function() {
 			tension: 0.2,
 
 			// Point
-			x: 172,
+			x: 182,
 			y: 156,
 
 			// Control points
-			controlPointPreviousX: 157.76304506745115,
+			controlPointPreviousX: 167.76304506745115,
 			controlPointPreviousY: 130.76816898092827,
-			controlPointNextX: 177.96304506745116,
+			controlPointNextX: 187.96304506745116,
 			controlPointNextY: 166.56816898092828,
 		});
 
@@ -443,13 +447,13 @@ describe('Line controller tests', function() {
 			tension: 0.2,
 
 			// Point
-			x: 222,
+			x: 232,
 			y: 194,
 
 			// Control points
-			controlPointPreviousX: 212,
+			controlPointPreviousX: 222,
 			controlPointPreviousY: 186.4,
-			controlPointNextX: 222,
+			controlPointNextX: 232,
 			controlPointNextY: 194,
 		});
 
@@ -505,15 +509,127 @@ describe('Line controller tests', function() {
 			tension: 0.15,
 
 			// Point
-			x: 71,
+			x: 81,
 			y: 62,
 
 			// Control points
-			controlPointPreviousX: 71,
+			controlPointPreviousX: 81,
 			controlPointPreviousY: 62,
-			controlPointNextX: 78.5,
+			controlPointNextX: 88.5,
 			controlPointNextY: 54.95,
 		});
+	});
+
+	it ('should fall back to the line styles for points', function() {
+		var data = {
+			datasets: [{
+				data: [0, 0],
+				label: 'dataset2',
+				xAxisID: 'firstXScaleID',
+				yAxisID: 'firstYScaleID',
+
+				// line styles
+				backgroundColor: 'rgb(98, 98, 98)',
+				borderColor: 'rgb(8, 8, 8)',
+				borderWidth: 0.55,
+			}],
+			labels: ['label1', 'label2']
+		};
+		var mockContext = window.createMockContext();
+
+		var VerticalScaleConstructor = Chart.scaleService.getScaleConstructor('linear');
+		var verticalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		verticalScaleConfig = Chart.helpers.scaleMerge(verticalScaleConfig, Chart.defaults.line.scales.yAxes[0]);
+		var yScale = new VerticalScaleConstructor({
+			ctx: mockContext,
+			options: verticalScaleConfig,
+			chart: {
+				data: data
+			},
+			id: 'firstYScaleID'
+		});
+
+		// Update ticks & set physical dimensions
+		var verticalSize = yScale.update(50, 200);
+		yScale.top = 0;
+		yScale.left = 0;
+		yScale.right = verticalSize.width;
+		yScale.bottom = verticalSize.height;
+
+		var HorizontalScaleConstructor = Chart.scaleService.getScaleConstructor('category');
+		var horizontalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
+		horizontalScaleConfig = Chart.helpers.scaleMerge(horizontalScaleConfig, Chart.defaults.line.scales.xAxes[0]);
+		var xScale = new HorizontalScaleConstructor({
+			ctx: mockContext,
+			options: horizontalScaleConfig,
+			chart: {
+				data: data
+			},
+			id: 'firstXScaleID'
+		});
+
+		// Update ticks & set physical dimensions
+		var horizontalSize = xScale.update(200, 50);
+		xScale.left = yScale.right;
+		xScale.top = yScale.bottom;
+		xScale.right = horizontalSize.width + xScale.left;
+		xScale.bottom = horizontalSize.height + xScale.top;
+
+		var chart = {
+			chartArea: {
+				bottom: 200,
+				left: xScale.left,
+				right: 200,
+				top: 0
+			},
+			data: data,
+			config: {
+				type: 'line'
+			},
+			options: {
+				elements: {
+					line: {
+						backgroundColor: 'rgb(255, 0, 0)',
+						borderCapStyle: 'round',
+						borderColor: 'rgb(0, 255, 0)',
+						borderDash: [],
+						borderDashOffset: 0.1,
+						borderJoinStyle: 'bevel',
+						borderWidth: 1.2,
+						fill: true,
+						tension: 0.1,
+					},
+					point: {
+						backgroundColor: Chart.defaults.global.defaultColor,
+						borderWidth: 1,
+						borderColor: Chart.defaults.global.defaultColor,
+						hitRadius: 1,
+						hoverRadius: 4,
+						hoverBorderWidth: 1,
+						radius: 3,
+					}
+				},
+				scales: {
+					xAxes: [{
+						id: 'firstXScaleID'
+					}],
+					yAxes: [{
+						id: 'firstYScaleID'
+					}]
+				}
+			},
+			scales: {
+				firstXScaleID: xScale,
+				firstYScaleID: yScale,
+			}
+		};
+
+		var controller = new Chart.controllers.line(chart, 0);
+		controller.update();
+
+		expect(chart.data.datasets[0].metaData[0]._model.backgroundColor).toBe('rgb(98, 98, 98)');
+		expect(chart.data.datasets[0].metaData[0]._model.borderColor).toBe('rgb(8, 8, 8)');
+		expect(chart.data.datasets[0].metaData[0]._model.borderWidth).toBe(0.55);
 	});
 
 	it('should handle number of data point changes in update', function() {
@@ -534,7 +650,9 @@ describe('Line controller tests', function() {
 		var yScale = new VerticalScaleConstructor({
 			ctx: mockContext,
 			options: verticalScaleConfig,
-			data: data,
+			chart: {
+				data: data
+			},
 			id: 'firstYScaleID'
 		});
 
@@ -551,7 +669,9 @@ describe('Line controller tests', function() {
 		var xScale = new HorizontalScaleConstructor({
 			ctx: mockContext,
 			options: horizontalScaleConfig,
-			data: data,
+			chart: {
+				data: data
+			},
 			id: 'firstXScaleID'
 		});
 
@@ -649,7 +769,9 @@ describe('Line controller tests', function() {
 		var yScale = new VerticalScaleConstructor({
 			ctx: mockContext,
 			options: verticalScaleConfig,
-			data: data,
+			chart: {
+				data: data
+			},
 			id: 'firstYScaleID'
 		});
 
@@ -666,7 +788,9 @@ describe('Line controller tests', function() {
 		var xScale = new HorizontalScaleConstructor({
 			ctx: mockContext,
 			options: horizontalScaleConfig,
-			data: data,
+			chart: {
+				data: data
+			},
 			id: 'firstXScaleID'
 		});
 
@@ -783,7 +907,9 @@ describe('Line controller tests', function() {
 		var yScale = new VerticalScaleConstructor({
 			ctx: mockContext,
 			options: verticalScaleConfig,
-			data: data,
+			chart: {
+				data: data
+			},
 			id: 'firstYScaleID'
 		});
 
@@ -800,7 +926,9 @@ describe('Line controller tests', function() {
 		var xScale = new HorizontalScaleConstructor({
 			ctx: mockContext,
 			options: horizontalScaleConfig,
-			data: data,
+			chart: {
+				data: data
+			},
 			id: 'firstXScaleID'
 		});
 

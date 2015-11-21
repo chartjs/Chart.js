@@ -51,7 +51,7 @@
 
 	var LinearRadialScale = Chart.Scale.extend({
 		getValueCount: function() {
-			return this.data.labels.length;
+			return this.chart.data.labels.length;
 		},
 		setDimensions: function() {
 			// Set the unconstrained dimension before label rotation
@@ -67,10 +67,10 @@
 			this.min = null;
 			this.max = null;
 
-			helpers.each(this.data.datasets, function(dataset) {
+			helpers.each(this.chart.data.datasets, function(dataset) {
 				if (helpers.isDatasetVisible(dataset)) {
 					helpers.each(dataset.data, function(rawValue, index) {
-						var value = this.getRightValue(rawValue);
+						var value = +this.getRightValue(rawValue);
 						if (isNaN(value)) {
 							return;
 						}
@@ -101,7 +101,8 @@
 			// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
 			// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on 
 			// the graph
-			var maxTicks = Math.min(11, Math.ceil(this.drawingArea / (1.5 * this.options.ticks.fontSize)));
+			var maxTicks = Math.min(this.options.ticks.maxTicksLimit ? this.options.ticks.maxTicksLimit : 11,
+			                        Math.ceil(this.drawingArea / (1.5 * this.options.ticks.fontSize)));
 			maxTicks = Math.max(2, maxTicks); // Make sure we always have at least 2 ticks 
 
 			// To get a "nice" value for the tick spacing, we will use the appropriately named 
@@ -150,6 +151,9 @@
 			}
 
 			this.zeroLineIndex = this.ticks.indexOf(0);
+		},
+		getLabelForIndex: function(index, datasetIndex) {
+			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 		},
 		getCircumference: function() {
 			return ((Math.PI * 2) / this.getValueCount());
@@ -206,7 +210,7 @@
 			for (i = 0; i < this.getValueCount(); i++) {
 				// 5px to space the text slightly out - similar to what we do in the draw function.
 				pointPosition = this.getPointPosition(i, largestPossibleRadius);
-				textWidth = this.ctx.measureText(this.options.ticks.callback(this.data.labels[i])).width + 5;
+				textWidth = this.ctx.measureText(this.options.ticks.callback(this.chart.data.labels[i])).width + 5;
 				if (i === 0 || i === this.getValueCount() / 2) {
 					// If we're at index zero, or exactly the middle, we're at exactly the top/bottom
 					// of the radar chart, so text will be aligned centrally, so we'll half it and compare
@@ -268,7 +272,10 @@
 			return index * angleMultiplier - (Math.PI / 2);
 		},
 		getDistanceFromCenterForValue: function(value) {
-			if (value === null) return 0; // null always in center
+			if (value === null) {
+				return 0; // null always in center	
+			} 
+			
 			// Take into account half font size + the yPadding of the top value
 			var scalingFactor = this.drawingArea / (this.max - this.min);
 			if (this.options.reverse) {
@@ -363,8 +370,8 @@
 						ctx.font = helpers.fontString(this.options.pointLabels.fontSize, this.options.pointLabels.fontStyle, this.options.pointLabels.fontFamily);
 						ctx.fillStyle = this.options.pointLabels.fontColor;
 
-						var labelsCount = this.data.labels.length,
-							halfLabelsCount = this.data.labels.length / 2,
+						var labelsCount = this.chart.data.labels.length,
+							halfLabelsCount = this.chart.data.labels.length / 2,
 							quarterLabelsCount = halfLabelsCount / 2,
 							upperHalf = (i < quarterLabelsCount || i > labelsCount - quarterLabelsCount),
 							exactQuarter = (i === quarterLabelsCount || i === labelsCount - quarterLabelsCount);
@@ -387,7 +394,7 @@
 							ctx.textBaseline = 'top';
 						}
 
-						ctx.fillText(this.data.labels[i], pointLabelPosition.x, pointLabelPosition.y);
+						ctx.fillText(this.chart.data.labels[i], pointLabelPosition.x, pointLabelPosition.y);
 					}
 				}
 			}

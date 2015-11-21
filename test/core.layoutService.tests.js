@@ -21,7 +21,9 @@ describe('Test the layout service', function() {
 		var xScale = new XConstructor({
 			ctx: mockContext,
 			options: xScaleConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: xScaleID
 		});
 
@@ -30,7 +32,9 @@ describe('Test the layout service', function() {
 		var yScale = new YConstructor({
 			ctx: mockContext,
 			options: yScaleConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: yScaleID
 		});
 
@@ -42,24 +46,24 @@ describe('Test the layout service', function() {
 		Chart.layoutService.update(chartInstance, canvasWidth, canvasHeight);
 
 		expect(chartInstance.chartArea).toEqual({
-			left: 45,
+			left: 55,
 			right: 245,
 			top: 5,
-			bottom: 76.0423977855504,
+			bottom: 75.0664716027288,
 		});
 
 		// Is xScale at the right spot
-		expect(xScale.left).toBe(45);
+		expect(xScale.left).toBe(55);
 		expect(xScale.right).toBe(245);
-		expect(xScale.top).toBe(76.0423977855504);
+		expect(xScale.top).toBe(75.0664716027288);
 		expect(xScale.bottom).toBe(145);
-		expect(xScale.labelRotation).toBe(55);
+		expect(xScale.labelRotation).toBe(57);
 
 		// Is yScale at the right spot
 		expect(yScale.left).toBe(5);
-		expect(yScale.right).toBe(45);
+		expect(yScale.right).toBe(55);
 		expect(yScale.top).toBe(5);
-		expect(yScale.bottom).toBe(76.0423977855504);
+		expect(yScale.bottom).toBe(75.0664716027288);
 	});
 
 	it('should fit scales that are in the top and right positions', function() {
@@ -84,7 +88,9 @@ describe('Test the layout service', function() {
 		var xScale = new XConstructor({
 			ctx: mockContext,
 			options: xScaleConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: xScaleID
 		});
 
@@ -94,7 +100,9 @@ describe('Test the layout service', function() {
 		var yScale = new YConstructor({
 			ctx: mockContext,
 			options: yScaleConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: yScaleID
 		});
 
@@ -107,22 +115,22 @@ describe('Test the layout service', function() {
 
 		expect(chartInstance.chartArea).toEqual({
 			left: 5,
-			right: 205,
-			top: 73.9576022144496,
+			right: 195,
+			top: 74.9335283972712,
 			bottom: 145,
 		});
 
 		// Is xScale at the right spot
 		expect(xScale.left).toBe(5);
-		expect(xScale.right).toBe(205);
+		expect(xScale.right).toBe(195);
 		expect(xScale.top).toBe(5);
-		expect(xScale.bottom).toBe(73.9576022144496);
-		expect(xScale.labelRotation).toBe(55);
+		expect(xScale.bottom).toBe(74.9335283972712);
+		expect(xScale.labelRotation).toBe(57);
 
 		// Is yScale at the right spot
-		expect(yScale.left).toBe(205);
+		expect(yScale.left).toBe(195);
 		expect(yScale.right).toBe(245);
-		expect(yScale.top).toBe(73.9576022144496);
+		expect(yScale.top).toBe(74.9335283972712);
 		expect(yScale.bottom).toBe(145);
 	});
 
@@ -151,7 +159,9 @@ describe('Test the layout service', function() {
 		var xScale = new XConstructor({
 			ctx: mockContext,
 			options: xScaleConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: xScaleID
 		});
 
@@ -160,13 +170,17 @@ describe('Test the layout service', function() {
 		var yScale1 = new YConstructor({
 			ctx: mockContext,
 			options: yScaleConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: yScaleID1
 		});
 		var yScale2 = new YConstructor({
 			ctx: mockContext,
 			options: yScaleConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: yScaleID2
 		});
 
@@ -179,28 +193,28 @@ describe('Test the layout service', function() {
 		Chart.layoutService.update(chartInstance, canvasWidth, canvasHeight);
 
 		expect(chartInstance.chartArea).toEqual({
-			left: 95,
+			left: 115,
 			right: 245,
 			top: 5,
-			bottom: 70.01536896070459,
+			bottom: 68.48521368620018,
 		});
 
 		// Is xScale at the right spot
-		expect(xScale.left).toBe(95);
+		expect(xScale.left).toBe(115);
 		expect(xScale.right).toBe(245);
-		expect(xScale.top).toBe(70.01536896070459);
+		expect(xScale.top).toBe(68.48521368620018);
 		expect(xScale.bottom).toBe(145);
 
 		// Are yScales at the right spot
 		expect(yScale1.left).toBe(5);
-		expect(yScale1.right).toBe(45);
+		expect(yScale1.right).toBe(55);
 		expect(yScale1.top).toBe(5);
-		expect(yScale1.bottom).toBe(70.01536896070459);
+		expect(yScale1.bottom).toBe(68.48521368620018);
 
-		expect(yScale2.left).toBe(45);
-		expect(yScale2.right).toBe(95);
+		expect(yScale2.left).toBe(55);
+		expect(yScale2.right).toBe(115);
 		expect(yScale2.top).toBe(5);
-		expect(yScale2.bottom).toBe(70.01536896070459);
+		expect(yScale2.bottom).toBe(68.48521368620018);
 	});
 
 	// This is an oddball case. What happens is, when the scales are fit the first time they must fit within the assigned size. In this case,
@@ -230,7 +244,9 @@ describe('Test the layout service', function() {
 		var scale = new ScaleConstructor({
 			ctx: mockContext,
 			options: scaleConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 

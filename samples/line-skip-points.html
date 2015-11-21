@@ -19,7 +19,6 @@
     <br>
     <br>
     <button id="randomizeData">Randomize Data</button>
-    <button id="changeDataObject">Change Data Object</button>
     <button id="addDataset">Add Dataset</button>
     <button id="removeDataset">Remove Dataset</button>
     <button id="addData">Add Data</button>
@@ -47,45 +46,22 @@
                 labels: ["January", "February", "March", "April", "May", "June", "July"],
                 datasets: [{
                     label: "My First dataset",
-                    data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
-                    fill: false,
+
+                    // Skip a point in the middle
+                    data: [randomScalingFactor(), randomScalingFactor(), NaN, randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
+                    fill: true,
                     borderDash: [5, 5],
                 }, {
-                    hidden: true,
-                    label: 'hidden dataset',
-                    data: [],
-                }, {
                     label: "My Second dataset",
-                    data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
+
+                    // Skip first and last points
+                    data: [NaN, randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), NaN],
                 }]
             },
             options: {
                 responsive: true,
                 tooltips: {
                     mode: 'label',
-                    callbacks: {
-                        // beforeTitle: function() {
-                        //     return '...beforeTitle';
-                        // },
-                        // afterTitle: function() {
-                        //     return '...afterTitle';
-                        // },
-                        // beforeBody: function() {
-                        //     return '...beforeBody';
-                        // },
-                        // afterBody: function() {
-                        //     return '...afterBody';
-                        // },
-                        // beforeFooter: function() {
-                        //     return '...beforeFooter';
-                        // },
-                        // footer: function() {
-                        //     return 'Footer';
-                        // },
-                        // afterFooter: function() {
-                        //     return '...afterFooter';
-                        // },
-                    }
                 },
                 hover: {
                     mode: 'label'
@@ -104,10 +80,6 @@
                             show: true,
                             labelString: 'Value'
                         },
-                        ticks: {
-                            suggestedMin: -10,
-                            suggestedMax: 250,
-                        }
                     }]
                 }
             }
@@ -146,32 +118,6 @@
 
             window.myLine.update();
             updateLegend();
-        });
-
-        $('#changeDataObject').click(function() {
-            config.data = {
-                labels: ["July", "August", "September", "October", "November", "December"],
-                datasets: [{
-                    label: "My First dataset",
-                    data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
-                    fill: false,
-                }, {
-                    label: "My Second dataset",
-                    fill: false,
-                    data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
-                }]
-            };
-
-            $.each(config.data.datasets, function(i, dataset) {
-                dataset.borderColor = randomColor(0.4);
-                dataset.backgroundColor = randomColor(0.5);
-                dataset.pointBorderColor = randomColor(0.7);
-                dataset.pointBackgroundColor = randomColor(0.5);
-                dataset.pointBorderWidth = 1;
-            });
-
-            // Update the chart
-            window.myLine.update();
         });
 
         $('#addDataset').click(function() {

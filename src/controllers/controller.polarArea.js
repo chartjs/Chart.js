@@ -17,6 +17,16 @@
 		//Boolean - Whether to animate the rotation of the chart
 		animateRotate: true,
 		animateScale: true,
+
+		// Need to override these to give a nice default
+		tooltips: {
+			callbacks: {
+				title: function() { return ''; },
+				label: function(tooltipItem, data) {
+					return data.labels[tooltipItem.index] + ': ' + tooltipItem.yLabel;
+				}
+			}
+		}
 	};
 
 	Chart.controllers.polarArea = function(chart, datasetIndex) {
@@ -143,6 +153,7 @@
 				_chart: this.chart.chart,
 				_datasetIndex: this.index,
 				_index: index,
+				_scale: this.chart.scale,
 
 				// Desired view properties
 				_model: reset ? resetModel : {

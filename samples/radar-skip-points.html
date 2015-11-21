@@ -8,8 +8,8 @@
 </head>
 
 <body>
-    <div style="width:100%">
-        <canvas id="canvas"></canvas>
+    <div style="width:50%">
+        <canvas id="canvas" height="450" width="450"></canvas>
     </div>
     <button id="randomizeData">Randomize Data</button>
     <button id="addDataset">Add Dataset</button>
@@ -38,24 +38,35 @@
         data: {
             labels: ["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling", "Running"],
             datasets: [{
-                label: "My First dataset",
-                backgroundColor: "rgba(220,220,220,0.2)",
+                label: "Skip first dataset",
+                borderColor: 'rgb(255, 0, 0)',
+                backgroundColor: "rgba(255,255,0,0.5)",
                 pointBackgroundColor: "rgba(220,220,220,1)",
-                data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+                data: [NaN, randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
             }, {
-                label: 'Hidden dataset',
-                hidden: true,
-                data: [],
-            }, {
-                label: "My Second dataset",
-                backgroundColor: "rgba(151,187,205,0.2)",
+                label: "Skip mid dataset",
+                borderColor: 'rgb(255, 0, 255)',
+                backgroundColor: "rgba(0, 255, 0, 0.5)",
                 pointBackgroundColor: "rgba(151,187,205,1)",
                 hoverPointBackgroundColor: "#fff",
                 pointHighlightStroke: "rgba(151,187,205,1)",
-                data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
-            },]
+                data: [randomScalingFactor(), randomScalingFactor(), NaN, randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+            },{
+                label: "Skip last dataset",
+                borderColor: 'rgb(0, 255, 255)',
+                backgroundColor: "rgba(0, 0, 255, 0.5)",
+                pointBackgroundColor: "rgba(151,187,205,1)",
+                hoverPointBackgroundColor: "#fff",
+                pointHighlightStroke: "rgba(151,187,205,1)",
+                data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), NaN]
+            }]
         },
         options: {
+            elements: {
+                line: {
+                    tension: 0.0,
+                }
+            },
             scale: {
                 beginAtZero: true,
                 reverse: false

@@ -48,7 +48,7 @@ To create a chart, we need to instantiate the `Chart` class. To do this, we need
 // Any of the following formats may be used
 var ctx = document.getElementById("myChart");
 var ctx = document.getElementById("myChart").getContext("2d");
-var ctx = $("myChart");
+var ctx = $("#myChart");
 ```
 
 Once you have the element or context, you're ready to instantiate a pre-defined chart-type or create your own!
@@ -103,7 +103,7 @@ Chart.defaults.global = {
 
     // Legend callback function. 
     // @param {Chart} chart : the chart object to generate a legend for
-    legendCallback: legendCallback: function(chart) {
+    legendCallback: function(chart) {
         var text = [];
         text.push('<ul class="' + chart.id + '-legend">');
         for (var i = 0; i < chart.data.datasets.length; i++) {
@@ -116,7 +116,7 @@ Chart.defaults.global = {
         text.push('</ul>');
 
         return text.join("");
-    }
+    },
 
     animation: {
         duration: 1000,

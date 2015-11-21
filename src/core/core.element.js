@@ -38,7 +38,7 @@
 
 				// Init if doesn't exist
 				else if (!this._view[key]) {
-					if (typeof value === 'number') {
+					if (typeof value === 'number' && isNaN(this._view[key]) === false) {
 						this._view[key] = value * ease;
 					} else {
 						this._view[key] = value || null;
@@ -61,14 +61,13 @@
 				}
 				// Number transitions
 				else if (typeof value === 'number') {
-					var startVal = this._start[key] !== undefined ? this._start[key] : 0;
+					var startVal = this._start[key] !== undefined && isNaN(this._start[key]) === false ? this._start[key] : 0;
 					this._view[key] = ((this._model[key] - startVal) * ease) + startVal;
 				}
 				// Everything else
 				else {
 					this._view[key] = value;
 				}
-
 			}, this);
 
 			if (ease === 1) {

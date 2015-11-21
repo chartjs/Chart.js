@@ -24,35 +24,45 @@ They are also registered under two aliases in the `Chart` core. Other than their
 
 ```javascript
 // For a pie chart
-var myPieChart = new Chart(ctx[0]).Pie(data,options);
+var myPieChart = new Chart(ctx[0],{
+	type:'pie',
+	data: data,
+	options: options
+});
 
 // And for a doughnut chart
-var myDoughnutChart = new Chart(ctx[1]).Doughnut(data,options);
+var myDoughnutChart = new Chart(ctx[1], {
+	type:'doughnut',
+	data: data,
+	options: options
+});
 ```
 
 ### Data structure
 
 ```javascript
-var data = [
-	{
-		value: 300,
-		color:"#F7464A",
-		highlight: "#FF5A5E",
-		label: "Red"
-	},
-	{
-		value: 50,
-		color: "#46BFBD",
-		highlight: "#5AD3D1",
-		label: "Green"
-	},
-	{
-		value: 100,
-		color: "#FDB45C",
-		highlight: "#FFC870",
-		label: "Yellow"
-	}
-]
+var data = {
+	datasets: [
+		{
+			data: [300, 50, 100],
+			backgroundColors: [
+				"#F7464A",
+				"#46BFBD",
+				"#FDB45C"
+			],
+			hoverBackgroundColor:[
+				 "#FF5A5E",
+				  "#5AD3D1",
+					"#FFC870"
+			]
+		},
+		labels: [
+			"Red",
+			"Green",
+			"Yellow"
+		]
+	]
+}
 ```
 
 For a pie chart, you must pass in an array of objects with a value and an optional color property. The value attribute should be a number, Chart.js will total all of the numbers and calculate the relative proportion of each. The color attribute should be a string. Similar to CSS, for this string you can use HEX notation, RGB, RGBA or HSL.

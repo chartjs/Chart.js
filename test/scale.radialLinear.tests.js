@@ -86,7 +86,39 @@ describe('Test the radial linear scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: Chart.scaleService.getScaleDefaults('radialLinear'), // use default config for scale
-			data: mockData,
+			chart: {
+				data: mockData
+			},
+			id: scaleID,
+		});
+
+		scale.update(200, 300);
+		expect(scale.min).toBe(-100);
+		expect(scale.max).toBe(200);
+	});
+
+	it('Should correctly determine the max & min of string data values', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: ['10', '5', '0', '-5', '78', '-100']
+			}, {
+				yAxisID: scaleID,
+				data: ['150']
+			}],
+			labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
+		};
+
+		var mockContext = window.createMockContext();
+		var Constructor = Chart.scaleService.getScaleConstructor('radialLinear');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: Chart.scaleService.getScaleDefaults('radialLinear'), // use default config for scale
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 
@@ -118,7 +150,9 @@ describe('Test the radial linear scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: Chart.scaleService.getScaleDefaults('radialLinear'), // use default config for scale
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 
@@ -140,7 +174,9 @@ describe('Test the radial linear scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: Chart.scaleService.getScaleDefaults('radialLinear'), // use default config for scale
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 
@@ -166,7 +202,9 @@ describe('Test the radial linear scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 
@@ -205,7 +243,9 @@ describe('Test the radial linear scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 
@@ -238,7 +278,9 @@ describe('Test the radial linear scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 
@@ -265,7 +307,9 @@ describe('Test the radial linear scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 
@@ -297,7 +341,9 @@ describe('Test the radial linear scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 
@@ -340,7 +386,9 @@ describe('Test the radial linear scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 

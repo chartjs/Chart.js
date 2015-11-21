@@ -23,9 +23,14 @@
 
 		this.chart = instance;
 		this.config = instance.config;
-		this.data = this.config.data;
 		this.options = this.config.options = helpers.configMerge(Chart.defaults.global, Chart.defaults[this.config.type], this.config.options || {});
 		this.id = helpers.uid();
+
+		Object.defineProperty(this, 'data', {
+			get: function() {
+				return this.config.data;
+			},
+		});
 
 		//Add the chart instance to the global namespace
 		Chart.instances[this.id] = this;
@@ -114,7 +119,7 @@
 			}
 		},
 		buildScales: function buildScales() {
-			// Map of scale ID to scale object so we can lookup later 
+			// Map of scale ID to scale object so we can lookup later
 			this.scales = {};
 
 			// Build the x axes
@@ -125,7 +130,7 @@
 						var scale = new ScaleClass({
 							ctx: this.chart.ctx,
 							options: xAxisOptions,
-							data: this.data,
+							chart: this,
 							id: xAxisOptions.id,
 						});
 
@@ -140,7 +145,7 @@
 						var scale = new ScaleClass({
 							ctx: this.chart.ctx,
 							options: yAxisOptions,
-							data: this.data,
+							chart: this,
 							id: yAxisOptions.id,
 						});
 
@@ -154,8 +159,7 @@
 				var scale = new ScaleClass({
 					ctx: this.chart.ctx,
 					options: this.options.scale,
-					data: this.data,
-					chart: this.chart,
+					chart: this,
 				});
 
 				this.scale = scale;
@@ -190,18 +194,22 @@
 				if (!dataset.type) {
 					dataset.type = this.config.type;
 				}
+
 				var type = dataset.type;
 				types.push(type);
+
 				if (dataset.controller) {
 					dataset.controller.updateIndex(datasetIndex);
 					return;
 				}
+
 				dataset.controller = new Chart.controllers[type](this, datasetIndex);
 
 				if (resetNewControllers) {
 					dataset.controller.reset();
 				}
 			}, this);
+
 			if (types.length > 1) {
 				for (var i = 1; i < types.length; i++) {
 					if (types[i] != types[i - 1]) {
@@ -219,6 +227,8 @@
 		},
 
 		update: function update(animationDuration, lazy) {
+			// In case the entire data object changed
+			this.tooltip._data = this.data;
 			Chart.layoutService.update(this, this.chart.width, this.chart.height);
 
 			// Make sure dataset controllers are updated and new controllers are reset
@@ -314,13 +324,25 @@
 			var eventPosition = helpers.getRelativePosition(e, this.chart);
 			var elementsArray = [];
 
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				if (helpers.isDatasetVisible(dataset)) {
-					helpers.each(dataset.metaData, function(element, index) {
-						if (element.inLabelRange(eventPosition.x, eventPosition.y)) {
-							elementsArray.push(element);
+			var found = (function(){
+				for (var i = 0; i < this.data.datasets.length; i++) {
+					if (helpers.isDatasetVisible(this.data.datasets[i])) {
+						for (var j = 0; j < this.data.datasets[i].metaData.length; j++) {
+							if (this.data.datasets[i].metaData[j].inRange(eventPosition.x, eventPosition.y)) {
+								return this.data.datasets[i].metaData[j];
+							}
 						}
-					}, this);
+					}
+				}
+			}).call(this);
+
+			if(!found){
+				return elementsArray;
+			}
+
+			helpers.each(this.data.datasets, function(dataset, dsIndex){
+				if(helpers.isDatasetVisible(dataset)){
+					elementsArray.push(dataset.metaData[found._index]);
 				}
 			}, this);
 
@@ -395,7 +417,8 @@
 
 			// Find Active Elements for hover and tooltips
 			if (e.type == 'mouseout') {
-				this.active = this.tooltipActive = [];
+				this.active = [];
+				this.tooltipActive = [];
 			} else {
 				this.active = function() {
 					switch (this.options.hover.mode) {
@@ -446,7 +469,8 @@
 					case 'label':
 					case 'dataset':
 						for (var i = 0; i < this.lastActive.length; i++) {
-							this.data.datasets[this.lastActive[i]._datasetIndex].controller.removeHoverStyle(this.lastActive[i], this.lastActive[i]._datasetIndex, this.lastActive[i]._index);
+							if (this.lastActive[i])
+						  		this.data.datasets[this.lastActive[i]._datasetIndex].controller.removeHoverStyle(this.lastActive[i], this.lastActive[i]._datasetIndex, this.lastActive[i]._index);
 						}
 						break;
 					default:
@@ -463,7 +487,8 @@
 					case 'label':
 					case 'dataset':
 						for (var j = 0; j < this.active.length; j++) {
-							this.data.datasets[this.active[j]._datasetIndex].controller.setHoverStyle(this.active[j]);
+							if (this.active[j])
+				  				this.data.datasets[this.active[j]._datasetIndex].controller.setHoverStyle(this.active[j]);
 						}
 						break;
 					default:
@@ -477,20 +502,8 @@
 
 				// The usual updates
 				this.tooltip.initialize();
-
-				// Active
-				if (this.tooltipActive.length) {
-					this.tooltip._model.opacity = 1;
-
-					helpers.extend(this.tooltip, {
-						_active: this.tooltipActive,
-					});
-
-					this.tooltip.update();
-				} else {
-					// Inactive
-					this.tooltip._model.opacity = 0;
-				}
+				this.tooltip._active = this.tooltipActive;
+				this.tooltip.update();
 			}
 
 			// Hover animations
@@ -512,16 +525,17 @@
 				}, this);
 
 				// If entering, leaving, or changing elements, animate the change via pivot
-				if ((!this.lastActive.length && this.active.length) ||
-					(this.lastActive.length && !this.active.length) ||
-					(this.lastActive.length && this.active.length && changed) ||
-					(!this.lastTooltipActive.length && this.tooltipActive.length) ||
-					(this.lastTooltipActive.length && !this.tooltipActive.length) ||
-					(this.lastTooltipActive.length && this.tooltipActive.length && changed)) {
+				if ((this.lastActive.length !== this.active.length) ||
+					(this.lastTooltipActive.length !== this.tooltipActive.length) ||
+					changed) {
 
 					this.stop();
 
-					// We only need to render at this point. Updating will cause scales to be recomputed generating flicker & using more 
+					if (this.options.tooltips.enabled || this.options.tooltips.custom) {
+						this.tooltip.update(true);
+					}
+
+					// We only need to render at this point. Updating will cause scales to be recomputed generating flicker & using more
 					// memory than necessary.
 					this.render(this.options.hover.animationDuration, true);
 				}

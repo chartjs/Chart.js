@@ -69,7 +69,48 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: {},
 			options: Chart.scaleService.getScaleDefaults('linear'), // use default config for scale
-			data: mockData,
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		expect(scale).not.toEqual(undefined); // must construct
+		expect(scale.min).toBe(undefined); // not yet set
+		expect(scale.max).toBe(undefined);
+
+		// Set arbitrary width and height for now
+		scale.width = 50;
+		scale.height = 400;
+
+		scale.buildTicks();
+		expect(scale.min).toBe(-100);
+		expect(scale.max).toBe(150);
+	});
+
+	it('Should correctly determine the max & min of string data values', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: ['10', '5', '0', '-5', '78', '-100']
+			}, {
+				yAxisID: 'second scale',
+				data: ['-1000', '1000'],
+			}, {
+				yAxisID: scaleID,
+				data: ['150']
+			}]
+		};
+
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var scale = new Constructor({
+			ctx: {},
+			options: Chart.scaleService.getScaleDefaults('linear'), // use default config for scale
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -107,7 +148,9 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: {},
 			options: Chart.scaleService.getScaleDefaults('linear'), // use default config for scale
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -152,7 +195,9 @@ describe('Linear Scale', function() {
 		var verticalScale = new Constructor({
 			ctx: {},
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -169,7 +214,9 @@ describe('Linear Scale', function() {
 		var horizontalScale = new Constructor({
 			ctx: {},
 			options: horizontalConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 
@@ -188,13 +235,19 @@ describe('Linear Scale', function() {
 		var mockData = {
 			datasets: [{
 				yAxisID: scaleID,
-				data: [10, 5, 0, -5, 78, -100]
+				data: [10, 5, 0, -5, 78, -100],
+				type: 'bar'
 			}, {
 				yAxisID: 'second scale',
 				data: [-1000, 1000],
 			}, {
 				yAxisID: scaleID,
-				data: [150, 0, 0, -100, -10, 9]
+				data: [150, 0, 0, -100, -10, 9],
+				type: 'bar'
+			}, {
+				yAxisID: scaleID,
+				data: [10, 10, 10, 10, 10, 10],
+				type: 'line'
 			}]
 		};
 
@@ -205,7 +258,9 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: {},
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -245,7 +300,9 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: {},
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -270,7 +327,9 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: {},
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -281,6 +340,39 @@ describe('Linear Scale', function() {
 		scale.buildTicks();
 		expect(scale.min).toBe(-1);
 		expect(scale.max).toBe(1);
+	});
+
+	it('Should use the suggestedMin and suggestedMax options', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [1, 1, 1, 2, 1, 0]
+			}]
+		};
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		config.ticks.suggestedMin = -10;
+		config.ticks.suggestedMax = 10;
+
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var scale = new Constructor({
+			ctx: {},
+			options: config,
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		// Set arbitrary width and height for now
+		scale.width = 50;
+		scale.height = 400;
+
+		scale.buildTicks();
+		expect(scale.min).toBe(-10);
+		expect(scale.max).toBe(10);
 	});
 
 	it('should forcibly include 0 in the range if the beginAtZero option is used', function() {
@@ -300,7 +392,9 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: {},
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -339,7 +433,9 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: {},
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -371,7 +467,9 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: {},
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -403,7 +501,9 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -428,7 +528,9 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -457,7 +559,9 @@ describe('Linear Scale', function() {
 		var scale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -484,7 +588,9 @@ describe('Linear Scale', function() {
 		var verticalScale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -510,7 +616,9 @@ describe('Linear Scale', function() {
 		var horizontalScale = new Constructor({
 			ctx: mockContext,
 			options: horizontalConfig,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID,
 		});
 
@@ -549,16 +657,18 @@ describe('Linear Scale', function() {
 		var verticalScale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
 		var minSize = verticalScale.update(100, 300);
 		expect(minSize).toEqual({
-			width: 30,
+			width: 40,
 			height: 300,
 		});
-		expect(verticalScale.width).toBe(30);
+		expect(verticalScale.width).toBe(40);
 		expect(verticalScale.height).toBe(300);
 		expect(verticalScale.paddingTop).toBe(6);
 		expect(verticalScale.paddingBottom).toBe(6);
@@ -585,7 +695,7 @@ describe('Linear Scale', function() {
 		config.scaleLabel.show = true;
 		minSize = verticalScale.update(100, 300);
 		expect(minSize).toEqual({
-			width: 48,
+			width: 58,
 			height: 300,
 		});
 	});
@@ -608,7 +718,9 @@ describe('Linear Scale', function() {
 		var horizontalScale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -668,7 +780,9 @@ describe('Linear Scale', function() {
 		var horizontalScale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -899,7 +1013,9 @@ describe('Linear Scale', function() {
 		var verticalScale = new Constructor({
 			ctx: mockContext,
 			options: config,
-			data: mockData,
+			chart: {
+				data: mockData
+			},
 			id: scaleID
 		});
 
@@ -1421,7 +1537,7 @@ describe('Linear Scale', function() {
 		}, {
 			"name": "rotate",
 			"args": [-1.5707963267948966]
-		},  {
+		}, {
 			"name": "setFillStyle",
 			"args": ["#666"]
 		}, {
@@ -1431,5 +1547,247 @@ describe('Linear Scale', function() {
 			"name": "restore",
 			"args": []
 		}]);
+	});
+
+	it("should not draw lines where the callback function returned null or undefined", function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				xAxisID: scaleID, // for the horizontal scale
+				yAxisID: scaleID,
+				data: [-5, 0, 2, -3, 5]
+			}]
+		};
+		var mockContext = window.createMockContext();
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		config.ticks.callback = function(tickValue, index) {
+			return index % 2 === 0 ? null : tickValue.toString();
+		};
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var verticalScale = new Constructor({
+			ctx: mockContext,
+			options: config,
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		var minSize = verticalScale.update(100, 300);
+		minSize = verticalScale.update(30, 300, {
+			left: 0,
+			right: 0,
+			top: 15,
+			bottom: 3
+		});
+		expect(minSize).toEqual({
+			width: 30,
+			height: 300,
+		});
+
+		verticalScale.left = 0;
+		verticalScale.right = minSize.width;
+		verticalScale.top = 0;
+		verticalScale.bottom = minSize.height;
+
+		var chartArea = {
+			top: 0,
+			bottom: minSize.height,
+			left: minSize.width,
+			right: minSize.width + 100
+		};
+
+		mockContext.resetCalls();
+		verticalScale.draw(chartArea);
+
+		expect(mockContext.getCalls()).toEqual([{
+			"name": "setFillStyle",
+			"args": ["#666"]
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0, 0, 0, 0.1)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [25, 30.2]
+		}, {
+			"name": "lineTo",
+			"args": [30, 30.2]
+		}, {
+			"name": "moveTo",
+			"args": [30, 30.2]
+		}, {
+			"name": "lineTo",
+			"args": [130, 30.2]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [20, 29.7]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["4", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [25, 89.6]
+		}, {
+			"name": "lineTo",
+			"args": [30, 89.6]
+		}, {
+			"name": "moveTo",
+			"args": [30, 89.6]
+		}, {
+			"name": "lineTo",
+			"args": [130, 89.6]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [20, 89.1]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["2", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0,0,0,0.25)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [25, 149]
+		}, {
+			"name": "lineTo",
+			"args": [30, 149]
+		}, {
+			"name": "moveTo",
+			"args": [30, 149]
+		}, {
+			"name": "lineTo",
+			"args": [130, 149]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [20, 148.5]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["0", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0, 0, 0, 0.1)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [25, 208.4]
+		}, {
+			"name": "lineTo",
+			"args": [30, 208.4]
+		}, {
+			"name": "moveTo",
+			"args": [30, 208.4]
+		}, {
+			"name": "lineTo",
+			"args": [130, 208.4]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [20, 207.9]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["-2", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [25, 267.8]
+		}, {
+			"name": "lineTo",
+			"args": [30, 267.8]
+		}, {
+			"name": "moveTo",
+			"args": [30, 267.8]
+		}, {
+			"name": "lineTo",
+			"args": [130, 267.8]
+		}, {
+			"name": "stroke",
+			"args": []
+		}, {
+			"name": "save",
+			"args": []
+		}, {
+			"name": "translate",
+			"args": [20, 267.3]
+		}, {
+			"name": "rotate",
+			"args": [-0]
+		}, {
+			"name": "fillText",
+			"args": ["-4", 0, 0]
+		}, {
+			"name": "restore",
+			"args": []
+		}])
 	});
 });
