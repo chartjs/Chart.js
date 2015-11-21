@@ -1,3 +1,6 @@
+# Base URL to work with github pages
+baseurl: /Chart.js
+
 # Collections of files
 collections:
   doc-parts:
