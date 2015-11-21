@@ -2,5 +2,7 @@
 collections:
   doc-parts:
     output: false
+  doc-parts-v2:
+    output: false
 
 markdown: redcarpet
