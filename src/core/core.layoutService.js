@@ -113,10 +113,11 @@
 				var isHorizontal = box.isHorizontal();
 
 				if (isHorizontal) {
-					minSize = box.update(chartWidth, horizontalBoxHeight);
+					minSize = box.update(box.options.fullWidth ? chartWidth : chartAreaWidth, horizontalBoxHeight);
 				} else {
 					minSize = box.update(verticalBoxWidth, chartAreaHeight);
 				}
+
 				minBoxSizes.push({
 					horizontal: isHorizontal,
 					minSize: minSize,
@@ -159,23 +160,25 @@
 			// Set the Left and Right margins for the horizontal boxes
 			helpers.each(topBoxes.concat(bottomBoxes), fitBox);
 
+			// Function to fit a box
 			function fitBox(box) {
-
 				var minBoxSize = helpers.findNextWhere(minBoxSizes, function(minBoxSize) {
 					return minBoxSize.box === box;
 				});
 
-				if (box.isHorizontal() && minBoxSize) {
-					var scaleMargin = {
-						left: totalLeftBoxesWidth,
-						right: totalRightBoxesWidth,
-						top: 0,
-						bottom: 0,
-					};
+				if (minBoxSize) {
+					if (box.isHorizontal()) {
+						var scaleMargin = {
+							left: totalLeftBoxesWidth,
+							right: totalRightBoxesWidth,
+							top: 0,
+							bottom: 0,
+						};
 
-					box.update(chartWidth, minBoxSize.minSize.height, scaleMargin);
-				} else {
-					box.update(minBoxSize.minSize.width, maxChartAreaHeight);
+						box.update(box.options.fullWidth ? chartWidth : maxChartAreaWidth, minBoxSize.minSize.height, scaleMargin);
+					} else {
+						box.update(minBoxSize.minSize.width, maxChartAreaHeight);
+					}
 				}
 			}
 
@@ -273,8 +276,8 @@
 
 			function placeBox(box) {
 				if (box.isHorizontal()) {
-					box.left = xPadding;
-					box.right = width - xPadding;
+					box.left = box.options.fullWidth ? xPadding : totalLeftBoxesWidth;
+					box.right = box.options.fullWidth ? width - xPadding : totalLeftBoxesWidth + maxChartAreaWidth;
 					box.top = top;
 					box.bottom = top + box.height;
 

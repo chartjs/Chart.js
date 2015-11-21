@@ -219,7 +219,7 @@
 			if (this.isHorizontal()) {
 
 				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
-				pixel = this.left + this.margins.left + (innerWidth / range * (rightValue - this.start));
+				pixel = this.left + (innerWidth / range * (rightValue - this.start));
 				return Math.round(pixel + this.paddingLeft);
 			} else {
 				var innerHeight = this.height - (this.paddingTop + this.paddingBottom);

@@ -9,6 +9,7 @@
 
 		display: true,
 		position: 'top',
+		fullWidth: true, // marks that this box should take the full width of the canvas (pushing down other boxes)
 		onClick: false, // a callback will override the default behavior of toggling the datasets
 
 		title: {
