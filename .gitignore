@@ -1,1 +1,3 @@
 _site
+node_modules
+coverage
