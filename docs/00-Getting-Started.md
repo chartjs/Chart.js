@@ -84,137 +84,105 @@ This concept was introduced in Chart.js 1.0 to keep configuration DRY, and allow
 
 Chart.js merges configurations and options in a few places with the global defaults using chart type defaults and scales defaults. This way you can be as specific as you want in your individual chart configs, or change the defaults for Chart.js as a whole.
 
-```javascript
-Chart.defaults.global = {
-    responsive: true,
-    responsiveAnimationDuration: 0,
-    maintainAspectRatio: true,
-    events: ["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"],
-    hover: {
-        onHover: null,
-        mode: 'single',
-        animationDuration: 400,
-    },
-    onClick: null,
-    defaultColor: 'rgba(0,0,0,0.1)',
+The global options are defined in `Chart.defaults.global`.
 
-    // Element defaults defined in element extensions
-    elements: {},
+Name | Type | Default | Description
+--- | --- | --- | ---
+responsive | Boolean | true | Resizes when the browser window does.
+responsiveAnimationDuration | Number | 0 | Duration in milliseconds it takes to animate to new size after a resize event.
+maintainAspectRatio | Boolean | true |
+maintainAspectRatio | Array[String] | `["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"]` |
+hover |-|-|-
+*hover*.onHover | Function | null |
+*hover*.mode | String | 'single' |
+*hover*.animationDuration | Number | 400 |
+onClick | Function | null |
+defaultColor | Color | 'rgba(0,0,0,0.1)' |
+legendCallback | Function | ` function (chart) { // the chart object to generate a legend from.  }` |
 
-    // Legend callback function. 
-    // @param {Chart} chart : the chart object to generate a legend for
-    legendCallback: function(chart) {
-        var text = [];
-        text.push('<ul class="' + chart.id + '-legend">');
-        for (var i = 0; i < chart.data.datasets.length; i++) {
-            text.push('<li><span style="background-color:' + chart.data.datasets[i].backgroundColor + '">');
-            if (chart.data.datasets[i].label) {
-                text.push(chart.data.datasets[i].label);
-            }
-            text.push('</span></li>');
-        }
-        text.push('</ul>');
+The global options for tooltips are defined in `Chart.defaults.global.tooltips`.
 
-        return text.join("");
-    },
+Name | Type | Default | Description
+--- |:---:| --- | ---
+enabled | Boolean | true |
+custom | | null |
+mode | String | 'single' |
+backgroundColor | Color | 'rgba(0,0,0,0.8)' |
+ | | |
+Label | | | There are three labels you can control. `title`, `body`, `footer` the star (\*) represents one of these three. *(i.e. titleFontFamily, footerSpacing)*
+\*FontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" |
+\*FontSize | Number | 12 |
+\*FontStyle | String | title - "bold", body - "normal", footer - "bold" |
+\*Spacing | Number | 2 |
+\*Color | Color | "#fff" |
+\*Align | String | "left" |
+titleMarginBottom | Number | 6 |
+footerMarginTop | Number | 6 |
+xPadding | Number | 6 |
+yPadding | Number | 6 |
+caretSize | Number | 5 |
+cornerRadius | Number | 6 |
+xOffset | Number | 10 |
+multiKeyBackground | Color | "#fff" |
+ | | |
+callbacks | - | - |  V2.0 introduces callback functions as a replacement for the template engine in v1. The tooltip has the following callbacks for providing text. For all functions, 'this' will be the tooltip object create from the Chart.Tooltip constructor
+**Callback Functions** | | | All functions are called with the same arguments
+xLabel | String or Array[Strings] | | This is the xDataValue for each item to be displayed in the tooltip
+yLabel | String or Array[Strings] | | This is the yDataValue for each item to be displayed in the tooltip
+index | Number | | Data index.
+data | Object | | Data object passed to chart.
+ | | |
+*callbacks*.beforeTitle | Function | none |
+*callbacks*.title | Function | `function(tooltipItems, data) { //Pick first xLabel }` |
+*callbacks*.afterTitle | Function | none |
+*callbacks*.beforeBody | Function | none |
+*callbacks*.beforeLabel | Function | none |
+*callbacks*.label | Function | `function(tooltipItem, data) { // Returns "datasetLabel: tooltipItem.yLabel" }` |
+*callbacks*.afterLabel | Function | none |
+*callbacks*.afterBody | Function | none |
+*callbacks*.beforeFooter | Function | none |
+*callbacks*.footer | Function | none |
+*callbacks*.afterFooter | Function | none |
 
-    animation: {
-        duration: 1000,
-        easing: "easeOutQuart",
-        onProgress: function() {},
-        onComplete: function() {},
-    },
+The global options for animations are defined in `Chart.defaults.global.animation`.
 
-    tooltips:{
-        enabled: true,
-        custom: null,
-        backgroundColor: "rgba(0,0,0,0.8)",
-        fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-        fontSize: 10,
-        fontStyle: "normal",
-        fontColor: "#fff",
-        titleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-        titleFontSize: 12,
-        titleFontStyle: "bold",
-        titleFontColor: "#fff",
-        yPadding: 6,
-        xPadding: 6,
-        caretSize: 8,
-        cornerRadius: 6,
-        xOffset: 10,
-        // V2.0 introduces callback functions as a replacement for the template engine in v1. The tooltip
-        // has the following callbacks for providing text. For all functions, 'this' will be the tooltip object
-        // create from the Chart.Tooltip constructor
-        //
-        // All functions are called with the same arguments
-        // - xLabel : string or array of strings. This is the xDataValue for each item to be displayed in the tooltip
-        // - yLabel : string or array of strings. This is the yDataValue for each item to be displayed in the tooltip
-        // - index : number. Data index
-        // - datasetIndex : number. Dataset index 
-        // - data : object. Data object passed to chart
-        callbacks: {
-            beforeTitle: helpers.noop,
-            title: function(xLabel, yLabel, index, datasetIndex, data) {
-                // If there are multiple items, use the xLabel of the 
-                return helpers.isArray(xLabel) ? xLabel[0] : xLabel;
-            },
-            afterTitle: helpers.noop,
+Name | Type | Default | Description
+--- |:---:| --- | ---
+duration | Number | 1000 | The number of milliseconds an animation takes.
+easing | String | "easyOutQuart" |
+onProgress | Function | none |
+onComplete | Function |none |
 
-            beforeBody: helpers.noop,
+The global options for elements are defined in `Chart.defaults.global.elements`.
 
-            beforeLabel: helpers.noop,
-            label: function(xLabel, yLabel, index, datasetIndex, data) {
-                return this._data.datasets[datasetIndex].label + ': ' + yLabel;
-            },
-            afterLabel: helpers.noop,
-
-            afterBody: helpers.noop,
-
-            beforeFooter: helpers.noop,
-            footer: helpers.noop,
-            afterFooter: helpers.noop,
-        },
-        multiKeyBackground: '#fff',
-    },
-
-    elements: {
-        arc: {   
-            backgroundColor: Chart.defaults.global.defaultColor,
-            borderColor: "#fff",
-            borderWidth: 2
-        },
-        line: {
-            tension: 0.4,
-            backgroundColor: Chart.defaults.global.defaultColor,
-            borderWidth: 3,
-            borderColor: Chart.defaults.global.defaultColor,
-            borderCapStyle: 'butt',
-            borderDash: [],
-            borderDashOffset: 0.0,
-            borderJoinStyle: 'miter',
-            fill: true, // do we fill in the area between the line and its base axis
-            skipNull: true,
-            drawNull: false,
-        },
-        point: {
-            radius: 3,
-            backgroundColor: Chart.defaults.global.defaultColor,
-            borderWidth: 1,
-            borderColor: Chart.defaults.global.defaultColor,
-            // Hover
-            hitRadius: 1,
-            hoverRadius: 4,
-            hoverBorderWidth: 1,
-        },
-        rectangle: {
-            backgroundColor: Chart.defaults.global.defaultColor,
-            borderWidth: 0,
-            borderColor: Chart.defaults.global.defaultColor,
-        }
-
-    }
-}
-```
+Name | Type | Default | Description
+--- |:---:| --- | ---
+arc | - | - | -
+*arc*.backgroundColor | Color | `Chart.defaults.global.defaultColor` |
+*arc*.borderColor | Color | "#fff" |
+*arc*.borderWidth | Number | 2 |
+line | - | - | -
+*line*.tension | Number | 0.4 |
+*line*.backgroundColor | Color | `Chart.defaults.global.defaultColor` |
+*line*.borderWidth | Number | 3 |
+*line*.borderColor | Color | `Chart.defaults.global.defaultColor` |
+*line*.borderCapStyle | String | 'butt' |
+*line*.borderDash | Array | [] |
+*line*.borderDashOffset | Number | 0.0 |
+*line*.borderJoinStyle | String | 'miter' |
+*line*.fill | Boolean | true |
+point | - | - | -
+*point*.radius | Number | 3 |
+*point*.backgroundColor | Color | `Chart.defaults.global.defaultColor` |
+*point*.borderWidth | Number | 1 |
+*point*.borderColor | Color | `Chart.defaults.global.defaultColor` |
+*point*.hitRadius | Number | 1 |
+*point*.hoverRadius | Number | 4 |
+*point*.hoverBorderWidth | Number | 1 |
+rectangle | - | - | -
+*rectangle*.backgroundColor | Color | `Chart.defaults.global.defaultColor` |
+*rectangle*.borderWidth | Number | 0 |
+*rectangle*.borderColor | Color | `Chart.defaults.global.defaultColor` |
 
 If for example, you wanted all charts created to be responsive, and resize when the browser window does, the following setting can be changed:
 
