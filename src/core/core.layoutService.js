@@ -54,6 +54,18 @@
 				return box.options.position == "chartArea";
 			});
 
+			function fullWidthSorter(a, b) {
+
+			}
+
+			// Ensure that full width boxes are at the very top / bottom
+			topBoxes.sort(function(a, b) {
+				return (b.options.fullWidth ? 1 : 0) - (a.options.fullWidth ? 1 : 0);
+			});
+			bottomBoxes.sort(function(a, b) {
+				return (a.options.fullWidth ? 1 : 0) - (b.options.fullWidth ? 1 : 0);
+			});
+
 			// Essentially we now have any number of boxes on each of the 4 sides.
 			// Our canvas looks like the following.
 			// The areas L1 and L2 are the left axes. R1 is the right axis, T1 is the top axis and 
