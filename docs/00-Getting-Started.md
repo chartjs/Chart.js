@@ -91,7 +91,7 @@ Name | Type | Default | Description
 responsive | Boolean | true | Resizes when the browser window does.
 responsiveAnimationDuration | Number | 0 | Duration in milliseconds it takes to animate to new size after a resize event.
 maintainAspectRatio | Boolean | true |
-maintainAspectRatio | Array[String] | `["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"]` |
+events | Array[String] | `["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"]` |
 hover |-|-|-
 *hover*.onHover | Function | null |
 *hover*.mode | String | 'single' |
