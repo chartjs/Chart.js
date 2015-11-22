@@ -420,30 +420,23 @@
 				this.active = [];
 				this.tooltipActive = [];
 			} else {
-				this.active = function() {
-					switch (this.options.hover.mode) {
+
+				var _this = this;
+				function getItemsForMode(mode) {
+					switch (mode) {
 						case 'single':
-							return this.getElementAtEvent(e);
+							return _this.getElementAtEvent(e);
 						case 'label':
-							return this.getElementsAtEvent(e);
+							return _this.getElementsAtEvent(e);
 						case 'dataset':
-							return this.getDatasetAtEvent(e);
+							return _this.getDatasetAtEvent(e);
 						default:
 							return e;
 					}
-				}.call(this);
-				this.tooltipActive = function() {
-					switch (this.options.tooltips.mode) {
-						case 'single':
-							return this.getElementAtEvent(e);
-						case 'label':
-							return this.getElementsAtEvent(e);
-						case 'dataset':
-							return this.getDatasetAtEvent(e);
-						default:
-							return e;
-					}
-				}.call(this);
+				}
+
+				this.active = getItemsForMode(this.options.hover.mode);
+				this.tooltipActive = getItemsForMode(this.options.tooltips.mode);
 			}
 
 			// On Hover hook
