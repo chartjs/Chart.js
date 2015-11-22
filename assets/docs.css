@@ -513,6 +513,38 @@ article ul li {
     font-size: 14px;
   }
 }
+
+/* Styles for the tables in v2 documentation */
+table {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #e1e1e1;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+td {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+thead {
+  background-color: 
+}
+
+tbody tr:nth-child(even) {
+  background-color: #ffffff
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #eeeeee;
+}
+
+/* Left navigation menu */
 aside {
   position: fixed;
   height: 100%;
