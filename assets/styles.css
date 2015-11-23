@@ -341,6 +341,9 @@ a {
 .btn.blue:hover {
   background-color: #4c86b9;
 }
+.documentation-button-container {
+  margin-top: 20px;
+}
 .badge {
   background-color: #ebcb8b;
   padding: 4px 8px;
