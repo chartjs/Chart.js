@@ -140,6 +140,9 @@
 			var titleFont = helpers.fontString(this.options.title.fontSize, this.options.title.fontStyle, this.options.title.fontFamily);
 			var labelFont = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
 
+			// Reset hit boxes
+			this.legendHitBoxes = [];
+
 			// Width
 			if (this.isHorizontal()) {
 				this.minSize.width = this.maxWidth; // fill all the width
@@ -164,7 +167,8 @@
 
 				// Labels
 
-				this.labelWidths = [0];
+				// Width of each line of legend boxes. Labels wrap onto multiple lines when there are too many to fit on one
+				this.lineWidths = [0];
 				var totalHeight = this.labels.length ? this.options.labels.fontSize + (this.options.labels.padding) : 0;
 
 				ctx.textAlign = "left";
@@ -173,11 +177,20 @@
 
 				helpers.each(this.labels, function(label, i) {
 					var width = this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + ctx.measureText(label).width;
-					if (this.labelWidths[this.labelWidths.length - 1] + width >= this.width) {
+					if (this.lineWidths[this.lineWidths.length - 1] + width >= this.width) {
 						totalHeight += this.options.labels.fontSize + (this.options.labels.padding);
-						this.labelWidths[this.labelWidths.length] = this.left;
+						this.lineWidths[this.lineWidths.length] = this.left;
 					}
-					this.labelWidths[this.labelWidths.length - 1] += width + this.options.labels.padding;
+
+					// Store the hitbox width and height here. Final position will be updated in `draw`
+					this.legendHitBoxes[i] = {
+						left: 0,
+						top: 0,
+						width: width,
+						height: this.options.labels.fontSize,
+					};
+
+					this.lineWidths[this.lineWidths.length - 1] += width + this.options.labels.padding;
 				}, this);
 
 				this.minSize.height += totalHeight;
@@ -199,16 +212,10 @@
 
 		// Actualy draw the legend on the canvas
 		draw: function() {
-			// Reset hit boxes
-			this.legendHitBoxes = [];
-
 			if (this.options.display) {
-
-				console.log(this.labelWidths);
-
 				var ctx = this.ctx;
 				var cursor = {
-					x: this.left + ((this.width - this.labelWidths[0]) / 2),
+					x: this.left + ((this.width - this.lineWidths[0]) / 2),
 					y: this.top,
 					line: 0,
 				};
@@ -239,7 +246,7 @@
 						if (cursor.x + width >= this.width) {
 							cursor.y += this.options.labels.fontSize + (this.options.labels.padding);
 							cursor.line++;
-							cursor.x = this.left + ((this.width - this.labelWidths[cursor.line]) / 2);
+							cursor.x = this.left + ((this.width - this.lineWidths[cursor.line]) / 2);
 						}
 
 						// Set the ctx for the box
@@ -260,13 +267,8 @@
 						ctx.fillRect(cursor.x, cursor.y, this.options.labels.boxWidth, this.options.labels.fontSize);
 						ctx.restore();
 
-						// Store the hitbox
-						this.legendHitBoxes[i] = {
-							left: cursor.x,
-							top: cursor.y,
-							right: cursor.x + this.options.labels.boxWidth,
-							bottom: cursor.y + this.options.labels.fontSize,
-						};
+						this.legendHitBoxes[i].left = cursor.x;
+						this.legendHitBoxes[i].top = cursor.y;
 
 						ctx.fillText(label, this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + cursor.x, cursor.y);
 						cursor.x += width + (this.options.labels.padding);
@@ -330,7 +332,8 @@
 					// See if we are touching one of the dataset boxes
 					for (var i = 0; i < this.legendHitBoxes.length; ++i) {
 						var hitBox = this.legendHitBoxes[i];
-						if (position.x >= hitBox.left && position.x <= hitBox.right && position.y >= hitBox.top && position.y <= hitBox.bottom) {
+
+						if (position.x >= hitBox.left && position.x <= hitBox.left + hitBox.width && position.y >= hitBox.top && position.y <= hitBox.top + hitBox.height) {
 							this.chart.data.datasets[i].hidden = !this.chart.data.datasets[i].hidden;
 
 							// We hid a dataset ... rerender the chart
