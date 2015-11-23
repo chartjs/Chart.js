@@ -1,66 +1,49 @@
 ---
 title: Getting started
-anchor: getting-started
+anchor: scales
 ---
 
 ###Scales
 
 Scales in v2.0 of Chart.js are significantly more powerful, but also different than those of v1.0.
 - Multiple x & y axes are now supported.
-- A built-in label auto-skip feature now detects would-be overlapping ticks and labels and removes every nth label to keep things displaying normally. 
+- A built-in label auto-skip feature now detects would-be overlapping ticks and labels and removes every nth label to keep things displaying normally.
 - Scale labels
 
 Every scale extends a core scale class with the following options:
 
-```javascript
-Chart.defaults.scale = {
-	display: true,
-
-	// grid line settings
-	gridLines: {
-		show: true,
-		color: "rgba(0, 0, 0, 0.1)",
-		lineWidth: 1,
-		drawOnChartArea: true,
-		drawTicks: true,
-		zeroLineWidth: 1,
-		zeroLineColor: "rgba(0,0,0,0.25)",
-		offsetGridLines: false,
-	},
-
-	// scale label
-	scaleLabel: {
-		fontColor: '#666',
-		fontFamily: 'Helvetica Neue',
-		fontSize: 12,
-		fontStyle: 'normal',
-
-		// actual label
-		labelString: '',
-
-		// display property
-		show: false,
-	},
-
-	// label settings
-	ticks: {
-		beginAtZero: false,
-		fontSize: 12,
-		fontStyle: "normal",
-		fontColor: "#666",
-		fontFamily: "Helvetica Neue",
-		maxTicksLimit: 11,
-		maxRotation: 90,
-		minRotation: 20,
-		mirror: false,
-		padding: 10,
-		reverse: false,
-		show: true,
-		template: "<%=value%>",
-		userCallback: false,
-	},
-};
-```
+Name | Type | Default | Description
+--- |:---:| --- | ---
+display | Boolean | true | If true, show the scale.
+gridLines | Array | |
+*gridLines*.show | Boolean | true | If true, show the grid lines.
+*gridLines*.color | Color | "rgba(0, 0, 0, 0.1)" | Color of the grid lines.
+*gridLines*.lineWidth | Number | 1 | Width of the grid lines in number of pixels.
+*gridLines*.drawOnChartArea | Boolean | true | If true draw lines on the chart area, if false...
+*gridLines*.drawTicks | Boolean | true |  If true draw ticks in the axis area, if false...
+*gridLines*.zeroLineWidth | Number | 1 | Width of the grid line for the first index (index 0).
+*gridLines*.zeroLineColor | Color | "rgba(0, 0, 0, 0.25)" | Color of the grid line for the first index (index 0).
+*gridLines*.offsetGridLines | Boolean | false | If true, offset labels from grid lines.
+scaleLabel | Array | | Label for the axis.
+*scaleLabel*.show | Boolean | false | Whether the label is displayed.
+*scaleLabel*.labelString | String | "" | The text for the label.
+*scaleLabel*.fontColor | Color | "#666" |
+*scaleLabel*.fontFamily| String | "Helvetica Neue" |
+*scaleLabel*.fontSize | Number | 12 |
+*scaleLabel*.fontStyle | String | "normal" |
+ticks | Array | | Settings for the ticks along the axis.
+*ticks*.beginAtZero | Boolean | false | If true the scale will be begin at 0, if false the ticks will begin at your smallest data value.
+*ticks*.fontSize | Number | 12 |
+*ticks*.fontStyle | String | "normal" |
+*ticks*.fontColor | Color | "#666" |
+*ticks*.fontFamily | String | "Helvetica Neue" |
+*ticks*.maxRotation | Number | 90 |
+*ticks*.minRotation | Number |  20 |
+*ticks*.mirror | Boolean | false |
+*ticks*.padding | Number | 10 |
+*ticks*.reverse | Boolean | false |
+*ticks*.show | Boolean | true |
+*ticks*.callback | Function | `function(value) { return '' + value; } ` |
 
 The `userCallback` method may be used for advanced tick customization. The following callback would display every label in scientific notation
 ```javascript
@@ -127,9 +110,9 @@ The time scale extends the core scale class with the following tick template:
 		// string/callback - By default, date objects are expected. You may use a pattern string from http://momentjs.com/docs/#/parsing/string-format/ to parse a time string format, or use a callback function that is passed the label, and must return a moment() instance.
 		format: false,
 		// string - By default, unit will automatically be detected.  Override with 'week', 'month', 'year', etc. (see supported time measurements)
-		unit: false, 
+		unit: false,
 		// string - By default, no rounding is applied.  To round, set to a supported time unit eg. 'week', 'month', 'year', etc.
-		round: false, 
+		round: false,
 		// string - By default, is set to the detected (or manually overridden) time unit's `display` property (see supported time measurements).  To override, use a pattern string from http://momentjs.com/docs/#/displaying/format/
 		displayFormat: false
 	},
@@ -209,7 +192,7 @@ The radial linear scale extends the core scale class with the following tick tem
 
 		//Number - The backdrop padding to the side of the label in pixels
 		backdropPaddingX: 2,
-		
+
 		//Number - Limit the maximum number of ticks
 		maxTicksLimit: 11,
 	},
