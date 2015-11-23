@@ -47,6 +47,9 @@
 		initialize: function(config) {
 			helpers.extend(this, config);
 			this.options = helpers.configMerge(Chart.defaults.legend, config.options);
+
+			// Contains hit boxes for each dataset (in dataset order)
+			this.legendHitBoxes = [];
 		},
 
 		// These methods are ordered by lifecyle. Utilities then follow.
@@ -196,6 +199,9 @@
 
 		// Actualy draw the legend on the canvas
 		draw: function() {
+			// Reset hit boxes
+			this.legendHitBoxes = [];
+
 			if (this.options.display) {
 
 				console.log(this.labelWidths);
@@ -254,6 +260,13 @@
 						ctx.fillRect(cursor.x, cursor.y, this.options.labels.boxWidth, this.options.labels.fontSize);
 						ctx.restore();
 
+						// Store the hitbox
+						this.legendHitBoxes[i] = {
+							left: cursor.x,
+							top: cursor.y,
+							right: cursor.x + this.options.labels.boxWidth,
+							bottom: cursor.y + this.options.labels.fontSize,
+						};
 
 						ctx.fillText(label, this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + cursor.x, cursor.y);
 						cursor.x += width + (this.options.labels.padding);
@@ -301,6 +314,30 @@
 
 					}
 
+				}
+			}
+		},
+
+		// Handle an event
+		handleEvent: function(e) {
+			var position = helpers.getRelativePosition(e, this.chart.chart);
+
+			if (position.x >= this.left && position.x <= this.right && position.y >= this.top && position.y <= this.bottom) {
+				// Legend is active
+				if (this.options.onClick) {
+					this.options.onClick.call(this, e);
+				} else {
+					// See if we are touching one of the dataset boxes
+					for (var i = 0; i < this.legendHitBoxes.length; ++i) {
+						var hitBox = this.legendHitBoxes[i];
+						if (position.x >= hitBox.left && position.x <= hitBox.right && position.y >= hitBox.top && position.y <= hitBox.bottom) {
+							this.chart.data.datasets[i].hidden = !this.chart.data.datasets[i].hidden;
+
+							// We hid a dataset ... rerender the chart
+							this.chart.render();
+							break;
+						}
+					}
 				}
 			}
 		}

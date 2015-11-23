@@ -448,6 +448,10 @@
 				if (this.options.onClick) {
 					this.options.onClick.call(this, e, this.active);
 				}
+
+				if (this.legend && this.legend.handleEvent) {
+					this.legend.handleEvent(e);
+				}
 			}
 
 			var dataset;
