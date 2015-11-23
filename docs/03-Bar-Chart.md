@@ -88,10 +88,10 @@ position | String | "bottom" | Position of the scale. Options are "top" and "bot
 id | String | "x-axis-1" | Id of the axis so that data can bind to it
 categoryPercentage | Number | 0.8 | Specific to bar chart.
 barPercentage | Number | 0.9 |
-gridLines | Array |  [See Scales](#scales). |
+gridLines | Array |  [See Scales](#scales) |
 *gridLines*.offsetGridLines | Boolean | true |
-scaleLabel | Array | [See Scales](#scales). |
-ticks | Array |  [See Scales](#scales). |
+scaleLabel | Array | [See Scales](#scales) |
+ticks | Array |  [See Scales](#scales) |
 | | |
 *scales*.yAxes | Array | `[{ type: "linear" }]` |
 *Options for xAxes* | | |
@@ -124,8 +124,8 @@ new Chart(ctx,{
 	}
 });
 // This will create a chart with all of the default options, merged from the global config,
-//  and the Bar chart defaults but this particular instance will have `stacked` set to true for
-// both x and y axes.
+//  and the Bar chart defaults but this particular instance will have `stacked` set to true
+// for both x and y axes.
 ```
 
 We can also change these defaults values for each Bar type that is created, this object is available at `Chart.defaults.Bar`.
