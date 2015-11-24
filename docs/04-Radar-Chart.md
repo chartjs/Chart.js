@@ -59,77 +59,35 @@ The label key on each dataset is optional, and can be used when generating a sca
 
 These are the customisation options specific to Radar charts. These options are merged with the [global chart configuration options](#getting-started-global-chart-configuration), and form the options of the chart.
 
+The default options for radar chart are defined in `Chart.defaults.radar`.
 
-```javascript
-{
-	//Boolean - Whether to show lines for each scale point
-	scaleShowLine : true,
-
-	//Boolean - Whether we show the angle lines out of the radar
-	angleShowLineOut : true,
-
-	//Boolean - Whether to show labels on the scale
-	scaleShowLabels : false,
-
-	// Boolean - Whether the scale should begin at zero
-	scaleBeginAtZero : true,
-
-	//String - Colour of the angle line
-	angleLineColor : "rgba(0,0,0,.1)",
-
-	//Number - Pixel width of the angle line
-	angleLineWidth : 1,
-
-	//String - Point label font declaration
-	pointLabelFontFamily : "'Arial'",
-
-	//String - Point label font weight
-	pointLabelFontStyle : "normal",
-
-	//Number - Point label font size in pixels
-	pointLabelFontSize : 10,
-
-	//String - Point label font colour
-	pointLabelFontColor : "#666",
-
-	//Boolean - Whether to show a dot for each point
-	pointDot : true,
-
-	//Number - Radius of each point dot in pixels
-	pointDotRadius : 3,
-
-	//Number - Pixel width of point dot stroke
-	pointDotStrokeWidth : 1,
-
-	//Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-	pointHitDetectionRadius : 20,
-
-	//Boolean - Whether to show a stroke for datasets
-	datasetStroke : true,
-
-	//Number - Pixel width of dataset stroke
-	datasetStrokeWidth : 2,
-
-	//Boolean - Whether to fill the dataset with a colour
-	datasetFill : true,
-	{% raw %}
-	//String - A legend template
-	legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-	{% endraw %}
-}
-```
-
+Name | Type | Default | Description
+--- | --- | --- | ---
+scale | Array | [See Scales](#scales) and [Defaults for Radial Linear Scale](#getting-started-radial-linear-scale) | Options for the one scale used on the chart. Use this to style the ticks, labels, and grid.
+*scale*.type | String |"radialLinear" | Contains options for the scale.
+*elements*.line | Array | | Options for all line elements used on the chart, as defined in the global elements, duplicated here to show Radar chart specific defaults.
+*elements.line*.tension | Number | 0 |
 
 You can override these for your `Chart` instance by passing a second argument into the `Radar` method as an object with the keys you want to override.
 
 For example, we could have a radar chart without a point for each on piece of data by doing the following:
 
 ```javascript
-new Chart(ctx).Radar(data, {
-	pointDot: false
+new Chart(ctx, {
+	type:"radar",
+	data: data,
+	options: {
+			scale: {
+				reverse: true,
+				ticks: {
+					beginAtZero: true
+				}
+			}
+	}
 });
 // This will create a chart with all of the default options, merged from the global config,
-//  and the Bar chart defaults but this particular instance will have `pointDot` set to false.
+//  and the Radar chart defaults but this particular instance's scale will be reversed as
+// well as the ticks beginning at zero.
 ```
 
 We can also change these defaults values for each Radar type that is created, this object is available at `Chart.defaults.Radar`.

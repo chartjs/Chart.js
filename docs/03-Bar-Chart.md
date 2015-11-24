@@ -80,7 +80,7 @@ Name | Type | Default | Description
 stacked | Boolean | false |
 *hover*.mode | String | "label" | Label's hover mode. "label" is used since the x axis displays data by the index in the dataset.
 scales | Array | - | -
-*scales*.xAxes | Array | | The bar chart officially supports only 1 x-axis but uses an array to keep the API consistent. Use a scatter chart if you need multiple x axes.
+*scales*.xAxes | Array |  | The bar chart officially supports only 1 x-axis but uses an array to keep the API consistent. Use a scatter chart if you need multiple x axes.
 *Options for xAxes* | | |
 type | String | "Category" |
 display | Boolean | true | If true, show the scale.
