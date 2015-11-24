@@ -233,6 +233,8 @@
 					// Labels
 					ctx.textAlign = "left";
 					ctx.textBaseline = 'top';
+					ctx.lineWidth = 0.5;
+					ctx.strokeStyle = this.options.labels.fontColor; // for strikethrough effect
 					ctx.fillStyle = this.options.labels.fontColor; // render in correct colour
 					ctx.font = labelFont;
 
@@ -242,7 +244,8 @@
 						var backgroundColor = dataset.backgroundColor;
 						var borderColor = dataset.borderColor;
 
-						var width = this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + ctx.measureText(label).width;
+						var textWidth = ctx.measureText(label).width;
+						var width = this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + textWidth;
 						if (cursor.x + width >= this.width) {
 							cursor.y += this.options.labels.fontSize + (this.options.labels.padding);
 							cursor.line++;
@@ -251,26 +254,42 @@
 
 						// Set the ctx for the box
 						ctx.save();
-						ctx.lineCap = dataset.borderCapStyle || Chart.defaults.global.elements.line.borderCapStyle;
-						if (ctx.setLineDash) {
-							// IE 9 and 10 do not support line dash
-							ctx.setLineDash(dataset.borderDash || Chart.defaults.global.elements.line.borderDash);
-						}
+						
 						ctx.strokeStyle = dataset.borderColor || Chart.defaults.global.defaultColor;
 						ctx.fillStyle = dataset.backgroundColor || Chart.defaults.global.defaultColor;
+						
 						if (dataset.metaDataset) {
+							// Is this a line-like element? If so, stroke the box
+							if (ctx.setLineDash) {
+								// IE 9 and 10 do not support line dash
+								ctx.setLineDash(dataset.borderDash || Chart.defaults.global.elements.line.borderDash);
+							}
+
+							ctx.lineCap = dataset.borderCapStyle || Chart.defaults.global.elements.line.borderCapStyle;
 							ctx.lineDashOffset = dataset.borderDashOffset || Chart.defaults.global.elements.line.borderDashOffset;
 							ctx.lineJoin = dataset.borderJoinStyle || Chart.defaults.global.elements.line.borderJoinStyle;
 							ctx.lineWidth = dataset.borderWidth || Chart.defaults.global.elements.line.borderWidth;
 						}
+						
+						// Draw the box
 						ctx.strokeRect(cursor.x, cursor.y, this.options.labels.boxWidth, this.options.labels.fontSize);
 						ctx.fillRect(cursor.x, cursor.y, this.options.labels.boxWidth, this.options.labels.fontSize);
+						
 						ctx.restore();
 
 						this.legendHitBoxes[i].left = cursor.x;
 						this.legendHitBoxes[i].top = cursor.y;
 
+						// Fill the actual label
 						ctx.fillText(label, this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + cursor.x, cursor.y);
+
+						if (dataset.hidden) {
+							// Strikethrough the text if hidden
+							ctx.moveTo(this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + cursor.x, cursor.y + (this.options.labels.fontSize / 2));
+							ctx.lineTo(this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + cursor.x + textWidth, cursor.y + (this.options.labels.fontSize / 2));
+							ctx.stroke();
+						}
+
 						cursor.x += width + (this.options.labels.padding);
 					}, this);
 
