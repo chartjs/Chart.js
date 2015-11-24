@@ -741,12 +741,12 @@
 			var ctx = chart.ctx;
 			var width = chart.canvas.width;
 			var height = chart.canvas.height;
-			chart.currentDevicePixelRatio = window.devicePixelRatio || 1;
+			var pixelRatio = chart.currentDevicePixelRatio = window.devicePixelRatio || 1;
 
-			if (window.devicePixelRatio !== 1) {
-				ctx.canvas.height = height * window.devicePixelRatio;
-				ctx.canvas.width = width * window.devicePixelRatio;
-				ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+			if (pixelRatio !== 1) {
+				ctx.canvas.height = height * pixelRatio;
+				ctx.canvas.width = width * pixelRatio;
+				ctx.scale(pixelRatio, pixelRatio);
 
 				ctx.canvas.style.width = width + 'px';
 				ctx.canvas.style.height = height + 'px';
@@ -754,7 +754,7 @@
 				// Store the device pixel ratio so that we can go backwards in `destroy`.
 				// The devicePixelRatio changes with zoom, so there are no guarantees that it is the same
 				// when destroy is called
-				chart.originalDevicePixelRatio = chart.originalDevicePixelRatio || window.devicePixelRatio;
+				chart.originalDevicePixelRatio = chart.originalDevicePixelRatio || pixelRatio;
 			}
 		},
 		//-- Canvas methods
