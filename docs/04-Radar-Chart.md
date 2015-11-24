@@ -63,10 +63,10 @@ The default options for radar chart are defined in `Chart.defaults.radar`.
 
 Name | Type | Default | Description
 --- | --- | --- | ---
-scale | Array | [See Scales](#scales) and [Defaults for Radial Linear Scale](#getting-started-radial-linear-scale) | Options for the one scale used on the chart. Use this to style the ticks, labels, and grid.
-*scale*.type | String |"radialLinear" | Contains options for the scale.
+scale | Array | [See Scales](#scales) and [Defaults for Radial Linear Scale](#scales-radial-linear-scale) | Options for the one scale used on the chart. Use this to style the ticks, labels, and grid lines.
+*scale*.type | String |"radialLinear" | As defined in ["Radial Linear"](#scales-radial-linear-scale).
 *elements*.line | Array | | Options for all line elements used on the chart, as defined in the global elements, duplicated here to show Radar chart specific defaults.
-*elements.line*.tension | Number | 0 |
+*elements.line*.tension | Number | 0 | Tension exhibited by lines when calculating splineCurve.
 
 You can override these for your `Chart` instance by passing a second argument into the `Radar` method as an object with the keys you want to override.
 

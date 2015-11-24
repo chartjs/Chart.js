@@ -82,23 +82,23 @@ stacked | Boolean | false |
 scales | Array | - | -
 *scales*.xAxes | Array |  | The bar chart officially supports only 1 x-axis but uses an array to keep the API consistent. Use a scatter chart if you need multiple x axes.
 *Options for xAxes* | | |
-type | String | "Category" |
+type | String | "Category" | As defined in [Scales](#scales-category-scale).
 display | Boolean | true | If true, show the scale.
 position | String | "bottom" | Position of the scale. Options are "top" and "bottom" for dataset scales.
 id | String | "x-axis-1" | Id of the axis so that data can bind to it
-categoryPercentage | Number | 0.8 | Specific to bar chart.
-barPercentage | Number | 0.9 |
+categoryPercentage | Number | 0.8 | Percent (0-1) of the available width (the space between the gridlines for small datasets) for each data-point to use for the bars.
+barPercentage | Number | 0.9 | Percent (0-1) of the available width each bar should be within the category percentage. 1.0 will take the whole category width and put the bars right next to each other.
 gridLines | Array |  [See Scales](#scales) |
-*gridLines*.offsetGridLines | Boolean | true |
+*gridLines*.offsetGridLines | Boolean | true | If true, the bars for a particular data point fall between the grid lines. If false, the grid line will go right down the middle of the bars.
 scaleLabel | Array | [See Scales](#scales) |
 ticks | Array |  [See Scales](#scales) |
 | | |
 *scales*.yAxes | Array | `[{ type: "linear" }]` |
 *Options for xAxes* | | |
-type | String | "linear" |
+type | String | "linear" | As defined in [Scales](#scales-linear-scale).
 display | Boolean | true | If true, show the scale.
 position | String | "left" | Position of the scale. Options are "left" and "right" for dataset scales.
-id | String | "y-axis-1" | Id of the axis so that data can bind to it
+id | String | "y-axis-1" | Id of the axis so that data can bind to it.
 gridLines | Array |  [See Scales](#scales) |
 scaleLabel | Array | [See Scales](#scales) |
 ticks | Array |  [See Scales](#scales) |
