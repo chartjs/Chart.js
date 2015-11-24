@@ -14,39 +14,39 @@ Every scale extends a core scale class with the following options:
 
 Name | Type | Default | Description
 --- |:---:| --- | ---
-display | Boolean | true | If true, show the scale.
-reverse | Boolean | false | If true, reverses the scales.
-gridLines | Array | |
+type | String | Chart specific. | Type of scale being employed. Custom scales can be created. Options: ["category"](#scales-category-scale), ["linear"](#scales-linear-scale), ["logarithmic"](#scales-logarithmic-scale), ["time"](#scales-time-scale), ["radialLinear"](#scales-radial-linear-scale)
+display | Boolean | true | If true, show the scale including gridlines, ticks, and labels. Overrides *gridLines.show*, *scaleLabel.show*, and *ticks.show*.
+**gridLines** | Array | - | Options for the grid lines that run perpendicular to the axis.
 *gridLines*.show | Boolean | true | If true, show the grid lines.
 *gridLines*.color | Color | "rgba(0, 0, 0, 0.1)" | Color of the grid lines.
 *gridLines*.lineWidth | Number | 1 | Width of the grid lines in number of pixels.
-*gridLines*.drawOnChartArea | Boolean | true | If true draw lines on the chart area, if false...
-*gridLines*.drawTicks | Boolean | true |  If true draw ticks in the axis area, if false...
+*gridLines*.drawOnChartArea | Boolean | true | If true, draw lines on the chart area inside the axis lines.
+*gridLines*.drawTicks | Boolean | true |  If true, draw lines beside the ticks in the axis area beside the chart.
 *gridLines*.zeroLineWidth | Number | 1 | Width of the grid line for the first index (index 0).
 *gridLines*.zeroLineColor | Color | "rgba(0, 0, 0, 0.25)" | Color of the grid line for the first index (index 0).
 *gridLines*.offsetGridLines | Boolean | false | If true, offset labels from grid lines.
-scaleLabel | Array | | Label for the axis.
-*scaleLabel*.show | Boolean | false | Whether the label is displayed.
-*scaleLabel*.labelString | String | "" | The text for the label.
-*scaleLabel*.fontColor | Color | "#666" |
-*scaleLabel*.fontFamily| String | "Helvetica Neue" |
-*scaleLabel*.fontSize | Number | 12 |
-*scaleLabel*.fontStyle | String | "normal" |
-ticks | Array | | Settings for the ticks along the axis.
+**scaleLabel** | Array | | Label for the entire axis.
+*scaleLabel*.show | Boolean | false | If true, show the scale label.
+*scaleLabel*.labelString | String | "" | The text for the label. (i.e. "# of People", "Response Choices")
+*scaleLabel*.fontColor | Color | "#666" | Font color for the scale label.
+*scaleLabel*.fontFamily| String | "Helvetica Neue" | Font family for the scale label, follows CSS font-family options.
+*scaleLabel*.fontSize | Number | 12 | Font size for the scale label.
+*scaleLabel*.fontStyle | String | "normal" | Font style for the scale label, follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit).
+**ticks** | Array | | Settings for the labels that run along the axis.
 *ticks*.beginAtZero | Boolean | false | If true the scale will be begin at 0, if false the ticks will begin at your smallest data value.
-*ticks*.fontSize | Number | 12 |
-*ticks*.fontStyle | String | "normal" |
-*ticks*.fontColor | Color | "#666" |
-*ticks*.fontFamily | String | "Helvetica Neue" |
-*ticks*.maxRotation | Number | 90 |
-*ticks*.minRotation | Number |  20 |
-*ticks*.mirror | Boolean | false |
-*ticks*.padding | Number | 10 |
-*ticks*.reverse | Boolean | false |
-*ticks*.show | Boolean | true |
+*ticks*.fontColor | Color | "#666" | Font color for the tick labels.
+*ticks*.fontFamily | String | "Helvetica Neue" | Font family for the tick labels, follows CSS font-family options.
+*ticks*.fontSize | Number | 12 | Font size for the tick labels.
+*ticks*.fontStyle | String | "normal" | Font style for the tick labels, follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit).
+*ticks*.maxRotation | Number | 90 | Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. *Note: Only applicable to horizontal scales.*
+*ticks*.minRotation | Number |  20 | *currently not-implemented* Minimum rotation for tick labels when condensing is necessary.  *Note: Only applicable to horizontal scales.*
+*ticks*.padding | Number | 10 | Padding between the tick label and the axis. *Note: Only applicable to horizontal scales.*
+*ticks*.mirror | Boolean | false | Flips tick labels around axis, displaying the labels inside the chart instead of outside. *Note: Only applicable to vertical scales.*
+*ticks*.reverse | Boolean | false | Reverses order of tick labels.
+*ticks*.show | Boolean | true | If true, show the ticks.
 *ticks*.suggestedMin | Number | - | User defined minimum number for the scale, overrides minimum value *except for if* it is higher than the minimum value.
 *ticks*.suggestedMax | Number | - | User defined maximum number for the scale, overrides maximum value *except for if* it is lower than the maximum value.
-*ticks*.callback | Function | `function(value) { return '' + value; } ` |
+*ticks*.callback | Function | `function(value) { return '' + value; } ` | Returns the string representation of the tick value as it should be displayed on the chart.
 
 The `userCallback` method may be used for advanced tick customization. The following callback would display every label in scientific notation
 ```javascript

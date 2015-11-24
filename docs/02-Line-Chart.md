@@ -122,12 +122,12 @@ stacked | Boolean | false | If true, lines stack on top of each other along the 
 scales | - | - | -
 *scales*.xAxes | Array | `[{type:"category","id":"x-axis-1"}]` | Defines all of the x axes used in the chart. See the [scale documentation](#getting-started-scales) for details on the available options.
 *Options for xAxes* | | |
-type | String | "category" | Type of scale. Built in types are 'category' and 'linear'.
+type | String | "category" | As defined in ["Category"](#scales-category-scale).
 id | String | "x-axis-1" | Id of the axis so that data can bind to it.
  | | |
  *scales*.yAxes | Array | `[{type:"linear","id":"y-axis-1"}]` | Defines all of the x axes used in the chart. See the [scale documentation](#getting-started-scales) for details on the available options.
  *Options for yAxes* | | |
- type | String | "linear" | Type of scale. Built in types are 'category' and 'linear'.
+ type | String | "linear" | As defined in ["Linear"](#scales-linear-scale).
  id | String | "y-axis-1" | Id of the axis so that data can bind to it.
 
 You can override these for your `Chart` instance by passing a member `options` into the `Line` method.
