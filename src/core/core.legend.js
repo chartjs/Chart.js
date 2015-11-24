@@ -285,6 +285,7 @@
 
 						if (dataset.hidden) {
 							// Strikethrough the text if hidden
+							ctx.beginPath();
 							ctx.moveTo(this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + cursor.x, cursor.y + (this.options.labels.fontSize / 2));
 							ctx.lineTo(this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + cursor.x + textWidth, cursor.y + (this.options.labels.fontSize / 2));
 							ctx.stroke();
