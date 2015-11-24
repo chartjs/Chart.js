@@ -226,8 +226,13 @@
 				if (this.isHorizontal()) {
 
 					// Title Spacing if on top
-					if (this.options.title.display && this.options.title.position == 'top') {
-						cursor.y += this.options.title.fontSize + (this.options.title.padding * 2);
+					if (this.options.title.display) {
+						if (this.options.title.position === 'top') {
+							cursor.y += this.options.title.fontSize + (this.options.title.padding * 2);
+						} else {
+							// bottom
+							cursor.y += this.options.labels.padding;
+						}
 					}
 
 					// Labels
@@ -246,6 +251,7 @@
 
 						var textWidth = ctx.measureText(label).width;
 						var width = this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + textWidth;
+						
 						if (cursor.x + width >= this.width) {
 							cursor.y += this.options.labels.fontSize + (this.options.labels.padding);
 							cursor.line++;
@@ -295,7 +301,7 @@
 					}, this);
 
 					// Title Spacing if on bottom
-					if (this.options.title.display && this.options.title.position == 'bottom') {
+					if (this.options.title.display && this.options.title.position === 'bottom') {
 						cursor.y += this.options.title.fontSize + (this.options.title.padding * 2);
 					}
 
@@ -308,7 +314,7 @@
 						ctx.font = helpers.fontString(this.options.title.fontSize, this.options.title.fontStyle, this.options.title.fontFamily);
 
 						var titleX = this.left + ((this.right - this.left) / 2); // midpoint of the width
-						var titleY = this.options.position == 'bottom' ? this.bottom - (this.options.title.fontSize / 2) - this.options.title.padding : this.top + (this.options.title.fontSize / 2) + this.options.title.padding;
+						var titleY = this.options.title.position == 'bottom' ? this.bottom - (this.options.title.fontSize / 2) - this.options.title.padding : this.top + (this.options.title.fontSize / 2) + this.options.title.padding;
 
 						ctx.fillText(this.options.title.text, titleX, titleY);
 					}
