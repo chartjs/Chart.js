@@ -36,7 +36,7 @@ npm install Chart.js --save
 
 https://cdnjs.com/libraries/chart.js
 
-###Creating a chart
+###Creating a Chart
 
 To create a chart, we need to instantiate the `Chart` class. To do this, we need to pass in the node, jQuery instance, or 2d context of the canvas of where we want to draw the chart. Here's an example.
 
@@ -53,30 +53,35 @@ var ctx = $("#myChart");
 
 Once you have the element or context, you're ready to instantiate a pre-defined chart-type or create your own!
 
-The following example instantiates a the pre-defined Polar Area chart type with a config object of data and options.
-```javascript
-var myNewChart = Chart.PolarArea(ctx, {
-    data: data,
-    options: options
-});
-```
+The following example instantiates a bar chart showing the number of votes for different colors and the y-axis starting at 0.
 
-To create a scatter chart, which is a special configuration of a line chart, we use the following.
-```javascript
-var myScatterChart = Chart.Scatter(ctx, {
-    data: data,
-    options: options
-});
-```
-
-Alternatively, we can use the more advanced API to create simple or advanced chart types. In the example below, we are creating a line chart.
-```javascript
+```html
+<canvas id="myChart" width="400" height="400"></canvas>
+<script>
+var ctx = document.getElementById("myChart");
 var myChart = new Chart(ctx, {
-    type: 'line', // built in types are 'line', 'bar', 'radar', 'polarArea', 'doughnut', 'scatter'
-    data: data,
-    options: options
+		type: 'bar',
+		data: {
+			labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+			datasets: [{
+					label: '# of Votes',
+					data: [12, 19, 3, 5, 2, 3]
+			}]
+		},
+		options:{
+			scales:{
+				yAxes:[{
+						ticks:{
+							beginAtZero:true
+						}
+					}]
+			}
+		}
 });
+</script>
 ```
+
+It's that easy to get started using Chart.js! From here you can explore the many options that can help you customise your charts with scales, tooltips, labels, colors, custom actions, and much more.
 
 ###Global chart configuration
 
