@@ -44,6 +44,8 @@ ticks | Array | | Settings for the ticks along the axis.
 *ticks*.padding | Number | 10 |
 *ticks*.reverse | Boolean | false |
 *ticks*.show | Boolean | true |
+*ticks*.suggestedMin | Number | - | User defined minimum number for the scale, overrides minimum value *except for if* it is higher than the minimum value.
+*ticks*.suggestedMax | Number | - | User defined maximum number for the scale, overrides maximum value *except for if* it is lower than the maximum value.
 *ticks*.callback | Function | `function(value) { return '' + value; } ` |
 
 The `userCallback` method may be used for advanced tick customization. The following callback would display every label in scientific notation
