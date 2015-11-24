@@ -337,7 +337,8 @@
 							this.chart.data.datasets[i].hidden = !this.chart.data.datasets[i].hidden;
 
 							// We hid a dataset ... rerender the chart
-							this.chart.render();
+							//this.chart.render();
+							this.chart.update();
 							break;
 						}
 					}
