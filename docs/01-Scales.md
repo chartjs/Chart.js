@@ -15,6 +15,7 @@ Every scale extends a core scale class with the following options:
 Name | Type | Default | Description
 --- |:---:| --- | ---
 display | Boolean | true | If true, show the scale.
+reverse | Boolean | false | If true, reverses the scales.
 gridLines | Array | |
 *gridLines*.show | Boolean | true | If true, show the grid lines.
 *gridLines*.color | Color | "rgba(0, 0, 0, 0.1)" | Color of the grid lines.

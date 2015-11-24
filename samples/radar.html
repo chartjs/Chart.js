@@ -19,7 +19,7 @@
     <div>
         <h3>Legend</h3>
         <div id="legendContainer">
-            
+
         </div>
     </div>
     <script>
@@ -57,8 +57,10 @@
         },
         options: {
             scale: {
-                beginAtZero: true,
-                reverse: false
+              reverse: true,
+              ticks: {
+                beginAtZero: true
+              }
             }
         }
     };
