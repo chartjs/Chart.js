@@ -15,9 +15,9 @@ Every scale extends a core scale class with the following options:
 Name | Type | Default | Description
 --- |:---:| --- | ---
 type | String | Chart specific. | Type of scale being employed. Custom scales can be created. Options: ["category"](#scales-category-scale), ["linear"](#scales-linear-scale), ["logarithmic"](#scales-logarithmic-scale), ["time"](#scales-time-scale), ["radialLinear"](#scales-radial-linear-scale)
-display | Boolean | true | If true, show the scale including gridlines, ticks, and labels. Overrides *gridLines.show*, *scaleLabel.show*, and *ticks.show*.
+display | Boolean | true | If true, show the scale including gridlines, ticks, and labels. Overrides *gridLines.display*, *scaleLabel.display*, and *ticks.display*.
 **gridLines** | Array | - | Options for the grid lines that run perpendicular to the axis.
-*gridLines*.show | Boolean | true | If true, show the grid lines.
+*gridLines*.display | Boolean | true | If true, show the grid lines.
 *gridLines*.color | Color | "rgba(0, 0, 0, 0.1)" | Color of the grid lines.
 *gridLines*.lineWidth | Number | 1 | Width of the grid lines in number of pixels.
 *gridLines*.drawOnChartArea | Boolean | true | If true, draw lines on the chart area inside the axis lines.
@@ -26,7 +26,7 @@ display | Boolean | true | If true, show the scale including gridlines, ticks, a
 *gridLines*.zeroLineColor | Color | "rgba(0, 0, 0, 0.25)" | Color of the grid line for the first index (index 0).
 *gridLines*.offsetGridLines | Boolean | false | If true, offset labels from grid lines.
 **scaleLabel** | Array | | Label for the entire axis.
-*scaleLabel*.show | Boolean | false | If true, show the scale label.
+*scaleLabel*.display | Boolean | false | If true, show the scale label.
 *scaleLabel*.labelString | String | "" | The text for the label. (i.e. "# of People", "Response Choices")
 *scaleLabel*.fontColor | Color | "#666" | Font color for the scale label.
 *scaleLabel*.fontFamily| String | "Helvetica Neue" | Font family for the scale label, follows CSS font-family options.
@@ -43,7 +43,7 @@ display | Boolean | true | If true, show the scale including gridlines, ticks, a
 *ticks*.padding | Number | 10 | Padding between the tick label and the axis. *Note: Only applicable to horizontal scales.*
 *ticks*.mirror | Boolean | false | Flips tick labels around axis, displaying the labels inside the chart instead of outside. *Note: Only applicable to vertical scales.*
 *ticks*.reverse | Boolean | false | Reverses order of tick labels.
-*ticks*.show | Boolean | true | If true, show the ticks.
+*ticks*.display | Boolean | true | If true, show the ticks.
 *ticks*.suggestedMin | Number | - | User defined minimum number for the scale, overrides minimum value *except for if* it is higher than the minimum value.
 *ticks*.suggestedMax | Number | - | User defined maximum number for the scale, overrides maximum value *except for if* it is lower than the maximum value.
 *ticks*.callback | Function | `function(value) { return '' + value; } ` | Returns the string representation of the tick value as it should be displayed on the chart.
@@ -177,7 +177,7 @@ The radial linear scale extends the core scale class with the following tick tem
 	position: "chartArea",
 
 	angleLines: {
-		show: true,
+		display: true,
 		color: "rgba(0, 0, 0, 0.1)",
 		lineWidth: 1
 	},
