@@ -14,7 +14,7 @@
 		position: "chartArea",
 
 		angleLines: {
-			show: true,
+			display: true,
 			color: "rgba(0, 0, 0, 0.1)",
 			lineWidth: 1
 		},
@@ -304,7 +304,7 @@
 						var yHeight = this.yCenter - yCenterOffset;
 
 						// Draw circular lines around the scale
-						if (this.options.gridLines.show) {
+						if (this.options.gridLines.display) {
 							ctx.strokeStyle = this.options.gridLines.color;
 							ctx.lineWidth = this.options.gridLines.lineWidth;
 
@@ -330,7 +330,7 @@
 							}
 						}
 
-						if (this.options.ticks.show) {
+						if (this.options.ticks.display) {
 							ctx.font = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
 
 							if (this.options.ticks.showLabelBackdrop) {
@@ -357,7 +357,7 @@
 					ctx.strokeStyle = this.options.angleLines.color;
 
 					for (var i = this.getValueCount() - 1; i >= 0; i--) {
-						if (this.options.angleLines.show) {
+						if (this.options.angleLines.display) {
 							var outerPosition = this.getPointPosition(i, this.getDistanceFromCenterForValue(this.options.reverse ? this.min : this.max));
 							ctx.beginPath();
 							ctx.moveTo(this.xCenter, this.yCenter);

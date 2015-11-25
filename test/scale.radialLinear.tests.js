@@ -10,7 +10,7 @@ describe('Test the radial linear scale', function() {
 		var defaultConfig = Chart.scaleService.getScaleDefaults('radialLinear');
 		expect(defaultConfig).toEqual({
 			angleLines: {
-				show: true,
+				display: true,
 				color: "rgba(0, 0, 0, 0.1)",
 				lineWidth: 1
 			},
@@ -22,7 +22,7 @@ describe('Test the radial linear scale', function() {
 				drawTicks: true,
 				lineWidth: 1,
 				offsetGridLines: false,
-				show: true,
+				display: true,
 				zeroLineColor: "rgba(0,0,0,0.25)",
 				zeroLineWidth: 1,
 			},
@@ -40,7 +40,7 @@ describe('Test the radial linear scale', function() {
 				fontSize: 12,
 				fontStyle: 'normal',
 				labelString: '',
-				show: false,
+				display: false,
 			},
 			ticks: {
 				backdropColor: "rgba(255,255,255,0.75)",
@@ -57,7 +57,7 @@ describe('Test the radial linear scale', function() {
 				padding: 10,
 				reverse: false,
 				showLabelBackdrop: true,
-				show: true,
+				display: true,
 				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
 
 			},
