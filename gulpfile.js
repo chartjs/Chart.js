@@ -27,7 +27,6 @@ var srcFiles = [
 	'./node_modules/color/dist/color.min.js',
 	'./src/core/core.js',
 	'./src/core/core.helpers.js',
-	'./src/core/core.chart.js',
 	'./src/core/core.element.js',
 	'./src/core/**',
 	'./src/controllers/**',
