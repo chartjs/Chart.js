@@ -1,10 +1,7 @@
 
 .DS_Store
 
-node_modules/*
-custom/*
-
-docs/index.md
+node_modules/
 
 bower_components/
 
