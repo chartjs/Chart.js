@@ -333,7 +333,7 @@
 
 			var d01 = Math.sqrt(Math.pow(current.x - previous.x, 2) + Math.pow(current.y - previous.y, 2));
 			var d12 = Math.sqrt(Math.pow(next.x - current.x, 2) + Math.pow(next.y - current.y, 2));
-			
+
 			var s01 = d01 / (d01 + d12);
 			var s12 = d12 / (d01 + d12);
 
@@ -624,7 +624,7 @@
 				canvas = evt.currentTarget || evt.srcElement,
 				boundingRect = canvas.getBoundingClientRect();
 
-			if (e.touches) {
+			if (e.touches && e.touches.length > 0) {
 				mouseX = e.touches[0].clientX;
 				mouseY = e.touches[0].clientY;
 
@@ -634,7 +634,7 @@
 			}
 
 			// Scale mouse coordinates into canvas coordinates
-			// by following the pattern laid out by 'jerryj' in the comments of 
+			// by following the pattern laid out by 'jerryj' in the comments of
 			// http://www.html5canvastutorials.com/advanced/html5-canvas-mouse-coordinates/
 
 			// We divide by the current device pixel ratio, because the canvas is scaled up by that amount in each direction. However
