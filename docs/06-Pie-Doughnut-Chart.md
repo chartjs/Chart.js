@@ -42,27 +42,26 @@ var myDoughnutChart = new Chart(ctx[1], {
 
 ```javascript
 var data = {
-	datasets: [
-		{
-			data: [300, 50, 100],
-			backgroundColors: [
-				"#F7464A",
-				"#46BFBD",
-				"#FDB45C"
-			],
-			hoverBackgroundColor:[
-				 "#FF5A5E",
-				  "#5AD3D1",
-					"#FFC870"
-			]
-		},
-		labels: [
-			"Red",
-			"Green",
-			"Yellow"
-		]
-	]
-}
+    labels: [
+        "Red",
+        "Green",
+        "Yellow"
+    ],
+    datasets: [
+        {
+            data: [300, 50, 100],
+            backgroundColor: [
+                "#F7464A",
+                "#46BFBD",
+                "#FDB45C"
+            ],
+            hoverBackgroundColor: [
+                "#FF5A5E",
+                "#5AD3D1",
+                "#FFC870"
+            ]
+        }]
+};
 ```
 
 For a pie chart, you must pass in an array of objects with a value and an optional color property. The value attribute should be a number, Chart.js will total all of the numbers and calculate the relative proportion of each. The color attribute should be a string. Similar to CSS, for this string you can use HEX notation, RGB, RGBA or HSL.
