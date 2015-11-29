@@ -1725,7 +1725,7 @@
 
 		// grid line settings
 		gridLines: {
-			show: true,
+			display: true,
 			color: "rgba(0, 0, 0, 0.1)",
 			lineWidth: 1,
 			drawOnChartArea: true,
@@ -1746,7 +1746,7 @@
 			labelString: '',
 
 			// display property
-			show: false,
+			display: false,
 		},
 
 		// label settings
@@ -1761,7 +1761,7 @@
 			mirror: false,
 			padding: 10,
 			reverse: false,
-			show: true,
+			display: true,
 			callback: function(value) {
 				return '' + value;
 			},
@@ -1946,18 +1946,18 @@
 			if (this.isHorizontal()) {
 				this.minSize.width = this.maxWidth; // fill all the width
 			} else {
-				this.minSize.width = this.options.gridLines.show && this.options.display ? 10 : 0;
+				this.minSize.width = this.options.gridLines.display && this.options.display ? 10 : 0;
 			}
 
 			// height
 			if (this.isHorizontal()) {
-				this.minSize.height = this.options.gridLines.show && this.options.display ? 10 : 0;
+				this.minSize.height = this.options.gridLines.display && this.options.display ? 10 : 0;
 			} else {
 				this.minSize.height = this.maxHeight; // fill all the height
 			}
 
 			// Are we showing a title for the scale?
-			if (this.options.scaleLabel.show) {
+			if (this.options.scaleLabel.display) {
 				if (this.isHorizontal()) {
 					this.minSize.height += (this.options.scaleLabel.fontSize * 1.5);
 				} else {
@@ -1965,7 +1965,7 @@
 				}
 			}
 
-			if (this.options.ticks.show && this.options.display) {
+			if (this.options.ticks.display && this.options.display) {
 				// Don't bother fitting the ticks if we are not showing them
 				var labelFont = helpers.fontString(this.options.ticks.fontSize,
 					this.options.ticks.fontStyle, this.options.ticks.fontFamily);
@@ -2126,7 +2126,7 @@
 						var xLineValue = this.getPixelForTick(index); // xvalues for grid lines
 						var xLabelValue = this.getPixelForTick(index, this.options.gridLines.offsetGridLines); // x values for ticks (need to consider offsetLabel option)
 
-						if (this.options.gridLines.show) {
+						if (this.options.gridLines.display) {
 							if (index === (typeof this.zeroLineIndex !== 'undefined' ? this.zeroLineIndex : 0)) {
 								// Draw the first index specially
 								this.ctx.lineWidth = this.options.gridLines.zeroLineWidth;
@@ -2158,7 +2158,7 @@
 							this.ctx.stroke();
 						}
 
-						if (this.options.ticks.show) {
+						if (this.options.ticks.display) {
 							this.ctx.save();
 							this.ctx.translate(xLabelValue, (isRotated) ? this.top + 12 : this.options.position === "top" ? this.bottom - 10 : this.top + 10);
 							this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
@@ -2170,7 +2170,7 @@
 						}
 					}, this);
 
-					if (this.options.scaleLabel.show) {
+					if (this.options.scaleLabel.display) {
 						// Draw the scale label
 						this.ctx.textAlign = "center";
 						this.ctx.textBaseline = 'middle';
@@ -2196,7 +2196,7 @@
 
 						var yLineValue = this.getPixelForTick(index); // xvalues for grid lines
 
-						if (this.options.gridLines.show) {
+						if (this.options.gridLines.display) {
 							if (index === (typeof this.zeroLineIndex !== 'undefined' ? this.zeroLineIndex : 0)) {
 								// Draw the first index specially
 								this.ctx.lineWidth = this.options.gridLines.zeroLineWidth;
@@ -2228,7 +2228,7 @@
 							this.ctx.stroke();
 						}
 
-						if (this.options.ticks.show) {
+						if (this.options.ticks.display) {
 							var xLabelValue;
 							var yLabelValue = this.getPixelForTick(index, this.options.gridLines.offsetGridLines); // x values for ticks (need to consider offsetLabel option)
 
@@ -2263,7 +2263,7 @@
 						}
 					}, this);
 
-					if (this.options.scaleLabel.show) {
+					if (this.options.scaleLabel.display) {
 						// Draw the scale label
 						scaleLabelX = this.options.position == 'left' ? this.left + (this.options.scaleLabel.fontSize / 2) : this.right - (this.options.scaleLabel.fontSize / 2);
 						scaleLabelY = this.top + ((this.bottom - this.top) / 2);
@@ -3017,8 +3017,11 @@
 
 			// Draw Background
 
+			// IE11/Edge does not like very small opacities, so snap to 0
+			var opacity = Math.abs(vm.opacity < 1e-3) ? 0 : vm.opacity;
+
 			if (this._options.tooltips.enabled) {
-				ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
+				ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(opacity).rgbString();
 				helpers.drawRoundedRectangle(ctx, tooltipX, tooltipY, tooltipWidth, tooltipHeight, vm.cornerRadius);
 				ctx.fill();
 			}
@@ -3026,7 +3029,7 @@
 
 			// Draw Caret
 			if (this._options.tooltips.enabled) {
-				ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
+				ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(opacity).rgbString();
 
 				if (vm.xAlign == 'left') {
 
@@ -3058,7 +3061,7 @@
 				if (vm.title.length) {
 					ctx.textAlign = vm._titleAlign;
 					ctx.textBaseline = "top";
-					ctx.fillStyle = helpers.color(vm.titleColor).alpha(vm.opacity).rgbString();
+					ctx.fillStyle = helpers.color(vm.titleColor).alpha(opacity).rgbString();
 					ctx.font = helpers.fontString(vm.titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
 
 					helpers.each(vm.title, function(title, i) {
@@ -3074,7 +3077,7 @@
 				// Body
 				ctx.textAlign = vm._bodyAlign;
 				ctx.textBaseline = "top";
-				ctx.fillStyle = helpers.color(vm.bodyColor).alpha(vm.opacity).rgbString();
+				ctx.fillStyle = helpers.color(vm.bodyColor).alpha(opacity).rgbString();
 				ctx.font = helpers.fontString(vm.bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
 
 				// Before Body
@@ -3089,18 +3092,18 @@
 					// Draw Legend-like boxes if needed
 					if (this._options.tooltips.mode != 'single') {
 						// Fill a white rect so that colours merge nicely if the opacity is < 1
-						ctx.fillStyle = helpers.color('#FFFFFF').alpha(vm.opacity).rgbaString();
+						ctx.fillStyle = helpers.color('#FFFFFF').alpha(opacity).rgbaString();
 						ctx.fillRect(xBase, yBase, vm.bodyFontSize, vm.bodyFontSize);
 
 						// Border
-						ctx.strokeStyle = helpers.color(vm.labelColors[i].borderColor).alpha(vm.opacity).rgbaString();
+						ctx.strokeStyle = helpers.color(vm.labelColors[i].borderColor).alpha(opacity).rgbaString();
 						ctx.strokeRect(xBase, yBase, vm.bodyFontSize, vm.bodyFontSize);
 
 						// Inner square
-						ctx.fillStyle = helpers.color(vm.labelColors[i].backgroundColor).alpha(vm.opacity).rgbaString();
+						ctx.fillStyle = helpers.color(vm.labelColors[i].backgroundColor).alpha(opacity).rgbaString();
 						ctx.fillRect(xBase + 1, yBase + 1, vm.bodyFontSize - 2, vm.bodyFontSize - 2);
 
-						ctx.fillStyle = helpers.color(vm.bodyColor).alpha(vm.opacity).rgbaString(); // Return fill style for text
+						ctx.fillStyle = helpers.color(vm.bodyColor).alpha(opacity).rgbaString(); // Return fill style for text
 					}
 
 					// Body Line
@@ -3126,7 +3129,7 @@
 
 					ctx.textAlign = vm._footerAlign;
 					ctx.textBaseline = "top";
-					ctx.fillStyle = helpers.color(vm.footerColor).alpha(vm.opacity).rgbString();
+					ctx.fillStyle = helpers.color(vm.footerColor).alpha(opacity).rgbString();
 					ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
 
 					helpers.each(vm.footer, function(footer, i) {
@@ -5282,7 +5285,7 @@
 		position: "chartArea",
 
 		angleLines: {
-			show: true,
+			display: true,
 			color: "rgba(0, 0, 0, 0.1)",
 			lineWidth: 1
 		},
@@ -5572,7 +5575,7 @@
 						var yHeight = this.yCenter - yCenterOffset;
 
 						// Draw circular lines around the scale
-						if (this.options.gridLines.show) {
+						if (this.options.gridLines.display) {
 							ctx.strokeStyle = this.options.gridLines.color;
 							ctx.lineWidth = this.options.gridLines.lineWidth;
 
@@ -5598,7 +5601,7 @@
 							}
 						}
 
-						if (this.options.ticks.show) {
+						if (this.options.ticks.display) {
 							ctx.font = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
 
 							if (this.options.ticks.showLabelBackdrop) {
@@ -5625,7 +5628,7 @@
 					ctx.strokeStyle = this.options.angleLines.color;
 
 					for (var i = this.getValueCount() - 1; i >= 0; i--) {
-						if (this.options.angleLines.show) {
+						if (this.options.angleLines.display) {
 							var outerPosition = this.getPointPosition(i, this.getDistanceFromCenterForValue(this.options.reverse ? this.min : this.max));
 							ctx.beginPath();
 							ctx.moveTo(this.xCenter, this.yCenter);
