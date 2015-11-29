@@ -392,8 +392,11 @@
 
 			// Draw Background
 
+			// IE11/Edge does not like very small opacities, so snap to 0
+			var opacity = Math.abs(vm.opacity < 1e-3) ? 0 : vm.opacity;
+
 			if (this._options.tooltips.enabled) {
-				ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
+				ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(opacity).rgbString();
 				helpers.drawRoundedRectangle(ctx, tooltipX, tooltipY, tooltipWidth, tooltipHeight, vm.cornerRadius);
 				ctx.fill();
 			}
@@ -401,7 +404,7 @@
 
 			// Draw Caret
 			if (this._options.tooltips.enabled) {
-				ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(vm.opacity).rgbString();
+				ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(opacity).rgbString();
 
 				if (vm.xAlign == 'left') {
 
@@ -433,7 +436,7 @@
 				if (vm.title.length) {
 					ctx.textAlign = vm._titleAlign;
 					ctx.textBaseline = "top";
-					ctx.fillStyle = helpers.color(vm.titleColor).alpha(vm.opacity).rgbString();
+					ctx.fillStyle = helpers.color(vm.titleColor).alpha(opacity).rgbString();
 					ctx.font = helpers.fontString(vm.titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
 
 					helpers.each(vm.title, function(title, i) {
@@ -449,7 +452,7 @@
 				// Body
 				ctx.textAlign = vm._bodyAlign;
 				ctx.textBaseline = "top";
-				ctx.fillStyle = helpers.color(vm.bodyColor).alpha(vm.opacity).rgbString();
+				ctx.fillStyle = helpers.color(vm.bodyColor).alpha(opacity).rgbString();
 				ctx.font = helpers.fontString(vm.bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
 
 				// Before Body
@@ -464,18 +467,18 @@
 					// Draw Legend-like boxes if needed
 					if (this._options.tooltips.mode != 'single') {
 						// Fill a white rect so that colours merge nicely if the opacity is < 1
-						ctx.fillStyle = helpers.color('#FFFFFF').alpha(vm.opacity).rgbaString();
+						ctx.fillStyle = helpers.color('#FFFFFF').alpha(opacity).rgbaString();
 						ctx.fillRect(xBase, yBase, vm.bodyFontSize, vm.bodyFontSize);
 
 						// Border
-						ctx.strokeStyle = helpers.color(vm.labelColors[i].borderColor).alpha(vm.opacity).rgbaString();
+						ctx.strokeStyle = helpers.color(vm.labelColors[i].borderColor).alpha(opacity).rgbaString();
 						ctx.strokeRect(xBase, yBase, vm.bodyFontSize, vm.bodyFontSize);
 
 						// Inner square
-						ctx.fillStyle = helpers.color(vm.labelColors[i].backgroundColor).alpha(vm.opacity).rgbaString();
+						ctx.fillStyle = helpers.color(vm.labelColors[i].backgroundColor).alpha(opacity).rgbaString();
 						ctx.fillRect(xBase + 1, yBase + 1, vm.bodyFontSize - 2, vm.bodyFontSize - 2);
 
-						ctx.fillStyle = helpers.color(vm.bodyColor).alpha(vm.opacity).rgbaString(); // Return fill style for text
+						ctx.fillStyle = helpers.color(vm.bodyColor).alpha(opacity).rgbaString(); // Return fill style for text
 					}
 
 					// Body Line
@@ -501,7 +504,7 @@
 
 					ctx.textAlign = vm._footerAlign;
 					ctx.textBaseline = "top";
-					ctx.fillStyle = helpers.color(vm.footerColor).alpha(vm.opacity).rgbString();
+					ctx.fillStyle = helpers.color(vm.footerColor).alpha(opacity).rgbString();
 					ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
 
 					helpers.each(vm.footer, function(footer, i) {
