@@ -17,7 +17,7 @@ describe('Linear Scale', function() {
 				drawTicks: true, // draw ticks extending towards the label
 				lineWidth: 1,
 				offsetGridLines: false,
-				show: true,
+				display: true,
 				zeroLineColor: "rgba(0,0,0,0.25)",
 				zeroLineWidth: 1,
 			},
@@ -28,7 +28,7 @@ describe('Linear Scale', function() {
 				fontSize: 12,
 				fontStyle: 'normal',
 				labelString: '',
-				show: false,
+				display: false,
 			},
 			ticks: {
 				beginAtZero: false,
@@ -41,7 +41,7 @@ describe('Linear Scale', function() {
 				mirror: false,
 				padding: 10,
 				reverse: false,
-				show: true,
+				display: true,
 				callback: defaultConfig.ticks.callback, // make this work nicer, then check below
 			}
 		});
@@ -692,7 +692,7 @@ describe('Linear Scale', function() {
 		expect(verticalScale.paddingRight).toBe(0);
 
 		// Extra size when scale label showing
-		config.scaleLabel.show = true;
+		config.scaleLabel.display = true;
 		minSize = verticalScale.update(100, 300);
 		expect(minSize).toEqual({
 			width: 58,
@@ -754,7 +754,7 @@ describe('Linear Scale', function() {
 		expect(horizontalScale.paddingRight).toBe(2);
 
 		// Extra size when scale label showing
-		config.scaleLabel.show = true;
+		config.scaleLabel.display = true;
 		minSize = horizontalScale.update(200, 300);
 		expect(minSize).toEqual({
 			width: 200,
@@ -934,8 +934,8 @@ describe('Linear Scale', function() {
 		// Turn off some drawing
 		config.gridLines.drawTicks = false;
 		config.gridLines.drawOnChartArea = false;
-		config.ticks.show = false;
-		config.scaleLabel.show = true;
+		config.ticks.display = false;
+		config.scaleLabel.display = true;
 		config.scaleLabel.labelString = 'myLabel';
 
 		mockContext.resetCalls();
@@ -1435,8 +1435,8 @@ describe('Linear Scale', function() {
 		// Turn off some drawing
 		config.gridLines.drawTicks = false;
 		config.gridLines.drawOnChartArea = false;
-		config.ticks.show = false;
-		config.scaleLabel.show = true;
+		config.ticks.display = false;
+		config.scaleLabel.display = true;
 
 		mockContext.resetCalls();
 

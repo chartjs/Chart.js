@@ -211,7 +211,7 @@ The radial linear scale extends the core scale class with the following tick tem
 	position: "chartArea",
 
 	angleLines: {
-		show: true,
+		display: true,
 		color: "rgba(0, 0, 0, 0.1)",
 		lineWidth: 1
 	},

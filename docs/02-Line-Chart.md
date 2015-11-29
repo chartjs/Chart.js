@@ -140,7 +140,7 @@ new Chart(ctx, {
 	data: data,
 	options: {
 		xAxes: [{
-			show: false
+			display: false
 		}]
 	}
 });
