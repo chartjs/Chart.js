@@ -10,7 +10,7 @@
 
 		// grid line settings
 		gridLines: {
-			show: true,
+			display: true,
 			color: "rgba(0, 0, 0, 0.1)",
 			lineWidth: 1,
 			drawOnChartArea: true,
@@ -31,7 +31,7 @@
 			labelString: '',
 
 			// display property
-			show: false,
+			display: false,
 		},
 
 		// label settings
@@ -46,7 +46,7 @@
 			mirror: false,
 			padding: 10,
 			reverse: false,
-			show: true,
+			display: true,
 			callback: function(value) {
 				return '' + value;
 			},
@@ -231,18 +231,18 @@
 			if (this.isHorizontal()) {
 				this.minSize.width = this.maxWidth; // fill all the width
 			} else {
-				this.minSize.width = this.options.gridLines.show && this.options.display ? 10 : 0;
+				this.minSize.width = this.options.gridLines.display && this.options.display ? 10 : 0;
 			}
 
 			// height
 			if (this.isHorizontal()) {
-				this.minSize.height = this.options.gridLines.show && this.options.display ? 10 : 0;
+				this.minSize.height = this.options.gridLines.display && this.options.display ? 10 : 0;
 			} else {
 				this.minSize.height = this.maxHeight; // fill all the height
 			}
 
 			// Are we showing a title for the scale?
-			if (this.options.scaleLabel.show) {
+			if (this.options.scaleLabel.display) {
 				if (this.isHorizontal()) {
 					this.minSize.height += (this.options.scaleLabel.fontSize * 1.5);
 				} else {
@@ -250,7 +250,7 @@
 				}
 			}
 
-			if (this.options.ticks.show && this.options.display) {
+			if (this.options.ticks.display && this.options.display) {
 				// Don't bother fitting the ticks if we are not showing them
 				var labelFont = helpers.fontString(this.options.ticks.fontSize,
 					this.options.ticks.fontStyle, this.options.ticks.fontFamily);
@@ -411,7 +411,7 @@
 						var xLineValue = this.getPixelForTick(index); // xvalues for grid lines
 						var xLabelValue = this.getPixelForTick(index, this.options.gridLines.offsetGridLines); // x values for ticks (need to consider offsetLabel option)
 
-						if (this.options.gridLines.show) {
+						if (this.options.gridLines.display) {
 							if (index === (typeof this.zeroLineIndex !== 'undefined' ? this.zeroLineIndex : 0)) {
 								// Draw the first index specially
 								this.ctx.lineWidth = this.options.gridLines.zeroLineWidth;
@@ -443,7 +443,7 @@
 							this.ctx.stroke();
 						}
 
-						if (this.options.ticks.show) {
+						if (this.options.ticks.display) {
 							this.ctx.save();
 							this.ctx.translate(xLabelValue, (isRotated) ? this.top + 12 : this.options.position === "top" ? this.bottom - 10 : this.top + 10);
 							this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
@@ -455,7 +455,7 @@
 						}
 					}, this);
 
-					if (this.options.scaleLabel.show) {
+					if (this.options.scaleLabel.display) {
 						// Draw the scale label
 						this.ctx.textAlign = "center";
 						this.ctx.textBaseline = 'middle';
@@ -481,7 +481,7 @@
 
 						var yLineValue = this.getPixelForTick(index); // xvalues for grid lines
 
-						if (this.options.gridLines.show) {
+						if (this.options.gridLines.display) {
 							if (index === (typeof this.zeroLineIndex !== 'undefined' ? this.zeroLineIndex : 0)) {
 								// Draw the first index specially
 								this.ctx.lineWidth = this.options.gridLines.zeroLineWidth;
@@ -513,7 +513,7 @@
 							this.ctx.stroke();
 						}
 
-						if (this.options.ticks.show) {
+						if (this.options.ticks.display) {
 							var xLabelValue;
 							var yLabelValue = this.getPixelForTick(index, this.options.gridLines.offsetGridLines); // x values for ticks (need to consider offsetLabel option)
 
@@ -548,7 +548,7 @@
 						}
 					}, this);
 
-					if (this.options.scaleLabel.show) {
+					if (this.options.scaleLabel.display) {
 						// Draw the scale label
 						scaleLabelX = this.options.position == 'left' ? this.left + (this.options.scaleLabel.fontSize / 2) : this.right - (this.options.scaleLabel.fontSize / 2);
 						scaleLabelY = this.top + ((this.bottom - this.top) / 2);
