@@ -140,7 +140,7 @@ new Chart(ctx, {
 	data: data,
 	options: {
 		xAxes: [{
-			show: false
+			display: false
 		}]
 	}
 });
@@ -166,32 +166,16 @@ canvas.onclick = function(evt){
 
 This functionality may be useful for implementing DOM based tooltips, or triggering custom behaviour in your application.
 
+#### .getElementAtEvent( event )
+Calling `getElementAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the single element at the event position. If there are multiple items within range, only the first is returned
+
 #### .update( )
 
-Calling `update()` on your Chart instance will re-render the chart with any updated values, allowing you to edit the value of multiple existing points, then render those in one animated render loop.
+Calling `update()` on your Chart instance will re-render the chart with any updated values, allowing you to edit the value of multiple existing points, then render those in one animated render loop. You can safely call `update()` after changing the entire data object on the chart.
 
 ```javascript
-myLineChart.datasets[0].points[2].value = 50;
+myLineChart.data.datasets[0].data[2] = 50;
 // Would update the first dataset's value of 'March' to be 50
 myLineChart.update();
 // Calling update now animates the position of March from 90 to 50.
-```
-
-#### .addData( valuesArray, label )
-
-Calling `addData(valuesArray, label)` on your Chart instance passing an array of values for each dataset, along with a label for those points.
-
-```javascript
-// The values array passed into addData should be one for each dataset in the chart
-myLineChart.addData([40, 60], "August");
-// This new data will now animate at the end of the chart.
-```
-
-#### .removeData( )
-
-Calling `removeData()` on your Chart instance will remove the first value for all datasets on the chart.
-
-```javascript
-myLineChart.removeData();
-// The chart will remove the first point and animate other points into place
 ```
