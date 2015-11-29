@@ -155,45 +155,29 @@ Sample:	   |==============|
 ```
 ### Prototype methods
 
-#### .getBarsAtEvent( event )
+#### .getElementsAtEvent( event )
 
-Calling `getBarsAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the bar elements that are at that the same position of that event.
+Calling `getElementsAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the point elements that are at that the same position of that event.
 
 ```javascript
 canvas.onclick = function(evt){
-	var activeBars = myBarChart.getBarsAtEvent(evt);
-	// => activeBars is an array of bars on the canvas that are at the same position as the click event.
+	var activePoints = myLineChart.getElementsAtEvent(evt);
+	// => activePoints is an array of points on the canvas that are at the same position as the click event.
 };
 ```
 
 This functionality may be useful for implementing DOM based tooltips, or triggering custom behaviour in your application.
+
+#### .getElementAtEvent( event )
+Calling `getElementAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the single element at the event position. If there are multiple items within range, only the first is returned
 
 #### .update( )
 
 Calling `update()` on your Chart instance will re-render the chart with any updated values, allowing you to edit the value of multiple existing points, then render those in one animated render loop.
 
 ```javascript
-myBarChart.datasets[0].bars[2].value = 50;
+myBarChart.data.datasets[0].data[2] = 50;
 // Would update the first dataset's value of 'March' to be 50
 myBarChart.update();
 // Calling update now animates the position of March from 90 to 50.
-```
-
-#### .addData( valuesArray, label )
-
-Calling `addData(valuesArray, label)` on your Chart instance passing an array of values for each dataset, along with a label for those bars.
-
-```javascript
-// The values array passed into addData should be one for each dataset in the chart
-myBarChart.addData([40, 60], "August");
-// The new data will now animate at the end of the chart.
-```
-
-#### .removeData( )
-
-Calling `removeData()` on your Chart instance will remove the first value for all datasets on the chart.
-
-```javascript
-myBarChart.removeData();
-// The chart will now animate and remove the first bar
 ```
