@@ -150,8 +150,19 @@ The time scale extends the core scale class with the following tick template:
 		unit: false,
 		// string - By default, no rounding is applied.  To round, set to a supported time unit eg. 'week', 'month', 'year', etc.
 		round: false,
-		// string - By default, is set to the detected (or manually overridden) time unit's `display` property (see supported time measurements).  To override, use a pattern string from http://momentjs.com/docs/#/displaying/format/
-		displayFormat: false
+		// Moment js for each of the units. Replaces `displayFormat`
+		// To override, use a pattern string from http://momentjs.com/docs/#/displaying/format/
+		displayFormats: {
+				'millisecond': 'SSS [ms]',
+				'second': 'h:mm:ss a', // 11:20:01 AM
+				'minute': 'h:mm:ss a', // 11:20:01 AM
+				'hour': 'MMM D, hA', // Sept 4, 5PM
+				'day': 'll', // Sep 4 2015
+				'week': 'll', // Week 46, or maybe "[W]WW - YYYY" ?
+				'month': 'MMM YYYY', // Sept 2015
+				'quarter': '[Q]Q - YYYY', // Q3
+				'year': 'YYYY', // 2015
+			}, 
 	},
 }
 ```
