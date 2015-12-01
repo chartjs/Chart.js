@@ -5700,44 +5700,6 @@
 			'quarter',
 			'year',
 		],
-		unit: {
-			'millisecond': {
-				display: 'SSS [ms]', // 002 ms
-				maxStep: 1000,
-			},
-			'second': {
-				display: 'h:mm:ss a', // 11:20:01 AM
-				maxStep: 60,
-			},
-			'minute': {
-				display: 'h:mm:ss a', // 11:20:01 AM
-				maxStep: 60,
-			},
-			'hour': {
-				display: 'MMM D, hA', // Sept 4, 5PM
-				maxStep: 24,
-			},
-			'day': {
-				display: 'll', // Sep 4 2015
-				maxStep: 7,
-			},
-			'week': {
-				display: 'll', // Week 46, or maybe "[W]WW - YYYY" ?
-				maxStep: 4.3333,
-			},
-			'month': {
-				display: 'MMM YYYY', // Sept 2015
-				maxStep: 12,
-			},
-			'quarter': {
-				display: '[Q]Q - YYYY', // Q3
-				maxStep: 4,
-			},
-			'year': {
-				display: 'YYYY', // 2015
-				maxStep: false,
-			},
-		}
 	};
 
 	var defaultConfig = {
@@ -5747,7 +5709,20 @@
 			format: false, // false == date objects or use pattern string from http://momentjs.com/docs/#/parsing/string-format/
 			unit: false, // false == automatic or override with week, month, year, etc.
 			round: false, // none, or override with week, month, year, etc.
-			displayFormat: false, // defaults to unit's corresponding unitFormat below or override using pattern string from http://momentjs.com/docs/#/displaying/format/
+			displayFormat: false, // DEPRECATED
+
+			// defaults to unit's corresponding unitFormat below or override using pattern string from http://momentjs.com/docs/#/displaying/format/
+			displayFormats: {
+				'millisecond': 'SSS [ms]',
+				'second': 'h:mm:ss a', // 11:20:01 AM
+				'minute': 'h:mm:ss a', // 11:20:01 AM
+				'hour': 'MMM D, hA', // Sept 4, 5PM
+				'day': 'll', // Sep 4 2015
+				'week': 'll', // Week 46, or maybe "[W]WW - YYYY" ?
+				'month': 'MMM YYYY', // Sept 2015
+				'quarter': '[Q]Q - YYYY', // Q3
+				'year': 'YYYY', // 2015
+			}, 
 		},
 	};
 
@@ -5823,7 +5798,7 @@
 			// Set unit override if applicable
 			if (this.options.time.unit) {
 				this.tickUnit = this.options.time.unit || 'day';
-				this.displayFormat = time.unit[this.tickUnit].display;
+				this.displayFormat = this.options.time.displayFormats[this.tickUnit];
 				this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, this.tickUnit, true));
 			} else {
 				// Determine the smallest needed unit of the time
@@ -5834,7 +5809,7 @@
 				// Start as small as possible
 				this.tickUnit = 'millisecond';
 				this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, this.tickUnit, true) + buffer);
-				this.displayFormat = time.unit[this.tickUnit].display;
+				this.displayFormat = this.options.time.displayFormats[this.tickUnit];
 
 				// Work our way up to comfort
 				helpers.each(time.units, function(format) {
@@ -5843,7 +5818,7 @@
 					}
 					this.tickUnit = format;
 					this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, this.tickUnit) + buffer);
-					this.displayFormat = time.unit[format].display;
+					this.displayFormat = this.options.time.displayFormats[format];
 
 				}, this);
 			}
@@ -5880,7 +5855,7 @@
 		},
 		convertTicksToLabels: function() {
 			this.ticks = this.ticks.map(function(tick, index, ticks) {
-				var formattedTick = tick.format(this.options.time.displayFormat ? this.options.time.displayFormat : time.unit[this.tickUnit].display);
+				var formattedTick = tick.format(this.options.time.displayFormat ? this.options.time.displayFormat : this.options.time.displayFormats[this.tickUnit]);
 
 				if (this.options.ticks.userCallback) {
 					return this.options.ticks.userCallback(formattedTick, index, ticks);
