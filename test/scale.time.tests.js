@@ -53,6 +53,17 @@ describe('Time scale tests', function() {
 				unit: false,
 				round: false,
 				displayFormat: false,
+				displayFormats: {
+					'millisecond': 'SSS [ms]',
+					'second': 'h:mm:ss a', // 11:20:01 AM
+					'minute': 'h:mm:ss a', // 11:20:01 AM
+					'hour': 'MMM D, hA', // Sept 4, 5PM
+					'day': 'll', // Sep 4 2015
+					'week': 'll', // Week 46, or maybe "[W]WW - YYYY" ?
+					'month': 'MMM YYYY', // Sept 2015
+					'quarter': '[Q]Q - YYYY', // Q3
+					'year': 'YYYY', // 2015
+				},
 			}
 		});
 
