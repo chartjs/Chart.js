@@ -93,6 +93,8 @@
 				var horizontalScaleHeight = (height - chartHeight) / (topScales.length + bottomScales.length);
 
 				// Step 4;
+				var maxChartHeight = height - (2 * yPadding);
+				var maxChartWidth = width - (2 * xPadding);
 				var minimumScaleSizes = [];
 
 				var verticalScaleMinSizeFunction = function(scaleInstance) {
@@ -102,15 +104,19 @@
 						minSize: minSize,
 						scale: scaleInstance,
 					});
+
+					maxChartWidth -= minSize.width;
 				};
 
 				var horizontalScaleMinSizeFunction = function(scaleInstance) {
-					var minSize = scaleInstance.update(chartWidth, horizontalScaleHeight);
+					var minSize = scaleInstance.update(maxChartWidth, horizontalScaleHeight);
 					minimumScaleSizes.push({
 						horizontal: true,
 						minSize: minSize,
 						scale: scaleInstance,
 					});
+
+					maxChartHeight -= minSize.height;
 				};
 
 				// vertical scales
@@ -121,22 +127,10 @@
 				helpers.each(topScales, horizontalScaleMinSizeFunction);
 				helpers.each(bottomScales, horizontalScaleMinSizeFunction);
 
-				// Step 5
-				var maxChartHeight = height - (2 * yPadding);
-				var maxChartWidth = width - (2 * xPadding);
-
-				helpers.each(minimumScaleSizes, function(wrapper) {
-					if (wrapper.horizontal) {
-						maxChartHeight -= wrapper.minSize.height;
-					} else {
-						maxChartWidth -= wrapper.minSize.width;
-					}
-				});
-
 				// At this point, maxChartHeight and maxChartWidth are the size the chart area could
 				// be if the axes are drawn at their minimum sizes.
 
-				// Step 6
+				// Steps 5 & 6
 				var verticalScaleFitFunction = function(scaleInstance) {
 					var wrapper = helpers.findNextWhere(minimumScaleSizes, function(wrapper) {
 						return wrapper.scale === scaleInstance;
