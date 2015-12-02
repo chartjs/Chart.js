@@ -12,15 +12,34 @@
 
 	var time = {
 		units: [
-			'millisecond',
-			'second',
-			'minute',
-			'hour',
-			'day',
-			'week',
-			'month',
-			'quarter',
-			'year',
+			{
+				name: 'millisecond',
+				steps: [1, 2, 5, 10, 20, 50, 100, 250, 500]
+			}, {
+				name: 'second',
+				steps: [1, 2, 5, 10, 30]
+			}, {
+				name: 'minute',
+				steps: [1, 2, 5, 10, 30]
+			}, {
+				name: 'hour',
+				steps: [1, 2, 3, 6, 12]
+			}, {
+				name: 'day',
+				steps: [1, 2, 5]
+			}, {
+				name: 'week',
+				maxStep: 4
+			}, {
+				name: 'month',
+				maxStep: 3
+			}, {
+				name: 'quarter',
+				maxStep: 4,
+			}, {
+				name: 'year',
+				maxStep: false
+			},
 		],
 	};
 
@@ -125,7 +144,7 @@
 			} else {
 				// Determine the smallest needed unit of the time
 				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
-				var labelCapacity = innerWidth / this.options.ticks.fontSize + 4;
+				var labelCapacity = innerWidth / (this.options.ticks.fontSize + 10);
 				var buffer = this.options.time.round ? 0 : 2;
 
 				// Start as small as possible
@@ -133,16 +152,41 @@
 				this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, this.tickUnit, true) + buffer);
 				this.displayFormat = this.options.time.displayFormats[this.tickUnit];
 
-				// Work our way up to comfort
-				helpers.each(time.units, function(format) {
-					if (this.tickRange <= labelCapacity) {
-						return;
-					}
-					this.tickUnit = format;
-					this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, this.tickUnit) + buffer);
-					this.displayFormat = this.options.time.displayFormats[format];
+				// How much we scale the unit by, ie 2 means 2x unit per step 
+				this.unitScale = 1;
+				var unitDefinitionIndex = 0;
+				var unitDefinition = time.units[unitDefinitionIndex];
 
-				}, this);
+				// While we aren't ideal and we don't have units left 
+				while (unitDefinitionIndex < time.units.length) {
+					// Can we scale this unit. If `false` we can scale infinitely
+					//var canScaleUnit = ;
+					this.unitScale = 1;
+
+					if (helpers.isArray(unitDefinition.steps) && Math.ceil(this.tickRange / labelCapacity) < helpers.max(unitDefinition.steps)) {
+						// Use one of the prefedined steps
+						for (var idx = 1; idx < unitDefinition.steps.length; ++idx) {
+							if (unitDefinition.steps[idx] > Math.ceil(this.tickRange / labelCapacity)) {
+								this.unitScale = unitDefinition.steps[idx - 1];
+								break;
+							}
+						}
+
+						break;
+					} else if ((unitDefinition.maxStep === false) || (Math.ceil(this.tickRange / labelCapacity) < unitDefinition.maxStep)) {
+						// We have a max step. Scale this unit
+						this.unitScale = Math.ceil(this.tickRange / labelCapacity);
+						break;
+					} else {
+						// Move to the next unit up
+						++unitDefinitionIndex;
+						unitDefinition = time.units[unitDefinitionIndex];
+						
+						this.tickUnit = unitDefinition.name;
+						this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, this.tickUnit) + buffer);
+						this.displayFormat = this.options.time.displayFormats[unitDefinition.name];
+					}
+				}
 			}
 
 			this.firstTick.startOf(this.tickUnit);
@@ -162,7 +206,15 @@
 
 			// For every unit in between the first and last moment, create a moment and add it to the ticks tick
 			for (var i = 0; i <= this.tickRange; ++i) {
-				this.ticks.push(this.firstTick.clone().add(i, this.tickUnit));
+				if (i % this.unitScale === 0) {
+					this.ticks.push(this.firstTick.clone().add(i, this.tickUnit));
+				} else if (i === this.tickRange) {
+					// Expand out the last one if not an exact multiple
+					this.tickRange = Math.ceil(this.tickRange / this.unitScale) * this.unitScale;
+					this.ticks.push(this.firstTick.clone().add(this.tickRange, this.tickUnit));
+					this.lastTick = this.ticks[this.ticks.length - 1].clone();
+					break;
+				}
 			}
 		},
 		// Get tooltip label
