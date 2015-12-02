@@ -3029,7 +3029,19 @@
 
 			// Draw Caret
 			if (this._options.tooltips.enabled) {
+
+
+
+				//This draws a line if option was enabled
+
+
+				ctx.strokeStyle="#FF0000";
+				ctx.beginPath();
+				ctx.moveTo(vm.x,vm.y);
+				ctx.lineTo(vm.x,5);
+				ctx.stroke();
 				ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(opacity).rgbString();
+
 
 				if (vm.xAlign == 'left') {
 
