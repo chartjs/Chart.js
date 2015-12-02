@@ -42,7 +42,6 @@
 			fontColor: "#666",
 			fontFamily: "Helvetica Neue",
 			maxRotation: 90,
-			minRotation: 20,
 			mirror: false,
 			padding: 10,
 			reverse: false,
