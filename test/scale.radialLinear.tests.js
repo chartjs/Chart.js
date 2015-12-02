@@ -52,7 +52,6 @@ describe('Test the radial linear scale', function() {
 				fontSize: 12,
 				fontStyle: "normal",
 				maxRotation: 90,
-				minRotation: 20,
 				mirror: false,
 				padding: 10,
 				reverse: false,
