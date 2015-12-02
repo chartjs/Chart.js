@@ -133,6 +133,7 @@
 
 			this.ticks = [];
 			this.labelMoments = [];
+			this.unitScale = 1; // How much we scale the unit by, ie 2 means 2x unit per step 
 
 			this.buildLabelMoments();
 
@@ -152,8 +153,6 @@
 				this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, this.tickUnit, true) + buffer);
 				this.displayFormat = this.options.time.displayFormats[this.tickUnit];
 
-				// How much we scale the unit by, ie 2 means 2x unit per step 
-				this.unitScale = 1;
 				var unitDefinitionIndex = 0;
 				var unitDefinition = time.units[unitDefinitionIndex];
 
