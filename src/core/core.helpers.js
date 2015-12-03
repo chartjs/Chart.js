@@ -246,9 +246,10 @@
 		})(),
 		warn = helpers.warn = function(str) {
 			//Method for warning of errors
-			if (window.console && typeof window.console.warn === "function") console.warn(str);
+			if (console && typeof console.warn === "function") {
+				console.warn(str);
+			}
 		},
-		amd = helpers.amd = (typeof define === 'function' && define.amd),
 		//-- Math methods
 		isNumber = helpers.isNumber = function(n) {
 			return !isNaN(parseFloat(n)) && isFinite(n);
@@ -787,11 +788,11 @@
 			ctx.closePath();
 		},
 		color = helpers.color = function(color) {
-			if (!window.Color) {
+			if (!root.Color) {
 				console.log('Color.js not found!');
 				return color;
 			}
-			return window.Color(color);
+			return root.Color(color);
 		},
 		addResizeListener = helpers.addResizeListener = function(node, callback) {
 			// Hide an iframe before the node

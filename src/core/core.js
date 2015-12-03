@@ -109,14 +109,6 @@
 		},
 	};
 
-	if (typeof amd !== 'undefined') {
-		define(function() {
-			return Chart;
-		});
-	} else if (typeof module === 'object' && module.exports) {
-		module.exports = Chart;
-	}
-
 	root.Chart = Chart;
 
 	Chart.noConflict = function() {
