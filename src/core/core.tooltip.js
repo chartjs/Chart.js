@@ -153,7 +153,7 @@
 
 		// Args are: (tooltipItem, data)
 		getBeforeBody: function() {
-			var lines = this._options.tooltips.callbacks.beforeBody.call(this, arguments);
+			var lines = this._options.tooltips.callbacks.beforeBody.apply(this, arguments);
 			return helpers.isArray(lines) ? lines : [lines];
 		},
 
@@ -174,7 +174,7 @@
 
 		// Args are: (tooltipItem, data)
 		getAfterBody: function() {
-			var lines = this._options.tooltips.callbacks.afterBody.call(this, arguments);
+			var lines = this._options.tooltips.callbacks.afterBody.apply(this, arguments);
 			return helpers.isArray(lines) ? lines : [lines];
 		},
 
