@@ -1,7 +1,7 @@
-(function() {
+(function(moment) {
 	"use strict";
 
-	if (!window.moment) {
+	if (!moment) {
 		console.warn('Chart.js - Moment.js could not be found! You must include it before Chart.js to use the time scale. Download at http://momentjs.com/');
 		return;
 	}
@@ -226,4 +226,4 @@
 	});
 	Chart.scaleService.registerScaleType("time", TimeScale, defaultConfig);
 
-}).call(this);
+}).call(this, moment);
