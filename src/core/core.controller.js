@@ -422,7 +422,7 @@
 			} else {
 
 				var _this = this;
-				function getItemsForMode(mode) {
+				var getItemsForMode = function(mode) {
 					switch (mode) {
 						case 'single':
 							return _this.getElementAtEvent(e);
@@ -433,7 +433,7 @@
 						default:
 							return e;
 					}
-				}
+				};
 
 				this.active = getItemsForMode(this.options.hover.mode);
 				this.tooltipActive = getItemsForMode(this.options.tooltips.mode);
