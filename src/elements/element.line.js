@@ -161,7 +161,7 @@
 				}
 			}, this);
 
-			if (this._loop) {
+			if (this._loop && this._children.length > 0) {
 				loopBackToStart();
 			}
 
