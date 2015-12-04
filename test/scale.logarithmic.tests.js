@@ -16,7 +16,7 @@ describe('Logarithmic Scale tests', function() {
 				drawTicks: true,
 				lineWidth: 1,
 				offsetGridLines: false,
-				show: true,
+				display: true,
 				zeroLineColor: "rgba(0,0,0,0.25)",
 				zeroLineWidth: 1,
 			},
@@ -27,7 +27,7 @@ describe('Logarithmic Scale tests', function() {
 				fontSize: 12,
 				fontStyle: 'normal',
 				labelString: '',
-				show: false,
+				display: false,
 			},
 			ticks: {
 				beginAtZero: false,
@@ -36,11 +36,10 @@ describe('Logarithmic Scale tests', function() {
 				fontSize: 12,
 				fontStyle: "normal",
 				maxRotation: 90,
-				minRotation: 20,
 				mirror: false,
 				padding: 10,
 				reverse: false,
-				show: true,
+				display: true,
 				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
 			},
 		});

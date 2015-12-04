@@ -116,6 +116,8 @@
 			var horizontalBoxHeight = (height - chartAreaHeight) / (topBoxes.length + bottomBoxes.length);
 
 			// Step 4
+			var maxChartAreaWidth = chartWidth;
+			var maxChartAreaHeight = chartHeight;
 			var minBoxSizes = [];
 
 			helpers.each(leftBoxes.concat(rightBoxes, topBoxes, bottomBoxes), getMinimumBoxSize);
@@ -125,9 +127,11 @@
 				var isHorizontal = box.isHorizontal();
 
 				if (isHorizontal) {
-					minSize = box.update(box.options.fullWidth ? chartWidth : chartAreaWidth, horizontalBoxHeight);
+					minSize = box.update(box.options.fullWidth ? chartWidth : maxChartAreaWidth, horizontalBoxHeight);
+					maxChartAreaHeight -= minSize.height;
 				} else {
 					minSize = box.update(verticalBoxWidth, chartAreaHeight);
+					maxChartAreaWidth -= minSize.width;
 				}
 
 				minBoxSizes.push({
@@ -137,22 +141,10 @@
 				});
 			}
 
-			// Step 5
-			var maxChartAreaWidth = chartWidth;
-			var maxChartAreaHeight = chartHeight;
-
-			helpers.each(minBoxSizes, function(minimumBoxSize) {
-				if (minimumBoxSize.horizontal) {
-					maxChartAreaHeight -= minimumBoxSize.minSize.height;
-				} else {
-					maxChartAreaWidth -= minimumBoxSize.minSize.width;
-				}
-			});
-
 			// At this point, maxChartAreaHeight and maxChartAreaWidth are the size the chart area could
 			// be if the axes are drawn at their minimum sizes.
 
-			// Step 6
+			// Steps 5 & 6
 			var totalLeftBoxesWidth = xPadding;
 			var totalRightBoxesWidth = xPadding;
 			var totalTopBoxesHeight = yPadding;

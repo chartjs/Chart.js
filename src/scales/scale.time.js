@@ -1,7 +1,7 @@
-(function() {
+(function(moment) {
 	"use strict";
 
-	if (!window.moment) {
+	if (!moment) {
 		console.warn('Chart.js - Moment.js could not be found! You must include it before Chart.js to use the time scale. Download at http://momentjs.com/');
 		return;
 	}
@@ -12,54 +12,35 @@
 
 	var time = {
 		units: [
-			'millisecond',
-			'second',
-			'minute',
-			'hour',
-			'day',
-			'week',
-			'month',
-			'quarter',
-			'year',
-		],
-		unit: {
-			'millisecond': {
-				display: 'SSS [ms]', // 002 ms
-				maxStep: 1000,
-			},
-			'second': {
-				display: 'h:mm:ss a', // 11:20:01 AM
-				maxStep: 60,
-			},
-			'minute': {
-				display: 'h:mm:ss a', // 11:20:01 AM
-				maxStep: 60,
-			},
-			'hour': {
-				display: 'MMM D, hA', // Sept 4, 5PM
-				maxStep: 24,
-			},
-			'day': {
-				display: 'll', // Sep 4 2015
-				maxStep: 7,
-			},
-			'week': {
-				display: 'll', // Week 46, or maybe "[W]WW - YYYY" ?
-				maxStep: 4.3333,
-			},
-			'month': {
-				display: 'MMM YYYY', // Sept 2015
-				maxStep: 12,
-			},
-			'quarter': {
-				display: '[Q]Q - YYYY', // Q3
+			{
+				name: 'millisecond',
+				steps: [1, 2, 5, 10, 20, 50, 100, 250, 500]
+			}, {
+				name: 'second',
+				steps: [1, 2, 5, 10, 30]
+			}, {
+				name: 'minute',
+				steps: [1, 2, 5, 10, 30]
+			}, {
+				name: 'hour',
+				steps: [1, 2, 3, 6, 12]
+			}, {
+				name: 'day',
+				steps: [1, 2, 5]
+			}, {
+				name: 'week',
+				maxStep: 4
+			}, {
+				name: 'month',
+				maxStep: 3
+			}, {
+				name: 'quarter',
 				maxStep: 4,
+			}, {
+				name: 'year',
+				maxStep: false
 			},
-			'year': {
-				display: 'YYYY', // 2015
-				maxStep: false,
-			},
-		}
+		],
 	};
 
 	var defaultConfig = {
@@ -69,7 +50,20 @@
 			format: false, // false == date objects or use pattern string from http://momentjs.com/docs/#/parsing/string-format/
 			unit: false, // false == automatic or override with week, month, year, etc.
 			round: false, // none, or override with week, month, year, etc.
-			displayFormat: false, // defaults to unit's corresponding unitFormat below or override using pattern string from http://momentjs.com/docs/#/displaying/format/
+			displayFormat: false, // DEPRECATED
+
+			// defaults to unit's corresponding unitFormat below or override using pattern string from http://momentjs.com/docs/#/displaying/format/
+			displayFormats: {
+				'millisecond': 'SSS [ms]',
+				'second': 'h:mm:ss a', // 11:20:01 AM
+				'minute': 'h:mm:ss a', // 11:20:01 AM
+				'hour': 'MMM D, hA', // Sept 4, 5PM
+				'day': 'll', // Sep 4 2015
+				'week': 'll', // Week 46, or maybe "[W]WW - YYYY" ?
+				'month': 'MMM YYYY', // Sept 2015
+				'quarter': '[Q]Q - YYYY', // Q3
+				'year': 'YYYY', // 2015
+			}, 
 		},
 	};
 
@@ -139,35 +133,59 @@
 
 			this.ticks = [];
 			this.labelMoments = [];
+			this.unitScale = 1; // How much we scale the unit by, ie 2 means 2x unit per step 
 
 			this.buildLabelMoments();
 
 			// Set unit override if applicable
 			if (this.options.time.unit) {
 				this.tickUnit = this.options.time.unit || 'day';
-				this.displayFormat = time.unit[this.tickUnit].display;
+				this.displayFormat = this.options.time.displayFormats[this.tickUnit];
 				this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, this.tickUnit, true));
 			} else {
 				// Determine the smallest needed unit of the time
 				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
-				var labelCapacity = innerWidth / this.options.ticks.fontSize + 4;
+				var labelCapacity = innerWidth / (this.options.ticks.fontSize + 10);
 				var buffer = this.options.time.round ? 0 : 2;
 
 				// Start as small as possible
 				this.tickUnit = 'millisecond';
 				this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, this.tickUnit, true) + buffer);
-				this.displayFormat = time.unit[this.tickUnit].display;
+				this.displayFormat = this.options.time.displayFormats[this.tickUnit];
 
-				// Work our way up to comfort
-				helpers.each(time.units, function(format) {
-					if (this.tickRange <= labelCapacity) {
-						return;
+				var unitDefinitionIndex = 0;
+				var unitDefinition = time.units[unitDefinitionIndex];
+
+				// While we aren't ideal and we don't have units left 
+				while (unitDefinitionIndex < time.units.length) {
+					// Can we scale this unit. If `false` we can scale infinitely
+					//var canScaleUnit = ;
+					this.unitScale = 1;
+
+					if (helpers.isArray(unitDefinition.steps) && Math.ceil(this.tickRange / labelCapacity) < helpers.max(unitDefinition.steps)) {
+						// Use one of the prefedined steps
+						for (var idx = 1; idx < unitDefinition.steps.length; ++idx) {
+							if (unitDefinition.steps[idx] > Math.ceil(this.tickRange / labelCapacity)) {
+								this.unitScale = unitDefinition.steps[idx - 1];
+								break;
+							}
+						}
+
+						break;
+					} else if ((unitDefinition.maxStep === false) || (Math.ceil(this.tickRange / labelCapacity) < unitDefinition.maxStep)) {
+						// We have a max step. Scale this unit
+						this.unitScale = Math.ceil(this.tickRange / labelCapacity);
+						break;
+					} else {
+						// Move to the next unit up
+						++unitDefinitionIndex;
+						unitDefinition = time.units[unitDefinitionIndex];
+						
+						this.tickUnit = unitDefinition.name;
+						this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, this.tickUnit) + buffer);
+						this.displayFormat = this.options.time.displayFormats[unitDefinition.name];
 					}
-					this.tickUnit = format;
-					this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, this.tickUnit) + buffer);
-					this.displayFormat = time.unit[format].display;
-
-				}, this);
+				}
 			}
 
 			this.firstTick.startOf(this.tickUnit);
@@ -187,7 +205,15 @@
 
 			// For every unit in between the first and last moment, create a moment and add it to the ticks tick
 			for (var i = 0; i <= this.tickRange; ++i) {
-				this.ticks.push(this.firstTick.clone().add(i, this.tickUnit));
+				if (i % this.unitScale === 0) {
+					this.ticks.push(this.firstTick.clone().add(i, this.tickUnit));
+				} else if (i === this.tickRange) {
+					// Expand out the last one if not an exact multiple
+					this.tickRange = Math.ceil(this.tickRange / this.unitScale) * this.unitScale;
+					this.ticks.push(this.firstTick.clone().add(this.tickRange, this.tickUnit));
+					this.lastTick = this.ticks[this.ticks.length - 1].clone();
+					break;
+				}
 			}
 		},
 		// Get tooltip label
@@ -202,7 +228,7 @@
 		},
 		convertTicksToLabels: function() {
 			this.ticks = this.ticks.map(function(tick, index, ticks) {
-				var formattedTick = tick.format(this.options.time.displayFormat ? this.options.time.displayFormat : time.unit[this.tickUnit].display);
+				var formattedTick = tick.format(this.options.time.displayFormat ? this.options.time.displayFormat : this.options.time.displayFormats[this.tickUnit]);
 
 				if (this.options.ticks.userCallback) {
 					return this.options.ticks.userCallback(formattedTick, index, ticks);
@@ -251,4 +277,4 @@
 	});
 	Chart.scaleService.registerScaleType("time", TimeScale, defaultConfig);
 
-}).call(this);
+}).call(this, moment);

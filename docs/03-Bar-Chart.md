@@ -73,212 +73,111 @@ The label key on each dataset is optional, and can be used when generating a sca
 
 These are the customisation options specific to Bar charts. These options are merged with the [global chart configuration options](#getting-started-global-chart-configuration), and form the options of the chart.
 
-```javascript
-{
-	// Boolean - if true, bars stack on top of each other
-	stacked: false,
+The default options for bar chart are defined in `Chart.defaults.Bar`.
 
-	hover: {
-		// String - We use a label hover mode since the x axis displays data by the index in the dataset
-		mode: "label"
-	},
-
-	scales: {
-		// The bar chart officially supports only 1 x-axis but uses an array to keep the API consistent. Use a scatter chart if you need multiple x axes.
-		xAxes: [{
-			// String - type of axis to use. Should not be changed from 'dataset'.
-			scaleType: "dataset", // scatter should not use a dataset axis
-
-			// Boolean - if true, show the scale
-			display: true,
-
-			// String - position of the scale. possible options are "top" and "bottom" for dataset scales
-			position: "bottom",
-
-			// String - id of the axis so that data can bind to it
-			id: "x-axis-1", // need an ID so datasets can reference the scale
-
-			// grid line settings
-			gridLines: {
-				// Boolean - if true, show the grid lines
-				show: true,
-
-				// String - color of the grid lines
-				color: "rgba(0, 0, 0, 0.05)",
-
-				// Number - width of the grid lines
-				lineWidth: 1,
-
-				// Boolean - if true draw lines on the chart area
-				drawOnChartArea: true,
-
-				// Boolean - if true draw ticks in the axis area
-				drawTicks: true,
-
-				// Number - width of the grid line for the first index (index 0)
-				zeroLineWidth: 1,
-
-				// String - color of the grid line for the first index
-				zeroLineColor: "rgba(0,0,0,0.25)",
-
-				// Boolean - if true, offset labels from grid lines
-				offsetGridLines: false,
-			},
-
-			// label settings
-			labels: {
-				// Boolean - if true show labels
-				show: true,
-
-				// String - template string for labels
-				template: "<%=value%>",
-
-				// Number - label font size
-				fontSize: 12,
-
-				// String - label font style
-				fontStyle: "normal",
-
-				// String - label font color
-				fontColor: "#666",
-
-				// String - label font family
-				fontFamily: "Helvetica Neue",
-			},
-		}],
-		yAxes: [{
-			// String - type of axis. 'linear' is the default but extensions may provide other types such as logarithmic
-			scaleType: "linear",
-
-			// Boolean - if true, show the scale
-			display: true,
-
-			// String - position of axis. Vertical axes can have either "left" or "right"
-			position: "left",
-
-			// ID of the axis for data binding
-			id: "y-axis-1",
-
-			// grid line settings
-			gridLines: {
-				// Boolean - if true, show the grid lines
-				show: true,
-
-				// String - color of the grid lines
-				color: "rgba(0, 0, 0, 0.05)",
-
-				// Number - width of the grid lines
-				lineWidth: 1,
-
-				// Boolean - if true draw lines on the chart area
-				drawOnChartArea: true,
-
-				// Boolean - if true draw ticks in the axis area
-				drawTicks: true,
-
-				// Number - width of the grid line representing a numerical value of 0
-				zeroLineWidth: 1,
-
-				// String - color of the grid line representing a numerical value of 0
-				zeroLineColor: "rgba(0,0,0,0.25)",
-			},
-
-			// Boolean - if true ensures that the scale always has a 0 point
-			beginAtZero: false,
-
-			// Object - if specified, allows the user to override the step generation algorithm.
-			//			Contains the following values
-			//				start: // number to start at
-			//				stepWidth: // size of step
-			//				steps: // number of steps
-			override: null,
-
-			// label settings
-			labels: {
-				// Boolean - if true show labels
-				show: true,
-
-				// String - template string for labels
-				template: "<%=value%>",
-
-				// Function - if specified this is passed the tick value, index, and the array of all tick values. Returns a string that is used as the label for that value
-				userCallback: null,
-
-				// Number - label font size
-				fontSize: 12,
-
-				// String - label font style
-				fontStyle: "normal",
-
-				// String - label font color
-				fontColor: "#666",
-
-				// String - label font family
-				fontFamily: "Helvetica Neue",
-			},
-		}],
-	},
-};
-```
+Name | Type | Default | Description
+--- |:---:| --- | ---
+stacked | Boolean | false |
+*hover*.mode | String | "label" | Label's hover mode. "label" is used since the x axis displays data by the index in the dataset.
+scales | Array | - | -
+*scales*.xAxes | Array |  | The bar chart officially supports only 1 x-axis but uses an array to keep the API consistent. Use a scatter chart if you need multiple x axes.
+*Options for xAxes* | | |
+type | String | "Category" | As defined in [Scales](#scales-category-scale).
+display | Boolean | true | If true, show the scale.
+position | String | "bottom" | Position of the scale. Options are "top" and "bottom" for dataset scales.
+id | String | "x-axis-1" | Id of the axis so that data can bind to it
+categoryPercentage | Number | 0.8 | Percent (0-1) of the available width (the space between the gridlines for small datasets) for each data-point to use for the bars. [Read More](#bar-chart-barpercentage-vs-categorypercentage)
+barPercentage | Number | 0.9 | Percent (0-1) of the available width each bar should be within the category percentage. 1.0 will take the whole category width and put the bars right next to each other. [Read More](#bar-chart-barpercentage-vs-categorypercentage)
+gridLines | Array |  [See Scales](#scales) |
+*gridLines*.offsetGridLines | Boolean | true | If true, the bars for a particular data point fall between the grid lines. If false, the grid line will go right down the middle of the bars.
+scaleLabel | Array | [See Scales](#scales) |
+ticks | Array |  [See Scales](#scales) |
+| | |
+*scales*.yAxes | Array | `[{ type: "linear" }]` |
+*Options for xAxes* | | |
+type | String | "linear" | As defined in [Scales](#scales-linear-scale).
+display | Boolean | true | If true, show the scale.
+position | String | "left" | Position of the scale. Options are "left" and "right" for dataset scales.
+id | String | "y-axis-1" | Id of the axis so that data can bind to it.
+gridLines | Array |  [See Scales](#scales) |
+scaleLabel | Array | [See Scales](#scales) |
+ticks | Array |  [See Scales](#scales) |
 
 You can override these for your `Chart` instance by passing a second argument into the `Bar` method as an object with the keys you want to override.
 
 For example, we could have a bar chart without a stroke on each bar by doing the following:
 
 ```javascript
-new Chart(ctx).Bar({
+new Chart(ctx,{
+	type:"bar",
 	data: data,
 	options: {
-		barShowStroke: false
+		scales: {
+				xAxes: [{
+						stacked: true,
+				}],
+				yAxes: [{
+						stacked: true
+				}]
+			}
+		}
 	}
 });
 // This will create a chart with all of the default options, merged from the global config,
-//  and the Bar chart defaults but this particular instance will have `barShowStroke` set to false.
+//  and the Bar chart defaults but this particular instance will have `stacked` set to true
+// for both x and y axes.
 ```
 
 We can also change these defaults values for each Bar type that is created, this object is available at `Chart.defaults.Bar`.
 
+#### barPercentage vs categoryPercentage
+
+The following shows the relationship between the bar percentage option and the category percentage option.
+
+```text
+// categoryPercentage: 1.0
+// barPercentage: 1.0
+Bar:          | 1.0 | 1.0 |
+Category: 	|    1.0    |   
+Sample:	   |===========|
+
+// categoryPercentage: 1.0
+// barPercentage: 0.5
+Bar:             |.5|  |.5|
+Category: 	|      1.0     |   
+Sample:	   |==============|
+
+// categoryPercentage: 0.5
+// barPercentage: 1.0
+Bar:              |1.||1.|
+Category:     	|  .5  |   
+Sample:	   |==============|
+```
 ### Prototype methods
 
-#### .getBarsAtEvent( event )
+#### .getElementsAtEvent( event )
 
-Calling `getBarsAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the bar elements that are at that the same position of that event.
+Calling `getElementsAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the point elements that are at that the same position of that event.
 
 ```javascript
 canvas.onclick = function(evt){
-	var activeBars = myBarChart.getBarsAtEvent(evt);
-	// => activeBars is an array of bars on the canvas that are at the same position as the click event.
+	var activePoints = myLineChart.getElementsAtEvent(evt);
+	// => activePoints is an array of points on the canvas that are at the same position as the click event.
 };
 ```
 
 This functionality may be useful for implementing DOM based tooltips, or triggering custom behaviour in your application.
+
+#### .getElementAtEvent( event )
+Calling `getElementAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the single element at the event position. If there are multiple items within range, only the first is returned
 
 #### .update( )
 
 Calling `update()` on your Chart instance will re-render the chart with any updated values, allowing you to edit the value of multiple existing points, then render those in one animated render loop.
 
 ```javascript
-myBarChart.datasets[0].bars[2].value = 50;
+myBarChart.data.datasets[0].data[2] = 50;
 // Would update the first dataset's value of 'March' to be 50
 myBarChart.update();
 // Calling update now animates the position of March from 90 to 50.
-```
-
-#### .addData( valuesArray, label )
-
-Calling `addData(valuesArray, label)` on your Chart instance passing an array of values for each dataset, along with a label for those bars.
-
-```javascript
-// The values array passed into addData should be one for each dataset in the chart
-myBarChart.addData([40, 60], "August");
-// The new data will now animate at the end of the chart.
-```
-
-#### .removeData( )
-
-Calling `removeData()` on your Chart instance will remove the first value for all datasets on the chart.
-
-```javascript
-myBarChart.removeData();
-// The chart will now animate and remove the first bar
 ```

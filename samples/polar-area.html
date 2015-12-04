@@ -17,7 +17,7 @@
     <div>
         <h3>Legend</h3>
         <div id="legendContainer">
-            
+
         </div>
     </div>
     <script>
@@ -60,9 +60,12 @@
         options: {
             responsive: true,
             scale: {
-                beginAtZero: true,
-                reverse: false
-            }
+              ticks: {
+                beginAtZero: true
+              },
+              reverse: false
+            },
+            animateRotate:false
         }
     };
 

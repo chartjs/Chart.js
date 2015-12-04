@@ -42,27 +42,26 @@ var myDoughnutChart = new Chart(ctx[1], {
 
 ```javascript
 var data = {
-	datasets: [
-		{
-			data: [300, 50, 100],
-			backgroundColors: [
-				"#F7464A",
-				"#46BFBD",
-				"#FDB45C"
-			],
-			hoverBackgroundColor:[
-				 "#FF5A5E",
-				  "#5AD3D1",
-					"#FFC870"
-			]
-		},
-		labels: [
-			"Red",
-			"Green",
-			"Yellow"
-		]
-	]
-}
+    labels: [
+        "Red",
+        "Green",
+        "Yellow"
+    ],
+    datasets: [
+        {
+            data: [300, 50, 100],
+            backgroundColor: [
+                "#F7464A",
+                "#46BFBD",
+                "#FDB45C"
+            ],
+            hoverBackgroundColor: [
+                "#FF5A5E",
+                "#5AD3D1",
+                "#FFC870"
+            ]
+        }]
+};
 ```
 
 For a pie chart, you must pass in an array of objects with a value and an optional color property. The value attribute should be a number, Chart.js will total all of the numbers and calculate the relative proportion of each. The color attribute should be a string. Similar to CSS, for this string you can use HEX notation, RGB, RGBA or HSL.
@@ -71,44 +70,25 @@ For a pie chart, you must pass in an array of objects with a value and an option
 
 These are the customisation options specific to Pie & Doughnut charts. These options are merged with the [global chart configuration options](#getting-started-global-chart-configuration), and form the options of the chart.
 
-```javascript
-{
-	//Boolean - Whether we should show a stroke on each segment
-	segmentShowStroke : true,
+Name | Type | Default | Description
+--- | --- | --- | ---
+cutoutPercentage | Number | 50 - for doughnut, 0 - for pie | The percentage of the chart that is cut out of the middle.
+scale | Array | [See Scales](#scales) and [Defaults for Radial Linear Scale](#getting-started-radial-linear-scale) | Options for the one scale used on the chart. Use this to style the ticks, labels, and grid.
+*scale*.type | String |"radialLinear" | As defined in ["Radial Linear"](#scales-radial-linear-scale).
+*scale*.lineArc | Boolean | true | When true, lines are arced compared to straight when false.
+*animation*.animateRotate | Boolean |true | If true, will animate the rotation of the chart.
+*animation*.animateScale | Boolean | false | If true, will animate scaling the Doughnut from the centre.
 
-	//String - The colour of each segment stroke
-	segmentStrokeColor : "#fff",
-
-	//Number - The width of each segment stroke
-	segmentStrokeWidth : 2,
-
-	//Number - The percentage of the chart that we cut out of the middle
-	percentageInnerCutout : 50, // This is 0 for Pie charts
-
-	//Number - Amount of animation steps
-	animationSteps : 100,
-
-	//String - Animation easing effect
-	animationEasing : "easeOutBounce",
-
-	//Boolean - Whether we animate the rotation of the Doughnut
-	animateRotate : true,
-
-	//Boolean - Whether we animate scaling the Doughnut from the centre
-	animateScale : false,
-	{% raw %}
-	//String - A legend template
-	legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
-	{% endraw %}
-}
-```
 You can override these for your `Chart` instance by passing a second argument into the `Doughnut` method as an object with the keys you want to override.
 
 For example, we could have a doughnut chart that animates by scaling out from the centre like so:
 
 ```javascript
-new Chart(ctx).Doughnut(data, {
-	animateScale: true
+new Chart(ctx,{
+	type:"doughnut",
+	animation:{
+		animateScale:true
+	}
 });
 // This will create a chart with all of the default options, merged from the global config,
 // and the Doughnut chart defaults but this particular instance will have `animateScale` set to `true`.

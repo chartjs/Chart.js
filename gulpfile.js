@@ -13,7 +13,8 @@ var gulp = require('gulp'),
 	fs = require('fs'),
 	package = require('./package.json'),
 	bower = require('./bower.json'),
-	karma = require('gulp-karma');
+	karma = require('gulp-karma'),
+	umd = require('gulp-umd');
 
 var srcDir = './src/';
 var testDir = './test/';
@@ -27,7 +28,6 @@ var srcFiles = [
 	'./node_modules/color/dist/color.min.js',
 	'./src/core/core.js',
 	'./src/core/core.helpers.js',
-	'./src/core/core.chart.js',
 	'./src/core/core.element.js',
 	'./src/core/**',
 	'./src/controllers/**',
@@ -73,6 +73,13 @@ function buildTask() {
 	return gulp.src(srcFiles)
 		.pipe(concat('Chart.js'))
 		.pipe(replace('{{ version }}', package.version))
+		.pipe(umd({
+			// We want a global always to ensure that we match previous behaviour
+			templateName: 'returnExportsGlobal',
+			dependencies: function() {
+				return ['moment']
+			}
+		}))
 		.pipe(gulp.dest(outputDir))
 		.pipe(uglify({
 			preserveComments: 'some'

@@ -246,9 +246,10 @@
 		})(),
 		warn = helpers.warn = function(str) {
 			//Method for warning of errors
-			if (window.console && typeof window.console.warn === "function") console.warn(str);
+			if (console && typeof console.warn === "function") {
+				console.warn(str);
+			}
 		},
-		amd = helpers.amd = (typeof define === 'function' && define.amd),
 		//-- Math methods
 		isNumber = helpers.isNumber = function(n) {
 			return !isNaN(parseFloat(n)) && isFinite(n);
@@ -333,7 +334,7 @@
 
 			var d01 = Math.sqrt(Math.pow(current.x - previous.x, 2) + Math.pow(current.y - previous.y, 2));
 			var d12 = Math.sqrt(Math.pow(next.x - current.x, 2) + Math.pow(next.y - current.y, 2));
-			
+
 			var s01 = d01 / (d01 + d12);
 			var s12 = d12 / (d01 + d12);
 
@@ -624,7 +625,7 @@
 				canvas = evt.currentTarget || evt.srcElement,
 				boundingRect = canvas.getBoundingClientRect();
 
-			if (e.touches) {
+			if (e.touches && e.touches.length > 0) {
 				mouseX = e.touches[0].clientX;
 				mouseY = e.touches[0].clientY;
 
@@ -634,7 +635,7 @@
 			}
 
 			// Scale mouse coordinates into canvas coordinates
-			// by following the pattern laid out by 'jerryj' in the comments of 
+			// by following the pattern laid out by 'jerryj' in the comments of
 			// http://www.html5canvastutorials.com/advanced/html5-canvas-mouse-coordinates/
 
 			// We divide by the current device pixel ratio, because the canvas is scaled up by that amount in each direction. However
@@ -741,12 +742,12 @@
 			var ctx = chart.ctx;
 			var width = chart.canvas.width;
 			var height = chart.canvas.height;
-			chart.currentDevicePixelRatio = window.devicePixelRatio || 1;
+			var pixelRatio = chart.currentDevicePixelRatio = window.devicePixelRatio || 1;
 
-			if (window.devicePixelRatio !== 1) {
-				ctx.canvas.height = height * window.devicePixelRatio;
-				ctx.canvas.width = width * window.devicePixelRatio;
-				ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+			if (pixelRatio !== 1) {
+				ctx.canvas.height = height * pixelRatio;
+				ctx.canvas.width = width * pixelRatio;
+				ctx.scale(pixelRatio, pixelRatio);
 
 				ctx.canvas.style.width = width + 'px';
 				ctx.canvas.style.height = height + 'px';
@@ -754,7 +755,7 @@
 				// Store the device pixel ratio so that we can go backwards in `destroy`.
 				// The devicePixelRatio changes with zoom, so there are no guarantees that it is the same
 				// when destroy is called
-				chart.originalDevicePixelRatio = chart.originalDevicePixelRatio || window.devicePixelRatio;
+				chart.originalDevicePixelRatio = chart.originalDevicePixelRatio || pixelRatio;
 			}
 		},
 		//-- Canvas methods
@@ -787,11 +788,11 @@
 			ctx.closePath();
 		},
 		color = helpers.color = function(color) {
-			if (!window.Color) {
+			if (!root.Color) {
 				console.log('Color.js not found!');
 				return color;
 			}
-			return window.Color(color);
+			return root.Color(color);
 		},
 		addResizeListener = helpers.addResizeListener = function(node, callback) {
 			// Hide an iframe before the node

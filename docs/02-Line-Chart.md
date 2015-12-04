@@ -15,7 +15,7 @@ Often, it is used to show trend data, and the comparison of two data sets.
 ```javascript
 var myLineChart = new Chart(ctx, {
 	type: 'line',
-	data: data, 
+	data: data,
 	options: options
 });
 ```
@@ -23,7 +23,7 @@ var myLineChart = new Chart(ctx, {
 Alternatively a line chart can be created using syntax similar to the v1.0 syntax
 ```javascript
 var myLineChart = Chart.Line(ctx, {
-	data: data, 
+	data: data,
 	options: options
 });
 ```
@@ -113,37 +113,22 @@ The label key on each dataset is optional, and can be used when generating a sca
 
 These are the customisation options specific to Line charts. These options are merged with the [global chart configuration options](#getting-started-global-chart-configuration), and form the options of the chart.
 
-```javascript
-{
-	// Boolean - if true, line stack on top of each other along the y axis
-	stacked: false,
+The default options for line chart are defined in `Chart.defaults.Line`.
 
-	hover: {
-		// String - We use a label hover mode since the x axis displays data by the index in the dataset
-		mode: "label"
-	},
-
-	scales: {
-		// Defines all of the x axes used in the chart. See the [scale documentation](#getting-started-scales) for details on the available options
-		xAxes: [{
-			// String - type of scale. Built in types are 'category' and 'linear'
-			type: 'category', 
-
-			// String - id of the axis so that data can bind to it
-    		id: "x-axis-1", // need an ID so datasets can reference the scale
-		}],
-
-		// Defines all of the y axes used in the chart.
-		// By default, the line chart uses a linear scale along the y axis
-		yAxes: [{
-			type: 'linear',
-
-			// String - ID of the axis for data binding
-    		id: "y-axis-1",
-		}],
-	}
-};
-```
+Name | Type | Default | Description
+--- | --- | --- | ---
+stacked | Boolean | false | If true, lines stack on top of each other along the y axis.
+*hover*.mode | String | "label" | Label's hover mode. "label" is used since the x axis displays data by the index in the dataset.
+scales | - | - | -
+*scales*.xAxes | Array | `[{type:"category","id":"x-axis-1"}]` | Defines all of the x axes used in the chart. See the [scale documentation](#getting-started-scales) for details on the available options.
+*Options for xAxes* | | |
+type | String | "category" | As defined in ["Category"](#scales-category-scale).
+id | String | "x-axis-1" | Id of the axis so that data can bind to it.
+ | | |
+ *scales*.yAxes | Array | `[{type:"linear","id":"y-axis-1"}]` | Defines all of the x axes used in the chart. See the [scale documentation](#getting-started-scales) for details on the available options.
+ *Options for yAxes* | | |
+ type | String | "linear" | As defined in ["Linear"](#scales-linear-scale).
+ id | String | "y-axis-1" | Id of the axis so that data can bind to it.
 
 You can override these for your `Chart` instance by passing a member `options` into the `Line` method.
 
@@ -152,10 +137,10 @@ For example, we could have a line chart display without an x axis by doing the f
 ```javascript
 new Chart(ctx, {
 	type: 'line',
-	data: data, 
+	data: data,
 	options: {
 		xAxes: [{
-			show: false
+			display: false
 		}]
 	}
 });
@@ -181,32 +166,16 @@ canvas.onclick = function(evt){
 
 This functionality may be useful for implementing DOM based tooltips, or triggering custom behaviour in your application.
 
+#### .getElementAtEvent( event )
+Calling `getElementAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the single element at the event position. If there are multiple items within range, only the first is returned
+
 #### .update( )
 
-Calling `update()` on your Chart instance will re-render the chart with any updated values, allowing you to edit the value of multiple existing points, then render those in one animated render loop.
+Calling `update()` on your Chart instance will re-render the chart with any updated values, allowing you to edit the value of multiple existing points, then render those in one animated render loop. You can safely call `update()` after changing the entire data object on the chart.
 
 ```javascript
-myLineChart.datasets[0].points[2].value = 50;
+myLineChart.data.datasets[0].data[2] = 50;
 // Would update the first dataset's value of 'March' to be 50
 myLineChart.update();
 // Calling update now animates the position of March from 90 to 50.
-```
-
-#### .addData( valuesArray, label )
-
-Calling `addData(valuesArray, label)` on your Chart instance passing an array of values for each dataset, along with a label for those points.
-
-```javascript
-// The values array passed into addData should be one for each dataset in the chart
-myLineChart.addData([40, 60], "August");
-// This new data will now animate at the end of the chart.
-```
-
-#### .removeData( )
-
-Calling `removeData()` on your Chart instance will remove the first value for all datasets on the chart.
-
-```javascript
-myLineChart.removeData();
-// The chart will remove the first point and animate other points into place
 ```

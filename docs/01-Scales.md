@@ -1,68 +1,54 @@
 ---
 title: Getting started
-anchor: getting-started
+anchor: scales
 ---
 
 ###Scales
 
 Scales in v2.0 of Chart.js are significantly more powerful, but also different than those of v1.0.
 - Multiple x & y axes are now supported.
-- A built-in label auto-skip feature now detects would-be overlapping ticks and labels and removes every nth label to keep things displaying normally. 
-- Scale labels
+- A built-in label auto-skip feature now detects would-be overlapping ticks and labels and removes every nth label to keep things displaying normally.
+- Scale titles are now supported
 
 Every scale extends a core scale class with the following options:
 
-```javascript
-Chart.defaults.scale = {
-	display: true,
+Name | Type | Default | Description
+--- |:---:| --- | ---
+type | String | Chart specific. | Type of scale being employed. Custom scales can be created and registered with a string key. Options: ["category"](#scales-category-scale), ["linear"](#scales-linear-scale), ["logarithmic"](#scales-logarithmic-scale), ["time"](#scales-time-scale), ["radialLinear"](#scales-radial-linear-scale)
+display | Boolean | true | If true, show the scale including gridlines, ticks, and labels. Overrides *gridLines.display*, *scaleLabel.display*, and *ticks.display*.
+**gridLines** | Array | - | Options for the grid lines that run perpendicular to the axis.
+*gridLines*.display | Boolean | true |
+*gridLines*.color | Color | "rgba(0, 0, 0, 0.1)" | Color of the grid lines.
+*gridLines*.lineWidth | Number | 1 | Stroke width of grid lines
+*gridLines*.drawOnChartArea | Boolean | true | If true, draw lines on the chart area inside the axis lines. This is useful when there are multiple axes and you need to control which grid lines are drawn
+*gridLines*.drawTicks | Boolean | true |  If true, draw lines beside the ticks in the axis area beside the chart.
+*gridLines*.zeroLineWidth | Number | 1 | Stroke width of the grid line for the first index (index 0).
+*gridLines*.zeroLineColor | Color | "rgba(0, 0, 0, 0.25)" | Stroke color of the grid line for the first index (index 0).
+*gridLines*.offsetGridLines | Boolean | false | If true, offset labels from grid lines.
+**scaleLabel** | Array | | Title for the entire axis.
+*scaleLabel*.display | Boolean | false | 
+*scaleLabel*.labelString | String | "" | The text for the title. (i.e. "# of People", "Response Choices")
+*scaleLabel*.fontColor | Color | "#666" | Font color for the scale title.
+*scaleLabel*.fontFamily| String | "Helvetica Neue" | Font family for the scale title, follows CSS font-family options.
+*scaleLabel*.fontSize | Number | 12 | Font size for the scale title.
+*scaleLabel*.fontStyle | String | "normal" | Font style for the scale title, follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit).
+**ticks** | Array | | Settings for the labels that run along the axis.
+*ticks*.beginAtZero | Boolean | false | If true the scale will be begin at 0, if false the ticks will begin at your smallest data value.
+*ticks*.fontColor | Color | "#666" | Font color for the tick labels.
+*ticks*.fontFamily | String | "Helvetica Neue" | Font family for the tick labels, follows CSS font-family options.
+*ticks*.fontSize | Number | 12 | Font size for the tick labels.
+*ticks*.fontStyle | String | "normal" | Font style for the tick labels, follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit).
+*ticks*.maxRotation | Number | 90 | Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. *Note: Only applicable to horizontal scales.*
+*ticks*.minRotation | Number |  20 | *currently not-implemented* Minimum rotation for tick labels when condensing is necessary.  *Note: Only applicable to horizontal scales.*
+*ticks*.padding | Number | 10 | Padding between the tick label and the axis. *Note: Only applicable to horizontal scales.*
+*ticks*.mirror | Boolean | false | Flips tick labels around axis, displaying the labels inside the chart instead of outside. *Note: Only applicable to vertical scales.*
+*ticks*.reverse | Boolean | false | Reverses order of tick labels.
+*ticks*.display | Boolean | true | If true, show the ticks.
+*ticks*.suggestedMin | Number | - | User defined minimum number for the scale, overrides minimum value *except for if* it is higher than the minimum value.
+*ticks*.suggestedMax | Number | - | User defined maximum number for the scale, overrides maximum value *except for if* it is lower than the maximum value.
+*ticks*.callback | Function | `function(value) { return '' + value; } ` | Returns the string representation of the tick value as it should be displayed on the chart.
 
-	// grid line settings
-	gridLines: {
-		show: true,
-		color: "rgba(0, 0, 0, 0.1)",
-		lineWidth: 1,
-		drawOnChartArea: true,
-		drawTicks: true,
-		zeroLineWidth: 1,
-		zeroLineColor: "rgba(0,0,0,0.25)",
-		offsetGridLines: false,
-	},
-
-	// scale label
-	scaleLabel: {
-		fontColor: '#666',
-		fontFamily: 'Helvetica Neue',
-		fontSize: 12,
-		fontStyle: 'normal',
-
-		// actual label
-		labelString: '',
-
-		// display property
-		show: false,
-	},
-
-	// label settings
-	ticks: {
-		beginAtZero: false,
-		fontSize: 12,
-		fontStyle: "normal",
-		fontColor: "#666",
-		fontFamily: "Helvetica Neue",
-		maxTicksLimit: 11,
-		maxRotation: 90,
-		minRotation: 20,
-		mirror: false,
-		padding: 10,
-		reverse: false,
-		show: true,
-		template: "<%=value%>",
-		userCallback: false,
-	},
-};
-```
-
-The `userCallback` method may be used for advanced tick customization. The following callback would display every label in scientific notation
+The `callback` method may be used for advanced tick customization. The following callback would display every label in scientific notation
 ```javascript
 {
     scales: {
@@ -98,6 +84,32 @@ The linear scale extends the core scale class with the following tick template:
 ```javascript
 {
 	position: "left",
+    ticks: {
+        callback: function(tickValue, index, ticks) {
+            var delta = ticks[1] - ticks[0];
+
+            // If we have a number like 2.5 as the delta, figure out how many decimal places we need
+            if (Math.abs(delta) > 1) {
+                if (tickValue !== Math.floor(tickValue)) {
+                    // not an integer
+                    delta = tickValue - Math.floor(tickValue);
+                }
+            }
+
+            var logDelta = helpers.log10(Math.abs(delta));
+            var tickString = '';
+
+            if (tickValue !== 0) {
+                var numDecimal = -1 * Math.floor(logDelta);
+                numDecimal = Math.max(Math.min(numDecimal, 20), 0); // toFixed has a max of 20 decimal places
+                tickString = tickValue.toFixed(numDecimal);
+            } else {
+            	tickString = '0'; // never show decimal places for 0
+            }
+
+      		return tickString;
+      	}
+    }
 }
 ```
 
@@ -110,7 +122,15 @@ The log scale extends the core scale class with the following tick template:
 {
 	position: "left",
 	ticks: {
-		template: "<%var remain = value / (Math.pow(10, Math.floor(Chart.helpers.log10(value))));if (remain === 1 || remain === 2 || remain === 5) {%><%=value.toExponential()%><%} else {%><%= null %><%}%>",
+		callback: function(value) {
+			var remain = value / (Math.pow(10, Math.floor(Chart.helpers.log10(value))));
+
+        	if (remain === 1 || remain === 2 || remain === 5) {
+        		return value.toExponential();
+        	} else {
+        		return '';
+        	}
+        }
 	}
 }
 ```
@@ -127,11 +147,22 @@ The time scale extends the core scale class with the following tick template:
 		// string/callback - By default, date objects are expected. You may use a pattern string from http://momentjs.com/docs/#/parsing/string-format/ to parse a time string format, or use a callback function that is passed the label, and must return a moment() instance.
 		format: false,
 		// string - By default, unit will automatically be detected.  Override with 'week', 'month', 'year', etc. (see supported time measurements)
-		unit: false, 
+		unit: false,
 		// string - By default, no rounding is applied.  To round, set to a supported time unit eg. 'week', 'month', 'year', etc.
-		round: false, 
-		// string - By default, is set to the detected (or manually overridden) time unit's `display` property (see supported time measurements).  To override, use a pattern string from http://momentjs.com/docs/#/displaying/format/
-		displayFormat: false
+		round: false,
+		// Moment js for each of the units. Replaces `displayFormat`
+		// To override, use a pattern string from http://momentjs.com/docs/#/displaying/format/
+		displayFormats: {
+				'millisecond': 'SSS [ms]',
+				'second': 'h:mm:ss a', // 11:20:01 AM
+				'minute': 'h:mm:ss a', // 11:20:01 AM
+				'hour': 'MMM D, hA', // Sept 4, 5PM
+				'day': 'll', // Sep 4 2015
+				'week': 'll', // Week 46, or maybe "[W]WW - YYYY" ?
+				'month': 'MMM YYYY', // Sept 2015
+				'quarter': '[Q]Q - YYYY', // Q3
+				'year': 'YYYY', // 2015
+			}, 
 	},
 }
 ```
@@ -191,7 +222,7 @@ The radial linear scale extends the core scale class with the following tick tem
 	position: "chartArea",
 
 	angleLines: {
-		show: true,
+		display: true,
 		color: "rgba(0, 0, 0, 0.1)",
 		lineWidth: 1
 	},
@@ -209,7 +240,7 @@ The radial linear scale extends the core scale class with the following tick tem
 
 		//Number - The backdrop padding to the side of the label in pixels
 		backdropPaddingX: 2,
-		
+
 		//Number - Limit the maximum number of ticks
 		maxTicksLimit: 11,
 	},

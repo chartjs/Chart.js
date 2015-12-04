@@ -21,7 +21,7 @@ describe('Time scale tests', function() {
 				drawTicks: true,
 				lineWidth: 1,
 				offsetGridLines: false,
-				show: true,
+				display: true,
 				zeroLineColor: "rgba(0,0,0,0.25)",
 				zeroLineWidth: 1,
 			},
@@ -32,7 +32,7 @@ describe('Time scale tests', function() {
 				fontSize: 12,
 				fontStyle: 'normal',
 				labelString: '',
-				show: false,
+				display: false,
 			},
 			ticks: {
 				beginAtZero: false,
@@ -41,11 +41,10 @@ describe('Time scale tests', function() {
 				fontSize: 12,
 				fontStyle: "normal",
 				maxRotation: 90,
-				minRotation: 20,
 				mirror: false,
 				padding: 10,
 				reverse: false,
-				show: true,
+				display: true,
 				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
 			},
 			time: {
@@ -53,6 +52,17 @@ describe('Time scale tests', function() {
 				unit: false,
 				round: false,
 				displayFormat: false,
+				displayFormats: {
+					'millisecond': 'SSS [ms]',
+					'second': 'h:mm:ss a', // 11:20:01 AM
+					'minute': 'h:mm:ss a', // 11:20:01 AM
+					'hour': 'MMM D, hA', // Sept 4, 5PM
+					'day': 'll', // Sep 4 2015
+					'week': 'll', // Week 46, or maybe "[W]WW - YYYY" ?
+					'month': 'MMM YYYY', // Sept 2015
+					'quarter': '[Q]Q - YYYY', // Q3
+					'year': 'YYYY', // 2015
+				},
 			}
 		});
 

@@ -219,7 +219,7 @@ describe('Core helper tests', function() {
 						drawTicks: true, // draw ticks extending towards the label
 						lineWidth: 1,
 						offsetGridLines: false,
-						show: true,
+						display: true,
 						zeroLineColor: "rgba(0,0,0,0.25)",
 						zeroLineWidth: 1,
 					},
@@ -230,7 +230,7 @@ describe('Core helper tests', function() {
 						fontSize: 12,
 						fontStyle: 'normal',
 						labelString: '',
-						show: false,
+						display: false,
 					},
 					ticks: {
 						beginAtZero: false,
@@ -239,11 +239,10 @@ describe('Core helper tests', function() {
 						fontSize: 12,
 						fontStyle: "normal",
 						maxRotation: 90,
-						minRotation: 20,
 						mirror: false,
 						padding: 10,
 						reverse: false,
-						show: true,
+						display: true,
 						callback: merged.scales.yAxes[1].ticks.callback, // make it nicer, then check explicitly below
 					},
 					type: 'linear'
@@ -256,7 +255,7 @@ describe('Core helper tests', function() {
 						drawTicks: true, // draw ticks extending towards the label
 						lineWidth: 1,
 						offsetGridLines: false,
-						show: true,
+						display: true,
 						zeroLineColor: "rgba(0,0,0,0.25)",
 						zeroLineWidth: 1,
 					},
@@ -267,7 +266,7 @@ describe('Core helper tests', function() {
 						fontSize: 12,
 						fontStyle: 'normal',
 						labelString: '',
-						show: false,
+						display: false,
 					},
 					ticks: {
 						beginAtZero: false,
@@ -276,11 +275,10 @@ describe('Core helper tests', function() {
 						fontSize: 12,
 						fontStyle: "normal",
 						maxRotation: 90,
-						minRotation: 20,
 						mirror: false,
 						padding: 10,
 						reverse: false,
-						show: true,
+						display: true,
 						callback: merged.scales.yAxes[2].ticks.callback, // make it nicer, then check explicitly below
 					},
 					type: 'linear'
