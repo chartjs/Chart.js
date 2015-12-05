@@ -150,10 +150,11 @@
 			var resetModel = {
 				x: this.chart.chart.width / 2,
 				y: this.chart.chart.height / 2,
-				startAngle: Math.PI * -0.5, // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
+				startAngle: Math.PI * -0.5, // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function,
+				endAngle: Math.PI * -0.5,
 				circumference: (this.chart.options.animation.animateRotate) ? 0 : this.calculateCircumference(this.getDataset().data[index]),
 				outerRadius: (this.chart.options.animation.animateScale) ? 0 : this.outerRadius,
-				innerRadius: (this.chart.options.animation.animateScale) ? 0 : this.innerRadius,
+				innerRadius: (this.chart.options.animation.animateScale) ? 0 : this.innerRadius
 			};
 
 			helpers.extend(arc, {
