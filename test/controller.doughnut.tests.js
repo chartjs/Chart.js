@@ -103,36 +103,40 @@ describe('Doughnut controller tests', function() {
 			x: 50,
 			y: 100,
 			startAngle: Math.PI * -0.5,
+			endAngle: Math.PI * -0.5,
 			circumference: 2.166614539857563,
 			outerRadius: 49,
-			innerRadius: 36.75,
+			innerRadius: 36.75
 		});
 
 		expect(chart.data.datasets[1].metaData[1]._model).toEqual({
 			x: 50,
 			y: 100,
 			startAngle: Math.PI * -0.5,
+			endAngle: Math.PI * -0.5,
 			circumference: 3.2499218097863447,
 			outerRadius: 49,
-			innerRadius: 36.75,
+			innerRadius: 36.75
 		});
 
 		expect(chart.data.datasets[1].metaData[2]._model).toEqual({
 			x: 50,
 			y: 100,
 			startAngle: Math.PI * -0.5,
+			endAngle: Math.PI * -0.5,
 			circumference: 0,
 			outerRadius: 49,
-			innerRadius: 36.75,
+			innerRadius: 36.75
 		});
 
 		expect(chart.data.datasets[1].metaData[3]._model).toEqual({
 			x: 50,
 			y: 100,
 			startAngle: Math.PI * -0.5,
+			endAngle: Math.PI * -0.5,
 			circumference: 0.8666458159430251,
 			outerRadius: 49,
-			innerRadius: 36.75,
+			innerRadius: 36.75
 		});
 
 		controller.update();
