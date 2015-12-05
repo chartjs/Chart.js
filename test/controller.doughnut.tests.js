@@ -62,9 +62,11 @@ describe('Doughnut controller tests', function() {
 
 	it ('Should reset and update elements', function() {
 		var chart = {
-			chart: {
-				width: 100,
-				height: 200,
+			chartArea: {
+				left: 0,
+				top: 0,
+				right: 100,
+				bottom: 200,
 			},
 			data: {
 				datasets: [{
@@ -228,9 +230,11 @@ describe('Doughnut controller tests', function() {
 
 	it ('should draw all arcs', function() {
 		var chart = {
-			chart: {
-				width: 100,
-				height: 200,
+			chartArea: {
+				left: 0,
+				top: 0,
+				right: 100,
+				bottom: 200,
 			},
 			data: {
 				datasets: [{
@@ -275,9 +279,11 @@ describe('Doughnut controller tests', function() {
 
 	it ('should set the hover style of an arc', function() {
 		var chart = {
-			chart: {
-				width: 100,
-				height: 200,
+			chartArea: {
+				left: 0,
+				top: 0,
+				right: 100,
+				bottom: 200,
 			},
 			data: {
 				datasets: [{
@@ -354,9 +360,11 @@ describe('Doughnut controller tests', function() {
 
 	it ('should unset the hover style of an arc', function() {
 		var chart = {
-			chart: {
-				width: 100,
-				height: 200,
+			chartArea: {
+				left: 0,
+				top: 0,
+				right: 100,
+				bottom: 200,
 			},
 			data: {
 				datasets: [{
