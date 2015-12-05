@@ -124,7 +124,6 @@
 
 		beforeBuildLabels: helpers.noop,
 		buildLabels: function() {
-			// Convert ticks to strings
 			this.labels = this.chart.data.datasets.map(function(dataset) {
 				return this.options.labels.callback.call(this, dataset.label);
 			}, this);
@@ -292,6 +291,7 @@
 						if (dataset.hidden) {
 							// Strikethrough the text if hidden
 							ctx.beginPath();
+							ctx.lineWidth = 2;
 							ctx.moveTo(this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + cursor.x, cursor.y + (this.options.labels.fontSize / 2));
 							ctx.lineTo(this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + cursor.x + textWidth, cursor.y + (this.options.labels.fontSize / 2));
 							ctx.stroke();

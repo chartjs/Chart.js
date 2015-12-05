@@ -60,6 +60,7 @@
                     "#949FB1",
                     "#4D5360",
                 ],
+                label: 'Dataset 1'
             }, {
                 hidden: true,
                 data: [
@@ -76,6 +77,7 @@
                     "#949FB1",
                     "#4D5360",
                 ],
+                label: 'Dataset 2'
             }, {
                 data: [
                     randomScalingFactor(),
@@ -91,6 +93,7 @@
                     "#949FB1",
                     "#4D5360",
                 ],
+                label: 'Dataset 3'
             }],
             labels: [
                 "Red",
@@ -106,7 +109,7 @@
                 position: 'top',
                 title: {
                     display: true,
-                    text: 'Our 2 Favorite Datasets'
+                    text: 'Our Favorite Datasets'
                 }
             },
         }
@@ -145,6 +148,7 @@
         var newDataset = {
             backgroundColor: [],
             data: [],
+            label: 'New dataset ' + config.data.datasets.length,
         };
 
         for (var index = 0; index < config.data.labels.length; ++index) {
