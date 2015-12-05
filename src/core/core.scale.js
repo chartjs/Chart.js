@@ -334,7 +334,11 @@
 			}
 			// If it is in fact an object, dive in one more level
 			if (typeof(rawValue) === "object") {
-				return getRightValue(this.isHorizontal() ? rawValue.x : rawValue.y);
+				if (rawValue instanceof Date) {
+					return rawValue;
+				} else {
+					return getRightValue(this.isHorizontal() ? rawValue.x : rawValue.y);
+				}
 			}
 
 			// Value is good, return it
