@@ -111,7 +111,8 @@
 		},
 
 		update: function update(reset) {
-			this.chart.outerRadius = Math.max((helpers.min([this.chart.chart.width, this.chart.chart.height]) - this.chart.options.elements.arc.borderWidth / 2) / 2, 0);
+			var minSize = Math.min(this.chart.chartArea.right - this.chart.chartArea.left, this.chart.chartArea.bottom - this.chart.chartArea.top);
+			this.chart.outerRadius = Math.max((minSize - this.chart.options.elements.arc.borderWidth / 2) / 2, 0);
 			this.chart.innerRadius = Math.max(this.chart.options.cutoutPercentage ? (this.chart.outerRadius / 100) * (this.chart.options.cutoutPercentage) : 1, 0);
 			this.chart.radiusLength = (this.chart.outerRadius - this.chart.innerRadius) / this.getVisibleDatasetCount();
 
@@ -129,12 +130,15 @@
 		},
 		updateElement: function(arc, index, reset) {
 			var circumference = 1 / this.getDataset().data.length * 2;
+			var centerX = (this.chart.chartArea.left + this.chart.chartArea.right) / 2;
+			var centerY = (this.chart.chartArea.top + this.chart.chartArea.bottom) / 2;
+
 			var startAngle = (-0.5 * Math.PI) + (Math.PI * circumference) * index;
 			var endAngle = startAngle + (circumference * Math.PI);
 
 			var resetModel = {
-				x: this.chart.chart.width / 2,
-				y: this.chart.chart.height / 2,
+				x: centerX,
+				y: centerY,
 				innerRadius: 0,
 				outerRadius: this.chart.options.animateScale ? 0 : this.chart.scale.getDistanceFromCenterForValue(this.getDataset().data[index]),
 				startAngle: this.chart.options.animateRotate ? Math.PI * -0.5 : startAngle,
@@ -157,8 +161,8 @@
 
 				// Desired view properties
 				_model: reset ? resetModel : {
-					x: this.chart.chart.width / 2,
-					y: this.chart.chart.height / 2,
+					x: centerX,
+					y: centerY,
 					innerRadius: 0,
 					outerRadius: this.chart.scale.getDistanceFromCenterForValue(this.getDataset().data[index]),
 					startAngle: startAngle,
