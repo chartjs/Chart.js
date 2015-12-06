@@ -35,7 +35,6 @@
 		xPadding: 6,
 		caretSize: 5,
 		cornerRadius: 6,
-		xOffset: 10,
 		multiKeyBackground: '#fff',
 		callbacks: {
 			// Args are: (tooltipItems, data)
@@ -98,7 +97,6 @@
 					// Positioning
 					xPadding: options.tooltips.xPadding,
 					yPadding: options.tooltips.yPadding,
-					xOffset: options.tooltips.xOffset,
 
 					// Body
 					bodyColor: options.tooltips.bodyColor,
@@ -467,7 +465,7 @@
 					// Draw Legend-like boxes if needed
 					if (this._options.tooltips.mode != 'single') {
 						// Fill a white rect so that colours merge nicely if the opacity is < 1
-						ctx.fillStyle = helpers.color('#FFFFFF').alpha(opacity).rgbaString();
+						ctx.fillStyle = helpers.color(vm.legendColorBackground).alpha(opacity).rgbaString();
 						ctx.fillRect(xBase, yBase, vm.bodyFontSize, vm.bodyFontSize);
 
 						// Border
