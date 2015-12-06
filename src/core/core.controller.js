@@ -59,7 +59,7 @@
 			this.ensureScalesHaveIDs();
 			this.buildOrUpdateControllers();
 			this.buildScales();
-			this.buildLegends();
+			this.buildSurroundingItems();
 			this.updateLayout();
 			this.resetElements();
 			this.initToolTip();
@@ -170,18 +170,26 @@
 			Chart.scaleService.addScalesToLayout(this);
 		},
 
-		buildLegends: function() {
-			if (!this.options.legend) {
-				return;
+		buildSurroundingItems: function() {
+			if (this.options.title) {
+				this.titleBlock = new Chart.Title({
+					ctx: this.chart.ctx,
+					options: this.options.title,
+					chart: this
+				});
+
+				Chart.layoutService.addBox(this, this.titleBlock);
 			}
 
-			this.legend = new Chart.Legend({
-				ctx: this.chart.ctx,
-				options: this.options.legend,
-				chart: this,
-			});
+			if (this.options.legend) {
+				this.legend = new Chart.Legend({
+					ctx: this.chart.ctx,
+					options: this.options.legend,
+					chart: this,
+				});
 
-			Chart.layoutService.addBox(this, this.legend);
+				Chart.layoutService.addBox(this, this.legend);
+			}
 		},
 
 		updateLayout: function() {

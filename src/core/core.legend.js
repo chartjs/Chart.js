@@ -12,21 +12,6 @@
 		fullWidth: true, // marks that this box should take the full width of the canvas (pushing down other boxes)
 		onClick: false, // a callback will override the default behavior of toggling the datasets
 
-		title: {
-			position: 'top',
-			fontColor: '#666',
-			fontFamily: 'Helvetica Neue',
-			fontSize: 12,
-			fontStyle: 'bold',
-			padding: 10,
-
-			// actual title
-			text: '',
-
-			// display property
-			display: false,
-		},
-
 		labels: {
 			boxWidth: 40,
 			fontSize: 12,
@@ -136,7 +121,6 @@
 		fit: function() {
 
 			var ctx = this.ctx;
-			var titleFont = helpers.fontString(this.options.title.fontSize, this.options.title.fontStyle, this.options.title.fontFamily);
 			var labelFont = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
 
 			// Reset hit boxes
@@ -158,12 +142,6 @@
 
 			// Increase sizes here
 			if (this.isHorizontal()) {
-
-				// Title
-				if (this.options.title.display) {
-					this.minSize.height += this.options.title.fontSize + (this.options.title.padding * 2);
-				}
-
 				// Labels
 
 				// Width of each line of legend boxes. Labels wrap onto multiple lines when there are too many to fit on one
@@ -215,7 +193,7 @@
 				var ctx = this.ctx;
 				var cursor = {
 					x: this.left + ((this.width - this.lineWidths[0]) / 2),
-					y: this.top,
+					y: this.top + this.options.labels.padding,
 					line: 0,
 				};
 
@@ -223,17 +201,6 @@
 
 				// Horizontal
 				if (this.isHorizontal()) {
-
-					// Title Spacing if on top
-					if (this.options.title.display) {
-						if (this.options.title.position === 'top') {
-							cursor.y += this.options.title.fontSize + (this.options.title.padding * 2);
-						} else {
-							// bottom
-							cursor.y += this.options.labels.padding;
-						}
-					}
-
 					// Labels
 					ctx.textAlign = "left";
 					ctx.textBaseline = 'top';
@@ -299,48 +266,7 @@
 
 						cursor.x += width + (this.options.labels.padding);
 					}, this);
-
-					// Title Spacing if on bottom
-					if (this.options.title.display && this.options.title.position === 'bottom') {
-						cursor.y += this.options.title.fontSize + (this.options.title.padding * 2);
-					}
-
-					// Title
-					if (this.options.title.display) {
-
-						ctx.textAlign = "center";
-						ctx.textBaseline = 'middle';
-						ctx.fillStyle = this.options.title.fontColor; // render in correct colour
-						ctx.font = helpers.fontString(this.options.title.fontSize, this.options.title.fontStyle, this.options.title.fontFamily);
-
-						var titleX = this.left + ((this.right - this.left) / 2); // midpoint of the width
-						var titleY = this.options.title.position == 'bottom' ? this.bottom - (this.options.title.fontSize / 2) - this.options.title.padding : this.top + (this.options.title.fontSize / 2) + this.options.title.padding;
-
-						ctx.fillText(this.options.title.text, titleX, titleY);
-					}
-
-
 				} else {
-
-					// Title
-					if (this.options.title.display) {
-
-						// Draw the legend label
-						titleX = this.options.position == 'left' ? this.left + (this.options.title.fontSize / 2) : this.right - (this.options.title.fontSize / 2);
-						titleY = this.top + ((this.bottom - this.top) / 2);
-						var rotation = this.options.position == 'left' ? -0.5 * Math.PI : 0.5 * Math.PI;
-
-						ctx.save();
-						ctx.translate(titleX, titleY);
-						ctx.rotate(rotation);
-						ctx.textAlign = "center";
-						ctx.fillStyle = this.options.title.fontColor; // render in correct colour
-						ctx.font = helpers.fontString(this.options.title.fontSize, this.options.title.fontStyle, this.options.title.fontFamily);
-						ctx.textBaseline = 'middle';
-						ctx.fillText(this.options.title.text, 0, 0);
-						ctx.restore();
-
-					}
 
 				}
 			}
@@ -363,7 +289,6 @@
 							this.chart.data.datasets[i].hidden = !this.chart.data.datasets[i].hidden;
 
 							// We hid a dataset ... rerender the chart
-							//this.chart.render();
 							this.chart.update();
 							break;
 						}
