@@ -5,7 +5,7 @@
 		Chart = root.Chart,
 		helpers = Chart.helpers;
 
-	Chart.defaults.legend = {
+	Chart.defaults.global.legend = {
 
 		display: true,
 		position: 'top',
@@ -19,10 +19,8 @@
 			fontColor: "#666",
 			fontFamily: "Helvetica Neue",
 			padding: 10,
-			reverse: false,
-			display: true,
-			callback: function(value) {
-				return '' + value;
+			callback: function(dataset) {
+				return '' + dataset.label;
 			},
 		},
 	};
@@ -31,7 +29,7 @@
 
 		initialize: function(config) {
 			helpers.extend(this, config);
-			this.options = helpers.configMerge(Chart.defaults.legend, config.options);
+			this.options = helpers.configMerge(Chart.defaults.global.legend, config.options);
 
 			// Contains hit boxes for each dataset (in dataset order)
 			this.legendHitBoxes = [];
@@ -110,7 +108,7 @@
 		beforeBuildLabels: helpers.noop,
 		buildLabels: function() {
 			this.labels = this.chart.data.datasets.map(function(dataset) {
-				return this.options.labels.callback.call(this, dataset.label);
+				return this.options.labels.callback.call(this, dataset);
 			}, this);
 		},
 		afterBuildLabels: helpers.noop,

@@ -5,9 +5,8 @@
 		Chart = root.Chart,
 		helpers = Chart.helpers;
 
-	Chart.defaults.title = {
-
-		display: true,
+	Chart.defaults.global.title = {
+		display: false,
 		position: 'top',
 		fullWidth: true, // marks that this box should take the full width of the canvas (pushing down other boxes)
 
@@ -25,7 +24,7 @@
 
 		initialize: function(config) {
 			helpers.extend(this, config);
-			this.options = helpers.configMerge(Chart.defaults.title, config.options);
+			this.options = helpers.configMerge(Chart.defaults.global.title, config.options);
 
 			// Contains hit boxes for each dataset (in dataset order)
 			this.legendHitBoxes = [];
