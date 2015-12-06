@@ -22,6 +22,13 @@
 			callback: function(dataset) {
 				return '' + dataset.label;
 			},
+
+			// Generates labels shown in the legend
+			generateLabels: function(data) {
+				return data.datasets.map(function(dataset) {
+					return this.options.labels.callback.call(this, dataset);
+				}, this);
+			}
 		},
 	};
 
@@ -29,10 +36,12 @@
 
 		initialize: function(config) {
 			helpers.extend(this, config);
-			this.options = helpers.configMerge(Chart.defaults.global.legend, config.options);
 
 			// Contains hit boxes for each dataset (in dataset order)
 			this.legendHitBoxes = [];
+
+			// Are we in doughnut mode which has a different data type
+			this.doughnutMode = false;
 		},
 
 		// These methods are ordered by lifecyle. Utilities then follow.
@@ -107,9 +116,7 @@
 
 		beforeBuildLabels: helpers.noop,
 		buildLabels: function() {
-			this.labels = this.chart.data.datasets.map(function(dataset) {
-				return this.options.labels.callback.call(this, dataset);
-			}, this);
+			this.labels = this.options.labels.generateLabels.call(this, this.chart.data);
 		},
 		afterBuildLabels: helpers.noop,
 
@@ -208,7 +215,6 @@
 					ctx.font = labelFont;
 
 					helpers.each(this.labels, function(label, i) {
-
 						var dataset = this.chart.data.datasets[i];
 						var backgroundColor = dataset.backgroundColor;
 						var borderColor = dataset.borderColor;

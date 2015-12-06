@@ -13,9 +13,35 @@
 			//Boolean - Whether we animate scaling the Doughnut from the centre
 			animateScale: false,
 		},
+		aspectRatio: 1,
 		hover: {
 			mode: 'single'
 		},
+		legendCallback: function(chart) {
+			var text = [];
+			text.push('<ul class="' + chart.id + '-legend">');
+
+			if (chart.data.datasets.length) {
+				for (var i = 0; i < chart.data.datasets[0].data.length; ++i) {
+					text.push('<li><span style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '">');
+					if (chart.data.labels[i]) {
+						text.push(chart.data.labels[i]);
+					}
+					text.push('</span></li>');
+				}
+			}
+
+			text.push('</ul>');
+			return text.join("");
+		},
+		legend: {
+			labels: {
+				generateLabels: function(data) {
+					return data.labels.slice();
+				}
+			}
+		},
+
 		//The percentage of the chart that we cut out of the middle.
 		cutoutPercentage: 50,
 

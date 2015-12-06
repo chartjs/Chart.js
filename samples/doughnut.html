@@ -44,6 +44,7 @@
     };
 
     var config = {
+        type: 'doughnut',
         data: {
             datasets: [{
                 data: [
@@ -123,7 +124,7 @@
 
     window.onload = function() {
         var ctx = document.getElementById("chart-area").getContext("2d");
-        window.myDoughnut = Chart.Doughnut(ctx, config);
+        window.myDoughnut = new Chart(ctx, config);
         console.log(window.myDoughnut);
 
         updateLegend();
