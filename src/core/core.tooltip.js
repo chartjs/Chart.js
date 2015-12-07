@@ -231,7 +231,7 @@
 
 				var tooltipItems = [];
 
-				if (this._options.tooltips.mode == 'single') {
+				if (this._options.tooltips.mode === 'single') {
 					var yScale = element._yScale || element._scale; // handle radar || polarArea charts
 					tooltipItems.push({
 						xLabel: element._xScale ? element._xScale.getLabelForIndex(element._index, element._datasetIndex) : '',
@@ -337,7 +337,7 @@
 			});
 			helpers.each(vm.body, function(line) {
 				ctx.font = helpers.fontString(vm.bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
-				tooltipWidth = Math.max(tooltipWidth, ctx.measureText(line).width + (this._options.tooltips.mode != 'single' ? (vm.bodyFontSize + 2) : 0));
+				tooltipWidth = Math.max(tooltipWidth, ctx.measureText(line).width + (this._options.tooltips.mode !== 'single' ? (vm.bodyFontSize + 2) : 0));
 			}, this);
 			helpers.each(vm.footer, function(line) {
 				ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
@@ -452,7 +452,7 @@
 
 				// Before Body
 				helpers.each(vm.beforeBody, function(beforeBody) {
-					ctx.fillText(vm.beforeBody, xBase, yBase);
+					ctx.fillText(beforeBody, xBase, yBase);
 					yBase += vm.bodyFontSize + vm.bodySpacing;
 				});
 
@@ -485,7 +485,7 @@
 
 				// After Body
 				helpers.each(vm.afterBody, function(afterBody) {
-					ctx.fillText(vm.afterBody, xBase, yBase);
+					ctx.fillText(afterBody, xBase, yBase);
 					yBase += vm.bodyFontSize;
 				});
 
