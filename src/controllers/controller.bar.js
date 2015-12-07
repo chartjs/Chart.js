@@ -233,9 +233,9 @@
 			var datasetCount = this.getBarCount();
 
 			var tickWidth = (function() {
-				var min = xScale.getPixelForValue(null, 1) - xScale.getPixelForValue(null, 0);
+				var min = xScale.getPixelForTick(1) - xScale.getPixelForTick(0);
 				for (var i = 2; i < this.getDataset().data.length; i++) {
-					min = Math.min(xScale.getPixelForValue(null, i) - xScale.getPixelForValue(null, i - 1), min);
+					min = Math.min(xScale.getPixelForTick(i) - xScale.getPixelForTick(i - 1), min);
 				}
 				return min;
 			}).call(this);
@@ -290,7 +290,7 @@
 			var barIndex = this.getBarIndex(datasetIndex);
 
 			var ruler = this.getRuler();
-			var leftTick = xScale.getPixelForValue(null, index, barIndex, this.chart.isCombo);
+			var leftTick = xScale.getPixelForValue(null, index, datasetIndex, this.chart.isCombo);
 			leftTick -= this.chart.isCombo ? (ruler.tickWidth / 2) : 0;
 
 			if (xScale.options.stacked) {

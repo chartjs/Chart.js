@@ -164,9 +164,9 @@
 
 					if (helpers.isArray(unitDefinition.steps) && Math.ceil(this.tickRange / labelCapacity) < helpers.max(unitDefinition.steps)) {
 						// Use one of the prefedined steps
-						for (var idx = 1; idx < unitDefinition.steps.length; ++idx) {
+						for (var idx = 0; idx < unitDefinition.steps.length; ++idx) {
 							if (unitDefinition.steps[idx] > Math.ceil(this.tickRange / labelCapacity)) {
-								this.unitScale = unitDefinition.steps[idx - 1];
+								this.unitScale = unitDefinition.steps[idx];
 								break;
 							}
 						}
@@ -224,11 +224,16 @@
 				label = this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 			}
 
+			// Format nicely
+			if (this.options.time.tooltipFormat) {
+				label = this.parseTime(label).format(this.options.time.tooltipFormat);
+			}
+
 			return label;
 		},
 		convertTicksToLabels: function() {
 			this.ticks = this.ticks.map(function(tick, index, ticks) {
-				var formattedTick = tick.format(this.options.time.displayFormat ? this.options.time.displayFormat : this.options.time.displayFormats[this.tickUnit]);
+				var formattedTick = tick.format(this.displayFormat);
 
 				if (this.options.ticks.userCallback) {
 					return this.options.ticks.userCallback(formattedTick, index, ticks);
@@ -250,7 +255,6 @@
 
 				return this.left + Math.round(valueOffset);
 			} else {
-				//return this.top + (decimal * (this.height / this.ticks.length));
 				var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
 				var valueHeight = innerHeight / Math.max(this.ticks.length - 1, 1);
 				var heightOffset = (innerHeight * decimal) + this.paddingTop;
