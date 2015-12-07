@@ -127,8 +127,7 @@ xPadding | Number | 6 | Padding to add on top and bottom of tooltip
 yPadding | Number | 6 | Padding to add on left and right of tooltip
 caretSize | Number | 5 | Size, in px, of the tooltip arrow
 cornerRadius | Number | 6 | Radius of tooltip corner curves
-xOffset | Number | 10 |
-multiKeyBackground | Color | "#fff" |
+multiKeyBackground | Color | "#fff" | Color to draw behind the colored boxes when multiple items are in the tooltip
  | | |
 callbacks | - | - |  V2.0 introduces callback functions as a replacement for the template engine in v1. The tooltip has the following callbacks for providing text. For all functions, 'this' will be the tooltip object create from the Chart.Tooltip constructor
 **Callback Functions** | | | All functions are called with the same arguments
