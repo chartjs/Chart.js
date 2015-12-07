@@ -7,6 +7,7 @@
 
 	var defaultConfig = {
 		aspectRatio: 1,
+		bezierCurve: true,
 		legendCallback: function(chart) {
 			var text = [];
 			text.push('<ul class="' + chart.id + '-legend">');
