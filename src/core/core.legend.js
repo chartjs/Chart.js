@@ -173,39 +173,41 @@
 			}
 
 			// Increase sizes here
-			if (this.isHorizontal()) {
-				// Labels
+			if (this.options.display) {
+				if (this.isHorizontal()) {
+					// Labels
 
-				// Width of each line of legend boxes. Labels wrap onto multiple lines when there are too many to fit on one
-				this.lineWidths = [0];
-				var totalHeight = this.legendItems.length ? this.options.labels.fontSize + (this.options.labels.padding) : 0;
+					// Width of each line of legend boxes. Labels wrap onto multiple lines when there are too many to fit on one
+					this.lineWidths = [0];
+					var totalHeight = this.legendItems.length ? this.options.labels.fontSize + (this.options.labels.padding) : 0;
 
-				ctx.textAlign = "left";
-				ctx.textBaseline = 'top';
-				ctx.font = labelFont;
+					ctx.textAlign = "left";
+					ctx.textBaseline = 'top';
+					ctx.font = labelFont;
 
-				helpers.each(this.legendItems, function(legendItem, i) {
-					var width = this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + ctx.measureText(legendItem.text).width;
-					if (this.lineWidths[this.lineWidths.length - 1] + width >= this.width) {
-						totalHeight += this.options.labels.fontSize + (this.options.labels.padding);
-						this.lineWidths[this.lineWidths.length] = this.left;
-					}
+					helpers.each(this.legendItems, function(legendItem, i) {
+						var width = this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + ctx.measureText(legendItem.text).width;
+						if (this.lineWidths[this.lineWidths.length - 1] + width >= this.width) {
+							totalHeight += this.options.labels.fontSize + (this.options.labels.padding);
+							this.lineWidths[this.lineWidths.length] = this.left;
+						}
 
-					// Store the hitbox width and height here. Final position will be updated in `draw`
-					this.legendHitBoxes[i] = {
-						left: 0,
-						top: 0,
-						width: width,
-						height: this.options.labels.fontSize,
-					};
+						// Store the hitbox width and height here. Final position will be updated in `draw`
+						this.legendHitBoxes[i] = {
+							left: 0,
+							top: 0,
+							width: width,
+							height: this.options.labels.fontSize,
+						};
 
-					this.lineWidths[this.lineWidths.length - 1] += width + this.options.labels.padding;
-				}, this);
+						this.lineWidths[this.lineWidths.length - 1] += width + this.options.labels.padding;
+					}, this);
 
-				this.minSize.height += totalHeight;
+					this.minSize.height += totalHeight;
 
-			} else {
-				// TODO vertical
+				} else {
+					// TODO vertical
+				}
 			}
 
 			this.width = this.minSize.width;
