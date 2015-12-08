@@ -43,6 +43,7 @@
 						return {
 							text: label,
 							fillStyle: data.datasets[0].backgroundColor[i],
+							hidden: isNaN(data.datasets[0].data[i]),
 
 							// Extra data used for toggling the correct item
 							index: i
@@ -50,7 +51,21 @@
 					});
 				}
 			},
-			onClick: null,
+			onClick: function(e, legendItem) {
+				helpers.each(this.chart.data.datasets, function(dataset) {
+					dataset.metaHiddenData = dataset.metaHiddenData || [];
+					var idx = legendItem.index;
+
+					if (!isNaN(dataset.data[idx])) {
+						dataset.metaHiddenData[idx] = dataset.data[idx];
+						dataset.data[idx] = NaN;
+					} else if (!isNaN(dataset.metaHiddenData[idx])) {
+						dataset.data[idx] = dataset.metaHiddenData[idx];
+					}
+				});
+
+				this.chart.update();
+			}
 		},
 
 		// Need to override these to give a nice default
@@ -163,13 +178,23 @@
 				this.updateElement(arc, index, reset);
 			}, this);
 		},
+
 		updateElement: function(arc, index, reset) {
-			var circumference = 1 / this.getDataset().data.length * 2;
+			var circumference = this.calculateCircumference(this.getDataset().data[index]);
 			var centerX = (this.chart.chartArea.left + this.chart.chartArea.right) / 2;
 			var centerY = (this.chart.chartArea.top + this.chart.chartArea.bottom) / 2;
 
-			var startAngle = (-0.5 * Math.PI) + (Math.PI * circumference) * index;
-			var endAngle = startAngle + (circumference * Math.PI);
+			// If there is NaN data before us, we need to calculate the starting angle correctly. 
+			// We could be way more efficient here, but its unlikely that the polar area chart will have a lot of data
+			var notNullIndex = 0;
+			for (var i = 0; i < index; ++i) {
+				if (!isNaN(this.getDataset().data[i])) {
+					++notNullIndex;
+				}
+			}
+
+			var startAngle = (-0.5 * Math.PI) + (circumference * notNullIndex);
+			var endAngle = startAngle + circumference;
 
 			var resetModel = {
 				x: centerX,
@@ -241,10 +266,15 @@
 		},
 
 		calculateCircumference: function(value) {
-			if (this.getDataset().total > 0) {
-				return (Math.PI * 2) * (value / this.getDataset().total);
-			} else {
+			if (isNaN(value)) {
 				return 0;
+			} else {
+				// Count the number of NaN values 
+				var numNaN = helpers.where(this.getDataset().data, function(data) {
+					return isNaN(data);
+				}).length;
+
+				return (2 * Math.PI) / (this.getDataset().data.length - numNaN);
 			}
 		},
 		updateScaleRange: function() {
