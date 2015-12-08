@@ -35,7 +35,6 @@
 		xPadding: 6,
 		caretSize: 5,
 		cornerRadius: 6,
-		xOffset: 10,
 		multiKeyBackground: '#fff',
 		callbacks: {
 			// Args are: (tooltipItems, data)
@@ -98,7 +97,6 @@
 					// Positioning
 					xPadding: options.tooltips.xPadding,
 					yPadding: options.tooltips.yPadding,
-					xOffset: options.tooltips.xOffset,
 
 					// Body
 					bodyColor: options.tooltips.bodyColor,
@@ -153,7 +151,7 @@
 
 		// Args are: (tooltipItem, data)
 		getBeforeBody: function() {
-			var lines = this._options.tooltips.callbacks.beforeBody.call(this, arguments);
+			var lines = this._options.tooltips.callbacks.beforeBody.apply(this, arguments);
 			return helpers.isArray(lines) ? lines : [lines];
 		},
 
@@ -174,7 +172,7 @@
 
 		// Args are: (tooltipItem, data)
 		getAfterBody: function() {
-			var lines = this._options.tooltips.callbacks.afterBody.call(this, arguments);
+			var lines = this._options.tooltips.callbacks.afterBody.apply(this, arguments);
 			return helpers.isArray(lines) ? lines : [lines];
 		},
 
@@ -224,10 +222,7 @@
 		},
 
 		update: function(changed) {
-
-			var ctx = this._chart.ctx;
-
-			if(this._active.length){
+			if (this._active.length){
 				this._model.opacity = 1;
 
 				var element = this._active[0],
@@ -236,7 +231,7 @@
 
 				var tooltipItems = [];
 
-				if (this._options.tooltips.mode == 'single') {
+				if (this._options.tooltips.mode === 'single') {
 					var yScale = element._yScale || element._scale; // handle radar || polarArea charts
 					tooltipItems.push({
 						xLabel: element._xScale ? element._xScale.getLabelForIndex(element._index, element._datasetIndex) : '',
@@ -263,7 +258,7 @@
 						}
 					});
 
-					helpers.each(this._active, function(active, i) {
+					helpers.each(this._active, function(active) {
 						if (active) {
 						  labelColors.push({
 						  	borderColor: active._view.borderColor,
@@ -336,15 +331,15 @@
 
 			// Width
 			var tooltipWidth = 0;
-			helpers.each(vm.title, function(line, i) {
+			helpers.each(vm.title, function(line) {
 				ctx.font = helpers.fontString(vm.titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
 				tooltipWidth = Math.max(tooltipWidth, ctx.measureText(line).width);
 			});
-			helpers.each(vm.body, function(line, i) {
+			helpers.each(vm.body, function(line) {
 				ctx.font = helpers.fontString(vm.bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
-				tooltipWidth = Math.max(tooltipWidth, ctx.measureText(line).width + (this._options.tooltips.mode != 'single' ? (vm.bodyFontSize + 2) : 0));
+				tooltipWidth = Math.max(tooltipWidth, ctx.measureText(line).width + (this._options.tooltips.mode !== 'single' ? (vm.bodyFontSize + 2) : 0));
 			}, this);
-			helpers.each(vm.footer, function(line, i) {
+			helpers.each(vm.footer, function(line) {
 				ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
 				tooltipWidth = Math.max(tooltipWidth, ctx.measureText(line).width);
 			});
@@ -374,17 +369,17 @@
 			var tooltipX = vm.x,
 				tooltipY = vm.y;
 
-			if (vm.yAlign == 'top') {
+			if (vm.yAlign === 'top') {
 				tooltipY = vm.y - vm.caretSize - vm.cornerRadius;
-			} else if (vm.yAlign == 'bottom') {
+			} else if (vm.yAlign === 'bottom') {
 				tooltipY = vm.y - tooltipHeight + vm.caretSize + vm.cornerRadius;
 			} else {
 				tooltipY = vm.y - (tooltipHeight / 2);
 			}
 
-			if (vm.xAlign == 'left') {
+			if (vm.xAlign === 'left') {
 				tooltipX = vm.x - tooltipTotalWidth;
-			} else if (vm.xAlign == 'right') {
+			} else if (vm.xAlign === 'right') {
 				tooltipX = vm.x + caretPadding + vm.caretSize;
 			} else {
 				tooltipX = vm.x + (tooltipTotalWidth / 2);
@@ -406,7 +401,7 @@
 			if (this._options.tooltips.enabled) {
 				ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(opacity).rgbString();
 
-				if (vm.xAlign == 'left') {
+				if (vm.xAlign === 'left') {
 
 					ctx.beginPath();
 					ctx.moveTo(vm.x - caretPadding, vm.y);
@@ -442,7 +437,7 @@
 					helpers.each(vm.title, function(title, i) {
 						ctx.fillText(title, xBase, yBase);
 						yBase += vm.titleFontSize + vm.titleSpacing; // Line Height and spacing
-						if (i + 1 == vm.title.length) {
+						if (i + 1 === vm.title.length) {
 							yBase += vm.titleMarginBottom - vm.titleSpacing; // If Last, add margin, remove spacing
 						}
 					}, this);
@@ -456,8 +451,8 @@
 				ctx.font = helpers.fontString(vm.bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
 
 				// Before Body
-				helpers.each(vm.beforeBody, function(beforeBody, i) {
-					ctx.fillText(vm.beforeBody, xBase, yBase);
+				helpers.each(vm.beforeBody, function(beforeBody) {
+					ctx.fillText(beforeBody, xBase, yBase);
 					yBase += vm.bodyFontSize + vm.bodySpacing;
 				});
 
@@ -465,9 +460,9 @@
 
 
 					// Draw Legend-like boxes if needed
-					if (this._options.tooltips.mode != 'single') {
+					if (this._options.tooltips.mode !== 'single') {
 						// Fill a white rect so that colours merge nicely if the opacity is < 1
-						ctx.fillStyle = helpers.color('#FFFFFF').alpha(opacity).rgbaString();
+						ctx.fillStyle = helpers.color(vm.legendColorBackground).alpha(opacity).rgbaString();
 						ctx.fillRect(xBase, yBase, vm.bodyFontSize, vm.bodyFontSize);
 
 						// Border
@@ -482,15 +477,15 @@
 					}
 
 					// Body Line
-					ctx.fillText(body, xBase + (this._options.tooltips.mode != 'single' ? (vm.bodyFontSize + 2) : 0), yBase);
+					ctx.fillText(body, xBase + (this._options.tooltips.mode !== 'single' ? (vm.bodyFontSize + 2) : 0), yBase);
 
 					yBase += vm.bodyFontSize + vm.bodySpacing;
 
 				}, this);
 
 				// After Body
-				helpers.each(vm.afterBody, function(afterBody, i) {
-					ctx.fillText(vm.afterBody, xBase, yBase);
+				helpers.each(vm.afterBody, function(afterBody) {
+					ctx.fillText(afterBody, xBase, yBase);
 					yBase += vm.bodyFontSize;
 				});
 
@@ -507,7 +502,7 @@
 					ctx.fillStyle = helpers.color(vm.footerColor).alpha(opacity).rgbString();
 					ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
 
-					helpers.each(vm.footer, function(footer, i) {
+					helpers.each(vm.footer, function(footer) {
 						ctx.fillText(footer, xBase, yBase);
 						yBase += vm.footerFontSize + vm.footerSpacing;
 					}, this);

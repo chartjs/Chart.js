@@ -256,7 +256,7 @@
 
 		render: function render(duration, lazy) {
 
-			if ((typeof duration !== 'undefined' && duration !== 0) || (typeof duration == 'undefined' && this.options.animation.duration !== 0)) {
+			if (this.options.animation !== false && ((typeof duration !== 'undefined' && duration !== 0) || (typeof duration == 'undefined' && this.options.animation.duration !== 0))) {
 				var animation = new Chart.Animation();
 				animation.numSteps = (duration || this.options.animation.duration) / 16.66; //60 fps
 				animation.easing = this.options.animation.easing;
@@ -358,22 +358,13 @@
 		},
 
 		getDatasetAtEvent: function(e) {
-			var eventPosition = helpers.getRelativePosition(e, this.chart);
-			var elementsArray = [];
+			var elementsArray = this.getElementAtEvent(e);
 
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				if (helpers.isDatasetVisible(dataset)) {
-					helpers.each(dataset.metaData, function(element, elementIndex) {
-						if (element.inLabelRange(eventPosition.x, eventPosition.y)) {
-							helpers.each(dataset.metaData, function(element, index) {
-								elementsArray.push(element);
-							}, this);
-						}
-					}, this);
-				}
-			}, this);
+			if (elementsArray.length > 0) {
+				elementsArray = this.data.datasets[elementsArray[0]._datasetIndex].metaData;
+			}
 
-			return elementsArray.length ? elementsArray : [];
+			return elementsArray;
 		},
 
 		generateLegend: function generateLegend() {

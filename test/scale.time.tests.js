@@ -92,7 +92,35 @@ describe('Time scale tests', function() {
 		scale.update(400, 50);
 
 		// Counts down because the lines are drawn top to bottom
-		expect(scale.ticks).toEqual(['Jan 1, 2015', 'Jan 2, 2015', 'Jan 3, 2015', 'Jan 4, 2015', 'Jan 5, 2015', 'Jan 6, 2015', 'Jan 7, 2015', 'Jan 8, 2015', 'Jan 9, 2015', 'Jan 10, 2015', 'Jan 11, 2015']);
+		expect(scale.ticks).toEqual(['Jan 1, 2015', 'Jan 3, 2015', 'Jan 5, 2015', 'Jan 7, 2015', 'Jan 9, 2015', 'Jan 11, 2015']);
+	});
+
+	it('should build ticks using date objects', function() {
+		// Helper to build date objects
+		function newDateFromRef(days) {
+			return moment('01/01/2015 12:00', 'DD/MM/YYYY HH:mm').add(days, 'd').toDate();
+		}
+
+		var scaleID = 'myScale';
+		var mockData = {
+			labels: [newDateFromRef(0), newDateFromRef(1), newDateFromRef(2), newDateFromRef(4), newDateFromRef(6), newDateFromRef(7), newDateFromRef(9)], // days
+		};
+
+		var mockContext = window.createMockContext();
+		var Constructor = Chart.scaleService.getScaleConstructor('time');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: Chart.scaleService.getScaleDefaults('time'), // use default config for scale
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		scale.update(400, 50);
+
+		// Counts down because the lines are drawn top to bottom
+		expect(scale.ticks).toEqual(['Jan 1, 2015', 'Jan 3, 2015', 'Jan 5, 2015', 'Jan 7, 2015', 'Jan 9, 2015', 'Jan 11, 2015', 'Jan 13, 2015']);
 	});
 
 	it('should build ticks using the config unit', function() {

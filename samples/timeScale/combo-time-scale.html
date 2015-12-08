@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Line Chart</title>
+	<script src="../../node_modules/moment/min/moment.min.js"></script>
+	<script src="../../Chart.js"></script>
+	<script src="../../node_modules/jquery/dist/jquery.min.js"></script>
+	<style>
+		canvas {
+			-webkit-box-shadow: 0 0 20px 0 rgba(0, 0, 0, .5);
+		}
+	</style>
+</head>
+
+<body>
+	<div style="width:100%;">
+		<canvas id="canvas" style="width:100%;height:100%"></canvas>
+	</div>
+	<br>
+	<br>
+	<button id="randomizeData">Randomize Data</button>
+	<button id="addDataset">Add Dataset</button>
+	<button id="removeDataset">Remove Dataset</button>
+	<button id="addData">Add Data</button>
+	<button id="removeData">Remove Data</button>
+	<div>
+		<h3>Legend</h3>
+		<div id="legendContainer">
+		</div>
+	</div>
+	<script>
+		var timeFormat = 'MM/DD/YYYY HH:mm';
+
+		function randomScalingFactor() {
+			return Math.round(Math.random() * 100 * (Math.random() > 0.5 ? -1 : 1));
+		}
+
+		function randomColorFactor() {
+			return Math.round(Math.random() * 255);
+		}
+
+		function randomColor(opacity) {
+			return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
+		}
+
+		function newDateString(days) {
+			return moment().add(days, 'd').format(timeFormat);
+		}
+
+		var config = {
+			type: 'bar',
+			data: {
+				labels: [newDateString(0), newDateString(1), newDateString(2), newDateString(3), newDateString(4), newDateString(5), newDateString(6)],
+				datasets: [{
+					type: 'bar',
+					label: 'Dataset 1',
+					backgroundColor: "rgba(151,187,205,0.5)",
+					data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
+					borderColor: 'white',
+					borderWidth: 2
+				}, {
+					type: 'bar',
+					label: 'Dataset 2',
+					backgroundColor: "rgba(151,187,205,0.5)",
+					data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
+					borderColor: 'white',
+					borderWidth: 2
+				}, {
+					type: 'line',
+					label: 'Dataset 3',
+					backgroundColor: "rgba(220,220,220,0.5)",
+					data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+				}, ]
+			},
+			options: {
+				responsive: true,
+				scales: {
+					xAxes: [{
+						type: "time",
+						display: true,
+						time: {
+							format: timeFormat,
+							// round: 'day'
+						}
+					}],
+				},
+			}
+		};
+
+		$.each(config.data.datasets, function(i, dataset) {
+			dataset.borderColor = randomColor(0.4);
+			dataset.backgroundColor = randomColor(0.5);
+			dataset.pointBorderColor = randomColor(0.7);
+			dataset.pointBackgroundColor = randomColor(0.5);
+			dataset.pointBorderWidth = 1;
+		});
+
+		console.log(config.data);
+
+		window.onload = function() {
+			var ctx = document.getElementById("canvas").getContext("2d");
+			window.myLine = new Chart(ctx, config);
+
+			updateLegend();
+		};
+
+		function updateLegend() {
+			$legendContainer = $('#legendContainer');
+			$legendContainer.empty();
+			$legendContainer.append(window.myLine.generateLegend());
+		}
+
+		$('#randomizeData').click(function() {
+			$.each(config.data.datasets, function(i, dataset) {
+				dataset.data = dataset.data.map(function() {
+					return randomScalingFactor();
+				});
+			});
+
+			window.myLine.update();
+			updateLegend();
+		});
+
+		$('#addDataset').click(function() {
+			var newDataset = {
+				label: 'Dataset ' + config.data.datasets.length,
+				borderColor: randomColor(0.4),
+				backgroundColor: randomColor(0.5),
+				pointBorderColor: randomColor(0.7),
+				pointBackgroundColor: randomColor(0.5),
+				pointBorderWidth: 1,
+				data: [],
+			};
+
+			for (var index = 0; index < config.data.labels.length; ++index) {
+				newDataset.data.push(randomScalingFactor());
+			}
+
+			config.data.datasets.push(newDataset);
+			window.myLine.update();
+			updateLegend();
+		});
+
+		$('#addData').click(function() {
+			if (config.data.datasets.length > 0) {
+				config.data.labels.push(
+					myLine.scales['x-axis-0'].labelMoments[myLine.scales['x-axis-0'].labelMoments.length - 1].add(1, 'day')
+					.format('MM/DD/YYYY')
+				);
+
+				for (var index = 0; index < config.data.datasets.length; ++index) {
+					config.data.datasets[index].data.push(randomScalingFactor());
+				}
+
+				window.myLine.update();
+				updateLegend();
+			}
+		});
+
+		$('#removeDataset').click(function() {
+			config.data.datasets.splice(0, 1);
+			window.myLine.update();
+			updateLegend();
+		});
+
+		$('#removeData').click(function() {
+			config.data.labels.splice(-1, 1); // remove the label first
+
+			config.data.datasets.forEach(function(dataset, datasetIndex) {
+				config.data.datasets[datasetIndex].data.pop();
+			});
+
+			window.myLine.update();
+			updateLegend();
+		});
+	</script>
+</body>
+
+</html>
