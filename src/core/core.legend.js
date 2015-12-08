@@ -27,10 +27,6 @@
 			fontColor: "#666",
 			fontFamily: "Helvetica Neue",
 			padding: 10,
-			callback: function(dataset) {
-				return '' + dataset.label;
-			},
-
 			// Generates labels shown in the legend
 			// Valid properties to return:
 			// text : text to display
@@ -45,7 +41,7 @@
 			generateLabels: function(data) {
 				return data.datasets.map(function(dataset, i) {
 					return {
-						text: this.options.labels.callback.call(this, dataset),
+						text: dataset.label,
 						fillStyle: dataset.backgroundColor,
 						hidden: dataset.hidden,
 						lineCap: dataset.borderCapStyle,

@@ -126,7 +126,7 @@ Name | Type | Default | Description
 display | Boolean | true | Is the legend displayed
 position | String | 'top' | Position of the legend. Options are 'top' or 'bottom'
 fullWidth | Boolean | true | Marks that this box should take the full width of the canvas (pushing down other boxes)
-onClick | Function | false | A callback that will override the default behavior of toggling the datasets
+onClick | Function | `function(event, legendItem) {}` | A callback that is called when a click is registered on top of a label item
 labels |-|-|-
 *labels*boxWidth | Number | 40 | Width of coloured box
 *labels*fontSize | Number | 12 | Font size
@@ -134,7 +134,7 @@ labels |-|-|-
 *labels*fontColor | Color | "#666" |
 *labels*fontFamily | String | "Helvetica Neue" |
 *labels*padding | Number | 10 | Padding between rows of colored boxes
-*labels*callback: | Function | `function(dataset) { return '' + value; } | Generate the text for a dataset in the label
+*labels*generateLabels: | Function | `function(data) {  } | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. Styles that can be returned are `fillStyle`, `strokeStyle`, `lineCap`, `lineDash`, `lineDashOffset`, `lineWidth`, `lineJoin`. Return a `hidden` attribute to indicate that the label refers to something that is not visible. A strikethrough style will be given to the text in this case.
 
 The global options for tooltips are defined in `Chart.defaults.global.tooltips`.
 
