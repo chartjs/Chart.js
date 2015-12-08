@@ -49,7 +49,8 @@
 						};
 					});
 				}
-			}
+			},
+			onClick: null,
 		},
 
 		// Need to override these to give a nice default

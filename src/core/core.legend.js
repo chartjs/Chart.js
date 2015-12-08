@@ -10,7 +10,15 @@
 		display: true,
 		position: 'top',
 		fullWidth: true, // marks that this box should take the full width of the canvas (pushing down other boxes)
-		onClick: false, // a callback will override the default behavior of toggling the datasets
+
+		// a callback that will handle 
+		onClick: function(e, legendItem) {
+			var dataset = this.chart.data.datasets[legendItem.datasetIndex];
+			dataset.hidden = !dataset.hidden;
+
+			// We hid a dataset ... rerender the chart
+			this.chart.update();
+		},
 
 		labels: {
 			boxWidth: 40,
@@ -300,21 +308,16 @@
 			var position = helpers.getRelativePosition(e, this.chart.chart);
 
 			if (position.x >= this.left && position.x <= this.right && position.y >= this.top && position.y <= this.bottom) {
-				// Legend is active
-				if (this.options.onClick) {
-					this.options.onClick.call(this, e);
-				} else {
-					// See if we are touching one of the dataset boxes
-					for (var i = 0; i < this.legendHitBoxes.length; ++i) {
-						var hitBox = this.legendHitBoxes[i];
+				// See if we are touching one of the dataset boxes
+				for (var i = 0; i < this.legendHitBoxes.length; ++i) {
+					var hitBox = this.legendHitBoxes[i];
 
-						if (position.x >= hitBox.left && position.x <= hitBox.left + hitBox.width && position.y >= hitBox.top && position.y <= hitBox.top + hitBox.height) {
-							this.chart.data.datasets[i].hidden = !this.chart.data.datasets[i].hidden;
-
-							// We hid a dataset ... rerender the chart
-							this.chart.update();
-							break;
+					if (position.x >= hitBox.left && position.x <= hitBox.left + hitBox.width && position.y >= hitBox.top && position.y <= hitBox.top + hitBox.height) {
+						// Touching an element
+						if (this.options.onClick) {
+							this.options.onClick.call(this, e, this.legendItems[i]);
 						}
+						break;
 					}
 				}
 			}
