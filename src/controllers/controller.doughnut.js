@@ -37,7 +37,15 @@
 		legend: {
 			labels: {
 				generateLabels: function(data) {
-					return data.labels.slice();
+					return data.labels.map(function(label, i) {
+						return {
+							text: label,
+							fillStyle: data.datasets[0].backgroundColor[i],
+
+							// Extra data used for toggling the correct item
+							index: i
+						};
+					});
 				}
 			}
 		},
