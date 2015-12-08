@@ -41,12 +41,28 @@
 						return {
 							text: label,
 							fillStyle: data.datasets[0].backgroundColor[i],
+							hidden: isNaN(data.datasets[0].data[i]),
 
 							// Extra data used for toggling the correct item
 							index: i
 						};
 					});
 				}
+			},
+			onClick: function(e, legendItem) {
+				helpers.each(this.chart.data.datasets, function(dataset) {
+					dataset.metaHiddenData = dataset.metaHiddenData || [];
+					var idx = legendItem.index;
+
+					if (!isNaN(dataset.data[idx])) {
+						dataset.metaHiddenData[idx] = dataset.data[idx];
+						dataset.data[idx] = NaN;
+					} else if (!isNaN(dataset.metaHiddenData[idx])) {
+						dataset.data[idx] = dataset.metaHiddenData[idx];
+					}
+				});
+
+				this.chart.update();
 			}
 		},
 
@@ -171,7 +187,9 @@
 
 			this.getDataset().total = 0;
 			helpers.each(this.getDataset().data, function(value) {
-				this.getDataset().total += Math.abs(value);
+				if (!isNaN(value)) {
+					this.getDataset().total += Math.abs(value);
+				}
 			}, this);
 
 			this.outerRadius = this.chart.outerRadius - (this.chart.radiusLength * this.getRingIndex(this.index));
@@ -263,7 +281,7 @@
 		},
 
 		calculateCircumference: function(value) {
-			if (this.getDataset().total > 0) {
+			if (this.getDataset().total > 0 && !isNaN(value)) {
 				return (Math.PI * 1.999999) * (value / this.getDataset().total);
 			} else {
 				return 0;
