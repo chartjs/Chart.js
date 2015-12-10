@@ -11,14 +11,14 @@ First we need to include the Chart.js library on the page. The library occupies 
 <script src="Chart.js"></script>
 ```
 
-Alternatively, if you're using an AMD loader for JavaScript modules, that is also supported in the Chart.js core. Please note: the library will still occupy a global variable of `Chart`, even if it detects `define` and `define.amd`. If this is a problem, you can call `noConflict` to restore the global Chart variable to it's previous owner.
+Alternatively, if you're using an AMD loader for JavaScript modules, that is also supported in the Chart.js core. Please note: the library will still occupy a global variable of `Chart`, even if it detects `define` and `define.amd`. If this is a problem, you can call `noConflict` to restore the global Chart variable to its previous owner.
 
 ```javascript
 // Using requirejs
 require(['path/to/Chartjs'], function(Chart){
 	// Use Chart.js as normal here.
 
-	// Chart.noConflict restores the Chart global variable to it's previous owner
+	// Chart.noConflict restores the Chart global variable to its previous owner
 	// The function returns what was previously Chart, allowing you to reassign.
 	var Chartjs = Chart.noConflict();
 
@@ -28,8 +28,18 @@ require(['path/to/Chartjs'], function(Chart){
 You can also grab Chart.js using bower:
 
 ```bash
-bower install chartjs --save
+bower install Chart.js --save
 ```
+
+or NPM:
+
+```bash
+npm install chart.js --save
+```
+
+Also, Chart.js is available from CDN:
+
+https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js
 
 ###Creating a chart
 
@@ -68,6 +78,10 @@ We call a method of the name of the chart we want to create. We pass in the data
 
 This concept was introduced in Chart.js 1.0 to keep configuration DRY, and allow for changing options globally across chart types, avoiding the need to specify options for each instance, or the default for a particular chart type.
 
+Templates are based on micro templating by John Resig:
+
+http://ejohn.org/blog/javascript-micro-templating/
+
 ```javascript
 Chart.defaults.global = {
 	// Boolean - Whether to animate the chart
@@ -77,6 +91,14 @@ Chart.defaults.global = {
 	animationSteps: 60,
 
 	// String - Animation easing effect
+	// Possible effects are:
+	// [easeInOutQuart, linear, easeOutBounce, easeInBack, easeInOutQuad,
+	//  easeOutQuart, easeOutQuad, easeInOutBounce, easeOutSine, easeInOutCubic,
+	//  easeInExpo, easeInOutBack, easeInCirc, easeInOutElastic, easeOutBack,
+	//  easeInQuad, easeInOutExpo, easeInQuart, easeOutQuint, easeInOutCirc,
+	//  easeInSine, easeOutExpo, easeOutCirc, easeOutCubic, easeInQuint,
+	//  easeInElastic, easeInOutSine, easeInOutQuint, easeInBounce,
+	//  easeOutElastic, easeInCubic]
 	animationEasing: "easeOutQuart",
 
 	// Boolean - If we should show the scale at all
@@ -132,6 +154,9 @@ Chart.defaults.global = {
 	// Boolean - Determines whether to draw tooltips on the canvas or not
 	showTooltips: true,
 
+	// Function - Determines whether to execute the customTooltips function instead of drawing the built in tooltips (See [Advanced - External Tooltips](#advanced-usage-external-tooltips))
+	customTooltips: false,
+
 	// Array - Array of string names to attach tooltip events
 	tooltipEvents: ["mousemove", "touchstart", "touchmove"],
 
@@ -162,6 +187,9 @@ Chart.defaults.global = {
 	// String - Tooltip title font colour
 	tooltipTitleFontColor: "#fff",
 
+	// String - Tooltip title template
+	tooltipTitleTemplate: "<%= label%>",
+
 	// Number - pixel width of padding around tooltip text
 	tooltipYPadding: 6,
 
@@ -180,7 +208,7 @@ Chart.defaults.global = {
 	// String - Template string for single tooltips
 	tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",
 	{% endraw %}
-	// String - Template string for single tooltips
+	// String - Template string for multiple tooltips
 	multiTooltipTemplate: "<%= value %>",
 
 	// Function - Will fire on animation progression.

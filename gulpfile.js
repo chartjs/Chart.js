@@ -6,6 +6,7 @@ var gulp = require('gulp'),
 	size = require('gulp-size'),
 	connect = require('gulp-connect'),
 	replace = require('gulp-replace'),
+	htmlv = require('gulp-html-validator'),
 	inquirer = require('inquirer'),
 	semver = require('semver'),
 	exec = require('child_process').exec,
@@ -27,7 +28,7 @@ gulp.task('build', function(){
 		isCustom = !!(util.env.types),
 		outputDir = (isCustom) ? 'custom' : '.';
 	if (isCustom){
-		util.env.types.split(',').forEach(function(type){ return srcFiles.push(FileName(type))});
+		util.env.types.split(',').forEach(function(type){ return srcFiles.push(FileName(type));});
 	}
 	else{
 		// Seems gulp-concat remove duplicates - nice!
@@ -45,7 +46,7 @@ gulp.task('build', function(){
 
 	function FileName(moduleName){
 		return srcDir+'Chart.'+moduleName+'.js';
-	};
+	}
 });
 
 /*
@@ -90,6 +91,11 @@ gulp.task('jshint', function(){
 		.pipe(jshint.reporter('default'));
 });
 
+gulp.task('valid', function(){
+	return gulp.src('samples/*.html')
+    .pipe(htmlv());
+});
+
 gulp.task('library-size', function(){
 	return gulp.src('Chart.min.js')
 		.pipe(size({
@@ -103,14 +109,14 @@ gulp.task('module-sizes', function(){
 	.pipe(size({
 		showFiles: true,
 		gzip: true
-	}))
+	}));
 });
 
 gulp.task('watch', function(){
 	gulp.watch('./src/*', ['build']);
 });
 
-gulp.task('test', ['jshint']);
+gulp.task('test', ['jshint', 'valid']);
 
 gulp.task('size', ['library-size', 'module-sizes']);
 
@@ -118,7 +124,7 @@ gulp.task('default', ['build', 'watch']);
 
 gulp.task('server', function(){
 	connect.server({
-		port: 8000,
+		port: 8000
 	});
 });
 

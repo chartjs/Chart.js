@@ -54,7 +54,7 @@ myLineChart.destroy();
 
 #### .toBase64Image()
 
-This returns a base 64 encoded string of the chart in it's current state.
+This returns a base 64 encoded string of the chart in its current state.
 
 ```javascript
 myLineChart.toBase64Image();
@@ -69,6 +69,39 @@ Returns an HTML string of a legend for that chart. The template for this legend 
 myLineChart.generateLegend();
 // => returns HTML string of a legend for this chart
 ```
+
+### External Tooltips
+
+You can enable custom tooltips in the global or chart configuration like so:
+
+```javascript
+var myPieChart = new Chart(ctx).Pie(data, {
+	customTooltips: function(tooltip) {
+
+        // tooltip will be false if tooltip is not visible or should be hidden
+        if (!tooltip) {
+            return;
+        }
+
+        // Otherwise, tooltip will be an object with all tooltip properties like:
+
+        // tooltip.caretHeight
+        // tooltip.caretPadding
+        // tooltip.chart
+        // tooltip.cornerRadius
+        // tooltip.fillColor
+        // tooltip.font...
+        // tooltip.text
+        // tooltip.x
+        // tooltip.y
+        // etc...
+
+    };
+});
+```
+
+See files `sample/pie-customTooltips.html` and `sample/line-customTooltips.html` for examples on how to get started.
+
 
 ### Writing new chart types
 
@@ -125,7 +158,10 @@ new Chart(ctx).LineAlt(data);
 
 ### Community extensions
 
-- <a href="https://github.com/Regaddi/Chart.StackedBar.js" target"_blank">Stacked Bar Chart</a> by <a href="https://twitter.com/Regaddi" target="_blank">@Regaddi</a>
+- <a href="https://github.com/Regaddi/Chart.StackedBar.js" target="_blank">Stacked Bar Chart</a> by <a href="https://twitter.com/Regaddi" target="_blank">@Regaddi</a>
+- <a href="https://github.com/tannerlinsley/Chart.StackedArea.js" target="_blank">Stacked Bar Chart</a> by <a href="https://twitter.com/tannerlinsley" target="_blank">@tannerlinsley</a>
+- <a href="https://github.com/CAYdenberg/Chart.js" target="_blank">Error bars (bar and line charts)</a> by <a href="https://twitter.com/CAYdenberg" target="_blank">@CAYdenberg</a>
+- <a href="http://dima117.github.io/Chart.Scatter/" target="_blank">Scatter chart (number & date scales are supported)</a> by <a href="https://github.com/dima117" target="_blank">@dima117</a>
 
 ### Creating custom builds
 
@@ -140,7 +176,7 @@ npm install -g gulp
 
 This will install the local development dependencies for Chart.js, along with a CLI for the JavaScript task runner <a href="http://gulpjs.com/" target="_blank">gulp</a>.
 
-Now, we can run the `gulp build` task, and pass in a comma seperated list of types as an argument to build a custom version of Chart.js with only specified chart types.
+Now, we can run the `gulp build` task, and pass in a comma-separated list of types as an argument to build a custom version of Chart.js with only specified chart types.
 
 Here we will create a version of Chart.js with only Line, Radar and Bar charts included:
 
