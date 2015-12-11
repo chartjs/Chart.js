@@ -31,7 +31,7 @@ You can also grab Chart.js using bower, npm, or CDN:
 bower install Chart.js --save
 ```
 ```bash
-npm install Chart.js --save
+npm install chart.js --save
 ```
 
 https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.0.0-beta/Chart.js
