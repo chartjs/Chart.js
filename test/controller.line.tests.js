@@ -342,7 +342,7 @@ describe('Line controller tests', function() {
 		});
 
 		// Use dataset level styles for lines & points
-		chart.data.datasets[0].tension = 0.2;
+		chart.data.datasets[0].tension = 0;
 		chart.data.datasets[0].backgroundColor = 'rgb(98, 98, 98)';
 		chart.data.datasets[0].borderColor = 'rgb(8, 8, 8)';
 		chart.data.datasets[0].borderWidth = 0.55;
@@ -370,7 +370,7 @@ describe('Line controller tests', function() {
 			borderJoinStyle: 'miter',
 			borderWidth: 0.55,
 			fill: false,
-			tension: 0.2,
+			tension: 0,
 
 			scaleTop: 0,
 			scaleBottom: 200,
@@ -384,7 +384,7 @@ describe('Line controller tests', function() {
 			hitRadius: 3.3,
 			radius: 22,
 			skip: false,
-			tension: 0.2,
+			tension: 0,
 
 			// Point
 			x: 81,
@@ -393,8 +393,8 @@ describe('Line controller tests', function() {
 			// Control points
 			controlPointPreviousX: 81,
 			controlPointPreviousY: 62,
-			controlPointNextX: 91,
-			controlPointNextY: 52.6,
+			controlPointNextX: 81,
+			controlPointNextY: 62,
 		});
 
 		expect(chart.data.datasets[0].metaData[1]._model).toEqual({
@@ -404,17 +404,17 @@ describe('Line controller tests', function() {
 			hitRadius: 3.3,
 			radius: 22,
 			skip: false,
-			tension: 0.2,
+			tension: 0,
 
 			// Point
 			x: 131,
 			y: 15,
 
 			// Control points
-			controlPointPreviousX: 124.65778768378175,
-			controlPointPreviousY: 9.097346953222619,
-			controlPointNextX: 144.85778768378177,
-			controlPointNextY: 27.897346953222623,
+			controlPointPreviousX: 131,
+			controlPointPreviousY: 15,
+			controlPointNextX: 131,
+			controlPointNextY: 15,
 		});
 
 		expect(chart.data.datasets[0].metaData[2]._model).toEqual({
@@ -424,17 +424,17 @@ describe('Line controller tests', function() {
 			hitRadius: 3.3,
 			radius: 22,
 			skip: false,
-			tension: 0.2,
+			tension: 0,
 
 			// Point
 			x: 182,
 			y: 156,
 
 			// Control points
-			controlPointPreviousX: 167.76304506745115,
-			controlPointPreviousY: 130.76816898092827,
-			controlPointNextX: 187.96304506745116,
-			controlPointNextY: 166.56816898092828,
+			controlPointPreviousX: 182,
+			controlPointPreviousY: 156,
+			controlPointNextX: 182,
+			controlPointNextY: 156,
 		});
 
 		expect(chart.data.datasets[0].metaData[3]._model).toEqual({
@@ -444,15 +444,15 @@ describe('Line controller tests', function() {
 			hitRadius: 3.3,
 			radius: 22,
 			skip: false,
-			tension: 0.2,
+			tension: 0,
 
 			// Point
 			x: 232,
 			y: 194,
 
 			// Control points
-			controlPointPreviousX: 222,
-			controlPointPreviousY: 186.4,
+			controlPointPreviousX: 232,
+			controlPointPreviousY: 194,
 			controlPointNextX: 232,
 			controlPointNextY: 194,
 		});
