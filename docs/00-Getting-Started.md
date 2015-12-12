@@ -186,9 +186,9 @@ Name | Type | Default | Description
 --- |:---:| --- | ---
 duration | Number | 1000 | The number of milliseconds an animation takes.
 easing | String | "easeOutQuart" | Easing function to use. 
-onProgress | Function | none |
-onComplete | Function |none |
-
+onProgress | Function | none | Callback called on each step of an animation. Passed a single argument, an object, containing the chart instance and an object with details of the animation.
+onComplete | Function | none | Callback called at the end of an animation. Passed the same arguments as `onProgress
+`
 The global options for elements are defined in `Chart.defaults.global.elements`.
 
 Name | Type | Default | Description
