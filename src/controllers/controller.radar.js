@@ -136,7 +136,7 @@
 				// Model
 				_model: {
 					// Appearance
-					tension: this.getDataset().tension || this.chart.options.elements.line.tension,
+					tension: helpers.getValueOrDefault(this.getDataset().tension, this.chart.options.elements.line.tension),
 					backgroundColor: this.getDataset().backgroundColor || this.chart.options.elements.line.backgroundColor,
 					borderWidth: this.getDataset().borderWidth || this.chart.options.elements.line.borderWidth,
 					borderColor: this.getDataset().borderColor || this.chart.options.elements.line.borderColor,
@@ -175,7 +175,7 @@
 					y: reset ? this.chart.scale.yCenter : pointPosition.y,
 
 					// Appearance
-					tension: point.custom && point.custom.tension ? point.custom.tension : this.chart.options.elements.line.tension,
+					tension: point.custom && point.custom.tension ? point.custom.tension : helpers.getValueOrDefault(this.getDataset().tension, this.chart.options.elements.line.tension),
 					radius: point.custom && point.custom.radius ? point.custom.pointRadius : helpers.getValueAtIndexOrDefault(this.getDataset().pointRadius, index, this.chart.options.elements.point.radius),
 					backgroundColor: point.custom && point.custom.backgroundColor ? point.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBackgroundColor, index, this.chart.options.elements.point.backgroundColor),
 					borderColor: point.custom && point.custom.borderColor ? point.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderColor, index, this.chart.options.elements.point.borderColor),

@@ -171,6 +171,9 @@
 
 			return value;
 		},
+		getValueOrDefault = helpers.getValueOrDefault = function(value, defaultValue) {
+			return value === undefined ? defaultValue : value;
+		},
 		indexOf = helpers.indexOf = function(arrayToSearch, item) {
 			if (Array.prototype.indexOf) {
 				return arrayToSearch.indexOf(item);
