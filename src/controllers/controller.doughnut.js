@@ -13,9 +13,59 @@
 			//Boolean - Whether we animate scaling the Doughnut from the centre
 			animateScale: false,
 		},
+		aspectRatio: 1,
 		hover: {
 			mode: 'single'
 		},
+		legendCallback: function(chart) {
+			var text = [];
+			text.push('<ul class="' + chart.id + '-legend">');
+
+			if (chart.data.datasets.length) {
+				for (var i = 0; i < chart.data.datasets[0].data.length; ++i) {
+					text.push('<li><span style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '">');
+					if (chart.data.labels[i]) {
+						text.push(chart.data.labels[i]);
+					}
+					text.push('</span></li>');
+				}
+			}
+
+			text.push('</ul>');
+			return text.join("");
+		},
+		legend: {
+			labels: {
+				generateLabels: function(data) {
+					return data.labels.map(function(label, i) {
+						return {
+							text: label,
+							fillStyle: data.datasets[0].backgroundColor[i],
+							hidden: isNaN(data.datasets[0].data[i]),
+
+							// Extra data used for toggling the correct item
+							index: i
+						};
+					});
+				}
+			},
+			onClick: function(e, legendItem) {
+				helpers.each(this.chart.data.datasets, function(dataset) {
+					dataset.metaHiddenData = dataset.metaHiddenData || [];
+					var idx = legendItem.index;
+
+					if (!isNaN(dataset.data[idx])) {
+						dataset.metaHiddenData[idx] = dataset.data[idx];
+						dataset.data[idx] = NaN;
+					} else if (!isNaN(dataset.metaHiddenData[idx])) {
+						dataset.data[idx] = dataset.metaHiddenData[idx];
+					}
+				});
+
+				this.chart.update();
+			}
+		},
+
 		//The percentage of the chart that we cut out of the middle.
 		cutoutPercentage: 50,
 
@@ -129,14 +179,17 @@
 		},
 
 		update: function update(reset) {
+			var minSize = Math.min(this.chart.chartArea.right - this.chart.chartArea.left, this.chart.chartArea.bottom - this.chart.chartArea.top);
 
-			this.chart.outerRadius = Math.max((helpers.min([this.chart.chart.width, this.chart.chart.height]) / 2) - this.chart.options.elements.arc.borderWidth / 2, 0);
+			this.chart.outerRadius = Math.max((minSize / 2) - this.chart.options.elements.arc.borderWidth / 2, 0);
 			this.chart.innerRadius = Math.max(this.chart.options.cutoutPercentage ? (this.chart.outerRadius / 100) * (this.chart.options.cutoutPercentage) : 1, 0);
 			this.chart.radiusLength = (this.chart.outerRadius - this.chart.innerRadius) / this.getVisibleDatasetCount();
 
 			this.getDataset().total = 0;
 			helpers.each(this.getDataset().data, function(value) {
-				this.getDataset().total += Math.abs(value);
+				if (!isNaN(value)) {
+					this.getDataset().total += Math.abs(value);
+				}
 			}, this);
 
 			this.outerRadius = this.chart.outerRadius - (this.chart.radiusLength * this.getRingIndex(this.index));
@@ -147,10 +200,13 @@
 			}, this);
 		},
 		updateElement: function(arc, index, reset) {
+			var centerX = (this.chart.chartArea.left + this.chart.chartArea.right) / 2;
+			var centerY = (this.chart.chartArea.top + this.chart.chartArea.bottom) / 2;
+
 			var resetModel = {
-				x: this.chart.chart.width / 2,
-				y: this.chart.chart.height / 2,
-				startAngle: Math.PI * -0.5, // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function,
+				x: centerX,
+				y: centerY,
+				startAngle: Math.PI * -0.5, // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
 				endAngle: Math.PI * -0.5,
 				circumference: (this.chart.options.animation.animateRotate) ? 0 : this.calculateCircumference(this.getDataset().data[index]),
 				outerRadius: (this.chart.options.animation.animateScale) ? 0 : this.outerRadius,
@@ -165,8 +221,8 @@
 
 				// Desired view properties
 				_model: reset ? resetModel : {
-					x: this.chart.chart.width / 2,
-					y: this.chart.chart.height / 2,
+					x: centerX,
+					y: centerY,
 					circumference: this.calculateCircumference(this.getDataset().data[index]),
 					outerRadius: this.outerRadius,
 					innerRadius: this.innerRadius,
@@ -226,7 +282,7 @@
 		},
 
 		calculateCircumference: function(value) {
-			if (this.getDataset().total > 0) {
+			if (this.getDataset().total > 0 && !isNaN(value)) {
 				return (Math.PI * 1.999999) * (value / this.getDataset().total);
 			} else {
 				return 0;

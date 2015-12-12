@@ -67,7 +67,12 @@
 			// Absorb the master measurements
 			this.maxWidth = maxWidth;
 			this.maxHeight = maxHeight;
-			this.margins = margins;
+			this.margins = helpers.extend({
+				left: 0,
+				right: 0,
+				top: 0,
+				bottom: 0
+			}, margins);
 
 			// Dimensions
 			this.beforeSetDimensions();
@@ -166,7 +171,6 @@
 				var originalLabelWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
 				var cosRotation;
 				var sinRotation;
-				var firstRotatedWidth;
 
 				this.labelWidth = originalLabelWidth;
 
@@ -228,7 +232,8 @@
 
 			// Width
 			if (this.isHorizontal()) {
-				this.minSize.width = this.maxWidth; // fill all the width
+				// subtract the margins to line up with the chartArea if we are a full width scale
+				this.minSize.width = this.isFullWidth() ? this.maxWidth - this.margins.left - this.margins.right : this.maxWidth;
 			} else {
 				this.minSize.width = this.options.gridLines.display && this.options.display ? 10 : 0;
 			}
@@ -256,7 +261,6 @@
 
 				if (this.isHorizontal()) {
 					// A horizontal axis is more constrained by the height.
-					var maxLabelHeight = this.maxHeight - this.minSize.height;
 					var longestLabelWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
 
 					// TODO - improve this calculation
@@ -319,7 +323,10 @@
 
 		// Shared Methods
 		isHorizontal: function() {
-			return this.options.position == "top" || this.options.position == "bottom";
+			return this.options.position === "top" || this.options.position === "bottom";
+		},
+		isFullWidth: function() {
+			return (this.options.fullWidth);
 		},
 
 		// Get the correct value. NaN bad inputs, If the value type is object get the x or y based on whether we are horizontal or not
@@ -362,7 +369,10 @@
 				if (includeOffset) {
 					pixel += tickWidth / 2;
 				}
-				return this.left + Math.round(pixel);
+
+				var finalVal = this.left + Math.round(pixel);
+				finalVal += this.isFullWidth() ? this.margins.left : 0;
+				return finalVal;
 			} else {
 				var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
 				return this.top + (index * (innerHeight / (this.ticks.length - 1)));
@@ -370,12 +380,14 @@
 		},
 
 		// Utility for getting the pixel location of a percentage of scale
-		getPixelForDecimal: function(decimal, includeOffset) {
+		getPixelForDecimal: function(decimal/*, includeOffset*/) {
 			if (this.isHorizontal()) {
 				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
 				var valueOffset = (innerWidth * decimal) + this.paddingLeft;
 
-				return this.left + Math.round(valueOffset);
+				var finalVal = this.left + Math.round(valueOffset);
+				finalVal += this.isFullWidth() ? this.margins.left : 0;
+				return finalVal;
 			} else {
 				return this.top + (decimal * this.height);
 			}
@@ -398,8 +410,8 @@
 
 				if (this.isHorizontal()) {
 					setContextLineSettings = true;
-					var yTickStart = this.options.position == "bottom" ? this.top : this.bottom - 10;
-					var yTickEnd = this.options.position == "bottom" ? this.top + 10 : this.bottom;
+					var yTickStart = this.options.position === "bottom" ? this.top : this.bottom - 10;
+					var yTickEnd = this.options.position === "bottom" ? this.top + 10 : this.bottom;
 					skipRatio = false;
 
 					if ((this.options.ticks.fontSize + 4) * this.ticks.length > (this.width - (this.paddingLeft + this.paddingRight))) {
@@ -466,15 +478,15 @@
 						this.ctx.font = helpers.fontString(this.options.scaleLabel.fontSize, this.options.scaleLabel.fontStyle, this.options.scaleLabel.fontFamily);
 
 						scaleLabelX = this.left + ((this.right - this.left) / 2); // midpoint of the width
-						scaleLabelY = this.options.position == 'bottom' ? this.bottom - (this.options.scaleLabel.fontSize / 2) : this.top + (this.options.scaleLabel.fontSize / 2);
+						scaleLabelY = this.options.position === 'bottom' ? this.bottom - (this.options.scaleLabel.fontSize / 2) : this.top + (this.options.scaleLabel.fontSize / 2);
 
 						this.ctx.fillText(this.options.scaleLabel.labelString, scaleLabelX, scaleLabelY);
 					}
 
 				} else {
 					setContextLineSettings = true;
-					var xTickStart = this.options.position == "right" ? this.left : this.right - 5;
-					var xTickEnd = this.options.position == "right" ? this.left + 5 : this.right;
+					var xTickStart = this.options.position === "right" ? this.left : this.right - 5;
+					var xTickEnd = this.options.position === "right" ? this.left + 5 : this.right;
 
 					helpers.each(this.ticks, function(label, index) {
 						// If the callback returned a null or undefined value, do not draw this line
@@ -522,7 +534,7 @@
 
 							this.ctx.save();
 
-							if (this.options.position == "left") {
+							if (this.options.position === "left") {
 								if (this.options.ticks.mirror) {
 									xLabelValue = this.right + this.options.ticks.padding;
 									this.ctx.textAlign = "left";
@@ -553,9 +565,9 @@
 
 					if (this.options.scaleLabel.display) {
 						// Draw the scale label
-						scaleLabelX = this.options.position == 'left' ? this.left + (this.options.scaleLabel.fontSize / 2) : this.right - (this.options.scaleLabel.fontSize / 2);
+						scaleLabelX = this.options.position === 'left' ? this.left + (this.options.scaleLabel.fontSize / 2) : this.right - (this.options.scaleLabel.fontSize / 2);
 						scaleLabelY = this.top + ((this.bottom - this.top) / 2);
-						var rotation = this.options.position == 'left' ? -0.5 * Math.PI : 0.5 * Math.PI;
+						var rotation = this.options.position === 'left' ? -0.5 * Math.PI : 0.5 * Math.PI;
 
 						this.ctx.save();
 						this.ctx.translate(scaleLabelX, scaleLabelY);

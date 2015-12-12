@@ -59,6 +59,8 @@
 			this.ensureScalesHaveIDs();
 			this.buildOrUpdateControllers();
 			this.buildScales();
+			this.buildSurroundingItems();
+			this.updateLayout();
 			this.resetElements();
 			this.initToolTip();
 			this.update();
@@ -165,7 +167,33 @@
 				this.scales.radialScale = scale;
 			}
 
-			Chart.scaleService.update(this, this.chart.width, this.chart.height);
+			Chart.scaleService.addScalesToLayout(this);
+		},
+
+		buildSurroundingItems: function() {
+			if (this.options.title) {
+				this.titleBlock = new Chart.Title({
+					ctx: this.chart.ctx,
+					options: this.options.title,
+					chart: this
+				});
+
+				Chart.layoutService.addBox(this, this.titleBlock);
+			}
+
+			if (this.options.legend) {
+				this.legend = new Chart.Legend({
+					ctx: this.chart.ctx,
+					options: this.options.legend,
+					chart: this,
+				});
+
+				Chart.layoutService.addBox(this, this.legend);
+			}
+		},
+
+		updateLayout: function() {
+			Chart.layoutService.update(this, this.chart.width, this.chart.height);
 		},
 
 		buildOrUpdateControllers: function buildOrUpdateControllers(resetNewControllers) {
@@ -212,7 +240,7 @@
 			// Make sure dataset controllers are updated and new controllers are reset
 			this.buildOrUpdateControllers(true);
 
-			Chart.scaleService.update(this, this.chart.width, this.chart.height);
+			Chart.layoutService.update(this, this.chart.width, this.chart.height);
 
 			// Make sure all dataset controllers have correct meta data counts
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
@@ -261,8 +289,8 @@
 			this.clear();
 
 			// Draw all the scales
-			helpers.each(this.scales, function(scale) {
-				scale.draw(this.chartArea);
+			helpers.each(this.boxes, function(box) {
+				box.draw(this.chartArea);
 			}, this);
 			if (this.scale) {
 				this.scale.draw();
@@ -391,30 +419,23 @@
 				this.active = [];
 				this.tooltipActive = [];
 			} else {
-				this.active = function() {
-					switch (this.options.hover.mode) {
+
+				var _this = this;
+				var getItemsForMode = function(mode) {
+					switch (mode) {
 						case 'single':
-							return this.getElementAtEvent(e);
+							return _this.getElementAtEvent(e);
 						case 'label':
-							return this.getElementsAtEvent(e);
+							return _this.getElementsAtEvent(e);
 						case 'dataset':
-							return this.getDatasetAtEvent(e);
+							return _this.getDatasetAtEvent(e);
 						default:
 							return e;
 					}
-				}.call(this);
-				this.tooltipActive = function() {
-					switch (this.options.tooltips.mode) {
-						case 'single':
-							return this.getElementAtEvent(e);
-						case 'label':
-							return this.getElementsAtEvent(e);
-						case 'dataset':
-							return this.getDatasetAtEvent(e);
-						default:
-							return e;
-					}
-				}.call(this);
+				};
+
+				this.active = getItemsForMode(this.options.hover.mode);
+				this.tooltipActive = getItemsForMode(this.options.tooltips.mode);
 			}
 
 			// On Hover hook
@@ -425,6 +446,10 @@
 			if (e.type == 'mouseup' || e.type == 'click') {
 				if (this.options.onClick) {
 					this.options.onClick.call(this, e, this.active);
+				}
+
+				if (this.legend && this.legend.handleEvent) {
+					this.legend.handleEvent(e);
 				}
 			}
 
