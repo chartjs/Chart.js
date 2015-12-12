@@ -48,6 +48,7 @@
                     "#949FB1",
                     "#4D5360",
                 ],
+                label: 'My dataset' // for legend
             }],
             labels: [
                 "Red",
@@ -59,6 +60,13 @@
         },
         options: {
             responsive: true,
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'Our Favorite Dataset'
+            },
             scale: {
               ticks: {
                 beginAtZero: true

@@ -44,6 +44,7 @@
     };
 
     var config = {
+        type: 'doughnut',
         data: {
             datasets: [{
                 data: [
@@ -60,6 +61,7 @@
                     "#949FB1",
                     "#4D5360",
                 ],
+                label: 'Dataset 1'
             }, {
                 hidden: true,
                 data: [
@@ -76,6 +78,7 @@
                     "#949FB1",
                     "#4D5360",
                 ],
+                label: 'Dataset 2'
             }, {
                 data: [
                     randomScalingFactor(),
@@ -91,6 +94,7 @@
                     "#949FB1",
                     "#4D5360",
                 ],
+                label: 'Dataset 3'
             }],
             labels: [
                 "Red",
@@ -101,7 +105,14 @@
             ]
         },
         options: {
-            responsive: true
+            responsive: true,
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'Our Favorite Datasets'
+            }
         }
     };
 
@@ -113,7 +124,7 @@
 
     window.onload = function() {
         var ctx = document.getElementById("chart-area").getContext("2d");
-        window.myDoughnut = Chart.Doughnut(ctx, config);
+        window.myDoughnut = new Chart(ctx, config);
         console.log(window.myDoughnut);
 
         updateLegend();
@@ -138,6 +149,7 @@
         var newDataset = {
             backgroundColor: [],
             data: [],
+            label: 'New dataset ' + config.data.datasets.length,
         };
 
         for (var index = 0; index < config.data.labels.length; ++index) {

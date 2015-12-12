@@ -105,6 +105,37 @@ onClick | Function | null | Called if the event is of type 'mouseup' or 'click'.
 defaultColor | Color | 'rgba(0,0,0,0.1)' |
 legendCallback | Function | ` function (chart) { // the chart object to generate a legend from.  }` | Function to generate a legend. Default implementation returns an HTML string.
 
+The global options for the chart title is defined in `Chart.defaults.global.title`
+
+Name | Type | Default | Description
+--- | --- | --- | ---
+display | Boolean | true | Show the title block
+position | String | 'top' | Position of the title. 'top' or 'bottom' are allowed
+fullWidth | Boolean | true | Marks that this box should take the full width of the canvas (pushing down other boxes)
+fontColor | Color  | '#666' | Text color
+fontFamily | String | 'Helvetica Neue' |
+fontSize | Number | 12 | 
+fontStyle | String | 'bold' |
+padding | Number | 10 | Number of pixels to add above and below the title text
+text | String | '' | Title text
+
+The global options for the chart legend is defined in `Chart.defaults.global.legend`
+
+Name | Type | Default | Description
+--- | --- | --- | ---
+display | Boolean | true | Is the legend displayed
+position | String | 'top' | Position of the legend. Options are 'top' or 'bottom'
+fullWidth | Boolean | true | Marks that this box should take the full width of the canvas (pushing down other boxes)
+onClick | Function | `function(event, legendItem) {}` | A callback that is called when a click is registered on top of a label item
+labels |-|-|-
+*labels*boxWidth | Number | 40 | Width of coloured box
+*labels*fontSize | Number | 12 | Font size
+*labels*fontStyle | String | "normal" |
+*labels*fontColor | Color | "#666" |
+*labels*fontFamily | String | "Helvetica Neue" |
+*labels*padding | Number | 10 | Padding between rows of colored boxes
+*labels*generateLabels: | Function | `function(data) {  } | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. Styles that can be returned are `fillStyle`, `strokeStyle`, `lineCap`, `lineDash`, `lineDashOffset`, `lineWidth`, `lineJoin`. Return a `hidden` attribute to indicate that the label refers to something that is not visible. A strikethrough style will be given to the text in this case.
+
 The global options for tooltips are defined in `Chart.defaults.global.tooltips`.
 
 Name | Type | Default | Description

@@ -78,6 +78,8 @@ scale | Array | [See Scales](#scales) and [Defaults for Radial Linear Scale](#ge
 *scale*.lineArc | Boolean | true | When true, lines are arced compared to straight when false.
 *animation*.animateRotate | Boolean |true | If true, will animate the rotation of the chart.
 *animation*.animateScale | Boolean | false | If true, will animate scaling the Doughnut from the centre.
+*legend*.*labels*.generateLabels | Function | `function(data) {} ` | Returns labels for each the legend
+*legend*.onClick | Function | function(event, legendItem) {} ` | Handles clicking an individual legend item
 
 You can override these for your `Chart` instance by passing a second argument into the `Doughnut` method as an object with the keys you want to override.
 

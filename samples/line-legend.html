@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Line Chart</title>
+    <script src="../Chart.js"></script>
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <style>
+        canvas {
+            -webkit-box-shadow: 0 0 20px 0 rgba(0, 0, 0, .5);
+        }
+    </style>
+</head>
+
+<body>
+    <div style="width:100%;">
+        <canvas id="canvas" style="width:100%;height:100%"></canvas>
+    </div>
+    <br>
+    <br>
+    <button id="randomizeData">Randomize Data</button>
+    <button id="addDataset">Add Dataset</button>
+    <button id="removeDataset">Remove Dataset</button>
+    <button id="addData">Add Data</button>
+    <button id="removeData">Remove Data</button>
+    <script>
+        var randomScalingFactor = function() {
+            return Math.round(Math.random() * 100 * (Math.random() > 0.5 ? -1 : 1));
+        };
+        var randomColorFactor = function() {
+            return Math.round(Math.random() * 255);
+        };
+        var randomColor = function(opacity) {
+            return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
+        };
+
+        var config = {
+            type: 'line',
+            data: {
+                labels: ["January", "February", "March", "April", "May", "June", "July"],
+                datasets: [{
+                    label: "My First dataset",
+                    data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
+                    fill: false,
+                    borderDash: [5, 5],
+                }, {
+                    label: "My Second dataset",
+                    data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
+                    fill: false,
+                    borderDash: [5, 5],
+                }, {
+                    label: "My Third dataset",
+                    data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
+                    fill: false,
+                }, {
+                    label: "My Fourth dataset",
+                    data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
+                    fill: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                legend: {
+                    position: 'bottom',
+                },
+                hover: {
+                    mode: 'label'
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            show: true,
+                            labelString: 'Month'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            show: true,
+                            labelString: 'Value'
+                        }
+                    }]
+                },
+                title: {
+                    display: true,
+                    text: 'Our 4 Favorite Datasets'
+                }
+            }
+        };
+
+        $.each(config.data.datasets, function(i, dataset) {
+            var background = randomColor(0.5);
+            dataset.borderColor = background;
+            dataset.backgroundColor = background;
+            dataset.pointBorderColor = background;
+            dataset.pointBackgroundColor = background;
+            dataset.pointBorderWidth = 1;
+        });
+
+        console.log(config.data);
+
+        window.onload = function() {
+            var ctx = document.getElementById("canvas").getContext("2d");
+            window.myLine = new Chart(ctx, config);
+
+            updateLegend();
+        };
+
+        function updateLegend() {
+            $legendContainer = $('#legendContainer');
+            $legendContainer.empty();
+            $legendContainer.append(window.myLine.generateLegend());
+        }
+
+        $('#randomizeData').click(function() {
+            $.each(config.data.datasets, function(i, dataset) {
+                dataset.data = dataset.data.map(function() {
+                    return randomScalingFactor();
+                });
+
+            });
+
+            window.myLine.update();
+            updateLegend();
+        });
+
+        $('#addDataset').click(function() {
+            var background = randomColor(0.5);
+            var newDataset = {
+                label: 'Dataset ' + config.data.datasets.length,
+                borderColor: background,
+                backgroundColor: background,
+                pointBorderColor: background,
+                pointBackgroundColor: background,
+                pointBorderWidth: 1,
+                fill: false,
+                data: [],
+            };
+
+            for (var index = 0; index < config.data.labels.length; ++index) {
+                newDataset.data.push(randomScalingFactor());
+            }
+
+            config.data.datasets.push(newDataset);
+            window.myLine.update();
+            updateLegend();
+        });
+
+        $('#addData').click(function() {
+            if (config.data.datasets.length > 0) {
+                config.data.labels.push('dataset #' + config.data.labels.length);
+
+                $.each(config.data.datasets, function(i, dataset) {
+                    dataset.data.push(randomScalingFactor());
+                });
+
+                window.myLine.update();
+                updateLegend();
+            }
+        });
+
+        $('#removeDataset').click(function() {
+            config.data.datasets.splice(0, 1);
+            window.myLine.update();
+            updateLegend();
+        });
+
+        $('#removeData').click(function() {
+            config.data.labels.splice(-1, 1); // remove the label first
+
+            config.data.datasets.forEach(function(dataset, datasetIndex) {
+                dataset.data.pop();
+            });
+
+            window.myLine.update();
+            updateLegend();
+        });
+    </script>
+</body>
+
+</html>

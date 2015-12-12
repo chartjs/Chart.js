@@ -18,6 +18,56 @@
 		animateRotate: true,
 		animateScale: true,
 
+		aspectRatio: 1,
+		legendCallback: function(chart) {
+			var text = [];
+			text.push('<ul class="' + chart.id + '-legend">');
+
+			if (chart.data.datasets.length) {
+				for (var i = 0; i < chart.data.datasets[0].data.length; ++i) {
+					text.push('<li><span style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '">');
+					if (chart.data.labels[i]) {
+						text.push(chart.data.labels[i]);
+					}
+					text.push('</span></li>');
+				}
+			}
+
+			text.push('</ul>');
+			return text.join("");
+		},
+		legend: {
+			labels: {
+				generateLabels: function(data) {
+					return data.labels.map(function(label, i) {
+						return {
+							text: label,
+							fillStyle: data.datasets[0].backgroundColor[i],
+							hidden: isNaN(data.datasets[0].data[i]),
+
+							// Extra data used for toggling the correct item
+							index: i
+						};
+					});
+				}
+			},
+			onClick: function(e, legendItem) {
+				helpers.each(this.chart.data.datasets, function(dataset) {
+					dataset.metaHiddenData = dataset.metaHiddenData || [];
+					var idx = legendItem.index;
+
+					if (!isNaN(dataset.data[idx])) {
+						dataset.metaHiddenData[idx] = dataset.data[idx];
+						dataset.data[idx] = NaN;
+					} else if (!isNaN(dataset.metaHiddenData[idx])) {
+						dataset.data[idx] = dataset.metaHiddenData[idx];
+					}
+				});
+
+				this.chart.update();
+			}
+		},
+
 		// Need to override these to give a nice default
 		tooltips: {
 			callbacks: {
@@ -111,7 +161,8 @@
 		},
 
 		update: function update(reset) {
-			this.chart.outerRadius = Math.max((helpers.min([this.chart.chart.width, this.chart.chart.height]) - this.chart.options.elements.arc.borderWidth / 2) / 2, 0);
+			var minSize = Math.min(this.chart.chartArea.right - this.chart.chartArea.left, this.chart.chartArea.bottom - this.chart.chartArea.top);
+			this.chart.outerRadius = Math.max((minSize - this.chart.options.elements.arc.borderWidth / 2) / 2, 0);
 			this.chart.innerRadius = Math.max(this.chart.options.cutoutPercentage ? (this.chart.outerRadius / 100) * (this.chart.options.cutoutPercentage) : 1, 0);
 			this.chart.radiusLength = (this.chart.outerRadius - this.chart.innerRadius) / this.getVisibleDatasetCount();
 
@@ -127,14 +178,27 @@
 				this.updateElement(arc, index, reset);
 			}, this);
 		},
+
 		updateElement: function(arc, index, reset) {
-			var circumference = 1 / this.getDataset().data.length * 2;
-			var startAngle = (-0.5 * Math.PI) + (Math.PI * circumference) * index;
-			var endAngle = startAngle + (circumference * Math.PI);
+			var circumference = this.calculateCircumference(this.getDataset().data[index]);
+			var centerX = (this.chart.chartArea.left + this.chart.chartArea.right) / 2;
+			var centerY = (this.chart.chartArea.top + this.chart.chartArea.bottom) / 2;
+
+			// If there is NaN data before us, we need to calculate the starting angle correctly. 
+			// We could be way more efficient here, but its unlikely that the polar area chart will have a lot of data
+			var notNullIndex = 0;
+			for (var i = 0; i < index; ++i) {
+				if (!isNaN(this.getDataset().data[i])) {
+					++notNullIndex;
+				}
+			}
+
+			var startAngle = (-0.5 * Math.PI) + (circumference * notNullIndex);
+			var endAngle = startAngle + circumference;
 
 			var resetModel = {
-				x: this.chart.chart.width / 2,
-				y: this.chart.chart.height / 2,
+				x: centerX,
+				y: centerY,
 				innerRadius: 0,
 				outerRadius: this.chart.options.animateScale ? 0 : this.chart.scale.getDistanceFromCenterForValue(this.getDataset().data[index]),
 				startAngle: this.chart.options.animateRotate ? Math.PI * -0.5 : startAngle,
@@ -157,8 +221,8 @@
 
 				// Desired view properties
 				_model: reset ? resetModel : {
-					x: this.chart.chart.width / 2,
-					y: this.chart.chart.height / 2,
+					x: centerX,
+					y: centerY,
 					innerRadius: 0,
 					outerRadius: this.chart.scale.getDistanceFromCenterForValue(this.getDataset().data[index]),
 					startAngle: startAngle,
@@ -202,10 +266,15 @@
 		},
 
 		calculateCircumference: function(value) {
-			if (this.getDataset().total > 0) {
-				return (Math.PI * 2) * (value / this.getDataset().total);
-			} else {
+			if (isNaN(value)) {
 				return 0;
+			} else {
+				// Count the number of NaN values 
+				var numNaN = helpers.where(this.getDataset().data, function(data) {
+					return isNaN(data);
+				}).length;
+
+				return (2 * Math.PI) / (this.getDataset().data.length - numNaN);
 			}
 		},
 		updateScaleRange: function() {

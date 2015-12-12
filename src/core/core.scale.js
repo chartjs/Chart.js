@@ -67,7 +67,12 @@
 			// Absorb the master measurements
 			this.maxWidth = maxWidth;
 			this.maxHeight = maxHeight;
-			this.margins = margins;
+			this.margins = helpers.extend({
+				left: 0,
+				right: 0,
+				top: 0,
+				bottom: 0
+			}, margins);
 
 			// Dimensions
 			this.beforeSetDimensions();
@@ -227,7 +232,8 @@
 
 			// Width
 			if (this.isHorizontal()) {
-				this.minSize.width = this.maxWidth; // fill all the width
+				// subtract the margins to line up with the chartArea if we are a full width scale
+				this.minSize.width = this.isFullWidth() ? this.maxWidth - this.margins.left - this.margins.right : this.maxWidth;
 			} else {
 				this.minSize.width = this.options.gridLines.display && this.options.display ? 10 : 0;
 			}
@@ -319,6 +325,9 @@
 		isHorizontal: function() {
 			return this.options.position === "top" || this.options.position === "bottom";
 		},
+		isFullWidth: function() {
+			return (this.options.fullWidth);
+		},
 
 		// Get the correct value. NaN bad inputs, If the value type is object get the x or y based on whether we are horizontal or not
 		getRightValue: function getRightValue(rawValue) {
@@ -360,7 +369,10 @@
 				if (includeOffset) {
 					pixel += tickWidth / 2;
 				}
-				return this.left + Math.round(pixel);
+
+				var finalVal = this.left + Math.round(pixel);
+				finalVal += this.isFullWidth() ? this.margins.left : 0;
+				return finalVal;
 			} else {
 				var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
 				return this.top + (index * (innerHeight / (this.ticks.length - 1)));
@@ -373,7 +385,9 @@
 				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
 				var valueOffset = (innerWidth * decimal) + this.paddingLeft;
 
-				return this.left + Math.round(valueOffset);
+				var finalVal = this.left + Math.round(valueOffset);
+				finalVal += this.isFullWidth() ? this.margins.left : 0;
+				return finalVal;
 			} else {
 				return this.top + (decimal * this.height);
 			}
