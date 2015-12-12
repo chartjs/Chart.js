@@ -208,13 +208,12 @@
 
 				if (dataset.controller) {
 					dataset.controller.updateIndex(datasetIndex);
-					return;
-				}
+				} else {
+					dataset.controller = new Chart.controllers[type](this, datasetIndex);
 
-				dataset.controller = new Chart.controllers[type](this, datasetIndex);
-
-				if (resetNewControllers) {
-					dataset.controller.reset();
+					if (resetNewControllers) {
+						dataset.controller.reset();
+					}
 				}
 			}, this);
 
@@ -237,10 +236,11 @@
 		update: function update(animationDuration, lazy) {
 			// In case the entire data object changed
 			this.tooltip._data = this.data;
-			Chart.layoutService.update(this, this.chart.width, this.chart.height);
 
 			// Make sure dataset controllers are updated and new controllers are reset
 			this.buildOrUpdateControllers(true);
+
+			Chart.layoutService.update(this, this.chart.width, this.chart.height);
 
 			// Make sure all dataset controllers have correct meta data counts
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
