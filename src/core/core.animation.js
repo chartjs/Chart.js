@@ -9,8 +9,8 @@
 	Chart.defaults.global.animation = {
 		duration: 1000,
 		easing: "easeOutQuart",
-		onProgress: function() {},
-		onComplete: function() {},
+		onProgress: helpers.noop,
+		onComplete: helpers.noop,
 	};
 
 	Chart.Animation = Chart.Element.extend({
@@ -77,18 +77,26 @@
 			}
 
 			for (var i = 0; i < this.animations.length; i++) {
-
 				if (this.animations[i].animationObject.currentStep === null) {
 					this.animations[i].animationObject.currentStep = 0;
 				}
+
 				this.animations[i].animationObject.currentStep += 1 + framesToDrop;
+
 				if (this.animations[i].animationObject.currentStep > this.animations[i].animationObject.numSteps) {
 					this.animations[i].animationObject.currentStep = this.animations[i].animationObject.numSteps;
 				}
 
 				this.animations[i].animationObject.render(this.animations[i].chartInstance, this.animations[i].animationObject);
+				if (this.animations[i].animationObject.onAnimationProgress && this.animations[i].animationObject.onAnimationProgress.call) {
+					this.animations[i].animationObject.onAnimationProgress.call(this.animations[i].chartInstance, this.animations[i]);
+				}
 
 				if (this.animations[i].animationObject.currentStep == this.animations[i].animationObject.numSteps) {
+					if (this.animations[i].animationObject.onAnimationComplete && this.animations[i].animationObject.onAnimationComplete.call) {
+						this.animations[i].animationObject.onAnimationComplete.call(this.animations[i].chartInstance, this.animations[i]);
+					}
+					
 					// executed the last frame. Remove the animation.
 					this.animations[i].chartInstance.animating = false;
 					this.animations.splice(i, 1);
