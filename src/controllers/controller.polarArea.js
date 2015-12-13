@@ -79,34 +79,10 @@
 		}
 	};
 
-	Chart.controllers.polarArea = function(chart, datasetIndex) {
-		this.initialize.call(this, chart, datasetIndex);
-	};
-
-	helpers.extend(Chart.controllers.polarArea.prototype, {
-
-		initialize: function(chart, datasetIndex) {
-			this.chart = chart;
-			this.index = datasetIndex;
-			this.linkScales();
-			this.addElements();
-		},
-		updateIndex: function(datasetIndex) {
-			this.index = datasetIndex;
-		},
-
+	Chart.controllers.polarArea = Chart.DatasetController.extend({
 		linkScales: function() {
 			// no scales for doughnut
 		},
-
-		getDataset: function() {
-			return this.chart.data.datasets[this.index];
-		},
-
-		getScaleForId: function(scaleID) {
-			return this.chart.scales[scaleID];
-		},
-
 		addElements: function() {
 			this.getDataset().metaData = this.getDataset().metaData || [];
 			helpers.each(this.getDataset().data, function(value, index) {
@@ -131,31 +107,6 @@
 			// Add to the points array
 			this.getDataset().metaData.splice(index, 0, arc);
 		},
-		removeElement: function(index) {
-			this.getDataset().metaData.splice(index, 1);
-		},
-
-		reset: function() {
-			this.update(true);
-		},
-
-		buildOrUpdateElements: function buildOrUpdateElements() {
-			// Handle the number of data points changing
-			var numData = this.getDataset().data.length;
-			var numPoints = this.getDataset().metaData.length;
-
-			// Make sure that we handle number of datapoints changing
-			if (numData < numPoints) {
-				// Remove excess bars for data points that have been removed
-				this.getDataset().metaData.splice(numData, numPoints - numData);
-			} else if (numData > numPoints) {
-				// Add new elements
-				for (var index = numPoints; index < numData; ++index) {
-					this.addElementAndReset(index);
-				}
-			}
-		},
-
 		getVisibleDatasetCount: function getVisibleDatasetCount() {
 			return helpers.where(this.chart.data.datasets, function(ds) { return helpers.isDatasetVisible(ds); }).length;
 		},
@@ -276,14 +227,6 @@
 
 				return (2 * Math.PI) / (this.getDataset().data.length - numNaN);
 			}
-		},
-		updateScaleRange: function() {
-			helpers.extend(this.chart.scale, {
-				size: helpers.min([this.chart.width, this.chart.height]),
-				xCenter: this.chart.width / 2,
-				yCenter: this.chart.height / 2
-			});
-		},
-
+		}
 	});
 }).call(this);

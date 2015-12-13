@@ -142,33 +142,6 @@ describe('Bar controller tests', function() {
 		expect(chart.data.datasets[1].metaData[3] instanceof Chart.elements.Rectangle).toBe(true);
 	});
 
-	it('should remove elements', function() {
-		var chart = {
-			data: {
-				datasets: [{}, {
-					data: [10, 15, 0, -4]
-				}]
-			},
-			config: {
-				type: 'bar'
-			},
-			options: {
-				scales: {
-					xAxes: [{
-						id: 'firstXScaleID'
-					}],
-					yAxes: [{
-						id: 'firstYScaleID'
-					}]
-				}
-			}
-		};
-
-		var controller = new Chart.controllers.bar(chart, 1);
-		controller.removeElement(1);
-		expect(chart.data.datasets[1].metaData.length).toBe(3);
-	});
-
 	it('should update elements', function() {
 		var data = {
 			datasets: [{

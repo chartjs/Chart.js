@@ -152,7 +152,7 @@
 		// Args are: (tooltipItem, data)
 		getBeforeBody: function() {
 			var lines = this._options.tooltips.callbacks.beforeBody.apply(this, arguments);
-			return helpers.isArray(lines) ? lines : [lines];
+			return helpers.isArray(lines) ? lines : lines !== undefined ? [lines] : [];
 		},
 
 		// Args are: (tooltipItem, data)
@@ -173,7 +173,7 @@
 		// Args are: (tooltipItem, data)
 		getAfterBody: function() {
 			var lines = this._options.tooltips.callbacks.afterBody.apply(this, arguments);
-			return helpers.isArray(lines) ? lines : [lines];
+			return helpers.isArray(lines) ? lines : lines !== undefined ? [lines] : [];
 		},
 
 		// Get the footer and beforeFooter and afterFooter lines
@@ -323,11 +323,11 @@
 			tooltipHeight += vm.title.length ? vm.titleMarginBottom : 0; // Title's bottom Margin
 
 			tooltipHeight += combinedBodyLength * vm.bodyFontSize; // Body Lines
-			tooltipHeight += (combinedBodyLength - 1) * vm.bodySpacing; // Body Line Spacing
+			tooltipHeight += combinedBodyLength ? (combinedBodyLength - 1) * vm.bodySpacing : 0; // Body Line Spacing
 
 			tooltipHeight += vm.footer.length ? vm.footerMarginTop : 0; // Footer Margin
 			tooltipHeight += vm.footer.length * (vm.footerFontSize); // Footer Lines
-			tooltipHeight += (vm.footer.length - 1) * vm.footerSpacing; // Footer Line Spacing
+			tooltipHeight += vm.footer.length ? (vm.footer.length - 1) * vm.footerSpacing : 0; // Footer Line Spacing
 
 			// Width
 			var tooltipWidth = 0;
