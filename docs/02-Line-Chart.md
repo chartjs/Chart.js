@@ -80,6 +80,9 @@ var data = {
 			// Number or array - border width of point when hovered
 			pointHoverBorderWidth: 2,
 
+			// Tension - bezier curve tension of the line. Set to 0 to draw straight Wlines connecting points
+			tension: 0.1
+
 			// The actual data
 			data: [65, 59, 80, 81, 56, 55, 40],
 
@@ -145,37 +148,7 @@ new Chart(ctx, {
 	}
 });
 // This will create a chart with all of the default options, merged from the global config,
-// and the Line chart defaults, but this particular instance will have `bezierCurve` set to false.
+// and the Line chart defaults, but this particular instance will have the x axis not displaying.
 ```
 
-We can also change these defaults values for each Line type that is created, this object is available at `Chart.defaults.Line`.
-
-
-### Prototype methods
-
-#### .getElementsAtEvent( event )
-
-Calling `getElementsAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the point elements that are at that the same position of that event.
-
-```javascript
-canvas.onclick = function(evt){
-	var activePoints = myLineChart.getElementsAtEvent(evt);
-	// => activePoints is an array of points on the canvas that are at the same position as the click event.
-};
-```
-
-This functionality may be useful for implementing DOM based tooltips, or triggering custom behaviour in your application.
-
-#### .getElementAtEvent( event )
-Calling `getElementAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the single element at the event position. If there are multiple items within range, only the first is returned
-
-#### .update( )
-
-Calling `update()` on your Chart instance will re-render the chart with any updated values, allowing you to edit the value of multiple existing points, then render those in one animated render loop. You can safely call `update()` after changing the entire data object on the chart.
-
-```javascript
-myLineChart.data.datasets[0].data[2] = 50;
-// Would update the first dataset's value of 'March' to be 50
-myLineChart.update();
-// Calling update now animates the position of March from 90 to 50.
-```
+We can also change these defaults values for each Line type that is created, this object is available at `Chart.defaults.line`.

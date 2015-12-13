@@ -15,7 +15,7 @@ They are often useful for comparing the points of two or more different data set
 ###Example usage
 
 ```javascript
-var myRadarChart = new Chart(ctx,{
+var myRadarChart = new Chart(ctx, {
 	type:'radar',
 	data: data,
 	options: options
@@ -66,7 +66,7 @@ Name | Type | Default | Description
 scale | Array | [See Scales](#scales) and [Defaults for Radial Linear Scale](#scales-radial-linear-scale) | Options for the one scale used on the chart. Use this to style the ticks, labels, and grid lines.
 *scale*.type | String |"radialLinear" | As defined in ["Radial Linear"](#scales-radial-linear-scale).
 *elements*.line | Array | | Options for all line elements used on the chart, as defined in the global elements, duplicated here to show Radar chart specific defaults.
-*elements.line*.tension | Number | 0 | Tension exhibited by lines when calculating splineCurve.
+*elements.line*.tension | Number | 0 | Tension exhibited by lines when calculating splineCurve. Setting to 0 creates straight lines.
 
 You can override these for your `Chart` instance by passing a second argument into the `Radar` method as an object with the keys you want to override.
 
@@ -90,50 +90,5 @@ new Chart(ctx, {
 // well as the ticks beginning at zero.
 ```
 
-We can also change these defaults values for each Radar type that is created, this object is available at `Chart.defaults.Radar`.
+We can also change these defaults values for each Radar type that is created, this object is available at `Chart.defaults.radar`.
 
-
-### Prototype methods
-
-#### .getPointsAtEvent( event )
-
-Calling `getPointsAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the point elements that are at that the same position of that event.
-
-```javascript
-canvas.onclick = function(evt){
-	var activePoints = myRadarChart.getPointsAtEvent(evt);
-	// => activePoints is an array of points on the canvas that are at the same position as the click event.
-};
-```
-
-This functionality may be useful for implementing DOM based tooltips, or triggering custom behaviour in your application.
-
-#### .update( )
-
-Calling `update()` on your Chart instance will re-render the chart with any updated values, allowing you to edit the value of multiple existing points, then render those in one animated render loop.
-
-```javascript
-myRadarChart.datasets[0].points[2].value = 50;
-// Would update the first dataset's value of 'Sleeping' to be 50
-myRadarChart.update();
-// Calling update now animates the position of Sleeping from 90 to 50.
-```
-
-#### .addData( valuesArray, label )
-
-Calling `addData(valuesArray, label)` on your Chart instance passing an array of values for each dataset, along with a label for those points.
-
-```javascript
-// The values array passed into addData should be one for each dataset in the chart
-myRadarChart.addData([40, 60], "Dancing");
-// The new data will now animate at the end of the chart.
-```
-
-#### .removeData( )
-
-Calling `removeData()` on your Chart instance will remove the first value for all datasets on the chart.
-
-```javascript
-myRadarChart.removeData();
-// Other points will now animate to their correct positions.
-```
