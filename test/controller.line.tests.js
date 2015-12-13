@@ -76,33 +76,6 @@ describe('Line controller tests', function() {
 		expect(chart.data.datasets[0].metaDataset instanceof Chart.elements.Line).toBe(true); // 1 line element
 	});
 
-	it('should remove elements', function() {
-		var chart = {
-			data: {
-				datasets: [{
-					data: [10, 15, 0, -4]
-				}]
-			},
-			config: {
-				type: 'line'
-			},
-			options: {
-				scales: {
-					xAxes: [{
-						id: 'firstXScaleID'
-					}],
-					yAxes: [{
-						id: 'firstYScaleID'
-					}]
-				}
-			}
-		};
-
-		var controller = new Chart.controllers.line(chart, 0);
-		controller.removeElement(0);
-		expect(chart.data.datasets[0].metaData.length).toBe(3);
-	});
-
 	it('should draw all elements', function() {
 		var chart = {
 			data: {

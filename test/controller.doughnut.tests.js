@@ -41,25 +41,6 @@ describe('Doughnut controller tests', function() {
 		expect(chart.data.datasets[0].metaData[3] instanceof Chart.elements.Arc).toBe(true);
 	});
 
-	it ('Should remove elements', function() {
-		var chart = {
-			data: {
-				datasets: [{
-					data: [10, 15, 0, 4]
-				}]
-			},
-			config: {
-				type: 'doughnut'
-			},
-			options: {
-			}
-		};
-
-		var controller = new Chart.controllers.doughnut(chart, 0);
-		controller.removeElement(1);
-		expect(chart.data.datasets[0].metaData.length).toBe(3);
-	});
-
 	it ('Should reset and update elements', function() {
 		var chart = {
 			chartArea: {

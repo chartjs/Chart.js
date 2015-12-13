@@ -86,27 +86,9 @@
 	});
 
 
-	Chart.controllers.doughnut = Chart.controllers.pie = function(chart, datasetIndex) {
-		this.initialize.call(this, chart, datasetIndex);
-	};
-
-	helpers.extend(Chart.controllers.doughnut.prototype, {
-
-		initialize: function(chart, datasetIndex) {
-			this.chart = chart;
-			this.index = datasetIndex;
-			this.linkScales();
-			this.addElements();
-		},
-		updateIndex: function(datasetIndex) {
-			this.index = datasetIndex;
-		},
+	Chart.controllers.doughnut = Chart.controllers.pie = Chart.DatasetController.extend({
 		linkScales: function() {
 			// no scales for doughnut
-		},
-
-		getDataset: function() {
-			return this.chart.data.datasets[this.index];
 		},
 
 		addElements: function() {
@@ -136,29 +118,6 @@
 
 			// Add to the points array
 			this.getDataset().metaData.splice(index, 0, arc);
-		},
-		removeElement: function(index) {
-			this.getDataset().metaData.splice(index, 1);
-		},
-		reset: function() {
-			this.update(true);
-		},
-
-		buildOrUpdateElements: function buildOrUpdateElements() {
-			// Make sure we have metaData for each data point
-			var numData = this.getDataset().data.length;
-			var numArcs = this.getDataset().metaData.length;
-
-			// Make sure that we handle number of datapoints changing
-			if (numData < numArcs) {
-				// Remove excess bars for data points that have been removed
-				this.getDataset().metaData.splice(numData, numArcs - numData);
-			} else if (numData > numArcs) {
-				// Add new elements
-				for (var index = numArcs; index < numData; ++index) {
-					this.addElementAndReset(index);
-				}
-			}
 		},
 
 		getVisibleDatasetCount: function getVisibleDatasetCount() {

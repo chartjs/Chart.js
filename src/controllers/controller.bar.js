@@ -30,39 +30,7 @@
 		},
 	};
 
-	Chart.controllers.bar = function(chart, datasetIndex) {
-		this.initialize.call(this, chart, datasetIndex);
-	};
-
-	helpers.extend(Chart.controllers.bar.prototype, {
-
-		initialize: function(chart, datasetIndex) {
-			this.chart = chart;
-			this.index = datasetIndex;
-			this.linkScales();
-			this.addElements();
-		},
-		updateIndex: function(datasetIndex) {
-			this.index = datasetIndex;
-		},
-		linkScales: function() {
-			if (!this.getDataset().xAxisID) {
-				this.getDataset().xAxisID = this.chart.options.scales.xAxes[0].id;
-			}
-
-			if (!this.getDataset().yAxisID) {
-				this.getDataset().yAxisID = this.chart.options.scales.yAxes[0].id;
-			}
-		},
-
-		getDataset: function() {
-			return this.chart.data.datasets[this.index];
-		},
-
-		getScaleForID: function(scaleID) {
-			return this.chart.scales[scaleID];
-		},
-
+	Chart.controllers.bar = Chart.DatasetController.extend({
 		// Get the number of datasets that display bars. We use this to correctly calculate the bar width
 		getBarCount: function getBarCount() {
 			var barCount = 0;
@@ -102,30 +70,6 @@
 			this.getDataset().metaData.splice(index, 0, rectangle);
 		},
 
-		removeElement: function(index) {
-			this.getDataset().metaData.splice(index, 1);
-		},
-
-		reset: function() {
-			this.update(true);
-		},
-
-		buildOrUpdateElements: function buildOrUpdateElements() {
-			var numData = this.getDataset().data.length;
-			var numRectangles = this.getDataset().metaData.length;
-
-			// Make sure that we handle number of datapoints changing
-			if (numData < numRectangles) {
-				// Remove excess bars for data points that have been removed
-				this.getDataset().metaData.splice(numData, numRectangles - numData);
-			} else if (numData > numRectangles) {
-				// Add new elements
-				for (var index = numRectangles; index < numData; ++index) {
-					this.addElementAndReset(index);
-				}
-			}
-		},
-
 		update: function update(reset) {
 			var numBars = this.getBarCount();
 
@@ -136,8 +80,8 @@
 
 		updateElement: function updateElement(rectangle, index, reset, numBars) {
 
-			var xScale = this.getScaleForID(this.getDataset().xAxisID);
-			var yScale = this.getScaleForID(this.getDataset().yAxisID);
+			var xScale = this.getScaleForId(this.getDataset().xAxisID);
+			var yScale = this.getScaleForId(this.getDataset().yAxisID);
 
 			var yScalePoint;
 
@@ -181,8 +125,8 @@
 
 		calculateBarBase: function(datasetIndex, index) {
 
-			var xScale = this.getScaleForID(this.getDataset().xAxisID);
-			var yScale = this.getScaleForID(this.getDataset().yAxisID);
+			var xScale = this.getScaleForId(this.getDataset().xAxisID);
+			var yScale = this.getScaleForId(this.getDataset().yAxisID);
 
 			var base = 0;
 
@@ -225,11 +169,8 @@
 
 		getRuler: function() {
 
-			var xScale = this.getScaleForID(this.getDataset().xAxisID);
-			var yScale = this.getScaleForID(this.getDataset().yAxisID);
-			/*var datasetCount = !this.chart.isCombo ? this.chart.data.datasets.length : helpers.where(this.chart.data.datasets, function(ds) {
-				return ds.type == 'bar';
-			}).length;*/
+			var xScale = this.getScaleForId(this.getDataset().xAxisID);
+			var yScale = this.getScaleForId(this.getDataset().yAxisID);
 			var datasetCount = this.getBarCount();
 
 			var tickWidth = (function() {
@@ -258,7 +199,7 @@
 
 		calculateBarWidth: function() {
 
-			var xScale = this.getScaleForID(this.getDataset().xAxisID);
+			var xScale = this.getScaleForId(this.getDataset().xAxisID);
 			var ruler = this.getRuler();
 
 			if (xScale.options.stacked) {
@@ -285,8 +226,8 @@
 
 		calculateBarX: function(index, datasetIndex) {
 
-			var yScale = this.getScaleForID(this.getDataset().yAxisID);
-			var xScale = this.getScaleForID(this.getDataset().xAxisID);
+			var yScale = this.getScaleForId(this.getDataset().yAxisID);
+			var xScale = this.getScaleForId(this.getDataset().xAxisID);
 			var barIndex = this.getBarIndex(datasetIndex);
 
 			var ruler = this.getRuler();
@@ -307,8 +248,8 @@
 
 		calculateBarY: function(index, datasetIndex) {
 
-			var xScale = this.getScaleForID(this.getDataset().xAxisID);
-			var yScale = this.getScaleForID(this.getDataset().yAxisID);
+			var xScale = this.getScaleForId(this.getDataset().xAxisID);
+			var yScale = this.getScaleForId(this.getDataset().yAxisID);
 
 			var value = this.getDataset().data[index];
 
