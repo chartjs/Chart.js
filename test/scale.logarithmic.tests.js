@@ -329,6 +329,41 @@ describe('Logarithmic Scale tests', function() {
 		expect(scale.max).toBe(1);
 	});
 
+
+	it('Should use the min and max options', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [1, 1, 1, 2, 1, 0]
+			}]
+		};
+
+		var mockContext = window.createMockContext();
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('logarithmic'));
+
+		config.ticks.min = 10;
+		config.ticks.max = 1010;
+
+		var Constructor = Chart.scaleService.getScaleConstructor('logarithmic');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: config,
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		scale.update(400, 00);
+		scale.buildTicks();
+		expect(scale.min).toBe(10);
+		expect(scale.max).toBe(1010);
+		expect(scale.ticks[0]).toBe(1010);
+		expect(scale.ticks[scale.ticks.length - 1]).toBe(10);
+	});
+
 	it('Should generate tick marks', function() {
 		var scaleID = 'myScale';
 

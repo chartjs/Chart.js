@@ -374,6 +374,41 @@ describe('Linear Scale', function() {
 		expect(scale.max).toBe(10);
 	});
 
+	it('Should use the min and max options', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [1, 1, 1, 2, 1, 0]
+			}]
+		};
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		config.ticks.min = -1010;
+		config.ticks.max = 1010;
+
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var scale = new Constructor({
+			ctx: {},
+			options: config,
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		// Set arbitrary width and height for now
+		scale.width = 50;
+		scale.height = 400;
+
+		scale.buildTicks();
+		expect(scale.min).toBe(-1010);
+		expect(scale.max).toBe(1010);
+		expect(scale.ticks[0]).toBe(1010);
+		expect(scale.ticks[scale.ticks.length-1]).toBe(-1010);
+	});
+
 	it('should forcibly include 0 in the range if the beginAtZero option is used', function() {
 		var scaleID = 'myScale';
 
