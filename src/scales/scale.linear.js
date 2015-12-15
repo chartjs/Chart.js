@@ -158,10 +158,14 @@
 
 			if (this.options.ticks.suggestedMin) {
 				this.min = Math.min(this.min, this.options.ticks.suggestedMin);
+			} else if (this.options.ticks.min !== undefined) {
+				this.min = this.options.ticks.min;
 			}
 
 			if (this.options.ticks.suggestedMax) {
 				this.max = Math.max(this.max, this.options.ticks.suggestedMax);
+			} else if (this.options.ticks.max !== undefined) {
+				this.max = this.options.ticks.max;
 			}
 
 			if (this.min === this.max) {
@@ -177,17 +181,11 @@
 			var numSpaces = Math.ceil((niceMax - niceMin) / spacing);
 
 			// Put the values into the ticks array
-			for (var j = 0; j <= numSpaces; ++j) {
+			this.ticks.push(this.options.ticks.min !== undefined ? this.options.ticks.min : niceMin);
+			for (var j = 1; j < numSpaces; ++j) {
 				this.ticks.push(niceMin + (j * spacing));
 			}
-
-			if (this.options.ticks.min !== undefined) {
-				this.ticks[0] = this.options.ticks.min;
-			}
-
-			if (this.options.ticks.max !== undefined) {
-				this.ticks[this.ticks.length - 1] = this.options.ticks.max;
-			}
+			this.ticks.push(this.options.ticks.max !== undefined ? this.options.ticks.max : niceMax);
 
 			if (this.options.position == "left" || this.options.position == "right") {
 				// We are in a vertical orientation. The top value is the highest. So reverse the array
@@ -198,15 +196,7 @@
 			// range of the scale
 			this.max = helpers.max(this.ticks);
 			this.min = helpers.min(this.ticks);
-
-			if (this.options.ticks.min !== undefined) {
-				this.min = this.options.ticks.min;
-			}
-
-			if (this.options.ticks.max !== undefined) {
-				this.max = this.options.ticks.max;
-			}
-
+			this.ticksAsNumbers = this.ticks.slice();
 
 			if (this.options.ticks.reverse) {
 				this.ticks.reverse();
@@ -234,7 +224,6 @@
 			var range = this.end - this.start;
 
 			if (this.isHorizontal()) {
-
 				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
 				pixel = this.left + (innerWidth / range * (rightValue - this.start));
 				return Math.round(pixel + this.paddingLeft);
@@ -243,6 +232,9 @@
 				pixel = (this.bottom - this.paddingBottom) - (innerHeight / range * (rightValue - this.start));
 				return Math.round(pixel);
 			}
+		},
+		getPixelForTick: function(index, includeOffset) {
+			return this.getPixelForValue(this.ticksAsNumbers[index], null, null, includeOffset);
 		},
 	});
 	Chart.scaleService.registerScaleType("linear", LinearScale, defaultConfig);
