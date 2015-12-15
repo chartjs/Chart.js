@@ -181,6 +181,14 @@
 				this.ticks.push(niceMin + (j * spacing));
 			}
 
+			if (this.options.ticks.min !== undefined) {
+				this.ticks[0] = this.options.ticks.min;
+			}
+
+			if (this.options.ticks.max !== undefined) {
+				this.ticks[this.ticks.length - 1] = this.options.ticks.max;
+			}
+
 			if (this.options.position == "left" || this.options.position == "right") {
 				// We are in a vertical orientation. The top value is the highest. So reverse the array
 				this.ticks.reverse();
@@ -190,6 +198,15 @@
 			// range of the scale
 			this.max = helpers.max(this.ticks);
 			this.min = helpers.min(this.ticks);
+
+			if (this.options.ticks.min !== undefined) {
+				this.min = this.options.ticks.min;
+			}
+
+			if (this.options.ticks.max !== undefined) {
+				this.max = this.options.ticks.max;
+			}
+
 
 			if (this.options.ticks.reverse) {
 				this.ticks.reverse();

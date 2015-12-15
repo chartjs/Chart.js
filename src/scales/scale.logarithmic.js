@@ -90,6 +90,14 @@
 				}, this);
 			}
 
+			if (this.options.ticks.max) {
+				this.max = this.options.ticks.max;
+			}
+
+			if (this.options.ticks.min) {
+				this.min = this.options.ticks.min;
+			}
+
 			if (this.min === this.max) {
 				if (this.min !== 0 && this.min !== null) {
 					this.min = Math.pow(10, Math.floor(helpers.log10(this.min)) - 1);
@@ -121,6 +129,14 @@
 
 			this.tickValues.push(1.0 * Math.pow(10, maxExponent));
 
+			if (this.options.ticks.min) {
+				this.tickValues[0] = this.min;
+			}
+
+			if (this.options.ticks.max) {
+				this.tickValues[this.tickValues.length - 1] = this.max;
+			}
+
 			if (this.options.position == "left" || this.options.position == "right") {
 				// We are in a vertical orientation. The top value is the highest. So reverse the array
 				this.tickValues.reverse();
@@ -130,6 +146,14 @@
 			// range of the scale
 			this.max = helpers.max(this.tickValues);
 			this.min = helpers.min(this.tickValues);
+
+			if (this.options.ticks.min) {
+				this.min = this.options.ticks.min;
+			}
+
+			if (this.options.ticks.max) {
+				this.max = this.options.ticks.max;
+			}
 
 			if (this.options.ticks.reverse) {
 				this.tickValues.reverse();
