@@ -489,4 +489,48 @@ describe('Core helper tests', function() {
 			args: []
 		}])
 	});
+	
+	it('should be able to decide if point is inside an area or not', function () {		
+		var area = { left: 0, right: 100, top: 0, bottom: 100 };
+		var point = { x: 20, y: 20 };
+		
+		expect(helpers.isInArea(area, point)).toBe(true);
+		// Move it too far to the right 
+		point.x = 110;
+		expect(helpers.isInArea(area, point)).toBe(false);
+		// Move it back inside
+		point.x = 20;
+		expect(helpers.isInArea(area, point)).toBe(true);
+		
+		// Move it out to the left
+		point.x = -10;
+		expect(helpers.isInArea(area, point)).toBe(false);
+		// Move it back inside
+		point.x = 20;
+		expect(helpers.isInArea(area, point)).toBe(true);
+		
+		// Move it below the area
+		point.y = 110;
+		expect(helpers.isInArea(area, point)).toBe(false);
+		// Move it back
+		point.y = 20;
+		expect(helpers.isInArea(area, point)).toBe(true);
+		
+		// Move it below the area
+		point.y = -10;
+		expect(helpers.isInArea(area, point)).toBe(false);
+		// Move it back
+		point.y = 20;
+		expect(helpers.isInArea(area, point)).toBe(true);
+		
+		// Move area down, making the point be over the area
+		area.top = 30;
+		expect(helpers.isInArea(area, point)).toBe(false);
+
+		// Move it back
+		area.top = 0;
+		expect(helpers.isInArea(area, point)).toBe(true);
+
+	});
+
 });

@@ -847,5 +847,22 @@
 		},
 		isDatasetVisible = helpers.isDatasetVisible = function(dataset) {
 			return !dataset.hidden;
+		},
+		isInArea = helpers.isInArea = function(area, point) {
+			return point.y < area.bottom &&
+					point.y > area.top &&
+					point.x > area.left &&
+					point.x < area.right;
+		},
+		getChartArea = helpers.getChartArea = function(chart) {
+			if (chart.controller !== undefined && chart.controller.chartArea !== undefined) {
+				return chart.controller.chartArea;
+			}
+			return undefined;
+		},
+		isInChartArea = helpers.isInChartArea = function(chart, point) {
+			var chartArea = helpers.getChartArea(chart);
+			if (!chartArea) return true;
+			return helpers.isInArea(chartArea, point);
 		};
 }).call(this);
