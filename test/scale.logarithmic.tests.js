@@ -528,7 +528,7 @@ describe('Logarithmic Scale tests', function() {
 
 		expect(verticalScale.getPixelForValue(80, 0, 0)).toBe(5); // top + paddingTop
 		expect(verticalScale.getPixelForValue(1, 0, 0)).toBe(105); // bottom - paddingBottom
-		expect(verticalScale.getPixelForValue(10, 0, 0)).toBe(52.45387728193468); // halfway
+		expect(verticalScale.getPixelForValue(10, 0, 0)).toBeCloseTo(52.4, 1e-4); // halfway
 
 		var horizontalConfig = Chart.helpers.clone(config);
 		horizontalConfig.position = 'bottom';
@@ -555,6 +555,6 @@ describe('Logarithmic Scale tests', function() {
 
 		expect(horizontalScale.getPixelForValue(80, 0, 0)).toBe(105); // right - paddingRight
 		expect(horizontalScale.getPixelForValue(1, 0, 0)).toBe(5); // left + paddingLeft
-		expect(horizontalScale.getPixelForValue(10, 0, 0)).toBe(57.54612271806532); // halfway
+		expect(horizontalScale.getPixelForValue(10, 0, 0)).toBeCloseTo(57.5, 1e-4); // halfway
 	});
 });
