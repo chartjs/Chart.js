@@ -301,20 +301,62 @@ describe('Line element tests', function() {
 			name: 'setStrokeStyle',
 			args: ['rgb(255, 255, 0)']
 		}, {
+			name: 'setStrokeStyle',
+			args: ['rgb(255, 255, 0)']
+		}, {
 			name: 'beginPath',
 			args: []
 		}, {
 			name: 'moveTo',
 			args: [0, 10]
 		}, {
+			name: 'closePath',
+			args: []
+		}, {
+			name: 'stroke',
+			args: []
+		}, {
+			name: 'setStrokeStyle',
+			args: ['rgb(255, 255, 0)']
+		}, {
+			name: 'beginPath',
+			args: []
+		}, {
 			name: 'bezierCurveTo',
 			args: [0, 10, 5, 0, 5, 0]
+		}, {
+			name: 'closePath',
+			args: []
+		}, {
+			name: 'stroke',
+			args: []
+		}, {
+			name: 'setStrokeStyle',
+			args: ['rgb(255, 255, 0)']
+		}, {
+			name: 'beginPath',
+			args: []
 		}, {
 			name: 'bezierCurveTo',
 			args: [5, 0, 15, -10, 15, -10]
 		}, {
+			name: 'closePath',
+			args: []
+		}, {
+			name: 'stroke',
+			args: []
+		}, {
+			name: 'setStrokeStyle',
+			args: ['rgb(255, 255, 0)']
+		}, {
+			name: 'beginPath',
+			args: []
+		}, {
 			name: 'bezierCurveTo',
 			args: [15, -10, 19, -5, 19, -5]
+		}, {
+			name: 'closePath',
+			args: []
 		}, {
 			name: 'stroke',
 			args: [],
@@ -323,8 +365,7 @@ describe('Line element tests', function() {
 			args: []
 		}];
 		
-		console.log(mockContext.getCalls());
-		return;
+		
 		expect(mockContext.getCalls()).toEqual(expected);
 	});
 
@@ -520,9 +561,7 @@ describe('Line element tests', function() {
 			name: 'restore',
 			args: []
 		}];
-		
-		console.log(mockContext.getCalls());
-		// return;
+	
 		expect(mockContext.getCalls()).toEqual(expected);
 	});
 
