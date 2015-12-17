@@ -16,6 +16,20 @@ Name | Type | Default | Description
 --- |:---:| --- | ---
 type | String | Chart specific. | Type of scale being employed. Custom scales can be created and registered with a string key. Options: ["category"](#scales-category-scale), ["linear"](#scales-linear-scale), ["logarithmic"](#scales-logarithmic-scale), ["time"](#scales-time-scale), ["radialLinear"](#scales-radial-linear-scale)
 display | Boolean | true | If true, show the scale including gridlines, ticks, and labels. Overrides *gridLines.display*, *scaleLabel.display*, and *ticks.display*.
+beforeUpdate | Function | undefined | Callback called before the update process starts. Passed a single argument, the scale instance.
+beforeSetDimensions | Function | undefined | Callback that runs before dimensions are set. Passed a single argument, the scale instance.
+afterSetDimensions | Function | undefined | Callback that runs after dimensions are set. Passed a single argument, the scale instance.
+beforeDataLimits | Function | undefined | Callback that runs before data limits are determined. Passed a single argument, the scale instance.
+afterDataLimits | Function | undefined | Callback that runs after data limits are determined. Passed a single argument, the scale instance.
+beforeBuildTicks | Function | undefined | Callback that runs before ticks are created. Passed a single argument, the scale instance.
+afterBuildTicks | Function | undefined | Callback that runs after ticks are created. Useful for filtering ticks. Passed a single argument, the scale instance.
+beforeTickToLabelConversion | Function | undefined | Callback that runs before ticks are converted into strings. Passed a single argument, the scale instance.
+afterTickToLabelConversion | Function | undefined | Callback that runs after ticks are converted into strings. Passed a single argument, the scale instance.
+beforeCalculateTickRotation | Function | undefined | Callback that runs before tick rotation is determined. Passed a single argument, the scale instance.
+afterCalculateTickRotation | Function | undefined | Callback that runs after tick rotation is determined. Passed a single argument, the scale instance.
+beforeFit | Function | undefined | Callback that runs before the scale fits to the canvas. Passed a single argument, the scale instance.
+afterFit | Function | undefined | Callback that runs after the scale fits to the canvas. Passed a single argument, the scale instance.
+afterUpdate | Function | undefined | Callback that runs at the end of the update process. Passed a single argument, the scale instance.
 **gridLines** | Array | - | Options for the grid lines that run perpendicular to the axis.
 *gridLines*.display | Boolean | true |
 *gridLines*.color | Color | "rgba(0, 0, 0, 0.1)" | Color of the grid lines.

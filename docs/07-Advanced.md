@@ -229,6 +229,9 @@ To work with Chart.js, custom scale types must implement the following interface
 
 ```javascript
 {
+	// Determines the data limits. Should set this.min and this.max to be the data max/min
+	determineDataLimits: function() {},
+
 	// Generate tick marks. this.chart is the chart instance. The data object can be accessed as this.chart.data
 	// buildTicks() should create a ticks array on the scale instance, if you intend to use any of the implementations from the base class
 	buildTicks: function() {},

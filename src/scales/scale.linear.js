@@ -36,8 +36,7 @@
 	};
 
 	var LinearScale = Chart.Scale.extend({
-		buildTicks: function() {
-
+		determineDataLimits: function() {
 			// First Calculate the range
 			this.min = null;
 			this.max = null;
@@ -114,32 +113,6 @@
 				}, this);
 			}
 
-			// Then calulate the ticks
-			this.ticks = [];
-
-			// Figure out what the max number of ticks we can support it is based on the size of
-			// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
-			// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on 
-			// the graph
-
-			var maxTicks;
-
-			if (this.isHorizontal()) {
-				maxTicks = Math.min(this.options.ticks.maxTicksLimit ? this.options.ticks.maxTicksLimit : 11,
-				                    Math.ceil(this.width / 50));
-			} else {
-				// The factor of 2 used to scale the font size has been experimentally determined.
-				maxTicks = Math.min(this.options.ticks.maxTicksLimit ? this.options.ticks.maxTicksLimit : 11,
-				                    Math.ceil(this.height / (2 * this.options.ticks.fontSize)));
-			}
-
-			// Make sure we always have at least 2 ticks 
-			maxTicks = Math.max(2, maxTicks);
-
-			// To get a "nice" value for the tick spacing, we will use the appropriately named 
-			// "nice number" algorithm. See http://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
-			// for details.
-
 			// If we are forcing it to begin at 0, but 0 will already be rendered on the chart,
 			// do nothing since that would make the chart weird. If the user really wants a weird chart
 			// axis, they can manually override it
@@ -172,6 +145,34 @@
 				this.min--;
 				this.max++;
 			}
+		},
+		buildTicks: function() {
+
+			// Then calulate the ticks
+			this.ticks = [];
+
+			// Figure out what the max number of ticks we can support it is based on the size of
+			// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
+			// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on 
+			// the graph
+
+			var maxTicks;
+
+			if (this.isHorizontal()) {
+				maxTicks = Math.min(this.options.ticks.maxTicksLimit ? this.options.ticks.maxTicksLimit : 11,
+				                    Math.ceil(this.width / 50));
+			} else {
+				// The factor of 2 used to scale the font size has been experimentally determined.
+				maxTicks = Math.min(this.options.ticks.maxTicksLimit ? this.options.ticks.maxTicksLimit : 11,
+				                    Math.ceil(this.height / (2 * this.options.ticks.fontSize)));
+			}
+
+			// Make sure we always have at least 2 ticks 
+			maxTicks = Math.max(2, maxTicks);
+
+			// To get a "nice" value for the tick spacing, we will use the appropriately named 
+			// "nice number" algorithm. See http://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
+			// for details.
 
 			var niceRange = helpers.niceNum(this.max - this.min, false);
 			var spacing = helpers.niceNum(niceRange / (maxTicks - 1), true);

@@ -848,4 +848,10 @@
 		isDatasetVisible = helpers.isDatasetVisible = function(dataset) {
 			return !dataset.hidden;
 		};
+
+	helpers.callCallback = function(fn, args, _tArg) {
+		if (fn && typeof fn.call === 'function') {
+			fn.apply(_tArg, args);
+		}
+	}
 }).call(this);
