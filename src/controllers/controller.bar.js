@@ -31,16 +31,18 @@
 	};
 
 	Chart.controllers.bar = Chart.DatasetController.extend({
+		initialize: function(chart, datasetIndex) {
+			Chart.DatasetController.prototype.initialize.call(this, chart, datasetIndex);
+
+			// Use this to indicate that this is a bar dataset. 
+			this.getDataset().bar = true;
+		},
 		// Get the number of datasets that display bars. We use this to correctly calculate the bar width
 		getBarCount: function getBarCount() {
 			var barCount = 0;
 			helpers.each(this.chart.data.datasets, function(dataset) {
-				if (helpers.isDatasetVisible(dataset)) {
-					if (dataset.type === 'bar') {
-						++barCount;
-					} else if (dataset.type === undefined && this.chart.config.type === 'bar') {
-						++barCount;
-					}
+				if (helpers.isDatasetVisible(dataset) && dataset.bar) {
+					++barCount;
 				}
 			}, this);
 			return barCount;
@@ -215,8 +217,7 @@
 			var barIndex = 0;
 
 			for (var j = 0; j < datasetIndex; ++j) {
-				if (helpers.isDatasetVisible(this.chart.data.datasets[j]) &&
-					(this.chart.data.datasets[j].type === 'bar' || (this.chart.data.datasets[j].type === undefined && this.chart.config.type === 'bar'))) {
+				if (helpers.isDatasetVisible(this.chart.data.datasets[j]) && this.chart.data.datasets[j].bar) {
 					++barIndex;
 				}
 			}

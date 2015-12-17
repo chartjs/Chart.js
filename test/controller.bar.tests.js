@@ -52,11 +52,10 @@ describe('Bar controller tests', function() {
 		var chart = {
 			data: {
 				datasets: [{
-					type: 'line'
 				}, {
-					type: 'bar'
+					bar: true
 				}, {
-					// no type, defaults to bar
+					bar: true
 				}]
 			},
 			config: {
@@ -82,13 +81,13 @@ describe('Bar controller tests', function() {
 		var chart = {
 			data: {
 				datasets: [{
-					
+					bar: true,
 				}, {
+					bar: true,
 					hidden: true
 				}, {
-					type: 'line'
 				}, {
-					
+					bar: true,
 				}]
 			},
 			config: {
@@ -148,7 +147,8 @@ describe('Bar controller tests', function() {
 				data: [1, 2],
 				label: 'dataset1',
 				xAxisID: 'firstXScaleID',
-				yAxisID: 'firstYScaleID'
+				yAxisID: 'firstYScaleID',
+				bar: true
 			}, {
 				data: [10, 15, 0, -4],
 				label: 'dataset2'
