@@ -180,7 +180,7 @@
 				var tickWidth = this.getPixelForTick(1) - this.getPixelForTick(0) - 6;
 
 				//Max label rotation can be set or default to 90 - also act as a loop counter
-				while (this.labelWidth > tickWidth && this.labelRotation <= this.options.ticks.maxRotation) {
+				while (this.labelWidth > tickWidth && this.labelRotation < this.options.ticks.maxRotation) {
 					cosRotation = Math.cos(helpers.toRadians(this.labelRotation));
 					sinRotation = Math.sin(helpers.toRadians(this.labelRotation));
 
