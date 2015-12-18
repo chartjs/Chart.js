@@ -154,8 +154,8 @@ Label | | | There are three labels you can control. `title`, `body`, `footer` th
 \*Align | String | "left" | text alignment. See [MDN Canvas Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/textAlign)
 titleMarginBottom | Number | 6 | Margin to add on bottom of title section
 footerMarginTop | Number | 6 | Margin to add before drawing the footer
-xPadding | Number | 6 | Padding to add on top and bottom of tooltip
-yPadding | Number | 6 | Padding to add on left and right of tooltip
+xPadding | Number | 6 | Padding to add on left and right of tooltip
+yPadding | Number | 6 | Padding to add on top and bottom of tooltip
 caretSize | Number | 5 | Size, in px, of the tooltip arrow
 cornerRadius | Number | 6 | Radius of tooltip corner curves
 multiKeyBackground | Color | "#fff" | Color to draw behind the colored boxes when multiple items are in the tooltip
