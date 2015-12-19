@@ -82,7 +82,7 @@ describe('Linear Scale', function() {
 		scale.width = 50;
 		scale.height = 400;
 
-		scale.buildTicks();
+		scale.determineDataLimits();
 		expect(scale.min).toBe(-100);
 		expect(scale.max).toBe(150);
 	});
@@ -121,7 +121,7 @@ describe('Linear Scale', function() {
 		scale.width = 50;
 		scale.height = 400;
 
-		scale.buildTicks();
+		scale.determineDataLimits();
 		expect(scale.min).toBe(-100);
 		expect(scale.max).toBe(150);
 	});
@@ -161,6 +161,7 @@ describe('Linear Scale', function() {
 		scale.width = 50;
 		scale.height = 400;
 
+		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.min).toBe(-100);
 		expect(scale.max).toBe(80);
@@ -204,6 +205,7 @@ describe('Linear Scale', function() {
 		verticalScale.width = 50;
 		verticalScale.height = 400;
 
+		verticalScale.determineDataLimits();
 		verticalScale.buildTicks();
 		expect(verticalScale.min).toBe(0);
 		expect(verticalScale.max).toBe(100);
@@ -223,6 +225,7 @@ describe('Linear Scale', function() {
 		horizontalScale.width = 400;
 		horizontalScale.height = 50;
 
+		horizontalScale.determineDataLimits();
 		horizontalScale.buildTicks();
 		expect(horizontalScale.min).toBe(-20);
 		expect(horizontalScale.max).toBe(100);
@@ -267,6 +270,7 @@ describe('Linear Scale', function() {
 		scale.width = 50;
 		scale.height = 400;
 
+		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.min).toBe(-150);
 		expect(scale.max).toBe(200);
@@ -309,6 +313,7 @@ describe('Linear Scale', function() {
 		scale.width = 50;
 		scale.height = 400;
 
+		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.min).toBe(-150);
 		expect(scale.max).toBe(200);
@@ -336,6 +341,7 @@ describe('Linear Scale', function() {
 		scale.width = 50;
 		scale.height = 400;
 
+		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.min).toBe(-1);
 		expect(scale.max).toBe(1);
@@ -369,6 +375,7 @@ describe('Linear Scale', function() {
 		scale.width = 50;
 		scale.height = 400;
 
+		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.min).toBe(-10);
 		expect(scale.max).toBe(10);
@@ -402,6 +409,7 @@ describe('Linear Scale', function() {
 		scale.width = 50;
 		scale.height = 400;
 
+		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.min).toBe(-1010);
 		expect(scale.max).toBe(1010);
@@ -436,18 +444,22 @@ describe('Linear Scale', function() {
 		scale.width = 50;
 		scale.height = 400;
 
+		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.ticks).toEqual([50, 45, 40, 35, 30, 25, 20]);
 
 		config.ticks.beginAtZero = true;
+		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.ticks).toEqual([50, 45, 40, 35, 30, 25, 20, 15, 10, 5, 0]);
 
 		mockData.datasets[0].data = [-20, -30, -40, -50];
+		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.ticks).toEqual([0, -5, -10, -15, -20, -25, -30, -35, -40, -45, -50]);
 
 		config.ticks.beginAtZero = false;
+		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.ticks).toEqual([-20, -25, -30, -35, -40, -45, -50]);
 	});
@@ -477,6 +489,7 @@ describe('Linear Scale', function() {
 		scale.width = 50;
 		scale.height = 400;
 
+		scale.determineDataLimits();
 		scale.buildTicks();
 
 		// Counts down because the lines are drawn top to bottom
@@ -511,6 +524,7 @@ describe('Linear Scale', function() {
 		scale.width = 50;
 		scale.height = 400;
 
+		scale.determineDataLimits();
 		scale.buildTicks();
 
 		// Reverse mode makes this count up

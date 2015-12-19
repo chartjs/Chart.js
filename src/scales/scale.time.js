@@ -71,8 +71,9 @@
 		getLabelMoment: function(datasetIndex, index) {
 			return this.labelMoments[datasetIndex][index];
 		},
-
-		buildLabelMoments: function() {
+		determineDataLimits: function() {
+			this.labelMoments = [];
+			
 			// Only parse these once. If the dataset does not have data as x,y pairs, we will use
 			// these 
 			var scaleLabelMoments = [];
@@ -128,14 +129,10 @@
 			this.firstTick = this.firstTick.clone();
 			this.lastTick = this.lastTick.clone();
 		},
-
 		buildTicks: function(index) {
 
 			this.ticks = [];
-			this.labelMoments = [];
 			this.unitScale = 1; // How much we scale the unit by, ie 2 means 2x unit per step 
-
-			this.buildLabelMoments();
 
 			// Set unit override if applicable
 			if (this.options.time.unit) {

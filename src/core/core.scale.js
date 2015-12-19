@@ -58,7 +58,9 @@
 		// Any function defined here is inherited by all scale types.
 		// Any function can be extended by the scale type
 
-		beforeUpdate: helpers.noop,
+		beforeUpdate: function() {
+			helpers.callCallback(this.options.beforeUpdate, [this]);
+		},
 		update: function(maxWidth, maxHeight, margins) {
 
 			// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
@@ -78,6 +80,12 @@
 			this.beforeSetDimensions();
 			this.setDimensions();
 			this.afterSetDimensions();
+
+			// Data min/max
+			this.beforeDataLimits();
+			this.determineDataLimits();
+			this.afterDataLimits();
+
 			// Ticks
 			this.beforeBuildTicks();
 			this.buildTicks();
@@ -101,11 +109,15 @@
 			return this.minSize;
 
 		},
-		afterUpdate: helpers.noop,
+		afterUpdate: function() {
+			helpers.callCallback(this.options.afterUpdate, [this]);
+		},
 
 		//
 
-		beforeSetDimensions: helpers.noop,
+		beforeSetDimensions: function() {
+			helpers.callCallback(this.options.beforeSetDimensions, [this]);
+		},
 		setDimensions: function() {
 			// Set the unconstrained dimension before label rotation
 			if (this.isHorizontal()) {
@@ -127,15 +139,31 @@
 			this.paddingRight = 0;
 			this.paddingBottom = 0;
 		},
-		afterSetDimensions: helpers.noop,
+		afterSetDimensions: function() {
+			helpers.callCallback(this.options.afterSetDimensions, [this]);
+		},
+
+		// Data limits
+		beforeDataLimits: function() {
+			helpers.callCallback(this.options.beforeDataLimits, [this]);
+		},
+		determineDataLimits: helpers.noop,
+		afterDataLimits: function() {
+			helpers.callCallback(this.options.afterDataLimits, [this]);
+		},
 
 		//
-
-		beforeBuildTicks: helpers.noop,
+		beforeBuildTicks: function() {
+			helpers.callCallback(this.options.beforeBuildTicks, [this]);
+		},
 		buildTicks: helpers.noop,
-		afterBuildTicks: helpers.noop,
+		afterBuildTicks: function() {
+			helpers.callCallback(this.options.afterBuildTicks, [this]);
+		},
 
-		beforeTickToLabelConversion: helpers.noop,
+		beforeTickToLabelConversion: function() {
+			helpers.callCallback(this.options.beforeTickToLabelConversion, [this]);
+		},
 		convertTicksToLabels: function() {
 			// Convert ticks to strings
 			this.ticks = this.ticks.map(function(numericalTick, index, ticks) {
@@ -146,11 +174,15 @@
 				},
 				this);
 		},
-		afterTickToLabelConversion: helpers.noop,
+		afterTickToLabelConversion: function() {
+			helpers.callCallback(this.options.afterTickToLabelConversion, [this]);
+		},
 
 		//
 
-		beforeCalculateTickRotation: helpers.noop,
+		beforeCalculateTickRotation: function() {
+			helpers.callCallback(this.options.beforeCalculateTickRotation, [this]);
+		},
 		calculateTickRotation: function() {
 			//Get the width of each grid by calculating the difference
 			//between x offsets between 0 and 1.
@@ -218,11 +250,15 @@
 				this.paddingRight = Math.max(this.paddingRight, 0);
 			}
 		},
-		afterCalculateTickRotation: helpers.noop,
+		afterCalculateTickRotation: function() {
+			helpers.callCallback(this.options.afterCalculateTickRotation, [this]);
+		},
 
 		//
 
-		beforeFit: helpers.noop,
+		beforeFit: function() {
+			helpers.callCallback(this.options.beforeFit, [this]);
+		},
 		fit: function() {
 
 			this.minSize = {
@@ -319,7 +355,9 @@
 			this.height = this.minSize.height;
 
 		},
-		afterFit: helpers.noop,
+		afterFit: function() {
+			helpers.callCallback(this.options.afterFit, [this]);
+		},
 
 		// Shared Methods
 		isHorizontal: function() {

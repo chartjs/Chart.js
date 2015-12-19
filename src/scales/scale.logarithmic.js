@@ -23,10 +23,8 @@
 	};
 
 	var LogarithmicScale = Chart.Scale.extend({
-		buildTicks: function() {
-
-			// Calculate Range (we may break this out into it's own lifecycle function)
-
+		determineDataLimits: function() {
+			// Calculate Range
 			this.min = null;
 			this.max = null;
 
@@ -102,8 +100,8 @@
 					this.max = 10;
 				}
 			}
-
-
+		},
+		buildTicks: function() {
 			// Reset the ticks array. Later on, we will draw a grid line at these positions
 			// The array simply contains the numerical value of the spots where ticks will be
 			this.tickValues = [];
@@ -128,19 +126,6 @@
 
 				tickVal = significand * Math.pow(10, exp);
 			}
-
-			/*var minExponent = Math.floor(helpers.log10(this.min));
-			var maxExponent = Math.ceil(helpers.log10(this.max));
-
-			for (var exponent = minExponent; exponent < maxExponent; ++exponent) {
-				for (var i = 1; i < 10; ++i) {
-					if (this.options.ticks.min) {
-
-					} else {
-						this.tickValues.push(i * Math.pow(10, exponent));
-					}
-				}
-			}*/
 
 			var lastTick = this.options.ticks.max !== undefined ? this.options.ticks.max : tickVal;
 			this.tickValues.push(lastTick);

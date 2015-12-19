@@ -389,6 +389,7 @@ describe('Logarithmic Scale tests', function() {
 		scale.width = 50;
 		scale.height = 400;
 
+		scale.determineDataLimits();
 		scale.buildTicks();
 
 		// Counts down because the lines are drawn top to bottom
@@ -424,6 +425,7 @@ describe('Logarithmic Scale tests', function() {
 		scale.width = 50;
 		scale.height = 400;
 
+		scale.determineDataLimits();
 		scale.buildTicks();
 
 		// Counts down because the lines are drawn top to bottom
