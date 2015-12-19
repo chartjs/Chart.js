@@ -1664,7 +1664,6 @@
 			if (this.options.tooltips.enabled || this.options.tooltips.custom) {
 
 				// The usual updates
-				this.tooltip.initialize();
 				this.tooltip._active = this.tooltipActive;
 				this.tooltip.update();
 			}
