@@ -335,9 +335,17 @@
 				ctx.font = helpers.fontString(vm.titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
 				tooltipWidth = Math.max(tooltipWidth, ctx.measureText(line).width);
 			});
+			helpers.each(vm.beforeBody, function(line) {
+				ctx.font = helpers.fontString(vm.bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
+				tooltipWidth = Math.max(tooltipWidth, ctx.measureText(line).width);
+			}, this);
 			helpers.each(vm.body, function(line) {
 				ctx.font = helpers.fontString(vm.bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
 				tooltipWidth = Math.max(tooltipWidth, ctx.measureText(line).width + (this._options.tooltips.mode !== 'single' ? (vm.bodyFontSize + 2) : 0));
+			}, this);
+			helpers.each(vm.afterBody, function(line) {
+				ctx.font = helpers.fontString(vm.bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
+				tooltipWidth = Math.max(tooltipWidth, ctx.measureText(line).width);
 			}, this);
 			helpers.each(vm.footer, function(line) {
 				ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
