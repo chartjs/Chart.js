@@ -46,6 +46,7 @@
 			padding: 10,
 			reverse: false,
 			display: true,
+			autoSkip: true,
 			callback: function(value) {
 				return '' + value;
 			},
@@ -441,6 +442,7 @@
 				var skipRatio;
 				var scaleLabelX;
 				var scaleLabelY;
+				var useAutoskipper = this.options.ticks.autoSkip;
 
 				// Make sure we draw text in the correct color and font
 				this.ctx.fillStyle = this.options.ticks.fontColor;
@@ -456,6 +458,10 @@
 						skipRatio = 1 + Math.floor(((this.options.ticks.fontSize + 4) * this.ticks.length) / (this.width - (this.paddingLeft + this.paddingRight)));
 					}
 
+					if (!useAutoskipper) {
+						skipRatio = false;
+					}
+					
 					helpers.each(this.ticks, function(label, index) {
 						// Blank ticks
 						if ((skipRatio > 1 && index % skipRatio > 0) || (label === undefined || label === null)) {

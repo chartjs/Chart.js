@@ -62,6 +62,7 @@ afterUpdate | Function | undefined | Callback that runs at the end of the update
 *ticks*.suggestedMax | Number | - | User defined maximum number for the scale, overrides maximum value *except for if* it is lower than the maximum value.
 *ticks*.min | Number | - | User defined minimum number for the scale, overrides minimum value
 *ticks*.max | Number | - | User defined minimum number for the scale, overrides maximum value
+*ticks*.autoSkip | Boolean | true | If true, automatically calculates how many labels that can be shown and hides labels accordingly. Turn it off to show all labels no matter what
 *ticks*.callback | Function | `function(value) { return '' + value; } ` | Returns the string representation of the tick value as it should be displayed on the chart.
 
 The `callback` method may be used for advanced tick customization. The following callback would display every label in scientific notation
