@@ -47,6 +47,7 @@
 			reverse: false,
 			display: true,
 			autoSkip: true,
+		    autoSkipPadding: 20,
 			callback: function(value) {
 				return '' + value;
 			},
@@ -455,7 +456,7 @@
 					skipRatio = false;
 
 					if ((this.options.ticks.fontSize * maxLength) * this.ticks.length > (this.width - (this.paddingLeft + this.paddingRight))) {
-					    skipRatio = 1 + Math.floor((((this.options.ticks.fontSize * maxLength / 2) + (this.options.ticks.autoSkipPadding || 20)) * this.ticks.length) / (this.width - (this.paddingLeft + this.paddingRight)));
+					    skipRatio = 1 + Math.floor((((this.options.ticks.fontSize * maxLength / 2) + this.options.ticks.autoSkipPadding) * this.ticks.length) / (this.width - (this.paddingLeft + this.paddingRight)));
 					}
 
 					if (!useAutoskipper) {
