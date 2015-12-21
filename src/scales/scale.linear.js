@@ -129,13 +129,13 @@
 				}
 			}
 
-			if (this.options.ticks.suggestedMin) {
+			if (this.options.ticks.suggestedMin !== undefined) {
 				this.min = Math.min(this.min, this.options.ticks.suggestedMin);
 			} else if (this.options.ticks.min !== undefined) {
 				this.min = this.options.ticks.min;
 			}
 
-			if (this.options.ticks.suggestedMax) {
+			if (this.options.ticks.suggestedMax !== undefined) {
 				this.max = Math.max(this.max, this.options.ticks.suggestedMax);
 			} else if (this.options.ticks.max !== undefined) {
 				this.max = this.options.ticks.max;
