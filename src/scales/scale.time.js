@@ -126,8 +126,15 @@
 			}, this);
 
 			// We will modify these, so clone for later
-			this.firstTick = this.firstTick.clone();
-			this.lastTick = this.lastTick.clone();
+			if (this.firstTick != null)
+                this.firstTick = this.firstTick.clone();
+            else
+                this.firstTick = moment(new Date);
+
+            if (this.lastTick != null)
+                this.lastTick = this.lastTick.clone();
+            else
+                this.lastTick = moment(new Date);
 		},
 		buildTicks: function(index) {
 
