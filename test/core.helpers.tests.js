@@ -244,6 +244,7 @@ describe('Core helper tests', function() {
 						reverse: false,
 						display: true,
 						callback: merged.scales.yAxes[1].ticks.callback, // make it nicer, then check explicitly below
+						autoSkip: true
 					},
 					type: 'linear'
 				}, {
@@ -280,6 +281,7 @@ describe('Core helper tests', function() {
 						reverse: false,
 						display: true,
 						callback: merged.scales.yAxes[2].ticks.callback, // make it nicer, then check explicitly below
+						autoSkip: true
 					},
 					type: 'linear'
 				}]

@@ -58,7 +58,7 @@ describe('Test the radial linear scale', function() {
 				showLabelBackdrop: true,
 				display: true,
 				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
-
+				autoSkip: true
 			},
 		});
 
