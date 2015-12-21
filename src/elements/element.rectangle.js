@@ -78,17 +78,10 @@
 		},
 		tooltipPosition: function() {
 			var vm = this._view;
-			if (vm.y < vm.base) {
-				return {
-					x: vm.x,
-					y: vm.y
-				};
-			} else {
-				return {
-					x: vm.x,
-					y: vm.base
-				};
-			}
+			return {
+				x: vm.x,
+				y: vm.y
+			};
 		},
 	});
 
