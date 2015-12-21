@@ -92,6 +92,9 @@
 				});
 			}
 
+			var pointDotSelectedIndex = this.options.pointDotSelectedIndex;
+			var pointDotRadiusSelected = this.options.pointDotRadiusSelected;
+			var pointDotRadius = this.options.pointDotRadius;
 			//Iterate through each of the datasets, and build this into a property of the chart
 			helpers.each(data.datasets,function(dataset){
 
@@ -112,6 +115,8 @@
 					datasetObject.points.push(new this.PointClass({
 						value : dataPoint,
 						label : data.labels[index],
+						radius : (pointDotSelectedIndex == index) ? pointDotRadiusSelected : pointDotRadius,
+						pointDot : dataset.pointDot,
 						datasetLabel: dataset.label,
 						strokeColor : dataset.pointStrokeColor,
 						fillColor : dataset.pointColor,
@@ -206,6 +211,7 @@
 				gridLineWidth : (this.options.scaleShowGridLines) ? this.options.scaleGridLineWidth : 0,
 				gridLineColor : (this.options.scaleShowGridLines) ? this.options.scaleGridLineColor : "rgba(0,0,0,0)",
 				padding: (this.options.showScale) ? 0 : this.options.pointDotRadius + this.options.pointDotStrokeWidth,
+				disableVerticalPadding : this.options.disableVerticalPadding,
 				showLabels : this.options.scaleShowLabels,
 				display : this.options.showScale
 			};
@@ -373,7 +379,9 @@
 				//A little inefficient double looping, but better than the line
 				//lagging behind the point positions
 				helpers.each(pointsWithValues,function(point){
-					point.draw();
+					if (point.pointDot) {
+						point.draw();
+					}
 				});
 			},this);
 		}
