@@ -406,10 +406,6 @@
 				var scaleLabelY;
 				var useAutoskipper = this.options.ticks.autoSkip;
 
-				if(this.options.ticks.userCallback) {
-					useAutoskipper = false;
-				}
-
 				// Make sure we draw text in the correct color and font
 				this.ctx.fillStyle = this.options.ticks.fontColor;
 				var labelFont = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
