@@ -299,10 +299,10 @@
 
 				if (this.isHorizontal()) {
 					// A horizontal axis is more constrained by the height.
-					var longestLabelWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
+					this.longestLabelWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
 
 					// TODO - improve this calculation
-					var labelHeight = (Math.sin(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.ticks.fontSize;
+					var labelHeight = (Math.sin(helpers.toRadians(this.labelRotation)) * this.longestLabelWidth) + 1.5 * this.options.ticks.fontSize;
 
 					this.minSize.height = Math.min(this.maxHeight, this.minSize.height + labelHeight);
 
@@ -449,14 +449,19 @@
 				this.ctx.fillStyle = this.options.ticks.fontColor;
 				var labelFont = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
 
+				var cosRotation = Math.cos(helpers.toRadians(this.labelRotation));
+				var sinRotation = Math.sin(helpers.toRadians(this.labelRotation));
+				var longestRotatedLabel = this.longestLabelWidth * cosRotation;
+				var rotatedLabelHeight = this.options.ticks.fontSize * sinRotation;
+
 				if (this.isHorizontal()) {
 					setContextLineSettings = true;
 					var yTickStart = this.options.position === "bottom" ? this.top : this.bottom - 10;
 					var yTickEnd = this.options.position === "bottom" ? this.top + 10 : this.bottom;
 					skipRatio = false;
 
-					if ((this.options.ticks.fontSize * maxLength) * this.ticks.length > (this.width - (this.paddingLeft + this.paddingRight))) {
-					    skipRatio = 1 + Math.floor((((this.options.ticks.fontSize * maxLength / 2) + this.options.ticks.autoSkipPadding) * this.ticks.length) / (this.width - (this.paddingLeft + this.paddingRight)));
+					if ((longestRotatedLabel + rotatedLabelHeight) * this.ticks.length > (this.width - (this.paddingLeft + this.paddingRight))) {
+					    skipRatio = 1 + Math.floor((((longestRotatedLabel / 2) + this.options.ticks.autoSkipPadding) * this.ticks.length) / (this.width - (this.paddingLeft + this.paddingRight)));
 					}
 
 					if (!useAutoskipper) {
