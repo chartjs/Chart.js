@@ -75,7 +75,19 @@ function buildTask() {
 		.pipe(replace('{{ version }}', package.version))
 		.pipe(umd({
 			// We want a global always to ensure that we match previous behaviour
-			templateName: 'returnExportsGlobal',
+			templateSource:
+				";(function(root, factory) {\n"+
+				"  if (typeof define === 'function' && define.amd) {\n"+
+				"    define(<%= amd %>, factory);\n"+
+				"  } else if (typeof exports === 'object') {\n"+
+				"    module.exports = factory.call(root,<%= cjs %>);\n"+
+				"  } else {\n"+
+				"    root.<%= namespace %> = factory.call(root,<%= global %>);\n"+
+				"  }\n"+
+				"}(this, function(<%= param %>) {\n"+
+				"<%= contents %>\n"+
+				"return <%= exports %>;\n"+
+				"}));\n",
 			dependencies: function() {
 				return ['moment']
 			}
