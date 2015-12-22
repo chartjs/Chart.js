@@ -126,8 +126,8 @@
 			}, this);
 
 			// We will modify these, so clone for later
-			this.firstTick = this.firstTick.clone();
-			this.lastTick = this.lastTick.clone();
+			this.firstTick = (this.firstTick || moment(new Date())).clone();
+			this.lastTick = (this.lastTick || moment(new Date())).clone();
 		},
 		buildTicks: function(index) {
 
