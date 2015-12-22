@@ -81,7 +81,7 @@ var data = {
 			pointHoverBorderWidth: 2,
 
 			// Tension - bezier curve tension of the line. Set to 0 to draw straight Wlines connecting points
-			tension: 0.1
+			tension: 0.1,
 
 			// The actual data
 			data: [65, 59, 80, 81, 56, 55, 40],
