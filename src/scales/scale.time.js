@@ -243,7 +243,7 @@
 			var labelMoment = this.getLabelMoment(datasetIndex, index);
 			var offset = labelMoment.diff(this.firstTick, this.tickUnit, true);
 
-			var decimal = offset / this.tickRange;
+			var decimal = offset / (this.tickRange - 1);
 
 			if (this.isHorizontal()) {
 				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
