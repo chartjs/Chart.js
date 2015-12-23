@@ -460,7 +460,7 @@
 					var yTickEnd = this.options.position === "bottom" ? this.top + 10 : this.bottom;
 					skipRatio = false;
 
-					if ((longestRotatedLabel + rotatedLabelHeight) * this.ticks.length > (this.width - (this.paddingLeft + this.paddingRight))) {
+					if (((longestRotatedLabel / 2) + this.options.ticks.autoSkipPadding) * this.ticks.length > (this.width - (this.paddingLeft + this.paddingRight))) {
 					    skipRatio = 1 + Math.floor((((longestRotatedLabel / 2) + this.options.ticks.autoSkipPadding) * this.ticks.length) / (this.width - (this.paddingLeft + this.paddingRight)));
 					}
 
