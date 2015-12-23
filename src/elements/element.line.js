@@ -37,7 +37,7 @@
 				skipHandler.call(this, previousPoint, point, nextPoint); 
 			} else if (previousPoint._view.skip) {
 				previousSkipHandler.call(this, previousPoint, point, nextPoint);
-			} else if (this._chart.config.options.elements.line.tension === 0) { 
+			} else if (point._view.tension === 0) { 
 				ctx.lineTo(point._view.x, point._view.y);
 			} else {
 				// Line between points
