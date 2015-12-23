@@ -27,16 +27,24 @@
 		borderDashOffset: 0.0,
 		borderJoinStyle: 'miter',
 		fill: true, // do we fill in the area between the line and its base axis
+		bezierCurve: true,
 	};
 
 	Chart.elements.Line = Chart.Element.extend({
 		lineToNextPoint: function(previousPoint, point, nextPoint, skipHandler, previousSkipHandler) {
 			var ctx = this._chart.ctx;
+			var options = this._chart.config.options;
 
 			if (point._view.skip) {
 				skipHandler.call(this, previousPoint, point, nextPoint); 
 			} else if (previousPoint._view.skip) {
 				previousSkipHandler.call(this, previousPoint, point, nextPoint);
+			} else if (options.bezierCurve === false) {
+				// Straight line between points
+				ctx.lineTo(
+						point._view.x,
+						point._view.y
+				);
 			} else {
 				// Line between points
 				ctx.bezierCurveTo(
