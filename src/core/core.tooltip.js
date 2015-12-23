@@ -306,6 +306,11 @@
 			if (this._view.opacity === 0) {
 				return;
 			}
+			
+			// If outside chart area don't draw it
+			if (!helpers.isInChartArea(this._chart, this._view)) {
+				return;
+			}
 
 			// Get Dimensions
 

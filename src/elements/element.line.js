@@ -40,6 +40,16 @@
 			} else if (point._view.tension === 0) { 
 				ctx.lineTo(point._view.x, point._view.y);
 			} else {
+				var y = point._view.y;
+				
+				if (!helpers.isInChartArea(this._chart, point._view)) {
+					var chartArea = helpers.getChartArea(this._chart);
+					if (chartArea) {
+						y = point._view.y > chartArea.bottom ? chartArea.bottom : y;
+						y = point._view.y < chartArea.top ? chartArea.top : y;
+					}
+				}
+				
 				// Line between points
 				ctx.bezierCurveTo(
 					previousPoint._view.controlPointNextX, 
@@ -47,7 +57,7 @@
 					point._view.controlPointPreviousX,
 					point._view.controlPointPreviousY,
 					point._view.x,
-					point._view.y
+					y
 				);
 			}
 		},
@@ -87,7 +97,16 @@
 				helpers.each(this._children, function(point, index) {
 					var previous = helpers.previousItem(this._children, index);
 					var next = helpers.nextItem(this._children, index);
-
+					var y = point._view.y;
+					
+					if (!helpers.isInChartArea(this._chart, point._view)) {
+						var chartArea = helpers.getChartArea(this._chart);
+						if (chartArea) {
+							y = point._view.y > chartArea.bottom ? chartArea.bottom : y;
+							y = point._view.y < chartArea.top ? chartArea.top : y;
+						}
+					}
+					
 					// First point moves to it's starting position no matter what
 					if (index === 0) {
 						if (this._loop) {
@@ -101,7 +120,7 @@
 								ctx.moveTo(next._view.x, this._view.scaleZero);
 							}
 						} else {
-							ctx.lineTo(point._view.x, point._view.y);
+							ctx.lineTo(point._view.x, y);
 						}
 					} else {
 						this.lineToNextPoint(previous, point, next, function(previousPoint, point, nextPoint) {
@@ -145,14 +164,32 @@
 			ctx.lineJoin = vm.borderJoinStyle || Chart.defaults.global.elements.line.borderJoinStyle;
 			ctx.lineWidth = vm.borderWidth || Chart.defaults.global.elements.line.borderWidth;
 			ctx.strokeStyle = vm.borderColor || Chart.defaults.global.defaultColor;
-			ctx.beginPath();
-
+			
 			helpers.each(this._children, function(point, index) {
 				var previous = helpers.previousItem(this._children, index);
 				var next = helpers.nextItem(this._children, index);
+				var y = point._view.y;
 
+
+				ctx.strokeStyle = vm.borderColor || Chart.defaults.global.defaultColor;
+				
+				if (!helpers.isInChartArea(this._chart, point._view)) {
+					var chartArea = helpers.getChartArea(this._chart);
+					if (chartArea) {
+						y = point._view.y > chartArea.bottom ? chartArea.bottom : y;
+						y = point._view.y < chartArea.top ? chartArea.top : y;
+					}
+					// If previous point also was outside chart area
+					// set stroke to transparent so it doesn't looke like data is just exactly at charts min/max point
+					if (!helpers.isInChartArea(this._chart, previous._view)) {
+						ctx.strokeStyle = 'transparent';
+					}
+				}
+								
+				ctx.beginPath();
+				
 				if (index === 0) {
-					ctx.moveTo(point._view.x, point._view.y);
+					ctx.moveTo(point._view.x, y);
 				} else {
 					this.lineToNextPoint(previous, point, next, function(previousPoint, point, nextPoint) {
 						ctx.moveTo(nextPoint._view.x, nextPoint._view.y);
@@ -161,13 +198,16 @@
 						ctx.moveTo(point._view.x, point._view.y);
 					});
 				}
+				
+				ctx.closePath();
+				ctx.stroke();
+				
 			}, this);
 
 			if (this._loop && this._children.length > 0) {
 				loopBackToStart();
 			}
 
-			ctx.stroke();
 			ctx.restore();
 		},
 	});
