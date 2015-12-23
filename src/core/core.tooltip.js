@@ -283,9 +283,15 @@
 				helpers.extend(this._model, {
 					x: Math.round(tooltipPosition.x),
 					y: Math.round(tooltipPosition.y),
-					caretPadding: tooltipPosition.padding,
+					caretPadding: helpers.getValueOrDefault(tooltipPosition.padding, 2),
 					labelColors: labelColors,
 				});
+
+				// We need to determine alignment of 
+				var tooltipSize = this.getTooltipSize(this._model);
+				this.determineAlignment(tooltipSize); // Smart Tooltip placement to stay on the canvas
+
+				helpers.extend(this._model, this.getBackgroundPoint(this._model, tooltipSize));
 			}
 			else{
 				this._model.opacity = 0;
@@ -297,8 +303,7 @@
 
 			return this;
 		},
-		getTooltipSize: function getTooltipSize() {
-			var vm = this._view;
+		getTooltipSize: function getTooltipSize(vm) {
 			var ctx = this._chart.ctx;
 
 			var size = {
@@ -339,63 +344,121 @@
 			return size;
 		},
 		determineAlignment: function determineAlignment(size) {
-			var vm = this._view;
-			vm.yAlign = "center";
-			if (vm.y - (size.height / 2) < 0) {
-				vm.yAlign = "top";
-			} else if (vm.y + (size.height / 2) > this._chart.height) {
-				vm.yAlign = "bottom";
+			this._model.xAlign = this._model.yAlign = "center";
+
+			if (this._model.y < size.height) {
+				this._model.yAlign = 'top';
+			} else if (this._model.y > (this._chart.height - size.height)) {
+				this._model.yAlign = 'bottom';
 			}
 
-			// Left or Right
-			vm.xAlign = "right";
-			if (vm.x + size.width > this._chart.width) {
-				vm.xAlign = "left";
+			var lf, rf;
+			var _this = this;
+			var midX = (this._chartInstance.chartArea.left + this._chartInstance.chartArea.right) / 2;
+
+			if (this._model.yAlign === 'center') {
+				lf = function(x) { return x <= midX; };
+				rf = function(x) { return x > midX; };
+			} else {
+				lf = function(x) { return x <= (size.width / 2); };
+				rf = function(x) { return x >= (_this._chart.width - (size.width / 2)); };
+			}
+
+			if (lf(this._model.x)) {
+				this._model.xAlign = 'left';
+			} else if (rf(this._model.x)) {
+				this._model.xAlign = 'right';
 			}
 		},
-		getBackgroundPoint: function getBackgroundPoint(size, caretPadding) {
-			var vm = this._view;
+		getBackgroundPoint: function getBackgroundPoint(vm, size) {
 			// Background Position
 			var pt = {
 				x: vm.x,
 				y: vm.y
 			};
 
-			if (vm.yAlign === 'top') {
-				pt.y = vm.y - vm.caretSize - vm.cornerRadius;
-			} else if (vm.yAlign === 'bottom') {
-				pt.y = vm.y - size.height + vm.caretSize + vm.cornerRadius;
-			} else {
-				pt.y = vm.y - (size.height / 2);
+			if (vm.xAlign === 'right') {
+				pt.x -= size.width;
+			} else if (vm.xAlign === 'center') {
+				pt.x -= (size.width / 2);
 			}
 
-			if (vm.xAlign === 'left') {
-				pt.x = vm.x - size.width;
-			} else if (vm.xAlign === 'right') {
-				pt.x = vm.x + caretPadding + vm.caretSize;
+			if (vm.yAlign === 'top') {
+				pt.y += vm.caretPadding + vm.caretSize;
+			} else if (vm.yAlign === 'bottom') {
+				pt.y -= size.height + vm.caretPadding + vm.caretSize;
 			} else {
-				pt.x = vm.x + (size.width / 2);
+				pt.y -= (size.height / 2);
+			}
+
+			if (vm.yAlign == 'center') {
+				if (vm.xAlign === 'left') {
+					pt.x += vm.caretPadding + vm.caretSize;
+				} else if (vm.xAlign === 'right') {
+					pt.x -= vm.caretPadding + vm.caretSize;
+				}
+			} else {
+				if (vm.xAlign === 'left') {
+					pt.x -= vm.cornerRadius + vm.caretPadding;
+				} else if (vm.xAlign === 'right') {
+					pt.x += vm.cornerRadius + vm.caretPadding;
+				}
 			}
 
 			return pt;
 		},
-		drawCaret: function drawCaret(opacity, caretPadding) {
+		drawCaret: function drawCaret(tooltipPoint, size, opacity, caretPadding) {
 			var vm = this._view;
 			var ctx = this._chart.ctx;
+			var x1, x2, x3;
+			var y1, y2, y3;
+
+			if (vm.yAlign === 'center') {
+				// Left or right side
+				if (vm.xAlign === 'left') {
+					x1 = tooltipPoint.x;
+					x2 = x1 - vm.caretSize;
+					x3 = x1;
+				} else {
+					x1 = tooltipPoint.x + size.width;
+					x2 = x1 + vm.caretSize;
+					x3 = x1;
+				}
+
+				y2 = tooltipPoint.y + (size.height / 2);
+				y1 = y2 - vm.caretSize;
+				y3 = y2 + vm.caretSize;
+			} else {
+				if (vm.xAlign === 'left') {
+					x1 = tooltipPoint.x + vm.cornerRadius;
+					x2 = x1 + vm.caretSize;
+					x3 = x2 + vm.caretSize;
+				} else if (vm.xAlign === 'right') {
+					x1 = tooltipPoint.x + size.width - vm.cornerRadius;
+					x2 = x1 - vm.caretSize;
+					x3 = x2 - vm.caretSize;
+				} else {
+					x2 = tooltipPoint.x + (size.width / 2);
+					x1 = x2 - vm.caretSize;
+					x3 = x2 + vm.caretSize;
+				}
+
+				if (vm.yAlign === 'top') {
+					y1 = tooltipPoint.y;
+					y2 = y1 - vm.caretSize;
+					y3 = y1;
+				} else {
+					y1 = tooltipPoint.y + size.height;
+					y2 = y1 + vm.caretSize;
+					y3 = y1;
+				}
+			}
 
 			ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(opacity).rgbString();
 			ctx.beginPath();
-
-			if (vm.xAlign === 'left') {
-				ctx.moveTo(vm.x - caretPadding, vm.y);
-				ctx.lineTo(vm.x - caretPadding - vm.caretSize, vm.y - vm.caretSize);
-				ctx.lineTo(vm.x - caretPadding - vm.caretSize, vm.y + vm.caretSize);
-			} else {
-				ctx.moveTo(vm.x + caretPadding, vm.y);
-				ctx.lineTo(vm.x + caretPadding + vm.caretSize, vm.y - vm.caretSize);
-				ctx.lineTo(vm.x + caretPadding + vm.caretSize, vm.y + vm.caretSize);
-			}
-
+			ctx.moveTo(x1, y1);
+			ctx.lineTo(x2, y2);
+			ctx.lineTo(x3, y3);
 			ctx.closePath();
 			ctx.fill();
 		},
@@ -483,18 +546,12 @@
 				return;
 			}
 
-			var caretPadding = vm.caretPadding || 2;
-			var tooltipSize = this.getTooltipSize();
-			var backgroundWidth = tooltipSize.width;
-			
-			// Expand to be new total size (including caret)
-			tooltipSize.width += vm.caretSize + caretPadding;
-
-			// Smart Tooltip placement to stay on the canvas
-			// Top, center, or bottom
-			this.determineAlignment(tooltipSize);
-
-			var pt = this.getBackgroundPoint(tooltipSize, caretPadding);
+			var caretPadding = vm.caretPadding;
+			var tooltipSize = this.getTooltipSize(vm);
+			var pt = {
+				x: vm.x,
+				y: vm.y
+			};
 
 			// IE11/Edge does not like very small opacities, so snap to 0
 			var opacity = Math.abs(vm.opacity < 1e-3) ? 0 : vm.opacity;
@@ -502,11 +559,11 @@
 			if (this._options.tooltips.enabled) {
 				// Draw Background
 				ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(opacity).rgbString();
-				helpers.drawRoundedRectangle(ctx, pt.x, pt.y, backgroundWidth, tooltipSize.height, vm.cornerRadius);
+				helpers.drawRoundedRectangle(ctx, pt.x, pt.y, tooltipSize.width, tooltipSize.height, vm.cornerRadius);
 				ctx.fill();
 
 				// Draw Caret
-				this.drawCaret(opacity, caretPadding);
+				this.drawCaret(pt, tooltipSize, opacity, caretPadding);
 				
 				// Draw Title, Body, and Footer
 				pt.x += vm.xPadding;

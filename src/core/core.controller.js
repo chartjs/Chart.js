@@ -400,6 +400,7 @@
 		initToolTip: function initToolTip() {
 			this.tooltip = new Chart.Tooltip({
 				_chart: this.chart,
+				_chartInstance: this,
 				_data: this.data,
 				_options: this.options,
 			}, this);
