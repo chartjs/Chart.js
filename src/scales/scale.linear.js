@@ -129,16 +129,16 @@
 				}
 			}
 
-			if (this.options.ticks.suggestedMin !== undefined) {
-				this.min = Math.min(this.min, this.options.ticks.suggestedMin);
-			} else if (this.options.ticks.min !== undefined) {
+			if (this.options.ticks.min !== undefined) {
 				this.min = this.options.ticks.min;
+			} else if (this.options.ticks.suggestedMin !== undefined) {
+				this.min = Math.min(this.min, this.options.ticks.suggestedMin);
 			}
 
-			if (this.options.ticks.suggestedMax !== undefined) {
-				this.max = Math.max(this.max, this.options.ticks.suggestedMax);
-			} else if (this.options.ticks.max !== undefined) {
+			if (this.options.ticks.max !== undefined) {
 				this.max = this.options.ticks.max;
+			} else if (this.options.ticks.suggestedMax !== undefined) {
+				this.max = Math.max(this.max, this.options.ticks.suggestedMax);
 			}
 
 			if (this.min === this.max) {
