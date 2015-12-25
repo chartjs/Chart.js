@@ -21,7 +21,8 @@
     "gulp-util": "~2.2.x",
     "gulp-html-validator": "^0.0.2",
     "inquirer": "^0.5.1",
-    "semver": "^3.0.1"
+    "semver": "^3.0.1",
+    "gulp-livereload": "^3.8.0"
   },
   "spm": {
     "main": "Chart.js"
