@@ -40,10 +40,6 @@
 		var width = this.width = computeDimension(context.canvas,'Width') || context.canvas.width;
 		var height = this.height = computeDimension(context.canvas,'Height') || context.canvas.height;
 
-		// Firefox requires this to work correctly
-		context.canvas.width  = width;
-		context.canvas.height = height;
-
 		width = this.width = context.canvas.width;
 		height = this.height = context.canvas.height;
 		this.aspectRatio = this.width / this.height;
