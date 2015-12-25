@@ -19,6 +19,9 @@
 		//The percentage of the chart that we cut out of the middle.
 		percentageInnerCutout : 50,
 
+		//The percentage of the chart that we cut from outerRadius.
+		percentageOuterCutout : 0,
+
 		//Number - Amount of animation steps
 		animationSteps : 100,
 
@@ -48,6 +51,7 @@
 			//Declare segments as a static property to prevent inheriting across the Chart type prototype
 			this.segments = [];
 			this.outerRadius = (helpers.min([this.chart.width,this.chart.height]) -	this.options.segmentStrokeWidth/2)/2;
+			this.outerRadius -= this.outerRadius/100*this.options.percentageOuterCutout;
 
 			this.SegmentArc = Chart.Arc.extend({
 				ctx : this.chart.ctx,
