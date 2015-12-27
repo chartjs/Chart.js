@@ -173,6 +173,12 @@
 			// String - Colour behind the legend colour block
 			multiTooltipKeyBackground: '#fff',
 
+			// Array - A list of colors to use as the defaults
+			segmentColorDefault: ["#A6CEE3", "#1F78B4", "#B2DF8A", "#33A02C", "#FB9A99", "#E31A1C", "#FDBF6F", "#FF7F00", "#CAB2D6", "#6A3D9A", "#B4B482", "#B15928" ],
+
+			// Array - A list of highlight colors to use as the defaults
+			segmentHighlightColorDefaults: [ "#CEF6FF", "#47A0DC", "#DAFFB2", "#5BC854", "#FFC2C1", "#FF4244", "#FFE797", "#FFA728", "#F2DAFE", "#9265C2", "#DCDCAA", "#D98150" ],
+
 			// Function - Will fire on animation progression.
 			onAnimationProgress: function(){},
 

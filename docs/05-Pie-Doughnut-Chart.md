@@ -137,6 +137,8 @@ myDoughnutChart.update();
 
 Calling `addData(segmentData, index)` on your Chart instance passing an object in the same format as in the constructor. There is an optional second argument of 'index', this determines at what index the new segment should be inserted into the chart.
 
+If you don't specify a color and highliht, one will be chosen from the global default array: segmentColorDefault and the corresponding segmentHighlightColorDefault.  The index of the addded data is used to lookup a corresponding color from the defaults.
+
 ```javascript
 // An object in the same format as the original data source
 myDoughnutChart.addData({
