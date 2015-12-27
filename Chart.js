@@ -2,16 +2,16 @@
   if (typeof define === 'function' && define.amd) {
     define(['moment'], factory);
   } else if (typeof exports === 'object') {
-    module.exports = factory(require('moment'));
+    module.exports = factory.call(root,require('moment'));
   } else {
-    root.Chart = factory(root.moment);
+    root.Chart = factory.call(root,root.moment);
   }
 }(this, function(moment) {
 !function e(r,t,n){function a(i,u){if(!t[i]){if(!r[i]){var l="function"==typeof require&&require;if(!u&&l)return l(i,!0);if(s)return s(i,!0);var h=new Error("Cannot find module '"+i+"'");throw h.code="MODULE_NOT_FOUND",h}var o=t[i]={exports:{}};r[i][0].call(o.exports,function(e){var t=r[i][1][e];return a(t?t:e)},o,o.exports,e,r,t,n)}return t[i].exports}for(var s="function"==typeof require&&require,i=0;i<n.length;i++)a(n[i]);return a}({1:[function(e,r,t){!function(){var t=e("color-convert"),n=e("color-string"),a=function(e){if(e instanceof a)return e;if(!(this instanceof a))return new a(e);if(this.values={rgb:[0,0,0],hsl:[0,0,0],hsv:[0,0,0],hwb:[0,0,0],cmyk:[0,0,0,0],alpha:1},"string"==typeof e){var r=n.getRgba(e);if(r)this.setValues("rgb",r);else if(r=n.getHsla(e))this.setValues("hsl",r);else{if(!(r=n.getHwb(e)))throw new Error('Unable to parse color from string "'+e+'"');this.setValues("hwb",r)}}else if("object"==typeof e){var r=e;if(void 0!==r.r||void 0!==r.red)this.setValues("rgb",r);else if(void 0!==r.l||void 0!==r.lightness)this.setValues("hsl",r);else if(void 0!==r.v||void 0!==r.value)this.setValues("hsv",r);else if(void 0!==r.w||void 0!==r.whiteness)this.setValues("hwb",r);else{if(void 0===r.c&&void 0===r.cyan)throw new Error("Unable to parse color from object "+JSON.stringify(e));this.setValues("cmyk",r)}}};a.prototype={rgb:function(e){return this.setSpace("rgb",arguments)},hsl:function(e){return this.setSpace("hsl",arguments)},hsv:function(e){return this.setSpace("hsv",arguments)},hwb:function(e){return this.setSpace("hwb",arguments)},cmyk:function(e){return this.setSpace("cmyk",arguments)},rgbArray:function(){return this.values.rgb},hslArray:function(){return this.values.hsl},hsvArray:function(){return this.values.hsv},hwbArray:function(){return 1!==this.values.alpha?this.values.hwb.concat([this.values.alpha]):this.values.hwb},cmykArray:function(){return this.values.cmyk},rgbaArray:function(){var e=this.values.rgb;return e.concat([this.values.alpha])},hslaArray:function(){var e=this.values.hsl;return e.concat([this.values.alpha])},alpha:function(e){return void 0===e?this.values.alpha:(this.setValues("alpha",e),this)},red:function(e){return this.setChannel("rgb",0,e)},green:function(e){return this.setChannel("rgb",1,e)},blue:function(e){return this.setChannel("rgb",2,e)},hue:function(e){return this.setChannel("hsl",0,e)},saturation:function(e){return this.setChannel("hsl",1,e)},lightness:function(e){return this.setChannel("hsl",2,e)},saturationv:function(e){return this.setChannel("hsv",1,e)},whiteness:function(e){return this.setChannel("hwb",1,e)},blackness:function(e){return this.setChannel("hwb",2,e)},value:function(e){return this.setChannel("hsv",2,e)},cyan:function(e){return this.setChannel("cmyk",0,e)},magenta:function(e){return this.setChannel("cmyk",1,e)},yellow:function(e){return this.setChannel("cmyk",2,e)},black:function(e){return this.setChannel("cmyk",3,e)},hexString:function(){return n.hexString(this.values.rgb)},rgbString:function(){return n.rgbString(this.values.rgb,this.values.alpha)},rgbaString:function(){return n.rgbaString(this.values.rgb,this.values.alpha)},percentString:function(){return n.percentString(this.values.rgb,this.values.alpha)},hslString:function(){return n.hslString(this.values.hsl,this.values.alpha)},hslaString:function(){return n.hslaString(this.values.hsl,this.values.alpha)},hwbString:function(){return n.hwbString(this.values.hwb,this.values.alpha)},keyword:function(){return n.keyword(this.values.rgb,this.values.alpha)},rgbNumber:function(){return this.values.rgb[0]<<16|this.values.rgb[1]<<8|this.values.rgb[2]},luminosity:function(){for(var e=this.values.rgb,r=[],t=0;t<e.length;t++){var n=e[t]/255;r[t]=.03928>=n?n/12.92:Math.pow((n+.055)/1.055,2.4)}return.2126*r[0]+.7152*r[1]+.0722*r[2]},contrast:function(e){var r=this.luminosity(),t=e.luminosity();return r>t?(r+.05)/(t+.05):(t+.05)/(r+.05)},level:function(e){var r=this.contrast(e);return r>=7.1?"AAA":r>=4.5?"AA":""},dark:function(){var e=this.values.rgb,r=(299*e[0]+587*e[1]+114*e[2])/1e3;return 128>r},light:function(){return!this.dark()},negate:function(){for(var e=[],r=0;3>r;r++)e[r]=255-this.values.rgb[r];return this.setValues("rgb",e),this},lighten:function(e){return this.values.hsl[2]+=this.values.hsl[2]*e,this.setValues("hsl",this.values.hsl),this},darken:function(e){return this.values.hsl[2]-=this.values.hsl[2]*e,this.setValues("hsl",this.values.hsl),this},saturate:function(e){return this.values.hsl[1]+=this.values.hsl[1]*e,this.setValues("hsl",this.values.hsl),this},desaturate:function(e){return this.values.hsl[1]-=this.values.hsl[1]*e,this.setValues("hsl",this.values.hsl),this},whiten:function(e){return this.values.hwb[1]+=this.values.hwb[1]*e,this.setValues("hwb",this.values.hwb),this},blacken:function(e){return this.values.hwb[2]+=this.values.hwb[2]*e,this.setValues("hwb",this.values.hwb),this},greyscale:function(){var e=this.values.rgb,r=.3*e[0]+.59*e[1]+.11*e[2];return this.setValues("rgb",[r,r,r]),this},clearer:function(e){return this.setValues("alpha",this.values.alpha-this.values.alpha*e),this},opaquer:function(e){return this.setValues("alpha",this.values.alpha+this.values.alpha*e),this},rotate:function(e){var r=this.values.hsl[0];return r=(r+e)%360,r=0>r?360+r:r,this.values.hsl[0]=r,this.setValues("hsl",this.values.hsl),this},mix:function(e,r){r=1-(null==r?.5:r);for(var t=2*r-1,n=this.alpha()-e.alpha(),a=((t*n==-1?t:(t+n)/(1+t*n))+1)/2,s=1-a,i=this.rgbArray(),u=e.rgbArray(),l=0;l<i.length;l++)i[l]=i[l]*a+u[l]*s;this.setValues("rgb",i);var h=this.alpha()*r+e.alpha()*(1-r);return this.setValues("alpha",h),this},toJSON:function(){return this.rgb()},clone:function(){return new a(this.rgb())}},a.prototype.getValues=function(e){for(var r={},t=0;t<e.length;t++)r[e.charAt(t)]=this.values[e][t];return 1!=this.values.alpha&&(r.a=this.values.alpha),r},a.prototype.setValues=function(e,r){var n={rgb:["red","green","blue"],hsl:["hue","saturation","lightness"],hsv:["hue","saturation","value"],hwb:["hue","whiteness","blackness"],cmyk:["cyan","magenta","yellow","black"]},a={rgb:[255,255,255],hsl:[360,100,100],hsv:[360,100,100],hwb:[360,100,100],cmyk:[100,100,100,100]},s=1;if("alpha"==e)s=r;else if(r.length)this.values[e]=r.slice(0,e.length),s=r[e.length];else if(void 0!==r[e.charAt(0)]){for(var i=0;i<e.length;i++)this.values[e][i]=r[e.charAt(i)];s=r.a}else if(void 0!==r[n[e][0]]){for(var u=n[e],i=0;i<e.length;i++)this.values[e][i]=r[u[i]];s=r.alpha}if(this.values.alpha=Math.max(0,Math.min(1,void 0!==s?s:this.values.alpha)),"alpha"!=e){for(var i=0;i<e.length;i++){var l=Math.max(0,Math.min(a[e][i],this.values[e][i]));this.values[e][i]=Math.round(l)}for(var h in n){h!=e&&(this.values[h]=t[e][h](this.values[e]));for(var i=0;i<h.length;i++){var l=Math.max(0,Math.min(a[h][i],this.values[h][i]));this.values[h][i]=Math.round(l)}}return!0}},a.prototype.setSpace=function(e,r){var t=r[0];return void 0===t?this.getValues(e):("number"==typeof t&&(t=Array.prototype.slice.call(r)),this.setValues(e,t),this)},a.prototype.setChannel=function(e,r,t){return void 0===t?this.values[e][r]:(this.values[e][r]=t,this.setValues(e,this.values[e]),this)},window.Color=r.exports=a}()},{"color-convert":3,"color-string":4}],2:[function(e,t,n){function a(e){var r,t,n,a=e[0]/255,s=e[1]/255,i=e[2]/255,u=Math.min(a,s,i),l=Math.max(a,s,i),h=l-u;return l==u?r=0:a==l?r=(s-i)/h:s==l?r=2+(i-a)/h:i==l&&(r=4+(a-s)/h),r=Math.min(60*r,360),0>r&&(r+=360),n=(u+l)/2,t=l==u?0:.5>=n?h/(l+u):h/(2-l-u),[r,100*t,100*n]}function s(e){var r,t,n,a=e[0],s=e[1],i=e[2],u=Math.min(a,s,i),l=Math.max(a,s,i),h=l-u;return t=0==l?0:h/l*1e3/10,l==u?r=0:a==l?r=(s-i)/h:s==l?r=2+(i-a)/h:i==l&&(r=4+(a-s)/h),r=Math.min(60*r,360),0>r&&(r+=360),n=l/255*1e3/10,[r,t,n]}function i(e){var r=e[0],t=e[1],n=e[2],s=a(e)[0],i=1/255*Math.min(r,Math.min(t,n)),n=1-1/255*Math.max(r,Math.max(t,n));return[s,100*i,100*n]}function u(e){var r,t,n,a,s=e[0]/255,i=e[1]/255,u=e[2]/255;return a=Math.min(1-s,1-i,1-u),r=(1-s-a)/(1-a)||0,t=(1-i-a)/(1-a)||0,n=(1-u-a)/(1-a)||0,[100*r,100*t,100*n,100*a]}function l(e){return X[JSON.stringify(e)]}function h(e){var r=e[0]/255,t=e[1]/255,n=e[2]/255;r=r>.04045?Math.pow((r+.055)/1.055,2.4):r/12.92,t=t>.04045?Math.pow((t+.055)/1.055,2.4):t/12.92,n=n>.04045?Math.pow((n+.055)/1.055,2.4):n/12.92;var a=.4124*r+.3576*t+.1805*n,s=.2126*r+.7152*t+.0722*n,i=.0193*r+.1192*t+.9505*n;return[100*a,100*s,100*i]}function o(e){var r,t,n,a=h(e),s=a[0],i=a[1],u=a[2];return s/=95.047,i/=100,u/=108.883,s=s>.008856?Math.pow(s,1/3):7.787*s+16/116,i=i>.008856?Math.pow(i,1/3):7.787*i+16/116,u=u>.008856?Math.pow(u,1/3):7.787*u+16/116,r=116*i-16,t=500*(s-i),n=200*(i-u),[r,t,n]}function c(e){return J(o(e))}function v(e){var r,t,n,a,s,i=e[0]/360,u=e[1]/100,l=e[2]/100;if(0==u)return s=255*l,[s,s,s];t=.5>l?l*(1+u):l+u-l*u,r=2*l-t,a=[0,0,0];for(var h=0;3>h;h++)n=i+1/3*-(h-1),0>n&&n++,n>1&&n--,s=1>6*n?r+6*(t-r)*n:1>2*n?t:2>3*n?r+(t-r)*(2/3-n)*6:r,a[h]=255*s;return a}function f(e){var r,t,n=e[0],a=e[1]/100,s=e[2]/100;return s*=2,a*=1>=s?s:2-s,t=(s+a)/2,r=2*a/(s+a),[n,100*r,100*t]}function d(e){return i(v(e))}function p(e){return u(v(e))}function m(e){return l(v(e))}function y(e){var r=e[0]/60,t=e[1]/100,n=e[2]/100,a=Math.floor(r)%6,s=r-Math.floor(r),i=255*n*(1-t),u=255*n*(1-t*s),l=255*n*(1-t*(1-s)),n=255*n;switch(a){case 0:return[n,l,i];case 1:return[u,n,i];case 2:return[i,n,l];case 3:return[i,u,n];case 4:return[l,i,n];case 5:return[n,i,u]}}function w(e){var r,t,n=e[0],a=e[1]/100,s=e[2]/100;return t=(2-a)*s,r=a*s,r/=1>=t?t:2-t,r=r||0,t/=2,[n,100*r,100*t]}function k(e){return i(y(e))}function M(e){return u(y(e))}function S(e){return l(y(e))}function x(e){var t,n,a,s,i=e[0]/360,u=e[1]/100,l=e[2]/100,h=u+l;switch(h>1&&(u/=h,l/=h),t=Math.floor(6*i),n=1-l,a=6*i-t,0!=(1&t)&&(a=1-a),s=u+a*(n-u),t){default:case 6:case 0:r=n,g=s,b=u;break;case 1:r=s,g=n,b=u;break;case 2:r=u,g=n,b=s;break;case 3:r=u,g=s,b=n;break;case 4:r=s,g=u,b=n;break;case 5:r=n,g=u,b=s}return[255*r,255*g,255*b]}function V(e){return a(x(e))}function q(e){return s(x(e))}function A(e){return u(x(e))}function C(e){return l(x(e))}function F(e){var r,t,n,a=e[0]/100,s=e[1]/100,i=e[2]/100,u=e[3]/100;return r=1-Math.min(1,a*(1-u)+u),t=1-Math.min(1,s*(1-u)+u),n=1-Math.min(1,i*(1-u)+u),[255*r,255*t,255*n]}function N(e){return a(F(e))}function z(e){return s(F(e))}function I(e){return i(F(e))}function O(e){return l(F(e))}function E(e){var r,t,n,a=e[0]/100,s=e[1]/100,i=e[2]/100;return r=3.2406*a+-1.5372*s+i*-.4986,t=a*-.9689+1.8758*s+.0415*i,n=.0557*a+s*-.204+1.057*i,r=r>.0031308?1.055*Math.pow(r,1/2.4)-.055:r=12.92*r,t=t>.0031308?1.055*Math.pow(t,1/2.4)-.055:t=12.92*t,n=n>.0031308?1.055*Math.pow(n,1/2.4)-.055:n=12.92*n,r=Math.min(Math.max(0,r),1),t=Math.min(Math.max(0,t),1),n=Math.min(Math.max(0,n),1),[255*r,255*t,255*n]}function H(e){var r,t,n,a=e[0],s=e[1],i=e[2];return a/=95.047,s/=100,i/=108.883,a=a>.008856?Math.pow(a,1/3):7.787*a+16/116,s=s>.008856?Math.pow(s,1/3):7.787*s+16/116,i=i>.008856?Math.pow(i,1/3):7.787*i+16/116,r=116*s-16,t=500*(a-s),n=200*(s-i),[r,t,n]}function U(e){return J(H(e))}function j(e){var r,t,n,a,s=e[0],i=e[1],u=e[2];return 8>=s?(t=100*s/903.3,a=7.787*(t/100)+16/116):(t=100*Math.pow((s+16)/116,3),a=Math.pow(t/100,1/3)),r=.008856>=r/95.047?r=95.047*(i/500+a-16/116)/7.787:95.047*Math.pow(i/500+a,3),n=.008859>=n/108.883?n=108.883*(a-u/200-16/116)/7.787:108.883*Math.pow(a-u/200,3),[r,t,n]}function J(e){var r,t,n,a=e[0],s=e[1],i=e[2];return r=Math.atan2(i,s),t=360*r/2/Math.PI,0>t&&(t+=360),n=Math.sqrt(s*s+i*i),[a,n,t]}function R(e){return E(j(e))}function $(e){var r,t,n,a=e[0],s=e[1],i=e[2];return n=i/360*2*Math.PI,r=s*Math.cos(n),t=s*Math.sin(n),[a,r,t]}function D(e){return j($(e))}function P(e){return R($(e))}function _(e){return W[e]}function L(e){return a(_(e))}function T(e){return s(_(e))}function B(e){return i(_(e))}function G(e){return u(_(e))}function K(e){return o(_(e))}function Q(e){return h(_(e))}t.exports={rgb2hsl:a,rgb2hsv:s,rgb2hwb:i,rgb2cmyk:u,rgb2keyword:l,rgb2xyz:h,rgb2lab:o,rgb2lch:c,hsl2rgb:v,hsl2hsv:f,hsl2hwb:d,hsl2cmyk:p,hsl2keyword:m,hsv2rgb:y,hsv2hsl:w,hsv2hwb:k,hsv2cmyk:M,hsv2keyword:S,hwb2rgb:x,hwb2hsl:V,hwb2hsv:q,hwb2cmyk:A,hwb2keyword:C,cmyk2rgb:F,cmyk2hsl:N,cmyk2hsv:z,cmyk2hwb:I,cmyk2keyword:O,keyword2rgb:_,keyword2hsl:L,keyword2hsv:T,keyword2hwb:B,keyword2cmyk:G,keyword2lab:K,keyword2xyz:Q,xyz2rgb:E,xyz2lab:H,xyz2lch:U,lab2xyz:j,lab2rgb:R,lab2lch:J,lch2lab:$,lch2xyz:D,lch2rgb:P};var W={aliceblue:[240,248,255],antiquewhite:[250,235,215],aqua:[0,255,255],aquamarine:[127,255,212],azure:[240,255,255],beige:[245,245,220],bisque:[255,228,196],black:[0,0,0],blanchedalmond:[255,235,205],blue:[0,0,255],blueviolet:[138,43,226],brown:[165,42,42],burlywood:[222,184,135],cadetblue:[95,158,160],chartreuse:[127,255,0],chocolate:[210,105,30],coral:[255,127,80],cornflowerblue:[100,149,237],cornsilk:[255,248,220],crimson:[220,20,60],cyan:[0,255,255],darkblue:[0,0,139],darkcyan:[0,139,139],darkgoldenrod:[184,134,11],darkgray:[169,169,169],darkgreen:[0,100,0],darkgrey:[169,169,169],darkkhaki:[189,183,107],darkmagenta:[139,0,139],darkolivegreen:[85,107,47],darkorange:[255,140,0],darkorchid:[153,50,204],darkred:[139,0,0],darksalmon:[233,150,122],darkseagreen:[143,188,143],darkslateblue:[72,61,139],darkslategray:[47,79,79],darkslategrey:[47,79,79],darkturquoise:[0,206,209],darkviolet:[148,0,211],deeppink:[255,20,147],deepskyblue:[0,191,255],dimgray:[105,105,105],dimgrey:[105,105,105],dodgerblue:[30,144,255],firebrick:[178,34,34],floralwhite:[255,250,240],forestgreen:[34,139,34],fuchsia:[255,0,255],gainsboro:[220,220,220],ghostwhite:[248,248,255],gold:[255,215,0],goldenrod:[218,165,32],gray:[128,128,128],green:[0,128,0],greenyellow:[173,255,47],grey:[128,128,128],honeydew:[240,255,240],hotpink:[255,105,180],indianred:[205,92,92],indigo:[75,0,130],ivory:[255,255,240],khaki:[240,230,140],lavender:[230,230,250],lavenderblush:[255,240,245],lawngreen:[124,252,0],lemonchiffon:[255,250,205],lightblue:[173,216,230],lightcoral:[240,128,128],lightcyan:[224,255,255],lightgoldenrodyellow:[250,250,210],lightgray:[211,211,211],lightgreen:[144,238,144],lightgrey:[211,211,211],lightpink:[255,182,193],lightsalmon:[255,160,122],lightseagreen:[32,178,170],lightskyblue:[135,206,250],lightslategray:[119,136,153],lightslategrey:[119,136,153],lightsteelblue:[176,196,222],lightyellow:[255,255,224],lime:[0,255,0],limegreen:[50,205,50],linen:[250,240,230],magenta:[255,0,255],maroon:[128,0,0],mediumaquamarine:[102,205,170],mediumblue:[0,0,205],mediumorchid:[186,85,211],mediumpurple:[147,112,219],mediumseagreen:[60,179,113],mediumslateblue:[123,104,238],mediumspringgreen:[0,250,154],mediumturquoise:[72,209,204],mediumvioletred:[199,21,133],midnightblue:[25,25,112],mintcream:[245,255,250],mistyrose:[255,228,225],moccasin:[255,228,181],navajowhite:[255,222,173],navy:[0,0,128],oldlace:[253,245,230],olive:[128,128,0],olivedrab:[107,142,35],orange:[255,165,0],orangered:[255,69,0],orchid:[218,112,214],palegoldenrod:[238,232,170],palegreen:[152,251,152],paleturquoise:[175,238,238],palevioletred:[219,112,147],papayawhip:[255,239,213],peachpuff:[255,218,185],peru:[205,133,63],pink:[255,192,203],plum:[221,160,221],powderblue:[176,224,230],purple:[128,0,128],rebeccapurple:[102,51,153],red:[255,0,0],rosybrown:[188,143,143],royalblue:[65,105,225],saddlebrown:[139,69,19],salmon:[250,128,114],sandybrown:[244,164,96],seagreen:[46,139,87],seashell:[255,245,238],sienna:[160,82,45],silver:[192,192,192],skyblue:[135,206,235],slateblue:[106,90,205],slategray:[112,128,144],slategrey:[112,128,144],snow:[255,250,250],springgreen:[0,255,127],steelblue:[70,130,180],tan:[210,180,140],teal:[0,128,128],thistle:[216,191,216],tomato:[255,99,71],turquoise:[64,224,208],violet:[238,130,238],wheat:[245,222,179],white:[255,255,255],whitesmoke:[245,245,245],yellow:[255,255,0],yellowgreen:[154,205,50]},X={};for(var Y in W)X[JSON.stringify(W[Y])]=Y},{}],3:[function(e,r,t){var n=e("./conversions"),a=function(){return new h};for(var s in n){a[s+"Raw"]=function(e){return function(r){return"number"==typeof r&&(r=Array.prototype.slice.call(arguments)),n[e](r)}}(s);var i=/(\w+)2(\w+)/.exec(s),u=i[1],l=i[2];a[u]=a[u]||{},a[u][l]=a[s]=function(e){return function(r){"number"==typeof r&&(r=Array.prototype.slice.call(arguments));var t=n[e](r);if("string"==typeof t||void 0===t)return t;for(var a=0;a<t.length;a++)t[a]=Math.round(t[a]);return t}}(s)}var h=function(){this.convs={}};h.prototype.routeSpace=function(e,r){var t=r[0];return void 0===t?this.getValues(e):("number"==typeof t&&(t=Array.prototype.slice.call(r)),this.setValues(e,t))},h.prototype.setValues=function(e,r){return this.space=e,this.convs={},this.convs[e]=r,this},h.prototype.getValues=function(e){var r=this.convs[e];if(!r){var t=this.space,n=this.convs[t];r=a[t][e](n),this.convs[e]=r}return r},["rgb","hsl","hsv","cmyk","keyword"].forEach(function(e){h.prototype[e]=function(r){return this.routeSpace(e,arguments)}}),r.exports=a},{"./conversions":2}],4:[function(e,r,t){function n(e){if(e){var r=/^#([a-fA-F0-9]{3})$/,t=/^#([a-fA-F0-9]{6})$/,n=/^rgba?\(\s*([+-]?\d+)\s*,\s*([+-]?\d+)\s*,\s*([+-]?\d+)\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)$/,a=/^rgba?\(\s*([+-]?[\d\.]+)\%\s*,\s*([+-]?[\d\.]+)\%\s*,\s*([+-]?[\d\.]+)\%\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)$/,s=/(\w+)/,i=[0,0,0],u=1,l=e.match(r);if(l){l=l[1];for(var h=0;h<i.length;h++)i[h]=parseInt(l[h]+l[h],16)}else if(l=e.match(t)){l=l[1];for(var h=0;h<i.length;h++)i[h]=parseInt(l.slice(2*h,2*h+2),16)}else if(l=e.match(n)){for(var h=0;h<i.length;h++)i[h]=parseInt(l[h+1]);u=parseFloat(l[4])}else if(l=e.match(a)){for(var h=0;h<i.length;h++)i[h]=Math.round(2.55*parseFloat(l[h+1]));u=parseFloat(l[4])}else if(l=e.match(s)){if("transparent"==l[1])return[0,0,0,0];if(i=w[l[1]],!i)return}for(var h=0;h<i.length;h++)i[h]=m(i[h],0,255);return u=u||0==u?m(u,0,1):1,i[3]=u,i}}function a(e){if(e){var r=/^hsla?\(\s*([+-]?\d+)(?:deg)?\s*,\s*([+-]?[\d\.]+)%\s*,\s*([+-]?[\d\.]+)%\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)/,t=e.match(r);if(t){var n=parseFloat(t[4]),a=m(parseInt(t[1]),0,360),s=m(parseFloat(t[2]),0,100),i=m(parseFloat(t[3]),0,100),u=m(isNaN(n)?1:n,0,1);return[a,s,i,u]}}}function s(e){if(e){var r=/^hwb\(\s*([+-]?\d+)(?:deg)?\s*,\s*([+-]?[\d\.]+)%\s*,\s*([+-]?[\d\.]+)%\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)/,t=e.match(r);if(t){var n=parseFloat(t[4]),a=m(parseInt(t[1]),0,360),s=m(parseFloat(t[2]),0,100),i=m(parseFloat(t[3]),0,100),u=m(isNaN(n)?1:n,0,1);return[a,s,i,u]}}}function i(e){var r=n(e);return r&&r.slice(0,3)}function u(e){var r=a(e);return r&&r.slice(0,3)}function l(e){var r=n(e);return r?r[3]:(r=a(e))?r[3]:(r=s(e))?r[3]:void 0}function h(e){return"#"+y(e[0])+y(e[1])+y(e[2])}function o(e,r){return 1>r||e[3]&&e[3]<1?c(e,r):"rgb("+e[0]+", "+e[1]+", "+e[2]+")"}function c(e,r){return void 0===r&&(r=void 0!==e[3]?e[3]:1),"rgba("+e[0]+", "+e[1]+", "+e[2]+", "+r+")"}function g(e,r){if(1>r||e[3]&&e[3]<1)return v(e,r);var t=Math.round(e[0]/255*100),n=Math.round(e[1]/255*100),a=Math.round(e[2]/255*100);return"rgb("+t+"%, "+n+"%, "+a+"%)"}function v(e,r){var t=Math.round(e[0]/255*100),n=Math.round(e[1]/255*100),a=Math.round(e[2]/255*100);return"rgba("+t+"%, "+n+"%, "+a+"%, "+(r||e[3]||1)+")"}function f(e,r){return 1>r||e[3]&&e[3]<1?d(e,r):"hsl("+e[0]+", "+e[1]+"%, "+e[2]+"%)"}function d(e,r){return void 0===r&&(r=void 0!==e[3]?e[3]:1),"hsla("+e[0]+", "+e[1]+"%, "+e[2]+"%, "+r+")"}function b(e,r){return void 0===r&&(r=void 0!==e[3]?e[3]:1),"hwb("+e[0]+", "+e[1]+"%, "+e[2]+"%"+(void 0!==r&&1!==r?", "+r:"")+")"}function p(e){return k[e.slice(0,3)]}function m(e,r,t){return Math.min(Math.max(r,e),t)}function y(e){var r=e.toString(16).toUpperCase();return r.length<2?"0"+r:r}var w=e("color-name");r.exports={getRgba:n,getHsla:a,getRgb:i,getHsl:u,getHwb:s,getAlpha:l,hexString:h,rgbString:o,rgbaString:c,percentString:g,percentaString:v,hslString:f,hslaString:d,hwbString:b,keyword:p};var k={};for(var M in w)k[w[M]]=M},{"color-name":5}],5:[function(e,r,t){r.exports={aliceblue:[240,248,255],antiquewhite:[250,235,215],aqua:[0,255,255],aquamarine:[127,255,212],azure:[240,255,255],beige:[245,245,220],bisque:[255,228,196],black:[0,0,0],blanchedalmond:[255,235,205],blue:[0,0,255],blueviolet:[138,43,226],brown:[165,42,42],burlywood:[222,184,135],cadetblue:[95,158,160],chartreuse:[127,255,0],chocolate:[210,105,30],coral:[255,127,80],cornflowerblue:[100,149,237],cornsilk:[255,248,220],crimson:[220,20,60],cyan:[0,255,255],darkblue:[0,0,139],darkcyan:[0,139,139],darkgoldenrod:[184,134,11],darkgray:[169,169,169],darkgreen:[0,100,0],darkgrey:[169,169,169],darkkhaki:[189,183,107],darkmagenta:[139,0,139],darkolivegreen:[85,107,47],darkorange:[255,140,0],darkorchid:[153,50,204],darkred:[139,0,0],darksalmon:[233,150,122],darkseagreen:[143,188,143],darkslateblue:[72,61,139],darkslategray:[47,79,79],darkslategrey:[47,79,79],darkturquoise:[0,206,209],darkviolet:[148,0,211],deeppink:[255,20,147],deepskyblue:[0,191,255],dimgray:[105,105,105],dimgrey:[105,105,105],dodgerblue:[30,144,255],firebrick:[178,34,34],floralwhite:[255,250,240],forestgreen:[34,139,34],fuchsia:[255,0,255],gainsboro:[220,220,220],ghostwhite:[248,248,255],gold:[255,215,0],goldenrod:[218,165,32],gray:[128,128,128],green:[0,128,0],greenyellow:[173,255,47],grey:[128,128,128],honeydew:[240,255,240],hotpink:[255,105,180],indianred:[205,92,92],indigo:[75,0,130],ivory:[255,255,240],khaki:[240,230,140],lavender:[230,230,250],lavenderblush:[255,240,245],lawngreen:[124,252,0],lemonchiffon:[255,250,205],lightblue:[173,216,230],lightcoral:[240,128,128],lightcyan:[224,255,255],lightgoldenrodyellow:[250,250,210],lightgray:[211,211,211],lightgreen:[144,238,144],lightgrey:[211,211,211],lightpink:[255,182,193],lightsalmon:[255,160,122],lightseagreen:[32,178,170],lightskyblue:[135,206,250],lightslategray:[119,136,153],lightslategrey:[119,136,153],lightsteelblue:[176,196,222],lightyellow:[255,255,224],lime:[0,255,0],limegreen:[50,205,50],linen:[250,240,230],magenta:[255,0,255],maroon:[128,0,0],mediumaquamarine:[102,205,170],mediumblue:[0,0,205],mediumorchid:[186,85,211],mediumpurple:[147,112,219],mediumseagreen:[60,179,113],mediumslateblue:[123,104,238],mediumspringgreen:[0,250,154],mediumturquoise:[72,209,204],mediumvioletred:[199,21,133],midnightblue:[25,25,112],mintcream:[245,255,250],mistyrose:[255,228,225],moccasin:[255,228,181],navajowhite:[255,222,173],navy:[0,0,128],oldlace:[253,245,230],olive:[128,128,0],olivedrab:[107,142,35],orange:[255,165,0],orangered:[255,69,0],orchid:[218,112,214],palegoldenrod:[238,232,170],palegreen:[152,251,152],paleturquoise:[175,238,238],palevioletred:[219,112,147],papayawhip:[255,239,213],peachpuff:[255,218,185],peru:[205,133,63],pink:[255,192,203],plum:[221,160,221],powderblue:[176,224,230],purple:[128,0,128],rebeccapurple:[102,51,153],red:[255,0,0],rosybrown:[188,143,143],royalblue:[65,105,225],saddlebrown:[139,69,19],salmon:[250,128,114],sandybrown:[244,164,96],seagreen:[46,139,87],seashell:[255,245,238],sienna:[160,82,45],silver:[192,192,192],skyblue:[135,206,235],slateblue:[106,90,205],slategray:[112,128,144],slategrey:[112,128,144],snow:[255,250,250],springgreen:[0,255,127],steelblue:[70,130,180],tan:[210,180,140],teal:[0,128,128],thistle:[216,191,216],tomato:[255,99,71],turquoise:[64,224,208],violet:[238,130,238],wheat:[245,222,179],white:[255,255,255],whitesmoke:[245,245,245],yellow:[255,255,0],yellowgreen:[154,205,50]}},{}]},{},[1]);
 /*!
  * Chart.js
  * http://chartjs.org/
- * Version: 2.0.0-beta
+ * Version: 2.0.0-beta2
  *
  * Copyright 2015 Nick Downie
  * Released under the MIT license
@@ -1601,6 +1601,7 @@
 		initToolTip: function initToolTip() {
 			this.tooltip = new Chart.Tooltip({
 				_chart: this.chart,
+				_chartInstance: this,
 				_data: this.data,
 				_options: this.options,
 			}, this);
@@ -2524,6 +2525,8 @@
 			padding: 10,
 			reverse: false,
 			display: true,
+			autoSkip: true,
+		    autoSkipPadding: 20,
 			callback: function(value) {
 				return '' + value;
 			},
@@ -2775,10 +2778,10 @@
 
 				if (this.isHorizontal()) {
 					// A horizontal axis is more constrained by the height.
-					var longestLabelWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
+					this.longestLabelWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
 
 					// TODO - improve this calculation
-					var labelHeight = (Math.sin(helpers.toRadians(this.labelRotation)) * longestLabelWidth) + 1.5 * this.options.ticks.fontSize;
+					var labelHeight = (Math.sin(helpers.toRadians(this.labelRotation)) * this.longestLabelWidth) + 1.5 * this.options.ticks.fontSize;
 
 					this.minSize.height = Math.min(this.maxHeight, this.minSize.height + labelHeight);
 
@@ -2919,10 +2922,16 @@
 				var skipRatio;
 				var scaleLabelX;
 				var scaleLabelY;
+				var useAutoskipper = this.options.ticks.autoSkip;
 
 				// Make sure we draw text in the correct color and font
 				this.ctx.fillStyle = this.options.ticks.fontColor;
 				var labelFont = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
+
+				var cosRotation = Math.cos(helpers.toRadians(this.labelRotation));
+				var sinRotation = Math.sin(helpers.toRadians(this.labelRotation));
+				var longestRotatedLabel = this.longestLabelWidth * cosRotation;
+				var rotatedLabelHeight = this.options.ticks.fontSize * sinRotation;
 
 				if (this.isHorizontal()) {
 					setContextLineSettings = true;
@@ -2930,10 +2939,14 @@
 					var yTickEnd = this.options.position === "bottom" ? this.top + 10 : this.bottom;
 					skipRatio = false;
 
-					if ((this.options.ticks.fontSize + 4) * this.ticks.length > (this.width - (this.paddingLeft + this.paddingRight))) {
-						skipRatio = 1 + Math.floor(((this.options.ticks.fontSize + 4) * this.ticks.length) / (this.width - (this.paddingLeft + this.paddingRight)));
+					if (((longestRotatedLabel / 2) + this.options.ticks.autoSkipPadding) * this.ticks.length > (this.width - (this.paddingLeft + this.paddingRight))) {
+					    skipRatio = 1 + Math.floor((((longestRotatedLabel / 2) + this.options.ticks.autoSkipPadding) * this.ticks.length) / (this.width - (this.paddingLeft + this.paddingRight)));
 					}
 
+					if (!useAutoskipper) {
+						skipRatio = false;
+					}
+					
 					helpers.each(this.ticks, function(label, index) {
 						// Blank ticks
 						if ((skipRatio > 1 && index % skipRatio > 0) || (label === undefined || label === null)) {
@@ -3621,9 +3634,15 @@
 				helpers.extend(this._model, {
 					x: Math.round(tooltipPosition.x),
 					y: Math.round(tooltipPosition.y),
-					caretPadding: tooltipPosition.padding,
+					caretPadding: helpers.getValueOrDefault(tooltipPosition.padding, 2),
 					labelColors: labelColors,
 				});
+
+				// We need to determine alignment of 
+				var tooltipSize = this.getTooltipSize(this._model);
+				this.determineAlignment(tooltipSize); // Smart Tooltip placement to stay on the canvas
+
+				helpers.extend(this._model, this.getBackgroundPoint(this._model, tooltipSize));
 			}
 			else{
 				this._model.opacity = 0;
@@ -3635,219 +3654,282 @@
 
 			return this;
 		},
-		draw: function() {
+		getTooltipSize: function getTooltipSize(vm) {
+			var ctx = this._chart.ctx;
 
+			var size = {
+				height: vm.yPadding * 2, // Tooltip Padding
+				width: 0
+			};
+			var combinedBodyLength = vm.body.length + vm.beforeBody.length + vm.afterBody.length;
 
+			size.height += vm.title.length * vm.titleFontSize; // Title Lines
+			size.height += (vm.title.length - 1) * vm.titleSpacing; // Title Line Spacing
+			size.height += vm.title.length ? vm.titleMarginBottom : 0; // Title's bottom Margin
+			size.height += combinedBodyLength * vm.bodyFontSize; // Body Lines
+			size.height += combinedBodyLength ? (combinedBodyLength - 1) * vm.bodySpacing : 0; // Body Line Spacing
+			size.height += vm.footer.length ? vm.footerMarginTop : 0; // Footer Margin
+			size.height += vm.footer.length * (vm.footerFontSize); // Footer Lines
+			size.height += vm.footer.length ? (vm.footer.length - 1) * vm.footerSpacing : 0; // Footer Line Spacing
+
+			// Width
+			ctx.font = helpers.fontString(vm.titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
+			helpers.each(vm.title, function(line) {
+				size.width = Math.max(size.width, ctx.measureText(line).width);
+			});
+
+			ctx.font = helpers.fontString(vm.bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
+			helpers.each(vm.beforeBody.concat(vm.afterBody), function(line) {
+				size.width = Math.max(size.width, ctx.measureText(line).width);
+			}, this);
+			helpers.each(vm.body, function(line) {
+				size.width = Math.max(size.width, ctx.measureText(line).width + (this._options.tooltips.mode !== 'single' ? (vm.bodyFontSize + 2) : 0));
+			}, this);
+
+			ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
+			helpers.each(vm.footer, function(line) {
+				size.width = Math.max(size.width, ctx.measureText(line).width);
+			});
+			size.width += 2 * vm.xPadding;
+
+			return size;
+		},
+		determineAlignment: function determineAlignment(size) {
+			this._model.xAlign = this._model.yAlign = "center";
+
+			if (this._model.y < size.height) {
+				this._model.yAlign = 'top';
+			} else if (this._model.y > (this._chart.height - size.height)) {
+				this._model.yAlign = 'bottom';
+			}
+
+			var lf, rf;
+			var _this = this;
+			var midX = (this._chartInstance.chartArea.left + this._chartInstance.chartArea.right) / 2;
+
+			if (this._model.yAlign === 'center') {
+				lf = function(x) { return x <= midX; };
+				rf = function(x) { return x > midX; };
+			} else {
+				lf = function(x) { return x <= (size.width / 2); };
+				rf = function(x) { return x >= (_this._chart.width - (size.width / 2)); };
+			}
+
+			if (lf(this._model.x)) {
+				this._model.xAlign = 'left';
+			} else if (rf(this._model.x)) {
+				this._model.xAlign = 'right';
+			}
+		},
+		getBackgroundPoint: function getBackgroundPoint(vm, size) {
+			// Background Position
+			var pt = {
+				x: vm.x,
+				y: vm.y
+			};
+
+			if (vm.xAlign === 'right') {
+				pt.x -= size.width;
+			} else if (vm.xAlign === 'center') {
+				pt.x -= (size.width / 2);
+			}
+
+			if (vm.yAlign === 'top') {
+				pt.y += vm.caretPadding + vm.caretSize;
+			} else if (vm.yAlign === 'bottom') {
+				pt.y -= size.height + vm.caretPadding + vm.caretSize;
+			} else {
+				pt.y -= (size.height / 2);
+			}
+
+			if (vm.yAlign == 'center') {
+				if (vm.xAlign === 'left') {
+					pt.x += vm.caretPadding + vm.caretSize;
+				} else if (vm.xAlign === 'right') {
+					pt.x -= vm.caretPadding + vm.caretSize;
+				}
+			} else {
+				if (vm.xAlign === 'left') {
+					pt.x -= vm.cornerRadius + vm.caretPadding;
+				} else if (vm.xAlign === 'right') {
+					pt.x += vm.cornerRadius + vm.caretPadding;
+				}
+			}
+
+			return pt;
+		},
+		drawCaret: function drawCaret(tooltipPoint, size, opacity, caretPadding) {
+			var vm = this._view;
+			var ctx = this._chart.ctx;
+			var x1, x2, x3;
+			var y1, y2, y3;
+
+			if (vm.yAlign === 'center') {
+				// Left or right side
+				if (vm.xAlign === 'left') {
+					x1 = tooltipPoint.x;
+					x2 = x1 - vm.caretSize;
+					x3 = x1;
+				} else {
+					x1 = tooltipPoint.x + size.width;
+					x2 = x1 + vm.caretSize;
+					x3 = x1;
+				}
+
+				y2 = tooltipPoint.y + (size.height / 2);
+				y1 = y2 - vm.caretSize;
+				y3 = y2 + vm.caretSize;
+			} else {
+				if (vm.xAlign === 'left') {
+					x1 = tooltipPoint.x + vm.cornerRadius;
+					x2 = x1 + vm.caretSize;
+					x3 = x2 + vm.caretSize;
+				} else if (vm.xAlign === 'right') {
+					x1 = tooltipPoint.x + size.width - vm.cornerRadius;
+					x2 = x1 - vm.caretSize;
+					x3 = x2 - vm.caretSize;
+				} else {
+					x2 = tooltipPoint.x + (size.width / 2);
+					x1 = x2 - vm.caretSize;
+					x3 = x2 + vm.caretSize;
+				}
+
+				if (vm.yAlign === 'top') {
+					y1 = tooltipPoint.y;
+					y2 = y1 - vm.caretSize;
+					y3 = y1;
+				} else {
+					y1 = tooltipPoint.y + size.height;
+					y2 = y1 + vm.caretSize;
+					y3 = y1;
+				}
+			}
+
+			ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(opacity).rgbString();
+			ctx.beginPath();
+			ctx.moveTo(x1, y1);
+			ctx.lineTo(x2, y2);
+			ctx.lineTo(x3, y3);
+			ctx.closePath();
+			ctx.fill();
+		},
+		drawTitle: function drawTitle(pt, vm, ctx, opacity) {
+			if (vm.title.length) {
+				ctx.textAlign = vm._titleAlign;
+				ctx.textBaseline = "top";
+				ctx.fillStyle = helpers.color(vm.titleColor).alpha(opacity).rgbString();
+				ctx.font = helpers.fontString(vm.titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
+
+				helpers.each(vm.title, function(title, i) {
+					ctx.fillText(title, pt.x, pt.y);
+					pt.y += vm.titleFontSize + vm.titleSpacing; // Line Height and spacing
+					
+					if (i + 1 === vm.title.length) {
+						pt.y += vm.titleMarginBottom - vm.titleSpacing; // If Last, add margin, remove spacing
+					}
+				}, this);
+			}
+		},
+		drawBody: function drawBody(pt, vm, ctx, opacity) {
+			ctx.textAlign = vm._bodyAlign;
+			ctx.textBaseline = "top";
+			ctx.fillStyle = helpers.color(vm.bodyColor).alpha(opacity).rgbString();
+			ctx.font = helpers.fontString(vm.bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
+
+			// Before Body
+			helpers.each(vm.beforeBody, function(beforeBody) {
+				ctx.fillText(beforeBody, pt.x, pt.y);
+				pt.y += vm.bodyFontSize + vm.bodySpacing;
+			});
+
+			helpers.each(vm.body, function(body, i) {
+				// Draw Legend-like boxes if needed
+				if (this._options.tooltips.mode !== 'single') {
+					// Fill a white rect so that colours merge nicely if the opacity is < 1
+					ctx.fillStyle = helpers.color(vm.legendColorBackground).alpha(opacity).rgbaString();
+					ctx.fillRect(pt.x, pt.y, vm.bodyFontSize, vm.bodyFontSize);
+
+					// Border
+					ctx.strokeStyle = helpers.color(vm.labelColors[i].borderColor).alpha(opacity).rgbaString();
+					ctx.strokeRect(pt.x, pt.y, vm.bodyFontSize, vm.bodyFontSize);
+
+					// Inner square
+					ctx.fillStyle = helpers.color(vm.labelColors[i].backgroundColor).alpha(opacity).rgbaString();
+					ctx.fillRect(pt.x + 1, pt.y + 1, vm.bodyFontSize - 2, vm.bodyFontSize - 2);
+
+					ctx.fillStyle = helpers.color(vm.bodyColor).alpha(opacity).rgbaString(); // Return fill style for text
+				}
+
+				// Body Line
+				ctx.fillText(body, pt.x + (this._options.tooltips.mode !== 'single' ? (vm.bodyFontSize + 2) : 0), pt.y);
+
+				pt.y += vm.bodyFontSize + vm.bodySpacing;
+			}, this);
+
+			// After Body
+			helpers.each(vm.afterBody, function(afterBody) {
+				ctx.fillText(afterBody, pt.x, pt.y);
+				pt.y += vm.bodyFontSize;
+			});
+
+			pt.y -= vm.bodySpacing; // Remove last body spacing
+		},
+		drawFooter: function drawFooter(pt, vm, ctx, opacity) {
+			if (vm.footer.length) {
+				pt.y += vm.footerMarginTop;
+
+				ctx.textAlign = vm._footerAlign;
+				ctx.textBaseline = "top";
+				ctx.fillStyle = helpers.color(vm.footerColor).alpha(opacity).rgbString();
+				ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
+
+				helpers.each(vm.footer, function(footer) {
+					ctx.fillText(footer, pt.x, pt.y);
+					pt.y += vm.footerFontSize + vm.footerSpacing;
+				}, this);
+			}
+		},
+		draw: function draw() {
 			var ctx = this._chart.ctx;
 			var vm = this._view;
 
-			if (this._view.opacity === 0) {
+			if (vm.opacity === 0) {
 				return;
 			}
 
-			// Get Dimensions
-
-			vm.position = "top";
-
-			var caretPadding = vm.caretPadding || 2;
-
-			var combinedBodyLength = vm.body.length + vm.beforeBody.length + vm.afterBody.length;
-
-			// Height
-			var tooltipHeight = vm.yPadding * 2; // Tooltip Padding
-
-			tooltipHeight += vm.title.length * vm.titleFontSize; // Title Lines
-			tooltipHeight += (vm.title.length - 1) * vm.titleSpacing; // Title Line Spacing
-			tooltipHeight += vm.title.length ? vm.titleMarginBottom : 0; // Title's bottom Margin
-
-			tooltipHeight += combinedBodyLength * vm.bodyFontSize; // Body Lines
-			tooltipHeight += combinedBodyLength ? (combinedBodyLength - 1) * vm.bodySpacing : 0; // Body Line Spacing
-
-			tooltipHeight += vm.footer.length ? vm.footerMarginTop : 0; // Footer Margin
-			tooltipHeight += vm.footer.length * (vm.footerFontSize); // Footer Lines
-			tooltipHeight += vm.footer.length ? (vm.footer.length - 1) * vm.footerSpacing : 0; // Footer Line Spacing
-
-			// Width
-			var tooltipWidth = 0;
-			helpers.each(vm.title, function(line) {
-				ctx.font = helpers.fontString(vm.titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
-				tooltipWidth = Math.max(tooltipWidth, ctx.measureText(line).width);
-			});
-			helpers.each(vm.body, function(line) {
-				ctx.font = helpers.fontString(vm.bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
-				tooltipWidth = Math.max(tooltipWidth, ctx.measureText(line).width + (this._options.tooltips.mode !== 'single' ? (vm.bodyFontSize + 2) : 0));
-			}, this);
-			helpers.each(vm.footer, function(line) {
-				ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
-				tooltipWidth = Math.max(tooltipWidth, ctx.measureText(line).width);
-			});
-			tooltipWidth += 2 * vm.xPadding;
-			var tooltipTotalWidth = tooltipWidth + vm.caretSize + caretPadding;
-
-
-
-			// Smart Tooltip placement to stay on the canvas
-			// Top, center, or bottom
-			vm.yAlign = "center";
-			if (vm.y - (tooltipHeight / 2) < 0) {
-				vm.yAlign = "top";
-			} else if (vm.y + (tooltipHeight / 2) > this._chart.height) {
-				vm.yAlign = "bottom";
-			}
-
-
-			// Left or Right
-			vm.xAlign = "right";
-			if (vm.x + tooltipTotalWidth > this._chart.width) {
-				vm.xAlign = "left";
-			}
-
-
-			// Background Position
-			var tooltipX = vm.x,
-				tooltipY = vm.y;
-
-			if (vm.yAlign === 'top') {
-				tooltipY = vm.y - vm.caretSize - vm.cornerRadius;
-			} else if (vm.yAlign === 'bottom') {
-				tooltipY = vm.y - tooltipHeight + vm.caretSize + vm.cornerRadius;
-			} else {
-				tooltipY = vm.y - (tooltipHeight / 2);
-			}
-
-			if (vm.xAlign === 'left') {
-				tooltipX = vm.x - tooltipTotalWidth;
-			} else if (vm.xAlign === 'right') {
-				tooltipX = vm.x + caretPadding + vm.caretSize;
-			} else {
-				tooltipX = vm.x + (tooltipTotalWidth / 2);
-			}
-
-			// Draw Background
+			var caretPadding = vm.caretPadding;
+			var tooltipSize = this.getTooltipSize(vm);
+			var pt = {
+				x: vm.x,
+				y: vm.y
+			};
 
 			// IE11/Edge does not like very small opacities, so snap to 0
 			var opacity = Math.abs(vm.opacity < 1e-3) ? 0 : vm.opacity;
 
 			if (this._options.tooltips.enabled) {
+				// Draw Background
 				ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(opacity).rgbString();
-				helpers.drawRoundedRectangle(ctx, tooltipX, tooltipY, tooltipWidth, tooltipHeight, vm.cornerRadius);
+				helpers.drawRoundedRectangle(ctx, pt.x, pt.y, tooltipSize.width, tooltipSize.height, vm.cornerRadius);
 				ctx.fill();
-			}
 
-
-			// Draw Caret
-			if (this._options.tooltips.enabled) {
-				ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(opacity).rgbString();
-
-				if (vm.xAlign === 'left') {
-
-					ctx.beginPath();
-					ctx.moveTo(vm.x - caretPadding, vm.y);
-					ctx.lineTo(vm.x - caretPadding - vm.caretSize, vm.y - vm.caretSize);
-					ctx.lineTo(vm.x - caretPadding - vm.caretSize, vm.y + vm.caretSize);
-					ctx.closePath();
-					ctx.fill();
-				} else {
-					ctx.beginPath();
-					ctx.moveTo(vm.x + caretPadding, vm.y);
-					ctx.lineTo(vm.x + caretPadding + vm.caretSize, vm.y - vm.caretSize);
-					ctx.lineTo(vm.x + caretPadding + vm.caretSize, vm.y + vm.caretSize);
-					ctx.closePath();
-					ctx.fill();
-				}
-			}
-
-			// Draw Title, Body, and Footer
-
-			if (this._options.tooltips.enabled) {
-
-				var yBase = tooltipY + vm.yPadding;
-				var xBase = tooltipX + vm.xPadding;
+				// Draw Caret
+				this.drawCaret(pt, tooltipSize, opacity, caretPadding);
+				
+				// Draw Title, Body, and Footer
+				pt.x += vm.xPadding;
+				pt.y += vm.yPadding;
 
 				// Titles
-
-				if (vm.title.length) {
-					ctx.textAlign = vm._titleAlign;
-					ctx.textBaseline = "top";
-					ctx.fillStyle = helpers.color(vm.titleColor).alpha(opacity).rgbString();
-					ctx.font = helpers.fontString(vm.titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
-
-					helpers.each(vm.title, function(title, i) {
-						ctx.fillText(title, xBase, yBase);
-						yBase += vm.titleFontSize + vm.titleSpacing; // Line Height and spacing
-						if (i + 1 === vm.title.length) {
-							yBase += vm.titleMarginBottom - vm.titleSpacing; // If Last, add margin, remove spacing
-						}
-					}, this);
-				}
-
+				this.drawTitle(pt, vm, ctx, opacity);
 
 				// Body
-				ctx.textAlign = vm._bodyAlign;
-				ctx.textBaseline = "top";
-				ctx.fillStyle = helpers.color(vm.bodyColor).alpha(opacity).rgbString();
-				ctx.font = helpers.fontString(vm.bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
-
-				// Before Body
-				helpers.each(vm.beforeBody, function(beforeBody) {
-					ctx.fillText(beforeBody, xBase, yBase);
-					yBase += vm.bodyFontSize + vm.bodySpacing;
-				});
-
-				helpers.each(vm.body, function(body, i) {
-
-
-					// Draw Legend-like boxes if needed
-					if (this._options.tooltips.mode !== 'single') {
-						// Fill a white rect so that colours merge nicely if the opacity is < 1
-						ctx.fillStyle = helpers.color(vm.legendColorBackground).alpha(opacity).rgbaString();
-						ctx.fillRect(xBase, yBase, vm.bodyFontSize, vm.bodyFontSize);
-
-						// Border
-						ctx.strokeStyle = helpers.color(vm.labelColors[i].borderColor).alpha(opacity).rgbaString();
-						ctx.strokeRect(xBase, yBase, vm.bodyFontSize, vm.bodyFontSize);
-
-						// Inner square
-						ctx.fillStyle = helpers.color(vm.labelColors[i].backgroundColor).alpha(opacity).rgbaString();
-						ctx.fillRect(xBase + 1, yBase + 1, vm.bodyFontSize - 2, vm.bodyFontSize - 2);
-
-						ctx.fillStyle = helpers.color(vm.bodyColor).alpha(opacity).rgbaString(); // Return fill style for text
-					}
-
-					// Body Line
-					ctx.fillText(body, xBase + (this._options.tooltips.mode !== 'single' ? (vm.bodyFontSize + 2) : 0), yBase);
-
-					yBase += vm.bodyFontSize + vm.bodySpacing;
-
-				}, this);
-
-				// After Body
-				helpers.each(vm.afterBody, function(afterBody) {
-					ctx.fillText(afterBody, xBase, yBase);
-					yBase += vm.bodyFontSize;
-				});
-
-				yBase -= vm.bodySpacing; // Remove last body spacing
-
+				this.drawBody(pt, vm, ctx, opacity);
 
 				// Footer
-				if (vm.footer.length) {
-
-					yBase += vm.footerMarginTop;
-
-					ctx.textAlign = vm._footerAlign;
-					ctx.textBaseline = "top";
-					ctx.fillStyle = helpers.color(vm.footerColor).alpha(opacity).rgbString();
-					ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
-
-					helpers.each(vm.footer, function(footer) {
-						ctx.fillText(footer, xBase, yBase);
-						yBase += vm.footerFontSize + vm.footerSpacing;
-					}, this);
-				}
-
+				this.drawFooter(pt, vm, ctx, opacity);
 			}
-		},
+		}
 	});
 
 }).call(this);
@@ -5493,16 +5575,16 @@
 				}
 			}
 
-			if (this.options.ticks.suggestedMin) {
-				this.min = Math.min(this.min, this.options.ticks.suggestedMin);
-			} else if (this.options.ticks.min !== undefined) {
+			if (this.options.ticks.min !== undefined) {
 				this.min = this.options.ticks.min;
+			} else if (this.options.ticks.suggestedMin !== undefined) {
+				this.min = Math.min(this.min, this.options.ticks.suggestedMin);
 			}
 
-			if (this.options.ticks.suggestedMax) {
-				this.max = Math.max(this.max, this.options.ticks.suggestedMax);
-			} else if (this.options.ticks.max !== undefined) {
+			if (this.options.ticks.max !== undefined) {
 				this.max = this.options.ticks.max;
+			} else if (this.options.ticks.suggestedMax !== undefined) {
+				this.max = Math.max(this.max, this.options.ticks.suggestedMax);
 			}
 
 			if (this.min === this.max) {
@@ -6337,8 +6419,8 @@
 			}, this);
 
 			// We will modify these, so clone for later
-			this.firstTick = this.firstTick.clone();
-			this.lastTick = this.lastTick.clone();
+			this.firstTick = (this.firstTick || moment()).clone();
+			this.lastTick = (this.lastTick || moment()).clone();
 		},
 		buildTicks: function(index) {
 
@@ -6494,7 +6576,7 @@
 /*!
  * Chart.js
  * http://chartjs.org/
- * Version: 2.0.0-beta
+ * Version: 2.0.0-beta2
  *
  * Copyright 2015 Nick Downie
  * Released under the MIT license
@@ -6591,7 +6673,7 @@
 /*!
  * Chart.js
  * http://chartjs.org/
- * Version: 2.0.0-beta
+ * Version: 2.0.0-beta2
  *
  * Copyright 2015 Nick Downie
  * Released under the MIT license
@@ -6627,6 +6709,8 @@
 				skipHandler.call(this, previousPoint, point, nextPoint); 
 			} else if (previousPoint._view.skip) {
 				previousSkipHandler.call(this, previousPoint, point, nextPoint);
+			} else if (point._view.tension === 0) { 
+				ctx.lineTo(point._view.x, point._view.y);
 			} else {
 				// Line between points
 				ctx.bezierCurveTo(
@@ -6765,7 +6849,7 @@
 /*!
  * Chart.js
  * http://chartjs.org/
- * Version: 2.0.0-beta
+ * Version: 2.0.0-beta2
  *
  * Copyright 2015 Nick Downie
  * Released under the MIT license
@@ -6932,17 +7016,10 @@
 		},
 		tooltipPosition: function() {
 			var vm = this._view;
-			if (vm.y < vm.base) {
-				return {
-					x: vm.x,
-					y: vm.y
-				};
-			} else {
-				return {
-					x: vm.x,
-					y: vm.base
-				};
-			}
+			return {
+				x: vm.x,
+				y: vm.y
+			};
 		},
 	});
 
