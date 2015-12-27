@@ -174,10 +174,10 @@
 			multiTooltipKeyBackground: '#fff',
 
 			// Array - A list of colors to use as the defaults
-			segmentColorDefault: ["#668CFF", "#8C66FF", "#D966FF", "#FF66D9", "#FF668C", "#FF8C66", "#FFD966", "#D9FF66", "#8CFF66", "#66FF8C", "#66FFD9", "#66D9FF", "#295EFF", "#003BEB", "#FFC929"],
+			segmentColorDefault: ["#A6CEE3", "#1F78B4", "#B2DF8A", "#33A02C", "#FB9A99", "#E31A1C", "#FDBF6F", "#FF7F00", "#CAB2D6", "#6A3D9A", "#B4B482", "#B15928" ],
 
 			// Array - A list of highlight colors to use as the defaults
-			segmentHighlightColorDefaults: ["#6633FF", "#CC33FF", "#FF33CC", "#FF3366", "#FF6633", "#FFCC33", "#CCFF33", "#66FF33", "#33FF66", "#33FFCC", "#33CCFF", "#003DF5", "#002EB8", "#F5B800", "#B88A00"],
+			segmentHighlightColorDefaults: [ "#CEF6FF", "#47A0DC", "#DAFFB2", "#5BC854", "#FFC2C1", "#FF4244", "#FFE797", "#FFA728", "#F2DAFE", "#9265C2", "#DCDCAA", "#D98150" ],
 
 			// Function - Will fire on animation progression.
 			onAnimationProgress: function(){},
