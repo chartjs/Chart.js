@@ -2,7 +2,7 @@
   "name": "chart.js",
   "homepage": "http://www.chartjs.org",
   "description": "Simple HTML5 charts using the canvas element.",
-  "version": "2.0.0-beta",
+  "version": "2.0.0-beta2",
   "main": "Chart.js",
   "repository": {
     "type": "git",
