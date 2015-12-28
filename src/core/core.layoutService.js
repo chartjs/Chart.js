@@ -179,7 +179,9 @@
 							bottom: 0,
 						};
 
-						box.update(box.options.fullWidth ? chartWidth : maxChartAreaWidth, minBoxSize.minSize.height, scaleMargin);
+						// Don't use min size here because of label rotation. When the labels are rotated, their rotation highly depends
+						// on the margin. Sometimes they need to increase in size slightly
+						box.update(box.options.fullWidth ? chartWidth : maxChartAreaWidth, chartHeight / 2, scaleMargin);
 					} else {
 						box.update(minBoxSize.minSize.width, maxChartAreaHeight);
 					}
