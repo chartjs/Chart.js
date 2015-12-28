@@ -96,7 +96,7 @@ myLineChart.generateLegend();
 
 Calling `getElementAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the single element at the event position. If there are multiple items within range, only the first is returned
 
-```javscript
+```javascript
 myLineChart.getElementAtEvent(e);
 // => returns the first element at the event point.
 ```
@@ -275,7 +275,7 @@ Optionally, the following methods may also be overwritten, but an implementation
 ```
 
 The Core.Scale base class also has some utility functions that you may find useful.
-```javscript
+```javascript
 {	
 	// Returns true if the scale instance is horizontal
 	isHorizontal: function(){},

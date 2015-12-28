@@ -1,14 +1,13 @@
 ---
-title: Getting started
+title: Scales
 anchor: scales
 ---
 
-###Scales
-
 Scales in v2.0 of Chart.js are significantly more powerful, but also different than those of v1.0.
-- Multiple x & y axes are now supported.
-- A built-in label auto-skip feature now detects would-be overlapping ticks and labels and removes every nth label to keep things displaying normally.
-- Scale titles are now supported
+* Multiple x & y axes are now supported.
+* A built-in label auto-skip feature now detects would-be overlapping ticks and labels and removes every nth label to keep things displaying normally.
+* Scale titles are now supported
+* New scale types can be extended without writing an entirely new chart type
 
 Every scale extends a core scale class with the following options:
 
@@ -82,7 +81,7 @@ The `callback` method may be used for advanced tick customization. The following
 }
 ```
 
-#### Category Scale
+### Category Scale
 The category scale will be familiar to those who have used v1.0. Labels are drawn in from the labels array included in the chart data.
 
 The category scale extends the core scale class with the following tick template:
@@ -93,7 +92,7 @@ The category scale extends the core scale class with the following tick template
 }
 ```
 
-#### Linear Scale
+### Linear Scale
 The linear scale can be used to display numerical data. It can be placed on either the x or y axis. The scatter chart type automatically configures a line chart to use one of these scales for the x axis.
 
 The linear scale extends the core scale class with the following tick template:
@@ -130,7 +129,7 @@ The linear scale extends the core scale class with the following tick template:
 }
 ```
 
-#### Logarithmic Scale
+### Logarithmic Scale
 The logarithmic scale is used to display logarithmic data of course. It can be placed on either the x or y axis.
 
 The log scale extends the core scale class with the following tick template:
@@ -152,7 +151,7 @@ The log scale extends the core scale class with the following tick template:
 }
 ```
 
-#### Time Scale
+### Time Scale
 The time scale is used to display times and dates. It can be placed on the x axis. When building its ticks, it will automatically calculate the most comfortable unit base on the size of the scale.
 
 The time scale extends the core scale class with the following tick template:
@@ -229,7 +228,7 @@ The following time measurements are supported:
 }
 ```
 
-#### Radial Linear Scale
+### Radial Linear Scale
 The radial linear scale is used specifically for the radar chart type.
 
 The radial linear scale extends the core scale class with the following tick template:

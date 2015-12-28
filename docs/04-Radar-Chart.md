@@ -3,7 +3,7 @@ title: Radar Chart
 anchor: radar-chart
 ---
 
-###Introduction
+### Introduction
 A radar chart is a way of showing multiple data points and the variation between them.
 
 They are often useful for comparing the points of two or more different data sets.
@@ -12,7 +12,7 @@ They are often useful for comparing the points of two or more different data set
 	<canvas width="250" height="125"></canvas>
 </div>
 
-###Example usage
+### Example usage
 
 ```javascript
 var myRadarChart = new Chart(ctx, {
@@ -22,7 +22,7 @@ var myRadarChart = new Chart(ctx, {
 });
 ```
 
-###Data structure
+### Data structure
 ```javascript
 var data = {
 	labels: ["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling", "Running"],
@@ -52,10 +52,10 @@ var data = {
 ```
 For a radar chart, to provide context of what each point means, we include an array of strings that show around each point in the chart.
 For the radar chart data, we have an array of datasets. Each of these is an object, with a fill colour, a stroke colour, a colour for the fill of each point, and a colour for the stroke of each point. We also have an array of data values.
-
 The label key on each dataset is optional, and can be used when generating a scale for the chart.
 
-### Chart options
+
+### Chart Options
 
 These are the customisation options specific to Radar charts. These options are merged with the [global chart configuration options](#getting-started-global-chart-configuration), and form the options of the chart.
 
@@ -91,4 +91,3 @@ new Chart(ctx, {
 ```
 
 We can also change these defaults values for each Radar type that is created, this object is available at `Chart.defaults.radar`.
-
