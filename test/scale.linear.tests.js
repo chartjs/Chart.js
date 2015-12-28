@@ -986,10 +986,10 @@ describe('Linear Scale', function() {
 			"args": ["rgba(0, 0, 0, 0.1)"]
 		}, {
 			"name": "moveTo",
-			"args": [0, 100]
+			"args": [0, 100.5]
 		}, {
 			"name": "lineTo",
-			"args": [200, 100]
+			"args": [200, 100.5]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -1059,10 +1059,10 @@ describe('Linear Scale', function() {
 			"args": ["rgba(0, 0, 0, 0.1)"]
 		}, {
 			"name": "moveTo",
-			"args": [0, 100]
+			"args": [0, 100.5]
 		}, {
 			"name": "lineTo",
-			"args": [200, 100]
+			"args": [200, 100.5]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -1518,10 +1518,10 @@ describe('Linear Scale', function() {
 			"args": ["rgba(0, 0, 0, 0.1)"]
 		}, {
 			"name": "moveTo",
-			"args": [30, 0]
+			"args": [30.5, 0]
 		}, {
 			"name": "lineTo",
-			"args": [30, 300]
+			"args": [30.5, 300]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -1649,10 +1649,10 @@ describe('Linear Scale', function() {
 			"args": ["rgba(0, 0, 0, 0.1)"]
 		}, {
 			"name": "moveTo",
-			"args": [30, 0]
+			"args": [30.5, 0]
 		}, {
 			"name": "lineTo",
-			"args": [30, 300]
+			"args": [30.5, 300]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -1906,10 +1906,10 @@ describe('Linear Scale', function() {
 			"args": ["rgba(0, 0, 0, 0.1)"]
 		}, {
 			"name": "moveTo",
-			"args": [30, 0]
+			"args": [30.5, 0]
 		}, {
 			"name": "lineTo",
-			"args": [30, 300]
+			"args": [30.5, 300]
 		}, {
 			"name": "stroke",
 			"args": []

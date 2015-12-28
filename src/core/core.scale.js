@@ -637,8 +637,12 @@
 
 				if (this.isHorizontal()) {
 					y1 = y2 = this.options.position === 'top' ? this.bottom : this.top;
+					y1 += helpers.aliasPixel(this.ctx.lineWidth);
+					y2 += helpers.aliasPixel(this.ctx.lineWidth);
 				} else {
 					x1 = x2 = this.options.position === 'left' ? this.right : this.left;
+					x1 += helpers.aliasPixel(this.ctx.lineWidth);
+					x2 += helpers.aliasPixel(this.ctx.lineWidth);
 				}
 
 				this.ctx.moveTo(x1, y1);
