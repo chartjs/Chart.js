@@ -153,31 +153,3 @@ Bar:              |1.||1.|
 Category:     	|  .5  |   
 Sample:	   |==============|
 ```
-### Prototype methods
-
-#### .getElementsAtEvent( event )
-
-Calling `getElementsAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the point elements that are at that the same position of that event.
-
-```javascript
-canvas.onclick = function(evt){
-	var activePoints = myLineChart.getElementsAtEvent(evt);
-	// => activePoints is an array of points on the canvas that are at the same position as the click event.
-};
-```
-
-This functionality may be useful for implementing DOM based tooltips, or triggering custom behaviour in your application.
-
-#### .getElementAtEvent( event )
-Calling `getElementAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the single element at the event position. If there are multiple items within range, only the first is returned
-
-#### .update( )
-
-Calling `update()` on your Chart instance will re-render the chart with any updated values, allowing you to edit the value of multiple existing points, then render those in one animated render loop.
-
-```javascript
-myBarChart.data.datasets[0].data[2] = 50;
-// Would update the first dataset's value of 'March' to be 50
-myBarChart.update();
-// Calling update now animates the position of March from 90 to 50.
-```

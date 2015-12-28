@@ -78,6 +78,8 @@ scale | Array | [See Scales](#scales) and [Defaults for Radial Linear Scale](#ge
 *scale*.lineArc | Boolean | true | When true, lines are arced compared to straight when false.
 *animation*.animateRotate | Boolean |true | If true, will animate the rotation of the chart.
 *animation*.animateScale | Boolean | false | If true, will animate scaling the Doughnut from the centre.
+*legend*.*labels*.generateLabels | Function | `function(data) {} ` | Returns labels for each the legend
+*legend*.onClick | Function | function(event, legendItem) {} ` | Handles clicking an individual legend item
 
 You can override these for your `Chart` instance by passing a second argument into the `Doughnut` method as an object with the keys you want to override.
 
@@ -95,54 +97,3 @@ new Chart(ctx,{
 ```
 
 We can also change these default values for each Doughnut type that is created, this object is available at `Chart.defaults.Doughnut`. Pie charts also have a clone of these defaults available to change at `Chart.defaults.Pie`, with the only difference being `percentageInnerCutout` being set to 0.
-
-### Prototype methods
-
-#### .getSegmentsAtEvent( event )
-
-Calling `getSegmentsAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the segment elements that are at the same position of that event.
-
-```javascript
-canvas.onclick = function(evt){
-	var activePoints = myDoughnutChart.getSegmentsAtEvent(evt);
-	// => activePoints is an array of segments on the canvas that are at the same position as the click event.
-};
-```
-
-This functionality may be useful for implementing DOM based tooltips, or triggering custom behaviour in your application.
-
-#### .update( )
-
-Calling `update()` on your Chart instance will re-render the chart with any updated values, allowing you to edit the value of multiple existing points, then render those in one animated render loop.
-
-```javascript
-myDoughnutChart.segments[1].value = 10;
-// Would update the first dataset's value of 'Green' to be 10
-myDoughnutChart.update();
-// Calling update now animates the circumference of the segment 'Green' from 50 to 10.
-// and transitions other segment widths
-```
-
-#### .addData( segmentData, index )
-
-Calling `addData(segmentData, index)` on your Chart instance passing an object in the same format as in the constructor. There is an optional second argument of 'index', this determines at what index the new segment should be inserted into the chart.
-
-```javascript
-// An object in the same format as the original data source
-myDoughnutChart.addData({
-	value: 130,
-	color: "#B48EAD",
-	highlight: "#C69CBE",
-	label: "Purple"
-});
-// The new segment will now animate in.
-```
-
-#### .removeData( index )
-
-Calling `removeData(index)` on your Chart instance will remove segment at that particular index. If none is provided, it will default to the last segment.
-
-```javascript
-myDoughnutChart.removeData();
-// Other segments will update to fill the empty space left.
-```

@@ -1,14 +1,13 @@
 ---
-title: Getting started
+title: Scales
 anchor: scales
 ---
 
-###Scales
-
 Scales in v2.0 of Chart.js are significantly more powerful, but also different than those of v1.0.
-- Multiple x & y axes are now supported.
-- A built-in label auto-skip feature now detects would-be overlapping ticks and labels and removes every nth label to keep things displaying normally.
-- Scale titles are now supported
+* Multiple x & y axes are now supported.
+* A built-in label auto-skip feature now detects would-be overlapping ticks and labels and removes every nth label to keep things displaying normally.
+* Scale titles are now supported
+* New scale types can be extended without writing an entirely new chart type
 
 Every scale extends a core scale class with the following options:
 
@@ -16,6 +15,20 @@ Name | Type | Default | Description
 --- |:---:| --- | ---
 type | String | Chart specific. | Type of scale being employed. Custom scales can be created and registered with a string key. Options: ["category"](#scales-category-scale), ["linear"](#scales-linear-scale), ["logarithmic"](#scales-logarithmic-scale), ["time"](#scales-time-scale), ["radialLinear"](#scales-radial-linear-scale)
 display | Boolean | true | If true, show the scale including gridlines, ticks, and labels. Overrides *gridLines.display*, *scaleLabel.display*, and *ticks.display*.
+beforeUpdate | Function | undefined | Callback called before the update process starts. Passed a single argument, the scale instance.
+beforeSetDimensions | Function | undefined | Callback that runs before dimensions are set. Passed a single argument, the scale instance.
+afterSetDimensions | Function | undefined | Callback that runs after dimensions are set. Passed a single argument, the scale instance.
+beforeDataLimits | Function | undefined | Callback that runs before data limits are determined. Passed a single argument, the scale instance.
+afterDataLimits | Function | undefined | Callback that runs after data limits are determined. Passed a single argument, the scale instance.
+beforeBuildTicks | Function | undefined | Callback that runs before ticks are created. Passed a single argument, the scale instance.
+afterBuildTicks | Function | undefined | Callback that runs after ticks are created. Useful for filtering ticks. Passed a single argument, the scale instance.
+beforeTickToLabelConversion | Function | undefined | Callback that runs before ticks are converted into strings. Passed a single argument, the scale instance.
+afterTickToLabelConversion | Function | undefined | Callback that runs after ticks are converted into strings. Passed a single argument, the scale instance.
+beforeCalculateTickRotation | Function | undefined | Callback that runs before tick rotation is determined. Passed a single argument, the scale instance.
+afterCalculateTickRotation | Function | undefined | Callback that runs after tick rotation is determined. Passed a single argument, the scale instance.
+beforeFit | Function | undefined | Callback that runs before the scale fits to the canvas. Passed a single argument, the scale instance.
+afterFit | Function | undefined | Callback that runs after the scale fits to the canvas. Passed a single argument, the scale instance.
+afterUpdate | Function | undefined | Callback that runs at the end of the update process. Passed a single argument, the scale instance.
 **gridLines** | Array | - | Options for the grid lines that run perpendicular to the axis.
 *gridLines*.display | Boolean | true |
 *gridLines*.color | Color | "rgba(0, 0, 0, 0.1)" | Color of the grid lines.
@@ -46,6 +59,9 @@ display | Boolean | true | If true, show the scale including gridlines, ticks, a
 *ticks*.display | Boolean | true | If true, show the ticks.
 *ticks*.suggestedMin | Number | - | User defined minimum number for the scale, overrides minimum value *except for if* it is higher than the minimum value.
 *ticks*.suggestedMax | Number | - | User defined maximum number for the scale, overrides maximum value *except for if* it is lower than the maximum value.
+*ticks*.min | Number | - | User defined minimum number for the scale, overrides minimum value
+*ticks*.max | Number | - | User defined minimum number for the scale, overrides maximum value
+*ticks*.autoSkip | Boolean | true | If true, automatically calculates how many labels that can be shown and hides labels accordingly. Turn it off to show all labels no matter what
 *ticks*.callback | Function | `function(value) { return '' + value; } ` | Returns the string representation of the tick value as it should be displayed on the chart.
 
 The `callback` method may be used for advanced tick customization. The following callback would display every label in scientific notation
@@ -65,7 +81,7 @@ The `callback` method may be used for advanced tick customization. The following
 }
 ```
 
-#### Category Scale
+### Category Scale
 The category scale will be familiar to those who have used v1.0. Labels are drawn in from the labels array included in the chart data.
 
 The category scale extends the core scale class with the following tick template:
@@ -76,7 +92,7 @@ The category scale extends the core scale class with the following tick template
 }
 ```
 
-#### Linear Scale
+### Linear Scale
 The linear scale can be used to display numerical data. It can be placed on either the x or y axis. The scatter chart type automatically configures a line chart to use one of these scales for the x axis.
 
 The linear scale extends the core scale class with the following tick template:
@@ -113,7 +129,7 @@ The linear scale extends the core scale class with the following tick template:
 }
 ```
 
-#### Logarithmic Scale
+### Logarithmic Scale
 The logarithmic scale is used to display logarithmic data of course. It can be placed on either the x or y axis.
 
 The log scale extends the core scale class with the following tick template:
@@ -135,7 +151,7 @@ The log scale extends the core scale class with the following tick template:
 }
 ```
 
-#### Time Scale
+### Time Scale
 The time scale is used to display times and dates. It can be placed on the x axis. When building its ticks, it will automatically calculate the most comfortable unit base on the size of the scale.
 
 The time scale extends the core scale class with the following tick template:
@@ -150,8 +166,21 @@ The time scale extends the core scale class with the following tick template:
 		unit: false,
 		// string - By default, no rounding is applied.  To round, set to a supported time unit eg. 'week', 'month', 'year', etc.
 		round: false,
-		// string - By default, is set to the detected (or manually overridden) time unit's `display` property (see supported time measurements).  To override, use a pattern string from http://momentjs.com/docs/#/displaying/format/
-		displayFormat: false
+		// Moment js for each of the units. Replaces `displayFormat`
+		// To override, use a pattern string from http://momentjs.com/docs/#/displaying/format/
+		displayFormats: {
+			'millisecond': 'SSS [ms]',
+			'second': 'h:mm:ss a', // 11:20:01 AM
+			'minute': 'h:mm:ss a', // 11:20:01 AM
+			'hour': 'MMM D, hA', // Sept 4, 5PM
+			'day': 'll', // Sep 4 2015
+			'week': 'll', // Week 46, or maybe "[W]WW - YYYY" ?
+			'month': 'MMM YYYY', // Sept 2015
+			'quarter': '[Q]Q - YYYY', // Q3
+			'year': 'YYYY', // 2015
+		},
+		// Sets the display format used in tooltip generation
+		tooltipFormat: ''
 	},
 }
 ```
@@ -199,7 +228,7 @@ The following time measurements are supported:
 }
 ```
 
-#### Radial Linear Scale
+### Radial Linear Scale
 The radial linear scale is used specifically for the radar chart type.
 
 The radial linear scale extends the core scale class with the following tick template:

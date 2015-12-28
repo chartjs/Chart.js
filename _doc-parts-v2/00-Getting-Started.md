@@ -16,11 +16,11 @@ Alternatively, if you're using an AMD loader for JavaScript modules, that is als
 ```javascript
 // Using requirejs
 require(['path/to/Chartjs'], function(Chart){
-    // Use Chart.js as normal here.
+	// Use Chart.js as normal here.
 
-    // Chart.noConflict restores the Chart global variable to it's previous owner
-    // The function returns what was previously Chart, allowing you to reassign.
-    var Chartjs = Chart.noConflict();
+	// Chart.noConflict restores the Chart global variable to it's previous owner
+	// The function returns what was previously Chart, allowing you to reassign.
+	var Chartjs = Chart.noConflict();
 
 });
 ```
@@ -31,7 +31,7 @@ You can also grab Chart.js using bower, npm, or CDN:
 bower install Chart.js --save
 ```
 ```bash
-npm install Chart.js --save
+npm install chart.js --save
 ```
 
 https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.0.0-beta/Chart.js
@@ -60,23 +60,23 @@ The following example instantiates a bar chart showing the number of votes for d
 <script>
 var ctx = document.getElementById("myChart");
 var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-            datasets: [{
-                    label: '# of Votes',
-                    data: [12, 19, 3, 5, 2, 3]
-            }]
-        },
-        options:{
-            scales:{
-                yAxes:[{
-                        ticks:{
-                            beginAtZero:true
-                        }
-                    }]
-            }
-        }
+		type: 'bar',
+		data: {
+			labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+			datasets: [{
+					label: '# of Votes',
+					data: [12, 19, 3, 5, 2, 3]
+			}]
+		},
+		options:{
+			scales:{
+				yAxes:[{
+						ticks:{
+							beginAtZero:true
+						}
+					}]
+			}
+		}
 });
 </script>
 ```
@@ -105,6 +105,37 @@ onClick | Function | null | Called if the event is of type 'mouseup' or 'click'.
 defaultColor | Color | 'rgba(0,0,0,0.1)' |
 legendCallback | Function | ` function (chart) { // the chart object to generate a legend from.  }` | Function to generate a legend. Default implementation returns an HTML string.
 
+The global options for the chart title is defined in `Chart.defaults.global.title`
+
+Name | Type | Default | Description
+--- | --- | --- | ---
+display | Boolean | true | Show the title block
+position | String | 'top' | Position of the title. 'top' or 'bottom' are allowed
+fullWidth | Boolean | true | Marks that this box should take the full width of the canvas (pushing down other boxes)
+fontColor | Color  | '#666' | Text color
+fontFamily | String | 'Helvetica Neue' |
+fontSize | Number | 12 | 
+fontStyle | String | 'bold' |
+padding | Number | 10 | Number of pixels to add above and below the title text
+text | String | '' | Title text
+
+The global options for the chart legend is defined in `Chart.defaults.global.legend`
+
+Name | Type | Default | Description
+--- | --- | --- | ---
+display | Boolean | true | Is the legend displayed
+position | String | 'top' | Position of the legend. Options are 'top' or 'bottom'
+fullWidth | Boolean | true | Marks that this box should take the full width of the canvas (pushing down other boxes)
+onClick | Function | `function(event, legendItem) {}` | A callback that is called when a click is registered on top of a label item
+labels |-|-|-
+*labels*boxWidth | Number | 40 | Width of coloured box
+*labels*fontSize | Number | 12 | Font size
+*labels*fontStyle | String | "normal" |
+*labels*fontColor | Color | "#666" |
+*labels*fontFamily | String | "Helvetica Neue" |
+*labels*padding | Number | 10 | Padding between rows of colored boxes
+*labels*generateLabels: | Function | `function(data) {  } | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. Styles that can be returned are `fillStyle`, `strokeStyle`, `lineCap`, `lineDash`, `lineDashOffset`, `lineWidth`, `lineJoin`. Return a `hidden` attribute to indicate that the label refers to something that is not visible. A strikethrough style will be given to the text in this case.
+
 The global options for tooltips are defined in `Chart.defaults.global.tooltips`.
 
 Name | Type | Default | Description
@@ -123,12 +154,11 @@ Label | | | There are three labels you can control. `title`, `body`, `footer` th
 \*Align | String | "left" | text alignment. See [MDN Canvas Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/textAlign)
 titleMarginBottom | Number | 6 | Margin to add on bottom of title section
 footerMarginTop | Number | 6 | Margin to add before drawing the footer
-xPadding | Number | 6 | Padding to add on top and bottom of tooltip
-yPadding | Number | 6 | Padding to add on left and right of tooltip
+xPadding | Number | 6 | Padding to add on left and right of tooltip
+yPadding | Number | 6 | Padding to add on top and bottom of tooltip
 caretSize | Number | 5 | Size, in px, of the tooltip arrow
 cornerRadius | Number | 6 | Radius of tooltip corner curves
-xOffset | Number | 10 |
-multiKeyBackground | Color | "#fff" |
+multiKeyBackground | Color | "#fff" | Color to draw behind the colored boxes when multiple items are in the tooltip
  | | |
 callbacks | - | - |  V2.0 introduces callback functions as a replacement for the template engine in v1. The tooltip has the following callbacks for providing text. For all functions, 'this' will be the tooltip object create from the Chart.Tooltip constructor
 **Callback Functions** | | | All functions are called with the same arguments
@@ -156,9 +186,9 @@ Name | Type | Default | Description
 --- |:---:| --- | ---
 duration | Number | 1000 | The number of milliseconds an animation takes.
 easing | String | "easeOutQuart" | Easing function to use. 
-onProgress | Function | none |
-onComplete | Function |none |
-
+onProgress | Function | none | Callback called on each step of an animation. Passed a single argument, an object, containing the chart instance and an object with details of the animation.
+onComplete | Function | none | Callback called at the end of an animation. Passed the same arguments as `onProgress
+`
 The global options for elements are defined in `Chart.defaults.global.elements`.
 
 Name | Type | Default | Description
