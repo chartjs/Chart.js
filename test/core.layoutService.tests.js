@@ -196,25 +196,25 @@ describe('Test the layout service', function() {
 			left: 115,
 			right: 245,
 			top: 5,
-			bottom: 68.48521368620018,
+			bottom: 75,
 		});
 
 		// Is xScale at the right spot
 		expect(xScale.left).toBe(115);
 		expect(xScale.right).toBe(245);
-		expect(xScale.top).toBe(68.48521368620018);
+		expect(xScale.top).toBe(75);
 		expect(xScale.bottom).toBe(145);
 
 		// Are yScales at the right spot
 		expect(yScale1.left).toBe(5);
 		expect(yScale1.right).toBe(55);
 		expect(yScale1.top).toBe(5);
-		expect(yScale1.bottom).toBe(68.48521368620018);
+		expect(yScale1.bottom).toBe(75);
 
 		expect(yScale2.left).toBe(55);
 		expect(yScale2.right).toBe(115);
 		expect(yScale2.top).toBe(5);
-		expect(yScale2.bottom).toBe(68.48521368620018);
+		expect(yScale2.bottom).toBe(75);
 	});
 
 	// This is an oddball case. What happens is, when the scales are fit the first time they must fit within the assigned size. In this case,
@@ -336,25 +336,25 @@ describe('Test the layout service', function() {
 		expect(chartInstance.chartArea).toEqual({
 			left: 45,
 			right: 245,
-			top: 45,
-			bottom: 105,
+			top: 63.78307376628291,
+			bottom: 76.0423977855504,
 		});
 
 		// Are xScales at the right spot
 		expect(xScale1.left).toBe(45);
 		expect(xScale1.right).toBe(245);
-		expect(xScale1.top).toBe(105);
+		expect(xScale1.top).toBeCloseTo(76.04, 1e-3);
 		expect(xScale1.bottom).toBe(145);
 
 		expect(xScale2.left).toBe(5);
 		expect(xScale2.right).toBe(245);
 		expect(xScale2.top).toBe(5);
-		expect(xScale2.bottom).toBe(45);
+		expect(xScale2.bottom).toBeCloseTo(63.78, 1e-3);
 
 		// Is yScale at the right spot
 		expect(yScale.left).toBe(5);
 		expect(yScale.right).toBe(45);
-		expect(yScale.top).toBe(45);
-		expect(yScale.bottom).toBe(105);
+		expect(yScale.top).toBeCloseTo(63.78, 1e-3);
+		expect(yScale.bottom).toBeCloseTo(76.04, 1e-3);
 	});
 });
