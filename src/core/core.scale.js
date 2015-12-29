@@ -194,62 +194,54 @@
 			var firstWidth = this.ctx.measureText(this.ticks[0]).width;
 			var lastWidth = this.ctx.measureText(this.ticks[this.ticks.length - 1]).width;
 			var firstRotated;
-			var lastRotated;
-
-			this.paddingRight = lastWidth / 2 + 3;
-			this.paddingLeft = firstWidth / 2 + 3;
 
 			this.labelRotation = 0;
+			this.paddingRight = 0;
+			this.paddingLeft = 0;
 
-			if (this.options.display && this.isHorizontal()) {
-				var originalLabelWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
-				var cosRotation;
-				var sinRotation;
+			if (this.options.display) {
+				if (this.isHorizontal()) {
+					this.paddingRight = lastWidth / 2 + 3;
+					this.paddingLeft = firstWidth / 2 + 3;
 
-				this.labelWidth = originalLabelWidth;
+					var originalLabelWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
+					var labelWidth = originalLabelWidth;
+					var cosRotation;
+					var sinRotation;
 
-				// Allow 3 pixels x2 padding either side for label readability
-				// only the index matters for a dataset scale, but we want a consistent interface between scales
+					// Allow 3 pixels x2 padding either side for label readability
+					// only the index matters for a dataset scale, but we want a consistent interface between scales
+					var tickWidth = this.getPixelForTick(1) - this.getPixelForTick(0) - 6;
 
-				var tickWidth = this.getPixelForTick(1) - this.getPixelForTick(0) - 6;
+					//Max label rotation can be set or default to 90 - also act as a loop counter
+					while (labelWidth > tickWidth && this.labelRotation < this.options.ticks.maxRotation) {
+						cosRotation = Math.cos(helpers.toRadians(this.labelRotation));
+						sinRotation = Math.sin(helpers.toRadians(this.labelRotation));
 
-				//Max label rotation can be set or default to 90 - also act as a loop counter
-				while (this.labelWidth > tickWidth && this.labelRotation < this.options.ticks.maxRotation) {
-					cosRotation = Math.cos(helpers.toRadians(this.labelRotation));
-					sinRotation = Math.sin(helpers.toRadians(this.labelRotation));
+						firstRotated = cosRotation * firstWidth;
 
-					firstRotated = cosRotation * firstWidth;
-					lastRotated = cosRotation * lastWidth;
+						// We're right aligning the text now.
+						if (firstRotated + this.options.ticks.fontSize / 2 > this.yLabelWidth) {
+							this.paddingLeft = firstRotated + this.options.ticks.fontSize / 2;
+						}
 
-					// We're right aligning the text now.
-					if (firstRotated + this.options.ticks.fontSize / 2 > this.yLabelWidth) {
-						this.paddingLeft = firstRotated + this.options.ticks.fontSize / 2;
+						this.paddingRight = this.options.ticks.fontSize / 2;
+
+						if (sinRotation * originalLabelWidth > this.maxHeight) {
+							// go back one step
+							this.labelRotation--;
+							break;
+						}
+
+						this.labelRotation++;
+						labelWidth = cosRotation * originalLabelWidth;
 					}
-
-					this.paddingRight = this.options.ticks.fontSize / 2;
-
-					if (sinRotation * originalLabelWidth > this.maxHeight) {
-						// go back one step
-						this.labelRotation--;
-						break;
-					}
-
-					this.labelRotation++;
-					this.labelWidth = cosRotation * originalLabelWidth;
-
 				}
-			} else {
-				this.labelWidth = 0;
-				this.paddingRight = 0;
-				this.paddingLeft = 0;
 			}
 
 			if (this.margins) {
-				this.paddingLeft -= this.margins.left;
-				this.paddingRight -= this.margins.right;
-
-				this.paddingLeft = Math.max(this.paddingLeft, 0);
-				this.paddingRight = Math.max(this.paddingRight, 0);
+				this.paddingLeft = Math.max(this.paddingLeft - this.margins.left, 0);
+				this.paddingRight = Math.max(this.paddingRight - this.margins.right, 0);
 			}
 		},
 		afterCalculateTickRotation: function() {
@@ -342,15 +334,10 @@
 			}
 
 			if (this.margins) {
-				this.paddingLeft -= this.margins.left;
-				this.paddingTop -= this.margins.top;
-				this.paddingRight -= this.margins.right;
-				this.paddingBottom -= this.margins.bottom;
-
-				this.paddingLeft = Math.max(this.paddingLeft, 0);
-				this.paddingTop = Math.max(this.paddingTop, 0);
-				this.paddingRight = Math.max(this.paddingRight, 0);
-				this.paddingBottom = Math.max(this.paddingBottom, 0);
+				this.paddingLeft = Math.max(this.paddingLeft - this.margins.left, 0);
+				this.paddingTop = Math.max(this.paddingTop - this.margins.top, 0);
+				this.paddingRight = Math.max(this.paddingRight - this.margins.right, 0);
+				this.paddingBottom = Math.max(this.paddingBottom - this.margins.bottom, 0);
 			}
 
 			this.width = this.minSize.width;
