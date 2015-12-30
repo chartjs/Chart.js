@@ -771,11 +771,16 @@
 		longestText = helpers.longestText = function(ctx, font, arrayOfStrings) {
 			ctx.font = font;
 			var longest = 0;
-			each(arrayOfStrings, function(string) {
-				var textWidth = ctx.measureText(string).width;
-				longest = (textWidth > longest) ? textWidth : longest;
+			var longestString = "";
+			
+			each(arrayOfStrings, function (string) {
+				if (string != null && string.length > longest) {
+					longest = string.length;
+					longestString = string;
+				}
 			});
-			return longest;
+			
+			return ctx.measureText(longestString).width;
 		},
 		drawRoundedRectangle = helpers.drawRoundedRectangle = function(ctx, x, y, width, height, radius) {
 			ctx.beginPath();
