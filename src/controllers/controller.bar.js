@@ -285,7 +285,10 @@
 		draw: function(ease) {
 			var easingDecimal = ease || 1;
 			helpers.each(this.getDataset().metaData, function(rectangle, index) {
-				rectangle.transition(easingDecimal).draw();
+				var d = this.getDataset().data[index];
+				if (d !== null && d !== undefined && !isNaN(d)) {
+					rectangle.transition(easingDecimal).draw();
+				}
 			}, this);
 		},
 
