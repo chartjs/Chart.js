@@ -7,7 +7,7 @@
 
 ## v2.0 Beta
 
-Current Release: [2.0.0-beta](https://github.com/nnnick/Chart.js/releases/tag/2.0.0-beta)
+Current Release: [2.0.0-beta2](https://github.com/nnnick/Chart.js/releases/tag/2.0.0-beta2)
 
 The next generation and release of Chart.js has been well under way this year and we are very close to releasing some amazing new features including, but not limited to:
 - Rewritten, optimized, and unit-tested
