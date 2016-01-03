@@ -352,13 +352,19 @@
 				this._model.yAlign = 'bottom';
 			}
 
-			var lf, rf;
+			var lf, rf; // functions to determine left, right alignment
+			var olf, orf; // functions to determine if left/right alignment causes tooltip to go outside chart
+			var yf; // function to get the y alignment if the tooltip goes outside of the left or right edges
 			var _this = this;
 			var midX = (this._chartInstance.chartArea.left + this._chartInstance.chartArea.right) / 2;
+			var midY = (this._chartInstance.chartArea.top + this._chartInstance.chartArea.bottom) / 2;
 
 			if (this._model.yAlign === 'center') {
 				lf = function(x) { return x <= midX; };
 				rf = function(x) { return x > midX; };
+				olf = function(x) { return x + size.width > _this._chart.width; };
+				orf = function(x) { return x - size.width < 0; };
+				yf = function(y) { return y <= midY ? 'top' : 'bottom'; };
 			} else {
 				lf = function(x) { return x <= (size.width / 2); };
 				rf = function(x) { return x >= (_this._chart.width - (size.width / 2)); };
@@ -366,8 +372,20 @@
 
 			if (lf(this._model.x)) {
 				this._model.xAlign = 'left';
+
+				// Is tooltip too wide and goes over the right side of the chart.?
+				if (olf(this._model.x)) {
+					this._model.xAlign = 'center';
+					this._model.yAlign = yf(this._model.y);
+				}
 			} else if (rf(this._model.x)) {
 				this._model.xAlign = 'right';
+
+				// Is tooltip too wide and goes outside left edge of canvas?
+				if (orf(this._model.x)) {
+					this._model.xAlign = 'center';
+					this._model.yAlign = yf(this._model.y);
+				}
 			}
 		},
 		getBackgroundPoint: function getBackgroundPoint(vm, size) {
