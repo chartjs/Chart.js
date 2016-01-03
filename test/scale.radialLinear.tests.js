@@ -185,6 +185,73 @@ describe('Test the radial linear scale', function() {
 		expect(scale.max).toBe(1);
 	});
 
+	it('Should use the suggestedMin and suggestedMax options', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [1, 1, 1, 2, 1, 0]
+			}],
+			labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
+		};
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('radialLinear'));
+		config.ticks.suggestedMin = -10;
+		config.ticks.suggestedMax = 10;
+
+		var mockContext = window.createMockContext();
+		var Constructor = Chart.scaleService.getScaleConstructor('radialLinear');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: config,
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		// Set arbitrary width and height for now
+		scale.update(200, 300);
+		expect(scale.min).toBe(-10);
+		expect(scale.max).toBe(10);
+	});
+
+	it('Should use the min and max options', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [1, 1, 1, 2, 1, 0]
+			}],
+			labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
+		};
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('radialLinear'));
+		config.ticks.min = -1010;
+		config.ticks.max = 1010;
+
+		var mockContext = window.createMockContext();
+		var Constructor = Chart.scaleService.getScaleConstructor('radialLinear');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: config,
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		// Set arbitrary width and height for now
+		scale.update(200, 300);
+		expect(scale.min).toBe(-1010);
+		expect(scale.max).toBe(1010);
+		expect(scale.ticks[0]).toBe('-1010');
+		expect(scale.ticks[scale.ticks.length - 1]).toBe('1010');
+		expect(scale.ticks).toEqual(['-1010', '-1000', '0', '1000', '1010']);
+	});
+
 	it('should forcibly include 0 in the range if the beginAtZero option is used', function() {
 		var scaleID = 'myScale';
 

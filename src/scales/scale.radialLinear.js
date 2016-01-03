@@ -90,11 +90,6 @@
 				}
 			}, this);
 
-			if (this.min === this.max) {
-				this.min--;
-				this.max++;
-			}
-
 			// If we are forcing it to begin at 0, but 0 will already be rendered on the chart,
 			// do nothing since that would make the chart weird. If the user really wants a weird chart
 			// axis, they can manually override it
@@ -109,6 +104,23 @@
 					// move the botttom down to 0
 					this.min = 0;
 				}
+			}
+
+			if (this.options.ticks.min !== undefined) {
+				this.min = this.options.ticks.min;
+			} else if (this.options.ticks.suggestedMin !== undefined) {
+				this.min = Math.min(this.min, this.options.ticks.suggestedMin);
+			}
+
+			if (this.options.ticks.max !== undefined) {
+				this.max = this.options.ticks.max;
+			} else if (this.options.ticks.suggestedMax !== undefined) {
+				this.max = Math.max(this.max, this.options.ticks.suggestedMax);
+			}
+
+			if (this.min === this.max) {
+				this.min--;
+				this.max++;
 			}
 		},
 		buildTicks: function() {
@@ -133,10 +145,14 @@
 			var niceMin = Math.floor(this.min / spacing) * spacing;
 			var niceMax = Math.ceil(this.max / spacing) * spacing;
 
+			var numSpaces = Math.ceil((niceMax - niceMin) / spacing);
+
 			// Put the values into the ticks array
-			for (var j = niceMin; j <= niceMax; j += spacing) {
-				this.ticks.push(j);
+			this.ticks.push(this.options.ticks.min !== undefined ? this.options.ticks.min : niceMin);
+			for (var j = 1; j < numSpaces; ++j) {
+				this.ticks.push(niceMin + (j * spacing));
 			}
+			this.ticks.push(this.options.ticks.max !== undefined ? this.options.ticks.max : niceMax);
 
 			// At this point, we need to update our max and min given the tick values since we have expanded the
 			// range of the scale
