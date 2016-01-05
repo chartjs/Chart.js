@@ -38,8 +38,27 @@
 			this.getDataset().bar = true;
 		},
 
+		addElements: function() {
+			//call Super
+			//call addErrorBar
+		},
+		addErrorBar: function(index) {
+			//new elements.ErrorBar
+		},
+
+		update: function(reset) {
+			//call Super
+			//call updateErrorBar
+		},
+		updateErrorBar: function(errorBar, index, reset, numBars) {
+			//calculate position
+		},
+
+
 		draw: function(ease) {
 			Chart.controllers.bar.prototype.draw.call(this, ease);
+
+			console.log(this.getDataset().metaData);
 
 			return;
 		}

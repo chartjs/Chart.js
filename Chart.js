@@ -4302,6 +4302,8 @@
 		draw: function(ease) {
 			Chart.controllers.bar.prototype.draw.call(this, ease);
 
+			console.log(this.getDataset().metaData);
+
 			return;
 		}
 
