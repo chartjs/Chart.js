@@ -436,22 +436,9 @@
 				// figure out the maximum number of gridlines to show
 				var maxTicks;
 
-				if (this.isHorizontal()) {
-					maxTicks = Math.min(
-						helpers.getValueOrDefault(this.options.ticks.maxTicksLimit, 11),
-						Math.ceil(this.width / 50)
-					);
-				} else {
-					// The factor of 2 used to scale the font size has been experimentally determined.
-					maxTicks = Math.min(
-						helpers.getValueOrDefault(this.options.ticks.maxTicksLimit, 11),
-						Math.ceil(this.height / (2 * this.options.ticks.fontSize))
-					);
+				if (this.options.ticks.maxTicksLimit) {
+					maxTicks = this.options.ticks.maxTicksLimit;
 				}
-
-				// Make sure we always have at least 2 ticks 
-				maxTicks = Math.max(2, maxTicks);
-
 
 				// Make sure we draw text in the correct color and font
 				this.ctx.fillStyle = this.options.ticks.fontColor;
