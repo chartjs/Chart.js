@@ -53,6 +53,7 @@ afterUpdate | Function | undefined | Callback that runs at the end of the update
 *ticks*.fontStyle | String | "normal" | Font style for the tick labels, follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit).
 *ticks*.maxRotation | Number | 90 | Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. *Note: Only applicable to horizontal scales.*
 *ticks*.minRotation | Number |  20 | *currently not-implemented* Minimum rotation for tick labels when condensing is necessary.  *Note: Only applicable to horizontal scales.*
+*ticks*.maxTicksLimit | Number | 11 | Maximum number of ticks and gridlines to show.
 *ticks*.padding | Number | 10 | Padding between the tick label and the axis. *Note: Only applicable to horizontal scales.*
 *ticks*.mirror | Boolean | false | Flips tick labels around axis, displaying the labels inside the chart instead of outside. *Note: Only applicable to vertical scales.*
 *ticks*.reverse | Boolean | false | Reverses order of tick labels.
@@ -259,7 +260,7 @@ The radial linear scale extends the core scale class with the following tick tem
 		//Number - The backdrop padding to the side of the label in pixels
 		backdropPaddingX: 2,
 
-		//Number - Limit the maximum number of ticks
+		//Number - Limit the maximum number of ticks and gridlines
 		maxTicksLimit: 11,
 	},
 
