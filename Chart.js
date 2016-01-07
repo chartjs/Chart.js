@@ -2895,6 +2895,14 @@
 				var scaleLabelY;
 				var useAutoskipper = this.options.ticks.autoSkip;
 
+
+				// figure out the maximum number of gridlines to show
+				var maxTicks;
+
+				if (this.options.ticks.maxTicksLimit) {
+					maxTicks = this.options.ticks.maxTicksLimit;
+				}
+
 				// Make sure we draw text in the correct color and font
 				this.ctx.fillStyle = this.options.ticks.fontColor;
 				var labelFont = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
@@ -2917,10 +2925,23 @@
 					if (!useAutoskipper) {
 						skipRatio = false;
 					}
+
+					// if they defined a max number of ticks, 
+					// increase skipRatio until that number is met
+					if (maxTicks) {
+						while (!skipRatio || this.ticks.length / (skipRatio || 1) > maxTicks) {
+							if (!skipRatio) {
+								skipRatio = 1;
+							}
+							skipRatio += 1;
+						}
+					}
 					
 					helpers.each(this.ticks, function(label, index) {
 						// Blank ticks
-						if ((skipRatio > 1 && index % skipRatio > 0) || (label === undefined || label === null)) {
+						var isLastTick = this.ticks.length == index + 1;
+						var shouldSkip = skipRatio > 1 && index % skipRatio > 0;
+						if (shouldSkip && !isLastTick || (label === undefined || label === null)) {
 							return;
 						}
 						var xLineValue = this.getPixelForTick(index); // xvalues for grid lines
@@ -7232,5 +7253,5 @@
 	};
 	
 }).call(this);
-return Chart;
+return this.Chart;
 }));
