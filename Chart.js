@@ -2928,7 +2928,7 @@
 
 					// if they defined a max number of ticks, 
 					// increase skipRatio until that number is met
-					if (maxTicks) {
+					if (maxTicks && this.ticks.length > maxTicks) {
 						while (!skipRatio || this.ticks.length / (skipRatio || 1) > maxTicks) {
 							if (!skipRatio) {
 								skipRatio = 1;
