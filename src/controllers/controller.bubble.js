@@ -1,10 +1,8 @@
-(function() {
+(function(Chart) {
 
 	"use strict";
 
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
+	var helpers = Chart.helpers;
 
 	Chart.defaults.bubble = {
 		hover: {
@@ -158,4 +156,4 @@
 			point._model.borderWidth = point.custom && point.custom.borderWidth ? point.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.point.borderWidth);
 		}
 	});
-}).call(this);
+}).call(this, Chart);

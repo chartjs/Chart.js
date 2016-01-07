@@ -1,9 +1,7 @@
-(function() {
+(function(Chart) {
 	"use strict";
 
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
+	var helpers = Chart.helpers;
 
 	Chart.defaults.scale = {
 		display: true,
@@ -639,4 +637,4 @@
 		}
 	});
 
-}).call(this);
+}).call(this, Chart);

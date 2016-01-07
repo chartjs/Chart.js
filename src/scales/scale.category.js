@@ -1,9 +1,7 @@
-(function() {
+(function(Chart) {
     "use strict";
 
-    var root = this,
-        Chart = root.Chart,
-        helpers = Chart.helpers;
+    var helpers = Chart.helpers;
 
     // Default config for a category scale
     var defaultConfig = {
@@ -47,4 +45,4 @@
 
     Chart.scaleService.registerScaleType("category", DatasetScale, defaultConfig);
 
-}).call(this);
+}).call(this, Chart);

@@ -9,13 +9,11 @@
  */
 
 
-(function() {
+(function(Chart) {
 
 	"use strict";
 
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
+	var helpers = Chart.helpers;
 
 	Chart.defaults.global.elements.line = {
 		tension: 0.4,
@@ -172,4 +170,4 @@
 		},
 	});
 
-}).call(this);
+}).call(this, Chart);

@@ -1,11 +1,7 @@
-(function() {
+(function(Chart) {
 	"use strict";
 
-	var root = this,
-		Chart = root.Chart,
-		//Cache a local reference to Chart.helpers
-		helpers = Chart.helpers;
-
+	var helpers = Chart.helpers;
 
 	Chart.defaults.polarArea = {
 
@@ -229,4 +225,4 @@
 			}
 		}
 	});
-}).call(this);
+}).call(this, Chart);

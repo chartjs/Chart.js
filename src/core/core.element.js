@@ -1,11 +1,7 @@
-(function() {
-
+(function(Chart) {
 	"use strict";
 
-	//Declare root variable - window in the browser, global on the server
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
+	var helpers = Chart.helpers;
 
 	Chart.elements = {};
 
@@ -88,4 +84,4 @@
 
 	Chart.Element.extend = helpers.inherits;
 
-}).call(this);
+}).call(this, Chart);

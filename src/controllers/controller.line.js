@@ -1,10 +1,8 @@
-(function() {
+(function(Chart) {
 
 	"use strict";
 
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
+	var helpers = Chart.helpers;
 
 	Chart.defaults.line = {
 		hover: {
@@ -287,4 +285,4 @@
 			point._model.borderWidth = this.getPointBorderWidth(point, index);
 		}
 	});
-}).call(this);
+}).call(this, Chart);
