@@ -86,7 +86,7 @@ function buildTask() {
 				"  }\n"+
 				"}(this || window, function(<%= param %>) {\n"+
 				"<%= contents %>\n"+
-				"return <%= exports %>;\n"+
+				"return this.<%= exports %>;\n"+
 				"}));\n",
 			dependencies: function() {
 				return ['moment']
