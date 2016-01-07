@@ -476,7 +476,9 @@
 					
 					helpers.each(this.ticks, function(label, index) {
 						// Blank ticks
-						if ((skipRatio > 1 && index % skipRatio > 0) || (label === undefined || label === null)) {
+						var isLastTick = this.ticks.length == index + 1;
+						var shouldSkip = skipRatio > 1 && index % skipRatio > 0;
+						if (shouldSkip && !isLastTick || (label === undefined || label === null)) {
 							return;
 						}
 						var xLineValue = this.getPixelForTick(index); // xvalues for grid lines
