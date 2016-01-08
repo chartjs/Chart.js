@@ -63,6 +63,7 @@
 			this.updateLayout();
 			this.resetElements();
 			this.initToolTip();
+			this.draw();
 			this.update();
 
 			// TODO
@@ -83,17 +84,19 @@
 		},
 
 		resize: function resize(silent) {
-			this.stop();
 			var canvas = this.chart.canvas;
 			var newWidth = helpers.getMaximumWidth(this.chart.canvas);
 			var newHeight = (this.options.maintainAspectRatio && isNaN(this.chart.aspectRatio) === false && isFinite(this.chart.aspectRatio) && this.chart.aspectRatio !== 0) ? newWidth / this.chart.aspectRatio : helpers.getMaximumHeight(this.chart.canvas);
+
+			var sizeChanged = this.chart.width !== newWidth || this.chart.height !== newHeight;
 
 			canvas.width = this.chart.width = newWidth;
 			canvas.height = this.chart.height = newHeight;
 
 			helpers.retinaScale(this.chart);
 
-			if (!silent) {
+			if (!silent && sizeChanged) {
+				this.stop();
 				this.update(this.options.responsiveAnimationDuration);
 			}
 
