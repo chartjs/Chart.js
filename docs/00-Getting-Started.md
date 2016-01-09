@@ -226,3 +226,22 @@ Chart.defaults.global.responsive = true;
 ```
 
 Now, every time we create a chart, `options.responsive` will be `true`.
+
+###Tooltip Templates
+For the `tooltipTemplate` and `multiTooltipTemplate` configuration options, you may use special template blocks. **Do not use user input in the tooltip template, as it may be executed as raw JavaScript.**
+
+Anything in between `<%` and `%>` will be executed as JavaScript. As in the example shown above, `<% if (label) { %>` and later `<% } %>`. Using `<%= expr %>` will print the value of the variable named by `expr` into the tooltip.
+
+The available variables to print into the tooltip depends on the chart type. In general, the following variables are available:
+
+```javascript
+{
+	value : "value of the data point",
+	label : "label for the position the data point is at",
+	datasetLabel: "label for the dataset the point is from",
+	strokeColor : "stroke color for the dataset",
+	fillColor : "fill color for the dataset",
+	highlightFill : "highlight fill color for the dataset",
+	highlightStroke : "highlight stroke color for the dataset"
+}
+```
