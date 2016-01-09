@@ -321,6 +321,47 @@ describe('Linear Scale', function() {
 		expect(scale.max).toBe(200);
 	});
 
+	it('Should correctly determine the min and max data values when stacked mode is turned on there are multiple types of datasets', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				type: 'bar',
+				yAxisID: scaleID,
+				data: [10, 5, 0, -5, 78, -100]
+			}, {
+				type: 'line',
+				yAxisID: scaleID,
+				data: [10, 10, 10, 10, 10, 10],
+			}, {
+				type: 'bar',
+				yAxisID: scaleID,
+				data: [150, 0, 0, -100, -10, 9]
+			}]
+		};
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		config.stacked = true; // enable scale stacked mode
+
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var scale = new Constructor({
+			ctx: {},
+			options: config,
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		// Set arbitrary width and height for now
+		scale.width = 50;
+		scale.height = 400;
+
+		scale.determineDataLimits();
+		expect(scale.min).toBe(-105);
+		expect(scale.max).toBe(160);
+	});
+
 	it('Should ensure that the scale has a max and min that are not equal', function() {
 		var scaleID = 'myScale';
 
