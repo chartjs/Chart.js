@@ -275,6 +275,109 @@ describe('Bar controller tests', function() {
 		expect(chart.data.datasets[1].metaData.length).toBe(3); // should add a new meta data item
 	});
 
+	it ('should get the correct bar points when datasets of different types exist', function() {
+		var data = {
+			datasets: [{
+				data: [1, 2],
+				label: 'dataset1',
+				xAxisID: 'firstXScaleID',
+				yAxisID: 'firstYScaleID',
+				bar: true,
+			}, {
+				data: [10, 15],
+				label: 'dataset2',
+				xAxisID: 'firstXScaleID',
+				yAxisID: 'firstYScaleID',
+			}, {
+				data: [30, 25],
+				label: 'dataset3',
+				xAxisID: 'firstXScaleID',
+				yAxisID: 'firstYScaleID',
+				bar: true
+			}],
+			labels: ['label1', 'label2']
+		};
+		var mockContext = window.createMockContext();
+
+		var VerticalScaleConstructor = Chart.scaleService.getScaleConstructor('linear');
+		var verticalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		verticalScaleConfig = Chart.helpers.scaleMerge(verticalScaleConfig, Chart.defaults.bar.scales.yAxes[0]);
+		var yScale = new VerticalScaleConstructor({
+			ctx: mockContext,
+			options: verticalScaleConfig,
+			chart: {
+				data: data
+			},
+			id: 'firstYScaleID'
+		});
+
+		// Update ticks & set physical dimensions
+		var verticalSize = yScale.update(50, 200);
+		yScale.top = 0;
+		yScale.left = 0;
+		yScale.right = verticalSize.width;
+		yScale.bottom = verticalSize.height;
+
+		var HorizontalScaleConstructor = Chart.scaleService.getScaleConstructor('category');
+		var horizontalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
+		horizontalScaleConfig = Chart.helpers.scaleMerge(horizontalScaleConfig, Chart.defaults.bar.scales.xAxes[0]);
+		var xScale = new HorizontalScaleConstructor({
+			ctx: mockContext,
+			options: horizontalScaleConfig,
+			chart: {
+				data: data
+			},
+			id: 'firstXScaleID'
+		});
+
+		// Update ticks & set physical dimensions
+		var horizontalSize = xScale.update(200, 50);
+		xScale.left = yScale.right;
+		xScale.top = yScale.bottom;
+		xScale.right = horizontalSize.width + xScale.left;
+		xScale.bottom = horizontalSize.height + xScale.top;
+
+		var chart = {
+			data: data,
+			config: {
+				type: 'bar'
+			},
+			options: {
+				elements: {
+					rectangle: {
+						backgroundColor: 'rgb(255, 0, 0)',
+						borderColor: 'rgb(0, 0, 255)',
+						borderWidth: 2,
+					}
+				},
+				scales: {
+					xAxes: [{
+						id: 'firstXScaleID'
+					}],
+					yAxes: [{
+						id: 'firstYScaleID'
+					}]
+				}
+			},
+			scales: {
+				firstXScaleID: xScale,
+				firstYScaleID: yScale,
+			}
+		};
+
+		var controller = new Chart.controllers.bar(chart, 2);
+		controller.buildOrUpdateElements();
+		controller.update();
+
+		var bar1 = chart.data.datasets[2].metaData[0];
+		var bar2 = chart.data.datasets[2].metaData[1];
+
+		expect(bar1._model.x).toBe(119.9);
+		expect(bar1._model.y).toBe(6);
+		expect(bar2._model.x).toBe(186.9);
+		expect(bar2._model.y).toBe(37);
+	});
+
 	it ('should draw all bars', function() {
 		var data = {
 			datasets: [{}, {
