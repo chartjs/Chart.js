@@ -32,6 +32,7 @@ describe('Test the radial linear scale', function() {
 				fontFamily: "'Arial'",
 				fontSize: 10,
 				fontStyle: "normal",
+				callback: defaultConfig.pointLabels.callback, // make this nicer, then check explicitly below
 			},
 			position: "chartArea",
 			scaleLabel: {
@@ -65,6 +66,7 @@ describe('Test the radial linear scale', function() {
 
 		// Is this actually a function
 		expect(defaultConfig.ticks.callback).toEqual(jasmine.any(Function));
+		expect(defaultConfig.pointLabels.callback).toEqual(jasmine.any(Function));
 	});
 
 	it('Should correctly determine the max & min data values', function() {
@@ -332,7 +334,7 @@ describe('Test the radial linear scale', function() {
 				yAxisID: scaleID,
 				data: [10, 5, 0, 25, 78]
 			}],
-			labels: []
+			labels: ['label1', 'label2', 'label3', 'label4', 'label5']
 		};
 
 		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('radialLinear'));
@@ -355,6 +357,40 @@ describe('Test the radial linear scale', function() {
 
 		// Just the index
 		expect(scale.ticks).toEqual(['0', '1', '2', '3', '4']);
+		expect(scale.pointLabels).toEqual(['label1', 'label2', 'label3', 'label4', 'label5']);
+	});
+
+	it('Should build point labels using the user supplied callback', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [10, 5, 0, 25, 78]
+			}],
+			labels: ['label1', 'label2', 'label3', 'label4', 'label5']
+		};
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('radialLinear'));
+		config.pointLabels.callback = function(value, index) {
+			return index.toString();
+		};
+
+		var mockContext = window.createMockContext();
+		var Constructor = Chart.scaleService.getScaleConstructor('radialLinear');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: config,
+			chart: {
+				data: mockData
+			},
+			id: scaleID,
+		});
+
+		scale.update(200, 300);
+
+		// Just the index
+		expect(scale.pointLabels).toEqual(['0', '1', '2', '3', '4']);
 	});
 
 	it('should correctly set the center point', function() {

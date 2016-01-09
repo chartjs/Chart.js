@@ -276,6 +276,11 @@ The radial linear scale extends the core scale class with the following tick tem
 
 		//String - Point label font colour
 		fontColor: "#666",
+
+		//Function - Used to determine point labels to show in scale
+		callback: function(pointLabel) {
+			return pointLabel;
+		}
 	},
 }
 ```
