@@ -240,7 +240,7 @@
 			for (i = 0; i < this.getValueCount(); i++) {
 				// 5px to space the text slightly out - similar to what we do in the draw function.
 				pointPosition = this.getPointPosition(i, largestPossibleRadius);
-				textWidth = this.ctx.measureText(this.options.ticks.callback(this.pointLabels[i])).width + 5;
+				textWidth = this.ctx.measureText(this.pointLabels[i] ? this.pointLabels[i] : '').width + 5;
 				if (i === 0 || i === this.getValueCount() / 2) {
 					// If we're at index zero, or exactly the middle, we're at exactly the top/bottom
 					// of the radar chart, so text will be aligned centrally, so we'll half it and compare
@@ -424,7 +424,7 @@
 							ctx.textBaseline = 'top';
 						}
 
-						ctx.fillText(this.pointLabels[i], pointLabelPosition.x, pointLabelPosition.y);
+						ctx.fillText(this.pointLabels[i] ? this.pointLabels[i] : '', pointLabelPosition.x, pointLabelPosition.y);
 					}
 				}
 			}
