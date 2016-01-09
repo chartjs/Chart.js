@@ -410,7 +410,14 @@
 				skipFitting = (minSteps >= maxSteps);
 
 			var maxValue = max(valuesArray),
-				minValue = min(valuesArray);
+				minValue = Number.POSITIVE_INFINITY;
+
+			// Ignore nulls since we don't construct points for them (since Math.min treats them as 0)
+			each(valuesArray, function( value ){
+				if (value < minValue && value != null){
+					minValue = value;
+				}
+			});
 
 			// We need some degree of separation here to calculate the scales if all the values are the same
 			// Adding/minusing 0.5 will give us a range of 1.
