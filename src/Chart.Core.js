@@ -410,7 +410,7 @@
 				skipFitting = (minSteps >= maxSteps);
 
 			var maxValue = max(valuesArray),
-				minValue = min(valuesArray);
+				minValue = min(helpers.where(valuesArray, helpers.isNumber));
 
 			// We need some degree of separation here to calculate the scales if all the values are the same
 			// Adding/minusing 0.5 will give us a range of 1.
