@@ -206,7 +206,7 @@
 
 				for (var i = this.chart.data.datasets.length - 1; i > datasetIndex; i--) {
 					var ds = this.chart.data.datasets[i];
-					if (helpers.isDatasetVisible(ds)) {
+					if (ds.type === 'line' && helpers.isDatasetVisible(ds)) {
 						if (ds.data[index] < 0) {
 							sumNeg += ds.data[index] || 0;
 						} else {

@@ -139,14 +139,14 @@
 				if (value < 0) {
 					for (var i = 0; i < datasetIndex; i++) {
 						var negDS = this.chart.data.datasets[i];
-						if (helpers.isDatasetVisible(negDS) && negDS.yAxisID === yScale.id) {
+						if (helpers.isDatasetVisible(negDS) && negDS.yAxisID === yScale.id && negDS.bar) {
 							base += negDS.data[index] < 0 ? negDS.data[index] : 0;
 						}
 					}
 				} else {
 					for (var j = 0; j < datasetIndex; j++) {
 						var posDS = this.chart.data.datasets[j];
-						if (helpers.isDatasetVisible(posDS) && posDS.yAxisID === yScale.id) {
+						if (helpers.isDatasetVisible(posDS) && posDS.yAxisID === yScale.id && posDS.bar) {
 							base += posDS.data[index] > 0 ? posDS.data[index] : 0;
 						}
 					}
@@ -200,16 +200,9 @@
 		},
 
 		calculateBarWidth: function() {
-
 			var xScale = this.getScaleForId(this.getDataset().xAxisID);
 			var ruler = this.getRuler();
-
-			if (xScale.options.stacked) {
-				return ruler.categoryWidth;
-			}
-
-			return ruler.barWidth;
-
+			return xScale.options.stacked ? ruler.categoryWidth : ruler.barWidth;
 		},
 
 		// Get bar index from the given dataset index accounting for the fact that not all bars are visible
@@ -261,7 +254,7 @@
 
 				for (var i = 0; i < datasetIndex; i++) {
 					var ds = this.chart.data.datasets[i];
-					if (helpers.isDatasetVisible(ds)) {
+					if (helpers.isDatasetVisible(ds) && ds.bar && ds.yAxisID === yScale.id) {
 						if (ds.data[index] < 0) {
 							sumNeg += ds.data[index] || 0;
 						} else {
