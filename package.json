@@ -17,8 +17,10 @@
     "gulp-jshint": "~1.5.1",
     "gulp-karma": "0.0.4",
     "gulp-replace": "^0.4.0",
+    "gulp-sequence": "^0.4.4",
     "gulp-size": "~0.4.0",
     "gulp-uglify": "~0.2.x",
+    "gulp-umd": "~0.2.0",
     "gulp-util": "~2.2.x",
     "inquirer": "^0.5.1",
     "jasmine": "^2.3.2",
@@ -30,8 +32,8 @@
     "karma-firefox-launcher": "^0.1.6",
     "karma-jasmine": "^0.3.6",
     "karma-jasmine-html-reporter": "^0.1.8",
-    "semver": "^3.0.1",
-    "gulp-umd": "~0.2.0"
+    "require-dir": "^0.3.0",
+    "semver": "^3.0.1"
   },
   "spm": {
     "main": "Chart.js"

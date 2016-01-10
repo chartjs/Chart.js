@@ -1,0 +1,52 @@
+{
+	"root": {
+		"src": "./src",
+		"dest": "."
+	},
+	"files": {
+		"preTestFiles": ["./node_modules/moment/min/moment.min.js"],
+		"srcFiles": [
+			"./node_modules/color/dist/color.min.js",
+			"./src/core/core.js",
+			"./src/core/core.helpers.js",
+			"./src/core/core.element.js",
+			"./src/core/**",
+			"./src/controllers/**",
+			"./src/scales/**",
+			"./src/elements/**",
+			"./src/charts/**"
+		],
+		"testFiles": [
+			"./test/mockContext.js",
+			"./test/*.js"
+		]
+	},
+
+	"tasks": {
+		"coverage": {
+			"config": "./karma.coverage.conf.js"
+		},
+		"validHTML": {
+			"src": "./samples"
+		},
+		"js": {
+			"src": "javascripts",
+			"dest": "javascripts",
+			"extractSharedJs": true,
+			"entries": {
+				"app": ["./app.js"],
+				"page": ["./page.js"]
+			},
+			"extensions": ["js"]
+		},
+		"unittest": {
+			"config": "./karma.conf.ci.js"
+		},
+		"unittestWatch": {
+			"config": "./karma.conf.js"
+		},
+		"validHTML": {
+			"src": "./samples"
+		}
+	}
+}
