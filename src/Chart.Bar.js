@@ -115,10 +115,10 @@
 						value : dataPoint,
 						label : data.labels[index],
 						datasetLabel: dataset.label,
-						strokeColor : dataset.strokeColor[index] || dataset.strokeColor,
-						fillColor : dataset.fillColor[index] || dataset.fillColor,
-						highlightFill : (dataset.highlightFill) ? dataset.highlightFill[index] || dataset.highlightFill : dataset.fillColor[index] || dataset.fillColor,
-						highlightStroke : (dataset.highlightStroke) ? dataset.highlightStroke[index] || dataset.highlightStroke : dataset.strokeColor[index] || dataset.strokeColor
+						strokeColor : (typeof dataset.strokeColor != 'string') ? dataset.strokeColor[index] : dataset.strokeColor,
+						fillColor : (typeof dataset.fillColor != 'string') ? dataset.fillColor[index] : dataset.fillColor,
+						highlightFill : (dataset.highlightFill && typeof dataset.highlightFill != 'string') ? dataset.highlightFill[index] || dataset.highlightFill : (typeof dataset.fillColor != 'string') ? dataset.fillColor[index] : dataset.fillColor,
+						highlightStroke : (dataset.highlightStroke && typeof dataset.highlightStroke != 'string') ? dataset.highlightStroke[index] || dataset.highlightStroke : (typeof dataset.strokeColor != 'string') ? dataset.strokeColor[index] : dataset.strokeColor
 					}));
 				},this);
 
