@@ -117,8 +117,8 @@
 						datasetLabel: dataset.label,
 						strokeColor : dataset.strokeColor[index] || dataset.strokeColor,
 						fillColor : dataset.fillColor[index] || dataset.fillColor,
-						highlightFill : dataset.highlightFill[index] || dataset.highlightFill || dataset.fillColor[index] || dataset.fillColor,
-						highlightStroke : dataset.highlightStroke[index] || dataset.highlightStroke || dataset.strokeColor[index] || dataset.strokeColor
+						highlightFill : (dataset.highlightFill) ? dataset.highlightFill[index] || dataset.highlightFill : dataset.fillColor[index] || dataset.fillColor,
+						highlightStroke : (dataset.highlightStroke) ? dataset.highlightStroke[index] || dataset.highlightStroke : dataset.strokeColor[index] || dataset.strokeColor
 					}));
 				},this);
 
