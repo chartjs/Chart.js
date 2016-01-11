@@ -1,3 +1,5 @@
+var color = require('color');
+
 (function(Chart, Color) {
 	"use strict";
 
@@ -831,4 +833,4 @@
 			fn.apply(_tArg, args);
 		}
 	};
-}).call(this, Chart, this.Color);
+}).call(this, Chart, color);

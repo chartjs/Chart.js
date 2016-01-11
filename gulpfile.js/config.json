@@ -6,7 +6,6 @@
 	"files": {
 		"preTestFiles": ["./node_modules/moment/min/moment.min.js"],
 		"srcFiles": [
-			"./node_modules/color/dist/color.min.js",
 			"./src/core/core.js",
 			"./src/core/core.helpers.js",
 			"./src/core/core.element.js",

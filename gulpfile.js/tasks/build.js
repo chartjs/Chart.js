@@ -12,7 +12,7 @@ function buildTask() {
 	return gulp.src(config.files.srcFiles)
 		.pipe(concat('Chart.js'))
 		.pipe(replace('{{ version }}', package.version))
-		.pipe(umd({
+		/*.pipe(umd({
 			// We want a global always to ensure that we match previous behaviour
 			templateSource: ";(function(root, factory) {\n" +
 				"  if (typeof define === 'function' && define.amd) {\n" +
@@ -29,7 +29,7 @@ function buildTask() {
 			dependencies: function() {
 				return ['moment']
 			}
-		}))
+		}))*/
 		.pipe(gulp.dest(config.root.dest))
 		.pipe(uglify({
 			preserveComments: 'some'

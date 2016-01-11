@@ -33,12 +33,13 @@
     "karma-jasmine": "^0.3.6",
     "karma-jasmine-html-reporter": "^0.1.8",
     "require-dir": "^0.3.0",
-    "semver": "^3.0.1"
+    "semver": "^3.0.1",
+    "webpack": "^1.12.10"
   },
   "spm": {
     "main": "Chart.js"
   },
-  "dependencies": {
+  "optionalDependencies": {
     "moment": "^2.10.6"
   }
 }

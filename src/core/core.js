@@ -106,3 +106,5 @@ var Chart = (function() {
 
 	return Chart;
 }).call(this);
+
+module.exports = Chart;

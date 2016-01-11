@@ -1,3 +1,8 @@
+var moment;
+try {
+	moment = require('moment');
+} catch(e) {}
+
 (function(Chart, moment) {
 	"use strict";
 
