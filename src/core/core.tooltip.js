@@ -362,13 +362,14 @@
 			if (this._model.yAlign === 'center') {
 				lf = function(x) { return x <= midX; };
 				rf = function(x) { return x > midX; };
-				olf = function(x) { return x + size.width > _this._chart.width; };
-				orf = function(x) { return x - size.width < 0; };
-				yf = function(y) { return y <= midY ? 'top' : 'bottom'; };
 			} else {
 				lf = function(x) { return x <= (size.width / 2); };
 				rf = function(x) { return x >= (_this._chart.width - (size.width / 2)); };
 			}
+			
+			olf = function(x) { return x + size.width > _this._chart.width; };
+			orf = function(x) { return x - size.width < 0; };
+			yf = function(y) { return y <= midY ? 'top' : 'bottom'; };
 
 			if (lf(this._model.x)) {
 				this._model.xAlign = 'left';
