@@ -11,24 +11,24 @@
 
 	//-- Basic js utility methods
 	helpers.each = function(loopable, callback, self, reverse) {
-		var additionalArgs = Array.prototype.slice.call(arguments, 3);
 		// Check to see if null or undefined firstly.
-		if (loopable) {
-			if (loopable.length === +loopable.length) {
-				var i;
-				if (reverse) {
-					for (i = loopable.length - 1; i >= 0; i--) {
-						callback.apply(self, [loopable[i], i].concat(additionalArgs));
-					}
-				} else {
-					for (i = 0; i < loopable.length; i++) {
-						callback.apply(self, [loopable[i], i].concat(additionalArgs));
-					}
+		var i, len;
+		if (helpers.isArray(loopable)) {
+			len = loopable.length;
+			if (reverse) {
+				for (i = len - 1; i >= 0; i--) {
+					callback.call(self, loopable[i], i);
 				}
 			} else {
-				for (var item in loopable) {
-					callback.apply(self, [loopable[item], item].concat(additionalArgs));
+				for (i = 0; i < len; i++) {
+					callback.call(self, loopable[i], i);
 				}
+			}
+		} else if (typeof loopable === 'object') {
+			var keys = Object.keys(loopable);
+			len = keys.length;
+			for (i = 0; i < len; i++) {
+				callback.call(self, loopable[keys[i]], keys[i]);
 			}
 		}
 	};
@@ -48,7 +48,12 @@
 		return objClone;
 	};
 	helpers.extend = function(base) {
-		helpers.each(Array.prototype.slice.call(arguments, 1), function(extensionObject) {
+		var len = arguments.length;
+		var additionalArgs = [];
+		for(var i = 1; i < len; i++) {
+			additionalArgs.push(arguments[i]);
+		}
+		helpers.each(additionalArgs, function(extensionObject) {
 			helpers.each(extensionObject, function(value, key) {
 				if (extensionObject.hasOwnProperty(key)) {
 					base[key] = value;
