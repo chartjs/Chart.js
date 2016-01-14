@@ -87,6 +87,7 @@ describe('Line controller tests', function() {
 				type: 'line'
 			},
 			options: {
+				showLines: true,
 				scales: {
 					xAxes: [{
 						id: 'firstXScaleID'
@@ -109,6 +110,45 @@ describe('Line controller tests', function() {
 		controller.draw();
 
 		expect(chart.data.datasets[0].metaDataset.draw.calls.count()).toBe(1);
+		expect(chart.data.datasets[0].metaData[0].draw.calls.count()).toBe(1);
+		expect(chart.data.datasets[0].metaData[2].draw.calls.count()).toBe(1);
+		expect(chart.data.datasets[0].metaData[3].draw.calls.count()).toBe(1);
+	});
+
+	it('should draw all elements except lines', function() {
+		var chart = {
+			data: {
+				datasets: [{
+					data: [10, 15, 0, -4]
+				}]
+			},
+			config: {
+				type: 'line'
+			},
+			options: {
+				showLines: false,
+				scales: {
+					xAxes: [{
+						id: 'firstXScaleID'
+					}],
+					yAxes: [{
+						id: 'firstYScaleID'
+					}]
+				}
+			}
+		};
+
+		var controller = new Chart.controllers.line(chart, 0);
+
+		spyOn(chart.data.datasets[0].metaDataset, 'draw');
+		spyOn(chart.data.datasets[0].metaData[0], 'draw');
+		spyOn(chart.data.datasets[0].metaData[1], 'draw');
+		spyOn(chart.data.datasets[0].metaData[2], 'draw');
+		spyOn(chart.data.datasets[0].metaData[3], 'draw');
+
+		controller.draw();
+
+		expect(chart.data.datasets[0].metaDataset.draw.calls.count()).toBe(0);
 		expect(chart.data.datasets[0].metaData[0].draw.calls.count()).toBe(1);
 		expect(chart.data.datasets[0].metaData[2].draw.calls.count()).toBe(1);
 		expect(chart.data.datasets[0].metaData[3].draw.calls.count()).toBe(1);
@@ -177,6 +217,7 @@ describe('Line controller tests', function() {
 				type: 'line'
 			},
 			options: {
+				showLines: true,
 				elements: {
 					line: {
 						backgroundColor: 'rgb(255, 0, 0)',

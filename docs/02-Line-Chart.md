@@ -120,6 +120,7 @@ The default options for line chart are defined in `Chart.defaults.Line`.
 
 Name | Type | Default | Description
 --- | --- | --- | ---
+showLines | Boolean | true | If false, the lines between points are not drawn
 stacked | Boolean | false | If true, lines stack on top of each other along the y axis.
 *hover*.mode | String | "label" | Label's hover mode. "label" is used since the x axis displays data by the index in the dataset.
 scales | - | - | -
