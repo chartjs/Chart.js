@@ -259,9 +259,9 @@
 			var easingDecimal = ease || 1;
 
 			// Transition Point Locations
-			helpers.each(this.getDataset().metaData, function(point, index) {
+			helpers.each(this.getDataset().metaData, function(point) {
 				point.transition(easingDecimal);
-			}, this);
+			});
 
 			// Transition and Draw the line
 			if (this.chart.options.showLines)

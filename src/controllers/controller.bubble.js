@@ -133,7 +133,7 @@
 			helpers.each(this.getDataset().metaData, function(point, index) {
 				point.transition(easingDecimal);
 				point.draw();
-			}, this);
+			});
 
 		},
 

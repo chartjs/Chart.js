@@ -44,7 +44,7 @@
 				if (helpers.isDatasetVisible(dataset) && dataset.bar) {
 					++barCount;
 				}
-			}, this);
+			});
 			return barCount;
 		},
 
