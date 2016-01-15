@@ -60,7 +60,7 @@
 			this.getDataset().metaData.splice(index, 0, point);
 
 			// Make sure bezier control points are updated
-			if (this.chart.options.showLines)
+			if (this.chart.options.showLines && this.chart.options.elements.line.tension !== 0)
 				this.updateBezierControlPoints();
 		},
 
@@ -112,7 +112,7 @@
 				this.updateElement(point, index, reset);
 			}, this);
 
-			if (this.chart.options.showLines)
+			if (this.chart.options.showLines && this.chart.options.elements.line.tension !== 0)
 				this.updateBezierControlPoints();
 		},
 
