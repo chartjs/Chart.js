@@ -167,7 +167,7 @@
 			// Transition Point Locations
 			helpers.each(this.getDataset().metaData, function(point, index) {
 				point.transition(easingDecimal);
-			}, this);
+			});
 
 			// Transition and Draw the line
 			this.getDataset().metaDataset.transition(easingDecimal).draw();

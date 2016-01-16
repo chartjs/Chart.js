@@ -756,13 +756,37 @@
 	helpers.fontString = function(pixelSize, fontStyle, fontFamily) {
 		return fontStyle + " " + pixelSize + "px " + fontFamily;
 	};
-	helpers.longestText = function(ctx, font, arrayOfStrings) {
+	helpers.longestText = function(ctx, font, arrayOfStrings, cache) {
+		cache = cache || {};
+		cache.data = cache.data || {};
+		cache.garbageCollect = cache.garbageCollect || [];
+
+		if (cache.font !== font) {
+			cache.data = {};
+			cache.garbageCollect = [];
+			cache.font = font;
+		}
+
 		ctx.font = font;
 		var longest = 0;
 		helpers.each(arrayOfStrings, function(string) {
-			var textWidth = ctx.measureText(string).width;
-			longest = (textWidth > longest) ? textWidth : longest;
+			var textWidth = cache.data[string];
+			if (!textWidth) {
+				textWidth = cache.data[string] = ctx.measureText(string).width;
+				cache.garbageCollect.push(string);
+			}
+			if (textWidth > longest)
+				longest = textWidth;
 		});
+
+		var gcLen = cache.garbageCollect.length / 2;
+		if (gcLen > arrayOfStrings.length) {
+			for (var i = 0; i < gcLen; i++) {
+				var key = cache.garbageCollect.shift();
+				delete cache.data[key];
+			}
+		}
+
 		return longest;
 	};
 	helpers.drawRoundedRectangle = function(ctx, x, y, width, height, radius) {

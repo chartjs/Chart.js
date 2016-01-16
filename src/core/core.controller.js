@@ -110,14 +110,14 @@
 				if (this.options.scales.xAxes && this.options.scales.xAxes.length) {
 					helpers.each(this.options.scales.xAxes, function(xAxisOptions, index) {
 						xAxisOptions.id = xAxisOptions.id || (defaultXAxisID + index);
-					}, this);
+					});
 				}
 
 				if (this.options.scales.yAxes && this.options.scales.yAxes.length) {
 					// Build the y axes
 					helpers.each(this.options.scales.yAxes, function(yAxisOptions, index) {
 						yAxisOptions.id = yAxisOptions.id || (defaultYAxisID + index);
-					}, this);
+					});
 				}
 			}
 		},
@@ -239,7 +239,7 @@
 		resetElements: function resetElements() {
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				dataset.controller.reset();
-			}, this);
+			});
 		},
 
 		update: function update(animationDuration, lazy) {
@@ -254,12 +254,12 @@
 			// Make sure all dataset controllers have correct meta data counts
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				dataset.controller.buildOrUpdateElements();
-			}, this);
+			});
 
 			// This will loop through any data and do the appropriate element update for the type
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				dataset.controller.update();
-			}, this);
+			});
 			this.render(animationDuration, lazy);
 		},
 
@@ -310,7 +310,7 @@
 				if (helpers.isDatasetVisible(dataset)) {
 					dataset.controller.draw(ease);
 				}
-			}, this);
+			});
 
 			// Finally draw the tooltip
 			this.tooltip.transition(easingDecimal).draw();
@@ -330,9 +330,9 @@
 							elementsArray.push(element);
 							return elementsArray;
 						}
-					}, this);
+					});
 				}
-			}, this);
+			});
 
 			return elementsArray;
 		},
@@ -361,7 +361,7 @@
 				if(helpers.isDatasetVisible(dataset)){
 					elementsArray.push(dataset.metaData[found._index]);
 				}
-			}, this);
+			});
 
 			return elementsArray;
 		},

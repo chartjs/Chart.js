@@ -26,6 +26,14 @@
 			if (!this._view) {
 				this._view = helpers.clone(this._model);
 			}
+
+			// No animation -> No Transition
+			if (ease === 1) {
+				this._view = this._model;
+				this._start = null;
+				return this;
+			}
+
 			if (!this._start) {
 				this.pivot();
 			}
@@ -37,16 +45,16 @@
 				}
 
 				// Init if doesn't exist
-				else if (!this._view[key]) {
-					if (typeof value === 'number' && isNaN(this._view[key]) === false) {
+				else if (!this._view.hasOwnProperty(key)) {
+					if (typeof value === 'number' && !isNaN(this._view[key])) {
 						this._view[key] = value * ease;
 					} else {
-						this._view[key] = value || null;
+						this._view[key] = value;
 					}
 				}
 
 				// No unnecessary computations
-				else if (this._model[key] === this._view[key]) {
+				else if (value === this._view[key]) {
 					// It's the same! Woohoo!
 				}
 
@@ -70,9 +78,6 @@
 				}
 			}, this);
 
-			if (ease === 1) {
-				delete this._start;
-			}
 			return this;
 		},
 		tooltipPosition: function() {

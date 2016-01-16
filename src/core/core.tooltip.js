@@ -265,7 +265,7 @@
 						  	backgroundColor: active._view.backgroundColor
 						  });
 						}
-					}, this);
+					});
 
 					tooltipPosition = this.getAveragePosition(this._active);
 					tooltipPosition.y = this._active[0]._yScale.getPixelForDecimal(0.5);
@@ -330,7 +330,7 @@
 			ctx.font = helpers.fontString(vm.bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
 			helpers.each(vm.beforeBody.concat(vm.afterBody), function(line) {
 				size.width = Math.max(size.width, ctx.measureText(line).width);
-			}, this);
+			});
 			helpers.each(vm.body, function(line) {
 				size.width = Math.max(size.width, ctx.measureText(line).width + (this._options.tooltips.mode !== 'single' ? (vm.bodyFontSize + 2) : 0));
 			}, this);
@@ -495,7 +495,7 @@
 					if (i + 1 === vm.title.length) {
 						pt.y += vm.titleMarginBottom - vm.titleSpacing; // If Last, add margin, remove spacing
 					}
-				}, this);
+				});
 			}
 		},
 		drawBody: function drawBody(pt, vm, ctx, opacity) {
@@ -554,7 +554,7 @@
 				helpers.each(vm.footer, function(footer) {
 					ctx.fillText(footer, pt.x, pt.y);
 					pt.y += vm.footerFontSize + vm.footerSpacing;
-				}, this);
+				});
 			}
 		},
 		draw: function draw() {
