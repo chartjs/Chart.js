@@ -209,6 +209,7 @@ line | - | - | -
 *line*.fill | Boolean | true | 
 point | - | - | -
 *point*.radius | Number | 3 | Default point radius
+*point*.pointStyle | String | 'circle' | Default point style
 *point*.backgroundColor | Color | `Chart.defaults.global.defaultColor` | Default point fill color
 *point*.borderWidth | Number | 1 | Default point stroke width
 *point*.borderColor | Color | `Chart.defaults.global.defaultColor` | Default point stroke color

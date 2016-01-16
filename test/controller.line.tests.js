@@ -238,6 +238,7 @@ describe('Line controller tests', function() {
 						hoverRadius: 4,
 						hoverBorderWidth: 1,
 						radius: 3,
+						pointStyle: 'circle'
 					}
 				},
 				scales: {
@@ -281,6 +282,7 @@ describe('Line controller tests', function() {
 			borderColor: Chart.defaults.global.defaultColor,
 			hitRadius: 1,
 			radius: 3,
+			pointStyle: 'circle',
 			skip: false,
 			tension: 0.1,
 
@@ -301,6 +303,7 @@ describe('Line controller tests', function() {
 			borderColor: Chart.defaults.global.defaultColor,
 			hitRadius: 1,
 			radius: 3,
+			pointStyle: 'circle',
 			skip: false,
 			tension: 0.1,
 
@@ -321,6 +324,7 @@ describe('Line controller tests', function() {
 			borderColor: Chart.defaults.global.defaultColor,
 			hitRadius: 1,
 			radius: 3,
+			pointStyle: 'circle',
 			skip: false,
 			tension: 0.1,
 
@@ -341,6 +345,7 @@ describe('Line controller tests', function() {
 			borderColor: Chart.defaults.global.defaultColor,
 			hitRadius: 1,
 			radius: 3,
+			pointStyle: 'circle',
 			skip: false,
 			tension: 0.1,
 
@@ -397,6 +402,7 @@ describe('Line controller tests', function() {
 			borderColor: 'rgb(56, 57, 58)',
 			hitRadius: 3.3,
 			radius: 22,
+			pointStyle: 'circle',
 			skip: false,
 			tension: 0,
 
@@ -417,6 +423,7 @@ describe('Line controller tests', function() {
 			borderColor: 'rgb(56, 57, 58)',
 			hitRadius: 3.3,
 			radius: 22,
+			pointStyle: 'circle',
 			skip: false,
 			tension: 0,
 
@@ -437,6 +444,7 @@ describe('Line controller tests', function() {
 			borderColor: 'rgb(56, 57, 58)',
 			hitRadius: 3.3,
 			radius: 22,
+			pointStyle: 'circle',
 			skip: false,
 			tension: 0,
 
@@ -457,6 +465,7 @@ describe('Line controller tests', function() {
 			borderColor: 'rgb(56, 57, 58)',
 			hitRadius: 3.3,
 			radius: 22,
+			pointStyle: 'circle',
 			skip: false,
 			tension: 0,
 
@@ -519,6 +528,7 @@ describe('Line controller tests', function() {
 			borderColor: 'rgb(4, 6, 8)',
 			hitRadius: 5,
 			radius: 2.2,
+			pointStyle: 'circle',
 			skip: true,
 			tension: 0.15,
 
