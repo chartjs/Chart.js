@@ -14,11 +14,15 @@ function packTask(callback) {
 		context: process.cwd(),
 		entry: ['Chart.js'],
 		output: {
-			filename: 'Chart.pack.js',
+			filename: 'Chart.js',
 			library: "Chart",
 			libraryTarget: "umd",
 			umdNamedDefine: true
 		},
+		plugins: [
+			new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/]),
+			new webpack.IgnorePlugin(/^moment$/)
+		],
 		resolve: {
 			root: [process.cwd(), path.join(process.cwd(), 'node_modules')]
 		}
@@ -29,11 +33,11 @@ function packTask(callback) {
 			throw new gutil.PluginError("webpack", err);
 		}
 
-        util.log("[webpack]", stats.toString({
-            // output options
-            errorDetails: true
-        }));
-        callback();
+		util.log("[webpack]", stats.toString({
+			// output options
+			errorDetails: true
+		}));
+		callback();
 	})
 }
 

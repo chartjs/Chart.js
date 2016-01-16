@@ -9,7 +9,6 @@
     "url": "https://github.com/nnnick/Chart.js.git"
   },
   "devDependencies": {
-    "color": "git://github.com/chartjs/color",
     "gulp": "3.5.x",
     "gulp-concat": "~2.1.x",
     "gulp-connect": "~2.0.5",
@@ -38,6 +37,9 @@
   },
   "spm": {
     "main": "Chart.js"
+  },
+  "dependencies": {
+    "color": "git://github.com/chartjs/color"
   },
   "optionalDependencies": {
     "moment": "^2.10.6"
