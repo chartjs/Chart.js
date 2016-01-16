@@ -1,10 +1,7 @@
-(function() {
+var color = require('color');
 
+(function(Chart, Color) {
 	"use strict";
-
-	//Declare root variable - window in the browser, global on the server
-	var root = this,
-		Chart = root.Chart;
 
 	//Global Chart helpers object for utility methods and classes
 	var helpers = Chart.helpers = {};
@@ -803,11 +800,11 @@
 		ctx.closePath();
 	};
 	helpers.color = function(color) {
-		if (!root.Color) {
+		if (!Color) {
 			console.log('Color.js not found!');
 			return color;
 		}
-		return root.Color(color);
+		return Color(color);
 	};
 	helpers.addResizeListener = function(node, callback) {
 		// Hide an iframe before the node
@@ -865,4 +862,4 @@
 			fn.apply(_tArg, args);
 		}
 	};
-}).call(this);
+}).call(this, Chart, color);

@@ -9,13 +9,8 @@
  */
 
 
-(function() {
-
+var Chart = (function() {
 	"use strict";
-
-	//Declare root variable - window in the browser, global on the server
-	var root = this,
-		previous = root.Chart;
 
 	//Occupy the global variable of Chart, and create a simple base class
 	var Chart = function(context, config) {
@@ -109,11 +104,7 @@
 		},
 	};
 
-	root.Chart = Chart;
-
-	Chart.noConflict = function() {
-		root.Chart = previous;
-		return Chart;
-	};
-
+	return Chart;
 }).call(this);
+
+module.exports = Chart;

@@ -1,9 +1,7 @@
-(function() {
+(function(Chart) {
 	"use strict";
 
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
+	var helpers = Chart.helpers;
 
 	// The layout service is ver self explanatory.  It's responsible for the layout within a chart.  
 	// Scales, Legends and Plugins all rely on the layout service and can easily register to be placed anywhere they need
@@ -323,4 +321,4 @@
 	};
 
 
-}).call(this);
+}).call(this, Chart);

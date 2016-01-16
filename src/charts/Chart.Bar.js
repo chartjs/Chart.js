@@ -1,8 +1,6 @@
-(function() {
+(function(Chart) {
 	"use strict";
 
-	var root = this;
-	var Chart = root.Chart;
 	var helpers = Chart.helpers;
 
 	Chart.Bar = function(context, config) {
@@ -11,4 +9,4 @@
 		return new Chart(context, config);
 	};
 
-}).call(this);
+}).call(this, Chart);

@@ -1,12 +1,7 @@
-(function() {
-
+(function(Chart) {
 	"use strict";
 
-	//Declare root variable - window in the browser, global on the server
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
-
+	var helpers = Chart.helpers;
 
 	//Create a dictionary of chart types, to allow for extension of existing types
 	Chart.types = {};
@@ -554,4 +549,4 @@
 		},
 	});
 
-}).call(this);
+}).call(this, Chart);

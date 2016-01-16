@@ -9,13 +9,11 @@
  */
 
 
-(function() {
+(function(Chart) {
 
 	"use strict";
 
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
+	var helpers = Chart.helpers;
 
 	Chart.defaults.global.elements.point = {
 		radius: 3,
@@ -158,4 +156,4 @@
 	});
 
 
-}).call(this);
+}).call(this, Chart);

@@ -1,9 +1,7 @@
-(function() {
+(function(Chart) {
 	"use strict";
 
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
+	var helpers = Chart.helpers;
 
 	Chart.scaleService = {
 		// Scale registration object. Extensions can register new scale types (such as log or DB scales) and then
@@ -32,6 +30,4 @@
 			});
 		},
 	};
-
-
-}).call(this);
+}).call(this, Chart);

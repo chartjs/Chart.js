@@ -1,8 +1,6 @@
-(function() {
+(function(Chart) {
 	"use strict";
 
-	var root = this;
-	var Chart = root.Chart;
 	var helpers = Chart.helpers;
 
 	var defaultConfig = {
@@ -47,4 +45,4 @@
 		return new Chart(context, config);
 	};
 	
-}).call(this);
+}).call(this, Chart);

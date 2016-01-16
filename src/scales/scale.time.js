@@ -1,4 +1,9 @@
-(function(moment) {
+var moment;
+try {
+	moment = require('moment');
+} catch(e) {}
+
+(function(Chart, moment) {
 	"use strict";
 
 	if (!moment) {
@@ -6,9 +11,7 @@
 		return;
 	}
 
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
+	var helpers = Chart.helpers;
 
 	var time = {
 		units: [
@@ -278,4 +281,4 @@
 	});
 	Chart.scaleService.registerScaleType("time", TimeScale, defaultConfig);
 
-}).call(this, moment);
+}).call(this, Chart, moment);

@@ -1,12 +1,7 @@
-(function() {
-
+(function(Chart) {
 	"use strict";
 
-	//Declare root variable - window in the browser, global on the server
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
-
+	var helpers = Chart.helpers;
 
 	// Base class for all dataset controllers (line, bar, etc)
 	Chart.DatasetController = function(chart, datasetIndex) {
@@ -74,4 +69,4 @@
 
 	Chart.DatasetController.extend = helpers.inherits;
 
-}).call(this);
+}).call(this, Chart);
