@@ -96,14 +96,14 @@
 						ctx.fill();
 					break;
 					case 'rect':
-						ctx.fillRect(vm.x - radius, vm.y - radius, 2 * radius, 2 * radius);
-						ctx.strokeRect(vm.x - radius, vm.y - radius, 2 * radius, 2 * radius);
+						ctx.fillRect(vm.x - 1 / Math.SQRT2 * radius, vm.y - 1 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius);
+						ctx.strokeRect(vm.x - 1 / Math.SQRT2 * radius, vm.y - 1 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius);
 					break;
 					case 'rectRot':
 						ctx.translate(vm.x, vm.y);
 						ctx.rotate(Math.PI / 4);
-						ctx.fillRect(-radius, -radius, 2 * radius, 2 * radius);
-						ctx.strokeRect(-radius, -radius, 2 * radius, 2 * radius);
+						ctx.fillRect(-1 / Math.SQRT2 * radius, -1 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius);
+						ctx.strokeRect(-1 / Math.SQRT2 * radius, -1 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius);
 						ctx.setTransform(1, 0, 0, 1, 0, 0);
 					break;
 					case 'cross':
