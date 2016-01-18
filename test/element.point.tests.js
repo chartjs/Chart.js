@@ -166,10 +166,10 @@ describe('Point element tests', function() {
 			args: ['rgba(0, 255, 0)']
 		}, {
 			name: 'fillRect',
-			args: [8, 13, 4, 4]
+			args: [10 - 1 / Math.SQRT2 * 2, 15 - 1 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2]
 		}, {
 			name: 'strokeRect',
-			args: [8, 13, 4, 4]
+			args: [10 - 1 / Math.SQRT2 * 2, 15 - 1 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2]
 		}, {
 			name: 'stroke',
 			args: []
@@ -196,10 +196,10 @@ describe('Point element tests', function() {
 			args: [Math.PI / 4]
 		}, {
 			name: 'fillRect',
-			args: [-2, -2, 4, 4],
+			args: [-1 / Math.SQRT2 * 2, -1 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2],
 		}, {
 			name: 'strokeRect',
-			args: [-2, -2, 4, 4],
+			args: [-1 / Math.SQRT2 * 2, -1 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2],
 		}, {
 			name: 'setTransform',
 			args: [1, 0, 0, 1, 0, 0],
