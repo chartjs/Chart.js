@@ -90,12 +90,15 @@
 
 			var sizeChanged = this.chart.width !== newWidth || this.chart.height !== newHeight;
 
+			if (!sizeChanged)
+				return this;
+
 			canvas.width = this.chart.width = newWidth;
 			canvas.height = this.chart.height = newHeight;
 
 			helpers.retinaScale(this.chart);
 
-			if (!silent && sizeChanged) {
+			if (!silent) {
 				this.stop();
 				this.update(this.options.responsiveAnimationDuration);
 			}
