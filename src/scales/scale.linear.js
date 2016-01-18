@@ -197,7 +197,6 @@
 			// range of the scale
 			this.max = helpers.max(this.ticks);
 			this.min = helpers.min(this.ticks);
-			this.ticksAsNumbers = this.ticks.slice();
 
 			if (this.options.ticks.reverse) {
 				this.ticks.reverse();
@@ -209,6 +208,7 @@
 				this.end = this.max;
 			}
 
+			this.ticksAsNumbers = this.ticks.slice(); // do after we potentially reverse the ticks
 			this.zeroLineIndex = this.ticks.indexOf(0);
 		},
 
