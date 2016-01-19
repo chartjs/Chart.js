@@ -1027,6 +1027,9 @@ describe('Linear Scale', function() {
 			"name": "setStrokeStyle",
 			"args": ["rgba(0, 0, 0, 0.1)"]
 		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
 			"name": "moveTo",
 			"args": [0, 100.5]
 		}, {
@@ -1099,6 +1102,9 @@ describe('Linear Scale', function() {
 		}, {
 			"name": "setStrokeStyle",
 			"args": ["rgba(0, 0, 0, 0.1)"]
+		}, {
+			"name": "beginPath",
+			"args": []
 		}, {
 			"name": "moveTo",
 			"args": [0, 100.5]
@@ -1559,6 +1565,9 @@ describe('Linear Scale', function() {
 			"name": "setStrokeStyle",
 			"args": ["rgba(0, 0, 0, 0.1)"]
 		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
 			"name": "moveTo",
 			"args": [30.5, 0]
 		}, {
@@ -1689,6 +1698,9 @@ describe('Linear Scale', function() {
 		}, {
 			"name": "setStrokeStyle",
 			"args": ["rgba(0, 0, 0, 0.1)"]
+		}, {
+			"name": "beginPath",
+			"args": []
 		}, {
 			"name": "moveTo",
 			"args": [30.5, 0]
@@ -1946,6 +1958,9 @@ describe('Linear Scale', function() {
 		}, {
 			"name": "setStrokeStyle",
 			"args": ["rgba(0, 0, 0, 0.1)"]
+		}, {
+			"name": "beginPath",
+			"args": []
 		}, {
 			"name": "moveTo",
 			"args": [30.5, 0]
