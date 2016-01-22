@@ -208,8 +208,10 @@
 			Chart.layoutService.update(this, this.chart.width, this.chart.height);
 		},
 
-		buildOrUpdateControllers: function buildOrUpdateControllers(resetNewControllers) {
+		buildOrUpdateControllers: function buildOrUpdateControllers() {
 			var types = [];
+			var newControllers = [];
+
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				if (!dataset.type) {
 					dataset.type = this.config.type;
@@ -222,10 +224,7 @@
 					dataset.controller.updateIndex(datasetIndex);
 				} else {
 					dataset.controller = new Chart.controllers[type](this, datasetIndex);
-
-					if (resetNewControllers) {
-						dataset.controller.reset();
-					}
+					newControllers.push(dataset.controller);
 				}
 			}, this);
 
@@ -237,6 +236,8 @@
 					}
 				}
 			}
+
+			return newControllers;
 		},
 
 		resetElements: function resetElements() {
@@ -250,9 +251,14 @@
 			this.tooltip._data = this.data;
 
 			// Make sure dataset controllers are updated and new controllers are reset
-			this.buildOrUpdateControllers(true);
+			var newControllers = this.buildOrUpdateControllers();
 
 			Chart.layoutService.update(this, this.chart.width, this.chart.height);
+
+			// Can only reset the new controllers after the scales have been updated
+			helpers.each(newControllers, function(controller) {
+				controller.reset();
+			});
 
 			// Make sure all dataset controllers have correct meta data counts
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {

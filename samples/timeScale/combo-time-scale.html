@@ -74,6 +74,7 @@
 				}, ]
 			},
 			options: {
+				showLines: true,
 				responsive: true,
 				scales: {
 					xAxes: [{
@@ -144,10 +145,7 @@
 
 		$('#addData').click(function() {
 			if (config.data.datasets.length > 0) {
-				config.data.labels.push(
-					myLine.scales['x-axis-0'].labelMoments[myLine.scales['x-axis-0'].labelMoments.length - 1].add(1, 'day')
-					.format('MM/DD/YYYY')
-				);
+				config.data.labels.push(newDateString(config.data.labels.length));
 
 				for (var index = 0; index < config.data.datasets.length; ++index) {
 					config.data.datasets[index].data.push(randomScalingFactor());
