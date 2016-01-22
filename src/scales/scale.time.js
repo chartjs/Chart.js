@@ -147,7 +147,7 @@
 
 				// Start as small as possible
 				this.tickUnit = 'millisecond';
-				this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, this.tickUnit, true) + buffer);
+				this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, this.tickUnit, true) + buffer) - 1;
 				this.displayFormat = this.options.time.displayFormats[this.tickUnit];
 
 				var unitDefinitionIndex = 0;
@@ -179,7 +179,7 @@
 						unitDefinition = time.units[unitDefinitionIndex];
 						
 						this.tickUnit = unitDefinition.name;
-						this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, this.tickUnit) + buffer);
+						this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, this.tickUnit) + buffer) - 1;
 						this.displayFormat = this.options.time.displayFormats[unitDefinition.name];
 					}
 				}
@@ -201,12 +201,12 @@
 			}
 
 			// For every unit in between the first and last moment, create a moment and add it to the ticks tick
-			for (var i = 0; i <= this.tickRange; ++i) {
+			for (var i = 0; i < this.tickRange; ++i) {
 				if (i % this.unitScale === 0) {
 					this.ticks.push(this.firstTick.clone().add(i, this.tickUnit));
-				} else if (i === this.tickRange) {
+				} else if (i + 1 === this.tickRange) {
 					// Expand out the last one if not an exact multiple
-					this.tickRange = Math.ceil(this.tickRange / this.unitScale) * this.unitScale;
+					this.tickRange = (Math.ceil(this.tickRange / this.unitScale) * this.unitScale) - 1;
 					this.ticks.push(this.firstTick.clone().add(this.tickRange, this.tickUnit));
 					this.lastTick = this.ticks[this.ticks.length - 1].clone();
 					break;
@@ -243,7 +243,7 @@
 			var labelMoment = this.getLabelMoment(datasetIndex, index);
 			var offset = labelMoment.diff(this.firstTick, this.tickUnit, true);
 
-			var decimal = offset / this.tickRange;
+			var decimal = offset / (this.tickRange - 1);
 
 			if (this.isHorizontal()) {
 				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
