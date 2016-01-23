@@ -265,10 +265,22 @@
 		return !isNaN(parseFloat(n)) && isFinite(n);
 	};
 	helpers.max = function(array) {
-		return Math.max.apply(Math, array);
+		return array.reduce(function(max, value) {
+			if (!isNaN(value)) {
+				return Math.max(max, value);
+			} else {
+				return max;
+			}
+		}, Number.MIN_VALUE);
 	};
 	helpers.min = function(array) {
-		return Math.min.apply(Math, array);
+		return array.reduce(function(min, value) {
+			if (!isNaN(value)) {
+				return Math.min(min, value);
+			} else {
+				return min;
+			}
+		}, Number.MAX_VALUE);
 	};
 	helpers.sign = function(x) {
 		if (Math.sign) {

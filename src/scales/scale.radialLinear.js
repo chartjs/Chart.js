@@ -185,9 +185,6 @@
 		getLabelForIndex: function(index, datasetIndex) {
 			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 		},
-		getCircumference: function() {
-			return ((Math.PI * 2) / this.getValueCount());
-		},
 		fit: function() {
 			/*
 			 * Right, this is really confusing and there is a lot of maths going on here
