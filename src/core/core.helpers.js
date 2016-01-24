@@ -271,7 +271,7 @@
 			} else {
 				return max;
 			}
-		}, Number.MIN_VALUE);
+		}, Number.NEGATIVE_INFINITY);
 	};
 	helpers.min = function(array) {
 		return array.reduce(function(min, value) {
@@ -280,7 +280,7 @@
 			} else {
 				return min;
 			}
-		}, Number.MAX_VALUE);
+		}, Number.POSITIVE_INFINITY);
 	};
 	helpers.sign = function(x) {
 		if (Math.sign) {
