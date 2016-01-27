@@ -43,6 +43,8 @@
 
 			if (this.options.stacked) {
 				var valuesPerType = {};
+				var hasPositiveValues = false;
+				var hasNegativeValues = false;
 
 				helpers.each(this.chart.data.datasets, function(dataset) {
 					if (valuesPerType[dataset.type] === undefined) {
@@ -71,8 +73,10 @@
 								positiveValues[index] = 100;
 							} else {
 								if (value < 0) {
+									hasNegativeValues = true;
 									negativeValues[index] += value;
 								} else {
+									hasPositiveValues = true;
 									positiveValues[index] += value;
 								}
 							}
@@ -81,9 +85,9 @@
 				}, this);
 
 				helpers.each(valuesPerType, function(valuesForType) {
-					var values = valuesForType.positiveValues.concat(valuesForType.negativeValues);
+					var values = hasPositiveValues ? hasNegativeValues ? valuesForType.positiveValues.concat(valuesForType.negativeValues) : valuesForType.positiveValues : valuesForType.negativeValues;
 					var minVal = helpers.min(values);
-					var maxVal = helpers.max(values);
+					var maxVal = helpers.max(values)
 					this.min = this.min === null ? minVal : Math.min(this.min, minVal);
 					this.max = this.max === null ? maxVal : Math.max(this.max, maxVal);
 				}, this);

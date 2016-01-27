@@ -125,6 +125,57 @@ describe('Time scale tests', function() {
 		expect(scale.ticks).toEqual(['Jan 1, 2015', 'Jan 3, 2015', 'Jan 5, 2015', 'Jan 7, 2015', 'Jan 9, 2015', 'Jan 11, 2015', 'Jan 13, 2015']);
 	});
 
+	it('should build ticks when the data is xy points', function() {
+		// Helper to build date objects
+		function newDateFromRef(days) {
+			return moment('01/01/2015 12:00', 'DD/MM/YYYY HH:mm').add(days, 'd').toDate();
+		}
+
+		var scaleID = 'myScale';
+		var mockData = {
+			datasets: [{
+				data: [{
+					x: newDateFromRef(0),
+					y: 1
+				}, {
+					x: newDateFromRef(1),
+					y: 10
+				}, {
+					x: newDateFromRef(2),
+					y: 0
+				}, {
+					x: newDateFromRef(4),
+					y: 5
+				}, {
+					x: newDateFromRef(6),
+					y: 77
+				}, {
+					x: newDateFromRef(7),
+					y: 9
+				}, {
+					x: newDateFromRef(9),
+					y: 5
+				}], // days
+			}]
+		};
+
+		var mockContext = window.createMockContext();
+		var Constructor = Chart.scaleService.getScaleConstructor('time');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: Chart.scaleService.getScaleDefaults('time'), // use default config for scale
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		scale.update(400, 50);
+
+		// Counts down because the lines are drawn top to bottom
+		expect(scale.ticks).toEqual(['Jan 1, 2015', 'Jan 3, 2015', 'Jan 5, 2015', 'Jan 7, 2015', 'Jan 9, 2015', 'Jan 11, 2015', 'Jan 13, 2015']);
+	});
+
 	it('should build ticks using the config unit', function() {
 		var scaleID = 'myScale';
 
@@ -133,7 +184,7 @@ describe('Time scale tests', function() {
 		};
 
 		var mockContext = window.createMockContext();
-		var config = Chart.scaleService.getScaleDefaults('time');
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('time'));
 		config.time.unit = 'hour';
 		var Constructor = Chart.scaleService.getScaleConstructor('time');
 		var scale = new Constructor({
@@ -158,7 +209,7 @@ describe('Time scale tests', function() {
 		};
 
 		var mockContext = window.createMockContext();
-		var config = Chart.scaleService.getScaleDefaults('time');
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('time'));
 		config.time.unit = 'week';
 		config.time.round = 'week';
 		var Constructor = Chart.scaleService.getScaleConstructor('time');
@@ -174,6 +225,31 @@ describe('Time scale tests', function() {
 		//scale.buildTicks();
 		scale.update(400, 50);
 		expect(scale.ticks).toEqual(['Dec 28, 2014', 'Jan 4, 2015', 'Jan 11, 2015', 'Jan 18, 2015', 'Jan 25, 2015', 'Feb 1, 2015', 'Feb 8, 2015', 'Feb 15, 2015']);
+	});
+
+	it('Should use the min and max options', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			labels: ["2015-01-01T20:00:00", "2015-01-02T20:00:00", "2015-01-03T20:00:00"], // days
+		};
+
+		var mockContext = window.createMockContext();
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('time'));
+		config.time.min = "2015-01-01T04:00:00";
+		config.time.max = "2015-01-05T06:00:00"
+		var Constructor = Chart.scaleService.getScaleConstructor('time');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: config, // use default config for scale
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		scale.update(400, 50);
+		expect(scale.ticks).toEqual(['Jan 1, 4AM', 'Jan 1, 4PM', 'Jan 2, 4AM', 'Jan 2, 4PM', 'Jan 3, 4AM', 'Jan 3, 4PM', 'Jan 4, 4AM', 'Jan 4, 4PM', 'Jan 5, 4AM', 'Jan 5, 6AM']);
 	});
 
 	it('should get the correct pixel for a value', function() {
@@ -197,20 +273,19 @@ describe('Time scale tests', function() {
 			id: scaleID
 		});
 
-		//scale.buildTicks();
 		scale.update(400, 50);
 
 		expect(scale.width).toBe(400);
-		expect(scale.height).toBe(28);
+		expect(scale.height).toBe(50);
 		scale.left = 0;
 		scale.right = 400;
 		scale.top = 10;
 		scale.bottom = 38;
 
-		expect(scale.getPixelForValue('', 0, 0)).toBe(63);
-		expect(scale.getPixelForValue('', 6, 0)).toBe(342);
+		expect(scale.getPixelForValue('', 0, 0)).toBe(128);
+		expect(scale.getPixelForValue('', 6, 0)).toBe(380);
 
-		var verticalScaleConfig = Chart.scaleService.getScaleDefaults('time');
+		var verticalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('time'));
 		verticalScaleConfig.position = "left";
 
 		var verticalScale = new Constructor({
@@ -229,7 +304,42 @@ describe('Time scale tests', function() {
 		verticalScale.right = 50;
 		verticalScale.bottom = 400;
 
-		expect(verticalScale.getPixelForValue('', 0, 0)).toBe(6);
-		expect(verticalScale.getPixelForValue('', 6, 0)).toBe(394);
+		expect(verticalScale.getPixelForValue('', 0, 0)).toBe(38);
+		expect(verticalScale.getPixelForValue('', 6, 0)).toBe(375);
+	});
+
+	it('should get the correct label for a data value', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			labels: ["2015-01-01T20:00:00", "2015-01-02T21:00:00", "2015-01-03T22:00:00", "2015-01-05T23:00:00", "2015-01-07T03:00", "2015-01-08T10:00", "2015-01-10T12:00"], // days
+			datasets: [{
+				data: [],
+			}]
+		};
+
+		var mockContext = window.createMockContext();
+		var Constructor = Chart.scaleService.getScaleConstructor('time');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: Chart.scaleService.getScaleDefaults('time'), // use default config for scale
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		scale.update(400, 50);
+
+		expect(scale.width).toBe(400);
+		expect(scale.height).toBe(50);
+		scale.left = 0;
+		scale.right = 400;
+		scale.top = 10;
+		scale.bottom = 38;
+
+		expect(scale.getLabelForIndex(0, 0)).toBe('2015-01-01T20:00:00');
+		expect(scale.getLabelForIndex(6, 0)).toBe('2015-01-10T12:00');
+
 	});
 });

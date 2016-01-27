@@ -159,6 +159,45 @@ describe('Logarithmic Scale tests', function() {
 		expect(scale.max).toBe(5000);
 	});
 
+	it('Should correctly determine the max & min data values when there is NaN data', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [undefined, 10, null, 5, 5000, NaN, 78, 450]
+			}]
+		};
+
+		var mockContext = window.createMockContext();
+		var options = Chart.scaleService.getScaleDefaults('logarithmic');
+		var Constructor = Chart.scaleService.getScaleConstructor('logarithmic');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: options, // use default config for scale
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		expect(scale).not.toEqual(undefined); // must construct
+		expect(scale.min).toBe(undefined); // not yet set
+		expect(scale.max).toBe(undefined);
+
+		scale.update(400, 400);
+		expect(scale.min).toBe(1);
+		expect(scale.max).toBe(5000);
+
+		// Turn on stacked mode since it uses it's own
+		options.stacked = true;
+
+		scale.update(400, 400);
+		expect(scale.min).toBe(1);
+		expect(scale.max).toBe(5000);
+	});
+
+
 	it('Should correctly determine the max & min for scatter data', function() {
 		var scaleID = 'myScale';
 
@@ -495,6 +534,38 @@ describe('Logarithmic Scale tests', function() {
 		expect(scale.ticks).toEqual(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16']);
 	});
 
+	it('Should correctly get the correct label for a data item', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [10, 5, 5000, 78, 450]
+			}, {
+				yAxisID: 'second scale',
+				data: [1, 1000, 10, 100],
+			}, {
+				yAxisID: scaleID,
+				data: [150]
+			}]
+		};
+
+		var mockContext = window.createMockContext();
+		var Constructor = Chart.scaleService.getScaleConstructor('logarithmic');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: Chart.scaleService.getScaleDefaults('logarithmic'), // use default config for scale
+			chart: {
+				data: mockData,
+			},
+			id: scaleID
+		});
+
+		scale.update(400, 400);
+
+		expect(scale.getLabelForIndex(0, 2)).toBe(150);
+	});
+
 	it('Should get the correct pixel value for a point', function() {
 		var scaleID = 'myScale';
 
@@ -533,6 +604,7 @@ describe('Logarithmic Scale tests', function() {
 		expect(verticalScale.getPixelForValue(80, 0, 0)).toBe(5); // top + paddingTop
 		expect(verticalScale.getPixelForValue(1, 0, 0)).toBe(105); // bottom - paddingBottom
 		expect(verticalScale.getPixelForValue(10, 0, 0)).toBeCloseTo(52.4, 1e-4); // halfway
+		expect(verticalScale.getPixelForValue(0, 0, 0)).toBe(5); // 0 is invalid. force it on top
 
 		var horizontalConfig = Chart.helpers.clone(config);
 		horizontalConfig.position = 'bottom';
@@ -560,5 +632,6 @@ describe('Logarithmic Scale tests', function() {
 		expect(horizontalScale.getPixelForValue(80, 0, 0)).toBe(105); // right - paddingRight
 		expect(horizontalScale.getPixelForValue(1, 0, 0)).toBe(5); // left + paddingLeft
 		expect(horizontalScale.getPixelForValue(10, 0, 0)).toBeCloseTo(57.5, 1e-4); // halfway
+		expect(horizontalScale.getPixelForValue(0, 0, 0)).toBe(5); // 0 is invalid, put it on the left.
 	});
 });

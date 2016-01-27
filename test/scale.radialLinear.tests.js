@@ -163,6 +163,33 @@ describe('Test the radial linear scale', function() {
 		expect(scale.max).toBe(200);
 	});
 
+	it('Should correctly determine the max & min data values when there is NaN data', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [50, 60, NaN, 70, null, undefined]
+			}],
+			labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
+		};
+
+		var mockContext = window.createMockContext();
+		var Constructor = Chart.scaleService.getScaleConstructor('radialLinear');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: Chart.scaleService.getScaleDefaults('radialLinear'), // use default config for scale
+			chart: {
+				data: mockData
+			},
+			id: scaleID,
+		});
+
+		scale.update(200, 300);
+		expect(scale.min).toBe(50);
+		expect(scale.max).toBe(70);
+	});
+
 	it('Should ensure that the scale has a max and min that are not equal', function() {
 		var scaleID = 'myScale';
 
@@ -425,6 +452,38 @@ describe('Test the radial linear scale', function() {
 		expect(scale.drawingArea).toBe(37);
 		expect(scale.xCenter).toBe(110);
 		expect(scale.yCenter).toBe(155);
+	});
+
+	it('should correctly get the label for a given data index', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [10, 5, 0, 25, 78]
+			}],
+			labels: ['point1', 'point2', 'point3', 'point4', 'point5'] // used in radar charts which use the same scales
+		};
+
+		var mockContext = window.createMockContext();
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('radialLinear'));
+		var Constructor = Chart.scaleService.getScaleConstructor('radialLinear');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: config,
+			chart: {
+				data: mockData
+			},
+			id: scaleID,
+		});
+
+		scale.left = 10;
+		scale.right = 210;
+		scale.top = 5;
+		scale.bottom = 305;
+		scale.update(200, 300);
+
+		expect(scale.getLabelForIndex(1, 0)).toBe(5);
 	});
 
 	it('should get the correct distance from the center point', function() {

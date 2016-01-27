@@ -172,7 +172,7 @@
 				} else {
 					var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
 					pixel = this.left + (innerWidth / range * (helpers.log10(newVal) - helpers.log10(this.start)));
-					return pixel + this.paddingLeft;
+					pixel += this.paddingLeft;
 				}
 			} else {
 				// Bottom - top since pixels increase downard on a screen
@@ -180,10 +180,11 @@
 					pixel = this.top + this.paddingTop;
 				} else {
 					var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
-					return (this.bottom - this.paddingBottom) - (innerHeight / range * (helpers.log10(newVal) - helpers.log10(this.start)));
+					pixel = (this.bottom - this.paddingBottom) - (innerHeight / range * (helpers.log10(newVal) - helpers.log10(this.start)));
 				}
 			}
 
+			return pixel;
 		},
 
 	});

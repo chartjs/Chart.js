@@ -378,6 +378,152 @@ describe('Bar controller tests', function() {
 		expect(bar2._model.y).toBe(37);
 	});
 
+	it('should update elements when the scales are stacked', function() {
+		var data = {
+			datasets: [{
+				data: [10, -10, 10, -10],
+				label: 'dataset1',
+				xAxisID: 'firstXScaleID',
+				yAxisID: 'firstYScaleID',
+				bar: true
+			}, {
+				data: [10, 15, 0, -4],
+				label: 'dataset2',
+				xAxisID: 'firstXScaleID',
+				yAxisID: 'firstYScaleID',
+				bar: true
+			}],
+			labels: ['label1', 'label2', 'label3', 'label4']
+		};
+		var mockContext = window.createMockContext();
+
+		var VerticalScaleConstructor = Chart.scaleService.getScaleConstructor('linear');
+		var verticalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		verticalScaleConfig = Chart.helpers.scaleMerge(verticalScaleConfig, Chart.defaults.bar.scales.yAxes[0]);
+		verticalScaleConfig.stacked = true;
+		var yScale = new VerticalScaleConstructor({
+			ctx: mockContext,
+			options: verticalScaleConfig,
+			chart: {
+				data: data
+			},
+			id: 'firstYScaleID'
+		});
+
+		// Update ticks & set physical dimensions
+		var verticalSize = yScale.update(50, 200);
+		yScale.top = 0;
+		yScale.left = 0;
+		yScale.right = verticalSize.width;
+		yScale.bottom = verticalSize.height;
+
+		var HorizontalScaleConstructor = Chart.scaleService.getScaleConstructor('category');
+		var horizontalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
+		horizontalScaleConfig = Chart.helpers.scaleMerge(horizontalScaleConfig, Chart.defaults.bar.scales.xAxes[0]);
+		horizontalScaleConfig.stacked = true;
+		var xScale = new HorizontalScaleConstructor({
+			ctx: mockContext,
+			options: horizontalScaleConfig,
+			chart: {
+				data: data
+			},
+			id: 'firstXScaleID'
+		});
+
+		// Update ticks & set physical dimensions
+		var horizontalSize = xScale.update(200, 50);
+		xScale.left = yScale.right;
+		xScale.top = yScale.bottom;
+		xScale.right = horizontalSize.width + xScale.left;
+		xScale.bottom = horizontalSize.height + xScale.top;
+
+		var chart = {
+			data: data,
+			config: {
+				type: 'bar'
+			},
+			options: {
+				elements: {
+					rectangle: {
+						backgroundColor: 'rgb(255, 0, 0)',
+						borderColor: 'rgb(0, 0, 255)',
+						borderWidth: 2,
+					}
+				},
+				scales: {
+					xAxes: [{
+						id: 'firstXScaleID'
+					}],
+					yAxes: [{
+						id: 'firstYScaleID'
+					}]
+				}
+			},
+			scales: {
+				firstXScaleID: xScale,
+				firstYScaleID: yScale,
+			}
+		};
+
+		var controller0 = new Chart.controllers.bar(chart, 0);
+		var controller1 = new Chart.controllers.bar(chart, 1);
+
+		controller0.buildOrUpdateElements();
+		controller0.update();
+		controller1.buildOrUpdateElements();
+		controller1.update();
+
+		expect(chart.data.datasets[0].metaData[0]._model).toEqual(jasmine.objectContaining({
+			x: 106,
+			y: 60,
+			base: 113,
+			width: 30.400000000000002
+		}));
+		expect(chart.data.datasets[0].metaData[1]._model).toEqual(jasmine.objectContaining({
+			x: 144,
+			y: 167,
+			base: 113,
+			width: 30.400000000000002
+		}));
+		expect(chart.data.datasets[0].metaData[2]._model).toEqual(jasmine.objectContaining({
+			x: 183,
+			y: 60,
+			base: 113,
+			width: 30.400000000000002
+		}));
+		expect(chart.data.datasets[0].metaData[3]._model).toEqual(jasmine.objectContaining({
+			x: 222,
+			y: 167,
+			base: 113,
+			width: 30.400000000000002
+		}));
+
+		expect(chart.data.datasets[1].metaData[0]._model).toEqual(jasmine.objectContaining({
+			x: 106,
+			y: 6,
+			base: 60,
+			width: 30.400000000000002
+		}));
+		expect(chart.data.datasets[1].metaData[1]._model).toEqual(jasmine.objectContaining({
+			x: 144,
+			y: 33,
+			base: 113,
+			width: 30.400000000000002
+		}));
+		expect(chart.data.datasets[1].metaData[2]._model).toEqual(jasmine.objectContaining({
+			x: 183,
+			y: 60,
+			base: 60,
+			width: 30.400000000000002
+		}));
+		expect(chart.data.datasets[1].metaData[3]._model).toEqual(jasmine.objectContaining({
+			x: 222,
+			y: 189,
+			base: 167,
+			width: 30.400000000000002
+		}));
+	});
+
 	it ('should draw all bars', function() {
 		var data = {
 			datasets: [{}, {
