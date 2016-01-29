@@ -9,6 +9,11 @@
     Chart.elements.ErrorBar = Chart.Element.extend({
       draw: function() {
 
+				var ctx = this._chart.ctx;
+				var vm = this._view;
+
+				// console.log(vm);
+
       }
     })
 
