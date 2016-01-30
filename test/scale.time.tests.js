@@ -55,7 +55,7 @@ describe('Time scale tests', function() {
 				round: false,
 				displayFormat: false,
 				displayFormats: {
-					'millisecond': 'SSS [ms]',
+					'millisecond': 'h:mm:ss.SSS a', // 11:20:01.123 AM
 					'second': 'h:mm:ss a', // 11:20:01 AM
 					'minute': 'h:mm:ss a', // 11:20:01 AM
 					'hour': 'MMM D, hA', // Sept 4, 5PM
@@ -122,7 +122,7 @@ describe('Time scale tests', function() {
 		scale.update(400, 50);
 
 		// Counts down because the lines are drawn top to bottom
-		expect(scale.ticks).toEqual(['Jan 1, 2015', 'Jan 3, 2015', 'Jan 5, 2015', 'Jan 7, 2015', 'Jan 9, 2015', 'Jan 11, 2015', 'Jan 13, 2015']);
+		expect(scale.ticks).toEqual(['Jan 1, 2015', 'Jan 3, 2015', 'Jan 5, 2015', 'Jan 7, 2015', 'Jan 9, 2015', 'Jan 11, 2015']);
 	});
 
 	it('should build ticks when the data is xy points', function() {
@@ -173,7 +173,7 @@ describe('Time scale tests', function() {
 		scale.update(400, 50);
 
 		// Counts down because the lines are drawn top to bottom
-		expect(scale.ticks).toEqual(['Jan 1, 2015', 'Jan 3, 2015', 'Jan 5, 2015', 'Jan 7, 2015', 'Jan 9, 2015', 'Jan 11, 2015', 'Jan 13, 2015']);
+		expect(scale.ticks).toEqual(['Jan 1, 2015', 'Jan 3, 2015', 'Jan 5, 2015', 'Jan 7, 2015', 'Jan 9, 2015', 'Jan 11, 2015']);
 	});
 
 	it('should build ticks using the config unit', function() {
@@ -224,6 +224,8 @@ describe('Time scale tests', function() {
 
 		//scale.buildTicks();
 		scale.update(400, 50);
+
+		// last date is feb 15 because we round to start of week
 		expect(scale.ticks).toEqual(['Dec 28, 2014', 'Jan 4, 2015', 'Jan 11, 2015', 'Jan 18, 2015', 'Jan 25, 2015', 'Feb 1, 2015', 'Feb 8, 2015', 'Feb 15, 2015']);
 	});
 

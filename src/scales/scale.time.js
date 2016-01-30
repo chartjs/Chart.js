@@ -54,7 +54,7 @@
 
 			// defaults to unit's corresponding unitFormat below or override using pattern string from http://momentjs.com/docs/#/displaying/format/
 			displayFormats: {
-				'millisecond': 'SSS [ms]',
+				'millisecond': 'h:mm:ss.SSS a', // 11:20:01.123 AM,
 				'second': 'h:mm:ss a', // 11:20:01 AM
 				'minute': 'h:mm:ss a', // 11:20:01 AM
 				'hour': 'MMM D, hA', // Sept 4, 5PM
@@ -143,7 +143,7 @@
 				// Determine the smallest needed unit of the time
 				var innerWidth = this.isHorizontal() ? this.width - (this.paddingLeft + this.paddingRight) : this.height - (this.paddingTop + this.paddingBottom);
 				var labelCapacity = innerWidth / (this.options.ticks.fontSize + 10);
-				var buffer = this.options.time.round ? 0 : 2;
+				var buffer = this.options.time.round ? 0 : 1;
 
 				// Start as small as possible
 				this.tickUnit = 'millisecond';
@@ -225,7 +225,7 @@
 			// Always show the right tick
 			if (this.options.time.max) {
 				this.ticks.push(this.lastTick.clone());
-			} else {
+			} else if (this.ticks[this.ticks.length - 1].diff(this.lastTick, this.tickUnit, true) !== 0) {
 				this.tickRange = Math.ceil(this.tickRange / this.unitScale) * this.unitScale;
 				this.ticks.push(this.firstTick.clone().add(this.tickRange, this.tickUnit));
 				this.lastTick = this.ticks[this.ticks.length - 1].clone();
