@@ -217,8 +217,15 @@
 
 			// For every unit in between the first and last moment, create a moment and add it to the ticks tick
 			for (var i = 1; i < this.tickRange; ++i) {
+				var newTick = roundedStart.clone().add(i, this.tickUnit);
+
+				// Are we greater than the max time
+				if (this.options.time.max && newTick.diff(this.lastTick, this.tickUnit, true) >= 0) {
+					break;
+				}
+
 				if (i % this.unitScale === 0) {
-					this.ticks.push(roundedStart.clone().add(i, this.tickUnit));
+					this.ticks.push(newTick);
 				}
 			}
 
