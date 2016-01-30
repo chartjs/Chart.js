@@ -141,24 +141,24 @@
 
 	//-- Basic js utility methods
 	helpers.each = function(loopable, callback, self, reverse) {
-		var additionalArgs = Array.prototype.slice.call(arguments, 3);
 		// Check to see if null or undefined firstly.
-		if (loopable) {
-			if (loopable.length === +loopable.length) {
-				var i;
-				if (reverse) {
-					for (i = loopable.length - 1; i >= 0; i--) {
-						callback.apply(self, [loopable[i], i].concat(additionalArgs));
-					}
-				} else {
-					for (i = 0; i < loopable.length; i++) {
-						callback.apply(self, [loopable[i], i].concat(additionalArgs));
-					}
+		var i, len;
+		if (helpers.isArray(loopable)) {
+			len = loopable.length;
+			if (reverse) {
+				for (i = len - 1; i >= 0; i--) {
+					callback.call(self, loopable[i], i);
 				}
 			} else {
-				for (var item in loopable) {
-					callback.apply(self, [loopable[item], item].concat(additionalArgs));
+				for (i = 0; i < len; i++) {
+					callback.call(self, loopable[i], i);
 				}
+			}
+		} else if (typeof loopable === 'object') {
+			var keys = Object.keys(loopable);
+			len = keys.length;
+			for (i = 0; i < len; i++) {
+				callback.call(self, loopable[keys[i]], keys[i]);
 			}
 		}
 	};
@@ -178,7 +178,12 @@
 		return objClone;
 	};
 	helpers.extend = function(base) {
-		helpers.each(Array.prototype.slice.call(arguments, 1), function(extensionObject) {
+		var len = arguments.length;
+		var additionalArgs = [];
+		for(var i = 1; i < len; i++) {
+			additionalArgs.push(arguments[i]);
+		}
+		helpers.each(additionalArgs, function(extensionObject) {
 			helpers.each(extensionObject, function(value, key) {
 				if (extensionObject.hasOwnProperty(key)) {
 					base[key] = value;
@@ -390,10 +395,22 @@
 		return !isNaN(parseFloat(n)) && isFinite(n);
 	};
 	helpers.max = function(array) {
-		return Math.max.apply(Math, array);
+		return array.reduce(function(max, value) {
+			if (!isNaN(value)) {
+				return Math.max(max, value);
+			} else {
+				return max;
+			}
+		}, Number.NEGATIVE_INFINITY);
 	};
 	helpers.min = function(array) {
-		return Math.min.apply(Math, array);
+		return array.reduce(function(min, value) {
+			if (!isNaN(value)) {
+				return Math.min(min, value);
+			} else {
+				return min;
+			}
+		}, Number.POSITIVE_INFINITY);
 	};
 	helpers.sign = function(x) {
 		if (Math.sign) {
@@ -881,13 +898,37 @@
 	helpers.fontString = function(pixelSize, fontStyle, fontFamily) {
 		return fontStyle + " " + pixelSize + "px " + fontFamily;
 	};
-	helpers.longestText = function(ctx, font, arrayOfStrings) {
+	helpers.longestText = function(ctx, font, arrayOfStrings, cache) {
+		cache = cache || {};
+		cache.data = cache.data || {};
+		cache.garbageCollect = cache.garbageCollect || [];
+
+		if (cache.font !== font) {
+			cache.data = {};
+			cache.garbageCollect = [];
+			cache.font = font;
+		}
+
 		ctx.font = font;
 		var longest = 0;
 		helpers.each(arrayOfStrings, function(string) {
-			var textWidth = ctx.measureText(string).width;
-			longest = (textWidth > longest) ? textWidth : longest;
+			var textWidth = cache.data[string];
+			if (!textWidth) {
+				textWidth = cache.data[string] = ctx.measureText(string).width;
+				cache.garbageCollect.push(string);
+			}
+			if (textWidth > longest)
+				longest = textWidth;
 		});
+
+		var gcLen = cache.garbageCollect.length / 2;
+		if (gcLen > arrayOfStrings.length) {
+			for (var i = 0; i < gcLen; i++) {
+				var key = cache.garbageCollect.shift();
+				delete cache.data[key];
+			}
+		}
+
 		return longest;
 	};
 	helpers.drawRoundedRectangle = function(ctx, x, y, width, height, radius) {
@@ -996,6 +1037,14 @@
 			if (!this._view) {
 				this._view = helpers.clone(this._model);
 			}
+
+			// No animation -> No Transition
+			if (ease === 1) {
+				this._view = this._model;
+				this._start = null;
+				return this;
+			}
+
 			if (!this._start) {
 				this.pivot();
 			}
@@ -1007,16 +1056,16 @@
 				}
 
 				// Init if doesn't exist
-				else if (!this._view[key]) {
-					if (typeof value === 'number' && isNaN(this._view[key]) === false) {
+				else if (!this._view.hasOwnProperty(key)) {
+					if (typeof value === 'number' && !isNaN(this._view[key])) {
 						this._view[key] = value * ease;
 					} else {
-						this._view[key] = value || null;
+						this._view[key] = value;
 					}
 				}
 
 				// No unnecessary computations
-				else if (this._model[key] === this._view[key]) {
+				else if (value === this._view[key]) {
 					// It's the same! Woohoo!
 				}
 
@@ -1040,9 +1089,6 @@
 				}
 			}, this);
 
-			if (ease === 1) {
-				delete this._start;
-			}
 			return this;
 		},
 		tooltipPosition: function() {
@@ -1273,12 +1319,15 @@
 
 			var sizeChanged = this.chart.width !== newWidth || this.chart.height !== newHeight;
 
+			if (!sizeChanged)
+				return this;
+
 			canvas.width = this.chart.width = newWidth;
 			canvas.height = this.chart.height = newHeight;
 
 			helpers.retinaScale(this.chart);
 
-			if (!silent && sizeChanged) {
+			if (!silent) {
 				this.stop();
 				this.update(this.options.responsiveAnimationDuration);
 			}
@@ -1293,14 +1342,14 @@
 				if (this.options.scales.xAxes && this.options.scales.xAxes.length) {
 					helpers.each(this.options.scales.xAxes, function(xAxisOptions, index) {
 						xAxisOptions.id = xAxisOptions.id || (defaultXAxisID + index);
-					}, this);
+					});
 				}
 
 				if (this.options.scales.yAxes && this.options.scales.yAxes.length) {
 					// Build the y axes
 					helpers.each(this.options.scales.yAxes, function(yAxisOptions, index) {
 						yAxisOptions.id = yAxisOptions.id || (defaultYAxisID + index);
-					}, this);
+					});
 				}
 			}
 		},
@@ -1313,14 +1362,16 @@
 				if (this.options.scales.xAxes && this.options.scales.xAxes.length) {
 					helpers.each(this.options.scales.xAxes, function(xAxisOptions, index) {
 						var ScaleClass = Chart.scaleService.getScaleConstructor(xAxisOptions.type);
-						var scale = new ScaleClass({
-							ctx: this.chart.ctx,
-							options: xAxisOptions,
-							chart: this,
-							id: xAxisOptions.id,
-						});
+						if (ScaleClass) {
+							var scale = new ScaleClass({
+								ctx: this.chart.ctx,
+								options: xAxisOptions,
+								chart: this,
+								id: xAxisOptions.id,
+							});
 
-						this.scales[scale.id] = scale;
+							this.scales[scale.id] = scale;
+						}
 					}, this);
 				}
 
@@ -1328,29 +1379,33 @@
 					// Build the y axes
 					helpers.each(this.options.scales.yAxes, function(yAxisOptions, index) {
 						var ScaleClass = Chart.scaleService.getScaleConstructor(yAxisOptions.type);
-						var scale = new ScaleClass({
-							ctx: this.chart.ctx,
-							options: yAxisOptions,
-							chart: this,
-							id: yAxisOptions.id,
-						});
+						if (ScaleClass) {
+							var scale = new ScaleClass({
+								ctx: this.chart.ctx,
+								options: yAxisOptions,
+								chart: this,
+								id: yAxisOptions.id,
+							});
 
-						this.scales[scale.id] = scale;
+							this.scales[scale.id] = scale;
+						}
 					}, this);
 				}
 			}
 			if (this.options.scale) {
 				// Build radial axes
 				var ScaleClass = Chart.scaleService.getScaleConstructor(this.options.scale.type);
-				var scale = new ScaleClass({
-					ctx: this.chart.ctx,
-					options: this.options.scale,
-					chart: this,
-				});
+				if (ScaleClass) {
+					var scale = new ScaleClass({
+						ctx: this.chart.ctx,
+						options: this.options.scale,
+						chart: this,
+					});
 
-				this.scale = scale;
+					this.scale = scale;
 
-				this.scales.radialScale = scale;
+					this.scales.radialScale = scale;
+				}
 			}
 
 			Chart.scaleService.addScalesToLayout(this);
@@ -1382,8 +1437,10 @@
 			Chart.layoutService.update(this, this.chart.width, this.chart.height);
 		},
 
-		buildOrUpdateControllers: function buildOrUpdateControllers(resetNewControllers) {
+		buildOrUpdateControllers: function buildOrUpdateControllers() {
 			var types = [];
+			var newControllers = [];
+
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				if (!dataset.type) {
 					dataset.type = this.config.type;
@@ -1396,10 +1453,7 @@
 					dataset.controller.updateIndex(datasetIndex);
 				} else {
 					dataset.controller = new Chart.controllers[type](this, datasetIndex);
-
-					if (resetNewControllers) {
-						dataset.controller.reset();
-					}
+					newControllers.push(dataset.controller);
 				}
 			}, this);
 
@@ -1411,12 +1465,14 @@
 					}
 				}
 			}
+
+			return newControllers;
 		},
 
 		resetElements: function resetElements() {
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				dataset.controller.reset();
-			}, this);
+			});
 		},
 
 		update: function update(animationDuration, lazy) {
@@ -1424,19 +1480,24 @@
 			this.tooltip._data = this.data;
 
 			// Make sure dataset controllers are updated and new controllers are reset
-			this.buildOrUpdateControllers(true);
+			var newControllers = this.buildOrUpdateControllers();
 
 			Chart.layoutService.update(this, this.chart.width, this.chart.height);
+
+			// Can only reset the new controllers after the scales have been updated
+			helpers.each(newControllers, function(controller) {
+				controller.reset();
+			});
 
 			// Make sure all dataset controllers have correct meta data counts
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				dataset.controller.buildOrUpdateElements();
-			}, this);
+			});
 
 			// This will loop through any data and do the appropriate element update for the type
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				dataset.controller.update();
-			}, this);
+			});
 			this.render(animationDuration, lazy);
 		},
 
@@ -1487,7 +1548,7 @@
 				if (helpers.isDatasetVisible(dataset)) {
 					dataset.controller.draw(ease);
 				}
-			}, this);
+			});
 
 			// Finally draw the tooltip
 			this.tooltip.transition(easingDecimal).draw();
@@ -1507,9 +1568,9 @@
 							elementsArray.push(element);
 							return elementsArray;
 						}
-					}, this);
+					});
 				}
-			}, this);
+			});
 
 			return elementsArray;
 		},
@@ -1538,7 +1599,7 @@
 				if(helpers.isDatasetVisible(dataset)){
 					elementsArray.push(dataset.metaData[found._index]);
 				}
-			}, this);
+			});
 
 			return elementsArray;
 		},
@@ -2670,7 +2731,10 @@
 					this.paddingRight = lastWidth / 2 + 3;
 					this.paddingLeft = firstWidth / 2 + 3;
 
-					var originalLabelWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
+					if (!this.longestTextCache) {
+						this.longestTextCache = {};
+					}
+					var originalLabelWidth = helpers.longestText(this.ctx, labelFont, this.ticks, this.longestTextCache);
 					var labelWidth = originalLabelWidth;
 					var cosRotation;
 					var sinRotation;
@@ -2755,9 +2819,15 @@
 				var labelFont = helpers.fontString(this.options.ticks.fontSize,
 					this.options.ticks.fontStyle, this.options.ticks.fontFamily);
 
+				if (!this.longestTextCache) {
+					this.longestTextCache = {};
+				}
+
+				var largestTextWidth = helpers.longestText(this.ctx, labelFont, this.ticks, this.longestTextCache);
+
 				if (this.isHorizontal()) {
 					// A horizontal axis is more constrained by the height.
-					this.longestLabelWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
+					this.longestLabelWidth = largestTextWidth;
 
 					// TODO - improve this calculation
 					var labelHeight = (Math.sin(helpers.toRadians(this.labelRotation)) * this.longestLabelWidth) + 1.5 * this.options.ticks.fontSize;
@@ -2779,7 +2849,6 @@
 				} else {
 					// A vertical axis is more constrained by the width. Labels are the dominant factor here, so get that length first
 					var maxLabelWidth = this.maxWidth - this.minSize.width;
-					var largestTextWidth = helpers.longestText(this.ctx, labelFont, this.ticks);
 
 					// Account for padding
 					if (!this.options.ticks.mirror) {
@@ -3119,6 +3188,7 @@
 					x2 += helpers.aliasPixel(this.ctx.lineWidth);
 				}
 
+				this.ctx.beginPath();
 				this.ctx.moveTo(x1, y1);
 				this.ctx.lineTo(x2, y2);
 				this.ctx.stroke();
@@ -3629,7 +3699,7 @@
 						  	backgroundColor: active._view.backgroundColor
 						  });
 						}
-					}, this);
+					});
 
 					tooltipPosition = this.getAveragePosition(this._active);
 					tooltipPosition.y = this._active[0]._yScale.getPixelForDecimal(0.5);
@@ -3694,7 +3764,7 @@
 			ctx.font = helpers.fontString(vm.bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
 			helpers.each(vm.beforeBody.concat(vm.afterBody), function(line) {
 				size.width = Math.max(size.width, ctx.measureText(line).width);
-			}, this);
+			});
 			helpers.each(vm.body, function(line) {
 				size.width = Math.max(size.width, ctx.measureText(line).width + (this._options.tooltips.mode !== 'single' ? (vm.bodyFontSize + 2) : 0));
 			}, this);
@@ -3726,13 +3796,14 @@
 			if (this._model.yAlign === 'center') {
 				lf = function(x) { return x <= midX; };
 				rf = function(x) { return x > midX; };
-				olf = function(x) { return x + size.width > _this._chart.width; };
-				orf = function(x) { return x - size.width < 0; };
-				yf = function(y) { return y <= midY ? 'top' : 'bottom'; };
 			} else {
 				lf = function(x) { return x <= (size.width / 2); };
 				rf = function(x) { return x >= (_this._chart.width - (size.width / 2)); };
 			}
+			
+			olf = function(x) { return x + size.width > _this._chart.width; };
+			orf = function(x) { return x - size.width < 0; };
+			yf = function(y) { return y <= midY ? 'top' : 'bottom'; };
 
 			if (lf(this._model.x)) {
 				this._model.xAlign = 'left';
@@ -3858,7 +3929,7 @@
 					if (i + 1 === vm.title.length) {
 						pt.y += vm.titleMarginBottom - vm.titleSpacing; // If Last, add margin, remove spacing
 					}
-				}, this);
+				});
 			}
 		},
 		drawBody: function drawBody(pt, vm, ctx, opacity) {
@@ -3917,7 +3988,7 @@
 				helpers.each(vm.footer, function(footer) {
 					ctx.fillText(footer, pt.x, pt.y);
 					pt.y += vm.footerFontSize + vm.footerSpacing;
-				}, this);
+				});
 			}
 		},
 		draw: function draw() {
@@ -4011,7 +4082,7 @@
 				if (helpers.isDatasetVisible(dataset) && dataset.bar) {
 					++barCount;
 				}
-			}, this);
+			});
 			return barCount;
 		},
 
@@ -4303,8 +4374,17 @@
 		},
 
 		tooltips: {
-			template: "(<%= value.x %>, <%= value.y %>, <%= value.r %>)",
-			multiTemplate: "<%if (datasetLabel){%><%=datasetLabel%>: <%}%>(<%= value.x %>, <%= value.y %>, <%= value.r %>)",
+			callbacks: {
+				title: function(tooltipItems, data) {
+					// Title doesn't make sense for scatter since we format the data as a point
+					return '';
+				},
+				label: function(tooltipItem, data) {
+					var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
+					var dataPoint = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+					return datasetLabel + ': (' + dataPoint.x + ', ' + dataPoint.y + ', ' + dataPoint.r + ')';
+				}
+			}
 		},
 	};
 
@@ -4411,7 +4491,7 @@
 			helpers.each(this.getDataset().metaData, function(point, index) {
 				point.transition(easingDecimal);
 				point.draw();
-			}, this);
+			});
 
 		},
 
@@ -4659,7 +4739,7 @@
 			var easingDecimal = ease || 1;
 			helpers.each(this.getDataset().metaData, function(arc, index) {
 				arc.transition(easingDecimal).draw();
-			}, this);
+			});
 		},
 
 		setHoverStyle: function(arc) {
@@ -4702,6 +4782,8 @@
 		helpers = Chart.helpers;
 
 	Chart.defaults.line = {
+		showLines: true,
+
 		hover: {
 			mode: "label"
 		},
@@ -4753,7 +4835,8 @@
 			this.getDataset().metaData.splice(index, 0, point);
 
 			// Make sure bezier control points are updated
-			this.updateBezierControlPoints();
+			if (this.chart.options.showLines && this.chart.options.elements.line.tension !== 0)
+				this.updateBezierControlPoints();
 		},
 
 		update: function update(reset) {
@@ -4773,14 +4856,14 @@
 			}
 
 			// Update Line
-			helpers.extend(line, {
+			if (this.chart.options.showLines) {
 				// Utility
-				_scale: yScale,
-				_datasetIndex: this.index,
+				line._scale = yScale;
+				line._datasetIndex = this.index;
 				// Data
-				_children: points,
+				line._children = points;
 				// Model
-				_model: {
+				line._model = {
 					// Appearance
 					tension: line.custom && line.custom.tension ? line.custom.tension : helpers.getValueOrDefault(this.getDataset().tension, this.chart.options.elements.line.tension),
 					backgroundColor: line.custom && line.custom.backgroundColor ? line.custom.backgroundColor : (this.getDataset().backgroundColor || this.chart.options.elements.line.backgroundColor),
@@ -4794,17 +4877,18 @@
 					// Scale
 					scaleTop: yScale.top,
 					scaleBottom: yScale.bottom,
-					scaleZero: scaleBase,
-				},
-			});
-			line.pivot();
+					scaleZero: scaleBase
+				};
+				line.pivot();
+			}
 
 			// Update Points
 			helpers.each(points, function(point, index) {
 				this.updateElement(point, index, reset);
 			}, this);
 
-			this.updateBezierControlPoints();
+			if (this.chart.options.showLines && this.chart.options.elements.line.tension !== 0)
+				this.updateBezierControlPoints();
 		},
 
 		getPointBackgroundColor: function(point, index) {
@@ -4863,28 +4947,27 @@
 				scaleBase = yScale.getPixelForValue(0);
 			}
 
-			helpers.extend(point, {
-				// Utility
-				_chart: this.chart.chart,
-				_xScale: xScale,
-				_yScale: yScale,
-				_datasetIndex: this.index,
-				_index: index,
+			// Utility
+			point._chart = this.chart.chart;
+			point._xScale = xScale;
+			point._yScale = yScale;
+			point._datasetIndex = this.index;
+			point._index = index;
 
-				// Desired view properties
-				_model: {
-					x: xScale.getPixelForValue(this.getDataset().data[index], index, this.index, this.chart.isCombo),
-					y: reset ? scaleBase : this.calculatePointY(this.getDataset().data[index], index, this.index, this.chart.isCombo),
-					// Appearance
-					tension: point.custom && point.custom.tension ? point.custom.tension : helpers.getValueOrDefault(this.getDataset().tension, this.chart.options.elements.line.tension),
-					radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().radius, index, this.chart.options.elements.point.radius),
-					backgroundColor: this.getPointBackgroundColor(point, index),
-					borderColor: this.getPointBorderColor(point, index),
-					borderWidth: this.getPointBorderWidth(point, index),
-					// Tooltip
-					hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.getDataset().hitRadius, index, this.chart.options.elements.point.hitRadius),
-				},
-			});
+			// Desired view properties
+			point._model = {
+				x: xScale.getPixelForValue(this.getDataset().data[index], index, this.index, this.chart.isCombo),
+				y: reset ? scaleBase : this.calculatePointY(this.getDataset().data[index], index, this.index, this.chart.isCombo),
+				// Appearance
+				tension: point.custom && point.custom.tension ? point.custom.tension : helpers.getValueOrDefault(this.getDataset().tension, this.chart.options.elements.line.tension),
+				radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().radius, index, this.chart.options.elements.point.radius),
+				pointStyle: point.custom && point.custom.pointStyle ? point.custom.pointStyle : helpers.getValueAtIndexOrDefault(this.getDataset().pointStyle, index, this.chart.options.elements.point.pointStyle),
+				backgroundColor: this.getPointBackgroundColor(point, index),
+				borderColor: this.getPointBorderColor(point, index),
+				borderWidth: this.getPointBorderWidth(point, index),
+				// Tooltip
+				hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.getDataset().hitRadius, index, this.chart.options.elements.point.hitRadius)
+			};
 
 			point._model.skip = point.custom && point.custom.skip ? point.custom.skip : (isNaN(point._model.x) || isNaN(point._model.y));
 		},
@@ -4915,8 +4998,6 @@
 				} else {
 					return yScale.getPixelForValue(sumPos + value);
 				}
-
-				return yScale.getPixelForValue(value);
 			}
 
 			return yScale.getPixelForValue(value);
@@ -4948,12 +5029,13 @@
 			var easingDecimal = ease || 1;
 
 			// Transition Point Locations
-			helpers.each(this.getDataset().metaData, function(point, index) {
+			helpers.each(this.getDataset().metaData, function(point) {
 				point.transition(easingDecimal);
-			}, this);
+			});
 
 			// Transition and Draw the line
-			this.getDataset().metaDataset.transition(easingDecimal).draw();
+			if (this.chart.options.showLines)
+				this.getDataset().metaDataset.transition(easingDecimal).draw();
 
 			// Draw the points
 			helpers.each(this.getDataset().metaData, function(point) {
@@ -5142,7 +5224,6 @@
 				endAngle: this.chart.options.animateRotate ? Math.PI * -0.5 : endAngle,
 
 				backgroundColor: arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor),
-				hoverBackgroundColor: arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().hoverBackgroundColor, index, this.chart.options.elements.arc.hoverBackgroundColor),
 				borderWidth: arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.arc.borderWidth),
 				borderColor: arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor),
 
@@ -5166,7 +5247,6 @@
 					endAngle: endAngle,
 
 					backgroundColor: arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor),
-					hoverBackgroundColor: arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().hoverBackgroundColor, index, this.chart.options.elements.arc.hoverBackgroundColor),
 					borderWidth: arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.arc.borderWidth),
 					borderColor: arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor),
 
@@ -5181,7 +5261,7 @@
 			var easingDecimal = ease || 1;
 			helpers.each(this.getDataset().metaData, function(arc, index) {
 				arc.transition(easingDecimal).draw();
-			}, this);
+			});
 		},
 
 		setHoverStyle: function(arc) {
@@ -5190,7 +5270,7 @@
 
 			arc._model.backgroundColor = arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.color(arc._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
 			arc._model.borderColor = arc.custom && arc.custom.hoverBorderColor ? arc.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.color(arc._model.borderColor).saturate(0.5).darken(0.1).rgbString());
-			arc._model.borderWidth = arc.custom && arc.custom.hoverBorderWidth ? arc.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, arc._model.borderWidth);
+			arc._model.borderWidth = arc.custom && arc.custom.hoverBorderWidth ? arc.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.hoverBorderWidth, index, arc._model.borderWidth);
 		},
 
 		removeHoverStyle: function(arc) {
@@ -5307,11 +5387,15 @@
 				// Model
 				_model: {
 					// Appearance
-					tension: helpers.getValueOrDefault(this.getDataset().tension, this.chart.options.elements.line.tension),
-					backgroundColor: this.getDataset().backgroundColor || this.chart.options.elements.line.backgroundColor,
-					borderWidth: this.getDataset().borderWidth || this.chart.options.elements.line.borderWidth,
-					borderColor: this.getDataset().borderColor || this.chart.options.elements.line.borderColor,
-					fill: this.getDataset().fill !== undefined ? this.getDataset().fill : this.chart.options.elements.line.fill, // use the value from the this.getDataset() if it was provided. else fall back to the default
+					tension: line.custom && line.custom.tension ? line.custom.tension : helpers.getValueOrDefault(this.getDataset().tension, this.chart.options.elements.line.tension),
+					backgroundColor: line.custom && line.custom.backgroundColor ? line.custom.backgroundColor : (this.getDataset().backgroundColor || this.chart.options.elements.line.backgroundColor),
+					borderWidth: line.custom && line.custom.borderWidth ? line.custom.borderWidth : (this.getDataset().borderWidth || this.chart.options.elements.line.borderWidth),
+					borderColor: line.custom && line.custom.borderColor ? line.custom.borderColor : (this.getDataset().borderColor || this.chart.options.elements.line.borderColor),
+					fill: line.custom && line.custom.fill ? line.custom.fill : (this.getDataset().fill !== undefined ? this.getDataset().fill : this.chart.options.elements.line.fill),
+					borderCapStyle: line.custom && line.custom.borderCapStyle ? line.custom.borderCapStyle : (this.getDataset().borderCapStyle || this.chart.options.elements.line.borderCapStyle),
+					borderDash: line.custom && line.custom.borderDash ? line.custom.borderDash : (this.getDataset().borderDash || this.chart.options.elements.line.borderDash),
+					borderDashOffset: line.custom && line.custom.borderDashOffset ? line.custom.borderDashOffset : (this.getDataset().borderDashOffset || this.chart.options.elements.line.borderDashOffset),
+					borderJoinStyle: line.custom && line.custom.borderJoinStyle ? line.custom.borderJoinStyle : (this.getDataset().borderJoinStyle || this.chart.options.elements.line.borderJoinStyle),
 
 					// Scale
 					scaleTop: scale.top,
@@ -5347,10 +5431,11 @@
 
 					// Appearance
 					tension: point.custom && point.custom.tension ? point.custom.tension : helpers.getValueOrDefault(this.getDataset().tension, this.chart.options.elements.line.tension),
-					radius: point.custom && point.custom.radius ? point.custom.pointRadius : helpers.getValueAtIndexOrDefault(this.getDataset().pointRadius, index, this.chart.options.elements.point.radius),
+					radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().pointRadius, index, this.chart.options.elements.point.radius),
 					backgroundColor: point.custom && point.custom.backgroundColor ? point.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBackgroundColor, index, this.chart.options.elements.point.backgroundColor),
 					borderColor: point.custom && point.custom.borderColor ? point.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderColor, index, this.chart.options.elements.point.borderColor),
 					borderWidth: point.custom && point.custom.borderWidth ? point.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderWidth, index, this.chart.options.elements.point.borderWidth),
+					pointStyle: point.custom && point.custom.pointStyle ? point.custom.pointStyle : helpers.getValueAtIndexOrDefault(this.getDataset().pointStyle, index, this.chart.options.elements.point.pointStyle),
 
 					// Tooltip
 					hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.getDataset().hitRadius, index, this.chart.options.elements.point.hitRadius),
@@ -5386,7 +5471,7 @@
 			// Transition Point Locations
 			helpers.each(this.getDataset().metaData, function(point, index) {
 				point.transition(easingDecimal);
-			}, this);
+			});
 
 			// Transition and Draw the line
 			this.getDataset().metaDataset.transition(easingDecimal).draw();
@@ -5402,10 +5487,10 @@
 			var dataset = this.chart.data.datasets[point._datasetIndex];
 			var index = point._index;
 
-			point._model.radius = point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.chart.options.elements.point.hoverRadius);
+			point._model.radius = point.custom && point.custom.hoverRadius ? point.custom.hoverRadius : helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.chart.options.elements.point.hoverRadius);
 			point._model.backgroundColor = point.custom && point.custom.hoverBackgroundColor ? point.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.color(point._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
 			point._model.borderColor = point.custom && point.custom.hoverBorderColor ? point.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.color(point._model.borderColor).saturate(0.5).darken(0.1).rgbString());
-			point._model.borderWidth = point.custom && point.custom.hoverBorderWidth ? point.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, point._model.borderWidth);
+			point._model.borderWidth = point.custom && point.custom.hoverBorderWidth ? point.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderWidth, index, point._model.borderWidth);
 		},
 
 		removeHoverStyle: function(point) {
@@ -5516,6 +5601,8 @@
 
 			if (this.options.stacked) {
 				var valuesPerType = {};
+				var hasPositiveValues = false;
+				var hasNegativeValues = false;
 
 				helpers.each(this.chart.data.datasets, function(dataset) {
 					if (valuesPerType[dataset.type] === undefined) {
@@ -5544,8 +5631,10 @@
 								positiveValues[index] = 100;
 							} else {
 								if (value < 0) {
+									hasNegativeValues = true;
 									negativeValues[index] += value;
 								} else {
+									hasPositiveValues = true;
 									positiveValues[index] += value;
 								}
 							}
@@ -5554,9 +5643,9 @@
 				}, this);
 
 				helpers.each(valuesPerType, function(valuesForType) {
-					var values = valuesForType.positiveValues.concat(valuesForType.negativeValues);
+					var values = hasPositiveValues ? hasNegativeValues ? valuesForType.positiveValues.concat(valuesForType.negativeValues) : valuesForType.positiveValues : valuesForType.negativeValues;
 					var minVal = helpers.min(values);
-					var maxVal = helpers.max(values);
+					var maxVal = helpers.max(values)
 					this.min = this.min === null ? minVal : Math.min(this.min, minVal);
 					this.max = this.max === null ? maxVal : Math.max(this.max, maxVal);
 				}, this);
@@ -5670,7 +5759,6 @@
 			// range of the scale
 			this.max = helpers.max(this.ticks);
 			this.min = helpers.min(this.ticks);
-			this.ticksAsNumbers = this.ticks.slice();
 
 			if (this.options.ticks.reverse) {
 				this.ticks.reverse();
@@ -5682,6 +5770,7 @@
 				this.end = this.max;
 			}
 
+			this.ticksAsNumbers = this.ticks.slice(); // do after we potentially reverse the ticks
 			this.zeroLineIndex = this.ticks.indexOf(0);
 		},
 
@@ -5889,7 +5978,7 @@
 				} else {
 					var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
 					pixel = this.left + (innerWidth / range * (helpers.log10(newVal) - helpers.log10(this.start)));
-					return pixel + this.paddingLeft;
+					pixel += this.paddingLeft;
 				}
 			} else {
 				// Bottom - top since pixels increase downard on a screen
@@ -5897,10 +5986,11 @@
 					pixel = this.top + this.paddingTop;
 				} else {
 					var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
-					return (this.bottom - this.paddingBottom) - (innerHeight / range * (helpers.log10(newVal) - helpers.log10(this.start)));
+					pixel = (this.bottom - this.paddingBottom) - (innerHeight / range * (helpers.log10(newVal) - helpers.log10(this.start)));
 				}
 			}
 
+			return pixel;
 		},
 
 	});
@@ -5956,6 +6046,11 @@
 
 			//String - Point label font colour
 			fontColor: "#666",
+
+			//Function - Used to convert point labels
+			callback: function(label) {
+				return label;
+			}
 		},
 	};
 
@@ -6081,11 +6176,14 @@
 
 			this.zeroLineIndex = this.ticks.indexOf(0);
 		},
+		convertTicksToLabels: function() {
+			Chart.Scale.prototype.convertTicksToLabels.call(this);
+
+			// Point labels
+			this.pointLabels = this.chart.data.labels.map(this.options.pointLabels.callback, this);
+		},
 		getLabelForIndex: function(index, datasetIndex) {
 			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
-		},
-		getCircumference: function() {
-			return ((Math.PI * 2) / this.getValueCount());
 		},
 		fit: function() {
 			/*
@@ -6139,7 +6237,7 @@
 			for (i = 0; i < this.getValueCount(); i++) {
 				// 5px to space the text slightly out - similar to what we do in the draw function.
 				pointPosition = this.getPointPosition(i, largestPossibleRadius);
-				textWidth = this.ctx.measureText(this.options.ticks.callback(this.chart.data.labels[i])).width + 5;
+				textWidth = this.ctx.measureText(this.pointLabels[i] ? this.pointLabels[i] : '').width + 5;
 				if (i === 0 || i === this.getValueCount() / 2) {
 					// If we're at index zero, or exactly the middle, we're at exactly the top/bottom
 					// of the radar chart, so text will be aligned centrally, so we'll half it and compare
@@ -6299,8 +6397,8 @@
 						ctx.font = helpers.fontString(this.options.pointLabels.fontSize, this.options.pointLabels.fontStyle, this.options.pointLabels.fontFamily);
 						ctx.fillStyle = this.options.pointLabels.fontColor;
 
-						var labelsCount = this.chart.data.labels.length,
-							halfLabelsCount = this.chart.data.labels.length / 2,
+						var labelsCount = this.pointLabels.length,
+							halfLabelsCount = this.pointLabels.length / 2,
 							quarterLabelsCount = halfLabelsCount / 2,
 							upperHalf = (i < quarterLabelsCount || i > labelsCount - quarterLabelsCount),
 							exactQuarter = (i === quarterLabelsCount || i === labelsCount - quarterLabelsCount);
@@ -6323,7 +6421,7 @@
 							ctx.textBaseline = 'top';
 						}
 
-						ctx.fillText(this.chart.data.labels[i], pointLabelPosition.x, pointLabelPosition.y);
+						ctx.fillText(this.pointLabels[i] ? this.pointLabels[i] : '', pointLabelPosition.x, pointLabelPosition.y);
 					}
 				}
 			}
@@ -6422,17 +6520,8 @@
 					scaleLabelMoments.push(labelMoment);
 				}, this);
 
-				if (this.options.time.min) {
-					this.firstTick = this.parseTime(this.options.time.min);
-				} else {
-					this.firstTick = moment.min.call(this, scaleLabelMoments);
-				}
-
-				if (this.options.time.max) {
-					this.lastTick = this.parseTime(this.options.time.max);
-				} else {
-					this.lastTick = moment.max.call(this, scaleLabelMoments);
-				}
+				this.firstTick = moment.min.call(this, scaleLabelMoments);
+				this.lastTick = moment.max.call(this, scaleLabelMoments);
 			} else {
 				this.firstTick = null;
 				this.lastTick = null;
@@ -6461,6 +6550,15 @@
 				this.labelMoments.push(momentsForDataset);
 			}, this);
 
+			// Set these after we've done all the data 
+			if (this.options.time.min) {
+				this.firstTick = this.parseTime(this.options.time.min);
+			}
+
+			if (this.options.time.max) {
+				this.lastTick = this.parseTime(this.options.time.max);
+			}
+
 			// We will modify these, so clone for later
 			this.firstTick = (this.firstTick || moment()).clone();
 			this.lastTick = (this.lastTick || moment()).clone();
@@ -6477,7 +6575,7 @@
 				this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, this.tickUnit, true));
 			} else {
 				// Determine the smallest needed unit of the time
-				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
+				var innerWidth = this.isHorizontal() ? this.width - (this.paddingLeft + this.paddingRight) : this.height - (this.paddingTop + this.paddingBottom);
 				var labelCapacity = innerWidth / (this.options.ticks.fontSize + 10);
 				var buffer = this.options.time.round ? 0 : 2;
 
@@ -6492,7 +6590,6 @@
 				// While we aren't ideal and we don't have units left 
 				while (unitDefinitionIndex < time.units.length) {
 					// Can we scale this unit. If `false` we can scale infinitely
-					//var canScaleUnit = ;
 					this.unitScale = 1;
 
 					if (helpers.isArray(unitDefinition.steps) && Math.ceil(this.tickRange / labelCapacity) < helpers.max(unitDefinition.steps)) {
@@ -6521,8 +6618,21 @@
 				}
 			}
 
-			this.firstTick.startOf(this.tickUnit);
-			this.lastTick.endOf(this.tickUnit);
+			var roundedStart;
+
+			// Only round the first tick if we have no hard minimum
+			if (!this.options.time.min) {
+				this.firstTick.startOf(this.tickUnit);
+				roundedStart = this.firstTick;
+			} else {
+				roundedStart = this.firstTick.clone().startOf(this.tickUnit);
+			}
+			
+			// Only round the last tick if we have no hard maximum
+			if (!this.options.time.max) {
+				this.lastTick.endOf(this.tickUnit);
+			}
+
 			this.smallestLabelSeparation = this.width;
 
 			helpers.each(this.chart.data.datasets, function(dataset, datasetIndex) {
@@ -6536,17 +6646,23 @@
 				this.displayFormat = this.options.time.displayFormat;
 			}
 
+			// first tick. will have been rounded correctly if options.time.min is not specified
+			this.ticks.push(this.firstTick.clone());
+
 			// For every unit in between the first and last moment, create a moment and add it to the ticks tick
-			for (var i = 0; i <= this.tickRange; ++i) {
+			for (var i = 1; i < this.tickRange; ++i) {
 				if (i % this.unitScale === 0) {
-					this.ticks.push(this.firstTick.clone().add(i, this.tickUnit));
-				} else if (i === this.tickRange) {
-					// Expand out the last one if not an exact multiple
-					this.tickRange = Math.ceil(this.tickRange / this.unitScale) * this.unitScale;
-					this.ticks.push(this.firstTick.clone().add(this.tickRange, this.tickUnit));
-					this.lastTick = this.ticks[this.ticks.length - 1].clone();
-					break;
+					this.ticks.push(roundedStart.clone().add(i, this.tickUnit));
 				}
+			}
+
+			// Always show the right tick
+			if (this.options.time.max) {
+				this.ticks.push(this.lastTick.clone());
+			} else {
+				this.tickRange = Math.ceil(this.tickRange / this.unitScale) * this.unitScale;
+				this.ticks.push(this.firstTick.clone().add(this.tickRange, this.tickUnit));
+				this.lastTick = this.ticks[this.ticks.length - 1].clone();
 			}
 		},
 		// Get tooltip label
@@ -6910,6 +7026,7 @@
 
 	Chart.defaults.global.elements.point = {
 		radius: 3,
+		pointStyle: 'circle',
 		backgroundColor: Chart.defaults.global.defaultColor,
 		borderWidth: 1,
 		borderColor: Chart.defaults.global.defaultColor,
@@ -6960,17 +7077,88 @@
 
 			if (vm.radius > 0 || vm.borderWidth > 0) {
 
-				ctx.beginPath();
-
-				ctx.arc(vm.x, vm.y, vm.radius || Chart.defaults.global.elements.point.radius, 0, Math.PI * 2);
-				ctx.closePath();
-
 				ctx.strokeStyle = vm.borderColor || Chart.defaults.global.defaultColor;
 				ctx.lineWidth = vm.borderWidth || Chart.defaults.global.elements.point.borderWidth;
 
 				ctx.fillStyle = vm.backgroundColor || Chart.defaults.global.defaultColor;
 
-				ctx.fill();
+				var radius = vm.radius || Chart.defaults.global.elements.point.radius;
+
+				switch (vm.pointStyle) {
+					case 'circle':
+					default:
+						ctx.beginPath();
+						ctx.arc(vm.x, vm.y, radius, 0, Math.PI * 2);
+						ctx.closePath();
+						ctx.fill();
+					break;
+					case 'triangle':
+						ctx.beginPath();
+						var edgeLength = 3 * radius / Math.sqrt(3);
+						var height = edgeLength * Math.sqrt(3) / 2;
+						ctx.moveTo(vm.x - edgeLength / 2, vm.y + height / 3);
+						ctx.lineTo(vm.x + edgeLength / 2, vm.y + height / 3);
+						ctx.lineTo(vm.x, vm.y - 2 * height / 3);
+						ctx.closePath();
+						ctx.fill();
+					break;
+					case 'rect':
+						ctx.fillRect(vm.x - 1 / Math.SQRT2 * radius, vm.y - 1 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius);
+						ctx.strokeRect(vm.x - 1 / Math.SQRT2 * radius, vm.y - 1 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius);
+					break;
+					case 'rectRot':
+						ctx.translate(vm.x, vm.y);
+						ctx.rotate(Math.PI / 4);
+						ctx.fillRect(-1 / Math.SQRT2 * radius, -1 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius);
+						ctx.strokeRect(-1 / Math.SQRT2 * radius, -1 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius);
+						ctx.setTransform(1, 0, 0, 1, 0, 0);
+					break;
+					case 'cross':
+						ctx.beginPath();
+						ctx.moveTo(vm.x, vm.y + radius);
+						ctx.lineTo(vm.x, vm.y - radius);
+						ctx.moveTo(vm.x - radius, vm.y);
+						ctx.lineTo(vm.x + radius, vm.y);
+						ctx.closePath();
+					break;
+					case 'crossRot':
+						ctx.beginPath();
+						var xOffset = Math.cos(Math.PI / 4) * radius;
+						var yOffset = Math.sin(Math.PI / 4) * radius;
+						ctx.moveTo(vm.x - xOffset, vm.y - yOffset);
+						ctx.lineTo(vm.x + xOffset, vm.y + yOffset);
+						ctx.moveTo(vm.x - xOffset, vm.y + yOffset);
+						ctx.lineTo(vm.x + xOffset, vm.y - yOffset);
+						ctx.closePath();
+					break;
+					case 'star':
+						ctx.beginPath();
+						ctx.moveTo(vm.x, vm.y + radius);
+						ctx.lineTo(vm.x, vm.y - radius);
+						ctx.moveTo(vm.x - radius, vm.y);
+						ctx.lineTo(vm.x + radius, vm.y);
+						var xOffset = Math.cos(Math.PI / 4) * radius;
+						var yOffset = Math.sin(Math.PI / 4) * radius;
+						ctx.moveTo(vm.x - xOffset, vm.y - yOffset);
+						ctx.lineTo(vm.x + xOffset, vm.y + yOffset);
+						ctx.moveTo(vm.x - xOffset, vm.y + yOffset);
+						ctx.lineTo(vm.x + xOffset, vm.y - yOffset);
+						ctx.closePath();
+					break;
+					case 'line':
+						ctx.beginPath();
+						ctx.moveTo(vm.x - radius, vm.y);
+						ctx.lineTo(vm.x + radius, vm.y);
+						ctx.closePath();
+					break;
+					case 'dash':
+						ctx.beginPath();
+						ctx.moveTo(vm.x, vm.y);
+						ctx.lineTo(vm.x + radius, vm.y);
+						ctx.closePath();
+					break;
+				}
+
 				ctx.stroke();
 			}
 		}
@@ -7091,41 +7279,6 @@
 	var root = this;
 	var Chart = root.Chart;
 	var helpers = Chart.helpers;
-
-	var defaultConfig = {
-		hover: {
-			mode: 'single',
-		},
-
-		scales: {
-			xAxes: [{
-				type: "linear", // bubble should probably use a linear scale by default
-				position: "bottom",
-				id: "x-axis-0", // need an ID so datasets can reference the scale
-			}],
-			yAxes: [{
-				type: "linear",
-				position: "left",
-				id: "y-axis-0",
-			}],
-		},
-
-		tooltips: {
-			callbacks: {
-				title: function(tooltipItems, data) {
-					// Title doesn't make sense for scatter since we format the data as a point
-					return '';
-				},
-				label: function(tooltipItem, data) {
-					return '(' + tooltipItem.xLabel + ', ' + tooltipItem.yLabel + ')';
-				}
-			}
-		},
-
-	};
-
-	// Register the default config for this type
-	Chart.defaults.bubble = defaultConfig;
 
 	Chart.Bubble = function(context, config) {
 		config.type = 'bubble';
