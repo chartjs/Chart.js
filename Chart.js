@@ -4325,23 +4325,45 @@
 		},
 
 		updateErrorBar: function(errorBar, index, reset, numBars) {
-			console.log(this.calculateBarX(index, this.index));
-			console.log(this.calculateErrorBarTop(index, this.index));
+
+			var xScale = this.getScaleForId(this.getDataset().xAxisID);
+			var yScale = this.getScaleForId(this.getDataset().yAxisID);
+
+			helpers.extend(errorBar, {
+				// Utility
+				_chart: this.chart.chart,
+				_xScale: xScale,
+				_yScale: yScale,
+				_datasetIndex: this.index,
+				_index: index,
+
+				_model: {
+					x: this.calculateBarX(index, this.index),
+					yTop: this.calculateErrorBarTop(index, this.index),
+					yBottom: this.calculateErrorBarBottom(index, this.index),
+					capWidth: 0.75,
+					direction: 'both',
+					strokeColor: '#000',
+					strokeWidth: 1
+				}
+
+			});
+			errorBar.pivot();
 		},
 
 		calculateErrorBarTop: function(index, datasetIndex) {
-			var value = this.getDataset().data[index] + this.getDataset.error[index],
-				yScale = this.getScaleForID(this.getDataset().yAxisID);
+			var value = this.getDataset().data[index] + this.getDataset().error[index],
+				yScale = this.getScaleForId(this.getDataset().yAxisID);
 
-			//still need to worry about stacked bar chart.
+			//TODO: still need to worry about stacked bar chart.
 			return yScale.getPixelForValue(value);
 		},
 
 		calculateErrorBarBottom: function(index, datasetIndex) {
-			var value = this.getDataset().data[index] - this.getDataset.error[index],
-				yScale = this.getScaleForID(this.getDataset().yAxisID);
+			var value = this.getDataset().data[index] - this.getDataset().error[index],
+				yScale = this.getScaleForId(this.getDataset().yAxisID);
 
-			//still need to worry about stacked bar chart.
+			//TODO: still need to worry about stacked bar chart.
 			return yScale.getPixelForValue(value);
 		},
 
@@ -6812,7 +6834,7 @@
 				var ctx = this._chart.ctx;
 				var vm = this._view;
 
-				// console.log(vm);
+				console.log(this);
 
       }
     })

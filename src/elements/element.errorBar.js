@@ -12,7 +12,7 @@
 				var ctx = this._chart.ctx;
 				var vm = this._view;
 
-				// console.log(vm);
+				console.log(this);
 
       }
     })
