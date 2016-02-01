@@ -85,7 +85,7 @@
 				}, this);
 
 				helpers.each(valuesPerType, function(valuesForType) {
-					var values = hasPositiveValues ? hasNegativeValues ? valuesForType.positiveValues.concat(valuesForType.negativeValues) : valuesForType.positiveValues : valuesForType.negativeValues;
+					var values = valuesForType.positiveValues.concat(valuesForType.negativeValues);
 					var minVal = helpers.min(values);
 					var maxVal = helpers.max(values)
 					this.min = this.min === null ? minVal : Math.min(this.min, minVal);

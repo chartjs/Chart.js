@@ -207,7 +207,7 @@ describe('Linear Scale', function() {
 		options.stacked = true;
 
 		scale.determineDataLimits();
-		expect(scale.min).toBe(30);
+		expect(scale.min).toBe(0);
 		expect(scale.max).toBe(90);
 	});
 
