@@ -58,15 +58,17 @@
 				this.updateElement(rectangle, index, reset, numBars);
 				if (index in this.getDataset().metaError) {
 					errorBar = this.getDataset().metaError[index];
-					this.updateErrorBar(errorBar, index, reset, numBars);
+					this.updateErrorBar(errorBar, rectangle, index, reset, numBars);
 				}
 			}, this);
 		},
 
-		updateErrorBar: function(errorBar, index, reset, numBars) {
+		updateErrorBar: function(errorBar, rectangle, index, reset, numBars) {
 
 			var xScale = this.getScaleForId(this.getDataset().xAxisID);
 			var yScale = this.getScaleForId(this.getDataset().yAxisID);
+
+			console.log(rectangle);
 
 			helpers.extend(errorBar, {
 				// Utility
@@ -80,7 +82,7 @@
 					x: this.calculateBarX(index, this.index),
 					yTop: this.calculateErrorBarTop(index, this.index),
 					yBottom: this.calculateErrorBarBottom(index, this.index),
-					capWidth: 0.75,
+					capWidth: 0.75 * rectangle._view.width,
 					direction: 'both',
 					strokeColor: '#000',
 					strokeWidth: 1

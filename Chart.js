@@ -4319,15 +4319,17 @@
 				this.updateElement(rectangle, index, reset, numBars);
 				if (index in this.getDataset().metaError) {
 					errorBar = this.getDataset().metaError[index];
-					this.updateErrorBar(errorBar, index, reset, numBars);
+					this.updateErrorBar(errorBar, rectangle, index, reset, numBars);
 				}
 			}, this);
 		},
 
-		updateErrorBar: function(errorBar, index, reset, numBars) {
+		updateErrorBar: function(errorBar, rectangle, index, reset, numBars) {
 
 			var xScale = this.getScaleForId(this.getDataset().xAxisID);
 			var yScale = this.getScaleForId(this.getDataset().yAxisID);
+
+			console.log(rectangle);
 
 			helpers.extend(errorBar, {
 				// Utility
@@ -4341,7 +4343,7 @@
 					x: this.calculateBarX(index, this.index),
 					yTop: this.calculateErrorBarTop(index, this.index),
 					yBottom: this.calculateErrorBarBottom(index, this.index),
-					capWidth: 0.75,
+					capWidth: 0.75 * rectangle._view.width,
 					direction: 'both',
 					strokeColor: '#000',
 					strokeWidth: 1
@@ -6831,13 +6833,45 @@
     Chart.elements.ErrorBar = Chart.Element.extend({
       draw: function() {
 
-				var ctx = this._chart.ctx;
-				var vm = this._view;
+				var ctx = this._chart.ctx,
+					vm = this._view,
 
-				console.log(this);
+					halfWidth = vm.capWidth/2,
+					leftX = vm.x - halfWidth,
+					rightX = vm.x + halfWidth,
+					top = vm.yTop,
+					bottom = vm.yBottom,
+					middle = (top + bottom) / 2;
+
+				ctx.strokeStyle = vm.strokeColor;
+				ctx.lineWidth = vm.strokeWidth;
+
+				//draw upper error bar
+				if (vm.direction !== "down") {
+					ctx.beginPath();
+					ctx.moveTo(vm.x, middle);
+					ctx.lineTo(vm.x, top);
+					ctx.stroke();
+					ctx.beginPath();
+					ctx.moveTo(leftX, top);
+					ctx.lineTo(rightX, top);
+					ctx.stroke();
+				}
+
+				//draw lower error bar
+				if (this.errorDir != "up") {
+					ctx.beginPath();
+					ctx.moveTo(vm.x, middle);
+					ctx.lineTo(vm.x, bottom);
+					ctx.stroke();
+					ctx.beginPath();
+					ctx.moveTo(leftX, bottom);
+					ctx.lineTo(rightX, bottom);
+					ctx.stroke();
+				}
 
       }
-    })
+    });
 
 
 }).call(this);
