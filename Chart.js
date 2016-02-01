@@ -5643,7 +5643,7 @@
 				}, this);
 
 				helpers.each(valuesPerType, function(valuesForType) {
-					var values = hasPositiveValues ? hasNegativeValues ? valuesForType.positiveValues.concat(valuesForType.negativeValues) : valuesForType.positiveValues : valuesForType.negativeValues;
+					var values = valuesForType.positiveValues.concat(valuesForType.negativeValues);
 					var minVal = helpers.min(values);
 					var maxVal = helpers.max(values)
 					this.min = this.min === null ? minVal : Math.min(this.min, minVal);
@@ -6488,7 +6488,7 @@
 
 			// defaults to unit's corresponding unitFormat below or override using pattern string from http://momentjs.com/docs/#/displaying/format/
 			displayFormats: {
-				'millisecond': 'SSS [ms]',
+				'millisecond': 'h:mm:ss.SSS a', // 11:20:01.123 AM,
 				'second': 'h:mm:ss a', // 11:20:01 AM
 				'minute': 'h:mm:ss a', // 11:20:01 AM
 				'hour': 'MMM D, hA', // Sept 4, 5PM
@@ -6577,7 +6577,7 @@
 				// Determine the smallest needed unit of the time
 				var innerWidth = this.isHorizontal() ? this.width - (this.paddingLeft + this.paddingRight) : this.height - (this.paddingTop + this.paddingBottom);
 				var labelCapacity = innerWidth / (this.options.ticks.fontSize + 10);
-				var buffer = this.options.time.round ? 0 : 2;
+				var buffer = this.options.time.round ? 0 : 1;
 
 				// Start as small as possible
 				this.tickUnit = 'millisecond';
@@ -6651,15 +6651,22 @@
 
 			// For every unit in between the first and last moment, create a moment and add it to the ticks tick
 			for (var i = 1; i < this.tickRange; ++i) {
+				var newTick = roundedStart.clone().add(i, this.tickUnit);
+
+				// Are we greater than the max time
+				if (this.options.time.max && newTick.diff(this.lastTick, this.tickUnit, true) >= 0) {
+					break;
+				}
+
 				if (i % this.unitScale === 0) {
-					this.ticks.push(roundedStart.clone().add(i, this.tickUnit));
+					this.ticks.push(newTick);
 				}
 			}
 
 			// Always show the right tick
 			if (this.options.time.max) {
 				this.ticks.push(this.lastTick.clone());
-			} else {
+			} else if (this.ticks[this.ticks.length - 1].diff(this.lastTick, this.tickUnit, true) !== 0) {
 				this.tickRange = Math.ceil(this.tickRange / this.unitScale) * this.unitScale;
 				this.ticks.push(this.firstTick.clone().add(this.tickRange, this.tickUnit));
 				this.lastTick = this.ticks[this.ticks.length - 1].clone();
