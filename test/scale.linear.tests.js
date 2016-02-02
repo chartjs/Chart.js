@@ -24,7 +24,7 @@ describe('Linear Scale', function() {
 			position: "left",
 			scaleLabel: {
 				fontColor: '#666',
-				fontFamily: 'Helvetica Neue',
+				fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 				fontSize: 12,
 				fontStyle: 'normal',
 				labelString: '',
@@ -33,7 +33,7 @@ describe('Linear Scale', function() {
 			ticks: {
 				beginAtZero: false,
 				fontColor: "#666",
-				fontFamily: "Helvetica Neue",
+				fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 				fontSize: 12,
 				fontStyle: "normal",
 				maxRotation: 90,

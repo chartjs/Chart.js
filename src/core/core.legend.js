@@ -22,10 +22,10 @@
 
 		labels: {
 			boxWidth: 40,
-			fontSize: 12,
-			fontStyle: "normal",
-			fontColor: "#666",
-			fontFamily: "Helvetica Neue",
+			fontSize: Chart.defaults.global.defaultFontSize,
+			fontStyle: Chart.defaults.global.defaultFontStyle,
+			fontColor: Chart.defaults.global.defaultFontColor,
+			fontFamily: Chart.defaults.global.defaultFontFamily,
 			padding: 10,
 			// Generates labels shown in the legend
 			// Valid properties to return:

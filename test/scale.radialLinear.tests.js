@@ -29,7 +29,7 @@ describe('Test the radial linear scale', function() {
 			lineArc: false,
 			pointLabels: {
 				fontColor: "#666",
-				fontFamily: "'Arial'",
+				fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 				fontSize: 10,
 				fontStyle: "normal",
 				callback: defaultConfig.pointLabels.callback, // make this nicer, then check explicitly below
@@ -37,7 +37,7 @@ describe('Test the radial linear scale', function() {
 			position: "chartArea",
 			scaleLabel: {
 				fontColor: '#666',
-				fontFamily: 'Helvetica Neue',
+				fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 				fontSize: 12,
 				fontStyle: 'normal',
 				labelString: '',
@@ -49,7 +49,7 @@ describe('Test the radial linear scale', function() {
 				backdropPaddingX: 2,
 				beginAtZero: false,
 				fontColor: "#666",
-				fontFamily: "Helvetica Neue",
+				fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 				fontSize: 12,
 				fontStyle: "normal",
 				maxRotation: 90,

@@ -36,16 +36,16 @@
 
 		pointLabels: {
 			//String - Point label font declaration
-			fontFamily: "'Arial'",
+			fontFamily: Chart.defaults.global.defaultFontFamily,
 
 			//String - Point label font weight
-			fontStyle: "normal",
+			fontStyle: Chart.defaults.global.defaultFontStyle,
 
 			//Number - Point label font size in pixels
 			fontSize: 10,
 
 			//String - Point label font colour
-			fontColor: "#666",
+			fontColor: Chart.defaults.global.defaultFontColor,
 
 			//Function - Used to convert point labels
 			callback: function(label) {

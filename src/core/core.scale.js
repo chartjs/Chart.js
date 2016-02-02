@@ -22,10 +22,10 @@
 
 		// scale label
 		scaleLabel: {
-			fontColor: '#666',
-			fontFamily: 'Helvetica Neue',
-			fontSize: 12,
-			fontStyle: 'normal',
+			fontColor: Chart.defaults.global.defaultFontColor,
+			fontFamily: Chart.defaults.global.defaultFontFamily,
+			fontSize: Chart.defaults.global.defaultFontSize,
+			fontStyle: Chart.defaults.global.defaultFontStyle,
 
 			// actual label
 			labelString: '',
@@ -37,10 +37,10 @@
 		// label settings
 		ticks: {
 			beginAtZero: false,
-			fontSize: 12,
-			fontStyle: "normal",
-			fontColor: "#666",
-			fontFamily: "Helvetica Neue",
+			fontSize: Chart.defaults.global.defaultFontSize,
+			fontStyle: Chart.defaults.global.defaultFontStyle,
+			fontColor: Chart.defaults.global.defaultFontColor,
+			fontFamily: Chart.defaults.global.defaultFontFamily,
 			maxRotation: 90,
 			mirror: false,
 			padding: 10,
