@@ -10,9 +10,9 @@
 		position: 'top',
 		fullWidth: true, // marks that this box should take the full width of the canvas (pushing down other boxes)
 
-		fontColor: '#666',
-		fontFamily: 'Helvetica Neue',
-		fontSize: 12,
+		fontColor: Chart.defaults.global.defaultFontColor,
+		fontFamily: Chart.defaults.global.defaultFontFamily,
+		fontSize: Chart.defaults.global.defaultFontSize,
 		fontStyle: 'bold',
 		padding: 10,
 

@@ -23,7 +23,7 @@ describe('Logarithmic Scale tests', function() {
 			position: "left",
 			scaleLabel: {
 				fontColor: '#666',
-				fontFamily: 'Helvetica Neue',
+				fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 				fontSize: 12,
 				fontStyle: 'normal',
 				labelString: '',
@@ -32,7 +32,7 @@ describe('Logarithmic Scale tests', function() {
 			ticks: {
 				beginAtZero: false,
 				fontColor: "#666",
-				fontFamily: "Helvetica Neue",
+				fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 				fontSize: 12,
 				fontStyle: "normal",
 				maxRotation: 90,

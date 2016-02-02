@@ -25,7 +25,7 @@ describe('Category scale tests', function() {
 			position: "bottom",
 			scaleLabel: {
 				fontColor: '#666',
-				fontFamily: 'Helvetica Neue',
+				fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 				fontSize: 12,
 				fontStyle: 'normal',
 				labelString: '',
@@ -34,7 +34,7 @@ describe('Category scale tests', function() {
 			ticks: {
 				beginAtZero: false,
 				fontColor: "#666",
-				fontFamily: "Helvetica Neue",
+				fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 				fontSize: 12,
 				fontStyle: "normal",
 				maxRotation: 90,
