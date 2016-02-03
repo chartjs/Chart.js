@@ -877,4 +877,4 @@
 			fn.apply(_tArg, args);
 		}
 	};
-}).call(this);
+}).call(window || this);

@@ -190,4 +190,4 @@
 	});
 	Chart.scaleService.registerScaleType("logarithmic", LogarithmicScale, defaultConfig);
 
-}).call(this);
+}).call(window || this);

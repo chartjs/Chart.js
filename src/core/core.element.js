@@ -93,4 +93,4 @@
 
 	Chart.Element.extend = helpers.inherits;
 
-}).call(this);
+}).call(window || this);

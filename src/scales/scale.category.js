@@ -47,4 +47,4 @@
 
     Chart.scaleService.registerScaleType("category", DatasetScale, defaultConfig);
 
-}).call(this);
+}).call(window || this);

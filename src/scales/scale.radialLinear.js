@@ -430,4 +430,4 @@
 	Chart.scaleService.registerScaleType("radialLinear", LinearRadialScale, defaultConfig);
 
 
-}).call(this);
+}).call(window || this);

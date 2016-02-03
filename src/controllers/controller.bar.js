@@ -307,4 +307,4 @@
 
 
 
-}).call(this);
+}).call(window || this);

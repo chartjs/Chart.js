@@ -167,4 +167,4 @@
 			point._model.borderWidth = point.custom && point.custom.borderWidth ? point.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.point.borderWidth);
 		}
 	});
-}).call(this);
+}).call(window || this);
