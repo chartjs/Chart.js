@@ -172,7 +172,6 @@
 
             if (this.options.ticks.fixedStepSize) {
                 for (var j = this.min; j <= this.max; ++j) {
-                    console.log(j * this.options.ticks.fixedStepSize);
                     this.ticks.push(j * this.options.ticks.fixedStepSize);
                 }
             } else {
