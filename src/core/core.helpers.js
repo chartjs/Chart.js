@@ -843,7 +843,7 @@
 		},
 		isDatasetVisible = helpers.isDatasetVisible = function(dataset) {
 			return !dataset.hidden;
-		};
+		},
         pushAllIfDefined = helpers.pushAllIfDefined = function(element, array) {
             if (typeof element == "undefined") {
                 return;
