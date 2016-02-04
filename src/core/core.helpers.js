@@ -844,4 +844,15 @@
 		isDatasetVisible = helpers.isDatasetVisible = function(dataset) {
 			return !dataset.hidden;
 		};
+        isDatasetVisible = helpers.pushAllIfDefined = function(element, array) {
+            if (typeof element == "undefined") {
+                return;
+            }
+            
+            if (isArray(element)) {
+                array.push.apply(array, element);
+            } else {
+                array.push(element);
+            }
+		};
 }).call(this);
