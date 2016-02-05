@@ -6,29 +6,12 @@
 		Chart = root.Chart,
 		helpers = Chart.helpers;
 
-	Chart.defaults.barError = {
-		hover: {
-			mode: "label"
-		},
-
-		scales: {
-			xAxes: [{
-				type: "category",
-
-				// Specific to Bar Controller
-				categoryPercentage: 0.8,
-				barPercentage: 0.9,
-
-				// grid line settings
-				gridLines: {
-					offsetGridLines: true,
-				},
-			}],
-			yAxes: [{
-				type: "linear",
-			}],
-		},
-	};
+	Chart.defaults.barError = helpers.extend(Chart.defaults.bar, {
+		errorDir: "both",
+		errorStrokeWidth: 1,
+		errorCapWidth: 0.75,
+		errorColor: null
+	});
 
 	Chart.controllers.barError = Chart.controllers.bar.extend({
 		initialize: function(chart, datasetIndex) {
@@ -105,6 +88,12 @@
 			var xScale = this.getScaleForId(this.getDataset().xAxisID);
 			var yScale = this.getScaleForId(this.getDataset().yAxisID);
 
+			//TODO: abstract out so these can be global options
+			var errorDir = this.getDataset().errorDir || 'both';
+			var errorCapWidth = this.getDataset().errorCapWidth || 0.75;
+			var errorStrokeColor = this.getDataset().errorColor || rectangle._model.backgroundColor;
+			var errorStrokeWidth = this.getDataset().errorStrokeWidth || 1;
+
 			helpers.extend(errorBar, {
 				// Utility
 				_chart: this.chart.chart,
@@ -117,10 +106,12 @@
 					x: this.calculateBarX(index, this.index),
 					yTop: this.calculateErrorBarTop(index, this.index),
 					yBottom: this.calculateErrorBarBottom(index, this.index),
-					capWidth: 0.75 * rectangle._model.width,
-					direction: 'both',
-					strokeColor: '#000',
-					strokeWidth: 1
+
+					// Appearance
+					capWidth: rectangle._model.width * errorCapWidth,
+					direction: errorDir,
+					strokeColor: errorStrokeColor,
+					strokeWidth: errorStrokeWidth
 				}
 
 			});
