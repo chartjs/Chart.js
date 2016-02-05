@@ -4296,11 +4296,16 @@
 			Chart.controllers.bar.prototype.initialize.apply(this, arguments);
 		},
 
-
 		addElements: function() {
 			//call Super
 			Chart.controllers.bar.prototype.addElements.call(this);
-			this.getDataset().metaError = new Array(this.getDataset().error.length);
+
+			if (this.getDataset().error) {
+				this.getDataset().metaError = new Array(this.getDataset().error.length);
+			} else {
+				this.getDataset().metaError = new Array();
+			}
+
 			helpers.each(this.getDataset().error, function(value, index) {
 				this.getDataset().metaError[index] = new Chart.elements.ErrorBar({
 					_chart: this.chart.chart,
@@ -4310,17 +4315,49 @@
 			}, this);
 		},
 
+		addElementAndReset: function(index) {
+			Chart.controllers.bar.prototype.addElementAndReset.call(this, index);
+			var rectangle = this.getDataset().metaData[index];
+
+			if (this.getDataset().error && this.getDataset().error[index]) {
+
+				var errorBar = new Chart.elements.ErrorBar({
+					_chart: this.chart.chart,
+					_datasetIndex: this.index,
+					_index: index
+				});
+
+				var numBars = this.getBarCount();
+
+				this.updateErrorBar(errorBar, rectangle, index, true, numBars);
+				this.getDataset().metaError.splice(index, 0, errorBar);
+			}
+
+		},
+
 		update: function update(reset) {
 			var numBars = this.getBarCount();
+
+			//ensure that there are not more error bars than data
+			if (this.getDataset().error) {
+				this.getDataset().error = this.getDataset().error.slice(0, this.getDataset().metaData.length);
+			}
+			if (this.getDataset().metaError) {
+				this.getDataset().metaError = this.getDataset().metaError.slice(0, this.getDataset().metaData.length);
+			}
 
 			helpers.each(this.getDataset().metaData, function(rectangle, index) {
 				var errorBar;
 				//update the bar
 				this.updateElement(rectangle, index, reset, numBars);
-				if (index in this.getDataset().metaError) {
-					errorBar = this.getDataset().metaError[index];
-					this.updateErrorBar(errorBar, rectangle, index, reset, numBars);
+
+				if (this.getDataset().error) {
+					if (index in this.getDataset().metaError) {
+						errorBar = this.getDataset().metaError[index];
+						this.updateErrorBar(errorBar, rectangle, index, reset, numBars);
+					}
 				}
+
 			}, this);
 		},
 
@@ -4328,8 +4365,6 @@
 
 			var xScale = this.getScaleForId(this.getDataset().xAxisID);
 			var yScale = this.getScaleForId(this.getDataset().yAxisID);
-
-			console.log(rectangle);
 
 			helpers.extend(errorBar, {
 				// Utility
@@ -4343,7 +4378,7 @@
 					x: this.calculateBarX(index, this.index),
 					yTop: this.calculateErrorBarTop(index, this.index),
 					yBottom: this.calculateErrorBarBottom(index, this.index),
-					capWidth: 0.75 * rectangle._view.width,
+					capWidth: 0.75 * rectangle._model.width,
 					direction: 'both',
 					strokeColor: '#000',
 					strokeWidth: 1
