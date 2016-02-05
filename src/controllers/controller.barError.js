@@ -89,10 +89,10 @@
 			var yScale = this.getScaleForId(this.getDataset().yAxisID);
 
 			//TODO: abstract out so these can be global options
-			var errorDir = this.getDataset().errorDir || 'both';
-			var errorCapWidth = this.getDataset().errorCapWidth || 0.75;
+			var errorDir = this.getDataset().errorDir || Chart.defaults.barError.errorDir;
+			var errorCapWidth = this.getDataset().errorCapWidth || Chart.defaults.barError.errorCapWidth;
 			var errorStrokeColor = this.getDataset().errorColor || rectangle._model.backgroundColor;
-			var errorStrokeWidth = this.getDataset().errorStrokeWidth || 1;
+			var errorStrokeWidth = this.getDataset().errorStrokeWidth || Chart.defaults.barError.errorStrokeWidth;
 
 			helpers.extend(errorBar, {
 				// Utility
