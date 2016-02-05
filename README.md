@@ -33,9 +33,9 @@ This repo is compatible with @nnnick/Chart.js, so even if you are already using 
 
 ## Chart.js 2.0
 
-A previous version (based on the old, non-API version of Chart.js) also supported scatter plots, box plots, and trendlines. This version of the project is available in the "old" branch.
+Good news, everybody. We *will* be updating to Chart.js 2.0.
 
-At one point I made a attempt to integrate these features into the current project, but got frustrated because the API was constantly forcing me to write repetitive code. There has been a flurry of development recently toward Chartjs 2.0 which looks like it will address this - so stay tuned.
+Checkout v2.0-dev-ErrorBars to see where I'm at. Issue reports (or PRs!) are appreciated.
 
 ## License
 
