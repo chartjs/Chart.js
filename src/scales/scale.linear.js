@@ -171,8 +171,10 @@
 			}
 
 			if (this.options.ticks.fixedStepSize && this.options.ticks.fixedStepSize > 0) {
-				for (var j = this.min; j <= this.max; ++j) {
-					this.ticks.push(j * this.options.ticks.fixedStepSize);
+				var j = this.min;
+				while (j <= this.max) {
+					this.ticks.push(j);
+					j += this.options.ticks.fixedStepSize;
 				}
 			} else {
 				var niceRange = helpers.niceNum(this.max - this.min, false);
