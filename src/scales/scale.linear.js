@@ -1,14 +1,14 @@
-(function () {
+(function() {
 	"use strict";
 
 	var root = this,
-			Chart = root.Chart,
-			helpers = Chart.helpers;
+		Chart = root.Chart,
+		helpers = Chart.helpers;
 
 	var defaultConfig = {
 		position: "left",
 		ticks: {
-			callback: function (tickValue, index, ticks) {
+			callback: function(tickValue, index, ticks) {
 				var delta = ticks[1] - ticks[0];
 
 				// If we have a number like 2.5 as the delta, figure out how many decimal places we need
@@ -36,7 +36,7 @@
 	};
 
 	var LinearScale = Chart.Scale.extend({
-		buildTicks: function () {
+		buildTicks: function() {
 
 			// First Calculate the range
 			this.min = null;
@@ -45,7 +45,7 @@
 			if (this.options.stacked) {
 				var valuesPerType = {};
 
-				helpers.each(this.chart.data.datasets, function (dataset) {
+				helpers.each(this.chart.data.datasets, function(dataset) {
 					if (valuesPerType[dataset.type] === undefined) {
 						valuesPerType[dataset.type] = {
 							positiveValues: [],
@@ -58,7 +58,7 @@
 					var negativeValues = valuesPerType[dataset.type].negativeValues;
 
 					if (helpers.isDatasetVisible(dataset) && (this.isHorizontal() ? dataset.xAxisID === this.id : dataset.yAxisID === this.id)) {
-						helpers.each(dataset.data, function (rawValue, index) {
+						helpers.each(dataset.data, function(rawValue, index) {
 
 							var value = +this.getRightValue(rawValue);
 							if (isNaN(value)) {
@@ -81,7 +81,7 @@
 					}
 				}, this);
 
-				helpers.each(valuesPerType, function (valuesForType) {
+				helpers.each(valuesPerType, function(valuesForType) {
 					var values = valuesForType.positiveValues.concat(valuesForType.negativeValues);
 					var minVal = helpers.min(values);
 					var maxVal = helpers.max(values);
@@ -90,9 +90,9 @@
 				}, this);
 
 			} else {
-				helpers.each(this.chart.data.datasets, function (dataset) {
+				helpers.each(this.chart.data.datasets, function(dataset) {
 					if (helpers.isDatasetVisible(dataset) && (this.isHorizontal() ? dataset.xAxisID === this.id : dataset.yAxisID === this.id)) {
-						helpers.each(dataset.data, function (rawValue, index) {
+						helpers.each(dataset.data, function(rawValue, index) {
 							var value = +this.getRightValue(rawValue);
 							if (isNaN(value)) {
 								return;
@@ -126,11 +126,11 @@
 
 			if (this.isHorizontal()) {
 				maxTicks = Math.min(this.options.ticks.maxTicksLimit ? this.options.ticks.maxTicksLimit : 11,
-						Math.ceil(this.width / 50));
+					Math.ceil(this.width / 50));
 			} else {
 				// The factor of 2 used to scale the font size has been experimentally determined.
 				maxTicks = Math.min(this.options.ticks.maxTicksLimit ? this.options.ticks.maxTicksLimit : 11,
-						Math.ceil(this.height / (2 * this.options.ticks.fontSize)));
+					Math.ceil(this.height / (2 * this.options.ticks.fontSize)));
 			}
 
 			// Make sure we always have at least 2 ticks 
@@ -210,11 +210,11 @@
 
 			this.zeroLineIndex = this.ticks.indexOf(0);
 		},
-		getLabelForIndex: function (index, datasetIndex) {
+		getLabelForIndex: function(index, datasetIndex) {
 			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 		},
 		// Utils
-		getPixelForValue: function (value, index, datasetIndex, includeOffset) {
+		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
 			// This must be called after fit has been run so that 
 			//      this.left, this.top, this.right, and this.bottom have been defined
 			var rightValue = +this.getRightValue(value);
