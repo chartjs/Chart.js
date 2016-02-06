@@ -329,6 +329,13 @@ describe('Core helper tests', function() {
 		expect(helpers.log10(1000)).toBeCloseTo(3, 1e-9);
 	});
 
+	it('should correctly determine if two numbers are essentially equal', function() {
+		expect(helpers.almostEquals(0, Number.EPSILON, 2 * Number.EPSILON)).toBe(true);
+		expect(helpers.almostEquals(1, 1.1, 0.0001)).toBe(false);
+		expect(helpers.almostEquals(1e30, 1e30 + Number.EPSILON, 0)).toBe(false);
+		expect(helpers.almostEquals(1e30, 1e30 + Number.EPSILON, 2 * Number.EPSILON)).toBe(true);
+	});
+
 	it('Should generate ids', function() {
 		expect(helpers.uid()).toBe('chart-0');
 		expect(helpers.uid()).toBe('chart-1');
