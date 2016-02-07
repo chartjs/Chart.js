@@ -55,6 +55,11 @@ module.exports = function(Chart) {
 				return;
 			}
 
+			if (typeof vm.pointStyle === 'object' && ((vm.pointStyle.toString() === '[object HTMLImageElement]') || (vm.pointStyle.toString() === '[object HTMLCanvasElement]'))) {
+				ctx.drawImage(vm.pointStyle, vm.x - vm.pointStyle.width / 2, vm.y - vm.pointStyle.height / 2);
+				return;
+			}
+
 			if (vm.radius > 0 || vm.borderWidth > 0) {
 
 				ctx.strokeStyle = vm.borderColor || Chart.defaults.global.defaultColor;
