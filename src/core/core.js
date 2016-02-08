@@ -121,4 +121,4 @@
 		return Chart;
 	};
 
-}).call(this);
+}).call(window || this);

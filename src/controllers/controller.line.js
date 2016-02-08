@@ -289,4 +289,4 @@
 			point._model.borderWidth = this.getPointBorderWidth(point, index);
 		}
 	});
-}).call(this);
+}).call(window || this);

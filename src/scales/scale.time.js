@@ -303,4 +303,4 @@
 	});
 	Chart.scaleService.registerScaleType("time", TimeScale, defaultConfig);
 
-}).call(this, moment);
+}).call(window || this, moment);

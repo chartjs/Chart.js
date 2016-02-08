@@ -47,4 +47,4 @@
 		return new Chart(context, config);
 	};
 	
-}).call(this);
+}).call(window || this);

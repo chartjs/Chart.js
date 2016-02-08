@@ -250,4 +250,4 @@
 	});
 	Chart.scaleService.registerScaleType("linear", LinearScale, defaultConfig);
 
-}).call(this);
+}).call(window || this);
