@@ -103,6 +103,10 @@ hover |-|-|-
 *hover*.animationDuration | Number | 400 | Duration in milliseconds it takes to animate hover style changes
 onClick | Function | null | Called if the event is of type 'mouseup' or 'click'. Called in the context of the chart and passed an array of active elements
 defaultColor | Color | 'rgba(0,0,0,0.1)' |
+defaultFontColor | Color | '#666' | Default font color for all text
+defaultFontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Default font family for all text
+defaultFontSize | Number | 12 | Default font size (in px) for text. Does not apply to radialLinear scale point labels
+defaultFontStyle | String | 'normal' | Default font style. Does not apply to tooltip title or footer. Does not apply to chart title
 legendCallback | Function | ` function (chart) { // the chart object to generate a legend from.  }` | Function to generate a legend. Default implementation returns an HTML string.
 
 The global options for the chart title is defined in `Chart.defaults.global.title`
