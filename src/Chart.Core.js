@@ -839,13 +839,13 @@
 			var container = domNode.parentNode,
 			    padding = parseInt(getStyle(container, 'padding-left')) + parseInt(getStyle(container, 'padding-right'));
 			// TODO = check cross browser stuff with this.
-			return container.clientWidth - padding;
+			return container ? container.clientWidth - padding : 0;
 		},
 		getMaximumHeight = helpers.getMaximumHeight = function(domNode){
 			var container = domNode.parentNode,
 			    padding = parseInt(getStyle(container, 'padding-bottom')) + parseInt(getStyle(container, 'padding-top'));
 			// TODO = check cross browser stuff with this.
-			return container.clientHeight - padding;
+			return container ? container.clientHeight - padding : 0;
 		},
 		getStyle = helpers.getStyle = function (el, property) {
 			return el.currentStyle ?
