@@ -97,6 +97,11 @@
 			},
 			onClick: null,
 			defaultColor: 'rgba(0,0,0,0.1)',
+			defaultFontColor: '#666',
+			defaultFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+			defaultFontSize: 12,
+			defaultFontStyle: 'normal',
+			showLines: true,
 
 			// Element defaults defined in element extensions
 			elements: {},
@@ -180,7 +185,7 @@
 	helpers.extend = function(base) {
 		var len = arguments.length;
 		var additionalArgs = [];
-		for(var i = 1; i < len; i++) {
+		for (var i = 1; i < len; i++) {
 			additionalArgs.push(arguments[i]);
 		}
 		helpers.each(additionalArgs, function(extensionObject) {
@@ -314,7 +319,8 @@
 			return arrayToSearch.indexOf(item);
 		} else {
 			for (var i = 0; i < arrayToSearch.length; i++) {
-				if (arrayToSearch[i] === item) return i;
+				if (arrayToSearch[i] === item)
+					return i;
 			}
 			return -1;
 		}
@@ -393,6 +399,9 @@
 	//-- Math methods
 	helpers.isNumber = function(n) {
 		return !isNaN(parseFloat(n)) && isFinite(n);
+	};
+	helpers.almostEquals = function(x, y, epsilon) {
+		return Math.abs(x - y) < epsilon;
 	};
 	helpers.max = function(array) {
 		return array.reduce(function(max, value) {
@@ -803,7 +812,8 @@
 	};
 	helpers.bindEvents = function(chartInstance, arrayOfEvents, handler) {
 		// Create the events object if it's not already present
-		if (!chartInstance.events) chartInstance.events = {};
+		if (!chartInstance.events)
+			chartInstance.events = {};
 
 		helpers.each(arrayOfEvents, function(eventName) {
 			chartInstance.events[eventName] = function() {
@@ -978,7 +988,6 @@
 		// Insert the iframe so that contentWindow is available
 		node.insertBefore(hiddenIframe, node.firstChild);
 
-		var timer = 0;
 		(hiddenIframe.contentWindow || hiddenIframe).onresize = function() {
 			if (callback) {
 				callback();
@@ -998,6 +1007,17 @@
 			return Object.prototype.toString.call(arg) === '[object Array]';
 		}
 		return Array.isArray(obj);
+	};
+	helpers.pushAllIfDefined = function(element, array) {
+		if (typeof element == "undefined") {
+			return;
+		}
+
+		if (helpers.isArray(element)) {
+			array.push.apply(array, element);
+		} else {
+			array.push(element);
+		}
 	};
 	helpers.isDatasetVisible = function(dataset) {
 		return !dataset.hidden;
@@ -2223,10 +2243,10 @@
 
 		labels: {
 			boxWidth: 40,
-			fontSize: 12,
-			fontStyle: "normal",
-			fontColor: "#666",
-			fontFamily: "Helvetica Neue",
+			fontSize: Chart.defaults.global.defaultFontSize,
+			fontStyle: Chart.defaults.global.defaultFontStyle,
+			fontColor: Chart.defaults.global.defaultFontColor,
+			fontFamily: Chart.defaults.global.defaultFontFamily,
 			padding: 10,
 			// Generates labels shown in the legend
 			// Valid properties to return:
@@ -2549,10 +2569,10 @@
 
 		// scale label
 		scaleLabel: {
-			fontColor: '#666',
-			fontFamily: 'Helvetica Neue',
-			fontSize: 12,
-			fontStyle: 'normal',
+			fontColor: Chart.defaults.global.defaultFontColor,
+			fontFamily: Chart.defaults.global.defaultFontFamily,
+			fontSize: Chart.defaults.global.defaultFontSize,
+			fontStyle: Chart.defaults.global.defaultFontStyle,
 
 			// actual label
 			labelString: '',
@@ -2564,10 +2584,10 @@
 		// label settings
 		ticks: {
 			beginAtZero: false,
-			fontSize: 12,
-			fontStyle: "normal",
-			fontColor: "#666",
-			fontFamily: "Helvetica Neue",
+			fontSize: Chart.defaults.global.defaultFontSize,
+			fontStyle: Chart.defaults.global.defaultFontStyle,
+			fontColor: Chart.defaults.global.defaultFontColor,
+			fontFamily: Chart.defaults.global.defaultFontFamily,
 			maxRotation: 90,
 			mirror: false,
 			padding: 10,
@@ -3248,9 +3268,9 @@
 		position: 'top',
 		fullWidth: true, // marks that this box should take the full width of the canvas (pushing down other boxes)
 
-		fontColor: '#666',
-		fontFamily: 'Helvetica Neue',
-		fontSize: 12,
+		fontColor: Chart.defaults.global.defaultFontColor,
+		fontFamily: Chart.defaults.global.defaultFontFamily,
+		fontSize: Chart.defaults.global.defaultFontSize,
 		fontStyle: 'bold',
 		padding: 10,
 
@@ -3445,21 +3465,21 @@
 		custom: null,
 		mode: 'single',
 		backgroundColor: "rgba(0,0,0,0.8)",
-		titleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-		titleFontSize: 12,
+		titleFontFamily: Chart.defaults.global.defaultFontFamily,
+		titleFontSize: Chart.defaults.global.defaultFontSize,
 		titleFontStyle: "bold",
 		titleSpacing: 2,
 		titleMarginBottom: 6,
 		titleColor: "#fff",
 		titleAlign: "left",
-		bodyFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-		bodyFontSize: 12,
-		bodyFontStyle: "normal",
+		bodyFontFamily: Chart.defaults.global.defaultFontFamily,
+		bodyFontSize: Chart.defaults.global.defaultFontSize,
+		bodyFontStyle: Chart.defaults.global.defaultFontStyle,
 		bodySpacing: 2,
 		bodyColor: "#fff",
 		bodyAlign: "left",
-		footerFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-		footerFontSize: 12,
+		footerFontFamily: Chart.defaults.global.defaultFontFamily,
+		footerFontSize: Chart.defaults.global.defaultFontSize,
 		footerFontStyle: "bold",
 		footerSpacing: 2,
 		footerMarginTop: 6,
@@ -3594,11 +3614,9 @@
 			var lines = [];
 
 			helpers.each(tooltipItems, function(bodyItem) {
-				var beforeLabel = this._options.tooltips.callbacks.beforeLabel.call(this, bodyItem, data) || '';
-				var bodyLabel = this._options.tooltips.callbacks.label.call(this, bodyItem, data) || '';
-				var afterLabel = this._options.tooltips.callbacks.afterLabel.call(this, bodyItem, data) || '';
-
-				lines.push(beforeLabel + bodyLabel + afterLabel);
+                helpers.pushAllIfDefined(this._options.tooltips.callbacks.beforeLabel.call(this, bodyItem, data), lines);
+                helpers.pushAllIfDefined(this._options.tooltips.callbacks.label.call(this, bodyItem, data), lines);
+                helpers.pushAllIfDefined(this._options.tooltips.callbacks.afterLabel.call(this, bodyItem, data), lines);
 			}, this);
 
 			return lines;
@@ -5722,11 +5740,11 @@
 
 			if (this.isHorizontal()) {
 				maxTicks = Math.min(this.options.ticks.maxTicksLimit ? this.options.ticks.maxTicksLimit : 11,
-				                    Math.ceil(this.width / 50));
+					Math.ceil(this.width / 50));
 			} else {
 				// The factor of 2 used to scale the font size has been experimentally determined.
 				maxTicks = Math.min(this.options.ticks.maxTicksLimit ? this.options.ticks.maxTicksLimit : 11,
-				                    Math.ceil(this.height / (2 * this.options.ticks.fontSize)));
+					Math.ceil(this.height / (2 * this.options.ticks.fontSize)));
 			}
 
 			// Make sure we always have at least 2 ticks 
@@ -5736,12 +5754,24 @@
 			// "nice number" algorithm. See http://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
 			// for details.
 
-			var niceRange = helpers.niceNum(this.max - this.min, false);
-			var spacing = helpers.niceNum(niceRange / (maxTicks - 1), true);
+			var spacing;
+			var fixedStepSizeSet = this.options.ticks.fixedStepSize && this.options.ticks.fixedStepSize > 0;
+			if (fixedStepSizeSet) {
+				spacing = this.options.ticks.fixedStepSize;
+			} else {
+				var niceRange = helpers.niceNum(this.max - this.min, false);
+				spacing = helpers.niceNum(niceRange / (maxTicks - 1), true);
+			}
 			var niceMin = Math.floor(this.min / spacing) * spacing;
 			var niceMax = Math.ceil(this.max / spacing) * spacing;
+			var numSpaces = (niceMax - niceMin) / spacing;
 
-			var numSpaces = Math.ceil((niceMax - niceMin) / spacing);
+			// If very close to our rounded value, use it. 
+			if (helpers.almostEquals(numSpaces, Math.round(numSpaces), spacing / 1000)) {
+				numSpaces = Math.round(numSpaces);
+			} else {
+				numSpaces = Math.ceil(numSpaces);
+			}
 
 			// Put the values into the ticks array
 			this.ticks.push(this.options.ticks.min !== undefined ? this.options.ticks.min : niceMin);
@@ -5773,11 +5803,9 @@
 			this.ticksAsNumbers = this.ticks.slice(); // do after we potentially reverse the ticks
 			this.zeroLineIndex = this.ticks.indexOf(0);
 		},
-
 		getLabelForIndex: function(index, datasetIndex) {
 			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 		},
-
 		// Utils
 		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
 			// This must be called after fit has been run so that 
@@ -6036,16 +6064,16 @@
 
 		pointLabels: {
 			//String - Point label font declaration
-			fontFamily: "'Arial'",
+			fontFamily: Chart.defaults.global.defaultFontFamily,
 
 			//String - Point label font weight
-			fontStyle: "normal",
+			fontStyle: Chart.defaults.global.defaultFontStyle,
 
 			//Number - Point label font size in pixels
 			fontSize: 10,
 
 			//String - Point label font colour
-			fontColor: "#666",
+			fontColor: Chart.defaults.global.defaultFontColor,
 
 			//Function - Used to convert point labels
 			callback: function(label) {

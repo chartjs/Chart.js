@@ -164,11 +164,11 @@
 
 			if (this.isHorizontal()) {
 				maxTicks = Math.min(this.options.ticks.maxTicksLimit ? this.options.ticks.maxTicksLimit : 11,
-				                    Math.ceil(this.width / 50));
+					Math.ceil(this.width / 50));
 			} else {
 				// The factor of 2 used to scale the font size has been experimentally determined.
 				maxTicks = Math.min(this.options.ticks.maxTicksLimit ? this.options.ticks.maxTicksLimit : 11,
-				                    Math.ceil(this.height / (2 * this.options.ticks.fontSize)));
+					Math.ceil(this.height / (2 * this.options.ticks.fontSize)));
 			}
 
 			// Make sure we always have at least 2 ticks 
@@ -178,12 +178,18 @@
 			// "nice number" algorithm. See http://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
 			// for details.
 
-			var niceRange = helpers.niceNum(this.max - this.min, false);
-			var spacing = helpers.niceNum(niceRange / (maxTicks - 1), true);
+			var spacing;
+			var fixedStepSizeSet = this.options.ticks.fixedStepSize && this.options.ticks.fixedStepSize > 0;
+			if (fixedStepSizeSet) {
+				spacing = this.options.ticks.fixedStepSize;
+			} else {
+				var niceRange = helpers.niceNum(this.max - this.min, false);
+				spacing = helpers.niceNum(niceRange / (maxTicks - 1), true);
+			}
 			var niceMin = Math.floor(this.min / spacing) * spacing;
 			var niceMax = Math.ceil(this.max / spacing) * spacing;
-
 			var numSpaces = (niceMax - niceMin) / spacing;
+
 			// If very close to our rounded value, use it. 
 			if (helpers.almostEquals(numSpaces, Math.round(numSpaces), spacing / 1000)) {
 				numSpaces = Math.round(numSpaces);
@@ -221,11 +227,9 @@
 			this.ticksAsNumbers = this.ticks.slice(); // do after we potentially reverse the ticks
 			this.zeroLineIndex = this.ticks.indexOf(0);
 		},
-
 		getLabelForIndex: function(index, datasetIndex) {
 			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 		},
-
 		// Utils
 		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
 			// This must be called after fit has been run so that 

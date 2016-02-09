@@ -50,7 +50,7 @@
 	helpers.extend = function(base) {
 		var len = arguments.length;
 		var additionalArgs = [];
-		for(var i = 1; i < len; i++) {
+		for (var i = 1; i < len; i++) {
 			additionalArgs.push(arguments[i]);
 		}
 		helpers.each(additionalArgs, function(extensionObject) {
@@ -184,7 +184,8 @@
 			return arrayToSearch.indexOf(item);
 		} else {
 			for (var i = 0; i < arrayToSearch.length; i++) {
-				if (arrayToSearch[i] === item) return i;
+				if (arrayToSearch[i] === item)
+					return i;
 			}
 			return -1;
 		}
@@ -676,7 +677,8 @@
 	};
 	helpers.bindEvents = function(chartInstance, arrayOfEvents, handler) {
 		// Create the events object if it's not already present
-		if (!chartInstance.events) chartInstance.events = {};
+		if (!chartInstance.events)
+			chartInstance.events = {};
 
 		helpers.each(arrayOfEvents, function(eventName) {
 			chartInstance.events[eventName] = function() {
@@ -851,7 +853,6 @@
 		// Insert the iframe so that contentWindow is available
 		node.insertBefore(hiddenIframe, node.firstChild);
 
-		var timer = 0;
 		(hiddenIframe.contentWindow || hiddenIframe).onresize = function() {
 			if (callback) {
 				callback();
@@ -871,6 +872,17 @@
 			return Object.prototype.toString.call(arg) === '[object Array]';
 		}
 		return Array.isArray(obj);
+	};
+	helpers.pushAllIfDefined = function(element, array) {
+		if (typeof element == "undefined") {
+			return;
+		}
+
+		if (helpers.isArray(element)) {
+			array.push.apply(array, element);
+		} else {
+			array.push(element);
+		}
 	};
 	helpers.isDatasetVisible = function(dataset) {
 		return !dataset.hidden;
