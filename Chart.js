@@ -3067,6 +3067,18 @@
 								this.ctx.lineTo(xLineValue, chartArea.bottom);
 							}
 
+							// Draw the constant lines
+							if(this.options.constantLines)
+							{
+								helpers.each(this.options.constantLines, function(constantValue, barindex){
+									//from % to pixel
+									var constantValue=this.getPixelForDecimal(constantValue);//+helpers.aliasPixel(constantValue)
+									//draw it
+									this.ctx.moveTo(constantValue, chartArea.top);
+									this.ctx.lineTo(constantValue, chartArea.bottom);
+								},this);
+							}
+
 							// Need to stroke in the loop because we are potentially changing line widths & colours
 							this.ctx.stroke();
 						}
@@ -3135,6 +3147,18 @@
 							if (this.options.gridLines.drawOnChartArea) {
 								this.ctx.moveTo(chartArea.left, yLineValue);
 								this.ctx.lineTo(chartArea.right, yLineValue);
+							}
+
+							// Draw the constant lines
+							if(this.options.constantLines)
+							{
+								helpers.each(this.options.constantLines, function(constantValue, barindex){
+									//from % to pixel
+									var constantValue=this.getPixelForDecimal(constantValue)+helpers.aliasPixel(constantValue)
+									//draw it
+									this.ctx.moveTo(chartArea.left, constantValue);
+									this.ctx.lineTo(chartArea.right, constantValue);
+								},this);
 							}
 
 							// Need to stroke in the loop because we are potentially changing line widths & colours
