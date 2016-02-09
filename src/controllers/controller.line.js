@@ -7,6 +7,8 @@
 		helpers = Chart.helpers;
 
 	Chart.defaults.line = {
+		showLines: true,
+
 		hover: {
 			mode: "label"
 		},
@@ -24,40 +26,7 @@
 	};
 
 
-	Chart.controllers.line = function(chart, datasetIndex) {
-		this.initialize.call(this, chart, datasetIndex);
-	};
-
-	helpers.extend(Chart.controllers.line.prototype, {
-
-		initialize: function(chart, datasetIndex) {
-			this.chart = chart;
-			this.index = datasetIndex;
-			this.linkScales();
-			this.addElements();
-		},
-		updateIndex: function(datasetIndex) {
-			this.index = datasetIndex;
-		},
-
-		linkScales: function() {
-			if (!this.getDataset().xAxisID) {
-				this.getDataset().xAxisID = this.chart.options.scales.xAxes[0].id;
-			}
-
-			if (!this.getDataset().yAxisID) {
-				this.getDataset().yAxisID = this.chart.options.scales.yAxes[0].id;
-			}
-		},
-
-		getDataset: function() {
-			return this.chart.data.datasets[this.index];
-		},
-
-		getScaleForId: function(scaleID) {
-			return this.chart.scales[scaleID];
-		},
-
+	Chart.controllers.line = Chart.DatasetController.extend({
 		addElements: function() {
 
 			this.getDataset().metaData = this.getDataset().metaData || [];
@@ -91,31 +60,8 @@
 			this.getDataset().metaData.splice(index, 0, point);
 
 			// Make sure bezier control points are updated
-			this.updateBezierControlPoints();
-		},
-		removeElement: function(index) {
-			this.getDataset().metaData.splice(index, 1);
-		},
-
-		reset: function() {
-			this.update(true);
-		},
-
-		buildOrUpdateElements: function buildOrUpdateElements() {
-			// Handle the number of data points changing
-			var numData = this.getDataset().data.length;
-			var numPoints = this.getDataset().metaData.length;
-
-			// Make sure that we handle number of datapoints changing
-			if (numData < numPoints) {
-				// Remove excess bars for data points that have been removed
-				this.getDataset().metaData.splice(numData, numPoints - numData);
-			} else if (numData > numPoints) {
-				// Add new elements
-				for (var index = numPoints; index < numData; ++index) {
-					this.addElementAndReset(index);
-				}
-			}
+			if (this.chart.options.showLines && this.chart.options.elements.line.tension !== 0)
+				this.updateBezierControlPoints();
 		},
 
 		update: function update(reset) {
@@ -135,16 +81,16 @@
 			}
 
 			// Update Line
-			helpers.extend(line, {
+			if (this.chart.options.showLines) {
 				// Utility
-				_scale: yScale,
-				_datasetIndex: this.index,
+				line._scale = yScale;
+				line._datasetIndex = this.index;
 				// Data
-				_children: points,
+				line._children = points;
 				// Model
-				_model: {
+				line._model = {
 					// Appearance
-					tension: line.custom && line.custom.tension ? line.custom.tension : (this.getDataset().tension || this.chart.options.elements.line.tension),
+					tension: line.custom && line.custom.tension ? line.custom.tension : helpers.getValueOrDefault(this.getDataset().tension, this.chart.options.elements.line.tension),
 					backgroundColor: line.custom && line.custom.backgroundColor ? line.custom.backgroundColor : (this.getDataset().backgroundColor || this.chart.options.elements.line.backgroundColor),
 					borderWidth: line.custom && line.custom.borderWidth ? line.custom.borderWidth : (this.getDataset().borderWidth || this.chart.options.elements.line.borderWidth),
 					borderColor: line.custom && line.custom.borderColor ? line.custom.borderColor : (this.getDataset().borderColor || this.chart.options.elements.line.borderColor),
@@ -156,17 +102,18 @@
 					// Scale
 					scaleTop: yScale.top,
 					scaleBottom: yScale.bottom,
-					scaleZero: scaleBase,
-				},
-			});
-			line.pivot();
+					scaleZero: scaleBase
+				};
+				line.pivot();
+			}
 
 			// Update Points
 			helpers.each(points, function(point, index) {
 				this.updateElement(point, index, reset);
 			}, this);
 
-			this.updateBezierControlPoints();
+			if (this.chart.options.showLines && this.chart.options.elements.line.tension !== 0)
+				this.updateBezierControlPoints();
 		},
 
 		getPointBackgroundColor: function(point, index) {
@@ -225,28 +172,27 @@
 				scaleBase = yScale.getPixelForValue(0);
 			}
 
-			helpers.extend(point, {
-				// Utility
-				_chart: this.chart.chart,
-				_xScale: xScale,
-				_yScale: yScale,
-				_datasetIndex: this.index,
-				_index: index,
+			// Utility
+			point._chart = this.chart.chart;
+			point._xScale = xScale;
+			point._yScale = yScale;
+			point._datasetIndex = this.index;
+			point._index = index;
 
-				// Desired view properties
-				_model: {
-					x: xScale.getPixelForValue(this.getDataset().data[index], index, this.index, this.chart.isCombo),
-					y: reset ? scaleBase : this.calculatePointY(this.getDataset().data[index], index, this.index, this.chart.isCombo),
-					// Appearance
-					tension: point.custom && point.custom.tension ? point.custom.tension : (this.getDataset().tension || this.chart.options.elements.line.tension),
-					radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().radius, index, this.chart.options.elements.point.radius),
-					backgroundColor: this.getPointBackgroundColor(point, index),
-					borderColor: this.getPointBorderColor(point, index),
-					borderWidth: this.getPointBorderWidth(point, index),
-					// Tooltip
-					hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.getDataset().hitRadius, index, this.chart.options.elements.point.hitRadius),
-				},
-			});
+			// Desired view properties
+			point._model = {
+				x: xScale.getPixelForValue(this.getDataset().data[index], index, this.index, this.chart.isCombo),
+				y: reset ? scaleBase : this.calculatePointY(this.getDataset().data[index], index, this.index, this.chart.isCombo),
+				// Appearance
+				tension: point.custom && point.custom.tension ? point.custom.tension : helpers.getValueOrDefault(this.getDataset().tension, this.chart.options.elements.line.tension),
+				radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().radius, index, this.chart.options.elements.point.radius),
+				pointStyle: point.custom && point.custom.pointStyle ? point.custom.pointStyle : helpers.getValueAtIndexOrDefault(this.getDataset().pointStyle, index, this.chart.options.elements.point.pointStyle),
+				backgroundColor: this.getPointBackgroundColor(point, index),
+				borderColor: this.getPointBorderColor(point, index),
+				borderWidth: this.getPointBorderWidth(point, index),
+				// Tooltip
+				hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.getDataset().hitRadius, index, this.chart.options.elements.point.hitRadius)
+			};
 
 			point._model.skip = point.custom && point.custom.skip ? point.custom.skip : (isNaN(point._model.x) || isNaN(point._model.y));
 		},
@@ -263,7 +209,7 @@
 
 				for (var i = this.chart.data.datasets.length - 1; i > datasetIndex; i--) {
 					var ds = this.chart.data.datasets[i];
-					if (helpers.isDatasetVisible(ds)) {
+					if (ds.type === 'line' && helpers.isDatasetVisible(ds)) {
 						if (ds.data[index] < 0) {
 							sumNeg += ds.data[index] || 0;
 						} else {
@@ -277,8 +223,6 @@
 				} else {
 					return yScale.getPixelForValue(sumPos + value);
 				}
-
-				return yScale.getPixelForValue(value);
 			}
 
 			return yScale.getPixelForValue(value);
@@ -310,12 +254,13 @@
 			var easingDecimal = ease || 1;
 
 			// Transition Point Locations
-			helpers.each(this.getDataset().metaData, function(point, index) {
+			helpers.each(this.getDataset().metaData, function(point) {
 				point.transition(easingDecimal);
-			}, this);
+			});
 
 			// Transition and Draw the line
-			this.getDataset().metaDataset.transition(easingDecimal).draw();
+			if (this.chart.options.showLines)
+				this.getDataset().metaDataset.transition(easingDecimal).draw();
 
 			// Draw the points
 			helpers.each(this.getDataset().metaData, function(point) {

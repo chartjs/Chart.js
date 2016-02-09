@@ -109,7 +109,7 @@ describe('Rectangle element tests', function() {
 
 		expect(rectangle.tooltipPosition()).toEqual({
 			x: 10,
-			y: 0,
+			y: 15,
 		});
 
 		// Test when the y is below the base (negative bar)

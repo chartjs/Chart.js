@@ -19,6 +19,7 @@
 
 	Chart.defaults.global.elements.point = {
 		radius: 3,
+		pointStyle: 'circle',
 		backgroundColor: Chart.defaults.global.defaultColor,
 		borderWidth: 1,
 		borderColor: Chart.defaults.global.defaultColor,
@@ -69,17 +70,88 @@
 
 			if (vm.radius > 0 || vm.borderWidth > 0) {
 
-				ctx.beginPath();
-
-				ctx.arc(vm.x, vm.y, vm.radius || Chart.defaults.global.elements.point.radius, 0, Math.PI * 2);
-				ctx.closePath();
-
 				ctx.strokeStyle = vm.borderColor || Chart.defaults.global.defaultColor;
 				ctx.lineWidth = vm.borderWidth || Chart.defaults.global.elements.point.borderWidth;
 
 				ctx.fillStyle = vm.backgroundColor || Chart.defaults.global.defaultColor;
 
-				ctx.fill();
+				var radius = vm.radius || Chart.defaults.global.elements.point.radius;
+
+				switch (vm.pointStyle) {
+					case 'circle':
+					default:
+						ctx.beginPath();
+						ctx.arc(vm.x, vm.y, radius, 0, Math.PI * 2);
+						ctx.closePath();
+						ctx.fill();
+					break;
+					case 'triangle':
+						ctx.beginPath();
+						var edgeLength = 3 * radius / Math.sqrt(3);
+						var height = edgeLength * Math.sqrt(3) / 2;
+						ctx.moveTo(vm.x - edgeLength / 2, vm.y + height / 3);
+						ctx.lineTo(vm.x + edgeLength / 2, vm.y + height / 3);
+						ctx.lineTo(vm.x, vm.y - 2 * height / 3);
+						ctx.closePath();
+						ctx.fill();
+					break;
+					case 'rect':
+						ctx.fillRect(vm.x - 1 / Math.SQRT2 * radius, vm.y - 1 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius);
+						ctx.strokeRect(vm.x - 1 / Math.SQRT2 * radius, vm.y - 1 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius);
+					break;
+					case 'rectRot':
+						ctx.translate(vm.x, vm.y);
+						ctx.rotate(Math.PI / 4);
+						ctx.fillRect(-1 / Math.SQRT2 * radius, -1 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius);
+						ctx.strokeRect(-1 / Math.SQRT2 * radius, -1 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius, 2 / Math.SQRT2 * radius);
+						ctx.setTransform(1, 0, 0, 1, 0, 0);
+					break;
+					case 'cross':
+						ctx.beginPath();
+						ctx.moveTo(vm.x, vm.y + radius);
+						ctx.lineTo(vm.x, vm.y - radius);
+						ctx.moveTo(vm.x - radius, vm.y);
+						ctx.lineTo(vm.x + radius, vm.y);
+						ctx.closePath();
+					break;
+					case 'crossRot':
+						ctx.beginPath();
+						var xOffset = Math.cos(Math.PI / 4) * radius;
+						var yOffset = Math.sin(Math.PI / 4) * radius;
+						ctx.moveTo(vm.x - xOffset, vm.y - yOffset);
+						ctx.lineTo(vm.x + xOffset, vm.y + yOffset);
+						ctx.moveTo(vm.x - xOffset, vm.y + yOffset);
+						ctx.lineTo(vm.x + xOffset, vm.y - yOffset);
+						ctx.closePath();
+					break;
+					case 'star':
+						ctx.beginPath();
+						ctx.moveTo(vm.x, vm.y + radius);
+						ctx.lineTo(vm.x, vm.y - radius);
+						ctx.moveTo(vm.x - radius, vm.y);
+						ctx.lineTo(vm.x + radius, vm.y);
+						var xOffset = Math.cos(Math.PI / 4) * radius;
+						var yOffset = Math.sin(Math.PI / 4) * radius;
+						ctx.moveTo(vm.x - xOffset, vm.y - yOffset);
+						ctx.lineTo(vm.x + xOffset, vm.y + yOffset);
+						ctx.moveTo(vm.x - xOffset, vm.y + yOffset);
+						ctx.lineTo(vm.x + xOffset, vm.y - yOffset);
+						ctx.closePath();
+					break;
+					case 'line':
+						ctx.beginPath();
+						ctx.moveTo(vm.x - radius, vm.y);
+						ctx.lineTo(vm.x + radius, vm.y);
+						ctx.closePath();
+					break;
+					case 'dash':
+						ctx.beginPath();
+						ctx.moveTo(vm.x, vm.y);
+						ctx.lineTo(vm.x + radius, vm.y);
+						ctx.closePath();
+					break;
+				}
+
 				ctx.stroke();
 			}
 		}

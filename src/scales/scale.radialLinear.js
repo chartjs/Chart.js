@@ -14,7 +14,7 @@
 		position: "chartArea",
 
 		angleLines: {
-			show: true,
+			display: true,
 			color: "rgba(0, 0, 0, 0.1)",
 			lineWidth: 1
 		},
@@ -36,16 +36,21 @@
 
 		pointLabels: {
 			//String - Point label font declaration
-			fontFamily: "'Arial'",
+			fontFamily: Chart.defaults.global.defaultFontFamily,
 
 			//String - Point label font weight
-			fontStyle: "normal",
+			fontStyle: Chart.defaults.global.defaultFontStyle,
 
 			//Number - Point label font size in pixels
 			fontSize: 10,
 
 			//String - Point label font colour
-			fontColor: "#666",
+			fontColor: Chart.defaults.global.defaultFontColor,
+
+			//Function - Used to convert point labels
+			callback: function(label) {
+				return label;
+			}
 		},
 	};
 
@@ -63,7 +68,7 @@
 			var minSize = helpers.min([this.height, this.width]);
 			this.drawingArea = (this.options.display) ? (minSize / 2) - (this.options.ticks.fontSize / 2 + this.options.ticks.backdropPaddingY) : (minSize / 2);
 		},
-		buildTicks: function() {
+		determineDataLimits: function() {
 			this.min = null;
 			this.max = null;
 
@@ -90,25 +95,6 @@
 				}
 			}, this);
 
-			if (this.min === this.max) {
-				this.min--;
-				this.max++;
-			}
-
-			this.ticks = [];
-
-			// Figure out what the max number of ticks we can support it is based on the size of
-			// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
-			// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on 
-			// the graph
-			var maxTicks = Math.min(this.options.ticks.maxTicksLimit ? this.options.ticks.maxTicksLimit : 11,
-			                        Math.ceil(this.drawingArea / (1.5 * this.options.ticks.fontSize)));
-			maxTicks = Math.max(2, maxTicks); // Make sure we always have at least 2 ticks 
-
-			// To get a "nice" value for the tick spacing, we will use the appropriately named 
-			// "nice number" algorithm. See http://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
-			// for details.
-
 			// If we are forcing it to begin at 0, but 0 will already be rendered on the chart,
 			// do nothing since that would make the chart weird. If the user really wants a weird chart
 			// axis, they can manually override it
@@ -125,15 +111,53 @@
 				}
 			}
 
+			if (this.options.ticks.min !== undefined) {
+				this.min = this.options.ticks.min;
+			} else if (this.options.ticks.suggestedMin !== undefined) {
+				this.min = Math.min(this.min, this.options.ticks.suggestedMin);
+			}
+
+			if (this.options.ticks.max !== undefined) {
+				this.max = this.options.ticks.max;
+			} else if (this.options.ticks.suggestedMax !== undefined) {
+				this.max = Math.max(this.max, this.options.ticks.suggestedMax);
+			}
+
+			if (this.min === this.max) {
+				this.min--;
+				this.max++;
+			}
+		},
+		buildTicks: function() {
+			
+
+			this.ticks = [];
+
+			// Figure out what the max number of ticks we can support it is based on the size of
+			// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
+			// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on 
+			// the graph
+			var maxTicks = Math.min(this.options.ticks.maxTicksLimit ? this.options.ticks.maxTicksLimit : 11,
+			                        Math.ceil(this.drawingArea / (1.5 * this.options.ticks.fontSize)));
+			maxTicks = Math.max(2, maxTicks); // Make sure we always have at least 2 ticks 
+
+			// To get a "nice" value for the tick spacing, we will use the appropriately named 
+			// "nice number" algorithm. See http://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
+			// for details.
+
 			var niceRange = helpers.niceNum(this.max - this.min, false);
 			var spacing = helpers.niceNum(niceRange / (maxTicks - 1), true);
 			var niceMin = Math.floor(this.min / spacing) * spacing;
 			var niceMax = Math.ceil(this.max / spacing) * spacing;
 
+			var numSpaces = Math.ceil((niceMax - niceMin) / spacing);
+
 			// Put the values into the ticks array
-			for (var j = niceMin; j <= niceMax; j += spacing) {
-				this.ticks.push(j);
+			this.ticks.push(this.options.ticks.min !== undefined ? this.options.ticks.min : niceMin);
+			for (var j = 1; j < numSpaces; ++j) {
+				this.ticks.push(niceMin + (j * spacing));
 			}
+			this.ticks.push(this.options.ticks.max !== undefined ? this.options.ticks.max : niceMax);
 
 			// At this point, we need to update our max and min given the tick values since we have expanded the
 			// range of the scale
@@ -152,11 +176,14 @@
 
 			this.zeroLineIndex = this.ticks.indexOf(0);
 		},
+		convertTicksToLabels: function() {
+			Chart.Scale.prototype.convertTicksToLabels.call(this);
+
+			// Point labels
+			this.pointLabels = this.chart.data.labels.map(this.options.pointLabels.callback, this);
+		},
 		getLabelForIndex: function(index, datasetIndex) {
 			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
-		},
-		getCircumference: function() {
-			return ((Math.PI * 2) / this.getValueCount());
 		},
 		fit: function() {
 			/*
@@ -210,7 +237,7 @@
 			for (i = 0; i < this.getValueCount(); i++) {
 				// 5px to space the text slightly out - similar to what we do in the draw function.
 				pointPosition = this.getPointPosition(i, largestPossibleRadius);
-				textWidth = this.ctx.measureText(this.options.ticks.callback(this.chart.data.labels[i])).width + 5;
+				textWidth = this.ctx.measureText(this.pointLabels[i] ? this.pointLabels[i] : '').width + 5;
 				if (i === 0 || i === this.getValueCount() / 2) {
 					// If we're at index zero, or exactly the middle, we're at exactly the top/bottom
 					// of the radar chart, so text will be aligned centrally, so we'll half it and compare
@@ -304,7 +331,7 @@
 						var yHeight = this.yCenter - yCenterOffset;
 
 						// Draw circular lines around the scale
-						if (this.options.gridLines.show) {
+						if (this.options.gridLines.display) {
 							ctx.strokeStyle = this.options.gridLines.color;
 							ctx.lineWidth = this.options.gridLines.lineWidth;
 
@@ -330,7 +357,7 @@
 							}
 						}
 
-						if (this.options.ticks.show) {
+						if (this.options.ticks.display) {
 							ctx.font = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
 
 							if (this.options.ticks.showLabelBackdrop) {
@@ -357,7 +384,7 @@
 					ctx.strokeStyle = this.options.angleLines.color;
 
 					for (var i = this.getValueCount() - 1; i >= 0; i--) {
-						if (this.options.angleLines.show) {
+						if (this.options.angleLines.display) {
 							var outerPosition = this.getPointPosition(i, this.getDistanceFromCenterForValue(this.options.reverse ? this.min : this.max));
 							ctx.beginPath();
 							ctx.moveTo(this.xCenter, this.yCenter);
@@ -370,8 +397,8 @@
 						ctx.font = helpers.fontString(this.options.pointLabels.fontSize, this.options.pointLabels.fontStyle, this.options.pointLabels.fontFamily);
 						ctx.fillStyle = this.options.pointLabels.fontColor;
 
-						var labelsCount = this.chart.data.labels.length,
-							halfLabelsCount = this.chart.data.labels.length / 2,
+						var labelsCount = this.pointLabels.length,
+							halfLabelsCount = this.pointLabels.length / 2,
 							quarterLabelsCount = halfLabelsCount / 2,
 							upperHalf = (i < quarterLabelsCount || i > labelsCount - quarterLabelsCount),
 							exactQuarter = (i === quarterLabelsCount || i === labelsCount - quarterLabelsCount);
@@ -394,7 +421,7 @@
 							ctx.textBaseline = 'top';
 						}
 
-						ctx.fillText(this.chart.data.labels[i], pointLabelPosition.x, pointLabelPosition.y);
+						ctx.fillText(this.pointLabels[i] ? this.pointLabels[i] : '', pointLabelPosition.x, pointLabelPosition.y);
 					}
 				}
 			}

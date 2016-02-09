@@ -219,32 +219,33 @@ describe('Core helper tests', function() {
 						drawTicks: true, // draw ticks extending towards the label
 						lineWidth: 1,
 						offsetGridLines: false,
-						show: true,
+						display: true,
 						zeroLineColor: "rgba(0,0,0,0.25)",
 						zeroLineWidth: 1,
 					},
 					position: "right",
 					scaleLabel: {
 						fontColor: '#666',
-						fontFamily: 'Helvetica Neue',
+						fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 						fontSize: 12,
 						fontStyle: 'normal',
 						labelString: '',
-						show: false,
+						display: false,
 					},
 					ticks: {
 						beginAtZero: false,
 						fontColor: "#666",
-						fontFamily: "Helvetica Neue",
+						fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 						fontSize: 12,
 						fontStyle: "normal",
 						maxRotation: 90,
-						minRotation: 20,
 						mirror: false,
 						padding: 10,
 						reverse: false,
-						show: true,
+						display: true,
 						callback: merged.scales.yAxes[1].ticks.callback, // make it nicer, then check explicitly below
+						autoSkip: true,
+						autoSkipPadding: 20
 					},
 					type: 'linear'
 				}, {
@@ -256,32 +257,33 @@ describe('Core helper tests', function() {
 						drawTicks: true, // draw ticks extending towards the label
 						lineWidth: 1,
 						offsetGridLines: false,
-						show: true,
+						display: true,
 						zeroLineColor: "rgba(0,0,0,0.25)",
 						zeroLineWidth: 1,
 					},
 					position: "left",
 					scaleLabel: {
 						fontColor: '#666',
-						fontFamily: 'Helvetica Neue',
+						fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 						fontSize: 12,
 						fontStyle: 'normal',
 						labelString: '',
-						show: false,
+						display: false,
 					},
 					ticks: {
 						beginAtZero: false,
 						fontColor: "#666",
-						fontFamily: "Helvetica Neue",
+						fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 						fontSize: 12,
 						fontStyle: "normal",
 						maxRotation: 90,
-						minRotation: 20,
 						mirror: false,
 						padding: 10,
 						reverse: false,
-						show: true,
+						display: true,
 						callback: merged.scales.yAxes[2].ticks.callback, // make it nicer, then check explicitly below
+						autoSkip: true,
+						autoSkipPadding: 20
 					},
 					type: 'linear'
 				}]
@@ -325,6 +327,13 @@ describe('Core helper tests', function() {
 		expect(helpers.log10(0)).toBe(-Infinity);
 		expect(helpers.log10(1)).toBe(0);
 		expect(helpers.log10(1000)).toBeCloseTo(3, 1e-9);
+	});
+
+	it('should correctly determine if two numbers are essentially equal', function() {
+		expect(helpers.almostEquals(0, Number.EPSILON, 2 * Number.EPSILON)).toBe(true);
+		expect(helpers.almostEquals(1, 1.1, 0.0001)).toBe(false);
+		expect(helpers.almostEquals(1e30, 1e30 + Number.EPSILON, 0)).toBe(false);
+		expect(helpers.almostEquals(1e30, 1e30 + Number.EPSILON, 2 * Number.EPSILON)).toBe(true);
 	});
 
 	it('Should generate ids', function() {

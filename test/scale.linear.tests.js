@@ -17,32 +17,33 @@ describe('Linear Scale', function() {
 				drawTicks: true, // draw ticks extending towards the label
 				lineWidth: 1,
 				offsetGridLines: false,
-				show: true,
+				display: true,
 				zeroLineColor: "rgba(0,0,0,0.25)",
 				zeroLineWidth: 1,
 			},
 			position: "left",
 			scaleLabel: {
 				fontColor: '#666',
-				fontFamily: 'Helvetica Neue',
+				fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 				fontSize: 12,
 				fontStyle: 'normal',
 				labelString: '',
-				show: false,
+				display: false,
 			},
 			ticks: {
 				beginAtZero: false,
 				fontColor: "#666",
-				fontFamily: "Helvetica Neue",
+				fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 				fontSize: 12,
 				fontStyle: "normal",
 				maxRotation: 90,
-				minRotation: 20,
 				mirror: false,
 				padding: 10,
 				reverse: false,
-				show: true,
+				display: true,
 				callback: defaultConfig.ticks.callback, // make this work nicer, then check below
+				autoSkip: true,
+				autoSkipPadding: 20
 			}
 		});
 
@@ -83,7 +84,7 @@ describe('Linear Scale', function() {
 		scale.width = 50;
 		scale.height = 400;
 
-		scale.buildTicks();
+		scale.determineDataLimits();
 		expect(scale.min).toBe(-100);
 		expect(scale.max).toBe(150);
 	});
@@ -122,7 +123,7 @@ describe('Linear Scale', function() {
 		scale.width = 50;
 		scale.height = 400;
 
-		scale.buildTicks();
+		scale.determineDataLimits();
 		expect(scale.min).toBe(-100);
 		expect(scale.max).toBe(150);
 	});
@@ -162,9 +163,52 @@ describe('Linear Scale', function() {
 		scale.width = 50;
 		scale.height = 400;
 
+		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.min).toBe(-100);
 		expect(scale.max).toBe(80);
+	});
+
+	it('Should correctly determine the max & min data values ignoring data that is NaN', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [null, 90, NaN, undefined, 45, 30]
+			}]
+		};
+
+		var options = Chart.scaleService.getScaleDefaults('linear');
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var scale = new Constructor({
+			ctx: {},
+			options: options, // use default config for scale
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		expect(scale).not.toEqual(undefined); // must construct
+		expect(scale.min).toBe(undefined); // not yet set
+		expect(scale.max).toBe(undefined);
+
+		// Set arbitrary width and height for now
+		scale.width = 50;
+		scale.height = 400;
+
+		scale.determineDataLimits();
+		scale.buildTicks();
+		expect(scale.min).toBe(30);
+		expect(scale.max).toBe(90);
+
+		// Scale is now stacked
+		options.stacked = true;
+
+		scale.determineDataLimits();
+		expect(scale.min).toBe(0);
+		expect(scale.max).toBe(90);
 	});
 
 	it('Should correctly determine the max & min for scatter data', function() {
@@ -205,6 +249,7 @@ describe('Linear Scale', function() {
 		verticalScale.width = 50;
 		verticalScale.height = 400;
 
+		verticalScale.determineDataLimits();
 		verticalScale.buildTicks();
 		expect(verticalScale.min).toBe(0);
 		expect(verticalScale.max).toBe(100);
@@ -224,9 +269,54 @@ describe('Linear Scale', function() {
 		horizontalScale.width = 400;
 		horizontalScale.height = 50;
 
+		horizontalScale.determineDataLimits();
 		horizontalScale.buildTicks();
 		expect(horizontalScale.min).toBe(-20);
 		expect(horizontalScale.max).toBe(100);
+	});
+
+	it('Should correctly get the label for the given index', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				xAxisID: scaleID, // for the horizontal scale
+				yAxisID: scaleID,
+				data: [{
+					x: 10,
+					y: 100
+				}, {
+					x: -10,
+					y: 0
+				}, {
+					x: 0,
+					y: 0
+				}, {
+					x: 99,
+					y: 7
+				}]
+			}]
+		};
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var scale = new Constructor({
+			ctx: {},
+			options: config,
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		// Set arbitrary width and height for now
+		scale.width = 50;
+		scale.height = 400;
+
+		scale.determineDataLimits();
+		scale.buildTicks();
+
+		expect(scale.getLabelForIndex(3, 0)).toBe(7)
 	});
 
 	it('Should correctly determine the min and max data values when stacked mode is turned on', function() {
@@ -268,6 +358,7 @@ describe('Linear Scale', function() {
 		scale.width = 50;
 		scale.height = 400;
 
+		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.min).toBe(-150);
 		expect(scale.max).toBe(200);
@@ -310,9 +401,51 @@ describe('Linear Scale', function() {
 		scale.width = 50;
 		scale.height = 400;
 
+		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.min).toBe(-150);
 		expect(scale.max).toBe(200);
+	});
+
+	it('Should correctly determine the min and max data values when stacked mode is turned on there are multiple types of datasets', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				type: 'bar',
+				yAxisID: scaleID,
+				data: [10, 5, 0, -5, 78, -100]
+			}, {
+				type: 'line',
+				yAxisID: scaleID,
+				data: [10, 10, 10, 10, 10, 10],
+			}, {
+				type: 'bar',
+				yAxisID: scaleID,
+				data: [150, 0, 0, -100, -10, 9]
+			}]
+		};
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		config.stacked = true; // enable scale stacked mode
+
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var scale = new Constructor({
+			ctx: {},
+			options: config,
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		// Set arbitrary width and height for now
+		scale.width = 50;
+		scale.height = 400;
+
+		scale.determineDataLimits();
+		expect(scale.min).toBe(-105);
+		expect(scale.max).toBe(160);
 	});
 
 	it('Should ensure that the scale has a max and min that are not equal', function() {
@@ -337,6 +470,7 @@ describe('Linear Scale', function() {
 		scale.width = 50;
 		scale.height = 400;
 
+		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.min).toBe(-1);
 		expect(scale.max).toBe(1);
@@ -370,9 +504,46 @@ describe('Linear Scale', function() {
 		scale.width = 50;
 		scale.height = 400;
 
+		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.min).toBe(-10);
 		expect(scale.max).toBe(10);
+	});
+
+	it('Should use the min and max options', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [1, 1, 1, 2, 1, 0]
+			}]
+		};
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		config.ticks.min = -1010;
+		config.ticks.max = 1010;
+
+		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+		var scale = new Constructor({
+			ctx: {},
+			options: config,
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		// Set arbitrary width and height for now
+		scale.width = 50;
+		scale.height = 400;
+
+		scale.determineDataLimits();
+		scale.buildTicks();
+		expect(scale.min).toBe(-1010);
+		expect(scale.max).toBe(1010);
+		expect(scale.ticks[0]).toBe(1010);
+		expect(scale.ticks[scale.ticks.length - 1]).toBe(-1010);
 	});
 
 	it('should forcibly include 0 in the range if the beginAtZero option is used', function() {
@@ -402,18 +573,22 @@ describe('Linear Scale', function() {
 		scale.width = 50;
 		scale.height = 400;
 
+		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.ticks).toEqual([50, 45, 40, 35, 30, 25, 20]);
 
 		config.ticks.beginAtZero = true;
+		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.ticks).toEqual([50, 45, 40, 35, 30, 25, 20, 15, 10, 5, 0]);
 
 		mockData.datasets[0].data = [-20, -30, -40, -50];
+		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.ticks).toEqual([0, -5, -10, -15, -20, -25, -30, -35, -40, -45, -50]);
 
 		config.ticks.beginAtZero = false;
+		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.ticks).toEqual([-20, -25, -30, -35, -40, -45, -50]);
 	});
@@ -443,6 +618,7 @@ describe('Linear Scale', function() {
 		scale.width = 50;
 		scale.height = 400;
 
+		scale.determineDataLimits();
 		scale.buildTicks();
 
 		// Counts down because the lines are drawn top to bottom
@@ -477,10 +653,12 @@ describe('Linear Scale', function() {
 		scale.width = 50;
 		scale.height = 400;
 
+		scale.determineDataLimits();
 		scale.buildTicks();
 
 		// Reverse mode makes this count up
 		expect(scale.ticks).toEqual([0, 10, 20, 30, 40, 50, 60, 70, 80]);
+		expect(scale.ticksAsNumbers).toEqual([0, 10, 20, 30, 40, 50, 60, 70, 80]);
 		expect(scale.start).toBe(80);
 		expect(scale.end).toBe(0);
 	});
@@ -692,7 +870,7 @@ describe('Linear Scale', function() {
 		expect(verticalScale.paddingRight).toBe(0);
 
 		// Extra size when scale label showing
-		config.scaleLabel.show = true;
+		config.scaleLabel.display = true;
 		minSize = verticalScale.update(100, 300);
 		expect(minSize).toEqual({
 			width: 58,
@@ -754,7 +932,7 @@ describe('Linear Scale', function() {
 		expect(horizontalScale.paddingRight).toBe(2);
 
 		// Extra size when scale label showing
-		config.scaleLabel.show = true;
+		config.scaleLabel.display = true;
 		minSize = horizontalScale.update(200, 300);
 		expect(minSize).toEqual({
 			width: 200,
@@ -928,14 +1106,32 @@ describe('Linear Scale', function() {
 		}, {
 			"name": "restore",
 			"args": []
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0, 0, 0, 0.1)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [0, 100.5]
+		}, {
+			"name": "lineTo",
+			"args": [200, 100.5]
+		}, {
+			"name": "stroke",
+			"args": []
 		}];
 		expect(mockContext.getCalls()).toEqual(expected);
 
 		// Turn off some drawing
 		config.gridLines.drawTicks = false;
 		config.gridLines.drawOnChartArea = false;
-		config.ticks.show = false;
-		config.scaleLabel.show = true;
+		config.ticks.display = false;
+		config.scaleLabel.display = true;
 		config.scaleLabel.labelString = 'myLabel';
 
 		mockContext.resetCalls();
@@ -986,6 +1182,24 @@ describe('Linear Scale', function() {
 		}, {
 			"name": "fillText",
 			"args": ["myLabel", 100, 122]
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0, 0, 0, 0.1)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [0, 100.5]
+		}, {
+			"name": "lineTo",
+			"args": [200, 100.5]
+		}, {
+			"name": "stroke",
+			"args": []
 		}]);
 
 		// Turn off display
@@ -1093,16 +1307,16 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "moveTo",
-			"args": [25, 30.2]
+			"args": [25, 30.5]
 		}, {
 			"name": "lineTo",
-			"args": [30, 30.2]
+			"args": [30, 30.5]
 		}, {
 			"name": "moveTo",
-			"args": [30, 30.2]
+			"args": [30, 30.5]
 		}, {
 			"name": "lineTo",
-			"args": [130, 30.2]
+			"args": [130, 30.5]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -1111,7 +1325,7 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "translate",
-			"args": [20, 29.7]
+			"args": [20, 30]
 		}, {
 			"name": "rotate",
 			"args": [-0]
@@ -1126,16 +1340,16 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "moveTo",
-			"args": [25, 59.9]
+			"args": [25, 59.5]
 		}, {
 			"name": "lineTo",
-			"args": [30, 59.9]
+			"args": [30, 59.5]
 		}, {
 			"name": "moveTo",
-			"args": [30, 59.9]
+			"args": [30, 59.5]
 		}, {
 			"name": "lineTo",
-			"args": [130, 59.9]
+			"args": [130, 59.5]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -1144,7 +1358,7 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "translate",
-			"args": [20, 59.4]
+			"args": [20, 59]
 		}, {
 			"name": "rotate",
 			"args": [-0]
@@ -1159,16 +1373,16 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "moveTo",
-			"args": [25, 89.6]
+			"args": [25, 89.5]
 		}, {
 			"name": "lineTo",
-			"args": [30, 89.6]
+			"args": [30, 89.5]
 		}, {
 			"name": "moveTo",
-			"args": [30, 89.6]
+			"args": [30, 89.5]
 		}, {
 			"name": "lineTo",
-			"args": [130, 89.6]
+			"args": [130, 89.5]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -1177,7 +1391,7 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "translate",
-			"args": [20, 89.1]
+			"args": [20, 89]
 		}, {
 			"name": "rotate",
 			"args": [-0]
@@ -1192,16 +1406,16 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "moveTo",
-			"args": [25, 119.3]
+			"args": [25, 119.5]
 		}, {
 			"name": "lineTo",
-			"args": [30, 119.3]
+			"args": [30, 119.5]
 		}, {
 			"name": "moveTo",
-			"args": [30, 119.3]
+			"args": [30, 119.5]
 		}, {
 			"name": "lineTo",
-			"args": [130, 119.3]
+			"args": [130, 119.5]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -1210,7 +1424,7 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "translate",
-			"args": [20, 118.8]
+			"args": [20, 119]
 		}, {
 			"name": "rotate",
 			"args": [-0]
@@ -1231,16 +1445,16 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "moveTo",
-			"args": [25, 149]
+			"args": [25, 149.5]
 		}, {
 			"name": "lineTo",
-			"args": [30, 149]
+			"args": [30, 149.5]
 		}, {
 			"name": "moveTo",
-			"args": [30, 149]
+			"args": [30, 149.5]
 		}, {
 			"name": "lineTo",
-			"args": [130, 149]
+			"args": [130, 149.5]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -1249,7 +1463,7 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "translate",
-			"args": [20, 148.5]
+			"args": [20, 149]
 		}, {
 			"name": "rotate",
 			"args": [-0]
@@ -1270,16 +1484,16 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "moveTo",
-			"args": [25, 178.7]
+			"args": [25, 178.5]
 		}, {
 			"name": "lineTo",
-			"args": [30, 178.7]
+			"args": [30, 178.5]
 		}, {
 			"name": "moveTo",
-			"args": [30, 178.7]
+			"args": [30, 178.5]
 		}, {
 			"name": "lineTo",
-			"args": [130, 178.7]
+			"args": [130, 178.5]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -1288,7 +1502,7 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "translate",
-			"args": [20, 178.2]
+			"args": [20, 178]
 		}, {
 			"name": "rotate",
 			"args": [-0]
@@ -1303,16 +1517,16 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "moveTo",
-			"args": [25, 208.4]
+			"args": [25, 208.5]
 		}, {
 			"name": "lineTo",
-			"args": [30, 208.4]
+			"args": [30, 208.5]
 		}, {
 			"name": "moveTo",
-			"args": [30, 208.4]
+			"args": [30, 208.5]
 		}, {
 			"name": "lineTo",
-			"args": [130, 208.4]
+			"args": [130, 208.5]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -1321,7 +1535,7 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "translate",
-			"args": [20, 207.9]
+			"args": [20, 208]
 		}, {
 			"name": "rotate",
 			"args": [-0]
@@ -1336,16 +1550,16 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "moveTo",
-			"args": [25, 238.1]
+			"args": [25, 238.5]
 		}, {
 			"name": "lineTo",
-			"args": [30, 238.1]
+			"args": [30, 238.5]
 		}, {
 			"name": "moveTo",
-			"args": [30, 238.1]
+			"args": [30, 238.5]
 		}, {
 			"name": "lineTo",
-			"args": [130, 238.1]
+			"args": [130, 238.5]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -1354,7 +1568,7 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "translate",
-			"args": [20, 237.6]
+			"args": [20, 238]
 		}, {
 			"name": "rotate",
 			"args": [-0]
@@ -1369,16 +1583,16 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "moveTo",
-			"args": [25, 267.8]
+			"args": [25, 267.5]
 		}, {
 			"name": "lineTo",
-			"args": [30, 267.8]
+			"args": [30, 267.5]
 		}, {
 			"name": "moveTo",
-			"args": [30, 267.8]
+			"args": [30, 267.5]
 		}, {
 			"name": "lineTo",
-			"args": [130, 267.8]
+			"args": [130, 267.5]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -1387,7 +1601,7 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "translate",
-			"args": [20, 267.3]
+			"args": [20, 267]
 		}, {
 			"name": "rotate",
 			"args": [-0]
@@ -1430,13 +1644,31 @@ describe('Linear Scale', function() {
 		}, {
 			"name": "restore",
 			"args": []
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0, 0, 0, 0.1)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [30.5, 0]
+		}, {
+			"name": "lineTo",
+			"args": [30.5, 300]
+		}, {
+			"name": "stroke",
+			"args": []
 		}]);
 
 		// Turn off some drawing
 		config.gridLines.drawTicks = false;
 		config.gridLines.drawOnChartArea = false;
-		config.ticks.show = false;
-		config.scaleLabel.show = true;
+		config.ticks.display = false;
+		config.scaleLabel.display = true;
 
 		mockContext.resetCalls();
 
@@ -1546,6 +1778,24 @@ describe('Linear Scale', function() {
 		}, {
 			"name": "restore",
 			"args": []
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0, 0, 0, 0.1)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [30.5, 0]
+		}, {
+			"name": "lineTo",
+			"args": [30.5, 300]
+		}, {
+			"name": "stroke",
+			"args": []
 		}]);
 	});
 
@@ -1616,16 +1866,16 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "moveTo",
-			"args": [25, 30.2]
+			"args": [25, 30.5]
 		}, {
 			"name": "lineTo",
-			"args": [30, 30.2]
+			"args": [30, 30.5]
 		}, {
 			"name": "moveTo",
-			"args": [30, 30.2]
+			"args": [30, 30.5]
 		}, {
 			"name": "lineTo",
-			"args": [130, 30.2]
+			"args": [130, 30.5]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -1634,7 +1884,7 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "translate",
-			"args": [20, 29.7]
+			"args": [20, 30]
 		}, {
 			"name": "rotate",
 			"args": [-0]
@@ -1649,16 +1899,16 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "moveTo",
-			"args": [25, 89.6]
+			"args": [25, 89.5]
 		}, {
 			"name": "lineTo",
-			"args": [30, 89.6]
+			"args": [30, 89.5]
 		}, {
 			"name": "moveTo",
-			"args": [30, 89.6]
+			"args": [30, 89.5]
 		}, {
 			"name": "lineTo",
-			"args": [130, 89.6]
+			"args": [130, 89.5]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -1667,7 +1917,7 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "translate",
-			"args": [20, 89.1]
+			"args": [20, 89]
 		}, {
 			"name": "rotate",
 			"args": [-0]
@@ -1688,16 +1938,16 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "moveTo",
-			"args": [25, 149]
+			"args": [25, 149.5]
 		}, {
 			"name": "lineTo",
-			"args": [30, 149]
+			"args": [30, 149.5]
 		}, {
 			"name": "moveTo",
-			"args": [30, 149]
+			"args": [30, 149.5]
 		}, {
 			"name": "lineTo",
-			"args": [130, 149]
+			"args": [130, 149.5]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -1706,7 +1956,7 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "translate",
-			"args": [20, 148.5]
+			"args": [20, 149]
 		}, {
 			"name": "rotate",
 			"args": [-0]
@@ -1727,16 +1977,16 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "moveTo",
-			"args": [25, 208.4]
+			"args": [25, 208.5]
 		}, {
 			"name": "lineTo",
-			"args": [30, 208.4]
+			"args": [30, 208.5]
 		}, {
 			"name": "moveTo",
-			"args": [30, 208.4]
+			"args": [30, 208.5]
 		}, {
 			"name": "lineTo",
-			"args": [130, 208.4]
+			"args": [130, 208.5]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -1745,7 +1995,7 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "translate",
-			"args": [20, 207.9]
+			"args": [20, 208]
 		}, {
 			"name": "rotate",
 			"args": [-0]
@@ -1760,16 +2010,16 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "moveTo",
-			"args": [25, 267.8]
+			"args": [25, 267.5]
 		}, {
 			"name": "lineTo",
-			"args": [30, 267.8]
+			"args": [30, 267.5]
 		}, {
 			"name": "moveTo",
-			"args": [30, 267.8]
+			"args": [30, 267.5]
 		}, {
 			"name": "lineTo",
-			"args": [130, 267.8]
+			"args": [130, 267.5]
 		}, {
 			"name": "stroke",
 			"args": []
@@ -1778,7 +2028,7 @@ describe('Linear Scale', function() {
 			"args": []
 		}, {
 			"name": "translate",
-			"args": [20, 267.3]
+			"args": [20, 267]
 		}, {
 			"name": "rotate",
 			"args": [-0]
@@ -1787,6 +2037,24 @@ describe('Linear Scale', function() {
 			"args": ["-4", 0, 0]
 		}, {
 			"name": "restore",
+			"args": []
+		}, {
+			"name": "setLineWidth",
+			"args": [1]
+		}, {
+			"name": "setStrokeStyle",
+			"args": ["rgba(0, 0, 0, 0.1)"]
+		}, {
+			"name": "beginPath",
+			"args": []
+		}, {
+			"name": "moveTo",
+			"args": [30.5, 0]
+		}, {
+			"name": "lineTo",
+			"args": [30.5, 300]
+		}, {
+			"name": "stroke",
 			"args": []
 		}])
 	});

@@ -80,6 +80,9 @@ var data = {
 			// Number or array - border width of point when hovered
 			pointHoverBorderWidth: 2,
 
+			// Tension - bezier curve tension of the line. Set to 0 to draw straight Wlines connecting points
+			tension: 0.1,
+
 			// The actual data
 			data: [65, 59, 80, 81, 56, 55, 40],
 
@@ -104,7 +107,7 @@ var data = {
 };
 ```
 
-The line chart requires an array of labels for each of the data points. This is shown on the X axis.
+The line chart requires an array of labels. This labels are shown on the X axis. There must be one label for each data point. More labels than datapoints are allowed, in which case the line ends at the last data point.
 The data for line charts is broken up into an array of datasets. Each dataset has a colour for the fill, a colour for the line and colours for the points and strokes of the points. These colours are strings just like CSS. You can use RGBA, RGB, HEX or HSL notation.
 
 The label key on each dataset is optional, and can be used when generating a scale for the chart.
@@ -117,6 +120,7 @@ The default options for line chart are defined in `Chart.defaults.Line`.
 
 Name | Type | Default | Description
 --- | --- | --- | ---
+showLines | Boolean | true | If false, the lines between points are not drawn
 stacked | Boolean | false | If true, lines stack on top of each other along the y axis.
 *hover*.mode | String | "label" | Label's hover mode. "label" is used since the x axis displays data by the index in the dataset.
 scales | - | - | -
@@ -140,58 +144,12 @@ new Chart(ctx, {
 	data: data,
 	options: {
 		xAxes: [{
-			show: false
+			display: false
 		}]
 	}
 });
 // This will create a chart with all of the default options, merged from the global config,
-// and the Line chart defaults, but this particular instance will have `bezierCurve` set to false.
+// and the Line chart defaults, but this particular instance will have the x axis not displaying.
 ```
 
-We can also change these defaults values for each Line type that is created, this object is available at `Chart.defaults.Line`.
-
-
-### Prototype methods
-
-#### .getElementsAtEvent( event )
-
-Calling `getElementsAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the point elements that are at that the same position of that event.
-
-```javascript
-canvas.onclick = function(evt){
-	var activePoints = myLineChart.getElementsAtEvent(evt);
-	// => activePoints is an array of points on the canvas that are at the same position as the click event.
-};
-```
-
-This functionality may be useful for implementing DOM based tooltips, or triggering custom behaviour in your application.
-
-#### .update( )
-
-Calling `update()` on your Chart instance will re-render the chart with any updated values, allowing you to edit the value of multiple existing points, then render those in one animated render loop.
-
-```javascript
-myLineChart.datasets[0].points[2].value = 50;
-// Would update the first dataset's value of 'March' to be 50
-myLineChart.update();
-// Calling update now animates the position of March from 90 to 50.
-```
-
-#### .addData( valuesArray, label )
-
-Calling `addData(valuesArray, label)` on your Chart instance passing an array of values for each dataset, along with a label for those points.
-
-```javascript
-// The values array passed into addData should be one for each dataset in the chart
-myLineChart.addData([40, 60], "August");
-// This new data will now animate at the end of the chart.
-```
-
-#### .removeData( )
-
-Calling `removeData()` on your Chart instance will remove the first value for all datasets on the chart.
-
-```javascript
-myLineChart.removeData();
-// The chart will remove the first point and animate other points into place
-```
+We can also change these defaults values for each Line type that is created, this object is available at `Chart.defaults.line`.

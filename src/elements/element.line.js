@@ -37,6 +37,8 @@
 				skipHandler.call(this, previousPoint, point, nextPoint); 
 			} else if (previousPoint._view.skip) {
 				previousSkipHandler.call(this, previousPoint, point, nextPoint);
+			} else if (point._view.tension === 0) { 
+				ctx.lineTo(point._view.x, point._view.y);
 			} else {
 				// Line between points
 				ctx.bezierCurveTo(
@@ -110,7 +112,7 @@
 								ctx.lineTo(previousPoint._view.x, this._view.scaleZero);
 								ctx.moveTo(nextPoint._view.x, this._view.scaleZero);
 							}
-						}, function(previousPoint, point, nextPoint) {
+						}, function(previousPoint, point) {
 							// If we skipped the last point, draw a line to ourselves so that the fill is nice
 							ctx.lineTo(point._view.x, point._view.y);
 						});
@@ -154,14 +156,14 @@
 				} else {
 					this.lineToNextPoint(previous, point, next, function(previousPoint, point, nextPoint) {
 						ctx.moveTo(nextPoint._view.x, nextPoint._view.y);
-					}, function(previousPoint, point, nextPoint) {
+					}, function(previousPoint, point) {
 						// If we skipped the last point, move up to our point preventing a line from being drawn
 						ctx.moveTo(point._view.x, point._view.y);
 					});
 				}
 			}, this);
 
-			if (this._loop) {
+			if (this._loop && this._children.length > 0) {
 				loopBackToStart();
 			}
 

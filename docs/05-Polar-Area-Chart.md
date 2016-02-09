@@ -14,45 +14,42 @@ This type of chart is often useful when we want to show a comparison data simila
 ### Example usage
 
 ```javascript
-new Chart(ctx).PolarArea(data, options);
+new Chart(ctx, {
+	data:data, 
+	type: 'polarArea',
+	options: options
+});
 ```
 
 ### Data structure
 
 ```javascript
-var data = [
-	{
-		value: 300,
-		color:"#F7464A",
-		highlight: "#FF5A5E",
-		label: "Red"
-	},
-	{
-		value: 50,
-		color: "#46BFBD",
-		highlight: "#5AD3D1",
-		label: "Green"
-	},
-	{
-		value: 100,
-		color: "#FDB45C",
-		highlight: "#FFC870",
-		label: "Yellow"
-	},
-	{
-		value: 40,
-		color: "#949FB1",
-		highlight: "#A8B3C5",
-		label: "Grey"
-	},
-	{
-		value: 120,
-		color: "#4D5360",
-		highlight: "#616774",
-		label: "Dark Grey"
-	}
-
-];
+var data = {
+	datasets: [{
+		data: [
+			10,
+			32,
+			53,
+			14,
+			22,
+		],
+		backgroundColor: [
+			"#F7464A",
+			"#46BFBD",
+			"#FDB45C",
+			"#949FB1",
+			"#4D5360",
+		],
+		label: 'My dataset' // for legend
+	}],
+	labels: [
+		"Red",
+		"Green",
+		"Yellow",
+		"Grey",
+		"Dark Grey"
+	]
+};
 ```
 As you can see, for the chart data you pass in an array of objects, with a value and a colour. The value attribute should be a number, while the color attribute should be a string. Similar to CSS, for this string you can use HEX notation, RGB, RGBA or HSL.
 
@@ -65,69 +62,30 @@ Name | Type | Default | Description
 scale | Array | [See Scales](#scales) and [Defaults for Radial Linear Scale](#getting-started-radial-linear-scale) | Options for the one scale used on the chart. Use this to style the ticks, labels, and grid.
 *scale*.type | String |"radialLinear" | As defined in ["Radial Linear"](#scales-radial-linear-scale).
 *scale*.lineArc | Boolean | true | When true, lines are circular.
-*animation*.animateRotate | Boolean |true | If true, will animate the rotation of the chart.
-*animation*.animateScale | Boolean | true | If true, will animate scaling the chart.
+animateRotate | Boolean |true | If true, will animate the rotation of the chart.
+animateScale | Boolean | true | If true, will animate scaling the chart.
+*legend*.*labels*.generateLabels | Function | `function(data) {} ` | Returns labels for each the legend
+*legend*.onClick | Function | function(event, legendItem) {} ` | Handles clicking an individual legend item
+legendCallback | Function | `function(chart) ` | Generates the HTML legend via calls to `generateLegend`
 
 You can override these for your `Chart` instance by passing a second argument into the `PolarArea` method as an object with the keys you want to override.
 
 For example, we could have a polar area chart with a black stroke on each segment like so:
 
 ```javascript
-new Chart(ctx).PolarArea(data, {
-	segmentStrokeColor: "#000000"
+new Chart(ctx, {
+	data: data,
+	type: 'polarArea',
+	options: {
+		elements: {
+			arc: {
+				borderColor: "#000000"
+			}
+		}
+	}
 });
 // This will create a chart with all of the default options, merged from the global config,
-// and the PolarArea chart defaults but this particular instance will have `segmentStrokeColor` set to `"#000000"`.
+// and the PolarArea chart defaults but this particular instance will have `elements.arc.borderColor` set to `"#000000"`.
 ```
 
-We can also change these defaults values for each PolarArea type that is created, this object is available at `Chart.defaults.PolarArea`.
-
-### Prototype methods
-
-#### .getSegmentsAtEvent( event )
-
-Calling `getSegmentsAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the segment elements that are at that the same position of that event.
-
-```javascript
-canvas.onclick = function(evt){
-	var activePoints = myPolarAreaChart.getSegmentsAtEvent(evt);
-	// => activePoints is an array of segments on the canvas that are at the same position as the click event.
-};
-```
-
-This functionality may be useful for implementing DOM based tooltips, or triggering custom behaviour in your application.
-
-#### .update( )
-
-Calling `update()` on your Chart instance will re-render the chart with any updated values, allowing you to edit the value of multiple existing points, then render those in one animated render loop.
-
-```javascript
-myPolarAreaChart.segments[1].value = 10;
-// Would update the first dataset's value of 'Green' to be 10
-myPolarAreaChart.update();
-// Calling update now animates the position of Green from 50 to 10.
-```
-
-#### .addData( segmentData, index )
-
-Calling `addData(segmentData, index)` on your Chart instance passing an object in the same format as in the constructor. There is an option second argument of 'index', this determines at what index the new segment should be inserted into the chart.
-
-```javascript
-// An object in the same format as the original data source
-myPolarAreaChart.addData({
-	value: 130,
-	color: "#B48EAD",
-	highlight: "#C69CBE",
-	label: "Purple"
-});
-// The new segment will now animate in.
-```
-
-#### .removeData( index )
-
-Calling `removeData(index)` on your Chart instance will remove segment at that particular index. If none is provided, it will default to the last segment.
-
-```javascript
-myPolarAreaChart.removeData();
-// Other segments will update to fill the empty space left.
-```
+We can also change these defaults values for each PolarArea type that is created, this object is available at `Chart.defaults.polarArea`.

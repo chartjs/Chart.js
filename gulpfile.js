@@ -13,7 +13,8 @@ var gulp = require('gulp'),
 	fs = require('fs'),
 	package = require('./package.json'),
 	bower = require('./bower.json'),
-	karma = require('gulp-karma');
+	karma = require('gulp-karma'),
+	umd = require('gulp-umd');
 
 var srcDir = './src/';
 var testDir = './test/';
@@ -72,6 +73,25 @@ function buildTask() {
 	return gulp.src(srcFiles)
 		.pipe(concat('Chart.js'))
 		.pipe(replace('{{ version }}', package.version))
+		.pipe(umd({
+			// We want a global always to ensure that we match previous behaviour
+			templateSource:
+				";(function(root, factory) {\n"+
+				"  if (typeof define === 'function' && define.amd) {\n"+
+				"    define(<%= amd %>, factory);\n"+
+				"  } else if (typeof exports === 'object') {\n"+
+				"    module.exports = factory.call(root,<%= cjs %>);\n"+
+				"  } else {\n"+
+				"    root.<%= namespace %> = factory.call(root,<%= global %>);\n"+
+				"  }\n"+
+				"}(this || window, function(<%= param %>) {\n"+
+				"<%= contents %>\n"+
+				"return this.<%= exports %>;\n"+
+				"}));\n",
+			dependencies: function() {
+				return ['moment']
+			}
+		}))
 		.pipe(gulp.dest(outputDir))
 		.pipe(uglify({
 			preserveComments: 'some'

@@ -1,8 +1,8 @@
 // Tests of the scale service
-describe('Test the scale service', function() {
+describe('Test the layout service', function() {
 	it('should fit a simple chart with 2 scales', function() {
 		var chartInstance = {
-			scales: [],
+			boxes: [],
 		};
 
 		var xScaleID = 'xScale';
@@ -38,12 +38,12 @@ describe('Test the scale service', function() {
 			id: yScaleID
 		});
 
-		chartInstance.scales.push(xScale);
-		chartInstance.scales.push(yScale);
+		chartInstance.boxes.push(xScale);
+		chartInstance.boxes.push(yScale);
 
 		var canvasWidth = 250;
 		var canvasHeight = 150;
-		Chart.scaleService.update(chartInstance, canvasWidth, canvasHeight);
+		Chart.layoutService.update(chartInstance, canvasWidth, canvasHeight);
 
 		expect(chartInstance.chartArea).toEqual({
 			left: 55,
@@ -68,7 +68,7 @@ describe('Test the scale service', function() {
 
 	it('should fit scales that are in the top and right positions', function() {
 		var chartInstance = {
-			scales: [],
+			boxes: [],
 		};
 
 		var xScaleID = 'xScale';
@@ -106,12 +106,12 @@ describe('Test the scale service', function() {
 			id: yScaleID
 		});
 
-		chartInstance.scales.push(xScale);
-		chartInstance.scales.push(yScale);
+		chartInstance.boxes.push(xScale);
+		chartInstance.boxes.push(yScale);
 
 		var canvasWidth = 250;
 		var canvasHeight = 150;
-		Chart.scaleService.update(chartInstance, canvasWidth, canvasHeight);
+		Chart.layoutService.update(chartInstance, canvasWidth, canvasHeight);
 
 		expect(chartInstance.chartArea).toEqual({
 			left: 5,
@@ -136,7 +136,7 @@ describe('Test the scale service', function() {
 
 	it('should fit multiple axes in the same position', function() {
 		var chartInstance = {
-			scales: [],
+			boxes: [],
 		};
 
 		var xScaleID = 'xScale';
@@ -184,37 +184,37 @@ describe('Test the scale service', function() {
 			id: yScaleID2
 		});
 
-		chartInstance.scales.push(xScale);
-		chartInstance.scales.push(yScale1);
-		chartInstance.scales.push(yScale2);
+		chartInstance.boxes.push(xScale);
+		chartInstance.boxes.push(yScale1);
+		chartInstance.boxes.push(yScale2);
 
 		var canvasWidth = 250;
 		var canvasHeight = 150;
-		Chart.scaleService.update(chartInstance, canvasWidth, canvasHeight);
+		Chart.layoutService.update(chartInstance, canvasWidth, canvasHeight);
 
 		expect(chartInstance.chartArea).toEqual({
 			left: 115,
 			right: 245,
 			top: 5,
-			bottom: 68.48521368620018,
+			bottom: 75,
 		});
 
 		// Is xScale at the right spot
 		expect(xScale.left).toBe(115);
 		expect(xScale.right).toBe(245);
-		expect(xScale.top).toBe(68.48521368620018);
+		expect(xScale.top).toBe(75);
 		expect(xScale.bottom).toBe(145);
 
 		// Are yScales at the right spot
 		expect(yScale1.left).toBe(5);
 		expect(yScale1.right).toBe(55);
 		expect(yScale1.top).toBe(5);
-		expect(yScale1.bottom).toBe(68.48521368620018);
+		expect(yScale1.bottom).toBe(75);
 
 		expect(yScale2.left).toBe(55);
 		expect(yScale2.right).toBe(115);
 		expect(yScale2.top).toBe(5);
-		expect(yScale2.bottom).toBe(68.48521368620018);
+		expect(yScale2.bottom).toBe(75);
 	});
 
 	// This is an oddball case. What happens is, when the scales are fit the first time they must fit within the assigned size. In this case,
@@ -223,7 +223,7 @@ describe('Test the scale service', function() {
 	// due to the lack of label rotation
 	it('should fit scales that overlap the chart area', function() {
 		var chartInstance = {
-			scales: [],
+			boxes: [],
 		};
 
 		var scaleID = 'scaleID';
@@ -250,11 +250,11 @@ describe('Test the scale service', function() {
 			id: scaleID
 		});
 
-		chartInstance.scales.push(scale);
+		chartInstance.boxes.push(scale);
 
 		var canvasWidth = 300;
 		var canvasHeight = 350;
-		Chart.scaleService.update(chartInstance, canvasWidth, canvasHeight);
+		Chart.layoutService.update(chartInstance, canvasWidth, canvasHeight);
 
 		expect(chartInstance.chartArea).toEqual({
 			left: 5,
@@ -269,5 +269,92 @@ describe('Test the scale service', function() {
 		expect(scale.bottom).toBe(345);
 		expect(scale.width).toBe(290);
 		expect(scale.height).toBe(340)
+	});
+
+	it ('should fix a full width box correctly', function() {
+		var chartInstance = {
+			boxes: [],
+		};
+
+		var xScaleID1= 'xScale1';
+		var xScaleID2 = 'xScale2';
+		var yScaleID = 'yScale2';
+
+		var mockData = {
+			datasets: [{
+				xAxisID: xScaleID1,
+				data: [10, 5, 0, 25, 78, -10]
+			}, {
+				xAxisID: xScaleID2,
+				data: [-19, -20, 0, -99, -50, 0]
+			}],
+			labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']
+		};
+		var mockContext = window.createMockContext();
+
+		var xScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
+		var XConstructor = Chart.scaleService.getScaleConstructor('category');
+		var xScale1 = new XConstructor({
+			ctx: mockContext,
+			options: xScaleConfig,
+			chart: {
+				data: mockData
+			},
+			id: xScaleID1
+		});
+		var xScale2 = new XConstructor({
+			ctx: mockContext,
+			options: Chart.helpers.extend(Chart.helpers.clone(xScaleConfig), {
+				position: 'top',
+				fullWidth: true
+			}),
+			chart: {
+				data: mockData,
+			},
+			id: xScaleID2
+		});
+
+		var yScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		var YConstructor = Chart.scaleService.getScaleConstructor('linear');
+		var yScale = new YConstructor({
+			ctx: mockContext,
+			options: yScaleConfig,
+			chart: {
+				data: mockData
+			},
+			id: yScaleID
+		});
+
+		chartInstance.boxes.push(xScale1);
+		chartInstance.boxes.push(xScale2);
+		chartInstance.boxes.push(yScale);
+
+		var canvasWidth = 250;
+		var canvasHeight = 150;
+		Chart.layoutService.update(chartInstance, canvasWidth, canvasHeight);
+
+		expect(chartInstance.chartArea).toEqual({
+			left: 45,
+			right: 245,
+			top: 63.78307376628291,
+			bottom: 76.0423977855504,
+		});
+
+		// Are xScales at the right spot
+		expect(xScale1.left).toBe(45);
+		expect(xScale1.right).toBe(245);
+		expect(xScale1.top).toBeCloseTo(76.04, 1e-3);
+		expect(xScale1.bottom).toBe(145);
+
+		expect(xScale2.left).toBe(5);
+		expect(xScale2.right).toBe(245);
+		expect(xScale2.top).toBe(5);
+		expect(xScale2.bottom).toBeCloseTo(63.78, 1e-3);
+
+		// Is yScale at the right spot
+		expect(yScale.left).toBe(5);
+		expect(yScale.right).toBe(45);
+		expect(yScale.top).toBeCloseTo(63.78, 1e-3);
+		expect(yScale.bottom).toBeCloseTo(76.04, 1e-3);
 	});
 });

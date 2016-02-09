@@ -10,7 +10,7 @@ describe('Test the radial linear scale', function() {
 		var defaultConfig = Chart.scaleService.getScaleDefaults('radialLinear');
 		expect(defaultConfig).toEqual({
 			angleLines: {
-				show: true,
+				display: true,
 				color: "rgba(0, 0, 0, 0.1)",
 				lineWidth: 1
 			},
@@ -22,25 +22,26 @@ describe('Test the radial linear scale', function() {
 				drawTicks: true,
 				lineWidth: 1,
 				offsetGridLines: false,
-				show: true,
+				display: true,
 				zeroLineColor: "rgba(0,0,0,0.25)",
 				zeroLineWidth: 1,
 			},
 			lineArc: false,
 			pointLabels: {
 				fontColor: "#666",
-				fontFamily: "'Arial'",
+				fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 				fontSize: 10,
 				fontStyle: "normal",
+				callback: defaultConfig.pointLabels.callback, // make this nicer, then check explicitly below
 			},
 			position: "chartArea",
 			scaleLabel: {
 				fontColor: '#666',
-				fontFamily: 'Helvetica Neue',
+				fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 				fontSize: 12,
 				fontStyle: 'normal',
 				labelString: '',
-				show: false,
+				display: false,
 			},
 			ticks: {
 				backdropColor: "rgba(255,255,255,0.75)",
@@ -48,23 +49,24 @@ describe('Test the radial linear scale', function() {
 				backdropPaddingX: 2,
 				beginAtZero: false,
 				fontColor: "#666",
-				fontFamily: "Helvetica Neue",
+				fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 				fontSize: 12,
 				fontStyle: "normal",
 				maxRotation: 90,
-				minRotation: 20,
 				mirror: false,
 				padding: 10,
 				reverse: false,
 				showLabelBackdrop: true,
-				show: true,
+				display: true,
 				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
-
+				autoSkip: true,
+				autoSkipPadding: 20
 			},
 		});
 
 		// Is this actually a function
 		expect(defaultConfig.ticks.callback).toEqual(jasmine.any(Function));
+		expect(defaultConfig.pointLabels.callback).toEqual(jasmine.any(Function));
 	});
 
 	it('Should correctly determine the max & min data values', function() {
@@ -161,6 +163,33 @@ describe('Test the radial linear scale', function() {
 		expect(scale.max).toBe(200);
 	});
 
+	it('Should correctly determine the max & min data values when there is NaN data', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [50, 60, NaN, 70, null, undefined]
+			}],
+			labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
+		};
+
+		var mockContext = window.createMockContext();
+		var Constructor = Chart.scaleService.getScaleConstructor('radialLinear');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: Chart.scaleService.getScaleDefaults('radialLinear'), // use default config for scale
+			chart: {
+				data: mockData
+			},
+			id: scaleID,
+		});
+
+		scale.update(200, 300);
+		expect(scale.min).toBe(50);
+		expect(scale.max).toBe(70);
+	});
+
 	it('Should ensure that the scale has a max and min that are not equal', function() {
 		var scaleID = 'myScale';
 
@@ -183,6 +212,73 @@ describe('Test the radial linear scale', function() {
 		scale.update(200, 300);
 		expect(scale.min).toBe(-1);
 		expect(scale.max).toBe(1);
+	});
+
+	it('Should use the suggestedMin and suggestedMax options', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [1, 1, 1, 2, 1, 0]
+			}],
+			labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
+		};
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('radialLinear'));
+		config.ticks.suggestedMin = -10;
+		config.ticks.suggestedMax = 10;
+
+		var mockContext = window.createMockContext();
+		var Constructor = Chart.scaleService.getScaleConstructor('radialLinear');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: config,
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		// Set arbitrary width and height for now
+		scale.update(200, 300);
+		expect(scale.min).toBe(-10);
+		expect(scale.max).toBe(10);
+	});
+
+	it('Should use the min and max options', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [1, 1, 1, 2, 1, 0]
+			}],
+			labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
+		};
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('radialLinear'));
+		config.ticks.min = -1010;
+		config.ticks.max = 1010;
+
+		var mockContext = window.createMockContext();
+		var Constructor = Chart.scaleService.getScaleConstructor('radialLinear');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: config,
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		// Set arbitrary width and height for now
+		scale.update(200, 300);
+		expect(scale.min).toBe(-1010);
+		expect(scale.max).toBe(1010);
+		expect(scale.ticks[0]).toBe('-1010');
+		expect(scale.ticks[scale.ticks.length - 1]).toBe('1010');
+		expect(scale.ticks).toEqual(['-1010', '-1000', '0', '1000', '1010']);
 	});
 
 	it('should forcibly include 0 in the range if the beginAtZero option is used', function() {
@@ -265,7 +361,7 @@ describe('Test the radial linear scale', function() {
 				yAxisID: scaleID,
 				data: [10, 5, 0, 25, 78]
 			}],
-			labels: []
+			labels: ['label1', 'label2', 'label3', 'label4', 'label5']
 		};
 
 		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('radialLinear'));
@@ -288,6 +384,40 @@ describe('Test the radial linear scale', function() {
 
 		// Just the index
 		expect(scale.ticks).toEqual(['0', '1', '2', '3', '4']);
+		expect(scale.pointLabels).toEqual(['label1', 'label2', 'label3', 'label4', 'label5']);
+	});
+
+	it('Should build point labels using the user supplied callback', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [10, 5, 0, 25, 78]
+			}],
+			labels: ['label1', 'label2', 'label3', 'label4', 'label5']
+		};
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('radialLinear'));
+		config.pointLabels.callback = function(value, index) {
+			return index.toString();
+		};
+
+		var mockContext = window.createMockContext();
+		var Constructor = Chart.scaleService.getScaleConstructor('radialLinear');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: config,
+			chart: {
+				data: mockData
+			},
+			id: scaleID,
+		});
+
+		scale.update(200, 300);
+
+		// Just the index
+		expect(scale.pointLabels).toEqual(['0', '1', '2', '3', '4']);
 	});
 
 	it('should correctly set the center point', function() {
@@ -322,6 +452,38 @@ describe('Test the radial linear scale', function() {
 		expect(scale.drawingArea).toBe(37);
 		expect(scale.xCenter).toBe(110);
 		expect(scale.yCenter).toBe(155);
+	});
+
+	it('should correctly get the label for a given data index', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [10, 5, 0, 25, 78]
+			}],
+			labels: ['point1', 'point2', 'point3', 'point4', 'point5'] // used in radar charts which use the same scales
+		};
+
+		var mockContext = window.createMockContext();
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('radialLinear'));
+		var Constructor = Chart.scaleService.getScaleConstructor('radialLinear');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: config,
+			chart: {
+				data: mockData
+			},
+			id: scaleID,
+		});
+
+		scale.left = 10;
+		scale.right = 210;
+		scale.top = 5;
+		scale.bottom = 305;
+		scale.update(200, 300);
+
+		expect(scale.getLabelForIndex(1, 0)).toBe(5);
 	});
 
 	it('should get the correct distance from the center point', function() {

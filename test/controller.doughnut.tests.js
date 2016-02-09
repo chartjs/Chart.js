@@ -41,30 +41,13 @@ describe('Doughnut controller tests', function() {
 		expect(chart.data.datasets[0].metaData[3] instanceof Chart.elements.Arc).toBe(true);
 	});
 
-	it ('Should remove elements', function() {
-		var chart = {
-			data: {
-				datasets: [{
-					data: [10, 15, 0, 4]
-				}]
-			},
-			config: {
-				type: 'doughnut'
-			},
-			options: {
-			}
-		};
-
-		var controller = new Chart.controllers.doughnut(chart, 0);
-		controller.removeElement(1);
-		expect(chart.data.datasets[0].metaData.length).toBe(3);
-	});
-
 	it ('Should reset and update elements', function() {
 		var chart = {
-			chart: {
-				width: 100,
-				height: 200,
+			chartArea: {
+				left: 0,
+				top: 0,
+				right: 100,
+				bottom: 200,
 			},
 			data: {
 				datasets: [{
@@ -103,36 +86,40 @@ describe('Doughnut controller tests', function() {
 			x: 50,
 			y: 100,
 			startAngle: Math.PI * -0.5,
+			endAngle: Math.PI * -0.5,
 			circumference: 2.166614539857563,
 			outerRadius: 49,
-			innerRadius: 36.75,
+			innerRadius: 36.75
 		});
 
 		expect(chart.data.datasets[1].metaData[1]._model).toEqual({
 			x: 50,
 			y: 100,
 			startAngle: Math.PI * -0.5,
+			endAngle: Math.PI * -0.5,
 			circumference: 3.2499218097863447,
 			outerRadius: 49,
-			innerRadius: 36.75,
+			innerRadius: 36.75
 		});
 
 		expect(chart.data.datasets[1].metaData[2]._model).toEqual({
 			x: 50,
 			y: 100,
 			startAngle: Math.PI * -0.5,
+			endAngle: Math.PI * -0.5,
 			circumference: 0,
 			outerRadius: 49,
-			innerRadius: 36.75,
+			innerRadius: 36.75
 		});
 
 		expect(chart.data.datasets[1].metaData[3]._model).toEqual({
 			x: 50,
 			y: 100,
 			startAngle: Math.PI * -0.5,
+			endAngle: Math.PI * -0.5,
 			circumference: 0.8666458159430251,
 			outerRadius: 49,
-			innerRadius: 36.75,
+			innerRadius: 36.75
 		});
 
 		controller.update();
@@ -228,9 +215,11 @@ describe('Doughnut controller tests', function() {
 
 	it ('should draw all arcs', function() {
 		var chart = {
-			chart: {
-				width: 100,
-				height: 200,
+			chartArea: {
+				left: 0,
+				top: 0,
+				right: 100,
+				bottom: 200,
 			},
 			data: {
 				datasets: [{
@@ -275,9 +264,11 @@ describe('Doughnut controller tests', function() {
 
 	it ('should set the hover style of an arc', function() {
 		var chart = {
-			chart: {
-				width: 100,
-				height: 200,
+			chartArea: {
+				left: 0,
+				top: 0,
+				right: 100,
+				bottom: 200,
 			},
 			data: {
 				datasets: [{
@@ -354,9 +345,11 @@ describe('Doughnut controller tests', function() {
 
 	it ('should unset the hover style of an arc', function() {
 		var chart = {
-			chart: {
-				width: 100,
-				height: 200,
+			chartArea: {
+				left: 0,
+				top: 0,
+				right: 100,
+				bottom: 200,
 			},
 			data: {
 				datasets: [{

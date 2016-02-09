@@ -87,6 +87,11 @@
 			},
 			onClick: null,
 			defaultColor: 'rgba(0,0,0,0.1)',
+			defaultFontColor: '#666',
+			defaultFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+			defaultFontSize: 12,
+			defaultFontStyle: 'normal',
+			showLines: true,
 
 			// Element defaults defined in element extensions
 			elements: {},
@@ -108,14 +113,6 @@
 			}
 		},
 	};
-
-	if (typeof amd !== 'undefined') {
-		define(function() {
-			return Chart;
-		});
-	} else if (typeof module === 'object' && module.exports) {
-		module.exports = Chart;
-	}
 
 	root.Chart = Chart;
 

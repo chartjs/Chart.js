@@ -10,10 +10,10 @@
 
 		// label settings
 		ticks: {
-			callback: function(value) {
+			callback: function(value, index, arr) {
 				var remain = value / (Math.pow(10, Math.floor(Chart.helpers.log10(value))));
 
-				if (remain === 1 || remain === 2 || remain === 5) {
+				if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === arr.length - 1) {
 					return value.toExponential();
 				} else {
 					return '';
@@ -23,10 +23,8 @@
 	};
 
 	var LogarithmicScale = Chart.Scale.extend({
-		buildTicks: function() {
-
-			// Calculate Range (we may break this out into it's own lifecycle function)
-
+		determineDataLimits: function() {
+			// Calculate Range
 			this.min = null;
 			this.max = null;
 
@@ -90,6 +88,9 @@
 				}, this);
 			}
 
+			this.min = this.options.ticks.min !== undefined ? this.options.ticks.min : this.min;
+			this.max = this.options.ticks.max !== undefined ? this.options.ticks.max : this.max;
+
 			if (this.min === this.max) {
 				if (this.min !== 0 && this.min !== null) {
 					this.min = Math.pow(10, Math.floor(helpers.log10(this.min)) - 1);
@@ -99,8 +100,8 @@
 					this.max = 10;
 				}
 			}
-
-
+		},
+		buildTicks: function() {
 			// Reset the ticks array. Later on, we will draw a grid line at these positions
 			// The array simply contains the numerical value of the spots where ticks will be
 			this.tickValues = [];
@@ -110,16 +111,24 @@
 			// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on 
 			// the graph
 
-			var minExponent = Math.floor(helpers.log10(this.min));
-			var maxExponent = Math.ceil(helpers.log10(this.max));
+			var tickVal = this.options.ticks.min !== undefined ? this.options.ticks.min : Math.pow(10, Math.floor(helpers.log10(this.min)));
 
-			for (var exponent = minExponent; exponent < maxExponent; ++exponent) {
-				for (var i = 1; i < 10; ++i) {
-					this.tickValues.push(i * Math.pow(10, exponent));
+			while (tickVal < this.max) {
+				this.tickValues.push(tickVal);
+
+				var exp = Math.floor(helpers.log10(tickVal));
+				var significand = Math.floor(tickVal / Math.pow(10, exp)) + 1;
+
+				if (significand === 10) {
+					significand = 1;
+					++exp;
 				}
+
+				tickVal = significand * Math.pow(10, exp);
 			}
 
-			this.tickValues.push(1.0 * Math.pow(10, maxExponent));
+			var lastTick = this.options.ticks.max !== undefined ? this.options.ticks.max : tickVal;
+			this.tickValues.push(lastTick);
 
 			if (this.options.position == "left" || this.options.position == "right") {
 				// We are in a vertical orientation. The top value is the highest. So reverse the array
@@ -163,7 +172,7 @@
 				} else {
 					var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
 					pixel = this.left + (innerWidth / range * (helpers.log10(newVal) - helpers.log10(this.start)));
-					return pixel + this.paddingLeft;
+					pixel += this.paddingLeft;
 				}
 			} else {
 				// Bottom - top since pixels increase downard on a screen
@@ -171,10 +180,11 @@
 					pixel = this.top + this.paddingTop;
 				} else {
 					var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
-					return (this.bottom - this.paddingBottom) - (innerHeight / range * (helpers.log10(newVal) - helpers.log10(this.start)));
+					pixel = (this.bottom - this.paddingBottom) - (innerHeight / range * (helpers.log10(newVal) - helpers.log10(this.start)));
 				}
 			}
 
+			return pixel;
 		},
 
 	});

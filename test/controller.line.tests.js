@@ -76,33 +76,6 @@ describe('Line controller tests', function() {
 		expect(chart.data.datasets[0].metaDataset instanceof Chart.elements.Line).toBe(true); // 1 line element
 	});
 
-	it('should remove elements', function() {
-		var chart = {
-			data: {
-				datasets: [{
-					data: [10, 15, 0, -4]
-				}]
-			},
-			config: {
-				type: 'line'
-			},
-			options: {
-				scales: {
-					xAxes: [{
-						id: 'firstXScaleID'
-					}],
-					yAxes: [{
-						id: 'firstYScaleID'
-					}]
-				}
-			}
-		};
-
-		var controller = new Chart.controllers.line(chart, 0);
-		controller.removeElement(0);
-		expect(chart.data.datasets[0].metaData.length).toBe(3);
-	});
-
 	it('should draw all elements', function() {
 		var chart = {
 			data: {
@@ -114,6 +87,7 @@ describe('Line controller tests', function() {
 				type: 'line'
 			},
 			options: {
+				showLines: true,
 				scales: {
 					xAxes: [{
 						id: 'firstXScaleID'
@@ -136,6 +110,45 @@ describe('Line controller tests', function() {
 		controller.draw();
 
 		expect(chart.data.datasets[0].metaDataset.draw.calls.count()).toBe(1);
+		expect(chart.data.datasets[0].metaData[0].draw.calls.count()).toBe(1);
+		expect(chart.data.datasets[0].metaData[2].draw.calls.count()).toBe(1);
+		expect(chart.data.datasets[0].metaData[3].draw.calls.count()).toBe(1);
+	});
+
+	it('should draw all elements except lines', function() {
+		var chart = {
+			data: {
+				datasets: [{
+					data: [10, 15, 0, -4]
+				}]
+			},
+			config: {
+				type: 'line'
+			},
+			options: {
+				showLines: false,
+				scales: {
+					xAxes: [{
+						id: 'firstXScaleID'
+					}],
+					yAxes: [{
+						id: 'firstYScaleID'
+					}]
+				}
+			}
+		};
+
+		var controller = new Chart.controllers.line(chart, 0);
+
+		spyOn(chart.data.datasets[0].metaDataset, 'draw');
+		spyOn(chart.data.datasets[0].metaData[0], 'draw');
+		spyOn(chart.data.datasets[0].metaData[1], 'draw');
+		spyOn(chart.data.datasets[0].metaData[2], 'draw');
+		spyOn(chart.data.datasets[0].metaData[3], 'draw');
+
+		controller.draw();
+
+		expect(chart.data.datasets[0].metaDataset.draw.calls.count()).toBe(0);
 		expect(chart.data.datasets[0].metaData[0].draw.calls.count()).toBe(1);
 		expect(chart.data.datasets[0].metaData[2].draw.calls.count()).toBe(1);
 		expect(chart.data.datasets[0].metaData[3].draw.calls.count()).toBe(1);
@@ -204,6 +217,7 @@ describe('Line controller tests', function() {
 				type: 'line'
 			},
 			options: {
+				showLines: true,
 				elements: {
 					line: {
 						backgroundColor: 'rgb(255, 0, 0)',
@@ -224,6 +238,7 @@ describe('Line controller tests', function() {
 						hoverRadius: 4,
 						hoverBorderWidth: 1,
 						radius: 3,
+						pointStyle: 'circle'
 					}
 				},
 				scales: {
@@ -267,6 +282,7 @@ describe('Line controller tests', function() {
 			borderColor: Chart.defaults.global.defaultColor,
 			hitRadius: 1,
 			radius: 3,
+			pointStyle: 'circle',
 			skip: false,
 			tension: 0.1,
 
@@ -287,6 +303,7 @@ describe('Line controller tests', function() {
 			borderColor: Chart.defaults.global.defaultColor,
 			hitRadius: 1,
 			radius: 3,
+			pointStyle: 'circle',
 			skip: false,
 			tension: 0.1,
 
@@ -307,6 +324,7 @@ describe('Line controller tests', function() {
 			borderColor: Chart.defaults.global.defaultColor,
 			hitRadius: 1,
 			radius: 3,
+			pointStyle: 'circle',
 			skip: false,
 			tension: 0.1,
 
@@ -327,6 +345,7 @@ describe('Line controller tests', function() {
 			borderColor: Chart.defaults.global.defaultColor,
 			hitRadius: 1,
 			radius: 3,
+			pointStyle: 'circle',
 			skip: false,
 			tension: 0.1,
 
@@ -342,7 +361,7 @@ describe('Line controller tests', function() {
 		});
 
 		// Use dataset level styles for lines & points
-		chart.data.datasets[0].tension = 0.2;
+		chart.data.datasets[0].tension = 0;
 		chart.data.datasets[0].backgroundColor = 'rgb(98, 98, 98)';
 		chart.data.datasets[0].borderColor = 'rgb(8, 8, 8)';
 		chart.data.datasets[0].borderWidth = 0.55;
@@ -370,7 +389,7 @@ describe('Line controller tests', function() {
 			borderJoinStyle: 'miter',
 			borderWidth: 0.55,
 			fill: false,
-			tension: 0.2,
+			tension: 0,
 
 			scaleTop: 0,
 			scaleBottom: 200,
@@ -383,8 +402,9 @@ describe('Line controller tests', function() {
 			borderColor: 'rgb(56, 57, 58)',
 			hitRadius: 3.3,
 			radius: 22,
+			pointStyle: 'circle',
 			skip: false,
-			tension: 0.2,
+			tension: 0,
 
 			// Point
 			x: 81,
@@ -393,8 +413,8 @@ describe('Line controller tests', function() {
 			// Control points
 			controlPointPreviousX: 81,
 			controlPointPreviousY: 62,
-			controlPointNextX: 91,
-			controlPointNextY: 52.6,
+			controlPointNextX: 81,
+			controlPointNextY: 62,
 		});
 
 		expect(chart.data.datasets[0].metaData[1]._model).toEqual({
@@ -403,18 +423,19 @@ describe('Line controller tests', function() {
 			borderColor: 'rgb(56, 57, 58)',
 			hitRadius: 3.3,
 			radius: 22,
+			pointStyle: 'circle',
 			skip: false,
-			tension: 0.2,
+			tension: 0,
 
 			// Point
 			x: 131,
 			y: 15,
 
 			// Control points
-			controlPointPreviousX: 124.65778768378175,
-			controlPointPreviousY: 9.097346953222619,
-			controlPointNextX: 144.85778768378177,
-			controlPointNextY: 27.897346953222623,
+			controlPointPreviousX: 131,
+			controlPointPreviousY: 15,
+			controlPointNextX: 131,
+			controlPointNextY: 15,
 		});
 
 		expect(chart.data.datasets[0].metaData[2]._model).toEqual({
@@ -423,18 +444,19 @@ describe('Line controller tests', function() {
 			borderColor: 'rgb(56, 57, 58)',
 			hitRadius: 3.3,
 			radius: 22,
+			pointStyle: 'circle',
 			skip: false,
-			tension: 0.2,
+			tension: 0,
 
 			// Point
 			x: 182,
 			y: 156,
 
 			// Control points
-			controlPointPreviousX: 167.76304506745115,
-			controlPointPreviousY: 130.76816898092827,
-			controlPointNextX: 187.96304506745116,
-			controlPointNextY: 166.56816898092828,
+			controlPointPreviousX: 182,
+			controlPointPreviousY: 156,
+			controlPointNextX: 182,
+			controlPointNextY: 156,
 		});
 
 		expect(chart.data.datasets[0].metaData[3]._model).toEqual({
@@ -443,16 +465,17 @@ describe('Line controller tests', function() {
 			borderColor: 'rgb(56, 57, 58)',
 			hitRadius: 3.3,
 			radius: 22,
+			pointStyle: 'circle',
 			skip: false,
-			tension: 0.2,
+			tension: 0,
 
 			// Point
 			x: 232,
 			y: 194,
 
 			// Control points
-			controlPointPreviousX: 222,
-			controlPointPreviousY: 186.4,
+			controlPointPreviousX: 232,
+			controlPointPreviousY: 194,
 			controlPointNextX: 232,
 			controlPointNextY: 194,
 		});
@@ -505,6 +528,7 @@ describe('Line controller tests', function() {
 			borderColor: 'rgb(4, 6, 8)',
 			hitRadius: 5,
 			radius: 2.2,
+			pointStyle: 'circle',
 			skip: true,
 			tension: 0.15,
 
@@ -518,6 +542,381 @@ describe('Line controller tests', function() {
 			controlPointNextX: 88.5,
 			controlPointNextY: 54.95,
 		});
+	});
+
+	it('should update elements when the y scale is stacked', function() {
+		var data = {
+			datasets: [{
+				data: [10, 15, -4, -4],
+				label: 'dataset2',
+				xAxisID: 'firstXScaleID',
+				yAxisID: 'firstYScaleID',
+				type: 'line'
+			}, {
+				data: [20, 20, 30, -30],
+				label: 'dataset1',
+				xAxisID: 'firstXScaleID',
+				yAxisID: 'firstYScaleID',
+				type: 'line'
+			}],
+			labels: ['label1', 'label2', 'label3', 'label4']
+		};
+		var mockContext = window.createMockContext();
+
+		var VerticalScaleConstructor = Chart.scaleService.getScaleConstructor('linear');
+		var verticalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		verticalScaleConfig = Chart.helpers.scaleMerge(verticalScaleConfig, Chart.defaults.line.scales.yAxes[0]);
+		verticalScaleConfig.stacked = true;
+		var yScale = new VerticalScaleConstructor({
+			ctx: mockContext,
+			options: verticalScaleConfig,
+			chart: {
+				data: data
+			},
+			id: 'firstYScaleID'
+		});
+
+		// Update ticks & set physical dimensions
+		var verticalSize = yScale.update(50, 200);
+		yScale.top = 0;
+		yScale.left = 0;
+		yScale.right = verticalSize.width;
+		yScale.bottom = verticalSize.height;
+
+		var HorizontalScaleConstructor = Chart.scaleService.getScaleConstructor('category');
+		var horizontalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
+		horizontalScaleConfig = Chart.helpers.scaleMerge(horizontalScaleConfig, Chart.defaults.line.scales.xAxes[0]);
+		var xScale = new HorizontalScaleConstructor({
+			ctx: mockContext,
+			options: horizontalScaleConfig,
+			chart: {
+				data: data
+			},
+			id: 'firstXScaleID'
+		});
+
+		// Update ticks & set physical dimensions
+		var horizontalSize = xScale.update(200, 50);
+		xScale.left = yScale.right;
+		xScale.top = yScale.bottom;
+		xScale.right = horizontalSize.width + xScale.left;
+		xScale.bottom = horizontalSize.height + xScale.top;
+
+
+		var chart = {
+			chartArea: {
+				bottom: 200,
+				left: xScale.left,
+				right: xScale.left + 200,
+				top: 0
+			},
+			data: data,
+			config: {
+				type: 'line'
+			},
+			options: {
+				showLines: true,
+				elements: {
+					line: {
+						backgroundColor: 'rgb(255, 0, 0)',
+						borderCapStyle: 'round',
+						borderColor: 'rgb(0, 255, 0)',
+						borderDash: [],
+						borderDashOffset: 0.1,
+						borderJoinStyle: 'bevel',
+						borderWidth: 1.2,
+						fill: true,
+						tension: 0,
+					},
+					point: {
+						backgroundColor: Chart.defaults.global.defaultColor,
+						borderWidth: 1,
+						borderColor: Chart.defaults.global.defaultColor,
+						hitRadius: 1,
+						hoverRadius: 4,
+						hoverBorderWidth: 1,
+						radius: 3,
+						pointStyle: 'circle'
+					}
+				},
+				scales: {
+					xAxes: [{
+						id: 'firstXScaleID'
+					}],
+					yAxes: [{
+						id: 'firstYScaleID'
+					}]
+				}
+			},
+			scales: {
+				firstXScaleID: xScale,
+				firstYScaleID: yScale,
+			}
+		};
+
+		var controller = new Chart.controllers.line(chart, 0);
+		controller.update();
+
+		// Line element
+		expect(chart.data.datasets[0].metaDataset._model).toEqual(jasmine.objectContaining({
+			scaleTop: 0,
+			scaleBottom: 200,
+			scaleZero: 100,
+		}));
+
+		expect(chart.data.datasets[0].metaData[0]._model).toEqual(jasmine.objectContaining({
+			// Point
+			x: 91,
+			y: 30,
+		}));
+
+		expect(chart.data.datasets[0].metaData[1]._model).toEqual(jasmine.objectContaining({
+			// Point
+			x: 141,
+			y: 18,
+		}));
+
+		expect(chart.data.datasets[0].metaData[2]._model).toEqual(jasmine.objectContaining({
+			// Point
+			x: 192,
+			y: 109,
+		}));
+
+		expect(chart.data.datasets[0].metaData[3]._model).toEqual(jasmine.objectContaining({
+			// Point
+			x: 242,
+			y: 180,
+		}));
+	});
+
+	it('should find the correct scale zero when the data is all positive', function() {
+		var data = {
+			datasets: [{
+				data: [10, 15, 20, 20],
+				label: 'dataset2',
+				xAxisID: 'firstXScaleID',
+				yAxisID: 'firstYScaleID',
+				type: 'line'
+			}],
+			labels: ['label1', 'label2', 'label3', 'label4']
+		};
+		var mockContext = window.createMockContext();
+
+		var VerticalScaleConstructor = Chart.scaleService.getScaleConstructor('linear');
+		var verticalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		verticalScaleConfig = Chart.helpers.scaleMerge(verticalScaleConfig, Chart.defaults.line.scales.yAxes[0]);
+		verticalScaleConfig.stacked = true;
+		var yScale = new VerticalScaleConstructor({
+			ctx: mockContext,
+			options: verticalScaleConfig,
+			chart: {
+				data: data
+			},
+			id: 'firstYScaleID'
+		});
+
+		// Update ticks & set physical dimensions
+		var verticalSize = yScale.update(50, 200);
+		yScale.top = 0;
+		yScale.left = 0;
+		yScale.right = verticalSize.width;
+		yScale.bottom = verticalSize.height;
+
+		var HorizontalScaleConstructor = Chart.scaleService.getScaleConstructor('category');
+		var horizontalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
+		horizontalScaleConfig = Chart.helpers.scaleMerge(horizontalScaleConfig, Chart.defaults.line.scales.xAxes[0]);
+		var xScale = new HorizontalScaleConstructor({
+			ctx: mockContext,
+			options: horizontalScaleConfig,
+			chart: {
+				data: data
+			},
+			id: 'firstXScaleID'
+		});
+
+		// Update ticks & set physical dimensions
+		var horizontalSize = xScale.update(200, 50);
+		xScale.left = yScale.right;
+		xScale.top = yScale.bottom;
+		xScale.right = horizontalSize.width + xScale.left;
+		xScale.bottom = horizontalSize.height + xScale.top;
+
+
+		var chart = {
+			chartArea: {
+				bottom: 200,
+				left: xScale.left,
+				right: xScale.left + 200,
+				top: 0
+			},
+			data: data,
+			config: {
+				type: 'line'
+			},
+			options: {
+				showLines: true,
+				elements: {
+					line: {
+						backgroundColor: 'rgb(255, 0, 0)',
+						borderCapStyle: 'round',
+						borderColor: 'rgb(0, 255, 0)',
+						borderDash: [],
+						borderDashOffset: 0.1,
+						borderJoinStyle: 'bevel',
+						borderWidth: 1.2,
+						fill: true,
+						tension: 0,
+					},
+					point: {
+						backgroundColor: Chart.defaults.global.defaultColor,
+						borderWidth: 1,
+						borderColor: Chart.defaults.global.defaultColor,
+						hitRadius: 1,
+						hoverRadius: 4,
+						hoverBorderWidth: 1,
+						radius: 3,
+						pointStyle: 'circle'
+					}
+				},
+				scales: {
+					xAxes: [{
+						id: 'firstXScaleID'
+					}],
+					yAxes: [{
+						id: 'firstYScaleID'
+					}]
+				}
+			},
+			scales: {
+				firstXScaleID: xScale,
+				firstYScaleID: yScale,
+			}
+		};
+
+		var controller = new Chart.controllers.line(chart, 0);
+		controller.update();
+
+		// Line element
+		expect(chart.data.datasets[0].metaDataset._model).toEqual(jasmine.objectContaining({
+			scaleTop: 0,
+			scaleBottom: 200,
+			scaleZero: 194, // yScale.min is the 0 point
+		}));
+	});
+
+	it('should find the correct scale zero when the data is all negative', function() {
+		var data = {
+			datasets: [{
+				data: [-10, -15, -20, -20],
+				label: 'dataset2',
+				xAxisID: 'firstXScaleID',
+				yAxisID: 'firstYScaleID',
+				type: 'line'
+			}],
+			labels: ['label1', 'label2', 'label3', 'label4']
+		};
+		var mockContext = window.createMockContext();
+
+		var VerticalScaleConstructor = Chart.scaleService.getScaleConstructor('linear');
+		var verticalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('linear'));
+		verticalScaleConfig = Chart.helpers.scaleMerge(verticalScaleConfig, Chart.defaults.line.scales.yAxes[0]);
+		verticalScaleConfig.stacked = true;
+		var yScale = new VerticalScaleConstructor({
+			ctx: mockContext,
+			options: verticalScaleConfig,
+			chart: {
+				data: data
+			},
+			id: 'firstYScaleID'
+		});
+
+		// Update ticks & set physical dimensions
+		var verticalSize = yScale.update(50, 200);
+		yScale.top = 0;
+		yScale.left = 0;
+		yScale.right = verticalSize.width;
+		yScale.bottom = verticalSize.height;
+
+		var HorizontalScaleConstructor = Chart.scaleService.getScaleConstructor('category');
+		var horizontalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
+		horizontalScaleConfig = Chart.helpers.scaleMerge(horizontalScaleConfig, Chart.defaults.line.scales.xAxes[0]);
+		var xScale = new HorizontalScaleConstructor({
+			ctx: mockContext,
+			options: horizontalScaleConfig,
+			chart: {
+				data: data
+			},
+			id: 'firstXScaleID'
+		});
+
+		// Update ticks & set physical dimensions
+		var horizontalSize = xScale.update(200, 50);
+		xScale.left = yScale.right;
+		xScale.top = yScale.bottom;
+		xScale.right = horizontalSize.width + xScale.left;
+		xScale.bottom = horizontalSize.height + xScale.top;
+
+
+		var chart = {
+			chartArea: {
+				bottom: 200,
+				left: xScale.left,
+				right: xScale.left + 200,
+				top: 0
+			},
+			data: data,
+			config: {
+				type: 'line'
+			},
+			options: {
+				showLines: true,
+				elements: {
+					line: {
+						backgroundColor: 'rgb(255, 0, 0)',
+						borderCapStyle: 'round',
+						borderColor: 'rgb(0, 255, 0)',
+						borderDash: [],
+						borderDashOffset: 0.1,
+						borderJoinStyle: 'bevel',
+						borderWidth: 1.2,
+						fill: true,
+						tension: 0,
+					},
+					point: {
+						backgroundColor: Chart.defaults.global.defaultColor,
+						borderWidth: 1,
+						borderColor: Chart.defaults.global.defaultColor,
+						hitRadius: 1,
+						hoverRadius: 4,
+						hoverBorderWidth: 1,
+						radius: 3,
+						pointStyle: 'circle'
+					}
+				},
+				scales: {
+					xAxes: [{
+						id: 'firstXScaleID'
+					}],
+					yAxes: [{
+						id: 'firstYScaleID'
+					}]
+				}
+			},
+			scales: {
+				firstXScaleID: xScale,
+				firstYScaleID: yScale,
+			}
+		};
+
+		var controller = new Chart.controllers.line(chart, 0);
+		controller.update();
+
+		// Line element
+		expect(chart.data.datasets[0].metaDataset._model).toEqual(jasmine.objectContaining({
+			scaleTop: 0,
+			scaleBottom: 200,
+			scaleZero: 6, // yScale.max is the zero point
+		}));
 	});
 
 	it ('should fall back to the line styles for points', function() {

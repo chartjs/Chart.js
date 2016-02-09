@@ -18,32 +18,33 @@ describe('Category scale tests', function() {
 				drawTicks: true, // draw ticks extending towards the label
 				lineWidth: 1,
 				offsetGridLines: false,
-				show: true,
+				display: true,
 				zeroLineColor: "rgba(0,0,0,0.25)",
 				zeroLineWidth: 1,
 			},
 			position: "bottom",
 			scaleLabel: {
 				fontColor: '#666',
-				fontFamily: 'Helvetica Neue',
+				fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 				fontSize: 12,
 				fontStyle: 'normal',
 				labelString: '',
-				show: false,
+				display: false,
 			},
 			ticks: {
 				beginAtZero: false,
 				fontColor: "#666",
-				fontFamily: "Helvetica Neue",
+				fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 				fontSize: 12,
 				fontStyle: "normal",
 				maxRotation: 90,
-				minRotation: 20,
 				mirror: false,
 				padding: 10,
 				reverse: false,
-				show: true,
+				display: true,
 				callback: defaultConfig.ticks.callback,  // make this nicer, then check explicitly below
+				autoSkip: true,
+				autoSkipPadding: 20
 			}
 		});
 
@@ -75,6 +76,33 @@ describe('Category scale tests', function() {
 
 		scale.buildTicks();
 		expect(scale.ticks).toEqual(mockData.labels);
+	});
+
+	it ('should get the correct label for the index', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [10, 5, 0, 25, 78]
+			}],
+			labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']
+		};
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
+		var Constructor = Chart.scaleService.getScaleConstructor('category');
+		var scale = new Constructor({
+			ctx: {},
+			options: config,
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		scale.buildTicks();
+		
+		expect(scale.getLabelForIndex(1)).toBe('tick2');
 	});
 
 	it ('Should get the correct pixel for a value when horizontal', function() {

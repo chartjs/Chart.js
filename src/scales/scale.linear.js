@@ -36,14 +36,15 @@
 	};
 
 	var LinearScale = Chart.Scale.extend({
-		buildTicks: function() {
-
+		determineDataLimits: function() {
 			// First Calculate the range
 			this.min = null;
 			this.max = null;
 
 			if (this.options.stacked) {
 				var valuesPerType = {};
+				var hasPositiveValues = false;
+				var hasNegativeValues = false;
 
 				helpers.each(this.chart.data.datasets, function(dataset) {
 					if (valuesPerType[dataset.type] === undefined) {
@@ -72,8 +73,10 @@
 								positiveValues[index] = 100;
 							} else {
 								if (value < 0) {
+									hasNegativeValues = true;
 									negativeValues[index] += value;
 								} else {
+									hasPositiveValues = true;
 									positiveValues[index] += value;
 								}
 							}
@@ -84,7 +87,7 @@
 				helpers.each(valuesPerType, function(valuesForType) {
 					var values = valuesForType.positiveValues.concat(valuesForType.negativeValues);
 					var minVal = helpers.min(values);
-					var maxVal = helpers.max(values);
+					var maxVal = helpers.max(values)
 					this.min = this.min === null ? minVal : Math.min(this.min, minVal);
 					this.max = this.max === null ? maxVal : Math.max(this.max, maxVal);
 				}, this);
@@ -114,6 +117,41 @@
 				}, this);
 			}
 
+			// If we are forcing it to begin at 0, but 0 will already be rendered on the chart,
+			// do nothing since that would make the chart weird. If the user really wants a weird chart
+			// axis, they can manually override it
+			if (this.options.ticks.beginAtZero) {
+				var minSign = helpers.sign(this.min);
+				var maxSign = helpers.sign(this.max);
+
+				if (minSign < 0 && maxSign < 0) {
+					// move the top up to 0
+					this.max = 0;
+				} else if (minSign > 0 && maxSign > 0) {
+					// move the botttom down to 0
+					this.min = 0;
+				}
+			}
+
+			if (this.options.ticks.min !== undefined) {
+				this.min = this.options.ticks.min;
+			} else if (this.options.ticks.suggestedMin !== undefined) {
+				this.min = Math.min(this.min, this.options.ticks.suggestedMin);
+			}
+
+			if (this.options.ticks.max !== undefined) {
+				this.max = this.options.ticks.max;
+			} else if (this.options.ticks.suggestedMax !== undefined) {
+				this.max = Math.max(this.max, this.options.ticks.suggestedMax);
+			}
+
+			if (this.min === this.max) {
+				this.min--;
+				this.max++;
+			}
+		},
+		buildTicks: function() {
+
 			// Then calulate the ticks
 			this.ticks = [];
 
@@ -140,55 +178,31 @@
 			// "nice number" algorithm. See http://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
 			// for details.
 
-			// If we are forcing it to begin at 0, but 0 will already be rendered on the chart,
-			// do nothing since that would make the chart weird. If the user really wants a weird chart
-			// axis, they can manually override it
-			if (this.options.ticks.beginAtZero) {
-				var minSign = helpers.sign(this.min);
-				var maxSign = helpers.sign(this.max);
-
-				if (minSign < 0 && maxSign < 0) {
-					// move the top up to 0
-					this.max = 0;
-				} else if (minSign > 0 && maxSign > 0) {
-					// move the botttom down to 0
-					this.min = 0;
-				}
-			}
-
-
-			if (this.options.ticks.suggestedMin) {
-				this.min = Math.min(this.min, this.options.ticks.suggestedMin);
-			}
-
-			if (this.options.ticks.suggestedMax) {
-				this.max = Math.max(this.max, this.options.ticks.suggestedMax);
-			}
-
-			if (this.min === this.max) {
-				this.min--;
-				this.max++;
-			}
-
-			if (this.options.ticks.fixedStepSize && this.options.ticks.fixedStepSize > 0) {
-				var j = this.min;
-				while (j <= this.max) {
-					this.ticks.push(j);
-					j += this.options.ticks.fixedStepSize;
-				}
+			var spacing;
+			var fixedStepSizeSet = this.options.ticks.fixedStepSize && this.options.ticks.fixedStepSize > 0;
+			if (fixedStepSizeSet) {
+				spacing = this.options.ticks.fixedStepSize;
 			} else {
 				var niceRange = helpers.niceNum(this.max - this.min, false);
-				var spacing = helpers.niceNum(niceRange / (maxTicks - 1), true);
-				var niceMin = Math.floor(this.min / spacing) * spacing;
-				var niceMax = Math.ceil(this.max / spacing) * spacing;
-
-				var numSpaces = Math.ceil((niceMax - niceMin) / spacing);
-
-				// Put the values into the ticks array
-				for (var j = 0; j <= numSpaces; ++j) {
-					this.ticks.push(niceMin + (j * spacing));
-				}
+				spacing = helpers.niceNum(niceRange / (maxTicks - 1), true);
 			}
+			var niceMin = Math.floor(this.min / spacing) * spacing;
+			var niceMax = Math.ceil(this.max / spacing) * spacing;
+			var numSpaces = (niceMax - niceMin) / spacing;
+
+			// If very close to our rounded value, use it. 
+			if (helpers.almostEquals(numSpaces, Math.round(numSpaces), spacing / 1000)) {
+				numSpaces = Math.round(numSpaces);
+			} else {
+				numSpaces = Math.ceil(numSpaces);
+			}
+
+			// Put the values into the ticks array
+			this.ticks.push(this.options.ticks.min !== undefined ? this.options.ticks.min : niceMin);
+			for (var j = 1; j < numSpaces; ++j) {
+				this.ticks.push(niceMin + (j * spacing));
+			}
+			this.ticks.push(this.options.ticks.max !== undefined ? this.options.ticks.max : niceMax);
 
 			if (this.options.position == "left" || this.options.position == "right") {
 				// We are in a vertical orientation. The top value is the highest. So reverse the array
@@ -210,6 +224,7 @@
 				this.end = this.max;
 			}
 
+			this.ticksAsNumbers = this.ticks.slice(); // do after we potentially reverse the ticks
 			this.zeroLineIndex = this.ticks.indexOf(0);
 		},
 		getLabelForIndex: function(index, datasetIndex) {
@@ -224,7 +239,6 @@
 			var range = this.end - this.start;
 
 			if (this.isHorizontal()) {
-
 				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
 				pixel = this.left + (innerWidth / range * (rightValue - this.start));
 				return Math.round(pixel + this.paddingLeft);
@@ -233,6 +247,9 @@
 				pixel = (this.bottom - this.paddingBottom) - (innerHeight / range * (rightValue - this.start));
 				return Math.round(pixel);
 			}
+		},
+		getPixelForTick: function(index, includeOffset) {
+			return this.getPixelForValue(this.ticksAsNumbers[index], null, null, includeOffset);
 		},
 	});
 	Chart.scaleService.registerScaleType("linear", LinearScale, defaultConfig);
