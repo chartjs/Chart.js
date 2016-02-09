@@ -5765,7 +5765,6 @@
 			var niceMin = Math.floor(this.min / spacing) * spacing;
 			var niceMax = Math.ceil(this.max / spacing) * spacing;
 			var numSpaces = (niceMax - niceMin) / spacing;
-			console.log(this.min, this.max, niceMin, niceMax, numSpaces, spacing);
 
 			// If very close to our rounded value, use it. 
 			if (helpers.almostEquals(numSpaces, Math.round(numSpaces), spacing / 1000)) {
