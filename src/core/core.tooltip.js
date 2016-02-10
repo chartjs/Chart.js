@@ -160,11 +160,9 @@
 			var lines = [];
 
 			helpers.each(tooltipItems, function(bodyItem) {
-				var beforeLabel = this._options.tooltips.callbacks.beforeLabel.call(this, bodyItem, data) || '';
-				var bodyLabel = this._options.tooltips.callbacks.label.call(this, bodyItem, data) || '';
-				var afterLabel = this._options.tooltips.callbacks.afterLabel.call(this, bodyItem, data) || '';
-
-				lines.push(beforeLabel + bodyLabel + afterLabel);
+                helpers.pushAllIfDefined(this._options.tooltips.callbacks.beforeLabel.call(this, bodyItem, data), lines);
+                helpers.pushAllIfDefined(this._options.tooltips.callbacks.label.call(this, bodyItem, data), lines);
+                helpers.pushAllIfDefined(this._options.tooltips.callbacks.afterLabel.call(this, bodyItem, data), lines);
 			}, this);
 
 			return lines;
