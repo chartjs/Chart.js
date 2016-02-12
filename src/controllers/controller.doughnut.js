@@ -1,10 +1,8 @@
-(function() {
-	"use strict";
+"use strict";
 
-	var root = this,
-		Chart = root.Chart,
-		//Cache a local reference to Chart.helpers
-		helpers = Chart.helpers;
+module.exports = function(Chart) {
+
+	var helpers = require('../core/core.helpers.js');
 
 	Chart.defaults.doughnut = {
 		animation: {
@@ -249,6 +247,4 @@
 		},
 
 	});
-
-
-}).call(this);
+};

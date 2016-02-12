@@ -1,14 +1,11 @@
-(function() {
-	"use strict";
+"use strict";
 
-	var root = this;
-	var Chart = root.Chart;
-	var helpers = Chart.helpers;
+module.exports = function(Chart) {
 
-	Chart.PolarArea = function(context, config) {
-		config.type = 'polarArea';
+  Chart.PolarArea = function(context, config) {
+    config.type = 'polarArea';
 
-		return new Chart(context, config);
-	};
-	
-}).call(this);
+    return new Chart(context, config);
+  };
+
+};

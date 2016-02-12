@@ -1,96 +1,81 @@
-/*!
- * Chart.js
- * http://chartjs.org/
- * Version: {{ version }}
- *
- * Copyright 2015 Nick Downie
- * Released under the MIT license
- * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
- */
+"use strict";
 
+module.exports = function(Chart, moment) {
 
-(function() {
+  var helpers = require('../core/core.helpers.js');
 
-	"use strict";
+  Chart.defaults.global.elements.arc = {
+    backgroundColor: Chart.defaults.global.defaultColor,
+    borderColor: "#fff",
+    borderWidth: 2
+  };
 
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
+  Chart.elements.Arc = Chart.Element.extend({
+    inLabelRange: function(mouseX) {
+      var vm = this._view;
 
-	Chart.defaults.global.elements.arc = {
-		backgroundColor: Chart.defaults.global.defaultColor,
-		borderColor: "#fff",
-		borderWidth: 2
-	};
+      if (vm) {
+        return (Math.pow(mouseX - vm.x, 2) < Math.pow(vm.radius + vm.hoverRadius, 2));
+      } else {
+        return false;
+      }
+    },
+    inRange: function(chartX, chartY) {
 
-	Chart.elements.Arc = Chart.Element.extend({
-		inLabelRange: function(mouseX) {
-			var vm = this._view;
+      var vm = this._view;
 
-			if (vm) {
-				return (Math.pow(mouseX - vm.x, 2) < Math.pow(vm.radius + vm.hoverRadius, 2));
-			} else {
-				return false;
-			}
-		},
-		inRange: function(chartX, chartY) {
+      if (vm) {
+        var pointRelativePosition = helpers.getAngleFromPoint(vm, {
+          x: chartX,
+          y: chartY
+        });
 
-			var vm = this._view;
+        // Put into the range of (-PI/2, 3PI/2]
+        var startAngle = vm.startAngle < (-0.5 * Math.PI) ? vm.startAngle + (2.0 * Math.PI) : vm.startAngle > (1.5 * Math.PI) ? vm.startAngle - (2.0 * Math.PI) : vm.startAngle;
+        var endAngle = vm.endAngle < (-0.5 * Math.PI) ? vm.endAngle + (2.0 * Math.PI) : vm.endAngle > (1.5 * Math.PI) ? vm.endAngle - (2.0 * Math.PI) : vm.endAngle;
 
-			if (vm) {
-				var pointRelativePosition = helpers.getAngleFromPoint(vm, {
-					x: chartX,
-					y: chartY
-				});
+        //Check if within the range of the open/close angle
+        var betweenAngles = (pointRelativePosition.angle >= startAngle && pointRelativePosition.angle <= endAngle),
+          withinRadius = (pointRelativePosition.distance >= vm.innerRadius && pointRelativePosition.distance <= vm.outerRadius);
 
-				// Put into the range of (-PI/2, 3PI/2]
-				var startAngle = vm.startAngle < (-0.5 * Math.PI) ? vm.startAngle + (2.0 * Math.PI) : vm.startAngle > (1.5 * Math.PI) ? vm.startAngle - (2.0 * Math.PI) : vm.startAngle;
-				var endAngle = vm.endAngle < (-0.5 * Math.PI) ? vm.endAngle + (2.0 * Math.PI) : vm.endAngle > (1.5 * Math.PI) ? vm.endAngle - (2.0 * Math.PI) : vm.endAngle;
+        return (betweenAngles && withinRadius);
+      } else {
+        return false;
+      }
+    },
+    tooltipPosition: function() {
+      var vm = this._view;
 
-				//Check if within the range of the open/close angle
-				var betweenAngles = (pointRelativePosition.angle >= startAngle && pointRelativePosition.angle <= endAngle),
-					withinRadius = (pointRelativePosition.distance >= vm.innerRadius && pointRelativePosition.distance <= vm.outerRadius);
+      var centreAngle = vm.startAngle + ((vm.endAngle - vm.startAngle) / 2),
+        rangeFromCentre = (vm.outerRadius - vm.innerRadius) / 2 + vm.innerRadius;
+      return {
+        x: vm.x + (Math.cos(centreAngle) * rangeFromCentre),
+        y: vm.y + (Math.sin(centreAngle) * rangeFromCentre)
+      };
+    },
+    draw: function() {
 
-				return (betweenAngles && withinRadius);
-			} else {
-				return false;
-			}			
-		},
-		tooltipPosition: function() {
-			var vm = this._view;
+      var ctx = this._chart.ctx;
+      var vm = this._view;
 
-			var centreAngle = vm.startAngle + ((vm.endAngle - vm.startAngle) / 2),
-				rangeFromCentre = (vm.outerRadius - vm.innerRadius) / 2 + vm.innerRadius;
-			return {
-				x: vm.x + (Math.cos(centreAngle) * rangeFromCentre),
-				y: vm.y + (Math.sin(centreAngle) * rangeFromCentre)
-			};
-		},
-		draw: function() {
+      ctx.beginPath();
 
-			var ctx = this._chart.ctx;
-			var vm = this._view;
+      ctx.arc(vm.x, vm.y, vm.outerRadius, vm.startAngle, vm.endAngle);
 
-			ctx.beginPath();
+      ctx.arc(vm.x, vm.y, vm.innerRadius, vm.endAngle, vm.startAngle, true);
 
-			ctx.arc(vm.x, vm.y, vm.outerRadius, vm.startAngle, vm.endAngle);
+      ctx.closePath();
+      ctx.strokeStyle = vm.borderColor;
+      ctx.lineWidth = vm.borderWidth;
 
-			ctx.arc(vm.x, vm.y, vm.innerRadius, vm.endAngle, vm.startAngle, true);
+      ctx.fillStyle = vm.backgroundColor;
 
-			ctx.closePath();
-			ctx.strokeStyle = vm.borderColor;
-			ctx.lineWidth = vm.borderWidth;
+      ctx.fill();
+      ctx.lineJoin = 'bevel';
 
-			ctx.fillStyle = vm.backgroundColor;
-
-			ctx.fill();
-			ctx.lineJoin = 'bevel';
-
-			if (vm.borderWidth) {
-				ctx.stroke();
-			}
-		}
-	});
-
-
-}).call(this);
+      if (vm.borderWidth) {
+        ctx.stroke();
+      }
+    }
+  });
+};
