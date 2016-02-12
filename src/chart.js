@@ -33,7 +33,7 @@ require('./scales/scale.category')(Chart)
 require('./scales/scale.linear')(Chart)
 require('./scales/scale.logarithmic')(Chart)
 require('./scales/scale.radialLinear')(Chart)
-require('./scales/scale.time')(Chart, moment)
+require('./scales/scale.time')(Chart)
 
 require('./elements/element.arc')(Chart)
 require('./elements/element.line')(Chart)
@@ -47,3 +47,5 @@ require('./charts/Chart.Line')(Chart)
 require('./charts/Chart.PolarArea')(Chart)
 require('./charts/Chart.Radar')(Chart)
 require('./charts/Chart.Scatter')(Chart)
+
+window.Chart = module.exports = Chart

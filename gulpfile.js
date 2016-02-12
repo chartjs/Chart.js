@@ -16,9 +16,11 @@ var gulp = require('gulp'),
   karma = require('gulp-karma'),
   browserify = require('browserify'),
   streamify = require('gulp-streamify'),
-  source = require('vinyl-source-stream');
+  source = require('vinyl-source-stream'),
+  merge = require('merge-stream');
 
 var srcDir = './src/';
+var outDir = './dist/';
 var testDir = './test/';
 
 var preTestFiles = [
@@ -52,19 +54,30 @@ gulp.task('default', ['build', 'watch']);
 
 function buildTask() {
 
-  var isCustom = !!(util.env.types),
-    outputDir = (isCustom) ? 'custom' : '.';
+  var bundled = browserify('./src/Chart.js')
+    .bundle()
+    .pipe(source('Chart.bundle.js'))
+    .pipe(streamify(replace('{{ version }}', package.version)))
+    .pipe(gulp.dest(outDir))
+    .pipe(streamify(uglify({
+      preserveComments: 'some'
+    })))
+    .pipe(streamify(concat('Chart.bundle.min.js')))
+    .pipe(gulp.dest(outDir));
 
-  return browserify('./src/chart.js')
+  var nonBundled = browserify('./src/Chart.js')
+    .ignore('moment')
     .bundle()
     .pipe(source('Chart.js'))
     .pipe(streamify(replace('{{ version }}', package.version)))
-    .pipe(gulp.dest(outputDir))
+    .pipe(gulp.dest(outDir))
     .pipe(streamify(uglify({
       preserveComments: 'some'
     })))
     .pipe(streamify(concat('Chart.min.js')))
-    .pipe(gulp.dest(outputDir));
+    .pipe(gulp.dest(outDir));
+
+  return merge(bundled, nonBundled);
 
 }
 

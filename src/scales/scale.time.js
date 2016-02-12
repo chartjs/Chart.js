@@ -1,6 +1,9 @@
 "use strict";
 
-module.exports = function(Chart, moment) {
+var moment = require('moment')
+moment = typeof(moment) === 'function' ? moment : window.moment
+
+module.exports = function(Chart) {
 
   var helpers = require('../core/core.helpers.js');
 

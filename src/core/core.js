@@ -2,6 +2,8 @@
 
 module.exports = function() {
 
+  var helpers = require('./core.helpers')
+
   //Occupy the global variable of Chart, and create a simple base class
   var Chart = function(context, config) {
     this.config = config;
@@ -23,8 +25,8 @@ module.exports = function() {
     // If the canvas has a specified width and height, we use those else
     // we look to see if the canvas node has a CSS width and height.
     // If there is still no height, fill the parent container
-    this.width = context.canvas.width || parseInt(Chart.helpers.getStyle(context.canvas, 'width')) || Chart.helpers.getMaximumWidth(context.canvas);
-    this.height = context.canvas.height || parseInt(Chart.helpers.getStyle(context.canvas, 'height')) || Chart.helpers.getMaximumHeight(context.canvas);
+    this.width = context.canvas.width || parseInt(helpers.getStyle(context.canvas, 'width')) || helpers.getMaximumWidth(context.canvas);
+    this.height = context.canvas.height || parseInt(helpers.getStyle(context.canvas, 'height')) || helpers.getMaximumHeight(context.canvas);
 
     this.aspectRatio = this.width / this.height;
 
@@ -40,7 +42,7 @@ module.exports = function() {
     this.originalCanvasStyleHeight = context.canvas.style.height;
 
     // High pixel density displays - multiply the size of the canvas height/width by the device pixel ratio, then scale.
-    Chart.helpers.retinaScale(this);
+    helpers.retinaScale(this);
 
     if (config) {
       this.controller = new Chart.Controller(this);
@@ -48,7 +50,7 @@ module.exports = function() {
 
     // Always bind this so that if the responsive state changes we still work
     var _this = this;
-    Chart.helpers.addResizeListener(context.canvas.parentNode, function() {
+    helpers.addResizeListener(context.canvas.parentNode, function() {
       if (_this.controller && _this.controller.config.options.responsive) {
         _this.controller.resize();
       }
