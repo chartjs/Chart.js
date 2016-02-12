@@ -132,7 +132,7 @@ function validHTMLTask() {
 
 
 function unittestTask() {
-  var files = ['./dist/Chart.js']
+  var files = ['./dist/Chart.bundle.js']
   Array.prototype.unshift.apply(files, preTestFiles);
   Array.prototype.push.apply(files, testFiles);
 
@@ -144,7 +144,7 @@ function unittestTask() {
 }
 
 function unittestWatchTask() {
-  var files = ['./dist/Chart.js']
+  var files = ['./dist/Chart.bundle.js']
   Array.prototype.unshift.apply(files, preTestFiles);
   Array.prototype.push.apply(files, testFiles);
 
@@ -156,7 +156,7 @@ function unittestWatchTask() {
 }
 
 function coverageTask() {
-  var files = ['./dist/Chart.js']
+  var files = ['./dist/Chart.bundle.js']
   Array.prototype.unshift.apply(files, preTestFiles);
   Array.prototype.push.apply(files, testFiles);
 
@@ -168,14 +168,14 @@ function coverageTask() {
 }
 
 function librarySizeTask() {
-  return gulp.src('Chart.min.js')
+  return gulp.src('dist/Chart.bundle.min.js')
     .pipe(size({
       gzip: true
     }));
 }
 
 function moduleSizesTask() {
-  return gulp.src(srcDir + '*.js')
+  return gulp.src(srcDir + '**/*.js')
     .pipe(uglify({
       preserveComments: 'some'
     }))
