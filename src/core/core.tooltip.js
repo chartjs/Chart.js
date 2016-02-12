@@ -2,7 +2,7 @@
 
 module.exports = function(Chart) {
 
-  var helpers = require('./core.helpers.js');
+  var helpers = Chart.helpers
 	
   Chart.defaults.global.tooltips = {
     enabled: true,

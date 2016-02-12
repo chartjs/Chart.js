@@ -2,7 +2,7 @@
 
 module.exports = function(Chart) {
 
-  var helpers = require('./core.helpers.js');
+  var helpers = Chart.helpers
 
   Chart.scaleService = {
     // Scale registration object. Extensions can register new scale types (such as log or DB scales) and then

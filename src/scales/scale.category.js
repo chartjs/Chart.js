@@ -2,7 +2,7 @@
 
 module.exports = function(Chart) {
 
-  var helpers = require('../core/core.helpers.js');
+  var helpers = Chart.helpers
   // Default config for a category scale
   var defaultConfig = {
     position: "bottom",

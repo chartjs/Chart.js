@@ -2,7 +2,7 @@
 
 module.exports = function(Chart, moment) {
 
-  var helpers = require('../core/core.helpers.js');
+  var helpers = Chart.helpers
 
   Chart.defaults.global.elements.arc = {
     backgroundColor: Chart.defaults.global.defaultColor,

@@ -2,7 +2,7 @@
 
 module.exports = function(Chart) {
 
-  var helpers = require('./core.helpers.js');
+  var helpers = Chart.helpers
 
   // The layout service is very self explanatory.  It's responsible for the layout within a chart.
   // Scales, Legends and Plugins all rely on the layout service and can easily register to be placed anywhere they need

@@ -2,7 +2,7 @@
 
 module.exports = function(Chart) {
 
-  var helpers = require('../core/core.helpers.js');
+  var helpers = Chart.helpers
 
   Chart.defaults.global.elements.point = {
     radius: 3,
@@ -64,8 +64,11 @@ module.exports = function(Chart) {
 
         var radius = vm.radius || Chart.defaults.global.elements.point.radius;
 
+        var xOffset
+        var yOffset
+
         switch (vm.pointStyle) {
-          case 'circle':
+          // Default includes circle
           default:
             ctx.beginPath();
             ctx.arc(vm.x, vm.y, radius, 0, Math.PI * 2);
@@ -103,8 +106,8 @@ module.exports = function(Chart) {
             break;
           case 'crossRot':
             ctx.beginPath();
-            var xOffset = Math.cos(Math.PI / 4) * radius;
-            var yOffset = Math.sin(Math.PI / 4) * radius;
+            xOffset = Math.cos(Math.PI / 4) * radius;
+            yOffset = Math.sin(Math.PI / 4) * radius;
             ctx.moveTo(vm.x - xOffset, vm.y - yOffset);
             ctx.lineTo(vm.x + xOffset, vm.y + yOffset);
             ctx.moveTo(vm.x - xOffset, vm.y + yOffset);
@@ -117,8 +120,8 @@ module.exports = function(Chart) {
             ctx.lineTo(vm.x, vm.y - radius);
             ctx.moveTo(vm.x - radius, vm.y);
             ctx.lineTo(vm.x + radius, vm.y);
-            var xOffset = Math.cos(Math.PI / 4) * radius;
-            var yOffset = Math.sin(Math.PI / 4) * radius;
+            xOffset = Math.cos(Math.PI / 4) * radius;
+            yOffset = Math.sin(Math.PI / 4) * radius;
             ctx.moveTo(vm.x - xOffset, vm.y - yOffset);
             ctx.lineTo(vm.x + xOffset, vm.y + yOffset);
             ctx.moveTo(vm.x - xOffset, vm.y + yOffset);

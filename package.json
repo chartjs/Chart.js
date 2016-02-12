@@ -10,7 +10,6 @@
   },
   "devDependencies": {
     "browserify": "^13.0.0",
-    "color": "git://github.com/chartjs/color",
     "gulp": "3.9.x",
     "gulp-concat": "~2.1.x",
     "gulp-connect": "~2.0.5",
@@ -41,6 +40,7 @@
     "main": "Chart.js"
   },
   "dependencies": {
+    "chartjs-color": "^1.0.2",
     "moment": "^2.10.6"
   }
 }
