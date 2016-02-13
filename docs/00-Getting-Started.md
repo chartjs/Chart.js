@@ -3,38 +3,50 @@ title: Getting started
 anchor: getting-started
 ---
 
-###Include Chart.js
+###Download Chart.js
 
-First we need to include the Chart.js library on the page. The library occupies a global variable of `Chart`.
+To download a zip, go to the [Chart.js on Github](https://github.com/nnnick/Chart.js)
 
-```html
-<script src="Chart.js"></script>
-```
+To install via npm / bower:
 
-Alternatively, if you're using an AMD loader for JavaScript modules, that is also supported in the Chart.js core. Please note: the library will still occupy a global variable of `Chart`, even if it detects `define` and `define.amd`. If this is a problem, you can call `noConflict` to restore the global Chart variable to it's previous owner.
-
-```javascript
-// Using requirejs
-require(['path/to/Chartjs'], function(Chart){
-	// Use Chart.js as normal here.
-
-	// Chart.noConflict restores the Chart global variable to it's previous owner
-	// The function returns what was previously Chart, allowing you to reassign.
-	var Chartjs = Chart.noConflict();
-
-});
-```
-
-You can also grab Chart.js using bower, npm, or CDN:
-
-```bash
-bower install Chart.js --save
-```
 ```bash
 npm install chart.js --save
 ```
+```bash
+bower install Chart.js --save
+```
 
-https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.0.0-beta/Chart.js
+CDN: https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.0.0-beta/Chart.js
+
+###Install Chart.js
+
+To import Chart.js using an old-school script tag:
+
+```html
+<script src="Chart.js"></script>
+<script>
+	var myChart = new Chart({...})
+</script>
+```
+
+To import Chart.js using an awesome module loader:
+
+```javascript
+
+// Using CommonJS
+var Chart = require('chart.js')
+var myChart = new Chart({...})
+
+// ES6
+import Chart from 'chart.js'
+let myChart = new Chart({...})
+
+// Using requirejs
+require(['path/to/Chartjs'], function(Chart){
+ var myChart = new Chart({...})
+})
+
+```
 
 ###Creating a Chart
 
@@ -118,7 +130,7 @@ position | String | 'top' | Position of the title. 'top' or 'bottom' are allowed
 fullWidth | Boolean | true | Marks that this box should take the full width of the canvas (pushing down other boxes)
 fontColor | Color  | '#666' | Text color
 fontFamily | String | 'Helvetica Neue' |
-fontSize | Number | 12 | 
+fontSize | Number | 12 |
 fontStyle | String | 'bold' |
 padding | Number | 10 | Number of pixels to add above and below the title text
 text | String | '' | Title text
@@ -146,7 +158,7 @@ Name | Type | Default | Description
 --- |:---:| --- | ---
 enabled | Boolean | true |
 custom | | null |
-mode | String | 'single' | Sets which elements appear in the tooltip. Acceptable options are `'single'` or `'label'`. `single` highlights the closest element. `label` highlights elements in all datasets at the same `X` value. 
+mode | String | 'single' | Sets which elements appear in the tooltip. Acceptable options are `'single'` or `'label'`. `single` highlights the closest element. `label` highlights elements in all datasets at the same `X` value.
 backgroundColor | Color | 'rgba(0,0,0,0.8)' | Background color of the tooltip
  | | |
 Label | | | There are three labels you can control. `title`, `body`, `footer` the star (\*) represents one of these three. *(i.e. titleFontFamily, footerSpacing)*
@@ -189,7 +201,7 @@ The global options for animations are defined in `Chart.defaults.global.animatio
 Name | Type | Default | Description
 --- |:---:| --- | ---
 duration | Number | 1000 | The number of milliseconds an animation takes.
-easing | String | "easeOutQuart" | Easing function to use. 
+easing | String | "easeOutQuart" | Easing function to use.
 onProgress | Function | none | Callback called on each step of an animation. Passed a single argument, an object, containing the chart instance and an object with details of the animation.
 onComplete | Function | none | Callback called at the end of an animation. Passed the same arguments as `onProgress
 `
@@ -210,7 +222,7 @@ line | - | - | -
 *line*.borderDash | Array | `[]` | Default line dash. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
 *line*.borderDashOffset | Number | 0.0 | Default line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
 *line*.borderJoinStyle | String | 'miter' | Default line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin)
-*line*.fill | Boolean | true | 
+*line*.fill | Boolean | true |
 point | - | - | -
 *point*.radius | Number | 3 | Default point radius
 *point*.pointStyle | String | 'circle' | Default point style
