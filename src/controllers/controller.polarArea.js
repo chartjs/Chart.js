@@ -1,11 +1,8 @@
-(function() {
-	"use strict";
+"use strict";
 
-	var root = this,
-		Chart = root.Chart,
-		//Cache a local reference to Chart.helpers
-		helpers = Chart.helpers;
+module.exports = function(Chart) {
 
+	var helpers = Chart.helpers
 
 	Chart.defaults.polarArea = {
 
@@ -135,7 +132,7 @@
 			var centerX = (this.chart.chartArea.left + this.chart.chartArea.right) / 2;
 			var centerY = (this.chart.chartArea.top + this.chart.chartArea.bottom) / 2;
 
-			// If there is NaN data before us, we need to calculate the starting angle correctly. 
+			// If there is NaN data before us, we need to calculate the starting angle correctly.
 			// We could be way more efficient here, but its unlikely that the polar area chart will have a lot of data
 			var notNullIndex = 0;
 			for (var i = 0; i < index; ++i) {
@@ -218,7 +215,7 @@
 			if (isNaN(value)) {
 				return 0;
 			} else {
-				// Count the number of NaN values 
+				// Count the number of NaN values
 				var numNaN = helpers.where(this.getDataset().data, function(data) {
 					return isNaN(data);
 				}).length;
@@ -227,4 +224,5 @@
 			}
 		}
 	});
-}).call(this);
+
+};

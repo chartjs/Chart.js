@@ -1,14 +1,11 @@
-(function() {
-	"use strict";
+"use strict";
 
-	var root = this;
-	var Chart = root.Chart;
-	var helpers = Chart.helpers;
+module.exports = function(Chart) {
 
-	Chart.Doughnut = function(context, config) {
-		config.type = 'doughnut';
+  Chart.Doughnut = function(context, config) {
+    config.type = 'doughnut';
 
-		return new Chart(context, config);
-	};
-	
-}).call(this);
+    return new Chart(context, config);
+  };
+
+};

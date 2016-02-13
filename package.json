@@ -3,13 +3,13 @@
   "homepage": "http://www.chartjs.org",
   "description": "Simple HTML5 charts using the canvas element.",
   "version": "2.0.0-beta2",
-  "main": "Chart.js",
+  "main": "src/chart.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/nnnick/Chart.js.git"
   },
   "devDependencies": {
-    "color": "git://github.com/chartjs/color",
+    "browserify": "^13.0.0",
     "gulp": "3.9.x",
     "gulp-concat": "~2.1.x",
     "gulp-connect": "~2.0.5",
@@ -18,7 +18,9 @@
     "gulp-karma": "0.0.4",
     "gulp-replace": "^0.4.0",
     "gulp-size": "~0.4.0",
+    "gulp-streamify": "^1.0.2",
     "gulp-uglify": "~0.2.x",
+    "gulp-umd": "~0.2.0",
     "gulp-util": "~2.2.x",
     "inquirer": "^0.5.1",
     "jasmine": "^2.3.2",
@@ -30,13 +32,15 @@
     "karma-firefox-launcher": "^0.1.6",
     "karma-jasmine": "^0.3.6",
     "karma-jasmine-html-reporter": "^0.1.8",
+    "merge-stream": "^1.0.0",
     "semver": "^3.0.1",
-    "gulp-umd": "~0.2.0"
+    "vinyl-source-stream": "^1.1.0"
   },
   "spm": {
     "main": "Chart.js"
   },
   "dependencies": {
+    "chartjs-color": "^1.0.2",
     "moment": "^2.10.6"
   }
 }

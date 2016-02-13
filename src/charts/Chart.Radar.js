@@ -1,19 +1,18 @@
-(function() {
-	"use strict";
+"use strict";
 
-	var root = this;
-	var Chart = root.Chart;
-	var helpers = Chart.helpers;
+module.exports = function(Chart) {
 
-	var defaultConfig = {
-		aspectRatio: 1,
-	};
+  var helpers = Chart.helpers
 
-	Chart.Radar = function(context, config) {
-		config.options = helpers.configMerge(defaultConfig, config.options);
-		config.type = 'radar';
+  var defaultConfig = {
+    aspectRatio: 1,
+  };
 
-		return new Chart(context, config);
-	};
-	
-}).call(this);
+  Chart.Radar = function(context, config) {
+    config.options = helpers.configMerge(defaultConfig, config.options);
+    config.type = 'radar';
+
+    return new Chart(context, config);
+  };
+
+};
