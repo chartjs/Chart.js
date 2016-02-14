@@ -2,21 +2,24 @@ module.exports = function(config) {
 	config.set({
 		browsers: ['Chrome', 'Firefox'],
 
-		coverageReporter: {
-			type: 'html',
-			dir: 'coverage/'
-		},
-
 		frameworks: ['browserify', 'jasmine'],
 
 		preprocessors: {
-			'src/**/*.js': ['browserify', 'coverage']
+			'src/**/*.js': ['browserify']
 		},
 		browserify: {
 			debug: true,
-			transform: ['browserify-istanbul']
+			transform: [['browserify-istanbul', {
+				instrumenterConfig: {
+					embed: true
+				}
+			}]]
 		},
 		
 		reporters: ['progress', 'coverage'],
+		coverageReporter: {
+			type: 'html',
+			dir: 'coverage/'
+		}
 	});
 };
