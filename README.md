@@ -1,6 +1,6 @@
 # Chart.js 
 
-[![Build Status](https://travis-ci.org/nnnick/Chart.js.svg?branch=v2.0-dev)](https://travis-ci.org/nnnick/Chart.js) [![Code Climate](https://codeclimate.com/github/nnnick/Chart.js/badges/gpa.svg)](https://codeclimate.com/github/nnnick/Chart.js)[![Coverage Status](https://coveralls.io/repos/nnnick/Chart.js/badge.svg?branch=v2.0-dev)](https://coveralls.io/r/nnncik/Chart.js?branch=v2.0-dev)
+[![Build Status](https://travis-ci.org/nnnick/Chart.js.svg?branch=v2.0-dev)](https://travis-ci.org/nnnick/Chart.js) [![Code Climate](https://codeclimate.com/github/nnnick/Chart.js/badges/gpa.svg)](https://codeclimate.com/github/nnnick/Chart.js)[![Coverage Status](https://coveralls.io/repos/nnnick/Chart.js/badge.svg?branch=v2.0-dev)](https://coveralls.io/r/nnnick/Chart.js?branch=v2.0-dev)
 
 
 
