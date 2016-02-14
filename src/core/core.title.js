@@ -131,7 +131,9 @@ module.exports = function(Chart) {
 					this.minSize.height += this.options.fontSize + (this.options.padding * 2);
 				}
 			} else {
-				// TODO vertical
+				if (this.options.display) {
+					this.minSize.width += this.options.fontSize + (this.options.padding * 2);
+				}
 			}
 
 			this.width = this.minSize.width;
