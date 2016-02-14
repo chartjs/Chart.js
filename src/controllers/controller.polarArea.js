@@ -8,7 +8,7 @@ module.exports = function(Chart) {
 
 		scale: {
 			type: "radialLinear",
-			lineArc: true, // so that lines are circular
+			lineArc: true // so that lines are circular
 		},
 
 		//Boolean - Whether to animate the rotation of the chart
@@ -68,7 +68,9 @@ module.exports = function(Chart) {
 		// Need to override these to give a nice default
 		tooltips: {
 			callbacks: {
-				title: function() { return ''; },
+				title: function() {
+					return '';
+				},
 				label: function(tooltipItem, data) {
 					return data.labels[tooltipItem.index] + ': ' + tooltipItem.yLabel;
 				}
@@ -86,7 +88,7 @@ module.exports = function(Chart) {
 				this.getDataset().metaData[index] = this.getDataset().metaData[index] || new Chart.elements.Arc({
 					_chart: this.chart.chart,
 					_datasetIndex: this.index,
-					_index: index,
+					_index: index
 				});
 			}, this);
 		},
@@ -95,7 +97,7 @@ module.exports = function(Chart) {
 			var arc = new Chart.elements.Arc({
 				_chart: this.chart.chart,
 				_datasetIndex: this.index,
-				_index: index,
+				_index: index
 			});
 
 			// Reset the point
@@ -105,7 +107,9 @@ module.exports = function(Chart) {
 			this.getDataset().metaData.splice(index, 0, arc);
 		},
 		getVisibleDatasetCount: function getVisibleDatasetCount() {
-			return helpers.where(this.chart.data.datasets, function(ds) { return helpers.isDatasetVisible(ds); }).length;
+			return helpers.where(this.chart.data.datasets, function(ds) {
+				return helpers.isDatasetVisible(ds);
+			}).length;
 		},
 
 		update: function update(reset) {
@@ -180,7 +184,7 @@ module.exports = function(Chart) {
 					borderColor: arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor),
 
 					label: helpers.getValueAtIndexOrDefault(this.chart.data.labels, index, this.chart.data.labels[index])
-				},
+				}
 			});
 
 			arc.pivot();

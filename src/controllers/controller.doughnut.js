@@ -9,7 +9,7 @@ module.exports = function(Chart) {
 			//Boolean - Whether we animate the rotation of the Doughnut
 			animateRotate: true,
 			//Boolean - Whether we animate scaling the Doughnut from the centre
-			animateScale: false,
+			animateScale: false
 		},
 		aspectRatio: 1,
 		hover: {
@@ -70,7 +70,9 @@ module.exports = function(Chart) {
 		// Need to override these to give a nice default
 		tooltips: {
 			callbacks: {
-				title: function() { return '';},
+				title: function() {
+					return '';
+				},
 				label: function(tooltipItem, data) {
 					return data.labels[tooltipItem.index] + ': ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 				}
@@ -95,7 +97,7 @@ module.exports = function(Chart) {
 				this.getDataset().metaData[index] = this.getDataset().metaData[index] || new Chart.elements.Arc({
 					_chart: this.chart.chart,
 					_datasetIndex: this.index,
-					_index: index,
+					_index: index
 				});
 			}, this);
 		},
@@ -104,7 +106,7 @@ module.exports = function(Chart) {
 			var arc = new Chart.elements.Arc({
 				_chart: this.chart.chart,
 				_datasetIndex: this.index,
-				_index: index,
+				_index: index
 			});
 
 			if (colorForNewElement && helpers.isArray(this.getDataset().backgroundColor)) {
@@ -119,7 +121,9 @@ module.exports = function(Chart) {
 		},
 
 		getVisibleDatasetCount: function getVisibleDatasetCount() {
-			return helpers.where(this.chart.data.datasets, function(ds) { return helpers.isDatasetVisible(ds); }).length;
+			return helpers.where(this.chart.data.datasets, function(ds) {
+				return helpers.isDatasetVisible(ds);
+			}).length;
 		},
 
 		// Get index of the dataset in relation to the visible datasets. This allows determining the inner and outer radius correctly
@@ -190,7 +194,7 @@ module.exports = function(Chart) {
 					borderColor: arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor),
 
 					label: helpers.getValueAtIndexOrDefault(this.getDataset().label, index, this.chart.data.labels[index])
-				},
+				}
 			});
 
 			if (!reset) {
@@ -244,7 +248,6 @@ module.exports = function(Chart) {
 			} else {
 				return 0;
 			}
-		},
-
+		}
 	});
 };
