@@ -133,7 +133,7 @@ function validHTMLTask() {
 
 
 function unittestTask() {
-  var files = ['./dist/Chart.bundle.js']
+  var files = ['./src/**/*.js'];
   Array.prototype.unshift.apply(files, preTestFiles);
   Array.prototype.push.apply(files, testFiles);
 
@@ -145,7 +145,7 @@ function unittestTask() {
 }
 
 function unittestWatchTask() {
-  var files = ['./dist/Chart.bundle.js']
+  var files = ['./src/**/*.js'];
   Array.prototype.unshift.apply(files, preTestFiles);
   Array.prototype.push.apply(files, testFiles);
 
@@ -157,7 +157,6 @@ function unittestWatchTask() {
 }
 
 function coverageTask() {
-  //var files = ['./dist/Chart.bundle.js']
   var files = ['./src/**/*.js'];
   Array.prototype.unshift.apply(files, preTestFiles);
   Array.prototype.push.apply(files, testFiles);
