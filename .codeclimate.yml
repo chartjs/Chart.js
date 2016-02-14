@@ -3,6 +3,6 @@ engines:
     enabled: true
 ratings:
   paths:
-  - src/**
+    - "src/**"
 exclude_paths:
-- dist/**/*
+  - "dist/**/*"
