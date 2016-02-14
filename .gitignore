@@ -3,6 +3,7 @@
 
 node_modules/*
 custom/*
+coverage/*
 
 docs/index.md
 
