@@ -120,8 +120,9 @@ function releaseTask() {
 
 function jshintTask() {
   return gulp.src(srcDir + '**/*.js')
-    .pipe(jshint())
-    .pipe(jshint.reporter('default'));
+    .pipe(jshint('config.jshintrc'))
+    .pipe(jshint.reporter('jshint-stylish'))
+    .pipe(jshint.reporter('fail'));
 }
 
 

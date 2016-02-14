@@ -2,7 +2,7 @@
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   Chart.defaults.global.elements.point = {
     radius: 3,
@@ -64,8 +64,8 @@ module.exports = function(Chart) {
 
         var radius = vm.radius || Chart.defaults.global.elements.point.radius;
 
-        var xOffset
-        var yOffset
+        var xOffset;
+        var yOffset;
 
         switch (vm.pointStyle) {
           // Default includes circle

@@ -1,12 +1,12 @@
 /*global window: false */
 "use strict";
 
-var moment = require('moment')
-moment = typeof(moment) === 'function' ? moment : window.moment
+var moment = require('moment');
+moment = typeof(moment) === 'function' ? moment : window.moment;
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   if (!moment) {
     console.warn('Chart.js - Moment.js could not be found! You must include it before Chart.js to use the time scale. Download at http://momentjs.com/');

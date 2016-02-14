@@ -2,7 +2,7 @@
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   var defaultConfig = {
     aspectRatio: 1,

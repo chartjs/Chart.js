@@ -2,7 +2,7 @@
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
   //Create a dictionary of chart types, to allow for extension of existing types
   Chart.types = {};
 

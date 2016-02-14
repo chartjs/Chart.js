@@ -1598,47 +1598,47 @@ window.Color = module.exports = Color
  */
 
 
-var Chart = require('./core/core.js')()
+var Chart = require('./core/core.js')();
 
-require('./core/core.helpers')(Chart)
-require('./core/core.element')(Chart)
-require('./core/core.animation')(Chart)
-require('./core/core.controller')(Chart)
-require('./core/core.datasetController')(Chart)
-require('./core/core.layoutService')(Chart)
-require('./core/core.legend')(Chart)
-require('./core/core.scale')(Chart)
-require('./core/core.scaleService')(Chart)
-require('./core/core.title')(Chart)
-require('./core/core.tooltip')(Chart)
+require('./core/core.helpers')(Chart);
+require('./core/core.element')(Chart);
+require('./core/core.animation')(Chart);
+require('./core/core.controller')(Chart);
+require('./core/core.datasetController')(Chart);
+require('./core/core.layoutService')(Chart);
+require('./core/core.legend')(Chart);
+require('./core/core.scale')(Chart);
+require('./core/core.scaleService')(Chart);
+require('./core/core.title')(Chart);
+require('./core/core.tooltip')(Chart);
 
-require('./controllers/controller.bar')(Chart)
-require('./controllers/controller.bubble')(Chart)
-require('./controllers/controller.doughnut')(Chart)
-require('./controllers/controller.line')(Chart)
-require('./controllers/controller.polarArea')(Chart)
-require('./controllers/controller.radar')(Chart)
+require('./controllers/controller.bar')(Chart);
+require('./controllers/controller.bubble')(Chart);
+require('./controllers/controller.doughnut')(Chart);
+require('./controllers/controller.line')(Chart);
+require('./controllers/controller.polarArea')(Chart);
+require('./controllers/controller.radar')(Chart);
 
-require('./scales/scale.category')(Chart)
-require('./scales/scale.linear')(Chart)
-require('./scales/scale.logarithmic')(Chart)
-require('./scales/scale.radialLinear')(Chart)
-require('./scales/scale.time')(Chart)
+require('./scales/scale.category')(Chart);
+require('./scales/scale.linear')(Chart);
+require('./scales/scale.logarithmic')(Chart);
+require('./scales/scale.radialLinear')(Chart);
+require('./scales/scale.time')(Chart);
 
-require('./elements/element.arc')(Chart)
-require('./elements/element.line')(Chart)
-require('./elements/element.point')(Chart)
-require('./elements/element.rectangle')(Chart)
+require('./elements/element.arc')(Chart);
+require('./elements/element.line')(Chart);
+require('./elements/element.point')(Chart);
+require('./elements/element.rectangle')(Chart);
 
-require('./charts/Chart.Bar')(Chart)
-require('./charts/Chart.Bubble')(Chart)
-require('./charts/Chart.Doughnut')(Chart)
-require('./charts/Chart.Line')(Chart)
-require('./charts/Chart.PolarArea')(Chart)
-require('./charts/Chart.Radar')(Chart)
-require('./charts/Chart.Scatter')(Chart)
+require('./charts/Chart.Bar')(Chart);
+require('./charts/Chart.Bubble')(Chart);
+require('./charts/Chart.Doughnut')(Chart);
+require('./charts/Chart.Line')(Chart);
+require('./charts/Chart.PolarArea')(Chart);
+require('./charts/Chart.Radar')(Chart);
+require('./charts/Chart.Scatter')(Chart);
 
-window.Chart = module.exports = Chart
+window.Chart = module.exports = Chart;
 
 },{"./charts/Chart.Bar":8,"./charts/Chart.Bubble":9,"./charts/Chart.Doughnut":10,"./charts/Chart.Line":11,"./charts/Chart.PolarArea":12,"./charts/Chart.Radar":13,"./charts/Chart.Scatter":14,"./controllers/controller.bar":15,"./controllers/controller.bubble":16,"./controllers/controller.doughnut":17,"./controllers/controller.line":18,"./controllers/controller.polarArea":19,"./controllers/controller.radar":20,"./core/core.animation":21,"./core/core.controller":22,"./core/core.datasetController":23,"./core/core.element":24,"./core/core.helpers":25,"./core/core.js":26,"./core/core.layoutService":27,"./core/core.legend":28,"./core/core.scale":29,"./core/core.scaleService":30,"./core/core.title":31,"./core/core.tooltip":32,"./elements/element.arc":33,"./elements/element.line":34,"./elements/element.point":35,"./elements/element.rectangle":36,"./scales/scale.category":37,"./scales/scale.linear":38,"./scales/scale.logarithmic":39,"./scales/scale.radialLinear":40,"./scales/scale.time":41}],8:[function(require,module,exports){
 "use strict";
@@ -1709,7 +1709,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   var defaultConfig = {
     aspectRatio: 1,
@@ -1778,7 +1778,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   Chart.defaults.bar = {
     hover: {
@@ -2085,7 +2085,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-	var helpers = Chart.helpers
+	var helpers = Chart.helpers;
 
 	Chart.defaults.bubble = {
 		hover: {
@@ -2255,7 +2255,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-	var helpers = Chart.helpers
+	var helpers = Chart.helpers;
 
 	Chart.defaults.doughnut = {
 		animation: {
@@ -2507,7 +2507,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   Chart.defaults.line = {
     showLines: true,
@@ -2799,7 +2799,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-	var helpers = Chart.helpers
+	var helpers = Chart.helpers;
 
 	Chart.defaults.polarArea = {
 
@@ -3029,7 +3029,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
 
   Chart.defaults.radar = {
@@ -3237,7 +3237,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   Chart.defaults.global.animation = {
     duration: 1000,
@@ -3356,7 +3356,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
   //Create a dictionary of chart types, to allow for extension of existing types
   Chart.types = {};
 
@@ -3918,7 +3918,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   // Base class for all dataset controllers (line, bar, etc)
   Chart.DatasetController = function(chart, datasetIndex) {
@@ -3993,7 +3993,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   Chart.elements = {};
 
@@ -4088,7 +4088,7 @@ module.exports = function(Chart) {
 /*global document: false */
 "use strict";
 
-var color = require('chartjs-color')
+var color = require('chartjs-color');
 
 module.exports = function(Chart) {
 
@@ -4979,7 +4979,7 @@ module.exports = function(Chart) {
     }
   };
 
-}
+};
 
 },{"chartjs-color":6}],26:[function(require,module,exports){
 "use strict";
@@ -5081,9 +5081,9 @@ module.exports = function() {
         return text.join("");
       }
     },
-  }
+  };
 
-	return Chart
+	return Chart;
 
 };
 
@@ -5092,7 +5092,7 @@ module.exports = function() {
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   // The layout service is very self explanatory.  It's responsible for the layout within a chart.
   // Scales, Legends and Plugins all rely on the layout service and can easily register to be placed anywhere they need
@@ -5417,7 +5417,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   Chart.defaults.global.legend = {
 
@@ -5743,7 +5743,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   Chart.defaults.scale = {
     display: true,
@@ -6418,7 +6418,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   Chart.scaleService = {
     // Scale registration object. Extensions can register new scale types (such as log or DB scales) and then
@@ -6454,7 +6454,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   Chart.defaults.global.title = {
     display: false,
@@ -6649,7 +6649,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 	
   Chart.defaults.global.tooltips = {
     enabled: true,
@@ -7263,7 +7263,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart, moment) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   Chart.defaults.global.elements.arc = {
     backgroundColor: Chart.defaults.global.defaultColor,
@@ -7346,7 +7346,7 @@ module.exports = function(Chart, moment) {
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   Chart.defaults.global.elements.line = {
     tension: 0.4,
@@ -7509,7 +7509,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   Chart.defaults.global.elements.point = {
     radius: 3,
@@ -7571,8 +7571,8 @@ module.exports = function(Chart) {
 
         var radius = vm.radius || Chart.defaults.global.elements.point.radius;
 
-        var xOffset
-        var yOffset
+        var xOffset;
+        var yOffset;
 
         switch (vm.pointStyle) {
           // Default includes circle
@@ -7660,7 +7660,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   Chart.defaults.global.elements.rectangle = {
     backgroundColor: Chart.defaults.global.defaultColor,
@@ -7748,7 +7748,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
   // Default config for a category scale
   var defaultConfig = {
     position: "bottom",
@@ -7798,7 +7798,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   var defaultConfig = {
     position: "left",
@@ -7882,7 +7882,7 @@ module.exports = function(Chart) {
         helpers.each(valuesPerType, function(valuesForType) {
           var values = valuesForType.positiveValues.concat(valuesForType.negativeValues);
           var minVal = helpers.min(values);
-          var maxVal = helpers.max(values)
+          var maxVal = helpers.max(values);
           this.min = this.min === null ? minVal : Math.min(this.min, minVal);
           this.max = this.max === null ? maxVal : Math.max(this.max, maxVal);
         }, this);
@@ -8056,7 +8056,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   var defaultConfig = {
     position: "left",
@@ -8250,7 +8250,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   var defaultConfig = {
     display: true,
@@ -8682,12 +8682,12 @@ module.exports = function(Chart) {
 /*global window: false */
 "use strict";
 
-var moment = require('moment')
-moment = typeof(moment) === 'function' ? moment : window.moment
+var moment = require('moment');
+moment = typeof(moment) === 'function' ? moment : window.moment;
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   if (!moment) {
     console.warn('Chart.js - Moment.js could not be found! You must include it before Chart.js to use the time scale. Download at http://momentjs.com/');

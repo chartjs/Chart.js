@@ -97,8 +97,8 @@ module.exports = function() {
         return text.join("");
       }
     },
-  }
+  };
 
-	return Chart
+	return Chart;
 
 };

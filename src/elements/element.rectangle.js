@@ -2,7 +2,7 @@
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   Chart.defaults.global.elements.rectangle = {
     backgroundColor: Chart.defaults.global.defaultColor,

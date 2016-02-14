@@ -2,7 +2,7 @@
 /*global document: false */
 "use strict";
 
-var color = require('chartjs-color')
+var color = require('chartjs-color');
 
 module.exports = function(Chart) {
 
@@ -893,4 +893,4 @@ module.exports = function(Chart) {
     }
   };
 
-}
+};

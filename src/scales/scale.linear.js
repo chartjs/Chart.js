@@ -2,7 +2,7 @@
 
 module.exports = function(Chart) {
 
-  var helpers = Chart.helpers
+  var helpers = Chart.helpers;
 
   var defaultConfig = {
     position: "left",
@@ -86,7 +86,7 @@ module.exports = function(Chart) {
         helpers.each(valuesPerType, function(valuesForType) {
           var values = valuesForType.positiveValues.concat(valuesForType.negativeValues);
           var minVal = helpers.min(values);
-          var maxVal = helpers.max(values)
+          var maxVal = helpers.max(values);
           this.min = this.min === null ? minVal : Math.min(this.min, minVal);
           this.max = this.max === null ? maxVal : Math.max(this.max, maxVal);
         }, this);
