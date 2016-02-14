@@ -6,3 +6,4 @@ ratings:
     - "src/**"
 exclude_paths:
   - "dist/**/*"
+  - "coverage/**/*"
