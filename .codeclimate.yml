@@ -1,0 +1,4 @@
+## Exclude dist files and samples from codeclimate
+exclude_paths:
+  - dist/**/*
+  - samples/**/*
