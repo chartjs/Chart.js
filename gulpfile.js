@@ -157,7 +157,8 @@ function unittestWatchTask() {
 }
 
 function coverageTask() {
-  var files = ['./dist/Chart.bundle.js']
+  //var files = ['./dist/Chart.bundle.js']
+  var files = ['./src/**/*.js'];
   Array.prototype.unshift.apply(files, preTestFiles);
   Array.prototype.push.apply(files, testFiles);
 

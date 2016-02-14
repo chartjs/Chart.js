@@ -7,10 +7,14 @@ module.exports = function(config) {
 			dir: 'coverage/'
 		},
 
-		frameworks: ['jasmine'],
+		frameworks: ['browserify', 'jasmine'],
 
 		preprocessors: {
-			'src/**/*.js': ['coverage']
+			'src/**/*.js': ['browserify', 'coverage']
+		},
+		browserify: {
+			debug: true,
+			transform: ['browserify-istanbul']
 		},
 		
 		reporters: ['progress', 'coverage'],
