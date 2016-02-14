@@ -10,6 +10,8 @@
   },
   "devDependencies": {
     "browserify": "^13.0.0",
+    "browserify-istanbul": "^0.2.1",
+    "coveralls": "^2.11.6",
     "gulp": "3.9.x",
     "gulp-concat": "~2.1.x",
     "gulp-connect": "~2.0.5",
@@ -26,7 +28,9 @@
     "jasmine": "^2.3.2",
     "jasmine-core": "^2.3.4",
     "jquery": "^2.1.4",
+    "jshint-stylish": "~2.1.0",
     "karma": "^0.12.37",
+    "karma-browserify": "^5.0.1",
     "karma-chrome-launcher": "^0.2.0",
     "karma-coverage": "^0.5.1",
     "karma-firefox-launcher": "^0.1.6",
@@ -34,8 +38,7 @@
     "karma-jasmine-html-reporter": "^0.1.8",
     "merge-stream": "^1.0.0",
     "semver": "^3.0.1",
-    "vinyl-source-stream": "^1.1.0",
-    "jshint-stylish": "~2.1.0"
+    "vinyl-source-stream": "^1.1.0"
   },
   "spm": {
     "main": "Chart.js"
