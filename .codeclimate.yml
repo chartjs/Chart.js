@@ -1,10 +1,8 @@
 engines:
-  rubocop:
-    enabled: true
   eslint:
     enabled: true
-
-## Exclude dist files and samples from codeclimate
+ratings:
+  paths:
+  - src/**
 exclude_paths:
 - dist/**/*
-- samples/**/*
