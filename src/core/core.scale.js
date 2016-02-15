@@ -484,7 +484,9 @@ module.exports = function(Chart) {
 					helpers.each(this.ticks, function(label, index) {
 						// Blank ticks
 						var isLastTick = this.ticks.length === index + 1;
-						var shouldSkip = skipRatio > 1 && index % skipRatio > 0;
+
+						// Since we always show the last tick,we need may need to hide the last shown one before
+						var shouldSkip = (skipRatio > 1 && index % skipRatio > 0) || (index % skipRatio === 0 && index + skipRatio > this.ticks.length);
 						if (shouldSkip && !isLastTick || (label === undefined || label === null)) {
 							return;
 						}
