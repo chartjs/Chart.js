@@ -186,7 +186,7 @@ module.exports = function(Chart) {
 
 					helpers.each(this.legendItems, function(legendItem, i) {
 						var width = this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + ctx.measureText(legendItem.text).width;
-						if (this.lineWidths[this.lineWidths.length - 1] + width >= this.width) {
+						if (this.lineWidths[this.lineWidths.length - 1] + width + this.options.labels.padding >= this.width) {
 							totalHeight += this.options.labels.fontSize + (this.options.labels.padding);
 							this.lineWidths[this.lineWidths.length] = this.left;
 						}
