@@ -65,6 +65,9 @@ module.exports = function(Chart) {
 				'quarter': '[Q]Q - YYYY', // Q3
 				'year': 'YYYY' // 2015
 			}
+		},
+		ticks: {
+			autoSkip: false,
 		}
 	};
 
