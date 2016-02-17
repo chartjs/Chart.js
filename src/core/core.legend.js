@@ -9,6 +9,7 @@ module.exports = function(Chart) {
 		display: true,
 		position: 'top',
 		fullWidth: true, // marks that this box should take the full width of the canvas (pushing down other boxes)
+		reverse: false,
 
 		// a callback that will handle
 		onClick: function(e, legendItem) {
@@ -143,6 +144,9 @@ module.exports = function(Chart) {
 		beforeBuildLabels: helpers.noop,
 		buildLabels: function() {
 			this.legendItems = this.options.labels.generateLabels.call(this, this.chart.data);
+			if(this.options.reverse){
+				this.legendItems.reverse();
+			}
 		},
 		afterBuildLabels: helpers.noop,
 

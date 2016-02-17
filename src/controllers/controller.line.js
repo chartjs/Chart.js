@@ -205,7 +205,7 @@ module.exports = function(Chart) {
 				var sumPos = 0,
 					sumNeg = 0;
 
-				for (var i = this.chart.data.datasets.length - 1; i > datasetIndex; i--) {
+				for (var i = 0; i < datasetIndex; i++) {
 					var ds = this.chart.data.datasets[i];
 					if (ds.type === 'line' && helpers.isDatasetVisible(ds)) {
 						if (ds.data[index] < 0) {
