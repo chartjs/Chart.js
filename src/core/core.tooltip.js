@@ -253,7 +253,7 @@ module.exports = function(Chart) {
 								datasetIndex: datasetIndex
 							});
 						}
-					});
+					}, null, element._yScale.options.stacked);
 
 					helpers.each(this._active, function(active) {
 						if (active) {
@@ -262,7 +262,7 @@ module.exports = function(Chart) {
 								backgroundColor: active._view.backgroundColor
 							});
 						}
-					});
+					}, null, element._yScale.options.stacked);
 
 					tooltipPosition = this.getAveragePosition(this._active);
 					tooltipPosition.y = this._active[0]._yScale.getPixelForDecimal(0.5);
