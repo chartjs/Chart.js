@@ -11,6 +11,7 @@ describe('Legend block tests', function() {
 			display: true,
 			position: 'top',
 			fullWidth: true, // marks that this box should take the full width of the canvas (pushing down other boxes)
+			reverse: false,
 
 			// a callback that will handle
 			onClick: jasmine.any(Function),
