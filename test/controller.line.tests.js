@@ -655,7 +655,9 @@ describe('Line controller tests', function() {
 		};
 
 		var controller = new Chart.controllers.line(chart, 0);
+		var controller2 = new Chart.controllers.line(chart, 1);
 		controller.update();
+		controller2.update();
 
 		// Line element
 		expect(chart.data.datasets[0].metaDataset._model).toEqual(jasmine.objectContaining({
@@ -667,13 +669,13 @@ describe('Line controller tests', function() {
 		expect(chart.data.datasets[0].metaData[0]._model).toEqual(jasmine.objectContaining({
 			// Point
 			x: 91,
-			y: 30,
+			y: 77,
 		}));
 
 		expect(chart.data.datasets[0].metaData[1]._model).toEqual(jasmine.objectContaining({
 			// Point
 			x: 141,
-			y: 18,
+			y: 65,
 		}));
 
 		expect(chart.data.datasets[0].metaData[2]._model).toEqual(jasmine.objectContaining({
@@ -685,8 +687,34 @@ describe('Line controller tests', function() {
 		expect(chart.data.datasets[0].metaData[3]._model).toEqual(jasmine.objectContaining({
 			// Point
 			x: 242,
+			y: 109,
+		}));
+
+		expect(chart.data.datasets[1].metaData[0]._model).toEqual(jasmine.objectContaining({
+			// Point
+			x: 91,
+			y: 30,
+		}));
+
+		expect(chart.data.datasets[1].metaData[1]._model).toEqual(jasmine.objectContaining({
+			// Point
+			x: 141,
+			y: 18,
+		}));
+
+		expect(chart.data.datasets[1].metaData[2]._model).toEqual(jasmine.objectContaining({
+			// Point
+			x: 192,
+			y: 30,
+		}));
+
+		expect(chart.data.datasets[1].metaData[3]._model).toEqual(jasmine.objectContaining({
+			// Point
+			x: 242,
 			y: 180,
 		}));
+
+
 	});
 
 	it('should find the correct scale zero when the data is all positive', function() {

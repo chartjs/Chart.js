@@ -314,7 +314,7 @@ module.exports = function(Chart) {
 				if (helpers.isDatasetVisible(dataset)) {
 					dataset.controller.draw(ease);
 				}
-			});
+			}, null, true);
 
 			// Finally draw the tooltip
 			this.tooltip.transition(easingDecimal).draw();
