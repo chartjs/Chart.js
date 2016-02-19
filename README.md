@@ -33,9 +33,7 @@ This repo is compatible with @nnnick/Chart.js, so even if you are already using 
 
 ## Chart.js 2.0
 
-Good news, everybody. We *will* be updating to Chart.js 2.0.
-
-Checkout v2.0-dev-ErrorBars to see where I'm at. Issue reports (or PRs!) are appreciated.
+[Chart.js 2.0 is currently in beta.](https://github.com/nnnick/Chart.js/tree/v2.0-dev) I have updated the extension to support this version of the library. Check it out on the v2.0-dev branch. 
 
 ## License
 
