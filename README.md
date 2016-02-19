@@ -28,7 +28,7 @@ Options included with this version of the library:
 
 		//String - color of the error bar in hex or RGBA.
 		//If not specified defaults to the fill color of the bar of point.
-		errorColor: rgba(220, 220, 220, 1)
+		errorColor: "rgba(220, 220, 220, 1)"
 
 		//Number - ratio of the width of the error bar caps to the width of the bar
 		errorCapWidth : 0.75,
