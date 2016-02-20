@@ -60,14 +60,14 @@ module.exports = function(Chart) {
 				return;
 			}
 
-			if (vm.radius > 0 || vm.borderWidth > 0) {
+			if (!isNaN(vm.radius) && vm.radius > 0) {
 
 				ctx.strokeStyle = vm.borderColor || Chart.defaults.global.defaultColor;
-				ctx.lineWidth = vm.borderWidth || Chart.defaults.global.elements.point.borderWidth;
+				ctx.lineWidth = helpers.getValueOrDefault(vm.borderWidth, Chart.defaults.global.elements.point.borderWidth);
 
 				ctx.fillStyle = vm.backgroundColor || Chart.defaults.global.defaultColor;
 
-				var radius = vm.radius || Chart.defaults.global.elements.point.radius;
+				var radius = vm.radius;
 
 				var xOffset;
 				var yOffset;
