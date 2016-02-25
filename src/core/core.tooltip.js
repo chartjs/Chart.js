@@ -483,7 +483,8 @@ module.exports = function(Chart) {
 				}
 			}
 
-			ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(opacity).rgbString();
+			var bgColor = helpers.color(vm.backgroundColor);
+			ctx.fillStyle = bgColor.alpha(opacity * bgColor.alpha()).rgbString();
 			ctx.beginPath();
 			ctx.moveTo(x1, y1);
 			ctx.lineTo(x2, y2);
@@ -495,7 +496,9 @@ module.exports = function(Chart) {
 			if (vm.title.length) {
 				ctx.textAlign = vm._titleAlign;
 				ctx.textBaseline = "top";
-				ctx.fillStyle = helpers.color(vm.titleColor).alpha(opacity).rgbString();
+				
+				var titleColor = helpers.color(vm.titleColor);
+				ctx.fillStyle = titleColor.alpha(opacity * titleColor.alpha()).rgbString();
 				ctx.font = helpers.fontString(vm.titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
 
 				helpers.each(vm.title, function(title, i) {
@@ -511,7 +514,9 @@ module.exports = function(Chart) {
 		drawBody: function drawBody(pt, vm, ctx, opacity) {
 			ctx.textAlign = vm._bodyAlign;
 			ctx.textBaseline = "top";
-			ctx.fillStyle = helpers.color(vm.bodyColor).alpha(opacity).rgbString();
+
+			var bodyColor = helpers.color(vm.bodyColor);
+			ctx.fillStyle = bodyColor.alpha(opacity * bodyColor.alpha()).rgbString();
 			ctx.font = helpers.fontString(vm.bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
 
 			// Before Body
@@ -558,7 +563,9 @@ module.exports = function(Chart) {
 
 				ctx.textAlign = vm._footerAlign;
 				ctx.textBaseline = "top";
-				ctx.fillStyle = helpers.color(vm.footerColor).alpha(opacity).rgbString();
+				
+				var footerColor = helpers.color(vm.footerColor);
+				ctx.fillStyle = footerColor.alpha(opacity * footerColor.alpha()).rgbString();
 				ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
 
 				helpers.each(vm.footer, function(footer) {
@@ -587,7 +594,8 @@ module.exports = function(Chart) {
 
 			if (this._options.tooltips.enabled) {
 				// Draw Background
-				ctx.fillStyle = helpers.color(vm.backgroundColor).alpha(opacity).rgbString();
+				var bgColor = helpers.color(vm.backgroundColor);
+				ctx.fillStyle = bgColor.alpha(opacity * bgColor.alpha()).rgbString();
 				helpers.drawRoundedRectangle(ctx, pt.x, pt.y, tooltipSize.width, tooltipSize.height, vm.cornerRadius);
 				ctx.fill();
 
