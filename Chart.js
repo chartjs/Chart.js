@@ -977,7 +977,7 @@
 			return this;
 		},
 		generateLegend : function(){
-			return template(this.options.legendTemplate,this);
+			return helpers.template(this.options.legendTemplate, {datasets: this.data.datasets});
 		},
 		destroy : function(){
 			this.clear();
@@ -2058,7 +2058,7 @@
 					for (var i = this.valuesCount - 1; i >= 0; i--) {
 						var centerOffset = null, outerPosition = null;
 
-						if (this.angleLineWidth > 0){
+						if (this.angleLineWidth > 0 && (i % this.angleLineInterval === 0)){
 							centerOffset = this.calculateCenterOffset(this.max);
 							outerPosition = this.getPointPosition(i, centerOffset);
 							ctx.beginPath();
@@ -2366,10 +2366,10 @@
 						value : dataPoint,
 						label : data.labels[index],
 						datasetLabel: dataset.label,
-						strokeColor : dataset.strokeColor,
-						fillColor : dataset.fillColor,
-						highlightFill : dataset.highlightFill || dataset.fillColor,
-						highlightStroke : dataset.highlightStroke || dataset.strokeColor
+						strokeColor : (typeof dataset.strokeColor != 'string') ? dataset.strokeColor[index] : dataset.strokeColor,
+						fillColor : (typeof dataset.fillColor != 'string') ? dataset.fillColor[index] : dataset.fillColor,
+						highlightFill : (dataset.highlightFill && typeof dataset.highlightFill != 'string') ? dataset.highlightFill[index] || dataset.highlightFill : (typeof dataset.fillColor != 'string') ? dataset.fillColor[index] : dataset.fillColor,
+						highlightStroke : (dataset.highlightStroke && typeof dataset.highlightStroke != 'string') ? dataset.highlightStroke[index] || dataset.highlightStroke : (typeof dataset.strokeColor != 'string') ? dataset.strokeColor[index] : dataset.strokeColor
 					}));
 				},this);
 
@@ -3413,6 +3413,9 @@
 			//Number - Pixel width of the angle line
 			angleLineWidth : 1,
 
+			//Number - Interval at which to draw angle lines ("every Nth point")
+			angleLineInterval: 1,
+
 			//String - Point label font declaration
 			pointLabelFontFamily : "'Arial'",
 
@@ -3566,6 +3569,7 @@
 				lineColor: this.options.scaleLineColor,
 				angleLineColor : this.options.angleLineColor,
 				angleLineWidth : (this.options.angleShowLineOut) ? this.options.angleLineWidth : 0,
+        angleLineInterval: (this.options.angleLineInterval) ? this.options.angleLineInterval : 1,
 				// Point labels at the edge of each line
 				pointLabelFontColor : this.options.pointLabelFontColor,
 				pointLabelFontSize : this.options.pointLabelFontSize,

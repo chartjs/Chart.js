@@ -76,6 +76,9 @@ These are the customisation options specific to Radar charts. These options are 
 	//Number - Pixel width of the angle line
 	angleLineWidth : 1,
 
+	//Number - Interval at which to draw angle lines ("every Nth point")
+	angleLineInterval: 1,
+      
 	//String - Point label font declaration
 	pointLabelFontFamily : "'Arial'",
 
