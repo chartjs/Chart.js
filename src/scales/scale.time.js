@@ -270,22 +270,25 @@ module.exports = function(Chart) {
 		},
 		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
 			var labelMoment = this.getLabelMoment(datasetIndex, index);
-			var offset = labelMoment.diff(this.firstTick, this.tickUnit, true);
 
-			var decimal = offset / this.tickRange;
+			if (labelMoment) {
+				var offset = labelMoment.diff(this.firstTick, this.tickUnit, true);
 
-			if (this.isHorizontal()) {
-				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
-				var valueWidth = innerWidth / Math.max(this.ticks.length - 1, 1);
-				var valueOffset = (innerWidth * decimal) + this.paddingLeft;
+				var decimal = offset / this.tickRange;
 
-				return this.left + Math.round(valueOffset);
-			} else {
-				var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
-				var valueHeight = innerHeight / Math.max(this.ticks.length - 1, 1);
-				var heightOffset = (innerHeight * decimal) + this.paddingTop;
+				if (this.isHorizontal()) {
+					var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
+					var valueWidth = innerWidth / Math.max(this.ticks.length - 1, 1);
+					var valueOffset = (innerWidth * decimal) + this.paddingLeft;
 
-				return this.top + Math.round(heightOffset);
+					return this.left + Math.round(valueOffset);
+				} else {
+					var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
+					var valueHeight = innerHeight / Math.max(this.ticks.length - 1, 1);
+					var heightOffset = (innerHeight * decimal) + this.paddingTop;
+
+					return this.top + Math.round(heightOffset);
+				}
 			}
 		},
 		parseTime: function(label) {
