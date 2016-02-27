@@ -163,16 +163,11 @@ module.exports = function(Chart) {
 		updateElement: function(arc, index, reset) {
 			var centerX = (this.chart.chartArea.left + this.chart.chartArea.right) / 2;
 			var centerY = (this.chart.chartArea.top + this.chart.chartArea.bottom) / 2;
-
-			var resetModel = {
-				x: centerX,
-				y: centerY,
-				startAngle: Math.PI * -0.5, // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
-				endAngle: Math.PI * -0.5,
-				circumference: (this.chart.options.animation.animateRotate) ? 0 : this.calculateCircumference(this.getDataset().data[index]),
-				outerRadius: (this.chart.options.animation.animateScale) ? 0 : this.outerRadius,
-				innerRadius: (this.chart.options.animation.animateScale) ? 0 : this.innerRadius
-			};
+			var startAngle = Math.PI * -0.5; // non reset case handled later
+			var endAngle = Math.PI * -0.5; // non reset case handled later
+			var circumference = reset && this.chart.options.animation.animateRotate ? 0 : this.calculateCircumference(this.getDataset().data[index]);
+			var innerRadius = reset && this.chart.options.animation.animateScale ? 0 : this.innerRadius;
+			var outerRadius = reset && this.chart.options.animation.animateScale ? 0 : this.outerRadius;
 
 			helpers.extend(arc, {
 				// Utility
@@ -181,12 +176,14 @@ module.exports = function(Chart) {
 				_index: index,
 
 				// Desired view properties
-				_model: reset ? resetModel : {
+				_model: {
 					x: centerX,
 					y: centerY,
-					circumference: this.calculateCircumference(this.getDataset().data[index]),
-					outerRadius: this.outerRadius,
-					innerRadius: this.innerRadius,
+					startAngle: startAngle,
+					endAngle: endAngle,
+					circumference: circumference,
+					outerRadius: outerRadius,
+					innerRadius: innerRadius,
 
 					backgroundColor: arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor),
 					hoverBackgroundColor: arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().hoverBackgroundColor, index, this.chart.options.elements.arc.hoverBackgroundColor),
@@ -197,6 +194,7 @@ module.exports = function(Chart) {
 				}
 			});
 
+			// Set correct angles if not resetting
 			if (!reset) {
 
 				if (index === 0) {
@@ -206,12 +204,6 @@ module.exports = function(Chart) {
 				}
 
 				arc._model.endAngle = arc._model.startAngle + arc._model.circumference;
-
-
-				//Check to see if it's the last arc, if not get the next and update its start angle
-				if (index < this.getDataset().data.length - 1) {
-					this.getDataset().metaData[index + 1]._model.startAngle = arc._model.endAngle;
-				}
 			}
 
 			arc.pivot();
