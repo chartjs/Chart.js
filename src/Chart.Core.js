@@ -980,6 +980,7 @@
 			return helpers.template(this.options.legendTemplate, {datasets: this.data.datasets});
 		},
 		destroy : function(){
+			this.stop();
 			this.clear();
 			unbindEvents(this, this.events);
 			var canvas = this.chart.canvas;
