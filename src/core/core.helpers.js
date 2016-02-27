@@ -799,9 +799,9 @@ module.exports = function(Chart) {
 		var gcLen = cache.garbageCollect.length / 2;
 		if (gcLen > arrayOfStrings.length) {
 			for (var i = 0; i < gcLen; i++) {
-				var key = cache.garbageCollect.shift();
-				delete cache.data[key];
+				delete cache.data[cache.garbageCollect[i]];
 			}
+			cache.garbageCollect.splice(0, gcLen);
 		}
 
 		return longest;
