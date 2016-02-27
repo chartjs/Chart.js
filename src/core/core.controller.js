@@ -58,7 +58,6 @@ module.exports = function(Chart) {
 			this.updateLayout();
 			this.resetElements();
 			this.initToolTip();
-			this.draw();
 			this.update();
 
 			// TODO
