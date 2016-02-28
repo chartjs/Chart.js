@@ -5,15 +5,17 @@
     <script src="../../dist/Chart.bundle.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <style>
-        canvas {
-            -webkit-box-shadow: 0 0 20px 0 rgba(0, 0, 0, .5);
-        }
+    canvas {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
     </style>
 </head>
 
 <body>
-    <div style="width: 100 %;">
-        <canvas id="canvas" style="width: 100 % ;height: 100 %"></canvas>
+    <div style="width: 75%;">
+        <canvas id="canvas"></canvas>
         <progress id="animationProgress" max="1" value="0" style="width: 100%"></progress>
     </div>
     <br>
@@ -24,6 +26,8 @@
     <button id="addData">Add Data</button>
     <button id="removeData">Remove Data</button>
     <script>
+        var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
         var randomScalingFactor = function() {
             return Math.round(Math.random() * 100);
         };
@@ -51,6 +55,10 @@
                 }]
             },
             options: {
+                title:{
+                    display:true,
+                    text:"Chart.js Line Chart - Animation Progress Bar"
+                },
                 animation: {
                     duration: 2000,
                     onProgress: function(animation) {
@@ -131,7 +139,8 @@
 
         $('#addData').click(function() {
             if (config.data.datasets.length > 0) {
-                config.data.labels.push('dataset #' + config.data.labels.length);
+                var month = MONTHS[config.data.labels.length % MONTHS.length];
+                config.data.labels.push(month);
 
                 $.each(config.data.datasets, function(i, dataset) {
                     dataset.data.push(randomScalingFactor());
