@@ -22,10 +22,6 @@ module.exports = function(Chart) {
 
 		labels: {
 			boxWidth: 40,
-			fontSize: Chart.defaults.global.defaultFontSize,
-			fontStyle: Chart.defaults.global.defaultFontStyle,
-			fontColor: Chart.defaults.global.defaultFontColor,
-			fontFamily: Chart.defaults.global.defaultFontFamily,
 			padding: 10,
 			// Generates labels shown in the legend
 			// Valid properties to return:
@@ -156,7 +152,10 @@ module.exports = function(Chart) {
 		fit: function() {
 
 			var ctx = this.ctx;
-			var labelFont = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
+			var fontSize = helpers.getValueOrDefault(this.options.labels.fontSize, Chart.defaults.global.defaultFontSize);
+			var fontStyle = helpers.getValueOrDefault(this.options.labels.fontStyle, Chart.defaults.global.defaultFontStyle);
+			var fontFamily = helpers.getValueOrDefault(this.options.labels.fontFamily, Chart.defaults.global.defaultFontFamily);
+			var labelFont = helpers.fontString(fontSize, fontStyle, fontFamily);
 
 			// Reset hit boxes
 			this.legendHitBoxes = [];
@@ -182,16 +181,16 @@ module.exports = function(Chart) {
 
 					// Width of each line of legend boxes. Labels wrap onto multiple lines when there are too many to fit on one
 					this.lineWidths = [0];
-					var totalHeight = this.legendItems.length ? this.options.labels.fontSize + (this.options.labels.padding) : 0;
+					var totalHeight = this.legendItems.length ? fontSize + (this.options.labels.padding) : 0;
 
 					ctx.textAlign = "left";
 					ctx.textBaseline = 'top';
 					ctx.font = labelFont;
 
 					helpers.each(this.legendItems, function(legendItem, i) {
-						var width = this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + ctx.measureText(legendItem.text).width;
+						var width = this.options.labels.boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
 						if (this.lineWidths[this.lineWidths.length - 1] + width + this.options.labels.padding >= this.width) {
-							totalHeight += this.options.labels.fontSize + (this.options.labels.padding);
+							totalHeight += fontSize + (this.options.labels.padding);
 							this.lineWidths[this.lineWidths.length] = this.left;
 						}
 
@@ -200,7 +199,7 @@ module.exports = function(Chart) {
 							left: 0,
 							top: 0,
 							width: width,
-							height: this.options.labels.fontSize
+							height: fontSize
 						};
 
 						this.lineWidths[this.lineWidths.length - 1] += width + this.options.labels.padding;
@@ -234,7 +233,11 @@ module.exports = function(Chart) {
 					line: 0
 				};
 
-				var labelFont = helpers.fontString(this.options.labels.fontSize, this.options.labels.fontStyle, this.options.labels.fontFamily);
+				var fontColor = helpers.getValueOrDefault(this.options.labels.fontColor, Chart.defaults.global.defaultFontColor);
+				var fontSize = helpers.getValueOrDefault(this.options.labels.fontSize, Chart.defaults.global.defaultFontSize);
+				var fontStyle = helpers.getValueOrDefault(this.options.labels.fontStyle, Chart.defaults.global.defaultFontStyle);
+				var fontFamily = helpers.getValueOrDefault(this.options.labels.fontFamily, Chart.defaults.global.defaultFontFamily);
+				var labelFont = helpers.fontString(fontSize, fontStyle, fontFamily);
 
 				// Horizontal
 				if (this.isHorizontal()) {
@@ -242,16 +245,16 @@ module.exports = function(Chart) {
 					ctx.textAlign = "left";
 					ctx.textBaseline = 'top';
 					ctx.lineWidth = 0.5;
-					ctx.strokeStyle = this.options.labels.fontColor; // for strikethrough effect
-					ctx.fillStyle = this.options.labels.fontColor; // render in correct colour
+					ctx.strokeStyle = fontColor; // for strikethrough effect
+					ctx.fillStyle = fontColor; // render in correct colour
 					ctx.font = labelFont;
 
 					helpers.each(this.legendItems, function(legendItem, i) {
 						var textWidth = ctx.measureText(legendItem.text).width;
-						var width = this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + textWidth;
+						var width = this.options.labels.boxWidth + (fontSize / 2) + textWidth;
 
 						if (cursor.x + width >= this.width) {
-							cursor.y += this.options.labels.fontSize + (this.options.labels.padding);
+							cursor.y += fontSize + (this.options.labels.padding);
 							cursor.line++;
 							cursor.x = this.left + ((this.width - this.lineWidths[cursor.line]) / 2);
 						}
@@ -276,8 +279,8 @@ module.exports = function(Chart) {
 						}
 
 						// Draw the box
-						ctx.strokeRect(cursor.x, cursor.y, this.options.labels.boxWidth, this.options.labels.fontSize);
-						ctx.fillRect(cursor.x, cursor.y, this.options.labels.boxWidth, this.options.labels.fontSize);
+						ctx.strokeRect(cursor.x, cursor.y, this.options.labels.boxWidth, fontSize);
+						ctx.fillRect(cursor.x, cursor.y, this.options.labels.boxWidth, fontSize);
 
 						ctx.restore();
 
@@ -285,14 +288,14 @@ module.exports = function(Chart) {
 						this.legendHitBoxes[i].top = cursor.y;
 
 						// Fill the actual label
-						ctx.fillText(legendItem.text, this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + cursor.x, cursor.y);
+						ctx.fillText(legendItem.text, this.options.labels.boxWidth + (fontSize / 2) + cursor.x, cursor.y);
 
 						if (legendItem.hidden) {
 							// Strikethrough the text if hidden
 							ctx.beginPath();
 							ctx.lineWidth = 2;
-							ctx.moveTo(this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + cursor.x, cursor.y + (this.options.labels.fontSize / 2));
-							ctx.lineTo(this.options.labels.boxWidth + (this.options.labels.fontSize / 2) + cursor.x + textWidth, cursor.y + (this.options.labels.fontSize / 2));
+							ctx.moveTo(this.options.labels.boxWidth + (fontSize / 2) + cursor.x, cursor.y + (fontSize / 2));
+							ctx.lineTo(this.options.labels.boxWidth + (fontSize / 2) + cursor.x + textWidth, cursor.y + (fontSize / 2));
 							ctx.stroke();
 						}
 

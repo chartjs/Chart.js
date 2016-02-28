@@ -18,10 +18,6 @@ describe('Legend block tests', function() {
 
 			labels: {
 				boxWidth: 40,
-				fontSize: Chart.defaults.global.defaultFontSize,
-				fontStyle: Chart.defaults.global.defaultFontStyle,
-				fontColor: Chart.defaults.global.defaultFontColor,
-				fontFamily: Chart.defaults.global.defaultFontFamily,
 				padding: 10,
 				generateLabels: jasmine.any(Function)
 			}
