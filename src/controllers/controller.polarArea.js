@@ -36,16 +36,20 @@ module.exports = function(Chart) {
 		legend: {
 			labels: {
 				generateLabels: function(data) {
-					return data.labels.map(function(label, i) {
-						return {
-							text: label,
-							fillStyle: data.datasets[0].backgroundColor[i],
-							hidden: isNaN(data.datasets[0].data[i]),
+					if (data.labels.length && data.datasets.length) {
+						return data.labels.map(function(label, i) {
+							return {
+								text: label,
+								fillStyle: data.datasets[0].backgroundColor[i],
+								hidden: isNaN(data.datasets[0].data[i]),
 
-							// Extra data used for toggling the correct item
-							index: i
-						};
-					});
+								// Extra data used for toggling the correct item
+								index: i
+							};
+						});
+					} else {
+						return [];
+					}
 				}
 			},
 			onClick: function(e, legendItem) {
