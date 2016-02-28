@@ -6,7 +6,7 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="../dist/Chart.bundle.js"></script>
     <style type="text/css">
-    #canvas{
+    canvas{
         -moz-user-select: none;
         -webkit-user-select: none;
         -ms-user-select: none;
@@ -45,24 +45,69 @@
             datasets: [{
                 label: "My First dataset",
                 backgroundColor: randomColor(),
-                data: []
+                data: [{
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }]
             }, {
                 label: "My Second dataset",
                 backgroundColor: randomColor(),
-                data: []
-            }]
-        };
-
-        // add random data to initial datasets
-        for(var i in bubbleChartData.datasets){
-            for(var j=0; j<DEFAULT_DATASET_SIZE; ++j){
-                bubbleChartData.datasets[i].data.push({
+                data: [{
                     x: randomScalingFactor(),
                     y: randomScalingFactor(),
-                    r: Math.abs(randomScalingFactor()) / 5
-                });
-            }
-        }
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                    r: Math.abs(randomScalingFactor()) / 5,
+                }]
+            }]
+        };
 
         window.onload = function() {
             var ctx = document.getElementById("canvas").getContext("2d");
