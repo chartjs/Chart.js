@@ -5,12 +5,19 @@
     <title>Scatter Chart Multi Axis</title>
     <script src="../dist/Chart.bundle.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <style>
+    canvas {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+    </style>
 </head>
 
 <body>
-    <div style="width:50%">
+    <div style="width:75%">
         <div>
-            <canvas id="canvas" height="450" width="600"></canvas>
+            <canvas id="canvas"></canvas>
         </div>
     </div>
     <button id="randomizeData">Randomize Data</button>
@@ -86,8 +93,6 @@
         dataset.pointBorderWidth = 1;
     });
 
-    console.log(scatterChartData);
-
     window.onload = function() {
         var ctx = document.getElementById("canvas").getContext("2d");
         window.myScatter = Chart.Scatter(ctx, {
@@ -95,6 +100,10 @@
         	options: {
 	            responsive: true,
 	            hoverMode: 'single',
+            	title: {
+	                display: true,
+	                text: 'Chart.js Scatter Chart - Multi Axis'
+	            },
 	            scales: {
 	            	xAxes: [{
 	            		position: "bottom",
@@ -168,7 +177,7 @@
 		}, {
 			x: randomScalingFactor(),
 			y: randomScalingFactor(),
-		}]
+		}];
         window.myScatter.update();
     });
     </script>

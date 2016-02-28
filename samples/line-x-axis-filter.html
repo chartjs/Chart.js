@@ -6,15 +6,17 @@
     <script src="../dist/Chart.bundle.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <style>
-        canvas {
-            -webkit-box-shadow: 0 0 20px 0 rgba(0, 0, 0, .5);
-        }
+    canvas {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
     </style>
 </head>
 
 <body>
-    <div style="width:50%;">
-        <canvas id="canvas" style="width:100%;height:100%"></canvas>
+    <div style="width:75%;">
+        <canvas id="canvas"></canvas>
     </div>
     <br>
     <br>
@@ -24,6 +26,8 @@
     <button id="addData">Add Data</button>
     <button id="removeData">Remove Data</button>
     <script>
+        var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
         var randomScalingFactor = function() {
             return Math.round(Math.random() * 50 * (Math.random() > 0.5 ? 1 : 1)) + 50;
         };
@@ -37,7 +41,7 @@
         var config = {
             type: 'line',
             data: {
-                labels: ["January is a long month", "February", "March", "April", "May", "June", "July"],
+                labels: ["January", "February", "March", "April", "May", "June", "July"],
                 datasets: [{
                     label: "My First dataset",
                     data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
@@ -50,6 +54,10 @@
             },
             options: {
                 responsive: true,
+                title:{
+                    display:true,
+                    text:"Chart.js Line Chart - X-Axis Filter"
+                },
                 scales: {
                     xAxes: [{
                         display: true,
@@ -74,8 +82,6 @@
             dataset.pointBackgroundColor = randomColor(0.5);
             dataset.pointBorderWidth = 1;
         });
-
-        console.log(config.data);
 
         window.onload = function() {
             var ctx = document.getElementById("canvas").getContext("2d");
@@ -114,7 +120,8 @@
 
         $('#addData').click(function() {
             if (config.data.datasets.length > 0) {
-                config.data.labels.push('dataset #' + config.data.labels.length);
+                var month = MONTHS[config.data.labels.length % MONTHS.length];
+                config.data.labels.push(month);
 
                 for (var index = 0; index < config.data.datasets.length; ++index) {
                     config.data.datasets[index].data.push(randomScalingFactor());

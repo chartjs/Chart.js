@@ -6,14 +6,16 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="../dist/Chart.bundle.js"></script>
     <style type="text/css">
-        canvas {
-            border: 1px solid red;
-        }
+    canvas{
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
     </style>
 </head>
 
 <body>
-    <div id="container" style="width: 100%; height: 25%;">
+    <div id="container" style="width: 75%;">
         <canvas id="canvas"></canvas>
     </div>
     <button id="randomizeData">Randomize Data</button>
@@ -21,13 +23,11 @@
     <button id="removeDataset">Remove Dataset</button>
     <button id="addData">Add Data</button>
     <button id="removeData">Remove Data</button>
-    <button id="show">Show</button>
-    <div>
-        <h3>Legend</h3>
-        <div id="legendContainer">
-        </div>
-    </div>
     <script>
+        var DEFAULT_DATASET_SIZE = 7;
+
+        var addedCount = 0;
+
         var randomScalingFactor = function() {
             return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 100);
         };
@@ -107,14 +107,7 @@
                     r: Math.abs(randomScalingFactor()) / 5,
                 }]
             }]
-
         };
-
-        function updateLegend() {
-            $legendContainer = $('#legendContainer');
-            $legendContainer.empty();
-            $legendContainer.append(window.myChart.generateLegend());
-        }
 
         window.onload = function() {
             var ctx = document.getElementById("canvas").getContext("2d");
@@ -123,10 +116,12 @@
                 data: bubbleChartData,
                 options: {
                     responsive: true,
+                    title:{
+                        display:true,
+                        text:'Chart.js Bubble Chart'
+                    },
                 }
             });
-
-            updateLegend();
         };
 
         $('#randomizeData').click(function() {
@@ -142,16 +137,17 @@
                 });
             });
             window.myChart.update();
-            updateLegend();
         });
 
         $('#addDataset').click(function() {
+            ++addedCount;
             var newDataset = {
+                label: "My added dataset " + addedCount,
                 backgroundColor: randomColor(),
                 data: []
             };
 
-            for (var index = 0; index < bubbleChartData.datasets[0].data.length; ++index) {
+            for (var index = 0; index < DEFAULT_DATASET_SIZE; ++index) {
                 newDataset.data.push({
                     x: randomScalingFactor(),
                     y: randomScalingFactor(),
@@ -161,14 +157,11 @@
 
             bubbleChartData.datasets.push(newDataset);
             window.myChart.update();
-            updateLegend();
         });
 
         $('#addData').click(function() {
             if (bubbleChartData.datasets.length > 0) {
-
                 for (var index = 0; index < bubbleChartData.datasets.length; ++index) {
-                    //window.myChart.addData(randomScalingFactor(), index);
                     bubbleChartData.datasets[index].data.push({
                         x: randomScalingFactor(),
                         y: randomScalingFactor(),
@@ -177,14 +170,12 @@
                 }
 
                 window.myChart.update();
-                updateLegend();
             }
         });
 
         $('#removeDataset').click(function() {
             bubbleChartData.datasets.splice(0, 1);
             window.myChart.update();
-            updateLegend();
         });
 
         $('#removeData').click(function() {
@@ -194,11 +185,6 @@
             });
 
             window.myChart.update();
-            updateLegend();
-        });
-
-        $('#show').click(function() {
-            document.getElementById('container').style.display = '';
         });
     </script>
 </body>
