@@ -6,16 +6,11 @@
   <script src="../dist/Chart.bundle.js"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <style>
-    #canvas-holder1 {
-      width: 300px;
-      margin: 20px auto;
+    canvas{
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
     }
-
-    #canvas-holder2 {
-      width: 50%;
-      margin: 20px 25%;
-    }
-
     #chartjs-tooltip {
       opacity: 1;
       position: absolute;
@@ -38,15 +33,13 @@
 </head>
 
 <body>
-  <div id="canvas-holder1">
-    <canvas id="chart1" width="300" height="100" />
+  <div id="canvas-holder1" style="width:75%;">
+    <canvas id="chart1"/>
   </div>
   <script>
     window.count = 0;
     Chart.defaults.global.pointHitDetectionRadius = 1;
     var customTooltips = function(tooltip) {
-
-      console.log(window.count++, tooltip);
 
       // Tooltip Element
       var tooltipEl = $('#chartjs-tooltip');
@@ -131,6 +124,10 @@
         type: 'line',
         data: lineChartData,
         options: {
+          title:{
+            display:true,
+            text:'Chart.js Line Chart - Custom Tooltips'
+          },
           tooltips: {
             enabled: false,
             custom: customTooltips
