@@ -27,6 +27,8 @@
     <button id="addData">Add Data</button>
     <button id="removeData">Remove Data</button>
     <script>
+        var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        
         var randomScalingFactor = function() {
             return Math.round(Math.random() * 100);
             //return 0;
@@ -185,7 +187,8 @@
 
         $('#addData').click(function() {
             if (config.data.datasets.length > 0) {
-                config.data.labels.push('dataset #' + config.data.labels.length);
+                var month = MONTHS[config.data.labels.length % MONTHS.length];
+                config.data.labels.push(month);
 
                 $.each(config.data.datasets, function(i, dataset) {
                     dataset.data.push(randomScalingFactor());
