@@ -11,9 +11,6 @@ describe('Title block tests', function() {
 			display: false,
 			position: 'top',
 			fullWidth: true,
-			fontColor: Chart.defaults.global.defaultFontColor,
-			fontFamily: Chart.defaults.global.defaultFontFamily,
-			fontSize: Chart.defaults.global.defaultFontSize,
 			fontStyle: 'bold',
 			padding: 10,
 			text: ''
@@ -146,6 +143,9 @@ describe('Title block tests', function() {
 		title.draw();
 
 		expect(context.getCalls()).toEqual([{
+			name: 'setFillStyle',
+			args: ['#666']
+		}, {
 			name: 'save',
 			args: []
 		}, {
@@ -154,9 +154,6 @@ describe('Title block tests', function() {
 		}, {
 			name: 'rotate',
 			args: [-0.5 * Math.PI]
-		}, {
-			name: 'setFillStyle',
-			args: ['#666']
 		}, {
 			name: 'fillText',
 			args: ['My title', 0, 0]
@@ -179,6 +176,9 @@ describe('Title block tests', function() {
 		title.draw();
 
 		expect(context.getCalls()).toEqual([{
+			name: 'setFillStyle',
+			args: ['#666']
+		}, {
 			name: 'save',
 			args: []
 		}, {
@@ -187,9 +187,6 @@ describe('Title block tests', function() {
 		}, {
 			name: 'rotate',
 			args: [0.5 * Math.PI]
-		}, {
-			name: 'setFillStyle',
-			args: ['#666']
 		}, {
 			name: 'fillText',
 			args: ['My title', 0, 0]

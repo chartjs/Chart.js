@@ -145,8 +145,9 @@ module.exports = function(Chart) {
 				this.tickRange = Math.ceil(this.lastTick.diff(this.firstTick, this.tickUnit, true));
 			} else {
 				// Determine the smallest needed unit of the time
+				var tickFontSize = helpers.getValueOrDefault(this.options.ticks.fontSize, Chart.defaults.global.defaultFontSize);
 				var innerWidth = this.isHorizontal() ? this.width - (this.paddingLeft + this.paddingRight) : this.height - (this.paddingTop + this.paddingBottom);
-				var labelCapacity = innerWidth / (this.options.ticks.fontSize + 10);
+				var labelCapacity = innerWidth / (tickFontSize + 10);
 				var buffer = this.options.time.round ? 0 : 1;
 
 				// Start as small as possible

@@ -34,17 +34,8 @@ module.exports = function(Chart) {
 		},
 
 		pointLabels: {
-			//String - Point label font declaration
-			fontFamily: Chart.defaults.global.defaultFontFamily,
-
-			//String - Point label font weight
-			fontStyle: Chart.defaults.global.defaultFontStyle,
-
 			//Number - Point label font size in pixels
 			fontSize: 10,
-
-			//String - Point label font colour
-			fontColor: Chart.defaults.global.defaultFontColor,
 
 			//Function - Used to convert point labels
 			callback: function(label) {
@@ -65,7 +56,8 @@ module.exports = function(Chart) {
 			this.yCenter = Math.round(this.height / 2);
 
 			var minSize = helpers.min([this.height, this.width]);
-			this.drawingArea = (this.options.display) ? (minSize / 2) - (this.options.ticks.fontSize / 2 + this.options.ticks.backdropPaddingY) : (minSize / 2);
+			var tickFontSize = helpers.getValueOrDefault(this.options.ticks.fontSize, Chart.defaults.global.defaultFontSize);
+			this.drawingArea = (this.options.display) ? (minSize / 2) - (tickFontSize / 2 + this.options.ticks.backdropPaddingY) : (minSize / 2);
 		},
 		determineDataLimits: function() {
 			this.min = null;
@@ -136,8 +128,8 @@ module.exports = function(Chart) {
 			// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
 			// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on
 			// the graph
-			var maxTicks = Math.min(this.options.ticks.maxTicksLimit ? this.options.ticks.maxTicksLimit : 11,
-				Math.ceil(this.drawingArea / (1.5 * this.options.ticks.fontSize)));
+			var tickFontSize = helpers.getValueOrDefault(this.options.ticks.fontSize, Chart.defaults.global.defaultFontSize);
+			var maxTicks = Math.min(this.options.ticks.maxTicksLimit ? this.options.ticks.maxTicksLimit : 11, Math.ceil(this.drawingArea / (1.5 * tickFontSize)));
 			maxTicks = Math.max(2, maxTicks); // Make sure we always have at least 2 ticks
 
 			// To get a "nice" value for the tick spacing, we will use the appropriately named
@@ -213,10 +205,14 @@ module.exports = function(Chart) {
 			 * https://dl.dropboxusercontent.com/u/34601363/yeahscience.gif
 			 */
 
+			var pointLabelFontSize = helpers.getValueOrDefault(this.options.pointLabels.fontSize, Chart.defaults.global.defaultFontSize);
+			var pointLabeFontStyle = helpers.getValueOrDefault(this.options.pointLabels.fontStyle, Chart.defaults.global.defaultFontStyle);
+			var pointLabeFontFamily = helpers.getValueOrDefault(this.options.pointLabels.fontFamily, Chart.defaults.global.defaultFontFamily);
+			var pointLabeFont = helpers.fontString(pointLabelFontSize, pointLabeFontStyle, pointLabeFontFamily);
 
 			// Get maximum radius of the polygon. Either half the height (minus the text width) or half the width.
 			// Use this to calculate the offset + change. - Make sure L/R protrusion is at least 0 to stop issues with centre points
-			var largestPossibleRadius = helpers.min([(this.height / 2 - this.options.pointLabels.fontSize - 5), this.width / 2]),
+			var largestPossibleRadius = helpers.min([(this.height / 2 - pointLabelFontSize - 5), this.width / 2]),
 				pointPosition,
 				i,
 				textWidth,
@@ -232,7 +228,8 @@ module.exports = function(Chart) {
 				radiusReductionRight,
 				radiusReductionLeft,
 				maxWidthRadius;
-			this.ctx.font = helpers.fontString(this.options.pointLabels.fontSize, this.options.pointLabels.fontStyle, this.options.pointLabels.fontFamily);
+			this.ctx.font = pointLabeFont;
+
 			for (i = 0; i < this.getValueCount(); i++) {
 				// 5px to space the text slightly out - similar to what we do in the draw function.
 				pointPosition = this.getPointPosition(i, largestPossibleRadius);
@@ -357,22 +354,27 @@ module.exports = function(Chart) {
 						}
 
 						if (this.options.ticks.display) {
-							ctx.font = helpers.fontString(this.options.ticks.fontSize, this.options.ticks.fontStyle, this.options.ticks.fontFamily);
+							var tickFontColor = helpers.getValueOrDefault(this.options.ticks.fontColor, Chart.defaults.global.defaultFontColor);
+							var tickFontSize = helpers.getValueOrDefault(this.options.ticks.fontSize, Chart.defaults.global.defaultFontSize);
+							var tickFontStyle = helpers.getValueOrDefault(this.options.ticks.fontStyle, Chart.defaults.global.defaultFontStyle);
+							var tickFontFamily = helpers.getValueOrDefault(this.options.ticks.fontFamily, Chart.defaults.global.defaultFontFamily);
+							var tickLabelFont = helpers.fontString(tickFontSize, tickFontStyle, tickFontFamily);
+							ctx.font = tickLabelFont;
 
 							if (this.options.ticks.showLabelBackdrop) {
 								var labelWidth = ctx.measureText(label).width;
 								ctx.fillStyle = this.options.ticks.backdropColor;
 								ctx.fillRect(
 									this.xCenter - labelWidth / 2 - this.options.ticks.backdropPaddingX,
-									yHeight - this.options.ticks.fontSize / 2 - this.options.ticks.backdropPaddingY,
+									yHeight - tickFontSize / 2 - this.options.ticks.backdropPaddingY,
 									labelWidth + this.options.ticks.backdropPaddingX * 2,
-									this.options.ticks.fontSize + this.options.ticks.backdropPaddingY * 2
+									tickFontSize + this.options.ticks.backdropPaddingY * 2
 								);
 							}
 
 							ctx.textAlign = 'center';
 							ctx.textBaseline = "middle";
-							ctx.fillStyle = this.options.ticks.fontColor;
+							ctx.fillStyle = tickFontColor;
 							ctx.fillText(label, this.xCenter, yHeight);
 						}
 					}
@@ -393,8 +395,15 @@ module.exports = function(Chart) {
 						}
 						// Extra 3px out for some label spacing
 						var pointLabelPosition = this.getPointPosition(i, this.getDistanceFromCenterForValue(this.options.reverse ? this.min : this.max) + 5);
-						ctx.font = helpers.fontString(this.options.pointLabels.fontSize, this.options.pointLabels.fontStyle, this.options.pointLabels.fontFamily);
-						ctx.fillStyle = this.options.pointLabels.fontColor;
+						
+						var pointLabelFontColor = helpers.getValueOrDefault(this.options.pointLabels.fontColor, Chart.defaults.global.defaultFontColor);
+						var pointLabelFontSize = helpers.getValueOrDefault(this.options.pointLabels.fontSize, Chart.defaults.global.defaultFontSize);
+						var pointLabeFontStyle = helpers.getValueOrDefault(this.options.pointLabels.fontStyle, Chart.defaults.global.defaultFontStyle);
+						var pointLabeFontFamily = helpers.getValueOrDefault(this.options.pointLabels.fontFamily, Chart.defaults.global.defaultFontFamily);
+						var pointLabeFont = helpers.fontString(pointLabelFontSize, pointLabeFontStyle, pointLabeFontFamily);
+
+						ctx.font = pointLabeFont;
+						ctx.fillStyle = pointLabelFontColor;
 
 						var labelsCount = this.pointLabels.length,
 							halfLabelsCount = this.pointLabels.length / 2,
