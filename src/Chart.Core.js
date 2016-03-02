@@ -1818,11 +1818,13 @@
 
 
 					// Small lines at the bottom of the base grid line
-					ctx.beginPath();
-					ctx.moveTo(linePos,this.endPoint);
-					ctx.lineTo(linePos,this.endPoint + 5);
-					ctx.stroke();
-					ctx.closePath();
+          if (this.showXTicks) {
+					  ctx.beginPath();
+					  ctx.moveTo(linePos,this.endPoint);
+					  ctx.lineTo(linePos,this.endPoint + 5);
+					  ctx.stroke();
+					  ctx.closePath();
+          }
 
 					ctx.save();
 					ctx.translate(xPos,(isRotated) ? this.endPoint + 12 : this.endPoint + 8);
@@ -2059,7 +2061,7 @@
 					for (var i = this.valuesCount - 1; i >= 0; i--) {
 						var centerOffset = null, outerPosition = null;
 
-						if (this.angleLineWidth > 0){
+						if (this.angleLineWidth > 0 && (i % this.angleLineInterval === 0)){
 							centerOffset = this.calculateCenterOffset(this.max);
 							outerPosition = this.getPointPosition(i, centerOffset);
 							ctx.beginPath();
