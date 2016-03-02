@@ -48,7 +48,8 @@ module.exports = function(Chart) {
 		position: "bottom",
 
 		time: {
-			format: false, // false == date objects or use pattern string from http://momentjs.com/docs/#/parsing/string-format/
+			parser: false, // false == a pattern string from http://momentjs.com/docs/#/parsing/string-format/ or a custom callback that converts its argument to a moment
+			format: false, // DEPRECATED false == date objects, moment object, callback or a pattern string from http://momentjs.com/docs/#/parsing/string-format/
 			unit: false, // false == automatic or override with week, month, year, etc.
 			round: false, // none, or override with week, month, year, etc.
 			displayFormat: false, // DEPRECATED
@@ -293,6 +294,12 @@ module.exports = function(Chart) {
 			}
 		},
 		parseTime: function(label) {
+			if (typeof this.options.time.parser === 'string') {
+				return moment(label, this.options.time.parser)
+			}
+			if (typeof this.options.time.parser === 'function') {
+				return this.options.time.parser(label);
+			}
 			// Date objects
 			if (typeof label.getMonth === 'function' || typeof label === 'number') {
 				return moment(label);
@@ -303,6 +310,7 @@ module.exports = function(Chart) {
 			}
 			// Custom parsing (return an instance of moment)
 			if (typeof this.options.time.format !== 'string' && this.options.time.format.call) {
+				console.warn("options.time.format is deprecated and replaced by options.time.parser. See http://nnnick.github.io/Chart.js/docs-v2/#scales-time-scale");
 				return this.options.time.format(label);
 			}
 			// Moment format parsing

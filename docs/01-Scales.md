@@ -168,7 +168,7 @@ The time scale extends the core scale class with the following tick template:
 	position: "bottom",
 	time: {
 		// string/callback - By default, date objects are expected. You may use a pattern string from http://momentjs.com/docs/#/parsing/string-format/ to parse a time string format, or use a callback function that is passed the label, and must return a moment() instance.
-		format: false,
+		parser: false,
 		// string - By default, unit will automatically be detected.  Override with 'week', 'month', 'year', etc. (see supported time measurements)
 		unit: false,
 		// string - By default, no rounding is applied.  To round, set to a supported time unit eg. 'week', 'month', 'year', etc.
