@@ -42,6 +42,7 @@ describe('Time scale tests', function() {
 				autoSkipPadding: 20
 			},
 			time: {
+				parser: false,
 				format: false,
 				unit: false,
 				round: false,
@@ -166,6 +167,43 @@ describe('Time scale tests', function() {
 
 		// Counts down because the lines are drawn top to bottom
 		expect(scale.ticks).toEqual(['Jan 1, 2015', 'Jan 3, 2015', 'Jan 5, 2015', 'Jan 7, 2015', 'Jan 9, 2015', 'Jan 11, 2015']);
+	});
+
+	it('should allow custom time parsers', function() {
+		// Helper to build date objects
+
+
+		var scaleID = 'myScale';
+		var mockData = {
+			datasets: [{
+				data: [{
+					x: 375058800,
+					y: 1
+				}],
+			}]
+		};
+		var verticalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('time'));
+		verticalScaleConfig.time.unit = 'day';
+		verticalScaleConfig.time.round = true;
+		verticalScaleConfig.time.parser = function customTimeParser(label) {
+			console.log("got "+label+" returning "+moment.unix(label))
+			return moment.unix(label);
+		}
+
+		var mockContext = window.createMockContext();
+		var Constructor = Chart.scaleService.getScaleConstructor('time');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: verticalScaleConfig,
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+		scale.update(400, 50);
+
+		// Counts down because the lines are drawn top to bottom
+		expect(scale.ticks).toEqual(['Nov 20, 1981', 'Nov 20, 1981']);
 	});
 
 	it('should build ticks using the config unit', function() {
