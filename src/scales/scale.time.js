@@ -295,7 +295,7 @@ module.exports = function(Chart) {
 		},
 		parseTime: function(label) {
 			if (typeof this.options.time.parser === 'string') {
-				return moment(label, this.options.time.parser)
+				return moment(label, this.options.time.parser);
 			}
 			if (typeof this.options.time.parser === 'function') {
 				return this.options.time.parser(label);
