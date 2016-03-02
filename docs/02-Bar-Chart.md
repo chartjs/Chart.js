@@ -71,6 +71,9 @@ These are the customisation options specific to Bar charts. These options are me
 	//Boolean - Whether to show vertical lines (except Y axis)
 	scaleShowVerticalLines: true,
 
+	//Boolean - Whether to show ticks on the X axis
+	scaleShowXTicks: true,
+
 	//Boolean - If there is a stroke on each bar
 	barShowStroke : true,
 
