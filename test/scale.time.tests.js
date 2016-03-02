@@ -177,7 +177,7 @@ describe('Time scale tests', function() {
 		var mockData = {
 			datasets: [{
 				data: [{
-					x: 375058800,
+					x: 375068900,
 					y: 1
 				}],
 			}]
@@ -186,7 +186,6 @@ describe('Time scale tests', function() {
 		verticalScaleConfig.time.unit = 'day';
 		verticalScaleConfig.time.round = true;
 		verticalScaleConfig.time.parser = function customTimeParser(label) {
-			console.log("got "+label+" returning "+moment.unix(label))
 			return moment.unix(label);
 		}
 
