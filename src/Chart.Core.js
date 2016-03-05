@@ -1683,7 +1683,7 @@
 		},
 		calculateY : function(value){
 			var scalingFactor = this.drawingArea() / (this.min - this.max);
-			return this.endPoint - (scalingFactor * (value - this.min));
+			return Math.round(this.endPoint - (scalingFactor * (value - this.min)));
 		},
 		calculateX : function(index){
 			var isRotated = (this.xLabelRotation > 0),
