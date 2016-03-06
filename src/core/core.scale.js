@@ -476,10 +476,6 @@ module.exports = function(Chart) {
 						skipRatio = 1 + Math.floor((((longestRotatedLabel / 2) + this.options.ticks.autoSkipPadding) * this.ticks.length) / (this.width - (this.paddingLeft + this.paddingRight)));
 					}
 
-					if (!useAutoskipper) {
-						skipRatio = false;
-					}
-
 					// if they defined a max number of ticks,
 					// increase skipRatio until that number is met
 					if (maxTicks && this.ticks.length > maxTicks) {
@@ -489,6 +485,10 @@ module.exports = function(Chart) {
 							}
 							skipRatio += 1;
 						}
+					}
+
+					if (!useAutoskipper) {
+						skipRatio = false;
 					}
 
 					helpers.each(this.ticks, function(label, index) {

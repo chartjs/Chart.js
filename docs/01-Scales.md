@@ -171,8 +171,13 @@ The time scale extends the core scale class with the following tick template:
 		parser: false,
 		// string - By default, unit will automatically be detected.  Override with 'week', 'month', 'year', etc. (see supported time measurements)
 		unit: false,
+
+		// Number - The number of steps of the above unit between ticks
+		unitStepSize: 1
+
 		// string - By default, no rounding is applied.  To round, set to a supported time unit eg. 'week', 'month', 'year', etc.
 		round: false,
+		
 		// Moment js for each of the units. Replaces `displayFormat`
 		// To override, use a pattern string from http://momentjs.com/docs/#/displaying/format/
 		displayFormats: {

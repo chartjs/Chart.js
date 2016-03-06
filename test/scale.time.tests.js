@@ -1,6 +1,27 @@
 // Time scale tests
 describe('Time scale tests', function() {
 
+	beforeEach(function() {
+		jasmine.addMatchers({
+			toEqualOneOf: function() {
+				return {
+					compare: function(actual, expecteds) {
+						var result = false;
+						for (var i = 0, l = expecteds.length; i < l; i++) {
+							if (actual === expecteds[i]) {
+								result = true;
+								break;
+							}
+						}
+						return {
+							pass: result
+						};
+					}
+				};
+			}
+		});
+	});
+
 	it('Should load moment.js as a dependency', function() {
 		expect(window.moment).not.toBe(undefined);
 	});
@@ -202,7 +223,8 @@ describe('Time scale tests', function() {
 		scale.update(400, 50);
 
 		// Counts down because the lines are drawn top to bottom
-		expect(scale.ticks).toEqual(['Nov 20, 1981', 'Nov 20, 1981']);
+		expect(scale.ticks[0]).toEqualOneOf(['Nov 19, 1981', 'Nov 20, 1981']); // handle time zone changes
+		expect(scale.ticks[1]).toEqualOneOf(['Nov 19, 1981', 'Nov 20, 1981']); // handle time zone changes
 	});
 
 	it('should build ticks using the config unit', function() {
