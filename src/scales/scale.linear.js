@@ -177,9 +177,9 @@ module.exports = function(Chart) {
 			// for details.
 
 			var spacing;
-			var fixedStepSizeSet = this.options.ticks.fixedStepSize && this.options.ticks.fixedStepSize > 0;
+			var fixedStepSizeSet = (this.options.ticks.fixedStepSize && this.options.ticks.fixedStepSize > 0) || (this.options.ticks.stepSize && this.options.ticks.stepSize > 0);
 			if (fixedStepSizeSet) {
-				spacing = this.options.ticks.fixedStepSize;
+				spacing = helpers.getValueOrDefault(this.options.ticks.fixedStepSize, this.options.ticks.stepSize);
 			} else {
 				var niceRange = helpers.niceNum(this.max - this.min, false);
 				spacing = helpers.niceNum(niceRange / (maxTicks - 1), true);
