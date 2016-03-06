@@ -202,7 +202,7 @@ describe('Time scale tests', function() {
 		scale.update(400, 50);
 
 		// Counts down because the lines are drawn top to bottom
-		expect(scale.ticks).toEqual(['Nov 20, 1981', 'Nov 20, 1981']);
+		expect(scale.ticks).toEqual(['Nov 19, 1981', 'Nov 19, 1981']);
 	});
 
 	it('should build ticks using the config unit', function() {
