@@ -13,52 +13,102 @@ var gulp = require('gulp'),
 	fs = require('fs'),
 	package = require('./package.json'),
 	bower = require('./bower.json'),
-	livereload = require('gulp-livereload');
+	karma = require('gulp-karma'),
+	umd = require('gulp-umd');
 
 var srcDir = './src/';
+var testDir = './test/';
 /*
- *	Usage : gulp build --types=Bar,Line,Doughnut
- *	Output: - A built Chart.js file with Core and types Bar, Line and Doughnut concatenated together
- *			- A minified version of this code, in Chart.min.js
+ *  Usage : gulp build --types=Bar,Line,Doughnut
+ *  Output: - A built Chart.js file with Core and types Bar, Line and Doughnut concatenated together
+ *          - A minified version of this code, in Chart.min.js
  */
 
-gulp.task('build', function(){
+var srcFiles = [
+	'./node_modules/color/dist/color.min.js',
+	'./src/core/core.js',
+	'./src/core/core.helpers.js',
+	'./src/core/core.element.js',
+	'./src/core/**',
+	'./src/controllers/**',
+	'./src/scales/**',
+	'./src/elements/**',
+	'./src/charts/**',
+];
 
-	// Default to all of the chart types, with Chart.Core first
-	var srcFiles = [FileName('Core')],
-		isCustom = !!(util.env.types),
+var preTestFiles = [
+	'./node_modules/moment/min/moment.min.js',
+];
+
+var testFiles = [
+	'./test/mockContext.js',
+	'./test/*.js'
+];
+
+gulp.task('build', buildTask);
+gulp.task('coverage', coverageTask);
+gulp.task('watch', watchTask);
+gulp.task('bump', bumpTask);
+gulp.task('release', ['build'], releaseTask);
+gulp.task('jshint', jshintTask);
+gulp.task('test', ['jshint', 'validHTML', 'unittest']);
+gulp.task('size', ['library-size', 'module-sizes']);
+gulp.task('server', serverTask);
+gulp.task('validHTML', validHTMLTask);
+gulp.task('unittest', unittestTask);
+gulp.task('unittestWatch', unittestWatchTask);
+gulp.task('library-size', librarySizeTask);
+gulp.task('module-sizes', moduleSizesTask);
+gulp.task('_open', _openTask);
+gulp.task('dev', ['server', 'default']);
+
+gulp.task('default', ['build', 'watch']);
+
+
+function buildTask() {
+
+	var isCustom = !!(util.env.types),
 		outputDir = (isCustom) ? 'custom' : '.';
-	if (isCustom){
-		util.env.types.split(',').forEach(function(type){ return srcFiles.push(FileName(type));});
-	}
-	else{
-		// Seems gulp-concat remove duplicates - nice!
-		// So we can use this to sort out dependency order - aka include Core first!
-		srcFiles.push(srcDir+'*');
-	}
 
 	return gulp.src(srcFiles)
 		.pipe(concat('Chart.js'))
 		.pipe(replace('{{ version }}', package.version))
+		.pipe(umd({
+			// We want a global always to ensure that we match previous behaviour
+			templateSource:
+				";(function(root, factory) {\n"+
+				"  if (typeof define === 'function' && define.amd) {\n"+
+				"    define(<%= amd %>, factory);\n"+
+				"  } else if (typeof exports === 'object') {\n"+
+				"    module.exports = factory.call(root,<%= cjs %>);\n"+
+				"  } else {\n"+
+				"    root.<%= namespace %> = factory.call(root,<%= global %>);\n"+
+				"  }\n"+
+				"}(this, function(<%= param %>) {\n"+
+				"<%= contents %>\n"+
+				"return <%= exports %>;\n"+
+				"}));\n",
+			dependencies: function() {
+				return ['moment']
+			}
+		}))
 		.pipe(gulp.dest(outputDir))
-		.pipe(uglify({preserveComments:'some'}))
+		.pipe(uglify({
+			preserveComments: 'some'
+		}))
 		.pipe(concat('Chart.min.js'))
 		.pipe(gulp.dest(outputDir));
 
-	function FileName(moduleName){
-		return srcDir+'Chart.'+moduleName+'.js';
-	}
-});
+}
 
 /*
- *	Usage : gulp bump
- *	Prompts: Version increment to bump
- *	Output: - New version number written into package.json & bower.json
+ *  Usage : gulp bump
+ *  Prompts: Version increment to bump
+ *  Output: - New version number written into package.json & bower.json
  */
-
-gulp.task('bump', function(complete){
+function bumpTask(complete) {
 	util.log('Current version:', util.colors.cyan(package.version));
-	var choices = ['major', 'premajor', 'minor', 'preminor', 'patch', 'prepatch', 'prerelease'].map(function(versionType){
+	var choices = ['major', 'premajor', 'minor', 'preminor', 'patch', 'prepatch', 'prerelease'].map(function(versionType) {
 		return versionType + ' (v' + semver.inc(package.version, versionType) + ')';
 	});
 	inquirer.prompt({
@@ -66,7 +116,7 @@ gulp.task('bump', function(complete){
 		name: 'version',
 		message: 'What version update would you like?',
 		choices: choices
-	}, function(res){
+	}, function(res) {
 		var increment = res.version.split(' ')[0],
 			newVersion = semver.inc(package.version, increment);
 
@@ -80,68 +130,97 @@ gulp.task('bump', function(complete){
 
 		complete();
 	});
-});
+}
 
-gulp.task('release', ['build'], function(){
+
+function releaseTask() {
 	exec('git tag -a v' + package.version);
-});
+}
 
-gulp.task('jshint', function(){
-	return gulp.src(srcDir + '*.js')
+
+function jshintTask() {
+	return gulp.src(srcDir + '**/*.js')
 		.pipe(jshint())
 		.pipe(jshint.reporter('default'));
-});
+}
 
-gulp.task('valid', function(){
+
+function validHTMLTask() {
 	return gulp.src('samples/*.html')
-    .pipe(htmlv());
-});
+		.pipe(htmlv());
+}
 
-gulp.task('library-size', function(){
+
+function unittestTask() {
+	var files = srcFiles.slice();
+	Array.prototype.unshift.apply(files, preTestFiles);
+	Array.prototype.push.apply(files, testFiles);
+
+	return gulp.src(files)
+		.pipe(karma({
+			configFile: 'karma.conf.ci.js',
+			action: 'run'
+		}));
+}
+
+function unittestWatchTask() {
+	var files = srcFiles.slice();
+	Array.prototype.unshift.apply(files, preTestFiles);
+	Array.prototype.push.apply(files, testFiles);
+
+	return gulp.src(files)
+		.pipe(karma({
+			configFile: 'karma.conf.js',
+			action: 'watch'
+		}));
+}
+
+function coverageTask() {
+	var files = srcFiles.slice();
+	Array.prototype.unshift.apply(files, preTestFiles);
+	Array.prototype.push.apply(files, testFiles);
+
+	return gulp.src(files)
+		.pipe(karma({
+			configFile: 'karma.coverage.conf.js',
+			action: 'run'
+		}));
+}
+
+function librarySizeTask() {
 	return gulp.src('Chart.min.js')
 		.pipe(size({
 			gzip: true
 		}));
-});
+}
 
-gulp.task('module-sizes', function(){
+function moduleSizesTask() {
 	return gulp.src(srcDir + '*.js')
-	.pipe(uglify({preserveComments:'some'}))
-	.pipe(size({
-		showFiles: true,
-		gzip: true
-	}));
-});
+		.pipe(uglify({
+			preserveComments: 'some'
+		}))
+		.pipe(size({
+			showFiles: true,
+			gzip: true
+		}));
+}
 
-gulp.task('watch', function(){
-	gulp.watch('./src/*', ['build']);
+function watchTask() {
+	if (util.env.test) {
+		return gulp.watch('./src/**', ['build', 'unittest', 'unittestWatch']);
+	}
+	return gulp.watch('./src/**', ['build']);
+}
 
-	livereload.listen(35729);
-
-	var reloadPage = function (evt) {
-	  livereload.changed(evt.path);
-	};
-
-	gulp.watch(['Chart.js', 'samples/*'], reloadPage);
-
-});
-
-gulp.task('test', ['jshint', 'valid']);
-
-gulp.task('size', ['library-size', 'module-sizes']);
-
-gulp.task('default', ['build', 'watch']);
-
-gulp.task('server', function(){
+function serverTask() {
 	connect.server({
 		port: 8000
 	});
-});
+}
 
 // Convenience task for opening the project straight from the command line
-gulp.task('_open', function(){
+
+function _openTask() {
 	exec('open http://localhost:8000');
 	exec('subl .');
-});
-
-gulp.task('dev', ['server', 'default']);
+}
