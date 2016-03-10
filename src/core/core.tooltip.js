@@ -24,6 +24,8 @@ module.exports = function(Chart) {
 		footerAlign: "left",
 		yPadding: 6,
 		xPadding: 6,
+		yAlign : 'center',
+		xAlign : 'center',
 		caretSize: 5,
 		cornerRadius: 6,
 		multiKeyBackground: '#fff',
@@ -88,6 +90,8 @@ module.exports = function(Chart) {
 					// Positioning
 					xPadding: options.tooltips.xPadding,
 					yPadding: options.tooltips.yPadding,
+					xAlign : options.tooltips.yAlign,
+					yAlign : options.tooltips.xAlign,
 
 					// Body
 					bodyColor: options.tooltips.bodyColor,
@@ -333,8 +337,6 @@ module.exports = function(Chart) {
 			return size;
 		},
 		determineAlignment: function determineAlignment(size) {
-			this._model.xAlign = this._model.yAlign = "center";
-
 			if (this._model.y < size.height) {
 				this._model.yAlign = 'top';
 			} else if (this._model.y > (this._chart.height - size.height)) {
