@@ -90,6 +90,8 @@ module.exports = function(Chart) {
 					// Positioning
 					xPadding: options.tooltips.xPadding,
 					yPadding: options.tooltips.yPadding,
+					xAlign : options.tooltips.yAlign,
+					yAlign : options.tooltips.xAlign,
 
 					// Body
 					bodyColor: options.tooltips.bodyColor,
@@ -118,8 +120,6 @@ module.exports = function(Chart) {
 					footerMarginTop: options.tooltips.footerMarginTop,
 
 					// Appearance
-					yAlign : options.tooltips.yAlign,
-					xAlign : options.tooltips.xAlign,
 					caretSize: options.tooltips.caretSize,
 					cornerRadius: options.tooltips.cornerRadius,
 					backgroundColor: options.tooltips.backgroundColor,
