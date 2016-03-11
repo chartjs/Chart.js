@@ -83,8 +83,10 @@
 						bar.restore(['fillColor', 'strokeColor']);
 					});
 					helpers.each(activeBars, function(activeBar){
-						activeBar.fillColor = activeBar.highlightFill;
-						activeBar.strokeColor = activeBar.highlightStroke;
+						if (activeBar) {
+							activeBar.fillColor = activeBar.highlightFill;
+							activeBar.strokeColor = activeBar.highlightStroke;
+						}
 					});
 					this.showTooltip(activeBars);
 				});
@@ -117,8 +119,8 @@
 						datasetLabel: dataset.label,
 						strokeColor : (typeof dataset.strokeColor != 'string') ? dataset.strokeColor[index] : dataset.strokeColor,
 						fillColor : (typeof dataset.fillColor != 'string') ? dataset.fillColor[index] : dataset.fillColor,
-						highlightFill : (dataset.highlightFill && typeof dataset.highlightFill != 'string') ? dataset.highlightFill[index] || dataset.highlightFill : (typeof dataset.fillColor != 'string') ? dataset.fillColor[index] : dataset.fillColor,
-						highlightStroke : (dataset.highlightStroke && typeof dataset.highlightStroke != 'string') ? dataset.highlightStroke[index] || dataset.highlightStroke : (typeof dataset.strokeColor != 'string') ? dataset.strokeColor[index] : dataset.strokeColor
+						highlightFill : (dataset.highlightFill) ? (typeof dataset.highlightFill != 'string') ? dataset.highlightFill[index] : dataset.highlightFill : (typeof dataset.fillColor != 'string') ? dataset.fillColor[index] : dataset.fillColor,
+						highlightStroke : (dataset.highlightStroke) ? (typeof dataset.highlightStroke != 'string') ? dataset.highlightStroke[index] : dataset.highlightStroke : (typeof dataset.strokeColor != 'string') ? dataset.strokeColor[index] : dataset.strokeColor
 					}));
 				},this);
 
