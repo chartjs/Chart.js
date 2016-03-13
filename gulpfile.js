@@ -17,8 +17,8 @@ var gulp = require('gulp'),
 
 var srcDir = './src/';
 /*
- *	Usage : gulp build --types=Bar,Line,Doughnut
- *	Output: - A built Chart.js file with Core and types Bar, Line and Doughnut concatenated together
+ *	Usage : gulp build --types=Bar,HorizontalBar,Line,Doughnut
+ *	Output: - A built Chart.js file with Core and types Bar, HorizontalBar, Line and Doughnut concatenated together
  *			- A minified version of this code, in Chart.min.js
  */
 
