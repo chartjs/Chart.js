@@ -16,7 +16,7 @@ They are often useful for comparing the points of two or more different data set
 
 ```javascript
 var myRadarChart = new Chart(ctx, {
-	type:'radar',
+	type: 'radar',
 	data: data,
 	options: options
 });
@@ -74,7 +74,7 @@ For example, we could have a radar chart without a point for each on piece of da
 
 ```javascript
 new Chart(ctx, {
-	type:"radar",
+	type: "radar",
 	data: data,
 	options: {
 			scale: {

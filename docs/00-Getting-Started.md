@@ -80,10 +80,10 @@ var myChart = new Chart(ctx, {
 					data: [12, 19, 3, 5, 2, 3]
 			}]
 		},
-		options:{
-			scales:{
-				yAxes:[{
-						ticks:{
+		options: {
+			scales: {
+				yAxes: [{
+						ticks: {
 							beginAtZero:true
 						}
 					}]
@@ -119,7 +119,7 @@ defaultFontColor | Color | '#666' | Default font color for all text
 defaultFontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Default font family for all text
 defaultFontSize | Number | 12 | Default font size (in px) for text. Does not apply to radialLinear scale point labels
 defaultFontStyle | String | 'normal' | Default font style. Does not apply to tooltip title or footer. Does not apply to chart title
-legendCallback | Function | ` function (chart) { // the chart object to generate a legend from.  }` | Function to generate a legend. Default implementation returns an HTML string.
+legendCallback | Function | ` function (chart) { }` | Function to generate a legend. Receives the chart object to generate a legend from. Default implementation returns an HTML string.
 
 The global options for the chart title is defined in `Chart.defaults.global.title`
 
@@ -150,7 +150,7 @@ labels |-|-|-
 *labels*fontColor | Color | "#666" |
 *labels*fontFamily | String | "Helvetica Neue" |
 *labels*padding | Number | 10 | Padding between rows of colored boxes
-*labels*generateLabels: | Function | `function(data) {  } | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. Styles that can be returned are `fillStyle`, `strokeStyle`, `lineCap`, `lineDash`, `lineDashOffset`, `lineWidth`, `lineJoin`. Return a `hidden` attribute to indicate that the label refers to something that is not visible. A strikethrough style will be given to the text in this case.
+*labels*generateLabels: | Function | `function(data) {  }` | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. Styles that can be returned are `fillStyle`, `strokeStyle`, `lineCap`, `lineDash`, `lineDashOffset`, `lineWidth`, `lineJoin`. Return a `hidden` attribute to indicate that the label refers to something that is not visible. A strikethrough style will be given to the text in this case.
 
 The global options for tooltips are defined in `Chart.defaults.global.tooltips`.
 
@@ -203,8 +203,8 @@ Name | Type | Default | Description
 duration | Number | 1000 | The number of milliseconds an animation takes.
 easing | String | "easeOutQuart" | Easing function to use.
 onProgress | Function | none | Callback called on each step of an animation. Passed a single argument, an object, containing the chart instance and an object with details of the animation.
-onComplete | Function | none | Callback called at the end of an animation. Passed the same arguments as `onProgress
-`
+onComplete | Function | none | Callback called at the end of an animation. Passed the same arguments as `onProgress`
+
 The global options for elements are defined in `Chart.defaults.global.elements`.
 
 Name | Type | Default | Description
