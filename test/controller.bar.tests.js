@@ -204,6 +204,7 @@ describe('Bar controller tests', function() {
 				elements: {
 					rectangle: {
 						backgroundColor: 'rgb(255, 0, 0)',
+						borderSkipped: 'top',
 						borderColor: 'rgb(0, 0, 255)',
 						borderWidth: 2,
 					}
@@ -247,6 +248,7 @@ describe('Bar controller tests', function() {
 			base: 194,
 			width: 13.680000000000001,
 			backgroundColor: 'rgb(255, 0, 0)',
+			borderSkipped: 'top',
 			borderColor: 'rgb(0, 0, 255)',
 			borderWidth: 2,
 		});
@@ -264,6 +266,7 @@ describe('Bar controller tests', function() {
 			base: 194,
 			width: 13.680000000000001,
 			backgroundColor: 'rgb(255, 0, 0)',
+			borderSkipped: 'top',
 			borderColor: 'rgb(0, 0, 255)',
 			borderWidth: 2,
 		});
