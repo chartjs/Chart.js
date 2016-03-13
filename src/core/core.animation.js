@@ -52,11 +52,11 @@ module.exports = function(Chart) {
 		},
 		// Cancel the animation for a given chart instance
 		cancelAnimation: function(chartInstance) {
-			var index = helpers.findNextWhere(this.animations, function(animationWrapper) {
+			var index = helpers.findIndex(this.animations, function(animationWrapper) {
 				return animationWrapper.chartInstance === chartInstance;
 			});
 
-			if (index) {
+			if (index !== -1) {
 				this.animations.splice(index, 1);
 				chartInstance.animating = false;
 			}
@@ -75,7 +75,8 @@ module.exports = function(Chart) {
 				this.dropFrames = this.dropFrames % 1;
 			}
 
-			for (var i = 0; i < this.animations.length; i++) {
+			var i = 0;
+			while (i < this.animations.length) {
 				if (this.animations[i].animationObject.currentStep === null) {
 					this.animations[i].animationObject.currentStep = 0;
 				}
@@ -98,9 +99,10 @@ module.exports = function(Chart) {
 
 					// executed the last frame. Remove the animation.
 					this.animations[i].chartInstance.animating = false;
+
 					this.animations.splice(i, 1);
-					// Keep the index in place to offset the splice
-					i--;
+				} else {
+					++i;
 				}
 			}
 
