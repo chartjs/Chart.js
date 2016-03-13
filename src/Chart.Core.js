@@ -2059,7 +2059,7 @@
 					for (var i = this.valuesCount - 1; i >= 0; i--) {
 						var centerOffset = null, outerPosition = null;
 
-						if (this.angleLineWidth > 0){
+						if (this.angleLineWidth > 0 && (i % this.angleLineInterval === 0)){
 							centerOffset = this.calculateCenterOffset(this.max);
 							outerPosition = this.getPointPosition(i, centerOffset);
 							ctx.beginPath();
