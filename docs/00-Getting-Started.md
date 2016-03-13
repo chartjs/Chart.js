@@ -236,6 +236,7 @@ rectangle | - | - | -
 *rectangle*.backgroundColor | Color | `Chart.defaults.global.defaultColor` | Default bar fill color
 *rectangle*.borderWidth | Number | 0 | Default bar stroke width
 *rectangle*.borderColor | Color | `Chart.defaults.global.defaultColor` | Default bar stroke color
+*rectangle*.borderSkipped | String | 'bottom' | Default skipped (excluded) border for rectangle. Can be one of `bottom`, `left`, `top`, `right`
 
 If for example, you wanted all charts created to be responsive, and resize when the browser window does, the following setting can be changed:
 
