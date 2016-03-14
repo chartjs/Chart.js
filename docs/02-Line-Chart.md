@@ -86,8 +86,8 @@ var data = {
 			// The actual data
 			data: [65, 59, 80, 81, 56, 55, 40],
 
-			// String - If specified, binds the dataset to a certain y-axis. If not specified, the first y-axis is used.
-			yAxisID: "y-axis-1",
+			// String - If specified, binds the dataset to a certain y-axis. If not specified, the first y-axis is used. First id is y-axis-0
+			yAxisID: "y-axis-0",
 		},
 		{
 			label: "My Second dataset",
