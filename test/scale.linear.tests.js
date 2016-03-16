@@ -650,7 +650,6 @@ describe('Linear Scale', function() {
 
 		// Reverse mode makes this count up
 		expect(scale.ticks).toEqual([0, 10, 20, 30, 40, 50, 60, 70, 80]);
-		expect(scale.ticksAsNumbers).toEqual([0, 10, 20, 30, 40, 50, 60, 70, 80]);
 		expect(scale.start).toBe(80);
 		expect(scale.end).toBe(0);
 	});
