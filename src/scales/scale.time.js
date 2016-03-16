@@ -7,12 +7,6 @@ moment = typeof(moment) === 'function' ? moment : window.moment;
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
-
-	if (!moment) {
-		console.warn('Chart.js - Moment.js could not be found! You must include it before Chart.js to use the time scale. Download at http://momentjs.com/');
-		return;
-	}
-
 	var time = {
 		units: [{
 			name: 'millisecond',
@@ -73,6 +67,13 @@ module.exports = function(Chart) {
 	};
 
 	var TimeScale = Chart.Scale.extend({
+		initialize: function() {
+			if (!moment) {
+				throw new Error('Chart.js - Moment.js could not be found! You must include it before Chart.js to use the time scale. Download at https://momentjs.com');
+			}
+
+			Chart.Scale.prototype.initialize.call(this);
+		},
 		getLabelMoment: function(datasetIndex, index) {
 			return this.labelMoments[datasetIndex][index];
 		},
