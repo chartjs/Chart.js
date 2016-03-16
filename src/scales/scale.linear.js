@@ -221,12 +221,15 @@ module.exports = function(Chart) {
 				this.start = this.min;
 				this.end = this.max;
 			}
-
-			this.ticksAsNumbers = this.ticks.slice(); // do after we potentially reverse the ticks
-			this.zeroLineIndex = this.ticks.indexOf(0);
 		},
 		getLabelForIndex: function(index, datasetIndex) {
 			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
+		},
+		convertTicksToLabels: function() {
+			this.ticksAsNumbers = this.ticks.slice();
+			this.zeroLineIndex = this.ticks.indexOf(0);
+
+			Chart.Scale.prototype.convertTicksToLabels.call(this);
 		},
 		// Utils
 		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
