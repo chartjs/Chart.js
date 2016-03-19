@@ -5491,6 +5491,7 @@ module.exports = function(Chart) {
 					base: reset ? yScalePoint : this.calculateBarBase(this.index, index),
 					width: this.calculateBarWidth(numBars),
 					backgroundColor: rectangle.custom && rectangle.custom.backgroundColor ? rectangle.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.rectangle.backgroundColor),
+					borderSkipped: rectangle.custom && rectangle.custom.borderSkipped ? rectangle.custom.borderSkipped : this.chart.options.elements.rectangle.borderSkipped,
 					borderColor: rectangle.custom && rectangle.custom.borderColor ? rectangle.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.rectangle.borderColor),
 					borderWidth: rectangle.custom && rectangle.custom.borderWidth ? rectangle.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.rectangle.borderWidth)
 				}
@@ -6888,11 +6889,11 @@ module.exports = function(Chart) {
 		},
 		// Cancel the animation for a given chart instance
 		cancelAnimation: function(chartInstance) {
-			var index = helpers.findNextWhere(this.animations, function(animationWrapper) {
+			var index = helpers.findIndex(this.animations, function(animationWrapper) {
 				return animationWrapper.chartInstance === chartInstance;
 			});
 
-			if (index) {
+			if (index !== -1) {
 				this.animations.splice(index, 1);
 				chartInstance.animating = false;
 			}
@@ -6911,7 +6912,8 @@ module.exports = function(Chart) {
 				this.dropFrames = this.dropFrames % 1;
 			}
 
-			for (var i = 0; i < this.animations.length; i++) {
+			var i = 0;
+			while (i < this.animations.length) {
 				if (this.animations[i].animationObject.currentStep === null) {
 					this.animations[i].animationObject.currentStep = 0;
 				}
@@ -6934,9 +6936,10 @@ module.exports = function(Chart) {
 
 					// executed the last frame. Remove the animation.
 					this.animations[i].chartInstance.animating = false;
+
 					this.animations.splice(i, 1);
-					// Keep the index in place to offset the splice
-					i--;
+				} else {
+					++i;
 				}
 			}
 
@@ -7081,7 +7084,8 @@ module.exports = function(Chart) {
 			if (this.options.scales) {
 				if (this.options.scales.xAxes && this.options.scales.xAxes.length) {
 					helpers.each(this.options.scales.xAxes, function(xAxisOptions, index) {
-						var ScaleClass = Chart.scaleService.getScaleConstructor(xAxisOptions.type);
+						var xType = helpers.getValueOrDefault(xAxisOptions.type, 'category');
+						var ScaleClass = Chart.scaleService.getScaleConstructor(xType);
 						if (ScaleClass) {
 							var scale = new ScaleClass({
 								ctx: this.chart.ctx,
@@ -7098,7 +7102,8 @@ module.exports = function(Chart) {
 				if (this.options.scales.yAxes && this.options.scales.yAxes.length) {
 					// Build the y axes
 					helpers.each(this.options.scales.yAxes, function(yAxisOptions, index) {
-						var ScaleClass = Chart.scaleService.getScaleConstructor(yAxisOptions.type);
+						var yType = helpers.getValueOrDefault(yAxisOptions.type, 'linear');
+						var ScaleClass = Chart.scaleService.getScaleConstructor(yType);
 						if (ScaleClass) {
 							var scale = new ScaleClass({
 								ctx: this.chart.ctx,
@@ -7821,11 +7826,12 @@ module.exports = function(Chart) {
 					// These properties are arrays of items
 					if (base.hasOwnProperty(key)) {
 						helpers.each(value, function(valueObj, index) {
+							var axisType = helpers.getValueOrDefault(valueObj.type, key === 'xAxes' ? 'category' : 'linear');
 							if (index >= base[key].length || !base[key][index].type) {
-								base[key].push(helpers.configMerge(valueObj.type ? Chart.scaleService.getScaleDefaults(valueObj.type) : {}, valueObj));
+								base[key].push(helpers.configMerge(Chart.scaleService.getScaleDefaults(axisType), valueObj));
 							} else if (valueObj.type !== base[key][index].type) {
 								// Type changed. Bring in the new defaults before we bring in valueObj so that valueObj can override the correct scale defaults
-								base[key][index] = helpers.configMerge(base[key][index], valueObj.type ? Chart.scaleService.getScaleDefaults(valueObj.type) : {}, valueObj);
+								base[key][index] = helpers.configMerge(base[key][index], Chart.scaleService.getScaleDefaults(axisType), valueObj);
 							} else {
 								// Type is the same
 								base[key][index] = helpers.configMerge(base[key][index], valueObj);
@@ -7834,7 +7840,8 @@ module.exports = function(Chart) {
 					} else {
 						base[key] = [];
 						helpers.each(value, function(valueObj) {
-							base[key].push(helpers.configMerge(valueObj.type ? Chart.scaleService.getScaleDefaults(valueObj.type) : {}, valueObj));
+							var axisType = helpers.getValueOrDefault(valueObj.type, key === 'xAxes' ? 'category' : 'linear');
+							base[key].push(helpers.configMerge(Chart.scaleService.getScaleDefaults(axisType), valueObj));
 						});
 					}
 				} else if (base.hasOwnProperty(key) && typeof base[key] === "object" && base[key] !== null && typeof value === "object") {
@@ -7885,6 +7892,23 @@ module.exports = function(Chart) {
 		});
 
 		return filtered;
+	};
+	helpers.findIndex = function(arrayToSearch, callback, thisArg) {
+		var index = -1;
+		if (Array.prototype.findIndex) {
+			index = arrayToSearch.findIndex(callback, thisArg);
+		} else {
+			for (var i = 0; i < arrayToSearch.length; ++i) {
+				thisArg = thisArg !== undefined ? thisArg : arrayToSearch;
+
+				if (callback.call(thisArg, arrayToSearch[i], i, arrayToSearch)) {
+					index = i;
+					break;
+				}
+			}
+		}
+
+		return index;
 	};
 	helpers.findNextWhere = function(arrayToSearch, filterCallback, startIndex) {
 		// Default to start of the array
@@ -8448,14 +8472,14 @@ module.exports = function(Chart) {
 			ctx.canvas.width = width * pixelRatio;
 			ctx.scale(pixelRatio, pixelRatio);
 
-			ctx.canvas.style.width = width + 'px';
-			ctx.canvas.style.height = height + 'px';
-
 			// Store the device pixel ratio so that we can go backwards in `destroy`.
 			// The devicePixelRatio changes with zoom, so there are no guarantees that it is the same
 			// when destroy is called
 			chart.originalDevicePixelRatio = chart.originalDevicePixelRatio || pixelRatio;
 		}
+
+		ctx.canvas.style.width = width + 'px';
+		ctx.canvas.style.height = height + 'px';
 	};
 	//-- Canvas methods
 	helpers.clear = function(chart) {
@@ -10289,6 +10313,8 @@ module.exports = function(Chart) {
 		footerAlign: "left",
 		yPadding: 6,
 		xPadding: 6,
+		yAlign : 'center',
+		xAlign : 'center',
 		caretSize: 5,
 		cornerRadius: 6,
 		multiKeyBackground: '#fff',
@@ -10353,6 +10379,8 @@ module.exports = function(Chart) {
 					// Positioning
 					xPadding: options.tooltips.xPadding,
 					yPadding: options.tooltips.yPadding,
+					xAlign : options.tooltips.yAlign,
+					yAlign : options.tooltips.xAlign,
 
 					// Body
 					bodyColor: options.tooltips.bodyColor,
@@ -10598,8 +10626,6 @@ module.exports = function(Chart) {
 			return size;
 		},
 		determineAlignment: function determineAlignment(size) {
-			this._model.xAlign = this._model.yAlign = "center";
-
 			if (this._model.y < size.height) {
 				this._model.yAlign = 'top';
 			} else if (this._model.y > (this._chart.height - size.height)) {
@@ -11286,7 +11312,8 @@ module.exports = function(Chart) {
 	Chart.defaults.global.elements.rectangle = {
 		backgroundColor: Chart.defaults.global.defaultColor,
 		borderWidth: 0,
-		borderColor: Chart.defaults.global.defaultColor
+		borderColor: Chart.defaults.global.defaultColor,
+		borderSkipped: 'bottom'
 	};
 
 	Chart.elements.Rectangle = Chart.Element.extend({
@@ -11315,12 +11342,31 @@ module.exports = function(Chart) {
 			ctx.strokeStyle = vm.borderColor;
 			ctx.lineWidth = vm.borderWidth;
 
-			// It'd be nice to keep this class totally generic to any rectangle
-			// and simply specify which border to miss out.
-			ctx.moveTo(leftX, vm.base);
-			ctx.lineTo(leftX, top);
-			ctx.lineTo(rightX, top);
-			ctx.lineTo(rightX, vm.base);
+			// Corner points, from bottom-left to bottom-right clockwise
+			// | 1 2 |
+			// | 0 3 |
+			var corners = [
+				[leftX, vm.base],
+				[leftX, top],
+				[rightX, top],
+				[rightX, vm.base]
+			];
+
+			// Find first (starting) corner with fallback to 'bottom' 
+			var borders = ['bottom', 'left', 'top', 'right'];
+			var startCorner = borders.indexOf(vm.borderSkipped, 0);
+			if (startCorner === -1)
+				startCorner = 0;
+
+			function cornerAt(index) {
+				return corners[(startCorner + index) % 4];
+			}
+
+			// Draw rectangle from 'startCorner'
+			ctx.moveTo.apply(ctx, cornerAt(0));
+			for (var i = 1; i < 4; i++)
+				ctx.lineTo.apply(ctx, cornerAt(i));
+
 			ctx.fill();
 			if (vm.borderWidth) {
 				ctx.stroke();
@@ -11636,12 +11682,15 @@ module.exports = function(Chart) {
 				this.start = this.min;
 				this.end = this.max;
 			}
-
-			this.ticksAsNumbers = this.ticks.slice(); // do after we potentially reverse the ticks
-			this.zeroLineIndex = this.ticks.indexOf(0);
 		},
 		getLabelForIndex: function(index, datasetIndex) {
 			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
+		},
+		convertTicksToLabels: function() {
+			this.ticksAsNumbers = this.ticks.slice();
+			this.zeroLineIndex = this.ticks.indexOf(0);
+
+			Chart.Scale.prototype.convertTicksToLabels.call(this);
 		},
 		// Utils
 		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
@@ -11774,7 +11823,7 @@ module.exports = function(Chart) {
 		buildTicks: function() {
 			// Reset the ticks array. Later on, we will draw a grid line at these positions
 			// The array simply contains the numerical value of the spots where ticks will be
-			this.tickValues = [];
+			this.ticks = [];
 
 			// Figure out what the max number of ticks we can support it is based on the size of
 			// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
@@ -11784,7 +11833,7 @@ module.exports = function(Chart) {
 			var tickVal = this.options.ticks.min !== undefined ? this.options.ticks.min : Math.pow(10, Math.floor(helpers.log10(this.min)));
 
 			while (tickVal < this.max) {
-				this.tickValues.push(tickVal);
+				this.ticks.push(tickVal);
 
 				var exp = Math.floor(helpers.log10(tickVal));
 				var significand = Math.floor(tickVal / Math.pow(10, exp)) + 1;
@@ -11798,20 +11847,20 @@ module.exports = function(Chart) {
 			}
 
 			var lastTick = this.options.ticks.max !== undefined ? this.options.ticks.max : tickVal;
-			this.tickValues.push(lastTick);
+			this.ticks.push(lastTick);
 
 			if (this.options.position === "left" || this.options.position === "right") {
 				// We are in a vertical orientation. The top value is the highest. So reverse the array
-				this.tickValues.reverse();
+				this.ticks.reverse();
 			}
 
 			// At this point, we need to update our max and min given the tick values since we have expanded the
 			// range of the scale
-			this.max = helpers.max(this.tickValues);
-			this.min = helpers.min(this.tickValues);
+			this.max = helpers.max(this.ticks);
+			this.min = helpers.min(this.ticks);
 
 			if (this.options.ticks.reverse) {
-				this.tickValues.reverse();
+				this.ticks.reverse();
 
 				this.start = this.max;
 				this.end = this.min;
@@ -11819,8 +11868,11 @@ module.exports = function(Chart) {
 				this.start = this.min;
 				this.end = this.max;
 			}
+		},
+		convertTicksToLabels: function() {
+			this.tickValues = this.ticks.slice();
 
-			this.ticks = this.tickValues.slice();
+			Chart.Scale.prototype.convertTicksToLabels.call(this);
 		},
 		// Get the correct tooltip label
 		getLabelForIndex: function(index, datasetIndex) {
@@ -12312,12 +12364,6 @@ moment = typeof(moment) === 'function' ? moment : window.moment;
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
-
-	if (!moment) {
-		console.warn('Chart.js - Moment.js could not be found! You must include it before Chart.js to use the time scale. Download at http://momentjs.com/');
-		return;
-	}
-
 	var time = {
 		units: [{
 			name: 'millisecond',
@@ -12378,6 +12424,13 @@ module.exports = function(Chart) {
 	};
 
 	var TimeScale = Chart.Scale.extend({
+		initialize: function() {
+			if (!moment) {
+				throw new Error('Chart.js - Moment.js could not be found! You must include it before Chart.js to use the time scale. Download at https://momentjs.com');
+			}
+
+			Chart.Scale.prototype.initialize.call(this);
+		},
 		getLabelMoment: function(datasetIndex, index) {
 			return this.labelMoments[datasetIndex][index];
 		},
