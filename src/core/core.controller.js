@@ -126,7 +126,8 @@ module.exports = function(Chart) {
 			if (this.options.scales) {
 				if (this.options.scales.xAxes && this.options.scales.xAxes.length) {
 					helpers.each(this.options.scales.xAxes, function(xAxisOptions, index) {
-						var ScaleClass = Chart.scaleService.getScaleConstructor(xAxisOptions.type);
+						var xType = helpers.getValueOrDefault(xAxisOptions.type, 'category');
+						var ScaleClass = Chart.scaleService.getScaleConstructor(xType);
 						if (ScaleClass) {
 							var scale = new ScaleClass({
 								ctx: this.chart.ctx,
@@ -143,7 +144,8 @@ module.exports = function(Chart) {
 				if (this.options.scales.yAxes && this.options.scales.yAxes.length) {
 					// Build the y axes
 					helpers.each(this.options.scales.yAxes, function(yAxisOptions, index) {
-						var ScaleClass = Chart.scaleService.getScaleConstructor(yAxisOptions.type);
+						var yType = helpers.getValueOrDefault(yAxisOptions.type, 'linear');
+						var ScaleClass = Chart.scaleService.getScaleConstructor(yType);
 						if (ScaleClass) {
 							var scale = new ScaleClass({
 								ctx: this.chart.ctx,
