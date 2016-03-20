@@ -137,11 +137,12 @@ module.exports = function(Chart) {
 					if (base.hasOwnProperty(key)) {
 						helpers.each(value, function(valueObj, index) {
 							var axisType = helpers.getValueOrDefault(valueObj.type, key === 'xAxes' ? 'category' : 'linear');
+							var axisDefaults = Chart.scaleService.getScaleDefaults(axisType);
 							if (index >= base[key].length || !base[key][index].type) {
-								base[key].push(helpers.configMerge(Chart.scaleService.getScaleDefaults(axisType), valueObj));
-							} else if (valueObj.type !== base[key][index].type) {
+								base[key].push(helpers.configMerge(axisDefaults, valueObj));
+							} else if (valueObj.type && valueObj.type !== base[key][index].type) {
 								// Type changed. Bring in the new defaults before we bring in valueObj so that valueObj can override the correct scale defaults
-								base[key][index] = helpers.configMerge(base[key][index], Chart.scaleService.getScaleDefaults(axisType), valueObj);
+								base[key][index] = helpers.configMerge(base[key][index], axisDefaults, valueObj);
 							} else {
 								// Type is the same
 								base[key][index] = helpers.configMerge(base[key][index], valueObj);
