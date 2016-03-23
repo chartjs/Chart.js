@@ -16,7 +16,7 @@ npm install chart.js --save
 bower install Chart.js --save
 ```
 
-CDN: https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.0.0-beta/Chart.js
+CDN: https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.0.0/Chart.js
 
 ###Install Chart.js
 
