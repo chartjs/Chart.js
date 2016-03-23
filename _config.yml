@@ -8,7 +8,7 @@ collections:
   doc-parts-v2:
     output: false
 
-markdown: redcarpet
+markdown: kramdown
 
 redcarpet:
   extensions: ["no_intra_emphasis", "tables"]
