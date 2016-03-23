@@ -1,3 +1,4 @@
 _site
 node_modules
 coverage
+Gemfile.lock
