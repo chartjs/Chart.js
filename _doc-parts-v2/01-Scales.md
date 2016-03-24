@@ -53,6 +53,7 @@ afterUpdate | Function | undefined | Callback that runs at the end of the update
 *ticks*.fontStyle | String | "normal" | Font style for the tick labels, follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit).
 *ticks*.maxRotation | Number | 90 | Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. *Note: Only applicable to horizontal scales.*
 *ticks*.minRotation | Number |  20 | *currently not-implemented* Minimum rotation for tick labels when condensing is necessary.  *Note: Only applicable to horizontal scales.*
+*ticks*.maxTicksLimit | Number | 11 | Maximum number of ticks and gridlines to show. If not defined, it will limit to 11 ticks but will show all gridlines.
 *ticks*.padding | Number | 10 | Padding between the tick label and the axis. *Note: Only applicable to horizontal scales.*
 *ticks*.mirror | Boolean | false | Flips tick labels around axis, displaying the labels inside the chart instead of outside. *Note: Only applicable to vertical scales.*
 *ticks*.reverse | Boolean | false | Reverses order of tick labels.
@@ -129,7 +130,13 @@ The linear scale extends the core scale class with the following tick template:
 }
 ```
 
-### Logarithmic Scale
+It also provides additional configuration options:
+
+Name | Type | Default | Description
+--- |:---:| --- | ---
+*ticks*.stepSize | Number | - | User defined fixed step size for the scale. If set, the scale ticks will be enumerated by multiple of stepSize, having one tick per increment. If not set, the ticks are labeled automatically using the nice numbers algorithm.
+
+#### Logarithmic Scale
 The logarithmic scale is used to display logarithmic data of course. It can be placed on either the x or y axis.
 
 The log scale extends the core scale class with the following tick template:
@@ -161,11 +168,16 @@ The time scale extends the core scale class with the following tick template:
 	position: "bottom",
 	time: {
 		// string/callback - By default, date objects are expected. You may use a pattern string from http://momentjs.com/docs/#/parsing/string-format/ to parse a time string format, or use a callback function that is passed the label, and must return a moment() instance.
-		format: false,
+		parser: false,
 		// string - By default, unit will automatically be detected.  Override with 'week', 'month', 'year', etc. (see supported time measurements)
 		unit: false,
+
+		// Number - The number of steps of the above unit between ticks
+		unitStepSize: 1
+
 		// string - By default, no rounding is applied.  To round, set to a supported time unit eg. 'week', 'month', 'year', etc.
 		round: false,
+		
 		// Moment js for each of the units. Replaces `displayFormat`
 		// To override, use a pattern string from http://momentjs.com/docs/#/displaying/format/
 		displayFormats: {
@@ -259,7 +271,7 @@ The radial linear scale extends the core scale class with the following tick tem
 		//Number - The backdrop padding to the side of the label in pixels
 		backdropPaddingX: 2,
 
-		//Number - Limit the maximum number of ticks
+		//Number - Limit the maximum number of ticks and gridlines
 		maxTicksLimit: 11,
 	},
 
@@ -275,6 +287,11 @@ The radial linear scale extends the core scale class with the following tick tem
 
 		//String - Point label font colour
 		fontColor: "#666",
+
+		//Function - Used to determine point labels to show in scale
+		callback: function(pointLabel) {
+			return pointLabel;
+		}
 	},
 }
 ```

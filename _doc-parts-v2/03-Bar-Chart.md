@@ -14,7 +14,7 @@ It is sometimes used to show trend data, and the comparison of multiple data set
 
 ### Example usage
 ```javascript
-var myBarChart = new Chart(ctx,{
+var myBarChart = new Chart(ctx, {
 	type: 'bar',
 	data: data,
 	options: options
@@ -50,7 +50,7 @@ var data = {
 			data: [65, 59, 80, 81, 56, 55, 40],
 
 			// String - If specified, binds the dataset to a certain y-axis. If not specified, the first y-axis is used.
-			yAxisID: "y-axis-1",
+			yAxisID: "y-axis-0",
 		},
 		{
 			label: "My Second dataset",
@@ -108,13 +108,13 @@ You can override these for your `Chart` instance by passing a second argument in
 For example, we could have a bar chart without a stroke on each bar by doing the following:
 
 ```javascript
-new Chart(ctx,{
-	type:"bar",
+new Chart(ctx, {
+	type: "bar",
 	data: data,
 	options: {
 		scales: {
 				xAxes: [{
-						stacked: true,
+						stacked: true
 				}],
 				yAxes: [{
 						stacked: true
@@ -137,19 +137,19 @@ The following shows the relationship between the bar percentage option and the c
 ```text
 // categoryPercentage: 1.0
 // barPercentage: 1.0
-Bar:          | 1.0 | 1.0 |
-Category: 	|    1.0    |   
-Sample:	   |===========|
+Bar:        | 1.0 | 1.0 |
+Category:   |    1.0    |   
+Sample:     |===========|
 
 // categoryPercentage: 1.0
 // barPercentage: 0.5
-Bar:             |.5|  |.5|
-Category: 	|      1.0     |   
-Sample:	   |==============|
+Bar:          |.5|  |.5|
+Category:  |      1.0     |   
+Sample:    |==============|
 
 // categoryPercentage: 0.5
 // barPercentage: 1.0
-Bar:              |1.||1.|
-Category:     	|  .5  |   
-Sample:	   |==============|
+Bar:            |1.||1.|
+Category:       |  .5  |   
+Sample:     |==============|
 ```
