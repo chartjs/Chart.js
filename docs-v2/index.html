@@ -19,7 +19,7 @@
 			</ul>
 			<nav>
 				<ul>
-					{% for doc in site.collections.doc-parts-v2.docs %}
+					{% for doc in site.collections[1].docs %}
 					<li id="link-{{ doc.anchor }}">
 						<a href="#{{ doc.anchor }}">{{ doc.title | escape }}</a>
 					</li>
@@ -33,7 +33,7 @@
 				<h3>Everything you need to know to build great looking charts using Chart.js</h3>
 			</article>
 
-			{% for doc in site.collections.doc-parts-v2.docs %}
+			{% for doc in site.collections[1].docs %}
 			<article id="{{ doc.anchor }}">
 				<h2>{{ doc.title | escape }}</h2>
 				{{ doc.content }}

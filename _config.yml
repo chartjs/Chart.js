@@ -1,6 +1,8 @@
 # Base URL to work with github pages
 baseurl: /Chart.js
 
+repository: nnnick/Chart.js
+
 # Collections of files
 collections:
   doc-parts:
@@ -8,7 +10,6 @@ collections:
   doc-parts-v2:
     output: false
 
-markdown: redcarpet
+markdown: kramdown
 
-redcarpet:
-  extensions: ["no_intra_emphasis", "tables"]
+future: true
