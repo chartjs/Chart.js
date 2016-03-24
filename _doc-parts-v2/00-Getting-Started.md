@@ -3,50 +3,38 @@ title: Getting started
 anchor: getting-started
 ---
 
-###Download Chart.js
+###Include Chart.js
 
-To download a zip, go to the [Chart.js on Github](https://github.com/nnnick/Chart.js)
-
-To install via npm / bower:
-
-```bash
-npm install chart.js --save
-```
-```bash
-bower install Chart.js --save
-```
-
-CDN: https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.0.0/Chart.js
-
-###Install Chart.js
-
-To import Chart.js using an old-school script tag:
+First we need to include the Chart.js library on the page. The library occupies a global variable of `Chart`.
 
 ```html
 <script src="Chart.js"></script>
-<script>
-	var myChart = new Chart({...})
-</script>
 ```
 
-To import Chart.js using an awesome module loader:
+Alternatively, if you're using an AMD loader for JavaScript modules, that is also supported in the Chart.js core. Please note: the library will still occupy a global variable of `Chart`, even if it detects `define` and `define.amd`. If this is a problem, you can call `noConflict` to restore the global Chart variable to it's previous owner.
 
 ```javascript
-
-// Using CommonJS
-var Chart = require('chart.js')
-var myChart = new Chart({...})
-
-// ES6
-import Chart from 'chart.js'
-let myChart = new Chart({...})
-
 // Using requirejs
 require(['path/to/Chartjs'], function(Chart){
- var myChart = new Chart({...})
-})
+	// Use Chart.js as normal here.
 
+	// Chart.noConflict restores the Chart global variable to it's previous owner
+	// The function returns what was previously Chart, allowing you to reassign.
+	var Chartjs = Chart.noConflict();
+
+});
 ```
+
+You can also grab Chart.js using bower, npm, or CDN:
+
+```bash
+bower install Chart.js --save
+```
+```bash
+npm install chart.js --save
+```
+
+https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.0.0-beta/Chart.js
 
 ###Creating a Chart
 
@@ -80,10 +68,10 @@ var myChart = new Chart(ctx, {
 					data: [12, 19, 3, 5, 2, 3]
 			}]
 		},
-		options: {
-			scales: {
-				yAxes: [{
-						ticks: {
+		options:{
+			scales:{
+				yAxes:[{
+						ticks:{
 							beginAtZero:true
 						}
 					}]
@@ -115,11 +103,7 @@ hover |-|-|-
 *hover*.animationDuration | Number | 400 | Duration in milliseconds it takes to animate hover style changes
 onClick | Function | null | Called if the event is of type 'mouseup' or 'click'. Called in the context of the chart and passed an array of active elements
 defaultColor | Color | 'rgba(0,0,0,0.1)' |
-defaultFontColor | Color | '#666' | Default font color for all text
-defaultFontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Default font family for all text
-defaultFontSize | Number | 12 | Default font size (in px) for text. Does not apply to radialLinear scale point labels
-defaultFontStyle | String | 'normal' | Default font style. Does not apply to tooltip title or footer. Does not apply to chart title
-legendCallback | Function | ` function (chart) { }` | Function to generate a legend. Receives the chart object to generate a legend from. Default implementation returns an HTML string.
+legendCallback | Function | ` function (chart) { // the chart object to generate a legend from.  }` | Function to generate a legend. Default implementation returns an HTML string.
 
 The global options for the chart title is defined in `Chart.defaults.global.title`
 
@@ -130,7 +114,7 @@ position | String | 'top' | Position of the title. 'top' or 'bottom' are allowed
 fullWidth | Boolean | true | Marks that this box should take the full width of the canvas (pushing down other boxes)
 fontColor | Color  | '#666' | Text color
 fontFamily | String | 'Helvetica Neue' |
-fontSize | Number | 12 |
+fontSize | Number | 12 | 
 fontStyle | String | 'bold' |
 padding | Number | 10 | Number of pixels to add above and below the title text
 text | String | '' | Title text
@@ -150,7 +134,7 @@ labels |-|-|-
 *labels*fontColor | Color | "#666" |
 *labels*fontFamily | String | "Helvetica Neue" |
 *labels*padding | Number | 10 | Padding between rows of colored boxes
-*labels*generateLabels: | Function | `function(data) {  }` | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. Styles that can be returned are `fillStyle`, `strokeStyle`, `lineCap`, `lineDash`, `lineDashOffset`, `lineWidth`, `lineJoin`. Return a `hidden` attribute to indicate that the label refers to something that is not visible. A strikethrough style will be given to the text in this case.
+*labels*generateLabels: | Function | `function(data) {  } | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. Styles that can be returned are `fillStyle`, `strokeStyle`, `lineCap`, `lineDash`, `lineDashOffset`, `lineWidth`, `lineJoin`. Return a `hidden` attribute to indicate that the label refers to something that is not visible. A strikethrough style will be given to the text in this case.
 
 The global options for tooltips are defined in `Chart.defaults.global.tooltips`.
 
@@ -158,7 +142,7 @@ Name | Type | Default | Description
 --- |:---:| --- | ---
 enabled | Boolean | true |
 custom | | null |
-mode | String | 'single' | Sets which elements appear in the tooltip. Acceptable options are `'single'` or `'label'`. `single` highlights the closest element. `label` highlights elements in all datasets at the same `X` value.
+mode | String | 'single' | Sets which elements appear in the tooltip. Acceptable options are `'single'` or `'label'`. `single` highlights the closest element. `label` highlights elements in all datasets at the same `X` value. 
 backgroundColor | Color | 'rgba(0,0,0,0.8)' | Background color of the tooltip
  | | |
 Label | | | There are three labels you can control. `title`, `body`, `footer` the star (\*) represents one of these three. *(i.e. titleFontFamily, footerSpacing)*
@@ -201,10 +185,10 @@ The global options for animations are defined in `Chart.defaults.global.animatio
 Name | Type | Default | Description
 --- |:---:| --- | ---
 duration | Number | 1000 | The number of milliseconds an animation takes.
-easing | String | "easeOutQuart" | Easing function to use.
+easing | String | "easeOutQuart" | Easing function to use. 
 onProgress | Function | none | Callback called on each step of an animation. Passed a single argument, an object, containing the chart instance and an object with details of the animation.
-onComplete | Function | none | Callback called at the end of an animation. Passed the same arguments as `onProgress`
-
+onComplete | Function | none | Callback called at the end of an animation. Passed the same arguments as `onProgress
+`
 The global options for elements are defined in `Chart.defaults.global.elements`.
 
 Name | Type | Default | Description
@@ -222,10 +206,9 @@ line | - | - | -
 *line*.borderDash | Array | `[]` | Default line dash. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
 *line*.borderDashOffset | Number | 0.0 | Default line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
 *line*.borderJoinStyle | String | 'miter' | Default line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin)
-*line*.fill | Boolean | true |
+*line*.fill | Boolean | true | 
 point | - | - | -
 *point*.radius | Number | 3 | Default point radius
-*point*.pointStyle | String | 'circle' | Default point style
 *point*.backgroundColor | Color | `Chart.defaults.global.defaultColor` | Default point fill color
 *point*.borderWidth | Number | 1 | Default point stroke width
 *point*.borderColor | Color | `Chart.defaults.global.defaultColor` | Default point stroke color
@@ -236,7 +219,6 @@ rectangle | - | - | -
 *rectangle*.backgroundColor | Color | `Chart.defaults.global.defaultColor` | Default bar fill color
 *rectangle*.borderWidth | Number | 0 | Default bar stroke width
 *rectangle*.borderColor | Color | `Chart.defaults.global.defaultColor` | Default bar stroke color
-*rectangle*.borderSkipped | String | 'bottom' | Default skipped (excluded) border for rectangle. Can be one of `bottom`, `left`, `top`, `right`
 
 If for example, you wanted all charts created to be responsive, and resize when the browser window does, the following setting can be changed:
 

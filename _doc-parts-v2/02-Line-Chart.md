@@ -86,8 +86,8 @@ var data = {
 			// The actual data
 			data: [65, 59, 80, 81, 56, 55, 40],
 
-			// String - If specified, binds the dataset to a certain y-axis. If not specified, the first y-axis is used. First id is y-axis-0
-			yAxisID: "y-axis-0",
+			// String - If specified, binds the dataset to a certain y-axis. If not specified, the first y-axis is used.
+			yAxisID: "y-axis-1",
 		},
 		{
 			label: "My Second dataset",
@@ -107,7 +107,7 @@ var data = {
 };
 ```
 
-The line chart requires an array of labels. This labels are shown on the X axis. There must be one label for each data point. More labels than datapoints are allowed, in which case the line ends at the last data point.
+The line chart requires an array of labels for each of the data points. This is shown on the X axis.
 The data for line charts is broken up into an array of datasets. Each dataset has a colour for the fill, a colour for the line and colours for the points and strokes of the points. These colours are strings just like CSS. You can use RGBA, RGB, HEX or HSL notation.
 
 The label key on each dataset is optional, and can be used when generating a scale for the chart.
@@ -120,7 +120,6 @@ The default options for line chart are defined in `Chart.defaults.Line`.
 
 Name | Type | Default | Description
 --- | --- | --- | ---
-showLines | Boolean | true | If false, the lines between points are not drawn
 stacked | Boolean | false | If true, lines stack on top of each other along the y axis.
 *hover*.mode | String | "label" | Label's hover mode. "label" is used since the x axis displays data by the index in the dataset.
 scales | - | - | -
