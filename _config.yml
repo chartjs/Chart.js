@@ -9,6 +9,3 @@ collections:
     output: false
 
 markdown: kramdown
-
-redcarpet:
-  extensions: ["no_intra_emphasis", "tables"]
