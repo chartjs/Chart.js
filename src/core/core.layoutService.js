@@ -32,8 +32,8 @@ module.exports = function(Chart) {
 				return;
 			}
 
-			var xPadding = width > 30 ? 5 : 2;
-			var yPadding = height > 30 ? 5 : 2;
+			var xPadding = 0;
+			var yPadding = 0;
 
 			var leftBoxes = helpers.where(chartInstance.boxes, function(box) {
 				return box.options.position === "left";
