@@ -136,7 +136,7 @@ Name | Type | Default | Description
 --- |:---:| --- | ---
 *ticks*.stepSize | Number | - | User defined fixed step size for the scale. If set, the scale ticks will be enumerated by multiple of stepSize, having one tick per increment. If not set, the ticks are labeled automatically using the nice numbers algorithm.
 
-#### Logarithmic Scale
+### Logarithmic Scale
 The logarithmic scale is used to display logarithmic data of course. It can be placed on either the x or y axis.
 
 The log scale extends the core scale class with the following tick template:
