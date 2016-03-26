@@ -2,7 +2,7 @@
 title: Pie & Doughnut Charts
 anchor: doughnut-pie-chart
 ---
-###Introduction
+### Introduction
 Pie and doughnut charts are probably the most commonly used chart there are. They are divided into segments, the arc of each segment shows the proportional value of each piece of data.
 
 They are excellent at showing the relational proportions between data.

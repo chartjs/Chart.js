@@ -2,7 +2,7 @@
 title: Line Chart
 anchor: line-chart
 ---
-###Introduction
+### Introduction
 A line chart is a way of plotting data points on a line.
 
 Often, it is used to show trend data, and the comparison of two data sets.
@@ -11,7 +11,7 @@ Often, it is used to show trend data, and the comparison of two data sets.
 	<canvas width="250" height="125"></canvas>
 </div>
 
-###Example usage
+### Example usage
 ```javascript
 var myLineChart = new Chart(ctx, {
 	type: 'line',
@@ -27,7 +27,7 @@ var myLineChart = Chart.Line(ctx, {
 	options: options
 });
 ```
-###Data structure
+### Data structure
 
 ```javascript
 var data = {

@@ -3,7 +3,7 @@ title: Getting started
 anchor: getting-started
 ---
 
-###Download Chart.js
+### Download Chart.js
 
 To download a zip, go to the [Chart.js on Github](https://github.com/nnnick/Chart.js)
 
@@ -18,7 +18,7 @@ bower install Chart.js --save
 
 CDN: https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.0.0/Chart.js
 
-###Install Chart.js
+### Install Chart.js
 
 To import Chart.js using an old-school script tag:
 
@@ -48,7 +48,7 @@ require(['path/to/Chartjs'], function(Chart){
 
 ```
 
-###Creating a Chart
+### Creating a Chart
 
 To create a chart, we need to instantiate the `Chart` class. To do this, we need to pass in the node, jQuery instance, or 2d context of the canvas of where we want to draw the chart. Here's an example.
 
@@ -95,7 +95,7 @@ var myChart = new Chart(ctx, {
 
 It's that easy to get started using Chart.js! From here you can explore the many options that can help you customise your charts with scales, tooltips, labels, colors, custom actions, and much more.
 
-###Global chart configuration
+### Global chart configuration
 
 This concept was introduced in Chart.js 1.0 to keep configuration DRY, and allow for changing options globally across chart types, avoiding the need to specify options for each instance, or the default for a particular chart type.
 
