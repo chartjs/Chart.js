@@ -977,7 +977,7 @@
 			return this;
 		},
 		generateLegend : function(){
-			return helpers.template(this.options.legendTemplate, {datasets: this.datasets});
+			return helpers.template(this.options.legendTemplate, this);
 		},
 		destroy : function(){
 			this.stop();
