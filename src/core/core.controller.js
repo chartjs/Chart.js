@@ -347,11 +347,13 @@ module.exports = function(Chart) {
 			var elementsArray = [];
 
 			var found = (function() {
-				for (var i = 0; i < this.data.datasets.length; i++) {
-					if (helpers.isDatasetVisible(this.data.datasets[i])) {
-						for (var j = 0; j < this.data.datasets[i].metaData.length; j++) {
-							if (this.data.datasets[i].metaData[j].inRange(eventPosition.x, eventPosition.y)) {
-								return this.data.datasets[i].metaData[j];
+				if (this.data.datasets) {
+					for (var i = 0; i < this.data.datasets.length; i++) {
+						if (helpers.isDatasetVisible(this.data.datasets[i])) {
+							for (var j = 0; j < this.data.datasets[i].metaData.length; j++) {
+								if (this.data.datasets[i].metaData[j].inRange(eventPosition.x, eventPosition.y)) {
+									return this.data.datasets[i].metaData[j];
+								}
 							}
 						}
 					}
