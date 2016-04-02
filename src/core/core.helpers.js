@@ -720,14 +720,14 @@ module.exports = function(Chart) {
 	};
 
 	// Private helper function to convert max-width/max-height values that may be percentages into a number
-	function parseMaxStyle(styleValue, node, horizontal) {
+	function parseMaxStyle(styleValue, node, parentProperty) {
 		var valueInPixels;
 		if (typeof(styleValue) === 'string') {
 			valueInPixels = parseInt(styleValue, 10);
 
 			if (styleValue.indexOf('%') != -1) {
 				// percentage * size in dimension
-				valueInPixels = valueInPixels / 100 * (horizontal ? node.parentNode.clientWidth : node.parentNode.clientHeight);
+				valueInPixels = valueInPixels / 100 * node.parentNode[parentProperty];
 			}
 		} else {
 			valueInPixels = styleValue;
@@ -736,30 +736,29 @@ module.exports = function(Chart) {
 		return valueInPixels;
 	}
 
-	helpers.getConstraintWidth = function(domNode) { // returns Number or undefined if no constraint
-		var constrainedWidth;
-		var constrainedWNode = document.defaultView.getComputedStyle(domNode)['max-width'];
-		var constrainedWContainer = document.defaultView.getComputedStyle(domNode.parentNode)['max-width'];
-		var hasCWNode = constrainedWNode !== null && constrainedWNode !== "none";
-		var hasCWContainer = constrainedWContainer !== null && constrainedWContainer !== "none";
+	// Private helper to get a constraint dimension
+	// @param domNode : the node to check the constraint on
+	// @param maxStyle : the style that defines the maximum for the direction we are using (max-width / max-height)
+	// @param percentageProperty : property of parent to use when calculating width as a percentage
+	function getConstraintDimension(domNode, maxStyle, percentageProperty) {
+		var constrainedDimension;
+		var constrainedNode = document.defaultView.getComputedStyle(domNode)[maxStyle];
+		var constrainedContainer = document.defaultView.getComputedStyle(domNode.parentNode)[maxStyle];
+		var hasCNode = constrainedNode !== null && constrainedNode !== "none";
+		var hasCContainer = constrainedContainer !== null && constrainedContainer !== "none";
 
-		if (hasCWNode || hasCWContainer) {
-			constrainedWidth = Math.min((hasCWNode ? parseMaxStyle(constrainedWNode, domNode, true) : Number.POSITIVE_INFINITY), (hasCWContainer ? parseMaxStyle(constrainedWContainer, domNode.parentNode, true) : Number.POSITIVE_INFINITY));
+		if (hasCNode || hasCContainer) {
+			constrainedDimension = Math.min((hasCNode ? parseMaxStyle(constrainedNode, domNode, percentageProperty) : Number.POSITIVE_INFINITY), (hasCContainer ? parseMaxStyle(constrainedContainer, domNode.parentNode, percentageProperty) : Number.POSITIVE_INFINITY));
 		}
-		return constrainedWidth;
+		return constrainedDimension;
+	}
+	// returns Number or undefined if no constraint
+	helpers.getConstraintWidth = function(domNode) {
+		return getConstraintDimension(domNode, 'max-width', 'clientWidth');
 	};
 	// returns Number or undefined if no constraint
 	helpers.getConstraintHeight = function(domNode) {
-		var constrainedHeight;
-		var constrainedHNode = document.defaultView.getComputedStyle(domNode)['max-height'];
-		var constrainedHContainer = document.defaultView.getComputedStyle(domNode.parentNode)['max-height'];
-		var hasCHNode = constrainedHNode !== null && constrainedHNode !== "none";
-		var hasCHContainer = constrainedHContainer !== null && constrainedHContainer !== "none";
-
-		if (hasCHNode || hasCHContainer) {
-			constrainedHeight = Math.min((hasCHNode ? parseMaxStyle(constrainedHNode, domNode) : Number.POSITIVE_INFINITY), (hasCHContainer ? parseMaxStyle(constrainedHContainer, domNode.parentNode) : Number.POSITIVE_INFINITY));
-		}
-		return constrainedHeight;
+		return getConstraintDimension(domNode, 'max-height', 'clientHeight');
 	};
 	helpers.getMaximumWidth = function(domNode) {
 		var container = domNode.parentNode;
