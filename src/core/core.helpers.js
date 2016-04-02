@@ -718,6 +718,24 @@ module.exports = function(Chart) {
 			helpers.removeEvent(chartInstance.chart.canvas, eventName, handler);
 		});
 	};
+
+	// Private helper function to convert max-width/max-height values that may be percentages into a number
+	function parseMaxStyle(styleValue, node, horizontal) {
+		var valueInPixels;
+		if (typeof(styleValue) === 'string') {
+			valueInPixels = parseInt(styleValue, 10);
+
+			if (styleValue.indexOf('%') != -1) {
+				// percentage * size in dimension
+				valueInPixels = valueInPixels / 100 * (horizontal ? node.parentNode.clientWidth : node.parentNode.clientHeight);
+			}
+		} else {
+			valueInPixels = styleValue;
+		}
+
+		return valueInPixels;
+	}
+
 	helpers.getConstraintWidth = function(domNode) { // returns Number or undefined if no constraint
 		var constrainedWidth;
 		var constrainedWNode = document.defaultView.getComputedStyle(domNode)['max-width'];
@@ -726,7 +744,7 @@ module.exports = function(Chart) {
 		var hasCWContainer = constrainedWContainer !== null && constrainedWContainer !== "none";
 
 		if (hasCWNode || hasCWContainer) {
-			constrainedWidth = Math.min((hasCWNode ? parseInt(constrainedWNode, 10) : Number.POSITIVE_INFINITY), (hasCWContainer ? parseInt(constrainedWContainer, 10) : Number.POSITIVE_INFINITY));
+			constrainedWidth = Math.min((hasCWNode ? parseMaxStyle(constrainedWNode, domNode, true) : Number.POSITIVE_INFINITY), (hasCWContainer ? parseMaxStyle(constrainedWContainer, domNode.parentNode, true) : Number.POSITIVE_INFINITY));
 		}
 		return constrainedWidth;
 	};
@@ -738,8 +756,8 @@ module.exports = function(Chart) {
 		var hasCHNode = constrainedHNode !== null && constrainedHNode !== "none";
 		var hasCHContainer = constrainedHContainer !== null && constrainedHContainer !== "none";
 
-		if (constrainedHNode || constrainedHContainer) {
-			constrainedHeight = Math.min((hasCHNode ? parseInt(constrainedHNode, 10) : Number.POSITIVE_INFINITY), (hasCHContainer ? parseInt(constrainedHContainer, 10) : Number.POSITIVE_INFINITY));
+		if (hasCHNode || hasCHContainer) {
+			constrainedHeight = Math.min((hasCHNode ? parseMaxStyle(constrainedHNode, domNode) : Number.POSITIVE_INFINITY), (hasCHContainer ? parseMaxStyle(constrainedHContainer, domNode.parentNode) : Number.POSITIVE_INFINITY));
 		}
 		return constrainedHeight;
 	};
