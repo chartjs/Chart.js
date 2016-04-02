@@ -5,7 +5,10 @@ anchor: getting-started
 
 ### Download Chart.js
 
-To download a zip, go to the [Chart.js on Github](https://github.com/nnnick/Chart.js)
+To download a zip, go to [Chart.js on Github](https://github.com/nnnick/Chart.js) and choose the version that is right for your application.
+* [Standard build](https://raw.githubusercontent.com/nnnick/Chart.js/v2.0-dev/dist/Chart.js) (~31kB gzipped)
+* [Bundled with Moment.js](https://raw.githubusercontent.com/nnnick/Chart.js/v2.0-dev/dist/Chart.bundle.js) (~45kB gzipped)
+* [CDN Versions](https://cdnjs.com/libraries/Chart.js)
 
 To install via npm / bower:
 
@@ -16,16 +19,14 @@ npm install chart.js --save
 bower install Chart.js --save
 ```
 
-CDN: https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.0.0/Chart.js
-
-### Install Chart.js
+### Installation
 
 To import Chart.js using an old-school script tag:
 
 ```html
 <script src="Chart.js"></script>
 <script>
-	var myChart = new Chart({...})
+    var myChart = new Chart({...})
 </script>
 ```
 
@@ -34,11 +35,11 @@ To import Chart.js using an awesome module loader:
 ```javascript
 
 // Using CommonJS
-var Chart = require('chart.js')
+var Chart = require('src/chart.js')
 var myChart = new Chart({...})
 
 // ES6
-import Chart from 'chart.js'
+import Chart from 'src/chart.js'
 let myChart = new Chart({...})
 
 // Using requirejs
@@ -72,23 +73,23 @@ The following example instantiates a bar chart showing the number of votes for d
 <script>
 var ctx = document.getElementById("myChart");
 var myChart = new Chart(ctx, {
-		type: 'bar',
-		data: {
-			labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-			datasets: [{
-					label: '# of Votes',
-					data: [12, 19, 3, 5, 2, 3]
-			}]
-		},
-		options: {
-			scales: {
-				yAxes: [{
-						ticks: {
-							beginAtZero:true
-						}
-					}]
-			}
-		}
+    type: 'bar',
+    data: {
+        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        datasets: [{
+            label: '# of Votes',
+            data: [12, 19, 3, 5, 2, 3]
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
 });
 </script>
 ```
