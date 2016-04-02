@@ -20,3 +20,5 @@ notifications:
   slack: chartjs:pcfCZR6ugg5TEcaLtmIfQYuA
 
 sudo: false
+addons:
+  firefox: latest
