@@ -16,7 +16,7 @@ module.exports = function(Chart) {
 
 			if (this.options.ticks.min !== undefined) {
 				// user specified min value
-				findIndex = helpers.indexOf(this.chart.data.labels, this.options.ticks.min)
+				findIndex = helpers.indexOf(this.chart.data.labels, this.options.ticks.min);
 				this.startIndex = findIndex !== -1 ? findIndex : this.startIndex;
 			}
 
