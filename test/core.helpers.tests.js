@@ -484,4 +484,184 @@ describe('Core helper tests', function() {
 			args: []
 		}])
 	});
+
+	it ('should get the maximum width and height for a node', function() {
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = "200px";
+		div.style.height = "300px";
+
+		document.body.appendChild(div);
+
+		// Create the div we want to get the max size for
+		var innerDiv = document.createElement('div');
+		div.appendChild(innerDiv);
+
+		expect(helpers.getMaximumWidth(innerDiv)).toBe(200);
+		expect(helpers.getMaximumHeight(innerDiv)).toBe(300);
+
+		document.body.removeChild(div);
+	});
+
+	it ('should get the maximum width of a node that has a max-width style', function() {
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = "200px";
+		div.style.height = "300px";
+
+		document.body.appendChild(div);
+
+		// Create the div we want to get the max size for and set a max-width style
+		var innerDiv = document.createElement('div');
+		innerDiv.style.maxWidth = "150px";
+		div.appendChild(innerDiv);
+
+		expect(helpers.getMaximumWidth(innerDiv)).toBe(150);
+
+		document.body.removeChild(div);
+	});
+
+	it ('should get the maximum height of a node that has a max-height style', function() {
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = "200px";
+		div.style.height = "300px";
+
+		document.body.appendChild(div);
+
+		// Create the div we want to get the max size for and set a max-height style
+		var innerDiv = document.createElement('div');
+		innerDiv.style.maxHeight = "150px";
+		div.appendChild(innerDiv);
+
+		expect(helpers.getMaximumHeight(innerDiv)).toBe(150);
+
+		document.body.removeChild(div);
+	});
+
+	it ('should get the maximum width of a node when the parent has a max-width style', function() {
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = "200px";
+		div.style.height = "300px";
+
+		document.body.appendChild(div);
+
+		// Create an inner wrapper around our div we want to size and give that a max-width style
+		var parentDiv = document.createElement('div');
+		parentDiv.style.maxWidth = "150px";
+		div.appendChild(parentDiv);
+
+		// Create the div we want to get the max size for
+		var innerDiv = document.createElement('div');
+		parentDiv.appendChild(innerDiv);
+
+		expect(helpers.getMaximumWidth(innerDiv)).toBe(150);
+
+		document.body.removeChild(div);
+	});
+
+	it ('should get the maximum height of a node when the parent has a max-height style', function() {
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = "200px";
+		div.style.height = "300px";
+
+		document.body.appendChild(div);
+
+		// Create an inner wrapper around our div we want to size and give that a max-height style
+		var parentDiv = document.createElement('div');
+		parentDiv.style.maxHeight = "150px";
+		div.appendChild(parentDiv);
+
+		// Create the div we want to get the max size for
+		var innerDiv = document.createElement('div');
+		innerDiv.style.height = "300px"; // make it large
+		parentDiv.appendChild(innerDiv);
+
+		expect(helpers.getMaximumHeight(innerDiv)).toBe(150);
+
+		document.body.removeChild(div);
+	});
+
+	it ('should get the maximum width of a node that has a percentage max-width style', function() {
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = "200px";
+		div.style.height = "300px";
+
+		document.body.appendChild(div);
+
+		// Create the div we want to get the max size for and set a max-width style
+		var innerDiv = document.createElement('div');
+		innerDiv.style.maxWidth = "50%";
+		div.appendChild(innerDiv);
+
+		expect(helpers.getMaximumWidth(innerDiv)).toBe(100);
+
+		document.body.removeChild(div);
+	});
+
+	it ('should get the maximum height of a node that has a percentage max-height style', function() {
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = "200px";
+		div.style.height = "300px";
+
+		document.body.appendChild(div);
+
+		// Create the div we want to get the max size for and set a max-height style
+		var innerDiv = document.createElement('div');
+		innerDiv.style.maxHeight = "50%";
+		div.appendChild(innerDiv);
+
+		expect(helpers.getMaximumHeight(innerDiv)).toBe(150);
+
+		document.body.removeChild(div);
+	});
+
+	it ('should get the maximum width of a node when the parent has a percentage max-width style', function() {
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = "200px";
+		div.style.height = "300px";
+
+		document.body.appendChild(div);
+
+		// Create an inner wrapper around our div we want to size and give that a max-width style
+		var parentDiv = document.createElement('div');
+		parentDiv.style.maxWidth = "50%";
+		div.appendChild(parentDiv);
+
+		// Create the div we want to get the max size for
+		var innerDiv = document.createElement('div');
+		parentDiv.appendChild(innerDiv);
+
+		expect(helpers.getMaximumWidth(innerDiv)).toBe(100);
+
+		document.body.removeChild(div);
+	});
+
+	it ('should get the maximum height of a node when the parent has a percentage max-height style', function() {
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = "200px";
+		div.style.height = "300px";
+
+		document.body.appendChild(div);
+
+		// Create an inner wrapper around our div we want to size and give that a max-height style
+		var parentDiv = document.createElement('div');
+		parentDiv.style.maxHeight = "50%";
+		div.appendChild(parentDiv);
+
+		var innerDiv = document.createElement('div');
+		innerDiv.style.height = "300px"; // make it large
+		parentDiv.appendChild(innerDiv);
+
+		expect(helpers.getMaximumHeight(innerDiv)).toBe(150);
+
+		document.body.removeChild(div);
+	});
+
 });
