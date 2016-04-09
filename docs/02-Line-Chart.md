@@ -48,16 +48,16 @@ var data = {
 			borderColor: "rgba(220,220,220,1)",
 
 			// String - cap style of the line. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap
-            borderCapStyle: 'butt',
+			borderCapStyle: 'butt',
 
-            // Array - Length and spacing of dashes. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
-            borderDash: [],
+			// Array - Length and spacing of dashes. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
+			borderDash: [],
 
-            // Number - Offset for line dashes. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
-            borderDashOffset: 0.0,
+			// Number - Offset for line dashes. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
+			borderDashOffset: 0.0,
 
-            // String - line join style. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin
-            borderJoinStyle: 'miter',
+			// String - line join style. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin
+			borderJoinStyle: 'miter',
 
 			// String or array - Point stroke color
 			pointBorderColor: "rgba(220,220,220,1)",
