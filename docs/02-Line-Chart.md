@@ -48,16 +48,16 @@ var data = {
 			borderColor: "rgba(220,220,220,1)",
 
 			// String - cap style of the line. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap
-            borderCapStyle: 'butt',
+			borderCapStyle: 'butt',
 
-            // Array - Length and spacing of dashes. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
-            borderDash: [],
+			// Array - Length and spacing of dashes. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
+			borderDash: [],
 
-            // Number - Offset for line dashes. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
-            borderDashOffset: 0.0,
+			// Number - Offset for line dashes. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
+			borderDashOffset: 0.0,
 
-            // String - line join style. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin
-            borderJoinStyle: 'miter',
+			// String - line join style. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin
+			borderJoinStyle: 'miter',
 
 			// String or array - Point stroke color
 			pointBorderColor: "rgba(220,220,220,1)",
@@ -82,6 +82,9 @@ var data = {
 
 			// Tension - bezier curve tension of the line. Set to 0 to draw straight Wlines connecting points
 			tension: 0.1,
+
+			// Number - the pixel size of the point shape. Can be set to 0 to not render a circle over the point
+			radius: 1,
 
 			// The actual data
 			data: [65, 59, 80, 81, 56, 55, 40],
@@ -123,6 +126,9 @@ Name | Type | Default | Description
 showLines | Boolean | true | If false, the lines between points are not drawn
 stacked | Boolean | false | If true, lines stack on top of each other along the y axis.
 *hover*.mode | String | "label" | Label's hover mode. "label" is used since the x axis displays data by the index in the dataset.
+elements | - | - | -
+*elements*.point | - | - | -
+*elements.point*.radius | Number | `3` | Defines the size of the Point shape. Can be set to zero to skip rendering a point.
 scales | - | - | -
 *scales*.xAxes | Array | `[{type:"category","id":"x-axis-1"}]` | Defines all of the x axes used in the chart. See the [scale documentation](#getting-started-scales) for details on the available options.
 *Options for xAxes* | | |
