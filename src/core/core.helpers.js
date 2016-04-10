@@ -830,13 +830,18 @@ module.exports = function(Chart) {
 		ctx.font = font;
 		var longest = 0;
 		helpers.each(arrayOfStrings, function(string) {
-			var textWidth = cache.data[string];
-			if (!textWidth) {
-				textWidth = cache.data[string] = ctx.measureText(string).width;
-				cache.garbageCollect.push(string);
+			// Undefined strings should not be measured
+			if (string !== undefined && string !== null) {
+				var textWidth = cache.data[string];
+				if (!textWidth) {
+					textWidth = cache.data[string] = ctx.measureText(string).width;
+					cache.garbageCollect.push(string);
+				}
+
+				if (textWidth > longest) {
+					longest = textWidth;
+				}
 			}
-			if (textWidth > longest)
-				longest = textWidth;
 		});
 
 		var gcLen = cache.garbageCollect.length / 2;
