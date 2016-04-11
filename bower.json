@@ -5,7 +5,7 @@
   "homepage": "https://github.com/nnnick/Chart.js",
   "author": "nnnick",
   "main": [
-    "Chart.js"
+    "dist/Chart.js"
   ],
   "devDependencies": {
     "jquery": "~2.1.4"
