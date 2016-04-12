@@ -872,6 +872,12 @@ module.exports = function(Chart) {
 			console.log('Color.js not found!');
 			return c;
 		}
+
+		/* global CanvasGradient */
+		if (c instanceof CanvasGradient) {
+			return color(Chart.defaults.global.defaultColor);
+		}
+
 		return color(c);
 	};
 	helpers.addResizeListener = function(node, callback) {

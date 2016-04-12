@@ -664,4 +664,21 @@ describe('Core helper tests', function() {
 		document.body.removeChild(div);
 	});
 
+	describe('Color helper', function() {
+		function isColorInstance(obj) {
+			return typeof obj === 'object' && obj.hasOwnProperty('values') && obj.values.hasOwnProperty('rgb');
+		}
+
+		it('should return a color when called with a color', function() {
+			expect(isColorInstance(helpers.color('rgb(1, 2, 3)'))).toBe(true);
+		});
+
+		it('should return a color when called with a CanvasGradient instance', function() {
+			var context = document.createElement('canvas').getContext('2d');
+			var gradient = context.createLinearGradient(0, 1, 2, 3);
+
+			expect(isColorInstance(helpers.color(gradient))).toBe(true);
+		});
+	});
+
 });
