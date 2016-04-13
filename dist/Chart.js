@@ -2268,11 +2268,11 @@ module.exports = function(Chart) {
 
 			if (chart.data.datasets.length) {
 				for (var i = 0; i < chart.data.datasets[0].data.length; ++i) {
-					text.push('<li><span style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
+					text.push('<li><span style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '">');
 					if (chart.data.labels[i]) {
 						text.push(chart.data.labels[i]);
 					}
-					text.push('</li>');
+					text.push('</span></li>');
 				}
 			}
 
