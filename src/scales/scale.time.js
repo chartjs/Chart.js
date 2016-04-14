@@ -137,7 +137,7 @@ module.exports = function(Chart) {
 		},
 		buildTicks: function(index) {
 
-			this.ctx.save()
+			this.ctx.save();
 			var tickFontSize = helpers.getValueOrDefault(this.options.ticks.fontSize, Chart.defaults.global.defaultFontSize);
 			var tickFontStyle = helpers.getValueOrDefault(this.options.ticks.fontStyle, Chart.defaults.global.defaultFontStyle);
 			var tickFontFamily = helpers.getValueOrDefault(this.options.ticks.fontFamily, Chart.defaults.global.defaultFontFamily);
@@ -263,7 +263,7 @@ module.exports = function(Chart) {
 					this.lastTick = this.ticks[this.ticks.length - 1].clone();
 				}
 			}
-			this.ctx.restore()
+			this.ctx.restore();
 		},
 		// Get tooltip label
 		getLabelForIndex: function(index, datasetIndex) {
