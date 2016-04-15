@@ -90,14 +90,14 @@
         }
       }
 
-      var offset = $(this._chart.canvas).offset();
+      var position = $(this._chart.canvas)[0].getBoundingClientRect();
 
       // Display, position, and set styles for font
       tooltipEl.css({
         opacity: 1,
         width: tooltip.width ? (tooltip.width + 'px') : 'auto',
-        left: offset.left + tooltip.x + 'px',
-        top: offset.top + top + 'px',
+        left: position.left + tooltip.x + 'px',
+        top: position.top + top + 'px',
         fontFamily: tooltip._fontFamily,
         fontSize: tooltip.fontSize,
         fontStyle: tooltip._fontStyle,
