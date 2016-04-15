@@ -105,11 +105,29 @@
             top = tooltip.y + tooltip.caretHeight + tooltip.caretPadding;
         }
 
+        //Function to find absolution position of the element and not just it's relative position
+        function getPosition (element) {
+            var top = 0, left = 0;
+            do {
+                top += element.offsetTop || 0;
+                left += element.offsetLeft || 0;
+                element = element.offsetParent;
+            } while (element);
+
+            return {
+                top: top,
+                left: left
+            };
+        };
+
+        //Finding absolute position of the chart canvas
+        var position = getPosition(tooltip.chart.canvas)
+        
         // Display, position, and set styles for font
         tooltipEl.css({
             opacity: 1,
-            left: tooltip.chart.canvas.offsetLeft + tooltip.x + 'px',
-            top: tooltip.chart.canvas.offsetTop + top + 'px',
+            left: position.left + tooltip.x + 'px',
+            top: position.top + top + 'px',
             fontFamily: tooltip.fontFamily,
             fontSize: tooltip.fontSize,
             fontStyle: tooltip.fontStyle,
