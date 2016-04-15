@@ -72,6 +72,9 @@ These are the customisation options specific to Line charts. These options are m
 	//Boolean - Whether to show vertical lines (except Y axis)
 	scaleShowVerticalLines: true,
 
+	//Boolean - Whether to show ticks on the X axis
+	scaleShowXTicks: true,
+
 	//Boolean - Whether the line is curved between points
 	bezierCurve : true,
 
