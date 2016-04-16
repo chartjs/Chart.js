@@ -20,7 +20,7 @@ CDN: https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.0.0/Chart.js
 
 ## Documentation
 
-You can find documentation at [nnnick.github.io/Chart.js/docs-v2/](nnnick.github.io/Chart.js/docs-v2/). The markdown files that build the site are available under `/docs`. Please note - in some of the json examples of configuration you might notice some liquid tags - this is just for the generating the site html, please disregard.
+You can find documentation at [nnnick.github.io/Chart.js/docs-v2/](http://nnnick.github.io/Chart.js/docs-v2/). The markdown files that build the site are available under `/docs`. Please note - in some of the json examples of configuration you might notice some liquid tags - this is just for the generating the site html, please disregard.
 
 ## Contributing
 
