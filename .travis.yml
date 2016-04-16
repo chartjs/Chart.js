@@ -20,6 +20,7 @@ notifications:
   slack: chartjs:pcfCZR6ugg5TEcaLtmIfQYuA
 
 sudo: required
+dist: trusty
 
 addons:
   firefox: latest
