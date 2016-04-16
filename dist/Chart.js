@@ -1590,7 +1590,7 @@ module.exports = {
 /*!
  * Chart.js
  * http://chartjs.org/
- * Version: 2.0.0-beta2
+ * Version: 2.0.1
  *
  * Copyright 2015 Nick Downie
  * Released under the MIT license
@@ -3258,6 +3258,7 @@ module.exports = function(Chart) {
 		frameDuration: 17,
 		animations: [],
 		dropFrames: 0,
+		request: null,
 		addAnimation: function(chartInstance, animationObject, duration, lazy) {
 
 			if (!lazy) {
@@ -3279,7 +3280,7 @@ module.exports = function(Chart) {
 
 			// If there are no animations queued, manually kickstart a digest, for lack of a better word
 			if (this.animations.length === 1) {
-				helpers.requestAnimFrame.call(window, this.digestWrapper);
+				this.requestAnimationFrame();
 			}
 		},
 		// Cancel the animation for a given chart instance
@@ -3293,9 +3294,17 @@ module.exports = function(Chart) {
 				chartInstance.animating = false;
 			}
 		},
-		// calls startDigest with the proper context
-		digestWrapper: function() {
-			Chart.animationService.startDigest.call(Chart.animationService);
+		requestAnimationFrame: function() {
+			var me = this;
+			if (me.request === null) {
+				// Skip animation frame requests until the active one is executed.
+				// This can happen when processing mouse events, e.g. 'mousemove'
+				// and 'mouseout' events will trigger multiple renders.
+				me.request = helpers.requestAnimFrame.call(window, function() {
+					me.request = null;
+					me.startDigest();
+				});
+			}
 		},
 		startDigest: function() {
 
@@ -3345,7 +3354,7 @@ module.exports = function(Chart) {
 
 			// Do we have more stuff to animate?
 			if (this.animations.length > 0) {
-				helpers.requestAnimFrame.call(window, this.digestWrapper);
+				this.requestAnimationFrame();
 			}
 		}
 	};
@@ -3663,12 +3672,21 @@ module.exports = function(Chart) {
 				this.scale.draw();
 			}
 
+			// Clip out the chart area so that anything outside does not draw. This is necessary for zoom and pan to function
+			this.chart.ctx.save();
+			this.chart.ctx.beginPath();
+			this.chart.ctx.rect(this.chartArea.left, this.chartArea.top, this.chartArea.right - this.chartArea.left, this.chartArea.bottom - this.chartArea.top);
+			this.chart.ctx.clip();
+
 			// Draw each dataset via its respective controller (reversed to support proper line stacking)
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				if (helpers.isDatasetVisible(dataset)) {
 					dataset.controller.draw(ease);
 				}
 			}, null, true);
+
+			// Restore from the clipping operation
+			this.chart.ctx.restore();
 
 			// Finally draw the tooltip
 			this.tooltip.transition(easingDecimal).draw();
@@ -3700,11 +3718,13 @@ module.exports = function(Chart) {
 			var elementsArray = [];
 
 			var found = (function() {
-				for (var i = 0; i < this.data.datasets.length; i++) {
-					if (helpers.isDatasetVisible(this.data.datasets[i])) {
-						for (var j = 0; j < this.data.datasets[i].metaData.length; j++) {
-							if (this.data.datasets[i].metaData[j].inRange(eventPosition.x, eventPosition.y)) {
-								return this.data.datasets[i].metaData[j];
+				if (this.data.datasets) {
+					for (var i = 0; i < this.data.datasets.length; i++) {
+						if (helpers.isDatasetVisible(this.data.datasets[i])) {
+							for (var j = 0; j < this.data.datasets[i].metaData.length; j++) {
+								if (this.data.datasets[i].metaData[j].inRange(eventPosition.x, eventPosition.y)) {
+									return this.data.datasets[i].metaData[j];
+								}
 							}
 						}
 					}
@@ -4803,30 +4823,47 @@ module.exports = function(Chart) {
 			helpers.removeEvent(chartInstance.chart.canvas, eventName, handler);
 		});
 	};
-	helpers.getConstraintWidth = function(domNode) { // returns Number or undefined if no constraint
-		var constrainedWidth;
-		var constrainedWNode = document.defaultView.getComputedStyle(domNode)['max-width'];
-		var constrainedWContainer = document.defaultView.getComputedStyle(domNode.parentNode)['max-width'];
-		var hasCWNode = constrainedWNode !== null && constrainedWNode !== "none";
-		var hasCWContainer = constrainedWContainer !== null && constrainedWContainer !== "none";
 
-		if (hasCWNode || hasCWContainer) {
-			constrainedWidth = Math.min((hasCWNode ? parseInt(constrainedWNode, 10) : Number.POSITIVE_INFINITY), (hasCWContainer ? parseInt(constrainedWContainer, 10) : Number.POSITIVE_INFINITY));
+	// Private helper function to convert max-width/max-height values that may be percentages into a number
+	function parseMaxStyle(styleValue, node, parentProperty) {
+		var valueInPixels;
+		if (typeof(styleValue) === 'string') {
+			valueInPixels = parseInt(styleValue, 10);
+
+			if (styleValue.indexOf('%') != -1) {
+				// percentage * size in dimension
+				valueInPixels = valueInPixels / 100 * node.parentNode[parentProperty];
+			}
+		} else {
+			valueInPixels = styleValue;
 		}
-		return constrainedWidth;
+
+		return valueInPixels;
+	}
+
+	// Private helper to get a constraint dimension
+	// @param domNode : the node to check the constraint on
+	// @param maxStyle : the style that defines the maximum for the direction we are using (max-width / max-height)
+	// @param percentageProperty : property of parent to use when calculating width as a percentage
+	function getConstraintDimension(domNode, maxStyle, percentageProperty) {
+		var constrainedDimension;
+		var constrainedNode = document.defaultView.getComputedStyle(domNode)[maxStyle];
+		var constrainedContainer = document.defaultView.getComputedStyle(domNode.parentNode)[maxStyle];
+		var hasCNode = constrainedNode !== null && constrainedNode !== "none";
+		var hasCContainer = constrainedContainer !== null && constrainedContainer !== "none";
+
+		if (hasCNode || hasCContainer) {
+			constrainedDimension = Math.min((hasCNode ? parseMaxStyle(constrainedNode, domNode, percentageProperty) : Number.POSITIVE_INFINITY), (hasCContainer ? parseMaxStyle(constrainedContainer, domNode.parentNode, percentageProperty) : Number.POSITIVE_INFINITY));
+		}
+		return constrainedDimension;
+	}
+	// returns Number or undefined if no constraint
+	helpers.getConstraintWidth = function(domNode) {
+		return getConstraintDimension(domNode, 'max-width', 'clientWidth');
 	};
 	// returns Number or undefined if no constraint
 	helpers.getConstraintHeight = function(domNode) {
-		var constrainedHeight;
-		var constrainedHNode = document.defaultView.getComputedStyle(domNode)['max-height'];
-		var constrainedHContainer = document.defaultView.getComputedStyle(domNode.parentNode)['max-height'];
-		var hasCHNode = constrainedHNode !== null && constrainedHNode !== "none";
-		var hasCHContainer = constrainedHContainer !== null && constrainedHContainer !== "none";
-
-		if (constrainedHNode || constrainedHContainer) {
-			constrainedHeight = Math.min((hasCHNode ? parseInt(constrainedHNode, 10) : Number.POSITIVE_INFINITY), (hasCHContainer ? parseInt(constrainedHContainer, 10) : Number.POSITIVE_INFINITY));
-		}
-		return constrainedHeight;
+		return getConstraintDimension(domNode, 'max-height', 'clientHeight');
 	};
 	helpers.getMaximumWidth = function(domNode) {
 		var container = domNode.parentNode;
@@ -4898,13 +4935,18 @@ module.exports = function(Chart) {
 		ctx.font = font;
 		var longest = 0;
 		helpers.each(arrayOfStrings, function(string) {
-			var textWidth = cache.data[string];
-			if (!textWidth) {
-				textWidth = cache.data[string] = ctx.measureText(string).width;
-				cache.garbageCollect.push(string);
+			// Undefined strings should not be measured
+			if (string !== undefined && string !== null) {
+				var textWidth = cache.data[string];
+				if (!textWidth) {
+					textWidth = cache.data[string] = ctx.measureText(string).width;
+					cache.garbageCollect.push(string);
+				}
+
+				if (textWidth > longest) {
+					longest = textWidth;
+				}
 			}
-			if (textWidth > longest)
-				longest = textWidth;
 		});
 
 		var gcLen = cache.garbageCollect.length / 2;
@@ -4935,6 +4977,12 @@ module.exports = function(Chart) {
 			console.log('Color.js not found!');
 			return c;
 		}
+
+		/* global CanvasGradient */
+		if (c instanceof CanvasGradient) {
+			return color(Chart.defaults.global.defaultColor);
+		}
+
 		return color(c);
 	};
 	helpers.addResizeListener = function(node, callback) {
@@ -5005,6 +5053,7 @@ module.exports = function(Chart) {
 	};
 
 };
+
 },{"chartjs-color":5}],26:[function(require,module,exports){
 "use strict";
 
@@ -5094,11 +5143,11 @@ module.exports = function() {
 				var text = [];
 				text.push('<ul class="' + chart.id + '-legend">');
 				for (var i = 0; i < chart.data.datasets.length; i++) {
-					text.push('<li><span style="background-color:' + chart.data.datasets[i].backgroundColor + '">');
+					text.push('<li><span style="background-color:' + chart.data.datasets[i].backgroundColor + '"></span>');
 					if (chart.data.datasets[i].label) {
 						text.push(chart.data.datasets[i].label);
 					}
-					text.push('</span></li>');
+					text.push('</li>');
 				}
 				text.push('</ul>');
 
@@ -5110,6 +5159,7 @@ module.exports = function() {
 	return Chart;
 
 };
+
 },{}],27:[function(require,module,exports){
 "use strict";
 
@@ -5145,8 +5195,8 @@ module.exports = function(Chart) {
 				return;
 			}
 
-			var xPadding = width > 30 ? 5 : 2;
-			var yPadding = height > 30 ? 5 : 2;
+			var xPadding = 0;
+			var yPadding = 0;
 
 			var leftBoxes = helpers.where(chartInstance.boxes, function(box) {
 				return box.options.position === "left";
@@ -5434,6 +5484,7 @@ module.exports = function(Chart) {
 		}
 	};
 };
+
 },{}],28:[function(require,module,exports){
 "use strict";
 
@@ -5472,7 +5523,7 @@ module.exports = function(Chart) {
 			// lineJoin :
 			// lineWidth :
 			generateLabels: function(data) {
-				return data.datasets.map(function(dataset, i) {
+				return helpers.isArray(data.datasets) ? data.datasets.map(function(dataset, i) {
 					return {
 						text: dataset.label,
 						fillStyle: dataset.backgroundColor,
@@ -5487,7 +5538,7 @@ module.exports = function(Chart) {
 						// Below is extra data used for toggling the datasets
 						datasetIndex: i
 					};
-				}, this);
+				}, this) : [];
 			}
 		}
 	};
@@ -7818,7 +7869,24 @@ module.exports = function(Chart) {
 
 	var DatasetScale = Chart.Scale.extend({
 		buildTicks: function(index) {
-			this.ticks = this.chart.data.labels;
+			this.startIndex = 0;
+			this.endIndex = this.chart.data.labels.length;
+			var findIndex;
+
+			if (this.options.ticks.min !== undefined) {
+				// user specified min value
+				findIndex = helpers.indexOf(this.chart.data.labels, this.options.ticks.min);
+				this.startIndex = findIndex !== -1 ? findIndex : this.startIndex;
+			}
+
+			if (this.options.ticks.max !== undefined) {
+				// user specified max value
+				findIndex = helpers.indexOf(this.chart.data.labels, this.options.ticks.max);
+				this.endIndex = findIndex !== -1 ? findIndex : this.endIndex;
+			}
+
+			// If we are viewing some subset of labels, slice the original array
+			this.ticks = (this.startIndex === 0 && this.endIndex === this.chart.data.labels.length) ? this.chart.data.labels : this.chart.data.labels.slice(this.startIndex, this.endIndex + 1);
 		},
 
 		getLabelForIndex: function(index, datasetIndex) {
@@ -7827,10 +7895,13 @@ module.exports = function(Chart) {
 
 		// Used to get data value locations.  Value can either be an index or a numerical value
 		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
+			// 1 is added because we need the length but we have the indexes
+			var offsetAmt = Math.max((this.ticks.length - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
+
 			if (this.isHorizontal()) {
 				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
-				var valueWidth = innerWidth / Math.max((this.chart.data.labels.length - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
-				var widthOffset = (valueWidth * index) + this.paddingLeft;
+				var valueWidth = innerWidth / offsetAmt;
+				var widthOffset = (valueWidth * (index - this.startIndex)) + this.paddingLeft;
 
 				if (this.options.gridLines.offsetGridLines && includeOffset) {
 					widthOffset += (valueWidth / 2);
@@ -7839,8 +7910,8 @@ module.exports = function(Chart) {
 				return this.left + Math.round(widthOffset);
 			} else {
 				var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
-				var valueHeight = innerHeight / Math.max((this.chart.data.labels.length - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
-				var heightOffset = (valueHeight * index) + this.paddingTop;
+				var valueHeight = innerHeight / offsetAmt;
+				var heightOffset = (valueHeight * (index - this.startIndex)) + this.paddingTop;
 
 				if (this.options.gridLines.offsetGridLines && includeOffset) {
 					heightOffset += (valueHeight / 2);
@@ -7848,6 +7919,9 @@ module.exports = function(Chart) {
 
 				return this.top + Math.round(heightOffset);
 			}
+		},
+		getPixelForTick: function(index, includeOffset) {
+			return this.getPixelForValue(this.ticks[index], index + this.startIndex, null, includeOffset);
 		}
 	});
 

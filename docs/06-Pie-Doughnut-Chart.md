@@ -96,4 +96,4 @@ new Chart(ctx,{
 // and the Doughnut chart defaults but this particular instance will have `animateScale` set to `true`.
 ```
 
-We can also change these default values for each Doughnut type that is created, this object is available at `Chart.defaults.Doughnut`. Pie charts also have a clone of these defaults available to change at `Chart.defaults.Pie`, with the only difference being `percentageInnerCutout` being set to 0.
+We can also change these default values for each Doughnut type that is created, this object is available at `Chart.defaults.doughnut`. Pie charts also have a clone of these defaults available to change at `Chart.defaults.pie`, with the only difference being `percentageInnerCutout` being set to 0.

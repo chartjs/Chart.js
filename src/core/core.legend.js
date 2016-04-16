@@ -35,7 +35,7 @@ module.exports = function(Chart) {
 			// lineJoin :
 			// lineWidth :
 			generateLabels: function(data) {
-				return data.datasets.map(function(dataset, i) {
+				return helpers.isArray(data.datasets) ? data.datasets.map(function(dataset, i) {
 					return {
 						text: dataset.label,
 						fillStyle: dataset.backgroundColor,
@@ -50,7 +50,7 @@ module.exports = function(Chart) {
 						// Below is extra data used for toggling the datasets
 						datasetIndex: i
 					};
-				}, this);
+				}, this) : [];
 			}
 		}
 	};
