@@ -28,14 +28,14 @@ describe('Linear Scale', function() {
 			},
 			ticks: {
 				beginAtZero: false,
-				maxRotation: 90,
+				maxRotation: 50,
 				mirror: false,
 				padding: 10,
 				reverse: false,
 				display: true,
 				callback: defaultConfig.ticks.callback, // make this work nicer, then check below
 				autoSkip: true,
-				autoSkipPadding: 20
+				autoSkipPadding: 0
 			}
 		});
 

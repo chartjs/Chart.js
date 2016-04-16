@@ -62,7 +62,7 @@ module.exports = function(Chart) {
 			}
 		},
 		ticks: {
-			autoSkip: false,
+			autoSkip: false
 		}
 	};
 
@@ -157,14 +157,14 @@ module.exports = function(Chart) {
 			} else {
 				// Determine the smallest needed unit of the time
 				var innerWidth = this.isHorizontal() ? this.width - (this.paddingLeft + this.paddingRight) : this.height - (this.paddingTop + this.paddingBottom);
-				
+
 				// Crude approximation of what the label length might be
 				var tempFirstLabel = this.tickFormatFunction(this.firstTick, 0, []);
 				var tickLabelWidth = this.ctx.measureText(tempFirstLabel).width;
 				var cosRotation = Math.cos(helpers.toRadians(this.options.ticks.maxRotation));
 				var sinRotation = Math.sin(helpers.toRadians(this.options.ticks.maxRotation));
 				tickLabelWidth = (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation);
-				var labelCapacity = innerWidth / (tickLabelWidth + 6);
+				var labelCapacity = innerWidth / (tickLabelWidth);
 
 				// Start as small as possible
 				this.tickUnit = 'millisecond';
