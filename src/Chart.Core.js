@@ -454,6 +454,8 @@
 						//If the user has said integers only, we need to check that making the scale more granular wouldn't make it a float
 						if(stepValue/2 % 1 === 0){
 							stepValue /=2;
+							if ((graphMax - stepValue) >= maxValue)
+								graphRange -= stepValue;
 							numberOfSteps = Math.round(graphRange/stepValue);
 						}
 						//If it would make it a float break out of the loop
@@ -464,6 +466,8 @@
 					//If the scale doesn't have to be an int, make the scale more granular anyway.
 					else{
 						stepValue /=2;
+						if ((graphMax - stepValue) >= maxValue)
+							graphRange -= stepValue;
 						numberOfSteps = Math.round(graphRange/stepValue);
 					}
 
