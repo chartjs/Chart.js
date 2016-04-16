@@ -3,221 +3,241 @@ title: Getting started
 anchor: getting-started
 ---
 
-###Include Chart.js
+### Download Chart.js
 
-First we need to include the Chart.js library on the page. The library occupies a global variable of `Chart`.
+To download a zip, go to [Chart.js on Github](https://github.com/nnnick/Chart.js) and choose the version that is right for your application.
+* [Standard build](https://raw.githubusercontent.com/nnnick/Chart.js/v2.0-dev/dist/Chart.js) (~31kB gzipped)
+* [Bundled with Moment.js](https://raw.githubusercontent.com/nnnick/Chart.js/v2.0-dev/dist/Chart.bundle.js) (~45kB gzipped)
+* [CDN Versions](https://cdnjs.com/libraries/Chart.js)
 
-```html
-<script src="Chart.js"></script>
-```
-
-Alternatively, if you're using an AMD loader for JavaScript modules, that is also supported in the Chart.js core. Please note: the library will still occupy a global variable of `Chart`, even if it detects `define` and `define.amd`. If this is a problem, you can call `noConflict` to restore the global Chart variable to its previous owner.
-
-```javascript
-// Using requirejs
-require(['path/to/Chartjs'], function(Chart){
-	// Use Chart.js as normal here.
-
-	// Chart.noConflict restores the Chart global variable to its previous owner
-	// The function returns what was previously Chart, allowing you to reassign.
-	var Chartjs = Chart.noConflict();
-
-});
-```
-
-You can also grab Chart.js using bower:
-
-```bash
-bower install Chart.js --save
-```
-
-or NPM:
+To install via npm / bower:
 
 ```bash
 npm install chart.js --save
 ```
+```bash
+bower install Chart.js --save
+```
 
-Also, Chart.js is available from CDN:
+### Installation
 
-https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js
+To import Chart.js using an old-school script tag:
 
-###Creating a chart
+```html
+<script src="Chart.js"></script>
+<script>
+    var myChart = new Chart({...})
+</script>
+```
 
-To create a chart, we need to instantiate the `Chart` class. To do this, we need to pass in the 2d context of where we want to draw the chart. Here's an example.
+To import Chart.js using an awesome module loader:
+
+```javascript
+
+// Using CommonJS
+var Chart = require('src/chart.js')
+var myChart = new Chart({...})
+
+// ES6
+import Chart from 'src/chart.js'
+let myChart = new Chart({...})
+
+// Using requirejs
+require(['path/to/Chartjs'], function(Chart){
+ var myChart = new Chart({...})
+})
+
+```
+
+### Creating a Chart
+
+To create a chart, we need to instantiate the `Chart` class. To do this, we need to pass in the node, jQuery instance, or 2d context of the canvas of where we want to draw the chart. Here's an example.
 
 ```html
 <canvas id="myChart" width="400" height="400"></canvas>
 ```
 
 ```javascript
-// Get the context of the canvas element we want to select
+// Any of the following formats may be used
+var ctx = document.getElementById("myChart");
 var ctx = document.getElementById("myChart").getContext("2d");
-var myNewChart = new Chart(ctx).PolarArea(data);
+var ctx = $("#myChart");
 ```
 
-We can also get the context of our canvas with jQuery. To do this, we need to get the DOM node out of the jQuery collection, and call the `getContext("2d")` method on that.
+Once you have the element or context, you're ready to instantiate a pre-defined chart-type or create your own!
 
-```javascript
-// Get context with jQuery - using jQuery's .get() method.
-var ctx = $("#myChart").get(0).getContext("2d");
-// This will get the first returned node in the jQuery collection.
-var myNewChart = new Chart(ctx);
+The following example instantiates a bar chart showing the number of votes for different colors and the y-axis starting at 0.
+
+```html
+<canvas id="myChart" width="400" height="400"></canvas>
+<script>
+var ctx = document.getElementById("myChart");
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        datasets: [{
+            label: '# of Votes',
+            data: [12, 19, 3, 5, 2, 3]
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+</script>
 ```
 
-After we've instantiated the Chart class on the canvas we want to draw on, Chart.js will handle the scaling for retina displays.
+It's that easy to get started using Chart.js! From here you can explore the many options that can help you customise your charts with scales, tooltips, labels, colors, custom actions, and much more.
 
-With the Chart class set up, we can go on to create one of the charts Chart.js has available. In the example below, we would be drawing a Polar area chart.
-
-```javascript
-new Chart(ctx).PolarArea(data, options);
-```
-
-We call a method of the name of the chart we want to create. We pass in the data for that chart type, and the options for that chart as parameters. Chart.js will merge the global defaults with chart type specific defaults, then merge any options passed in as a second argument after data.
-
-###Global chart configuration
+### Global chart configuration
 
 This concept was introduced in Chart.js 1.0 to keep configuration DRY, and allow for changing options globally across chart types, avoiding the need to specify options for each instance, or the default for a particular chart type.
 
-Templates are based on micro templating by John Resig:
+Chart.js merges configurations and options in a few places with the global defaults using chart type defaults and scales defaults. This way you can be as specific as you want in your individual chart configs, or change the defaults for Chart.js as a whole.
 
-http://ejohn.org/blog/javascript-micro-templating/
+The global options are defined in `Chart.defaults.global`.
 
-```javascript
-Chart.defaults.global = {
-	// Boolean - Whether to animate the chart
-	animation: true,
+Name | Type | Default | Description
+--- | --- | --- | ---
+responsive | Boolean | true | Resizes when the canvas container does.
+responsiveAnimationDuration | Number | 0 | Duration in milliseconds it takes to animate to new size after a resize event.
+maintainAspectRatio | Boolean | true | Maintain the original canvas aspect ratio `(width / height)` when resizing
+events | Array[String] | `["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"]` | Events that the chart should listen to for tooltips and hovering
+hover |-|-|-
+*hover*.onHover | Function | null | Called when any of the events fire. Called in the context of the chart and passed an array of active elements (bars, points, etc)
+*hover*.mode | String | 'single' | Sets which elements hover. Acceptable options are `'single'`, `'label'`, or `'dataset'`. `single` highlights the closest element. `label` highlights elements in all datasets at the same `X` value. `dataset` highlights the closest dataset.
+*hover*.animationDuration | Number | 400 | Duration in milliseconds it takes to animate hover style changes
+onClick | Function | null | Called if the event is of type 'mouseup' or 'click'. Called in the context of the chart and passed an array of active elements
+defaultColor | Color | 'rgba(0,0,0,0.1)' |
+defaultFontColor | Color | '#666' | Default font color for all text
+defaultFontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Default font family for all text
+defaultFontSize | Number | 12 | Default font size (in px) for text. Does not apply to radialLinear scale point labels
+defaultFontStyle | String | 'normal' | Default font style. Does not apply to tooltip title or footer. Does not apply to chart title
+legendCallback | Function | ` function (chart) { }` | Function to generate a legend. Receives the chart object to generate a legend from. Default implementation returns an HTML string.
 
-	// Number - Number of animation steps
-	animationSteps: 60,
+The global options for the chart title is defined in `Chart.defaults.global.title`
 
-	// String - Animation easing effect
-	// Possible effects are:
-	// [easeInOutQuart, linear, easeOutBounce, easeInBack, easeInOutQuad,
-	//  easeOutQuart, easeOutQuad, easeInOutBounce, easeOutSine, easeInOutCubic,
-	//  easeInExpo, easeInOutBack, easeInCirc, easeInOutElastic, easeOutBack,
-	//  easeInQuad, easeInOutExpo, easeInQuart, easeOutQuint, easeInOutCirc,
-	//  easeInSine, easeOutExpo, easeOutCirc, easeOutCubic, easeInQuint,
-	//  easeInElastic, easeInOutSine, easeInOutQuint, easeInBounce,
-	//  easeOutElastic, easeInCubic]
-	animationEasing: "easeOutQuart",
+Name | Type | Default | Description
+--- | --- | --- | ---
+display | Boolean | true | Show the title block
+position | String | 'top' | Position of the title. 'top' or 'bottom' are allowed
+fullWidth | Boolean | true | Marks that this box should take the full width of the canvas (pushing down other boxes)
+fontColor | Color  | '#666' | Text color
+fontFamily | String | 'Helvetica Neue' |
+fontSize | Number | 12 |
+fontStyle | String | 'bold' |
+padding | Number | 10 | Number of pixels to add above and below the title text
+text | String | '' | Title text
 
-	// Boolean - If we should show the scale at all
-	showScale: true,
+The global options for the chart legend is defined in `Chart.defaults.global.legend`
 
-	// Boolean - If we want to override with a hard coded scale
-	scaleOverride: false,
+Name | Type | Default | Description
+--- | --- | --- | ---
+display | Boolean | true | Is the legend displayed
+position | String | 'top' | Position of the legend. Options are 'top' or 'bottom'
+fullWidth | Boolean | true | Marks that this box should take the full width of the canvas (pushing down other boxes)
+onClick | Function | `function(event, legendItem) {}` | A callback that is called when a click is registered on top of a label item
+labels |-|-|-
+*labels*boxWidth | Number | 40 | Width of coloured box
+*labels*fontSize | Number | 12 | Font size
+*labels*fontStyle | String | "normal" |
+*labels*fontColor | Color | "#666" |
+*labels*fontFamily | String | "Helvetica Neue" |
+*labels*padding | Number | 10 | Padding between rows of colored boxes
+*labels*generateLabels: | Function | `function(data) {  }` | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. Styles that can be returned are `fillStyle`, `strokeStyle`, `lineCap`, `lineDash`, `lineDashOffset`, `lineWidth`, `lineJoin`. Return a `hidden` attribute to indicate that the label refers to something that is not visible. A strikethrough style will be given to the text in this case.
 
-	// ** Required if scaleOverride is true **
-	// Number - The number of steps in a hard coded scale
-	scaleSteps: null,
-	// Number - The value jump in the hard coded scale
-	scaleStepWidth: null,
-	// Number - The scale starting value
-	scaleStartValue: null,
+The global options for tooltips are defined in `Chart.defaults.global.tooltips`.
 
-	// String - Colour of the scale line
-	scaleLineColor: "rgba(0,0,0,.1)",
+Name | Type | Default | Description
+--- |:---:| --- | ---
+enabled | Boolean | true |
+custom | | null |
+mode | String | 'single' | Sets which elements appear in the tooltip. Acceptable options are `'single'` or `'label'`. `single` highlights the closest element. `label` highlights elements in all datasets at the same `X` value.
+backgroundColor | Color | 'rgba(0,0,0,0.8)' | Background color of the tooltip
+ | | |
+Label | | | There are three labels you can control. `title`, `body`, `footer` the star (\*) represents one of these three. *(i.e. titleFontFamily, footerSpacing)*
+\*FontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" |
+\*FontSize | Number | 12 |
+\*FontStyle | String | title - "bold", body - "normal", footer - "bold" |
+\*Spacing | Number | 2 |
+\*Color | Color | "#fff" |
+\*Align | String | "left" | text alignment. See [MDN Canvas Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/textAlign)
+titleMarginBottom | Number | 6 | Margin to add on bottom of title section
+footerMarginTop | Number | 6 | Margin to add before drawing the footer
+xPadding | Number | 6 | Padding to add on left and right of tooltip
+yPadding | Number | 6 | Padding to add on top and bottom of tooltip
+caretSize | Number | 5 | Size, in px, of the tooltip arrow
+cornerRadius | Number | 6 | Radius of tooltip corner curves
+multiKeyBackground | Color | "#fff" | Color to draw behind the colored boxes when multiple items are in the tooltip
+ | | |
+callbacks | - | - |  V2.0 introduces callback functions as a replacement for the template engine in v1. The tooltip has the following callbacks for providing text. For all functions, 'this' will be the tooltip object create from the Chart.Tooltip constructor
+**Callback Functions** | | | All functions are called with the same arguments
+xLabel | String or Array[Strings] | | This is the xDataValue for each item to be displayed in the tooltip
+yLabel | String or Array[Strings] | | This is the yDataValue for each item to be displayed in the tooltip
+index | Number | | Data index.
+data | Object | | Data object passed to chart.
+`return`| String or Array[Strings] | | All functions must return either a string or an array of strings. Arrays of strings are treated as multiple lines of text.
+ | | |
+*callbacks*.beforeTitle | Function | none | Text to render before the title
+*callbacks*.title | Function | `function(tooltipItems, data) { //Pick first xLabel }` | Text to render as the title
+*callbacks*.afterTitle | Function | none | Text to render after the ttiel
+*callbacks*.beforeBody | Function | none | Text to render before the body section
+*callbacks*.beforeLabel | Function | none | Text to render before an individual label
+*callbacks*.label | Function | `function(tooltipItem, data) { // Returns "datasetLabel: tooltipItem.yLabel" }` | Text to render as label
+*callbacks*.afterLabel | Function | none | Text to render after an individual label
+*callbacks*.afterBody | Function | none | Text to render after the body section
+*callbacks*.beforeFooter | Function | none | Text to render before the footer section
+*callbacks*.footer | Function | none | Text to render as the footer
+*callbacks*.afterFooter | Function | none | Text to render after the footer section
 
-	// Number - Pixel width of the scale line
-	scaleLineWidth: 1,
+The global options for animations are defined in `Chart.defaults.global.animation`.
 
-	// Boolean - Whether to show labels on the scale
-	scaleShowLabels: true,
+Name | Type | Default | Description
+--- |:---:| --- | ---
+duration | Number | 1000 | The number of milliseconds an animation takes.
+easing | String | "easeOutQuart" | Easing function to use.
+onProgress | Function | none | Callback called on each step of an animation. Passed a single argument, an object, containing the chart instance and an object with details of the animation.
+onComplete | Function | none | Callback called at the end of an animation. Passed the same arguments as `onProgress`
 
-	// Interpolated JS string - can access value
-	scaleLabel: "<%=value%>",
+The global options for elements are defined in `Chart.defaults.global.elements`.
 
-	// Boolean - Whether the scale should stick to integers, not floats even if drawing space is there
-	scaleIntegersOnly: true,
-
-	// Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
-	scaleBeginAtZero: false,
-
-	// String - Scale label font declaration for the scale label
-	scaleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-
-	// Number - Scale label font size in pixels
-	scaleFontSize: 12,
-
-	// String - Scale label font weight style
-	scaleFontStyle: "normal",
-
-	// String - Scale label font colour
-	scaleFontColor: "#666",
-
-	// Boolean - whether or not the chart should be responsive and resize when the browser does.
-	responsive: false,
-
-	// Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
-	maintainAspectRatio: true,
-
-	// Boolean - Determines whether to draw tooltips on the canvas or not
-	showTooltips: true,
-
-	// Function - Determines whether to execute the customTooltips function instead of drawing the built in tooltips (See [Advanced - External Tooltips](#advanced-usage-external-tooltips))
-	customTooltips: false,
-
-	// Array - Array of string names to attach tooltip events
-	tooltipEvents: ["mousemove", "touchstart", "touchmove"],
-
-	// String - Tooltip background colour
-	tooltipFillColor: "rgba(0,0,0,0.8)",
-
-	// String - Tooltip label font declaration for the scale label
-	tooltipFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-
-	// Number - Tooltip label font size in pixels
-	tooltipFontSize: 14,
-
-	// String - Tooltip font weight style
-	tooltipFontStyle: "normal",
-
-	// String - Tooltip label font colour
-	tooltipFontColor: "#fff",
-
-	// String - Tooltip title font declaration for the scale label
-	tooltipTitleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-
-	// Number - Tooltip title font size in pixels
-	tooltipTitleFontSize: 14,
-
-	// String - Tooltip title font weight style
-	tooltipTitleFontStyle: "bold",
-
-	// String - Tooltip title font colour
-	tooltipTitleFontColor: "#fff",
-
-	// String - Tooltip title template
-	tooltipTitleTemplate: "<%= label%>",
-
-	// Number - pixel width of padding around tooltip text
-	tooltipYPadding: 6,
-
-	// Number - pixel width of padding around tooltip text
-	tooltipXPadding: 6,
-
-	// Number - Size of the caret on the tooltip
-	tooltipCaretSize: 8,
-
-	// Number - Pixel radius of the tooltip border
-	tooltipCornerRadius: 6,
-
-	// Number - Pixel offset from point x to tooltip edge
-	tooltipXOffset: 10,
-	{% raw %}
-	// String - Template string for single tooltips
-	tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",
-	{% endraw %}
-	// String - Template string for multiple tooltips
-	multiTooltipTemplate: "<%= value %>",
-
-	// Function - Will fire on animation progression.
-	onAnimationProgress: function(){},
-
-	// Function - Will fire on animation completion.
-	onAnimationComplete: function(){}
-}
-```
+Name | Type | Default | Description
+--- |:---:| --- | ---
+arc | - | - | -
+*arc*.backgroundColor | Color | `Chart.defaults.global.defaultColor` | Default fill color for arcs
+*arc*.borderColor | Color | "#fff" | Default stroke color for arcs
+*arc*.borderWidth | Number | 2 | Default stroke width for arcs
+line | - | - | -
+*line*.tension | Number | 0.4 | Default bezier curve tension. Set to `0` for no bezier curves.
+*line*.backgroundColor | Color | `Chart.defaults.global.defaultColor` | Default line fill color
+*line*.borderWidth | Number | 3 | Default line stroke width
+*line*.borderColor | Color | `Chart.defaults.global.defaultColor` | Default line stroke color
+*line*.borderCapStyle | String | 'butt' | Default line cap style. See [MDN](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/lineCap)
+*line*.borderDash | Array | `[]` | Default line dash. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
+*line*.borderDashOffset | Number | 0.0 | Default line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
+*line*.borderJoinStyle | String | 'miter' | Default line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin)
+*line*.fill | Boolean | true |
+point | - | - | -
+*point*.radius | Number | 3 | Default point radius
+*point*.pointStyle | String | 'circle' | Default point style
+*point*.backgroundColor | Color | `Chart.defaults.global.defaultColor` | Default point fill color
+*point*.borderWidth | Number | 1 | Default point stroke width
+*point*.borderColor | Color | `Chart.defaults.global.defaultColor` | Default point stroke color
+*point*.hitRadius | Number | 1 | Extra radius added to point radius for hit detection
+*point*.hoverRadius | Number | 4 | Default point radius when hovered
+*point*.hoverBorderWidth | Number | 1 | Default stroke width when hovered
+rectangle | - | - | -
+*rectangle*.backgroundColor | Color | `Chart.defaults.global.defaultColor` | Default bar fill color
+*rectangle*.borderWidth | Number | 0 | Default bar stroke width
+*rectangle*.borderColor | Color | `Chart.defaults.global.defaultColor` | Default bar stroke color
+*rectangle*.borderSkipped | String | 'bottom' | Default skipped (excluded) border for rectangle. Can be one of `bottom`, `left`, `top`, `right`
 
 If for example, you wanted all charts created to be responsive, and resize when the browser window does, the following setting can be changed:
 
@@ -226,22 +246,3 @@ Chart.defaults.global.responsive = true;
 ```
 
 Now, every time we create a chart, `options.responsive` will be `true`.
-
-###Tooltip Templates
-For the `tooltipTemplate` and `multiTooltipTemplate` configuration options, you may use special template blocks. **Do not use user input in the tooltip template, as it may be executed as raw JavaScript.**
-
-Anything in between `<%` and `%>` will be executed as JavaScript. As in the example shown above, `<% if (label) { %>` and later `<% } %>`. Using `<%= expr %>` will print the value of the variable named by `expr` into the tooltip.
-
-The available variables to print into the tooltip depends on the chart type. In general, the following variables are available:
-
-```javascript
-{
-	value : "value of the data point",
-	label : "label for the position the data point is at",
-	datasetLabel: "label for the dataset the point is from",
-	strokeColor : "stroke color for the dataset",
-	fillColor : "fill color for the dataset",
-	highlightFill : "highlight fill color for the dataset",
-	highlightStroke : "highlight stroke color for the dataset"
-}
-```

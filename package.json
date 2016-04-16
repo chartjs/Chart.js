@@ -2,29 +2,50 @@
   "name": "chart.js",
   "homepage": "http://www.chartjs.org",
   "description": "Simple HTML5 charts using the canvas element.",
-  "version": "1.1.1",
-  "main": "Chart.js",
+  "version": "2.0.2",
+  "main": "src/chart.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/nnnick/Chart.js.git"
   },
-  "license": "MIT",
-  "dependences": {},
   "devDependencies": {
+    "browserify": "^13.0.0",
+    "browserify-istanbul": "^0.2.1",
+    "coveralls": "^2.11.6",
     "gulp": "3.9.x",
     "gulp-concat": "~2.1.x",
     "gulp-connect": "~2.0.5",
+    "gulp-html-validator": "^0.0.2",
     "gulp-jshint": "~1.5.1",
+    "gulp-karma": "0.0.4",
     "gulp-replace": "^0.4.0",
     "gulp-size": "~0.4.0",
-    "gulp-uglify": "~1.5.x",
+    "gulp-streamify": "^1.0.2",
+    "gulp-uglify": "~0.2.x",
+    "gulp-umd": "~0.2.0",
     "gulp-util": "~2.2.x",
-    "gulp-html-validator": "^0.0.2",
     "inquirer": "^0.5.1",
+    "jasmine": "^2.3.2",
+    "jasmine-core": "^2.3.4",
+    "jquery": "^2.1.4",
+    "jshint-stylish": "~2.1.0",
+    "karma": "^0.12.37",
+    "karma-browserify": "^5.0.1",
+    "karma-chrome-launcher": "^0.2.0",
+    "karma-coverage": "^0.5.1",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-jasmine": "^0.3.6",
+    "karma-jasmine-html-reporter": "^0.1.8",
+    "merge-stream": "^1.0.0",
     "semver": "^3.0.1",
-    "gulp-livereload": "^3.8.0"
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.7.0"
   },
   "spm": {
     "main": "Chart.js"
+  },
+  "dependencies": {
+    "chartjs-color": "^1.0.2",
+    "moment": "^2.10.6"
   }
 }

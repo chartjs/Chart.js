@@ -1,21 +1,13 @@
 {
   "name": "Chart.js",
+  "version": "2.0.2",
   "description": "Simple HTML5 Charts using the canvas element",
   "homepage": "https://github.com/nnnick/Chart.js",
   "author": "nnnick",
   "main": [
-    "Chart.js"
+    "dist/Chart.js"
   ],
-  "ignore": [
-    "**/*",
-    ".travis.yml",
-    "CONTRIBUTING.md",
-    "Chart.js",
-    "LICENSE.md",
-    "README.md",
-    "gulpfile.js",
-    "package.json"
-  ],
-  "dependencies": {},
-  "version": "1.1.1"
+  "devDependencies": {
+    "jquery": "~2.1.4"
+  }
 }
