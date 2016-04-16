@@ -49,21 +49,21 @@ describe('Test the layout service', function() {
 			left: 50,
 			right: 250,
 			top: 0,
-			bottom: 81.0423977855504,
+			bottom: 83.6977778440511,
 		});
 
 		// Is xScale at the right spot
 		expect(xScale.left).toBe(50);
 		expect(xScale.right).toBe(250);
-		expect(xScale.top).toBe(81.0423977855504);
+		expect(xScale.top).toBe(83.6977778440511);
 		expect(xScale.bottom).toBe(150);
-		expect(xScale.labelRotation).toBe(55);
+		expect(xScale.labelRotation).toBe(50);
 
 		// Is yScale at the right spot
 		expect(yScale.left).toBe(0);
 		expect(yScale.right).toBe(50);
 		expect(yScale.top).toBe(0);
-		expect(yScale.bottom).toBe(81.0423977855504);
+		expect(yScale.bottom).toBe(83.6977778440511);
 	});
 
 	it('should fit scales that are in the top and right positions', function() {
@@ -116,7 +116,7 @@ describe('Test the layout service', function() {
 		expect(chartInstance.chartArea).toEqual({
 			left: 0,
 			right: 200,
-			top: 68.9576022144496,
+			top: 66.3022221559489,
 			bottom: 150,
 		});
 
@@ -124,13 +124,13 @@ describe('Test the layout service', function() {
 		expect(xScale.left).toBe(0);
 		expect(xScale.right).toBe(200);
 		expect(xScale.top).toBe(0);
-		expect(xScale.bottom).toBe(68.9576022144496);
-		expect(xScale.labelRotation).toBe(55);
+		expect(xScale.bottom).toBe(66.3022221559489);
+		expect(xScale.labelRotation).toBe(50);
 
 		// Is yScale at the right spot
 		expect(yScale.left).toBe(200);
 		expect(yScale.right).toBe(250);
-		expect(yScale.top).toBe(68.9576022144496);
+		expect(yScale.top).toBe(66.3022221559489);
 		expect(yScale.bottom).toBe(150);
 	});
 
@@ -196,30 +196,30 @@ describe('Test the layout service', function() {
 			left: 110,
 			right: 250,
 			top: 0,
-			bottom: 75,
+			bottom: 83.6977778440511,
 		});
 
 		// Is xScale at the right spot
 		expect(xScale.left).toBe(110);
 		expect(xScale.right).toBe(250);
-		expect(xScale.top).toBe(75);
+		expect(xScale.top).toBe(83.6977778440511);
 		expect(xScale.bottom).toBe(150);
 
 		// Are yScales at the right spot
 		expect(yScale1.left).toBe(0);
 		expect(yScale1.right).toBe(50);
 		expect(yScale1.top).toBe(0);
-		expect(yScale1.bottom).toBe(75);
+		expect(yScale1.bottom).toBe(83.6977778440511);
 
 		expect(yScale2.left).toBe(50);
 		expect(yScale2.right).toBe(110);
 		expect(yScale2.top).toBe(0);
-		expect(yScale2.bottom).toBe(75);
+		expect(yScale2.bottom).toBe(83.6977778440511);
 	});
 
 	// This is an oddball case. What happens is, when the scales are fit the first time they must fit within the assigned size. In this case,
-	// the labels on the xScale need to rotate to fit. However, when the scales are fit again after the width of the left axis is determined, 
-	// the labels do not need to rotate. Previously, the chart was too small because the chartArea did not expand to take up the space freed up 
+	// the labels on the xScale need to rotate to fit. However, when the scales are fit again after the width of the left axis is determined,
+	// the labels do not need to rotate. Previously, the chart was too small because the chartArea did not expand to take up the space freed up
 	// due to the lack of label rotation
 	it('should fit scales that overlap the chart area', function() {
 		var chartInstance = {
@@ -337,13 +337,13 @@ describe('Test the layout service', function() {
 			left: 60,
 			right: 250,
 			top: 54.495963211660246,
-			bottom: 80.0664716027288,
+			bottom: 83.6977778440511
 		});
 
 		// Are xScales at the right spot
 		expect(xScale1.left).toBe(60);
 		expect(xScale1.right).toBe(250);
-		expect(xScale1.top).toBeCloseTo(80.06, 1e-3);
+		expect(xScale1.top).toBeCloseTo(83.69, 1e-3);
 		expect(xScale1.bottom).toBe(150);
 
 		expect(xScale2.left).toBe(0);
@@ -355,6 +355,6 @@ describe('Test the layout service', function() {
 		expect(yScale.left).toBe(0);
 		expect(yScale.right).toBe(60);
 		expect(yScale.top).toBeCloseTo(54.49, 1e-3);
-		expect(yScale.bottom).toBeCloseTo(80.06, 1e-3);
+		expect(yScale.bottom).toBeCloseTo(83.69, 1e-3);
 	});
 });

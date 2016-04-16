@@ -20,23 +20,23 @@ describe('Category scale tests', function() {
 				offsetGridLines: false,
 				display: true,
 				zeroLineColor: "rgba(0,0,0,0.25)",
-				zeroLineWidth: 1,
+				zeroLineWidth: 1
 			},
 			position: "bottom",
 			scaleLabel: {
 				labelString: '',
-				display: false,
+				display: false
 			},
 			ticks: {
 				beginAtZero: false,
-				maxRotation: 90,
+				maxRotation: 50,
 				mirror: false,
 				padding: 10,
 				reverse: false,
 				display: true,
 				callback: defaultConfig.ticks.callback,  // make this nicer, then check explicitly below
 				autoSkip: true,
-				autoSkipPadding: 20
+				autoSkipPadding: 0
 			}
 		});
 
@@ -93,7 +93,7 @@ describe('Category scale tests', function() {
 		});
 
 		scale.buildTicks();
-		
+
 		expect(scale.getLabelForIndex(1)).toBe('tick2');
 	});
 

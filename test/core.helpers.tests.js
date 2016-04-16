@@ -230,14 +230,14 @@ describe('Core helper tests', function() {
 					},
 					ticks: {
 						beginAtZero: false,
-						maxRotation: 90,
+						maxRotation: 50,
 						mirror: false,
 						padding: 10,
 						reverse: false,
 						display: true,
 						callback: merged.scales.yAxes[1].ticks.callback, // make it nicer, then check explicitly below
 						autoSkip: true,
-						autoSkipPadding: 20
+						autoSkipPadding: 0
 					},
 					type: 'linear'
 				}, {
@@ -260,14 +260,14 @@ describe('Core helper tests', function() {
 					},
 					ticks: {
 						beginAtZero: false,
-						maxRotation: 90,
+						maxRotation: 50,
 						mirror: false,
 						padding: 10,
 						reverse: false,
 						display: true,
 						callback: merged.scales.yAxes[2].ticks.callback, // make it nicer, then check explicitly below
 						autoSkip: true,
-						autoSkipPadding: 20
+						autoSkipPadding: 0
 					},
 					type: 'linear'
 				}]

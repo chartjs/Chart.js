@@ -31,13 +31,13 @@ module.exports = function(Chart) {
 		// label settings
 		ticks: {
 			beginAtZero: false,
-			maxRotation: 90,
+			maxRotation: 50,
 			mirror: false,
 			padding: 10,
 			reverse: false,
 			display: true,
 			autoSkip: true,
-			autoSkipPadding: 20,
+			autoSkipPadding: 0,
 			callback: function(value) {
 				return '' + value;
 			}

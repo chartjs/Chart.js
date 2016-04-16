@@ -41,7 +41,7 @@ describe('Test the radial linear scale', function() {
 				backdropPaddingY: 2,
 				backdropPaddingX: 2,
 				beginAtZero: false,
-				maxRotation: 90,
+				maxRotation: 50,
 				mirror: false,
 				padding: 10,
 				reverse: false,
@@ -49,7 +49,7 @@ describe('Test the radial linear scale', function() {
 				display: true,
 				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
 				autoSkip: true,
-				autoSkipPadding: 20
+				autoSkipPadding: 0
 			},
 		});
 
