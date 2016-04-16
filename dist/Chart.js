@@ -1016,7 +1016,158 @@ for (var name in colorNames) {
    reverseNames[colorNames[name]] = name;
 }
 
-},{"color-name":6}],5:[function(require,module,exports){
+},{"color-name":5}],5:[function(require,module,exports){
+module.exports = {
+	"aliceblue": [240, 248, 255],
+	"antiquewhite": [250, 235, 215],
+	"aqua": [0, 255, 255],
+	"aquamarine": [127, 255, 212],
+	"azure": [240, 255, 255],
+	"beige": [245, 245, 220],
+	"bisque": [255, 228, 196],
+	"black": [0, 0, 0],
+	"blanchedalmond": [255, 235, 205],
+	"blue": [0, 0, 255],
+	"blueviolet": [138, 43, 226],
+	"brown": [165, 42, 42],
+	"burlywood": [222, 184, 135],
+	"cadetblue": [95, 158, 160],
+	"chartreuse": [127, 255, 0],
+	"chocolate": [210, 105, 30],
+	"coral": [255, 127, 80],
+	"cornflowerblue": [100, 149, 237],
+	"cornsilk": [255, 248, 220],
+	"crimson": [220, 20, 60],
+	"cyan": [0, 255, 255],
+	"darkblue": [0, 0, 139],
+	"darkcyan": [0, 139, 139],
+	"darkgoldenrod": [184, 134, 11],
+	"darkgray": [169, 169, 169],
+	"darkgreen": [0, 100, 0],
+	"darkgrey": [169, 169, 169],
+	"darkkhaki": [189, 183, 107],
+	"darkmagenta": [139, 0, 139],
+	"darkolivegreen": [85, 107, 47],
+	"darkorange": [255, 140, 0],
+	"darkorchid": [153, 50, 204],
+	"darkred": [139, 0, 0],
+	"darksalmon": [233, 150, 122],
+	"darkseagreen": [143, 188, 143],
+	"darkslateblue": [72, 61, 139],
+	"darkslategray": [47, 79, 79],
+	"darkslategrey": [47, 79, 79],
+	"darkturquoise": [0, 206, 209],
+	"darkviolet": [148, 0, 211],
+	"deeppink": [255, 20, 147],
+	"deepskyblue": [0, 191, 255],
+	"dimgray": [105, 105, 105],
+	"dimgrey": [105, 105, 105],
+	"dodgerblue": [30, 144, 255],
+	"firebrick": [178, 34, 34],
+	"floralwhite": [255, 250, 240],
+	"forestgreen": [34, 139, 34],
+	"fuchsia": [255, 0, 255],
+	"gainsboro": [220, 220, 220],
+	"ghostwhite": [248, 248, 255],
+	"gold": [255, 215, 0],
+	"goldenrod": [218, 165, 32],
+	"gray": [128, 128, 128],
+	"green": [0, 128, 0],
+	"greenyellow": [173, 255, 47],
+	"grey": [128, 128, 128],
+	"honeydew": [240, 255, 240],
+	"hotpink": [255, 105, 180],
+	"indianred": [205, 92, 92],
+	"indigo": [75, 0, 130],
+	"ivory": [255, 255, 240],
+	"khaki": [240, 230, 140],
+	"lavender": [230, 230, 250],
+	"lavenderblush": [255, 240, 245],
+	"lawngreen": [124, 252, 0],
+	"lemonchiffon": [255, 250, 205],
+	"lightblue": [173, 216, 230],
+	"lightcoral": [240, 128, 128],
+	"lightcyan": [224, 255, 255],
+	"lightgoldenrodyellow": [250, 250, 210],
+	"lightgray": [211, 211, 211],
+	"lightgreen": [144, 238, 144],
+	"lightgrey": [211, 211, 211],
+	"lightpink": [255, 182, 193],
+	"lightsalmon": [255, 160, 122],
+	"lightseagreen": [32, 178, 170],
+	"lightskyblue": [135, 206, 250],
+	"lightslategray": [119, 136, 153],
+	"lightslategrey": [119, 136, 153],
+	"lightsteelblue": [176, 196, 222],
+	"lightyellow": [255, 255, 224],
+	"lime": [0, 255, 0],
+	"limegreen": [50, 205, 50],
+	"linen": [250, 240, 230],
+	"magenta": [255, 0, 255],
+	"maroon": [128, 0, 0],
+	"mediumaquamarine": [102, 205, 170],
+	"mediumblue": [0, 0, 205],
+	"mediumorchid": [186, 85, 211],
+	"mediumpurple": [147, 112, 219],
+	"mediumseagreen": [60, 179, 113],
+	"mediumslateblue": [123, 104, 238],
+	"mediumspringgreen": [0, 250, 154],
+	"mediumturquoise": [72, 209, 204],
+	"mediumvioletred": [199, 21, 133],
+	"midnightblue": [25, 25, 112],
+	"mintcream": [245, 255, 250],
+	"mistyrose": [255, 228, 225],
+	"moccasin": [255, 228, 181],
+	"navajowhite": [255, 222, 173],
+	"navy": [0, 0, 128],
+	"oldlace": [253, 245, 230],
+	"olive": [128, 128, 0],
+	"olivedrab": [107, 142, 35],
+	"orange": [255, 165, 0],
+	"orangered": [255, 69, 0],
+	"orchid": [218, 112, 214],
+	"palegoldenrod": [238, 232, 170],
+	"palegreen": [152, 251, 152],
+	"paleturquoise": [175, 238, 238],
+	"palevioletred": [219, 112, 147],
+	"papayawhip": [255, 239, 213],
+	"peachpuff": [255, 218, 185],
+	"peru": [205, 133, 63],
+	"pink": [255, 192, 203],
+	"plum": [221, 160, 221],
+	"powderblue": [176, 224, 230],
+	"purple": [128, 0, 128],
+	"rebeccapurple": [102, 51, 153],
+	"red": [255, 0, 0],
+	"rosybrown": [188, 143, 143],
+	"royalblue": [65, 105, 225],
+	"saddlebrown": [139, 69, 19],
+	"salmon": [250, 128, 114],
+	"sandybrown": [244, 164, 96],
+	"seagreen": [46, 139, 87],
+	"seashell": [255, 245, 238],
+	"sienna": [160, 82, 45],
+	"silver": [192, 192, 192],
+	"skyblue": [135, 206, 235],
+	"slateblue": [106, 90, 205],
+	"slategray": [112, 128, 144],
+	"slategrey": [112, 128, 144],
+	"snow": [255, 250, 250],
+	"springgreen": [0, 255, 127],
+	"steelblue": [70, 130, 180],
+	"tan": [210, 180, 140],
+	"teal": [0, 128, 128],
+	"thistle": [216, 191, 216],
+	"tomato": [255, 99, 71],
+	"turquoise": [64, 224, 208],
+	"violet": [238, 130, 238],
+	"wheat": [245, 222, 179],
+	"white": [255, 255, 255],
+	"whitesmoke": [245, 245, 245],
+	"yellow": [255, 255, 0],
+	"yellowgreen": [154, 205, 50]
+};
+},{}],6:[function(require,module,exports){
 /* MIT license */
 
 var convert = require("color-convert"),
@@ -1435,162 +1586,11 @@ Color.prototype.setChannel = function(space, index, val) {
 
 window.Color = module.exports = Color
 
-},{"color-convert":3,"color-string":4}],6:[function(require,module,exports){
-module.exports = {
-	"aliceblue": [240, 248, 255],
-	"antiquewhite": [250, 235, 215],
-	"aqua": [0, 255, 255],
-	"aquamarine": [127, 255, 212],
-	"azure": [240, 255, 255],
-	"beige": [245, 245, 220],
-	"bisque": [255, 228, 196],
-	"black": [0, 0, 0],
-	"blanchedalmond": [255, 235, 205],
-	"blue": [0, 0, 255],
-	"blueviolet": [138, 43, 226],
-	"brown": [165, 42, 42],
-	"burlywood": [222, 184, 135],
-	"cadetblue": [95, 158, 160],
-	"chartreuse": [127, 255, 0],
-	"chocolate": [210, 105, 30],
-	"coral": [255, 127, 80],
-	"cornflowerblue": [100, 149, 237],
-	"cornsilk": [255, 248, 220],
-	"crimson": [220, 20, 60],
-	"cyan": [0, 255, 255],
-	"darkblue": [0, 0, 139],
-	"darkcyan": [0, 139, 139],
-	"darkgoldenrod": [184, 134, 11],
-	"darkgray": [169, 169, 169],
-	"darkgreen": [0, 100, 0],
-	"darkgrey": [169, 169, 169],
-	"darkkhaki": [189, 183, 107],
-	"darkmagenta": [139, 0, 139],
-	"darkolivegreen": [85, 107, 47],
-	"darkorange": [255, 140, 0],
-	"darkorchid": [153, 50, 204],
-	"darkred": [139, 0, 0],
-	"darksalmon": [233, 150, 122],
-	"darkseagreen": [143, 188, 143],
-	"darkslateblue": [72, 61, 139],
-	"darkslategray": [47, 79, 79],
-	"darkslategrey": [47, 79, 79],
-	"darkturquoise": [0, 206, 209],
-	"darkviolet": [148, 0, 211],
-	"deeppink": [255, 20, 147],
-	"deepskyblue": [0, 191, 255],
-	"dimgray": [105, 105, 105],
-	"dimgrey": [105, 105, 105],
-	"dodgerblue": [30, 144, 255],
-	"firebrick": [178, 34, 34],
-	"floralwhite": [255, 250, 240],
-	"forestgreen": [34, 139, 34],
-	"fuchsia": [255, 0, 255],
-	"gainsboro": [220, 220, 220],
-	"ghostwhite": [248, 248, 255],
-	"gold": [255, 215, 0],
-	"goldenrod": [218, 165, 32],
-	"gray": [128, 128, 128],
-	"green": [0, 128, 0],
-	"greenyellow": [173, 255, 47],
-	"grey": [128, 128, 128],
-	"honeydew": [240, 255, 240],
-	"hotpink": [255, 105, 180],
-	"indianred": [205, 92, 92],
-	"indigo": [75, 0, 130],
-	"ivory": [255, 255, 240],
-	"khaki": [240, 230, 140],
-	"lavender": [230, 230, 250],
-	"lavenderblush": [255, 240, 245],
-	"lawngreen": [124, 252, 0],
-	"lemonchiffon": [255, 250, 205],
-	"lightblue": [173, 216, 230],
-	"lightcoral": [240, 128, 128],
-	"lightcyan": [224, 255, 255],
-	"lightgoldenrodyellow": [250, 250, 210],
-	"lightgray": [211, 211, 211],
-	"lightgreen": [144, 238, 144],
-	"lightgrey": [211, 211, 211],
-	"lightpink": [255, 182, 193],
-	"lightsalmon": [255, 160, 122],
-	"lightseagreen": [32, 178, 170],
-	"lightskyblue": [135, 206, 250],
-	"lightslategray": [119, 136, 153],
-	"lightslategrey": [119, 136, 153],
-	"lightsteelblue": [176, 196, 222],
-	"lightyellow": [255, 255, 224],
-	"lime": [0, 255, 0],
-	"limegreen": [50, 205, 50],
-	"linen": [250, 240, 230],
-	"magenta": [255, 0, 255],
-	"maroon": [128, 0, 0],
-	"mediumaquamarine": [102, 205, 170],
-	"mediumblue": [0, 0, 205],
-	"mediumorchid": [186, 85, 211],
-	"mediumpurple": [147, 112, 219],
-	"mediumseagreen": [60, 179, 113],
-	"mediumslateblue": [123, 104, 238],
-	"mediumspringgreen": [0, 250, 154],
-	"mediumturquoise": [72, 209, 204],
-	"mediumvioletred": [199, 21, 133],
-	"midnightblue": [25, 25, 112],
-	"mintcream": [245, 255, 250],
-	"mistyrose": [255, 228, 225],
-	"moccasin": [255, 228, 181],
-	"navajowhite": [255, 222, 173],
-	"navy": [0, 0, 128],
-	"oldlace": [253, 245, 230],
-	"olive": [128, 128, 0],
-	"olivedrab": [107, 142, 35],
-	"orange": [255, 165, 0],
-	"orangered": [255, 69, 0],
-	"orchid": [218, 112, 214],
-	"palegoldenrod": [238, 232, 170],
-	"palegreen": [152, 251, 152],
-	"paleturquoise": [175, 238, 238],
-	"palevioletred": [219, 112, 147],
-	"papayawhip": [255, 239, 213],
-	"peachpuff": [255, 218, 185],
-	"peru": [205, 133, 63],
-	"pink": [255, 192, 203],
-	"plum": [221, 160, 221],
-	"powderblue": [176, 224, 230],
-	"purple": [128, 0, 128],
-	"rebeccapurple": [102, 51, 153],
-	"red": [255, 0, 0],
-	"rosybrown": [188, 143, 143],
-	"royalblue": [65, 105, 225],
-	"saddlebrown": [139, 69, 19],
-	"salmon": [250, 128, 114],
-	"sandybrown": [244, 164, 96],
-	"seagreen": [46, 139, 87],
-	"seashell": [255, 245, 238],
-	"sienna": [160, 82, 45],
-	"silver": [192, 192, 192],
-	"skyblue": [135, 206, 235],
-	"slateblue": [106, 90, 205],
-	"slategray": [112, 128, 144],
-	"slategrey": [112, 128, 144],
-	"snow": [255, 250, 250],
-	"springgreen": [0, 255, 127],
-	"steelblue": [70, 130, 180],
-	"tan": [210, 180, 140],
-	"teal": [0, 128, 128],
-	"thistle": [216, 191, 216],
-	"tomato": [255, 99, 71],
-	"turquoise": [64, 224, 208],
-	"violet": [238, 130, 238],
-	"wheat": [245, 222, 179],
-	"white": [255, 255, 255],
-	"whitesmoke": [245, 245, 245],
-	"yellow": [255, 255, 0],
-	"yellowgreen": [154, 205, 50]
-};
-},{}],7:[function(require,module,exports){
+},{"color-convert":3,"color-string":4}],7:[function(require,module,exports){
 /*!
  * Chart.js
  * http://chartjs.org/
- * Version: 2.0.1
+ * Version: 2.0.2
  *
  * Copyright 2015 Nick Downie
  * Released under the MIT license
@@ -2318,6 +2318,12 @@ module.exports = function(Chart) {
 		//The percentage of the chart that we cut out of the middle.
 		cutoutPercentage: 50,
 
+		//The rotation of the chart, where the first data arc begins.
+		rotation: Math.PI * -0.5,
+
+		//The total circumference of the chart.
+		circumference: Math.PI * 2.0,
+
 		// Need to override these to give a nice default
 		tooltips: {
 			callbacks: {
@@ -2391,11 +2397,35 @@ module.exports = function(Chart) {
 		},
 
 		update: function update(reset) {
-			var minSize = Math.min(this.chart.chartArea.right - this.chart.chartArea.left, this.chart.chartArea.bottom - this.chart.chartArea.top);
+			var availableWidth = this.chart.chartArea.right - this.chart.chartArea.left - this.chart.options.elements.arc.borderWidth;
+			var availableHeight = this.chart.chartArea.bottom - this.chart.chartArea.top - this.chart.options.elements.arc.borderWidth;
+			var minSize = Math.min(availableWidth, availableHeight);
+			var offset = {x: 0, y: 0};
 
-			this.chart.outerRadius = Math.max((minSize / 2) - this.chart.options.elements.arc.borderWidth / 2, 0);
+			// If the chart's circumference isn't a full circle, calculate minSize as a ratio of the width/height of the arc
+			if (this.chart.options.circumference && this.chart.options.circumference < Math.PI * 2.0) {
+				var startAngle = this.chart.options.rotation % (Math.PI * 2.0);
+				startAngle += Math.PI * 2.0 * (startAngle >= Math.PI ? -1 : startAngle < -Math.PI ? 1 : 0);
+				var endAngle = startAngle + this.chart.options.circumference;
+				var start = {x: Math.cos(startAngle), y: Math.sin(startAngle)};
+				var end = {x: Math.cos(endAngle), y: Math.sin(endAngle)};
+				var contains0 = (startAngle <= 0 && 0 <= endAngle) || (startAngle <= Math.PI * 2.0 && Math.PI * 2.0 <= endAngle);
+				var contains90 = (startAngle <= Math.PI * 0.5 && Math.PI * 0.5 <= endAngle) || (startAngle <= Math.PI * 2.5 && Math.PI * 2.5 <= endAngle);
+				var contains180 = (startAngle <= -Math.PI && -Math.PI <= endAngle) || (startAngle <= Math.PI && Math.PI <= endAngle);
+				var contains270 = (startAngle <= -Math.PI * 0.5 && -Math.PI * 0.5 <= endAngle) || (startAngle <= Math.PI * 1.5 && Math.PI * 1.5 <= endAngle);
+				var cutout = this.chart.options.cutoutPercentage / 100.0;
+				var min = {x: contains180 ? -1 : Math.min(start.x * (start.x < 0 ? 1 : cutout), end.x * (end.x < 0 ? 1 : cutout)), y: contains270 ? -1 : Math.min(start.y * (start.y < 0 ? 1 : cutout), end.y * (end.y < 0 ? 1 : cutout))};
+				var max = {x: contains0 ? 1 : Math.max(start.x * (start.x > 0 ? 1 : cutout), end.x * (end.x > 0 ? 1 : cutout)), y: contains90 ? 1 : Math.max(start.y * (start.y > 0 ? 1 : cutout), end.y * (end.y > 0 ? 1 : cutout))};
+				var size = {width: (max.x - min.x) * 0.5, height: (max.y - min.y) * 0.5};
+				minSize = Math.min(availableWidth / size.width, availableHeight / size.height);
+				offset = {x: (max.x + min.x) * -0.5, y: (max.y + min.y) * -0.5};
+			}
+
+			this.chart.outerRadius = Math.max(minSize / 2, 0);
 			this.chart.innerRadius = Math.max(this.chart.options.cutoutPercentage ? (this.chart.outerRadius / 100) * (this.chart.options.cutoutPercentage) : 1, 0);
 			this.chart.radiusLength = (this.chart.outerRadius - this.chart.innerRadius) / this.getVisibleDatasetCount();
+			this.chart.offsetX = offset.x * this.chart.outerRadius;
+			this.chart.offsetY = offset.y * this.chart.outerRadius;
 
 			this.getDataset().total = 0;
 			helpers.each(this.getDataset().data, function(value) {
@@ -2414,9 +2444,9 @@ module.exports = function(Chart) {
 		updateElement: function(arc, index, reset) {
 			var centerX = (this.chart.chartArea.left + this.chart.chartArea.right) / 2;
 			var centerY = (this.chart.chartArea.top + this.chart.chartArea.bottom) / 2;
-			var startAngle = Math.PI * -0.5; // non reset case handled later
-			var endAngle = Math.PI * -0.5; // non reset case handled later
-			var circumference = reset && this.chart.options.animation.animateRotate ? 0 : this.calculateCircumference(this.getDataset().data[index]);
+			var startAngle = this.chart.options.rotation || (Math.PI * -0.5); // non reset case handled later
+			var endAngle = this.chart.options.rotation || (Math.PI * -0.5); // non reset case handled later
+			var circumference = reset && this.chart.options.animation.animateRotate ? 0 : this.calculateCircumference(this.getDataset().data[index]) * ((this.chart.options.circumference || (2.0 * Math.PI)) / (2.0 * Math.PI));
 			var innerRadius = reset && this.chart.options.animation.animateScale ? 0 : this.innerRadius;
 			var outerRadius = reset && this.chart.options.animation.animateScale ? 0 : this.outerRadius;
 
@@ -2428,8 +2458,8 @@ module.exports = function(Chart) {
 
 				// Desired view properties
 				_model: {
-					x: centerX,
-					y: centerY,
+					x: centerX + this.chart.offsetX,
+					y: centerY + this.chart.offsetY,
 					startAngle: startAngle,
 					endAngle: endAngle,
 					circumference: circumference,
@@ -2449,7 +2479,7 @@ module.exports = function(Chart) {
 			if (!reset) {
 
 				if (index === 0) {
-					arc._model.startAngle = Math.PI * -0.5; // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
+					arc._model.startAngle = this.chart.options.rotation || (Math.PI * -0.5);
 				} else {
 					arc._model.startAngle = this.getDataset().metaData[index - 1]._model.endAngle;
 				}
@@ -5054,7 +5084,7 @@ module.exports = function(Chart) {
 
 };
 
-},{"chartjs-color":5}],26:[function(require,module,exports){
+},{"chartjs-color":6}],26:[function(require,module,exports){
 "use strict";
 
 module.exports = function() {
@@ -5852,13 +5882,13 @@ module.exports = function(Chart) {
 		// label settings
 		ticks: {
 			beginAtZero: false,
-			maxRotation: 90,
+			maxRotation: 50,
 			mirror: false,
 			padding: 10,
 			reverse: false,
 			display: true,
 			autoSkip: true,
-			autoSkipPadding: 20,
+			autoSkipPadding: 0,
 			callback: function(value) {
 				return '' + value;
 			}
@@ -6504,6 +6534,7 @@ module.exports = function(Chart) {
 		}
 	});
 };
+
 },{}],30:[function(require,module,exports){
 "use strict";
 
@@ -7383,9 +7414,18 @@ module.exports = function(Chart, moment) {
           y: chartY
         });
 
-        // Put into the range of (-PI/2, 3PI/2]
-        var startAngle = vm.startAngle < (-0.5 * Math.PI) ? vm.startAngle + (2.0 * Math.PI) : vm.startAngle > (1.5 * Math.PI) ? vm.startAngle - (2.0 * Math.PI) : vm.startAngle;
-        var endAngle = vm.endAngle < (-0.5 * Math.PI) ? vm.endAngle + (2.0 * Math.PI) : vm.endAngle > (1.5 * Math.PI) ? vm.endAngle - (2.0 * Math.PI) : vm.endAngle;
+        //Sanitise angle range
+        var startAngle = vm.startAngle;
+        var endAngle = vm.endAngle;
+        while (endAngle < startAngle) {
+          endAngle += 2.0 * Math.PI;
+        }
+        while (pointRelativePosition.angle > endAngle) {
+          pointRelativePosition.angle -= 2.0 * Math.PI;
+        }
+        while (pointRelativePosition.angle < startAngle) {
+          pointRelativePosition.angle += 2.0 * Math.PI;
+        }
 
         //Check if within the range of the open/close angle
         var betweenAngles = (pointRelativePosition.angle >= startAngle && pointRelativePosition.angle <= endAngle),
@@ -8889,7 +8929,7 @@ module.exports = function(Chart) {
 			}
 		},
 		ticks: {
-			autoSkip: false,
+			autoSkip: false
 		}
 	};
 
@@ -8964,6 +9004,13 @@ module.exports = function(Chart) {
 		},
 		buildTicks: function(index) {
 
+			this.ctx.save();
+			var tickFontSize = helpers.getValueOrDefault(this.options.ticks.fontSize, Chart.defaults.global.defaultFontSize);
+			var tickFontStyle = helpers.getValueOrDefault(this.options.ticks.fontStyle, Chart.defaults.global.defaultFontStyle);
+			var tickFontFamily = helpers.getValueOrDefault(this.options.ticks.fontFamily, Chart.defaults.global.defaultFontFamily);
+			var tickLabelFont = helpers.fontString(tickFontSize, tickFontStyle, tickFontFamily);
+			this.ctx.font = tickLabelFont;
+
 			this.ticks = [];
 			this.unitScale = 1; // How much we scale the unit by, ie 2 means 2x unit per step
 			this.scaleSizeInUnits = 0; // How large the scale is in the base unit (seconds, minutes, etc)
@@ -8976,16 +9023,15 @@ module.exports = function(Chart) {
 				this.unitScale = helpers.getValueOrDefault(this.options.time.unitStepSize, 1);
 			} else {
 				// Determine the smallest needed unit of the time
-				var tickFontSize = helpers.getValueOrDefault(this.options.ticks.fontSize, Chart.defaults.global.defaultFontSize);
 				var innerWidth = this.isHorizontal() ? this.width - (this.paddingLeft + this.paddingRight) : this.height - (this.paddingTop + this.paddingBottom);
-				
+
 				// Crude approximation of what the label length might be
 				var tempFirstLabel = this.tickFormatFunction(this.firstTick, 0, []);
-				var tickLabelWidth = tempFirstLabel.length * tickFontSize;
+				var tickLabelWidth = this.ctx.measureText(tempFirstLabel).width;
 				var cosRotation = Math.cos(helpers.toRadians(this.options.ticks.maxRotation));
 				var sinRotation = Math.sin(helpers.toRadians(this.options.ticks.maxRotation));
 				tickLabelWidth = (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation);
-				var labelCapacity = innerWidth / (tickLabelWidth + 10);
+				var labelCapacity = innerWidth / (tickLabelWidth);
 
 				// Start as small as possible
 				this.tickUnit = 'millisecond';
@@ -9003,7 +9049,7 @@ module.exports = function(Chart) {
 					if (helpers.isArray(unitDefinition.steps) && Math.ceil(this.scaleSizeInUnits / labelCapacity) < helpers.max(unitDefinition.steps)) {
 						// Use one of the prefedined steps
 						for (var idx = 0; idx < unitDefinition.steps.length; ++idx) {
-							if (unitDefinition.steps[idx] > Math.ceil(this.scaleSizeInUnits / labelCapacity)) {
+							if (unitDefinition.steps[idx] >= Math.ceil(this.scaleSizeInUnits / labelCapacity)) {
 								this.unitScale = helpers.getValueOrDefault(this.options.time.unitStepSize, unitDefinition.steps[idx]);
 								break;
 							}
@@ -9084,6 +9130,7 @@ module.exports = function(Chart) {
 					this.lastTick = this.ticks[this.ticks.length - 1].clone();
 				}
 			}
+			this.ctx.restore();
 		},
 		// Get tooltip label
 		getLabelForIndex: function(index, datasetIndex) {
@@ -9163,4 +9210,5 @@ module.exports = function(Chart) {
 	Chart.scaleService.registerScaleType("time", TimeScale, defaultConfig);
 
 };
+
 },{"moment":1}]},{},[7]);
