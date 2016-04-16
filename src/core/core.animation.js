@@ -26,6 +26,7 @@ module.exports = function(Chart) {
 		frameDuration: 17,
 		animations: [],
 		dropFrames: 0,
+		request: null,
 		addAnimation: function(chartInstance, animationObject, duration, lazy) {
 
 			if (!lazy) {
@@ -47,7 +48,7 @@ module.exports = function(Chart) {
 
 			// If there are no animations queued, manually kickstart a digest, for lack of a better word
 			if (this.animations.length === 1) {
-				helpers.requestAnimFrame.call(window, this.digestWrapper);
+				this.requestAnimationFrame();
 			}
 		},
 		// Cancel the animation for a given chart instance
@@ -61,9 +62,17 @@ module.exports = function(Chart) {
 				chartInstance.animating = false;
 			}
 		},
-		// calls startDigest with the proper context
-		digestWrapper: function() {
-			Chart.animationService.startDigest.call(Chart.animationService);
+		requestAnimationFrame: function() {
+			var me = this;
+			if (me.request === null) {
+				// Skip animation frame requests until the active one is executed.
+				// This can happen when processing mouse events, e.g. 'mousemove'
+				// and 'mouseout' events will trigger multiple renders.
+				me.request = helpers.requestAnimFrame.call(window, function() {
+					me.request = null;
+					me.startDigest();
+				});
+			}
 		},
 		startDigest: function() {
 
@@ -113,7 +122,7 @@ module.exports = function(Chart) {
 
 			// Do we have more stuff to animate?
 			if (this.animations.length > 0) {
-				helpers.requestAnimFrame.call(window, this.digestWrapper);
+				this.requestAnimationFrame();
 			}
 		}
 	};
