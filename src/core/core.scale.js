@@ -6,6 +6,7 @@ module.exports = function(Chart) {
 
 	Chart.defaults.scale = {
 		display: true,
+		drawLineAtIndex: 0,
 
 		// grid line settings
 		gridLines: {
@@ -32,6 +33,7 @@ module.exports = function(Chart) {
 		ticks: {
 			beginAtZero: false,
 			maxRotation: 90,
+			minRotation: 20,
 			mirror: false,
 			padding: 10,
 			reverse: false,
@@ -560,6 +562,15 @@ module.exports = function(Chart) {
 						this.ctx.fillText(this.options.scaleLabel.labelString, scaleLabelX, scaleLabelY);
 					}
 
+					if (this.options.drawLineAtIndex !== 0) {
+						var xPixel = this.getPixelForTick(this.options.drawLineAtIndex);
+						this.ctx.lineWidth = this.options.gridLines.lineWidth;
+						this.ctx.strokeStyle = "#ff0000";
+						this.ctx.moveTo(xPixel, chartArea.top);
+						this.ctx.lineTo(xPixel, chartArea.bottom);					
+						this.ctx.stroke();
+					};
+
 				} else {
 					setContextLineSettings = true;
 					var xTickStart = this.options.position === "right" ? this.left : this.right - 5;
@@ -655,6 +666,15 @@ module.exports = function(Chart) {
 						this.ctx.fillText(this.options.scaleLabel.labelString, 0, 0);
 						this.ctx.restore();
 					}
+
+					if (this.options.drawLineAtIndex !== 0) {
+						var yPixel = this.getPixelForTick(this.options.drawLineAtIndex);
+						this.ctx.lineWidth = this.options.gridLines.lineWidth;
+						this.ctx.strokeStyle = "#ff0000";
+						this.ctx.moveTo(chartArea.left, yPixel);
+						this.ctx.lineTo(chartArea.right, yPixel);					
+						this.ctx.stroke();
+					};
 				}
 
 				// Draw the line at the edge of the axis
