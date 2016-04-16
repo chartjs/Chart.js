@@ -156,7 +156,7 @@ module.exports = function(Chart) {
 			var offset = {x: 0, y: 0};
 
 			// If the chart's circumference isn't a full circle, calculate minSize as a ratio of the width/height of the arc
-			if (this.chart.options.circumference && this.chart.options.circumference < Math.PI * 2.0) {
+			if (this.chart.options.circumference < Math.PI * 2.0) {
 				var startAngle = this.chart.options.rotation % (Math.PI * 2.0);
 				startAngle += Math.PI * 2.0 * (startAngle >= Math.PI ? -1 : startAngle < -Math.PI ? 1 : 0);
 				var endAngle = startAngle + this.chart.options.circumference;
@@ -197,9 +197,9 @@ module.exports = function(Chart) {
 		updateElement: function(arc, index, reset) {
 			var centerX = (this.chart.chartArea.left + this.chart.chartArea.right) / 2;
 			var centerY = (this.chart.chartArea.top + this.chart.chartArea.bottom) / 2;
-			var startAngle = this.chart.options.rotation || (Math.PI * -0.5); // non reset case handled later
-			var endAngle = this.chart.options.rotation || (Math.PI * -0.5); // non reset case handled later
-			var circumference = reset && this.chart.options.animation.animateRotate ? 0 : this.calculateCircumference(this.getDataset().data[index]) * ((this.chart.options.circumference || (2.0 * Math.PI)) / (2.0 * Math.PI));
+			var startAngle = this.chart.options.rotation; // non reset case handled later
+			var endAngle = this.chart.options.rotation; // non reset case handled later
+			var circumference = reset && this.chart.options.animation.animateRotate ? 0 : this.calculateCircumference(this.getDataset().data[index]) * (this.chart.options.circumference / (2.0 * Math.PI));
 			var innerRadius = reset && this.chart.options.animation.animateScale ? 0 : this.innerRadius;
 			var outerRadius = reset && this.chart.options.animation.animateScale ? 0 : this.outerRadius;
 
@@ -232,7 +232,7 @@ module.exports = function(Chart) {
 			if (!reset) {
 
 				if (index === 0) {
-					arc._model.startAngle = this.chart.options.rotation || (Math.PI * -0.5);
+					arc._model.startAngle = this.chart.options.rotation;
 				} else {
 					arc._model.startAngle = this.getDataset().metaData[index - 1]._model.endAngle;
 				}
@@ -270,7 +270,7 @@ module.exports = function(Chart) {
 
 		calculateCircumference: function(value) {
 			if (this.getDataset().total > 0 && !isNaN(value)) {
-				return (Math.PI * 1.999999) * (value / this.getDataset().total);
+				return (Math.PI * 2.0) * (value / this.getDataset().total);
 			} else {
 				return 0;
 			}
