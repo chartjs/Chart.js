@@ -71,6 +71,12 @@ module.exports = function(Chart) {
 		//The percentage of the chart that we cut out of the middle.
 		cutoutPercentage: 50,
 
+		//The rotation of the chart, where the first data arc begins.
+		rotation: Math.PI * -0.5,
+
+		//The total circumference of the chart.
+		circumference: Math.PI * 2.0,
+
 		// Need to override these to give a nice default
 		tooltips: {
 			callbacks: {
@@ -144,11 +150,35 @@ module.exports = function(Chart) {
 		},
 
 		update: function update(reset) {
-			var minSize = Math.min(this.chart.chartArea.right - this.chart.chartArea.left, this.chart.chartArea.bottom - this.chart.chartArea.top);
+			var availableWidth = this.chart.chartArea.right - this.chart.chartArea.left - this.chart.options.elements.arc.borderWidth;
+			var availableHeight = this.chart.chartArea.bottom - this.chart.chartArea.top - this.chart.options.elements.arc.borderWidth;
+			var minSize = Math.min(availableWidth, availableHeight);
+			var offset = {x: 0, y: 0};
 
-			this.chart.outerRadius = Math.max((minSize / 2) - this.chart.options.elements.arc.borderWidth / 2, 0);
+			// If the chart's circumference isn't a full circle, calculate minSize as a ratio of the width/height of the arc
+			if (this.chart.options.circumference && this.chart.options.circumference < Math.PI * 2.0) {
+				var startAngle = this.chart.options.rotation % (Math.PI * 2.0);
+				startAngle += Math.PI * 2.0 * (startAngle >= Math.PI ? -1 : startAngle < -Math.PI ? 1 : 0);
+				var endAngle = startAngle + this.chart.options.circumference;
+				var start = {x: Math.cos(startAngle), y: Math.sin(startAngle)};
+				var end = {x: Math.cos(endAngle), y: Math.sin(endAngle)};
+				var contains0 = (startAngle <= 0 && 0 <= endAngle) || (startAngle <= Math.PI * 2.0 && Math.PI * 2.0 <= endAngle);
+				var contains90 = (startAngle <= Math.PI * 0.5 && Math.PI * 0.5 <= endAngle) || (startAngle <= Math.PI * 2.5 && Math.PI * 2.5 <= endAngle);
+				var contains180 = (startAngle <= -Math.PI && -Math.PI <= endAngle) || (startAngle <= Math.PI && Math.PI <= endAngle);
+				var contains270 = (startAngle <= -Math.PI * 0.5 && -Math.PI * 0.5 <= endAngle) || (startAngle <= Math.PI * 1.5 && Math.PI * 1.5 <= endAngle);
+				var cutout = this.chart.options.cutoutPercentage / 100.0;
+				var min = {x: contains180 ? -1 : Math.min(start.x * (start.x < 0 ? 1 : cutout), end.x * (end.x < 0 ? 1 : cutout)), y: contains270 ? -1 : Math.min(start.y * (start.y < 0 ? 1 : cutout), end.y * (end.y < 0 ? 1 : cutout))};
+				var max = {x: contains0 ? 1 : Math.max(start.x * (start.x > 0 ? 1 : cutout), end.x * (end.x > 0 ? 1 : cutout)), y: contains90 ? 1 : Math.max(start.y * (start.y > 0 ? 1 : cutout), end.y * (end.y > 0 ? 1 : cutout))};
+				var size = {width: (max.x - min.x) * 0.5, height: (max.y - min.y) * 0.5};
+				minSize = Math.min(availableWidth / size.width, availableHeight / size.height);
+				offset = {x: (max.x + min.x) * -0.5, y: (max.y + min.y) * -0.5};
+			}
+
+			this.chart.outerRadius = Math.max(minSize / 2, 0);
 			this.chart.innerRadius = Math.max(this.chart.options.cutoutPercentage ? (this.chart.outerRadius / 100) * (this.chart.options.cutoutPercentage) : 1, 0);
 			this.chart.radiusLength = (this.chart.outerRadius - this.chart.innerRadius) / this.getVisibleDatasetCount();
+			this.chart.offsetX = offset.x * this.chart.outerRadius;
+			this.chart.offsetY = offset.y * this.chart.outerRadius;
 
 			this.getDataset().total = 0;
 			helpers.each(this.getDataset().data, function(value) {
@@ -167,9 +197,9 @@ module.exports = function(Chart) {
 		updateElement: function(arc, index, reset) {
 			var centerX = (this.chart.chartArea.left + this.chart.chartArea.right) / 2;
 			var centerY = (this.chart.chartArea.top + this.chart.chartArea.bottom) / 2;
-			var startAngle = Math.PI * -0.5; // non reset case handled later
-			var endAngle = Math.PI * -0.5; // non reset case handled later
-			var circumference = reset && this.chart.options.animation.animateRotate ? 0 : this.calculateCircumference(this.getDataset().data[index]);
+			var startAngle = this.chart.options.rotation || (Math.PI * -0.5); // non reset case handled later
+			var endAngle = this.chart.options.rotation || (Math.PI * -0.5); // non reset case handled later
+			var circumference = reset && this.chart.options.animation.animateRotate ? 0 : this.calculateCircumference(this.getDataset().data[index]) * ((this.chart.options.circumference || (2.0 * Math.PI)) / (2.0 * Math.PI));
 			var innerRadius = reset && this.chart.options.animation.animateScale ? 0 : this.innerRadius;
 			var outerRadius = reset && this.chart.options.animation.animateScale ? 0 : this.outerRadius;
 
@@ -181,8 +211,8 @@ module.exports = function(Chart) {
 
 				// Desired view properties
 				_model: {
-					x: centerX,
-					y: centerY,
+					x: centerX + this.chart.offsetX,
+					y: centerY + this.chart.offsetY,
 					startAngle: startAngle,
 					endAngle: endAngle,
 					circumference: circumference,
@@ -202,7 +232,7 @@ module.exports = function(Chart) {
 			if (!reset) {
 
 				if (index === 0) {
-					arc._model.startAngle = Math.PI * -0.5; // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
+					arc._model.startAngle = this.chart.options.rotation || (Math.PI * -0.5);
 				} else {
 					arc._model.startAngle = this.getDataset().metaData[index - 1]._model.endAngle;
 				}

@@ -30,9 +30,18 @@ module.exports = function(Chart, moment) {
           y: chartY
         });
 
-        // Put into the range of (-PI/2, 3PI/2]
-        var startAngle = vm.startAngle < (-0.5 * Math.PI) ? vm.startAngle + (2.0 * Math.PI) : vm.startAngle > (1.5 * Math.PI) ? vm.startAngle - (2.0 * Math.PI) : vm.startAngle;
-        var endAngle = vm.endAngle < (-0.5 * Math.PI) ? vm.endAngle + (2.0 * Math.PI) : vm.endAngle > (1.5 * Math.PI) ? vm.endAngle - (2.0 * Math.PI) : vm.endAngle;
+        //Sanitise angle range
+        var startAngle = vm.startAngle;
+        var endAngle = vm.endAngle;
+        while (endAngle < startAngle) {
+          endAngle += 2.0 * Math.PI;
+        }
+        while (pointRelativePosition.angle > endAngle) {
+          pointRelativePosition.angle -= 2.0 * Math.PI;
+        }
+        while (pointRelativePosition.angle < startAngle) {
+          pointRelativePosition.angle += 2.0 * Math.PI;
+        }
 
         //Check if within the range of the open/close angle
         var betweenAngles = (pointRelativePosition.angle >= startAngle && pointRelativePosition.angle <= endAngle),
