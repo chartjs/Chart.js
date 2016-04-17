@@ -36,7 +36,7 @@ describe('Test the plugin system', function() {
 		};
 		Chart.pluginService.register(myplugin);
 		
-		Chart.pluginService.notifyPlugins('trigger', { count: 10 });
+		Chart.pluginService.notifyPlugins('trigger', [{ count: 10 }]);
 
 		expect(myplugin.count).toBe(10);
 	});

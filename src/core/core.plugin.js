@@ -22,10 +22,10 @@ module.exports = function(Chart) {
 		},
 
 		// Iterate over all plugins
-		notifyPlugins: function(method, chartInstance, scope) {
+		notifyPlugins: function(method, args, scope) {
 			helpers.each(Chart.plugins, function(plugin) {
 				if (plugin[method] && typeof plugin[method] === 'function') {
-					plugin[method].call(scope, chartInstance);
+					plugin[method].apply(scope, args);
 				}
 			}, scope);
 		}
