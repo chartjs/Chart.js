@@ -35,6 +35,7 @@ afterUpdate | Function | undefined | Callback that runs at the end of the update
 *gridLines*.lineWidth | Number | 1 | Stroke width of grid lines
 *gridLines*.drawOnChartArea | Boolean | true | If true, draw lines on the chart area inside the axis lines. This is useful when there are multiple axes and you need to control which grid lines are drawn
 *gridLines*.drawTicks | Boolean | true |  If true, draw lines beside the ticks in the axis area beside the chart.
+*gridLines*.tickMarkLength | Number | 10 | Length in pixels that the grid lines will draw into the axis area.
 *gridLines*.zeroLineWidth | Number | 1 | Stroke width of the grid line for the first index (index 0).
 *gridLines*.zeroLineColor | Color | "rgba(0, 0, 0, 0.25)" | Stroke color of the grid line for the first index (index 0).
 *gridLines*.offsetGridLines | Boolean | false | If true, offset labels from grid lines.
