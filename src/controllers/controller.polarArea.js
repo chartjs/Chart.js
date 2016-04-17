@@ -38,15 +38,23 @@ module.exports = function(Chart) {
 				generateLabels: function(data) {
 					if (data.labels.length && data.datasets.length) {
 						return data.labels.map(function(label, i) {
+							var ds = data.datasets[0];
+							var arc = ds.metaData[i];
+							var fill = arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(ds.backgroundColor, i, this.chart.options.elements.arc.backgroundColor);
+							var stroke = arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(ds.borderColor, i, this.chart.options.elements.arc.borderColor);
+							var bw = arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(ds.borderWidth, i, this.chart.options.elements.arc.borderWidth);
+
 							return {
 								text: label,
-								fillStyle: data.datasets[0].backgroundColor[i],
+								fillStyle: fill,
+								strokeStyle: stroke,
+								lineWidth: bw,
 								hidden: isNaN(data.datasets[0].data[i]),
 
 								// Extra data used for toggling the correct item
 								index: i
 							};
-						});
+						}, this);
 					} else {
 						return [];
 					}

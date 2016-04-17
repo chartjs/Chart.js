@@ -74,7 +74,8 @@ describe('Test the doughnut chart default config', function() {
 			labels: ['label1', 'label2', 'label3'],
 			datasets: [{
 				data: [10, 20, NaN],
-				backgroundColor: ['red', 'green', 'blue']
+				backgroundColor: ['red', 'green', 'blue'],
+				metaData: [{}, {}, {}]
 			}]
 		};
 
@@ -82,20 +83,37 @@ describe('Test the doughnut chart default config', function() {
 			text: 'label1',
 			fillStyle: 'red',
 			hidden: false,
-			index: 0
+			index: 0,
+			strokeStyle: '#000',
+			lineWidth: 2
 		}, {
 			text: 'label2',
 			fillStyle: 'green',
 			hidden: false,
-			index: 1
+			index: 1,
+			strokeStyle: '#000',
+			lineWidth: 2
 		}, {
 			text: 'label3',
 			fillStyle: 'blue',
 			hidden: true,
-			index: 2
+			index: 2,
+			strokeStyle: '#000',
+			lineWidth: 2
 		}];
 
-		expect(config.legend.labels.generateLabels(data)).toEqual(expected);
+		var chart = {
+			data: data,
+			options: {
+				elements: {
+					arc: {
+						borderWidth: 2,
+						borderColor: '#000'
+					}
+				}
+			}
+		};
+		expect(config.legend.labels.generateLabels.call({ chart: chart }, data)).toEqual(expected);
 	});
 
 	it('should hide the correct arc when a legend item is clicked', function() {
@@ -189,7 +207,8 @@ describe('Test the polar area chart default config', function() {
 			labels: ['label1', 'label2', 'label3'],
 			datasets: [{
 				data: [10, 20, NaN],
-				backgroundColor: ['red', 'green', 'blue']
+				backgroundColor: ['red', 'green', 'blue'],
+				metaData: [{}, {}, {}]
 			}]
 		};
 
@@ -197,20 +216,37 @@ describe('Test the polar area chart default config', function() {
 			text: 'label1',
 			fillStyle: 'red',
 			hidden: false,
-			index: 0
+			index: 0,
+			strokeStyle: '#000',
+			lineWidth: 2
 		}, {
 			text: 'label2',
 			fillStyle: 'green',
 			hidden: false,
-			index: 1
+			index: 1,
+			strokeStyle: '#000',
+			lineWidth: 2
 		}, {
 			text: 'label3',
 			fillStyle: 'blue',
 			hidden: true,
-			index: 2
+			index: 2,
+			strokeStyle: '#000',
+			lineWidth: 2
 		}];
 
-		expect(config.legend.labels.generateLabels(data)).toEqual(expected);
+		var chart = {
+			data: data,
+			options: {
+				elements: {
+					arc: {
+						borderWidth: 2,
+						borderColor: '#000'
+					}
+				}
+			}
+		};
+		expect(config.legend.labels.generateLabels.call({ chart: chart }, data)).toEqual(expected);
 	});
 
 	it('should hide the correct arc when a legend item is clicked', function() {
