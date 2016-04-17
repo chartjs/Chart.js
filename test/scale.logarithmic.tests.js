@@ -14,6 +14,7 @@ describe('Logarithmic Scale tests', function() {
 				color: "rgba(0, 0, 0, 0.1)",
 				drawOnChartArea: true,
 				drawTicks: true,
+				tickMarkLength: 10,
 				lineWidth: 1,
 				offsetGridLines: false,
 				display: true,

@@ -16,6 +16,7 @@ describe('Category scale tests', function() {
 				color: "rgba(0, 0, 0, 0.1)",
 				drawOnChartArea: true,
 				drawTicks: true, // draw ticks extending towards the label
+				tickMarkLength: 10,
 				lineWidth: 1,
 				offsetGridLines: false,
 				display: true,
