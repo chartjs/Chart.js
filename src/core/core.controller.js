@@ -43,9 +43,8 @@ module.exports = function(Chart) {
 	helpers.extend(Chart.Controller.prototype, {
 
 		initialize: function initialize() {
-
-			// TODO
-			// If BeforeInit(this) doesn't return false, proceed
+			// Before init plugin notification
+			Chart.pluginService.notifyPlugins('beforeInit', [this]);
 
 			this.bindEvents();
 
@@ -60,8 +59,8 @@ module.exports = function(Chart) {
 			this.initToolTip();
 			this.update();
 
-			// TODO
-			// If AfterInit(this) doesn't return false, proceed
+			// After init plugin notification
+			Chart.pluginService.notifyPlugins('afterInit', [this]);
 
 			return this;
 		},
@@ -243,6 +242,8 @@ module.exports = function(Chart) {
 		},
 
 		update: function update(animationDuration, lazy) {
+			Chart.pluginService.notifyPlugins('beforeUpdate', [this]);
+
 			// In case the entire data object changed
 			this.tooltip._data = this.data;
 
@@ -266,6 +267,8 @@ module.exports = function(Chart) {
 				dataset.controller.update();
 			});
 			this.render(animationDuration, lazy);
+
+			Chart.pluginService.notifyPlugins('afterUpdate', [this]);
 		},
 
 		render: function render(duration, lazy) {
@@ -302,6 +305,8 @@ module.exports = function(Chart) {
 			var easingDecimal = ease || 1;
 			this.clear();
 
+			Chart.pluginService.notifyPlugins('beforeDraw', [this, easingDecimal]);
+
 			// Draw all the scales
 			helpers.each(this.boxes, function(box) {
 				box.draw(this.chartArea);
@@ -328,6 +333,8 @@ module.exports = function(Chart) {
 
 			// Finally draw the tooltip
 			this.tooltip.transition(easingDecimal).draw();
+
+			Chart.pluginService.notifyPlugins('afterDraw', [this, easingDecimal]);
 		},
 
 		// Get the single element that was clicked on

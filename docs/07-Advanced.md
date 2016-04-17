@@ -366,6 +366,32 @@ The built in controller types are:
 #### Bar Controller
 The bar controller has a special property that you should be aware of. To correctly calculate the width of a bar, the controller must determine the number of datasets that map to bars. To do this, the bar controller attaches a property `bar` to the dataset during initialization. If you are creating a replacement or updated bar controller, you should do the same. This will ensure that charts with regular bars and your new derived bars will work seamlessly.
 
+### Creating Plugins
+
+Starting with v2.1.0, you can create plugins for chart.js. To register your plugin, simply call `Chart.pluginService.register` and pass your plugin in.
+Plugins will be called at the following times
+* Start of initialization
+* End of initialization
+* Start of update
+* End of update
+* Start of draw
+* End of draw
+
+Plugins should derive from Chart.PluginBase and implement the following interface
+```javascript
+{
+	beforeInit: function(chartInstance) { },
+	afterInit: function(chartInstance) { },
+
+	beforeUpdate: function(chartInstance) { },
+	afterUpdate: function(chartInstance) { },
+
+	// Easing is for animation
+	beforeDraw: function(chartInstance, easing) { },
+	afterDraw: function(chartInstance, easing) { }
+}
+```
+
 ### Building Chart.js
 
 Chart.js uses <a href="http://gulpjs.com/" target="_blank">gulp</a> to build the library into a single JavaScript file. 
