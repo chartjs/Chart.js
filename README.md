@@ -1,6 +1,6 @@
 # Chart.js 
 
-[![Build Status](https://travis-ci.org/nnnick/Chart.js.svg?branch=master)](https://travis-ci.org/nnnick/Chart.js) [![Code Climate](https://codeclimate.com/github/nnnick/Chart.js/badges/gpa.svg)](https://codeclimate.com/github/nnnick/Chart.js)[![Coverage Status](https://coveralls.io/repos/nnnick/Chart.js/badge.svg?branch=master)](https://coveralls.io/r/nnnick/Chart.js?branch=v2.0-dev)
+[![Build Status](https://travis-ci.org/nnnick/Chart.js.svg?branch=master)](https://travis-ci.org/nnnick/Chart.js) [![Code Climate](https://codeclimate.com/github/nnnick/Chart.js/badges/gpa.svg)](https://codeclimate.com/github/nnnick/Chart.js)[![Coverage Status](https://coveralls.io/repos/nnnick/Chart.js/badge.svg?branch=master)](https://coveralls.io/r/nnnick/Chart.js?branch=master)
 
 [![Chart.js on Slack](https://img.shields.io/badge/slack-Chart.js-blue.svg)](https://chartjs-slack-automation.herokuapp.com/)
 
