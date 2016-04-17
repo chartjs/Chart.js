@@ -233,23 +233,27 @@ To work with Chart.js, custom scale types must implement the following interface
 	determineDataLimits: function() {},
 
 	// Generate tick marks. this.chart is the chart instance. The data object can be accessed as this.chart.data
-	// buildTicks() should create a ticks array on the scale instance, if you intend to use any of the implementations from the base class
+	// buildTicks() should create a ticks array on the axis instance, if you intend to use any of the implementations from the base class
 	buildTicks: function() {},
 
 	// Get the value to show for the data at the given index of the the given dataset, ie this.chart.data.datasets[datasetIndex].data[index]
 	getLabelForIndex: function(index, datasetIndex) {},
 
-	// Get the pixel (x coordinate for horizontal scale, y coordinate for vertical scales) for a given value
+	// Get the pixel (x coordinate for horizontal axis, y coordinate for vertical axis) for a given value
 	// @param index: index into the ticks array
 	// @param includeOffset: if true, get the pixel halway between the given tick and the next
 	getPixelForTick: function(index, includeOffset) {},
 
-	// Get the pixel (x coordinate for horizontal scale, y coordinate for vertical scales) for a given value
+	// Get the pixel (x coordinate for horizontal axis, y coordinate for vertical axis) for a given value
 	// @param value : the value to get the pixel for
 	// @param index : index into the data array of the value
 	// @param datasetIndex : index of the dataset the value comes from
 	// @param includeOffset : if true, get the pixel halway between the given tick and the next
 	getPixelForValue: function(value, index, datasetIndex, includeOffset) {}
+
+	// Get the value for a given pixel (x coordinate for horizontal axis, y coordinate for vertical axis)
+	// @param pixel : pixel value
+	getValueForPixel: function(pixel) {}
 }
 ```
 
@@ -389,6 +393,8 @@ Plugins should derive from Chart.PluginBase and implement the following interfac
 	// Easing is for animation
 	beforeDraw: function(chartInstance, easing) { },
 	afterDraw: function(chartInstance, easing) { }
+
+	destroy: function(chartInstance) { }
 }
 ```
 

@@ -51,5 +51,8 @@ module.exports = function(Chart) {
 
 		// Called at end of draw
 		afterDraw: helpers.noop,
+
+		// Called during destroy
+		destory: helpers.noop,
 	});
 };
