@@ -9,25 +9,31 @@ module.exports = function(Chart) {
 	};
 
 	var DatasetScale = Chart.Scale.extend({
-		buildTicks: function(index) {
-			this.startIndex = 0;
-			this.endIndex = this.chart.data.labels.length;
+		// Implement this so that 
+		determineDataLimits: function() {
+			this.minIndex = 0;
+			this.maxIndex = this.chart.data.labels.length;
 			var findIndex;
 
 			if (this.options.ticks.min !== undefined) {
 				// user specified min value
 				findIndex = helpers.indexOf(this.chart.data.labels, this.options.ticks.min);
-				this.startIndex = findIndex !== -1 ? findIndex : this.startIndex;
+				this.minIndex = findIndex !== -1 ? findIndex : this.minIndex;
 			}
 
 			if (this.options.ticks.max !== undefined) {
 				// user specified max value
 				findIndex = helpers.indexOf(this.chart.data.labels, this.options.ticks.max);
-				this.endIndex = findIndex !== -1 ? findIndex : this.endIndex;
+				this.maxIndex = findIndex !== -1 ? findIndex : this.maxIndex;
 			}
 
+			this.min = this.chart.data.labels[this.minIndex];
+			this.max = this.chart.data.labels[this.maxIndex];
+		},
+
+		buildTicks: function(index) {
 			// If we are viewing some subset of labels, slice the original array
-			this.ticks = (this.startIndex === 0 && this.endIndex === this.chart.data.labels.length) ? this.chart.data.labels : this.chart.data.labels.slice(this.startIndex, this.endIndex + 1);
+			this.ticks = (this.minIndex === 0 && this.maxIndex === this.chart.data.labels.length) ? this.chart.data.labels : this.chart.data.labels.slice(this.minIndex, this.maxIndex + 1);
 		},
 
 		getLabelForIndex: function(index, datasetIndex) {
@@ -42,7 +48,7 @@ module.exports = function(Chart) {
 			if (this.isHorizontal()) {
 				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
 				var valueWidth = innerWidth / offsetAmt;
-				var widthOffset = (valueWidth * (index - this.startIndex)) + this.paddingLeft;
+				var widthOffset = (valueWidth * (index - this.minIndex)) + this.paddingLeft;
 
 				if (this.options.gridLines.offsetGridLines && includeOffset) {
 					widthOffset += (valueWidth / 2);
@@ -52,7 +58,7 @@ module.exports = function(Chart) {
 			} else {
 				var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
 				var valueHeight = innerHeight / offsetAmt;
-				var heightOffset = (valueHeight * (index - this.startIndex)) + this.paddingTop;
+				var heightOffset = (valueHeight * (index - this.minIndex)) + this.paddingTop;
 
 				if (this.options.gridLines.offsetGridLines && includeOffset) {
 					heightOffset += (valueHeight / 2);
@@ -62,7 +68,7 @@ module.exports = function(Chart) {
 			}
 		},
 		getPixelForTick: function(index, includeOffset) {
-			return this.getPixelForValue(this.ticks[index], index + this.startIndex, null, includeOffset);
+			return this.getPixelForValue(this.ticks[index], index + this.minIndex, null, includeOffset);
 		}
 	});
 

@@ -66,6 +66,7 @@ describe('Category scale tests', function() {
 			id: scaleID
 		});
 
+		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.ticks).toEqual(mockData.labels);
 	});
@@ -92,6 +93,7 @@ describe('Category scale tests', function() {
 			id: scaleID
 		});
 
+		scale.determineDataLimits();
 		scale.buildTicks();
 
 		expect(scale.getLabelForIndex(1)).toBe('tick2');
