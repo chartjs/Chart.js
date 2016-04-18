@@ -24,15 +24,17 @@ They are also registered under two aliases in the `Chart` core. Other than their
 
 ```javascript
 // For a pie chart
-var myPieChart = new Chart(ctx[0],{
-	type:'pie',
+var myPieChart = new Chart(ctx,{
+	type: 'pie',
 	data: data,
 	options: options
 });
+```
 
+```javascript
 // And for a doughnut chart
-var myDoughnutChart = new Chart(ctx[1], {
-	type:'doughnut',
+var myDoughnutChart = new Chart(ctx, {
+	type: 'doughnut',
 	data: data,
 	options: options
 });
