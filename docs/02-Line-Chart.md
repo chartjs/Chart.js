@@ -135,7 +135,7 @@ scales | - | - | -
 type | String | "category" | As defined in ["Category"](#scales-category-scale).
 id | String | "x-axis-1" | Id of the axis so that data can bind to it.
  | | |
- *scales*.yAxes | Array | `[{type:"linear","id":"y-axis-1"}]` | Defines all of the x axes used in the chart. See the [scale documentation](#getting-started-scales) for details on the available options.
+ *scales*.yAxes | Array | `[{type:"linear","id":"y-axis-1"}]` | Defines all of the y axes used in the chart. See the [scale documentation](#getting-started-scales) for details on the available options.
  *Options for yAxes* | | |
  type | String | "linear" | As defined in ["Linear"](#scales-linear-scale).
  id | String | "y-axis-1" | Id of the axis so that data can bind to it.
