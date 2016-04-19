@@ -143,7 +143,7 @@ var myPieChart = new Chart(ctx, {
 
 				// Otherwise, tooltip will be an object with all tooltip properties like:
 
-				// tooltip.caretHeight
+				// tooltip.caretSize
 				// tooltip.caretPadding
 				// tooltip.chart
 				// tooltip.cornerRadius
