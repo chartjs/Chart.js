@@ -26,29 +26,11 @@ new Chart(ctx, {
 ```javascript
 var data = {
 	datasets: [{
-		data: [
-			10,
-			32,
-			53,
-			14,
-			22,
-		],
-		backgroundColor: [
-			"#F7464A",
-			"#46BFBD",
-			"#FDB45C",
-			"#949FB1",
-			"#4D5360",
-		],
+		data: [10, 32, 53, 14, 22],
+		backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#4D5360"],
 		label: 'My dataset' // for legend
 	}],
-	labels: [
-		"Red",
-		"Green",
-		"Yellow",
-		"Grey",
-		"Dark Grey"
-	]
+	labels: ["Red", "Green", "Yellow", "Grey", "Dark Grey"]
 };
 ```
 As you can see, for the chart data you pass in an array of objects, with a value and a colour. The value attribute should be a number, while the color attribute should be a string. Similar to CSS, for this string you can use HEX notation, RGB, RGBA or HSL.

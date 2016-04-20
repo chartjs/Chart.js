@@ -77,12 +77,12 @@ new Chart(ctx, {
 	type: "radar",
 	data: data,
 	options: {
-			scale: {
-				reverse: true,
-				ticks: {
-					beginAtZero: true
-				}
+		scale: {
+			reverse: true,
+			ticks: {
+				beginAtZero: true
 			}
+		}
 	}
 });
 // This will create a chart with all of the default options, merged from the global config,

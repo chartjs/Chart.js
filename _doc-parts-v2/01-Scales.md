@@ -39,7 +39,7 @@ afterUpdate | Function | undefined | Callback that runs at the end of the update
 *gridLines*.zeroLineColor | Color | "rgba(0, 0, 0, 0.25)" | Stroke color of the grid line for the first index (index 0).
 *gridLines*.offsetGridLines | Boolean | false | If true, offset labels from grid lines.
 **scaleLabel** | Array | | Title for the entire axis.
-*scaleLabel*.display | Boolean | false | 
+*scaleLabel*.display | Boolean | false |
 *scaleLabel*.labelString | String | "" | The text for the title. (i.e. "# of People", "Response Choices")
 *scaleLabel*.fontColor | Color | "#666" | Font color for the scale title.
 *scaleLabel*.fontFamily| String | "Helvetica Neue" | Font family for the scale title, follows CSS font-family options.
@@ -68,17 +68,17 @@ afterUpdate | Function | undefined | Callback that runs at the end of the update
 The `callback` method may be used for advanced tick customization. The following callback would display every label in scientific notation
 ```javascript
 {
-    scales: {
-        xAxes: [{
-            ticks: {
-                // Return an empty string to draw the tick line but hide the tick label
-                // Return `null` or `undefined` to hide the tick line entirely
-               	userCallback: function(value, index, values) {
-    				return value.toExponential();
-    			}
-            }
-        }]
-    }
+	scales: {
+		xAxes: [{
+			ticks: {
+				// Return an empty string to draw the tick line but hide the tick label
+				// Return `null` or `undefined` to hide the tick line entirely
+				userCallback: function(value, index, values) {
+					return value.toExponential();
+				}
+			}
+		}]
+	}
 }
 ```
 
@@ -101,32 +101,32 @@ The linear scale extends the core scale class with the following tick template:
 ```javascript
 {
 	position: "left",
-    ticks: {
-        callback: function(tickValue, index, ticks) {
-            var delta = ticks[1] - ticks[0];
+	ticks: {
+		callback: function(tickValue, index, ticks) {
+			var delta = ticks[1] - ticks[0];
 
-            // If we have a number like 2.5 as the delta, figure out how many decimal places we need
-            if (Math.abs(delta) > 1) {
-                if (tickValue !== Math.floor(tickValue)) {
-                    // not an integer
-                    delta = tickValue - Math.floor(tickValue);
-                }
-            }
+			// If we have a number like 2.5 as the delta, figure out how many decimal places we need
+			if (Math.abs(delta) > 1) {
+				if (tickValue !== Math.floor(tickValue)) {
+					// not an integer
+						delta = tickValue - Math.floor(tickValue);
+					}
+				}
 
-            var logDelta = helpers.log10(Math.abs(delta));
-            var tickString = '';
+			var logDelta = helpers.log10(Math.abs(delta));
+			var tickString = '';
 
-            if (tickValue !== 0) {
-                var numDecimal = -1 * Math.floor(logDelta);
-                numDecimal = Math.max(Math.min(numDecimal, 20), 0); // toFixed has a max of 20 decimal places
-                tickString = tickValue.toFixed(numDecimal);
-            } else {
-            	tickString = '0'; // never show decimal places for 0
-            }
+			if (tickValue !== 0) {
+				var numDecimal = -1 * Math.floor(logDelta);
+				numDecimal = Math.max(Math.min(numDecimal, 20), 0); // toFixed has a max of 20 decimal places
+				tickString = tickValue.toFixed(numDecimal);
+			} else {
+				tickString = '0'; // never show decimal places for 0
+			}
 
-      		return tickString;
-      	}
-    }
+			return tickString;
+		}
+	}
 }
 ```
 
@@ -148,12 +148,12 @@ The log scale extends the core scale class with the following tick template:
 		callback: function(value) {
 			var remain = value / (Math.pow(10, Math.floor(Chart.helpers.log10(value))));
 
-        	if (remain === 1 || remain === 2 || remain === 5) {
-        		return value.toExponential();
-        	} else {
-        		return '';
-        	}
-        }
+			if (remain === 1 || remain === 2 || remain === 5) {
+				return value.toExponential();
+			} else {
+				return '';
+			}
+		}
 	}
 }
 ```
@@ -177,7 +177,7 @@ The time scale extends the core scale class with the following tick template:
 
 		// string - By default, no rounding is applied.  To round, set to a supported time unit eg. 'week', 'month', 'year', etc.
 		round: false,
-		
+
 		// Moment js for each of the units. Replaces `displayFormat`
 		// To override, use a pattern string from http://momentjs.com/docs/#/displaying/format/
 		displayFormats: {
