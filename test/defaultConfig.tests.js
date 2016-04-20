@@ -63,7 +63,7 @@ describe('Test the doughnut chart default config', function() {
 				}]
 			}
 		};
-		var expectedLegend = '<ul class="mychart-legend"><li><span style="background-color:red">label1</span></li><li><span style="background-color:green">label2</span></li></ul>';
+		var expectedLegend = '<ul class="mychart-legend"><li><span style="background-color:red"></span>label1</li><li><span style="background-color:green"></span>label2</li></ul>';
 
 		expect(config.legendCallback(chart)).toBe(expectedLegend);
 	});
