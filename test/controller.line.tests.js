@@ -284,7 +284,6 @@ describe('Line controller tests', function() {
       radius: 3,
       pointStyle: 'circle',
       skip: false,
-      tension: 0.1,
 
       // Point
       x: 82,
@@ -300,7 +299,6 @@ describe('Line controller tests', function() {
     expect(chart.data.datasets[0].metaData[1]._model).toEqual({
       x: 132,
       y: 15,
-      tension: 0.1,
       radius: 3,
       pointStyle: 'circle',
       backgroundColor: 'rgba(0,0,0,0.1)',
@@ -317,7 +315,6 @@ describe('Line controller tests', function() {
     expect(chart.data.datasets[0].metaData[2]._model).toEqual({
       x: 182,
       y: 156,
-      tension: 0.1,
       radius: 3,
       pointStyle: 'circle',
       backgroundColor: 'rgba(0,0,0,0.1)',
@@ -339,7 +336,6 @@ describe('Line controller tests', function() {
       radius: 3,
       pointStyle: 'circle',
       skip: false,
-      tension: 0.1,
 
       // Point
       x: 232,
@@ -391,7 +387,6 @@ describe('Line controller tests', function() {
     expect(chart.data.datasets[0].metaData[0]._model).toEqual({
       x: 82,
       y: 62,
-      tension: 0,
       radius: 22,
       pointStyle: 'circle',
       backgroundColor: 'rgb(128, 129, 130)',
@@ -408,7 +403,6 @@ describe('Line controller tests', function() {
     expect(chart.data.datasets[0].metaData[1]._model).toEqual({
       x: 132,
       y: 15,
-      tension: 0,
       radius: 22,
       pointStyle: 'circle',
       backgroundColor: 'rgb(128, 129, 130)',
@@ -430,7 +424,6 @@ describe('Line controller tests', function() {
       radius: 22,
       pointStyle: 'circle',
       skip: false,
-      tension: 0,
 
       // Point
       x: 182,
@@ -451,7 +444,6 @@ describe('Line controller tests', function() {
       radius: 22,
       pointStyle: 'circle',
       skip: false,
-      tension: 0,
 
       // Point
       x: 232,
@@ -466,7 +458,7 @@ describe('Line controller tests', function() {
 
     // Use custom styles for lines & first point
     chart.data.datasets[0].metaDataset.custom = {
-      tension: 0.25,
+      tension: 0.15,
       backgroundColor: 'rgb(55, 55, 54)',
       borderColor: 'rgb(8, 7, 6)',
       borderWidth: 0.3,
@@ -483,7 +475,6 @@ describe('Line controller tests', function() {
       backgroundColor: 'rgb(0, 1, 3)',
       borderColor: 'rgb(4, 6, 8)',
       borderWidth: 0.787,
-      tension: 0.15,
       skip: true,
       hitRadius: 5,
     };
@@ -499,7 +490,7 @@ describe('Line controller tests', function() {
       borderJoinStyle: 'round',
       borderWidth: 0.3,
       fill: true,
-      tension: 0.25,
+      tension: 0.15,
 
       scaleTop: 0,
       scaleBottom: 200,
@@ -509,7 +500,6 @@ describe('Line controller tests', function() {
     expect(chart.data.datasets[0].metaData[0]._model).toEqual({
       x: 82,
       y: 62,
-      tension: 0.15,
       radius: 2.2,
       pointStyle: 'circle',
       backgroundColor: 'rgb(0, 1, 3)',

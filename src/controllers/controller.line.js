@@ -182,7 +182,6 @@ module.exports = function(Chart) {
 				x: xScale.getPixelForValue(this.getDataset().data[index], index, this.index, this.chart.isCombo),
 				y: reset ? scaleBase : this.calculatePointY(this.getDataset().data[index], index, this.index, this.chart.isCombo),
 				// Appearance
-				tension: point.custom && point.custom.tension ? point.custom.tension : helpers.getValueOrDefault(this.getDataset().tension, this.chart.options.elements.line.tension),
 				radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().radius, index, this.chart.options.elements.point.radius),
 				pointStyle: point.custom && point.custom.pointStyle ? point.custom.pointStyle : helpers.getValueAtIndexOrDefault(this.getDataset().pointStyle, index, this.chart.options.elements.point.pointStyle),
 				backgroundColor: this.getPointBackgroundColor(point, index),
@@ -233,7 +232,7 @@ module.exports = function(Chart) {
 					helpers.previousItem(this.getDataset().metaData, index)._model,
 					point._model,
 					helpers.nextItem(this.getDataset().metaData, index)._model,
-					point._model.tension
+					this.getDataset().metaDataset._model.tension
 				);
 
 				// Prevent the bezier going outside of the bounds of the graph
