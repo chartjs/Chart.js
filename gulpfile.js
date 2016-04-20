@@ -54,7 +54,7 @@ gulp.task('default', ['build', 'watch']);
 
 function buildTask() {
 
-  var bundled = browserify('./src/Chart.js')
+  var bundled = browserify('./src/chart.js')
     .bundle()
     .pipe(source('Chart.bundle.js'))
     .pipe(streamify(replace('{{ version }}', package.version)))
@@ -65,7 +65,7 @@ function buildTask() {
     .pipe(streamify(concat('Chart.bundle.min.js')))
     .pipe(gulp.dest(outDir));
 
-  var nonBundled = browserify('./src/Chart.js')
+  var nonBundled = browserify('./src/chart.js')
     .ignore('moment')
     .bundle()
     .pipe(source('Chart.js'))
