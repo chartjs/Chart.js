@@ -28,7 +28,7 @@ myLineChart.destroy();
 Triggers an update of the chart. This can be safely called after replacing the entire data object. This will update all scales, legends, and then re-render the chart.
 
 ```javascript
-// duration is the time for the animation of the redraw in miliseconds
+// duration is the time for the animation of the redraw in milliseconds
 // lazy is a boolean. if true, the animation can be interupted by other animations
 myLineChart.data.datasets[0].data[2] = 50; // Would update the first dataset's value of 'March' to be 50
 myLineChart.update(); // Calling update now animates the position of March from 90 to 50.
@@ -39,7 +39,7 @@ myLineChart.update(); // Calling update now animates the position of March from 
 Triggers a redraw of all chart elements. Note, this does not update elements for new data. Use `.update()` in that case.
 
 ```javascript
-// duration is the time for the animation of the redraw in miliseconds
+// duration is the time for the animation of the redraw in milliseconds
 // lazy is a boolean. if true, the animation can be interupted by other animations
 myLineChart.render(duration, lazy);
 ```
@@ -108,7 +108,7 @@ Looks for the element under the event point, then returns all elements at the sa
 Calling `getElementsAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the point elements that are at that the same position of that event.
 
 ```javascript
-canvas.onclick = function(evt){
+canvas.onclick = function(evt) {
 	var activePoints = myLineChart.getElementsAtEvent(evt);
 	// => activePoints is an array of points on the canvas that are at the same position as the click event.
 };
@@ -203,12 +203,12 @@ Scale instances are given the following properties during the fitting process.
 {
 	left: Number, // left edge of the scale bounding box
 	right: Number, // right edge of the bounding box'
-	top: Number, 
+	top: Number,
 	bottom: Number,
 	width: Number, // the same as right - left
 	height: Number, // the same as bottom - top
 
-	// Margin on each side. Like css, this is outside the bounding box. 
+	// Margin on each side. Like css, this is outside the bounding box.
 	margins: {
 		left: Number,
 		right: Number,
@@ -225,7 +225,7 @@ Scale instances are given the following properties during the fitting process.
 ```
 
 #### Scale Interface
-To work with Chart.js, custom scale types must implement the following interface. 
+To work with Chart.js, custom scale types must implement the following interface.
 
 ```javascript
 {
@@ -236,19 +236,19 @@ To work with Chart.js, custom scale types must implement the following interface
 	// buildTicks() should create a ticks array on the scale instance, if you intend to use any of the implementations from the base class
 	buildTicks: function() {},
 
-	// Get the value to show for the data at the given index of the the given dataset, ie this.chart.data.datasets[datasetIndex].data[index]
+	// Get the value to show for the data at the given index of the the given dataset, i.e. this.chart.data.datasets[datasetIndex].data[index]
 	getLabelForIndex: function(index, datasetIndex) {},
 
 	// Get the pixel (x coordinate for horizontal scale, y coordinate for vertical scales) for a given value
 	// @param index: index into the ticks array
-	// @param includeOffset: if true, get the pixel halway between the given tick and the next
+	// @param includeOffset: if true, get the pixel halfway between the given tick and the next
 	getPixelForTick: function(index, includeOffset) {},
 
 	// Get the pixel (x coordinate for horizontal scale, y coordinate for vertical scales) for a given value
 	// @param value : the value to get the pixel for
 	// @param index : index into the data array of the value
 	// @param datasetIndex : index of the dataset the value comes from
-	// @param includeOffset : if true, get the pixel halway between the given tick and the next
+	// @param includeOffset : if true, get the pixel halfway between the given tick and the next
 	getPixelForValue: function(value, index, datasetIndex, includeOffset) {}
 }
 ```
@@ -256,10 +256,10 @@ To work with Chart.js, custom scale types must implement the following interface
 Optionally, the following methods may also be overwritten, but an implementation is already provided by the `Chart.Scale` base class.
 
 ```javascript
-	// Transform the ticks array of the scale instance into strings. The default implementation simply calls this.options.ticks.callback(numericalTick, index, ticks); 
+	// Transform the ticks array of the scale instance into strings. The default implementation simply calls this.options.ticks.callback(numericalTick, index, ticks);
 	convertTicksToLabels: function() {},
 
-	// Determine how much the labels will rotate by. The default implementation will only rotate labels if the scale is horizontal. 
+	// Determine how much the labels will rotate by. The default implementation will only rotate labels if the scale is horizontal.
 	calculateTickRotation: function() {},
 
 	// Fits the scale into the canvas.
@@ -276,7 +276,7 @@ Optionally, the following methods may also be overwritten, but an implementation
 
 The Core.Scale base class also has some utility functions that you may find useful.
 ```javascript
-{	
+{
 	// Returns true if the scale instance is horizontal
 	isHorizontal: function() {},
 
@@ -301,7 +301,7 @@ Chart.controllers.MyType = Chart.DatasetController.extend({
 
 // Now we can create a new instance of our chart, using the Chart.js API
 new Chart(ctx, {
-	// this is the string the constructor was registered at, ie Chart.controllers.MyType
+	// this is the string the constructor was registered at, i.e. Chart.controllers.MyType
 	type: 'MyType',
 	data: data,
 	options: options
@@ -346,7 +346,7 @@ The following methods may optionally be overridden by derived dataset controller
 	// chart types using a single scale
 	linkScales: function() {},
 
-	// Called by the main chart controller when an update is triggered. The default implementation handles the number of data points changing and creating elements appropriately. 
+	// Called by the main chart controller when an update is triggered. The default implementation handles the number of data points changing and creating elements appropriately.
 	buildOrUpdateElements: function() {}
 }
 ```
@@ -368,7 +368,7 @@ The bar controller has a special property that you should be aware of. To correc
 
 ### Building Chart.js
 
-Chart.js uses <a href="http://gulpjs.com/" target="_blank">gulp</a> to build the library into a single JavaScript file. 
+Chart.js uses [gulp](http://gulpjs.com/) to build the library into a single JavaScript file.
 
 Firstly, we need to ensure development dependencies are installed. With node and npm installed, after cloning the Chart.js repo to a local directory, and navigating to that directory in the command line, we can run the following:
 
@@ -377,10 +377,18 @@ npm install
 npm install -g gulp
 ```
 
-This will install the local development dependencies for Chart.js, along with a CLI for the JavaScript task runner <a href="http://gulpjs.com/" target="_blank">gulp</a>.
+This will install the local development dependencies for Chart.js, along with a CLI for the JavaScript task runner [gulp](http://gulpjs.com/).
 
-Now, we can run the `gulp build` task.
+Now, we can run the `gulp build` task:
 
 ```bash
 gulp build
 ```
+
+To have the source files watched for modifications and the output files generated automatically, run the `gulp dev` task:
+
+```bash
+gulp dev
+```
+
+This will also run a local webserver to serve the Chart.js-files and samples.

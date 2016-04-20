@@ -48,16 +48,16 @@ var data = {
 			borderColor: "rgba(220,220,220,1)",
 
 			// String - cap style of the line. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap
-            borderCapStyle: 'butt',
+			borderCapStyle: 'butt',
 
-            // Array - Length and spacing of dashes. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
-            borderDash: [],
+			// Array - Length and spacing of dashes. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
+			borderDash: [],
 
-            // Number - Offset for line dashes. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
-            borderDashOffset: 0.0,
+			// Number - Offset for line dashes. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
+			borderDashOffset: 0.0,
 
-            // String - line join style. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin
-            borderJoinStyle: 'miter',
+			// String - line join style. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin
+			borderJoinStyle: 'miter',
 
 			// String or array - Point stroke color
 			pointBorderColor: "rgba(220,220,220,1)",
@@ -107,7 +107,7 @@ var data = {
 };
 ```
 
-The line chart requires an array of labels. This labels are shown on the X axis. There must be one label for each data point. More labels than datapoints are allowed, in which case the line ends at the last data point.
+The line chart requires an array of labels when using the ["category"](#scales-category-scale) scale for the x axis where they will also be displayed. There must be one label for each data point. More labels than datapoints are allowed, in which case the line ends at the last data point.
 The data for line charts is broken up into an array of datasets. Each dataset has a colour for the fill, a colour for the line and colours for the points and strokes of the points. These colours are strings just like CSS. You can use RGBA, RGB, HEX or HSL notation.
 
 The label key on each dataset is optional, and can be used when generating a scale for the chart.
@@ -129,10 +129,10 @@ scales | - | - | -
 type | String | "category" | As defined in ["Category"](#scales-category-scale).
 id | String | "x-axis-1" | Id of the axis so that data can bind to it.
  | | |
- *scales*.yAxes | Array | `[{type:"linear","id":"y-axis-1"}]` | Defines all of the x axes used in the chart. See the [scale documentation](#getting-started-scales) for details on the available options.
- *Options for yAxes* | | |
- type | String | "linear" | As defined in ["Linear"](#scales-linear-scale).
- id | String | "y-axis-1" | Id of the axis so that data can bind to it.
+*scales*.yAxes | Array | `[{type:"linear","id":"y-axis-1"}]` | Defines all of the x axes used in the chart. See the [scale documentation](#getting-started-scales) for details on the available options.
+*Options for yAxes* | | |
+type | String | "linear" | As defined in ["Linear"](#scales-linear-scale).
+id | String | "y-axis-1" | Id of the axis so that data can bind to it.
 
 You can override these for your `Chart` instance by passing a member `options` into the `Line` method.
 
