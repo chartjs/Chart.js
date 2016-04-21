@@ -1,17 +1,15 @@
-(function() {
-	"use strict";
+"use strict";
 
-	var root = this,
-		Chart = root.Chart,
-		//Cache a local reference to Chart.helpers
-		helpers = Chart.helpers;
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
 
 	Chart.defaults.doughnut = {
 		animation: {
 			//Boolean - Whether we animate the rotation of the Doughnut
 			animateRotate: true,
 			//Boolean - Whether we animate scaling the Doughnut from the centre
-			animateScale: false,
+			animateScale: false
 		},
 		aspectRatio: 1,
 		hover: {
@@ -23,11 +21,11 @@
 
 			if (chart.data.datasets.length) {
 				for (var i = 0; i < chart.data.datasets[0].data.length; ++i) {
-					text.push('<li><span style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '">');
+					text.push('<li><span style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
 					if (chart.data.labels[i]) {
 						text.push(chart.data.labels[i]);
 					}
-					text.push('</span></li>');
+					text.push('</li>');
 				}
 			}
 
@@ -37,16 +35,29 @@
 		legend: {
 			labels: {
 				generateLabels: function(data) {
-					return data.labels.map(function(label, i) {
-						return {
-							text: label,
-							fillStyle: data.datasets[0].backgroundColor[i],
-							hidden: isNaN(data.datasets[0].data[i]),
+					if (data.labels.length && data.datasets.length) {
 
-							// Extra data used for toggling the correct item
-							index: i
-						};
-					});
+						return data.labels.map(function(label, i) {
+							var ds = data.datasets[0];
+							var arc = ds.metaData[i];
+							var fill = arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(ds.backgroundColor, i, this.chart.options.elements.arc.backgroundColor);
+							var stroke = arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(ds.borderColor, i, this.chart.options.elements.arc.borderColor);
+							var bw = arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(ds.borderWidth, i, this.chart.options.elements.arc.borderWidth);
+
+							return {
+								text: label,
+								fillStyle: fill,
+								strokeStyle: stroke,
+								lineWidth: bw,
+								hidden: isNaN(data.datasets[0].data[i]),
+
+								// Extra data used for toggling the correct item
+								index: i
+							};
+						}, this);
+					} else {
+						return [];
+					}
 				}
 			},
 			onClick: function(e, legendItem) {
@@ -69,10 +80,18 @@
 		//The percentage of the chart that we cut out of the middle.
 		cutoutPercentage: 50,
 
+		//The rotation of the chart, where the first data arc begins.
+		rotation: Math.PI * -0.5,
+
+		//The total circumference of the chart.
+		circumference: Math.PI * 2.0,
+
 		// Need to override these to give a nice default
 		tooltips: {
 			callbacks: {
-				title: function() { return '';},
+				title: function() {
+					return '';
+				},
 				label: function(tooltipItem, data) {
 					return data.labels[tooltipItem.index] + ': ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 				}
@@ -97,7 +116,7 @@
 				this.getDataset().metaData[index] = this.getDataset().metaData[index] || new Chart.elements.Arc({
 					_chart: this.chart.chart,
 					_datasetIndex: this.index,
-					_index: index,
+					_index: index
 				});
 			}, this);
 		},
@@ -106,7 +125,7 @@
 			var arc = new Chart.elements.Arc({
 				_chart: this.chart.chart,
 				_datasetIndex: this.index,
-				_index: index,
+				_index: index
 			});
 
 			if (colorForNewElement && helpers.isArray(this.getDataset().backgroundColor)) {
@@ -121,7 +140,9 @@
 		},
 
 		getVisibleDatasetCount: function getVisibleDatasetCount() {
-			return helpers.where(this.chart.data.datasets, function(ds) { return helpers.isDatasetVisible(ds); }).length;
+			return helpers.where(this.chart.data.datasets, function(ds) {
+				return helpers.isDatasetVisible(ds);
+			}).length;
 		},
 
 		// Get index of the dataset in relation to the visible datasets. This allows determining the inner and outer radius correctly
@@ -138,11 +159,35 @@
 		},
 
 		update: function update(reset) {
-			var minSize = Math.min(this.chart.chartArea.right - this.chart.chartArea.left, this.chart.chartArea.bottom - this.chart.chartArea.top);
+			var availableWidth = this.chart.chartArea.right - this.chart.chartArea.left - this.chart.options.elements.arc.borderWidth;
+			var availableHeight = this.chart.chartArea.bottom - this.chart.chartArea.top - this.chart.options.elements.arc.borderWidth;
+			var minSize = Math.min(availableWidth, availableHeight);
+			var offset = {x: 0, y: 0};
 
-			this.chart.outerRadius = Math.max((minSize / 2) - this.chart.options.elements.arc.borderWidth / 2, 0);
+			// If the chart's circumference isn't a full circle, calculate minSize as a ratio of the width/height of the arc
+			if (this.chart.options.circumference < Math.PI * 2.0) {
+				var startAngle = this.chart.options.rotation % (Math.PI * 2.0);
+				startAngle += Math.PI * 2.0 * (startAngle >= Math.PI ? -1 : startAngle < -Math.PI ? 1 : 0);
+				var endAngle = startAngle + this.chart.options.circumference;
+				var start = {x: Math.cos(startAngle), y: Math.sin(startAngle)};
+				var end = {x: Math.cos(endAngle), y: Math.sin(endAngle)};
+				var contains0 = (startAngle <= 0 && 0 <= endAngle) || (startAngle <= Math.PI * 2.0 && Math.PI * 2.0 <= endAngle);
+				var contains90 = (startAngle <= Math.PI * 0.5 && Math.PI * 0.5 <= endAngle) || (startAngle <= Math.PI * 2.5 && Math.PI * 2.5 <= endAngle);
+				var contains180 = (startAngle <= -Math.PI && -Math.PI <= endAngle) || (startAngle <= Math.PI && Math.PI <= endAngle);
+				var contains270 = (startAngle <= -Math.PI * 0.5 && -Math.PI * 0.5 <= endAngle) || (startAngle <= Math.PI * 1.5 && Math.PI * 1.5 <= endAngle);
+				var cutout = this.chart.options.cutoutPercentage / 100.0;
+				var min = {x: contains180 ? -1 : Math.min(start.x * (start.x < 0 ? 1 : cutout), end.x * (end.x < 0 ? 1 : cutout)), y: contains270 ? -1 : Math.min(start.y * (start.y < 0 ? 1 : cutout), end.y * (end.y < 0 ? 1 : cutout))};
+				var max = {x: contains0 ? 1 : Math.max(start.x * (start.x > 0 ? 1 : cutout), end.x * (end.x > 0 ? 1 : cutout)), y: contains90 ? 1 : Math.max(start.y * (start.y > 0 ? 1 : cutout), end.y * (end.y > 0 ? 1 : cutout))};
+				var size = {width: (max.x - min.x) * 0.5, height: (max.y - min.y) * 0.5};
+				minSize = Math.min(availableWidth / size.width, availableHeight / size.height);
+				offset = {x: (max.x + min.x) * -0.5, y: (max.y + min.y) * -0.5};
+			}
+
+			this.chart.outerRadius = Math.max(minSize / 2, 0);
 			this.chart.innerRadius = Math.max(this.chart.options.cutoutPercentage ? (this.chart.outerRadius / 100) * (this.chart.options.cutoutPercentage) : 1, 0);
 			this.chart.radiusLength = (this.chart.outerRadius - this.chart.innerRadius) / this.getVisibleDatasetCount();
+			this.chart.offsetX = offset.x * this.chart.outerRadius;
+			this.chart.offsetY = offset.y * this.chart.outerRadius;
 
 			this.getDataset().total = 0;
 			helpers.each(this.getDataset().data, function(value) {
@@ -161,16 +206,11 @@
 		updateElement: function(arc, index, reset) {
 			var centerX = (this.chart.chartArea.left + this.chart.chartArea.right) / 2;
 			var centerY = (this.chart.chartArea.top + this.chart.chartArea.bottom) / 2;
-
-			var resetModel = {
-				x: centerX,
-				y: centerY,
-				startAngle: Math.PI * -0.5, // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
-				endAngle: Math.PI * -0.5,
-				circumference: (this.chart.options.animation.animateRotate) ? 0 : this.calculateCircumference(this.getDataset().data[index]),
-				outerRadius: (this.chart.options.animation.animateScale) ? 0 : this.outerRadius,
-				innerRadius: (this.chart.options.animation.animateScale) ? 0 : this.innerRadius
-			};
+			var startAngle = this.chart.options.rotation; // non reset case handled later
+			var endAngle = this.chart.options.rotation; // non reset case handled later
+			var circumference = reset && this.chart.options.animation.animateRotate ? 0 : this.calculateCircumference(this.getDataset().data[index]) * (this.chart.options.circumference / (2.0 * Math.PI));
+			var innerRadius = reset && this.chart.options.animation.animateScale ? 0 : this.innerRadius;
+			var outerRadius = reset && this.chart.options.animation.animateScale ? 0 : this.outerRadius;
 
 			helpers.extend(arc, {
 				// Utility
@@ -179,12 +219,14 @@
 				_index: index,
 
 				// Desired view properties
-				_model: reset ? resetModel : {
-					x: centerX,
-					y: centerY,
-					circumference: this.calculateCircumference(this.getDataset().data[index]),
-					outerRadius: this.outerRadius,
-					innerRadius: this.innerRadius,
+				_model: {
+					x: centerX + this.chart.offsetX,
+					y: centerY + this.chart.offsetY,
+					startAngle: startAngle,
+					endAngle: endAngle,
+					circumference: circumference,
+					outerRadius: outerRadius,
+					innerRadius: innerRadius,
 
 					backgroundColor: arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor),
 					hoverBackgroundColor: arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().hoverBackgroundColor, index, this.chart.options.elements.arc.hoverBackgroundColor),
@@ -192,24 +234,19 @@
 					borderColor: arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor),
 
 					label: helpers.getValueAtIndexOrDefault(this.getDataset().label, index, this.chart.data.labels[index])
-				},
+				}
 			});
 
+			// Set correct angles if not resetting
 			if (!reset) {
 
 				if (index === 0) {
-					arc._model.startAngle = Math.PI * -0.5; // use - PI / 2 instead of 3PI / 2 to make animations better. It means that we never deal with overflow during the transition function
+					arc._model.startAngle = this.chart.options.rotation;
 				} else {
 					arc._model.startAngle = this.getDataset().metaData[index - 1]._model.endAngle;
 				}
 
 				arc._model.endAngle = arc._model.startAngle + arc._model.circumference;
-
-
-				//Check to see if it's the last arc, if not get the next and update its start angle
-				if (index < this.getDataset().data.length - 1) {
-					this.getDataset().metaData[index + 1]._model.startAngle = arc._model.endAngle;
-				}
 			}
 
 			arc.pivot();
@@ -219,7 +256,7 @@
 			var easingDecimal = ease || 1;
 			helpers.each(this.getDataset().metaData, function(arc, index) {
 				arc.transition(easingDecimal).draw();
-			}, this);
+			});
 		},
 
 		setHoverStyle: function(arc) {
@@ -242,13 +279,10 @@
 
 		calculateCircumference: function(value) {
 			if (this.getDataset().total > 0 && !isNaN(value)) {
-				return (Math.PI * 1.999999) * (value / this.getDataset().total);
+				return (Math.PI * 2.0) * (value / this.getDataset().total);
 			} else {
 				return 0;
 			}
-		},
-
+		}
 	});
-
-
-}).call(this);
+};

@@ -1,9 +1,8 @@
-(function() {
-	"use strict";
+"use strict";
 
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
 
 	var defaultConfig = {
 		position: "left",
@@ -104,17 +103,17 @@
 		buildTicks: function() {
 			// Reset the ticks array. Later on, we will draw a grid line at these positions
 			// The array simply contains the numerical value of the spots where ticks will be
-			this.tickValues = [];
+			this.ticks = [];
 
 			// Figure out what the max number of ticks we can support it is based on the size of
 			// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
-			// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on 
+			// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on
 			// the graph
 
 			var tickVal = this.options.ticks.min !== undefined ? this.options.ticks.min : Math.pow(10, Math.floor(helpers.log10(this.min)));
 
 			while (tickVal < this.max) {
-				this.tickValues.push(tickVal);
+				this.ticks.push(tickVal);
 
 				var exp = Math.floor(helpers.log10(tickVal));
 				var significand = Math.floor(tickVal / Math.pow(10, exp)) + 1;
@@ -128,20 +127,20 @@
 			}
 
 			var lastTick = this.options.ticks.max !== undefined ? this.options.ticks.max : tickVal;
-			this.tickValues.push(lastTick);
+			this.ticks.push(lastTick);
 
-			if (this.options.position == "left" || this.options.position == "right") {
+			if (this.options.position === "left" || this.options.position === "right") {
 				// We are in a vertical orientation. The top value is the highest. So reverse the array
-				this.tickValues.reverse();
+				this.ticks.reverse();
 			}
 
 			// At this point, we need to update our max and min given the tick values since we have expanded the
 			// range of the scale
-			this.max = helpers.max(this.tickValues);
-			this.min = helpers.min(this.tickValues);
+			this.max = helpers.max(this.ticks);
+			this.min = helpers.min(this.ticks);
 
 			if (this.options.ticks.reverse) {
-				this.tickValues.reverse();
+				this.ticks.reverse();
 
 				this.start = this.max;
 				this.end = this.min;
@@ -149,8 +148,11 @@
 				this.start = this.min;
 				this.end = this.max;
 			}
+		},
+		convertTicksToLabels: function() {
+			this.tickValues = this.ticks.slice();
 
-			this.ticks = this.tickValues.slice();
+			Chart.Scale.prototype.convertTicksToLabels.call(this);
 		},
 		// Get the correct tooltip label
 		getLabelForIndex: function(index, datasetIndex) {
@@ -172,7 +174,7 @@
 				} else {
 					var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
 					pixel = this.left + (innerWidth / range * (helpers.log10(newVal) - helpers.log10(this.start)));
-					return pixel + this.paddingLeft;
+					pixel += this.paddingLeft;
 				}
 			} else {
 				// Bottom - top since pixels increase downard on a screen
@@ -180,13 +182,14 @@
 					pixel = this.top + this.paddingTop;
 				} else {
 					var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
-					return (this.bottom - this.paddingBottom) - (innerHeight / range * (helpers.log10(newVal) - helpers.log10(this.start)));
+					pixel = (this.bottom - this.paddingBottom) - (innerHeight / range * (helpers.log10(newVal) - helpers.log10(this.start)));
 				}
 			}
 
-		},
+			return pixel;
+		}
 
 	});
 	Chart.scaleService.registerScaleType("logarithmic", LogarithmicScale, defaultConfig);
 
-}).call(this);
+};

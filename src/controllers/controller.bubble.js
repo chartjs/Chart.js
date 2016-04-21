@@ -1,10 +1,8 @@
-(function() {
+"use strict";
 
-	"use strict";
+module.exports = function(Chart) {
 
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
+	var helpers = Chart.helpers;
 
 	Chart.defaults.bubble = {
 		hover: {
@@ -15,19 +13,28 @@
 			xAxes: [{
 				type: "linear", // bubble should probably use a linear scale by default
 				position: "bottom",
-				id: "x-axis-0", // need an ID so datasets can reference the scale
+				id: "x-axis-0" // need an ID so datasets can reference the scale
 			}],
 			yAxes: [{
 				type: "linear",
 				position: "left",
-				id: "y-axis-0",
-			}],
+				id: "y-axis-0"
+			}]
 		},
 
 		tooltips: {
-			template: "(<%= value.x %>, <%= value.y %>, <%= value.r %>)",
-			multiTemplate: "<%if (datasetLabel){%><%=datasetLabel%>: <%}%>(<%= value.x %>, <%= value.y %>, <%= value.r %>)",
-		},
+			callbacks: {
+				title: function(tooltipItems, data) {
+					// Title doesn't make sense for scatter since we format the data as a point
+					return '';
+				},
+				label: function(tooltipItem, data) {
+					var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
+					var dataPoint = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+					return datasetLabel + ': (' + dataPoint.x + ', ' + dataPoint.y + ', ' + dataPoint.r + ')';
+				}
+			}
+		}
 	};
 
 
@@ -40,7 +47,7 @@
 				this.getDataset().metaData[index] = this.getDataset().metaData[index] || new Chart.elements.Point({
 					_chart: this.chart.chart,
 					_datasetIndex: this.index,
-					_index: index,
+					_index: index
 				});
 			}, this);
 		},
@@ -49,7 +56,7 @@
 			var point = new Chart.elements.Point({
 				_chart: this.chart.chart,
 				_datasetIndex: this.index,
-				_index: index,
+				_index: index
 			});
 
 			// Reset the point
@@ -113,8 +120,8 @@
 					borderWidth: point.custom && point.custom.borderWidth ? point.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.point.borderWidth),
 
 					// Tooltip
-					hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.getDataset().hitRadius, index, this.chart.options.elements.point.hitRadius),
-				},
+					hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.getDataset().hitRadius, index, this.chart.options.elements.point.hitRadius)
+				}
 			});
 
 			point._model.skip = point.custom && point.custom.skip ? point.custom.skip : (isNaN(point._model.x) || isNaN(point._model.y));
@@ -133,7 +140,7 @@
 			helpers.each(this.getDataset().metaData, function(point, index) {
 				point.transition(easingDecimal);
 				point.draw();
-			}, this);
+			});
 
 		},
 
@@ -158,4 +165,4 @@
 			point._model.borderWidth = point.custom && point.custom.borderWidth ? point.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.point.borderWidth);
 		}
 	});
-}).call(this);
+};

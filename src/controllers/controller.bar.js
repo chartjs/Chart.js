@@ -1,10 +1,8 @@
-(function() {
+"use strict";
 
-	"use strict";
+module.exports = function(Chart) {
 
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
+	var helpers = Chart.helpers;
 
 	Chart.defaults.bar = {
 		hover: {
@@ -21,20 +19,20 @@
 
 				// grid line settings
 				gridLines: {
-					offsetGridLines: true,
-				},
+					offsetGridLines: true
+				}
 			}],
 			yAxes: [{
-				type: "linear",
-			}],
-		},
+				type: "linear"
+			}]
+		}
 	};
 
 	Chart.controllers.bar = Chart.DatasetController.extend({
 		initialize: function(chart, datasetIndex) {
 			Chart.DatasetController.prototype.initialize.call(this, chart, datasetIndex);
 
-			// Use this to indicate that this is a bar dataset. 
+			// Use this to indicate that this is a bar dataset.
 			this.getDataset().bar = true;
 		},
 		// Get the number of datasets that display bars. We use this to correctly calculate the bar width
@@ -44,7 +42,7 @@
 				if (helpers.isDatasetVisible(dataset) && dataset.bar) {
 					++barCount;
 				}
-			}, this);
+			});
 			return barCount;
 		},
 
@@ -54,7 +52,7 @@
 				this.getDataset().metaData[index] = this.getDataset().metaData[index] || new Chart.elements.Rectangle({
 					_chart: this.chart.chart,
 					_datasetIndex: this.index,
-					_index: index,
+					_index: index
 				});
 			}, this);
 		},
@@ -63,7 +61,7 @@
 			var rectangle = new Chart.elements.Rectangle({
 				_chart: this.chart.chart,
 				_datasetIndex: this.index,
-				_index: index,
+				_index: index
 			});
 
 			var numBars = this.getBarCount();
@@ -115,12 +113,13 @@
 					datasetLabel: this.getDataset().label,
 
 					// Appearance
-					base: this.calculateBarBase(this.index, index),
+					base: reset ? yScalePoint : this.calculateBarBase(this.index, index),
 					width: this.calculateBarWidth(numBars),
 					backgroundColor: rectangle.custom && rectangle.custom.backgroundColor ? rectangle.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.rectangle.backgroundColor),
+					borderSkipped: rectangle.custom && rectangle.custom.borderSkipped ? rectangle.custom.borderSkipped : this.chart.options.elements.rectangle.borderSkipped,
 					borderColor: rectangle.custom && rectangle.custom.borderColor ? rectangle.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.rectangle.borderColor),
-					borderWidth: rectangle.custom && rectangle.custom.borderWidth ? rectangle.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.rectangle.borderWidth),
-				},
+					borderWidth: rectangle.custom && rectangle.custom.borderWidth ? rectangle.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.rectangle.borderWidth)
+				}
 			});
 			rectangle.pivot();
 		},
@@ -139,14 +138,14 @@
 				if (value < 0) {
 					for (var i = 0; i < datasetIndex; i++) {
 						var negDS = this.chart.data.datasets[i];
-						if (helpers.isDatasetVisible(negDS) && negDS.yAxisID === yScale.id) {
+						if (helpers.isDatasetVisible(negDS) && negDS.yAxisID === yScale.id && negDS.bar) {
 							base += negDS.data[index] < 0 ? negDS.data[index] : 0;
 						}
 					}
 				} else {
 					for (var j = 0; j < datasetIndex; j++) {
 						var posDS = this.chart.data.datasets[j];
-						if (helpers.isDatasetVisible(posDS) && posDS.yAxisID === yScale.id) {
+						if (helpers.isDatasetVisible(posDS) && posDS.yAxisID === yScale.id && posDS.bar) {
 							base += posDS.data[index] > 0 ? posDS.data[index] : 0;
 						}
 					}
@@ -195,21 +194,14 @@
 				categorySpacing: categorySpacing,
 				fullBarWidth: fullBarWidth,
 				barWidth: barWidth,
-				barSpacing: barSpacing,
+				barSpacing: barSpacing
 			};
 		},
 
 		calculateBarWidth: function() {
-
 			var xScale = this.getScaleForId(this.getDataset().xAxisID);
 			var ruler = this.getRuler();
-
-			if (xScale.options.stacked) {
-				return ruler.categoryWidth;
-			}
-
-			return ruler.barWidth;
-
+			return xScale.options.stacked ? ruler.categoryWidth : ruler.barWidth;
 		},
 
 		// Get bar index from the given dataset index accounting for the fact that not all bars are visible
@@ -261,7 +253,7 @@
 
 				for (var i = 0; i < datasetIndex; i++) {
 					var ds = this.chart.data.datasets[i];
-					if (helpers.isDatasetVisible(ds)) {
+					if (helpers.isDatasetVisible(ds) && ds.bar && ds.yAxisID === yScale.id) {
 						if (ds.data[index] < 0) {
 							sumNeg += ds.data[index] || 0;
 						} else {
@@ -311,7 +303,4 @@
 		}
 
 	});
-
-
-
-}).call(this);
+};

@@ -1,21 +1,6 @@
-/*!
- * Chart.js
- * http://chartjs.org/
- * Version: {{ version }}
- *
- * Copyright 2015 Nick Downie
- * Released under the MIT license
- * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
- */
+"use strict";
 
-
-(function() {
-
-	"use strict";
-
-	//Declare root variable - window in the browser, global on the server
-	var root = this,
-		previous = root.Chart;
+module.exports = function() {
 
 	//Occupy the global variable of Chart, and create a simple base class
 	var Chart = function(context, config) {
@@ -36,7 +21,7 @@
 
 		// Figure out what the size of the chart will be.
 		// If the canvas has a specified width and height, we use those else
-		// we look to see if the canvas node has a CSS width and height. 
+		// we look to see if the canvas node has a CSS width and height.
 		// If there is still no height, fill the parent container
 		this.width = context.canvas.width || parseInt(Chart.helpers.getStyle(context.canvas, 'width')) || Chart.helpers.getMaximumWidth(context.canvas);
 		this.height = context.canvas.height || parseInt(Chart.helpers.getStyle(context.canvas, 'height')) || Chart.helpers.getMaximumHeight(context.canvas);
@@ -83,10 +68,15 @@
 			hover: {
 				onHover: null,
 				mode: 'single',
-				animationDuration: 400,
+				animationDuration: 400
 			},
 			onClick: null,
 			defaultColor: 'rgba(0,0,0,0.1)',
+			defaultFontColor: '#666',
+			defaultFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+			defaultFontSize: 12,
+			defaultFontStyle: 'normal',
+			showLines: true,
 
 			// Element defaults defined in element extensions
 			elements: {},
@@ -96,24 +86,19 @@
 				var text = [];
 				text.push('<ul class="' + chart.id + '-legend">');
 				for (var i = 0; i < chart.data.datasets.length; i++) {
-					text.push('<li><span style="background-color:' + chart.data.datasets[i].backgroundColor + '">');
+					text.push('<li><span style="background-color:' + chart.data.datasets[i].backgroundColor + '"></span>');
 					if (chart.data.datasets[i].label) {
 						text.push(chart.data.datasets[i].label);
 					}
-					text.push('</span></li>');
+					text.push('</li>');
 				}
 				text.push('</ul>');
 
 				return text.join("");
 			}
-		},
+		}
 	};
 
-	root.Chart = Chart;
+	return Chart;
 
-	Chart.noConflict = function() {
-		root.Chart = previous;
-		return Chart;
-	};
-
-}).call(this);
+};

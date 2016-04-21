@@ -1,15 +1,15 @@
-(function() {
-	"use strict";
+"use strict";
 
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
 
 	var defaultConfig = {
 		position: "left",
 		ticks: {
 			callback: function(tickValue, index, ticks) {
-				var delta = ticks[1] - ticks[0];
+				// If we have lots of ticks, don't use the ones
+				var delta = ticks.length > 3 ? ticks[2] - ticks[1] : ticks[1] - ticks[0];
 
 				// If we have a number like 2.5 as the delta, figure out how many decimal places we need
 				if (Math.abs(delta) > 1) {
@@ -43,12 +43,14 @@
 
 			if (this.options.stacked) {
 				var valuesPerType = {};
+				var hasPositiveValues = false;
+				var hasNegativeValues = false;
 
 				helpers.each(this.chart.data.datasets, function(dataset) {
 					if (valuesPerType[dataset.type] === undefined) {
 						valuesPerType[dataset.type] = {
 							positiveValues: [],
-							negativeValues: [],
+							negativeValues: []
 						};
 					}
 
@@ -71,8 +73,10 @@
 								positiveValues[index] = 100;
 							} else {
 								if (value < 0) {
+									hasNegativeValues = true;
 									negativeValues[index] += value;
 								} else {
+									hasPositiveValues = true;
 									positiveValues[index] += value;
 								}
 							}
@@ -153,33 +157,44 @@
 
 			// Figure out what the max number of ticks we can support it is based on the size of
 			// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
-			// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on 
+			// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on
 			// the graph
 
 			var maxTicks;
 
 			if (this.isHorizontal()) {
-				maxTicks = Math.min(this.options.ticks.maxTicksLimit ? this.options.ticks.maxTicksLimit : 11,
-				                    Math.ceil(this.width / 50));
+				maxTicks = Math.min(this.options.ticks.maxTicksLimit ? this.options.ticks.maxTicksLimit : 11, Math.ceil(this.width / 50));
 			} else {
 				// The factor of 2 used to scale the font size has been experimentally determined.
-				maxTicks = Math.min(this.options.ticks.maxTicksLimit ? this.options.ticks.maxTicksLimit : 11,
-				                    Math.ceil(this.height / (2 * this.options.ticks.fontSize)));
+				var tickFontSize = helpers.getValueOrDefault(this.options.ticks.fontSize, Chart.defaults.global.defaultFontSize);
+				maxTicks = Math.min(this.options.ticks.maxTicksLimit ? this.options.ticks.maxTicksLimit : 11, Math.ceil(this.height / (2 * tickFontSize)));
 			}
 
-			// Make sure we always have at least 2 ticks 
+			// Make sure we always have at least 2 ticks
 			maxTicks = Math.max(2, maxTicks);
 
-			// To get a "nice" value for the tick spacing, we will use the appropriately named 
+			// To get a "nice" value for the tick spacing, we will use the appropriately named
 			// "nice number" algorithm. See http://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
 			// for details.
 
-			var niceRange = helpers.niceNum(this.max - this.min, false);
-			var spacing = helpers.niceNum(niceRange / (maxTicks - 1), true);
+			var spacing;
+			var fixedStepSizeSet = (this.options.ticks.fixedStepSize && this.options.ticks.fixedStepSize > 0) || (this.options.ticks.stepSize && this.options.ticks.stepSize > 0);
+			if (fixedStepSizeSet) {
+				spacing = helpers.getValueOrDefault(this.options.ticks.fixedStepSize, this.options.ticks.stepSize);
+			} else {
+				var niceRange = helpers.niceNum(this.max - this.min, false);
+				spacing = helpers.niceNum(niceRange / (maxTicks - 1), true);
+			}
 			var niceMin = Math.floor(this.min / spacing) * spacing;
 			var niceMax = Math.ceil(this.max / spacing) * spacing;
+			var numSpaces = (niceMax - niceMin) / spacing;
 
-			var numSpaces = Math.ceil((niceMax - niceMin) / spacing);
+			// If very close to our rounded value, use it.
+			if (helpers.almostEquals(numSpaces, Math.round(numSpaces), spacing / 1000)) {
+				numSpaces = Math.round(numSpaces);
+			} else {
+				numSpaces = Math.ceil(numSpaces);
+			}
 
 			// Put the values into the ticks array
 			this.ticks.push(this.options.ticks.min !== undefined ? this.options.ticks.min : niceMin);
@@ -188,7 +203,7 @@
 			}
 			this.ticks.push(this.options.ticks.max !== undefined ? this.options.ticks.max : niceMax);
 
-			if (this.options.position == "left" || this.options.position == "right") {
+			if (this.options.position === "left" || this.options.position === "right") {
 				// We are in a vertical orientation. The top value is the highest. So reverse the array
 				this.ticks.reverse();
 			}
@@ -197,7 +212,6 @@
 			// range of the scale
 			this.max = helpers.max(this.ticks);
 			this.min = helpers.min(this.ticks);
-			this.ticksAsNumbers = this.ticks.slice();
 
 			if (this.options.ticks.reverse) {
 				this.ticks.reverse();
@@ -208,17 +222,19 @@
 				this.start = this.min;
 				this.end = this.max;
 			}
-
-			this.zeroLineIndex = this.ticks.indexOf(0);
 		},
-
 		getLabelForIndex: function(index, datasetIndex) {
 			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 		},
+		convertTicksToLabels: function() {
+			this.ticksAsNumbers = this.ticks.slice();
+			this.zeroLineIndex = this.ticks.indexOf(0);
 
+			Chart.Scale.prototype.convertTicksToLabels.call(this);
+		},
 		// Utils
 		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
-			// This must be called after fit has been run so that 
+			// This must be called after fit has been run so that
 			//      this.left, this.top, this.right, and this.bottom have been defined
 			var rightValue = +this.getRightValue(value);
 			var pixel;
@@ -236,8 +252,8 @@
 		},
 		getPixelForTick: function(index, includeOffset) {
 			return this.getPixelForValue(this.ticksAsNumbers[index], null, null, includeOffset);
-		},
+		}
 	});
 	Chart.scaleService.registerScaleType("linear", LinearScale, defaultConfig);
 
-}).call(this);
+};

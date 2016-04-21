@@ -143,7 +143,7 @@ var myPieChart = new Chart(ctx, {
 
 				// Otherwise, tooltip will be an object with all tooltip properties like:
 
-				// tooltip.caretHeight
+				// tooltip.caretSize
 				// tooltip.caretPadding
 				// tooltip.chart
 				// tooltip.cornerRadius
@@ -233,23 +233,27 @@ To work with Chart.js, custom scale types must implement the following interface
 	determineDataLimits: function() {},
 
 	// Generate tick marks. this.chart is the chart instance. The data object can be accessed as this.chart.data
-	// buildTicks() should create a ticks array on the scale instance, if you intend to use any of the implementations from the base class
+	// buildTicks() should create a ticks array on the axis instance, if you intend to use any of the implementations from the base class
 	buildTicks: function() {},
 
 	// Get the value to show for the data at the given index of the the given dataset, ie this.chart.data.datasets[datasetIndex].data[index]
 	getLabelForIndex: function(index, datasetIndex) {},
 
-	// Get the pixel (x coordinate for horizontal scale, y coordinate for vertical scales) for a given value
+	// Get the pixel (x coordinate for horizontal axis, y coordinate for vertical axis) for a given value
 	// @param index: index into the ticks array
 	// @param includeOffset: if true, get the pixel halway between the given tick and the next
 	getPixelForTick: function(index, includeOffset) {},
 
-	// Get the pixel (x coordinate for horizontal scale, y coordinate for vertical scales) for a given value
+	// Get the pixel (x coordinate for horizontal axis, y coordinate for vertical axis) for a given value
 	// @param value : the value to get the pixel for
 	// @param index : index into the data array of the value
 	// @param datasetIndex : index of the dataset the value comes from
 	// @param includeOffset : if true, get the pixel halway between the given tick and the next
 	getPixelForValue: function(value, index, datasetIndex, includeOffset) {}
+
+	// Get the value for a given pixel (x coordinate for horizontal axis, y coordinate for vertical axis)
+	// @param pixel : pixel value
+	getValueForPixel: function(pixel) {}
 }
 ```
 
@@ -278,14 +282,14 @@ The Core.Scale base class also has some utility functions that you may find usef
 ```javascript
 {	
 	// Returns true if the scale instance is horizontal
-	isHorizontal: function(){},
+	isHorizontal: function() {},
 
 	// Get the correct value from the value from this.chart.data.datasets[x].data[]
 	// If dataValue is an object, returns .x or .y depending on the return of isHorizontal()
 	// If the value is undefined, returns NaN
 	// Otherwise returns the value.
 	// Note that in all cases, the returned value is not guaranteed to be a Number
-	getRightValue: function(dataValue){},
+	getRightValue: function(dataValue) {},
 }
 ```
 
@@ -365,6 +369,34 @@ The built in controller types are:
 
 #### Bar Controller
 The bar controller has a special property that you should be aware of. To correctly calculate the width of a bar, the controller must determine the number of datasets that map to bars. To do this, the bar controller attaches a property `bar` to the dataset during initialization. If you are creating a replacement or updated bar controller, you should do the same. This will ensure that charts with regular bars and your new derived bars will work seamlessly.
+
+### Creating Plugins
+
+Starting with v2.1.0, you can create plugins for chart.js. To register your plugin, simply call `Chart.pluginService.register` and pass your plugin in.
+Plugins will be called at the following times
+* Start of initialization
+* End of initialization
+* Start of update
+* End of update
+* Start of draw
+* End of draw
+
+Plugins should derive from Chart.PluginBase and implement the following interface
+```javascript
+{
+	beforeInit: function(chartInstance) { },
+	afterInit: function(chartInstance) { },
+
+	beforeUpdate: function(chartInstance) { },
+	afterUpdate: function(chartInstance) { },
+
+	// Easing is for animation
+	beforeDraw: function(chartInstance, easing) { },
+	afterDraw: function(chartInstance, easing) { }
+
+	destroy: function(chartInstance) { }
+}
+```
 
 ### Building Chart.js
 

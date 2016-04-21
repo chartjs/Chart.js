@@ -1,21 +1,8 @@
-/*!
- * Chart.js
- * http://chartjs.org/
- * Version: {{ version }}
- *
- * Copyright 2015 Nick Downie
- * Released under the MIT license
- * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
- */
+"use strict";
 
+module.exports = function(Chart) {
 
-(function() {
-
-	"use strict";
-
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
+	var helpers = Chart.helpers;
 
 	Chart.defaults.global.elements.line = {
 		tension: 0.4,
@@ -26,7 +13,7 @@
 		borderDash: [],
 		borderDashOffset: 0.0,
 		borderJoinStyle: 'miter',
-		fill: true, // do we fill in the area between the line and its base axis
+		fill: true // do we fill in the area between the line and its base axis
 	};
 
 	Chart.elements.Line = Chart.Element.extend({
@@ -34,15 +21,15 @@
 			var ctx = this._chart.ctx;
 
 			if (point._view.skip) {
-				skipHandler.call(this, previousPoint, point, nextPoint); 
+				skipHandler.call(this, previousPoint, point, nextPoint);
 			} else if (previousPoint._view.skip) {
 				previousSkipHandler.call(this, previousPoint, point, nextPoint);
-			} else if (point._view.tension === 0) { 
+			} else if (point._view.tension === 0) {
 				ctx.lineTo(point._view.x, point._view.y);
 			} else {
 				// Line between points
 				ctx.bezierCurveTo(
-					previousPoint._view.controlPointNextX, 
+					previousPoint._view.controlPointNextX,
 					previousPoint._view.controlPointNextY,
 					point._view.controlPointPreviousX,
 					point._view.controlPointPreviousY,
@@ -169,7 +156,6 @@
 
 			ctx.stroke();
 			ctx.restore();
-		},
+		}
 	});
-
-}).call(this);
+};

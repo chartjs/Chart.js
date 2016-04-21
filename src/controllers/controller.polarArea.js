@@ -1,17 +1,14 @@
-(function() {
-	"use strict";
+"use strict";
 
-	var root = this,
-		Chart = root.Chart,
-		//Cache a local reference to Chart.helpers
-		helpers = Chart.helpers;
+module.exports = function(Chart) {
 
+	var helpers = Chart.helpers;
 
 	Chart.defaults.polarArea = {
 
 		scale: {
 			type: "radialLinear",
-			lineArc: true, // so that lines are circular
+			lineArc: true // so that lines are circular
 		},
 
 		//Boolean - Whether to animate the rotation of the chart
@@ -39,16 +36,28 @@
 		legend: {
 			labels: {
 				generateLabels: function(data) {
-					return data.labels.map(function(label, i) {
-						return {
-							text: label,
-							fillStyle: data.datasets[0].backgroundColor[i],
-							hidden: isNaN(data.datasets[0].data[i]),
+					if (data.labels.length && data.datasets.length) {
+						return data.labels.map(function(label, i) {
+							var ds = data.datasets[0];
+							var arc = ds.metaData[i];
+							var fill = arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(ds.backgroundColor, i, this.chart.options.elements.arc.backgroundColor);
+							var stroke = arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(ds.borderColor, i, this.chart.options.elements.arc.borderColor);
+							var bw = arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(ds.borderWidth, i, this.chart.options.elements.arc.borderWidth);
 
-							// Extra data used for toggling the correct item
-							index: i
-						};
-					});
+							return {
+								text: label,
+								fillStyle: fill,
+								strokeStyle: stroke,
+								lineWidth: bw,
+								hidden: isNaN(data.datasets[0].data[i]),
+
+								// Extra data used for toggling the correct item
+								index: i
+							};
+						}, this);
+					} else {
+						return [];
+					}
 				}
 			},
 			onClick: function(e, legendItem) {
@@ -71,7 +80,9 @@
 		// Need to override these to give a nice default
 		tooltips: {
 			callbacks: {
-				title: function() { return ''; },
+				title: function() {
+					return '';
+				},
 				label: function(tooltipItem, data) {
 					return data.labels[tooltipItem.index] + ': ' + tooltipItem.yLabel;
 				}
@@ -89,7 +100,7 @@
 				this.getDataset().metaData[index] = this.getDataset().metaData[index] || new Chart.elements.Arc({
 					_chart: this.chart.chart,
 					_datasetIndex: this.index,
-					_index: index,
+					_index: index
 				});
 			}, this);
 		},
@@ -98,7 +109,7 @@
 			var arc = new Chart.elements.Arc({
 				_chart: this.chart.chart,
 				_datasetIndex: this.index,
-				_index: index,
+				_index: index
 			});
 
 			// Reset the point
@@ -108,7 +119,9 @@
 			this.getDataset().metaData.splice(index, 0, arc);
 		},
 		getVisibleDatasetCount: function getVisibleDatasetCount() {
-			return helpers.where(this.chart.data.datasets, function(ds) { return helpers.isDatasetVisible(ds); }).length;
+			return helpers.where(this.chart.data.datasets, function(ds) {
+				return helpers.isDatasetVisible(ds);
+			}).length;
 		},
 
 		update: function update(reset) {
@@ -135,7 +148,7 @@
 			var centerX = (this.chart.chartArea.left + this.chart.chartArea.right) / 2;
 			var centerY = (this.chart.chartArea.top + this.chart.chartArea.bottom) / 2;
 
-			// If there is NaN data before us, we need to calculate the starting angle correctly. 
+			// If there is NaN data before us, we need to calculate the starting angle correctly.
 			// We could be way more efficient here, but its unlikely that the polar area chart will have a lot of data
 			var notNullIndex = 0;
 			for (var i = 0; i < index; ++i) {
@@ -156,7 +169,6 @@
 				endAngle: this.chart.options.animateRotate ? Math.PI * -0.5 : endAngle,
 
 				backgroundColor: arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor),
-				hoverBackgroundColor: arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().hoverBackgroundColor, index, this.chart.options.elements.arc.hoverBackgroundColor),
 				borderWidth: arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.arc.borderWidth),
 				borderColor: arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor),
 
@@ -180,12 +192,11 @@
 					endAngle: endAngle,
 
 					backgroundColor: arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor),
-					hoverBackgroundColor: arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().hoverBackgroundColor, index, this.chart.options.elements.arc.hoverBackgroundColor),
 					borderWidth: arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.arc.borderWidth),
 					borderColor: arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor),
 
 					label: helpers.getValueAtIndexOrDefault(this.chart.data.labels, index, this.chart.data.labels[index])
-				},
+				}
 			});
 
 			arc.pivot();
@@ -195,7 +206,7 @@
 			var easingDecimal = ease || 1;
 			helpers.each(this.getDataset().metaData, function(arc, index) {
 				arc.transition(easingDecimal).draw();
-			}, this);
+			});
 		},
 
 		setHoverStyle: function(arc) {
@@ -204,7 +215,7 @@
 
 			arc._model.backgroundColor = arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.color(arc._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
 			arc._model.borderColor = arc.custom && arc.custom.hoverBorderColor ? arc.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.color(arc._model.borderColor).saturate(0.5).darken(0.1).rgbString());
-			arc._model.borderWidth = arc.custom && arc.custom.hoverBorderWidth ? arc.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, arc._model.borderWidth);
+			arc._model.borderWidth = arc.custom && arc.custom.hoverBorderWidth ? arc.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.hoverBorderWidth, index, arc._model.borderWidth);
 		},
 
 		removeHoverStyle: function(arc) {
@@ -220,7 +231,7 @@
 			if (isNaN(value)) {
 				return 0;
 			} else {
-				// Count the number of NaN values 
+				// Count the number of NaN values
 				var numNaN = helpers.where(this.getDataset().data, function(data) {
 					return isNaN(data);
 				}).length;
@@ -229,4 +240,5 @@
 			}
 		}
 	});
-}).call(this);
+
+};

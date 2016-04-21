@@ -1,12 +1,11 @@
-(function() {
-	"use strict";
+"use strict";
 
-	var root = this;
-	var Chart = root.Chart;
+module.exports = function(Chart) {
+
 	var helpers = Chart.helpers;
 
 	var defaultConfig = {
-		aspectRatio: 1,
+		aspectRatio: 1
 	};
 
 	Chart.Radar = function(context, config) {
@@ -15,5 +14,5 @@
 
 		return new Chart(context, config);
 	};
-	
-}).call(this);
+
+};

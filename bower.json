@@ -1,13 +1,13 @@
 {
-    "name": "Chart.js",
-    "version": "2.0.0-beta2",
-    "description": "Simple HTML5 Charts using the canvas element",
-    "homepage": "https://github.com/nnnick/Chart.js",
-    "author": "nnnick",
-    "main": [
-        "Chart.js"
-    ],
-    "devDependencies": {
-        "jquery": "~2.1.4"
-    }
+  "name": "Chart.js",
+  "version": "2.0.2",
+  "description": "Simple HTML5 Charts using the canvas element",
+  "homepage": "https://github.com/nnnick/Chart.js",
+  "author": "nnnick",
+  "main": [
+    "dist/Chart.js"
+  ],
+  "devDependencies": {
+    "jquery": "~2.1.4"
+  }
 }

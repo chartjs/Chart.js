@@ -1,11 +1,10 @@
-(function() {
-	"use strict";
+"use strict";
 
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
+module.exports = function(Chart) {
 
-	// The layout service is ver self explanatory.  It's responsible for the layout within a chart.  
+	var helpers = Chart.helpers;
+
+	// The layout service is very self explanatory.  It's responsible for the layout within a chart.
 	// Scales, Legends and Plugins all rely on the layout service and can easily register to be placed anywhere they need
 	// It is this service's responsibility of carrying out that layout.
 	Chart.layoutService = {
@@ -33,25 +32,25 @@
 				return;
 			}
 
-			var xPadding = width > 30 ? 5 : 2;
-			var yPadding = height > 30 ? 5 : 2;
+			var xPadding = 0;
+			var yPadding = 0;
 
 			var leftBoxes = helpers.where(chartInstance.boxes, function(box) {
-				return box.options.position == "left";
+				return box.options.position === "left";
 			});
 			var rightBoxes = helpers.where(chartInstance.boxes, function(box) {
-				return box.options.position == "right";
+				return box.options.position === "right";
 			});
 			var topBoxes = helpers.where(chartInstance.boxes, function(box) {
-				return box.options.position == "top";
+				return box.options.position === "top";
 			});
 			var bottomBoxes = helpers.where(chartInstance.boxes, function(box) {
-				return box.options.position == "bottom";
+				return box.options.position === "bottom";
 			});
 
 			// Boxes that overlay the chartarea such as the radialLinear scale
 			var chartAreaBoxes = helpers.where(chartInstance.boxes, function(box) {
-				return box.options.position == "chartArea";
+				return box.options.position === "chartArea";
 			});
 
 			function fullWidthSorter(a, b) {
@@ -68,7 +67,7 @@
 
 			// Essentially we now have any number of boxes on each of the 4 sides.
 			// Our canvas looks like the following.
-			// The areas L1 and L2 are the left axes. R1 is the right axis, T1 is the top axis and 
+			// The areas L1 and L2 are the left axes. R1 is the right axis, T1 is the top axis and
 			// B1 is the bottom axis
 			// There are also 4 quadrant-like locations (left to right instead of clockwise) reserved for chart overlays
 			// These locations are single-box locations only, when trying to register a chartArea location that is already taken,
@@ -93,11 +92,11 @@
 			// |----------------------------------------------------|
 			//
 			// What we do to find the best sizing, we do the following
-			// 1. Determine the minimum size of the chart area. 
+			// 1. Determine the minimum size of the chart area.
 			// 2. Split the remaining width equally between each vertical axis
 			// 3. Split the remaining height equally between each horizontal axis
 			// 4. Give each layout the maximum size it can be. The layout will return it's minimum size
-			// 5. Adjust the sizes of each axis based on it's minimum reported size. 
+			// 5. Adjust the sizes of each axis based on it's minimum reported size.
 			// 6. Refit each axis
 			// 7. Position each axis in the final location
 			// 8. Tell the chart the final location of the chart area
@@ -137,7 +136,7 @@
 				minBoxSizes.push({
 					horizontal: isHorizontal,
 					minSize: minSize,
-					box: box,
+					box: box
 				});
 			}
 
@@ -176,7 +175,7 @@
 							left: totalLeftBoxesWidth,
 							right: totalRightBoxesWidth,
 							top: 0,
-							bottom: 0,
+							bottom: 0
 						};
 
 						// Don't use min size here because of label rotation. When the labels are rotated, their rotation highly depends
@@ -287,7 +286,7 @@
 					box.top = top;
 					box.bottom = top + box.height;
 
-					// Move to next point 
+					// Move to next point
 					top = box.bottom;
 
 				} else {
@@ -307,7 +306,7 @@
 				left: totalLeftBoxesWidth,
 				top: totalTopBoxesHeight,
 				right: totalLeftBoxesWidth + maxChartAreaWidth,
-				bottom: totalTopBoxesHeight + maxChartAreaHeight,
+				bottom: totalTopBoxesHeight + maxChartAreaHeight
 			};
 
 			// Step 9
@@ -321,6 +320,4 @@
 			});
 		}
 	};
-
-
-}).call(this);
+};

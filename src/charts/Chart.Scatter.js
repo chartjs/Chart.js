@@ -1,26 +1,23 @@
-(function() {
-	"use strict";
+"use strict";
 
-	var root = this;
-	var Chart = root.Chart;
-	var helpers = Chart.helpers;
+module.exports = function(Chart) {
 
 	var defaultConfig = {
 		hover: {
-			mode: 'single',
+			mode: 'single'
 		},
 
 		scales: {
 			xAxes: [{
 				type: "linear", // scatter should not use a category axis
 				position: "bottom",
-				id: "x-axis-1", // need an ID so datasets can reference the scale
+				id: "x-axis-1" // need an ID so datasets can reference the scale
 			}],
 			yAxes: [{
 				type: "linear",
 				position: "left",
-				id: "y-axis-1",
-			}],
+				id: "y-axis-1"
+			}]
 		},
 
 		tooltips: {
@@ -33,7 +30,7 @@
 					return '(' + tooltipItem.xLabel + ', ' + tooltipItem.yLabel + ')';
 				}
 			}
-		},
+		}
 	};
 
 	// Register the default config for this type
@@ -46,5 +43,5 @@
 		config.type = 'scatter';
 		return new Chart(context, config);
 	};
-	
-}).call(this);
+
+};

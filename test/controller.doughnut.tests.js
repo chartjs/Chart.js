@@ -68,6 +68,8 @@ describe('Doughnut controller tests', function() {
 					animateScale: false
 				},
 				cutoutPercentage: 50,
+				rotation: Math.PI * -0.5,
+				circumference: Math.PI * 2.0,
 				elements: {
 					arc: {
 						backgroundColor: 'rgb(255, 0, 0)',
@@ -82,27 +84,27 @@ describe('Doughnut controller tests', function() {
 		var controller = new Chart.controllers.doughnut(chart, 1);
 		controller.reset(); // reset first
 
-		expect(chart.data.datasets[1].metaData[0]._model).toEqual({
+		expect(chart.data.datasets[1].metaData[0]._model).toEqual(jasmine.objectContaining({
 			x: 50,
 			y: 100,
 			startAngle: Math.PI * -0.5,
 			endAngle: Math.PI * -0.5,
-			circumference: 2.166614539857563,
+			circumference: 2.1666156231653746,
 			outerRadius: 49,
 			innerRadius: 36.75
-		});
+		}));
 
-		expect(chart.data.datasets[1].metaData[1]._model).toEqual({
+		expect(chart.data.datasets[1].metaData[1]._model).toEqual(jasmine.objectContaining({
 			x: 50,
 			y: 100,
 			startAngle: Math.PI * -0.5,
 			endAngle: Math.PI * -0.5,
-			circumference: 3.2499218097863447,
+			circumference: 3.249923434748062,
 			outerRadius: 49,
 			innerRadius: 36.75
-		});
+		}));
 
-		expect(chart.data.datasets[1].metaData[2]._model).toEqual({
+		expect(chart.data.datasets[1].metaData[2]._model).toEqual(jasmine.objectContaining({
 			x: 50,
 			y: 100,
 			startAngle: Math.PI * -0.5,
@@ -110,26 +112,26 @@ describe('Doughnut controller tests', function() {
 			circumference: 0,
 			outerRadius: 49,
 			innerRadius: 36.75
-		});
+		}));
 
-		expect(chart.data.datasets[1].metaData[3]._model).toEqual({
+		expect(chart.data.datasets[1].metaData[3]._model).toEqual(jasmine.objectContaining({
 			x: 50,
 			y: 100,
 			startAngle: Math.PI * -0.5,
 			endAngle: Math.PI * -0.5,
-			circumference: 0.8666458159430251,
+			circumference: 0.8666462492661499,
 			outerRadius: 49,
 			innerRadius: 36.75
-		});
+		}));
 
 		controller.update();
 
-		expect(chart.data.datasets[1].metaData[0]._model).toEqual({
+		expect(chart.data.datasets[1].metaData[0]._model).toEqual(jasmine.objectContaining({
 			x: 50,
 			y: 100,
 			startAngle: Math.PI * -0.5,
-			endAngle: 0.5958182130626666,
-			circumference: 2.166614539857563,
+			endAngle: 0.595819296370478,
+			circumference: 2.1666156231653746,
 			outerRadius: 49,
 			innerRadius: 36.75,
 
@@ -139,14 +141,14 @@ describe('Doughnut controller tests', function() {
 			hoverBackgroundColor: 'rgb(255, 255, 255)',
 
 			label: 'label0',
-		});
+		}));
 
-		expect(chart.data.datasets[1].metaData[1]._model).toEqual({
+		expect(chart.data.datasets[1].metaData[1]._model).toEqual(jasmine.objectContaining({
 			x: 50,
 			y: 100,
-			startAngle: 0.5958182130626666,
-			endAngle: 3.8457400228490113,
-			circumference: 3.2499218097863447,
+			startAngle: 0.595819296370478,
+			endAngle: 3.84574273111854,
+			circumference: 3.249923434748062,
 			outerRadius: 49,
 			innerRadius: 36.75,
 
@@ -156,13 +158,13 @@ describe('Doughnut controller tests', function() {
 			hoverBackgroundColor: 'rgb(255, 255, 255)',
 
 			label: 'label1'
-		});
+		}));
 
-		expect(chart.data.datasets[1].metaData[2]._model).toEqual({
+		expect(chart.data.datasets[1].metaData[2]._model).toEqual(jasmine.objectContaining({
 			x: 50,
 			y: 100,
-			startAngle: 3.8457400228490113,
-			endAngle: 3.8457400228490113,
+			startAngle: 3.84574273111854,
+			endAngle: 3.84574273111854,
 			circumference: 0,
 			outerRadius: 49,
 			innerRadius: 36.75,
@@ -173,14 +175,14 @@ describe('Doughnut controller tests', function() {
 			hoverBackgroundColor: 'rgb(255, 255, 255)',
 
 			label: 'label2'
-		});
+		}));
 
-		expect(chart.data.datasets[1].metaData[3]._model).toEqual({
+		expect(chart.data.datasets[1].metaData[3]._model).toEqual(jasmine.objectContaining({
 			x: 50,
 			y: 100,
-			startAngle: 3.8457400228490113,
-			endAngle: 4.712385838792036,
-			circumference: 0.8666458159430251,
+			startAngle: 3.84574273111854,
+			endAngle: 4.71238898038469,
+			circumference: 0.8666462492661499,
 			outerRadius: 49,
 			innerRadius: 36.75,
 
@@ -188,9 +190,9 @@ describe('Doughnut controller tests', function() {
 			borderColor: 'rgb(0, 0, 255)',
 			borderWidth: 2,
 			hoverBackgroundColor: 'rgb(255, 255, 255)',
-			
+
 			label: 'label3'
-		});
+		}));
 
 		// Change the amount of data and ensure that arcs are updated accordingly
 		chart.data.datasets[1].data = [1, 2]; // remove 2 elements from dataset 0
@@ -211,6 +213,66 @@ describe('Doughnut controller tests', function() {
 		expect(chart.data.datasets[1].metaData[1] instanceof Chart.elements.Arc).toBe(true);
 		expect(chart.data.datasets[1].metaData[2] instanceof Chart.elements.Arc).toBe(true);
 		expect(chart.data.datasets[1].metaData[3] instanceof Chart.elements.Arc).toBe(true);
+	});
+
+	it ('Should rotate and limit circumference', function() {
+		var chart = {
+			chartArea: {
+				left: 0,
+				top: 0,
+				right: 200,
+				bottom: 100,
+			},
+			data: {
+				datasets: [{
+					hidden: true
+				}, {
+					data: [1, 3]
+				}, {
+					data: [1]
+				}],
+				labels: ['label0', 'label1']
+			},
+			config: {
+				type: 'doughnut'
+			},
+			options: {
+				animation: {
+					animateRotate: false,
+					animateScale: false
+				},
+				cutoutPercentage: 50,
+				rotation: Math.PI,
+				circumference: Math.PI * 0.5,
+				elements: {
+					arc: {
+						backgroundColor: 'rgb(255, 0, 0)',
+						borderColor: 'rgb(0, 0, 255)',
+						borderWidth: 2,
+						hoverBackgroundColor: 'rgb(255, 255, 255)'
+					}
+				}
+			}
+		};
+
+		var controller = new Chart.controllers.doughnut(chart, 1);
+		controller.update();
+
+		expect(chart.data.datasets[1].metaData[0]._model.x).toEqual(149);
+		expect(chart.data.datasets[1].metaData[0]._model.y).toEqual(99);
+		expect(chart.data.datasets[1].metaData[0]._model.startAngle).toBeCloseTo(Math.PI, 10);
+		expect(chart.data.datasets[1].metaData[0]._model.endAngle).toBeCloseTo(Math.PI + Math.PI / 8, 10);
+		expect(chart.data.datasets[1].metaData[0]._model.circumference).toBeCloseTo(Math.PI / 8, 10);
+		expect(chart.data.datasets[1].metaData[0]._model.outerRadius).toBeCloseTo(98, 10);
+		expect(chart.data.datasets[1].metaData[0]._model.innerRadius).toBeCloseTo(73.5, 10);
+
+		expect(chart.data.datasets[1].metaData[1]._model.x).toEqual(149);
+		expect(chart.data.datasets[1].metaData[1]._model.y).toEqual(99);
+		expect(chart.data.datasets[1].metaData[1]._model.startAngle).toBeCloseTo(Math.PI + Math.PI / 8, 10);
+		expect(chart.data.datasets[1].metaData[1]._model.endAngle).toBeCloseTo(Math.PI + Math.PI / 2, 10);
+		expect(chart.data.datasets[1].metaData[1]._model.circumference).toBeCloseTo(3 * Math.PI / 8, 10);
+		expect(chart.data.datasets[1].metaData[1]._model.outerRadius).toBeCloseTo(98, 10);
+		expect(chart.data.datasets[1].metaData[1]._model.innerRadius).toBeCloseTo(73.5, 10);
 	});
 
 	it ('should draw all arcs', function() {

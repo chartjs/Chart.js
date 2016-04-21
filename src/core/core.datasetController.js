@@ -1,12 +1,8 @@
-(function() {
+"use strict";
 
-	"use strict";
+module.exports = function(Chart) {
 
-	//Declare root variable - window in the browser, global on the server
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
-
+	var helpers = Chart.helpers;
 
 	// Base class for all dataset controllers (line, bar, etc)
 	Chart.DatasetController = function(chart, datasetIndex) {
@@ -69,9 +65,9 @@
 		draw: helpers.noop,
 		removeHoverStyle: helpers.noop,
 		setHoverStyle: helpers.noop,
-		update: helpers.noop,
+		update: helpers.noop
 	});
 
 	Chart.DatasetController.extend = helpers.inherits;
 
-}).call(this);
+};

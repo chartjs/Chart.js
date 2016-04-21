@@ -15,7 +15,7 @@ This type of chart is often useful when we want to show a comparison data simila
 
 ```javascript
 new Chart(ctx, {
-	data:data, 
+	data: data,
 	type: 'polarArea',
 	options: options
 });
@@ -75,7 +75,7 @@ For example, we could have a polar area chart with a black stroke on each segmen
 ```javascript
 new Chart(ctx, {
 	data: data,
-	type: 'polarArea',
+	type: "polarArea",
 	options: {
 		elements: {
 			arc: {

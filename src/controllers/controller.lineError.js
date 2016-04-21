@@ -1,10 +1,8 @@
-(function() {
+'use strict';
 
-	"use strict";
+module.exports = function(Chart) {
 
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
+	var helpers = Chart.helpers;
 
 	Chart.defaults.lineError = helpers.extend(Chart.defaults.line, {
 		errorDir: "both",
@@ -137,4 +135,4 @@
 		}
 
 	});
-}).call(this);
+};

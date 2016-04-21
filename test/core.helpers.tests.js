@@ -217,6 +217,7 @@ describe('Core helper tests', function() {
 						color: "rgba(0, 0, 0, 0.1)",
 						drawOnChartArea: true,
 						drawTicks: true, // draw ticks extending towards the label
+						tickMarkLength: 10,
 						lineWidth: 1,
 						offsetGridLines: false,
 						display: true,
@@ -225,27 +226,19 @@ describe('Core helper tests', function() {
 					},
 					position: "right",
 					scaleLabel: {
-						fontColor: '#666',
-						fontFamily: 'Helvetica Neue',
-						fontSize: 12,
-						fontStyle: 'normal',
 						labelString: '',
 						display: false,
 					},
 					ticks: {
 						beginAtZero: false,
-						fontColor: "#666",
-						fontFamily: "Helvetica Neue",
-						fontSize: 12,
-						fontStyle: "normal",
-						maxRotation: 90,
+						maxRotation: 50,
 						mirror: false,
 						padding: 10,
 						reverse: false,
 						display: true,
 						callback: merged.scales.yAxes[1].ticks.callback, // make it nicer, then check explicitly below
 						autoSkip: true,
-						autoSkipPadding: 20
+						autoSkipPadding: 0
 					},
 					type: 'linear'
 				}, {
@@ -254,7 +247,8 @@ describe('Core helper tests', function() {
 					gridLines: {
 						color: "rgba(0, 0, 0, 0.1)",
 						drawOnChartArea: true,
-						drawTicks: true, // draw ticks extending towards the label
+						drawTicks: true, // draw ticks extending towards the label,
+						tickMarkLength: 10,
 						lineWidth: 1,
 						offsetGridLines: false,
 						display: true,
@@ -263,27 +257,19 @@ describe('Core helper tests', function() {
 					},
 					position: "left",
 					scaleLabel: {
-						fontColor: '#666',
-						fontFamily: 'Helvetica Neue',
-						fontSize: 12,
-						fontStyle: 'normal',
 						labelString: '',
 						display: false,
 					},
 					ticks: {
 						beginAtZero: false,
-						fontColor: "#666",
-						fontFamily: "Helvetica Neue",
-						fontSize: 12,
-						fontStyle: "normal",
-						maxRotation: 90,
+						maxRotation: 50,
 						mirror: false,
 						padding: 10,
 						reverse: false,
 						display: true,
 						callback: merged.scales.yAxes[2].ticks.callback, // make it nicer, then check explicitly below
 						autoSkip: true,
-						autoSkipPadding: 20
+						autoSkipPadding: 0
 					},
 					type: 'linear'
 				}]
@@ -327,6 +313,13 @@ describe('Core helper tests', function() {
 		expect(helpers.log10(0)).toBe(-Infinity);
 		expect(helpers.log10(1)).toBe(0);
 		expect(helpers.log10(1000)).toBeCloseTo(3, 1e-9);
+	});
+
+	it('should correctly determine if two numbers are essentially equal', function() {
+		expect(helpers.almostEquals(0, Number.EPSILON, 2 * Number.EPSILON)).toBe(true);
+		expect(helpers.almostEquals(1, 1.1, 0.0001)).toBe(false);
+		expect(helpers.almostEquals(1e30, 1e30 + Number.EPSILON, 0)).toBe(false);
+		expect(helpers.almostEquals(1e30, 1e30 + Number.EPSILON, 2 * Number.EPSILON)).toBe(true);
 	});
 
 	it('Should generate ids', function() {
@@ -493,4 +486,201 @@ describe('Core helper tests', function() {
 			args: []
 		}])
 	});
+
+	it ('should get the maximum width and height for a node', function() {
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = "200px";
+		div.style.height = "300px";
+
+		document.body.appendChild(div);
+
+		// Create the div we want to get the max size for
+		var innerDiv = document.createElement('div');
+		div.appendChild(innerDiv);
+
+		expect(helpers.getMaximumWidth(innerDiv)).toBe(200);
+		expect(helpers.getMaximumHeight(innerDiv)).toBe(300);
+
+		document.body.removeChild(div);
+	});
+
+	it ('should get the maximum width of a node that has a max-width style', function() {
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = "200px";
+		div.style.height = "300px";
+
+		document.body.appendChild(div);
+
+		// Create the div we want to get the max size for and set a max-width style
+		var innerDiv = document.createElement('div');
+		innerDiv.style.maxWidth = "150px";
+		div.appendChild(innerDiv);
+
+		expect(helpers.getMaximumWidth(innerDiv)).toBe(150);
+
+		document.body.removeChild(div);
+	});
+
+	it ('should get the maximum height of a node that has a max-height style', function() {
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = "200px";
+		div.style.height = "300px";
+
+		document.body.appendChild(div);
+
+		// Create the div we want to get the max size for and set a max-height style
+		var innerDiv = document.createElement('div');
+		innerDiv.style.maxHeight = "150px";
+		div.appendChild(innerDiv);
+
+		expect(helpers.getMaximumHeight(innerDiv)).toBe(150);
+
+		document.body.removeChild(div);
+	});
+
+	it ('should get the maximum width of a node when the parent has a max-width style', function() {
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = "200px";
+		div.style.height = "300px";
+
+		document.body.appendChild(div);
+
+		// Create an inner wrapper around our div we want to size and give that a max-width style
+		var parentDiv = document.createElement('div');
+		parentDiv.style.maxWidth = "150px";
+		div.appendChild(parentDiv);
+
+		// Create the div we want to get the max size for
+		var innerDiv = document.createElement('div');
+		parentDiv.appendChild(innerDiv);
+
+		expect(helpers.getMaximumWidth(innerDiv)).toBe(150);
+
+		document.body.removeChild(div);
+	});
+
+	it ('should get the maximum height of a node when the parent has a max-height style', function() {
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = "200px";
+		div.style.height = "300px";
+
+		document.body.appendChild(div);
+
+		// Create an inner wrapper around our div we want to size and give that a max-height style
+		var parentDiv = document.createElement('div');
+		parentDiv.style.maxHeight = "150px";
+		div.appendChild(parentDiv);
+
+		// Create the div we want to get the max size for
+		var innerDiv = document.createElement('div');
+		innerDiv.style.height = "300px"; // make it large
+		parentDiv.appendChild(innerDiv);
+
+		expect(helpers.getMaximumHeight(innerDiv)).toBe(150);
+
+		document.body.removeChild(div);
+	});
+
+	it ('should get the maximum width of a node that has a percentage max-width style', function() {
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = "200px";
+		div.style.height = "300px";
+
+		document.body.appendChild(div);
+
+		// Create the div we want to get the max size for and set a max-width style
+		var innerDiv = document.createElement('div');
+		innerDiv.style.maxWidth = "50%";
+		div.appendChild(innerDiv);
+
+		expect(helpers.getMaximumWidth(innerDiv)).toBe(100);
+
+		document.body.removeChild(div);
+	});
+
+	it ('should get the maximum height of a node that has a percentage max-height style', function() {
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = "200px";
+		div.style.height = "300px";
+
+		document.body.appendChild(div);
+
+		// Create the div we want to get the max size for and set a max-height style
+		var innerDiv = document.createElement('div');
+		innerDiv.style.maxHeight = "50%";
+		div.appendChild(innerDiv);
+
+		expect(helpers.getMaximumHeight(innerDiv)).toBe(150);
+
+		document.body.removeChild(div);
+	});
+
+	it ('should get the maximum width of a node when the parent has a percentage max-width style', function() {
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = "200px";
+		div.style.height = "300px";
+
+		document.body.appendChild(div);
+
+		// Create an inner wrapper around our div we want to size and give that a max-width style
+		var parentDiv = document.createElement('div');
+		parentDiv.style.maxWidth = "50%";
+		div.appendChild(parentDiv);
+
+		// Create the div we want to get the max size for
+		var innerDiv = document.createElement('div');
+		parentDiv.appendChild(innerDiv);
+
+		expect(helpers.getMaximumWidth(innerDiv)).toBe(100);
+
+		document.body.removeChild(div);
+	});
+
+	it ('should get the maximum height of a node when the parent has a percentage max-height style', function() {
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = "200px";
+		div.style.height = "300px";
+
+		document.body.appendChild(div);
+
+		// Create an inner wrapper around our div we want to size and give that a max-height style
+		var parentDiv = document.createElement('div');
+		parentDiv.style.maxHeight = "50%";
+		div.appendChild(parentDiv);
+
+		var innerDiv = document.createElement('div');
+		innerDiv.style.height = "300px"; // make it large
+		parentDiv.appendChild(innerDiv);
+
+		expect(helpers.getMaximumHeight(innerDiv)).toBe(150);
+
+		document.body.removeChild(div);
+	});
+
+	describe('Color helper', function() {
+		function isColorInstance(obj) {
+			return typeof obj === 'object' && obj.hasOwnProperty('values') && obj.values.hasOwnProperty('rgb');
+		}
+
+		it('should return a color when called with a color', function() {
+			expect(isColorInstance(helpers.color('rgb(1, 2, 3)'))).toBe(true);
+		});
+
+		it('should return a color when called with a CanvasGradient instance', function() {
+			var context = document.createElement('canvas').getContext('2d');
+			var gradient = context.createLinearGradient(0, 1, 2, 3);
+
+			expect(isColorInstance(helpers.color(gradient))).toBe(true);
+		});
+	});
+
 });

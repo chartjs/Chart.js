@@ -1,10 +1,8 @@
-(function() {
+'use strict';
 
-	"use strict";
+module.exports = function(Chart) {
 
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
+	var helpers = Chart.helpers;
 
 	Chart.defaults.barError = helpers.extend(Chart.defaults.bar, {
 		errorDir: "both",
@@ -148,4 +146,4 @@
 		}
 
 	});
-}).call(this);
+};

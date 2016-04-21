@@ -82,7 +82,9 @@
 			save: function() {},
 			setLineDash: function() {},
 			stroke: function() {},
-			translate: function() {},
+			strokeRect: function(x, y, w, h) {},
+			setTransform: function(a, b, c, d, e, f) {},
+			translate: function(x, y) {},
 		};
 
 		// attach methods to the class itself

@@ -2,7 +2,7 @@
 title: Pie & Doughnut Charts
 anchor: doughnut-pie-chart
 ---
-###Introduction
+### Introduction
 Pie and doughnut charts are probably the most commonly used chart there are. They are divided into segments, the arc of each segment shows the proportional value of each piece of data.
 
 They are excellent at showing the relational proportions between data.
@@ -24,15 +24,17 @@ They are also registered under two aliases in the `Chart` core. Other than their
 
 ```javascript
 // For a pie chart
-var myPieChart = new Chart(ctx[0],{
-	type:'pie',
+var myPieChart = new Chart(ctx,{
+	type: 'pie',
 	data: data,
 	options: options
 });
+```
 
+```javascript
 // And for a doughnut chart
-var myDoughnutChart = new Chart(ctx[1], {
-	type:'doughnut',
+var myDoughnutChart = new Chart(ctx, {
+	type: 'doughnut',
 	data: data,
 	options: options
 });
@@ -73,6 +75,8 @@ These are the customisation options specific to Pie & Doughnut charts. These opt
 Name | Type | Default | Description
 --- | --- | --- | ---
 cutoutPercentage | Number | 50 - for doughnut, 0 - for pie | The percentage of the chart that is cut out of the middle.
+rotation | Number | -0.5 * Math.PI | Starting angle to draw arcs from
+circumference | Number | 2 * Math.PI | Sweep to allow arcs to cover
 scale | Array | [See Scales](#scales) and [Defaults for Radial Linear Scale](#getting-started-radial-linear-scale) | Options for the one scale used on the chart. Use this to style the ticks, labels, and grid.
 *scale*.type | String |"radialLinear" | As defined in ["Radial Linear"](#scales-radial-linear-scale).
 *scale*.lineArc | Boolean | true | When true, lines are arced compared to straight when false.
@@ -96,4 +100,4 @@ new Chart(ctx,{
 // and the Doughnut chart defaults but this particular instance will have `animateScale` set to `true`.
 ```
 
-We can also change these default values for each Doughnut type that is created, this object is available at `Chart.defaults.Doughnut`. Pie charts also have a clone of these defaults available to change at `Chart.defaults.Pie`, with the only difference being `percentageInnerCutout` being set to 0.
+We can also change these default values for each Doughnut type that is created, this object is available at `Chart.defaults.doughnut`. Pie charts also have a clone of these defaults available to change at `Chart.defaults.pie`, with the only difference being `percentageInnerCutout` being set to 0.

@@ -1,16 +1,15 @@
-(function() {
+/*global window: false */
+"use strict";
 
-	"use strict";
+module.exports = function(Chart) {
 
-	var root = this,
-		Chart = root.Chart,
-		helpers = Chart.helpers;
+	var helpers = Chart.helpers;
 
 	Chart.defaults.global.animation = {
 		duration: 1000,
 		easing: "easeOutQuart",
 		onProgress: helpers.noop,
-		onComplete: helpers.noop,
+		onComplete: helpers.noop
 	};
 
 	Chart.Animation = Chart.Element.extend({
@@ -19,14 +18,15 @@
 		easing: "", // the easing to use for this animation
 		render: null, // render function used by the animation service
 
-		onAnimationProgress: null, // user specified callback to fire on each step of the animation 
-		onAnimationComplete: null, // user specified callback to fire when the animation finishes
+		onAnimationProgress: null, // user specified callback to fire on each step of the animation
+		onAnimationComplete: null // user specified callback to fire when the animation finishes
 	});
 
 	Chart.animationService = {
 		frameDuration: 17,
 		animations: [],
 		dropFrames: 0,
+		request: null,
 		addAnimation: function(chartInstance, animationObject, duration, lazy) {
 
 			if (!lazy) {
@@ -47,24 +47,32 @@
 			});
 
 			// If there are no animations queued, manually kickstart a digest, for lack of a better word
-			if (this.animations.length == 1) {
-				helpers.requestAnimFrame.call(window, this.digestWrapper);
+			if (this.animations.length === 1) {
+				this.requestAnimationFrame();
 			}
 		},
 		// Cancel the animation for a given chart instance
 		cancelAnimation: function(chartInstance) {
-			var index = helpers.findNextWhere(this.animations, function(animationWrapper) {
+			var index = helpers.findIndex(this.animations, function(animationWrapper) {
 				return animationWrapper.chartInstance === chartInstance;
 			});
 
-			if (index) {
+			if (index !== -1) {
 				this.animations.splice(index, 1);
 				chartInstance.animating = false;
 			}
 		},
-		// calls startDigest with the proper context
-		digestWrapper: function() {
-			Chart.animationService.startDigest.call(Chart.animationService);
+		requestAnimationFrame: function() {
+			var me = this;
+			if (me.request === null) {
+				// Skip animation frame requests until the active one is executed.
+				// This can happen when processing mouse events, e.g. 'mousemove'
+				// and 'mouseout' events will trigger multiple renders.
+				me.request = helpers.requestAnimFrame.call(window, function() {
+					me.request = null;
+					me.startDigest();
+				});
+			}
 		},
 		startDigest: function() {
 
@@ -76,7 +84,8 @@
 				this.dropFrames = this.dropFrames % 1;
 			}
 
-			for (var i = 0; i < this.animations.length; i++) {
+			var i = 0;
+			while (i < this.animations.length) {
 				if (this.animations[i].animationObject.currentStep === null) {
 					this.animations[i].animationObject.currentStep = 0;
 				}
@@ -92,16 +101,17 @@
 					this.animations[i].animationObject.onAnimationProgress.call(this.animations[i].chartInstance, this.animations[i]);
 				}
 
-				if (this.animations[i].animationObject.currentStep == this.animations[i].animationObject.numSteps) {
+				if (this.animations[i].animationObject.currentStep === this.animations[i].animationObject.numSteps) {
 					if (this.animations[i].animationObject.onAnimationComplete && this.animations[i].animationObject.onAnimationComplete.call) {
 						this.animations[i].animationObject.onAnimationComplete.call(this.animations[i].chartInstance, this.animations[i]);
 					}
-					
+
 					// executed the last frame. Remove the animation.
 					this.animations[i].chartInstance.animating = false;
+
 					this.animations.splice(i, 1);
-					// Keep the index in place to offset the splice
-					i--;
+				} else {
+					++i;
 				}
 			}
 
@@ -112,9 +122,8 @@
 
 			// Do we have more stuff to animate?
 			if (this.animations.length > 0) {
-				helpers.requestAnimFrame.call(window, this.digestWrapper);
+				this.requestAnimationFrame();
 			}
 		}
 	};
-
-}).call(this);
+};

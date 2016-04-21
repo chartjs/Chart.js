@@ -2,17 +2,11 @@
 
 *This is an fork of [Chart.js](http://www.chartjs.org) which supports error bars. It can be used as a stand-alone library or as an extension of the original library.
 
-**This branch is for Chart.js v2.0, currently in beta.** Checkout the master branch to see the current stable extension for Chart.js 1.x.
-
-I won't be doing formal testing/semver for the extension. When Chart.js 2.0 goes stable, this will become the main branch. Please help me out and report issues.
-
-![Bar chart with margin of error](samples/bar_error.png)
-
-![Line chart with margin of error](samples/line_error.png)
+The master branch is compatible with Chart.js 2.x.x. There are branch compatible with earlier versions, but I will not maintain them.
 
 ## Documentation
 
-You can find documentation for Chart.js at [chartjs.org/docs](http://www.chartjs.org/docs/). Usage of the extension is noted below.
+You can find documentation for Chart.js at [nnnick.github.io/Chart.js/docs-v2/](http://nnnick.github.io/Chart.js/docs-v2/). Usage of the extension is noted below.
 
 ## Include Error Bars
 

@@ -7,8 +7,14 @@ module.exports = function(config) {
 				flags: ['--no-sandbox']
 			}
 		},
-		frameworks: ['jasmine'],
+		frameworks: ['browserify', 'jasmine'],
 		reporters: ['progress', 'html'],
+		preprocessors: {
+			'src/**/*.js': ['browserify']
+		},
+		browserify: {
+			debug: true
+		}
 	};
 
 	if (process.env.TRAVIS) {

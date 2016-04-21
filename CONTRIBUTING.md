@@ -30,10 +30,18 @@ Guidlines for reporting bugs:
 Please provide any additional details associated with the bug, if it's browser or screen density specific, or only happens with a certain configuration or data.
 
 
+Local development
+-----------------
+
+Run `npm install` to install all the libraries, then run `gulp dev --test` to build and run tests as you make changes.
+
+
 Pull requests
 -------------
 
 Clear, concise pull requests are excellent at continuing the project's community driven growth. But please review [these guidelines](https://github.com/blog/1943-how-to-write-the-perfect-pull-request) and the guidelines below before starting work on the project.
+
+Be advised that **Chart.js 1.0.2 is in feature-complete status**. Pull requests adding new features to the 1.x branch will be disregarded.
 
 Guidlines:
 
@@ -45,7 +53,7 @@ Guidlines:
  - If adding new functionality, please also update the relevant `.md` file in [`/docs`](https://github.com/nnnick/Chart.js/tree/master/docs)
  - Please make your commits in logical sections with clear commit messages
 
-Joining the Project
+Joining the project
 -------------
  - Active committers and contributors are invited to introduce yourself and request commit access to this project.  Please send an email to hello@nickdownie.com or file an issue. 
 
