@@ -53,5 +53,13 @@
 
   ga('create', 'UA-28909194-3', 'auto');
   ga('send', 'pageview');</script>
+  <script>!function(){for(var d,a=500,b=15,c=document.getElementsByTagName("a"),e=0;e<c.length;e++)
+  d=void 0===c[e].attributes.href?null:c[e].attributes.href.nodeValue.toString(),
+  null!==d&&d.length>1&&"#"==d.substr(0,1)&&(c[e].onclick=function(){
+  var c,d=this.attributes.href.nodeValue.toString();if(c=document.getElementById(d.substr(1)))
+  for(var e=a/b,h=g(),i=(f(c)-h)/e,j=1;e>=j;j++)!function(){
+  var a=i*j;setTimeout(function(){window.scrollTo(0,a+h)},b*j)}();return!1});
+  var f=function(a){for(var b=0;void 0!=a.offsetParent&&null!=a.offsetParent;)b+=a.offsetTop+(null!=a.clientTop?a.clientTop:0),
+  a=a.offsetParent;return b},g=function(){return document.documentElement.scrollTop+document.body.scrollTop}}();</script>
 	</body>
 </html>
