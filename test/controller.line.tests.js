@@ -456,6 +456,61 @@ describe('Line controller tests', function() {
       controlPointNextY: 194,
     });
 
+    // Use the consistent name "lineTension", setting but overwriting
+    // another value in "tension"
+    chart.data.datasets[0].lineTension = 0.5;
+    chart.data.datasets[0].tension = 0.7;
+
+    controller.update();
+
+    expect(chart.data.datasets[0].metaDataset._model).toEqual({
+      backgroundColor: 'rgb(98, 98, 98)',
+      borderCapStyle: 'butt',
+      borderColor: 'rgb(8, 8, 8)',
+      borderDash: [2, 3],
+      borderDashOffset: 7,
+      borderJoinStyle: 'miter',
+      borderWidth: 0.55,
+      fill: false,
+      tension: 0.5,
+
+      scaleTop: 0,
+      scaleBottom: 200,
+      scaleZero: 156,
+    });
+
+    expect(chart.data.datasets[0].metaData[0]._model).toEqual({
+      x: 82,
+      y: 62,
+      radius: 22,
+      pointStyle: 'circle',
+      backgroundColor: 'rgb(128, 129, 130)',
+      borderColor: 'rgb(56, 57, 58)',
+      borderWidth: 1.123,
+      hitRadius: 3.3,
+      skip: false,
+      controlPointPreviousX: 82,
+      controlPointPreviousY: 62,
+      controlPointNextX: 107,
+      controlPointNextY: 38.5
+    });
+
+    expect(chart.data.datasets[0].metaData[1]._model).toEqual({
+      x: 132,
+      y: 15,
+      radius: 22,
+      pointStyle: 'circle',
+      backgroundColor: 'rgb(128, 129, 130)',
+      borderColor: 'rgb(56, 57, 58)',
+      borderWidth: 1.123,
+      hitRadius: 3.3,
+      skip: false,
+      controlPointPreviousX: 116.2771987579006,
+      controlPointPreviousY: 0.22056683242656483,
+      controlPointNextX: 166.2771987579006,
+      controlPointNextY: 47.22056683242656
+    });
+
     // Use custom styles for lines & first point
     chart.data.datasets[0].metaDataset.custom = {
       tension: 0.15,
