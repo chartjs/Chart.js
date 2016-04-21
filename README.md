@@ -2,13 +2,11 @@
 
 *This is an fork of [Chart.js](http://www.chartjs.org) which supports error bars. It can be used as a stand-alone library or as an extension of the original library.
 
-![Bar chart with margin of error](samples/bar_error.png)
-
-![Line chart with margin of error](samples/line_error.png)
+The master branch is compatible with Chart.js 2.x.x. There are branch compatible with earlier versions, but I will not maintain them.
 
 ## Documentation
 
-You can find documentation for Chart.js at [chartjs.org/docs](http://www.chartjs.org/docs/). Usage of the extension is noted below.
+You can find documentation for Chart.js at [nnnick.github.io/Chart.js/docs-v2/](http://nnnick.github.io/Chart.js/docs-v2/). Usage of the extension is noted below.
 
 ## Include Error Bars
 
@@ -22,6 +20,10 @@ Options included with this version of the library:
 		//Number - stroke width of the error bars
 		errorStrokeWidth : 1,
 
+		//String - color of the error bar in hex or RGBA.
+		//If not specified defaults to the fill color of the bar of point.
+		errorColor: "rgba(220, 220, 220, 1)"
+
 		//Number - ratio of the width of the error bar caps to the width of the bar
 		errorCapWidth : 0.75,
 		//For line charts, errorCapWidth is the ratio of the width of the error bar
@@ -29,11 +31,7 @@ Options included with this version of the library:
 		
 ## Compatibility
 
-This repo is compatible with @nnnick/Chart.js, so even if you are already using Chart.js on your site, switching to my version will not harm anything.
-
-## Chart.js 2.0
-
-[Chart.js 2.0 is currently in beta.](https://github.com/nnnick/Chart.js/tree/v2.0-dev) I have updated the extension to support this version of the library. Check it out on the v2.0-dev branch. 
+This repo is compatible with @nnnick/Chart.js **v2.0**, so even if you are already using Chart.js on your site, switching to my version will not harm anything.
 
 ## License
 

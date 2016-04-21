@@ -1,13 +1,30 @@
 language: node_js
 node_js:
-  - "0.11"
-  - "0.10"
+  - "5.10"
+
+before_install:
+  - "export CHROME_BIN=/usr/bin/google-chrome"
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
 
 before_script:
   - npm install
 
 script:
   - gulp test
+  - gulp coverage
+  - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
 
 notifications:
   slack: chartjs:pcfCZR6ugg5TEcaLtmIfQYuA
+
+sudo: required
+dist: trusty
+
+addons:
+  firefox: latest
+  apt:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable
