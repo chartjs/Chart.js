@@ -778,8 +778,13 @@ describe('Linear Scale', function() {
 		verticalScale.height = 110;
 
 		expect(verticalScale.getPixelForValue(1, 0, 0)).toBe(5); // top + paddingTop
+		expect(verticalScale.getValueForPixel(5)).toBe(1);
+
 		expect(verticalScale.getPixelForValue(-1, 0, 0)).toBe(105); // bottom - paddingBottom
+		expect(verticalScale.getValueForPixel(105)).toBe(-1);
+
 		expect(verticalScale.getPixelForValue(0, 0, 0)).toBe(55); // halfway
+		expect(verticalScale.getValueForPixel(55)).toBe(0);
 
 		var horizontalConfig = Chart.helpers.clone(config);
 		horizontalConfig.position = 'bottom';
@@ -806,8 +811,13 @@ describe('Linear Scale', function() {
 
 		// Range expands to [-2, 2] due to nicenum algorithm
 		expect(horizontalScale.getPixelForValue(2, 0, 0)).toBe(105); // right - paddingRight
+		expect(horizontalScale.getValueForPixel(105)).toBe(2);
+
 		expect(horizontalScale.getPixelForValue(-2, 0, 0)).toBe(5); // left + paddingLeft
+		expect(horizontalScale.getValueForPixel(5)).toBe(-2);
+
 		expect(horizontalScale.getPixelForValue(0, 0, 0)).toBe(55); // halfway
+		expect(horizontalScale.getValueForPixel(55)).toBe(0);
 	});
 
 	it('should fit correctly', function() {

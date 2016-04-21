@@ -316,6 +316,11 @@ module.exports = function(Chart) {
 				}
 			}
 		},
+		getValueForPixel: function(pixel) {
+			var offset = pixel - (this.isHorizontal() ? this.left + this.paddingLeft : this.top + this.paddingTop);
+			offset *= this.scaleSizeInUnits;
+			return this.firstTick.clone().add(offset, this.tickUnit);
+		},
 		parseTime: function(label) {
 			if (typeof this.options.time.parser === 'string') {
 				return moment(label, this.options.time.parser);

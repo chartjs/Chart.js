@@ -187,6 +187,16 @@ module.exports = function(Chart) {
 			}
 
 			return pixel;
+		},
+		getValueForPixel: function(pixel) {
+			var offset;
+
+			if (this.isHorizontal) {
+				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
+			} else {
+				var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
+			}
+
 		}
 
 	});

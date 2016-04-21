@@ -595,8 +595,14 @@ describe('Logarithmic Scale tests', function() {
 		verticalScale.height = 110;
 
 		expect(verticalScale.getPixelForValue(80, 0, 0)).toBe(5); // top + paddingTop
+		expect(verticalScale.getValueForPixel(5)).toBeCloseTo(80, 1e-4);
+
 		expect(verticalScale.getPixelForValue(1, 0, 0)).toBe(105); // bottom - paddingBottom
+		expect(verticalScale.getValueForPixel(105)).toBeCloseTo(1, 1e-4);
+
 		expect(verticalScale.getPixelForValue(10, 0, 0)).toBeCloseTo(52.4, 1e-4); // halfway
+		expect(verticalScale.getValueForPixel(52.4)).toBeCloseTo(10, 1e-4);
+
 		expect(verticalScale.getPixelForValue(0, 0, 0)).toBe(5); // 0 is invalid. force it on top
 
 		var horizontalConfig = Chart.helpers.clone(config);
@@ -623,8 +629,14 @@ describe('Logarithmic Scale tests', function() {
 		horizontalScale.height = 50;
 
 		expect(horizontalScale.getPixelForValue(80, 0, 0)).toBe(105); // right - paddingRight
+		expect(horizontalScale.getValueForPixel(105)).toBeCloseTo(80, 1e-4);
+
 		expect(horizontalScale.getPixelForValue(1, 0, 0)).toBe(5); // left + paddingLeft
+		expect(horizontalScale.getValueForPixel(5)).toBeCloseTo(1, 1e-4);
+
 		expect(horizontalScale.getPixelForValue(10, 0, 0)).toBeCloseTo(57.5, 1e-4); // halfway
+		expect(horizontalScale.getValueForPixel(57.5)).toBeCloseTo(10, 1e-4);
+
 		expect(horizontalScale.getPixelForValue(0, 0, 0)).toBe(5); // 0 is invalid, put it on the left.
 	});
 });

@@ -1,0 +1,232 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Scatter Chart</title>
+    <script src="../dist/Chart.bundle.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <style>
+    canvas {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+    </style>
+</head>
+
+<body>
+    <div style="width:75%">
+        <div>
+            <canvas id="canvas"></canvas>
+        </div>
+    </div>
+    <script src="http://hammerjs.github.io/dist/hammer.min.js"></script>
+    <script type="text/javascript">
+        var helpers = Chart.helpers;
+        function canZoomDirection(mode, dir) {
+            if (mode === undefined) {
+                return true;
+            } else if (typeof mode === 'string') {
+                return mode.indexOf(dir) !== -1;
+            }
+
+            return false;
+        }
+
+        function zoomScaleIn(scale, zoom, center) {
+            if (typeof scale.min === 'number' && typeof scale.max === 'number') {
+                var newDiff = (scale.max - scale.min) * (zoom - 1);
+                scale.options.ticks.min = scale.min + (newDiff / 2);
+                scale.options.ticks.max = scale.max - (newDiff / 2);
+            } else {
+                // Category scale
+                var indexDiff = scale.maxIndex - scale.minIndex;
+            }
+        }
+
+        function doZoom(chartInstance, zoom, center) {
+            var ca = chartInstance.chartArea;
+            if (!center) {
+                center = {
+                    x: (ca.left + ca.right) / 2,
+                    y: (ca.top + ca.bottom) / 2,
+                }
+            }
+
+            if (chartInstance.options.zoom && chartInstance.options.zoom.enabled) {
+                // Do the zoom here
+                helpers.each(chartInstance.scales, function(scale, id) {
+                    if (scale.isHorizontal() && canZoomDirection(chartInstance.options.zoom.mode, 'x')) {
+                        zoomScaleIn(scale, zoom, center);
+                    } else if (canZoomDirection(chartInstance.options.zoom.mode, 'y')) {
+                        // Do Y zoom
+                        zoomScaleIn(scale, zoom, center);
+                    }
+                });
+
+                chartInstance.update();
+            }
+        }
+
+        // Chartjs Zoom Plugin
+        var ZoomPlugin = Chart.PluginBase.extend({
+            beforeInit: function(chartInstance) {
+                var node = chartInstance.chart.ctx.canvas;
+                var options = chartInstance.options;
+                var wheelHandler = function(e) {
+                    if (e.wheelDelta > 0) {
+                        doZoom(chartInstance, 1.1);
+                    } else {
+                        doZoom(chartInstance, 0.909);
+                    }
+                };
+                chartInstance._wheelHandler = wheelHandler;
+
+                node.addEventListener('mousewheel', wheelHandler);
+
+                var mc = new window.Hammer.Manager(node);
+                mc.add(new Hammer.Pinch());
+
+                var handlePinch = function handlePinch(e) {
+                    var diff = 1 / (currentPinchScaling) * e.scale;
+                    doZoom(chartInstance, diff, e.center);
+
+                    // Keep track of overall scale
+                    currentPinchScaling = e.scale;
+                };
+
+                // Hammer reports the total scaling. We need the incremental amount
+                var currentPinchScaling;
+
+                mc.on('pinchstart', function(e) {
+                    currentPinchScaling = 1; // reset tracker
+                });
+                mc.on('pinch', handlePinch);
+                mc.on('pinchend', function(e) {
+                    handlePinch(e);
+                    currentPinchScaling = null; // reset
+                });
+            },
+
+            destroy: function(chartInstance) {
+                var node = chartInstance.chart.ctx.canvas;
+
+                // Remove wheel handler
+                node.removeEventListener('mousewheel', chartInstance._wheelHandler);
+            }
+        });
+
+        Chart.pluginService.register(new ZoomPlugin());
+    </script>
+
+    <script>
+        var randomScalingFactor = function() {
+            return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 100);
+        };
+        var randomColor = function(opacity) {
+            return 'rgba(' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + (opacity || '.3') + ')';
+        };
+
+        var scatterChartData = {
+            datasets: [{
+                label: "My First dataset",
+                data: [{
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                }]
+            }, {
+                label: "My Second dataset",
+                data: [{
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                }, {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor(),
+                }]
+            }]
+        };
+
+        $.each(scatterChartData.datasets, function(i, dataset) {
+            dataset.borderColor = randomColor(0.4);
+            dataset.backgroundColor = randomColor(0.1);
+            dataset.pointBorderColor = randomColor(0.7);
+            dataset.pointBackgroundColor = randomColor(0.5);
+            dataset.pointBorderWidth = 1;
+        });
+
+        window.onload = function() {
+            var ctx = document.getElementById("canvas").getContext("2d");
+            window.myScatter = Chart.Scatter(ctx, {
+                data: scatterChartData,
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Chart.js Scatter Chart'
+                    },
+                    scales: {
+                        xAxes: [{
+                            gridLines: {
+                                zeroLineColor: "rgba(0,255,0,1)"
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'x axis'
+                            },
+                            ticks: {
+                                maxRotation: 0
+                            }
+                        }],
+                        yAxes: [{
+                            gridLines: {
+                                zeroLineColor: "rgba(0,255,0,1)"
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'y axis'
+                            }
+                        }]
+                    },
+                    zoom: {
+                        enabled: true,
+                        mode: 'x'
+                    }
+                }
+            });
+        };
+    </script>
+</body>
+
+</html>

@@ -337,7 +337,10 @@ describe('Time scale tests', function() {
 		scale.bottom = 38;
 
 		expect(scale.getPixelForValue('', 0, 0)).toBe(81);
+		expect(scale.getValueForPixel(81)).toEqual(scale.firstTick);
+
 		expect(scale.getPixelForValue('', 6, 0)).toBe(323);
+		expect(scale.getValueForPixel(323)).toEqual(scale.lastTick);
 
 		var verticalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('time'));
 		verticalScaleConfig.position = "left";
@@ -359,7 +362,10 @@ describe('Time scale tests', function() {
 		verticalScale.bottom = 400;
 
 		expect(verticalScale.getPixelForValue('', 0, 0)).toBe(38);
+		expect(verticalScale.getValueForPixel(38)).toEqual(verticalScale.firstTick);
+
 		expect(verticalScale.getPixelForValue('', 6, 0)).toBe(375);
+		expect(verticalScale.getValueForPixel(375)).toEqual(verticalScale.lastTick);
 	});
 
 	it('should get the correct label for a data value', function() {
