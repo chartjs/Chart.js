@@ -511,6 +511,116 @@ describe('Line controller tests', function() {
       controlPointNextY: 47.22056683242656
     });
 
+    // Use the consistent name "pointRadius", setting but overwriting
+    // another value in "radius"
+    chart.data.datasets[0].pointRadius = 250;
+    chart.data.datasets[0].radius = 20;
+
+    controller.update();
+
+    expect(chart.data.datasets[0].metaDataset._model).toEqual({
+      backgroundColor: 'rgb(98, 98, 98)',
+      borderCapStyle: 'butt',
+      borderColor: 'rgb(8, 8, 8)',
+      borderDash: [2, 3],
+      borderDashOffset: 7,
+      borderJoinStyle: 'miter',
+      borderWidth: 0.55,
+      fill: false,
+      tension: 0.5,
+
+      scaleTop: 0,
+      scaleBottom: 200,
+      scaleZero: 156,
+    });
+
+    expect(chart.data.datasets[0].metaData[0]._model).toEqual({
+      x: 82,
+      y: 62,
+      radius: 250,
+      pointStyle: 'circle',
+      backgroundColor: 'rgb(128, 129, 130)',
+      borderColor: 'rgb(56, 57, 58)',
+      borderWidth: 1.123,
+      hitRadius: 3.3,
+      skip: false,
+      controlPointPreviousX: 82,
+      controlPointPreviousY: 62,
+      controlPointNextX: 107,
+      controlPointNextY: 38.5
+    });
+
+    expect(chart.data.datasets[0].metaData[1]._model).toEqual({
+      x: 132,
+      y: 15,
+      radius: 250,
+      pointStyle: 'circle',
+      backgroundColor: 'rgb(128, 129, 130)',
+      borderColor: 'rgb(56, 57, 58)',
+      borderWidth: 1.123,
+      hitRadius: 3.3,
+      skip: false,
+      controlPointPreviousX: 116.2771987579006,
+      controlPointPreviousY: 0.22056683242656483,
+      controlPointNextX: 166.2771987579006,
+      controlPointNextY: 47.22056683242656
+    });
+
+    // Use the consistent name "pointHitRadius", setting but overwriting
+    // another value in "hitRadius"
+    chart.data.datasets[0].pointHitRadius = 123;
+    chart.data.datasets[0].hitRadius = 23;
+
+    controller.update();
+
+    expect(chart.data.datasets[0].metaDataset._model).toEqual({
+      backgroundColor: 'rgb(98, 98, 98)',
+      borderCapStyle: 'butt',
+      borderColor: 'rgb(8, 8, 8)',
+      borderDash: [2, 3],
+      borderDashOffset: 7,
+      borderJoinStyle: 'miter',
+      borderWidth: 0.55,
+      fill: false,
+      tension: 0.5,
+
+      scaleTop: 0,
+      scaleBottom: 200,
+      scaleZero: 156,
+    });
+
+    expect(chart.data.datasets[0].metaData[0]._model).toEqual({
+      x: 82,
+      y: 62,
+      radius: 250,
+      pointStyle: 'circle',
+      backgroundColor: 'rgb(128, 129, 130)',
+      borderColor: 'rgb(56, 57, 58)',
+      borderWidth: 1.123,
+      hitRadius: 123,
+      skip: false,
+      controlPointPreviousX: 82,
+      controlPointPreviousY: 62,
+      controlPointNextX: 107,
+      controlPointNextY: 38.5
+    });
+
+    expect(chart.data.datasets[0].metaData[1]._model).toEqual({
+      x: 132,
+      y: 15,
+      radius: 250,
+      pointStyle: 'circle',
+      backgroundColor: 'rgb(128, 129, 130)',
+      borderColor: 'rgb(56, 57, 58)',
+      borderWidth: 1.123,
+      hitRadius: 123,
+      skip: false,
+      controlPointPreviousX: 116.2771987579006,
+      controlPointPreviousY: 0.22056683242656483,
+      controlPointNextX: 166.2771987579006,
+      controlPointNextY: 47.22056683242656
+    });
+
     // Use custom styles for lines & first point
     chart.data.datasets[0].metaDataset.custom = {
       tension: 0.15,
@@ -1326,6 +1436,17 @@ describe('Line controller tests', function() {
     expect(point._model.borderWidth).toBe(2.1);
     expect(point._model.radius).toBe(3.3);
 
+    // Use the consistent name "pointRadius", setting but overwriting
+    // another value in "radius"
+    chart.data.datasets[0].pointRadius = 250;
+    chart.data.datasets[0].radius = 20;
+
+    controller.setHoverStyle(point);
+    expect(point._model.backgroundColor).toBe('rgb(77, 79, 81)');
+    expect(point._model.borderColor).toBe('rgb(123, 125, 127)');
+    expect(point._model.borderWidth).toBe(2.1);
+    expect(point._model.radius).toBe(3.3);
+
     // Custom style
     point.custom = {
       hoverRadius: 4.4,
@@ -1467,6 +1588,17 @@ describe('Line controller tests', function() {
     expect(point._model.borderColor).toBe('rgb(123, 125, 127)');
     expect(point._model.borderWidth).toBe(2.1);
     expect(point._model.radius).toBe(3.3);
+
+    // Use the consistent name "pointRadius", setting but overwriting
+    // another value in "radius"
+    chart.data.datasets[0].pointRadius = 250;
+    chart.data.datasets[0].radius = 20;
+
+    controller.removeHoverStyle(point);
+    expect(point._model.backgroundColor).toBe('rgb(77, 79, 81)');
+    expect(point._model.borderColor).toBe('rgb(123, 125, 127)');
+    expect(point._model.borderWidth).toBe(2.1);
+    expect(point._model.radius).toBe(250);
 
     // Custom style
     point.custom = {
