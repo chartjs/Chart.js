@@ -80,8 +80,9 @@ var data = {
 			// Number or array - border width of point when hovered
 			pointHoverBorderWidth: 2,
 
-			// Tension - bezier curve tension of the line. Set to 0 to draw straight Wlines connecting points
-			tension: 0.1,
+			// Tension - bezier curve tension of the line. Set to 0 to draw straight lines connecting points
+			// Used to be called "tension" but was renamed for consistency. The old option name continues to work for compatibility.
+			lineTension: 0.1,
 
 			// Number - the pixel size of the point shape. Can be set to 0 to not render a circle over the point
 			radius: 1,
