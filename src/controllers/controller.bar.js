@@ -40,7 +40,7 @@ module.exports = function(Chart) {
 			var barCount = 0;
 			helpers.each(this.chart.data.datasets, function(dataset, datasetIndex) {
 				var meta = this.chart.getDatasetMeta(datasetIndex);
-				if (meta.bar && helpers.isDatasetVisible(dataset)) {
+				if (meta.bar && this.chart.isDatasetVisible(datasetIndex)) {
 					++barCount;
 				}
 			}, this);
@@ -141,7 +141,7 @@ module.exports = function(Chart) {
 					for (var i = 0; i < datasetIndex; i++) {
 						var negDS = this.chart.data.datasets[i];
 						var negDSMeta = this.chart.getDatasetMeta(i);
-						if (negDSMeta.bar && negDSMeta.yAxisID === yScale.id && helpers.isDatasetVisible(negDS)) {
+						if (negDSMeta.bar && negDSMeta.yAxisID === yScale.id && this.chart.isDatasetVisible(i)) {
 							base += negDS.data[index] < 0 ? negDS.data[index] : 0;
 						}
 					}
@@ -149,7 +149,7 @@ module.exports = function(Chart) {
 					for (var j = 0; j < datasetIndex; j++) {
 						var posDS = this.chart.data.datasets[j];
 						var posDSMeta = this.chart.getDatasetMeta(j);
-						if (posDSMeta.bar && posDSMeta.yAxisID === yScale.id && helpers.isDatasetVisible(posDS)) {
+						if (posDSMeta.bar && posDSMeta.yAxisID === yScale.id && this.chart.isDatasetVisible(j)) {
 							base += posDS.data[index] > 0 ? posDS.data[index] : 0;
 						}
 					}
@@ -221,7 +221,7 @@ module.exports = function(Chart) {
 
 			for (j = 0; j < datasetIndex; ++j) {
 				meta = this.chart.getDatasetMeta(j);
-				if (meta.bar && helpers.isDatasetVisible(this.chart.data.datasets[j])) {
+				if (meta.bar && this.chart.isDatasetVisible(j)) {
 					++barIndex;
 				}
 			}
@@ -266,7 +266,7 @@ module.exports = function(Chart) {
 				for (var i = 0; i < datasetIndex; i++) {
 					var ds = this.chart.data.datasets[i];
 					var dsMeta = this.chart.getDatasetMeta(i);
-					if (dsMeta.bar && dsMeta.yAxisID === yScale.id && helpers.isDatasetVisible(ds)) {
+					if (dsMeta.bar && dsMeta.yAxisID === yScale.id && this.chart.isDatasetVisible(i)) {
 						if (ds.data[index] < 0) {
 							sumNeg += ds.data[index] || 0;
 						} else {

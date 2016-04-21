@@ -325,7 +325,7 @@ module.exports = function(Chart) {
 
 			// Draw each dataset via its respective controller (reversed to support proper line stacking)
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				if (helpers.isDatasetVisible(dataset)) {
+				if (this.isDatasetVisible(datasetIndex)) {
 					this.getDatasetMeta(datasetIndex).controller.draw(ease);
 				}
 			}, this, true);
@@ -346,8 +346,8 @@ module.exports = function(Chart) {
 			var elementsArray = [];
 
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				var meta = this.getDatasetMeta(datasetIndex);
-				if (helpers.isDatasetVisible(dataset)) {
+				if (this.isDatasetVisible(datasetIndex)) {
+					var meta = this.getDatasetMeta(datasetIndex);
 					helpers.each(meta.data, function(element, index) {
 						if (element.inRange(eventPosition.x, eventPosition.y)) {
 							elementsArray.push(element);
@@ -368,7 +368,7 @@ module.exports = function(Chart) {
 				if (this.data.datasets) {
 					for (var i = 0; i < this.data.datasets.length; i++) {
 						var meta = this.getDatasetMeta(i);
-						if (helpers.isDatasetVisible(this.data.datasets[i])) {
+						if (this.isDatasetVisible(i)) {
 							for (var j = 0; j < meta.data.length; j++) {
 								if (meta.data[j].inRange(eventPosition.x, eventPosition.y)) {
 									return meta.data[j];
@@ -384,8 +384,8 @@ module.exports = function(Chart) {
 			}
 
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				var meta = this.getDatasetMeta(datasetIndex);
-				if (helpers.isDatasetVisible(dataset)) {
+				if (this.isDatasetVisible(datasetIndex)) {
+					var meta = this.getDatasetMeta(datasetIndex);
 					elementsArray.push(meta.data[found._index]);
 				}
 			}, this);
@@ -416,12 +416,32 @@ module.exports = function(Chart) {
 				data: [],
 				dataset: null,
 				controller: null,
+				hiddenData: {},
+				hidden: null,			// See isDatasetVisible() comment
 				xAxisID: null,
 				yAxisID: null
 			};
 			}
 
 			return meta;
+		},
+
+		getVisibleDatasetCount: function() {
+			var count = 0;
+			for (var i = 0, ilen = this.data.datasets.length; i<ilen; ++i) {
+				 if (this.isDatasetVisible(i)) {
+					count++;
+				}
+			}
+			return count;
+		},
+
+		isDatasetVisible: function(datasetIndex) {
+			var meta = this.getDatasetMeta(datasetIndex);
+
+			// meta.hidden is a per chart dataset hidden flag override with 3 states: if true or false,
+			// the dataset.hidden value is ignored, else if null, the dataset hidden state is returned.
+			return typeof meta.hidden === 'boolean'? !meta.hidden : !this.data.datasets[datasetIndex].hidden;
 		},
 
 		generateLegend: function generateLegend() {

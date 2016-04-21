@@ -32,7 +32,7 @@ module.exports = function(Chart) {
 
 				helpers.each(this.chart.data.datasets, function(dataset, datasetIndex) {
 					var meta = this.chart.getDatasetMeta(datasetIndex);
-					if (helpers.isDatasetVisible(dataset) && (this.isHorizontal() ? meta.xAxisID === this.id : meta.yAxisID === this.id)) {
+					if (this.chart.isDatasetVisible(datasetIndex) && (this.isHorizontal() ? meta.xAxisID === this.id : meta.yAxisID === this.id)) {
 						if (valuesPerType[meta.type] === undefined) {
 							valuesPerType[meta.type] = [];
 						}
@@ -66,7 +66,7 @@ module.exports = function(Chart) {
 			} else {
 				helpers.each(this.chart.data.datasets, function(dataset, datasetIndex) {
 					var meta = this.chart.getDatasetMeta(datasetIndex);
-					if (helpers.isDatasetVisible(dataset) && (this.isHorizontal() ? meta.xAxisID === this.id : meta.yAxisID === this.id)) {
+					if (this.chart.isDatasetVisible(dataset, datasetIndex) && (this.isHorizontal() ? meta.xAxisID === this.id : meta.yAxisID === this.id)) {
 						helpers.each(dataset.data, function(rawValue, index) {
 							var value = +this.getRightValue(rawValue);
 							if (isNaN(value)) {
