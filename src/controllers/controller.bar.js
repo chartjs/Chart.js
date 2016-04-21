@@ -33,16 +33,17 @@ module.exports = function(Chart) {
 			Chart.DatasetController.prototype.initialize.call(this, chart, datasetIndex);
 
 			// Use this to indicate that this is a bar dataset.
-			this.getDataset().bar = true;
+			this.getMeta().bar = true;
 		},
 		// Get the number of datasets that display bars. We use this to correctly calculate the bar width
 		getBarCount: function getBarCount() {
 			var barCount = 0;
-			helpers.each(this.chart.data.datasets, function(dataset) {
-				if (helpers.isDatasetVisible(dataset) && dataset.bar) {
+			helpers.each(this.chart.data.datasets, function(dataset, datasetIndex) {
+				var meta = this.chart.getDatasetMeta(datasetIndex);
+				if (meta.bar && helpers.isDatasetVisible(dataset)) {
 					++barCount;
 				}
-			});
+			}, this);
 			return barCount;
 		},
 
@@ -140,7 +141,7 @@ module.exports = function(Chart) {
 					for (var i = 0; i < datasetIndex; i++) {
 						var negDS = this.chart.data.datasets[i];
 						var negDSMeta = this.chart.getDatasetMeta(i);
-						if (helpers.isDatasetVisible(negDS) && negDSMeta.yAxisID === yScale.id && negDS.bar) {
+						if (negDSMeta.bar && negDSMeta.yAxisID === yScale.id && helpers.isDatasetVisible(negDS)) {
 							base += negDS.data[index] < 0 ? negDS.data[index] : 0;
 						}
 					}
@@ -148,7 +149,7 @@ module.exports = function(Chart) {
 					for (var j = 0; j < datasetIndex; j++) {
 						var posDS = this.chart.data.datasets[j];
 						var posDSMeta = this.chart.getDatasetMeta(j);
-						if (helpers.isDatasetVisible(posDS) && posDSMeta.yAxisID === yScale.id && posDS.bar) {
+						if (posDSMeta.bar && posDSMeta.yAxisID === yScale.id && helpers.isDatasetVisible(posDS)) {
 							base += posDS.data[index] > 0 ? posDS.data[index] : 0;
 						}
 					}
@@ -216,9 +217,11 @@ module.exports = function(Chart) {
 		// Get bar index from the given dataset index accounting for the fact that not all bars are visible
 		getBarIndex: function(datasetIndex) {
 			var barIndex = 0;
+			var meta, j;
 
-			for (var j = 0; j < datasetIndex; ++j) {
-				if (helpers.isDatasetVisible(this.chart.data.datasets[j]) && this.chart.data.datasets[j].bar) {
+			for (j = 0; j < datasetIndex; ++j) {
+				meta = this.chart.getDatasetMeta(j);
+				if (meta.bar && helpers.isDatasetVisible(this.chart.data.datasets[j])) {
 					++barIndex;
 				}
 			}
@@ -263,7 +266,7 @@ module.exports = function(Chart) {
 				for (var i = 0; i < datasetIndex; i++) {
 					var ds = this.chart.data.datasets[i];
 					var dsMeta = this.chart.getDatasetMeta(i);
-					if (helpers.isDatasetVisible(ds) && ds.bar && dsMeta.yAxisID === yScale.id) {
+					if (dsMeta.bar && dsMeta.yAxisID === yScale.id && helpers.isDatasetVisible(ds)) {
 						if (ds.data[index] < 0) {
 							sumNeg += ds.data[index] || 0;
 						} else {

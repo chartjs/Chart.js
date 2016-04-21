@@ -33,12 +33,12 @@ module.exports = function(Chart) {
 				helpers.each(this.chart.data.datasets, function(dataset, datasetIndex) {
 					var meta = this.chart.getDatasetMeta(datasetIndex);
 					if (helpers.isDatasetVisible(dataset) && (this.isHorizontal() ? meta.xAxisID === this.id : meta.yAxisID === this.id)) {
-						if (valuesPerType[dataset.type] === undefined) {
-							valuesPerType[dataset.type] = [];
+						if (valuesPerType[meta.type] === undefined) {
+							valuesPerType[meta.type] = [];
 						}
 
 						helpers.each(dataset.data, function(rawValue, index) {
-							var values = valuesPerType[dataset.type];
+							var values = valuesPerType[meta.type];
 							var value = +this.getRightValue(rawValue);
 							if (isNaN(value)) {
 								return;

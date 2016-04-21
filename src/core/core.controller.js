@@ -208,18 +208,17 @@ module.exports = function(Chart) {
 			var newControllers = [];
 
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				if (!dataset.type) {
-					dataset.type = this.config.type;
+				var meta = this.getDatasetMeta(datasetIndex);
+				if (!meta.type) {
+					meta.type = dataset.type || this.config.type;
 				}
 
-				var meta = this.getDatasetMeta(datasetIndex);
-				var type = dataset.type;
-				types.push(type);
+				types.push(meta.type);
 
 				if (meta.controller) {
 					meta.controller.updateIndex(datasetIndex);
 				} else {
-					meta.controller = new Chart.controllers[type](this, datasetIndex);
+					meta.controller = new Chart.controllers[meta.type](this, datasetIndex);
 					newControllers.push(meta.controller);
 				}
 			}, this);
@@ -347,7 +346,7 @@ module.exports = function(Chart) {
 			var elementsArray = [];
 
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-					var meta = this.getDatasetMeta(datasetIndex);
+				var meta = this.getDatasetMeta(datasetIndex);
 				if (helpers.isDatasetVisible(dataset)) {
 					helpers.each(meta.data, function(element, index) {
 						if (element.inRange(eventPosition.x, eventPosition.y)) {
@@ -376,7 +375,7 @@ module.exports = function(Chart) {
 								}
 							}
 						}
-					};
+					}
 				}
 			}).call(this);
 
@@ -385,7 +384,7 @@ module.exports = function(Chart) {
 			}
 
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-					var meta = this.getDatasetMeta(datasetIndex);
+				var meta = this.getDatasetMeta(datasetIndex);
 				if (helpers.isDatasetVisible(dataset)) {
 					elementsArray.push(meta.data[found._index]);
 				}
@@ -413,12 +412,13 @@ module.exports = function(Chart) {
 			var meta = dataset._meta[this.id];
 			if (!meta) {
 				meta = dataset._meta[this.id] = {
-					data: [],
-					dataset: null,
-					controller: null,
-					xAxisID: null,
-					yAxisID: null
-				};
+				type: null,
+				data: [],
+				dataset: null,
+				controller: null,
+				xAxisID: null,
+				yAxisID: null
+			};
 			}
 
 			return meta;
