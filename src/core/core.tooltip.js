@@ -487,7 +487,7 @@ module.exports = function(Chart) {
 			ctx.closePath();
 			ctx.fill();
 		},
-		drawTitle: function drawTitle(pt, vm, ctx, opacity) {
+		drawTitle: function drawTitle(pt, vm, ctx, opacity, tooltipSize) {
 			if (vm.title.length) {
 				ctx.textAlign = vm._titleAlign;
 				ctx.textBaseline = "top";
@@ -496,8 +496,13 @@ module.exports = function(Chart) {
 				ctx.fillStyle = titleColor.alpha(opacity * titleColor.alpha()).rgbString();
 				ctx.font = helpers.fontString(vm.titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
 
+				// change x coordinate where to start painting the text (if align is not left)
+				var additionalWidth = 0;
+				additionalWidth += ctx.textAlign === 'center' ? (tooltipSize.width / 2 - vm.xPadding) : 0;
+				additionalWidth += ctx.textAlign === 'right' ? (tooltipSize.width - 2 * vm.xPadding) : 0;
+				
 				helpers.each(vm.title, function(title, i) {
-					ctx.fillText(title, pt.x, pt.y);
+					ctx.fillText(title, pt.x + additionalWidth, pt.y);
 					pt.y += vm.titleFontSize + vm.titleSpacing; // Line Height and spacing
 
 					if (i + 1 === vm.title.length) {
@@ -506,7 +511,7 @@ module.exports = function(Chart) {
 				});
 			}
 		},
-		drawBody: function drawBody(pt, vm, ctx, opacity) {
+		drawBody: function drawBody(pt, vm, ctx, opacity, tooltipSize) {
 			ctx.textAlign = vm._bodyAlign;
 			ctx.textBaseline = "top";
 
@@ -519,6 +524,12 @@ module.exports = function(Chart) {
 				ctx.fillText(beforeBody, pt.x, pt.y);
 				pt.y += vm.bodyFontSize + vm.bodySpacing;
 			});
+			
+			// change x coordinate where to start painting the text (if align is not left)
+			var additionalWidth = 0;
+			additionalWidth += ctx.textAlign === 'center' ? (tooltipSize.width / 2 - vm.xPadding) : 0;
+			additionalWidth += ctx.textAlign === 'right' ? (tooltipSize.width - 2 * vm.xPadding) : 0;
+			additionalWidth += this._options.tooltips.mode !== 'single' ? (vm.bodyFontSize + 2) : 0;
 
 			helpers.each(vm.body, function(body, i) {
 				// Draw Legend-like boxes if needed
@@ -539,7 +550,7 @@ module.exports = function(Chart) {
 				}
 
 				// Body Line
-				ctx.fillText(body, pt.x + (this._options.tooltips.mode !== 'single' ? (vm.bodyFontSize + 2) : 0), pt.y);
+				ctx.fillText(body, pt.x + additionalWidth, pt.y);
 
 				pt.y += vm.bodyFontSize + vm.bodySpacing;
 			}, this);
@@ -552,7 +563,7 @@ module.exports = function(Chart) {
 
 			pt.y -= vm.bodySpacing; // Remove last body spacing
 		},
-		drawFooter: function drawFooter(pt, vm, ctx, opacity) {
+		drawFooter: function drawFooter(pt, vm, ctx, opacity, tooltipSize) {
 			if (vm.footer.length) {
 				pt.y += vm.footerMarginTop;
 
@@ -563,8 +574,13 @@ module.exports = function(Chart) {
 				ctx.fillStyle = footerColor.alpha(opacity * footerColor.alpha()).rgbString();
 				ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
 
+				// change x coordinate where to start painting the text (if align is not left)
+				var additionalWidth = 0;
+				additionalWidth += ctx.textAlign === 'center' ? (tooltipSize.width / 2 - vm.xPadding) : 0;
+				additionalWidth += ctx.textAlign === 'right' ? (tooltipSize.width - 2 * vm.xPadding) : 0;
+				
 				helpers.each(vm.footer, function(footer) {
-					ctx.fillText(footer, pt.x, pt.y);
+					ctx.fillText(footer, pt.x + additionalWidth, pt.y);
 					pt.y += vm.footerFontSize + vm.footerSpacing;
 				});
 			}
@@ -602,13 +618,13 @@ module.exports = function(Chart) {
 				pt.y += vm.yPadding;
 
 				// Titles
-				this.drawTitle(pt, vm, ctx, opacity);
+				this.drawTitle(pt, vm, ctx, opacity, tooltipSize);
 
 				// Body
-				this.drawBody(pt, vm, ctx, opacity);
+				this.drawBody(pt, vm, ctx, opacity, tooltipSize);
 
 				// Footer
-				this.drawFooter(pt, vm, ctx, opacity);
+				this.drawFooter(pt, vm, ctx, opacity, tooltipSize);
 			}
 		}
 	});
