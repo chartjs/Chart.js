@@ -43,7 +43,7 @@ Clear, concise pull requests are excellent at continuing the project's community
 
 Be advised that **Chart.js 1.0.2 is in feature-complete status**. Pull requests adding new features to the 1.x branch will be disregarded.
 
-Guidlines:
+Guidelines:
 
  - Please create an issue first:
    - For bugs, we can discuss the fixing approach
