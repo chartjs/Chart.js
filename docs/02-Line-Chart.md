@@ -39,12 +39,14 @@ var data = {
 			// Boolean - if true fill the area under the line
 			fill: false,
 
+			// Tension - bezier curve tension of the line. Set to 0 to draw straight lines connecting points
+			// Used to be called "tension" but was renamed for consistency. The old option name continues to work for compatibility.
+			lineTension: 0.1,
+
 			// String - the color to fill the area under the line with if fill is true
 			backgroundColor: "rgba(220,220,220,0.2)",
 
-			// The properties below allow an array to be specified to change the value of the item at the given index
-
-			// String or array - Line color
+			// String - Line color
 			borderColor: "rgba(220,220,220,1)",
 
 			// String - cap style of the line. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap
@@ -59,32 +61,37 @@ var data = {
 			// String - line join style. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin
 			borderJoinStyle: 'miter',
 
-			// String or array - Point stroke color
+			// The properties below allow an array to be specified to change the value of the item at the given index
+
+			// String or Array - Point stroke color
 			pointBorderColor: "rgba(220,220,220,1)",
 
-			// String or array - Point fill color
+			// String or Array - Point fill color
 			pointBackgroundColor: "#fff",
 
-			// Number or array - Stroke width of point border
+			// Number or Array - Stroke width of point border
 			pointBorderWidth: 1,
 
-			// Number or array - Radius of point when hovered
+			// Number or Array - Radius of point when hovered
 			pointHoverRadius: 5,
 
-			// String or array - point background color when hovered
+			// String or Array - point background color when hovered
 			pointHoverBackgroundColor: "rgba(220,220,220,1)",
 
-			// Point border color when hovered
+			// String or Array - Point border color when hovered
 			pointHoverBorderColor: "rgba(220,220,220,1)",
 
-			// Number or array - border width of point when hovered
+			// Number or Array - border width of point when hovered
 			pointHoverBorderWidth: 2,
 
-			// Tension - bezier curve tension of the line. Set to 0 to draw straight Wlines connecting points
-			tension: 0.1,
+			// Number or Array - the pixel size of the point shape. Can be set to 0 to not render a circle over the point
+			// Used to be called "radius" but was renamed for consistency. The old option name continues to work for compatibility.
+			pointRadius: 1,
 
-			// Number - the pixel size of the point shape. Can be set to 0 to not render a circle over the point
-			radius: 1,
+			// Number or Array - the pixel size of the non-displayed point that reacts to mouse hover events
+			//
+			// Used to be called "hitRadius" but was renamed for consistency. The old option name continues to work for compatibility.
+			pointHitRadius: 10,
 
 			// The actual data
 			data: [65, 59, 80, 81, 56, 55, 40],
