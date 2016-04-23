@@ -73,7 +73,7 @@ The label key on each dataset is optional, and can be used when generating a sca
 
 These are the customisation options specific to Bar charts. These options are merged with the [global chart configuration options](#getting-started-global-chart-configuration), and form the options of the chart.
 
-The default options for bar chart are defined in `Chart.defaults.Bar`.
+The default options for bar chart are defined in `Chart.defaults.bar`.
 
 Name | Type | Default | Description
 --- |:---:| --- | ---
@@ -128,7 +128,7 @@ new Chart(ctx, {
 // for both x and y axes.
 ```
 
-We can also change these defaults values for each Bar type that is created, this object is available at `Chart.defaults.Bar`.
+We can also change these defaults values for each Bar type that is created, this object is available at `Chart.defaults.bar`.
 
 #### barPercentage vs categoryPercentage
 
