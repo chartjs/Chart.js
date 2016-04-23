@@ -66,7 +66,7 @@ var data = {
 };
 ```
 
-For a pie chart, you must pass in an array of objects with a value and an optional color property. The value attribute should be a number, Chart.js will total all of the numbers and calculate the relative proportion of each. The color attribute should be a string. Similar to CSS, for this string you can use HEX notation, RGB, RGBA or HSL.
+For a pie chart, datasets need to contain an array of data points. The data points should be a number, Chart.js will total all of the numbers and calculate the relative proportion of each. You can also add an array of background colors. The color attributes should be a string. Similar to CSS, for this string you can use HEX notation, RGB, RGBA or HSL.
 
 ### Chart options
 
