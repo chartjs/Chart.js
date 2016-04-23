@@ -53,14 +53,14 @@ var data = {
         {
             data: [300, 50, 100],
             backgroundColor: [
-                "#F7464A",
-                "#46BFBD",
-                "#FDB45C"
+                "#FF6384",
+                "#36A2EB",
+                "#FFCE56"
             ],
             hoverBackgroundColor: [
-                "#FF5A5E",
-                "#5AD3D1",
-                "#FFC870"
+                "#FF6384",
+                "#36A2EB",
+                "#FFCE56"
             ]
         }]
 };
