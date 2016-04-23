@@ -262,7 +262,6 @@ module.exports = function(Chart) {
 					}, null);
 
 					tooltipPosition = this.getAveragePosition(this._active);
-					//tooltipPosition.y = this._active[0]._yScale.getPixelForDecimal(0.5);
 				}
 
 				// Build the Text Lines
