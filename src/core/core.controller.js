@@ -422,7 +422,7 @@ module.exports = function(Chart) {
 			canvas.style.width = this.chart.originalCanvasStyleWidth;
 			canvas.style.height = this.chart.originalCanvasStyleHeight;
 
-			Chart.pluginService.notifyPlugins('destory', [this, easingDecimal]);
+			Chart.pluginService.notifyPlugins('destory', [this]);
 
 			delete Chart.instances[this.id];
 		},
