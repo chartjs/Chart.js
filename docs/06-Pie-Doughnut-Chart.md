@@ -7,7 +7,7 @@ Pie and doughnut charts are probably the most commonly used chart there are. The
 
 They are excellent at showing the relational proportions between data.
 
-Pie and doughnut charts are effectively the same class in Chart.js, but have one different default value - their `percentageInnerCutout`. This equates what percentage of the inner should be cut out. This defaults to `0` for pie charts, and `50` for doughnuts.
+Pie and doughnut charts are effectively the same class in Chart.js, but have one different default value - their `cutoutPercentage`. This equates what percentage of the inner should be cut out. This defaults to `0` for pie charts, and `50` for doughnuts.
 
 They are also registered under two aliases in the `Chart` core. Other than their different default value, and different alias, they are exactly the same.
 
@@ -100,4 +100,4 @@ new Chart(ctx,{
 // and the Doughnut chart defaults but this particular instance will have `animateScale` set to `true`.
 ```
 
-We can also change these default values for each Doughnut type that is created, this object is available at `Chart.defaults.doughnut`. Pie charts also have a clone of these defaults available to change at `Chart.defaults.pie`, with the only difference being `percentageInnerCutout` being set to 0.
+We can also change these default values for each Doughnut type that is created, this object is available at `Chart.defaults.doughnut`. Pie charts also have a clone of these defaults available to change at `Chart.defaults.pie`, with the only difference being `cutoutPercentage` being set to 0.
