@@ -18,6 +18,20 @@ describe('Time scale tests', function() {
 						};
 					}
 				};
+			},
+			toBeCloseToTime: function() {
+				return {
+					compare: function(actual, expected) {
+						var result = false;
+
+						var diff = actual.diff(expected.value, expected.unit, true);
+						result = Math.abs(diff) < 0.25;
+
+						return {
+							pass: result
+						};
+					}
+				}
 			}
 		});
 	});
@@ -337,10 +351,16 @@ describe('Time scale tests', function() {
 		scale.bottom = 38;
 
 		expect(scale.getPixelForValue('', 0, 0)).toBe(81);
-		expect(scale.getValueForPixel(81)).toEqual(scale.firstTick);
+		expect(scale.getValueForPixel(81)).toBeCloseToTime({
+			value: moment(mockData.labels[0]),
+			unit: 'hour'
+		});
 
 		expect(scale.getPixelForValue('', 6, 0)).toBe(323);
-		expect(scale.getValueForPixel(323)).toEqual(scale.lastTick);
+		expect(scale.getValueForPixel(323)).toBeCloseToTime({
+			value: moment(mockData.labels[6]),
+			unit: 'hour'
+		});
 
 		var verticalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('time'));
 		verticalScaleConfig.position = "left";
@@ -362,10 +382,16 @@ describe('Time scale tests', function() {
 		verticalScale.bottom = 400;
 
 		expect(verticalScale.getPixelForValue('', 0, 0)).toBe(38);
-		expect(verticalScale.getValueForPixel(38)).toEqual(verticalScale.firstTick);
+		expect(verticalScale.getValueForPixel(38)).toBeCloseToTime({
+			value: moment(mockData.labels[0]),
+			unit: 'hour'
+		});
 
 		expect(verticalScale.getPixelForValue('', 6, 0)).toBe(375);
-		expect(verticalScale.getValueForPixel(375)).toEqual(verticalScale.lastTick);
+		expect(verticalScale.getValueForPixel(375)).toBeCloseToTime({
+			value: moment(mockData.labels[6]),
+			unit: 'hour'
+		});
 	});
 
 	it('should get the correct label for a data value', function() {

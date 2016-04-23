@@ -317,7 +317,8 @@ module.exports = function(Chart) {
 			}
 		},
 		getValueForPixel: function(pixel) {
-			var offset = pixel - (this.isHorizontal() ? this.left + this.paddingLeft : this.top + this.paddingTop);
+			var innerDimension = this.isHorizontal() ? this.width - (this.paddingLeft + this.paddingRight) : this.height - (this.paddingTop + this.paddingBottom);
+			var offset = (pixel - (this.isHorizontal() ? this.left + this.paddingLeft : this.top + this.paddingTop)) / innerDimension;
 			offset *= this.scaleSizeInUnits;
 			return this.firstTick.clone().add(offset, this.tickUnit);
 		},
