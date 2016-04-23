@@ -27,18 +27,18 @@ new Chart(ctx, {
 var data = {
 	datasets: [{
 		data: [
-			10,
-			32,
-			53,
-			14,
-			22,
+			11,
+			16,
+			7,
+			3,
+			14
 		],
 		backgroundColor: [
-			"#F7464A",
-			"#46BFBD",
-			"#FDB45C",
-			"#949FB1",
-			"#4D5360",
+			"#FF6384",
+			"#4BC0C0",
+			"#FFCE56",
+			"#E7E9ED",
+			"#36A2EB"
 		],
 		label: 'My dataset' // for legend
 	}],
@@ -47,7 +47,7 @@ var data = {
 		"Green",
 		"Yellow",
 		"Grey",
-		"Dark Grey"
+		"Blue"
 	]
 };
 ```

@@ -44,10 +44,10 @@ var data = {
 			lineTension: 0.1,
 
 			// String - the color to fill the area under the line with if fill is true
-			backgroundColor: "rgba(220,220,220,0.2)",
+			backgroundColor: "rgba(75,192,192,0.4)",
 
 			// String - Line color
-			borderColor: "rgba(220,220,220,1)",
+			borderColor: "rgba(75,192,192,1)",
 
 			// String - cap style of the line. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap
 			borderCapStyle: 'butt',
@@ -64,7 +64,7 @@ var data = {
 			// The properties below allow an array to be specified to change the value of the item at the given index
 
 			// String or Array - Point stroke color
-			pointBorderColor: "rgba(220,220,220,1)",
+			pointBorderColor: "rgba(75,192,192,1)",
 
 			// String or Array - Point fill color
 			pointBackgroundColor: "#fff",
@@ -76,7 +76,7 @@ var data = {
 			pointHoverRadius: 5,
 
 			// String or Array - point background color when hovered
-			pointHoverBackgroundColor: "rgba(220,220,220,1)",
+			pointHoverBackgroundColor: "rgba(75,192,192,1)",
 
 			// String or Array - Point border color when hovered
 			pointHoverBorderColor: "rgba(220,220,220,1)",
@@ -102,14 +102,14 @@ var data = {
 		{
 			label: "My Second dataset",
 			fill: false,
-			backgroundColor: "rgba(220,220,220,0.2)",
-			borderColor: "rgba(220,220,220,1)",
-			pointBorderColor: "rgba(220,220,220,1)",
+			backgroundColor: "rgba(255,205,86,0.4)",
+			borderColor: "rgba(255,205,86,1)",
+			pointBorderColor: "rgba(255,205,86,1)",
 			pointBackgroundColor: "#fff",
 			pointBorderWidth: 1,
 			pointHoverRadius: 5,
-			pointHoverBackgroundColor: "rgba(220,220,220,1)",
-			pointHoverBorderColor: "rgba(220,220,220,1)",
+			pointHoverBackgroundColor: "rgba(255,205,86,1)",
+			pointHoverBorderColor: "rgba(255,205,86,1)",
 			pointHoverBorderWidth: 2,
 			data: [28, 48, 40, 19, 86, 27, 90]
 		}
