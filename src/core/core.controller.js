@@ -416,7 +416,6 @@ module.exports = function(Chart) {
 				data: [],
 				dataset: null,
 				controller: null,
-				hiddenData: {},
 				hidden: null,			// See isDatasetVisible() comment
 				xAxisID: null,
 				yAxisID: null
