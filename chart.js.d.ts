@@ -34,11 +34,6 @@ declare namespace Chart {
 
   interface ChartData {
     labels: Array<string>
-    datasets?: Array<ChartDataSet>
-  }
-
-  interface ChartDataSet {
-    data: Array<number>
   }
 
   interface ChartOptions {
@@ -83,13 +78,12 @@ declare namespace Chart {
     fullWidth?: boolean
     onClick?: (event: Event, legendItem: LegendItem) => void // Check required, is Event the correct type here?
     labels?: {
-      labelsboxWidth?: number
-      labelsfontSize?: number
-      labelsfontStyle?: string
-      labelsfontColor?: string
-      labelsfontFamily?: string
-      labelspadding?: number
-      labelsgenerateLabels?: (data: ChartData) => Array<LegendItem> // Check required
+      boxWidth?: number
+      fontSize?: number
+      fontStyle?: string
+      fontColor?: string
+      fontFamily?: string
+      padding?: number
     }
   }
 
@@ -226,7 +220,7 @@ declare namespace Chart {
   }
 
   interface LineChartData extends ChartData {
-    datasets?: Array<ChartDataSet & {
+    datasets?: Array<{
       label?: string
       fill?: boolean
       backgroundColor?: string
@@ -244,6 +238,7 @@ declare namespace Chart {
       pointHoverBorderWidth?: number | Array<number>
       tension?: number
       yAxisID?: string
+      data: Array<number>
     }>
   }
 
@@ -266,7 +261,7 @@ declare namespace Chart {
   }
 
   interface BarChartData extends ChartData {
-    datasets?: Array<ChartDataSet & {
+    datasets?: Array<{
       label?: string
       backgroundColor?: string | Array<string>
       borderColor?: string | Array<string>
@@ -274,6 +269,7 @@ declare namespace Chart {
       hoverBackgroundColor?: string | Array<string>
       hoverBorderColor?: string | Array<string>
       yAxisID?: string
+      data: Array<number>
     }>
   }
 
@@ -302,7 +298,7 @@ declare namespace Chart {
   }
 
   interface RadarChartData extends ChartData {
-    datasets?: Array<ChartDataSet & {
+    datasets?: Array<{
       label?: string
       backgroundColor?: string
       borderColor?: string
@@ -310,6 +306,7 @@ declare namespace Chart {
       pointBorderColor?: string
       pointHoverBackgroundColor?: string
       pointHoverBorderColor?: string
+      data: Array<number>
     }>
   }
 
@@ -323,9 +320,10 @@ declare namespace Chart {
   }
 
   interface PolarAreaChartData extends ChartData {
-    datasets?: Array<ChartDataSet & {
+    datasets?: Array<{
       label?: string
       backgroundColor?: Array<string>
+      data: Array<number>
     }>
   }
 
@@ -345,9 +343,10 @@ declare namespace Chart {
   }
 
   interface CircularChartData extends ChartData {
-    datasets?: Array<ChartDataSet & {
+    datasets?: Array<{
       backgroundColor?: Array<string>
       hoverBackgroundColor?: Array<string>
+      data: Array<number>
     }>
   }
 
