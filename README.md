@@ -1,4 +1,4 @@
-# Chart.js 
+# Chart.js
 
 [![Build Status](https://travis-ci.org/nnnick/Chart.js.svg?branch=master)](https://travis-ci.org/nnnick/Chart.js) [![Code Climate](https://codeclimate.com/github/nnnick/Chart.js/badges/gpa.svg)](https://codeclimate.com/github/nnnick/Chart.js)[![Coverage Status](https://coveralls.io/repos/nnnick/Chart.js/badge.svg?branch=master)](https://coveralls.io/r/nnnick/Chart.js?branch=master)
 
@@ -20,7 +20,7 @@ CDN: https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.0.0/Chart.js
 
 ## Documentation
 
-You can find documentation at [nnnick.github.io/Chart.js/docs-v2/](http://nnnick.github.io/Chart.js/docs-v2/). The markdown files that build the site are available under `/docs`. Please note - in some of the json examples of configuration you might notice some liquid tags - this is just for the generating the site html, please disregard.
+You can find documentation at [www.chartjs.org/docs](http://www.chartjs.org/docs). The markdown files that build the site are available under `/docs`. Please note - in some of the json examples of configuration you might notice some liquid tags - this is just for the generating the site html, please disregard.
 
 ## Contributing
 
