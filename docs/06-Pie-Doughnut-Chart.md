@@ -7,7 +7,7 @@ Pie and doughnut charts are probably the most commonly used chart there are. The
 
 They are excellent at showing the relational proportions between data.
 
-Pie and doughnut charts are effectively the same class in Chart.js, but have one different default value - their `percentageInnerCutout`. This equates what percentage of the inner should be cut out. This defaults to `0` for pie charts, and `50` for doughnuts.
+Pie and doughnut charts are effectively the same class in Chart.js, but have one different default value - their `cutoutPercentage`. This equates what percentage of the inner should be cut out. This defaults to `0` for pie charts, and `50` for doughnuts.
 
 They are also registered under two aliases in the `Chart` core. Other than their different default value, and different alias, they are exactly the same.
 
@@ -24,15 +24,17 @@ They are also registered under two aliases in the `Chart` core. Other than their
 
 ```javascript
 // For a pie chart
-var myPieChart = new Chart(ctx[0],{
-	type:'pie',
+var myPieChart = new Chart(ctx,{
+	type: 'pie',
 	data: data,
 	options: options
 });
+```
 
+```javascript
 // And for a doughnut chart
-var myDoughnutChart = new Chart(ctx[1], {
-	type:'doughnut',
+var myDoughnutChart = new Chart(ctx, {
+	type: 'doughnut',
 	data: data,
 	options: options
 });
@@ -51,20 +53,20 @@ var data = {
         {
             data: [300, 50, 100],
             backgroundColor: [
-                "#F7464A",
-                "#46BFBD",
-                "#FDB45C"
+                "#FF6384",
+                "#36A2EB",
+                "#FFCE56"
             ],
             hoverBackgroundColor: [
-                "#FF5A5E",
-                "#5AD3D1",
-                "#FFC870"
+                "#FF6384",
+                "#36A2EB",
+                "#FFCE56"
             ]
         }]
 };
 ```
 
-For a pie chart, you must pass in an array of objects with a value and an optional color property. The value attribute should be a number, Chart.js will total all of the numbers and calculate the relative proportion of each. The color attribute should be a string. Similar to CSS, for this string you can use HEX notation, RGB, RGBA or HSL.
+For a pie chart, datasets need to contain an array of data points. The data points should be a number, Chart.js will total all of the numbers and calculate the relative proportion of each. You can also add an array of background colors. The color attributes should be a string. Similar to CSS, for this string you can use HEX notation, RGB, RGBA or HSL.
 
 ### Chart options
 
@@ -98,4 +100,4 @@ new Chart(ctx,{
 // and the Doughnut chart defaults but this particular instance will have `animateScale` set to `true`.
 ```
 
-We can also change these default values for each Doughnut type that is created, this object is available at `Chart.defaults.doughnut`. Pie charts also have a clone of these defaults available to change at `Chart.defaults.pie`, with the only difference being `percentageInnerCutout` being set to 0.
+We can also change these default values for each Doughnut type that is created, this object is available at `Chart.defaults.doughnut`. Pie charts also have a clone of these defaults available to change at `Chart.defaults.pie`, with the only difference being `cutoutPercentage` being set to 0.

@@ -16,6 +16,7 @@
     "gulp-concat": "~2.1.x",
     "gulp-connect": "~2.0.5",
     "gulp-html-validator": "^0.0.2",
+    "gulp-insert": "~0.5.0",
     "gulp-jshint": "~1.5.1",
     "gulp-karma": "0.0.4",
     "gulp-replace": "^0.4.0",

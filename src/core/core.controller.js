@@ -250,16 +250,16 @@ module.exports = function(Chart) {
 			// Make sure dataset controllers are updated and new controllers are reset
 			var newControllers = this.buildOrUpdateControllers();
 
+			// Make sure all dataset controllers have correct meta data counts
+			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
+				dataset.controller.buildOrUpdateElements();
+			});
+
 			Chart.layoutService.update(this, this.chart.width, this.chart.height);
 
 			// Can only reset the new controllers after the scales have been updated
 			helpers.each(newControllers, function(controller) {
 				controller.reset();
-			});
-
-			// Make sure all dataset controllers have correct meta data counts
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				dataset.controller.buildOrUpdateElements();
 			});
 
 			// This will loop through any data and do the appropriate element update for the type
@@ -272,6 +272,7 @@ module.exports = function(Chart) {
 		},
 
 		render: function render(duration, lazy) {
+			Chart.pluginService.notifyPlugins('beforeRender', [this]);
 
 			if (this.options.animation && ((typeof duration !== 'undefined' && duration !== 0) || (typeof duration === 'undefined' && this.options.animation.duration !== 0))) {
 				var animation = new Chart.Animation();
@@ -422,7 +423,7 @@ module.exports = function(Chart) {
 			canvas.style.width = this.chart.originalCanvasStyleWidth;
 			canvas.style.height = this.chart.originalCanvasStyleHeight;
 
-			Chart.pluginService.notifyPlugins('destory', [this]);
+			Chart.pluginService.notifyPlugins('destroy', [this]);
 
 			delete Chart.instances[this.id];
 		},

@@ -143,7 +143,7 @@ var myPieChart = new Chart(ctx, {
 
 				// Otherwise, tooltip will be an object with all tooltip properties like:
 
-				// tooltip.caretHeight
+				// tooltip.caretSize
 				// tooltip.caretPadding
 				// tooltip.chart
 				// tooltip.cornerRadius
@@ -389,6 +389,10 @@ Plugins should derive from Chart.PluginBase and implement the following interfac
 
 	beforeUpdate: function(chartInstance) { },
 	afterUpdate: function(chartInstance) { },
+
+	// This is called at the start of a render. It is only called once, even if the animation will run for a number of frames. Use beforeDraw or afterDraw 
+	// to do something on each animation frame
+	beforeRender: function(chartInstance) { },
 
 	// Easing is for animation
 	beforeDraw: function(chartInstance, easing) { },

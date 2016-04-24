@@ -4,25 +4,11 @@ anchor: notes
 ---
 
 ### Browser support
-Browser support for the canvas element is available in all modern & major mobile browsers <a href="http://caniuse.com/canvas" target="_blank">(caniuse.com/canvas)</a>.
 
-For IE8 & below, I would recommend using the polyfill ExplorerCanvas - available at <a href="https://code.google.com/p/explorercanvas/" target="_blank">https://code.google.com/p/explorercanvas/</a>. It falls back to Internet explorer's format VML when canvas support is not available. Example use:
+Chart.js offers support for all browsers where canvas is supported.
 
-```html
-<head>
-	<!--[if lte IE 8]>
-		<script src="excanvas.js"></script>
-	<![endif]-->
-</head>
-```
+Browser support for the canvas element is available in all modern & major mobile browsers <a href="http://http://caniuse.com/#feat=canvas" target="_blank">(http://caniuse.com/#feat=canvas)</a>.
 
-Usually I would recommend feature detection to choose whether or not to load a polyfill, rather than IE conditional comments, however in this case, VML is a Microsoft proprietary format, so it will only work in IE.
-
-Some important points to note in my experience using ExplorerCanvas as a fallback.
-
-- Initialise charts on load rather than DOMContentReady when using the library, as sometimes a race condition will occur, and it will result in an error when trying to get the 2d context of a canvas.
-- New VML DOM elements are being created for each animation frame and there is no hardware acceleration. As a result animation is usually slow and jerky, with flashing text. It is a good idea to dynamically turn off animation based on canvas support. I recommend using the excellent <a href="http://modernizr.com/" target="_blank">Modernizr</a> to do this.
-- When declaring fonts, the library explorercanvas requires the font name to be in single quotes inside the string. For example, instead of your scaleFontFamily property being simply "Arial", explorercanvas support, use "'Arial'" instead. Chart.js does this for default values.
 
 ### Bugs & issues
 

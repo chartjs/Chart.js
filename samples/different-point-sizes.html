@@ -21,8 +21,6 @@
     <br>
     <br>
     <button id="randomizeData">Randomize Data</button>
-    <button id="addDataset">Add Dataset</button>
-    <button id="removeDataset">Remove Dataset</button>
     <button id="addData">Add Data</button>
     <button id="removeData">Remove Data</button>
     <script>
@@ -42,24 +40,28 @@
             data: {
                 labels: ["January", "February", "March", "April", "May", "June", "July"],
                 datasets: [{
-                    label: "My First dataset",
+                    label: "dataset - big points",
                     data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
                     fill: false,
                     borderDash: [5, 5],
+                    pointRadius: 15,
+                    pointHoverRadius: 10,
                 }, {
-                    label: "My Second dataset",
+                    label: "dataset - individual point sizes",
                     data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
                     fill: false,
                     borderDash: [5, 5],
+                    pointRadius: [2, 4, 6, 18, 0, 12, 20],
                 }, {
-                    label: "My Third dataset - No bezier",
-                    data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
-                    lineTension: 0,
-                    fill: false,
-                }, {
-                    label: "My Fourth dataset",
+                    label: "dataset - large pointHoverRadius",
                     data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
                     fill: false,
+                    pointHoverRadius: 30,
+                }, {
+                    label: "dataset - large pointHitRadius",
+                    data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
+                    fill: false,
+                    pointHitRadius: 20,
                 }]
             },
             options: {
@@ -88,7 +90,7 @@
                 },
                 title: {
                     display: true,
-                    text: 'Chart.js Line Chart - Legend'
+                    text: 'Chart.js Line Chart - Different point sizes'
                 }
             }
         };
@@ -118,27 +120,6 @@
             window.myLine.update();
         });
 
-        $('#addDataset').click(function() {
-            var background = randomColor(0.5);
-            var newDataset = {
-                label: 'Dataset ' + config.data.datasets.length,
-                borderColor: background,
-                backgroundColor: background,
-                pointBorderColor: background,
-                pointBackgroundColor: background,
-                pointBorderWidth: 1,
-                fill: false,
-                data: [],
-            };
-
-            for (var index = 0; index < config.data.labels.length; ++index) {
-                newDataset.data.push(randomScalingFactor());
-            }
-
-            config.data.datasets.push(newDataset);
-            window.myLine.update();
-        });
-
         $('#addData').click(function() {
             if (config.data.datasets.length > 0) {
                 var month = MONTHS[config.data.labels.length % MONTHS.length];
@@ -146,15 +127,13 @@
 
                 $.each(config.data.datasets, function(i, dataset) {
                     dataset.data.push(randomScalingFactor());
+                    if (Array.isArray(dataset.pointRadius)) {
+                      dataset.pointRadius.push(Math.random() * 30);
+                    }
                 });
 
                 window.myLine.update();
             }
-        });
-
-        $('#removeDataset').click(function() {
-            config.data.datasets.splice(0, 1);
-            window.myLine.update();
         });
 
         $('#removeData').click(function() {
@@ -162,6 +141,9 @@
 
             config.data.datasets.forEach(function(dataset, datasetIndex) {
                 dataset.data.pop();
+                if (Array.isArray(dataset.pointRadius)) {
+                  dataset.pointRadius.pop();
+                }
             });
 
             window.myLine.update();

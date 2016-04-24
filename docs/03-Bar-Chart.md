@@ -32,19 +32,19 @@ var data = {
 
 			// The properties below allow an array to be specified to change the value of the item at the given index
 			// String  or array - the bar color
-			backgroundColor: "rgba(220,220,220,0.2)",
+			backgroundColor: "rgba(255,99,132,0.2)",
 
 			// String or array - bar stroke color
-			borderColor: "rgba(220,220,220,1)",
+			borderColor: "rgba(255,99,132,1)",
 
 			// Number or array - bar border width
 			borderWidth: 1,
 
 			// String or array - fill color when hovered
-			hoverBackgroundColor: "rgba(220,220,220,0.2)",
+			hoverBackgroundColor: "rgba(255,99,132,0.4)",
 
 			// String or array - border color when hovered
-			hoverBorderColor: "rgba(220,220,220,1)",
+			hoverBorderColor: "rgba(255,99,132,1)",
 
 			// The actual data
 			data: [65, 59, 80, 81, 56, 55, 40],
@@ -54,11 +54,11 @@ var data = {
 		},
 		{
 			label: "My Second dataset",
-			backgroundColor: "rgba(220,220,220,0.2)",
-			borderColor: "rgba(220,220,220,1)",
+			backgroundColor: "rgba(54,162,235,0.2)",
+			borderColor: "rgba(54,162,235,1)",
 			borderWidth: 1,
-			hoverBackgroundColor: "rgba(220,220,220,0.2)",
-			hoverBorderColor: "rgba(220,220,220,1)",
+			hoverBackgroundColor: "rgba(54,162,235,0.4)",
+			hoverBorderColor: "rgba(54,162,235,1)",
 			data: [28, 48, 40, 19, 86, 27, 90]
 		}
 	]
@@ -73,7 +73,7 @@ The label key on each dataset is optional, and can be used when generating a sca
 
 These are the customisation options specific to Bar charts. These options are merged with the [global chart configuration options](#getting-started-global-chart-configuration), and form the options of the chart.
 
-The default options for bar chart are defined in `Chart.defaults.Bar`.
+The default options for bar chart are defined in `Chart.defaults.bar`.
 
 Name | Type | Default | Description
 --- |:---:| --- | ---
@@ -128,7 +128,7 @@ new Chart(ctx, {
 // for both x and y axes.
 ```
 
-We can also change these defaults values for each Bar type that is created, this object is available at `Chart.defaults.Bar`.
+We can also change these defaults values for each Bar type that is created, this object is available at `Chart.defaults.bar`.
 
 #### barPercentage vs categoryPercentage
 
