@@ -118,6 +118,7 @@ describe('Polar area controller tests', function() {
 						borderWidth: 1.2,
 					},
 				},
+				animation: {}
 			},
 			scale: scale
 		};
@@ -308,6 +309,7 @@ describe('Polar area controller tests', function() {
 						borderWidth: 1.2,
 					},
 				},
+				animation: {}
 			},
 			scale: scale
 		};
@@ -382,6 +384,7 @@ describe('Polar area controller tests', function() {
 						borderWidth: 1.2,
 					},
 				},
+				animation: {}
 			},
 			scale: scale
 		};
@@ -466,6 +469,7 @@ describe('Polar area controller tests', function() {
 						borderWidth: 1.2,
 					},
 				},
+				animation: {}
 			},
 			scale: scale
 		};

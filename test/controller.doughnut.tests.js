@@ -64,7 +64,7 @@ describe('Doughnut controller tests', function() {
 			},
 			options: {
 				animation: {
-					animateRotate: false,
+					animateRotate: true,
 					animateScale: false
 				},
 				cutoutPercentage: 50,
@@ -89,7 +89,7 @@ describe('Doughnut controller tests', function() {
 			y: 100,
 			startAngle: Math.PI * -0.5,
 			endAngle: Math.PI * -0.5,
-			circumference: 2.1666156231653746,
+			circumference: 0,
 			outerRadius: 49,
 			innerRadius: 36.75
 		}));
@@ -99,7 +99,7 @@ describe('Doughnut controller tests', function() {
 			y: 100,
 			startAngle: Math.PI * -0.5,
 			endAngle: Math.PI * -0.5,
-			circumference: 3.249923434748062,
+			circumference: 0,
 			outerRadius: 49,
 			innerRadius: 36.75
 		}));
@@ -119,7 +119,7 @@ describe('Doughnut controller tests', function() {
 			y: 100,
 			startAngle: Math.PI * -0.5,
 			endAngle: Math.PI * -0.5,
-			circumference: 0.8666462492661499,
+			circumference: 0,
 			outerRadius: 49,
 			innerRadius: 36.75
 		}));
