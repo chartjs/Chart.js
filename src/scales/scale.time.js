@@ -86,10 +86,13 @@ module.exports = function(Chart) {
 			if (this.chart.data.labels && this.chart.data.labels.length > 0) {
 				helpers.each(this.chart.data.labels, function(label, index) {
 					var labelMoment = this.parseTime(label);
-					if (this.options.time.round) {
-						labelMoment.startOf(this.options.time.round);
+
+					if (labelMoment.isValid()) {
+						if (this.options.time.round) {
+							labelMoment.startOf(this.options.time.round);
+						}
+						scaleLabelMoments.push(labelMoment);
 					}
-					scaleLabelMoments.push(labelMoment);
 				}, this);
 
 				this.firstTick = moment.min.call(this, scaleLabelMoments);
@@ -105,14 +108,17 @@ module.exports = function(Chart) {
 				if (typeof dataset.data[0] === 'object') {
 					helpers.each(dataset.data, function(value, index) {
 						var labelMoment = this.parseTime(this.getRightValue(value));
-						if (this.options.time.round) {
-							labelMoment.startOf(this.options.time.round);
-						}
-						momentsForDataset.push(labelMoment);
 
-						// May have gone outside the scale ranges, make sure we keep the first and last ticks updated
-						this.firstTick = this.firstTick !== null ? moment.min(this.firstTick, labelMoment) : labelMoment;
-						this.lastTick = this.lastTick !== null ? moment.max(this.lastTick, labelMoment) : labelMoment;
+						if (labelMoment.isValid()) {
+							if (this.options.time.round) {
+								labelMoment.startOf(this.options.time.round);
+							}
+							momentsForDataset.push(labelMoment);
+
+							// May have gone outside the scale ranges, make sure we keep the first and last ticks updated
+							this.firstTick = this.firstTick !== null ? moment.min(this.firstTick, labelMoment) : labelMoment;
+							this.lastTick = this.lastTick !== null ? moment.max(this.lastTick, labelMoment) : labelMoment;
+						}
 					}, this);
 				} else {
 					// We have no labels. Use the ones from the scale
