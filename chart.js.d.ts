@@ -47,11 +47,11 @@ declare namespace Chart {
     maintainAspectRatio?: boolean
     events?: Array<string>
     hover?: {
-      onHover?: (activeElements: Array<any>) => void // Check required, what fields does an element contain? element interface?
+      onHover?: (activeElements: Array<Element>) => void // Check required, what fields does an element contain? element interface?
       mode?: string
       animationDuration?: number
     }
-    onClick?: (activeElements: Array<any>) => void // Check required
+    onClick?: (activeElements: Array<Element>) => void // Check required
     defaultColor?: string
     defaultFontColor?: string
     defaultFontFamily?: string
@@ -207,6 +207,10 @@ declare namespace Chart {
     }
   }
 
+  interface Element {
+
+  }
+
   class ChartInstance {
     destroy(): void;
     update(duration?: number, lazy?: boolean): void;
@@ -216,9 +220,9 @@ declare namespace Chart {
     clear(): void;
     toBase64Image(): string;
     generateLegend(): string;
-    getElementAtEvent(e: Event): any; // Check required. What does element return type contain? is Event correct here?
-    getElementsAtEvent(e: Event): Array<any>; // Check required
-    getDatasetAtEvent(e: Event): Array<any>; // Check required
+    getElementAtEvent(e: Event): Element; // Check required. What does element return type contain? is Event correct here?
+    getElementsAtEvent(e: Event): Array<Element>; // Check required
+    getDatasetAtEvent(e: Event): Array<Element>; // Check required
   }
 
   interface LineChartData extends ChartData {
@@ -458,7 +462,7 @@ declare namespace Chart {
 
     isHorizontal(): boolean
 
-    getRightValue(dataValue: Object): any
+    getRightValue(dataValue: Object): any // NaN is a possibility here (is a more constricting type possible?)
 
     left: number;
     right: number;
@@ -496,9 +500,9 @@ declare namespace Chart {
 
     abstract draw(ease: number): void
 
-    abstract removeHoverStyle(element: any): void
+    abstract removeHoverStyle(element: Element): void
 
-    abstract setHoverStyle(element: any): void
+    abstract setHoverStyle(element: Element): void
 
     abstract update(reset: boolean): void
 
@@ -518,9 +522,9 @@ declare namespace Chart {
 
       draw(ease: number): void
 
-      removeHoverStyle(element: any): void
+      removeHoverStyle(element: Element): void
 
-      setHoverStyle(element: any): void
+      setHoverStyle(element: Element): void
 
       update(reset: boolean): void
     }
@@ -532,9 +536,9 @@ declare namespace Chart {
 
       draw(ease: number): void
 
-      removeHoverStyle(element: any): void
+      removeHoverStyle(element: Element): void
 
-      setHoverStyle(element: any): void
+      setHoverStyle(element: Element): void
 
       update(reset: boolean): void
     }
@@ -546,9 +550,9 @@ declare namespace Chart {
 
       draw(ease: number): void
 
-      removeHoverStyle(element: any): void
+      removeHoverStyle(element: Element): void
 
-      setHoverStyle(element: any): void
+      setHoverStyle(element: Element): void
 
       update(reset: boolean): void
     }
@@ -560,9 +564,9 @@ declare namespace Chart {
 
       draw(ease: number): void
 
-      removeHoverStyle(element: any): void
+      removeHoverStyle(element: Element): void
 
-      setHoverStyle(element: any): void
+      setHoverStyle(element: Element): void
 
       update(reset: boolean): void
     }
@@ -574,9 +578,9 @@ declare namespace Chart {
 
       draw(ease: number): void
 
-      removeHoverStyle(element: any): void
+      removeHoverStyle(element: Element): void
 
-      setHoverStyle(element: any): void
+      setHoverStyle(element: Element): void
 
       update(reset: boolean): void
     }
@@ -588,9 +592,9 @@ declare namespace Chart {
 
       draw(ease: number): void
 
-      removeHoverStyle(element: any): void
+      removeHoverStyle(element: Element): void
 
-      setHoverStyle(element: any): void
+      setHoverStyle(element: Element): void
 
       update(reset: boolean): void
     }
