@@ -53,10 +53,6 @@ module.exports = function(Chart) {
 				return box.options.position === "chartArea";
 			});
 
-			function fullWidthSorter(a, b) {
-
-			}
-
 			// Ensure that full width boxes are at the very top / bottom
 			topBoxes.sort(function(a, b) {
 				return (b.options.fullWidth ? 1 : 0) - (a.options.fullWidth ? 1 : 0);
@@ -253,11 +249,15 @@ module.exports = function(Chart) {
 				});
 
 				helpers.each(topBoxes, function(box) {
-					box.width = newMaxChartAreaWidth;
+					if (!box.options.fullWidth) {
+						box.width = newMaxChartAreaWidth;
+					}
 				});
 
 				helpers.each(bottomBoxes, function(box) {
-					box.width = newMaxChartAreaWidth;
+					if (!box.options.fullWidth) {
+						box.width = newMaxChartAreaWidth;
+					}
 				});
 
 				maxChartAreaHeight = newMaxChartAreaHeight;
