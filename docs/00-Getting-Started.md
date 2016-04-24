@@ -273,5 +273,3 @@ img.onload = function() {
 }
 
 ```
-
-It is common to spec
