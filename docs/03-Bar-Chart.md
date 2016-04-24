@@ -22,6 +22,25 @@ var myBarChart = new Chart(ctx, {
 ```
 
 ### Data structure
+The following options can be included in a bar chart dataset to configure options for that specific dataset.
+
+Some properties can be specified as an array. If these are set to an array value, the first value applies to the first bar, the second value to the second bar, and so on.
+
+Property | Type | Usage
+--- | --- | ---
+data | `Array<Number>` | The data to plot as bars
+label | `String` | The label for the dataset which appears in the legend and tooltips
+xAxisID | `String` | The ID of the x axis to plot this dataset on
+yAxisID | `String` | The ID of the y axis to plot this dataset on
+backgroundColor | `Color or Array<Color>` | The fill color of the bars. See [Colors](#colors)
+borderColor | `Color or Array<Color>` | Bar border color
+borderWidth | `Number or Array<Number>` | Border width of bar in pixels
+borderSkipped | `String or Array<String>` | Which edge to skip drawing the border for. Options are 'bottom', 'left', 'top', and 'right'
+hoverBackgroundColor | `Color or Array<Color>` | Bar background color when hovered
+hoverBorderColor | `Color or Array<Color>` | Bar border color when hovered
+hoverBorderWidth | `Number or Array<Number>` | Border width of bar when hovered
+
+An example data object using these attributes is shown below.
 
 ```javascript
 var data = {
@@ -29,45 +48,18 @@ var data = {
 	datasets: [
 		{
 			label: "My First dataset",
-
-			// The properties below allow an array to be specified to change the value of the item at the given index
-			// String  or array - the bar color
 			backgroundColor: "rgba(255,99,132,0.2)",
-
-			// String or array - bar stroke color
 			borderColor: "rgba(255,99,132,1)",
-
-			// Number or array - bar border width
 			borderWidth: 1,
-
-			// String or array - fill color when hovered
 			hoverBackgroundColor: "rgba(255,99,132,0.4)",
-
-			// String or array - border color when hovered
 			hoverBorderColor: "rgba(255,99,132,1)",
-
-			// The actual data
 			data: [65, 59, 80, 81, 56, 55, 40],
-
-			// String - If specified, binds the dataset to a certain y-axis. If not specified, the first y-axis is used.
-			yAxisID: "y-axis-0",
-		},
-		{
-			label: "My Second dataset",
-			backgroundColor: "rgba(54,162,235,0.2)",
-			borderColor: "rgba(54,162,235,1)",
-			borderWidth: 1,
-			hoverBackgroundColor: "rgba(54,162,235,0.4)",
-			hoverBorderColor: "rgba(54,162,235,1)",
-			data: [28, 48, 40, 19, 86, 27, 90]
 		}
 	]
 };
 ```
-The bar chart has the a very similar data structure to the line chart, and has an array of datasets, each with colours and an array of data. Again, colours are in CSS format.
+The bar chart has the a very similar data structure to the line chart, and has an array of datasets, each with colours and an array of data.
 We have an array of labels too for display. In the example, we are showing the same data as the previous line chart example.
-
-The label key on each dataset is optional, and can be used when generating a scale for the chart.
 
 ### Chart Options
 

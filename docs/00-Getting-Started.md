@@ -246,3 +246,30 @@ Chart.defaults.global.responsive = true;
 ```
 
 Now, every time we create a chart, `options.responsive` will be `true`.
+
+### Colors
+When supplying colors to Chart options, you can use a number of formats. You can specify the color as a string in hexadecimal, RGB, or HSL notations. 
+
+You can also pass a [CanvasGradient](https://developer.mozilla.org/en-US/docs/Web/API/CanvasGradient) object. You will need to create this before passing to the chart, but using it you can achieve some interesting effects.
+
+The final option is to pass a [CanvasPattern](https://developer.mozilla.org/en-US/docs/Web/API/CanvasPattern) object. For example, if you wanted to fill a dataset with a pattern from an image you could do the following.
+
+```javascript
+var img = new Image();
+img.src = 'https://example.com/my_image.png';
+img.onload = function() {
+    var ctx = document.getElementById('canvas').getContext('2d');
+    var fillPattern = ctx.CreatePattern(img, 'repeat');
+
+    var chart = new Chart(ctx, {
+        data: {
+            labels: ['Item 1', 'Item 2', 'Item 3'],
+            datasets: [{
+                data: [10, 20, 30],
+                backgroundColor: fillPattern
+            }]
+        }
+    })
+}
+
+```

@@ -23,6 +23,37 @@ var myRadarChart = new Chart(ctx, {
 ```
 
 ### Data structure
+
+The following options can be included in a radar chart dataset to configure options for that specific dataset.
+
+All point* properties can be specified as an array. If these are set to an array value, the first value applies to the first point, the second value to the second point, and so on.
+
+Property | Type | Usage
+--- | --- | ---
+data | `Array<Number>` | The data to plot in a line
+label | `String` | The label for the dataset which appears in the legend and tooltips
+fill | `Boolean` | If true, fill the area under the line
+tension | `Number` | Bezier curve tension of the line. Set to 0 to draw straightlines. *Note* This was renamed from 'tension' but the old name still works.
+backgroundColor | `Color` | The fill color under the line. See [Colors](#colors)
+borderWidth | `Number` | The width of the line in pixels
+borderColor | `Color` | The color of the line.
+borderCapStyle | `String` | Cap style of the line. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap)
+borderDash | `Array<Number>` | Length and spacing of dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
+borderDashOffset | `Number` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
+borderJoinStyle | `String` | Line joint style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin)
+pointBorderColor | `Color or Array<Color>` | The border color for points.
+pointBackgroundColor | `Color or Array<Color>` | The fill color for points
+pointBorderWidth | `Number or Array<Number>` | The width of the point border in pixels
+pointRadius | `Number or Array<Number>` | The radius of the point shape. If set to 0, nothing is rendered. 
+pointHoverRadius | `Number or Array<Number>` | The radius of the point when hovered
+hitRadius | `Number or Array<Number>` | The pixel size of the non-displayed point that reacts to mouse events
+pointHoverBackgroundColor | `Color or Array<Color>` | Point background color when hovered
+pointHoverBorderColor | `Color or Array<Color>` | Point border color when hovered
+pointHoverBorderWidth | `Number or Array<Number>` | Border width of point when hovered
+pointStyle | `String or Array<String>` | The style of point. Options include 'circle', 'triangle', 'rect', 'rectRot', 'cross', 'crossRot', 'star', 'line', and 'dash'
+
+An example data object using these attributes is shown below.
+
 ```javascript
 var data = {
 	labels: ["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling", "Running"],
