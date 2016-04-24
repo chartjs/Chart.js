@@ -1,4 +1,3 @@
-
 declare module "chart.js" {
   export = Chart
 }
@@ -201,19 +200,23 @@ declare namespace Chart {
     }
   }
 
-  interface Element {
-
-  }
-
   class ChartInstance {
     destroy(): void;
+
     update(duration?: number, lazy?: boolean): void;
+
     render(duration?: number, lazy?: boolean): void;
+
     stop(): void;
+
     resize(): void;
+
     clear(): void;
+
     toBase64Image(): string;
+
     generateLegend(): string;
+
     getElementAtEvent(e: Event): Element; // Check required. What does element return type contain? is Event correct here?
     getElementsAtEvent(e: Event): Array<Element>; // Check required
     getDatasetAtEvent(e: Event): Array<Element>; // Check required
@@ -599,6 +602,16 @@ declare namespace Chart {
     }
   }
 
+  class Element { }
+
+  namespace elements {
+
+    class line extends Element { }
+    class arc extends Element { }
+    class point extends Element { }
+    class rectangle extends Element { }
+
+  }
 }
 
 
