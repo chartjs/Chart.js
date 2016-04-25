@@ -33,8 +33,7 @@ Property | Type | Usage
 data | `Array<Number>` | The data to plot in a line
 label | `String` | The label for the dataset which appears in the legend and tooltips
 fill | `Boolean` | If true, fill the area under the line
-lineTension | `Number` | Bezier curve tension of the line. Set to 0 to draw straightlines. *Note* This was renamed from
-'tension' but the old name still works.
+lineTension | `Number` | Bezier curve tension of the line. Set to 0 to draw straightlines. *Note* This was renamed from 'tension' but the old name still works.
 backgroundColor | `Color` | The fill color under the line. See [Colors](#colors)
 borderWidth | `Number` | The width of the line in pixels
 borderColor | `Color` | The color of the line.
