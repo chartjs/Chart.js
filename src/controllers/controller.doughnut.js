@@ -265,11 +265,14 @@ module.exports = function(Chart) {
 		},
 
 		calculateTotal: function() {
+			var dataset = this.getDataset();
 			var meta = this.getMeta();
 			var total = 0;
+			var value;
 
-			this.getDataset().data.forEach(function(value, index) {
-				if (!isNaN(value) && !meta.data[index].hidden) {
+			helpers.each(meta.data, function(element, index) {
+				value = dataset.data[index];
+				if (!isNaN(value) && !element.hidden) {
 					total += Math.abs(value);
 				}
 			});
