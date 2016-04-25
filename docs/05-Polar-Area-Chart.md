@@ -76,7 +76,7 @@ These are the customisation options specific to Polar Area charts. These options
 
 Name | Type | Default | Description
 --- | --- | --- | ---
-scale | Array | [See Scales](#scales) and [Defaults for Radial Linear Scale](#getting-started-radial-linear-scale) | Options for the one scale used on the chart. Use this to style the ticks, labels, and grid.
+scale | Array | [See Scales](#scales) and [Defaults for Radial Linear Scale](#scales-radial-linear-scale) | Options for the one scale used on the chart. Use this to style the ticks, labels, and grid.
 *scale*.type | String |"radialLinear" | As defined in ["Radial Linear"](#scales-radial-linear-scale).
 *scale*.lineArc | Boolean | true | When true, lines are circular.
 animateRotate | Boolean |true | If true, will animate the rotation of the chart.
