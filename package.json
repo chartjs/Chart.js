@@ -6,7 +6,7 @@
   "main": "src/chart.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nnnick/Chart.js.git"
+    "url": "https://github.com/chartjs/Chart.js.git"
   },
   "devDependencies": {
     "browserify": "^13.0.0",
