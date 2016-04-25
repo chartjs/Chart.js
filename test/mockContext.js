@@ -122,6 +122,25 @@
 		return new Context();
 	};
 
+	// Custom matcher
+	function toBeCloseToPixel() {
+		return {
+			compare: function(actual, expected) {
+				var result = (!isNaN(actual) && !isNaN(expected))?
+					Math.abs(actual - expected) < 2 :	// 2 pixels tolerance
+					false;
+
+				return { pass: result };
+			}
+		}
+	};
+
+	window.addDefaultMatchers = function(jasmine) {
+		jasmine.addMatchers({
+			toBeCloseToPixel: toBeCloseToPixel
+		});
+	}
+
 	// Canvas injection helpers
 	var charts = {};
 
