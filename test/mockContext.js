@@ -57,7 +57,7 @@
 			},
 		});
 	};
-	
+
 	Context.prototype._initMethods = function() {
 		// define methods to test here
 		// no way to introspect so we have to do some extra work :(
@@ -121,4 +121,75 @@
 	window.createMockContext = function() {
 		return new Context();
 	};
+
+	// Canvas injection helpers
+	var charts = {};
+
+	function acquireChart(config, style) {
+		var wrapper = document.createElement("div");
+		var canvas = document.createElement("canvas");
+		wrapper.className = 'chartjs-wrapper';
+
+		style = style || { height: '512px', width: '512px' };
+		for (var k in style) {
+			wrapper.style[k] = style[k];
+			canvas.style[k] = style[k];
+		}
+
+		canvas.height = canvas.style.height && parseInt(canvas.style.height);
+		canvas.width = canvas.style.width && parseInt(canvas.style.width);
+
+		// by default, remove chart animation and auto resize
+		var options = config.options = config.options || {};
+		options.animation = options.animation === undefined? false : options.animation;
+		options.responsive = options.responsive === undefined? false : options.responsive;
+		options.defaultFontFamily = options.defaultFontFamily || 'Arial';
+
+		wrapper.appendChild(canvas);
+		window.document.body.appendChild(wrapper);
+		var chart = new Chart(canvas.getContext("2d"), config);
+		charts[chart.id] = chart;
+		return chart;
+	}
+
+	function releaseChart(chart) {
+		chart.chart.canvas.parentNode.remove();
+		delete charts[chart.id];
+		delete chart;
+	}
+
+	function releaseAllCharts(scope) {
+		for (var id in charts) {
+			var chart = charts[id];
+			releaseChart(chart);
+		}
+	}
+
+	function injectCSS(css) {
+		// http://stackoverflow.com/q/3922139
+		var head = document.getElementsByTagName('head')[0];
+		var style = document.createElement('style');
+		style.setAttribute('type', 'text/css');
+		if (style.styleSheet) {   // IE
+			style.styleSheet.cssText = css;
+		} else {
+			style.appendChild(document.createTextNode(css));
+		}
+		head.appendChild(style);
+	}
+
+	window.acquireChart = acquireChart;
+	window.releaseChart = releaseChart;
+	window.releaseAllCharts = releaseAllCharts;
+
+	// some style initialization to limit differences between browsers across different plateforms.
+	injectCSS(
+		'.chartjs-wrapper, .chartjs-wrapper canvas {' +
+			'border: 0;' +
+			'margin: 0;' +
+			'padding: 0;' +
+		'}' +
+		'.chartjs-wrapper {' +
+			'position: absolute' +
+		'}');
 })();
