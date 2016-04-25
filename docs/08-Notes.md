@@ -7,7 +7,7 @@ anchor: notes
 
 Chart.js offers support for all browsers where canvas is supported.
 
-Browser support for the canvas element is available in all modern & major mobile browsers <a href="http://http://caniuse.com/#feat=canvas" target="_blank">(http://caniuse.com/#feat=canvas)</a>.
+Browser support for the canvas element is available in all modern & major mobile browsers <a href="http://caniuse.com/#feat=canvas" target="_blank">(http://caniuse.com/#feat=canvas)</a>.
 
 
 ### Bugs & issues
