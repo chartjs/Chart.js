@@ -110,7 +110,7 @@ responsive | Boolean | true | Resizes when the canvas container does.
 responsiveAnimationDuration | Number | 0 | Duration in milliseconds it takes to animate to new size after a resize event.
 maintainAspectRatio | Boolean | true | Maintain the original canvas aspect ratio `(width / height)` when resizing
 events | Array[String] | `["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"]` | Events that the chart should listen to for tooltips and hovering
-hover |-|-|-
+hover |Object|-|-
 *hover*.onHover | Function | null | Called when any of the events fire. Called in the context of the chart and passed an array of active elements (bars, points, etc)
 *hover*.mode | String | 'single' | Sets which elements hover. Acceptable options are `'single'`, `'label'`, or `'dataset'`. `single` highlights the closest element. `label` highlights elements in all datasets at the same `X` value. `dataset` highlights the closest dataset.
 *hover*.animationDuration | Number | 400 | Duration in milliseconds it takes to animate hover style changes
@@ -144,7 +144,7 @@ display | Boolean | true | Is the legend displayed
 position | String | 'top' | Position of the legend. Options are 'top' or 'bottom'
 fullWidth | Boolean | true | Marks that this box should take the full width of the canvas (pushing down other boxes)
 onClick | Function | `function(event, legendItem) {}` | A callback that is called when a click is registered on top of a label item
-labels |-|-|-
+labels |Object|-|-
 *labels*.boxWidth | Number | 40 | Width of coloured box
 *labels*.fontSize | Number | 12 | Font size
 *labels*.fontStyle | String | "normal" |
@@ -177,7 +177,7 @@ caretSize | Number | 5 | Size, in px, of the tooltip arrow
 cornerRadius | Number | 6 | Radius of tooltip corner curves
 multiKeyBackground | Color | "#fff" | Color to draw behind the colored boxes when multiple items are in the tooltip
  | | |
-callbacks | - | - |  V2.0 introduces callback functions as a replacement for the template engine in v1. The tooltip has the following callbacks for providing text. For all functions, 'this' will be the tooltip object create from the Chart.Tooltip constructor
+callbacks | Object | - |  V2.0 introduces callback functions as a replacement for the template engine in v1. The tooltip has the following callbacks for providing text. For all functions, 'this' will be the tooltip object create from the Chart.Tooltip constructor
 **Callback Functions** | | | All functions are called with the same arguments
 xLabel | String or Array[Strings] | | This is the xDataValue for each item to be displayed in the tooltip
 yLabel | String or Array[Strings] | | This is the yDataValue for each item to be displayed in the tooltip
@@ -210,11 +210,11 @@ The global options for elements are defined in `Chart.defaults.global.elements`.
 
 Name | Type | Default | Description
 --- |:---:| --- | ---
-arc | - | - | -
+arc | Object | - | -
 *arc*.backgroundColor | Color | `Chart.defaults.global.defaultColor` | Default fill color for arcs
 *arc*.borderColor | Color | "#fff" | Default stroke color for arcs
 *arc*.borderWidth | Number | 2 | Default stroke width for arcs
-line | - | - | -
+line | Object | - | -
 *line*.tension | Number | 0.4 | Default bezier curve tension. Set to `0` for no bezier curves.
 *line*.backgroundColor | Color | `Chart.defaults.global.defaultColor` | Default line fill color
 *line*.borderWidth | Number | 3 | Default line stroke width
@@ -224,7 +224,7 @@ line | - | - | -
 *line*.borderDashOffset | Number | 0.0 | Default line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
 *line*.borderJoinStyle | String | 'miter' | Default line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin)
 *line*.fill | Boolean | true |
-point | - | - | -
+point | Object | - | -
 *point*.radius | Number | 3 | Default point radius
 *point*.pointStyle | String | 'circle' | Default point style
 *point*.backgroundColor | Color | `Chart.defaults.global.defaultColor` | Default point fill color
@@ -233,7 +233,7 @@ point | - | - | -
 *point*.hitRadius | Number | 1 | Extra radius added to point radius for hit detection
 *point*.hoverRadius | Number | 4 | Default point radius when hovered
 *point*.hoverBorderWidth | Number | 1 | Default stroke width when hovered
-rectangle | - | - | -
+rectangle | Object | - | -
 *rectangle*.backgroundColor | Color | `Chart.defaults.global.defaultColor` | Default bar fill color
 *rectangle*.borderWidth | Number | 0 | Default bar stroke width
 *rectangle*.borderColor | Color | `Chart.defaults.global.defaultColor` | Default bar stroke color
