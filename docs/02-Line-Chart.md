@@ -105,10 +105,10 @@ Name | Type | Default | Description
 showLines | Boolean | true | If false, the lines between points are not drawn
 stacked | Boolean | false | If true, lines stack on top of each other along the y axis.
 *hover*.mode | String | "label" | Label's hover mode. "label" is used since the x axis displays data by the index in the dataset.
-elements | - | - | -
-*elements*.point | - | - | -
+elements | Object | - | -
+*elements*.point | Object | - | -
 *elements.point*.radius | Number | `3` | Defines the size of the Point shape. Can be set to zero to skip rendering a point.
-scales | - | - | -
+scales | Object | - | -
 *scales*.xAxes | Array | `[{type:"category","id":"x-axis-0"}]` | Defines all of the x axes used in the chart. See the [scale documentation](#getting-started-scales) for details on the available options.
 *Options for xAxes* | | |
 type | String | "category" | As defined in ["Category"](#scales-category-scale).

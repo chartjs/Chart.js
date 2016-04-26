@@ -29,7 +29,7 @@ afterCalculateTickRotation | Function | undefined | Callback that runs after tic
 beforeFit | Function | undefined | Callback that runs before the scale fits to the canvas. Passed a single argument, the scale instance.
 afterFit | Function | undefined | Callback that runs after the scale fits to the canvas. Passed a single argument, the scale instance.
 afterUpdate | Function | undefined | Callback that runs at the end of the update process. Passed a single argument, the scale instance.
-**gridLines** | Array | - | Options for the grid lines that run perpendicular to the axis.
+**gridLines** | Object | - | Options for the grid lines that run perpendicular to the axis.
 *gridLines*.display | Boolean | true |
 *gridLines*.color | Color | "rgba(0, 0, 0, 0.1)" | Color of the grid lines.
 *gridLines*.lineWidth | Number | 1 | Stroke width of grid lines
@@ -39,14 +39,14 @@ afterUpdate | Function | undefined | Callback that runs at the end of the update
 *gridLines*.zeroLineWidth | Number | 1 | Stroke width of the grid line for the first index (index 0).
 *gridLines*.zeroLineColor | Color | "rgba(0, 0, 0, 0.25)" | Stroke color of the grid line for the first index (index 0).
 *gridLines*.offsetGridLines | Boolean | false | If true, offset labels from grid lines.
-**scaleLabel** | Array | | Title for the entire axis.
+**scaleLabel** | Object | | Title for the entire axis.
 *scaleLabel*.display | Boolean | false | 
 *scaleLabel*.labelString | String | "" | The text for the title. (i.e. "# of People", "Response Choices")
 *scaleLabel*.fontColor | Color | "#666" | Font color for the scale title.
 *scaleLabel*.fontFamily| String | "Helvetica Neue" | Font family for the scale title, follows CSS font-family options.
 *scaleLabel*.fontSize | Number | 12 | Font size for the scale title.
 *scaleLabel*.fontStyle | String | "normal" | Font style for the scale title, follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit).
-**ticks** | Array | | Settings for the labels that run along the axis.
+**ticks** | Object | | Settings for the labels that run along the axis.
 *ticks*.beginAtZero | Boolean | false | If true the scale will be begin at 0, if false the ticks will begin at your smallest data value.
 *ticks*.fontColor | Color | "#666" | Font color for the tick labels.
 *ticks*.fontFamily | String | "Helvetica Neue" | Font family for the tick labels, follows CSS font-family options.
