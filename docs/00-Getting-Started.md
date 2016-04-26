@@ -215,7 +215,7 @@ arc | Object | - | -
 *arc*.borderColor | Color | "#fff" | Default stroke color for arcs
 *arc*.borderWidth | Number | 2 | Default stroke width for arcs
 line | Object | - | -
-*line*.tension | Number | 0.4 | Default bezier curve tension. Set to `0` for no bezier curves.
+*line*.lineTension | Number | 0.4 | Default bezier curve tension. Set to `0` for no bezier curves.
 *line*.backgroundColor | Color | `Chart.defaults.global.defaultColor` | Default line fill color
 *line*.borderWidth | Number | 3 | Default line stroke width
 *line*.borderColor | Color | `Chart.defaults.global.defaultColor` | Default line stroke color

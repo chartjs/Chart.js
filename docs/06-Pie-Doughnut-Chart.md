@@ -90,9 +90,6 @@ Name | Type | Default | Description
 cutoutPercentage | Number | 50 - for doughnut, 0 - for pie | The percentage of the chart that is cut out of the middle.
 rotation | Number | -0.5 * Math.PI | Starting angle to draw arcs from
 circumference | Number | 2 * Math.PI | Sweep to allow arcs to cover
-scale | Object | [See Scales](#scales) and [Defaults for Radial Linear Scale](#scales-radial-linear-scale) | Options for the one scale used on the chart. Use this to style the ticks, labels, and grid.
-*scale*.type | String |"radialLinear" | As defined in ["Radial Linear"](#scales-radial-linear-scale).
-*scale*.lineArc | Boolean | true | When true, lines are arced compared to straight when false.
 *animation*.animateRotate | Boolean |true | If true, will animate the rotation of the chart.
 *animation*.animateScale | Boolean | false | If true, will animate scaling the Doughnut from the centre.
 *legend*.*labels*.generateLabels | Function | `function(data) {} ` | Returns labels for each the legend

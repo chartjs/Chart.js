@@ -97,7 +97,7 @@ Name | Type | Default | Description
 scale | Object | [See Scales](#scales) and [Defaults for Radial Linear Scale](#scales-radial-linear-scale) | Options for the one scale used on the chart. Use this to style the ticks, labels, and grid lines.
 *scale*.type | String |"radialLinear" | As defined in ["Radial Linear"](#scales-radial-linear-scale).
 *elements*.line | Object | | Options for all line elements used on the chart, as defined in the global elements, duplicated here to show Radar chart specific defaults.
-*elements.line*.tension | Number | 0 | Tension exhibited by lines when calculating splineCurve. Setting to 0 creates straight lines.
+*elements.line*.lineTension | Number | 0 | Tension exhibited by lines when calculating splineCurve. Setting to 0 creates straight lines.
 
 You can override these for your `Chart` instance by passing a second argument into the `Radar` method as an object with the keys you want to override.
 
