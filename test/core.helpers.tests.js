@@ -6,7 +6,7 @@ describe('Core helper tests', function() {
 		helpers = window.Chart.helpers;
 	});
 
-	it('Should iterate over an array and pass the extra data to that function', function() {
+	it('should iterate over an array and pass the extra data to that function', function() {
 		var testData = [0, 9, "abc"];
 		var scope = {}; // fake out the scope and ensure that 'this' is the correct thing
 
@@ -33,7 +33,7 @@ describe('Core helper tests', function() {
 		expect(iterated.slice().reverse()).toEqual(testData);
 	});
 
-	it('Should iterate over properties in an object', function() {
+	it('should iterate over properties in an object', function() {
 		var testData = {
 			myProp1: 'abc',
 			myProp2: 276,
@@ -59,7 +59,7 @@ describe('Core helper tests', function() {
 		}).not.toThrow();
 	});
 
-	it('Should clone an object', function() {
+	it('should clone an object', function() {
 		var testData = {
 			myProp1: 'abc',
 			myProp2: ['a', 'b'],
@@ -98,7 +98,7 @@ describe('Core helper tests', function() {
 		});
 	});
 
-	it('Should merge a normal config without scales', function() {
+	it('should merge a normal config without scales', function() {
 		var baseConfig = {
 			valueProp: 5,
 			arrayProp: [1, 2, 3, 4, 5, 6],
@@ -161,7 +161,7 @@ describe('Core helper tests', function() {
 		});
 	});
 
-	it('Should merge scale configs', function() {
+	it('should merge scale configs', function() {
 		var baseConfig = {
 			scales: {
 				prop1: {
@@ -303,7 +303,7 @@ describe('Core helper tests', function() {
 		expect(helpers.findPreviousWhere(data, callback, 0)).toBe(undefined);
 	});
 
-	it('Should get the correct sign', function() {
+	it('should get the correct sign', function() {
 		expect(helpers.sign(0)).toBe(0);
 		expect(helpers.sign(10)).toBe(1);
 		expect(helpers.sign(-5)).toBe(-1);
@@ -322,11 +322,12 @@ describe('Core helper tests', function() {
 		expect(helpers.almostEquals(1e30, 1e30 + Number.EPSILON, 2 * Number.EPSILON)).toBe(true);
 	});
 
-	it('Should generate ids', function() {
-		expect(helpers.uid()).toBe('chart-0');
-		expect(helpers.uid()).toBe('chart-1');
-		expect(helpers.uid()).toBe('chart-2');
-		expect(helpers.uid()).toBe('chart-3');
+	it('should generate integer ids', function() {
+		var uid = helpers.uid();
+		expect(uid).toEqual(jasmine.any(Number));
+		expect(helpers.uid()).toBe(uid + 1);
+		expect(helpers.uid()).toBe(uid + 2);
+		expect(helpers.uid()).toBe(uid + 3);
 	});
 
 	it('should detect a number', function() {
