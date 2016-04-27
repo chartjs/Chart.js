@@ -126,7 +126,7 @@ The global options for the chart title is defined in `Chart.defaults.global.titl
 
 Name | Type | Default | Description
 --- | --- | --- | ---
-display | Boolean | true | Show the title block
+display | Boolean | false | Show the title block
 position | String | 'top' | Position of the title. 'top' or 'bottom' are allowed
 fullWidth | Boolean | true | Marks that this box should take the full width of the canvas (pushing down other boxes)
 fontColor | Color  | '#666' | Text color
