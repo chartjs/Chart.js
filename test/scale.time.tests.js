@@ -109,7 +109,7 @@ describe('Time scale tests', function() {
 		scale.update(400, 50);
 
 		// Counts down because the lines are drawn top to bottom
-		expect(scale.ticks).toEqual([ 'Jan 1, 2015', 'Jan 6, 2015', 'Jan 11, 2015' ]);
+		expect(scale.ticks).toEqual([ 'Dec 28, 2014', 'Jan 11, 2015' ]);
 	});
 
 	it('should build ticks using date objects', function() {
@@ -137,7 +137,7 @@ describe('Time scale tests', function() {
 		scale.update(400, 50);
 
 		// Counts down because the lines are drawn top to bottom
-		expect(scale.ticks).toEqual([ 'Jan 1, 2015', 'Jan 6, 2015', 'Jan 11, 2015' ]);
+		expect(scale.ticks).toEqual([ 'Dec 28, 2014', 'Jan 11, 2015' ]);
 	});
 
 	it('should build ticks when the data is xy points', function() {
@@ -170,7 +170,7 @@ describe('Time scale tests', function() {
 				}, {
 					x: newDateFromRef(9),
 					y: 5
-				}], // days
+				}] // days
 			}]
 		};
 
@@ -188,7 +188,7 @@ describe('Time scale tests', function() {
 		scale.update(400, 50);
 
 		// Counts down because the lines are drawn top to bottom
-		expect(scale.ticks).toEqual([ 'Jan 1, 2015', 'Jan 6, 2015', 'Jan 11, 2015' ]);
+		expect(scale.ticks).toEqual([ 'Dec 28, 2014', 'Jan 11, 2015' ]);
 	});
 
 	it('should allow custom time parsers', function() {
@@ -201,7 +201,7 @@ describe('Time scale tests', function() {
 				data: [{
 					x: 375068900,
 					y: 1
-				}],
+				}]
 			}]
 		};
 		var verticalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('time'));
@@ -303,7 +303,7 @@ describe('Time scale tests', function() {
 		});
 
 		scale.update(400, 50);
-		expect(scale.ticks).toEqual([ 'Jan 1, 2015', 'Jan 3, 2015', 'Jan 5, 2015' ]);
+		expect(scale.ticks).toEqual([ 'Jan 1, 2015', 'Jan 5, 2015' ]);
 	});
 
 	it('should get the correct pixel for a value', function() {
@@ -336,8 +336,8 @@ describe('Time scale tests', function() {
 		scale.top = 10;
 		scale.bottom = 38;
 
-		expect(scale.getPixelForValue('', 0, 0)).toBe(81);
-		expect(scale.getPixelForValue('', 6, 0)).toBe(323);
+		expect(scale.getPixelForValue('', 0, 0)).toBe(148);
+		expect(scale.getPixelForValue('', 6, 0)).toBe(299);
 
 		var verticalScaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('time'));
 		verticalScaleConfig.position = "left";
@@ -358,8 +358,8 @@ describe('Time scale tests', function() {
 		verticalScale.right = 50;
 		verticalScale.bottom = 400;
 
-		expect(verticalScale.getPixelForValue('', 0, 0)).toBe(38);
-		expect(verticalScale.getPixelForValue('', 6, 0)).toBe(375);
+		expect(verticalScale.getPixelForValue('', 0, 0)).toBe(126);
+		expect(verticalScale.getPixelForValue('', 6, 0)).toBe(340);
 	});
 
 	it('should get the correct label for a data value', function() {

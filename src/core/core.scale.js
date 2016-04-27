@@ -6,6 +6,7 @@ module.exports = function(Chart) {
 
 	Chart.defaults.scale = {
 		display: true,
+		position: "left",
 
 		// grid line settings
 		gridLines: {

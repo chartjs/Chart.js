@@ -272,7 +272,7 @@ module.exports = function(Chart) {
 	helpers.uid = (function() {
 		var id = 0;
 		return function() {
-			return "chart-" + id++;
+			return id++;
 		};
 	})();
 	helpers.warn = function(str) {
@@ -937,9 +937,6 @@ module.exports = function(Chart) {
 		} else {
 			array.push(element);
 		}
-	};
-	helpers.isDatasetVisible = function(dataset) {
-		return !dataset.hidden;
 	};
 	helpers.callCallback = function(fn, args, _tArg) {
 		if (fn && typeof fn.call === 'function') {
