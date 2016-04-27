@@ -126,9 +126,15 @@
 	function toBeCloseToPixel() {
 		return {
 			compare: function(actual, expected) {
-				var result = (!isNaN(actual) && !isNaN(expected))?
-					Math.abs(actual - expected) < 2 :	// 2 pixels tolerance
-					false;
+				var result = false;
+
+				if (!isNaN(actual) && !isNaN(expected)) {
+					var diff = Math.abs(actual - expected);
+					var A = Math.abs(actual);
+					var B = Math.abs(expected);
+					var percentDiff = 0.005; // 0.5% diff
+					result = (diff <= (A > B ? A : B) * percentDiff) || diff < 2; // 2 pixels is fine
+				}
 
 				return { pass: result };
 			}
@@ -137,7 +143,7 @@
 
 	window.addDefaultMatchers = function(jasmine) {
 		jasmine.addMatchers({
-			toBeCloseToPixel: toBeCloseToPixel
+			toBeCloseToPixel: toBeCloseToPixel,
 		});
 	}
 
