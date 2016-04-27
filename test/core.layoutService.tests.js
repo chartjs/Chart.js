@@ -228,7 +228,7 @@ describe('Test the layout service', function() {
 		expect(chart.scales.xScale1.bottom).toBeCloseToPixel(512);
 		expect(chart.scales.xScale1.left).toBeCloseToPixel(45);
 		expect(chart.scales.xScale1.right).toBeCloseToPixel(512);
-		expect(chart.scales.x1.top).toBeCloseToPixel(484);
+		expect(chart.scales.xScale1.top).toBeCloseToPixel(484);
 
 		expect(chart.scales.xScale2.bottom).toBeCloseToPixel(28);
 		expect(chart.scales.xScale2.left).toBeCloseToPixel(0);
