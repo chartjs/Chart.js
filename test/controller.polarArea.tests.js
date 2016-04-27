@@ -1,113 +1,93 @@
 // Test the polar area controller
 describe('Polar area controller tests', function() {
-	it('Should be constructed', function() {
-		var chart = {
-			data: {
-				datasets: [{
-					data: []
-				}]
-			}
-		};
 
-		var controller = new Chart.controllers.polarArea(chart, 0);
-		expect(controller).not.toBe(undefined);
-		expect(controller.index).toBe(0);
-		expect(chart.data.datasets[0].metaData).toEqual([]);
-
-		controller.updateIndex(1);
-		expect(controller.index).toBe(1);
+	beforeEach(function() {
+		window.addDefaultMatchers(jasmine);
 	});
 
-	it('Should create arc elements for each data item during initialization', function() {
-		var chart = {
+	afterEach(function() {
+		window.releaseAllCharts();
+	});
+
+	it('should be constructed', function() {
+		var chart = window.acquireChart({
+		type: 'polarArea',
+		data: {
+			datasets: [
+				{ data: [] },
+				{ data: [] }
+			],
+			labels: []
+		}
+		});
+
+		var meta = chart.getDatasetMeta(1);
+		expect(meta.type).toEqual('polarArea');
+		expect(meta.data).toEqual([]);
+		expect(meta.hidden).toBe(null);
+		expect(meta.controller).not.toBe(undefined);
+		expect(meta.controller.index).toBe(1);
+
+		meta.controller.updateIndex(0);
+		expect(meta.controller.index).toBe(0);
+	});
+
+	it('should create arc elements for each data item during initialization', function() {
+		var chart = window.acquireChart({
+			type: 'polarArea',
 			data: {
-				datasets: [{
-					data: [10, 15, 0, -4]
-				}]
-			},
-			config: {
-				type: 'polarArea'
-			},
-			options: {
+				datasets: [
+					{ data: [] },
+					{ data: [10, 15, 0, -4] }
+				],
+				labels: []
 			}
-		};
+		});
 
-		var controller = new Chart.controllers.polarArea(chart, 0);
-
-		expect(chart.data.datasets[0].metaData.length).toBe(4); // 4 arcs created
-		expect(chart.data.datasets[0].metaData[0] instanceof Chart.elements.Arc).toBe(true);
-		expect(chart.data.datasets[0].metaData[1] instanceof Chart.elements.Arc).toBe(true);
-		expect(chart.data.datasets[0].metaData[2] instanceof Chart.elements.Arc).toBe(true);
-		expect(chart.data.datasets[0].metaData[3] instanceof Chart.elements.Arc).toBe(true);
+		var meta = chart.getDatasetMeta(1);
+		expect(meta.data.length).toBe(4); // 4 arcs created
+		expect(meta.data[0] instanceof Chart.elements.Arc).toBe(true);
+		expect(meta.data[1] instanceof Chart.elements.Arc).toBe(true);
+		expect(meta.data[2] instanceof Chart.elements.Arc).toBe(true);
+		expect(meta.data[3] instanceof Chart.elements.Arc).toBe(true);
 	});
 
 	it('should draw all elements', function() {
-		var chart = {
-			data: {
-				datasets: [{
-					data: [10, 15, 0, -4]
-				}]
-			},
-			config: {
-				type: 'polarArea'
-			},
-			options: {
-			}
-		};
-
-		var controller = new Chart.controllers.polarArea(chart, 0);
-
-		spyOn(chart.data.datasets[0].metaData[0], 'draw');
-		spyOn(chart.data.datasets[0].metaData[1], 'draw');
-		spyOn(chart.data.datasets[0].metaData[2], 'draw');
-		spyOn(chart.data.datasets[0].metaData[3], 'draw');
-
-		controller.draw();
-
-		expect(chart.data.datasets[0].metaData[0].draw.calls.count()).toBe(1);
-		expect(chart.data.datasets[0].metaData[1].draw.calls.count()).toBe(1);
-		expect(chart.data.datasets[0].metaData[2].draw.calls.count()).toBe(1);
-		expect(chart.data.datasets[0].metaData[3].draw.calls.count()).toBe(1);
-	});
-
-	it('should update elements', function() {
-		var data = {
+		var chart = window.acquireChart({
+		type: 'polarArea',
+		data: {
 			datasets: [{
 				data: [10, 15, 0, -4],
-				label: 'dataset2',
+				label: 'dataset2'
 			}],
 			labels: ['label1', 'label2', 'label3', 'label4']
-		};
-		var mockContext = window.createMockContext();
-
-		var ScaleConstructor = Chart.scaleService.getScaleConstructor('radialLinear');
-		var scaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('radialLinear'));
-		scaleConfig = Chart.helpers.scaleMerge(scaleConfig, Chart.defaults.polarArea.scale);
-		var scale = new ScaleConstructor({
-			ctx: mockContext,
-			options: scaleConfig,
-			chart: {
-				data: data
-			},
+		}
 		});
 
-		// Update ticks & set physical dimensions
-		scale.update(300, 300);
-		scale.top = 0;
-		scale.left = 0;
-		scale.right = 300;
-		scale.bottom = 300;
+		var meta = chart.getDatasetMeta(0);
 
-		var chart = {
-			chartArea: {
-				bottom: 300,
-				left: 0,
-				right: 300,
-				top: 0
-			},
-			data: data,
-			config: {
-				type: 'line'
+		spyOn(meta.data[0], 'draw');
+		spyOn(meta.data[1], 'draw');
+		spyOn(meta.data[2], 'draw');
+		spyOn(meta.data[3], 'draw');
+
+		chart.update();
+
+		expect(meta.data[0].draw.calls.count()).toBe(1);
+		expect(meta.data[1].draw.calls.count()).toBe(1);
+		expect(meta.data[2].draw.calls.count()).toBe(1);
+		expect(meta.data[3].draw.calls.count()).toBe(1);
+	});
+
+	it('should update elements when modifying data', function() {
+		var chart = window.acquireChart({
+			type: 'polarArea',
+			data: {
+				datasets: [{
+					data: [10, 15, 0, -4],
+					label: 'dataset2'
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
 				showLines: true,
@@ -115,66 +95,32 @@ describe('Polar area controller tests', function() {
 					arc: {
 						backgroundColor: 'rgb(255, 0, 0)',
 						borderColor: 'rgb(0, 255, 0)',
-						borderWidth: 1.2,
-					},
-				},
-			},
-			scale: scale
-		};
-
-		var controller = new Chart.controllers.polarArea(chart, 0);
-		controller.update();
-
-		expect(chart.data.datasets[0].metaData[0]._model).toEqual({
-			x: 150,
-			y: 150,
-			innerRadius: 0,
-			outerRadius: 59.5,
-			startAngle: -0.5 * Math.PI,
-			endAngle: 0,
-			backgroundColor: 'rgb(255, 0, 0)',
-			borderColor: 'rgb(0, 255, 0)',
-			borderWidth: 1.2,
-			label: 'label1'
+						borderWidth: 1.2
+					}
+				}
+			}
 		});
 
-		expect(chart.data.datasets[0].metaData[1]._model).toEqual({
-			x: 150,
-			y: 150,
-			innerRadius: 0,
-			outerRadius: 80.75,
-			startAngle: 0,
-			endAngle: 0.5 * Math.PI,
-			backgroundColor: 'rgb(255, 0, 0)',
-			borderColor: 'rgb(0, 255, 0)',
-			borderWidth: 1.2,
-			label: 'label2'
-		});
+		var meta = chart.getDatasetMeta(0);
+		expect(meta.data.length).toBe(4);
 
-		expect(chart.data.datasets[0].metaData[2]._model).toEqual({
-			x: 150,
-			y: 150,
-			innerRadius: 0,
-			outerRadius: 17,
-			startAngle: 0.5 * Math.PI,
-			endAngle: Math.PI,
-			backgroundColor: 'rgb(255, 0, 0)',
-			borderColor: 'rgb(0, 255, 0)',
-			borderWidth: 1.2,
-			label: 'label3'
-		});
-
-		expect(chart.data.datasets[0].metaData[3]._model).toEqual({
-			x: 150,
-			y: 150,
-			innerRadius: 0,
-			outerRadius: 0,
-			startAngle: Math.PI,
-			endAngle: 1.5 * Math.PI,
-			backgroundColor: 'rgb(255, 0, 0)',
-			borderColor: 'rgb(0, 255, 0)',
-			borderWidth: 1.2,
-			label: 'label4'
+		[	{ o: 156, s: -0.5 * Math.PI, e:             0 },
+			{ o: 211, s:              0, e: 0.5 * Math.PI },
+			{ o:  45, s:  0.5 * Math.PI, e:       Math.PI },
+			{ o:   0, s:        Math.PI, e: 1.5 * Math.PI }
+		].forEach(function(expected, i) {
+			expect(meta.data[i]._model.x).toBeCloseToPixel(256);
+			expect(meta.data[i]._model.y).toBeCloseToPixel(272);
+			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(0);
+			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(expected.o);
+			expect(meta.data[i]._model.startAngle).toBe(expected.s);
+			expect(meta.data[i]._model.endAngle).toBe(expected.e);
+			expect(meta.data[i]._model).toEqual(jasmine.objectContaining({
+				backgroundColor: 'rgb(255, 0, 0)',
+				borderColor: 'rgb(0, 255, 0)',
+				borderWidth: 1.2,
+				label: chart.data.labels[i]
+			}));
 		});
 
 		// arc styles
@@ -182,122 +128,46 @@ describe('Polar area controller tests', function() {
 		chart.data.datasets[0].borderColor = 'rgb(56, 57, 58)';
 		chart.data.datasets[0].borderWidth = 1.123;
 
-		controller.update();
+		chart.update();
 
-		expect(chart.data.datasets[0].metaData[0]._model).toEqual({
-			x: 150,
-			y: 150,
-			innerRadius: 0,
-			outerRadius: 59.5,
-			startAngle: -0.5 * Math.PI,
-			endAngle: 0,
-			backgroundColor: 'rgb(128, 129, 130)',
-			borderWidth: 1.123,
-			borderColor: 'rgb(56, 57, 58)',
-			label: 'label1'
-		});
-
-		expect(chart.data.datasets[0].metaData[1]._model).toEqual({
-			x: 150,
-			y: 150,
-			innerRadius: 0,
-			outerRadius: 80.75,
-			startAngle: 0,
-			endAngle: 0.5 * Math.PI,
-			backgroundColor: 'rgb(128, 129, 130)',
-			borderWidth: 1.123,
-			borderColor: 'rgb(56, 57, 58)',
-			label: 'label2'
-		});
-
-		expect(chart.data.datasets[0].metaData[2]._model).toEqual({
-			x: 150,
-			y: 150,
-			innerRadius: 0,
-			outerRadius: 17,
-			startAngle: 0.5 * Math.PI,
-			endAngle: Math.PI,
-			backgroundColor: 'rgb(128, 129, 130)',
-			borderWidth: 1.123,
-			borderColor: 'rgb(56, 57, 58)',
-			label: 'label3'
-		});
-
-		expect(chart.data.datasets[0].metaData[3]._model).toEqual({
-			x: 150,
-			y: 150,
-			innerRadius: 0,
-			outerRadius: 0,
-			startAngle: Math.PI,
-			endAngle: 1.5 * Math.PI,
-			backgroundColor: 'rgb(128, 129, 130)',
-			borderWidth: 1.123,
-			borderColor: 'rgb(56, 57, 58)',
-			label: 'label4'
-		});
+		for (var i = 0; i < 4; ++i) {
+			expect(meta.data[i]._model.backgroundColor).toBe('rgb(128, 129, 130)');
+			expect(meta.data[i]._model.borderColor).toBe('rgb(56, 57, 58)');
+			expect(meta.data[i]._model.borderWidth).toBe(1.123);
+		}
 
 		// arc styles
-		chart.data.datasets[0].metaData[0].custom = {
+		meta.data[0].custom = {
 			backgroundColor: 'rgb(0, 1, 3)',
 			borderColor: 'rgb(4, 6, 8)',
-			borderWidth: 0.787,
-
+			borderWidth: 0.787
 		};
 
-		controller.update();
+		chart.update();
 
-		expect(chart.data.datasets[0].metaData[0]._model).toEqual({
-			x: 150,
-			y: 150,
-			innerRadius: 0,
-			outerRadius: 59.5,
+		expect(meta.data[0]._model.x).toBeCloseToPixel(256);
+		expect(meta.data[0]._model.y).toBeCloseToPixel(272);
+		expect(meta.data[0]._model.innerRadius).toBeCloseToPixel(0);
+		expect(meta.data[0]._model.outerRadius).toBeCloseToPixel(156);
+		expect(meta.data[0]._model).toEqual(jasmine.objectContaining({
 			startAngle: -0.5 * Math.PI,
 			endAngle: 0,
 			backgroundColor: 'rgb(0, 1, 3)',
 			borderWidth: 0.787,
 			borderColor: 'rgb(4, 6, 8)',
 			label: 'label1'
-		});
+		}));
 	});
 
 	it('should handle number of data point changes in update', function() {
-		var data = {
-			datasets: [{
-				data: [10, 15, 0, -4],
-				label: 'dataset2',
-			}],
-			labels: ['label1', 'label2', 'label3', 'label4']
-		};
-		var mockContext = window.createMockContext();
-
-		var ScaleConstructor = Chart.scaleService.getScaleConstructor('radialLinear');
-		var scaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('radialLinear'));
-		scaleConfig = Chart.helpers.scaleMerge(scaleConfig, Chart.defaults.polarArea.scale);
-		var scale = new ScaleConstructor({
-			ctx: mockContext,
-			options: scaleConfig,
-			chart: {
-				data: data
-			},
-		});
-
-		// Update ticks & set physical dimensions
-		scale.update(300, 300);
-		scale.top = 0;
-		scale.left = 0;
-		scale.right = 300;
-		scale.bottom = 300;
-
-		var chart = {
-			chartArea: {
-				bottom: 300,
-				left: 0,
-				right: 300,
-				top: 0
-			},
-			data: data,
-			config: {
-				type: 'line'
+		var chart = window.acquireChart({
+			type: 'polarArea',
+			data: {
+				datasets: [{
+					data: [10, 15, 0, -4],
+					label: 'dataset2'
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
 				showLines: true,
@@ -305,73 +175,46 @@ describe('Polar area controller tests', function() {
 					arc: {
 						backgroundColor: 'rgb(255, 0, 0)',
 						borderColor: 'rgb(0, 255, 0)',
-						borderWidth: 1.2,
-					},
-				},
-			},
-			scale: scale
-		};
+						borderWidth: 1.2
+					}
+				}
+			}
+		});
 
-		var controller = new Chart.controllers.polarArea(chart, 0);
-		controller.update();
-		expect(chart.data.datasets[0].metaData.length).toBe(4);
+		var meta = chart.getDatasetMeta(0);
+		expect(meta.data.length).toBe(4);
 
-		chart.data.datasets[0].data = [1, 2]; // remove 2 items
-		controller.buildOrUpdateElements();
-		controller.update();
-		expect(chart.data.datasets[0].metaData.length).toBe(2);
-		expect(chart.data.datasets[0].metaData[0] instanceof Chart.elements.Arc).toBe(true);
-		expect(chart.data.datasets[0].metaData[1] instanceof Chart.elements.Arc).toBe(true);
+		// remove 2 items
+		chart.data.labels = ['label1', 'label2'];
+		chart.data.datasets[0].data = [1, 2];
+		chart.update();
 
-		chart.data.datasets[0].data = [1, 2, 3, 4, 5]; // add 3 items
-		controller.buildOrUpdateElements();
-		controller.update();
-		expect(chart.data.datasets[0].metaData.length).toBe(5);
-		expect(chart.data.datasets[0].metaData[0] instanceof Chart.elements.Arc).toBe(true);
-		expect(chart.data.datasets[0].metaData[1] instanceof Chart.elements.Arc).toBe(true);
-		expect(chart.data.datasets[0].metaData[2] instanceof Chart.elements.Arc).toBe(true);
-		expect(chart.data.datasets[0].metaData[3] instanceof Chart.elements.Arc).toBe(true);
-		expect(chart.data.datasets[0].metaData[4] instanceof Chart.elements.Arc).toBe(true);
+		expect(meta.data.length).toBe(2);
+		expect(meta.data[0] instanceof Chart.elements.Arc).toBe(true);
+		expect(meta.data[1] instanceof Chart.elements.Arc).toBe(true);
+
+ 		// add 3 items
+		chart.data.labels = ['label1', 'label2', 'label3', 'label4', 'label5'];
+		chart.data.datasets[0].data = [1, 2, 3, 4, 5];
+		chart.update();
+
+		expect(meta.data.length).toBe(5);
+		expect(meta.data[0] instanceof Chart.elements.Arc).toBe(true);
+		expect(meta.data[1] instanceof Chart.elements.Arc).toBe(true);
+		expect(meta.data[2] instanceof Chart.elements.Arc).toBe(true);
+		expect(meta.data[3] instanceof Chart.elements.Arc).toBe(true);
+		expect(meta.data[4] instanceof Chart.elements.Arc).toBe(true);
 	});
 
 	it('should set arc hover styles', function() {
-		var data = {
-			datasets: [{
-				data: [10, 15, 0, -4],
-				label: 'dataset2',
-			}],
-			labels: ['label1', 'label2', 'label3', 'label4']
-		};
-		var mockContext = window.createMockContext();
-
-		var ScaleConstructor = Chart.scaleService.getScaleConstructor('radialLinear');
-		var scaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('radialLinear'));
-		scaleConfig = Chart.helpers.scaleMerge(scaleConfig, Chart.defaults.polarArea.scale);
-		var scale = new ScaleConstructor({
-			ctx: mockContext,
-			options: scaleConfig,
-			chart: {
-				data: data
-			},
-		});
-
-		// Update ticks & set physical dimensions
-		scale.update(300, 300);
-		scale.top = 0;
-		scale.left = 0;
-		scale.right = 300;
-		scale.bottom = 300;
-
-		var chart = {
-			chartArea: {
-				bottom: 300,
-				left: 0,
-				right: 300,
-				top: 0
-			},
-			data: data,
-			config: {
-				type: 'line'
+		var chart = window.acquireChart({
+			type: 'polarArea',
+			data: {
+				datasets: [{
+					data: [10, 15, 0, -4],
+					label: 'dataset2'
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
 				showLines: true,
@@ -379,18 +222,16 @@ describe('Polar area controller tests', function() {
 					arc: {
 						backgroundColor: 'rgb(255, 0, 0)',
 						borderColor: 'rgb(0, 255, 0)',
-						borderWidth: 1.2,
-					},
-				},
-			},
-			scale: scale
-		};
+						borderWidth: 1.2
+					}
+				}
+			}
+		});
 
-		var controller = new Chart.controllers.polarArea(chart, 0);
-		controller.update();
-		var arc = chart.data.datasets[0].metaData[0];
+		var meta = chart.getDatasetMeta(0);
+		var arc = meta.data[0];
 
-		controller.setHoverStyle(arc);
+		meta.controller.setHoverStyle(arc);
 		expect(arc._model.backgroundColor).toBe('rgb(230, 0, 0)');
 		expect(arc._model.borderColor).toBe('rgb(0, 230, 0)');
 		expect(arc._model.borderWidth).toBe(1.2);
@@ -400,7 +241,7 @@ describe('Polar area controller tests', function() {
 		chart.data.datasets[0].hoverBorderColor = 'rgb(123, 125, 127)';
 		chart.data.datasets[0].hoverBorderWidth = 2.1;
 
-		controller.setHoverStyle(arc);
+		meta.controller.setHoverStyle(arc);
 		expect(arc._model.backgroundColor).toBe('rgb(77, 79, 81)');
 		expect(arc._model.borderColor).toBe('rgb(123, 125, 127)');
 		expect(arc._model.borderWidth).toBe(2.1);
@@ -412,50 +253,21 @@ describe('Polar area controller tests', function() {
 			hoverBorderColor: 'rgb(10, 10, 10)'
 		};
 
-		controller.setHoverStyle(arc);
+		meta.controller.setHoverStyle(arc);
 		expect(arc._model.backgroundColor).toBe('rgb(0, 0, 0)');
 		expect(arc._model.borderColor).toBe('rgb(10, 10, 10)');
 		expect(arc._model.borderWidth).toBe(5.5);
 	});
 
 	it('should remove hover styles', function() {
-		var data = {
-			datasets: [{
-				data: [10, 15, 0, -4],
-				label: 'dataset2',
-			}],
-			labels: ['label1', 'label2', 'label3', 'label4']
-		};
-		var mockContext = window.createMockContext();
-
-		var ScaleConstructor = Chart.scaleService.getScaleConstructor('radialLinear');
-		var scaleConfig = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('radialLinear'));
-		scaleConfig = Chart.helpers.scaleMerge(scaleConfig, Chart.defaults.polarArea.scale);
-		var scale = new ScaleConstructor({
-			ctx: mockContext,
-			options: scaleConfig,
-			chart: {
-				data: data
-			},
-		});
-
-		// Update ticks & set physical dimensions
-		scale.update(300, 300);
-		scale.top = 0;
-		scale.left = 0;
-		scale.right = 300;
-		scale.bottom = 300;
-
-		var chart = {
-			chartArea: {
-				bottom: 300,
-				left: 0,
-				right: 300,
-				top: 0
-			},
-			data: data,
-			config: {
-				type: 'line'
+		var chart = window.acquireChart({
+			type: 'polarArea',
+			data: {
+				datasets: [{
+					data: [10, 15, 0, -4],
+					label: 'dataset2'
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
 				showLines: true,
@@ -463,22 +275,20 @@ describe('Polar area controller tests', function() {
 					arc: {
 						backgroundColor: 'rgb(255, 0, 0)',
 						borderColor: 'rgb(0, 255, 0)',
-						borderWidth: 1.2,
-					},
-				},
-			},
-			scale: scale
-		};
+						borderWidth: 1.2
+					}
+				}
+			}
+		});
 
-		var controller = new Chart.controllers.polarArea(chart, 0);
-		controller.update();
-		var arc = chart.data.datasets[0].metaData[0];
+		var meta = chart.getDatasetMeta(0);
+		var arc = meta.data[0];
 
 		chart.options.elements.arc.backgroundColor = 'rgb(45, 46, 47)';
 		chart.options.elements.arc.borderColor = 'rgb(50, 51, 52)';
 		chart.options.elements.arc.borderWidth = 10.1;
 
-		controller.removeHoverStyle(arc);
+		meta.controller.removeHoverStyle(arc);
 		expect(arc._model.backgroundColor).toBe('rgb(45, 46, 47)');
 		expect(arc._model.borderColor).toBe('rgb(50, 51, 52)');
 		expect(arc._model.borderWidth).toBe(10.1);
@@ -488,7 +298,7 @@ describe('Polar area controller tests', function() {
 		chart.data.datasets[0].borderColor = 'rgb(123, 125, 127)';
 		chart.data.datasets[0].borderWidth = 2.1;
 
-		controller.removeHoverStyle(arc);
+		meta.controller.removeHoverStyle(arc);
 		expect(arc._model.backgroundColor).toBe('rgb(77, 79, 81)');
 		expect(arc._model.borderColor).toBe('rgb(123, 125, 127)');
 		expect(arc._model.borderWidth).toBe(2.1);
@@ -500,7 +310,7 @@ describe('Polar area controller tests', function() {
 			borderColor: 'rgb(10, 10, 10)'
 		};
 
-		controller.removeHoverStyle(arc);
+		meta.controller.removeHoverStyle(arc);
 		expect(arc._model.backgroundColor).toBe('rgb(0, 0, 0)');
 		expect(arc._model.borderColor).toBe('rgb(10, 10, 10)');
 		expect(arc._model.borderWidth).toBe(5.5);
