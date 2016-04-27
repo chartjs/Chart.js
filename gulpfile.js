@@ -45,7 +45,6 @@ var testFiles = [
   // Disable tests which need to be rewritten based on changes introduced by
   // the following changes: https://github.com/chartjs/Chart.js/pull/2346
   '!./test/controller.line.tests.js',
-  '!./test/controller.radar.tests.js',
   '!./test/core.layoutService.tests.js',
   '!./test/defaultConfig.tests.js',
   '!./test/scale.linear.tests.js',
