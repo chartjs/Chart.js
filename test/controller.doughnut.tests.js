@@ -65,7 +65,7 @@ describe('Doughnut controller tests', function() {
 			},
 			options: {
 				animation: {
-					animateRotate: true,
+					animateRotate: false,
 					animateScale: false
 				},
 				cutoutPercentage: 50,
@@ -88,19 +88,19 @@ describe('Doughnut controller tests', function() {
 
 		expect(meta.data.length).toBe(4);
 
-		[	{ c: 1.7453292519 },
-			{ c: 2.0943951023 },
-			{ c: 0,           },
-			{ c: 2.4434609527 }
+		[	{ c: 1.7453292519, sA: Math.PI * -0.5, eA: 0.17453292519943298 },
+			{ c: 2.0943951023, sA: 0.17453292519943298, eA: 2.2689280275926285 },
+			{ c: 0,            sA: 2.2689280275926285, eA: 2.2689280275926285},
+			{ c: 2.4434609527, sA: 2.2689280275926285, eA: 4.71238898038469}
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(256);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(272);
 			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(239);
 			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(179);
 			expect(meta.data[i]._model.circumference).toBeCloseTo(expected.c, 8);
+			expect(meta.data[i]._model.startAngle).toBeCloseTo(expected.sA, 8);
+			expect(meta.data[i]._model.endAngle).toBeCloseTo(expected.eA, 8);
 			expect(meta.data[i]._model).toEqual(jasmine.objectContaining({
-				startAngle: Math.PI * -0.5,
-				endAngle: Math.PI * -0.5,
 				label: chart.data.labels[i],
 				hoverBackgroundColor: 'rgb(255, 255, 255)',
 				backgroundColor: 'rgb(255, 0, 0)',
