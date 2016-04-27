@@ -64,6 +64,10 @@ describe('Doughnut controller tests', function() {
 				labels: ['label0', 'label1', 'label2', 'label3']
 			},
 			options: {
+				animation: {
+					animateRotate: true,
+					animateScale: false
+				},
 				cutoutPercentage: 50,
 				rotation: Math.PI * -0.5,
 				circumference: Math.PI * 2.0,
