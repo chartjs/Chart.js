@@ -2,6 +2,11 @@
 title: Notes
 anchor: notes
 ---
+### Previous versions
+
+Please note - documentation for previous versions are available on the GitHub repo.
+
+- [1.x Documentation](https://github.com/chartjs/Chart.js/tree/v1.1.1/docs)
 
 ### Browser support
 
