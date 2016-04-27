@@ -23,6 +23,23 @@ new Chart(ctx, {
 
 ### Data structure
 
+The following options can be included in a polar area chart dataset to configure options for that specific dataset.
+
+Some properties are specified as arrays. The first value applies to the first bar, the second value to the second bar, and so on.
+
+Property | Type | Usage
+--- | --- | ---
+data | `Array<Number>` | The data to plot as bars
+label | `String` | The label for the dataset which appears in the legend and tooltips
+backgroundColor | `Array<Color>` | The fill color of the arcs. See [Colors](#colors)
+borderColor | `Array<Color>` | Arc border color
+borderWidth | `Array<Number>` | Border width of arcs in pixels
+hoverBackgroundColor | `Array<Color>` | Arc background color when hovered
+hoverBorderColor | `Array<Color>` | Arc border color when hovered
+hoverBorderWidth | `Array<Number>` | Border width of arc when hovered
+
+An example data object using these attributes is shown below.
+
 ```javascript
 var data = {
 	datasets: [{
@@ -59,7 +76,7 @@ These are the customisation options specific to Polar Area charts. These options
 
 Name | Type | Default | Description
 --- | --- | --- | ---
-scale | Array | [See Scales](#scales) and [Defaults for Radial Linear Scale](#getting-started-radial-linear-scale) | Options for the one scale used on the chart. Use this to style the ticks, labels, and grid.
+scale | Array | [See Scales](#scales) and [Defaults for Radial Linear Scale](#scales-radial-linear-scale) | Options for the one scale used on the chart. Use this to style the ticks, labels, and grid.
 *scale*.type | String |"radialLinear" | As defined in ["Radial Linear"](#scales-radial-linear-scale).
 *scale*.lineArc | Boolean | true | When true, lines are circular.
 *animation*.animateRotate | Boolean |true | If true, will animate the rotation of the chart.

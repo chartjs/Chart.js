@@ -99,7 +99,6 @@ module.exports = function(Chart) {
 			this.afterUpdate();
 
 			return this.minSize;
-
 		},
 		afterUpdate: helpers.noop,
 

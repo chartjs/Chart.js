@@ -1,3 +1,12 @@
+/*!
+ * Chart.js
+ * http://chartjs.org/
+ * Version: 2.0.2
+ *
+ * Copyright 2016 Nick Downie
+ * Released under the MIT license
+ * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
+ */
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /* MIT license */
 
@@ -5192,17 +5201,6 @@ for (var name in colorNames) {
 
 }));
 },{}],7:[function(require,module,exports){
-/*!
- * Chart.js
- * http://chartjs.org/
- * Version: 2.0.2
- *
- * Copyright 2015 Nick Downie
- * Released under the MIT license
- * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
- */
-
-
 var Chart = require('./core/core.js')();
 
 require('./core/core.helpers')(Chart);
@@ -5560,6 +5558,12 @@ module.exports = function(Chart) {
 			var categoryWidth = tickWidth * xScale.options.categoryPercentage;
 			var categorySpacing = (tickWidth - (tickWidth * xScale.options.categoryPercentage)) / 2;
 			var fullBarWidth = categoryWidth / datasetCount;
+			
+			if (xScale.ticks.length !== this.chart.data.labels.length) {
+			    var perc = xScale.ticks.length / this.chart.data.labels.length;
+			    fullBarWidth = fullBarWidth * perc;
+			}
+			
 			var barWidth = fullBarWidth * xScale.options.barPercentage;
 			var barSpacing = fullBarWidth - (fullBarWidth * xScale.options.barPercentage);
 
@@ -5874,11 +5878,11 @@ module.exports = function(Chart) {
 
 			if (chart.data.datasets.length) {
 				for (var i = 0; i < chart.data.datasets[0].data.length; ++i) {
-					text.push('<li><span style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '">');
+					text.push('<li><span style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
 					if (chart.data.labels[i]) {
 						text.push(chart.data.labels[i]);
 					}
-					text.push('</span></li>');
+					text.push('</li>');
 				}
 			}
 
@@ -6139,6 +6143,7 @@ module.exports = function(Chart) {
 		}
 	});
 };
+
 },{}],18:[function(require,module,exports){
 "use strict";
 
@@ -6228,9 +6233,16 @@ module.exports = function(Chart) {
 				// Data
 				line._children = points;
 				// Model
+
+				// Compatibility: If the properties are defined with only the old name, use those values
+				if ((this.getDataset().tension !== undefined) && (this.getDataset().lineTension === undefined))
+				{
+					this.getDataset().lineTension = this.getDataset().tension;
+				}
+
 				line._model = {
 					// Appearance
-					tension: line.custom && line.custom.tension ? line.custom.tension : helpers.getValueOrDefault(this.getDataset().tension, this.chart.options.elements.line.tension),
+					tension: line.custom && line.custom.tension ? line.custom.tension : helpers.getValueOrDefault(this.getDataset().lineTension, this.chart.options.elements.line.tension),
 					backgroundColor: line.custom && line.custom.backgroundColor ? line.custom.backgroundColor : (this.getDataset().backgroundColor || this.chart.options.elements.line.backgroundColor),
 					borderWidth: line.custom && line.custom.borderWidth ? line.custom.borderWidth : (this.getDataset().borderWidth || this.chart.options.elements.line.borderWidth),
 					borderColor: line.custom && line.custom.borderColor ? line.custom.borderColor : (this.getDataset().borderColor || this.chart.options.elements.line.borderColor),
@@ -6320,18 +6332,28 @@ module.exports = function(Chart) {
 			point._index = index;
 
 			// Desired view properties
+
+			// Compatibility: If the properties are defined with only the old name, use those values
+			if ((this.getDataset().radius !== undefined) && (this.getDataset().pointRadius === undefined))
+			{
+				this.getDataset().pointRadius = this.getDataset().radius;
+			}
+			if ((this.getDataset().hitRadius !== undefined) && (this.getDataset().pointHitRadius === undefined))
+			{
+				this.getDataset().pointHitRadius = this.getDataset().hitRadius;
+			}
+
 			point._model = {
 				x: xScale.getPixelForValue(this.getDataset().data[index], index, this.index, this.chart.isCombo),
 				y: reset ? scaleBase : this.calculatePointY(this.getDataset().data[index], index, this.index, this.chart.isCombo),
 				// Appearance
-				tension: point.custom && point.custom.tension ? point.custom.tension : helpers.getValueOrDefault(this.getDataset().tension, this.chart.options.elements.line.tension),
-				radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().radius, index, this.chart.options.elements.point.radius),
+				radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().pointRadius, index, this.chart.options.elements.point.radius),
 				pointStyle: point.custom && point.custom.pointStyle ? point.custom.pointStyle : helpers.getValueAtIndexOrDefault(this.getDataset().pointStyle, index, this.chart.options.elements.point.pointStyle),
 				backgroundColor: this.getPointBackgroundColor(point, index),
 				borderColor: this.getPointBorderColor(point, index),
 				borderWidth: this.getPointBorderWidth(point, index),
 				// Tooltip
-				hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.getDataset().hitRadius, index, this.chart.options.elements.point.hitRadius)
+				hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.getDataset().pointHitRadius, index, this.chart.options.elements.point.hitRadius)
 			};
 
 			point._model.skip = point.custom && point.custom.skip ? point.custom.skip : (isNaN(point._model.x) || isNaN(point._model.y));
@@ -6375,7 +6397,7 @@ module.exports = function(Chart) {
 					helpers.previousItem(this.getDataset().metaData, index)._model,
 					point._model,
 					helpers.nextItem(this.getDataset().metaData, index)._model,
-					point._model.tension
+					this.getDataset().metaDataset._model.tension
 				);
 
 				// Prevent the bezier going outside of the bounds of the graph
@@ -6423,7 +6445,13 @@ module.exports = function(Chart) {
 			var dataset = this.chart.data.datasets[point._datasetIndex];
 			var index = point._index;
 
-			point._model.radius = point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().radius, index, this.chart.options.elements.point.radius);
+			// Compatibility: If the properties are defined with only the old name, use those values
+			if ((this.getDataset().radius !== undefined) && (this.getDataset().pointRadius === undefined))
+			{
+				this.getDataset().pointRadius = this.getDataset().radius;
+			}
+
+			point._model.radius = point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().pointRadius, index, this.chart.options.elements.point.radius);
 			point._model.backgroundColor = this.getPointBackgroundColor(point, index);
 			point._model.borderColor = this.getPointBorderColor(point, index);
 			point._model.borderWidth = this.getPointBorderWidth(point, index);
@@ -7265,16 +7293,16 @@ module.exports = function(Chart) {
 			// Make sure dataset controllers are updated and new controllers are reset
 			var newControllers = this.buildOrUpdateControllers();
 
+			// Make sure all dataset controllers have correct meta data counts
+			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
+				dataset.controller.buildOrUpdateElements();
+			});
+
 			Chart.layoutService.update(this, this.chart.width, this.chart.height);
 
 			// Can only reset the new controllers after the scales have been updated
 			helpers.each(newControllers, function(controller) {
 				controller.reset();
-			});
-
-			// Make sure all dataset controllers have correct meta data counts
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				dataset.controller.buildOrUpdateElements();
 			});
 
 			// This will loop through any data and do the appropriate element update for the type
@@ -7287,6 +7315,7 @@ module.exports = function(Chart) {
 		},
 
 		render: function render(duration, lazy) {
+			Chart.pluginService.notifyPlugins('beforeRender', [this]);
 
 			if (this.options.animation && ((typeof duration !== 'undefined' && duration !== 0) || (typeof duration === 'undefined' && this.options.animation.duration !== 0))) {
 				var animation = new Chart.Animation();
@@ -7436,6 +7465,8 @@ module.exports = function(Chart) {
 			// Reset to the old style since it may have been changed by the device pixel ratio changes
 			canvas.style.width = this.chart.originalCanvasStyleWidth;
 			canvas.style.height = this.chart.originalCanvasStyleHeight;
+
+			Chart.pluginService.notifyPlugins('destroy', [this]);
 
 			delete Chart.instances[this.id];
 		},
@@ -8876,10 +8907,6 @@ module.exports = function(Chart) {
 				return box.options.position === "chartArea";
 			});
 
-			function fullWidthSorter(a, b) {
-
-			}
-
 			// Ensure that full width boxes are at the very top / bottom
 			topBoxes.sort(function(a, b) {
 				return (b.options.fullWidth ? 1 : 0) - (a.options.fullWidth ? 1 : 0);
@@ -9076,11 +9103,15 @@ module.exports = function(Chart) {
 				});
 
 				helpers.each(topBoxes, function(box) {
-					box.width = newMaxChartAreaWidth;
+					if (!box.options.fullWidth) {
+						box.width = newMaxChartAreaWidth;
+					}
 				});
 
 				helpers.each(bottomBoxes, function(box) {
-					box.width = newMaxChartAreaWidth;
+					if (!box.options.fullWidth) {
+						box.width = newMaxChartAreaWidth;
+					}
 				});
 
 				maxChartAreaHeight = newMaxChartAreaHeight;
@@ -9247,7 +9278,6 @@ module.exports = function(Chart) {
 			this.afterUpdate();
 
 			return this.minSize;
-
 		},
 		afterUpdate: helpers.noop,
 
@@ -9532,8 +9562,12 @@ module.exports = function(Chart) {
 
 		// Called at end of draw
 		afterDraw: helpers.noop,
+
+		// Called during destroy
+		destroy: helpers.noop,
 	});
 };
+
 },{}],30:[function(require,module,exports){
 "use strict";
 
@@ -10705,7 +10739,7 @@ module.exports = function(Chart) {
 								datasetIndex: datasetIndex
 							});
 						}
-					}, null, element._yScale.options.stacked);
+					}, null);
 
 					helpers.each(this._active, function(active) {
 						if (active) {
@@ -10714,10 +10748,9 @@ module.exports = function(Chart) {
 								backgroundColor: active._view.backgroundColor
 							});
 						}
-					}, null, element._yScale.options.stacked);
+					}, null);
 
 					tooltipPosition = this.getAveragePosition(this._active);
-					tooltipPosition.y = this._active[0]._yScale.getPixelForDecimal(0.5);
 				}
 
 				// Build the Text Lines
@@ -12648,10 +12681,13 @@ module.exports = function(Chart) {
 			if (this.chart.data.labels && this.chart.data.labels.length > 0) {
 				helpers.each(this.chart.data.labels, function(label, index) {
 					var labelMoment = this.parseTime(label);
-					if (this.options.time.round) {
-						labelMoment.startOf(this.options.time.round);
+
+					if (labelMoment.isValid()) {
+						if (this.options.time.round) {
+							labelMoment.startOf(this.options.time.round);
+						}
+						scaleLabelMoments.push(labelMoment);
 					}
-					scaleLabelMoments.push(labelMoment);
 				}, this);
 
 				this.firstTick = moment.min.call(this, scaleLabelMoments);
@@ -12667,14 +12703,17 @@ module.exports = function(Chart) {
 				if (typeof dataset.data[0] === 'object') {
 					helpers.each(dataset.data, function(value, index) {
 						var labelMoment = this.parseTime(this.getRightValue(value));
-						if (this.options.time.round) {
-							labelMoment.startOf(this.options.time.round);
-						}
-						momentsForDataset.push(labelMoment);
 
-						// May have gone outside the scale ranges, make sure we keep the first and last ticks updated
-						this.firstTick = this.firstTick !== null ? moment.min(this.firstTick, labelMoment) : labelMoment;
-						this.lastTick = this.lastTick !== null ? moment.max(this.lastTick, labelMoment) : labelMoment;
+						if (labelMoment.isValid()) {
+							if (this.options.time.round) {
+								labelMoment.startOf(this.options.time.round);
+							}
+							momentsForDataset.push(labelMoment);
+
+							// May have gone outside the scale ranges, make sure we keep the first and last ticks updated
+							this.firstTick = this.firstTick !== null ? moment.min(this.firstTick, labelMoment) : labelMoment;
+							this.lastTick = this.lastTick !== null ? moment.max(this.lastTick, labelMoment) : labelMoment;
+						}
 					}, this);
 				} else {
 					// We have no labels. Use the ones from the scale
