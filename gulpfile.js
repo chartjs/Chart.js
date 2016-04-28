@@ -48,7 +48,7 @@ var testFiles = [
   '!./test/core.layoutService.tests.js',
   '!./test/defaultConfig.tests.js',
   '!./test/scale.radialLinear.tests.js',
-  '!./test/scale.time.tests.js'
+  //'!./test/scale.time.tests.js'
 ];
 
 gulp.task('build', buildTask);

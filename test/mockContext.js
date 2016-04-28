@@ -141,9 +141,27 @@
 		}
 	};
 
+	function toEqualOneOf() {
+		return {
+			compare: function(actual, expecteds) {
+				var result = false;
+				for (var i = 0, l = expecteds.length; i < l; i++) {
+					if (actual === expecteds[i]) {
+						result = true;
+						break;
+					}
+				}
+				return {
+					pass: result
+				};
+			}
+		};
+	}
+
 	window.addDefaultMatchers = function(jasmine) {
 		jasmine.addMatchers({
 			toBeCloseToPixel: toBeCloseToPixel,
+			toEqualOneOf: toEqualOneOf
 		});
 	}
 
