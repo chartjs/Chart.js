@@ -65,14 +65,16 @@
                     },
                     animation: {
                         onComplete: function () {
-                            var ctx = this.chart.ctx;
+                            var chartInstance = this.chart;
+                            var ctx = chartInstance.ctx;
                             ctx.textAlign = "center";
 
-                            Chart.helpers.each(this.data.datasets.forEach(function (dataset) {
-                                Chart.helpers.each(dataset.metaData.forEach(function (bar, index) {
+                            Chart.helpers.each(this.data.datasets.forEach(function (dataset, i) {
+                                var meta = chartInstance.controller.getDatasetMeta(i);
+                                Chart.helpers.each(meta.data.forEach(function (bar, index) {
                                     ctx.fillText(dataset.data[index], bar._model.x, bar._model.y - 10);
-                                    }),this)
-                                    }),this);
+                                }),this)
+                            }),this);
                         }
                     }
                 }
