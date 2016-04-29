@@ -4,6 +4,7 @@
   "description": "Simple HTML5 Charts using the canvas element",
   "homepage": "https://github.com/nnnick/Chart.js",
   "author": "nnnick",
+  "license": "MIT",
   "main": [
     "dist/Chart.js"
   ],
