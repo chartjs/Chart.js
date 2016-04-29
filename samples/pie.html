@@ -96,7 +96,7 @@
         $.each(config.data.datasets, function(i, piece) {
             $.each(piece.data, function(j, value) {
                 config.data.datasets[i].data[j] = randomScalingFactor();
-                //config.data.datasets.backgroundColor[i] = 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
+                config.data.datasets[i].backgroundColor[j] = randomColor(0.7);
             });
         });
         window.myPie.update();
