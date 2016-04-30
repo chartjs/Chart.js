@@ -146,17 +146,23 @@ describe('Category scale tests', function() {
 
 		expect(scale.getPixelForValue(0, 0, 0, false)).toBe(33);
 		expect(scale.getPixelForValue(0, 0, 0, true)).toBe(85);
+		expect(scale.getValueForPixel(33)).toBe(0);
+		expect(scale.getValueForPixel(85)).toBe(0);
 
 		expect(scale.getPixelForValue(0, 4, 0, false)).toBe(452);
 		expect(scale.getPixelForValue(0, 4, 0, true)).toBe(505);
+		expect(scale.getValueForPixel(452)).toBe(4);
+		expect(scale.getValueForPixel(505)).toBe(4);
 
 		config.gridLines.offsetGridLines = false;
 
 		expect(scale.getPixelForValue(0, 0, 0, false)).toBe(33);
 		expect(scale.getPixelForValue(0, 0, 0, true)).toBe(33);
+		expect(scale.getValueForPixel(33)).toBe(0);
 
 		expect(scale.getPixelForValue(0, 4, 0, false)).toBe(557);
 		expect(scale.getPixelForValue(0, 4, 0, true)).toBe(557);
+		expect(scale.getValueForPixel(557)).toBe(4);
 	});
 
 	it ('Should get the correct pixel for a value when horizontal and zoomed', function() {
@@ -268,17 +274,22 @@ describe('Category scale tests', function() {
 
 		expect(scale.getPixelForValue(0, 0, 0, false)).toBe(11);
 		expect(scale.getPixelForValue(0, 0, 0, true)).toBe(30);
+		expect(scale.getValueForPixel(11)).toBe(0);
+		expect(scale.getValueForPixel(30)).toBe(0);
 
 		expect(scale.getPixelForValue(0, 4, 0, false)).toBe(161);
 		expect(scale.getPixelForValue(0, 4, 0, true)).toBe(180);
+		expect(scale.getValueForPixel(161)).toBe(4);
 
 		config.gridLines.offsetGridLines = false;
 
 		expect(scale.getPixelForValue(0, 0, 0, false)).toBe(11);
 		expect(scale.getPixelForValue(0, 0, 0, true)).toBe(11);
+		expect(scale.getValueForPixel(11)).toBe(0);
 
 		expect(scale.getPixelForValue(0, 4, 0, false)).toBe(199);
 		expect(scale.getPixelForValue(0, 4, 0, true)).toBe(199);
+		expect(scale.getValueForPixel(199)).toBe(4);
 	});
 
 	it ('should get the correct pixel for a value when vertical and zoomed', function() {
