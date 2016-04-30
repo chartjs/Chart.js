@@ -13,7 +13,7 @@ describe('Time scale tests', function() {
 						var result = false;
 
 						var diff = actual.diff(expected.value, expected.unit, true);
-						result = Math.abs(diff) < 0.3;
+						result = Math.abs(diff) < 0.5;
 
 						return {
 							pass: result
