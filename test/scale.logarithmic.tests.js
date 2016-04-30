@@ -553,10 +553,18 @@ describe('Logarithmic Scale tests', function() {
 		expect(xScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(283);  // halfway
 		expect(xScale.getPixelForValue( 0, 0, 0)).toBeCloseToPixel(48);   // 0 is invalid, put it on the left.
 
+		expect(xScale.getValueForPixel(495)).toBeCloseTo(80, 1e-4);
+		expect(xScale.getValueForPixel(48)).toBeCloseTo(1, 1e-4);
+		expect(xScale.getValueForPixel(283)).toBeCloseTo(10, 1e-4);
+
 		var yScale = chart.scales.yScale;
 		expect(yScale.getPixelForValue(80, 0, 0)).toBeCloseToPixel(32);   // top + paddingTop
 		expect(yScale.getPixelForValue( 1, 0, 0)).toBeCloseToPixel(456);  // bottom - paddingBottom
 		expect(yScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(234);  // halfway
 		expect(yScale.getPixelForValue( 0, 0, 0)).toBeCloseToPixel(32);   // 0 is invalid. force it on top
+
+		expect(yScale.getValueForPixel(32)).toBeCloseTo(80, 1e-4);
+		expect(yScale.getValueForPixel(456)).toBeCloseTo(1, 1e-4);
+		expect(yScale.getValueForPixel(234)).toBeCloseTo(10, 1e-4);
 	});
 });

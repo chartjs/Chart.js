@@ -326,6 +326,12 @@ module.exports = function(Chart) {
 				}
 			}
 		},
+		getValueForPixel: function(pixel) {
+			var innerDimension = this.isHorizontal() ? this.width - (this.paddingLeft + this.paddingRight) : this.height - (this.paddingTop + this.paddingBottom);
+			var offset = (pixel - (this.isHorizontal() ? this.left + this.paddingLeft : this.top + this.paddingTop)) / innerDimension;
+			offset *= (this.scaleSizeInUnits - (this.leadingUnitBuffer > 0 ? 1 : 0));
+			return this.firstTick.clone().add(moment.duration(offset, this.tickUnit).asSeconds(), 'seconds');
+		},
 		parseTime: function(label) {
 			if (typeof this.options.time.parser === 'string') {
 				return moment(label, this.options.time.parser);

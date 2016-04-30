@@ -4,6 +4,24 @@ describe('Time scale tests', function() {
 
 	beforeEach(function() {
 		window.addDefaultMatchers(jasmine);
+
+		// Need a time matcher for getValueFromPixel
+		jasmine.addMatchers({
+			toBeCloseToTime: function() {
+				return {
+					compare: function(actual, expected) {
+						var result = false;
+
+						var diff = actual.diff(expected.value, expected.unit, true);
+						result = Math.abs(diff) < 0.3;
+
+						return {
+							pass: result
+						};
+					}
+				}
+			}
+		});
 	});
 
 	afterEach(function() {
@@ -339,6 +357,15 @@ describe('Time scale tests', function() {
 
 		expect(xScale.getPixelForValue('', 0, 0)).toBeCloseToPixel(78);
 		expect(xScale.getPixelForValue('', 6, 0)).toBeCloseToPixel(466);
+
+		expect(xScale.getValueForPixel(78)).toBeCloseToTime({
+			value: moment(chartInstance.data.labels[0]),
+			unit: 'hour'
+		});
+		expect(xScale.getValueForPixel(466)).toBeCloseToTime({
+			value: moment(chartInstance.data.labels[6]),
+			unit: 'hour'
+		});
 	});
 
 	it('should get the correct label for a data value', function() {

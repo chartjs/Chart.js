@@ -614,10 +614,18 @@ describe('Linear Scale', function() {
 		expect(xScale.getPixelForValue(-1, 0, 0)).toBeCloseToPixel(41); // left + paddingLeft
 		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(271); // halfway*/
 
+		expect(xScale.getValueForPixel(501)).toBeCloseTo(1, 1e-2);
+		expect(xScale.getValueForPixel(41)).toBeCloseTo(-1, 1e-2);
+		expect(xScale.getValueForPixel(271)).toBeCloseTo(0, 1e-2);
+
 		var yScale = chartInstance.scales.yScale0;
-		expect(yScale.getPixelForValue(1, 0, 0)).toBeCloseToPixel(32); // top + paddingTop
-		expect(yScale.getPixelForValue(-1, 0, 0)).toBeCloseToPixel(484); // bottom - paddingBottom
-		expect(yScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(258); // halfway
+		expect(yScale.getPixelForValue(1, 0, 0)).toBeCloseToPixel(32); // right - paddingRight
+		expect(yScale.getPixelForValue(-1, 0, 0)).toBeCloseToPixel(484); // left + paddingLeft
+		expect(yScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(258); // halfway*/
+
+		expect(yScale.getValueForPixel(32)).toBe(1);
+		expect(yScale.getValueForPixel(484)).toBe(-1);
+		expect(yScale.getValueForPixel(258)).toBe(0);
 	});
 
 	it('should fit correctly', function() {
