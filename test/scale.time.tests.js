@@ -13,7 +13,7 @@ describe('Time scale tests', function() {
 						var result = false;
 
 						var diff = actual.diff(expected.value, expected.unit, true);
-						result = Math.abs(diff) < 0.5;
+						result = Math.abs(diff) < (expected.threshold !== undefined ? expected.threshold : 0.5);
 
 						return {
 							pass: result
@@ -118,7 +118,7 @@ describe('Time scale tests', function() {
 		scale.update(400, 50);
 
 		// Counts down because the lines are drawn top to bottom
-		expect(scale.ticks).toEqual([ 'Dec 28, 2014', 'Jan 11, 2015' ]);
+		expect(scale.ticks).toEqual([ 'Dec 28, 2014', 'Jan 4, 2015', 'Jan 11, 2015' ]);
 	});
 
 	it('should build ticks using date objects', function() {
@@ -146,7 +146,7 @@ describe('Time scale tests', function() {
 		scale.update(400, 50);
 
 		// Counts down because the lines are drawn top to bottom
-		expect(scale.ticks).toEqual([ 'Dec 28, 2014', 'Jan 11, 2015' ]);
+		expect(scale.ticks).toEqual([ 'Dec 28, 2014', 'Jan 4, 2015', 'Jan 11, 2015' ]);
 	});
 
 	it('should build ticks when the data is xy points', function() {
@@ -244,8 +244,8 @@ describe('Time scale tests', function() {
 		var xScale = chartInstance.scales.xScale0;
 
 		// Counts down because the lines are drawn top to bottom
-		expect(xScale.ticks[0]).toEqualOneOf(['Nov 19, 1981', 'Nov 20, 1981']); // handle time zone changes
-		expect(xScale.ticks[1]).toEqualOneOf(['Nov 19, 1981', 'Nov 20, 1981']); // handle time zone changes
+		expect(xScale.ticks[0]).toEqualOneOf(['Nov 19, 1981', 'Nov 20, 1981', 'Nov 21, 1981']); // handle time zone changes
+		expect(xScale.ticks[1]).toEqualOneOf(['Nov 19, 1981', 'Nov 20, 1981', 'Nov 21, 1981']); // handle time zone changes
 	});
 
 	it('should build ticks using the config unit', function() {
@@ -356,13 +356,14 @@ describe('Time scale tests', function() {
 		var xScale = chartInstance.scales.xScale0;
 
 		expect(xScale.getPixelForValue('', 0, 0)).toBeCloseToPixel(78);
-		expect(xScale.getPixelForValue('', 6, 0)).toBeCloseToPixel(466);
+		expect(xScale.getPixelForValue('', 6, 0)).toBeCloseToPixel(452);
 
 		expect(xScale.getValueForPixel(78)).toBeCloseToTime({
 			value: moment(chartInstance.data.labels[0]),
-			unit: 'hour'
+			unit: 'hour',
+			threshold: 0.75
 		});
-		expect(xScale.getValueForPixel(466)).toBeCloseToTime({
+		expect(xScale.getValueForPixel(452)).toBeCloseToTime({
 			value: moment(chartInstance.data.labels[6]),
 			unit: 'hour'
 		});
