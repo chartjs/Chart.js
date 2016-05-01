@@ -244,8 +244,8 @@ describe('Time scale tests', function() {
 		var xScale = chartInstance.scales.xScale0;
 
 		// Counts down because the lines are drawn top to bottom
-		expect(xScale.ticks[0]).toEqualOneOf(['Nov 19, 1981', 'Nov 20, 1981']); // handle time zone changes
-		expect(xScale.ticks[1]).toEqualOneOf(['Nov 19, 1981', 'Nov 20, 1981']); // handle time zone changes
+		expect(xScale.ticks[0]).toEqualOneOf(['Nov 19, 1981', 'Nov 20, 1981', 'Nov 21, 1981']); // handle time zone changes
+		expect(xScale.ticks[1]).toEqualOneOf(['Nov 19, 1981', 'Nov 20, 1981', 'Nov 21, 1981']); // handle time zone changes
 	});
 
 	it('should build ticks using the config unit', function() {
