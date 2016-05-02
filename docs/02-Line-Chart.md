@@ -41,7 +41,7 @@ xAxisID | `String` | The ID of the x axis to plot this dataset on
 yAxisID | `String` | The ID of the y axis to plot this dataset on
 fill | `Boolean` | If true, fill the area under the line
 lineTension | `Number` | Bezier curve tension of the line. Set to 0 to draw straightlines. *Note* This was renamed from 'tension' but the old name still works.
-backgroundColor | `Color` | The fill color under the line. See [Colors](#colors)
+backgroundColor | `Color` | The fill color under the line. See [Colors](#getting-started-colors)
 borderWidth | `Number` | The width of the line in pixels
 borderColor | `Color` | The color of the line.
 borderCapStyle | `String` | Cap style of the line. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap)
@@ -109,12 +109,12 @@ elements | Object | - | -
 *elements*.point | Object | - | -
 *elements.point*.radius | Number | `3` | Defines the size of the Point shape. Can be set to zero to skip rendering a point.
 scales | Object | - | -
-*scales*.xAxes | Array | `[{type:"category","id":"x-axis-0"}]` | Defines all of the x axes used in the chart. See the [scale documentation](#getting-started-scales) for details on the available options.
+*scales*.xAxes | Array | `[{type:"category","id":"x-axis-0"}]` | Defines all of the x axes used in the chart. See the [scale documentation](#scales) for details on the available options.
 *Options for xAxes* | | |
 type | String | "category" | As defined in ["Category"](#scales-category-scale).
 id | String | "x-axis-0" | Id of the axis so that data can bind to it.
  | | |
- *scales*.yAxes | Array | `[{type:"linear","id":"y-axis-0"}]` | Defines all of the y axes used in the chart. See the [scale documentation](#getting-started-scales) for details on the available options.
+ *scales*.yAxes | Array | `[{type:"linear","id":"y-axis-0"}]` | Defines all of the y axes used in the chart. See the [scale documentation](#scales) for details on the available options.
  *Options for yAxes* | | |
  type | String | "linear" | As defined in ["Linear"](#scales-linear-scale).
  id | String | "y-axis-0" | Id of the axis so that data can bind to it.
