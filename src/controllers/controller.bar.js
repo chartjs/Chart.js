@@ -389,9 +389,9 @@ module.exports = function(Chart) {
 					// Canvas doesn't allow us to stroke inside the width so we can
 					// adjust the sizes to fit if we're setting a stroke on the line
 					if (vm.borderWidth) {
-						leftY += halfStroke;
-						rightY -= halfStroke;
-						top += halfStroke;
+						topY += halfStroke;
+						bottomY -= halfStroke;
+						right += halfStroke;
 					}
 
 					ctx.beginPath();
