@@ -463,7 +463,7 @@ module.exports = function(Chart) {
 		},
 
 		calculateBarBase: function (datasetIndex, index) {
-			var meta = this.getMeta()
+			var meta = this.getMeta();
 			var xScale = this.getScaleForId(meta.xAxisID);
 			var yScale = this.getScaleForId(meta.yAxisID);
 
