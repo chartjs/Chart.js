@@ -11,648 +11,6 @@
 
 },{}],2:[function(require,module,exports){
 /* MIT license */
-var colorNames = require('color-name');
-
-module.exports = {
-   getRgba: getRgba,
-   getHsla: getHsla,
-   getRgb: getRgb,
-   getHsl: getHsl,
-   getHwb: getHwb,
-   getAlpha: getAlpha,
-
-   hexString: hexString,
-   rgbString: rgbString,
-   rgbaString: rgbaString,
-   percentString: percentString,
-   percentaString: percentaString,
-   hslString: hslString,
-   hslaString: hslaString,
-   hwbString: hwbString,
-   keyword: keyword
-}
-
-function getRgba(string) {
-   if (!string) {
-      return;
-   }
-   var abbr =  /^#([a-fA-F0-9]{3})$/,
-       hex =  /^#([a-fA-F0-9]{6})$/,
-       rgba = /^rgba?\(\s*([+-]?\d+)\s*,\s*([+-]?\d+)\s*,\s*([+-]?\d+)\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)$/,
-       per = /^rgba?\(\s*([+-]?[\d\.]+)\%\s*,\s*([+-]?[\d\.]+)\%\s*,\s*([+-]?[\d\.]+)\%\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)$/,
-       keyword = /(\w+)/;
-
-   var rgb = [0, 0, 0],
-       a = 1,
-       match = string.match(abbr);
-   if (match) {
-      match = match[1];
-      for (var i = 0; i < rgb.length; i++) {
-         rgb[i] = parseInt(match[i] + match[i], 16);
-      }
-   }
-   else if (match = string.match(hex)) {
-      match = match[1];
-      for (var i = 0; i < rgb.length; i++) {
-         rgb[i] = parseInt(match.slice(i * 2, i * 2 + 2), 16);
-      }
-   }
-   else if (match = string.match(rgba)) {
-      for (var i = 0; i < rgb.length; i++) {
-         rgb[i] = parseInt(match[i + 1]);
-      }
-      a = parseFloat(match[4]);
-   }
-   else if (match = string.match(per)) {
-      for (var i = 0; i < rgb.length; i++) {
-         rgb[i] = Math.round(parseFloat(match[i + 1]) * 2.55);
-      }
-      a = parseFloat(match[4]);
-   }
-   else if (match = string.match(keyword)) {
-      if (match[1] == "transparent") {
-         return [0, 0, 0, 0];
-      }
-      rgb = colorNames[match[1]];
-      if (!rgb) {
-         return;
-      }
-   }
-
-   for (var i = 0; i < rgb.length; i++) {
-      rgb[i] = scale(rgb[i], 0, 255);
-   }
-   if (!a && a != 0) {
-      a = 1;
-   }
-   else {
-      a = scale(a, 0, 1);
-   }
-   rgb[3] = a;
-   return rgb;
-}
-
-function getHsla(string) {
-   if (!string) {
-      return;
-   }
-   var hsl = /^hsla?\(\s*([+-]?\d+)(?:deg)?\s*,\s*([+-]?[\d\.]+)%\s*,\s*([+-]?[\d\.]+)%\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)/;
-   var match = string.match(hsl);
-   if (match) {
-      var alpha = parseFloat(match[4]);
-      var h = scale(parseInt(match[1]), 0, 360),
-          s = scale(parseFloat(match[2]), 0, 100),
-          l = scale(parseFloat(match[3]), 0, 100),
-          a = scale(isNaN(alpha) ? 1 : alpha, 0, 1);
-      return [h, s, l, a];
-   }
-}
-
-function getHwb(string) {
-   if (!string) {
-      return;
-   }
-   var hwb = /^hwb\(\s*([+-]?\d+)(?:deg)?\s*,\s*([+-]?[\d\.]+)%\s*,\s*([+-]?[\d\.]+)%\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)/;
-   var match = string.match(hwb);
-   if (match) {
-    var alpha = parseFloat(match[4]);
-      var h = scale(parseInt(match[1]), 0, 360),
-          w = scale(parseFloat(match[2]), 0, 100),
-          b = scale(parseFloat(match[3]), 0, 100),
-          a = scale(isNaN(alpha) ? 1 : alpha, 0, 1);
-      return [h, w, b, a];
-   }
-}
-
-function getRgb(string) {
-   var rgba = getRgba(string);
-   return rgba && rgba.slice(0, 3);
-}
-
-function getHsl(string) {
-  var hsla = getHsla(string);
-  return hsla && hsla.slice(0, 3);
-}
-
-function getAlpha(string) {
-   var vals = getRgba(string);
-   if (vals) {
-      return vals[3];
-   }
-   else if (vals = getHsla(string)) {
-      return vals[3];
-   }
-   else if (vals = getHwb(string)) {
-      return vals[3];
-   }
-}
-
-// generators
-function hexString(rgb) {
-   return "#" + hexDouble(rgb[0]) + hexDouble(rgb[1])
-              + hexDouble(rgb[2]);
-}
-
-function rgbString(rgba, alpha) {
-   if (alpha < 1 || (rgba[3] && rgba[3] < 1)) {
-      return rgbaString(rgba, alpha);
-   }
-   return "rgb(" + rgba[0] + ", " + rgba[1] + ", " + rgba[2] + ")";
-}
-
-function rgbaString(rgba, alpha) {
-   if (alpha === undefined) {
-      alpha = (rgba[3] !== undefined ? rgba[3] : 1);
-   }
-   return "rgba(" + rgba[0] + ", " + rgba[1] + ", " + rgba[2]
-           + ", " + alpha + ")";
-}
-
-function percentString(rgba, alpha) {
-   if (alpha < 1 || (rgba[3] && rgba[3] < 1)) {
-      return percentaString(rgba, alpha);
-   }
-   var r = Math.round(rgba[0]/255 * 100),
-       g = Math.round(rgba[1]/255 * 100),
-       b = Math.round(rgba[2]/255 * 100);
-
-   return "rgb(" + r + "%, " + g + "%, " + b + "%)";
-}
-
-function percentaString(rgba, alpha) {
-   var r = Math.round(rgba[0]/255 * 100),
-       g = Math.round(rgba[1]/255 * 100),
-       b = Math.round(rgba[2]/255 * 100);
-   return "rgba(" + r + "%, " + g + "%, " + b + "%, " + (alpha || rgba[3] || 1) + ")";
-}
-
-function hslString(hsla, alpha) {
-   if (alpha < 1 || (hsla[3] && hsla[3] < 1)) {
-      return hslaString(hsla, alpha);
-   }
-   return "hsl(" + hsla[0] + ", " + hsla[1] + "%, " + hsla[2] + "%)";
-}
-
-function hslaString(hsla, alpha) {
-   if (alpha === undefined) {
-      alpha = (hsla[3] !== undefined ? hsla[3] : 1);
-   }
-   return "hsla(" + hsla[0] + ", " + hsla[1] + "%, " + hsla[2] + "%, "
-           + alpha + ")";
-}
-
-// hwb is a bit different than rgb(a) & hsl(a) since there is no alpha specific syntax
-// (hwb have alpha optional & 1 is default value)
-function hwbString(hwb, alpha) {
-   if (alpha === undefined) {
-      alpha = (hwb[3] !== undefined ? hwb[3] : 1);
-   }
-   return "hwb(" + hwb[0] + ", " + hwb[1] + "%, " + hwb[2] + "%"
-           + (alpha !== undefined && alpha !== 1 ? ", " + alpha : "") + ")";
-}
-
-function keyword(rgb) {
-  return reverseNames[rgb.slice(0, 3)];
-}
-
-// helpers
-function scale(num, min, max) {
-   return Math.min(Math.max(min, num), max);
-}
-
-function hexDouble(num) {
-  var str = num.toString(16).toUpperCase();
-  return (str.length < 2) ? "0" + str : str;
-}
-
-
-//create a list of reverse color names
-var reverseNames = {};
-for (var name in colorNames) {
-   reverseNames[colorNames[name]] = name;
-}
-
-},{"color-name":6}],3:[function(require,module,exports){
-/* MIT license */
-
-var convert = require("color-convert"),
-  string = require("chartjs-color-string");
-
-var Color = function(obj) {
-  if (obj instanceof Color) return obj;
-  if (!(this instanceof Color)) return new Color(obj);
-
-  this.values = {
-    rgb: [0, 0, 0],
-    hsl: [0, 0, 0],
-    hsv: [0, 0, 0],
-    hwb: [0, 0, 0],
-    cmyk: [0, 0, 0, 0],
-    alpha: 1
-  }
-
-  // parse Color() argument
-  if (typeof obj == "string") {
-    var vals = string.getRgba(obj);
-    if (vals) {
-      this.setValues("rgb", vals);
-    } else if (vals = string.getHsla(obj)) {
-      this.setValues("hsl", vals);
-    } else if (vals = string.getHwb(obj)) {
-      this.setValues("hwb", vals);
-    } else {
-      throw new Error("Unable to parse color from string \"" + obj + "\"");
-    }
-  } else if (typeof obj == "object") {
-    var vals = obj;
-    if (vals["r"] !== undefined || vals["red"] !== undefined) {
-      this.setValues("rgb", vals)
-    } else if (vals["l"] !== undefined || vals["lightness"] !== undefined) {
-      this.setValues("hsl", vals)
-    } else if (vals["v"] !== undefined || vals["value"] !== undefined) {
-      this.setValues("hsv", vals)
-    } else if (vals["w"] !== undefined || vals["whiteness"] !== undefined) {
-      this.setValues("hwb", vals)
-    } else if (vals["c"] !== undefined || vals["cyan"] !== undefined) {
-      this.setValues("cmyk", vals)
-    } else {
-      throw new Error("Unable to parse color from object " + JSON.stringify(obj));
-    }
-  }
-}
-
-Color.prototype = {
-  rgb: function(vals) {
-    return this.setSpace("rgb", arguments);
-  },
-  hsl: function(vals) {
-    return this.setSpace("hsl", arguments);
-  },
-  hsv: function(vals) {
-    return this.setSpace("hsv", arguments);
-  },
-  hwb: function(vals) {
-    return this.setSpace("hwb", arguments);
-  },
-  cmyk: function(vals) {
-    return this.setSpace("cmyk", arguments);
-  },
-
-  rgbArray: function() {
-    return this.values.rgb;
-  },
-  hslArray: function() {
-    return this.values.hsl;
-  },
-  hsvArray: function() {
-    return this.values.hsv;
-  },
-  hwbArray: function() {
-    if (this.values.alpha !== 1) {
-      return this.values.hwb.concat([this.values.alpha])
-    }
-    return this.values.hwb;
-  },
-  cmykArray: function() {
-    return this.values.cmyk;
-  },
-  rgbaArray: function() {
-    var rgb = this.values.rgb;
-    return rgb.concat([this.values.alpha]);
-  },
-  hslaArray: function() {
-    var hsl = this.values.hsl;
-    return hsl.concat([this.values.alpha]);
-  },
-  alpha: function(val) {
-    if (val === undefined) {
-      return this.values.alpha;
-    }
-    this.setValues("alpha", val);
-    return this;
-  },
-
-  red: function(val) {
-    return this.setChannel("rgb", 0, val);
-  },
-  green: function(val) {
-    return this.setChannel("rgb", 1, val);
-  },
-  blue: function(val) {
-    return this.setChannel("rgb", 2, val);
-  },
-  hue: function(val) {
-    return this.setChannel("hsl", 0, val);
-  },
-  saturation: function(val) {
-    return this.setChannel("hsl", 1, val);
-  },
-  lightness: function(val) {
-    return this.setChannel("hsl", 2, val);
-  },
-  saturationv: function(val) {
-    return this.setChannel("hsv", 1, val);
-  },
-  whiteness: function(val) {
-    return this.setChannel("hwb", 1, val);
-  },
-  blackness: function(val) {
-    return this.setChannel("hwb", 2, val);
-  },
-  value: function(val) {
-    return this.setChannel("hsv", 2, val);
-  },
-  cyan: function(val) {
-    return this.setChannel("cmyk", 0, val);
-  },
-  magenta: function(val) {
-    return this.setChannel("cmyk", 1, val);
-  },
-  yellow: function(val) {
-    return this.setChannel("cmyk", 2, val);
-  },
-  black: function(val) {
-    return this.setChannel("cmyk", 3, val);
-  },
-
-  hexString: function() {
-    return string.hexString(this.values.rgb);
-  },
-  rgbString: function() {
-    return string.rgbString(this.values.rgb, this.values.alpha);
-  },
-  rgbaString: function() {
-    return string.rgbaString(this.values.rgb, this.values.alpha);
-  },
-  percentString: function() {
-    return string.percentString(this.values.rgb, this.values.alpha);
-  },
-  hslString: function() {
-    return string.hslString(this.values.hsl, this.values.alpha);
-  },
-  hslaString: function() {
-    return string.hslaString(this.values.hsl, this.values.alpha);
-  },
-  hwbString: function() {
-    return string.hwbString(this.values.hwb, this.values.alpha);
-  },
-  keyword: function() {
-    return string.keyword(this.values.rgb, this.values.alpha);
-  },
-
-  rgbNumber: function() {
-    return (this.values.rgb[0] << 16) | (this.values.rgb[1] << 8) | this.values.rgb[2];
-  },
-
-  luminosity: function() {
-    // http://www.w3.org/TR/WCAG20/#relativeluminancedef
-    var rgb = this.values.rgb;
-    var lum = [];
-    for (var i = 0; i < rgb.length; i++) {
-      var chan = rgb[i] / 255;
-      lum[i] = (chan <= 0.03928) ? chan / 12.92 : Math.pow(((chan + 0.055) / 1.055), 2.4)
-    }
-    return 0.2126 * lum[0] + 0.7152 * lum[1] + 0.0722 * lum[2];
-  },
-
-  contrast: function(color2) {
-    // http://www.w3.org/TR/WCAG20/#contrast-ratiodef
-    var lum1 = this.luminosity();
-    var lum2 = color2.luminosity();
-    if (lum1 > lum2) {
-      return (lum1 + 0.05) / (lum2 + 0.05)
-    };
-    return (lum2 + 0.05) / (lum1 + 0.05);
-  },
-
-  level: function(color2) {
-    var contrastRatio = this.contrast(color2);
-    return (contrastRatio >= 7.1) ? 'AAA' : (contrastRatio >= 4.5) ? 'AA' : '';
-  },
-
-  dark: function() {
-    // YIQ equation from http://24ways.org/2010/calculating-color-contrast
-    var rgb = this.values.rgb,
-      yiq = (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;
-    return yiq < 128;
-  },
-
-  light: function() {
-    return !this.dark();
-  },
-
-  negate: function() {
-    var rgb = []
-    for (var i = 0; i < 3; i++) {
-      rgb[i] = 255 - this.values.rgb[i];
-    }
-    this.setValues("rgb", rgb);
-    return this;
-  },
-
-  lighten: function(ratio) {
-    this.values.hsl[2] += this.values.hsl[2] * ratio;
-    this.setValues("hsl", this.values.hsl);
-    return this;
-  },
-
-  darken: function(ratio) {
-    this.values.hsl[2] -= this.values.hsl[2] * ratio;
-    this.setValues("hsl", this.values.hsl);
-    return this;
-  },
-
-  saturate: function(ratio) {
-    this.values.hsl[1] += this.values.hsl[1] * ratio;
-    this.setValues("hsl", this.values.hsl);
-    return this;
-  },
-
-  desaturate: function(ratio) {
-    this.values.hsl[1] -= this.values.hsl[1] * ratio;
-    this.setValues("hsl", this.values.hsl);
-    return this;
-  },
-
-  whiten: function(ratio) {
-    this.values.hwb[1] += this.values.hwb[1] * ratio;
-    this.setValues("hwb", this.values.hwb);
-    return this;
-  },
-
-  blacken: function(ratio) {
-    this.values.hwb[2] += this.values.hwb[2] * ratio;
-    this.setValues("hwb", this.values.hwb);
-    return this;
-  },
-
-  greyscale: function() {
-    var rgb = this.values.rgb;
-    // http://en.wikipedia.org/wiki/Grayscale#Converting_color_to_grayscale
-    var val = rgb[0] * 0.3 + rgb[1] * 0.59 + rgb[2] * 0.11;
-    this.setValues("rgb", [val, val, val]);
-    return this;
-  },
-
-  clearer: function(ratio) {
-    this.setValues("alpha", this.values.alpha - (this.values.alpha * ratio));
-    return this;
-  },
-
-  opaquer: function(ratio) {
-    this.setValues("alpha", this.values.alpha + (this.values.alpha * ratio));
-    return this;
-  },
-
-  rotate: function(degrees) {
-    var hue = this.values.hsl[0];
-    hue = (hue + degrees) % 360;
-    hue = hue < 0 ? 360 + hue : hue;
-    this.values.hsl[0] = hue;
-    this.setValues("hsl", this.values.hsl);
-    return this;
-  },
-
-  mix: function(color2, weight) {
-    weight = 1 - (weight == null ? 0.5 : weight);
-
-    // algorithm from Sass's mix(). Ratio of first color in mix is
-    // determined by the alphas of both colors and the weight
-    var t1 = weight * 2 - 1,
-      d = this.alpha() - color2.alpha();
-
-    var weight1 = (((t1 * d == -1) ? t1 : (t1 + d) / (1 + t1 * d)) + 1) / 2;
-    var weight2 = 1 - weight1;
-
-    var rgb = this.rgbArray();
-    var rgb2 = color2.rgbArray();
-
-    for (var i = 0; i < rgb.length; i++) {
-      rgb[i] = rgb[i] * weight1 + rgb2[i] * weight2;
-    }
-    this.setValues("rgb", rgb);
-
-    var alpha = this.alpha() * weight + color2.alpha() * (1 - weight);
-    this.setValues("alpha", alpha);
-
-    return this;
-  },
-
-  toJSON: function() {
-    return this.rgb();
-  },
-
-  clone: function() {
-    return new Color(this.rgb());
-  }
-}
-
-
-Color.prototype.getValues = function(space) {
-  var vals = {};
-  for (var i = 0; i < space.length; i++) {
-    vals[space.charAt(i)] = this.values[space][i];
-  }
-  if (this.values.alpha != 1) {
-    vals["a"] = this.values.alpha;
-  }
-  // {r: 255, g: 255, b: 255, a: 0.4}
-  return vals;
-}
-
-Color.prototype.setValues = function(space, vals) {
-  var spaces = {
-    "rgb": ["red", "green", "blue"],
-    "hsl": ["hue", "saturation", "lightness"],
-    "hsv": ["hue", "saturation", "value"],
-    "hwb": ["hue", "whiteness", "blackness"],
-    "cmyk": ["cyan", "magenta", "yellow", "black"]
-  };
-
-  var maxes = {
-    "rgb": [255, 255, 255],
-    "hsl": [360, 100, 100],
-    "hsv": [360, 100, 100],
-    "hwb": [360, 100, 100],
-    "cmyk": [100, 100, 100, 100]
-  };
-
-  var alpha = 1;
-  if (space == "alpha") {
-    alpha = vals;
-  } else if (vals.length) {
-    // [10, 10, 10]
-    this.values[space] = vals.slice(0, space.length);
-    alpha = vals[space.length];
-  } else if (vals[space.charAt(0)] !== undefined) {
-    // {r: 10, g: 10, b: 10}
-    for (var i = 0; i < space.length; i++) {
-      this.values[space][i] = vals[space.charAt(i)];
-    }
-    alpha = vals.a;
-  } else if (vals[spaces[space][0]] !== undefined) {
-    // {red: 10, green: 10, blue: 10}
-    var chans = spaces[space];
-    for (var i = 0; i < space.length; i++) {
-      this.values[space][i] = vals[chans[i]];
-    }
-    alpha = vals.alpha;
-  }
-  this.values.alpha = Math.max(0, Math.min(1, (alpha !== undefined ? alpha : this.values.alpha)));
-  if (space == "alpha") {
-    return;
-  }
-
-  // cap values of the space prior converting all values
-  for (var i = 0; i < space.length; i++) {
-    var capped = Math.max(0, Math.min(maxes[space][i], this.values[space][i]));
-    this.values[space][i] = Math.round(capped);
-  }
-
-  // convert to all the other color spaces
-  for (var sname in spaces) {
-    if (sname != space) {
-      this.values[sname] = convert[space][sname](this.values[space])
-    }
-
-    // cap values
-    for (var i = 0; i < sname.length; i++) {
-      var capped = Math.max(0, Math.min(maxes[sname][i], this.values[sname][i]));
-      this.values[sname][i] = Math.round(capped);
-    }
-  }
-  return true;
-}
-
-Color.prototype.setSpace = function(space, args) {
-  var vals = args[0];
-  if (vals === undefined) {
-    // color.rgb()
-    return this.getValues(space);
-  }
-  // color.rgb(10, 10, 10)
-  if (typeof vals == "number") {
-    vals = Array.prototype.slice.call(args);
-  }
-  this.setValues(space, vals);
-  return this;
-}
-
-Color.prototype.setChannel = function(space, index, val) {
-  if (val === undefined) {
-    // color.red()
-    return this.values[space][index];
-  }
-  // color.red(100)
-  this.values[space][index] = val;
-  this.setValues(space, this.values[space]);
-  return this;
-}
-
-window.Color = module.exports = Color
-
-},{"chartjs-color-string":2,"color-convert":5}],4:[function(require,module,exports){
-/* MIT license */
 
 module.exports = {
   rgb2hsl: rgb2hsl,
@@ -1351,7 +709,7 @@ for (var key in cssKeywords) {
   reverseKeywords[JSON.stringify(cssKeywords[key])] = key;
 }
 
-},{}],5:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 var conversions = require("./conversions");
 
 var convert = function() {
@@ -1444,7 +802,230 @@ Converter.prototype.getValues = function(space) {
 });
 
 module.exports = convert;
-},{"./conversions":4}],6:[function(require,module,exports){
+},{"./conversions":2}],4:[function(require,module,exports){
+/* MIT license */
+var colorNames = require('color-name');
+
+module.exports = {
+   getRgba: getRgba,
+   getHsla: getHsla,
+   getRgb: getRgb,
+   getHsl: getHsl,
+   getHwb: getHwb,
+   getAlpha: getAlpha,
+
+   hexString: hexString,
+   rgbString: rgbString,
+   rgbaString: rgbaString,
+   percentString: percentString,
+   percentaString: percentaString,
+   hslString: hslString,
+   hslaString: hslaString,
+   hwbString: hwbString,
+   keyword: keyword
+}
+
+function getRgba(string) {
+   if (!string) {
+      return;
+   }
+   var abbr =  /^#([a-fA-F0-9]{3})$/,
+       hex =  /^#([a-fA-F0-9]{6})$/,
+       rgba = /^rgba?\(\s*([+-]?\d+)\s*,\s*([+-]?\d+)\s*,\s*([+-]?\d+)\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)$/,
+       per = /^rgba?\(\s*([+-]?[\d\.]+)\%\s*,\s*([+-]?[\d\.]+)\%\s*,\s*([+-]?[\d\.]+)\%\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)$/,
+       keyword = /(\w+)/;
+
+   var rgb = [0, 0, 0],
+       a = 1,
+       match = string.match(abbr);
+   if (match) {
+      match = match[1];
+      for (var i = 0; i < rgb.length; i++) {
+         rgb[i] = parseInt(match[i] + match[i], 16);
+      }
+   }
+   else if (match = string.match(hex)) {
+      match = match[1];
+      for (var i = 0; i < rgb.length; i++) {
+         rgb[i] = parseInt(match.slice(i * 2, i * 2 + 2), 16);
+      }
+   }
+   else if (match = string.match(rgba)) {
+      for (var i = 0; i < rgb.length; i++) {
+         rgb[i] = parseInt(match[i + 1]);
+      }
+      a = parseFloat(match[4]);
+   }
+   else if (match = string.match(per)) {
+      for (var i = 0; i < rgb.length; i++) {
+         rgb[i] = Math.round(parseFloat(match[i + 1]) * 2.55);
+      }
+      a = parseFloat(match[4]);
+   }
+   else if (match = string.match(keyword)) {
+      if (match[1] == "transparent") {
+         return [0, 0, 0, 0];
+      }
+      rgb = colorNames[match[1]];
+      if (!rgb) {
+         return;
+      }
+   }
+
+   for (var i = 0; i < rgb.length; i++) {
+      rgb[i] = scale(rgb[i], 0, 255);
+   }
+   if (!a && a != 0) {
+      a = 1;
+   }
+   else {
+      a = scale(a, 0, 1);
+   }
+   rgb[3] = a;
+   return rgb;
+}
+
+function getHsla(string) {
+   if (!string) {
+      return;
+   }
+   var hsl = /^hsla?\(\s*([+-]?\d+)(?:deg)?\s*,\s*([+-]?[\d\.]+)%\s*,\s*([+-]?[\d\.]+)%\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)/;
+   var match = string.match(hsl);
+   if (match) {
+      var alpha = parseFloat(match[4]);
+      var h = scale(parseInt(match[1]), 0, 360),
+          s = scale(parseFloat(match[2]), 0, 100),
+          l = scale(parseFloat(match[3]), 0, 100),
+          a = scale(isNaN(alpha) ? 1 : alpha, 0, 1);
+      return [h, s, l, a];
+   }
+}
+
+function getHwb(string) {
+   if (!string) {
+      return;
+   }
+   var hwb = /^hwb\(\s*([+-]?\d+)(?:deg)?\s*,\s*([+-]?[\d\.]+)%\s*,\s*([+-]?[\d\.]+)%\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)/;
+   var match = string.match(hwb);
+   if (match) {
+    var alpha = parseFloat(match[4]);
+      var h = scale(parseInt(match[1]), 0, 360),
+          w = scale(parseFloat(match[2]), 0, 100),
+          b = scale(parseFloat(match[3]), 0, 100),
+          a = scale(isNaN(alpha) ? 1 : alpha, 0, 1);
+      return [h, w, b, a];
+   }
+}
+
+function getRgb(string) {
+   var rgba = getRgba(string);
+   return rgba && rgba.slice(0, 3);
+}
+
+function getHsl(string) {
+  var hsla = getHsla(string);
+  return hsla && hsla.slice(0, 3);
+}
+
+function getAlpha(string) {
+   var vals = getRgba(string);
+   if (vals) {
+      return vals[3];
+   }
+   else if (vals = getHsla(string)) {
+      return vals[3];
+   }
+   else if (vals = getHwb(string)) {
+      return vals[3];
+   }
+}
+
+// generators
+function hexString(rgb) {
+   return "#" + hexDouble(rgb[0]) + hexDouble(rgb[1])
+              + hexDouble(rgb[2]);
+}
+
+function rgbString(rgba, alpha) {
+   if (alpha < 1 || (rgba[3] && rgba[3] < 1)) {
+      return rgbaString(rgba, alpha);
+   }
+   return "rgb(" + rgba[0] + ", " + rgba[1] + ", " + rgba[2] + ")";
+}
+
+function rgbaString(rgba, alpha) {
+   if (alpha === undefined) {
+      alpha = (rgba[3] !== undefined ? rgba[3] : 1);
+   }
+   return "rgba(" + rgba[0] + ", " + rgba[1] + ", " + rgba[2]
+           + ", " + alpha + ")";
+}
+
+function percentString(rgba, alpha) {
+   if (alpha < 1 || (rgba[3] && rgba[3] < 1)) {
+      return percentaString(rgba, alpha);
+   }
+   var r = Math.round(rgba[0]/255 * 100),
+       g = Math.round(rgba[1]/255 * 100),
+       b = Math.round(rgba[2]/255 * 100);
+
+   return "rgb(" + r + "%, " + g + "%, " + b + "%)";
+}
+
+function percentaString(rgba, alpha) {
+   var r = Math.round(rgba[0]/255 * 100),
+       g = Math.round(rgba[1]/255 * 100),
+       b = Math.round(rgba[2]/255 * 100);
+   return "rgba(" + r + "%, " + g + "%, " + b + "%, " + (alpha || rgba[3] || 1) + ")";
+}
+
+function hslString(hsla, alpha) {
+   if (alpha < 1 || (hsla[3] && hsla[3] < 1)) {
+      return hslaString(hsla, alpha);
+   }
+   return "hsl(" + hsla[0] + ", " + hsla[1] + "%, " + hsla[2] + "%)";
+}
+
+function hslaString(hsla, alpha) {
+   if (alpha === undefined) {
+      alpha = (hsla[3] !== undefined ? hsla[3] : 1);
+   }
+   return "hsla(" + hsla[0] + ", " + hsla[1] + "%, " + hsla[2] + "%, "
+           + alpha + ")";
+}
+
+// hwb is a bit different than rgb(a) & hsl(a) since there is no alpha specific syntax
+// (hwb have alpha optional & 1 is default value)
+function hwbString(hwb, alpha) {
+   if (alpha === undefined) {
+      alpha = (hwb[3] !== undefined ? hwb[3] : 1);
+   }
+   return "hwb(" + hwb[0] + ", " + hwb[1] + "%, " + hwb[2] + "%"
+           + (alpha !== undefined && alpha !== 1 ? ", " + alpha : "") + ")";
+}
+
+function keyword(rgb) {
+  return reverseNames[rgb.slice(0, 3)];
+}
+
+// helpers
+function scale(num, min, max) {
+   return Math.min(Math.max(min, num), max);
+}
+
+function hexDouble(num) {
+  var str = num.toString(16).toUpperCase();
+  return (str.length < 2) ? "0" + str : str;
+}
+
+
+//create a list of reverse color names
+var reverseNames = {};
+for (var name in colorNames) {
+   reverseNames[colorNames[name]] = name;
+}
+
+},{"color-name":5}],5:[function(require,module,exports){
 module.exports = {
 	"aliceblue": [240, 248, 255],
 	"antiquewhite": [250, 235, 215],
@@ -1595,7 +1176,426 @@ module.exports = {
 	"yellow": [255, 255, 0],
 	"yellowgreen": [154, 205, 50]
 };
-},{}],7:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
+/* MIT license */
+
+var convert = require("color-convert"),
+  string = require("color-string");
+
+var Color = function(obj) {
+  if (obj instanceof Color) return obj;
+  if (!(this instanceof Color)) return new Color(obj);
+
+  this.values = {
+    rgb: [0, 0, 0],
+    hsl: [0, 0, 0],
+    hsv: [0, 0, 0],
+    hwb: [0, 0, 0],
+    cmyk: [0, 0, 0, 0],
+    alpha: 1
+  }
+
+  // parse Color() argument
+  if (typeof obj == "string") {
+    var vals = string.getRgba(obj);
+    if (vals) {
+      this.setValues("rgb", vals);
+    } else if (vals = string.getHsla(obj)) {
+      this.setValues("hsl", vals);
+    } else if (vals = string.getHwb(obj)) {
+      this.setValues("hwb", vals);
+    } else {
+      throw new Error("Unable to parse color from string \"" + obj + "\"");
+    }
+  } else if (typeof obj == "object") {
+    var vals = obj;
+    if (vals["r"] !== undefined || vals["red"] !== undefined) {
+      this.setValues("rgb", vals)
+    } else if (vals["l"] !== undefined || vals["lightness"] !== undefined) {
+      this.setValues("hsl", vals)
+    } else if (vals["v"] !== undefined || vals["value"] !== undefined) {
+      this.setValues("hsv", vals)
+    } else if (vals["w"] !== undefined || vals["whiteness"] !== undefined) {
+      this.setValues("hwb", vals)
+    } else if (vals["c"] !== undefined || vals["cyan"] !== undefined) {
+      this.setValues("cmyk", vals)
+    } else {
+      throw new Error("Unable to parse color from object " + JSON.stringify(obj));
+    }
+  }
+}
+
+Color.prototype = {
+  rgb: function(vals) {
+    return this.setSpace("rgb", arguments);
+  },
+  hsl: function(vals) {
+    return this.setSpace("hsl", arguments);
+  },
+  hsv: function(vals) {
+    return this.setSpace("hsv", arguments);
+  },
+  hwb: function(vals) {
+    return this.setSpace("hwb", arguments);
+  },
+  cmyk: function(vals) {
+    return this.setSpace("cmyk", arguments);
+  },
+
+  rgbArray: function() {
+    return this.values.rgb;
+  },
+  hslArray: function() {
+    return this.values.hsl;
+  },
+  hsvArray: function() {
+    return this.values.hsv;
+  },
+  hwbArray: function() {
+    if (this.values.alpha !== 1) {
+      return this.values.hwb.concat([this.values.alpha])
+    }
+    return this.values.hwb;
+  },
+  cmykArray: function() {
+    return this.values.cmyk;
+  },
+  rgbaArray: function() {
+    var rgb = this.values.rgb;
+    return rgb.concat([this.values.alpha]);
+  },
+  hslaArray: function() {
+    var hsl = this.values.hsl;
+    return hsl.concat([this.values.alpha]);
+  },
+  alpha: function(val) {
+    if (val === undefined) {
+      return this.values.alpha;
+    }
+    this.setValues("alpha", val);
+    return this;
+  },
+
+  red: function(val) {
+    return this.setChannel("rgb", 0, val);
+  },
+  green: function(val) {
+    return this.setChannel("rgb", 1, val);
+  },
+  blue: function(val) {
+    return this.setChannel("rgb", 2, val);
+  },
+  hue: function(val) {
+    return this.setChannel("hsl", 0, val);
+  },
+  saturation: function(val) {
+    return this.setChannel("hsl", 1, val);
+  },
+  lightness: function(val) {
+    return this.setChannel("hsl", 2, val);
+  },
+  saturationv: function(val) {
+    return this.setChannel("hsv", 1, val);
+  },
+  whiteness: function(val) {
+    return this.setChannel("hwb", 1, val);
+  },
+  blackness: function(val) {
+    return this.setChannel("hwb", 2, val);
+  },
+  value: function(val) {
+    return this.setChannel("hsv", 2, val);
+  },
+  cyan: function(val) {
+    return this.setChannel("cmyk", 0, val);
+  },
+  magenta: function(val) {
+    return this.setChannel("cmyk", 1, val);
+  },
+  yellow: function(val) {
+    return this.setChannel("cmyk", 2, val);
+  },
+  black: function(val) {
+    return this.setChannel("cmyk", 3, val);
+  },
+
+  hexString: function() {
+    return string.hexString(this.values.rgb);
+  },
+  rgbString: function() {
+    return string.rgbString(this.values.rgb, this.values.alpha);
+  },
+  rgbaString: function() {
+    return string.rgbaString(this.values.rgb, this.values.alpha);
+  },
+  percentString: function() {
+    return string.percentString(this.values.rgb, this.values.alpha);
+  },
+  hslString: function() {
+    return string.hslString(this.values.hsl, this.values.alpha);
+  },
+  hslaString: function() {
+    return string.hslaString(this.values.hsl, this.values.alpha);
+  },
+  hwbString: function() {
+    return string.hwbString(this.values.hwb, this.values.alpha);
+  },
+  keyword: function() {
+    return string.keyword(this.values.rgb, this.values.alpha);
+  },
+
+  rgbNumber: function() {
+    return (this.values.rgb[0] << 16) | (this.values.rgb[1] << 8) | this.values.rgb[2];
+  },
+
+  luminosity: function() {
+    // http://www.w3.org/TR/WCAG20/#relativeluminancedef
+    var rgb = this.values.rgb;
+    var lum = [];
+    for (var i = 0; i < rgb.length; i++) {
+      var chan = rgb[i] / 255;
+      lum[i] = (chan <= 0.03928) ? chan / 12.92 : Math.pow(((chan + 0.055) / 1.055), 2.4)
+    }
+    return 0.2126 * lum[0] + 0.7152 * lum[1] + 0.0722 * lum[2];
+  },
+
+  contrast: function(color2) {
+    // http://www.w3.org/TR/WCAG20/#contrast-ratiodef
+    var lum1 = this.luminosity();
+    var lum2 = color2.luminosity();
+    if (lum1 > lum2) {
+      return (lum1 + 0.05) / (lum2 + 0.05)
+    };
+    return (lum2 + 0.05) / (lum1 + 0.05);
+  },
+
+  level: function(color2) {
+    var contrastRatio = this.contrast(color2);
+    return (contrastRatio >= 7.1) ? 'AAA' : (contrastRatio >= 4.5) ? 'AA' : '';
+  },
+
+  dark: function() {
+    // YIQ equation from http://24ways.org/2010/calculating-color-contrast
+    var rgb = this.values.rgb,
+      yiq = (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;
+    return yiq < 128;
+  },
+
+  light: function() {
+    return !this.dark();
+  },
+
+  negate: function() {
+    var rgb = []
+    for (var i = 0; i < 3; i++) {
+      rgb[i] = 255 - this.values.rgb[i];
+    }
+    this.setValues("rgb", rgb);
+    return this;
+  },
+
+  lighten: function(ratio) {
+    this.values.hsl[2] += this.values.hsl[2] * ratio;
+    this.setValues("hsl", this.values.hsl);
+    return this;
+  },
+
+  darken: function(ratio) {
+    this.values.hsl[2] -= this.values.hsl[2] * ratio;
+    this.setValues("hsl", this.values.hsl);
+    return this;
+  },
+
+  saturate: function(ratio) {
+    this.values.hsl[1] += this.values.hsl[1] * ratio;
+    this.setValues("hsl", this.values.hsl);
+    return this;
+  },
+
+  desaturate: function(ratio) {
+    this.values.hsl[1] -= this.values.hsl[1] * ratio;
+    this.setValues("hsl", this.values.hsl);
+    return this;
+  },
+
+  whiten: function(ratio) {
+    this.values.hwb[1] += this.values.hwb[1] * ratio;
+    this.setValues("hwb", this.values.hwb);
+    return this;
+  },
+
+  blacken: function(ratio) {
+    this.values.hwb[2] += this.values.hwb[2] * ratio;
+    this.setValues("hwb", this.values.hwb);
+    return this;
+  },
+
+  greyscale: function() {
+    var rgb = this.values.rgb;
+    // http://en.wikipedia.org/wiki/Grayscale#Converting_color_to_grayscale
+    var val = rgb[0] * 0.3 + rgb[1] * 0.59 + rgb[2] * 0.11;
+    this.setValues("rgb", [val, val, val]);
+    return this;
+  },
+
+  clearer: function(ratio) {
+    this.setValues("alpha", this.values.alpha - (this.values.alpha * ratio));
+    return this;
+  },
+
+  opaquer: function(ratio) {
+    this.setValues("alpha", this.values.alpha + (this.values.alpha * ratio));
+    return this;
+  },
+
+  rotate: function(degrees) {
+    var hue = this.values.hsl[0];
+    hue = (hue + degrees) % 360;
+    hue = hue < 0 ? 360 + hue : hue;
+    this.values.hsl[0] = hue;
+    this.setValues("hsl", this.values.hsl);
+    return this;
+  },
+
+  mix: function(color2, weight) {
+    weight = 1 - (weight == null ? 0.5 : weight);
+
+    // algorithm from Sass's mix(). Ratio of first color in mix is
+    // determined by the alphas of both colors and the weight
+    var t1 = weight * 2 - 1,
+      d = this.alpha() - color2.alpha();
+
+    var weight1 = (((t1 * d == -1) ? t1 : (t1 + d) / (1 + t1 * d)) + 1) / 2;
+    var weight2 = 1 - weight1;
+
+    var rgb = this.rgbArray();
+    var rgb2 = color2.rgbArray();
+
+    for (var i = 0; i < rgb.length; i++) {
+      rgb[i] = rgb[i] * weight1 + rgb2[i] * weight2;
+    }
+    this.setValues("rgb", rgb);
+
+    var alpha = this.alpha() * weight + color2.alpha() * (1 - weight);
+    this.setValues("alpha", alpha);
+
+    return this;
+  },
+
+  toJSON: function() {
+    return this.rgb();
+  },
+
+  clone: function() {
+    return new Color(this.rgb());
+  }
+}
+
+
+Color.prototype.getValues = function(space) {
+  var vals = {};
+  for (var i = 0; i < space.length; i++) {
+    vals[space.charAt(i)] = this.values[space][i];
+  }
+  if (this.values.alpha != 1) {
+    vals["a"] = this.values.alpha;
+  }
+  // {r: 255, g: 255, b: 255, a: 0.4}
+  return vals;
+}
+
+Color.prototype.setValues = function(space, vals) {
+  var spaces = {
+    "rgb": ["red", "green", "blue"],
+    "hsl": ["hue", "saturation", "lightness"],
+    "hsv": ["hue", "saturation", "value"],
+    "hwb": ["hue", "whiteness", "blackness"],
+    "cmyk": ["cyan", "magenta", "yellow", "black"]
+  };
+
+  var maxes = {
+    "rgb": [255, 255, 255],
+    "hsl": [360, 100, 100],
+    "hsv": [360, 100, 100],
+    "hwb": [360, 100, 100],
+    "cmyk": [100, 100, 100, 100]
+  };
+
+  var alpha = 1;
+  if (space == "alpha") {
+    alpha = vals;
+  } else if (vals.length) {
+    // [10, 10, 10]
+    this.values[space] = vals.slice(0, space.length);
+    alpha = vals[space.length];
+  } else if (vals[space.charAt(0)] !== undefined) {
+    // {r: 10, g: 10, b: 10}
+    for (var i = 0; i < space.length; i++) {
+      this.values[space][i] = vals[space.charAt(i)];
+    }
+    alpha = vals.a;
+  } else if (vals[spaces[space][0]] !== undefined) {
+    // {red: 10, green: 10, blue: 10}
+    var chans = spaces[space];
+    for (var i = 0; i < space.length; i++) {
+      this.values[space][i] = vals[chans[i]];
+    }
+    alpha = vals.alpha;
+  }
+  this.values.alpha = Math.max(0, Math.min(1, (alpha !== undefined ? alpha : this.values.alpha)));
+  if (space == "alpha") {
+    return;
+  }
+
+  // cap values of the space prior converting all values
+  for (var i = 0; i < space.length; i++) {
+    var capped = Math.max(0, Math.min(maxes[space][i], this.values[space][i]));
+    this.values[space][i] = Math.round(capped);
+  }
+
+  // convert to all the other color spaces
+  for (var sname in spaces) {
+    if (sname != space) {
+      this.values[sname] = convert[space][sname](this.values[space])
+    }
+
+    // cap values
+    for (var i = 0; i < sname.length; i++) {
+      var capped = Math.max(0, Math.min(maxes[sname][i], this.values[sname][i]));
+      this.values[sname][i] = Math.round(capped);
+    }
+  }
+  return true;
+}
+
+Color.prototype.setSpace = function(space, args) {
+  var vals = args[0];
+  if (vals === undefined) {
+    // color.rgb()
+    return this.getValues(space);
+  }
+  // color.rgb(10, 10, 10)
+  if (typeof vals == "number") {
+    vals = Array.prototype.slice.call(args);
+  }
+  this.setValues(space, vals);
+  return this;
+}
+
+Color.prototype.setChannel = function(space, index, val) {
+  if (val === undefined) {
+    // color.red()
+    return this.values[space][index];
+  }
+  // color.red(100)
+  this.values[space][index] = val;
+  this.setValues(space, this.values[space]);
+  return this;
+}
+
+window.Color = module.exports = Color
+
+},{"color-convert":3,"color-string":4}],7:[function(require,module,exports){
 var Chart = require('./core/core.js')();
 
 require('./core/core.helpers')(Chart);
@@ -2082,6 +2082,296 @@ module.exports = function(Chart) {
 			rectangle._model.borderWidth = rectangle.custom && rectangle.custom.borderWidth ? rectangle.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.rectangle.borderWidth);
 		}
 
+	});
+
+
+	// including horizontalBar in the bar file, instead of a file of its own
+	// it extends bar (like pie extends doughnut)
+	Chart.defaults.horizontalBar = {
+		hover: {
+			mode: "label"
+		},
+
+		scales: {
+			xAxes: [{
+				type: "linear",
+				position: "bottom"
+			}],
+			yAxes: [{
+				position: "left",
+				type: "category",
+
+				// Specific to Horizontal Bar Controller
+				categoryPercentage: 0.8,
+				barPercentage: 0.9,
+
+				// grid line settings
+				gridLines: {
+					offsetGridLines: true
+				}
+			}]
+		},
+	};
+
+	Chart.controllers.horizontalBar = Chart.controllers.bar.extend({
+		updateElement: function updateElement(rectangle, index, reset, numBars) {
+			var meta = this.getMeta();
+			var xScale = this.getScaleForId(meta.xAxisID);
+			var yScale = this.getScaleForId(meta.yAxisID);
+
+			var xScalePoint;
+
+			if (xScale.min < 0 && xScale.max < 0) {
+				// all less than 0. use the right
+				xScalePoint = xScale.getPixelForValue(xScale.max);
+			} else if (xScale.min > 0 && xScale.max > 0) {
+				xScalePoint = xScale.getPixelForValue(xScale.min);
+			} else {
+				xScalePoint = xScale.getPixelForValue(0);
+			}
+
+			helpers.extend(rectangle, {
+				// Utility
+				_chart: this.chart.chart,
+				_xScale: xScale,
+				_yScale: yScale,
+				_datasetIndex: this.index,
+				_index: index,
+
+				// Desired view properties
+				_model: {
+					x: reset ? xScalePoint : this.calculateBarX(index, this.index),
+					y: this.calculateBarY(index, this.index),
+
+					// Tooltip
+					label: this.chart.data.labels[index],
+					datasetLabel: this.getDataset().label,
+
+					// Appearance
+					base: reset ? xScalePoint : this.calculateBarBase(this.index, index),
+					height: this.calculateBarHeight(numBars),
+					backgroundColor: rectangle.custom && rectangle.custom.backgroundColor ? rectangle.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.rectangle.backgroundColor),
+					borderSkipped: rectangle.custom && rectangle.custom.borderSkipped ? rectangle.custom.borderSkipped : this.chart.options.elements.rectangle.borderSkipped,
+					borderColor: rectangle.custom && rectangle.custom.borderColor ? rectangle.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.rectangle.borderColor),
+					borderWidth: rectangle.custom && rectangle.custom.borderWidth ? rectangle.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.rectangle.borderWidth)
+				},
+
+				draw: function () {
+
+					var ctx = this._chart.ctx;
+					var vm = this._view;
+
+					var halfHeight = vm.height / 2,
+						topY = vm.y - halfHeight,
+						bottomY = vm.y + halfHeight,
+						right = vm.base - (vm.base - vm.x),
+						halfStroke = vm.borderWidth / 2;
+
+					// Canvas doesn't allow us to stroke inside the width so we can
+					// adjust the sizes to fit if we're setting a stroke on the line
+					if (vm.borderWidth) {
+						topY += halfStroke;
+						bottomY -= halfStroke;
+						right += halfStroke;
+					}
+
+					ctx.beginPath();
+
+					ctx.fillStyle = vm.backgroundColor;
+					ctx.strokeStyle = vm.borderColor;
+					ctx.lineWidth = vm.borderWidth;
+
+					// Corner points, from bottom-left to bottom-right clockwise
+					// | 1 2 |
+					// | 0 3 |
+					var corners = [
+						[vm.base, bottomY],
+						[vm.base, topY],
+						[right, topY],
+						[right, bottomY]
+					];
+
+					// Find first (starting) corner with fallback to 'bottom'
+					var borders = ['bottom', 'left', 'top', 'right'];
+					var startCorner = borders.indexOf(vm.borderSkipped, 0);
+					if (startCorner === -1)
+						startCorner = 0;
+
+					function cornerAt(index) {
+						return corners[(startCorner + index) % 4];
+					}
+
+					// Draw rectangle from 'startCorner'
+					ctx.moveTo.apply(ctx, cornerAt(0));
+					for (var i = 1; i < 4; i++)
+						ctx.lineTo.apply(ctx, cornerAt(i));
+
+					ctx.fill();
+					if (vm.borderWidth) {
+						ctx.stroke();
+					}
+				},
+
+				inRange: function (mouseX, mouseY) {
+					var vm = this._view;
+					var inRange = false;
+
+					if (vm) {
+						if (vm.x < vm.base) {
+							inRange = (mouseY >= vm.y - vm.height / 2 && mouseY <= vm.y + vm.height / 2) && (mouseX >= vm.x && mouseX <= vm.base);
+						} else {
+							inRange = (mouseY >= vm.y - vm.height / 2 && mouseY <= vm.y + vm.height / 2) && (mouseX >= vm.base && mouseX <= vm.x);
+						}
+					}
+
+					return inRange;
+				}
+			});
+
+			rectangle.pivot();
+		},
+
+		calculateBarBase: function (datasetIndex, index) {
+			var meta = this.getMeta();
+			var xScale = this.getScaleForId(meta.xAxisID);
+			var yScale = this.getScaleForId(meta.yAxisID);
+
+			var base = 0;
+
+			if (xScale.options.stacked) {
+
+				var value = this.chart.data.datasets[datasetIndex].data[index];
+
+				if (value < 0) {
+					for (var i = 0; i < datasetIndex; i++) {
+						var negDS = this.chart.data.datasets[i];
+						var negDSMeta = this.chart.getDatasetMeta(i);
+						if (negDSMeta.bar && negDSMeta.xAxisID === xScale.id && this.chart.isDatasetVisible(i)) {
+							base += negDS.data[index] < 0 ? negDS.data[index] : 0;
+						}
+					}
+				} else {
+					for (var j = 0; j < datasetIndex; j++) {
+						var posDS = this.chart.data.datasets[j];
+						var posDSMeta = this.chart.getDatasetMeta(j);
+						if (posDSMeta.bar && posDSMeta.xAxisID === xScale.id && this.chart.isDatasetVisible(j)) {
+							base += posDS.data[index] > 0 ? posDS.data[index] : 0;
+						}
+					}
+				}
+
+				return xScale.getPixelForValue(base);
+			}
+
+			base = xScale.getPixelForValue(xScale.min);
+
+			if (xScale.beginAtZero || ((xScale.min <= 0 && xScale.max >= 0) || (xScale.min >= 0 && xScale.max <= 0))) {
+				base = xScale.getPixelForValue(0, 0);
+			} else if (xScale.min < 0 && xScale.max < 0) {
+				// All values are negative. Use the right as the base
+				base = xScale.getPixelForValue(xScale.max);
+			}
+
+			return base;
+		},
+
+		getRuler: function () {
+			var meta = this.getMeta();
+			var xScale = this.getScaleForId(meta.xAxisID);
+			var yScale = this.getScaleForId(meta.yAxisID);
+			var datasetCount = this.getBarCount();
+
+			var tickHeight = (function () {
+				var min = yScale.getPixelForTick(1) - yScale.getPixelForTick(0);
+				for (var i = 2; i < this.getDataset().data.length; i++) {
+					min = Math.min(yScale.getPixelForTick(i) - yScale.getPixelForTick(i - 1), min);
+				}
+				return min;
+			}).call(this);
+			var categoryHeight = tickHeight * yScale.options.categoryPercentage;
+			var categorySpacing = (tickHeight - (tickHeight * yScale.options.categoryPercentage)) / 2;
+			var fullBarHeight = categoryHeight / datasetCount;
+
+			if (yScale.ticks.length !== this.chart.data.labels.length) {
+				var perc = yScale.ticks.length / this.chart.data.labels.length;
+				fullBarHeight = fullBarHeight * perc;
+			}
+
+			var barHeight = fullBarHeight * yScale.options.barPercentage;
+			var barSpacing = fullBarHeight - (fullBarHeight * yScale.options.barPercentage);
+
+			return {
+				datasetCount: datasetCount,
+				tickHeight: tickHeight,
+				categoryHeight: categoryHeight,
+				categorySpacing: categorySpacing,
+				fullBarHeight: fullBarHeight,
+				barHeight: barHeight,
+				barSpacing: barSpacing,
+			};
+		},
+
+		calculateBarHeight: function () {
+			var yScale = this.getScaleForId(this.getMeta().yAxisID);
+			var ruler = this.getRuler();
+			return yScale.options.stacked ? ruler.categoryHeight : ruler.barHeight;
+		},
+
+		calculateBarX: function (index, datasetIndex) {
+			var meta = this.getMeta();
+			var xScale = this.getScaleForId(meta.xAxisID);
+			var yScale = this.getScaleForId(meta.yAxisID);
+
+			var value = this.getDataset().data[index];
+
+			if (xScale.options.stacked) {
+
+				var sumPos = 0,
+					sumNeg = 0;
+
+				for (var i = 0; i < datasetIndex; i++) {
+					var ds = this.chart.data.datasets[i];
+					var dsMeta = this.chart.getDatasetMeta(i);
+					if (dsMeta.bar && dsMeta.xAxisID === xScale.id && this.chart.isDatasetVisible(i)) {
+						if (ds.data[index] < 0) {
+							sumNeg += ds.data[index] || 0;
+						} else {
+							sumPos += ds.data[index] || 0;
+						}
+					}
+				}
+
+				if (value < 0) {
+					return xScale.getPixelForValue(sumNeg + value);
+				} else {
+					return xScale.getPixelForValue(sumPos + value);
+				}
+			}
+
+			return xScale.getPixelForValue(value);
+		},
+
+		calculateBarY: function (index, datasetIndex) {
+			var meta = this.getMeta();
+			var yScale = this.getScaleForId(meta.yAxisID);
+			var xScale = this.getScaleForId(meta.xAxisID);
+			var barIndex = this.getBarIndex(datasetIndex);
+
+			var ruler = this.getRuler();
+			var topTick = yScale.getPixelForValue(null, index, datasetIndex, this.chart.isCombo);
+			topTick -= this.chart.isCombo ? (ruler.tickHeight / 2) : 0;
+
+			if (yScale.options.stacked) {
+				return topTick + (ruler.categoryHeight / 2) + ruler.categorySpacing;
+			}
+
+			return topTick +
+				(ruler.barHeight / 2) +
+				ruler.categorySpacing +
+				(ruler.barHeight * barIndex) +
+				(ruler.barSpacing / 2) +
+				(ruler.barSpacing * barIndex);
+		}
 	});
 };
 
@@ -5202,7 +5492,7 @@ module.exports = function(Chart) {
 
 };
 
-},{"chartjs-color":3}],26:[function(require,module,exports){
+},{"chartjs-color":6}],26:[function(require,module,exports){
 "use strict";
 
 module.exports = function() {
@@ -8099,7 +8389,7 @@ module.exports = function(Chart) {
 		// Implement this so that 
 		determineDataLimits: function() {
 			this.minIndex = 0;
-			this.maxIndex = this.chart.data.labels.length;
+			this.maxIndex = this.chart.data.labels.length - 1;
 			var findIndex;
 
 			if (this.options.ticks.min !== undefined) {
@@ -8120,7 +8410,7 @@ module.exports = function(Chart) {
 
 		buildTicks: function(index) {
 			// If we are viewing some subset of labels, slice the original array
-			this.ticks = (this.minIndex === 0 && this.maxIndex === this.chart.data.labels.length) ? this.chart.data.labels : this.chart.data.labels.slice(this.minIndex, this.maxIndex + 1);
+			this.ticks = (this.minIndex === 0 && this.maxIndex === this.chart.data.labels.length - 1) ? this.chart.data.labels : this.chart.data.labels.slice(this.minIndex, this.maxIndex + 1);
 		},
 
 		getLabelForIndex: function(index, datasetIndex) {
@@ -8130,7 +8420,7 @@ module.exports = function(Chart) {
 		// Used to get data value locations.  Value can either be an index or a numerical value
 		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
 			// 1 is added because we need the length but we have the indexes
-			var offsetAmt = Math.max((this.ticks.length - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
+			var offsetAmt = Math.max((this.maxIndex + 1 - this.minIndex - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
 
 			if (this.isHorizontal()) {
 				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
@@ -8157,8 +8447,7 @@ module.exports = function(Chart) {
 		getPixelForTick: function(index, includeOffset) {
 			return this.getPixelForValue(this.ticks[index], index + this.minIndex, null, includeOffset);
 		},
-		getValueForPixel: function(pixel)
-		{
+		getValueForPixel: function(pixel) {
 			var value
 ;			var offsetAmt = Math.max((this.ticks.length - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
 			var horz = this.isHorizontal();
@@ -9323,8 +9612,9 @@ module.exports = function(Chart) {
 						unitDefinition = time.units[unitDefinitionIndex];
 
 						this.tickUnit = unitDefinition.name;
-						this.leadingUnitBuffer = this.firstTick.diff(this.firstTick.clone().startOf(this.tickUnit), this.tickUnit, true);
-						this.scaleSizeInUnits = this.lastTick.diff(this.firstTick, this.tickUnit, true) + (this.leadingUnitBuffer > 0 ? 2 : 0);
+						var leadingUnitBuffer = this.firstTick.diff(this.firstTick.clone().startOf(this.tickUnit), this.tickUnit, true);
+						var trailingUnitBuffer = this.lastTick.clone().add(1, this.tickUnit).startOf(this.tickUnit).diff(this.lastTick, this.tickUnit, true);
+						this.scaleSizeInUnits = this.lastTick.diff(this.firstTick, this.tickUnit, true) + leadingUnitBuffer + trailingUnitBuffer;
 						this.displayFormat = this.options.time.displayFormats[unitDefinition.name];
 					}
 				}
@@ -9342,7 +9632,11 @@ module.exports = function(Chart) {
 
 			// Only round the last tick if we have no hard maximum
 			if (!this.options.time.max) {
-				this.lastTick.endOf(this.tickUnit);
+				var roundedEnd = this.lastTick.clone().startOf(this.tickUnit);
+				if (roundedEnd.diff(this.lastTick, this.tickUnit, true) !== 0) {
+					// Do not use end of because we need this to be in the next time unit
+					this.lastTick.add(1, this.tickUnit).startOf(this.tickUnit);
+				}
 			}
 
 			this.smallestLabelSeparation = this.width;
@@ -9362,7 +9656,7 @@ module.exports = function(Chart) {
 			this.ticks.push(this.firstTick.clone());
 
 			// For every unit in between the first and last moment, create a moment and add it to the ticks tick
-			for (var i = 1; i < this.scaleSizeInUnits; ++i) {
+			for (var i = 1; i <= this.scaleSizeInUnits; ++i) {
 				var newTick = roundedStart.clone().add(i, this.tickUnit);
 
 				// Are we greater than the max time
@@ -9376,18 +9670,19 @@ module.exports = function(Chart) {
 			}
 
 			// Always show the right tick
-			if (this.ticks[this.ticks.length - 1].diff(this.lastTick, this.tickUnit) !== 0 || this.scaleSizeInUnits === 0) {
-			// this is a weird case. If the <max> option is the same as the end option, we can't just diff the times because the tick was created from the roundedStart
-			// but the last tick was not rounded.
+			var diff = this.ticks[this.ticks.length - 1].diff(this.lastTick, this.tickUnit);
+			if (diff !== 0 || this.scaleSizeInUnits === 0) {
+				// this is a weird case. If the <max> option is the same as the end option, we can't just diff the times because the tick was created from the roundedStart
+				// but the last tick was not rounded.
 				if (this.options.time.max) {
 					this.ticks.push(this.lastTick.clone());
 					this.scaleSizeInUnits = this.lastTick.diff(this.ticks[0], this.tickUnit, true);
 				} else {
-					this.scaleSizeInUnits = Math.ceil(this.scaleSizeInUnits / this.unitScale) * this.unitScale;
-					this.ticks.push(this.firstTick.clone().add(this.scaleSizeInUnits, this.tickUnit));
-					this.lastTick = this.ticks[this.ticks.length - 1].clone();
+					this.ticks.push(this.lastTick.clone());
+					this.scaleSizeInUnits = this.lastTick.diff(this.firstTick, this.tickUnit, true);
 				}
 			}
+			
 			this.ctx.restore();
 		},
 		// Get tooltip label
@@ -9419,12 +9714,12 @@ module.exports = function(Chart) {
 			this.ticks = this.ticks.map(this.tickFormatFunction, this);
 		},
 		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
-			var labelMoment = this.getLabelMoment(datasetIndex, index);
+			var labelMoment = value && value.isValid && value.isValid() ? value : this.getLabelMoment(datasetIndex, index);
 
 			if (labelMoment) {
 				var offset = labelMoment.diff(this.firstTick, this.tickUnit, true);
 
-				var decimal = offset / (this.scaleSizeInUnits - (this.leadingUnitBuffer > 0 ? 1 : 0));
+				var decimal = offset / this.scaleSizeInUnits;
 
 				if (this.isHorizontal()) {
 					var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
@@ -9444,7 +9739,7 @@ module.exports = function(Chart) {
 		getValueForPixel: function(pixel) {
 			var innerDimension = this.isHorizontal() ? this.width - (this.paddingLeft + this.paddingRight) : this.height - (this.paddingTop + this.paddingBottom);
 			var offset = (pixel - (this.isHorizontal() ? this.left + this.paddingLeft : this.top + this.paddingTop)) / innerDimension;
-			offset *= (this.scaleSizeInUnits - (this.leadingUnitBuffer > 0 ? 1 : 0));
+			offset *= this.scaleSizeInUnits;
 			return this.firstTick.clone().add(moment.duration(offset, this.tickUnit).asSeconds(), 'seconds');
 		},
 		parseTime: function(label) {
