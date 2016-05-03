@@ -21,6 +21,16 @@ var myBarChart = new Chart(ctx, {
 });
 ```
 
+Or if you want horizontal bars.
+
+```javascript
+var myBarChart = new Chart(ctx, {
+	type: 'horizontalBar',
+	data: data,
+	options: options
+});
+```
+
 ### Data structure
 The following options can be included in a bar chart dataset to configure options for that specific dataset.
 
@@ -113,7 +123,16 @@ new Chart(ctx, {
 // for both x and y axes.
 ```
 
-We can also change these defaults values for each Bar type that is created, this object is available at `Chart.defaults.bar`.
+We can also change these defaults values for each Bar type that is created, this object is available at `Chart.defaults.bar`. For horizontal bars, this object is available at `Chart.defaults.horizontalBar`.
+
+The default options for horizontal bar charts are defined in `Chart.defaults.horizontalBar` and are same as those of the bar chart, but with `xAxes` and `yAxes` swapped and the following additional options.
+
+Name | Type | Default | Description
+--- |:---:| --- | ---
+*Options for xAxes* | | |
+position | String | "bottom" |
+*Options for yAxes* | | |
+position | String | "left" |
 
 ### barPercentage vs categoryPercentage
 
