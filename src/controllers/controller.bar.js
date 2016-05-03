@@ -422,8 +422,8 @@ module.exports = function(Chart) {
 						[right, bottomY]
 					];
 
-					// Find first (starting) corner with fallback to 'left'
-					var borders = ['left', 'top', 'right', 'bottom'];
+					// Find first (starting) corner with fallback to 'bottom'
+					var borders = ['bottom', 'left', 'top', 'right'];
 					var startCorner = borders.indexOf(vm.borderSkipped, 0);
 					if (startCorner === -1)
 						startCorner = 0;
