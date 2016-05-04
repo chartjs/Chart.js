@@ -76,9 +76,9 @@ function buildTask() {
     .pipe(insert.prepend(header))
     .pipe(streamify(replace('{{ version }}', package.version)))
     .pipe(gulp.dest(outDir))
-    .pipe(streamify(uglify({
-      preserveComments: 'some'
-    })))
+    .pipe(streamify(uglify()))
+    .pipe(insert.prepend(header))
+    .pipe(streamify(replace('{{ version }}', package.version)))
     .pipe(streamify(concat('Chart.bundle.min.js')))
     .pipe(gulp.dest(outDir));
 
@@ -89,9 +89,9 @@ function buildTask() {
     .pipe(insert.prepend(header))
     .pipe(streamify(replace('{{ version }}', package.version)))
     .pipe(gulp.dest(outDir))
-    .pipe(streamify(uglify({
-      preserveComments: 'some'
-    })))
+    .pipe(streamify(uglify()))
+    .pipe(insert.prepend(header))
+    .pipe(streamify(replace('{{ version }}', package.version)))
     .pipe(streamify(concat('Chart.min.js')))
     .pipe(gulp.dest(outDir));
 
