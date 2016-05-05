@@ -273,9 +273,9 @@ module.exports = function(Chart) {
 							y = cursor.y;
 
 						if (x + width >= legendWidth) {
-							cursor.y += fontSize + (labelOpts.padding);
+							y = cursor.y += fontSize + (labelOpts.padding);
 							cursor.line++;
-							cursor.x = this.left + ((legendWidth - lineWidths[cursor.line]) / 2);
+							x = cursor.x = this.left + ((legendWidth - lineWidths[cursor.line]) / 2);
 						}
 
 						// Set the ctx for the box
