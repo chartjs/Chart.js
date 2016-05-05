@@ -92,7 +92,7 @@ rotation | Number | -0.5 * Math.PI | Starting angle to draw arcs from
 circumference | Number | 2 * Math.PI | Sweep to allow arcs to cover
 *animation*.animateRotate | Boolean |true | If true, will animate the rotation of the chart.
 *animation*.animateScale | Boolean | false | If true, will animate scaling the Doughnut from the centre.
-*legend*.*labels*.generateLabels | Function | `function(data) {} ` | Returns labels for each the legend
+*legend*.*labels*.generateLabels | Function | `function(chart) {} ` | Returns a label for each item to be displayed on the legend.
 *legend*.onClick | Function | function(event, legendItem) {} ` | Handles clicking an individual legend item
 
 You can override these for your `Chart` instance by passing a second argument into the `Doughnut` method as an object with the keys you want to override.
