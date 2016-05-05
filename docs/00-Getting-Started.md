@@ -151,7 +151,7 @@ labels |Object|-|-
 *labels*.fontColor | Color | "#666" |
 *labels*.fontFamily | String | "Helvetica Neue" |
 *labels*.padding | Number | 10 | Padding between rows of colored boxes
-*labels*.generateLabels: | Function | `function(data) {  }` | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. Styles that can be returned are `fillStyle`, `strokeStyle`, `lineCap`, `lineDash`, `lineDashOffset`, `lineWidth`, `lineJoin`. Return a `hidden` attribute to indicate that the label refers to something that is not visible. A strikethrough style will be given to the text in this case.
+*labels*.generateLabels: | Function | `function(chart) {  }` | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. Styles that can be returned are `fillStyle`, `strokeStyle`, `lineCap`, `lineDash`, `lineDashOffset`, `lineWidth`, `lineJoin`. Return a `hidden` attribute to indicate that the label refers to something that is not visible. A strikethrough style will be given to the text in this case.
 
 The global options for tooltips are defined in `Chart.defaults.global.tooltips`.
 
