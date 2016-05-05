@@ -8,16 +8,18 @@ module.exports = function(Chart) {
 	Chart.pluginService = {
 		// Register a new plugin
 		register: function(plugin) {
-			if (Chart.plugins.indexOf(plugin) === -1) {
-				Chart.plugins.push(plugin);
+			var p = Chart.plugins;
+			if (p.indexOf(plugin) === -1) {
+				p.push(plugin);
 			}
 		},
 
 		// Remove a registered plugin
 		remove: function(plugin) {
-			var idx = Chart.plugins.indexOf(plugin);
+			var p = Chart.plugins;
+			var idx = p.indexOf(plugin);
 			if (idx !== -1) {
-				Chart.plugins.splice(idx, 1);
+				p.splice(idx, 1);
 			}
 		},
 
@@ -31,28 +33,29 @@ module.exports = function(Chart) {
 		}
 	};
 
+	var noop = helpers.noop;
 	Chart.PluginBase = Chart.Element.extend({
 		// Plugin methods. All functions are passed the chart instance
 
 		// Called at start of chart init
-		beforeInit: helpers.noop,
+		beforeInit: noop,
 
 		// Called at end of chart init
-		afterInit: helpers.noop,
+		afterInit: noop,
 
 		// Called at start of update
-		beforeUpdate: helpers.noop,
+		beforeUpdate: noop,
 
 		// Called at end of update
-		afterUpdate: helpers.noop,
+		afterUpdate: noop,
 
 		// Called at start of draw
-		beforeDraw: helpers.noop,
+		beforeDraw: noop,
 
 		// Called at end of draw
-		afterDraw: helpers.noop,
+		afterDraw: noop,
 
 		// Called during destroy
-		destroy: helpers.noop,
+		destroy: noop,
 	});
 };

@@ -108,8 +108,20 @@ describe('Title block tests', function() {
 			name: 'setFillStyle',
 			args: ['#666']
 		}, {
+			name: 'save',
+			args: []
+		}, {
+			name: 'translate',
+			args: [300, 66]
+		}, {
+			name: 'rotate',
+			args: [0]
+		}, {
 			name: 'fillText',
-			args: ['My title', 300, 66]
+			args: ['My title', 0, 0]
+		}, {
+			name: 'restore',
+			args: []
 		}]);
 	});
 
