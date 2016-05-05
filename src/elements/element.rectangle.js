@@ -2,18 +2,18 @@
 
 module.exports = function(Chart) {
 
-	var helpers = Chart.helpers;
+	var helpers = Chart.helpers,
+		globalOpts = Chart.defaults.global;
 
-	Chart.defaults.global.elements.rectangle = {
-		backgroundColor: Chart.defaults.global.defaultColor,
+	globalOpts.elements.rectangle = {
+		backgroundColor: globalOpts.defaultColor,
 		borderWidth: 0,
-		borderColor: Chart.defaults.global.defaultColor,
+		borderColor: globalOpts.defaultColor,
 		borderSkipped: 'bottom'
 	};
 
 	Chart.elements.Rectangle = Chart.Element.extend({
 		draw: function() {
-
 			var ctx = this._chart.ctx;
 			var vm = this._view;
 
@@ -32,7 +32,6 @@ module.exports = function(Chart) {
 			}
 
 			ctx.beginPath();
-
 			ctx.fillStyle = vm.backgroundColor;
 			ctx.strokeStyle = vm.borderColor;
 			ctx.lineWidth = vm.borderWidth;
@@ -73,26 +72,15 @@ module.exports = function(Chart) {
 		},
 		inRange: function(mouseX, mouseY) {
 			var vm = this._view;
-			var inRange = false;
-
-			if (vm) {
-				if (vm.y < vm.base) {
-					inRange = (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2) && (mouseY >= vm.y && mouseY <= vm.base);
-				} else {
-					inRange = (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2) && (mouseY >= vm.base && mouseY <= vm.y);
-				}
-			}
-
-			return inRange;
+			return vm ? 
+					(vm.y < vm.base ? 
+						(mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2) && (mouseY >= vm.y && mouseY <= vm.base) :
+						(mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2) && (mouseY >= vm.base && mouseY <= vm.y)) :
+					false;
 		},
 		inLabelRange: function(mouseX) {
 			var vm = this._view;
-
-			if (vm) {
-				return (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2);
-			} else {
-				return false;
-			}
+			return vm ? (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2) : false;
 		},
 		tooltipPosition: function() {
 			var vm = this._view;
