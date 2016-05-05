@@ -3,6 +3,7 @@
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
+	var noop = helpers.noop;
 
 	// Base class for all dataset controllers (line, bar, etc)
 	Chart.DatasetController = function(chart, datasetIndex) {
@@ -50,14 +51,15 @@ module.exports = function(Chart) {
 
 		buildOrUpdateElements: function buildOrUpdateElements() {
 			// Handle the number of data points changing
-			var meta = this.getMeta();
-			var numData = this.getDataset().data.length;
-			var numMetaData = meta.data.length;
+			var meta = this.getMeta(),
+				md = meta.data,
+				numData = this.getDataset().data.length,
+				numMetaData = md.length;
 
 			// Make sure that we handle number of datapoints changing
 			if (numData < numMetaData) {
 				// Remove excess bars for data points that have been removed
-				meta.data.splice(numData, numMetaData - numData);
+				md.splice(numData, numMetaData - numData);
 			} else if (numData > numMetaData) {
 				// Add new elements
 				for (var index = numMetaData; index < numData; ++index) {
@@ -67,14 +69,13 @@ module.exports = function(Chart) {
 		},
 
 		// Controllers should implement the following
-		addElements: helpers.noop,
-		addElementAndReset: helpers.noop,
-		draw: helpers.noop,
-		removeHoverStyle: helpers.noop,
-		setHoverStyle: helpers.noop,
-		update: helpers.noop
+		addElements: noop,
+		addElementAndReset: noop,
+		draw: noop,
+		removeHoverStyle: noop,
+		setHoverStyle: noop,
+		update: noop
 	});
 
 	Chart.DatasetController.extend = helpers.inherits;
-
 };
