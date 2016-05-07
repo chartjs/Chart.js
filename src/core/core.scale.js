@@ -268,23 +268,25 @@ module.exports = function(Chart) {
 			var scaleLabelFontFamily = helpers.getValueOrDefault(this.options.scaleLabel.fontFamily, Chart.defaults.global.defaultFontFamily);
 			var scaleLabelFont = helpers.fontString(scaleLabelFontSize, scaleLabelFontStyle, scaleLabelFontFamily);
 
+			var display = this.options.display;
+
 			// Width
 			if (this.isHorizontal()) {
 				// subtract the margins to line up with the chartArea if we are a full width scale
 				this.minSize.width = this.isFullWidth() ? this.maxWidth - this.margins.left - this.margins.right : this.maxWidth;
 			} else {
-				this.minSize.width = this.options.gridLines.tickMarkLength;
+				this.minSize.width = display ? this.options.gridLines.tickMarkLength : 0;
 			}
 
 			// height
 			if (this.isHorizontal()) {
-				this.minSize.height = this.options.gridLines.tickMarkLength;
+				this.minSize.height = display ? this.options.gridLines.tickMarkLength : 0;
 			} else {
 				this.minSize.height = this.maxHeight; // fill all the height
 			}
 
 			// Are we showing a title for the scale?
-			if (this.options.scaleLabel.display) {
+			if (this.options.scaleLabel.display && display) {
 				if (this.isHorizontal()) {
 					this.minSize.height += (scaleLabelFontSize * 1.5);
 				} else {
@@ -292,7 +294,7 @@ module.exports = function(Chart) {
 				}
 			}
 
-			if (this.options.ticks.display && this.options.display) {
+			if (this.options.ticks.display && display) {
 				// Don't bother fitting the ticks if we are not showing them
 				if (!this.longestTextCache) {
 					this.longestTextCache = {};
