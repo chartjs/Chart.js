@@ -217,11 +217,7 @@ module.exports = function(Chart) {
 				innerRadius = reset && animationOpts.animateScale ? 0 : this.innerRadius,
 				outerRadius = reset && animationOpts.animateScale ? 0 : this.outerRadius,
 				custom = arc.custom,
-				valueAtIndexOrDefault = helpers.getValueAtIndexOrDefault,
-				backgroundColor = "backgroundColor",
-				hoverBackgroundColor = "hoverBackgroundColor",
-				borderWidth = "borderWidth",
-				borderColor = "borderColor";
+				valueAtIndexOrDefault = helpers.getValueAtIndexOrDefault;
 
 			helpers.extend(arc, {
 				// Utility
@@ -243,10 +239,10 @@ module.exports = function(Chart) {
 			});
 
 			var model = arc._model;
-			model[backgroundColor] = custom && custom[backgroundColor] ? custom[backgroundColor] : valueAtIndexOrDefault(dataset[backgroundColor], index, arcOpts[backgroundColor]);
-			model[hoverBackgroundColor] = custom && custom[hoverBackgroundColor] ? custom[hoverBackgroundColor] : valueAtIndexOrDefault(dataset[hoverBackgroundColor], index, arcOpts[hoverBackgroundColor]);
-			model[borderWidth] = custom && custom[borderWidth] ? custom[borderWidth] : valueAtIndexOrDefault(dataset[borderWidth], index, arcOpts[borderWidth]);
-			model[borderColor] = custom && custom[borderColor] ? custom[borderColor] : valueAtIndexOrDefault(dataset[borderColor], index, arcOpts[borderColor]);
+			model.backgroundColor = custom && custom.backgroundColor ? custom.backgroundColor : valueAtIndexOrDefault(dataset.backgroundColor, index, arcOpts.backgroundColor);
+			model.hoverBackgroundColor = custom && custom.hoverBackgroundColor ? custom.hoverBackgroundColor : valueAtIndexOrDefault(dataset.hoverBackgroundColor, index, arcOpts.hoverBackgroundColor);
+			model.borderWidth = custom && custom.borderWidth ? custom.borderWidth : valueAtIndexOrDefault(dataset.borderWidth, index, arcOpts.borderWidth);
+			model.borderColor = custom && custom.borderColor ? custom.borderColor : valueAtIndexOrDefault(dataset.borderColor, index, arcOpts.borderColor);
 
 			// Set correct angles if not resetting
 			if (!reset || !animationOpts.animateRotate) {

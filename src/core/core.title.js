@@ -111,20 +111,18 @@ module.exports = function(Chart) {
 				globalDefaults = Chart.defaults.global,
 				display = opts.display,
 				fontSize = valueOrDefault(opts.fontSize, globalDefaults.defaultFontSize),
-				minSize = _this.minSize,
-				width = "width",
-				height = "height";
+				minSize = _this.minSize;
 
 			if (_this.isHorizontal()) {
-				minSize[width] = _this.maxWidth; // fill all the width
-				minSize[height] = display ? fontSize + (opts.padding * 2) : 0;
+				minSize.width = _this.maxWidth; // fill all the width
+				minSize.height = display ? fontSize + (opts.padding * 2) : 0;
 			} else {
-				minSize[width] = display ? fontSize + (opts.padding * 2) : 0;
-				minSize[height] = _this.maxHeight; // fill all the height
+				minSize.width = display ? fontSize + (opts.padding * 2) : 0;
+				minSize.height = _this.maxHeight; // fill all the height
 			}
 
-			_this[width] = minSize[width];
-			_this[height] = minSize[height];
+			_this.width = minSize.width;
+			_this.height = minSize.height;
 
 		},
 		afterFit: noop,
