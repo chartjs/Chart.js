@@ -147,8 +147,11 @@ module.exports = function(Chart) {
 			}
 
 			if (this.min === this.max) {
-				this.min--;
 				this.max++;
+
+				if (!this.options.ticks.beginAtZero) {
+					this.min--;
+				}
 			}
 		},
 		buildTicks: function() {
