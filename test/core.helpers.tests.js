@@ -684,4 +684,29 @@ describe('Core helper tests', function() {
 		});
 	});
 
+	describe('Background canvas hover helper', function() {
+		it('should return a CanvasPattern backgroundColor when called with a CanvasPattern', function(done) {
+			var dots = new Image();
+			dots.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAMAAAAolt3jAAAAD1BMVEUAAAD///////////////+PQt5oAAAABXRSTlMAHlFhZsfk/BEAAAAqSURBVHgBY2BgZGJmYmSAAUYWEIDzmcBcJhiXGcxlRpPFrhdmMiqgvX0AcGIBEUAo6UAAAAAASUVORK5CYII=';
+			dots.onload = function() {
+				var chartContext = document.createElement('canvas').getContext('2d');
+				var patternCanvas = document.createElement('canvas');
+				var patternContext = patternCanvas.getContext('2d');
+				var pattern = patternContext.createPattern(dots, 'repeat');
+				patternContext.fillStyle = pattern;
+
+				var backgroundColor = helpers.getHoverBackgroundColor(chartContext.createPattern(patternCanvas, 'repeat'));
+
+				expect(backgroundColor instanceof CanvasPattern).toBe(true);
+
+				done();
+			}
+		});
+
+		it('should return a modified version of backgroundColor when called with a color', function() {
+			var originalColorRGB = 'rgb(70, 191, 189)';
+
+			expect(helpers.getHoverBackgroundColor('#46BFBD')).not.toEqual(originalColorRGB);
+		});
+	});
 });

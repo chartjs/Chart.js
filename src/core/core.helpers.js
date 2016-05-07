@@ -943,5 +943,9 @@ module.exports = function(Chart) {
 			fn.apply(_tArg, args);
 		}
 	};
-
+	helpers.getHoverBackgroundColor = function(backgroundColor) {
+		return (backgroundColor instanceof CanvasPattern) ?
+			backgroundColor :
+			helpers.color(backgroundColor).saturate(0.5).darken(0.1).rgbString();
+	};
 };
