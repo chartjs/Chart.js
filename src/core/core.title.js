@@ -104,24 +104,27 @@ module.exports = function(Chart) {
 		beforeFit: noop,
 		fit: function() {
 
-			var ctx = this.ctx,
+			var _this = this,
+				ctx = _this.ctx,
 				valueOrDefault = helpers.getValueOrDefault,
-				opts = this.options,
+				opts = _this.options,
 				globalDefaults = Chart.defaults.global,
 				display = opts.display,
 				fontSize = valueOrDefault(opts.fontSize, globalDefaults.defaultFontSize),
-				minSize = this.minSize;
+				minSize = _this.minSize,
+				width = "width",
+				height = "height";
 
-			if (this.isHorizontal()) {
-				minSize.width = this.maxWidth; // fill all the width
-				minSize.height = display ? fontSize + (opts.padding * 2) : 0;
+			if (_this.isHorizontal()) {
+				minSize[width] = _this.maxWidth; // fill all the width
+				minSize[height] = display ? fontSize + (opts.padding * 2) : 0;
 			} else {
-				minSize.width = display ? fontSize + (opts.padding * 2) : 0;
-				minSize.height = this.maxHeight; // fill all the height
+				minSize[width] = display ? fontSize + (opts.padding * 2) : 0;
+				minSize[height] = _this.maxHeight; // fill all the height
 			}
 
-			this.width = minSize.width;
-			this.height = minSize.height;
+			_this[width] = minSize[width];
+			_this[height] = minSize[height];
 
 		},
 		afterFit: noop,
@@ -134,9 +137,10 @@ module.exports = function(Chart) {
 
 		// Actualy draw the title block on the canvas
 		draw: function() {
-			var ctx = this.ctx,
+			var _this = this,
+				ctx = _this.ctx,
 				valueOrDefault = helpers.getValueOrDefault,
-				opts = this.options,
+				opts = _this.options,
 				globalDefaults = Chart.defaults.global;
 
 			if (opts.display) {
@@ -146,18 +150,22 @@ module.exports = function(Chart) {
 					titleFont = helpers.fontString(fontSize, fontStyle, fontFamily),
 					rotation = 0,
 					titleX, 
-					titleY;
+					titleY,
+					top = _this.top,
+					left = _this.left,
+					bottom = _this.bottom,
+					right = _this.right;
 
 				ctx.fillStyle = valueOrDefault(opts.fontColor, globalDefaults.defaultFontColor); // render in correct colour
 				ctx.font = titleFont;
 
 				// Horizontal
-				if (this.isHorizontal()) {
-					titleX = this.left + ((this.right - this.left) / 2); // midpoint of the width
-					titleY = this.top + ((this.bottom - this.top) / 2); // midpoint of the height
+				if (_this.isHorizontal()) {
+					titleX = left + ((right - left) / 2); // midpoint of the width
+					titleY = top + ((bottom - top) / 2); // midpoint of the height
 				} else {
-					titleX = opts.position === 'left' ? this.left + (fontSize / 2) : this.right - (fontSize / 2);
-					titleY = this.top + ((this.bottom - this.top) / 2);
+					titleX = opts.position === 'left' ? left + (fontSize / 2) : right - (fontSize / 2);
+					titleY = top + ((bottom - top) / 2);
 					rotation = Math.PI * (opts.position === 'left' ? -0.5 : 0.5);
 				}
 

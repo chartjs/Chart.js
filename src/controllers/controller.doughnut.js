@@ -2,9 +2,10 @@
 
 module.exports = function(Chart) {
 
-	var helpers = Chart.helpers;
+	var helpers = Chart.helpers,
+		defaults = Chart.defaults;
 
-	Chart.defaults.doughnut = {
+	defaults.doughnut = {
 		animation: {
 			//Boolean - Whether we animate the rotation of the Doughnut
 			animateRotate: true,
@@ -98,21 +99,21 @@ module.exports = function(Chart) {
 		}
 	};
 
-	Chart.defaults.pie = helpers.clone(Chart.defaults.doughnut);
-	helpers.extend(Chart.defaults.pie, {
+	defaults.pie = helpers.clone(defaults.doughnut);
+	helpers.extend(defaults.pie, {
 		cutoutPercentage: 0
 	});
 
 
 	Chart.controllers.doughnut = Chart.controllers.pie = Chart.DatasetController.extend({
-		linkScales: function() {
-			// no scales for doughnut
-		},
+		// no scales for doughnut
+		linkScales: helpers.noop,
 
 		addElements: function() {
-			var meta = this.getMeta();
+			var meta = this.getMeta(),
+				data = meta.data;
 			helpers.each(this.getDataset().data, function(value, index) {
-				meta.data[index] = meta.data[index] || new Chart.elements.Arc({
+				data[index] = data[index] || new Chart.elements.Arc({
 					_chart: this.chart.chart,
 					_datasetIndex: this.index,
 					_index: index
@@ -125,10 +126,11 @@ module.exports = function(Chart) {
 				_chart: this.chart.chart,
 				_datasetIndex: this.index,
 				_index: index
-			});
+			}),
+			ds = this.getDataset();
 
-			if (colorForNewElement && helpers.isArray(this.getDataset().backgroundColor)) {
-				this.getDataset().backgroundColor.splice(index, 0, colorForNewElement);
+			if (colorForNewElement && helpers.isArray(ds.backgroundColor)) {
+				ds.backgroundColor.splice(index, 0, colorForNewElement);
 			}
 
 			// Add to the points array and reset it
@@ -150,23 +152,33 @@ module.exports = function(Chart) {
 		},
 
 		update: function update(reset) {
-			var availableWidth = this.chart.chartArea.right - this.chart.chartArea.left - this.chart.options.elements.arc.borderWidth;
-			var availableHeight = this.chart.chartArea.bottom - this.chart.chartArea.top - this.chart.options.elements.arc.borderWidth;
-			var minSize = Math.min(availableWidth, availableHeight);
-			var offset = {x: 0, y: 0};
+			var chart = this.chart,
+				chartArea = chart.chartArea,
+				opts = chart.options,
+				arcOpts = opts.elements.arc,
+				availableWidth = chartArea.right - chartArea.left - arcOpts.borderWidth,
+				availableHeight = chartArea.bottom - chartArea.top - arcOpts.borderWidth,
+				minSize = Math.min(availableWidth, availableHeight),
+				offset = {
+					x: 0, 
+					y: 0
+				},
+				meta = this.getMeta(),
+				cutoutPercentage = opts.cutoutPercentage,
+				circumference = opts.circumference;
 
 			// If the chart's circumference isn't a full circle, calculate minSize as a ratio of the width/height of the arc
-			if (this.chart.options.circumference < Math.PI * 2.0) {
-				var startAngle = this.chart.options.rotation % (Math.PI * 2.0);
+			if (circumference < Math.PI * 2.0) {
+				var startAngle = opts.rotation % (Math.PI * 2.0);
 				startAngle += Math.PI * 2.0 * (startAngle >= Math.PI ? -1 : startAngle < -Math.PI ? 1 : 0);
-				var endAngle = startAngle + this.chart.options.circumference;
+				var endAngle = startAngle + circumference;
 				var start = {x: Math.cos(startAngle), y: Math.sin(startAngle)};
 				var end = {x: Math.cos(endAngle), y: Math.sin(endAngle)};
 				var contains0 = (startAngle <= 0 && 0 <= endAngle) || (startAngle <= Math.PI * 2.0 && Math.PI * 2.0 <= endAngle);
 				var contains90 = (startAngle <= Math.PI * 0.5 && Math.PI * 0.5 <= endAngle) || (startAngle <= Math.PI * 2.5 && Math.PI * 2.5 <= endAngle);
 				var contains180 = (startAngle <= -Math.PI && -Math.PI <= endAngle) || (startAngle <= Math.PI && Math.PI <= endAngle);
 				var contains270 = (startAngle <= -Math.PI * 0.5 && -Math.PI * 0.5 <= endAngle) || (startAngle <= Math.PI * 1.5 && Math.PI * 1.5 <= endAngle);
-				var cutout = this.chart.options.cutoutPercentage / 100.0;
+				var cutout = cutoutPercentage / 100.0;
 				var min = {x: contains180 ? -1 : Math.min(start.x * (start.x < 0 ? 1 : cutout), end.x * (end.x < 0 ? 1 : cutout)), y: contains270 ? -1 : Math.min(start.y * (start.y < 0 ? 1 : cutout), end.y * (end.y < 0 ? 1 : cutout))};
 				var max = {x: contains0 ? 1 : Math.max(start.x * (start.x > 0 ? 1 : cutout), end.x * (end.x > 0 ? 1 : cutout)), y: contains90 ? 1 : Math.max(start.y * (start.y > 0 ? 1 : cutout), end.y * (end.y > 0 ? 1 : cutout))};
 				var size = {width: (max.x - min.x) * 0.5, height: (max.y - min.y) * 0.5};
@@ -174,66 +186,77 @@ module.exports = function(Chart) {
 				offset = {x: (max.x + min.x) * -0.5, y: (max.y + min.y) * -0.5};
 			}
 
-			this.chart.outerRadius = Math.max(minSize / 2, 0);
-			this.chart.innerRadius = Math.max(this.chart.options.cutoutPercentage ? (this.chart.outerRadius / 100) * (this.chart.options.cutoutPercentage) : 1, 0);
-			this.chart.radiusLength = (this.chart.outerRadius - this.chart.innerRadius) / this.chart.getVisibleDatasetCount();
-			this.chart.offsetX = offset.x * this.chart.outerRadius;
-			this.chart.offsetY = offset.y * this.chart.outerRadius;
+			chart.outerRadius = Math.max(minSize / 2, 0);
+			chart.innerRadius = Math.max(cutoutPercentage ? (chart.outerRadius / 100) * (cutoutPercentage) : 1, 0);
+			chart.radiusLength = (chart.outerRadius - chart.innerRadius) / chart.getVisibleDatasetCount();
+			chart.offsetX = offset.x * chart.outerRadius;
+			chart.offsetY = offset.y * chart.outerRadius;
 
-			this.getMeta().total = this.calculateTotal();
+			meta.total = this.calculateTotal();
 
-			this.outerRadius = this.chart.outerRadius - (this.chart.radiusLength * this.getRingIndex(this.index));
-			this.innerRadius = this.outerRadius - this.chart.radiusLength;
+			this.outerRadius = chart.outerRadius - (chart.radiusLength * this.getRingIndex(this.index));
+			this.innerRadius = this.outerRadius - chart.radiusLength;
 
-			helpers.each(this.getMeta().data, function(arc, index) {
+			helpers.each(meta.data, function(arc, index) {
 				this.updateElement(arc, index, reset);
 			}, this);
 		},
 
 		updateElement: function(arc, index, reset) {
-			var centerX = (this.chart.chartArea.left + this.chart.chartArea.right) / 2;
-			var centerY = (this.chart.chartArea.top + this.chart.chartArea.bottom) / 2;
-			var startAngle = this.chart.options.rotation; // non reset case handled later
-			var endAngle = this.chart.options.rotation; // non reset case handled later
-			var circumference = reset && this.chart.options.animation.animateRotate ? 0 : arc.hidden? 0 : this.calculateCircumference(this.getDataset().data[index]) * (this.chart.options.circumference / (2.0 * Math.PI));
-			var innerRadius = reset && this.chart.options.animation.animateScale ? 0 : this.innerRadius;
-			var outerRadius = reset && this.chart.options.animation.animateScale ? 0 : this.outerRadius;
+			var chart = this.chart,
+				chartArea = chart.chartArea,
+				opts = chart.options,
+				animationOpts = opts.animation,
+				arcOpts = opts.elements.arc,
+				centerX = (chartArea.left + chartArea.right) / 2,
+				centerY = (chartArea.top + chartArea.bottom) / 2,
+				startAngle = opts.rotation, // non reset case handled later
+				endAngle = opts.rotation, // non reset case handled later
+				dataset = this.getDataset(),
+				circumference = reset && animationOpts.animateRotate ? 0 : arc.hidden ? 0 : this.calculateCircumference(dataset.data[index]) * (opts.circumference / (2.0 * Math.PI)),
+				innerRadius = reset && animationOpts.animateScale ? 0 : this.innerRadius,
+				outerRadius = reset && animationOpts.animateScale ? 0 : this.outerRadius,
+				custom = arc.custom,
+				valueAtIndexOrDefault = helpers.getValueAtIndexOrDefault,
+				backgroundColor = "backgroundColor",
+				hoverBackgroundColor = "hoverBackgroundColor",
+				borderWidth = "borderWidth",
+				borderColor = "borderColor";
 
 			helpers.extend(arc, {
 				// Utility
-				_chart: this.chart.chart,
+				_chart: chart.chart,
 				_datasetIndex: this.index,
 				_index: index,
 
 				// Desired view properties
 				_model: {
-					x: centerX + this.chart.offsetX,
-					y: centerY + this.chart.offsetY,
+					x: centerX + chart.offsetX,
+					y: centerY + chart.offsetY,
 					startAngle: startAngle,
 					endAngle: endAngle,
 					circumference: circumference,
 					outerRadius: outerRadius,
 					innerRadius: innerRadius,
-
-					backgroundColor: arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor),
-					hoverBackgroundColor: arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().hoverBackgroundColor, index, this.chart.options.elements.arc.hoverBackgroundColor),
-					borderWidth: arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.arc.borderWidth),
-					borderColor: arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor),
-
-					label: helpers.getValueAtIndexOrDefault(this.getDataset().label, index, this.chart.data.labels[index])
+					label: valueAtIndexOrDefault(dataset.label, index, chart.data.labels[index])
 				}
 			});
 
-			// Set correct angles if not resetting
-			if (!reset || !this.chart.options.animation.animateRotate) {
+			var model = arc._model;
+			model[backgroundColor] = custom && custom[backgroundColor] ? custom[backgroundColor] : valueAtIndexOrDefault(dataset[backgroundColor], index, arcOpts[backgroundColor]);
+			model[hoverBackgroundColor] = custom && custom[hoverBackgroundColor] ? custom[hoverBackgroundColor] : valueAtIndexOrDefault(dataset[hoverBackgroundColor], index, arcOpts[hoverBackgroundColor]);
+			model[borderWidth] = custom && custom[borderWidth] ? custom[borderWidth] : valueAtIndexOrDefault(dataset[borderWidth], index, arcOpts[borderWidth]);
+			model[borderColor] = custom && custom[borderColor] ? custom[borderColor] : valueAtIndexOrDefault(dataset[borderColor], index, arcOpts[borderColor]);
 
+			// Set correct angles if not resetting
+			if (!reset || !animationOpts.animateRotate) {
 				if (index === 0) {
-					arc._model.startAngle = this.chart.options.rotation;
+					model.startAngle = opts.rotation;
 				} else {
-					arc._model.startAngle = this.getMeta().data[index - 1]._model.endAngle;
+					model.startAngle = this.getMeta().data[index - 1]._model.endAngle;
 				}
 
-				arc._model.endAngle = arc._model.startAngle + arc._model.circumference;
+				model.endAngle = model.startAngle + model.circumference;
 			}
 
 			arc.pivot();
@@ -246,22 +269,8 @@ module.exports = function(Chart) {
 			});
 		},
 
-		setHoverStyle: function(arc) {
-			var dataset = this.chart.data.datasets[arc._datasetIndex];
-			var index = arc._index;
-
-			arc._model.backgroundColor = arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.color(arc._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
-			arc._model.borderColor = arc.custom && arc.custom.hoverBorderColor ? arc.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.color(arc._model.borderColor).saturate(0.5).darken(0.1).rgbString());
-			arc._model.borderWidth = arc.custom && arc.custom.hoverBorderWidth ? arc.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.hoverBorderWidth, index, arc._model.borderWidth);
-		},
-
 		removeHoverStyle: function(arc) {
-			var dataset = this.chart.data.datasets[arc._datasetIndex];
-			var index = arc._index;
-
-			arc._model.backgroundColor = arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor);
-			arc._model.borderColor = arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor);
-			arc._model.borderWidth = arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.arc.borderWidth);
+			Chart.DatasetController.prototype.removeHoverStyle.call(this, arc, this.chart.options.elements.arc);
 		},
 
 		calculateTotal: function() {
