@@ -180,7 +180,7 @@ module.exports = function(Chart) {
 
 			var tickWidth = (function() {
 				var min = xScale.getPixelForTick(1) - xScale.getPixelForTick(0);
-				for (var i = 2; i < this.getDataset().data.length; i++) {
+				for (var i = 2; i < xScale.ticks.length; i++) {
 					min = Math.min(xScale.getPixelForTick(i) - xScale.getPixelForTick(i - 1), min);
 				}
 				return min;
