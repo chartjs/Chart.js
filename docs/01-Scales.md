@@ -299,3 +299,15 @@ The radial linear scale extends the core scale class with the following tick tem
 	},
 }
 ```
+
+### Update Default Scale config
+The default configuration for a scale can be easily changed using the scale service. Pass in a partial configuration that will be merged with the current scale default configuration.
+
+For example, to set the minimum value of 0 for all linear scales, you would do the following. Any linear scales created after this time would now have a minimum of 0.
+```
+Chart.scaleService.updateScaleDefaults('linear', {
+	ticks: {
+		min: 0
+	}
+})
+```

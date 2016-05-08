@@ -409,6 +409,31 @@ describe('Linear Scale', function() {
 		expect(chartInstance.scales.yScale0.max).toBe(1);
 	});
 
+	it('Should ensure that the scale has a max and min that are not equal when beginAtZero is set', function() {
+		chartInstance = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [],
+				labels: ['a', 'b', 'c', 'd', 'e', 'f']
+			},
+			options: {
+				scales: {
+					yAxes: [{
+						id: 'yScale0',
+						type: 'linear',
+						ticks: {
+							beginAtZero: true
+						}
+					}]
+				}
+			}
+		});
+
+		expect(chartInstance.scales.yScale0).not.toEqual(undefined); // must construct
+		expect(chartInstance.scales.yScale0.min).toBe(0);
+		expect(chartInstance.scales.yScale0.max).toBe(1);
+	});
+
 	it('Should use the suggestedMin and suggestedMax options', function() {
 		chartInstance = window.acquireChart({
 			type: 'bar',
