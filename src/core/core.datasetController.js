@@ -71,7 +71,12 @@ module.exports = function(Chart) {
 		// Controllers should implement the following
 		addElements: noop,
 		addElementAndReset: noop,
-		draw: noop,
+		draw: function(ease) {
+			var easingDecimal = ease || 1;
+			helpers.each(this.getMeta().data, function(element, index) {
+				element.transition(easingDecimal).draw();
+			});
+		},
 		removeHoverStyle: function(element, elementOpts) {
 			var dataset = this.chart.data.datasets[element._datasetIndex],
 				index = element._index,

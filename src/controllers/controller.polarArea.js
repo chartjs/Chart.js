@@ -22,11 +22,15 @@ module.exports = function(Chart) {
 			var text = [];
 			text.push('<ul class="' + chart.id + '-legend">');
 
-			if (chart.data.datasets.length) {
-				for (var i = 0; i < chart.data.datasets[0].data.length; ++i) {
-					text.push('<li><span style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '">');
-					if (chart.data.labels[i]) {
-						text.push(chart.data.labels[i]);
+			var data = chart.data;
+			var datasets = data.datasets;
+			var labels = data.labels;
+
+			if (datasets.length) {
+				for (var i = 0; i < datasets[0].data.length; ++i) {
+					text.push('<li><span style="background-color:' + datasets[0].backgroundColor[i] + '">');
+					if (labels[i]) {
+						text.push(labels[i]);
 					}
 					text.push('</span></li>');
 				}
@@ -44,9 +48,12 @@ module.exports = function(Chart) {
 							var meta = chart.getDatasetMeta(0);
 							var ds = data.datasets[0];
 							var arc = meta.data[i];
-							var fill = arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(ds.backgroundColor, i, this.chart.options.elements.arc.backgroundColor);
-							var stroke = arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(ds.borderColor, i, this.chart.options.elements.arc.borderColor);
-							var bw = arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(ds.borderWidth, i, this.chart.options.elements.arc.borderWidth);
+							var custom = arc.custom;
+							var getValueAtIndexOrDefault = helpers.getValueAtIndexOrDefault;
+							var arcOpts = chart.options.elements.arc;
+							var fill = custom && custom.backgroundColor ? custom.backgroundColor : getValueAtIndexOrDefault(ds.backgroundColor, i, arcOpts.backgroundColor);
+							var stroke = custom && custom.borderColor ? custom.borderColor : getValueAtIndexOrDefault(ds.borderColor, i, arcOpts.borderColor);
+							var bw = custom && custom.borderWidth ? custom.borderWidth : getValueAtIndexOrDefault(ds.borderWidth, i, arcOpts.borderWidth);
 
 							return {
 								text: label,
@@ -58,7 +65,7 @@ module.exports = function(Chart) {
 								// Extra data used for toggling the correct item
 								index: i
 							};
-						}, this);
+						});
 					} else {
 						return [];
 					}
@@ -98,61 +105,80 @@ module.exports = function(Chart) {
 		},
 
 		addElements: function() {
+			var _this = this;
 			var meta = this.getMeta();
-			helpers.each(this.getDataset().data, function(value, index) {
+			helpers.each(_this.getDataset().data, function(value, index) {
 				meta.data[index] = meta.data[index] || new Chart.elements.Arc({
-					_chart: this.chart.chart,
-					_datasetIndex: this.index,
+					_chart: _this.chart.chart,
+					_datasetIndex: _this.index,
 					_index: index
 				});
-			}, this);
+			});
 		},
 
 		addElementAndReset: function(index) {
+			var _this = this;
 			var arc = new Chart.elements.Arc({
-				_chart: this.chart.chart,
-				_datasetIndex: this.index,
+				_chart: _this.chart.chart,
+				_datasetIndex: _this.index,
 				_index: index
 			});
 
 			// Add to the points array and reset it
-			this.getMeta().data.splice(index, 0, arc);
-			this.updateElement(arc, index, true);
+			_this.getMeta().data.splice(index, 0, arc);
+			_this.updateElement(arc, index, true);
 		},
 
 		update: function update(reset) {
+			var _this = this;
+			var chart = _this.chart;
+			var chartArea = chart.chartArea;
 			var meta = this.getMeta();
-			var minSize = Math.min(this.chart.chartArea.right - this.chart.chartArea.left, this.chart.chartArea.bottom - this.chart.chartArea.top);
-			this.chart.outerRadius = Math.max((minSize - this.chart.options.elements.arc.borderWidth / 2) / 2, 0);
-			this.chart.innerRadius = Math.max(this.chart.options.cutoutPercentage ? (this.chart.outerRadius / 100) * (this.chart.options.cutoutPercentage) : 1, 0);
-			this.chart.radiusLength = (this.chart.outerRadius - this.chart.innerRadius) / this.chart.getVisibleDatasetCount();
+			var opts = chart.options;
+			var arcOpts = opts.elements.arc;
+			var minSize = Math.min(chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
+			chart.outerRadius = Math.max((minSize - arcOpts.borderWidth / 2) / 2, 0);
+			chart.innerRadius = Math.max(opts.cutoutPercentage ? (chart.outerRadius / 100) * (opts.cutoutPercentage) : 1, 0);
+			chart.radiusLength = (chart.outerRadius - chart.innerRadius) / chart.getVisibleDatasetCount();
 
-			this.outerRadius = this.chart.outerRadius - (this.chart.radiusLength * this.index);
-			this.innerRadius = this.outerRadius - this.chart.radiusLength;
+			_this.outerRadius = chart.outerRadius - (chart.radiusLength * _this.index);
+			_this.innerRadius = _this.outerRadius - chart.radiusLength;
 
-			meta.count = this.countVisibleElements();
+			meta.count = _this.countVisibleElements();
 
 			helpers.each(meta.data, function(arc, index) {
-				this.updateElement(arc, index, reset);
-			}, this);
+				_this.updateElement(arc, index, reset);
+			});
 		},
 
 		updateElement: function(arc, index, reset) {
-			var circumference = this.calculateCircumference(this.getDataset().data[index]);
-			var centerX = (this.chart.chartArea.left + this.chart.chartArea.right) / 2;
-			var centerY = (this.chart.chartArea.top + this.chart.chartArea.bottom) / 2;
+			var _this = this;
+			var chart = _this.chart;
+			var chartArea = chart.chartArea;
+			var dataset = _this.getDataset();
+			var opts = chart.options;
+			var animationOpts = opts.animation;
+			var arcOpts = opts.elements.arc;
+			var custom = arc.custom;
+			var scale = chart.scale;
+			var getValueAtIndexOrDefault = helpers.getValueAtIndexOrDefault;
+			var labels = chart.data.labels;
+
+			var circumference = _this.calculateCircumference(dataset.data[index]);
+			var centerX = (chartArea.left + chartArea.right) / 2;
+			var centerY = (chartArea.top + chartArea.bottom) / 2;
 
 			// If there is NaN data before us, we need to calculate the starting angle correctly.
 			// We could be way more efficient here, but its unlikely that the polar area chart will have a lot of data
 			var visibleCount = 0;
-			var meta = this.getMeta();
+			var meta = _this.getMeta();
 			for (var i = 0; i < index; ++i) {
-				if (!isNaN(this.getDataset().data[i]) && !meta.data[i].hidden) {
+				if (!isNaN(dataset.data[i]) && !meta.data[i].hidden) {
 					++visibleCount;
 				}
 			}
 
-			var distance = arc.hidden? 0 : this.chart.scale.getDistanceFromCenterForValue(this.getDataset().data[index]);
+			var distance = arc.hidden? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
 			var startAngle = (-0.5 * Math.PI) + (circumference * visibleCount);
 			var endAngle = startAngle + (arc.hidden? 0 : circumference);
 
@@ -160,23 +186,23 @@ module.exports = function(Chart) {
 				x: centerX,
 				y: centerY,
 				innerRadius: 0,
-				outerRadius: this.chart.options.animation.animateScale ? 0 : this.chart.scale.getDistanceFromCenterForValue(this.getDataset().data[index]),
-				startAngle: this.chart.options.animation.animateRotate ? Math.PI * -0.5 : startAngle,
-				endAngle: this.chart.options.animation.animateRotate ? Math.PI * -0.5 : endAngle,
+				outerRadius: animationOpts.animateScale ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]),
+				startAngle: animationOpts.animateRotate ? Math.PI * -0.5 : startAngle,
+				endAngle: animationOpts.animateRotate ? Math.PI * -0.5 : endAngle,
 
-				backgroundColor: arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor),
-				borderWidth: arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.arc.borderWidth),
-				borderColor: arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor),
+				backgroundColor: custom && custom.backgroundColor ? custom.backgroundColor : getValueAtIndexOrDefault(dataset.backgroundColor, index, arcOpts.backgroundColor),
+				borderWidth: custom && custom.borderWidth ? custom.borderWidth : getValueAtIndexOrDefault(dataset.borderWidth, index, arcOpts.borderWidth),
+				borderColor: custom && custom.borderColor ? custom.borderColor : getValueAtIndexOrDefault(dataset.borderColor, index, arcOpts.borderColor),
 
-				label: helpers.getValueAtIndexOrDefault(this.chart.data.labels, index, this.chart.data.labels[index])
+				label: getValueAtIndexOrDefault(labels, index, labels[index])
 			};
 
 			helpers.extend(arc, {
 				// Utility
-				_chart: this.chart.chart,
-				_datasetIndex: this.index,
+				_chart: chart.chart,
+				_datasetIndex: _this.index,
 				_index: index,
-				_scale: this.chart.scale,
+				_scale: scale,
 
 				// Desired view properties
 				_model: reset ? resetModel : {
@@ -187,40 +213,19 @@ module.exports = function(Chart) {
 					startAngle: startAngle,
 					endAngle: endAngle,
 
-					backgroundColor: arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor),
-					borderWidth: arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.arc.borderWidth),
-					borderColor: arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor),
+					backgroundColor: custom && custom.backgroundColor ? custom.backgroundColor : getValueAtIndexOrDefault(dataset.backgroundColor, index, arcOpts.backgroundColor),
+					borderWidth: custom && custom.borderWidth ? custom.borderWidth : getValueAtIndexOrDefault(dataset.borderWidth, index, arcOpts.borderWidth),
+					borderColor: custom && custom.borderColor ? custom.borderColor : getValueAtIndexOrDefault(dataset.borderColor, index, arcOpts.borderColor),
 
-					label: helpers.getValueAtIndexOrDefault(this.chart.data.labels, index, this.chart.data.labels[index])
+					label: getValueAtIndexOrDefault(labels, index, labels[index])
 				}
 			});
 
 			arc.pivot();
 		},
 
-		draw: function(ease) {
-			var easingDecimal = ease || 1;
-			helpers.each(this.getMeta().data, function(arc, index) {
-				arc.transition(easingDecimal).draw();
-			});
-		},
-
-		setHoverStyle: function(arc) {
-			var dataset = this.chart.data.datasets[arc._datasetIndex];
-			var index = arc._index;
-
-			arc._model.backgroundColor = arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.color(arc._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
-			arc._model.borderColor = arc.custom && arc.custom.hoverBorderColor ? arc.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.color(arc._model.borderColor).saturate(0.5).darken(0.1).rgbString());
-			arc._model.borderWidth = arc.custom && arc.custom.hoverBorderWidth ? arc.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.hoverBorderWidth, index, arc._model.borderWidth);
-		},
-
 		removeHoverStyle: function(arc) {
-			var dataset = this.chart.data.datasets[arc._datasetIndex];
-			var index = arc._index;
-
-			arc._model.backgroundColor = arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.arc.backgroundColor);
-			arc._model.borderColor = arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.arc.borderColor);
-			arc._model.borderWidth = arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.arc.borderWidth);
+			Chart.DatasetController.prototype.removeHoverStyle.call(this, arc, this.chart.options.elements.arc);
 		},
 
 		countVisibleElements: function() {

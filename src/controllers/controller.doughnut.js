@@ -269,13 +269,6 @@ module.exports = function(Chart) {
 			arc.pivot();
 		},
 
-		draw: function(ease) {
-			var easingDecimal = ease || 1;
-			helpers.each(this.getMeta().data, function(arc, index) {
-				arc.transition(easingDecimal).draw();
-			});
-		},
-
 		removeHoverStyle: function(arc) {
 			Chart.DatasetController.prototype.removeHoverStyle.call(this, arc, this.chart.options.elements.arc);
 		},
