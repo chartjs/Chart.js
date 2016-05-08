@@ -228,41 +228,44 @@ module.exports = function(Chart) {
 			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 		},
 		convertTicksToLabels: function() {
-			this.ticksAsNumbers = this.ticks.slice();
-			this.zeroLineIndex = this.ticks.indexOf(0);
+			var _this = this;
+			_this.ticksAsNumbers = _this.ticks.slice();
+			_this.zeroLineIndex = _this.ticks.indexOf(0);
 
-			Chart.Scale.prototype.convertTicksToLabels.call(this);
+			Chart.Scale.prototype.convertTicksToLabels.call(_this);
 		},
 		// Utils
 		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
 			// This must be called after fit has been run so that
 			//      this.left, this.top, this.right, and this.bottom have been defined
-			var rightValue = +this.getRightValue(value);
-			var pixel;
-			var range = this.end - this.start;
+			var _this = this;
+			var paddingLeft = _this.paddingLeft;
+			var paddingBottom = _this.paddingBottom;
+			var start = _this.start;
 
-			if (this.isHorizontal()) {
-				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
-				pixel = this.left + (innerWidth / range * (rightValue - this.start));
-				return Math.round(pixel + this.paddingLeft);
+			var rightValue = +_this.getRightValue(value);
+			var pixel;
+			var innerDimension;
+			var range = _this.end - start;
+
+			if (_this.isHorizontal()) {
+				innerDimension = _this.width - (paddingLeft + _this.paddingRight);
+				pixel = _this.left + (innerDimension / range * (rightValue - start));
+				return Math.round(pixel + paddingLeft);
 			} else {
-				var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
-				pixel = (this.bottom - this.paddingBottom) - (innerHeight / range * (rightValue - this.start));
+				innerDimension = _this.height - (_this.paddingTop + paddingBottom);
+				pixel = (_this.bottom - paddingBottom) - (innerDimension / range * (rightValue - start));
 				return Math.round(pixel);
 			}
 		},
 		getValueForPixel: function(pixel) {
-			var offset;
-
-			if (this.isHorizontal()) {
-				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
-				offset = (pixel - this.left - this.paddingLeft) / innerWidth;
-			} else {
-				var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
-				offset = (this.bottom - this.paddingBottom - pixel) / innerHeight;
-			}
-
-			return this.start + ((this.end - this.start) * offset);
+			var _this = this;
+			var isHorizontal = _this.isHorizontal();
+			var paddingLeft = _this.paddingLeft;
+			var paddingBottom = _this.paddingBottom;
+			var innerDimension = isHorizontal ? _this.width - (paddingLeft + _this.paddingRight) : _this.height - (_this.paddingTop + paddingBottom);
+			var offset = (isHorizontal ? pixel - _this.left - paddingLeft : _this.bottom - paddingBottom - pixel) / innerDimension;
+			return _this.start + ((_this.end - _this.start) * offset);
 		},
 		getPixelForTick: function(index, includeOffset) {
 			return this.getPixelForValue(this.ticksAsNumbers[index], null, null, includeOffset);
