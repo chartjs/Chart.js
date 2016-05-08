@@ -1,7 +1,7 @@
 /*!
  * Chart.js
  * http://chartjs.org/
- * Version: 2.1.1
+ * Version: 2.1.2
  *
  * Copyright 2016 Nick Downie
  * Released under the MIT license
@@ -1949,7 +1949,7 @@ module.exports = function(Chart) {
 
 			var tickWidth = (function() {
 				var min = xScale.getPixelForTick(1) - xScale.getPixelForTick(0);
-				for (var i = 2; i < this.getDataset().data.length; i++) {
+				for (var i = 2; i < xScale.ticks.length; i++) {
 					min = Math.min(xScale.getPixelForTick(i) - xScale.getPixelForTick(i - 1), min);
 				}
 				return min;
@@ -6595,47 +6595,56 @@ module.exports = function(Chart) {
 			helpers.callCallback(this.options.beforeFit, [this]);
 		},
 		fit: function() {
-
-			this.minSize = {
+			// Reset
+			var minSize = this.minSize = {
 				width: 0,
 				height: 0
 			};
 
-			var tickFontSize = helpers.getValueOrDefault(this.options.ticks.fontSize, Chart.defaults.global.defaultFontSize);
-			var tickFontStyle = helpers.getValueOrDefault(this.options.ticks.fontStyle, Chart.defaults.global.defaultFontStyle);
-			var tickFontFamily = helpers.getValueOrDefault(this.options.ticks.fontFamily, Chart.defaults.global.defaultFontFamily);
+			var opts = this.options;
+			var tickOpts = opts.ticks;
+			var scaleLabelOpts = opts.scaleLabel;
+			var globalOpts = Chart.defaults.global;
+			var display = opts.display;
+			var isHorizontal = this.isHorizontal();
+
+			var tickFontSize = helpers.getValueOrDefault(tickOpts.fontSize, globalOpts.defaultFontSize);
+			var tickFontStyle = helpers.getValueOrDefault(tickOpts.fontStyle, globalOpts.defaultFontStyle);
+			var tickFontFamily = helpers.getValueOrDefault(tickOpts.fontFamily, globalOpts.defaultFontFamily);
 			var tickLabelFont = helpers.fontString(tickFontSize, tickFontStyle, tickFontFamily);
 
-			var scaleLabelFontSize = helpers.getValueOrDefault(this.options.scaleLabel.fontSize, Chart.defaults.global.defaultFontSize);
-			var scaleLabelFontStyle = helpers.getValueOrDefault(this.options.scaleLabel.fontStyle, Chart.defaults.global.defaultFontStyle);
-			var scaleLabelFontFamily = helpers.getValueOrDefault(this.options.scaleLabel.fontFamily, Chart.defaults.global.defaultFontFamily);
+			var scaleLabelFontSize = helpers.getValueOrDefault(scaleLabelOpts.fontSize, globalOpts.defaultFontSize);
+			var scaleLabelFontStyle = helpers.getValueOrDefault(scaleLabelOpts.fontStyle, globalOpts.defaultFontStyle);
+			var scaleLabelFontFamily = helpers.getValueOrDefault(scaleLabelOpts.fontFamily, globalOpts.defaultFontFamily);
 			var scaleLabelFont = helpers.fontString(scaleLabelFontSize, scaleLabelFontStyle, scaleLabelFontFamily);
 
+			var tickMarkLength = opts.gridLines.tickMarkLength;
+
 			// Width
-			if (this.isHorizontal()) {
+			if (isHorizontal) {
 				// subtract the margins to line up with the chartArea if we are a full width scale
-				this.minSize.width = this.isFullWidth() ? this.maxWidth - this.margins.left - this.margins.right : this.maxWidth;
+				minSize.width = this.isFullWidth() ? this.maxWidth - this.margins.left - this.margins.right : this.maxWidth;
 			} else {
-				this.minSize.width = this.options.gridLines.tickMarkLength;
+				minSize.width = display ? tickMarkLength : 0;
 			}
 
 			// height
-			if (this.isHorizontal()) {
-				this.minSize.height = this.options.gridLines.tickMarkLength;
+			if (isHorizontal) {
+				minSize.height = display ? tickMarkLength : 0;
 			} else {
-				this.minSize.height = this.maxHeight; // fill all the height
+				minSize.height = this.maxHeight; // fill all the height
 			}
 
 			// Are we showing a title for the scale?
-			if (this.options.scaleLabel.display) {
-				if (this.isHorizontal()) {
-					this.minSize.height += (scaleLabelFontSize * 1.5);
+			if (scaleLabelOpts.display && display) {
+				if (isHorizontal) {
+					minSize.height += (scaleLabelFontSize * 1.5);
 				} else {
-					this.minSize.width += (scaleLabelFontSize * 1.5);
+					minSize.width += (scaleLabelFontSize * 1.5);
 				}
 			}
 
-			if (this.options.ticks.display && this.options.display) {
+			if (tickOpts.display && display) {
 				// Don't bother fitting the ticks if we are not showing them
 				if (!this.longestTextCache) {
 					this.longestTextCache = {};
@@ -6643,14 +6652,14 @@ module.exports = function(Chart) {
 
 				var largestTextWidth = helpers.longestText(this.ctx, tickLabelFont, this.ticks, this.longestTextCache);
 
-				if (this.isHorizontal()) {
+				if (isHorizontal) {
 					// A horizontal axis is more constrained by the height.
 					this.longestLabelWidth = largestTextWidth;
 
 					// TODO - improve this calculation
 					var labelHeight = (Math.sin(helpers.toRadians(this.labelRotation)) * this.longestLabelWidth) + 1.5 * tickFontSize;
 
-					this.minSize.height = Math.min(this.maxHeight, this.minSize.height + labelHeight);
+					minSize.height = Math.min(this.maxHeight, minSize.height + labelHeight);
 					this.ctx.font = tickLabelFont;
 
 					var firstLabelWidth = this.ctx.measureText(this.ticks[0]).width;
@@ -6664,19 +6673,23 @@ module.exports = function(Chart) {
 					this.paddingRight = this.labelRotation !== 0 ? (sinRotation * (tickFontSize / 2)) + 3 : lastLabelWidth / 2 + 3; // when rotated
 				} else {
 					// A vertical axis is more constrained by the width. Labels are the dominant factor here, so get that length first
-					var maxLabelWidth = this.maxWidth - this.minSize.width;
+					var maxLabelWidth = this.maxWidth - minSize.width;
 
 					// Account for padding
-					if (!this.options.ticks.mirror) {
+					var mirror = tickOpts.mirror;
+					if (!mirror) {
 						largestTextWidth += this.options.ticks.padding;
+					} else {
+						// If mirrored text is on the inside so don't expand
+						largestTextWidth = 0;
 					}
 
 					if (largestTextWidth < maxLabelWidth) {
 						// We don't need all the room
-						this.minSize.width += largestTextWidth;
+						minSize.width += largestTextWidth;
 					} else {
 						// Expand to max size
-						this.minSize.width = this.maxWidth;
+						minSize.width = this.maxWidth;
 					}
 
 					this.paddingTop = tickFontSize / 2;
@@ -6691,8 +6704,8 @@ module.exports = function(Chart) {
 				this.paddingBottom = Math.max(this.paddingBottom - this.margins.bottom, 0);
 			}
 
-			this.width = this.minSize.width;
-			this.height = this.minSize.height;
+			this.width = minSize.width;
+			this.height = minSize.height;
 
 		},
 		afterFit: function() {
@@ -7059,6 +7072,12 @@ module.exports = function(Chart) {
 		getScaleDefaults: function(type) {
 			// Return the scale defaults merged with the global settings so that we always use the latest ones
 			return this.defaults.hasOwnProperty(type) ? helpers.scaleMerge(Chart.defaults.scale, this.defaults[type]) : {};
+		},
+		updateScaleDefaults: function(type, additions) {
+			var defaults = this.defaults;
+			if (defaults.hasOwnProperty(type)) {
+				defaults[type] = helpers.extend(defaults[type], additions);
+			}
 		},
 		addScalesToLayout: function(chartInstance) {
 			// Adds each scale to the chart.boxes array to be sized accordingly
@@ -8607,8 +8626,11 @@ module.exports = function(Chart) {
 			}
 
 			if (this.min === this.max) {
-				this.min--;
 				this.max++;
+
+				if (!this.options.ticks.beginAtZero) {
+					this.min--;
+				}
 			}
 		},
 		buildTicks: function() {
