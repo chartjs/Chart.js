@@ -37,17 +37,29 @@ module.exports = function(Chart) {
 
 	var LinearScale = Chart.Scale.extend({
 		determineDataLimits: function() {
-			// First Calculate the range
-			this.min = null;
-			this.max = null;
+			var _this = this;
+			var opts = _this.options;
+			var tickOpts = opts.ticks;
+			var chart = _this.chart;
+			var data = chart.data;
+			var datasets = data.datasets;
+			var isHorizontal = _this.isHorizontal();
 
-			if (this.options.stacked) {
+			function IDMatches(meta) {
+				return isHorizontal ? meta.xAxisID === _this.id : meta.yAxisID === _this.id;
+			}
+
+			// First Calculate the range
+			_this.min = null;
+			_this.max = null;
+
+			if (opts.stacked) {
 				var valuesPerType = {};
 				var hasPositiveValues = false;
 				var hasNegativeValues = false;
 
-				helpers.each(this.chart.data.datasets, function(dataset, datasetIndex) {
-					var meta = this.chart.getDatasetMeta(datasetIndex);
+				helpers.each(datasets, function(dataset, datasetIndex) {
+					var meta = chart.getDatasetMeta(datasetIndex);
 					if (valuesPerType[meta.type] === undefined) {
 						valuesPerType[meta.type] = {
 							positiveValues: [],
@@ -59,9 +71,9 @@ module.exports = function(Chart) {
 					var positiveValues = valuesPerType[meta.type].positiveValues;
 					var negativeValues = valuesPerType[meta.type].negativeValues;
 
-					if (this.chart.isDatasetVisible(datasetIndex) && (this.isHorizontal() ? meta.xAxisID === this.id : meta.yAxisID === this.id)) {
+					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 						helpers.each(dataset.data, function(rawValue, index) {
-							var value = +this.getRightValue(rawValue);
+							var value = +_this.getRightValue(rawValue);
 							if (isNaN(value) || meta.data[index].hidden) {
 								return;
 							}
@@ -69,7 +81,7 @@ module.exports = function(Chart) {
 							positiveValues[index] = positiveValues[index] || 0;
 							negativeValues[index] = negativeValues[index] || 0;
 
-							if (this.options.relativePoints) {
+							if (opts.relativePoints) {
 								positiveValues[index] = 100;
 							} else {
 								if (value < 0) {
@@ -80,84 +92,88 @@ module.exports = function(Chart) {
 									positiveValues[index] += value;
 								}
 							}
-						}, this);
+						});
 					}
-				}, this);
+				});
 
 				helpers.each(valuesPerType, function(valuesForType) {
 					var values = valuesForType.positiveValues.concat(valuesForType.negativeValues);
 					var minVal = helpers.min(values);
 					var maxVal = helpers.max(values);
-					this.min = this.min === null ? minVal : Math.min(this.min, minVal);
-					this.max = this.max === null ? maxVal : Math.max(this.max, maxVal);
-				}, this);
+					_this.min = _this.min === null ? minVal : Math.min(_this.min, minVal);
+					_this.max = _this.max === null ? maxVal : Math.max(_this.max, maxVal);
+				});
 
 			} else {
-				helpers.each(this.chart.data.datasets, function(dataset, datasetIndex) {
-					var meta = this.chart.getDatasetMeta(datasetIndex);
-					if (this.chart.isDatasetVisible(datasetIndex) && (this.isHorizontal() ? meta.xAxisID === this.id : meta.yAxisID === this.id)) {
+				helpers.each(datasets, function(dataset, datasetIndex) {
+					var meta = chart.getDatasetMeta(datasetIndex);
+					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 						helpers.each(dataset.data, function(rawValue, index) {
-							var value = +this.getRightValue(rawValue);
+							var value = +_this.getRightValue(rawValue);
 							if (isNaN(value) || meta.data[index].hidden) {
 								return;
 							}
 
-							if (this.min === null) {
-								this.min = value;
-							} else if (value < this.min) {
-								this.min = value;
+							if (_this.min === null) {
+								_this.min = value;
+							} else if (value < _this.min) {
+								_this.min = value;
 							}
 
-							if (this.max === null) {
-								this.max = value;
-							} else if (value > this.max) {
-								this.max = value;
+							if (_this.max === null) {
+								_this.max = value;
+							} else if (value > _this.max) {
+								_this.max = value;
 							}
-						}, this);
+						});
 					}
-				}, this);
+				});
 			}
 
 			// If we are forcing it to begin at 0, but 0 will already be rendered on the chart,
 			// do nothing since that would make the chart weird. If the user really wants a weird chart
 			// axis, they can manually override it
-			if (this.options.ticks.beginAtZero) {
-				var minSign = helpers.sign(this.min);
-				var maxSign = helpers.sign(this.max);
+			if (tickOpts.beginAtZero) {
+				var minSign = helpers.sign(_this.min);
+				var maxSign = helpers.sign(_this.max);
 
 				if (minSign < 0 && maxSign < 0) {
 					// move the top up to 0
-					this.max = 0;
+					_this.max = 0;
 				} else if (minSign > 0 && maxSign > 0) {
 					// move the botttom down to 0
-					this.min = 0;
+					_this.min = 0;
 				}
 			}
 
-			if (this.options.ticks.min !== undefined) {
-				this.min = this.options.ticks.min;
-			} else if (this.options.ticks.suggestedMin !== undefined) {
-				this.min = Math.min(this.min, this.options.ticks.suggestedMin);
+			if (tickOpts.min !== undefined) {
+				_this.min = tickOpts.min;
+			} else if (tickOpts.suggestedMin !== undefined) {
+				_this.min = Math.min(_this.min, tickOpts.suggestedMin);
 			}
 
-			if (this.options.ticks.max !== undefined) {
-				this.max = this.options.ticks.max;
-			} else if (this.options.ticks.suggestedMax !== undefined) {
-				this.max = Math.max(this.max, this.options.ticks.suggestedMax);
+			if (tickOpts.max !== undefined) {
+				_this.max = tickOpts.max;
+			} else if (tickOpts.suggestedMax !== undefined) {
+				_this.max = Math.max(_this.max, tickOpts.suggestedMax);
 			}
 
-			if (this.min === this.max) {
-				this.max++;
+			if (_this.min === _this.max) {
+				_this.max++;
 
-				if (!this.options.ticks.beginAtZero) {
-					this.min--;
+				if (!tickOpts.beginAtZero) {
+					_this.min--;
 				}
 			}
 		},
 		buildTicks: function() {
+			var _this = this;
+			var opts = _this.options;
+			var tickOpts = opts.ticks;
+			var getValueOrDefault = helpers.getValueOrDefault;
+			var isHorizontal = _this.isHorizontal();
 
-			// Then calulate the ticks
-			this.ticks = [];
+			var ticks = _this.ticks = [];
 
 			// Figure out what the max number of ticks we can support it is based on the size of
 			// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
@@ -166,12 +182,12 @@ module.exports = function(Chart) {
 
 			var maxTicks;
 
-			if (this.isHorizontal()) {
-				maxTicks = Math.min(this.options.ticks.maxTicksLimit ? this.options.ticks.maxTicksLimit : 11, Math.ceil(this.width / 50));
+			if (isHorizontal) {
+				maxTicks = Math.min(tickOpts.maxTicksLimit ? tickOpts.maxTicksLimit : 11, Math.ceil(_this.width / 50));
 			} else {
 				// The factor of 2 used to scale the font size has been experimentally determined.
-				var tickFontSize = helpers.getValueOrDefault(this.options.ticks.fontSize, Chart.defaults.global.defaultFontSize);
-				maxTicks = Math.min(this.options.ticks.maxTicksLimit ? this.options.ticks.maxTicksLimit : 11, Math.ceil(this.height / (2 * tickFontSize)));
+				var tickFontSize = getValueOrDefault(tickOpts.fontSize, Chart.defaults.global.defaultFontSize);
+				maxTicks = Math.min(tickOpts.maxTicksLimit ? tickOpts.maxTicksLimit : 11, Math.ceil(_this.height / (2 * tickFontSize)));
 			}
 
 			// Make sure we always have at least 2 ticks
@@ -182,15 +198,15 @@ module.exports = function(Chart) {
 			// for details.
 
 			var spacing;
-			var fixedStepSizeSet = (this.options.ticks.fixedStepSize && this.options.ticks.fixedStepSize > 0) || (this.options.ticks.stepSize && this.options.ticks.stepSize > 0);
+			var fixedStepSizeSet = (tickOpts.fixedStepSize && tickOpts.fixedStepSize > 0) || (tickOpts.stepSize && tickOpts.stepSize > 0);
 			if (fixedStepSizeSet) {
-				spacing = helpers.getValueOrDefault(this.options.ticks.fixedStepSize, this.options.ticks.stepSize);
+				spacing = getValueOrDefault(tickOpts.fixedStepSize, tickOpts.stepSize);
 			} else {
-				var niceRange = helpers.niceNum(this.max - this.min, false);
+				var niceRange = helpers.niceNum(_this.max - _this.min, false);
 				spacing = helpers.niceNum(niceRange / (maxTicks - 1), true);
 			}
-			var niceMin = Math.floor(this.min / spacing) * spacing;
-			var niceMax = Math.ceil(this.max / spacing) * spacing;
+			var niceMin = Math.floor(_this.min / spacing) * spacing;
+			var niceMax = Math.ceil(_this.max / spacing) * spacing;
 			var numSpaces = (niceMax - niceMin) / spacing;
 
 			// If very close to our rounded value, use it.
@@ -201,30 +217,30 @@ module.exports = function(Chart) {
 			}
 
 			// Put the values into the ticks array
-			this.ticks.push(this.options.ticks.min !== undefined ? this.options.ticks.min : niceMin);
+			ticks.push(tickOpts.min !== undefined ? tickOpts.min : niceMin);
 			for (var j = 1; j < numSpaces; ++j) {
-				this.ticks.push(niceMin + (j * spacing));
+				ticks.push(niceMin + (j * spacing));
 			}
-			this.ticks.push(this.options.ticks.max !== undefined ? this.options.ticks.max : niceMax);
+			ticks.push(tickOpts.max !== undefined ? tickOpts.max : niceMax);
 
-			if (this.options.position === "left" || this.options.position === "right") {
+			if (!isHorizontal) {
 				// We are in a vertical orientation. The top value is the highest. So reverse the array
-				this.ticks.reverse();
+				ticks.reverse();
 			}
 
 			// At this point, we need to update our max and min given the tick values since we have expanded the
 			// range of the scale
-			this.max = helpers.max(this.ticks);
-			this.min = helpers.min(this.ticks);
+			_this.max = helpers.max(ticks);
+			_this.min = helpers.min(ticks);
 
-			if (this.options.ticks.reverse) {
-				this.ticks.reverse();
+			if (tickOpts.reverse) {
+				ticks.reverse();
 
-				this.start = this.max;
-				this.end = this.min;
+				_this.start = _this.max;
+				_this.end = _this.min;
 			} else {
-				this.start = this.min;
-				this.end = this.max;
+				_this.start = _this.min;
+				_this.end = _this.max;
 			}
 		},
 		getLabelForIndex: function(index, datasetIndex) {
