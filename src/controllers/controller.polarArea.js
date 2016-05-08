@@ -100,15 +100,14 @@ module.exports = function(Chart) {
 	};
 
 	Chart.controllers.polarArea = Chart.DatasetController.extend({
-		linkScales: function() {
-			// no scales for doughnut
-		},
+		linkScales: helpers.noop,
 
 		addElements: function() {
 			var _this = this;
 			var meta = this.getMeta();
+			var data = meta.data;
 			helpers.each(_this.getDataset().data, function(value, index) {
-				meta.data[index] = meta.data[index] || new Chart.elements.Arc({
+				data[index] = data[index] || new Chart.elements.Arc({
 					_chart: _this.chart.chart,
 					_datasetIndex: _this.index,
 					_index: index
