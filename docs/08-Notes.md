@@ -4,7 +4,7 @@ anchor: notes
 ---
 ### Previous versions
 
-Please note - documentation for previous versions are available on the GitHub repo.
+Please note - documentation for previous versions are available on the GitHub repo. Version 1.x may continue to receive updates for bug fixes or high priority items.
 
 - [1.x Documentation](https://github.com/chartjs/Chart.js/tree/v1.1.1/docs)
 
