@@ -267,9 +267,10 @@ module.exports = function(Chart) {
 				this.getDatasetMeta(datasetIndex).controller.update();
 			}, this);
 
-			this.render(animationDuration, lazy);
-
+			// Do this before render so that any plugins that need final scale updates can use it
 			Chart.pluginService.notifyPlugins('afterUpdate', [this]);
+
+			this.render(animationDuration, lazy);
 		},
 
 		render: function render(duration, lazy) {

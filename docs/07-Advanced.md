@@ -377,9 +377,10 @@ Plugins will be called at the following times
 * Start of initialization
 * End of initialization
 * Start of update
-* End of update
+* End of update (before render occurs)
 * Start of draw
 * End of draw
+* Before an animation is started
 
 Plugins should derive from Chart.PluginBase and implement the following interface
 ```javascript
