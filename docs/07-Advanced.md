@@ -377,7 +377,6 @@ Plugins will be called at the following times
 * Start of initialization
 * End of initialization
 * Start of update
-* After the chart scales have calculated
 * End of update (before render occurs)
 * Start of draw
 * End of draw
@@ -390,7 +389,6 @@ Plugins should derive from Chart.PluginBase and implement the following interfac
 	afterInit: function(chartInstance) { },
 
 	beforeUpdate: function(chartInstance) { },
-	afterScaleUpdate: function(chartInstance) { },
 	afterUpdate: function(chartInstance) { },
 
 	// This is called at the start of a render. It is only called once, even if the animation will run for a number of frames. Use beforeDraw or afterDraw 
