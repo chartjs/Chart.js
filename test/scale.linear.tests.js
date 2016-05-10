@@ -41,6 +41,7 @@ describe('Linear Scale', function() {
 			},
 			ticks: {
 				beginAtZero: false,
+				minRotation: 0,
 				maxRotation: 50,
 				mirror: false,
 				padding: 10,
@@ -633,7 +634,7 @@ describe('Linear Scale', function() {
 				}
 			}
 		});
-		
+
 		var xScale = chartInstance.scales.xScale0;
 		expect(xScale.getPixelForValue(1, 0, 0)).toBeCloseToPixel(501); // right - paddingRight
 		expect(xScale.getPixelForValue(-1, 0, 0)).toBeCloseToPixel(41); // left + paddingLeft

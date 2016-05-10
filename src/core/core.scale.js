@@ -33,6 +33,7 @@ module.exports = function(Chart) {
 		// label settings
 		ticks: {
 			beginAtZero: false,
+			minRotation: 0,
 			maxRotation: 50,
 			mirror: false,
 			padding: 10,
@@ -190,7 +191,7 @@ module.exports = function(Chart) {
 			var lastWidth = this.ctx.measureText(this.ticks[this.ticks.length - 1]).width;
 			var firstRotated;
 
-			this.labelRotation = 0;
+			this.labelRotation = this.options.ticks.minRotation || 0;
 			this.paddingRight = 0;
 			this.paddingLeft = 0;
 
