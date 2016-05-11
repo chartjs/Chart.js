@@ -34,7 +34,6 @@ module.exports = function(Chart) {
 			// fillStyle : fill of coloured box
 			// strokeStyle: stroke of coloured box
 			// hidden : if this legend item refers to a hidden item
-			// excluded : if this entry should be completely excluded in the legend
 			// lineCap : cap style for line
 			// lineDash
 			// lineDashOffset :
@@ -47,7 +46,6 @@ module.exports = function(Chart) {
 						text: dataset.label,
 						fillStyle: dataset.backgroundColor,
 						hidden: !chart.isDatasetVisible(i),
-						excluded: false,
 						lineCap: dataset.borderCapStyle,
 						lineDash: dataset.borderDash,
 						lineDashOffset: dataset.borderDashOffset,
@@ -269,11 +267,6 @@ module.exports = function(Chart) {
 						hitboxes = this.legendHitBoxes;
 
 					helpers.each(this.legendItems, function(legendItem, i) {
-
-						if (legendItem.excluded) {
-							return;
-						}
-
 						var textWidth = ctx.measureText(legendItem.text).width,
 							width = boxWidth + (fontSize / 2) + textWidth,
 							x = cursor.x,

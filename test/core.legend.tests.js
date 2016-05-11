@@ -53,12 +53,6 @@ describe('Legend block tests', function() {
 					borderWidth: 10,
 					borderColor: 'green',
 					data: []
-				}, {
-					label: 'dataset4',
-					excluded: true,
-					borderWidth: 10,
-					borderColor: 'green',
-					data: []
 				}],
 				labels: []
 			}
@@ -68,7 +62,6 @@ describe('Legend block tests', function() {
 			text: 'dataset1',
 			fillStyle: '#f31',
 			hidden: false,
-			excluded: false,
 			lineCap: 'butt',
 			lineDash: [2, 2],
 			lineDashOffset: 5.5,
@@ -80,7 +73,6 @@ describe('Legend block tests', function() {
 			text: 'dataset2',
 			fillStyle: undefined,
 			hidden: true,
-			excluded: false,
 			lineCap: undefined,
 			lineDash: undefined,
 			lineDashOffset: undefined,
@@ -92,19 +84,6 @@ describe('Legend block tests', function() {
 			text: 'dataset3',
 			fillStyle: undefined,
 			hidden: false,
-			excluded: false,
-			lineCap: undefined,
-			lineDash: undefined,
-			lineDashOffset: undefined,
-			lineJoin: undefined,
-			lineWidth: 10,
-			strokeStyle: 'green',
-			datasetIndex: 2
-		}, {
-			text: 'dataset4',
-			fillStyle: undefined,
-			hidden: false,
-			excluded: true,
 			lineCap: undefined,
 			lineDash: undefined,
 			lineDashOffset: undefined,
