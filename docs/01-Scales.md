@@ -41,7 +41,7 @@ afterUpdate | Function | undefined | Callback that runs at the end of the update
 *gridLines*.zeroLineColor | Color | "rgba(0, 0, 0, 0.25)" | Stroke color of the grid line for the first index (index 0).
 *gridLines*.offsetGridLines | Boolean | false | If true, offset labels from grid lines.
 **scaleLabel** | Object | | Title for the entire axis.
-*scaleLabel*.display | Boolean | false | 
+*scaleLabel*.display | Boolean | false |
 *scaleLabel*.labelString | String | "" | The text for the title. (i.e. "# of People", "Response Choices")
 *scaleLabel*.fontColor | Color | "#666" | Font color for the scale title.
 *scaleLabel*.fontFamily| String | "Helvetica Neue" | Font family for the scale title, follows CSS font-family options.
@@ -62,7 +62,7 @@ afterUpdate | Function | undefined | Callback that runs at the end of the update
 *ticks*.display | Boolean | true | If true, show the ticks.
 *ticks*.suggestedMin | Number | - | User defined minimum number for the scale, overrides minimum value *except for if* it is higher than the minimum value.
 *ticks*.suggestedMax | Number | - | User defined maximum number for the scale, overrides maximum value *except for if* it is lower than the maximum value.
-*ticks*.min | Number | - | User defined minimum number for the scale, overrides minimum value. 
+*ticks*.min | Number | - | User defined minimum number for the scale, overrides minimum value.
 *ticks*.max | Number | - | User defined minimum number for the scale, overrides maximum value
 *ticks*.autoSkip | Boolean | true | If true, automatically calculates how many labels that can be shown and hides labels accordingly. Turn it off to show all labels no matter what
 *ticks*.callback | Function | `function(value) { return '' + value; } ` | Returns the string representation of the tick value as it should be displayed on the chart.
@@ -181,7 +181,10 @@ The time scale extends the core scale class with the following tick template:
 
 		// string - By default, no rounding is applied.  To round, set to a supported time unit eg. 'week', 'month', 'year', etc.
 		round: false,
-		
+
+        // Number - By default, the week and therefore the scale starts on the locale defined week if the unit is 'week'. To override the start day of the week, set this to an integer between 1 and 7 - see http://momentjs.com/docs/#/get-set/iso-weekday/
+		isoWeekday: false,
+
 		// Moment js for each of the units. Replaces `displayFormat`
 		// To override, use a pattern string from http://momentjs.com/docs/#/displaying/format/
 		displayFormats: {
