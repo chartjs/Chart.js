@@ -38,7 +38,8 @@ describe('Category scale tests', function() {
 				display: true,
 				callback: defaultConfig.ticks.callback,  // make this nicer, then check explicitly below
 				autoSkip: true,
-				autoSkipPadding: 0
+				autoSkipPadding: 0,
+				labelOffset: 0
 			}
 		});
 
