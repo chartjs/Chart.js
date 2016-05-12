@@ -183,6 +183,9 @@ The time scale extends the core scale class with the following tick template:
 		// string - By default, no rounding is applied.  To round, set to a supported time unit eg. 'week', 'month', 'year', etc.
 		round: false,
 
+        // Number - By default, the week and therefore the scale starts on the locale defined week if the unit is 'week'. To override the start day of the week, set this to an integer between 1 and 7 - see http://momentjs.com/docs/#/get-set/iso-weekday/
+		isoWeekday: false,
+
 		// Moment js for each of the units. Replaces `displayFormat`
 		// To override, use a pattern string from http://momentjs.com/docs/#/displaying/format/
 		displayFormats: {
