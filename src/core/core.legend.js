@@ -21,15 +21,15 @@ module.exports = function(Chart) {
 				indices = [legendItem.datasetIndex];
 			}
 
-            for (var idx in indices) {
+			for (var idx in indices) {
 				var index = indices[idx];
 				var meta = ci.getDatasetMeta(index);
-                // See controller.isDatasetVisible comment
-                meta.hidden = meta.hidden === null? !ci.data.datasets[index].hidden : null;
-            }
+				// See controller.isDatasetVisible comment
+				meta.hidden = meta.hidden === null? !ci.data.datasets[index].hidden : null;
+			}
 
-            // We hid a dataset ... rerender the chart
-            ci.update();
+			// We hid a dataset ... rerender the chart
+			ci.update();
 		},
 
 		labels: {
