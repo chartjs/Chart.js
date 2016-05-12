@@ -14,15 +14,22 @@ module.exports = function(Chart) {
 
 		// a callback that will handle
 		onClick: function(e, legendItem) {
-			var index = legendItem.datasetIndex;
+			var indices = [];
 			var ci = this.chart;
-			var meta = ci.getDatasetMeta(index);
 
-			// See controller.isDatasetVisible comment
-			meta.hidden = meta.hidden === null? !ci.data.datasets[index].hidden : null;
+			if (!helpers.isArray(legendItem.datasetIndex)) {
+				indices = [legendItem.datasetIndex];
+			}
 
-			// We hid a dataset ... rerender the chart
-			ci.update();
+            for (var idx in indices) {
+				var index = indices[idx];
+				var meta = ci.getDatasetMeta(index);
+                // See controller.isDatasetVisible comment
+                meta.hidden = meta.hidden === null? !ci.data.datasets[index].hidden : null;
+            }
+
+            // We hid a dataset ... rerender the chart
+            ci.update();
 		},
 
 		labels: {
