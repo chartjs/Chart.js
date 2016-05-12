@@ -1,7 +1,7 @@
 /*!
  * Chart.js
  * http://chartjs.org/
- * Version: 2.1.2
+ * Version: 2.1.3
  *
  * Copyright 2016 Nick Downie
  * Released under the MIT license
@@ -2068,8 +2068,8 @@ module.exports = function(Chart) {
 			var dataset = this.chart.data.datasets[rectangle._datasetIndex];
 			var index = rectangle._index;
 
-			rectangle._model.backgroundColor = rectangle.custom && rectangle.custom.hoverBackgroundColor ? rectangle.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.color(rectangle._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
-			rectangle._model.borderColor = rectangle.custom && rectangle.custom.hoverBorderColor ? rectangle.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.color(rectangle._model.borderColor).saturate(0.5).darken(0.1).rgbString());
+			rectangle._model.backgroundColor = rectangle.custom && rectangle.custom.hoverBackgroundColor ? rectangle.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.getHoverColor(rectangle._model.backgroundColor));
+			rectangle._model.borderColor = rectangle.custom && rectangle.custom.hoverBorderColor ? rectangle.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.getHoverColor(rectangle._model.borderColor));
 			rectangle._model.borderWidth = rectangle.custom && rectangle.custom.hoverBorderWidth ? rectangle.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.hoverBorderWidth, index, rectangle._model.borderWidth);
 		},
 
@@ -2524,8 +2524,8 @@ module.exports = function(Chart) {
 			var index = point._index;
 
 			point._model.radius = point.custom && point.custom.hoverRadius ? point.custom.hoverRadius : (helpers.getValueAtIndexOrDefault(dataset.hoverRadius, index, this.chart.options.elements.point.hoverRadius)) + this.getRadius(this.getDataset().data[point._index]);
-			point._model.backgroundColor = point.custom && point.custom.hoverBackgroundColor ? point.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.color(point._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
-			point._model.borderColor = point.custom && point.custom.hoverBorderColor ? point.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.color(point._model.borderColor).saturate(0.5).darken(0.1).rgbString());
+			point._model.backgroundColor = point.custom && point.custom.hoverBackgroundColor ? point.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.getHoverColor(point._model.backgroundColor));
+			point._model.borderColor = point.custom && point.custom.hoverBorderColor ? point.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.getHoverColor(point._model.borderColor));
 			point._model.borderWidth = point.custom && point.custom.hoverBorderWidth ? point.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.hoverBorderWidth, index, point._model.borderWidth);
 		},
 
@@ -2540,6 +2540,7 @@ module.exports = function(Chart) {
 		}
 	});
 };
+
 },{}],17:[function(require,module,exports){
 "use strict";
 
@@ -2793,8 +2794,8 @@ module.exports = function(Chart) {
 			var dataset = this.chart.data.datasets[arc._datasetIndex];
 			var index = arc._index;
 
-			arc._model.backgroundColor = arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.color(arc._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
-			arc._model.borderColor = arc.custom && arc.custom.hoverBorderColor ? arc.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.color(arc._model.borderColor).saturate(0.5).darken(0.1).rgbString());
+			arc._model.backgroundColor = arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.getHoverColor(arc._model.backgroundColor));
+			arc._model.borderColor = arc.custom && arc.custom.hoverBorderColor ? arc.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.getHoverColor(arc._model.borderColor));
 			arc._model.borderWidth = arc.custom && arc.custom.hoverBorderWidth ? arc.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.hoverBorderWidth, index, arc._model.borderWidth);
 		},
 
@@ -3128,8 +3129,8 @@ module.exports = function(Chart) {
 			var index = point._index;
 
 			point._model.radius = point.custom && point.custom.hoverRadius ? point.custom.hoverRadius : helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.chart.options.elements.point.hoverRadius);
-			point._model.backgroundColor = point.custom && point.custom.hoverBackgroundColor ? point.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.color(point._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
-			point._model.borderColor = point.custom && point.custom.hoverBorderColor ? point.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.color(point._model.borderColor).saturate(0.5).darken(0.1).rgbString());
+			point._model.backgroundColor = point.custom && point.custom.hoverBackgroundColor ? point.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.getHoverColor(point._model.backgroundColor));
+			point._model.borderColor = point.custom && point.custom.hoverBorderColor ? point.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.getHoverColor(point._model.borderColor));
 			point._model.borderWidth = point.custom && point.custom.hoverBorderWidth ? point.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderWidth, index, point._model.borderWidth);
 		},
 
@@ -3363,8 +3364,8 @@ module.exports = function(Chart) {
 			var dataset = this.chart.data.datasets[arc._datasetIndex];
 			var index = arc._index;
 
-			arc._model.backgroundColor = arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.color(arc._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
-			arc._model.borderColor = arc.custom && arc.custom.hoverBorderColor ? arc.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.color(arc._model.borderColor).saturate(0.5).darken(0.1).rgbString());
+			arc._model.backgroundColor = arc.custom && arc.custom.hoverBackgroundColor ? arc.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.getHoverColor(arc._model.backgroundColor));
+			arc._model.borderColor = arc.custom && arc.custom.hoverBorderColor ? arc.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.getHoverColor(arc._model.borderColor));
 			arc._model.borderWidth = arc.custom && arc.custom.hoverBorderWidth ? arc.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.hoverBorderWidth, index, arc._model.borderWidth);
 		},
 
@@ -3596,8 +3597,8 @@ module.exports = function(Chart) {
 			var index = point._index;
 
 			point._model.radius = point.custom && point.custom.hoverRadius ? point.custom.hoverRadius : helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.chart.options.elements.point.hoverRadius);
-			point._model.backgroundColor = point.custom && point.custom.hoverBackgroundColor ? point.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.color(point._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
-			point._model.borderColor = point.custom && point.custom.hoverBorderColor ? point.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.color(point._model.borderColor).saturate(0.5).darken(0.1).rgbString());
+			point._model.backgroundColor = point.custom && point.custom.hoverBackgroundColor ? point.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.getHoverColor(point._model.backgroundColor));
+			point._model.borderColor = point.custom && point.custom.hoverBorderColor ? point.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.getHoverColor(point._model.borderColor));
 			point._model.borderWidth = point.custom && point.custom.hoverBorderWidth ? point.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderWidth, index, point._model.borderWidth);
 		},
 
@@ -3612,6 +3613,7 @@ module.exports = function(Chart) {
 		}
 	});
 };
+
 },{}],21:[function(require,module,exports){
 /*global window: false */
 "use strict";
@@ -4002,6 +4004,9 @@ module.exports = function(Chart) {
 
 			Chart.layoutService.update(this, this.chart.width, this.chart.height);
 
+			// Apply changes to the dataets that require the scales to have been calculated i.e BorderColor chages
+			Chart.pluginService.notifyPlugins('afterScaleUpdate', [this]);
+
 			// Can only reset the new controllers after the scales have been updated
 			helpers.each(newControllers, function(controller) {
 				controller.reset();
@@ -4012,9 +4017,10 @@ module.exports = function(Chart) {
 				this.getDatasetMeta(datasetIndex).controller.update();
 			}, this);
 
-			this.render(animationDuration, lazy);
-
+			// Do this before render so that any plugins that need final scale updates can use it
 			Chart.pluginService.notifyPlugins('afterUpdate', [this]);
+
+			this.render(animationDuration, lazy);
 		},
 
 		render: function render(duration, lazy) {
@@ -5491,7 +5497,12 @@ module.exports = function(Chart) {
 			fn.apply(_tArg, args);
 		}
 	};
-
+	helpers.getHoverColor = function(color) {
+		/* global CanvasPattern */
+		return (color instanceof CanvasPattern) ?
+			color :
+			helpers.color(color).saturate(0.5).darken(0.1).rgbString();
+	};
 };
 
 },{"chartjs-color":3}],26:[function(require,module,exports){
@@ -6376,6 +6387,7 @@ module.exports = function(Chart) {
 		// label settings
 		ticks: {
 			beginAtZero: false,
+			minRotation: 0,
 			maxRotation: 50,
 			mirror: false,
 			padding: 10,
@@ -6383,6 +6395,7 @@ module.exports = function(Chart) {
 			display: true,
 			autoSkip: true,
 			autoSkipPadding: 0,
+			labelOffset: 0,
 			callback: function(value) {
 				return '' + value;
 			}
@@ -6533,7 +6546,7 @@ module.exports = function(Chart) {
 			var lastWidth = this.ctx.measureText(this.ticks[this.ticks.length - 1]).width;
 			var firstRotated;
 
-			this.labelRotation = 0;
+			this.labelRotation = this.options.ticks.minRotation || 0;
 			this.paddingRight = 0;
 			this.paddingLeft = 0;
 
@@ -6899,7 +6912,7 @@ module.exports = function(Chart) {
 
 						if (this.options.ticks.display) {
 							this.ctx.save();
-							this.ctx.translate(xLabelValue, (isRotated) ? this.top + 12 : this.options.position === "top" ? this.bottom - tl : this.top + tl);
+							this.ctx.translate(xLabelValue + this.options.ticks.labelOffset, (isRotated) ? this.top + 12 : this.options.position === "top" ? this.bottom - tl : this.top + tl);
 							this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
 							this.ctx.font = tickLabelFont;
 							this.ctx.textAlign = (isRotated) ? "right" : "center";
@@ -6992,7 +7005,7 @@ module.exports = function(Chart) {
 								}
 							}
 
-							this.ctx.translate(xLabelValue, yLabelValue);
+							this.ctx.translate(xLabelValue, yLabelValue + this.options.ticks.labelOffset);
 							this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
 							this.ctx.font = tickLabelFont;
 							this.ctx.textBaseline = "middle";
@@ -9458,6 +9471,7 @@ module.exports = function(Chart) {
 			unit: false, // false == automatic or override with week, month, year, etc.
 			round: false, // none, or override with week, month, year, etc.
 			displayFormat: false, // DEPRECATED
+			isoWeekday: false, // override week start day - see http://momentjs.com/docs/#/get-set/iso-weekday/
 
 			// defaults to unit's corresponding unitFormat below or override using pattern string from http://momentjs.com/docs/#/displaying/format/
 			displayFormats: {
@@ -9487,6 +9501,13 @@ module.exports = function(Chart) {
 		},
 		getLabelMoment: function(datasetIndex, index) {
 			return this.labelMoments[datasetIndex][index];
+		},
+		getMomentStartOf: function(tick) {
+			if (this.options.time.unit === 'week' && this.options.time.isoWeekday !== false) {
+				return tick.clone().startOf('isoWeek').isoWeekday(this.options.time.isoWeekday);
+			} else {
+				return tick.clone().startOf(this.tickUnit);
+			}
 		},
 		determineDataLimits: function() {
 			this.labelMoments = [];
@@ -9619,8 +9640,8 @@ module.exports = function(Chart) {
 						unitDefinition = time.units[unitDefinitionIndex];
 
 						this.tickUnit = unitDefinition.name;
-						var leadingUnitBuffer = this.firstTick.diff(this.firstTick.clone().startOf(this.tickUnit), this.tickUnit, true);
-						var trailingUnitBuffer = this.lastTick.clone().add(1, this.tickUnit).startOf(this.tickUnit).diff(this.lastTick, this.tickUnit, true);
+						var leadingUnitBuffer = this.firstTick.diff(this.getMomentStartOf(this.firstTick), this.tickUnit, true);
+						var trailingUnitBuffer = this.getMomentStartOf(this.lastTick.clone().add(1, this.tickUnit)).diff(this.lastTick, this.tickUnit, true);
 						this.scaleSizeInUnits = this.lastTick.diff(this.firstTick, this.tickUnit, true) + leadingUnitBuffer + trailingUnitBuffer;
 						this.displayFormat = this.options.time.displayFormats[unitDefinition.name];
 					}
@@ -9631,18 +9652,18 @@ module.exports = function(Chart) {
 
 			// Only round the first tick if we have no hard minimum
 			if (!this.options.time.min) {
-				this.firstTick.startOf(this.tickUnit);
+				this.firstTick = this.getMomentStartOf(this.firstTick);
 				roundedStart = this.firstTick;
 			} else {
-				roundedStart = this.firstTick.clone().startOf(this.tickUnit);
+				roundedStart = this.getMomentStartOf(this.firstTick);
 			}
 
 			// Only round the last tick if we have no hard maximum
 			if (!this.options.time.max) {
-				var roundedEnd = this.lastTick.clone().startOf(this.tickUnit);
+				var roundedEnd = this.getMomentStartOf(this.lastTick);
 				if (roundedEnd.diff(this.lastTick, this.tickUnit, true) !== 0) {
 					// Do not use end of because we need this to be in the next time unit
-					this.lastTick.add(1, this.tickUnit).startOf(this.tickUnit);
+					this.lastTick = this.getMomentStartOf(this.lastTick.add(1, this.tickUnit));
 				}
 			}
 
@@ -9689,7 +9710,7 @@ module.exports = function(Chart) {
 					this.scaleSizeInUnits = this.lastTick.diff(this.firstTick, this.tickUnit, true);
 				}
 			}
-			
+
 			this.ctx.restore();
 		},
 		// Get tooltip label
@@ -9710,9 +9731,11 @@ module.exports = function(Chart) {
 		// Function to format an individual tick mark
 		tickFormatFunction: function tickFormatFunction(tick, index, ticks) {
 			var formattedTick = tick.format(this.displayFormat);
+			var tickOpts = this.options.ticks;
+			var callback = helpers.getValueOrDefault(tickOpts.callback, tickOpts.userCallback);
 
-			if (this.options.ticks.userCallback) {
-				return this.options.ticks.userCallback(formattedTick, index, ticks);
+			if (callback) {
+				return callback(formattedTick, index, ticks);
 			} else {
 				return formattedTick;
 			}
