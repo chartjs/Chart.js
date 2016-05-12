@@ -19,6 +19,8 @@ module.exports = function(Chart) {
 
 			if (!helpers.isArray(legendItem.datasetIndex)) {
 				indices = [legendItem.datasetIndex];
+			} else {
+				indices = legendItem.datasetIndex;
 			}
 
 			helpers.each(indices, function(index) {
