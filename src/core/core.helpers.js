@@ -944,6 +944,7 @@ module.exports = function(Chart) {
 		}
 	};
 	helpers.getHoverColor = function(color) {
+		/* global CanvasPattern */
 		return (color instanceof CanvasPattern) ?
 			color :
 			helpers.color(color).saturate(0.5).darken(0.1).rgbString();
