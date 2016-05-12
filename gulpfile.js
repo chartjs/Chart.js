@@ -116,7 +116,8 @@ function bumpTask(complete) {
     choices: choices
   }, function(res) {
     var increment = res.version.split(' ')[0],
-      newVersion = semver.inc(package.version, increment);
+      newVersion = semver.inc(package.version, increment),
+      oldVersion = package.version;
 
     // Set the new versions into the bower/package object
     package.version = newVersion;
@@ -125,6 +126,13 @@ function bumpTask(complete) {
     // Write these to their own files, then build the output
     fs.writeFileSync('package.json', JSON.stringify(package, null, 2));
     fs.writeFileSync('bower.json', JSON.stringify(bower, null, 2));
+    
+    var oldCDN = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/'+oldVersion+'/Chart.min.js',
+      newCDN = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/'+newVersion+'/Chart.min.js';
+    
+    gulp.src(['./README.md'])
+      .pipe(replace(oldCDN, newCDN))
+      .pipe(gulp.dest('./'));
 
     complete();
   });

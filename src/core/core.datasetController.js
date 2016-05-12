@@ -95,10 +95,11 @@ module.exports = function(Chart) {
 				custom = element.custom,
 				valueOrDefault = helpers.getValueAtIndexOrDefault,
 				color = helpers.color,
+				getHoverColor = helpers.getHoverColor,
 				model = element._model;
 
-			model.backgroundColor = custom && custom.hoverBackgroundColor ? custom.hoverBackgroundColor : valueOrDefault(dataset.hoverBackgroundColor, index, color(model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
-			model.borderColor = custom && custom.hoverBorderColor ? custom.hoverBorderColor : valueOrDefault(dataset.hoverBorderColor, index, color(model.borderColor).saturate(0.5).darken(0.1).rgbString());
+			model.backgroundColor = custom && custom.hoverBackgroundColor ? custom.hoverBackgroundColor : valueOrDefault(dataset.hoverBackgroundColor, index, getHoverColor(model.backgroundColor));
+			model.borderColor = custom && custom.hoverBorderColor ? custom.hoverBorderColor : valueOrDefault(dataset.hoverBorderColor, index, getHoverColor(model.borderColor));
 			model.borderWidth = custom && custom.hoverBorderWidth ? custom.hoverBorderWidth : valueOrDefault(dataset.hoverBorderWidth, index, model.borderWidth);
 		},
 		update: noop

@@ -943,5 +943,10 @@ module.exports = function(Chart) {
 			fn.apply(_tArg, args);
 		}
 	};
-
+	helpers.getHoverColor = function(color) {
+		/* global CanvasPattern */
+		return (color instanceof CanvasPattern) ?
+			color :
+			helpers.color(color).saturate(0.5).darken(0.1).rgbString();
+	};
 };
