@@ -41,6 +41,7 @@ module.exports = function(Chart) {
 			display: true,
 			autoSkip: true,
 			autoSkipPadding: 0,
+			labelOffset: 0,
 			callback: function(value) {
 				return '' + value;
 			}
@@ -557,7 +558,7 @@ module.exports = function(Chart) {
 
 						if (this.options.ticks.display) {
 							this.ctx.save();
-							this.ctx.translate(xLabelValue, (isRotated) ? this.top + 12 : this.options.position === "top" ? this.bottom - tl : this.top + tl);
+							this.ctx.translate(xLabelValue + this.options.ticks.labelOffset, (isRotated) ? this.top + 12 : this.options.position === "top" ? this.bottom - tl : this.top + tl);
 							this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
 							this.ctx.font = tickLabelFont;
 							this.ctx.textAlign = (isRotated) ? "right" : "center";
@@ -650,7 +651,7 @@ module.exports = function(Chart) {
 								}
 							}
 
-							this.ctx.translate(xLabelValue, yLabelValue);
+							this.ctx.translate(xLabelValue, yLabelValue + this.options.ticks.labelOffset);
 							this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
 							this.ctx.font = tickLabelFont;
 							this.ctx.textBaseline = "middle";
