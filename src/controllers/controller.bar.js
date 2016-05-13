@@ -342,6 +342,11 @@ module.exports = function(Chart) {
 				}
 			}]
 		},
+		elements: {
+			rectangle: {
+				borderSkipped: 'left'
+			}
+		}
 	};
 
 	Chart.controllers.horizontalBar = Chart.controllers.bar.extend({
