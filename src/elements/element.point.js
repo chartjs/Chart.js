@@ -3,14 +3,15 @@
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers,
-		globalOpts = Chart.defaults.global;
+		globalOpts = Chart.defaults.global,
+		defaultColor = globalOpts.defaultColor;
 
 	globalOpts.elements.point = {
 		radius: 3,
 		pointStyle: 'circle',
-		backgroundColor: globalOpts.defaultColor,
+		backgroundColor: defaultColor,
 		borderWidth: 1,
-		borderColor: globalOpts.defaultColor,
+		borderColor: defaultColor,
 		// Hover
 		hitRadius: 1,
 		hoverRadius: 4,
@@ -53,10 +54,10 @@ module.exports = function(Chart) {
 
 			if (!isNaN(vm.radius) && vm.radius > 0) {
 
-				ctx.strokeStyle = vm.borderColor || Chart.defaults.global.defaultColor;
-				ctx.lineWidth = helpers.getValueOrDefault(vm.borderWidth, Chart.defaults.global.elements.point.borderWidth);
+				ctx.strokeStyle = vm.borderColor || defaultColor;
+				ctx.lineWidth = helpers.getValueOrDefault(vm.borderWidth, globalOpts.elements.point.borderWidth);
 
-				ctx.fillStyle = vm.backgroundColor || Chart.defaults.global.defaultColor;
+				ctx.fillStyle = vm.backgroundColor || defaultColor;
 
 				var radius = vm.radius;
 
