@@ -60,7 +60,7 @@ module.exports = function(Chart) {
         // Color transitions if possible
         else if (typeof value === 'string') {
           try {
-            var color = helpers.color(this._start[key]).mix(helpers.color(this._model[key]), ease);
+            var color = helpers.color(this._model[key]).mix(helpers.color(this._start[key]), ease);
             this._view[key] = color.rgbString();
           } catch (err) {
             this._view[key] = value;
