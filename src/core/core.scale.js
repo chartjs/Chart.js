@@ -3,6 +3,7 @@
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
+	var globalDefaults = Chart.defaults.global;
 
 	Chart.defaults.scale = {
 		display: true,
@@ -180,19 +181,22 @@ module.exports = function(Chart) {
 			helpers.callCallback(this.options.beforeCalculateTickRotation, [this]);
 		},
 		calculateTickRotation: function() {
+			var context = this.ctx;
+			var optionTicks = this.options.ticks;
+
 			//Get the width of each grid by calculating the difference
 			//between x offsets between 0 and 1.
-			var tickFontSize = helpers.getValueOrDefault(this.options.ticks.fontSize, Chart.defaults.global.defaultFontSize);
-			var tickFontStyle = helpers.getValueOrDefault(this.options.ticks.fontStyle, Chart.defaults.global.defaultFontStyle);
-			var tickFontFamily = helpers.getValueOrDefault(this.options.ticks.fontFamily, Chart.defaults.global.defaultFontFamily);
+			var tickFontSize = helpers.getValueOrDefault(optionTicks.fontSize, globalDefaults.defaultFontSize);
+			var tickFontStyle = helpers.getValueOrDefault(optionTicks.fontStyle, globalDefaults.defaultFontStyle);
+			var tickFontFamily = helpers.getValueOrDefault(optionTicks.fontFamily, globalDefaults.defaultFontFamily);
 			var tickLabelFont = helpers.fontString(tickFontSize, tickFontStyle, tickFontFamily);
-			this.ctx.font = tickLabelFont;
+			context.font = tickLabelFont;
 
-			var firstWidth = this.ctx.measureText(this.ticks[0]).width;
-			var lastWidth = this.ctx.measureText(this.ticks[this.ticks.length - 1]).width;
+			var firstWidth = context.measureText(this.ticks[0]).width;
+			var lastWidth = context.measureText(this.ticks[this.ticks.length - 1]).width;
 			var firstRotated;
 
-			this.labelRotation = this.options.ticks.minRotation || 0;
+			this.labelRotation = optionTicks.minRotation || 0;
 			this.paddingRight = 0;
 			this.paddingLeft = 0;
 
@@ -204,7 +208,7 @@ module.exports = function(Chart) {
 					if (!this.longestTextCache) {
 						this.longestTextCache = {};
 					}
-					var originalLabelWidth = helpers.longestText(this.ctx, tickLabelFont, this.ticks, this.longestTextCache);
+					var originalLabelWidth = helpers.longestText(context, tickLabelFont, this.ticks, this.longestTextCache);
 					var labelWidth = originalLabelWidth;
 					var cosRotation;
 					var sinRotation;
@@ -214,7 +218,7 @@ module.exports = function(Chart) {
 					var tickWidth = this.getPixelForTick(1) - this.getPixelForTick(0) - 6;
 
 					//Max label rotation can be set or default to 90 - also act as a loop counter
-					while (labelWidth > tickWidth && this.labelRotation < this.options.ticks.maxRotation) {
+					while (labelWidth > tickWidth && this.labelRotation < optionTicks.maxRotation) {
 						cosRotation = Math.cos(helpers.toRadians(this.labelRotation));
 						sinRotation = Math.sin(helpers.toRadians(this.labelRotation));
 
@@ -263,18 +267,17 @@ module.exports = function(Chart) {
 			var opts = this.options;
 			var tickOpts = opts.ticks;
 			var scaleLabelOpts = opts.scaleLabel;
-			var globalOpts = Chart.defaults.global;
 			var display = opts.display;
 			var isHorizontal = this.isHorizontal();
 
-			var tickFontSize = helpers.getValueOrDefault(tickOpts.fontSize, globalOpts.defaultFontSize);
-			var tickFontStyle = helpers.getValueOrDefault(tickOpts.fontStyle, globalOpts.defaultFontStyle);
-			var tickFontFamily = helpers.getValueOrDefault(tickOpts.fontFamily, globalOpts.defaultFontFamily);
+			var tickFontSize = helpers.getValueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize);
+			var tickFontStyle = helpers.getValueOrDefault(tickOpts.fontStyle, globalDefaults.defaultFontStyle);
+			var tickFontFamily = helpers.getValueOrDefault(tickOpts.fontFamily, globalDefaults.defaultFontFamily);
 			var tickLabelFont = helpers.fontString(tickFontSize, tickFontStyle, tickFontFamily);
 
-			var scaleLabelFontSize = helpers.getValueOrDefault(scaleLabelOpts.fontSize, globalOpts.defaultFontSize);
-			var scaleLabelFontStyle = helpers.getValueOrDefault(scaleLabelOpts.fontStyle, globalOpts.defaultFontStyle);
-			var scaleLabelFontFamily = helpers.getValueOrDefault(scaleLabelOpts.fontFamily, globalOpts.defaultFontFamily);
+			var scaleLabelFontSize = helpers.getValueOrDefault(scaleLabelOpts.fontSize, globalDefaults.defaultFontSize);
+			var scaleLabelFontStyle = helpers.getValueOrDefault(scaleLabelOpts.fontStyle, globalDefaults.defaultFontStyle);
+			var scaleLabelFontFamily = helpers.getValueOrDefault(scaleLabelOpts.fontFamily, globalDefaults.defaultFontFamily);
 			var scaleLabelFont = helpers.fontString(scaleLabelFontSize, scaleLabelFontStyle, scaleLabelFontFamily);
 
 			var tickMarkLength = opts.gridLines.tickMarkLength;
@@ -450,42 +453,46 @@ module.exports = function(Chart) {
 		// @param {rectangle} chartArea : the area of the chart to draw full grid lines on
 		draw: function(chartArea) {
 			if (this.options.display) {
+				var context = this.ctx;
+				var ticks = this.options.ticks;
+				var gridLines = this.options.gridLines;
+				var scaleLabel = this.options.scaleLabel;
 
 				var setContextLineSettings;
 				var isRotated = this.labelRotation !== 0;
 				var skipRatio;
 				var scaleLabelX;
 				var scaleLabelY;
-				var useAutoskipper = this.options.ticks.autoSkip;
+]				var useAutoskipper = ticks.autoSkip;
 
 
 				// figure out the maximum number of gridlines to show
 				var maxTicks;
-
-				if (this.options.ticks.maxTicksLimit) {
-					maxTicks = this.options.ticks.maxTicksLimit;
+				if (ticks.maxTicksLimit) {
+					maxTicks = ticks.maxTicksLimit;
 				}
 
-				var tickFontColor = helpers.getValueOrDefault(this.options.ticks.fontColor, Chart.defaults.global.defaultFontColor);
-				var tickFontSize = helpers.getValueOrDefault(this.options.ticks.fontSize, Chart.defaults.global.defaultFontSize);
-				var tickFontStyle = helpers.getValueOrDefault(this.options.ticks.fontStyle, Chart.defaults.global.defaultFontStyle);
-				var tickFontFamily = helpers.getValueOrDefault(this.options.ticks.fontFamily, Chart.defaults.global.defaultFontFamily);
+				var tickFontColor = helpers.getValueOrDefault(ticks.fontColor, globalDefaults.defaultFontColor);
+				var tickFontSize = helpers.getValueOrDefault(ticks.fontSize, globalDefaults.defaultFontSize);
+				var tickFontStyle = helpers.getValueOrDefault(ticks.fontStyle, globalDefaults.defaultFontStyle);
+				var tickFontFamily = helpers.getValueOrDefault(ticks.fontFamily, globalDefaults.defaultFontFamily);
 				var tickLabelFont = helpers.fontString(tickFontSize, tickFontStyle, tickFontFamily);
-				var tl = this.options.gridLines.tickMarkLength;
+				var tl = gridLines.tickMarkLength;
 
-				var scaleLabelFontColor = helpers.getValueOrDefault(this.options.scaleLabel.fontColor, Chart.defaults.global.defaultFontColor);
-				var scaleLabelFontSize = helpers.getValueOrDefault(this.options.scaleLabel.fontSize, Chart.defaults.global.defaultFontSize);
-				var scaleLabelFontStyle = helpers.getValueOrDefault(this.options.scaleLabel.fontStyle, Chart.defaults.global.defaultFontStyle);
-				var scaleLabelFontFamily = helpers.getValueOrDefault(this.options.scaleLabel.fontFamily, Chart.defaults.global.defaultFontFamily);
+				var scaleLabelFontColor = helpers.getValueOrDefault(scaleLabel.fontColor, globalDefaults.defaultFontColor);
+				var scaleLabelFontSize = helpers.getValueOrDefault(scaleLabel.fontSize, globalDefaults.defaultFontSize);
+				var scaleLabelFontStyle = helpers.getValueOrDefault(scaleLabel.fontStyle, globalDefaults.defaultFontStyle);
+				var scaleLabelFontFamily = helpers.getValueOrDefault(scaleLabel.fontFamily, globalDefaults.defaultFontFamily);
 				var scaleLabelFont = helpers.fontString(scaleLabelFontSize, scaleLabelFontStyle, scaleLabelFontFamily);
 
-				var cosRotation = Math.cos(helpers.toRadians(this.labelRotation));
-				var sinRotation = Math.sin(helpers.toRadians(this.labelRotation));
+				var labelRotationRadians = helpers.toRadians(this.labelRotation);
+				var cosRotation = Math.cos(labelRotationRadians);
+				var sinRotation = Math.sin(labelRotationRadians);
 				var longestRotatedLabel = this.longestLabelWidth * cosRotation;
 				var rotatedLabelHeight = tickFontSize * sinRotation;
 
 				// Make sure we draw text in the correct color and font
-				this.ctx.fillStyle = tickFontColor;
+				context.fillStyle = tickFontColor;
 
 				if (this.isHorizontal()) {
 					setContextLineSettings = true;
@@ -493,8 +500,8 @@ module.exports = function(Chart) {
 					var yTickEnd = this.options.position === "bottom" ? this.top + tl : this.bottom;
 					skipRatio = false;
 
-					if (((longestRotatedLabel / 2) + this.options.ticks.autoSkipPadding) * this.ticks.length > (this.width - (this.paddingLeft + this.paddingRight))) {
-						skipRatio = 1 + Math.floor((((longestRotatedLabel / 2) + this.options.ticks.autoSkipPadding) * this.ticks.length) / (this.width - (this.paddingLeft + this.paddingRight)));
+					if (((longestRotatedLabel / 2) + ticks.autoSkipPadding) * this.ticks.length > (this.width - (this.paddingLeft + this.paddingRight))) {
+						skipRatio = 1 + Math.floor((((longestRotatedLabel / 2) + ticks.autoSkipPadding) * this.ticks.length) / (this.width - (this.paddingLeft + this.paddingRight)));
 					}
 
 					// if they defined a max number of ticks,
@@ -522,63 +529,63 @@ module.exports = function(Chart) {
 							return;
 						}
 						var xLineValue = this.getPixelForTick(index); // xvalues for grid lines
-						var xLabelValue = this.getPixelForTick(index, this.options.gridLines.offsetGridLines); // x values for ticks (need to consider offsetLabel option)
+						var xLabelValue = this.getPixelForTick(index, gridLines.offsetGridLines); // x values for ticks (need to consider offsetLabel option)
 
-						if (this.options.gridLines.display) {
+						if (gridLines.display) {
 							if (index === (typeof this.zeroLineIndex !== 'undefined' ? this.zeroLineIndex : 0)) {
 								// Draw the first index specially
-								this.ctx.lineWidth = this.options.gridLines.zeroLineWidth;
-								this.ctx.strokeStyle = this.options.gridLines.zeroLineColor;
+								context.lineWidth = gridLines.zeroLineWidth;
+								context.strokeStyle = gridLines.zeroLineColor;
 								setContextLineSettings = true; // reset next time
 							} else if (setContextLineSettings) {
-								this.ctx.lineWidth = this.options.gridLines.lineWidth;
-								this.ctx.strokeStyle = this.options.gridLines.color;
+								context.lineWidth = gridLines.lineWidth;
+								context.strokeStyle = gridLines.color;
 								setContextLineSettings = false;
 							}
 
-							xLineValue += helpers.aliasPixel(this.ctx.lineWidth);
+							xLineValue += helpers.aliasPixel(context.lineWidth);
 
 							// Draw the label area
-							this.ctx.beginPath();
+							context.beginPath();
 
-							if (this.options.gridLines.drawTicks) {
-								this.ctx.moveTo(xLineValue, yTickStart);
-								this.ctx.lineTo(xLineValue, yTickEnd);
+							if (gridLines.drawTicks) {
+								context.moveTo(xLineValue, yTickStart);
+								context.lineTo(xLineValue, yTickEnd);
 							}
 
 							// Draw the chart area
-							if (this.options.gridLines.drawOnChartArea) {
-								this.ctx.moveTo(xLineValue, chartArea.top);
-								this.ctx.lineTo(xLineValue, chartArea.bottom);
+							if (gridLines.drawOnChartArea) {
+								context.moveTo(xLineValue, chartArea.top);
+								context.lineTo(xLineValue, chartArea.bottom);
 							}
 
 							// Need to stroke in the loop because we are potentially changing line widths & colours
-							this.ctx.stroke();
+							context.stroke();
 						}
 
-						if (this.options.ticks.display) {
-							this.ctx.save();
-							this.ctx.translate(xLabelValue + this.options.ticks.labelOffset, (isRotated) ? this.top + 12 : this.options.position === "top" ? this.bottom - tl : this.top + tl);
-							this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
-							this.ctx.font = tickLabelFont;
-							this.ctx.textAlign = (isRotated) ? "right" : "center";
-							this.ctx.textBaseline = (isRotated) ? "middle" : this.options.position === "top" ? "bottom" : "top";
-							this.ctx.fillText(label, 0, 0);
-							this.ctx.restore();
+						if (ticks.display) {
+							context.save();
+							context.translate(xLabelValue + ticks.labelOffset, (isRotated) ? this.top + 12 : this.options.position === "top" ? this.bottom - tl : this.top + tl);
+							context.rotate(labelRotationRadians * -1);
+							context.font = tickLabelFont;
+							context.textAlign = (isRotated) ? "right" : "center";
+							context.textBaseline = (isRotated) ? "middle" : this.options.position === "top" ? "bottom" : "top";
+							context.fillText(label, 0, 0);
+							context.restore();
 						}
 					}, this);
 
-					if (this.options.scaleLabel.display) {
+					if (scaleLabel.display) {
 						// Draw the scale label
-						this.ctx.textAlign = "center";
-						this.ctx.textBaseline = 'middle';
-						this.ctx.fillStyle = scaleLabelFontColor; // render in correct colour
-						this.ctx.font = scaleLabelFont;
+						context.textAlign = "center";
+						context.textBaseline = 'middle';
+						context.fillStyle = scaleLabelFontColor; // render in correct colour
+						context.font = scaleLabelFont;
 
 						scaleLabelX = this.left + ((this.right - this.left) / 2); // midpoint of the width
 						scaleLabelY = this.options.position === 'bottom' ? this.bottom - (scaleLabelFontSize / 2) : this.top + (scaleLabelFontSize / 2);
 
-						this.ctx.fillText(this.options.scaleLabel.labelString, scaleLabelX, scaleLabelY);
+						context.fillText(scaleLabel.labelString, scaleLabelX, scaleLabelY);
 					}
 
 				} else {
@@ -594,112 +601,113 @@ module.exports = function(Chart) {
 
 						var yLineValue = this.getPixelForTick(index); // xvalues for grid lines
 
-						if (this.options.gridLines.display) {
+						if (gridLines.display) {
 							if (index === (typeof this.zeroLineIndex !== 'undefined' ? this.zeroLineIndex : 0)) {
 								// Draw the first index specially
-								this.ctx.lineWidth = this.options.gridLines.zeroLineWidth;
-								this.ctx.strokeStyle = this.options.gridLines.zeroLineColor;
+								context.lineWidth = gridLines.zeroLineWidth;
+								context.strokeStyle = gridLines.zeroLineColor;
 								setContextLineSettings = true; // reset next time
 							} else if (setContextLineSettings) {
-								this.ctx.lineWidth = this.options.gridLines.lineWidth;
-								this.ctx.strokeStyle = this.options.gridLines.color;
+								context.lineWidth = gridLines.lineWidth;
+								context.strokeStyle = gridLines.color;
 								setContextLineSettings = false;
 							}
 
-							yLineValue += helpers.aliasPixel(this.ctx.lineWidth);
+							yLineValue += helpers.aliasPixel(context.lineWidth);
 
 							// Draw the label area
-							this.ctx.beginPath();
+							context.beginPath();
 
-							if (this.options.gridLines.drawTicks) {
-								this.ctx.moveTo(xTickStart, yLineValue);
-								this.ctx.lineTo(xTickEnd, yLineValue);
+							if (gridLines.drawTicks) {
+								context.moveTo(xTickStart, yLineValue);
+								context.lineTo(xTickEnd, yLineValue);
 							}
 
 							// Draw the chart area
-							if (this.options.gridLines.drawOnChartArea) {
-								this.ctx.moveTo(chartArea.left, yLineValue);
-								this.ctx.lineTo(chartArea.right, yLineValue);
+							if (gridLines.drawOnChartArea) {
+								context.moveTo(chartArea.left, yLineValue);
+								context.lineTo(chartArea.right, yLineValue);
 							}
 
 							// Need to stroke in the loop because we are potentially changing line widths & colours
-							this.ctx.stroke();
+							context.stroke();
 						}
 
-						if (this.options.ticks.display) {
+						if (ticks.display) {
 							var xLabelValue;
-							var yLabelValue = this.getPixelForTick(index, this.options.gridLines.offsetGridLines); // x values for ticks (need to consider offsetLabel option)
+							var yLabelValue = this.getPixelForTick(index, gridLines.offsetGridLines); // x values for ticks (need to consider offsetLabel option)
 
-							this.ctx.save();
+							context.save();
 
 							if (this.options.position === "left") {
-								if (this.options.ticks.mirror) {
-									xLabelValue = this.right + this.options.ticks.padding;
-									this.ctx.textAlign = "left";
+								if (ticks.mirror) {
+									xLabelValue = this.right + ticks.padding;
+									context.textAlign = "left";
 								} else {
-									xLabelValue = this.right - this.options.ticks.padding;
-									this.ctx.textAlign = "right";
+									xLabelValue = this.right - ticks.padding;
+									context.textAlign = "right";
 								}
 							} else {
 								// right side
-								if (this.options.ticks.mirror) {
-									xLabelValue = this.left - this.options.ticks.padding;
-									this.ctx.textAlign = "right";
+								if (ticks.mirror) {
+									xLabelValue = this.left - ticks.padding;
+									context.textAlign = "right";
 								} else {
-									xLabelValue = this.left + this.options.ticks.padding;
-									this.ctx.textAlign = "left";
+									xLabelValue = this.left + ticks.padding;
+									context.textAlign = "left";
 								}
 							}
 
-							this.ctx.translate(xLabelValue, yLabelValue + this.options.ticks.labelOffset);
-							this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
-							this.ctx.font = tickLabelFont;
-							this.ctx.textBaseline = "middle";
-							this.ctx.fillText(label, 0, 0);
-							this.ctx.restore();
+							context.translate(xLabelValue, yLabelValue + ticks.labelOffset);
+							context.rotate(labelRotationRadians * -1);
+							context.font = tickLabelFont;
+							context.textBaseline = "middle";
+							context.fillText(label, 0, 0);
+							context.restore();
 						}
 					}, this);
 
-					if (this.options.scaleLabel.display) {
+					if (scaleLabel.display) {
 						// Draw the scale label
 						scaleLabelX = this.options.position === 'left' ? this.left + (scaleLabelFontSize / 2) : this.right - (scaleLabelFontSize / 2);
 						scaleLabelY = this.top + ((this.bottom - this.top) / 2);
 						var rotation = this.options.position === 'left' ? -0.5 * Math.PI : 0.5 * Math.PI;
 
-						this.ctx.save();
-						this.ctx.translate(scaleLabelX, scaleLabelY);
-						this.ctx.rotate(rotation);
-						this.ctx.textAlign = "center";
-						this.ctx.fillStyle =scaleLabelFontColor; // render in correct colour
-						this.ctx.font = scaleLabelFont;
-						this.ctx.textBaseline = 'middle';
-						this.ctx.fillText(this.options.scaleLabel.labelString, 0, 0);
-						this.ctx.restore();
+						context.save();
+						context.translate(scaleLabelX, scaleLabelY);
+						context.rotate(rotation);
+						context.textAlign = "center";
+						context.fillStyle =scaleLabelFontColor; // render in correct colour
+						context.font = scaleLabelFont;
+						context.textBaseline = 'middle';
+						context.fillText(scaleLabel.labelString, 0, 0);
+						context.restore();
 					}
 				}
 
 				// Draw the line at the edge of the axis
-				this.ctx.lineWidth = this.options.gridLines.lineWidth;
-				this.ctx.strokeStyle = this.options.gridLines.color;
+				context.lineWidth = gridLines.lineWidth;
+				context.strokeStyle = gridLines.color;
 				var x1 = this.left,
 					x2 = this.right,
 					y1 = this.top,
 					y2 = this.bottom;
 
+				var aliasPixel = helpers.aliasPixel(context.lineWidth);
 				if (this.isHorizontal()) {
 					y1 = y2 = this.options.position === 'top' ? this.bottom : this.top;
-					y1 += helpers.aliasPixel(this.ctx.lineWidth);
-					y2 += helpers.aliasPixel(this.ctx.lineWidth);
+					y1 += aliasPixel;
+					y2 += aliasPixel;
 				} else {
 					x1 = x2 = this.options.position === 'left' ? this.right : this.left;
-					x1 += helpers.aliasPixel(this.ctx.lineWidth);
-					x2 += helpers.aliasPixel(this.ctx.lineWidth);
+					x1 += aliasPixel;
+					x2 += aliasPixel;
 				}
 
-				this.ctx.beginPath();
-				this.ctx.moveTo(x1, y1);
-				this.ctx.lineTo(x2, y2);
-				this.ctx.stroke();
+				context.beginPath();
+				context.moveTo(x1, y1);
+				context.lineTo(x2, y2);
+				context.stroke();
 			}
 		}
 	});
