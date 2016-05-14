@@ -8,6 +8,7 @@ var gulp = require('gulp'),
   replace = require('gulp-replace'),
   htmlv = require('gulp-html-validator'),
   insert = require('gulp-insert'),
+  zip = require('gulp-zip'),
   inquirer = require('inquirer'),
   semver = require('semver'),
   exec = require('child_process').exec,
@@ -49,6 +50,7 @@ var testFiles = [
 ];
 
 gulp.task('build', buildTask);
+gulp.task('package', packageTask);
 gulp.task('coverage', coverageTask);
 gulp.task('watch', watchTask);
 gulp.task('bump', bumpTask);
@@ -99,6 +101,21 @@ function buildTask() {
 
   return merge(bundled, nonBundled);
 
+}
+
+function packageTask() {
+  return merge(
+      // gather "regular" files landing in the package root
+      gulp.src([outDir + '*.js', 'LICENSE.md']),
+
+      // since we moved the dist files one folder up (package root), we need to rewrite
+      // samples src="../dist/ to src="../ and then copy them in the /samples directory.
+      gulp.src('./samples/**/*', { base: '.' })
+        .pipe(streamify(replace(/src="((?:\.\.\/)+)dist\//g, 'src="$1')))
+  )
+  // finally, create the zip archive
+  //.pipe(zip('Chart.js.zip'))
+  .pipe(gulp.dest(outDir));
 }
 
 /*
