@@ -61,6 +61,7 @@ module.exports = function(Chart) {
 		update: function update(reset) {
 			var meta = this.getMeta();
 			var line = meta.dataset;
+			var lineElementOptions = this.chart.options.elements.line;
 			var points = meta.data;
 
 			var yScale = this.getScaleForId(meta.yAxisID);
@@ -84,23 +85,24 @@ module.exports = function(Chart) {
 				line._children = points;
 				// Model
 
+				var dataset = this.getDataset();
+				var custom = line.custom || {};
 				// Compatibility: If the properties are defined with only the old name, use those values
-				if ((this.getDataset().tension !== undefined) && (this.getDataset().lineTension === undefined))
-				{
-					this.getDataset().lineTension = this.getDataset().tension;
+				if ((dataset.tension !== undefined) && (dataset.lineTension === undefined)) {
+					dataset.lineTension = dataset.tension;
 				}
 
 				line._model = {
 					// Appearance
-					tension: line.custom && line.custom.tension ? line.custom.tension : helpers.getValueOrDefault(this.getDataset().lineTension, this.chart.options.elements.line.tension),
-					backgroundColor: line.custom && line.custom.backgroundColor ? line.custom.backgroundColor : (this.getDataset().backgroundColor || this.chart.options.elements.line.backgroundColor),
-					borderWidth: line.custom && line.custom.borderWidth ? line.custom.borderWidth : (this.getDataset().borderWidth || this.chart.options.elements.line.borderWidth),
-					borderColor: line.custom && line.custom.borderColor ? line.custom.borderColor : (this.getDataset().borderColor || this.chart.options.elements.line.borderColor),
-					borderCapStyle: line.custom && line.custom.borderCapStyle ? line.custom.borderCapStyle : (this.getDataset().borderCapStyle || this.chart.options.elements.line.borderCapStyle),
-					borderDash: line.custom && line.custom.borderDash ? line.custom.borderDash : (this.getDataset().borderDash || this.chart.options.elements.line.borderDash),
-					borderDashOffset: line.custom && line.custom.borderDashOffset ? line.custom.borderDashOffset : (this.getDataset().borderDashOffset || this.chart.options.elements.line.borderDashOffset),
-					borderJoinStyle: line.custom && line.custom.borderJoinStyle ? line.custom.borderJoinStyle : (this.getDataset().borderJoinStyle || this.chart.options.elements.line.borderJoinStyle),
-					fill: line.custom && line.custom.fill ? line.custom.fill : (this.getDataset().fill !== undefined ? this.getDataset().fill : this.chart.options.elements.line.fill),
+					tension: custom.tension ? custom.tension : helpers.getValueOrDefault(dataset.lineTension, lineElementOptions.tension),
+					backgroundColor: custom.backgroundColor ? custom.backgroundColor : (dataset.backgroundColor || lineElementOptions.backgroundColor),
+					borderWidth: custom.borderWidth ? custom.borderWidth : (dataset.borderWidth || lineElementOptions.borderWidth),
+					borderColor: custom.borderColor ? custom.borderColor : (dataset.borderColor || lineElementOptions.borderColor),
+					borderCapStyle: custom.borderCapStyle ? custom.borderCapStyle : (dataset.borderCapStyle || lineElementOptions.borderCapStyle),
+					borderDash: custom.borderDash ? custom.borderDash : (dataset.borderDash || lineElementOptions.borderDash),
+					borderDashOffset: custom.borderDashOffset ? custom.borderDashOffset : (dataset.borderDashOffset || lineElementOptions.borderDashOffset),
+					borderJoinStyle: custom.borderJoinStyle ? custom.borderJoinStyle : (dataset.borderJoinStyle || lineElementOptions.borderJoinStyle),
+					fill: custom.fill ? custom.fill : (dataset.fill !== undefined ? dataset.fill : lineElementOptions.fill),
 					// Scale
 					scaleTop: yScale.top,
 					scaleBottom: yScale.bottom,
@@ -114,16 +116,18 @@ module.exports = function(Chart) {
 				this.updateElement(point, index, reset);
 			}, this);
 
-			if (this.chart.options.showLines && this.chart.options.elements.line.tension !== 0)
+			if (this.chart.options.showLines && lineElementOptions.tension !== 0) {
 				this.updateBezierControlPoints();
+			}
 		},
 
 		getPointBackgroundColor: function(point, index) {
 			var backgroundColor = this.chart.options.elements.point.backgroundColor;
 			var dataset = this.getDataset();
+			var custom = point.custom || {};
 
-			if (point.custom && point.custom.backgroundColor) {
-				backgroundColor = point.custom.backgroundColor;
+			if (custom.backgroundColor) {
+				backgroundColor = custom.backgroundColor;
 			} else if (dataset.pointBackgroundColor) {
 				backgroundColor = helpers.getValueAtIndexOrDefault(dataset.pointBackgroundColor, index, backgroundColor);
 			} else if (dataset.backgroundColor) {
@@ -135,11 +139,12 @@ module.exports = function(Chart) {
 		getPointBorderColor: function(point, index) {
 			var borderColor = this.chart.options.elements.point.borderColor;
 			var dataset = this.getDataset();
+			var custom = point.custom || {};
 
-			if (point.custom && point.custom.borderColor) {
-				borderColor = point.custom.borderColor;
+			if (custom.borderColor) {
+				borderColor = custom.borderColor;
 			} else if (dataset.pointBorderColor) {
-				borderColor = helpers.getValueAtIndexOrDefault(this.getDataset().pointBorderColor, index, borderColor);
+				borderColor = helpers.getValueAtIndexOrDefault(dataset.pointBorderColor, index, borderColor);
 			} else if (dataset.borderColor) {
 				borderColor = dataset.borderColor;
 			}
@@ -149,12 +154,13 @@ module.exports = function(Chart) {
 		getPointBorderWidth: function(point, index) {
 			var borderWidth = this.chart.options.elements.point.borderWidth;
 			var dataset = this.getDataset();
+			var custom = point.custom || {};
 
-			if (point.custom && point.custom.borderWidth !== undefined) {
-				borderWidth = point.custom.borderWidth;
-			} else if (dataset.pointBorderWidth !== undefined) {
+			if (custom.borderWidth) {
+				borderWidth = custom.borderWidth;
+			} else if (dataset.pointBorderWidth) {
 				borderWidth = helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, borderWidth);
-			} else if (dataset.borderWidth !== undefined) {
+			} else if (dataset.borderWidth) {
 				borderWidth = dataset.borderWidth;
 			}
 
@@ -163,6 +169,8 @@ module.exports = function(Chart) {
 
 		updateElement: function(point, index, reset) {
 			var meta = this.getMeta();
+			var custom = point.custom || {};
+			var dataset = this.getDataset();
 			var yScale = this.getScaleForId(meta.yAxisID);
 			var xScale = this.getScaleForId(meta.xAxisID);
 			var scaleBase;
@@ -185,30 +193,30 @@ module.exports = function(Chart) {
 			// Desired view properties
 
 			// Compatibility: If the properties are defined with only the old name, use those values
-			if ((this.getDataset().radius !== undefined) && (this.getDataset().pointRadius === undefined))
+			if ((dataset.radius !== undefined) && (dataset.pointRadius === undefined))
 			{
-				this.getDataset().pointRadius = this.getDataset().radius;
+				dataset.pointRadius = dataset.radius;
 			}
-			if ((this.getDataset().hitRadius !== undefined) && (this.getDataset().pointHitRadius === undefined))
+			if ((dataset.hitRadius !== undefined) && (dataset.pointHitRadius === undefined))
 			{
-				this.getDataset().pointHitRadius = this.getDataset().hitRadius;
+				dataset.pointHitRadius = dataset.hitRadius;
 			}
 
 			point._model = {
-				x: xScale.getPixelForValue(this.getDataset().data[index], index, this.index, this.chart.isCombo),
-				y: reset ? scaleBase : this.calculatePointY(this.getDataset().data[index], index, this.index, this.chart.isCombo),
+				x: xScale.getPixelForValue(dataset.data[index], index, this.index, this.chart.isCombo),
+				y: reset ? scaleBase : this.calculatePointY(dataset.data[index], index, this.index, this.chart.isCombo),
 				// Appearance
-				radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().pointRadius, index, this.chart.options.elements.point.radius),
-				pointStyle: point.custom && point.custom.pointStyle ? point.custom.pointStyle : helpers.getValueAtIndexOrDefault(this.getDataset().pointStyle, index, this.chart.options.elements.point.pointStyle),
+				radius: custom.radius ? custom.radius : helpers.getValueAtIndexOrDefault(dataset.pointRadius, index, this.chart.options.elements.point.radius),
+				pointStyle: custom.pointStyle ? custom.pointStyle : helpers.getValueAtIndexOrDefault(dataset.pointStyle, index, this.chart.options.elements.point.pointStyle),
 				backgroundColor: this.getPointBackgroundColor(point, index),
 				borderColor: this.getPointBorderColor(point, index),
 				borderWidth: this.getPointBorderWidth(point, index),
 				tension: meta.dataset._model ? meta.dataset._model.tension : 0,
 				// Tooltip
-				hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.getDataset().pointHitRadius, index, this.chart.options.elements.point.hitRadius)
+				hitRadius: custom.hitRadius ? custom.hitRadius : helpers.getValueAtIndexOrDefault(dataset.pointHitRadius, index, this.chart.options.elements.point.hitRadius)
 			};
 
-			point._model.skip = point.custom && point.custom.skip ? point.custom.skip : (isNaN(point._model.x) || isNaN(point._model.y));
+			point._model.skip = custom.skip ? custom.skip : (isNaN(point._model.x) || isNaN(point._model.y));
 		},
 
 		calculatePointY: function(value, index, datasetIndex, isCombo) {
@@ -289,27 +297,31 @@ module.exports = function(Chart) {
 			// Point
 			var dataset = this.chart.data.datasets[point._datasetIndex];
 			var index = point._index;
+			var custom = point.custom || {};
+			var model = point._model;
 
-			point._model.radius = point.custom && point.custom.hoverRadius ? point.custom.hoverRadius : helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.chart.options.elements.point.hoverRadius);
-			point._model.backgroundColor = point.custom && point.custom.hoverBackgroundColor ? point.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.getHoverColor(point._model.backgroundColor));
-			point._model.borderColor = point.custom && point.custom.hoverBorderColor ? point.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.getHoverColor(point._model.borderColor));
-			point._model.borderWidth = point.custom && point.custom.hoverBorderWidth ? point.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderWidth, index, point._model.borderWidth);
+			model.radius = custom.hoverRadius ? custom.hoverRadius : helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.chart.options.elements.point.hoverRadius);
+			model.backgroundColor = custom.hoverBackgroundColor ? custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.getHoverColor(model.backgroundColor));
+			model.borderColor = custom.hoverBorderColor ? custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.getHoverColor(model.borderColor));
+			model.borderWidth = custom.hoverBorderWidth ? custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderWidth, index, model.borderWidth);
 		},
 
 		removeHoverStyle: function(point) {
 			var dataset = this.chart.data.datasets[point._datasetIndex];
 			var index = point._index;
+			var custom = point.custom || {};
+			var model = point._model;
 
 			// Compatibility: If the properties are defined with only the old name, use those values
-			if ((this.getDataset().radius !== undefined) && (this.getDataset().pointRadius === undefined))
+			if ((dataset.radius !== undefined) && (dataset.pointRadius === undefined))
 			{
-				this.getDataset().pointRadius = this.getDataset().radius;
+				dataset.pointRadius = dataset.radius;
 			}
 
-			point._model.radius = point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().pointRadius, index, this.chart.options.elements.point.radius);
-			point._model.backgroundColor = this.getPointBackgroundColor(point, index);
-			point._model.borderColor = this.getPointBorderColor(point, index);
-			point._model.borderWidth = this.getPointBorderWidth(point, index);
+			model.radius = custom.radius ? custom.radius : helpers.getValueAtIndexOrDefault(dataset.pointRadius, index, this.chart.options.elements.point.radius);
+			model.backgroundColor = this.getPointBackgroundColor(point, index);
+			model.borderColor = this.getPointBorderColor(point, index);
+			model.borderWidth = this.getPointBorderWidth(point, index);
 		}
 	});
 };
