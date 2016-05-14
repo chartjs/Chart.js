@@ -454,7 +454,7 @@ module.exports = function(Chart) {
 		draw: function(chartArea) {
 			if (this.options.display) {
 				var context = this.ctx;
-				var ticks = this.options.ticks;
+				var optionTicks = this.options.ticks;
 				var gridLines = this.options.gridLines;
 				var scaleLabel = this.options.scaleLabel;
 
@@ -463,19 +463,18 @@ module.exports = function(Chart) {
 				var skipRatio;
 				var scaleLabelX;
 				var scaleLabelY;
-]				var useAutoskipper = ticks.autoSkip;
-
+]				var useAutoskipper = optionTicks.autoSkip;
 
 				// figure out the maximum number of gridlines to show
 				var maxTicks;
-				if (ticks.maxTicksLimit) {
-					maxTicks = ticks.maxTicksLimit;
+				if (optionTicks.maxTicksLimit) {
+					maxTicks = optionTicks.maxTicksLimit;
 				}
 
-				var tickFontColor = helpers.getValueOrDefault(ticks.fontColor, globalDefaults.defaultFontColor);
-				var tickFontSize = helpers.getValueOrDefault(ticks.fontSize, globalDefaults.defaultFontSize);
-				var tickFontStyle = helpers.getValueOrDefault(ticks.fontStyle, globalDefaults.defaultFontStyle);
-				var tickFontFamily = helpers.getValueOrDefault(ticks.fontFamily, globalDefaults.defaultFontFamily);
+				var tickFontColor = helpers.getValueOrDefault(optionTicks.fontColor, globalDefaults.defaultFontColor);
+				var tickFontSize = helpers.getValueOrDefault(optionTicks.fontSize, globalDefaults.defaultFontSize);
+				var tickFontStyle = helpers.getValueOrDefault(optionTicks.fontStyle, globalDefaults.defaultFontStyle);
+				var tickFontFamily = helpers.getValueOrDefault(optionTicks.fontFamily, globalDefaults.defaultFontFamily);
 				var tickLabelFont = helpers.fontString(tickFontSize, tickFontStyle, tickFontFamily);
 				var tl = gridLines.tickMarkLength;
 
@@ -500,11 +499,11 @@ module.exports = function(Chart) {
 					var yTickEnd = this.options.position === "bottom" ? this.top + tl : this.bottom;
 					skipRatio = false;
 
-					if (((longestRotatedLabel / 2) + ticks.autoSkipPadding) * this.ticks.length > (this.width - (this.paddingLeft + this.paddingRight))) {
-						skipRatio = 1 + Math.floor((((longestRotatedLabel / 2) + ticks.autoSkipPadding) * this.ticks.length) / (this.width - (this.paddingLeft + this.paddingRight)));
+					if (((longestRotatedLabel / 2) + optionTicks.autoSkipPadding) * this.ticks.length > (this.width - (this.paddingLeft + this.paddingRight))) {
+						skipRatio = 1 + Math.floor((((longestRotatedLabel / 2) + optionTicks.autoSkipPadding) * this.ticks.length) / (this.width - (this.paddingLeft + this.paddingRight)));
 					}
 
-					// if they defined a max number of ticks,
+					// if they defined a max number of optionTicks,
 					// increase skipRatio until that number is met
 					if (maxTicks && this.ticks.length > maxTicks) {
 						while (!skipRatio || this.ticks.length / (skipRatio || 1) > maxTicks) {
@@ -520,7 +519,7 @@ module.exports = function(Chart) {
 					}
 
 					helpers.each(this.ticks, function(label, index) {
-						// Blank ticks
+						// Blank optionTicks
 						var isLastTick = this.ticks.length === index + 1;
 
 						// Since we always show the last tick,we need may need to hide the last shown one before
@@ -529,7 +528,7 @@ module.exports = function(Chart) {
 							return;
 						}
 						var xLineValue = this.getPixelForTick(index); // xvalues for grid lines
-						var xLabelValue = this.getPixelForTick(index, gridLines.offsetGridLines); // x values for ticks (need to consider offsetLabel option)
+						var xLabelValue = this.getPixelForTick(index, gridLines.offsetGridLines); // x values for optionTicks (need to consider offsetLabel option)
 
 						if (gridLines.display) {
 							if (index === (typeof this.zeroLineIndex !== 'undefined' ? this.zeroLineIndex : 0)) {
@@ -563,9 +562,9 @@ module.exports = function(Chart) {
 							context.stroke();
 						}
 
-						if (ticks.display) {
+						if (optionTicks.display) {
 							context.save();
-							context.translate(xLabelValue + ticks.labelOffset, (isRotated) ? this.top + 12 : this.options.position === "top" ? this.bottom - tl : this.top + tl);
+							context.translate(xLabelValue + optionTicks.labelOffset, (isRotated) ? this.top + 12 : this.options.position === "top" ? this.bottom - tl : this.top + tl);
 							context.rotate(labelRotationRadians * -1);
 							context.font = tickLabelFont;
 							context.textAlign = (isRotated) ? "right" : "center";
@@ -633,32 +632,32 @@ module.exports = function(Chart) {
 							context.stroke();
 						}
 
-						if (ticks.display) {
+						if (optionTicks.display) {
 							var xLabelValue;
-							var yLabelValue = this.getPixelForTick(index, gridLines.offsetGridLines); // x values for ticks (need to consider offsetLabel option)
+							var yLabelValue = this.getPixelForTick(index, gridLines.offsetGridLines); // x values for optionTicks (need to consider offsetLabel option)
 
 							context.save();
 
 							if (this.options.position === "left") {
-								if (ticks.mirror) {
-									xLabelValue = this.right + ticks.padding;
+								if (optionTicks.mirror) {
+									xLabelValue = this.right + optionTicks.padding;
 									context.textAlign = "left";
 								} else {
-									xLabelValue = this.right - ticks.padding;
+									xLabelValue = this.right - optionTicks.padding;
 									context.textAlign = "right";
 								}
 							} else {
 								// right side
-								if (ticks.mirror) {
-									xLabelValue = this.left - ticks.padding;
+								if (optionTicks.mirror) {
+									xLabelValue = this.left - optionTicks.padding;
 									context.textAlign = "right";
 								} else {
-									xLabelValue = this.left + ticks.padding;
+									xLabelValue = this.left + optionTicks.padding;
 									context.textAlign = "left";
 								}
 							}
 
-							context.translate(xLabelValue, yLabelValue + ticks.labelOffset);
+							context.translate(xLabelValue, yLabelValue + optionTicks.labelOffset);
 							context.rotate(labelRotationRadians * -1);
 							context.font = tickLabelFont;
 							context.textBaseline = "middle";
