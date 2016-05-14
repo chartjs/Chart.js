@@ -279,10 +279,11 @@ module.exports = function(Chart) {
 		render: function render(duration, lazy) {
 			Chart.pluginService.notifyPlugins('beforeRender', [this]);
 
-			if (this.options.animation && ((typeof duration !== 'undefined' && duration !== 0) || (typeof duration === 'undefined' && this.options.animation.duration !== 0))) {
+			var animationOptions = this.options.animation;
+			if (animationOptions && ((typeof duration !== 'undefined' && duration !== 0) || (typeof duration === 'undefined' && animationOptions.duration !== 0))) {
 				var animation = new Chart.Animation();
-				animation.numSteps = (duration || this.options.animation.duration) / 16.66; //60 fps
-				animation.easing = this.options.animation.easing;
+				animation.numSteps = (duration || animationOptions.duration) / 16.66; //60 fps
+				animation.easing = animationOptions.easing;
 
 				// render function
 				animation.render = function(chartInstance, animationObject) {
@@ -294,14 +295,14 @@ module.exports = function(Chart) {
 				};
 
 				// user events
-				animation.onAnimationProgress = this.options.animation.onProgress;
-				animation.onAnimationComplete = this.options.animation.onComplete;
+				animation.onAnimationProgress = animationOptions.onProgress;
+				animation.onAnimationComplete = animationOptions.onComplete;
 
 				Chart.animationService.addAnimation(this, animation, duration, lazy);
 			} else {
 				this.draw();
-				if (this.options.animation && this.options.animation.onComplete && this.options.animation.onComplete.call) {
-					this.options.animation.onComplete.call(this);
+				if (animationOptions && animationOptions.onComplete && animationOptions.onComplete.call) {
+					animationOptions.onComplete.call(this);
 				}
 			}
 			return this;
@@ -322,10 +323,11 @@ module.exports = function(Chart) {
 			}
 
 			// Clip out the chart area so that anything outside does not draw. This is necessary for zoom and pan to function
-			this.chart.ctx.save();
-			this.chart.ctx.beginPath();
-			this.chart.ctx.rect(this.chartArea.left, this.chartArea.top, this.chartArea.right - this.chartArea.left, this.chartArea.bottom - this.chartArea.top);
-			this.chart.ctx.clip();
+			var context = this.chart.ctx;
+			context.save();
+			context.beginPath();
+			context.rect(this.chartArea.left, this.chartArea.top, this.chartArea.right - this.chartArea.left, this.chartArea.bottom - this.chartArea.top);
+			context.clip();
 
 			// Draw each dataset via its respective controller (reversed to support proper line stacking)
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
@@ -335,7 +337,7 @@ module.exports = function(Chart) {
 			}, this, true);
 
 			// Restore from the clipping operation
-			this.chart.ctx.restore();
+			context.restore();
 
 			// Finally draw the tooltip
 			this.tooltip.transition(easingDecimal).draw();
@@ -538,15 +540,18 @@ module.exports = function(Chart) {
 
 			// Remove styling for last active (even if it may still be active)
 			if (this.lastActive.length) {
+				var lastActive;
 				switch (this.options.hover.mode) {
 					case 'single':
-						this.getDatasetMeta(this.lastActive[0]._datasetIndex).controller.removeHoverStyle(this.lastActive[0], this.lastActive[0]._datasetIndex, this.lastActive[0]._index);
+						lastActive = this.lastActive[0];
+						this.getDatasetMeta(lastActive._datasetIndex).controller.removeHoverStyle(lastActive, lastActive._datasetIndex, lastActive._index);
 						break;
 					case 'label':
 					case 'dataset':
 						for (var i = 0; i < this.lastActive.length; i++) {
-							if (this.lastActive[i])
-								this.getDatasetMeta(this.lastActive[i]._datasetIndex).controller.removeHoverStyle(this.lastActive[i], this.lastActive[i]._datasetIndex, this.lastActive[i]._index);
+							lastActive = this.lastActive[i];
+							if (lastActive)
+								this.getDatasetMeta(lastActive._datasetIndex).controller.removeHoverStyle(lastActive, lastActive._datasetIndex, lastActive._index);
 						}
 						break;
 					default:
@@ -556,15 +561,18 @@ module.exports = function(Chart) {
 
 			// Built in hover styling
 			if (this.active.length && this.options.hover.mode) {
+				var active;
 				switch (this.options.hover.mode) {
 					case 'single':
-						this.getDatasetMeta(this.active[0]._datasetIndex).controller.setHoverStyle(this.active[0]);
+						active = this.active[0];
+						this.getDatasetMeta(active._datasetIndex).controller.setHoverStyle(active);
 						break;
 					case 'label':
 					case 'dataset':
 						for (var j = 0; j < this.active.length; j++) {
-							if (this.active[j])
-								this.getDatasetMeta(this.active[j]._datasetIndex).controller.setHoverStyle(this.active[j]);
+							active = this.active[j];
+							if (active)
+								this.getDatasetMeta(active._datasetIndex).controller.setHoverStyle(active);
 						}
 						break;
 					default:
@@ -572,18 +580,18 @@ module.exports = function(Chart) {
 				}
 			}
 
-
+			var tooltip = this.tooltip;
 			// Built in Tooltips
 			if (this.options.tooltips.enabled || this.options.tooltips.custom) {
 
 				// The usual updates
-				this.tooltip.initialize();
-				this.tooltip._active = this.tooltipActive;
-				this.tooltip.update(true);
+				tooltip.initialize();
+				tooltip._active = this.tooltipActive;
+				tooltip.update(true);
 			}
 
 			// Hover animations
-			this.tooltip.pivot();
+			tooltip.pivot();
 
 			if (!this.animating) {
 				var changed;
@@ -608,7 +616,7 @@ module.exports = function(Chart) {
 					this.stop();
 
 					if (this.options.tooltips.enabled || this.options.tooltips.custom) {
-						this.tooltip.update(true);
+						tooltip.update(true);
 					}
 
 					// We only need to render at this point. Updating will cause scales to be recomputed generating flicker & using more

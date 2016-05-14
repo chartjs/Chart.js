@@ -9,5 +9,5 @@ docs/index.md
 bower_components/
 
 coverage/*
-
+.idea
 nbproject/*
