@@ -265,6 +265,7 @@ module.exports = function(Chart) {
 			};
 
 			var opts = this.options;
+			var globalDefaults = Chart.defaults.global;
 			var tickOpts = opts.ticks;
 			var scaleLabelOpts = opts.scaleLabel;
 			var display = opts.display;
@@ -463,7 +464,7 @@ module.exports = function(Chart) {
 				var skipRatio;
 				var scaleLabelX;
 				var scaleLabelY;
-]				var useAutoskipper = optionTicks.autoSkip;
+				var useAutoskipper = optionTicks.autoSkip;
 
 				// figure out the maximum number of gridlines to show
 				var maxTicks;

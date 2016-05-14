@@ -398,6 +398,9 @@ module.exports = function(Chart) {
 				xScalePoint = xScale.getPixelForValue(0);
 			}
 
+			var custom = rectangle.custom;
+			var dataset = this.getDataset();
+			var rectangleElementOptions = this.chart.options.elements.rectangle;
 			helpers.extend(rectangle, {
 				// Utility
 				_chart: this.chart.chart,
@@ -413,15 +416,15 @@ module.exports = function(Chart) {
 
 					// Tooltip
 					label: this.chart.data.labels[index],
-					datasetLabel: this.getDataset().label,
+					datasetLabel: dataset.label,
 
 					// Appearance
 					base: reset ? xScalePoint : this.calculateBarBase(this.index, index),
 					height: this.calculateBarHeight(numBars),
-					backgroundColor: customr && customr.backgroundColor ? customr.backgroundColor : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.rectangle.backgroundColor),
-					borderSkipped: customr && customr.borderSkipped ? customr.borderSkipped : this.chart.options.elements.rectangle.borderSkipped,
-					borderColor: customr && customr.borderColor ? customr.borderColor : helpers.getValueAtIndexOrDefault(this.getDataset().borderColor, index, this.chart.options.elements.rectangle.borderColor),
-					borderWidth: customr && customr.borderWidth ? customr.borderWidth : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.rectangle.borderWidth)
+					backgroundColor: custom && custom.backgroundColor ? custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, rectangleElementOptions.backgroundColor),
+					borderSkipped: custom && custom.borderSkipped ? custom.borderSkipped : rectangleElementOptions.borderSkipped,
+					borderColor: custom && custom.borderColor ? custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, rectangleElementOptions.borderColor),
+					borderWidth: custom && custom.borderWidth ? custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, rectangleElementOptions.borderWidth)
 				},
 
 				draw: function () {

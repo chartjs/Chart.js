@@ -540,15 +540,16 @@ module.exports = function(Chart) {
 
 			// Remove styling for last active (even if it may still be active)
 			if (this.lastActive.length) {
+				var lastActive;
 				switch (this.options.hover.mode) {
 					case 'single':
-						var lastActive = this.lastActive[0];
+						lastActive = this.lastActive[0];
 						this.getDatasetMeta(lastActive._datasetIndex).controller.removeHoverStyle(lastActive, lastActive._datasetIndex, lastActive._index);
 						break;
 					case 'label':
 					case 'dataset':
 						for (var i = 0; i < this.lastActive.length; i++) {
-							var lastActive = this.lastActive[i];
+							lastActive = this.lastActive[i];
 							if (lastActive)
 								this.getDatasetMeta(lastActive._datasetIndex).controller.removeHoverStyle(lastActive, lastActive._datasetIndex, lastActive._index);
 						}
@@ -560,15 +561,16 @@ module.exports = function(Chart) {
 
 			// Built in hover styling
 			if (this.active.length && this.options.hover.mode) {
+				var active;
 				switch (this.options.hover.mode) {
 					case 'single':
-						var active = this.active[0];
+						active = this.active[0];
 						this.getDatasetMeta(active._datasetIndex).controller.setHoverStyle(active);
 						break;
 					case 'label':
 					case 'dataset':
 						for (var j = 0; j < this.active.length; j++) {
-							var active = this.active[j];
+							active = this.active[j];
 							if (active)
 								this.getDatasetMeta(active._datasetIndex).controller.setHoverStyle(active);
 						}

@@ -3,7 +3,7 @@
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
-	var globalDefaults = globalDefaults;
+	var globalDefaults = Chart.defaults.global;
 
 	var defaultConfig = {
 		display: true,
