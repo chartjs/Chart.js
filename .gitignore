@@ -3,7 +3,6 @@
 
 node_modules/*
 custom/*
-dist/*
 
 docs/index.md
 

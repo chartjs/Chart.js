@@ -5,9 +5,10 @@ anchor: getting-started
 
 ### Download Chart.js
 
-You can download the latest version of [Chart.js on GitHub](https://github.com/chartjs/Chart.js/releases/latest) or just use these [Chart.js CDN](https://cdnjs.com/libraries/Chart.js) links.
-
-### Installation
+To download a zip, go to [Chart.js on Github](https://github.com/chartjs/Chart.js) and choose the version that is right for your application.
+* [Standard build](https://raw.githubusercontent.com/chartjs/Chart.js/v2.0-dev/dist/Chart.js) (~31kB gzipped)
+* [Bundled with Moment.js](https://raw.githubusercontent.com/chartjs/Chart.js/v2.0-dev/dist/Chart.bundle.js) (~45kB gzipped)
+* [CDN Versions](https://cdnjs.com/libraries/Chart.js)
 
 To install via npm / bower:
 
@@ -17,6 +18,8 @@ npm install chart.js --save
 ```bash
 bower install Chart.js --save
 ```
+
+### Installation
 
 To import Chart.js using an old-school script tag:
 
