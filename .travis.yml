@@ -11,6 +11,7 @@ before_script:
   - npm install
 
 script:
+  - gulp build
   - gulp test
   - gulp coverage
   - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
@@ -28,3 +29,16 @@ addons:
       - google-chrome
     packages:
       - google-chrome-stable
+
+deploy:
+  provider: releases
+  api_key:
+    secure: E6JiZzA/Qy+UD1so/rVfqYnMhgU4m0cUsljxyrKIiYKlt/ZXo1XJabNkpEIYLvckrNx+g/4cmidNcuLfrnAZJtUg53qHLxyqMTXa9zAqmxxJ6aIpQpNK25FIEk9Xwm2XZdbI5rrm0ZciP5rcgg0X8/j5+RtnU3ZpTOCVkp0P73A=
+  file:
+  - "./dist/Chart.bundle.js"
+  - "./dist/Chart.bundle.min.js"
+  - "./dist/Chart.js"
+  - "./dist/Chart.min.js"
+  skip_cleanup: true
+  on:
+    tags: true
