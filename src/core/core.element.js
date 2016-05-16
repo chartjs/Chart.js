@@ -39,7 +39,7 @@ module.exports = function(Chart) {
 
       helpers.each(this._model, function(value, key) {
 
-        if (key[0] === '_' || !this._model.hasOwnProperty(key)) {
+        if (key[0] === '_') {
           // Only non-underscored properties
         }
 
