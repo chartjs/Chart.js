@@ -215,6 +215,7 @@ describe('Core helper tests', function() {
 
 					gridLines: {
 						color: "rgba(0, 0, 0, 0.1)",
+						drawBorder: true,
 						drawOnChartArea: true,
 						drawTicks: true, // draw ticks extending towards the label
 						tickMarkLength: 10,
@@ -248,6 +249,7 @@ describe('Core helper tests', function() {
 
 					gridLines: {
 						color: "rgba(0, 0, 0, 0.1)",
+						drawBorder: true,
 						drawOnChartArea: true,
 						drawTicks: true, // draw ticks extending towards the label,
 						tickMarkLength: 10,

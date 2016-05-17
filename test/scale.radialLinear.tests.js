@@ -30,6 +30,7 @@ describe('Test the radial linear scale', function() {
 			display: true,
 			gridLines: {
 				color: "rgba(0, 0, 0, 0.1)",
+				drawBorder: true,
 				drawOnChartArea: true,
 				drawTicks: true,
 				tickMarkLength: 10,
