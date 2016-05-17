@@ -34,6 +34,7 @@ afterUpdate | Function | undefined | Callback that runs at the end of the update
 *gridLines*.display | Boolean | true |
 *gridLines*.color | Color | "rgba(0, 0, 0, 0.1)" | Color of the grid lines.
 *gridLines*.lineWidth | Number | 1 | Stroke width of grid lines
+*gridLines*.drawBorder | Boolean | true | If true draw border on the edge of the chart
 *gridLines*.drawOnChartArea | Boolean | true | If true, draw lines on the chart area inside the axis lines. This is useful when there are multiple axes and you need to control which grid lines are drawn
 *gridLines*.drawTicks | Boolean | true |  If true, draw lines beside the ticks in the axis area beside the chart.
 *gridLines*.tickMarkLength | Number | 10 | Length in pixels that the grid lines will draw into the axis area.
@@ -53,7 +54,7 @@ afterUpdate | Function | undefined | Callback that runs at the end of the update
 *ticks*.fontFamily | String | "Helvetica Neue" | Font family for the tick labels, follows CSS font-family options.
 *ticks*.fontSize | Number | 12 | Font size for the tick labels.
 *ticks*.fontStyle | String | "normal" | Font style for the tick labels, follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit).
-*ticks*.minRotation | Number | 0 | Minimum rotation for tick labels 
+*ticks*.minRotation | Number | 0 | Minimum rotation for tick labels
 *ticks*.maxRotation | Number | 90 | Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. *Note: Only applicable to horizontal scales.*
 *ticks*.minRotation | Number |  20 | *currently not-implemented* Minimum rotation for tick labels when condensing is necessary.  *Note: Only applicable to horizontal scales.*
 *ticks*.maxTicksLimit | Number | 11 | Maximum number of ticks and gridlines to show. If not defined, it will limit to 11 ticks but will show all gridlines.
@@ -64,7 +65,7 @@ afterUpdate | Function | undefined | Callback that runs at the end of the update
 *ticks*.display | Boolean | true | If true, show the ticks.
 *ticks*.suggestedMin | Number | - | User defined minimum number for the scale, overrides minimum value *except for if* it is higher than the minimum value.
 *ticks*.suggestedMax | Number | - | User defined maximum number for the scale, overrides maximum value *except for if* it is lower than the maximum value.
-*ticks*.min | Number | - | User defined minimum number for the scale, overrides minimum value. 
+*ticks*.min | Number | - | User defined minimum number for the scale, overrides minimum value.
 *ticks*.max | Number | - | User defined maximum number for the scale, overrides maximum value
 *ticks*.autoSkip | Boolean | true | If true, automatically calculates how many labels that can be shown and hides labels accordingly. Turn it off to show all labels no matter what
 *ticks*.callback | Function | `function(value) { return '' + value; } ` | Returns the string representation of the tick value as it should be displayed on the chart.
