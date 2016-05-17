@@ -259,7 +259,7 @@ var img = new Image();
 img.src = 'https://example.com/my_image.png';
 img.onload = function() {
     var ctx = document.getElementById('canvas').getContext('2d');
-    var fillPattern = ctx.CreatePattern(img, 'repeat');
+    var fillPattern = ctx.createPattern(img, 'repeat');
 
     var chart = new Chart(ctx, {
         data: {
