@@ -13,6 +13,7 @@ module.exports = function(Chart) {
 			display: true,
 			color: "rgba(0, 0, 0, 0.1)",
 			lineWidth: 1,
+			drawBorder: true,
 			drawOnChartArea: true,
 			drawTicks: true,
 			tickMarkLength: 10,
@@ -690,29 +691,31 @@ module.exports = function(Chart) {
 				}
 			}
 
-			// Draw the line at the edge of the axis
-			context.lineWidth = gridLines.lineWidth;
-			context.strokeStyle = gridLines.color;
-			var x1 = this.left,
-				x2 = this.right,
-				y1 = this.top,
-				y2 = this.bottom;
+			if (gridLines.drawBorder) {
+				// Draw the line at the edge of the axis
+				context.lineWidth = gridLines.lineWidth;
+				context.strokeStyle = gridLines.color;
+				var x1 = this.left,
+					x2 = this.right,
+					y1 = this.top,
+					y2 = this.bottom;
 
-			var aliasPixel = helpers.aliasPixel(context.lineWidth);
-			if (this.isHorizontal()) {
-				y1 = y2 = options.position === 'top' ? this.bottom : this.top;
-				y1 += aliasPixel;
-				y2 += aliasPixel;
-			} else {
-				x1 = x2 = options.position === 'left' ? this.right : this.left;
-				x1 += aliasPixel;
-				x2 += aliasPixel;
+				var aliasPixel = helpers.aliasPixel(context.lineWidth);
+				if (this.isHorizontal()) {
+					y1 = y2 = options.position === 'top' ? this.bottom : this.top;
+					y1 += aliasPixel;
+					y2 += aliasPixel;
+				} else {
+					x1 = x2 = options.position === 'left' ? this.right : this.left;
+					x1 += aliasPixel;
+					x2 += aliasPixel;
+				}
+
+				context.beginPath();
+				context.moveTo(x1, y1);
+				context.lineTo(x2, y2);
+				context.stroke();
 			}
-
-			context.beginPath();
-			context.moveTo(x1, y1);
-			context.lineTo(x2, y2);
-			context.stroke();
 		}
 	});
 };
