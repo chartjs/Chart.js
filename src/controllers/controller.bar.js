@@ -120,7 +120,7 @@ module.exports = function(Chart) {
 
 					// Appearance
 					base: reset ? yScalePoint : this.calculateBarBase(this.index, index),
-					width: this.calculateBarWidth(numBars),
+					width: this.calculateBarWidth(index),
 					backgroundColor: custom.backgroundColor ? custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, rectangleElementOptions.backgroundColor),
 					borderSkipped: custom.borderSkipped ? custom.borderSkipped : rectangleElementOptions.borderSkipped,
 					borderColor: custom.borderColor ? custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, rectangleElementOptions.borderColor),
@@ -177,19 +177,20 @@ module.exports = function(Chart) {
 
 		},
 
-		getRuler: function() {
+		getRuler: function(index) {
 			var meta = this.getMeta();
 			var xScale = this.getScaleForId(meta.xAxisID);
 			var yScale = this.getScaleForId(meta.yAxisID);
 			var datasetCount = this.getBarCount();
 
-			var tickWidth = (function() {
-				var min = xScale.getPixelForTick(1) - xScale.getPixelForTick(0);
-				for (var i = 2; i < xScale.ticks.length; i++) {
-					min = Math.min(xScale.getPixelForTick(i) - xScale.getPixelForTick(i - 1), min);
-				}
-				return min;
-			}).call(this);
+			var tickWidth;
+
+			if (xScale.options.type === 'category') {
+				tickWidth = xScale.getPixelForTick(index + 1) - xScale.getPixelForTick(index);
+			} else {
+				// Average width
+				tickWidth = xScale.width / xScale.ticks.length;
+			}
 			var categoryWidth = tickWidth * xScale.options.categoryPercentage;
 			var categorySpacing = (tickWidth - (tickWidth * xScale.options.categoryPercentage)) / 2;
 			var fullBarWidth = categoryWidth / datasetCount;
@@ -213,9 +214,9 @@ module.exports = function(Chart) {
 			};
 		},
 
-		calculateBarWidth: function() {
+		calculateBarWidth: function(index) {
 			var xScale = this.getScaleForId(this.getMeta().xAxisID);
-			var ruler = this.getRuler();
+			var ruler = this.getRuler(index);
 			return xScale.options.stacked ? ruler.categoryWidth : ruler.barWidth;
 		},
 
@@ -240,7 +241,7 @@ module.exports = function(Chart) {
 			var xScale = this.getScaleForId(meta.xAxisID);
 			var barIndex = this.getBarIndex(datasetIndex);
 
-			var ruler = this.getRuler();
+			var ruler = this.getRuler(index);
 			var leftTick = xScale.getPixelForValue(null, index, datasetIndex, this.chart.isCombo);
 			leftTick -= this.chart.isCombo ? (ruler.tickWidth / 2) : 0;
 
