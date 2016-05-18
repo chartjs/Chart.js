@@ -506,7 +506,7 @@ module.exports = function(Chart) {
 				var yTickEnd = options.position === "bottom" ? this.top + tl : this.bottom;
 				skipRatio = false;
 
-                // Only calculate the skip ratio with the half width of longestRotateLabel if we got an ü
+                // Only calculate the skip ratio with the half width of longestRotateLabel if we got an actual rotation
                 // See #2584
                 if (isRotated) {
                     longestRotatedLabel /= 2;
