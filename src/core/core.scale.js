@@ -506,8 +506,14 @@ module.exports = function(Chart) {
 				var yTickEnd = options.position === "bottom" ? this.top + tl : this.bottom;
 				skipRatio = false;
 
-				if (((longestRotatedLabel / 2) + optionTicks.autoSkipPadding) * this.ticks.length > (this.width - (this.paddingLeft + this.paddingRight))) {
-					skipRatio = 1 + Math.floor((((longestRotatedLabel / 2) + optionTicks.autoSkipPadding) * this.ticks.length) / (this.width - (this.paddingLeft + this.paddingRight)));
+                // Only calculate the skip ratio with the half width of longestRotateLabel if we got an actual rotation
+                // See #2584
+                if (isRotated) {
+                    longestRotatedLabel /= 2;
+                }
+
+				if ((longestRotatedLabel + optionTicks.autoSkipPadding) * this.ticks.length > (this.width - (this.paddingLeft + this.paddingRight))) {
+					skipRatio = 1 + Math.floor(((longestRotatedLabel + optionTicks.autoSkipPadding) * this.ticks.length) / (this.width - (this.paddingLeft + this.paddingRight)));
 				}
 
 				// if they defined a max number of optionTicks,
