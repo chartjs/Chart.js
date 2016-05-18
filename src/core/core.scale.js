@@ -396,7 +396,7 @@ module.exports = function(Chart) {
 			}
 			// If it is in fact an object, dive in one more level
 			if (typeof(rawValue) === "object") {
-				if (rawValue instanceof Date) {
+				if ((rawValue instanceof Date) || (rawValue.isValid)) {
 					return rawValue;
 				} else {
 					return getRightValue(this.isHorizontal() ? rawValue.x : rawValue.y);
