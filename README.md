@@ -31,6 +31,8 @@ For support using Chart.js, please post questions with the [`chartjs` tag on Sta
 ## Building and Testing
 `gulp build`, `gulp test`
 
+Thanks to [BrowserStack](https://browserstack.com) for allowing our team to test on thousands of browsers.
+
 ## License
 
 Chart.js is available under the [MIT license](http://opensource.org/licenses/MIT).
