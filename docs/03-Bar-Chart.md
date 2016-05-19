@@ -12,7 +12,7 @@ It is sometimes used to show trend data, and the comparison of multiple data set
 	<canvas width="250" height="125"></canvas>
 </div>
 
-### Example usage
+### Example Usage
 ```javascript
 var myBarChart = new Chart(ctx, {
 	type: 'bar',
@@ -31,7 +31,7 @@ var myBarChart = new Chart(ctx, {
 });
 ```
 
-### Data structure
+### Data Structure
 The following options can be included in a bar chart dataset to configure options for that specific dataset.
 
 Some properties can be specified as an array. If these are set to an array value, the first value applies to the first bar, the second value to the second bar, and so on.

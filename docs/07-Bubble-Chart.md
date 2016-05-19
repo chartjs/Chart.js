@@ -10,7 +10,7 @@ A bubble chart is used to display three dimensions of data at the same time. The
 </div>
 <br>
 
-### Example usage
+### Example Usage
 
 ```javascript
 // For a bubble chart
@@ -21,7 +21,7 @@ var myBubbleChart = new Chart(ctx,{
 });
 ```
 
-### Data structure
+### Data Structure
 
 Property | Type | Usage
 --- | --- | ---
@@ -77,7 +77,7 @@ Data for the bubble chart is passed in the form of an object. The object must im
 }
 ```
 
-### Chart options
+### Chart Options
 
 The bubble chart has no unique configuration options. To configure options common to all of the bubbles, the point element options are used. 
 

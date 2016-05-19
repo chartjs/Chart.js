@@ -11,7 +11,7 @@ Often, it is used to show trend data, and the comparison of two data sets.
 	<canvas width="250" height="125"></canvas>
 </div>
 
-### Example usage
+### Example Usage
 ```javascript
 var myLineChart = new Chart(ctx, {
 	type: 'line',
@@ -27,7 +27,7 @@ var myLineChart = Chart.Line(ctx, {
 	options: options
 });
 ```
-### Data structure
+### Data Structure
 
 The following options can be included in a line chart dataset to configure options for that specific dataset.
 
@@ -94,7 +94,7 @@ The data for line charts is broken up into an array of datasets. Each dataset ha
 
 The label key on each dataset is optional, and can be used when generating a scale for the chart.
 
-### Chart options
+### Chart Options
 
 These are the customisation options specific to Line charts. These options are merged with the [global chart configuration options](#getting-started-global-chart-configuration), and form the options of the chart.
 

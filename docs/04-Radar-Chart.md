@@ -12,7 +12,7 @@ They are often useful for comparing the points of two or more different data set
 	<canvas width="250" height="125"></canvas>
 </div>
 
-### Example usage
+### Example Usage
 
 ```javascript
 var myRadarChart = new Chart(ctx, {
@@ -22,7 +22,7 @@ var myRadarChart = new Chart(ctx, {
 });
 ```
 
-### Data structure
+### Data Structure
 
 The following options can be included in a radar chart dataset to configure options for that specific dataset.
 
