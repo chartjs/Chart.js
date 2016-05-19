@@ -59,7 +59,7 @@ An example data object using these attributes is shown below.
 var data = {
     labels: [
         "Red",
-        "Green",
+        "Blue",
         "Yellow"
     ],
     datasets: [
