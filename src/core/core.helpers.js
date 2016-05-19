@@ -5,7 +5,6 @@
 var color = require('chartjs-color');
 
 module.exports = function(Chart) {
-
 	//Global Chart helpers object for utility methods and classes
 	var helpers = Chart.helpers = {};
 
@@ -186,15 +185,19 @@ module.exports = function(Chart) {
 		}
 	};
 	helpers.where = function(collection, filterCallback) {
-		var filtered = [];
+		if (helpers.isArray(collection) && Array.prototype.filter) {
+			return collection.filter(filterCallback);
+		} else {
+			var filtered = [];
 
-		helpers.each(collection, function(item) {
-			if (filterCallback(item)) {
-				filtered.push(item);
-			}
-		});
+			helpers.each(collection, function(item) {
+				if (filterCallback(item)) {
+					filtered.push(item);
+				}
+			});
 
-		return filtered;
+			return filtered;
+		}
 	};
 	helpers.findIndex = function(arrayToSearch, callback, thisArg) {
 		var index = -1;
@@ -645,9 +648,10 @@ module.exports = function(Chart) {
 			canvas = evt.currentTarget || evt.srcElement,
 			boundingRect = canvas.getBoundingClientRect();
 
-		if (e.touches && e.touches.length > 0) {
-			mouseX = e.touches[0].clientX;
-			mouseY = e.touches[0].clientY;
+		var touches = e.touches;
+		if (touches && touches.length > 0) {
+			mouseX = touches[0].clientX;
+			mouseY = touches[0].clientY;
 
 		} else {
 			mouseX = e.clientX;
@@ -695,19 +699,19 @@ module.exports = function(Chart) {
 	};
 	helpers.bindEvents = function(chartInstance, arrayOfEvents, handler) {
 		// Create the events object if it's not already present
-		if (!chartInstance.events)
-			chartInstance.events = {};
+		var events = chartInstance.events = chartInstance.events || {};
 
 		helpers.each(arrayOfEvents, function(eventName) {
-			chartInstance.events[eventName] = function() {
+			events[eventName] = function() {
 				handler.apply(chartInstance, arguments);
 			};
-			helpers.addEvent(chartInstance.chart.canvas, eventName, chartInstance.events[eventName]);
+			helpers.addEvent(chartInstance.chart.canvas, eventName, events[eventName]);
 		});
 	};
 	helpers.unbindEvents = function(chartInstance, arrayOfEvents) {
+		var canvas = chartInstance.chart.canvas;
 		helpers.each(arrayOfEvents, function(handler, eventName) {
-			helpers.removeEvent(chartInstance.chart.canvas, eventName, handler);
+			helpers.removeEvent(canvas, eventName, handler);
 		});
 	};
 
@@ -783,13 +787,14 @@ module.exports = function(Chart) {
 	};
 	helpers.retinaScale = function(chart) {
 		var ctx = chart.ctx;
-		var width = chart.canvas.width;
-		var height = chart.canvas.height;
+		var canvas = chart.canvas;
+		var width = canvas.width;
+		var height = canvas.height;
 		var pixelRatio = chart.currentDevicePixelRatio = window.devicePixelRatio || 1;
 
 		if (pixelRatio !== 1) {
-			ctx.canvas.height = height * pixelRatio;
-			ctx.canvas.width = width * pixelRatio;
+			canvas.height = height * pixelRatio;
+			canvas.width = width * pixelRatio;
 			ctx.scale(pixelRatio, pixelRatio);
 
 			// Store the device pixel ratio so that we can go backwards in `destroy`.
@@ -798,8 +803,8 @@ module.exports = function(Chart) {
 			chart.originalDevicePixelRatio = chart.originalDevicePixelRatio || pixelRatio;
 		}
 
-		ctx.canvas.style.width = width + 'px';
-		ctx.canvas.style.height = height + 'px';
+		canvas.style.width = width + 'px';
+		canvas.style.height = height + 'px';
 	};
 	//-- Canvas methods
 	helpers.clear = function(chart) {
@@ -810,12 +815,12 @@ module.exports = function(Chart) {
 	};
 	helpers.longestText = function(ctx, font, arrayOfStrings, cache) {
 		cache = cache || {};
-		cache.data = cache.data || {};
-		cache.garbageCollect = cache.garbageCollect || [];
+		var data = cache.data = cache.data || {};
+		var gc = cache.garbageCollect = cache.garbageCollect || [];
 
 		if (cache.font !== font) {
-			cache.data = {};
-			cache.garbageCollect = [];
+			data = cache.data = {};
+			gc = cache.garbageCollect = [];
 			cache.font = font;
 		}
 
@@ -824,10 +829,10 @@ module.exports = function(Chart) {
 		helpers.each(arrayOfStrings, function(string) {
 			// Undefined strings should not be measured
 			if (string !== undefined && string !== null) {
-				var textWidth = cache.data[string];
+				var textWidth = data[string];
 				if (!textWidth) {
-					textWidth = cache.data[string] = ctx.measureText(string).width;
-					cache.garbageCollect.push(string);
+					textWidth = data[string] = ctx.measureText(string).width;
+					gc.push(string);
 				}
 
 				if (textWidth > longest) {
@@ -836,12 +841,12 @@ module.exports = function(Chart) {
 			}
 		});
 
-		var gcLen = cache.garbageCollect.length / 2;
+		var gcLen = gc.length / 2;
 		if (gcLen > arrayOfStrings.length) {
 			for (var i = 0; i < gcLen; i++) {
-				delete cache.data[cache.garbageCollect[i]];
+				delete data[gc[i]];
 			}
-			cache.garbageCollect.splice(0, gcLen);
+			gc.splice(0, gcLen);
 		}
 
 		return longest;
@@ -885,16 +890,17 @@ module.exports = function(Chart) {
 		}
 
 		// Set the style
-		hiddenIframe.style.width = '100%';
-		hiddenIframe.style.display = 'block';
-		hiddenIframe.style.border = 0;
-		hiddenIframe.style.height = 0;
-		hiddenIframe.style.margin = 0;
-		hiddenIframe.style.position = 'absolute';
-		hiddenIframe.style.left = 0;
-		hiddenIframe.style.right = 0;
-		hiddenIframe.style.top = 0;
-		hiddenIframe.style.bottom = 0;
+		var style = hiddenIframe.style;
+		style.width = '100%';
+		style.display = 'block';
+		style.border = 0;
+		style.height = 0;
+		style.margin = 0;
+		style.position = 'absolute';
+		style.left = 0;
+		style.right = 0;
+		style.top = 0;
+		style.bottom = 0;
 
 		// Insert the iframe so that contentWindow is available
 		node.insertBefore(hiddenIframe, node.firstChild);
