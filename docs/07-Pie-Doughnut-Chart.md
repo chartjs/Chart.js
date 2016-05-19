@@ -83,7 +83,7 @@ For a pie chart, datasets need to contain an array of data points. The data poin
 
 ### Chart Options
 
-These are the customisation options specific to Pie & Doughnut charts. These options are merged with the [global chart configuration options](#getting-started-global-chart-configuration), and form the options of the chart.
+These are the customisation options specific to Pie & Doughnut charts. These options are merged with the [global chart configuration options](#global-chart-configuration), and form the options of the chart.
 
 Name | Type | Default | Description
 --- | --- | --- | ---

@@ -88,7 +88,7 @@ The label key on each dataset is optional, and can be used when generating a sca
 
 ### Chart Options
 
-These are the customisation options specific to Radar charts. These options are merged with the [global chart configuration options](#getting-started-global-chart-configuration), and form the options of the chart.
+These are the customisation options specific to Radar charts. These options are merged with the [global chart configuration options](#global-chart-configuration), and form the options of the chart.
 
 The default options for radar chart are defined in `Chart.defaults.radar`.
 

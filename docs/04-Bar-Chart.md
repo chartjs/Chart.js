@@ -73,7 +73,7 @@ We have an array of labels too for display. In the example, we are showing the s
 
 ### Chart Options
 
-These are the customisation options specific to Bar charts. These options are merged with the [global chart configuration options](#getting-started-global-chart-configuration), and form the options of the chart.
+These are the customisation options specific to Bar charts. These options are merged with the [global chart configuration options](#global-chart-configuration), and form the options of the chart.
 
 The default options for bar chart are defined in `Chart.defaults.bar`.
 
