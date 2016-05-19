@@ -274,23 +274,20 @@ module.exports = function(Chart) {
 			}
 
 			// Always show the right tick
-			var diff = this.ticks[this.ticks.length - 1].diff(this.lastTick, this.tickUnit);
-			if (diff !== 0 || this.scaleSizeInUnits === 0) {
-                this.ticks.push(this.lastTick.clone());
-
-                // Remove the next to the last tick, so it won't be overlapping with the last one. See #2599
-                if (this.ticks.length >= 2) {
-                    this.ticks.splice(this.ticks.length - 2, 1);
+            if (!this.options.ticks.allowSkipLastTick) {
+                var diff = this.ticks[this.ticks.length - 1].diff(this.lastTick, this.tickUnit);
+                if (diff !== 0 || this.scaleSizeInUnits === 0) {
+                    // this is a weird case. If the <max> option is the same as the end option, we can't just diff the times because the tick was created from the roundedStart
+                    // but the last tick was not rounded.
+                    if (this.options.time.max) {
+                        this.ticks.push(this.lastTick.clone());
+                        this.scaleSizeInUnits = this.lastTick.diff(this.ticks[0], this.tickUnit, true);
+                    } else {
+                        this.ticks.push(this.lastTick.clone());
+                        this.scaleSizeInUnits = this.lastTick.diff(this.firstTick, this.tickUnit, true);
+                    }
                 }
-
-                // this is a weird case. If the <max> option is the same as the end option, we can't just diff the times because the tick was created from the roundedStart
-                // but the last tick was not rounded.
-                if (this.options.time.max) {
-                    this.scaleSizeInUnits = this.lastTick.diff(this.ticks[0], this.tickUnit, true);
-                } else {
-                    this.scaleSizeInUnits = this.lastTick.diff(this.firstTick, this.tickUnit, true);
-                }
-			}
+            }
 
 			this.ctx.restore();
 		},

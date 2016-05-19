@@ -41,6 +41,7 @@ module.exports = function(Chart) {
 			reverse: false,
 			display: true,
 			autoSkip: true,
+            allowSkipLastTick: false,
 			autoSkipPadding: 0,
 			labelOffset: 0,
 			callback: function(value) {
@@ -471,6 +472,7 @@ module.exports = function(Chart) {
 			var scaleLabelX;
 			var scaleLabelY;
 			var useAutoskipper = optionTicks.autoSkip;
+            var allowSkipLastTick = optionTicks.allowSkipLastTick;
 
 			// figure out the maximum number of gridlines to show
 			var maxTicks;
@@ -506,8 +508,14 @@ module.exports = function(Chart) {
 				var yTickEnd = options.position === "bottom" ? this.top + tl : this.bottom;
 				skipRatio = false;
 
-				if (((longestRotatedLabel / 2) + optionTicks.autoSkipPadding) * this.ticks.length > (this.width - (this.paddingLeft + this.paddingRight))) {
-					skipRatio = 1 + Math.floor((((longestRotatedLabel / 2) + optionTicks.autoSkipPadding) * this.ticks.length) / (this.width - (this.paddingLeft + this.paddingRight)));
+                // Only calculate the skip ratio with the half width of longestRotateLabel if we got an actual rotation
+                // See #2584
+                if (isRotated) {
+                    longestRotatedLabel /= 2;
+                }
+
+				if ((longestRotatedLabel + optionTicks.autoSkipPadding) * this.ticks.length > (this.width - (this.paddingLeft + this.paddingRight))) {
+					skipRatio = 1 + Math.floor(((longestRotatedLabel + optionTicks.autoSkipPadding) * this.ticks.length) / (this.width - (this.paddingLeft + this.paddingRight)));
 				}
 
 				// if they defined a max number of optionTicks,
@@ -528,10 +536,14 @@ module.exports = function(Chart) {
 				helpers.each(this.ticks, function (label, index) {
 					// Blank optionTicks
 					var isLastTick = this.ticks.length === index + 1;
+					var shouldSkip = skipRatio > 1 && index % skipRatio > 0;
 
-					// Since we always show the last tick,we need may need to hide the last shown one before
-					var shouldSkip = (skipRatio > 1 && index % skipRatio > 0) || (index % skipRatio === 0 && index + skipRatio > this.ticks.length);
-					if (shouldSkip && !isLastTick || (label === undefined || label === null)) {
+                    // If we skip the last tick, we may need to hide the last shown one before
+                    if (!allowSkipLastTick) {
+                        shouldSkip = shouldSkip || (index % skipRatio === 0 && index + skipRatio >= this.ticks.length);
+                    }
+
+					if (shouldSkip && !(isLastTick && !allowSkipLastTick) || (label === undefined || label === null)) {
 						return;
 					}
 					var xLineValue = this.getPixelForTick(index); // xvalues for grid lines
