@@ -37,29 +37,9 @@ module.exports = function(Chart) {
 		}
 	};
 
-
 	Chart.controllers.bubble = Chart.DatasetController.extend({
-		addElements: function() {
-			var meta = this.getMeta();
-			helpers.each(this.getDataset().data, function(value, index) {
-				meta.data[index] = meta.data[index] || new Chart.elements.Point({
-					_chart: this.chart.chart,
-					_datasetIndex: this.index,
-					_index: index
-				});
-			}, this);
-		},
-		addElementAndReset: function(index) {
-			var point = new Chart.elements.Point({
-				_chart: this.chart.chart,
-				_datasetIndex: this.index,
-				_index: index
-			});
 
-			// Add to the points array and reset it
-			this.getMeta().data.splice(index, 0, point);
-			this.updateElement(point, index, true);
-		},
+		dataElementType: Chart.elements.Point,
 
 		update: function update(reset) {
 			var meta = this.getMeta();
@@ -69,7 +49,6 @@ module.exports = function(Chart) {
 			helpers.each(points, function(point, index) {
 				this.updateElement(point, index, reset);
 			}, this);
-
 		},
 
 		updateElement: function(point, index, reset) {
@@ -84,7 +63,6 @@ module.exports = function(Chart) {
 
 			helpers.extend(point, {
 				// Utility
-				_chart: this.chart.chart,
 				_xScale: xScale,
 				_yScale: yScale,
 				_datasetIndex: this.index,
@@ -113,17 +91,6 @@ module.exports = function(Chart) {
 
 		getRadius: function(value) {
 			return value.r || this.chart.options.elements.point.radius;
-		},
-
-		draw: function(ease) {
-			var easingDecimal = ease || 1;
-
-			// Transition and Draw the Points
-			helpers.each(this.getMeta().data, function(point, index) {
-				point.transition(easingDecimal);
-				point.draw();
-			});
-
 		},
 
 		setHoverStyle: function(point) {

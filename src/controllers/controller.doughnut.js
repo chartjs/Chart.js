@@ -113,39 +113,10 @@ module.exports = function(Chart) {
 
 
 	Chart.controllers.doughnut = Chart.controllers.pie = Chart.DatasetController.extend({
-		// no scales for doughnut
+
+		dataElementType: Chart.elements.Arc,
+
 		linkScales: helpers.noop,
-
-		addElements: function() {
-			var _this = this;
-			var meta = this.getMeta(),
-				data = meta.data;
-			helpers.each(_this.getDataset().data, function(value, index) {
-				data[index] = data[index] || new Chart.elements.Arc({
-					_chart: _this.chart.chart,
-					_datasetIndex: _this.index,
-					_index: index
-				});
-			});
-		},
-
-		addElementAndReset: function(index, colorForNewElement) {
-			var _this = this;
-			var arc = new Chart.elements.Arc({
-				_chart: _this.chart.chart,
-				_datasetIndex: _this.index,
-				_index: index
-			}),
-			ds = _this.getDataset();
-
-			if (colorForNewElement && helpers.isArray(ds.backgroundColor)) {
-				ds.backgroundColor.splice(index, 0, colorForNewElement);
-			}
-
-			// Add to the points array and reset it
-			_this.getMeta().data.splice(index, 0, arc);
-			_this.updateElement(arc, index, true);
-		},
 
 		// Get index of the dataset in relation to the visible datasets. This allows determining the inner and outer radius correctly
 		getRingIndex: function getRingIndex(datasetIndex) {
@@ -232,7 +203,6 @@ module.exports = function(Chart) {
 
 			helpers.extend(arc, {
 				// Utility
-				_chart: chart.chart,
 				_datasetIndex: _this.index,
 				_index: index,
 

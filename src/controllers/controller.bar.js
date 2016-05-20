@@ -29,12 +29,16 @@ module.exports = function(Chart) {
 	};
 
 	Chart.controllers.bar = Chart.DatasetController.extend({
+
+		dataElementType: Chart.elements.Rectangle,
+
 		initialize: function(chart, datasetIndex) {
 			Chart.DatasetController.prototype.initialize.call(this, chart, datasetIndex);
 
 			// Use this to indicate that this is a bar dataset.
 			this.getMeta().bar = true;
 		},
+
 		// Get the number of datasets that display bars. We use this to correctly calculate the bar width
 		getBarCount: function getBarCount() {
 			var barCount = 0;
@@ -47,40 +51,13 @@ module.exports = function(Chart) {
 			return barCount;
 		},
 
-		addElements: function() {
-			var meta = this.getMeta();
-			helpers.each(this.getDataset().data, function(value, index) {
-				meta.data[index] = meta.data[index] || new Chart.elements.Rectangle({
-					_chart: this.chart.chart,
-					_datasetIndex: this.index,
-					_index: index
-				});
-			}, this);
-		},
-
-		addElementAndReset: function(index) {
-			var rectangle = new Chart.elements.Rectangle({
-				_chart: this.chart.chart,
-				_datasetIndex: this.index,
-				_index: index
-			});
-
-			var numBars = this.getBarCount();
-
-			// Add to the points array and reset it
-			this.getMeta().data.splice(index, 0, rectangle);
-			this.updateElement(rectangle, index, true, numBars);
-		},
-
 		update: function update(reset) {
-			var numBars = this.getBarCount();
-
 			helpers.each(this.getMeta().data, function(rectangle, index) {
-				this.updateElement(rectangle, index, reset, numBars);
+				this.updateElement(rectangle, index, reset);
 			}, this);
 		},
 
-		updateElement: function updateElement(rectangle, index, reset, numBars) {
+		updateElement: function updateElement(rectangle, index, reset) {
 			var meta = this.getMeta();
 			var xScale = this.getScaleForId(meta.xAxisID);
 			var yScale = this.getScaleForId(meta.yAxisID);
@@ -91,12 +68,10 @@ module.exports = function(Chart) {
 
 			helpers.extend(rectangle, {
 				// Utility
-				_chart: this.chart.chart,
 				_xScale: xScale,
 				_yScale: yScale,
 				_datasetIndex: this.index,
 				_index: index,
-
 
 				// Desired view properties
 				_model: {
@@ -366,7 +341,6 @@ module.exports = function(Chart) {
 
 			helpers.extend(rectangle, {
 				// Utility
-				_chart: this.chart.chart,
 				_xScale: xScale,
 				_yScale: yScale,
 				_datasetIndex: this.index,

@@ -24,40 +24,16 @@ module.exports = function(Chart) {
 	};
 
 	Chart.controllers.line = Chart.DatasetController.extend({
-		addElements: function() {
-			var me = this;
-			var meta = me.getMeta();
-			var data = me.getDataset().data || [];
-			var value, i, ilen;
 
-			meta.dataset = meta.dataset || new Chart.elements.Line({
-				_chart: me.chart.chart,
-				_datasetIndex: me.index,
-				_points: meta.data
-			});
+		datasetElementType: Chart.elements.Line,
 
-			for (i=0, ilen=data.length; i<ilen; ++i) {
-				value = data[i];
-				meta.data[i] = meta.data[i] || new Chart.elements.Point({
-					_chart: me.chart.chart,
-					_datasetIndex: me.index,
-					_index: i
-				});
-			}
-		},
+		dataElementType: Chart.elements.Point,
 
 		addElementAndReset: function(index) {
 			var me = this;
 			var options = me.chart.options;
-			var point = new Chart.elements.Point({
-				_chart: me.chart.chart,
-				_datasetIndex: me.index,
-				_index: index
-			});
 
-			// Add to the points array and reset it
-			me.getMeta().data.splice(index, 0, point);
-			me.updateElement(point, index, true);
+			Chart.DatasetController.prototype.addElementAndReset.call(me, index);
 
 			// Make sure bezier control points are updated
 			if (options.showLines && options.elements.line.tension !== 0) {
@@ -193,7 +169,6 @@ module.exports = function(Chart) {
 			y = reset ? yScale.getBasePixel() : me.calculatePointY(value, index, datasetIndex, me.chart.isCombo);
 
 			// Utility
-			point._chart = me.chart.chart;
 			point._xScale = xScale;
 			point._yScale = yScale;
 			point._datasetIndex = datasetIndex;
