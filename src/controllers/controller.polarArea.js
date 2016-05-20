@@ -100,33 +100,10 @@ module.exports = function(Chart) {
 	};
 
 	Chart.controllers.polarArea = Chart.DatasetController.extend({
+
+		dataElementType: Chart.elements.Arc,
+
 		linkScales: helpers.noop,
-
-		addElements: function() {
-			var _this = this;
-			var meta = this.getMeta();
-			var data = meta.data;
-			helpers.each(_this.getDataset().data, function(value, index) {
-				data[index] = data[index] || new Chart.elements.Arc({
-					_chart: _this.chart.chart,
-					_datasetIndex: _this.index,
-					_index: index
-				});
-			});
-		},
-
-		addElementAndReset: function(index) {
-			var _this = this;
-			var arc = new Chart.elements.Arc({
-				_chart: _this.chart.chart,
-				_datasetIndex: _this.index,
-				_index: index
-			});
-
-			// Add to the points array and reset it
-			_this.getMeta().data.splice(index, 0, arc);
-			_this.updateElement(arc, index, true);
-		},
 
 		update: function update(reset) {
 			var _this = this;
@@ -198,7 +175,6 @@ module.exports = function(Chart) {
 
 			helpers.extend(arc, {
 				// Utility
-				_chart: chart.chart,
 				_datasetIndex: _this.index,
 				_index: index,
 				_scale: scale,

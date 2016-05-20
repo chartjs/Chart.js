@@ -13,12 +13,10 @@ require('./core/core.scaleService')(Chart);
 require('./core/core.title')(Chart);
 require('./core/core.tooltip')(Chart);
 
-require('./controllers/controller.bar')(Chart);
-require('./controllers/controller.bubble')(Chart);
-require('./controllers/controller.doughnut')(Chart);
-require('./controllers/controller.line')(Chart);
-require('./controllers/controller.polarArea')(Chart);
-require('./controllers/controller.radar')(Chart);
+require('./elements/element.arc')(Chart);
+require('./elements/element.line')(Chart);
+require('./elements/element.point')(Chart);
+require('./elements/element.rectangle')(Chart);
 
 require('./scales/scale.category')(Chart);
 require('./scales/scale.linear')(Chart);
@@ -26,10 +24,14 @@ require('./scales/scale.logarithmic')(Chart);
 require('./scales/scale.radialLinear')(Chart);
 require('./scales/scale.time')(Chart);
 
-require('./elements/element.arc')(Chart);
-require('./elements/element.line')(Chart);
-require('./elements/element.point')(Chart);
-require('./elements/element.rectangle')(Chart);
+// Controllers must be loaded after elements
+// See Chart.core.datasetController.dataElementType
+require('./controllers/controller.bar')(Chart);
+require('./controllers/controller.bubble')(Chart);
+require('./controllers/controller.doughnut')(Chart);
+require('./controllers/controller.line')(Chart);
+require('./controllers/controller.polarArea')(Chart);
+require('./controllers/controller.radar')(Chart);
 
 require('./charts/Chart.Bar')(Chart);
 require('./charts/Chart.Bubble')(Chart);
