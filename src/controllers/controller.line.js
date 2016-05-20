@@ -72,17 +72,8 @@ module.exports = function(Chart) {
 			var points = meta.data || [];
 			var options = me.chart.options;
 			var lineElementOptions = options.elements.line;
-			var yScale = me.getScaleForId(meta.yAxisID);
-			var xScale = me.getScaleForId(meta.xAxisID);
-			var scaleBase, i, ilen, dataset, custom;
-
-			if (yScale.min < 0 && yScale.max < 0) {
-				scaleBase = yScale.getPixelForValue(yScale.max);
-			} else if (yScale.min > 0 && yScale.max > 0) {
-				scaleBase = yScale.getPixelForValue(yScale.min);
-			} else {
-				scaleBase = yScale.getPixelForValue(0);
-			}
+			var scale = me.getScaleForId(meta.yAxisID);
+			var i, ilen, dataset, custom;
 
 			// Update Line
 			if (options.showLines) {
@@ -95,7 +86,7 @@ module.exports = function(Chart) {
 				}
 
 				// Utility
-				line._scale = yScale;
+				line._scale = scale;
 				line._datasetIndex = me.index;
 				// Data
 				line._children = points;
@@ -112,9 +103,9 @@ module.exports = function(Chart) {
 					borderJoinStyle: custom.borderJoinStyle ? custom.borderJoinStyle : (dataset.borderJoinStyle || lineElementOptions.borderJoinStyle),
 					fill: custom.fill ? custom.fill : (dataset.fill !== undefined ? dataset.fill : lineElementOptions.fill),
 					// Scale
-					scaleTop: yScale.top,
-					scaleBottom: yScale.bottom,
-					scaleZero: scaleBase
+					scaleTop: scale.top,
+					scaleBottom: scale.bottom,
+					scaleZero: scale.getBasePixel()
 				};
 
 				line.pivot();
@@ -188,15 +179,7 @@ module.exports = function(Chart) {
 			var yScale = me.getScaleForId(meta.yAxisID);
 			var xScale = me.getScaleForId(meta.xAxisID);
 			var pointOptions = me.chart.options.elements.point;
-			var scaleBase, x, y;
-
-			if (yScale.min < 0 && yScale.max < 0) {
-				scaleBase = yScale.getPixelForValue(yScale.max);
-			} else if (yScale.min > 0 && yScale.max > 0) {
-				scaleBase = yScale.getPixelForValue(yScale.min);
-			} else {
-				scaleBase = yScale.getPixelForValue(0);
-			}
+			var x, y;
 
 			// Compatibility: If the properties are defined with only the old name, use those values
 			if ((dataset.radius !== undefined) && (dataset.pointRadius === undefined)) {
@@ -207,7 +190,7 @@ module.exports = function(Chart) {
 			}
 
 			x = xScale.getPixelForValue(value, index, datasetIndex, me.chart.isCombo);
-			y = reset ? scaleBase : me.calculatePointY(value, index, datasetIndex, me.chart.isCombo);
+			y = reset ? yScale.getBasePixel() : me.calculatePointY(value, index, datasetIndex, me.chart.isCombo);
 
 			// Utility
 			point._chart = me.chart.chart;
@@ -237,7 +220,6 @@ module.exports = function(Chart) {
 			var me = this;
 			var chart = me.chart;
 			var meta = me.getMeta();
-			var xScale = me.getScaleForId(meta.xAxisID);
 			var yScale = me.getScaleForId(meta.yAxisID);
 			var sumPos = 0;
 			var sumNeg = 0;
