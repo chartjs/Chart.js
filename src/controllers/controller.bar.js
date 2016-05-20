@@ -84,18 +84,7 @@ module.exports = function(Chart) {
 			var meta = this.getMeta();
 			var xScale = this.getScaleForId(meta.xAxisID);
 			var yScale = this.getScaleForId(meta.yAxisID);
-
-			var yScalePoint;
-
-			if (yScale.min < 0 && yScale.max < 0) {
-				// all less than 0. use the top
-				yScalePoint = yScale.getPixelForValue(yScale.max);
-			} else if (yScale.min > 0 && yScale.max > 0) {
-				yScalePoint = yScale.getPixelForValue(yScale.min);
-			} else {
-				yScalePoint = yScale.getPixelForValue(0);
-			}
-
+			var scaleBase = yScale.getBasePixel();
 			var rectangleElementOptions = this.chart.options.elements.rectangle;
 			var custom = rectangle.custom || {};
 			var dataset = this.getDataset();
@@ -112,14 +101,14 @@ module.exports = function(Chart) {
 				// Desired view properties
 				_model: {
 					x: this.calculateBarX(index, this.index),
-					y: reset ? yScalePoint : this.calculateBarY(index, this.index),
+					y: reset ? scaleBase : this.calculateBarY(index, this.index),
 
 					// Tooltip
 					label: this.chart.data.labels[index],
 					datasetLabel: dataset.label,
 
 					// Appearance
-					base: reset ? yScalePoint : this.calculateBarBase(this.index, index),
+					base: reset ? scaleBase : this.calculateBarBase(this.index, index),
 					width: this.calculateBarWidth(index),
 					backgroundColor: custom.backgroundColor ? custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, rectangleElementOptions.backgroundColor),
 					borderSkipped: custom.borderSkipped ? custom.borderSkipped : rectangleElementOptions.borderSkipped,
@@ -132,9 +121,7 @@ module.exports = function(Chart) {
 
 		calculateBarBase: function(datasetIndex, index) {
 			var meta = this.getMeta();
-			var xScale = this.getScaleForId(meta.xAxisID);
 			var yScale = this.getScaleForId(meta.yAxisID);
-
 			var base = 0;
 
 			if (yScale.options.stacked) {
@@ -163,24 +150,12 @@ module.exports = function(Chart) {
 				return yScale.getPixelForValue(base);
 			}
 
-			base = yScale.getPixelForValue(yScale.min);
-
-			if (yScale.beginAtZero || ((yScale.min <= 0 && yScale.max >= 0) || (yScale.min >= 0 && yScale.max <= 0))) {
-				base = yScale.getPixelForValue(0, 0);
-				//base += yScale.options.gridLines.lineWidth;
-			} else if (yScale.min < 0 && yScale.max < 0) {
-				// All values are negative. Use the top as the base
-				base = yScale.getPixelForValue(yScale.max);
-			}
-
-			return base;
-
+			return yScale.getBasePixel();
 		},
 
 		getRuler: function(index) {
 			var meta = this.getMeta();
 			var xScale = this.getScaleForId(meta.xAxisID);
-			var yScale = this.getScaleForId(meta.yAxisID);
 			var datasetCount = this.getBarCount();
 
 			var tickWidth;
@@ -237,7 +212,6 @@ module.exports = function(Chart) {
 
 		calculateBarX: function(index, datasetIndex) {
 			var meta = this.getMeta();
-			var yScale = this.getScaleForId(meta.yAxisID);
 			var xScale = this.getScaleForId(meta.xAxisID);
 			var barIndex = this.getBarIndex(datasetIndex);
 
@@ -259,9 +233,7 @@ module.exports = function(Chart) {
 
 		calculateBarY: function(index, datasetIndex) {
 			var meta = this.getMeta();
-			var xScale = this.getScaleForId(meta.xAxisID);
 			var yScale = this.getScaleForId(meta.yAxisID);
-
 			var value = this.getDataset().data[index];
 
 			if (yScale.options.stacked) {
@@ -387,21 +359,11 @@ module.exports = function(Chart) {
 			var meta = this.getMeta();
 			var xScale = this.getScaleForId(meta.xAxisID);
 			var yScale = this.getScaleForId(meta.yAxisID);
-
-			var xScalePoint;
-
-			if (xScale.min < 0 && xScale.max < 0) {
-				// all less than 0. use the right
-				xScalePoint = xScale.getPixelForValue(xScale.max);
-			} else if (xScale.min > 0 && xScale.max > 0) {
-				xScalePoint = xScale.getPixelForValue(xScale.min);
-			} else {
-				xScalePoint = xScale.getPixelForValue(0);
-			}
-
+			var scaleBase = xScale.getBasePixel();
 			var custom = rectangle.custom || {};
 			var dataset = this.getDataset();
 			var rectangleElementOptions = this.chart.options.elements.rectangle;
+
 			helpers.extend(rectangle, {
 				// Utility
 				_chart: this.chart.chart,
@@ -412,7 +374,7 @@ module.exports = function(Chart) {
 
 				// Desired view properties
 				_model: {
-					x: reset ? xScalePoint : this.calculateBarX(index, this.index),
+					x: reset ? scaleBase : this.calculateBarX(index, this.index),
 					y: this.calculateBarY(index, this.index),
 
 					// Tooltip
@@ -420,7 +382,7 @@ module.exports = function(Chart) {
 					datasetLabel: dataset.label,
 
 					// Appearance
-					base: reset ? xScalePoint : this.calculateBarBase(this.index, index),
+					base: reset ? scaleBase : this.calculateBarBase(this.index, index),
 					height: this.calculateBarHeight(index),
 					backgroundColor: custom.backgroundColor ? custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, rectangleElementOptions.backgroundColor),
 					borderSkipped: custom.borderSkipped ? custom.borderSkipped : rectangleElementOptions.borderSkipped,
@@ -506,8 +468,6 @@ module.exports = function(Chart) {
 		calculateBarBase: function (datasetIndex, index) {
 			var meta = this.getMeta();
 			var xScale = this.getScaleForId(meta.xAxisID);
-			var yScale = this.getScaleForId(meta.yAxisID);
-
 			var base = 0;
 
 			if (xScale.options.stacked) {
@@ -535,21 +495,11 @@ module.exports = function(Chart) {
 				return xScale.getPixelForValue(base);
 			}
 
-			base = xScale.getPixelForValue(xScale.min);
-
-			if (xScale.beginAtZero || ((xScale.min <= 0 && xScale.max >= 0) || (xScale.min >= 0 && xScale.max <= 0))) {
-				base = xScale.getPixelForValue(0, 0);
-			} else if (xScale.min < 0 && xScale.max < 0) {
-				// All values are negative. Use the right as the base
-				base = xScale.getPixelForValue(xScale.max);
-			}
-
-			return base;
+			return xScale.getBasePixel();
 		},
 
 		getRuler: function (index) {
 			var meta = this.getMeta();
-			var xScale = this.getScaleForId(meta.xAxisID);
 			var yScale = this.getScaleForId(meta.yAxisID);
 			var datasetCount = this.getBarCount();
 
@@ -592,8 +542,6 @@ module.exports = function(Chart) {
 		calculateBarX: function (index, datasetIndex) {
 			var meta = this.getMeta();
 			var xScale = this.getScaleForId(meta.xAxisID);
-			var yScale = this.getScaleForId(meta.yAxisID);
-
 			var value = this.getDataset().data[index];
 
 			if (xScale.options.stacked) {
@@ -626,7 +574,6 @@ module.exports = function(Chart) {
 		calculateBarY: function (index, datasetIndex) {
 			var meta = this.getMeta();
 			var yScale = this.getScaleForId(meta.yAxisID);
-			var xScale = this.getScaleForId(meta.xAxisID);
 			var barIndex = this.getBarIndex(datasetIndex);
 
 			var ruler = this.getRuler(index);

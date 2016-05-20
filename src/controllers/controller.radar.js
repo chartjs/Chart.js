@@ -65,21 +65,10 @@ module.exports = function(Chart) {
 			var custom = line.custom || {};
 			var dataset = this.getDataset();
 			var lineElementOptions = this.chart.options.elements.line;
-
 			var scale = this.chart.scale;
-			var scaleBase;
-
-			if (scale.min < 0 && scale.max < 0) {
-				scaleBase = scale.getPointPositionForValue(0, scale.max);
-			} else if (scale.min > 0 && scale.max > 0) {
-				scaleBase = scale.getPointPositionForValue(0, scale.min);
-			} else {
-				scaleBase = scale.getPointPositionForValue(0, 0);
-			}
 
 			// Compatibility: If the properties are defined with only the old name, use those values
-			if ((dataset.tension !== undefined) && (dataset.lineTension === undefined))
-			{
+			if ((dataset.tension !== undefined) && (dataset.lineTension === undefined)) {
 				dataset.lineTension = dataset.tension;
 			}
 
@@ -104,7 +93,7 @@ module.exports = function(Chart) {
 					// Scale
 					scaleTop: scale.top,
 					scaleBottom: scale.bottom,
-					scaleZero: scaleBase
+					scaleZero: scale.getBasePosition()
 				}
 			});
 

@@ -451,6 +451,18 @@ module.exports = function(Chart) {
 			}
 		},
 
+		getBasePixel: function() {
+			var me = this;
+			var min = me.min;
+			var max = me.max;
+
+			return me.getPixelForValue(
+				me.beginAtZero? 0:
+				min < 0 && max < 0? max :
+				min > 0 && max > 0? min :
+				0);
+		},
+
 		// Actualy draw the scale on the canvas
 		// @param {rectangle} chartArea : the area of the chart to draw full grid lines on
 		draw: function(chartArea) {

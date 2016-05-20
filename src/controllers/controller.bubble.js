@@ -64,17 +64,6 @@ module.exports = function(Chart) {
 		update: function update(reset) {
 			var meta = this.getMeta();
 			var points = meta.data;
-			var yScale = this.getScaleForId(meta.yAxisID);
-			var xScale = this.getScaleForId(meta.xAxisID);
-			var scaleBase;
-
-			if (yScale.min < 0 && yScale.max < 0) {
-				scaleBase = yScale.getPixelForValue(yScale.max);
-			} else if (yScale.min > 0 && yScale.max > 0) {
-				scaleBase = yScale.getPixelForValue(yScale.min);
-			} else {
-				scaleBase = yScale.getPixelForValue(0);
-			}
 
 			// Update Points
 			helpers.each(points, function(point, index) {
@@ -85,22 +74,13 @@ module.exports = function(Chart) {
 
 		updateElement: function(point, index, reset) {
 			var meta = this.getMeta();
-			var yScale = this.getScaleForId(meta.yAxisID);
 			var xScale = this.getScaleForId(meta.xAxisID);
-			var scaleBase;
+			var yScale = this.getScaleForId(meta.yAxisID);
 
 			var custom = point.custom || {};
 			var dataset = this.getDataset();
 			var data = dataset.data[index];
 			var pointElementOptions = this.chart.options.elements.point;
-
-			if (yScale.min < 0 && yScale.max < 0) {
-				scaleBase = yScale.getPixelForValue(yScale.max);
-			} else if (yScale.min > 0 && yScale.max > 0) {
-				scaleBase = yScale.getPixelForValue(yScale.min);
-			} else {
-				scaleBase = yScale.getPixelForValue(0);
-			}
 
 			helpers.extend(point, {
 				// Utility
@@ -113,7 +93,7 @@ module.exports = function(Chart) {
 				// Desired view properties
 				_model: {
 					x: reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(data, index, this.index, this.chart.isCombo),
-					y: reset ? scaleBase : yScale.getPixelForValue(data, index, this.index),
+					y: reset ? yScale.getBasePixel() : yScale.getPixelForValue(data, index, this.index),
 					// Appearance
 					radius: reset ? 0 : custom.radius ? custom.radius : this.getRadius(data),
 					backgroundColor: custom.backgroundColor ? custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, pointElementOptions.backgroundColor),
