@@ -388,6 +388,20 @@ module.exports = function(Chart) {
 			return elementsArray;
 		},
 
+		getElementsAtEventForMode: function(e, mode) {
+			var me = this;
+			switch (mode) {
+			case 'single':
+				return me.getElementAtEvent(e);
+			case 'label':
+				return me.getElementsAtEvent(e);
+			case 'dataset':
+				return me.getDatasetAtEvent(e);
+			default:
+				return e;
+			}
+		},
+
 		getDatasetAtEvent: function(e) {
 			var elementsArray = this.getElementAtEvent(e);
 
@@ -484,140 +498,106 @@ module.exports = function(Chart) {
 				this.eventHandler(evt);
 			});
 		},
+
+		updateHoverStyle: function(elements, mode, enabled) {
+			var method = enabled? 'setHoverStyle' : 'removeHoverStyle';
+			var element, i, ilen;
+
+			switch (mode) {
+			case 'single':
+				elements = [ elements[0] ];
+				break;
+			case 'label':
+			case 'dataset':
+				// elements = elements;
+				break;
+			default:
+				// unsupported mode
+				return;
+			}
+
+			for (i=0, ilen=elements.length; i<ilen; ++i) {
+				element = elements[i];
+				if (element) {
+					this.getDatasetMeta(element._datasetIndex).controller[method](element);
+				}
+			}
+		},
+
 		eventHandler: function eventHandler(e) {
-			this.lastActive = this.lastActive || [];
-			this.lastTooltipActive = this.lastTooltipActive || [];
+			var me = this;
+			var tooltip = me.tooltip;
+			var options = me.options || {};
+			var hoverOptions = options.hover;
+			var tooltipsOptions = options.tooltips;
+
+			me.lastActive = me.lastActive || [];
+			me.lastTooltipActive = me.lastTooltipActive || [];
 
 			// Find Active Elements for hover and tooltips
 			if (e.type === 'mouseout') {
-				this.active = [];
-				this.tooltipActive = [];
+				me.active = [];
+				me.tooltipActive = [];
 			} else {
-
-				var _this = this;
-				var getItemsForMode = function(mode) {
-					switch (mode) {
-						case 'single':
-							return _this.getElementAtEvent(e);
-						case 'label':
-							return _this.getElementsAtEvent(e);
-						case 'dataset':
-							return _this.getDatasetAtEvent(e);
-						default:
-							return e;
-					}
-				};
-
-				this.active = getItemsForMode(this.options.hover.mode);
-				this.tooltipActive = getItemsForMode(this.options.tooltips.mode);
+				me.active = me.getElementsAtEventForMode(e, hoverOptions.mode);
+				me.tooltipActive =  me.getElementsAtEventForMode(e, tooltipsOptions.mode);
 			}
 
 			// On Hover hook
-			if (this.options.hover.onHover) {
-				this.options.hover.onHover.call(this, this.active);
+			if (hoverOptions.onHover) {
+				hoverOptions.onHover.call(me, me.active);
 			}
 
 			if (e.type === 'mouseup' || e.type === 'click') {
-				if (this.options.onClick) {
-					this.options.onClick.call(this, e, this.active);
+				if (options.onClick) {
+					options.onClick.call(me, e, me.active);
 				}
-
-				if (this.legend && this.legend.handleEvent) {
-					this.legend.handleEvent(e);
+				if (me.legend && me.legend.handleEvent) {
+					me.legend.handleEvent(e);
 				}
 			}
 
 			// Remove styling for last active (even if it may still be active)
-			if (this.lastActive.length) {
-				var lastActive;
-				switch (this.options.hover.mode) {
-					case 'single':
-						lastActive = this.lastActive[0];
-						this.getDatasetMeta(lastActive._datasetIndex).controller.removeHoverStyle(lastActive, lastActive._datasetIndex, lastActive._index);
-						break;
-					case 'label':
-					case 'dataset':
-						for (var i = 0; i < this.lastActive.length; i++) {
-							lastActive = this.lastActive[i];
-							if (lastActive)
-								this.getDatasetMeta(lastActive._datasetIndex).controller.removeHoverStyle(lastActive, lastActive._datasetIndex, lastActive._index);
-						}
-						break;
-					default:
-						// Don't change anything
-				}
+			if (me.lastActive.length) {
+				me.updateHoverStyle(me.lastActive, hoverOptions.mode, false);
 			}
 
 			// Built in hover styling
-			if (this.active.length && this.options.hover.mode) {
-				var active;
-				switch (this.options.hover.mode) {
-					case 'single':
-						active = this.active[0];
-						this.getDatasetMeta(active._datasetIndex).controller.setHoverStyle(active);
-						break;
-					case 'label':
-					case 'dataset':
-						for (var j = 0; j < this.active.length; j++) {
-							active = this.active[j];
-							if (active)
-								this.getDatasetMeta(active._datasetIndex).controller.setHoverStyle(active);
-						}
-						break;
-					default:
-						// Don't change anything
-				}
+			if (me.active.length && hoverOptions.mode) {
+				me.updateHoverStyle(me.active, hoverOptions.mode, true);
 			}
 
-			var tooltip = this.tooltip;
 			// Built in Tooltips
-			if (this.options.tooltips.enabled || this.options.tooltips.custom) {
-
-				// The usual updates
+			if (tooltipsOptions.enabled || tooltipsOptions.custom) {
 				tooltip.initialize();
-				tooltip._active = this.tooltipActive;
+				tooltip._active = me.tooltipActive;
 				tooltip.update(true);
 			}
 
 			// Hover animations
 			tooltip.pivot();
 
-			if (!this.animating) {
-				var changed;
-
-				helpers.each(this.active, function(element, index) {
-					if (element !== this.lastActive[index]) {
-						changed = true;
-					}
-				}, this);
-
-				helpers.each(this.tooltipActive, function(element, index) {
-					if (element !== this.lastTooltipActive[index]) {
-						changed = true;
-					}
-				}, this);
-
+			if (!me.animating) {
 				// If entering, leaving, or changing elements, animate the change via pivot
-				if ((this.lastActive.length !== this.active.length) ||
-					(this.lastTooltipActive.length !== this.tooltipActive.length) ||
-					changed) {
+				if (!helpers.arrayEquals(me.active, me.lastActive) ||
+					!helpers.arrayEquals(me.tooltipActive, me.lastTooltipActive)) {
 
-					this.stop();
+					me.stop();
 
-					if (this.options.tooltips.enabled || this.options.tooltips.custom) {
+					if (tooltipsOptions.enabled || tooltipsOptions.custom) {
 						tooltip.update(true);
 					}
 
-					// We only need to render at this point. Updating will cause scales to be recomputed generating flicker & using more
-					// memory than necessary.
-					this.render(this.options.hover.animationDuration, true);
+					// We only need to render at this point. Updating will cause scales to be
+					// recomputed generating flicker & using more memory than necessary.
+					me.render(hoverOptions.animationDuration, true);
 				}
 			}
 
 			// Remember Last Actives
-			this.lastActive = this.active;
-			this.lastTooltipActive = this.tooltipActive;
-			return this;
+			me.lastActive = me.active;
+			me.lastTooltipActive = me.tooltipActive;
+			return me;
 		}
 	});
 };
