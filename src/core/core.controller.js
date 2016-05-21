@@ -98,81 +98,70 @@ module.exports = function(Chart) {
 
 			return this;
 		},
+
 		ensureScalesHaveIDs: function ensureScalesHaveIDs() {
-			var defaultXAxisID = 'x-axis-';
-			var defaultYAxisID = 'y-axis-';
+			var options = this.options;
+			var scalesOptions = options.scales || {};
+			var scaleOptions = options.scale;
 
-			if (this.options.scales) {
-				if (this.options.scales.xAxes && this.options.scales.xAxes.length) {
-					helpers.each(this.options.scales.xAxes, function(xAxisOptions, index) {
-						xAxisOptions.id = xAxisOptions.id || (defaultXAxisID + index);
-					});
-				}
+			helpers.each(scalesOptions.xAxes, function(xAxisOptions, index) {
+				xAxisOptions.id = xAxisOptions.id || ('x-axis-' + index);
+			});
 
-				if (this.options.scales.yAxes && this.options.scales.yAxes.length) {
-					// Build the y axes
-					helpers.each(this.options.scales.yAxes, function(yAxisOptions, index) {
-						yAxisOptions.id = yAxisOptions.id || (defaultYAxisID + index);
-					});
-				}
+			helpers.each(scalesOptions.yAxes, function(yAxisOptions, index) {
+				yAxisOptions.id = yAxisOptions.id || ('y-axis-' + index);
+			});
+
+			if (scaleOptions) {
+				scaleOptions.id = scaleOptions.id || 'scale';
 			}
 		},
+
+		/**
+		 * Builds a map of scale ID to scale object for future lookup.
+		 */
 		buildScales: function buildScales() {
-			// Map of scale ID to scale object so we can lookup later
-			this.scales = {};
+			var me = this;
+			var options = me.options;
+			var scales = me.scales = {};
+			var items = [];
 
-			// Build the x axes
-			if (this.options.scales) {
-				if (this.options.scales.xAxes && this.options.scales.xAxes.length) {
-					helpers.each(this.options.scales.xAxes, function(xAxisOptions, index) {
-						var xType = helpers.getValueOrDefault(xAxisOptions.type, 'category');
-						var ScaleClass = Chart.scaleService.getScaleConstructor(xType);
-						if (ScaleClass) {
-							var scale = new ScaleClass({
-								ctx: this.chart.ctx,
-								options: xAxisOptions,
-								chart: this,
-								id: xAxisOptions.id
-							});
-
-							this.scales[scale.id] = scale;
-						}
-					}, this);
-				}
-
-				if (this.options.scales.yAxes && this.options.scales.yAxes.length) {
-					// Build the y axes
-					helpers.each(this.options.scales.yAxes, function(yAxisOptions, index) {
-						var yType = helpers.getValueOrDefault(yAxisOptions.type, 'linear');
-						var ScaleClass = Chart.scaleService.getScaleConstructor(yType);
-						if (ScaleClass) {
-							var scale = new ScaleClass({
-								ctx: this.chart.ctx,
-								options: yAxisOptions,
-								chart: this,
-								id: yAxisOptions.id
-							});
-
-							this.scales[scale.id] = scale;
-						}
-					}, this);
-				}
+			if (options.scales) {
+				items = items.concat(
+					(options.scales.xAxes || []).map(function(xAxisOptions) {
+						return { options: xAxisOptions, dtype: 'category' }; }),
+					(options.scales.yAxes || []).map(function(yAxisOptions) {
+						return { options: yAxisOptions, dtype: 'linear' }; }));
 			}
-			if (this.options.scale) {
-				// Build radial axes
-				var ScaleClass = Chart.scaleService.getScaleConstructor(this.options.scale.type);
-				if (ScaleClass) {
-					var scale = new ScaleClass({
-						ctx: this.chart.ctx,
-						options: this.options.scale,
-						chart: this
-					});
 
-					this.scale = scale;
-
-					this.scales.radialScale = scale;
-				}
+			if (options.scale) {
+				items.push({ options: options.scale, dtype: 'radialLinear', isDefault: true });
 			}
+
+			helpers.each(items, function(item, index) {
+				var scaleOptions = item.options;
+				var scaleType = helpers.getValueOrDefault(scaleOptions.type, item.dtype);
+				var scaleClass = Chart.scaleService.getScaleConstructor(scaleType);
+				if (!scaleClass) {
+					return;
+				}
+
+				var scale = new scaleClass({
+					id: scaleOptions.id,
+					options: scaleOptions,
+					ctx: me.chart.ctx,
+					chart: me
+				});
+
+				scales[scale.id] = scale;
+
+				// TODO(SB): I think we should be able to remove this custom case (options.scale)
+				// and consider it as a regular scale part of the "scales"" map only! This would
+				// make the logic easier and remove some useless? custom code.
+				if (item.isDefault) {
+					me.scale = scale;
+				}
+			});
 
 			Chart.scaleService.addScalesToLayout(this);
 		},
