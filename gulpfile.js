@@ -22,17 +22,16 @@ var gulp = require('gulp'),
 
 var srcDir = './src/';
 var outDir = './dist/';
-var testDir = './test/';
 
-var header = "/*!\n\
- * Chart.js\n\
- * http://chartjs.org/\n\
- * Version: {{ version }}\n\
- *\n\
- * Copyright 2016 Nick Downie\n\
- * Released under the MIT license\n\
- * https://github.com/chartjs/Chart.js/blob/master/LICENSE.md\n\
- */\n";
+var header = "/*!\n" +
+  " * Chart.js\n" +
+  " * http://chartjs.org/\n" +
+  " * Version: {{ version }}\n" +
+  " *\n" +
+  " * Copyright 2016 Nick Downie\n" +
+  " * Released under the MIT license\n" +
+  " * https://github.com/chartjs/Chart.js/blob/master/LICENSE.md\n" +
+  " */\n";
 
 var preTestFiles = [
   './node_modules/moment/min/moment.min.js',
@@ -157,11 +156,15 @@ function validHTMLTask() {
     .pipe(htmlv());
 }
 
-
-function unittestTask() {
+function startTest() {
   var files = ['./src/**/*.js'];
   Array.prototype.unshift.apply(files, preTestFiles);
   Array.prototype.push.apply(files, testFiles);
+  return files;
+}
+
+function unittestTask() {
+  var files = startTest();
 
   return gulp.src(files)
     .pipe(karma({
@@ -171,9 +174,7 @@ function unittestTask() {
 }
 
 function unittestWatchTask() {
-  var files = ['./src/**/*.js'];
-  Array.prototype.unshift.apply(files, preTestFiles);
-  Array.prototype.push.apply(files, testFiles);
+  var files = startTest();
 
   return gulp.src(files)
     .pipe(karma({
@@ -183,9 +184,7 @@ function unittestWatchTask() {
 }
 
 function coverageTask() {
-  var files = ['./src/**/*.js'];
-  Array.prototype.unshift.apply(files, preTestFiles);
-  Array.prototype.push.apply(files, testFiles);
+  var files = startTest();
 
   return gulp.src(files)
     .pipe(karma({
