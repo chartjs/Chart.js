@@ -164,9 +164,7 @@ function startTest() {
 }
 
 function unittestTask() {
-  var files = startTest();
-
-  return gulp.src(files)
+  return gulp.src(startTest())
     .pipe(karma({
       configFile: 'karma.conf.ci.js',
       action: 'run'
@@ -174,9 +172,7 @@ function unittestTask() {
 }
 
 function unittestWatchTask() {
-  var files = startTest();
-
-  return gulp.src(files)
+  return gulp.src(startTest())
     .pipe(karma({
       configFile: 'karma.conf.js',
       action: 'watch'
@@ -184,9 +180,7 @@ function unittestWatchTask() {
 }
 
 function coverageTask() {
-  var files = startTest();
-
-  return gulp.src(files)
+  return gulp.src(startTest())
     .pipe(karma({
       configFile: 'karma.coverage.conf.js',
       action: 'run'
