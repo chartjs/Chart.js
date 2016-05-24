@@ -732,21 +732,35 @@ module.exports = function(Chart) {
 		return valueInPixels;
 	}
 
+	/**
+	 * Returns if the given value contains an effective constraint.
+	 * @private
+	 */
+	function isConstrainedValue(value) {
+		return value !== undefined &&  value !== null && value !== 'none';
+	}
+
 	// Private helper to get a constraint dimension
 	// @param domNode : the node to check the constraint on
-	// @param maxStyle : the style that defines the maximum for the direction we are using (max-width / max-height)
+	// @param maxStyle : the style that defines the maximum for the direction we are using (maxWidth / maxHeight)
 	// @param percentageProperty : property of parent to use when calculating width as a percentage
+	// @see http://www.nathanaeljones.com/blog/2013/reading-max-width-cross-browser
 	function getConstraintDimension(domNode, maxStyle, percentageProperty) {
-		var constrainedDimension;
-		var constrainedNode = document.defaultView.getComputedStyle(domNode)[maxStyle];
-		var constrainedContainer = document.defaultView.getComputedStyle(domNode.parentNode)[maxStyle];
-		var hasCNode = constrainedNode !== null && constrainedNode !== "none";
-		var hasCContainer = constrainedContainer !== null && constrainedContainer !== "none";
+		var view = document.defaultView;
+		var parentNode = domNode.parentNode;
+		var constrainedNode = view.getComputedStyle(domNode)[maxStyle];
+		var constrainedContainer = view.getComputedStyle(parentNode)[maxStyle];
+		var hasCNode = isConstrainedValue(constrainedNode);
+		var hasCContainer = isConstrainedValue(constrainedContainer);
+		var infinity = Number.POSITIVE_INFINITY;
 
 		if (hasCNode || hasCContainer) {
-			constrainedDimension = Math.min((hasCNode ? parseMaxStyle(constrainedNode, domNode, percentageProperty) : Number.POSITIVE_INFINITY), (hasCContainer ? parseMaxStyle(constrainedContainer, domNode.parentNode, percentageProperty) : Number.POSITIVE_INFINITY));
+			return Math.min(
+				hasCNode? parseMaxStyle(constrainedNode, domNode, percentageProperty) : infinity,
+				hasCContainer? parseMaxStyle(constrainedContainer, parentNode, percentageProperty) : infinity);
 		}
-		return constrainedDimension;
+
+		return 'none';
 	}
 	// returns Number or undefined if no constraint
 	helpers.getConstraintWidth = function(domNode) {
@@ -759,26 +773,16 @@ module.exports = function(Chart) {
 	helpers.getMaximumWidth = function(domNode) {
 		var container = domNode.parentNode;
 		var padding = parseInt(helpers.getStyle(container, 'padding-left')) + parseInt(helpers.getStyle(container, 'padding-right'));
-
 		var w = container.clientWidth - padding;
 		var cw = helpers.getConstraintWidth(domNode);
-		if (cw !== undefined) {
-			w = Math.min(w, cw);
-		}
-
-		return w;
+		return isNaN(cw)? w : Math.min(w, cw);
 	};
 	helpers.getMaximumHeight = function(domNode) {
 		var container = domNode.parentNode;
 		var padding = parseInt(helpers.getStyle(container, 'padding-top')) + parseInt(helpers.getStyle(container, 'padding-bottom'));
-
 		var h = container.clientHeight - padding;
 		var ch = helpers.getConstraintHeight(domNode);
-		if (ch !== undefined) {
-			h = Math.min(h, ch);
-		}
-
-		return h;
+		return isNaN(ch)? h : Math.min(h, ch);
 	};
 	helpers.getStyle = function(el, property) {
 		return el.currentStyle ?
