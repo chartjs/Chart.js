@@ -11,7 +11,7 @@ This type of chart is often useful when we want to show a comparison data simila
 	<canvas width="250" height="125"></canvas>
 </div>
 
-### Example usage
+### Example Usage
 
 ```javascript
 new Chart(ctx, {
@@ -21,7 +21,7 @@ new Chart(ctx, {
 });
 ```
 
-### Data structure
+### Data Structure
 
 The following options can be included in a polar area chart dataset to configure options for that specific dataset.
 
@@ -70,9 +70,9 @@ var data = {
 ```
 As you can see, for the chart data you pass in an array of objects, with a value and a colour. The value attribute should be a number, while the color attribute should be a string. Similar to CSS, for this string you can use HEX notation, RGB, RGBA or HSL.
 
-### Chart options
+### Chart Options
 
-These are the customisation options specific to Polar Area charts. These options are merged with the [global chart configuration options](#getting-started-global-chart-configuration), and form the options of the chart.
+These are the customisation options specific to Polar Area charts. These options are merged with the [global chart configuration options](#global-chart-configuration), and form the options of the chart.
 
 Name | Type | Default | Description
 --- | --- | --- | ---

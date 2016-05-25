@@ -20,7 +20,7 @@ They are also registered under two aliases in the `Chart` core. Other than their
 </div>
 <br>
 
-### Example usage
+### Example Usage
 
 ```javascript
 // For a pie chart
@@ -40,7 +40,7 @@ var myDoughnutChart = new Chart(ctx, {
 });
 ```
 
-### Data structure
+### Data Structure
 
 Property | Type | Usage
 --- | --- | ---
@@ -81,9 +81,9 @@ var data = {
 
 For a pie chart, datasets need to contain an array of data points. The data points should be a number, Chart.js will total all of the numbers and calculate the relative proportion of each. You can also add an array of background colors. The color attributes should be a string. Similar to CSS, for this string you can use HEX notation, RGB, RGBA or HSL.
 
-### Chart options
+### Chart Options
 
-These are the customisation options specific to Pie & Doughnut charts. These options are merged with the [global chart configuration options](#getting-started-global-chart-configuration), and form the options of the chart.
+These are the customisation options specific to Pie & Doughnut charts. These options are merged with the [global chart configuration options](#global-chart-configuration), and form the options of the chart.
 
 Name | Type | Default | Description
 --- | --- | --- | ---

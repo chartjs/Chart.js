@@ -12,7 +12,7 @@ It is sometimes used to show trend data, and the comparison of multiple data set
 	<canvas width="250" height="125"></canvas>
 </div>
 
-### Example usage
+### Example Usage
 ```javascript
 var myBarChart = new Chart(ctx, {
 	type: 'bar',
@@ -31,7 +31,7 @@ var myBarChart = new Chart(ctx, {
 });
 ```
 
-### Data structure
+### Data Structure
 The following options can be included in a bar chart dataset to configure options for that specific dataset.
 
 Some properties can be specified as an array. If these are set to an array value, the first value applies to the first bar, the second value to the second bar, and so on.
@@ -73,7 +73,7 @@ We have an array of labels too for display. In the example, we are showing the s
 
 ### Chart Options
 
-These are the customisation options specific to Bar charts. These options are merged with the [global chart configuration options](#getting-started-global-chart-configuration), and form the options of the chart.
+These are the customisation options specific to Bar charts. These options are merged with the [global chart configuration options](#global-chart-configuration), and form the options of the chart.
 
 The default options for bar chart are defined in `Chart.defaults.bar`.
 
