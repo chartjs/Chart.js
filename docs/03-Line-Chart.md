@@ -149,9 +149,11 @@ new Chart(ctx, {
 	type: 'line',
 	data: data,
 	options: {
-		xAxes: [{
-			display: false
-		}]
+		scales: {
+			xAxes: [{
+				display: false
+			}]
+		}
 	}
 });
 ```
