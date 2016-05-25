@@ -3,9 +3,7 @@ title: Line Chart
 anchor: line-chart
 ---
 ### Introduction
-A line chart is a way of plotting data points on a line.
-
-Often, it is used to show trend data, and the comparison of two data sets.
+A line chart is a way of plotting data points on a line. Often, it is used to show trend data, and the comparison of two data sets.
 
 <div class="canvas-holder">
 	<canvas width="250" height="125"></canvas>
@@ -27,6 +25,7 @@ var myLineChart = Chart.Line(ctx, {
 	options: options
 });
 ```
+
 ### Data Structure
 
 The following options can be included in a line chart dataset to configure options for that specific dataset.
@@ -35,7 +34,7 @@ All point* properties can be specified as an array. If these are set to an array
 
 Property | Type | Usage
 --- | --- | ---
-data | `Array<Number>` | The data to plot in a line
+data | See [data point](#line-chart-data-points) section | The data to plot in a line
 label | `String` | The label for the dataset which appears in the legend and tooltips
 xAxisID | `String` | The ID of the x axis to plot this dataset on
 yAxisID | `String` | The ID of the y axis to plot this dataset on
@@ -57,7 +56,7 @@ pointHitRadius | `Number or Array<Number>` | The pixel size of the non-displayed
 pointHoverBackgroundColor | `Color or Array<Color>` | Point background color when hovered
 pointHoverBorderColor | `Color or Array<Color>` | Point border color when hovered
 pointHoverBorderWidth | `Number or Array<Number>` | Border width of point when hovered
-pointStyle | `String or Array<String>` | The style of point. Options include 'circle', 'triangle', 'rect', 'rectRot', 'cross', 'crossRot', 'star', 'line', and 'dash'
+pointStyle | `String, Array<String>, Image, Array<Image>` | The style of point. Options are 'circle', 'triangle', 'rect', 'rectRot', 'cross', 'crossRot', 'star', 'line', and 'dash'. If the option is an image, that image is drawn on the canvas using `drawImage`. 
 
 An example data object using these attributes is shown below.
 ```javascript
@@ -89,39 +88,61 @@ var data = {
 };
 ```
 
-The line chart requires an array of labels. This labels are shown on the X axis. There must be one label for each data point. More labels than datapoints are allowed, in which case the line ends at the last data point.
+The line chart usually requires an array of labels. This labels are shown on the X axis. There must be one label for each data point. More labels than datapoints are allowed, in which case the line ends at the last data point.
 The data for line charts is broken up into an array of datasets. Each dataset has a colour for the fill, a colour for the line and colours for the points and strokes of the points. These colours are strings just like CSS. You can use RGBA, RGB, HEX or HSL notation.
 
 The label key on each dataset is optional, and can be used when generating a scale for the chart.
 
+### Data Points
+
+The data passed to the chart can be passed in two formats. The most common method is to pass the data array as an array of numbers. In this case, the `data.labels` array must be specified and must contain a label for each point.
+
+The alternate is used for sparse datasets. Data is specified using an object containing `x` and `y` properties. This is used for scatter charts as documented below.
+
+### Scatter Line Charts
+
+Scatter line charts can be created by changing the X axis to a linear axis. To use a scatter chart, data must be passed as objects containing X and Y properties. The example below creates a scatter chart with 3 points.
+
+```javascript
+var scatterChart = new Chart(ctx, {
+	type: 'line',
+	data: {
+		datasets: [{
+			label: 'Scatter Dataset',
+			data: [{
+				x: -10,
+				y: 0
+			}, {
+				x: 0,
+				y: 10
+			}, {
+				x: 10,
+				y: 5
+			}]
+		}]
+	},
+	options: {
+		scales: {
+			xAxes: [{
+				type: 'linear',
+				position: 'bottom'
+			}]
+		}
+	}
+});
+```
+
 ### Chart Options
 
-These are the customisation options specific to Line charts. These options are merged with the [global chart configuration options](#global-chart-configuration), and form the options of the chart.
-
-The default options for line chart are defined in `Chart.defaults.line`.
+These are the customisation options specific to Line charts. These options are merged with the [global chart configuration options](#chart-configuration-global-configuration), and form the options of the chart.
 
 Name | Type | Default | Description
 --- | --- | --- | ---
 showLines | Boolean | true | If false, the lines between points are not drawn
-stacked | Boolean | false | If true, lines stack on top of each other along the y axis.
-*hover*.mode | String | "label" | Label's hover mode. "label" is used since the x axis displays data by the index in the dataset.
-elements | Object | - | -
-*elements*.point | Object | - | -
-*elements.point*.radius | Number | `3` | Defines the size of the Point shape. Can be set to zero to skip rendering a point.
-scales | Object | - | -
-*scales*.xAxes | Array | `[{type:"category","id":"x-axis-0"}]` | Defines all of the x axes used in the chart. See the [scale documentation](#scales) for details on the available options.
-*Options for xAxes* | | |
-type | String | "category" | As defined in ["Category"](#scales-category-scale).
-id | String | "x-axis-0" | Id of the axis so that data can bind to it.
- | | |
- *scales*.yAxes | Array | `[{type:"linear","id":"y-axis-0"}]` | Defines all of the y axes used in the chart. See the [scale documentation](#scales) for details on the available options.
- *Options for yAxes* | | |
- type | String | "linear" | As defined in ["Linear"](#scales-linear-scale).
- id | String | "y-axis-0" | Id of the axis so that data can bind to it.
 
 You can override these for your `Chart` instance by passing a member `options` into the `Line` method.
 
-For example, we could have a line chart display without an x axis by doing the following. The config merge is smart enough to handle arrays so that you do not need to specify all axis settings to change one thing.
+For example, we could have a line chart display without an X axis by doing the following. The config merge is smart enough to handle arrays so that you do not need to specify all axis settings to change one thing.
 
 ```javascript
 new Chart(ctx, {
@@ -133,8 +154,24 @@ new Chart(ctx, {
 		}]
 	}
 });
-// This will create a chart with all of the default options, merged from the global config,
-// and the Line chart defaults, but this particular instance will have the x axis not displaying.
 ```
 
 We can also change these defaults values for each Line type that is created, this object is available at `Chart.defaults.line`.
+
+### Stacked Charts
+
+Stacked area charts can be created by setting the Y axis to a stacked configuration. The following example would have stacked lines.
+
+```javascript
+var stackedLine = new Chart(ctx, {
+	type: 'line',
+	data: data,
+	options: {
+		scales: {
+			yAxes: [{
+				stacked: true
+			}]
+		}
+	}
+});
+```
