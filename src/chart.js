@@ -13,6 +13,7 @@ require('./core/core.scaleService')(Chart);
 require('./core/core.title')(Chart);
 require('./core/core.tooltip')(Chart);
 
+require('./controllers/controller.band')(Chart);
 require('./controllers/controller.bar')(Chart);
 require('./controllers/controller.bubble')(Chart);
 require('./controllers/controller.doughnut')(Chart);
@@ -31,6 +32,7 @@ require('./elements/element.line')(Chart);
 require('./elements/element.point')(Chart);
 require('./elements/element.rectangle')(Chart);
 
+require('./charts/Chart.Band')(Chart);
 require('./charts/Chart.Bar')(Chart);
 require('./charts/Chart.Bubble')(Chart);
 require('./charts/Chart.Doughnut')(Chart);
