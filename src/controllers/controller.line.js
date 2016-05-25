@@ -24,40 +24,16 @@ module.exports = function(Chart) {
 	};
 
 	Chart.controllers.line = Chart.DatasetController.extend({
-		addElements: function() {
-			var me = this;
-			var meta = me.getMeta();
-			var data = me.getDataset().data || [];
-			var value, i, ilen;
 
-			meta.dataset = meta.dataset || new Chart.elements.Line({
-				_chart: me.chart.chart,
-				_datasetIndex: me.index,
-				_points: meta.data
-			});
+		datasetElementType: Chart.elements.Line,
 
-			for (i=0, ilen=data.length; i<ilen; ++i) {
-				value = data[i];
-				meta.data[i] = meta.data[i] || new Chart.elements.Point({
-					_chart: me.chart.chart,
-					_datasetIndex: me.index,
-					_index: i
-				});
-			}
-		},
+		dataElementType: Chart.elements.Point,
 
 		addElementAndReset: function(index) {
 			var me = this;
 			var options = me.chart.options;
-			var point = new Chart.elements.Point({
-				_chart: me.chart.chart,
-				_datasetIndex: me.index,
-				_index: index
-			});
 
-			// Add to the points array and reset it
-			me.getMeta().data.splice(index, 0, point);
-			me.updateElement(point, index, true);
+			Chart.DatasetController.prototype.addElementAndReset.call(me, index);
 
 			// Make sure bezier control points are updated
 			if (options.showLines && options.elements.line.tension !== 0) {
@@ -72,17 +48,8 @@ module.exports = function(Chart) {
 			var points = meta.data || [];
 			var options = me.chart.options;
 			var lineElementOptions = options.elements.line;
-			var yScale = me.getScaleForId(meta.yAxisID);
-			var xScale = me.getScaleForId(meta.xAxisID);
-			var scaleBase, i, ilen, dataset, custom;
-
-			if (yScale.min < 0 && yScale.max < 0) {
-				scaleBase = yScale.getPixelForValue(yScale.max);
-			} else if (yScale.min > 0 && yScale.max > 0) {
-				scaleBase = yScale.getPixelForValue(yScale.min);
-			} else {
-				scaleBase = yScale.getPixelForValue(0);
-			}
+			var scale = me.getScaleForId(meta.yAxisID);
+			var i, ilen, dataset, custom;
 
 			// Update Line
 			if (options.showLines) {
@@ -95,7 +62,7 @@ module.exports = function(Chart) {
 				}
 
 				// Utility
-				line._scale = yScale;
+				line._scale = scale;
 				line._datasetIndex = me.index;
 				// Data
 				line._children = points;
@@ -112,9 +79,9 @@ module.exports = function(Chart) {
 					borderJoinStyle: custom.borderJoinStyle ? custom.borderJoinStyle : (dataset.borderJoinStyle || lineElementOptions.borderJoinStyle),
 					fill: custom.fill ? custom.fill : (dataset.fill !== undefined ? dataset.fill : lineElementOptions.fill),
 					// Scale
-					scaleTop: yScale.top,
-					scaleBottom: yScale.bottom,
-					scaleZero: scaleBase
+					scaleTop: scale.top,
+					scaleBottom: scale.bottom,
+					scaleZero: scale.getBasePixel()
 				};
 
 				line.pivot();
@@ -188,15 +155,7 @@ module.exports = function(Chart) {
 			var yScale = me.getScaleForId(meta.yAxisID);
 			var xScale = me.getScaleForId(meta.xAxisID);
 			var pointOptions = me.chart.options.elements.point;
-			var scaleBase, x, y;
-
-			if (yScale.min < 0 && yScale.max < 0) {
-				scaleBase = yScale.getPixelForValue(yScale.max);
-			} else if (yScale.min > 0 && yScale.max > 0) {
-				scaleBase = yScale.getPixelForValue(yScale.min);
-			} else {
-				scaleBase = yScale.getPixelForValue(0);
-			}
+			var x, y;
 
 			// Compatibility: If the properties are defined with only the old name, use those values
 			if ((dataset.radius !== undefined) && (dataset.pointRadius === undefined)) {
@@ -207,10 +166,9 @@ module.exports = function(Chart) {
 			}
 
 			x = xScale.getPixelForValue(value, index, datasetIndex, me.chart.isCombo);
-			y = reset ? scaleBase : me.calculatePointY(value, index, datasetIndex, me.chart.isCombo);
+			y = reset ? yScale.getBasePixel() : me.calculatePointY(value, index, datasetIndex, me.chart.isCombo);
 
 			// Utility
-			point._chart = me.chart.chart;
 			point._xScale = xScale;
 			point._yScale = yScale;
 			point._datasetIndex = datasetIndex;
@@ -237,7 +195,6 @@ module.exports = function(Chart) {
 			var me = this;
 			var chart = me.chart;
 			var meta = me.getMeta();
-			var xScale = me.getScaleForId(meta.xAxisID);
 			var yScale = me.getScaleForId(meta.yAxisID);
 			var sumPos = 0;
 			var sumNeg = 0;

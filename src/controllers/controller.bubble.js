@@ -37,74 +37,32 @@ module.exports = function(Chart) {
 		}
 	};
 
-
 	Chart.controllers.bubble = Chart.DatasetController.extend({
-		addElements: function() {
-			var meta = this.getMeta();
-			helpers.each(this.getDataset().data, function(value, index) {
-				meta.data[index] = meta.data[index] || new Chart.elements.Point({
-					_chart: this.chart.chart,
-					_datasetIndex: this.index,
-					_index: index
-				});
-			}, this);
-		},
-		addElementAndReset: function(index) {
-			var point = new Chart.elements.Point({
-				_chart: this.chart.chart,
-				_datasetIndex: this.index,
-				_index: index
-			});
 
-			// Add to the points array and reset it
-			this.getMeta().data.splice(index, 0, point);
-			this.updateElement(point, index, true);
-		},
+		dataElementType: Chart.elements.Point,
 
 		update: function update(reset) {
 			var meta = this.getMeta();
 			var points = meta.data;
-			var yScale = this.getScaleForId(meta.yAxisID);
-			var xScale = this.getScaleForId(meta.xAxisID);
-			var scaleBase;
-
-			if (yScale.min < 0 && yScale.max < 0) {
-				scaleBase = yScale.getPixelForValue(yScale.max);
-			} else if (yScale.min > 0 && yScale.max > 0) {
-				scaleBase = yScale.getPixelForValue(yScale.min);
-			} else {
-				scaleBase = yScale.getPixelForValue(0);
-			}
 
 			// Update Points
 			helpers.each(points, function(point, index) {
 				this.updateElement(point, index, reset);
 			}, this);
-
 		},
 
 		updateElement: function(point, index, reset) {
 			var meta = this.getMeta();
-			var yScale = this.getScaleForId(meta.yAxisID);
 			var xScale = this.getScaleForId(meta.xAxisID);
-			var scaleBase;
+			var yScale = this.getScaleForId(meta.yAxisID);
 
 			var custom = point.custom || {};
 			var dataset = this.getDataset();
 			var data = dataset.data[index];
 			var pointElementOptions = this.chart.options.elements.point;
 
-			if (yScale.min < 0 && yScale.max < 0) {
-				scaleBase = yScale.getPixelForValue(yScale.max);
-			} else if (yScale.min > 0 && yScale.max > 0) {
-				scaleBase = yScale.getPixelForValue(yScale.min);
-			} else {
-				scaleBase = yScale.getPixelForValue(0);
-			}
-
 			helpers.extend(point, {
 				// Utility
-				_chart: this.chart.chart,
 				_xScale: xScale,
 				_yScale: yScale,
 				_datasetIndex: this.index,
@@ -113,7 +71,7 @@ module.exports = function(Chart) {
 				// Desired view properties
 				_model: {
 					x: reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(data, index, this.index, this.chart.isCombo),
-					y: reset ? scaleBase : yScale.getPixelForValue(data, index, this.index),
+					y: reset ? yScale.getBasePixel() : yScale.getPixelForValue(data, index, this.index),
 					// Appearance
 					radius: reset ? 0 : custom.radius ? custom.radius : this.getRadius(data),
 					backgroundColor: custom.backgroundColor ? custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, pointElementOptions.backgroundColor),
@@ -133,17 +91,6 @@ module.exports = function(Chart) {
 
 		getRadius: function(value) {
 			return value.r || this.chart.options.elements.point.radius;
-		},
-
-		draw: function(ease) {
-			var easingDecimal = ease || 1;
-
-			// Transition and Draw the Points
-			helpers.each(this.getMeta().data, function(point, index) {
-				point.transition(easingDecimal);
-				point.draw();
-			});
-
 		},
 
 		setHoverStyle: function(point) {
