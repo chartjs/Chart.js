@@ -128,9 +128,11 @@ new Chart(ctx, {
 	type: 'line',
 	data: data,
 	options: {
-		xAxes: [{
-			display: false
-		}]
+		scales: {
+			xAxes: [{
+				display: false
+			}]
+		}
 	}
 });
 // This will create a chart with all of the default options, merged from the global config,
