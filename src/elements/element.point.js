@@ -88,12 +88,14 @@ module.exports = function(Chart) {
 				ctx.strokeRect(x - size, y - size, 2 * size, 2 * size);
 				break;
 			case 'rectRot':
-				ctx.translate(x, y);
-				ctx.rotate(Math.PI / 4);
 				size = 1 / Math.SQRT2 * radius;
-				ctx.fillRect(-size, -size, 2 * size, 2 * size);
-				ctx.strokeRect(-size, -size, 2 * size, 2 * size);
-				ctx.setTransform(1, 0, 0, 1, 0, 0);
+				ctx.beginPath();
+				ctx.moveTo(x - size, y);
+				ctx.lineTo(x, y + size);
+				ctx.lineTo(x + size, y);
+				ctx.lineTo(x, y - size);
+				ctx.closePath();
+				ctx.fill();
 				break;
 			case 'cross':
 				ctx.beginPath();
