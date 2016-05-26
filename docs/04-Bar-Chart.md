@@ -85,7 +85,7 @@ scales | Object | - | -
 *Options for xAxes* | | |
 type | String | "Category" | As defined in [Scales](#scales-category-scale).
 display | Boolean | true | If true, show the scale.
-id | String | "x-axis-1" | Id of the axis so that data can bind to it
+id | String | "x-axis-0" | Id of the axis so that data can bind to it
 stacked | Boolean | false | If true, bars are stacked on the x-axis
 categoryPercentage | Number | 0.8 | Percent (0-1) of the available width (the space between the gridlines for small datasets) for each data-point to use for the bars. [Read More](#bar-chart-barpercentage-vs-categorypercentage)
 barPercentage | Number | 0.9 | Percent (0-1) of the available width each bar should be within the category percentage. 1.0 will take the whole category width and put the bars right next to each other. [Read More](#bar-chart-barpercentage-vs-categorypercentage)
@@ -96,7 +96,7 @@ gridLines | Object |  [See Scales](#scales) |
 *Options for xAxes* | | |
 type | String | "linear" | As defined in [Scales](#scales-linear-scale).
 display | Boolean | true | If true, show the scale.
-id | String | "y-axis-1" | Id of the axis so that data can bind to it.
+id | String | "y-axis-0" | Id of the axis so that data can bind to it.
 stacked | Boolean | false | If true, bars are stacked on the y-axis
 
 You can override these for your `Chart` instance by passing a second argument into the `Bar` method as an object with the keys you want to override.
