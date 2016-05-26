@@ -189,20 +189,26 @@ describe('Point element tests', function() {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
 		}, {
-			name: 'translate',
-			args: [10, 15]
+			name: 'beginPath',
+			args: []
 		}, {
-			name: 'rotate',
-			args: [Math.PI / 4]
+			name: 'moveTo',
+			args: [10 - 1 / Math.SQRT2 * 2, 15]
 		}, {
-			name: 'fillRect',
-			args: [-1 / Math.SQRT2 * 2, -1 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2],
+			name: 'lineTo',
+			args: [10, 15 + 1 / Math.SQRT2 * 2]
 		}, {
-			name: 'strokeRect',
-			args: [-1 / Math.SQRT2 * 2, -1 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2],
+			name: 'lineTo',
+			args: [10 + 1 / Math.SQRT2 * 2, 15],
 		}, {
-			name: 'setTransform',
-			args: [1, 0, 0, 1, 0, 0],
+			name: 'lineTo',
+			args: [10, 15 - 1 / Math.SQRT2 * 2],
+		}, {
+			name: 'closePath',
+			args: []
+		}, {
+			name: 'fill',
+			args: [],
 		}, {
 			name: 'stroke',
 			args: []
