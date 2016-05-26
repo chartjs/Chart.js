@@ -176,16 +176,6 @@ module.exports = function(Chart) {
 
 				Chart.layoutService.addBox(this, this.titleBlock);
 			}
-
-			if (this.options.legend) {
-				this.legend = new Chart.Legend({
-					ctx: this.chart.ctx,
-					options: this.options.legend,
-					chart: this
-				});
-
-				Chart.layoutService.addBox(this, this.legend);
-			}
 		},
 
 		updateLayout: function() {

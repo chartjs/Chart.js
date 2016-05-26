@@ -6,10 +6,10 @@ require('./core/core.animation')(Chart);
 require('./core/core.controller')(Chart);
 require('./core/core.datasetController')(Chart);
 require('./core/core.layoutService')(Chart);
-require('./core/core.legend')(Chart);
-require('./core/core.plugin.js')(Chart);
-require('./core/core.scale')(Chart);
 require('./core/core.scaleService')(Chart);
+require('./core/core.plugin.js')(Chart);
+require('./core/core.legend')(Chart);
+require('./core/core.scale')(Chart);
 require('./core/core.title')(Chart);
 require('./core/core.tooltip')(Chart);
 
