@@ -167,7 +167,7 @@ module.exports = function(Chart) {
 		},
 
 		buildSurroundingItems: function() {
-			if (this.options.title) {
+			/*if (this.options.title) {
 				this.titleBlock = new Chart.Title({
 					ctx: this.chart.ctx,
 					options: this.options.title,
@@ -175,7 +175,7 @@ module.exports = function(Chart) {
 				});
 
 				Chart.layoutService.addBox(this, this.titleBlock);
-			}
+			}*/
 		},
 
 		updateLayout: function() {

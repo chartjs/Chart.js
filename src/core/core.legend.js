@@ -363,5 +363,5 @@ module.exports = function(Chart) {
 				Chart.layoutService.addBox(chartInstance, chartInstance.legend);
 			}
 		}
-	})
+	});
 };
