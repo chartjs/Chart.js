@@ -32,11 +32,12 @@ module.exports = function(Chart) {
 		addElementAndReset: function(index) {
 			var me = this;
 			var options = me.chart.options;
+			var meta = me.getMeta();
 
 			Chart.DatasetController.prototype.addElementAndReset.call(me, index);
 
 			// Make sure bezier control points are updated
-			if (options.showLines && options.elements.line.tension !== 0) {
+			if (options.showLines && meta.dataset._model.tension !== 0) {
 				me.updateBezierControlPoints();
 			}
 		},
@@ -92,8 +93,13 @@ module.exports = function(Chart) {
 				me.updateElement(points[i], i, reset);
 			}
 
-			if (options.showLines && lineElementOptions.tension !== 0) {
+			if (options.showLines && line._model.tension !== 0) {
 				me.updateBezierControlPoints();
+			}
+
+			// Now pivot the point for animation
+			for (i=0, ilen=points.length; i<ilen; ++i) {
+				points[i].pivot();
 			}
 		},
 
@@ -244,9 +250,6 @@ module.exports = function(Chart) {
 				model.controlPointPreviousY = Math.max(Math.min(controlPoints.previous.y, area.bottom), area.top);
 				model.controlPointNextX = Math.max(Math.min(controlPoints.next.x, area.right), area.left);
 				model.controlPointNextY = Math.max(Math.min(controlPoints.next.y, area.bottom), area.top);
-
-				// Now pivot the point for animation
-				point.pivot();
 			}
 		},
 
