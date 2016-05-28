@@ -489,7 +489,7 @@ module.exports = function(Chart) {
 				_chart: this.chart,
 				_chartInstance: this,
 				_data: this.data,
-				_options: this.options
+				_options: this.options.tooltips
 			}, this);
 		},
 
