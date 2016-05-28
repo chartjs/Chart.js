@@ -234,6 +234,7 @@ afterTitle | `Array[tooltipItem], data` | Text to render after the title
 beforeBody | `Array[tooltipItem], data` | Text to render before the body section
 beforeLabel | `tooltipItem, data` | Text to render before an individual label
 label | `tooltipItem, data` | Text to render for an individual item in the tooltip
+labelColor | `tooltipItem, chartInstace` | Returns the colors to render for the tooltip item. Return as an object containing two parameters: `borderColor` and `backgroundColor`.
 afterLabel | `tooltipItem, data` | Text to render after an individual label
 afterBody | `Array[tooltipItem], data` | Text to render after the body section
 beforeFooter | `Array[tooltipItem], data` | Text to render before the footer section
