@@ -434,6 +434,7 @@ module.exports = function(Chart) {
 		},
 
 		destroy: function destroy() {
+			this.stop();
 			this.clear();
 			helpers.unbindEvents(this, this.events);
 			helpers.removeResizeListener(this.chart.canvas.parentNode);
