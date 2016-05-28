@@ -163,15 +163,22 @@ module.exports = function(Chart) {
 
 		// Args are: (tooltipItem, data)
 		getBody: function(tooltipItems, data) {
-			var lines = [];
+			var bodyItems = [];
 
-			helpers.each(tooltipItems, function(bodyItem) {
-				helpers.pushAllIfDefined(this._options.callbacks.beforeLabel.call(this, bodyItem, data), lines);
-				helpers.pushAllIfDefined(this._options.callbacks.label.call(this, bodyItem, data), lines);
-				helpers.pushAllIfDefined(this._options.callbacks.afterLabel.call(this, bodyItem, data), lines);
+			helpers.each(tooltipItems, function(tooltipItem) {
+				var bodyItem = {
+					before: [],
+					lines: [],
+					after: []
+				};
+				helpers.pushAllIfDefined(this._options.callbacks.beforeLabel.call(this, tooltipItem, data), bodyItem.before);
+				helpers.pushAllIfDefined(this._options.callbacks.label.call(this, tooltipItem, data), bodyItem.lines);
+				helpers.pushAllIfDefined(this._options.callbacks.afterLabel.call(this, tooltipItem, data), bodyItem.after);
+
+				bodyItems.push(bodyItem);
 			}, this);
 
-			return lines;
+			return bodyItems;
 		},
 
 		// Args are: (tooltipItem, data)
@@ -307,7 +314,13 @@ module.exports = function(Chart) {
 				height: vm.yPadding * 2, // Tooltip Padding
 				width: 0
 			};
-			var combinedBodyLength = vm.body.length + vm.beforeBody.length + vm.afterBody.length;
+
+
+			var combinedBodyLength = vm.body.reduce(function(count, bodyItem) {
+				return count + bodyItem.before.length + bodyItem.lines.length + bodyItem.after.length;
+			}, 0);
+			// Count in before and after body sections
+			combinedBodyLength += vm.beforeBody.length + vm.afterBody.length;
 
 			size.height += vm.title.length * vm.titleFontSize; // Title Lines
 			size.height += (vm.title.length - 1) * vm.titleSpacing; // Title Line Spacing
@@ -328,9 +341,16 @@ module.exports = function(Chart) {
 			helpers.each(vm.beforeBody.concat(vm.afterBody), function(line) {
 				size.width = Math.max(size.width, ctx.measureText(line).width);
 			});
-			helpers.each(vm.body, function(line) {
-				size.width = Math.max(size.width, ctx.measureText(line).width + (this._options.mode !== 'single' ? (vm.bodyFontSize + 2) : 0));
-			}, this);
+
+			var _this = this;
+			var maxBodyWidth = function(line) {
+				size.width = Math.max(size.width, ctx.measureText(line).width + (_this._options.mode !== 'single' ? (vm.bodyFontSize + 2) : 0));
+			};
+			helpers.each(vm.body, function(bodyItem) {
+				helpers.each(bodyItem.before, maxBodyWidth);
+				helpers.each(bodyItem.lines, maxBodyWidth);
+				helpers.each(bodyItem.after, maxBodyWidth);
+			});
 
 			ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
 			helpers.each(vm.footer, function(line) {
@@ -524,28 +544,38 @@ module.exports = function(Chart) {
 				pt.y += vm.bodyFontSize + vm.bodySpacing;
 			});
 
-			helpers.each(vm.body, function(body, i) {
-				// Draw Legend-like boxes if needed
-				if (this._options.mode !== 'single') {
-					// Fill a white rect so that colours merge nicely if the opacity is < 1
-					ctx.fillStyle = helpers.color(vm.legendColorBackground).alpha(opacity).rgbaString();
-					ctx.fillRect(pt.x, pt.y, vm.bodyFontSize, vm.bodyFontSize);
+			helpers.each(vm.body, function(bodyItem, i) {
+				var _this = this;
+				var fillLine = function(line) {
+					// Body Line
+					ctx.fillText(line, pt.x + (_this._options.mode !== 'single' ? (vm.bodyFontSize + 2) : 0), pt.y);
+					pt.y += vm.bodyFontSize + vm.bodySpacing;
+				};
 
-					// Border
-					ctx.strokeStyle = helpers.color(vm.labelColors[i].borderColor).alpha(opacity).rgbaString();
-					ctx.strokeRect(pt.x, pt.y, vm.bodyFontSize, vm.bodyFontSize);
+				helpers.each(bodyItem.before, fillLine);
 
-					// Inner square
-					ctx.fillStyle = helpers.color(vm.labelColors[i].backgroundColor).alpha(opacity).rgbaString();
-					ctx.fillRect(pt.x + 1, pt.y + 1, vm.bodyFontSize - 2, vm.bodyFontSize - 2);
+				helpers.each(bodyItem.lines, function(line) {
+					// Draw Legend-like boxes if needed
+					if (this._options.mode !== 'single') {
+						// Fill a white rect so that colours merge nicely if the opacity is < 1
+						ctx.fillStyle = helpers.color(vm.legendColorBackground).alpha(opacity).rgbaString();
+						ctx.fillRect(pt.x, pt.y, vm.bodyFontSize, vm.bodyFontSize);
 
-					ctx.fillStyle = helpers.color(vm.bodyColor).alpha(opacity).rgbaString(); // Return fill style for text
-				}
+						// Border
+						ctx.strokeStyle = helpers.color(vm.labelColors[i].borderColor).alpha(opacity).rgbaString();
+						ctx.strokeRect(pt.x, pt.y, vm.bodyFontSize, vm.bodyFontSize);
 
-				// Body Line
-				ctx.fillText(body, pt.x + (this._options.mode !== 'single' ? (vm.bodyFontSize + 2) : 0), pt.y);
+						// Inner square
+						ctx.fillStyle = helpers.color(vm.labelColors[i].backgroundColor).alpha(opacity).rgbaString();
+						ctx.fillRect(pt.x + 1, pt.y + 1, vm.bodyFontSize - 2, vm.bodyFontSize - 2);
 
-				pt.y += vm.bodyFontSize + vm.bodySpacing;
+						ctx.fillStyle = helpers.color(vm.bodyColor).alpha(opacity).rgbaString(); // Return fill style for text
+					}
+
+					fillLine(line);
+				}, this);
+				
+				helpers.each(bodyItem.after, fillLine);
 			}, this);
 
 			// After Body
