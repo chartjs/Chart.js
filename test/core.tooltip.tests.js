@@ -119,8 +119,8 @@ describe('tooltip tests', function() {
 			}]
 		}));
 
-		expect(tooltip._view.x).toBeCloseTo(269, 1);
-		expect(tooltip._view.y).toBeCloseTo(155, 1);
+		expect(tooltip._view.x).toBeCloseTo(269, 0);
+		expect(tooltip._view.y).toBeCloseTo(155, 0);
 	});
 
 	it('Should display in single mode', function() {
@@ -223,8 +223,8 @@ describe('tooltip tests', function() {
 			labelColors: []
 		}));
 
-		expect(tooltip._view.x).toBeCloseTo(269, 1);
-		expect(tooltip._view.y).toBeCloseTo(312, 1);
+		expect(tooltip._view.x).toBeCloseTo(269, 0);
+		expect(tooltip._view.y).toBeCloseTo(312, 0);
 	});
 
 	it('Should display information from user callbacks', function() {
@@ -372,8 +372,8 @@ describe('tooltip tests', function() {
 			}]
 		}));
 
-		expect(tooltip._view.x).toBeCloseTo(216, 1);
-		expect(tooltip._view.y).toBeCloseTo(190, 1);
+		expect(tooltip._view.x).toBeCloseTo(216, 0);
+		expect(tooltip._view.y).toBeCloseTo(190, 0);
 	});
 
 	it('Should display information from user callbacks', function() {
@@ -455,7 +455,7 @@ describe('tooltip tests', function() {
 			}]
 		}));
 
-		expect(tooltip._view.x).toBeCloseTo(269, 1);
-		expect(tooltip._view.y).toBeCloseTo(155, 1);
+		expect(tooltip._view.x).toBeCloseTo(269, 0);
+		expect(tooltip._view.y).toBeCloseTo(155, 0);
 	});
 });
