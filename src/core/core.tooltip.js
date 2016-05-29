@@ -272,6 +272,7 @@ module.exports = function(Chart) {
 			var opts = me._options;
 			var model = me._model;
 			var active = me._active;
+
 			var data = me._data;
 			var chartInstance = me._chartInstance;
 
@@ -280,13 +281,17 @@ module.exports = function(Chart) {
 			if (active.length) {
 				model.opacity = 1;
 
-				var element = active[0],
-					labelColors = [],
+				var labelColors = [],
 					tooltipPosition = tooltipPosition = getAveragePosition(active);
 
 				var tooltipItems = [];
 				for (var i = 0, len = active.length; i < len; ++i) {
 					tooltipItems.push(createTooltipItem(active[i]));
+				}
+
+				// If the user provided a sorting function, use it to modify the tooltip items
+				if (opts.itemSort) {
+					tooltipItems = tooltipItems.sort(opts.itemSort);
 				}
 
 				// If there is more than one item, show color items
