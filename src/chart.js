@@ -18,6 +18,7 @@ require('./elements/element.line')(Chart);
 require('./elements/element.point')(Chart);
 require('./elements/element.rectangle')(Chart);
 
+require('./scales/scale.linearbase.js')(Chart);
 require('./scales/scale.category')(Chart);
 require('./scales/scale.linear')(Chart);
 require('./scales/scale.logarithmic')(Chart);
