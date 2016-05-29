@@ -195,6 +195,7 @@ Name | Type | Default | Description
 enabled | Boolean | true | Are tooltips 
 custom | Function | null | See [section](#chart-configuration-custom-tooltips) below
 mode | String | 'single' | Sets which elements appear in the tooltip. Acceptable options are `'single'` or `'label'`. `single` highlights the closest element. `label` highlights elements in all datasets at the same `X` value.
+itemSort | Function | undefined | Allows sorting of [tooltip items](#chart-configuration-tooltip-item-interface). Must implement a function that can be passed to [Array.prototype.sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
 backgroundColor | Color | 'rgba(0,0,0,0.8)' | Background color of the tooltip
 titleFontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Font family for tooltip title inherited from global font family
 titleFontSize | Number | 12 | Font size for tooltip title inherited from global font size

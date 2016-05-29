@@ -953,17 +953,6 @@ module.exports = function(Chart) {
 
 		return true;
 	};
-	helpers.pushAllIfDefined = function(element, array) {
-		if (typeof element === "undefined") {
-			return;
-		}
-
-		if (helpers.isArray(element)) {
-			array.push.apply(array, element);
-		} else {
-			array.push(element);
-		}
-	};
 	helpers.callCallback = function(fn, args, _tArg) {
 		if (fn && typeof fn.call === 'function') {
 			fn.apply(_tArg, args);
