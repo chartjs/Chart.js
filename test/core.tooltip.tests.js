@@ -109,8 +109,6 @@ describe('tooltip tests', function() {
 			}],
 			afterBody: [],
 			footer: [],
-			x: 269,
-			y: 155,
 			caretPadding: 2,
 			labelColors: [{
 				borderColor: 'rgb(255, 0, 0)',
@@ -120,6 +118,9 @@ describe('tooltip tests', function() {
 				backgroundColor: 'rgb(0, 255, 255)'
 			}]
 		}));
+
+		expect(tooltip._view.x).toBeCloseToPixel(269);
+		expect(tooltip._view.y).toBeCloseToPixel(155);
 	});
 
 	it('Should display in single mode', function() {
@@ -218,11 +219,12 @@ describe('tooltip tests', function() {
 			}],
 			afterBody: [],
 			footer: [],
-			x: 269,
-			y: 312,
 			caretPadding: 2,
 			labelColors: []
 		}));
+
+		expect(tooltip._view.x).toBeCloseToPixel(269);
+		expect(tooltip._view.y).toBeCloseToPixel(312);
 	});
 
 	it('Should display information from user callbacks', function() {
@@ -360,8 +362,6 @@ describe('tooltip tests', function() {
 			}],
 			afterBody: ['afterBody'],
 			footer: ['beforeFooter', 'footer', 'afterFooter'],
-			x: 216,
-			y: 190,
 			caretPadding: 2,
 			labelColors: [{
 				borderColor: 'rgb(255, 0, 0)',
@@ -371,6 +371,9 @@ describe('tooltip tests', function() {
 				backgroundColor: 'rgb(0, 255, 255)'
 			}]
 		}));
+
+		expect(tooltip._view.x).toBeCloseToPixel(216);
+		expect(tooltip._view.y).toBeCloseToPixel(190);
 	});
 
 	it('Should display information from user callbacks', function() {
@@ -443,8 +446,6 @@ describe('tooltip tests', function() {
 			}],
 			afterBody: [],
 			footer: [],
-			x: 269,
-			y: 155,
 			labelColors: [{
 				borderColor: 'rgb(0, 0, 255)',
 				backgroundColor: 'rgb(0, 255, 255)'
@@ -453,5 +454,8 @@ describe('tooltip tests', function() {
 				backgroundColor: 'rgb(0, 255, 0)'
 			}]
 		}));
+
+		expect(tooltip._view.x).toBeCloseToPixel(269);
+		expect(tooltip._view.y).toBeCloseToPixel(155);
 	});
 });

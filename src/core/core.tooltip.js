@@ -282,10 +282,10 @@ module.exports = function(Chart) {
 				model.opacity = 1;
 
 				var labelColors = [],
-					tooltipPosition = tooltipPosition = getAveragePosition(active);
+					tooltipPosition = getAveragePosition(active);
 
 				var tooltipItems = [];
-				for (var i = 0, len = active.length; i < len; ++i) {
+				for (i = 0, len = active.length; i < len; ++i) {
 					tooltipItems.push(createTooltipItem(active[i]));
 				}
 
@@ -601,7 +601,7 @@ module.exports = function(Chart) {
 
 			var bodyColor = helpers.color(vm.bodyColor);
 			var textColor = bodyColor.alpha(opacity * bodyColor.alpha()).rgbString();
-			ctx.fillStyle = textColor
+			ctx.fillStyle = textColor;
 			ctx.font = helpers.fontString(bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
 
 			// Before Body
@@ -615,7 +615,7 @@ module.exports = function(Chart) {
 			helpers.each(vm.beforeBody, fillLineOfText);
 
 			var drawColorBoxes = body.length > 1;
-			xLinePadding = drawColorBoxes ? (bodyFontSize + 2) : 0
+			xLinePadding = drawColorBoxes ? (bodyFontSize + 2) : 0;
 			
 			// Draw body lines now
 			helpers.each(body, function(bodyItem, i) {
