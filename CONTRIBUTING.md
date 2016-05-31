@@ -9,7 +9,7 @@ Using issues
 
 The [issue tracker](https://github.com/chartjs/Chart.js/issues) is the preferred channel for reporting bugs, requesting new features and submitting pull requests.
 
-If you're suggesting a new chart type, please take a look at [writing new chart types](https://github.com/chartjs/Chart.js/blob/master/docs/07-Advanced.md#writing-new-chart-types) in the documentation or consider [creating a plugin](https://github.com/chartjs/Chart.js/blob/master/docs/07-Advanced.md#creating-plugins).
+If you're suggesting a new chart type, please take a look at [writing new chart types](https://github.com/chartjs/Chart.js/blob/master/docs/09-Advanced.md#writing-new-chart-types) in the documentation or consider [creating a plugin](https://github.com/chartjs/Chart.js/blob/master/docs/09-Advanced.md#creating-plugins).
 
 To keep the library lightweight for everyone, it's unlikely we'll add many more chart types to the core of Chart.js, but issues are a good medium to design and spec out how new chart types could work and look.
 
