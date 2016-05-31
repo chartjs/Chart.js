@@ -190,14 +190,16 @@ var chartInstance = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
-        xAxes: [{
-            type: 'logarithmic',
-            position: 'bottom',
-            ticks: {
-                min: 1,
-                max: 1000
-            }
-        }]
+        scales: {
+            xAxes: [{
+                type: 'logarithmic',
+                position: 'bottom',
+                ticks: {
+                    min: 1,
+                    max: 1000
+                }
+            }]
+        }
     }
 })
 ```
