@@ -288,7 +288,7 @@ module.exports = function(Chart) {
 				this.scale.draw();
 			}
 
-			Chart.pluginService.notifyPlugins('beforeElementDraw', [this, easingDecimal]);
+			Chart.pluginService.notifyPlugins('beforeDatasetDraw', [this, easingDecimal]);
 
 			// Draw each dataset via its respective controller (reversed to support proper line stacking)
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
@@ -302,7 +302,7 @@ module.exports = function(Chart) {
 			// Finally draw the tooltip
 			this.tooltip.transition(easingDecimal).draw();
 
-			Chart.pluginService.notifyPlugins('afterDraw', [this, easingDecimal]);
+			Chart.pluginService.notifyPlugins('afterDatasetDraw', [this, easingDecimal]);
 		},
 
 		// Get the single element that was clicked on
