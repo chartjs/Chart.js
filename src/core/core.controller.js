@@ -288,12 +288,7 @@ module.exports = function(Chart) {
 				this.scale.draw();
 			}
 
-			// Clip out the chart area so that anything outside does not draw. This is necessary for zoom and pan to function
-			var context = this.chart.ctx;
-			context.save();
-			context.beginPath();
-			context.rect(this.chartArea.left, this.chartArea.top, this.chartArea.right - this.chartArea.left, this.chartArea.bottom - this.chartArea.top);
-			context.clip();
+			Chart.pluginService.notifyPlugins('beforeElementDraw', [this, easingDecimal]);
 
 			// Draw each dataset via its respective controller (reversed to support proper line stacking)
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
@@ -302,8 +297,7 @@ module.exports = function(Chart) {
 				}
 			}, this, true);
 
-			// Restore from the clipping operation
-			context.restore();
+			Chart.pluginService.notifyPlugins('afterElementDraw', [this, easingDecimal]);
 
 			// Finally draw the tooltip
 			this.tooltip.transition(easingDecimal).draw();
