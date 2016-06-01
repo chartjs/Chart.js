@@ -297,12 +297,12 @@ module.exports = function(Chart) {
 				}
 			}, this, true);
 
-			Chart.pluginService.notifyPlugins('afterElementDraw', [this, easingDecimal]);
+			Chart.pluginService.notifyPlugins('afterDatasetDraw', [this, easingDecimal]);
 
 			// Finally draw the tooltip
 			this.tooltip.transition(easingDecimal).draw();
 
-			Chart.pluginService.notifyPlugins('afterDatasetDraw', [this, easingDecimal]);
+			Chart.pluginService.notifyPlugins('afterDraw', [this, easingDecimal]);
 		},
 
 		// Get the single element that was clicked on
