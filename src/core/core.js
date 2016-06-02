@@ -100,6 +100,8 @@ module.exports = function() {
 		}
 	};
 
+	Chart.Chart = Chart;
+
 	return Chart;
 
 };
