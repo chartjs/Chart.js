@@ -29,10 +29,15 @@ module.exports = function(Chart) {
 
 		// These methods are ordered by lifecyle. Utilities then follow.
 
-		beforeUpdate: noop,
+		beforeUpdate: function () {
+			var chartOpts = this.chart.options;
+			if (chartOpts && chartOpts.title) {
+				this.options = helpers.configMerge(Chart.defaults.global.title, chartOpts.title);
+			}
+		},
 		update: function(maxWidth, maxHeight, margins) {
 
-			// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
+			// Update Lifecycle
 			this.beforeUpdate();
 
 			// Absorb the master measurements
