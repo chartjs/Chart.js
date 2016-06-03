@@ -839,7 +839,7 @@ module.exports = function(Chart) {
 				// to do maybe simplify this function a bit so we can do this more recursively?
 				helpers.each(thing, function(nestedThing) {
 					// Undefined strings and arrays should not be measured
-					if (nestedThing !== undefined && nestedThing !== null && helpers.isArray(nestedThing)) {
+					if (nestedThing !== undefined && nestedThing !== null && !helpers.isArray(nestedThing)) {
 						longest = helpers.measureText(ctx, data, gc, longest, nestedThing);
 					}
 				});

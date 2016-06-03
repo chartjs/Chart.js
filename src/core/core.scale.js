@@ -43,6 +43,7 @@ module.exports = function(Chart) {
 			autoSkip: true,
 			autoSkipPadding: 0,
 			labelOffset: 0,
+			// We pass through arrays to be rendered as multiline labels, we convert Others to strings here.
 			callback: function(value) {
 				return helpers.isArray(value) ? value : '' + value;
 			}
@@ -548,7 +549,6 @@ module.exports = function(Chart) {
 				helpers.each(this.ticks, function (label, index) {
 					// Blank optionTicks
 					var isLastTick = this.ticks.length === index + 1;
-					var lineHeight;
 
 					// Since we always show the last tick,we need may need to hide the last shown one before
 					var shouldSkip = (skipRatio > 1 && index % skipRatio > 0) || (index % skipRatio === 0 && index + skipRatio >= this.ticks.length);
@@ -597,13 +597,13 @@ module.exports = function(Chart) {
 						context.font = tickLabelFont;
 						context.textAlign = (isRotated) ? "right" : "center";
 						context.textBaseline = (isRotated) ? "middle" : options.position === "top" ? "bottom" : "top";
-						
-						lineHeight = context.measureText("M").width * 1.2;
-
+					
 						if (helpers.isArray(label)) {
 							for (var i = 0, y = 0; i < label.length; ++i) {
-								context.fillText(label[i], 0, y);
-								y += lineHeight;
+								// We just make sure the multiline element is a string here..
+								context.fillText('' + label[i], 0, y);
+								// apply same lineSpacing as calculated @ L#320
+								y += (tickFontSize * 1.5);
 							}
 						} else {
 							context.fillText(label, 0, 0);
