@@ -381,6 +381,9 @@ Plugins will be called at the following times
 * End of update (before render occurs)
 * Start of draw
 * End of draw
+* Before datasets draw
+* After datasets draw
+* Resize
 * Before an animation is started
 
 Plugins should derive from Chart.PluginBase and implement the following interface
@@ -388,6 +391,8 @@ Plugins should derive from Chart.PluginBase and implement the following interfac
 {
 	beforeInit: function(chartInstance) { },
 	afterInit: function(chartInstance) { },
+
+	resize: function(chartInstance, newChartSize) { },
 
 	beforeUpdate: function(chartInstance) { },
 	afterScaleUpdate: function(chartInstance) { }
