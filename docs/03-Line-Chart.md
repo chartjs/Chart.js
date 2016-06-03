@@ -96,7 +96,7 @@ The label key on each dataset is optional, and can be used when generating a sca
 
 ### Data Points
 
-The data passed to the chart can be passed in two formats. The most common method is to pass the data array as an array of numbers. In this case, the `data.labels` array must be specified and must contain a label for each point.
+The data passed to the chart can be passed in two formats. The most common method is to pass the data array as an array of numbers. In this case, the `data.labels` array must be specified and must contain a label for each point or, in the case of labels to be displayed over multiple lines an array of labels (one for each line) i.e `[["June","2015"], "July"]`.
 
 The alternate is used for sparse datasets. Data is specified using an object containing `x` and `y` properties. This is used for scatter charts as documented below.
 

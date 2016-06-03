@@ -817,7 +817,7 @@ module.exports = function(Chart) {
 	helpers.fontString = function(pixelSize, fontStyle, fontFamily) {
 		return fontStyle + " " + pixelSize + "px " + fontFamily;
 	};
-	helpers.longestText = function(ctx, font, arrayOfStrings, cache) {
+	helpers.longestText = function(ctx, font, arrayOfThings, cache) {
 		cache = cache || {};
 		var data = cache.data = cache.data || {};
 		var gc = cache.garbageCollect = cache.garbageCollect || [];
@@ -830,30 +830,52 @@ module.exports = function(Chart) {
 
 		ctx.font = font;
 		var longest = 0;
-		helpers.each(arrayOfStrings, function(string) {
-			// Undefined strings should not be measured
-			if (string !== undefined && string !== null) {
-				var textWidth = data[string];
-				if (!textWidth) {
-					textWidth = data[string] = ctx.measureText(string).width;
-					gc.push(string);
-				}
-
-				if (textWidth > longest) {
-					longest = textWidth;
-				}
+		helpers.each(arrayOfThings, function(thing) {
+			// Undefined strings and arrays should not be measured
+			if (thing !== undefined && thing !== null && helpers.isArray(thing) !== true) {
+				longest = helpers.measureText(ctx, data, gc, longest, thing);
+			} else if (helpers.isArray(thing)) {
+				// if it is an array lets measure each element
+				// to do maybe simplify this function a bit so we can do this more recursively?
+				helpers.each(thing, function(nestedThing) {
+					// Undefined strings and arrays should not be measured
+					if (nestedThing !== undefined && nestedThing !== null && helpers.isArray(nestedThing)) {
+						longest = helpers.measureText(ctx, data, gc, longest, nestedThing);
+					}
+				});
 			}
 		});
 
 		var gcLen = gc.length / 2;
-		if (gcLen > arrayOfStrings.length) {
+		if (gcLen > arrayOfThings.length) {
 			for (var i = 0; i < gcLen; i++) {
 				delete data[gc[i]];
 			}
 			gc.splice(0, gcLen);
 		}
-
 		return longest;
+	};
+	helpers.measureText = function (ctx, data, gc, longest, string) {
+		var textWidth = data[string];
+		if (!textWidth) {
+			textWidth = data[string] = ctx.measureText(string).width;
+			gc.push(string);
+		}
+		if (textWidth > longest) {
+			longest = textWidth;
+		}
+		return longest;
+	};
+	helpers.numberOfLabelLines = function(arrayOfThings) {
+		var numberOfLines = 1;
+		helpers.each(arrayOfThings, function(thing) {
+			if (helpers.isArray(thing)) {
+				if (thing.length > numberOfLines) {
+					numberOfLines = thing.length;
+				}
+			}
+		});
+		return numberOfLines;
 	};
 	helpers.drawRoundedRectangle = function(ctx, x, y, width, height, radius) {
 		ctx.beginPath();
