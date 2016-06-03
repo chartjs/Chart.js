@@ -399,7 +399,10 @@ Plugins should derive from Chart.PluginBase and implement the following interfac
 
 	// Easing is for animation
 	beforeDraw: function(chartInstance, easing) { },
-	afterDraw: function(chartInstance, easing) { }
+	afterDraw: function(chartInstance, easing) { },
+	// Before the datasets are drawn but after scales are drawn
+	beforeDatasetDraw: function(chartInstance, easing) { },
+	afterDatasetDraw: function(chartInstance, easing) { },
 
 	destroy: function(chartInstance) { }
 }
