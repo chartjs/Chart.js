@@ -12,7 +12,7 @@ They are often useful for comparing the points of two or more different data set
 	<canvas width="250" height="125"></canvas>
 </div>
 
-### Example usage
+### Example Usage
 
 ```javascript
 var myRadarChart = new Chart(ctx, {
@@ -22,7 +22,7 @@ var myRadarChart = new Chart(ctx, {
 });
 ```
 
-### Data structure
+### Data Structure
 
 The following options can be included in a radar chart dataset to configure options for that specific dataset.
 
@@ -88,7 +88,7 @@ The label key on each dataset is optional, and can be used when generating a sca
 
 ### Chart Options
 
-These are the customisation options specific to Radar charts. These options are merged with the [global chart configuration options](#getting-started-global-chart-configuration), and form the options of the chart.
+These are the customisation options specific to Radar charts. These options are merged with the [global chart configuration options](#global-chart-configuration), and form the options of the chart.
 
 The default options for radar chart are defined in `Chart.defaults.radar`.
 

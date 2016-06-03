@@ -1,5 +1,14 @@
 // Plugin tests
 describe('Test the plugin system', function() {
+	var oldPlugins;
+
+	beforeAll(function() {
+		oldPlugins = Chart.plugins;
+	});
+	afterAll(function() {
+		Chart.plugins = oldPlugins;
+	});
+
 	beforeEach(function() {
 		Chart.plugins = [];
 	});

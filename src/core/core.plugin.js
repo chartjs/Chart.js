@@ -56,6 +56,6 @@ module.exports = function(Chart) {
 		afterDraw: noop,
 
 		// Called during destroy
-		destroy: noop,
+		destroy: noop
 	});
 };

@@ -47,6 +47,7 @@ describe('Time scale tests', function() {
 			display: true,
 			gridLines: {
 				color: "rgba(0, 0, 0, 0.1)",
+				drawBorder: true,
 				drawOnChartArea: true,
 				drawTicks: true,
 				tickMarkLength: 10,
@@ -63,6 +64,7 @@ describe('Time scale tests', function() {
 			},
 			ticks: {
 				beginAtZero: false,
+				minRotation: 0,
 				maxRotation: 50,
 				mirror: false,
 				padding: 10,
@@ -70,13 +72,15 @@ describe('Time scale tests', function() {
 				display: true,
 				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below,
 				autoSkip: false,
-				autoSkipPadding: 0
+				autoSkipPadding: 0,
+				labelOffset: 0
 			},
 			time: {
 				parser: false,
 				format: false,
 				unit: false,
 				round: false,
+				isoWeekday: false,
 				displayFormat: false,
 				displayFormats: {
 					'millisecond': 'h:mm:ss.SSS a', // 11:20:01.123 AM
@@ -324,6 +328,36 @@ describe('Time scale tests', function() {
 
 		scale.update(400, 50);
 		expect(scale.ticks).toEqual([ 'Jan 1, 2015', 'Jan 5, 2015' ]);
+	});
+
+	it('Should use the isoWeekday option', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			labels: [
+				"2015-01-01T20:00:00", // Thursday
+				"2015-01-02T20:00:00", // Friday
+				"2015-01-03T20:00:00" // Saturday
+			]
+		};
+
+		var mockContext = window.createMockContext();
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('time'));
+		config.time.unit = 'week';
+		// Wednesday
+		config.time.isoWeekday = 3;
+		var Constructor = Chart.scaleService.getScaleConstructor('time');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: config, // use default config for scale
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		scale.update(400, 50);
+		expect(scale.ticks).toEqual([ 'Dec 31, 2014', 'Jan 7, 2015' ]);
 	});
 
 	it('should get the correct pixel for a value', function() {

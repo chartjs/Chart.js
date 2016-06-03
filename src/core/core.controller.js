@@ -53,7 +53,6 @@ module.exports = function(Chart) {
 			this.ensureScalesHaveIDs();
 			this.buildOrUpdateControllers();
 			this.buildScales();
-			this.buildSurroundingItems();
 			this.updateLayout();
 			this.resetElements();
 			this.initToolTip();
@@ -98,105 +97,72 @@ module.exports = function(Chart) {
 
 			return this;
 		},
+
 		ensureScalesHaveIDs: function ensureScalesHaveIDs() {
-			var defaultXAxisID = 'x-axis-';
-			var defaultYAxisID = 'y-axis-';
+			var options = this.options;
+			var scalesOptions = options.scales || {};
+			var scaleOptions = options.scale;
 
-			if (this.options.scales) {
-				if (this.options.scales.xAxes && this.options.scales.xAxes.length) {
-					helpers.each(this.options.scales.xAxes, function(xAxisOptions, index) {
-						xAxisOptions.id = xAxisOptions.id || (defaultXAxisID + index);
-					});
-				}
+			helpers.each(scalesOptions.xAxes, function(xAxisOptions, index) {
+				xAxisOptions.id = xAxisOptions.id || ('x-axis-' + index);
+			});
 
-				if (this.options.scales.yAxes && this.options.scales.yAxes.length) {
-					// Build the y axes
-					helpers.each(this.options.scales.yAxes, function(yAxisOptions, index) {
-						yAxisOptions.id = yAxisOptions.id || (defaultYAxisID + index);
-					});
-				}
+			helpers.each(scalesOptions.yAxes, function(yAxisOptions, index) {
+				yAxisOptions.id = yAxisOptions.id || ('y-axis-' + index);
+			});
+
+			if (scaleOptions) {
+				scaleOptions.id = scaleOptions.id || 'scale';
 			}
 		},
+
+		/**
+		 * Builds a map of scale ID to scale object for future lookup.
+		 */
 		buildScales: function buildScales() {
-			// Map of scale ID to scale object so we can lookup later
-			this.scales = {};
+			var me = this;
+			var options = me.options;
+			var scales = me.scales = {};
+			var items = [];
 
-			// Build the x axes
-			if (this.options.scales) {
-				if (this.options.scales.xAxes && this.options.scales.xAxes.length) {
-					helpers.each(this.options.scales.xAxes, function(xAxisOptions, index) {
-						var xType = helpers.getValueOrDefault(xAxisOptions.type, 'category');
-						var ScaleClass = Chart.scaleService.getScaleConstructor(xType);
-						if (ScaleClass) {
-							var scale = new ScaleClass({
-								ctx: this.chart.ctx,
-								options: xAxisOptions,
-								chart: this,
-								id: xAxisOptions.id
-							});
-
-							this.scales[scale.id] = scale;
-						}
-					}, this);
-				}
-
-				if (this.options.scales.yAxes && this.options.scales.yAxes.length) {
-					// Build the y axes
-					helpers.each(this.options.scales.yAxes, function(yAxisOptions, index) {
-						var yType = helpers.getValueOrDefault(yAxisOptions.type, 'linear');
-						var ScaleClass = Chart.scaleService.getScaleConstructor(yType);
-						if (ScaleClass) {
-							var scale = new ScaleClass({
-								ctx: this.chart.ctx,
-								options: yAxisOptions,
-								chart: this,
-								id: yAxisOptions.id
-							});
-
-							this.scales[scale.id] = scale;
-						}
-					}, this);
-				}
+			if (options.scales) {
+				items = items.concat(
+					(options.scales.xAxes || []).map(function(xAxisOptions) {
+						return { options: xAxisOptions, dtype: 'category' }; }),
+					(options.scales.yAxes || []).map(function(yAxisOptions) {
+						return { options: yAxisOptions, dtype: 'linear' }; }));
 			}
-			if (this.options.scale) {
-				// Build radial axes
-				var ScaleClass = Chart.scaleService.getScaleConstructor(this.options.scale.type);
-				if (ScaleClass) {
-					var scale = new ScaleClass({
-						ctx: this.chart.ctx,
-						options: this.options.scale,
-						chart: this
-					});
 
-					this.scale = scale;
-
-					this.scales.radialScale = scale;
-				}
+			if (options.scale) {
+				items.push({ options: options.scale, dtype: 'radialLinear', isDefault: true });
 			}
+
+			helpers.each(items, function(item, index) {
+				var scaleOptions = item.options;
+				var scaleType = helpers.getValueOrDefault(scaleOptions.type, item.dtype);
+				var scaleClass = Chart.scaleService.getScaleConstructor(scaleType);
+				if (!scaleClass) {
+					return;
+				}
+
+				var scale = new scaleClass({
+					id: scaleOptions.id,
+					options: scaleOptions,
+					ctx: me.chart.ctx,
+					chart: me
+				});
+
+				scales[scale.id] = scale;
+
+				// TODO(SB): I think we should be able to remove this custom case (options.scale)
+				// and consider it as a regular scale part of the "scales"" map only! This would
+				// make the logic easier and remove some useless? custom code.
+				if (item.isDefault) {
+					me.scale = scale;
+				}
+			});
 
 			Chart.scaleService.addScalesToLayout(this);
-		},
-
-		buildSurroundingItems: function() {
-			if (this.options.title) {
-				this.titleBlock = new Chart.Title({
-					ctx: this.chart.ctx,
-					options: this.options.title,
-					chart: this
-				});
-
-				Chart.layoutService.addBox(this, this.titleBlock);
-			}
-
-			if (this.options.legend) {
-				this.legend = new Chart.Legend({
-					ctx: this.chart.ctx,
-					options: this.options.legend,
-					chart: this
-				});
-
-				Chart.layoutService.addBox(this, this.legend);
-			}
 		},
 
 		updateLayout: function() {
@@ -257,6 +223,9 @@ module.exports = function(Chart) {
 
 			Chart.layoutService.update(this, this.chart.width, this.chart.height);
 
+			// Apply changes to the dataets that require the scales to have been calculated i.e BorderColor chages
+			Chart.pluginService.notifyPlugins('afterScaleUpdate', [this]);
+
 			// Can only reset the new controllers after the scales have been updated
 			helpers.each(newControllers, function(controller) {
 				controller.reset();
@@ -267,18 +236,20 @@ module.exports = function(Chart) {
 				this.getDatasetMeta(datasetIndex).controller.update();
 			}, this);
 
-			this.render(animationDuration, lazy);
-
+			// Do this before render so that any plugins that need final scale updates can use it
 			Chart.pluginService.notifyPlugins('afterUpdate', [this]);
+
+			this.render(animationDuration, lazy);
 		},
 
 		render: function render(duration, lazy) {
 			Chart.pluginService.notifyPlugins('beforeRender', [this]);
 
-			if (this.options.animation && ((typeof duration !== 'undefined' && duration !== 0) || (typeof duration === 'undefined' && this.options.animation.duration !== 0))) {
+			var animationOptions = this.options.animation;
+			if (animationOptions && ((typeof duration !== 'undefined' && duration !== 0) || (typeof duration === 'undefined' && animationOptions.duration !== 0))) {
 				var animation = new Chart.Animation();
-				animation.numSteps = (duration || this.options.animation.duration) / 16.66; //60 fps
-				animation.easing = this.options.animation.easing;
+				animation.numSteps = (duration || animationOptions.duration) / 16.66; //60 fps
+				animation.easing = animationOptions.easing;
 
 				// render function
 				animation.render = function(chartInstance, animationObject) {
@@ -290,14 +261,14 @@ module.exports = function(Chart) {
 				};
 
 				// user events
-				animation.onAnimationProgress = this.options.animation.onProgress;
-				animation.onAnimationComplete = this.options.animation.onComplete;
+				animation.onAnimationProgress = animationOptions.onProgress;
+				animation.onAnimationComplete = animationOptions.onComplete;
 
 				Chart.animationService.addAnimation(this, animation, duration, lazy);
 			} else {
 				this.draw();
-				if (this.options.animation && this.options.animation.onComplete && this.options.animation.onComplete.call) {
-					this.options.animation.onComplete.call(this);
+				if (animationOptions && animationOptions.onComplete && animationOptions.onComplete.call) {
+					animationOptions.onComplete.call(this);
 				}
 			}
 			return this;
@@ -317,11 +288,7 @@ module.exports = function(Chart) {
 				this.scale.draw();
 			}
 
-			// Clip out the chart area so that anything outside does not draw. This is necessary for zoom and pan to function
-			this.chart.ctx.save();
-			this.chart.ctx.beginPath();
-			this.chart.ctx.rect(this.chartArea.left, this.chartArea.top, this.chartArea.right - this.chartArea.left, this.chartArea.bottom - this.chartArea.top);
-			this.chart.ctx.clip();
+			Chart.pluginService.notifyPlugins('beforeDatasetDraw', [this, easingDecimal]);
 
 			// Draw each dataset via its respective controller (reversed to support proper line stacking)
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
@@ -330,8 +297,7 @@ module.exports = function(Chart) {
 				}
 			}, this, true);
 
-			// Restore from the clipping operation
-			this.chart.ctx.restore();
+			Chart.pluginService.notifyPlugins('afterDatasetDraw', [this, easingDecimal]);
 
 			// Finally draw the tooltip
 			this.tooltip.transition(easingDecimal).draw();
@@ -393,6 +359,20 @@ module.exports = function(Chart) {
 			return elementsArray;
 		},
 
+		getElementsAtEventForMode: function(e, mode) {
+			var me = this;
+			switch (mode) {
+			case 'single':
+				return me.getElementAtEvent(e);
+			case 'label':
+				return me.getElementsAtEvent(e);
+			case 'dataset':
+				return me.getDatasetAtEvent(e);
+			default:
+				return e;
+			}
+		},
+
 		getDatasetAtEvent: function(e) {
 			var elementsArray = this.getElementAtEvent(e);
 
@@ -448,6 +428,7 @@ module.exports = function(Chart) {
 		},
 
 		destroy: function destroy() {
+			this.stop();
 			this.clear();
 			helpers.unbindEvents(this, this.events);
 			helpers.removeResizeListener(this.chart.canvas.parentNode);
@@ -480,7 +461,7 @@ module.exports = function(Chart) {
 				_chart: this.chart,
 				_chartInstance: this,
 				_data: this.data,
-				_options: this.options
+				_options: this.options.tooltips
 			}, this);
 		},
 
@@ -489,134 +470,106 @@ module.exports = function(Chart) {
 				this.eventHandler(evt);
 			});
 		},
+
+		updateHoverStyle: function(elements, mode, enabled) {
+			var method = enabled? 'setHoverStyle' : 'removeHoverStyle';
+			var element, i, ilen;
+
+			switch (mode) {
+			case 'single':
+				elements = [ elements[0] ];
+				break;
+			case 'label':
+			case 'dataset':
+				// elements = elements;
+				break;
+			default:
+				// unsupported mode
+				return;
+			}
+
+			for (i=0, ilen=elements.length; i<ilen; ++i) {
+				element = elements[i];
+				if (element) {
+					this.getDatasetMeta(element._datasetIndex).controller[method](element);
+				}
+			}
+		},
+
 		eventHandler: function eventHandler(e) {
-			this.lastActive = this.lastActive || [];
-			this.lastTooltipActive = this.lastTooltipActive || [];
+			var me = this;
+			var tooltip = me.tooltip;
+			var options = me.options || {};
+			var hoverOptions = options.hover;
+			var tooltipsOptions = options.tooltips;
+
+			me.lastActive = me.lastActive || [];
+			me.lastTooltipActive = me.lastTooltipActive || [];
 
 			// Find Active Elements for hover and tooltips
 			if (e.type === 'mouseout') {
-				this.active = [];
-				this.tooltipActive = [];
+				me.active = [];
+				me.tooltipActive = [];
 			} else {
-
-				var _this = this;
-				var getItemsForMode = function(mode) {
-					switch (mode) {
-						case 'single':
-							return _this.getElementAtEvent(e);
-						case 'label':
-							return _this.getElementsAtEvent(e);
-						case 'dataset':
-							return _this.getDatasetAtEvent(e);
-						default:
-							return e;
-					}
-				};
-
-				this.active = getItemsForMode(this.options.hover.mode);
-				this.tooltipActive = getItemsForMode(this.options.tooltips.mode);
+				me.active = me.getElementsAtEventForMode(e, hoverOptions.mode);
+				me.tooltipActive =  me.getElementsAtEventForMode(e, tooltipsOptions.mode);
 			}
 
 			// On Hover hook
-			if (this.options.hover.onHover) {
-				this.options.hover.onHover.call(this, this.active);
+			if (hoverOptions.onHover) {
+				hoverOptions.onHover.call(me, me.active);
 			}
 
 			if (e.type === 'mouseup' || e.type === 'click') {
-				if (this.options.onClick) {
-					this.options.onClick.call(this, e, this.active);
+				if (options.onClick) {
+					options.onClick.call(me, e, me.active);
 				}
-
-				if (this.legend && this.legend.handleEvent) {
-					this.legend.handleEvent(e);
+				if (me.legend && me.legend.handleEvent) {
+					me.legend.handleEvent(e);
 				}
 			}
 
 			// Remove styling for last active (even if it may still be active)
-			if (this.lastActive.length) {
-				switch (this.options.hover.mode) {
-					case 'single':
-						this.getDatasetMeta(this.lastActive[0]._datasetIndex).controller.removeHoverStyle(this.lastActive[0], this.lastActive[0]._datasetIndex, this.lastActive[0]._index);
-						break;
-					case 'label':
-					case 'dataset':
-						for (var i = 0; i < this.lastActive.length; i++) {
-							if (this.lastActive[i])
-								this.getDatasetMeta(this.lastActive[i]._datasetIndex).controller.removeHoverStyle(this.lastActive[i], this.lastActive[i]._datasetIndex, this.lastActive[i]._index);
-						}
-						break;
-					default:
-						// Don't change anything
-				}
+			if (me.lastActive.length) {
+				me.updateHoverStyle(me.lastActive, hoverOptions.mode, false);
 			}
 
 			// Built in hover styling
-			if (this.active.length && this.options.hover.mode) {
-				switch (this.options.hover.mode) {
-					case 'single':
-						this.getDatasetMeta(this.active[0]._datasetIndex).controller.setHoverStyle(this.active[0]);
-						break;
-					case 'label':
-					case 'dataset':
-						for (var j = 0; j < this.active.length; j++) {
-							if (this.active[j])
-								this.getDatasetMeta(this.active[j]._datasetIndex).controller.setHoverStyle(this.active[j]);
-						}
-						break;
-					default:
-						// Don't change anything
-				}
+			if (me.active.length && hoverOptions.mode) {
+				me.updateHoverStyle(me.active, hoverOptions.mode, true);
 			}
 
-
 			// Built in Tooltips
-			if (this.options.tooltips.enabled || this.options.tooltips.custom) {
-
-				// The usual updates
-				this.tooltip.initialize();
-				this.tooltip._active = this.tooltipActive;
-				this.tooltip.update(true);
+			if (tooltipsOptions.enabled || tooltipsOptions.custom) {
+				tooltip.initialize();
+				tooltip._active = me.tooltipActive;
+				tooltip.update(true);
 			}
 
 			// Hover animations
-			this.tooltip.pivot();
+			tooltip.pivot();
 
-			if (!this.animating) {
-				var changed;
-
-				helpers.each(this.active, function(element, index) {
-					if (element !== this.lastActive[index]) {
-						changed = true;
-					}
-				}, this);
-
-				helpers.each(this.tooltipActive, function(element, index) {
-					if (element !== this.lastTooltipActive[index]) {
-						changed = true;
-					}
-				}, this);
-
+			if (!me.animating) {
 				// If entering, leaving, or changing elements, animate the change via pivot
-				if ((this.lastActive.length !== this.active.length) ||
-					(this.lastTooltipActive.length !== this.tooltipActive.length) ||
-					changed) {
+				if (!helpers.arrayEquals(me.active, me.lastActive) ||
+					!helpers.arrayEquals(me.tooltipActive, me.lastTooltipActive)) {
 
-					this.stop();
+					me.stop();
 
-					if (this.options.tooltips.enabled || this.options.tooltips.custom) {
-						this.tooltip.update(true);
+					if (tooltipsOptions.enabled || tooltipsOptions.custom) {
+						tooltip.update(true);
 					}
 
-					// We only need to render at this point. Updating will cause scales to be recomputed generating flicker & using more
-					// memory than necessary.
-					this.render(this.options.hover.animationDuration, true);
+					// We only need to render at this point. Updating will cause scales to be
+					// recomputed generating flicker & using more memory than necessary.
+					me.render(hoverOptions.animationDuration, true);
 				}
 			}
 
 			// Remember Last Actives
-			this.lastActive = this.active;
-			this.lastTooltipActive = this.tooltipActive;
-			return this;
+			me.lastActive = me.active;
+			me.lastTooltipActive = me.tooltipActive;
+			return me;
 		}
 	});
 };

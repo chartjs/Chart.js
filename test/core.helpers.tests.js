@@ -215,6 +215,7 @@ describe('Core helper tests', function() {
 
 					gridLines: {
 						color: "rgba(0, 0, 0, 0.1)",
+						drawBorder: true,
 						drawOnChartArea: true,
 						drawTicks: true, // draw ticks extending towards the label
 						tickMarkLength: 10,
@@ -231,6 +232,7 @@ describe('Core helper tests', function() {
 					},
 					ticks: {
 						beginAtZero: false,
+						minRotation: 0,
 						maxRotation: 50,
 						mirror: false,
 						padding: 10,
@@ -238,7 +240,8 @@ describe('Core helper tests', function() {
 						display: true,
 						callback: merged.scales.yAxes[1].ticks.callback, // make it nicer, then check explicitly below
 						autoSkip: true,
-						autoSkipPadding: 0
+						autoSkipPadding: 0,
+						labelOffset: 0,
 					},
 					type: 'linear'
 				}, {
@@ -246,6 +249,7 @@ describe('Core helper tests', function() {
 
 					gridLines: {
 						color: "rgba(0, 0, 0, 0.1)",
+						drawBorder: true,
 						drawOnChartArea: true,
 						drawTicks: true, // draw ticks extending towards the label,
 						tickMarkLength: 10,
@@ -262,6 +266,7 @@ describe('Core helper tests', function() {
 					},
 					ticks: {
 						beginAtZero: false,
+						minRotation: 0,
 						maxRotation: 50,
 						mirror: false,
 						padding: 10,
@@ -269,7 +274,8 @@ describe('Core helper tests', function() {
 						display: true,
 						callback: merged.scales.yAxes[2].ticks.callback, // make it nicer, then check explicitly below
 						autoSkip: true,
-						autoSkipPadding: 0
+						autoSkipPadding: 0,
+						labelOffset: 0,
 					},
 					type: 'linear'
 				}]
@@ -684,4 +690,29 @@ describe('Core helper tests', function() {
 		});
 	});
 
+	describe('Background hover color helper', function() {
+		it('should return a CanvasPattern when called with a CanvasPattern', function(done) {
+			var dots = new Image();
+			dots.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAMAAAAolt3jAAAAD1BMVEUAAAD///////////////+PQt5oAAAABXRSTlMAHlFhZsfk/BEAAAAqSURBVHgBY2BgZGJmYmSAAUYWEIDzmcBcJhiXGcxlRpPFrhdmMiqgvX0AcGIBEUAo6UAAAAAASUVORK5CYII=';
+			dots.onload = function() {
+				var chartContext = document.createElement('canvas').getContext('2d');
+				var patternCanvas = document.createElement('canvas');
+				var patternContext = patternCanvas.getContext('2d');
+				var pattern = patternContext.createPattern(dots, 'repeat');
+				patternContext.fillStyle = pattern;
+
+				var backgroundColor = helpers.getHoverColor(chartContext.createPattern(patternCanvas, 'repeat'));
+
+				expect(backgroundColor instanceof CanvasPattern).toBe(true);
+
+				done();
+			}
+		});
+
+		it('should return a modified version of color when called with a color', function() {
+			var originalColorRGB = 'rgb(70, 191, 189)';
+
+			expect(helpers.getHoverColor('#46BFBD')).not.toEqual(originalColorRGB);
+		});
+	});
 });

@@ -347,4 +347,21 @@ module.exports = function(Chart) {
 		}
 	});
 
+	// Register the legend plugin
+	Chart.pluginService.register({
+		beforeInit: function(chartInstance) {
+			var opts = chartInstance.options;
+			var legendOpts = opts.legend;
+
+			if (legendOpts) {
+				chartInstance.legend = new Chart.Legend({
+					ctx: chartInstance.chart.ctx,
+					options: legendOpts,
+					chart: chartInstance
+				});
+
+				Chart.layoutService.addBox(chartInstance, chartInstance.legend);
+			}
+		}
+	});
 };

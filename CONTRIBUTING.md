@@ -9,7 +9,7 @@ Using issues
 
 The [issue tracker](https://github.com/chartjs/Chart.js/issues) is the preferred channel for reporting bugs, requesting new features and submitting pull requests.
 
-If you're suggesting a new chart type, please take a look at [writing new chart types](https://github.com/chartjs/Chart.js/blob/master/docs/07-Advanced.md#writing-new-chart-types) in the documentation or consider [creating a plugin](https://github.com/chartjs/Chart.js/blob/master/docs/07-Advanced.md#creating-plugins).
+If you're suggesting a new chart type, please take a look at [writing new chart types](https://github.com/chartjs/Chart.js/blob/master/docs/09-Advanced.md#writing-new-chart-types) in the documentation or consider [creating a plugin](https://github.com/chartjs/Chart.js/blob/master/docs/09-Advanced.md#creating-plugins).
 
 To keep the library lightweight for everyone, it's unlikely we'll add many more chart types to the core of Chart.js, but issues are a good medium to design and spec out how new chart types could work and look.
 
@@ -25,7 +25,7 @@ Guidlines for reporting bugs:
 
  - Check the issue search to see if it has already been reported
  - Isolate the problem to a simple test case
- - Provide a demonstration of the problem on [JS Bin](http://jsbin.com) or similar
+ - Please include a demonstration of the bug on a website such as [JS Bin](http://jsbin.com/), [JS Fiddle](http://jsfiddle.net/), or [Codepen](http://codepen.io/pen/). ([Template](http://codepen.io/pen?template=JXVYzq))
 
 Please provide any additional details associated with the bug, if it's browser or screen density specific, or only happens with a certain configuration or data.
 
@@ -45,7 +45,7 @@ Be advised that **Chart.js 1.0.2 is in feature-complete status**. Pull requests 
 
 Guidelines:
 
- - Please create an issue first:
+ - Please create an issue first and/or talk with a team member:
    - For bugs, we can discuss the fixing approach
    - For enhancements, we can discuss if it is within the project scope and avoid duplicate effort
  - Please make changes to the files in [`/src`](https://github.com/chartjs/Chart.js/tree/master/src), not `Chart.js` or `Chart.min.js` in the repo root directory, this avoids merge conflicts

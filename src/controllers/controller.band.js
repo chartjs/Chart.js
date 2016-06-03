@@ -42,10 +42,7 @@ module.exports = function(Chart) {
         tooltips: {
             callbacks: {
                 title: function(tooltipItems, data) {
-                    console.log(tooltipItems);
-                    console.log(data);
-                   // var datasetLabel = data.datasets[tooltipItems.datasetIndex].label || '';
-                    return '';
+                   return '';
                 },
                 label: function(tooltipItem, data) {
                     var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
@@ -53,21 +50,8 @@ module.exports = function(Chart) {
                     
                     var label = dp.label != undefined ? dp.label + ': ' : '';
 
-                    if( dp.x ) {
-                        if( dp.x2 ) {
-                            label += dp.x + ' - ' + dp.x2;
-                        } else {
-                            label += dp.x;
-                        }
-                    } 
-
-                    if( dp.y ) {
-                        if( dp.y2 ) {
-                            label += dp.y + ' - ' + dp.y2;
-                        } else {
-                            label += dp.y;
-                        }
-                    }
+                    label += dp.x ? ( dp.x2 ? dp.x + ' - ' + dp.x2 : dp.x ) : '';
+                    label += dp.y ? ( dp.y2 ? dp.y + ' - ' + dp.y2 : dp.y ) : '';
 
                     return label;
                 }
@@ -94,8 +78,6 @@ module.exports = function(Chart) {
                     });
                 }, this); 
 
-            // console.log('add elements');
-            // // console.log(meta);
         },
 
         // Create a single element for the data at the given index and reset its state
@@ -107,7 +89,6 @@ module.exports = function(Chart) {
             });
             this.getMeta().splice(index, 0, rectangle);
             this.updateElement(rectangle, index, true);
-            // console.log('add element and reset');
         },
 
         // Update the elements in response to new data
@@ -221,15 +202,7 @@ module.exports = function(Chart) {
                     };
                 }
             });
-            console.log('===============================');
-            console.log(this.getDataset().label);
-            console.log(rectangle._model.backgroundColor);
-            console.log(rectangle._model.borderSkipped);
-            console.log(rectangle._model.borderColor);
-            console.log(rectangle._model.borderWidth);
-
-
-
+            
             rectangle.pivot();
 
         },
@@ -239,20 +212,11 @@ module.exports = function(Chart) {
         draw: function(ease) {
 
             var easingDecimal = ease || 1;
-            // console.log('EASING: ' + easingDecimal);
             helpers.each(this.getMeta().data, function(rectangle, index) {
-
-                // console.log('Drawing rectangle ' +index);
-                // console.log(rectangle);
-
                 var d = this.getDataset().data[index];
-
                 if (d !== null && d !== undefined && (d.x || d.x2 || d.y || d.y2) ) {
-                    // console.log('DRAWING');
                     rectangle.transition(easingDecimal).draw();
-                } else {
-                    // console.log('DID NOT DRAW');
-                }
+                } 
             }, this);
         },
 
@@ -274,11 +238,6 @@ module.exports = function(Chart) {
             
             rectangle._model.borderWidth = rectangle.custom && rectangle.custom.hoverBorderWidth ? rectangle.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.hoverBorderWidth, index, rectangle._model.borderWidth);
 
-
-
-           // rectangle._model.hoverBackgroundColor = rectangle.custom && rectangle.custom.hoverBackgroundColor ? rectangle.custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.color(rectangle._model.backgroundColor).saturate(0.5).darken(0.1).rgbString());
-           // rectangle._model.borderColor = rectangle.custom && rectangle.custom.hoverBorderColor ? rectangle.custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.color(rectangle._model.borderColor).saturate(0.5).darken(0.1).rgbString());
-           // rectangle._model.borderWidth = rectangle.custom && rectangle.custom.hoverBorderWidth ? rectangle.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.hoverBorderWidth, index, rectangle._model.borderWidth);    
         },
 
         // Add hover styling to the given element

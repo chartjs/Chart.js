@@ -20,6 +20,7 @@ describe('Logarithmic Scale tests', function() {
 			display: true,
 			gridLines: {
 				color: "rgba(0, 0, 0, 0.1)",
+				drawBorder: true,
 				drawOnChartArea: true,
 				drawTicks: true,
 				tickMarkLength: 10,
@@ -36,6 +37,7 @@ describe('Logarithmic Scale tests', function() {
 			},
 			ticks: {
 				beginAtZero: false,
+				minRotation: 0,
 				maxRotation: 50,
 				mirror: false,
 				padding: 10,
@@ -43,7 +45,8 @@ describe('Logarithmic Scale tests', function() {
 				display: true,
 				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
 				autoSkip: true,
-				autoSkipPadding: 0
+				autoSkipPadding: 0,
+				labelOffset: 0
 			},
 		});
 

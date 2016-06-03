@@ -25,6 +25,7 @@ describe('Linear Scale', function() {
 
 			gridLines: {
 				color: "rgba(0, 0, 0, 0.1)",
+				drawBorder: true,
 				drawOnChartArea: true,
 				drawTicks: true, // draw ticks extending towards the label
 				tickMarkLength: 10,
@@ -41,6 +42,7 @@ describe('Linear Scale', function() {
 			},
 			ticks: {
 				beginAtZero: false,
+				minRotation: 0,
 				maxRotation: 50,
 				mirror: false,
 				padding: 10,
@@ -48,7 +50,8 @@ describe('Linear Scale', function() {
 				display: true,
 				callback: defaultConfig.ticks.callback, // make this work nicer, then check below
 				autoSkip: true,
-				autoSkipPadding: 0
+				autoSkipPadding: 0,
+				labelOffset: 0
 			}
 		});
 
@@ -633,7 +636,7 @@ describe('Linear Scale', function() {
 				}
 			}
 		});
-		
+
 		var xScale = chartInstance.scales.xScale0;
 		expect(xScale.getPixelForValue(1, 0, 0)).toBeCloseToPixel(501); // right - paddingRight
 		expect(xScale.getPixelForValue(-1, 0, 0)).toBeCloseToPixel(41); // left + paddingLeft

@@ -4,7 +4,7 @@ anchor: advanced-usage
 ---
 
 
-### Prototype methods
+### Prototype Methods
 
 For each chart, there are a set of global prototype methods on the shared `ChartType` which you may find useful. These are available on all charts created with Chart.js, but for the examples, let's use a line chart we've made.
 
@@ -161,7 +161,7 @@ var myPieChart = new Chart(ctx, {
 
 See `sample/line-customTooltips.html` for examples on how to get started.
 
-### Writing new scale types
+### Writing New Scale Types
 
 Starting with Chart.js 2.0 scales can be individually extended. Scales should always derive from Chart.Scale.
 
@@ -293,7 +293,7 @@ The Core.Scale base class also has some utility functions that you may find usef
 }
 ```
 
-### Writing new chart types
+### Writing New Chart Types
 
 Chart.js 2.0 introduces the concept of controllers for each dataset. Like scales, new controllers can be written as needed.
 
@@ -355,7 +355,7 @@ The following methods may optionally be overridden by derived dataset controller
 }
 ```
 
-### Extending existing chart types
+### Extending Existing Chart Types
 
 Extending or replacing an existing controller type is easy. Simply replace the constructor for one of the built in types with your own.
 
@@ -377,9 +377,11 @@ Plugins will be called at the following times
 * Start of initialization
 * End of initialization
 * Start of update
-* End of update
+* After the chart scales have calculated
+* End of update (before render occurs)
 * Start of draw
 * End of draw
+* Before an animation is started
 
 Plugins should derive from Chart.PluginBase and implement the following interface
 ```javascript
@@ -388,6 +390,7 @@ Plugins should derive from Chart.PluginBase and implement the following interfac
 	afterInit: function(chartInstance) { },
 
 	beforeUpdate: function(chartInstance) { },
+	afterScaleUpdate: function(chartInstance) { }
 	afterUpdate: function(chartInstance) { },
 
 	// This is called at the start of a render. It is only called once, even if the animation will run for a number of frames. Use beforeDraw or afterDraw 
@@ -396,7 +399,10 @@ Plugins should derive from Chart.PluginBase and implement the following interfac
 
 	// Easing is for animation
 	beforeDraw: function(chartInstance, easing) { },
-	afterDraw: function(chartInstance, easing) { }
+	afterDraw: function(chartInstance, easing) { },
+	// Before the datasets are drawn but after scales are drawn
+	beforeDatasetDraw: function(chartInstance, easing) { },
+	afterDatasetDraw: function(chartInstance, easing) { },
 
 	destroy: function(chartInstance) { }
 }

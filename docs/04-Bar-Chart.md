@@ -12,7 +12,7 @@ It is sometimes used to show trend data, and the comparison of multiple data set
 	<canvas width="250" height="125"></canvas>
 </div>
 
-### Example usage
+### Example Usage
 ```javascript
 var myBarChart = new Chart(ctx, {
 	type: 'bar',
@@ -31,7 +31,7 @@ var myBarChart = new Chart(ctx, {
 });
 ```
 
-### Data structure
+### Data Structure
 The following options can be included in a bar chart dataset to configure options for that specific dataset.
 
 Some properties can be specified as an array. If these are set to an array value, the first value applies to the first bar, the second value to the second bar, and so on.
@@ -58,11 +58,23 @@ var data = {
 	datasets: [
 		{
 			label: "My First dataset",
-			backgroundColor: "rgba(255,99,132,0.2)",
-			borderColor: "rgba(255,99,132,1)",
-			borderWidth: 1,
-			hoverBackgroundColor: "rgba(255,99,132,0.4)",
-			hoverBorderColor: "rgba(255,99,132,1)",
+			backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
 			data: [65, 59, 80, 81, 56, 55, 40],
 		}
 	]
@@ -73,20 +85,20 @@ We have an array of labels too for display. In the example, we are showing the s
 
 ### Chart Options
 
-These are the customisation options specific to Bar charts. These options are merged with the [global chart configuration options](#getting-started-global-chart-configuration), and form the options of the chart.
+These are the customisation options specific to Bar charts. These options are merged with the [global chart configuration options](#global-chart-configuration), and form the options of the chart.
 
 The default options for bar chart are defined in `Chart.defaults.bar`.
 
 Name | Type | Default | Description
 --- |:---:| --- | ---
-stacked | Boolean | false |
 *hover*.mode | String | "label" | Label's hover mode. "label" is used since the x axis displays data by the index in the dataset.
 scales | Object | - | -
 *scales*.xAxes | Array |  | The bar chart officially supports only 1 x-axis but uses an array to keep the API consistent. Use a scatter chart if you need multiple x axes.
 *Options for xAxes* | | |
 type | String | "Category" | As defined in [Scales](#scales-category-scale).
 display | Boolean | true | If true, show the scale.
-id | String | "x-axis-1" | Id of the axis so that data can bind to it
+id | String | "x-axis-0" | Id of the axis so that data can bind to it
+stacked | Boolean | false | If true, bars are stacked on the x-axis
 categoryPercentage | Number | 0.8 | Percent (0-1) of the available width (the space between the gridlines for small datasets) for each data-point to use for the bars. [Read More](#bar-chart-barpercentage-vs-categorypercentage)
 barPercentage | Number | 0.9 | Percent (0-1) of the available width each bar should be within the category percentage. 1.0 will take the whole category width and put the bars right next to each other. [Read More](#bar-chart-barpercentage-vs-categorypercentage)
 gridLines | Object |  [See Scales](#scales) |
@@ -96,7 +108,8 @@ gridLines | Object |  [See Scales](#scales) |
 *Options for xAxes* | | |
 type | String | "linear" | As defined in [Scales](#scales-linear-scale).
 display | Boolean | true | If true, show the scale.
-id | String | "y-axis-1" | Id of the axis so that data can bind to it.
+id | String | "y-axis-0" | Id of the axis so that data can bind to it.
+stacked | Boolean | false | If true, bars are stacked on the y-axis
 
 You can override these for your `Chart` instance by passing a second argument into the `Bar` method as an object with the keys you want to override.
 

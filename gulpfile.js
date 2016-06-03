@@ -22,17 +22,16 @@ var gulp = require('gulp'),
 
 var srcDir = './src/';
 var outDir = './dist/';
-var testDir = './test/';
 
-var header = "/*!\n\
- * Chart.js\n\
- * http://chartjs.org/\n\
- * Version: {{ version }}\n\
- *\n\
- * Copyright 2016 Nick Downie\n\
- * Released under the MIT license\n\
- * https://github.com/chartjs/Chart.js/blob/master/LICENSE.md\n\
- */\n";
+var header = "/*!\n" +
+  " * Chart.js\n" +
+  " * http://chartjs.org/\n" +
+  " * Version: {{ version }}\n" +
+  " *\n" +
+  " * Copyright 2016 Nick Downie\n" +
+  " * Released under the MIT license\n" +
+  " * https://github.com/chartjs/Chart.js/blob/master/LICENSE.md\n" +
+  " */\n";
 
 var preTestFiles = [
   './node_modules/moment/min/moment.min.js',
@@ -116,7 +115,8 @@ function bumpTask(complete) {
     choices: choices
   }, function(res) {
     var increment = res.version.split(' ')[0],
-      newVersion = semver.inc(package.version, increment);
+      newVersion = semver.inc(package.version, increment),
+      oldVersion = package.version;
 
     // Set the new versions into the bower/package object
     package.version = newVersion;
@@ -125,6 +125,13 @@ function bumpTask(complete) {
     // Write these to their own files, then build the output
     fs.writeFileSync('package.json', JSON.stringify(package, null, 2));
     fs.writeFileSync('bower.json', JSON.stringify(bower, null, 2));
+    
+    var oldCDN = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/'+oldVersion+'/Chart.min.js',
+      newCDN = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/'+newVersion+'/Chart.min.js';
+    
+    gulp.src(['./README.md'])
+      .pipe(replace(oldCDN, newCDN))
+      .pipe(gulp.dest('./'));
 
     complete();
   });
@@ -149,13 +156,15 @@ function validHTMLTask() {
     .pipe(htmlv());
 }
 
-
-function unittestTask() {
+function startTest() {
   var files = ['./src/**/*.js'];
   Array.prototype.unshift.apply(files, preTestFiles);
   Array.prototype.push.apply(files, testFiles);
+  return files;
+}
 
-  return gulp.src(files)
+function unittestTask() {
+  return gulp.src(startTest())
     .pipe(karma({
       configFile: 'karma.conf.ci.js',
       action: 'run'
@@ -163,11 +172,7 @@ function unittestTask() {
 }
 
 function unittestWatchTask() {
-  var files = ['./src/**/*.js'];
-  Array.prototype.unshift.apply(files, preTestFiles);
-  Array.prototype.push.apply(files, testFiles);
-
-  return gulp.src(files)
+  return gulp.src(startTest())
     .pipe(karma({
       configFile: 'karma.conf.js',
       action: 'watch'
@@ -175,11 +180,7 @@ function unittestWatchTask() {
 }
 
 function coverageTask() {
-  var files = ['./src/**/*.js'];
-  Array.prototype.unshift.apply(files, preTestFiles);
-  Array.prototype.push.apply(files, testFiles);
-
-  return gulp.src(files)
+  return gulp.src(startTest())
     .pipe(karma({
       configFile: 'karma.coverage.conf.js',
       action: 'run'

@@ -16,7 +16,7 @@ To install via npm / bower:
 npm install chart.js --save
 bower install Chart.js --save
 ```
-CDN: https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.2/Chart.min.js
+CDN: https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js
 
 ## Documentation
 
@@ -30,6 +30,8 @@ For support using Chart.js, please post questions with the [`chartjs` tag on Sta
 
 ## Building and Testing
 `gulp build`, `gulp test`
+
+Thanks to [BrowserStack](https://browserstack.com) for allowing our team to test on thousands of browsers.
 
 ## License
 
