@@ -76,26 +76,39 @@ module.exports = function(Chart) {
 		},
 
 		resize: function resize(silent) {
-			var canvas = this.chart.canvas;
-			var newWidth = helpers.getMaximumWidth(this.chart.canvas);
-			var newHeight = (this.options.maintainAspectRatio && isNaN(this.chart.aspectRatio) === false && isFinite(this.chart.aspectRatio) && this.chart.aspectRatio !== 0) ? newWidth / this.chart.aspectRatio : helpers.getMaximumHeight(this.chart.canvas);
+			var me = this;
+			var chart = me.chart;
+			var canvas = chart.canvas;
+			var newWidth = helpers.getMaximumWidth(canvas);
+			var aspectRatio = chart.aspectRatio;
+			var newHeight = (me.options.maintainAspectRatio && isNaN(aspectRatio) === false && isFinite(aspectRatio) && aspectRatio !== 0) ? newWidth / aspectRatio : helpers.getMaximumHeight(canvas);
 
-			var sizeChanged = this.chart.width !== newWidth || this.chart.height !== newHeight;
+			var sizeChanged = chart.width !== newWidth || chart.height !== newHeight;
 
-			if (!sizeChanged)
-				return this;
-
-			canvas.width = this.chart.width = newWidth;
-			canvas.height = this.chart.height = newHeight;
-
-			helpers.retinaScale(this.chart);
-
-			if (!silent) {
-				this.stop();
-				this.update(this.options.responsiveAnimationDuration);
+			if (!sizeChanged) {
+				return me;
 			}
 
-			return this;
+			canvas.width = chart.width = newWidth;
+			canvas.height = chart.height = newHeight;
+
+			helpers.retinaScale(chart);
+
+			// Notify any plugins about the resize
+			var newSize = { width: newWidth, height: newHeight };
+			Chart.pluginService.notifyPlugins('resize', [me, newSize]);
+
+			// Notify of resize
+			if (me.options.onResize) {
+				me.options.onResize(me, newSize);
+			}
+
+			if (!silent) {
+				me.stop();
+				me.update(me.options.responsiveAnimationDuration);
+			}
+
+			return me;
 		},
 
 		ensureScalesHaveIDs: function ensureScalesHaveIDs() {
