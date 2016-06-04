@@ -260,7 +260,7 @@ module.exports = function(Chart) {
 
 		draw: function(ease) {
 			var me = this;
-			var meta = this.getMeta();
+			var meta = me.getMeta();
 			var points = meta.data || [];
 			var easingDecimal = ease || 1;
 			var i, ilen;

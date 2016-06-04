@@ -11,29 +11,31 @@ module.exports = function(Chart) {
 	var DatasetScale = Chart.Scale.extend({
 		// Implement this so that 
 		determineDataLimits: function() {
-			this.minIndex = 0;
-			this.maxIndex = this.chart.data.labels.length - 1;
+			var me = this;
+			me.minIndex = 0;
+			me.maxIndex = me.chart.data.labels.length - 1;
 			var findIndex;
 
-			if (this.options.ticks.min !== undefined) {
+			if (me.options.ticks.min !== undefined) {
 				// user specified min value
-				findIndex = helpers.indexOf(this.chart.data.labels, this.options.ticks.min);
-				this.minIndex = findIndex !== -1 ? findIndex : this.minIndex;
+				findIndex = helpers.indexOf(me.chart.data.labels, me.options.ticks.min);
+				me.minIndex = findIndex !== -1 ? findIndex : me.minIndex;
 			}
 
-			if (this.options.ticks.max !== undefined) {
+			if (me.options.ticks.max !== undefined) {
 				// user specified max value
-				findIndex = helpers.indexOf(this.chart.data.labels, this.options.ticks.max);
-				this.maxIndex = findIndex !== -1 ? findIndex : this.maxIndex;
+				findIndex = helpers.indexOf(me.chart.data.labels, me.options.ticks.max);
+				me.maxIndex = findIndex !== -1 ? findIndex : me.maxIndex;
 			}
 
-			this.min = this.chart.data.labels[this.minIndex];
-			this.max = this.chart.data.labels[this.maxIndex];
+			me.min = me.chart.data.labels[me.minIndex];
+			me.max = me.chart.data.labels[me.maxIndex];
 		},
 
 		buildTicks: function(index) {
+			var me = this;
 			// If we are viewing some subset of labels, slice the original array
-			this.ticks = (this.minIndex === 0 && this.maxIndex === this.chart.data.labels.length - 1) ? this.chart.data.labels : this.chart.data.labels.slice(this.minIndex, this.maxIndex + 1);
+			me.ticks = (me.minIndex === 0 && me.maxIndex === me.chart.data.labels.length - 1) ? me.chart.data.labels : me.chart.data.labels.slice(me.minIndex, me.maxIndex + 1);
 		},
 
 		getLabelForIndex: function(index, datasetIndex) {
@@ -42,45 +44,47 @@ module.exports = function(Chart) {
 
 		// Used to get data value locations.  Value can either be an index or a numerical value
 		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
+			var me = this;
 			// 1 is added because we need the length but we have the indexes
-			var offsetAmt = Math.max((this.maxIndex + 1 - this.minIndex - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
+			var offsetAmt = Math.max((me.maxIndex + 1 - me.minIndex - ((me.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
 
-			if (this.isHorizontal()) {
-				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
+			if (me.isHorizontal()) {
+				var innerWidth = me.width - (me.paddingLeft + me.paddingRight);
 				var valueWidth = innerWidth / offsetAmt;
-				var widthOffset = (valueWidth * (index - this.minIndex)) + this.paddingLeft;
+				var widthOffset = (valueWidth * (index - me.minIndex)) + me.paddingLeft;
 
-				if (this.options.gridLines.offsetGridLines && includeOffset) {
+				if (me.options.gridLines.offsetGridLines && includeOffset) {
 					widthOffset += (valueWidth / 2);
 				}
 
-				return this.left + Math.round(widthOffset);
+				return me.left + Math.round(widthOffset);
 			} else {
-				var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
+				var innerHeight = me.height - (me.paddingTop + me.paddingBottom);
 				var valueHeight = innerHeight / offsetAmt;
-				var heightOffset = (valueHeight * (index - this.minIndex)) + this.paddingTop;
+				var heightOffset = (valueHeight * (index - me.minIndex)) + me.paddingTop;
 
-				if (this.options.gridLines.offsetGridLines && includeOffset) {
+				if (me.options.gridLines.offsetGridLines && includeOffset) {
 					heightOffset += (valueHeight / 2);
 				}
 
-				return this.top + Math.round(heightOffset);
+				return me.top + Math.round(heightOffset);
 			}
 		},
 		getPixelForTick: function(index, includeOffset) {
 			return this.getPixelForValue(this.ticks[index], index + this.minIndex, null, includeOffset);
 		},
 		getValueForPixel: function(pixel) {
-			var value
-;			var offsetAmt = Math.max((this.ticks.length - ((this.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
-			var horz = this.isHorizontal();
-			var innerDimension = horz ? this.width - (this.paddingLeft + this.paddingRight) : this.height - (this.paddingTop + this.paddingBottom);
+			var me = this;
+			var value;
+			var offsetAmt = Math.max((me.ticks.length - ((me.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
+			var horz = me.isHorizontal();
+			var innerDimension = horz ? me.width - (me.paddingLeft + me.paddingRight) : me.height - (me.paddingTop + me.paddingBottom);
 			var valueDimension = innerDimension / offsetAmt;
 
-			if (this.options.gridLines.offsetGridLines) {
+			if (me.options.gridLines.offsetGridLines) {
 				pixel -= (valueDimension / 2);
 			}
-			pixel -= horz ? this.paddingLeft : this.paddingTop;
+			pixel -= horz ? me.paddingLeft : me.paddingTop;
 
 			if (pixel <= 0) {
 				value = 0;

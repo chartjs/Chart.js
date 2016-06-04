@@ -215,8 +215,7 @@ module.exports = function(Chart) {
 
 		// Args are: (tooltipItem, data)
 		getBeforeBody: function() {
-			var me = this;
-			var lines = me._options.callbacks.beforeBody.apply(me, arguments);
+			var lines = this._options.callbacks.beforeBody.apply(this, arguments);
 			return helpers.isArray(lines) ? lines : lines !== undefined ? [lines] : [];
 		},
 
@@ -244,8 +243,7 @@ module.exports = function(Chart) {
 
 		// Args are: (tooltipItem, data)
 		getAfterBody: function() {
-			var me = this;
-			var lines = me._options.callbacks.afterBody.apply(me, arguments);
+			var lines = this._options.callbacks.afterBody.apply(this, arguments);
 			return helpers.isArray(lines) ? lines : lines !== undefined ? [lines] : [];
 		},
 
@@ -330,8 +328,7 @@ module.exports = function(Chart) {
 			return me;
 		},
 		getTooltipSize: function getTooltipSize(vm) {
-			var me = this;
-			var ctx = me._chart.ctx;
+			var ctx = this._chart.ctx;
 
 			var size = {
 				height: vm.yPadding * 2, // Tooltip Padding
@@ -501,9 +498,8 @@ module.exports = function(Chart) {
 			return pt;
 		},
 		drawCaret: function drawCaret(tooltipPoint, size, opacity, caretPadding) {
-			var me = this;
-			var vm = me._view;
-			var ctx = me._chart.ctx;
+			var vm = this._view;
+			var ctx = this._chart.ctx;
 			var x1, x2, x3;
 			var y1, y2, y3;
 			var caretSize = vm.caretSize;
@@ -591,7 +587,6 @@ module.exports = function(Chart) {
 			}
 		},
 		drawBody: function drawBody(pt, vm, ctx, opacity) {
-			var me = this;
 			var bodyFontSize = vm.bodyFontSize;
 			var bodySpacing = vm.bodySpacing;
 			var body = vm.body;

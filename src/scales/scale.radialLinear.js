@@ -99,10 +99,9 @@ module.exports = function(Chart) {
 			me.handleTickRangeOptions();
 		},
 		getTickLimit: function() {
-			var me = this;
-			var tickOpts = me.options.ticks;
+			var tickOpts = this.options.ticks;
 			var tickFontSize = helpers.getValueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize);
-			return Math.min(tickOpts.maxTicksLimit ? tickOpts.maxTicksLimit : 11, Math.ceil(me.drawingArea / (1.5 * tickFontSize)));
+			return Math.min(tickOpts.maxTicksLimit ? tickOpts.maxTicksLimit : 11, Math.ceil(this.drawingArea / (1.5 * tickFontSize)));
 		},
 		convertTicksToLabels: function() {
 			var me = this;
