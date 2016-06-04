@@ -83,7 +83,7 @@ module.exports = function(Chart) {
 			var newWidth = helpers.getMaximumWidth(canvas);
 			var aspectRatio = chart.aspectRatio;
 			var newHeight = (me.options.maintainAspectRatio && isNaN(aspectRatio) === false && isFinite(aspectRatio) && aspectRatio !== 0) ? newWidth / aspectRatio : helpers.getMaximumHeight(canvas);
-
+			
 			var sizeChanged = chart.width !== newWidth || chart.height !== newHeight;
 
 			if (!sizeChanged) {
