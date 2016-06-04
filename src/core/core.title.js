@@ -20,11 +20,12 @@ module.exports = function(Chart) {
 	Chart.Title = Chart.Element.extend({
 
 		initialize: function(config) {
-			helpers.extend(this, config);
-			this.options = helpers.configMerge(Chart.defaults.global.title, config.options);
+			var me = this;
+			helpers.extend(me, config);
+			me.options = helpers.configMerge(Chart.defaults.global.title, config.options);
 
 			// Contains hit boxes for each dataset (in dataset order)
-			this.legendHitBoxes = [];
+			me.legendHitBoxes = [];
 		},
 
 		// These methods are ordered by lifecyle. Utilities then follow.
@@ -36,32 +37,33 @@ module.exports = function(Chart) {
 			}
 		},
 		update: function(maxWidth, maxHeight, margins) {
-
-			// Update Lifecycle
-			this.beforeUpdate();
+			var me = this;
+			
+			// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
+			me.beforeUpdate();
 
 			// Absorb the master measurements
-			this.maxWidth = maxWidth;
-			this.maxHeight = maxHeight;
-			this.margins = margins;
+			me.maxWidth = maxWidth;
+			me.maxHeight = maxHeight;
+			me.margins = margins;
 
 			// Dimensions
-			this.beforeSetDimensions();
-			this.setDimensions();
-			this.afterSetDimensions();
+			me.beforeSetDimensions();
+			me.setDimensions();
+			me.afterSetDimensions();
 			// Labels
-			this.beforeBuildLabels();
-			this.buildLabels();
-			this.afterBuildLabels();
+			me.beforeBuildLabels();
+			me.buildLabels();
+			me.afterBuildLabels();
 
 			// Fit
-			this.beforeFit();
-			this.fit();
-			this.afterFit();
+			me.beforeFit();
+			me.fit();
+			me.afterFit();
 			//
-			this.afterUpdate();
+			me.afterUpdate();
 
-			return this.minSize;
+			return me.minSize;
 
 		},
 		afterUpdate: noop,
@@ -70,28 +72,29 @@ module.exports = function(Chart) {
 
 		beforeSetDimensions: noop,
 		setDimensions: function() {
+			var me = this;
 			// Set the unconstrained dimension before label rotation
-			if (this.isHorizontal()) {
+			if (me.isHorizontal()) {
 				// Reset position before calculating rotation
-				this.width = this.maxWidth;
-				this.left = 0;
-				this.right = this.width;
+				me.width = me.maxWidth;
+				me.left = 0;
+				me.right = me.width;
 			} else {
-				this.height = this.maxHeight;
+				me.height = me.maxHeight;
 
 				// Reset position before calculating rotation
-				this.top = 0;
-				this.bottom = this.height;
+				me.top = 0;
+				me.bottom = me.height;
 			}
 
 			// Reset padding
-			this.paddingLeft = 0;
-			this.paddingTop = 0;
-			this.paddingRight = 0;
-			this.paddingBottom = 0;
+			me.paddingLeft = 0;
+			me.paddingTop = 0;
+			me.paddingRight = 0;
+			me.paddingBottom = 0;
 
 			// Reset minSize
-			this.minSize = {
+			me.minSize = {
 				width: 0,
 				height: 0
 			};
@@ -109,25 +112,25 @@ module.exports = function(Chart) {
 		beforeFit: noop,
 		fit: function() {
 
-			var _this = this,
-				ctx = _this.ctx,
+			var me = this,
+				ctx = me.ctx,
 				valueOrDefault = helpers.getValueOrDefault,
-				opts = _this.options,
+				opts = me.options,
 				globalDefaults = Chart.defaults.global,
 				display = opts.display,
 				fontSize = valueOrDefault(opts.fontSize, globalDefaults.defaultFontSize),
-				minSize = _this.minSize;
+				minSize = me.minSize;
 
-			if (_this.isHorizontal()) {
-				minSize.width = _this.maxWidth; // fill all the width
+			if (me.isHorizontal()) {
+				minSize.width = me.maxWidth; // fill all the width
 				minSize.height = display ? fontSize + (opts.padding * 2) : 0;
 			} else {
 				minSize.width = display ? fontSize + (opts.padding * 2) : 0;
-				minSize.height = _this.maxHeight; // fill all the height
+				minSize.height = me.maxHeight; // fill all the height
 			}
 
-			_this.width = minSize.width;
-			_this.height = minSize.height;
+			me.width = minSize.width;
+			me.height = minSize.height;
 
 		},
 		afterFit: noop,
@@ -140,10 +143,10 @@ module.exports = function(Chart) {
 
 		// Actualy draw the title block on the canvas
 		draw: function() {
-			var _this = this,
-				ctx = _this.ctx,
+			var me = this,
+				ctx = me.ctx,
 				valueOrDefault = helpers.getValueOrDefault,
-				opts = _this.options,
+				opts = me.options,
 				globalDefaults = Chart.defaults.global;
 
 			if (opts.display) {
@@ -154,16 +157,16 @@ module.exports = function(Chart) {
 					rotation = 0,
 					titleX, 
 					titleY,
-					top = _this.top,
-					left = _this.left,
-					bottom = _this.bottom,
-					right = _this.right;
+					top = me.top,
+					left = me.left,
+					bottom = me.bottom,
+					right = me.right;
 
 				ctx.fillStyle = valueOrDefault(opts.fontColor, globalDefaults.defaultFontColor); // render in correct colour
 				ctx.font = titleFont;
 
 				// Horizontal
-				if (_this.isHorizontal()) {
+				if (me.isHorizontal()) {
 					titleX = left + ((right - left) / 2); // midpoint of the width
 					titleY = top + ((bottom - top) / 2); // midpoint of the height
 				} else {

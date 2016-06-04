@@ -37,21 +37,21 @@ module.exports = function(Chart) {
 
 	var LinearScale = Chart.LinearScaleBase.extend({
 		determineDataLimits: function() {
-			var _this = this;
-			var opts = _this.options;
+			var me = this;
+			var opts = me.options;
 			var tickOpts = opts.ticks;
-			var chart = _this.chart;
+			var chart = me.chart;
 			var data = chart.data;
 			var datasets = data.datasets;
-			var isHorizontal = _this.isHorizontal();
+			var isHorizontal = me.isHorizontal();
 
 			function IDMatches(meta) {
-				return isHorizontal ? meta.xAxisID === _this.id : meta.yAxisID === _this.id;
+				return isHorizontal ? meta.xAxisID === me.id : meta.yAxisID === me.id;
 			}
 
 			// First Calculate the range
-			_this.min = null;
-			_this.max = null;
+			me.min = null;
+			me.max = null;
 
 			if (opts.stacked) {
 				var valuesPerType = {};
@@ -73,7 +73,7 @@ module.exports = function(Chart) {
 
 					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 						helpers.each(dataset.data, function(rawValue, index) {
-							var value = +_this.getRightValue(rawValue);
+							var value = +me.getRightValue(rawValue);
 							if (isNaN(value) || meta.data[index].hidden) {
 								return;
 							}
@@ -100,8 +100,8 @@ module.exports = function(Chart) {
 					var values = valuesForType.positiveValues.concat(valuesForType.negativeValues);
 					var minVal = helpers.min(values);
 					var maxVal = helpers.max(values);
-					_this.min = _this.min === null ? minVal : Math.min(_this.min, minVal);
-					_this.max = _this.max === null ? maxVal : Math.max(_this.max, maxVal);
+					me.min = me.min === null ? minVal : Math.min(me.min, minVal);
+					me.max = me.max === null ? maxVal : Math.max(me.max, maxVal);
 				});
 
 			} else {
@@ -109,21 +109,21 @@ module.exports = function(Chart) {
 					var meta = chart.getDatasetMeta(datasetIndex);
 					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 						helpers.each(dataset.data, function(rawValue, index) {
-							var value = +_this.getRightValue(rawValue);
+							var value = +me.getRightValue(rawValue);
 							if (isNaN(value) || meta.data[index].hidden) {
 								return;
 							}
 
-							if (_this.min === null) {
-								_this.min = value;
-							} else if (value < _this.min) {
-								_this.min = value;
+							if (me.min === null) {
+								me.min = value;
+							} else if (value < me.min) {
+								me.min = value;
 							}
 
-							if (_this.max === null) {
-								_this.max = value;
-							} else if (value > _this.max) {
-								_this.max = value;
+							if (me.max === null) {
+								me.max = value;
+							} else if (value > me.max) {
+								me.max = value;
 							}
 						});
 					}
@@ -150,10 +150,9 @@ module.exports = function(Chart) {
 		},
 		// Called after the ticks are built. We need 
 		handleDirectionalChanges: function() {
-			var me = this;
-			if (!me.isHorizontal()) {
+			if (!this.isHorizontal()) {
 				// We are in a vertical orientation. The top value is the highest. So reverse the array
-				me.ticks.reverse();
+				this.ticks.reverse();
 			}
 		},
 		getLabelForIndex: function(index, datasetIndex) {
@@ -163,34 +162,34 @@ module.exports = function(Chart) {
 		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
 			// This must be called after fit has been run so that
 			//      this.left, this.top, this.right, and this.bottom have been defined
-			var _this = this;
-			var paddingLeft = _this.paddingLeft;
-			var paddingBottom = _this.paddingBottom;
-			var start = _this.start;
+			var me = this;
+			var paddingLeft = me.paddingLeft;
+			var paddingBottom = me.paddingBottom;
+			var start = me.start;
 
-			var rightValue = +_this.getRightValue(value);
+			var rightValue = +me.getRightValue(value);
 			var pixel;
 			var innerDimension;
-			var range = _this.end - start;
+			var range = me.end - start;
 
-			if (_this.isHorizontal()) {
-				innerDimension = _this.width - (paddingLeft + _this.paddingRight);
-				pixel = _this.left + (innerDimension / range * (rightValue - start));
+			if (me.isHorizontal()) {
+				innerDimension = me.width - (paddingLeft + me.paddingRight);
+				pixel = me.left + (innerDimension / range * (rightValue - start));
 				return Math.round(pixel + paddingLeft);
 			} else {
-				innerDimension = _this.height - (_this.paddingTop + paddingBottom);
-				pixel = (_this.bottom - paddingBottom) - (innerDimension / range * (rightValue - start));
+				innerDimension = me.height - (me.paddingTop + paddingBottom);
+				pixel = (me.bottom - paddingBottom) - (innerDimension / range * (rightValue - start));
 				return Math.round(pixel);
 			}
 		},
 		getValueForPixel: function(pixel) {
-			var _this = this;
-			var isHorizontal = _this.isHorizontal();
-			var paddingLeft = _this.paddingLeft;
-			var paddingBottom = _this.paddingBottom;
-			var innerDimension = isHorizontal ? _this.width - (paddingLeft + _this.paddingRight) : _this.height - (_this.paddingTop + paddingBottom);
-			var offset = (isHorizontal ? pixel - _this.left - paddingLeft : _this.bottom - paddingBottom - pixel) / innerDimension;
-			return _this.start + ((_this.end - _this.start) * offset);
+			var me = this;
+			var isHorizontal = me.isHorizontal();
+			var paddingLeft = me.paddingLeft;
+			var paddingBottom = me.paddingBottom;
+			var innerDimension = isHorizontal ? me.width - (paddingLeft + me.paddingRight) : me.height - (me.paddingTop + paddingBottom);
+			var offset = (isHorizontal ? pixel - me.left - paddingLeft : me.bottom - paddingBottom - pixel) / innerDimension;
+			return me.start + ((me.end - me.start) * offset);
 		},
 		getPixelForTick: function(index, includeOffset) {
 			return this.getPixelForValue(this.ticksAsNumbers[index], null, null, includeOffset);

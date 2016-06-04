@@ -79,32 +79,33 @@ module.exports = function(Chart) {
 
 		beforeUpdate: noop,
 		update: function(maxWidth, maxHeight, margins) {
+			var me = this;
 
 			// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
-			this.beforeUpdate();
+			me.beforeUpdate();
 
 			// Absorb the master measurements
-			this.maxWidth = maxWidth;
-			this.maxHeight = maxHeight;
-			this.margins = margins;
+			me.maxWidth = maxWidth;
+			me.maxHeight = maxHeight;
+			me.margins = margins;
 
 			// Dimensions
-			this.beforeSetDimensions();
-			this.setDimensions();
-			this.afterSetDimensions();
+			me.beforeSetDimensions();
+			me.setDimensions();
+			me.afterSetDimensions();
 			// Labels
-			this.beforeBuildLabels();
-			this.buildLabels();
-			this.afterBuildLabels();
+			me.beforeBuildLabels();
+			me.buildLabels();
+			me.afterBuildLabels();
 
 			// Fit
-			this.beforeFit();
-			this.fit();
-			this.afterFit();
+			me.beforeFit();
+			me.fit();
+			me.afterFit();
 			//
-			this.afterUpdate();
+			me.afterUpdate();
 
-			return this.minSize;
+			return me.minSize;
 		},
 		afterUpdate: noop,
 
@@ -112,28 +113,29 @@ module.exports = function(Chart) {
 
 		beforeSetDimensions: noop,
 		setDimensions: function() {
+			var me = this;
 			// Set the unconstrained dimension before label rotation
-			if (this.isHorizontal()) {
+			if (me.isHorizontal()) {
 				// Reset position before calculating rotation
-				this.width = this.maxWidth;
-				this.left = 0;
-				this.right = this.width;
+				me.width = me.maxWidth;
+				me.left = 0;
+				me.right = me.width;
 			} else {
-				this.height = this.maxHeight;
+				me.height = me.maxHeight;
 
 				// Reset position before calculating rotation
-				this.top = 0;
-				this.bottom = this.height;
+				me.top = 0;
+				me.bottom = me.height;
 			}
 
 			// Reset padding
-			this.paddingLeft = 0;
-			this.paddingTop = 0;
-			this.paddingRight = 0;
-			this.paddingBottom = 0;
+			me.paddingLeft = 0;
+			me.paddingTop = 0;
+			me.paddingRight = 0;
+			me.paddingBottom = 0;
 
 			// Reset minSize
-			this.minSize = {
+			me.minSize = {
 				width: 0,
 				height: 0
 			};
@@ -144,9 +146,10 @@ module.exports = function(Chart) {
 
 		beforeBuildLabels: noop,
 		buildLabels: function() {
-			this.legendItems = this.options.labels.generateLabels.call(this, this.chart);
-			if(this.options.reverse){
-				this.legendItems.reverse();
+			var me = this;
+			me.legendItems = me.options.labels.generateLabels.call(me, me.chart);
+			if(me.options.reverse){
+				me.legendItems.reverse();
 			}
 		},
 		afterBuildLabels: noop,
@@ -155,11 +158,12 @@ module.exports = function(Chart) {
 
 		beforeFit: noop,
 		fit: function() {
-			var opts = this.options;
+			var me = this;
+			var opts = me.options;
 			var labelOpts = opts.labels;
 			var display = opts.display;
 
-			var ctx = this.ctx;
+			var ctx = me.ctx;
 
 			var globalDefault = Chart.defaults.global,
 				itemOrDefault = helpers.getValueOrDefault,
@@ -169,17 +173,17 @@ module.exports = function(Chart) {
 				labelFont = helpers.fontString(fontSize, fontStyle, fontFamily);
 
 			// Reset hit boxes
-			var hitboxes = this.legendHitBoxes = [];
+			var hitboxes = me.legendHitBoxes = [];
 
-			var minSize = this.minSize;
-			var isHorizontal = this.isHorizontal();
+			var minSize = me.minSize;
+			var isHorizontal = me.isHorizontal();
 
 			if (isHorizontal) {
-				minSize.width = this.maxWidth; // fill all the width
+				minSize.width = me.maxWidth; // fill all the width
 				minSize.height = display ? 10 : 0;
 			} else {
 				minSize.width = display ? 10 : 0;
-				minSize.height = this.maxHeight; // fill all the height
+				minSize.height = me.maxHeight; // fill all the height
 			}
 
 			// Increase sizes here
@@ -188,18 +192,18 @@ module.exports = function(Chart) {
 					// Labels
 
 					// Width of each line of legend boxes. Labels wrap onto multiple lines when there are too many to fit on one
-					var lineWidths = this.lineWidths = [0];
-					var totalHeight = this.legendItems.length ? fontSize + (labelOpts.padding) : 0;
+					var lineWidths = me.lineWidths = [0];
+					var totalHeight = me.legendItems.length ? fontSize + (labelOpts.padding) : 0;
 
 					ctx.textAlign = "left";
 					ctx.textBaseline = 'top';
 					ctx.font = labelFont;
 
-					helpers.each(this.legendItems, function(legendItem, i) {
+					helpers.each(me.legendItems, function(legendItem, i) {
 						var width = labelOpts.boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
-						if (lineWidths[lineWidths.length - 1] + width + labelOpts.padding >= this.width) {
+						if (lineWidths[lineWidths.length - 1] + width + labelOpts.padding >= me.width) {
 							totalHeight += fontSize + (labelOpts.padding);
-							lineWidths[lineWidths.length] = this.left;
+							lineWidths[lineWidths.length] = me.left;
 						}
 
 						// Store the hitbox width and height here. Final position will be updated in `draw`
@@ -211,7 +215,7 @@ module.exports = function(Chart) {
 						};
 
 						lineWidths[lineWidths.length - 1] += width + labelOpts.padding;
-					}, this);
+					}, me);
 
 					minSize.height += totalHeight;
 
@@ -220,8 +224,8 @@ module.exports = function(Chart) {
 				}
 			}
 
-			this.width = minSize.width;
-			this.height = minSize.height;
+			me.width = minSize.width;
+			me.height = minSize.height;
 		},
 		afterFit: noop,
 
@@ -232,18 +236,19 @@ module.exports = function(Chart) {
 
 		// Actualy draw the legend on the canvas
 		draw: function() {
-			var opts = this.options;
+			var me = this;
+			var opts = me.options;
 			var labelOpts = opts.labels;
 			var globalDefault = Chart.defaults.global,
 				lineDefault = globalDefault.elements.line,
-				legendWidth = this.width,
-				lineWidths = this.lineWidths;
+				legendWidth = me.width,
+				lineWidths = me.lineWidths;
 
 			if (opts.display) {
-				var ctx = this.ctx,
+				var ctx = me.ctx,
 					cursor = {
-						x: this.left + ((legendWidth - lineWidths[0]) / 2),
-						y: this.top + labelOpts.padding,
+						x: me.left + ((legendWidth - lineWidths[0]) / 2),
+						y: me.top + labelOpts.padding,
 						line: 0
 					},
 					itemOrDefault = helpers.getValueOrDefault,
@@ -254,7 +259,7 @@ module.exports = function(Chart) {
 					labelFont = helpers.fontString(fontSize, fontStyle, fontFamily);
 
 				// Horizontal
-				if (this.isHorizontal()) {
+				if (me.isHorizontal()) {
 					// Labels
 					ctx.textAlign = "left";
 					ctx.textBaseline = 'top';
@@ -264,9 +269,9 @@ module.exports = function(Chart) {
 					ctx.font = labelFont;
 
 					var boxWidth = labelOpts.boxWidth,
-						hitboxes = this.legendHitBoxes;
+						hitboxes = me.legendHitBoxes;
 
-					helpers.each(this.legendItems, function(legendItem, i) {
+					helpers.each(me.legendItems, function(legendItem, i) {
 						var textWidth = ctx.measureText(legendItem.text).width,
 							width = boxWidth + (fontSize / 2) + textWidth,
 							x = cursor.x,
@@ -275,7 +280,7 @@ module.exports = function(Chart) {
 						if (x + width >= legendWidth) {
 							y = cursor.y += fontSize + (labelOpts.padding);
 							cursor.line++;
-							x = cursor.x = this.left + ((legendWidth - lineWidths[cursor.line]) / 2);
+							x = cursor.x = me.left + ((legendWidth - lineWidths[cursor.line]) / 2);
 						}
 
 						// Set the ctx for the box
@@ -315,7 +320,7 @@ module.exports = function(Chart) {
 						}
 
 						cursor.x += width + (labelOpts.padding);
-					}, this);
+					}, me);
 				} else {
 
 				}
@@ -324,21 +329,22 @@ module.exports = function(Chart) {
 
 		// Handle an event
 		handleEvent: function(e) {
-			var position = helpers.getRelativePosition(e, this.chart.chart),
+			var me = this;
+			var position = helpers.getRelativePosition(e, me.chart.chart),
 				x = position.x,
 				y = position.y,
-				opts = this.options;
+				opts = me.options;
 
-			if (x >= this.left && x <= this.right && y >= this.top && y <= this.bottom) {
+			if (x >= me.left && x <= me.right && y >= me.top && y <= me.bottom) {
 				// See if we are touching one of the dataset boxes
-				var lh = this.legendHitBoxes;
+				var lh = me.legendHitBoxes;
 				for (var i = 0; i < lh.length; ++i) {
 					var hitBox = lh[i];
 
 					if (x >= hitBox.left && x <= hitBox.left + hitBox.width && y >= hitBox.top && y <= hitBox.top + hitBox.height) {
 						// Touching an element
 						if (opts.onClick) {
-							opts.onClick.call(this, e, this.legendItems[i]);
+							opts.onClick.call(me, e, me.legendItems[i]);
 						}
 						break;
 					}

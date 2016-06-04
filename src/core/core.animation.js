@@ -28,27 +28,28 @@ module.exports = function(Chart) {
 		dropFrames: 0,
 		request: null,
 		addAnimation: function(chartInstance, animationObject, duration, lazy) {
+			var me = this;
 
 			if (!lazy) {
 				chartInstance.animating = true;
 			}
 
-			for (var index = 0; index < this.animations.length; ++index) {
-				if (this.animations[index].chartInstance === chartInstance) {
+			for (var index = 0; index < me.animations.length; ++index) {
+				if (me.animations[index].chartInstance === chartInstance) {
 					// replacing an in progress animation
-					this.animations[index].animationObject = animationObject;
+					me.animations[index].animationObject = animationObject;
 					return;
 				}
 			}
 
-			this.animations.push({
+			me.animations.push({
 				chartInstance: chartInstance,
 				animationObject: animationObject
 			});
 
 			// If there are no animations queued, manually kickstart a digest, for lack of a better word
-			if (this.animations.length === 1) {
-				this.requestAnimationFrame();
+			if (me.animations.length === 1) {
+				me.requestAnimationFrame();
 			}
 		},
 		// Cancel the animation for a given chart instance
@@ -75,54 +76,55 @@ module.exports = function(Chart) {
 			}
 		},
 		startDigest: function() {
+			var me = this;
 
 			var startTime = Date.now();
 			var framesToDrop = 0;
 
-			if (this.dropFrames > 1) {
-				framesToDrop = Math.floor(this.dropFrames);
-				this.dropFrames = this.dropFrames % 1;
+			if (me.dropFrames > 1) {
+				framesToDrop = Math.floor(me.dropFrames);
+				me.dropFrames = me.dropFrames % 1;
 			}
 
 			var i = 0;
-			while (i < this.animations.length) {
-				if (this.animations[i].animationObject.currentStep === null) {
-					this.animations[i].animationObject.currentStep = 0;
+			while (i < me.animations.length) {
+				if (me.animations[i].animationObject.currentStep === null) {
+					me.animations[i].animationObject.currentStep = 0;
 				}
 
-				this.animations[i].animationObject.currentStep += 1 + framesToDrop;
+				me.animations[i].animationObject.currentStep += 1 + framesToDrop;
 
-				if (this.animations[i].animationObject.currentStep > this.animations[i].animationObject.numSteps) {
-					this.animations[i].animationObject.currentStep = this.animations[i].animationObject.numSteps;
+				if (me.animations[i].animationObject.currentStep > me.animations[i].animationObject.numSteps) {
+					me.animations[i].animationObject.currentStep = me.animations[i].animationObject.numSteps;
 				}
 
-				this.animations[i].animationObject.render(this.animations[i].chartInstance, this.animations[i].animationObject);
-				if (this.animations[i].animationObject.onAnimationProgress && this.animations[i].animationObject.onAnimationProgress.call) {
-					this.animations[i].animationObject.onAnimationProgress.call(this.animations[i].chartInstance, this.animations[i]);
+				me.animations[i].animationObject.render(me.animations[i].chartInstance, me.animations[i].animationObject);
+				if (me.animations[i].animationObject.onAnimationProgress && me.animations[i].animationObject.onAnimationProgress.call) {
+					me.animations[i].animationObject.onAnimationProgress.call(me.animations[i].chartInstance, me.animations[i]);
 				}
 
-				if (this.animations[i].animationObject.currentStep === this.animations[i].animationObject.numSteps) {
-					if (this.animations[i].animationObject.onAnimationComplete && this.animations[i].animationObject.onAnimationComplete.call) {
-						this.animations[i].animationObject.onAnimationComplete.call(this.animations[i].chartInstance, this.animations[i]);
+				if (me.animations[i].animationObject.currentStep === me.animations[i].animationObject.numSteps) {
+					if (me.animations[i].animationObject.onAnimationComplete && me.animations[i].animationObject.onAnimationComplete.call) {
+						me.animations[i].animationObject.onAnimationComplete.call(me.animations[i].chartInstance, me.animations[i]);
 					}
 
 					// executed the last frame. Remove the animation.
-					this.animations[i].chartInstance.animating = false;
+					me.animations[i].chartInstance.animating = false;
 
-					this.animations.splice(i, 1);
+					me.animations.splice(i, 1);
 				} else {
 					++i;
 				}
 			}
 
 			var endTime = Date.now();
-			var dropFrames = (endTime - startTime) / this.frameDuration;
+			var dropFrames = (endTime - startTime) / me.frameDuration;
 
-			this.dropFrames += dropFrames;
+			me.dropFrames += dropFrames;
 
 			// Do we have more stuff to animate?
-			if (this.animations.length > 0) {
-				this.requestAnimationFrame();
+			if (me.animations.length > 0) {
+				me.requestAnimationFrame();
 			}
 		}
 	};
