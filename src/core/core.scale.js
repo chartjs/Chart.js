@@ -43,8 +43,9 @@ module.exports = function(Chart) {
 			autoSkip: true,
 			autoSkipPadding: 0,
 			labelOffset: 0,
+			// We pass through arrays to be rendered as multiline labels, we convert Others to strings here.
 			callback: function(value) {
-				return '' + value;
+				return helpers.isArray(value) ? value : '' + value;
 			}
 		}
 	};
@@ -320,13 +321,15 @@ module.exports = function(Chart) {
 				}
 
 				var largestTextWidth = helpers.longestText(me.ctx, tickLabelFont, me.ticks, me.longestTextCache);
+				var tallestLabelHeightInLines = helpers.numberOfLabelLines(me.ticks);
+				var lineSpace = tickFontSize * 0.5;
 
 				if (isHorizontal) {
 					// A horizontal axis is more constrained by the height.
 					me.longestLabelWidth = largestTextWidth;
 
 					// TODO - improve this calculation
-					var labelHeight = (Math.sin(helpers.toRadians(me.labelRotation)) * me.longestLabelWidth) + 1.5 * tickFontSize;
+					var labelHeight = (Math.sin(helpers.toRadians(me.labelRotation)) * me.longestLabelWidth) + (tickFontSize * tallestLabelHeightInLines) + (lineSpace * tallestLabelHeightInLines);
 
 					minSize.height = Math.min(me.maxHeight, minSize.height + labelHeight);
 					me.ctx.font = tickLabelFont;
@@ -602,7 +605,18 @@ module.exports = function(Chart) {
 						context.font = tickLabelFont;
 						context.textAlign = (isRotated) ? "right" : "center";
 						context.textBaseline = (isRotated) ? "middle" : options.position === "top" ? "bottom" : "top";
-						context.fillText(label, 0, 0);
+					
+						if (helpers.isArray(label)) {
+							for (var i = 0, y = 0; i < label.length; ++i) {
+								// We just make sure the multiline element is a string here..
+								context.fillText('' + label[i], 0, y);
+								// apply same lineSpacing as calculated @ L#320
+								y += (tickFontSize * 1.5);
+							}
+						} else {
+							context.fillText(label, 0, 0);
+						}
+						
 						context.restore();
 					}
 				}, me);
