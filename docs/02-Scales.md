@@ -74,7 +74,7 @@ The grid line configuration is nested under the scale configuration in the `tick
 Name | Type | Default | Description
 --- | --- | --- | ---
 autoSkip | Boolean | true | If true, automatically calculates how many labels that can be shown and hides labels accordingly. Turn it off to show all labels no matter what
-callback | Function | `function(value) { return '' + value; } ` | Returns the string representation of the tick value as it should be displayed on the chart. See [callback](#scales-creating-custom-tick-formats) section below.
+callback | Function | `function(value) { return helpers.isArray(value) ? value : '' + value; }` | Returns the string representation of the tick value as it should be displayed on the chart. See [callback](#scales-creating-custom-tick-formats) section below.
 display | Boolean | true | If true, show the ticks.
 fontColor | Color | "#666" | Font color for the tick labels.
 fontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Font family for the tick labels, follows CSS font-family options.
@@ -359,8 +359,8 @@ The default configuration for a scale can be easily changed using the scale serv
 For example, to set the minimum value of 0 for all linear scales, you would do the following. Any linear scales created after this time would now have a minimum of 0.
 ```
 Chart.scaleService.updateScaleDefaults('linear', {
-	ticks: {
-		min: 0
-	}
+    ticks: {
+        min: 0
+    }
 })
 ```
