@@ -23,10 +23,6 @@ module.exports = function(Chart) {
 		}
 	};
 
-	function lineEnabled(dataset, options) {
-		return helpers.getValueOrDefault(dataset.showLine, options.showLines);
-	}
-
 	Chart.controllers.line = Chart.DatasetController.extend({
 
 		datasetElementType: Chart.elements.Line,
@@ -36,12 +32,11 @@ module.exports = function(Chart) {
 		addElementAndReset: function(index) {
 			var me = this;
 			var options = me.chart.options;
-			var meta = me.getMeta();
 
 			Chart.DatasetController.prototype.addElementAndReset.call(me, index);
 
 			// Make sure bezier control points are updated
-			if (lineEnabled(me.getDataset(), options) && meta.dataset._model.tension !== 0) {
+			if (options.showLines && options.elements.line.tension !== 0) {
 				me.updateBezierControlPoints();
 			}
 		},
@@ -54,12 +49,11 @@ module.exports = function(Chart) {
 			var options = me.chart.options;
 			var lineElementOptions = options.elements.line;
 			var scale = me.getScaleForId(meta.yAxisID);
-			var i, ilen, custom;
-			var dataset = me.getDataset();
-			var showLine = lineEnabled(dataset, options);
+			var i, ilen, dataset, custom;
 
 			// Update Line
-			if (showLine) {
+			if (options.showLines) {
+				dataset = me.getDataset();
 				custom = line.custom || {};
 
 				// Compatibility: If the properties are defined with only the old name, use those values
@@ -75,6 +69,10 @@ module.exports = function(Chart) {
 				// Model
 				line._model = {
 					// Appearance
+					// The default behavior of lines is to break at null values, according
+					// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158
+					// This option gives linse the ability to span gaps
+					spanGaps: dataset.spanGaps ? dataset.spanGaps : false,
 					tension: custom.tension ? custom.tension : helpers.getValueOrDefault(dataset.lineTension, lineElementOptions.tension),
 					backgroundColor: custom.backgroundColor ? custom.backgroundColor : (dataset.backgroundColor || lineElementOptions.backgroundColor),
 					borderWidth: custom.borderWidth ? custom.borderWidth : (dataset.borderWidth || lineElementOptions.borderWidth),
@@ -98,13 +96,8 @@ module.exports = function(Chart) {
 				me.updateElement(points[i], i, reset);
 			}
 
-			if (showLine && line._model.tension !== 0) {
+			if (options.showLines && lineElementOptions.tension !== 0) {
 				me.updateBezierControlPoints();
-			}
-
-			// Now pivot the point for animation
-			for (i=0, ilen=points.length; i<ilen; ++i) {
-				points[i].pivot();
 			}
 		},
 
@@ -255,12 +248,14 @@ module.exports = function(Chart) {
 				model.controlPointPreviousY = Math.max(Math.min(controlPoints.previous.y, area.bottom), area.top);
 				model.controlPointNextX = Math.max(Math.min(controlPoints.next.x, area.right), area.left);
 				model.controlPointNextY = Math.max(Math.min(controlPoints.next.y, area.bottom), area.top);
+
+				// Now pivot the point for animation
+				point.pivot();
 			}
 		},
 
 		draw: function(ease) {
-			var me = this;
-			var meta = me.getMeta();
+			var meta = this.getMeta();
 			var points = meta.data || [];
 			var easingDecimal = ease || 1;
 			var i, ilen;
@@ -271,7 +266,7 @@ module.exports = function(Chart) {
 			}
 
 			// Transition and Draw the line
-			if (lineEnabled(me.getDataset(), me.chart.options)) {
+			if (this.chart.options.showLines) {
 				meta.dataset.transition(easingDecimal).draw();
 			}
 
