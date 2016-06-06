@@ -21,6 +21,8 @@ module.exports = function() {
 		me.ctx = context;
 		me.canvas = context.canvas;
 
+		context.canvas.style.display = context.canvas.style.display || 'block';
+
 		// Figure out what the size of the chart will be.
 		// If the canvas has a specified width and height, we use those else
 		// we look to see if the canvas node has a CSS width and height.
