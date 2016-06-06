@@ -21,10 +21,14 @@ module.exports = function(Chart) {
 		lineToNextPoint: function(previousPoint, point, nextPoint, skipHandler, previousSkipHandler) {
 			var me = this;
 			var ctx = me._chart.ctx;
+			
+			// This adds an option to all data arrays in the dataset options to let
+			// line bars span gaps. This is useful with sparse data.
+			var spanGaps = this._chart.config.data.datasets[point._datasetIndex].spanGaps
 
-			if (point._view.skip) {
+			if (point._view.skip && !spanGaps) {
 				skipHandler.call(me, previousPoint, point, nextPoint);
-			} else if (previousPoint._view.skip) {
+			} else if (previousPoint._view.skip && !spanGaps) {
 				previousSkipHandler.call(me, previousPoint, point, nextPoint);
 			} else if (point._view.tension === 0) {
 				ctx.lineTo(point._view.x, point._view.y);
