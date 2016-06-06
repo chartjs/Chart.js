@@ -21,10 +21,11 @@ module.exports = function(Chart) {
 		lineToNextPoint: function(previousPoint, point, nextPoint, skipHandler, previousSkipHandler) {
 			var me = this;
 			var ctx = me._chart.ctx;
+			var spanGaps = me._model ? me._model.spanGaps : false;
 
-			if (point._view.skip && !me._model.spanGaps) {
+			if (point._view.skip && !spanGaps) {
 				skipHandler.call(me, previousPoint, point, nextPoint);
-			} else if (previousPoint._view.skip && !me._model.spanGaps) {
+			} else if (previousPoint._view.skip && !spanGaps) {
 				previousSkipHandler.call(me, previousPoint, point, nextPoint);
 			} else if (point._view.tension === 0) {
 				ctx.lineTo(point._view.x, point._view.y);
