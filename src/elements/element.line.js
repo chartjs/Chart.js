@@ -22,9 +22,9 @@ module.exports = function(Chart) {
 			var me = this;
 			var ctx = me._chart.ctx;
 
-			if (point._view.skip) {
+			if (point._view.skip && !me._model.spanGaps) {
 				skipHandler.call(me, previousPoint, point, nextPoint);
-			} else if (previousPoint._view.skip) {
+			} else if (previousPoint._view.skip && !me._model.spanGaps) {
 				previousSkipHandler.call(me, previousPoint, point, nextPoint);
 			} else if (point._view.tension === 0) {
 				ctx.lineTo(point._view.x, point._view.y);
