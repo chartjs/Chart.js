@@ -58,6 +58,7 @@ pointHoverBorderColor | `Color or Array<Color>` | Point border color when hovere
 pointHoverBorderWidth | `Number or Array<Number>` | Border width of point when hovered
 pointStyle | `String, Array<String>, Image, Array<Image>` | The style of point. Options are 'circle', 'triangle', 'rect', 'rectRot', 'cross', 'crossRot', 'star', 'line', and 'dash'. If the option is an image, that image is drawn on the canvas using `drawImage`. 
 showLine | `Boolean` | If false, the line is not drawn for this dataset
+spanGaps | `Boolean` | If true, lines will be drawn between points with no or null data
 
 An example data object using these attributes is shown below.
 ```javascript
@@ -84,6 +85,7 @@ var data = {
 			pointRadius: 1,
 			pointHitRadius: 10,
 			data: [65, 59, 80, 81, 56, 55, 40],
+			spanGaps: false,
 		}
 	]
 };
@@ -93,6 +95,8 @@ The line chart usually requires an array of labels. This labels are shown on the
 The data for line charts is broken up into an array of datasets. Each dataset has a colour for the fill, a colour for the line and colours for the points and strokes of the points. These colours are strings just like CSS. You can use RGBA, RGB, HEX or HSL notation.
 
 The label key on each dataset is optional, and can be used when generating a scale for the chart.
+
+When `spanGaps` is set to true, the gaps between points in sparse datasets are filled in. By default, it is off.
 
 ### Data Points
 
