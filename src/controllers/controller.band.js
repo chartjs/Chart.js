@@ -5,9 +5,8 @@ module.exports = function(Chart) {
     var helpers = Chart.helpers;
 
     Chart.defaults.band = {
-
         hover: {
-            mode: "single"
+            mode: "label"
         },
 
         scales: {
@@ -102,7 +101,6 @@ module.exports = function(Chart) {
 
         updateElement: function updateElement(rectangle, index, reset)
         {
-            // console.log("update element " + index);
 
             var meta   = this.getMeta();
             var xScale = this.getScaleForId(meta.xAxisID);
@@ -151,7 +149,6 @@ module.exports = function(Chart) {
                 : helpers.getValueAtIndexOrDefault(this.getDataset().backgroundColor, index, this.chart.options.elements.rectangle.backgroundColor);
 
 
-
             helpers.extend(rectangle, {
                 // Utility
                 _chart: this.chart.chart,
@@ -169,7 +166,7 @@ module.exports = function(Chart) {
                     isLine : isLine,
 
                     // Tooltip
-                    label: '',
+                    label: rdata.label ? rdata.label : '',
                     datasetLabel: this.getDataset().label,
 
                     // Appearance
@@ -190,6 +187,7 @@ module.exports = function(Chart) {
                         ? Chart.defaults.band.options.defaultLineBorderWidth 
                         : helpers.getValueAtIndexOrDefault(this.getDataset().borderWidth, index, this.chart.options.elements.rectangle.borderWidth)
                 },
+
 
 
 
@@ -222,7 +220,8 @@ module.exports = function(Chart) {
 
         // Remove hover styling from the given element
         setHoverStyle: function(rectangle) {
-            console.log('remove hover style');
+
+            return;
             var dataset = this.chart.data.datasets[rectangle._datasetIndex];
             var index = rectangle._index;
 
@@ -232,8 +231,8 @@ module.exports = function(Chart) {
             
             rectangle._model.borderColor = rectangle._model.isLine 
                         ? rectangle._model.hoverBackgroundColor
-                        : ( rectangle.custom && rectangle.custom.HoverBorderColor 
-                                ? rectangle.custom.HoverBorderColor 
+                        : ( rectangle.custom && rectangle.custom.hoverBorderColor 
+                                ? rectangle.custom.hoverBorderColor 
                                 : helpers.getValueAtIndexOrDefault(this.getDataset().HoverBorderColor, index, this.chart.options.elements.rectangle.HoverBorderColor));
             
             rectangle._model.borderWidth = rectangle.custom && rectangle.custom.hoverBorderWidth ? rectangle.custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.hoverBorderWidth, index, rectangle._model.borderWidth);
@@ -242,7 +241,7 @@ module.exports = function(Chart) {
 
         // Add hover styling to the given element
         removeHoverStyle: function(rectangle) {
-            console.log('set hover style');
+            return;
             var dataset = this.chart.data.datasets[rectangle._datasetIndex];
             var index = rectangle._index;
 
