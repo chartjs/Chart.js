@@ -42,7 +42,7 @@ module.exports = function(Chart) {
 			generateLabels: function(chart) {
 				var data = chart.data;
 				return helpers.isArray(data.datasets) ? data.datasets.map(function(dataset, i) {
-					return {
+					return (dataset.label === false) ? false : {
 						text: dataset.label,
 						fillStyle: dataset.backgroundColor,
 						hidden: !chart.isDatasetVisible(i),
@@ -144,9 +144,16 @@ module.exports = function(Chart) {
 
 		beforeBuildLabels: noop,
 		buildLabels: function() {
-			this.legendItems = this.options.labels.generateLabels.call(this, this.chart);
-			if(this.options.reverse){
-				this.legendItems.reverse();
+			var me = this;
+			var items = me.options.labels.generateLabels.call(me, me.chart), legendItems = [];
+			
+			helpers.each(items, function(item, i){
+				if(item) legendItems.push(item);
+			});
+
+			me.legendItems = legendItems;
+			if(me.options.reverse){
+				me.legendItems.reverse();
 			}
 		},
 		afterBuildLabels: noop,
