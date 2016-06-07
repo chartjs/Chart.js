@@ -290,145 +290,106 @@ module.exports = function(Chart) {
 					fontFamily = itemOrDefault(labelOpts.fontFamily, globalDefault.defaultFontFamily),
 					labelFont = helpers.fontString(fontSize, fontStyle, fontFamily);
 
+				// Canvas setup
+				ctx.textAlign = "left";
+				ctx.textBaseline = 'top';
+				ctx.lineWidth = 0.5;
+				ctx.strokeStyle = fontColor; // for strikethrough effect
+				ctx.fillStyle = fontColor; // render in correct colour
+				ctx.font = labelFont;
+
+				var boxWidth = labelOpts.boxWidth,
+					hitboxes = me.legendHitBoxes;
+
+				// current position
+				var drawLegendBox = function(x, y, legendItem) {
+					// Set the ctx for the box
+					ctx.save();
+
+					ctx.fillStyle = itemOrDefault(legendItem.fillStyle, globalDefault.defaultColor);
+					ctx.lineCap = itemOrDefault(legendItem.lineCap, lineDefault.borderCapStyle);
+					ctx.lineDashOffset = itemOrDefault(legendItem.lineDashOffset, lineDefault.borderDashOffset);
+					ctx.lineJoin = itemOrDefault(legendItem.lineJoin, lineDefault.borderJoinStyle);
+					ctx.lineWidth = itemOrDefault(legendItem.lineWidth, lineDefault.borderWidth);
+					ctx.strokeStyle = itemOrDefault(legendItem.strokeStyle, globalDefault.defaultColor);
+
+					if (ctx.setLineDash) {
+						// IE 9 and 10 do not support line dash
+						ctx.setLineDash(itemOrDefault(legendItem.lineDash, lineDefault.borderDash));
+					}
+
+					// Draw the box
+					ctx.strokeRect(x, y, boxWidth, fontSize);
+					ctx.fillRect(x, y, boxWidth, fontSize);
+
+					ctx.restore();
+				};
+				var fillText = function(x, y, legendItem, textWidth) {
+					ctx.fillText(legendItem.text, boxWidth + (fontSize / 2) + x, y);
+
+					if (legendItem.hidden) {
+						// Strikethrough the text if hidden
+						ctx.beginPath();
+						ctx.lineWidth = 2;
+						ctx.moveTo(boxWidth + (fontSize / 2) + x, y + (fontSize / 2));
+						ctx.lineTo(boxWidth + (fontSize / 2) + x + textWidth, y + (fontSize / 2));
+						ctx.stroke();
+					}
+				};
+
 				// Horizontal
-				if (me.isHorizontal()) {
+				var isHorizontal = me.isHorizontal();
+				if (isHorizontal) {
 					cursor = {
 						x: me.left + ((legendWidth - lineWidths[0]) / 2),
 						y: me.top + labelOpts.padding,
 						line: 0
 					};
-
-					// Labels
-					ctx.textAlign = "left";
-					ctx.textBaseline = 'top';
-					ctx.lineWidth = 0.5;
-					ctx.strokeStyle = fontColor; // for strikethrough effect
-					ctx.fillStyle = fontColor; // render in correct colour
-					ctx.font = labelFont;
-
-					var boxWidth = labelOpts.boxWidth,
-						hitboxes = me.legendHitBoxes;
-
-					helpers.each(me.legendItems, function(legendItem, i) {
-						var textWidth = ctx.measureText(legendItem.text).width,
-							width = boxWidth + (fontSize / 2) + textWidth,
-							x = cursor.x,
-							y = cursor.y;
-
-						if (x + width >= legendWidth) {
-							y = cursor.y += fontSize + (labelOpts.padding);
-							cursor.line++;
-							x = cursor.x = me.left + ((legendWidth - lineWidths[cursor.line]) / 2);
-						}
-
-						// Set the ctx for the box
-						ctx.save();
-
-						ctx.fillStyle = itemOrDefault(legendItem.fillStyle, globalDefault.defaultColor);
-						ctx.lineCap = itemOrDefault(legendItem.lineCap, lineDefault.borderCapStyle);
-						ctx.lineDashOffset = itemOrDefault(legendItem.lineDashOffset, lineDefault.borderDashOffset);
-						ctx.lineJoin = itemOrDefault(legendItem.lineJoin, lineDefault.borderJoinStyle);
-						ctx.lineWidth = itemOrDefault(legendItem.lineWidth, lineDefault.borderWidth);
-						ctx.strokeStyle = itemOrDefault(legendItem.strokeStyle, globalDefault.defaultColor);
-
-						if (ctx.setLineDash) {
-							// IE 9 and 10 do not support line dash
-							ctx.setLineDash(itemOrDefault(legendItem.lineDash, lineDefault.borderDash));
-						}
-
-						// Draw the box
-						ctx.strokeRect(x, y, boxWidth, fontSize);
-						ctx.fillRect(x, y, boxWidth, fontSize);
-
-						ctx.restore();
-
-						hitboxes[i].left = x;
-						hitboxes[i].top = y;
-
-						// Fill the actual label
-						ctx.fillText(legendItem.text, boxWidth + (fontSize / 2) + x, y);
-
-						if (legendItem.hidden) {
-							// Strikethrough the text if hidden
-							ctx.beginPath();
-							ctx.lineWidth = 2;
-							ctx.moveTo(boxWidth + (fontSize / 2) + x, y + (fontSize / 2));
-							ctx.lineTo(boxWidth + (fontSize / 2) + x + textWidth, y + (fontSize / 2));
-							ctx.stroke();
-						}
-
-						cursor.x += width + (labelOpts.padding);
-					}, me);
 				} else {
 					cursor = {
 						x: me.left + labelOpts.padding,
 						y: me.top,
 						line: 0
 					};
+				}
 
-					// Labels
-					ctx.textAlign = "left";
-					ctx.textBaseline = 'top';
-					ctx.lineWidth = 0.5;
-					ctx.strokeStyle = fontColor; // for strikethrough effect
-					ctx.fillStyle = fontColor; // render in correct colour
-					ctx.font = labelFont;
+				var itemHeight = fontSize + labelOpts.padding;
+				helpers.each(me.legendItems, function(legendItem, i) {
+					var textWidth = ctx.measureText(legendItem.text).width,
+						width = boxWidth + (fontSize / 2) + textWidth,
+						x = cursor.x,
+						y = cursor.y;
 
-					var boxWidth = labelOpts.boxWidth,
-						hitboxes = me.legendHitBoxes;
-
-					helpers.each(me.legendItems, function(legendItem, i) {
-						var textWidth = ctx.measureText(legendItem.text).width,
-							width = boxWidth + (fontSize / 2) + textWidth,
-							height = fontSize + labelOpts.padding,
-							x = cursor.x,
-							y = cursor.y;
-
-						if (y + height > me.bottom) {
+					if (isHorizontal) {
+						if (x + width >= legendWidth) {
+							y = cursor.y += fontSize + (labelOpts.padding);
+							cursor.line++;
+							x = cursor.x = me.left + ((legendWidth - lineWidths[cursor.line]) / 2);
+						}
+					} else {
+						if (y + itemHeight > me.bottom) {
 							x = cursor.x = x + me.columnWidths[cursor.line] + labelOpts.padding;
 							y = cursor.y = me.top;
 							cursor.line++;
 						}
+					}
+					
 
-						// Set the ctx for the box
-						ctx.save();
+					drawLegendBox(x, y, legendItem);
 
-						ctx.fillStyle = itemOrDefault(legendItem.fillStyle, globalDefault.defaultColor);
-						ctx.lineCap = itemOrDefault(legendItem.lineCap, lineDefault.borderCapStyle);
-						ctx.lineDashOffset = itemOrDefault(legendItem.lineDashOffset, lineDefault.borderDashOffset);
-						ctx.lineJoin = itemOrDefault(legendItem.lineJoin, lineDefault.borderJoinStyle);
-						ctx.lineWidth = itemOrDefault(legendItem.lineWidth, lineDefault.borderWidth);
-						ctx.strokeStyle = itemOrDefault(legendItem.strokeStyle, globalDefault.defaultColor);
+					hitboxes[i].left = x;
+					hitboxes[i].top = y;
 
-						if (ctx.setLineDash) {
-							// IE 9 and 10 do not support line dash
-							ctx.setLineDash(itemOrDefault(legendItem.lineDash, lineDefault.borderDash));
-						}
+					// Fill the actual label
+					fillText(x, y, legendItem, textWidth);
 
-						// Draw the box
-						ctx.strokeRect(x, y, boxWidth, fontSize);
-						ctx.fillRect(x, y, boxWidth, fontSize);
-
-						ctx.restore();
-
-						hitboxes[i].left = x;
-						hitboxes[i].top = y;
-
-						// Fill the actual label
-						ctx.fillText(legendItem.text, boxWidth + (fontSize / 2) + x, y);
-
-						if (legendItem.hidden) {
-							// Strikethrough the text if hidden
-							ctx.beginPath();
-							ctx.lineWidth = 2;
-							ctx.moveTo(boxWidth + (fontSize / 2) + x, y + (fontSize / 2));
-							ctx.lineTo(boxWidth + (fontSize / 2) + x + textWidth, y + (fontSize / 2));
-							ctx.stroke();
-						}
-
-						cursor.y += height;
-					});
-				}
+					if (isHorizontal) {
+						cursor.x += width + (labelOpts.padding);
+					} else {
+						cursor.y += itemHeight;
+					}
+					
+				});
 			}
 		},
 
