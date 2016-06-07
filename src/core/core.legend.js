@@ -188,6 +188,8 @@ module.exports = function(Chart) {
 
 			// Increase sizes here
 			if (display) {
+				ctx.font = labelFont;
+
 				if (isHorizontal) {
 					// Labels
 
@@ -197,7 +199,6 @@ module.exports = function(Chart) {
 
 					ctx.textAlign = "left";
 					ctx.textBaseline = 'top';
-					ctx.font = labelFont;
 
 					helpers.each(me.legendItems, function(legendItem, i) {
 						var width = labelOpts.boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
@@ -215,12 +216,46 @@ module.exports = function(Chart) {
 						};
 
 						lineWidths[lineWidths.length - 1] += width + labelOpts.padding;
-					}, me);
+					});
 
 					minSize.height += totalHeight;
 
 				} else {
-					// TODO vertical
+					var vPadding = labelOpts.padding;
+					var columnWidths = me.columnWidths = [];
+					var totalWidth = labelOpts.padding;
+					var currentColWidth = 0;
+					var currentColHeight = 0;
+					var itemHeight = fontSize + vPadding;
+
+					helpers.each(me.legendItems, function(legendItem, i) {
+						var itemWidth = labelOpts.boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
+
+						// If too tall, go to new column
+						if (currentColHeight + itemHeight > minSize.height) {
+							totalWidth += currentColWidth + labelOpts.padding;
+							columnWidths.push(currentColWidth); // previous column width
+
+							currentColWidth = 0;
+							currentColHeight = 0;
+						}
+
+						// Get max width
+						currentColWidth = Math.max(currentColWidth, itemWidth);
+						currentColHeight += itemHeight;
+
+						// Store the hitbox width and height here. Final position will be updated in `draw`
+						hitboxes[i] = {
+							left: 0,
+							top: 0,
+							width: itemWidth,
+							height: fontSize
+						};
+					});
+
+					totalWidth += currentColWidth;
+					columnWidths.push(currentColWidth);
+					minSize.width += totalWidth;
 				}
 			}
 
@@ -242,15 +277,12 @@ module.exports = function(Chart) {
 			var globalDefault = Chart.defaults.global,
 				lineDefault = globalDefault.elements.line,
 				legendWidth = me.width,
+				legendHeight = me.height,
 				lineWidths = me.lineWidths;
 
 			if (opts.display) {
 				var ctx = me.ctx,
-					cursor = {
-						x: me.left + ((legendWidth - lineWidths[0]) / 2),
-						y: me.top + labelOpts.padding,
-						line: 0
-					},
+					cursor,
 					itemOrDefault = helpers.getValueOrDefault,
 					fontColor = itemOrDefault(labelOpts.fontColor, globalDefault.defaultFontColor),
 					fontSize = itemOrDefault(labelOpts.fontSize, globalDefault.defaultFontSize),
@@ -260,6 +292,12 @@ module.exports = function(Chart) {
 
 				// Horizontal
 				if (me.isHorizontal()) {
+					cursor = {
+						x: me.left + ((legendWidth - lineWidths[0]) / 2),
+						y: me.top + labelOpts.padding,
+						line: 0
+					};
+
 					// Labels
 					ctx.textAlign = "left";
 					ctx.textBaseline = 'top';
@@ -322,7 +360,74 @@ module.exports = function(Chart) {
 						cursor.x += width + (labelOpts.padding);
 					}, me);
 				} else {
+					cursor = {
+						x: me.left + labelOpts.padding,
+						y: me.top,
+						line: 0
+					};
 
+					// Labels
+					ctx.textAlign = "left";
+					ctx.textBaseline = 'top';
+					ctx.lineWidth = 0.5;
+					ctx.strokeStyle = fontColor; // for strikethrough effect
+					ctx.fillStyle = fontColor; // render in correct colour
+					ctx.font = labelFont;
+
+					var boxWidth = labelOpts.boxWidth,
+						hitboxes = me.legendHitBoxes;
+
+					helpers.each(me.legendItems, function(legendItem, i) {
+						var textWidth = ctx.measureText(legendItem.text).width,
+							width = boxWidth + (fontSize / 2) + textWidth,
+							height = fontSize + labelOpts.padding,
+							x = cursor.x,
+							y = cursor.y;
+
+						if (y + height > me.bottom) {
+							x = cursor.x = x + me.columnWidths[cursor.line] + labelOpts.padding;
+							y = cursor.y = me.top;
+							cursor.line++;
+						}
+
+						// Set the ctx for the box
+						ctx.save();
+
+						ctx.fillStyle = itemOrDefault(legendItem.fillStyle, globalDefault.defaultColor);
+						ctx.lineCap = itemOrDefault(legendItem.lineCap, lineDefault.borderCapStyle);
+						ctx.lineDashOffset = itemOrDefault(legendItem.lineDashOffset, lineDefault.borderDashOffset);
+						ctx.lineJoin = itemOrDefault(legendItem.lineJoin, lineDefault.borderJoinStyle);
+						ctx.lineWidth = itemOrDefault(legendItem.lineWidth, lineDefault.borderWidth);
+						ctx.strokeStyle = itemOrDefault(legendItem.strokeStyle, globalDefault.defaultColor);
+
+						if (ctx.setLineDash) {
+							// IE 9 and 10 do not support line dash
+							ctx.setLineDash(itemOrDefault(legendItem.lineDash, lineDefault.borderDash));
+						}
+
+						// Draw the box
+						ctx.strokeRect(x, y, boxWidth, fontSize);
+						ctx.fillRect(x, y, boxWidth, fontSize);
+
+						ctx.restore();
+
+						hitboxes[i].left = x;
+						hitboxes[i].top = y;
+
+						// Fill the actual label
+						ctx.fillText(legendItem.text, boxWidth + (fontSize / 2) + x, y);
+
+						if (legendItem.hidden) {
+							// Strikethrough the text if hidden
+							ctx.beginPath();
+							ctx.lineWidth = 2;
+							ctx.moveTo(boxWidth + (fontSize / 2) + x, y + (fontSize / 2));
+							ctx.lineTo(boxWidth + (fontSize / 2) + x + textWidth, y + (fontSize / 2));
+							ctx.stroke();
+						}
+
+						cursor.y += height;
+					});
 				}
 			}
 		},
