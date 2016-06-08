@@ -12,15 +12,15 @@ module.exports = function(Chart) {
 		titleFontStyle: "bold",
 		titleSpacing: 2,
 		titleMarginBottom: 6,
-		titleColor: "#fff",
+		titleFontColor: "#fff",
 		titleAlign: "left",
 		bodySpacing: 2,
-		bodyColor: "#fff",
+		bodyFontColor: "#fff",
 		bodyAlign: "left",
 		footerFontStyle: "bold",
 		footerSpacing: 2,
 		footerMarginTop: 6,
-		footerColor: "#fff",
+		footerFontColor: "#fff",
 		footerAlign: "left",
 		yPadding: 6,
 		xPadding: 6,
@@ -571,8 +571,8 @@ module.exports = function(Chart) {
 				var titleFontSize = vm.titleFontSize,
 					titleSpacing = vm.titleSpacing;
 
-				var titleColor = helpers.color(vm.titleColor);
-				ctx.fillStyle = titleColor.alpha(opacity * titleColor.alpha()).rgbString();
+				var titleFontColor = helpers.color(vm.titleFontColor);
+				ctx.fillStyle = titleFontColor.alpha(opacity * titleFontColor.alpha()).rgbString();
 				ctx.font = helpers.fontString(titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
 
 				var i, len;
@@ -594,8 +594,8 @@ module.exports = function(Chart) {
 			ctx.textAlign = vm._bodyAlign;
 			ctx.textBaseline = "top";
 
-			var bodyColor = helpers.color(vm.bodyColor);
-			var textColor = bodyColor.alpha(opacity * bodyColor.alpha()).rgbString();
+			var bodyFontColor = helpers.color(vm.bodyFontColor);
+			var textColor = bodyFontColor.alpha(opacity * bodyFontColor.alpha()).rgbString();
 			ctx.fillStyle = textColor;
 			ctx.font = helpers.fontString(bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
 
@@ -656,8 +656,8 @@ module.exports = function(Chart) {
 				ctx.textAlign = vm._footerAlign;
 				ctx.textBaseline = "top";
 
-				var footerColor = helpers.color(vm.footerColor);
-				ctx.fillStyle = footerColor.alpha(opacity * footerColor.alpha()).rgbString();
+				var footerFontColor = helpers.color(vm.footerFontColor);
+				ctx.fillStyle = footerFontColor.alpha(opacity * footerFontColor.alpha()).rgbString();
 				ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
 
 				helpers.each(footer, function(line) {
