@@ -33,7 +33,7 @@ describe('tooltip tests', function() {
 			}
 		});
 
-		// Trigger an event over top of the 
+		// Trigger an event over top of the
 		var meta = chartInstance.getDatasetMeta(0);
 		var point = meta.data[1];
 
@@ -63,7 +63,7 @@ describe('tooltip tests', function() {
 			yAlign: 'center',
 
 			// Body
-			bodyColor: '#fff',
+			bodyFontColor: '#fff',
 			_bodyFontFamily: globalDefaults.defaultFontFamily,
 			_bodyFontStyle: globalDefaults.defaultFontStyle,
 			_bodyAlign: 'left',
@@ -80,7 +80,7 @@ describe('tooltip tests', function() {
 			titleMarginBottom: 6,
 
 			// Footer
-			footerColor: '#fff',
+			footerFontColor: '#fff',
 			_footerFontFamily: globalDefaults.defaultFontFamily,
 			_footerFontStyle: 'bold',
 			footerFontSize: globalDefaults.defaultFontSize,
@@ -147,7 +147,7 @@ describe('tooltip tests', function() {
 			}
 		});
 
-		// Trigger an event over top of the 
+		// Trigger an event over top of the
 		var meta = chartInstance.getDatasetMeta(0);
 		var point = meta.data[1];
 
@@ -177,7 +177,7 @@ describe('tooltip tests', function() {
 			yAlign: 'center',
 
 			// Body
-			bodyColor: '#fff',
+			bodyFontColor: '#fff',
 			_bodyFontFamily: globalDefaults.defaultFontFamily,
 			_bodyFontStyle: globalDefaults.defaultFontStyle,
 			_bodyAlign: 'left',
@@ -194,7 +194,7 @@ describe('tooltip tests', function() {
 			titleMarginBottom: 6,
 
 			// Footer
-			footerColor: '#fff',
+			footerFontColor: '#fff',
 			_footerFontFamily: globalDefaults.defaultFontFamily,
 			_footerFontStyle: 'bold',
 			footerFontSize: globalDefaults.defaultFontSize,
@@ -286,7 +286,7 @@ describe('tooltip tests', function() {
 			}
 		});
 
-		// Trigger an event over top of the 
+		// Trigger an event over top of the
 		var meta = chartInstance.getDatasetMeta(0);
 		var point = meta.data[1];
 
@@ -316,7 +316,7 @@ describe('tooltip tests', function() {
 			yAlign: 'top',
 
 			// Body
-			bodyColor: '#fff',
+			bodyFontColor: '#fff',
 			_bodyFontFamily: globalDefaults.defaultFontFamily,
 			_bodyFontStyle: globalDefaults.defaultFontStyle,
 			_bodyAlign: 'left',
@@ -324,7 +324,7 @@ describe('tooltip tests', function() {
 			bodySpacing: 2,
 
 			// Title
-			titleColor: '#fff',
+			titleFontColor: '#fff',
 			_titleFontFamily: globalDefaults.defaultFontFamily,
 			_titleFontStyle: 'bold',
 			titleFontSize: globalDefaults.defaultFontSize,
@@ -333,7 +333,7 @@ describe('tooltip tests', function() {
 			titleMarginBottom: 6,
 
 			// Footer
-			footerColor: '#fff',
+			footerFontColor: '#fff',
 			_footerFontFamily: globalDefaults.defaultFontFamily,
 			_footerFontStyle: 'bold',
 			footerFontSize: globalDefaults.defaultFontSize,
@@ -403,7 +403,7 @@ describe('tooltip tests', function() {
 			}
 		});
 
-		// Trigger an event over top of the 
+		// Trigger an event over top of the
 		var meta0 = chartInstance.getDatasetMeta(0);
 		var point0 = meta0.data[1];
 
@@ -426,7 +426,7 @@ describe('tooltip tests', function() {
 
 		// Check and see if tooltip was displayed
 		var tooltip = chartInstance.tooltip;
-		
+
 		expect(tooltip._view).toEqual(jasmine.objectContaining({
 			// Positioning
 			xAlign: 'left',
