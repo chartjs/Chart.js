@@ -488,7 +488,6 @@ module.exports = function(Chart) {
 			var gridLines = options.gridLines;
 			var scaleLabel = options.scaleLabel;
 
-			var setContextLineSettings;
 			var isRotated = me.labelRotation !== 0;
 			var skipRatio;
 			var scaleLabelX;
@@ -524,7 +523,6 @@ module.exports = function(Chart) {
 			context.fillStyle = tickFontColor;
 
 			if (me.isHorizontal()) {
-				setContextLineSettings = true;
 				var yTickStart = options.position === "bottom" ? me.top : me.bottom - tl;
 				var yTickEnd = options.position === "bottom" ? me.top + tl : me.bottom;
 				skipRatio = false;
@@ -571,11 +569,9 @@ module.exports = function(Chart) {
 							// Draw the first index specially
 							context.lineWidth = gridLines.zeroLineWidth;
 							context.strokeStyle = gridLines.zeroLineColor;
-							setContextLineSettings = true; // reset next time
-						} else if (setContextLineSettings) {
-							context.lineWidth = gridLines.lineWidth;
-							context.strokeStyle = gridLines.color;
-							setContextLineSettings = false;
+						} else  {
+							context.lineWidth = helpers.getValueAtIndexOrDefault(gridLines.lineWidth, index);
+							context.strokeStyle = helpers.getValueAtIndexOrDefault(gridLines.color, index);
 						}
 
 						xLineValue += helpers.aliasPixel(context.lineWidth);
@@ -635,7 +631,6 @@ module.exports = function(Chart) {
 				}
 
 			} else {
-				setContextLineSettings = true;
 				var xTickStart = options.position === "right" ? me.left : me.right - 5;
 				var xTickEnd = options.position === "right" ? me.left + 5 : me.right;
 
@@ -652,11 +647,9 @@ module.exports = function(Chart) {
 							// Draw the first index specially
 							context.lineWidth = gridLines.zeroLineWidth;
 							context.strokeStyle = gridLines.zeroLineColor;
-							setContextLineSettings = true; // reset next time
-						} else if (setContextLineSettings) {
-							context.lineWidth = gridLines.lineWidth;
-							context.strokeStyle = gridLines.color;
-							setContextLineSettings = false;
+						} else {
+							context.lineWidth = helpers.getValueAtIndexOrDefault(gridLines.lineWidth, index);
+							context.strokeStyle = helpers.getValueAtIndexOrDefault(gridLines.color, index);
 						}
 
 						yLineValue += helpers.aliasPixel(context.lineWidth);
@@ -733,8 +726,8 @@ module.exports = function(Chart) {
 
 			if (gridLines.drawBorder) {
 				// Draw the line at the edge of the axis
-				context.lineWidth = gridLines.lineWidth;
-				context.strokeStyle = gridLines.color;
+				context.lineWidth = helpers.getValueAtIndexOrDefault(gridLines.lineWidth, 0);
+				context.strokeStyle = helpers.getValueAtIndexOrDefault(gridLines.color, 0);
 				var x1 = me.left,
 					x2 = me.right,
 					y1 = me.top,
