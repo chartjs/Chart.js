@@ -12,15 +12,15 @@ module.exports = function(Chart) {
 		titleFontStyle: "bold",
 		titleSpacing: 2,
 		titleMarginBottom: 6,
-		titleColor: "#fff",
+		titleFontColor: "#fff",
 		titleAlign: "left",
 		bodySpacing: 2,
-		bodyColor: "#fff",
+		bodyFontColor: "#fff",
 		bodyAlign: "left",
 		footerFontStyle: "bold",
 		footerSpacing: 2,
 		footerMarginTop: 6,
-		footerColor: "#fff",
+		footerFontColor: "#fff",
 		footerAlign: "left",
 		yPadding: 6,
 		xPadding: 6,
@@ -159,7 +159,7 @@ module.exports = function(Chart) {
 					yAlign : tooltipOpts.xAlign,
 
 					// Body
-					bodyColor: tooltipOpts.bodyColor,
+					bodyFontColor: tooltipOpts.bodyFontColor,
 					_bodyFontFamily: getValueOrDefault(tooltipOpts.bodyFontFamily, globalDefaults.defaultFontFamily),
 					_bodyFontStyle: getValueOrDefault(tooltipOpts.bodyFontStyle, globalDefaults.defaultFontStyle),
 					_bodyAlign: tooltipOpts.bodyAlign,
@@ -167,7 +167,7 @@ module.exports = function(Chart) {
 					bodySpacing: tooltipOpts.bodySpacing,
 
 					// Title
-					titleColor: tooltipOpts.titleColor,
+					titleFontColor: tooltipOpts.titleFontColor,
 					_titleFontFamily: getValueOrDefault(tooltipOpts.titleFontFamily, globalDefaults.defaultFontFamily),
 					_titleFontStyle: getValueOrDefault(tooltipOpts.titleFontStyle, globalDefaults.defaultFontStyle),
 					titleFontSize: getValueOrDefault(tooltipOpts.titleFontSize, globalDefaults.defaultFontSize),
@@ -176,7 +176,7 @@ module.exports = function(Chart) {
 					titleMarginBottom: tooltipOpts.titleMarginBottom,
 
 					// Footer
-					footerColor: tooltipOpts.footerColor,
+					footerFontColor: tooltipOpts.footerFontColor,
 					_footerFontFamily: getValueOrDefault(tooltipOpts.footerFontFamily, globalDefaults.defaultFontFamily),
 					_footerFontStyle: getValueOrDefault(tooltipOpts.footerFontStyle, globalDefaults.defaultFontStyle),
 					footerFontSize: getValueOrDefault(tooltipOpts.footerFontSize, globalDefaults.defaultFontSize),
@@ -571,8 +571,8 @@ module.exports = function(Chart) {
 				var titleFontSize = vm.titleFontSize,
 					titleSpacing = vm.titleSpacing;
 
-				var titleColor = helpers.color(vm.titleColor);
-				ctx.fillStyle = titleColor.alpha(opacity * titleColor.alpha()).rgbString();
+				var titleFontColor = helpers.color(vm.titleFontColor);
+				ctx.fillStyle = titleFontColor.alpha(opacity * titleFontColor.alpha()).rgbString();
 				ctx.font = helpers.fontString(titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
 
 				var i, len;
@@ -594,8 +594,8 @@ module.exports = function(Chart) {
 			ctx.textAlign = vm._bodyAlign;
 			ctx.textBaseline = "top";
 
-			var bodyColor = helpers.color(vm.bodyColor);
-			var textColor = bodyColor.alpha(opacity * bodyColor.alpha()).rgbString();
+			var bodyFontColor = helpers.color(vm.bodyFontColor);
+			var textColor = bodyFontColor.alpha(opacity * bodyFontColor.alpha()).rgbString();
 			ctx.fillStyle = textColor;
 			ctx.font = helpers.fontString(bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
 
@@ -611,7 +611,7 @@ module.exports = function(Chart) {
 
 			var drawColorBoxes = body.length > 1;
 			xLinePadding = drawColorBoxes ? (bodyFontSize + 2) : 0;
-			
+
 			// Draw body lines now
 			helpers.each(body, function(bodyItem, i) {
 				helpers.each(bodyItem.before, fillLineOfText);
@@ -636,7 +636,7 @@ module.exports = function(Chart) {
 
 					fillLineOfText(line);
 				});
-				
+
 				helpers.each(bodyItem.after, fillLineOfText);
 			});
 
@@ -656,8 +656,8 @@ module.exports = function(Chart) {
 				ctx.textAlign = vm._footerAlign;
 				ctx.textBaseline = "top";
 
-				var footerColor = helpers.color(vm.footerColor);
-				ctx.fillStyle = footerColor.alpha(opacity * footerColor.alpha()).rgbString();
+				var footerFontColor = helpers.color(vm.footerFontColor);
+				ctx.fillStyle = footerFontColor.alpha(opacity * footerFontColor.alpha()).rgbString();
 				ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
 
 				helpers.each(footer, function(line) {
