@@ -71,7 +71,7 @@ describe('tooltip tests', function() {
 			bodySpacing: 2,
 
 			// Title
-			titleColor: '#fff',
+			titleFontColor: '#fff',
 			_titleFontFamily: globalDefaults.defaultFontFamily,
 			_titleFontStyle: 'bold',
 			titleFontSize: globalDefaults.defaultFontSize,
