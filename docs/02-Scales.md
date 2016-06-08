@@ -44,8 +44,8 @@ The grid line configuration is nested under the scale configuration in the `grid
 Name | Type | Default | Description
 --- | --- | --- | ---
 display | Boolean | true |
-color | Color | "rgba(0, 0, 0, 0.1)" | Color of the grid lines.
-lineWidth | Number | 1 | Stroke width of grid lines
+color | Color or Array[Color] | "rgba(0, 0, 0, 0.1)" | Color of the grid lines.
+lineWidth | Number or Array[Number] | 1 | Stroke width of grid lines
 drawBorder | Boolean | true | If true draw border on the edge of the chart
 drawOnChartArea | Boolean | true | If true, draw lines on the chart area inside the axis lines. This is useful when there are multiple axes and you need to control which grid lines are drawn
 drawTicks | Boolean | true |  If true, draw lines beside the ticks in the axis area beside the chart.
