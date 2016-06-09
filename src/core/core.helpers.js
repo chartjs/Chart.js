@@ -45,16 +45,10 @@ module.exports = function(Chart) {
 		return objClone;
 	};
 	helpers.extend = function(base) {
-		var len = arguments.length;
-		var additionalArgs = [];
-		for (var i = 1; i < len; i++) {
-			additionalArgs.push(arguments[i]);
+		var setFn = function(value, key) { base[key] = value; };
+		for (var i = 1, ilen = arguments.length; i < ilen; i++) {
+			helpers.each(arguments[i], setFn);
 		}
-		helpers.each(additionalArgs, function(extensionObject) {
-			helpers.each(extensionObject, function(value, key) {
-				base[key] = value;
-			});
-		});
 		return base;
 	};
 	// Need a special merge function to chart configs since they are now grouped
@@ -101,24 +95,6 @@ module.exports = function(Chart) {
 		});
 
 		return base;
-	};
-	helpers.extendDeep = function(_base) {
-		return _extendDeep.apply(this, arguments);
-
-		function _extendDeep(dst) {
-			helpers.each(arguments, function(obj) {
-				if (obj !== dst) {
-					helpers.each(obj, function(value, key) {
-						if (dst[key] && dst[key].constructor && dst[key].constructor === Object) {
-							_extendDeep(dst[key], value);
-						} else {
-							dst[key] = value;
-						}
-					});
-				}
-			});
-			return dst;
-		}
 	};
 	helpers.scaleMerge = function(_base, extension) {
 		var base = helpers.clone(_base);
@@ -173,17 +149,16 @@ module.exports = function(Chart) {
 	helpers.getValueOrDefault = function(value, defaultValue) {
 		return value === undefined ? defaultValue : value;
 	};
-	helpers.indexOf = function(arrayToSearch, item) {
-		if (Array.prototype.indexOf) {
-			return arrayToSearch.indexOf(item);
-		} else {
-			for (var i = 0; i < arrayToSearch.length; i++) {
-				if (arrayToSearch[i] === item)
+	helpers.indexOf = Array.prototype.indexOf?
+		function(array, item) { return array.indexOf(item); } :
+		function(array, item) {
+			for (var i = 0, ilen = array.length; i < ilen; ++i) {
+				if (array[i] === item) {
 					return i;
+				}
 			}
 			return -1;
-		}
-	};
+		};
 	helpers.where = function(collection, filterCallback) {
 		if (helpers.isArray(collection) && Array.prototype.filter) {
 			return collection.filter(filterCallback);
@@ -199,23 +174,17 @@ module.exports = function(Chart) {
 			return filtered;
 		}
 	};
-	helpers.findIndex = function(arrayToSearch, callback, thisArg) {
-		var index = -1;
-		if (Array.prototype.findIndex) {
-			index = arrayToSearch.findIndex(callback, thisArg);
-		} else {
-			for (var i = 0; i < arrayToSearch.length; ++i) {
-				thisArg = thisArg !== undefined ? thisArg : arrayToSearch;
-
-				if (callback.call(thisArg, arrayToSearch[i], i, arrayToSearch)) {
-					index = i;
-					break;
+	helpers.findIndex = Array.prototype.findIndex?
+		function(array, callback, scope) { return array.findIndex(callback, scope); } :
+		function(array, callback, scope) {
+			scope = scope === undefined? array : scope;
+			for (var i = 0, ilen = array.length; i < ilen; ++i) {
+				if (callback.call(scope, array[i], i, array)) {
+					return i;
 				}
 			}
-		}
-
-		return index;
-	};
+			return -1;
+		};
 	helpers.findNextWhere = function(arrayToSearch, filterCallback, startIndex) {
 		// Default to start of the array
 		if (startIndex === undefined || startIndex === null) {
@@ -270,12 +239,6 @@ module.exports = function(Chart) {
 			return id++;
 		};
 	})();
-	helpers.warn = function(str) {
-		//Method for warning of errors
-		if (console && typeof console.warn === "function") {
-			console.warn(str);
-		}
-	};
 	//-- Math methods
 	helpers.isNumber = function(n) {
 		return !isNaN(parseFloat(n)) && isFinite(n);
@@ -301,24 +264,20 @@ module.exports = function(Chart) {
 			}
 		}, Number.POSITIVE_INFINITY);
 	};
-	helpers.sign = function(x) {
-		if (Math.sign) {
-			return Math.sign(x);
-		} else {
+	helpers.sign = Math.sign?
+		function(x) { return Math.sign(x); } :
+		function(x) {
 			x = +x; // convert to a number
 			if (x === 0 || isNaN(x)) {
 				return x;
 			}
 			return x > 0 ? 1 : -1;
-		}
-	};
-	helpers.log10 = function(x) {
-		if (Math.log10) {
-			return Math.log10(x);
-		} else {
+		};
+	helpers.log10 = Math.log10?
+		function(x) { return Math.log10(x); } :
+		function(x) {
 			return Math.log(x) / Math.LN10;
-		}
-	};
+		};
 	helpers.toRadians = function(degrees) {
 		return degrees * (Math.PI / 180);
 	};
@@ -945,12 +904,11 @@ module.exports = function(Chart) {
 			hiddenIframe.parentNode.removeChild(hiddenIframe);
 		}
 	};
-	helpers.isArray = function(obj) {
-		if (!Array.isArray) {
+	helpers.isArray = Array.isArray?
+		function(obj) { return Array.isArray(obj); } :
+		function(obj) {
 			return Object.prototype.toString.call(obj) === '[object Array]';
-		}
-		return Array.isArray(obj);
-	};
+		};
 	//! @see http://stackoverflow.com/a/14853974
 	helpers.arrayEquals = function(a0, a1) {
 		var i, ilen, v0, v1;
