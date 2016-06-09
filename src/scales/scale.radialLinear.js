@@ -282,7 +282,7 @@ module.exports = function(Chart) {
 
 			if (opts.display) {
 				var ctx = me.ctx;
-				
+
 				// Tick Font
 				var tickFontSize = getValueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize);
 				var tickFontStyle = getValueOrDefault(tickOpts.fontStyle, globalDefaults.defaultFontStyle);
@@ -350,11 +350,11 @@ module.exports = function(Chart) {
 					ctx.strokeStyle = angleLineOpts.color;
 
 					var outerDistance = me.getDistanceFromCenterForValue(opts.reverse ? me.min : me.max);
-					
+
 					// Point Label Font
 					var pointLabelFontSize = getValueOrDefault(pointLabelOpts.fontSize, globalDefaults.defaultFontSize);
 					var pointLabeFontStyle = getValueOrDefault(pointLabelOpts.fontStyle, globalDefaults.defaultFontStyle);
-					var pointLabeFontFamily = getValueOrDefault(pointLabelOpts, globalDefaults.defaultFontFamily);
+					var pointLabeFontFamily = getValueOrDefault(pointLabelOpts.fontFamily, globalDefaults.defaultFontFamily);
 					var pointLabeFont = helpers.fontString(pointLabelFontSize, pointLabeFontStyle, pointLabeFontFamily);
 
 					for (var i = me.getValueCount() - 1; i >= 0; i--) {
