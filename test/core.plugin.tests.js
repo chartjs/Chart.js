@@ -3,37 +3,38 @@ describe('Test the plugin system', function() {
 	var oldPlugins;
 
 	beforeAll(function() {
-		oldPlugins = Chart.plugins;
+		oldPlugins = Chart.plugins._plugins;
 	});
+
 	afterAll(function() {
-		Chart.plugins = oldPlugins;
+		Chart.plugins._plugins = oldPlugins;
 	});
 
 	beforeEach(function() {
-		Chart.plugins = [];
+		Chart.plugins._plugins = [];
 	});
 
 	it ('Should register plugins', function() {
 		var myplugin = {};
-		Chart.pluginService.register(myplugin);
-		expect(Chart.plugins.length).toBe(1);
+		Chart.plugins.register(myplugin);
+		expect(Chart.plugins._plugins.length).toBe(1);
 
 		// Should only add plugin once
-		Chart.pluginService.register(myplugin);
-		expect(Chart.plugins.length).toBe(1);		
+		Chart.plugins.register(myplugin);
+		expect(Chart.plugins._plugins.length).toBe(1);
 	});
 
 	it ('Should allow unregistering plugins', function() {
 		var myplugin = {};
-		Chart.pluginService.register(myplugin);
-		expect(Chart.plugins.length).toBe(1);
+		Chart.plugins.register(myplugin);
+		expect(Chart.plugins._plugins.length).toBe(1);
 
 		// Should only add plugin once
-		Chart.pluginService.remove(myplugin);
-		expect(Chart.plugins.length).toBe(0);		
+		Chart.plugins.remove(myplugin);
+		expect(Chart.plugins._plugins.length).toBe(0);
 
 		// Removing a plugin that doesn't exist should not error
-		Chart.pluginService.remove(myplugin);
+		Chart.plugins.remove(myplugin);
 	});
 
 	it ('Should allow notifying plugins', function() {
@@ -43,9 +44,9 @@ describe('Test the plugin system', function() {
 				myplugin.count = chart.count;
 			}
 		};
-		Chart.pluginService.register(myplugin);
-		
-		Chart.pluginService.notifyPlugins('trigger', [{ count: 10 }]);
+		Chart.plugins.register(myplugin);
+
+		Chart.plugins.notify('trigger', [{ count: 10 }]);
 
 		expect(myplugin.count).toBe(10);
 	});

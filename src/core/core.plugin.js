@@ -1,14 +1,20 @@
 "use strict";
 
 module.exports = function(Chart) {
-	var helpers = Chart.helpers;
 
-	// Plugins are stored here
-	Chart.plugins = [];
-	Chart.pluginService = {
+	var helpers = Chart.helpers;
+	var noop = helpers.noop;
+
+	/**
+	 * The plugin service singleton
+	 * @namespace Chart.plugins
+	 */
+	Chart.plugins = {
+		_plugins: [],
+
 		// Register a new plugin
 		register: function(plugin) {
-			var p = Chart.plugins;
+			var p = this._plugins;
 			if (p.indexOf(plugin) === -1) {
 				p.push(plugin);
 			}
@@ -16,16 +22,20 @@ module.exports = function(Chart) {
 
 		// Remove a registered plugin
 		remove: function(plugin) {
-			var p = Chart.plugins;
+			var p = this._plugins;
 			var idx = p.indexOf(plugin);
 			if (idx !== -1) {
 				p.splice(idx, 1);
 			}
 		},
 
-		// Iterate over all plugins
-		notifyPlugins: function(method, args, scope) {
-			helpers.each(Chart.plugins, function(plugin) {
+		/**
+		 * Calls registered plugins on the specified method, with the given args. This
+		 * method immediately returns as soon as a plugin explicitly returns false.
+		 * @returns {Boolean} false if any of the plugins return false, else returns true.
+		 */
+		notify: function(method, args, scope) {
+			helpers.each(this._plugins, function(plugin) {
 				if (plugin[method] && typeof plugin[method] === 'function') {
 					plugin[method].apply(scope, args);
 				}
@@ -33,7 +43,6 @@ module.exports = function(Chart) {
 		}
 	};
 
-	var noop = helpers.noop;
 	Chart.PluginBase = Chart.Element.extend({
 		// Plugin methods. All functions are passed the chart instance
 
@@ -58,4 +67,12 @@ module.exports = function(Chart) {
 		// Called during destroy
 		destroy: noop
 	});
+
+	/**
+	 * Provided for backward compatibility, use Chart.plugins instead
+	 * @namespace Chart.pluginService
+	 * @deprecated since version 2.1.5
+	 * @todo remove me at version 3
+	 */
+	Chart.pluginService = Chart.plugins;
 };

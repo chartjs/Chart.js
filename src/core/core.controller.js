@@ -45,7 +45,7 @@ module.exports = function(Chart) {
 		initialize: function initialize() {
 			var me = this;
 			// Before init plugin notification
-			Chart.pluginService.notifyPlugins('beforeInit', [me]);
+			Chart.plugins.notify('beforeInit', [me]);
 
 			me.bindEvents();
 
@@ -60,7 +60,7 @@ module.exports = function(Chart) {
 			me.update();
 
 			// After init plugin notification
-			Chart.pluginService.notifyPlugins('afterInit', [me]);
+			Chart.plugins.notify('afterInit', [me]);
 
 			return me;
 		},
@@ -83,7 +83,7 @@ module.exports = function(Chart) {
 			var newWidth = helpers.getMaximumWidth(canvas);
 			var aspectRatio = chart.aspectRatio;
 			var newHeight = (me.options.maintainAspectRatio && isNaN(aspectRatio) === false && isFinite(aspectRatio) && aspectRatio !== 0) ? newWidth / aspectRatio : helpers.getMaximumHeight(canvas);
-			
+
 			var sizeChanged = chart.width !== newWidth || chart.height !== newHeight;
 
 			if (!sizeChanged) {
@@ -97,7 +97,7 @@ module.exports = function(Chart) {
 
 			// Notify any plugins about the resize
 			var newSize = { width: newWidth, height: newHeight };
-			Chart.pluginService.notifyPlugins('resize', [me, newSize]);
+			Chart.plugins.notify('resize', [me, newSize]);
 
 			// Notify of resize
 			if (me.options.onResize) {
@@ -225,7 +225,7 @@ module.exports = function(Chart) {
 
 		update: function update(animationDuration, lazy) {
 			var me = this;
-			Chart.pluginService.notifyPlugins('beforeUpdate', [me]);
+			Chart.plugins.notify('beforeUpdate', [me]);
 
 			// In case the entire data object changed
 			me.tooltip._data = me.data;
@@ -241,7 +241,7 @@ module.exports = function(Chart) {
 			Chart.layoutService.update(me, me.chart.width, me.chart.height);
 
 			// Apply changes to the dataets that require the scales to have been calculated i.e BorderColor chages
-			Chart.pluginService.notifyPlugins('afterScaleUpdate', [me]);
+			Chart.plugins.notify('afterScaleUpdate', [me]);
 
 			// Can only reset the new controllers after the scales have been updated
 			helpers.each(newControllers, function(controller) {
@@ -254,14 +254,14 @@ module.exports = function(Chart) {
 			}, me);
 
 			// Do this before render so that any plugins that need final scale updates can use it
-			Chart.pluginService.notifyPlugins('afterUpdate', [me]);
+			Chart.plugins.notify('afterUpdate', [me]);
 
 			me.render(animationDuration, lazy);
 		},
 
 		render: function render(duration, lazy) {
 			var me = this;
-			Chart.pluginService.notifyPlugins('beforeRender', [me]);
+			Chart.plugins.notify('beforeRender', [me]);
 
 			var animationOptions = me.options.animation;
 			if (animationOptions && ((typeof duration !== 'undefined' && duration !== 0) || (typeof duration === 'undefined' && animationOptions.duration !== 0))) {
@@ -297,7 +297,7 @@ module.exports = function(Chart) {
 			var easingDecimal = ease || 1;
 			me.clear();
 
-			Chart.pluginService.notifyPlugins('beforeDraw', [me, easingDecimal]);
+			Chart.plugins.notify('beforeDraw', [me, easingDecimal]);
 
 			// Draw all the scales
 			helpers.each(me.boxes, function(box) {
@@ -307,7 +307,7 @@ module.exports = function(Chart) {
 				me.scale.draw();
 			}
 
-			Chart.pluginService.notifyPlugins('beforeDatasetDraw', [me, easingDecimal]);
+			Chart.plugins.notify('beforeDatasetDraw', [me, easingDecimal]);
 
 			// Draw each dataset via its respective controller (reversed to support proper line stacking)
 			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
@@ -316,12 +316,12 @@ module.exports = function(Chart) {
 				}
 			}, me, true);
 
-			Chart.pluginService.notifyPlugins('afterDatasetDraw', [me, easingDecimal]);
+			Chart.plugins.notify('afterDatasetDraw', [me, easingDecimal]);
 
 			// Finally draw the tooltip
 			me.tooltip.transition(easingDecimal).draw();
 
-			Chart.pluginService.notifyPlugins('afterDraw', [me, easingDecimal]);
+			Chart.plugins.notify('afterDraw', [me, easingDecimal]);
 		},
 
 		// Get the single element that was clicked on
@@ -470,7 +470,7 @@ module.exports = function(Chart) {
 			canvas.style.width = me.chart.originalCanvasStyleWidth;
 			canvas.style.height = me.chart.originalCanvasStyleHeight;
 
-			Chart.pluginService.notifyPlugins('destroy', [me]);
+			Chart.plugins.notify('destroy', [me]);
 
 			delete Chart.instances[me.id];
 		},
