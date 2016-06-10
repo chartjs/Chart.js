@@ -308,8 +308,8 @@ The following additional configuration options are provided by the radial linear
 Name | Type | Default | Description
 --- | --- | --- | ---
 lineArc | Boolean | false | If true, circular arcs are used else straight lines are used. The former is used by the polar area chart and the latter by the radar chart
-angleLines | Object | - | See the [Angle Lines](#scales-angle-line-options) section below for details.
-pointLabels | Object | - | See the [Point Label](#scales-point-label) section below for details.
+angleLines | Object | - | See the Angle Line Options section below for details.
+pointLabels | Object | - | See the Point Label Options section below for details.
 ticks | Object | - | See the Ticks table below for options.
 
 #### Angle Line Options
