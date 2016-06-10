@@ -91,9 +91,12 @@ module.exports = function(Chart) {
 		}
 	};
 
+	/**
+	 * Plugin extension methods.
+	 * @interface Chart.PluginBase
+	 * @since 2.1.0
+	 */
 	Chart.PluginBase = Chart.Element.extend({
-		// Plugin extensions. All functions are passed the chart instance
-
 		// Called at start of chart init
 		beforeInit: noop,
 

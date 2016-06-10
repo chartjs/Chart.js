@@ -13,7 +13,10 @@ module.exports = function(Chart) {
 	// Controllers available for dataset visualization eg. bar, line, slice, etc.
 	Chart.controllers = {};
 
-	// The main controller of a chart
+	/**
+	 * @class Chart.Controller
+	 * The main controller of a chart.
+	 */
 	Chart.Controller = function(instance) {
 
 		this.chart = instance;
@@ -40,7 +43,7 @@ module.exports = function(Chart) {
 		return this;
 	};
 
-	helpers.extend(Chart.Controller.prototype, {
+	helpers.extend(Chart.Controller.prototype, /** @lends Chart.Controller */ {
 
 		initialize: function initialize() {
 			var me = this;
@@ -248,15 +251,53 @@ module.exports = function(Chart) {
 				controller.reset();
 			});
 
-			// This will loop through any data and do the appropriate element update for the type
-			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
-				me.getDatasetMeta(datasetIndex).controller.update();
-			}, me);
+			me.updateDatasets();
 
 			// Do this before render so that any plugins that need final scale updates can use it
 			Chart.plugins.notify('afterUpdate', [me]);
 
 			me.render(animationDuration, lazy);
+		},
+
+		/**
+		 * @method beforeDatasetsUpdate
+		 * @description Called before all datasets are updated. If a plugin returns false,
+		 * the datasets update will be cancelled until another chart update is triggered.
+		 * @param {Object} instance the chart instance being updated.
+		 * @returns {Boolean} false to cancel the datasets update.
+		 * @memberof Chart.PluginBase
+		 * @since version 2.1.5
+		 * @instance
+		 */
+
+		/**
+		 * @method afterDatasetsUpdate
+		 * @description Called after all datasets have been updated. Note that this
+		 * extension will not be called if the datasets update has been cancelled.
+		 * @param {Object} instance the chart instance being updated.
+		 * @memberof Chart.PluginBase
+		 * @since version 2.1.5
+		 * @instance
+		 */
+
+		/**
+		 * Updates all datasets unless a plugin returns false to the beforeDatasetsUpdate
+		 * extension, in which case no datasets will be updated and the afterDatasetsUpdate
+		 * notification will be skipped.
+		 * @protected
+		 * @instance
+		 */
+		updateDatasets: function() {
+			var me = this;
+			var i, ilen;
+
+			if (Chart.plugins.notify('beforeDatasetsUpdate', [ me ])) {
+				for (i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
+					me.getDatasetMeta(i).controller.update();
+				}
+
+				Chart.plugins.notify('afterDatasetsUpdate', [ me ]);
+			}
 		},
 
 		render: function render(duration, lazy) {
@@ -307,7 +348,7 @@ module.exports = function(Chart) {
 				me.scale.draw();
 			}
 
-			Chart.plugins.notify('beforeDatasetDraw', [me, easingDecimal]);
+			Chart.plugins.notify('beforeDatasetsDraw', [me, easingDecimal]);
 
 			// Draw each dataset via its respective controller (reversed to support proper line stacking)
 			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
@@ -316,7 +357,7 @@ module.exports = function(Chart) {
 				}
 			}, me, true);
 
-			Chart.plugins.notify('afterDatasetDraw', [me, easingDecimal]);
+			Chart.plugins.notify('afterDatasetsDraw', [me, easingDecimal]);
 
 			// Finally draw the tooltip
 			me.tooltip.transition(easingDecimal).draw();
