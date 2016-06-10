@@ -7,25 +7,62 @@ module.exports = function(Chart) {
 	/**
 	 * The plugin service singleton
 	 * @namespace Chart.plugins
+	 * @since 2.1.0
 	 */
 	Chart.plugins = {
 		_plugins: [],
 
-		// Register a new plugin
-		register: function(plugin) {
+		/**
+		 * Registers the given plugin(s) if not already registered.
+		 * @param {Array|Object} plugins plugin instance(s).
+		 */
+		register: function(plugins) {
 			var p = this._plugins;
-			if (p.indexOf(plugin) === -1) {
-				p.push(plugin);
-			}
+			([]).concat(plugins).forEach(function(plugin) {
+				if (p.indexOf(plugin) === -1) {
+					p.push(plugin);
+				}
+			});
 		},
 
-		// Remove a registered plugin
-		remove: function(plugin) {
+		/**
+		 * Unregisters the given plugin(s) only if registered.
+		 * @param {Array|Object} plugins plugin instance(s).
+		 */
+		unregister: function(plugins) {
 			var p = this._plugins;
-			var idx = p.indexOf(plugin);
-			if (idx !== -1) {
-				p.splice(idx, 1);
-			}
+			([]).concat(plugins).forEach(function(plugin) {
+				var idx = p.indexOf(plugin);
+				if (idx !== -1) {
+					p.splice(idx, 1);
+				}
+			});
+		},
+
+		/**
+		 * Remove all registered p^lugins.
+		 * @since 2.1.5
+		 */
+		clear: function() {
+			this._plugins = [];
+		},
+
+		/**
+		 * Returns the number of registered plugins?
+		 * @returns {Number}
+		 * @since 2.1.5
+		 */
+		count: function() {
+			return this._plugins.length;
+		},
+
+		/**
+		 * Returns all registered plugin intances.
+		 * @returns {Array} array of plugin objects.
+		 * @since 2.1.5
+		 */
+		getAll: function() {
+			return this._plugins;
 		},
 
 		/**

@@ -1,44 +1,72 @@
-// Plugin tests
-describe('Test the plugin system', function() {
+describe('Chart.plugins', function() {
 	var oldPlugins;
 
 	beforeAll(function() {
-		oldPlugins = Chart.plugins._plugins;
+		oldPlugins = Chart.plugins.getAll();
 	});
 
 	afterAll(function() {
-		Chart.plugins._plugins = oldPlugins;
+		Chart.plugins.register(oldPlugins);
 	});
 
 	beforeEach(function() {
-		Chart.plugins._plugins = [];
+		Chart.plugins.clear();
 	});
 
-	it ('Should register plugins', function() {
-		var myplugin = {};
-		Chart.plugins.register(myplugin);
-		expect(Chart.plugins._plugins.length).toBe(1);
+	describe('Chart.plugins.register', function() {
+		it('should register a plugin', function() {
+			Chart.plugins.register({});
+			expect(Chart.plugins.count()).toBe(1);
+			Chart.plugins.register({});
+			expect(Chart.plugins.count()).toBe(2);
+		});
 
-		// Should only add plugin once
-		Chart.plugins.register(myplugin);
-		expect(Chart.plugins._plugins.length).toBe(1);
+		it('should register an array of plugins', function() {
+			Chart.plugins.register([{}, {}, {}]);
+			expect(Chart.plugins.count()).toBe(3);
+		});
+
+		it('should succeed to register an already registered plugin', function() {
+			var plugin = {};
+			Chart.plugins.register(plugin);
+			expect(Chart.plugins.count()).toBe(1);
+			Chart.plugins.register(plugin);
+			expect(Chart.plugins.count()).toBe(1);
+			Chart.plugins.register([{}, plugin, plugin]);
+			expect(Chart.plugins.count()).toBe(2);
+		});
 	});
 
-	it ('Should allow unregistering plugins', function() {
-		var myplugin = {};
-		Chart.plugins.register(myplugin);
-		expect(Chart.plugins._plugins.length).toBe(1);
+	describe('Chart.plugins.unregister', function() {
+		it('should unregister a plugin', function() {
+			var plugin = {};
+			Chart.plugins.register(plugin);
+			expect(Chart.plugins.count()).toBe(1);
+			Chart.plugins.unregister(plugin);
+			expect(Chart.plugins.count()).toBe(0);
+		});
 
-		// Should only add plugin once
-		Chart.plugins.remove(myplugin);
-		expect(Chart.plugins._plugins.length).toBe(0);
+		it('should unregister an array of plugins', function() {
+			var plugins = [{}, {}, {}];
+			Chart.plugins.register(plugins);
+			expect(Chart.plugins.count()).toBe(3);
+			Chart.plugins.unregister(plugins.slice(0, 2));
+			expect(Chart.plugins.count()).toBe(1);
+		});
 
-		// Removing a plugin that doesn't exist should not error
-		Chart.plugins.remove(myplugin);
+		it('should succeed to unregister a plugin not registered', function() {
+			var plugin = {};
+			Chart.plugins.register(plugin);
+			expect(Chart.plugins.count()).toBe(1);
+			Chart.plugins.unregister({});
+			expect(Chart.plugins.count()).toBe(1);
+			Chart.plugins.unregister([{}, plugin]);
+			expect(Chart.plugins.count()).toBe(0);
+		});
 	});
 
 	describe('Chart.plugins.notify', function() {
-		it ('should call plugins with arguments', function() {
+		it('should call plugins with arguments', function() {
 			var myplugin = {
 				count: 0,
 				trigger: function(chart) {
