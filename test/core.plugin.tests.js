@@ -37,17 +37,36 @@ describe('Test the plugin system', function() {
 		Chart.plugins.remove(myplugin);
 	});
 
-	it ('Should allow notifying plugins', function() {
-		var myplugin = {
-			count: 0,
-			trigger: function(chart) {
-				myplugin.count = chart.count;
-			}
-		};
-		Chart.plugins.register(myplugin);
+	describe('Chart.plugins.notify', function() {
+		it ('should call plugins with arguments', function() {
+			var myplugin = {
+				count: 0,
+				trigger: function(chart) {
+					myplugin.count = chart.count;
+				}
+			};
 
-		Chart.plugins.notify('trigger', [{ count: 10 }]);
+			Chart.plugins.register(myplugin);
+			Chart.plugins.notify('trigger', [{ count: 10 }]);
+			expect(myplugin.count).toBe(10);
+		});
 
-		expect(myplugin.count).toBe(10);
+		it('should return TRUE if no plugin explicitly returns FALSE', function() {
+			Chart.plugins.register({ check: function() {} });
+			Chart.plugins.register({ check: function() { return; } });
+			Chart.plugins.register({ check: function() { return null; } });
+			Chart.plugins.register({ check: function() { return 42 } });
+			var res = Chart.plugins.notify('check');
+			expect(res).toBeTruthy();
+		});
+
+		it('should return FALSE if no plugin explicitly returns FALSE', function() {
+			Chart.plugins.register({ check: function() {} });
+			Chart.plugins.register({ check: function() { return; } });
+			Chart.plugins.register({ check: function() { return false; } });
+			Chart.plugins.register({ check: function() { return 42 } });
+			var res = Chart.plugins.notify('check');
+			expect(res).toBeFalsy();
+		});
 	});
 });

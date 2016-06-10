@@ -2,8 +2,7 @@
 
 module.exports = function(Chart) {
 
-	var helpers = Chart.helpers;
-	var noop = helpers.noop;
+	var noop = Chart.helpers.noop;
 
 	/**
 	 * The plugin service singleton
@@ -30,21 +29,33 @@ module.exports = function(Chart) {
 		},
 
 		/**
-		 * Calls registered plugins on the specified method, with the given args. This
-		 * method immediately returns as soon as a plugin explicitly returns false.
+		 * Calls registered plugins on the specified extension, with the given args. This
+		 * method immediately returns as soon as a plugin explicitly returns false. The
+		 * returned value can be used, for instance, to interrupt the current action.
+		 * @param {String} extension the name of the plugin method to call (e.g. 'beforeUpdate').
+		 * @param {Array} [args] extra arguments to apply to the extension call.
 		 * @returns {Boolean} false if any of the plugins return false, else returns true.
 		 */
-		notify: function(method, args, scope) {
-			helpers.each(this._plugins, function(plugin) {
-				if (plugin[method] && typeof plugin[method] === 'function') {
-					plugin[method].apply(scope, args);
+		notify: function(extension, args) {
+			var plugins = this._plugins;
+			var ilen = plugins.length;
+			var i, plugin;
+
+			for (i=0; i<ilen; ++i) {
+				plugin = plugins[i];
+				if (typeof plugin[extension] === 'function') {
+					if (plugin[extension].apply(plugin, args || []) === false) {
+						return false;
+					}
 				}
-			}, scope);
+			}
+
+			return true;
 		}
 	};
 
 	Chart.PluginBase = Chart.Element.extend({
-		// Plugin methods. All functions are passed the chart instance
+		// Plugin extensions. All functions are passed the chart instance
 
 		// Called at start of chart init
 		beforeInit: noop,
