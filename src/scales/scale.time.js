@@ -259,6 +259,12 @@ module.exports = function(Chart) {
 				me.displayFormat = me.options.time.displayFormat;
 			}
 
+			if (me.firstTick.diff(me.lastTick, me.tickUnit, true) === 0) {
+				me.lastTick = me.firstTick.clone().add(1, me.tickUnit);
+				me.firstTick = me.firstTick.clone().subtract(1, me.tickUnit);
+				me.scaleSizeInUnits = me.lastTick.diff(me.firstTick, me.tickUnit, true);
+			}
+
 			// first tick. will have been rounded correctly if options.time.min is not specified
 			me.ticks.push(me.firstTick.clone());
 
