@@ -420,7 +420,7 @@ module.exports = function(Chart) {
 	});
 
 	// Register the legend plugin
-	Chart.pluginService.register({
+	Chart.plugins.register({
 		beforeInit: function(chartInstance) {
 			var opts = chartInstance.options;
 			var legendOpts = opts.legend;

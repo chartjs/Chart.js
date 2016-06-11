@@ -1,3 +1,6 @@
+/**
+ * @namespace Chart
+ */
 var Chart = require('./core/core.js')();
 
 require('./core/core.helpers')(Chart);
