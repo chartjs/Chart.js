@@ -324,7 +324,7 @@ lineWidth | Number | 1 | Width of angled lines
 
 #### Point Label Options
 
-The following options are used to configure the point labels that are shown on the perimeter of the scale. They can be found in the `pointLabel` sub options. Note that these options only apply if `lineArc` is false.
+The following options are used to configure the point labels that are shown on the perimeter of the scale. They can be found in the `pointLabels` sub options. Note that these options only apply if `lineArc` is false.
 
 Name | Type | Default | Description
 --- | --- | --- | ---
