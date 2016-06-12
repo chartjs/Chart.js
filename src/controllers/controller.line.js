@@ -254,11 +254,10 @@ module.exports = function(Chart) {
 					meta.dataset._model.tension
 				);
 
-				// Prevent the bezier going outside of the bounds of the graph
-				model.controlPointPreviousX = Math.max(Math.min(controlPoints.previous.x, area.right), area.left);
-				model.controlPointPreviousY = Math.max(Math.min(controlPoints.previous.y, area.bottom), area.top);
-				model.controlPointNextX = Math.max(Math.min(controlPoints.next.x, area.right), area.left);
-				model.controlPointNextY = Math.max(Math.min(controlPoints.next.y, area.bottom), area.top);
+				model.controlPointPreviousX = controlPoints.previous.x;
+				model.controlPointPreviousY = controlPoints.previous.y;
+				model.controlPointNextX = controlPoints.next.x;
+				model.controlPointNextY = controlPoints.next.y;
 			}
 		},
 
