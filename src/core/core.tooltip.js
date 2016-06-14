@@ -86,7 +86,8 @@ module.exports = function(Chart) {
 	function pushOrConcat(base, toPush) {
 		if (toPush) {
 			if (helpers.isArray(toPush)) {
-				base = base.concat(toPush);
+				//base = base.concat(toPush);
+				Array.prototype.push.apply(base, toPush);
 			} else {
 				base.push(toPush);
 			}
