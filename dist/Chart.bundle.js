@@ -1,7 +1,7 @@
 /*!
  * Chart.js
  * http://chartjs.org/
- * Version: 2.1.5
+ * Version: 2.1.6
  *
  * Copyright 2016 Nick Downie
  * Released under the MIT license
@@ -11675,7 +11675,8 @@ module.exports = function(Chart) {
 	function pushOrConcat(base, toPush) {
 		if (toPush) {
 			if (helpers.isArray(toPush)) {
-				base = base.concat(toPush);
+				//base = base.concat(toPush);
+				Array.prototype.push.apply(base, toPush);
 			} else {
 				base.push(toPush);
 			}
