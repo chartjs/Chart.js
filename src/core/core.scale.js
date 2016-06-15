@@ -333,9 +333,28 @@ module.exports = function(Chart) {
 
 					minSize.height = Math.min(me.maxHeight, minSize.height + labelHeight);
 					me.ctx.font = tickLabelFont;
-
-					var firstLabelWidth = me.ctx.measureText(me.ticks[0]).width;
-					var lastLabelWidth = me.ctx.measureText(me.ticks[me.ticks.length - 1]).width;
+					
+					var longestFirstString = "";
+					for (var i = me.ticks[0].length - 1; i >= 0; i--) {
+						
+						if ( me.ticks[0][i].length > longestFirstString ) {
+							
+							longestFirstString = me.ticks[0][i].length;
+						}
+					}
+					
+					var firstLabelWidth = me.ctx.measureText(longestFirstString).width;
+					
+					var longestLastString = "";
+					for (var i = me.ticks[me.ticks.length - 1].length - 1; i >= 0; i--) {
+						
+						if ( me.ticks[me.ticks.length - 1][i].length > longestLastString ) {
+							
+							longestLastString = me.ticks[me.ticks.length - 1][i].length;
+						}
+					}
+					
+					var lastLabelWidth = me.ctx.measureText(longestLastString).width;
 
 					// Ensure that our ticks are always inside the canvas. When rotated, ticks are right aligned which means that the right padding is dominated
 					// by the font height
