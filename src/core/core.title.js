@@ -111,9 +111,7 @@ module.exports = function(Chart) {
 
 		beforeFit: noop,
 		fit: function() {
-
 			var me = this,
-				ctx = me.ctx,
 				valueOrDefault = helpers.getValueOrDefault,
 				opts = me.options,
 				globalDefaults = Chart.defaults.global,

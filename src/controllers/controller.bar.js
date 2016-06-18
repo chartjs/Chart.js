@@ -338,7 +338,7 @@ module.exports = function(Chart) {
 	};
 
 	Chart.controllers.horizontalBar = Chart.controllers.bar.extend({
-		updateElement: function updateElement(rectangle, index, reset, numBars) {
+		updateElement: function updateElement(rectangle, index, reset) {
 			var me = this;
 			var meta = me.getMeta();
 			var xScale = me.getScaleForId(meta.xAxisID);

@@ -154,7 +154,7 @@ module.exports = function(Chart) {
 				items.push({ options: options.scale, dtype: 'radialLinear', isDefault: true });
 			}
 
-			helpers.each(items, function(item, index) {
+			helpers.each(items, function(item) {
 				var scaleOptions = item.options;
 				var scaleType = helpers.getValueOrDefault(scaleOptions.type, item.dtype);
 				var scaleClass = Chart.scaleService.getScaleConstructor(scaleType);
@@ -375,7 +375,7 @@ module.exports = function(Chart) {
 			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
 				if (me.isDatasetVisible(datasetIndex)) {
 					var meta = me.getDatasetMeta(datasetIndex);
-					helpers.each(meta.data, function(element, index) {
+					helpers.each(meta.data, function(element) {
 						if (element.inRange(eventPosition.x, eventPosition.y)) {
 							elementsArray.push(element);
 							return elementsArray;

@@ -498,7 +498,7 @@ module.exports = function(Chart) {
 
 			return pt;
 		},
-		drawCaret: function drawCaret(tooltipPoint, size, opacity, caretPadding) {
+		drawCaret: function drawCaret(tooltipPoint, size, opacity) {
 			var vm = this._view;
 			var ctx = this._chart.ctx;
 			var x1, x2, x3;
@@ -692,7 +692,7 @@ module.exports = function(Chart) {
 				ctx.fill();
 
 				// Draw Caret
-				this.drawCaret(pt, tooltipSize, opacity, vm.caretPadding);
+				this.drawCaret(pt, tooltipSize, opacity);
 
 				// Draw Title, Body, and Footer
 				pt.x += vm.xPadding;

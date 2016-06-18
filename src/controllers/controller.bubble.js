@@ -24,7 +24,7 @@ module.exports = function(Chart) {
 
 		tooltips: {
 			callbacks: {
-				title: function(tooltipItems, data) {
+				title: function() {
 					// Title doesn't make sense for scatter since we format the data as a point
 					return '';
 				},

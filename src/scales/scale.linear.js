@@ -39,7 +39,6 @@ module.exports = function(Chart) {
 		determineDataLimits: function() {
 			var me = this;
 			var opts = me.options;
-			var tickOpts = opts.ticks;
 			var chart = me.chart;
 			var data = chart.data;
 			var datasets = data.datasets;
@@ -148,7 +147,7 @@ module.exports = function(Chart) {
 
 			return maxTicks;
 		},
-		// Called after the ticks are built. We need 
+		// Called after the ticks are built. We need
 		handleDirectionalChanges: function() {
 			if (!this.isHorizontal()) {
 				// We are in a vertical orientation. The top value is the highest. So reverse the array
@@ -159,9 +158,9 @@ module.exports = function(Chart) {
 			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 		},
 		// Utils
-		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
+		getPixelForValue: function(value) {
 			// This must be called after fit has been run so that
-			//      this.left, this.top, this.right, and this.bottom have been defined
+			// this.left, this.top, this.right, and this.bottom have been defined
 			var me = this;
 			var paddingLeft = me.paddingLeft;
 			var paddingBottom = me.paddingBottom;
@@ -191,8 +190,8 @@ module.exports = function(Chart) {
 			var offset = (isHorizontal ? pixel - me.left - paddingLeft : me.bottom - paddingBottom - pixel) / innerDimension;
 			return me.start + ((me.end - me.start) * offset);
 		},
-		getPixelForTick: function(index, includeOffset) {
-			return this.getPixelForValue(this.ticksAsNumbers[index], null, null, includeOffset);
+		getPixelForTick: function(index) {
+			return this.getPixelForValue(this.ticksAsNumbers[index]);
 		}
 	});
 	Chart.scaleService.registerScaleType("linear", LinearScale, defaultConfig);

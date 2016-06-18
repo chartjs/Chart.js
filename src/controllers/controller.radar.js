@@ -146,7 +146,7 @@ module.exports = function(Chart) {
 			var easingDecimal = ease || 1;
 
 			// Transition Point Locations
-			helpers.each(meta.data, function(point, index) {
+			helpers.each(meta.data, function(point) {
 				point.transition(easingDecimal);
 			});
 
