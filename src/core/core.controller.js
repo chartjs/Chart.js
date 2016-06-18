@@ -45,7 +45,7 @@ module.exports = function(Chart) {
 
 	helpers.extend(Chart.Controller.prototype, /** @lends Chart.Controller */ {
 
-		initialize: function initialize() {
+		initialize: function() {
 			var me = this;
 			// Before init plugin notification
 			Chart.plugins.notify('beforeInit', [me]);
@@ -68,12 +68,12 @@ module.exports = function(Chart) {
 			return me;
 		},
 
-		clear: function clear() {
+		clear: function() {
 			helpers.clear(this.chart);
 			return this;
 		},
 
-		stop: function stop() {
+		stop: function() {
 			// Stops any current animation loop occuring
 			Chart.animationService.cancelAnimation(this);
 			return this;
@@ -115,7 +115,7 @@ module.exports = function(Chart) {
 			return me;
 		},
 
-		ensureScalesHaveIDs: function ensureScalesHaveIDs() {
+		ensureScalesHaveIDs: function() {
 			var options = this.options;
 			var scalesOptions = options.scales || {};
 			var scaleOptions = options.scale;
@@ -136,7 +136,7 @@ module.exports = function(Chart) {
 		/**
 		 * Builds a map of scale ID to scale object for future lookup.
 		 */
-		buildScales: function buildScales() {
+		buildScales: function() {
 			var me = this;
 			var options = me.options;
 			var scales = me.scales = {};
@@ -186,7 +186,7 @@ module.exports = function(Chart) {
 			Chart.layoutService.update(this, this.chart.width, this.chart.height);
 		},
 
-		buildOrUpdateControllers: function buildOrUpdateControllers() {
+		buildOrUpdateControllers: function() {
 			var me = this;
 			var types = [];
 			var newControllers = [];
@@ -219,7 +219,7 @@ module.exports = function(Chart) {
 			return newControllers;
 		},
 
-		resetElements: function resetElements() {
+		resetElements: function() {
 			var me = this;
 			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
 				me.getDatasetMeta(datasetIndex).controller.reset();
@@ -486,11 +486,11 @@ module.exports = function(Chart) {
 			return typeof meta.hidden === 'boolean'? !meta.hidden : !this.data.datasets[datasetIndex].hidden;
 		},
 
-		generateLegend: function generateLegend() {
+		generateLegend: function() {
 			return this.options.legendCallback(this);
 		},
 
-		destroy: function destroy() {
+		destroy: function() {
 			var me = this;
 			me.stop();
 			me.clear();
@@ -516,11 +516,11 @@ module.exports = function(Chart) {
 			delete Chart.instances[me.id];
 		},
 
-		toBase64Image: function toBase64Image() {
+		toBase64Image: function() {
 			return this.chart.canvas.toDataURL.apply(this.chart.canvas, arguments);
 		},
 
-		initToolTip: function initToolTip() {
+		initToolTip: function() {
 			var me = this;
 			me.tooltip = new Chart.Tooltip({
 				_chart: me.chart,
@@ -530,7 +530,7 @@ module.exports = function(Chart) {
 			}, me);
 		},
 
-		bindEvents: function bindEvents() {
+		bindEvents: function() {
 			var me = this;
 			helpers.bindEvents(me, me.options.events, function(evt) {
 				me.eventHandler(evt);

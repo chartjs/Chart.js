@@ -105,7 +105,7 @@ module.exports = function(Chart) {
 
 		linkScales: helpers.noop,
 
-		update: function update(reset) {
+		update: function(reset) {
 			var me = this;
 			var chart = me.chart;
 			var chartArea = chart.chartArea;

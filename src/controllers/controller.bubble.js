@@ -41,7 +41,7 @@ module.exports = function(Chart) {
 
 		dataElementType: Chart.elements.Point,
 
-		update: function update(reset) {
+		update: function(reset) {
 			var me = this;
 			var meta = me.getMeta();
 			var points = meta.data;

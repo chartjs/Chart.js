@@ -105,7 +105,7 @@ module.exports = function(Chart) {
 			me.updateElement(element, index, true);
 		},
 
-		buildOrUpdateElements: function buildOrUpdateElements() {
+		buildOrUpdateElements: function() {
 			// Handle the number of data points changing
 			var meta = this.getMeta(),
 				md = meta.data,

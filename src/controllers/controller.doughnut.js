@@ -119,7 +119,7 @@ module.exports = function(Chart) {
 		linkScales: helpers.noop,
 
 		// Get index of the dataset in relation to the visible datasets. This allows determining the inner and outer radius correctly
-		getRingIndex: function getRingIndex(datasetIndex) {
+		getRingIndex: function(datasetIndex) {
 			var ringIndex = 0;
 
 			for (var j = 0; j < datasetIndex; ++j) {
@@ -131,7 +131,7 @@ module.exports = function(Chart) {
 			return ringIndex;
 		},
 
-		update: function update(reset) {
+		update: function(reset) {
 			var me = this;
 			var chart = me.chart,
 				chartArea = chart.chartArea,

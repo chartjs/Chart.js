@@ -390,7 +390,7 @@ module.exports = function(Chart) {
 		},
 
 		// Get the correct value. NaN bad inputs, If the value type is object get the x or y based on whether we are horizontal or not
-		getRightValue: function getRightValue(rawValue) {
+		getRightValue: function(rawValue) {
 			// Null and undefined values first
 			if (rawValue === null || typeof(rawValue) === 'undefined') {
 				return NaN;
@@ -404,7 +404,7 @@ module.exports = function(Chart) {
 				if ((rawValue instanceof Date) || (rawValue.isValid)) {
 					return rawValue;
 				} else {
-					return getRightValue(this.isHorizontal() ? rawValue.x : rawValue.y);
+					return this.getRightValue(this.isHorizontal() ? rawValue.x : rawValue.y);
 				}
 			}
 

@@ -46,7 +46,7 @@ module.exports = function(Chart) {
 			}
 		},
 
-		update: function update(reset) {
+		update: function(reset) {
 			var me = this;
 			var meta = me.getMeta();
 			var line = meta.dataset;

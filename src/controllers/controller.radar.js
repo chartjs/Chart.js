@@ -30,7 +30,7 @@ module.exports = function(Chart) {
 			this.updateBezierControlPoints();
 		},
 
-		update: function update(reset) {
+		update: function(reset) {
 			var me = this;
 			var meta = me.getMeta();
 			var line = meta.dataset;

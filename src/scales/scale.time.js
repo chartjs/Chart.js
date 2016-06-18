@@ -309,7 +309,7 @@ module.exports = function(Chart) {
 			return label;
 		},
 		// Function to format an individual tick mark
-		tickFormatFunction: function tickFormatFunction(tick, index, ticks) {
+		tickFormatFunction: function(tick, index, ticks) {
 			var formattedTick = tick.format(this.displayFormat);
 			var tickOpts = this.options.ticks;
 			var callback = helpers.getValueOrDefault(tickOpts.callback, tickOpts.userCallback);
