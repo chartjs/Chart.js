@@ -391,6 +391,7 @@ describe('Time scale tests', function() {
 
 		expect(xScale.getPixelForValue('', 0, 0)).toBeCloseToPixel(78);
 		expect(xScale.getPixelForValue('', 6, 0)).toBeCloseToPixel(452);
+		expect(xScale.getPixelForValue('2015-01-01T20:00:00')).toBeCloseToPixel(78);
 
 		expect(xScale.getValueForPixel(78)).toBeCloseToTime({
 			value: moment(chartInstance.data.labels[0]),
