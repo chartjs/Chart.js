@@ -116,7 +116,7 @@ module.exports = function(Chart) {
 
 		var x = 0,
 			y = 0;
-		for (i = 0, len - xPositions.length; i < len; ++i) {
+		for (i = 0; i < xPositions.length; ++i) {
 			x += xPositions[i];
 			y += yPositions[i];
 		}
