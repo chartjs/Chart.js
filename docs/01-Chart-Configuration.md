@@ -189,7 +189,7 @@ var chartInstance = new Chart(ctx, {
 
 ### Tooltip Configuration
 
-The title configuration is passed into the `options.tooltips` namespace. The global options for the chart tooltips is defined in `Chart.defaults.global.tooltips`.
+The tooltip configuration is passed into the `options.tooltips` namespace. The global options for the chart tooltips is defined in `Chart.defaults.global.tooltips`.
 
 Name | Type | Default | Description
 --- | --- | --- | ---
