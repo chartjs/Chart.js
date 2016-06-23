@@ -327,6 +327,7 @@ module.exports = function(Chart) {
 		},
 		getPixelForValue: function(value, index, datasetIndex) {
 			var me = this;
+			value = moment(value);
 			var labelMoment = value && value.isValid && value.isValid() ? value : me.getLabelMoment(datasetIndex, index);
 
 			if (labelMoment) {
