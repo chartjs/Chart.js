@@ -144,6 +144,7 @@ These are the customisation options specific to Line charts. These options are m
 Name | Type | Default | Description
 --- | --- | --- | ---
 showLines | Boolean | true | If false, the lines between points are not drawn
+spanGaps | Boolean | false | If true, NaN data does not break the line 
 
 You can override these for your `Chart` instance by passing a member `options` into the `Line` method.
 
