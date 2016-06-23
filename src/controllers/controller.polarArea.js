@@ -130,7 +130,6 @@ module.exports = function(Chart) {
 		updateElement: function(arc, index, reset) {
 			var me = this;
 			var chart = me.chart;
-			var chartArea = chart.chartArea;
 			var dataset = me.getDataset();
 			var opts = chart.options;
 			var animationOpts = opts.animation;
