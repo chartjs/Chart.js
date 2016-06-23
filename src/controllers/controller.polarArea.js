@@ -130,7 +130,6 @@ module.exports = function(Chart) {
 		updateElement: function(arc, index, reset) {
 			var me = this;
 			var chart = me.chart;
-			var chartArea = chart.chartArea;
 			var dataset = me.getDataset();
 			var opts = chart.options;
 			var animationOpts = opts.animation;
@@ -139,8 +138,8 @@ module.exports = function(Chart) {
 			var labels = chart.data.labels;
 
 			var circumference = me.calculateCircumference(dataset.data[index]);
-			var centerX = (chartArea.left + chartArea.right) / 2;
-			var centerY = (chartArea.top + chartArea.bottom) / 2;
+			var centerX = scale.xCenter;
+			var centerY = scale.yCenter;
 
 			// If there is NaN data before us, we need to calculate the starting angle correctly.
 			// We could be way more efficient here, but its unlikely that the polar area chart will have a lot of data
