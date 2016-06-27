@@ -216,7 +216,7 @@ module.exports = function(Chart) {
 			var me = this;
 			var meta = me.getMeta();
 			var yScale = me.getScaleForId(meta.yAxisID);
-			var value = me.getDataset().data[index];
+			var value = me.chart.data.datasets[datasetIndex].data[index];
 
 			if (yScale.options.stacked) {
 
