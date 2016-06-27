@@ -333,7 +333,7 @@ module.exports = function(Chart) {
 			if (labelMoment) {
 				var offset = labelMoment.diff(me.firstTick, me.tickUnit, true);
 
-				var decimal = offset / me.scaleSizeInUnits;
+				var decimal = offset !== 0 ? offset / me.scaleSizeInUnits : offset;
 
 				if (me.isHorizontal()) {
 					var innerWidth = me.width - (me.paddingLeft + me.paddingRight);
