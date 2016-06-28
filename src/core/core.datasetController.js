@@ -160,7 +160,7 @@ module.exports = function (Chart) {
         //gets the max border or hover width to properly scale pie charts
         getMaxBorderWidth: function (elements) {
             var max = 0;
-            console.log(elements);
+
             for (var i = 0; i < elements.length; i++) {
                 var borderWidth = elements[i]._model ? elements[i]._model.borderWidth : 0,
                     hoverWidth = elements[i]._chart ? elements[i]._chart.config.data.datasets[0].hoverBorderWidth : 0;
