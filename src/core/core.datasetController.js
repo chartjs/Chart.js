@@ -157,13 +157,16 @@ module.exports = function (Chart) {
             model.borderColor = custom.hoverBorderColor ? custom.hoverBorderColor : valueOrDefault(dataset.hoverBorderColor, index, getHoverColor(model.borderColor));
             model.borderWidth = custom.hoverBorderWidth ? custom.hoverBorderWidth : valueOrDefault(dataset.hoverBorderWidth, index, model.borderWidth);
         },
-        //gets the max border or hover width to properly scale charts
+        //gets the max border or hover width to properly scale pie charts
         getMaxBorderWidth: function (elements) {
             var max = 0;
+            console.log(elements);
             for (var i = 0; i < elements.length; i++) {
-                var borderWidth = elements[i]._model ? elements[i]._model.borderWidth : 0;
+                var borderWidth = elements[i]._model ? elements[i]._model.borderWidth : 0,
+                    hoverWidth = elements[i]._chart ? elements[i]._chart.config.data.datasets[0].hoverBorderWidth : 0;
 
                 max = borderWidth > max ? borderWidth : max;
+                max = hoverWidth > max ? hoverWidth : max;
             }
             return max;
         }
