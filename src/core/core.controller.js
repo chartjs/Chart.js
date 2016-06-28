@@ -421,6 +421,40 @@ module.exports = function(Chart) {
 			return elementsArray;
 		},
 
+        getElementsAtXAxis: function(e){
+            var me = this;
+            var eventPosition = helpers.getRelativePosition(e, me.chart);
+            var elementsArray = [];
+
+            var found = (function() {
+                if (me.data.datasets) {
+                    for (var i = 0; i < me.data.datasets.length; i++) {
+                        var meta = me.getDatasetMeta(i);
+                        if (me.isDatasetVisible(i)) {
+                            for (var j = 0; j < meta.data.length; j++) {
+                                if (meta.data[j].inLabelRange(eventPosition.x, eventPosition.y)) {
+                                    return meta.data[j];
+                                }
+                            }
+                        }
+                    }
+                }
+            }).call(me);
+
+            if (!found) {
+                return elementsArray;
+            }
+
+            helpers.each(me.data.datasets, function(dataset, datasetIndex) {
+                if (me.isDatasetVisible(datasetIndex)) {
+                    var meta = me.getDatasetMeta(datasetIndex);
+                    elementsArray.push(meta.data[found._index]);
+                }
+            }, me);
+
+            return elementsArray;
+        },		
+
 		getElementsAtEventForMode: function(e, mode) {
 			var me = this;
 			switch (mode) {
@@ -430,6 +464,8 @@ module.exports = function(Chart) {
 				return me.getElementsAtEvent(e);
 			case 'dataset':
 				return me.getDatasetAtEvent(e);
+            case 'x-axis':
+                return me.getElementsAtXAxis(e);
 			default:
 				return e;
 			}
@@ -547,6 +583,7 @@ module.exports = function(Chart) {
 				break;
 			case 'label':
 			case 'dataset':
+            case 'x-axis':
 				// elements = elements;
 				break;
 			default:
