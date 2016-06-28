@@ -1,13 +1,8 @@
+/coverage
+/custom
+/dist
+/docs/index.md
+/node_modules
 
 .DS_Store
-
-node_modules/*
-custom/*
-
-docs/index.md
-
-bower_components/
-
-coverage/*
 .idea
-nbproject/*
