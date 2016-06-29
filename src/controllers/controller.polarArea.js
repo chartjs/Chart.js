@@ -8,7 +8,10 @@ module.exports = function(Chart) {
 
 		scale: {
 			type: "radialLinear",
-			lineArc: true // so that lines are circular
+			lineArc: true, // so that lines are circular
+			ticks: {
+				beginAtZero: true
+			}
 		},
 
 		//Boolean - Whether to animate the rotation of the chart
