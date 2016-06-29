@@ -278,6 +278,76 @@ describe('Line controller tests', function() {
 		
 	});
 
+	it('should update elements when the y scale is stacked and datasets is scatter data', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: [{
+						x: 0,
+						y: 10
+					}, {
+						x: 1,
+						y: -10
+					}, {
+						x: 2,
+						y: 10
+					}, {
+						x: 3,
+						y: -10
+					}],
+					label: 'dataset1'
+				}, {
+					data: [{
+						x: 0,
+						y: 10
+					}, {
+						x: 1,
+						y: 15
+					}, {
+						x: 2,
+						y: 0
+					}, {
+						x: 3,
+						y: -4
+					}],
+					label: 'dataset2'
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4']
+			},
+			options: {
+				scales: {
+					yAxes: [{
+						stacked: true
+					}]
+				}
+			}
+		});
+		
+		var meta0 = chart.getDatasetMeta(0);
+
+		[	{ x:  38, y: 161 },
+			{ x: 189, y: 419 },
+			{ x: 341, y: 161 },
+			{ x: 492, y: 419 }
+		].forEach(function(values, i) {
+				expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
+				expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
+		});
+
+		var meta1 = chart.getDatasetMeta(1);
+
+		[	{ x:  38, y:  32 },
+			{ x: 189, y:  97 },
+			{ x: 341, y: 161 },
+			{ x: 492, y: 471 }
+		].forEach(function(values, i) {
+				expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
+				expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
+		});
+		
+	});
+
 	it('should find the correct scale zero when the data is all positive', function() {
 		var chart = window.acquireChart({
 			type: 'line',
