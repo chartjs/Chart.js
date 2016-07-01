@@ -105,7 +105,7 @@ gridLines | Object |  [See Scales](#scales) |
 *gridLines*.offsetGridLines | Boolean | true | If true, the bars for a particular data point fall between the grid lines. If false, the grid line will go right down the middle of the bars.
 | | |
 *scales*.yAxes | Array | `[{ type: "linear" }]` |
-*Options for xAxes* | | |
+*Options for yAxes* | | |
 type | String | "linear" | As defined in [Scales](#scales-linear-scale).
 display | Boolean | true | If true, show the scale.
 id | String | "y-axis-0" | Id of the axis so that data can bind to it.
