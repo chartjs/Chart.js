@@ -373,7 +373,7 @@ hoverBorderWidth | Number | 1 | Default stroke width when hovered
 
 #### Rectangle Configuration
 
-Rectangle elements are used to represent the bars in a bar chart. The global rectangle options are stored in `Chart.defaults.global.elements.rectange`.
+Rectangle elements are used to represent the bars in a bar chart. The global rectangle options are stored in `Chart.defaults.global.elements.rectangle`.
 
 Name | Type | Default | Description
 --- | --- | --- | ---
