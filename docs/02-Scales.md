@@ -52,7 +52,7 @@ drawTicks | Boolean | true |  If true, draw lines beside the ticks in the axis a
 tickMarkLength | Number | 10 | Length in pixels that the grid lines will draw into the axis area.
 zeroLineWidth | Number | 1 | Stroke width of the grid line for the first index (index 0).
 zeroLineColor | Color | "rgba(0, 0, 0, 0.25)" | Stroke color of the grid line for the first index (index 0).
-offsetGridLines | Boolean | false | If true, offset labels from grid lines.
+offsetGridLines | Boolean | false | If true, labels are shifted to be between grid lines. This is used in the bar chart.
 
 #### Scale Title Configuration
 
@@ -124,8 +124,6 @@ Name | Type | Default | Description
 --- | --- | --- | ---
 ticks.min | String | - | The minimum item to display. Must be a value in the `labels` array
 ticks.max | String | - | The maximum item to display. Must be a value in the `labels` array
-gridLines.offsetGridLines | Boolean | - | If true, labels are shifted to be between grid lines. This is used in the bar chart.
-
 
 ### Linear Scale
 
