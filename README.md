@@ -29,7 +29,14 @@ Before submitting an issue or a pull request to the project, please take a momen
 For support using Chart.js, please post questions with the [`chartjs` tag on Stack Overflow](http://stackoverflow.com/questions/tagged/chartjs).
 
 ## Building and Testing
-`gulp build`, `gulp test`
+
+To build, run `gulp build`.
+
+To test, run `gulp test`.
+
+To test against code standards, run `gulp jshint`.
+
+More information on building and testing can be found in [gulpfile.js](gulpfile.js).
 
 Thanks to [BrowserStack](https://browserstack.com) for allowing our team to test on thousands of browsers.
 
