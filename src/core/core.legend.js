@@ -286,7 +286,6 @@ module.exports = function(Chart) {
 			var globalDefault = Chart.defaults.global,
 				lineDefault = globalDefault.elements.line,
 				legendWidth = me.width,
-				legendHeight = me.height,
 				lineWidths = me.lineWidths;
 
 			if (opts.display) {
