@@ -3,8 +3,9 @@
 
 <head>
 	<title>Time Scale Point Data</title>
-	<script src="../../dist/Chart.bundle.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="../../dist/Chart.bundle.js"></script>
 	<style>
     canvas {
         -moz-user-select: none;
@@ -39,7 +40,7 @@
 		function newDate(days) {
 			return moment().add(days, 'd').toDate();
 		}
-		
+
 		function newDateString(days) {
 			return moment().add(days, 'd').format();
 		}

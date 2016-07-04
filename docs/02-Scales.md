@@ -19,6 +19,7 @@ Name | Type | Default | Description
 type | String | Chart specific. | Type of scale being employed. Custom scales can be created and registered with a string key. Options: ["category"](#scales-category-scale), ["linear"](#scales-linear-scale), ["logarithmic"](#scales-logarithmic-scale), ["time"](#scales-time-scale), ["radialLinear"](#scales-radial-linear-scale)
 display | Boolean | true | If true, show the scale including gridlines, ticks, and labels. Overrides *gridLines.display*, *scaleLabel.display*, and *ticks.display*.
 position | String | "left" | Position of the scale. Possible values are 'top', 'left', 'bottom' and 'right'.
+id | String | | The ID is used to link datasets and scale axes together. The properties `datasets.xAxisID` or `datasets.yAxisID` have to match the scale properties `scales.xAxes.id` or `scales.yAxes.id`. This is especially needed if multi-axes charts are used.
 beforeUpdate | Function | undefined | Callback called before the update process starts. Passed a single argument, the scale instance.
 beforeSetDimensions | Function | undefined | Callback that runs before dimensions are set. Passed a single argument, the scale instance.
 afterSetDimensions | Function | undefined | Callback that runs after dimensions are set. Passed a single argument, the scale instance.
@@ -33,9 +34,9 @@ afterCalculateTickRotation | Function | undefined | Callback that runs after tic
 beforeFit | Function | undefined | Callback that runs before the scale fits to the canvas. Passed a single argument, the scale instance.
 afterFit | Function | undefined | Callback that runs after the scale fits to the canvas. Passed a single argument, the scale instance.
 afterUpdate | Function | undefined | Callback that runs at the end of the update process. Passed a single argument, the scale instance.
-**gridLines** | Object | - | See [grid line configuration](#scales-grid-line-configuration) section.
-**scaleLabel** | Object | | See [scale title configuration](#scales-scale-title-configuration) section.
-**ticks** | Object | | See [ticks configuration](#scales-ticks-configuration) section.
+**gridLines** | Object | - | See [grid line configuration](#grid-line-configuration) section.
+**scaleLabel** | Object | | See [scale title configuration](#scale-title-configuration) section.
+**ticks** | Object | | See [ticks configuration](#ticks-configuration) section.
 
 #### Grid Line Configuration
 
@@ -52,7 +53,7 @@ drawTicks | Boolean | true |  If true, draw lines beside the ticks in the axis a
 tickMarkLength | Number | 10 | Length in pixels that the grid lines will draw into the axis area.
 zeroLineWidth | Number | 1 | Stroke width of the grid line for the first index (index 0).
 zeroLineColor | Color | "rgba(0, 0, 0, 0.25)" | Stroke color of the grid line for the first index (index 0).
-offsetGridLines | Boolean | false | If true, offset labels from grid lines.
+offsetGridLines | Boolean | false | If true, labels are shifted to be between grid lines. This is used in the bar chart.
 
 #### Scale Title Configuration
 
@@ -124,8 +125,6 @@ Name | Type | Default | Description
 --- | --- | --- | ---
 ticks.min | String | - | The minimum item to display. Must be a value in the `labels` array
 ticks.max | String | - | The maximum item to display. Must be a value in the `labels` array
-gridLines.offsetGridLines | Boolean | - | If true, labels are shifted to be between grid lines. This is used in the bar chart.
-
 
 ### Linear Scale
 
@@ -141,7 +140,7 @@ beginAtZero | Boolean | - | if true, scale will inclulde 0 if it is not already 
 min | Number | - | User defined minimum number for the scale, overrides minimum value from data.
 max | Number | - | User defined maximum number for the scale, overrides maximum value from data.
 maxTicksLimit | Number | 11 | Maximum number of ticks and gridlines to show. If not defined, it will limit to 11 ticks but will show all gridlines.
-stepSize | Number | - | User defined fixed step size for the scale. If set, the scale ticks will be enumerated by multiple of stepSize, having one tick per increment. If not set, the ticks are labeled automatically using the nice numbers algorithm.
+fixedStepSize | Number | - | User defined fixed step size for the scale. If set, the scale ticks will be enumerated by multiple of stepSize, having one tick per increment. If not set, the ticks are labeled automatically using the nice numbers algorithm.
 stepSize | Number | - | if defined, it can be used along with the min and the max to give a custom number of steps. See the example below.
 suggestedMax | Number | - | User defined maximum number for the scale, overrides maximum value *except for if* it is lower than the maximum value.
 suggestedMin | Number | - | User defined minimum number for the scale, overrides minimum value *except for if* it is higher than the minimum value.
@@ -222,7 +221,7 @@ parser | String or Function | - | If defined as a string, it is interpreted as a
 round | String | - | If defined, dates will be rounded to the start of this unit. See [Time Units](#scales-time-units) below for the allowed units.
 tooltipFormat | String | '' | The moment js format string to use for the tooltip.
 unit | String | - | If defined, will force the unit to be a certain type. See [Time Units](#scales-time-units) section below for details.
-unitStepSize | Number | 1 | The number of units between grid lines. 
+unitStepSize | Number | 1 | The number of units between grid lines.
 
 #### Date Formats
 
@@ -232,8 +231,8 @@ When providing data for the time scale, Chart.js supports all of the formats tha
 
 The following display formats are used to configure how different time units are formed into strings for the axis tick marks. See [moment.js](http://momentjs.com/docs/#/displaying/format/) for the allowable format strings.
 
-Name | Default 
---- | --- 
+Name | Default
+--- | ---
 millisecond | 'SSS [ms]'
 second | 'h:mm:ss a'
 minute | 'h:mm:ss a'
@@ -318,7 +317,7 @@ The following options are used to configure angled lines that radiate from the c
 
 Name | Type | Default | Description
 --- | --- | --- | ---
-display | Boolean | true | If true, angle lines are shown. 
+display | Boolean | true | If true, angle lines are shown.
 color | Color | 'rgba(0, 0, 0, 0.1)' | Color of angled lines
 lineWidth | Number | 1 | Width of angled lines
 

@@ -86,7 +86,7 @@ fullWidth | Boolean | true | Marks that this box should take the full width of t
 fontSize | Number | 12 | Font size inherited from global configuration
 fontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Font family inherited from global configuration
 fontColor | Color | "#666" | Font color inherited from global configuration
-fontStyle | String | 'bold' | Font styling of the title. 
+fontStyle | String | 'bold' | Font styling of the title.
 padding | Number | 10 | Number of pixels to add above and below the title text
 text | String | '' | Title text
 
@@ -161,7 +161,7 @@ Items passed to the legend `onClick` function are the ones returned from `labels
     // For box border. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin
     lineJoin: String,
 
-    // Width of box border 
+    // Width of box border
     lineWidth: Number,
 
     // Stroke style of the legend box
@@ -193,13 +193,13 @@ var chartInstance = new Chart(ctx, {
 
 ### Tooltip Configuration
 
-The title configuration is passed into the `options.tooltips` namespace. The global options for the chart tooltips is defined in `Chart.defaults.global.tooltips`.
+The tooltip configuration is passed into the `options.tooltips` namespace. The global options for the chart tooltips is defined in `Chart.defaults.global.tooltips`.
 
 Name | Type | Default | Description
 --- | --- | --- | ---
-enabled | Boolean | true | Are tooltips 
+enabled | Boolean | true | Are tooltips enabled
 custom | Function | null | See [section](#chart-configuration-custom-tooltips) below
-mode | String | 'single' | Sets which elements appear in the tooltip. Acceptable options are `'single'` or `'label'`. `single` highlights the closest element. `label` highlights elements in all datasets at the same `X` value.
+mode | String | 'single' | Sets which elements appear in the tooltip. Acceptable options are `'single'`, `'label'` or `'x-axis'`. <br>&nbsp;<br>`single` highlights the closest element. <br>&nbsp;<br>`label` highlights elements in all datasets at the same `X` value. <br>&nbsp;<br>`'x-axis'` also highlights elements in all datasets at the same `X` value, but activates when hovering anywhere within the vertical slice of the x-axis representing that `X` value.
 itemSort | Function | undefined | Allows sorting of [tooltip items](#chart-configuration-tooltip-item-interface). Must implement a function that can be passed to [Array.prototype.sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
 backgroundColor | Color | 'rgba(0,0,0,0.8)' | Background color of the tooltip
 titleFontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Font family for tooltip title inherited from global font family
@@ -228,7 +228,7 @@ callbacks | Object | | See the [callbacks section](#chart-configuration-tooltip-
 
 #### Tooltip Callbacks
 
-The tooltip label configuration is nested below the tooltip configuration using the `callbacks` key. The tooltip has the following callbacks for providing text. For all functions, 'this' will be the tooltip object created from the Chart.Tooltip constructor. 
+The tooltip label configuration is nested below the tooltip configuration using the `callbacks` key. The tooltip has the following callbacks for providing text. For all functions, 'this' will be the tooltip object created from the Chart.Tooltip constructor.
 
 All functions are called with the same arguments: a [tooltip item](#chart-configuration-tooltip-item-interface) and the data object passed to the chart. All functions must return either a string or an array of strings. Arrays of strings are treated as multiple lines of text.
 
@@ -273,7 +273,7 @@ The hover configuration is passed into the `options.hover` namespace. The global
 
 Name | Type | Default | Description
 --- | --- | --- | ---
-mode | String | 'single' | Sets which elements hover. Acceptable options are `'single'`, `'label'`, or `'dataset'`. `single` highlights the closest element. `label` highlights elements in all datasets at the same `X` value. `dataset` highlights the closest dataset.
+mode | String | 'single' | Sets which elements hover. Acceptable options are `'single'`, `'label'`, `'x-axis'`, or `'dataset'`. <br>&nbsp;<br>`single` highlights the closest element. <br>&nbsp;<br>`label` highlights elements in all datasets at the same `X` value. <br>&nbsp;<br>`'x-axis'` also highlights elements in all datasets at the same `X` value, but activates when hovering anywhere within the vertical slice of the x-axis representing that `X` value.  <br>&nbsp;<br>`dataset` highlights the closest dataset.
 animationDuration | Number | 400 | Duration in milliseconds it takes to animate hover style changes
 onHover | Function | null | Called when any of the events fire. Called in the context of the chart and passed an array of active elements (bars, points, etc)
 
@@ -340,7 +340,7 @@ Arcs are used in the polar area, doughnut and pie charts. They can be configured
 
 Name | Type | Default | Description
 --- | --- | --- | ---
-backgroundColor | Color | 'rgba(0,0,0,0.1)' | Default fill color for arcs. Inherited from the global default 
+backgroundColor | Color | 'rgba(0,0,0,0.1)' | Default fill color for arcs. Inherited from the global default
 borderColor | Color | '#fff' | Default stroke color for arcs
 borderWidth | Number | 2 | Default stroke width for arcs
 
@@ -377,7 +377,7 @@ hoverBorderWidth | Number | 1 | Default stroke width when hovered
 
 #### Rectangle Configuration
 
-Rectangle elements are used to represent the bars in a bar chart. The global rectangle options are stored in `Chart.defaults.global.elements.rectange`.
+Rectangle elements are used to represent the bars in a bar chart. The global rectangle options are stored in `Chart.defaults.global.elements.rectangle`.
 
 Name | Type | Default | Description
 --- | --- | --- | ---

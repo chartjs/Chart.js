@@ -11,8 +11,10 @@ before_script:
   - npm install
 
 script:
+  - gulp build
   - gulp test
   - gulp coverage
+  - gulp package
   - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
 
 notifications:
@@ -28,3 +30,25 @@ addons:
       - google-chrome
     packages:
       - google-chrome-stable
+
+deploy:
+- provider: releases
+  api_key:
+    secure: E6JiZzA/Qy+UD1so/rVfqYnMhgU4m0cUsljxyrKIiYKlt/ZXo1XJabNkpEIYLvckrNx+g/4cmidNcuLfrnAZJtUg53qHLxyqMTXa9zAqmxxJ6aIpQpNK25FIEk9Xwm2XZdbI5rrm0ZciP5rcgg0X8/j5+RtnU3ZpTOCVkp0P73A=
+  file:
+  - "./dist/Chart.bundle.js"
+  - "./dist/Chart.bundle.min.js"
+  - "./dist/Chart.js"
+  - "./dist/Chart.min.js"
+  - "./dist/Chart.js.zip"
+  skip_cleanup: true
+  on:
+    tags: true
+- provider: npm
+  email:
+    secure: f6jQXdqhoKtEZ3WBvnNM9PB2l9yg8SGmnUwQzeuLpW731opmv1ngPcMA+CotDAavIRs2BvAgVoLJOVGxMRXRSi5pgahfR0O2LetFoT/Px+q4MMqtn3zMgV/OuYL/fIyKXjyoYwSRfjuaIIGX7VTCOpqOEe29UQJAb7XcG9jhgIo=
+  api_key:
+    secure: O5lgPeX5ofkMSiUeijs+0hrK9Dejmpki/UABd+rgx3Cmjlxvi5DVugHpcn/6C0if0CoHv5/TqwQHVgL43kwR5ZKcspl7bzK2vD2YBpingF42Oz91YVNZwQIJyWNVSSWzzFYzG9xOXO26ZD1gTZ26Z3X+xfZVtugWkzbBa/c8NmQ=
+  skip_cleanup: true
+  on:
+    tags: true

@@ -401,7 +401,7 @@ module.exports = function(Chart) {
 							cursor.line++;
 						}
 					}
-					
+
 					drawLegendBox(x, y, legendItem);
 
 					hitboxes[i].left = x;
@@ -415,7 +415,7 @@ module.exports = function(Chart) {
 					} else {
 						cursor.y += itemHeight;
 					}
-					
+
 				});
 			}
 		},
