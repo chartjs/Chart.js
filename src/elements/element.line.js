@@ -29,6 +29,9 @@ module.exports = function(Chart) {
 				previousSkipHandler.call(me, previousPoint, point, nextPoint);
 			} else if (point._view.tension === 0) {
 				ctx.lineTo(point._view.x, point._view.y);
+			} else if (point._view.tension === -1) {
+				ctx.lineTo(point._view.x, previousPoint._view.y);
+				ctx.lineTo(point._view.x, point._view.y);				
 			} else {
 				// Line between points
 				ctx.bezierCurveTo(
