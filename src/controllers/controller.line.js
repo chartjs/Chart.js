@@ -221,18 +221,20 @@ module.exports = function(Chart) {
 					ds = chart.data.datasets[i];
 					dsMeta = chart.getDatasetMeta(i);
 					if (dsMeta.type === 'line' && chart.isDatasetVisible(i)) {
-						if (ds.data[index] < 0) {
-							sumNeg += ds.data[index] || 0;
+						var stackedRightValue = yScale.getRightValue(ds.data[index]);
+						if (stackedRightValue < 0) {
+							sumNeg += stackedRightValue || 0;
 						} else {
-							sumPos += ds.data[index] || 0;
+							sumPos += stackedRightValue || 0;
 						}
 					}
 				}
 
-				if (value < 0) {
-					return yScale.getPixelForValue(sumNeg + value);
+				var rightValue = yScale.getRightValue(value);
+				if (rightValue < 0) {
+					return yScale.getPixelForValue(sumNeg + rightValue);
 				} else {
-					return yScale.getPixelForValue(sumPos + value);
+					return yScale.getPixelForValue(sumPos + rightValue);
 				}
 			}
 
