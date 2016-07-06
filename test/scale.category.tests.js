@@ -154,7 +154,7 @@ describe('Category scale tests', function() {
 
 		expect(scale.getPixelForValue(0, 4, 0, false)).toBe(452);
 		expect(scale.getPixelForValue(0, 4, 0, true)).toBe(505);
-		expect(scale.getValueForPixel(452)).toBe(4);
+		expect(scale.getValueForPixel(453)).toBe(4);
 		expect(scale.getValueForPixel(505)).toBe(4);
 
 		config.gridLines.offsetGridLines = false;
@@ -282,7 +282,7 @@ describe('Category scale tests', function() {
 
 		expect(scale.getPixelForValue(0, 4, 0, false)).toBe(161);
 		expect(scale.getPixelForValue(0, 4, 0, true)).toBe(180);
-		expect(scale.getValueForPixel(161)).toBe(4);
+		expect(scale.getValueForPixel(162)).toBe(4);
 
 		config.gridLines.offsetGridLines = false;
 
