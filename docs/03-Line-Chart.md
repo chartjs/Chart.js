@@ -39,7 +39,7 @@ label | `String` | The label for the dataset which appears in the legend and too
 xAxisID | `String` | The ID of the x axis to plot this dataset on
 yAxisID | `String` | The ID of the y axis to plot this dataset on
 fill | `Boolean` | If true, fill the area under the line
-lineTension | `Number` | Bezier curve tension of the line. Set to 0 to draw straightlines. Set to -1 to draw a Stepped Line Chart. *Note* This was renamed from 'tension' but the old name still works.
+lineTension | `Number` | Bezier curve tension of the line. Set to 0 to draw straightlines. *Note* This was renamed from 'tension' but the old name still works.
 backgroundColor | `Color` | The fill color under the line. See [Colors](#getting-started-colors)
 borderWidth | `Number` | The width of the line in pixels
 borderColor | `Color` | The color of the line.
