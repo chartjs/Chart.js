@@ -355,6 +355,7 @@ borderDash | Array | `[]` | Default line dash. See [MDN](https://developer.mozil
 borderDashOffset | Number | 0.0 | Default line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
 borderJoinStyle | String | 'miter' | Default line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin)
 fill | Boolean | true | If true, the line is filled.
+stepped | `Boolean` | If true, the line is shown as a steeped line and 'tension' will be ignored
 
 #### Point Configuration
 

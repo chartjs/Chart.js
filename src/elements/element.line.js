@@ -27,6 +27,9 @@ module.exports = function(Chart) {
 				skipHandler.call(me, previousPoint, point, nextPoint);
 			} else if (previousPoint._view.skip && !spanGaps) {
 				previousSkipHandler.call(me, previousPoint, point, nextPoint);
+			} else if (point._view.steppedLine === true) {
+				ctx.lineTo(point._view.x, previousPoint._view.y);
+				ctx.lineTo(point._view.x, point._view.y);				
 			} else if (point._view.tension === 0) {
 				ctx.lineTo(point._view.x, point._view.y);
 			} else {
