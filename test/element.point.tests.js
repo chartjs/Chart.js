@@ -165,6 +165,9 @@ describe('Point element tests', function() {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
 		}, {
+			name: 'beginPath',
+			args: []
+		}, {
 			name: 'fillRect',
 			args: [10 - 1 / Math.SQRT2 * 2, 15 - 1 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2]
 		}, {
