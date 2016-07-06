@@ -221,7 +221,7 @@ module.exports = function(Chart) {
 					ds = chart.data.datasets[i];
 					dsMeta = chart.getDatasetMeta(i);
 					if (dsMeta.type === 'line' && chart.isDatasetVisible(i)) {
-						var stackedRightValue = yScale.getRightValue(ds.data[index]);
+						var stackedRightValue = Number(yScale.getRightValue(ds.data[index]));
 						if (stackedRightValue < 0) {
 							sumNeg += stackedRightValue || 0;
 						} else {
@@ -230,7 +230,7 @@ module.exports = function(Chart) {
 					}
 				}
 
-				var rightValue = yScale.getRightValue(value);
+				var rightValue = Number(yScale.getRightValue(value));
 				if (rightValue < 0) {
 					return yScale.getPixelForValue(sumNeg + rightValue);
 				} else {
