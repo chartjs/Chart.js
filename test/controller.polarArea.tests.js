@@ -159,6 +159,52 @@ describe('Polar area controller tests', function() {
 		}));
 	});
 
+	it('should update elements with start angle from options', function() {
+		var chart = window.acquireChart({
+			type: 'polarArea',
+			data: {
+				datasets: [{
+					data: [10, 15, 0, -4],
+					label: 'dataset2'
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4']
+			},
+			options: {
+				showLines: true,
+				startAngle: 0, // default is -0.5 * Math.PI
+				elements: {
+					arc: {
+						backgroundColor: 'rgb(255, 0, 0)',
+						borderColor: 'rgb(0, 255, 0)',
+						borderWidth: 1.2
+					}
+				}
+			}
+		});
+
+		var meta = chart.getDatasetMeta(0);
+		expect(meta.data.length).toBe(4);
+
+		[	{ o: 156, s:              0, e: 0.5 * Math.PI },
+			{ o: 211, s:  0.5 * Math.PI, e:       Math.PI },
+			{ o:  45, s:        Math.PI, e: 1.5 * Math.PI },
+			{ o:   0, s:  1.5 * Math.PI, e: 2.0 * Math.PI }
+		].forEach(function(expected, i) {
+			expect(meta.data[i]._model.x).toBeCloseToPixel(256);
+			expect(meta.data[i]._model.y).toBeCloseToPixel(272);
+			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(0);
+			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(expected.o);
+			expect(meta.data[i]._model.startAngle).toBe(expected.s);
+			expect(meta.data[i]._model.endAngle).toBe(expected.e);
+			expect(meta.data[i]._model).toEqual(jasmine.objectContaining({
+				backgroundColor: 'rgb(255, 0, 0)',
+				borderColor: 'rgb(0, 255, 0)',
+				borderWidth: 1.2,
+				label: chart.data.labels[i]
+			}));
+		});
+	});
+
 	it('should handle number of data point changes in update', function() {
 		var chart = window.acquireChart({
 			type: 'polarArea',
