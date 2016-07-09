@@ -369,6 +369,7 @@ borderCapStyle | String | 'butt' | Default line cap style. See [MDN](https://dev
 borderDash | Array | `[]` | Default line dash. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
 borderDashOffset | Number | 0.0 | Default line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
 borderJoinStyle | String | 'miter' | Default line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin)
+capBezierPoints | Boolean | true | If true, bezier control points are kept inside the chart. If false, no restriction is enforced.
 fill | Boolean | true | If true, the line is filled.
 stepped | Boolean | false | If true, the line is shown as a steeped line and 'tension' will be ignored
 
