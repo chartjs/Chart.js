@@ -89,6 +89,7 @@ module.exports = function(Chart) {
 					borderDashOffset: custom.borderDashOffset ? custom.borderDashOffset : (dataset.borderDashOffset || lineElementOptions.borderDashOffset),
 					borderJoinStyle: custom.borderJoinStyle ? custom.borderJoinStyle : (dataset.borderJoinStyle || lineElementOptions.borderJoinStyle),
 					fill: custom.fill ? custom.fill : (dataset.fill !== undefined ? dataset.fill : lineElementOptions.fill),
+					steppedLine: custom.steppedLine ? custom.steppedLine : helpers.getValueOrDefault(dataset.steppedLine, lineElementOptions.stepped),
 					// Scale
 					scaleTop: scale.top,
 					scaleBottom: scale.bottom,
@@ -202,6 +203,7 @@ module.exports = function(Chart) {
 				borderColor: me.getPointBorderColor(point, index),
 				borderWidth: me.getPointBorderWidth(point, index),
 				tension: meta.dataset._model ? meta.dataset._model.tension : 0,
+				steppedLine: meta.dataset._model ? meta.dataset._model.steppedLine : false,
 				// Tooltip
 				hitRadius: custom.hitRadius || helpers.getValueAtIndexOrDefault(dataset.pointHitRadius, index, pointOptions.hitRadius)
 			};
