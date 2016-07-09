@@ -446,26 +446,10 @@ module.exports = function(Chart) {
 			var base = 0;
 
 			if (xScale.options.stacked) {
+				var chart = me.chart;
+				var datasets = chart.data.datasets;
+				var value = Number(datasets[datasetIndex].data[index]);
 
-				var value = Number(me.chart.data.datasets[datasetIndex].data[index]);
-
-				/*if (value < 0) {
-					for (var i = 0; i < datasetIndex; i++) {
-						var negDS = me.chart.data.datasets[i];
-						var negDSMeta = me.chart.getDatasetMeta(i);
-						if (negDSMeta.bar && negDSMeta.xAxisID === xScale.id && me.chart.isDatasetVisible(i)) {
-							base += negDS.data[index] < 0 ? negDS.data[index] : 0;
-						}
-					}
-				} else {
-					for (var j = 0; j < datasetIndex; j++) {
-						var posDS = me.chart.data.datasets[j];
-						var posDSMeta = me.chart.getDatasetMeta(j);
-						if (posDSMeta.bar && posDSMeta.xAxisID === xScale.id && me.chart.isDatasetVisible(j)) {
-							base += posDS.data[index] > 0 ? posDS.data[index] : 0;
-						}
-					}
-				}*/
 				for (var i = 0; i < datasetIndex; i++) {
 					var currentDs = datasets[i];
 					var currentDsMeta = chart.getDatasetMeta(i);
