@@ -138,6 +138,12 @@ var scatterChart = new Chart(ctx, {
 });
 ```
 
+### Positioning the X Axis
+
+In a 1D scatter plot, the points are typically centered on the X-Axis. In order to enable this, set `scales.xAxes.position: 'centerHorizontal'`. The xAxes can have the following positions: 
+`'bottom', 'top', 'left', 'right', 'centerHorizontal'`, while the yAxes can only have: `'bottom', 'top', 'left', 'right'`. 
+
+
 ### Chart Options
 
 These are the customisation options specific to Line charts. These options are merged with the [global chart configuration options](#chart-configuration-global-configuration), and form the options of the chart.

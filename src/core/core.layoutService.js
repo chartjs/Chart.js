@@ -45,7 +45,10 @@ module.exports = function(Chart) {
 				return box.options.position === "top";
 			});
 			var bottomBoxes = helpers.where(chartInstance.boxes, function(box) {
-				return box.options.position === "bottom";
+				// The boxes with an axis running horizontally down the center has the same characteristics
+				// as a bottom box, and so in this instance it is more performant to simply hijack the bottomBoxes
+				// for centerHorizontal.
+				return box.options.position === "bottom" || box.options.position === "centerHorizontal";
 			});
 
 			// Boxes that overlay the chartarea such as the radialLinear scale
