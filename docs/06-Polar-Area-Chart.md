@@ -29,7 +29,7 @@ Some properties are specified as arrays. The first value applies to the first ba
 
 Property | Type | Usage
 --- | --- | ---
-data | `Array<Number>` | The data to plot as bars
+data | `Array<Number>` | The data to plot as arcs
 label | `String` | The label for the dataset which appears in the legend and tooltips
 backgroundColor | `Array<Color>` | The fill color of the arcs. See [Colors](#chart-configuration-colors)
 borderColor | `Array<Color>` | Arc border color
