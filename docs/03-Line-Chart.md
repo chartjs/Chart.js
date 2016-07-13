@@ -40,7 +40,7 @@ xAxisID | `String` | The ID of the x axis to plot this dataset on
 yAxisID | `String` | The ID of the y axis to plot this dataset on
 fill | `Boolean` | If true, fill the area under the line
 lineTension | `Number` | Bezier curve tension of the line. Set to 0 to draw straightlines. *Note* This was renamed from 'tension' but the old name still works.
-backgroundColor | `Color` | The fill color under the line. See [Colors](#getting-started-colors)
+backgroundColor | `Color` | The fill color under the line. See [Colors](#chart-configuration-colors)
 borderWidth | `Number` | The width of the line in pixels
 borderColor | `Color` | The color of the line.
 borderCapStyle | `String` | Cap style of the line. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap)
@@ -59,6 +59,7 @@ pointHoverBorderWidth | `Number or Array<Number>` | Border width of point when h
 pointStyle | `String, Array<String>, Image, Array<Image>` | The style of point. Options are 'circle', 'triangle', 'rect', 'rectRot', 'cross', 'crossRot', 'star', 'line', and 'dash'. If the option is an image, that image is drawn on the canvas using `drawImage`. 
 showLine | `Boolean` | If false, the line is not drawn for this dataset
 spanGaps | `Boolean` | If true, lines will be drawn between points with no or null data
+steppedLine | `Boolean` | If true, the line is shown as a steeped line and 'lineTension' will be ignored
 
 An example data object using these attributes is shown below.
 ```javascript

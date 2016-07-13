@@ -89,6 +89,7 @@ module.exports = function(Chart) {
 					borderDashOffset: custom.borderDashOffset ? custom.borderDashOffset : (dataset.borderDashOffset || lineElementOptions.borderDashOffset),
 					borderJoinStyle: custom.borderJoinStyle ? custom.borderJoinStyle : (dataset.borderJoinStyle || lineElementOptions.borderJoinStyle),
 					fill: custom.fill ? custom.fill : (dataset.fill !== undefined ? dataset.fill : lineElementOptions.fill),
+					steppedLine: custom.steppedLine ? custom.steppedLine : helpers.getValueOrDefault(dataset.steppedLine, lineElementOptions.stepped),
 					// Scale
 					scaleTop: scale.top,
 					scaleBottom: scale.bottom,
@@ -202,6 +203,7 @@ module.exports = function(Chart) {
 				borderColor: me.getPointBorderColor(point, index),
 				borderWidth: me.getPointBorderWidth(point, index),
 				tension: meta.dataset._model ? meta.dataset._model.tension : 0,
+				steppedLine: meta.dataset._model ? meta.dataset._model.steppedLine : false,
 				// Tooltip
 				hitRadius: custom.hitRadius || helpers.getValueAtIndexOrDefault(dataset.pointHitRadius, index, pointOptions.hitRadius)
 			};
@@ -242,9 +244,16 @@ module.exports = function(Chart) {
 		},
 
 		updateBezierControlPoints: function() {
-			var meta = this.getMeta();
+			var me = this;
+			var meta = me.getMeta();
+			var area = me.chart.chartArea;
 			var points = meta.data || [];
 			var i, ilen, point, model, controlPoints;
+
+			var needToCap = me.chart.options.elements.line.capBezierPoints;
+			function capIfNecessary(pt, min, max) {
+				return needToCap ? Math.max(Math.min(pt, max), min) : pt;
+			}
 
 			for (i=0, ilen=points.length; i<ilen; ++i) {
 				point = points[i];
@@ -256,10 +265,10 @@ module.exports = function(Chart) {
 					meta.dataset._model.tension
 				);
 
-				model.controlPointPreviousX = controlPoints.previous.x;
-				model.controlPointPreviousY = controlPoints.previous.y;
-				model.controlPointNextX = controlPoints.next.x;
-				model.controlPointNextY = controlPoints.next.y;
+				model.controlPointPreviousX = capIfNecessary(controlPoints.previous.x, area.left, area.right);
+				model.controlPointPreviousY = capIfNecessary(controlPoints.previous.y, area.top, area.bottom);
+				model.controlPointNextX = capIfNecessary(controlPoints.next.x, area.left, area.right);
+				model.controlPointNextY = capIfNecessary(controlPoints.next.y, area.top, area.bottom);
 			}
 		},
 

@@ -414,7 +414,9 @@ module.exports = function(Chart) {
 			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
 				if (me.isDatasetVisible(datasetIndex)) {
 					var meta = me.getDatasetMeta(datasetIndex);
-					elementsArray.push(meta.data[found._index]);
+					if(!meta.data[found._index]._view.skip){
+						elementsArray.push(meta.data[found._index]);
+					}
 				}
 			}, me);
 
@@ -448,7 +450,9 @@ module.exports = function(Chart) {
             helpers.each(me.data.datasets, function(dataset, datasetIndex) {
                 if (me.isDatasetVisible(datasetIndex)) {
                     var meta = me.getDatasetMeta(datasetIndex);
-                    elementsArray.push(meta.data[found._index]);
+                    if(!meta.data[found._index]._view.skip){
+                    	elementsArray.push(meta.data[found._index]);
+                    }
                 }
             }, me);
 
