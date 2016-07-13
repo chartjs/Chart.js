@@ -152,6 +152,7 @@ var myPieChart = new Chart(ctx, {
 				// tooltip.text
 				// tooltip.x
 				// tooltip.y
+				// tooltip.anchor containing the original x and y against which the tooltip can be oriented.
 				// etc...
 			}
 		}
