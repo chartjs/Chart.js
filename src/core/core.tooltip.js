@@ -284,7 +284,7 @@ module.exports = function(Chart) {
 
 				var labelColors = [],
 					tooltipPosition = getAveragePosition(active);
-				
+
 				var tooltipItems = [];
 				for (i = 0, len = active.length; i < len; ++i) {
 					tooltipItems.push(createTooltipItem(active[i]));
