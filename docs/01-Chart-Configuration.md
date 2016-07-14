@@ -92,7 +92,7 @@ The title configuration is passed into the `options.title` namespace. The global
 Name | Type | Default | Description
 --- | --- | --- | ---
 display | Boolean | false | Display the title block
-position | String | 'top' | Position of the title. Only 'top' or 'bottom' are currently allowed
+position | String | 'top' | Position of the title. Possible values are 'top', 'left', 'bottom' and 'right'.
 fullWidth | Boolean | true | Marks that this box should take the full width of the canvas (pushing down other boxes)
 fontSize | Number | 12 | Font size inherited from global configuration
 fontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Font family inherited from global configuration
@@ -125,7 +125,7 @@ The legend configuration is passed into the `options.legend` namespace. The glob
 Name | Type | Default | Description
 --- | --- | --- | ---
 display | Boolean | true | Is the legend displayed
-position | String | 'top' | Position of the legend. Options are 'top' or 'bottom'
+position | String | 'top' | Position of the legend. Possible values are 'top', 'left', 'bottom' and 'right'.
 fullWidth | Boolean | true | Marks that this box should take the full width of the canvas (pushing down other boxes)
 onClick | Function | `function(event, legendItem) {}` | A callback that is called when a click is registered on top of a label item
 labels |Object|-| See the [Legend Label Configuration](#chart-configuration-legend-label-configuration) section below.
