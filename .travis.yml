@@ -40,7 +40,6 @@ deploy:
   - "./dist/Chart.bundle.min.js"
   - "./dist/Chart.js"
   - "./dist/Chart.min.js"
-  - "./dist/Chart.js.zip"
   skip_cleanup: true
   on:
     tags: true
