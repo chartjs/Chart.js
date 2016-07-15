@@ -113,7 +113,7 @@ function packageTask() {
         .pipe(streamify(replace(/src="((?:\.\.\/)+)dist\//g, 'src="$1')))
   )
   // finally, create the zip archive
-  //.pipe(zip('Chart.js.zip'))
+  .pipe(zip('Chart.js.zip'))
   .pipe(gulp.dest(outDir));
 }
 
