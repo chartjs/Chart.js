@@ -285,6 +285,60 @@ describe('Bar controller tests', function() {
 		});
 	});
 
+	it('should update elements when the scales are stacked and data is strings', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					data: ['10', '-10', '10', '-10'],
+					label: 'dataset1'
+				}, {
+					data: ['10', '15', '0', '-4'],
+					label: 'dataset2'
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4']
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						type: 'category',
+						stacked: true
+					}],
+					yAxes: [{
+						type: 'linear',
+						stacked: true
+					}]
+				}
+			}
+		});
+
+		var meta0 = chart.getDatasetMeta(0);
+
+		[	{ b: 290, w: 91, x:  95, y: 161 },
+			{ b: 290, w: 91, x: 209, y: 419 },
+			{ b: 290, w: 91, x: 322, y: 161 },
+			{ b: 290, w: 91, x: 436, y: 419 }
+		].forEach(function(values, i) {
+			expect(meta0.data[i]._model.base).toBeCloseToPixel(values.b);
+			expect(meta0.data[i]._model.width).toBeCloseToPixel(values.w);
+			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
+			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
+		});
+
+		var meta1 = chart.getDatasetMeta(1);
+
+		[	{ b: 161, w: 91, x:  95, y:  32 },
+			{ b: 290, w: 91, x: 209, y:  97 },
+			{ b: 161, w: 91, x: 322, y: 161 },
+			{ b: 419, w: 91, x: 436, y: 471 }
+		].forEach(function(values, i) {
+			expect(meta1.data[i]._model.base).toBeCloseToPixel(values.b);
+			expect(meta1.data[i]._model.width).toBeCloseToPixel(values.w);
+			expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
+			expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
+		});
+	});
+
 	it('should draw all bars', function() {
 		var chart = window.acquireChart({
 			type: 'bar',

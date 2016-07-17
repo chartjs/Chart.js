@@ -5,6 +5,17 @@ anchor: chart-configuration
 
 Chart.js provides a number of options for changing the behaviour of created charts. These configuration options can be changed on a per chart basis by passing in an options object when creating the chart. Alternatively, the global configuration can be changed which will be used by all charts created after that point.
 
+### Chart Data
+
+To display data, the chart must be passed a data object that contains all of the information needed by the chart. The data object can contain the following parameters
+
+Name | Type | Description
+--- | --- | ----
+datasets | Array[object] | Contains data for each dataset. See the documentation for each chart type to determine the valid options that can be attached to the dataset
+labels | Array[string] | Optional parameter that is used with the [category axis](#scales-category-scale).
+xLabels | Array[string] | Optional parameter that is used with the category axis and is used if the axis is horizontal
+yLabels | Array[string] | Optional parameter that is used with the category axis and is used if the axis is vertical
+
 ### Creating a Chart with Options
 
 To create a chart with configuration options, simply pass an object containing your configuration to the constructor. In the example below, a line chart is created and configured to not be responsive.
@@ -21,7 +32,7 @@ var chartInstance = new Chart(ctx, {
 
 ### Global Configuration
 
-This concept was introduced in Chart.js 1.0 to keep configuration DRY, and allow for changing options globally across chart types, avoiding the need to specify options for each instance, or the default for a particular chart type.
+This concept was introduced in Chart.js 1.0 to keep configuration [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), and allow for changing options globally across chart types, avoiding the need to specify options for each instance, or the default for a particular chart type.
 
 Chart.js merges the options object passed to the chart with the global configuration using chart type defaults and scales defaults appropriately. This way you can be as specific as you would like in your individual chart configuration, while still changing the defaults for all chart types where applicable. The global general options are defined in `Chart.defaults.global`. The defaults for each chart type are discussed in the documentation for that chart type.
 
@@ -81,7 +92,7 @@ The title configuration is passed into the `options.title` namespace. The global
 Name | Type | Default | Description
 --- | --- | --- | ---
 display | Boolean | false | Display the title block
-position | String | 'top' | Position of the title. Only 'top' or 'bottom' are currently allowed
+position | String | 'top' | Position of the title. Possible values are 'top', 'left', 'bottom' and 'right'.
 fullWidth | Boolean | true | Marks that this box should take the full width of the canvas (pushing down other boxes)
 fontSize | Number | 12 | Font size inherited from global configuration
 fontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Font family inherited from global configuration
@@ -114,7 +125,7 @@ The legend configuration is passed into the `options.legend` namespace. The glob
 Name | Type | Default | Description
 --- | --- | --- | ---
 display | Boolean | true | Is the legend displayed
-position | String | 'top' | Position of the legend. Options are 'top' or 'bottom'
+position | String | 'top' | Position of the legend. Possible values are 'top', 'left', 'bottom' and 'right'.
 fullWidth | Boolean | true | Marks that this box should take the full width of the canvas (pushing down other boxes)
 onClick | Function | `function(event, legendItem) {}` | A callback that is called when a click is registered on top of a label item
 labels |Object|-| See the [Legend Label Configuration](#chart-configuration-legend-label-configuration) section below.
@@ -358,7 +369,9 @@ borderCapStyle | String | 'butt' | Default line cap style. See [MDN](https://dev
 borderDash | Array | `[]` | Default line dash. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
 borderDashOffset | Number | 0.0 | Default line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
 borderJoinStyle | String | 'miter' | Default line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin)
+capBezierPoints | Boolean | true | If true, bezier control points are kept inside the chart. If false, no restriction is enforced.
 fill | Boolean | true | If true, the line is filled.
+stepped | Boolean | false | If true, the line is shown as a steeped line and 'tension' will be ignored
 
 #### Point Configuration
 

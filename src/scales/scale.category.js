@@ -9,33 +9,44 @@ module.exports = function(Chart) {
 	};
 
 	var DatasetScale = Chart.Scale.extend({
+		/**
+		* Internal function to get the correct labels. If data.xLabels or data.yLabels are defined, use tose
+		* else fall back to data.labels
+		* @private
+		*/
+		getLabels: function() {
+			var data = this.chart.data;
+			return (this.isHorizontal() ? data.xLabels : data.yLabels) || data.labels;
+		},
 		// Implement this so that
 		determineDataLimits: function() {
 			var me = this;
+			var labels = me.getLabels(); 
 			me.minIndex = 0;
-			me.maxIndex = me.chart.data.labels.length - 1;
+			me.maxIndex = labels.length - 1;
 			var findIndex;
 
 			if (me.options.ticks.min !== undefined) {
 				// user specified min value
-				findIndex = helpers.indexOf(me.chart.data.labels, me.options.ticks.min);
+				findIndex = helpers.indexOf(labels, me.options.ticks.min);
 				me.minIndex = findIndex !== -1 ? findIndex : me.minIndex;
 			}
 
 			if (me.options.ticks.max !== undefined) {
 				// user specified max value
-				findIndex = helpers.indexOf(me.chart.data.labels, me.options.ticks.max);
+				findIndex = helpers.indexOf(labels, me.options.ticks.max);
 				me.maxIndex = findIndex !== -1 ? findIndex : me.maxIndex;
 			}
 
-			me.min = me.chart.data.labels[me.minIndex];
-			me.max = me.chart.data.labels[me.maxIndex];
+			me.min = labels[me.minIndex];
+			me.max = labels[me.maxIndex];
 		},
 
 		buildTicks: function() {
 			var me = this;
+			var labels = me.getLabels();
 			// If we are viewing some subset of labels, slice the original array
-			me.ticks = (me.minIndex === 0 && me.maxIndex === me.chart.data.labels.length - 1) ? me.chart.data.labels : me.chart.data.labels.slice(me.minIndex, me.maxIndex + 1);
+			me.ticks = (me.minIndex === 0 && me.maxIndex === labels.length - 1) ? labels : labels.slice(me.minIndex, me.maxIndex + 1);
 		},
 
 		getLabelForIndex: function(index) {
@@ -47,6 +58,12 @@ module.exports = function(Chart) {
 			var me = this;
 			// 1 is added because we need the length but we have the indexes
 			var offsetAmt = Math.max((me.maxIndex + 1 - me.minIndex - ((me.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
+
+			if (value !== undefined) {
+				var labels = me.getLabels();
+				var idx = labels.indexOf(value);
+				index = idx !== -1 ? idx : index;
+			}
 
 			if (me.isHorizontal()) {
 				var innerWidth = me.width - (me.paddingLeft + me.paddingRight);
@@ -81,6 +98,8 @@ module.exports = function(Chart) {
 			var innerDimension = horz ? me.width - (me.paddingLeft + me.paddingRight) : me.height - (me.paddingTop + me.paddingBottom);
 			var valueDimension = innerDimension / offsetAmt;
 
+			pixel -= horz ? me.left : me.top;
+
 			if (me.options.gridLines.offsetGridLines) {
 				pixel -= (valueDimension / 2);
 			}
@@ -93,6 +112,9 @@ module.exports = function(Chart) {
 			}
 
 			return value;
+		},
+		getBasePixel: function() {
+			return this.bottom;
 		}
 	});
 

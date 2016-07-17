@@ -158,8 +158,8 @@ module.exports = function(Chart) {
 					// Positioning
 					xPadding: tooltipOpts.xPadding,
 					yPadding: tooltipOpts.yPadding,
-					xAlign : tooltipOpts.yAlign,
-					yAlign : tooltipOpts.xAlign,
+					xAlign : tooltipOpts.xAlign,
+					yAlign : tooltipOpts.yAlign,
 
 					// Body
 					bodyFontColor: tooltipOpts.bodyFontColor,

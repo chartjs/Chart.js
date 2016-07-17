@@ -106,23 +106,14 @@ module.exports = function(Chart) {
 			if (yScale.options.stacked) {
 				var chart = me.chart;
 				var datasets = chart.data.datasets;
-				var value = datasets[datasetIndex].data[index];
+				var value = Number(datasets[datasetIndex].data[index]);
 
-				if (value < 0) {
-					for (var i = 0; i < datasetIndex; i++) {
-						var negDS = datasets[i];
-						var negDSMeta = chart.getDatasetMeta(i);
-						if (negDSMeta.bar && negDSMeta.yAxisID === yScale.id && chart.isDatasetVisible(i)) {
-							base += negDS.data[index] < 0 ? negDS.data[index] : 0;
-						}
-					}
-				} else {
-					for (var j = 0; j < datasetIndex; j++) {
-						var posDS = datasets[j];
-						var posDSMeta = chart.getDatasetMeta(j);
-						if (posDSMeta.bar && posDSMeta.yAxisID === yScale.id && chart.isDatasetVisible(j)) {
-							base += posDS.data[index] > 0 ? posDS.data[index] : 0;
-						}
+				for (var i = 0; i < datasetIndex; i++) {
+					var currentDs = datasets[i];
+					var currentDsMeta = chart.getDatasetMeta(i);
+					if (currentDsMeta.bar && currentDsMeta.yAxisID === yScale.id && chart.isDatasetVisible(i)) {
+						var currentVal = Number(currentDs.data[index]);
+						base += value < 0 ? Math.min(currentVal, 0) : Math.max(currentVal, 0);
 					}
 				}
 
@@ -171,6 +162,9 @@ module.exports = function(Chart) {
 
 		calculateBarWidth: function(index) {
 			var xScale = this.getScaleForId(this.getMeta().xAxisID);
+			if (xScale.options.barThickness) {
+				return xScale.options.barThickness;
+			}
 			var ruler = this.getRuler(index);
 			return xScale.options.stacked ? ruler.categoryWidth : ruler.barWidth;
 		},
@@ -216,7 +210,7 @@ module.exports = function(Chart) {
 			var me = this;
 			var meta = me.getMeta();
 			var yScale = me.getScaleForId(meta.yAxisID);
-			var value = me.getDataset().data[index];
+			var value = Number(me.getDataset().data[index]);
 
 			if (yScale.options.stacked) {
 
@@ -227,10 +221,11 @@ module.exports = function(Chart) {
 					var ds = me.chart.data.datasets[i];
 					var dsMeta = me.chart.getDatasetMeta(i);
 					if (dsMeta.bar && dsMeta.yAxisID === yScale.id && me.chart.isDatasetVisible(i)) {
-						if (ds.data[index] < 0) {
-							sumNeg += ds.data[index] || 0;
+						var stackedVal = Number(ds.data[index]);
+						if (stackedVal < 0) {
+							sumNeg += stackedVal || 0;
 						} else {
-							sumPos += ds.data[index] || 0;
+							sumPos += stackedVal || 0;
 						}
 					}
 				}
@@ -454,24 +449,16 @@ module.exports = function(Chart) {
 			var base = 0;
 
 			if (xScale.options.stacked) {
+				var chart = me.chart;
+				var datasets = chart.data.datasets;
+				var value = Number(datasets[datasetIndex].data[index]);
 
-				var value = me.chart.data.datasets[datasetIndex].data[index];
-
-				if (value < 0) {
-					for (var i = 0; i < datasetIndex; i++) {
-						var negDS = me.chart.data.datasets[i];
-						var negDSMeta = me.chart.getDatasetMeta(i);
-						if (negDSMeta.bar && negDSMeta.xAxisID === xScale.id && me.chart.isDatasetVisible(i)) {
-							base += negDS.data[index] < 0 ? negDS.data[index] : 0;
-						}
-					}
-				} else {
-					for (var j = 0; j < datasetIndex; j++) {
-						var posDS = me.chart.data.datasets[j];
-						var posDSMeta = me.chart.getDatasetMeta(j);
-						if (posDSMeta.bar && posDSMeta.xAxisID === xScale.id && me.chart.isDatasetVisible(j)) {
-							base += posDS.data[index] > 0 ? posDS.data[index] : 0;
-						}
+				for (var i = 0; i < datasetIndex; i++) {
+					var currentDs = datasets[i];
+					var currentDsMeta = chart.getDatasetMeta(i);
+					if (currentDsMeta.bar && currentDsMeta.xAxisID === xScale.id && chart.isDatasetVisible(i)) {
+						var currentVal = Number(currentDs.data[index]);
+						base += value < 0 ? Math.min(currentVal, 0) : Math.max(currentVal, 0);
 					}
 				}
 
@@ -520,6 +507,9 @@ module.exports = function(Chart) {
 		calculateBarHeight: function (index) {
 			var me = this;
 			var yScale = me.getScaleForId(me.getMeta().yAxisID);
+			if (yScale.options.barThickness) {
+				return yScale.options.barThickness;
+			}
 			var ruler = me.getRuler(index);
 			return yScale.options.stacked ? ruler.categoryHeight : ruler.barHeight;
 		},
@@ -528,7 +518,7 @@ module.exports = function(Chart) {
 			var me = this;
 			var meta = me.getMeta();
 			var xScale = me.getScaleForId(meta.xAxisID);
-			var value = me.getDataset().data[index];
+			var value = Number(me.getDataset().data[index]);
 
 			if (xScale.options.stacked) {
 
@@ -539,10 +529,11 @@ module.exports = function(Chart) {
 					var ds = me.chart.data.datasets[i];
 					var dsMeta = me.chart.getDatasetMeta(i);
 					if (dsMeta.bar && dsMeta.xAxisID === xScale.id && me.chart.isDatasetVisible(i)) {
-						if (ds.data[index] < 0) {
-							sumNeg += ds.data[index] || 0;
+						var stackedVal = Number(ds.data[index]);
+						if (stackedVal < 0) {
+							sumNeg += stackedVal || 0;
 						} else {
-							sumPos += ds.data[index] || 0;
+							sumPos += stackedVal || 0;
 						}
 					}
 				}

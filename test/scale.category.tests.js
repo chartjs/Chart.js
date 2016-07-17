@@ -48,7 +48,7 @@ describe('Category scale tests', function() {
 		expect(defaultConfig.ticks.callback).toEqual(jasmine.any(Function));
 	});
 
-	it('Should generate ticks from the data labales', function() {
+	it('Should generate ticks from the data labels', function() {
 		var scaleID = 'myScale';
 
 		var mockData = {
@@ -73,6 +73,61 @@ describe('Category scale tests', function() {
 		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.ticks).toEqual(mockData.labels);
+	});
+
+	it('Should generate ticks from the data xLabels', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [10, 5, 0, 25, 78]
+			}],
+			xLabels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']
+		};
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
+		var Constructor = Chart.scaleService.getScaleConstructor('category');
+		var scale = new Constructor({
+			ctx: {},
+			options: config,
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		scale.determineDataLimits();
+		scale.buildTicks();
+		expect(scale.ticks).toEqual(mockData.xLabels);
+	});
+
+	it('Should generate ticks from the data xLabels', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [10, 5, 0, 25, 78]
+			}],
+			yLabels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']
+		};
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
+		config.position = 'left'; // y axis
+		var Constructor = Chart.scaleService.getScaleConstructor('category');
+		var scale = new Constructor({
+			ctx: {},
+			options: config,
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		scale.determineDataLimits();
+		scale.buildTicks();
+		expect(scale.ticks).toEqual(mockData.yLabels);
 	});
 
 	it ('should get the correct label for the index', function() {
@@ -154,7 +209,7 @@ describe('Category scale tests', function() {
 
 		expect(scale.getPixelForValue(0, 4, 0, false)).toBe(452);
 		expect(scale.getPixelForValue(0, 4, 0, true)).toBe(505);
-		expect(scale.getValueForPixel(452)).toBe(4);
+		expect(scale.getValueForPixel(453)).toBe(4);
 		expect(scale.getValueForPixel(505)).toBe(4);
 
 		config.gridLines.offsetGridLines = false;
@@ -282,7 +337,7 @@ describe('Category scale tests', function() {
 
 		expect(scale.getPixelForValue(0, 4, 0, false)).toBe(161);
 		expect(scale.getPixelForValue(0, 4, 0, true)).toBe(180);
-		expect(scale.getValueForPixel(161)).toBe(4);
+		expect(scale.getValueForPixel(162)).toBe(4);
 
 		config.gridLines.offsetGridLines = false;
 
