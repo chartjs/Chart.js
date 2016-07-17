@@ -15,7 +15,7 @@ They are also registered under two aliases in the `Chart` core. Other than their
 	<canvas width="250" height="125"></canvas>
 </div>
 
-<div class="canvas-holder half">
+<div class="canvas-holder">
 	<canvas width="250" height="125"></canvas>
 </div>
 <br>
