@@ -171,8 +171,13 @@ module.exports = function(Chart) {
 				// 5px to space the text slightly out - similar to what we do in the draw function.
 				pointPosition = this.getPointPosition(i, largestPossibleRadius);
 				textWidth = this.ctx.measureText(this.pointLabels[i] ? this.pointLabels[i] : '').width + 5;
-				if (i === 0 || i === this.getValueCount() / 2) {
-					// If we're at index zero, or exactly the middle, we're at exactly the top/bottom
+
+				// Add quarter circle to make degree 0 mean top of circle
+				var angleRadians = this.getIndexAngle(i) + (Math.PI / 2);
+				var angle = (angleRadians * 360 / (2 * Math.PI)) % 360;
+
+				if (angle === 0 || angle === 180) {
+					// At angle 0 and 180, we're at exactly the top/bottom
 					// of the radar chart, so text will be aligned centrally, so we'll half it and compare
 					// w/left and right text sizes
 					halfTextWidth = textWidth / 2;
@@ -184,13 +189,13 @@ module.exports = function(Chart) {
 						furthestLeft = pointPosition.x - halfTextWidth;
 						furthestLeftIndex = i;
 					}
-				} else if (i < this.getValueCount() / 2) {
+				} else if (angle < 180) {
 					// Less than half the values means we'll left align the text
 					if (pointPosition.x + textWidth > furthestRight) {
 						furthestRight = pointPosition.x + textWidth;
 						furthestRightIndex = i;
 					}
-				} else if (i > this.getValueCount() / 2) {
+				} else {
 					// More than half the values means we'll right align the text
 					if (pointPosition.x - textWidth < furthestLeft) {
 						furthestLeft = pointPosition.x - textWidth;
@@ -227,9 +232,14 @@ module.exports = function(Chart) {
 
 		getIndexAngle: function(index) {
 			var angleMultiplier = (Math.PI * 2) / this.getValueCount();
-			// Start from the top instead of right, so remove a quarter of the circle
+			var offsetAngle = this.chart.options && this.chart.options.offsetAngle ?
+				this.chart.options.offsetAngle :
+				0;
 
-			return index * angleMultiplier - (Math.PI / 2);
+			var offsetAngleRadians = offsetAngle * Math.PI * 2 / 360;
+
+			// Start from the top instead of right, so remove a quarter of the circle
+			return index * angleMultiplier - (Math.PI / 2) + offsetAngleRadians;
 		},
 		getDistanceFromCenterForValue: function(value) {
 			var me = this;
@@ -373,26 +383,24 @@ module.exports = function(Chart) {
 						ctx.font = pointLabeFont;
 						ctx.fillStyle = pointLabelFontColor;
 
-						var pointLabels = me.pointLabels,
-							labelsCount = pointLabels.length,
-							halfLabelsCount = pointLabels.length / 2,
-							quarterLabelsCount = halfLabelsCount / 2,
-							upperHalf = (i < quarterLabelsCount || i > labelsCount - quarterLabelsCount),
-							exactQuarter = (i === quarterLabelsCount || i === labelsCount - quarterLabelsCount);
-						if (i === 0) {
+						var pointLabels = me.pointLabels;
+
+						// Add quarter circle to make degree 0 mean top of circle
+						var angleRadians = this.getIndexAngle(i) + (Math.PI / 2);
+						var angle = (angleRadians * 360 / (2 * Math.PI)) % 360;
+
+						if (angle === 0 || angle === 180) {
 							ctx.textAlign = 'center';
-						} else if (i === halfLabelsCount) {
-							ctx.textAlign = 'center';
-						} else if (i < halfLabelsCount) {
+						} else if (angle < 180) {
 							ctx.textAlign = 'left';
 						} else {
 							ctx.textAlign = 'right';
 						}
 
 						// Set the correct text baseline based on outer positioning
-						if (exactQuarter) {
+						if (angle === 90 || angle === 270) {
 							ctx.textBaseline = 'middle';
-						} else if (upperHalf) {
+						} else if (angle > 270 || angle < 90) {
 							ctx.textBaseline = 'bottom';
 						} else {
 							ctx.textBaseline = 'top';
