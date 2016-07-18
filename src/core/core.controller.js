@@ -413,9 +413,10 @@ module.exports = function(Chart) {
 
 			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
 				if (me.isDatasetVisible(datasetIndex)) {
-					var meta = me.getDatasetMeta(datasetIndex);
-					if(!meta.data[found._index]._view.skip){
-						elementsArray.push(meta.data[found._index]);
+					var meta = me.getDatasetMeta(datasetIndex),
+						element = meta.data[found._index];
+					if(element && !element._view.skip){
+						elementsArray.push(element);
 					}
 				}
 			}, me);
