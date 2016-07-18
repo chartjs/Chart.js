@@ -162,6 +162,9 @@ module.exports = function(Chart) {
 
 		calculateBarWidth: function(index) {
 			var xScale = this.getScaleForId(this.getMeta().xAxisID);
+			if (xScale.options.barThickness) {
+				return xScale.options.barThickness;
+			}
 			var ruler = this.getRuler(index);
 			return xScale.options.stacked ? ruler.categoryWidth : ruler.barWidth;
 		},
@@ -504,6 +507,9 @@ module.exports = function(Chart) {
 		calculateBarHeight: function (index) {
 			var me = this;
 			var yScale = me.getScaleForId(me.getMeta().yAxisID);
+			if (yScale.options.barThickness) {
+				return yScale.options.barThickness;
+			}
 			var ruler = me.getRuler(index);
 			return yScale.options.stacked ? ruler.categoryHeight : ruler.barHeight;
 		},
