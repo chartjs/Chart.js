@@ -232,14 +232,14 @@ module.exports = function(Chart) {
 
 		getIndexAngle: function(index) {
 			var angleMultiplier = (Math.PI * 2) / this.getValueCount();
-			var offsetAngle = this.chart.options && this.chart.options.offsetAngle ?
-				this.chart.options.offsetAngle :
+			var startAngle = this.chart.options && this.chart.options.startAngle ?
+				this.chart.options.startAngle :
 				0;
 
-			var offsetAngleRadians = offsetAngle * Math.PI * 2 / 360;
+			var startAngleRadians = startAngle * Math.PI * 2 / 360;
 
 			// Start from the top instead of right, so remove a quarter of the circle
-			return index * angleMultiplier - (Math.PI / 2) + offsetAngleRadians;
+			return index * angleMultiplier - (Math.PI / 2) + startAngleRadians;
 		},
 		getDistanceFromCenterForValue: function(value) {
 			var me = this;
