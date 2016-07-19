@@ -383,7 +383,8 @@ module.exports = function(Chart) {
 
 		// Shared Methods
 		isHorizontal: function() {
-			return this.options.position === "top" || this.options.position === "bottom" || this.options.position === "centerHorizontal";
+			var position = this.options.position;
+			return position === "top" || position === "bottom" || position === "centerHorizontal";
 		},
 		isFullWidth: function() {
 			return (this.options.fullWidth);
