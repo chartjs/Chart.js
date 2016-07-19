@@ -20,6 +20,7 @@ module.exports = function(Chart) {
 			animateScale: true
 		},
 
+		startAngle: -0.5 * Math.PI,
 		aspectRatio: 1,
 		legendCallback: function(chart) {
 			var text = [];
@@ -154,9 +155,10 @@ module.exports = function(Chart) {
 				}
 			}
 
-			var negHalfPI = -0.5 * Math.PI;
+			//var negHalfPI = -0.5 * Math.PI;
+			var datasetStartAngle = opts.startAngle;
 			var distance = arc.hidden ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
-			var startAngle = (negHalfPI) + (circumference * visibleCount);
+			var startAngle = datasetStartAngle + (circumference * visibleCount);
 			var endAngle = startAngle + (arc.hidden ? 0 : circumference);
 
 			var resetRadius = animationOpts.animateScale ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
@@ -173,8 +175,8 @@ module.exports = function(Chart) {
 					y: centerY,
 					innerRadius: 0,
 					outerRadius: reset ? resetRadius : distance,
-					startAngle: reset && animationOpts.animateRotate ? negHalfPI : startAngle,
-					endAngle: reset && animationOpts.animateRotate ? negHalfPI : endAngle,
+					startAngle: reset && animationOpts.animateRotate ? datasetStartAngle : startAngle,
+					endAngle: reset && animationOpts.animateRotate ? datasetStartAngle : endAngle,
 					label: getValueAtIndexOrDefault(labels, index, labels[index])
 				}
 			});
