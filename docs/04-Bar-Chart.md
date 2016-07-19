@@ -74,7 +74,7 @@ var data = {
                 'rgba(153, 102, 255, 1)',
                 'rgba(255, 159, 64, 1)'
             ],
-            borderWidth: 1
+            borderWidth: 1,
 			data: [65, 59, 80, 81, 56, 55, 40],
 		}
 	]
