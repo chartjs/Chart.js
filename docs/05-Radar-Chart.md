@@ -98,6 +98,7 @@ scale | Object | [See Scales](#scales) and [Defaults for Radial Linear Scale](#s
 *scale*.type | String |"radialLinear" | As defined in ["Radial Linear"](#scales-radial-linear-scale).
 *elements*.line | Object | | Options for all line elements used on the chart, as defined in the global elements, duplicated here to show Radar chart specific defaults.
 *elements.line*.lineTension | Number | 0 | Tension exhibited by lines when calculating splineCurve. Setting to 0 creates straight lines.
+startAngle | Number | 0 | The number of degrees to rotate the chart clockwise.
 
 You can override these for your `Chart` instance by passing a second argument into the `Radar` method as an object with the keys you want to override.
 
