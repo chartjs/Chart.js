@@ -76,7 +76,7 @@ module.exports = function(Chart) {
 			Chart.Scale.prototype.initialize.call(this);
 		},
 		getLabelMoment: function(datasetIndex, index) {
-			return this.labelMoments[datasetIndex][index];
+			return datasetIndex == null || index == null ? null : this.labelMoments[datasetIndex][index];
 		},
 		getMomentStartOf: function(tick) {
 			var me = this;
