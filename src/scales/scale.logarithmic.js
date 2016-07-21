@@ -48,11 +48,14 @@ module.exports = function(Chart) {
 						if (valuesPerType[meta.type] === undefined) {
 							valuesPerType[meta.type] = [];
 						}
-
+                        
 						helpers.each(dataset.data, function(rawValue, index) {
 							var values = valuesPerType[meta.type];
 							var value = +me.getRightValue(rawValue);
-							if (isNaN(value) || meta.data[index].hidden) {
+                            if(value === 0){
+                                dataset.data[index] = null;  // don't show y-value
+                            }
+							if (isNaN(value) || meta.data[index].hidden || value === 0) {
 								return;
 							}
 
@@ -81,7 +84,10 @@ module.exports = function(Chart) {
 					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 						helpers.each(dataset.data, function(rawValue, index) {
 							var value = +me.getRightValue(rawValue);
-							if (isNaN(value) || meta.data[index].hidden) {
+                            if(value === 0){
+                                dataset.data[index] = null;  // don't show y-value
+                            }
+							if (isNaN(value) || meta.data[index].hidden || value === 0) {
 								return;
 							}
 
