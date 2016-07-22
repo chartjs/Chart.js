@@ -161,10 +161,10 @@ describe('Rectangle element tests', function() {
 			args: [],
 		}, {
 			name: 'setFillStyle',
-			args: ['rgb(255, 0, 0)']
+			args: ['rgba(255, 0, 0, 1)']
 		}, {
 			name: 'setStrokeStyle',
-			args: ['rgb(0, 0, 255)'],
+			args: ['rgba(0, 0, 255, 1)'],
 		}, {
 			name: 'setLineWidth',
 			args: [1]
@@ -217,10 +217,10 @@ describe('Rectangle element tests', function() {
 			args: [],
 		}, {
 			name: 'setFillStyle',
-			args: ['rgb(255, 0, 0)']
+			args: ['rgba(255, 0, 0, 1)']
 		}, {
 			name: 'setStrokeStyle',
-			args: ['rgb(0, 0, 255)'],
+			args: ['rgba(0, 0, 255, 1)'],
 		}, {
 			name: 'setLineWidth',
 			args: [undefined]

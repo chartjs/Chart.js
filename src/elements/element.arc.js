@@ -77,10 +77,10 @@ module.exports = function(Chart) {
       ctx.arc(vm.x, vm.y, vm.innerRadius, eA, sA, true);
 
       ctx.closePath();
-      ctx.strokeStyle = vm.borderColor;
+      ctx.strokeStyle = helpers.color(vm.borderColor).rgbaString();
       ctx.lineWidth = vm.borderWidth;
 
-      ctx.fillStyle = vm.backgroundColor;
+      ctx.fillStyle = helpers.color(vm.backgroundColor).rgbaString();
 
       ctx.fill();
       ctx.lineJoin = 'bevel';

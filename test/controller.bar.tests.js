@@ -177,9 +177,9 @@ describe('Bar controller tests', function() {
 			expect(meta.data[i]._model).toEqual(jasmine.objectContaining({
 				datasetLabel: chart.config.data.datasets[1].label,
 				label: chart.config.data.labels[i],
-				backgroundColor: 'red',
+				backgroundColor: 'rgba(255, 0, 0, 1)',
 				borderSkipped: 'top',
-				borderColor: 'blue',
+				borderColor: 'rgba(0, 0, 255, 1)',
 				borderWidth: 1
 			}));
 		});

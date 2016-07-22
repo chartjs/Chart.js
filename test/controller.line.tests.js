@@ -221,8 +221,8 @@ describe('Line controller tests', function() {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(expected.y);
 			expect(meta.data[i]._model).toEqual(jasmine.objectContaining({
-				backgroundColor: 'red',
-				borderColor: 'blue',
+				backgroundColor: 'rgba(255, 0, 0, 1)',
+				borderColor: 'rgba(0, 0, 255, 1)',
 			}));
 		});
 		
@@ -445,8 +445,8 @@ describe('Line controller tests', function() {
 					label: 'dataset1',
 	
 					// line styles
-					backgroundColor: 'rgb(98, 98, 98)',
-					borderColor: 'rgb(8, 8, 8)',
+					backgroundColor: 'rgba(98, 98, 98, 1)',
+					borderColor: 'rgba(8, 8, 8, 1)',
 					borderWidth: 0.55,
 				}],
 				labels: ['label1', 'label2']
@@ -455,8 +455,8 @@ describe('Line controller tests', function() {
 
 		var meta = chart.getDatasetMeta(0);
 
-		expect(meta.dataset._model.backgroundColor).toBe('rgb(98, 98, 98)');
-		expect(meta.dataset._model.borderColor).toBe('rgb(8, 8, 8)');
+		expect(meta.dataset._model.backgroundColor).toBe('rgba(98, 98, 98, 1)');
+		expect(meta.dataset._model.borderColor).toBe('rgba(8, 8, 8, 1)');
 		expect(meta.dataset._model.borderWidth).toBe(0.55);
 	});
 
@@ -503,9 +503,9 @@ describe('Line controller tests', function() {
 			options: {
 				elements: {
 					point: {
-						backgroundColor: 'rgb(255, 255, 0)',
+						backgroundColor: 'rgba(255, 255, 0, 1)',
 						borderWidth: 1,
-						borderColor: 'rgb(255, 255, 255)',
+						borderColor: 'rgba(255, 255, 255, 1)',
 						hitRadius: 1,
 						hoverRadius: 4,
 						hoverBorderWidth: 1,
@@ -519,20 +519,20 @@ describe('Line controller tests', function() {
 		var point = meta.data[0];
 
 		meta.controller.setHoverStyle(point);
-		expect(point._model.backgroundColor).toBe('rgb(229, 230, 0)');
-		expect(point._model.borderColor).toBe('rgb(230, 230, 230)');
+		expect(point._model.backgroundColor).toBe('rgba(229, 230, 0, 1)');
+		expect(point._model.borderColor).toBe('rgba(230, 230, 230, 1)');
 		expect(point._model.borderWidth).toBe(1);
 		expect(point._model.radius).toBe(4);
 
 		// Can set hover style per dataset
 		chart.data.datasets[0].pointHoverRadius = 3.3;
-		chart.data.datasets[0].pointHoverBackgroundColor = 'rgb(77, 79, 81)';
-		chart.data.datasets[0].pointHoverBorderColor = 'rgb(123, 125, 127)';
+		chart.data.datasets[0].pointHoverBackgroundColor = 'rgba(77, 79, 81, 1)';
+		chart.data.datasets[0].pointHoverBorderColor = 'rgba(123, 125, 127, 1)';
 		chart.data.datasets[0].pointHoverBorderWidth = 2.1;
 
 		meta.controller.setHoverStyle(point);
-		expect(point._model.backgroundColor).toBe('rgb(77, 79, 81)');
-		expect(point._model.borderColor).toBe('rgb(123, 125, 127)');
+		expect(point._model.backgroundColor).toBe('rgba(77, 79, 81, 1)');
+		expect(point._model.borderColor).toBe('rgba(123, 125, 127, 1)');
 		expect(point._model.borderWidth).toBe(2.1);
 		expect(point._model.radius).toBe(3.3);
 
@@ -542,8 +542,8 @@ describe('Line controller tests', function() {
 		chart.data.datasets[0].radius = 20;
 
 		meta.controller.setHoverStyle(point);
-		expect(point._model.backgroundColor).toBe('rgb(77, 79, 81)');
-		expect(point._model.borderColor).toBe('rgb(123, 125, 127)');
+		expect(point._model.backgroundColor).toBe('rgba(77, 79, 81, 1)');
+		expect(point._model.borderColor).toBe('rgba(123, 125, 127, 1)');
 		expect(point._model.borderWidth).toBe(2.1);
 		expect(point._model.radius).toBe(3.3);
 
@@ -551,13 +551,13 @@ describe('Line controller tests', function() {
 		point.custom = {
 			hoverRadius: 4.4,
 			hoverBorderWidth: 5.5,
-			hoverBackgroundColor: 'rgb(0, 0, 0)',
-			hoverBorderColor: 'rgb(10, 10, 10)'
+			hoverBackgroundColor: 'rgba(0, 0, 0, 1)',
+			hoverBorderColor: 'rgba(10, 10, 10, 1)'
 		};
 
 		meta.controller.setHoverStyle(point);
-		expect(point._model.backgroundColor).toBe('rgb(0, 0, 0)');
-		expect(point._model.borderColor).toBe('rgb(10, 10, 10)');
+		expect(point._model.backgroundColor).toBe('rgba(0, 0, 0, 1)');
+		expect(point._model.borderColor).toBe('rgba(10, 10, 10, 1)');
 		expect(point._model.borderWidth).toBe(5.5);
 		expect(point._model.radius).toBe(4.4);
 	});
@@ -590,26 +590,26 @@ describe('Line controller tests', function() {
 		var meta = chart.getDatasetMeta(0);
 		var point = meta.data[0];
 
-		chart.options.elements.point.backgroundColor = 'rgb(45, 46, 47)';
-		chart.options.elements.point.borderColor = 'rgb(50, 51, 52)';
+		chart.options.elements.point.backgroundColor = 'rgba(45, 46, 47, 1)';
+		chart.options.elements.point.borderColor = 'rgba(50, 51, 52, 1)';
 		chart.options.elements.point.borderWidth = 10.1;
 		chart.options.elements.point.radius = 1.01;
 
 		meta.controller.removeHoverStyle(point);
-		expect(point._model.backgroundColor).toBe('rgb(45, 46, 47)');
-		expect(point._model.borderColor).toBe('rgb(50, 51, 52)');
+		expect(point._model.backgroundColor).toBe('rgba(45, 46, 47, 1)');
+		expect(point._model.borderColor).toBe('rgba(50, 51, 52, 1)');
 		expect(point._model.borderWidth).toBe(10.1);
 		expect(point._model.radius).toBe(1.01);
 
 		// Can set hover style per dataset
 		chart.data.datasets[0].radius = 3.3;
-		chart.data.datasets[0].pointBackgroundColor = 'rgb(77, 79, 81)';
-		chart.data.datasets[0].pointBorderColor = 'rgb(123, 125, 127)';
+		chart.data.datasets[0].pointBackgroundColor = 'rgba(77, 79, 81, 1)';
+		chart.data.datasets[0].pointBorderColor = 'rgba(123, 125, 127, 1)';
 		chart.data.datasets[0].pointBorderWidth = 2.1;
 
 		meta.controller.removeHoverStyle(point);
-		expect(point._model.backgroundColor).toBe('rgb(77, 79, 81)');
-		expect(point._model.borderColor).toBe('rgb(123, 125, 127)');
+		expect(point._model.backgroundColor).toBe('rgba(77, 79, 81, 1)');
+		expect(point._model.borderColor).toBe('rgba(123, 125, 127, 1)');
 		expect(point._model.borderWidth).toBe(2.1);
 		expect(point._model.radius).toBe(3.3);
 
@@ -619,8 +619,8 @@ describe('Line controller tests', function() {
 		chart.data.datasets[0].radius = 20;
 
 		meta.controller.removeHoverStyle(point);
-		expect(point._model.backgroundColor).toBe('rgb(77, 79, 81)');
-		expect(point._model.borderColor).toBe('rgb(123, 125, 127)');
+		expect(point._model.backgroundColor).toBe('rgba(77, 79, 81, 1)');
+		expect(point._model.borderColor).toBe('rgba(123, 125, 127, 1)');
 		expect(point._model.borderWidth).toBe(2.1);
 		expect(point._model.radius).toBe(250);
 
@@ -628,13 +628,13 @@ describe('Line controller tests', function() {
 		point.custom = {
 			radius: 4.4,
 			borderWidth: 5.5,
-			backgroundColor: 'rgb(0, 0, 0)',
-			borderColor: 'rgb(10, 10, 10)'
+			backgroundColor: 'rgba(0, 0, 0, 1)',
+			borderColor: 'rgba(10, 10, 10, 1)'
 		};
 
 		meta.controller.removeHoverStyle(point);
-		expect(point._model.backgroundColor).toBe('rgb(0, 0, 0)');
-		expect(point._model.borderColor).toBe('rgb(10, 10, 10)');
+		expect(point._model.backgroundColor).toBe('rgba(0, 0, 0, 1)');
+		expect(point._model.borderColor).toBe('rgba(10, 10, 10, 1)');
 		expect(point._model.borderWidth).toBe(5.5);
 		expect(point._model.radius).toBe(4.4);
 	});

@@ -942,6 +942,6 @@ module.exports = function(Chart) {
 		/* global CanvasPattern */
 		return (color instanceof CanvasPattern) ?
 			color :
-			helpers.color(color).saturate(0.5).darken(0.1).rgbString();
+			helpers.color(color).clone().saturate(0.5).darken(0.1).rgbString();
 	};
 };

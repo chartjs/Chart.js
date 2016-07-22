@@ -122,7 +122,7 @@ module.exports = function(Chart) {
 					ctx.lineTo(me._children[0]._view.x, vm.scaleZero);
 				}
 
-				ctx.fillStyle = vm.backgroundColor || globalDefaults.defaultColor;
+				ctx.fillStyle = helpers.color(vm.backgroundColor || globalDefaults.defaultColor).rgbaString();
 				ctx.closePath();
 				ctx.fill();
 			}
@@ -139,7 +139,7 @@ module.exports = function(Chart) {
 			ctx.lineDashOffset = vm.borderDashOffset || globalOptionLineElements.borderDashOffset;
 			ctx.lineJoin = vm.borderJoinStyle || globalOptionLineElements.borderJoinStyle;
 			ctx.lineWidth = vm.borderWidth || globalOptionLineElements.borderWidth;
-			ctx.strokeStyle = vm.borderColor || globalDefaults.defaultColor;
+			ctx.strokeStyle = helpers.color(vm.borderColor || globalDefaults.defaultColor).rgbaString();
 			ctx.beginPath();
 
 			helpers.each(me._children, function(point, index) {

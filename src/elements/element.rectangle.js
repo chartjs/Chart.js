@@ -2,7 +2,8 @@
 
 module.exports = function(Chart) {
 
-	var globalOpts = Chart.defaults.global;
+	var globalOpts = Chart.defaults.global,
+		helpers = Chart.helpers;
 
 	globalOpts.elements.rectangle = {
 		backgroundColor: globalOpts.defaultColor,
@@ -31,8 +32,8 @@ module.exports = function(Chart) {
 			}
 
 			ctx.beginPath();
-			ctx.fillStyle = vm.backgroundColor;
-			ctx.strokeStyle = vm.borderColor;
+			ctx.fillStyle = helpers.color(vm.backgroundColor).rgbaString();
+			ctx.strokeStyle = helpers.color(vm.borderColor).rgbaString();
 			ctx.lineWidth = vm.borderWidth;
 
 			// Corner points, from bottom-left to bottom-right clockwise

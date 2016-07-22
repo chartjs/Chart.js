@@ -101,8 +101,8 @@ describe('Doughnut controller tests', function() {
 				startAngle: Math.PI * -0.5,
 				endAngle: Math.PI * -0.5,
 				label: chart.data.labels[i],
-				backgroundColor: 'rgb(255, 0, 0)',
-				borderColor: 'rgb(0, 0, 255)',
+				backgroundColor: 'rgba(255, 0, 0, 1)',
+				borderColor: 'rgba(0, 0, 255, 1)',
 				borderWidth: 2
 			}));
 		})
@@ -123,8 +123,8 @@ describe('Doughnut controller tests', function() {
 			expect(meta.data[i]._model.endAngle).toBeCloseTo(expected.e, 8);
 			expect(meta.data[i]._model).toEqual(jasmine.objectContaining({
 				label: chart.data.labels[i],
-				backgroundColor: 'rgb(255, 0, 0)',
-				borderColor: 'rgb(0, 0, 255)',
+				backgroundColor: 'rgba(255, 0, 0, 1)',
+				borderColor: 'rgba(0, 0, 255, 1)',
 				borderWidth: 2
 			}));
 		})
@@ -244,8 +244,8 @@ describe('Doughnut controller tests', function() {
 		var arc = meta.data[0];
 
 		meta.controller.setHoverStyle(arc);
-		expect(arc._model.backgroundColor).toBe('rgb(230, 0, 0)');
-		expect(arc._model.borderColor).toBe('rgb(0, 0, 230)');
+		expect(arc._model.backgroundColor).toBe('rgba(230, 0, 0, 1)');
+		expect(arc._model.borderColor).toBe('rgba(0, 0, 230, 1)');
 		expect(arc._model.borderWidth).toBe(2);
 
 		// Set a dataset style to take precedence
@@ -254,8 +254,8 @@ describe('Doughnut controller tests', function() {
 		chart.data.datasets[0].hoverBorderWidth = 1.56;
 
 		meta.controller.setHoverStyle(arc);
-		expect(arc._model.backgroundColor).toBe('rgb(9, 9, 9)');
-		expect(arc._model.borderColor).toBe('rgb(18, 18, 18)');
+		expect(arc._model.backgroundColor).toBe('rgba(9, 9, 9, 1)');
+		expect(arc._model.borderColor).toBe('rgba(18, 18, 18, 1)');
 		expect(arc._model.borderWidth).toBe(1.56);
 
 		// Dataset styles can be an array
@@ -264,8 +264,8 @@ describe('Doughnut controller tests', function() {
 		chart.data.datasets[0].hoverBorderWidth = [0.1, 1.56];
 
 		meta.controller.setHoverStyle(arc);
-		expect(arc._model.backgroundColor).toBe('rgb(255, 255, 255)');
-		expect(arc._model.borderColor).toBe('rgb(18, 18, 18)');
+		expect(arc._model.backgroundColor).toBe('rgba(255, 255, 255, 1)');
+		expect(arc._model.borderColor).toBe('rgba(18, 18, 18, 1)');
 		expect(arc._model.borderWidth).toBe(0.1);
 
 		// Element custom styles also work
@@ -276,8 +276,8 @@ describe('Doughnut controller tests', function() {
 		};
 
 		meta.controller.setHoverStyle(arc);
-		expect(arc._model.backgroundColor).toBe('rgb(7, 7, 7)');
-		expect(arc._model.borderColor).toBe('rgb(17, 17, 17)');
+		expect(arc._model.backgroundColor).toBe('rgba(7, 7, 7, 1)');
+		expect(arc._model.borderColor).toBe('rgba(17, 17, 17, 1)');
 		expect(arc._model.borderWidth).toBe(3.14159);
 	});
 
@@ -305,8 +305,8 @@ describe('Doughnut controller tests', function() {
 		var arc = meta.data[0];
 
 		meta.controller.removeHoverStyle(arc);
-		expect(arc._model.backgroundColor).toBe('rgb(255, 0, 0)');
-		expect(arc._model.borderColor).toBe('rgb(0, 0, 255)');
+		expect(arc._model.backgroundColor).toBe('rgba(255, 0, 0, 1)');
+		expect(arc._model.borderColor).toBe('rgba(0, 0, 255, 1)');
 		expect(arc._model.borderWidth).toBe(2);
 
 		// Set a dataset style to take precedence
@@ -315,8 +315,8 @@ describe('Doughnut controller tests', function() {
 		chart.data.datasets[0].borderWidth = 1.56;
 
 		meta.controller.removeHoverStyle(arc);
-		expect(arc._model.backgroundColor).toBe('rgb(9, 9, 9)');
-		expect(arc._model.borderColor).toBe('rgb(18, 18, 18)');
+		expect(arc._model.backgroundColor).toBe('rgba(9, 9, 9, 1)');
+		expect(arc._model.borderColor).toBe('rgba(18, 18, 18, 1)');
 		expect(arc._model.borderWidth).toBe(1.56);
 
 		// Dataset styles can be an array
@@ -325,8 +325,8 @@ describe('Doughnut controller tests', function() {
 		chart.data.datasets[0].borderWidth = [0.1, 1.56];
 
 		meta.controller.removeHoverStyle(arc);
-		expect(arc._model.backgroundColor).toBe('rgb(255, 255, 255)');
-		expect(arc._model.borderColor).toBe('rgb(18, 18, 18)');
+		expect(arc._model.backgroundColor).toBe('rgba(255, 255, 255, 1)');
+		expect(arc._model.borderColor).toBe('rgba(18, 18, 18, 1)');
 		expect(arc._model.borderWidth).toBe(0.1);
 
 		// Element custom styles also work
@@ -337,8 +337,8 @@ describe('Doughnut controller tests', function() {
 		};
 
 		meta.controller.removeHoverStyle(arc);
-		expect(arc._model.backgroundColor).toBe('rgb(7, 7, 7)');
-		expect(arc._model.borderColor).toBe('rgb(17, 17, 17)');
+		expect(arc._model.backgroundColor).toBe('rgba(7, 7, 7, 1)');
+		expect(arc._model.borderColor).toBe('rgba(17, 17, 17, 1)');
 		expect(arc._model.borderWidth).toBe(3.14159);
 	});
 });
