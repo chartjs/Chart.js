@@ -57,15 +57,16 @@ module.exports = function(Chart) {
 				points.push(points[0]);
 			}
 
+			var index, current, previous, currentVM;
+
 			// Fill Line
 			if (points.length && vm.fill) {
 				ctx.beginPath();
 
-				for (var index = 0; index < points.length; ++index) {
-					var current = points[index];
-					var previous = helpers.previousItem(points, index);
-
-					var currentVM = current._view;
+				for (index = 0; index < points.length; ++index) {
+					current = points[index];
+					previous = helpers.previousItem(points, index);
+					currentVM = current._view;
 
 					// First point moves to it's starting position no matter what
 					if (index === 0) {
@@ -97,7 +98,7 @@ module.exports = function(Chart) {
 								// If the first data point is NaN, then there is no real gap to skip
 								if (spanGaps && lastDrawnIndex !== -1) {
 									// We are spanning the gap, so simple draw a line to this point
-									lineToPoint(previous, current)
+									lineToPoint(previous, current);
 								} else {
 									if (loop) {
 										ctx.lineTo(currentVM.x, currentVM.y);
@@ -142,10 +143,10 @@ module.exports = function(Chart) {
 			ctx.beginPath();
 			lastDrawnIndex = -1;
 
-			for (var index = 0; index < points.length; ++index) {
-				var current = points[index];
-				var previous = helpers.previousItem(points, index);
-				var currentVM = current._view;
+			for (index = 0; index < points.length; ++index) {
+				current = points[index];
+				previous = helpers.previousItem(points, index);
+				currentVM = current._view;
 
 				// First point moves to it's starting position no matter what
 				if (index === 0) {
