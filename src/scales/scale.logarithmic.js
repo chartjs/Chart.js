@@ -9,10 +9,12 @@ module.exports = function(Chart) {
 
 		// label settings
 		ticks: {
-			callback: function(value, index, arr) {
+			callback: function(value, index, arr) {               
 				var remain = value / (Math.pow(10, Math.floor(helpers.log10(value))));
 
-				if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === arr.length - 1) {
+                if (value === 0){
+                    return '0';
+                } else if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === arr.length - 1) {
 					return value.toExponential();
 				} else {
 					return '';
@@ -38,6 +40,7 @@ module.exports = function(Chart) {
 			// Calculate Range
 			me.min = null;
 			me.max = null;
+            me.minNotZero = null;
 
 			if (opts.stacked) {
 				var valuesPerType = {};
@@ -52,11 +55,7 @@ module.exports = function(Chart) {
 						helpers.each(dataset.data, function(rawValue, index) {
 							var values = valuesPerType[meta.type];
 							var value = +me.getRightValue(rawValue);
-                            if(value === 0){
-                                dataset.data[index] = null;  // don't show y-value
-                            }
-							if (isNaN(value) || meta.data[index].hidden || value === 0) {
-								return;
+							if (isNaN(value) || meta.data[index].hidden) {								return;
 							}
 
 							values[index] = values[index] || 0;
@@ -84,10 +83,7 @@ module.exports = function(Chart) {
 					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 						helpers.each(dataset.data, function(rawValue, index) {
 							var value = +me.getRightValue(rawValue);
-                            if(value === 0){
-                                dataset.data[index] = null;  // don't show y-value
-                            }
-							if (isNaN(value) || meta.data[index].hidden || value === 0) {
+							if (isNaN(value) || meta.data[index].hidden) {
 								return;
 							}
 
@@ -102,6 +98,12 @@ module.exports = function(Chart) {
 							} else if (value > me.max) {
 								me.max = value;
 							}
+                            
+                            if(me.minNotZero === null && value !== 0){
+                               me.minNotZero = value; 
+                            } else if (value < me.minNotZero && value !== 0) {
+                               me.minNotZero = value; 
+                            }
 						});
 					}
 				});
@@ -139,9 +141,17 @@ module.exports = function(Chart) {
 
 			while (tickVal < me.max) {
 				ticks.push(tickVal);
-
-				var exp = Math.floor(helpers.log10(tickVal));
-				var significand = Math.floor(tickVal / Math.pow(10, exp)) + 1;
+                
+                var exp;
+                var significand;
+                
+                if(tickVal === 0){
+                    exp = Math.floor(helpers.log10(me.minNotZero));
+                    significand = Math.floor(me.minNotZero / Math.pow(10, exp));
+                } else {
+                    exp = Math.floor(helpers.log10(tickVal));
+                    significand = Math.floor(tickVal / Math.pow(10, exp)) + 1;
+                }
 
 				if (significand === 10) {
 					significand = 1;
@@ -162,7 +172,7 @@ module.exports = function(Chart) {
 			// At this point, we need to update our max and min given the tick values since we have expanded the
 			// range of the scale
 			me.max = helpers.max(ticks);
-			me.min = helpers.min(ticks);
+			me.min = helpers.min(ticks);          
 
 			if (tickOpts.reverse) {
 				ticks.reverse();
@@ -193,13 +203,13 @@ module.exports = function(Chart) {
 
 			var start = me.start;
 			var newVal = +me.getRightValue(value);
-			var range = helpers.log10(me.end) - helpers.log10(start);
+			var range;
 			var paddingTop = me.paddingTop;
 			var paddingBottom = me.paddingBottom;
 			var paddingLeft = me.paddingLeft;
 
 			if (me.isHorizontal()) {
-
+                range = helpers.log10(me.end) - helpers.log10(start); // todo: if start === 0
 				if (newVal === 0) {
 					pixel = me.left + paddingLeft;
 				} else {
@@ -209,14 +219,22 @@ module.exports = function(Chart) {
 				}
 			} else {
 				// Bottom - top since pixels increase downard on a screen
-				if (newVal === 0) {
-					pixel = me.top + paddingTop;
-				} else {
-					innerDimension = me.height - (paddingTop + paddingBottom);
+                innerDimension = me.height - (paddingTop + paddingBottom);
+                if(start === 0){
+                    range = helpers.log10(me.end) - helpers.log10(me.minNotZero);
+                    if (newVal === start) {
+                        pixel = me.bottom - paddingBottom;
+                    } else if(newVal === me.minNotZero){
+                        pixel = me.bottom - paddingBottom - innerDimension * 0.02;
+                    } else {
+                        pixel = me.bottom - paddingBottom - innerDimension * 0.02 - (innerDimension * 0.98/ range * (helpers.log10(newVal)-helpers.log10(me.minNotZero)));
+                    }
+                } else {
+                    range = helpers.log10(me.end) - helpers.log10(start);
+                    innerDimension = me.height - (paddingTop + paddingBottom);
 					pixel = (me.bottom - paddingBottom) - (innerDimension / range * (helpers.log10(newVal) - helpers.log10(start)));
-				}
+               }
 			}
-
 			return pixel;
 		},
 		getValueForPixel: function(pixel) {
@@ -231,7 +249,6 @@ module.exports = function(Chart) {
 				innerDimension = me.height - (me.paddingTop + me.paddingBottom);
 				value = Math.pow(10, (me.bottom - me.paddingBottom - pixel) * range / innerDimension) / me.start;
 			}
-
 			return value;
 		}
 	});
