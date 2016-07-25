@@ -136,7 +136,7 @@ The following options are provided by the linear scale. They are all located in 
 
 Name | Type | Default | Description
 --- | --- | --- | ---
-beginAtZero | Boolean | - | if true, scale will inclulde 0 if it is not already included.
+beginAtZero | Boolean | - | if true, scale will include 0 if it is not already included.
 min | Number | - | User defined minimum number for the scale, overrides minimum value from data.
 max | Number | - | User defined maximum number for the scale, overrides maximum value from data.
 maxTicksLimit | Number | 11 | Maximum number of ticks and gridlines to show. If not defined, it will limit to 11 ticks but will show all gridlines.
@@ -341,7 +341,7 @@ Name | Type | Default | Description
 backdropColor | Color | 'rgba(255, 255, 255, 0.75)' | Color of label backdrops
 backdropPaddingX | Number | 2 | Horizontal padding of label backdrop
 backdropPaddingY | Number | 2 | Vertical padding of label backdrop
-beginAtZero | Boolean | - | if true, scale will inclulde 0 if it is not already included.
+beginAtZero | Boolean | - | if true, scale will include 0 if it is not already included.
 min | Number | - | User defined minimum number for the scale, overrides minimum value from data.
 max | Number | - | User defined maximum number for the scale, overrides maximum value from data.
 maxTicksLimit | Number | 11 | Maximum number of ticks and gridlines to show. If not defined, it will limit to 11 ticks but will show all gridlines.
