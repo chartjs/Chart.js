@@ -479,4 +479,33 @@ describe('Time scale tests', function() {
 			threshold: 0.75
 		});
 	});
+
+	it("should not throw an error if the datasetIndex is out of bounds", function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				labels: ["2016-06-26"],
+				datasets: [{
+					type: "line",
+					data: [5]
+				}]
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						display: true,
+						type: "time",
+					}]
+				}
+			}
+		});
+
+		var xScale = chartInstance.scales.xScale0;
+
+		var getOutOfBoundPixelForValue = function() {
+			xScale.getLabelMoment(12, 0);
+		};
+
+		expect(getOutOfBoundPixelForValue).not.toThrow();
+	});
 });
