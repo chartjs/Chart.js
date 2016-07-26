@@ -142,7 +142,9 @@ module.exports = function(Chart) {
 			xLabel: xScale ? xScale.getLabelForIndex(index, datasetIndex) : '',
 			yLabel: yScale ? yScale.getLabelForIndex(index, datasetIndex) : '',
 			index: index,
-			datasetIndex: datasetIndex
+			datasetIndex: datasetIndex,
+			pointX: element._model.x,
+			pointY: element._model.y,
 		};
 	}
 
@@ -312,7 +314,8 @@ module.exports = function(Chart) {
 					x: Math.round(tooltipPosition.x),
 					y: Math.round(tooltipPosition.y),
 					caretPadding: helpers.getValueOrDefault(tooltipPosition.padding, 2),
-					labelColors: labelColors
+					labelColors: labelColors,
+					dataPoints: tooltipItems,
 				});
 
 				// We need to determine alignment of
