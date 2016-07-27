@@ -424,41 +424,44 @@ module.exports = function(Chart) {
 			return elementsArray;
 		},
 
-        getElementsAtXAxis: function(e){
-            var me = this;
-            var eventPosition = helpers.getRelativePosition(e, me.chart);
-            var elementsArray = [];
+		getElementsAtXAxis: function(e) {
+			var me = this;
+			var eventPosition = helpers.getRelativePosition(e, me.chart);
+			var elementsArray = [];
 
-            var found = (function() {
-                if (me.data.datasets) {
-                    for (var i = 0; i < me.data.datasets.length; i++) {
-                        var meta = me.getDatasetMeta(i);
-                        if (me.isDatasetVisible(i)) {
-                            for (var j = 0; j < meta.data.length; j++) {
-                                if (meta.data[j].inLabelRange(eventPosition.x, eventPosition.y)) {
-                                    return meta.data[j];
-                                }
-                            }
-                        }
-                    }
-                }
-            }).call(me);
+			var found = (function() {
+				if (me.data.datasets) {
+					for (var i = 0; i < me.data.datasets.length; i++) {
+						var meta = me.getDatasetMeta(i);
+						if (me.isDatasetVisible(i)) {
+							for (var j = 0; j < meta.data.length; j++) {
+								if (meta.data[j].inLabelRange(eventPosition.x, eventPosition.y)) {
+									return meta.data[j];
+								}
+							}
+						}
+					}
+				}
+			}).call(me);
 
-            if (!found) {
-                return elementsArray;
-            }
+			if (!found) {
+				return elementsArray;
+			}
 
-            helpers.each(me.data.datasets, function(dataset, datasetIndex) {
-                if (me.isDatasetVisible(datasetIndex)) {
-                    var meta = me.getDatasetMeta(datasetIndex);
-                    if(!meta.data[found._index]._view.skip){
-                    	elementsArray.push(meta.data[found._index]);
-                    }
-                }
-            }, me);
+			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
+				if (me.isDatasetVisible(datasetIndex)) {
+					var meta = me.getDatasetMeta(datasetIndex);
+					var index = helpers.findIndex(meta.data, function (it) {
+						return found._model.x === it._model.x;
+					});
+					if(index !== -1 && !meta.data[index]._view.skip) {
+						elementsArray.push(meta.data[index]);
+					}
+				}
+			}, me);
 
-            return elementsArray;
-        },		
+			return elementsArray;
+		},		
 
 		getElementsAtEventForMode: function(e, mode) {
 			var me = this;
