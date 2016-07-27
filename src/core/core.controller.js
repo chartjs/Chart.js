@@ -450,14 +450,11 @@ module.exports = function(Chart) {
 			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
 				if (me.isDatasetVisible(datasetIndex)) {
 					var meta = me.getDatasetMeta(datasetIndex);
-					var item = null;
-					var findByXCoord = function (it) {
-						if (found._model.x === it._model.x)
-							item = it;
-					};
-					meta.data.forEach(findByXCoord);
-					if(item && !item._view.skip) {
-						elementsArray.push(item);
+					var index = helpers.findIndex(meta.data, function (it) {
+						return found._model.x === it._model.x;
+					});
+					if(index !== -1 && !meta.data[index]._view.skip) {
+						elementsArray.push(meta.data[index]);
 					}
 				}
 			}, me);
