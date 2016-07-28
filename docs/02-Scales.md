@@ -209,7 +209,7 @@ The time scale is used to display times and dates. It can only be placed on the 
 
 #### Configuration Options
 
-The following options are provided by the logarithmic scale. They are all located in the `time` sub options.
+The following options are provided by the time scale. They are all located in the `time` sub options.
 
 Name | Type | Default | Description
 --- | --- | --- | ---
@@ -346,7 +346,7 @@ min | Number | - | User defined minimum number for the scale, overrides minimum 
 max | Number | - | User defined maximum number for the scale, overrides maximum value from data.
 maxTicksLimit | Number | 11 | Maximum number of ticks and gridlines to show. If not defined, it will limit to 11 ticks but will show all gridlines.
 showLabelBackdrop | Boolean | true | If true, draw a background behind the tick labels
-stepSize | Number | - | User defined fixed step size for the scale. If set, the scale ticks will be enumerated by multiple of stepSize, having one tick per increment. If not set, the ticks are labeled automatically using the nice numbers algorithm.
+fixedStepSize | Number | - | User defined fixed step size for the scale. If set, the scale ticks will be enumerated by multiple of stepSize, having one tick per increment. If not set, the ticks are labeled automatically using the nice numbers algorithm.
 stepSize | Number | - | if defined, it can be used along with the min and the max to give a custom number of steps. See the example below.
 suggestedMax | Number | - | User defined maximum number for the scale, overrides maximum value *except for if* it is lower than the maximum value.
 suggestedMin | Number | - | User defined minimum number for the scale, overrides minimum value *except for if* it is higher than the minimum value.
