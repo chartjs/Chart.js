@@ -209,7 +209,7 @@ The time scale is used to display times and dates. It can only be placed on the 
 
 #### Configuration Options
 
-The following options are provided by the logarithmic scale. They are all located in the `time` sub options.
+The following options are provided by the time scale. They are all located in the `time` sub options.
 
 Name | Type | Default | Description
 --- | --- | --- | ---
