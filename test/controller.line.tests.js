@@ -278,6 +278,59 @@ describe('Line controller tests', function() {
 		
 	});
 
+	it('should update elements when the y scale is stacked with multiple axes', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: [10, -10, 10, -10],
+					label: 'dataset1'
+				}, {
+					data: [10, 15, 0, -4],
+					label: 'dataset2'
+				}, {
+					data: [10, 10, -10, -10],
+					label: 'dataset3',
+					yAxisID: 'secondAxis'
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4']
+			},
+			options: {
+				scales: {
+					yAxes: [{
+						stacked: true
+					}, {
+						type: 'linear',
+						id: 'secondAxis'
+					}]
+				}
+			}
+		});
+		
+		var meta0 = chart.getDatasetMeta(0);
+
+		[	{ x:  76, y: 161 },
+			{ x: 215, y: 419 },
+			{ x: 353, y: 161 },
+			{ x: 492, y: 419 }
+		].forEach(function(values, i) {
+				expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
+				expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
+		});
+
+		var meta1 = chart.getDatasetMeta(1);
+
+		[	{ x:  76, y:  32 },
+			{ x: 215, y:  97 },
+			{ x: 353, y: 161 },
+			{ x: 492, y: 471 }
+		].forEach(function(values, i) {
+				expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
+				expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
+		});
+		
+	});
+
 	it('should update elements when the y scale is stacked and datasets is scatter data', function() {
 		var chart = window.acquireChart({
 			type: 'line',
