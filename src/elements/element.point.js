@@ -47,9 +47,9 @@ module.exports = function(Chart) {
 				return;
 			}
 
-			ctx.strokeStyle = vm.borderColor || defaultColor;
+			ctx.strokeStyle = helpers.color(vm.borderColor || defaultColor).rgbaString();
 			ctx.lineWidth = helpers.getValueOrDefault(vm.borderWidth, globalOpts.elements.point.borderWidth);
-			ctx.fillStyle = vm.backgroundColor || defaultColor;
+			ctx.fillStyle = helpers.color(vm.backgroundColor || defaultColor).rgbaString();
 
 			Chart.canvasHelpers.drawPoint(ctx, pointStyle, radius, x, y);
 		}

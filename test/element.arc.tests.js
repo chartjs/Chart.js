@@ -99,13 +99,13 @@ describe('Arc element tests', function() {
 			args: []
 		}, {
 			name: 'setStrokeStyle',
-			args: ['rgb(255, 0, 0)']
+			args: ['rgba(255, 0, 0, 1)']
 		}, {
 			name: 'setLineWidth',
 			args: [undefined]
 		}, {
 			name: 'setFillStyle',
-			args: ['rgb(0, 0, 255)']
+			args: ['rgba(0, 0, 255, 1)']
 		}, {
 			name: 'fill',
 			args: []
@@ -155,13 +155,13 @@ describe('Arc element tests', function() {
 			args: []
 		}, {
 			name: 'setStrokeStyle',
-			args: ['rgb(255, 0, 0)']
+			args: ['rgba(255, 0, 0, 1)']
 		}, {
 			name: 'setLineWidth',
 			args: [5]
 		}, {
 			name: 'setFillStyle',
-			args: ['rgb(0, 0, 255)']
+			args: ['rgba(0, 0, 255, 1)']
 		}, {
 			name: 'fill',
 			args: []

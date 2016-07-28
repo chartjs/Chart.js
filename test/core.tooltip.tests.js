@@ -111,11 +111,11 @@ describe('tooltip tests', function() {
 			footer: [],
 			caretPadding: 2,
 			labelColors: [{
-				borderColor: 'rgb(255, 0, 0)',
-				backgroundColor: 'rgb(0, 255, 0)'
+				borderColor: 'rgba(255, 0, 0, 1)',
+				backgroundColor: 'rgba(0, 255, 0, 1)'
 			}, {
-				borderColor: 'rgb(0, 0, 255)',
-				backgroundColor: 'rgb(0, 255, 255)'
+				borderColor: 'rgba(0, 0, 255, 1)',
+				backgroundColor: 'rgba(0, 255, 255, 1)'
 			}]
 		}));
 
@@ -364,11 +364,11 @@ describe('tooltip tests', function() {
 			footer: ['beforeFooter', 'footer', 'afterFooter'],
 			caretPadding: 2,
 			labelColors: [{
-				borderColor: 'rgb(255, 0, 0)',
-				backgroundColor: 'rgb(0, 255, 0)'
+				borderColor: 'rgba(255, 0, 0, 1)',
+				backgroundColor: 'rgba(0, 255, 0, 1)'
 			}, {
-				borderColor: 'rgb(0, 0, 255)',
-				backgroundColor: 'rgb(0, 255, 255)'
+				borderColor: 'rgba(0, 0, 255, 1)',
+				backgroundColor: 'rgba(0, 255, 255, 1)'
 			}]
 		}));
 
@@ -447,11 +447,11 @@ describe('tooltip tests', function() {
 			afterBody: [],
 			footer: [],
 			labelColors: [{
-				borderColor: 'rgb(0, 0, 255)',
-				backgroundColor: 'rgb(0, 255, 255)'
+				borderColor: 'rgba(0, 0, 255, 1)',
+				backgroundColor: 'rgba(0, 255, 255, 1)'
 			}, {
-				borderColor: 'rgb(255, 0, 0)',
-				backgroundColor: 'rgb(0, 255, 0)'
+				borderColor: 'rgba(255, 0, 0, 1)',
+				backgroundColor: 'rgba(0, 255, 0, 1)'
 			}]
 		}));
 

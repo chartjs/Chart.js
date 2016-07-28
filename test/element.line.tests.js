@@ -101,7 +101,7 @@ describe('Line element tests', function() {
 			args: [3]
 		}, {
 			name: 'setStrokeStyle',
-			args: ['rgba(0,0,0,0.1)']
+			args: ['rgba(0, 0, 0, 0.1)']
 		}, {
 			name: 'beginPath',
 			args: []
@@ -231,7 +231,7 @@ describe('Line element tests', function() {
 			args: [0, 2]
 		}, {
 			name: 'setFillStyle',
-			args: ['rgb(0, 0, 0)']
+			args: ['rgba(0, 0, 0, 1)']
 		}, {
 			name: 'closePath',
 			args: []
@@ -257,7 +257,7 @@ describe('Line element tests', function() {
 			args: [4]
 		}, {
 			name: 'setStrokeStyle',
-			args: ['rgb(255, 255, 0)']
+			args: ['rgba(255, 255, 0, 1)']
 		}, {
 			name: 'beginPath',
 			args: []
@@ -384,7 +384,7 @@ describe('Line element tests', function() {
 			args: [0, 2]
 		}, {
 			name: 'setFillStyle',
-			args: ['rgba(0,0,0,0.1)']
+			args: ['rgba(0, 0, 0, 0.1)']
 		}, {
 			name: 'closePath',
 			args: []
@@ -410,7 +410,7 @@ describe('Line element tests', function() {
 			args: [3]
 		}, {
 			name: 'setStrokeStyle',
-			args: ['rgba(0,0,0,0.1)']
+			args: ['rgba(0, 0, 0, 0.1)']
 		}, {
 			name: 'beginPath',
 			args: []
@@ -536,7 +536,7 @@ describe('Line element tests', function() {
 			args: [19, -5, 0, 10, 0, 10]
 		}, {
 			name: 'setFillStyle',
-			args: ['rgba(0,0,0,0.1)']
+			args: ['rgba(0, 0, 0, 0.1)']
 		}, {
 			name: 'closePath',
 			args: []
@@ -562,7 +562,7 @@ describe('Line element tests', function() {
 			args: [3]
 		}, {
 			name: 'setStrokeStyle',
-			args: ['rgba(0,0,0,0.1)']
+			args: ['rgba(0, 0, 0, 0.1)']
 		}, {
 			name: 'beginPath',
 			args: []
@@ -691,7 +691,7 @@ describe('Line element tests', function() {
 			args: [19, -5, 0, 10, 0, 10]
 		}, {
 			name: 'setFillStyle',
-			args: ['rgba(0,0,0,0.1)']
+			args: ['rgba(0, 0, 0, 0.1)']
 		}, {
 			name: 'closePath',
 			args: []
@@ -717,7 +717,7 @@ describe('Line element tests', function() {
 			args: [3]
 		}, {
 			name: 'setStrokeStyle',
-			args: ['rgba(0,0,0,0.1)']
+			args: ['rgba(0, 0, 0, 0.1)']
 		}, {
 			name: 'beginPath',
 			args: []
@@ -843,7 +843,7 @@ describe('Line element tests', function() {
 			args: [3, 2]
 		}, {
 			name: 'setFillStyle',
-			args: ['rgba(0,0,0,0.1)']
+			args: ['rgba(0, 0, 0, 0.1)']
 		}, {
 			name: 'closePath',
 			args: []
@@ -869,7 +869,7 @@ describe('Line element tests', function() {
 			args: [3]
 		}, {
 			name: 'setStrokeStyle',
-			args: ['rgba(0,0,0,0.1)']
+			args: ['rgba(0, 0, 0, 0.1)']
 		}, {
 			name: 'beginPath',
 			args: []
@@ -995,7 +995,7 @@ describe('Line element tests', function() {
 			args: [3, 2]
 		}, {
 			name: 'setFillStyle',
-			args: ['rgba(0,0,0,0.1)']
+			args: ['rgba(0, 0, 0, 0.1)']
 		}, {
 			name: 'closePath',
 			args: []
@@ -1021,7 +1021,7 @@ describe('Line element tests', function() {
 			args: [3]
 		}, {
 			name: 'setStrokeStyle',
-			args: ['rgba(0,0,0,0.1)']
+			args: ['rgba(0, 0, 0, 0.1)']
 		}, {
 			name: 'beginPath',
 			args: []

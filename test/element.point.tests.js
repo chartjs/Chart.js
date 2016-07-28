@@ -97,7 +97,7 @@ describe('Point element tests', function() {
 			args: [6]
 		}, {
 			name: 'setFillStyle',
-			args: ['rgba(0, 255, 0)']
+			args: ['rgba(0, 255, 0, 1)']
 		}, {
 			name: 'beginPath',
 			args: []
@@ -127,7 +127,7 @@ describe('Point element tests', function() {
 			args: [6]
 		}, {
 			name: 'setFillStyle',
-			args: ['rgba(0, 255, 0)']
+			args: ['rgba(0, 255, 0, 1)']
 		}, {
 			name: 'beginPath',
 			args: []
@@ -163,7 +163,7 @@ describe('Point element tests', function() {
 			args: [6]
 		}, {
 			name: 'setFillStyle',
-			args: ['rgba(0, 255, 0)']
+			args: ['rgba(0, 255, 0, 1)']
 		}, {
 			name: 'beginPath',
 			args: []
@@ -190,7 +190,7 @@ describe('Point element tests', function() {
 			args: [6]
 		}, {
 			name: 'setFillStyle',
-			args: ['rgba(0, 255, 0)']
+			args: ['rgba(0, 255, 0, 1)']
 		}, {
 			name: 'beginPath',
 			args: []
@@ -229,7 +229,7 @@ describe('Point element tests', function() {
 			args: [6]
 		}, {
 			name: 'setFillStyle',
-			args: ['rgba(0, 255, 0)']
+			args: ['rgba(0, 255, 0, 1)']
 		}, {
 			name: 'beginPath',
 			args: []
@@ -265,7 +265,7 @@ describe('Point element tests', function() {
 			args: [6]
 		}, {
 			name: 'setFillStyle',
-			args: ['rgba(0, 255, 0)']
+			args: ['rgba(0, 255, 0, 1)']
 		}, {
 			name: 'beginPath',
 			args: []
@@ -301,7 +301,7 @@ describe('Point element tests', function() {
 			args: [6]
 		}, {
 			name: 'setFillStyle',
-			args: ['rgba(0, 255, 0)']
+			args: ['rgba(0, 255, 0, 1)']
 		}, {
 			name: 'beginPath',
 			args: []
@@ -349,7 +349,7 @@ describe('Point element tests', function() {
 			args: [6]
 		}, {
 			name: 'setFillStyle',
-			args: ['rgba(0, 255, 0)']
+			args: ['rgba(0, 255, 0, 1)']
 		}, {
 			name: 'beginPath',
 			args: []
@@ -379,7 +379,7 @@ describe('Point element tests', function() {
 			args: [6]
 		}, {
 			name: 'setFillStyle',
-			args: ['rgba(0, 255, 0)']
+			args: ['rgba(0, 255, 0, 1)']
 		}, {
 			name: 'beginPath',
 			args: []
@@ -422,13 +422,13 @@ describe('Point element tests', function() {
 
 		expect(mockContext.getCalls()).toEqual([{
 			name: 'setStrokeStyle',
-			args: ['rgba(0,0,0,0.1)']
+			args: ['rgba(0, 0, 0, 0.1)']
 		}, {
 			name: 'setLineWidth',
 			args: [1]
 		}, {
 			name: 'setFillStyle',
-			args: ['rgba(0,0,0,0.1)']
+			args: ['rgba(0, 0, 0, 0.1)']
 		}, {
 			name: 'beginPath',
 			args: []
