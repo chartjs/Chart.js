@@ -247,7 +247,9 @@ module.exports = function(Chart) {
 			var me = this;
 			var meta = me.getMeta();
 			var area = me.chart.chartArea;
-			var points = meta.data || [];
+
+			// only consider points that are drawn in case the spanGaps option is ued
+			var points = (meta.data || []).filter(function(pt) { return !pt._model.skip; });
 			var i, ilen, point, model, controlPoints;
 
 			var needToCap = me.chart.options.elements.line.capBezierPoints;
