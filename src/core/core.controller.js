@@ -384,7 +384,7 @@ module.exports = function(Chart) {
 				}
 			});
 
-			return elementsArray;
+			return elementsArray.slice(0, 1);
 		},
 
 		getElementsAtEvent: function(e) {
