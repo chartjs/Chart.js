@@ -40,7 +40,7 @@ xAxisID | `String` | The ID of the x axis to plot this dataset on
 yAxisID | `String` | The ID of the y axis to plot this dataset on
 fill | `Boolean` | If true, fill the area under the line
 lineTension | `Number` | Bezier curve tension of the line. Set to 0 to draw straightlines. *Note* This was renamed from 'tension' but the old name still works.
-backgroundColor | `Color` | The fill color under the line. See [Colors](#getting-started-colors)
+backgroundColor | `Color` | The fill color under the line. See [Colors](#chart-configuration-colors)
 borderWidth | `Number` | The width of the line in pixels
 borderColor | `Color` | The color of the line.
 borderCapStyle | `String` | Cap style of the line. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap)
@@ -58,6 +58,8 @@ pointHoverBorderColor | `Color or Array<Color>` | Point border color when hovere
 pointHoverBorderWidth | `Number or Array<Number>` | Border width of point when hovered
 pointStyle | `String, Array<String>, Image, Array<Image>` | The style of point. Options are 'circle', 'triangle', 'rect', 'rectRot', 'cross', 'crossRot', 'star', 'line', and 'dash'. If the option is an image, that image is drawn on the canvas using `drawImage`. 
 showLine | `Boolean` | If false, the line is not drawn for this dataset
+spanGaps | `Boolean` | If true, lines will be drawn between points with no or null data
+steppedLine | `Boolean` | If true, the line is shown as a steeped line and 'lineTension' will be ignored
 
 An example data object using these attributes is shown below.
 ```javascript
@@ -84,6 +86,7 @@ var data = {
 			pointRadius: 1,
 			pointHitRadius: 10,
 			data: [65, 59, 80, 81, 56, 55, 40],
+			spanGaps: false,
 		}
 	]
 };
@@ -94,9 +97,11 @@ The data for line charts is broken up into an array of datasets. Each dataset ha
 
 The label key on each dataset is optional, and can be used when generating a scale for the chart.
 
+When `spanGaps` is set to true, the gaps between points in sparse datasets are filled in. By default, it is off.
+
 ### Data Points
 
-The data passed to the chart can be passed in two formats. The most common method is to pass the data array as an array of numbers. In this case, the `data.labels` array must be specified and must contain a label for each point.
+The data passed to the chart can be passed in two formats. The most common method is to pass the data array as an array of numbers. In this case, the `data.labels` array must be specified and must contain a label for each point or, in the case of labels to be displayed over multiple lines an array of labels (one for each line) i.e `[["June","2015"], "July"]`.
 
 The alternate is used for sparse datasets. Data is specified using an object containing `x` and `y` properties. This is used for scatter charts as documented below.
 
@@ -140,6 +145,7 @@ These are the customisation options specific to Line charts. These options are m
 Name | Type | Default | Description
 --- | --- | --- | ---
 showLines | Boolean | true | If false, the lines between points are not drawn
+spanGaps | Boolean | false | If true, NaN data does not break the line 
 
 You can override these for your `Chart` instance by passing a member `options` into the `Line` method.
 

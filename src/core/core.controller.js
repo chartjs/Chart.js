@@ -13,7 +13,10 @@ module.exports = function(Chart) {
 	// Controllers available for dataset visualization eg. bar, line, slice, etc.
 	Chart.controllers = {};
 
-	// The main controller of a chart
+	/**
+	 * @class Chart.Controller
+	 * The main controller of a chart.
+	 */
 	Chart.Controller = function(instance) {
 
 		this.chart = instance;
@@ -40,65 +43,79 @@ module.exports = function(Chart) {
 		return this;
 	};
 
-	helpers.extend(Chart.Controller.prototype, {
+	helpers.extend(Chart.Controller.prototype, /** @lends Chart.Controller */ {
 
-		initialize: function initialize() {
+		initialize: function() {
+			var me = this;
 			// Before init plugin notification
-			Chart.pluginService.notifyPlugins('beforeInit', [this]);
+			Chart.plugins.notify('beforeInit', [me]);
 
-			this.bindEvents();
+			me.bindEvents();
 
 			// Make sure controllers are built first so that each dataset is bound to an axis before the scales
 			// are built
-			this.ensureScalesHaveIDs();
-			this.buildOrUpdateControllers();
-			this.buildScales();
-			this.updateLayout();
-			this.resetElements();
-			this.initToolTip();
-			this.update();
+			me.ensureScalesHaveIDs();
+			me.buildOrUpdateControllers();
+			me.buildScales();
+			me.updateLayout();
+			me.resetElements();
+			me.initToolTip();
+			me.update();
 
 			// After init plugin notification
-			Chart.pluginService.notifyPlugins('afterInit', [this]);
+			Chart.plugins.notify('afterInit', [me]);
 
-			return this;
+			return me;
 		},
 
-		clear: function clear() {
+		clear: function() {
 			helpers.clear(this.chart);
 			return this;
 		},
 
-		stop: function stop() {
+		stop: function() {
 			// Stops any current animation loop occuring
 			Chart.animationService.cancelAnimation(this);
 			return this;
 		},
 
 		resize: function resize(silent) {
-			var canvas = this.chart.canvas;
-			var newWidth = helpers.getMaximumWidth(this.chart.canvas);
-			var newHeight = (this.options.maintainAspectRatio && isNaN(this.chart.aspectRatio) === false && isFinite(this.chart.aspectRatio) && this.chart.aspectRatio !== 0) ? newWidth / this.chart.aspectRatio : helpers.getMaximumHeight(this.chart.canvas);
+			var me = this;
+			var chart = me.chart;
+			var canvas = chart.canvas;
+			var newWidth = helpers.getMaximumWidth(canvas);
+			var aspectRatio = chart.aspectRatio;
+			var newHeight = (me.options.maintainAspectRatio && isNaN(aspectRatio) === false && isFinite(aspectRatio) && aspectRatio !== 0) ? newWidth / aspectRatio : helpers.getMaximumHeight(canvas);
 
-			var sizeChanged = this.chart.width !== newWidth || this.chart.height !== newHeight;
+			var sizeChanged = chart.width !== newWidth || chart.height !== newHeight;
 
-			if (!sizeChanged)
-				return this;
-
-			canvas.width = this.chart.width = newWidth;
-			canvas.height = this.chart.height = newHeight;
-
-			helpers.retinaScale(this.chart);
-
-			if (!silent) {
-				this.stop();
-				this.update(this.options.responsiveAnimationDuration);
+			if (!sizeChanged) {
+				return me;
 			}
 
-			return this;
+			canvas.width = chart.width = newWidth;
+			canvas.height = chart.height = newHeight;
+
+			helpers.retinaScale(chart);
+
+			// Notify any plugins about the resize
+			var newSize = { width: newWidth, height: newHeight };
+			Chart.plugins.notify('resize', [me, newSize]);
+
+			// Notify of resize
+			if (me.options.onResize) {
+				me.options.onResize(me, newSize);
+			}
+
+			if (!silent) {
+				me.stop();
+				me.update(me.options.responsiveAnimationDuration);
+			}
+
+			return me;
 		},
 
-		ensureScalesHaveIDs: function ensureScalesHaveIDs() {
+		ensureScalesHaveIDs: function() {
 			var options = this.options;
 			var scalesOptions = options.scales || {};
 			var scaleOptions = options.scale;
@@ -119,7 +136,7 @@ module.exports = function(Chart) {
 		/**
 		 * Builds a map of scale ID to scale object for future lookup.
 		 */
-		buildScales: function buildScales() {
+		buildScales: function() {
 			var me = this;
 			var options = me.options;
 			var scales = me.scales = {};
@@ -137,7 +154,7 @@ module.exports = function(Chart) {
 				items.push({ options: options.scale, dtype: 'radialLinear', isDefault: true });
 			}
 
-			helpers.each(items, function(item, index) {
+			helpers.each(items, function(item) {
 				var scaleOptions = item.options;
 				var scaleType = helpers.getValueOrDefault(scaleOptions.type, item.dtype);
 				var scaleClass = Chart.scaleService.getScaleConstructor(scaleType);
@@ -169,14 +186,15 @@ module.exports = function(Chart) {
 			Chart.layoutService.update(this, this.chart.width, this.chart.height);
 		},
 
-		buildOrUpdateControllers: function buildOrUpdateControllers() {
+		buildOrUpdateControllers: function() {
+			var me = this;
 			var types = [];
 			var newControllers = [];
 
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				var meta = this.getDatasetMeta(datasetIndex);
+			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
+				var meta = me.getDatasetMeta(datasetIndex);
 				if (!meta.type) {
-					meta.type = dataset.type || this.config.type;
+					meta.type = dataset.type || me.config.type;
 				}
 
 				types.push(meta.type);
@@ -184,15 +202,15 @@ module.exports = function(Chart) {
 				if (meta.controller) {
 					meta.controller.updateIndex(datasetIndex);
 				} else {
-					meta.controller = new Chart.controllers[meta.type](this, datasetIndex);
+					meta.controller = new Chart.controllers[meta.type](me, datasetIndex);
 					newControllers.push(meta.controller);
 				}
-			}, this);
+			}, me);
 
 			if (types.length > 1) {
 				for (var i = 1; i < types.length; i++) {
 					if (types[i] !== types[i - 1]) {
-						this.isCombo = true;
+						me.isCombo = true;
 						break;
 					}
 				}
@@ -201,51 +219,92 @@ module.exports = function(Chart) {
 			return newControllers;
 		},
 
-		resetElements: function resetElements() {
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				this.getDatasetMeta(datasetIndex).controller.reset();
-			}, this);
+		resetElements: function() {
+			var me = this;
+			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
+				me.getDatasetMeta(datasetIndex).controller.reset();
+			}, me);
 		},
 
 		update: function update(animationDuration, lazy) {
-			Chart.pluginService.notifyPlugins('beforeUpdate', [this]);
+			var me = this;
+			Chart.plugins.notify('beforeUpdate', [me]);
 
 			// In case the entire data object changed
-			this.tooltip._data = this.data;
+			me.tooltip._data = me.data;
 
 			// Make sure dataset controllers are updated and new controllers are reset
-			var newControllers = this.buildOrUpdateControllers();
+			var newControllers = me.buildOrUpdateControllers();
 
 			// Make sure all dataset controllers have correct meta data counts
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				this.getDatasetMeta(datasetIndex).controller.buildOrUpdateElements();
-			}, this);
+			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
+				me.getDatasetMeta(datasetIndex).controller.buildOrUpdateElements();
+			}, me);
 
-			Chart.layoutService.update(this, this.chart.width, this.chart.height);
+			Chart.layoutService.update(me, me.chart.width, me.chart.height);
 
 			// Apply changes to the dataets that require the scales to have been calculated i.e BorderColor chages
-			Chart.pluginService.notifyPlugins('afterScaleUpdate', [this]);
+			Chart.plugins.notify('afterScaleUpdate', [me]);
 
 			// Can only reset the new controllers after the scales have been updated
 			helpers.each(newControllers, function(controller) {
 				controller.reset();
 			});
 
-			// This will loop through any data and do the appropriate element update for the type
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				this.getDatasetMeta(datasetIndex).controller.update();
-			}, this);
+			me.updateDatasets();
 
 			// Do this before render so that any plugins that need final scale updates can use it
-			Chart.pluginService.notifyPlugins('afterUpdate', [this]);
+			Chart.plugins.notify('afterUpdate', [me]);
 
-			this.render(animationDuration, lazy);
+			me.render(animationDuration, lazy);
+		},
+
+		/**
+		 * @method beforeDatasetsUpdate
+		 * @description Called before all datasets are updated. If a plugin returns false,
+		 * the datasets update will be cancelled until another chart update is triggered.
+		 * @param {Object} instance the chart instance being updated.
+		 * @returns {Boolean} false to cancel the datasets update.
+		 * @memberof Chart.PluginBase
+		 * @since version 2.1.5
+		 * @instance
+		 */
+
+		/**
+		 * @method afterDatasetsUpdate
+		 * @description Called after all datasets have been updated. Note that this
+		 * extension will not be called if the datasets update has been cancelled.
+		 * @param {Object} instance the chart instance being updated.
+		 * @memberof Chart.PluginBase
+		 * @since version 2.1.5
+		 * @instance
+		 */
+
+		/**
+		 * Updates all datasets unless a plugin returns false to the beforeDatasetsUpdate
+		 * extension, in which case no datasets will be updated and the afterDatasetsUpdate
+		 * notification will be skipped.
+		 * @protected
+		 * @instance
+		 */
+		updateDatasets: function() {
+			var me = this;
+			var i, ilen;
+
+			if (Chart.plugins.notify('beforeDatasetsUpdate', [ me ])) {
+				for (i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
+					me.getDatasetMeta(i).controller.update();
+				}
+
+				Chart.plugins.notify('afterDatasetsUpdate', [ me ]);
+			}
 		},
 
 		render: function render(duration, lazy) {
-			Chart.pluginService.notifyPlugins('beforeRender', [this]);
+			var me = this;
+			Chart.plugins.notify('beforeRender', [me]);
 
-			var animationOptions = this.options.animation;
+			var animationOptions = me.options.animation;
 			if (animationOptions && ((typeof duration !== 'undefined' && duration !== 0) || (typeof duration === 'undefined' && animationOptions.duration !== 0))) {
 				var animation = new Chart.Animation();
 				animation.numSteps = (duration || animationOptions.duration) / 16.66; //60 fps
@@ -264,77 +323,80 @@ module.exports = function(Chart) {
 				animation.onAnimationProgress = animationOptions.onProgress;
 				animation.onAnimationComplete = animationOptions.onComplete;
 
-				Chart.animationService.addAnimation(this, animation, duration, lazy);
+				Chart.animationService.addAnimation(me, animation, duration, lazy);
 			} else {
-				this.draw();
+				me.draw();
 				if (animationOptions && animationOptions.onComplete && animationOptions.onComplete.call) {
-					animationOptions.onComplete.call(this);
+					animationOptions.onComplete.call(me);
 				}
 			}
-			return this;
+			return me;
 		},
 
 		draw: function(ease) {
+			var me = this;
 			var easingDecimal = ease || 1;
-			this.clear();
+			me.clear();
 
-			Chart.pluginService.notifyPlugins('beforeDraw', [this, easingDecimal]);
+			Chart.plugins.notify('beforeDraw', [me, easingDecimal]);
 
 			// Draw all the scales
-			helpers.each(this.boxes, function(box) {
-				box.draw(this.chartArea);
-			}, this);
-			if (this.scale) {
-				this.scale.draw();
+			helpers.each(me.boxes, function(box) {
+				box.draw(me.chartArea);
+			}, me);
+			if (me.scale) {
+				me.scale.draw();
 			}
 
-			Chart.pluginService.notifyPlugins('beforeDatasetDraw', [this, easingDecimal]);
+			Chart.plugins.notify('beforeDatasetsDraw', [me, easingDecimal]);
 
 			// Draw each dataset via its respective controller (reversed to support proper line stacking)
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				if (this.isDatasetVisible(datasetIndex)) {
-					this.getDatasetMeta(datasetIndex).controller.draw(ease);
+			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
+				if (me.isDatasetVisible(datasetIndex)) {
+					me.getDatasetMeta(datasetIndex).controller.draw(ease);
 				}
-			}, this, true);
+			}, me, true);
 
-			Chart.pluginService.notifyPlugins('afterDatasetDraw', [this, easingDecimal]);
+			Chart.plugins.notify('afterDatasetsDraw', [me, easingDecimal]);
 
 			// Finally draw the tooltip
-			this.tooltip.transition(easingDecimal).draw();
+			me.tooltip.transition(easingDecimal).draw();
 
-			Chart.pluginService.notifyPlugins('afterDraw', [this, easingDecimal]);
+			Chart.plugins.notify('afterDraw', [me, easingDecimal]);
 		},
 
 		// Get the single element that was clicked on
 		// @return : An object containing the dataset index and element index of the matching element. Also contains the rectangle that was draw
 		getElementAtEvent: function(e) {
-			var eventPosition = helpers.getRelativePosition(e, this.chart);
+			var me = this;
+			var eventPosition = helpers.getRelativePosition(e, me.chart);
 			var elementsArray = [];
 
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				if (this.isDatasetVisible(datasetIndex)) {
-					var meta = this.getDatasetMeta(datasetIndex);
-					helpers.each(meta.data, function(element, index) {
+			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
+				if (me.isDatasetVisible(datasetIndex)) {
+					var meta = me.getDatasetMeta(datasetIndex);
+					helpers.each(meta.data, function(element) {
 						if (element.inRange(eventPosition.x, eventPosition.y)) {
 							elementsArray.push(element);
 							return elementsArray;
 						}
 					});
 				}
-			}, this);
+			});
 
-			return elementsArray;
+			return elementsArray.slice(0, 1);
 		},
 
 		getElementsAtEvent: function(e) {
-			var eventPosition = helpers.getRelativePosition(e, this.chart);
+			var me = this;
+			var eventPosition = helpers.getRelativePosition(e, me.chart);
 			var elementsArray = [];
 
 			var found = (function() {
-				if (this.data.datasets) {
-					for (var i = 0; i < this.data.datasets.length; i++) {
-						var meta = this.getDatasetMeta(i);
-						if (this.isDatasetVisible(i)) {
+				if (me.data.datasets) {
+					for (var i = 0; i < me.data.datasets.length; i++) {
+						var meta = me.getDatasetMeta(i);
+						if (me.isDatasetVisible(i)) {
 							for (var j = 0; j < meta.data.length; j++) {
 								if (meta.data[j].inRange(eventPosition.x, eventPosition.y)) {
 									return meta.data[j];
@@ -343,21 +405,63 @@ module.exports = function(Chart) {
 						}
 					}
 				}
-			}).call(this);
+			}).call(me);
 
 			if (!found) {
 				return elementsArray;
 			}
 
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				if (this.isDatasetVisible(datasetIndex)) {
-					var meta = this.getDatasetMeta(datasetIndex);
-					elementsArray.push(meta.data[found._index]);
+			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
+				if (me.isDatasetVisible(datasetIndex)) {
+					var meta = me.getDatasetMeta(datasetIndex),
+						element = meta.data[found._index];
+					if(element && !element._view.skip){
+						elementsArray.push(element);
+					}
 				}
-			}, this);
+			}, me);
 
 			return elementsArray;
 		},
+
+		getElementsAtXAxis: function(e) {
+			var me = this;
+			var eventPosition = helpers.getRelativePosition(e, me.chart);
+			var elementsArray = [];
+
+			var found = (function() {
+				if (me.data.datasets) {
+					for (var i = 0; i < me.data.datasets.length; i++) {
+						var meta = me.getDatasetMeta(i);
+						if (me.isDatasetVisible(i)) {
+							for (var j = 0; j < meta.data.length; j++) {
+								if (meta.data[j].inLabelRange(eventPosition.x, eventPosition.y)) {
+									return meta.data[j];
+								}
+							}
+						}
+					}
+				}
+			}).call(me);
+
+			if (!found) {
+				return elementsArray;
+			}
+
+			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
+				if (me.isDatasetVisible(datasetIndex)) {
+					var meta = me.getDatasetMeta(datasetIndex);
+					var index = helpers.findIndex(meta.data, function (it) {
+						return found._model.x === it._model.x;
+					});
+					if(index !== -1 && !meta.data[index]._view.skip) {
+						elementsArray.push(meta.data[index]);
+					}
+				}
+			}, me);
+
+			return elementsArray;
+		},		
 
 		// returns all data from datasets that are currently under the mouse
 		getDataElementsAtMouse: function(e){
@@ -392,6 +496,8 @@ module.exports = function(Chart) {
 				return me.getElementsAtEvent(e);
 			case 'dataset':
 				return me.getDatasetAtEvent(e);
+            case 'x-axis':
+                return me.getElementsAtXAxis(e);
 			case 'mouse':
 				return me.getDataElementsAtMouse(e);
 			default:
@@ -410,14 +516,15 @@ module.exports = function(Chart) {
 		},
 
 		getDatasetMeta: function(datasetIndex) {
-			var dataset = this.data.datasets[datasetIndex];
+			var me = this;
+			var dataset = me.data.datasets[datasetIndex];
 			if (!dataset._meta) {
 				dataset._meta = {};
 			}
 
-			var meta = dataset._meta[this.id];
+			var meta = dataset._meta[me.id];
 			if (!meta) {
-				meta = dataset._meta[this.id] = {
+				meta = dataset._meta[me.id] = {
 				type: null,
 				data: [],
 				dataset: null,
@@ -449,51 +556,54 @@ module.exports = function(Chart) {
 			return typeof meta.hidden === 'boolean'? !meta.hidden : !this.data.datasets[datasetIndex].hidden;
 		},
 
-		generateLegend: function generateLegend() {
+		generateLegend: function() {
 			return this.options.legendCallback(this);
 		},
 
-		destroy: function destroy() {
-			this.stop();
-			this.clear();
-			helpers.unbindEvents(this, this.events);
-			helpers.removeResizeListener(this.chart.canvas.parentNode);
+		destroy: function() {
+			var me = this;
+			me.stop();
+			me.clear();
+			helpers.unbindEvents(me, me.events);
+			helpers.removeResizeListener(me.chart.canvas.parentNode);
 
 			// Reset canvas height/width attributes
-			var canvas = this.chart.canvas;
-			canvas.width = this.chart.width;
-			canvas.height = this.chart.height;
+			var canvas = me.chart.canvas;
+			canvas.width = me.chart.width;
+			canvas.height = me.chart.height;
 
 			// if we scaled the canvas in response to a devicePixelRatio !== 1, we need to undo that transform here
-			if (this.chart.originalDevicePixelRatio !== undefined) {
-				this.chart.ctx.scale(1 / this.chart.originalDevicePixelRatio, 1 / this.chart.originalDevicePixelRatio);
+			if (me.chart.originalDevicePixelRatio !== undefined) {
+				me.chart.ctx.scale(1 / me.chart.originalDevicePixelRatio, 1 / me.chart.originalDevicePixelRatio);
 			}
 
 			// Reset to the old style since it may have been changed by the device pixel ratio changes
-			canvas.style.width = this.chart.originalCanvasStyleWidth;
-			canvas.style.height = this.chart.originalCanvasStyleHeight;
+			canvas.style.width = me.chart.originalCanvasStyleWidth;
+			canvas.style.height = me.chart.originalCanvasStyleHeight;
 
-			Chart.pluginService.notifyPlugins('destroy', [this]);
+			Chart.plugins.notify('destroy', [me]);
 
-			delete Chart.instances[this.id];
+			delete Chart.instances[me.id];
 		},
 
-		toBase64Image: function toBase64Image() {
+		toBase64Image: function() {
 			return this.chart.canvas.toDataURL.apply(this.chart.canvas, arguments);
 		},
 
-		initToolTip: function initToolTip() {
-			this.tooltip = new Chart.Tooltip({
-				_chart: this.chart,
-				_chartInstance: this,
-				_data: this.data,
-				_options: this.options.tooltips
-			}, this);
+		initToolTip: function() {
+			var me = this;
+			me.tooltip = new Chart.Tooltip({
+				_chart: me.chart,
+				_chartInstance: me,
+				_data: me.data,
+				_options: me.options.tooltips
+			}, me);
 		},
 
-		bindEvents: function bindEvents() {
-			helpers.bindEvents(this, this.options.events, function(evt) {
-				this.eventHandler(evt);
+		bindEvents: function() {
+			var me = this;
+			helpers.bindEvents(me, me.options.events, function(evt) {
+				me.eventHandler(evt);
 			});
 		},
 
@@ -507,6 +617,7 @@ module.exports = function(Chart) {
 				break;
 			case 'label':
 			case 'dataset':
+            case 'x-axis':
 			case 'mouse':
 				// elements = elements;
 				break;

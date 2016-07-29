@@ -1,6 +1,6 @@
 "use strict";
 
-module.exports = function(Chart, moment) {
+module.exports = function(Chart) {
 
   var helpers = Chart.helpers,
     globalOpts = Chart.defaults.global;

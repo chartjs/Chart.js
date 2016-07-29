@@ -119,7 +119,7 @@ module.exports = function(Chart) {
 		linkScales: helpers.noop,
 
 		// Get index of the dataset in relation to the visible datasets. This allows determining the inner and outer radius correctly
-		getRingIndex: function getRingIndex(datasetIndex) {
+		getRingIndex: function(datasetIndex) {
 			var ringIndex = 0;
 
 			for (var j = 0; j < datasetIndex; ++j) {
@@ -131,9 +131,9 @@ module.exports = function(Chart) {
 			return ringIndex;
 		},
 
-		update: function update(reset) {
-			var _this = this;
-			var chart = _this.chart,
+		update: function(reset) {
+			var me = this;
+			var chart = me.chart,
 				chartArea = chart.chartArea,
 				opts = chart.options,
 				arcOpts = opts.elements.arc,
@@ -144,7 +144,7 @@ module.exports = function(Chart) {
 					x: 0,
 					y: 0
 				},
-				meta = _this.getMeta(),
+				meta = me.getMeta(),
 				cutoutPercentage = opts.cutoutPercentage,
 				circumference = opts.circumference;
 
@@ -166,44 +166,43 @@ module.exports = function(Chart) {
 				minSize = Math.min(availableWidth / size.width, availableHeight / size.height);
 				offset = {x: (max.x + min.x) * -0.5, y: (max.y + min.y) * -0.5};
 			}
+            chart.borderWidth = me.getMaxBorderWidth(meta.data);
 
-			chart.outerRadius = Math.max(minSize / 2, 0);
+			chart.outerRadius = Math.max((minSize - chart.borderWidth) / 2, 0);
 			chart.innerRadius = Math.max(cutoutPercentage ? (chart.outerRadius / 100) * (cutoutPercentage) : 1, 0);
 			chart.radiusLength = (chart.outerRadius - chart.innerRadius) / chart.getVisibleDatasetCount();
 			chart.offsetX = offset.x * chart.outerRadius;
 			chart.offsetY = offset.y * chart.outerRadius;
 
-			meta.total = _this.calculateTotal();
+			meta.total = me.calculateTotal();
 
-			_this.outerRadius = chart.outerRadius - (chart.radiusLength * _this.getRingIndex(_this.index));
-			_this.innerRadius = _this.outerRadius - chart.radiusLength;
+			me.outerRadius = chart.outerRadius - (chart.radiusLength * me.getRingIndex(me.index));
+			me.innerRadius = me.outerRadius - chart.radiusLength;
 
 			helpers.each(meta.data, function(arc, index) {
-				_this.updateElement(arc, index, reset);
+				me.updateElement(arc, index, reset);
 			});
 		},
 
 		updateElement: function(arc, index, reset) {
-			var _this = this;
-			var chart = _this.chart,
+			var me = this;
+			var chart = me.chart,
 				chartArea = chart.chartArea,
 				opts = chart.options,
 				animationOpts = opts.animation,
-				arcOpts = opts.elements.arc,
 				centerX = (chartArea.left + chartArea.right) / 2,
 				centerY = (chartArea.top + chartArea.bottom) / 2,
 				startAngle = opts.rotation, // non reset case handled later
 				endAngle = opts.rotation, // non reset case handled later
-				dataset = _this.getDataset(),
-				circumference = reset && animationOpts.animateRotate ? 0 : arc.hidden ? 0 : _this.calculateCircumference(dataset.data[index]) * (opts.circumference / (2.0 * Math.PI)),
-				innerRadius = reset && animationOpts.animateScale ? 0 : _this.innerRadius,
-				outerRadius = reset && animationOpts.animateScale ? 0 : _this.outerRadius,
-				custom = arc.custom || {},
+				dataset = me.getDataset(),
+				circumference = reset && animationOpts.animateRotate ? 0 : arc.hidden ? 0 : me.calculateCircumference(dataset.data[index]) * (opts.circumference / (2.0 * Math.PI)),
+				innerRadius = reset && animationOpts.animateScale ? 0 : me.innerRadius,
+				outerRadius = reset && animationOpts.animateScale ? 0 : me.outerRadius,
 				valueAtIndexOrDefault = helpers.getValueAtIndexOrDefault;
 
 			helpers.extend(arc, {
 				// Utility
-				_datasetIndex: _this.index,
+				_datasetIndex: me.index,
 				_index: index,
 
 				// Desired view properties
@@ -228,7 +227,7 @@ module.exports = function(Chart) {
 				if (index === 0) {
 					model.startAngle = opts.rotation;
 				} else {
-					model.startAngle = _this.getMeta().data[index - 1]._model.endAngle;
+					model.startAngle = me.getMeta().data[index - 1]._model.endAngle;
 				}
 
 				model.endAngle = model.startAngle + model.circumference;
@@ -264,6 +263,24 @@ module.exports = function(Chart) {
 			} else {
 				return 0;
 			}
-		}
+		},
+		
+		//gets the max border or hover width to properly scale pie charts
+        getMaxBorderWidth: function (elements) {
+            var max = 0,
+				index = this.index,
+				length = elements.length,
+				borderWidth,
+				hoverWidth;
+
+            for (var i = 0; i < length; i++) {
+               	borderWidth = elements[i]._model ? elements[i]._model.borderWidth : 0;
+                hoverWidth = elements[i]._chart ? elements[i]._chart.config.data.datasets[index].hoverBorderWidth : 0;
+				
+                max = borderWidth > max ? borderWidth : max;
+                max = hoverWidth > max ? hoverWidth : max;
+            }
+            return max;
+        }
 	});
 };

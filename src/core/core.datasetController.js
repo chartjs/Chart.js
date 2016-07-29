@@ -25,10 +25,11 @@ module.exports = function(Chart) {
 		dataElementType: null,
 
 		initialize: function(chart, datasetIndex) {
-			this.chart = chart;
-			this.index = datasetIndex;
-			this.linkScales();
-			this.addElements();
+			var me = this;
+			me.chart = chart;
+			me.index = datasetIndex;
+			me.linkScales();
+			me.addElements();
 		},
 
 		updateIndex: function(datasetIndex) {
@@ -36,14 +37,15 @@ module.exports = function(Chart) {
 		},
 
 		linkScales: function() {
-			var meta = this.getMeta();
-			var dataset = this.getDataset();
+			var me = this;
+			var meta = me.getMeta();
+			var dataset = me.getDataset();
 
 			if (meta.xAxisID === null) {
-				meta.xAxisID = dataset.xAxisID || this.chart.options.scales.xAxes[0].id;
+				meta.xAxisID = dataset.xAxisID || me.chart.options.scales.xAxes[0].id;
 			}
 			if (meta.yAxisID === null) {
-				meta.yAxisID = dataset.yAxisID || this.chart.options.scales.yAxes[0].id;
+				meta.yAxisID = dataset.yAxisID || me.chart.options.scales.yAxes[0].id;
 			}
 		},
 
@@ -103,7 +105,7 @@ module.exports = function(Chart) {
 			me.updateElement(element, index, true);
 		},
 
-		buildOrUpdateElements: function buildOrUpdateElements() {
+		buildOrUpdateElements: function() {
 			// Handle the number of data points changing
 			var meta = this.getMeta(),
 				md = meta.data,
@@ -126,7 +128,7 @@ module.exports = function(Chart) {
 
 		draw: function(ease) {
 			var easingDecimal = ease || 1;
-			helpers.each(this.getMeta().data, function(element, index) {
+			helpers.each(this.getMeta().data, function(element) {
 				element.transition(easingDecimal).draw();
 			});
 		},
@@ -136,7 +138,6 @@ module.exports = function(Chart) {
 				index = element._index,
 				custom = element.custom || {},
 				valueOrDefault = helpers.getValueAtIndexOrDefault,
-				color = helpers.color,
 				model = element._model;
 
 			model.backgroundColor = custom.backgroundColor ? custom.backgroundColor : valueOrDefault(dataset.backgroundColor, index, elementOpts.backgroundColor);
@@ -149,7 +150,6 @@ module.exports = function(Chart) {
 				index = element._index,
 				custom = element.custom || {},
 				valueOrDefault = helpers.getValueAtIndexOrDefault,
-				color = helpers.color,
 				getHoverColor = helpers.getHoverColor,
 				model = element._model;
 
@@ -157,7 +157,9 @@ module.exports = function(Chart) {
 			model.borderColor = custom.hoverBorderColor ? custom.hoverBorderColor : valueOrDefault(dataset.hoverBorderColor, index, getHoverColor(model.borderColor));
 			model.borderWidth = custom.hoverBorderWidth ? custom.hoverBorderWidth : valueOrDefault(dataset.hoverBorderWidth, index, model.borderWidth);
 		}
-	});
+		
+    });
+	
 
 	Chart.DatasetController.extend = helpers.inherits;
 };

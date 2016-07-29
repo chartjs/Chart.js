@@ -5,6 +5,17 @@ anchor: chart-configuration
 
 Chart.js provides a number of options for changing the behaviour of created charts. These configuration options can be changed on a per chart basis by passing in an options object when creating the chart. Alternatively, the global configuration can be changed which will be used by all charts created after that point.
 
+### Chart Data
+
+To display data, the chart must be passed a data object that contains all of the information needed by the chart. The data object can contain the following parameters
+
+Name | Type | Description
+--- | --- | ----
+datasets | Array[object] | Contains data for each dataset. See the documentation for each chart type to determine the valid options that can be attached to the dataset
+labels | Array[string] | Optional parameter that is used with the [category axis](#scales-category-scale).
+xLabels | Array[string] | Optional parameter that is used with the category axis and is used if the axis is horizontal
+yLabels | Array[string] | Optional parameter that is used with the category axis and is used if the axis is vertical
+
 ### Creating a Chart with Options
 
 To create a chart with configuration options, simply pass an object containing your configuration to the constructor. In the example below, a line chart is created and configured to not be responsive.
@@ -21,7 +32,7 @@ var chartInstance = new Chart(ctx, {
 
 ### Global Configuration
 
-This concept was introduced in Chart.js 1.0 to keep configuration DRY, and allow for changing options globally across chart types, avoiding the need to specify options for each instance, or the default for a particular chart type.
+This concept was introduced in Chart.js 1.0 to keep configuration [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), and allow for changing options globally across chart types, avoiding the need to specify options for each instance, or the default for a particular chart type.
 
 Chart.js merges the options object passed to the chart with the global configuration using chart type defaults and scales defaults appropriately. This way you can be as specific as you would like in your individual chart configuration, while still changing the defaults for all chart types where applicable. The global general options are defined in `Chart.defaults.global`. The defaults for each chart type are discussed in the documentation for that chart type.
 
@@ -72,6 +83,7 @@ maintainAspectRatio | Boolean | true | Maintain the original canvas aspect ratio
 events | Array[String] | `["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"]` | Events that the chart should listen to for tooltips and hovering
 onClick | Function | null | Called if the event is of type 'mouseup' or 'click'. Called in the context of the chart and passed an array of active elements
 legendCallback | Function | ` function (chart) { }` | Function to generate a legend. Receives the chart object to generate a legend from. Default implementation returns an HTML string.
+onResize | Function | null | Called when a resize occurs. Gets passed two arguemnts: the chart instance and the new size.
 
 ### Title Configuration
 
@@ -80,12 +92,12 @@ The title configuration is passed into the `options.title` namespace. The global
 Name | Type | Default | Description
 --- | --- | --- | ---
 display | Boolean | false | Display the title block
-position | String | 'top' | Position of the title. Only 'top' or 'bottom' are currently allowed
+position | String | 'top' | Position of the title. Possible values are 'top', 'left', 'bottom' and 'right'.
 fullWidth | Boolean | true | Marks that this box should take the full width of the canvas (pushing down other boxes)
 fontSize | Number | 12 | Font size inherited from global configuration
 fontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Font family inherited from global configuration
 fontColor | Color | "#666" | Font color inherited from global configuration
-fontStyle | String | 'bold' | Font styling of the title. 
+fontStyle | String | 'bold' | Font styling of the title.
 padding | Number | 10 | Number of pixels to add above and below the title text
 text | String | '' | Title text
 
@@ -113,7 +125,7 @@ The legend configuration is passed into the `options.legend` namespace. The glob
 Name | Type | Default | Description
 --- | --- | --- | ---
 display | Boolean | true | Is the legend displayed
-position | String | 'top' | Position of the legend. Options are 'top' or 'bottom'
+position | String | 'top' | Position of the legend. Possible values are 'top', 'left', 'bottom' and 'right'.
 fullWidth | Boolean | true | Marks that this box should take the full width of the canvas (pushing down other boxes)
 onClick | Function | `function(event, legendItem) {}` | A callback that is called when a click is registered on top of a label item
 labels |Object|-| See the [Legend Label Configuration](#chart-configuration-legend-label-configuration) section below.
@@ -131,6 +143,7 @@ fontColor | Color | "#666" | Font color inherited from global configuration
 fontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Font family inherited from global configuration
 padding | Number | 10 | Padding between rows of colored boxes
 generateLabels: | Function | `function(chart) {  }` | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See [Legend Item](#chart-configuration-legend-item-interface) for details.
+usePointStyle | Boolean | false | Label style will match corresponding point style (size is based on fontSize, boxWidth is not used in this case).
 
 #### Legend Item Interface
 
@@ -159,11 +172,14 @@ Items passed to the legend `onClick` function are the ones returned from `labels
     // For box border. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin
     lineJoin: String,
 
-    // Width of box border 
+    // Width of box border
     lineWidth: Number,
 
     // Stroke style of the legend box
     strokeStyle: Color
+
+    // Point style of the legend box (only used if usePointStyle is true)
+    pointStyle: String
 }
 ```
 
@@ -188,13 +204,13 @@ var chartInstance = new Chart(ctx, {
 
 ### Tooltip Configuration
 
-The title configuration is passed into the `options.tooltips` namespace. The global options for the chart tooltips is defined in `Chart.defaults.global.title`.
+The tooltip configuration is passed into the `options.tooltips` namespace. The global options for the chart tooltips is defined in `Chart.defaults.global.tooltips`.
 
 Name | Type | Default | Description
 --- | --- | --- | ---
-enabled | Boolean | true | Are tooltips 
+enabled | Boolean | true | Are tooltips enabled
 custom | Function | null | See [section](#chart-configuration-custom-tooltips) below
-mode | String | 'single' | Sets which elements appear in the tooltip. Acceptable options are `'single'` or `'label'`. `single` highlights the closest element. `label` highlights elements in all datasets at the same `X` value.
+mode | String | 'single' | Sets which elements appear in the tooltip. Acceptable options are `'single'`, `'label'` or `'x-axis'`. <br>&nbsp;<br>`single` highlights the closest element. <br>&nbsp;<br>`label` highlights elements in all datasets at the same `X` value. <br>&nbsp;<br>`'x-axis'` also highlights elements in all datasets at the same `X` value, but activates when hovering anywhere within the vertical slice of the x-axis representing that `X` value.
 itemSort | Function | undefined | Allows sorting of [tooltip items](#chart-configuration-tooltip-item-interface). Must implement a function that can be passed to [Array.prototype.sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
 backgroundColor | Color | 'rgba(0,0,0,0.8)' | Background color of the tooltip
 titleFontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Font family for tooltip title inherited from global font family
@@ -223,7 +239,7 @@ callbacks | Object | | See the [callbacks section](#chart-configuration-tooltip-
 
 #### Tooltip Callbacks
 
-The tooltip label configuration is nested below the tooltip configuration using the `callbacks` key. The tooltip has the following callbacks for providing text. For all functions, 'this' will be the tooltip object created from the Chart.Tooltip constructor. 
+The tooltip label configuration is nested below the tooltip configuration using the `callbacks` key. The tooltip has the following callbacks for providing text. For all functions, 'this' will be the tooltip object created from the Chart.Tooltip constructor.
 
 All functions are called with the same arguments: a [tooltip item](#chart-configuration-tooltip-item-interface) and the data object passed to the chart. All functions must return either a string or an array of strings. Arrays of strings are treated as multiple lines of text.
 
@@ -268,7 +284,7 @@ The hover configuration is passed into the `options.hover` namespace. The global
 
 Name | Type | Default | Description
 --- | --- | --- | ---
-mode | String | 'single' | Sets which elements hover. Acceptable options are `'single'`, `'label'`, or `'dataset'`. `single` highlights the closest element. `label` highlights elements in all datasets at the same `X` value. `dataset` highlights the closest dataset.
+mode | String | 'single' | Sets which elements hover. Acceptable options are `'single'`, `'label'`, `'x-axis'`, or `'dataset'`. <br>&nbsp;<br>`single` highlights the closest element. <br>&nbsp;<br>`label` highlights elements in all datasets at the same `X` value. <br>&nbsp;<br>`'x-axis'` also highlights elements in all datasets at the same `X` value, but activates when hovering anywhere within the vertical slice of the x-axis representing that `X` value.  <br>&nbsp;<br>`dataset` highlights the closest dataset.
 animationDuration | Number | 400 | Duration in milliseconds it takes to animate hover style changes
 onHover | Function | null | Called when any of the events fire. Called in the context of the chart and passed an array of active elements (bars, points, etc)
 
@@ -335,7 +351,7 @@ Arcs are used in the polar area, doughnut and pie charts. They can be configured
 
 Name | Type | Default | Description
 --- | --- | --- | ---
-backgroundColor | Color | 'rgba(0,0,0,0.1)' | Default fill color for arcs. Inherited from the global default 
+backgroundColor | Color | 'rgba(0,0,0,0.1)' | Default fill color for arcs. Inherited from the global default
 borderColor | Color | '#fff' | Default stroke color for arcs
 borderWidth | Number | 2 | Default stroke width for arcs
 
@@ -353,7 +369,9 @@ borderCapStyle | String | 'butt' | Default line cap style. See [MDN](https://dev
 borderDash | Array | `[]` | Default line dash. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
 borderDashOffset | Number | 0.0 | Default line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
 borderJoinStyle | String | 'miter' | Default line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin)
+capBezierPoints | Boolean | true | If true, bezier control points are kept inside the chart. If false, no restriction is enforced.
 fill | Boolean | true | If true, the line is filled.
+stepped | Boolean | false | If true, the line is shown as a steeped line and 'tension' will be ignored
 
 #### Point Configuration
 
@@ -372,7 +390,7 @@ hoverBorderWidth | Number | 1 | Default stroke width when hovered
 
 #### Rectangle Configuration
 
-Rectangle elements are used to represent the bars in a bar chart. The global rectangle options are stored in `Chart.defaults.global.elements.rectange`.
+Rectangle elements are used to represent the bars in a bar chart. The global rectangle options are stored in `Chart.defaults.global.elements.rectangle`.
 
 Name | Type | Default | Description
 --- | --- | --- | ---
@@ -383,7 +401,7 @@ borderSkipped | String | 'bottom' | Default skipped (excluded) border for rectan
 
 ### Colors
 
-When supplying colors to Chart options, you can use a number of formats. You can specify the color as a string in hexadecimal, RGB, or HSL notations. If a color is needed, but not specified, Chart.js will use the global default color. This color is stored at `Chart.defaults.global.defaultColor`. It is initially set to 'rgb(0, 0, 0, 0.1)';
+When supplying colors to Chart options, you can use a number of formats. You can specify the color as a string in hexadecimal, RGB, or HSL notations. If a color is needed, but not specified, Chart.js will use the global default color. This color is stored at `Chart.defaults.global.defaultColor`. It is initially set to 'rgba(0, 0, 0, 0.1)';
 
 You can also pass a [CanvasGradient](https://developer.mozilla.org/en-US/docs/Web/API/CanvasGradient) object. You will need to create this before passing to the chart, but using it you can achieve some interesting effects.
 

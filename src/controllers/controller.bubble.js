@@ -24,7 +24,7 @@ module.exports = function(Chart) {
 
 		tooltips: {
 			callbacks: {
-				title: function(tooltipItems, data) {
+				title: function() {
 					// Title doesn't make sense for scatter since we format the data as a point
 					return '';
 				},
@@ -41,7 +41,7 @@ module.exports = function(Chart) {
 
 		dataElementType: Chart.elements.Point,
 
-		update: function update(reset) {
+		update: function(reset) {
 			var me = this;
 			var meta = me.getMeta();
 			var points = meta.data;
@@ -73,7 +73,7 @@ module.exports = function(Chart) {
 
 				// Desired view properties
 				_model: {
-					x: reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(data, index, dsIndex, me.chart.isCombo),
+					x: reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(typeof data === 'object' ? data : NaN, index, dsIndex, me.chart.isCombo),
 					y: reset ? yScale.getBasePixel() : yScale.getPixelForValue(data, index, dsIndex),
 					// Appearance
 					radius: reset ? 0 : custom.radius ? custom.radius : me.getRadius(data),

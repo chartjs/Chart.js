@@ -34,7 +34,7 @@ data | `Array<Number>` | The data to plot in a line
 label | `String` | The label for the dataset which appears in the legend and tooltips
 fill | `Boolean` | If true, fill the area under the line
 lineTension | `Number` | Bezier curve tension of the line. Set to 0 to draw straightlines. *Note* This was renamed from 'tension' but the old name still works.
-backgroundColor | `Color` | The fill color under the line. See [Colors](#getting-started-colors)
+backgroundColor | `Color` | The fill color under the line. See [Colors](#chart-configuration-colors)
 borderWidth | `Number` | The width of the line in pixels
 borderColor | `Color` | The color of the line.
 borderCapStyle | `String` | Cap style of the line. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap)
@@ -98,6 +98,7 @@ scale | Object | [See Scales](#scales) and [Defaults for Radial Linear Scale](#s
 *scale*.type | String |"radialLinear" | As defined in ["Radial Linear"](#scales-radial-linear-scale).
 *elements*.line | Object | | Options for all line elements used on the chart, as defined in the global elements, duplicated here to show Radar chart specific defaults.
 *elements.line*.lineTension | Number | 0 | Tension exhibited by lines when calculating splineCurve. Setting to 0 creates straight lines.
+startAngle | Number | 0 | The number of degrees to rotate the chart clockwise.
 
 You can override these for your `Chart` instance by passing a second argument into the `Radar` method as an object with the keys you want to override.
 

@@ -5,18 +5,34 @@ anchor: getting-started
 
 ### Download Chart.js
 
-To download a zip, go to [Chart.js on Github](https://github.com/chartjs/Chart.js) and choose the version that is right for your application.
-* [Standard build](https://raw.githubusercontent.com/chartjs/Chart.js/master/dist/Chart.js) (~31kB gzipped)
-* [Bundled with Moment.js](https://raw.githubusercontent.com/chartjs/Chart.js/master/dist/Chart.bundle.js) (~45kB gzipped)
-* [CDN Versions](https://cdnjs.com/libraries/Chart.js)
+You can download the latest version of [Chart.js on GitHub](https://github.com/chartjs/Chart.js/releases/latest) or just use these [Chart.js CDN](https://cdnjs.com/libraries/Chart.js) links.
 
-To install via npm / bower:
+### Installation
+
+#### npm
 
 ```bash
 npm install chart.js --save
 ```
+
+#### bower
+
+Bower support has been dropped since version 2.2.0 but you can still use Chart.js with Bower thanks to [bower-npm-resolver](https://www.npmjs.com/package/bower-npm-resolver).
+
+First, add the resolver in your .bowerrc file:
+```json
+{
+  "resolvers": [
+    "bower-npm-resolver"
+  ]
+}
+```
+
+Then:
+
 ```bash
-bower install Chart.js --save
+npm install -g bower-npm-resolver
+bower install npm:chart.js --save
 ```
 
 ### Selecting the Correct Build
@@ -25,7 +41,7 @@ Chart.js provides two different builds that are available for your use. The `Cha
 
 The `Chart.bundle.js` and `Chart.bundle.min.js` builds include Moment.js in a single file. This version should be used if you require time axes and want a single file to include, select this version. Do not use this build if your application already includes Moment.js. If you do, Moment.js will be included twice, increasing the page load time and potentially introducing version issues.
 
-### Installation
+### Usage
 
 To import Chart.js using an old-school script tag:
 

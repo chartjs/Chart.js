@@ -30,7 +30,7 @@
         var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         
         var randomScalingFactor = function() {
-            return Math.round(Math.random() * 100);
+            return (Math.random() > 0.5 ? -1 : 1) * Math.round(Math.random() * 100);
             //return 0;
         };
         var randomColorFactor = function() {
@@ -48,13 +48,16 @@
                     label: "My First dataset",
                     data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
                     fill: false,
+                    steppedLine: true,
                     borderDash: [5, 5],
                 }, {
                     hidden: true,
                     label: 'hidden dataset',
+                    steppedLine: true,
                     data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
                 }, {
                     label: "My Second dataset",
+                    steppedLine: true,
                     data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
                 }]
             },
@@ -145,11 +148,13 @@
                 labels: ["July", "August", "September", "October", "November", "December"],
                 datasets: [{
                     label: "My First dataset",
-                    data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
+                    data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],					
                     fill: false,
+                    steppedLine: true,
                 }, {
                     label: "My Second dataset",
                     fill: false,
+                    steppedLine: true,
                     data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
                 }]
             };
@@ -174,6 +179,7 @@
                 pointBorderColor: randomColor(0.7),
                 pointBackgroundColor: randomColor(0.5),
                 pointBorderWidth: 1,
+                steppedLine: true,
                 data: [],
             };
 
