@@ -117,7 +117,7 @@ module.exports = function(Chart) {
 				}
 
 				if (!loop) {
-					ctx.lineTo(points[points.length - 1]._view.x, scaleZero);
+					ctx.lineTo(points[lastDrawnIndex]._view.x, scaleZero);
 				}
 
 				ctx.fillStyle = vm.backgroundColor || globalDefaults.defaultColor;
@@ -160,7 +160,7 @@ module.exports = function(Chart) {
 					previous = lastDrawnIndex === -1 ? previous : points[lastDrawnIndex];
 
 					if (!currentVM.skip) {
-						if (lastDrawnIndex !== (index - 1) && !spanGaps) {
+						if ((lastDrawnIndex !== (index - 1) && !spanGaps) || lastDrawnIndex === -1) {
 							// There was a gap and this is the first point after the gap
 							ctx.moveTo(currentVM.x, currentVM.y);
 						} else {
