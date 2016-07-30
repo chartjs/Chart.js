@@ -116,7 +116,7 @@ module.exports = function(Chart) {
 					}
 				}
 
-				if (!loop) {
+				if (!loop && lastDrawnIndex !== -1) {
 					ctx.lineTo(points[lastDrawnIndex]._view.x, scaleZero);
 				}
 
