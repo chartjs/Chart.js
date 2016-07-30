@@ -252,7 +252,7 @@ module.exports = function(Chart) {
 					me.lastTick = roundedEnd;
 				}
 
-				me.scaleSizeInUnits = me.lastTick.diff(me.firstTick, me.tickUnit, true)
+				me.scaleSizeInUnits = me.lastTick.diff(me.firstTick, me.tickUnit, true);
 			}
 
 			me.smallestLabelSeparation = me.width;
