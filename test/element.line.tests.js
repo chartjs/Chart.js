@@ -816,6 +816,130 @@ describe('Line element tests', function() {
 		expect(mockContext.getCalls()).toEqual(expected);
 	});
 
+	it('should skip points correctly when all points are skipped', function() {
+		var mockContext = window.createMockContext();
+
+		// Create our points
+		var points = [];
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 0,
+			_view: {
+				x: 0,
+				y: 10,
+				controlPointNextX: 0,
+				controlPointNextY: 10,
+				skip: true
+			}
+		}));
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 1,
+			_view: {
+				x: 5,
+				y: 0,
+				controlPointPreviousX: 5,
+				controlPointPreviousY: 0,
+				controlPointNextX: 5,
+				controlPointNextY: 0,
+				skip: true
+			}
+		}));
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 2,
+			_view: {
+				x: 15,
+				y: -10,
+				controlPointPreviousX: 15,
+				controlPointPreviousY: -10,
+				controlPointNextX: 15,
+				controlPointNextY: -10,
+				skip: true
+			}
+		}));
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 3,
+			_view: {
+				x: 19,
+				y: -5,
+				controlPointPreviousX: 19,
+				controlPointPreviousY: -5,
+				controlPointNextX: 19,
+				controlPointNextY: -5,
+				skip: true
+			}
+		}));
+
+		var line = new Chart.elements.Line({
+			_datasetindex: 2,
+			_chart: {
+				ctx: mockContext,
+			},
+			_children: points,
+			// Need to provide some settings
+			_view: {
+				fill: true,
+				scaleZero: 2, // for filling lines
+				tension: 0.0, // no bezier curve for now
+				spanGaps: true
+			}
+		});
+
+		line.draw();
+
+		var expected = [{
+			name: 'save',
+			args: []
+		}, {
+			name: 'beginPath',
+			args: []
+		}, {
+			name: 'moveTo',
+			args: [0, 2]
+		}, {
+			name: 'setFillStyle',
+			args: ['rgba(0,0,0,0.1)']
+		}, {
+			name: 'closePath',
+			args: []
+		}, {
+			name: 'fill',
+			args: []
+		}, {
+			name: 'setLineCap',
+			args: ['butt']
+		}, {
+			name: 'setLineDash',
+			args: [
+				[]
+			]
+		}, {
+			name: 'setLineDashOffset',
+			args: [0]
+		}, {
+			name: 'setLineJoin',
+			args: ['miter']
+		}, {
+			name: 'setLineWidth',
+			args: [3]
+		}, {
+			name: 'setStrokeStyle',
+			args: ['rgba(0,0,0,0.1)']
+		}, {
+			name: 'beginPath',
+			args: []
+		}, {
+			name: 'stroke',
+			args: []
+		}, {
+			name: 'restore',
+			args: []
+		}];
+		expect(mockContext.getCalls()).toEqual(expected);
+	});
+
 	it('should skip the first point correctly', function() {
 		var mockContext = window.createMockContext();
 
