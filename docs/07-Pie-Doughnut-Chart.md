@@ -40,7 +40,7 @@ var myDoughnutChart = new Chart(ctx, {
 });
 ```
 
-### Data Structure
+### Dataset Structure
 
 Property | Type | Usage
 --- | --- | ---

@@ -26,7 +26,7 @@ var myLineChart = Chart.Line(ctx, {
 });
 ```
 
-### Data Structure
+### Dataset Structure
 
 The following options can be included in a line chart dataset to configure options for that specific dataset.
 

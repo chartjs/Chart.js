@@ -22,7 +22,7 @@ var myRadarChart = new Chart(ctx, {
 });
 ```
 
-### Data Structure
+### Dataset Structure
 
 The following options can be included in a radar chart dataset to configure options for that specific dataset.
 
