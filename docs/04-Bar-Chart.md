@@ -31,7 +31,7 @@ var myBarChart = new Chart(ctx, {
 });
 ```
 
-### Data Structure
+### Dataset Structure
 The following options can be included in a bar chart dataset to configure options for that specific dataset.
 
 Some properties can be specified as an array. If these are set to an array value, the first value applies to the first bar, the second value to the second bar, and so on.
