@@ -9,7 +9,7 @@ module.exports = function(Chart) {
 
 		// label settings
 		ticks: {
-			callback: function(value, index, arr) {               
+			callback: function(value, index, arr) {
 				var remain = value / (Math.pow(10, Math.floor(helpers.log10(value))));
 
                 if (value === 0){
@@ -51,7 +51,7 @@ module.exports = function(Chart) {
 						if (valuesPerType[meta.type] === undefined) {
 							valuesPerType[meta.type] = [];
 						}
-                        
+
 						helpers.each(dataset.data, function(rawValue, index) {
 							var values = valuesPerType[meta.type];
 							var value = +me.getRightValue(rawValue);
@@ -98,11 +98,11 @@ module.exports = function(Chart) {
 							} else if (value > me.max) {
 								me.max = value;
 							}
-                            
+
                             if(me.minNotZero === null && value !== 0){
-                               me.minNotZero = value; 
+                               me.minNotZero = value;
                             } else if (value < me.minNotZero && value !== 0) {
-                               me.minNotZero = value; 
+                               me.minNotZero = value;
                             }
 						});
 					}
@@ -141,10 +141,10 @@ module.exports = function(Chart) {
 
 			while (tickVal < me.max) {
 				ticks.push(tickVal);
-                
+
                 var exp;
                 var significand;
-                
+
                 if(tickVal === 0){
                     exp = Math.floor(helpers.log10(me.minNotZero));
                     significand = Math.floor(me.minNotZero / Math.pow(10, exp));
@@ -172,7 +172,7 @@ module.exports = function(Chart) {
 			// At this point, we need to update our max and min given the tick values since we have expanded the
 			// range of the scale
 			me.max = helpers.max(ticks);
-			me.min = helpers.min(ticks);          
+			me.min = helpers.min(ticks);
 
 			if (tickOpts.reverse) {
 				ticks.reverse();
@@ -207,6 +207,8 @@ module.exports = function(Chart) {
 			var paddingTop = me.paddingTop;
 			var paddingBottom = me.paddingBottom;
 			var paddingLeft = me.paddingLeft;
+			var opts = me.options;
+			var tickOpts = opts.ticks;
 
 			if (me.isHorizontal()) {
                 range = helpers.log10(me.end) - helpers.log10(start); // todo: if start === 0
@@ -220,7 +222,7 @@ module.exports = function(Chart) {
 			} else {
 				// Bottom - top since pixels increase downard on a screen
                 innerDimension = me.height - (paddingTop + paddingBottom);
-                if(start === 0){
+                if(start === 0 && !tickOpts.reverse){
                     range = helpers.log10(me.end) - helpers.log10(me.minNotZero);
                     if (newVal === start) {
                         pixel = me.bottom - paddingBottom;
@@ -229,6 +231,15 @@ module.exports = function(Chart) {
                     } else {
                         pixel = me.bottom - paddingBottom - innerDimension * 0.02 - (innerDimension * 0.98/ range * (helpers.log10(newVal)-helpers.log10(me.minNotZero)));
                     }
+                } else if (me.end === 0 && tickOpts.reverse){
+					range = helpers.log10(me.start) - helpers.log10(me.minNotZero);
+					if (newVal === me.end) {
+						pixel = me.top + paddingTop;
+					} else if(newVal === me.minNotZero){
+						pixel = me.top + paddingTop + innerDimension * 0.02;
+					} else {
+						pixel = me.top + paddingTop + innerDimension * 0.02 + (innerDimension * 0.98/ range * (helpers.log10(newVal)-helpers.log10(me.minNotZero)));
+					}
                 } else {
                     range = helpers.log10(me.end) - helpers.log10(start);
                     innerDimension = me.height - (paddingTop + paddingBottom);
@@ -245,7 +256,7 @@ module.exports = function(Chart) {
 			if (me.isHorizontal()) {
 				innerDimension = me.width - (me.paddingLeft + me.paddingRight);
 				value = me.start * Math.pow(10, (pixel - me.left - me.paddingLeft) * range / innerDimension);
-			} else {
+			} else {  // todo: if start === 0
 				innerDimension = me.height - (me.paddingTop + me.paddingBottom);
 				value = Math.pow(10, (me.bottom - me.paddingBottom - pixel) * range / innerDimension) / me.start;
 			}
