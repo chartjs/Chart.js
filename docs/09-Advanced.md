@@ -372,7 +372,7 @@ The bar controller has a special property that you should be aware of. To correc
 
 ### Creating Plugins
 
-Starting with v2.1.0, you can create plugins for chart.js. To register your plugin, simply call `Chart.pluginService.register` and pass your plugin in.
+Starting with v2.1.0, you can create plugins for chart.js. To register your plugin, simply call `Chart.plugins.register` and pass your plugin in.
 Plugins will be called at the following times
 * Start of initialization
 * End of initialization
