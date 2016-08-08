@@ -375,7 +375,7 @@ module.exports = function(Chart) {
 		for (i = 0; i < pointsLen - 1; ++i) {
 			pointCurrent = pointsWithTangents[i];
 			pointAfter = pointsWithTangents[i + 1];
-			if (pointCurrent.skip || pointAfter.skip) continue;
+			if (pointCurrent.model.skip || pointAfter.model.skip) continue;
 			if (helpers.almostEquals(pointCurrent.deltaK, 0, this.EPSILON))
 			{
 				pointCurrent.mK = pointAfter.mK = 0;
