@@ -427,19 +427,19 @@ describe('Core helper tests', function() {
 
 	it('should spline curves with monotone cubic interpolation', function() {
 		var dataPoints = [
-			{ x:   0, y:   0, skip: false },
-			{ x:   3, y:   6, skip: false },
-			{ x:   9, y:   6, skip: false },
-			{ x:  12, y:  60, skip: false },
-			{ x:  15, y:  60, skip: false },
-			{ x:  18, y: 120, skip: false },
-			{ x: NaN, y: NaN, skip: true  },
-			{ x:  21, y: 180, skip: false },
-			{ x:  24, y: 120, skip: false },
-			{ x:  27, y: 125, skip: false },
-			{ x:  30, y: 105, skip: false },
-			{ x:  33, y: 110, skip: false },
-			{ x:  36, y: 170, skip: false }
+			{ _model: { x:    0, y:    0, skip: false } },
+			{ _model: { x:    3, y:    6, skip: false } },
+			{ _model: { x:    9, y:    6, skip: false } },
+			{ _model: { x:   12, y:   60, skip: false } },
+			{ _model: { x:   15, y:   60, skip: false } },
+			{ _model: { x:   18, y:  120, skip: false } },
+			{ _model: { x: null, y: null, skip: true  } },
+			{ _model: { x:   21, y:  180, skip: false } },
+			{ _model: { x:   24, y:  120, skip: false } },
+			{ _model: { x:   27, y:  125, skip: false } },
+			{ _model: { x:   30, y:  105, skip: false } },
+			{ _model: { x:   33, y:  110, skip: false } },
+			{ _model: { x:   36, y:  170, skip: false } }
 		];
 		helpers.splineCurveMonotone(dataPoints);
 		expect(dataPoints).toEqual([{
