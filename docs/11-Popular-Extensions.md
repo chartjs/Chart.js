@@ -26,3 +26,12 @@ There are many Chart.js extensions available for use with popular frameworks. So
 ### Laravel
 
 - [laravel-chartjs](https://github.com/fxcosta/laravel-chartjs)
+
+### Others
+
+- [Chart.Annotation.js](https://github.com/chartjs/Chart.Annotation.js)
+- [Chart.BarFunnel.js](https://github.com/chartjs/Chart.BarFunnel.js)
+- [Chart.Deferred.js](https://github.com/chartjs/Chart.Deferred.js)
+- [Chart.LinearGauge.js](https://github.com/chartjs/Chart.LinearGauge.js)
+- [Chart.smith.js](https://github.com/chartjs/Chart.smith.js)
+- [Chart.Zoom.js](https://github.com/chartjs/Chart.Zoom.js)
