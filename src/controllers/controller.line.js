@@ -90,6 +90,7 @@ module.exports = function(Chart) {
 					borderJoinStyle: custom.borderJoinStyle ? custom.borderJoinStyle : (dataset.borderJoinStyle || lineElementOptions.borderJoinStyle),
 					fill: custom.fill ? custom.fill : (dataset.fill !== undefined ? dataset.fill : lineElementOptions.fill),
 					steppedLine: custom.steppedLine ? custom.steppedLine : helpers.getValueOrDefault(dataset.steppedLine, lineElementOptions.stepped),
+					cubicInterpolationMode: custom.cubicInterpolationMode ? custom.cubicInterpolationMode : helpers.getValueOrDefault(dataset.cubicInterpolationMode, lineElementOptions.cubicInterpolationMode),
 					// Scale
 					scaleTop: scale.top,
 					scaleBottom: scale.bottom,
@@ -248,7 +249,7 @@ module.exports = function(Chart) {
 			var meta = me.getMeta();
 			var area = me.chart.chartArea;
 
-			// only consider points that are drawn in case the spanGaps option is ued
+			// Only consider points that are drawn in case the spanGaps option is used
 			var points = (meta.data || []).filter(function(pt) { return !pt._model.skip; });
 			var i, ilen, point, model, controlPoints;
 
@@ -256,7 +257,7 @@ module.exports = function(Chart) {
 				return Math.max(Math.min(pt, max), min);
 			}
 
-			if (me.chart.options.elements.line.cubicInterpolationMode == 'monotone') {
+			if (meta.dataset._model.cubicInterpolationMode == 'monotone') {
 				helpers.splineCurveMonotone(points);
 			}
 			else {
