@@ -80,18 +80,19 @@ Built in Chart Types
 There are many extensions which are available for use with popular frameworks. Some particularly notable ones are listed here:
 
 #### Angular
- - https://github.com/carlcraig/tc-angular-chartjs
- - https://github.com/petermelias/angular-chartjs
- - https://github.com/earlonrails/angular-chartjs-directive
+ - <a href="https://github.com/jtblin/angular-chart.js" target="_blank">angular-chart.js</a>
+ - <a href="https://github.com/carlcraig/tc-angular-chartjs" target="_blank">tc-angular-chartjs</a>
+ - <a href="https://github.com/petermelias/angular-chartjs" target="_blank">angular-chartjs</a>
+ - <a href="https://github.com/earlonrails/angular-chartjs-directive" target="_blank">Angular Chart-js Directive</a>
 
 #### React
- - https://github.com/jhudson8/react-chartjs/tree/chartjs-v2
+ - <a href="https://github.com/earlonrails/angular-chartjs-directive" target="_blank">react-chartjs</a>
 
 #### Django
- - https://github.com/novafloss/django-chartjs
+ - <a href="https://github.com/novafloss/django-chartjs" target="_blank">Django Chartjs</a>
 
 #### Ruby on Rails
- - https://github.com/airblade/chartjs-ror
+ - <a href="https://github.com/airblade/chartjs-ror" target="_blank">chartjs-ror</a>
 
 #### Laravel
- - https://github.com/fxcosta/laravel-chartjs
+ - <a href="https://github.com/fxcosta/laravel-chartjs" target="_blank">laravel-chartjs</a>
