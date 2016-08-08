@@ -405,7 +405,9 @@ When supplying colors to Chart options, you can use a number of formats. You can
 
 You can also pass a [CanvasGradient](https://developer.mozilla.org/en-US/docs/Web/API/CanvasGradient) object. You will need to create this before passing to the chart, but using it you can achieve some interesting effects.
 
-The final option is to pass a [CanvasPattern](https://developer.mozilla.org/en-US/docs/Web/API/CanvasPattern) object. For example, if you wanted to fill a dataset with a pattern from an image you could do the following.
+### Patterns
+
+An alternative option is to pass a [CanvasPattern](https://developer.mozilla.org/en-US/docs/Web/API/CanvasPattern) object. For example, if you wanted to fill a dataset with a pattern from an image you could do the following.
 
 ```javascript
 var img = new Image();
@@ -424,5 +426,23 @@ img.onload = function() {
         }
     })
 }
+```
 
+Using pattern fills for data graphics can help viewers with vision deficiencies (e.g. color-blindness or partial sight) to [more easily understand your data](http://betweentwobrackets.com/data-graphics-and-colour-vision/).
+
+Using the [Patternomaly](https://github.com/ashiguruma/patternomaly) library you can generate patterns to fill datasets.
+
+```javascript
+var chartData = {
+	datasets: [{
+		data: [45, 25, 20, 10],
+		backgroundColor: [
+			pattern.draw('square', '#ff6384'),
+			pattern.draw('circle', '#36a2eb'),
+			pattern.draw('diamond', '#cc65fe'),
+			pattern.draw('triangle', '#ffce56'),
+		]
+	}],
+	labels: ['Red', 'Blue', 'Purple', 'Yellow']
+};
 ```
