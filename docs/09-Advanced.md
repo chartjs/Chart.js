@@ -127,7 +127,7 @@ myLineChart.getDatasetAtEvent(e);
 
 #### .getDatasetMeta(index)
 
-Looks for the dataset that matches the current index and returns that metadata. This returned data has all of the metadata that is used to construct the chart, and can be used to share data between charts.
+Looks for the dataset that matches the current index and returns that metadata. This returned data has all of the metadata that is used to construct the chart.
 
 The `data` property of the metadata will contain information about each point, rectangle, etc. depending on the chart type.
 
