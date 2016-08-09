@@ -366,7 +366,7 @@ module.exports = function(Chart) {
 			}
 			if (!pointBefore || pointBefore.model.skip) pointCurrent.mK = pointCurrent.deltaK;
 			else if (!pointAfter || pointAfter.model.skip) pointCurrent.mK = pointBefore.deltaK;
-			else if (Math.sign(pointBefore.deltaK) != Math.sign(pointCurrent.deltaK)) pointCurrent.mK = 0;
+			else if (this.sign(pointBefore.deltaK) != this.sign(pointCurrent.deltaK)) pointCurrent.mK = 0;
 			else pointCurrent.mK = (pointBefore.deltaK + pointCurrent.deltaK) / 2;
 		}
 
