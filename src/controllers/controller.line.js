@@ -250,7 +250,8 @@ module.exports = function(Chart) {
 			var area = me.chart.chartArea;
 
 			// Only consider points that are drawn in case the spanGaps option is used
-			var points = (meta.data || []).filter(function(pt) { return !pt._model.skip; });
+			var points = (meta.data || []);
+			if (meta.dataset._model.spanGaps) points = points.filter(function(pt) { return !pt._model.skip; });
 			var i, ilen, point, model, controlPoints;
 
 			function capControlPoint(pt, min, max) {
