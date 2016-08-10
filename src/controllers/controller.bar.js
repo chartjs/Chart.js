@@ -500,7 +500,7 @@ module.exports = function(Chart) {
 				categorySpacing: categorySpacing,
 				fullBarHeight: fullBarHeight,
 				barHeight: barHeight,
-				barSpacing: barSpacing,
+				barSpacing: barSpacing
 			};
 		},
 
