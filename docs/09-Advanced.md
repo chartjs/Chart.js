@@ -125,6 +125,19 @@ myLineChart.getDatasetAtEvent(e);
 // => returns an array of elements
 ```
 
+#### .getDatasetMeta(index)
+
+Looks for the dataset that matches the current index and returns that metadata. This returned data has all of the metadata that is used to construct the chart.
+
+The `data` property of the metadata will contain information about each point, rectangle, etc. depending on the chart type.
+
+Extensive examples of usage are available in the [Chart.js tests](https://github.com/chartjs/Chart.js/tree/master/test).
+
+```javascript
+var meta = myChart.getDatasetMeta(0);
+var x = meta.data[0]._model.x
+```
+
 ### External Tooltips
 
 You can enable custom tooltips in the global or chart configuration like so:

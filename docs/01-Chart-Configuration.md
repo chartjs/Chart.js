@@ -77,7 +77,7 @@ The following options are applicable to all charts. The can be set on the [globa
 
 Name | Type | Default | Description
 --- | --- | --- | ---
-responsive | Boolean | true | Resizes when the canvas container does.
+responsive | Boolean | true | Resizes the chart canvas when its container does.
 responsiveAnimationDuration | Number | 0 | Duration in milliseconds it takes to animate to new size after a resize event.
 maintainAspectRatio | Boolean | true | Maintain the original canvas aspect ratio `(width / height)` when resizing
 events | Array[String] | `["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"]` | Events that the chart should listen to for tooltips and hovering
@@ -144,6 +144,7 @@ fontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Fon
 padding | Number | 10 | Padding between rows of colored boxes
 generateLabels: | Function | `function(chart) {  }` | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See [Legend Item](#chart-configuration-legend-item-interface) for details.
 usePointStyle | Boolean | false | Label style will match corresponding point style (size is based on fontSize, boxWidth is not used in this case).
+reverse | Boolean | false | Legend will show datasets in reverse order
 
 #### Legend Item Interface
 
@@ -445,4 +446,33 @@ var chartData = {
 	}],
 	labels: ['Red', 'Blue', 'Purple', 'Yellow']
 };
+```
+
+### Mixed Chart Types
+
+When creating a chart, you have the option to overlay different chart types on top of eachother as separate datasets.
+
+To do this, you must set a `type` for each dataset individually. You can create mixed chart types with bar and line chart types.
+
+When creating the chart you must set the overall `type` as `bar`.
+
+```javascript
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Item 1', 'Item 2', 'Item 3'],
+        datasets: [
+            {
+                type: 'bar',
+                label: 'Bar Component',
+                data: [10, 20, 30],
+            },
+            {
+                type: 'line',
+                label: 'Line Component',
+                data: [30, 20, 10],
+            }
+        ]
+    }
+});
 ```
