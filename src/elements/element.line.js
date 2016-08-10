@@ -150,9 +150,7 @@ module.exports = function(Chart) {
 
 				// First point moves to it's starting position no matter what
 				if (index === 0) {
-					if (currentVM.skip) {
-						
-					} else {
+					if (!currentVM.skip) {
 						ctx.moveTo(currentVM.x, currentVM.y);
 						lastDrawnIndex = index;
 					}
