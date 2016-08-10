@@ -55,7 +55,7 @@ module.exports = function(Chart) {
 						helpers.each(dataset.data, function(rawValue, index) {
 							var values = valuesPerType[meta.type];
 							var value = +me.getRightValue(rawValue);
-							if (isNaN(value) || meta.data[index].hidden) {								return;
+							if (isNaN(value) || meta.data[index].hidden) {			            return;
 							}
 
 							values[index] = values[index] || 0;
@@ -98,11 +98,9 @@ module.exports = function(Chart) {
 							} else if (value > me.max) {
 								me.max = value;
 							}
-
-                            if(me.minNotZero === null && value !== 0){
-                               me.minNotZero = value;
-                            } else if (value < me.minNotZero && value !== 0) {
-                               me.minNotZero = value;
+                            
+                            if(value !== 0 && (me.minNotZero == null || value < me.minNotZero)) {
+                                me.minNotZero = value;
                             }
 						});
 					}
