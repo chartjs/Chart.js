@@ -145,7 +145,7 @@ module.exports = function(Chart) {
 
                 if(tickVal === 0){
                     exp = Math.floor(helpers.log10(me.minNotZero));
-                    significand = Math.floor(me.minNotZero / Math.pow(10, exp));
+                    significand = Math.round(me.minNotZero / Math.pow(10, exp));
                 } else {
                     exp = Math.floor(helpers.log10(tickVal));
                     significand = Math.floor(tickVal / Math.pow(10, exp)) + 1;
