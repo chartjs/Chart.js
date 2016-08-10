@@ -875,6 +875,7 @@ module.exports = function(Chart) {
 		}
 
 		// Set the style
+		hiddenIframe.tabIndex = -1;
 		var style = hiddenIframe.style;
 		style.width = '100%';
 		style.display = 'block';
