@@ -72,7 +72,7 @@ describe('Logarithmic Scale tests', function() {
 					data: [20, 0, 150, 1800, 3040]
 				}, {
 					yAxisID: 'yScale3',
-                    data: [67, 0.0004, 0, 820, 0.001]
+					data: [67, 0.0004, 0, 820, 0.001]
 				}],
 				labels: ['a', 'b', 'c', 'd', 'e']
 			},
@@ -106,12 +106,12 @@ describe('Logarithmic Scale tests', function() {
 		expect(chart.scales.yScale1.max).toBe(5000);
 
 		expect(chart.scales.yScale2).not.toEqual(undefined); // must construct
-        expect(chart.scales.yScale2.min).toBe(0);
-        expect(chart.scales.yScale2.max).toBe(4000);
+		expect(chart.scales.yScale2.min).toBe(0);
+		expect(chart.scales.yScale2.max).toBe(4000);
 
-        expect(chart.scales.yScale3).not.toEqual(undefined); // must construct
-        expect(chart.scales.yScale3.min).toBe(0);
-        expect(chart.scales.yScale3.max).toBe(900);
+		expect(chart.scales.yScale3).not.toEqual(undefined); // must construct
+		expect(chart.scales.yScale3.min).toBe(0);
+		expect(chart.scales.yScale3.max).toBe(900);
 	});
 
 	it('should correctly determine the max & min of string data values', function() {
@@ -744,7 +744,7 @@ describe('Logarithmic Scale tests', function() {
 		expect(yScale.getValueForPixel(234)).toBeCloseTo(10, 1e-4);
 	});
 
-    it('should get the correct pixel value for a point when 0 values are present', function() {
+	it('should get the correct pixel value for a point when 0 values are present', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
@@ -777,9 +777,9 @@ describe('Logarithmic Scale tests', function() {
 		expect(yScale.getPixelForValue(63, 0, 0)).toBeCloseToPixel(38.5);
 
 		chart.options.scales.yAxes[0].ticks.reverse = true;   // Reverse mode
-        chart.update();
+		chart.update();
 
-        expect(yScale.getPixelForValue(70, 0, 0)).toBeCloseToPixel(484); // bottom - paddingBottom
+		expect(yScale.getPixelForValue(70, 0, 0)).toBeCloseToPixel(484); // bottom - paddingBottom
 		expect(yScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(32);  // top + paddingTop
 		expect(yScale.getPixelForValue(0.063, 0, 0)).toBeCloseToPixel(41);  // minNotZero 2% from range
 		expect(yScale.getPixelForValue(0.5, 0, 0)).toBeCloseToPixel(172);
