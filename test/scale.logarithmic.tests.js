@@ -170,11 +170,11 @@ describe('Logarithmic Scale tests', function() {
 			type: 'bar',
 			data: {
 				datasets: [{
-					data: [undefined, 10, null, 5, 5000, NaN, 78, 450]
+					data: [undefined, 10, null, 5, 5000, NaN, 78, 450, Infinity]
 				}, {
-					data: [undefined, 28, null, 1000, 500, NaN, 50, 42]
+					data: [undefined, 28, null, 1000, 500, NaN, 50, 42, Infinity]
 				}],
-				labels: ['a', 'b', 'c', 'd', 'e', 'f' ,'g']
+				labels: ['a', 'b', 'c', 'd', 'e', 'f' ,'g', 'h']
 			},
 			options: {
 				scales: {
