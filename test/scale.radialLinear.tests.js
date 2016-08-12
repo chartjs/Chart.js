@@ -39,6 +39,8 @@ describe('Test the radial linear scale', function() {
 				display: true,
 				zeroLineColor: "rgba(0,0,0,0.25)",
 				zeroLineWidth: 1,
+				borderDash: [],
+				borderDashOffset: 0.0
 			},
 			lineArc: false,
 			pointLabels: {
