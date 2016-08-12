@@ -653,6 +653,7 @@ module.exports = function(Chart) {
 			// Draw all of the tick labels, tick marks, and grid lines at the correct places
 			helpers.each(itemsToDraw, function(itemToDraw) {
 				if (gridLines.display) {
+					context.save();
 					context.lineWidth = itemToDraw.glWidth;
 					context.strokeStyle = itemToDraw.glColor;
 					if (itemToDraw.glBorderDash) {
@@ -672,6 +673,7 @@ module.exports = function(Chart) {
 					}
 
 					context.stroke();
+					context.restore();
 				}
 
 				if (optionTicks.display) {
