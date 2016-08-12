@@ -502,6 +502,7 @@ module.exports = function(Chart) {
 			var tickFontFamily = helpers.getValueOrDefault(optionTicks.fontFamily, globalDefaults.defaultFontFamily);
 			var tickLabelFont = helpers.fontString(tickFontSize, tickFontStyle, tickFontFamily);
 			var tl = gridLines.tickMarkLength;
+			var borderDash = gridLines.borderDash;
 
 			var scaleLabelFontColor = helpers.getValueOrDefault(scaleLabel.fontColor, globalDefaults.defaultFontColor);
 			var scaleLabelFontSize = helpers.getValueOrDefault(scaleLabel.fontSize, globalDefaults.defaultFontSize);
@@ -641,6 +642,7 @@ module.exports = function(Chart) {
 					labelY: labelY,
 					glWidth: lineWidth,
 					glColor: lineColor,
+					glBorderDash: borderDash,
 					rotation: -1 * labelRotationRadians,
 					label: label,
 					textBaseline: textBaseline,
@@ -653,6 +655,9 @@ module.exports = function(Chart) {
 				if (gridLines.display) {
 					context.lineWidth = itemToDraw.glWidth;
 					context.strokeStyle = itemToDraw.glColor;
+					if (itemToDraw.glBorderDash) {
+						context.setLineDash(itemToDraw.glBorderDash);
+					}
 
 					context.beginPath();
 
