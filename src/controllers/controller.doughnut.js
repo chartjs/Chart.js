@@ -46,7 +46,7 @@ module.exports = function(Chart) {
 							var meta = chart.getDatasetMeta(0);
 							var ds = data.datasets[0];
 							var arc = meta.data[i];
-							var custom = arc.custom || {};
+							var custom = arc && arc.custom || {};
 							var getValueAtIndexOrDefault = helpers.getValueAtIndexOrDefault;
 							var arcOpts = chart.options.elements.arc;
 							var fill = custom.backgroundColor ? custom.backgroundColor : getValueAtIndexOrDefault(ds.backgroundColor, i, arcOpts.backgroundColor);
@@ -252,6 +252,10 @@ module.exports = function(Chart) {
 					total += Math.abs(value);
 				}
 			});
+
+			/*if (total === 0) {
+				total = NaN;
+			}*/
 
 			return total;
 		},

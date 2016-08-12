@@ -55,7 +55,9 @@ describe('Time scale tests', function() {
 				offsetGridLines: false,
 				display: true,
 				zeroLineColor: "rgba(0,0,0,0.25)",
-				zeroLineWidth: 1
+				zeroLineWidth: 1,
+				borderDash: [],
+				borderDashOffset: 0.0
 			},
 			position: "bottom",
 			scaleLabel: {
@@ -478,5 +480,34 @@ describe('Time scale tests', function() {
 			unit: 'day',
 			threshold: 0.75
 		});
+	});
+
+	it("should not throw an error if the datasetIndex is out of bounds", function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				labels: ["2016-06-26"],
+				datasets: [{
+					type: "line",
+					data: [5]
+				}]
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						display: true,
+						type: "time",
+					}]
+				}
+			}
+		});
+
+		var xScale = chartInstance.scales.xScale0;
+
+		var getOutOfBoundPixelForValue = function() {
+			xScale.getLabelMoment(12, 0);
+		};
+
+		expect(getOutOfBoundPixelForValue).not.toThrow();
 	});
 });

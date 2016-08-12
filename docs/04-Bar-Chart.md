@@ -31,7 +31,7 @@ var myBarChart = new Chart(ctx, {
 });
 ```
 
-### Data Structure
+### Dataset Structure
 The following options can be included in a bar chart dataset to configure options for that specific dataset.
 
 Some properties can be specified as an array. If these are set to an array value, the first value applies to the first bar, the second value to the second bar, and so on.
@@ -59,22 +59,22 @@ var data = {
 		{
 			label: "My First dataset",
 			backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
+				'rgba(255, 99, 132, 0.2)',
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(255, 206, 86, 0.2)',
+				'rgba(75, 192, 192, 0.2)',
+				'rgba(153, 102, 255, 0.2)',
+				'rgba(255, 159, 64, 0.2)'
             ],
             borderColor: [
-                'rgba(255,99,132,1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
+				'rgba(255,99,132,1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(255, 206, 86, 1)',
+				'rgba(75, 192, 192, 1)',
+				'rgba(153, 102, 255, 1)',
+				'rgba(255, 159, 64, 1)'
+			],
+			borderWidth: 1,
 			data: [65, 59, 80, 81, 56, 55, 40],
 		}
 	]
@@ -99,6 +99,7 @@ type | String | "Category" | As defined in [Scales](#scales-category-scale).
 display | Boolean | true | If true, show the scale.
 id | String | "x-axis-0" | Id of the axis so that data can bind to it
 stacked | Boolean | false | If true, bars are stacked on the x-axis
+barThickness | Number | | Manually set width of each bar in pixels. If not set, the bars are sized automatically.
 categoryPercentage | Number | 0.8 | Percent (0-1) of the available width (the space between the gridlines for small datasets) for each data-point to use for the bars. [Read More](#bar-chart-barpercentage-vs-categorypercentage)
 barPercentage | Number | 0.9 | Percent (0-1) of the available width each bar should be within the category percentage. 1.0 will take the whole category width and put the bars right next to each other. [Read More](#bar-chart-barpercentage-vs-categorypercentage)
 gridLines | Object |  [See Scales](#scales) |
@@ -110,6 +111,7 @@ type | String | "linear" | As defined in [Scales](#scales-linear-scale).
 display | Boolean | true | If true, show the scale.
 id | String | "y-axis-0" | Id of the axis so that data can bind to it.
 stacked | Boolean | false | If true, bars are stacked on the y-axis
+barThickness | Number | | Manually set height of each bar in pixels. If not set, the bars are sized automatically.
 
 You can override these for your `Chart` instance by passing a second argument into the `Bar` method as an object with the keys you want to override.
 
@@ -121,13 +123,12 @@ new Chart(ctx, {
 	data: data,
 	options: {
 		scales: {
-				xAxes: [{
-						stacked: true
-				}],
-				yAxes: [{
-						stacked: true
-				}]
-			}
+			xAxes: [{
+				stacked: true
+			}],
+			yAxes: [{
+				stacked: true
+			}]
 		}
 	}
 });

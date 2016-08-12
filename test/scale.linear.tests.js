@@ -34,6 +34,8 @@ describe('Linear Scale', function() {
 				display: true,
 				zeroLineColor: "rgba(0,0,0,0.25)",
 				zeroLineWidth: 1,
+				borderDash: [],
+				borderDashOffset: 0.0
 			},
 			position: "left",
 			scaleLabel: {

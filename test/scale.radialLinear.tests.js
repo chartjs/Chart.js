@@ -39,6 +39,8 @@ describe('Test the radial linear scale', function() {
 				display: true,
 				zeroLineColor: "rgba(0,0,0,0.25)",
 				zeroLineWidth: 1,
+				borderDash: [],
+				borderDashOffset: 0.0
 			},
 			lineArc: false,
 			pointLabels: {
@@ -419,5 +421,44 @@ describe('Test the radial linear scale', function() {
 
 		expect(chartInstance.scale.getDistanceFromCenterForValue(chartInstance.scale.min)).toBe(225);
 		expect(chartInstance.scale.getDistanceFromCenterForValue(chartInstance.scale.max)).toBe(0);
+	});
+
+	it('should correctly get angles for all points', function() {
+		chartInstance = window.acquireChart({
+			type: 'radar',
+			data: {
+				datasets: [{
+					data: [10, 5, 0, 25, 78]
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4', 'label5']
+			},
+			options: {
+				scale: {
+					pointLabels: {
+						callback: function(value, index) {
+							return index.toString();
+						}
+					}
+				},
+				startAngle: 15
+			}
+		});
+
+		var radToNearestDegree = function(rad) {
+			return Math.round((360 * rad) / (2 * Math.PI));
+		}
+
+		var slice = 72; // (360 / 5)
+
+		for(var i = 0; i < 5; i++) {
+			expect(radToNearestDegree(chartInstance.scale.getIndexAngle(i))).toBe(15 + (slice * i) - 90);
+		}
+
+		chartInstance.options.startAngle = 0;
+		chartInstance.update();
+
+		for(var i = 0; i < 5; i++) {
+			expect(radToNearestDegree(chartInstance.scale.getIndexAngle(i))).toBe((slice * i) - 90);
+		}
 	});
 });

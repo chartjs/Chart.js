@@ -222,7 +222,7 @@ module.exports = function(Chart) {
 				for (i = 0; i < datasetIndex; i++) {
 					ds = chart.data.datasets[i];
 					dsMeta = chart.getDatasetMeta(i);
-					if (dsMeta.type === 'line' && chart.isDatasetVisible(i)) {
+					if (dsMeta.type === 'line' && dsMeta.yAxisID === yScale.id && chart.isDatasetVisible(i)) {
 						var stackedRightValue = Number(yScale.getRightValue(ds.data[index]));
 						if (stackedRightValue < 0) {
 							sumNeg += stackedRightValue || 0;
@@ -247,7 +247,9 @@ module.exports = function(Chart) {
 			var me = this;
 			var meta = me.getMeta();
 			var area = me.chart.chartArea;
-			var points = meta.data || [];
+
+			// only consider points that are drawn in case the spanGaps option is ued
+			var points = (meta.data || []).filter(function(pt) { return !pt._model.skip; });
 			var i, ilen, point, model, controlPoints;
 
 			var needToCap = me.chart.options.elements.line.capBezierPoints;

@@ -120,6 +120,6 @@ module.exports = function(Chart) {
 			me.zeroLineIndex = me.ticks.indexOf(0);
 
 			Chart.Scale.prototype.convertTicksToLabels.call(me);
-		},
+		}
 	});
 };
