@@ -325,7 +325,7 @@ module.exports = function(Chart) {
 			}
 
 			if (changed && opts.custom) {
-				opts.custom.call(me, model);
+				opts.custom.call(me, model, tooltipItems, data);
 			}
 
 			return me;
