@@ -463,6 +463,30 @@ module.exports = function(Chart) {
 			return elementsArray;
 		},		
 
+		// returns all data from datasets that are currently under the mouse
+		getDataElementsAtMouse: function(e){
+			var eventPosition = helpers.getRelativePosition(e, this.chart);
+			var elementsArray = [];
+			var mouseX = eventPosition.x;
+			var mouseY = eventPosition.y;
+
+			for(var i = 0; i < this.data.datasets.length; i++ ){
+				var meta = this.getDatasetMeta(i);
+				if( this.isDatasetVisible(i) && this.data.datasets[i].eventsEnabled !== false )
+				{
+					for(var j=0; j < meta.data.length; j++) {
+						if( meta.data[j].inRange(mouseX,mouseY)){
+								elementsArray.push(meta.data[j]);
+							
+						}
+					}
+				}
+			}
+
+			return elementsArray;
+
+		},
+
 		getElementsAtEventForMode: function(e, mode) {
 			var me = this;
 			switch (mode) {
@@ -474,6 +498,8 @@ module.exports = function(Chart) {
 				return me.getDatasetAtEvent(e);
             case 'x-axis':
                 return me.getElementsAtXAxis(e);
+			case 'mouse':
+				return me.getDataElementsAtMouse(e);
 			default:
 				return e;
 			}
@@ -592,6 +618,7 @@ module.exports = function(Chart) {
 			case 'label':
 			case 'dataset':
             case 'x-axis':
+			case 'mouse':
 				// elements = elements;
 				break;
 			default:
@@ -625,7 +652,6 @@ module.exports = function(Chart) {
 				me.active = me.getElementsAtEventForMode(e, hoverOptions.mode);
 				me.tooltipActive =  me.getElementsAtEventForMode(e, tooltipsOptions.mode);
 			}
-
 			// On Hover hook
 			if (hoverOptions.onHover) {
 				hoverOptions.onHover.call(me, me.active);

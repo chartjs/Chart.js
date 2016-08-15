@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Band Chart</title>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="../dist/Chart.bundle.js"></script>
+    <style>
+    canvas {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="container" style="width: 75%;">
+        <canvas id="canvas"></canvas>
+    </div>
+    <button id="randomizeData">Randomize Data</button>
+    <script>
+    
+
+        var randomVerticalBand = function() {
+            var x = Math.random() * Math.round(Math.random() * 100);
+            var x2 = x + (Math.random() * Math.round(Math.random() * (100-x)));
+            return { "x" : x, "x2" : x2, label: "hello!" }
+        };
+
+        var randomVerticalLine = function() {
+            var x = Math.random() * Math.round(Math.random() * 100);
+            return { "x" : x }
+        };
+
+        var randomHorizontalBand = function() {
+            var y = Math.random() * Math.round(Math.random() * 100);
+            var y2 = y + (Math.random() * Math.round(Math.random() * (100-y)));
+            return { "y" : y, "y2" : y2 }
+        };
+
+        var randomHorizontalLine = function() {
+            var y = Math.random() * Math.round(Math.random() * 100);
+            return { "y" : y }
+        };
+
+        var bandChartData = {
+            labels: [],
+            datasets: [{
+                label: 'Vertical Bands',
+                backgroundColor: "rgba(220,220,220,0.4)",
+                data: [randomVerticalBand(), randomVerticalBand()]
+            }, {
+                label: 'Horizontal Bands',
+                backgroundColor: "rgba(20,215,65,0.4)",
+                data: [randomHorizontalBand(), randomHorizontalBand()]
+            }, {
+                label: 'Vertical Lines',
+                backgroundColor: "rgba(80,80,195,0.4)",
+                data: [randomVerticalLine(), randomVerticalLine(), randomVerticalLine(), randomVerticalLine(), randomVerticalLine()]
+            }, {
+                label: 'Horizontal Lines',
+                backgroundColor: "rgba(220,65,110,0.4)",
+                data: [randomHorizontalLine(), randomHorizontalLine(), randomHorizontalLine(), randomHorizontalLine(), randomHorizontalLine()]
+            }]
+
+        };
+
+
+        window.onload = function() {
+            var ctx = document.getElementById("canvas").getContext("2d");
+            window.myBand = new Chart(ctx, {
+                type: 'band',
+                data: bandChartData,
+                options: {                   
+                    responsive: true,
+                    animationDuration: 0,
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Chart.js Band Chart'
+                    },
+                    
+                },
+
+            });
+
+        };
+
+       
+        $('#randomizeData').click(function() {
+            $.each(bandChartData.datasets, function(i, dataset) {
+                var fns = [randomVerticalBand,randomHorizontalBand,randomVerticalLine,randomHorizontalLine];
+                dataset.data = dataset.data.map(function() {
+                    return fns[i]();
+                });
+            });
+            window.myBand.update();
+        });
+
+       
+    </script>
+</body>
+
+</html>
