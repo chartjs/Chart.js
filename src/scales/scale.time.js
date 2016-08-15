@@ -255,6 +255,8 @@ module.exports = function(Chart) {
 				me.scaleSizeInUnits = me.lastTick.diff(me.firstTick, me.tickUnit, true);
 			}
 
+			me.scaleSizeInUnits = me.lastTick.diff(me.firstTick, me.tickUnit, true);
+
 			me.smallestLabelSeparation = me.width;
 
 			helpers.each(me.chart.data.datasets, function(dataset, datasetIndex) {
@@ -293,7 +295,7 @@ module.exports = function(Chart) {
 				if (me.options.time.max) {
 					me.ticks.push(me.lastTick.clone());
 					me.scaleSizeInUnits = me.lastTick.diff(me.ticks[0], me.tickUnit, true);
-				} else {
+				} else if (me.scaleSizeInUnits === 0) {
 					me.ticks.push(me.lastTick.clone());
 					me.scaleSizeInUnits = me.lastTick.diff(me.firstTick, me.tickUnit, true);
 				}
