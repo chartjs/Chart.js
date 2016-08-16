@@ -882,7 +882,6 @@ module.exports = function(Chart) {
 		style.border = 0;
 		style.height = 0;
 		style.margin = 0;
-		style.position = 'absolute';
 		style.left = 0;
 		style.right = 0;
 		style.top = 0;
