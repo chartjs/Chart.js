@@ -296,7 +296,7 @@ The following animation options are available. The global options for are define
 Name | Type | Default | Description
 --- |:---:| --- | ---
 duration | Number | 1000 | The number of milliseconds an animation takes.
-easing | String | "easeOutQuart" | Easing function to use.
+easing | String | "easeOutQuart" | Easing function to use. Available options are: `'linear'`, `'easeInQuad'`, `'easeOutQuad'`, `'easeInOutQuad'`, `'easeInCubic'`, `'easeOutCubic'`, `'easeInOutCubic'`, `'easeInQuart'`, `'easeOutQuart'`, `'easeInOutQuart'`, `'easeInQuint'`, `'easeOutQuint'`, `'easeInOutQuint'`, `'easeInSine'`, `'easeOutSine'`, `'easeInOutSine'`, `'easeInExpo'`, `'easeOutExpo'`, `'easeInOutExpo'`, `'easeInCirc'`, `'easeOutCirc'`, `'easeInOutCirc'`, `'easeInElastic'`, `'easeOutElastic'`, `'easeInOutElastic'`, `'easeInBack'`, `'easeOutBack'`, `'easeInOutBack'`, `'easeInBounce'`, `'easeOutBounce'`, `'easeInOutBounce'`. See [Robert Penner's easing equations](http://robertpenner.com/easing/).
 onProgress | Function | none | Callback called on each step of an animation. Passed a single argument, an object, containing the chart instance and an object with details of the animation.
 onComplete | Function | none | Callback called at the end of an animation. Passed the same arguments as `onProgress`
 
