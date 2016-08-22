@@ -212,7 +212,7 @@ Name | Type | Default | Description
 enabled | Boolean | true | Are tooltips enabled
 custom | Function | null | See [section](#chart-configuration-custom-tooltips) below
 mode | String | 'single' | Sets which elements appear in the tooltip. Acceptable options are `'single'`, `'label'` or `'x-axis'`. <br>&nbsp;<br>`single` highlights the closest element. <br>&nbsp;<br>`label` highlights elements in all datasets at the same `X` value. <br>&nbsp;<br>`'x-axis'` also highlights elements in all datasets at the same `X` value, but activates when hovering anywhere within the vertical slice of the x-axis representing that `X` value.
-itemSort | Function | undefined | Allows sorting of [tooltip items](#chart-configuration-tooltip-item-interface). Must implement a function that can be passed to [Array.prototype.sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
+itemSort | Function | undefined | Allows sorting of [tooltip items](#chart-configuration-tooltip-item-interface). Must implement at minimum a function that can be passed to [Array.prototype.sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort).  This function can also accept a third parameter that is the data object passed to the chart.
 backgroundColor | Color | 'rgba(0,0,0,0.8)' | Background color of the tooltip
 titleFontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Font family for tooltip title inherited from global font family
 titleFontSize | Number | 12 | Font size for tooltip title inherited from global font size
