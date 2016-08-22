@@ -225,6 +225,54 @@ describe('Category scale tests', function() {
 		expect(scale.getValueForPixel(557)).toBe(4);
 	});
 
+	it ('Should get the correct pixel for a value when there are repeated labels', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [10, 5, 0, 25, 78]
+			}],
+			labels: ['tick1', 'tick1', 'tick3', 'tick3', 'tick_last']
+		};
+
+		var mockContext = window.createMockContext();
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
+		config.gridLines.offsetGridLines = true;
+		var Constructor = Chart.scaleService.getScaleConstructor('category');
+		var scale = new Constructor({
+			ctx: mockContext,
+			options: config,
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		var minSize = scale.update(600, 100);
+
+		expect(scale.width).toBe(600);
+		expect(scale.height).toBe(28);
+		expect(scale.paddingTop).toBe(0);
+		expect(scale.paddingBottom).toBe(0);
+		expect(scale.paddingLeft).toBe(28);
+		expect(scale.paddingRight).toBe(48);
+		expect(scale.labelRotation).toBe(0);
+
+		expect(minSize).toEqual({
+			width: 600,
+			height: 28,
+		});
+
+		scale.left = 5;
+		scale.top = 5;
+		scale.right = 605;
+		scale.bottom = 33;
+
+		expect(scale.getPixelForValue('tick_1', 1, 0, false)).toBe(138);
+		expect(scale.getPixelForValue('tick_1', 1, 0, true)).toBe(190);
+	});
+
 	it ('Should get the correct pixel for a value when horizontal and zoomed', function() {
 		var scaleID = 'myScale';
 
