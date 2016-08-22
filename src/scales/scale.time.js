@@ -330,7 +330,7 @@ module.exports = function(Chart) {
 			var me = this;
 			if (!value || !value.isValid) {
 				// not already a moment object
-				value = moment(me.getRightValue(value));
+				value = me.parseTime(me.getRightValue(value));
 			}
 			var labelMoment = value && value.isValid && value.isValid() ? value : me.getLabelMoment(datasetIndex, index);
 
