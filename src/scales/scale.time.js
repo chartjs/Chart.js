@@ -255,14 +255,6 @@ module.exports = function(Chart) {
 				me.scaleSizeInUnits = me.lastTick.diff(me.firstTick, me.tickUnit, true);
 			}
 
-			me.smallestLabelSeparation = me.width;
-
-			helpers.each(me.chart.data.datasets, function(dataset, datasetIndex) {
-				for (var i = 1; i < me.labelMoments[datasetIndex].length; i++) {
-					me.smallestLabelSeparation = Math.min(me.smallestLabelSeparation, me.labelMoments[datasetIndex][i].diff(me.labelMoments[datasetIndex][i - 1], me.tickUnit, true));
-				}
-			}, me);
-
 			// Tick displayFormat override
 			if (me.options.time.displayFormat) {
 				me.displayFormat = me.options.time.displayFormat;
