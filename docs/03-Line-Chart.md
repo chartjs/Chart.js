@@ -39,7 +39,8 @@ label | `String` | The label for the dataset which appears in the legend and too
 xAxisID | `String` | The ID of the x axis to plot this dataset on
 yAxisID | `String` | The ID of the y axis to plot this dataset on
 fill | `Boolean` | If true, fill the area under the line
-lineTension | `Number` | Bezier curve tension of the line. Set to 0 to draw straightlines. *Note* This was renamed from 'tension' but the old name still works.
+cubicInterpolationMode | `String` | Algorithm used to interpolate a smooth curve from the discrete data points. Options are 'default' and 'monotone'. The 'default' algorithm uses a custom weighted cubic interpolation, which produces pleasant curves for all types of datasets. The 'monotone' algorithm is more suited to `y = f(x)` datasets : it preserves monotonicity (or piecewise monotonicity) of the dataset being interpolated, and ensures local extremums (if any) stay at input data points. If left untouched (`undefined`), the global `options.elements.line.cubicInterpolationMode` property is used.
+lineTension | `Number` | Bezier curve tension of the line. Set to 0 to draw straightlines. This option is ignored if monotone cubic interpolation is used. *Note* This was renamed from 'tension' but the old name still works.
 backgroundColor | `Color` | The fill color under the line. See [Colors](#chart-configuration-colors)
 borderWidth | `Number` | The width of the line in pixels
 borderColor | `Color` | The color of the line.

@@ -90,6 +90,7 @@ module.exports = function(Chart) {
 					borderJoinStyle: custom.borderJoinStyle ? custom.borderJoinStyle : (dataset.borderJoinStyle || lineElementOptions.borderJoinStyle),
 					fill: custom.fill ? custom.fill : (dataset.fill !== undefined ? dataset.fill : lineElementOptions.fill),
 					steppedLine: custom.steppedLine ? custom.steppedLine : helpers.getValueOrDefault(dataset.steppedLine, lineElementOptions.stepped),
+					cubicInterpolationMode: custom.cubicInterpolationMode ? custom.cubicInterpolationMode : helpers.getValueOrDefault(dataset.cubicInterpolationMode, lineElementOptions.cubicInterpolationMode),
 					// Scale
 					scaleTop: scale.top,
 					scaleBottom: scale.bottom,
@@ -248,30 +249,45 @@ module.exports = function(Chart) {
 			var meta = me.getMeta();
 			var area = me.chart.chartArea;
 
-			// only consider points that are drawn in case the spanGaps option is ued
-			var points = (meta.data || []).filter(function(pt) { return !pt._model.skip; });
+			// Only consider points that are drawn in case the spanGaps option is used
+			var points = (meta.data || []);
+			if (meta.dataset._model.spanGaps) points = points.filter(function(pt) { return !pt._model.skip; });
 			var i, ilen, point, model, controlPoints;
 
-			var needToCap = me.chart.options.elements.line.capBezierPoints;
-			function capIfNecessary(pt, min, max) {
-				return needToCap ? Math.max(Math.min(pt, max), min) : pt;
+			function capControlPoint(pt, min, max) {
+				return Math.max(Math.min(pt, max), min);
 			}
 
-			for (i=0, ilen=points.length; i<ilen; ++i) {
-				point = points[i];
-				model = point._model;
-				controlPoints = helpers.splineCurve(
-					helpers.previousItem(points, i)._model,
-					model,
-					helpers.nextItem(points, i)._model,
-					meta.dataset._model.tension
-				);
-
-				model.controlPointPreviousX = capIfNecessary(controlPoints.previous.x, area.left, area.right);
-				model.controlPointPreviousY = capIfNecessary(controlPoints.previous.y, area.top, area.bottom);
-				model.controlPointNextX = capIfNecessary(controlPoints.next.x, area.left, area.right);
-				model.controlPointNextY = capIfNecessary(controlPoints.next.y, area.top, area.bottom);
+			if (meta.dataset._model.cubicInterpolationMode == 'monotone') {
+				helpers.splineCurveMonotone(points);
 			}
+			else {
+				for (i = 0, ilen = points.length; i < ilen; ++i) {
+					point = points[i];
+					model = point._model;
+					controlPoints = helpers.splineCurve(
+						helpers.previousItem(points, i)._model,
+						model,
+						helpers.nextItem(points, i)._model,
+						meta.dataset._model.tension
+					);
+					model.controlPointPreviousX = controlPoints.previous.x;
+					model.controlPointPreviousY = controlPoints.previous.y;
+					model.controlPointNextX = controlPoints.next.x;
+					model.controlPointNextY = controlPoints.next.y;
+				}
+			}
+
+			if (me.chart.options.elements.line.capBezierPoints) {
+				for (i = 0, ilen = points.length; i < ilen; ++i) {
+					model = points[i]._model;
+					model.controlPointPreviousX = capControlPoint(model.controlPointPreviousX, area.left, area.right);
+					model.controlPointPreviousY = capControlPoint(model.controlPointPreviousY, area.top, area.bottom);
+					model.controlPointNextX = capControlPoint(model.controlPointNextX, area.left, area.right);
+					model.controlPointNextY = capControlPoint(model.controlPointNextY, area.top, area.bottom);
+				}
+			}
+
 		},
 
 		draw: function(ease) {
