@@ -59,7 +59,7 @@ module.exports = function(Chart) {
 			// 1 is added because we need the length but we have the indexes
 			var offsetAmt = Math.max((me.maxIndex + 1 - me.minIndex - ((me.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
 
-			if (value !== undefined) {
+			if (value !== undefined && isNaN(index)) {
 				var labels = me.getLabels();
 				var idx = labels.indexOf(value);
 				index = idx !== -1 ? idx : index;
