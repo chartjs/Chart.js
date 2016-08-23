@@ -730,4 +730,56 @@ describe('Linear Scale', function() {
 		expect(yScale.width).toBeCloseToPixel(59);
 		expect(yScale.height).toBeCloseToPixel(434);
 	});
+
+	it('should fit correctly when display is turned off', function() {
+		chartInstance = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					xAxisID: 'xScale0',
+					yAxisID: 'yScale0',
+					data: [{
+						x: 10,
+						y: 100
+					}, {
+						x: -10,
+						y: 0
+					}, {
+						x: 0,
+						y: 0
+					}, {
+						x: 99,
+						y: 7
+					}]
+				}],
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'xScale0',
+						type: 'linear',
+						position: 'bottom'
+					}],
+					yAxes: [{
+						id: 'yScale0',
+						type: 'linear',
+						gridLines: {
+							drawTicks: false,
+							drawBorder: false
+						},
+						scaleLabel: {
+							display: false
+						},
+						ticks: {
+							display: false,
+							padding: 0
+						}
+					}]
+				}
+			}
+		});
+
+		var yScale = chartInstance.scales.yScale0;
+		expect(yScale.width).toBeCloseToPixel(0);
+	});
 });
