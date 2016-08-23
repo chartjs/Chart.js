@@ -277,6 +277,7 @@ module.exports = function(Chart) {
 			var globalDefaults = Chart.defaults.global;
 			var tickOpts = opts.ticks;
 			var scaleLabelOpts = opts.scaleLabel;
+			var gridLineOpts = opts.gridLines;
 			var display = opts.display;
 			var isHorizontal = me.isHorizontal();
 
@@ -294,12 +295,12 @@ module.exports = function(Chart) {
 				// subtract the margins to line up with the chartArea if we are a full width scale
 				minSize.width = me.isFullWidth() ? me.maxWidth - me.margins.left - me.margins.right : me.maxWidth;
 			} else {
-				minSize.width = display ? tickMarkLength : 0;
+				minSize.width = display && gridLineOpts.drawTicks ? tickMarkLength : 0;
 			}
 
 			// height
 			if (isHorizontal) {
-				minSize.height = display ? tickMarkLength : 0;
+				minSize.height = display && gridLineOpts.drawTicks ? tickMarkLength : 0;
 			} else {
 				minSize.height = me.maxHeight; // fill all the height
 			}
