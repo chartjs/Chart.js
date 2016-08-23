@@ -240,19 +240,16 @@ module.exports = function(Chart) {
 			// Only round the last tick if we have no hard maximum
 			if (!me.options.time.max) {
 				var roundedEnd = me.getMomentStartOf(me.lastTick);
-				if (roundedEnd.diff(me.lastTick, me.tickUnit, true) !== 0) {
+				var delta = roundedEnd.diff(me.lastTick, me.tickUnit, true);
+				if (delta < 0) {
 					// Do not use end of because we need me to be in the next time unit
 					me.lastTick = me.getMomentStartOf(me.lastTick.add(1, me.tickUnit));
+				} else if (delta >= 0) {
+					me.lastTick = roundedEnd;
 				}
+
+				me.scaleSizeInUnits = me.lastTick.diff(me.firstTick, me.tickUnit, true);
 			}
-
-			me.smallestLabelSeparation = me.width;
-
-			helpers.each(me.chart.data.datasets, function(dataset, datasetIndex) {
-				for (var i = 1; i < me.labelMoments[datasetIndex].length; i++) {
-					me.smallestLabelSeparation = Math.min(me.smallestLabelSeparation, me.labelMoments[datasetIndex][i].diff(me.labelMoments[datasetIndex][i - 1], me.tickUnit, true));
-				}
-			}, me);
 
 			// Tick displayFormat override
 			if (me.options.time.displayFormat) {
@@ -329,7 +326,7 @@ module.exports = function(Chart) {
 			var me = this;
 			if (!value || !value.isValid) {
 				// not already a moment object
-				value = moment(me.getRightValue(value));
+				value = me.parseTime(me.getRightValue(value));
 			}
 			var labelMoment = value && value.isValid && value.isValid() ? value : me.getLabelMoment(datasetIndex, index);
 
