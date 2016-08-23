@@ -22,7 +22,9 @@ describe('Category scale tests', function() {
 				offsetGridLines: false,
 				display: true,
 				zeroLineColor: "rgba(0,0,0,0.25)",
-				zeroLineWidth: 1
+				zeroLineWidth: 1,
+				borderDash: [],
+				borderDashOffset: 0.0
 			},
 			position: "bottom",
 			scaleLabel: {

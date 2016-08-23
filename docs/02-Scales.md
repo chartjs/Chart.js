@@ -46,6 +46,8 @@ Name | Type | Default | Description
 --- | --- | --- | ---
 display | Boolean | true |
 color | Color or Array[Color] | "rgba(0, 0, 0, 0.1)" | Color of the grid lines.
+borderDash | Array[Number] | [] | Length and spacing of dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
+borderDashOffset | Number | 0.0 | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
 lineWidth | Number or Array[Number] | 1 | Stroke width of grid lines
 drawBorder | Boolean | true | If true draw border on the edge of the chart
 drawOnChartArea | Boolean | true | If true, draw lines on the chart area inside the axis lines. This is useful when there are multiple axes and you need to control which grid lines are drawn
@@ -136,7 +138,7 @@ The following options are provided by the linear scale. They are all located in 
 
 Name | Type | Default | Description
 --- | --- | --- | ---
-beginAtZero | Boolean | - | if true, scale will inclulde 0 if it is not already included.
+beginAtZero | Boolean | - | if true, scale will include 0 if it is not already included.
 min | Number | - | User defined minimum number for the scale, overrides minimum value from data.
 max | Number | - | User defined maximum number for the scale, overrides maximum value from data.
 maxTicksLimit | Number | 11 | Maximum number of ticks and gridlines to show. If not defined, it will limit to 11 ticks but will show all gridlines.
@@ -209,7 +211,7 @@ The time scale is used to display times and dates. It can only be placed on the 
 
 #### Configuration Options
 
-The following options are provided by the logarithmic scale. They are all located in the `time` sub options.
+The following options are provided by the time scale. They are all located in the `time` sub options.
 
 Name | Type | Default | Description
 --- | --- | --- | ---
@@ -341,12 +343,12 @@ Name | Type | Default | Description
 backdropColor | Color | 'rgba(255, 255, 255, 0.75)' | Color of label backdrops
 backdropPaddingX | Number | 2 | Horizontal padding of label backdrop
 backdropPaddingY | Number | 2 | Vertical padding of label backdrop
-beginAtZero | Boolean | - | if true, scale will inclulde 0 if it is not already included.
+beginAtZero | Boolean | - | if true, scale will include 0 if it is not already included.
 min | Number | - | User defined minimum number for the scale, overrides minimum value from data.
 max | Number | - | User defined maximum number for the scale, overrides maximum value from data.
 maxTicksLimit | Number | 11 | Maximum number of ticks and gridlines to show. If not defined, it will limit to 11 ticks but will show all gridlines.
 showLabelBackdrop | Boolean | true | If true, draw a background behind the tick labels
-stepSize | Number | - | User defined fixed step size for the scale. If set, the scale ticks will be enumerated by multiple of stepSize, having one tick per increment. If not set, the ticks are labeled automatically using the nice numbers algorithm.
+fixedStepSize | Number | - | User defined fixed step size for the scale. If set, the scale ticks will be enumerated by multiple of stepSize, having one tick per increment. If not set, the ticks are labeled automatically using the nice numbers algorithm.
 stepSize | Number | - | if defined, it can be used along with the min and the max to give a custom number of steps. See the example below.
 suggestedMax | Number | - | User defined maximum number for the scale, overrides maximum value *except for if* it is lower than the maximum value.
 suggestedMin | Number | - | User defined minimum number for the scale, overrides minimum value *except for if* it is higher than the minimum value.

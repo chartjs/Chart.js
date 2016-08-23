@@ -125,6 +125,19 @@ myLineChart.getDatasetAtEvent(e);
 // => returns an array of elements
 ```
 
+#### .getDatasetMeta(index)
+
+Looks for the dataset that matches the current index and returns that metadata. This returned data has all of the metadata that is used to construct the chart.
+
+The `data` property of the metadata will contain information about each point, rectangle, etc. depending on the chart type.
+
+Extensive examples of usage are available in the [Chart.js tests](https://github.com/chartjs/Chart.js/tree/master/test).
+
+```javascript
+var meta = myChart.getDatasetMeta(0);
+var x = meta.data[0]._model.x
+```
+
 ### External Tooltips
 
 You can enable custom tooltips in the global or chart configuration like so:
@@ -372,7 +385,7 @@ The bar controller has a special property that you should be aware of. To correc
 
 ### Creating Plugins
 
-Starting with v2.1.0, you can create plugins for chart.js. To register your plugin, simply call `Chart.pluginService.register` and pass your plugin in.
+Starting with v2.1.0, you can create plugins for chart.js. To register your plugin, simply call `Chart.plugins.register` and pass your plugin in.
 Plugins will be called at the following times
 * Start of initialization
 * End of initialization
