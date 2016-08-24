@@ -159,6 +159,19 @@ var myPieChart = new Chart(ctx, {
 });
 ```
 
+In addition to all tooltip properties, a `dataPoints` property is added containing an `array[CustomTooltipDataPoint]`.
+
+#### CustomTooltipDataPoint
+
+Name | Type | Description
+--- | --- | ---
+index | Number | Matching point index.
+datasetIndex | Number | Matching dataset index.
+xLabel | String | Matching label on X axis.
+yLabel | String | Matching label on Y axis.
+pointX | Number | X position of matching point.
+pointY | Number | Y position of matching point.
+
 See `sample/line-customTooltips.html` for examples on how to get started.
 
 ### Writing New Scale Types
@@ -203,12 +216,12 @@ Scale instances are given the following properties during the fitting process.
 {
 	left: Number, // left edge of the scale bounding box
 	right: Number, // right edge of the bounding box'
-	top: Number, 
+	top: Number,
 	bottom: Number,
 	width: Number, // the same as right - left
 	height: Number, // the same as bottom - top
 
-	// Margin on each side. Like css, this is outside the bounding box. 
+	// Margin on each side. Like css, this is outside the bounding box.
 	margins: {
 		left: Number,
 		right: Number,
@@ -225,7 +238,7 @@ Scale instances are given the following properties during the fitting process.
 ```
 
 #### Scale Interface
-To work with Chart.js, custom scale types must implement the following interface. 
+To work with Chart.js, custom scale types must implement the following interface.
 
 ```javascript
 {
@@ -260,10 +273,10 @@ To work with Chart.js, custom scale types must implement the following interface
 Optionally, the following methods may also be overwritten, but an implementation is already provided by the `Chart.Scale` base class.
 
 ```javascript
-	// Transform the ticks array of the scale instance into strings. The default implementation simply calls this.options.ticks.callback(numericalTick, index, ticks); 
+	// Transform the ticks array of the scale instance into strings. The default implementation simply calls this.options.ticks.callback(numericalTick, index, ticks);
 	convertTicksToLabels: function() {},
 
-	// Determine how much the labels will rotate by. The default implementation will only rotate labels if the scale is horizontal. 
+	// Determine how much the labels will rotate by. The default implementation will only rotate labels if the scale is horizontal.
 	calculateTickRotation: function() {},
 
 	// Fits the scale into the canvas.
@@ -280,7 +293,7 @@ Optionally, the following methods may also be overwritten, but an implementation
 
 The Core.Scale base class also has some utility functions that you may find useful.
 ```javascript
-{	
+{
 	// Returns true if the scale instance is horizontal
 	isHorizontal: function() {},
 
@@ -350,7 +363,7 @@ The following methods may optionally be overridden by derived dataset controller
 	// chart types using a single scale
 	linkScales: function() {},
 
-	// Called by the main chart controller when an update is triggered. The default implementation handles the number of data points changing and creating elements appropriately. 
+	// Called by the main chart controller when an update is triggered. The default implementation handles the number of data points changing and creating elements appropriately.
 	buildOrUpdateElements: function() {}
 }
 ```
@@ -419,7 +432,7 @@ Plugins should derive from Chart.PluginBase and implement the following interfac
 
 ### Building Chart.js
 
-Chart.js uses <a href="http://gulpjs.com/" target="_blank">gulp</a> to build the library into a single JavaScript file. 
+Chart.js uses <a href="http://gulpjs.com/" target="_blank">gulp</a> to build the library into a single JavaScript file.
 
 Firstly, we need to ensure development dependencies are installed. With node and npm installed, after cloning the Chart.js repo to a local directory, and navigating to that directory in the command line, we can run the following:
 
