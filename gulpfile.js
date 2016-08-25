@@ -1,5 +1,6 @@
 var gulp = require('gulp'),
   concat = require('gulp-concat'),
+  file = require('gulp-file'),
   uglify = require('gulp-uglify'),
   util = require('gulp-util'),
   jshint = require('gulp-jshint'),
@@ -48,6 +49,7 @@ var testFiles = [
   '!./test/defaultConfig.tests.js',
 ];
 
+gulp.task('bower', bowerTask);
 gulp.task('build', buildTask);
 gulp.task('package', packageTask);
 gulp.task('coverage', coverageTask);
@@ -65,9 +67,25 @@ gulp.task('library-size', librarySizeTask);
 gulp.task('module-sizes', moduleSizesTask);
 gulp.task('_open', _openTask);
 gulp.task('dev', ['server', 'default']);
-
 gulp.task('default', ['build', 'watch']);
 
+/**
+ * Generates the bower.json manifest file which will be pushed along release tags.
+ * Specs: https://github.com/bower/spec/blob/master/json.md
+ */
+function bowerTask() {
+  var json = JSON.stringify({
+      name: package.name,
+      description: package.description,
+      homepage: package.homepage,
+      license: package.license,
+      version: package.version,
+      main: outDir + "Chart.js"
+    }, null, 2);
+
+  return file('bower.json', json, { src: true })
+    .pipe(gulp.dest('./'));
+}
 
 function buildTask() {
 
