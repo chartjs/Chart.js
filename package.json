@@ -29,7 +29,6 @@
     "gulp-umd": "~0.2.0",
     "gulp-util": "~2.2.x",
     "gulp-zip": "~3.2.0",
-    "inquirer": "^0.5.1",
     "jasmine": "^2.3.2",
     "jasmine-core": "^2.3.4",
     "jquery": "^2.1.4",
@@ -42,7 +41,6 @@
     "karma-jasmine": "^0.3.6",
     "karma-jasmine-html-reporter": "^0.1.8",
     "merge-stream": "^1.0.0",
-    "semver": "^3.0.1",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.7.0"
   },

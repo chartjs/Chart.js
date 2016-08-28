@@ -10,10 +10,7 @@ var gulp = require('gulp'),
   htmlv = require('gulp-html-validator'),
   insert = require('gulp-insert'),
   zip = require('gulp-zip'),
-  inquirer = require('inquirer'),
-  semver = require('semver'),
   exec = require('child_process').exec,
-  fs = require('fs'),
   package = require('./package.json'),
   karma = require('gulp-karma'),
   browserify = require('browserify'),
@@ -54,8 +51,6 @@ gulp.task('build', buildTask);
 gulp.task('package', packageTask);
 gulp.task('coverage', coverageTask);
 gulp.task('watch', watchTask);
-gulp.task('bump', bumpTask);
-gulp.task('release', ['build'], releaseTask);
 gulp.task('jshint', jshintTask);
 gulp.task('test', ['jshint', 'validHTML', 'unittest']);
 gulp.task('size', ['library-size', 'module-sizes']);
@@ -135,56 +130,12 @@ function packageTask() {
   .pipe(gulp.dest(outDir));
 }
 
-/*
- *  Usage : gulp bump
- *  Prompts: Version increment to bump
- *  Output: - New version number written into package.json
- */
-function bumpTask(complete) {
-  util.log('Current version:', util.colors.cyan(package.version));
-  var choices = ['major', 'premajor', 'minor', 'preminor', 'patch', 'prepatch', 'prerelease'].map(function(versionType) {
-    return versionType + ' (v' + semver.inc(package.version, versionType) + ')';
-  });
-  inquirer.prompt({
-    type: 'list',
-    name: 'version',
-    message: 'What version update would you like?',
-    choices: choices
-  }, function(res) {
-    var increment = res.version.split(' ')[0],
-      newVersion = semver.inc(package.version, increment),
-      oldVersion = package.version;
-
-    // Set the new versions into the package object
-    package.version = newVersion;
-
-    // Write these to their own files, then build the output
-    fs.writeFileSync('package.json', JSON.stringify(package, null, 2));
-
-    var oldCDN = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/'+oldVersion+'/Chart.min.js',
-      newCDN = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/'+newVersion+'/Chart.min.js';
-
-    gulp.src(['./README.md'])
-      .pipe(replace(oldCDN, newCDN))
-      .pipe(gulp.dest('./'));
-
-    complete();
-  });
-}
-
-
-function releaseTask() {
-  exec('git tag -a v' + package.version);
-}
-
-
 function jshintTask() {
   return gulp.src(srcDir + '**/*.js')
     .pipe(jshint('config.jshintrc'))
     .pipe(jshint.reporter('jshint-stylish'))
     .pipe(jshint.reporter('fail'));
 }
-
 
 function validHTMLTask() {
   return gulp.src('samples/*.html')
