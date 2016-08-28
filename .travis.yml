@@ -33,6 +33,15 @@ addons:
       - google-chrome-stable
 
 deploy:
+# Creates a tag containing dist files and bower.json
+# Requires GITHUB_AUTH_TOKEN and GITHUB_AUTH_EMAIL environment variables
+# IMPORTANT: the script has to be set executable in the Git repository (error 127)
+# https://github.com/travis-ci/travis-ci/issues/5538#issuecomment-225025939
+- provider: script
+  script: ./scripts/release.sh
+  skip_cleanup: true
+  on:
+    branch: release
 - provider: releases
   api_key:
     secure: E6JiZzA/Qy+UD1so/rVfqYnMhgU4m0cUsljxyrKIiYKlt/ZXo1XJabNkpEIYLvckrNx+g/4cmidNcuLfrnAZJtUg53qHLxyqMTXa9zAqmxxJ6aIpQpNK25FIEk9Xwm2XZdbI5rrm0ZciP5rcgg0X8/j5+RtnU3ZpTOCVkp0P73A=
