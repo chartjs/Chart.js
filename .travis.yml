@@ -43,8 +43,7 @@ deploy:
   on:
     branch: release
 - provider: releases
-  api_key:
-    secure: E6JiZzA/Qy+UD1so/rVfqYnMhgU4m0cUsljxyrKIiYKlt/ZXo1XJabNkpEIYLvckrNx+g/4cmidNcuLfrnAZJtUg53qHLxyqMTXa9zAqmxxJ6aIpQpNK25FIEk9Xwm2XZdbI5rrm0ZciP5rcgg0X8/j5+RtnU3ZpTOCVkp0P73A=
+  api_key: $GITHUB_AUTH_TOKEN
   file:
   - "./dist/Chart.bundle.js"
   - "./dist/Chart.bundle.min.js"
@@ -55,10 +54,8 @@ deploy:
   on:
     tags: true
 - provider: npm
-  email:
-    secure: f6jQXdqhoKtEZ3WBvnNM9PB2l9yg8SGmnUwQzeuLpW731opmv1ngPcMA+CotDAavIRs2BvAgVoLJOVGxMRXRSi5pgahfR0O2LetFoT/Px+q4MMqtn3zMgV/OuYL/fIyKXjyoYwSRfjuaIIGX7VTCOpqOEe29UQJAb7XcG9jhgIo=
-  api_key:
-    secure: O5lgPeX5ofkMSiUeijs+0hrK9Dejmpki/UABd+rgx3Cmjlxvi5DVugHpcn/6C0if0CoHv5/TqwQHVgL43kwR5ZKcspl7bzK2vD2YBpingF42Oz91YVNZwQIJyWNVSSWzzFYzG9xOXO26ZD1gTZ26Z3X+xfZVtugWkzbBa/c8NmQ=
+  email: $NPM_AUTH_EMAIL
+  api_key: $NPM_AUTH_TOKEN
   skip_cleanup: true
   on:
     tags: true
