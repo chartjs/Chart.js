@@ -26,6 +26,8 @@ module.exports = function(Chart) {
 		xPadding: 6,
 		yAlign : 'center',
 		xAlign : 'center',
+		strokeColor: 'rgba(0,0,0,0)',
+		strokeWidth: 0,
 		showCaret: true,
 		caretSize: 5,
 		cornerRadius: 6,
@@ -194,7 +196,9 @@ module.exports = function(Chart) {
 					cornerRadius: tooltipOpts.cornerRadius,
 					backgroundColor: tooltipOpts.backgroundColor,
 					opacity: 0,
-					legendColorBackground: tooltipOpts.multiKeyBackground
+					legendColorBackground: tooltipOpts.multiKeyBackground,
+					strokeColor: tooltipOpts.strokeColor,
+					strokeWidth: tooltipOpts.strokeWidth
 				}
 			});
 		},
@@ -559,6 +563,7 @@ module.exports = function(Chart) {
 				}
 			}
 
+			this.applyStroke(tooltipPoint, vm, ctx, opacity);
 
 			var bgColor = helpers.color(vm.backgroundColor);
 
@@ -569,6 +574,23 @@ module.exports = function(Chart) {
 			ctx.lineTo(x3, y3);
 			ctx.closePath();
 			ctx.fill();
+
+			// Draw a line to cover the third line of the caret
+			if(Number.isFinite(vm.strokeWidth) && vm.strokeWidth > 0) {
+				ctx.strokeStyle = bgColor.alpha(opacity * bgColor.alpha()).rgbString();
+				ctx.lineWidth = vm.strokeWidth;
+				ctx.beginPath();
+				ctx.moveTo(x1, y1);
+				ctx.lineTo(x3, y3);
+				ctx.stroke();
+			}
+		},
+		applyStroke: function(pt, vm, ctx, opacity) {
+			var strokeColor = helpers.color(vm.strokeColor);
+
+			ctx.strokeStyle = strokeColor.alpha(opacity * strokeColor.alpha()).rgbString();
+			ctx.lineWidth = vm.strokeWidth;
+			ctx.stroke();
 		},
 		drawTitle: function(pt, vm, ctx, opacity) {
 			var title = vm.title;
@@ -698,6 +720,8 @@ module.exports = function(Chart) {
 				ctx.fillStyle = bgColor.alpha(opacity * bgColor.alpha()).rgbString();
 				helpers.drawRoundedRectangle(ctx, pt.x, pt.y, tooltipSize.width, tooltipSize.height, vm.cornerRadius);
 				ctx.fill();
+
+				this.applyStroke(pt, vm, ctx, opacity);
 
 				// Draw Caret
 				if(vm.showCaret) {

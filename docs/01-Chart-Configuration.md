@@ -238,6 +238,8 @@ caretSize | Number | 5 | Size, in px, of the tooltip arrow
 cornerRadius | Number | 6 | Radius of tooltip corner curves
 multiKeyBackground | Color | "#fff" | Color to draw behind the colored boxes when multiple items are in the tooltip
 callbacks | Object | | See the [callbacks section](#chart-configuration-tooltip-callbacks) below
+strokeColor | Color | 'rgba(0,0,0,0)' | Stroke color for tooltip border
+strokeWidth | Number | 0 | Stroke width for tooltip border
 
 #### Tooltip Callbacks
 
