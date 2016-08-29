@@ -26,6 +26,7 @@ module.exports = function(Chart) {
 		xPadding: 6,
 		yAlign : 'center',
 		xAlign : 'center',
+		showCaret: true,
 		caretSize: 5,
 		cornerRadius: 6,
 		multiKeyBackground: '#fff',
@@ -188,6 +189,7 @@ module.exports = function(Chart) {
 					footerMarginTop: tooltipOpts.footerMarginTop,
 
 					// Appearance
+					showCaret: tooltipOpts.showCaret,
 					caretSize: tooltipOpts.caretSize,
 					cornerRadius: tooltipOpts.cornerRadius,
 					backgroundColor: tooltipOpts.backgroundColor,
@@ -557,7 +559,9 @@ module.exports = function(Chart) {
 				}
 			}
 
+
 			var bgColor = helpers.color(vm.backgroundColor);
+
 			ctx.fillStyle = bgColor.alpha(opacity * bgColor.alpha()).rgbString();
 			ctx.beginPath();
 			ctx.moveTo(x1, y1);
@@ -696,7 +700,9 @@ module.exports = function(Chart) {
 				ctx.fill();
 
 				// Draw Caret
-				this.drawCaret(pt, tooltipSize, opacity);
+				if(vm.showCaret) {
+					this.drawCaret(pt, tooltipSize, opacity);
+				}
 
 				// Draw Title, Body, and Footer
 				pt.x += vm.xPadding;
