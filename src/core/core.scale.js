@@ -36,6 +36,7 @@ module.exports = function(Chart) {
 		// label settings
 		ticks: {
 			beginAtZero: false,
+			consistentAlignment: true,
 			minRotation: 0,
 			maxRotation: 50,
 			mirror: false,
@@ -210,8 +211,8 @@ module.exports = function(Chart) {
 
 			if (me.options.display) {
 				if (me.isHorizontal()) {
-					me.paddingRight = lastWidth / 2 + 3;
-					me.paddingLeft = firstWidth / 2 + 3;
+					me.paddingRight = 0;
+					me.paddingLeft = 0;
 
 					if (!me.longestTextCache) {
 						me.longestTextCache = {};
@@ -343,6 +344,10 @@ module.exports = function(Chart) {
 					var sinRotation = Math.sin(helpers.toRadians(me.labelRotation));
 					me.paddingLeft = me.labelRotation !== 0 ? (cosRotation * firstLabelWidth) + 3 : firstLabelWidth / 2 + 3; // add 3 px to move away from canvas edges
 					me.paddingRight = me.labelRotation !== 0 ? (sinRotation * (tickFontSize / 2)) + 3 : lastLabelWidth / 2 + 3; // when rotated
+
+					if (!tickOpts.consistentAlignment) {
+						me.paddingLeft = me.paddingRight = 0;
+					}
 				} else {
 					// A vertical axis is more constrained by the width. Labels are the dominant factor here, so get that length first
 					var maxLabelWidth = me.maxWidth - minSize.width;
@@ -592,6 +597,14 @@ module.exports = function(Chart) {
 					}
 
 					textAlign = isRotated ? 'right' : 'center';
+
+					if (!isRotated && !gridLines.offsetGridLines && !optionTicks.consistentAlignment) {
+						if (index === 0) {
+							textAlign = 'left';
+						} else if (index === me.ticks.length - 1) {
+							textAlign = 'right';
+						}
+					}
 
 					var xLineValue = me.getPixelForTick(index) + helpers.aliasPixel(lineWidth); // xvalues for grid lines
 					labelX = me.getPixelForTick(index, gridLines.offsetGridLines) + optionTicks.labelOffset; // x values for optionTicks (need to consider offsetLabel option)

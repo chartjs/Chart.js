@@ -78,6 +78,7 @@ Name | Type | Default | Description
 --- | --- | --- | ---
 autoSkip | Boolean | true | If true, automatically calculates how many labels that can be shown and hides labels accordingly. Turn it off to show all labels no matter what
 callback | Function | `function(value) { return helpers.isArray(value) ? value : '' + value; }` | Returns the string representation of the tick value as it should be displayed on the chart. See [callback](#scales-creating-custom-tick-formats) section below.
+consistentAlignment | Boolean | true | if true, and the axis is horizontal the labels are always center aligned. If false, the first tick is left aligned and the last tick is right aligned.
 display | Boolean | true | If true, show the ticks.
 fontColor | Color | "#666" | Font color for the tick labels.
 fontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Font family for the tick labels, follows CSS font-family options.
