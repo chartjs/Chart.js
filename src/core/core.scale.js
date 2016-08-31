@@ -36,7 +36,7 @@ module.exports = function(Chart) {
 		// label settings
 		ticks: {
 			beginAtZero: false,
-			consistentAlignment: true,
+			alignment: 'center',
 			minRotation: 0,
 			maxRotation: 50,
 			mirror: false,
@@ -192,6 +192,7 @@ module.exports = function(Chart) {
 			var context = me.ctx;
 			var globalDefaults = Chart.defaults.global;
 			var optionTicks = me.options.ticks;
+			var tickAlignment = optionTicks.alignment;
 
 			//Get the width of each grid by calculating the difference
 			//between x offsets between 0 and 1.
@@ -206,13 +207,21 @@ module.exports = function(Chart) {
 			var firstRotated;
 
 			me.labelRotation = optionTicks.minRotation || 0;
-			me.paddingRight = 0;
-			me.paddingLeft = 0;
+			me.paddingRight = 1;
+			me.paddingLeft = 1;
 
 			if (me.options.display) {
 				if (me.isHorizontal()) {
-					me.paddingRight = lastWidth / 2 + 3;
-					me.paddingLeft = firstWidth / 2 + 3;
+					if (tickAlignment === 'start') {
+						me.paddingLeft = 1;
+						me.paddingRight = lastWidth;
+					} else if (tickAlignment === 'end') {
+						me.paddingLeft = firstWidth;
+						me.paddingRight = 1; // so that we see the grid line
+					} else if (tickAlignment === 'center') {
+						me.paddingLeft = firstWidth / 2;
+						me.paddingRight = lastWidth / 2;
+					}
 
 					if (!me.longestTextCache) {
 						me.longestTextCache = {};
@@ -290,6 +299,7 @@ module.exports = function(Chart) {
 			var scaleLabelFontSize = helpers.getValueOrDefault(scaleLabelOpts.fontSize, globalDefaults.defaultFontSize);
 
 			var tickMarkLength = opts.gridLines.tickMarkLength;
+			var tickAlignment = tickOpts.alignment;
 
 			// Width
 			if (isHorizontal) {
@@ -336,17 +346,15 @@ module.exports = function(Chart) {
 					me.ctx.font = tickLabelFont;
 
 					var firstLabelWidth = me.ctx.measureText(me.ticks[0]).width;
-					var lastLabelWidth = me.ctx.measureText(me.ticks[me.ticks.length - 1]).width;
 
 					// Ensure that our ticks are always inside the canvas. When rotated, ticks are right aligned which means that the right padding is dominated
 					// by the font height
 					var cosRotation = Math.cos(helpers.toRadians(me.labelRotation));
 					var sinRotation = Math.sin(helpers.toRadians(me.labelRotation));
-					me.paddingLeft = me.labelRotation !== 0 ? (cosRotation * firstLabelWidth) + 3 : firstLabelWidth / 2 + 3; // add 3 px to move away from canvas edges
-					me.paddingRight = me.labelRotation !== 0 ? (sinRotation * (tickFontSize / 2)) + 3 : lastLabelWidth / 2 + 3; // when rotated
 
-					if (!tickOpts.consistentAlignment) {
-						me.paddingLeft = me.paddingRight = 0;
+					if (me.labelRotation !== 0) {
+						me.paddingLeft = (cosRotation * firstLabelWidth) + 3; // add 3 px to move away from canvas edges
+						me.paddingRight = (sinRotation * (tickFontSize / 2)) + 3; // when rotated
 					}
 				} else {
 					// A vertical axis is more constrained by the width. Labels are the dominant factor here, so get that length first
@@ -369,8 +377,15 @@ module.exports = function(Chart) {
 						minSize.width = me.maxWidth;
 					}
 
-					me.paddingTop = tickFontSize / 2;
-					me.paddingBottom = tickFontSize / 2;
+					if (tickAlignment == 'start') {
+						me.paddingTop = 1; // so we see the grid line
+						me.paddingBottom = tickFontSize;
+					} else if (tickAlignment == 'end') {
+						me.paddingTop = tickFontSize;
+						me.paddingBottom = 1; // so we see the grid line
+					} else if (tickAlignment == 'center') {
+						me.paddingTop = me.paddingBottom = tickFontSize / 2;
+					}
 				}
 			}
 
@@ -562,6 +577,17 @@ module.exports = function(Chart) {
 			var xTickEnd = options.position === "right" ? me.left + tl : me.right;
 			var yTickStart = options.position === "bottom" ? me.top : me.bottom - tl;
 			var yTickEnd = options.position === "bottom" ? me.top + tl : me.bottom;
+			var tickAlignment = optionTicks.alignment;
+			var horizontalAlignmentForTickAlignment = {
+				start: 'left',
+				end: 'right',
+				center: 'center'
+			};
+			var verticalAlignmentForTickAlignment = {
+				start: 'top',
+				end: 'bottom',
+				center: 'middle'
+			};
 
 			helpers.each(me.ticks, function(label, index) {
 				// If the callback returned a null or undefined value, do not draw this line
@@ -596,13 +622,21 @@ module.exports = function(Chart) {
 						textBaseline = options.position === 'top' ? 'bottom' : 'top';
 					}
 
+					// Alignment is 'right' if rotated or alignment set to 'end'
+					// 'left' if alignment set to 'start'
+					// 'center' if alignment set to 'center'
+					// 'left' for first tick and 'right' for last tick if alignment is auto
 					textAlign = isRotated ? 'right' : 'center';
 
-					if (!isRotated && !gridLines.offsetGridLines && !optionTicks.consistentAlignment) {
-						if (index === 0) {
-							textAlign = 'left';
-						} else if (index === me.ticks.length - 1) {
-							textAlign = 'right';
+					if (!isRotated && !gridLines.offsetGridLines) {
+						if (tickAlignment == 'auto') {
+							if (index === 0) {
+								textAlign = 'left';
+							} else if (index === me.ticks.length - 1) {
+								textAlign = 'right';
+							}
+						} else {
+							textAlign = horizontalAlignmentForTickAlignment[tickAlignment];
 						}
 					}
 
@@ -632,6 +666,18 @@ module.exports = function(Chart) {
 						} else {
 							labelX = me.left + optionTicks.padding;
 							textAlign = 'left';
+						}
+					}
+
+					if (!gridLines.offsetGridLines) {
+						if (tickAlignment == 'auto') {
+							if (index === 0) {
+								textBaseline = 'top'; // first tick is the top value
+							} else if (index === me.ticks.length - 1) {
+								textBaseline = 'bottom';
+							}
+						} else {
+							textBaseline = verticalAlignmentForTickAlignment[tickAlignment];
 						}
 					}
 
