@@ -211,8 +211,8 @@ module.exports = function(Chart) {
 
 			if (me.options.display) {
 				if (me.isHorizontal()) {
-					me.paddingRight = 0;
-					me.paddingLeft = 0;
+					me.paddingRight = lastWidth / 2 + 3;
+					me.paddingLeft = firstWidth / 2 + 3;
 
 					if (!me.longestTextCache) {
 						me.longestTextCache = {};
