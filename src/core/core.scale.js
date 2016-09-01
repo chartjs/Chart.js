@@ -257,6 +257,40 @@ module.exports = function(Chart) {
 			}
 		},
 		afterCalculateTickRotation: function() {
+			var me = this;
+			var context = me.ctx;
+			var tickWidth = me.getPixelForTick(1) - me.getPixelForTick(0) - 6;
+			
+			//for horizontal labels
+			//in case of no rotation and the text is too long
+			//seperate them into lines
+			if (me.isHorizontal()){
+				//loop through the labels
+				helpers.each(me.ticks, function(label, index) {
+					var words = (label+"").split(' ');
+					var line = '';
+					var lines = [];
+					var labelWidth = context.measureText(label).width;
+					
+					//compare the label length to the available length
+					if (tickWidth < labelWidth){
+						//loop thorugh the words to build th bigest line possible
+						helpers.each(words, function(word, index) {
+							var textLine = line ? line +' '+ word : word;
+							var testWidth = context.measureText(textLine).width;
+							
+							if (tickWidth < testWidth){ 
+								lines.push(line);
+								line = word;
+								} else {
+								line = textLine;
+								}
+						});
+						lines.push(line);
+						me.ticks[index] = lines;
+					}
+				});
+			}			
 			helpers.callCallback(this.options.afterCalculateTickRotation, [this]);
 		},
 
@@ -695,8 +729,8 @@ module.exports = function(Chart) {
 						for (var i = 0, y = 0; i < label.length; ++i) {
 							// We just make sure the multiline element is a string here..
 							context.fillText('' + label[i], 0, y);
-							// apply same lineSpacing as calculated @ L#320
-							y += (tickFontSize * 1.5);
+							// apply same lineSpacing as calculated @ L#320 > this will make the label get cut off at the bottom
+							y += tickFontSize;
 						}
 					} else {
 						context.fillText(label, 0, 0);
