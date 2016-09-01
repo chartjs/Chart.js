@@ -324,7 +324,7 @@ module.exports = function(Chart) {
 					ctx.lineJoin = itemOrDefault(legendItem.lineJoin, lineDefault.borderJoinStyle);
 					ctx.lineWidth = itemOrDefault(legendItem.lineWidth, lineDefault.borderWidth);
 					ctx.strokeStyle = itemOrDefault(legendItem.strokeStyle, globalDefault.defaultColor);
-					var isLineWidthZero = (itemOrDefault(legendItem.lineWidth, lineDefault.borderWidth) == 0);
+					var isLineWidthZero = (itemOrDefault(legendItem.lineWidth, lineDefault.borderWidth) === 0);
 
 					if (ctx.setLineDash) {
 						// IE 9 and 10 do not support line dash
