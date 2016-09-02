@@ -238,7 +238,7 @@ module.exports = function(Chart) {
 		return function() {
 			return id++;
 		};
-	})();
+	}());
 	//-- Math methods
 	helpers.isNumber = function(n) {
 		return !isNaN(parseFloat(n)) && isFinite(n);
@@ -366,7 +366,7 @@ module.exports = function(Chart) {
 			}
 			if (!pointBefore || pointBefore.model.skip) pointCurrent.mK = pointCurrent.deltaK;
 			else if (!pointAfter || pointAfter.model.skip) pointCurrent.mK = pointBefore.deltaK;
-			else if (this.sign(pointBefore.deltaK) != this.sign(pointCurrent.deltaK)) pointCurrent.mK = 0;
+			else if (this.sign(pointBefore.deltaK) !== this.sign(pointCurrent.deltaK)) pointCurrent.mK = 0;
 			else pointCurrent.mK = (pointBefore.deltaK + pointCurrent.deltaK) / 2;
 		}
 
@@ -376,8 +376,7 @@ module.exports = function(Chart) {
 			pointCurrent = pointsWithTangents[i];
 			pointAfter = pointsWithTangents[i + 1];
 			if (pointCurrent.model.skip || pointAfter.model.skip) continue;
-			if (helpers.almostEquals(pointCurrent.deltaK, 0, this.EPSILON))
-			{
+			if (helpers.almostEquals(pointCurrent.deltaK, 0, this.EPSILON)) {
 				pointCurrent.mK = pointAfter.mK = 0;
 				continue;
 			}
@@ -660,7 +659,7 @@ module.exports = function(Chart) {
 			function(callback) {
 				return window.setTimeout(callback, 1000 / 60);
 			};
-	})();
+	}());
 	helpers.cancelAnimFrame = (function() {
 		return window.cancelAnimationFrame ||
 			window.webkitCancelAnimationFrame ||
@@ -670,7 +669,7 @@ module.exports = function(Chart) {
 			function(callback) {
 				return window.clearTimeout(callback, 1000 / 60);
 			};
-	})();
+	}());
 	//-- DOM methods
 	helpers.getRelativePosition = function(evt, chart) {
 		var mouseX, mouseY;
@@ -751,7 +750,7 @@ module.exports = function(Chart) {
 		if (typeof(styleValue) === 'string') {
 			valueInPixels = parseInt(styleValue, 10);
 
-			if (styleValue.indexOf('%') != -1) {
+			if (styleValue.indexOf('%') !== -1) {
 				// percentage * size in dimension
 				valueInPixels = valueInPixels / 100 * node.parentNode[parentProperty];
 			}
@@ -802,15 +801,17 @@ module.exports = function(Chart) {
 	};
 	helpers.getMaximumWidth = function(domNode) {
 		var container = domNode.parentNode;
-		var padding = parseInt(helpers.getStyle(container, 'padding-left')) + parseInt(helpers.getStyle(container, 'padding-right'));
-		var w = container.clientWidth - padding;
+		var paddingLeft = parseInt(helpers.getStyle(container, 'padding-left'), 10);
+		var paddingRight = parseInt(helpers.getStyle(container, 'padding-right'), 10);
+		var w = container.clientWidth - paddingLeft - paddingRight;
 		var cw = helpers.getConstraintWidth(domNode);
 		return isNaN(cw)? w : Math.min(w, cw);
 	};
 	helpers.getMaximumHeight = function(domNode) {
 		var container = domNode.parentNode;
-		var padding = parseInt(helpers.getStyle(container, 'padding-top')) + parseInt(helpers.getStyle(container, 'padding-bottom'));
-		var h = container.clientHeight - padding;
+		var paddingTop = parseInt(helpers.getStyle(container, 'padding-top'), 10);
+		var paddingBottom = parseInt(helpers.getStyle(container, 'padding-bottom'), 10);
+		var h = container.clientHeight - paddingTop - paddingBottom;
 		var ch = helpers.getConstraintHeight(domNode);
 		return isNaN(ch)? h : Math.min(h, ch);
 	};
@@ -964,7 +965,7 @@ module.exports = function(Chart) {
 
 		(hiddenIframe.contentWindow || hiddenIframe).onresize = function() {
 			if (callback) {
-				callback();
+				return callback();
 			}
 		};
 	};
@@ -985,7 +986,7 @@ module.exports = function(Chart) {
 	helpers.arrayEquals = function(a0, a1) {
 		var i, ilen, v0, v1;
 
-		if (!a0 || !a1 || a0.length != a1.length) {
+		if (!a0 || !a1 || a0.length !== a1.length) {
 			return false;
 		}
 
@@ -997,7 +998,7 @@ module.exports = function(Chart) {
 				if (!helpers.arrayEquals(v0, v1)) {
 					return false;
 				}
-			} else if (v0 != v1) {
+			} else if (v0 !== v1) {
 				// NOTE: two different object instances will never be equal: {x:20} != {x:20}
 				return false;
 			}

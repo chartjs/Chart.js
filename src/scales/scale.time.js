@@ -80,7 +80,7 @@ module.exports = function(Chart) {
 				return null;
             }
             
-			if (typeof this.labelMoments[datasetIndex] != 'undefined') {
+			if (typeof this.labelMoments[datasetIndex] !== 'undefined') {
 				return this.labelMoments[datasetIndex][index];
 			}
 

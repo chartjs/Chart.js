@@ -260,7 +260,7 @@ module.exports = function(Chart) {
 				return Math.max(Math.min(pt, max), min);
 			}
 
-			if (meta.dataset._model.cubicInterpolationMode == 'monotone') {
+			if (meta.dataset._model.cubicInterpolationMode === 'monotone') {
 				helpers.splineCurveMonotone(points);
 			}
 			else {

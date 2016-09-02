@@ -230,10 +230,10 @@ describe('Test the layout service', function() {
 		expect(chart.scales.xScale1.right).toBeCloseToPixel(512);
 		expect(chart.scales.xScale1.top).toBeCloseToPixel(484);
 
-		expect(chart.scales.xScale2.bottom).toBeCloseToPixel(28);
+		expect(chart.scales.xScale2.bottom).toBeCloseToPixel(60);
 		expect(chart.scales.xScale2.left).toBeCloseToPixel(0);
 		expect(chart.scales.xScale2.right).toBeCloseToPixel(512);
-		expect(chart.scales.xScale2.top).toBeCloseToPixel(0);
+		expect(chart.scales.xScale2.top).toBeCloseToPixel(32);
 
 		// Is yScale at the right spot
 		expect(chart.scales.yScale.bottom).toBeCloseToPixel(484);

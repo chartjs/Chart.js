@@ -1,23 +1,23 @@
-var gulp = require('gulp'),
-  concat = require('gulp-concat'),
-  file = require('gulp-file'),
-  uglify = require('gulp-uglify'),
-  util = require('gulp-util'),
-  jshint = require('gulp-jshint'),
-  size = require('gulp-size'),
-  connect = require('gulp-connect'),
-  replace = require('gulp-replace'),
-  htmlv = require('gulp-html-validator'),
-  insert = require('gulp-insert'),
-  zip = require('gulp-zip'),
-  exec = require('child_process').exec,
-  package = require('./package.json'),
-  karma = require('gulp-karma'),
-  browserify = require('browserify'),
-  streamify = require('gulp-streamify'),
-  source = require('vinyl-source-stream'),
-  merge = require('merge-stream'),
-  collapse = require('bundle-collapser/plugin');
+var gulp = require('gulp');
+var concat = require('gulp-concat');
+var connect = require('gulp-connect');
+var eslint = require('gulp-eslint');
+var file = require('gulp-file');
+var htmlv = require('gulp-html-validator');
+var insert = require('gulp-insert');
+var replace = require('gulp-replace');
+var size = require('gulp-size');
+var streamify = require('gulp-streamify');
+var uglify = require('gulp-uglify');
+var util = require('gulp-util');
+var zip = require('gulp-zip');
+var exec = require('child_process').exec;
+var karma = require('gulp-karma');
+var browserify = require('browserify');
+var source = require('vinyl-source-stream');
+var merge = require('merge-stream');
+var collapse = require('bundle-collapser/plugin');
+var package = require('./package.json');
 
 var srcDir = './src/';
 var outDir = './dist/';
@@ -43,7 +43,7 @@ var testFiles = [
   // Disable tests which need to be rewritten based on changes introduced by
   // the following changes: https://github.com/chartjs/Chart.js/pull/2346
   '!./test/core.layoutService.tests.js',
-  '!./test/defaultConfig.tests.js',
+  '!./test/defaultConfig.tests.js'
 ];
 
 gulp.task('bower', bowerTask);
@@ -51,8 +51,8 @@ gulp.task('build', buildTask);
 gulp.task('package', packageTask);
 gulp.task('coverage', coverageTask);
 gulp.task('watch', watchTask);
-gulp.task('jshint', jshintTask);
-gulp.task('test', ['jshint', 'validHTML', 'unittest']);
+gulp.task('lint', lintTask);
+gulp.task('test', ['lint', 'validHTML', 'unittest']);
 gulp.task('size', ['library-size', 'module-sizes']);
 gulp.task('server', serverTask);
 gulp.task('validHTML', validHTMLTask);
@@ -130,11 +130,25 @@ function packageTask() {
   .pipe(gulp.dest(outDir));
 }
 
-function jshintTask() {
-  return gulp.src(srcDir + '**/*.js')
-    .pipe(jshint('config.jshintrc'))
-    .pipe(jshint.reporter('jshint-stylish'))
-    .pipe(jshint.reporter('fail'));
+function lintTask() {
+  var files = [
+    srcDir + '**/*.js',
+  ];
+
+  // NOTE(SB) codeclimate has 'complexity' and 'max-statements' eslint rules way too strict
+  // compare to what the current codebase can support, and since it's not straightforward
+  // to fix, let's turn them as warnings and rewrite code later progressively.
+  var options = {
+    rules: {
+      'complexity': [1, 6],
+      'max-statements': [1, 30]
+    }
+  };
+
+  return gulp.src(files)
+    .pipe(eslint(options))
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
 }
 
 function validHTMLTask() {
