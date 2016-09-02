@@ -48,6 +48,7 @@ module.exports = function(Chart) {
 			round: false, // none, or override with week, month, year, etc.
 			displayFormat: false, // DEPRECATED
 			isoWeekday: false, // override week start day - see http://momentjs.com/docs/#/get-set/iso-weekday/
+			minUnit: 'millisecond',
 
 			// defaults to unit's corresponding unitFormat below or override using pattern string from http://momentjs.com/docs/#/displaying/format/
 			displayFormats: {
@@ -195,7 +196,7 @@ module.exports = function(Chart) {
 				var labelCapacity = innerWidth / (tickLabelWidth);
 
 				// Start as small as possible
-				me.tickUnit = 'millisecond';
+				me.tickUnit = me.options.time.minUnit;
 				me.scaleSizeInUnits = me.lastTick.diff(me.firstTick, me.tickUnit, true);
 				me.displayFormat = me.options.time.displayFormats[me.tickUnit];
 
