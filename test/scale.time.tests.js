@@ -504,10 +504,44 @@ describe('Time scale tests', function() {
 
 		var xScale = chartInstance.scales.xScale0;
 
-		var getOutOfBoundPixelForValue = function() {
+		var getOutOfBoundLabelMoment = function() {
 			xScale.getLabelMoment(12, 0);
 		};
 
-		expect(getOutOfBoundPixelForValue).not.toThrow();
+		expect(getOutOfBoundLabelMoment).not.toThrow();
+	});
+	
+	it("should not throw an error if the datasetIndex or index are null", function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				labels: ["2016-06-26"],
+				datasets: [{
+					type: "line",
+					data: [5]
+				}]
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						display: true,
+						type: "time",
+					}]
+				}
+			}
+		});
+
+		var xScale = chartInstance.scales.xScale0;
+
+		var getNullDatasetIndexLabelMoment = function() {
+			xScale.getLabelMoment(null, 1);
+		};
+		
+		var getNullIndexLabelMoment = function() {
+			xScale.getLabelMoment(1, null);
+		};
+
+		expect(getNullDatasetIndexLabelMoment).not.toThrow();
+		expect(getNullIndexLabelMoment).not.toThrow();
 	});
 });
