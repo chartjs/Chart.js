@@ -86,6 +86,13 @@ module.exports = function(Chart) {
 
 			return null;
 		},
+		getLabelDiff: function(datasetIndex, index) {
+			if (typeof this.labelDiffs[datasetIndex] != 'undefined') {
+				return this.labelDiffs[datasetIndex][index];
+			}
+
+			return null;
+		},
 		getMomentStartOf: function(tick) {
 			var me = this;
 			if (me.options.time.unit === 'week' && me.options.time.isoWeekday !== false) {
@@ -161,6 +168,46 @@ module.exports = function(Chart) {
 			// We will modify these, so clone for later
 			me.firstTick = (me.firstTick || moment()).clone();
 			me.lastTick = (me.lastTick || moment()).clone();
+		},
+		buildLabelDiffs: function() {
+			var me = this;
+			me.labelDiffs = [];
+			var scaleLabelDiffs = [];
+			// Parse common labels once
+			if (me.chart.data.labels && me.chart.data.labels.length > 0) {
+				helpers.each(me.chart.data.labels, function(label) {
+					var labelMoment = me.parseTime(label);
+
+					if (labelMoment.isValid()) {
+						if (me.options.time.round) {
+							labelMoment.startOf(me.options.time.round);
+						}
+						scaleLabelDiffs.push(labelMoment.diff(me.firstTick, me.tickUnit, true));
+					}
+				}, me);
+			}
+
+			helpers.each(me.chart.data.datasets, function(dataset) {
+				var diffsForDataset = [];
+
+				if (typeof dataset.data[0] === 'object' && dataset.data[0] !== null) {
+					helpers.each(dataset.data, function(value) {
+						var labelMoment = me.parseTime(me.getRightValue(value));
+
+						if (labelMoment.isValid()) {
+							if (me.options.time.round) {
+								labelMoment.startOf(me.options.time.round);
+							}
+							diffsForDataset.push(labelMoment.diff(me.firstTick, me.tickUnit, true));
+						}
+					}, me);
+				} else {
+					// We have no labels. Use common ones
+					diffsForDataset = scaleLabelDiffs;
+				}
+
+				me.labelDiffs.push(diffsForDataset);
+			}, me);
 		},
 		buildTicks: function() {
 			var me = this;
@@ -296,6 +343,9 @@ module.exports = function(Chart) {
 			}
 
 			me.ctx.restore();
+
+			// Build diff table as first tick and tick units are already determined.
+			me.buildLabelDiffs();
 		},
 		// Get tooltip label
 		getLabelForIndex: function(index, datasetIndex) {
@@ -332,15 +382,22 @@ module.exports = function(Chart) {
 		},
 		getPixelForValue: function(value, index, datasetIndex) {
 			var me = this;
-			if (!value || !value.isValid) {
-				// not already a moment object
-				value = me.parseTime(me.getRightValue(value));
+			var offset = null;
+			if (index !== undefined && datasetIndex !== undefined) {
+				offset = me.getLabelDiff(datasetIndex, index);
 			}
-			var labelMoment = value && value.isValid && value.isValid() ? value : me.getLabelMoment(datasetIndex, index);
 
-			if (labelMoment) {
-				var offset = labelMoment.diff(me.firstTick, me.tickUnit, true);
+			if (offset === null) {
+				if (!value || !value.isValid) {
+					// not already a moment object
+					value = me.parseTime(me.getRightValue(value));
+				}
+				if (value && value.isValid && value.isValid()) {
+					offset = value.diff(me.firstTick, me.tickUnit, true);
+				}
+			}
 
+			if (offset !== null) {
 				var decimal = offset !== 0 ? offset / me.scaleSizeInUnits : offset;
 
 				if (me.isHorizontal()) {
