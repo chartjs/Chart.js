@@ -358,16 +358,25 @@ module.exports = function(Chart) {
 		var i, pointBefore, pointCurrent, pointAfter;
 		for (i = 0; i < pointsLen; ++i) {
 			pointCurrent = pointsWithTangents[i];
-			if (pointCurrent.model.skip) continue;
+			if (pointCurrent.model.skip) {
+				continue;
+			}
+
 			pointBefore = i > 0 ? pointsWithTangents[i - 1] : null;
 			pointAfter = i < pointsLen - 1 ? pointsWithTangents[i + 1] : null;
 			if (pointAfter && !pointAfter.model.skip) {
 				pointCurrent.deltaK = (pointAfter.model.y - pointCurrent.model.y) / (pointAfter.model.x - pointCurrent.model.x);
 			}
-			if (!pointBefore || pointBefore.model.skip) pointCurrent.mK = pointCurrent.deltaK;
-			else if (!pointAfter || pointAfter.model.skip) pointCurrent.mK = pointBefore.deltaK;
-			else if (this.sign(pointBefore.deltaK) !== this.sign(pointCurrent.deltaK)) pointCurrent.mK = 0;
-			else pointCurrent.mK = (pointBefore.deltaK + pointCurrent.deltaK) / 2;
+
+			if (!pointBefore || pointBefore.model.skip) {
+				pointCurrent.mK = pointCurrent.deltaK;
+			} else if (!pointAfter || pointAfter.model.skip) {
+				pointCurrent.mK = pointBefore.deltaK;
+			} else if (this.sign(pointBefore.deltaK) !== this.sign(pointCurrent.deltaK)) {
+				pointCurrent.mK = 0;
+			} else {
+				pointCurrent.mK = (pointBefore.deltaK + pointCurrent.deltaK) / 2;
+			}
 		}
 
 		// Adjust tangents to ensure monotonic properties
@@ -375,15 +384,22 @@ module.exports = function(Chart) {
 		for (i = 0; i < pointsLen - 1; ++i) {
 			pointCurrent = pointsWithTangents[i];
 			pointAfter = pointsWithTangents[i + 1];
-			if (pointCurrent.model.skip || pointAfter.model.skip) continue;
+			if (pointCurrent.model.skip || pointAfter.model.skip) {
+				continue;
+			}
+
 			if (helpers.almostEquals(pointCurrent.deltaK, 0, this.EPSILON)) {
 				pointCurrent.mK = pointAfter.mK = 0;
 				continue;
 			}
+
 			alphaK = pointCurrent.mK / pointCurrent.deltaK;
 			betaK = pointAfter.mK / pointCurrent.deltaK;
 			squaredMagnitude = Math.pow(alphaK, 2) + Math.pow(betaK, 2);
-			if (squaredMagnitude <= 9) continue;
+			if (squaredMagnitude <= 9) {
+				continue;
+			}
+
 			tauK = 3 / Math.sqrt(squaredMagnitude);
 			pointCurrent.mK = alphaK * tauK * pointCurrent.deltaK;
 			pointAfter.mK = betaK  * tauK * pointCurrent.deltaK;
@@ -393,7 +409,10 @@ module.exports = function(Chart) {
 		var deltaX;
 		for (i = 0; i < pointsLen; ++i) {
 			pointCurrent = pointsWithTangents[i];
-			if (pointCurrent.model.skip) continue;
+			if (pointCurrent.model.skip) {
+				continue;
+			}
+
 			pointBefore = i > 0 ? pointsWithTangents[i - 1] : null;
 			pointAfter = i < pointsLen - 1 ? pointsWithTangents[i + 1] : null;
 			if (pointBefore && !pointBefore.model.skip) {
@@ -412,7 +431,6 @@ module.exports = function(Chart) {
 		if (loop) {
 			return index >= collection.length - 1 ? collection[0] : collection[index + 1];
 		}
-
 		return index >= collection.length - 1 ? collection[collection.length - 1] : collection[index + 1];
 	};
 	helpers.previousItem = function(collection, index, loop) {
