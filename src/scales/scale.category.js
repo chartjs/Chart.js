@@ -70,9 +70,9 @@ module.exports = function(Chart) {
 				var valueWidth = innerWidth / offsetAmt;
 				var widthOffset = (valueWidth * (index - me.minIndex)) + me.paddingLeft;
 
-			if (me.options.gridLines.offsetGridLines && includeOffset || me.maxIndex === me.minIndex && includeOffset) {
+				if (me.options.gridLines.offsetGridLines && includeOffset || me.maxIndex === me.minIndex && includeOffset) {
 					widthOffset += (valueWidth / 2);
-			}
+				}
 
 				return me.left + Math.round(widthOffset);
 			} else {

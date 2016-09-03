@@ -243,7 +243,7 @@ module.exports = function(Chart) {
 					range = helpers.log10(me.end) - helpers.log10(start);
 					innerDimension = me.height - (paddingTop + paddingBottom);
 					pixel = (me.bottom - paddingBottom) - (innerDimension / range * (helpers.log10(newVal) - helpers.log10(start)));
-			   }
+				}
 			}
 			return pixel;
 		},

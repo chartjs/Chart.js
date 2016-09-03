@@ -142,8 +142,8 @@ module.exports = function(Chart) {
 			var fullBarWidth = categoryWidth / datasetCount;
 
 			if (xScale.ticks.length !== me.chart.data.labels.length) {
-			    var perc = xScale.ticks.length / me.chart.data.labels.length;
-			    fullBarWidth = fullBarWidth * perc;
+				var perc = xScale.ticks.length / me.chart.data.labels.length;
+				fullBarWidth = fullBarWidth * perc;
 			}
 
 			var barWidth = fullBarWidth * xScale.options.barPercentage;
@@ -326,7 +326,7 @@ module.exports = function(Chart) {
 				},
 				label: function(tooltipItem, data) {
 					var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
-				return datasetLabel + ': ' + tooltipItem.xLabel;
+					return datasetLabel + ': ' + tooltipItem.xLabel;
 				}
 			}
 		}

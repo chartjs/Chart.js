@@ -166,8 +166,8 @@ module.exports = function(Chart) {
 				minSize = Math.min(availableWidth / size.width, availableHeight / size.height);
 				offset = {x: (max.x + min.x) * -0.5, y: (max.y + min.y) * -0.5};
 			}
-            chart.borderWidth = me.getMaxBorderWidth(meta.data);
 
+			chart.borderWidth = me.getMaxBorderWidth(meta.data);
 			chart.outerRadius = Math.max((minSize - chart.borderWidth) / 2, 0);
 			chart.innerRadius = Math.max(cutoutPercentage ? (chart.outerRadius / 100) * (cutoutPercentage) : 1, 0);
 			chart.radiusLength = (chart.outerRadius - chart.innerRadius) / chart.getVisibleDatasetCount();
@@ -268,23 +268,23 @@ module.exports = function(Chart) {
 				return 0;
 			}
 		},
-		
+
 		//gets the max border or hover width to properly scale pie charts
-        getMaxBorderWidth: function (elements) {
-            var max = 0,
+		getMaxBorderWidth: function (elements) {
+			var max = 0,
 				index = this.index,
 				length = elements.length,
 				borderWidth,
 				hoverWidth;
 
-            for (var i = 0; i < length; i++) {
-               	borderWidth = elements[i]._model ? elements[i]._model.borderWidth : 0;
-                hoverWidth = elements[i]._chart ? elements[i]._chart.config.data.datasets[index].hoverBorderWidth : 0;
-				
-                max = borderWidth > max ? borderWidth : max;
-                max = hoverWidth > max ? hoverWidth : max;
-            }
-            return max;
-        }
+			for (var i = 0; i < length; i++) {
+				borderWidth = elements[i]._model ? elements[i]._model.borderWidth : 0;
+				hoverWidth = elements[i]._chart ? elements[i]._chart.config.data.datasets[index].hoverBorderWidth : 0;
+
+				max = borderWidth > max ? borderWidth : max;
+				max = hoverWidth > max ? hoverWidth : max;
+			}
+			return max;
+		}
 	});
 };

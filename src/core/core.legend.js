@@ -346,7 +346,7 @@ module.exports = function(Chart) {
 						// Draw box as legend symbol
 						if (!isLineWidthZero)
 						{
-								ctx.strokeRect(x, y, boxWidth, fontSize);
+							ctx.strokeRect(x, y, boxWidth, fontSize);
 						}
 						ctx.fillRect(x, y, boxWidth, fontSize);
 					}

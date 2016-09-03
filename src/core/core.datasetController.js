@@ -158,8 +158,7 @@ module.exports = function(Chart) {
 			model.borderWidth = custom.hoverBorderWidth ? custom.hoverBorderWidth : valueOrDefault(dataset.hoverBorderWidth, index, model.borderWidth);
 		}
 
-    });
-
+	});
 
 	Chart.DatasetController.extend = helpers.inherits;
 };

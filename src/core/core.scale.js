@@ -170,12 +170,12 @@ module.exports = function(Chart) {
 			var me = this;
 			// Convert ticks to strings
 			me.ticks = me.ticks.map(function(numericalTick, index, ticks) {
-					if (me.options.ticks.userCallback) {
-						return me.options.ticks.userCallback(numericalTick, index, ticks);
-					}
-					return me.options.ticks.callback(numericalTick, index, ticks);
-				},
-				me);
+				if (me.options.ticks.userCallback) {
+					return me.options.ticks.userCallback(numericalTick, index, ticks);
+				}
+				return me.options.ticks.callback(numericalTick, index, ticks);
+			},
+			me);
 		},
 		afterTickToLabelConversion: function() {
 			helpers.callCallback(this.options.afterTickToLabelConversion, [this]);
