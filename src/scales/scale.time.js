@@ -87,8 +87,17 @@ module.exports = function(Chart) {
 			return null;
 		},
 		getLabelDiff: function(datasetIndex, index) {
-			if (typeof this.labelDiffs[datasetIndex] != 'undefined') {
-				return this.labelDiffs[datasetIndex][index];
+			var me = this;
+			if (datasetIndex === null || index === null) {
+				return null;
+			}
+
+			if (me.labelDiffs === undefined) {
+				me.buildLabelDiffs();
+			}
+
+			if (typeof me.labelDiffs[datasetIndex] != 'undefined') {
+				return me.labelDiffs[datasetIndex][index];
 			}
 
 			return null;
@@ -344,8 +353,8 @@ module.exports = function(Chart) {
 
 			me.ctx.restore();
 
-			// Build diff table as first tick and tick units are already determined.
-			me.buildLabelDiffs();
+			// Invalidate label diffs cache
+			me.labelDiffs = undefined;
 		},
 		// Get tooltip label
 		getLabelForIndex: function(index, datasetIndex) {
