@@ -233,6 +233,7 @@ describe('Core helper tests', function() {
 						display: false,
 					},
 					ticks: {
+						alignment: 'center',
 						beginAtZero: false,
 						minRotation: 0,
 						maxRotation: 50,
@@ -269,6 +270,7 @@ describe('Core helper tests', function() {
 						display: false,
 					},
 					ticks: {
+						alignment: 'center',
 						beginAtZero: false,
 						minRotation: 0,
 						maxRotation: 50,

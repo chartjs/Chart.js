@@ -207,20 +207,21 @@ module.exports = function(Chart) {
 			var firstRotated;
 
 			me.labelRotation = optionTicks.minRotation || 0;
-			me.paddingRight = 1;
-			me.paddingLeft = 1;
+			var extraPadding = 3;
+			me.paddingRight = 0;
+			me.paddingLeft = 0;
 
 			if (me.options.display) {
 				if (me.isHorizontal()) {
 					if (tickAlignment === 'start') {
-						me.paddingLeft = 1;
+						me.paddingLeft = extraPadding;
 						me.paddingRight = lastWidth;
 					} else if (tickAlignment === 'end') {
 						me.paddingLeft = firstWidth;
-						me.paddingRight = 1; // so that we see the grid line
+						me.paddingRight = extraPadding; // so that we see the grid line
 					} else if (tickAlignment === 'center') {
-						me.paddingLeft = firstWidth / 2;
-						me.paddingRight = lastWidth / 2;
+						me.paddingLeft = firstWidth / 2 + extraPadding;
+						me.paddingRight = lastWidth / 2 + extraPadding;
 					}
 
 					if (!me.longestTextCache) {
