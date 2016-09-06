@@ -453,36 +453,24 @@ describe('Time scale tests', function() {
 		var xScale = chart.scales.xScale0;
 		expect(xScale.getLabelForIndex(0, 0)).toBe('2015-01-01T20:00:00');
 		expect(xScale.getLabelForIndex(6, 0)).toBe('2015-01-10T12:00');
-
 	});
+
 	it('should get the correct pixel for only one data in the dataset', function() {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
 				labels: ["2016-05-27"],
 				datasets: [{
-					type: "line",
+					xAxisID: 'xScale0',
 					data: [5]
 				}]
 			},
 			options: {
 				scales: {
 					xAxes: [{
+						id: 'xScale0',
 						display: true,
-						type: "time",
-						time: {
-							displayFormats: {
-								"day": "YYYY-MM-DD"
-							}
-						}
-					}],
-					yAxes: [{
-						type: "linear",
-						ticks: {
-							reverse: true,
-							min: 0,
-							max: 10
-						}
+						type: "time"
 					}]
 				}
 			}
@@ -490,9 +478,9 @@ describe('Time scale tests', function() {
 
 		var xScale = chart.scales.xScale0;
 
-		expect(xScale.getPixelForValue('', 0, 0)).toBeCloseToPixel(78);
+		expect(xScale.getPixelForValue('', 0, 0)).toBeCloseToPixel(62);
 
-		expect(xScale.getValueForPixel(78)).toBeCloseToTime({
+		expect(xScale.getValueForPixel(62)).toBeCloseToTime({
 			value: moment(chart.data.labels[0]),
 			unit: 'day',
 			threshold: 0.75
@@ -505,13 +493,14 @@ describe('Time scale tests', function() {
 			data: {
 				labels: ["2016-06-26"],
 				datasets: [{
-					type: "line",
+					xAxisID: 'xScale0',
 					data: [5]
 				}]
 			},
 			options: {
 				scales: {
 					xAxes: [{
+						id: 'xScale0',
 						display: true,
 						type: "time",
 					}]
@@ -520,7 +509,6 @@ describe('Time scale tests', function() {
 		});
 
 		var xScale = chart.scales.xScale0;
-
 		var getOutOfBoundLabelMoment = function() {
 			xScale.getLabelMoment(12, 0);
 		};
@@ -534,13 +522,14 @@ describe('Time scale tests', function() {
 			data: {
 				labels: ["2016-06-26"],
 				datasets: [{
-					type: "line",
+					xAxisID: 'xScale0',
 					data: [5]
 				}]
 			},
 			options: {
 				scales: {
 					xAxes: [{
+						id: 'xScale0',
 						display: true,
 						type: "time",
 					}]
