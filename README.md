@@ -34,7 +34,7 @@ To build, run `gulp build`.
 
 To test, run `gulp test`.
 
-To test against code standards, run `gulp jshint`.
+To test against code standards, run `gulp lint`.
 
 More information on building and testing can be found in [gulpfile.js](gulpfile.js).
 

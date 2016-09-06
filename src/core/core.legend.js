@@ -341,12 +341,10 @@ module.exports = function(Chart) {
 
 						// Draw pointStyle as legend symbol
 						Chart.canvasHelpers.drawPoint(ctx, legendItem.pointStyle, radius, centerX, centerY);
-					}
-					else {
+					} else {
 						// Draw box as legend symbol
-						if (!isLineWidthZero)
-						{
-								ctx.strokeRect(x, y, boxWidth, fontSize);
+						if (!isLineWidthZero) {
+							ctx.strokeRect(x, y, boxWidth, fontSize);
 						}
 						ctx.fillRect(x, y, boxWidth, fontSize);
 					}

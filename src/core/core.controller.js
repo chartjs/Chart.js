@@ -461,7 +461,7 @@ module.exports = function(Chart) {
 			}, me);
 
 			return elementsArray;
-		},		
+		},
 
 		getElementsAtEventForMode: function(e, mode) {
 			var me = this;
@@ -472,8 +472,8 @@ module.exports = function(Chart) {
 				return me.getElementsAtEvent(e);
 			case 'dataset':
 				return me.getDatasetAtEvent(e);
-            case 'x-axis':
-                return me.getElementsAtXAxis(e);
+			case 'x-axis':
+				return me.getElementsAtXAxis(e);
 			default:
 				return e;
 			}
@@ -499,14 +499,14 @@ module.exports = function(Chart) {
 			var meta = dataset._meta[me.id];
 			if (!meta) {
 				meta = dataset._meta[me.id] = {
-				type: null,
-				data: [],
-				dataset: null,
-				controller: null,
-				hidden: null,			// See isDatasetVisible() comment
-				xAxisID: null,
-				yAxisID: null
-			};
+					type: null,
+					data: [],
+					dataset: null,
+					controller: null,
+					hidden: null,			// See isDatasetVisible() comment
+					xAxisID: null,
+					yAxisID: null
+				};
 			}
 
 			return meta;
@@ -591,7 +591,7 @@ module.exports = function(Chart) {
 				break;
 			case 'label':
 			case 'dataset':
-            case 'x-axis':
+			case 'x-axis':
 				// elements = elements;
 				break;
 			default:
