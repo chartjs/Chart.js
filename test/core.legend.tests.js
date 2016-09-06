@@ -5,10 +5,6 @@ describe('Legend block tests', function() {
 		window.addDefaultMatchers(jasmine);
 	});
 
-	afterEach(function() {
-		window.releaseAllCharts();
-	});
-
 	it('Should be constructed', function() {
 		var legend = new Chart.Legend({});
 		expect(legend).not.toBe(undefined);

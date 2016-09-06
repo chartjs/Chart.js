@@ -4,10 +4,6 @@ describe('Logarithmic Scale tests', function() {
 		window.addDefaultMatchers(jasmine);
 	});
 
-	afterEach(function() {
-		window.releaseAllCharts();
-	});
-
 	it('should register the constructor with the scale service', function() {
 		var Constructor = Chart.scaleService.getScaleConstructor('logarithmic');
 		expect(Constructor).not.toBe(undefined);

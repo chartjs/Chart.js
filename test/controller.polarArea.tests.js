@@ -5,10 +5,6 @@ describe('Polar area controller tests', function() {
 		window.addDefaultMatchers(jasmine);
 	});
 
-	afterEach(function() {
-		window.releaseAllCharts();
-	});
-
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
 		type: 'polarArea',
