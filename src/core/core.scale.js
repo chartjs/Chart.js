@@ -543,37 +543,6 @@ module.exports = function(Chart) {
 			context.fillStyle = tickFontColor;
 
 			var itemsToDraw = [];
-
-			if (isHorizontal) {
-				skipRatio = false;
-
-				// Only calculate the skip ratio with the half width of longestRotateLabel if we got an actual rotation
-				// See #2584
-				if (isRotated) {
-					longestRotatedLabel /= 2;
-				}
-
-				if ((longestRotatedLabel + optionTicks.autoSkipPadding) * me.ticks.length > (me.width - (me.paddingLeft + me.paddingRight))) {
-					skipRatio = 1 + Math.floor(((longestRotatedLabel + optionTicks.autoSkipPadding) * me.ticks.length) / (me.width - (me.paddingLeft + me.paddingRight)));
-				}
-
-				// if they defined a max number of optionTicks,
-				// increase skipRatio until that number is met
-				if (maxTicks && me.ticks.length > maxTicks) {
-					while (!skipRatio || me.ticks.length / (skipRatio || 1) > maxTicks) {
-						if (!skipRatio) {
-							skipRatio = 1;
-						}
-						skipRatio += 1;
-					}
-				}
-
-				if (!useAutoskipper) {
-					skipRatio = false;
-				}
-			}
-
-
 			var xTickStart = options.position === "right" ? me.left : me.right - tl;
 			var xTickEnd = options.position === "right" ? me.left + tl : me.right;
 			var yTickStart = options.position === "bottom" ? me.top : me.bottom - tl;
@@ -596,14 +565,6 @@ module.exports = function(Chart) {
 					return;
 				}
 
-				var isLastTick = me.ticks.length === index + 1;
-
-				// Since we always show the last tick,we need may need to hide the last shown one before
-				var shouldSkip = (skipRatio > 1 && index % skipRatio > 0) || (index % skipRatio === 0 && index + skipRatio >= me.ticks.length);
-				if (shouldSkip && !isLastTick || (label === undefined || label === null)) {
-					return;
-				}
-
 				var lineWidth, lineColor;
 				if (index === (typeof me.zeroLineIndex !== 'undefined' ? me.zeroLineIndex : 0)) {
 					// Draw the first index specially
@@ -617,6 +578,12 @@ module.exports = function(Chart) {
 				// Common properties
 				var tx1, ty1, tx2, ty2, x1, y1, x2, y2, labelX, labelY;
 				var textAlign, textBaseline = 'middle';
+				var labelRect = {
+					left: 0,
+					top: 0,
+					right: 0,
+					bottom: 0
+				};
 
 				if (isHorizontal) {
 					if (!isRotated) {
@@ -691,6 +658,18 @@ module.exports = function(Chart) {
 					x1 = chartArea.left;
 					x2 = chartArea.right;
 					ty1 = ty2 = y1 = y2 = yLineValue;
+
+					// Figure out the label rect based on the alignment
+					if (textBaseline === 'top') {
+						labelRect.top = labelY;
+						labelRect.bottom = labelY + tickFontSize;
+					} else if (textBaseline === 'bottom') {
+						labelRect.top = labelY - tickFontSize;
+						labelRect.bottom = labelY;
+					} else if (textBaseline === 'middle') {
+						labelRect.top = labelY - tickFontSize / 2;
+						labelRect.bottom = labelY + tickFontSize / 2;
+					}
 				}
 
 				itemsToDraw.push({
@@ -704,6 +683,7 @@ module.exports = function(Chart) {
 					y2: y2,
 					labelX: labelX,
 					labelY: labelY,
+					labelRect: labelRect,
 					glWidth: lineWidth,
 					glColor: lineColor,
 					glBorderDash: borderDash,
@@ -713,6 +693,75 @@ module.exports = function(Chart) {
 					textBaseline: textBaseline,
 					textAlign: textAlign
 				});
+			});
+
+			// Auto Skip
+			var lastDisplayedTick = 0;
+			var firstLabelRect = itemsToDraw[0].labelRect, 
+				lastLabelRect = itemsToDraw[itemsToDraw.length - 1], 
+				lastDisplayedLabelRect;
+
+			itemsToDraw = itemsToDraw.filter(function(itemToDraw, index) {
+				var isLastItem = itemsToDraw.length === index + 1;
+				var display = true;
+
+				// Since we always show the last tick,we need may need to hide the last shown one before
+				/*var shouldSkip = (skipRatio > 1 && index % skipRatio > 0) || (index % skipRatio === 0 && index + skipRatio >= me.ticks.length);
+				if (shouldSkip && !isLastTick || (label === undefined || label === null)) {
+					return;
+				}
+				if (isHorizontal) {
+					skipRatio = false;
+
+					// Only calculate the skip ratio with the half width of longestRotateLabel if we got an actual rotation
+					// See #2584
+					if (isRotated) {
+						longestRotatedLabel /= 2;
+					}
+
+					if ((longestRotatedLabel + optionTicks.autoSkipPadding) * me.ticks.length > (me.width - (me.paddingLeft + me.paddingRight))) {
+						skipRatio = 1 + Math.floor(((longestRotatedLabel + optionTicks.autoSkipPadding) * me.ticks.length) / (me.width - (me.paddingLeft + me.paddingRight)));
+					}
+
+					// if they defined a max number of optionTicks,
+					// increase skipRatio until that number is met
+					if (maxTicks && me.ticks.length > maxTicks) {
+						while (!skipRatio || me.ticks.length / (skipRatio || 1) > maxTicks) {
+							if (!skipRatio) {
+								skipRatio = 1;
+							}
+							skipRatio += 1;
+						}
+					}
+
+					if (!useAutoskipper) {
+						skipRatio = false;
+					}
+				}*/
+				if (isHorizontal) {
+
+				} else {
+					if (index !== 0 && !isLastItem) {
+						// Check to make sure we don't overlap the first tick, the last tick, or the
+						// last displayed tick. If we overlap any of those we skip
+						var top = itemToDraw.labelY - tickFontSize / 2;
+						var bottom = itemToDraw.labelY + tickFontSize / 2;
+
+						if (top < firstLabelRect.bottom ||
+							bottom > lastLabelRect.top || 
+							(lastDisplayedTick && top < lastDisplayedLabelRect.bottom)) {
+							display = false;
+						}
+
+						if (display) {
+							// we are displaying, so cache last visible index and rect
+							lastDisplayedTick = index;
+							lastDisplayedLabelRect = itemToDraw.labelRect;
+						}
+					}
+				}
+
+				return display;
 			});
 
 			// Draw all of the tick labels, tick marks, and grid lines at the correct places
