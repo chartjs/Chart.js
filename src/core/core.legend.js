@@ -457,11 +457,11 @@ module.exports = function(Chart) {
 						// Touching an element
 						if (type === 'click') {
 							opts.onClick.call(me, e, me.legendItems[i]);
-					        break;
-					    } else if (type === 'mousemove') {
+							break;
+						} else if (type === 'mousemove') {
 							opts.onHover.call(me, e, me.legendItems[i]);
-					        break;
-					    }
+							break;
+						}
 					}
 				}
 			}
