@@ -378,13 +378,13 @@ module.exports = function(Chart) {
 						minSize.width = me.maxWidth;
 					}
 
-					if (tickAlignment == 'start') {
+					if (tickAlignment === 'start') {
 						me.paddingTop = 1; // so we see the grid line
 						me.paddingBottom = tickFontSize;
-					} else if (tickAlignment == 'end') {
+					} else if (tickAlignment === 'end') {
 						me.paddingTop = tickFontSize;
 						me.paddingBottom = 1; // so we see the grid line
-					} else if (tickAlignment == 'center') {
+					} else if (tickAlignment === 'center') {
 						me.paddingTop = me.paddingBottom = tickFontSize / 2;
 					}
 				}
@@ -595,7 +595,7 @@ module.exports = function(Chart) {
 					textAlign = isRotated ? 'right' : 'center';
 
 					if (!isRotated && !gridLines.offsetGridLines) {
-						if (tickAlignment == 'auto') {
+						if (tickAlignment === 'auto') {
 							if (index === 0) {
 								textAlign = 'left';
 							} else if (index === me.ticks.length - 1) {
@@ -636,7 +636,7 @@ module.exports = function(Chart) {
 					}
 
 					if (!gridLines.offsetGridLines) {
-						if (tickAlignment == 'auto') {
+						if (tickAlignment === 'auto') {
 							if (index === 0) {
 								textBaseline = 'top'; // first tick is the top value
 							} else if (index === me.ticks.length - 1) {
