@@ -631,12 +631,13 @@ module.exports = function(Chart) {
 				hoverOptions.onHover.call(me, me.active);
 			}
 
+			if (me.legend && me.legend.handleEvent) {
+				me.legend.handleEvent(e);
+			}
+
 			if (e.type === 'mouseup' || e.type === 'click') {
 				if (options.onClick) {
 					options.onClick.call(me, e, me.active);
-				}
-				if (me.legend && me.legend.handleEvent) {
-					me.legend.handleEvent(e);
 				}
 			}
 

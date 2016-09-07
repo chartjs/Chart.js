@@ -127,7 +127,8 @@ Name | Type | Default | Description
 display | Boolean | true | Is the legend displayed
 position | String | 'top' | Position of the legend. Possible values are 'top', 'left', 'bottom' and 'right'.
 fullWidth | Boolean | true | Marks that this box should take the full width of the canvas (pushing down other boxes)
-onClick | Function | `function(event, legendItem) {}` | A callback that is called when a click is registered on top of a label item
+onClick | Function | `function(event, legendItem) {}` | A callback that is called when a 'click' event is registered on top of a label item
+onHover | Function | `function(event, legendItem) {}` | A callback that is called when a 'mousemove' event is registered on top of a label item
 labels |Object|-| See the [Legend Label Configuration](#chart-configuration-legend-label-configuration) section below.
 
 #### Legend Label Configuration

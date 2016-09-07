@@ -25,6 +25,8 @@ module.exports = function(Chart) {
 			ci.update();
 		},
 
+		onHover: null,
+
 		labels: {
 			boxWidth: 40,
 			padding: 10,
@@ -424,10 +426,24 @@ module.exports = function(Chart) {
 		// Handle an event
 		handleEvent: function(e) {
 			var me = this;
+			var opts = me.options;
+			var type = e.type === 'mouseup' ? 'click' : e.type;
+
+			if (type === 'mousemove') {
+				if (!opts.onHover) {
+					return;
+				}
+			} else if (type === 'click') {
+				if (!opts.onClick) {
+					return;
+				}
+			} else {
+				return;
+			}
+
 			var position = helpers.getRelativePosition(e, me.chart.chart),
 				x = position.x,
-				y = position.y,
-				opts = me.options;
+				y = position.y;
 
 			if (x >= me.left && x <= me.right && y >= me.top && y <= me.bottom) {
 				// See if we are touching one of the dataset boxes
@@ -437,10 +453,13 @@ module.exports = function(Chart) {
 
 					if (x >= hitBox.left && x <= hitBox.left + hitBox.width && y >= hitBox.top && y <= hitBox.top + hitBox.height) {
 						// Touching an element
-						if (opts.onClick) {
+						if (type === 'click') {
 							opts.onClick.call(me, e, me.legendItems[i]);
+							break;
+						} else if (type === 'mousemove') {
+							opts.onHover.call(me, e, me.legendItems[i]);
+							break;
 						}
-						break;
 					}
 				}
 			}
