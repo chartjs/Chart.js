@@ -23,6 +23,7 @@ describe('Legend block tests', function() {
 
 			// a callback that will handle
 			onClick: jasmine.any(Function),
+			onHover: undefined,
 
 			labels: {
 				boxWidth: 40,
