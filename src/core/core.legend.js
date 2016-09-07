@@ -24,6 +24,8 @@ module.exports = function(Chart) {
 			// We hid a dataset ... rerender the chart
 			ci.update();
 		},
+		
+		onHover: null,
 
 		labels: {
 			boxWidth: 40,
@@ -424,6 +426,22 @@ module.exports = function(Chart) {
 		// Handle an event
 		handleEvent: function(e) {
 			var me = this;
+			var type = e.type;
+			
+			type = type === 'mouseup' ? 'click' : type;
+			
+			if (type === 'mousemove') {
+				if (!options.onHover) {
+					return;
+				}
+			} else if (type === 'click') {
+				if (!options.onClick) {
+					return;
+				}
+			} else {
+				return;
+			}
+			
 			var position = helpers.getRelativePosition(e, me.chart.chart),
 				x = position.x,
 				y = position.y,
@@ -437,10 +455,13 @@ module.exports = function(Chart) {
 
 					if (x >= hitBox.left && x <= hitBox.left + hitBox.width && y >= hitBox.top && y <= hitBox.top + hitBox.height) {
 						// Touching an element
-						if (opts.onClick) {
+						if (type === 'click') {
 							opts.onClick.call(me, e, me.legendItems[i]);
+							break;
+						} else if (type === 'mousemove') {
+							opts.onHover.call(me, e, me.legendItems[i]);
+							break;
 						}
-						break;
 					}
 				}
 			}
