@@ -427,25 +427,24 @@ module.exports = function(Chart) {
 		handleEvent: function(e) {
 			var me = this;
 			var type = e.type;
+			var opts = me.options;
+			var position = helpers.getRelativePosition(e, me.chart.chart),
+				x = position.x,
+				y = position.y;
 			
 			type = type === 'mouseup' ? 'click' : type;
 			
 			if (type === 'mousemove') {
-				if (!options.onHover) {
+				if (!opts.onHover) {
 					return;
 				}
 			} else if (type === 'click') {
-				if (!options.onClick) {
+				if (!opts.onClick) {
 					return;
 				}
 			} else {
 				return;
 			}
-			
-			var position = helpers.getRelativePosition(e, me.chart.chart),
-				x = position.x,
-				y = position.y,
-				opts = me.options;
 
 			if (x >= me.left && x <= me.right && y >= me.top && y <= me.bottom) {
 				// See if we are touching one of the dataset boxes
