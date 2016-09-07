@@ -627,21 +627,17 @@ module.exports = function(Chart) {
 			}
 
 			// On Hover hook
-			if (e.type === 'mousemove') {
-			    if (hoverOptions.onHover) {
-			        hoverOptions.onHover.call(me, me.active);
-			    }
-			    if (me.legend && me.legend.handleEvent && me.legend.options.onHover) {
-			        me.legend.handleEvent(e);
-			    }
+			if (hoverOptions.onHover) {
+				hoverOptions.onHover.call(me, me.active);
+			}
+			
+			if (me.legend && me.legend.handleEvent) {
+				me.legend.handleEvent(e);
 			}
 
 			if (e.type === 'mouseup' || e.type === 'click') {
 				if (options.onClick) {
 					options.onClick.call(me, e, me.active);
-				}
-				if (me.legend && me.legend.handleEvent) {
-					me.legend.handleEvent(e);
 				}
 			}
 

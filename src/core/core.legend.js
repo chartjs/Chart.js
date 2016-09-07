@@ -426,6 +426,22 @@ module.exports = function(Chart) {
 		// Handle an event
 		handleEvent: function(e) {
 			var me = this;
+			var type = e.type;
+			
+			type = type === 'mouseup' ? 'click' : type;
+			
+			if (type === 'mousemove') {
+				if (!options.onHover) {
+					return;
+				}
+			} else if (type === 'click') {
+				if (!options.onClick) {
+					return;
+				}
+			} else {
+				return;
+			}
+			
 			var position = helpers.getRelativePosition(e, me.chart.chart),
 				x = position.x,
 				y = position.y,
@@ -439,16 +455,11 @@ module.exports = function(Chart) {
 
 					if (x >= hitBox.left && x <= hitBox.left + hitBox.width && y >= hitBox.top && y <= hitBox.top + hitBox.height) {
 						// Touching an element
-						if (e.type === 'mouseup' || e.type === 'click') {
-					        if (opts.onClick) {
-					            opts.onClick.call(me, e, me.legendItems[i]);
-					        }
+						if (type === 'click') {
+							opts.onClick.call(me, e, me.legendItems[i]);
 					        break;
-					    }
-					    else if(e.type === 'mousemove') {
-					        if (opts.onHover) {
-					            opts.onHover.call(me, e, me.legendItems[i]);
-					        }
+					    } else if (type === 'mousemove') {
+							opts.onHover.call(me, e, me.legendItems[i]);
 					        break;
 					    }
 					}
