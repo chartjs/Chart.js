@@ -1,9 +1,5 @@
 // Tests of the scale service
 describe('Test the layout service', function() {
-	beforeEach(function() {
-		window.addDefaultMatchers(jasmine);
-	});
-
 	it('should fit a simple chart with 2 scales', function() {
 		var chart = window.acquireChart({
 			type: 'bar',

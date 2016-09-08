@@ -1,9 +1,5 @@
 // Test the polar area controller
 describe('Radar controller tests', function() {
-	beforeEach(function() {
-		window.addDefaultMatchers(jasmine);
-	});
-
 	it('Should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'radar',

@@ -1,10 +1,5 @@
 // Test the polar area controller
 describe('Polar area controller tests', function() {
-
-	beforeEach(function() {
-		window.addDefaultMatchers(jasmine);
-	});
-
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
 		type: 'polarArea',

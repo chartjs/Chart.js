@@ -1,10 +1,5 @@
 // Test the rectangle element
 describe('tooltip tests', function() {
-
-	beforeEach(function() {
-		window.addDefaultMatchers(jasmine);
-	});
-
 	it('Should display in label mode', function() {
 		var chartInstance = window.acquireChart({
 			type: 'line',

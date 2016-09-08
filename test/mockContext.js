@@ -158,12 +158,12 @@
 		};
 	}
 
-	window.addDefaultMatchers = function(jasmine) {
+	beforeEach(function() {
 		jasmine.addMatchers({
 			toBeCloseToPixel: toBeCloseToPixel,
 			toEqualOneOf: toEqualOneOf
 		});
-	}
+	});
 
 	// Canvas injection helpers
 	var charts = {};

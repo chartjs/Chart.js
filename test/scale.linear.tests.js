@@ -1,8 +1,4 @@
 describe('Linear Scale', function() {
-	beforeEach(function() {
-		window.addDefaultMatchers(jasmine);
-	});
-
 	it('Should register the constructor with the scale service', function() {
 		var Constructor = Chart.scaleService.getScaleConstructor('linear');
 		expect(Constructor).not.toBe(undefined);

@@ -1,9 +1,5 @@
 // Tests for the radial linear scale used by the polar area and radar charts
 describe('Test the radial linear scale', function() {
-	beforeEach(function() {
-		window.addDefaultMatchers(jasmine);
-	});
-
 	it('Should register the constructor with the scale service', function() {
 		var Constructor = Chart.scaleService.getScaleConstructor('radialLinear');
 		expect(Constructor).not.toBe(undefined);

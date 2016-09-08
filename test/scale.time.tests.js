@@ -1,8 +1,6 @@
 // Time scale tests
 describe('Time scale tests', function() {
 	beforeEach(function() {
-		window.addDefaultMatchers(jasmine);
-
 		// Need a time matcher for getValueFromPixel
 		jasmine.addMatchers({
 			toBeCloseToTime: function() {
