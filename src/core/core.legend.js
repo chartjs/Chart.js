@@ -427,8 +427,7 @@ module.exports = function(Chart) {
 		handleEvent: function(e) {
 			var me = this;
 			var opts = me.options;
-			var type = e.type;
-			type = type === 'mouseup' ? 'click' : type;
+			var type = e.type === 'mouseup' ? 'click' : e.type;
 
 			if (type === 'mousemove') {
 				if (!opts.onHover) {
