@@ -304,8 +304,8 @@ module.exports = function(Chart) {
 						var yCenterOffset = me.getDistanceFromCenterForValue(me.ticksAsNumbers[index]);
 						var yHeight = me.yCenter - yCenterOffset;
 
-						// Draw circular lines around the scale
-						if (gridLineOpts.display && index !== 0) {
+						// Draw circular lines around the scale (if they are not in the center)
+							if ((gridLineOpts.display && index !== 0 && !opts.reverse ) || (gridLineOpts.display && opts.reverse && index!== me.ticks.length-1 )) {
 							ctx.strokeStyle = helpers.getValueAtIndexOrDefault(gridLineOpts.color, index - 1);
 							ctx.lineWidth = helpers.getValueAtIndexOrDefault(gridLineOpts.lineWidth, index - 1);
 
