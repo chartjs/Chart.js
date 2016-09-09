@@ -97,7 +97,7 @@ There are many extensions which are available for use with popular frameworks. S
  - <a href="https://github.com/earlonrails/angular-chartjs-directive" target="_blank">Angular Chart-js Directive</a>
 
 #### React
- - <a href="https://github.com/earlonrails/angular-chartjs-directive" target="_blank">react-chartjs</a>
+ - <a href="https://github.com/reactjs/react-chartjs" target="_blank">react-chartjs</a>
 
 #### Django
  - <a href="https://github.com/novafloss/django-chartjs" target="_blank">Django Chartjs</a>
