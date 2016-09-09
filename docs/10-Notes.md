@@ -98,6 +98,7 @@ There are many extensions which are available for use with popular frameworks. S
 
 #### React
  - <a href="https://github.com/reactjs/react-chartjs" target="_blank">react-chartjs</a>
+ - <a href="https://github.com/gor181/react-chartjs-2" target="_blank">react-chartjs-2</a>
 
 #### Django
  - <a href="https://github.com/novafloss/django-chartjs" target="_blank">Django Chartjs</a>
