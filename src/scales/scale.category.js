@@ -49,8 +49,16 @@ module.exports = function(Chart) {
 			me.ticks = (me.minIndex === 0 && me.maxIndex === labels.length - 1) ? labels : labels.slice(me.minIndex, me.maxIndex + 1);
 		},
 
-		getLabelForIndex: function(index) {
-			return this.ticks[index];
+		getLabelForIndex: function(index, datasetIndex) {
+			var me = this;
+			var data = me.chart.data;
+			var isHorizontal = me.isHorizontal();
+
+			if ((data.xLabels && isHorizontal) || (data.yLabels && !isHorizontal)) {
+				return me.getRightValue(data.datasets[datasetIndex].data[index]);
+			} else {
+				return me.ticks[index];
+			}
 		},
 
 		// Used to get data value locations.  Value can either be an index or a numerical value
