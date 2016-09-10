@@ -276,6 +276,8 @@ module.exports = function(Chart) {
 
 			var data = me._data;
 			var chartInstance = me._chartInstance;
+			
+			var tooltipItems = [];
 
 			var i, len;
 
@@ -285,7 +287,6 @@ module.exports = function(Chart) {
 				var labelColors = [],
 					tooltipPosition = getAveragePosition(active);
 
-				var tooltipItems = [];
 				for (i = 0, len = active.length; i < len; ++i) {
 					tooltipItems.push(createTooltipItem(active[i]));
 				}
@@ -327,7 +328,7 @@ module.exports = function(Chart) {
 			}
 
 			if (changed && opts.custom) {
-				opts.custom.call(me, model);
+				opts.custom.call(me, model, tooltipItems, data);
 			}
 
 			return me;
