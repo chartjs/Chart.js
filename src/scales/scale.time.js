@@ -96,7 +96,7 @@ module.exports = function(Chart) {
 				me.buildLabelDiffs();
 			}
 
-			if (typeof me.labelDiffs[datasetIndex] != 'undefined') {
+			if (typeof me.labelDiffs[datasetIndex] !== 'undefined') {
 				return me.labelDiffs[datasetIndex][index];
 			}
 
