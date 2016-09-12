@@ -144,7 +144,7 @@ module.exports = function(Chart) {
 			index: index,
 			datasetIndex: datasetIndex,
 			pointX: element._model.x,
-			pointY: element._model.y,
+			pointY: element._model.y
 		};
 	}
 
@@ -315,7 +315,7 @@ module.exports = function(Chart) {
 					y: Math.round(tooltipPosition.y),
 					caretPadding: helpers.getValueOrDefault(tooltipPosition.padding, 2),
 					labelColors: labelColors,
-					dataPoints: tooltipItems,
+					dataPoints: tooltipItems
 				});
 
 				// We need to determine alignment of
