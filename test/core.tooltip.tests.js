@@ -94,6 +94,9 @@ describe('tooltip tests', function() {
 			backgroundColor: 'rgba(0,0,0,0.8)',
 			opacity: 1,
 			legendColorBackground: '#fff',
+			strokeColor: 'rgba(0,0,0,0)',
+			strokeWidth: 0,
+			showCaret: true,
 
 			// Text
 			title: ['Point 2'],
@@ -208,6 +211,9 @@ describe('tooltip tests', function() {
 			backgroundColor: 'rgba(0,0,0,0.8)',
 			opacity: 1,
 			legendColorBackground: '#fff',
+			strokeColor: 'rgba(0,0,0,0)',
+			strokeWidth: 0,
+			showCaret: true,
 
 			// Text
 			title: ['Point 2'],
@@ -347,6 +353,9 @@ describe('tooltip tests', function() {
 			backgroundColor: 'rgba(0,0,0,0.8)',
 			opacity: 1,
 			legendColorBackground: '#fff',
+			strokeColor: 'rgba(0,0,0,0)',
+			strokeWidth: 0,
+			showCaret: true,
 
 			// Text
 			title: ['beforeTitle', 'title', 'afterTitle'],

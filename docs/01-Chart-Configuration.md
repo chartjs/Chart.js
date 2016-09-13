@@ -234,10 +234,13 @@ footerSpacing | Number | 2 | Spacing to add to top and bottom of each footer lin
 footerMarginTop | Number | 6 | Margin to add before drawing the footer
 xPadding | Number | 6 | Padding to add on left and right of tooltip
 yPadding | Number | 6 | Padding to add on top and bottom of tooltip
+showCaret | Boolean | true | Draws the caret
 caretSize | Number | 5 | Size, in px, of the tooltip arrow
 cornerRadius | Number | 6 | Radius of tooltip corner curves
 multiKeyBackground | Color | "#fff" | Color to draw behind the colored boxes when multiple items are in the tooltip
 callbacks | Object | | See the [callbacks section](#chart-configuration-tooltip-callbacks) below
+strokeColor | Color | 'rgba(0,0,0,0)' | Stroke color for tooltip border
+strokeWidth | Number | 0 | Stroke width for tooltip border
 
 #### Tooltip Callbacks
 
