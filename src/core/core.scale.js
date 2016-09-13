@@ -386,7 +386,8 @@ module.exports = function(Chart) {
 
 		// Shared Methods
 		isHorizontal: function() {
-			return this.options.position === "top" || this.options.position === "bottom";
+			var position = this.options.position;
+			return position === "top" || position === "bottom" || position === "centerHorizontal";
 		},
 		isFullWidth: function() {
 			return (this.options.fullWidth);
@@ -595,7 +596,25 @@ module.exports = function(Chart) {
 
 					var xLineValue = me.getPixelForTick(index) + helpers.aliasPixel(lineWidth); // xvalues for grid lines
 					labelX = me.getPixelForTick(index, gridLines.offsetGridLines) + optionTicks.labelOffset; // x values for optionTicks (need to consider offsetLabel option)
-					labelY = (isRotated) ? me.top + 12 : options.position === 'top' ? me.bottom - tl : me.top + tl;
+
+					if (isRotated) {
+						labelY = me.top + 12;
+					} else {
+						switch (options.position) {
+						case 'top':
+							labelY = me.bottom - tl;
+							break;
+						case 'bottom':
+							labelY = me.top + tl;
+							break;
+						case 'centerHorizontal':
+							labelY = me.top/2 + tl;
+							break;
+						default:
+							labelY = me.top + tl;
+							break;
+						}
+					}
 
 					tx1 = tx2 = x1 = x2 = xLineValue;
 					ty1 = yTickStart;
@@ -743,9 +762,16 @@ module.exports = function(Chart) {
 
 				var aliasPixel = helpers.aliasPixel(context.lineWidth);
 				if (isHorizontal) {
-					y1 = y2 = options.position === 'top' ? me.bottom : me.top;
-					y1 += aliasPixel;
-					y2 += aliasPixel;
+					switch (options.position) {
+					case 'top':
+						y1 = y2 = me.bottom + aliasPixel;
+						break;
+					case 'bottom':
+						y1 = y2 = me.top + aliasPixel;
+						break;
+					case 'centerHorizontal':
+						y1 = y2 = me.top / 2 + aliasPixel;
+					}
 				} else {
 					x1 = x2 = options.position === 'left' ? me.right : me.left;
 					x1 += aliasPixel;
