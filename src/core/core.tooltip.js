@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
@@ -8,24 +8,24 @@ module.exports = function(Chart) {
 		enabled: true,
 		custom: null,
 		mode: 'single',
-		backgroundColor: "rgba(0,0,0,0.8)",
-		titleFontStyle: "bold",
+		backgroundColor: 'rgba(0,0,0,0.8)',
+		titleFontStyle: 'bold',
 		titleSpacing: 2,
 		titleMarginBottom: 6,
-		titleFontColor: "#fff",
-		titleAlign: "left",
+		titleFontColor: '#fff',
+		titleAlign: 'left',
 		bodySpacing: 2,
-		bodyFontColor: "#fff",
-		bodyAlign: "left",
-		footerFontStyle: "bold",
+		bodyFontColor: '#fff',
+		bodyAlign: 'left',
+		footerFontStyle: 'bold',
 		footerSpacing: 2,
 		footerMarginTop: 6,
-		footerFontColor: "#fff",
-		footerAlign: "left",
+		footerFontColor: '#fff',
+		footerAlign: 'left',
 		yPadding: 6,
 		xPadding: 6,
-		yAlign : 'center',
-		xAlign : 'center',
+		yAlign: 'center',
+		xAlign: 'center',
 		caretSize: 5,
 		cornerRadius: 6,
 		multiKeyBackground: '#fff',
@@ -86,7 +86,7 @@ module.exports = function(Chart) {
 	function pushOrConcat(base, toPush) {
 		if (toPush) {
 			if (helpers.isArray(toPush)) {
-				//base = base.concat(toPush);
+				// base = base.concat(toPush);
 				Array.prototype.push.apply(base, toPush);
 			} else {
 				base.push(toPush);
@@ -107,7 +107,7 @@ module.exports = function(Chart) {
 
 		for (i = 0, len = elements.length; i < len; ++i) {
 			var el = elements[i];
-			if (el && el.hasValue()){
+			if (el && el.hasValue()) {
 				var pos = el.tooltipPosition();
 				xPositions.push(pos.x);
 				yPositions.push(pos.y);
@@ -117,7 +117,7 @@ module.exports = function(Chart) {
 		var x = 0,
 			y = 0;
 		for (i = 0; i < xPositions.length; ++i) {
-			if (xPositions[ i ]) {
+			if (xPositions[i]) {
 				x += xPositions[i];
 				y += yPositions[i];
 			}
@@ -158,8 +158,8 @@ module.exports = function(Chart) {
 					// Positioning
 					xPadding: tooltipOpts.xPadding,
 					yPadding: tooltipOpts.yPadding,
-					xAlign : tooltipOpts.xAlign,
-					yAlign : tooltipOpts.yAlign,
+					xAlign: tooltipOpts.xAlign,
+					yAlign: tooltipOpts.yAlign,
 
 					// Body
 					bodyFontColor: tooltipOpts.bodyFontColor,
@@ -292,8 +292,8 @@ module.exports = function(Chart) {
 
 				// If the user provided a sorting function, use it to modify the tooltip items
 				if (opts.itemSort) {
-					tooltipItems = tooltipItems.sort(function(a,b) {
-						return opts.itemSort(a,b, data);
+					tooltipItems = tooltipItems.sort(function(a, b) {
+						return opts.itemSort(a, b, data);
 					});
 				}
 
@@ -571,7 +571,7 @@ module.exports = function(Chart) {
 
 			if (title.length) {
 				ctx.textAlign = vm._titleAlign;
-				ctx.textBaseline = "top";
+				ctx.textBaseline = 'top';
 
 				var titleFontSize = vm.titleFontSize,
 					titleSpacing = vm.titleSpacing;
@@ -597,7 +597,7 @@ module.exports = function(Chart) {
 			var body = vm.body;
 
 			ctx.textAlign = vm._bodyAlign;
-			ctx.textBaseline = "top";
+			ctx.textBaseline = 'top';
 
 			var bodyFontColor = helpers.color(vm.bodyFontColor);
 			var textColor = bodyFontColor.alpha(opacity * bodyFontColor.alpha()).rgbString();
@@ -659,7 +659,7 @@ module.exports = function(Chart) {
 				pt.y += vm.footerMarginTop;
 
 				ctx.textAlign = vm._footerAlign;
-				ctx.textBaseline = "top";
+				ctx.textBaseline = 'top';
 
 				var footerFontColor = helpers.color(vm.footerFontColor);
 				ctx.fillStyle = footerFontColor.alpha(opacity * footerFontColor.alpha()).rgbString();

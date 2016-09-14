@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
@@ -34,7 +34,7 @@ module.exports = function(Chart) {
 				var vm = point._view;
 				if (point._view.steppedLine === true) {
 					ctx.lineTo(point._view.x, previousPoint._view.y);
-					ctx.lineTo(point._view.x, point._view.y);				
+					ctx.lineTo(point._view.x, point._view.y);
 				} else if (point._view.tension === 0) {
 					ctx.lineTo(vm.x, vm.y);
 				} else {
@@ -94,7 +94,7 @@ module.exports = function(Chart) {
 							}
 						} else {
 							if (lastDrawnIndex !== (index - 1)) {
-								// There was a gap and this is the first point after the gap. If we've never drawn a point, this is a special case. 
+								// There was a gap and this is the first point after the gap. If we've never drawn a point, this is a special case.
 								// If the first data point is NaN, then there is no real gap to skip
 								if (spanGaps && lastDrawnIndex !== -1) {
 									// We are spanning the gap, so simple draw a line to this point

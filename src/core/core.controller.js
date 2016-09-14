@@ -1,13 +1,13 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
-	//Create a dictionary of chart types, to allow for extension of existing types
+	// Create a dictionary of chart types, to allow for extension of existing types
 	Chart.types = {};
 
-	//Store a reference to each instance - allowing us to globally resize chart instances on window resize.
-	//Destroy method on the chart will remove the instance of the chart from this reference.
+	// Store a reference to each instance - allowing us to globally resize chart instances on window resize.
+	// Destroy method on the chart will remove the instance of the chart from this reference.
 	Chart.instances = {};
 
 	// Controllers available for dataset visualization eg. bar, line, slice, etc.
@@ -30,7 +30,7 @@ module.exports = function(Chart) {
 			}
 		});
 
-		//Add the chart instance to the global namespace
+		// Add the chart instance to the global namespace
 		Chart.instances[this.id] = this;
 
 		if (this.options.responsive) {
@@ -99,7 +99,7 @@ module.exports = function(Chart) {
 			helpers.retinaScale(chart);
 
 			// Notify any plugins about the resize
-			var newSize = { width: newWidth, height: newHeight };
+			var newSize = {width: newWidth, height: newHeight};
 			Chart.plugins.notify('resize', [me, newSize]);
 
 			// Notify of resize
@@ -145,13 +145,13 @@ module.exports = function(Chart) {
 			if (options.scales) {
 				items = items.concat(
 					(options.scales.xAxes || []).map(function(xAxisOptions) {
-						return { options: xAxisOptions, dtype: 'category' }; }),
+						return {options: xAxisOptions, dtype: 'category'}; }),
 					(options.scales.yAxes || []).map(function(yAxisOptions) {
-						return { options: yAxisOptions, dtype: 'linear' }; }));
+						return {options: yAxisOptions, dtype: 'linear'}; }));
 			}
 
 			if (options.scale) {
-				items.push({ options: options.scale, dtype: 'radialLinear', isDefault: true });
+				items.push({options: options.scale, dtype: 'radialLinear', isDefault: true});
 			}
 
 			helpers.each(items, function(item) {
@@ -291,12 +291,12 @@ module.exports = function(Chart) {
 			var me = this;
 			var i, ilen;
 
-			if (Chart.plugins.notify('beforeDatasetsUpdate', [ me ])) {
+			if (Chart.plugins.notify('beforeDatasetsUpdate', [me])) {
 				for (i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
 					me.getDatasetMeta(i).controller.update();
 				}
 
-				Chart.plugins.notify('afterDatasetsUpdate', [ me ]);
+				Chart.plugins.notify('afterDatasetsUpdate', [me]);
 			}
 		},
 
@@ -307,7 +307,7 @@ module.exports = function(Chart) {
 			var animationOptions = me.options.animation;
 			if (animationOptions && ((typeof duration !== 'undefined' && duration !== 0) || (typeof duration === 'undefined' && animationOptions.duration !== 0))) {
 				var animation = new Chart.Animation();
-				animation.numSteps = (duration || animationOptions.duration) / 16.66; //60 fps
+				animation.numSteps = (duration || animationOptions.duration) / 16.66; // 60 fps
 				animation.easing = animationOptions.easing;
 
 				// render function
@@ -392,7 +392,7 @@ module.exports = function(Chart) {
 			var eventPosition = helpers.getRelativePosition(e, me.chart);
 			var elementsArray = [];
 
-			var found = (function() {
+			var found = function() {
 				if (me.data.datasets) {
 					for (var i = 0; i < me.data.datasets.length; i++) {
 						var meta = me.getDatasetMeta(i);
@@ -405,7 +405,7 @@ module.exports = function(Chart) {
 						}
 					}
 				}
-			}).call(me);
+			}.call(me);
 
 			if (!found) {
 				return elementsArray;
@@ -415,7 +415,7 @@ module.exports = function(Chart) {
 				if (me.isDatasetVisible(datasetIndex)) {
 					var meta = me.getDatasetMeta(datasetIndex),
 						element = meta.data[found._index];
-					if(element && !element._view.skip){
+					if(element && !element._view.skip) {
 						elementsArray.push(element);
 					}
 				}
@@ -429,7 +429,7 @@ module.exports = function(Chart) {
 			var eventPosition = helpers.getRelativePosition(e, me.chart);
 			var elementsArray = [];
 
-			var found = (function() {
+			var found = function() {
 				if (me.data.datasets) {
 					for (var i = 0; i < me.data.datasets.length; i++) {
 						var meta = me.getDatasetMeta(i);
@@ -442,7 +442,7 @@ module.exports = function(Chart) {
 						}
 					}
 				}
-			}).call(me);
+			}.call(me);
 
 			if (!found) {
 				return elementsArray;
@@ -451,7 +451,7 @@ module.exports = function(Chart) {
 			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
 				if (me.isDatasetVisible(datasetIndex)) {
 					var meta = me.getDatasetMeta(datasetIndex);
-					var index = helpers.findIndex(meta.data, function (it) {
+					var index = helpers.findIndex(meta.data, function(it) {
 						return found._model.x === it._model.x;
 					});
 					if(index !== -1 && !meta.data[index]._view.skip) {
@@ -587,7 +587,7 @@ module.exports = function(Chart) {
 
 			switch (mode) {
 			case 'single':
-				elements = [ elements[0] ];
+				elements = [elements[0]];
 				break;
 			case 'label':
 			case 'dataset':
@@ -623,7 +623,7 @@ module.exports = function(Chart) {
 				me.tooltipActive = [];
 			} else {
 				me.active = me.getElementsAtEventForMode(e, hoverOptions.mode);
-				me.tooltipActive =  me.getElementsAtEventForMode(e, tooltipsOptions.mode);
+				me.tooltipActive = me.getElementsAtEventForMode(e, tooltipsOptions.mode);
 			}
 
 			// On Hover hook

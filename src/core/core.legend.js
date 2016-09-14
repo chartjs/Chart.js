@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
@@ -151,7 +151,7 @@ module.exports = function(Chart) {
 		buildLabels: function() {
 			var me = this;
 			me.legendItems = me.options.labels.generateLabels.call(me, me.chart);
-			if(me.options.reverse){
+			if(me.options.reverse) {
 				me.legendItems.reverse();
 			}
 		},
@@ -200,7 +200,7 @@ module.exports = function(Chart) {
 					var lineWidths = me.lineWidths = [0];
 					var totalHeight = me.legendItems.length ? fontSize + (labelOpts.padding) : 0;
 
-					ctx.textAlign = "left";
+					ctx.textAlign = 'left';
 					ctx.textBaseline = 'top';
 
 					helpers.each(me.legendItems, function(legendItem, i) {
@@ -277,7 +277,7 @@ module.exports = function(Chart) {
 
 		// Shared Methods
 		isHorizontal: function() {
-			return this.options.position === "top" || this.options.position === "bottom";
+			return this.options.position === 'top' || this.options.position === 'bottom';
 		},
 
 		// Actualy draw the legend on the canvas
@@ -301,7 +301,7 @@ module.exports = function(Chart) {
 					labelFont = helpers.fontString(fontSize, fontStyle, fontFamily);
 
 				// Canvas setup
-				ctx.textAlign = "left";
+				ctx.textAlign = 'left';
 				ctx.textBaseline = 'top';
 				ctx.lineWidth = 0.5;
 				ctx.strokeStyle = fontColor; // for strikethrough effect

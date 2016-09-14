@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
@@ -7,7 +7,7 @@ module.exports = function(Chart) {
 
 	globalOpts.elements.arc = {
 		backgroundColor: globalOpts.defaultColor,
-		borderColor: "#fff",
+		borderColor: '#fff',
 		borderWidth: 2
 	};
 
@@ -32,7 +32,7 @@ module.exports = function(Chart) {
 					angle = pointRelativePosition.angle,
 					distance = pointRelativePosition.distance;
 
-				//Sanitise angle range
+				// Sanitise angle range
 				var startAngle = vm.startAngle;
 				var endAngle = vm.endAngle;
 				while (endAngle < startAngle) {
@@ -45,7 +45,7 @@ module.exports = function(Chart) {
 					angle += 2.0 * Math.PI;
 				}
 
-				//Check if within the range of the open/close angle
+				// Check if within the range of the open/close angle
 				var betweenAngles = (angle >= startAngle && angle <= endAngle),
 					withinRadius = (distance >= vm.innerRadius && distance <= vm.outerRadius);
 

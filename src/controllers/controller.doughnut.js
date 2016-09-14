@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
@@ -7,9 +7,9 @@ module.exports = function(Chart) {
 
 	defaults.doughnut = {
 		animation: {
-			//Boolean - Whether we animate the rotation of the Doughnut
+			// Boolean - Whether we animate the rotation of the Doughnut
 			animateRotate: true,
-			//Boolean - Whether we animate scaling the Doughnut from the centre
+			// Boolean - Whether we animate scaling the Doughnut from the centre
 			animateScale: false
 		},
 		aspectRatio: 1,
@@ -35,7 +35,7 @@ module.exports = function(Chart) {
 			}
 
 			text.push('</ul>');
-			return text.join("");
+			return text.join('');
 		},
 		legend: {
 			labels: {
@@ -84,13 +84,13 @@ module.exports = function(Chart) {
 			}
 		},
 
-		//The percentage of the chart that we cut out of the middle.
+		// The percentage of the chart that we cut out of the middle.
 		cutoutPercentage: 50,
 
-		//The rotation of the chart, where the first data arc begins.
+		// The rotation of the chart, where the first data arc begins.
 		rotation: Math.PI * -0.5,
 
-		//The total circumference of the chart.
+		// The total circumference of the chart.
 		circumference: Math.PI * 2.0,
 
 		// Need to override these to give a nice default
@@ -253,7 +253,7 @@ module.exports = function(Chart) {
 				}
 			});
 
-			/*if (total === 0) {
+			/* if (total === 0) {
 				total = NaN;
 			}*/
 
@@ -269,8 +269,8 @@ module.exports = function(Chart) {
 			}
 		},
 
-		//gets the max border or hover width to properly scale pie charts
-		getMaxBorderWidth: function (elements) {
+		// gets the max border or hover width to properly scale pie charts
+		getMaxBorderWidth: function(elements) {
 			var max = 0,
 				index = this.index,
 				length = elements.length,

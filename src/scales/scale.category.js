@@ -1,11 +1,11 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
 	// Default config for a category scale
 	var defaultConfig = {
-		position: "bottom"
+		position: 'bottom'
 	};
 
 	var DatasetScale = Chart.Scale.extend({
@@ -126,6 +126,6 @@ module.exports = function(Chart) {
 		}
 	});
 
-	Chart.scaleService.registerScaleType("category", DatasetScale, defaultConfig);
+	Chart.scaleService.registerScaleType('category', DatasetScale, defaultConfig);
 
 };

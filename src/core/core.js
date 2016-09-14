@@ -1,12 +1,12 @@
-"use strict";
+'use strict';
 
 module.exports = function() {
 
-	//Occupy the global variable of Chart, and create a simple base class
+	// Occupy the global variable of Chart, and create a simple base class
 	var Chart = function(context, config) {
 		var me = this;
 		var helpers = Chart.helpers;
-		me.config = config || { 
+		me.config = config || {
 			data: {
 				datasets: []
 			}
@@ -19,7 +19,7 @@ module.exports = function() {
 
 		// Support a canvas domnode
 		if (context.getContext) {
-			context = context.getContext("2d");
+			context = context.getContext('2d');
 		}
 
 		me.ctx = context;
@@ -62,13 +62,13 @@ module.exports = function() {
 
 	};
 
-	//Globally expose the defaults to allow for user updating/changing
+	// Globally expose the defaults to allow for user updating/changing
 	Chart.defaults = {
 		global: {
 			responsive: true,
 			responsiveAnimationDuration: 0,
 			maintainAspectRatio: true,
-			events: ["mousemove", "mouseout", "click", "touchstart", "touchmove"],
+			events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'],
 			hover: {
 				onHover: null,
 				mode: 'single',
@@ -77,7 +77,7 @@ module.exports = function() {
 			onClick: null,
 			defaultColor: 'rgba(0,0,0,0.1)',
 			defaultFontColor: '#666',
-			defaultFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+			defaultFontFamily: '\'Helvetica Neue\', \'Helvetica\', \'Arial\', sans-serif',
 			defaultFontSize: 12,
 			defaultFontStyle: 'normal',
 			showLines: true,
@@ -98,7 +98,7 @@ module.exports = function() {
 				}
 				text.push('</ul>');
 
-				return text.join("");
+				return text.join('');
 			}
 		}
 	};

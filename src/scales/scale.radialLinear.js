@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
@@ -8,37 +8,37 @@ module.exports = function(Chart) {
 	var defaultConfig = {
 		display: true,
 
-		//Boolean - Whether to animate scaling the chart from the centre
+		// Boolean - Whether to animate scaling the chart from the centre
 		animate: true,
 		lineArc: false,
-		position: "chartArea",
+		position: 'chartArea',
 
 		angleLines: {
 			display: true,
-			color: "rgba(0, 0, 0, 0.1)",
+			color: 'rgba(0, 0, 0, 0.1)',
 			lineWidth: 1
 		},
 
 		// label settings
 		ticks: {
-			//Boolean - Show a backdrop to the scale label
+			// Boolean - Show a backdrop to the scale label
 			showLabelBackdrop: true,
 
-			//String - The colour of the label backdrop
-			backdropColor: "rgba(255,255,255,0.75)",
+			// String - The colour of the label backdrop
+			backdropColor: 'rgba(255,255,255,0.75)',
 
-			//Number - The backdrop padding above & below the label in pixels
+			// Number - The backdrop padding above & below the label in pixels
 			backdropPaddingY: 2,
 
-			//Number - The backdrop padding to the side of the label in pixels
+			// Number - The backdrop padding to the side of the label in pixels
 			backdropPaddingX: 2
 		},
 
 		pointLabels: {
-			//Number - Point label font size in pixels
+			// Number - Point label font size in pixels
 			fontSize: 10,
 
-			//Function - Used to convert point labels
+			// Function - Used to convert point labels
 			callback: function(label) {
 				return label;
 			}
@@ -347,7 +347,7 @@ module.exports = function(Chart) {
 							}
 
 							ctx.textAlign = 'center';
-							ctx.textBaseline = "middle";
+							ctx.textBaseline = 'middle';
 							ctx.fillStyle = tickFontColor;
 							ctx.fillText(label, me.xCenter, yHeight);
 						}
@@ -412,6 +412,6 @@ module.exports = function(Chart) {
 			}
 		}
 	});
-	Chart.scaleService.registerScaleType("radialLinear", LinearRadialScale, defaultConfig);
+	Chart.scaleService.registerScaleType('radialLinear', LinearRadialScale, defaultConfig);
 
 };

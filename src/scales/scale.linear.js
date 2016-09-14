@@ -1,11 +1,11 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
 
 	var defaultConfig = {
-		position: "left",
+		position: 'left',
 		ticks: {
 			callback: function(tickValue, index, ticks) {
 				// If we have lots of ticks, don't use the ones
@@ -194,6 +194,6 @@ module.exports = function(Chart) {
 			return this.getPixelForValue(this.ticksAsNumbers[index]);
 		}
 	});
-	Chart.scaleService.registerScaleType("linear", LinearScale, defaultConfig);
+	Chart.scaleService.registerScaleType('linear', LinearScale, defaultConfig);
 
 };
