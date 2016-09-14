@@ -64,9 +64,8 @@ module.exports = function(Chart) {
 								index: i
 							};
 						});
-					} else {
-						return [];
 					}
+					return [];
 				}
 			},
 
@@ -264,9 +263,8 @@ module.exports = function(Chart) {
 			var total = this.getMeta().total;
 			if (total > 0 && !isNaN(value)) {
 				return (Math.PI * 2.0) * (value / total);
-			} else {
-				return 0;
 			}
+			return 0;
 		},
 
 		// gets the max border or hover width to properly scale pie charts

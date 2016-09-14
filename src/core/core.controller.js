@@ -79,7 +79,7 @@ module.exports = function(Chart) {
 			return this;
 		},
 
-		resize: function resize(silent) {
+		resize: function(silent) {
 			var me = this;
 			var chart = me.chart;
 			var canvas = chart.canvas;
@@ -145,9 +145,12 @@ module.exports = function(Chart) {
 			if (options.scales) {
 				items = items.concat(
 					(options.scales.xAxes || []).map(function(xAxisOptions) {
-						return {options: xAxisOptions, dtype: 'category'}; }),
+						return {options: xAxisOptions, dtype: 'category'};
+					}),
 					(options.scales.yAxes || []).map(function(yAxisOptions) {
-						return {options: yAxisOptions, dtype: 'linear'}; }));
+						return {options: yAxisOptions, dtype: 'linear'};
+					})
+				);
 			}
 
 			if (options.scale) {
@@ -226,7 +229,7 @@ module.exports = function(Chart) {
 			}, me);
 		},
 
-		update: function update(animationDuration, lazy) {
+		update: function(animationDuration, lazy) {
 			var me = this;
 			Chart.plugins.notify('beforeUpdate', [me]);
 
@@ -300,7 +303,7 @@ module.exports = function(Chart) {
 			}
 		},
 
-		render: function render(duration, lazy) {
+		render: function(duration, lazy) {
 			var me = this;
 			Chart.plugins.notify('beforeRender', [me]);
 
@@ -515,7 +518,7 @@ module.exports = function(Chart) {
 		getVisibleDatasetCount: function() {
 			var count = 0;
 			for (var i = 0, ilen = this.data.datasets.length; i<ilen; ++i) {
-				 if (this.isDatasetVisible(i)) {
+				if (this.isDatasetVisible(i)) {
 					count++;
 				}
 			}
@@ -607,7 +610,7 @@ module.exports = function(Chart) {
 			}
 		},
 
-		eventHandler: function eventHandler(e) {
+		eventHandler: function(e) {
 			var me = this;
 			var tooltip = me.tooltip;
 			var options = me.options || {};

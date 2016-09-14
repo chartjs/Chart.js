@@ -48,38 +48,30 @@ module.exports = function(Chart) {
 
 				if (key[0] === '_') {
 					// Only non-underscored properties
-				}
-
 				// Init if doesn't exist
-				else if (!me._view.hasOwnProperty(key)) {
+				} else if (!me._view.hasOwnProperty(key)) {
 					if (typeof value === 'number' && !isNaN(me._view[key])) {
 						me._view[key] = value * ease;
 					} else {
 						me._view[key] = value;
 					}
-				}
-
 				// No unnecessary computations
-				else if (value === me._view[key]) {
+				} else if (value === me._view[key]) {
 					// It's the same! Woohoo!
-				}
-
 				// Color transitions if possible
-				else if (typeof value === 'string') {
+				} else if (typeof value === 'string') {
 					try {
 						var color = helpers.color(me._model[key]).mix(helpers.color(me._start[key]), ease);
 						me._view[key] = color.rgbString();
 					} catch (err) {
 						me._view[key] = value;
 					}
-				}
 				// Number transitions
-				else if (typeof value === 'number') {
+				} else if (typeof value === 'number') {
 					var startVal = me._start[key] !== undefined && isNaN(me._start[key]) === false ? me._start[key] : 0;
 					me._view[key] = ((me._model[key] - startVal) * ease) + startVal;
-				}
 				// Everything else
-				else {
+				} else {
 					me._view[key] = value;
 				}
 			}, me);

@@ -96,7 +96,7 @@ rules:
   radix: 2
   vars-on-top: 0
   wrap-iife: 2
-  yoda: [2, never]
+  yoda: [1, never]
 
   # Strict
   strict: 0

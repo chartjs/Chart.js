@@ -238,9 +238,8 @@ module.exports = function(Chart) {
 				var rightValue = Number(yScale.getRightValue(value));
 				if (rightValue < 0) {
 					return yScale.getPixelForValue(sumNeg + rightValue);
-				} else {
-					return yScale.getPixelForValue(sumPos + rightValue);
 				}
+				return yScale.getPixelForValue(sumPos + rightValue);
 			}
 
 			return yScale.getPixelForValue(value);

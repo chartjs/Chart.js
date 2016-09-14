@@ -31,20 +31,20 @@ module.exports = function(Chart) {
 
 			// Helper function to draw a line to a point
 			function lineToPoint(previousPoint, point) {
-				var vm = point._view;
+				var pointvm = point._view;
 				if (point._view.steppedLine === true) {
-					ctx.lineTo(point._view.x, previousPoint._view.y);
-					ctx.lineTo(point._view.x, point._view.y);
+					ctx.lineTo(pointvm.x, previousPoint._view.y);
+					ctx.lineTo(pointvm.x, pointvm.y);
 				} else if (point._view.tension === 0) {
-					ctx.lineTo(vm.x, vm.y);
+					ctx.lineTo(pointvm.x, pointvm.y);
 				} else {
 					ctx.bezierCurveTo(
 						previousPoint._view.controlPointNextX,
 						previousPoint._view.controlPointNextY,
-						vm.controlPointPreviousX,
-						vm.controlPointPreviousY,
-						vm.x,
-						vm.y
+						pointvm.controlPointPreviousX,
+						pointvm.controlPointPreviousY,
+						pointvm.x,
+						pointvm.y
 					);
 				}
 			}
@@ -99,13 +99,11 @@ module.exports = function(Chart) {
 								if (spanGaps && lastDrawnIndex !== -1) {
 									// We are spanning the gap, so simple draw a line to this point
 									lineToPoint(previous, current);
+								} else if (loop) {
+									ctx.lineTo(currentVM.x, currentVM.y);
 								} else {
-									if (loop) {
-										ctx.lineTo(currentVM.x, currentVM.y);
-									} else {
-										ctx.lineTo(currentVM.x, scaleZero);
-										ctx.lineTo(currentVM.x, currentVM.y);
-									}
+									ctx.lineTo(currentVM.x, scaleZero);
+									ctx.lineTo(currentVM.x, currentVM.y);
 								}
 							} else {
 								// Line to next point

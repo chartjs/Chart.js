@@ -70,9 +70,8 @@ module.exports = function(Chart) {
 								index: i
 							};
 						});
-					} else {
-						return [];
 					}
+					return [];
 				}
 			},
 
@@ -209,9 +208,8 @@ module.exports = function(Chart) {
 			var count = this.getMeta().count;
 			if (count > 0 && !isNaN(value)) {
 				return (2 * Math.PI) / count;
-			} else {
-				return 0;
 			}
+			return 0;
 		}
 	});
 };

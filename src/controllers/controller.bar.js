@@ -232,9 +232,8 @@ module.exports = function(Chart) {
 
 				if (value < 0) {
 					return yScale.getPixelForValue(sumNeg + value);
-				} else {
-					return yScale.getPixelForValue(sumPos + value);
 				}
+				return yScale.getPixelForValue(sumPos + value);
 			}
 
 			return yScale.getPixelForValue(value);
@@ -409,8 +408,8 @@ module.exports = function(Chart) {
 						startCorner = 0;
 					}
 
-					function cornerAt(index) {
-						return corners[(startCorner + index) % 4];
+					function cornerAt(cornerIndex) {
+						return corners[(startCorner + cornerIndex) % 4];
 					}
 
 					// Draw rectangle from 'startCorner'
@@ -542,9 +541,8 @@ module.exports = function(Chart) {
 
 				if (value < 0) {
 					return xScale.getPixelForValue(sumNeg + value);
-				} else {
-					return xScale.getPixelForValue(sumPos + value);
 				}
+				return xScale.getPixelForValue(sumPos + value);
 			}
 
 			return xScale.getPixelForValue(value);

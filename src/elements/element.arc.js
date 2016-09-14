@@ -17,9 +17,8 @@ module.exports = function(Chart) {
 
 			if (vm) {
 				return (Math.pow(mouseX - vm.x, 2) < Math.pow(vm.radius + vm.hoverRadius, 2));
-			} else {
-				return false;
 			}
+			return false;
 		},
 		inRange: function(chartX, chartY) {
 			var vm = this._view;
@@ -50,9 +49,8 @@ module.exports = function(Chart) {
 					withinRadius = (distance >= vm.innerRadius && distance <= vm.outerRadius);
 
 				return (betweenAngles && withinRadius);
-			} else {
-				return false;
 			}
+			return false;
 		},
 		tooltipPosition: function() {
 			var vm = this._view;
