@@ -136,7 +136,7 @@ rules:
   computed-property-spacing: [2, never]
   consistent-this: [2, me]
   eol-last: 2
-  func-call-spacing: [2, never]
+  func-call-spacing: 0
   func-names: [2, never]
   func-style: 0
   id-length: 0
