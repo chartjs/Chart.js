@@ -151,7 +151,7 @@ module.exports = function(Chart) {
 		buildLabels: function() {
 			var me = this;
 			me.legendItems = me.options.labels.generateLabels.call(me, me.chart);
-			if(me.options.reverse) {
+			if (me.options.reverse) {
 				me.legendItems.reverse();
 			}
 		},

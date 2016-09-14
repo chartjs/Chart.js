@@ -415,7 +415,7 @@ module.exports = function(Chart) {
 				if (me.isDatasetVisible(datasetIndex)) {
 					var meta = me.getDatasetMeta(datasetIndex),
 						element = meta.data[found._index];
-					if(element && !element._view.skip) {
+					if (element && !element._view.skip) {
 						elementsArray.push(element);
 					}
 				}
@@ -454,7 +454,7 @@ module.exports = function(Chart) {
 					var index = helpers.findIndex(meta.data, function(it) {
 						return found._model.x === it._model.x;
 					});
-					if(index !== -1 && !meta.data[index]._view.skip) {
+					if (index !== -1 && !meta.data[index]._view.skip) {
 						elementsArray.push(meta.data[index]);
 					}
 				}
