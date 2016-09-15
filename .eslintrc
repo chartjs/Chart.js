@@ -13,7 +13,7 @@ env:
 rules:
   # Possible Errors
   no-cond-assign: 2
-  no-console: 1
+  no-console: [2, {allow: [warn, error]}]
   no-constant-condition: 2
   no-control-regex: 2
   no-debugger: 2
@@ -112,7 +112,7 @@ rules:
   no-undef: 2
   no-undefined: 0
   no-unused-vars: 2
-  no-use-before-define: 1
+  no-use-before-define: 2
 
   # Node.js and CommonJS
   callback-return: 2
@@ -130,7 +130,7 @@ rules:
   block-spacing: 0
   brace-style: [2, 1tbs]
   camelcase: 2
-  comma-dangle: [2, never]
+  comma-dangle: [2, only-multiline]
   comma-spacing: 2
   comma-style: [2, last]
   computed-property-spacing: [2, never]
@@ -188,7 +188,7 @@ rules:
   operator-linebreak: 0
   padded-blocks: 0
   quote-props: [2, as-needed]
-  quotes: [2, single]
+  quotes: [2, single, {avoidEscape: true}]
   require-jsdoc: 0
   semi-spacing: 2
   semi: [2, always]

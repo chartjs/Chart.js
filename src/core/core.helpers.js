@@ -945,7 +945,7 @@ module.exports = function(Chart) {
 	};
 	helpers.color = function(c) {
 		if (!color) {
-			console.log('Color.js not found!');
+			console.error('Color.js not found!');
 			return c;
 		}
 
