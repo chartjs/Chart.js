@@ -1,5 +1,5 @@
-/*global window: false */
-"use strict";
+/* global window: false */
+'use strict';
 
 var moment = require('moment');
 moment = typeof(moment) === 'function' ? moment : window.moment;
@@ -39,7 +39,7 @@ module.exports = function(Chart) {
 	};
 
 	var defaultConfig = {
-		position: "bottom",
+		position: 'bottom',
 
 		time: {
 			parser: false, // false == a pattern string from http://momentjs.com/docs/#/parsing/string-format/ or a custom callback that converts its argument to a moment
@@ -52,15 +52,15 @@ module.exports = function(Chart) {
 
 			// defaults to unit's corresponding unitFormat below or override using pattern string from http://momentjs.com/docs/#/displaying/format/
 			displayFormats: {
-				'millisecond': 'h:mm:ss.SSS a', // 11:20:01.123 AM,
-				'second': 'h:mm:ss a', // 11:20:01 AM
-				'minute': 'h:mm:ss a', // 11:20:01 AM
-				'hour': 'MMM D, hA', // Sept 4, 5PM
-				'day': 'll', // Sep 4 2015
-				'week': 'll', // Week 46, or maybe "[W]WW - YYYY" ?
-				'month': 'MMM YYYY', // Sept 2015
-				'quarter': '[Q]Q - YYYY', // Q3
-				'year': 'YYYY' // 2015
+				millisecond: 'h:mm:ss.SSS a', // 11:20:01.123 AM,
+				second: 'h:mm:ss a', // 11:20:01 AM
+				minute: 'h:mm:ss a', // 11:20:01 AM
+				hour: 'MMM D, hA', // Sept 4, 5PM
+				day: 'll', // Sep 4 2015
+				week: 'll', // Week 46, or maybe "[W]WW - YYYY" ?
+				month: 'MMM YYYY', // Sept 2015
+				quarter: '[Q]Q - YYYY', // Q3
+				year: 'YYYY' // 2015
 			}
 		},
 		ticks: {
@@ -107,9 +107,8 @@ module.exports = function(Chart) {
 			var me = this;
 			if (me.options.time.unit === 'week' && me.options.time.isoWeekday !== false) {
 				return tick.clone().startOf('isoWeek').isoWeekday(me.options.time.isoWeekday);
-			} else {
-				return tick.clone().startOf(me.tickUnit);
 			}
+			return tick.clone().startOf(me.tickUnit);
 		},
 		determineDataLimits: function() {
 			var me = this;
@@ -381,9 +380,8 @@ module.exports = function(Chart) {
 
 			if (callback) {
 				return callback(formattedTick, index, ticks);
-			} else {
-				return formattedTick;
 			}
+			return formattedTick;
 		},
 		convertTicksToLabels: function() {
 			var me = this;
@@ -415,12 +413,11 @@ module.exports = function(Chart) {
 					var valueOffset = (innerWidth * decimal) + me.paddingLeft;
 
 					return me.left + Math.round(valueOffset);
-				} else {
-					var innerHeight = me.height - (me.paddingTop + me.paddingBottom);
-					var heightOffset = (innerHeight * decimal) + me.paddingTop;
-
-					return me.top + Math.round(heightOffset);
 				}
+				var innerHeight = me.height - (me.paddingTop + me.paddingBottom);
+				var heightOffset = (innerHeight * decimal) + me.paddingTop;
+
+				return me.top + Math.round(heightOffset);
 			}
 		},
 		getPixelForTick: function(index) {
@@ -451,13 +448,13 @@ module.exports = function(Chart) {
 			}
 			// Custom parsing (return an instance of moment)
 			if (typeof me.options.time.format !== 'string' && me.options.time.format.call) {
-				console.warn("options.time.format is deprecated and replaced by options.time.parser. See http://nnnick.github.io/Chart.js/docs-v2/#scales-time-scale");
+				console.warn('options.time.format is deprecated and replaced by options.time.parser. See http://nnnick.github.io/Chart.js/docs-v2/#scales-time-scale');
 				return me.options.time.format(label);
 			}
 			// Moment format parsing
 			return moment(label, me.options.time.format);
 		}
 	});
-	Chart.scaleService.registerScaleType("time", TimeScale, defaultConfig);
+	Chart.scaleService.registerScaleType('time', TimeScale, defaultConfig);
 
 };

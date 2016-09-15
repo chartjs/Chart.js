@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
@@ -9,14 +9,14 @@ module.exports = function(Chart) {
 
 		scales: {
 			xAxes: [{
-				type: "linear", // scatter should not use a category axis
-				position: "bottom",
-				id: "x-axis-1" // need an ID so datasets can reference the scale
+				type: 'linear', // scatter should not use a category axis
+				position: 'bottom',
+				id: 'x-axis-1' // need an ID so datasets can reference the scale
 			}],
 			yAxes: [{
-				type: "linear",
-				position: "left",
-				id: "y-axis-1"
+				type: 'linear',
+				position: 'left',
+				id: 'y-axis-1'
 			}]
 		},
 

@@ -1,24 +1,23 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
 
 	var defaultConfig = {
-		position: "left",
+		position: 'left',
 
 		// label settings
 		ticks: {
 			callback: function(value, index, arr) {
 				var remain = value / (Math.pow(10, Math.floor(helpers.log10(value))));
 
-				if (value === 0){
+				if (value === 0) {
 					return '0';
 				} else if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === arr.length - 1) {
 					return value.toExponential();
-				} else {
-					return '';
 				}
+				return '';
 			}
 		}
 	};
@@ -100,7 +99,7 @@ module.exports = function(Chart) {
 								me.max = value;
 							}
 
-							if(value !== 0 && (me.minNotZero === null || value < me.minNotZero)) {
+							if (value !== 0 && (me.minNotZero === null || value < me.minNotZero)) {
 								me.minNotZero = value;
 							}
 						});
@@ -144,7 +143,7 @@ module.exports = function(Chart) {
 				var exp;
 				var significand;
 
-				if(tickVal === 0){
+				if (tickVal === 0) {
 					exp = Math.floor(helpers.log10(me.minNotZero));
 					significand = Math.round(me.minNotZero / Math.pow(10, exp));
 				} else {
@@ -221,20 +220,20 @@ module.exports = function(Chart) {
 			} else {
 				// Bottom - top since pixels increase downard on a screen
 				innerDimension = me.height - (paddingTop + paddingBottom);
-				if(start === 0 && !tickOpts.reverse){
+				if (start === 0 && !tickOpts.reverse) {
 					range = helpers.log10(me.end) - helpers.log10(me.minNotZero);
 					if (newVal === start) {
 						pixel = me.bottom - paddingBottom;
-					} else if(newVal === me.minNotZero){
+					} else if (newVal === me.minNotZero) {
 						pixel = me.bottom - paddingBottom - innerDimension * 0.02;
 					} else {
 						pixel = me.bottom - paddingBottom - innerDimension * 0.02 - (innerDimension * 0.98/ range * (helpers.log10(newVal)-helpers.log10(me.minNotZero)));
 					}
-				} else if (me.end === 0 && tickOpts.reverse){
+				} else if (me.end === 0 && tickOpts.reverse) {
 					range = helpers.log10(me.start) - helpers.log10(me.minNotZero);
 					if (newVal === me.end) {
 						pixel = me.top + paddingTop;
-					} else if(newVal === me.minNotZero){
+					} else if (newVal === me.minNotZero) {
 						pixel = me.top + paddingTop + innerDimension * 0.02;
 					} else {
 						pixel = me.top + paddingTop + innerDimension * 0.02 + (innerDimension * 0.98/ range * (helpers.log10(newVal)-helpers.log10(me.minNotZero)));
@@ -262,6 +261,6 @@ module.exports = function(Chart) {
 			return value;
 		}
 	});
-	Chart.scaleService.registerScaleType("logarithmic", LogarithmicScale, defaultConfig);
+	Chart.scaleService.registerScaleType('logarithmic', LogarithmicScale, defaultConfig);
 
 };

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
@@ -6,19 +6,19 @@ module.exports = function(Chart) {
 
 	Chart.defaults.bubble = {
 		hover: {
-			mode: "single"
+			mode: 'single'
 		},
 
 		scales: {
 			xAxes: [{
-				type: "linear", // bubble should probably use a linear scale by default
-				position: "bottom",
-				id: "x-axis-0" // need an ID so datasets can reference the scale
+				type: 'linear', // bubble should probably use a linear scale by default
+				position: 'bottom',
+				id: 'x-axis-0' // need an ID so datasets can reference the scale
 			}],
 			yAxes: [{
-				type: "linear",
-				position: "left",
-				id: "y-axis-0"
+				type: 'linear',
+				position: 'left',
+				id: 'y-axis-0'
 			}]
 		},
 
