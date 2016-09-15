@@ -145,7 +145,7 @@ rules:
   jsx-quotes: 0
   key-spacing: 2
   keyword-spacing: 2
-  linebreak-style: [2, unix]
+  linebreak-style: 0
   lines-around-comment: 0
   max-depth: 0
   max-len: 0
