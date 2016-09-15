@@ -16,9 +16,8 @@ module.exports = function(Chart) {
 					return '0';
 				} else if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === arr.length - 1) {
 					return value.toExponential();
-				} else {
-					return '';
 				}
+				return '';
 			}
 		}
 	};

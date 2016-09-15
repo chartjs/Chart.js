@@ -492,12 +492,10 @@ module.exports = function(Chart) {
 				} else if (xAlign === 'right') {
 					pt.x -= paddingAndSize;
 				}
-			} else {
-				if (xAlign === 'left') {
-					pt.x -= radiusAndPadding;
-				} else if (xAlign === 'right') {
-					pt.x += radiusAndPadding;
-				}
+			} else if (xAlign === 'left') {
+				pt.x -= radiusAndPadding;
+			} else if (xAlign === 'right') {
+				pt.x += radiusAndPadding;
 			}
 
 			return pt;

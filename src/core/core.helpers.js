@@ -45,7 +45,9 @@ module.exports = function(Chart) {
 		return objClone;
 	};
 	helpers.extend = function(base) {
-		var setFn = function(value, key) { base[key] = value; };
+		var setFn = function(value, key) {
+			base[key] = value;
+		};
 		for (var i = 1, ilen = arguments.length; i < ilen; i++) {
 			helpers.each(arguments[i], setFn);
 		}
@@ -150,7 +152,9 @@ module.exports = function(Chart) {
 		return value === undefined ? defaultValue : value;
 	};
 	helpers.indexOf = Array.prototype.indexOf?
-		function(array, item) { return array.indexOf(item); } :
+		function(array, item) {
+			return array.indexOf(item);
+		}:
 		function(array, item) {
 			for (var i = 0, ilen = array.length; i < ilen; ++i) {
 				if (array[i] === item) {
@@ -162,20 +166,21 @@ module.exports = function(Chart) {
 	helpers.where = function(collection, filterCallback) {
 		if (helpers.isArray(collection) && Array.prototype.filter) {
 			return collection.filter(filterCallback);
-		} else {
-			var filtered = [];
-
-			helpers.each(collection, function(item) {
-				if (filterCallback(item)) {
-					filtered.push(item);
-				}
-			});
-
-			return filtered;
 		}
+		var filtered = [];
+
+		helpers.each(collection, function(item) {
+			if (filterCallback(item)) {
+				filtered.push(item);
+			}
+		});
+
+		return filtered;
 	};
 	helpers.findIndex = Array.prototype.findIndex?
-		function(array, callback, scope) { return array.findIndex(callback, scope); } :
+		function(array, callback, scope) {
+			return array.findIndex(callback, scope);
+		} :
 		function(array, callback, scope) {
 			scope = scope === undefined? array : scope;
 			for (var i = 0, ilen = array.length; i < ilen; ++i) {
@@ -211,15 +216,15 @@ module.exports = function(Chart) {
 	};
 	helpers.inherits = function(extensions) {
 		// Basic javascript inheritance based on the model created in Backbone.js
-		var parent = this;
+		var me = this;
 		var ChartElement = (extensions && extensions.hasOwnProperty('constructor')) ? extensions.constructor : function() {
-			return parent.apply(this, arguments);
+			return me.apply(this, arguments);
 		};
 
 		var Surrogate = function() {
 			this.constructor = ChartElement;
 		};
-		Surrogate.prototype = parent.prototype;
+		Surrogate.prototype = me.prototype;
 		ChartElement.prototype = new Surrogate();
 
 		ChartElement.extend = helpers.inherits;
@@ -228,7 +233,7 @@ module.exports = function(Chart) {
 			helpers.extend(ChartElement.prototype, extensions);
 		}
 
-		ChartElement.__super__ = parent.prototype;
+		ChartElement.__super__ = me.prototype;
 
 		return ChartElement;
 	};
@@ -250,22 +255,22 @@ module.exports = function(Chart) {
 		return array.reduce(function(max, value) {
 			if (!isNaN(value)) {
 				return Math.max(max, value);
-			} else {
-				return max;
 			}
+			return max;
 		}, Number.NEGATIVE_INFINITY);
 	};
 	helpers.min = function(array) {
 		return array.reduce(function(min, value) {
 			if (!isNaN(value)) {
 				return Math.min(min, value);
-			} else {
-				return min;
 			}
+			return min;
 		}, Number.POSITIVE_INFINITY);
 	};
 	helpers.sign = Math.sign?
-		function(x) { return Math.sign(x); } :
+		function(x) {
+			return Math.sign(x);
+		} :
 		function(x) {
 			x = +x; // convert to a number
 			if (x === 0 || isNaN(x)) {
@@ -274,7 +279,9 @@ module.exports = function(Chart) {
 			return x > 0 ? 1 : -1;
 		};
 	helpers.log10 = Math.log10?
-		function(x) { return Math.log10(x); } :
+		function(x) {
+			return Math.log10(x);
+		} :
 		function(x) {
 			return Math.log(x) / Math.LN10;
 		};
@@ -455,16 +462,14 @@ module.exports = function(Chart) {
 			} else {
 				niceFraction = 10;
 			}
+		} else if (fraction <= 1.0) {
+			niceFraction = 1;
+		} else if (fraction <= 2) {
+			niceFraction = 2;
+		} else if (fraction <= 5) {
+			niceFraction = 5;
 		} else {
-			if (fraction <= 1.0) {
-				niceFraction = 1;
-			} else if (fraction <= 2) {
-				niceFraction = 2;
-			} else if (fraction <= 5) {
-				niceFraction = 5;
-			} else {
-				niceFraction = 10;
-			}
+			niceFraction = 10;
 		}
 
 		return niceFraction * Math.pow(10, exponent);
@@ -656,9 +661,8 @@ module.exports = function(Chart) {
 				return 1 * (7.5625 * (t -= (1.5 / 2.75)) * t + 0.75);
 			} else if (t < (2.5 / 2.75)) {
 				return 1 * (7.5625 * (t -= (2.25 / 2.75)) * t + 0.9375);
-			} else {
-				return 1 * (7.5625 * (t -= (2.625 / 2.75)) * t + 0.984375);
 			}
+			return 1 * (7.5625 * (t -= (2.625 / 2.75)) * t + 0.984375);
 		},
 		easeInOutBounce: function(t) {
 			if (t < 1 / 2) {
@@ -996,7 +1000,9 @@ module.exports = function(Chart) {
 		}
 	};
 	helpers.isArray = Array.isArray?
-		function(obj) { return Array.isArray(obj); } :
+		function(obj) {
+			return Array.isArray(obj);
+		} :
 		function(obj) {
 			return Object.prototype.toString.call(obj) === '[object Array]';
 		};
@@ -1029,10 +1035,10 @@ module.exports = function(Chart) {
 			fn.apply(_tArg, args);
 		}
 	};
-	helpers.getHoverColor = function(color) {
+	helpers.getHoverColor = function(colorValue) {
 		/* global CanvasPattern */
-		return (color instanceof CanvasPattern) ?
-			color :
-			helpers.color(color).saturate(0.5).darken(0.1).rgbString();
+		return (colorValue instanceof CanvasPattern) ?
+			colorValue :
+			helpers.color(colorValue).saturate(0.5).darken(0.1).rgbString();
 	};
 };

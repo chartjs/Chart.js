@@ -406,9 +406,8 @@ module.exports = function(Chart) {
 			if (typeof(rawValue) === 'object') {
 				if ((rawValue instanceof Date) || (rawValue.isValid)) {
 					return rawValue;
-				} else {
-					return this.getRightValue(this.isHorizontal() ? rawValue.x : rawValue.y);
 				}
+				return this.getRightValue(this.isHorizontal() ? rawValue.x : rawValue.y);
 			}
 
 			// Value is good, return it
@@ -440,10 +439,9 @@ module.exports = function(Chart) {
 				var finalVal = me.left + Math.round(pixel);
 				finalVal += me.isFullWidth() ? me.margins.left : 0;
 				return finalVal;
-			} else {
-				var innerHeight = me.height - (me.paddingTop + me.paddingBottom);
-				return me.top + (index * (innerHeight / (me.ticks.length - 1)));
 			}
+			var innerHeight = me.height - (me.paddingTop + me.paddingBottom);
+			return me.top + (index * (innerHeight / (me.ticks.length - 1)));
 		},
 
 		// Utility for getting the pixel location of a percentage of scale
@@ -456,9 +454,8 @@ module.exports = function(Chart) {
 				var finalVal = me.left + Math.round(valueOffset);
 				finalVal += me.isFullWidth() ? me.margins.left : 0;
 				return finalVal;
-			} else {
-				return me.top + (decimal * me.height);
 			}
+			return me.top + (decimal * me.height);
 		},
 
 		getBasePixel: function() {
@@ -584,7 +581,8 @@ module.exports = function(Chart) {
 
 				// Common properties
 				var tx1, ty1, tx2, ty2, x1, y1, x2, y2, labelX, labelY;
-				var textAlign, textBaseline = 'middle';
+				var textAlign = 'middle';
+				var textBaseline = 'middle';
 
 				if (isHorizontal) {
 					if (!isRotated) {
@@ -611,15 +609,13 @@ module.exports = function(Chart) {
 							labelX = me.right - optionTicks.padding;
 							textAlign = 'right';
 						}
+					// right side
+					} else if (optionTicks.mirror) {
+						labelX = me.left - optionTicks.padding;
+						textAlign = 'right';
 					} else {
-						// right side
-						if (optionTicks.mirror) {
-							labelX = me.left - optionTicks.padding;
-							textAlign = 'right';
-						} else {
-							labelX = me.left + optionTicks.padding;
-							textAlign = 'left';
-						}
+						labelX = me.left + optionTicks.padding;
+						textAlign = 'left';
 					}
 
 					var yLineValue = me.getPixelForTick(index); // xvalues for grid lines

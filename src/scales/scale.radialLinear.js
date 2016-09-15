@@ -195,12 +195,10 @@ module.exports = function(Chart) {
 						furthestRight = pointPosition.x + textWidth;
 						furthestRightIndex = i;
 					}
-				} else {
-					// More than half the values means we'll right align the text
-					if (pointPosition.x - textWidth < furthestLeft) {
-						furthestLeft = pointPosition.x - textWidth;
-						furthestLeftIndex = i;
-					}
+				// More than half the values means we'll right align the text
+				} else if (pointPosition.x - textWidth < furthestLeft) {
+					furthestLeft = pointPosition.x - textWidth;
+					furthestLeftIndex = i;
 				}
 			}
 
@@ -252,9 +250,8 @@ module.exports = function(Chart) {
 			var scalingFactor = me.drawingArea / (me.max - me.min);
 			if (me.options.reverse) {
 				return (me.max - value) * scalingFactor;
-			} else {
-				return (value - me.min) * scalingFactor;
 			}
+			return (value - me.min) * scalingFactor;
 		},
 		getPointPosition: function(index, distanceFromCenter) {
 			var me = this;
