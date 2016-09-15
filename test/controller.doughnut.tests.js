@@ -1,14 +1,5 @@
 // Test the bar controller
 describe('Doughnut controller tests', function() {
-
-	beforeEach(function() {
-		window.addDefaultMatchers(jasmine);
-	});
-
-	afterEach(function() {
-		window.releaseAllCharts();
-	});
-
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'doughnut',

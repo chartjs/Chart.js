@@ -158,39 +158,57 @@
 		};
 	}
 
-	window.addDefaultMatchers = function(jasmine) {
+	beforeEach(function() {
 		jasmine.addMatchers({
 			toBeCloseToPixel: toBeCloseToPixel,
 			toEqualOneOf: toEqualOneOf
 		});
-	}
+	});
 
 	// Canvas injection helpers
 	var charts = {};
 
-	function acquireChart(config, style) {
+	/**
+	 * Injects a new canvas (and div wrapper) and creates teh associated Chart instance
+	 * using the given config. Additional options allow tweaking elements generation.
+	 * @param {object} config - Chart config.
+	 * @param {object} options - Chart acquisition options.
+	 * @param {object} options.canvas - Canvas attributes.
+	 * @param {object} options.wrapper - Canvas wrapper attributes.
+	 * @param {boolean} options.persistent - If true, the chart will not be released after the spec.
+	 */
+	function acquireChart(config, options) {
 		var wrapper = document.createElement("div");
 		var canvas = document.createElement("canvas");
-		wrapper.className = 'chartjs-wrapper';
+		var chart, key;
 
-		style = style || { height: '512px', width: '512px' };
-		for (var k in style) {
-			wrapper.style[k] = style[k];
-			canvas.style[k] = style[k];
+		options = options || {};
+		options.canvas = options.canvas || { height: 512, width: 512 };
+		options.wrapper = options.wrapper || { class: 'chartjs-wrapper' };
+
+		for (key in options.canvas) {
+			if (options.canvas.hasOwnProperty(key)) {
+				canvas.setAttribute(key, options.canvas[key]);
+			}
 		}
 
-		canvas.height = canvas.style.height && parseInt(canvas.style.height);
-		canvas.width = canvas.style.width && parseInt(canvas.style.width);
+		for (key in options.wrapper) {
+			if (options.wrapper.hasOwnProperty(key)) {
+				wrapper.setAttribute(key, options.wrapper[key]);
+			}
+		}
 
 		// by default, remove chart animation and auto resize
-		var options = config.options = config.options || {};
-		options.animation = options.animation === undefined? false : options.animation;
-		options.responsive = options.responsive === undefined? false : options.responsive;
-		options.defaultFontFamily = options.defaultFontFamily || 'Arial';
+		config.options = config.options || {};
+		config.options.animation = config.options.animation === undefined? false : config.options.animation;
+		config.options.responsive = config.options.responsive === undefined? false : config.options.responsive;
+		config.options.defaultFontFamily = config.options.defaultFontFamily || 'Arial';
 
 		wrapper.appendChild(canvas);
 		window.document.body.appendChild(wrapper);
-		var chart = new Chart(canvas.getContext("2d"), config);
+
+		chart = new Chart(canvas.getContext("2d"), config);
+		chart.__test_persistent = options.persistent;
 		charts[chart.id] = chart;
 		return chart;
 	}
@@ -201,12 +219,15 @@
 		delete chart;
 	}
 
-	function releaseAllCharts(scope) {
+	afterEach(function() {
+		// Auto releasing acquired charts
 		for (var id in charts) {
 			var chart = charts[id];
-			releaseChart(chart);
+			if (!chart.__test_persistent) {
+				releaseChart(chart);
+			}
 		}
-	}
+	});
 
 	function injectCSS(css) {
 		// http://stackoverflow.com/q/3922139
@@ -223,7 +244,6 @@
 
 	window.acquireChart = acquireChart;
 	window.releaseChart = releaseChart;
-	window.releaseAllCharts = releaseAllCharts;
 
 	// some style initialization to limit differences between browsers across different plateforms.
 	injectCSS(

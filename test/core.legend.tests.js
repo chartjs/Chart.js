@@ -1,14 +1,5 @@
 // Test the rectangle element
 describe('Legend block tests', function() {
-
-	beforeEach(function() {
-		window.addDefaultMatchers(jasmine);
-	});
-
-	afterEach(function() {
-		window.releaseAllCharts();
-	});
-
 	it('Should be constructed', function() {
 		var legend = new Chart.Legend({});
 		expect(legend).not.toBe(undefined);
