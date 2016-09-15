@@ -31,20 +31,20 @@ module.exports = function(Chart) {
 
 			// Helper function to draw a line to a point
 			function lineToPoint(previousPoint, point) {
-				var pointvm = point._view;
+				var pointVM = point._view;
 				if (point._view.steppedLine === true) {
-					ctx.lineTo(pointvm.x, previousPoint._view.y);
-					ctx.lineTo(pointvm.x, pointvm.y);
+					ctx.lineTo(pointVM.x, previousPoint._view.y);
+					ctx.lineTo(pointVM.x, pointVM.y);
 				} else if (point._view.tension === 0) {
-					ctx.lineTo(pointvm.x, pointvm.y);
+					ctx.lineTo(pointVM.x, pointVM.y);
 				} else {
 					ctx.bezierCurveTo(
 						previousPoint._view.controlPointNextX,
 						previousPoint._view.controlPointNextY,
-						pointvm.controlPointPreviousX,
-						pointvm.controlPointPreviousY,
-						pointvm.x,
-						pointvm.y
+						pointVM.controlPointPreviousX,
+						pointVM.controlPointPreviousY,
+						pointVM.x,
+						pointVM.y
 					);
 				}
 			}
