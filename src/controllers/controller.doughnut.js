@@ -76,7 +76,10 @@ module.exports = function(Chart) {
 
 				for (i = 0, ilen = (chart.data.datasets || []).length; i < ilen; ++i) {
 					meta = chart.getDatasetMeta(i);
-					meta.data[index].hidden = !meta.data[index].hidden;
+					// toggle visibility of index if exists
+					if (meta.data[index]) {
+						meta.data[index].hidden = !meta.data[index].hidden;
+					}
 				}
 
 				chart.update();
