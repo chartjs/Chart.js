@@ -19,10 +19,8 @@ npm install chart.js --save
 #### bower
 
 ```bash
-bower install Chart.js --save
+bower install chart.js --save
 ```
-
-> Note: Bower native support has been reintroduced at version 2.2.3 (previously dropped at version 2.2.0).
 
 ### Selecting the Correct Build
 
