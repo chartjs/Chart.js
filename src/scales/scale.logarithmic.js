@@ -10,14 +10,7 @@ module.exports = function(Chart) {
 		// label settings
 		ticks: {
 			callback: function(value, index, arr) {
-				var remain = value / (Math.pow(10, Math.floor(helpers.log10(value))));
-
-				if (value === 0) {
-					return '0';
-				} else if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === arr.length - 1) {
-					return value.toExponential();
-				}
-				return '';
+				return Chart.Ticks.formatters.logarithmic(value, index, arr);
 			}
 		}
 	};
