@@ -1,10 +1,6 @@
 // Time scale tests
 describe('Time scale tests', function() {
-	var chartInstance;
-
 	beforeEach(function() {
-		window.addDefaultMatchers(jasmine);
-
 		// Need a time matcher for getValueFromPixel
 		jasmine.addMatchers({
 			toBeCloseToTime: function() {
@@ -22,13 +18,6 @@ describe('Time scale tests', function() {
 				}
 			}
 		});
-	});
-
-	afterEach(function() {
-		if (chartInstance)
-		{
-			releaseChart(chartInstance);
-		}
 	});
 
 	it('Should load moment.js as a dependency', function() {
@@ -162,7 +151,7 @@ describe('Time scale tests', function() {
 			return moment('01/01/2015 12:00', 'DD/MM/YYYY HH:mm').add(days, 'd').toDate();
 		}
 
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'line',
 			data: {
 				datasets: [{
@@ -208,12 +197,12 @@ describe('Time scale tests', function() {
 		});
 
 		// Counts down because the lines are drawn top to bottom
-		var xScale = chartInstance.scales.xScale0;
+		var xScale = chart.scales.xScale0;
 		expect(xScale.ticks).toEqual([ 'Jan 1, 2015', 'Jan 3, 2015', 'Jan 5, 2015', 'Jan 7, 2015', 'Jan 9, 2015', 'Jan 11, 2015' ]);
 	});
 
 	it('should allow custom time parsers', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'line',
 			data: {
 				datasets: [{
@@ -248,7 +237,7 @@ describe('Time scale tests', function() {
 		});
 
 		// Counts down because the lines are drawn top to bottom
-		var xScale = chartInstance.scales.xScale0;
+		var xScale = chart.scales.xScale0;
 
 		// Counts down because the lines are drawn top to bottom
 		expect(xScale.ticks[0]).toEqualOneOf(['Nov 19, 1981', 'Nov 20, 1981', 'Nov 21, 1981']); // handle time zone changes
@@ -389,7 +378,7 @@ describe('Time scale tests', function() {
 	});
 
 	it('should get the correct pixel for a value', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'line',
 			data: {
 				datasets: [{
@@ -415,25 +404,25 @@ describe('Time scale tests', function() {
 			}
 		});
 
-		var xScale = chartInstance.scales.xScale0;
+		var xScale = chart.scales.xScale0;
 
 		expect(xScale.getPixelForValue('', 0, 0)).toBeCloseToPixel(78);
 		expect(xScale.getPixelForValue('', 6, 0)).toBeCloseToPixel(452);
 		expect(xScale.getPixelForValue('2015-01-01T20:00:00')).toBeCloseToPixel(78);
 
 		expect(xScale.getValueForPixel(78)).toBeCloseToTime({
-			value: moment(chartInstance.data.labels[0]),
+			value: moment(chart.data.labels[0]),
 			unit: 'hour',
 			threshold: 0.75
 		});
 		expect(xScale.getValueForPixel(452)).toBeCloseToTime({
-			value: moment(chartInstance.data.labels[6]),
+			value: moment(chart.data.labels[6]),
 			unit: 'hour'
 		});
 	});
 
 	it('should get the correct label for a data value', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'line',
 			data: {
 				datasets: [{
@@ -459,50 +448,38 @@ describe('Time scale tests', function() {
 			}
 		});
 
-		var xScale = chartInstance.scales.xScale0;
+		var xScale = chart.scales.xScale0;
 		expect(xScale.getLabelForIndex(0, 0)).toBe('2015-01-01T20:00:00');
 		expect(xScale.getLabelForIndex(6, 0)).toBe('2015-01-10T12:00');
-
 	});
+
 	it('should get the correct pixel for only one data in the dataset', function() {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
 				labels: ["2016-05-27"],
 				datasets: [{
-					type: "line",
+					xAxisID: 'xScale0',
 					data: [5]
 				}]
 			},
 			options: {
 				scales: {
 					xAxes: [{
+						id: 'xScale0',
 						display: true,
-						type: "time",
-						time: {
-							displayFormats: {
-								"day": "YYYY-MM-DD"
-							}
-						}
-					}],
-					yAxes: [{
-						type: "linear",
-						ticks: {
-							reverse: true,
-							min: 0,
-							max: 10
-						}
+						type: "time"
 					}]
 				}
 			}
 		});
 
-		var xScale = chartInstance.scales.xScale0;
+		var xScale = chart.scales.xScale0;
 
-		expect(xScale.getPixelForValue('', 0, 0)).toBeCloseToPixel(78);
+		expect(xScale.getPixelForValue('', 0, 0)).toBeCloseToPixel(62);
 
-		expect(xScale.getValueForPixel(78)).toBeCloseToTime({
-			value: moment(chartInstance.data.labels[0]),
+		expect(xScale.getValueForPixel(62)).toBeCloseToTime({
+			value: moment(chart.data.labels[0]),
 			unit: 'day',
 			threshold: 0.75
 		});
@@ -514,13 +491,14 @@ describe('Time scale tests', function() {
 			data: {
 				labels: ["2016-06-26"],
 				datasets: [{
-					type: "line",
+					xAxisID: 'xScale0',
 					data: [5]
 				}]
 			},
 			options: {
 				scales: {
 					xAxes: [{
+						id: 'xScale0',
 						display: true,
 						type: "time",
 					}]
@@ -528,28 +506,28 @@ describe('Time scale tests', function() {
 			}
 		});
 
-		var xScale = chartInstance.scales.xScale0;
-
+		var xScale = chart.scales.xScale0;
 		var getOutOfBoundLabelMoment = function() {
 			xScale.getLabelMoment(12, 0);
 		};
 
 		expect(getOutOfBoundLabelMoment).not.toThrow();
 	});
-	
+
 	it("should not throw an error if the datasetIndex or index are null", function() {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
 				labels: ["2016-06-26"],
 				datasets: [{
-					type: "line",
+					xAxisID: 'xScale0',
 					data: [5]
 				}]
 			},
 			options: {
 				scales: {
 					xAxes: [{
+						id: 'xScale0',
 						display: true,
 						type: "time",
 					}]
@@ -557,12 +535,12 @@ describe('Time scale tests', function() {
 			}
 		});
 
-		var xScale = chartInstance.scales.xScale0;
+		var xScale = chart.scales.xScale0;
 
 		var getNullDatasetIndexLabelMoment = function() {
 			xScale.getLabelMoment(null, 1);
 		};
-		
+
 		var getNullIndexLabelMoment = function() {
 			xScale.getLabelMoment(1, null);
 		};

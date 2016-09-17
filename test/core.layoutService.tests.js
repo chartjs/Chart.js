@@ -1,13 +1,5 @@
 // Tests of the scale service
 describe('Test the layout service', function() {
-	beforeEach(function() {
-		window.addDefaultMatchers(jasmine);
-	});
-
-	afterEach(function() {
-		window.releaseAllCharts();
-	});
-
 	it('should fit a simple chart with 2 scales', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
@@ -30,8 +22,10 @@ describe('Test the layout service', function() {
 				}
 			}
 		}, {
-			height: '150px',
-			width: '250px'
+			canvas: {
+				height: 150,
+				width: 250
+			}
 		});
 
 		expect(chart.chartArea.bottom).toBeCloseToPixel(112);
@@ -78,8 +72,10 @@ describe('Test the layout service', function() {
 				}
 			}
 		}, {
-			height: '150px',
-			width: '250px'
+			canvas: {
+				height: 150,
+				width: 250
+			}
 		});
 
 		expect(chart.chartArea.bottom).toBeCloseToPixel(150);
@@ -157,8 +153,10 @@ describe('Test the layout service', function() {
 				}
 			}
 		}, {
-			height: '150px',
-			width: '250px'
+			canvas: {
+				height: 150,
+				width: 250
+			}
 		});
 
 		expect(chart.chartArea.bottom).toBeCloseToPixel(102);

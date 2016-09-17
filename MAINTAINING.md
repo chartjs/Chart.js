@@ -31,6 +31,6 @@ Finally, [cdnjs](https://cdnjs.com/libraries/Chart.js) is automatically updated 
 
 ### Further Reading
 
-* [Travis GitHub releases](/chartjs/Chart.js/pull/2555)
-* [Bower support and dist/* files](/chartjs/Chart.js/issues/3033)
-* [cdnjs npm auto update](/cdnjs/cdnjs/pull/8401)
+* [Travis GitHub releases](https://github.com/chartjs/Chart.js/pull/2555)
+* [Bower support and dist/* files](https://github.com/chartjs/Chart.js/issues/3033)
+* [cdnjs npm auto update](https://github.com/cdnjs/cdnjs/pull/8401)

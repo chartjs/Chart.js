@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
@@ -6,7 +6,7 @@ module.exports = function(Chart) {
 
 	Chart.defaults.radar = {
 		scale: {
-			type: "radialLinear"
+			type: 'radialLinear'
 		},
 		elements: {
 			line: {

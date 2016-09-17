@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
@@ -9,16 +9,16 @@ module.exports = function(Chart) {
 		spanGaps: false,
 
 		hover: {
-			mode: "label"
+			mode: 'label'
 		},
 
 		scales: {
 			xAxes: [{
-				type: "category",
+				type: 'category',
 				id: 'x-axis-0'
 			}],
 			yAxes: [{
-				type: "linear",
+				type: 'linear',
 				id: 'y-axis-0'
 			}]
 		}
@@ -238,9 +238,8 @@ module.exports = function(Chart) {
 				var rightValue = Number(yScale.getRightValue(value));
 				if (rightValue < 0) {
 					return yScale.getPixelForValue(sumNeg + rightValue);
-				} else {
-					return yScale.getPixelForValue(sumPos + rightValue);
 				}
+				return yScale.getPixelForValue(sumPos + rightValue);
 			}
 
 			return yScale.getPixelForValue(value);
