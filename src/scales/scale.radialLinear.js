@@ -31,7 +31,7 @@ module.exports = function(Chart) {
 			backdropPaddingY: 2,
 
 			// Number - The backdrop padding to the side of the label in pixels
-			backdropPaddingX: 2
+			backdropPaddingX: 2,
 
 			callback: function(tickValue, index, ticks) {
 				// If we have lots of ticks, don't use the ones
