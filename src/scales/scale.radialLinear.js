@@ -33,9 +33,7 @@ module.exports = function(Chart) {
 			// Number - The backdrop padding to the side of the label in pixels
 			backdropPaddingX: 2,
 
-			callback: function(tickValue, index, ticks) {
-				return Chart.Ticks.formatters.linear(tickValue, index, ticks);
-			}
+			callback: Chart.Ticks.formatters.linear
 		},
 
 		pointLabels: {

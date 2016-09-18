@@ -7,9 +7,7 @@ module.exports = function(Chart) {
 	var defaultConfig = {
 		position: 'left',
 		ticks: {
-			callback: function(tickValue, index, ticks) {
-				return Chart.Ticks.formatters.linear(tickValue, index, ticks);
-			}
+			callback: Chart.Ticks.formatters.linear
 		}
 	};
 

@@ -9,9 +9,7 @@ module.exports = function(Chart) {
 
 		// label settings
 		ticks: {
-			callback: function(value, index, arr) {
-				return Chart.Ticks.formatters.logarithmic(value, index, arr);
-			}
+			callback: Chart.Ticks.formatters.logarithmic
 		}
 	};
 
