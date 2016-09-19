@@ -64,6 +64,16 @@ myLineChart.resize();
 // => returns 'this' for chainability
 ```
 
+**Note!** In case you used `insertIframe = false` config option, you responsible for resizing charts manually, e.g.:
+
+```javascript
+window.onresize = function() {
+    for (var i in Chart.instances) {
+        Chart.instances[i].chart.controller.resize();
+    }
+};
+```
+
 #### .clear()
 
 Will clear the chart canvas. Used extensively internally between animation frames, but you might find it useful.
