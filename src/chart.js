@@ -37,6 +37,7 @@ require('./controllers/controller.doughnut')(Chart);
 require('./controllers/controller.line')(Chart);
 require('./controllers/controller.polarArea')(Chart);
 require('./controllers/controller.radar')(Chart);
+require('./controllers/controller.heatmap')(Chart);
 
 require('./charts/Chart.Bar')(Chart);
 require('./charts/Chart.Bubble')(Chart);
@@ -45,5 +46,6 @@ require('./charts/Chart.Line')(Chart);
 require('./charts/Chart.PolarArea')(Chart);
 require('./charts/Chart.Radar')(Chart);
 require('./charts/Chart.Scatter')(Chart);
+require('./charts/Chart.HeatMap')(Chart);
 
 window.Chart = module.exports = Chart;
