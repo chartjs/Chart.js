@@ -313,6 +313,7 @@ module.exports = function(Chart) {
 					footer: me.getFooter(tooltipItems, data),
 					x: Math.round(tooltipPosition.x),
 					y: Math.round(tooltipPosition.y),
+					anchor:tooltipPosition,
 					caretPadding: helpers.getValueOrDefault(tooltipPosition.padding, 2),
 					labelColors: labelColors
 				});
