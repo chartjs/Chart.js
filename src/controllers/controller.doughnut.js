@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
@@ -7,9 +7,9 @@ module.exports = function(Chart) {
 
 	defaults.doughnut = {
 		animation: {
-			//Boolean - Whether we animate the rotation of the Doughnut
+			// Boolean - Whether we animate the rotation of the Doughnut
 			animateRotate: true,
-			//Boolean - Whether we animate scaling the Doughnut from the centre
+			// Boolean - Whether we animate scaling the Doughnut from the centre
 			animateScale: false
 		},
 		aspectRatio: 1,
@@ -35,7 +35,7 @@ module.exports = function(Chart) {
 			}
 
 			text.push('</ul>');
-			return text.join("");
+			return text.join('');
 		},
 		legend: {
 			labels: {
@@ -64,9 +64,8 @@ module.exports = function(Chart) {
 								index: i
 							};
 						});
-					} else {
-						return [];
 					}
+					return [];
 				}
 			},
 
@@ -77,20 +76,23 @@ module.exports = function(Chart) {
 
 				for (i = 0, ilen = (chart.data.datasets || []).length; i < ilen; ++i) {
 					meta = chart.getDatasetMeta(i);
-					meta.data[index].hidden = !meta.data[index].hidden;
+					// toggle visibility of index if exists
+					if (meta.data[index]) {
+						meta.data[index].hidden = !meta.data[index].hidden;
+					}
 				}
 
 				chart.update();
 			}
 		},
 
-		//The percentage of the chart that we cut out of the middle.
+		// The percentage of the chart that we cut out of the middle.
 		cutoutPercentage: 50,
 
-		//The rotation of the chart, where the first data arc begins.
+		// The rotation of the chart, where the first data arc begins.
 		rotation: Math.PI * -0.5,
 
-		//The total circumference of the chart.
+		// The total circumference of the chart.
 		circumference: Math.PI * 2.0,
 
 		// Need to override these to give a nice default
@@ -166,8 +168,8 @@ module.exports = function(Chart) {
 				minSize = Math.min(availableWidth / size.width, availableHeight / size.height);
 				offset = {x: (max.x + min.x) * -0.5, y: (max.y + min.y) * -0.5};
 			}
-            chart.borderWidth = me.getMaxBorderWidth(meta.data);
 
+			chart.borderWidth = me.getMaxBorderWidth(meta.data);
 			chart.outerRadius = Math.max((minSize - chart.borderWidth) / 2, 0);
 			chart.innerRadius = Math.max(cutoutPercentage ? (chart.outerRadius / 100) * (cutoutPercentage) : 1, 0);
 			chart.radiusLength = (chart.outerRadius - chart.innerRadius) / chart.getVisibleDatasetCount();
@@ -253,7 +255,7 @@ module.exports = function(Chart) {
 				}
 			});
 
-			/*if (total === 0) {
+			/* if (total === 0) {
 				total = NaN;
 			}*/
 
@@ -264,27 +266,26 @@ module.exports = function(Chart) {
 			var total = this.getMeta().total;
 			if (total > 0 && !isNaN(value)) {
 				return (Math.PI * 2.0) * (value / total);
-			} else {
-				return 0;
 			}
+			return 0;
 		},
-		
-		//gets the max border or hover width to properly scale pie charts
-        getMaxBorderWidth: function (elements) {
-            var max = 0,
+
+		// gets the max border or hover width to properly scale pie charts
+		getMaxBorderWidth: function(elements) {
+			var max = 0,
 				index = this.index,
 				length = elements.length,
 				borderWidth,
 				hoverWidth;
 
-            for (var i = 0; i < length; i++) {
-               	borderWidth = elements[i]._model ? elements[i]._model.borderWidth : 0;
-                hoverWidth = elements[i]._chart ? elements[i]._chart.config.data.datasets[index].hoverBorderWidth : 0;
-				
-                max = borderWidth > max ? borderWidth : max;
-                max = hoverWidth > max ? hoverWidth : max;
-            }
-            return max;
-        }
+			for (var i = 0; i < length; i++) {
+				borderWidth = elements[i]._model ? elements[i]._model.borderWidth : 0;
+				hoverWidth = elements[i]._chart ? elements[i]._chart.config.data.datasets[index].hoverBorderWidth : 0;
+
+				max = borderWidth > max ? borderWidth : max;
+				max = hoverWidth > max ? hoverWidth : max;
+			}
+			return max;
+		}
 	});
 };

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
@@ -6,19 +6,19 @@ module.exports = function(Chart) {
 
 	Chart.defaults.scale = {
 		display: true,
-		position: "left",
+		position: 'left',
 
 		// grid line settings
 		gridLines: {
 			display: true,
-			color: "rgba(0, 0, 0, 0.1)",
+			color: 'rgba(0, 0, 0, 0.1)',
 			lineWidth: 1,
 			drawBorder: true,
 			drawOnChartArea: true,
 			drawTicks: true,
 			tickMarkLength: 10,
 			zeroLineWidth: 1,
-			zeroLineColor: "rgba(0,0,0,0.25)",
+			zeroLineColor: 'rgba(0,0,0,0.25)',
 			offsetGridLines: false,
 			borderDash: [],
 			borderDashOffset: 0.0
@@ -170,12 +170,12 @@ module.exports = function(Chart) {
 			var me = this;
 			// Convert ticks to strings
 			me.ticks = me.ticks.map(function(numericalTick, index, ticks) {
-					if (me.options.ticks.userCallback) {
-						return me.options.ticks.userCallback(numericalTick, index, ticks);
-					}
-					return me.options.ticks.callback(numericalTick, index, ticks);
-				},
-				me);
+				if (me.options.ticks.userCallback) {
+					return me.options.ticks.userCallback(numericalTick, index, ticks);
+				}
+				return me.options.ticks.callback(numericalTick, index, ticks);
+			},
+			me);
 		},
 		afterTickToLabelConversion: function() {
 			helpers.callCallback(this.options.afterTickToLabelConversion, [this]);
@@ -192,8 +192,8 @@ module.exports = function(Chart) {
 			var globalDefaults = Chart.defaults.global;
 			var optionTicks = me.options.ticks;
 
-			//Get the width of each grid by calculating the difference
-			//between x offsets between 0 and 1.
+			// Get the width of each grid by calculating the difference
+			// between x offsets between 0 and 1.
 			var tickFontSize = helpers.getValueOrDefault(optionTicks.fontSize, globalDefaults.defaultFontSize);
 			var tickFontStyle = helpers.getValueOrDefault(optionTicks.fontStyle, globalDefaults.defaultFontStyle);
 			var tickFontFamily = helpers.getValueOrDefault(optionTicks.fontFamily, globalDefaults.defaultFontFamily);
@@ -225,7 +225,7 @@ module.exports = function(Chart) {
 					// only the index matters for a dataset scale, but we want a consistent interface between scales
 					var tickWidth = me.getPixelForTick(1) - me.getPixelForTick(0) - 6;
 
-					//Max label rotation can be set or default to 90 - also act as a loop counter
+					// Max label rotation can be set or default to 90 - also act as a loop counter
 					while (labelWidth > tickWidth && me.labelRotation < optionTicks.maxRotation) {
 						cosRotation = Math.cos(helpers.toRadians(me.labelRotation));
 						sinRotation = Math.sin(helpers.toRadians(me.labelRotation));
@@ -386,7 +386,7 @@ module.exports = function(Chart) {
 
 		// Shared Methods
 		isHorizontal: function() {
-			return this.options.position === "top" || this.options.position === "bottom";
+			return this.options.position === 'top' || this.options.position === 'bottom';
 		},
 		isFullWidth: function() {
 			return (this.options.fullWidth);
@@ -403,12 +403,11 @@ module.exports = function(Chart) {
 				return NaN;
 			}
 			// If it is in fact an object, dive in one more level
-			if (typeof(rawValue) === "object") {
+			if (typeof(rawValue) === 'object') {
 				if ((rawValue instanceof Date) || (rawValue.isValid)) {
 					return rawValue;
-				} else {
-					return this.getRightValue(this.isHorizontal() ? rawValue.x : rawValue.y);
 				}
+				return this.getRightValue(this.isHorizontal() ? rawValue.x : rawValue.y);
 			}
 
 			// Value is good, return it
@@ -440,14 +439,13 @@ module.exports = function(Chart) {
 				var finalVal = me.left + Math.round(pixel);
 				finalVal += me.isFullWidth() ? me.margins.left : 0;
 				return finalVal;
-			} else {
-				var innerHeight = me.height - (me.paddingTop + me.paddingBottom);
-				return me.top + (index * (innerHeight / (me.ticks.length - 1)));
 			}
+			var innerHeight = me.height - (me.paddingTop + me.paddingBottom);
+			return me.top + (index * (innerHeight / (me.ticks.length - 1)));
 		},
 
 		// Utility for getting the pixel location of a percentage of scale
-		getPixelForDecimal: function(decimal /*, includeOffset*/ ) {
+		getPixelForDecimal: function(decimal /* , includeOffset*/) {
 			var me = this;
 			if (me.isHorizontal()) {
 				var innerWidth = me.width - (me.paddingLeft + me.paddingRight);
@@ -456,9 +454,8 @@ module.exports = function(Chart) {
 				var finalVal = me.left + Math.round(valueOffset);
 				finalVal += me.isFullWidth() ? me.margins.left : 0;
 				return finalVal;
-			} else {
-				return me.top + (decimal * me.height);
 			}
+			return me.top + (decimal * me.height);
 		},
 
 		getBasePixel: function() {
@@ -553,10 +550,10 @@ module.exports = function(Chart) {
 			}
 
 
-			var xTickStart = options.position === "right" ? me.left : me.right - tl;
-			var xTickEnd = options.position === "right" ? me.left + tl : me.right;
-			var yTickStart = options.position === "bottom" ? me.top : me.bottom - tl;
-			var yTickEnd = options.position === "bottom" ? me.top + tl : me.bottom;
+			var xTickStart = options.position === 'right' ? me.left : me.right - tl;
+			var xTickEnd = options.position === 'right' ? me.left + tl : me.right;
+			var yTickStart = options.position === 'bottom' ? me.top : me.bottom - tl;
+			var yTickEnd = options.position === 'bottom' ? me.top + tl : me.bottom;
 
 			helpers.each(me.ticks, function(label, index) {
 				// If the callback returned a null or undefined value, do not draw this line
@@ -577,14 +574,15 @@ module.exports = function(Chart) {
 					// Draw the first index specially
 					lineWidth = gridLines.zeroLineWidth;
 					lineColor = gridLines.zeroLineColor;
-				} else  {
+				} else {
 					lineWidth = helpers.getValueAtIndexOrDefault(gridLines.lineWidth, index);
 					lineColor = helpers.getValueAtIndexOrDefault(gridLines.color, index);
 				}
 
 				// Common properties
 				var tx1, ty1, tx2, ty2, x1, y1, x2, y2, labelX, labelY;
-				var textAlign, textBaseline = 'middle';
+				var textAlign = 'middle';
+				var textBaseline = 'middle';
 
 				if (isHorizontal) {
 					if (!isRotated) {
@@ -611,15 +609,13 @@ module.exports = function(Chart) {
 							labelX = me.right - optionTicks.padding;
 							textAlign = 'right';
 						}
+					// right side
+					} else if (optionTicks.mirror) {
+						labelX = me.left - optionTicks.padding;
+						textAlign = 'right';
 					} else {
-						// right side
-						if (optionTicks.mirror) {
-							labelX = me.left - optionTicks.padding;
-							textAlign = 'right';
-						} else {
-							labelX = me.left + optionTicks.padding;
-							textAlign = 'left';
-						}
+						labelX = me.left + optionTicks.padding;
+						textAlign = 'left';
 					}
 
 					var yLineValue = me.getPixelForTick(index); // xvalues for grid lines
@@ -692,7 +688,7 @@ module.exports = function(Chart) {
 
 					var label = itemToDraw.label;
 					if (helpers.isArray(label)) {
-						for (var i = 0, y = 0; i < label.length; ++i) {
+						for (var i = 0, y = -(label.length - 1)*tickFontSize*0.75; i < label.length; ++i) {
 							// We just make sure the multiline element is a string here..
 							context.fillText('' + label[i], 0, y);
 							// apply same lineSpacing as calculated @ L#320

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
@@ -48,8 +48,9 @@ module.exports = function(Chart) {
 			// Find first (starting) corner with fallback to 'bottom'
 			var borders = ['bottom', 'left', 'top', 'right'];
 			var startCorner = borders.indexOf(vm.borderSkipped, 0);
-			if (startCorner === -1)
+			if (startCorner === -1) {
 				startCorner = 0;
+			}
 
 			function cornerAt(index) {
 				return corners[(startCorner + index) % 4];
@@ -57,8 +58,9 @@ module.exports = function(Chart) {
 
 			// Draw rectangle from 'startCorner'
 			ctx.moveTo.apply(ctx, cornerAt(0));
-			for (var i = 1; i < 4; i++)
+			for (var i = 1; i < 4; i++) {
 				ctx.lineTo.apply(ctx, cornerAt(i));
+			}
 
 			ctx.fill();
 			if (vm.borderWidth) {

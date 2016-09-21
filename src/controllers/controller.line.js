@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
@@ -9,16 +9,16 @@ module.exports = function(Chart) {
 		spanGaps: false,
 
 		hover: {
-			mode: "label"
+			mode: 'label'
 		},
 
 		scales: {
 			xAxes: [{
-				type: "category",
+				type: 'category',
 				id: 'x-axis-0'
 			}],
 			yAxes: [{
-				type: "linear",
+				type: 'linear',
 				id: 'y-axis-0'
 			}]
 		}
@@ -238,9 +238,8 @@ module.exports = function(Chart) {
 				var rightValue = Number(yScale.getRightValue(value));
 				if (rightValue < 0) {
 					return yScale.getPixelForValue(sumNeg + rightValue);
-				} else {
-					return yScale.getPixelForValue(sumPos + rightValue);
 				}
+				return yScale.getPixelForValue(sumPos + rightValue);
 			}
 
 			return yScale.getPixelForValue(value);
@@ -250,20 +249,23 @@ module.exports = function(Chart) {
 			var me = this;
 			var meta = me.getMeta();
 			var area = me.chart.chartArea;
+			var points = (meta.data || []);
+			var i, ilen, point, model, controlPoints;
 
 			// Only consider points that are drawn in case the spanGaps option is used
-			var points = (meta.data || []);
-			if (meta.dataset._model.spanGaps) points = points.filter(function(pt) { return !pt._model.skip; });
-			var i, ilen, point, model, controlPoints;
+			if (meta.dataset._model.spanGaps) {
+				points = points.filter(function(pt) {
+					return !pt._model.skip;
+				});
+			}
 
 			function capControlPoint(pt, min, max) {
 				return Math.max(Math.min(pt, max), min);
 			}
 
-			if (meta.dataset._model.cubicInterpolationMode == 'monotone') {
+			if (meta.dataset._model.cubicInterpolationMode === 'monotone') {
 				helpers.splineCurveMonotone(points);
-			}
-			else {
+			} else {
 				for (i = 0, ilen = points.length; i < ilen; ++i) {
 					point = points[i];
 					model = point._model;
@@ -289,7 +291,6 @@ module.exports = function(Chart) {
 					model.controlPointNextY = capControlPoint(model.controlPointNextY, area.top, area.bottom);
 				}
 			}
-
 		},
 
 		draw: function(ease) {

@@ -1,11 +1,11 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
 	// Default config for a category scale
 	var defaultConfig = {
-		position: "bottom"
+		position: 'bottom'
 	};
 
 	var DatasetScale = Chart.Scale.extend({
@@ -49,8 +49,15 @@ module.exports = function(Chart) {
 			me.ticks = (me.minIndex === 0 && me.maxIndex === labels.length - 1) ? labels : labels.slice(me.minIndex, me.maxIndex + 1);
 		},
 
-		getLabelForIndex: function(index) {
-			return this.ticks[index];
+		getLabelForIndex: function(index, datasetIndex) {
+			var me = this;
+			var data = me.chart.data;
+			var isHorizontal = me.isHorizontal();
+
+			if ((data.xLabels && isHorizontal) || (data.yLabels && !isHorizontal)) {
+				return me.getRightValue(data.datasets[datasetIndex].data[index]);
+			}
+			return me.ticks[index];
 		},
 
 		// Used to get data value locations.  Value can either be an index or a numerical value
@@ -70,22 +77,21 @@ module.exports = function(Chart) {
 				var valueWidth = innerWidth / offsetAmt;
 				var widthOffset = (valueWidth * (index - me.minIndex)) + me.paddingLeft;
 
-			if (me.options.gridLines.offsetGridLines && includeOffset || me.maxIndex === me.minIndex && includeOffset) {
+				if (me.options.gridLines.offsetGridLines && includeOffset || me.maxIndex === me.minIndex && includeOffset) {
 					widthOffset += (valueWidth / 2);
-			}
-
-				return me.left + Math.round(widthOffset);
-			} else {
-				var innerHeight = me.height - (me.paddingTop + me.paddingBottom);
-				var valueHeight = innerHeight / offsetAmt;
-				var heightOffset = (valueHeight * (index - me.minIndex)) + me.paddingTop;
-
-				if (me.options.gridLines.offsetGridLines && includeOffset) {
-					heightOffset += (valueHeight / 2);
 				}
 
-				return me.top + Math.round(heightOffset);
+				return me.left + Math.round(widthOffset);
 			}
+			var innerHeight = me.height - (me.paddingTop + me.paddingBottom);
+			var valueHeight = innerHeight / offsetAmt;
+			var heightOffset = (valueHeight * (index - me.minIndex)) + me.paddingTop;
+
+			if (me.options.gridLines.offsetGridLines && includeOffset) {
+				heightOffset += (valueHeight / 2);
+			}
+
+			return me.top + Math.round(heightOffset);
 		},
 		getPixelForTick: function(index, includeOffset) {
 			return this.getPixelForValue(this.ticks[index], index + this.minIndex, null, includeOffset);
@@ -118,6 +124,6 @@ module.exports = function(Chart) {
 		}
 	});
 
-	Chart.scaleService.registerScaleType("category", DatasetScale, defaultConfig);
+	Chart.scaleService.registerScaleType('category', DatasetScale, defaultConfig);
 
 };

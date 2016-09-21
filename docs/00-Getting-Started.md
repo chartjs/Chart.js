@@ -5,7 +5,7 @@ anchor: getting-started
 
 ### Download Chart.js
 
-You can download the latest version of [Chart.js on GitHub](https://github.com/chartjs/Chart.js/releases/latest) or just use these [Chart.js CDN](https://cdnjs.com/libraries/Chart.js) links. 
+You can download the latest version of [Chart.js on GitHub](https://github.com/chartjs/Chart.js/releases/latest) or just use these [Chart.js CDN](https://cdnjs.com/libraries/Chart.js) links.
 If you download or clone the repository, you must run `gulp build` to generate the dist files. Chart.js no longer comes with prebuilt release versions, so an alternative option to downloading the repo is **strongly** advised.
 
 ### Installation
@@ -18,22 +18,8 @@ npm install chart.js --save
 
 #### bower
 
-Bower support has been dropped since version 2.2.0 but you can still use Chart.js with Bower thanks to [bower-npm-resolver](https://www.npmjs.com/package/bower-npm-resolver).
-
-First, add the resolver in your .bowerrc file:
-```json
-{
-  "resolvers": [
-    "bower-npm-resolver"
-  ]
-}
-```
-
-Then:
-
 ```bash
-npm install -g bower-npm-resolver
-bower install npm:chart.js --save
+bower install chart.js --save
 ```
 
 ### Selecting the Correct Build

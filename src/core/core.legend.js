@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
@@ -24,6 +24,8 @@ module.exports = function(Chart) {
 			// We hid a dataset ... rerender the chart
 			ci.update();
 		},
+
+		onHover: null,
 
 		labels: {
 			boxWidth: 40,
@@ -149,7 +151,7 @@ module.exports = function(Chart) {
 		buildLabels: function() {
 			var me = this;
 			me.legendItems = me.options.labels.generateLabels.call(me, me.chart);
-			if(me.options.reverse){
+			if (me.options.reverse) {
 				me.legendItems.reverse();
 			}
 		},
@@ -198,7 +200,7 @@ module.exports = function(Chart) {
 					var lineWidths = me.lineWidths = [0];
 					var totalHeight = me.legendItems.length ? fontSize + (labelOpts.padding) : 0;
 
-					ctx.textAlign = "left";
+					ctx.textAlign = 'left';
 					ctx.textBaseline = 'top';
 
 					helpers.each(me.legendItems, function(legendItem, i) {
@@ -275,7 +277,7 @@ module.exports = function(Chart) {
 
 		// Shared Methods
 		isHorizontal: function() {
-			return this.options.position === "top" || this.options.position === "bottom";
+			return this.options.position === 'top' || this.options.position === 'bottom';
 		},
 
 		// Actualy draw the legend on the canvas
@@ -299,7 +301,7 @@ module.exports = function(Chart) {
 					labelFont = helpers.fontString(fontSize, fontStyle, fontFamily);
 
 				// Canvas setup
-				ctx.textAlign = "left";
+				ctx.textAlign = 'left';
 				ctx.textBaseline = 'top';
 				ctx.lineWidth = 0.5;
 				ctx.strokeStyle = fontColor; // for strikethrough effect
@@ -324,6 +326,7 @@ module.exports = function(Chart) {
 					ctx.lineJoin = itemOrDefault(legendItem.lineJoin, lineDefault.borderJoinStyle);
 					ctx.lineWidth = itemOrDefault(legendItem.lineWidth, lineDefault.borderWidth);
 					ctx.strokeStyle = itemOrDefault(legendItem.strokeStyle, globalDefault.defaultColor);
+					var isLineWidthZero = (itemOrDefault(legendItem.lineWidth, lineDefault.borderWidth) === 0);
 
 					if (ctx.setLineDash) {
 						// IE 9 and 10 do not support line dash
@@ -340,10 +343,11 @@ module.exports = function(Chart) {
 
 						// Draw pointStyle as legend symbol
 						Chart.canvasHelpers.drawPoint(ctx, legendItem.pointStyle, radius, centerX, centerY);
-					}
-					else {
+					} else {
 						// Draw box as legend symbol
-						ctx.strokeRect(x, y, boxWidth, fontSize);
+						if (!isLineWidthZero) {
+							ctx.strokeRect(x, y, boxWidth, fontSize);
+						}
 						ctx.fillRect(x, y, boxWidth, fontSize);
 					}
 
@@ -393,12 +397,10 @@ module.exports = function(Chart) {
 							cursor.line++;
 							x = cursor.x = me.left + ((legendWidth - lineWidths[cursor.line]) / 2);
 						}
-					} else {
-						if (y + itemHeight > me.bottom) {
-							x = cursor.x = x + me.columnWidths[cursor.line] + labelOpts.padding;
-							y = cursor.y = me.top;
-							cursor.line++;
-						}
+					} else if (y + itemHeight > me.bottom) {
+						x = cursor.x = x + me.columnWidths[cursor.line] + labelOpts.padding;
+						y = cursor.y = me.top;
+						cursor.line++;
 					}
 
 					drawLegendBox(x, y, legendItem);
@@ -422,10 +424,24 @@ module.exports = function(Chart) {
 		// Handle an event
 		handleEvent: function(e) {
 			var me = this;
+			var opts = me.options;
+			var type = e.type === 'mouseup' ? 'click' : e.type;
+
+			if (type === 'mousemove') {
+				if (!opts.onHover) {
+					return;
+				}
+			} else if (type === 'click') {
+				if (!opts.onClick) {
+					return;
+				}
+			} else {
+				return;
+			}
+
 			var position = helpers.getRelativePosition(e, me.chart.chart),
 				x = position.x,
-				y = position.y,
-				opts = me.options;
+				y = position.y;
 
 			if (x >= me.left && x <= me.right && y >= me.top && y <= me.bottom) {
 				// See if we are touching one of the dataset boxes
@@ -435,10 +451,13 @@ module.exports = function(Chart) {
 
 					if (x >= hitBox.left && x <= hitBox.left + hitBox.width && y >= hitBox.top && y <= hitBox.top + hitBox.height) {
 						// Touching an element
-						if (opts.onClick) {
+						if (type === 'click') {
 							opts.onClick.call(me, e, me.legendItems[i]);
+							break;
+						} else if (type === 'mousemove') {
+							opts.onHover.call(me, e, me.legendItems[i]);
+							break;
 						}
-						break;
 					}
 				}
 			}

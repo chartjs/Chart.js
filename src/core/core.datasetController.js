@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
@@ -7,7 +7,7 @@ module.exports = function(Chart) {
 
 	// Base class for all dataset controllers (line, bar, etc)
 	Chart.DatasetController = function(chart, datasetIndex) {
-		this.initialize.call(this, chart, datasetIndex);
+		this.initialize(chart, datasetIndex);
 	};
 
 	helpers.extend(Chart.DatasetController.prototype, {
@@ -157,9 +157,8 @@ module.exports = function(Chart) {
 			model.borderColor = custom.hoverBorderColor ? custom.hoverBorderColor : valueOrDefault(dataset.hoverBorderColor, index, getHoverColor(model.borderColor));
 			model.borderWidth = custom.hoverBorderWidth ? custom.hoverBorderWidth : valueOrDefault(dataset.hoverBorderWidth, index, model.borderWidth);
 		}
-		
-    });
-	
+
+	});
 
 	Chart.DatasetController.extend = helpers.inherits;
 };

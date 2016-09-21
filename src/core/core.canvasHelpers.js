@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 	// Global Chart canvas helpers object for drawing items to canvas
@@ -40,7 +40,7 @@ module.exports = function(Chart) {
 		case 'rect':
 			size = 1 / Math.SQRT2 * radius;
 			ctx.beginPath();
-			ctx.fillRect(x - size, y - size, 2 * size,  2 * size);
+			ctx.fillRect(x - size, y - size, 2 * size, 2 * size);
 			ctx.strokeRect(x - size, y - size, 2 * size, 2 * size);
 			break;
 		case 'rectRot':

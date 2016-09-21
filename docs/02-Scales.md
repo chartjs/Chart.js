@@ -224,6 +224,7 @@ round | String | - | If defined, dates will be rounded to the start of this unit
 tooltipFormat | String | '' | The moment js format string to use for the tooltip.
 unit | String | - | If defined, will force the unit to be a certain type. See [Time Units](#scales-time-units) section below for details.
 unitStepSize | Number | 1 | The number of units between grid lines.
+minUnit | String | 'millisecond' | The minimum display format to be used for a time unit
 
 #### Date Formats
 

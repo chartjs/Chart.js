@@ -1,25 +1,23 @@
-var gulp = require('gulp'),
-  concat = require('gulp-concat'),
-  uglify = require('gulp-uglify'),
-  util = require('gulp-util'),
-  jshint = require('gulp-jshint'),
-  size = require('gulp-size'),
-  connect = require('gulp-connect'),
-  replace = require('gulp-replace'),
-  htmlv = require('gulp-html-validator'),
-  insert = require('gulp-insert'),
-  zip = require('gulp-zip'),
-  inquirer = require('inquirer'),
-  semver = require('semver'),
-  exec = require('child_process').exec,
-  fs = require('fs'),
-  package = require('./package.json'),
-  karma = require('gulp-karma'),
-  browserify = require('browserify'),
-  streamify = require('gulp-streamify'),
-  source = require('vinyl-source-stream'),
-  merge = require('merge-stream'),
-  collapse = require('bundle-collapser/plugin');
+var gulp = require('gulp');
+var concat = require('gulp-concat');
+var connect = require('gulp-connect');
+var eslint = require('gulp-eslint');
+var file = require('gulp-file');
+var htmlv = require('gulp-html-validator');
+var insert = require('gulp-insert');
+var replace = require('gulp-replace');
+var size = require('gulp-size');
+var streamify = require('gulp-streamify');
+var uglify = require('gulp-uglify');
+var util = require('gulp-util');
+var zip = require('gulp-zip');
+var exec = require('child_process').exec;
+var karma = require('gulp-karma');
+var browserify = require('browserify');
+var source = require('vinyl-source-stream');
+var merge = require('merge-stream');
+var collapse = require('bundle-collapser/plugin');
+var package = require('./package.json');
 
 var srcDir = './src/';
 var outDir = './dist/';
@@ -45,17 +43,16 @@ var testFiles = [
   // Disable tests which need to be rewritten based on changes introduced by
   // the following changes: https://github.com/chartjs/Chart.js/pull/2346
   '!./test/core.layoutService.tests.js',
-  '!./test/defaultConfig.tests.js',
+  '!./test/defaultConfig.tests.js'
 ];
 
+gulp.task('bower', bowerTask);
 gulp.task('build', buildTask);
 gulp.task('package', packageTask);
 gulp.task('coverage', coverageTask);
 gulp.task('watch', watchTask);
-gulp.task('bump', bumpTask);
-gulp.task('release', ['build'], releaseTask);
-gulp.task('jshint', jshintTask);
-gulp.task('test', ['jshint', 'validHTML', 'unittest']);
+gulp.task('lint', lintTask);
+gulp.task('test', ['lint', 'validHTML', 'unittest']);
 gulp.task('size', ['library-size', 'module-sizes']);
 gulp.task('server', serverTask);
 gulp.task('validHTML', validHTMLTask);
@@ -65,9 +62,25 @@ gulp.task('library-size', librarySizeTask);
 gulp.task('module-sizes', moduleSizesTask);
 gulp.task('_open', _openTask);
 gulp.task('dev', ['server', 'default']);
-
 gulp.task('default', ['build', 'watch']);
 
+/**
+ * Generates the bower.json manifest file which will be pushed along release tags.
+ * Specs: https://github.com/bower/spec/blob/master/json.md
+ */
+function bowerTask() {
+  var json = JSON.stringify({
+      name: package.name,
+      description: package.description,
+      homepage: package.homepage,
+      license: package.license,
+      version: package.version,
+      main: outDir + "Chart.js"
+    }, null, 2);
+
+  return file('bower.json', json, { src: true })
+    .pipe(gulp.dest('./'));
+}
 
 function buildTask() {
 
@@ -117,56 +130,26 @@ function packageTask() {
   .pipe(gulp.dest(outDir));
 }
 
-/*
- *  Usage : gulp bump
- *  Prompts: Version increment to bump
- *  Output: - New version number written into package.json
- */
-function bumpTask(complete) {
-  util.log('Current version:', util.colors.cyan(package.version));
-  var choices = ['major', 'premajor', 'minor', 'preminor', 'patch', 'prepatch', 'prerelease'].map(function(versionType) {
-    return versionType + ' (v' + semver.inc(package.version, versionType) + ')';
-  });
-  inquirer.prompt({
-    type: 'list',
-    name: 'version',
-    message: 'What version update would you like?',
-    choices: choices
-  }, function(res) {
-    var increment = res.version.split(' ')[0],
-      newVersion = semver.inc(package.version, increment),
-      oldVersion = package.version;
+function lintTask() {
+  var files = [
+    srcDir + '**/*.js',
+  ];
 
-    // Set the new versions into the package object
-    package.version = newVersion;
+  // NOTE(SB) codeclimate has 'complexity' and 'max-statements' eslint rules way too strict
+  // compare to what the current codebase can support, and since it's not straightforward
+  // to fix, let's turn them as warnings and rewrite code later progressively.
+  var options = {
+    rules: {
+      'complexity': [1, 6],
+      'max-statements': [1, 30]
+    }
+  };
 
-    // Write these to their own files, then build the output
-    fs.writeFileSync('package.json', JSON.stringify(package, null, 2));
-
-    var oldCDN = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/'+oldVersion+'/Chart.min.js',
-      newCDN = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/'+newVersion+'/Chart.min.js';
-
-    gulp.src(['./README.md'])
-      .pipe(replace(oldCDN, newCDN))
-      .pipe(gulp.dest('./'));
-
-    complete();
-  });
+  return gulp.src(files)
+    .pipe(eslint(options))
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
 }
-
-
-function releaseTask() {
-  exec('git tag -a v' + package.version);
-}
-
-
-function jshintTask() {
-  return gulp.src(srcDir + '**/*.js')
-    .pipe(jshint('config.jshintrc'))
-    .pipe(jshint.reporter('jshint-stylish'))
-    .pipe(jshint.reporter('fail'));
-}
-
 
 function validHTMLTask() {
   return gulp.src('samples/*.html')

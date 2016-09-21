@@ -127,7 +127,8 @@ Name | Type | Default | Description
 display | Boolean | true | Is the legend displayed
 position | String | 'top' | Position of the legend. Possible values are 'top', 'left', 'bottom' and 'right'.
 fullWidth | Boolean | true | Marks that this box should take the full width of the canvas (pushing down other boxes)
-onClick | Function | `function(event, legendItem) {}` | A callback that is called when a click is registered on top of a label item
+onClick | Function | `function(event, legendItem) {}` | A callback that is called when a 'click' event is registered on top of a label item
+onHover | Function | `function(event, legendItem) {}` | A callback that is called when a 'mousemove' event is registered on top of a label item
 labels |Object|-| See the [Legend Label Configuration](#chart-configuration-legend-label-configuration) section below.
 
 #### Legend Label Configuration
@@ -210,7 +211,7 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 Name | Type | Default | Description
 --- | --- | --- | ---
 enabled | Boolean | true | Are tooltips enabled
-custom | Function | null | See [section](#chart-configuration-custom-tooltips) below
+custom | Function | null | See [section](#advanced-usage-external-tooltips) below
 mode | String | 'single' | Sets which elements appear in the tooltip. Acceptable options are `'single'`, `'label'` or `'x-axis'`. <br>&nbsp;<br>`single` highlights the closest element. <br>&nbsp;<br>`label` highlights elements in all datasets at the same `X` value. <br>&nbsp;<br>`'x-axis'` also highlights elements in all datasets at the same `X` value, but activates when hovering anywhere within the vertical slice of the x-axis representing that `X` value.
 itemSort | Function | undefined | Allows sorting of [tooltip items](#chart-configuration-tooltip-item-interface). Must implement at minimum a function that can be passed to [Array.prototype.sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort).  This function can also accept a third parameter that is the data object passed to the chart.
 backgroundColor | Color | 'rgba(0,0,0,0.8)' | Background color of the tooltip

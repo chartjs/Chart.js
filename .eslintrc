@@ -12,9 +12,8 @@ env:
 # http://eslint.org/docs/rules/
 rules:
   # Possible Errors
-  comma-dangle: [2, never]
   no-cond-assign: 2
-  no-console: 0
+  no-console: [2, {allow: [warn, error]}]
   no-constant-condition: 2
   no-control-regex: 2
   no-debugger: 2
@@ -25,7 +24,7 @@ rules:
   no-empty-character-class: 2
   no-ex-assign: 2
   no-extra-boolean-cast: 2
-  no-extra-parens: 0
+  no-extra-parens: [2, functions]
   no-extra-semi: 2
   no-func-assign: 2
   no-inner-declarations: [2, functions]
@@ -43,38 +42,38 @@ rules:
 
   # Best Practices
   accessor-pairs: 2
+  array-callback-return: 0
   block-scoped-var: 0
   complexity: [2, 6]
   consistent-return: 0
-  curly: 0
-  default-case: 0
+  curly: [2, all]
+  default-case: 2
   dot-location: 0
-  dot-notation: 0
+  dot-notation: 2
   eqeqeq: 2
   guard-for-in: 2
   no-alert: 2
   no-caller: 2
   no-case-declarations: 2
   no-div-regex: 2
-  no-else-return: 0
-  no-empty-label: 2
+  no-else-return: 2
   no-empty-pattern: 2
   no-eq-null: 2
   no-eval: 2
   no-extend-native: 2
   no-extra-bind: 2
   no-fallthrough: 2
-  no-floating-decimal: 0
+  no-floating-decimal: 2
   no-implicit-coercion: 0
   no-implied-eval: 2
   no-invalid-this: 0
   no-iterator: 2
-  no-labels: 0
+  no-labels: 2
   no-lone-blocks: 2
   no-loop-func: 2
   no-magic-number: 0
-  no-multi-spaces: 0
-  no-multi-str: 0
+  no-multi-spaces: 2
+  no-multi-str: 2
   no-native-reassign: 2
   no-new-func: 2
   no-new-wrappers: 2
@@ -86,7 +85,7 @@ rules:
   no-return-assign: 2
   no-script-url: 2
   no-self-compare: 2
-  no-sequences: 0
+  no-sequences: 2
   no-throw-literal: 0
   no-unused-expressions: 2
   no-useless-call: 2
@@ -97,7 +96,7 @@ rules:
   radix: 2
   vars-on-top: 0
   wrap-iife: 2
-  yoda: 0
+  yoda: [1, never]
 
   # Strict
   strict: 0
@@ -108,12 +107,12 @@ rules:
   no-delete-var: 2
   no-label-var: 2
   no-shadow-restricted-names: 2
-  no-shadow: 0
+  no-shadow: 2
   no-undef-init: 2
-  no-undef: 0
+  no-undef: 2
   no-undefined: 0
-  no-unused-vars: 0
-  no-use-before-define: 0
+  no-unused-vars: 2
+  no-use-before-define: 2
 
   # Node.js and CommonJS
   callback-return: 2
@@ -127,39 +126,48 @@ rules:
   no-sync: 0
 
   # Stylistic Issues
-  array-bracket-spacing: 0
+  array-bracket-spacing: [2, never]
   block-spacing: 0
-  brace-style: 0
-  camelcase: 0
-  comma-spacing: 0
-  comma-style: 0
-  computed-property-spacing: 0
-  consistent-this: 0
-  eol-last: 0
-  func-names: 0
+  brace-style: [2, 1tbs]
+  camelcase: 2
+  comma-dangle: [2, only-multiline]
+  comma-spacing: 2
+  comma-style: [2, last]
+  computed-property-spacing: [2, never]
+  consistent-this: [2, me]
+  eol-last: 2
+  func-call-spacing: 0
+  func-names: [2, never]
   func-style: 0
   id-length: 0
   id-match: 0
-  indent: 0
+  indent: [2, tab]
   jsx-quotes: 0
-  key-spacing: 0
+  key-spacing: 2
+  keyword-spacing: 2
   linebreak-style: 0
   lines-around-comment: 0
   max-depth: 0
   max-len: 0
+  max-lines: 0
   max-nested-callbacks: 0
   max-params: 0
+  max-statements-per-line: 0
   max-statements: [2, 30]
+  multiline-ternary: 0
   new-cap: 0
-  new-parens: 0
+  new-parens: 2
   newline-after-var: 0
+  newline-before-return: 0
+  newline-per-chained-call: 0
   no-array-constructor: 0
   no-bitwise: 0
   no-continue: 0
   no-inline-comments: 0
-  no-lonely-if: 0
-  no-mixed-spaces-and-tabs: 0
-  no-multiple-empty-lines: 0
+  no-lonely-if: 2
+  no-mixed-operators: 0
+  no-mixed-spaces-and-tabs: 2
+  no-multiple-empty-lines: [2, {max: 2}]
   no-negated-condition: 0
   no-nested-ternary: 0
   no-new-object: 0
@@ -167,30 +175,33 @@ rules:
   no-restricted-syntax: 0
   no-spaced-func: 0
   no-ternary: 0
-  no-trailing-spaces: 0
+  no-trailing-spaces: 2
   no-underscore-dangle: 0
   no-unneeded-ternary: 0
-  object-curly-spacing: 0
+  no-whitespace-before-property: 2
+  object-curly-newline: 0
+  object-curly-spacing: [2, never]
+  object-property-newline: 0
+  one-var-declaration-per-line: 2
   one-var: 0
   operator-assignment: 0
   operator-linebreak: 0
   padded-blocks: 0
-  quote-props: 0
-  quotes: 0
+  quote-props: [2, as-needed]
+  quotes: [2, single, {avoidEscape: true}]
   require-jsdoc: 0
-  semi-spacing: 0
-  semi: 0
+  semi-spacing: 2
+  semi: [2, always]
+  sort-keys: 0
   sort-vars: 0
-  space-after-keywords: 0
-  space-before-blocks: 0
-  space-before-function-paren: 0
-  space-before-keywords: 0
-  space-in-parens: 0
+  space-before-blocks: [2, always]
+  space-before-function-paren: [2, never]
+  space-in-parens: [2, never]
   space-infix-ops: 0
-  space-return-throw-case: 0
   space-unary-ops: 0
-  spaced-comment: 0
-  wrap-regex: 0
+  spaced-comment: [2, always]
+  unicode-bom: 0
+  wrap-regex: 2
 
   # ECMAScript 6
   arrow-body-style: 0

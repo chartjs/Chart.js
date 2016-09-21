@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
@@ -36,21 +36,21 @@ module.exports = function(Chart) {
 			var yPadding = 0;
 
 			var leftBoxes = helpers.where(chartInstance.boxes, function(box) {
-				return box.options.position === "left";
+				return box.options.position === 'left';
 			});
 			var rightBoxes = helpers.where(chartInstance.boxes, function(box) {
-				return box.options.position === "right";
+				return box.options.position === 'right';
 			});
 			var topBoxes = helpers.where(chartInstance.boxes, function(box) {
-				return box.options.position === "top";
+				return box.options.position === 'top';
 			});
 			var bottomBoxes = helpers.where(chartInstance.boxes, function(box) {
-				return box.options.position === "bottom";
+				return box.options.position === 'bottom';
 			});
 
 			// Boxes that overlay the chartarea such as the radialLinear scale
 			var chartAreaBoxes = helpers.where(chartInstance.boxes, function(box) {
-				return box.options.position === "chartArea";
+				return box.options.position === 'chartArea';
 			});
 
 			// Ensure that full width boxes are at the very top / bottom
@@ -115,8 +115,6 @@ module.exports = function(Chart) {
 			var maxChartAreaHeight = chartHeight;
 			var minBoxSizes = [];
 
-			helpers.each(leftBoxes.concat(rightBoxes, topBoxes, bottomBoxes), getMinimumBoxSize);
-
 			function getMinimumBoxSize(box) {
 				var minSize;
 				var isHorizontal = box.isHorizontal();
@@ -136,6 +134,8 @@ module.exports = function(Chart) {
 				});
 			}
 
+			helpers.each(leftBoxes.concat(rightBoxes, topBoxes, bottomBoxes), getMinimumBoxSize);
+
 			// At this point, maxChartAreaHeight and maxChartAreaWidth are the size the chart area could
 			// be if the axes are drawn at their minimum sizes.
 
@@ -145,24 +145,10 @@ module.exports = function(Chart) {
 			var totalTopBoxesHeight = yPadding;
 			var totalBottomBoxesHeight = yPadding;
 
-			// Update, and calculate the left and right margins for the horizontal boxes
-			helpers.each(leftBoxes.concat(rightBoxes), fitBox);
-
-			helpers.each(leftBoxes, function(box) {
-				totalLeftBoxesWidth += box.width;
-			});
-
-			helpers.each(rightBoxes, function(box) {
-				totalRightBoxesWidth += box.width;
-			});
-
-			// Set the Left and Right margins for the horizontal boxes
-			helpers.each(topBoxes.concat(bottomBoxes), fitBox);
-
 			// Function to fit a box
 			function fitBox(box) {
-				var minBoxSize = helpers.findNextWhere(minBoxSizes, function(minBoxSize) {
-					return minBoxSize.box === box;
+				var minBoxSize = helpers.findNextWhere(minBoxSizes, function(minBox) {
+					return minBox.box === box;
 				});
 
 				if (minBoxSize) {
@@ -183,6 +169,20 @@ module.exports = function(Chart) {
 				}
 			}
 
+			// Update, and calculate the left and right margins for the horizontal boxes
+			helpers.each(leftBoxes.concat(rightBoxes), fitBox);
+
+			helpers.each(leftBoxes, function(box) {
+				totalLeftBoxesWidth += box.width;
+			});
+
+			helpers.each(rightBoxes, function(box) {
+				totalRightBoxesWidth += box.width;
+			});
+
+			// Set the Left and Right margins for the horizontal boxes
+			helpers.each(topBoxes.concat(bottomBoxes), fitBox);
+
 			// Figure out how much margin is on the top and bottom of the vertical boxes
 			helpers.each(topBoxes, function(box) {
 				totalTopBoxesHeight += box.height;
@@ -192,12 +192,9 @@ module.exports = function(Chart) {
 				totalBottomBoxesHeight += box.height;
 			});
 
-			// Let the left layout know the final margin
-			helpers.each(leftBoxes.concat(rightBoxes), finalFitVerticalBox);
-
 			function finalFitVerticalBox(box) {
-				var minBoxSize = helpers.findNextWhere(minBoxSizes, function(minBoxSize) {
-					return minBoxSize.box === box;
+				var minBoxSize = helpers.findNextWhere(minBoxSizes, function(minSize) {
+					return minSize.box === box;
 				});
 
 				var scaleMargin = {
@@ -211,6 +208,9 @@ module.exports = function(Chart) {
 					box.update(minBoxSize.minSize.width, maxChartAreaHeight, scaleMargin);
 				}
 			}
+
+			// Let the left layout know the final margin
+			helpers.each(leftBoxes.concat(rightBoxes), finalFitVerticalBox);
 
 			// Recalculate because the size of each layout might have changed slightly due to the margins (label rotation for instance)
 			totalLeftBoxesWidth = xPadding;
@@ -268,15 +268,6 @@ module.exports = function(Chart) {
 			var left = xPadding;
 			var top = yPadding;
 
-			helpers.each(leftBoxes.concat(topBoxes), placeBox);
-
-			// Account for chart width and height
-			left += maxChartAreaWidth;
-			top += maxChartAreaHeight;
-
-			helpers.each(rightBoxes, placeBox);
-			helpers.each(bottomBoxes, placeBox);
-
 			function placeBox(box) {
 				if (box.isHorizontal()) {
 					box.left = box.options.fullWidth ? xPadding : totalLeftBoxesWidth;
@@ -298,6 +289,15 @@ module.exports = function(Chart) {
 					left = box.right;
 				}
 			}
+
+			helpers.each(leftBoxes.concat(topBoxes), placeBox);
+
+			// Account for chart width and height
+			left += maxChartAreaWidth;
+			top += maxChartAreaHeight;
+
+			helpers.each(rightBoxes, placeBox);
+			helpers.each(bottomBoxes, placeBox);
 
 			// Step 8
 			chartInstance.chartArea = {

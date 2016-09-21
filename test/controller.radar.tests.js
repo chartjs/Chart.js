@@ -1,13 +1,5 @@
 // Test the polar area controller
 describe('Radar controller tests', function() {
-	beforeEach(function() {
-		window.addDefaultMatchers(jasmine);
-	});
-
-	afterEach(function() {
-		window.releaseAllCharts();
-	});
-
 	it('Should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'radar',
@@ -137,7 +129,7 @@ describe('Radar controller tests', function() {
 			tension: 0.1,
 		}));
 
-		[ 
+		[
 			{ x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
 			{ x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
 			{ x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
@@ -163,8 +155,8 @@ describe('Radar controller tests', function() {
 
 		// Now update controller and ensure proper updates
 		meta.controller.update();
-		
-		[ 
+
+		[
 			{ x: 256, y: 133, cppx: 246, cppy: 133, cpnx: 272, cpny: 133 },
 			{ x: 464, y: 272, cppx: 464, cppy: 264, cpnx: 464, cpny: 278 },
 			{ x: 256, y: 272, cppx: 276.9, cppy: 272, cpnx: 250.4, cpny: 272 },
@@ -225,7 +217,7 @@ describe('Radar controller tests', function() {
 		}));
 
 		// Since tension is now 0, we don't care about the control points
-		[ 
+		[
 			{ x: 256, y: 133 },
 			{ x: 464, y: 272 },
 			{ x: 256, y: 272 },
@@ -245,7 +237,7 @@ describe('Radar controller tests', function() {
 			}));
 		});
 
-		
+
 		// Use custom styles for lines & first point
 		meta.dataset.custom = {
 			tension: 0.25,

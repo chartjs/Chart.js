@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
@@ -7,14 +7,14 @@ module.exports = function(Chart) {
 	Chart.defaults.polarArea = {
 
 		scale: {
-			type: "radialLinear",
+			type: 'radialLinear',
 			lineArc: true, // so that lines are circular
 			ticks: {
 				beginAtZero: true
 			}
 		},
 
-		//Boolean - Whether to animate the rotation of the chart
+		// Boolean - Whether to animate the rotation of the chart
 		animation: {
 			animateRotate: true,
 			animateScale: true
@@ -41,7 +41,7 @@ module.exports = function(Chart) {
 			}
 
 			text.push('</ul>');
-			return text.join("");
+			return text.join('');
 		},
 		legend: {
 			labels: {
@@ -70,9 +70,8 @@ module.exports = function(Chart) {
 								index: i
 							};
 						});
-					} else {
-						return [];
 					}
+					return [];
 				}
 			},
 
@@ -155,7 +154,7 @@ module.exports = function(Chart) {
 				}
 			}
 
-			//var negHalfPI = -0.5 * Math.PI;
+			// var negHalfPI = -0.5 * Math.PI;
 			var datasetStartAngle = opts.startAngle;
 			var distance = arc.hidden ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
 			var startAngle = datasetStartAngle + (circumference * visibleCount);
@@ -209,9 +208,8 @@ module.exports = function(Chart) {
 			var count = this.getMeta().count;
 			if (count > 0 && !isNaN(value)) {
 				return (2 * Math.PI) / count;
-			} else {
-				return 0;
 			}
+			return 0;
 		}
 	});
 };
