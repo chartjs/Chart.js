@@ -629,79 +629,80 @@ module.exports = function(Chart) {
 				me.tooltipActive = me.getElementsAtEventForMode(e, tooltipsOptions.mode);
 			}
 
-		// to avoid disappering of toolTip while moving
-		if (me.active.length) {
+			// to avoid disappering of toolTip while moving
+			if (me.active.length) {
 
 				// to remove the tooltip after leaving the chart
-				$("#" + me.chart.canvas.id).on("mouseleave", function () {
-					if (xxx == undefined) {
-						var xxx = setTimeout(function () {
-								if (me.active != undefined || me.lastActive != undefined) {
-									me.active = me.lastActive = undefined;
-									tooltip._active = me.tooltipActive = [];
-									tooltip.update(true);
-									me.render(700, true);
-									return;
-								}
-							}, 1000)
-					}
-				});
+				//$("#" + me.chart.canvas.id).on("mouseleave", function () {
+				//	if (xxx == undefined) {
+				//		var xxx = setTimeout(function () {
+				//				if (me.active != undefined || me.lastActive != undefined) {
+				//					me.active = me.lastActive = undefined;
+				//					tooltip._active = me.tooltipActive = [];
+				//					tooltip.update(true);
+				//					me.render(700, true);
+				//					return;
+				//				}
+				//			}, 1000)
+				//	}
+				//});
 				
 			// On Hover hook
-			if (hoverOptions.onHover) {
-				hoverOptions.onHover.call(me, me.active);
-			}
-
-			if (me.legend && me.legend.handleEvent) {
-				me.legend.handleEvent(e);
-			}
-
-			if (e.type === 'mouseup' || e.type === 'click') {
-				if (options.onClick) {
-					options.onClick.call(me, e, me.active);
+				if (hoverOptions.onHover) {
+					hoverOptions.onHover.call(me, me.active);
 				}
-			}
-
-			// Remove styling for last active (even if it may still be active)
-			if (me.lastActive.length) {
-				me.updateHoverStyle(me.lastActive, hoverOptions.mode, false);
-			}
-
-			// Built in hover styling
-			if (me.active.length && hoverOptions.mode) {
-				me.updateHoverStyle(me.active, hoverOptions.mode, true);
-			}
-
-			// Built in Tooltips
-			if (tooltipsOptions.enabled || tooltipsOptions.custom) {
-				tooltip.initialize();
-				tooltip._active = me.tooltipActive;
-				tooltip.update(true);
-			}
-
-			// Hover animations
-			tooltip.pivot();
-
-			if (!me.animating) {
-				// If entering, leaving, or changing elements, animate the change via pivot
-				if (!helpers.arrayEquals(me.active, me.lastActive) ||
-					!helpers.arrayEquals(me.tooltipActive, me.lastTooltipActive)) {
-
-					me.stop();
-
-					if (tooltipsOptions.enabled || tooltipsOptions.custom) {
-						tooltip.update(true);
+	
+				if (me.legend && me.legend.handleEvent) {
+					me.legend.handleEvent(e);
+				}
+	
+				if (e.type === 'mouseup' || e.type === 'click') {
+					if (options.onClick) {
+						options.onClick.call(me, e, me.active);
 					}
-
-					// We only need to render at this point. Updating will cause scales to be
-					// recomputed generating flicker & using more memory than necessary.
-					me.render(hoverOptions.animationDuration, true);
+				}
+	
+				// Remove styling for last active (even if it may still be active)
+				if (me.lastActive.length) {
+					me.updateHoverStyle(me.lastActive, hoverOptions.mode, false);
+				}
+	
+				// Built in hover styling
+				if (me.active.length && hoverOptions.mode) {
+					me.updateHoverStyle(me.active, hoverOptions.mode, true);
+				}
+	
+				// Built in Tooltips
+				if (tooltipsOptions.enabled || tooltipsOptions.custom) {
+					tooltip.initialize();
+					tooltip._active = me.tooltipActive;
+					tooltip.update(true);
+				}
+	
+				// Hover animations
+				tooltip.pivot();
+	
+				if (!me.animating) {
+					// If entering, leaving, or changing elements, animate the change via pivot
+					if (!helpers.arrayEquals(me.active, me.lastActive) ||
+						!helpers.arrayEquals(me.tooltipActive, me.lastTooltipActive)) {
+	
+						me.stop();
+	
+						if (tooltipsOptions.enabled || tooltipsOptions.custom) {
+							tooltip.update(true);
+						}
+	
+						// We only need to render at this point. Updating will cause scales to be
+						// recomputed generating flicker & using more memory than necessary.
+						me.render(hoverOptions.animationDuration, true);
+					}
 				}
 			}
-		else {
+			else {
 				me.active = me.lastActive;
 				me.tooltipActive = me.lastTooltipActive;
-		}
+			}
 			
 			// Remember Last Actives
 			me.lastActive = me.active;
