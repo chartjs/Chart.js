@@ -633,21 +633,21 @@ module.exports = function(Chart) {
 			if (me.active.length) {
 
 				// to remove the tooltip after leaving the chart
-				//$("#" + me.chart.canvas.id).on("mouseleave", function () {
-				//	if (xxx == undefined) {
-				//		var xxx = setTimeout(function () {
-				//				if (me.active != undefined || me.lastActive != undefined) {
-				//					me.active = me.lastActive = undefined;
-				//					tooltip._active = me.tooltipActive = [];
-				//					tooltip.update(true);
-				//					me.render(700, true);
-				//					return;
-				//				}
-				//			}, 1000)
-				//	}
-				//});
+				//	$("#" + me.chart.canvas.id).on("mouseleave", function () {
+				//		if (xxx == undefined) {
+				//			var xxx = setTimeout(function () {
+				//					if (me.active != undefined || me.lastActive != undefined) {
+				//						me.active = me.lastActive = undefined;
+				//						tooltip._active = me.tooltipActive = [];
+				//						tooltip.update(true);
+				//						me.render(700, true);
+				//						return;
+				//					}
+				//				}, 1000)
+				//		}
+				//	});
 				
-			// On Hover hook
+				// On Hover hook
 				if (hoverOptions.onHover) {
 					hoverOptions.onHover.call(me, me.active);
 				}
