@@ -90,7 +90,13 @@ module.exports = function() {
 				var text = [];
 				text.push('<ul class="' + chart.id + '-legend">');
 				for (var i = 0; i < chart.data.datasets.length; i++) {
-					text.push('<li style="font-family:' + chart.options.legend.fontFamily + ';"><span style="background-color:' + chart.data.datasets[i].backgroundColor + '; border: 3px solid ' + chart.data.datasets[i].borderColor + '; width: 42px; height: 14px;"></span>');
+					if (chart.options.legend.fontFamily) {
+                		text.push('<li style="font-family:' + chart.options.legend.fontFamily + ';">');
+            		}
+            		else {
+                		text.push('<li style="font-family:' + Chart.defaults.global.legend.labels.fontFamily + ';">');
+            		}        
+            		text.push('<span style="background-color:' + chart.data.datasets[i].backgroundColor + '; border: 3px solid ' + chart.data.datasets[i].borderColor + '; width: 42px; height: 14px;"></span>');
             		if (chart.data.datasets[i].label) {
 						text.push(chart.data.datasets[i].label);
 					}
