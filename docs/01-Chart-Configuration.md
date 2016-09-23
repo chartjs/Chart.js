@@ -130,6 +130,7 @@ fullWidth | Boolean | true | Marks that this box should take the full width of t
 onClick | Function | `function(event, legendItem) {}` | A callback that is called when a 'click' event is registered on top of a label item
 onHover | Function | `function(event, legendItem) {}` | A callback that is called when a 'mousemove' event is registered on top of a label item
 labels |Object|-| See the [Legend Label Configuration](#chart-configuration-legend-label-configuration) section below.
+reverse | Boolean | false | Legend will show datasets in reverse order
 
 #### Legend Label Configuration
 
@@ -145,7 +146,6 @@ fontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Fon
 padding | Number | 10 | Padding between rows of colored boxes
 generateLabels: | Function | `function(chart) {  }` | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See [Legend Item](#chart-configuration-legend-item-interface) for details.
 usePointStyle | Boolean | false | Label style will match corresponding point style (size is based on fontSize, boxWidth is not used in this case).
-reverse | Boolean | false | Legend will show datasets in reverse order
 
 #### Legend Item Interface
 
