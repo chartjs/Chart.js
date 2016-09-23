@@ -52,11 +52,13 @@ module.exports = function() {
 		me.controller = new Chart.Controller(me);
 
 		// Always bind this so that if the responsive state changes we still work
-		helpers.addResizeListener(context.canvas.parentNode, function() {
-			if (me.controller && me.controller.config.options.responsive) {
-				me.controller.resize();
-			}
-		});
+		if (me.controller && me.controller.config.options.responsive) {
+			helpers.addResizeListener(context.canvas.parentNode, function() {
+				if (me.controller && me.controller.config.options.responsive) {
+					me.controller.resize();
+				}
+			});
+		}
 
 		return me.controller ? me.controller : me;
 
