@@ -158,10 +158,55 @@
 		};
 	}
 
+	function toBeChartOfSize() {
+		return {
+			compare: function(actual, expected) {
+				var message = null;
+				var chart, canvas, style, dh, dw, rh, rw;
+
+				if (!actual || !(actual instanceof Chart.Controller)) {
+					message = 'Expected ' + actual + ' to be an instance of Chart.Controller.';
+				} else {
+					chart = actual.chart;
+					canvas = chart.ctx.canvas;
+					style = getComputedStyle(canvas);
+					dh = parseInt(style.height);
+					dw = parseInt(style.width);
+					rh = canvas.height;
+					rw = canvas.width;
+
+					// sanity checks
+					if (chart.height !== rh) {
+						message = 'Expected chart height ' + chart.height + ' to be equal to render height ' + rh;
+					} else if (chart.width !== rw) {
+						message = 'Expected chart width ' + chart.width + ' to be equal to render width ' + rw;
+					}
+
+					// validity checks
+					if (dh !== expected.dh) {
+						message = 'Expected display height ' + dh + ' to be equal to ' + expected.dh;
+					} else if (dw !== expected.dw) {
+						message = 'Expected display width ' + dw + ' to be equal to ' + expected.dw;
+					} else if (rh !== expected.rh) {
+						message = 'Expected render height ' + rh + ' to be equal to ' + expected.rh;
+					} else if (rw !== expected.rw) {
+						message = 'Expected render width ' + rw + ' to be equal to ' + expected.rw;
+					}
+				}
+
+				return {
+					message: message? message : 'Expected ' + actual + ' to be a chart of size ' + expected,
+					pass: !message
+				}
+			}
+		}
+	}
+
 	beforeEach(function() {
 		jasmine.addMatchers({
 			toBeCloseToPixel: toBeCloseToPixel,
-			toEqualOneOf: toEqualOneOf
+			toEqualOneOf: toEqualOneOf,
+			toBeChartOfSize: toBeChartOfSize
 		});
 	});
 
@@ -214,6 +259,7 @@
 	}
 
 	function releaseChart(chart) {
+		chart.destroy();
 		chart.chart.canvas.parentNode.remove();
 		delete charts[chart.id];
 		delete chart;
