@@ -84,6 +84,7 @@ events | Array[String] | `["mousemove", "mouseout", "click", "touchstart", "touc
 onClick | Function | null | Called if the event is of type 'mouseup' or 'click'. Called in the context of the chart and passed an array of active elements
 legendCallback | Function | ` function (chart) { }` | Function to generate a legend. Receives the chart object to generate a legend from. Default implementation returns an HTML string.
 onResize | Function | null | Called when a resize occurs. Gets passed two arguemnts: the chart instance and the new size.
+insertIframe | Boolean | true | Inserts iframe before the canvas to handle parent container resize events. Disabling this options will disable resizing chart automatically, useful for shadow DOM (react, elm, etc.)
 
 ### Title Configuration
 
