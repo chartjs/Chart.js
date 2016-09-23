@@ -50,13 +50,14 @@ module.exports = function() {
 		// High pixel density displays - multiply the size of the canvas height/width by the device pixel ratio, then scale.
 		helpers.retinaScale(me);
 		me.controller = new Chart.Controller(me);
-
-		// Always bind this so that if the responsive state changes we still work
-		helpers.addResizeListener(context.canvas.parentNode, function() {
-			if (me.controller && me.controller.config.options.responsive) {
-				me.controller.resize();
-			}
-		});
+        if(me.config && me.config.options && me.config.options.addResizeListener === true) {
+            // Bind this if option addResizeListener is true (default true) so that if the responsive state changes we still work
+            helpers.addResizeListener(context.canvas.parentNode, function() {
+                if (me.controller && me.controller.config.options.responsive) {
+                    me.controller.resize();
+                }
+            });
+        }
 
 		return me.controller ? me.controller : me;
 
@@ -66,6 +67,7 @@ module.exports = function() {
 	Chart.defaults = {
 		global: {
 			responsive: true,
+			addResizeListener: true,
 			responsiveAnimationDuration: 0,
 			maintainAspectRatio: true,
 			events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'],
