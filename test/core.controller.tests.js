@@ -149,6 +149,18 @@ describe('Chart.Controller', function() {
 				rw: 165, rh: 85,
 			});
 		});
+
+		it('should NOT inject the resizer element', function() {
+			var chart = acquireChart({
+				options: {
+					responsive: false
+				}
+			});
+
+			var wrapper = chart.chart.canvas.parentNode;
+			expect(wrapper.childNodes.length).toBe(1);
+			expect(wrapper.firstChild.tagName).toBe('CANVAS');
+		});
 	});
 
 	describe('config.options.responsive: true (maintainAspectRatio: false)', function() {
@@ -449,7 +461,6 @@ describe('Chart.Controller', function() {
 	describe('controller.destroy', function() {
 		it('should restore canvas (and context) initial values', function(done) {
 			var chart = acquireChart({
-				type: 'line',
 				options: {
 					responsive: true,
 					maintainAspectRatio: false
@@ -483,6 +494,25 @@ describe('Chart.Controller', function() {
 
 				done();
 			});
+		});
+
+		it('should remove the resizer element when responsive: true', function() {
+			var chart = acquireChart({
+				options: {
+					responsive: true
+				}
+			});
+
+			var wrapper = chart.chart.canvas.parentNode;
+			var resizer = wrapper.firstChild;
+
+			expect(wrapper.childNodes.length).toBe(2);
+			expect(resizer.tagName).toBe('IFRAME');
+
+			chart.destroy();
+
+			expect(wrapper.childNodes.length).toBe(1);
+			expect(wrapper.firstChild.tagName).toBe('CANVAS');
 		});
 	});
 });

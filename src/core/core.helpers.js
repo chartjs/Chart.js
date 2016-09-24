@@ -980,15 +980,24 @@ module.exports = function(Chart) {
 		// Insert the iframe so that contentWindow is available
 		node.insertBefore(iframe, node.firstChild);
 
+		// Let's keep track of this added iframe and thus avoid DOM query when removing it.
+		node._chartjs = {
+			resizer: iframe
+		};
+
 		this.addEvent(iframe.contentWindow || iframe, 'resize', callback);
 	};
 	helpers.removeResizeListener = function(node) {
-		var hiddenIframe = node.querySelector('.chartjs-hidden-iframe');
-
-		// Remove the resize detect iframe
-		if (hiddenIframe) {
-			hiddenIframe.parentNode.removeChild(hiddenIframe);
+		if (!node || !node._chartjs) {
+			return;
 		}
+
+		var iframe = node._chartjs.resizer;
+		if (iframe) {
+			iframe.parentNode.removeChild(iframe);
+		}
+
+		delete node._chartjs;
 	};
 	helpers.isArray = Array.isArray?
 		function(obj) {

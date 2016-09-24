@@ -151,8 +151,11 @@ module.exports = function(Chart) {
 
 		me.id = helpers.uid();
 		me.chart = instance;
-		me.config = instance.config;
-		me.options = me.config.options;
+		me.config = config;
+		me.options = config.options;
+
+		// Add the chart instance to the global namespace
+		Chart.instances[me.id] = me;
 
 		Object.defineProperty(me, 'data', {
 			get: function() {
@@ -160,18 +163,16 @@ module.exports = function(Chart) {
 			}
 		});
 
-		// Always bind this so that if the responsive state changes we still work
-		helpers.addResizeListener(canvas.parentNode, function() {
-			if (me.config.options.responsive) {
-				me.resize();
-			}
-		});
-
-		// Add the chart instance to the global namespace
-		Chart.instances[me.id] = me;
-
+		// Responsiveness is currently based on the use of an iframe, however this method causes
+		// performance issues and could be troublesome when used with ad blockers. So make sure
+		// that the user is still able to create a chart without iframe when responsive is false.
+		// See https://github.com/chartjs/Chart.js/issues/2210
 		if (me.options.responsive) {
-			// Silent resize before chart draws
+			helpers.addResizeListener(canvas.parentNode, function() {
+				me.resize();
+			});
+
+			// Initial resize before chart draws (must be silent to preserve initial animations).
 			me.resize(true);
 		}
 
@@ -684,11 +685,11 @@ module.exports = function(Chart) {
 			me.stop();
 			me.clear();
 
-			helpers.unbindEvents(me, me.events);
-
 			if (canvas) {
+				helpers.unbindEvents(me, me.events);
 				helpers.removeResizeListener(canvas.parentNode);
 				releaseCanvas(canvas);
+				me.chart.canvas = null;
 			}
 
 			// if we scaled the canvas in response to a devicePixelRatio !== 1, we need to undo that transform here
