@@ -118,7 +118,7 @@ describe('Title block tests', function() {
 			args: [0]
 		}, {
 			name: 'fillText',
-			args: ['My title', 0, 0]
+			args: ['My title', 0, 0, 400]
 		}, {
 			name: 'restore',
 			args: []
@@ -168,7 +168,7 @@ describe('Title block tests', function() {
 			args: [-0.5 * Math.PI]
 		}, {
 			name: 'fillText',
-			args: ['My title', 0, 0]
+			args: ['My title', 0, 0, 400]
 		}, {
 			name: 'restore',
 			args: []
@@ -201,7 +201,7 @@ describe('Title block tests', function() {
 			args: [0.5 * Math.PI]
 		}, {
 			name: 'fillText',
-			args: ['My title', 0, 0]
+			args: ['My title', 0, 0, 400]
 		}, {
 			name: 'restore',
 			args: []
