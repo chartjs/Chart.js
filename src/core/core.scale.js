@@ -46,9 +46,7 @@ module.exports = function(Chart) {
 			autoSkipPadding: 0,
 			labelOffset: 0,
 			// We pass through arrays to be rendered as multiline labels, we convert Others to strings here.
-			callback: function(value) {
-				return helpers.isArray(value) ? value : '' + value;
-			}
+			callback: Chart.Ticks.formatters.values
 		}
 	};
 
@@ -398,8 +396,8 @@ module.exports = function(Chart) {
 			if (rawValue === null || typeof(rawValue) === 'undefined') {
 				return NaN;
 			}
-			// isNaN(object) returns true, so make sure NaN is checking for a number
-			if (typeof(rawValue) === 'number' && isNaN(rawValue)) {
+			// isNaN(object) returns true, so make sure NaN is checking for a number; Discard Infinite values
+			if (typeof(rawValue) === 'number' && !isFinite(rawValue)) {
 				return NaN;
 			}
 			// If it is in fact an object, dive in one more level

@@ -5,6 +5,7 @@ module.exports = function(Chart) {
 	var helpers = Chart.helpers;
 
 	Chart.defaults.radar = {
+		aspectRatio: 1,
 		scale: {
 			type: 'radialLinear'
 		},

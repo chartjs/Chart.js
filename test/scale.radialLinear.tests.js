@@ -132,9 +132,9 @@ describe('Test the radial linear scale', function() {
 			type: 'radar',
 			data: {
 				datasets: [{
-					data: [50, 60, NaN, 70, null, undefined]
+					data: [50, 60, NaN, 70, null, undefined, Infinity, -Infinity]
 				}],
-				labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
+				labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6', 'label7', 'label8']
 			},
 			options: {
 				scales: {}

@@ -3,6 +3,7 @@
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
+
 	// Create a dictionary of chart types, to allow for extension of existing types
 	Chart.types = {};
 
@@ -14,39 +15,175 @@ module.exports = function(Chart) {
 	Chart.controllers = {};
 
 	/**
+	 * The "used" size is the final value of a dimension property after all calculations have
+	 * been performed. This method uses the computed style of `element` but returns undefined
+	 * if the computed style is not expressed in pixels. That can happen in some cases where
+	 * `element` has a size relative to its parent and this last one is not yet displayed,
+	 * for example because of `display: none` on a parent node.
+	 * TODO(SB) Move this method in the upcoming core.platform class.
+	 * @see https://developer.mozilla.org/en-US/docs/Web/CSS/used_value
+	 * @returns {Number} Size in pixels or undefined if unknown.
+	 */
+	function readUsedSize(element, property) {
+		var value = helpers.getStyle(element, property);
+		var matches = value && value.match(/(\d+)px/);
+		return matches? Number(matches[1]) : undefined;
+	}
+
+	/**
+	 * Initializes the canvas style and render size without modifying the canvas display size,
+	 * since responsiveness is handled by the controller.resize() method. The config is used
+	 * to determine the aspect ratio to apply in case no explicit height has been specified.
+	 * TODO(SB) Move this method in the upcoming core.platform class.
+	 */
+	function initCanvas(canvas, config) {
+		var style = canvas.style;
+
+		// NOTE(SB) canvas.getAttribute('width') !== canvas.width: in the first case it
+		// returns null or '' if no explicit value has been set to the canvas attribute.
+		var renderHeight = canvas.getAttribute('height');
+		var renderWidth = canvas.getAttribute('width');
+
+		// Chart.js modifies some canvas values that we want to restore on destroy
+		canvas._chartjs = {
+			initial: {
+				height: renderHeight,
+				width: renderWidth,
+				style: {
+					display: style.display,
+					height: style.height,
+					width: style.width
+				}
+			}
+		};
+
+		// Force canvas to display as block to avoid extra space caused by inline
+		// elements, which would interfere with the responsive resize process.
+		// https://github.com/chartjs/Chart.js/issues/2538
+		style.display = style.display || 'block';
+
+		if (renderWidth === null || renderWidth === '') {
+			var displayWidth = readUsedSize(canvas, 'width');
+			if (displayWidth !== undefined) {
+				canvas.width = displayWidth;
+			}
+		}
+
+		if (renderHeight === null || renderHeight === '') {
+			if (canvas.style.height === '') {
+				// If no explicit render height and style height, let's apply the aspect ratio,
+				// which one can be specified by the user but also by charts as default option
+				// (i.e. options.aspectRatio). If not specified, use canvas aspect ratio of 2.
+				canvas.height = canvas.width / (config.options.aspectRatio || 2);
+			} else {
+				var displayHeight = readUsedSize(canvas, 'height');
+				if (displayWidth !== undefined) {
+					canvas.height = displayHeight;
+				}
+			}
+		}
+
+		return canvas;
+	}
+
+	/**
+	 * Restores the canvas initial state, such as render/display sizes and style.
+	 * TODO(SB) Move this method in the upcoming core.platform class.
+	 */
+	function releaseCanvas(canvas) {
+		if (!canvas._chartjs) {
+			return;
+		}
+
+		var initial = canvas._chartjs.initial;
+		['height', 'width'].forEach(function(prop) {
+			var value = initial[prop];
+			if (value === undefined || value === null) {
+				canvas.removeAttribute(prop);
+			} else {
+				canvas.setAttribute(prop, value);
+			}
+		});
+
+		helpers.each(initial.style || {}, function(value, key) {
+			canvas.style[key] = value;
+		});
+
+		delete canvas._chartjs;
+	}
+
+	/**
+	 * Initializes the given config with global and chart default values.
+	 */
+	function initConfig(config) {
+		config = config || {};
+		return helpers.configMerge({
+			options: helpers.configMerge(
+				Chart.defaults.global,
+				Chart.defaults[config.type],
+				config.options || {}),
+			data: {
+				datasets: [],
+				labels: []
+			}
+		}, config);
+	}
+
+	/**
 	 * @class Chart.Controller
 	 * The main controller of a chart.
 	 */
-	Chart.Controller = function(instance) {
+	Chart.Controller = function(context, config, instance) {
+		var me = this;
+		var canvas;
 
-		this.chart = instance;
-		this.config = instance.config;
-		this.options = this.config.options = helpers.configMerge(Chart.defaults.global, Chart.defaults[this.config.type], this.config.options || {});
-		this.id = helpers.uid();
+		config = initConfig(config);
+		canvas = initCanvas(context.canvas, config);
 
-		Object.defineProperty(this, 'data', {
+		instance.ctx = context;
+		instance.canvas = canvas;
+		instance.config = config;
+		instance.width = canvas.width;
+		instance.height = canvas.height;
+		instance.aspectRatio = canvas.width / canvas.height;
+
+		helpers.retinaScale(instance);
+
+		me.id = helpers.uid();
+		me.chart = instance;
+		me.config = instance.config;
+		me.options = me.config.options;
+
+		Object.defineProperty(me, 'data', {
 			get: function() {
-				return this.config.data;
+				return me.config.data;
+			}
+		});
+
+		// Always bind this so that if the responsive state changes we still work
+		helpers.addResizeListener(canvas.parentNode, function() {
+			if (me.config.options.responsive) {
+				me.resize();
 			}
 		});
 
 		// Add the chart instance to the global namespace
-		Chart.instances[this.id] = this;
+		Chart.instances[me.id] = me;
 
-		if (this.options.responsive) {
+		if (me.options.responsive) {
 			// Silent resize before chart draws
-			this.resize(true);
+			me.resize(true);
 		}
 
-		this.initialize();
+		me.initialize();
 
-		return this;
+		return me;
 	};
 
 	helpers.extend(Chart.Controller.prototype, /** @lends Chart.Controller */ {
-
 		initialize: function() {
 			var me = this;
+
 			// Before init plugin notification
 			Chart.plugins.notify('beforeInit', [me]);
 
@@ -82,21 +219,26 @@ module.exports = function(Chart) {
 		resize: function(silent) {
 			var me = this;
 			var chart = me.chart;
+			var options = me.options;
 			var canvas = chart.canvas;
-			var newWidth = helpers.getMaximumWidth(canvas);
-			var aspectRatio = chart.aspectRatio;
-			var newHeight = (me.options.maintainAspectRatio && isNaN(aspectRatio) === false && isFinite(aspectRatio) && aspectRatio !== 0) ? newWidth / aspectRatio : helpers.getMaximumHeight(canvas);
+			var aspectRatio = (options.maintainAspectRatio && chart.aspectRatio) || null;
 
-			var sizeChanged = chart.width !== newWidth || chart.height !== newHeight;
+			// the canvas render width and height will be casted to integers so make sure that
+			// the canvas display style uses the same integer values to avoid blurring effect.
+			var newWidth = Math.floor(helpers.getMaximumWidth(canvas));
+			var newHeight = Math.floor(aspectRatio? newWidth / aspectRatio : helpers.getMaximumHeight(canvas));
 
-			if (!sizeChanged) {
-				return me;
+			if (chart.width === newWidth && chart.height === newHeight) {
+				return;
 			}
 
 			canvas.width = chart.width = newWidth;
 			canvas.height = chart.height = newHeight;
 
 			helpers.retinaScale(chart);
+
+			canvas.style.width = newWidth + 'px';
+			canvas.style.height = newHeight + 'px';
 
 			// Notify any plugins about the resize
 			var newSize = {width: newWidth, height: newHeight};
@@ -111,8 +253,6 @@ module.exports = function(Chart) {
 				me.stop();
 				me.update(me.options.responsiveAnimationDuration);
 			}
-
-			return me;
 		},
 
 		ensureScalesHaveIDs: function() {
@@ -539,24 +679,22 @@ module.exports = function(Chart) {
 
 		destroy: function() {
 			var me = this;
+			var canvas = me.chart.canvas;
+
 			me.stop();
 			me.clear();
-			helpers.unbindEvents(me, me.events);
-			helpers.removeResizeListener(me.chart.canvas.parentNode);
 
-			// Reset canvas height/width attributes
-			var canvas = me.chart.canvas;
-			canvas.width = me.chart.width;
-			canvas.height = me.chart.height;
+			helpers.unbindEvents(me, me.events);
+
+			if (canvas) {
+				helpers.removeResizeListener(canvas.parentNode);
+				releaseCanvas(canvas);
+			}
 
 			// if we scaled the canvas in response to a devicePixelRatio !== 1, we need to undo that transform here
 			if (me.chart.originalDevicePixelRatio !== undefined) {
 				me.chart.ctx.scale(1 / me.chart.originalDevicePixelRatio, 1 / me.chart.originalDevicePixelRatio);
 			}
-
-			// Reset to the old style since it may have been changed by the device pixel ratio changes
-			canvas.style.width = me.chart.originalCanvasStyleWidth;
-			canvas.style.height = me.chart.originalCanvasStyleHeight;
 
 			Chart.plugins.notify('destroy', [me]);
 

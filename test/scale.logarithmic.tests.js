@@ -224,7 +224,7 @@ describe('Logarithmic Scale tests', function() {
 					data: [undefined, 10, null, 5, 5000, NaN, 78, 450]
 				}, {
 					yAxisID: 'yScale0',
-					data: [undefined, 28, null, 1000, 500, NaN, 50, 42]
+					data: [undefined, 28, null, 1000, 500, NaN, 50, 42, Infinity, -Infinity]
 				}, {
 					yAxisID: 'yScale1',
 					data: [undefined, 30, null, 9400, 0, NaN, 54, 836]
@@ -232,7 +232,7 @@ describe('Logarithmic Scale tests', function() {
 					yAxisID: 'yScale1',
 					data: [undefined, 0, null, 800, 9, NaN, 894, 21]
 				}],
-				labels: ['a', 'b', 'c', 'd', 'e', 'f' ,'g']
+				labels: ['a', 'b', 'c', 'd', 'e', 'f' ,'g', 'h', 'i']
 			},
 			options: {
 				scales: {
