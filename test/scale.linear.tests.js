@@ -156,9 +156,9 @@ describe('Linear Scale', function() {
 			data: {
 				datasets: [{
 					yAxisID: 'yScale0',
-					data: [null, 90, NaN, undefined, 45, 30]
+					data: [null, 90, NaN, undefined, 45, 30, Infinity, -Infinity]
 				}],
-				labels: ['a', 'b', 'c', 'd', 'e', 'f']
+				labels: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 			},
 			options: {
 				scales: {
