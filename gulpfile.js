@@ -17,6 +17,7 @@ var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var merge = require('merge-stream');
 var collapse = require('bundle-collapser/plugin');
+var argv  = require('yargs').argv
 var package = require('./package.json');
 
 var srcDir = './src/';
@@ -33,11 +34,10 @@ var header = "/*!\n" +
   " */\n";
 
 var preTestFiles = [
-  './node_modules/moment/min/moment.min.js',
+  './node_modules/moment/min/moment.min.js'
 ];
 
 var testFiles = [
-  './test/mockContext.js',
   './test/*.js',
 
   // Disable tests which need to be rewritten based on changes introduced by
@@ -157,10 +157,13 @@ function validHTMLTask() {
 }
 
 function startTest() {
-  var files = ['./src/**/*.js'];
-  Array.prototype.unshift.apply(files, preTestFiles);
-  Array.prototype.push.apply(files, testFiles);
-  return files;
+  return [].concat(preTestFiles).concat([
+      './src/**/*.js',
+      './test/mockContext.js'
+    ]).concat(
+      argv.inputs?
+        argv.inputs.split(';'):
+        testFiles);
 }
 
 function unittestTask() {

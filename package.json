@@ -38,7 +38,8 @@
     "karma-jasmine": "^0.3.6",
     "karma-jasmine-html-reporter": "^0.1.8",
     "merge-stream": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "yargs": "^5.0.0"
   },
   "spm": {
     "main": "Chart.js"

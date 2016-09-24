@@ -859,9 +859,6 @@ module.exports = function(Chart) {
 			// when destroy is called
 			chart.originalDevicePixelRatio = chart.originalDevicePixelRatio || pixelRatio;
 		}
-
-		canvas.style.width = width + 'px';
-		canvas.style.height = height + 'px';
 	};
 	// -- Canvas methods
 	helpers.clear = function(chart) {
