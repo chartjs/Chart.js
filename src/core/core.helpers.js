@@ -986,8 +986,10 @@ module.exports = function(Chart) {
 		this.addEvent(iframe.contentWindow || iframe, 'resize', callback);
 	};
 	helpers.removeResizeListener = function(node) {
-		var hiddenIframe = node.querySelector('.chartjs-hidden-iframe');
-
+		var hiddenIframe = null;
+		if (node) {
+			hiddenIframe = node.querySelector('.chartjs-hidden-iframe');
+		}
 		// Remove the resize detect iframe
 		if (hiddenIframe) {
 			hiddenIframe.parentNode.removeChild(hiddenIframe);
