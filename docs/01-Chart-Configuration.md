@@ -83,7 +83,7 @@ maintainAspectRatio | Boolean | true | Maintain the original canvas aspect ratio
 events | Array[String] | `["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"]` | Events that the chart should listen to for tooltips and hovering
 onClick | Function | null | Called if the event is of type 'mouseup' or 'click'. Called in the context of the chart and passed an array of active elements
 legendCallback | Function | ` function (chart) { }` | Function to generate a legend. Receives the chart object to generate a legend from. Default implementation returns an HTML string.
-onResize | Function | null | Called when a resize occurs. Gets passed two arguemnts: the chart instance and the new size.
+onResize | Function | null | Called when a resize occurs. Gets passed two arguments: the chart instance and the new size.
 
 ### Title Configuration
 
@@ -345,7 +345,7 @@ The animation object passed to the callbacks is of type `Chart.Animation`. The o
 
 The global options for elements are defined in `Chart.defaults.global.elements`.
 
-Options can be configured for four different types of elements; arc, lines, points, and rectangles. When set, these options apply to all objects of that type unless specifically overridden by the configuration attached to a dataset.
+Options can be configured for four different types of elements: arc, lines, points, and rectangles. When set, these options apply to all objects of that type unless specifically overridden by the configuration attached to a dataset.
 
 #### Arc Configuration
 
@@ -451,7 +451,7 @@ var chartData = {
 
 ### Mixed Chart Types
 
-When creating a chart, you have the option to overlay different chart types on top of eachother as separate datasets.
+When creating a chart, you have the option to overlay different chart types on top of each other as separate datasets.
 
 To do this, you must set a `type` for each dataset individually. You can create mixed chart types with bar and line chart types.
 
