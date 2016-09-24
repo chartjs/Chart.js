@@ -253,23 +253,23 @@
 		window.document.body.appendChild(wrapper);
 
 		chart = new Chart(canvas.getContext("2d"), config);
-		chart.__test_persistent = options.persistent;
+		chart._test_persistent = options.persistent;
+		chart._test_wrapper = wrapper;
 		charts[chart.id] = chart;
 		return chart;
 	}
 
 	function releaseChart(chart) {
 		chart.destroy();
-		chart.chart.canvas.parentNode.remove();
+		chart._test_wrapper.remove();
 		delete charts[chart.id];
-		delete chart;
 	}
 
 	afterEach(function() {
 		// Auto releasing acquired charts
 		for (var id in charts) {
 			var chart = charts[id];
-			if (!chart.__test_persistent) {
+			if (!chart._test_persistent) {
 				releaseChart(chart);
 			}
 		}
