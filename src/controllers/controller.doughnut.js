@@ -102,7 +102,19 @@ module.exports = function(Chart) {
 					return '';
 				},
 				label: function(tooltipItem, data) {
-					return data.labels[tooltipItem.index] + ': ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+					var dataLabel = data.labels[tooltipItem.index];
+					var value = ': ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+
+					if (helpers.isArray(dataLabel)) {
+						// show value on first line of multiline label
+						// need to clone because we are changing the value
+						dataLabel = dataLabel.slice();
+						dataLabel[0] += value;
+					} else {
+						dataLabel += value;
+					}
+
+					return dataLabel;
 				}
 			}
 		}
