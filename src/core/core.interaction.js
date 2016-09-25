@@ -110,6 +110,32 @@ module.exports = function(Chart) {
 			},
 
 			// Modes introduced in v2.4
+
+			/**
+			 * Intersection mode returns all elements that hit test based on the position
+			 * of the event
+			 * @function Chart.Interaction.modes.intersect
+			 * @param chartInstance {ChartInstance} the chart we are returning items from
+			 * @param e {Event} the event we are find things at
+			 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
+			 */
+			intersect: function(chartInstance, e) {
+				var eventPosition = helpers.getRelativePosition(e, chartInstance.chart);
+				var elementsArray = [];
+
+				helpers.each(chartInstance.data.datasets, function(dataset, datasetIndex) {
+					if (chartInstance.isDatasetVisible(datasetIndex)) {
+						var meta = chartInstance.getDatasetMeta(datasetIndex);
+						helpers.each(meta.data, function(element) {
+							if (element.inRange(eventPosition.x, eventPosition.y)) {
+								elementsArray.push(element);
+							}
+						});
+					}
+				});
+
+				return elementsArray;
+			}
 		}
 	};
 };
