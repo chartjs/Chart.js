@@ -219,7 +219,7 @@ describe("Default Configs", function() {
 				options: config
 			});
 
-			var expectedLegend = '<ul class="' + chart.id + '-legend"><li><span style="background-color:red">label1</span></li><li><span style="background-color:green">label2</span></li></ul>';
+			var expectedLegend = '<ul class="' + chart.id + '-legend"><li><span style="background-color:red"></span>label1</li><li><span style="background-color:green"></span>label2</li></ul>';
 			expect(chart.generateLegend()).toBe(expectedLegend);
 		});
 
