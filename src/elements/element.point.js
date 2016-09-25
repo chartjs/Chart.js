@@ -27,6 +27,16 @@ module.exports = function(Chart) {
 			var vm = this._view;
 			return vm ? (Math.pow(mouseX - vm.x, 2) < Math.pow(vm.radius + vm.hitRadius, 2)) : false;
 		},
+		distanceToCenter: function(point) {
+			var vm = this._view;
+			return helpers.distanceBetweenPoints(point, {
+				x: vm.x,
+				y: vm.y
+			});
+		},
+		getArea: function() {
+			return Math.PI * Math.pow(this._view.radius, 2);
+		},
 		tooltipPosition: function() {
 			var vm = this._view;
 			return {

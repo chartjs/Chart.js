@@ -83,6 +83,17 @@ module.exports = function(Chart) {
 			var vm = this._view;
 			return vm ? (mouseX >= vm.x - vm.width / 2 && mouseX <= vm.x + vm.width / 2) : false;
 		},
+		distanceToCenter: function(point) {
+			var vm = this._view;
+			return Chart.helpers.distanceBetweenPoints(point, {
+				x: vm.x,
+				y: (vm.y + vm.base) / 2
+			});
+		},
+		getArea: function() {
+			var vm = this._view;
+			return vm.width * Math.abs(vm.y - vm.base);
+		},
 		tooltipPosition: function() {
 			var vm = this._view;
 			return {

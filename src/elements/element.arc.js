@@ -52,6 +52,20 @@ module.exports = function(Chart) {
 			}
 			return false;
 		},
+		distanceToCenter: function(point) {
+			var vm = this._view;
+			var halfAngle = (vm.startAngle + vm.endAngle) / 2;
+			var halfRadius = (vm.innerRadius + vm.outerRadius) / 2;
+			var centerPoint = {
+				x: vm.x + Math.cos(halfAngle) * halfRadius,
+				y: vm.y + Math.sin(halfAngle) * halfRadius
+			};
+			return helpers.distanceBetweenPoints(point, centerPoint);
+		},
+		getArea: function() {
+			var vm = this._view;
+			return Math.PI * ((vm.endAngle - vm.startAngle) / (2 * Math.PI)) * (Math.pow(vm.outerRadius, 2) - Math.pow(vm.innerRadius, 2));
+		},
 		tooltipPosition: function() {
 			var vm = this._view;
 

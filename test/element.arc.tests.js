@@ -60,6 +60,44 @@ describe('Arc element tests', function() {
 		expect(pos.y).toBeCloseTo(0.5);
 	});
 
+	it ('should get the area', function() {
+		var arc = new Chart.elements.Arc({
+			_datasetIndex: 2,
+			_index: 1
+		});
+
+		// Mock out the view as if the controller put it there
+		arc._view = {
+			startAngle: 0,
+			endAngle: Math.PI / 2,
+			x: 0,
+			y: 0,
+			innerRadius: 0,
+			outerRadius: Math.sqrt(2),
+		};
+
+		expect(arc.getArea()).toBeCloseTo(0.5 * Math.PI, 6);
+	});
+
+	it ('should get the distance to the center', function() {
+		var arc = new Chart.elements.Arc({
+			_datasetIndex: 2,
+			_index: 1
+		});
+
+		// Mock out the view as if the controller put it there
+		arc._view = {
+			startAngle: 0,
+			endAngle: Math.PI / 2,
+			x: 0,
+			y: 0,
+			innerRadius: 0,
+			outerRadius: Math.sqrt(2),
+		};
+
+		expect(arc.distanceToCenter({ x: 0, y: 0 })).toEqual(Math.sqrt(0.5));
+	});
+
 	it ('should draw correctly with no border', function() {
 		var mockContext = window.createMockContext();
 		var arc = new Chart.elements.Arc({
