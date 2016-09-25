@@ -607,19 +607,12 @@ module.exports = function(Chart) {
 		},
 
 		getElementsAtEventForMode: function(e, mode) {
-			var me = this;
-			switch (mode) {
-			case 'single':
-				return me.getElementAtEvent(e);
-			case 'label':
-				return me.getElementsAtEvent(e);
-			case 'dataset':
-				return me.getDatasetAtEvent(e);
-			case 'x-axis':
-				return me.getElementsAtXAxis(e);
-			default:
-				return e;
+			var modeLookups = Chart.Interaction.modes;
+			if (typeof modeLookups[mode] === 'function') {
+				return modeLookups[mode](this, e);
 			}
+
+			return e;
 		},
 
 		getDatasetAtEvent: function(e) {
