@@ -117,16 +117,19 @@ module.exports = function(Chart) {
 	 */
 	function initConfig(config) {
 		config = config || {};
-		return helpers.configMerge({
-			options: helpers.configMerge(
-				Chart.defaults.global,
-				Chart.defaults[config.type],
-				config.options || {}),
-			data: {
-				datasets: [],
-				labels: []
-			}
-		}, config);
+
+		// Do NOT use configMerge() for the data object because this method merges arrays
+		// and so would change references to labels and datasets, preventing data updates.
+		var data = config.data = config.data || {};
+		data.datasets = data.datasets || [];
+		data.labels = data.labels || [];
+
+		config.options = helpers.configMerge(
+			Chart.defaults.global,
+			Chart.defaults[config.type],
+			config.options || {});
+
+		return config;
 	}
 
 	/**
