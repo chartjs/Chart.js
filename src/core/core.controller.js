@@ -661,7 +661,6 @@ module.exports = function(Chart) {
 						options.onClick.call(me, e, me.active);
 					}
 				}
-	
 				// Remove styling for last active (even if it may still be active)
 				if (me.lastActive.length) {
 					me.updateHoverStyle(me.lastActive, hoverOptions.mode, false);
@@ -686,20 +685,17 @@ module.exports = function(Chart) {
 					// If entering, leaving, or changing elements, animate the change via pivot
 					if (!helpers.arrayEquals(me.active, me.lastActive) ||
 						!helpers.arrayEquals(me.tooltipActive, me.lastTooltipActive)) {
-	
 						me.stop();
-	
 						if (tooltipsOptions.enabled || tooltipsOptions.custom) {
 							tooltip.update(true);
 						}
-	
+						
 						// We only need to render at this point. Updating will cause scales to be
 						// recomputed generating flicker & using more memory than necessary.
 						me.render(hoverOptions.animationDuration, true);
 					}
 				}
-			}
-			else {
+			}else {
 				me.active = me.lastActive;
 				me.tooltipActive = me.lastTooltipActive;
 			}
