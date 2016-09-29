@@ -8,6 +8,7 @@ module.exports = function(Chart) {
 		enabled: true,
 		custom: null,
 		mode: 'single',
+		intersect: true,
 		backgroundColor: 'rgba(0,0,0,0.8)',
 		titleFontStyle: 'bold',
 		titleSpacing: 2,

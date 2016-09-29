@@ -2,7 +2,7 @@
 
 // Test the rectangle element
 describe('Core.Interaction', function() {
-	describe('intersect mode', function() {
+	describe('point mode', function() {
 		it ('should return all items under the point', function() {
 			var chartInstance = window.acquireChart({
 				type: 'line',
@@ -39,7 +39,7 @@ describe('Core.Interaction', function() {
 				currentTarget: node
 			};
 
-			var elements = Chart.Interaction.modes.intersect(chartInstance, evt);
+			var elements = Chart.Interaction.modes.point(chartInstance, evt);
 			expect(elements).toEqual([point, meta1.data[1]]);
 		});
 
@@ -73,7 +73,7 @@ describe('Core.Interaction', function() {
 				currentTarget: node
 			};
 
-			var elements = Chart.Interaction.modes.intersect(chartInstance, evt);
+			var elements = Chart.Interaction.modes.point(chartInstance, evt);
 			expect(elements).toEqual([]);
 		});
 	});
@@ -115,8 +115,47 @@ describe('Core.Interaction', function() {
 				currentTarget: node
 			};
 
-			var elements = Chart.Interaction.modes.index(chartInstance, evt);
+			var elements = Chart.Interaction.modes.index(chartInstance, evt, true);
 			expect(elements).toEqual([point, meta1.data[1]]);
+		});
+
+		it ('should return all items at the same index when intersect is false', function() {
+			var chartInstance = window.acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						label: 'Dataset 1',
+						data: [10, 20, 30],
+						pointHoverBorderColor: 'rgb(255, 0, 0)',
+						pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+					}, {
+						label: 'Dataset 2',
+						data: [40, 40, 40],
+						pointHoverBorderColor: 'rgb(0, 0, 255)',
+						pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+					}],
+					labels: ['Point 1', 'Point 2', 'Point 3']
+				}
+			});
+
+			// Trigger an event over top of the
+			var meta0 = chartInstance.getDatasetMeta(0);
+			var meta1 = chartInstance.getDatasetMeta(1);
+
+			var node = chartInstance.chart.canvas;
+			var rect = node.getBoundingClientRect();
+
+			var evt = {
+				view: window,
+				bubbles: true,
+				cancelable: true,
+				clientX: rect.left,
+				clientY: rect.top,
+				currentTarget: node
+			};
+
+			var elements = Chart.Interaction.modes.index(chartInstance, evt, false);
+			expect(elements).toEqual([meta0.data[0], meta1.data[0]]);
 		});
 	});
 
@@ -156,7 +195,44 @@ describe('Core.Interaction', function() {
 				currentTarget: node
 			};
 
-			var elements = Chart.Interaction.modes.dataset(chartInstance, evt);
+			var elements = Chart.Interaction.modes.dataset(chartInstance, evt, true);
+			expect(elements).toEqual(meta.data);
+		});
+
+		it ('should return all items in the dataset of the first item found when intersect is false', function() {
+			var chartInstance = window.acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						label: 'Dataset 1',
+						data: [10, 20, 30],
+						pointHoverBorderColor: 'rgb(255, 0, 0)',
+						pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+					}, {
+						label: 'Dataset 2',
+						data: [40, 40, 40],
+						pointHoverBorderColor: 'rgb(0, 0, 255)',
+						pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+					}],
+					labels: ['Point 1', 'Point 2', 'Point 3']
+				}
+			});
+
+			var node = chartInstance.chart.canvas;
+			var rect = node.getBoundingClientRect();
+
+			var evt = {
+				view: window,
+				bubbles: true,
+				cancelable: true,
+				clientX: rect.left,
+				clientY: rect.top,
+				currentTarget: node
+			};
+
+			var elements = Chart.Interaction.modes.dataset(chartInstance, evt, false);
+
+			var meta = chartInstance.getDatasetMeta(1);
 			expect(elements).toEqual(meta.data);
 		});
 	});
@@ -195,7 +271,7 @@ describe('Core.Interaction', function() {
 			};
 
 			// Nearest to 0,0 (top left) will be first point of dataset 2
-			var elements = Chart.Interaction.modes.nearest(chartInstance, evt);
+			var elements = Chart.Interaction.modes.nearest(chartInstance, evt, false);
 			expect(elements).toEqual([meta.data[0]]);
 		});
 
@@ -242,7 +318,7 @@ describe('Core.Interaction', function() {
 			};
 
 			// Nearest to 0,0 (top left) will be first point of dataset 2
-			var elements = Chart.Interaction.modes.nearest(chartInstance, evt);
+			var elements = Chart.Interaction.modes.nearest(chartInstance, evt, false);
 			expect(elements).toEqual([meta0.data[1]]);
 		});
 
@@ -289,12 +365,12 @@ describe('Core.Interaction', function() {
 			};
 
 			// Nearest to 0,0 (top left) will be first point of dataset 2
-			var elements = Chart.Interaction.modes.nearest(chartInstance, evt);
+			var elements = Chart.Interaction.modes.nearest(chartInstance, evt, false);
 			expect(elements).toEqual([meta0.data[1]]);
 		});
 	});
 
-	describe('nearestIntersect mode', function() {
+	describe('nearest intersect mode', function() {
 		it ('should return the nearest item', function() {
 			var chartInstance = window.acquireChart({
 				type: 'line',
@@ -330,7 +406,7 @@ describe('Core.Interaction', function() {
 			};
 
 			// Nothing intersects so find nothing
-			var elements = Chart.Interaction.modes.nearestIntersect(chartInstance, evt);
+			var elements = Chart.Interaction.modes.nearest(chartInstance, evt, true);
 			expect(elements).toEqual([]);
 
 			evt = {
@@ -341,7 +417,7 @@ describe('Core.Interaction', function() {
 				clientY: rect.top + point._view.y,
 				currentTarget: node
 			};
-			elements = Chart.Interaction.modes.nearestIntersect(chartInstance, evt);
+			elements = Chart.Interaction.modes.nearest(chartInstance, evt, true);
 			expect(elements).toEqual([point]);
 		});
 
@@ -387,7 +463,7 @@ describe('Core.Interaction', function() {
 			};
 
 			// Nearest to 0,0 (top left) will be first point of dataset 2
-			var elements = Chart.Interaction.modes.nearestIntersect(chartInstance, evt);
+			var elements = Chart.Interaction.modes.nearest(chartInstance, evt, true);
 			expect(elements).toEqual([meta0.data[1]]);
 		});
 
@@ -433,7 +509,7 @@ describe('Core.Interaction', function() {
 			};
 
 			// Nearest to 0,0 (top left) will be first point of dataset 2
-			var elements = Chart.Interaction.modes.nearestIntersect(chartInstance, evt);
+			var elements = Chart.Interaction.modes.nearest(chartInstance, evt, true);
 			expect(elements).toEqual([meta0.data[1]]);
 		});
 
@@ -479,7 +555,7 @@ describe('Core.Interaction', function() {
 			};
 
 			// Nearest to 0,0 (top left) will be first point of dataset 2
-			var elements = Chart.Interaction.modes.nearestIntersect(chartInstance, evt);
+			var elements = Chart.Interaction.modes.nearest(chartInstance, evt, true);
 			expect(elements).toEqual([meta0.data[1]]);
 		});
 	});

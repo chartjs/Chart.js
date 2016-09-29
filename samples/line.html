@@ -66,6 +66,7 @@
                 },
                 tooltips: {
                     mode: 'label',
+                    intersect: false,
                     callbacks: {
                         // beforeTitle: function() {
                         //     return '...beforeTitle';
@@ -91,7 +92,8 @@
                     }
                 },
                 hover: {
-                    mode: 'dataset'
+                    mode: 'nearest',
+                    intersect: true
                 },
                 scales: {
                     xAxes: [{

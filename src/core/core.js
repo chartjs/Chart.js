@@ -31,6 +31,7 @@ module.exports = function() {
 			hover: {
 				onHover: null,
 				mode: 'single',
+				intersect: true,
 				animationDuration: 400
 			},
 			onClick: null,
