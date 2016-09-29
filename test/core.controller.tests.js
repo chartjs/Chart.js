@@ -4,6 +4,89 @@ describe('Chart.Controller', function() {
 		setTimeout(callback, 100);
 	}
 
+	describe('config', function() {
+		it('should create missing config.data properties', function() {
+			var chart = acquireChart({});
+			var data = chart.data;
+
+			expect(data instanceof Object).toBeTruthy();
+			expect(data.labels instanceof Array).toBeTruthy();
+			expect(data.labels.length).toBe(0);
+			expect(data.datasets instanceof Array).toBeTruthy();
+			expect(data.datasets.length).toBe(0);
+		});
+
+		it('should NOT alter config.data references', function() {
+			var ds0 = {data: [10, 11, 12, 13]};
+			var ds1 = {data: [20, 21, 22, 23]};
+			var datasets = [ds0, ds1];
+			var labels = [0, 1, 2, 3];
+			var data = {labels: labels, datasets: datasets};
+
+			var chart = acquireChart({
+				type: 'line',
+				data: data
+			});
+
+			expect(chart.data).toBe(data);
+			expect(chart.data.labels).toBe(labels);
+			expect(chart.data.datasets).toBe(datasets);
+			expect(chart.data.datasets[0]).toBe(ds0);
+			expect(chart.data.datasets[1]).toBe(ds1);
+			expect(chart.data.datasets[0].data).toBe(ds0.data);
+			expect(chart.data.datasets[1].data).toBe(ds1.data);
+		});
+
+		it('should initialize config with default options', function() {
+			var callback = function() {};
+
+			var defaults = Chart.defaults;
+			defaults.global.responsiveAnimationDuration = 42;
+			defaults.global.hover.onHover = callback;
+			defaults.line.hover.mode = 'x-axis';
+			defaults.line.spanGaps = true;
+
+			var chart = acquireChart({
+				type: 'line'
+			});
+
+			var options = chart.options;
+			expect(options.defaultFontSize).toBe(defaults.global.defaultFontSize);
+			expect(options.showLines).toBe(defaults.line.showLines);
+			expect(options.spanGaps).toBe(true);
+			expect(options.responsiveAnimationDuration).toBe(42);
+			expect(options.hover.onHover).toBe(callback);
+			expect(options.hover.mode).toBe('x-axis');
+		});
+
+		it('should override default options', function() {
+			var defaults = Chart.defaults;
+			defaults.global.responsiveAnimationDuration = 42;
+			defaults.line.hover.mode = 'x-axis';
+			defaults.line.spanGaps = true;
+
+			var chart = acquireChart({
+				type: 'line',
+				options: {
+					responsiveAnimationDuration: 4242,
+					spanGaps: false,
+					hover: {
+						mode: 'dataset',
+					},
+					title: {
+						position: 'bottom'
+					}
+				}
+			});
+
+			var options = chart.options;
+			expect(options.responsiveAnimationDuration).toBe(4242);
+			expect(options.spanGaps).toBe(false);
+			expect(options.hover.mode).toBe('dataset');
+			expect(options.title.position).toBe('bottom');
+		});
+	});
+
 	describe('config.options.aspectRatio', function() {
 		it('should use default "global" aspect ratio for render and display sizes', function() {
 			var chart = acquireChart({
