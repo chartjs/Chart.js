@@ -222,6 +222,38 @@ module.exports = function(Chart) {
 
 				// Return only 1 item
 				return nearestItems.slice(0, 1);
+			},
+
+			/**
+			 * x mode returns the elements that hit-test at the current x coordinate
+			 * @function Chart.Interaction.modes.x
+			 * @param chartInstance {ChartInstance} the chart we are returning items from
+			 * @param e {Event} the event we are find things at
+			 * @param options {IInteractionOptions} options to use
+			 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
+			 */
+			x: function(chartInstance, e, options) {
+				var eventPosition = helpers.getRelativePosition(e, chartInstance.chart);
+				var items = getAllItems(chartInstance).filter(function(item) {
+					return item.inXRange(eventPosition.x);
+				});
+				return items;
+			},
+
+			/**
+			 * y mode returns the elements that hit-test at the current y coordinate
+			 * @function Chart.Interaction.modes.y
+			 * @param chartInstance {ChartInstance} the chart we are returning items from
+			 * @param e {Event} the event we are find things at
+			 * @param options {IInteractionOptions} options to use
+			 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
+			 */
+			y: function(chartInstance, e, options) {
+				var eventPosition = helpers.getRelativePosition(e, chartInstance.chart);
+				var items = getAllItems(chartInstance).filter(function(item) {
+					return item.inYRange(eventPosition.x);
+				});
+				return items;
 			}
 		}
 	};
