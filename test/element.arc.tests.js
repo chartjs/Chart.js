@@ -79,7 +79,7 @@ describe('Arc element tests', function() {
 		expect(arc.getArea()).toBeCloseTo(0.5 * Math.PI, 6);
 	});
 
-	it ('should get the distance to the center', function() {
+	it ('should get the center', function() {
 		var arc = new Chart.elements.Arc({
 			_datasetIndex: 2,
 			_index: 1
@@ -95,7 +95,9 @@ describe('Arc element tests', function() {
 			outerRadius: Math.sqrt(2),
 		};
 
-		expect(arc.distanceToCenter({ x: 0, y: 0 })).toEqual(Math.sqrt(0.5));
+		var center = arc.getCenterPoint();
+		expect(center.x).toBeCloseTo(0.5, 6);
+		expect(center.y).toBeCloseTo(0.5, 6);
 	});
 
 	it ('should draw correctly with no border', function() {

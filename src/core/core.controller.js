@@ -523,12 +523,12 @@ module.exports = function(Chart) {
 		},
 
 		getElementsAtEventForMode: function(e, mode, options) {
-			var modeLookups = Chart.Interaction.modes;
-			if (typeof modeLookups[mode] === 'function') {
-				return modeLookups[mode](this, e, options);
+			var method = Chart.Interaction.modes[mode];
+			if (typeof method === 'function') {
+				return method(this, e, options);
 			}
 
-			return e;
+			return [];
 		},
 
 		getDatasetAtEvent: function(e) {

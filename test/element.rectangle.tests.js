@@ -149,7 +149,7 @@ describe('Rectangle element tests', function() {
 		expect(rectangle.getArea()).toEqual(60);
 	});
 
-	it ('should get the distance to the center', function() {
+	it ('should get the center', function() {
 		var rectangle = new Chart.elements.Rectangle({
 			_datasetIndex: 2,
 			_index: 1
@@ -163,7 +163,7 @@ describe('Rectangle element tests', function() {
 			y: 15
 		};
 
-		expect(rectangle.distanceToCenter({ x: 0, y: 0 })).toEqual(Math.sqrt(100 + Math.pow(7.5, 2)));
+		expect(rectangle.getCenterPoint()).toEqual({ x: 10, y: 7.5 });
 	});
 
 	it ('should draw correctly', function() {

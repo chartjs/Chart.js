@@ -78,7 +78,7 @@ describe('Point element tests', function() {
 		expect(point.getArea()).toEqual(Math.PI * 4);
 	});
 
-	it('should get the correct distance to the center', function() {
+	it('should get the correct center point', function() {
 		var point = new Chart.elements.Point({
 			_datasetIndex: 2,
 			_index: 1
@@ -91,7 +91,7 @@ describe('Point element tests', function() {
 			y: 10
 		};
 
-		expect(point.distanceToCenter({ x: 0, y: 0 })).toEqual(Math.sqrt(200));
+		expect(point.getCenterPoint()).toEqual({ x: 10, y: 10 });
 	});
 
 	it ('should draw correctly', function() {

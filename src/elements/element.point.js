@@ -38,12 +38,12 @@ module.exports = function(Chart) {
 		inXRange: xRange,
 		inYRange: yRange,
 
-		distanceToCenter: function(point) {
+		getCenterPoint: function() {
 			var vm = this._view;
-			return helpers.distanceBetweenPoints(point, {
+			return {
 				x: vm.x,
 				y: vm.y
-			});
+			};
 		},
 		getArea: function() {
 			return Math.PI * Math.pow(this._view.radius, 2);

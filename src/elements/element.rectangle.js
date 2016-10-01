@@ -116,20 +116,22 @@ module.exports = function(Chart) {
 				var bounds = getBarBounds(this);
 				inRange = mouseX >= bounds.left && mouseX <= bounds.right && mouseY >= bounds.top && mouseY <= bounds.bottom;
 			}
-			
+
 			return inRange;
 		},
 		inLabelRange: function(mouseX, mouseY) {
 			var me = this;
-			var inRange = false;
-			if (me._view) {
-				var bounds = getBarBounds(me);
+			if (!me._view) {
+				return false;
+			}
 
-				if (isVertical(me)) {
-					inRange = mouseX >= bounds.left && mouseX <= bounds.right;
-				} else {
-					inRange = mouseY >= bounds.top && mouseY <= bounds.bottom;
-				}
+			var inRange = false;
+			var bounds = getBarBounds(me);
+
+			if (isVertical(me)) {
+				inRange = mouseX >= bounds.left && mouseX <= bounds.right;
+			} else {
+				inRange = mouseY >= bounds.top && mouseY <= bounds.bottom;
 			}
 
 			return inRange;
@@ -142,12 +144,18 @@ module.exports = function(Chart) {
 			var bounds = getBarBounds(this);
 			return mouseY >= bounds.top && mouseY <= bounds.bottom;
 		},
-		distanceToCenter: function(point) {
+		getCenterPoint: function() {
 			var vm = this._view;
-			return Chart.helpers.distanceBetweenPoints(point, {
-				x: vm.x,
-				y: (vm.y + vm.base) / 2
-			});
+			var x, y;
+			if (isVertical(this)) {
+				x = vm.x;
+				y = (vm.y + vm.base) / 2;
+			} else {
+				x = (vm.x + vm.base) / 2;
+				y = vm.y;
+			}
+
+			return {x: x, y: y};
 		},
 		getArea: function() {
 			var vm = this._view;
