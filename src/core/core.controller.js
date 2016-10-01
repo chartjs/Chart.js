@@ -684,9 +684,19 @@ module.exports = function(Chart) {
 		destroy: function() {
 			var me = this;
 			var canvas = me.chart.canvas;
+			var meta, i, ilen;
 
 			me.stop();
 			me.clear();
+
+			// dataset controllers need to cleanup associated data
+			for (i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
+				meta = me.getDatasetMeta(i);
+				if (meta.controller) {
+					meta.controller.destroy();
+					meta.controller = null;
+				}
+			}
 
 			if (canvas) {
 				helpers.unbindEvents(me, me.events);
