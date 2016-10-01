@@ -515,17 +515,17 @@ module.exports = function(Chart) {
 		},
 
 		getElementsAtEvent: function(e) {
-			return Chart.Interaction.modes.label(this, e);
+			return Chart.Interaction.modes.label(this, e, {intersect: true});
 		},
 
 		getElementsAtXAxis: function(e) {
-			return Chart.Interaction.modes['x-axis'](this, e);
+			return Chart.Interaction.modes['x-axis'](this, e, {intersect: true});
 		},
 
-		getElementsAtEventForMode: function(e, mode, intersect) {
+		getElementsAtEventForMode: function(e, mode, options) {
 			var modeLookups = Chart.Interaction.modes;
 			if (typeof modeLookups[mode] === 'function') {
-				return modeLookups[mode](this, e, intersect);
+				return modeLookups[mode](this, e, options);
 			}
 
 			return e;
@@ -666,8 +666,8 @@ module.exports = function(Chart) {
 				me.active = [];
 				me.tooltipActive = [];
 			} else {
-				me.active = me.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions.intersect);
-				me.tooltipActive = me.getElementsAtEventForMode(e, tooltipsOptions.mode, tooltipsOptions.intersect);
+				me.active = me.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions);
+				me.tooltipActive = me.getElementsAtEventForMode(e, tooltipsOptions.mode, tooltipsOptions);
 			}
 
 			// On Hover hook

@@ -70,9 +70,9 @@ module.exports = function(Chart) {
 		return nearestItems;
 	}
 
-	function indexMode(chartInstance, e, intersect) {
+	function indexMode(chartInstance, e, options) {
 		var eventPosition = helpers.getRelativePosition(e, chartInstance.chart);
-		var items = intersect ? getIntersectItems(chartInstance, eventPosition) : getNearestItems(getAllItems(chartInstance), eventPosition);
+		var items = options.intersect ? getIntersectItems(chartInstance, eventPosition) : getNearestItems(getAllItems(chartInstance), eventPosition);
 
 		var elementsArray = [];
 
@@ -92,6 +92,15 @@ module.exports = function(Chart) {
 
 		return elementsArray;
 	}
+
+	/**
+	 * @interface IInteractionOptions
+	 */
+	/**
+	 * If true, only consider items that intersect the point
+	 * @name IInterfaceOptions#boolean
+	 * @type Boolean
+	 */
 
 	/**
 	 * @namespace Chart.Interaction
@@ -127,29 +136,29 @@ module.exports = function(Chart) {
 			label: indexMode,
 
 			/**
-			 * Returns items at the same index. If the intersect parameter is true, we only return items if we intersect something
-			 * If the intersect mode is false, we find the nearest item and return the items at the same index as that item
+			 * Returns items at the same index. If the options.intersect parameter is true, we only return items if we intersect something
+			 * If the options.intersect mode is false, we find the nearest item and return the items at the same index as that item
 			 * @function Chart.Interaction.modes.index
 			 * @since v2.4.0
 			 * @param chartInstance {ChartInstance} the chart we are returning items from
 			 * @param e {Event} the event we are find things at
-			 * @param intersect {Boolean} if true, only consider items that intersect the event position
+			 * @param options {IInteractionOptions} options to use during interaction
 			 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
 			 */
 			index: indexMode,
 
 			/**
-			 * Returns items in the same dataset. If the intersect parameter is true, we only return items if we intersect something
-			 * If the intersect mode is false, we find the nearest item and return the items in that dataset
+			 * Returns items in the same dataset. If the options.intersect parameter is true, we only return items if we intersect something
+			 * If the options.intersect is false, we find the nearest item and return the items in that dataset
 			 * @function Chart.Interaction.modes.dataset
 			 * @param chartInstance {ChartInstance} the chart we are returning items from
 			 * @param e {Event} the event we are find things at
-			 * @param intersect {Boolean} if true, only consider items that intersect the event position
+			 * @param options {IInteractionOptions} options to use during interaction
 			 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
 			 */
-			dataset: function(chartInstance, e, intersect) {
+			dataset: function(chartInstance, e, options) {
 				var eventPosition = helpers.getRelativePosition(e, chartInstance.chart);
-				var items = intersect ? getIntersectItems(chartInstance, eventPosition) : getNearestItems(getAllItems(chartInstance), eventPosition);
+				var items = options.intersect ? getIntersectItems(chartInstance, eventPosition) : getNearestItems(getAllItems(chartInstance), eventPosition);
 
 				if (items.length > 0) {
 					items = chartInstance.getDatasetMeta(items[0]._datasetIndex).data;
@@ -185,12 +194,12 @@ module.exports = function(Chart) {
 			 * @function Chart.Interaction.modes.intersect
 			 * @param chartInstance {ChartInstance} the chart we are returning items from
 			 * @param e {Event} the event we are find things at
-			 * @param intersect {Boolean} if true, only consider items that intersect the event position
+			 * @param options {IInteractionOptions} options to use
 			 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
 			 */
-			nearest: function(chartInstance, e, intersect) {
+			nearest: function(chartInstance, e, options) {
 				var eventPosition = helpers.getRelativePosition(e, chartInstance.chart);
-				var items = intersect ? getIntersectItems(chartInstance, eventPosition) : getAllItems(chartInstance);
+				var items = options.intersect ? getIntersectItems(chartInstance, eventPosition) : getAllItems(chartInstance);
 
 				// Filter to nearest items
 				var nearestItems = getNearestItems(items, eventPosition);
