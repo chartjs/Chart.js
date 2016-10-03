@@ -30,7 +30,8 @@ module.exports = function() {
 			events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'],
 			hover: {
 				onHover: null,
-				mode: 'single',
+				mode: 'nearest',
+				intersect: true,
 				animationDuration: 400
 			},
 			onClick: null,

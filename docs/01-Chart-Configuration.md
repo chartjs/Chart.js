@@ -36,13 +36,13 @@ This concept was introduced in Chart.js 1.0 to keep configuration [DRY](https://
 
 Chart.js merges the options object passed to the chart with the global configuration using chart type defaults and scales defaults appropriately. This way you can be as specific as you would like in your individual chart configuration, while still changing the defaults for all chart types where applicable. The global general options are defined in `Chart.defaults.global`. The defaults for each chart type are discussed in the documentation for that chart type.
 
-The following example would set the hover mode to 'single' for all charts where this was not overridden by the chart type defaults or the options passed to the constructor on creation.
+The following example would set the hover mode to 'nearest' for all charts where this was not overridden by the chart type defaults or the options passed to the constructor on creation.
 
 ```javascript
-Chart.defaults.global.hover.mode = 'single';
+Chart.defaults.global.hover.mode = 'nearest';
 
-// Hover mode is set to single because it was not overridden here
-var chartInstanceHoverModeSingle = new Chart(ctx, {
+// Hover mode is set to nearest because it was not overridden here
+var chartInstanceHoverModeNearest = new Chart(ctx, {
     type: 'line',
     data: data,
 });
@@ -54,7 +54,7 @@ var chartInstanceDifferentHoverMode = new Chart(ctx, {
     options: {
         hover: {
             // Overrides the global setting
-            mode: 'label'
+            mode: 'index'
         }
     }
 })
@@ -200,7 +200,7 @@ var chartInstance = new Chart(ctx, {
                 fontColor: 'rgb(255, 99, 132)'
             }
         }
-    }
+}
 });
 ```
 
@@ -212,7 +212,8 @@ Name | Type | Default | Description
 --- | --- | --- | ---
 enabled | Boolean | true | Are tooltips enabled
 custom | Function | null | See [section](#advanced-usage-external-tooltips) below
-mode | String | 'single' | Sets which elements appear in the tooltip. Acceptable options are `'single'`, `'label'` or `'x-axis'`. <br>&nbsp;<br>`single` highlights the closest element. <br>&nbsp;<br>`label` highlights elements in all datasets at the same `X` value. <br>&nbsp;<br>`'x-axis'` also highlights elements in all datasets at the same `X` value, but activates when hovering anywhere within the vertical slice of the x-axis representing that `X` value.
+mode | String | 'nearest' | Sets which elements appear in the tooltip. See [Interaction Modes](#interaction-modes) for details
+intersect | Boolean | true | if true, the tooltip mode applies only when the mouse position intersects with an element. If false, the mode will be applied at all times.
 itemSort | Function | undefined | Allows sorting of [tooltip items](#chart-configuration-tooltip-item-interface). Must implement at minimum a function that can be passed to [Array.prototype.sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort).  This function can also accept a third parameter that is the data object passed to the chart.
 backgroundColor | Color | 'rgba(0,0,0,0.8)' | Background color of the tooltip
 titleFontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Font family for tooltip title inherited from global font family
@@ -286,9 +287,27 @@ The hover configuration is passed into the `options.hover` namespace. The global
 
 Name | Type | Default | Description
 --- | --- | --- | ---
-mode | String | 'single' | Sets which elements hover. Acceptable options are `'single'`, `'label'`, `'x-axis'`, or `'dataset'`. <br>&nbsp;<br>`single` highlights the closest element. <br>&nbsp;<br>`label` highlights elements in all datasets at the same `X` value. <br>&nbsp;<br>`'x-axis'` also highlights elements in all datasets at the same `X` value, but activates when hovering anywhere within the vertical slice of the x-axis representing that `X` value.  <br>&nbsp;<br>`dataset` highlights the closest dataset.
+mode | String | 'naerest' | Sets which elements appear in the tooltip. See [Interaction Modes](#interaction-modes) for details
+intersect | Boolean | true | if true, the hover mode only applies when the mouse position intersects an item on the chart
 animationDuration | Number | 400 | Duration in milliseconds it takes to animate hover style changes
 onHover | Function | null | Called when any of the events fire. Called in the context of the chart and passed an array of active elements (bars, points, etc)
+
+### Interaction Modes
+When configuring interaction with the graph via hover or tooltips, a number of different modes are available.
+
+The following table details the modes and how they behave in conjunction with the `intersect` setting
+
+Mode | Behaviour 
+--- | --- 
+point | Finds all of the items that intersect the point
+nearest | Gets the item that is nearest to the point. The nearest item is determined based on the distance to the center of the chart item (point, bar). If 2 or more items are at the same distance, the one with the smallest area is used. If `intersect` is true, this is only triggered when the mouse position intersects an item in the graph. This is very useful for combo charts where points are hidden behind bars.
+single (deprecated) | Finds the first item that intersects the point and returns it. Behaves like 'nearest' mode with intersect = true.
+label (deprecated) | See `'index'` mode
+index | Finds item at the same index. If the `intersect` setting is true, the first intersecting item is used to determine the index in the data. If `intersect` false the nearest item is used to determine the index. 
+x-axis (deprecated) | Behaves like `'index'` mode with `intersect = true`
+dataset | Finds items in the same dataset. If the `intersect` setting is true, the first intersecting item is used to determine the index in the data. If `intersect` false the nearest item is used to determine the index.
+x | Returns all items that would intersect based on the `X` coordinate of the position only. Would be useful for a vertical cursor implementation. Note that this only applies to cartesian charts
+y | Returns all items that would intersect based on the `Y` coordinate of the position. This would be useful for a horizontal cursor implementation. Note that this only applies to cartesian charts.
 
 ### Animation Configuration
 

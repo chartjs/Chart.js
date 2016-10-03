@@ -515,125 +515,28 @@ module.exports = function(Chart) {
 		// Get the single element that was clicked on
 		// @return : An object containing the dataset index and element index of the matching element. Also contains the rectangle that was draw
 		getElementAtEvent: function(e) {
-			var me = this;
-			var eventPosition = helpers.getRelativePosition(e, me.chart);
-			var elementsArray = [];
-
-			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
-				if (me.isDatasetVisible(datasetIndex)) {
-					var meta = me.getDatasetMeta(datasetIndex);
-					helpers.each(meta.data, function(element) {
-						if (element.inRange(eventPosition.x, eventPosition.y)) {
-							elementsArray.push(element);
-							return elementsArray;
-						}
-					});
-				}
-			});
-
-			return elementsArray.slice(0, 1);
+			return Chart.Interaction.modes.single(this, e);
 		},
 
 		getElementsAtEvent: function(e) {
-			var me = this;
-			var eventPosition = helpers.getRelativePosition(e, me.chart);
-			var elementsArray = [];
-
-			var found = function() {
-				if (me.data.datasets) {
-					for (var i = 0; i < me.data.datasets.length; i++) {
-						var meta = me.getDatasetMeta(i);
-						if (me.isDatasetVisible(i)) {
-							for (var j = 0; j < meta.data.length; j++) {
-								if (meta.data[j].inRange(eventPosition.x, eventPosition.y)) {
-									return meta.data[j];
-								}
-							}
-						}
-					}
-				}
-			}.call(me);
-
-			if (!found) {
-				return elementsArray;
-			}
-
-			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
-				if (me.isDatasetVisible(datasetIndex)) {
-					var meta = me.getDatasetMeta(datasetIndex),
-						element = meta.data[found._index];
-					if (element && !element._view.skip) {
-						elementsArray.push(element);
-					}
-				}
-			}, me);
-
-			return elementsArray;
+			return Chart.Interaction.modes.label(this, e, {intersect: true});
 		},
 
 		getElementsAtXAxis: function(e) {
-			var me = this;
-			var eventPosition = helpers.getRelativePosition(e, me.chart);
-			var elementsArray = [];
-
-			var found = function() {
-				if (me.data.datasets) {
-					for (var i = 0; i < me.data.datasets.length; i++) {
-						var meta = me.getDatasetMeta(i);
-						if (me.isDatasetVisible(i)) {
-							for (var j = 0; j < meta.data.length; j++) {
-								if (meta.data[j].inLabelRange(eventPosition.x, eventPosition.y)) {
-									return meta.data[j];
-								}
-							}
-						}
-					}
-				}
-			}.call(me);
-
-			if (!found) {
-				return elementsArray;
-			}
-
-			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
-				if (me.isDatasetVisible(datasetIndex)) {
-					var meta = me.getDatasetMeta(datasetIndex);
-					var index = helpers.findIndex(meta.data, function(it) {
-						return found._model.x === it._model.x;
-					});
-					if (index !== -1 && !meta.data[index]._view.skip) {
-						elementsArray.push(meta.data[index]);
-					}
-				}
-			}, me);
-
-			return elementsArray;
+			return Chart.Interaction.modes['x-axis'](this, e, {intersect: true});
 		},
 
-		getElementsAtEventForMode: function(e, mode) {
-			var me = this;
-			switch (mode) {
-			case 'single':
-				return me.getElementAtEvent(e);
-			case 'label':
-				return me.getElementsAtEvent(e);
-			case 'dataset':
-				return me.getDatasetAtEvent(e);
-			case 'x-axis':
-				return me.getElementsAtXAxis(e);
-			default:
-				return e;
+		getElementsAtEventForMode: function(e, mode, options) {
+			var method = Chart.Interaction.modes[mode];
+			if (typeof method === 'function') {
+				return method(this, e, options);
 			}
+
+			return [];
 		},
 
 		getDatasetAtEvent: function(e) {
-			var elementsArray = this.getElementAtEvent(e);
-
-			if (elementsArray.length > 0) {
-				elementsArray = this.getDatasetMeta(elementsArray[0]._datasetIndex).data;
-			}
-
-			return elementsArray;
+			return Chart.Interaction.modes.dataset(this, e);
 		},
 
 		getDatasetMeta: function(datasetIndex) {
@@ -777,8 +680,8 @@ module.exports = function(Chart) {
 				me.active = [];
 				me.tooltipActive = [];
 			} else {
-				me.active = me.getElementsAtEventForMode(e, hoverOptions.mode);
-				me.tooltipActive = me.getElementsAtEventForMode(e, tooltipsOptions.mode);
+				me.active = me.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions);
+				me.tooltipActive = me.getElementsAtEventForMode(e, tooltipsOptions.mode, tooltipsOptions);
 			}
 
 			// On Hover hook

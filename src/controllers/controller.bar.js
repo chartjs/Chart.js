@@ -422,21 +422,6 @@ module.exports = function(Chart) {
 					if (vm.borderWidth) {
 						ctx.stroke();
 					}
-				},
-
-				inRange: function(mouseX, mouseY) {
-					var vm = this._view;
-					var inRange = false;
-
-					if (vm) {
-						if (vm.x < vm.base) {
-							inRange = (mouseY >= vm.y - vm.height / 2 && mouseY <= vm.y + vm.height / 2) && (mouseX >= vm.x && mouseX <= vm.base);
-						} else {
-							inRange = (mouseY >= vm.y - vm.height / 2 && mouseY <= vm.y + vm.height / 2) && (mouseX >= vm.base && mouseX <= vm.x);
-						}
-					}
-
-					return inRange;
 				}
 			});
 
