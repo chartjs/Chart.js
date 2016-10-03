@@ -30,6 +30,7 @@ module.exports = function(Chart) {
 		caretSize: 5,
 		cornerRadius: 6,
 		multiKeyBackground: '#fff',
+		displayColors: true,
 		callbacks: {
 			// Args are: (tooltipItems, data)
 			beforeTitle: helpers.noop,
@@ -193,7 +194,8 @@ module.exports = function(Chart) {
 					cornerRadius: tooltipOpts.cornerRadius,
 					backgroundColor: tooltipOpts.backgroundColor,
 					opacity: 0,
-					legendColorBackground: tooltipOpts.multiKeyBackground
+					legendColorBackground: tooltipOpts.multiKeyBackground,
+					displayColors: tooltipOpts.displayColors
 				}
 			});
 		},
@@ -298,12 +300,10 @@ module.exports = function(Chart) {
 					});
 				}
 
-				// If there is more than one item, show color items
-				if (active.length > 1) {
-					helpers.each(tooltipItems, function(tooltipItem) {
-						labelColors.push(opts.callbacks.labelColor.call(me, tooltipItem, chartInstance));
-					});
-				}
+				// Determine colors for boxes
+				helpers.each(tooltipItems, function(tooltipItem) {
+					labelColors.push(opts.callbacks.labelColor.call(me, tooltipItem, chartInstance));
+				});
 
 				// Build the Text Lines
 				helpers.extend(model, {
@@ -377,7 +377,7 @@ module.exports = function(Chart) {
 			helpers.each(vm.beforeBody.concat(vm.afterBody), maxLineWidth);
 
 			// Body lines may include some extra width due to the color box
-			widthPadding = body.length > 1 ? (bodyFontSize + 2) : 0;
+			widthPadding = vm.displayColors ? (bodyFontSize + 2) : 0;
 			helpers.each(body, function(bodyItem) {
 				helpers.each(bodyItem.before, maxLineWidth);
 				helpers.each(bodyItem.lines, maxLineWidth);
@@ -613,7 +613,7 @@ module.exports = function(Chart) {
 			// Before body lines
 			helpers.each(vm.beforeBody, fillLineOfText);
 
-			var drawColorBoxes = body.length > 1;
+			var drawColorBoxes = vm.displayColors;
 			xLinePadding = drawColorBoxes ? (bodyFontSize + 2) : 0;
 
 			// Draw body lines now

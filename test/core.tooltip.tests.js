@@ -85,6 +85,7 @@ describe('tooltip tests', function() {
 			backgroundColor: 'rgba(0,0,0,0.8)',
 			opacity: 1,
 			legendColorBackground: '#fff',
+			displayColors: true,
 
 			// Text
 			title: ['Point 2'],
@@ -199,6 +200,7 @@ describe('tooltip tests', function() {
 			backgroundColor: 'rgba(0,0,0,0.8)',
 			opacity: 1,
 			legendColorBackground: '#fff',
+			displayColors: true,
 
 			// Text
 			title: ['Point 2'],
@@ -211,7 +213,10 @@ describe('tooltip tests', function() {
 			afterBody: [],
 			footer: [],
 			caretPadding: 2,
-			labelColors: []
+			labelColors: [{
+				borderColor: 'rgb(255, 0, 0)',
+				backgroundColor: 'rgb(0, 255, 0)'
+			}]
 		}));
 
 		expect(tooltip._view.x).toBeCloseToPixel(269);
