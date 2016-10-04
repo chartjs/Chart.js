@@ -143,8 +143,8 @@ module.exports = function(Chart) {
 			yLabel: yScale ? yScale.getLabelForIndex(index, datasetIndex) : '',
 			index: index,
 			datasetIndex: datasetIndex,
-			pointX: element._model.x,
-			pointY: element._model.y
+			x: element._model.x,
+			y: element._model.y
 		};
 	}
 

@@ -267,8 +267,8 @@ index | Number | Matching point index.
 datasetIndex | Number | Matching dataset index.
 xLabel | String | Matching label on X axis.
 yLabel | String | Matching label on Y axis.
-pointX | Number | X position of matching point.
-pointY | Number | Y position of matching point.
+x | Number | X position of matching point.
+y | Number | Y position of matching point.
 
 #### Tooltip Item Interface
 

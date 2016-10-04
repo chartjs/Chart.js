@@ -515,7 +515,7 @@ describe('tooltip tests', function() {
 		expect(tooltip._view.dataPoints[0].yLabel).toEqual(
 			chartInstance.config.data.datasets[datasetIndex].data[pointIndex]
 		);
-		expect(tooltip._view.dataPoints[0].pointX).toBeCloseToPixel(point._model.x);
-		expect(tooltip._view.dataPoints[0].pointY).toBeCloseToPixel(point._model.y);
+		expect(tooltip._view.dataPoints[0].x).toBeCloseToPixel(point._model.x);
+		expect(tooltip._view.dataPoints[0].y).toBeCloseToPixel(point._model.y);
 	});
 });
