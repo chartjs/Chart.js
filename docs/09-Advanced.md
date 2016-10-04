@@ -159,19 +159,6 @@ var myPieChart = new Chart(ctx, {
 });
 ```
 
-In addition to all tooltip properties, a `dataPoints` property is added containing an `array[CustomTooltipDataPoint]`.
-
-#### CustomTooltipDataPoint
-
-Name | Type | Description
---- | --- | ---
-index | Number | Matching point index.
-datasetIndex | Number | Matching dataset index.
-xLabel | String | Matching label on X axis.
-yLabel | String | Matching label on Y axis.
-pointX | Number | X position of matching point.
-pointY | Number | Y position of matching point.
-
 See `sample/line-customTooltips.html` for examples on how to get started.
 
 ### Writing New Scale Types
