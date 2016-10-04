@@ -670,6 +670,12 @@ module.exports = function(Chart) {
 				});
 			}
 		},
+		drawBackground: function(pt, vm, ctx, tooltipSize, opacity) {
+			var bgColor = helpers.color(vm.backgroundColor);
+			ctx.fillStyle = bgColor.alpha(opacity * bgColor.alpha()).rgbString();
+			helpers.drawRoundedRectangle(ctx, pt.x, pt.y, tooltipSize.width, tooltipSize.height, vm.cornerRadius);
+			ctx.fill();
+		},
 		draw: function() {
 			var ctx = this._chart.ctx;
 			var vm = this._view;
@@ -689,10 +695,7 @@ module.exports = function(Chart) {
 
 			if (this._options.enabled) {
 				// Draw Background
-				var bgColor = helpers.color(vm.backgroundColor);
-				ctx.fillStyle = bgColor.alpha(opacity * bgColor.alpha()).rgbString();
-				helpers.drawRoundedRectangle(ctx, pt.x, pt.y, tooltipSize.width, tooltipSize.height, vm.cornerRadius);
-				ctx.fill();
+				this.drawBackground(pt, vm, ctx, tooltipSize, opacity);
 
 				// Draw Caret
 				this.drawCaret(pt, tooltipSize, opacity);
