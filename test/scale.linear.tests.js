@@ -486,6 +486,38 @@ describe('Linear Scale', function() {
 		expect(chart.scales.yScale0.ticks[chart.scales.yScale0.ticks.length - 1]).toBe('-1010');
 	});
 
+	it('Should use min, max and stepSize to create fixed spaced ticks', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					yAxisID: 'yScale0',
+					data: [10, 3, 6, 8, 3, 1]
+				}],
+				labels: ['a', 'b', 'c', 'd', 'e', 'f']
+			},
+			options: {
+				scales: {
+					yAxes: [{
+						id: 'yScale0',
+						type: 'linear',
+						ticks: {
+							min: 1,
+							max: 11,
+							stepSize: 2
+						}
+					}]
+				}
+			}
+		});
+
+		expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
+		expect(chart.scales.yScale0.min).toBe(1);
+		expect(chart.scales.yScale0.max).toBe(11);
+		expect(chart.scales.yScale0.ticks).toEqual(['11', '9', '7', '5', '3', '1']);
+	});
+
+
 	it('should forcibly include 0 in the range if the beginAtZero option is used', function() {
 		var chart = window.acquireChart({
 			type: 'bar',

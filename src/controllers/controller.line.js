@@ -34,19 +34,6 @@ module.exports = function(Chart) {
 
 		dataElementType: Chart.elements.Point,
 
-		addElementAndReset: function(index) {
-			var me = this;
-			var options = me.chart.options;
-			var meta = me.getMeta();
-
-			Chart.DatasetController.prototype.addElementAndReset.call(me, index);
-
-			// Make sure bezier control points are updated
-			if (lineEnabled(me.getDataset(), options) && meta.dataset._model.tension !== 0) {
-				me.updateBezierControlPoints();
-			}
-		},
-
 		update: function(reset) {
 			var me = this;
 			var meta = me.getMeta();

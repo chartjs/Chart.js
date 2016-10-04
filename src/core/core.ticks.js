@@ -64,8 +64,17 @@ module.exports = function(Chart) {
 				}
 				var niceMin = Math.floor(dataRange.min / spacing) * spacing;
 				var niceMax = Math.ceil(dataRange.max / spacing) * spacing;
-				var numSpaces = (niceMax - niceMin) / spacing;
 
+				// If min, max and stepSize is set and they make an evenly spaced scale use it.
+				if (generationOptions.min && generationOptions.max && generationOptions.stepSize) {
+					var minMaxDeltaDivisableByStepSize = ((generationOptions.max - generationOptions.min) % generationOptions.stepSize) === 0;
+					if (minMaxDeltaDivisableByStepSize) {
+						niceMin = generationOptions.min;
+						niceMax = generationOptions.max;
+					}
+				}
+
+				var numSpaces = (niceMax - niceMin) / spacing;
 				// If very close to our rounded value, use it.
 				if (helpers.almostEquals(numSpaces, Math.round(numSpaces), spacing / 1000)) {
 					numSpaces = Math.round(numSpaces);

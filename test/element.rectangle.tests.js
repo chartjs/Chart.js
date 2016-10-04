@@ -132,6 +132,40 @@ describe('Rectangle element tests', function() {
 		});
 	});
 
+	it ('should get the correct area', function() {
+		var rectangle = new Chart.elements.Rectangle({
+			_datasetIndex: 2,
+			_index: 1
+		});
+
+		// Attach a view object as if we were the controller
+		rectangle._view = {
+			base: 0,
+			width: 4,
+			x: 10,
+			y: 15
+		};
+
+		expect(rectangle.getArea()).toEqual(60);
+	});
+
+	it ('should get the center', function() {
+		var rectangle = new Chart.elements.Rectangle({
+			_datasetIndex: 2,
+			_index: 1
+		});
+
+		// Attach a view object as if we were the controller
+		rectangle._view = {
+			base: 0,
+			width: 4,
+			x: 10,
+			y: 15
+		};
+
+		expect(rectangle.getCenterPoint()).toEqual({ x: 10, y: 7.5 });
+	});
+
 	it ('should draw correctly', function() {
 		var mockContext = window.createMockContext();
 		var rectangle = new Chart.elements.Rectangle({

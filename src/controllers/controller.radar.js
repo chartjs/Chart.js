@@ -24,13 +24,6 @@ module.exports = function(Chart) {
 
 		linkScales: helpers.noop,
 
-		addElementAndReset: function(index) {
-			Chart.DatasetController.prototype.addElementAndReset.call(this, index);
-
-			// Make sure bezier control points are updated
-			this.updateBezierControlPoints();
-		},
-
 		update: function(reset) {
 			var me = this;
 			var meta = me.getMeta();
@@ -78,7 +71,6 @@ module.exports = function(Chart) {
 			helpers.each(points, function(point, index) {
 				me.updateElement(point, index, reset);
 			}, me);
-
 
 			// Update bezier control points
 			me.updateBezierControlPoints();
