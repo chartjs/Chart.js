@@ -85,7 +85,6 @@ There are many plugins that add additional functionality to Chart.js. Some parti
  - <a href="https://github.com/chartjs/Chart.Deferred.js" target="_blank">Chart.Deferred.js</a> - Defer initial chart update until chart scrolls into viewport
  - <a href="https://github.com/chartjs/Chart.smith.js" target="_blank">Chart.Smith.js</a> - Adds a smith chart type
  - <a href="https://github.com/chartjs/Chart.LinearGauge.js" target="_blank">Chart.LinearGauge.js</a> - Adds a linear gauge chart type
- - <a href="https://github.com/00F100/Chart.Select2.js" target="_blank">Chart.Select2.js</a> - Use <a href="https://select2.github.io/" target="_blank">Select2</a> multiple select options do change the chart
 
 ### Popular Extensions
 
@@ -109,3 +108,8 @@ There are many extensions which are available for use with popular frameworks. S
 
 #### Laravel
  - <a href="https://github.com/fxcosta/laravel-chartjs" target="_blank">laravel-chartjs</a>
+
+### Examples integrations Javascript's Library
+
+#### Select2
+ - <a href="https://github.com/00F100/Chart.Select2.js" target="_blank">Chart.Select2.js</a> - Use <a href="https://select2.github.io/" target="_blank">Select2</a> multiple select options do change the chart
