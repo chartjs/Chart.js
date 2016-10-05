@@ -45,7 +45,7 @@ module.exports = function(Chart) {
 				var data = chart.data;
 				return helpers.isArray(data.datasets) ? data.datasets.map(function(dataset, i) {
 					return {
-						text: dataset.label,
+						text: helpers.replaceHtmlSpecialChars(dataset.label),
 						fillStyle: (!helpers.isArray(dataset.backgroundColor) ? dataset.backgroundColor : dataset.backgroundColor[0]),
 						hidden: !chart.isDatasetVisible(i),
 						lineCap: dataset.borderCapStyle,

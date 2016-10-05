@@ -50,7 +50,7 @@ module.exports = function(Chart) {
 					}
 				}
 
-				return title;
+				return helpers.replaceHtmlSpecialChars(title);
 			},
 			afterTitle: helpers.noop,
 
@@ -61,7 +61,7 @@ module.exports = function(Chart) {
 			beforeLabel: helpers.noop,
 			label: function(tooltipItem, data) {
 				var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
-				return datasetLabel + ': ' + tooltipItem.yLabel;
+				return helpers.replaceHtmlSpecialChars(datasetLabel) + ': ' + tooltipItem.yLabel;
 			},
 			labelColor: function(tooltipItem, chartInstance) {
 				var meta = chartInstance.getDatasetMeta(tooltipItem.datasetIndex);

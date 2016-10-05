@@ -169,9 +169,9 @@ module.exports = function(Chart) {
 			// Convert ticks to strings
 			me.ticks = me.ticks.map(function(numericalTick, index, ticks) {
 				if (me.options.ticks.userCallback) {
-					return me.options.ticks.userCallback(numericalTick, index, ticks);
+					return helpers.replaceHtmlSpecialChars(me.options.ticks.userCallback(numericalTick, index, ticks));
 				}
-				return me.options.ticks.callback(numericalTick, index, ticks);
+				return helpers.replaceHtmlSpecialChars(me.options.ticks.callback(numericalTick, index, ticks));
 			},
 			me);
 		},

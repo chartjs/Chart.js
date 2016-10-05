@@ -1044,4 +1044,9 @@ module.exports = function(Chart) {
 			colorValue :
 			helpers.color(colorValue).saturate(0.5).darken(0.1).rgbString();
 	};
+	helpers.replaceHtmlSpecialChars = function(string) {
+		return string.replace(/&#(\d{0,4});/g, function(fullStr, str) {
+			return String.fromCharCode(str);
+		});
+	};
 };

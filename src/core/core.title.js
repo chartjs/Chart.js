@@ -191,6 +191,7 @@ module.exports = function(Chart) {
 	Chart.plugins.register({
 		beforeInit: function(chartInstance) {
 			var opts = chartInstance.options;
+			opts.title.text = helpers.replaceHtmlSpecialChars(opts.title.text);
 			var titleOpts = opts.title;
 
 			if (titleOpts) {
