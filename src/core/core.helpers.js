@@ -1045,8 +1045,11 @@ module.exports = function(Chart) {
 			helpers.color(colorValue).saturate(0.5).darken(0.1).rgbString();
 	};
 	helpers.replaceHtmlSpecialChars = function(string) {
-		return string.replace(/&#(\d{0,4});/g, function(fullStr, str) {
-			return String.fromCharCode(str);
-		});
+		if (typeof string === 'string') {
+			return string.replace(/&#(\d{0,4});/g, function(fullStr, str) {
+				return String.fromCharCode(str);
+			});
+		}
+		return string;
 	};
 };
