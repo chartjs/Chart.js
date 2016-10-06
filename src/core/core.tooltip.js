@@ -591,6 +591,7 @@ module.exports = function(Chart) {
 			}
 		},
 		drawBody: function(pt, vm, ctx, opacity) {
+			var me = this;
 			var bodyFontSize = vm.bodyFontSize;
 			var bodySpacing = vm.bodySpacing;
 			var body = vm.body;
@@ -632,7 +633,7 @@ module.exports = function(Chart) {
 						ctx.strokeRect(pt.x, pt.y, bodyFontSize, bodyFontSize);
 
 						// Inner square
-						ctx.fillStyle = helpers.color(vm.labelColors[i].backgroundColor).alpha(opacity).rgbaString();
+						ctx.fillStyle = helpers.color(me._data.datasets[i].backgroundColor).alpha(opacity).rgbaString();
 						ctx.fillRect(pt.x + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
 
 						ctx.fillStyle = textColor;
