@@ -630,6 +630,7 @@ module.exports = function(Chart) {
 				_data: me.data,
 				_options: me.options.tooltips
 			}, me);
+			me.tooltip.initialize();
 		},
 
 		bindEvents: function() {
@@ -711,14 +712,10 @@ module.exports = function(Chart) {
 
 			// Built in Tooltips
 			if (tooltipsOptions.enabled || tooltipsOptions.custom) {
-				tooltip.initialize();
 				tooltip._active = me.tooltipActive;
-				tooltip.update(true);
 			}
 
 			// Hover animations
-			tooltip.pivot();
-
 			if (!me.animating) {
 				// If entering, leaving, or changing elements, animate the change via pivot
 				if (!helpers.arrayEquals(me.active, me.lastActive) ||
@@ -728,6 +725,7 @@ module.exports = function(Chart) {
 
 					if (tooltipsOptions.enabled || tooltipsOptions.custom) {
 						tooltip.update(true);
+						tooltip.pivot();
 					}
 
 					// We only need to render at this point. Updating will cause scales to be
