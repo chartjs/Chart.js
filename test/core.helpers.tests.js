@@ -121,43 +121,12 @@ describe('Core helper tests', function() {
 		expect(merged).toEqual({
 			valueProp: 5,
 			valueProp2: null,
-			arrayProp: ['a', 'c', 3, 4, 5, 6],
+			arrayProp: ['a', 'c'],
 			objectProp: {
 				prop1: 'c',
 				prop2: 56,
 				prop3: 'prop3'
 			}
-		});
-	});
-
-	it('should merge arrays containing objects', function() {
-		var baseConfig = {
-			arrayProp: [{
-				prop1: 'abc',
-				prop2: 56
-			}],
-		};
-
-		var toMerge = {
-			arrayProp: [{
-				prop1: 'myProp1',
-				prop3: 'prop3'
-			}, 2, {
-				prop1: 'myProp1'
-			}],
-		};
-
-		var merged = helpers.configMerge(baseConfig, toMerge);
-		expect(merged).toEqual({
-			arrayProp: [{
-					prop1: 'myProp1',
-					prop2: 56,
-					prop3: 'prop3'
-				},
-				2, {
-					prop1: 'myProp1'
-				}
-			],
 		});
 	});
 
