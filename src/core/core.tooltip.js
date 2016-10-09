@@ -211,10 +211,8 @@ module.exports = function(Chart) {
 	function getTooltipSize(tooltip, model) {
 		var ctx = tooltip._chart.ctx;
 
-		var size = {
-			height: model.yPadding * 2, // Tooltip Padding
-			width: 0
-		};
+		var height = model.yPadding * 2; // Tooltip Padding
+		var width = 0;
 
 		// Count of all lines in the body
 		var body = model.body;
@@ -229,19 +227,19 @@ module.exports = function(Chart) {
 			bodyFontSize = model.bodyFontSize,
 			footerFontSize = model.footerFontSize;
 
-		size.height += titleLineCount * titleFontSize; // Title Lines
-		size.height += titleLineCount ? (titleLineCount - 1) * model.titleSpacing : 0; // Title Line Spacing
-		size.height += titleLineCount ? model.titleMarginBottom : 0; // Title's bottom Margin
-		size.height += combinedBodyLength * bodyFontSize; // Body Lines
-		size.height += combinedBodyLength ? (combinedBodyLength - 1) * model.bodySpacing : 0; // Body Line Spacing
-		size.height += footerLineCount ? model.footerMarginTop : 0; // Footer Margin
-		size.height += footerLineCount * (footerFontSize); // Footer Lines
-		size.height += footerLineCount ? (footerLineCount - 1) * model.footerSpacing : 0; // Footer Line Spacing
+		height += titleLineCount * titleFontSize; // Title Lines
+		height += titleLineCount ? (titleLineCount - 1) * model.titleSpacing : 0; // Title Line Spacing
+		height += titleLineCount ? model.titleMarginBottom : 0; // Title's bottom Margin
+		height += combinedBodyLength * bodyFontSize; // Body Lines
+		height += combinedBodyLength ? (combinedBodyLength - 1) * model.bodySpacing : 0; // Body Line Spacing
+		height += footerLineCount ? model.footerMarginTop : 0; // Footer Margin
+		height += footerLineCount * (footerFontSize); // Footer Lines
+		height += footerLineCount ? (footerLineCount - 1) * model.footerSpacing : 0; // Footer Line Spacing
 
 		// Title width
 		var widthPadding = 0;
 		var maxLineWidth = function(line) {
-			size.width = Math.max(size.width, ctx.measureText(line).width + widthPadding);
+			width = Math.max(width, ctx.measureText(line).width + widthPadding);
 		};
 
 		ctx.font = helpers.fontString(titleFontSize, model._titleFontStyle, model._titleFontFamily);
@@ -267,9 +265,12 @@ module.exports = function(Chart) {
 		helpers.each(model.footer, maxLineWidth);
 
 		// Add padding
-		size.width += 2 * model.xPadding;
+		width += 2 * model.xPadding;
 
-		return size;
+		return {
+			width: width,
+			height: height
+		};
 	}
 
 	/**
@@ -350,10 +351,8 @@ module.exports = function(Chart) {
 	 */
 	function getBackgroundPoint(vm, size, alignment) {
 		// Background Position
-		var pt = {
-			x: vm.x,
-			y: vm.y
-		};
+		var x = vm.x;
+		var y = vm.y;
 
 		var caretSize = vm.caretSize,
 			caretPadding = vm.caretPadding,
@@ -364,32 +363,35 @@ module.exports = function(Chart) {
 			radiusAndPadding = cornerRadius + caretPadding;
 
 		if (xAlign === 'right') {
-			pt.x -= size.width;
+			x -= size.width;
 		} else if (xAlign === 'center') {
-			pt.x -= (size.width / 2);
+			x -= (size.width / 2);
 		}
 
 		if (yAlign === 'top') {
-			pt.y += paddingAndSize;
+			y += paddingAndSize;
 		} else if (yAlign === 'bottom') {
-			pt.y -= size.height + paddingAndSize;
+			y -= size.height + paddingAndSize;
 		} else {
-			pt.y -= (size.height / 2);
+			y -= (size.height / 2);
 		}
 
 		if (yAlign === 'center') {
 			if (xAlign === 'left') {
-				pt.x += paddingAndSize;
+				x += paddingAndSize;
 			} else if (xAlign === 'right') {
-				pt.x -= paddingAndSize;
+				x -= paddingAndSize;
 			}
 		} else if (xAlign === 'left') {
-			pt.x -= radiusAndPadding;
+			x -= radiusAndPadding;
 		} else if (xAlign === 'right') {
-			pt.x += radiusAndPadding;
+			x += radiusAndPadding;
 		}
 
-		return pt;
+		return {
+			x: x,
+			y: y
+		};
 	}
 
 	Chart.Tooltip = Chart.Element.extend({
