@@ -757,30 +757,23 @@ module.exports = function(Chart) {
 			}
 
 			var i, len;
-			var xPositions = [];
-			var yPositions = [];
+			var x = 0;
+			var y = 0;
+			var count = 0;
 
 			for (i = 0, len = elements.length; i < len; ++i) {
 				var el = elements[i];
 				if (el && el.hasValue()) {
 					var pos = el.tooltipPosition();
-					xPositions.push(pos.x);
-					yPositions.push(pos.y);
-				}
-			}
-
-			var x = 0,
-				y = 0;
-			for (i = 0; i < xPositions.length; ++i) {
-				if (xPositions[i]) {
-					x += xPositions[i];
-					y += yPositions[i];
+					x += pos.x;
+					y += pos.y;
+					++count;
 				}
 			}
 
 			return {
-				x: Math.round(x / xPositions.length),
-				y: Math.round(y / xPositions.length)
+				x: Math.round(x / count),
+				y: Math.round(y / count)
 			};
 		},
 
