@@ -16,7 +16,7 @@ module.exports = function(Chart) {
 		enabled: true,
 		custom: null,
 		mode: 'nearest',
-		positionMode: 'average',
+		position: 'average',
 		intersect: true,
 		backgroundColor: 'rgba(0,0,0,0.8)',
 		titleFontStyle: 'bold',
@@ -472,7 +472,7 @@ module.exports = function(Chart) {
 				model.opacity = 1;
 
 				var labelColors = [],
-					tooltipPosition = Chart.Tooltip.modes[opts.positionMode](active, me._eventPosition);
+					tooltipPosition = Chart.Tooltip.positioners[opts.position](active, me._eventPosition);
 
 				var tooltipItems = [];
 				for (i = 0, len = active.length; i < len; ++i) {
@@ -742,12 +742,12 @@ module.exports = function(Chart) {
 	});
 
 	/**
-	 * @namespace Chart.Tooltip.modes
+	 * @namespace Chart.Tooltip.positioners
 	 */
-	Chart.Tooltip.modes = {
+	Chart.Tooltip.positioners = {
 		/**
 		 * Average mode places the tooltip at the average position of the elements shown
-		 * @function Chart.Tooltip.modes.average
+		 * @function Chart.Tooltip.positioners.average
 		 * @param elements {ChartElement[]} the elements being displayed in the tooltip
 		 * @returns {Point} tooltip position
 		 */
@@ -779,6 +779,7 @@ module.exports = function(Chart) {
 
 		/**
 		 * Gets the tooltip position nearest of the item nearest to the event position
+		 * @function Chart.Tooltip.positioners.nearest
 		 * @param elements {Chart.Element[]} the tooltip elements
 		 * @param eventPosition {Point} the position of the event in canvas coordinates
 		 * @returns {Point} the tooltip position
