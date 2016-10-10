@@ -713,25 +713,22 @@ module.exports = function(Chart) {
 			// Built in Tooltips
 			if (tooltipsOptions.enabled || tooltipsOptions.custom) {
 				tooltip._active = me.tooltipActive;
+				tooltip._eventPosition = helpers.getRelativePosition(e, me.chart);
 			}
 
 			// Hover animations
 			if (!me.animating) {
 				// If entering, leaving, or changing elements, animate the change via pivot
-				if (!helpers.arrayEquals(me.active, me.lastActive) ||
-					!helpers.arrayEquals(me.tooltipActive, me.lastTooltipActive)) {
+				me.stop();
 
-					me.stop();
-
-					if (tooltipsOptions.enabled || tooltipsOptions.custom) {
-						tooltip.update(true);
-						tooltip.pivot();
-					}
-
-					// We only need to render at this point. Updating will cause scales to be
-					// recomputed generating flicker & using more memory than necessary.
-					me.render(hoverOptions.animationDuration, true);
+				if (tooltipsOptions.enabled || tooltipsOptions.custom) {
+					tooltip.update(true);
+					tooltip.pivot();
 				}
+
+				// We only need to render at this point. Updating will cause scales to be
+				// recomputed generating flicker & using more memory than necessary.
+				me.render(hoverOptions.animationDuration, true);
 			}
 
 			// Remember Last Actives
