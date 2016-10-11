@@ -162,11 +162,14 @@ module.exports = function(Chart) {
 
 		calculateBarWidth: function(index) {
 			var xScale = this.getScaleForId(this.getMeta().xAxisID);
-			if (xScale.options.barThickness) {
-				return xScale.options.barThickness;
-			}
 			var ruler = this.getRuler(index);
-			return xScale.options.stacked ? ruler.categoryWidth : ruler.barWidth;
+			var maxBarThickness = xScale.options.maxBarThickness;
+			var calculatedBarThickness = xScale.options.stacked ? ruler.categoryWidth : ruler.barWidth;
+			if (maxBarThickness) {
+				return calculatedBarThickness > maxBarThickness ? maxBarThickness : calculatedBarThickness;
+			} else {
+				return calculatedBarThickness;
+			}
 		},
 
 		// Get bar index from the given dataset index accounting for the fact that not all bars are visible
@@ -493,11 +496,14 @@ module.exports = function(Chart) {
 		calculateBarHeight: function(index) {
 			var me = this;
 			var yScale = me.getScaleForId(me.getMeta().yAxisID);
-			if (yScale.options.barThickness) {
-				return yScale.options.barThickness;
-			}
 			var ruler = me.getRuler(index);
-			return yScale.options.stacked ? ruler.categoryHeight : ruler.barHeight;
+			var maxBarThickness = yScale.options.maxBarThickness;
+			var calculatedBarThickness = yScale.options.stacked ? ruler.categoryHeight : ruler.barHeight;
+			if (maxBarThickness) {
+				return calculatedBarThickness > maxBarThickness ? maxBarThickness : calculatedBarThickness;
+			} else {
+				return calculatedBarThickness;
+			}
 		},
 
 		calculateBarX: function(index, datasetIndex) {
