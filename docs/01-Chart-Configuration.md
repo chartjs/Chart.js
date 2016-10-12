@@ -394,6 +394,7 @@ borderJoinStyle | String | 'miter' | Default line join style. See [MDN](https://
 capBezierPoints | Boolean | true | If true, bezier control points are kept inside the chart. If false, no restriction is enforced.
 fill | Boolean | true | If true, the line is filled.
 stepped | Boolean | false | If true, the line is shown as a stepped line and 'tension' will be ignored
+fillMode | String | 'zero' | 'zero' fills to the 0 mark of the scale. 'top' fills to the top of the chart and 'bottom' fills to bottom of the chart
 
 #### Point Configuration
 

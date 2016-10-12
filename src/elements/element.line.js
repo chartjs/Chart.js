@@ -15,7 +15,8 @@ module.exports = function(Chart) {
 		borderDashOffset: 0.0,
 		borderJoinStyle: 'miter',
 		capBezierPoints: true,
-		fill: true // do we fill in the area between the line and its base axis
+		fill: true, // do we fill in the area between the line and its base axis
+		fillMode: 'zero'
 	};
 
 	Chart.elements.Line = Chart.Element.extend({
@@ -25,6 +26,15 @@ module.exports = function(Chart) {
 			var spanGaps = vm.spanGaps;
 			var scaleZero = vm.scaleZero;
 			var loop = me._loop;
+
+			// Handle different fill modes for cartesian lines
+			if (!loop) {
+				if (vm.fillMode === 'top') {
+					scaleZero = vm.scaleTop;
+				} else if (vm.fillMode === 'bottom') {
+					scaleZero = vm.scaleBottom;
+				}
+			}
 
 			var ctx = me._chart.ctx;
 			ctx.save();
