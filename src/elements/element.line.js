@@ -16,7 +16,6 @@ module.exports = function(Chart) {
 		borderJoinStyle: 'miter',
 		capBezierPoints: true,
 		fill: true, // do we fill in the area between the line and its base axis
-		fillMode: 'zero'
 	};
 
 	Chart.elements.Line = Chart.Element.extend({
@@ -29,9 +28,9 @@ module.exports = function(Chart) {
 
 			// Handle different fill modes for cartesian lines
 			if (!loop) {
-				if (vm.fillMode === 'top') {
+				if (vm.fill === 'top') {
 					fillPoint = vm.scaleTop;
-				} else if (vm.fillMode === 'bottom') {
+				} else if (vm.fill === 'bottom') {
 					fillPoint = vm.scaleBottom;
 				}
 			}

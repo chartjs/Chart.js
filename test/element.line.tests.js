@@ -587,8 +587,7 @@ describe('Line element tests', function() {
 			_children: points,
 			// Need to provide some settings
 			_view: {
-				fill: true,
-				fillMode: 'top',
+				fill: 'top',
 				scaleZero: 2, // for filling lines
 				scaleTop: -2,
 				scaleBottom: 10,
@@ -744,8 +743,7 @@ describe('Line element tests', function() {
 			_children: points,
 			// Need to provide some settings
 			_view: {
-				fill: true,
-				fillMode: 'bottom',
+				fill: 'bottom',
 				scaleZero: 2, // for filling lines
 				scaleTop: -2,
 				scaleBottom: 10,
