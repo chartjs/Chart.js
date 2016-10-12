@@ -24,15 +24,15 @@ module.exports = function(Chart) {
 			var me = this;
 			var vm = me._view;
 			var spanGaps = vm.spanGaps;
-			var scaleZero = vm.scaleZero;
+			var fillPoint = vm.scaleZero;
 			var loop = me._loop;
 
 			// Handle different fill modes for cartesian lines
 			if (!loop) {
 				if (vm.fillMode === 'top') {
-					scaleZero = vm.scaleTop;
+					fillPoint = vm.scaleTop;
 				} else if (vm.fillMode === 'bottom') {
-					scaleZero = vm.scaleBottom;
+					fillPoint = vm.scaleBottom;
 				}
 			}
 
@@ -81,9 +81,9 @@ module.exports = function(Chart) {
 					// First point moves to it's starting position no matter what
 					if (index === 0) {
 						if (loop) {
-							ctx.moveTo(scaleZero.x, scaleZero.y);
+							ctx.moveTo(fillPoint.x, fillPoint.y);
 						} else {
-							ctx.moveTo(currentVM.x, scaleZero);
+							ctx.moveTo(currentVM.x, fillPoint);
 						}
 
 						if (!currentVM.skip) {
@@ -97,9 +97,9 @@ module.exports = function(Chart) {
 							// Only do this if this is the first point that is skipped
 							if (!spanGaps && lastDrawnIndex === (index - 1)) {
 								if (loop) {
-									ctx.lineTo(scaleZero.x, scaleZero.y);
+									ctx.lineTo(fillPoint.x, fillPoint.y);
 								} else {
-									ctx.lineTo(previous._view.x, scaleZero);
+									ctx.lineTo(previous._view.x, fillPoint);
 								}
 							}
 						} else {
@@ -112,7 +112,7 @@ module.exports = function(Chart) {
 								} else if (loop) {
 									ctx.lineTo(currentVM.x, currentVM.y);
 								} else {
-									ctx.lineTo(currentVM.x, scaleZero);
+									ctx.lineTo(currentVM.x, fillPoint);
 									ctx.lineTo(currentVM.x, currentVM.y);
 								}
 							} else {
@@ -125,7 +125,7 @@ module.exports = function(Chart) {
 				}
 
 				if (!loop && lastDrawnIndex !== -1) {
-					ctx.lineTo(points[lastDrawnIndex]._view.x, scaleZero);
+					ctx.lineTo(points[lastDrawnIndex]._view.x, fillPoint);
 				}
 
 				ctx.fillStyle = vm.backgroundColor || globalDefaults.defaultColor;
