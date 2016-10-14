@@ -730,7 +730,9 @@ module.exports = function(Chart) {
 
 					// We only need to render at this point. Updating will cause scales to be
 					// recomputed generating flicker & using more memory than necessary.
-					me.render(hoverOptions.animationDuration, true);
+					if (hoverOptions.mode !== false) {
+						me.render(hoverOptions.animationDuration, true);
+					}
 				}
 			}
 
