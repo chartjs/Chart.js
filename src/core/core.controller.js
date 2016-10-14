@@ -156,7 +156,7 @@ module.exports = function(Chart) {
 		me.chart = instance;
 		me.config = config;
 		me.options = config.options;
-		me._bufferedUpdate = false;
+		me._bufferedRender = false;
 
 		// Add the chart instance to the global namespace
 		Chart.instances[me.id] = me;
@@ -404,7 +404,7 @@ module.exports = function(Chart) {
 			// Do this before render so that any plugins that need final scale updates can use it
 			Chart.plugins.notify('afterUpdate', [me]);
 
-			if (!me._bufferedUpdate) {
+			if (!me._bufferedRender) {
 				me.render(animationDuration, lazy);
 			}
 		},
@@ -660,7 +660,7 @@ module.exports = function(Chart) {
 			var hoverOptions = me.options.hover;
 
 			// Buffer any update calls so that renders do not occur
-			me._bufferedUpdate = true;
+			me._bufferedRender = true;
 
 			var changed = me.handleEvent(e);
 			changed |= me.legend.handleEvent(e);
@@ -675,7 +675,7 @@ module.exports = function(Chart) {
 				me.render(hoverOptions.animationDuration, true);
 			}
 
-			me._bufferedUpdate = false;
+			me._bufferedRender = false;
 			return me;
 		},
 
