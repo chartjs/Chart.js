@@ -167,13 +167,8 @@ module.exports = function(Chart) {
 		convertTicksToLabels: function() {
 			var me = this;
 			// Convert ticks to strings
-			me.ticks = me.ticks.map(function(numericalTick, index, ticks) {
-				if (me.options.ticks.userCallback) {
-					return me.options.ticks.userCallback(numericalTick, index, ticks);
-				}
-				return me.options.ticks.callback(numericalTick, index, ticks);
-			},
-			me);
+			var tickOpts = me.options.ticks;
+			me.ticks = me.ticks.map(tickOpts.userCallback || tickOpts.callback);
 		},
 		afterTickToLabelConversion: function() {
 			helpers.callCallback(this.options.afterTickToLabelConversion, [this]);
