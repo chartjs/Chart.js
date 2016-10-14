@@ -210,9 +210,11 @@ module.exports = function(Chart) {
 
 		draw: function(ease) {
 			var easingDecimal = ease || 1;
-			helpers.each(this.getMeta().data, function(element) {
-				element.transition(easingDecimal).draw();
-			});
+			var i, len;
+			var metaData = this.getMeta().data;
+			for (i = 0, len = metaData.length; i < len; ++i) {
+				metaData[i].transition(easingDecimal).draw();
+			}
 		},
 
 		removeHoverStyle: function(element, elementOpts) {

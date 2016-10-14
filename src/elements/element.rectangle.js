@@ -95,9 +95,12 @@ module.exports = function(Chart) {
 			}
 
 			// Draw rectangle from 'startCorner'
-			ctx.moveTo.apply(ctx, cornerAt(0));
+			var corner = cornerAt(0);
+			ctx.moveTo(corner[0], corner[1]);
+
 			for (var i = 1; i < 4; i++) {
-				ctx.lineTo.apply(ctx, cornerAt(i));
+				corner = cornerAt(i);
+				ctx.lineTo(corner[0], corner[1]);
 			}
 
 			ctx.fill();
