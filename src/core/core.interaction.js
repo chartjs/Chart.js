@@ -57,15 +57,17 @@ module.exports = function(Chart) {
 		var minDistance = Number.POSITIVE_INFINITY;
 		var nearestItems = [];
 
+		if (!distanceMetric) {
+			distanceMetric = helpers.distanceBetweenPoints;
+		}
+
 		parseVisibleItems(chart, function(element) {
 			if (intersect && !element.inRange(position.x, position.y)) {
 				return;
 			}
 
 			var center = element.getCenterPoint();
-			var distance = distanceMetric ?
-							distanceMetric(position, center) :
-							Math.round(helpers.distanceBetweenPoints(position, center));
+			var distance = distanceMetric(position, center);
 
 			if (distance < minDistance) {
 				nearestItems = [element];
