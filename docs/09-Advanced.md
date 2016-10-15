@@ -165,6 +165,8 @@ var myPieChart = new Chart(ctx, {
 				// tooltip.text
 				// tooltip.x
 				// tooltip.y
+				// tooltip.caretX
+				// tooltip.caretY
 				// etc...
 			}
 		}
