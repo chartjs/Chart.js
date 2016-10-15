@@ -833,7 +833,7 @@ module.exports = function(Chart) {
 				var el = elements[i];
 				if (el && el.hasValue()) {
 					var center = el.getCenterPoint();
-					var d = Math.abs(center.x - eventPosition.x);
+					var d = helpers.distanceBetweenPoints(eventPosition, center);
 
 					if (d < minDistance) {
 						minDistance = d;
