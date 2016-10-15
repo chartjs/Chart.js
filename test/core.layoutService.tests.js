@@ -5,7 +5,7 @@ describe('Test the layout service', function() {
 			type: 'bar',
 			data: {
 				datasets: [
-					{ data: [10, 5, 0, 25, 78, -10] }
+					{data: [10, 5, 0, 25, 78, -10]}
 				],
 				labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5', 'tick6']
 			},
@@ -53,7 +53,7 @@ describe('Test the layout service', function() {
 			type: 'bar',
 			data: {
 				datasets: [
-					{ data: [10, 5, 0, 25, 78, -10] }
+					{data: [10, 5, 0, 25, 78, -10]}
 				],
 				labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5', 'tick6']
 			},
@@ -121,7 +121,7 @@ describe('Test the layout service', function() {
 		expect(chart.scale.right).toBeCloseToPixel(512);
 		expect(chart.scale.top).toBeCloseToPixel(32);
 		expect(chart.scale.width).toBeCloseToPixel(512);
-		expect(chart.scale.height).toBeCloseToPixel(480)
+		expect(chart.scale.height).toBeCloseToPixel(480);
 	});
 
 	it('should fit multiple axes in the same position', function() {
