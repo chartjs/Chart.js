@@ -158,54 +158,82 @@
 		};
 	}
 
+	function toBeValidChart() {
+		return {
+			compare: function(actual) {
+				var chart = actual && actual.chart;
+				var message = null;
+
+				if (!(actual instanceof Chart.Controller)) {
+					message = 'Expected ' + actual + ' to be an instance of Chart.Controller';
+				} else if (!(chart instanceof Chart)) {
+					message = 'Expected chart to be an instance of Chart';
+				} else if (!(chart.canvas instanceof HTMLCanvasElement)) {
+					message = 'Expected canvas to be an instance of HTMLCanvasElement';
+				} else if (!(chart.ctx instanceof CanvasRenderingContext2D)) {
+					message = 'Expected context to be an instance of CanvasRenderingContext2D';
+				} else if (typeof chart.height !== 'number' || !isFinite(chart.height)) {
+					message = 'Expected height to be a strict finite number';
+				} else if (typeof chart.width !== 'number' || !isFinite(chart.width)) {
+					message = 'Expected width to be a strict finite number';
+				}
+
+				return {
+					message: message? message : 'Expected ' + actual + ' to be valid chart',
+					pass: !message
+				};
+			}
+		};
+	}
+
 	function toBeChartOfSize() {
 		return {
 			compare: function(actual, expected) {
+				var res = toBeValidChart().compare(actual);
+				if (!res.pass) {
+					return res;
+				}
+
 				var message = null;
-				var chart, canvas, style, dh, dw, rh, rw;
+				var chart = actual.chart;
+				var canvas = chart.ctx.canvas;
+				var style = getComputedStyle(canvas);
+				var dh = parseInt(style.height, 10);
+				var dw = parseInt(style.width, 10);
+				var rh = canvas.height;
+				var rw = canvas.width;
 
-				if (!actual || !(actual instanceof Chart.Controller)) {
-					message = 'Expected ' + actual + ' to be an instance of Chart.Controller.';
-				} else {
-					chart = actual.chart;
-					canvas = chart.ctx.canvas;
-					style = getComputedStyle(canvas);
-					dh = parseInt(style.height);
-					dw = parseInt(style.width);
-					rh = canvas.height;
-					rw = canvas.width;
+				// sanity checks
+				if (chart.height !== rh) {
+					message = 'Expected chart height ' + chart.height + ' to be equal to render height ' + rh;
+				} else if (chart.width !== rw) {
+					message = 'Expected chart width ' + chart.width + ' to be equal to render width ' + rw;
+				}
 
-					// sanity checks
-					if (chart.height !== rh) {
-						message = 'Expected chart height ' + chart.height + ' to be equal to render height ' + rh;
-					} else if (chart.width !== rw) {
-						message = 'Expected chart width ' + chart.width + ' to be equal to render width ' + rw;
-					}
-
-					// validity checks
-					if (dh !== expected.dh) {
-						message = 'Expected display height ' + dh + ' to be equal to ' + expected.dh;
-					} else if (dw !== expected.dw) {
-						message = 'Expected display width ' + dw + ' to be equal to ' + expected.dw;
-					} else if (rh !== expected.rh) {
-						message = 'Expected render height ' + rh + ' to be equal to ' + expected.rh;
-					} else if (rw !== expected.rw) {
-						message = 'Expected render width ' + rw + ' to be equal to ' + expected.rw;
-					}
+				// validity checks
+				if (dh !== expected.dh) {
+					message = 'Expected display height ' + dh + ' to be equal to ' + expected.dh;
+				} else if (dw !== expected.dw) {
+					message = 'Expected display width ' + dw + ' to be equal to ' + expected.dw;
+				} else if (rh !== expected.rh) {
+					message = 'Expected render height ' + rh + ' to be equal to ' + expected.rh;
+				} else if (rw !== expected.rw) {
+					message = 'Expected render width ' + rw + ' to be equal to ' + expected.rw;
 				}
 
 				return {
 					message: message? message : 'Expected ' + actual + ' to be a chart of size ' + expected,
 					pass: !message
-				}
+				};
 			}
-		}
+		};
 	}
 
 	beforeEach(function() {
 		jasmine.addMatchers({
 			toBeCloseToPixel: toBeCloseToPixel,
 			toEqualOneOf: toEqualOneOf,
+			toBeValidChart: toBeValidChart,
 			toBeChartOfSize: toBeChartOfSize
 		});
 	});
