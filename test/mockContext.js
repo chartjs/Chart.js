@@ -1,4 +1,6 @@
 /* eslint no-unused-vars: 1 */
+/* eslint guard-for-in: 1 */
+/* eslint camelcase: 1 */
 (function() {
 	// Code from http://stackoverflow.com/questions/4406864/html-canvas-unit-testing
 	var Context = function() {
@@ -112,11 +114,9 @@
 		};
 
 		for (methodName in methods) {
-			if ({}.hasOwnProperty.call(methods, methodName)) {
-				var method = methods[methodName];
+			var method = methods[methodName];
 
-				addMethod(methodName, method);
-			}
+			addMethod(methodName, method);
 		}
 	};
 
@@ -270,8 +270,8 @@
 		window.document.body.appendChild(wrapper);
 
 		chart = new Chart(canvas.getContext('2d'), config);
-		chart.testPersistent = options.persistent;
-		chart.testWrapper = wrapper;
+		chart._test_persistent = options.persistent;
+		chart._test_wrapper = wrapper;
 		charts[chart.id] = chart;
 		return chart;
 	}
@@ -285,11 +285,9 @@
 	afterEach(function() {
 		// Auto releasing acquired charts
 		for (var id in charts) {
-			if ({}.hasOwnProperty.call(charts, id)) {
-				var chart = charts[id];
-				if (!chart._test_persistent) {
-					releaseChart(chart);
-				}
+			var chart = charts[id];
+			if (!chart._test_persistent) {
+				releaseChart(chart);
 			}
 		}
 	});
