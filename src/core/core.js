@@ -7,7 +7,7 @@ module.exports = function() {
 		var me = this;
 
 		// Support a jQuery'd canvas element
-		if (context.length && context[0].getContext) {
+		if (typeof(jQuery) === 'function' && context instanceof jQuery) {
 			context = context[0];
 		}
 
