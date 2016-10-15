@@ -4,7 +4,75 @@ describe('Chart.Controller', function() {
 		setTimeout(callback, 100);
 	}
 
-	describe('config', function() {
+	describe('context acquisition', function() {
+		var canvasId = 'chartjs-canvas';
+
+		beforeEach(function() {
+			var canvas = document.createElement('canvas');
+			canvas.setAttribute('id', canvasId);
+			window.document.body.appendChild(canvas);
+		});
+
+		afterEach(function() {
+			document.getElementById(canvasId).remove();
+		});
+
+		// see https://github.com/chartjs/Chart.js/issues/2807
+		it('should gracefully handle invalid item', function() {
+			var chart = new Chart('foobar');
+
+			expect(chart).not.toBeValidChart();
+
+			chart.destroy();
+		});
+
+		it('should accept a DOM element id', function() {
+			var canvas = document.getElementById(canvasId);
+			var chart = new Chart(canvasId);
+
+			expect(chart).toBeValidChart();
+			expect(chart.chart.canvas).toBe(canvas);
+			expect(chart.chart.ctx).toBe(canvas.getContext('2d'));
+
+			chart.destroy();
+		});
+
+		it('should accept a canvas element', function() {
+			var canvas = document.getElementById(canvasId);
+			var chart = new Chart(canvas);
+
+			expect(chart).toBeValidChart();
+			expect(chart.chart.canvas).toBe(canvas);
+			expect(chart.chart.ctx).toBe(canvas.getContext('2d'));
+
+			chart.destroy();
+		});
+
+		it('should accept a canvas context2D', function() {
+			var canvas = document.getElementById(canvasId);
+			var context = canvas.getContext('2d');
+			var chart = new Chart(context);
+
+			expect(chart).toBeValidChart();
+			expect(chart.chart.canvas).toBe(canvas);
+			expect(chart.chart.ctx).toBe(context);
+
+			chart.destroy();
+		});
+
+		it('should accept an array containing canvas', function() {
+			var canvas = document.getElementById(canvasId);
+			var chart = new Chart([canvas]);
+
+			expect(chart).toBeValidChart();
+			expect(chart.chart.canvas).toBe(canvas);
+			expect(chart.chart.ctx).toBe(canvas.getContext('2d'));
+
+			chart.destroy();
+		});
+	});
+
+	describe('config initialization', function() {
 		it('should create missing config.data properties', function() {
 			var chart = acquireChart({});
 			var data = chart.data;

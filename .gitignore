@@ -6,4 +6,5 @@
 
 .DS_Store
 .idea
+.vscode
 bower.json
