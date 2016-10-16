@@ -34,6 +34,14 @@ myLineChart.data.datasets[0].data[2] = 50; // Would update the first dataset's v
 myLineChart.update(); // Calling update now animates the position of March from 90 to 50.
 ```
 
+#### .reset()
+
+Reset the chart to it's state before the initial animation. A new animation can then be triggered using `update`.
+
+```javascript
+myLineChart.reset();
+```
+
 #### .render(duration, lazy)
 
 Triggers a redraw of all chart elements. Note, this does not update elements for new data. Use `.update()` in that case.
