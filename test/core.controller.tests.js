@@ -666,4 +666,38 @@ describe('Chart.Controller', function() {
 			expect(wrapper.firstChild.tagName).toBe('CANVAS');
 		});
 	});
+
+	describe('controller.reset', function() {
+		it('should reset the chart elements', function() {
+			var chart = acquireChart({
+				type: 'line',
+				data: {
+					labels: ['A', 'B', 'C', 'D'],
+					datasets: [{
+						data: [10, 20, 30, 0]
+					}]
+				},
+				options: {
+					responsive: true
+				}
+			});
+
+			var meta = chart.getDatasetMeta(0);
+
+			// Verify that points are at their initial correct location,
+			// then we will reset and see that they moved
+			expect(meta.data[0]._model.y).toBe(333);
+			expect(meta.data[1]._model.y).toBe(183);
+			expect(meta.data[2]._model.y).toBe(32);
+			expect(meta.data[3]._model.y).toBe(484);
+
+			chart.reset();
+
+			// For a line chart, the animation state is the bottom
+			expect(meta.data[0]._model.y).toBe(484);
+			expect(meta.data[1]._model.y).toBe(484);
+			expect(meta.data[2]._model.y).toBe(484);
+			expect(meta.data[3]._model.y).toBe(484);
+		});
+	});
 });
