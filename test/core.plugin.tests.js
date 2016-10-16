@@ -75,24 +75,52 @@ describe('Chart.plugins', function() {
 			};
 
 			Chart.plugins.register(myplugin);
-			Chart.plugins.notify('trigger', [{ count: 10 }]);
+			Chart.plugins.notify('trigger', [{count: 10}]);
 			expect(myplugin.count).toBe(10);
 		});
 
 		it('should return TRUE if no plugin explicitly returns FALSE', function() {
-			Chart.plugins.register({ check: function() {} });
-			Chart.plugins.register({ check: function() { return; } });
-			Chart.plugins.register({ check: function() { return null; } });
-			Chart.plugins.register({ check: function() { return 42 } });
+			Chart.plugins.register({
+				check: function() {}
+			});
+			Chart.plugins.register({
+				check: function() {
+					return;
+				}
+			});
+			Chart.plugins.register({
+				check: function() {
+					return null;
+				}
+			});
+			Chart.plugins.register({
+				check: function() {
+					return 42;
+				}
+			});
 			var res = Chart.plugins.notify('check');
 			expect(res).toBeTruthy();
 		});
 
 		it('should return FALSE if no plugin explicitly returns FALSE', function() {
-			Chart.plugins.register({ check: function() {} });
-			Chart.plugins.register({ check: function() { return; } });
-			Chart.plugins.register({ check: function() { return false; } });
-			Chart.plugins.register({ check: function() { return 42 } });
+			Chart.plugins.register({
+				check: function() {}
+			});
+			Chart.plugins.register({
+				check: function() {
+					return;
+				}
+			});
+			Chart.plugins.register({
+				check: function() {
+					return false;
+				}
+			});
+			Chart.plugins.register({
+				check: function() {
+					return 42;
+				}
+			});
 			var res = Chart.plugins.notify('check');
 			expect(res).toBeFalsy();
 		});

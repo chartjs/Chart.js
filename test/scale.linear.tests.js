@@ -11,7 +11,7 @@ describe('Linear Scale', function() {
 			display: true,
 
 			gridLines: {
-				color: "rgba(0, 0, 0, 0.1)",
+				color: 'rgba(0, 0, 0, 0.1)',
 				drawBorder: true,
 				drawOnChartArea: true,
 				drawTicks: true, // draw ticks extending towards the label
@@ -19,12 +19,12 @@ describe('Linear Scale', function() {
 				lineWidth: 1,
 				offsetGridLines: false,
 				display: true,
-				zeroLineColor: "rgba(0,0,0,0.25)",
+				zeroLineColor: 'rgba(0,0,0,0.25)',
 				zeroLineWidth: 1,
 				borderDash: [],
 				borderDashOffset: 0.0
 			},
-			position: "left",
+			position: 'left',
 			scaleLabel: {
 				labelString: '',
 				display: false,

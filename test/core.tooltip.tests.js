@@ -342,7 +342,7 @@ describe('Core.Tooltip', function() {
 							return 'title';
 						},
 						afterTitle: function() {
-							return 'afterTitle'
+							return 'afterTitle';
 						},
 						beforeBody: function() {
 							return 'beforeBody';
@@ -366,7 +366,7 @@ describe('Core.Tooltip', function() {
 							return 'footer';
 						},
 						afterFooter: function() {
-							return 'afterFooter'
+							return 'afterFooter';
 						}
 					}
 				}
@@ -493,9 +493,6 @@ describe('Core.Tooltip', function() {
 		// Trigger an event over top of the
 		var meta0 = chartInstance.getDatasetMeta(0);
 		var point0 = meta0.data[1];
-
-		var meta1 = chartInstance.getDatasetMeta(1);
-		var point1 = meta1.data[1];
 
 		var node = chartInstance.chart.canvas;
 		var rect = node.getBoundingClientRect();

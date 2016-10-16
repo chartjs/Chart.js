@@ -22,6 +22,7 @@ var package = require('./package.json');
 
 var srcDir = './src/';
 var outDir = './dist/';
+var testDir = './test/';
 
 var header = "/*!\n" +
   " * Chart.js\n" +
@@ -132,6 +133,7 @@ function packageTask() {
 function lintTask() {
   var files = [
     srcDir + '**/*.js',
+    testDir + '**/*.js'
   ];
 
   // NOTE(SB) codeclimate has 'complexity' and 'max-statements' eslint rules way too strict
@@ -141,7 +143,21 @@ function lintTask() {
     rules: {
       'complexity': [1, 6],
       'max-statements': [1, 30]
-    }
+    },
+    globals: [
+      'Chart',
+      'acquireChart',
+      'afterAll',
+      'afterEach',
+      'beforeAll',
+      'beforeEach',
+      'describe',
+      'expect',
+      'it',
+      'jasmine',
+      'moment',
+      'spyOn'
+    ]
   };
 
   return gulp.src(files)

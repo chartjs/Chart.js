@@ -1,6 +1,6 @@
 // Test the bubble chart default config
-describe("Default Configs", function() {
-	describe("Bubble Chart", function() {
+describe('Default Configs', function() {
+	describe('Bubble Chart', function() {
 		it('should return correct tooltip strings', function() {
 			var config = Chart.defaults.bubble;
 			var chart = window.acquireChart({
@@ -22,7 +22,7 @@ describe("Default Configs", function() {
 			chart.tooltip._active = [chart.getDatasetMeta(0).data[0]];
 			chart.tooltip.update();
 
-			// Title is always blank 
+			// Title is always blank
 			expect(chart.tooltip._model.title).toEqual([]);
 			expect(chart.tooltip._model.body).toEqual([{
 				before: [],
@@ -50,7 +50,7 @@ describe("Default Configs", function() {
 			chart.tooltip._active = [chart.getDatasetMeta(0).data[1]];
 			chart.tooltip.update();
 
-			// Title is always blank 
+			// Title is always blank
 			expect(chart.tooltip._model.title).toEqual([]);
 			expect(chart.tooltip._model.body).toEqual([{
 				before: [],
@@ -76,7 +76,7 @@ describe("Default Configs", function() {
 			chart.tooltip._active = [chart.getDatasetMeta(0).data[1]];
 			chart.tooltip.update();
 
-			// Title is always blank 
+			// Title is always blank
 			expect(chart.tooltip._model.title).toEqual([]);
 			expect(chart.tooltip._model.body).toEqual([{
 				before: [],
@@ -196,7 +196,7 @@ describe("Default Configs", function() {
 			chart.tooltip._active = [chart.getDatasetMeta(0).data[1]];
 			chart.tooltip.update();
 
-			// Title is always blank 
+			// Title is always blank
 			expect(chart.tooltip._model.title).toEqual([]);
 			expect(chart.tooltip._model.body).toEqual([{
 				before: [],
@@ -280,7 +280,7 @@ describe("Default Configs", function() {
 				options: config
 			});
 			var meta = chart.getDatasetMeta(0);
-			
+
 			spyOn(chart, 'update').and.callThrough();
 
 			var legendItem = chart.legend.legendItems[0];

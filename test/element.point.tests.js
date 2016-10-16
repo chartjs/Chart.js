@@ -91,7 +91,7 @@ describe('Point element tests', function() {
 			y: 10
 		};
 
-		expect(point.getCenterPoint()).toEqual({ x: 10, y: 10 });
+		expect(point.getCenterPoint()).toEqual({x: 10, y: 10});
 	});
 
 	it ('should draw correctly', function() {
@@ -275,7 +275,7 @@ describe('Point element tests', function() {
 		}, {
 			name: 'lineTo',
 			args: [12, 15],
-		},{
+		}, {
 			name: 'closePath',
 			args: [],
 		}, {
@@ -347,7 +347,7 @@ describe('Point element tests', function() {
 		}, {
 			name: 'lineTo',
 			args: [12, 15],
-		},{
+		}, {
 			name: 'moveTo',
 			args: [10 - Math.cos(Math.PI / 4) * 2, 15 - Math.sin(Math.PI / 4) * 2]
 		}, {

@@ -32,8 +32,6 @@ describe('Radar controller tests', function() {
 			}
 		});
 
-		var controller = new Chart.controllers.radar(chart, 0);
-
 		var meta = chart.getDatasetMeta(0);
 		expect(meta.dataset instanceof Chart.elements.Line).toBe(true); // line element
 		expect(meta.data.length).toBe(4); // 4 points created
@@ -130,10 +128,10 @@ describe('Radar controller tests', function() {
 		}));
 
 		[
-			{ x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
-			{ x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
-			{ x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
-			{ x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
+			{x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
+			{x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
+			{x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
+			{x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(expected.y);
@@ -157,10 +155,10 @@ describe('Radar controller tests', function() {
 		meta.controller.update();
 
 		[
-			{ x: 256, y: 133, cppx: 246, cppy: 133, cpnx: 272, cpny: 133 },
-			{ x: 464, y: 272, cppx: 464, cppy: 264, cpnx: 464, cpny: 278 },
-			{ x: 256, y: 272, cppx: 276.9, cppy: 272, cpnx: 250.4, cpny: 272 },
-			{ x: 200, y: 272, cppx: 200, cppy: 275, cpnx: 200, cpny: 261 },
+			{x: 256, y: 133, cppx: 246, cppy: 133, cpnx: 272, cpny: 133},
+			{x: 464, y: 272, cppx: 464, cppy: 264, cpnx: 464, cpny: 278},
+			{x: 256, y: 272, cppx: 276.9, cppy: 272, cpnx: 250.4, cpny: 272},
+			{x: 200, y: 272, cppx: 200, cppy: 275, cpnx: 200, cpny: 261},
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(expected.y);
@@ -218,10 +216,10 @@ describe('Radar controller tests', function() {
 
 		// Since tension is now 0, we don't care about the control points
 		[
-			{ x: 256, y: 133 },
-			{ x: 464, y: 272 },
-			{ x: 256, y: 272 },
-			{ x: 200, y: 272 },
+			{x: 256, y: 133},
+			{x: 464, y: 272},
+			{x: 256, y: 272},
+			{x: 200, y: 272},
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(expected.y);

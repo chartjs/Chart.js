@@ -163,7 +163,7 @@ describe('Rectangle element tests', function() {
 			y: 15
 		};
 
-		expect(rectangle.getCenterPoint()).toEqual({ x: 10, y: 7.5 });
+		expect(rectangle.getCenterPoint()).toEqual({x: 10, y: 7.5});
 	});
 
 	it ('should draw correctly', function() {
@@ -276,10 +276,10 @@ describe('Rectangle element tests', function() {
 		}]);
 	});
 
-	function testBorderSkipped (borderSkipped, expectedDrawCalls) {
+	function testBorderSkipped(borderSkipped, expectedDrawCalls) {
 		var mockContext = window.createMockContext();
 		var rectangle = new Chart.elements.Rectangle({
-			_chart: { ctx: mockContext }
+			_chart: {ctx: mockContext}
 		});
 
 		// Attach a view object as if we were the controller
@@ -291,46 +291,46 @@ describe('Rectangle element tests', function() {
 			x: 10,
 			y: 15,
 		};
-		
+
 		rectangle.draw();
 
-		var drawCalls = rectangle._view.ctx.getCalls().splice(4, 4);  
+		var drawCalls = rectangle._view.ctx.getCalls().splice(4, 4);
 		expect(drawCalls).toEqual(expectedDrawCalls);
 	}
-	
+
 	it ('should draw correctly respecting "borderSkipped" == "bottom"', function() {
 		testBorderSkipped ('bottom', [
-			{ name: 'moveTo', args: [8, 0] },
-			{ name: 'lineTo', args: [8, 15] },
-			{ name: 'lineTo', args: [12, 15] },
-			{ name: 'lineTo', args: [12, 0] },
+			{name: 'moveTo', args: [8, 0]},
+			{name: 'lineTo', args: [8, 15]},
+			{name: 'lineTo', args: [12, 15]},
+			{name: 'lineTo', args: [12, 0]},
 		]);
 	});
 
 	it ('should draw correctly respecting "borderSkipped" == "left"', function() {
 		testBorderSkipped ('left', [
-			{ name: 'moveTo', args: [8, 15] },
-			{ name: 'lineTo', args: [12, 15] },
-			{ name: 'lineTo', args: [12, 0] },
-			{ name: 'lineTo', args: [8, 0] },
+			{name: 'moveTo', args: [8, 15]},
+			{name: 'lineTo', args: [12, 15]},
+			{name: 'lineTo', args: [12, 0]},
+			{name: 'lineTo', args: [8, 0]},
 		]);
 	});
 
 	it ('should draw correctly respecting "borderSkipped" == "top"', function() {
 		testBorderSkipped ('top', [
-			{ name: 'moveTo', args: [12, 15] },
-			{ name: 'lineTo', args: [12, 0] },
-			{ name: 'lineTo', args: [8, 0] },
-			{ name: 'lineTo', args: [8, 15] },
+			{name: 'moveTo', args: [12, 15]},
+			{name: 'lineTo', args: [12, 0]},
+			{name: 'lineTo', args: [8, 0]},
+			{name: 'lineTo', args: [8, 15]},
 		]);
 	});
 
 	it ('should draw correctly respecting "borderSkipped" == "right"', function() {
 		testBorderSkipped ('right', [
-			{ name: 'moveTo', args: [12, 0] },
-			{ name: 'lineTo', args: [8, 0] },
-			{ name: 'lineTo', args: [8, 15] },
-			{ name: 'lineTo', args: [12, 15] },
+			{name: 'moveTo', args: [12, 0]},
+			{name: 'lineTo', args: [8, 0]},
+			{name: 'lineTo', args: [8, 15]},
+			{name: 'lineTo', args: [12, 15]},
 		]);
 	});
 

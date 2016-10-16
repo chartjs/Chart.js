@@ -2,14 +2,14 @@
 describe('Polar area controller tests', function() {
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
-		type: 'polarArea',
-		data: {
-			datasets: [
-				{ data: [] },
-				{ data: [] }
-			],
-			labels: []
-		}
+			type: 'polarArea',
+			data: {
+				datasets: [
+				{data: []},
+				{data: []}
+				],
+				labels: []
+			}
 		});
 
 		var meta = chart.getDatasetMeta(1);
@@ -28,8 +28,8 @@ describe('Polar area controller tests', function() {
 			type: 'polarArea',
 			data: {
 				datasets: [
-					{ data: [] },
-					{ data: [10, 15, 0, -4] }
+					{data: []},
+					{data: [10, 15, 0, -4]}
 				],
 				labels: []
 			}
@@ -45,14 +45,14 @@ describe('Polar area controller tests', function() {
 
 	it('should draw all elements', function() {
 		var chart = window.acquireChart({
-		type: 'polarArea',
-		data: {
-			datasets: [{
-				data: [10, 15, 0, -4],
-				label: 'dataset2'
-			}],
-			labels: ['label1', 'label2', 'label3', 'label4']
-		}
+			type: 'polarArea',
+			data: {
+				datasets: [{
+					data: [10, 15, 0, -4],
+					label: 'dataset2'
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4']
+			}
 		});
 
 		var meta = chart.getDatasetMeta(0);
@@ -95,10 +95,11 @@ describe('Polar area controller tests', function() {
 		var meta = chart.getDatasetMeta(0);
 		expect(meta.data.length).toBe(4);
 
-		[	{ o: 156, s: -0.5 * Math.PI, e:             0 },
-			{ o: 211, s:              0, e: 0.5 * Math.PI },
-			{ o:  45, s:  0.5 * Math.PI, e:       Math.PI },
-			{ o:   0, s:        Math.PI, e: 1.5 * Math.PI }
+		[
+			{o: 156, s: -0.5 * Math.PI, e: 0},
+			{o: 211, s: 0, e: 0.5 * Math.PI},
+			{o: 45, s: 0.5 * Math.PI, e: Math.PI},
+			{o: 0, s: Math.PI, e: 1.5 * Math.PI}
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(256);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(272);
@@ -176,10 +177,11 @@ describe('Polar area controller tests', function() {
 		var meta = chart.getDatasetMeta(0);
 		expect(meta.data.length).toBe(4);
 
-		[	{ o: 156, s:              0, e: 0.5 * Math.PI },
-			{ o: 211, s:  0.5 * Math.PI, e:       Math.PI },
-			{ o:  45, s:        Math.PI, e: 1.5 * Math.PI },
-			{ o:   0, s:  1.5 * Math.PI, e: 2.0 * Math.PI }
+		[
+			{o: 156, s: 0, e: 0.5 * Math.PI},
+			{o: 211, s: 0.5 * Math.PI, e: Math.PI},
+			{o: 45, s: Math.PI, e: 1.5 * Math.PI},
+			{o: 0, s: 1.5 * Math.PI, e: 2.0 * Math.PI}
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(256);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(272);
@@ -230,7 +232,7 @@ describe('Polar area controller tests', function() {
 		expect(meta.data[0] instanceof Chart.elements.Arc).toBe(true);
 		expect(meta.data[1] instanceof Chart.elements.Arc).toBe(true);
 
- 		// add 3 items
+		// add 3 items
 		chart.data.labels = ['label1', 'label2', 'label3', 'label4', 'label5'];
 		chart.data.datasets[0].data = [1, 2, 3, 4, 5];
 		chart.update();
