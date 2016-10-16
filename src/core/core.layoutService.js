@@ -32,8 +32,13 @@ module.exports = function(Chart) {
 				return;
 			}
 
-			var xPadding = 0;
-			var yPadding = 0;
+			//Getting padding from config or setting by default:
+			 var paddingX = chartInstance.config.options.padding ? chartInstance.config.options.padding.x : 0,
+					 paddingY = chartInstance.config.options.padding ? chartInstance.config.options.padding.y : 0,
+					 validYConfigPadding = paddingY < height / 2 && (paddingY > 0),
+					 validXConfigPadding = paddingX < width / 2 && (paddingX > 0),
+					 xPadding = (validXConfigPadding ? paddingX : (width > 30 ? 5 : 2)),
+					 yPadding = (validYConfigPadding ? paddingY : (height > 30 ? 5 : 2));
 
 			var leftBoxes = helpers.where(chartInstance.boxes, function(box) {
 				return box.options.position === 'left';
