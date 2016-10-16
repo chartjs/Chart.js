@@ -50,11 +50,16 @@ module.exports = function(Chart) {
 	 * @param chart {Chart} the chart to look at elements from
 	 * @param position {Point} the point to be nearest to
 	 * @param intersect {Boolean} if true, only consider items that intersect the position
+	 * @param distanceMetric {Function} Optional function to provide the distance between
 	 * @return {ChartElement[]} the nearest items
 	 */
-	function getNearestItems(chart, position, intersect) {
+	function getNearestItems(chart, position, intersect, distanceMetric) {
 		var minDistance = Number.POSITIVE_INFINITY;
 		var nearestItems = [];
+
+		if (!distanceMetric) {
+			distanceMetric = helpers.distanceBetweenPoints;
+		}
 
 		parseVisibleItems(chart, function(element) {
 			if (intersect && !element.inRange(position.x, position.y)) {
@@ -62,7 +67,7 @@ module.exports = function(Chart) {
 			}
 
 			var center = element.getCenterPoint();
-			var distance = Math.round(helpers.distanceBetweenPoints(position, center));
+			var distance = distanceMetric(position, center);
 
 			if (distance < minDistance) {
 				nearestItems = [element];
@@ -78,7 +83,10 @@ module.exports = function(Chart) {
 
 	function indexMode(chart, e, options) {
 		var position = helpers.getRelativePosition(e, chart.chart);
-		var items = options.intersect ? getIntersectItems(chart, position) : getNearestItems(chart, position, false);
+		var distanceMetric = function(pt1, pt2) {
+			return Math.abs(pt1.x - pt2.x);
+		};
+		var items = options.intersect ? getIntersectItems(chart, position) : getNearestItems(chart, position, false, distanceMetric);
 		var elements = [];
 
 		if (!items.length) {

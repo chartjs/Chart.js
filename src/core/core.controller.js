@@ -113,6 +113,36 @@ module.exports = function(Chart) {
 	}
 
 	/**
+	 * TODO(SB) Move this method in the upcoming core.platform class.
+	 */
+	function acquireContext(item, config) {
+		if (typeof item === 'string') {
+			item = document.getElementById(item);
+		} else if (item.length) {
+			// Support for array based queries (such as jQuery)
+			item = item[0];
+		}
+
+		if (item && item.canvas) {
+			// Support for any object associated to a canvas (including a context2d)
+			item = item.canvas;
+		}
+
+		if (item instanceof HTMLCanvasElement) {
+			// To prevent canvas fingerprinting, some add-ons undefine the getContext
+			// method, for example: https://github.com/kkapsner/CanvasBlocker
+			// https://github.com/chartjs/Chart.js/issues/2807
+			var context = item.getContext && item.getContext('2d');
+			if (context instanceof CanvasRenderingContext2D) {
+				initCanvas(item, config);
+				return context;
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Initializes the given config with global and chart default values.
 	 */
 	function initConfig(config) {
@@ -136,21 +166,22 @@ module.exports = function(Chart) {
 	 * @class Chart.Controller
 	 * The main controller of a chart.
 	 */
-	Chart.Controller = function(context, config, instance) {
+	Chart.Controller = function(item, config, instance) {
 		var me = this;
-		var canvas;
 
 		config = initConfig(config);
-		canvas = initCanvas(context.canvas, config);
+
+		var context = acquireContext(item, config);
+		var canvas = context && context.canvas;
+		var height = canvas && canvas.height;
+		var width = canvas && canvas.width;
 
 		instance.ctx = context;
 		instance.canvas = canvas;
 		instance.config = config;
-		instance.width = canvas.width;
-		instance.height = canvas.height;
-		instance.aspectRatio = canvas.width / canvas.height;
-
-		helpers.retinaScale(instance);
+		instance.width = width;
+		instance.height = height;
+		instance.aspectRatio = height? width / height : null;
 
 		me.id = helpers.uid();
 		me.chart = instance;
@@ -166,6 +197,17 @@ module.exports = function(Chart) {
 				return me.config.data;
 			}
 		});
+
+		if (!context || !canvas) {
+			// The given item is not a compatible context2d element, let's return before finalizing
+			// the chart initialization but after setting basic chart / controller properties that
+			// can help to figure out that the chart is not valid (e.g chart.canvas !== null);
+			// https://github.com/chartjs/Chart.js/issues/2807
+			console.error("Failed to create chart: can't acquire context from the given item");
+			return me;
+		}
+
+		helpers.retinaScale(instance);
 
 		// Responsiveness is currently based on the use of an iframe, however this method causes
 		// performance issues and could be troublesome when used with ad blockers. So make sure
@@ -593,7 +635,6 @@ module.exports = function(Chart) {
 			var meta, i, ilen;
 
 			me.stop();
-			me.clear();
 
 			// dataset controllers need to cleanup associated data
 			for (i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
@@ -607,8 +648,10 @@ module.exports = function(Chart) {
 			if (canvas) {
 				helpers.unbindEvents(me, me.events);
 				helpers.removeResizeListener(canvas.parentNode);
+				helpers.clear(me.chart);
 				releaseCanvas(canvas);
 				me.chart.canvas = null;
+				me.chart.ctx = null;
 			}
 
 			// if we scaled the canvas in response to a devicePixelRatio !== 1, we need to undo that transform here
