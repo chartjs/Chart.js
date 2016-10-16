@@ -78,7 +78,8 @@ describe('Doughnut controller tests', function() {
 
 		expect(meta.data.length).toBe(4);
 
-		[{c: 0},
+		[
+			{c: 0},
 			{c: 0},
 			{c: 0},
 			{c: 0}
@@ -100,7 +101,8 @@ describe('Doughnut controller tests', function() {
 
 		chart.update();
 
-		[{c: 1.7453292519, s: -1.5707963267, e: 0.1745329251},
+		[
+			{c: 1.7453292519, s: -1.5707963267, e: 0.1745329251},
 			{c: 2.0943951023, s: 0.1745329251, e: 2.2689280275},
 			{c: 0, s: 2.2689280275, e: 2.2689280275},
 			{c: 2.4434609527, s: 2.2689280275, e: 4.7123889803}
@@ -172,7 +174,8 @@ describe('Doughnut controller tests', function() {
 		expect(meta.data.length).toBe(2);
 
 		// Only startAngle, endAngle and circumference should be different.
-		[{c: Math.PI / 8, s: Math.PI, e: Math.PI + Math.PI / 8},
+		[
+			{c: Math.PI / 8, s: Math.PI, e: Math.PI + Math.PI / 8},
 			{c: 3 * Math.PI / 8, s: Math.PI + Math.PI / 8, e: Math.PI + Math.PI / 2}
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(495);

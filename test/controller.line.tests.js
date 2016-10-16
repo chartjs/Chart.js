@@ -202,7 +202,8 @@ describe('Line controller tests', function() {
 		expect(meta.data.length).toBe(2);
 
 
-		[{x: 44, y: 484},
+		[
+			{x: 44, y: 484},
 			{x: 193, y: 32}
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._datasetIndex).toBe(0);
@@ -309,7 +310,8 @@ describe('Line controller tests', function() {
 
 		var meta0 = chart.getDatasetMeta(0);
 
-		[{x: 38, y: 161},
+		[
+			{x: 38, y: 161},
 			{x: 189, y: 419},
 			{x: 341, y: 161},
 			{x: 492, y: 419}
@@ -320,7 +322,8 @@ describe('Line controller tests', function() {
 
 		var meta1 = chart.getDatasetMeta(1);
 
-		[{x: 38, y: 32},
+		[
+			{x: 38, y: 32},
 			{x: 189, y: 97},
 			{x: 341, y: 161},
 			{x: 492, y: 471}
@@ -362,7 +365,8 @@ describe('Line controller tests', function() {
 
 		var meta0 = chart.getDatasetMeta(0);
 
-		[{x: 76, y: 161},
+		[
+			{x: 76, y: 161},
 			{x: 215, y: 419},
 			{x: 353, y: 161},
 			{x: 492, y: 419}
@@ -373,7 +377,8 @@ describe('Line controller tests', function() {
 
 		var meta1 = chart.getDatasetMeta(1);
 
-		[{x: 76, y: 32},
+		[
+			{x: 76, y: 32},
 			{x: 215, y: 97},
 			{x: 353, y: 161},
 			{x: 492, y: 471}
@@ -432,7 +437,8 @@ describe('Line controller tests', function() {
 
 		var meta0 = chart.getDatasetMeta(0);
 
-		[{x: 38, y: 161},
+		[
+			{x: 38, y: 161},
 			{x: 189, y: 419},
 			{x: 341, y: 161},
 			{x: 492, y: 419}
@@ -443,7 +449,8 @@ describe('Line controller tests', function() {
 
 		var meta1 = chart.getDatasetMeta(1);
 
-		[{x: 38, y: 32},
+		[
+			{x: 38, y: 32},
 			{x: 189, y: 97},
 			{x: 341, y: 161},
 			{x: 492, y: 471}
@@ -478,7 +485,8 @@ describe('Line controller tests', function() {
 
 		var meta0 = chart.getDatasetMeta(0);
 
-		[{x: 38, y: 161},
+		[
+			{x: 38, y: 161},
 			{x: 189, y: 419},
 			{x: 341, y: 161},
 			{x: 492, y: 419}
@@ -489,7 +497,8 @@ describe('Line controller tests', function() {
 
 		var meta1 = chart.getDatasetMeta(1);
 
-		[{x: 38, y: 32},
+		[
+			{x: 38, y: 32},
 			{x: 189, y: 97},
 			{x: 341, y: 161},
 			{x: 492, y: 471}

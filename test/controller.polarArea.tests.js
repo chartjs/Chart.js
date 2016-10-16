@@ -95,7 +95,8 @@ describe('Polar area controller tests', function() {
 		var meta = chart.getDatasetMeta(0);
 		expect(meta.data.length).toBe(4);
 
-		[{o: 156, s: -0.5 * Math.PI, e: 0},
+		[
+			{o: 156, s: -0.5 * Math.PI, e: 0},
 			{o: 211, s: 0, e: 0.5 * Math.PI},
 			{o: 45, s: 0.5 * Math.PI, e: Math.PI},
 			{o: 0, s: Math.PI, e: 1.5 * Math.PI}
@@ -176,7 +177,8 @@ describe('Polar area controller tests', function() {
 		var meta = chart.getDatasetMeta(0);
 		expect(meta.data.length).toBe(4);
 
-		[{o: 156, s: 0, e: 0.5 * Math.PI},
+		[
+			{o: 156, s: 0, e: 0.5 * Math.PI},
 			{o: 211, s: 0.5 * Math.PI, e: Math.PI},
 			{o: 45, s: Math.PI, e: 1.5 * Math.PI},
 			{o: 0, s: 1.5 * Math.PI, e: 2.0 * Math.PI}

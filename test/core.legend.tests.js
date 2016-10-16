@@ -118,7 +118,8 @@ describe('Legend block tests', function() {
 
 		expect(chart.legend.legendHitBoxes.length).toBe(3);
 
-		[{h: 12, l: 101, t: 10, w: 93},
+		[
+			{h: 12, l: 101, t: 10, w: 93},
 			{h: 12, l: 205, t: 10, w: 93},
 			{h: 12, l: 308, t: 10, w: 93}
 		].forEach(function(expected, i) {

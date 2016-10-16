@@ -1,4 +1,3 @@
-/* eslint no-unused-vars: 1 */
 /* eslint guard-for-in: 1 */
 /* eslint camelcase: 1 */
 (function() {
@@ -85,21 +84,21 @@
 			fill: function() {},
 			fillRect: function() {},
 			fillText: function() {},
-			lineTo: function(x, y) {},
+			lineTo: function() {},
 			measureText: function(text) {
 				// return the number of characters * fixed size
 				return text ? {width: text.length * 10} : {width: 0};
 			},
-			moveTo: function(x, y) {},
+			moveTo: function() {},
 			quadraticCurveTo: function() {},
 			restore: function() {},
 			rotate: function() {},
 			save: function() {},
 			setLineDash: function() {},
 			stroke: function() {},
-			strokeRect: function(x, y, w, h) {},
-			setTransform: function(a, b, c, d, e, f) {},
-			translate: function(x, y) {},
+			strokeRect: function() {},
+			setTransform: function() {},
+			translate: function() {},
 		};
 
 		// attach methods to the class itself
