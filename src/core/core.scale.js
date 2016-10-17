@@ -468,8 +468,6 @@ module.exports = function(Chart) {
 		draw: function(chartArea) {
 			var me = this;
 			var options = me.options;
-			var meta = me.chart.getDatasetMeta(0);
-			console.log(me.chart);
 			if (!options.display) {
 				return;
 			}
@@ -576,6 +574,8 @@ module.exports = function(Chart) {
 
 				// Common properties
 				var tx1, ty1, tx2, ty2, x1, y1, x2, y2, labelX, labelY;
+				var use_meta = false;
+				var not_bar = me.chart.config.type !== 'bar';
 				var textAlign = 'middle';
 				var textBaseline = 'middle';
 
@@ -583,13 +583,15 @@ module.exports = function(Chart) {
 
 					var xLineValue = helpers.aliasPixel(lineWidth);
 					labelX = optionTicks.labelOffset;
-					if (meta !== undefined && me.ticks.length == meta.data.length && me.chart.config.type !== 'bar') {
-						xLineValue += meta.data[index]._view.x;
-						labelX += meta.data[index]._view.x;
-					} else {
-						xLineValue += me.getPixelForTick(index);
-						labelX += me.getPixelForTick(index, gridLines.offsetGridLines);
+					
+					if (me.chart.getDatasetMeta(0) !== undefined) {
+						var meta = me.chart.getDatasetMeta(0);
+						use_meta = me.ticks.length == meta.data.length;
 					}
+
+					labelX += use_meta ? meta.data[index]._view.x : me.getPixelForTick(index, gridLines.offsetGridLines);
+					xLineValue += use_meta && not_bar ? meta.data[index]._view.x : me.getPixelForTick(index);
+
 					if (!isRotated) {
 						textBaseline = options.position === 'top' ? 'bottom' : 'top';
 					}
