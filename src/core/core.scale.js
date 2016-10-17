@@ -469,6 +469,7 @@ module.exports = function(Chart) {
 			var me = this;
 			var options = me.options;
 			var meta = me.chart.getDatasetMeta(0);
+			console.log(me.chart);
 			if (!options.display) {
 				return;
 			}
@@ -582,7 +583,7 @@ module.exports = function(Chart) {
 
 					var xLineValue = helpers.aliasPixel(lineWidth);
 					labelX = optionTicks.labelOffset;
-					if (meta !== undefined && me.ticks.length == meta.data.length) {
+					if (meta !== undefined && me.ticks.length == meta.data.length && me.chart.config.type !== 'bar') {
 						xLineValue += meta.data[index]._view.x;
 						labelX += meta.data[index]._view.x;
 					} else {
