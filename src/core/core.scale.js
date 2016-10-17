@@ -577,7 +577,7 @@ module.exports = function(Chart) {
 				var tx1, ty1, tx2, ty2, x1, y1, x2, y2, labelX, labelY;
 				var textAlign = 'middle';
 				var textBaseline = 'middle';
-				
+
 				if (isHorizontal) {
 
 					var xLineValue = helpers.aliasPixel(lineWidth);
