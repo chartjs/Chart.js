@@ -574,8 +574,8 @@ module.exports = function(Chart) {
 
 				// Common properties
 				var tx1, ty1, tx2, ty2, x1, y1, x2, y2, labelX, labelY;
-				var use_meta = false;
-				var not_bar = me.chart.config.type !== 'bar';
+				var useMeta = false;
+				var notBar = me.chart.config.type !== 'bar';
 				var textAlign = 'middle';
 				var textBaseline = 'middle';
 
@@ -583,21 +583,21 @@ module.exports = function(Chart) {
 
 					var xLineValue = helpers.aliasPixel(lineWidth);
 					labelX = optionTicks.labelOffset;
-					
+
 					if (me.chart.getDatasetMeta(0) !== undefined) {
 						var meta = me.chart.getDatasetMeta(0);
-						use_meta = me.ticks.length == meta.data.length;
+						useMeta = me.ticks.length === meta.data.length;
 					}
 
-					labelX += use_meta ? meta.data[index]._view.x : me.getPixelForTick(index, gridLines.offsetGridLines);
-					xLineValue += use_meta && not_bar ? meta.data[index]._view.x : me.getPixelForTick(index);
+					labelX += useMeta ? meta.data[index]._view.x : me.getPixelForTick(index, gridLines.offsetGridLines);
+					xLineValue += useMeta && notBar ? meta.data[index]._view.x : me.getPixelForTick(index);
 
 					if (!isRotated) {
 						textBaseline = options.position === 'top' ? 'bottom' : 'top';
 					}
 
 					textAlign = isRotated ? 'right' : 'center';
-					
+
 					labelY = (isRotated) ? me.top + 12 : options.position === 'top' ? me.bottom - tl : me.top + tl;
 
 					tx1 = tx2 = x1 = x2 = xLineValue;
