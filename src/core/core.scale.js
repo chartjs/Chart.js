@@ -582,7 +582,7 @@ module.exports = function(Chart) {
 
 					var xLineValue = helpers.aliasPixel(lineWidth);
 					labelX = optionTicks.labelOffset;
-					if (me.ticks.length == meta.data.length) {
+					if (meta !== undefined && me.ticks.length == meta.data.length) {
 						xLineValue += meta.data[index]._view.x;
 						labelX += meta.data[index]._view.x;
 					} else {
