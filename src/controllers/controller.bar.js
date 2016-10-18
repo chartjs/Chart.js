@@ -139,7 +139,7 @@ module.exports = function(Chart) {
 			var categorySpacing = (tickWidth - (tickWidth * xScale.options.categoryPercentage)) / 2;
 			var fullBarWidth = categoryWidth / datasetCount;
 
-			if (xScale.ticks.length !== me.chart.data.labels.length) {
+			if (xScale.options.type !== 'time' && xScale.ticks.length !== me.chart.data.labels.length) {
 				var perc = xScale.ticks.length / me.chart.data.labels.length;
 				fullBarWidth = fullBarWidth * perc;
 			}
@@ -190,15 +190,22 @@ module.exports = function(Chart) {
 			leftTick -= me.chart.isCombo ? (ruler.tickWidth / 2) : 0;
 
 			if (xScale.options.stacked) {
+				if (xScale.options.type === 'time') {
+					return leftTick;
+				}
 				return leftTick + (ruler.categoryWidth / 2) + ruler.categorySpacing;
 			}
-
-			return leftTick +
+			leftTick = leftTick +
 				(ruler.barWidth / 2) +
 				ruler.categorySpacing +
 				(ruler.barWidth * barIndex) +
 				(ruler.barSpacing / 2) +
 				(ruler.barSpacing * barIndex);
+
+			if (xScale.options.type === 'time') {
+				leftTick -= (ruler.barWidth + ruler.barSpacing) / 2 * ruler.datasetCount + ruler.categorySpacing;
+			}
+			return leftTick;
 		},
 
 		calculateBarY: function(index, datasetIndex) {
