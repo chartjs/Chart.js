@@ -1,8 +1,8 @@
 // Tests of the scale service
 describe('Test the layout service', function() {
 	// Disable tests which need to be rewritten based on changes introduced by
-  	// the following changes: https://github.com/chartjs/Chart.js/pull/2346
-  	// using xit marks the test as pending: http://jasmine.github.io/2.0/introduction.html#section-Pending_Specs
+	// the following changes: https://github.com/chartjs/Chart.js/pull/2346
+	// using xit marks the test as pending: http://jasmine.github.io/2.0/introduction.html#section-Pending_Specs
 	xit('should fit a simple chart with 2 scales', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
@@ -249,7 +249,9 @@ describe('Test the layout service', function() {
 				type: 'bar',
 				data: {
 					datasets: [
-						{ data: [10, 5, 0, 25, 78, -10] }
+						{
+							data: [10, 5, 0, 25, 78, -10]
+						}
 					],
 					labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5', 'tick6']
 				},
@@ -294,7 +296,9 @@ describe('Test the layout service', function() {
 				type: 'bar',
 				data: {
 					datasets: [
-						{ data: [10, 5, 0, 25, 78, -10] }
+						{
+							data: [10, 5, 0, 25, 78, -10]
+						}
 					],
 					labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5', 'tick6']
 				},
@@ -344,7 +348,9 @@ describe('Test the layout service', function() {
 				type: 'bar',
 				data: {
 					datasets: [
-						{ data: [10, 5, 0, 25, 78, -10] }
+						{
+							data: [10, 5, 0, 25, 78, -10]
+						}
 					],
 					labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5', 'tick6']
 				},

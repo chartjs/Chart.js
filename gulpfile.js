@@ -152,7 +152,8 @@ function lintTask() {
       'it',
       'jasmine',
       'moment',
-      'spyOn'
+      'spyOn',
+      'xit'
     ]
   };
 
