@@ -271,6 +271,7 @@ afterBody | `Array[tooltipItem], data` | Text to render after the body section
 beforeFooter | `Array[tooltipItem], data` | Text to render before the footer section
 footer | `Array[tooltipItem], data` | Text to render as the footer
 afterFooter | `Array[tooltipItem], data` | Text to render after the footer section
+dataPoints | `Array[tooltipItem]` | List of matching point informations.
 
 #### Tooltip Item Interface
 
@@ -288,7 +289,13 @@ The tooltip items passed to the tooltip callbacks implement the following interf
     datasetIndex: Number,
 
     // Index of this data item in the dataset
-    index: Number
+    index: Number,
+
+    // X position of matching point
+    x: Number,
+
+    // Y position of matching point
+    y: Number,
 }
 ```
 

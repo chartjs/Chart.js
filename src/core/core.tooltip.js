@@ -118,7 +118,9 @@ module.exports = function(Chart) {
 			xLabel: xScale ? xScale.getLabelForIndex(index, datasetIndex) : '',
 			yLabel: yScale ? yScale.getLabelForIndex(index, datasetIndex) : '',
 			index: index,
-			datasetIndex: datasetIndex
+			datasetIndex: datasetIndex,
+			x: element._model.x,
+			y: element._model.y
 		};
 	}
 
@@ -507,6 +509,9 @@ module.exports = function(Chart) {
 				model.y = Math.round(tooltipPosition.y);
 				model.caretPadding = helpers.getValueOrDefault(tooltipPosition.padding, 2);
 				model.labelColors = labelColors;
+
+				// data points
+				model.dataPoints = tooltipItems;
 
 				// We need to determine alignment of the tooltip
 				tooltipSize = getTooltipSize(this, model);

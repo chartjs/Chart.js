@@ -542,4 +542,64 @@ describe('Core.Tooltip', function() {
 		expect(tooltip._view.x).toBeCloseToPixel(269);
 		expect(tooltip._view.y).toBeCloseToPixel(155);
 	});
+
+	it('Should have dataPoints', function() {
+		var chartInstance = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					label: 'Dataset 1',
+					data: [10, 20, 30],
+					pointHoverBorderColor: 'rgb(255, 0, 0)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+				}, {
+					label: 'Dataset 2',
+					data: [40, 40, 40],
+					pointHoverBorderColor: 'rgb(0, 0, 255)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+				}],
+				labels: ['Point 1', 'Point 2', 'Point 3']
+			},
+			options: {
+				tooltips: {
+					mode: 'single'
+				}
+			}
+		});
+
+		// Trigger an event over top of the
+		var pointIndex = 1;
+		var datasetIndex = 0;
+		var meta = chartInstance.getDatasetMeta(datasetIndex);
+		var point = meta.data[pointIndex];
+		var node = chartInstance.chart.canvas;
+		var rect = node.getBoundingClientRect();
+		var evt = new MouseEvent('mousemove', {
+			view: window,
+			bubbles: true,
+			cancelable: true,
+			clientX: rect.left + point._model.x,
+			clientY: rect.top + point._model.y
+		});
+
+		// Manully trigger rather than having an async test
+		node.dispatchEvent(evt);
+
+		// Check and see if tooltip was displayed
+		var tooltip = chartInstance.tooltip;
+
+		expect(tooltip._view instanceof Object).toBe(true);
+		expect(tooltip._view.dataPoints instanceof Array).toBe(true);
+		expect(tooltip._view.dataPoints.length).toEqual(1);
+		expect(tooltip._view.dataPoints[0].index).toEqual(pointIndex);
+		expect(tooltip._view.dataPoints[0].datasetIndex).toEqual(datasetIndex);
+		expect(tooltip._view.dataPoints[0].xLabel).toEqual(
+			chartInstance.config.data.labels[pointIndex]
+		);
+		expect(tooltip._view.dataPoints[0].yLabel).toEqual(
+			chartInstance.config.data.datasets[datasetIndex].data[pointIndex]
+		);
+		expect(tooltip._view.dataPoints[0].x).toBeCloseToPixel(point._model.x);
+		expect(tooltip._view.dataPoints[0].y).toBeCloseToPixel(point._model.y);
+	});
 });
