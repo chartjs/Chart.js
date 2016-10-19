@@ -27,7 +27,7 @@
 	<button id="addData">Add Data</button>
 	<button id="removeData">Remove Data</button>
 	<script>
-		var timeFormat = 'MM/DD/YYYY HH:mm';
+		var timeFormat = 'MM/DD[\n]YYYY';
 
 		function randomScalingFactor() {
 			return Math.round(Math.random() * 100 * (Math.random() > 0.5 ? -1 : 1));
@@ -93,7 +93,10 @@
 					xAxes: [{
 						type: "time",
 						time: {
-							format: timeFormat,
+							unit: 'day',
+							displayFormats:{
+								day:timeFormat
+							},
 							// round: 'day'
 							tooltipFormat: 'll HH:mm'
 						},

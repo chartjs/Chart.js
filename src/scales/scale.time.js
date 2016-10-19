@@ -375,6 +375,9 @@ module.exports = function(Chart) {
 		// Function to format an individual tick mark
 		tickFormatFunction: function(tick, index, ticks) {
 			var formattedTick = tick.format(this.displayFormat);
+			if(formattedTick.indexOf("\n")>0){
+				formattedTick = formattedTick.split("\n");
+			}
 			var tickOpts = this.options.ticks;
 			var callback = helpers.getValueOrDefault(tickOpts.callback, tickOpts.userCallback);
 
