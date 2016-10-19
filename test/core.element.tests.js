@@ -25,9 +25,9 @@ describe('Core element tests', function() {
 		element._model.numberProp = 100;
 		element._model.numberProp2 = 250;
 		element._model._underscoreProp = 200;
-		element._model.stringProp = 'def'
+		element._model.stringProp = 'def';
 		element._model.newStringProp = 'newString';
-		element._model.colorProp = 'rgb(255, 255, 0)'
+		element._model.colorProp = 'rgb(255, 255, 0)';
 
 		element.transition(0.25);
 		expect(element._view).toEqual({

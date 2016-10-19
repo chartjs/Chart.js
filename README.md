@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/chartjs/Chart.js.svg?branch=master)](https://travis-ci.org/chartjs/Chart.js) [![Code Climate](https://codeclimate.com/github/nnnick/Chart.js/badges/gpa.svg)](https://codeclimate.com/github/nnnick/Chart.js) [![Coverage Status](https://coveralls.io/repos/github/chartjs/Chart.js/badge.svg?branch=master)](https://coveralls.io/github/chartjs/Chart.js?branch=master)
 
-[![Chart.js on Slack](https://img.shields.io/badge/slack-Chart.js-blue.svg)](https://chartjs-slack-automation.herokuapp.com/)
+[![Chart.js on Slack](https://img.shields.io/badge/slack-Chart.js-blue.svg)](https://chart-js-automation.herokuapp.com/)
 
 *Simple HTML5 Charts using the canvas element* [chartjs.org](http://www.chartjs.org)
 
@@ -34,7 +34,7 @@ To build, run `gulp build`.
 
 To test, run `gulp test`.
 
-To test against code standards, run `gulp jshint`.
+To test against code standards, run `gulp lint`.
 
 More information on building and testing can be found in [gulpfile.js](gulpfile.js).
 

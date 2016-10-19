@@ -1,14 +1,5 @@
 // Test the line controller
 describe('Line controller tests', function() {
-	
-	beforeEach(function() {
-		window.addDefaultMatchers(jasmine);
-	});
-
-	afterEach(function() {
-		window.releaseAllCharts();
-	});
-	
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'line',
@@ -130,7 +121,7 @@ describe('Line controller tests', function() {
 		spyOn(meta.data[3], 'draw');
 
 		chart.update();
-		
+
 		expect(meta.dataset.draw.calls.count()).toBe(0);
 		expect(meta.data[0].draw.calls.count()).toBe(1);
 		expect(meta.data[1].draw.calls.count()).toBe(1);
@@ -162,7 +153,7 @@ describe('Line controller tests', function() {
 		spyOn(meta.data[3], 'draw');
 
 		chart.update();
-		
+
 		expect(meta.dataset.draw.calls.count()).toBe(0);
 		expect(meta.data[0].draw.calls.count()).toBe(1);
 		expect(meta.data[1].draw.calls.count()).toBe(1);
@@ -174,12 +165,12 @@ describe('Line controller tests', function() {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
-					datasets: [{
-						data: [10, 15, 0, -4],
-						label: 'dataset',
-						xAxisID: 'firstXScaleID',
-						yAxisID: 'firstYScaleID'
-					}],
+				datasets: [{
+					data: [10, 15, 0, -4],
+					label: 'dataset',
+					xAxisID: 'firstXScaleID',
+					yAxisID: 'firstYScaleID'
+				}],
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
@@ -200,19 +191,20 @@ describe('Line controller tests', function() {
 				}
 			},
 		});
-		
+
 		var meta = chart.getDatasetMeta(0);
 		expect(meta.data.length).toBe(4);
-		
+
 		chart.data.datasets[0].data = [1, 2]; // remove 2 items
 		chart.data.datasets[0].borderWidth = 1;
 		chart.update();
 
 		expect(meta.data.length).toBe(2);
-		
-		
-		[	{ x:  44, y: 484 },
-			{ x: 193, y:  32 }
+
+
+		[
+			{x: 44, y: 484},
+			{x: 193, y: 32}
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._datasetIndex).toBe(0);
 			expect(meta.data[i]._index).toBe(i);
@@ -225,11 +217,73 @@ describe('Line controller tests', function() {
 				borderColor: 'blue',
 			}));
 		});
-		
+
 		chart.data.datasets[0].data = [1, 2, 3]; // add 1 items
 		chart.update();
 
 		expect(meta.data.length).toBe(3); // should add a new meta data item
+	});
+
+	it('should correctly calculate x scale for label and point', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				labels: ['One'],
+				datasets: [{
+					data: [1],
+				}]
+			},
+			options: {
+				hover: {
+					mode: 'single'
+				},
+				scales: {
+					yAxes: [{
+						ticks: {
+							beginAtZero: true
+						}
+					}]
+				}
+			}
+		});
+
+		var meta = chart.getDatasetMeta(0);
+		// 1 point
+		var point = meta.data[0];
+		expect(point._model.x).toBeCloseToPixel(267);
+
+		// 2 points
+		chart.data.labels = ['One', 'Two'];
+		chart.data.datasets[0].data = [1, 2];
+		chart.update();
+
+		var points = meta.data;
+
+		expect(points[0]._model.x).toBeCloseToPixel(37);
+		expect(points[1]._model.x).toBeCloseToPixel(498);
+
+		// 3 points
+		chart.data.labels = ['One', 'Two', 'Three'];
+		chart.data.datasets[0].data = [1, 2, 3];
+		chart.update();
+
+		points = meta.data;
+
+		expect(points[0]._model.x).toBeCloseToPixel(37);
+		expect(points[1]._model.x).toBeCloseToPixel(265);
+		expect(points[2]._model.x).toBeCloseToPixel(493);
+
+		// 4 points
+		chart.data.labels = ['One', 'Two', 'Three', 'Four'];
+		chart.data.datasets[0].data = [1, 2, 3, 4];
+		chart.update();
+
+		points = meta.data;
+
+		expect(points[0]._model.x).toBeCloseToPixel(37);
+		expect(points[1]._model.x).toBeCloseToPixel(190);
+		expect(points[2]._model.x).toBeCloseToPixel(343);
+		expect(points[3]._model.x).toBeCloseToPixel(497);
 	});
 
 	it('should update elements when the y scale is stacked', function() {
@@ -253,29 +307,86 @@ describe('Line controller tests', function() {
 				}
 			}
 		});
-		
+
 		var meta0 = chart.getDatasetMeta(0);
 
-		[	{ x:  38, y: 161 },
-			{ x: 189, y: 419 },
-			{ x: 341, y: 161 },
-			{ x: 492, y: 419 }
+		[
+			{x: 38, y: 161},
+			{x: 189, y: 419},
+			{x: 341, y: 161},
+			{x: 492, y: 419}
 		].forEach(function(values, i) {
-				expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
-				expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
+			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
 		});
 
 		var meta1 = chart.getDatasetMeta(1);
 
-		[	{ x:  38, y:  32 },
-			{ x: 189, y:  97 },
-			{ x: 341, y: 161 },
-			{ x: 492, y: 471 }
+		[
+			{x: 38, y: 32},
+			{x: 189, y: 97},
+			{x: 341, y: 161},
+			{x: 492, y: 471}
 		].forEach(function(values, i) {
-				expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
-				expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
+			expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
 		});
-		
+
+	});
+
+	it('should update elements when the y scale is stacked with multiple axes', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: [10, -10, 10, -10],
+					label: 'dataset1'
+				}, {
+					data: [10, 15, 0, -4],
+					label: 'dataset2'
+				}, {
+					data: [10, 10, -10, -10],
+					label: 'dataset3',
+					yAxisID: 'secondAxis'
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4']
+			},
+			options: {
+				scales: {
+					yAxes: [{
+						stacked: true
+					}, {
+						type: 'linear',
+						id: 'secondAxis'
+					}]
+				}
+			}
+		});
+
+		var meta0 = chart.getDatasetMeta(0);
+
+		[
+			{x: 76, y: 161},
+			{x: 215, y: 419},
+			{x: 353, y: 161},
+			{x: 492, y: 419}
+		].forEach(function(values, i) {
+			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
+			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
+		});
+
+		var meta1 = chart.getDatasetMeta(1);
+
+		[
+			{x: 76, y: 32},
+			{x: 215, y: 97},
+			{x: 353, y: 161},
+			{x: 492, y: 471}
+		].forEach(function(values, i) {
+			expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
+			expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
+		});
+
 	});
 
 	it('should update elements when the y scale is stacked and datasets is scatter data', function() {
@@ -323,29 +434,31 @@ describe('Line controller tests', function() {
 				}
 			}
 		});
-		
+
 		var meta0 = chart.getDatasetMeta(0);
 
-		[	{ x:  38, y: 161 },
-			{ x: 189, y: 419 },
-			{ x: 341, y: 161 },
-			{ x: 492, y: 419 }
+		[
+			{x: 38, y: 161},
+			{x: 189, y: 419},
+			{x: 341, y: 161},
+			{x: 492, y: 419}
 		].forEach(function(values, i) {
-				expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
-				expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
+			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
 		});
 
 		var meta1 = chart.getDatasetMeta(1);
 
-		[	{ x:  38, y:  32 },
-			{ x: 189, y:  97 },
-			{ x: 341, y: 161 },
-			{ x: 492, y: 471 }
+		[
+			{x: 38, y: 32},
+			{x: 189, y: 97},
+			{x: 341, y: 161},
+			{x: 492, y: 471}
 		].forEach(function(values, i) {
-				expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
-				expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
+			expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
 		});
-		
+
 	});
 
 	it('should update elements when the y scale is stacked and data is strings', function() {
@@ -369,29 +482,31 @@ describe('Line controller tests', function() {
 				}
 			}
 		});
-		
+
 		var meta0 = chart.getDatasetMeta(0);
 
-		[	{ x:  38, y: 161 },
-			{ x: 189, y: 419 },
-			{ x: 341, y: 161 },
-			{ x: 492, y: 419 }
+		[
+			{x: 38, y: 161},
+			{x: 189, y: 419},
+			{x: 341, y: 161},
+			{x: 492, y: 419}
 		].forEach(function(values, i) {
-				expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
-				expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
+			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
 		});
 
 		var meta1 = chart.getDatasetMeta(1);
 
-		[	{ x:  38, y:  32 },
-			{ x: 189, y:  97 },
-			{ x: 341, y: 161 },
-			{ x: 492, y: 471 }
+		[
+			{x: 38, y: 32},
+			{x: 189, y: 97},
+			{x: 341, y: 161},
+			{x: 492, y: 471}
 		].forEach(function(values, i) {
-				expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
-				expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
+			expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
 		});
-		
+
 	});
 
 	it('should find the correct scale zero when the data is all positive', function() {
@@ -405,9 +520,9 @@ describe('Line controller tests', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 		});
-		
+
 		var meta = chart.getDatasetMeta(0);
-		
+
 		expect(meta.dataset._model).toEqual(jasmine.objectContaining({
 			scaleTop: 32,
 			scaleBottom: 484,
@@ -426,9 +541,9 @@ describe('Line controller tests', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 		});
-		
+
 		var meta = chart.getDatasetMeta(0);
-		
+
 		expect(meta.dataset._model).toEqual(jasmine.objectContaining({
 			scaleTop: 32,
 			scaleBottom: 484,
@@ -443,7 +558,7 @@ describe('Line controller tests', function() {
 				datasets: [{
 					data: [0, 0],
 					label: 'dataset1',
-	
+
 					// line styles
 					backgroundColor: 'rgb(98, 98, 98)',
 					borderColor: 'rgb(8, 8, 8)',
@@ -471,9 +586,9 @@ describe('Line controller tests', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			}
 		});
-		
+
 		var meta = chart.getDatasetMeta(0);
-		
+
 		chart.data.datasets[0].data = [1, 2]; // remove 2 items
 		chart.update();
 		expect(meta.data.length).toBe(2);
@@ -514,7 +629,7 @@ describe('Line controller tests', function() {
 				}
 			}
 		});
-		
+
 		var meta = chart.getDatasetMeta(0);
 		var point = meta.data[0];
 

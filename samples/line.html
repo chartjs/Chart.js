@@ -65,7 +65,8 @@
                     text:'Chart.js Line Chart'
                 },
                 tooltips: {
-                    mode: 'label',
+                    mode: 'index',
+                    intersect: false,
                     callbacks: {
                         // beforeTitle: function() {
                         //     return '...beforeTitle';
@@ -91,7 +92,8 @@
                     }
                 },
                 hover: {
-                    mode: 'dataset'
+                    mode: 'nearest',
+                    intersect: true
                 },
                 scales: {
                     xAxes: [{

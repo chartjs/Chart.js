@@ -15,7 +15,7 @@ describe('Test the scale service', function() {
 		expect(Chart.scaleService.getScaleDefaults(type)).toEqual(jasmine.objectContaining({
 			testProp: true
 		}));
-		
+
 		Chart.scaleService.updateScaleDefaults(type, {
 			testProp: 'red',
 			newProp: 42
