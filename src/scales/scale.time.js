@@ -337,7 +337,7 @@ module.exports = function(Chart) {
 				}
 			}
 
-			if (me.chart.config.type === 'bar') {
+			if (me.chart && me.chart.config && me.chart.config.type === 'bar') {
 				if (!me.options.time.min) {
 					me.firstTick = me.firstTick.clone().add(-me.unitScale, me.tickUnit);
 					me.ticks.unshift(me.firstTick);
