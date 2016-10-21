@@ -1,7 +1,8 @@
 <!doctype html>
 <html>
+
 <head>
-	<title> Animation Callbacks </title>
+    <title>Tooltip Hooks</title>
     <script src="../../dist/Chart.bundle.js"></script>
     <script src="../chartColors.js"></script>
     <style>
@@ -14,28 +15,20 @@
 </head>
 
 <body>
-    <div style="width: 75%;">
+    <div style="width:75%;">
         <canvas id="canvas"></canvas>
-        <progress id="animationProgress" max="1" value="0" style="width: 100%"></progress>
     </div>
-    <br>
-    <br>
-    <button id="randomizeData">Randomize Data</button>
     <script>
-        var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
         var randomScalingFactor = function() {
-            return Math.round(Math.random() * 100);
+            return Math.round(Math.random() * 100 * (Math.random() > 0.5 ? -1 : 1));
         };
-
-        var progress = document.getElementById('animationProgress');
 
         var config = {
             type: 'line',
             data: {
                 labels: ["January", "February", "March", "April", "May", "June", "July"],
                 datasets: [{
-                    fill: false,
+                    label: "My First dataset",
                     borderColor: window.chartColors.red,
                     backgroundColor: window.chartColors.red,
                     data: [
@@ -46,10 +39,10 @@
                         randomScalingFactor(), 
                         randomScalingFactor(), 
                         randomScalingFactor()
-                    ]
-                }, {
-                    label: "My Second dataset ",
+                    ],
                     fill: false,
+                }, {
+                    label: "My Second dataset",
                     borderColor: window.chartColors.blue,
                     backgroundColor: window.chartColors.blue,
                     data: [
@@ -60,24 +53,50 @@
                         randomScalingFactor(), 
                         randomScalingFactor(), 
                         randomScalingFactor()
-                    ]
+                    ],
+                    fill: false,
                 }]
             },
             options: {
+                responsive: true,
                 title:{
-                    display:true,
-                    text: "Chart.js Line Chart - Animation Progress Bar"
+                    display: true,
+                    text: "Chart.js Line Chart - Custom Information in Tooltip"
                 },
-                animation: {
-                    duration: 2000,
-                    onProgress: function(animation) {
-                        progress.value = animation.animationObject.currentStep / animation.animationObject.numSteps;
+                tooltips: {
+                    mode: 'index',
+                    callbacks: {
+                        // Use the footer callback to display the sum of the items showing in the tooltip
+                        footer: function(tooltipItems, data) {
+                            var sum = 0;
+
+                            tooltipItems.forEach(function(tooltipItem) {
+                                sum += data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                            });
+                            return 'Sum: ' + sum;
+                        },
                     },
-                    onComplete: function(animation) {
-                        window.setTimeout(function() {
-                            progress.value = 0;
-                        }, 2000);
-                    }
+                    footerFontStyle: 'normal'
+                },
+                hover: {
+                    mode: 'index',
+                    intersect: true
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            show: true,
+                            labelString: 'Month'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            show: true,
+                            labelString: 'Value'
+                        }
+                    }]
                 }
             }
         };
@@ -86,16 +105,6 @@
             var ctx = document.getElementById("canvas").getContext("2d");
             window.myLine = new Chart(ctx, config);
         };
-
-        document.getElementById('randomizeData').addEventListener('click', function() {
-            config.data.datasets.forEach(function(dataset) {
-                dataset.data = dataset.data.map(function() {
-                    return randomScalingFactor();
-                });
-            });
-
-            window.myLine.update();
-        });
     </script>
 </body>
 
