@@ -2,9 +2,9 @@
 <html>
 
 <head>
-    <title>Combo Bar-Line Chart</title>
-    <script src="../dist/Chart.bundle.js"></script>
-    <script src="chartColors.js"></script>
+    <title>Stacked Bar Chart</title>
+    <script src="../../dist/Chart.bundle.js"></script>
+    <script src="../chartColors.js"></script>
     <style>
     canvas {
         -moz-user-select: none;
@@ -24,14 +24,11 @@
             return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 100);
         };
 
-        var chartData = {
+        var barChartData = {
             labels: ["January", "February", "March", "April", "May", "June", "July"],
             datasets: [{
-                type: 'line',
                 label: 'Dataset 1',
-                borderColor: window.chartColors.blue,
-                borderWidth: 2,
-                fill: false,
+                backgroundColor: window.chartColors.red,
                 data: [
                     randomScalingFactor(), 
                     randomScalingFactor(), 
@@ -42,9 +39,8 @@
                     randomScalingFactor()
                 ]
             }, {
-                type: 'bar',
                 label: 'Dataset 2',
-                backgroundColor: window.chartColors.red,
+                backgroundColor: window.chartColors.blue,
                 data: [
                     randomScalingFactor(), 
                     randomScalingFactor(), 
@@ -53,11 +49,8 @@
                     randomScalingFactor(), 
                     randomScalingFactor(), 
                     randomScalingFactor()
-                ],
-                borderColor: 'white',
-                borderWidth: 2
+                ]
             }, {
-                type: 'bar',
                 label: 'Dataset 3',
                 backgroundColor: window.chartColors.green,
                 data: [
@@ -74,30 +67,38 @@
         };
         window.onload = function() {
             var ctx = document.getElementById("canvas").getContext("2d");
-            window.myMixedChart = new Chart(ctx, {
+            window.myBar = new Chart(ctx, {
                 type: 'bar',
-                data: chartData,
+                data: barChartData,
                 options: {
-                    responsive: true,
-                    title: {
-                        display: true,
-                        text: 'Chart.js Combo Bar Line Chart'
+                    title:{
+                        display:true,
+                        text:"Chart.js Bar Chart - Stacked"
                     },
                     tooltips: {
                         mode: 'index',
-                        intersect: true
+                        intersect: false
+                    },
+                    responsive: true,
+                    scales: {
+                        xAxes: [{
+                            stacked: true,
+                        }],
+                        yAxes: [{
+                            stacked: true
+                        }]
                     }
                 }
             });
         };
 
         document.getElementById('randomizeData').addEventListener('click', function() {
-            chartData.datasets.forEach(function(dataset) {
+            barChartData.datasets.forEach(function(dataset, i) {
                 dataset.data = dataset.data.map(function() {
                     return randomScalingFactor();
                 });
             });
-            window.myMixedChart.update();
+            window.myBar.update();
         });
     </script>
 </body>

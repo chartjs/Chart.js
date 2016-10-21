@@ -1,11 +1,12 @@
 <!doctype html>
 <html>
+
 <head>
-	<title> Animation Callbacks </title>
+    <title>Line Chart</title>
     <script src="../../dist/Chart.bundle.js"></script>
     <script src="../chartColors.js"></script>
     <style>
-    canvas {
+    canvas{
         -moz-user-select: none;
         -webkit-user-select: none;
         -ms-user-select: none;
@@ -14,31 +15,29 @@
 </head>
 
 <body>
-    <div style="width: 75%;">
+    <div style="width:90%;">
         <canvas id="canvas"></canvas>
-        <progress id="animationProgress" max="1" value="0" style="width: 100%"></progress>
     </div>
-    <br>
-    <br>
-    <button id="randomizeData">Randomize Data</button>
     <script>
-        var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
         var randomScalingFactor = function() {
             return Math.round(Math.random() * 100);
         };
 
-        var progress = document.getElementById('animationProgress');
-
         var config = {
             type: 'line',
             data: {
-                labels: ["January", "February", "March", "April", "May", "June", "July"],
+                labels: [["June","2015"], "July", "August", "September", "October", "November", "December", ["January","2016"],"February", "March", "April", "May"],
                 datasets: [{
+                    label: "My First dataset",
                     fill: false,
-                    borderColor: window.chartColors.red,
                     backgroundColor: window.chartColors.red,
+                    borderColor: window.chartColors.red,
                     data: [
+                        randomScalingFactor(), 
+                        randomScalingFactor(), 
+                        randomScalingFactor(), 
+                        randomScalingFactor(), 
+                        randomScalingFactor(), 
                         randomScalingFactor(), 
                         randomScalingFactor(), 
                         randomScalingFactor(), 
@@ -48,10 +47,10 @@
                         randomScalingFactor()
                     ]
                 }, {
-                    label: "My Second dataset ",
+                    label: "My Second dataset",
                     fill: false,
-                    borderColor: window.chartColors.blue,
                     backgroundColor: window.chartColors.blue,
+                    borderColor: window.chartColors.blue,
                     data: [
                         randomScalingFactor(), 
                         randomScalingFactor(), 
@@ -59,26 +58,21 @@
                         randomScalingFactor(), 
                         randomScalingFactor(), 
                         randomScalingFactor(), 
+                        randomScalingFactor(), 
+                        randomScalingFactor(), 
+                        randomScalingFactor(), 
+                        randomScalingFactor(), 
+                        randomScalingFactor(), 
                         randomScalingFactor()
-                    ]
+                    ],
                 }]
             },
             options: {
+                responsive: true,
                 title:{
                     display:true,
-                    text: "Chart.js Line Chart - Animation Progress Bar"
+                    text:'Chart with Multiline Labels'
                 },
-                animation: {
-                    duration: 2000,
-                    onProgress: function(animation) {
-                        progress.value = animation.animationObject.currentStep / animation.animationObject.numSteps;
-                    },
-                    onComplete: function(animation) {
-                        window.setTimeout(function() {
-                            progress.value = 0;
-                        }, 2000);
-                    }
-                }
             }
         };
 
@@ -86,16 +80,6 @@
             var ctx = document.getElementById("canvas").getContext("2d");
             window.myLine = new Chart(ctx, config);
         };
-
-        document.getElementById('randomizeData').addEventListener('click', function() {
-            config.data.datasets.forEach(function(dataset) {
-                dataset.data = dataset.data.map(function() {
-                    return randomScalingFactor();
-                });
-            });
-
-            window.myLine.update();
-        });
     </script>
 </body>
 
