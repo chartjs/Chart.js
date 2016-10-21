@@ -485,6 +485,13 @@ module.exports = function(Chart) {
 					tooltipItems.push(createTooltipItem(active[i]));
 				}
 
+				// If the user provided a filter function, use it to modify the tooltip items
+				if (opts.filter) {
+					tooltipItems = tooltipItems.filter(function(a) {
+						return opts.filter(a, data);
+					});
+				}
+
 				// If the user provided a sorting function, use it to modify the tooltip items
 				if (opts.itemSort) {
 					tooltipItems = tooltipItems.sort(function(a, b) {

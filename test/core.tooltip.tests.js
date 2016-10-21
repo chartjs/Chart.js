@@ -543,6 +543,78 @@ describe('Core.Tooltip', function() {
 		expect(tooltip._view.y).toBeCloseToPixel(155);
 	});
 
+	it('should filter items from the tooltip using the callback', function() {
+		var chartInstance = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					label: 'Dataset 1',
+					data: [10, 20, 30],
+					pointHoverBorderColor: 'rgb(255, 0, 0)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 0)',
+					tooltipHidden: true
+				}, {
+					label: 'Dataset 2',
+					data: [40, 40, 40],
+					pointHoverBorderColor: 'rgb(0, 0, 255)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+				}],
+				labels: ['Point 1', 'Point 2', 'Point 3']
+			},
+			options: {
+				tooltips: {
+					mode: 'label',
+					filter: function(tooltipItem, data) {
+						// For testing purposes remove the first dataset that has a tooltipHidden property
+						return !data.datasets[tooltipItem.datasetIndex].tooltipHidden;
+					}
+				}
+			}
+		});
+
+		// Trigger an event over top of the
+		var meta0 = chartInstance.getDatasetMeta(0);
+		var point0 = meta0.data[1];
+
+		var node = chartInstance.chart.canvas;
+		var rect = node.getBoundingClientRect();
+
+		var evt = new MouseEvent('mousemove', {
+			view: window,
+			bubbles: true,
+			cancelable: true,
+			clientX: rect.left + point0._model.x,
+			clientY: rect.top + point0._model.y
+		});
+
+		// Manully trigger rather than having an async test
+		node.dispatchEvent(evt);
+
+		// Check and see if tooltip was displayed
+		var tooltip = chartInstance.tooltip;
+
+		expect(tooltip._view).toEqual(jasmine.objectContaining({
+			// Positioning
+			xAlign: 'left',
+			yAlign: 'center',
+
+			// Text
+			title: ['Point 2'],
+			beforeBody: [],
+			body: [{
+				before: [],
+				lines: ['Dataset 2: 40'],
+				after: []
+			}],
+			afterBody: [],
+			footer: [],
+			labelColors: [{
+				borderColor: 'rgb(0, 0, 255)',
+				backgroundColor: 'rgb(0, 255, 255)'
+			}]
+		}));
+	});
+
 	it('Should have dataPoints', function() {
 		var chartInstance = window.acquireChart({
 			type: 'line',
