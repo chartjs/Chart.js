@@ -187,25 +187,17 @@ module.exports = function(Chart) {
 			var xScale = me.getScaleForId(meta.xAxisID);
 			var barIndex = me.getBarIndex(datasetIndex);
 			var leftTick = xScale.getPixelForValue(null, index, datasetIndex, me.chart.isCombo);
-			leftTick -= me.chart.isCombo ? (ruler.tickWidth / 2) : 0;
+			leftTick -= me.chart.isCombo || xScale.options.type === 'time' ? (ruler.tickWidth / 2) : 0;
 
 			if (xScale.options.stacked) {
-				if (xScale.options.type === 'time') {
-					return leftTick;
-				}
 				return leftTick + (ruler.categoryWidth / 2) + ruler.categorySpacing;
 			}
-			leftTick = leftTick +
+			return leftTick +
 				(ruler.barWidth / 2) +
 				ruler.categorySpacing +
 				(ruler.barWidth * barIndex) +
 				(ruler.barSpacing / 2) +
 				(ruler.barSpacing * barIndex);
-
-			if (xScale.options.type === 'time') {
-				leftTick -= (ruler.barWidth + ruler.barSpacing) / 2 * ruler.datasetCount + ruler.categorySpacing;
-			}
-			return leftTick;
 		},
 
 		calculateBarY: function(index, datasetIndex) {
