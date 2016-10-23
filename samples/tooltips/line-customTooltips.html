@@ -4,7 +4,7 @@
 <head>
 	<title>Line Chart with Custom Tooltips</title>
 	<script src="../../dist/Chart.bundle.js"></script>
-	<script src="../chartColors.js"></script>
+	<script src="../utils.js"></script>
 	<style>
 		canvas{
 			-moz-user-select: none;
@@ -106,10 +106,7 @@
 			tooltipEl.style.fontStyle = tooltip._fontStyle;
 			tooltipEl.style.padding = tooltip.yPadding + 'px ' + tooltip.xPadding + 'px';
 		};
-		
-		var randomScalingFactor = function() {
-			return Math.round(Math.random() * 100);
-		};
+
 		var lineChartData = {
 			labels: ["January", "February", "March", "April", "May", "June", "July"],
 			datasets: [{

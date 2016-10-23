@@ -1,10 +1,9 @@
 <!doctype html>
 <html>
-
 <head>
-    <title>Chart with xAxis Filtering</title>
+	<title> Animation Callbacks </title>
     <script src="../../dist/Chart.bundle.js"></script>
-    <script src="../chartColors.js"></script>
+    <script src="../utils.js"></script>
     <style>
     canvas {
         -moz-user-select: none;
@@ -15,22 +14,21 @@
 </head>
 
 <body>
-    <div style="width:75%;">
+    <div style="width: 75%;">
         <canvas id="canvas"></canvas>
+        <progress id="animationProgress" max="1" value="0" style="width: 100%"></progress>
     </div>
+    <br>
+    <br>
+    <button id="randomizeData">Randomize Data</button>
     <script>
         var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-        var randomScalingFactor = function() {
-            return Math.round(Math.random() * 50 * (Math.random() > 0.5 ? 1 : 1)) + 50;
-        };
-
+        var progress = document.getElementById('animationProgress');
         var config = {
             type: 'line',
             data: {
                 labels: ["January", "February", "March", "April", "May", "June", "July"],
                 datasets: [{
-                    label: "My First dataset",
                     fill: false,
                     borderColor: window.chartColors.red,
                     backgroundColor: window.chartColors.red,
@@ -44,7 +42,7 @@
                         randomScalingFactor()
                     ]
                 }, {
-                    label: "My Second dataset",
+                    label: "My Second dataset ",
                     fill: false,
                     borderColor: window.chartColors.blue,
                     backgroundColor: window.chartColors.blue,
@@ -60,25 +58,20 @@
                 }]
             },
             options: {
-                responsive: true,
                 title:{
                     display:true,
-                    text:"Chart.js Line Chart - X-Axis Filter"
+                    text: "Chart.js Line Chart - Animation Progress Bar"
                 },
-                scales: {
-                    xAxes: [{
-                        display: true,
-                        ticks: {
-                            callback: function(dataLabel, index) {
-                                // Hide the label of every 2nd dataset. return null to hide the grid line too
-                                return index % 2 === 0 ? dataLabel : '';
-                            }
-                        }
-                    }],
-                    yAxes: [{
-                        display: true,
-                        beginAtZero: false
-                    }]
+                animation: {
+                    duration: 2000,
+                    onProgress: function(animation) {
+                        progress.value = animation.animationObject.currentStep / animation.animationObject.numSteps;
+                    },
+                    onComplete: function(animation) {
+                        window.setTimeout(function() {
+                            progress.value = 0;
+                        }, 2000);
+                    }
                 }
             }
         };
@@ -87,6 +80,16 @@
             var ctx = document.getElementById("canvas").getContext("2d");
             window.myLine = new Chart(ctx, config);
         };
+
+        document.getElementById('randomizeData').addEventListener('click', function() {
+            config.data.datasets.forEach(function(dataset) {
+                dataset.data = dataset.data.map(function() {
+                    return randomScalingFactor();
+                });
+            });
+
+            window.myLine.update();
+        });
     </script>
 </body>
 

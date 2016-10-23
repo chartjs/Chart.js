@@ -5,7 +5,7 @@
 <head>
     <title>Labelling Data Points</title>
     <script src="../dist/Chart.bundle.js"></script>
-    <script src="chartColors.js"></script>
+    <script src="utils.js"></script>
     <style>
     canvas {
         -moz-user-select: none;
@@ -21,10 +21,6 @@
     </div>
     <button id="randomizeData">Randomize Data</button>
     <script>
-        var randomScalingFactor = function() {
-            return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 100);
-        };
-
         var color = Chart.helpers.color;
         var barChartData = {
             labels: ["January", "February", "March", "April", "May", "June", "July"],

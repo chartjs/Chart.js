@@ -4,7 +4,7 @@
 <head>
     <title>Bubble Chart</title>
     <script src="../dist/Chart.bundle.js"></script>
-    <script src="chartColors.js"></script>
+    <script src="utils.js"></script>
     <style type="text/css">
     canvas{
         -moz-user-select: none;
@@ -27,11 +27,6 @@
         var DEFAULT_DATASET_SIZE = 7;
 
         var addedCount = 0;
-
-        var randomScalingFactor = function() {
-            return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 100);
-        };
-
         var color = Chart.helpers.color;
         var bubbleChartData = {
             animation: {

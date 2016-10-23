@@ -4,7 +4,7 @@
 <head>
 	<title>Line Chart</title>
 	<script src="../../dist/Chart.bundle.js"></script>
-	<script src="../chartColors.js"></script>
+	<script src="../utils.js"></script>
 	<style>
 		canvas {
 				-moz-user-select: none;
@@ -27,11 +27,6 @@
 	<button id="removeData">Remove Data</button>
 	<script>
 		var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-		var randomScalingFactor = function() {
-			return Math.round(Math.random() * 100 * (Math.random() > 0.5 ? -1 : 1));
-		};
-
 		var config = {
 			type: 'line',
 			data: {

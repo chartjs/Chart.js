@@ -4,7 +4,7 @@
 <head>
     <title>Stepped Line Chart</title>
     <script src="../../dist/Chart.bundle.js"></script>
-    <script src="../chartColors.js"></script>
+    <script src="../utils.js"></script>
     <style>
     canvas{
         -moz-user-select: none;
@@ -19,9 +19,6 @@
         <canvas id="canvas"></canvas>
     </div>
     <script>
-        var randomScalingFactor = function() {
-            return (Math.random() > 0.5 ? -1 : 1) * Math.round(Math.random() * 100);
-        };
         var config = {
             type: 'line',
             data: {
