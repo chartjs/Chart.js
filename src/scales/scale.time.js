@@ -68,6 +68,31 @@ module.exports = function(Chart) {
 		}
 	};
 
+	function parseTime(axis, label) {
+		var timeOpts = axis.options.time;
+		if (typeof timeOpts.parser === 'string') {
+			return moment(label, timeOpts.parser);
+		}
+		if (typeof timeOpts.parser === 'function') {
+			return timeOpts.parser(label);
+		}
+		// Date objects
+		if (typeof label.getMonth === 'function' || typeof label === 'number') {
+			return moment(label);
+		}
+		// Moment support
+		if (label.isValid && label.isValid()) {
+			return label;
+		}
+		// Custom parsing (return an instance of moment)
+		if (typeof timeOpts.format !== 'string' && timeOpts.format.call) {
+			console.warn('options.time.format is deprecated and replaced by options.time.parser. See http://nnnick.github.io/Chart.js/docs-v2/#scales-time-scale');
+			return timeOpts.format(label);
+		}
+		// Moment format parsing
+		return moment(label, timeOpts.format);
+	}
+
 	var TimeScale = Chart.Scale.extend({
 		initialize: function() {
 			if (!moment) {
@@ -381,30 +406,6 @@ module.exports = function(Chart) {
 			offset *= me.scaleSizeInUnits;
 			return me.firstTick.clone().add(moment.duration(offset, me.tickUnit).asSeconds(), 'seconds');
 		},
-		parseTime: function(label) {
-			var me = this;
-			if (typeof me.options.time.parser === 'string') {
-				return moment(label, me.options.time.parser);
-			}
-			if (typeof me.options.time.parser === 'function') {
-				return me.options.time.parser(label);
-			}
-			// Date objects
-			if (typeof label.getMonth === 'function' || typeof label === 'number') {
-				return moment(label);
-			}
-			// Moment support
-			if (label.isValid && label.isValid()) {
-				return label;
-			}
-			// Custom parsing (return an instance of moment)
-			if (typeof me.options.time.format !== 'string' && me.options.time.format.call) {
-				console.warn('options.time.format is deprecated and replaced by options.time.parser. See http://nnnick.github.io/Chart.js/docs-v2/#scales-time-scale');
-				return me.options.time.format(label);
-			}
-			// Moment format parsing
-			return moment(label, me.options.time.format);
-		}
 	});
 	Chart.scaleService.registerScaleType('time', TimeScale, defaultConfig);
 
