@@ -4,8 +4,8 @@
 <head>
 	<title>Time Scale Point Data</title>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
-	<script src="../../dist/Chart.js"></script>
-	<script src="../chartColors.js"></script>
+	<script src="../../../dist/Chart.js"></script>
+	<script src="../../utils.js"></script>
 	<style>
     canvas {
         -moz-user-select: none;
@@ -25,10 +25,6 @@
 	<button id="addData">Add Data</button>
 	<button id="removeData">Remove Data</button>
 	<script>
-		function randomScalingFactor() {
-			return Math.round(Math.random() * 100 * (Math.random() > 0.5 ? -1 : 1));
-		}
-
 		function newDate(days) {
 			return moment().add(days, 'd').toDate();
 		}

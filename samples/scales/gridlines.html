@@ -4,7 +4,7 @@
 <head>
     <title>Suggested Min/Max Settings</title>
     <script src="../../dist/Chart.bundle.js"></script>
-    <script src="../chartColors.js"></script>
+    <script src="../utils.js"></script>
     <style>
     canvas{
         -moz-user-select: none;
@@ -40,17 +40,19 @@
             options: {
                 responsive: true,
                 title:{
-                    display:true,
-                    text:'Min and Max Settings'
+                    display: true,
+                    text: 'Grid Line Settings'
                 },
                 scales: {
                     yAxes: [{
+                        gridLines: {
+                            drawBorder: false,
+                            color: ['pink', 'red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'purple']
+                        },
                         ticks: {
-                            // the data minimum used for determining the ticks is Math.min(dataMin, suggestedMin)
-                            suggestedMin: 10,
-
-                            // the data maximum used for determining the ticks is Math.max(dataMax, suggestedMax)
-                            suggestedMax: 50
+                            min: 0,
+                            max: 100,
+                            stepSize: 10
                         }
                     }]
                 }

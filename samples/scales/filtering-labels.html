@@ -2,11 +2,11 @@
 <html>
 
 <head>
-    <title>Line Chart</title>
+    <title>Chart with xAxis Filtering</title>
     <script src="../../dist/Chart.bundle.js"></script>
-    <script src="../chartColors.js"></script>
+    <script src="../utils.js"></script>
     <style>
-    canvas{
+    canvas {
         -moz-user-select: none;
         -webkit-user-select: none;
         -ms-user-select: none;
@@ -15,29 +15,26 @@
 </head>
 
 <body>
-    <div style="width:90%;">
+    <div style="width:75%;">
         <canvas id="canvas"></canvas>
     </div>
     <script>
+        var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
         var randomScalingFactor = function() {
-            return Math.round(Math.random() * 100);
+            return Math.round(Math.random() * 50 * (Math.random() > 0.5 ? 1 : 1)) + 50;
         };
 
         var config = {
             type: 'line',
             data: {
-                labels: [["June","2015"], "July", "August", "September", "October", "November", "December", ["January","2016"],"February", "March", "April", "May"],
+                labels: ["January", "February", "March", "April", "May", "June", "July"],
                 datasets: [{
                     label: "My First dataset",
                     fill: false,
-                    backgroundColor: window.chartColors.red,
                     borderColor: window.chartColors.red,
+                    backgroundColor: window.chartColors.red,
                     data: [
-                        randomScalingFactor(), 
-                        randomScalingFactor(), 
-                        randomScalingFactor(), 
-                        randomScalingFactor(), 
-                        randomScalingFactor(), 
                         randomScalingFactor(), 
                         randomScalingFactor(), 
                         randomScalingFactor(), 
@@ -49,8 +46,8 @@
                 }, {
                     label: "My Second dataset",
                     fill: false,
-                    backgroundColor: window.chartColors.blue,
                     borderColor: window.chartColors.blue,
+                    backgroundColor: window.chartColors.blue,
                     data: [
                         randomScalingFactor(), 
                         randomScalingFactor(), 
@@ -58,21 +55,31 @@
                         randomScalingFactor(), 
                         randomScalingFactor(), 
                         randomScalingFactor(), 
-                        randomScalingFactor(), 
-                        randomScalingFactor(), 
-                        randomScalingFactor(), 
-                        randomScalingFactor(), 
-                        randomScalingFactor(), 
                         randomScalingFactor()
-                    ],
+                    ]
                 }]
             },
             options: {
                 responsive: true,
                 title:{
                     display:true,
-                    text:'Chart with Multiline Labels'
+                    text:"Chart.js Line Chart - X-Axis Filter"
                 },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        ticks: {
+                            callback: function(dataLabel, index) {
+                                // Hide the label of every 2nd dataset. return null to hide the grid line too
+                                return index % 2 === 0 ? dataLabel : '';
+                            }
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        beginAtZero: false
+                    }]
+                }
             }
         };
 

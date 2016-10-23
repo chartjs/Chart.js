@@ -2,9 +2,9 @@
 <html>
 
 <head>
-    <title>Min/Max Settings</title>
-    <script src="../../dist/Chart.bundle.js"></script>
-    <script src="../chartColors.js"></script>
+    <title>Suggested Min/Max Settings</title>
+    <script src="../../../dist/Chart.bundle.js"></script>
+    <script src="../../utils.js"></script>
     <style>
     canvas{
         -moz-user-select: none;
@@ -27,14 +27,14 @@
                     label: "My First dataset",
                     backgroundColor: window.chartColors.red,
                     borderColor: window.chartColors.red,
-                    data: [10, 30, 50, 20, 25, 44, -10],
+                    data: [10, 30, 39, 20, 25, 34, -10],
                     fill: false,
                 }, {
                     label: "My Second dataset",
                     fill: false,
                     backgroundColor: window.chartColors.blue,
                     borderColor: window.chartColors.blue,
-                    data: [100, 33, 22, 19, 11, 49, 30],
+                    data: [18, 33, 22, 19, 11, 39, 30],
                 }]
             },
             options: {
@@ -46,8 +46,11 @@
                 scales: {
                     yAxes: [{
                         ticks: {
-                            min: 10,
-                            max: 50
+                            // the data minimum used for determining the ticks is Math.min(dataMin, suggestedMin)
+                            suggestedMin: 10,
+
+                            // the data maximum used for determining the ticks is Math.max(dataMax, suggestedMax)
+                            suggestedMax: 50
                         }
                     }]
                 }

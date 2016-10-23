@@ -4,7 +4,7 @@
 <head>
     <title>Legend Point Style</title>
     <script src="../../dist/Chart.bundle.js"></script>
-    <script src="../chartColors.js"></script>
+    <script src="../utils.js"></script>
     <style>
         canvas {
             -moz-user-select: none;
@@ -35,10 +35,6 @@
         </div>
     </div>
     <script>
-        var randomScalingFactor = function() {
-            return Math.round(Math.random() * 100 * (Math.random() > 0.5 ? -1 : 1));
-        };
-
         var color = Chart.helpers.color;
         function createConfig(colorName) {
             return {

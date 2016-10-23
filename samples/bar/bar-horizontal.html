@@ -4,7 +4,7 @@
 <head>
     <title>Horizontal Bar Chart</title>
     <script src="../../dist/Chart.bundle.js"></script>
-    <script src="../chartColors.js"></script>
+    <script src="../utils.js"></script>
     <style>
     canvas {
         -moz-user-select: none;
@@ -25,19 +25,7 @@
     <button id="removeData">Remove Data</button>
     <script>
         var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-        var randomScalingFactor = function() {
-            return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 100);
-        };
-        var randomColorFactor = function() {
-            return Math.round(Math.random() * 255);
-        };
-        var randomColor = function() {
-            return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',.7)';
-        };
-
         var color = Chart.helpers.color;
-
         var horizontalBarChartData = {
             labels: ["January", "February", "March", "April", "May", "June", "July"],
             datasets: [{
