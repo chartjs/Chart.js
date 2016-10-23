@@ -260,7 +260,7 @@ module.exports = function(Chart) {
 				var position = helpers.getRelativePosition(e, chart.chart);
 				var items = [];
 				parseVisibleItems(chart, function(element) {
-					if (element.inYRange(position.x)) {
+					if (element.inYRange(position.y)) {
 						items.push(element);
 					}
 				});
