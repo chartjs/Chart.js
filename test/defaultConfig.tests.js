@@ -1,293 +1,296 @@
 // Test the bubble chart default config
-describe("Test the bubble chart default config", function() {
-	it('should reutrn correct tooltip strings', function() {
-		var config = Chart.defaults.bubble;
+describe('Default Configs', function() {
+	describe('Bubble Chart', function() {
+		it('should return correct tooltip strings', function() {
+			var config = Chart.defaults.bubble;
+			var chart = window.acquireChart({
+				type: 'bubble',
+				data: {
+					datasets: [{
+						label: 'My dataset',
+						data: [{
+							x: 10,
+							y: 12,
+							r: 5
+						}]
+					}]
+				},
+				options: config
+			});
 
-		// Title is always blank
-		expect(config.tooltips.callbacks.title()).toBe('');
+			// fake out the tooltip hover and force the tooltip to update
+			chart.tooltip._active = [chart.getDatasetMeta(0).data[0]];
+			chart.tooltip.update();
 
-		// Item label
-		var data = {
-			datasets: [{
-				label: 'My dataset',
-				data: [{
-					x: 10,
-					y: 12,
-					r: 5
-				}]
-			}]
-		};
-
-		var tooltipItem = {
-			datasetIndex: 0,
-			index: 0
-		};
-
-		expect(config.tooltips.callbacks.label(tooltipItem, data)).toBe('My dataset: (10, 12, 5)');
-	});
-});
-
-describe('Test the doughnut chart default config', function() {
-	it('should return correct tooltip strings', function() {
-		var config = Chart.defaults.doughnut;
-
-		// Title is always blank
-		expect(config.tooltips.callbacks.title()).toBe('');
-
-		// Item label
-		var data = {
-			labels: ['label1', 'label2', 'label3'],
-			datasets: [{
-				data: [10, 20, 30],
-			}]
-		};
-
-		var tooltipItem = {
-			datasetIndex: 0,
-			index: 1
-		};
-
-		expect(config.tooltips.callbacks.label(tooltipItem, data)).toBe('label2: 20');
+			// Title is always blank
+			expect(chart.tooltip._model.title).toEqual([]);
+			expect(chart.tooltip._model.body).toEqual([{
+				before: [],
+				lines: ['My dataset: (10, 12, 5)'],
+				after: []
+			}]);
+		});
 	});
 
-	it('should return the correct html legend', function() {
-		var config = Chart.defaults.doughnut;
+	describe('Doughnut Chart', function() {
+		it('should return correct tooltip strings', function() {
+			var config = Chart.defaults.doughnut;
+			var chart = window.acquireChart({
+				type: 'doughnut',
+				data: {
+					labels: ['label1', 'label2', 'label3'],
+					datasets: [{
+						data: [10, 20, 30],
+					}]
+				},
+				options: config
+			});
 
-		var chart = {
-			id: 'mychart',
-			data: {
-				labels: ['label1', 'label2'],
-				datasets: [{
-					data: [10, 20],
-					backgroundColor: ['red', 'green']
-				}]
-			}
-		};
-		var expectedLegend = '<ul class="mychart-legend"><li><span style="background-color:red"></span>label1</li><li><span style="background-color:green"></span>label2</li></ul>';
+			// fake out the tooltip hover and force the tooltip to update
+			chart.tooltip._active = [chart.getDatasetMeta(0).data[1]];
+			chart.tooltip.update();
 
-		expect(config.legendCallback(chart)).toBe(expectedLegend);
-	});
+			// Title is always blank
+			expect(chart.tooltip._model.title).toEqual([]);
+			expect(chart.tooltip._model.body).toEqual([{
+				before: [],
+				lines: ['label2: 20'],
+				after: []
+			}]);
+		});
 
-	it('should return correct legend label objects', function() {
-		var config = Chart.defaults.doughnut;
-		var data = {
-			labels: ['label1', 'label2', 'label3'],
-			datasets: [{
-				data: [10, 20, NaN],
-				backgroundColor: ['red', 'green', 'blue'],
-				metaData: [{}, {}, {}]
-			}]
-		};
+		it('should return correct tooltip string for a multiline label', function() {
+			var config = Chart.defaults.doughnut;
+			var chart = window.acquireChart({
+				type: 'doughnut',
+				data: {
+					labels: ['label1', ['row1', 'row2', 'row3'], 'label3'],
+					datasets: [{
+						data: [10, 20, 30],
+					}]
+				},
+				options: config
+			});
 
-		var expected = [{
-			text: 'label1',
-			fillStyle: 'red',
-			hidden: false,
-			index: 0,
-			strokeStyle: '#000',
-			lineWidth: 2
-		}, {
-			text: 'label2',
-			fillStyle: 'green',
-			hidden: false,
-			index: 1,
-			strokeStyle: '#000',
-			lineWidth: 2
-		}, {
-			text: 'label3',
-			fillStyle: 'blue',
-			hidden: true,
-			index: 2,
-			strokeStyle: '#000',
-			lineWidth: 2
-		}];
+			// fake out the tooltip hover and force the tooltip to update
+			chart.tooltip._active = [chart.getDatasetMeta(0).data[1]];
+			chart.tooltip.update();
 
-		var chart = {
-			data: data,
-			options: {
-				elements: {
-					arc: {
+			// Title is always blank
+			expect(chart.tooltip._model.title).toEqual([]);
+			expect(chart.tooltip._model.body).toEqual([{
+				before: [],
+				lines: [
+					'row1: 20',
+					'row2',
+					'row3'
+				],
+				after: []
+			}]);
+		});
+
+		it('should return the correct html legend', function() {
+			var config = Chart.defaults.doughnut;
+			var chart = window.acquireChart({
+				type: 'doughnut',
+				data: {
+					labels: ['label1', 'label2'],
+					datasets: [{
+						data: [10, 20],
+						backgroundColor: ['red', 'green']
+					}]
+				},
+				options: config
+			});
+
+			var expectedLegend = '<ul class="' + chart.id + '-legend"><li><span style="background-color:red"></span>label1</li><li><span style="background-color:green"></span>label2</li></ul>';
+			expect(chart.generateLegend()).toBe(expectedLegend);
+		});
+
+		it('should return correct legend label objects', function() {
+			var config = Chart.defaults.doughnut;
+			var chart = window.acquireChart({
+				type: 'doughnut',
+				data: {
+					labels: ['label1', 'label2', 'label3'],
+					datasets: [{
+						data: [10, 20, NaN],
+						backgroundColor: ['red', 'green', 'blue'],
 						borderWidth: 2,
 						borderColor: '#000'
-					}
-				}
-			}
-		};
-		expect(config.legend.labels.generateLabels.call({ chart: chart }, data)).toEqual(expected);
-	});
+					}]
+				},
+				options: config
+			});
 
-	it('should hide the correct arc when a legend item is clicked', function() {
-		var config = Chart.defaults.doughnut;
+			var expected = [{
+				text: 'label1',
+				fillStyle: 'red',
+				hidden: false,
+				index: 0,
+				strokeStyle: '#000',
+				lineWidth: 2
+			}, {
+				text: 'label2',
+				fillStyle: 'green',
+				hidden: false,
+				index: 1,
+				strokeStyle: '#000',
+				lineWidth: 2
+			}, {
+				text: 'label3',
+				fillStyle: 'blue',
+				hidden: true,
+				index: 2,
+				strokeStyle: '#000',
+				lineWidth: 2
+			}];
+			expect(chart.legend.legendItems).toEqual(expected);
+		});
 
-		var legendItem = {
-			text: 'label1',
-			fillStyle: 'red',
-			hidden: false,
-			index: 0
-		};
-
-		var chart = {
-			data: {
-				labels: ['label1', 'label2', 'label3'],
-				datasets: [{
-					data: [10, 20, NaN],
-					backgroundColor: ['red', 'green', 'blue']
-				}]
-			},
-			update: function() {}
-		};
-
-		spyOn(chart, 'update');
-		var scope = {
-			chart: chart
-		};
-
-		config.legend.onClick.call(scope, null, legendItem);
-
-		expect(chart.data.datasets[0].metaHiddenData).toEqual([10]);
-		expect(chart.data.datasets[0].data).toEqual([NaN, 20, NaN]);
-
-		expect(chart.update).toHaveBeenCalled();
-
-		config.legend.onClick.call(scope, null, legendItem);
-		expect(chart.data.datasets[0].data).toEqual([10, 20, NaN]);
-
-		// Should not toggle index 2 since there was never data for it
-		legendItem.index = 2;
-		config.legend.onClick.call(scope, null, legendItem);
-		expect(chart.data.datasets[0].data).toEqual([10, 20, NaN]);
-	});
-});
-
-describe('Test the polar area chart default config', function() {
-	it('should return correct tooltip strings', function() {
-		var config = Chart.defaults.polarArea;
-
-		// Title is always blank
-		expect(config.tooltips.callbacks.title()).toBe('');
-
-		// Item label
-		var data = {
-			labels: ['label1', 'label2', 'label3'],
-			datasets: [{
-				data: [10, 20, 30],
-			}]
-		};
-
-		var tooltipItem = {
-			datasetIndex: 0,
-			index: 1,
-			yLabel: 20
-		};
-
-		expect(config.tooltips.callbacks.label(tooltipItem, data)).toBe('label2: 20');
-	});
-
-	it('should return the correct html legend', function() {
-		var config = Chart.defaults.polarArea;
-
-		var chart = {
-			id: 'mychart',
-			data: {
-				labels: ['label1', 'label2'],
-				datasets: [{
-					data: [10, 20],
-					backgroundColor: ['red', 'green']
-				}]
-			}
-		};
-		var expectedLegend = '<ul class="mychart-legend"><li><span style="background-color:red">label1</span></li><li><span style="background-color:green">label2</span></li></ul>';
-
-		expect(config.legendCallback(chart)).toBe(expectedLegend);
-	});
-
-	it('should return correct legend label objects', function() {
-		var config = Chart.defaults.polarArea;
-		var data = {
-			labels: ['label1', 'label2', 'label3'],
-			datasets: [{
-				data: [10, 20, NaN],
-				backgroundColor: ['red', 'green', 'blue'],
-				metaData: [{}, {}, {}]
-			}]
-		};
-
-		var expected = [{
-			text: 'label1',
-			fillStyle: 'red',
-			hidden: false,
-			index: 0,
-			strokeStyle: '#000',
-			lineWidth: 2
-		}, {
-			text: 'label2',
-			fillStyle: 'green',
-			hidden: false,
-			index: 1,
-			strokeStyle: '#000',
-			lineWidth: 2
-		}, {
-			text: 'label3',
-			fillStyle: 'blue',
-			hidden: true,
-			index: 2,
-			strokeStyle: '#000',
-			lineWidth: 2
-		}];
-
-		var chart = {
-			data: data,
-			options: {
-				elements: {
-					arc: {
+		it('should hide the correct arc when a legend item is clicked', function() {
+			var config = Chart.defaults.doughnut;
+			var chart = window.acquireChart({
+				type: 'doughnut',
+				data: {
+					labels: ['label1', 'label2', 'label3'],
+					datasets: [{
+						data: [10, 20, NaN],
+						backgroundColor: ['red', 'green', 'blue'],
 						borderWidth: 2,
 						borderColor: '#000'
-					}
-				}
-			}
-		};
-		expect(config.legend.labels.generateLabels.call({ chart: chart }, data)).toEqual(expected);
+					}]
+				},
+				options: config
+			});
+			var meta = chart.getDatasetMeta(0);
+
+			spyOn(chart, 'update').and.callThrough();
+
+			var legendItem = chart.legend.legendItems[0];
+			config.legend.onClick.call(chart.legend, null, legendItem);
+
+			expect(meta.data[0].hidden).toBe(true);
+			expect(chart.update).toHaveBeenCalled();
+
+			config.legend.onClick.call(chart.legend, null, legendItem);
+			expect(meta.data[0].hidden).toBe(false);
+		});
 	});
 
-	it('should hide the correct arc when a legend item is clicked', function() {
-		var config = Chart.defaults.polarArea;
+	describe('Polar Area Chart', function() {
+		it('should return correct tooltip strings', function() {
+			var config = Chart.defaults.polarArea;
+			var chart = window.acquireChart({
+				type: 'polarArea',
+				data: {
+					labels: ['label1', 'label2', 'label3'],
+					datasets: [{
+						data: [10, 20, 30],
+					}]
+				},
+				options: config
+			});
 
-		var legendItem = {
-			text: 'label1',
-			fillStyle: 'red',
-			hidden: false,
-			index: 0
-		};
+			// fake out the tooltip hover and force the tooltip to update
+			chart.tooltip._active = [chart.getDatasetMeta(0).data[1]];
+			chart.tooltip.update();
 
-		var chart = {
-			data: {
-				labels: ['label1', 'label2', 'label3'],
-				datasets: [{
-					data: [10, 20, NaN],
-					backgroundColor: ['red', 'green', 'blue']
-				}]
-			},
-			update: function() {}
-		};
+			// Title is always blank
+			expect(chart.tooltip._model.title).toEqual([]);
+			expect(chart.tooltip._model.body).toEqual([{
+				before: [],
+				lines: ['label2: 20'],
+				after: []
+			}]);
+		});
 
-		spyOn(chart, 'update');
-		var scope = {
-			chart: chart
-		};
+		it('should return the correct html legend', function() {
+			var config = Chart.defaults.polarArea;
+			var chart = window.acquireChart({
+				type: 'polarArea',
+				data: {
+					labels: ['label1', 'label2'],
+					datasets: [{
+						data: [10, 20],
+						backgroundColor: ['red', 'green']
+					}]
+				},
+				options: config
+			});
 
-		config.legend.onClick.call(scope, null, legendItem);
+			var expectedLegend = '<ul class="' + chart.id + '-legend"><li><span style="background-color:red"></span>label1</li><li><span style="background-color:green"></span>label2</li></ul>';
+			expect(chart.generateLegend()).toBe(expectedLegend);
+		});
 
-		expect(chart.data.datasets[0].metaHiddenData).toEqual([10]);
-		expect(chart.data.datasets[0].data).toEqual([NaN, 20, NaN]);
+		it('should return correct legend label objects', function() {
+			var config = Chart.defaults.polarArea;
+			var chart = window.acquireChart({
+				type: 'polarArea',
+				data: {
+					labels: ['label1', 'label2', 'label3'],
+					datasets: [{
+						data: [10, 20, NaN],
+						backgroundColor: ['red', 'green', 'blue'],
+						borderWidth: 2,
+						borderColor: '#000'
+					}]
+				},
+				options: config
+			});
 
-		expect(chart.update).toHaveBeenCalled();
+			var expected = [{
+				text: 'label1',
+				fillStyle: 'red',
+				hidden: false,
+				index: 0,
+				strokeStyle: '#000',
+				lineWidth: 2
+			}, {
+				text: 'label2',
+				fillStyle: 'green',
+				hidden: false,
+				index: 1,
+				strokeStyle: '#000',
+				lineWidth: 2
+			}, {
+				text: 'label3',
+				fillStyle: 'blue',
+				hidden: true,
+				index: 2,
+				strokeStyle: '#000',
+				lineWidth: 2
+			}];
+			expect(chart.legend.legendItems).toEqual(expected);
+		});
 
-		config.legend.onClick.call(scope, null, legendItem);
-		expect(chart.data.datasets[0].data).toEqual([10, 20, NaN]);
+		it('should hide the correct arc when a legend item is clicked', function() {
+			var config = Chart.defaults.polarArea;
+			var chart = window.acquireChart({
+				type: 'polarArea',
+				data: {
+					labels: ['label1', 'label2', 'label3'],
+					datasets: [{
+						data: [10, 20, NaN],
+						backgroundColor: ['red', 'green', 'blue'],
+						borderWidth: 2,
+						borderColor: '#000'
+					}]
+				},
+				options: config
+			});
+			var meta = chart.getDatasetMeta(0);
 
-		// Should not toggle index 2 since there was never data for it
-		legendItem.index = 2;
-		config.legend.onClick.call(scope, null, legendItem);
-		expect(chart.data.datasets[0].data).toEqual([10, 20, NaN]);
+			spyOn(chart, 'update').and.callThrough();
+
+			var legendItem = chart.legend.legendItems[0];
+			config.legend.onClick.call(chart.legend, null, legendItem);
+
+			expect(meta.data[0].hidden).toBe(true);
+			expect(chart.update).toHaveBeenCalled();
+
+			config.legend.onClick.call(chart.legend, null, legendItem);
+			expect(meta.data[0].hidden).toBe(false);
+		});
 	});
 });

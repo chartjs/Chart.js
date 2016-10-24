@@ -1,13 +1,5 @@
 // Test the polar area controller
 describe('Radar controller tests', function() {
-	beforeEach(function() {
-		window.addDefaultMatchers(jasmine);
-	});
-
-	afterEach(function() {
-		window.releaseAllCharts();
-	});
-
 	it('Should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'radar',
@@ -39,8 +31,6 @@ describe('Radar controller tests', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			}
 		});
-
-		var controller = new Chart.controllers.radar(chart, 0);
 
 		var meta = chart.getDatasetMeta(0);
 		expect(meta.dataset instanceof Chart.elements.Line).toBe(true); // line element
@@ -137,11 +127,11 @@ describe('Radar controller tests', function() {
 			tension: 0.1,
 		}));
 
-		[ 
-			{ x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
-			{ x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
-			{ x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
-			{ x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
+		[
+			{x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
+			{x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
+			{x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
+			{x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(expected.y);
@@ -163,12 +153,12 @@ describe('Radar controller tests', function() {
 
 		// Now update controller and ensure proper updates
 		meta.controller.update();
-		
-		[ 
-			{ x: 256, y: 133, cppx: 246, cppy: 133, cpnx: 272, cpny: 133 },
-			{ x: 464, y: 272, cppx: 464, cppy: 264, cpnx: 464, cpny: 278 },
-			{ x: 256, y: 272, cppx: 276.9, cppy: 272, cpnx: 250.4, cpny: 272 },
-			{ x: 200, y: 272, cppx: 200, cppy: 275, cpnx: 200, cpny: 261 },
+
+		[
+			{x: 256, y: 133, cppx: 246, cppy: 133, cpnx: 272, cpny: 133},
+			{x: 464, y: 272, cppx: 464, cppy: 264, cpnx: 464, cpny: 278},
+			{x: 256, y: 272, cppx: 276.9, cppy: 272, cpnx: 250.4, cpny: 272},
+			{x: 200, y: 272, cppx: 200, cppy: 275, cpnx: 200, cpny: 261},
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(expected.y);
@@ -225,11 +215,11 @@ describe('Radar controller tests', function() {
 		}));
 
 		// Since tension is now 0, we don't care about the control points
-		[ 
-			{ x: 256, y: 133 },
-			{ x: 464, y: 272 },
-			{ x: 256, y: 272 },
-			{ x: 200, y: 272 },
+		[
+			{x: 256, y: 133},
+			{x: 464, y: 272},
+			{x: 256, y: 272},
+			{x: 200, y: 272},
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(expected.y);
@@ -245,7 +235,7 @@ describe('Radar controller tests', function() {
 			}));
 		});
 
-		
+
 		// Use custom styles for lines & first point
 		meta.dataset.custom = {
 			tension: 0.25,

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function(Chart) {
 
@@ -15,7 +15,7 @@ module.exports = function(Chart) {
 		borderDashOffset: 0.0,
 		borderJoinStyle: 'miter',
 		capBezierPoints: true,
-		fill: true // do we fill in the area between the line and its base axis
+		fill: true, // do we fill in the area between the line and its base axis
 	};
 
 	Chart.elements.Line = Chart.Element.extend({
@@ -23,28 +23,37 @@ module.exports = function(Chart) {
 			var me = this;
 			var vm = me._view;
 			var spanGaps = vm.spanGaps;
-			var scaleZero = vm.scaleZero;
+			var fillPoint = vm.scaleZero;
 			var loop = me._loop;
+
+			// Handle different fill modes for cartesian lines
+			if (!loop) {
+				if (vm.fill === 'top') {
+					fillPoint = vm.scaleTop;
+				} else if (vm.fill === 'bottom') {
+					fillPoint = vm.scaleBottom;
+				}
+			}
 
 			var ctx = me._chart.ctx;
 			ctx.save();
 
 			// Helper function to draw a line to a point
 			function lineToPoint(previousPoint, point) {
-				var vm = point._view;
+				var pointVM = point._view;
 				if (point._view.steppedLine === true) {
-					ctx.lineTo(point._view.x, previousPoint._view.y);
-					ctx.lineTo(point._view.x, point._view.y);				
+					ctx.lineTo(pointVM.x, previousPoint._view.y);
+					ctx.lineTo(pointVM.x, pointVM.y);
 				} else if (point._view.tension === 0) {
-					ctx.lineTo(vm.x, vm.y);
+					ctx.lineTo(pointVM.x, pointVM.y);
 				} else {
 					ctx.bezierCurveTo(
 						previousPoint._view.controlPointNextX,
 						previousPoint._view.controlPointNextY,
-						vm.controlPointPreviousX,
-						vm.controlPointPreviousY,
-						vm.x,
-						vm.y
+						pointVM.controlPointPreviousX,
+						pointVM.controlPointPreviousY,
+						pointVM.x,
+						pointVM.y
 					);
 				}
 			}
@@ -71,9 +80,9 @@ module.exports = function(Chart) {
 					// First point moves to it's starting position no matter what
 					if (index === 0) {
 						if (loop) {
-							ctx.moveTo(scaleZero.x, scaleZero.y);
+							ctx.moveTo(fillPoint.x, fillPoint.y);
 						} else {
-							ctx.moveTo(currentVM.x, scaleZero);
+							ctx.moveTo(currentVM.x, fillPoint);
 						}
 
 						if (!currentVM.skip) {
@@ -87,25 +96,23 @@ module.exports = function(Chart) {
 							// Only do this if this is the first point that is skipped
 							if (!spanGaps && lastDrawnIndex === (index - 1)) {
 								if (loop) {
-									ctx.lineTo(scaleZero.x, scaleZero.y);
+									ctx.lineTo(fillPoint.x, fillPoint.y);
 								} else {
-									ctx.lineTo(previous._view.x, scaleZero);
+									ctx.lineTo(previous._view.x, fillPoint);
 								}
 							}
 						} else {
 							if (lastDrawnIndex !== (index - 1)) {
-								// There was a gap and this is the first point after the gap. If we've never drawn a point, this is a special case. 
+								// There was a gap and this is the first point after the gap. If we've never drawn a point, this is a special case.
 								// If the first data point is NaN, then there is no real gap to skip
 								if (spanGaps && lastDrawnIndex !== -1) {
 									// We are spanning the gap, so simple draw a line to this point
 									lineToPoint(previous, current);
+								} else if (loop) {
+									ctx.lineTo(currentVM.x, currentVM.y);
 								} else {
-									if (loop) {
-										ctx.lineTo(currentVM.x, currentVM.y);
-									} else {
-										ctx.lineTo(currentVM.x, scaleZero);
-										ctx.lineTo(currentVM.x, currentVM.y);
-									}
+									ctx.lineTo(currentVM.x, fillPoint);
+									ctx.lineTo(currentVM.x, currentVM.y);
 								}
 							} else {
 								// Line to next point
@@ -117,7 +124,7 @@ module.exports = function(Chart) {
 				}
 
 				if (!loop && lastDrawnIndex !== -1) {
-					ctx.lineTo(points[lastDrawnIndex]._view.x, scaleZero);
+					ctx.lineTo(points[lastDrawnIndex]._view.x, fillPoint);
 				}
 
 				ctx.fillStyle = vm.backgroundColor || globalDefaults.defaultColor;

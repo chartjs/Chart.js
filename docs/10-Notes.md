@@ -34,7 +34,7 @@ New contributions to the library are welcome, but we ask that you please follow 
 
 - Use tabs for indentation, not spaces.
 - Only change the individual files in `/src`.
-- Check that your code will pass `jshint` code standards, `gulp jshint` will run this for you.
+- Check that your code will pass `eslint` code standards, `gulp lint` will run this for you.
 - Check that your code will pass tests, `gulp test` will run tests for you.
 - Keep pull requests concise, and document new functionality in the relevant `.md` file.
 - Consider whether your changes are useful for all users, or if creating a Chart.js plugin would be more appropriate.
@@ -49,31 +49,31 @@ Library Features
 
 | Feature | Chart.js | D3 | HighCharts | Chartist |
 | ------- | -------- | --- | ---------- | -------- |
-| Completely Free | ✓ | ✓ | | ✓ |
-| Canvas | ✓ | | | |
-| SVG | | ✓ | ✓ | ✓ |
-| Built-in Charts | ✓ | | ✓ | ✓ |
-| 8+ Chart Types | ✓ | ✓ | ✓ | |
-| Extendable to Custom Charts | ✓ | ✓ | |  |
-| Supports Modern Browsers | ✓ | ✓ | ✓ | ✓ |
-| Extensive Documentation | ✓ | ✓ | ✓ | ✓ |
-| Open Source | ✓ | ✓ | ✓ | ✓ |
+| Completely Free | &check; | &check; | | &check; |
+| Canvas | &check; | | | |
+| SVG | | &check; | &check; | &check; |
+| Built-in Charts | &check; | | &check; | &check; |
+| 8+ Chart Types | &check; | &check; | &check; | |
+| Extendable to Custom Charts | &check; | &check; | |  |
+| Supports Modern Browsers | &check; | &check; | &check; | &check; |
+| Extensive Documentation | &check; | &check; | &check; | &check; |
+| Open Source | &check; | &check; | &check; | &check; |
 
 Built in Chart Types
 
 | Type | Chart.js | HighCharts | Chartist |
 | ---- | -------- | ---------- | -------- |
-| Combined Types | ✓ | ✓ | |
-| Line | ✓ | ✓ | ✓ |
-| Bar | ✓ | ✓ | ✓ |
-| Horizontal Bar | ✓ | ✓ | ✓ |
-| Pie/Doughnut | ✓ | ✓ | ✓ |
-| Polar Area | ✓ | ✓ | |
-| Radar | ✓ |  | |
-| Scatter | ✓ | ✓ | ✓ |
-| Bubble | ✓ | | |
-| Gauges | | ✓ | |
-| Maps (Heat/Tree/etc.) | | ✓ | |
+| Combined Types | &check; | &check; | |
+| Line | &check; | &check; | &check; |
+| Bar | &check; | &check; | &check; |
+| Horizontal Bar | &check; | &check; | &check; |
+| Pie/Doughnut | &check; | &check; | &check; |
+| Polar Area | &check; | &check; | |
+| Radar | &check; |  | |
+| Scatter | &check; | &check; | &check; |
+| Bubble | &check; | | |
+| Gauges | | &check; | |
+| Maps (Heat/Tree/etc.) | | &check; | |
 
 ### Popular Plugins
 
@@ -97,7 +97,8 @@ There are many extensions which are available for use with popular frameworks. S
  - <a href="https://github.com/earlonrails/angular-chartjs-directive" target="_blank">Angular Chart-js Directive</a>
 
 #### React
- - <a href="https://github.com/earlonrails/angular-chartjs-directive" target="_blank">react-chartjs</a>
+ - <a href="https://github.com/topdmc/react-chartjs2" target="_blank">react-chartjs2</a>
+ - <a href="https://github.com/gor181/react-chartjs-2" target="_blank">react-chartjs-2</a>
 
 #### Django
  - <a href="https://github.com/novafloss/django-chartjs" target="_blank">Django Chartjs</a>

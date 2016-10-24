@@ -1,3 +1,5 @@
+/* eslint guard-for-in: 1 */
+/* eslint camelcase: 1 */
 (function() {
 	// Code from http://stackoverflow.com/questions/4406864/html-canvas-unit-testing
 	var Context = function() {
@@ -13,44 +15,56 @@
 
 		// Define properties here so that we can record each time they are set
 		Object.defineProperties(this, {
-			"fillStyle": {
-				'get': function() { return this._fillStyle; },
-				'set': function(style) {
+			fillStyle: {
+				get: function() {
+					return this._fillStyle;
+				},
+				set: function(style) {
 					this._fillStyle = style;
 					this.record('setFillStyle', [style]);
 				}
 			},
-			'lineCap': {
-				'get': function() { return this._lineCap; },
-				'set': function(cap) {
+			lineCap: {
+				get: function() {
+					return this._lineCap;
+				},
+				set: function(cap) {
 					this._lineCap = cap;
 					this.record('setLineCap', [cap]);
 				}
 			},
-			'lineDashOffset': {
-				'get': function() { return this._lineDashOffset; },
-				'set': function(offset) {
+			lineDashOffset: {
+				get: function() {
+					return this._lineDashOffset;
+				},
+				set: function(offset) {
 					this._lineDashOffset = offset;
 					this.record('setLineDashOffset', [offset]);
 				}
 			},
-			'lineJoin': {
-				'get': function() { return this._lineJoin; },
-				'set': function(join) {
+			lineJoin: {
+				get: function() {
+					return this._lineJoin;
+				},
+				set: function(join) {
 					this._lineJoin = join;
 					this.record('setLineJoin', [join]);
 				}
 			},
-			'lineWidth': {
-				'get': function() { return this._lineWidth; },
-				'set': function (width) {
+			lineWidth: {
+				get: function() {
+					return this._lineWidth;
+				},
+				set: function(width) {
 					this._lineWidth = width;
 					this.record('setLineWidth', [width]);
 				}
 			},
-			'strokeStyle': {
-				'get': function() { return this._strokeStyle; },
-				'set': function(style) {
+			strokeStyle: {
+				get: function() {
+					return this._strokeStyle;
+				},
+				set: function(style) {
 					this._strokeStyle = style;
 					this.record('setStrokeStyle', [style]);
 				}
@@ -70,33 +84,35 @@
 			fill: function() {},
 			fillRect: function() {},
 			fillText: function() {},
-			lineTo: function(x, y) {},
+			lineTo: function() {},
 			measureText: function(text) {
 				// return the number of characters * fixed size
-				return text ? { width: text.length * 10 } : {width: 0};
+				return text ? {width: text.length * 10} : {width: 0};
 			},
-			moveTo: function(x, y) {},
+			moveTo: function() {},
 			quadraticCurveTo: function() {},
 			restore: function() {},
 			rotate: function() {},
 			save: function() {},
 			setLineDash: function() {},
 			stroke: function() {},
-			strokeRect: function(x, y, w, h) {},
-			setTransform: function(a, b, c, d, e, f) {},
-			translate: function(x, y) {},
+			strokeRect: function() {},
+			setTransform: function() {},
+			translate: function() {},
 		};
 
 		// attach methods to the class itself
-		var scope = this;
-		var addMethod = function(name, method) {
-			scope[methodName] = function() {
-				scope.record(name, arguments);
-				return method.apply(scope, arguments);
-			};
-		}
+		var me = this;
+		var methodName;
 
-		for (var methodName in methods) {
+		var addMethod = function(name, method) {
+			me[methodName] = function() {
+				me.record(name, arguments);
+				return method.apply(me, arguments);
+			};
+		};
+
+		for (methodName in methods) {
 			var method = methods[methodName];
 
 			addMethod(methodName, method);
@@ -108,11 +124,11 @@
 			name: methodName,
 			args: Array.prototype.slice.call(args)
 		});
-	},
+	};
 
 	Context.prototype.getCalls = function() {
 		return this._calls;
-	}
+	};
 
 	Context.prototype.resetCalls = function() {
 		this._calls = [];
@@ -136,10 +152,10 @@
 					result = (diff <= (A > B ? A : B) * percentDiff) || diff < 2; // 2 pixels is fine
 				}
 
-				return { pass: result };
+				return {pass: result};
 			}
-		}
-	};
+		};
+	}
 
 	function toEqualOneOf() {
 		return {
@@ -158,55 +174,150 @@
 		};
 	}
 
-	window.addDefaultMatchers = function(jasmine) {
+	function toBeValidChart() {
+		return {
+			compare: function(actual) {
+				var chart = actual && actual.chart;
+				var message = null;
+
+				if (!(actual instanceof Chart.Controller)) {
+					message = 'Expected ' + actual + ' to be an instance of Chart.Controller';
+				} else if (!(chart instanceof Chart)) {
+					message = 'Expected chart to be an instance of Chart';
+				} else if (!(chart.canvas instanceof HTMLCanvasElement)) {
+					message = 'Expected canvas to be an instance of HTMLCanvasElement';
+				} else if (!(chart.ctx instanceof CanvasRenderingContext2D)) {
+					message = 'Expected context to be an instance of CanvasRenderingContext2D';
+				} else if (typeof chart.height !== 'number' || !isFinite(chart.height)) {
+					message = 'Expected height to be a strict finite number';
+				} else if (typeof chart.width !== 'number' || !isFinite(chart.width)) {
+					message = 'Expected width to be a strict finite number';
+				}
+
+				return {
+					message: message? message : 'Expected ' + actual + ' to be valid chart',
+					pass: !message
+				};
+			}
+		};
+	}
+
+	function toBeChartOfSize() {
+		return {
+			compare: function(actual, expected) {
+				var res = toBeValidChart().compare(actual);
+				if (!res.pass) {
+					return res;
+				}
+
+				var message = null;
+				var chart = actual.chart;
+				var canvas = chart.ctx.canvas;
+				var style = getComputedStyle(canvas);
+				var dh = parseInt(style.height, 10);
+				var dw = parseInt(style.width, 10);
+				var rh = canvas.height;
+				var rw = canvas.width;
+
+				// sanity checks
+				if (chart.height !== rh) {
+					message = 'Expected chart height ' + chart.height + ' to be equal to render height ' + rh;
+				} else if (chart.width !== rw) {
+					message = 'Expected chart width ' + chart.width + ' to be equal to render width ' + rw;
+				}
+
+				// validity checks
+				if (dh !== expected.dh) {
+					message = 'Expected display height ' + dh + ' to be equal to ' + expected.dh;
+				} else if (dw !== expected.dw) {
+					message = 'Expected display width ' + dw + ' to be equal to ' + expected.dw;
+				} else if (rh !== expected.rh) {
+					message = 'Expected render height ' + rh + ' to be equal to ' + expected.rh;
+				} else if (rw !== expected.rw) {
+					message = 'Expected render width ' + rw + ' to be equal to ' + expected.rw;
+				}
+
+				return {
+					message: message? message : 'Expected ' + actual + ' to be a chart of size ' + expected,
+					pass: !message
+				};
+			}
+		};
+	}
+
+	beforeEach(function() {
 		jasmine.addMatchers({
 			toBeCloseToPixel: toBeCloseToPixel,
-			toEqualOneOf: toEqualOneOf
+			toEqualOneOf: toEqualOneOf,
+			toBeValidChart: toBeValidChart,
+			toBeChartOfSize: toBeChartOfSize
 		});
-	}
+	});
 
 	// Canvas injection helpers
 	var charts = {};
 
-	function acquireChart(config, style) {
-		var wrapper = document.createElement("div");
-		var canvas = document.createElement("canvas");
-		wrapper.className = 'chartjs-wrapper';
+	/**
+	 * Injects a new canvas (and div wrapper) and creates teh associated Chart instance
+	 * using the given config. Additional options allow tweaking elements generation.
+	 * @param {object} config - Chart config.
+	 * @param {object} options - Chart acquisition options.
+	 * @param {object} options.canvas - Canvas attributes.
+	 * @param {object} options.wrapper - Canvas wrapper attributes.
+	 * @param {boolean} options.persistent - If true, the chart will not be released after the spec.
+	 */
+	function acquireChart(config, options) {
+		var wrapper = document.createElement('div');
+		var canvas = document.createElement('canvas');
+		var chart, key;
 
-		style = style || { height: '512px', width: '512px' };
-		for (var k in style) {
-			wrapper.style[k] = style[k];
-			canvas.style[k] = style[k];
+		options = options || {};
+		options.canvas = options.canvas || {height: 512, width: 512};
+		options.wrapper = options.wrapper || {class: 'chartjs-wrapper'};
+
+		for (key in options.canvas) {
+			if (options.canvas.hasOwnProperty(key)) {
+				canvas.setAttribute(key, options.canvas[key]);
+			}
 		}
 
-		canvas.height = canvas.style.height && parseInt(canvas.style.height);
-		canvas.width = canvas.style.width && parseInt(canvas.style.width);
+		for (key in options.wrapper) {
+			if (options.wrapper.hasOwnProperty(key)) {
+				wrapper.setAttribute(key, options.wrapper[key]);
+			}
+		}
 
 		// by default, remove chart animation and auto resize
-		var options = config.options = config.options || {};
-		options.animation = options.animation === undefined? false : options.animation;
-		options.responsive = options.responsive === undefined? false : options.responsive;
-		options.defaultFontFamily = options.defaultFontFamily || 'Arial';
+		config.options = config.options || {};
+		config.options.animation = config.options.animation === undefined? false : config.options.animation;
+		config.options.responsive = config.options.responsive === undefined? false : config.options.responsive;
+		config.options.defaultFontFamily = config.options.defaultFontFamily || 'Arial';
 
 		wrapper.appendChild(canvas);
 		window.document.body.appendChild(wrapper);
-		var chart = new Chart(canvas.getContext("2d"), config);
+
+		chart = new Chart(canvas.getContext('2d'), config);
+		chart._test_persistent = options.persistent;
+		chart._test_wrapper = wrapper;
 		charts[chart.id] = chart;
 		return chart;
 	}
 
 	function releaseChart(chart) {
-		chart.chart.canvas.parentNode.remove();
+		chart.destroy();
+		chart._test_wrapper.remove();
 		delete charts[chart.id];
-		delete chart;
 	}
 
-	function releaseAllCharts(scope) {
+	afterEach(function() {
+		// Auto releasing acquired charts
 		for (var id in charts) {
 			var chart = charts[id];
-			releaseChart(chart);
+			if (!chart._test_persistent) {
+				releaseChart(chart);
+			}
 		}
-	}
+	});
 
 	function injectCSS(css) {
 		// http://stackoverflow.com/q/3922139
@@ -223,7 +334,6 @@
 
 	window.acquireChart = acquireChart;
 	window.releaseChart = releaseChart;
-	window.releaseAllCharts = releaseAllCharts;
 
 	// some style initialization to limit differences between browsers across different plateforms.
 	injectCSS(
@@ -235,4 +345,4 @@
 		'.chartjs-wrapper {' +
 			'position: absolute' +
 		'}');
-})();
+}());

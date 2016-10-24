@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Min/Max Settings</title>
+    <script src="../../../dist/Chart.bundle.js"></script>
+    <script src="../../utils.js"></script>
+    <style>
+    canvas{
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+    </style>
+</head>
+
+<body>
+    <div style="width:75%;">
+        <canvas id="canvas"></canvas>
+    </div>
+    <script>
+        var config = {
+            type: 'line',
+            data: {
+                labels: ["January", "February", "March", "April", "May", "June", "July"],
+                datasets: [{
+                    label: "My First dataset",
+                    backgroundColor: window.chartColors.red,
+                    borderColor: window.chartColors.red,
+                    data: [10, 30, 50, 20, 25, 44, -10],
+                    fill: false,
+                }, {
+                    label: "My Second dataset",
+                    fill: false,
+                    backgroundColor: window.chartColors.blue,
+                    borderColor: window.chartColors.blue,
+                    data: [100, 33, 22, 19, 11, 49, 30],
+                }]
+            },
+            options: {
+                responsive: true,
+                title:{
+                    display:true,
+                    text:'Min and Max Settings'
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            min: 10,
+                            max: 50
+                        }
+                    }]
+                }
+            }
+        };
+
+        window.onload = function() {
+            var ctx = document.getElementById("canvas").getContext("2d");
+            window.myLine = new Chart(ctx, config);
+        };
+    </script>
+</body>
+
+</html>

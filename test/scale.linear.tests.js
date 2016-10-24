@@ -1,17 +1,4 @@
 describe('Linear Scale', function() {
-	var chartInstance;
-
-	beforeEach(function() {
-		window.addDefaultMatchers(jasmine);
-	});
-
-	afterEach(function() {
-		if (chartInstance)
-		{
-			releaseChart(chartInstance);
-		}
-	});
-
 	it('Should register the constructor with the scale service', function() {
 		var Constructor = Chart.scaleService.getScaleConstructor('linear');
 		expect(Constructor).not.toBe(undefined);
@@ -24,7 +11,7 @@ describe('Linear Scale', function() {
 			display: true,
 
 			gridLines: {
-				color: "rgba(0, 0, 0, 0.1)",
+				color: 'rgba(0, 0, 0, 0.1)',
 				drawBorder: true,
 				drawOnChartArea: true,
 				drawTicks: true, // draw ticks extending towards the label
@@ -32,12 +19,12 @@ describe('Linear Scale', function() {
 				lineWidth: 1,
 				offsetGridLines: false,
 				display: true,
-				zeroLineColor: "rgba(0,0,0,0.25)",
+				zeroLineColor: 'rgba(0,0,0,0.25)',
 				zeroLineWidth: 1,
 				borderDash: [],
 				borderDashOffset: 0.0
 			},
-			position: "left",
+			position: 'left',
 			scaleLabel: {
 				labelString: '',
 				display: false,
@@ -62,7 +49,7 @@ describe('Linear Scale', function() {
 	});
 
 	it('Should correctly determine the max & min data values', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
 				datasets: [{
@@ -90,13 +77,13 @@ describe('Linear Scale', function() {
 			}
 		});
 
-		expect(chartInstance.scales.yScale0).not.toEqual(undefined); // must construct
-		expect(chartInstance.scales.yScale0.min).toBe(-100);
-		expect(chartInstance.scales.yScale0.max).toBe(150);
+		expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
+		expect(chart.scales.yScale0.min).toBe(-100);
+		expect(chart.scales.yScale0.max).toBe(150);
 	});
 
 	it('Should correctly determine the max & min of string data values', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
 				datasets: [{
@@ -124,13 +111,13 @@ describe('Linear Scale', function() {
 			}
 		});
 
-		expect(chartInstance.scales.yScale0).not.toEqual(undefined); // must construct
-		expect(chartInstance.scales.yScale0.min).toBe(-100);
-		expect(chartInstance.scales.yScale0.max).toBe(150);
+		expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
+		expect(chart.scales.yScale0.min).toBe(-100);
+		expect(chart.scales.yScale0.max).toBe(150);
 	});
 
 	it('Should correctly determine the max & min data values ignoring hidden datasets', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
 				datasets: [{
@@ -159,20 +146,20 @@ describe('Linear Scale', function() {
 			}
 		});
 
-		expect(chartInstance.scales.yScale0).not.toEqual(undefined); // must construct
-		expect(chartInstance.scales.yScale0.min).toBe(-100);
-		expect(chartInstance.scales.yScale0.max).toBe(80);
+		expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
+		expect(chart.scales.yScale0.min).toBe(-100);
+		expect(chart.scales.yScale0.max).toBe(80);
 	});
 
 	it('Should correctly determine the max & min data values ignoring data that is NaN', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
 				datasets: [{
 					yAxisID: 'yScale0',
-					data: [null, 90, NaN, undefined, 45, 30]
+					data: [null, 90, NaN, undefined, 45, 30, Infinity, -Infinity]
 				}],
-				labels: ['a', 'b', 'c', 'd', 'e', 'f']
+				labels: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 			},
 			options: {
 				scales: {
@@ -184,19 +171,19 @@ describe('Linear Scale', function() {
 			}
 		});
 
-		expect(chartInstance.scales.yScale0.min).toBe(30);
-		expect(chartInstance.scales.yScale0.max).toBe(90);
+		expect(chart.scales.yScale0.min).toBe(30);
+		expect(chart.scales.yScale0.max).toBe(90);
 
 		// Scale is now stacked
-		chartInstance.scales.yScale0.options.stacked = true;
-		chartInstance.update();
+		chart.scales.yScale0.options.stacked = true;
+		chart.update();
 
-		expect(chartInstance.scales.yScale0.min).toBe(0);
-		expect(chartInstance.scales.yScale0.max).toBe(90);
+		expect(chart.scales.yScale0.min).toBe(0);
+		expect(chart.scales.yScale0.max).toBe(90);
 	});
 
 	it('Should correctly determine the max & min for scatter data', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'line',
 			data: {
 				datasets: [{
@@ -231,16 +218,16 @@ describe('Linear Scale', function() {
 				}
 			}
 		});
-		chartInstance.update();
+		chart.update();
 
-		expect(chartInstance.scales.xScale0.min).toBe(-20);
-		expect(chartInstance.scales.xScale0.max).toBe(100);
-		expect(chartInstance.scales.yScale0.min).toBe(0);
-		expect(chartInstance.scales.yScale0.max).toBe(100);
+		expect(chart.scales.xScale0.min).toBe(-20);
+		expect(chart.scales.xScale0.max).toBe(100);
+		expect(chart.scales.yScale0.min).toBe(0);
+		expect(chart.scales.yScale0.max).toBe(100);
 	});
 
 	it('Should correctly get the label for the given index', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'line',
 			data: {
 				datasets: [{
@@ -275,13 +262,13 @@ describe('Linear Scale', function() {
 				}
 			}
 		});
-		chartInstance.update();
+		chart.update();
 
-		expect(chartInstance.scales.yScale0.getLabelForIndex(3, 0)).toBe(7);
+		expect(chart.scales.yScale0.getLabelForIndex(3, 0)).toBe(7);
 	});
 
 	it('Should correctly determine the min and max data values when stacked mode is turned on', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'line',
 			data: {
 				datasets: [{
@@ -315,14 +302,14 @@ describe('Linear Scale', function() {
 				}
 			}
 		});
-		chartInstance.update();
+		chart.update();
 
-		expect(chartInstance.scales.yScale0.min).toBe(-150);
-		expect(chartInstance.scales.yScale0.max).toBe(200);
+		expect(chart.scales.yScale0.min).toBe(-150);
+		expect(chart.scales.yScale0.max).toBe(200);
 	});
 
 	it('Should correctly determine the min and max data values when stacked mode is turned on and there are hidden datasets', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
 				datasets: [{
@@ -354,14 +341,14 @@ describe('Linear Scale', function() {
 				}
 			}
 		});
-		chartInstance.update();
+		chart.update();
 
-		expect(chartInstance.scales.yScale0.min).toBe(-150);
-		expect(chartInstance.scales.yScale0.max).toBe(200);
+		expect(chart.scales.yScale0.min).toBe(-150);
+		expect(chart.scales.yScale0.max).toBe(200);
 	});
 
 	it('Should correctly determine the min and max data values when stacked mode is turned on there are multiple types of datasets', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
 				datasets: [{
@@ -388,13 +375,13 @@ describe('Linear Scale', function() {
 			}
 		});
 
-		chartInstance.scales.yScale0.determineDataLimits();
-		expect(chartInstance.scales.yScale0.min).toBe(-105);
-		expect(chartInstance.scales.yScale0.max).toBe(160);
+		chart.scales.yScale0.determineDataLimits();
+		expect(chart.scales.yScale0.min).toBe(-105);
+		expect(chart.scales.yScale0.max).toBe(160);
 	});
 
 	it('Should ensure that the scale has a max and min that are not equal', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
 				datasets: [],
@@ -410,13 +397,13 @@ describe('Linear Scale', function() {
 			}
 		});
 
-		expect(chartInstance.scales.yScale0).not.toEqual(undefined); // must construct
-		expect(chartInstance.scales.yScale0.min).toBe(-1);
-		expect(chartInstance.scales.yScale0.max).toBe(1);
+		expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
+		expect(chart.scales.yScale0.min).toBe(-1);
+		expect(chart.scales.yScale0.max).toBe(1);
 	});
 
 	it('Should ensure that the scale has a max and min that are not equal when beginAtZero is set', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
 				datasets: [],
@@ -435,13 +422,13 @@ describe('Linear Scale', function() {
 			}
 		});
 
-		expect(chartInstance.scales.yScale0).not.toEqual(undefined); // must construct
-		expect(chartInstance.scales.yScale0.min).toBe(0);
-		expect(chartInstance.scales.yScale0.max).toBe(1);
+		expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
+		expect(chart.scales.yScale0.min).toBe(0);
+		expect(chart.scales.yScale0.max).toBe(1);
 	});
 
 	it('Should use the suggestedMin and suggestedMax options', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
 				datasets: [{
@@ -464,13 +451,13 @@ describe('Linear Scale', function() {
 			}
 		});
 
-		expect(chartInstance.scales.yScale0).not.toEqual(undefined); // must construct
-		expect(chartInstance.scales.yScale0.min).toBe(-10);
-		expect(chartInstance.scales.yScale0.max).toBe(10);
+		expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
+		expect(chart.scales.yScale0.min).toBe(-10);
+		expect(chart.scales.yScale0.max).toBe(10);
 	});
 
 	it('Should use the min and max options', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
 				datasets: [{
@@ -493,15 +480,47 @@ describe('Linear Scale', function() {
 			}
 		});
 
-		expect(chartInstance.scales.yScale0).not.toEqual(undefined); // must construct
-		expect(chartInstance.scales.yScale0.min).toBe(-1010);
-		expect(chartInstance.scales.yScale0.max).toBe(1010);
-		expect(chartInstance.scales.yScale0.ticks[0]).toBe('1010');
-		expect(chartInstance.scales.yScale0.ticks[chartInstance.scales.yScale0.ticks.length - 1]).toBe('-1010');
+		expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
+		expect(chart.scales.yScale0.min).toBe(-1010);
+		expect(chart.scales.yScale0.max).toBe(1010);
+		expect(chart.scales.yScale0.ticks[0]).toBe('1010');
+		expect(chart.scales.yScale0.ticks[chart.scales.yScale0.ticks.length - 1]).toBe('-1010');
 	});
 
+	it('Should use min, max and stepSize to create fixed spaced ticks', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					yAxisID: 'yScale0',
+					data: [10, 3, 6, 8, 3, 1]
+				}],
+				labels: ['a', 'b', 'c', 'd', 'e', 'f']
+			},
+			options: {
+				scales: {
+					yAxes: [{
+						id: 'yScale0',
+						type: 'linear',
+						ticks: {
+							min: 1,
+							max: 11,
+							stepSize: 2
+						}
+					}]
+				}
+			}
+		});
+
+		expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
+		expect(chart.scales.yScale0.min).toBe(1);
+		expect(chart.scales.yScale0.max).toBe(11);
+		expect(chart.scales.yScale0.ticks).toEqual(['11', '9', '7', '5', '3', '1']);
+	});
+
+
 	it('should forcibly include 0 in the range if the beginAtZero option is used', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
 				datasets: [{
@@ -520,24 +539,24 @@ describe('Linear Scale', function() {
 			}
 		});
 
-		expect(chartInstance.scales.yScale0).not.toEqual(undefined); // must construct
-		expect(chartInstance.scales.yScale0.ticks).toEqual(['50', '45', '40', '35', '30', '25', '20']);
+		expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
+		expect(chart.scales.yScale0.ticks).toEqual(['50', '45', '40', '35', '30', '25', '20']);
 
-		chartInstance.scales.yScale0.options.ticks.beginAtZero = true;
-		chartInstance.update();
-		expect(chartInstance.scales.yScale0.ticks).toEqual(['50', '45', '40', '35', '30', '25', '20', '15', '10', '5', '0']);
+		chart.scales.yScale0.options.ticks.beginAtZero = true;
+		chart.update();
+		expect(chart.scales.yScale0.ticks).toEqual(['50', '45', '40', '35', '30', '25', '20', '15', '10', '5', '0']);
 
-		chartInstance.data.datasets[0].data = [-20, -30, -40, -50];
-		chartInstance.update();
-		expect(chartInstance.scales.yScale0.ticks).toEqual(['0', '-5', '-10', '-15', '-20', '-25', '-30', '-35', '-40', '-45', '-50']);
+		chart.data.datasets[0].data = [-20, -30, -40, -50];
+		chart.update();
+		expect(chart.scales.yScale0.ticks).toEqual(['0', '-5', '-10', '-15', '-20', '-25', '-30', '-35', '-40', '-45', '-50']);
 
-		chartInstance.scales.yScale0.options.ticks.beginAtZero = false;
-		chartInstance.update();
-		expect(chartInstance.scales.yScale0.ticks).toEqual(['-20', '-25', '-30', '-35', '-40', '-45', '-50']);
+		chart.scales.yScale0.options.ticks.beginAtZero = false;
+		chart.update();
+		expect(chart.scales.yScale0.ticks).toEqual(['-20', '-25', '-30', '-35', '-40', '-45', '-50']);
 	});
 
 	it('Should generate tick marks in the correct order in reversed mode', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
 				datasets: [{
@@ -559,13 +578,13 @@ describe('Linear Scale', function() {
 			}
 		});
 
-		expect(chartInstance.scales.yScale0.ticks).toEqual(['0', '10', '20', '30', '40', '50', '60', '70', '80']);
-		expect(chartInstance.scales.yScale0.start).toBe(80);
-		expect(chartInstance.scales.yScale0.end).toBe(0);
+		expect(chart.scales.yScale0.ticks).toEqual(['0', '10', '20', '30', '40', '50', '60', '70', '80']);
+		expect(chart.scales.yScale0.start).toBe(80);
+		expect(chart.scales.yScale0.end).toBe(0);
 	});
 
 	it('should use the correct number of decimal places in the default format function', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
 				datasets: [{
@@ -583,11 +602,11 @@ describe('Linear Scale', function() {
 				}
 			}
 		});
-		expect(chartInstance.scales.yScale0.ticks).toEqual(['0.06', '0.05', '0.04', '0.03', '0.02', '0.01', '0']);
+		expect(chart.scales.yScale0.ticks).toEqual(['0.06', '0.05', '0.04', '0.03', '0.02', '0.01', '0']);
 	});
 
 	it('Should build labels using the user supplied callback', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
 				datasets: [{
@@ -612,11 +631,11 @@ describe('Linear Scale', function() {
 		});
 
 		// Just the index
-		expect(chartInstance.scales.yScale0.ticks).toEqual(['0', '1', '2', '3', '4', '5', '6', '7', '8']);
+		expect(chart.scales.yScale0.ticks).toEqual(['0', '1', '2', '3', '4', '5', '6', '7', '8']);
 	});
 
 	it('Should get the correct pixel value for a point', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'line',
 			data: {
 				datasets: [{
@@ -640,7 +659,7 @@ describe('Linear Scale', function() {
 			}
 		});
 
-		var xScale = chartInstance.scales.xScale0;
+		var xScale = chart.scales.xScale0;
 		expect(xScale.getPixelForValue(1, 0, 0)).toBeCloseToPixel(501); // right - paddingRight
 		expect(xScale.getPixelForValue(-1, 0, 0)).toBeCloseToPixel(41); // left + paddingLeft
 		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(271); // halfway*/
@@ -649,7 +668,7 @@ describe('Linear Scale', function() {
 		expect(xScale.getValueForPixel(41)).toBeCloseTo(-1, 1e-2);
 		expect(xScale.getValueForPixel(271)).toBeCloseTo(0, 1e-2);
 
-		var yScale = chartInstance.scales.yScale0;
+		var yScale = chart.scales.yScale0;
 		expect(yScale.getPixelForValue(1, 0, 0)).toBeCloseToPixel(32); // right - paddingRight
 		expect(yScale.getPixelForValue(-1, 0, 0)).toBeCloseToPixel(484); // left + paddingLeft
 		expect(yScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(258); // halfway*/
@@ -660,7 +679,7 @@ describe('Linear Scale', function() {
 	});
 
 	it('should fit correctly', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'line',
 			data: {
 				datasets: [{
@@ -696,7 +715,7 @@ describe('Linear Scale', function() {
 			}
 		});
 
-		var xScale = chartInstance.scales.xScale0;
+		var xScale = chart.scales.xScale0;
 		expect(xScale.paddingTop).toBeCloseToPixel(0);
 		expect(xScale.paddingBottom).toBeCloseToPixel(0);
 		expect(xScale.paddingLeft).toBeCloseToPixel(0);
@@ -704,7 +723,7 @@ describe('Linear Scale', function() {
 		expect(xScale.width).toBeCloseToPixel(471);
 		expect(xScale.height).toBeCloseToPixel(28);
 
-		var yScale = chartInstance.scales.yScale0;
+		var yScale = chart.scales.yScale0;
 		expect(yScale.paddingTop).toBeCloseToPixel(0);
 		expect(yScale.paddingBottom).toBeCloseToPixel(0);
 		expect(yScale.paddingLeft).toBeCloseToPixel(0);
@@ -715,7 +734,7 @@ describe('Linear Scale', function() {
 		// Extra size when scale label showing
 		xScale.options.scaleLabel.display = true;
 		yScale.options.scaleLabel.display = true;
-		chartInstance.update();
+		chart.update();
 
 		expect(xScale.paddingTop).toBeCloseToPixel(0);
 		expect(xScale.paddingBottom).toBeCloseToPixel(0);
@@ -733,7 +752,7 @@ describe('Linear Scale', function() {
 	});
 
 	it('should fit correctly when display is turned off', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'line',
 			data: {
 				datasets: [{
@@ -780,7 +799,7 @@ describe('Linear Scale', function() {
 			}
 		});
 
-		var yScale = chartInstance.scales.yScale0;
+		var yScale = chart.scales.yScale0;
 		expect(yScale.width).toBeCloseToPixel(0);
 	});
 });

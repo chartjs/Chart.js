@@ -1,17 +1,5 @@
 // Tests for the radial linear scale used by the polar area and radar charts
 describe('Test the radial linear scale', function() {
-	var chartInstance;
-
-	beforeEach(function() {
-		window.addDefaultMatchers(jasmine);
-	});
-
-	afterEach(function() {
-		if (chartInstance) {
-			releaseChart(chartInstance);
-		}
-	});
-
 	it('Should register the constructor with the scale service', function() {
 		var Constructor = Chart.scaleService.getScaleConstructor('radialLinear');
 		expect(Constructor).not.toBe(undefined);
@@ -23,13 +11,13 @@ describe('Test the radial linear scale', function() {
 		expect(defaultConfig).toEqual({
 			angleLines: {
 				display: true,
-				color: "rgba(0, 0, 0, 0.1)",
+				color: 'rgba(0, 0, 0, 0.1)',
 				lineWidth: 1
 			},
 			animate: true,
 			display: true,
 			gridLines: {
-				color: "rgba(0, 0, 0, 0.1)",
+				color: 'rgba(0, 0, 0, 0.1)',
 				drawBorder: true,
 				drawOnChartArea: true,
 				drawTicks: true,
@@ -37,7 +25,7 @@ describe('Test the radial linear scale', function() {
 				lineWidth: 1,
 				offsetGridLines: false,
 				display: true,
-				zeroLineColor: "rgba(0,0,0,0.25)",
+				zeroLineColor: 'rgba(0,0,0,0.25)',
 				zeroLineWidth: 1,
 				borderDash: [],
 				borderDashOffset: 0.0
@@ -47,7 +35,7 @@ describe('Test the radial linear scale', function() {
 				fontSize: 10,
 				callback: defaultConfig.pointLabels.callback, // make this nicer, then check explicitly below
 			},
-			position: "chartArea",
+			position: 'chartArea',
 			scaleLabel: {
 				labelString: '',
 				display: false,
@@ -78,7 +66,7 @@ describe('Test the radial linear scale', function() {
 	});
 
 	it('Should correctly determine the max & min data values', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'radar',
 			data: {
 				datasets: [{
@@ -89,18 +77,16 @@ describe('Test the radial linear scale', function() {
 				labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
 			},
 			options: {
-				scales: {
-
-				}
+				scales: {}
 			}
 		});
 
-		expect(chartInstance.scale.min).toBe(-100);
-		expect(chartInstance.scale.max).toBe(150);
+		expect(chart.scale.min).toBe(-100);
+		expect(chart.scale.max).toBe(150);
 	});
 
 	it('Should correctly determine the max & min of string data values', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'radar',
 			data: {
 				datasets: [{
@@ -111,18 +97,16 @@ describe('Test the radial linear scale', function() {
 				labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
 			},
 			options: {
-				scales: {
-
-				}
+				scales: {}
 			}
 		});
 
-		expect(chartInstance.scale.min).toBe(-100);
-		expect(chartInstance.scale.max).toBe(150);
+		expect(chart.scale.min).toBe(-100);
+		expect(chart.scale.max).toBe(150);
 	});
 
 	it('Should correctly determine the max & min data values when there are hidden datasets', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'radar',
 			data: {
 				datasets: [{
@@ -136,34 +120,30 @@ describe('Test the radial linear scale', function() {
 				labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
 			},
 			options: {
-				scales: {
-
-				}
+				scales: {}
 			}
 		});
 
-		expect(chartInstance.scale.min).toBe(-100);
-		expect(chartInstance.scale.max).toBe(150);
+		expect(chart.scale.min).toBe(-100);
+		expect(chart.scale.max).toBe(150);
 	});
 
 	it('Should correctly determine the max & min data values when there is NaN data', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'radar',
 			data: {
 				datasets: [{
-					data: [50, 60, NaN, 70, null, undefined]
+					data: [50, 60, NaN, 70, null, undefined, Infinity, -Infinity]
 				}],
-				labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
+				labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6', 'label7', 'label8']
 			},
 			options: {
-				scales: {
-
-				}
+				scales: {}
 			}
 		});
 
-		expect(chartInstance.scale.min).toBe(50);
-		expect(chartInstance.scale.max).toBe(70);
+		expect(chart.scale.min).toBe(50);
+		expect(chart.scale.max).toBe(70);
 	});
 
 	it('Should ensure that the scale has a max and min that are not equal', function() {
@@ -191,7 +171,7 @@ describe('Test the radial linear scale', function() {
 	});
 
 	it('Should use the suggestedMin and suggestedMax options', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'radar',
 			data: {
 				datasets: [{
@@ -209,12 +189,12 @@ describe('Test the radial linear scale', function() {
 			}
 		});
 
-		expect(chartInstance.scale.min).toBe(-10);
-		expect(chartInstance.scale.max).toBe(10);
+		expect(chart.scale.min).toBe(-10);
+		expect(chart.scale.max).toBe(10);
 	});
 
 	it('Should use the min and max options', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'radar',
 			data: {
 				datasets: [{
@@ -232,13 +212,13 @@ describe('Test the radial linear scale', function() {
 			}
 		});
 
-		expect(chartInstance.scale.min).toBe(-1010);
-		expect(chartInstance.scale.max).toBe(1010);
-		expect(chartInstance.scale.ticks).toEqual(['-1010', '-1000', '-500', '0', '500', '1000', '1010']);
+		expect(chart.scale.min).toBe(-1010);
+		expect(chart.scale.max).toBe(1010);
+		expect(chart.scale.ticks).toEqual(['-1010', '-1000', '-500', '0', '500', '1000', '1010']);
 	});
 
 	it('should forcibly include 0 in the range if the beginAtZero option is used', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'radar',
 			data: {
 				datasets: [{
@@ -255,26 +235,26 @@ describe('Test the radial linear scale', function() {
 			}
 		});
 
-		expect(chartInstance.scale.ticks).toEqual(['20', '25', '30', '35', '40', '45', '50']);
+		expect(chart.scale.ticks).toEqual(['20', '25', '30', '35', '40', '45', '50']);
 
-		chartInstance.scale.options.ticks.beginAtZero = true;
-		chartInstance.update();
+		chart.scale.options.ticks.beginAtZero = true;
+		chart.update();
 
-		expect(chartInstance.scale.ticks).toEqual(['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50']);
+		expect(chart.scale.ticks).toEqual(['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50']);
 
-		chartInstance.data.datasets[0].data = [-20, -30, -40, -50];
-		chartInstance.update();
+		chart.data.datasets[0].data = [-20, -30, -40, -50];
+		chart.update();
 
-		expect(chartInstance.scale.ticks).toEqual(['-50', '-45', '-40', '-35', '-30', '-25', '-20', '-15', '-10', '-5', '0']);
+		expect(chart.scale.ticks).toEqual(['-50', '-45', '-40', '-35', '-30', '-25', '-20', '-15', '-10', '-5', '0']);
 
-		chartInstance.scale.options.ticks.beginAtZero = false;
-		chartInstance.update();
+		chart.scale.options.ticks.beginAtZero = false;
+		chart.update();
 
-		expect(chartInstance.scale.ticks).toEqual(['-50', '-45', '-40', '-35', '-30', '-25', '-20']);
+		expect(chart.scale.ticks).toEqual(['-50', '-45', '-40', '-35', '-30', '-25', '-20']);
 	});
 
 	it('Should generate tick marks in the correct order in reversed mode', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'radar',
 			data: {
 				datasets: [{
@@ -291,13 +271,13 @@ describe('Test the radial linear scale', function() {
 			}
 		});
 
-		expect(chartInstance.scale.ticks).toEqual(['80', '70', '60', '50', '40', '30', '20', '10', '0']);
-		expect(chartInstance.scale.start).toBe(80);
-		expect(chartInstance.scale.end).toBe(0);
+		expect(chart.scale.ticks).toEqual(['80', '70', '60', '50', '40', '30', '20', '10', '0']);
+		expect(chart.scale.start).toBe(80);
+		expect(chart.scale.end).toBe(0);
 	});
 
 	it('Should build labels using the user supplied callback', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'radar',
 			data: {
 				datasets: [{
@@ -316,12 +296,12 @@ describe('Test the radial linear scale', function() {
 			}
 		});
 
-		expect(chartInstance.scale.ticks).toEqual(['0', '1', '2', '3', '4', '5', '6', '7', '8']);
-		expect(chartInstance.scale.pointLabels).toEqual(['label1', 'label2', 'label3', 'label4', 'label5']);
+		expect(chart.scale.ticks).toEqual(['0', '1', '2', '3', '4', '5', '6', '7', '8']);
+		expect(chart.scale.pointLabels).toEqual(['label1', 'label2', 'label3', 'label4', 'label5']);
 	});
 
 	it('Should build point labels using the user supplied callback', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'radar',
 			data: {
 				datasets: [{
@@ -340,11 +320,11 @@ describe('Test the radial linear scale', function() {
 			}
 		});
 
-		expect(chartInstance.scale.pointLabels).toEqual(['0', '1', '2', '3', '4']);
+		expect(chart.scale.pointLabels).toEqual(['0', '1', '2', '3', '4']);
 	});
 
 	it('should correctly set the center point', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'radar',
 			data: {
 				datasets: [{
@@ -363,13 +343,13 @@ describe('Test the radial linear scale', function() {
 			}
 		});
 
-		expect(chartInstance.scale.drawingArea).toBe(225);
-		expect(chartInstance.scale.xCenter).toBe(256);
-		expect(chartInstance.scale.yCenter).toBe(272);
+		expect(chart.scale.drawingArea).toBe(225);
+		expect(chart.scale.xCenter).toBe(256);
+		expect(chart.scale.yCenter).toBe(272);
 	});
 
 	it('should correctly get the label for a given data index', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'radar',
 			data: {
 				datasets: [{
@@ -387,11 +367,11 @@ describe('Test the radial linear scale', function() {
 				}
 			}
 		});
-		expect(chartInstance.scale.getLabelForIndex(1, 0)).toBe(5);
+		expect(chart.scale.getLabelForIndex(1, 0)).toBe(5);
 	});
 
 	it('should get the correct distance from the center point', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'radar',
 			data: {
 				datasets: [{
@@ -410,22 +390,22 @@ describe('Test the radial linear scale', function() {
 			}
 		});
 
-		expect(chartInstance.scale.getDistanceFromCenterForValue(chartInstance.scale.min)).toBe(0);
-		expect(chartInstance.scale.getDistanceFromCenterForValue(chartInstance.scale.max)).toBe(225);
-		expect(chartInstance.scale.getPointPositionForValue(1, 5)).toEqual({
+		expect(chart.scale.getDistanceFromCenterForValue(chart.scale.min)).toBe(0);
+		expect(chart.scale.getDistanceFromCenterForValue(chart.scale.max)).toBe(225);
+		expect(chart.scale.getPointPositionForValue(1, 5)).toEqual({
 			x: 269,
 			y: 268,
 		});
 
-		chartInstance.scale.options.reverse = true;
-		chartInstance.update();
+		chart.scale.options.reverse = true;
+		chart.update();
 
-		expect(chartInstance.scale.getDistanceFromCenterForValue(chartInstance.scale.min)).toBe(225);
-		expect(chartInstance.scale.getDistanceFromCenterForValue(chartInstance.scale.max)).toBe(0);
+		expect(chart.scale.getDistanceFromCenterForValue(chart.scale.min)).toBe(225);
+		expect(chart.scale.getDistanceFromCenterForValue(chart.scale.max)).toBe(0);
 	});
 
 	it('should correctly get angles for all points', function() {
-		chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'radar',
 			data: {
 				datasets: [{
@@ -447,19 +427,19 @@ describe('Test the radial linear scale', function() {
 
 		var radToNearestDegree = function(rad) {
 			return Math.round((360 * rad) / (2 * Math.PI));
-		}
+		};
 
 		var slice = 72; // (360 / 5)
 
-		for(var i = 0; i < 5; i++) {
-			expect(radToNearestDegree(chartInstance.scale.getIndexAngle(i))).toBe(15 + (slice * i) - 90);
+		for (var i = 0; i < 5; i++) {
+			expect(radToNearestDegree(chart.scale.getIndexAngle(i))).toBe(15 + (slice * i) - 90);
 		}
 
-		chartInstance.options.startAngle = 0;
-		chartInstance.update();
+		chart.options.startAngle = 0;
+		chart.update();
 
-		for(var i = 0; i < 5; i++) {
-			expect(radToNearestDegree(chartInstance.scale.getIndexAngle(i))).toBe((slice * i) - 90);
+		for (var x = 0; x < 5; x++) {
+			expect(radToNearestDegree(chart.scale.getIndexAngle(x))).toBe((slice * x) - 90);
 		}
 	});
 });

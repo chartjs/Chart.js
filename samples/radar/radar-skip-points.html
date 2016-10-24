@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Radar Chart</title>
+    <script src="../../dist/Chart.bundle.js"></script>
+    <script src="../utils.js"></script>
+    <style>
+    canvas {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+    </style>
+</head>
+
+<body>
+    <div style="width:40%">
+        <canvas id="canvas"></canvas>
+    </div>
+    <button id="randomizeData">Randomize Data</button>
+    <script>
+    var randomScalingFactor = function() {
+        return Math.round(Math.random() * 100);
+    };
+
+    var color = Chart.helpers.color;
+    var config = {
+        type: 'radar',
+        data: {
+            labels: ["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling", "Running"],
+            datasets: [{
+                label: "Skip first dataset",
+                borderColor: window.chartColors.red,
+                backgroundColor: color(window.chartColors.red).alpha(0.2).rgbString(),
+                pointBackgroundColor: window.chartColors.red,
+                data: [
+                    NaN, 
+                    randomScalingFactor(), 
+                    randomScalingFactor(), 
+                    randomScalingFactor(), 
+                    randomScalingFactor(), 
+                    randomScalingFactor(), 
+                    randomScalingFactor()
+                ]
+            }, {
+                label: "Skip mid dataset",
+                borderColor: window.chartColors.blue,
+                backgroundColor: color(window.chartColors.blue).alpha(0.2).rgbString(),
+                pointBackgroundColor: window.chartColors.blue,
+                data: [
+                    randomScalingFactor(), 
+                    randomScalingFactor(), 
+                    NaN, 
+                    randomScalingFactor(), 
+                    randomScalingFactor(), 
+                    randomScalingFactor(), 
+                    randomScalingFactor()
+                ]
+            },{
+                label: "Skip last dataset",
+                borderColor: window.chartColors.green,
+                backgroundColor: color(window.chartColors.green).alpha(0.2).rgbString(),
+                pointBackgroundColor: window.chartColors.green,
+                data: [
+                    randomScalingFactor(), 
+                    randomScalingFactor(), 
+                    randomScalingFactor(), 
+                    randomScalingFactor(), 
+                    randomScalingFactor(), 
+                    randomScalingFactor(),
+                    NaN
+                ]
+            }]
+        },
+        options: {
+            title:{
+                display:true,
+                text:"Chart.js Radar Chart - Skip Points"
+            },
+            elements: {
+                line: {
+                    tension: 0.0,
+                }
+            },
+            scale: {
+                beginAtZero: true,
+            }
+        }
+    };
+
+    window.onload = function() {
+        window.myRadar = new Chart(document.getElementById("canvas"), config);
+    };
+
+    document.getElementById('randomizeData').addEventListener('click', function() {
+        config.data.datasets.forEach(function(dataset) {
+            dataset.data = dataset.data.map(function() {
+                return randomScalingFactor();
+            });
+
+        });
+
+        window.myRadar.update();
+    });
+    </script>
+</body>
+
+</html>
