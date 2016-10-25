@@ -737,9 +737,9 @@ module.exports = function(Chart) {
 							var top = itemToDraw.labelY - tickFontSize / 2;
 							var bottom = itemToDraw.labelY + tickFontSize / 2;
 
-							if (Math.round(top - firstLabelRect.bottom) < autoSkipPadding ||
-								Math.round(lastLabelRect.top - bottom) < autoSkipPadding ||
-								(lastDisplayedTick && Math.round(top - lastDisplayedLabelRect.bottom) < autoSkipPadding)) {
+							if (Math.ceil(top - firstLabelRect.bottom) < autoSkipPadding ||
+								Math.ceil(lastLabelRect.top - bottom) < autoSkipPadding ||
+								(lastDisplayedTick && Math.ceil(top - lastDisplayedLabelRect.bottom) < autoSkipPadding)) {
 								display = false;
 							}
 
