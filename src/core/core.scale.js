@@ -51,6 +51,12 @@ module.exports = function(Chart) {
 	};
 
 	Chart.Scale = Chart.Element.extend({
+		/**
+		 * Get the padding needed for the scale
+		 * @method getPadding
+		 * @private
+		 * @returns {Padding} the necessary padding
+		 */
 		getPadding: function() {
 			var me = this;
 			return {
