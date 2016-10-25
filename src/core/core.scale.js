@@ -215,6 +215,9 @@ module.exports = function(Chart) {
 					} else if (tickAlignment === 'center') {
 						me.paddingLeft = firstWidth / 2 + extraPadding;
 						me.paddingRight = lastWidth / 2 + extraPadding;
+					} else if (tickAlignment === 'auto') {
+						me.paddingLeft = extraPadding;
+						me.paddingRight = extraPadding;
 					}
 
 					if (!me.longestTextCache) {
@@ -379,6 +382,9 @@ module.exports = function(Chart) {
 						me.paddingBottom = 1; // so we see the grid line
 					} else if (tickAlignment === 'center') {
 						me.paddingTop = me.paddingBottom = tickFontSize / 2;
+					} else if (tickAlignment === 'auto') {
+						me.paddingTop = 1;
+						me.paddingBottom = 1;
 					}
 				}
 			}
