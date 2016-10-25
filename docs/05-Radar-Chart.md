@@ -50,7 +50,7 @@ pointHitRadius | `Number or Array<Number>` | The pixel size of the non-displayed
 pointHoverBackgroundColor | `Color or Array<Color>` | Point background color when hovered
 pointHoverBorderColor | `Color or Array<Color>` | Point border color when hovered
 pointHoverBorderWidth | `Number or Array<Number>` | Border width of point when hovered
-pointStyle | `String or Array<String>` | The style of point. Options include 'circle', 'triangle', 'rect', 'rectRot', 'cross', 'crossRot', 'star', 'line', and 'dash'
+pointStyle | `String or Array<String>` | The style of point. Options include 'circle', 'triangle', 'rect', 'rectRounded', 'rectRot', 'cross', 'crossRot', 'star', 'line', and 'dash'
 
 An example data object using these attributes is shown below.
 

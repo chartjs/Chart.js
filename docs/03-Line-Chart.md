@@ -57,7 +57,7 @@ pointHitRadius | `Number or Array<Number>` | The pixel size of the non-displayed
 pointHoverBackgroundColor | `Color or Array<Color>` | Point background color when hovered
 pointHoverBorderColor | `Color or Array<Color>` | Point border color when hovered
 pointHoverBorderWidth | `Number or Array<Number>` | Border width of point when hovered
-pointStyle | `String, Array<String>, Image, Array<Image>` | The style of point. Options are 'circle', 'triangle', 'rect', 'rectRot', 'cross', 'crossRot', 'star', 'line', and 'dash'. If the option is an image, that image is drawn on the canvas using `drawImage`. 
+pointStyle | `String, Array<String>, Image, Array<Image>` | The style of point. Options are 'circle', 'triangle', 'rect', 'rectRounded', 'rectRot', 'cross', 'crossRot', 'star', 'line', and 'dash'. If the option is an image, that image is drawn on the canvas using `drawImage`.
 showLine | `Boolean` | If false, the line is not drawn for this dataset
 spanGaps | `Boolean` | If true, lines will be drawn between points with no or null data
 steppedLine | `Boolean` | If true, the line is shown as a stepped line and 'lineTension' will be ignored

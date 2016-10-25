@@ -208,6 +208,30 @@ describe('Point element tests', function() {
 			args: []
 		}]);
 
+		var drawRoundedRectangleSpy = jasmine.createSpy('drawRoundedRectangle');
+		var drawRoundedRectangle = Chart.helpers.drawRoundedRectangle;
+		var offset = point._view.radius / Math.SQRT2;
+		Chart.helpers.drawRoundedRectangle = drawRoundedRectangleSpy;
+		mockContext.resetCalls();
+		point._view.pointStyle = 'rectRounded';
+		point.draw();
+
+		expect(drawRoundedRectangleSpy).toHaveBeenCalledWith(
+			mockContext,
+			10 - offset,
+			15 - offset,
+			Math.SQRT2 * 2,
+			Math.SQRT2 * 2,
+			2 / 2
+		);
+		expect(mockContext.getCalls()).toContain(
+			jasmine.objectContaining({
+				name: 'fill',
+				args: [],
+			})
+		);
+
+		Chart.helpers.drawRoundedRectangle = drawRoundedRectangle;
 		mockContext.resetCalls();
 		point._view.pointStyle = 'rectRot';
 		point.draw();
