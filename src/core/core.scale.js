@@ -51,8 +51,17 @@ module.exports = function(Chart) {
 	};
 
 	Chart.Scale = Chart.Element.extend({
+		getPadding: function() {
+			var me = this;
+			return {
+				left: me.paddingLeft || 0,
+				top: me.paddingTop || 0,
+				right: me.paddingRight || 0,
+				bottom: me.paddingBottom || 0
+			};
+		},
 
-		// These methods are ordered by lifecycle. Utilities then follow.
+		// These methods are ordered by lifecyle. Utilities then follow.
 		// Any function defined here is inherited by all scale types.
 		// Any function can be extended by the scale type
 
