@@ -77,6 +77,7 @@ The tick configuration is nested under the scale configuration in the `ticks` ke
 Name | Type | Default | Description
 --- | --- | --- | ---
 autoSkip | Boolean | true | If true, automatically calculates how many labels that can be shown and hides labels accordingly. Turn it off to show all labels no matter what
+autoSkipPadding | Number | 0 | Padding between the ticks on the horizontal axis when `autoSkip` is enabled. *Note: Only applicable to horizontal scales.*
 callback | Function | `function(value) { return helpers.isArray(value) ? value : '' + value; }` | Returns the string representation of the tick value as it should be displayed on the chart. See [callback](#scales-creating-custom-tick-formats) section below.
 display | Boolean | true | If true, show the ticks.
 fontColor | Color | "#666" | Font color for the tick labels.
