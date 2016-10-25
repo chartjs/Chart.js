@@ -8,7 +8,7 @@
 
 ## Installation
 
-You can download the latest version of [Chart.js on GitHub](https://github.com/chartjs/Chart.js/releases/latest) or just use these [Chart.js CDN](https://cdnjs.com/libraries/Chart.js) links.
+You can download the latest version of Chart.js from the [GitHub releases](https://github.com/chartjs/Chart.js/releases/latest) or use a [Chart.js CDN](https://cdnjs.com/libraries/Chart.js).
 
 To install via npm:
 
@@ -16,7 +16,16 @@ To install via npm:
 npm install chart.js --save
 ```
 
-To Install via bower, please follow [these instructions](http://www.chartjs.org/docs/#getting-started-installation).
+To install via bower:
+```bash
+bower install chart.js --save
+```
+
+#### Selecting the Correct Build
+
+Chart.js provides two different builds that are available for your use. The `Chart.js` and `Chart.min.js` files include Chart.js and the accompanying color parsing library. If this version is used and you require the use of the time axis, [Moment.js](http://momentjs.com/) will need to be included before Chart.js.
+
+The `Chart.bundle.js` and `Chart.bundle.min.js` builds include Moment.js in a single file. This version should be used if you require time axes and want a single file to include, select this version. Do not use this build if your application already includes Moment.js. If you do, Moment.js will be included twice, increasing the page load time and potentially introducing version issues.
 
 ## Documentation
 
