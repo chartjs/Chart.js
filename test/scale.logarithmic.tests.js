@@ -722,7 +722,7 @@ describe('Logarithmic Scale tests', function() {
 		expect(xScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(276);  // halfway
 		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(48);   // 0 is invalid, put it on the left.
 
-		expect(xScale.getValueForPixel(481.5)).toBeCloseTo(80, 1e-4);
+		expect(xScale.getValueForPixel(481.5)).toBeCloseToPixel(80);
 		expect(xScale.getValueForPixel(48)).toBeCloseTo(1, 1e-4);
 		expect(xScale.getValueForPixel(276)).toBeCloseTo(10, 1e-4);
 

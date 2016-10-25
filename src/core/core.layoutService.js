@@ -154,15 +154,25 @@ module.exports = function(Chart) {
 
 			helpers.each(leftBoxes.concat(rightBoxes, topBoxes, bottomBoxes), getMinimumBoxSize);
 
-			// If a box has padding, we move the left scale over to avoid ugly charts (see issue #2478)
+			// If a horizontal box has padding, we move the left boxes over to avoid ugly charts (see issue #2478)
 			var maxHorizontalLeftPadding = 0;
 			var maxHorizontalRightPadding = 0;
+			var maxVerticalTopPadding = 0;
+			var maxVerticalBottomPadding = 0;
 
 			helpers.each(topBoxes.concat(bottomBoxes), function(horizontalBox) {
 				if (horizontalBox.getPadding) {
 					var boxPadding = horizontalBox.getPadding();
 					maxHorizontalLeftPadding = Math.max(maxHorizontalLeftPadding, boxPadding.left);
 					maxHorizontalRightPadding = Math.max(maxHorizontalRightPadding, boxPadding.right);
+				}
+			});
+
+			helpers.each(leftBoxes.concat(rightBoxes), function(verticalBox) {
+				if (verticalBox.getPadding) {
+					var boxPadding = verticalBox.getPadding();
+					maxVerticalTopPadding = Math.max(maxVerticalTopPadding, boxPadding.top);
+					maxVerticalBottomPadding = Math.max(maxVerticalBottomPadding, boxPadding.bottom);
 				}
 			});
 
@@ -264,10 +274,12 @@ module.exports = function(Chart) {
 
 			// We may be adding some padding to account for rotated x axis labels
 			var leftPaddingAddition = Math.max(maxHorizontalLeftPadding - totalLeftBoxesWidth, 0);
-			var rightPaddingAddition = Math.max(maxHorizontalRightPadding - totalRightBoxesWidth, 0);
-
 			totalLeftBoxesWidth += leftPaddingAddition;
-			totalRightBoxesWidth += rightPaddingAddition;
+			totalRightBoxesWidth += Math.max(maxHorizontalRightPadding - totalRightBoxesWidth, 0);
+
+			var topPaddingAddition = Math.max(maxVerticalTopPadding - totalTopBoxesHeight, 0);
+			totalTopBoxesHeight += topPaddingAddition;
+			totalBottomBoxesHeight += Math.max(maxVerticalBottomPadding - totalBottomBoxesHeight, 0);
 
 			// Figure out if our chart area changed. This would occur if the dataset layout label rotation
 			// changed due to the application of the margins in step 6. Since we can only get bigger, this is safe to do
@@ -302,7 +314,7 @@ module.exports = function(Chart) {
 
 			// Step 7 - Position the boxes
 			var left = leftPadding + leftPaddingAddition;
-			var top = topPadding;
+			var top = topPadding + topPaddingAddition;
 
 			function placeBox(box) {
 				if (box.isHorizontal()) {
