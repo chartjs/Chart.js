@@ -317,7 +317,7 @@ module.exports = function(Chart) {
 	}
 
 	/**
-	 * @Helper to get the location a tooltiop needs to be placed at given the initial position (via the vm) and the size and alignment
+	 * @Helper to get the location a tooltip needs to be placed at given the initial position (via the vm) and the size and alignment
 	 */
 	function getBackgroundPoint(vm, size, alignment) {
 		// Background Position
