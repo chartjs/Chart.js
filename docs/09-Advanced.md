@@ -29,7 +29,7 @@ Triggers an update of the chart. This can be safely called after replacing the e
 
 ```javascript
 // duration is the time for the animation of the redraw in miliseconds
-// lazy is a boolean. if true, the animation can be interupted by other animations
+// lazy is a boolean. if true, the animation can be interrupted by other animations
 myLineChart.data.datasets[0].data[2] = 50; // Would update the first dataset's value of 'March' to be 50
 myLineChart.update(); // Calling update now animates the position of March from 90 to 50.
 ```
@@ -48,7 +48,7 @@ Triggers a redraw of all chart elements. Note, this does not update elements for
 
 ```javascript
 // duration is the time for the animation of the redraw in miliseconds
-// lazy is a boolean. if true, the animation can be interupted by other animations
+// lazy is a boolean. if true, the animation can be interrupted by other animations
 myLineChart.render(duration, lazy);
 ```
 
