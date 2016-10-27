@@ -343,7 +343,7 @@ onComplete | Function | none | Callback called at the end of an animation. Passe
 
 The `onProgress` and `onComplete` callbacks are useful for synchronizing an external draw to the chart animation. The callback is passed an object that implements the following interface. An example usage of these callbacks can be found on [Github](https://github.com/chartjs/Chart.js/blob/master/samples/AnimationCallbacks/progress-bar.html). This sample displays a progress bar showing how far along the animation is.
 
-```javscript
+```javascript
 {
     // Chart object
     chartInstance,
