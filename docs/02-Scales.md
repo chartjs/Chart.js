@@ -302,7 +302,7 @@ var chartInstance = new Chart(ctx, {
 
 ### Radial Linear Scale
 
-The radial linear scale is used specifically for the radar and polar are chart types. It overlays the chart area, rather than being positioned on one of the edges.
+The radial linear scale is used specifically for the radar and polar area chart types. It overlays the chart area, rather than being positioned on one of the edges.
 
 #### Configuration Options
 
