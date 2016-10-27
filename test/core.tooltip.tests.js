@@ -41,7 +41,7 @@ describe('Core.Tooltip', function() {
 				clientY: 0
 			});
 
-			// Manully trigger rather than having an async test
+			// Manually trigger rather than having an async test
 			node.dispatchEvent(evt);
 
 			// Check and see if tooltip was displayed
@@ -157,7 +157,7 @@ describe('Core.Tooltip', function() {
 				clientY: 0
 			});
 
-			// Manully trigger rather than having an async test
+			// Manually trigger rather than having an async test
 			node.dispatchEvent(evt);
 
 			// Check and see if tooltip was displayed
@@ -245,7 +245,7 @@ describe('Core.Tooltip', function() {
 			clientY: rect.top + point._model.y
 		});
 
-		// Manully trigger rather than having an async test
+		// Manually trigger rather than having an async test
 		node.dispatchEvent(evt);
 
 		// Check and see if tooltip was displayed
@@ -388,7 +388,7 @@ describe('Core.Tooltip', function() {
 			clientY: rect.top + point._model.y
 		});
 
-		// Manully trigger rather than having an async test
+		// Manually trigger rather than having an async test
 		node.dispatchEvent(evt);
 
 		// Check and see if tooltip was displayed
@@ -505,7 +505,7 @@ describe('Core.Tooltip', function() {
 			clientY: rect.top + point0._model.y
 		});
 
-		// Manully trigger rather than having an async test
+		// Manually trigger rather than having an async test
 		node.dispatchEvent(evt);
 
 		// Check and see if tooltip was displayed
@@ -587,7 +587,7 @@ describe('Core.Tooltip', function() {
 			clientY: rect.top + point0._model.y
 		});
 
-		// Manully trigger rather than having an async test
+		// Manually trigger rather than having an async test
 		node.dispatchEvent(evt);
 
 		// Check and see if tooltip was displayed
@@ -654,7 +654,7 @@ describe('Core.Tooltip', function() {
 			clientY: rect.top + point._model.y
 		});
 
-		// Manully trigger rather than having an async test
+		// Manually trigger rather than having an async test
 		node.dispatchEvent(evt);
 
 		// Check and see if tooltip was displayed
