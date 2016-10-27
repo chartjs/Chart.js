@@ -527,7 +527,7 @@ describe('Chart.Controller', function() {
 			});
 		});
 
-		it('should resize the canvas with correct apect ratio when parent width changes', function(done) {
+		it('should resize the canvas with correct aspect ratio when parent width changes', function(done) {
 			var chart = acquireChart({
 				type: 'line', // AR == 2
 				options: {
