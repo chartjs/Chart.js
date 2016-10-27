@@ -88,7 +88,7 @@ module.exports = function(Chart) {
 			this.doughnutMode = false;
 		},
 
-		// These methods are ordered by lifecyle. Utilities then follow.
+		// These methods are ordered by lifecycle. Utilities then follow.
 		// Any function defined here is inherited by all legend types.
 		// Any function can be extended by the legend type
 
@@ -287,7 +287,7 @@ module.exports = function(Chart) {
 			return this.options.position === 'top' || this.options.position === 'bottom';
 		},
 
-		// Actualy draw the legend on the canvas
+		// Actually draw the legend on the canvas
 		draw: function() {
 			var me = this;
 			var opts = me.options;
@@ -341,7 +341,7 @@ module.exports = function(Chart) {
 					}
 
 					if (opts.labels && opts.labels.usePointStyle) {
-						// Recalulate x and y for drawPoint() because its expecting
+						// Recalculate x and y for drawPoint() because its expecting
 						// x and y to be center of figure (instead of top left)
 						var radius = fontSize * Math.SQRT2 / 2;
 						var offSet = radius / Math.SQRT2;

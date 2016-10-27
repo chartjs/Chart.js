@@ -22,7 +22,7 @@ module.exports = function(Chart) {
 					// move the top up to 0
 					me.max = 0;
 				} else if (minSign > 0 && maxSign > 0) {
-					// move the botttom down to 0
+					// move the bottom down to 0
 					me.min = 0;
 				}
 			}

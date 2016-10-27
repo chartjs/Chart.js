@@ -105,7 +105,7 @@ module.exports = function(Chart) {
 		return base;
 	}
 
-	// Private helper to create a tooltip iteam model
+	// Private helper to create a tooltip item model
 	// @param element : the chart element (point, arc, bar) to create the tooltip item for
 	// @return : new tooltip item
 	function createTooltipItem(element) {
@@ -317,7 +317,7 @@ module.exports = function(Chart) {
 	}
 
 	/**
-	 * @Helper to get the location a tooltiop needs to be placed at given the initial position (via the vm) and the size and alignment
+	 * @Helper to get the location a tooltip needs to be placed at given the initial position (via the vm) and the size and alignment
 	 */
 	function getBackgroundPoint(vm, size, alignment) {
 		// Background Position

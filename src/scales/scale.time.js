@@ -264,7 +264,7 @@ module.exports = function(Chart) {
 					me.unitScale = 1;
 
 					if (helpers.isArray(unitDefinition.steps) && Math.ceil(me.scaleSizeInUnits / labelCapacity) < helpers.max(unitDefinition.steps)) {
-						// Use one of the prefedined steps
+						// Use one of the predefined steps
 						for (var idx = 0; idx < unitDefinition.steps.length; ++idx) {
 							if (unitDefinition.steps[idx] >= Math.ceil(me.scaleSizeInUnits / labelCapacity)) {
 								me.unitScale = helpers.getValueOrDefault(me.options.time.unitStepSize, unitDefinition.steps[idx]);

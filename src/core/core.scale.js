@@ -52,7 +52,7 @@ module.exports = function(Chart) {
 
 	Chart.Scale = Chart.Element.extend({
 
-		// These methods are ordered by lifecyle. Utilities then follow.
+		// These methods are ordered by lifecycle. Utilities then follow.
 		// Any function defined here is inherited by all scale types.
 		// Any function can be extended by the scale type
 
@@ -463,7 +463,7 @@ module.exports = function(Chart) {
 				0);
 		},
 
-		// Actualy draw the scale on the canvas
+		// Actually draw the scale on the canvas
 		// @param {rectangle} chartArea : the area of the chart to draw full grid lines on
 		draw: function(chartArea) {
 			var me = this;

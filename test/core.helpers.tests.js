@@ -584,7 +584,7 @@ describe('Core helper tests', function() {
 		var arrayOfThings2D = [['FooBar_1', 'Bar_2'], 'Foo_1'];
 
 
-		// Regardless 'FooBar' is the longest label it should return (charcters * 10)
+		// Regardless 'FooBar' is the longest label it should return (characters * 10)
 		expect(helpers.longestText(context, font, arrayOfThings1D, {})).toEqual(60);
 		expect(helpers.longestText(context, font, arrayOfThings2D, {})).toEqual(80);
 		// We check to make sure we made the right calls to the canvas.

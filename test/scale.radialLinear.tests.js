@@ -73,7 +73,7 @@ describe('Test the radial linear scale', function() {
 				}, {
 					data: [150]
 				}],
-				labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
+				labels: ['label1', 'label2', 'label3', 'label4', 'label5', 'label6']
 			},
 			options: {
 				scales: {}
@@ -93,7 +93,7 @@ describe('Test the radial linear scale', function() {
 				}, {
 					data: ['150']
 				}],
-				labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
+				labels: ['label1', 'label2', 'label3', 'label4', 'label5', 'label6']
 			},
 			options: {
 				scales: {}
@@ -116,7 +116,7 @@ describe('Test the radial linear scale', function() {
 					data: [1000],
 					hidden: true
 				}],
-				labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
+				labels: ['label1', 'label2', 'label3', 'label4', 'label5', 'label6']
 			},
 			options: {
 				scales: {}
@@ -134,7 +134,7 @@ describe('Test the radial linear scale', function() {
 				datasets: [{
 					data: [50, 60, NaN, 70, null, undefined, Infinity, -Infinity]
 				}],
-				labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6', 'label7', 'label8']
+				labels: ['label1', 'label2', 'label3', 'label4', 'label5', 'label6', 'label7', 'label8']
 			},
 			options: {
 				scales: {}
@@ -176,7 +176,7 @@ describe('Test the radial linear scale', function() {
 				datasets: [{
 					data: [1, 1, 1, 2, 1, 0]
 				}],
-				labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
+				labels: ['label1', 'label2', 'label3', 'label4', 'label5', 'label6']
 			},
 			options: {
 				scale: {
@@ -199,7 +199,7 @@ describe('Test the radial linear scale', function() {
 				datasets: [{
 					data: [1, 1, 1, 2, 1, 0]
 				}],
-				labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
+				labels: ['label1', 'label2', 'label3', 'label4', 'label5', 'label6']
 			},
 			options: {
 				scale: {
@@ -223,7 +223,7 @@ describe('Test the radial linear scale', function() {
 				datasets: [{
 					data: [20, 30, 40, 50]
 				}],
-				labels: ['lablel1', 'label2', 'label3', 'label4']
+				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
 				scale: {
@@ -259,7 +259,7 @@ describe('Test the radial linear scale', function() {
 				datasets: [{
 					data: [10, 5, 0, 25, 78]
 				}],
-				labels: ['lablel1', 'label2', 'label3', 'label4', 'label5']
+				labels: ['label1', 'label2', 'label3', 'label4', 'label5']
 			},
 			options: {
 				scale: {

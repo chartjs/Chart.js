@@ -258,7 +258,7 @@ module.exports = function(Chart) {
 		},
 
 		stop: function() {
-			// Stops any current animation loop occuring
+			// Stops any current animation loop occurring
 			Chart.animationService.cancelAnimation(this);
 			return this;
 		},
@@ -447,7 +447,7 @@ module.exports = function(Chart) {
 
 			Chart.layoutService.update(me, me.chart.width, me.chart.height);
 
-			// Apply changes to the dataets that require the scales to have been calculated i.e BorderColor chages
+			// Apply changes to the datasets that require the scales to have been calculated i.e BorderColor changes
 			Chart.plugins.notify('afterScaleUpdate', [me]);
 
 			// Can only reset the new controllers after the scales have been updated

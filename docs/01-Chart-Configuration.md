@@ -266,7 +266,7 @@ afterTitle | `Array[tooltipItem], data` | Text to render after the title
 beforeBody | `Array[tooltipItem], data` | Text to render before the body section
 beforeLabel | `tooltipItem, data` | Text to render before an individual label
 label | `tooltipItem, data` | Text to render for an individual item in the tooltip
-labelColor | `tooltipItem, chartInstace` | Returns the colors to render for the tooltip item. Return as an object containing two parameters: `borderColor` and `backgroundColor`.
+labelColor | `tooltipItem, chartInstance` | Returns the colors to render for the tooltip item. Return as an object containing two parameters: `borderColor` and `backgroundColor`.
 afterLabel | `tooltipItem, data` | Text to render after an individual label
 afterBody | `Array[tooltipItem], data` | Text to render after the body section
 beforeFooter | `Array[tooltipItem], data` | Text to render before the footer section
@@ -306,7 +306,7 @@ The hover configuration is passed into the `options.hover` namespace. The global
 
 Name | Type | Default | Description
 --- | --- | --- | ---
-mode | String | 'naerest' | Sets which elements appear in the tooltip. See [Interaction Modes](#interaction-modes) for details
+mode | String | 'nearest' | Sets which elements appear in the tooltip. See [Interaction Modes](#interaction-modes) for details
 intersect | Boolean | true | if true, the hover mode only applies when the mouse position intersects an item on the chart
 animationDuration | Number | 400 | Duration in milliseconds it takes to animate hover style changes
 onHover | Function | null | Called when any of the events fire. Called in the context of the chart and passed an array of active elements (bars, points, etc)
@@ -343,7 +343,7 @@ onComplete | Function | none | Callback called at the end of an animation. Passe
 
 The `onProgress` and `onComplete` callbacks are useful for synchronizing an external draw to the chart animation. The callback is passed an object that implements the following interface. An example usage of these callbacks can be found on [Github](https://github.com/chartjs/Chart.js/blob/master/samples/AnimationCallbacks/progress-bar.html). This sample displays a progress bar showing how far along the animation is.
 
-```javscript
+```javascript
 {
     // Chart object
     chartInstance,
