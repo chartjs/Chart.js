@@ -40,7 +40,7 @@ module.exports = function(Chart) {
 		},
 
 		/**
-		 * Remove all registered p^lugins.
+		 * Remove all registered plugins.
 		 * @since 2.1.5
 		 */
 		clear: function() {
