@@ -57,7 +57,7 @@ module.exports = function(Chart) {
 		},
 
 		/**
-		 * Returns all registered plugin intances.
+		 * Returns all registered plugin instances.
 		 * @returns {Array} array of plugin objects.
 		 * @since 2.1.5
 		 */
