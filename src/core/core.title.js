@@ -139,7 +139,7 @@ module.exports = function(Chart) {
 			return pos === 'top' || pos === 'bottom';
 		},
 
-		// Actualy draw the title block on the canvas
+		// Actually draw the title block on the canvas
 		draw: function() {
 			var me = this,
 				ctx = me.ctx,

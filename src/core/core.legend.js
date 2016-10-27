@@ -287,7 +287,7 @@ module.exports = function(Chart) {
 			return this.options.position === 'top' || this.options.position === 'bottom';
 		},
 
-		// Actualy draw the legend on the canvas
+		// Actually draw the legend on the canvas
 		draw: function() {
 			var me = this;
 			var opts = me.options;

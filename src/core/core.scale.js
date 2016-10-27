@@ -463,7 +463,7 @@ module.exports = function(Chart) {
 				0);
 		},
 
-		// Actualy draw the scale on the canvas
+		// Actually draw the scale on the canvas
 		// @param {rectangle} chartArea : the area of the chart to draw full grid lines on
 		draw: function(chartArea) {
 			var me = this;
