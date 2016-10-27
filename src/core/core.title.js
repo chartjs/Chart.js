@@ -28,7 +28,7 @@ module.exports = function(Chart) {
 			me.legendHitBoxes = [];
 		},
 
-		// These methods are ordered by lifecyle. Utilities then follow.
+		// These methods are ordered by lifecycle. Utilities then follow.
 
 		beforeUpdate: function() {
 			var chartOpts = this.chart.options;
