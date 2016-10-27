@@ -67,8 +67,8 @@ module.exports = function(Chart) {
 
 				// If min, max and stepSize is set and they make an evenly spaced scale use it.
 				if (generationOptions.min && generationOptions.max && generationOptions.stepSize) {
-					var minMaxDeltaDivisableByStepSize = ((generationOptions.max - generationOptions.min) % generationOptions.stepSize) === 0;
-					if (minMaxDeltaDivisableByStepSize) {
+					var minMaxDeltaDivisibleByStepSize = ((generationOptions.max - generationOptions.min) % generationOptions.stepSize) === 0;
+					if (minMaxDeltaDivisibleByStepSize) {
 						niceMin = generationOptions.min;
 						niceMax = generationOptions.max;
 					}
