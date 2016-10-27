@@ -447,7 +447,7 @@ module.exports = function(Chart) {
 
 			Chart.layoutService.update(me, me.chart.width, me.chart.height);
 
-			// Apply changes to the dataets that require the scales to have been calculated i.e BorderColor chages
+			// Apply changes to the dataets that require the scales to have been calculated i.e BorderColor changes
 			Chart.plugins.notify('afterScaleUpdate', [me]);
 
 			// Can only reset the new controllers after the scales have been updated
