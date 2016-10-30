@@ -460,7 +460,12 @@ module.exports = function(Chart) {
 			// Do this before render so that any plugins that need final scale updates can use it
 			Chart.plugins.notify('afterUpdate', [me]);
 
-			if (!me._bufferedRender) {
+			if (me._bufferedRender) {
+				me._bufferedRequest = {
+					lazy: lazy,
+					duration: animationDuration
+				};
+			} else {
 				me.render(animationDuration, lazy);
 			}
 		},
@@ -718,12 +723,17 @@ module.exports = function(Chart) {
 
 			// Buffer any update calls so that renders do not occur
 			me._bufferedRender = true;
+			me._bufferedRequest = null;
 
 			var changed = me.handleEvent(e);
 			changed |= me.legend.handleEvent(e);
 			changed |= me.tooltip.handleEvent(e);
 
-			if (changed && !me.animating) {
+			var bufferedRequest = me._bufferedRequest;
+			if (bufferedRequest) {
+				// If we have an update that was triggered, we need to do a normal render
+				me.render(bufferedRequest.duration, bufferedRequest.lazy);
+			} else if (changed && !me.animating) {
 				// If entering, leaving, or changing elements, animate the change via pivot
 				me.stop();
 
@@ -733,6 +743,8 @@ module.exports = function(Chart) {
 			}
 
 			me._bufferedRender = false;
+			me._bufferedRequest = null;
+
 			return me;
 		},
 
