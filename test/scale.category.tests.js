@@ -161,305 +161,226 @@ describe('Category scale tests', function() {
 	});
 
 	it ('Should get the correct pixel for a value when horizontal', function() {
-		var scaleID = 'myScale';
-
-		var mockData = {
-			datasets: [{
-				yAxisID: scaleID,
-				data: [10, 5, 0, 25, 78]
-			}],
-			labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick_last']
-		};
-
-		var mockContext = window.createMockContext();
-		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
-		config.gridLines.offsetGridLines = true;
-		var Constructor = Chart.scaleService.getScaleConstructor('category');
-		var scale = new Constructor({
-			ctx: mockContext,
-			options: config,
-			chart: {
-				data: mockData
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					xAxisID: 'xScale0',
+					yAxisID: 'yScale0',
+					data: [10, 5, 0, 25, 78]
+				}],
+				labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick_last']
 			},
-			id: scaleID
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'xScale0',
+						type: 'category',
+						position: 'bottom'
+					}],
+					yAxes: [{
+						id: 'yScale0',
+						type: 'linear'
+					}]
+				}
+			}
 		});
 
-		var minSize = scale.update(600, 100);
+		var xScale = chart.scales.xScale0;
+		expect(xScale.getPixelForValue(0, 0, 0, false)).toBeCloseToPixel(33);
+		expect(xScale.getPixelForValue(0, 0, 0, true)).toBeCloseToPixel(33);
+		expect(xScale.getValueForPixel(33)).toBe(0);
 
-		expect(scale.width).toBe(600);
-		expect(scale.height).toBe(28);
-		expect(scale.paddingTop).toBe(0);
-		expect(scale.paddingBottom).toBe(0);
-		expect(scale.paddingLeft).toBe(28);
-		expect(scale.paddingRight).toBe(48);
-		expect(scale.labelRotation).toBe(0);
+		expect(xScale.getPixelForValue(0, 4, 0, false)).toBeCloseToPixel(487);
+		expect(xScale.getPixelForValue(0, 4, 0, true)).toBeCloseToPixel(487);
+		expect(xScale.getValueForPixel(487)).toBe(4);
 
-		expect(minSize).toEqual({
-			width: 600,
-			height: 28,
-		});
+		xScale.options.gridLines.offsetGridLines = true;
 
-		scale.left = 5;
-		scale.top = 5;
-		scale.right = 605;
-		scale.bottom = 33;
+		expect(xScale.getPixelForValue(0, 0, 0, false)).toBeCloseToPixel(33);
+		expect(xScale.getPixelForValue(0, 0, 0, true)).toBeCloseToPixel(78);
+		expect(xScale.getValueForPixel(33)).toBe(0);
+		expect(xScale.getValueForPixel(78)).toBe(0);
 
-		expect(scale.getPixelForValue(0, 0, 0, false)).toBe(33);
-		expect(scale.getPixelForValue(0, 0, 0, true)).toBe(85);
-		expect(scale.getValueForPixel(33)).toBe(0);
-		expect(scale.getValueForPixel(85)).toBe(0);
-
-		expect(scale.getPixelForValue(0, 4, 0, false)).toBe(452);
-		expect(scale.getPixelForValue(0, 4, 0, true)).toBe(505);
-		expect(scale.getValueForPixel(453)).toBe(4);
-		expect(scale.getValueForPixel(505)).toBe(4);
-
-		config.gridLines.offsetGridLines = false;
-
-		expect(scale.getPixelForValue(0, 0, 0, false)).toBe(33);
-		expect(scale.getPixelForValue(0, 0, 0, true)).toBe(33);
-		expect(scale.getValueForPixel(33)).toBe(0);
-
-		expect(scale.getPixelForValue(0, 4, 0, false)).toBe(557);
-		expect(scale.getPixelForValue(0, 4, 0, true)).toBe(557);
-		expect(scale.getValueForPixel(557)).toBe(4);
+		expect(xScale.getPixelForValue(0, 4, 0, false)).toBeCloseToPixel(396);
+		expect(xScale.getPixelForValue(0, 4, 0, true)).toBeCloseToPixel(441);
+		expect(xScale.getValueForPixel(397)).toBe(4);
+		expect(xScale.getValueForPixel(441)).toBe(4);
 	});
 
 	it ('Should get the correct pixel for a value when there are repeated labels', function() {
-		var scaleID = 'myScale';
-
-		var mockData = {
-			datasets: [{
-				yAxisID: scaleID,
-				data: [10, 5, 0, 25, 78]
-			}],
-			labels: ['tick1', 'tick1', 'tick3', 'tick3', 'tick_last']
-		};
-
-		var mockContext = window.createMockContext();
-		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
-		config.gridLines.offsetGridLines = true;
-		var Constructor = Chart.scaleService.getScaleConstructor('category');
-		var scale = new Constructor({
-			ctx: mockContext,
-			options: config,
-			chart: {
-				data: mockData
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					xAxisID: 'xScale0',
+					yAxisID: 'yScale0',
+					data: [10, 5, 0, 25, 78]
+				}],
+				labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick_last']
 			},
-			id: scaleID
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'xScale0',
+						type: 'category',
+						position: 'bottom'
+					}],
+					yAxes: [{
+						id: 'yScale0',
+						type: 'linear'
+					}]
+				}
+			}
 		});
 
-		var minSize = scale.update(600, 100);
-
-		expect(scale.width).toBe(600);
-		expect(scale.height).toBe(28);
-		expect(scale.paddingTop).toBe(0);
-		expect(scale.paddingBottom).toBe(0);
-		expect(scale.paddingLeft).toBe(28);
-		expect(scale.paddingRight).toBe(48);
-		expect(scale.labelRotation).toBe(0);
-
-		expect(minSize).toEqual({
-			width: 600,
-			height: 28,
-		});
-
-		scale.left = 5;
-		scale.top = 5;
-		scale.right = 605;
-		scale.bottom = 33;
-
-		expect(scale.getPixelForValue('tick_1', 1, 0, false)).toBe(138);
-		expect(scale.getPixelForValue('tick_1', 1, 0, true)).toBe(190);
+		var xScale = chart.scales.xScale0;
+		expect(xScale.getPixelForValue('tick_1', 0, 0, false)).toBeCloseToPixel(33);
+		expect(xScale.getPixelForValue('tick_1', 1, 0, false)).toBeCloseToPixel(146);
 	});
 
 	it ('Should get the correct pixel for a value when horizontal and zoomed', function() {
-		var scaleID = 'myScale';
-
-		var mockData = {
-			datasets: [{
-				yAxisID: scaleID,
-				data: [10, 5, 0, 25, 78]
-			}],
-			labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick_last']
-		};
-
-		var mockContext = window.createMockContext();
-		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
-		config.gridLines.offsetGridLines = true;
-		config.ticks.min = 'tick2';
-		config.ticks.max = 'tick4';
-
-		var Constructor = Chart.scaleService.getScaleConstructor('category');
-		var scale = new Constructor({
-			ctx: mockContext,
-			options: config,
-			chart: {
-				data: mockData
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					xAxisID: 'xScale0',
+					yAxisID: 'yScale0',
+					data: [10, 5, 0, 25, 78]
+				}],
+				labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick_last']
 			},
-			id: scaleID
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'xScale0',
+						type: 'category',
+						position: 'bottom',
+						ticks: {
+							min: 'tick2',
+							max: 'tick4'
+						}
+					}],
+					yAxes: [{
+						id: 'yScale0',
+						type: 'linear'
+					}]
+				}
+			}
 		});
 
-		var minSize = scale.update(600, 100);
+		var xScale = chart.scales.xScale0;
+		expect(xScale.getPixelForValue(0, 1, 0, false)).toBeCloseToPixel(33);
+		expect(xScale.getPixelForValue(0, 1, 0, true)).toBeCloseToPixel(33);
 
-		expect(scale.width).toBe(600);
-		expect(scale.height).toBe(28);
-		expect(scale.paddingTop).toBe(0);
-		expect(scale.paddingBottom).toBe(0);
-		expect(scale.paddingLeft).toBe(28);
-		expect(scale.paddingRight).toBe(28);
-		expect(scale.labelRotation).toBe(0);
+		expect(xScale.getPixelForValue(0, 3, 0, false)).toBeCloseToPixel(496);
+		expect(xScale.getPixelForValue(0, 3, 0, true)).toBeCloseToPixel(496);
 
-		expect(minSize).toEqual({
-			width: 600,
-			height: 28,
-		});
+		xScale.options.gridLines.offsetGridLines = true;
 
-		scale.left = 5;
-		scale.top = 5;
-		scale.right = 605;
-		scale.bottom = 33;
+		expect(xScale.getPixelForValue(0, 1, 0, false)).toBeCloseToPixel(33);
+		expect(xScale.getPixelForValue(0, 1, 0, true)).toBeCloseToPixel(110);
 
-		expect(scale.getPixelForValue(0, 1, 0, false)).toBe(33);
-		expect(scale.getPixelForValue(0, 1, 0, true)).toBe(124);
-
-		expect(scale.getPixelForValue(0, 3, 0, false)).toBe(396);
-		expect(scale.getPixelForValue(0, 3, 0, true)).toBe(486);
-
-		config.gridLines.offsetGridLines = false;
-
-		expect(scale.getPixelForValue(0, 1, 0, false)).toBe(33);
-		expect(scale.getPixelForValue(0, 1, 0, true)).toBe(33);
-
-		expect(scale.getPixelForValue(0, 3, 0, false)).toBe(577);
-		expect(scale.getPixelForValue(0, 3, 0, true)).toBe(577);
+		expect(xScale.getPixelForValue(0, 3, 0, false)).toBeCloseToPixel(342);
+		expect(xScale.getPixelForValue(0, 3, 0, true)).toBeCloseToPixel(419);
 	});
 
 	it ('should get the correct pixel for a value when vertical', function() {
-		var scaleID = 'myScale';
-
-		var mockData = {
-			datasets: [{
-				yAxisID: scaleID,
-				data: [10, 5, 0, 25, 78]
-			}],
-			labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick_last']
-		};
-
-		var mockContext = window.createMockContext();
-		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
-		config.gridLines.offsetGridLines = true;
-		config.position = 'left';
-		var Constructor = Chart.scaleService.getScaleConstructor('category');
-		var scale = new Constructor({
-			ctx: mockContext,
-			options: config,
-			chart: {
-				data: mockData
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					xAxisID: 'xScale0',
+					yAxisID: 'yScale0',
+					data: ['3', '5', '1', '4', '2']
+				}],
+				labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'],
+				yLabels: ['1', '2', '3', '4', '5']
 			},
-			id: scaleID
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'xScale0',
+						type: 'category',
+						position: 'bottom',
+					}],
+					yAxes: [{
+						id: 'yScale0',
+						type: 'category',
+						position: 'left'
+					}]
+				}
+			}
 		});
 
-		var minSize = scale.update(100, 200);
+		var yScale = chart.scales.yScale0;
+		expect(yScale.getPixelForValue(0, 0, 0, false)).toBe(32);
+		expect(yScale.getPixelForValue(0, 0, 0, true)).toBe(32);
+		expect(yScale.getValueForPixel(32)).toBe(0);
 
-		expect(scale.width).toBe(100);
-		expect(scale.height).toBe(200);
-		expect(scale.paddingTop).toBe(6);
-		expect(scale.paddingBottom).toBe(6);
-		expect(scale.paddingLeft).toBe(0);
-		expect(scale.paddingRight).toBe(0);
-		expect(scale.labelRotation).toBe(0);
+		expect(yScale.getPixelForValue(0, 4, 0, false)).toBe(484);
+		expect(yScale.getPixelForValue(0, 4, 0, true)).toBe(484);
+		expect(yScale.getValueForPixel(484)).toBe(4);
 
-		expect(minSize).toEqual({
-			width: 100,
-			height: 200,
-		});
+		yScale.options.gridLines.offsetGridLines = true;
 
-		scale.left = 5;
-		scale.top = 5;
-		scale.right = 105;
-		scale.bottom = 205;
+		expect(yScale.getPixelForValue(0, 0, 0, false)).toBe(32);
+		expect(yScale.getPixelForValue(0, 0, 0, true)).toBe(77);
+		expect(yScale.getValueForPixel(32)).toBe(0);
+		expect(yScale.getValueForPixel(77)).toBe(0);
 
-		expect(scale.getPixelForValue(0, 0, 0, false)).toBe(11);
-		expect(scale.getPixelForValue(0, 0, 0, true)).toBe(30);
-		expect(scale.getValueForPixel(11)).toBe(0);
-		expect(scale.getValueForPixel(30)).toBe(0);
-
-		expect(scale.getPixelForValue(0, 4, 0, false)).toBe(161);
-		expect(scale.getPixelForValue(0, 4, 0, true)).toBe(180);
-		expect(scale.getValueForPixel(162)).toBe(4);
-
-		config.gridLines.offsetGridLines = false;
-
-		expect(scale.getPixelForValue(0, 0, 0, false)).toBe(11);
-		expect(scale.getPixelForValue(0, 0, 0, true)).toBe(11);
-		expect(scale.getValueForPixel(11)).toBe(0);
-
-		expect(scale.getPixelForValue(0, 4, 0, false)).toBe(199);
-		expect(scale.getPixelForValue(0, 4, 0, true)).toBe(199);
-		expect(scale.getValueForPixel(199)).toBe(4);
+		expect(yScale.getPixelForValue(0, 4, 0, false)).toBe(394);
+		expect(yScale.getPixelForValue(0, 4, 0, true)).toBe(439);
+		expect(yScale.getValueForPixel(394)).toBe(4);
+		expect(yScale.getValueForPixel(439)).toBe(4);
 	});
 
 	it ('should get the correct pixel for a value when vertical and zoomed', function() {
-		var scaleID = 'myScale';
-
-		var mockData = {
-			datasets: [{
-				yAxisID: scaleID,
-				data: [10, 5, 0, 25, 78]
-			}],
-			labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick_last']
-		};
-
-		var mockContext = window.createMockContext();
-		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
-		config.gridLines.offsetGridLines = true;
-		config.ticks.min = 'tick2';
-		config.ticks.max = 'tick4';
-		config.position = 'left';
-
-		var Constructor = Chart.scaleService.getScaleConstructor('category');
-		var scale = new Constructor({
-			ctx: mockContext,
-			options: config,
-			chart: {
-				data: mockData
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					xAxisID: 'xScale0',
+					yAxisID: 'yScale0',
+					data: ['3', '5', '1', '4', '2']
+				}],
+				labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'],
+				yLabels: ['1', '2', '3', '4', '5']
 			},
-			id: scaleID
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'xScale0',
+						type: 'category',
+						position: 'bottom',
+					}],
+					yAxes: [{
+						id: 'yScale0',
+						type: 'category',
+						position: 'left',
+						ticks: {
+							min: '2',
+							max: '4'
+						}
+					}]
+				}
+			}
 		});
 
-		var minSize = scale.update(100, 200);
+		var yScale = chart.scales.yScale0;
 
-		expect(scale.width).toBe(70);
-		expect(scale.height).toBe(200);
-		expect(scale.paddingTop).toBe(6);
-		expect(scale.paddingBottom).toBe(6);
-		expect(scale.paddingLeft).toBe(0);
-		expect(scale.paddingRight).toBe(0);
-		expect(scale.labelRotation).toBe(0);
+		expect(yScale.getPixelForValue(0, 1, 0, false)).toBe(32);
+		expect(yScale.getPixelForValue(0, 1, 0, true)).toBe(32);
 
-		expect(minSize).toEqual({
-			width: 70,
-			height: 200,
-		});
+		expect(yScale.getPixelForValue(0, 3, 0, false)).toBe(484);
+		expect(yScale.getPixelForValue(0, 3, 0, true)).toBe(484);
 
-		scale.left = 5;
-		scale.top = 5;
-		scale.right = 75;
-		scale.bottom = 205;
+		yScale.options.gridLines.offsetGridLines = true;
 
-		expect(scale.getPixelForValue(0, 1, 0, false)).toBe(11);
-		expect(scale.getPixelForValue(0, 1, 0, true)).toBe(42);
+		expect(yScale.getPixelForValue(0, 1, 0, false)).toBe(32);
+		expect(yScale.getPixelForValue(0, 1, 0, true)).toBe(107);
 
-		expect(scale.getPixelForValue(0, 3, 0, false)).toBe(136);
-		expect(scale.getPixelForValue(0, 3, 0, true)).toBe(168);
-
-		config.gridLines.offsetGridLines = false;
-
-		expect(scale.getPixelForValue(0, 1, 0, false)).toBe(11);
-		expect(scale.getPixelForValue(0, 1, 0, true)).toBe(11);
-
-		expect(scale.getPixelForValue(0, 3, 0, false)).toBe(199);
-		expect(scale.getPixelForValue(0, 3, 0, true)).toBe(199);
+		expect(yScale.getPixelForValue(0, 3, 0, false)).toBe(333);
+		expect(yScale.getPixelForValue(0, 3, 0, true)).toBe(409);
 	});
 });
