@@ -51,6 +51,125 @@ module.exports = function(Chart) {
 		return !scale.options.lineArc ? scale.chart.data.labels.length : 0;
 	}
 
+	/**
+	 * Helper function to fit a radial linear scale with point labels
+	 */
+	function fitWithPointLabels(scale) {
+		/*
+		 * Right, this is really confusing and there is a lot of maths going on here
+		 * The gist of the problem is here: https://gist.github.com/nnnick/696cc9c55f4b0beb8fe9
+		 *
+		 * Reaction: https://dl.dropboxusercontent.com/u/34601363/toomuchscience.gif
+		 *
+		 * Solution:
+		 *
+		 * We assume the radius of the polygon is half the size of the canvas at first
+		 * at each index we check if the text overlaps.
+		 *
+		 * Where it does, we store that angle and that index.
+		 *
+		 * After finding the largest index and angle we calculate how much we need to remove
+		 * from the shape radius to move the point inwards by that x.
+		 *
+		 * We average the left and right distances to get the maximum shape radius that can fit in the box
+		 * along with labels.
+		 *
+		 * Once we have that, we can find the centre point for the chart, by taking the x text protrusion
+		 * on each side, removing that from the size, halving it and adding the left x protrusion width.
+		 *
+		 * This will mean we have a shape fitted to the canvas, as large as it can be with the labels
+		 * and position it in the most space efficient manner
+		 *
+		 * https://dl.dropboxusercontent.com/u/34601363/yeahscience.gif
+		 */
+
+		var pointLabels = scale.options.pointLabels;
+		var pointLabelFontSize = helpers.getValueOrDefault(pointLabels.fontSize, globalDefaults.defaultFontSize);
+		var pointLabeFontStyle = helpers.getValueOrDefault(pointLabels.fontStyle, globalDefaults.defaultFontStyle);
+		var pointLabeFontFamily = helpers.getValueOrDefault(pointLabels.fontFamily, globalDefaults.defaultFontFamily);
+		var pointLabeFont = helpers.fontString(pointLabelFontSize, pointLabeFontStyle, pointLabeFontFamily);
+
+		// Get maximum radius of the polygon. Either half the height (minus the text width) or half the width.
+		// Use this to calculate the offset + change. - Make sure L/R protrusion is at least 0 to stop issues with centre points
+		var largestPossibleRadius = Math.min(scale.height / 2 - pointLabelFontSize - 5, scale.width / 2),
+			pointPosition,
+			i,
+			textWidth,
+			halfTextWidth,
+			furthestRight = scale.width,
+			furthestRightIndex,
+			furthestRightAngle,
+			furthestLeft = 0,
+			furthestLeftIndex,
+			furthestLeftAngle,
+			xProtrusionLeft,
+			xProtrusionRight,
+			radiusReductionRight,
+			radiusReductionLeft;
+		scale.ctx.font = pointLabeFont;
+
+		var valueCount = getValueCount(scale);
+		for (i = 0; i < valueCount; i++) {
+			// 5px to space the text slightly out - similar to what we do in the draw function.
+			pointPosition = scale.getPointPosition(i, largestPossibleRadius);
+			textWidth = scale.ctx.measureText(scale.pointLabels[i] ? scale.pointLabels[i] : '').width + 5;
+
+			// Add quarter circle to make degree 0 mean top of circle
+			var angleRadians = scale.getIndexAngle(i) + (Math.PI / 2);
+			var angle = helpers.toDegrees(angleRadians) % 360;
+
+			if (angle === 0 || angle === 180) {
+				// At angle 0 and 180, we're at exactly the top/bottom
+				// of the radar chart, so text will be aligned centrally, so we'll half it and compare
+				// w/left and right text sizes
+				halfTextWidth = textWidth / 2;
+				if (pointPosition.x + halfTextWidth > furthestRight) {
+					furthestRight = pointPosition.x + halfTextWidth;
+					furthestRightIndex = i;
+				}
+				if (pointPosition.x - halfTextWidth < furthestLeft) {
+					furthestLeft = pointPosition.x - halfTextWidth;
+					furthestLeftIndex = i;
+				}
+			} else if (angle < 180) {
+				// Less than half the values means we'll left align the text
+				if (pointPosition.x + textWidth > furthestRight) {
+					furthestRight = pointPosition.x + textWidth;
+					furthestRightIndex = i;
+				}
+			// More than half the values means we'll right align the text
+			} else if (pointPosition.x - textWidth < furthestLeft) {
+				furthestLeft = pointPosition.x - textWidth;
+				furthestLeftIndex = i;
+			}
+		}
+
+		xProtrusionLeft = furthestLeft;
+		xProtrusionRight = Math.ceil(furthestRight - scale.width);
+
+		furthestRightAngle = scale.getIndexAngle(furthestRightIndex);
+		furthestLeftAngle = scale.getIndexAngle(furthestLeftIndex);
+
+		radiusReductionRight = xProtrusionRight / Math.sin(furthestRightAngle + Math.PI / 2);
+		radiusReductionLeft = xProtrusionLeft / Math.sin(furthestLeftAngle + Math.PI / 2);
+
+		// Ensure we actually need to reduce the size of the chart
+		radiusReductionRight = helpers.isNumber(radiusReductionRight) ? radiusReductionRight : 0;
+		radiusReductionLeft = helpers.isNumber(radiusReductionLeft) ? radiusReductionLeft : 0;
+
+		scale.drawingArea = Math.round(largestPossibleRadius - (radiusReductionLeft + radiusReductionRight) / 2);
+		scale.setCenterPoint(radiusReductionLeft, radiusReductionRight);
+	}
+
+	/**
+	 * Helper function to fit a radial linear scale with no point labels
+	 */
+	function fit(scale) {
+		var largestPossibleRadius = Math.min(scale.height / 2, scale.width / 2);
+		scale.drawingArea = Math.round(largestPossibleRadius);
+		scale.setCenterPoint(0, 0);
+	}
+
 	function getTextAlignForAngle(angle) {
 		var textAlign;
 		if (angle === 0 || angle === 180) {
@@ -212,109 +331,11 @@ module.exports = function(Chart) {
 			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 		},
 		fit: function() {
-			/*
-			 * Right, this is really confusing and there is a lot of maths going on here
-			 * The gist of the problem is here: https://gist.github.com/nnnick/696cc9c55f4b0beb8fe9
-			 *
-			 * Reaction: https://dl.dropboxusercontent.com/u/34601363/toomuchscience.gif
-			 *
-			 * Solution:
-			 *
-			 * We assume the radius of the polygon is half the size of the canvas at first
-			 * at each index we check if the text overlaps.
-			 *
-			 * Where it does, we store that angle and that index.
-			 *
-			 * After finding the largest index and angle we calculate how much we need to remove
-			 * from the shape radius to move the point inwards by that x.
-			 *
-			 * We average the left and right distances to get the maximum shape radius that can fit in the box
-			 * along with labels.
-			 *
-			 * Once we have that, we can find the centre point for the chart, by taking the x text protrusion
-			 * on each side, removing that from the size, halving it and adding the left x protrusion width.
-			 *
-			 * This will mean we have a shape fitted to the canvas, as large as it can be with the labels
-			 * and position it in the most space efficient manner
-			 *
-			 * https://dl.dropboxusercontent.com/u/34601363/yeahscience.gif
-			 */
-
-			var pointLabels = this.options.pointLabels;
-			var pointLabelFontSize = helpers.getValueOrDefault(pointLabels.fontSize, globalDefaults.defaultFontSize);
-			var pointLabeFontStyle = helpers.getValueOrDefault(pointLabels.fontStyle, globalDefaults.defaultFontStyle);
-			var pointLabeFontFamily = helpers.getValueOrDefault(pointLabels.fontFamily, globalDefaults.defaultFontFamily);
-			var pointLabeFont = helpers.fontString(pointLabelFontSize, pointLabeFontStyle, pointLabeFontFamily);
-
-			// Get maximum radius of the polygon. Either half the height (minus the text width) or half the width.
-			// Use this to calculate the offset + change. - Make sure L/R protrusion is at least 0 to stop issues with centre points
-			var largestPossibleRadius = helpers.min([(this.height / 2 - pointLabelFontSize - 5), this.width / 2]),
-				pointPosition,
-				i,
-				textWidth,
-				halfTextWidth,
-				furthestRight = this.width,
-				furthestRightIndex,
-				furthestRightAngle,
-				furthestLeft = 0,
-				furthestLeftIndex,
-				furthestLeftAngle,
-				xProtrusionLeft,
-				xProtrusionRight,
-				radiusReductionRight,
-				radiusReductionLeft;
-			this.ctx.font = pointLabeFont;
-
-			for (i = 0; i < getValueCount(this); i++) {
-				// 5px to space the text slightly out - similar to what we do in the draw function.
-				pointPosition = this.getPointPosition(i, largestPossibleRadius);
-				textWidth = this.ctx.measureText(this.pointLabels[i] ? this.pointLabels[i] : '').width + 5;
-
-				// Add quarter circle to make degree 0 mean top of circle
-				var angleRadians = this.getIndexAngle(i) + (Math.PI / 2);
-				var angle = (angleRadians * 360 / (2 * Math.PI)) % 360;
-
-				if (angle === 0 || angle === 180) {
-					// At angle 0 and 180, we're at exactly the top/bottom
-					// of the radar chart, so text will be aligned centrally, so we'll half it and compare
-					// w/left and right text sizes
-					halfTextWidth = textWidth / 2;
-					if (pointPosition.x + halfTextWidth > furthestRight) {
-						furthestRight = pointPosition.x + halfTextWidth;
-						furthestRightIndex = i;
-					}
-					if (pointPosition.x - halfTextWidth < furthestLeft) {
-						furthestLeft = pointPosition.x - halfTextWidth;
-						furthestLeftIndex = i;
-					}
-				} else if (angle < 180) {
-					// Less than half the values means we'll left align the text
-					if (pointPosition.x + textWidth > furthestRight) {
-						furthestRight = pointPosition.x + textWidth;
-						furthestRightIndex = i;
-					}
-				// More than half the values means we'll right align the text
-				} else if (pointPosition.x - textWidth < furthestLeft) {
-					furthestLeft = pointPosition.x - textWidth;
-					furthestLeftIndex = i;
-				}
+			if (this.options.lineArc) {
+				fit(this);
+			} else {
+				fitWithPointLabels(this);
 			}
-
-			xProtrusionLeft = furthestLeft;
-			xProtrusionRight = Math.ceil(furthestRight - this.width);
-
-			furthestRightAngle = this.getIndexAngle(furthestRightIndex);
-			furthestLeftAngle = this.getIndexAngle(furthestLeftIndex);
-
-			radiusReductionRight = xProtrusionRight / Math.sin(furthestRightAngle + Math.PI / 2);
-			radiusReductionLeft = xProtrusionLeft / Math.sin(furthestLeftAngle + Math.PI / 2);
-
-			// Ensure we actually need to reduce the size of the chart
-			radiusReductionRight = (helpers.isNumber(radiusReductionRight)) ? radiusReductionRight : 0;
-			radiusReductionLeft = (helpers.isNumber(radiusReductionLeft)) ? radiusReductionLeft : 0;
-
-			this.drawingArea = Math.round(largestPossibleRadius - (radiusReductionLeft + radiusReductionRight) / 2);
-			this.setCenterPoint(radiusReductionLeft, radiusReductionRight);
 		},
 		setCenterPoint: function(leftMovement, rightMovement) {
 			var me = this;
