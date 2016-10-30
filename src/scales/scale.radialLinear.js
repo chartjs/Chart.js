@@ -51,6 +51,31 @@ module.exports = function(Chart) {
 		return !scale.options.lineArc ? scale.chart.data.labels.length : 0;
 	}
 
+	function getTextAlignForAngle(angle) {
+		var textAlign;
+		if (angle === 0 || angle === 180) {
+			textAlign = 'center';
+		} else if (angle < 180) {
+			textAlign = 'left';
+		} else {
+			textAlign = 'right';
+		}
+
+		return textAlign;
+	}
+
+	function getTextBaselineForAngle(angle) {
+		var textBaseline;
+		if (angle === 90 || angle === 270) {
+			textBaseline = 'middle';
+		} else if (angle > 270 || angle < 90) {
+			textBaseline = 'bottom';
+		} else {
+			textBaseline = 'top';
+		}
+		return textBaseline;
+	}
+
 	function drawPointLabels(scale) {
 		var ctx = scale.ctx;
 		var getValueOrDefault = helpers.getValueOrDefault;
@@ -92,24 +117,38 @@ module.exports = function(Chart) {
 			var angleRadians = scale.getIndexAngle(i) + (Math.PI / 2);
 			var angle = (angleRadians * 360 / (2 * Math.PI)) % 360;
 
-			if (angle === 0 || angle === 180) {
-				ctx.textAlign = 'center';
-			} else if (angle < 180) {
-				ctx.textAlign = 'left';
-			} else {
-				ctx.textAlign = 'right';
-			}
+			ctx.textAlign = getTextAlignForAngle(angle);
+			ctx.textBaseline = getTextBaselineForAngle(angle);
 
-			// Set the correct text baseline based on outer positioning
-			if (angle === 90 || angle === 270) {
-				ctx.textBaseline = 'middle';
-			} else if (angle > 270 || angle < 90) {
-				ctx.textBaseline = 'bottom';
-			} else {
-				ctx.textBaseline = 'top';
-			}
+			ctx.fillText(pointLabels[i] || '', pointLabelPosition.x, pointLabelPosition.y);
+		}
+	}
 
-			ctx.fillText(pointLabels[i] ? pointLabels[i] : '', pointLabelPosition.x, pointLabelPosition.y);
+	function drawRadiusLine(scale, gridLineOpts, radius, index) {
+		var ctx = scale.ctx;
+		ctx.strokeStyle = helpers.getValueAtIndexOrDefault(gridLineOpts.color, index - 1);
+		ctx.lineWidth = helpers.getValueAtIndexOrDefault(gridLineOpts.lineWidth, index - 1);
+
+		if (scale.options.lineArc) {
+			// Draw circular arcs between the points
+			ctx.beginPath();
+			ctx.arc(scale.xCenter, scale.yCenter, radius, 0, Math.PI * 2);
+			ctx.closePath();
+			ctx.stroke();
+		} else {
+			// Draw straight lines connecting each index
+			ctx.beginPath();
+			var valueCount = getValueCount(scale);
+			for (var i = 0; i < valueCount; i++) {
+				var pointPosition = scale.getPointPosition(i, radius);
+				if (i === 0) {
+					ctx.moveTo(pointPosition.x, pointPosition.y);
+				} else {
+					ctx.lineTo(pointPosition.x, pointPosition.y);
+				}
+			}
+			ctx.closePath();
+			ctx.stroke();
 		}
 	}
 
@@ -131,8 +170,8 @@ module.exports = function(Chart) {
 		determineDataLimits: function() {
 			var me = this;
 			var chart = me.chart;
-			me.min = null;
-			me.max = null;
+			var min = Number.POSITIVE_INFINITY;
+			var max = Number.NEGATIVE_INFINITY;
 
 
 			helpers.each(chart.data.datasets, function(dataset, datasetIndex) {
@@ -145,20 +184,14 @@ module.exports = function(Chart) {
 							return;
 						}
 
-						if (me.min === null) {
-							me.min = value;
-						} else if (value < me.min) {
-							me.min = value;
-						}
-
-						if (me.max === null) {
-							me.max = value;
-						} else if (value > me.max) {
-							me.max = value;
-						}
+						min = Math.min(value, min);
+						max = Math.max(value, max);
 					});
 				}
 			});
+
+			me.min = min;
+			me.max = max;
 
 			// Common base implementation to handle ticks.min, ticks.max, ticks.beginAtZero
 			me.handleTickRangeOptions();
@@ -366,29 +399,7 @@ module.exports = function(Chart) {
 
 						// Draw circular lines around the scale
 						if (gridLineOpts.display && index !== 0) {
-							ctx.strokeStyle = helpers.getValueAtIndexOrDefault(gridLineOpts.color, index - 1);
-							ctx.lineWidth = helpers.getValueAtIndexOrDefault(gridLineOpts.lineWidth, index - 1);
-
-							if (opts.lineArc) {
-								// Draw circular arcs between the points
-								ctx.beginPath();
-								ctx.arc(me.xCenter, me.yCenter, yCenterOffset, 0, Math.PI * 2);
-								ctx.closePath();
-								ctx.stroke();
-							} else {
-								// Draw straight lines connecting each index
-								ctx.beginPath();
-								for (var i = 0; i < getValueCount(me); i++) {
-									var pointPosition = me.getPointPosition(i, yCenterOffset);
-									if (i === 0) {
-										ctx.moveTo(pointPosition.x, pointPosition.y);
-									} else {
-										ctx.lineTo(pointPosition.x, pointPosition.y);
-									}
-								}
-								ctx.closePath();
-								ctx.stroke();
-							}
+							drawRadiusLine(me, gridLineOpts, yCenterOffset, index);
 						}
 
 						if (tickOpts.display) {
