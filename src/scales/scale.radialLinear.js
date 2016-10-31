@@ -44,7 +44,8 @@ module.exports = function(Chart) {
 			callback: function(label) {
 				return label;
 			}
-		}
+		},
+		backgroundColors: null
 	};
 
 	var LinearRadialScale = Chart.LinearScaleBase.extend({
@@ -372,6 +373,23 @@ module.exports = function(Chart) {
 							ctx.moveTo(me.xCenter, me.yCenter);
 							ctx.lineTo(outerPosition.x, outerPosition.y);
 							ctx.stroke();
+							ctx.closePath();
+						}
+						if (opts.backgroundColors && opts.backgroundColors.length === me.getValueCount()) {
+							var outerPosition = me.getPointPosition(i, outerDistance);
+							var previousOuterPosition = this.getPointPosition(i === 0 ? me.getValueCount() - 1 : i - 1, outerDistance);
+							var nextOuterPosition = this.getPointPosition(i === me.getValueCount() - 1 ? 0 : i + 1, outerDistance);
+
+							var previousOuterHalfway = { x: (previousOuterPosition.x + outerPosition.x) / 2, y: (previousOuterPosition.y + outerPosition.y) / 2 };
+							var nextOuterHalfway = { x: (outerPosition.x + nextOuterPosition.x) / 2, y: (outerPosition.y + nextOuterPosition.y) / 2 };
+
+							ctx.beginPath();
+							ctx.moveTo(me.xCenter, me.yCenter);
+							ctx.lineTo(previousOuterHalfway.x, previousOuterHalfway.y);
+							ctx.lineTo(outerPosition.x, outerPosition.y);
+							ctx.lineTo(nextOuterHalfway.x, nextOuterHalfway.y);
+							ctx.fillStyle = opts.backgroundColors[i];
+							ctx.fill();
 							ctx.closePath();
 						}
 						// Extra 3px out for some label spacing
