@@ -1,7 +1,16 @@
 describe('Chart.Controller', function() {
 
-	function processResizeEvent(chart, callback) {
-		setTimeout(callback, 100);
+	function waitForResize(chart, callback) {
+		var resizer = chart.chart.canvas.parentNode._chartjs.resizer;
+		var content = resizer.contentWindow || resizer;
+		var state = content.document.readyState || 'complete';
+		var handler = function() {
+			Chart.helpers.removeEvent(content, 'load', handler);
+			Chart.helpers.removeEvent(content, 'resize', handler);
+			setTimeout(callback, 50);
+		};
+
+		Chart.helpers.addEvent(content, state !== 'complete'? 'load' : 'resize', handler);
 	}
 
 	describe('context acquisition', function() {
@@ -358,14 +367,14 @@ describe('Chart.Controller', function() {
 
 			var wrapper = chart.chart.canvas.parentNode;
 			wrapper.style.width = '455px';
-			processResizeEvent(chart, function() {
+			waitForResize(chart, function() {
 				expect(chart).toBeChartOfSize({
 					dw: 455, dh: 350,
 					rw: 455, rh: 350,
 				});
 
 				wrapper.style.width = '150px';
-				processResizeEvent(chart, function() {
+				waitForResize(chart, function() {
 					expect(chart).toBeChartOfSize({
 						dw: 150, dh: 350,
 						rw: 150, rh: 350,
@@ -398,14 +407,14 @@ describe('Chart.Controller', function() {
 
 			var wrapper = chart.chart.canvas.parentNode;
 			wrapper.style.height = '455px';
-			processResizeEvent(chart, function() {
+			waitForResize(chart, function() {
 				expect(chart).toBeChartOfSize({
 					dw: 300, dh: 455,
 					rw: 300, rh: 455,
 				});
 
 				wrapper.style.height = '150px';
-				processResizeEvent(chart, function() {
+				waitForResize(chart, function() {
 					expect(chart).toBeChartOfSize({
 						dw: 300, dh: 150,
 						rw: 300, rh: 150,
@@ -440,7 +449,7 @@ describe('Chart.Controller', function() {
 			var wrapper = chart.chart.canvas.parentNode;
 			wrapper.style.height = '355px';
 			wrapper.style.width = '455px';
-			processResizeEvent(chart, function() {
+			waitForResize(chart, function() {
 				expect(chart).toBeChartOfSize({
 					dw: 455, dh: 355,
 					rw: 455, rh: 355,
@@ -467,7 +476,7 @@ describe('Chart.Controller', function() {
 
 			var canvas = chart.chart.canvas;
 			canvas.style.display = 'block';
-			processResizeEvent(chart, function() {
+			waitForResize(chart, function() {
 				expect(chart).toBeChartOfSize({
 					dw: 320, dh: 350,
 					rw: 320, rh: 350,
@@ -494,13 +503,61 @@ describe('Chart.Controller', function() {
 
 			var wrapper = chart.chart.canvas.parentNode;
 			wrapper.style.display = 'block';
-			processResizeEvent(chart, function() {
+			waitForResize(chart, function() {
 				expect(chart).toBeChartOfSize({
 					dw: 460, dh: 380,
 					rw: 460, rh: 380,
 				});
 
 				done();
+			});
+		});
+
+		// https://github.com/chartjs/Chart.js/issues/3521
+		it('should resize the canvas after the wrapper has been re-attached to the DOM', function(done) {
+			var chart = acquireChart({
+				options: {
+					responsive: true,
+					maintainAspectRatio: false
+				}
+			}, {
+				canvas: {
+					style: ''
+				},
+				wrapper: {
+					style: 'width: 320px; height: 350px'
+				}
+			});
+
+			expect(chart).toBeChartOfSize({
+				dw: 320, dh: 350,
+				rw: 320, rh: 350,
+			});
+
+			var wrapper = chart.chart.canvas.parentNode;
+			var parent = wrapper.parentNode;
+			parent.removeChild(wrapper);
+			parent.appendChild(wrapper);
+			wrapper.style.height = '355px';
+
+			waitForResize(chart, function() {
+				expect(chart).toBeChartOfSize({
+					dw: 320, dh: 355,
+					rw: 320, rh: 355,
+				});
+
+				parent.removeChild(wrapper);
+				wrapper.style.width = '455px';
+				parent.appendChild(wrapper);
+
+				waitForResize(chart, function() {
+					expect(chart).toBeChartOfSize({
+						dw: 455, dh: 355,
+						rw: 455, rh: 355,
+					});
+
+					done();
+				});
 			});
 		});
 	});
@@ -550,14 +607,14 @@ describe('Chart.Controller', function() {
 
 			var wrapper = chart.chart.canvas.parentNode;
 			wrapper.style.width = '450px';
-			processResizeEvent(chart, function() {
+			waitForResize(chart, function() {
 				expect(chart).toBeChartOfSize({
 					dw: 450, dh: 225,
 					rw: 450, rh: 225,
 				});
 
 				wrapper.style.width = '150px';
-				processResizeEvent(chart, function() {
+				waitForResize(chart, function() {
 					expect(chart).toBeChartOfSize({
 						dw: 150, dh: 75,
 						rw: 150, rh: 75,
@@ -590,14 +647,14 @@ describe('Chart.Controller', function() {
 
 			var wrapper = chart.chart.canvas.parentNode;
 			wrapper.style.height = '455px';
-			processResizeEvent(chart, function() {
+			waitForResize(chart, function() {
 				expect(chart).toBeChartOfSize({
 					dw: 320, dh: 160,
 					rw: 320, rh: 160,
 				});
 
 				wrapper.style.height = '150px';
-				processResizeEvent(chart, function() {
+				waitForResize(chart, function() {
 					expect(chart).toBeChartOfSize({
 						dw: 320, dh: 160,
 						rw: 320, rh: 160,
@@ -629,7 +686,7 @@ describe('Chart.Controller', function() {
 			var canvas = chart.chart.canvas;
 			var wrapper = canvas.parentNode;
 			wrapper.style.width = '475px';
-			processResizeEvent(chart, function() {
+			waitForResize(chart, function() {
 				expect(chart).toBeChartOfSize({
 					dw: 475, dh: 450,
 					rw: 475, rh: 450,
