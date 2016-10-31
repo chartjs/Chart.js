@@ -360,9 +360,10 @@ module.exports = function(Chart) {
 		getLabelForIndex: function(index, datasetIndex) {
 			var me = this;
 			var label = me.chart.data.labels && index < me.chart.data.labels.length ? me.chart.data.labels[index] : '';
+			var value = me.chart.data.datasets[datasetIndex].data[index];
 
-			if (typeof me.chart.data.datasets[datasetIndex].data[0] === 'object') {
-				label = me.getRightValue(me.chart.data.datasets[datasetIndex].data[index]);
+			if (value !== null && typeof value === 'object') {
+				label = me.getRightValue(value);
 			}
 
 			// Format nicely
