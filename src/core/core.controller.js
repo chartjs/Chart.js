@@ -719,6 +719,8 @@ module.exports = function(Chart) {
 
 		eventHandler: function(e) {
 			var me = this;
+			var legend = me.legend;
+			var tooltip = me.tooltip;
 			var hoverOptions = me.options.hover;
 
 			// Buffer any update calls so that renders do not occur
@@ -726,8 +728,8 @@ module.exports = function(Chart) {
 			me._bufferedRequest = null;
 
 			var changed = me.handleEvent(e);
-			changed |= me.legend.handleEvent(e);
-			changed |= me.tooltip.handleEvent(e);
+			changed |= legend && legend.handleEvent(e);
+			changed |= tooltip && tooltip.handleEvent(e);
 
 			var bufferedRequest = me._bufferedRequest;
 			if (bufferedRequest) {
