@@ -237,14 +237,26 @@ module.exports = function(Chart) {
 			 * @param options {IInteractionOptions} options to use
 			 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
 			 */
-			x: function(chart, e) {
+			x: function(chart, e, options) {
 				var position = helpers.getRelativePosition(e, chart.chart);
 				var items = [];
+				var intersectsItem = false;
+
 				parseVisibleItems(chart, function(element) {
 					if (element.inXRange(position.x)) {
 						items.push(element);
 					}
+
+					if (element.inRange(position.x, position.y)) {
+						intersectsItem = true;
+					}
 				});
+
+				// If we want to trigger on an intersect and we don't have any items
+				// that intersect the position, return nothing
+				if (options.intersect && !intersectsItem) {
+					items = [];
+				}
 				return items;
 			},
 
@@ -256,14 +268,26 @@ module.exports = function(Chart) {
 			 * @param options {IInteractionOptions} options to use
 			 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
 			 */
-			y: function(chart, e) {
+			y: function(chart, e, options) {
 				var position = helpers.getRelativePosition(e, chart.chart);
 				var items = [];
+				var intersectsItem = false;
+
 				parseVisibleItems(chart, function(element) {
 					if (element.inYRange(position.y)) {
 						items.push(element);
 					}
+
+					if (element.inRange(position.x, position.y)) {
+						intersectsItem = true;
+					}
 				});
+
+				// If we want to trigger on an intersect and we don't have any items
+				// that intersect the position, return nothing
+				if (options.intersect && !intersectsItem) {
+					items = [];
+				}
 				return items;
 			}
 		}
