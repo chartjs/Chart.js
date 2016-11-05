@@ -353,7 +353,6 @@ module.exports = function(Chart) {
 					me.paddingRight = me.labelRotation !== 0 ? (sinRotation * (tickFontSize / 2)) + 3 : lastLabelWidth / 2 + 3; // when rotated
 				} else {
 					// A vertical axis is more constrained by the width. Labels are the dominant factor here, so get that length first
-					var maxLabelWidth = me.maxWidth - minSize.width;
 
 					// Account for padding
 					var mirror = tickOpts.mirror;
@@ -364,14 +363,7 @@ module.exports = function(Chart) {
 						largestTextWidth = 0;
 					}
 
-					if (largestTextWidth < maxLabelWidth) {
-						// We don't need all the room
-						minSize.width += largestTextWidth;
-					} else {
-						// Expand to max size
-						minSize.width = me.maxWidth;
-					}
-
+					minSize.width += largestTextWidth;
 					me.paddingTop = tickFontSize / 2;
 					me.paddingBottom = tickFontSize / 2;
 				}
