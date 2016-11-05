@@ -39,7 +39,7 @@ module.exports = function(Chart) {
 			minRotation: 0,
 			maxRotation: 50,
 			mirror: false,
-			padding: 10,
+			padding: 0,
 			reverse: false,
 			display: true,
 			autoSkip: true,
@@ -609,22 +609,19 @@ module.exports = function(Chart) {
 					y1 = chartArea.top;
 					y2 = chartArea.bottom;
 				} else {
-					if (options.position === 'left') {
-						if (optionTicks.mirror) {
-							labelX = me.right + optionTicks.padding;
-							textAlign = 'left';
-						} else {
-							labelX = me.right - optionTicks.padding;
-							textAlign = 'right';
-						}
-					// right side
-					} else if (optionTicks.mirror) {
-						labelX = me.left - optionTicks.padding;
-						textAlign = 'right';
+					var isLeft = options.position === 'left';
+					var tickPadding = optionTicks.padding;
+					var labelXOffset;
+
+					if (optionTicks.mirror) {
+						textAlign = isLeft ? 'left' : 'right';
+						labelXOffset = tickPadding;
 					} else {
-						labelX = me.left + optionTicks.padding;
-						textAlign = 'left';
+						textAlign = isLeft ? 'right' : 'left';
+						labelXOffset = tl + tickPadding;
 					}
+
+					labelX = isLeft ? me.right - labelXOffset : me.left + labelXOffset;
 
 					var yLineValue = me.getPixelForTick(index); // xvalues for grid lines
 					yLineValue += helpers.aliasPixel(lineWidth);

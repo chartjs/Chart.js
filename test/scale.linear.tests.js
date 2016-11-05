@@ -34,7 +34,7 @@ describe('Linear Scale', function() {
 				minRotation: 0,
 				maxRotation: 50,
 				mirror: false,
-				padding: 10,
+				padding: 0,
 				reverse: false,
 				display: true,
 				callback: defaultConfig.ticks.callback, // make this work nicer, then check below
@@ -660,12 +660,12 @@ describe('Linear Scale', function() {
 
 		var xScale = chart.scales.xScale0;
 		expect(xScale.getPixelForValue(1, 0, 0)).toBeCloseToPixel(501); // right - paddingRight
-		expect(xScale.getPixelForValue(-1, 0, 0)).toBeCloseToPixel(41); // left + paddingLeft
-		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(271); // halfway*/
+		expect(xScale.getPixelForValue(-1, 0, 0)).toBeCloseToPixel(31); // left + paddingLeft
+		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(266); // halfway*/
 
 		expect(xScale.getValueForPixel(501)).toBeCloseTo(1, 1e-2);
-		expect(xScale.getValueForPixel(41)).toBeCloseTo(-1, 1e-2);
-		expect(xScale.getValueForPixel(271)).toBeCloseTo(0, 1e-2);
+		expect(xScale.getValueForPixel(31)).toBeCloseTo(-1, 1e-2);
+		expect(xScale.getValueForPixel(266)).toBeCloseTo(0, 1e-2);
 
 		var yScale = chart.scales.yScale0;
 		expect(yScale.getPixelForValue(1, 0, 0)).toBeCloseToPixel(32); // right - paddingRight
@@ -719,7 +719,7 @@ describe('Linear Scale', function() {
 		expect(xScale.paddingBottom).toBeCloseToPixel(0);
 		expect(xScale.paddingLeft).toBeCloseToPixel(0);
 		expect(xScale.paddingRight).toBeCloseToPixel(0);
-		expect(xScale.width).toBeCloseToPixel(457.5);
+		expect(xScale.width).toBeCloseToPixel(468);
 		expect(xScale.height).toBeCloseToPixel(28);
 
 		var yScale = chart.scales.yScale0;
@@ -727,7 +727,7 @@ describe('Linear Scale', function() {
 		expect(yScale.paddingBottom).toBeCloseToPixel(0);
 		expect(yScale.paddingLeft).toBeCloseToPixel(0);
 		expect(yScale.paddingRight).toBeCloseToPixel(0);
-		expect(yScale.width).toBeCloseToPixel(41);
+		expect(yScale.width).toBeCloseToPixel(30);
 		expect(yScale.height).toBeCloseToPixel(452);
 
 		// Extra size when scale label showing
@@ -739,14 +739,14 @@ describe('Linear Scale', function() {
 		expect(xScale.paddingBottom).toBeCloseToPixel(0);
 		expect(xScale.paddingLeft).toBeCloseToPixel(0);
 		expect(xScale.paddingRight).toBeCloseToPixel(0);
-		expect(xScale.width).toBeCloseToPixel(439.5);
+		expect(xScale.width).toBeCloseToPixel(450);
 		expect(xScale.height).toBeCloseToPixel(46);
 
 		expect(yScale.paddingTop).toBeCloseToPixel(0);
 		expect(yScale.paddingBottom).toBeCloseToPixel(0);
 		expect(yScale.paddingLeft).toBeCloseToPixel(0);
 		expect(yScale.paddingRight).toBeCloseToPixel(0);
-		expect(yScale.width).toBeCloseToPixel(59);
+		expect(yScale.width).toBeCloseToPixel(48);
 		expect(yScale.height).toBeCloseToPixel(434);
 	});
 

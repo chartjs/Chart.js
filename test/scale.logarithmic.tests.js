@@ -33,7 +33,7 @@ describe('Logarithmic Scale tests', function() {
 				minRotation: 0,
 				maxRotation: 50,
 				mirror: false,
-				padding: 10,
+				padding: 0,
 				reverse: false,
 				display: true,
 				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
@@ -717,14 +717,14 @@ describe('Logarithmic Scale tests', function() {
 		});
 
 		var xScale = chart.scales.xScale;
-		expect(xScale.getPixelForValue(80, 0, 0)).toBeCloseToPixel(481.5);  // right - paddingRight
-		expect(xScale.getPixelForValue(1, 0, 0)).toBeCloseToPixel(48);   // left + paddingLeft
-		expect(xScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(276);  // halfway
-		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(48);   // 0 is invalid, put it on the left.
+		expect(xScale.getPixelForValue(80, 0, 0)).toBeCloseToPixel(482);  // right - paddingRight
+		expect(xScale.getPixelForValue(1, 0, 0)).toBeCloseToPixel(37);   // left + paddingLeft
+		expect(xScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(270);  // halfway
+		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(37);   // 0 is invalid, put it on the left.
 
 		expect(xScale.getValueForPixel(481.5)).toBeCloseToPixel(80);
 		expect(xScale.getValueForPixel(48)).toBeCloseTo(1, 1e-4);
-		expect(xScale.getValueForPixel(276)).toBeCloseTo(10, 1e-4);
+		expect(xScale.getValueForPixel(270)).toBeCloseTo(10, 1e-4);
 
 		var yScale = chart.scales.yScale;
 		expect(yScale.getPixelForValue(80, 0, 0)).toBeCloseToPixel(32);   // top + paddingTop

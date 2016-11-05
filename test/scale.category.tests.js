@@ -36,7 +36,7 @@ describe('Category scale tests', function() {
 				minRotation: 0,
 				maxRotation: 50,
 				mirror: false,
-				padding: 10,
+				padding: 0,
 				reverse: false,
 				display: true,
 				callback: defaultConfig.ticks.callback,  // make this nicer, then check explicitly below
@@ -187,8 +187,8 @@ describe('Category scale tests', function() {
 		});
 
 		var xScale = chart.scales.xScale0;
-		expect(xScale.getPixelForValue(0, 0, 0, false)).toBeCloseToPixel(33);
-		expect(xScale.getPixelForValue(0, 0, 0, true)).toBeCloseToPixel(33);
+		expect(xScale.getPixelForValue(0, 0, 0, false)).toBeCloseToPixel(23);
+		expect(xScale.getPixelForValue(0, 0, 0, true)).toBeCloseToPixel(23);
 		expect(xScale.getValueForPixel(33)).toBe(0);
 
 		expect(xScale.getPixelForValue(0, 4, 0, false)).toBeCloseToPixel(487);
@@ -197,12 +197,12 @@ describe('Category scale tests', function() {
 
 		xScale.options.gridLines.offsetGridLines = true;
 
-		expect(xScale.getPixelForValue(0, 0, 0, false)).toBeCloseToPixel(33);
-		expect(xScale.getPixelForValue(0, 0, 0, true)).toBeCloseToPixel(78);
+		expect(xScale.getPixelForValue(0, 0, 0, false)).toBeCloseToPixel(23);
+		expect(xScale.getPixelForValue(0, 0, 0, true)).toBeCloseToPixel(69);
 		expect(xScale.getValueForPixel(33)).toBe(0);
 		expect(xScale.getValueForPixel(78)).toBe(0);
 
-		expect(xScale.getPixelForValue(0, 4, 0, false)).toBeCloseToPixel(396);
+		expect(xScale.getPixelForValue(0, 4, 0, false)).toBeCloseToPixel(395);
 		expect(xScale.getPixelForValue(0, 4, 0, true)).toBeCloseToPixel(441);
 		expect(xScale.getValueForPixel(397)).toBe(4);
 		expect(xScale.getValueForPixel(441)).toBe(4);
@@ -235,8 +235,8 @@ describe('Category scale tests', function() {
 		});
 
 		var xScale = chart.scales.xScale0;
-		expect(xScale.getPixelForValue('tick_1', 0, 0, false)).toBeCloseToPixel(33);
-		expect(xScale.getPixelForValue('tick_1', 1, 0, false)).toBeCloseToPixel(146);
+		expect(xScale.getPixelForValue('tick_1', 0, 0, false)).toBeCloseToPixel(23);
+		expect(xScale.getPixelForValue('tick_1', 1, 0, false)).toBeCloseToPixel(139);
 	});
 
 	it ('Should get the correct pixel for a value when horizontal and zoomed', function() {
@@ -270,18 +270,18 @@ describe('Category scale tests', function() {
 		});
 
 		var xScale = chart.scales.xScale0;
-		expect(xScale.getPixelForValue(0, 1, 0, false)).toBeCloseToPixel(33);
-		expect(xScale.getPixelForValue(0, 1, 0, true)).toBeCloseToPixel(33);
+		expect(xScale.getPixelForValue(0, 1, 0, false)).toBeCloseToPixel(23);
+		expect(xScale.getPixelForValue(0, 1, 0, true)).toBeCloseToPixel(23);
 
 		expect(xScale.getPixelForValue(0, 3, 0, false)).toBeCloseToPixel(496);
 		expect(xScale.getPixelForValue(0, 3, 0, true)).toBeCloseToPixel(496);
 
 		xScale.options.gridLines.offsetGridLines = true;
 
-		expect(xScale.getPixelForValue(0, 1, 0, false)).toBeCloseToPixel(33);
-		expect(xScale.getPixelForValue(0, 1, 0, true)).toBeCloseToPixel(110);
+		expect(xScale.getPixelForValue(0, 1, 0, false)).toBeCloseToPixel(23);
+		expect(xScale.getPixelForValue(0, 1, 0, true)).toBeCloseToPixel(102);
 
-		expect(xScale.getPixelForValue(0, 3, 0, false)).toBeCloseToPixel(342);
+		expect(xScale.getPixelForValue(0, 3, 0, false)).toBeCloseToPixel(338);
 		expect(xScale.getPixelForValue(0, 3, 0, true)).toBeCloseToPixel(419);
 	});
 
