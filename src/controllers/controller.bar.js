@@ -35,21 +35,27 @@ module.exports = function(Chart) {
 		initialize: function(chart, datasetIndex) {
 			Chart.DatasetController.prototype.initialize.call(this, chart, datasetIndex);
 
+			var me = this;
+			var meta = me.getMeta();
+			var dataset = me.getDataset();
+
+			meta.stack = dataset.stack;
 			// Use this to indicate that this is a bar dataset.
-			this.getMeta().bar = true;
+			meta.bar = true;
 		},
 
-		// Get the number of datasets that display bars. We use this to correctly calculate the bar width
+		// Correctly calculate the bar width accounting for stacks and the fact that not all bars are visible
 		getBarCount: function() {
 			var me = this;
-			var barCount = 0;
+			var stacks = [];
 			helpers.each(me.chart.data.datasets, function(dataset, datasetIndex) {
 				var meta = me.chart.getDatasetMeta(datasetIndex);
-				if (meta.bar && me.chart.isDatasetVisible(datasetIndex)) {
-					++barCount;
+				if (meta.bar && me.chart.isDatasetVisible(datasetIndex) &&
+					(meta.stack === undefined || stacks.indexOf(meta.stack) === -1)) {
+					stacks.push(meta.stack);
 				}
 			}, me);
-			return barCount;
+			return stacks.length;
 		},
 
 		update: function(reset) {
@@ -109,7 +115,8 @@ module.exports = function(Chart) {
 				for (var i = 0; i < datasetIndex; i++) {
 					var currentDs = datasets[i];
 					var currentDsMeta = chart.getDatasetMeta(i);
-					if (currentDsMeta.bar && currentDsMeta.yAxisID === yScale.id && chart.isDatasetVisible(i)) {
+					if (currentDsMeta.bar && currentDsMeta.yAxisID === yScale.id && chart.isDatasetVisible(i) &&
+						meta.stack === currentDsMeta.stack) {
 						var currentVal = Number(currentDs.data[index]);
 						base += value < 0 ? Math.min(currentVal, 0) : Math.max(currentVal, 0);
 					}
@@ -159,21 +166,27 @@ module.exports = function(Chart) {
 		},
 
 		calculateBarWidth: function(ruler) {
-			var xScale = this.getScaleForId(this.getMeta().xAxisID);
+			var me = this;
+			var meta = me.getMeta();
+			var xScale = me.getScaleForId(meta.xAxisID);
 			if (xScale.options.barThickness) {
 				return xScale.options.barThickness;
 			}
-			return xScale.options.stacked ? ruler.categoryWidth : ruler.barWidth;
+			return (xScale.options.stacked && meta.stack === undefined) ? ruler.categoryWidth : ruler.barWidth;
 		},
 
-		// Get bar index from the given dataset index accounting for the fact that not all bars are visible
+		// Get bar index from the given dataset index accounting for stacks and the fact that not all bars are visible
 		getBarIndex: function(datasetIndex) {
+			var meta = this.getMeta();
 			var barIndex = 0;
-			var meta, j;
+			var dsMeta, j;
+			var stacks = [meta.stack];
 
 			for (j = 0; j < datasetIndex; ++j) {
-				meta = this.chart.getDatasetMeta(j);
-				if (meta.bar && this.chart.isDatasetVisible(j)) {
+				dsMeta = this.chart.getDatasetMeta(j);
+				if (dsMeta.bar && this.chart.isDatasetVisible(j) &&
+					(meta.stack === undefined || stacks.indexOf(dsMeta.stack) === -1)) {
+					stacks.push(dsMeta.stack);
 					++barIndex;
 				}
 			}
@@ -189,7 +202,7 @@ module.exports = function(Chart) {
 			var leftTick = xScale.getPixelForValue(null, index, datasetIndex, me.chart.isCombo);
 			leftTick -= me.chart.isCombo ? (ruler.tickWidth / 2) : 0;
 
-			if (xScale.options.stacked) {
+			if (xScale.options.stacked && meta.stack === undefined) {
 				return leftTick + (ruler.categoryWidth / 2) + ruler.categorySpacing;
 			}
 
@@ -215,7 +228,8 @@ module.exports = function(Chart) {
 				for (var i = 0; i < datasetIndex; i++) {
 					var ds = me.chart.data.datasets[i];
 					var dsMeta = me.chart.getDatasetMeta(i);
-					if (dsMeta.bar && dsMeta.yAxisID === yScale.id && me.chart.isDatasetVisible(i)) {
+					if (dsMeta.bar && dsMeta.yAxisID === yScale.id && me.chart.isDatasetVisible(i) &&
+						meta.stack === dsMeta.stack) {
 						var stackedVal = Number(ds.data[index]);
 						if (stackedVal < 0) {
 							sumNeg += stackedVal || 0;
@@ -437,7 +451,8 @@ module.exports = function(Chart) {
 				for (var i = 0; i < datasetIndex; i++) {
 					var currentDs = datasets[i];
 					var currentDsMeta = chart.getDatasetMeta(i);
-					if (currentDsMeta.bar && currentDsMeta.xAxisID === xScale.id && chart.isDatasetVisible(i)) {
+					if (currentDsMeta.bar && currentDsMeta.xAxisID === xScale.id && chart.isDatasetVisible(i) &&
+						meta.stack === currentDsMeta.stack) {
 						var currentVal = Number(currentDs.data[index]);
 						base += value < 0 ? Math.min(currentVal, 0) : Math.max(currentVal, 0);
 					}
@@ -487,11 +502,12 @@ module.exports = function(Chart) {
 
 		calculateBarHeight: function(ruler) {
 			var me = this;
-			var yScale = me.getScaleForId(me.getMeta().yAxisID);
+			var meta = me.getMeta();
+			var yScale = me.getScaleForId(meta.yAxisID);
 			if (yScale.options.barThickness) {
 				return yScale.options.barThickness;
 			}
-			return yScale.options.stacked ? ruler.categoryHeight : ruler.barHeight;
+			return (yScale.options.stacked && meta.stack === undefined) ? ruler.categoryHeight : ruler.barHeight;
 		},
 
 		calculateBarX: function(index, datasetIndex) {
@@ -508,7 +524,8 @@ module.exports = function(Chart) {
 				for (var i = 0; i < datasetIndex; i++) {
 					var ds = me.chart.data.datasets[i];
 					var dsMeta = me.chart.getDatasetMeta(i);
-					if (dsMeta.bar && dsMeta.xAxisID === xScale.id && me.chart.isDatasetVisible(i)) {
+					if (dsMeta.bar && dsMeta.xAxisID === xScale.id && me.chart.isDatasetVisible(i) &&
+						meta.stack === dsMeta.stack) {
 						var stackedVal = Number(ds.data[index]);
 						if (stackedVal < 0) {
 							sumNeg += stackedVal || 0;
@@ -535,7 +552,7 @@ module.exports = function(Chart) {
 			var topTick = yScale.getPixelForValue(null, index, datasetIndex, me.chart.isCombo);
 			topTick -= me.chart.isCombo ? (ruler.tickHeight / 2) : 0;
 
-			if (yScale.options.stacked) {
+			if (yScale.options.stacked && meta.stack === undefined) {
 				return topTick + (ruler.categoryHeight / 2) + ruler.categorySpacing;
 			}
 

@@ -49,6 +49,7 @@ borderSkipped | `String or Array<String>` | Which edge to skip drawing the borde
 hoverBackgroundColor | `Color or Array<Color>` | Bar background color when hovered
 hoverBorderColor | `Color or Array<Color>` | Bar border color when hovered
 hoverBorderWidth | `Number or Array<Number>` | Border width of bar when hovered
+stack | `String` | For grouping stacked bars
 
 An example data object using these attributes is shown below.
 

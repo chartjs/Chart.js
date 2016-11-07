@@ -33,16 +33,16 @@ module.exports = function(Chart) {
 
 				helpers.each(datasets, function(dataset, datasetIndex) {
 					var meta = chart.getDatasetMeta(datasetIndex);
-					if (valuesPerType[meta.type] === undefined) {
-						valuesPerType[meta.type] = {
+					if (valuesPerType[meta.type + meta.stack] === undefined) {
+						valuesPerType[meta.type + meta.stack] = {
 							positiveValues: [],
 							negativeValues: []
 						};
 					}
 
 					// Store these per type
-					var positiveValues = valuesPerType[meta.type].positiveValues;
-					var negativeValues = valuesPerType[meta.type].negativeValues;
+					var positiveValues = valuesPerType[meta.type + meta.stack].positiveValues;
+					var negativeValues = valuesPerType[meta.type + meta.stack].negativeValues;
 
 					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 						helpers.each(dataset.data, function(rawValue, index) {

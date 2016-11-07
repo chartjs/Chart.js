@@ -38,12 +38,12 @@ module.exports = function(Chart) {
 				helpers.each(datasets, function(dataset, datasetIndex) {
 					var meta = chart.getDatasetMeta(datasetIndex);
 					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
-						if (valuesPerType[meta.type] === undefined) {
-							valuesPerType[meta.type] = [];
+						if (valuesPerType[meta.type + meta.stack] === undefined) {
+							valuesPerType[meta.type + meta.stack] = [];
 						}
 
 						helpers.each(dataset.data, function(rawValue, index) {
-							var values = valuesPerType[meta.type];
+							var values = valuesPerType[meta.type + meta.stack];
 							var value = +me.getRightValue(rawValue);
 							if (isNaN(value) || meta.data[index].hidden) {
 								return;
