@@ -667,7 +667,33 @@ describe('Chart.Controller', function() {
 	});
 
 	describe('controller.destroy', function() {
-		it('should restore canvas (and context) initial values', function(done) {
+		it('should reset context to default values', function() {
+			var chart = acquireChart({});
+			var context = chart.chart.ctx;
+
+			chart.destroy();
+
+			// https://www.w3.org/TR/2dcontext/#conformance-requirements
+			Chart.helpers.each({
+				fillStyle: '#000000',
+				font: '10px sans-serif',
+				lineJoin: 'miter',
+				lineCap: 'butt',
+				lineWidth: 1,
+				miterLimit: 10,
+				shadowBlur: 0,
+				shadowColor: 'rgba(0, 0, 0, 0)',
+				shadowOffsetX: 0,
+				shadowOffsetY: 0,
+				strokeStyle: '#000000',
+				textAlign: 'start',
+				textBaseline: 'alphabetic'
+			}, function(value, key) {
+				expect(context[key]).toBe(value);
+			});
+		});
+
+		it('should restore canvas initial values', function(done) {
 			var chart = acquireChart({
 				options: {
 					responsive: true,

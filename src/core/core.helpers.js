@@ -842,11 +842,6 @@ module.exports = function(Chart) {
 			canvas.height = height * pixelRatio;
 			canvas.width = width * pixelRatio;
 			ctx.scale(pixelRatio, pixelRatio);
-
-			// Store the device pixel ratio so that we can go backwards in `destroy`.
-			// The devicePixelRatio changes with zoom, so there are no guarantees that it is the same
-			// when destroy is called
-			chart.originalDevicePixelRatio = chart.originalDevicePixelRatio || pixelRatio;
 		}
 	};
 	// -- Canvas methods
