@@ -109,6 +109,12 @@ module.exports = function(Chart) {
 			canvas.style[key] = value;
 		});
 
+		// The canvas render size might have been changed (and thus the state stack discarded),
+		// we can't use save() and restore() to restore the initial state. So make sure that at
+		// least the canvas context is reset to the default state by setting the canvas width.
+		// https://www.w3.org/TR/2011/WD-html5-20110525/the-canvas-element.html
+		canvas.width = canvas.width;
+
 		delete canvas._chartjs;
 	}
 
@@ -671,11 +677,6 @@ module.exports = function(Chart) {
 				releaseCanvas(canvas);
 				me.chart.canvas = null;
 				me.chart.ctx = null;
-			}
-
-			// if we scaled the canvas in response to a devicePixelRatio !== 1, we need to undo that transform here
-			if (me.chart.originalDevicePixelRatio !== undefined) {
-				me.chart.ctx.scale(1 / me.chart.originalDevicePixelRatio, 1 / me.chart.originalDevicePixelRatio);
 			}
 
 			Chart.plugins.notify('destroy', [me]);
