@@ -162,10 +162,20 @@ module.exports = function(Chart) {
 		beforeBuildLabels: noop,
 		buildLabels: function() {
 			var me = this;
-			me.legendItems = me.options.labels.generateLabels.call(me, me.chart);
-			if (me.options.reverse) {
-				me.legendItems.reverse();
+			var labelOpts = me.options.labels;
+			var legendItems = labelOpts.generateLabels.call(me, me.chart);
+
+			if (labelOpts.filter) {
+				legendItems = legendItems.filter(function(item) {
+					return labelOpts.filter(item, me.chart.data);
+				});
 			}
+
+			if (me.options.reverse) {
+				legendItems.reverse();
+			}
+
+			me.legendItems = legendItems;
 		},
 		afterBuildLabels: noop,
 
