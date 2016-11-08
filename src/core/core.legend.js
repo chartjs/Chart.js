@@ -414,7 +414,7 @@ module.exports = function(Chart) {
 						}
 					} else if (y + itemHeight > me.bottom) {
 						x = cursor.x = x + me.columnWidths[cursor.line] + labelOpts.padding;
-						y = cursor.y = me.top;
+						y = cursor.y = me.top + labelOpts.padding;
 						cursor.line++;
 					}
 
