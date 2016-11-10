@@ -671,16 +671,6 @@ module.exports = function(Chart) {
 				return window.setTimeout(callback, 1000 / 60);
 			};
 	}());
-	helpers.cancelAnimFrame = (function() {
-		return window.cancelAnimationFrame ||
-			window.webkitCancelAnimationFrame ||
-			window.mozCancelAnimationFrame ||
-			window.oCancelAnimationFrame ||
-			window.msCancelAnimationFrame ||
-			function(callback) {
-				return window.clearTimeout(callback, 1000 / 60);
-			};
-	}());
 	// -- DOM methods
 	helpers.getRelativePosition = function(evt, chart) {
 		var mouseX, mouseY;
