@@ -287,11 +287,10 @@ module.exports = function(Chart) {
 
 			canvas.width = chart.width = newWidth;
 			canvas.height = chart.height = newHeight;
-
-			helpers.retinaScale(chart);
-
 			canvas.style.width = newWidth + 'px';
 			canvas.style.height = newHeight + 'px';
+
+			helpers.retinaScale(chart);
 
 			// Notify any plugins about the resize
 			var newSize = {width: newWidth, height: newHeight};

@@ -214,16 +214,19 @@
 				var chart = actual.chart;
 				var canvas = chart.ctx.canvas;
 				var style = getComputedStyle(canvas);
+				var pixelRatio = window.devicePixelRatio;
 				var dh = parseInt(style.height, 10);
 				var dw = parseInt(style.width, 10);
 				var rh = canvas.height;
 				var rw = canvas.width;
+				var orh = rh / pixelRatio;
+				var orw = rw / pixelRatio;
 
 				// sanity checks
-				if (chart.height !== rh) {
-					message = 'Expected chart height ' + chart.height + ' to be equal to render height ' + rh;
-				} else if (chart.width !== rw) {
-					message = 'Expected chart width ' + chart.width + ' to be equal to render width ' + rw;
+				if (chart.height !== orh) {
+					message = 'Expected chart height ' + chart.height + ' to be equal to original render height ' + orh;
+				} else if (chart.width !== orw) {
+					message = 'Expected chart width ' + chart.width + ' to be equal to original render width ' + orw;
 				}
 
 				// validity checks
