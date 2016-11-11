@@ -93,7 +93,7 @@ describe('Chart.Controller', function() {
 			expect(data.datasets.length).toBe(0);
 		});
 
-		it('should NOT alter config.data references', function() {
+		it('should not alter config.data references', function() {
 			var ds0 = {data: [10, 11, 12, 13]};
 			var ds1 = {data: [20, 21, 22, 23]};
 			var datasets = [ds0, ds1];
@@ -218,7 +218,7 @@ describe('Chart.Controller', function() {
 			});
 		});
 
-		it('should NOT apply aspect ratio when height specified', function() {
+		it('should not apply aspect ratio when height specified', function() {
 			var chart = acquireChart({
 				options: {
 					responsive: false,
@@ -310,7 +310,7 @@ describe('Chart.Controller', function() {
 			});
 		});
 
-		it('should NOT inject the resizer element', function() {
+		it('should not inject the resizer element', function() {
 			var chart = acquireChart({
 				options: {
 					responsive: false
@@ -425,7 +425,7 @@ describe('Chart.Controller', function() {
 			});
 		});
 
-		it('should NOT include parent padding when resizing the canvas', function(done) {
+		it('should not include parent padding when resizing the canvas', function(done) {
 			var chart = acquireChart({
 				type: 'line',
 				options: {
@@ -625,7 +625,7 @@ describe('Chart.Controller', function() {
 			});
 		});
 
-		it('should NOT resize the canvas when parent height changes', function(done) {
+		it('should not resize the canvas when parent height changes', function(done) {
 			var chart = acquireChart({
 				options: {
 					responsive: true,
@@ -662,6 +662,53 @@ describe('Chart.Controller', function() {
 
 					done();
 				});
+			});
+		});
+	});
+
+	describe('Retina scale (a.k.a. device pixel ratio)', function() {
+		beforeEach(function() {
+			this.devicePixelRatio = window.devicePixelRatio;
+			window.devicePixelRatio = 3;
+		});
+
+		afterEach(function() {
+			window.devicePixelRatio = this.devicePixelRatio;
+		});
+
+		// see https://github.com/chartjs/Chart.js/issues/3575
+		it ('should scale the render size but not the "implicit" display size', function() {
+			var chart = acquireChart({
+				options: {
+					responsive: false
+				}
+			}, {
+				canvas: {
+					width: 320,
+					height: 240,
+				}
+			});
+
+			expect(chart).toBeChartOfSize({
+				dw: 320, dh: 240,
+				rw: 960, rh: 720,
+			});
+		});
+
+		it ('should scale the render size but not the "explicit" display size', function() {
+			var chart = acquireChart({
+				options: {
+					responsive: false
+				}
+			}, {
+				canvas: {
+					style: 'width: 320px; height: 240px'
+				}
+			});
+
+			expect(chart).toBeChartOfSize({
+				dw: 320, dh: 240,
+				rw: 960, rh: 720,
 			});
 		});
 	});
