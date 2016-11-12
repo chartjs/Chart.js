@@ -1,0 +1,8 @@
+{
+  "name": "chart.js",
+  "description": "Simple HTML5 charts using the canvas element.",
+  "homepage": "http://www.chartjs.org",
+  "license": "MIT",
+  "version": "2.4.0",
+  "main": "./dist/Chart.js"
+}
