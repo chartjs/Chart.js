@@ -36,13 +36,13 @@ This concept was introduced in Chart.js 1.0 to keep configuration [DRY](https://
 
 Chart.js merges the options object passed to the chart with the global configuration using chart type defaults and scales defaults appropriately. This way you can be as specific as you would like in your individual chart configuration, while still changing the defaults for all chart types where applicable. The global general options are defined in `Chart.defaults.global`. The defaults for each chart type are discussed in the documentation for that chart type.
 
-The following example would set the hover mode to 'single' for all charts where this was not overridden by the chart type defaults or the options passed to the constructor on creation.
+The following example would set the hover mode to 'nearest' for all charts where this was not overridden by the chart type defaults or the options passed to the constructor on creation.
 
 ```javascript
-Chart.defaults.global.hover.mode = 'single';
+Chart.defaults.global.hover.mode = 'nearest';
 
-// Hover mode is set to single because it was not overridden here
-var chartInstanceHoverModeSingle = new Chart(ctx, {
+// Hover mode is set to nearest because it was not overridden here
+var chartInstanceHoverModeNearest = new Chart(ctx, {
     type: 'line',
     data: data,
 });
@@ -54,7 +54,7 @@ var chartInstanceDifferentHoverMode = new Chart(ctx, {
     options: {
         hover: {
             // Overrides the global setting
-            mode: 'label'
+            mode: 'index'
         }
     }
 })
@@ -83,7 +83,16 @@ maintainAspectRatio | Boolean | true | Maintain the original canvas aspect ratio
 events | Array[String] | `["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"]` | Events that the chart should listen to for tooltips and hovering
 onClick | Function | null | Called if the event is of type 'mouseup' or 'click'. Called in the context of the chart and passed an array of active elements
 legendCallback | Function | ` function (chart) { }` | Function to generate a legend. Receives the chart object to generate a legend from. Default implementation returns an HTML string.
-onResize | Function | null | Called when a resize occurs. Gets passed two arguemnts: the chart instance and the new size.
+onResize | Function | null | Called when a resize occurs. Gets passed two arguments: the chart instance and the new size.
+
+### Layout Configuration
+
+The layout configuration is passed into the `options.layout` namespace. The global options for the chart layout is defined in `Chart.defaults.global.layout`.
+
+Name | Type | Default | Description
+--- | --- | --- | ---
+padding | Number or Object | 0 | The padding to add inside the chart. If this value is a number, it is applied to all sides of the chart (left, top, right, bottom). If this value is an object, the `left` property defines the left padding. Similarly the `right`, `top`, and `bottom` properties can also be specified.
+
 
 ### Title Configuration
 
@@ -130,6 +139,7 @@ fullWidth | Boolean | true | Marks that this box should take the full width of t
 onClick | Function | `function(event, legendItem) {}` | A callback that is called when a 'click' event is registered on top of a label item
 onHover | Function | `function(event, legendItem) {}` | A callback that is called when a 'mousemove' event is registered on top of a label item
 labels |Object|-| See the [Legend Label Configuration](#chart-configuration-legend-label-configuration) section below.
+reverse | Boolean | false | Legend will show datasets in reverse order
 
 #### Legend Label Configuration
 
@@ -145,7 +155,6 @@ fontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Fon
 padding | Number | 10 | Padding between rows of colored boxes
 generateLabels: | Function | `function(chart) {  }` | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See [Legend Item](#chart-configuration-legend-item-interface) for details.
 usePointStyle | Boolean | false | Label style will match corresponding point style (size is based on fontSize, boxWidth is not used in this case).
-reverse | Boolean | false | Legend will show datasets in reverse order
 
 #### Legend Item Interface
 
@@ -200,7 +209,7 @@ var chartInstance = new Chart(ctx, {
                 fontColor: 'rgb(255, 99, 132)'
             }
         }
-    }
+}
 });
 ```
 
@@ -212,8 +221,11 @@ Name | Type | Default | Description
 --- | --- | --- | ---
 enabled | Boolean | true | Are tooltips enabled
 custom | Function | null | See [section](#advanced-usage-external-tooltips) below
-mode | String | 'single' | Sets which elements appear in the tooltip. Acceptable options are `'single'`, `'label'` or `'x-axis'`. <br>&nbsp;<br>`single` highlights the closest element. <br>&nbsp;<br>`label` highlights elements in all datasets at the same `X` value. <br>&nbsp;<br>`'x-axis'` also highlights elements in all datasets at the same `X` value, but activates when hovering anywhere within the vertical slice of the x-axis representing that `X` value.
+mode | String | 'nearest' | Sets which elements appear in the tooltip. See [Interaction Modes](#interaction-modes) for details
+intersect | Boolean | true | if true, the tooltip mode applies only when the mouse position intersects with an element. If false, the mode will be applied at all times.
+position | String | 'average' | The mode for positioning the tooltip. 'average' mode will place the tooltip at the average position of the items displayed in the tooltip. 'nearest' will place the tooltip at the position of the element closest to the event position. New modes can be defined by adding functions to the Chart.Tooltip.positioners map.
 itemSort | Function | undefined | Allows sorting of [tooltip items](#chart-configuration-tooltip-item-interface). Must implement at minimum a function that can be passed to [Array.prototype.sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort).  This function can also accept a third parameter that is the data object passed to the chart.
+filter | Function | undefined | Allows filtering of [tooltip items](#chart-configuration-tooltip-item-interface). Must implement at minimum a function that can be passed to [Array.prototype.filter](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/filter). This function can also accept a second parameter that is the data object passed to the chart.
 backgroundColor | Color | 'rgba(0,0,0,0.8)' | Background color of the tooltip
 titleFontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Font family for tooltip title inherited from global font family
 titleFontSize | Number | 12 | Font size for tooltip title inherited from global font size
@@ -237,6 +249,7 @@ yPadding | Number | 6 | Padding to add on top and bottom of tooltip
 caretSize | Number | 5 | Size, in px, of the tooltip arrow
 cornerRadius | Number | 6 | Radius of tooltip corner curves
 multiKeyBackground | Color | "#fff" | Color to draw behind the colored boxes when multiple items are in the tooltip
+displayColors | Boolean | true | if true, color boxes are shown in the tooltip
 callbacks | Object | | See the [callbacks section](#chart-configuration-tooltip-callbacks) below
 
 #### Tooltip Callbacks
@@ -253,12 +266,13 @@ afterTitle | `Array[tooltipItem], data` | Text to render after the title
 beforeBody | `Array[tooltipItem], data` | Text to render before the body section
 beforeLabel | `tooltipItem, data` | Text to render before an individual label
 label | `tooltipItem, data` | Text to render for an individual item in the tooltip
-labelColor | `tooltipItem, chartInstace` | Returns the colors to render for the tooltip item. Return as an object containing two parameters: `borderColor` and `backgroundColor`.
+labelColor | `tooltipItem, chartInstance` | Returns the colors to render for the tooltip item. Return as an object containing two parameters: `borderColor` and `backgroundColor`.
 afterLabel | `tooltipItem, data` | Text to render after an individual label
 afterBody | `Array[tooltipItem], data` | Text to render after the body section
 beforeFooter | `Array[tooltipItem], data` | Text to render before the footer section
 footer | `Array[tooltipItem], data` | Text to render as the footer
 afterFooter | `Array[tooltipItem], data` | Text to render after the footer section
+dataPoints | `Array[tooltipItem]` | List of matching point informations.
 
 #### Tooltip Item Interface
 
@@ -276,7 +290,13 @@ The tooltip items passed to the tooltip callbacks implement the following interf
     datasetIndex: Number,
 
     // Index of this data item in the dataset
-    index: Number
+    index: Number,
+
+    // X position of matching point
+    x: Number,
+
+    // Y position of matching point
+    y: Number,
 }
 ```
 
@@ -286,9 +306,27 @@ The hover configuration is passed into the `options.hover` namespace. The global
 
 Name | Type | Default | Description
 --- | --- | --- | ---
-mode | String | 'single' | Sets which elements hover. Acceptable options are `'single'`, `'label'`, `'x-axis'`, or `'dataset'`. <br>&nbsp;<br>`single` highlights the closest element. <br>&nbsp;<br>`label` highlights elements in all datasets at the same `X` value. <br>&nbsp;<br>`'x-axis'` also highlights elements in all datasets at the same `X` value, but activates when hovering anywhere within the vertical slice of the x-axis representing that `X` value.  <br>&nbsp;<br>`dataset` highlights the closest dataset.
+mode | String | 'nearest' | Sets which elements appear in the tooltip. See [Interaction Modes](#interaction-modes) for details
+intersect | Boolean | true | if true, the hover mode only applies when the mouse position intersects an item on the chart
 animationDuration | Number | 400 | Duration in milliseconds it takes to animate hover style changes
 onHover | Function | null | Called when any of the events fire. Called in the context of the chart and passed an array of active elements (bars, points, etc)
+
+### Interaction Modes
+When configuring interaction with the graph via hover or tooltips, a number of different modes are available.
+
+The following table details the modes and how they behave in conjunction with the `intersect` setting
+
+Mode | Behaviour 
+--- | --- 
+point | Finds all of the items that intersect the point
+nearest | Gets the item that is nearest to the point. The nearest item is determined based on the distance to the center of the chart item (point, bar). If 2 or more items are at the same distance, the one with the smallest area is used. If `intersect` is true, this is only triggered when the mouse position intersects an item in the graph. This is very useful for combo charts where points are hidden behind bars.
+single (deprecated) | Finds the first item that intersects the point and returns it. Behaves like 'nearest' mode with intersect = true.
+label (deprecated) | See `'index'` mode
+index | Finds item at the same index. If the `intersect` setting is true, the first intersecting item is used to determine the index in the data. If `intersect` false the nearest item is used to determine the index. 
+x-axis (deprecated) | Behaves like `'index'` mode with `intersect = true`
+dataset | Finds items in the same dataset. If the `intersect` setting is true, the first intersecting item is used to determine the index in the data. If `intersect` false the nearest item is used to determine the index.
+x | Returns all items that would intersect based on the `X` coordinate of the position only. Would be useful for a vertical cursor implementation. Note that this only applies to cartesian charts
+y | Returns all items that would intersect based on the `Y` coordinate of the position. This would be useful for a horizontal cursor implementation. Note that this only applies to cartesian charts.
 
 ### Animation Configuration
 
@@ -305,7 +343,7 @@ onComplete | Function | none | Callback called at the end of an animation. Passe
 
 The `onProgress` and `onComplete` callbacks are useful for synchronizing an external draw to the chart animation. The callback is passed an object that implements the following interface. An example usage of these callbacks can be found on [Github](https://github.com/chartjs/Chart.js/blob/master/samples/AnimationCallbacks/progress-bar.html). This sample displays a progress bar showing how far along the animation is.
 
-```javscript
+```javascript
 {
     // Chart object
     chartInstance,
@@ -345,7 +383,7 @@ The animation object passed to the callbacks is of type `Chart.Animation`. The o
 
 The global options for elements are defined in `Chart.defaults.global.elements`.
 
-Options can be configured for four different types of elements; arc, lines, points, and rectangles. When set, these options apply to all objects of that type unless specifically overridden by the configuration attached to a dataset.
+Options can be configured for four different types of elements: arc, lines, points, and rectangles. When set, these options apply to all objects of that type unless specifically overridden by the configuration attached to a dataset.
 
 #### Arc Configuration
 
@@ -372,7 +410,7 @@ borderDash | Array | `[]` | Default line dash. See [MDN](https://developer.mozil
 borderDashOffset | Number | 0.0 | Default line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
 borderJoinStyle | String | 'miter' | Default line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin)
 capBezierPoints | Boolean | true | If true, bezier control points are kept inside the chart. If false, no restriction is enforced.
-fill | Boolean | true | If true, the line is filled.
+fill | Boolean or String | true | If true, the fill is assumed to be to zero. String values are 'zero', 'top', and 'bottom' to fill to different locations. If `false`, no fill is added
 stepped | Boolean | false | If true, the line is shown as a stepped line and 'tension' will be ignored
 
 #### Point Configuration
@@ -451,7 +489,7 @@ var chartData = {
 
 ### Mixed Chart Types
 
-When creating a chart, you have the option to overlay different chart types on top of eachother as separate datasets.
+When creating a chart, you have the option to overlay different chart types on top of each other as separate datasets.
 
 To do this, you must set a `type` for each dataset individually. You can create mixed chart types with bar and line chart types.
 

@@ -11,13 +11,13 @@ describe('Test the radial linear scale', function() {
 		expect(defaultConfig).toEqual({
 			angleLines: {
 				display: true,
-				color: "rgba(0, 0, 0, 0.1)",
+				color: 'rgba(0, 0, 0, 0.1)',
 				lineWidth: 1
 			},
 			animate: true,
 			display: true,
 			gridLines: {
-				color: "rgba(0, 0, 0, 0.1)",
+				color: 'rgba(0, 0, 0, 0.1)',
 				drawBorder: true,
 				drawOnChartArea: true,
 				drawTicks: true,
@@ -25,7 +25,7 @@ describe('Test the radial linear scale', function() {
 				lineWidth: 1,
 				offsetGridLines: false,
 				display: true,
-				zeroLineColor: "rgba(0,0,0,0.25)",
+				zeroLineColor: 'rgba(0,0,0,0.25)',
 				zeroLineWidth: 1,
 				borderDash: [],
 				borderDashOffset: 0.0
@@ -35,13 +35,13 @@ describe('Test the radial linear scale', function() {
 				fontSize: 10,
 				callback: defaultConfig.pointLabels.callback, // make this nicer, then check explicitly below
 			},
-			position: "chartArea",
+			position: 'chartArea',
 			scaleLabel: {
 				labelString: '',
 				display: false,
 			},
 			ticks: {
-				backdropColor: "rgba(255,255,255,0.75)",
+				backdropColor: 'rgba(255,255,255,0.75)',
 				backdropPaddingY: 2,
 				backdropPaddingX: 2,
 				beginAtZero: false,
@@ -73,7 +73,7 @@ describe('Test the radial linear scale', function() {
 				}, {
 					data: [150]
 				}],
-				labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
+				labels: ['label1', 'label2', 'label3', 'label4', 'label5', 'label6']
 			},
 			options: {
 				scales: {}
@@ -93,7 +93,7 @@ describe('Test the radial linear scale', function() {
 				}, {
 					data: ['150']
 				}],
-				labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
+				labels: ['label1', 'label2', 'label3', 'label4', 'label5', 'label6']
 			},
 			options: {
 				scales: {}
@@ -116,7 +116,7 @@ describe('Test the radial linear scale', function() {
 					data: [1000],
 					hidden: true
 				}],
-				labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
+				labels: ['label1', 'label2', 'label3', 'label4', 'label5', 'label6']
 			},
 			options: {
 				scales: {}
@@ -132,9 +132,9 @@ describe('Test the radial linear scale', function() {
 			type: 'radar',
 			data: {
 				datasets: [{
-					data: [50, 60, NaN, 70, null, undefined]
+					data: [50, 60, NaN, 70, null, undefined, Infinity, -Infinity]
 				}],
-				labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
+				labels: ['label1', 'label2', 'label3', 'label4', 'label5', 'label6', 'label7', 'label8']
 			},
 			options: {
 				scales: {}
@@ -176,7 +176,7 @@ describe('Test the radial linear scale', function() {
 				datasets: [{
 					data: [1, 1, 1, 2, 1, 0]
 				}],
-				labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
+				labels: ['label1', 'label2', 'label3', 'label4', 'label5', 'label6']
 			},
 			options: {
 				scale: {
@@ -199,7 +199,7 @@ describe('Test the radial linear scale', function() {
 				datasets: [{
 					data: [1, 1, 1, 2, 1, 0]
 				}],
-				labels: ['lablel1', 'label2', 'label3', 'label4', 'label5', 'label6']
+				labels: ['label1', 'label2', 'label3', 'label4', 'label5', 'label6']
 			},
 			options: {
 				scale: {
@@ -223,7 +223,7 @@ describe('Test the radial linear scale', function() {
 				datasets: [{
 					data: [20, 30, 40, 50]
 				}],
-				labels: ['lablel1', 'label2', 'label3', 'label4']
+				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
 				scale: {
@@ -259,7 +259,7 @@ describe('Test the radial linear scale', function() {
 				datasets: [{
 					data: [10, 5, 0, 25, 78]
 				}],
-				labels: ['lablel1', 'label2', 'label3', 'label4', 'label5']
+				labels: ['label1', 'label2', 'label3', 'label4', 'label5']
 			},
 			options: {
 				scale: {
@@ -426,19 +426,19 @@ describe('Test the radial linear scale', function() {
 
 		var radToNearestDegree = function(rad) {
 			return Math.round((360 * rad) / (2 * Math.PI));
-		}
+		};
 
 		var slice = 72; // (360 / 5)
 
-		for(var i = 0; i < 5; i++) {
+		for (var i = 0; i < 5; i++) {
 			expect(radToNearestDegree(chart.scale.getIndexAngle(i))).toBe(15 + (slice * i) - 90);
 		}
 
 		chart.options.startAngle = 0;
 		chart.update();
 
-		for(var i = 0; i < 5; i++) {
-			expect(radToNearestDegree(chart.scale.getIndexAngle(i))).toBe((slice * i) - 90);
+		for (var x = 0; x < 5; x++) {
+			expect(radToNearestDegree(chart.scale.getIndexAngle(x))).toBe((slice * x) - 90);
 		}
 	});
 });

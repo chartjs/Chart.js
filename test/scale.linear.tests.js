@@ -11,7 +11,7 @@ describe('Linear Scale', function() {
 			display: true,
 
 			gridLines: {
-				color: "rgba(0, 0, 0, 0.1)",
+				color: 'rgba(0, 0, 0, 0.1)',
 				drawBorder: true,
 				drawOnChartArea: true,
 				drawTicks: true, // draw ticks extending towards the label
@@ -19,12 +19,12 @@ describe('Linear Scale', function() {
 				lineWidth: 1,
 				offsetGridLines: false,
 				display: true,
-				zeroLineColor: "rgba(0,0,0,0.25)",
+				zeroLineColor: 'rgba(0,0,0,0.25)',
 				zeroLineWidth: 1,
 				borderDash: [],
 				borderDashOffset: 0.0
 			},
-			position: "left",
+			position: 'left',
 			scaleLabel: {
 				labelString: '',
 				display: false,
@@ -156,9 +156,9 @@ describe('Linear Scale', function() {
 			data: {
 				datasets: [{
 					yAxisID: 'yScale0',
-					data: [null, 90, NaN, undefined, 45, 30]
+					data: [null, 90, NaN, undefined, 45, 30, Infinity, -Infinity]
 				}],
-				labels: ['a', 'b', 'c', 'd', 'e', 'f']
+				labels: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 			},
 			options: {
 				scales: {
@@ -485,6 +485,38 @@ describe('Linear Scale', function() {
 		expect(chart.scales.yScale0.ticks[0]).toBe('1010');
 		expect(chart.scales.yScale0.ticks[chart.scales.yScale0.ticks.length - 1]).toBe('-1010');
 	});
+
+	it('Should use min, max and stepSize to create fixed spaced ticks', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					yAxisID: 'yScale0',
+					data: [10, 3, 6, 8, 3, 1]
+				}],
+				labels: ['a', 'b', 'c', 'd', 'e', 'f']
+			},
+			options: {
+				scales: {
+					yAxes: [{
+						id: 'yScale0',
+						type: 'linear',
+						ticks: {
+							min: 1,
+							max: 11,
+							stepSize: 2
+						}
+					}]
+				}
+			}
+		});
+
+		expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
+		expect(chart.scales.yScale0.min).toBe(1);
+		expect(chart.scales.yScale0.max).toBe(11);
+		expect(chart.scales.yScale0.ticks).toEqual(['11', '9', '7', '5', '3', '1']);
+	});
+
 
 	it('should forcibly include 0 in the range if the beginAtZero option is used', function() {
 		var chart = window.acquireChart({

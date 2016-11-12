@@ -4,7 +4,7 @@
 <head>
     <title>Polar Area Chart</title>
     <script src="../dist/Chart.bundle.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="utils.js"></script>
     <style>
     canvas {
         -moz-user-select: none;
@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <div id="canvas-holder" style="width:75%">
+    <div id="canvas-holder" style="width:50%">
         <canvas id="chart-area"></canvas>
     </div>
     <button id="randomizeData">Randomize Data</button>
@@ -25,13 +25,9 @@
     var randomScalingFactor = function() {
         return Math.round(Math.random() * 100);
     };
-    var randomColorFactor = function() {
-        return Math.round(Math.random() * 255);
-    };
-    var randomColor = function(opacity) {
-        return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
-    };
 
+    var chartColors = window.chartColors;
+    var color = Chart.helpers.color;
     var config = {
         data: {
             datasets: [{
@@ -43,26 +39,26 @@
                     randomScalingFactor(),
                 ],
                 backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
+                    color(chartColors.red).alpha(0.5).rgbString(),
+                    color(chartColors.orange).alpha(0.5).rgbString(),
+                    color(chartColors.yellow).alpha(0.5).rgbString(),
+                    color(chartColors.green).alpha(0.5).rgbString(),
+                    color(chartColors.blue).alpha(0.5).rgbString(),
                 ],
                 label: 'My dataset' // for legend
             }],
             labels: [
                 "Red",
-                "Green",
+                "Orange",
                 "Yellow",
-                "Grey",
-                "Dark Grey"
+                "Green",
+                "Blue"
             ]
         },
         options: {
             responsive: true,
             legend: {
-                position: 'top',
+                position: 'right',
             },
             title: {
                 display: true,
@@ -86,37 +82,33 @@
         window.myPolarArea = Chart.PolarArea(ctx, config);
     };
 
-    $('#randomizeData').click(function() {
-        $.each(config.data.datasets, function(i, piece) {
-            $.each(piece.data, function(j, value) {
+    document.getElementById('randomizeData').addEventListener('click', function() {
+        config.data.datasets.forEach(function(piece, i) {
+            piece.data.forEach(function(value, j) {
                 config.data.datasets[i].data[j] = randomScalingFactor();
-                config.data.datasets[i].backgroundColor[j] = randomColor();
             });
         });
         window.myPolarArea.update();
     });
 
-    $('#addData').click(function() {
+    var colorNames = Object.keys(window.chartColors);
+    document.getElementById('addData').addEventListener('click', function() {
         if (config.data.datasets.length > 0) {
-            config.data.labels.push('dataset #' + config.data.labels.length);
-
-            $.each(config.data.datasets, function(i, dataset) {
-                dataset.backgroundColor.push(randomColor());
+            config.data.labels.push('data #' + config.data.labels.length);
+            config.data.datasets.forEach(function(dataset) {
+                var colorName = colorNames[config.data.labels.length % colorNames.length];
+                dataset.backgroundColor.push(window.chartColors[colorName]);
                 dataset.data.push(randomScalingFactor());
             });
-
             window.myPolarArea.update();
         }
     });
-
-    $('#removeData').click(function() {
+    document.getElementById('removeData').addEventListener('click', function() {
         config.data.labels.pop(); // remove the label first
-
-        $.each(config.data.datasets, function(i, dataset) {
+        config.data.datasets.forEach(function(dataset) {
             dataset.backgroundColor.pop();
             dataset.data.pop();
         });
-
         window.myPolarArea.update();
     });
     </script>

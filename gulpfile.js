@@ -17,10 +17,12 @@ var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var merge = require('merge-stream');
 var collapse = require('bundle-collapser/plugin');
+var argv  = require('yargs').argv
 var package = require('./package.json');
 
 var srcDir = './src/';
 var outDir = './dist/';
+var testDir = './test/';
 
 var header = "/*!\n" +
   " * Chart.js\n" +
@@ -33,17 +35,11 @@ var header = "/*!\n" +
   " */\n";
 
 var preTestFiles = [
-  './node_modules/moment/min/moment.min.js',
+  './node_modules/moment/min/moment.min.js'
 ];
 
 var testFiles = [
-  './test/mockContext.js',
-  './test/*.js',
-
-  // Disable tests which need to be rewritten based on changes introduced by
-  // the following changes: https://github.com/chartjs/Chart.js/pull/2346
-  '!./test/core.layoutService.tests.js',
-  '!./test/defaultConfig.tests.js'
+  './test/*.js'
 ];
 
 gulp.task('bower', bowerTask);
@@ -133,6 +129,7 @@ function packageTask() {
 function lintTask() {
   var files = [
     srcDir + '**/*.js',
+    testDir + '**/*.js'
   ];
 
   // NOTE(SB) codeclimate has 'complexity' and 'max-statements' eslint rules way too strict
@@ -142,7 +139,22 @@ function lintTask() {
     rules: {
       'complexity': [1, 6],
       'max-statements': [1, 30]
-    }
+    },
+    globals: [
+      'Chart',
+      'acquireChart',
+      'afterAll',
+      'afterEach',
+      'beforeAll',
+      'beforeEach',
+      'describe',
+      'expect',
+      'it',
+      'jasmine',
+      'moment',
+      'spyOn',
+      'xit'
+    ]
   };
 
   return gulp.src(files)
@@ -157,10 +169,13 @@ function validHTMLTask() {
 }
 
 function startTest() {
-  var files = ['./src/**/*.js'];
-  Array.prototype.unshift.apply(files, preTestFiles);
-  Array.prototype.push.apply(files, testFiles);
-  return files;
+  return [].concat(preTestFiles).concat([
+      './src/**/*.js',
+      './test/mockContext.js'
+    ]).concat(
+      argv.inputs?
+        argv.inputs.split(';'):
+        testFiles);
 }
 
 function unittestTask() {

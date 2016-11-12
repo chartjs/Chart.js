@@ -13,7 +13,7 @@ describe('Category scale tests', function() {
 			display: true,
 
 			gridLines: {
-				color: "rgba(0, 0, 0, 0.1)",
+				color: 'rgba(0, 0, 0, 0.1)',
 				drawBorder: true,
 				drawOnChartArea: true,
 				drawTicks: true, // draw ticks extending towards the label
@@ -21,12 +21,12 @@ describe('Category scale tests', function() {
 				lineWidth: 1,
 				offsetGridLines: false,
 				display: true,
-				zeroLineColor: "rgba(0,0,0,0.25)",
+				zeroLineColor: 'rgba(0,0,0,0.25)',
 				zeroLineWidth: 1,
 				borderDash: [],
 				borderDashOffset: 0.0
 			},
-			position: "bottom",
+			position: 'bottom',
 			scaleLabel: {
 				labelString: '',
 				display: false
@@ -287,8 +287,8 @@ describe('Category scale tests', function() {
 		var mockContext = window.createMockContext();
 		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
 		config.gridLines.offsetGridLines = true;
-		config.ticks.min = "tick2";
-		config.ticks.max = "tick4";
+		config.ticks.min = 'tick2';
+		config.ticks.max = 'tick4';
 
 		var Constructor = Chart.scaleService.getScaleConstructor('category');
 		var scale = new Constructor({
@@ -349,7 +349,7 @@ describe('Category scale tests', function() {
 		var mockContext = window.createMockContext();
 		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
 		config.gridLines.offsetGridLines = true;
-		config.position = "left";
+		config.position = 'left';
 		var Constructor = Chart.scaleService.getScaleConstructor('category');
 		var scale = new Constructor({
 			ctx: mockContext,
@@ -414,9 +414,9 @@ describe('Category scale tests', function() {
 		var mockContext = window.createMockContext();
 		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
 		config.gridLines.offsetGridLines = true;
-		config.ticks.min = "tick2";
-		config.ticks.max = "tick4";
-		config.position = "left";
+		config.ticks.min = 'tick2';
+		config.ticks.max = 'tick4';
+		config.position = 'left';
 
 		var Constructor = Chart.scaleService.getScaleConstructor('category');
 		var scale = new Constructor({

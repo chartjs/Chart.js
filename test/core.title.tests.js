@@ -14,14 +14,14 @@ describe('Title block tests', function() {
 			fontStyle: 'bold',
 			padding: 10,
 			text: ''
-		})
+		});
 	});
 
 	it('should update correctly', function() {
 		var chart = {};
 
 		var options = Chart.helpers.clone(Chart.defaults.global.title);
-		options.text = "My title";
+		options.text = 'My title';
 
 		var title = new Chart.Title({
 			chart: chart,
@@ -50,7 +50,7 @@ describe('Title block tests', function() {
 		var chart = {};
 
 		var options = Chart.helpers.clone(Chart.defaults.global.title);
-		options.text = "My title";
+		options.text = 'My title';
 		options.position = 'left';
 
 		var title = new Chart.Title({
@@ -81,7 +81,7 @@ describe('Title block tests', function() {
 		var context = window.createMockContext();
 
 		var options = Chart.helpers.clone(Chart.defaults.global.title);
-		options.text = "My title";
+		options.text = 'My title';
 
 		var title = new Chart.Title({
 			chart: chart,
@@ -118,7 +118,7 @@ describe('Title block tests', function() {
 			args: [0]
 		}, {
 			name: 'fillText',
-			args: ['My title', 0, 0]
+			args: ['My title', 0, 0, 400]
 		}, {
 			name: 'restore',
 			args: []
@@ -130,7 +130,7 @@ describe('Title block tests', function() {
 		var context = window.createMockContext();
 
 		var options = Chart.helpers.clone(Chart.defaults.global.title);
-		options.text = "My title";
+		options.text = 'My title';
 		options.position = 'left';
 
 		var title = new Chart.Title({
@@ -168,7 +168,7 @@ describe('Title block tests', function() {
 			args: [-0.5 * Math.PI]
 		}, {
 			name: 'fillText',
-			args: ['My title', 0, 0]
+			args: ['My title', 0, 0, 400]
 		}, {
 			name: 'restore',
 			args: []
@@ -201,7 +201,7 @@ describe('Title block tests', function() {
 			args: [0.5 * Math.PI]
 		}, {
 			name: 'fillText',
-			args: ['My title', 0, 0]
+			args: ['My title', 0, 0, 400]
 		}, {
 			name: 'restore',
 			args: []

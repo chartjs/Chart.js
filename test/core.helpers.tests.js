@@ -7,7 +7,7 @@ describe('Core helper tests', function() {
 	});
 
 	it('should iterate over an array and pass the extra data to that function', function() {
-		var testData = [0, 9, "abc"];
+		var testData = [0, 9, 'abc'];
 		var scope = {}; // fake out the scope and ensure that 'this' is the correct thing
 
 		helpers.each(testData, function(item, index) {
@@ -121,43 +121,12 @@ describe('Core helper tests', function() {
 		expect(merged).toEqual({
 			valueProp: 5,
 			valueProp2: null,
-			arrayProp: ['a', 'c', 3, 4, 5, 6],
+			arrayProp: ['a', 'c'],
 			objectProp: {
 				prop1: 'c',
 				prop2: 56,
 				prop3: 'prop3'
 			}
-		});
-	});
-
-	it('should merge arrays containing objects', function() {
-		var baseConfig = {
-			arrayProp: [{
-				prop1: 'abc',
-				prop2: 56
-			}],
-		};
-
-		var toMerge = {
-			arrayProp: [{
-				prop1: 'myProp1',
-				prop3: 'prop3'
-			}, 2, {
-				prop1: 'myProp1'
-			}],
-		};
-
-		var merged = helpers.configMerge(baseConfig, toMerge);
-		expect(merged).toEqual({
-			arrayProp: [{
-					prop1: 'myProp1',
-					prop2: 56,
-					prop3: 'prop3'
-				},
-				2, {
-					prop1: 'myProp1'
-				}
-			],
 		});
 	});
 
@@ -214,7 +183,7 @@ describe('Core helper tests', function() {
 					display: true,
 
 					gridLines: {
-						color: "rgba(0, 0, 0, 0.1)",
+						color: 'rgba(0, 0, 0, 0.1)',
 						drawBorder: true,
 						drawOnChartArea: true,
 						drawTicks: true, // draw ticks extending towards the label
@@ -222,12 +191,12 @@ describe('Core helper tests', function() {
 						lineWidth: 1,
 						offsetGridLines: false,
 						display: true,
-						zeroLineColor: "rgba(0,0,0,0.25)",
+						zeroLineColor: 'rgba(0,0,0,0.25)',
 						zeroLineWidth: 1,
 						borderDash: [],
 						borderDashOffset: 0.0
 					},
-					position: "right",
+					position: 'right',
 					scaleLabel: {
 						labelString: '',
 						display: false,
@@ -250,7 +219,7 @@ describe('Core helper tests', function() {
 					display: true,
 
 					gridLines: {
-						color: "rgba(0, 0, 0, 0.1)",
+						color: 'rgba(0, 0, 0, 0.1)',
 						drawBorder: true,
 						drawOnChartArea: true,
 						drawTicks: true, // draw ticks extending towards the label,
@@ -258,12 +227,12 @@ describe('Core helper tests', function() {
 						lineWidth: 1,
 						offsetGridLines: false,
 						display: true,
-						zeroLineColor: "rgba(0,0,0,0.25)",
+						zeroLineColor: 'rgba(0,0,0,0.25)',
 						zeroLineWidth: 1,
 						borderDash: [],
 						borderDashOffset: 0.0
 					},
-					position: "left",
+					position: 'left',
 					scaleLabel: {
 						labelString: '',
 						display: false,
@@ -302,7 +271,7 @@ describe('Core helper tests', function() {
 	it('should filter an array', function() {
 		var data = [-10, 0, 6, 0, 7];
 		var callback = function(item) {
-			return item > 2
+			return item > 2;
 		};
 		expect(helpers.where(data, callback)).toEqual([6, 7]);
 		expect(helpers.findNextWhere(data, callback)).toEqual(6);
@@ -431,19 +400,19 @@ describe('Core helper tests', function() {
 
 	it('should spline curves with monotone cubic interpolation', function() {
 		var dataPoints = [
-			{ _model: { x:    0, y:    0, skip: false } },
-			{ _model: { x:    3, y:    6, skip: false } },
-			{ _model: { x:    9, y:    6, skip: false } },
-			{ _model: { x:   12, y:   60, skip: false } },
-			{ _model: { x:   15, y:   60, skip: false } },
-			{ _model: { x:   18, y:  120, skip: false } },
-			{ _model: { x: null, y: null, skip: true  } },
-			{ _model: { x:   21, y:  180, skip: false } },
-			{ _model: { x:   24, y:  120, skip: false } },
-			{ _model: { x:   27, y:  125, skip: false } },
-			{ _model: { x:   30, y:  105, skip: false } },
-			{ _model: { x:   33, y:  110, skip: false } },
-			{ _model: { x:   36, y:  170, skip: false } }
+			{_model: {x: 0, y: 0, skip: false}},
+			{_model: {x: 3, y: 6, skip: false}},
+			{_model: {x: 9, y: 6, skip: false}},
+			{_model: {x: 12, y: 60, skip: false}},
+			{_model: {x: 15, y: 60, skip: false}},
+			{_model: {x: 18, y: 120, skip: false}},
+			{_model: {x: null, y: null, skip: true}},
+			{_model: {x: 21, y: 180, skip: false}},
+			{_model: {x: 24, y: 120, skip: false}},
+			{_model: {x: 27, y: 125, skip: false}},
+			{_model: {x: 30, y: 105, skip: false}},
+			{_model: {x: 33, y: 110, skip: false}},
+			{_model: {x: 36, y: 170, skip: false}}
 		];
 		helpers.splineCurveMonotone(dataPoints);
 		expect(dataPoints).toEqual([{
@@ -611,13 +580,13 @@ describe('Core helper tests', function() {
 	it('should return the width of the longest text in an Array and 2D Array', function() {
 		var context = window.createMockContext();
 		var font = "normal 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
-		var arrayOfThings_1D = ['FooBar','Bar'];
-		var arrayOfThings_2D = [['FooBar_1','Bar_2'],'Foo_1'];
-		
+		var arrayOfThings1D = ['FooBar', 'Bar'];
+		var arrayOfThings2D = [['FooBar_1', 'Bar_2'], 'Foo_1'];
 
-		// Regardless 'FooBar' is the longest label it should return (charcters * 10)
-		expect(helpers.longestText(context, font, arrayOfThings_1D, {})).toEqual(60);
-		expect(helpers.longestText(context, font, arrayOfThings_2D, {})).toEqual(80);
+
+		// Regardless 'FooBar' is the longest label it should return (characters * 10)
+		expect(helpers.longestText(context, font, arrayOfThings1D, {})).toEqual(60);
+		expect(helpers.longestText(context, font, arrayOfThings2D, {})).toEqual(80);
 		// We check to make sure we made the right calls to the canvas.
 		expect(context.getCalls()).toEqual([{
 			name: 'measureText',
@@ -660,14 +629,14 @@ describe('Core helper tests', function() {
 	});
 
 	it('count look at all the labels and return maximum number of lines', function() {
-		var context = window.createMockContext();
-		var arrayOfThings_1 = ['Foo','Bar'];
-		var arrayOfThings_2 = [['Foo','Bar'],'Foo'];
-		var arrayOfThings_3 = [['Foo','Bar','Boo'],['Foo','Bar'],'Foo'];
+		window.createMockContext();
+		var arrayOfThings1 = ['Foo', 'Bar'];
+		var arrayOfThings2 = [['Foo', 'Bar'], 'Foo'];
+		var arrayOfThings3 = [['Foo', 'Bar', 'Boo'], ['Foo', 'Bar'], 'Foo'];
 
-		expect(helpers.numberOfLabelLines(arrayOfThings_1)).toEqual(1);
-		expect(helpers.numberOfLabelLines(arrayOfThings_2)).toEqual(2);
-		expect(helpers.numberOfLabelLines(arrayOfThings_3)).toEqual(3);
+		expect(helpers.numberOfLabelLines(arrayOfThings1)).toEqual(1);
+		expect(helpers.numberOfLabelLines(arrayOfThings2)).toEqual(2);
+		expect(helpers.numberOfLabelLines(arrayOfThings3)).toEqual(3);
 	});
 
 	it('should draw a rounded rectangle', function() {
@@ -707,14 +676,14 @@ describe('Core helper tests', function() {
 		}, {
 			name: 'closePath',
 			args: []
-		}])
+		}]);
 	});
 
 	it ('should get the maximum width and height for a node', function() {
 		// Create div with fixed size as a test bed
 		var div = document.createElement('div');
-		div.style.width = "200px";
-		div.style.height = "300px";
+		div.style.width = '200px';
+		div.style.height = '300px';
 
 		document.body.appendChild(div);
 
@@ -731,14 +700,14 @@ describe('Core helper tests', function() {
 	it ('should get the maximum width of a node that has a max-width style', function() {
 		// Create div with fixed size as a test bed
 		var div = document.createElement('div');
-		div.style.width = "200px";
-		div.style.height = "300px";
+		div.style.width = '200px';
+		div.style.height = '300px';
 
 		document.body.appendChild(div);
 
 		// Create the div we want to get the max size for and set a max-width style
 		var innerDiv = document.createElement('div');
-		innerDiv.style.maxWidth = "150px";
+		innerDiv.style.maxWidth = '150px';
 		div.appendChild(innerDiv);
 
 		expect(helpers.getMaximumWidth(innerDiv)).toBe(150);
@@ -749,14 +718,14 @@ describe('Core helper tests', function() {
 	it ('should get the maximum height of a node that has a max-height style', function() {
 		// Create div with fixed size as a test bed
 		var div = document.createElement('div');
-		div.style.width = "200px";
-		div.style.height = "300px";
+		div.style.width = '200px';
+		div.style.height = '300px';
 
 		document.body.appendChild(div);
 
 		// Create the div we want to get the max size for and set a max-height style
 		var innerDiv = document.createElement('div');
-		innerDiv.style.maxHeight = "150px";
+		innerDiv.style.maxHeight = '150px';
 		div.appendChild(innerDiv);
 
 		expect(helpers.getMaximumHeight(innerDiv)).toBe(150);
@@ -767,14 +736,14 @@ describe('Core helper tests', function() {
 	it ('should get the maximum width of a node when the parent has a max-width style', function() {
 		// Create div with fixed size as a test bed
 		var div = document.createElement('div');
-		div.style.width = "200px";
-		div.style.height = "300px";
+		div.style.width = '200px';
+		div.style.height = '300px';
 
 		document.body.appendChild(div);
 
 		// Create an inner wrapper around our div we want to size and give that a max-width style
 		var parentDiv = document.createElement('div');
-		parentDiv.style.maxWidth = "150px";
+		parentDiv.style.maxWidth = '150px';
 		div.appendChild(parentDiv);
 
 		// Create the div we want to get the max size for
@@ -789,19 +758,19 @@ describe('Core helper tests', function() {
 	it ('should get the maximum height of a node when the parent has a max-height style', function() {
 		// Create div with fixed size as a test bed
 		var div = document.createElement('div');
-		div.style.width = "200px";
-		div.style.height = "300px";
+		div.style.width = '200px';
+		div.style.height = '300px';
 
 		document.body.appendChild(div);
 
 		// Create an inner wrapper around our div we want to size and give that a max-height style
 		var parentDiv = document.createElement('div');
-		parentDiv.style.maxHeight = "150px";
+		parentDiv.style.maxHeight = '150px';
 		div.appendChild(parentDiv);
 
 		// Create the div we want to get the max size for
 		var innerDiv = document.createElement('div');
-		innerDiv.style.height = "300px"; // make it large
+		innerDiv.style.height = '300px'; // make it large
 		parentDiv.appendChild(innerDiv);
 
 		expect(helpers.getMaximumHeight(innerDiv)).toBe(150);
@@ -812,14 +781,14 @@ describe('Core helper tests', function() {
 	it ('should get the maximum width of a node that has a percentage max-width style', function() {
 		// Create div with fixed size as a test bed
 		var div = document.createElement('div');
-		div.style.width = "200px";
-		div.style.height = "300px";
+		div.style.width = '200px';
+		div.style.height = '300px';
 
 		document.body.appendChild(div);
 
 		// Create the div we want to get the max size for and set a max-width style
 		var innerDiv = document.createElement('div');
-		innerDiv.style.maxWidth = "50%";
+		innerDiv.style.maxWidth = '50%';
 		div.appendChild(innerDiv);
 
 		expect(helpers.getMaximumWidth(innerDiv)).toBe(100);
@@ -830,14 +799,14 @@ describe('Core helper tests', function() {
 	it ('should get the maximum height of a node that has a percentage max-height style', function() {
 		// Create div with fixed size as a test bed
 		var div = document.createElement('div');
-		div.style.width = "200px";
-		div.style.height = "300px";
+		div.style.width = '200px';
+		div.style.height = '300px';
 
 		document.body.appendChild(div);
 
 		// Create the div we want to get the max size for and set a max-height style
 		var innerDiv = document.createElement('div');
-		innerDiv.style.maxHeight = "50%";
+		innerDiv.style.maxHeight = '50%';
 		div.appendChild(innerDiv);
 
 		expect(helpers.getMaximumHeight(innerDiv)).toBe(150);
@@ -848,14 +817,14 @@ describe('Core helper tests', function() {
 	it ('should get the maximum width of a node when the parent has a percentage max-width style', function() {
 		// Create div with fixed size as a test bed
 		var div = document.createElement('div');
-		div.style.width = "200px";
-		div.style.height = "300px";
+		div.style.width = '200px';
+		div.style.height = '300px';
 
 		document.body.appendChild(div);
 
 		// Create an inner wrapper around our div we want to size and give that a max-width style
 		var parentDiv = document.createElement('div');
-		parentDiv.style.maxWidth = "50%";
+		parentDiv.style.maxWidth = '50%';
 		div.appendChild(parentDiv);
 
 		// Create the div we want to get the max size for
@@ -870,18 +839,18 @@ describe('Core helper tests', function() {
 	it ('should get the maximum height of a node when the parent has a percentage max-height style', function() {
 		// Create div with fixed size as a test bed
 		var div = document.createElement('div');
-		div.style.width = "200px";
-		div.style.height = "300px";
+		div.style.width = '200px';
+		div.style.height = '300px';
 
 		document.body.appendChild(div);
 
 		// Create an inner wrapper around our div we want to size and give that a max-height style
 		var parentDiv = document.createElement('div');
-		parentDiv.style.maxHeight = "50%";
+		parentDiv.style.maxHeight = '50%';
 		div.appendChild(parentDiv);
 
 		var innerDiv = document.createElement('div');
-		innerDiv.style.height = "300px"; // make it large
+		innerDiv.style.height = '300px'; // make it large
 		parentDiv.appendChild(innerDiv);
 
 		expect(helpers.getMaximumHeight(innerDiv)).toBe(150);
@@ -922,7 +891,7 @@ describe('Core helper tests', function() {
 				expect(backgroundColor instanceof CanvasPattern).toBe(true);
 
 				done();
-			}
+			};
 		});
 
 		it('should return a modified version of color when called with a color', function() {

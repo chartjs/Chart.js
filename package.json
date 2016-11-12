@@ -2,7 +2,7 @@
   "name": "chart.js",
   "homepage": "http://www.chartjs.org",
   "description": "Simple HTML5 charts using the canvas element.",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "license": "MIT",
   "main": "src/chart.js",
   "repository": {
@@ -17,7 +17,7 @@
     "gulp": "3.9.x",
     "gulp-concat": "~2.1.x",
     "gulp-connect": "~2.0.5",
-    "gulp-eslint": "^2.0.0",
+    "gulp-eslint": "^3.0.0",
     "gulp-file": "^0.3.0",
     "gulp-html-validator": "^0.0.2",
     "gulp-insert": "~0.5.0",
@@ -38,7 +38,9 @@
     "karma-jasmine": "^0.3.6",
     "karma-jasmine-html-reporter": "^0.1.8",
     "merge-stream": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.7.0",
+    "yargs": "^5.0.0"
   },
   "spm": {
     "main": "Chart.js"
