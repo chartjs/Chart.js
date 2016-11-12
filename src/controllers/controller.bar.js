@@ -54,7 +54,9 @@ module.exports = function(Chart) {
 			helpers.each(me.chart.data.datasets, function(dataset, datasetIndex) {
 				var dsMeta = me.chart.getDatasetMeta(datasetIndex);
 				if (dsMeta.bar && me.chart.isDatasetVisible(datasetIndex) &&
-					(!yScale.options.stacked || stacks.indexOf(dsMeta.stack) === -1)) {
+					(yScale.options.stacked === false ||
+					(yScale.options.stacked === true && stacks.indexOf(dsMeta.stack) === -1) ||
+					(yScale.options.stacked === undefined && (dsMeta.stack === undefined || stacks.indexOf(dsMeta.stack) === -1)))) {
 					stacks.push(dsMeta.stack);
 				}
 			}, me);
@@ -111,7 +113,8 @@ module.exports = function(Chart) {
 			var yScale = me.getScaleForId(meta.yAxisID);
 			var base = 0;
 
-			if (yScale.options.stacked) {
+			if ((yScale.options.stacked === true) ||
+				(yScale.options.stacked === undefined && meta.stack !== undefined)) {
 				var chart = me.chart;
 				var datasets = chart.data.datasets;
 				var value = Number(datasets[datasetIndex].data[index]);
@@ -189,7 +192,9 @@ module.exports = function(Chart) {
 			for (j = 0; j < datasetIndex; ++j) {
 				dsMeta = this.chart.getDatasetMeta(j);
 				if (dsMeta.bar && this.chart.isDatasetVisible(j) &&
-					(!yScale.options.stacked || stacks.indexOf(dsMeta.stack) === -1)) {
+					(yScale.options.stacked === false ||
+					(yScale.options.stacked === true && stacks.indexOf(dsMeta.stack) === -1) ||
+					(yScale.options.stacked === undefined && (dsMeta.stack === undefined || stacks.indexOf(dsMeta.stack) === -1)))) {
 					stacks.push(dsMeta.stack);
 				}
 			}
@@ -219,8 +224,8 @@ module.exports = function(Chart) {
 			var yScale = me.getScaleForId(meta.yAxisID);
 			var value = Number(me.getDataset().data[index]);
 
-			if (yScale.options.stacked) {
-
+			if (yScale.options.stacked ||
+				(yScale.options.stacked === undefined && meta.stack !== undefined)) {
 				var sumPos = 0,
 					sumNeg = 0;
 
@@ -355,7 +360,9 @@ module.exports = function(Chart) {
 			helpers.each(me.chart.data.datasets, function(dataset, datasetIndex) {
 				var dsMeta = me.chart.getDatasetMeta(datasetIndex);
 				if (dsMeta.bar && me.chart.isDatasetVisible(datasetIndex) &&
-					(!xScale.options.stacked || stacks.indexOf(dsMeta.stack) === -1)) {
+					(xScale.options.stacked === false ||
+					(xScale.options.stacked === true && stacks.indexOf(dsMeta.stack) === -1) ||
+					(xScale.options.stacked === undefined && (dsMeta.stack === undefined || stacks.indexOf(dsMeta.stack) === -1)))) {
 					stacks.push(dsMeta.stack);
 				}
 			}, me);
@@ -461,7 +468,8 @@ module.exports = function(Chart) {
 			var xScale = me.getScaleForId(meta.xAxisID);
 			var base = 0;
 
-			if (xScale.options.stacked) {
+			if (xScale.options.stacked ||
+				(xScale.options.stacked === undefined && meta.stack !== undefined)) {
 				var chart = me.chart;
 				var datasets = chart.data.datasets;
 				var value = Number(datasets[datasetIndex].data[index]);
@@ -539,7 +547,9 @@ module.exports = function(Chart) {
 			for (j = 0; j < datasetIndex; ++j) {
 				dsMeta = this.chart.getDatasetMeta(j);
 				if (dsMeta.bar && this.chart.isDatasetVisible(j) &&
-					(!xScale.options.stacked || stacks.indexOf(dsMeta.stack) === -1)) {
+					(xScale.options.stacked === false ||
+					(xScale.options.stacked === true && stacks.indexOf(dsMeta.stack) === -1) ||
+					(xScale.options.stacked === undefined && (dsMeta.stack === undefined || stacks.indexOf(dsMeta.stack) === -1)))) {
 					stacks.push(dsMeta.stack);
 				}
 			}
@@ -553,8 +563,8 @@ module.exports = function(Chart) {
 			var xScale = me.getScaleForId(meta.xAxisID);
 			var value = Number(me.getDataset().data[index]);
 
-			if (xScale.options.stacked) {
-
+			if (xScale.options.stacked ||
+				(xScale.options.stacked === undefined && meta.stack !== undefined)) {
 				var sumPos = 0,
 					sumNeg = 0;
 
