@@ -367,4 +367,66 @@ describe('Legend block tests', function() {
 			"args": ["dataset3", 228, 132]
 		}]);*/
 	});
+
+	describe('config update', function() {
+		it ('should update the options', function() {
+			var chart = acquireChart({
+				type: 'line',
+				data: {
+					labels: ['A', 'B', 'C', 'D'],
+					datasets: [{
+						data: [10, 20, 30, 100]
+					}]
+				},
+				options: {
+					legend: {
+						display: true
+					}
+				}
+			});
+			expect(chart.legend.options.display).toBe(true);
+
+			chart.options.legend.display = false;
+			chart.update();
+			expect(chart.legend.options.display).toBe(false);
+		});
+
+		it ('should remove the legend if the new options are false', function() {
+			var chart = acquireChart({
+				type: 'line',
+				data: {
+					labels: ['A', 'B', 'C', 'D'],
+					datasets: [{
+						data: [10, 20, 30, 100]
+					}]
+				}
+			});
+			expect(chart.legend).not.toBe(undefined);
+
+			chart.options.legend = false;
+			chart.update();
+			expect(chart.legend).toBe(undefined);
+		});
+
+		it ('should create the legend if the legend options are changed to exist', function() {
+			var chart = acquireChart({
+				type: 'line',
+				data: {
+					labels: ['A', 'B', 'C', 'D'],
+					datasets: [{
+						data: [10, 20, 30, 100]
+					}]
+				},
+				options: {
+					legend: false
+				}
+			});
+			expect(chart.legend).toBe(undefined);
+
+			chart.options.legend = {};
+			chart.update();
+			expect(chart.legend).not.toBe(undefined);
+			expect(chart.legend.options).toEqual(jasmine.objectContaining(Chart.defaults.global.legend));
+		});
+	});
 });

@@ -830,4 +830,53 @@ describe('Chart.Controller', function() {
 			expect(meta.data[3]._model.y).toBe(484);
 		});
 	});
+
+	describe('config update', function() {
+		it ('should update scales options', function() {
+			var chart = acquireChart({
+				type: 'line',
+				data: {
+					labels: ['A', 'B', 'C', 'D'],
+					datasets: [{
+						data: [10, 20, 30, 100]
+					}]
+				},
+				options: {
+					responsive: true
+				}
+			});
+
+			chart.options.scales.yAxes[0].ticks.min = 0;
+			chart.options.scales.yAxes[0].ticks.max = 10;
+			chart.update();
+
+			var yScale = chart.scales['y-axis-0'];
+			expect(yScale.options.ticks.min).toBe(0);
+			expect(yScale.options.ticks.max).toBe(10);
+		});
+
+		it ('should update tooltip options', function() {
+			var chart = acquireChart({
+				type: 'line',
+				data: {
+					labels: ['A', 'B', 'C', 'D'],
+					datasets: [{
+						data: [10, 20, 30, 100]
+					}]
+				},
+				options: {
+					responsive: true
+				}
+			});
+
+			var newTooltipConfig = {
+				mode: 'dataset',
+				intersect: false
+			};
+			chart.options.tooltips = newTooltipConfig;
+
+			chart.update();
+			expect(chart.tooltip._options).toEqual(jasmine.objectContaining(newTooltipConfig));
+		});
+	});
 });
