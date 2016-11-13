@@ -489,20 +489,39 @@ module.exports = function(Chart) {
 		}
 	});
 
+	function createNewLegendAndAttach(chartInstance, legendOpts) {
+		var legend = new Chart.Legend({
+			ctx: chartInstance.chart.ctx,
+			options: legendOpts,
+			chart: chartInstance
+		});
+		chartInstance.legend = legend;
+		Chart.layoutService.addBox(chartInstance, legend);
+	}
+
 	// Register the legend plugin
 	Chart.plugins.register({
 		beforeInit: function(chartInstance) {
-			var opts = chartInstance.options;
-			var legendOpts = opts.legend;
+			var legendOpts = chartInstance.options.legend;
 
 			if (legendOpts) {
-				chartInstance.legend = new Chart.Legend({
-					ctx: chartInstance.chart.ctx,
-					options: legendOpts,
-					chart: chartInstance
-				});
+				createNewLegendAndAttach(chartInstance, legendOpts);
+			}
+		},
+		beforeUpdate: function(chartInstance) {
+			var legendOpts = chartInstance.options.legend;
 
-				Chart.layoutService.addBox(chartInstance, chartInstance.legend);
+			if (legendOpts) {
+				legendOpts = helpers.configMerge(Chart.defaults.global.legend, legendOpts);
+
+				if (chartInstance.legend) {
+					chartInstance.legend.options = legendOpts;
+				} else {
+					createNewLegendAndAttach(chartInstance, legendOpts);
+				}
+			} else {
+				Chart.layoutService.removeBox(chartInstance, chartInstance.legend);
+				delete chartInstance.legend;
 			}
 		}
 	});

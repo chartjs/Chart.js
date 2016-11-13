@@ -169,6 +169,26 @@ module.exports = function(Chart) {
 	}
 
 	/**
+	 * Updates the config of the chart
+	 * @param chart {Chart.Controller} chart to update the options for
+	 */
+	function updateConfig(chart) {
+		var newOptions = chart.options;
+
+		// Update Scale(s) with options
+		if (newOptions.scale) {
+			chart.scale.options = newOptions.scale;
+		} else if (newOptions.scales) {
+			newOptions.scales.xAxes.concat(newOptions.scales.yAxes).forEach(function(scaleOptions) {
+				chart.scales[scaleOptions.id].options = scaleOptions;
+			});
+		}
+
+		// Tooltip
+		chart.tooltip._options = newOptions.tooltips;
+	}
+
+	/**
 	 * @class Chart.Controller
 	 * The main controller of a chart.
 	 */
@@ -435,8 +455,11 @@ module.exports = function(Chart) {
 			this.tooltip.initialize();
 		},
 
+
 		update: function(animationDuration, lazy) {
 			var me = this;
+
+			updateConfig(me);
 			Chart.plugins.notify('beforeUpdate', [me]);
 
 			// In case the entire data object changed
