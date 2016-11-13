@@ -182,7 +182,7 @@ var myPieChart = new Chart(ctx, {
 });
 ```
 
-See `sample/line-customTooltips.html` for examples on how to get started.
+See `samples/tooltips/line-customTooltips.html` for examples on how to get started.
 
 ### Writing New Scale Types
 
