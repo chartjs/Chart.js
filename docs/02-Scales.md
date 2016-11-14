@@ -231,7 +231,7 @@ minUnit | String | 'millisecond' | The minimum display format to be used for a t
 
 When providing data for the time scale, Chart.js supports all of the formats that Moment.js accepts. See [Moment.js docs](http://momentjs.com/docs/#/parsing/) for details.
 
-#### Display Formats
+### Display Formats
 
 The following display formats are used to configure how different time units are formed into strings for the axis tick marks. See [moment.js](http://momentjs.com/docs/#/displaying/format/) for the allowable format strings.
 
