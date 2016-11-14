@@ -139,11 +139,11 @@ module.exports = function(Chart) {
 			var dataset = this.getDataset();
 			var custom = point.custom || {};
 
-			if (custom.borderWidth) {
+			if (!isNaN(custom.borderWidth)) {
 				borderWidth = custom.borderWidth;
-			} else if (dataset.pointBorderWidth) {
+			} else if (!isNaN(dataset.pointBorderWidth)) {
 				borderWidth = helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, borderWidth);
-			} else if (dataset.borderWidth) {
+			} else if (!isNaN(dataset.borderWidth)) {
 				borderWidth = dataset.borderWidth;
 			}
 

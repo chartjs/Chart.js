@@ -753,4 +753,23 @@ describe('Line controller tests', function() {
 		expect(point._model.borderWidth).toBe(5.5);
 		expect(point._model.radius).toBe(4.4);
 	});
+
+	it('should allow 0 as a point border width', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: [10, 15, 0, -4],
+					label: 'dataset1',
+					pointBorderWidth: 0
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4']
+			}
+		});
+
+		var meta = chart.getDatasetMeta(0);
+		var point = meta.data[0];
+
+		expect(point._model.borderWidth).toBe(0);
+	});
 });
