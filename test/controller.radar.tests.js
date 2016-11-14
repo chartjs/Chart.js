@@ -179,7 +179,7 @@ describe('Radar controller tests', function() {
 		});
 
 		// Use dataset level styles for lines & points
-		chart.data.datasets[0].tension = 0;
+		chart.data.datasets[0].lineTension = 0;
 		chart.data.datasets[0].backgroundColor = 'rgb(98, 98, 98)';
 		chart.data.datasets[0].borderColor = 'rgb(8, 8, 8)';
 		chart.data.datasets[0].borderWidth = 0.55;
