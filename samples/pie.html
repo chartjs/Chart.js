@@ -4,12 +4,12 @@
 <head>
     <title>Pie Chart</title>
     <script src="../dist/Chart.bundle.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="utils.js"></script>
 </head>
 
 <body>
-    <div id="canvas-holder" style="width:50%">
-        <canvas id="chart-area" width="300" height="300" />
+    <div id="canvas-holder" style="width:40%">
+        <canvas id="chart-area" />
     </div>
     <button id="randomizeData">Randomize Data</button>
     <button id="addDataset">Add Dataset</button>
@@ -17,12 +17,6 @@
     <script>
     var randomScalingFactor = function() {
         return Math.round(Math.random() * 100);
-    };
-    var randomColorFactor = function() {
-        return Math.round(Math.random() * 255);
-    };
-    var randomColor = function(opacity) {
-        return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
     };
 
     var config = {
@@ -37,49 +31,20 @@
                     randomScalingFactor(),
                 ],
                 backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
+                    window.chartColors.red,
+                    window.chartColors.orange,
+                    window.chartColors.yellow,
+                    window.chartColors.green,
+                    window.chartColors.blue,
                 ],
-            }, {
-                data: [
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                ],
-                backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
-                ],
-            }, {
-                data: [
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                ],
-                backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
-                ],
+                label: 'Dataset 1'
             }],
             labels: [
                 "Red",
-                "Green",
+                "Orange",
                 "Yellow",
-                "Grey",
-                "Dark Grey"
+                "Green",
+                "Blue"
             ]
         },
         options: {
@@ -92,27 +57,37 @@
         window.myPie = new Chart(ctx, config);
     };
 
-    $('#randomizeData').click(function() {
-        $.each(config.data.datasets, function(i, piece) {
-            $.each(piece.data, function(j, value) {
-                config.data.datasets[i].data[j] = randomScalingFactor();
-                config.data.datasets[i].backgroundColor[j] = randomColor(0.7);
+    document.getElementById('randomizeData').addEventListener('click', function() {
+        config.data.datasets.forEach(function(dataset) {
+            dataset.data = dataset.data.map(function() {
+                return randomScalingFactor();
             });
         });
+
         window.myPie.update();
     });
 
-    $('#addDataset').click(function() {
+    var colorNames = Object.keys(window.chartColors);
+    document.getElementById('addDataset').addEventListener('click', function() {
         var newDataset = {
-            backgroundColor: [randomColor(0.7), randomColor(0.7), randomColor(0.7), randomColor(0.7), randomColor(0.7)],
-            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+            backgroundColor: [],
+            data: [],
+            label: 'New dataset ' + config.data.datasets.length,
         };
+
+        for (var index = 0; index < config.data.labels.length; ++index) {
+            newDataset.data.push(randomScalingFactor());
+
+            var colorName = colorNames[index % colorNames.length];;
+            var newColor = window.chartColors[colorName];
+            newDataset.backgroundColor.push(newColor);
+        }
 
         config.data.datasets.push(newDataset);
         window.myPie.update();
     });
 
-    $('#removeDataset').click(function() {
+    document.getElementById('removeDataset').addEventListener('click', function() {
         config.data.datasets.splice(0, 1);
         window.myPie.update();
     });

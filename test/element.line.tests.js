@@ -527,6 +527,318 @@ describe('Line element tests', function() {
 		expect(mockContext.getCalls()).toEqual(expected);
 	});
 
+	it('should draw with fillMode top', function() {
+		var mockContext = window.createMockContext();
+
+		// Create our points
+		var points = [];
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 0,
+			_view: {
+				x: 0,
+				y: 10,
+				controlPointNextX: 0,
+				controlPointNextY: 10
+			}
+		}));
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 1,
+			_view: {
+				x: 5,
+				y: 0,
+				controlPointPreviousX: 5,
+				controlPointPreviousY: 0,
+				controlPointNextX: 5,
+				controlPointNextY: 0
+			}
+		}));
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 2,
+			_view: {
+				x: 15,
+				y: -10,
+				controlPointPreviousX: 15,
+				controlPointPreviousY: -10,
+				controlPointNextX: 15,
+				controlPointNextY: -10
+			}
+		}));
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 3,
+			_view: {
+				x: 19,
+				y: -5,
+				controlPointPreviousX: 19,
+				controlPointPreviousY: -5,
+				controlPointNextX: 19,
+				controlPointNextY: -5
+			}
+		}));
+
+		var line = new Chart.elements.Line({
+			_datasetindex: 2,
+			_chart: {
+				ctx: mockContext,
+			},
+			_children: points,
+			// Need to provide some settings
+			_view: {
+				fill: 'top',
+				scaleZero: 2, // for filling lines
+				scaleTop: -2,
+				scaleBottom: 10,
+				tension: 0.0, // no bezier curve for now
+
+				borderCapStyle: 'round',
+				borderColor: 'rgb(255, 255, 0)',
+				borderDash: [2, 2],
+				borderDashOffset: 1.5,
+				borderJoinStyle: 'bevel',
+				borderWidth: 4,
+				backgroundColor: 'rgb(0, 0, 0)'
+			}
+		});
+
+		line.draw();
+
+		var expected = [{
+			name: 'save',
+			args: []
+		}, {
+			name: 'beginPath',
+			args: []
+		}, {
+			name: 'moveTo',
+			args: [0, -2]
+		}, {
+			name: 'lineTo',
+			args: [0, 10]
+		}, {
+			name: 'bezierCurveTo',
+			args: [0, 10, 5, 0, 5, 0]
+		}, {
+			name: 'bezierCurveTo',
+			args: [5, 0, 15, -10, 15, -10]
+		}, {
+			name: 'bezierCurveTo',
+			args: [15, -10, 19, -5, 19, -5]
+		}, {
+			name: 'lineTo',
+			args: [19, -2]
+		}, {
+			name: 'setFillStyle',
+			args: ['rgb(0, 0, 0)']
+		}, {
+			name: 'closePath',
+			args: []
+		}, {
+			name: 'fill',
+			args: []
+		}, {
+			name: 'setLineCap',
+			args: ['round']
+		}, {
+			name: 'setLineDash',
+			args: [
+				[2, 2]
+			]
+		}, {
+			name: 'setLineDashOffset',
+			args: [1.5]
+		}, {
+			name: 'setLineJoin',
+			args: ['bevel']
+		}, {
+			name: 'setLineWidth',
+			args: [4]
+		}, {
+			name: 'setStrokeStyle',
+			args: ['rgb(255, 255, 0)']
+		}, {
+			name: 'beginPath',
+			args: []
+		}, {
+			name: 'moveTo',
+			args: [0, 10]
+		}, {
+			name: 'bezierCurveTo',
+			args: [0, 10, 5, 0, 5, 0]
+		}, {
+			name: 'bezierCurveTo',
+			args: [5, 0, 15, -10, 15, -10]
+		}, {
+			name: 'bezierCurveTo',
+			args: [15, -10, 19, -5, 19, -5]
+		}, {
+			name: 'stroke',
+			args: []
+		}, {
+			name: 'restore',
+			args: []
+		}];
+		expect(mockContext.getCalls()).toEqual(expected);
+	});
+
+	it('should draw with fillMode bottom', function() {
+		var mockContext = window.createMockContext();
+
+		// Create our points
+		var points = [];
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 0,
+			_view: {
+				x: 0,
+				y: 10,
+				controlPointNextX: 0,
+				controlPointNextY: 10
+			}
+		}));
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 1,
+			_view: {
+				x: 5,
+				y: 0,
+				controlPointPreviousX: 5,
+				controlPointPreviousY: 0,
+				controlPointNextX: 5,
+				controlPointNextY: 0
+			}
+		}));
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 2,
+			_view: {
+				x: 15,
+				y: -10,
+				controlPointPreviousX: 15,
+				controlPointPreviousY: -10,
+				controlPointNextX: 15,
+				controlPointNextY: -10
+			}
+		}));
+		points.push(new Chart.elements.Point({
+			_datasetindex: 2,
+			_index: 3,
+			_view: {
+				x: 19,
+				y: -5,
+				controlPointPreviousX: 19,
+				controlPointPreviousY: -5,
+				controlPointNextX: 19,
+				controlPointNextY: -5
+			}
+		}));
+
+		var line = new Chart.elements.Line({
+			_datasetindex: 2,
+			_chart: {
+				ctx: mockContext,
+			},
+			_children: points,
+			// Need to provide some settings
+			_view: {
+				fill: 'bottom',
+				scaleZero: 2, // for filling lines
+				scaleTop: -2,
+				scaleBottom: 10,
+				tension: 0.0, // no bezier curve for now
+
+				borderCapStyle: 'round',
+				borderColor: 'rgb(255, 255, 0)',
+				borderDash: [2, 2],
+				borderDashOffset: 1.5,
+				borderJoinStyle: 'bevel',
+				borderWidth: 4,
+				backgroundColor: 'rgb(0, 0, 0)'
+			}
+		});
+
+		line.draw();
+
+		var expected = [{
+			name: 'save',
+			args: []
+		}, {
+			name: 'beginPath',
+			args: []
+		}, {
+			name: 'moveTo',
+			args: [0, 10]
+		}, {
+			name: 'lineTo',
+			args: [0, 10]
+		}, {
+			name: 'bezierCurveTo',
+			args: [0, 10, 5, 0, 5, 0]
+		}, {
+			name: 'bezierCurveTo',
+			args: [5, 0, 15, -10, 15, -10]
+		}, {
+			name: 'bezierCurveTo',
+			args: [15, -10, 19, -5, 19, -5]
+		}, {
+			name: 'lineTo',
+			args: [19, 10]
+		}, {
+			name: 'setFillStyle',
+			args: ['rgb(0, 0, 0)']
+		}, {
+			name: 'closePath',
+			args: []
+		}, {
+			name: 'fill',
+			args: []
+		}, {
+			name: 'setLineCap',
+			args: ['round']
+		}, {
+			name: 'setLineDash',
+			args: [
+				[2, 2]
+			]
+		}, {
+			name: 'setLineDashOffset',
+			args: [1.5]
+		}, {
+			name: 'setLineJoin',
+			args: ['bevel']
+		}, {
+			name: 'setLineWidth',
+			args: [4]
+		}, {
+			name: 'setStrokeStyle',
+			args: ['rgb(255, 255, 0)']
+		}, {
+			name: 'beginPath',
+			args: []
+		}, {
+			name: 'moveTo',
+			args: [0, 10]
+		}, {
+			name: 'bezierCurveTo',
+			args: [0, 10, 5, 0, 5, 0]
+		}, {
+			name: 'bezierCurveTo',
+			args: [5, 0, 15, -10, 15, -10]
+		}, {
+			name: 'bezierCurveTo',
+			args: [15, -10, 19, -5, 19, -5]
+		}, {
+			name: 'stroke',
+			args: []
+		}, {
+			name: 'restore',
+			args: []
+		}];
+		expect(mockContext.getCalls()).toEqual(expected);
+	});
+
 	it('should skip points correctly', function() {
 		var mockContext = window.createMockContext();
 

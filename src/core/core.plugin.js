@@ -40,7 +40,7 @@ module.exports = function(Chart) {
 		},
 
 		/**
-		 * Remove all registered p^lugins.
+		 * Remove all registered plugins.
 		 * @since 2.1.5
 		 */
 		clear: function() {
@@ -57,7 +57,7 @@ module.exports = function(Chart) {
 		},
 
 		/**
-		 * Returns all registered plugin intances.
+		 * Returns all registered plugin instances.
 		 * @returns {Array} array of plugin objects.
 		 * @since 2.1.5
 		 */

@@ -71,6 +71,7 @@ To create a chart, we need to instantiate the `Chart` class. To do this, we need
 var ctx = document.getElementById("myChart");
 var ctx = document.getElementById("myChart").getContext("2d");
 var ctx = $("#myChart");
+var ctx = "myChart";
 ```
 
 Once you have the element or context, you're ready to instantiate a pre-defined chart-type or create your own!

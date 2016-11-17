@@ -90,6 +90,71 @@ describe('Legend block tests', function() {
 		}]);
 	});
 
+	it('should filter items', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					label: 'dataset1',
+					backgroundColor: '#f31',
+					borderCapStyle: 'butt',
+					borderDash: [2, 2],
+					borderDashOffset: 5.5,
+					data: []
+				}, {
+					label: 'dataset2',
+					hidden: true,
+					borderJoinStyle: 'miter',
+					data: [],
+					legendHidden: true
+				}, {
+					label: 'dataset3',
+					borderWidth: 10,
+					borderColor: 'green',
+					pointStyle: 'crossRot',
+					data: []
+				}],
+				labels: []
+			},
+			options: {
+				legend: {
+					labels: {
+						filter: function(legendItem, data) {
+							var dataset = data.datasets[legendItem.datasetIndex];
+							return !dataset.legendHidden;
+						}
+					}
+				}
+			}
+		});
+
+		expect(chart.legend.legendItems).toEqual([{
+			text: 'dataset1',
+			fillStyle: '#f31',
+			hidden: false,
+			lineCap: 'butt',
+			lineDash: [2, 2],
+			lineDashOffset: 5.5,
+			lineJoin: undefined,
+			lineWidth: undefined,
+			strokeStyle: undefined,
+			pointStyle: undefined,
+			datasetIndex: 0
+		}, {
+			text: 'dataset3',
+			fillStyle: undefined,
+			hidden: false,
+			lineCap: undefined,
+			lineDash: undefined,
+			lineDashOffset: undefined,
+			lineJoin: undefined,
+			lineWidth: 10,
+			strokeStyle: 'green',
+			pointStyle: 'crossRot',
+			datasetIndex: 2
+		}]);
+	});
+
 	it('should draw correctly', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
@@ -118,20 +183,21 @@ describe('Legend block tests', function() {
 
 		expect(chart.legend.legendHitBoxes.length).toBe(3);
 
-		[	{ h: 12, l: 101, t: 10, w: 93 },
-			{ h: 12, l: 205, t: 10, w: 93 },
-			{ h: 12, l: 308, t: 10, w: 93 }
+		[
+			{h: 12, l: 101, t: 10, w: 93},
+			{h: 12, l: 205, t: 10, w: 93},
+			{h: 12, l: 308, t: 10, w: 93}
 		].forEach(function(expected, i) {
 			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
 			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
 			expect(chart.legend.legendHitBoxes[i].top).toBeCloseToPixel(expected.t);
 			expect(chart.legend.legendHitBoxes[i].width).toBeCloseToPixel(expected.w);
-		})
+		});
 
 		// NOTE(SB) We should get ride of the following tests and use image diff instead.
 		// For now, as discussed with Evert Timberg, simply comment out.
 		// See http://humblesoftware.github.io/js-imagediff/test.html
-		/*chart.legend.ctx = window.createMockContext();
+		/* chart.legend.ctx = window.createMockContext();
 		chart.update();
 
 		expect(chart.legend.ctx .getCalls()).toEqual([{

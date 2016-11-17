@@ -178,7 +178,7 @@ module.exports = function(Chart) {
 					pixel += paddingLeft;
 				}
 			} else {
-				// Bottom - top since pixels increase downard on a screen
+				// Bottom - top since pixels increase downward on a screen
 				innerDimension = me.height - (paddingTop + paddingBottom);
 				if (start === 0 && !tickOpts.reverse) {
 					range = helpers.log10(me.end) - helpers.log10(me.minNotZero);
