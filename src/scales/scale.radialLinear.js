@@ -376,17 +376,18 @@ module.exports = function(Chart) {
 							ctx.closePath();
 						}
 						if (opts.backgroundColors && opts.backgroundColors.length === me.getValueCount()) {
-							var outerPosition = me.getPointPosition(i, outerDistance);
-							var previousOuterPosition = this.getPointPosition(i === 0 ? me.getValueCount() - 1 : i - 1, outerDistance);
-							var nextOuterPosition = this.getPointPosition(i === me.getValueCount() - 1 ? 0 : i + 1, outerDistance);
+							var outerPointPosition = me.getPointPosition(i, outerDistance);
+							var previousOuterPointPosition = this.getPointPosition(i === 0 ? me.getValueCount() - 1 : i - 1, outerDistance);
+							var nextOuterPointPosition = this.getPointPosition(i === me.getValueCount() - 1 ? 0 : i + 1, outerDistance);
 
-							var previousOuterHalfway = { x: (previousOuterPosition.x + outerPosition.x) / 2, y: (previousOuterPosition.y + outerPosition.y) / 2 };
-							var nextOuterHalfway = { x: (outerPosition.x + nextOuterPosition.x) / 2, y: (outerPosition.y + nextOuterPosition.y) / 2 };
+							// Each color starts from the midpoint of the previous scale entry to the midpoint of the next
+							var previousOuterHalfway = {x: (previousOuterPointPosition.x + outerPointPosition.x) / 2, y: (previousOuterPointPosition.y + outerPointPosition.y) / 2};
+							var nextOuterHalfway = {x: (outerPointPosition.x + nextOuterPointPosition.x) / 2, y: (outerPointPosition.y + nextOuterPointPosition.y) / 2};
 
 							ctx.beginPath();
 							ctx.moveTo(me.xCenter, me.yCenter);
 							ctx.lineTo(previousOuterHalfway.x, previousOuterHalfway.y);
-							ctx.lineTo(outerPosition.x, outerPosition.y);
+							ctx.lineTo(outerPointPosition.x, outerPointPosition.y);
 							ctx.lineTo(nextOuterHalfway.x, nextOuterHalfway.y);
 							ctx.fillStyle = opts.backgroundColors[i];
 							ctx.fill();
