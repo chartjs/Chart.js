@@ -79,6 +79,7 @@ Name | Type | Default | Description
 autoSkip | Boolean | true | If true, automatically calculates how many labels that can be shown and hides labels accordingly. Turn it off to show all labels no matter what
 autoSkipPadding | Number | 0 | Padding between the ticks on the horizontal axis when `autoSkip` is enabled. *Note: Only applicable to horizontal scales.*
 callback | Function | `function(value) { return helpers.isArray(value) ? value : '' + value; }` | Returns the string representation of the tick value as it should be displayed on the chart. See [callback](#scales-creating-custom-tick-formats) section below.
+alignment | String | 'center' | Possible values are 'start', 'center', 'end', and 'auto'. 'center' matches the original v2 behaviour. 'start' uses left alignment when horizontal and top alignment when vertical. 'end' uses right alignment when horizontal and bottom alignment when vertical. 'auto' uses center alignment for the inner ticks, left/top alignment for the first tick and right/bottom alignment for the last tick
 display | Boolean | true | If true, show the ticks.
 fontColor | Color | "#666" | Font color for the tick labels.
 fontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Font family for the tick labels, follows CSS font-family options.

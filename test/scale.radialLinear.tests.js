@@ -41,7 +41,8 @@ describe('Test the radial linear scale', function() {
 				display: false,
 			},
 			ticks: {
-				backdropColor: 'rgba(255,255,255,0.75)',
+				alignment: 'center',
+				backdropColor: "rgba(255,255,255,0.75)",
 				backdropPaddingY: 2,
 				backdropPaddingX: 2,
 				beginAtZero: false,

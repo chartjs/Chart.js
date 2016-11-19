@@ -36,6 +36,7 @@ module.exports = function(Chart) {
 		// label settings
 		ticks: {
 			beginAtZero: false,
+			alignment: 'center',
 			minRotation: 0,
 			maxRotation: 50,
 			mirror: false,
@@ -199,6 +200,7 @@ module.exports = function(Chart) {
 			var context = me.ctx;
 			var globalDefaults = Chart.defaults.global;
 			var optionTicks = me.options.ticks;
+			var tickAlignment = optionTicks.alignment;
 
 			// Get the width of each grid by calculating the difference
 			// between x offsets between 0 and 1.
@@ -213,13 +215,25 @@ module.exports = function(Chart) {
 			var firstRotated;
 
 			me.labelRotation = optionTicks.minRotation || 0;
+			var extraPadding = 3;
 			me.paddingRight = 0;
 			me.paddingLeft = 0;
 
 			if (me.options.display) {
 				if (me.isHorizontal()) {
-					me.paddingRight = lastWidth / 2 + 3;
-					me.paddingLeft = firstWidth / 2 + 3;
+					if (tickAlignment === 'start') {
+						me.paddingLeft = extraPadding;
+						me.paddingRight = lastWidth;
+					} else if (tickAlignment === 'end') {
+						me.paddingLeft = firstWidth;
+						me.paddingRight = extraPadding; // so that we see the grid line
+					} else if (tickAlignment === 'center') {
+						me.paddingLeft = firstWidth / 2 + extraPadding;
+						me.paddingRight = lastWidth / 2 + extraPadding;
+					} else if (tickAlignment === 'auto') {
+						me.paddingLeft = extraPadding;
+						me.paddingRight = extraPadding;
+					}
 
 					if (!me.longestTextCache) {
 						me.longestTextCache = {};
@@ -258,11 +272,6 @@ module.exports = function(Chart) {
 					}
 				}
 			}
-
-			if (me.margins) {
-				me.paddingLeft = Math.max(me.paddingLeft - me.margins.left, 0);
-				me.paddingRight = Math.max(me.paddingRight - me.margins.right, 0);
-			}
 		},
 		afterCalculateTickRotation: function() {
 			helpers.callCallback(this.options.afterCalculateTickRotation, [this]);
@@ -297,6 +306,7 @@ module.exports = function(Chart) {
 			var scaleLabelFontSize = helpers.getValueOrDefault(scaleLabelOpts.fontSize, globalDefaults.defaultFontSize);
 
 			var tickMarkLength = opts.gridLines.tickMarkLength;
+			var tickAlignment = tickOpts.alignment;
 
 			// Width
 			if (isHorizontal) {
@@ -343,14 +353,16 @@ module.exports = function(Chart) {
 					me.ctx.font = tickLabelFont;
 
 					var firstLabelWidth = me.ctx.measureText(me.ticks[0]).width;
-					var lastLabelWidth = me.ctx.measureText(me.ticks[me.ticks.length - 1]).width;
 
 					// Ensure that our ticks are always inside the canvas. When rotated, ticks are right aligned which means that the right padding is dominated
 					// by the font height
 					var cosRotation = Math.cos(helpers.toRadians(me.labelRotation));
 					var sinRotation = Math.sin(helpers.toRadians(me.labelRotation));
-					me.paddingLeft = me.labelRotation !== 0 ? (cosRotation * firstLabelWidth) + 3 : firstLabelWidth / 2 + 3; // add 3 px to move away from canvas edges
-					me.paddingRight = me.labelRotation !== 0 ? (sinRotation * (tickFontSize / 2)) + 3 : lastLabelWidth / 2 + 3; // when rotated
+
+					if (me.labelRotation !== 0) {
+						me.paddingLeft = (cosRotation * firstLabelWidth) + 3; // add 3 px to move away from canvas edges
+						me.paddingRight = (sinRotation * (tickFontSize / 2)) + 3; // when rotated
+					}
 				} else {
 					// A vertical axis is more constrained by the width. Labels are the dominant factor here, so get that length first
 					var maxLabelWidth = me.maxWidth - minSize.width;
@@ -372,8 +384,18 @@ module.exports = function(Chart) {
 						minSize.width = me.maxWidth;
 					}
 
-					me.paddingTop = tickFontSize / 2;
-					me.paddingBottom = tickFontSize / 2;
+					if (tickAlignment === 'start') {
+						me.paddingTop = 1; // so we see the grid line
+						me.paddingBottom = tickFontSize;
+					} else if (tickAlignment === 'end') {
+						me.paddingTop = tickFontSize;
+						me.paddingBottom = 1; // so we see the grid line
+					} else if (tickAlignment === 'center') {
+						me.paddingTop = me.paddingBottom = tickFontSize / 2;
+					} else if (tickAlignment === 'auto') {
+						me.paddingTop = 1;
+						me.paddingBottom = 1;
+					}
 				}
 			}
 
@@ -494,8 +516,6 @@ module.exports = function(Chart) {
 			var scaleLabel = options.scaleLabel;
 
 			var isRotated = me.labelRotation !== 0;
-			var skipRatio;
-			var useAutoskipper = optionTicks.autoSkip;
 			var isHorizontal = me.isHorizontal();
 
 			// figure out the maximum number of gridlines to show
@@ -527,41 +547,21 @@ module.exports = function(Chart) {
 			context.fillStyle = tickFontColor;
 
 			var itemsToDraw = [];
-
-			if (isHorizontal) {
-				skipRatio = false;
-
-				// Only calculate the skip ratio with the half width of longestRotateLabel if we got an actual rotation
-				// See #2584
-				if (isRotated) {
-					longestRotatedLabel /= 2;
-				}
-
-				if ((longestRotatedLabel + optionTicks.autoSkipPadding) * me.ticks.length > (me.width - (me.paddingLeft + me.paddingRight))) {
-					skipRatio = 1 + Math.floor(((longestRotatedLabel + optionTicks.autoSkipPadding) * me.ticks.length) / (me.width - (me.paddingLeft + me.paddingRight)));
-				}
-
-				// if they defined a max number of optionTicks,
-				// increase skipRatio until that number is met
-				if (maxTicks && me.ticks.length > maxTicks) {
-					while (!skipRatio || me.ticks.length / (skipRatio || 1) > maxTicks) {
-						if (!skipRatio) {
-							skipRatio = 1;
-						}
-						skipRatio += 1;
-					}
-				}
-
-				if (!useAutoskipper) {
-					skipRatio = false;
-				}
-			}
-
-
 			var xTickStart = options.position === 'right' ? me.left : me.right - tl;
 			var xTickEnd = options.position === 'right' ? me.left + tl : me.right;
 			var yTickStart = options.position === 'bottom' ? me.top : me.bottom - tl;
 			var yTickEnd = options.position === 'bottom' ? me.top + tl : me.bottom;
+			var tickAlignment = optionTicks.alignment;
+			var horizontalAlignmentForTickAlignment = {
+				start: 'left',
+				end: 'right',
+				center: 'center'
+			};
+			var verticalAlignmentForTickAlignment = {
+				start: 'top',
+				end: 'bottom',
+				center: 'middle'
+			};
 
 			helpers.each(me.ticks, function(label, index) {
 				// If the callback returned a null or undefined value, do not draw this line
@@ -569,15 +569,9 @@ module.exports = function(Chart) {
 					return;
 				}
 
-				var isLastTick = me.ticks.length === index + 1;
+				var lineWidth;
+				var lineColor;
 
-				// Since we always show the last tick,we need may need to hide the last shown one before
-				var shouldSkip = (skipRatio > 1 && index % skipRatio > 0) || (index % skipRatio === 0 && index + skipRatio >= me.ticks.length);
-				if (shouldSkip && !isLastTick || (label === undefined || label === null)) {
-					return;
-				}
-
-				var lineWidth, lineColor;
 				if (index === (typeof me.zeroLineIndex !== 'undefined' ? me.zeroLineIndex : 0)) {
 					// Draw the first index specially
 					lineWidth = gridLines.zeroLineWidth;
@@ -589,15 +583,36 @@ module.exports = function(Chart) {
 
 				// Common properties
 				var tx1, ty1, tx2, ty2, x1, y1, x2, y2, labelX, labelY;
-				var textAlign = 'middle';
-				var textBaseline = 'middle';
+				var textAlign, textBaseline = 'middle';
+				var labelRect = {
+					left: 0,
+					top: 0,
+					right: 0,
+					bottom: 0
+				};
 
 				if (isHorizontal) {
 					if (!isRotated) {
 						textBaseline = options.position === 'top' ? 'bottom' : 'top';
 					}
 
+					// Alignment is 'right' if rotated or alignment set to 'end'
+					// 'left' if alignment set to 'start'
+					// 'center' if alignment set to 'center'
+					// 'left' for first tick and 'right' for last tick if alignment is auto
 					textAlign = isRotated ? 'right' : 'center';
+
+					if (!isRotated && !gridLines.offsetGridLines) {
+						if (tickAlignment === 'auto') {
+							if (index === 0) {
+								textAlign = 'left';
+							} else if (index === me.ticks.length - 1) {
+								textAlign = 'right';
+							}
+						} else {
+							textAlign = horizontalAlignmentForTickAlignment[tickAlignment];
+						}
+					}
 
 					var xLineValue = me.getPixelForTick(index) + helpers.aliasPixel(lineWidth); // xvalues for grid lines
 					labelX = me.getPixelForTick(index, gridLines.offsetGridLines) + optionTicks.labelOffset; // x values for optionTicks (need to consider offsetLabel option)
@@ -626,6 +641,18 @@ module.exports = function(Chart) {
 						textAlign = 'left';
 					}
 
+					if (!gridLines.offsetGridLines) {
+						if (tickAlignment === 'auto') {
+							if (index === 0) {
+								textBaseline = 'top'; // first tick is the top value
+							} else if (index === me.ticks.length - 1) {
+								textBaseline = 'bottom';
+							}
+						} else {
+							textBaseline = verticalAlignmentForTickAlignment[tickAlignment];
+						}
+					}
+
 					var yLineValue = me.getPixelForTick(index); // xvalues for grid lines
 					yLineValue += helpers.aliasPixel(lineWidth);
 					labelY = me.getPixelForTick(index, gridLines.offsetGridLines);
@@ -635,6 +662,18 @@ module.exports = function(Chart) {
 					x1 = chartArea.left;
 					x2 = chartArea.right;
 					ty1 = ty2 = y1 = y2 = yLineValue;
+
+					// Figure out the label rect based on the alignment
+					if (textBaseline === 'top') {
+						labelRect.top = labelY;
+						labelRect.bottom = labelY + tickFontSize;
+					} else if (textBaseline === 'bottom') {
+						labelRect.top = labelY - tickFontSize;
+						labelRect.bottom = labelY;
+					} else if (textBaseline === 'middle') {
+						labelRect.top = labelY - tickFontSize / 2;
+						labelRect.bottom = labelY + tickFontSize / 2;
+					}
 				}
 
 				itemsToDraw.push({
@@ -648,6 +687,7 @@ module.exports = function(Chart) {
 					y2: y2,
 					labelX: labelX,
 					labelY: labelY,
+					labelRect: labelRect,
 					glWidth: lineWidth,
 					glColor: lineColor,
 					glBorderDash: borderDash,
@@ -658,6 +698,78 @@ module.exports = function(Chart) {
 					textAlign: textAlign
 				});
 			});
+
+			// Auto Skip
+			if (optionTicks.autoSkip && itemsToDraw.length) {
+				var lastDisplayedTick = 0;
+				var autoSkipPadding = optionTicks.autoSkipPadding;
+				var firstLabelRect = itemsToDraw[0].labelRect,
+					lastLabelRect = itemsToDraw[itemsToDraw.length - 1].labelRect,
+					lastDisplayedLabelRect;
+
+				itemsToDraw = itemsToDraw.filter(function(itemToDraw, index) {
+					var isLastItem = itemsToDraw.length === index + 1;
+					var display = true;
+
+					// Since we always show the last tick,we need may need to hide the last shown one before
+					/*var shouldSkip = (skipRatio > 1 && index % skipRatio > 0) || (index % skipRatio === 0 && index + skipRatio >= me.ticks.length);
+					if (shouldSkip && !isLastTick || (label === undefined || label === null)) {
+						return;
+					}
+					if (isHorizontal) {
+						skipRatio = false;
+
+						// Only calculate the skip ratio with the half width of longestRotateLabel if we got an actual rotation
+						// See #2584
+						if (isRotated) {
+							longestRotatedLabel /= 2;
+						}
+
+						if ((longestRotatedLabel + optionTicks.autoSkipPadding) * me.ticks.length > (me.width - (me.paddingLeft + me.paddingRight))) {
+							skipRatio = 1 + Math.floor(((longestRotatedLabel + optionTicks.autoSkipPadding) * me.ticks.length) / (me.width - (me.paddingLeft + me.paddingRight)));
+						}
+
+						// if they defined a max number of optionTicks,
+						// increase skipRatio until that number is met
+						if (maxTicks && me.ticks.length > maxTicks) {
+							while (!skipRatio || me.ticks.length / (skipRatio || 1) > maxTicks) {
+								if (!skipRatio) {
+									skipRatio = 1;
+								}
+								skipRatio += 1;
+							}
+						}
+
+						if (!useAutoskipper) {
+							skipRatio = false;
+						}
+					}*/
+					if (isHorizontal) {
+
+					} else {
+						if (index !== 0 && !isLastItem) {
+							// Check to make sure we don't overlap the first tick, the last tick, or the
+							// last displayed tick. If we overlap any of those we skip
+							var top = itemToDraw.labelY - tickFontSize / 2;
+							var bottom = itemToDraw.labelY + tickFontSize / 2;
+
+							if (Math.ceil(top - firstLabelRect.bottom) < autoSkipPadding ||
+								Math.ceil(lastLabelRect.top - bottom) < autoSkipPadding ||
+								(lastDisplayedTick && Math.ceil(top - lastDisplayedLabelRect.bottom) < autoSkipPadding)) {
+								display = false;
+							}
+
+							if (display) {
+								// we are displaying, so cache last visible index and rect
+								lastDisplayedTick = index;
+								lastDisplayedLabelRect = itemToDraw.labelRect;
+							}
+						}
+					}
+
+					return display;
+				});
+			}
 
 			// Draw all of the tick labels, tick marks, and grid lines at the correct places
 			helpers.each(itemsToDraw, function(itemToDraw) {
