@@ -139,10 +139,10 @@ module.exports = function(Chart) {
 			var categorySpacing = (tickWidth - (tickWidth * xScale.options.categoryPercentage)) / 2;
 			var fullBarWidth = categoryWidth / datasetCount;
 
-			if (xScale.ticks.length !== me.chart.data.labels.length) {
-				var perc = xScale.ticks.length / me.chart.data.labels.length;
-				fullBarWidth = fullBarWidth * perc;
-			}
+			// if (xScale.ticks.length !== me.chart.data.labels.length) {
+			// 	var perc = xScale.ticks.length / me.chart.data.labels.length;
+			// 	fullBarWidth = fullBarWidth * perc;
+			// }
 
 			var barWidth = fullBarWidth * xScale.options.barPercentage;
 			var barSpacing = fullBarWidth - (fullBarWidth * xScale.options.barPercentage);
