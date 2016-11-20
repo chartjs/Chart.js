@@ -206,7 +206,7 @@ describe('Core helper tests', function() {
 						minRotation: 0,
 						maxRotation: 50,
 						mirror: false,
-						padding: 10,
+						padding: 0,
 						reverse: false,
 						display: true,
 						callback: merged.scales.yAxes[1].ticks.callback, // make it nicer, then check explicitly below
@@ -242,7 +242,7 @@ describe('Core helper tests', function() {
 						minRotation: 0,
 						maxRotation: 50,
 						mirror: false,
-						padding: 10,
+						padding: 0,
 						reverse: false,
 						display: true,
 						callback: merged.scales.yAxes[2].ticks.callback, // make it nicer, then check explicitly below

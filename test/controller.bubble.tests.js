@@ -134,9 +134,9 @@ describe('Bubble controller tests', function() {
 		var meta = chart.getDatasetMeta(0);
 
 		[
-			{r: 5, x: 38, y: 32},
-			{r: 1, x: 189, y: 484},
-			{r: 2, x: 341, y: 461},
+			{r: 5, x: 28, y: 32},
+			{r: 1, x: 183, y: 484},
+			{r: 2, x: 338, y: 461},
 			{r: 1, x: 492, y: 32}
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.radius).toBe(expected.r);

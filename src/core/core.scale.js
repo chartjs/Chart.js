@@ -39,7 +39,7 @@ module.exports = function(Chart) {
 			minRotation: 0,
 			maxRotation: 50,
 			mirror: false,
-			padding: 10,
+			padding: 0,
 			reverse: false,
 			display: true,
 			autoSkip: true,
@@ -51,8 +51,23 @@ module.exports = function(Chart) {
 	};
 
 	Chart.Scale = Chart.Element.extend({
+		/**
+		 * Get the padding needed for the scale
+		 * @method getPadding
+		 * @private
+		 * @returns {Padding} the necessary padding
+		 */
+		getPadding: function() {
+			var me = this;
+			return {
+				left: me.paddingLeft || 0,
+				top: me.paddingTop || 0,
+				right: me.paddingRight || 0,
+				bottom: me.paddingBottom || 0
+			};
+		},
 
-		// These methods are ordered by lifecycle. Utilities then follow.
+		// These methods are ordered by lifecyle. Utilities then follow.
 		// Any function defined here is inherited by all scale types.
 		// Any function can be extended by the scale type
 
@@ -338,7 +353,6 @@ module.exports = function(Chart) {
 					me.paddingRight = me.labelRotation !== 0 ? (sinRotation * (tickFontSize / 2)) + 3 : lastLabelWidth / 2 + 3; // when rotated
 				} else {
 					// A vertical axis is more constrained by the width. Labels are the dominant factor here, so get that length first
-					var maxLabelWidth = me.maxWidth - minSize.width;
 
 					// Account for padding
 					var mirror = tickOpts.mirror;
@@ -349,14 +363,7 @@ module.exports = function(Chart) {
 						largestTextWidth = 0;
 					}
 
-					if (largestTextWidth < maxLabelWidth) {
-						// We don't need all the room
-						minSize.width += largestTextWidth;
-					} else {
-						// Expand to max size
-						minSize.width = me.maxWidth;
-					}
-
+					minSize.width += largestTextWidth;
 					me.paddingTop = tickFontSize / 2;
 					me.paddingBottom = tickFontSize / 2;
 				}
@@ -594,22 +601,19 @@ module.exports = function(Chart) {
 					y1 = chartArea.top;
 					y2 = chartArea.bottom;
 				} else {
-					if (options.position === 'left') {
-						if (optionTicks.mirror) {
-							labelX = me.right + optionTicks.padding;
-							textAlign = 'left';
-						} else {
-							labelX = me.right - optionTicks.padding;
-							textAlign = 'right';
-						}
-					// right side
-					} else if (optionTicks.mirror) {
-						labelX = me.left - optionTicks.padding;
-						textAlign = 'right';
+					var isLeft = options.position === 'left';
+					var tickPadding = optionTicks.padding;
+					var labelXOffset;
+
+					if (optionTicks.mirror) {
+						textAlign = isLeft ? 'left' : 'right';
+						labelXOffset = tickPadding;
 					} else {
-						labelX = me.left + optionTicks.padding;
-						textAlign = 'left';
+						textAlign = isLeft ? 'right' : 'left';
+						labelXOffset = tl + tickPadding;
 					}
+
+					labelX = isLeft ? me.right - labelXOffset : me.left + labelXOffset;
 
 					var yLineValue = me.getPixelForTick(index); // xvalues for grid lines
 					yLineValue += helpers.aliasPixel(lineWidth);
