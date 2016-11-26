@@ -412,6 +412,7 @@ describe('Core helper tests', function() {
 			{_model: {x: 27, y: 125, skip: false}},
 			{_model: {x: 30, y: 105, skip: false}},
 			{_model: {x: 33, y: 110, skip: false}},
+			{_model: {x: 33, y: 110, skip: false}},
 			{_model: {x: 36, y: 170, skip: false}}
 		];
 		helpers.splineCurveMonotone(dataPoints);
@@ -532,9 +533,20 @@ describe('Core helper tests', function() {
 				y: 110,
 				skip: false,
 				controlPointPreviousX: 32,
-				controlPointPreviousY: 105,
+				controlPointPreviousY: 110,
+				controlPointNextX: 33,
+				controlPointNextY: 110
+			}
+		},
+		{
+			_model: {
+				x: 33,
+				y: 110,
+				skip: false,
+				controlPointPreviousX: 33,
+				controlPointPreviousY: 110,
 				controlPointNextX: 34,
-				controlPointNextY: 115
+				controlPointNextY: 110
 			}
 		},
 		{
