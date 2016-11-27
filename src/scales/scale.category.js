@@ -54,10 +54,10 @@ module.exports = function(Chart) {
 			var data = me.chart.data;
 			var isHorizontal = me.isHorizontal();
 
-			if ((data.xLabels && isHorizontal) || (data.yLabels && !isHorizontal)) {
+			if (data.yLabels && !isHorizontal) {
 				return me.getRightValue(data.datasets[datasetIndex].data[index]);
 			}
-			return me.ticks[index];
+			return me.ticks[index - me.minIndex];
 		},
 
 		// Used to get data value locations.  Value can either be an index or a numerical value
