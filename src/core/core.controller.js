@@ -312,16 +312,16 @@ module.exports = function(Chart) {
 
 			helpers.retinaScale(chart);
 
-			// Notify any plugins about the resize
-			var newSize = {width: newWidth, height: newHeight};
-			Chart.plugins.notify('resize', [me, newSize]);
-
-			// Notify of resize
-			if (me.options.onResize) {
-				me.options.onResize(me, newSize);
-			}
-
 			if (!silent) {
+				// Notify any plugins about the resize
+				var newSize = {width: newWidth, height: newHeight};
+				Chart.plugins.notify('resize', [me, newSize]);
+
+				// Notify of resize
+				if (me.options.onResize) {
+					me.options.onResize(me, newSize);
+				}
+
 				me.stop();
 				me.update(me.options.responsiveAnimationDuration);
 			}
