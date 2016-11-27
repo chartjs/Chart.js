@@ -74,7 +74,7 @@ module.exports = function(Chart) {
 			rectangle._datasetIndex = me.index;
 			rectangle._index = index;
 
-			var ruler = me.getRuler(index);
+			var ruler = me.getRuler(index); // The index argument for compatible
 			rectangle._model = {
 				x: me.calculateBarX(index, me.index, ruler),
 				y: reset ? scaleBase : me.calculateBarY(index, me.index),
@@ -121,28 +121,16 @@ module.exports = function(Chart) {
 			return yScale.getBasePixel();
 		},
 
-		getRuler: function(index) {
+		getRuler: function() {
 			var me = this;
 			var meta = me.getMeta();
 			var xScale = me.getScaleForId(meta.xAxisID);
 			var datasetCount = me.getBarCount();
 
-			var tickWidth;
-
-			if (xScale.options.type === 'category') {
-				tickWidth = xScale.getPixelForTick(index + 1) - xScale.getPixelForTick(index);
-			} else {
-				// Average width
-				tickWidth = xScale.width / xScale.ticks.length;
-			}
+			var tickWidth = xScale.width / xScale.ticks.length;
 			var categoryWidth = tickWidth * xScale.options.categoryPercentage;
 			var categorySpacing = (tickWidth - (tickWidth * xScale.options.categoryPercentage)) / 2;
 			var fullBarWidth = categoryWidth / datasetCount;
-
-			if (xScale.ticks.length !== me.chart.data.labels.length) {
-				var perc = xScale.ticks.length / me.chart.data.labels.length;
-				fullBarWidth = fullBarWidth * perc;
-			}
 
 			var barWidth = fullBarWidth * xScale.options.barPercentage;
 			var barSpacing = fullBarWidth - (fullBarWidth * xScale.options.barPercentage);
@@ -163,7 +151,7 @@ module.exports = function(Chart) {
 			if (xScale.options.barThickness) {
 				return xScale.options.barThickness;
 			}
-			return xScale.options.stacked ? ruler.categoryWidth : ruler.barWidth;
+			return xScale.options.stacked ? ruler.categoryWidth * xScale.options.barPercentage : ruler.barWidth;
 		},
 
 		// Get bar index from the given dataset index accounting for the fact that not all bars are visible
@@ -346,7 +334,7 @@ module.exports = function(Chart) {
 			rectangle._datasetIndex = me.index;
 			rectangle._index = index;
 
-			var ruler = me.getRuler(index);
+			var ruler = me.getRuler(index); // The index argument for compatible
 			rectangle._model = {
 				x: reset ? scaleBase : me.calculateBarX(index, me.index),
 				y: me.calculateBarY(index, me.index, ruler),
@@ -449,27 +437,16 @@ module.exports = function(Chart) {
 			return xScale.getBasePixel();
 		},
 
-		getRuler: function(index) {
+		getRuler: function() {
 			var me = this;
 			var meta = me.getMeta();
 			var yScale = me.getScaleForId(meta.yAxisID);
 			var datasetCount = me.getBarCount();
 
-			var tickHeight;
-			if (yScale.options.type === 'category') {
-				tickHeight = yScale.getPixelForTick(index + 1) - yScale.getPixelForTick(index);
-			} else {
-				// Average width
-				tickHeight = yScale.width / yScale.ticks.length;
-			}
+			var tickHeight = yScale.height / yScale.ticks.length;
 			var categoryHeight = tickHeight * yScale.options.categoryPercentage;
 			var categorySpacing = (tickHeight - (tickHeight * yScale.options.categoryPercentage)) / 2;
 			var fullBarHeight = categoryHeight / datasetCount;
-
-			if (yScale.ticks.length !== me.chart.data.labels.length) {
-				var perc = yScale.ticks.length / me.chart.data.labels.length;
-				fullBarHeight = fullBarHeight * perc;
-			}
 
 			var barHeight = fullBarHeight * yScale.options.barPercentage;
 			var barSpacing = fullBarHeight - (fullBarHeight * yScale.options.barPercentage);
@@ -491,7 +468,7 @@ module.exports = function(Chart) {
 			if (yScale.options.barThickness) {
 				return yScale.options.barThickness;
 			}
-			return yScale.options.stacked ? ruler.categoryHeight : ruler.barHeight;
+			return yScale.options.stacked ? ruler.categoryHeight * yScale.options.barPercentage : ruler.barHeight;
 		},
 
 		calculateBarX: function(index, datasetIndex) {
