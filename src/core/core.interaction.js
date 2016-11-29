@@ -21,7 +21,6 @@ module.exports = function(Chart) {
 			for (j = 0, jlen = meta.data.length; j < jlen; ++j) {
 				var element = meta.data[j];
 				if (!element._view.skip) {
-					element.adjustIndex(chart.config);
 					handler(element);
 				}
 			}

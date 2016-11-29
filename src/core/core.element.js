@@ -88,24 +88,6 @@ module.exports = function(Chart) {
 
 		hasValue: function() {
 			return helpers.isNumber(this._model.x) && helpers.isNumber(this._model.y);
-		},
-
-
-		skipIndexAdjustment: function(config) {
-			var moreThanOneAxes = config.options.scales.xAxes.length > 1;
-			var min = config.options.scales.xAxes[0].ticks.min;
-			return this._adjustedIndex || min === undefined || moreThanOneAxes;
-		},
-
-		adjustIndex: function(config) {
-			var min = config.options.scales.xAxes[0].ticks.min;
-
-			if (this.skipIndexAdjustment(config)) {
-				return;
-			}
-
-			this._index -= config.data.labels.indexOf(min);
-			this._adjustedIndex = true;
 		}
 	});
 

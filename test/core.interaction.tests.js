@@ -43,57 +43,6 @@ describe('Core.Interaction', function() {
 			expect(elements).toEqual([point, meta1.data[1]]);
 		});
 
-		it ('should start at index 0 within sliced dataset when min is defined', function() {
-			var chartInstance = window.acquireChart({
-				type: 'line',
-				options: {
-					scales: {
-						xAxes: [{
-							ticks: {
-								min: 'March',
-								max: 'May'
-							},
-							categoryPercentage: 1,
-							barPercentage: 1,
-						}]
-					}
-				},
-				data: {
-					datasets: [{
-						label: 'Dataset 1',
-						data: [10, 30, 39, 20, 25, 34, 1],
-					}, {
-						label: 'Dataset 2',
-						data: [10, 30, 39, 20, 25, 34, 1],
-					}],
-					labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-				}
-			});
-
-			// Trigger an event over top of the
-			var meta0 = chartInstance.getDatasetMeta(0);
-			var point = meta0.data[2];
-
-			var node = chartInstance.chart.canvas;
-			var rect = node.getBoundingClientRect();
-
-			var evt = {
-				view: window,
-				bubbles: true,
-				cancelable: true,
-				clientX: rect.left + point._model.x,
-				clientY: rect.top + point._model.y,
-				currentTarget: node
-			};
-
-			var elements = Chart.Interaction.modes.point(chartInstance, evt);
-
-			elements.forEach(function(element) {
-				expect(element._index).toEqual(0);
-				expect(element._adjustedIndex).toBeTruthy();
-			});
-		});
-
 		it ('should return an empty array when no items are found', function() {
 			var chartInstance = window.acquireChart({
 				type: 'line',
