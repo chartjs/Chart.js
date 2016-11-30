@@ -286,20 +286,23 @@ module.exports = function(Chart) {
 			var points = meta.data || [];
 			var easingDecimal = ease || 1;
 			var i, ilen;
+			var chartArea = me.chart.chartArea;
 
 			// Transition Point Locations
 			for (i=0, ilen=points.length; i<ilen; ++i) {
 				points[i].transition(easingDecimal);
 			}
 
+			Chart.canvasHelpers.clipArea(me.chart.chart.ctx, me.chart.chartArea);
 			// Transition and Draw the line
 			if (lineEnabled(me.getDataset(), me.chart.options)) {
 				meta.dataset.transition(easingDecimal).draw();
 			}
+			Chart.canvasHelpers.unclipArea(me.chart.chart.ctx);
 
 			// Draw the points
 			for (i=0, ilen=points.length; i<ilen; ++i) {
-				points[i].draw();
+				points[i].draw(chartArea);
 			}
 		},
 

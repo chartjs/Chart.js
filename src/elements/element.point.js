@@ -56,13 +56,14 @@ module.exports = function(Chart) {
 				padding: vm.radius + vm.borderWidth
 			};
 		},
-		draw: function() {
+		draw: function(chartArea) {
 			var vm = this._view;
 			var ctx = this._chart.ctx;
 			var pointStyle = vm.pointStyle;
 			var radius = vm.radius;
 			var x = vm.x;
 			var y = vm.y;
+			var color = Chart.helpers.color;
 
 			if (vm.skip) {
 				return;
@@ -71,6 +72,32 @@ module.exports = function(Chart) {
 			ctx.strokeStyle = vm.borderColor || defaultColor;
 			ctx.lineWidth = helpers.getValueOrDefault(vm.borderWidth, globalOpts.elements.point.borderWidth);
 			ctx.fillStyle = vm.backgroundColor || defaultColor;
+
+			// Cliping for Points.
+			var isOutofChartArea = function(position, area, errMarginPercent) {
+				if ((position.x < area.left) || (area.right*errMarginPercent < position.x) || (position.y < area.top) || (area.bottom*errMarginPercent < position.y)) {
+					return true;
+				}
+				return false;
+			};
+			var errMarginPercent = 1.01; // 1.01 is margin for Accumulated error. (Especially Edge, IE.)
+			var ratio = 0;
+			// going out from inner charArea?
+			if ((chartArea !== undefined)&&(isOutofChartArea(this._view, chartArea, errMarginPercent))&&(isOutofChartArea(this._model, chartArea, errMarginPercent))) {
+				// Point fade out
+				if (this._model.x < chartArea.left) {
+					ratio = (x - this._model.x) / (chartArea.left - this._model.x);
+				} else if (chartArea.right*errMarginPercent < this._model.x) {
+					ratio = (this._model.x - x) / (this._model.x - chartArea.right);
+				} else if (this._model.y < chartArea.top) {
+					ratio = (y - this._model.y) / (chartArea.top - this._model.y);
+				} else if (chartArea.bottom*errMarginPercent < this._model.y) {
+					ratio = (this._model.y - y) / (this._model.y - chartArea.bottom);
+				}
+				ratio = Math.round(ratio*100)/100;
+				ctx.strokeStyle = color(ctx.strokeStyle).alpha(ratio).rgbString();
+				ctx.fillStyle = color(ctx.fillStyle).alpha(ratio).rgbString();
+			}
 
 			Chart.canvasHelpers.drawPoint(ctx, pointStyle, radius, x, y);
 		}
