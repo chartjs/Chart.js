@@ -286,7 +286,6 @@ module.exports = function(Chart) {
 			var points = meta.data || [];
 			var easingDecimal = ease || 1;
 			var i, ilen;
-			var chartArea = me.chart.chartArea;
 
 			// Transition Point Locations
 			for (i=0, ilen=points.length; i<ilen; ++i) {
@@ -302,7 +301,7 @@ module.exports = function(Chart) {
 
 			// Draw the points
 			for (i=0, ilen=points.length; i<ilen; ++i) {
-				points[i].draw(chartArea);
+				points[i].draw(me.chart.chartArea);
 			}
 		},
 
