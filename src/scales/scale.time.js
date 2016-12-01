@@ -337,6 +337,16 @@ module.exports = function(Chart) {
 				}
 			}
 
+			if (me.chart && me.chart.config && me.chart.config.type === 'bar') {
+				if (!me.options.time.min) {
+					me.firstTick = me.firstTick.clone().add(-me.unitScale, me.tickUnit);
+					me.ticks.unshift(me.firstTick);
+				}
+				if (!me.options.time.max) {
+					me.lastTick = me.lastTick.clone().add(me.unitScale, me.tickUnit);
+				}
+			}
+
 			// Always show the right tick
 			var diff = me.ticks[me.ticks.length - 1].diff(me.lastTick, me.tickUnit);
 			if (diff !== 0 || me.scaleSizeInUnits === 0) {
