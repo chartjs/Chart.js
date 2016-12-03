@@ -229,12 +229,14 @@ module.exports = function(Chart) {
 			var dataset = me.getDataset();
 			var i, len;
 
+			Chart.canvasHelpers.clipArea(me.chart.chart.ctx, me.chart.chartArea);
 			for (i = 0, len = metaData.length; i < len; ++i) {
 				var d = dataset.data[i];
 				if (d !== null && d !== undefined && !isNaN(d)) {
 					metaData[i].transition(easingDecimal).draw();
 				}
 			}
+			Chart.canvasHelpers.unclipArea(me.chart.chart.ctx);
 		},
 
 		setHoverStyle: function(rectangle) {

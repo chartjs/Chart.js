@@ -109,4 +109,16 @@ module.exports = function(Chart) {
 
 		ctx.stroke();
 	};
+
+	helpers.clipArea = function(ctx, clipArea) {
+		ctx.save();
+		ctx.beginPath();
+		ctx.rect(clipArea.left, clipArea.top, clipArea.right - clipArea.left, clipArea.bottom - clipArea.top);
+		ctx.clip();
+	};
+
+	helpers.unclipArea = function(ctx) {
+		ctx.restore();
+	};
+
 };
