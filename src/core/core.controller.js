@@ -796,7 +796,7 @@ module.exports = function(Chart) {
 
 			// On Hover hook
 			if (hoverOptions.onHover) {
-				hoverOptions.onHover.call(me, me.active);
+				hoverOptions.onHover.call(me, e, me.active);
 			}
 
 			if (e.type === 'mouseup' || e.type === 'click') {
