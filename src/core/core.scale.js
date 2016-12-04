@@ -494,7 +494,7 @@ module.exports = function(Chart) {
 			var tickFontColor = helpers.getValueOrDefault(optionTicks.fontColor, globalDefaults.defaultFontColor);
 			var tickFont = parseFontOptions(optionTicks);
 
-			var tl = gridLines.tickMarkLength;
+			var tl = gridLines.drawTicks ? gridLines.tickMarkLength : 0;
 			var borderDash = helpers.getValueOrDefault(gridLines.borderDash, globalDefaults.borderDash);
 			var borderDashOffset = helpers.getValueOrDefault(gridLines.borderDashOffset, globalDefaults.borderDashOffset);
 
