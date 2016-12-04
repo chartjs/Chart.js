@@ -343,7 +343,7 @@ describe('Logarithmic Scale tests', function() {
 					data: [10, 5, 1, 5, 78, 100]
 				}, {
 					yAxisID: 'yScale1',
-					data: [-1000, 1000],
+					data: [0, 1000],
 				}, {
 					type: 'bar',
 					yAxisID: 'yScale0',
@@ -383,7 +383,7 @@ describe('Logarithmic Scale tests', function() {
 					type: 'bar'
 				}, {
 					yAxisID: 'yScale1',
-					data: [-1000, 1000],
+					data: [0, 1000],
 					type: 'bar'
 				}, {
 					yAxisID: 'yScale0',
