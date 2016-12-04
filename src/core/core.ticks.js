@@ -109,27 +109,33 @@ module.exports = function(Chart) {
 				// the graph
 				var tickVal = getValueOrDefault(generationOptions.min, Math.pow(10, Math.floor(helpers.log10(dataRange.min))));
 
-				while (tickVal < dataRange.max) {
+				var endExp = Math.floor(helpers.log10(dataRange.max));
+				var endSignificand = Math.ceil(dataRange.max / Math.pow(10, endExp));
+				var exp;
+				var significand;
+
+				if (tickVal === 0) {
+					exp = Math.floor(helpers.log10(dataRange.minNotZero));
+					significand = Math.floor(dataRange.minNotZero / Math.pow(10, exp));
+
+					ticks.push(tickVal);
+					tickVal = significand * Math.pow(10, exp);
+				} else {
+					exp = Math.floor(helpers.log10(tickVal));
+					significand = Math.floor(tickVal / Math.pow(10, exp));
+				}
+
+				do {
 					ticks.push(tickVal);
 
-					var exp;
-					var significand;
-
-					if (tickVal === 0) {
-						exp = Math.floor(helpers.log10(dataRange.minNotZero));
-						significand = Math.round(dataRange.minNotZero / Math.pow(10, exp));
-					} else {
-						exp = Math.floor(helpers.log10(tickVal));
-						significand = Math.floor(tickVal / Math.pow(10, exp)) + 1;
-					}
-
+					++significand;
 					if (significand === 10) {
 						significand = 1;
 						++exp;
 					}
 
 					tickVal = significand * Math.pow(10, exp);
-				}
+				} while (exp < endExp || (exp === endExp && significand < endSignificand));
 
 				var lastTick = getValueOrDefault(generationOptions.max, tickVal);
 				ticks.push(lastTick);
