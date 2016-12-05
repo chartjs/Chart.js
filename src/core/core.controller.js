@@ -818,8 +818,9 @@ module.exports = function(Chart) {
 			me._bufferedRender = true;
 			me._bufferedRequest = null;
 
-			var changed = me.handleEvent(e);
+			var changed = legend && legend.handleEvent(e);
 			changed |= tooltip && tooltip.handleEvent(e);
+			if (!changed) changed = me.handleEvent(e);
 
 			plugins.notify(me, 'afterEvent', [e]);
 
