@@ -57,10 +57,8 @@ module.exports = function(Chart) {
 			var ctx = this._chart.ctx;
 			var vm = this._view;
 			var x1,	x2,	y1,	y2;
-			var sign = {},
-				barSize = {};
+			var sign = {};
 			var borderWidth = vm.borderWidth;
-			var backgroundColor = vm.backgroundColor;
 
 			if (!isHorizontalBar) {
 				// bar
@@ -79,15 +77,13 @@ module.exports = function(Chart) {
 				sign.x = (x2 > x1) ? 1:-1;
 				sign.y = 1;
 			}
-			barSize.x = Math.abs(x1 - x2);
-			barSize.y = Math.abs(y1 - y2);
 
 			// Canvas doesn't allow us to stroke inside the width so we can
 			// adjust the sizes to fit if we're setting a stroke on the line
 			if (borderWidth) {
 				// borderWidth shold be less than bar width and bar height.
-				var barSizeMin = Math.min(barSize.x, barSize.y);
-				borderWidth = (borderWidth > barSizeMin) ? barSizeMin: borderWidth;
+				var barSize = Math.min(Math.abs(x1 - x2), Math.abs(y1 - y2));
+				borderWidth = (borderWidth > barSize) ? barSize: borderWidth;
 				var halfStroke = borderWidth / 2;
 				// Adjust borderWidth when bar top position is near vm.base(zero).
 				var Temp = {};
@@ -108,7 +104,7 @@ module.exports = function(Chart) {
 			}
 
 			ctx.beginPath();
-			ctx.fillStyle = backgroundColor;
+			ctx.fillStyle = vm.backgroundColor;
 			ctx.strokeStyle = vm.borderColor;
 			ctx.lineWidth = borderWidth;
 
