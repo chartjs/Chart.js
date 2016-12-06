@@ -324,7 +324,7 @@ nearest | Gets the item that is nearest to the point. The nearest item is determ
 single (deprecated) | Finds the first item that intersects the point and returns it. Behaves like 'nearest' mode with intersect = true.
 label (deprecated) | See `'index'` mode
 index | Finds item at the same index. If the `intersect` setting is true, the first intersecting item is used to determine the index in the data. If `intersect` false the nearest item is used to determine the index. 
-x-axis (deprecated) | Behaves like `'index'` mode with `intersect = true`
+x-axis (deprecated) | Behaves like `'index'` mode with `intersect = false`
 dataset | Finds items in the same dataset. If the `intersect` setting is true, the first intersecting item is used to determine the index in the data. If `intersect` false the nearest item is used to determine the index.
 x | Returns all items that would intersect based on the `X` coordinate of the position only. Would be useful for a vertical cursor implementation. Note that this only applies to cartesian charts
 y | Returns all items that would intersect based on the `Y` coordinate of the position. This would be useful for a horizontal cursor implementation. Note that this only applies to cartesian charts.
