@@ -50,37 +50,76 @@ module.exports = function(Chart) {
 	}
 
 	Chart.elements.Rectangle = Chart.Element.extend({
-		draw: function() {
+		draw: function(isHorizontalBar) {
+
+			isHorizontalBar = (isHorizontalBar === undefined)? false: isHorizontalBar;
+
 			var ctx = this._chart.ctx;
 			var vm = this._view;
+			var x1,	x2,	y1,	y2;
+			var sign = {},
+				barSize = {};
+			var borderWidth = vm.borderWidth;
+			var backgroundColor = vm.backgroundColor;
 
-			var halfWidth = vm.width / 2,
-				leftX = vm.x - halfWidth,
-				rightX = vm.x + halfWidth,
-				top = vm.base - (vm.base - vm.y),
-				halfStroke = vm.borderWidth / 2;
+			if (!isHorizontalBar) {
+				// bar
+				x1 = vm.x - vm.width / 2;
+				x2 = vm.x + vm.width / 2;
+				y1 = vm.y;
+				y2 = vm.base;
+				sign.x = 1;
+				sign.y = (y2 > y1) ? 1:-1;
+			} else {
+				// horizontal bar
+				x1 = vm.base;
+				x2 = vm.x;
+				y1 = vm.y - vm.height /2;
+				y2 = vm.y + vm.height /2;
+				sign.x = (x2 > x1) ? 1:-1;
+				sign.y = 1;
+			}
+			barSize.x = Math.abs(x1 - x2);
+			barSize.y = Math.abs(y1 - y2);
 
 			// Canvas doesn't allow us to stroke inside the width so we can
 			// adjust the sizes to fit if we're setting a stroke on the line
-			if (vm.borderWidth) {
-				leftX += halfStroke;
-				rightX -= halfStroke;
-				top += halfStroke;
+			if (borderWidth) {
+				// borderWidth shold be less than bar width and bar height.
+				var barSizeMin = Math.min(barSize.x, barSize.y);
+				borderWidth = (borderWidth > barSizeMin) ? barSizeMin: borderWidth;
+				var halfStroke = borderWidth / 2;
+				// Adjust borderWidth when bar top position is near vm.base(zero).
+				var Temp = {};
+				Temp.x1 = x1 + ((vm.borderSkipped !== 'left')? halfStroke * sign.x: 0);
+				Temp.x2 = x2 + ((vm.borderSkipped !== 'right')? -halfStroke * sign.x: 0);
+				Temp.y1 = y1 + ((vm.borderSkipped !== 'top')? halfStroke * sign.y: 0);
+				Temp.y2 = y2 + ((vm.borderSkipped !== 'bottom')? -halfStroke * sign.y: 0);
+				// not become a vertical line?
+				if (Temp.x1 !== Temp.x2) {
+					y1 = Temp.y1;
+					y2 = Temp.y2;
+				}
+				// not become a horizontal line?
+				if (Temp.y1 !== Temp.y2) {
+					x1 = Temp.x1;
+					x2 = Temp.x2;
+				}
 			}
 
 			ctx.beginPath();
-			ctx.fillStyle = vm.backgroundColor;
+			ctx.fillStyle = backgroundColor;
 			ctx.strokeStyle = vm.borderColor;
-			ctx.lineWidth = vm.borderWidth;
+			ctx.lineWidth = borderWidth;
 
 			// Corner points, from bottom-left to bottom-right clockwise
 			// | 1 2 |
 			// | 0 3 |
 			var corners = [
-				[leftX, vm.base],
-				[leftX, top],
-				[rightX, top],
-				[rightX, vm.base]
+				[x1, y2],
+				[x1, y1],
+				[x2, y1],
+				[x2, y2]
 			];
 
 			// Find first (starting) corner with fallback to 'bottom'
@@ -104,7 +143,7 @@ module.exports = function(Chart) {
 			}
 
 			ctx.fill();
-			if (vm.borderWidth) {
+			if (borderWidth) {
 				ctx.stroke();
 			}
 		},
