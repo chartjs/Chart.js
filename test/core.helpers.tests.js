@@ -301,6 +301,11 @@ describe('Core helper tests', function() {
 		expect(helpers.almostEquals(1e30, 1e30 + Number.EPSILON, 2 * Number.EPSILON)).toBe(true);
 	});
 
+	it('should correctly determine if a numbers are essentially whole', function() {
+		expect(helpers.almostWhole(0.99999, 0.0001)).toBe(true);
+		expect(helpers.almostWhole(0.9, 0.0001)).toBe(false);
+	});
+
 	it('should generate integer ids', function() {
 		var uid = helpers.uid();
 		expect(uid).toEqual(jasmine.any(Number));
