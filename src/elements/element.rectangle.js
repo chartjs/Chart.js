@@ -52,15 +52,14 @@ module.exports = function(Chart) {
 	Chart.elements.Rectangle = Chart.Element.extend({
 		draw: function(isHorizontalBar) {
 
-			isHorizontalBar = (isHorizontalBar === undefined)? false: isHorizontalBar;
-
 			var ctx = this._chart.ctx;
 			var vm = this._view;
 			var x1,	x2,	y1,	y2;
 			var sign = {};
 			var borderWidth = vm.borderWidth;
+			var borderSkipped = (vm.borderSkipped !== undefined)? vm.borderSkipped: 'bottom';
 
-			if (!isHorizontalBar) {
+			if ((isHorizontalBar === undefined) || (!isHorizontalBar)) {
 				// bar
 				x1 = vm.x - vm.width / 2;
 				x2 = vm.x + vm.width / 2;
@@ -87,10 +86,10 @@ module.exports = function(Chart) {
 				var halfStroke = borderWidth / 2;
 				// Adjust borderWidth when bar top position is near vm.base(zero).
 				var Temp = {};
-				Temp.x1 = x1 + ((vm.borderSkipped !== 'left')? halfStroke * sign.x: 0);
-				Temp.x2 = x2 + ((vm.borderSkipped !== 'right')? -halfStroke * sign.x: 0);
-				Temp.y1 = y1 + ((vm.borderSkipped !== 'top')? halfStroke * sign.y: 0);
-				Temp.y2 = y2 + ((vm.borderSkipped !== 'bottom')? -halfStroke * sign.y: 0);
+				Temp.x1 = x1 + ((borderSkipped !== 'left')? halfStroke * sign.x: 0);
+				Temp.x2 = x2 + ((borderSkipped !== 'right')? -halfStroke * sign.x: 0);
+				Temp.y1 = y1 + ((borderSkipped !== 'top')? halfStroke * sign.y: 0);
+				Temp.y2 = y2 + ((borderSkipped !== 'bottom')? -halfStroke * sign.y: 0);
 				// not become a vertical line?
 				if (Temp.x1 !== Temp.x2) {
 					y1 = Temp.y1;
@@ -120,7 +119,7 @@ module.exports = function(Chart) {
 
 			// Find first (starting) corner with fallback to 'bottom'
 			var borders = ['bottom', 'left', 'top', 'right'];
-			var startCorner = borders.indexOf(vm.borderSkipped, 0);
+			var startCorner = borders.indexOf(borderSkipped, 0);
 			if (startCorner === -1) {
 				startCorner = 0;
 			}

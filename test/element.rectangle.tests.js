@@ -186,7 +186,6 @@ describe('Rectangle element tests', function() {
 			width: 4,
 			x: 10,
 			y: 15,
-			borderSkipped: 'bottom',
 		};
 
 		rectangle.draw();
