@@ -337,6 +337,63 @@ describe('Bar controller tests', function() {
 		});
 	});
 
+	it('should update elements when the scales are stacked and the y axis is logarithmic', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					data: [10, 100, 10, 100],
+					label: 'dataset1'
+				}, {
+					data: [100, 10, 0, 100],
+					label: 'dataset2'
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4']
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						type: 'category',
+						stacked: true,
+						barPercentage: 1
+					}],
+					yAxes: [{
+						type: 'logarithmic',
+						stacked: true
+					}]
+				}
+			}
+		});
+
+		var meta0 = chart.getDatasetMeta(0);
+
+		[
+			{b: 484, w: 92, x: 94, y: 379},
+			{b: 484, w: 92, x: 208, y: 122},
+			{b: 484, w: 92, x: 322, y: 379},
+			{b: 484, w: 92, x: 436, y: 122}
+		].forEach(function(values, i) {
+			expect(meta0.data[i]._model.base).toBeCloseToPixel(values.b);
+			expect(meta0.data[i]._model.width).toBeCloseToPixel(values.w);
+			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
+			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
+		});
+
+		var meta1 = chart.getDatasetMeta(1);
+
+		[
+			{b: 379, w: 92, x: 94, y: 109},
+			{b: 122, w: 92, x: 208, y: 109},
+			{b: 379, w: 92, x: 322, y: 379},
+			{b: 122, w: 92, x: 436, y: 25}
+		].forEach(function(values, i) {
+			expect(meta1.data[i]._model.base).toBeCloseToPixel(values.b);
+			expect(meta1.data[i]._model.width).toBeCloseToPixel(values.w);
+			expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
+			expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
+		});
+	});
+
 	it('should draw all bars', function() {
 		var chart = window.acquireChart({
 			type: 'bar',

@@ -99,7 +99,8 @@ module.exports = function(Chart) {
 			var me = this;
 			var meta = me.getMeta();
 			var yScale = me.getScaleForId(meta.yAxisID);
-			var base = 0;
+			var base = yScale.getBaseValue();
+			var original = base;
 
 			if (yScale.options.stacked) {
 				var chart = me.chart;
@@ -111,7 +112,7 @@ module.exports = function(Chart) {
 					var currentDsMeta = chart.getDatasetMeta(i);
 					if (currentDsMeta.bar && currentDsMeta.yAxisID === yScale.id && chart.isDatasetVisible(i)) {
 						var currentVal = Number(currentDs.data[index]);
-						base += value < 0 ? Math.min(currentVal, 0) : Math.max(currentVal, 0);
+						base += value < 0 ? Math.min(currentVal, original) : Math.max(currentVal, original);
 					}
 				}
 
@@ -197,8 +198,9 @@ module.exports = function(Chart) {
 
 			if (yScale.options.stacked) {
 
-				var sumPos = 0,
-					sumNeg = 0;
+				var base = yScale.getBaseValue();
+				var sumPos = base,
+					sumNeg = base;
 
 				for (var i = 0; i < datasetIndex; i++) {
 					var ds = me.chart.data.datasets[i];
@@ -417,7 +419,8 @@ module.exports = function(Chart) {
 			var me = this;
 			var meta = me.getMeta();
 			var xScale = me.getScaleForId(meta.xAxisID);
-			var base = 0;
+			var base = xScale.getBaseValue();
+			var originalBase = base;
 
 			if (xScale.options.stacked) {
 				var chart = me.chart;
@@ -429,7 +432,7 @@ module.exports = function(Chart) {
 					var currentDsMeta = chart.getDatasetMeta(i);
 					if (currentDsMeta.bar && currentDsMeta.xAxisID === xScale.id && chart.isDatasetVisible(i)) {
 						var currentVal = Number(currentDs.data[index]);
-						base += value < 0 ? Math.min(currentVal, 0) : Math.max(currentVal, 0);
+						base += value < 0 ? Math.min(currentVal, originalBase) : Math.max(currentVal, originalBase);
 					}
 				}
 
@@ -481,8 +484,9 @@ module.exports = function(Chart) {
 
 			if (xScale.options.stacked) {
 
-				var sumPos = 0,
-					sumNeg = 0;
+				var base = xScale.getBaseValue();
+				var sumPos = base,
+					sumNeg = base;
 
 				for (var i = 0; i < datasetIndex; i++) {
 					var ds = me.chart.data.datasets[i];
