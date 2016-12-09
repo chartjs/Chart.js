@@ -86,9 +86,9 @@ module.exports = function(Chart) {
 				var halfStroke = borderWidth / 2;
 				// Adjust borderWidth when bar top position is near vm.base(zero).
 				var borderLeft = left + (borderSkipped !== 'left'? halfStroke * signX: 0);
-				var	borderRight = right + (borderSkipped !== 'right'? -halfStroke * signX: 0);
-				var	borderTop = top + (borderSkipped !== 'top'? halfStroke * signY: 0);
-				var	borderBottom = bottom + (borderSkipped !== 'bottom'? -halfStroke * signY: 0);
+				var borderRight = right + (borderSkipped !== 'right'? -halfStroke * signX: 0);
+				var borderTop = top + (borderSkipped !== 'top'? halfStroke * signY: 0);
+				var borderBottom = bottom + (borderSkipped !== 'bottom'? -halfStroke * signY: 0);
 				// not become a vertical line?
 				if (borderLeft !== borderRight) {
 					top = borderTop;
