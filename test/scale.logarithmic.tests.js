@@ -138,11 +138,10 @@ describe('Logarithmic Scale tests', function() {
 					}, {
 						id: 'yScale2',
 						type: 'logarithmic'
-					},
-						{
-							id: 'yScale3',
-							type: 'logarithmic'
-						}]
+					}, {
+						id: 'yScale3',
+						type: 'logarithmic'
+					}]
 				}
 			}
 		});
