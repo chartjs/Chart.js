@@ -879,4 +879,59 @@ describe('Chart.Controller', function() {
 			expect(chart.tooltip._options).toEqual(jasmine.objectContaining(newTooltipConfig));
 		});
 	});
+
+	describe('event handling', function() {
+		it('should notify plugins about events', function() {
+			var notifiedEvent;
+			var plugin = {
+				onEvent: function(chart, e) {
+					notifiedEvent = e;
+				}
+			};
+			var chart = acquireChart({
+				type: 'line',
+				data: {
+					labels: ['A', 'B', 'C', 'D'],
+					datasets: [{
+						data: [10, 20, 30, 100]
+					}]
+				},
+				options: {
+					responsive: true
+				},
+				plugins: [plugin]
+			});
+
+			var node = chart.chart.canvas;
+			var rect = node.getBoundingClientRect();
+			var clientX = (rect.left + rect.right) / 2;
+			var clientY = (rect.top + rect.bottom) / 2;
+
+			var evt = new MouseEvent('click', {
+				view: window,
+				bubbles: true,
+				cancelable: true,
+				clientX: clientX,
+				clientY: clientY
+			});
+
+			// Manually trigger rather than having an async test
+			node.dispatchEvent(evt);
+
+			// Check that notifiedEvent is correct
+			expect(notifiedEvent).not.toBe(undefined);
+			expect(notifiedEvent.native).toBe(evt);
+
+			// Is type correctly translated
+			expect(notifiedEvent.type).toBe(evt.type);
+
+			// Canvas width and height
+			expect(notifiedEvent.width).toBe(chart.chart.width);
+			expect(notifiedEvent.height).toBe(chart.chart.height);
+
+			// Relative Position
+			expect(notifiedEvent.x).toBe(chart.chart.width / 2);
+			expect(notifiedEvent.y).toBe(chart.chart.height / 2);
+		});
+	});
 });

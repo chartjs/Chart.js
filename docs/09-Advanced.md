@@ -410,6 +410,7 @@ Plugins will be called at the following times
 * After datasets draw
 * Resize
 * Before an animation is started
+* When an event occurs on the canvas (mousemove, click, etc). This requires the `options.events` property handled
 
 Plugins should derive from Chart.PluginBase and implement the following interface
 ```javascript
@@ -437,6 +438,13 @@ Plugins should derive from Chart.PluginBase and implement the following interfac
 	afterDatasetsDraw: function(chartInstance, easing) { },
 
 	destroy: function(chartInstance) { }
+
+	/**
+	 * Called when an event occurs on the chart
+	 * @param e {Core.Event} the Chart.js wrapper around the native event. e.native is the original event
+	 * @return {Boolean} true if the chart is changed and needs to re-render
+	 */
+	onEvent: function(chartInstance, e) {}
 }
 ```
 

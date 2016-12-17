@@ -18,6 +18,10 @@ require('./core/core.title')(Chart);
 require('./core/core.legend')(Chart);
 require('./core/core.interaction')(Chart);
 require('./core/core.tooltip')(Chart);
+require('./core/core.platform')(Chart);
+
+// By default, we only load the browser platform.
+Chart.Platform = require('./platforms/platform.browser')(Chart);
 
 require('./elements/element.arc')(Chart);
 require('./elements/element.line')(Chart);
