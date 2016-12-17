@@ -628,7 +628,7 @@ module.exports = function(Chart) {
 		},
 
 		getDatasetAtEvent: function(e) {
-			return Chart.Interaction.modes.dataset(this, e);
+			return Chart.Interaction.modes.dataset(this, e, this.options);
 		},
 
 		getDatasetMeta: function(datasetIndex) {
