@@ -50,14 +50,14 @@ module.exports = function(Chart) {
 	}
 
 	Chart.elements.Rectangle = Chart.Element.extend({
-		draw: function(horizontal) {
+		draw: function() {
 
 			var ctx = this._chart.ctx;
 			var vm = this._view;
 			var left, right, top, bottom, signX, signY, borderSkipped;
 			var borderWidth = vm.borderWidth;
 
-			if (!horizontal) {
+			if (!vm.horizontal) {
 				// bar
 				left = vm.x - vm.width / 2;
 				right = vm.x + vm.width / 2;

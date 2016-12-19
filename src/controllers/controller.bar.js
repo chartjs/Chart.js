@@ -84,6 +84,7 @@ module.exports = function(Chart) {
 				datasetLabel: dataset.label,
 
 				// Appearance
+				horizontal: false,
 				base: reset ? scaleBase : me.calculateBarBase(me.index, index),
 				width: me.calculateBarWidth(ruler),
 				backgroundColor: custom.backgroundColor ? custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, rectangleElementOptions.backgroundColor),
@@ -346,15 +347,13 @@ module.exports = function(Chart) {
 				datasetLabel: dataset.label,
 
 				// Appearance
+				horizontal: true,
 				base: reset ? scaleBase : me.calculateBarBase(me.index, index),
 				height: me.calculateBarHeight(ruler),
 				backgroundColor: custom.backgroundColor ? custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, rectangleElementOptions.backgroundColor),
 				borderSkipped: custom.borderSkipped ? custom.borderSkipped : rectangleElementOptions.borderSkipped,
 				borderColor: custom.borderColor ? custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, rectangleElementOptions.borderColor),
 				borderWidth: custom.borderWidth ? custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, rectangleElementOptions.borderWidth)
-			};
-			rectangle.draw = function() {
-				Chart.elements.Rectangle.prototype.draw.call(this, true);
 			};
 
 			rectangle.pivot();
