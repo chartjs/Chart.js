@@ -51,7 +51,6 @@ module.exports = function(Chart) {
 
 	Chart.elements.Rectangle = Chart.Element.extend({
 		draw: function() {
-
 			var ctx = this._chart.ctx;
 			var vm = this._view;
 			var left, right, top, bottom, signX, signY, borderSkipped;
