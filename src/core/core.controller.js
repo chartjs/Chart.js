@@ -63,9 +63,7 @@ module.exports = function(Chart) {
 
 		config = initConfig(config);
 
-		// Create the platform implementation
-		me.platform = new Chart.Platform(me);
-		var context = me.platform.acquireContext(item, config);
+		var context = Chart.platform.acquireContext(item, config);
 		var canvas = context && context.canvas;
 		var height = canvas && canvas.height;
 		var width = canvas && canvas.width;
@@ -564,7 +562,7 @@ module.exports = function(Chart) {
 				helpers.unbindEvents(me, me.events);
 				helpers.removeResizeListener(canvas.parentNode);
 				helpers.clear(me.chart);
-				me.platform.releaseCanvas(canvas);
+				Chart.platform.releaseContext(me.chart.ctx);
 				me.chart.canvas = null;
 				me.chart.ctx = null;
 			}
@@ -618,7 +616,7 @@ module.exports = function(Chart) {
 			me._bufferedRequest = null;
 
 			// Create platform agnostic chart event using platform specific code
-			var chartEvent = me.platform.createEvent(e);
+			var chartEvent = Chart.platform.createEvent(e, me.chart);
 
 			var changed = me.handleEvent(chartEvent);
 			changed |= tooltip && tooltip.handleEvent(chartEvent);
