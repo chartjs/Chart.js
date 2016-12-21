@@ -132,6 +132,35 @@ describe('Category scale tests', function() {
 		expect(scale.ticks).toEqual(mockData.yLabels);
 	});
 
+	it('Should generate ticks from the scale labels', function() {
+		var scaleID = 'myScale';
+
+		var mockData = {
+			datasets: [{
+				yAxisID: scaleID,
+				data: [10, 5, 0, 25, 78]
+			}]
+		};
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
+		config.position = 'left'; // y axis
+		config.labels = ['tock1', 'tock2', 'tock3', 'tock4', 'tock5'];
+
+		var Constructor = Chart.scaleService.getScaleConstructor('category');
+		var scale = new Constructor({
+			ctx: {},
+			options: config,
+			chart: {
+				data: mockData
+			},
+			id: scaleID
+		});
+
+		scale.determineDataLimits();
+		scale.buildTicks();
+		expect(scale.ticks).toEqual(config.labels);
+	});
+
 	it ('should get the correct label for the index', function() {
 		var scaleID = 'myScale';
 
