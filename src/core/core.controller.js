@@ -15,140 +15,6 @@ module.exports = function(Chart) {
 	Chart.controllers = {};
 
 	/**
-	 * The "used" size is the final value of a dimension property after all calculations have
-	 * been performed. This method uses the computed style of `element` but returns undefined
-	 * if the computed style is not expressed in pixels. That can happen in some cases where
-	 * `element` has a size relative to its parent and this last one is not yet displayed,
-	 * for example because of `display: none` on a parent node.
-	 * TODO(SB) Move this method in the upcoming core.platform class.
-	 * @see https://developer.mozilla.org/en-US/docs/Web/CSS/used_value
-	 * @returns {Number} Size in pixels or undefined if unknown.
-	 */
-	function readUsedSize(element, property) {
-		var value = helpers.getStyle(element, property);
-		var matches = value && value.match(/(\d+)px/);
-		return matches? Number(matches[1]) : undefined;
-	}
-
-	/**
-	 * Initializes the canvas style and render size without modifying the canvas display size,
-	 * since responsiveness is handled by the controller.resize() method. The config is used
-	 * to determine the aspect ratio to apply in case no explicit height has been specified.
-	 * TODO(SB) Move this method in the upcoming core.platform class.
-	 */
-	function initCanvas(canvas, config) {
-		var style = canvas.style;
-
-		// NOTE(SB) canvas.getAttribute('width') !== canvas.width: in the first case it
-		// returns null or '' if no explicit value has been set to the canvas attribute.
-		var renderHeight = canvas.getAttribute('height');
-		var renderWidth = canvas.getAttribute('width');
-
-		// Chart.js modifies some canvas values that we want to restore on destroy
-		canvas._chartjs = {
-			initial: {
-				height: renderHeight,
-				width: renderWidth,
-				style: {
-					display: style.display,
-					height: style.height,
-					width: style.width
-				}
-			}
-		};
-
-		// Force canvas to display as block to avoid extra space caused by inline
-		// elements, which would interfere with the responsive resize process.
-		// https://github.com/chartjs/Chart.js/issues/2538
-		style.display = style.display || 'block';
-
-		if (renderWidth === null || renderWidth === '') {
-			var displayWidth = readUsedSize(canvas, 'width');
-			if (displayWidth !== undefined) {
-				canvas.width = displayWidth;
-			}
-		}
-
-		if (renderHeight === null || renderHeight === '') {
-			if (canvas.style.height === '') {
-				// If no explicit render height and style height, let's apply the aspect ratio,
-				// which one can be specified by the user but also by charts as default option
-				// (i.e. options.aspectRatio). If not specified, use canvas aspect ratio of 2.
-				canvas.height = canvas.width / (config.options.aspectRatio || 2);
-			} else {
-				var displayHeight = readUsedSize(canvas, 'height');
-				if (displayWidth !== undefined) {
-					canvas.height = displayHeight;
-				}
-			}
-		}
-
-		return canvas;
-	}
-
-	/**
-	 * Restores the canvas initial state, such as render/display sizes and style.
-	 * TODO(SB) Move this method in the upcoming core.platform class.
-	 */
-	function releaseCanvas(canvas) {
-		if (!canvas._chartjs) {
-			return;
-		}
-
-		var initial = canvas._chartjs.initial;
-		['height', 'width'].forEach(function(prop) {
-			var value = initial[prop];
-			if (value === undefined || value === null) {
-				canvas.removeAttribute(prop);
-			} else {
-				canvas.setAttribute(prop, value);
-			}
-		});
-
-		helpers.each(initial.style || {}, function(value, key) {
-			canvas.style[key] = value;
-		});
-
-		// The canvas render size might have been changed (and thus the state stack discarded),
-		// we can't use save() and restore() to restore the initial state. So make sure that at
-		// least the canvas context is reset to the default state by setting the canvas width.
-		// https://www.w3.org/TR/2011/WD-html5-20110525/the-canvas-element.html
-		canvas.width = canvas.width;
-
-		delete canvas._chartjs;
-	}
-
-	/**
-	 * TODO(SB) Move this method in the upcoming core.platform class.
-	 */
-	function acquireContext(item, config) {
-		if (typeof item === 'string') {
-			item = document.getElementById(item);
-		} else if (item.length) {
-			// Support for array based queries (such as jQuery)
-			item = item[0];
-		}
-
-		if (item && item.canvas) {
-			// Support for any object associated to a canvas (including a context2d)
-			item = item.canvas;
-		}
-
-		if (item instanceof HTMLCanvasElement) {
-			// To prevent canvas fingerprinting, some add-ons undefine the getContext
-			// method, for example: https://github.com/kkapsner/CanvasBlocker
-			// https://github.com/chartjs/Chart.js/issues/2807
-			var context = item.getContext && item.getContext('2d');
-			if (context instanceof CanvasRenderingContext2D) {
-				initCanvas(item, config);
-				return context;
-			}
-		}
-
-		return null;
-	}
-
-	/**
 	 * Initializes the given config with global and chart default values.
 	 */
 	function initConfig(config) {
@@ -197,7 +63,7 @@ module.exports = function(Chart) {
 
 		config = initConfig(config);
 
-		var context = acquireContext(item, config);
+		var context = Chart.platform.acquireContext(item, config);
 		var canvas = context && context.canvas;
 		var height = canvas && canvas.height;
 		var width = canvas && canvas.width;
@@ -696,7 +562,7 @@ module.exports = function(Chart) {
 				helpers.unbindEvents(me, me.events);
 				helpers.removeResizeListener(canvas.parentNode);
 				helpers.clear(me.chart);
-				releaseCanvas(canvas);
+				Chart.platform.releaseContext(me.chart.ctx);
 				me.chart.canvas = null;
 				me.chart.ctx = null;
 			}
@@ -742,7 +608,6 @@ module.exports = function(Chart) {
 
 		eventHandler: function(e) {
 			var me = this;
-			var legend = me.legend;
 			var tooltip = me.tooltip;
 			var hoverOptions = me.options.hover;
 
@@ -750,9 +615,12 @@ module.exports = function(Chart) {
 			me._bufferedRender = true;
 			me._bufferedRequest = null;
 
-			var changed = me.handleEvent(e);
-			changed |= legend && legend.handleEvent(e);
-			changed |= tooltip && tooltip.handleEvent(e);
+			// Create platform agnostic chart event using platform specific code
+			var chartEvent = Chart.platform.createEvent(e, me.chart);
+
+			var changed = me.handleEvent(chartEvent);
+			changed |= tooltip && tooltip.handleEvent(chartEvent);
+			changed |= Chart.plugins.notify(me, 'onEvent', [chartEvent]);
 
 			var bufferedRequest = me._bufferedRequest;
 			if (bufferedRequest) {
@@ -776,7 +644,7 @@ module.exports = function(Chart) {
 		/**
 		 * Handle an event
 		 * @private
-		 * param e {Event} the event to handle
+		 * param e {Core.Event} the event to handle
 		 * @return {Boolean} true if the chart needs to re-render
 		 */
 		handleEvent: function(e) {
@@ -796,12 +664,14 @@ module.exports = function(Chart) {
 
 			// On Hover hook
 			if (hoverOptions.onHover) {
-				hoverOptions.onHover.call(me, e, me.active);
+				// Need to call with native event here to not break backwards compatibility
+				hoverOptions.onHover.call(me, e.native, me.active);
 			}
 
 			if (e.type === 'mouseup' || e.type === 'click') {
 				if (options.onClick) {
-					options.onClick.call(me, e, me.active);
+					// Use e.native here for backwards compatibility
+					options.onClick.call(me, e.native, me.active);
 				}
 			}
 

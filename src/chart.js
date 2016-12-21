@@ -19,6 +19,9 @@ require('./core/core.legend')(Chart);
 require('./core/core.interaction')(Chart);
 require('./core/core.tooltip')(Chart);
 
+// By default, we only load the browser platform.
+Chart.platform = require('./platforms/platform.dom')(Chart);
+
 require('./elements/element.arc')(Chart);
 require('./elements/element.line')(Chart);
 require('./elements/element.point')(Chart);
