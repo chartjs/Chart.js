@@ -54,9 +54,10 @@ module.exports = function(Chart) {
 			var data = me.chart.data;
 			var isHorizontal = me.isHorizontal();
 
-			if (data.yLabels && !isHorizontal) {
+			if ((me.options.labels || data.yLabels) && !isHorizontal) {
 				return me.getRightValue(data.datasets[datasetIndex].data[index]);
 			}
+
 			return me.ticks[index - me.minIndex];
 		},
 
