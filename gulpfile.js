@@ -11,7 +11,7 @@ var streamify = require('gulp-streamify');
 var uglify = require('gulp-uglify');
 var util = require('gulp-util');
 var zip = require('gulp-zip');
-var exec = require('child_process').exec;
+var exec = require('child-process-promise').exec;
 var karma = require('karma');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
@@ -41,6 +41,7 @@ gulp.task('package', packageTask);
 gulp.task('coverage', coverageTask);
 gulp.task('watch', watchTask);
 gulp.task('lint', lintTask);
+gulp.task('docs', docsTask);
 gulp.task('test', ['lint', 'validHTML', 'unittest']);
 gulp.task('size', ['library-size', 'module-sizes']);
 gulp.task('server', serverTask);
@@ -162,6 +163,19 @@ function lintTask() {
     .pipe(eslint(options))
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
+}
+
+function docsTask(done) {
+  const script = require.resolve('gitbook-cli/bin/gitbook.js');
+  const cmd = process.execPath;
+
+  exec([cmd, script, 'install', './'].join(' ')).then(() => {
+    return exec([cmd, script, 'build', './', './dist/docs'].join(' '));
+  }).catch((err) => {
+    console.error(err.stdout);
+  }).then(() => {
+    done();
+  });
 }
 
 function validHTMLTask() {

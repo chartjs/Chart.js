@@ -1,0 +1,11 @@
+a.anchorjs-link {
+    color: rgba(65, 131, 196, 0.1);
+    font-weight: 400;
+    text-decoration: none;
+    transition: color 100ms ease-out;
+    z-index: 999;
+}
+
+a.anchorjs-link:hover {
+    color: rgba(65, 131, 196, 1);
+}
