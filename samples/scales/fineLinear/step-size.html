@@ -91,13 +91,14 @@
                     yAxes: [{
                         // ------- fineLinear ----------
                         type: "linear2",
-                        // subScale: {
-                        //     subScale: {
-                        //         gridLines: {
-                        //             drawOnChartArea: false,
-                        //         }
-                        //     }
-                        // },
+                        subScale: {
+                            subScale: {
+                                display: false,
+                                gridLines: {
+                                    // drawOnChartArea: false,
+                                }
+                            }
+                        },
                         // -----------------------------
                         display: true,
                         scaleLabel: {

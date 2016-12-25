@@ -230,7 +230,7 @@ module.exports = function(Chart) {
 				ticks.push(startTick);
 				levels.push(getLevel(startTick, stepSize, stepSizeDicimal[pointerStepSize].magnification));
 				for (var index = 1; index < stepCount; index++) {
-					tickValue = niceMin + +((index * stepSize[pointerStepSize]).toFixed(stepSizeDicimal[pointerStepSize].digits));
+					tickValue = +(niceMin + index * stepSize[pointerStepSize]).toFixed(stepSizeDicimal[pointerStepSize].digits);
 					if ((tickValue <= startTick) || (endTick <= tickValue)) {
 						continue;
 					}
