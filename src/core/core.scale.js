@@ -485,12 +485,21 @@ module.exports = function(Chart) {
 
 					// Ensure that our ticks are always inside the canvas. When rotated, ticks are right aligned which means that the right padding is dominated
 					// by the font height
-					if (opts[0].position === 'bottom') {
-						me.paddingLeft = me.labelRotation !== 0? (cosRotation * firstLabelWidth) + 3: firstLabelWidth / 2 + 3; // add 3 px to move away from canvas edges
-						me.paddingRight = me.labelRotation !== 0? (cosRotation * lineSpace) + 3: lastLabelWidth / 2 + 3;
+
+					// if (opts[0].position === 'bottom') {
+					// 	me.paddingLeft = me.labelRotation !== 0? (cosRotation * firstLabelWidth) + 3: firstLabelWidth / 2 + 3; // add 3 px to move away from canvas edges
+					// 	me.paddingRight = me.labelRotation !== 0? (cosRotation * lineSpace) + 3: lastLabelWidth / 2 + 3;
+					// } else {
+					// 	me.paddingLeft = me.labelRotation !== 0? (cosRotation * lineSpace) + 3: firstLabelWidth / 2 + 3; // add 3 px to move away from canvas edges
+					// 	me.paddingRight = me.labelRotation !== 0? (cosRotation * lastLabelWidth) + 3: lastLabelWidth / 2 + 3;
+					// }
+
+					if (me.labelRotation !== 0) {
+						me.paddingLeft = opts[0].position === 'bottom'? (cosRotation * firstLabelWidth) + 3: (cosRotation * lineSpace) + 3; // add 3 px to move away from canvas edges
+						me.paddingRight = opts[0].position === 'bottom'? (cosRotation * lineSpace) + 3: (cosRotation * lastLabelWidth) + 3;
 					} else {
-						me.paddingLeft = me.labelRotation !== 0? (cosRotation * lineSpace) + 3: firstLabelWidth / 2 + 3; // add 3 px to move away from canvas edges
-						me.paddingRight = me.labelRotation !== 0? (cosRotation * lastLabelWidth) + 3: lastLabelWidth / 2 + 3;
+						me.paddingLeft = firstLabelWidth / 2 + 3; // add 3 px to move away from canvas edges
+						me.paddingRight = lastLabelWidth / 2 + 3;
 					}
 
 				} else {

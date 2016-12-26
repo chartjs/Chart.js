@@ -185,6 +185,14 @@ module.exports = function(Chart) {
 				// Nice numerical value for min & max
 				var niceMin = Math.floor(dataRange.min / stepSize[0]) * stepSize[0];
 				var niceMax = Math.ceil(dataRange.max / stepSize[0]) * stepSize[0];
+				// If min, max and stepSize is set and they make an evenly spaced scale use it.
+				if (generationOptions.min && generationOptions.max && generationOptions.stepSize) {
+					// If very close to our whole number, use it.
+					// if (helpers.almostWhole((generationOptions.max - generationOptions.min) / generationOptions.stepSize, spacing / 1000)) {
+					niceMin = generationOptions.min;
+					niceMax = generationOptions.max;
+					// }
+				}
 				// Max and Min value of scale
 				var startTick = generationOptions.min !== undefined? generationOptions.min: niceMin;
 				var endTick = generationOptions.max !== undefined? generationOptions.max: niceMax;
@@ -212,15 +220,16 @@ module.exports = function(Chart) {
 
 				// ----
 				// Calculation of scale level (0-2)
+				// nm : niceMin
 				// tv: tickValue
 				// ss: stepSize[]
 				// mc: magnification
 				// ----
 				var level, tickValue;
-				var getLevel = function(tv, ss, mc) {
+				var getLevel = function(nm, tv, ss, mc) {
 					// Level discrimination
-					var t1 = (tv / mc) % (ss[0] / mc);
-					var t2 = (tv / mc) % (ss[1] / mc);
+					var t1 = (tv - nm) / mc % (ss[0] / mc);
+					var t2 = (tv - nm) / mc % (ss[1] / mc);
 					return t1 === 0? 0: (t2 === 0? 1: 2);
 				};
 
@@ -228,20 +237,20 @@ module.exports = function(Chart) {
 				var stepCount = +(((niceMax - niceMin) / stepSize[pointerStepSize]).toFixed(stepSizeDicimal[pointerStepSize].digits));
 				// --push start tick--
 				ticks.push(startTick);
-				levels.push(getLevel(startTick, stepSize, stepSizeDicimal[pointerStepSize].magnification));
+				levels.push(getLevel(niceMin, startTick, stepSize, stepSizeDicimal[pointerStepSize].magnification));
 				for (var index = 1; index < stepCount; index++) {
 					tickValue = +(niceMin + index * stepSize[pointerStepSize]).toFixed(stepSizeDicimal[pointerStepSize].digits);
 					if ((tickValue <= startTick) || (endTick <= tickValue)) {
 						continue;
 					}
-					level = getLevel(tickValue, stepSize, stepSizeDicimal[pointerStepSize].magnification);
+					level = getLevel(niceMin, tickValue, stepSize, stepSizeDicimal[pointerStepSize].magnification);
 					// --push ticks--
 					ticks.push(+((tickValue).toFixed(stepSizeDicimal[level].digits)));
 					levels.push(level);
 				}
 				// --push end tick--
 				ticks.push(endTick);
-				levels.push(getLevel(endTick, stepSize, stepSizeDicimal[pointerStepSize].magnification));
+				levels.push(getLevel(niceMin, endTick, stepSize, stepSizeDicimal[pointerStepSize].magnification));
 
 				// -------
 				return {
