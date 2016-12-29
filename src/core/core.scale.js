@@ -588,12 +588,12 @@ module.exports = function(Chart) {
 						// bottom
 						textBaseline = !isRotated? 'top':'middle';
 						textAlign = !isRotated? 'center': 'right';
-						labelY = isRotated? me.top + tl: me.top + tl;
+						labelY = me.top + tl;
 					} else {
 						// top
 						textBaseline = !isRotated? 'bottom':'middle';
 						textAlign = !isRotated? 'center': 'left';
-						labelY = isRotated? me.bottom - tl: me.bottom - tl;
+						labelY = me.bottom - tl;
 					}
 
 					var xLineValue = me.getPixelForTick(index) + helpers.aliasPixel(lineWidth); // xvalues for grid lines
