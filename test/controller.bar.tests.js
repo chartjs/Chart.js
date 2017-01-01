@@ -57,20 +57,20 @@ describe('Bar controller tests', function() {
 			'bar',
 			'horizontalBar'
 		].forEach(function(barType) {
-		var chart = window.acquireChart({
+			var chart = window.acquireChart({
 				type: barType,
-			data: {
-				datasets: [
-					{data: [], type: 'line'},
-					{data: [], hidden: true},
-					{data: []},
-					{data: []}
-				],
-				labels: []
-			}
-		});
+				data: {
+					datasets: [
+						{data: [], type: 'line'},
+						{data: [], hidden: true},
+						{data: []},
+						{data: []}
+					],
+					labels: []
+				}
+			});
 
-		var meta = chart.getDatasetMeta(1);
+			var meta = chart.getDatasetMeta(1);
 			expect(meta.controller.getStackCount()).toBe(2);
 		});
 	});
@@ -347,16 +347,16 @@ describe('Bar controller tests', function() {
 			'bar',
 			'horizontalBar'
 		].forEach(function(barType) {
-		var chart = window.acquireChart({
+			var chart = window.acquireChart({
 				type: barType,
-			data: {
-				datasets: [
-					{data: []},
-					{data: [], hidden: true},
-					{data: [], type: 'line'},
-					{data: []}
-				],
-				labels: []
+				data: {
+					datasets: [
+						{data: []},
+						{data: [], hidden: true},
+						{data: [], type: 'line'},
+						{data: []}
+					],
+					labels: []
 				}
 			});
 
@@ -417,10 +417,10 @@ describe('Bar controller tests', function() {
 							stacked: true
 						}]
 					}
-			}
-		});
+				}
+			});
 
-		var meta = chart.getDatasetMeta(1);
+			var meta = chart.getDatasetMeta(1);
 			expect(meta.controller.getStackIndex(0)).toBe(0);
 			expect(meta.controller.getStackIndex(1)).toBe(0);
 			expect(meta.controller.getStackIndex(2)).toBe(0);
@@ -823,10 +823,10 @@ describe('Bar controller tests', function() {
 		var meta0 = chart.getDatasetMeta(0);
 
 		[
-			{b: 290, w: 82, x: 95, y: 161},
-			{b: 290, w: 82, x: 209, y: 419},
-			{b: 290, w: 82, x: 322, y: 161},
-			{b: 290, w: 82, x: 436, y: 419}
+			{b: 290, w: 83, x: 86, y: 161},
+			{b: 290, w: 83, x: 202, y: 419},
+			{b: 290, w: 83, x: 318, y: 161},
+			{b: 290, w: 83, x: 434, y: 419}
 		].forEach(function(values, i) {
 			expect(meta0.data[i]._model.base).toBeCloseToPixel(values.b);
 			expect(meta0.data[i]._model.width).toBeCloseToPixel(values.w);
@@ -837,10 +837,10 @@ describe('Bar controller tests', function() {
 		var meta1 = chart.getDatasetMeta(1);
 
 		[
-			{b: 161, w: 82, x: 95, y: 32},
-			{b: 290, w: 82, x: 209, y: 97},
-			{b: 161, w: 82, x: 322, y: 161},
-			{b: 419, w: 82, x: 436, y: 471}
+			{b: 161, w: 83, x: 86, y: 32},
+			{b: 290, w: 83, x: 202, y: 97},
+			{b: 161, w: 83, x: 318, y: 161},
+			{b: 419, w: 83, x: 434, y: 471}
 		].forEach(function(values, i) {
 			expect(meta1.data[i]._model.base).toBeCloseToPixel(values.b);
 			expect(meta1.data[i]._model.width).toBeCloseToPixel(values.w);
@@ -878,10 +878,10 @@ describe('Bar controller tests', function() {
 		var meta0 = chart.getDatasetMeta(0);
 
 		[
-			{b: 290, w: 82, x: 95, y: 161},
-			{b: 290, w: 82, x: 209, y: 419},
-			{b: 290, w: 82, x: 322, y: 161},
-			{b: 290, w: 82, x: 436, y: 419}
+			{b: 290, w: 83, x: 86, y: 161},
+			{b: 290, w: 83, x: 202, y: 419},
+			{b: 290, w: 83, x: 318, y: 161},
+			{b: 290, w: 83, x: 434, y: 419}
 		].forEach(function(values, i) {
 			expect(meta0.data[i]._model.base).toBeCloseToPixel(values.b);
 			expect(meta0.data[i]._model.width).toBeCloseToPixel(values.w);
@@ -892,10 +892,10 @@ describe('Bar controller tests', function() {
 		var meta1 = chart.getDatasetMeta(1);
 
 		[
-			{b: 161, w: 82, x: 95, y: 32},
-			{b: 290, w: 82, x: 209, y: 97},
-			{b: 161, w: 82, x: 322, y: 161},
-			{b: 419, w: 82, x: 436, y: 471}
+			{b: 161, w: 83, x: 86, y: 32},
+			{b: 290, w: 83, x: 202, y: 97},
+			{b: 161, w: 83, x: 318, y: 161},
+			{b: 419, w: 83, x: 434, y: 471}
 		].forEach(function(values, i) {
 			expect(meta1.data[i]._model.base).toBeCloseToPixel(values.b);
 			expect(meta1.data[i]._model.width).toBeCloseToPixel(values.w);
@@ -935,10 +935,10 @@ describe('Bar controller tests', function() {
 		var meta0 = chart.getDatasetMeta(0);
 
 		[
-			{b: 290, w: 82, x: 95, y: 161},
-			{b: 290, w: 82, x: 209, y: 419},
-			{b: 290, w: 82, x: 322, y: 161},
-			{b: 290, w: 82, x: 436, y: 419}
+			{b: 290, w: 83, x: 86, y: 161},
+			{b: 290, w: 83, x: 202, y: 419},
+			{b: 290, w: 83, x: 318, y: 161},
+			{b: 290, w: 83, x: 434, y: 419}
 		].forEach(function(values, i) {
 			expect(meta0.data[i]._model.base).toBeCloseToPixel(values.b);
 			expect(meta0.data[i]._model.width).toBeCloseToPixel(values.w);
@@ -949,10 +949,10 @@ describe('Bar controller tests', function() {
 		var meta = chart.getDatasetMeta(1);
 
 		[
-			{b: 161, w: 82, x: 95, y: 32},
-			{b: 290, w: 82, x: 209, y: 97},
-			{b: 161, w: 82, x: 322, y: 161},
-			{b: 419, w: 82, x: 436, y: 471}
+			{b: 161, w: 83, x: 86, y: 32},
+			{b: 290, w: 83, x: 202, y: 97},
+			{b: 161, w: 83, x: 318, y: 161},
+			{b: 419, w: 83, x: 434, y: 471}
 		].forEach(function(values, i) {
 			expect(meta.data[i]._model.base).toBeCloseToPixel(values.b);
 			expect(meta.data[i]._model.width).toBeCloseToPixel(values.w);
@@ -990,8 +990,8 @@ describe('Bar controller tests', function() {
 		var meta = chart.getDatasetMeta(1);
 
 		[
-			{x: 117, y: 258},
-			{x: 231, y: 32}
+			{x: 108, y: 258},
+			{x: 224, y: 32}
 		].forEach(function(values, i) {
 			expect(meta.data[i]._model.base).toBeCloseToPixel(484);
 			expect(meta.data[i]._model.width).toBeCloseToPixel(40);
@@ -1032,8 +1032,8 @@ describe('Bar controller tests', function() {
 		var meta = chart.getDatasetMeta(2);
 
 		[
-			{b: 371, x: 117, y: 258},
-			{b: 258, x: 231, y: 32}
+			{b: 371, x: 108, y: 258},
+			{b: 258, x: 224, y: 32}
 		].forEach(function(values, i) {
 			expect(meta.data[i]._model.base).toBeCloseToPixel(values.b);
 			expect(meta.data[i]._model.width).toBeCloseToPixel(40);
@@ -1269,10 +1269,11 @@ describe('Bar controller tests', function() {
 			var chart = window.acquireChart(this.config);
 			var meta = chart.getDatasetMeta(0);
 			var xScale = chart.scales[meta.xAxisID];
+			var yScale = chart.scales[meta.yAxisID];
 
 			var categoryPercentage = xScale.options.categoryPercentage;
 			var barPercentage = xScale.options.barPercentage;
-			var stacked = xScale.options.stacked;
+			var stacked = yScale.options.stacked;
 
 			var totalBarWidth = 0;
 			for (var i = 0; i < chart.data.datasets.length; i++) {
@@ -1318,8 +1319,10 @@ describe('Bar controller tests', function() {
 							ticks: {
 								min: 'March',
 								max: 'May',
-							},
-							stacked: true,
+							}
+						}],
+						yAxes: [{
+							stacked: true
 						}]
 					}
 				}
@@ -1343,11 +1346,12 @@ describe('Bar controller tests', function() {
 		afterEach(function() {
 			var chart = window.acquireChart(this.config);
 			var meta = chart.getDatasetMeta(0);
+			var xScale = chart.scales[meta.xAxisID];
 			var yScale = chart.scales[meta.yAxisID];
 
 			var categoryPercentage = yScale.options.categoryPercentage;
 			var barPercentage = yScale.options.barPercentage;
-			var stacked = yScale.options.stacked;
+			var stacked = xScale.options.stacked;
 
 			var totalBarHeight = 0;
 			for (var i = 0; i < chart.data.datasets.length; i++) {
@@ -1389,12 +1393,14 @@ describe('Bar controller tests', function() {
 				data: this.data,
 				options: {
 					scales: {
+						xAxes: [{
+							stacked: true
+						}],
 						yAxes: [{
 							ticks: {
 								min: 'March',
 								max: 'May',
-							},
-							stacked: true,
+							}
 						}]
 					}
 				}
