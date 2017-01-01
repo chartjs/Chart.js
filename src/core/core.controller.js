@@ -15,134 +15,6 @@ module.exports = function(Chart) {
 	Chart.controllers = {};
 
 	/**
-	 * The "used" size is the final value of a dimension property after all calculations have
-	 * been performed. This method uses the computed style of `element` but returns undefined
-	 * if the computed style is not expressed in pixels. That can happen in some cases where
-	 * `element` has a size relative to its parent and this last one is not yet displayed,
-	 * for example because of `display: none` on a parent node.
-	 * TODO(SB) Move this method in the upcoming core.platform class.
-	 * @see https://developer.mozilla.org/en-US/docs/Web/CSS/used_value
-	 * @returns {Number} Size in pixels or undefined if unknown.
-	 */
-	function readUsedSize(element, property) {
-		var value = helpers.getStyle(element, property);
-		var matches = value && value.match(/(\d+)px/);
-		return matches? Number(matches[1]) : undefined;
-	}
-
-	/**
-	 * Initializes the canvas style and render size without modifying the canvas display size,
-	 * since responsiveness is handled by the controller.resize() method. The config is used
-	 * to determine the aspect ratio to apply in case no explicit height has been specified.
-	 * TODO(SB) Move this method in the upcoming core.platform class.
-	 */
-	function initCanvas(canvas, config) {
-		var style = canvas.style;
-
-		// NOTE(SB) canvas.getAttribute('width') !== canvas.width: in the first case it
-		// returns null or '' if no explicit value has been set to the canvas attribute.
-		var renderHeight = canvas.getAttribute('height');
-		var renderWidth = canvas.getAttribute('width');
-
-		// Chart.js modifies some canvas values that we want to restore on destroy
-		canvas._chartjs = {
-			initial: {
-				height: renderHeight,
-				width: renderWidth,
-				style: {
-					display: style.display,
-					height: style.height,
-					width: style.width
-				}
-			}
-		};
-
-		// Force canvas to display as block to avoid extra space caused by inline
-		// elements, which would interfere with the responsive resize process.
-		// https://github.com/chartjs/Chart.js/issues/2538
-		style.display = style.display || 'block';
-
-		if (renderWidth === null || renderWidth === '') {
-			var displayWidth = readUsedSize(canvas, 'width');
-			if (displayWidth !== undefined) {
-				canvas.width = displayWidth;
-			}
-		}
-
-		if (renderHeight === null || renderHeight === '') {
-			if (canvas.style.height === '') {
-				// If no explicit render height and style height, let's apply the aspect ratio,
-				// which one can be specified by the user but also by charts as default option
-				// (i.e. options.aspectRatio). If not specified, use canvas aspect ratio of 2.
-				canvas.height = canvas.width / (config.options.aspectRatio || 2);
-			} else {
-				var displayHeight = readUsedSize(canvas, 'height');
-				if (displayWidth !== undefined) {
-					canvas.height = displayHeight;
-				}
-			}
-		}
-
-		return canvas;
-	}
-
-	/**
-	 * Restores the canvas initial state, such as render/display sizes and style.
-	 * TODO(SB) Move this method in the upcoming core.platform class.
-	 */
-	function releaseCanvas(canvas) {
-		if (!canvas._chartjs) {
-			return;
-		}
-
-		var initial = canvas._chartjs.initial;
-		['height', 'width'].forEach(function(prop) {
-			var value = initial[prop];
-			if (value === undefined || value === null) {
-				canvas.removeAttribute(prop);
-			} else {
-				canvas.setAttribute(prop, value);
-			}
-		});
-
-		helpers.each(initial.style || {}, function(value, key) {
-			canvas.style[key] = value;
-		});
-
-		delete canvas._chartjs;
-	}
-
-	/**
-	 * TODO(SB) Move this method in the upcoming core.platform class.
-	 */
-	function acquireContext(item, config) {
-		if (typeof item === 'string') {
-			item = document.getElementById(item);
-		} else if (item.length) {
-			// Support for array based queries (such as jQuery)
-			item = item[0];
-		}
-
-		if (item && item.canvas) {
-			// Support for any object associated to a canvas (including a context2d)
-			item = item.canvas;
-		}
-
-		if (item instanceof HTMLCanvasElement) {
-			// To prevent canvas fingerprinting, some add-ons undefine the getContext
-			// method, for example: https://github.com/kkapsner/CanvasBlocker
-			// https://github.com/chartjs/Chart.js/issues/2807
-			var context = item.getContext && item.getContext('2d');
-			if (context instanceof CanvasRenderingContext2D) {
-				initCanvas(item, config);
-				return context;
-			}
-		}
-
-		return null;
-	}
-
-	/**
 	 * Initializes the given config with global and chart default values.
 	 */
 	function initConfig(config) {
@@ -163,6 +35,26 @@ module.exports = function(Chart) {
 	}
 
 	/**
+	 * Updates the config of the chart
+	 * @param chart {Chart.Controller} chart to update the options for
+	 */
+	function updateConfig(chart) {
+		var newOptions = chart.options;
+
+		// Update Scale(s) with options
+		if (newOptions.scale) {
+			chart.scale.options = newOptions.scale;
+		} else if (newOptions.scales) {
+			newOptions.scales.xAxes.concat(newOptions.scales.yAxes).forEach(function(scaleOptions) {
+				chart.scales[scaleOptions.id].options = scaleOptions;
+			});
+		}
+
+		// Tooltip
+		chart.tooltip._options = newOptions.tooltips;
+	}
+
+	/**
 	 * @class Chart.Controller
 	 * The main controller of a chart.
 	 */
@@ -171,7 +63,7 @@ module.exports = function(Chart) {
 
 		config = initConfig(config);
 
-		var context = acquireContext(item, config);
+		var context = Chart.platform.acquireContext(item, config);
 		var canvas = context && context.canvas;
 		var height = canvas && canvas.height;
 		var width = canvas && canvas.width;
@@ -232,7 +124,7 @@ module.exports = function(Chart) {
 			var me = this;
 
 			// Before init plugin notification
-			Chart.plugins.notify('beforeInit', [me]);
+			Chart.plugins.notify(me, 'beforeInit');
 
 			me.bindEvents();
 
@@ -247,7 +139,7 @@ module.exports = function(Chart) {
 			me.update();
 
 			// After init plugin notification
-			Chart.plugins.notify('afterInit', [me]);
+			Chart.plugins.notify(me, 'afterInit');
 
 			return me;
 		},
@@ -281,22 +173,21 @@ module.exports = function(Chart) {
 
 			canvas.width = chart.width = newWidth;
 			canvas.height = chart.height = newHeight;
-
-			helpers.retinaScale(chart);
-
 			canvas.style.width = newWidth + 'px';
 			canvas.style.height = newHeight + 'px';
 
-			// Notify any plugins about the resize
-			var newSize = {width: newWidth, height: newHeight};
-			Chart.plugins.notify('resize', [me, newSize]);
-
-			// Notify of resize
-			if (me.options.onResize) {
-				me.options.onResize(me, newSize);
-			}
+			helpers.retinaScale(chart);
 
 			if (!silent) {
+				// Notify any plugins about the resize
+				var newSize = {width: newWidth, height: newHeight};
+				Chart.plugins.notify(me, 'resize', [newSize]);
+
+				// Notify of resize
+				if (me.options.onResize) {
+					me.options.onResize(me, newSize);
+				}
+
 				me.stop();
 				me.update(me.options.responsiveAnimationDuration);
 			}
@@ -430,9 +321,12 @@ module.exports = function(Chart) {
 			this.tooltip.initialize();
 		},
 
+
 		update: function(animationDuration, lazy) {
 			var me = this;
-			Chart.plugins.notify('beforeUpdate', [me]);
+
+			updateConfig(me);
+			Chart.plugins.notify(me, 'beforeUpdate');
 
 			// In case the entire data object changed
 			me.tooltip._data = me.data;
@@ -448,7 +342,7 @@ module.exports = function(Chart) {
 			Chart.layoutService.update(me, me.chart.width, me.chart.height);
 
 			// Apply changes to the datasets that require the scales to have been calculated i.e BorderColor changes
-			Chart.plugins.notify('afterScaleUpdate', [me]);
+			Chart.plugins.notify(me, 'afterScaleUpdate');
 
 			// Can only reset the new controllers after the scales have been updated
 			helpers.each(newControllers, function(controller) {
@@ -458,7 +352,7 @@ module.exports = function(Chart) {
 			me.updateDatasets();
 
 			// Do this before render so that any plugins that need final scale updates can use it
-			Chart.plugins.notify('afterUpdate', [me]);
+			Chart.plugins.notify(me, 'afterUpdate');
 
 			if (me._bufferedRender) {
 				me._bufferedRequest = {
@@ -502,18 +396,18 @@ module.exports = function(Chart) {
 			var me = this;
 			var i, ilen;
 
-			if (Chart.plugins.notify('beforeDatasetsUpdate', [me])) {
+			if (Chart.plugins.notify(me, 'beforeDatasetsUpdate')) {
 				for (i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
 					me.getDatasetMeta(i).controller.update();
 				}
 
-				Chart.plugins.notify('afterDatasetsUpdate', [me]);
+				Chart.plugins.notify(me, 'afterDatasetsUpdate');
 			}
 		},
 
 		render: function(duration, lazy) {
 			var me = this;
-			Chart.plugins.notify('beforeRender', [me]);
+			Chart.plugins.notify(me, 'beforeRender');
 
 			var animationOptions = me.options.animation;
 			if (animationOptions && ((typeof duration !== 'undefined' && duration !== 0) || (typeof duration === 'undefined' && animationOptions.duration !== 0))) {
@@ -549,7 +443,7 @@ module.exports = function(Chart) {
 			var easingDecimal = ease || 1;
 			me.clear();
 
-			Chart.plugins.notify('beforeDraw', [me, easingDecimal]);
+			Chart.plugins.notify(me, 'beforeDraw', [easingDecimal]);
 
 			// Draw all the scales
 			helpers.each(me.boxes, function(box) {
@@ -559,7 +453,7 @@ module.exports = function(Chart) {
 				me.scale.draw();
 			}
 
-			Chart.plugins.notify('beforeDatasetsDraw', [me, easingDecimal]);
+			Chart.plugins.notify(me, 'beforeDatasetsDraw', [easingDecimal]);
 
 			// Draw each dataset via its respective controller (reversed to support proper line stacking)
 			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
@@ -568,12 +462,12 @@ module.exports = function(Chart) {
 				}
 			}, me, true);
 
-			Chart.plugins.notify('afterDatasetsDraw', [me, easingDecimal]);
+			Chart.plugins.notify(me, 'afterDatasetsDraw', [easingDecimal]);
 
 			// Finally draw the tooltip
 			me.tooltip.transition(easingDecimal).draw();
 
-			Chart.plugins.notify('afterDraw', [me, easingDecimal]);
+			Chart.plugins.notify(me, 'afterDraw', [easingDecimal]);
 		},
 
 		// Get the single element that was clicked on
@@ -600,7 +494,7 @@ module.exports = function(Chart) {
 		},
 
 		getDatasetAtEvent: function(e) {
-			return Chart.Interaction.modes.dataset(this, e);
+			return Chart.Interaction.modes.dataset(this, e, {intersect: true});
 		},
 
 		getDatasetMeta: function(datasetIndex) {
@@ -668,17 +562,12 @@ module.exports = function(Chart) {
 				helpers.unbindEvents(me, me.events);
 				helpers.removeResizeListener(canvas.parentNode);
 				helpers.clear(me.chart);
-				releaseCanvas(canvas);
+				Chart.platform.releaseContext(me.chart.ctx);
 				me.chart.canvas = null;
 				me.chart.ctx = null;
 			}
 
-			// if we scaled the canvas in response to a devicePixelRatio !== 1, we need to undo that transform here
-			if (me.chart.originalDevicePixelRatio !== undefined) {
-				me.chart.ctx.scale(1 / me.chart.originalDevicePixelRatio, 1 / me.chart.originalDevicePixelRatio);
-			}
-
-			Chart.plugins.notify('destroy', [me]);
+			Chart.plugins.notify(me, 'destroy');
 
 			delete Chart.instances[me.id];
 		},
@@ -719,7 +608,6 @@ module.exports = function(Chart) {
 
 		eventHandler: function(e) {
 			var me = this;
-			var legend = me.legend;
 			var tooltip = me.tooltip;
 			var hoverOptions = me.options.hover;
 
@@ -727,9 +615,12 @@ module.exports = function(Chart) {
 			me._bufferedRender = true;
 			me._bufferedRequest = null;
 
-			var changed = me.handleEvent(e);
-			changed |= legend && legend.handleEvent(e);
-			changed |= tooltip && tooltip.handleEvent(e);
+			// Create platform agnostic chart event using platform specific code
+			var chartEvent = Chart.platform.createEvent(e, me.chart);
+
+			var changed = me.handleEvent(chartEvent);
+			changed |= tooltip && tooltip.handleEvent(chartEvent);
+			changed |= Chart.plugins.notify(me, 'onEvent', [chartEvent]);
 
 			var bufferedRequest = me._bufferedRequest;
 			if (bufferedRequest) {
@@ -753,7 +644,7 @@ module.exports = function(Chart) {
 		/**
 		 * Handle an event
 		 * @private
-		 * param e {Event} the event to handle
+		 * param e {Core.Event} the event to handle
 		 * @return {Boolean} true if the chart needs to re-render
 		 */
 		handleEvent: function(e) {
@@ -773,12 +664,14 @@ module.exports = function(Chart) {
 
 			// On Hover hook
 			if (hoverOptions.onHover) {
-				hoverOptions.onHover.call(me, me.active);
+				// Need to call with native event here to not break backwards compatibility
+				hoverOptions.onHover.call(me, e.native, me.active);
 			}
 
 			if (e.type === 'mouseup' || e.type === 'click') {
 				if (options.onClick) {
-					options.onClick.call(me, e, me.active);
+					// Use e.native here for backwards compatibility
+					options.onClick.call(me, e.native, me.active);
 				}
 			}
 
