@@ -51,4 +51,8 @@ require('./charts/Chart.PolarArea')(Chart);
 require('./charts/Chart.Radar')(Chart);
 require('./charts/Chart.Scatter')(Chart);
 
+// for test
+require('./scales/scale.linear2')(Chart);
+require('./scales/scale.linear3')(Chart);
+
 window.Chart = module.exports = Chart;

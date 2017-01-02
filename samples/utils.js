@@ -11,3 +11,19 @@ window.chartColors = {
 window.randomScalingFactor = function() {
 	return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 100);
 }
+
+var clone = function(obj) {
+	var c = new (obj.constructor)();
+	for (var p in obj) {
+		if (!obj.hasOwnProperty(p)) {
+			continue;
+		}
+		// c[p] = typeof obj[p]=== 'object'? this.clone(obj[p]): obj[p];
+		if (typeof obj[p] === 'object') {
+			c[p] = this.clone(obj[p]);
+		} else {
+			c[p] = obj[p];
+		}
+	}
+	return c;
+};

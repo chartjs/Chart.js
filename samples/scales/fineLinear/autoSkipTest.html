@@ -1,0 +1,204 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Scatter Chart</title>
+    <script src="../../../dist/Chart.bundle.js"></script>
+    <script src="../../utils.js"></script>
+    <style>
+    canvas {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+    </style>
+</head>
+
+<body>
+
+<div style="width:75%">
+    <canvas id="canvas1"></canvas>
+</div>
+<div style="width:75%">
+    <canvas id="canvas2"></canvas>
+</div>
+<div style="width:75%">
+    <canvas id="canvas3"></canvas>
+</div>
+
+<button id="randomizeData">Randomize Data</button>
+<script>
+
+    window.randomScalingFactor = function () {
+        return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 100000);
+    };
+
+    var color = Chart.helpers.color;
+    var scatterChartData = {
+        datasets: [{
+            label: "dataset1",
+            borderColor: window.chartColors.red,
+            backgroundColor: color(window.chartColors.red).alpha(0.2).rgbString(),
+            data: [{
+                x: randomScalingFactor(),
+                y: randomScalingFactor(),
+            }, {
+                x: randomScalingFactor(),
+                y: randomScalingFactor(),
+            }, {
+                x: randomScalingFactor(),
+                y: randomScalingFactor(),
+            }, {
+                x: randomScalingFactor(),
+                y: randomScalingFactor(),
+            }, {
+                x: randomScalingFactor(),
+                y: randomScalingFactor(),
+            }, {
+                x: randomScalingFactor(),
+                y: randomScalingFactor(),
+            }, {
+                x: randomScalingFactor(),
+                y: randomScalingFactor(),
+            }]
+        }, {
+            label: "dataset2",
+            borderColor: window.chartColors.blue,
+            backgroundColor: color(window.chartColors.blue).alpha(0.2).rgbString(),
+            data: [{
+                x: randomScalingFactor(),
+                y: randomScalingFactor(),
+            }, {
+                x: randomScalingFactor(),
+                y: randomScalingFactor(),
+            }, {
+                x: randomScalingFactor(),
+                y: randomScalingFactor(),
+            }, {
+                x: randomScalingFactor(),
+                y: randomScalingFactor(),
+            }, {
+                x: randomScalingFactor(),
+                y: randomScalingFactor(),
+            }, {
+                x: randomScalingFactor(),
+                y: randomScalingFactor(),
+            }, {
+                x: randomScalingFactor(),
+                y: randomScalingFactor(),
+            }]
+        }]
+    };
+
+    var config1 = {
+        data: scatterChartData,
+        options: {
+            title: {
+                display: true,
+                text: 'Chart.js Scatter Chart'
+            },
+            scales: {
+                xAxes: [{
+                    // ------- fineLinear ----------
+                    // type: "fineLinear",
+                    type: "linear",
+                    position: 'bottom',
+                    // -----------------------------
+                    subScale: {
+                        subScale: {
+
+                        }
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'linear',
+                    },
+                    ticks: {
+                        // autoSkip: false,
+                        // callback: function (value, index, values) {
+                        //     return value+ "long long long long";
+                        //     // return value;
+                        // }
+                        min: -42500,
+                        max: 45000,
+                        stepSize: 2500,
+                        // autoSkip: false,
+                    }
+                }],
+                yAxes: [{
+                    // ------- fineLinear ----------
+                    // type: "fineLinear",
+                    type: "linear",
+                    subScale: {
+                        // display: false,
+                        gridLines: {
+                            // color: 'rgba(255, 0, 0, 1)',
+                            // tickMarkLength: 10,
+                        },
+                        subScale:{
+                            // display: true,
+                            gridLines: {
+                                // color: 'rgba(0, 255, 0, 1)',
+                                // tickMarkLength: 10,
+                            },
+                        },                           
+                    },
+                    // -----------------------------
+                    // position: 'right',
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'linear',
+                    },
+                    ticks: {
+                        // autoSkip: false,
+                        min: -100125,
+                        max: 100500,
+                        stepSize: 25000,
+                    },
+                }]
+            }
+
+        }
+    };
+
+    var config2 = clone(config1);
+    config2.options.scales.xAxes[0].type = "linear2";
+    config2.options.scales.xAxes[0].scaleLabel.labelString = 'linear2';
+    config2.options.scales.yAxes[0].type = "linear2";
+    config2.options.scales.yAxes[0].scaleLabel.labelString = 'linear2';
+
+    var config3 = clone(config1);
+    config3.options.scales.xAxes[0].type = "linear3";
+    config3.options.scales.xAxes[0].scaleLabel.labelString = 'linear3';
+    config3.options.scales.yAxes[0].type = "linear3";
+    config3.options.scales.yAxes[0].scaleLabel.labelString = 'linear3';
+
+    window.onload = function () {
+        var ctx1 = document.getElementById("canvas1").getContext("2d");
+        window.myScatter1 = Chart.Scatter(ctx1, config1);
+        var ctx2 = document.getElementById("canvas2").getContext("2d");
+        window.myScatter2 = Chart.Scatter(ctx2, config2);
+        var ctx3 = document.getElementById("canvas3").getContext("2d");
+        window.myScatter3 = Chart.Scatter(ctx3, config3);
+    };
+
+    document.getElementById('randomizeData').addEventListener('click', function () {
+        scatterChartData.datasets.forEach(function (dataset) {
+            dataset.data = dataset.data.map(function () {
+                return {
+                    x: randomScalingFactor(),
+                    y: randomScalingFactor()
+                };
+            });
+        });
+        config1.data = scatterChartData;
+        window.myScatter1.update();
+        config2.data = scatterChartData;
+        window.myScatter2.update();
+        config3.data = scatterChartData;
+        window.myScatter3.update();
+    });
+</script>
+</body>
+
+</html>

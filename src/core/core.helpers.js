@@ -470,6 +470,26 @@ module.exports = function(Chart) {
 
 		return niceFraction * Math.pow(10, exponent);
 	};
+	// niceNum for fineScale
+	helpers.niceNumForFineScale = function(range, round, maxTicks, level) {
+		var tickRange = maxTicks? range / (maxTicks - 1): range;
+		var exponent = Math.floor(helpers.log10(tickRange));
+		var fraction = tickRange / Math.pow(10, exponent);
+
+		var niceFraction;
+		if (round) {
+			// niceFraction = fraction <= 1? 5: (fraction <= 5? 10: 20);
+			niceFraction = 	fraction <= 1? 5:
+							10;
+		} else {
+			niceFraction = 	fraction <= 1? 1:
+							fraction <= 2? 2:
+							fraction <= 5? 5:
+							10;
+		}
+
+		return niceFraction * Math.pow(10, exponent);
+	};
 	// Easing functions adapted from Robert Penner's easing equations
 	// http://www.robertpenner.com/easing/
 	var easingEffects = helpers.easingEffects = {
