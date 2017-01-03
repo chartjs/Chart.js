@@ -574,18 +574,30 @@ module.exports = function(Chart) {
 
 				// Common properties
 				var tx1, ty1, tx2, ty2, x1, y1, x2, y2, labelX, labelY;
+				var useMeta = false;
+				var notBar = me.chart.config.type !== 'bar';
 				var textAlign = 'middle';
 				var textBaseline = 'middle';
 
 				if (isHorizontal) {
+
+					var xLineValue = helpers.aliasPixel(lineWidth);
+					labelX = optionTicks.labelOffset;
+
+					if (me.chart.getDatasetMeta(0) !== undefined) {
+						var meta = me.chart.getDatasetMeta(0);
+						useMeta = me.ticks.length === meta.data.length;
+					}
+
+					labelX += useMeta ? meta.data[index]._view.x : me.getPixelForTick(index, gridLines.offsetGridLines);
+					xLineValue += useMeta && notBar ? meta.data[index]._view.x : me.getPixelForTick(index);
+
 					if (!isRotated) {
 						textBaseline = options.position === 'top' ? 'bottom' : 'top';
 					}
 
 					textAlign = isRotated ? 'right' : 'center';
 
-					var xLineValue = me.getPixelForTick(index) + helpers.aliasPixel(lineWidth); // xvalues for grid lines
-					labelX = me.getPixelForTick(index, gridLines.offsetGridLines) + optionTicks.labelOffset; // x values for optionTicks (need to consider offsetLabel option)
 					labelY = (isRotated) ? me.top + 12 : options.position === 'top' ? me.bottom - tl : me.top + tl;
 
 					tx1 = tx2 = x1 = x2 = xLineValue;
