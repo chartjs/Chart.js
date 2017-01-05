@@ -715,7 +715,7 @@ module.exports = function(Chart) {
 					var isLeft = options.position === 'left';
 					scaleLabelX = isLeft ? me.left + (scaleLabelFont.size / 2) : me.right - (scaleLabelFont.size / 2);
 					scaleLabelY = me.top + ((me.bottom - me.top) / 2);
-					rotation = -0.5 * Math.PI;
+					rotation = isLeft ? -0.5 * Math.PI : 0.5 * Math.PI;
 				}
 
 				context.save();
