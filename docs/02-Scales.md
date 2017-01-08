@@ -36,7 +36,7 @@ afterFit | Function | undefined | Callback that runs after the scale fits to the
 afterUpdate | Function | undefined | Callback that runs at the end of the update process. Passed a single argument, the scale instance.
 **gridLines** | Object | - | See [grid line configuration](#grid-line-configuration) section.
 **scaleLabel** | Object | | See [scale title configuration](#scale-title-configuration) section.
-**ticks** | Object | | See [ticks configuration](#ticks-configuration) section.
+**ticks** | Object | | See [tick configuration](#tick-configuration) section.
 
 #### Grid Line Configuration
 
