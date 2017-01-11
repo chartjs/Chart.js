@@ -17,6 +17,7 @@ describe('Test the radial linear scale', function() {
 			animate: true,
 			display: true,
 			gridLines: {
+				circular: false,
 				color: 'rgba(0, 0, 0, 0.1)',
 				drawBorder: true,
 				drawOnChartArea: true,
@@ -30,8 +31,8 @@ describe('Test the radial linear scale', function() {
 				borderDash: [],
 				borderDashOffset: 0.0
 			},
-			lineArc: false,
 			pointLabels: {
+				display: true,
 				fontSize: 10,
 				callback: defaultConfig.pointLabels.callback, // make this nicer, then check explicitly below
 			},
