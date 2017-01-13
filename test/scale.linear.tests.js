@@ -801,4 +801,47 @@ describe('Linear Scale', function() {
 		var yScale = chart.scales.yScale0;
 		expect(yScale.width).toBeCloseToPixel(0);
 	});
+
+	it('max and min value should be valid and finite when charts datasets are hidden', function() {
+		var barData = {
+			labels: ['S1', 'S2', 'S3'],
+			datasets: [{
+				label: 'Closed',
+				backgroundColor: '#382765',
+				data: [2500, 2000, 1500]
+			}, {
+				label: 'In Progress',
+				backgroundColor: '#7BC225',
+				data: [1000, 2000, 1500]
+			}, {
+				label: 'Assigned',
+				backgroundColor: '#ffC225',
+				data: [1000, 2000, 1500]
+			}]
+		};
+
+		var chart = window.acquireChart({
+			type: 'horizontalBar',
+			data: barData,
+			options: {
+				scales: {
+					xAxes: [{
+						stacked: true
+					}],
+					yAxes: [{
+						stacked: true
+					}]
+				}
+			}
+		});
+
+		barData.datasets.forEach(function(data, index) {
+			var meta = chart.getDatasetMeta(index);
+			meta.hidden = true;
+			chart.update();
+		});
+
+		expect(chart.scales['x-axis-0'].min).toEqual(0);
+		expect(chart.scales['x-axis-0'].max).toEqual(1);
+	});
 });
