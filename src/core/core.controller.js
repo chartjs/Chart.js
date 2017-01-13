@@ -457,7 +457,7 @@ module.exports = function(Chart) {
 
 			// Draw each dataset via its respective controller (reversed to support proper line stacking)
 			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
-				if (me.isDatasetVisible(datasetIndex)) {
+				if (me.isDatasetVisible(datasetIndex) && me.isDatasetVisible(datasetIndex).hasOwnProperty('controller')) {
 					me.getDatasetMeta(datasetIndex).controller.draw(ease);
 				}
 			}, me, true);
