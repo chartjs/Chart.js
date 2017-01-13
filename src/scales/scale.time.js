@@ -324,7 +324,7 @@ module.exports = function(Chart) {
 			me.ticks.push(me.firstTick.clone());
 
 			// For every unit in between the first and last moment, create a moment and add it to the ticks tick
-			for (var i = 1; i <= me.scaleSizeInUnits; ++i) {
+			for (var i = me.unitScale; i <= me.scaleSizeInUnits; i += me.unitScale) {
 				var newTick = roundedStart.clone().add(i, me.tickUnit);
 
 				// Are we greater than the max time
@@ -332,9 +332,7 @@ module.exports = function(Chart) {
 					break;
 				}
 
-				if (i % me.unitScale === 0) {
-					me.ticks.push(newTick);
-				}
+				me.ticks.push(newTick);
 			}
 
 			// Always show the right tick
