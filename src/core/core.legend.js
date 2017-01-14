@@ -439,7 +439,7 @@ module.exports = function(Chart) {
 		/**
 		 * Handle an event
 		 * @private
-		 * @param e {Core.Event} the event to handle
+		 * @param {IEvent} event - The event to handle
 		 * @return {Boolean} true if a change occured
 		 */
 		handleEvent: function(e) {

@@ -1,57 +1,13 @@
 'use strict';
 
-/**
- * @interface IPlatform
- * Allows abstracting platform dependencies away from the chart
- */
-/**
- * Creates a chart.js event from a platform specific event
- * @method IPlatform#createEvent
- * @param e {Event} : the platform event to translate
- * @returns {Core.Event} chart.js event
- */
-/**
- * @method IPlatform#acquireContext
- * @param item {Object} the context or canvas to use
- * @param config {ChartOptions} the chart options
- * @returns {CanvasRenderingContext2D} a context2d instance implementing the w3c Canvas 2D context API standard.
- */
-/**
- * @method IPlatform#releaseContext
- * @param context {CanvasRenderingContext2D} the context to release. This is the item returned by @see {@link IPlatform#acquireContext}
- */
-
 // Chart.Platform implementation for targeting a web browser
 module.exports = function(Chart) {
 	var helpers = Chart.helpers;
 
-	/*
-	 * Key is the browser event type
-	 * Chart.js internal events are:
-	 * 		mouseenter
-	 *		mousedown
-	 *		mousemove
-	 *		mouseup
-	 *		mouseout
-	 *		click
-	 *		dblclick
-	 *		contextmenu
-	 *		keydown
-	 *		keypress
-	 *		keyup
-	 */
-	var typeMap = {
-		// Mouse events
-		mouseenter: 'mouseenter',
-		mousedown: 'mousedown',
-		mousemove: 'mousemove',
-		mouseup: 'mouseup',
-		mouseout: 'mouseout',
-		mouseleave: 'mouseout',
-		click: 'click',
-		dblclick: 'dblclick',
-		contextmenu: 'contextmenu',
-
+	// DOM event types -> Chart.js event types.
+	// Note: only events with different types are mapped.
+	// https://developer.mozilla.org/en-US/docs/Web/Events
+	var eventTypeMap = {
 		// Touch events
 		touchstart: 'mousedown',
 		touchmove: 'mousemove',
@@ -63,12 +19,7 @@ module.exports = function(Chart) {
 		pointermove: 'mousemove',
 		pointerup: 'mouseup',
 		pointerleave: 'mouseout',
-		pointerout: 'mouseout',
-
-		// Key events
-		keydown: 'keydown',
-		keypress: 'keypress',
-		keyup: 'keyup',
+		pointerout: 'mouseout'
 	};
 
 	/**
@@ -141,38 +92,97 @@ module.exports = function(Chart) {
 		return canvas;
 	}
 
+	function createEvent(type, chart, x, y, native) {
+		return {
+			type: type,
+			chart: chart,
+			native: native || null,
+			x: x !== undefined? x : null,
+			y: y !== undefined? y : null,
+		};
+	}
+
+	function fromNativeEvent(event, chart) {
+		var type = eventTypeMap[event.type] || event.type;
+		var pos = helpers.getRelativePosition(event, chart);
+		return createEvent(type, chart, pos.x, pos.y, event);
+	}
+
+	function createResizer(handler) {
+		var iframe = document.createElement('iframe');
+		iframe.className = 'chartjs-hidden-iframe';
+		iframe.style.cssText =
+			'display:block;'+
+			'overflow:hidden;'+
+			'border:0;'+
+			'margin:0;'+
+			'top:0;'+
+			'left:0;'+
+			'bottom:0;'+
+			'right:0;'+
+			'height:100%;'+
+			'width:100%;'+
+			'position:absolute;'+
+			'pointer-events:none;'+
+			'z-index:-1;';
+
+		// Prevent the iframe to gain focus on tab.
+		// https://github.com/chartjs/Chart.js/issues/3090
+		iframe.tabIndex = -1;
+
+		// If the iframe is re-attached to the DOM, the resize listener is removed because the
+		// content is reloaded, so make sure to install the handler after the iframe is loaded.
+		// https://github.com/chartjs/Chart.js/issues/3521
+		helpers.addEvent(iframe, 'load', function() {
+			helpers.addEvent(iframe.contentWindow || iframe, 'resize', handler);
+
+			// The iframe size might have changed while loading, which can also
+			// happen if the size has been changed while detached from the DOM.
+			handler();
+		});
+
+		return iframe;
+	}
+
+	function addResizeListener(node, listener, chart) {
+		var stub = node._chartjs = {
+			ticking: false
+		};
+
+		// Throttle the callback notification until the next animation frame.
+		var notify = function() {
+			if (!stub.ticking) {
+				stub.ticking = true;
+				helpers.requestAnimFrame.call(window, function() {
+					if (stub.resizer) {
+						stub.ticking = false;
+						return listener(createEvent('resize', chart));
+					}
+				});
+			}
+		};
+
+		// Let's keep track of this added iframe and thus avoid DOM query when removing it.
+		stub.resizer = createResizer(notify);
+
+		node.insertBefore(stub.resizer, node.firstChild);
+	}
+
+	function removeResizeListener(node) {
+		if (!node || !node._chartjs) {
+			return;
+		}
+
+		var resizer = node._chartjs.resizer;
+		if (resizer) {
+			resizer.parentNode.removeChild(resizer);
+			node._chartjs.resizer = null;
+		}
+
+		delete node._chartjs;
+	}
+
 	return {
-		/**
-		 * Creates a Chart.js event from a raw event
-		 * @method BrowserPlatform#createEvent
-		 * @implements IPlatform.createEvent
-		 * @param e {Event} the raw event (such as a mouse event)
-		 * @param chart {Chart} the chart to use
-		 * @returns {Core.Event} the chart.js event for this event
-		 */
-		createEvent: function(e, chart) {
-			var relativePosition = helpers.getRelativePosition(e, chart);
-			return {
-				// allow access to the native event
-				native: e,
-
-				// our interal event type
-				type: typeMap[e.type],
-
-				// width and height of chart
-				width: chart.width,
-				height: chart.height,
-
-				// Position relative to the canvas
-				x: relativePosition.x,
-				y: relativePosition.y
-			};
-		},
-
-		/**
-		 * @method BrowserPlatform#acquireContext
-		 * @implements IPlatform#acquireContext
-		 */
 		acquireContext: function(item, config) {
 			if (typeof item === 'string') {
 				item = document.getElementById(item);
@@ -200,11 +210,6 @@ module.exports = function(Chart) {
 			return null;
 		},
 
-		/**
-		 * Restores the canvas initial state, such as render/display sizes and style.
-		 * @method BrowserPlatform#releaseContext
-		 * @implements IPlatform#releaseContext
-		 */
 		releaseContext: function(context) {
 			var canvas = context.canvas;
 			if (!canvas._chartjs) {
@@ -232,6 +237,41 @@ module.exports = function(Chart) {
 			canvas.width = canvas.width;
 
 			delete canvas._chartjs;
+		},
+
+		addEventListener: function(chart, type, listener) {
+			var canvas = chart.chart.canvas;
+			if (type === 'resize') {
+				// Note: the resize event is not supported on all browsers.
+				addResizeListener(canvas.parentNode, listener, chart.chart);
+				return;
+			}
+
+			var stub = listener._chartjs || (listener._chartjs = {});
+			var proxies = stub.proxies || (stub.proxies = {});
+			var proxy = proxies[chart.id + '_' + type] = function(event) {
+				listener(fromNativeEvent(event, chart.chart));
+			};
+
+			helpers.addEvent(canvas, type, proxy);
+		},
+
+		removeEventListener: function(chart, type, listener) {
+			var canvas = chart.chart.canvas;
+			if (type === 'resize') {
+				// Note: the resize event is not supported on all browsers.
+				removeResizeListener(canvas.parentNode, listener);
+				return;
+			}
+
+			var stub = listener._chartjs || {};
+			var proxies = stub.proxies || {};
+			var proxy = proxies[chart.id + '_' + type];
+			if (!proxy) {
+				return;
+			}
+
+			helpers.removeEvent(canvas, type, proxy);
 		}
 	};
 };

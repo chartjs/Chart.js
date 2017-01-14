@@ -763,7 +763,7 @@ module.exports = function(Chart) {
 		/**
 		 * Handle an event
 		 * @private
-		 * @param e {Core.Event} the event to handle
+		 * @param {IEvent} event - The event to handle
 		 * @returns {Boolean} true if the tooltip changed
 		 */
 		handleEvent: function(e) {

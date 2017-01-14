@@ -5,8 +5,8 @@ module.exports = function(Chart) {
 
 	/**
 	 * Helper function to get relative position for an event
-	 * @param e {Event|Core.Event} the event to get the position for
-	 * @param chart {chart} the chart
+	 * @param {Event|IEvent} event - The event to get the position for
+	 * @param {Chart} chart - The chart
 	 * @returns {Point} the event position
 	 */
 	function getRelativePosition(e, chart) {
@@ -135,8 +135,8 @@ module.exports = function(Chart) {
 	 */
 
 	/**
-	 * @namespace Chart.Interaction
 	 * Contains interaction related functions
+	 * @namespace Chart.Interaction
 	 */
 	Chart.Interaction = {
 		// Helper function for different modes
