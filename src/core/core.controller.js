@@ -3,6 +3,7 @@
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
+	var platform = Chart.platform;
 
 	// Create a dictionary of chart types, to allow for extension of existing types
 	Chart.types = {};
@@ -63,7 +64,7 @@ module.exports = function(Chart) {
 
 		config = initConfig(config);
 
-		var context = Chart.platform.acquireContext(item, config);
+		var context = platform.acquireContext(item, config);
 		var canvas = context && context.canvas;
 		var height = canvas && canvas.height;
 		var width = canvas && canvas.width;
@@ -99,21 +100,6 @@ module.exports = function(Chart) {
 			return me;
 		}
 
-		helpers.retinaScale(instance);
-
-		// Responsiveness is currently based on the use of an iframe, however this method causes
-		// performance issues and could be troublesome when used with ad blockers. So make sure
-		// that the user is still able to create a chart without iframe when responsive is false.
-		// See https://github.com/chartjs/Chart.js/issues/2210
-		if (me.options.responsive) {
-			helpers.addResizeListener(canvas.parentNode, function() {
-				me.resize();
-			});
-
-			// Initial resize before chart draws (must be silent to preserve initial animations).
-			me.resize(true);
-		}
-
 		me.initialize();
 
 		return me;
@@ -126,7 +112,14 @@ module.exports = function(Chart) {
 			// Before init plugin notification
 			Chart.plugins.notify(me, 'beforeInit');
 
+			helpers.retinaScale(me.chart);
+
 			me.bindEvents();
+
+			if (me.options.responsive) {
+				// Initial resize before chart draws (must be silent to preserve initial animations).
+				me.resize(true);
+			}
 
 			// Make sure controllers are built first so that each dataset is bound to an axis before the scales
 			// are built
@@ -559,10 +552,9 @@ module.exports = function(Chart) {
 			}
 
 			if (canvas) {
-				helpers.unbindEvents(me, me.events);
-				helpers.removeResizeListener(canvas.parentNode);
+				me.unbindEvents();
 				helpers.clear(me.chart);
-				Chart.platform.releaseContext(me.chart.ctx);
+				platform.releaseContext(me.chart.ctx);
 				me.chart.canvas = null;
 				me.chart.ctx = null;
 			}
@@ -587,10 +579,48 @@ module.exports = function(Chart) {
 			me.tooltip.initialize();
 		},
 
+		/**
+		 * @private
+		 */
 		bindEvents: function() {
 			var me = this;
-			helpers.bindEvents(me, me.options.events, function(evt) {
-				me.eventHandler(evt);
+			var listeners = me._listeners = {};
+			var listener = function() {
+				me.eventHandler.apply(me, arguments);
+			};
+
+			helpers.each(me.options.events, function(type) {
+				platform.addEventListener(me, type, listener);
+				listeners[type] = listener;
+			});
+
+			// Responsiveness is currently based on the use of an iframe, however this method causes
+			// performance issues and could be troublesome when used with ad blockers. So make sure
+			// that the user is still able to create a chart without iframe when responsive is false.
+			// See https://github.com/chartjs/Chart.js/issues/2210
+			if (me.options.responsive) {
+				listener = function() {
+					me.resize();
+				};
+
+				platform.addEventListener(me, 'resize', listener);
+				listeners.resize = listener;
+			}
+		},
+
+		/**
+		 * @private
+		 */
+		unbindEvents: function() {
+			var me = this;
+			var listeners = me._listeners;
+			if (!listeners) {
+				return;
+			}
+
+			delete me._listeners;
+			helpers.each(listeners, function(listener, type) {
+				platform.removeEventListener(me, type, listener);
 			});
 		},
 
@@ -606,6 +636,9 @@ module.exports = function(Chart) {
 			}
 		},
 
+		/**
+		 * @private
+		 */
 		eventHandler: function(e) {
 			var me = this;
 			var tooltip = me.tooltip;
@@ -615,12 +648,9 @@ module.exports = function(Chart) {
 			me._bufferedRender = true;
 			me._bufferedRequest = null;
 
-			// Create platform agnostic chart event using platform specific code
-			var chartEvent = Chart.platform.createEvent(e, me.chart);
-
-			var changed = me.handleEvent(chartEvent);
-			changed |= tooltip && tooltip.handleEvent(chartEvent);
-			changed |= Chart.plugins.notify(me, 'onEvent', [chartEvent]);
+			var changed = me.handleEvent(e);
+			changed |= tooltip && tooltip.handleEvent(e);
+			changed |= Chart.plugins.notify(me, 'onEvent', [e]);
 
 			var bufferedRequest = me._bufferedRequest;
 			if (bufferedRequest) {
@@ -644,7 +674,7 @@ module.exports = function(Chart) {
 		/**
 		 * Handle an event
 		 * @private
-		 * param e {Core.Event} the event to handle
+		 * @param {IEvent} event the event to handle
 		 * @return {Boolean} true if the chart needs to re-render
 		 */
 		handleEvent: function(e) {

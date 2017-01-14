@@ -361,10 +361,6 @@ describe('Platform.dom', function() {
 			// Is type correctly translated
 			expect(notifiedEvent.type).toBe(evt.type);
 
-			// Canvas width and height
-			expect(notifiedEvent.width).toBe(chart.chart.width);
-			expect(notifiedEvent.height).toBe(chart.chart.height);
-
 			// Relative Position
 			expect(notifiedEvent.x).toBe(chart.chart.width / 2);
 			expect(notifiedEvent.y).toBe(chart.chart.height / 2);
