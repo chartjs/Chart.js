@@ -116,7 +116,7 @@ describe('Time scale tests', function() {
 		scale.update(400, 50);
 
 		// Counts down because the lines are drawn top to bottom
-		expect(scale.ticks).toEqual(['Dec 28, 2014', 'Jan 4, 2015', 'Jan 11, 2015']);
+		expect(scale.ticks).toEqual(['Jan 1, 2015', 'Jan 2, 2015', 'Jan 3, 2015', 'Jan 4, 2015', 'Jan 5, 2015', 'Jan 6, 2015', 'Jan 7, 2015', 'Jan 8, 2015', 'Jan 9, 2015', 'Jan 10, 2015', 'Jan 11, 2015']);
 	});
 
 	it('should build ticks using date objects', function() {
@@ -144,7 +144,7 @@ describe('Time scale tests', function() {
 		scale.update(400, 50);
 
 		// Counts down because the lines are drawn top to bottom
-		expect(scale.ticks).toEqual(['Dec 28, 2014', 'Jan 4, 2015', 'Jan 11, 2015']);
+		expect(scale.ticks).toEqual(['Jan 1, 2015', 'Jan 2, 2015', 'Jan 3, 2015', 'Jan 4, 2015', 'Jan 5, 2015', 'Jan 6, 2015', 'Jan 7, 2015', 'Jan 8, 2015', 'Jan 9, 2015', 'Jan 10, 2015', 'Jan 11, 2015']);
 	});
 
 	it('should build ticks when the data is xy points', function() {
@@ -200,7 +200,7 @@ describe('Time scale tests', function() {
 
 		// Counts down because the lines are drawn top to bottom
 		var xScale = chart.scales.xScale0;
-		expect(xScale.ticks).toEqual(['Jan 1, 2015', 'Jan 3, 2015', 'Jan 5, 2015', 'Jan 7, 2015', 'Jan 9, 2015', 'Jan 11, 2015']);
+		expect(xScale.ticks).toEqual(['Jan 1, 2015', 'Jan 2, 2015', 'Jan 3, 2015', 'Jan 4, 2015', 'Jan 5, 2015', 'Jan 6, 2015', 'Jan 7, 2015', 'Jan 8, 2015', 'Jan 9, 2015', 'Jan 10, 2015', 'Jan 11, 2015']);
 	});
 
 	it('should allow custom time parsers', function() {
@@ -335,6 +335,7 @@ describe('Time scale tests', function() {
 		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('time'));
 		config.time.min = '2015-01-01T04:00:00';
 		config.time.max = '2015-01-05T06:00:00';
+		config.time.unit = 'day';
 		var Constructor = Chart.scaleService.getScaleConstructor('time');
 		var scale = new Constructor({
 			ctx: mockContext,
@@ -346,7 +347,8 @@ describe('Time scale tests', function() {
 		});
 
 		scale.update(400, 50);
-		expect(scale.ticks).toEqual(['Jan 1, 2015', 'Jan 5, 2015']);
+		expect(scale.ticks[0]).toEqual('Jan 1, 2015');
+		expect(scale.ticks[scale.ticks.length - 1]).toEqual('Jan 5, 2015');
 	});
 
 	it('Should use the isoWeekday option', function() {
@@ -408,16 +410,34 @@ describe('Time scale tests', function() {
 
 		var xScale = chart.scales.xScale0;
 
-		expect(xScale.getPixelForValue('', 0, 0)).toBeCloseToPixel(71);
-		expect(xScale.getPixelForValue('', 6, 0)).toBeCloseToPixel(452);
-		expect(xScale.getPixelForValue('2015-01-01T20:00:00')).toBeCloseToPixel(71);
+		expect(xScale.getValueForPixel(xScale.left)).toBeCloseToTime({
+			value: moment('2015-01-01'),
+			unit: 'hour',
+			threshold: 0.01
+		});
+		expect(xScale.getValueForPixel(xScale.right)).toBeCloseToTime({
+			value: moment('2015-01-11'),
+			unit: 'hour',
+			threshold: 0.01
+		});
 
-		expect(xScale.getValueForPixel(71)).toBeCloseToTime({
+		var timeRange = moment('2015-01-11').valueOf() - moment('2015-01-01').valueOf();
+		var msInHour = 3600000;
+		var firstLabelAlong = 20 * msInHour / timeRange;
+		var firstLabelPixel = xScale.left + (xScale.width * firstLabelAlong);
+		var lastLabelAlong = (timeRange - (12 * msInHour)) / timeRange;
+		var lastLabelPixel = xScale.left + (xScale.width * lastLabelAlong);
+
+		expect(xScale.getPixelForValue('', 0, 0)).toBeCloseToPixel(firstLabelPixel);
+		expect(xScale.getPixelForValue('', 6, 0)).toBeCloseToPixel(lastLabelPixel);
+		expect(xScale.getPixelForValue(chart.data.labels[0])).toBeCloseToPixel(firstLabelPixel);
+
+		expect(xScale.getValueForPixel(firstLabelPixel)).toBeCloseToTime({
 			value: moment(chart.data.labels[0]),
 			unit: 'hour',
 			threshold: 0.75
 		});
-		expect(xScale.getValueForPixel(452)).toBeCloseToTime({
+		expect(xScale.getValueForPixel(lastLabelPixel)).toBeCloseToTime({
 			value: moment(chart.data.labels[6]),
 			unit: 'hour'
 		});
