@@ -185,7 +185,12 @@ module.exports = function(Chart) {
 		var title = new Chart.Title({
 			ctx: chart.ctx,
 			options: titleOpts,
-			chart: chart
+			chart: chart,
+
+			// ILayoutItem parameters
+			weight: 2000, // greater than legend to be above
+			position: titleOpts.position,
+			fullWidth: titleOpts.fullWidth,
 		});
 		chart.titleBlock = title;
 		Chart.layoutService.addBox(chart, title);
