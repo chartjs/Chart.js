@@ -33,6 +33,9 @@ module.exports = function(Chart) {
 		addScalesToLayout: function(chart) {
 			// Adds each scale to the chart.boxes array to be sized accordingly
 			helpers.each(chart.scales, function(scale) {
+				// Set ILayoutItem parameters for backwards compatibility
+				scale.fullWidth = scale.options.fullWidth;
+				scale.position = scale.options.position;
 				Chart.layoutService.addBox(chart, scale);
 			});
 		}
