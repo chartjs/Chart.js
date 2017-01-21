@@ -71,7 +71,15 @@ function bowerTask() {
       homepage: package.homepage,
       license: package.license,
       version: package.version,
-      main: outDir + "Chart.js"
+      main: outDir + "Chart.js",
+      ignore: [
+        '.github',
+        '.codeclimate.yml',
+        '.gitignore',
+        '.npmignore',
+        '.travis.yml',
+        'scripts'
+      ]
     }, null, 2);
 
   return file('bower.json', json, { src: true })
