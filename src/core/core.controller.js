@@ -433,12 +433,18 @@ module.exports = function(Chart) {
 			return me;
 		},
 
-		draw: function(ease) {
+		draw: function(easingValue) {
 			var me = this;
-			var easingDecimal = ease || 1;
+
 			me.clear();
 
-			plugins.notify(me, 'beforeDraw', [easingDecimal]);
+			if (easingValue === undefined || easingValue === null) {
+				easingValue = 1;
+			}
+
+			if (plugins.notify(me, 'beforeDraw', [easingValue]) === false) {
+				return;
+			}
 
 			// Draw all the scales
 			helpers.each(me.boxes, function(box) {
@@ -449,12 +455,12 @@ module.exports = function(Chart) {
 				me.scale.draw();
 			}
 
-			me.drawDatasets(easingDecimal);
+			me.drawDatasets(easingValue);
 
 			// Finally draw the tooltip
-			me.tooltip.transition(easingDecimal).draw();
+			me.tooltip.transition(easingValue).draw();
 
-			plugins.notify(me, 'afterDraw', [easingDecimal]);
+			plugins.notify(me, 'afterDraw', [easingValue]);
 		},
 
 		/**
