@@ -412,7 +412,7 @@ Plugins will be called at the following times
 * Before an animation is started
 * When an event occurs on the canvas (mousemove, click, etc). This requires the `options.events` property handled
 
-Plugins should derive from Chart.PluginBase and implement the following interface
+Plugins should implement the `IPlugin` interface:
 ```javascript
 {
 	beforeInit: function(chartInstance) { },

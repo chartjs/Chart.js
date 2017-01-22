@@ -582,4 +582,75 @@ describe('Chart.Controller', function() {
 			expect(chart.tooltip._options).toEqual(jasmine.objectContaining(newTooltipConfig));
 		});
 	});
+
+	describe('plugin.extensions', function() {
+		it ('should notify plugin in correct order', function(done) {
+			var plugin = this.plugin = {id: 'foobar'};
+			var sequence = [];
+			var hooks = {
+				init: [
+					'beforeInit',
+					'afterInit'
+				],
+				update: [
+					'beforeUpdate',
+					'beforeLayout',
+					'afterLayout',
+					'beforeDatasetsUpdate',
+					'afterDatasetsUpdate',
+					'afterUpdate',
+				],
+				render: [
+					'beforeRender',
+					'beforeDraw',
+					'beforeDatasetsDraw',
+					'afterDatasetsDraw',
+					'afterDraw',
+					'afterRender',
+				],
+				resize: [
+					'resize'
+				],
+				destroy: [
+					'destroy'
+				]
+			};
+
+			Object.keys(hooks).forEach(function(group) {
+				hooks[group].forEach(function(name) {
+					plugin[name] = function() {
+						sequence.push(name);
+					};
+				});
+			});
+
+			var chart = window.acquireChart({
+				plugins: [plugin],
+				options: {
+					responsive: true
+				}
+			}, {
+				wrapper: {
+					style: 'width: 300px'
+				}
+			});
+
+			chart.chart.canvas.parentNode.style.width = '400px';
+			waitForResize(chart, function() {
+				chart.destroy();
+
+				expect(sequence).toEqual([].concat(
+					hooks.init,
+					hooks.update,
+					hooks.render,
+					hooks.resize,
+					hooks.update,
+					hooks.render,
+					hooks.destroy
+				));
+
+				done();
+			});
+		});
+	});
 });
