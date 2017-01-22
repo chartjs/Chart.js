@@ -191,7 +191,7 @@ module.exports = function(Chart) {
 			meta.total = me.calculateTotal();
 
 			me.outerRadius = chart.outerRadius - (chart.radiusLength * me.getRingIndex(me.index));
-			me.innerRadius = me.outerRadius - chart.radiusLength;
+			me.innerRadius = Math.max(me.outerRadius - chart.radiusLength, 0);
 
 			helpers.each(meta.data, function(arc, index) {
 				me.updateElement(arc, index, reset);
