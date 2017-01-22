@@ -664,7 +664,10 @@ module.exports = function(Chart) {
 		eventHandler: function(e) {
 			var me = this;
 			var tooltip = me.tooltip;
-			var hoverOptions = me.options.hover;
+
+			if (plugins.notify(me, 'beforeEvent', [e]) === false) {
+				return;
+			}
 
 			// Buffer any update calls so that renders do not occur
 			me._bufferedRender = true;
@@ -672,7 +675,8 @@ module.exports = function(Chart) {
 
 			var changed = me.handleEvent(e);
 			changed |= tooltip && tooltip.handleEvent(e);
-			changed |= plugins.notify(me, 'onEvent', [e]);
+
+			plugins.notify(me, 'afterEvent', [e]);
 
 			var bufferedRequest = me._bufferedRequest;
 			if (bufferedRequest) {
@@ -684,7 +688,7 @@ module.exports = function(Chart) {
 
 				// We only need to render at this point. Updating will cause scales to be
 				// recomputed generating flicker & using more memory than necessary.
-				me.render(hoverOptions.animationDuration, true);
+				me.render(me.options.hover.animationDuration, true);
 			}
 
 			me._bufferedRender = false;

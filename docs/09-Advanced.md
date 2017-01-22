@@ -439,12 +439,9 @@ Plugins should implement the `IPlugin` interface:
 
 	destroy: function(chartInstance) { }
 
-	/**
-	 * Called when an event occurs on the chart
-	 * @param e {Core.Event} the Chart.js wrapper around the native event. e.native is the original event
-	 * @return {Boolean} true if the chart is changed and needs to re-render
-	 */
-	onEvent: function(chartInstance, e) {}
+	// Called when an event occurs on the chart
+	beforeEvent: function(chartInstance, event) {}
+	afterEvent: function(chartInstance, event) {}
 }
 ```
 

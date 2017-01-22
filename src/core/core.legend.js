@@ -526,7 +526,7 @@ module.exports = function(Chart) {
 				delete chartInstance.legend;
 			}
 		},
-		onEvent: function(chartInstance, e) {
+		afterEvent: function(chartInstance, e) {
 			var legend = chartInstance.legend;
 			if (legend) {
 				legend.handleEvent(e);
