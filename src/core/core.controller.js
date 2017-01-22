@@ -121,13 +121,9 @@ module.exports = function(Chart) {
 				me.resize(true);
 			}
 
-			// Make sure controllers are built first so that each dataset is bound to an axis before the scales
-			// are built
+			// Make sure scales have IDs and are built before we build any controllers.
 			me.ensureScalesHaveIDs();
-			me.buildOrUpdateControllers();
 			me.buildScales();
-			me.updateLayout();
-			me.resetElements();
 			me.initToolTip();
 			me.update();
 
@@ -254,10 +250,6 @@ module.exports = function(Chart) {
 			});
 
 			Chart.scaleService.addScalesToLayout(this);
-		},
-
-		updateLayout: function() {
-			Chart.layoutService.update(this, this.chart.width, this.chart.height);
 		},
 
 		buildOrUpdateControllers: function() {
