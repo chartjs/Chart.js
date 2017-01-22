@@ -3,7 +3,6 @@
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
-	var noop = helpers.noop;
 
 	Chart.defaults.global.plugins = {};
 
@@ -86,15 +85,15 @@ module.exports = function(Chart) {
 		},
 
 		/**
-		 * Calls enabled plugins for chart, on the specified extension and with the given args.
+		 * Calls enabled plugins for `chart` on the specified hook and with the given args.
 		 * This method immediately returns as soon as a plugin explicitly returns false. The
 		 * returned value can be used, for instance, to interrupt the current action.
-		 * @param {Object} chart chart instance for which plugins should be called.
-		 * @param {String} extension the name of the plugin method to call (e.g. 'beforeUpdate').
-		 * @param {Array} [args] extra arguments to apply to the extension call.
+		 * @param {Object} chart - The chart instance for which plugins should be called.
+		 * @param {String} hook - The name of the plugin method to call (e.g. 'beforeUpdate').
+		 * @param {Array} [args] - Extra arguments to apply to the hook call.
 		 * @returns {Boolean} false if any of the plugins return false, else returns true.
 		 */
-		notify: function(chart, extension, args) {
+		notify: function(chart, hook, args) {
 			var descriptors = this.descriptors(chart);
 			var ilen = descriptors.length;
 			var i, descriptor, plugin, params, method;
@@ -102,7 +101,7 @@ module.exports = function(Chart) {
 			for (i=0; i<ilen; ++i) {
 				descriptor = descriptors[i];
 				plugin = descriptor.plugin;
-				method = plugin[extension];
+				method = plugin[hook];
 				if (typeof method === 'function') {
 					params = [chart].concat(args || []);
 					params.push(descriptor.options);
@@ -162,38 +161,149 @@ module.exports = function(Chart) {
 	};
 
 	/**
-	 * Plugin extension methods.
-	 * @interface Chart.PluginBase
+	 * Plugin extension hooks.
+	 * @interface IPlugin
 	 * @since 2.1.0
 	 */
-	Chart.PluginBase = helpers.inherits({
-		// Called at start of chart init
-		beforeInit: noop,
-
-		// Called at end of chart init
-		afterInit: noop,
-
-		// Called at start of update
-		beforeUpdate: noop,
-
-		// Called at end of update
-		afterUpdate: noop,
-
-		// Called at start of draw
-		beforeDraw: noop,
-
-		// Called at end of draw
-		afterDraw: noop,
-
-		// Called during destroy
-		destroy: noop
-	});
+	/**
+	 * @method IPlugin#beforeInit
+	 * @desc Called before initializing `chart`.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Object} options - The plugin options.
+	 */
+	/**
+	 * @method IPlugin#afterInit
+	 * @desc Called after `chart` has been initialized and before the first update.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Object} options - The plugin options.
+	 */
+	/**
+	 * @method IPlugin#beforeUpdate
+	 * @desc Called before updating `chart`. If any plugin returns `false`, the update
+	 * is cancelled (and thus subsequent render(s)) until another `update` is triggered.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Object} options - The plugin options.
+	 * @returns {Boolean} `false` to cancel the chart update.
+	 */
+	/**
+	 * @method IPlugin#afterUpdate
+	 * @desc Called after `chart` has been updated and before rendering. Note that this
+	 * hook will not be called if the chart update has been previously cancelled.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Object} options - The plugin options.
+	 */
+	/**
+	 * @method IPlugin#beforeDatasetsUpdate
+ 	 * @desc Called before updating the `chart` datasets. If any plugin returns `false`,
+	 * the datasets update is cancelled until another `update` is triggered.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Object} options - The plugin options.
+	 * @returns {Boolean} false to cancel the datasets update.
+	 * @since version 2.1.5
+	 */
+	/**
+	 * @method IPlugin#afterDatasetsUpdate
+	 * @desc Called after the `chart` datasets have been updated. Note that this hook
+	 * will not be called if the datasets update has been previously cancelled.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Object} options - The plugin options.
+	 * @since version 2.1.5
+	 */
+	/**
+	 * @method IPlugin#beforeLayout
+	 * @desc Called before laying out `chart`. If any plugin returns `false`,
+	 * the layout update is cancelled until another `update` is triggered.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Object} options - The plugin options.
+	 * @returns {Boolean} `false` to cancel the chart layout.
+	 */
+	/**
+	 * @method IPlugin#afterLayout
+	 * @desc Called after the `chart` has been layed out. Note that this hook will not
+	 * be called if the layout update has been previously cancelled.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Object} options - The plugin options.
+	 */
+	/**
+	 * @method IPlugin#beforeRender
+	 * @desc Called before rendering `chart`. If any plugin returns `false`,
+	 * the rendering is cancelled until another `render` is triggered.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Object} options - The plugin options.
+	 * @returns {Boolean} `false` to cancel the chart rendering.
+	 */
+	/**
+	 * @method IPlugin#afterRender
+	 * @desc Called after the `chart` has been fully rendered (and animation completed). Note
+	 * that this hook will not be called if the rendering has been previously cancelled.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Object} options - The plugin options.
+	 */
+	/**
+	 * @method IPlugin#beforeDraw
+	 * @desc Called before drawing `chart` at every animation frame specified by the given
+	 * easing value. If any plugin returns `false`, the frame drawing is cancelled until
+	 * another `render` is triggered.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Number} easingValue - The current animation value, between 0.0 and 1.0.
+	 * @param {Object} options - The plugin options.
+	 * @returns {Boolean} `false` to cancel the chart drawing.
+	 */
+	/**
+	 * @method IPlugin#afterDraw
+	 * @desc Called after the `chart` has been drawn for the specific easing value. Note
+	 * that this hook will not be called if the drawing has been previously cancelled.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Number} easingValue - The current animation value, between 0.0 and 1.0.
+	 * @param {Object} options - The plugin options.
+	 */
+	/**
+	 * @method IPlugin#beforeDatasetsDraw
+ 	 * @desc Called before drawing the `chart` datasets. If any plugin returns `false`,
+	 * the datasets drawing is cancelled until another `render` is triggered.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Number} easingValue - The current animation value, between 0.0 and 1.0.
+	 * @param {Object} options - The plugin options.
+	 * @returns {Boolean} `false` to cancel the chart datasets drawing.
+	 */
+	/**
+	 * @method IPlugin#afterDatasetsDraw
+	 * @desc Called after the `chart` datasets have been drawn. Note that this hook
+	 * will not be called if the datasets drawing has been previously cancelled.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Number} easingValue - The current animation value, between 0.0 and 1.0.
+	 * @param {Object} options - The plugin options.
+	 */
+	/**
+	 * @method IPlugin#resize
+	 * @desc Called after the chart as been resized.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Number} size - The new canvas display size (eq. canvas.style width & height).
+	 * @param {Object} options - The plugin options.
+	 */
+	/**
+	 * @method IPlugin#destroy
+	 * @desc Called after the chart as been destroyed.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Object} options - The plugin options.
+	 */
 
 	/**
 	 * Provided for backward compatibility, use Chart.plugins instead
 	 * @namespace Chart.pluginService
 	 * @deprecated since version 2.1.5
-	 * TODO remove me at version 3
+	 * @todo remove at version 3
+	 * @private
 	 */
 	Chart.pluginService = Chart.plugins;
+
+	/**
+	 * Provided for backward compatibility, inheriting from Chart.PlugingBase has no
+	 * effect, instead simply create/register plugins via plain JavaScript objects.
+	 * @interface Chart.PluginBase
+	 * @deprecated since version 2.5.0
+	 * @todo remove at version 3
+	 * @private
+	 */
+	Chart.PluginBase = helpers.inherits({});
 };

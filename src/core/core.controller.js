@@ -3,6 +3,7 @@
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
+	var plugins = Chart.plugins;
 	var platform = Chart.platform;
 
 	// Create a dictionary of chart types, to allow for extension of existing types
@@ -101,16 +102,17 @@ module.exports = function(Chart) {
 		}
 
 		me.initialize();
+		me.update();
 
 		return me;
 	};
 
-	helpers.extend(Chart.Controller.prototype, /** @lends Chart.Controller */ {
+	helpers.extend(Chart.Controller.prototype, /** @lends Chart.Controller.prototype */ {
 		initialize: function() {
 			var me = this;
 
 			// Before init plugin notification
-			Chart.plugins.notify(me, 'beforeInit');
+			plugins.notify(me, 'beforeInit');
 
 			helpers.retinaScale(me.chart);
 
@@ -125,10 +127,9 @@ module.exports = function(Chart) {
 			me.ensureScalesHaveIDs();
 			me.buildScales();
 			me.initToolTip();
-			me.update();
 
 			// After init plugin notification
-			Chart.plugins.notify(me, 'afterInit');
+			plugins.notify(me, 'afterInit');
 
 			return me;
 		},
@@ -170,7 +171,7 @@ module.exports = function(Chart) {
 			if (!silent) {
 				// Notify any plugins about the resize
 				var newSize = {width: newWidth, height: newHeight};
-				Chart.plugins.notify(me, 'resize', [newSize]);
+				plugins.notify(me, 'resize', [newSize]);
 
 				// Notify of resize
 				if (me.options.onResize) {
@@ -287,7 +288,6 @@ module.exports = function(Chart) {
 
 		/**
 		 * Reset the elements of all datasets
-		 * @method resetElements
 		 * @private
 		 */
 		resetElements: function() {
@@ -299,19 +299,20 @@ module.exports = function(Chart) {
 
 		/**
 		* Resets the chart back to it's state before the initial animation
-		* @method reset
 		*/
 		reset: function() {
 			this.resetElements();
 			this.tooltip.initialize();
 		},
 
-
 		update: function(animationDuration, lazy) {
 			var me = this;
 
 			updateConfig(me);
-			Chart.plugins.notify(me, 'beforeUpdate');
+
+			if (plugins.notify(me, 'beforeUpdate') === false) {
+				return;
+			}
 
 			// In case the entire data object changed
 			me.tooltip._data = me.data;
@@ -324,10 +325,7 @@ module.exports = function(Chart) {
 				me.getDatasetMeta(datasetIndex).controller.buildOrUpdateElements();
 			}, me);
 
-			Chart.layoutService.update(me, me.chart.width, me.chart.height);
-
-			// Apply changes to the datasets that require the scales to have been calculated i.e BorderColor changes
-			Chart.plugins.notify(me, 'afterScaleUpdate');
+			me.updateLayout();
 
 			// Can only reset the new controllers after the scales have been updated
 			helpers.each(newControllers, function(controller) {
@@ -337,7 +335,7 @@ module.exports = function(Chart) {
 			me.updateDatasets();
 
 			// Do this before render so that any plugins that need final scale updates can use it
-			Chart.plugins.notify(me, 'afterUpdate');
+			plugins.notify(me, 'afterUpdate');
 
 			if (me._bufferedRender) {
 				me._bufferedRequest = {
@@ -350,51 +348,64 @@ module.exports = function(Chart) {
 		},
 
 		/**
-		 * @method beforeDatasetsUpdate
-		 * @description Called before all datasets are updated. If a plugin returns false,
-		 * the datasets update will be cancelled until another chart update is triggered.
-		 * @param {Object} instance the chart instance being updated.
-		 * @returns {Boolean} false to cancel the datasets update.
-		 * @memberof Chart.PluginBase
-		 * @since version 2.1.5
-		 * @instance
+		 * Updates the chart layout unless a plugin returns `false` to the `beforeLayout`
+		 * hook, in which case, plugins will not be called on `afterLayout`.
+		 * @private
 		 */
+		updateLayout: function() {
+			var me = this;
+
+			if (plugins.notify(me, 'beforeLayout') === false) {
+				return;
+			}
+
+			Chart.layoutService.update(this, this.chart.width, this.chart.height);
+
+			/**
+			 * Provided for backward compatibility, use `afterLayout` instead.
+			 * @method IPlugin#afterScaleUpdate
+			 * @deprecated since version 2.5.0
+			 * @todo remove at version 3
+			 */
+			plugins.notify(me, 'afterScaleUpdate');
+			plugins.notify(me, 'afterLayout');
+		},
 
 		/**
-		 * @method afterDatasetsUpdate
-		 * @description Called after all datasets have been updated. Note that this
-		 * extension will not be called if the datasets update has been cancelled.
-		 * @param {Object} instance the chart instance being updated.
-		 * @memberof Chart.PluginBase
-		 * @since version 2.1.5
-		 * @instance
-		 */
-
-		/**
-		 * Updates all datasets unless a plugin returns false to the beforeDatasetsUpdate
-		 * extension, in which case no datasets will be updated and the afterDatasetsUpdate
-		 * notification will be skipped.
-		 * @protected
-		 * @instance
+		 * Updates all datasets unless a plugin returns `false` to the `beforeDatasetsUpdate`
+		 * hook, in which case, plugins will not be called on `afterDatasetsUpdate`.
+		 * @private
 		 */
 		updateDatasets: function() {
 			var me = this;
-			var i, ilen;
 
-			if (Chart.plugins.notify(me, 'beforeDatasetsUpdate')) {
-				for (i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
-					me.getDatasetMeta(i).controller.update();
-				}
-
-				Chart.plugins.notify(me, 'afterDatasetsUpdate');
+			if (plugins.notify(me, 'beforeDatasetsUpdate') === false) {
+				return;
 			}
+
+			for (var i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
+				me.getDatasetMeta(i).controller.update();
+			}
+
+			plugins.notify(me, 'afterDatasetsUpdate');
 		},
 
 		render: function(duration, lazy) {
 			var me = this;
-			Chart.plugins.notify(me, 'beforeRender');
+
+			if (plugins.notify(me, 'beforeRender') === false) {
+				return;
+			}
 
 			var animationOptions = me.options.animation;
+			var onComplete = function() {
+				plugins.notify(me, 'afterRender');
+				var callback = animationOptions && animationOptions.onComplete;
+				if (callback && callback.call) {
+					callback.call(me);
+				}
+			};
+
 			if (animationOptions && ((typeof duration !== 'undefined' && duration !== 0) || (typeof duration === 'undefined' && animationOptions.duration !== 0))) {
 				var animation = new Chart.Animation();
 				animation.numSteps = (duration || animationOptions.duration) / 16.66; // 60 fps
@@ -411,15 +422,14 @@ module.exports = function(Chart) {
 
 				// user events
 				animation.onAnimationProgress = animationOptions.onProgress;
-				animation.onAnimationComplete = animationOptions.onComplete;
+				animation.onAnimationComplete = onComplete;
 
 				Chart.animationService.addAnimation(me, animation, duration, lazy);
 			} else {
 				me.draw();
-				if (animationOptions && animationOptions.onComplete && animationOptions.onComplete.call) {
-					animationOptions.onComplete.call(me);
-				}
+				onComplete();
 			}
+
 			return me;
 		},
 
@@ -428,31 +438,45 @@ module.exports = function(Chart) {
 			var easingDecimal = ease || 1;
 			me.clear();
 
-			Chart.plugins.notify(me, 'beforeDraw', [easingDecimal]);
+			plugins.notify(me, 'beforeDraw', [easingDecimal]);
 
 			// Draw all the scales
 			helpers.each(me.boxes, function(box) {
 				box.draw(me.chartArea);
 			}, me);
+
 			if (me.scale) {
 				me.scale.draw();
 			}
 
-			Chart.plugins.notify(me, 'beforeDatasetsDraw', [easingDecimal]);
-
-			// Draw each dataset via its respective controller (reversed to support proper line stacking)
-			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
-				if (me.isDatasetVisible(datasetIndex)) {
-					me.getDatasetMeta(datasetIndex).controller.draw(ease);
-				}
-			}, me, true);
-
-			Chart.plugins.notify(me, 'afterDatasetsDraw', [easingDecimal]);
+			me.drawDatasets(easingDecimal);
 
 			// Finally draw the tooltip
 			me.tooltip.transition(easingDecimal).draw();
 
-			Chart.plugins.notify(me, 'afterDraw', [easingDecimal]);
+			plugins.notify(me, 'afterDraw', [easingDecimal]);
+		},
+
+		/**
+		 * Draws all datasets unless a plugin returns `false` to the `beforeDatasetsDraw`
+		 * hook, in which case, plugins will not be called on `afterDatasetsDraw`.
+		 * @private
+		 */
+		drawDatasets: function(easingValue) {
+			var me = this;
+
+			if (plugins.notify(me, 'beforeDatasetsDraw', [easingValue]) === false) {
+				return;
+			}
+
+			// Draw each dataset via its respective controller (reversed to support proper line stacking)
+			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
+				if (me.isDatasetVisible(datasetIndex)) {
+					me.getDatasetMeta(datasetIndex).controller.draw(easingValue);
+				}
+			}, me, true);
+
+			plugins.notify(me, 'afterDatasetsDraw', [easingValue]);
 		},
 
 		// Get the single element that was clicked on
@@ -551,7 +575,7 @@ module.exports = function(Chart) {
 				me.chart.ctx = null;
 			}
 
-			Chart.plugins.notify(me, 'destroy');
+			plugins.notify(me, 'destroy');
 
 			delete Chart.instances[me.id];
 		},
@@ -642,7 +666,7 @@ module.exports = function(Chart) {
 
 			var changed = me.handleEvent(e);
 			changed |= tooltip && tooltip.handleEvent(e);
-			changed |= Chart.plugins.notify(me, 'onEvent', [e]);
+			changed |= plugins.notify(me, 'onEvent', [e]);
 
 			var bufferedRequest = me._bufferedRequest;
 			if (bufferedRequest) {
