@@ -320,7 +320,7 @@ describe('Platform.dom', function() {
 		it('should notify plugins about events', function() {
 			var notifiedEvent;
 			var plugin = {
-				onEvent: function(chart, e) {
+				afterEvent: function(chart, e) {
 					notifiedEvent = e;
 				}
 			};
