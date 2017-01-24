@@ -76,17 +76,6 @@ module.exports = function(Chart) {
 
 			Chart.Scale.prototype.initialize.call(this);
 		},
-		getLabelMoment: function(datasetIndex, index) {
-			if (datasetIndex === null || index === null) {
-				return null;
-			}
-
-			if (typeof this.labelMoments[datasetIndex] !== 'undefined') {
-				return this.labelMoments[datasetIndex][index];
-			}
-
-			return null;
-		},
 		getLabelDiff: function(datasetIndex, index) {
 			var me = this;
 			if (datasetIndex === null || index === null) {
@@ -114,23 +103,26 @@ module.exports = function(Chart) {
 			var me = this;
 			me.labelMoments = [];
 
+			function appendLabel(array, label) {
+				var labelMoment = me.parseTime(label);
+				if (labelMoment.isValid()) {
+					if (me.options.time.round) {
+						labelMoment.startOf(me.options.time.round);
+					}
+					array.push(labelMoment);
+				}
+			}
+
 			// Only parse these once. If the dataset does not have data as x,y pairs, we will use
 			// these
 			var scaleLabelMoments = [];
 			if (me.chart.data.labels && me.chart.data.labels.length > 0) {
 				helpers.each(me.chart.data.labels, function(label) {
-					var labelMoment = me.parseTime(label);
-
-					if (labelMoment.isValid()) {
-						if (me.options.time.round) {
-							labelMoment.startOf(me.options.time.round);
-						}
-						scaleLabelMoments.push(labelMoment);
-					}
+					appendLabel(scaleLabelMoments, label);
 				}, me);
 
-				me.firstTick = moment.min.call(me, scaleLabelMoments);
-				me.lastTick = moment.max.call(me, scaleLabelMoments);
+				me.firstTick = moment.min(scaleLabelMoments);
+				me.lastTick = moment.max(scaleLabelMoments);
 			} else {
 				me.firstTick = null;
 				me.lastTick = null;
@@ -138,25 +130,19 @@ module.exports = function(Chart) {
 
 			helpers.each(me.chart.data.datasets, function(dataset, datasetIndex) {
 				var momentsForDataset = [];
-				var datasetVisible = me.chart.isDatasetVisible(datasetIndex);
 
 				if (typeof dataset.data[0] === 'object' && dataset.data[0] !== null) {
 					helpers.each(dataset.data, function(value) {
-						var labelMoment = me.parseTime(me.getRightValue(value));
-
-						if (labelMoment.isValid()) {
-							if (me.options.time.round) {
-								labelMoment.startOf(me.options.time.round);
-							}
-							momentsForDataset.push(labelMoment);
-
-							if (datasetVisible) {
-								// May have gone outside the scale ranges, make sure we keep the first and last ticks updated
-								me.firstTick = me.firstTick !== null ? moment.min(me.firstTick, labelMoment) : labelMoment;
-								me.lastTick = me.lastTick !== null ? moment.max(me.lastTick, labelMoment) : labelMoment;
-							}
-						}
+						appendLabel(momentsForDataset, me.getRightValue(value));
 					}, me);
+
+					if (me.chart.isDatasetVisible(datasetIndex)) {
+						// May have gone outside the scale ranges, make sure we keep the first and last ticks updated
+						var min = moment.min(momentsForDataset);
+						var max = moment.max(momentsForDataset);
+						me.firstTick = me.firstTick !== null ? moment.min(me.firstTick, min) : min;
+						me.lastTick = me.lastTick !== null ? moment.max(me.lastTick, max) : max;
+					}
 				} else {
 					// We have no labels. Use the ones from the scale
 					momentsForDataset = scaleLabelMoments;
@@ -180,43 +166,12 @@ module.exports = function(Chart) {
 		},
 		buildLabelDiffs: function() {
 			var me = this;
-			me.labelDiffs = [];
-			var scaleLabelDiffs = [];
-			// Parse common labels once
-			if (me.chart.data.labels && me.chart.data.labels.length > 0) {
-				helpers.each(me.chart.data.labels, function(label) {
-					var labelMoment = me.parseTime(label);
 
-					if (labelMoment.isValid()) {
-						if (me.options.time.round) {
-							labelMoment.startOf(me.options.time.round);
-						}
-						scaleLabelDiffs.push(labelMoment.diff(me.firstTick, me.tickUnit, true));
-					}
-				}, me);
-			}
-
-			helpers.each(me.chart.data.datasets, function(dataset) {
-				var diffsForDataset = [];
-
-				if (typeof dataset.data[0] === 'object' && dataset.data[0] !== null) {
-					helpers.each(dataset.data, function(value) {
-						var labelMoment = me.parseTime(me.getRightValue(value));
-
-						if (labelMoment.isValid()) {
-							if (me.options.time.round) {
-								labelMoment.startOf(me.options.time.round);
-							}
-							diffsForDataset.push(labelMoment.diff(me.firstTick, me.tickUnit, true));
-						}
-					}, me);
-				} else {
-					// We have no labels. Use common ones
-					diffsForDataset = scaleLabelDiffs;
-				}
-
-				me.labelDiffs.push(diffsForDataset);
-			}, me);
+			me.labelDiffs = me.labelMoments.map(function(datasetLabels) {
+				return datasetLabels.map(function(label) {
+					return label.diff(me.firstTick, me.tickUnit, true);
+				});
+			});
 		},
 		buildTicks: function() {
 			var me = this;
