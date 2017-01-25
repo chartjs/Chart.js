@@ -362,6 +362,56 @@ describe('Time scale tests', function() {
 		});
 	});
 
+	describe('when rendering several years', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				labels: ['2005-07-04', '2017-01-20'],
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'xScale0',
+						type: 'time',
+						position: 'bottom'
+					}],
+				}
+			}
+		});
+
+		var xScale = chart.scales.xScale0;
+
+		it('should be bounded by nearest year starts', function() {
+			expect(xScale.getValueForPixel(xScale.left)).toBeCloseToTime({
+				value: moment(chart.data.labels[0]).startOf('year'),
+				unit: 'hour',
+			});
+			expect(xScale.getValueForPixel(xScale.right)).toBeCloseToTime({
+				value: moment(chart.data.labels[chart.data.labels - 1]).endOf('year'),
+				unit: 'hour',
+			});
+		});
+
+		it('should build the correct ticks', function() {
+			// Where 'correct' is a two year spacing, except the last tick which is the year end of the last point.
+			expect(xScale.ticks).toEqual(['2005', '2007', '2009', '2011', '2013', '2015', '2017', '2018']);
+		});
+
+		it('should have ticks with accurate labels', function() {
+			var ticks = xScale.ticks;
+			var pixelsPerYear = xScale.width / 13;
+
+			for (var i = 0; i < ticks.length - 1; i++) {
+				var offset = 2 * pixelsPerYear * i;
+				expect(xScale.getValueForPixel(xScale.left + offset)).toBeCloseToTime({
+					value: moment(ticks[i] + '-01-01'),
+					unit: 'day',
+					threshold: 0.5,
+				});
+			}
+		});
+	});
+
 	it('should get the correct label for a data value', function() {
 		var chart = window.acquireChart({
 			type: 'line',

@@ -138,7 +138,7 @@ module.exports = function(Chart) {
 	 * @param min {Number} the scale minimum
 	 * @param max {Number} the scale maximum
 	 * @param unit {String} the unit determined by the {@see determineUnit} method
-	 * @return {Number} the axis step size in milliseconds
+	 * @return {Number} the axis step size as a multiple of unit
 	 */
 	function determineStepSize(min, max, unit) {
 		// Using our unit, figoure out what we need to scale as
@@ -162,7 +162,7 @@ module.exports = function(Chart) {
 			}
 		}
 
-		return unitSizeInMilliSeconds * multiplier;
+		return multiplier;
 	}
 
 	/**
@@ -173,47 +173,32 @@ module.exports = function(Chart) {
 	 */
 	Chart.Ticks.generators.time = function(generationOptions, dataRange) {
 		var ticks = [];
-		var spacing = generationOptions.stepSize;
-		var baseSpacing = generationOptions.baseSize;
+		var stepSize = generationOptions.stepSize;
 
 		var niceMin;
 		var niceMax;
 		var isoWeekday = generationOptions.isoWeekday;
 		if (generationOptions.unit === 'week' && isoWeekday !== false) {
 			niceMin = moment(dataRange.min).startOf('isoWeek').isoWeekday(isoWeekday).valueOf();
-			niceMax = moment(dataRange.max).startOf('isoWeek').isoWeekday(isoWeekday).valueOf();
+			niceMax = moment(dataRange.max).startOf('isoWeek').isoWeekday(isoWeekday);
 			if (dataRange.max - niceMax > 0) {
-				niceMax += baseSpacing;
+				niceMax.add(1, 'week');
 			}
+			niceMax = niceMax.valueOf();
 		} else {
 			niceMin = moment(dataRange.min).startOf(generationOptions.unit).valueOf();
-			niceMax = moment(dataRange.max).startOf(generationOptions.unit).valueOf();
+			niceMax = moment(dataRange.max).startOf(generationOptions.unit);
 			if (dataRange.max - niceMax > 0) {
-				niceMax += baseSpacing;
+				niceMax.add(1, generationOptions.unit);
 			}
-		}
-
-		// If min, max and stepSize is set and they make an evenly spaced scale use it.
-		if (generationOptions.min && generationOptions.max && generationOptions.stepSize) {
-			var minMaxDeltaDivisableByStepSize = ((generationOptions.max - generationOptions.min) % generationOptions.stepSize) === 0;
-			if (minMaxDeltaDivisableByStepSize) {
-				niceMin = generationOptions.min;
-				niceMax = generationOptions.max;
-			}
-		}
-
-		var numSpaces = (niceMax - niceMin) / spacing;
-		// If very close to our rounded value, use it.
-		if (helpers.almostEquals(numSpaces, Math.round(numSpaces), spacing / 1000)) {
-			numSpaces = Math.round(numSpaces);
-		} else {
-			numSpaces = Math.ceil(numSpaces);
+			niceMax = niceMax.valueOf();
 		}
 
 		// Put the values into the ticks array
 		ticks.push(generationOptions.min !== undefined ? generationOptions.min : niceMin);
-		for (var j = 1; j < numSpaces; ++j) {
-			ticks.push(niceMin + (j * spacing));
+		var cur = moment(niceMin);
+		while (cur.add(stepSize, generationOptions.unit).valueOf() < niceMax) {
+			ticks.push(cur.valueOf());
 		}
 		ticks.push(generationOptions.max !== undefined ? generationOptions.max : niceMax);
 
@@ -337,7 +322,6 @@ module.exports = function(Chart) {
 				max: maxTimestamp,
 				stepSize: stepSize,
 				unit: unit,
-				baseSize: time[unit].size,
 				isoWeekday: timeOpts.isoWeekday
 			};
 			var ticks = me.ticks = Chart.Ticks.generators.time(timeGeneratorOptions, {
