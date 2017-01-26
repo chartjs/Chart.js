@@ -109,3 +109,8 @@ There are many extensions which are available for use with popular frameworks. S
 
 #### Laravel
  - <a href="https://github.com/fxcosta/laravel-chartjs" target="_blank">laravel-chartjs</a>
+
+### Examples integrations Javascript's Library
+
+#### Select2
+ - <a href="https://github.com/00F100/Chart.Select2.js" target="_blank">Chart.Select2.js</a> - Use <a href="https://select2.github.io/" target="_blank">Select2</a> multiple select options do change the chart
