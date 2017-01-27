@@ -29,7 +29,7 @@ var header = "/*!\n" +
   " * http://chartjs.org/\n" +
   " * Version: {{ version }}\n" +
   " *\n" +
-  " * Copyright 2016 Nick Downie\n" +
+  " * Copyright 2017 Nick Downie\n" +
   " * Released under the MIT license\n" +
   " * https://github.com/chartjs/Chart.js/blob/master/LICENSE.md\n" +
   " */\n";
@@ -71,7 +71,15 @@ function bowerTask() {
       homepage: package.homepage,
       license: package.license,
       version: package.version,
-      main: outDir + "Chart.js"
+      main: outDir + "Chart.js",
+      ignore: [
+        '.github',
+        '.codeclimate.yml',
+        '.gitignore',
+        '.npmignore',
+        '.travis.yml',
+        'scripts'
+      ]
     }, null, 2);
 
   return file('bower.json', json, { src: true })

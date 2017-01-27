@@ -48,7 +48,7 @@ describe('Test the radial linear scale', function() {
 				minRotation: 0,
 				maxRotation: 50,
 				mirror: false,
-				padding: 10,
+				padding: 0,
 				reverse: false,
 				showLabelBackdrop: true,
 				display: true,
@@ -342,9 +342,9 @@ describe('Test the radial linear scale', function() {
 			}
 		});
 
-		expect(chart.scale.drawingArea).toBe(225);
-		expect(chart.scale.xCenter).toBe(256);
-		expect(chart.scale.yCenter).toBe(272);
+		expect(chart.scale.drawingArea).toBe(233);
+		expect(chart.scale.xCenter).toBe(247);
+		expect(chart.scale.yCenter).toBe(280);
 	});
 
 	it('should correctly get the label for a given data index', function() {
@@ -390,16 +390,16 @@ describe('Test the radial linear scale', function() {
 		});
 
 		expect(chart.scale.getDistanceFromCenterForValue(chart.scale.min)).toBe(0);
-		expect(chart.scale.getDistanceFromCenterForValue(chart.scale.max)).toBe(225);
+		expect(chart.scale.getDistanceFromCenterForValue(chart.scale.max)).toBe(233);
 		expect(chart.scale.getPointPositionForValue(1, 5)).toEqual({
-			x: 269,
-			y: 268,
+			x: 261,
+			y: 275,
 		});
 
 		chart.scale.options.reverse = true;
 		chart.update();
 
-		expect(chart.scale.getDistanceFromCenterForValue(chart.scale.min)).toBe(225);
+		expect(chart.scale.getDistanceFromCenterForValue(chart.scale.min)).toBe(233);
 		expect(chart.scale.getDistanceFromCenterForValue(chart.scale.max)).toBe(0);
 	});
 
@@ -431,14 +431,14 @@ describe('Test the radial linear scale', function() {
 		var slice = 72; // (360 / 5)
 
 		for (var i = 0; i < 5; i++) {
-			expect(radToNearestDegree(chart.scale.getIndexAngle(i))).toBe(15 + (slice * i) - 90);
+			expect(radToNearestDegree(chart.scale.getIndexAngle(i))).toBe(15 + (slice * i));
 		}
 
 		chart.options.startAngle = 0;
 		chart.update();
 
 		for (var x = 0; x < 5; x++) {
-			expect(radToNearestDegree(chart.scale.getIndexAngle(x))).toBe((slice * x) - 90);
+			expect(radToNearestDegree(chart.scale.getIndexAngle(x))).toBe((slice * x));
 		}
 	});
 });

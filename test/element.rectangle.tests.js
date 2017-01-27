@@ -207,10 +207,10 @@ describe('Rectangle element tests', function() {
 			args: [8.5, 0]
 		}, {
 			name: 'lineTo',
-			args: [8.5, 15.5]
+			args: [8.5, 14.5] // This is a minus bar. Not 15.5
 		}, {
 			name: 'lineTo',
-			args: [11.5, 15.5]
+			args: [11.5, 14.5]
 		}, {
 			name: 'lineTo',
 			args: [11.5, 0]

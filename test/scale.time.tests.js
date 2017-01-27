@@ -58,7 +58,7 @@ describe('Time scale tests', function() {
 				minRotation: 0,
 				maxRotation: 50,
 				mirror: false,
-				padding: 10,
+				padding: 0,
 				reverse: false,
 				display: true,
 				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below,
@@ -406,11 +406,11 @@ describe('Time scale tests', function() {
 
 		var xScale = chart.scales.xScale0;
 
-		expect(xScale.getPixelForValue('', 0, 0)).toBeCloseToPixel(78);
+		expect(xScale.getPixelForValue('', 0, 0)).toBeCloseToPixel(71);
 		expect(xScale.getPixelForValue('', 6, 0)).toBeCloseToPixel(452);
-		expect(xScale.getPixelForValue('2015-01-01T20:00:00')).toBeCloseToPixel(78);
+		expect(xScale.getPixelForValue('2015-01-01T20:00:00')).toBeCloseToPixel(71);
 
-		expect(xScale.getValueForPixel(78)).toBeCloseToTime({
+		expect(xScale.getValueForPixel(71)).toBeCloseToTime({
 			value: moment(chart.data.labels[0]),
 			unit: 'hour',
 			threshold: 0.75
@@ -428,7 +428,7 @@ describe('Time scale tests', function() {
 				datasets: [{
 					xAxisID: 'xScale0',
 					yAxisID: 'yScale0',
-					data: []
+					data: [null, 10, 3]
 				}],
 				labels: ['2015-01-01T20:00:00', '2015-01-02T21:00:00', '2015-01-03T22:00:00', '2015-01-05T23:00:00', '2015-01-07T03:00', '2015-01-08T10:00', '2015-01-10T12:00'], // days
 			},
@@ -449,6 +449,7 @@ describe('Time scale tests', function() {
 		});
 
 		var xScale = chart.scales.xScale0;
+		expect(xScale.getLabelForIndex(0, 0)).toBeTruthy();
 		expect(xScale.getLabelForIndex(0, 0)).toBe('2015-01-01T20:00:00');
 		expect(xScale.getLabelForIndex(6, 0)).toBe('2015-01-10T12:00');
 	});

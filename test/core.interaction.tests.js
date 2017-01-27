@@ -558,4 +558,240 @@ describe('Core.Interaction', function() {
 			expect(elements).toEqual([meta0.data[1]]);
 		});
 	});
+
+	describe('x mode', function() {
+		it('should return items at the same x value when intersect is false', function() {
+			var chartInstance = window.acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						label: 'Dataset 1',
+						data: [10, 40, 30],
+						pointRadius: [5, 10, 5],
+						pointHoverBorderColor: 'rgb(255, 0, 0)',
+						pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+					}, {
+						label: 'Dataset 2',
+						data: [40, 40, 40],
+						pointRadius: [10, 10, 10],
+						pointHoverBorderColor: 'rgb(0, 0, 255)',
+						pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+					}],
+					labels: ['Point 1', 'Point 2', 'Point 3']
+				}
+			});
+
+			// Trigger an event over top of the
+			var meta0 = chartInstance.getDatasetMeta(0);
+			var meta1 = chartInstance.getDatasetMeta(1);
+
+			// Halfway between 2 mid points
+			var pt = {
+				x: meta0.data[1]._view.x,
+				y: meta0.data[1]._view.y
+			};
+
+			var node = chartInstance.chart.canvas;
+			var rect = node.getBoundingClientRect();
+			var evt = {
+				view: window,
+				bubbles: true,
+				cancelable: true,
+				clientX: rect.left + pt.x,
+				clientY: rect.top,
+				currentTarget: node
+			};
+
+			var elements = Chart.Interaction.modes.x(chartInstance, evt, {intersect: false});
+			expect(elements).toEqual([meta0.data[1], meta1.data[1]]);
+
+			evt = {
+				view: window,
+				bubbles: true,
+				cancelable: true,
+				clientX: rect.left + pt.x + 20, // out of range
+				clientY: rect.top,
+				currentTarget: node
+			};
+
+			elements = Chart.Interaction.modes.x(chartInstance, evt, {intersect: false});
+			expect(elements).toEqual([]);
+		});
+
+		it('should return items at the same x value when intersect is true', function() {
+			var chartInstance = window.acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						label: 'Dataset 1',
+						data: [10, 40, 30],
+						pointRadius: [5, 10, 5],
+						pointHoverBorderColor: 'rgb(255, 0, 0)',
+						pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+					}, {
+						label: 'Dataset 2',
+						data: [40, 40, 40],
+						pointRadius: [10, 10, 10],
+						pointHoverBorderColor: 'rgb(0, 0, 255)',
+						pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+					}],
+					labels: ['Point 1', 'Point 2', 'Point 3']
+				}
+			});
+
+			// Trigger an event over top of the
+			var meta0 = chartInstance.getDatasetMeta(0);
+			var meta1 = chartInstance.getDatasetMeta(1);
+
+			// Halfway between 2 mid points
+			var pt = {
+				x: meta0.data[1]._view.x,
+				y: meta0.data[1]._view.y
+			};
+
+			var node = chartInstance.chart.canvas;
+			var rect = node.getBoundingClientRect();
+			var evt = {
+				view: window,
+				bubbles: true,
+				cancelable: true,
+				clientX: rect.left + pt.x,
+				clientY: rect.top,
+				currentTarget: node
+			};
+
+			var elements = Chart.Interaction.modes.x(chartInstance, evt, {intersect: true});
+			expect(elements).toEqual([]); // we don't intersect anything
+
+			evt = {
+				view: window,
+				bubbles: true,
+				cancelable: true,
+				clientX: rect.left + pt.x,
+				clientY: rect.top + pt.y,
+				currentTarget: node
+			};
+
+			elements = Chart.Interaction.modes.x(chartInstance, evt, {intersect: true});
+			expect(elements).toEqual([meta0.data[1], meta1.data[1]]);
+		});
+	});
+
+	describe('y mode', function() {
+		it('should return items at the same y value when intersect is false', function() {
+			var chartInstance = window.acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						label: 'Dataset 1',
+						data: [10, 40, 30],
+						pointRadius: [5, 10, 5],
+						pointHoverBorderColor: 'rgb(255, 0, 0)',
+						pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+					}, {
+						label: 'Dataset 2',
+						data: [40, 40, 40],
+						pointRadius: [10, 10, 10],
+						pointHoverBorderColor: 'rgb(0, 0, 255)',
+						pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+					}],
+					labels: ['Point 1', 'Point 2', 'Point 3']
+				}
+			});
+
+			// Trigger an event over top of the
+			var meta0 = chartInstance.getDatasetMeta(0);
+			var meta1 = chartInstance.getDatasetMeta(1);
+
+			// Halfway between 2 mid points
+			var pt = {
+				x: meta0.data[1]._view.x,
+				y: meta0.data[1]._view.y
+			};
+
+			var node = chartInstance.chart.canvas;
+			var rect = node.getBoundingClientRect();
+			var evt = {
+				view: window,
+				bubbles: true,
+				cancelable: true,
+				clientX: rect.left,
+				clientY: rect.top + pt.y,
+				currentTarget: node
+			};
+
+			var elements = Chart.Interaction.modes.y(chartInstance, evt, {intersect: false});
+			expect(elements).toEqual([meta0.data[1], meta1.data[0], meta1.data[1], meta1.data[2]]);
+
+			evt = {
+				view: window,
+				bubbles: true,
+				cancelable: true,
+				clientX: rect.left + pt.x,
+				clientY: rect.top + pt.y + 20, // out of range
+				currentTarget: node
+			};
+
+			elements = Chart.Interaction.modes.y(chartInstance, evt, {intersect: false});
+			expect(elements).toEqual([]);
+		});
+
+		it('should return items at the same y value when intersect is true', function() {
+			var chartInstance = window.acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						label: 'Dataset 1',
+						data: [10, 40, 30],
+						pointRadius: [5, 10, 5],
+						pointHoverBorderColor: 'rgb(255, 0, 0)',
+						pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+					}, {
+						label: 'Dataset 2',
+						data: [40, 40, 40],
+						pointRadius: [10, 10, 10],
+						pointHoverBorderColor: 'rgb(0, 0, 255)',
+						pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+					}],
+					labels: ['Point 1', 'Point 2', 'Point 3']
+				}
+			});
+
+			// Trigger an event over top of the
+			var meta0 = chartInstance.getDatasetMeta(0);
+			var meta1 = chartInstance.getDatasetMeta(1);
+
+			// Halfway between 2 mid points
+			var pt = {
+				x: meta0.data[1]._view.x,
+				y: meta0.data[1]._view.y
+			};
+
+			var node = chartInstance.chart.canvas;
+			var rect = node.getBoundingClientRect();
+			var evt = {
+				view: window,
+				bubbles: true,
+				cancelable: true,
+				clientX: rect.left,
+				clientY: rect.top + pt.y,
+				currentTarget: node
+			};
+
+			var elements = Chart.Interaction.modes.y(chartInstance, evt, {intersect: true});
+			expect(elements).toEqual([]); // we don't intersect anything
+
+			evt = {
+				view: window,
+				bubbles: true,
+				cancelable: true,
+				clientX: rect.left + pt.x,
+				clientY: rect.top + pt.y,
+				currentTarget: node
+			};
+
+			elements = Chart.Interaction.modes.y(chartInstance, evt, {intersect: true});
+			expect(elements).toEqual([meta0.data[1], meta1.data[0], meta1.data[1], meta1.data[2]]);
+		});
+	});
 });

@@ -4,6 +4,23 @@ module.exports = function(Chart) {
 	var helpers = Chart.helpers;
 
 	/**
+	 * Helper function to get relative position for an event
+	 * @param {Event|IEvent} event - The event to get the position for
+	 * @param {Chart} chart - The chart
+	 * @returns {Point} the event position
+	 */
+	function getRelativePosition(e, chart) {
+		if (e.native) {
+			return {
+				x: e.x,
+				y: e.y
+			};
+		}
+
+		return helpers.getRelativePosition(e, chart);
+	}
+
+	/**
 	 * Helper function to traverse all of the visible elements in the chart
 	 * @param chart {chart} the chart
 	 * @param handler {Function} the callback to execute for each visible item
@@ -82,7 +99,7 @@ module.exports = function(Chart) {
 	}
 
 	function indexMode(chart, e, options) {
-		var position = helpers.getRelativePosition(e, chart.chart);
+		var position = getRelativePosition(e, chart.chart);
 		var distanceMetric = function(pt1, pt2) {
 			return Math.abs(pt1.x - pt2.x);
 		};
@@ -118,14 +135,14 @@ module.exports = function(Chart) {
 	 */
 
 	/**
-	 * @namespace Chart.Interaction
 	 * Contains interaction related functions
+	 * @namespace Chart.Interaction
 	 */
 	Chart.Interaction = {
 		// Helper function for different modes
 		modes: {
 			single: function(chart, e) {
-				var position = helpers.getRelativePosition(e, chart.chart);
+				var position = getRelativePosition(e, chart.chart);
 				var elements = [];
 
 				parseVisibleItems(chart, function(element) {
@@ -166,7 +183,7 @@ module.exports = function(Chart) {
 			 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
 			 */
 			dataset: function(chart, e, options) {
-				var position = helpers.getRelativePosition(e, chart.chart);
+				var position = getRelativePosition(e, chart.chart);
 				var items = options.intersect ? getIntersectItems(chart, position) : getNearestItems(chart, position, false);
 
 				if (items.length > 0) {
@@ -193,7 +210,7 @@ module.exports = function(Chart) {
 			 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
 			 */
 			point: function(chart, e) {
-				var position = helpers.getRelativePosition(e, chart.chart);
+				var position = getRelativePosition(e, chart.chart);
 				return getIntersectItems(chart, position);
 			},
 
@@ -206,7 +223,7 @@ module.exports = function(Chart) {
 			 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
 			 */
 			nearest: function(chart, e, options) {
-				var position = helpers.getRelativePosition(e, chart.chart);
+				var position = getRelativePosition(e, chart.chart);
 				var nearestItems = getNearestItems(chart, position, options.intersect);
 
 				// We have multiple items at the same distance from the event. Now sort by smallest
@@ -237,14 +254,26 @@ module.exports = function(Chart) {
 			 * @param options {IInteractionOptions} options to use
 			 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
 			 */
-			x: function(chart, e) {
-				var position = helpers.getRelativePosition(e, chart.chart);
+			x: function(chart, e, options) {
+				var position = getRelativePosition(e, chart.chart);
 				var items = [];
+				var intersectsItem = false;
+
 				parseVisibleItems(chart, function(element) {
 					if (element.inXRange(position.x)) {
 						items.push(element);
 					}
+
+					if (element.inRange(position.x, position.y)) {
+						intersectsItem = true;
+					}
 				});
+
+				// If we want to trigger on an intersect and we don't have any items
+				// that intersect the position, return nothing
+				if (options.intersect && !intersectsItem) {
+					items = [];
+				}
 				return items;
 			},
 
@@ -256,14 +285,26 @@ module.exports = function(Chart) {
 			 * @param options {IInteractionOptions} options to use
 			 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
 			 */
-			y: function(chart, e) {
-				var position = helpers.getRelativePosition(e, chart.chart);
+			y: function(chart, e, options) {
+				var position = getRelativePosition(e, chart.chart);
 				var items = [];
+				var intersectsItem = false;
+
 				parseVisibleItems(chart, function(element) {
 					if (element.inYRange(position.y)) {
 						items.push(element);
 					}
+
+					if (element.inRange(position.x, position.y)) {
+						intersectsItem = true;
+					}
 				});
+
+				// If we want to trigger on an intersect and we don't have any items
+				// that intersect the position, return nothing
+				if (options.intersect && !intersectsItem) {
+					items = [];
+				}
 				return items;
 			}
 		}

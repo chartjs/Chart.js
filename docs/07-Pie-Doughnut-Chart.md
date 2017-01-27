@@ -102,8 +102,10 @@ For example, we could have a doughnut chart that animates by scaling out from th
 ```javascript
 new Chart(ctx,{
 	type:"doughnut",
-	animation:{
-		animateScale:true
+	options: {
+		animation:{
+			animateScale:true
+		}
 	}
 });
 // This will create a chart with all of the default options, merged from the global config,
