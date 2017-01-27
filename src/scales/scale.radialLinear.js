@@ -257,8 +257,8 @@ module.exports = function(Chart) {
 
 			if (opts.backgroundColors && opts.backgroundColors.length === scale.getValueCount()) {
 				var outerPointPosition = scale.getPointPosition(i, outerDistance);
-				var previousOuterPointPosition = this.getPointPosition(i === 0 ? scale.getValueCount() - 1 : i - 1, outerDistance);
-				var nextOuterPointPosition = this.getPointPosition(i === scale.getValueCount() - 1 ? 0 : i + 1, outerDistance);
+				var previousOuterPointPosition = this.getPointPosition(i === 0 ? getValueCount(scale) - 1 : i - 1, outerDistance);
+				var nextOuterPointPosition = this.getPointPosition(i === getValueCount(scale) - 1 ? 0 : i + 1, outerDistance);
 
 				// Each color starts from the midpoint of the previous scale entry to the midpoint of the next
 				var previousOuterHalfway = {x: (previousOuterPointPosition.x + outerPointPosition.x) / 2, y: (previousOuterPointPosition.y + outerPointPosition.y) / 2};
