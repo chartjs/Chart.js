@@ -437,6 +437,9 @@ Plugins should derive from Chart.PluginBase and implement the following interfac
 	beforeDatasetsDraw: function(chartInstance, easing) { },
 	afterDatasetsDraw: function(chartInstance, easing) { },
 
+    // After rendering fully finished
+    completedDraw: function(chartInstance) { },
+
 	destroy: function(chartInstance) { }
 
 	/**

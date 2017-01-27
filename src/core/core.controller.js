@@ -419,6 +419,8 @@ module.exports = function(Chart) {
 				if (animationOptions && animationOptions.onComplete && animationOptions.onComplete.call) {
 					animationOptions.onComplete.call(me);
 				}
+
+				Chart.plugins.notify('completedDraw', [me]);
 			}
 			return me;
 		},
