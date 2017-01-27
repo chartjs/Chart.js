@@ -109,3 +109,6 @@ There are many extensions which are available for use with popular frameworks. S
 
 #### Laravel
  - <a href="https://github.com/fxcosta/laravel-chartjs" target="_blank">laravel-chartjs</a>
+
+#### Vue.js
+ - <a href="https://github.com/apertureless/vue-chartjs/" target="_blank">vue-chartjs</a>
