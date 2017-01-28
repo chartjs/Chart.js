@@ -183,7 +183,7 @@ module.exports = function(Chart) {
 
 	function createNewTitleBlockAndAttach(chartInstance, titleOpts) {
 		var title = new Chart.Title({
-			ctx: chartInstance.chart.ctx,
+			ctx: chartInstance.ctx,
 			options: titleOpts,
 			chart: chartInstance
 		});

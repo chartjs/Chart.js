@@ -148,7 +148,7 @@ module.exports = function(Chart) {
 			var me = this;
 			var type = me.datasetElementType;
 			return type && new type({
-				_chart: me.chart.chart,
+				_chart: me.chart,
 				_datasetIndex: me.index
 			});
 		},
@@ -157,7 +157,7 @@ module.exports = function(Chart) {
 			var me = this;
 			var type = me.dataElementType;
 			return type && new type({
-				_chart: me.chart.chart,
+				_chart: me.chart,
 				_datasetIndex: me.index,
 				_index: index
 			});

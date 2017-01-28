@@ -27,7 +27,7 @@ describe('Core.Interaction', function() {
 			var meta1 = chartInstance.getDatasetMeta(1);
 			var point = meta0.data[1];
 
-			var node = chartInstance.chart.canvas;
+			var node = chartInstance.canvas;
 			var rect = node.getBoundingClientRect();
 
 			var evt = {
@@ -63,7 +63,7 @@ describe('Core.Interaction', function() {
 			});
 
 			// Trigger an event at (0, 0)
-			var node = chartInstance.chart.canvas;
+			var node = chartInstance.canvas;
 			var evt = {
 				view: window,
 				bubbles: true,
@@ -103,7 +103,7 @@ describe('Core.Interaction', function() {
 			var meta1 = chartInstance.getDatasetMeta(1);
 			var point = meta0.data[1];
 
-			var node = chartInstance.chart.canvas;
+			var node = chartInstance.canvas;
 			var rect = node.getBoundingClientRect();
 
 			var evt = {
@@ -142,7 +142,7 @@ describe('Core.Interaction', function() {
 			var meta0 = chartInstance.getDatasetMeta(0);
 			var meta1 = chartInstance.getDatasetMeta(1);
 
-			var node = chartInstance.chart.canvas;
+			var node = chartInstance.canvas;
 			var rect = node.getBoundingClientRect();
 
 			var evt = {
@@ -183,7 +183,7 @@ describe('Core.Interaction', function() {
 			var meta = chartInstance.getDatasetMeta(0);
 			var point = meta.data[1];
 
-			var node = chartInstance.chart.canvas;
+			var node = chartInstance.canvas;
 			var rect = node.getBoundingClientRect();
 
 			var evt = {
@@ -218,7 +218,7 @@ describe('Core.Interaction', function() {
 				}
 			});
 
-			var node = chartInstance.chart.canvas;
+			var node = chartInstance.canvas;
 			var rect = node.getBoundingClientRect();
 
 			var evt = {
@@ -259,7 +259,7 @@ describe('Core.Interaction', function() {
 
 			// Trigger an event over top of the
 			var meta = chartInstance.getDatasetMeta(1);
-			var node = chartInstance.chart.canvas;
+			var node = chartInstance.canvas;
 			var evt = {
 				view: window,
 				bubbles: true,
@@ -305,7 +305,7 @@ describe('Core.Interaction', function() {
 				y: (meta0.data[1]._view.y + meta1.data[1]._view.y) / 2
 			};
 
-			var node = chartInstance.chart.canvas;
+			var node = chartInstance.canvas;
 			var rect = node.getBoundingClientRect();
 			var evt = {
 				view: window,
@@ -352,7 +352,7 @@ describe('Core.Interaction', function() {
 				y: (meta0.data[1]._view.y + meta1.data[1]._view.y) / 2
 			};
 
-			var node = chartInstance.chart.canvas;
+			var node = chartInstance.canvas;
 			var rect = node.getBoundingClientRect();
 			var evt = {
 				view: window,
@@ -393,7 +393,7 @@ describe('Core.Interaction', function() {
 			var meta = chartInstance.getDatasetMeta(1);
 			var point = meta.data[1];
 
-			var node = chartInstance.chart.canvas;
+			var node = chartInstance.canvas;
 			var rect = node.getBoundingClientRect();
 			var evt = {
 				view: window,
@@ -450,7 +450,7 @@ describe('Core.Interaction', function() {
 				y: meta0.data[1]._view.y
 			};
 
-			var node = chartInstance.chart.canvas;
+			var node = chartInstance.canvas;
 			var rect = node.getBoundingClientRect();
 			var evt = {
 				view: window,
@@ -496,7 +496,7 @@ describe('Core.Interaction', function() {
 				y: meta0.data[1]._view.y
 			};
 
-			var node = chartInstance.chart.canvas;
+			var node = chartInstance.canvas;
 			var rect = node.getBoundingClientRect();
 			var evt = {
 				view: window,
@@ -542,7 +542,7 @@ describe('Core.Interaction', function() {
 				y: meta0.data[1]._view.y
 			};
 
-			var node = chartInstance.chart.canvas;
+			var node = chartInstance.canvas;
 			var rect = node.getBoundingClientRect();
 			var evt = {
 				view: window,
@@ -591,7 +591,7 @@ describe('Core.Interaction', function() {
 				y: meta0.data[1]._view.y
 			};
 
-			var node = chartInstance.chart.canvas;
+			var node = chartInstance.canvas;
 			var rect = node.getBoundingClientRect();
 			var evt = {
 				view: window,
@@ -649,7 +649,7 @@ describe('Core.Interaction', function() {
 				y: meta0.data[1]._view.y
 			};
 
-			var node = chartInstance.chart.canvas;
+			var node = chartInstance.canvas;
 			var rect = node.getBoundingClientRect();
 			var evt = {
 				view: window,
@@ -709,7 +709,7 @@ describe('Core.Interaction', function() {
 				y: meta0.data[1]._view.y
 			};
 
-			var node = chartInstance.chart.canvas;
+			var node = chartInstance.canvas;
 			var rect = node.getBoundingClientRect();
 			var evt = {
 				view: window,
@@ -767,7 +767,7 @@ describe('Core.Interaction', function() {
 				y: meta0.data[1]._view.y
 			};
 
-			var node = chartInstance.chart.canvas;
+			var node = chartInstance.canvas;
 			var rect = node.getBoundingClientRect();
 			var evt = {
 				view: window,

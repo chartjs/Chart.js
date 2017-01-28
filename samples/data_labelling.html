@@ -30,12 +30,12 @@
                 backgroundColor: color(window.chartColors.red).alpha(0.2).rgbString(),
                 borderColor: window.chartColors.red,
                 data: [
-                    randomScalingFactor(), 
-                    randomScalingFactor(), 
-                    randomScalingFactor(), 
-                    randomScalingFactor(), 
                     randomScalingFactor(),
-                    randomScalingFactor(), 
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
                     randomScalingFactor()
                 ]
             }, {
@@ -44,12 +44,12 @@
                 backgroundColor: color(window.chartColors.blue).alpha(0.2).rgbString(),
                 borderColor: window.chartColors.blue,
                 data: [
-                    randomScalingFactor(), 
-                    randomScalingFactor(), 
-                    randomScalingFactor(), 
-                    randomScalingFactor(), 
                     randomScalingFactor(),
-                    randomScalingFactor(), 
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
                     randomScalingFactor()
                 ]
             }, {
@@ -58,12 +58,12 @@
                 backgroundColor: color(window.chartColors.green).alpha(0.2).rgbString(),
                 borderColor: window.chartColors.green,
                 data: [
-                    randomScalingFactor(), 
-                    randomScalingFactor(), 
-                    randomScalingFactor(), 
-                    randomScalingFactor(), 
                     randomScalingFactor(),
-                    randomScalingFactor(), 
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
                     randomScalingFactor()
                 ]
             }]
@@ -73,7 +73,7 @@
         Chart.plugins.register({
             afterDatasetsDraw: function(chartInstance, easing) {
                 // To only draw at the end of animation, check for easing === 1
-                var ctx = chartInstance.chart.ctx;
+                var ctx = chartInstance.ctx;
 
                 chartInstance.data.datasets.forEach(function (dataset, i) {
                     var meta = chartInstance.getDatasetMeta(i);
@@ -120,7 +120,7 @@
 
         document.getElementById('randomizeData').addEventListener('click', function() {
             barChartData.datasets.forEach(function(dataset) {
-                dataset.data = dataset.data.map(function() { 
+                dataset.data = dataset.data.map(function() {
                     return randomScalingFactor();
                 })
             });

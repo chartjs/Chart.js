@@ -493,7 +493,7 @@ module.exports = function(Chart) {
 
 	function createNewLegendAndAttach(chartInstance, legendOpts) {
 		var legend = new Chart.Legend({
-			ctx: chartInstance.chart.ctx,
+			ctx: chartInstance.ctx,
 			options: legendOpts,
 			chart: chartInstance
 		});

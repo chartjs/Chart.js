@@ -122,7 +122,7 @@ module.exports = function(Chart) {
 			// Before init plugin notification
 			plugins.notify(me, 'beforeInit');
 
-			helpers.retinaScale(me.chart);
+			helpers.retinaScale(me);
 
 			me.bindEvents();
 
@@ -143,7 +143,7 @@ module.exports = function(Chart) {
 		},
 
 		clear: function() {
-			helpers.clear(this.chart);
+			helpers.clear(this);
 			return this;
 		},
 
@@ -155,26 +155,25 @@ module.exports = function(Chart) {
 
 		resize: function(silent) {
 			var me = this;
-			var chart = me.chart;
 			var options = me.options;
-			var canvas = chart.canvas;
-			var aspectRatio = (options.maintainAspectRatio && chart.aspectRatio) || null;
+			var canvas = me.canvas;
+			var aspectRatio = (options.maintainAspectRatio && me.aspectRatio) || null;
 
 			// the canvas render width and height will be casted to integers so make sure that
 			// the canvas display style uses the same integer values to avoid blurring effect.
 			var newWidth = Math.floor(helpers.getMaximumWidth(canvas));
 			var newHeight = Math.floor(aspectRatio? newWidth / aspectRatio : helpers.getMaximumHeight(canvas));
 
-			if (chart.width === newWidth && chart.height === newHeight) {
+			if (me.width === newWidth && me.height === newHeight) {
 				return;
 			}
 
-			canvas.width = chart.width = newWidth;
-			canvas.height = chart.height = newHeight;
+			canvas.width = me.width = newWidth;
+			canvas.height = me.height = newHeight;
 			canvas.style.width = newWidth + 'px';
 			canvas.style.height = newHeight + 'px';
 
-			helpers.retinaScale(chart);
+			helpers.retinaScale(me);
 
 			if (!silent) {
 				// Notify any plugins about the resize
@@ -244,7 +243,7 @@ module.exports = function(Chart) {
 				var scale = new scaleClass({
 					id: scaleOptions.id,
 					options: scaleOptions,
-					ctx: me.chart.ctx,
+					ctx: me.ctx,
 					chart: me
 				});
 
@@ -367,7 +366,7 @@ module.exports = function(Chart) {
 				return;
 			}
 
-			Chart.layoutService.update(this, this.chart.width, this.chart.height);
+			Chart.layoutService.update(this, this.width, this.height);
 
 			/**
 			 * Provided for backward compatibility, use `afterLayout` instead.
@@ -567,7 +566,7 @@ module.exports = function(Chart) {
 
 		destroy: function() {
 			var me = this;
-			var canvas = me.chart.canvas;
+			var canvas = me.canvas;
 			var meta, i, ilen;
 
 			me.stop();
@@ -583,10 +582,10 @@ module.exports = function(Chart) {
 
 			if (canvas) {
 				me.unbindEvents();
-				helpers.clear(me.chart);
-				platform.releaseContext(me.chart.ctx);
-				me.chart.canvas = null;
-				me.chart.ctx = null;
+				helpers.clear(me);
+				platform.releaseContext(me.ctx);
+				me.canvas = null;
+				me.ctx = null;
 			}
 
 			plugins.notify(me, 'destroy');
@@ -595,13 +594,13 @@ module.exports = function(Chart) {
 		},
 
 		toBase64Image: function() {
-			return this.chart.canvas.toDataURL.apply(this.chart.canvas, arguments);
+			return this.canvas.toDataURL.apply(this.canvas, arguments);
 		},
 
 		initToolTip: function() {
 			var me = this;
 			me.tooltip = new Chart.Tooltip({
-				_chart: me.chart,
+				_chart: me,
 				_chartInstance: me,
 				_data: me.data,
 				_options: me.options.tooltips
