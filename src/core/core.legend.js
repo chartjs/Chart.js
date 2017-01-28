@@ -491,43 +491,43 @@ module.exports = function(Chart) {
 		}
 	});
 
-	function createNewLegendAndAttach(chartInstance, legendOpts) {
+	function createNewLegendAndAttach(chart, legendOpts) {
 		var legend = new Chart.Legend({
-			ctx: chartInstance.ctx,
+			ctx: chart.ctx,
 			options: legendOpts,
-			chart: chartInstance
+			chart: chart
 		});
-		chartInstance.legend = legend;
-		Chart.layoutService.addBox(chartInstance, legend);
+		chart.legend = legend;
+		Chart.layoutService.addBox(chart, legend);
 	}
 
 	// Register the legend plugin
 	Chart.plugins.register({
-		beforeInit: function(chartInstance) {
-			var legendOpts = chartInstance.options.legend;
+		beforeInit: function(chart) {
+			var legendOpts = chart.options.legend;
 
 			if (legendOpts) {
-				createNewLegendAndAttach(chartInstance, legendOpts);
+				createNewLegendAndAttach(chart, legendOpts);
 			}
 		},
-		beforeUpdate: function(chartInstance) {
-			var legendOpts = chartInstance.options.legend;
+		beforeUpdate: function(chart) {
+			var legendOpts = chart.options.legend;
 
 			if (legendOpts) {
 				legendOpts = helpers.configMerge(Chart.defaults.global.legend, legendOpts);
 
-				if (chartInstance.legend) {
-					chartInstance.legend.options = legendOpts;
+				if (chart.legend) {
+					chart.legend.options = legendOpts;
 				} else {
-					createNewLegendAndAttach(chartInstance, legendOpts);
+					createNewLegendAndAttach(chart, legendOpts);
 				}
 			} else {
-				Chart.layoutService.removeBox(chartInstance, chartInstance.legend);
-				delete chartInstance.legend;
+				Chart.layoutService.removeBox(chart, chart.legend);
+				delete chart.legend;
 			}
 		},
-		afterEvent: function(chartInstance, e) {
-			var legend = chartInstance.legend;
+		afterEvent: function(chart, e) {
+			var legend = chart.legend;
 			if (legend) {
 				legend.handleEvent(e);
 			}

@@ -2,7 +2,7 @@
 describe('Core.Tooltip', function() {
 	describe('index mode', function() {
 		it('Should only use x distance when intersect is false', function() {
-			var chartInstance = window.acquireChart({
+			var chart = window.acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -27,10 +27,10 @@ describe('Core.Tooltip', function() {
 			});
 
 			// Trigger an event over top of the
-			var meta = chartInstance.getDatasetMeta(0);
+			var meta = chart.getDatasetMeta(0);
 			var point = meta.data[1];
 
-			var node = chartInstance.canvas;
+			var node = chart.canvas;
 			var rect = node.getBoundingClientRect();
 
 			var evt = new MouseEvent('mousemove', {
@@ -45,7 +45,7 @@ describe('Core.Tooltip', function() {
 			node.dispatchEvent(evt);
 
 			// Check and see if tooltip was displayed
-			var tooltip = chartInstance.tooltip;
+			var tooltip = chart.tooltip;
 			var globalDefaults = Chart.defaults.global;
 
 			expect(tooltip._view).toEqual(jasmine.objectContaining({
@@ -118,7 +118,7 @@ describe('Core.Tooltip', function() {
 		});
 
 		it('Should only display if intersecting if intersect is set', function() {
-			var chartInstance = window.acquireChart({
+			var chart = window.acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -143,10 +143,10 @@ describe('Core.Tooltip', function() {
 			});
 
 			// Trigger an event over top of the
-			var meta = chartInstance.getDatasetMeta(0);
+			var meta = chart.getDatasetMeta(0);
 			var point = meta.data[1];
 
-			var node = chartInstance.canvas;
+			var node = chart.canvas;
 			var rect = node.getBoundingClientRect();
 
 			var evt = new MouseEvent('mousemove', {
@@ -161,7 +161,7 @@ describe('Core.Tooltip', function() {
 			node.dispatchEvent(evt);
 
 			// Check and see if tooltip was displayed
-			var tooltip = chartInstance.tooltip;
+			var tooltip = chart.tooltip;
 			var globalDefaults = Chart.defaults.global;
 
 			expect(tooltip._view).toEqual(jasmine.objectContaining({
@@ -207,7 +207,7 @@ describe('Core.Tooltip', function() {
 	});
 
 	it('Should display in single mode', function() {
-		var chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'line',
 			data: {
 				datasets: [{
@@ -231,10 +231,10 @@ describe('Core.Tooltip', function() {
 		});
 
 		// Trigger an event over top of the
-		var meta = chartInstance.getDatasetMeta(0);
+		var meta = chart.getDatasetMeta(0);
 		var point = meta.data[1];
 
-		var node = chartInstance.canvas;
+		var node = chart.canvas;
 		var rect = node.getBoundingClientRect();
 
 		var evt = new MouseEvent('mousemove', {
@@ -249,7 +249,7 @@ describe('Core.Tooltip', function() {
 		node.dispatchEvent(evt);
 
 		// Check and see if tooltip was displayed
-		var tooltip = chartInstance.tooltip;
+		var tooltip = chart.tooltip;
 		var globalDefaults = Chart.defaults.global;
 
 		expect(tooltip._view).toEqual(jasmine.objectContaining({
@@ -315,7 +315,7 @@ describe('Core.Tooltip', function() {
 	});
 
 	it('Should display information from user callbacks', function() {
-		var chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'line',
 			data: {
 				datasets: [{
@@ -374,10 +374,10 @@ describe('Core.Tooltip', function() {
 		});
 
 		// Trigger an event over top of the
-		var meta = chartInstance.getDatasetMeta(0);
+		var meta = chart.getDatasetMeta(0);
 		var point = meta.data[1];
 
-		var node = chartInstance.canvas;
+		var node = chart.canvas;
 		var rect = node.getBoundingClientRect();
 
 		var evt = new MouseEvent('mousemove', {
@@ -392,7 +392,7 @@ describe('Core.Tooltip', function() {
 		node.dispatchEvent(evt);
 
 		// Check and see if tooltip was displayed
-		var tooltip = chartInstance.tooltip;
+		var tooltip = chart.tooltip;
 		var globalDefaults = Chart.defaults.global;
 
 		expect(tooltip._view).toEqual(jasmine.objectContaining({
@@ -464,7 +464,7 @@ describe('Core.Tooltip', function() {
 	});
 
 	it('Should display information from user callbacks', function() {
-		var chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'line',
 			data: {
 				datasets: [{
@@ -491,10 +491,10 @@ describe('Core.Tooltip', function() {
 		});
 
 		// Trigger an event over top of the
-		var meta0 = chartInstance.getDatasetMeta(0);
+		var meta0 = chart.getDatasetMeta(0);
 		var point0 = meta0.data[1];
 
-		var node = chartInstance.canvas;
+		var node = chart.canvas;
 		var rect = node.getBoundingClientRect();
 
 		var evt = new MouseEvent('mousemove', {
@@ -509,7 +509,7 @@ describe('Core.Tooltip', function() {
 		node.dispatchEvent(evt);
 
 		// Check and see if tooltip was displayed
-		var tooltip = chartInstance.tooltip;
+		var tooltip = chart.tooltip;
 
 		expect(tooltip._view).toEqual(jasmine.objectContaining({
 			// Positioning
@@ -544,7 +544,7 @@ describe('Core.Tooltip', function() {
 	});
 
 	it('should filter items from the tooltip using the callback', function() {
-		var chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'line',
 			data: {
 				datasets: [{
@@ -573,10 +573,10 @@ describe('Core.Tooltip', function() {
 		});
 
 		// Trigger an event over top of the
-		var meta0 = chartInstance.getDatasetMeta(0);
+		var meta0 = chart.getDatasetMeta(0);
 		var point0 = meta0.data[1];
 
-		var node = chartInstance.canvas;
+		var node = chart.canvas;
 		var rect = node.getBoundingClientRect();
 
 		var evt = new MouseEvent('mousemove', {
@@ -591,7 +591,7 @@ describe('Core.Tooltip', function() {
 		node.dispatchEvent(evt);
 
 		// Check and see if tooltip was displayed
-		var tooltip = chartInstance.tooltip;
+		var tooltip = chart.tooltip;
 
 		expect(tooltip._view).toEqual(jasmine.objectContaining({
 			// Positioning
@@ -616,7 +616,7 @@ describe('Core.Tooltip', function() {
 	});
 
 	it('Should have dataPoints', function() {
-		var chartInstance = window.acquireChart({
+		var chart = window.acquireChart({
 			type: 'line',
 			data: {
 				datasets: [{
@@ -642,9 +642,9 @@ describe('Core.Tooltip', function() {
 		// Trigger an event over top of the
 		var pointIndex = 1;
 		var datasetIndex = 0;
-		var meta = chartInstance.getDatasetMeta(datasetIndex);
+		var meta = chart.getDatasetMeta(datasetIndex);
 		var point = meta.data[pointIndex];
-		var node = chartInstance.canvas;
+		var node = chart.canvas;
 		var rect = node.getBoundingClientRect();
 		var evt = new MouseEvent('mousemove', {
 			view: window,
@@ -658,7 +658,7 @@ describe('Core.Tooltip', function() {
 		node.dispatchEvent(evt);
 
 		// Check and see if tooltip was displayed
-		var tooltip = chartInstance.tooltip;
+		var tooltip = chart.tooltip;
 
 		expect(tooltip._view instanceof Object).toBe(true);
 		expect(tooltip._view.dataPoints instanceof Array).toBe(true);
@@ -666,10 +666,10 @@ describe('Core.Tooltip', function() {
 		expect(tooltip._view.dataPoints[0].index).toEqual(pointIndex);
 		expect(tooltip._view.dataPoints[0].datasetIndex).toEqual(datasetIndex);
 		expect(tooltip._view.dataPoints[0].xLabel).toEqual(
-			chartInstance.config.data.labels[pointIndex]
+			chart.config.data.labels[pointIndex]
 		);
 		expect(tooltip._view.dataPoints[0].yLabel).toEqual(
-			chartInstance.config.data.datasets[datasetIndex].data[pointIndex]
+			chart.config.data.datasets[datasetIndex].data[pointIndex]
 		);
 		expect(tooltip._view.dataPoints[0].x).toBeCloseToPixel(point._model.x);
 		expect(tooltip._view.dataPoints[0].y).toBeCloseToPixel(point._model.y);

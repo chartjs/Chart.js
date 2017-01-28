@@ -4,7 +4,7 @@
 describe('Core.Interaction', function() {
 	describe('point mode', function() {
 		it ('should return all items under the point', function() {
-			var chartInstance = window.acquireChart({
+			var chart = window.acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -23,11 +23,11 @@ describe('Core.Interaction', function() {
 			});
 
 			// Trigger an event over top of the
-			var meta0 = chartInstance.getDatasetMeta(0);
-			var meta1 = chartInstance.getDatasetMeta(1);
+			var meta0 = chart.getDatasetMeta(0);
+			var meta1 = chart.getDatasetMeta(1);
 			var point = meta0.data[1];
 
-			var node = chartInstance.canvas;
+			var node = chart.canvas;
 			var rect = node.getBoundingClientRect();
 
 			var evt = {
@@ -39,12 +39,12 @@ describe('Core.Interaction', function() {
 				currentTarget: node
 			};
 
-			var elements = Chart.Interaction.modes.point(chartInstance, evt);
+			var elements = Chart.Interaction.modes.point(chart, evt);
 			expect(elements).toEqual([point, meta1.data[1]]);
 		});
 
 		it ('should return an empty array when no items are found', function() {
-			var chartInstance = window.acquireChart({
+			var chart = window.acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -63,7 +63,7 @@ describe('Core.Interaction', function() {
 			});
 
 			// Trigger an event at (0, 0)
-			var node = chartInstance.canvas;
+			var node = chart.canvas;
 			var evt = {
 				view: window,
 				bubbles: true,
@@ -73,14 +73,14 @@ describe('Core.Interaction', function() {
 				currentTarget: node
 			};
 
-			var elements = Chart.Interaction.modes.point(chartInstance, evt);
+			var elements = Chart.Interaction.modes.point(chart, evt);
 			expect(elements).toEqual([]);
 		});
 	});
 
 	describe('index mode', function() {
 		it ('should return all items at the same index', function() {
-			var chartInstance = window.acquireChart({
+			var chart = window.acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -99,11 +99,11 @@ describe('Core.Interaction', function() {
 			});
 
 			// Trigger an event over top of the
-			var meta0 = chartInstance.getDatasetMeta(0);
-			var meta1 = chartInstance.getDatasetMeta(1);
+			var meta0 = chart.getDatasetMeta(0);
+			var meta1 = chart.getDatasetMeta(1);
 			var point = meta0.data[1];
 
-			var node = chartInstance.canvas;
+			var node = chart.canvas;
 			var rect = node.getBoundingClientRect();
 
 			var evt = {
@@ -115,12 +115,12 @@ describe('Core.Interaction', function() {
 				currentTarget: node
 			};
 
-			var elements = Chart.Interaction.modes.index(chartInstance, evt, {intersect: true});
+			var elements = Chart.Interaction.modes.index(chart, evt, {intersect: true});
 			expect(elements).toEqual([point, meta1.data[1]]);
 		});
 
 		it ('should return all items at the same index when intersect is false', function() {
-			var chartInstance = window.acquireChart({
+			var chart = window.acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -139,10 +139,10 @@ describe('Core.Interaction', function() {
 			});
 
 			// Trigger an event over top of the
-			var meta0 = chartInstance.getDatasetMeta(0);
-			var meta1 = chartInstance.getDatasetMeta(1);
+			var meta0 = chart.getDatasetMeta(0);
+			var meta1 = chart.getDatasetMeta(1);
 
-			var node = chartInstance.canvas;
+			var node = chart.canvas;
 			var rect = node.getBoundingClientRect();
 
 			var evt = {
@@ -154,14 +154,14 @@ describe('Core.Interaction', function() {
 				currentTarget: node
 			};
 
-			var elements = Chart.Interaction.modes.index(chartInstance, evt, {intersect: false});
+			var elements = Chart.Interaction.modes.index(chart, evt, {intersect: false});
 			expect(elements).toEqual([meta0.data[0], meta1.data[0]]);
 		});
 	});
 
 	describe('dataset mode', function() {
 		it ('should return all items in the dataset of the first item found', function() {
-			var chartInstance = window.acquireChart({
+			var chart = window.acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -180,10 +180,10 @@ describe('Core.Interaction', function() {
 			});
 
 			// Trigger an event over top of the
-			var meta = chartInstance.getDatasetMeta(0);
+			var meta = chart.getDatasetMeta(0);
 			var point = meta.data[1];
 
-			var node = chartInstance.canvas;
+			var node = chart.canvas;
 			var rect = node.getBoundingClientRect();
 
 			var evt = {
@@ -195,12 +195,12 @@ describe('Core.Interaction', function() {
 				currentTarget: node
 			};
 
-			var elements = Chart.Interaction.modes.dataset(chartInstance, evt, {intersect: true});
+			var elements = Chart.Interaction.modes.dataset(chart, evt, {intersect: true});
 			expect(elements).toEqual(meta.data);
 		});
 
 		it ('should return all items in the dataset of the first item found when intersect is false', function() {
-			var chartInstance = window.acquireChart({
+			var chart = window.acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -218,7 +218,7 @@ describe('Core.Interaction', function() {
 				}
 			});
 
-			var node = chartInstance.canvas;
+			var node = chart.canvas;
 			var rect = node.getBoundingClientRect();
 
 			var evt = {
@@ -230,16 +230,16 @@ describe('Core.Interaction', function() {
 				currentTarget: node
 			};
 
-			var elements = Chart.Interaction.modes.dataset(chartInstance, evt, {intersect: false});
+			var elements = Chart.Interaction.modes.dataset(chart, evt, {intersect: false});
 
-			var meta = chartInstance.getDatasetMeta(1);
+			var meta = chart.getDatasetMeta(1);
 			expect(elements).toEqual(meta.data);
 		});
 	});
 
 	describe('nearest mode', function() {
 		it ('should return the nearest item', function() {
-			var chartInstance = window.acquireChart({
+			var chart = window.acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -258,8 +258,8 @@ describe('Core.Interaction', function() {
 			});
 
 			// Trigger an event over top of the
-			var meta = chartInstance.getDatasetMeta(1);
-			var node = chartInstance.canvas;
+			var meta = chart.getDatasetMeta(1);
+			var node = chart.canvas;
 			var evt = {
 				view: window,
 				bubbles: true,
@@ -270,12 +270,12 @@ describe('Core.Interaction', function() {
 			};
 
 			// Nearest to 0,0 (top left) will be first point of dataset 2
-			var elements = Chart.Interaction.modes.nearest(chartInstance, evt, {intersect: false});
+			var elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: false});
 			expect(elements).toEqual([meta.data[0]]);
 		});
 
 		it ('should return the smallest item if more than 1 are at the same distance', function() {
-			var chartInstance = window.acquireChart({
+			var chart = window.acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -296,8 +296,8 @@ describe('Core.Interaction', function() {
 			});
 
 			// Trigger an event over top of the
-			var meta0 = chartInstance.getDatasetMeta(0);
-			var meta1 = chartInstance.getDatasetMeta(1);
+			var meta0 = chart.getDatasetMeta(0);
+			var meta1 = chart.getDatasetMeta(1);
 
 			// Halfway between 2 mid points
 			var pt = {
@@ -305,7 +305,7 @@ describe('Core.Interaction', function() {
 				y: (meta0.data[1]._view.y + meta1.data[1]._view.y) / 2
 			};
 
-			var node = chartInstance.canvas;
+			var node = chart.canvas;
 			var rect = node.getBoundingClientRect();
 			var evt = {
 				view: window,
@@ -317,12 +317,12 @@ describe('Core.Interaction', function() {
 			};
 
 			// Nearest to 0,0 (top left) will be first point of dataset 2
-			var elements = Chart.Interaction.modes.nearest(chartInstance, evt, {intersect: false});
+			var elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: false});
 			expect(elements).toEqual([meta0.data[1]]);
 		});
 
 		it ('should return the lowest dataset index if size and area are the same', function() {
-			var chartInstance = window.acquireChart({
+			var chart = window.acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -343,8 +343,8 @@ describe('Core.Interaction', function() {
 			});
 
 			// Trigger an event over top of the
-			var meta0 = chartInstance.getDatasetMeta(0);
-			var meta1 = chartInstance.getDatasetMeta(1);
+			var meta0 = chart.getDatasetMeta(0);
+			var meta1 = chart.getDatasetMeta(1);
 
 			// Halfway between 2 mid points
 			var pt = {
@@ -352,7 +352,7 @@ describe('Core.Interaction', function() {
 				y: (meta0.data[1]._view.y + meta1.data[1]._view.y) / 2
 			};
 
-			var node = chartInstance.canvas;
+			var node = chart.canvas;
 			var rect = node.getBoundingClientRect();
 			var evt = {
 				view: window,
@@ -364,14 +364,14 @@ describe('Core.Interaction', function() {
 			};
 
 			// Nearest to 0,0 (top left) will be first point of dataset 2
-			var elements = Chart.Interaction.modes.nearest(chartInstance, evt, {intersect: false});
+			var elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: false});
 			expect(elements).toEqual([meta0.data[1]]);
 		});
 	});
 
 	describe('nearest intersect mode', function() {
 		it ('should return the nearest item', function() {
-			var chartInstance = window.acquireChart({
+			var chart = window.acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -390,10 +390,10 @@ describe('Core.Interaction', function() {
 			});
 
 			// Trigger an event over top of the
-			var meta = chartInstance.getDatasetMeta(1);
+			var meta = chart.getDatasetMeta(1);
 			var point = meta.data[1];
 
-			var node = chartInstance.canvas;
+			var node = chart.canvas;
 			var rect = node.getBoundingClientRect();
 			var evt = {
 				view: window,
@@ -405,7 +405,7 @@ describe('Core.Interaction', function() {
 			};
 
 			// Nothing intersects so find nothing
-			var elements = Chart.Interaction.modes.nearest(chartInstance, evt, {intersect: true});
+			var elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: true});
 			expect(elements).toEqual([]);
 
 			evt = {
@@ -416,12 +416,12 @@ describe('Core.Interaction', function() {
 				clientY: rect.top + point._view.y,
 				currentTarget: node
 			};
-			elements = Chart.Interaction.modes.nearest(chartInstance, evt, {intersect: true});
+			elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: true});
 			expect(elements).toEqual([point]);
 		});
 
 		it ('should return the nearest item even if 2 intersect', function() {
-			var chartInstance = window.acquireChart({
+			var chart = window.acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -442,7 +442,7 @@ describe('Core.Interaction', function() {
 			});
 
 			// Trigger an event over top of the
-			var meta0 = chartInstance.getDatasetMeta(0);
+			var meta0 = chart.getDatasetMeta(0);
 
 			// Halfway between 2 mid points
 			var pt = {
@@ -450,7 +450,7 @@ describe('Core.Interaction', function() {
 				y: meta0.data[1]._view.y
 			};
 
-			var node = chartInstance.canvas;
+			var node = chart.canvas;
 			var rect = node.getBoundingClientRect();
 			var evt = {
 				view: window,
@@ -462,12 +462,12 @@ describe('Core.Interaction', function() {
 			};
 
 			// Nearest to 0,0 (top left) will be first point of dataset 2
-			var elements = Chart.Interaction.modes.nearest(chartInstance, evt, {intersect: true});
+			var elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: true});
 			expect(elements).toEqual([meta0.data[1]]);
 		});
 
 		it ('should return the smallest item if more than 1 are at the same distance', function() {
-			var chartInstance = window.acquireChart({
+			var chart = window.acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -488,7 +488,7 @@ describe('Core.Interaction', function() {
 			});
 
 			// Trigger an event over top of the
-			var meta0 = chartInstance.getDatasetMeta(0);
+			var meta0 = chart.getDatasetMeta(0);
 
 			// Halfway between 2 mid points
 			var pt = {
@@ -496,7 +496,7 @@ describe('Core.Interaction', function() {
 				y: meta0.data[1]._view.y
 			};
 
-			var node = chartInstance.canvas;
+			var node = chart.canvas;
 			var rect = node.getBoundingClientRect();
 			var evt = {
 				view: window,
@@ -508,12 +508,12 @@ describe('Core.Interaction', function() {
 			};
 
 			// Nearest to 0,0 (top left) will be first point of dataset 2
-			var elements = Chart.Interaction.modes.nearest(chartInstance, evt, {intersect: true});
+			var elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: true});
 			expect(elements).toEqual([meta0.data[1]]);
 		});
 
 		it ('should return the item at the lowest dataset index if distance and area are the same', function() {
-			var chartInstance = window.acquireChart({
+			var chart = window.acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -534,7 +534,7 @@ describe('Core.Interaction', function() {
 			});
 
 			// Trigger an event over top of the
-			var meta0 = chartInstance.getDatasetMeta(0);
+			var meta0 = chart.getDatasetMeta(0);
 
 			// Halfway between 2 mid points
 			var pt = {
@@ -542,7 +542,7 @@ describe('Core.Interaction', function() {
 				y: meta0.data[1]._view.y
 			};
 
-			var node = chartInstance.canvas;
+			var node = chart.canvas;
 			var rect = node.getBoundingClientRect();
 			var evt = {
 				view: window,
@@ -554,14 +554,14 @@ describe('Core.Interaction', function() {
 			};
 
 			// Nearest to 0,0 (top left) will be first point of dataset 2
-			var elements = Chart.Interaction.modes.nearest(chartInstance, evt, {intersect: true});
+			var elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: true});
 			expect(elements).toEqual([meta0.data[1]]);
 		});
 	});
 
 	describe('x mode', function() {
 		it('should return items at the same x value when intersect is false', function() {
-			var chartInstance = window.acquireChart({
+			var chart = window.acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -582,8 +582,8 @@ describe('Core.Interaction', function() {
 			});
 
 			// Trigger an event over top of the
-			var meta0 = chartInstance.getDatasetMeta(0);
-			var meta1 = chartInstance.getDatasetMeta(1);
+			var meta0 = chart.getDatasetMeta(0);
+			var meta1 = chart.getDatasetMeta(1);
 
 			// Halfway between 2 mid points
 			var pt = {
@@ -591,7 +591,7 @@ describe('Core.Interaction', function() {
 				y: meta0.data[1]._view.y
 			};
 
-			var node = chartInstance.canvas;
+			var node = chart.canvas;
 			var rect = node.getBoundingClientRect();
 			var evt = {
 				view: window,
@@ -602,7 +602,7 @@ describe('Core.Interaction', function() {
 				currentTarget: node
 			};
 
-			var elements = Chart.Interaction.modes.x(chartInstance, evt, {intersect: false});
+			var elements = Chart.Interaction.modes.x(chart, evt, {intersect: false});
 			expect(elements).toEqual([meta0.data[1], meta1.data[1]]);
 
 			evt = {
@@ -614,12 +614,12 @@ describe('Core.Interaction', function() {
 				currentTarget: node
 			};
 
-			elements = Chart.Interaction.modes.x(chartInstance, evt, {intersect: false});
+			elements = Chart.Interaction.modes.x(chart, evt, {intersect: false});
 			expect(elements).toEqual([]);
 		});
 
 		it('should return items at the same x value when intersect is true', function() {
-			var chartInstance = window.acquireChart({
+			var chart = window.acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -640,8 +640,8 @@ describe('Core.Interaction', function() {
 			});
 
 			// Trigger an event over top of the
-			var meta0 = chartInstance.getDatasetMeta(0);
-			var meta1 = chartInstance.getDatasetMeta(1);
+			var meta0 = chart.getDatasetMeta(0);
+			var meta1 = chart.getDatasetMeta(1);
 
 			// Halfway between 2 mid points
 			var pt = {
@@ -649,7 +649,7 @@ describe('Core.Interaction', function() {
 				y: meta0.data[1]._view.y
 			};
 
-			var node = chartInstance.canvas;
+			var node = chart.canvas;
 			var rect = node.getBoundingClientRect();
 			var evt = {
 				view: window,
@@ -660,7 +660,7 @@ describe('Core.Interaction', function() {
 				currentTarget: node
 			};
 
-			var elements = Chart.Interaction.modes.x(chartInstance, evt, {intersect: true});
+			var elements = Chart.Interaction.modes.x(chart, evt, {intersect: true});
 			expect(elements).toEqual([]); // we don't intersect anything
 
 			evt = {
@@ -672,14 +672,14 @@ describe('Core.Interaction', function() {
 				currentTarget: node
 			};
 
-			elements = Chart.Interaction.modes.x(chartInstance, evt, {intersect: true});
+			elements = Chart.Interaction.modes.x(chart, evt, {intersect: true});
 			expect(elements).toEqual([meta0.data[1], meta1.data[1]]);
 		});
 	});
 
 	describe('y mode', function() {
 		it('should return items at the same y value when intersect is false', function() {
-			var chartInstance = window.acquireChart({
+			var chart = window.acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -700,8 +700,8 @@ describe('Core.Interaction', function() {
 			});
 
 			// Trigger an event over top of the
-			var meta0 = chartInstance.getDatasetMeta(0);
-			var meta1 = chartInstance.getDatasetMeta(1);
+			var meta0 = chart.getDatasetMeta(0);
+			var meta1 = chart.getDatasetMeta(1);
 
 			// Halfway between 2 mid points
 			var pt = {
@@ -709,7 +709,7 @@ describe('Core.Interaction', function() {
 				y: meta0.data[1]._view.y
 			};
 
-			var node = chartInstance.canvas;
+			var node = chart.canvas;
 			var rect = node.getBoundingClientRect();
 			var evt = {
 				view: window,
@@ -720,7 +720,7 @@ describe('Core.Interaction', function() {
 				currentTarget: node
 			};
 
-			var elements = Chart.Interaction.modes.y(chartInstance, evt, {intersect: false});
+			var elements = Chart.Interaction.modes.y(chart, evt, {intersect: false});
 			expect(elements).toEqual([meta0.data[1], meta1.data[0], meta1.data[1], meta1.data[2]]);
 
 			evt = {
@@ -732,12 +732,12 @@ describe('Core.Interaction', function() {
 				currentTarget: node
 			};
 
-			elements = Chart.Interaction.modes.y(chartInstance, evt, {intersect: false});
+			elements = Chart.Interaction.modes.y(chart, evt, {intersect: false});
 			expect(elements).toEqual([]);
 		});
 
 		it('should return items at the same y value when intersect is true', function() {
-			var chartInstance = window.acquireChart({
+			var chart = window.acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -758,8 +758,8 @@ describe('Core.Interaction', function() {
 			});
 
 			// Trigger an event over top of the
-			var meta0 = chartInstance.getDatasetMeta(0);
-			var meta1 = chartInstance.getDatasetMeta(1);
+			var meta0 = chart.getDatasetMeta(0);
+			var meta1 = chart.getDatasetMeta(1);
 
 			// Halfway between 2 mid points
 			var pt = {
@@ -767,7 +767,7 @@ describe('Core.Interaction', function() {
 				y: meta0.data[1]._view.y
 			};
 
-			var node = chartInstance.canvas;
+			var node = chart.canvas;
 			var rect = node.getBoundingClientRect();
 			var evt = {
 				view: window,
@@ -778,7 +778,7 @@ describe('Core.Interaction', function() {
 				currentTarget: node
 			};
 
-			var elements = Chart.Interaction.modes.y(chartInstance, evt, {intersect: true});
+			var elements = Chart.Interaction.modes.y(chart, evt, {intersect: true});
 			expect(elements).toEqual([]); // we don't intersect anything
 
 			evt = {
@@ -790,7 +790,7 @@ describe('Core.Interaction', function() {
 				currentTarget: node
 			};
 
-			elements = Chart.Interaction.modes.y(chartInstance, evt, {intersect: true});
+			elements = Chart.Interaction.modes.y(chart, evt, {intersect: true});
 			expect(elements).toEqual([meta0.data[1], meta1.data[0], meta1.data[1], meta1.data[2]]);
 		});
 	});

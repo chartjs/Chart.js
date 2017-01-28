@@ -70,8 +70,8 @@ module.exports = function(Chart) {
 				var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
 				return datasetLabel + ': ' + tooltipItem.yLabel;
 			},
-			labelColor: function(tooltipItem, chartInstance) {
-				var meta = chartInstance.getDatasetMeta(tooltipItem.datasetIndex);
+			labelColor: function(tooltipItem, chart) {
+				var meta = chart.getDatasetMeta(tooltipItem.datasetIndex);
 				var activeElement = meta.data[tooltipItem.index];
 				var view = activeElement._view;
 				return {
@@ -249,7 +249,7 @@ module.exports = function(Chart) {
 	function determineAlignment(tooltip, size) {
 		var model = tooltip._model;
 		var chart = tooltip._chart;
-		var chartArea = tooltip._chartInstance.chartArea;
+		var chartArea = tooltip._chart.chartArea;
 		var xAlign = 'center';
 		var yAlign = 'center';
 
@@ -452,7 +452,6 @@ module.exports = function(Chart) {
 			var active = me._active;
 
 			var data = me._data;
-			var chartInstance = me._chartInstance;
 
 			// In the case where active.length === 0 we need to keep these at existing values for good animations
 			var alignment = {
@@ -501,7 +500,7 @@ module.exports = function(Chart) {
 
 				// Determine colors for boxes
 				helpers.each(tooltipItems, function(tooltipItem) {
-					labelColors.push(opts.callbacks.labelColor.call(me, tooltipItem, chartInstance));
+					labelColors.push(opts.callbacks.labelColor.call(me, tooltipItem, me._chart));
 				});
 
 				// Build the Text Lines
@@ -777,7 +776,7 @@ module.exports = function(Chart) {
 			if (e.type === 'mouseout') {
 				me._active = [];
 			} else {
-				me._active = me._chartInstance.getElementsAtEventForMode(e, options.mode, options);
+				me._active = me._chart.getElementsAtEventForMode(e, options.mode, options);
 			}
 
 			// Remember Last Actives

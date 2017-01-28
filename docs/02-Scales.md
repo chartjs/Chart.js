@@ -98,7 +98,7 @@ The `callback` method may be used for advanced tick customization. In the follow
 If the callback returns `null` or `undefined` the associated grid line will be hidden.
 
 ```javascript
-var chartInstance = new Chart(ctx, {
+var chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
@@ -153,7 +153,7 @@ suggestedMin | Number | - | User defined minimum number for the scale, overrides
 The following example creates a line chart with a vertical axis that goes from 0 to 5 in 0.5 sized steps.
 
 ```javascript
-var chartInstance = new Chart(ctx, {
+var chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
@@ -188,7 +188,7 @@ max | Number | - | User defined maximum number for the scale, overrides maximum 
 The following example creates a chart with a logarithmic X axis that ranges from 1 to 1000.
 
 ```javascript
-var chartInstance = new Chart(ctx, {
+var chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
@@ -250,7 +250,7 @@ year | 'YYYY'
 For example, to set the display format for the 'quarter' unit to show the month and year, the following config would be passed to the chart constructor.
 
 ```javascript
-var chartInstance = new Chart(ctx, {
+var chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
@@ -285,7 +285,7 @@ The following time measurements are supported. The names can be passed as string
 For example, to create a chart with a time scale that always displayed units per month, the following config could be used.
 
 ```javascript
-var chartInstance = new Chart(ctx, {
+var chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {

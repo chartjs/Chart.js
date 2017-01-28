@@ -30,10 +30,10 @@ module.exports = function(Chart) {
 				defaults[type] = helpers.extend(defaults[type], additions);
 			}
 		},
-		addScalesToLayout: function(chartInstance) {
+		addScalesToLayout: function(chart) {
 			// Adds each scale to the chart.boxes array to be sized accordingly
-			helpers.each(chartInstance.scales, function(scale) {
-				Chart.layoutService.addBox(chartInstance, scale);
+			helpers.each(chart.scales, function(scale) {
+				Chart.layoutService.addBox(chart, scale);
 			});
 		}
 	};

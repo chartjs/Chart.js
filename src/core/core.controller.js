@@ -419,12 +419,12 @@ module.exports = function(Chart) {
 				animation.easing = animationOptions.easing;
 
 				// render function
-				animation.render = function(chartInstance, animationObject) {
+				animation.render = function(chart, animationObject) {
 					var easingFunction = helpers.easingEffects[animationObject.easing];
 					var stepDecimal = animationObject.currentStep / animationObject.numSteps;
 					var easeDecimal = easingFunction(stepDecimal);
 
-					chartInstance.draw(easeDecimal, stepDecimal, animationObject.currentStep);
+					chart.draw(easeDecimal, stepDecimal, animationObject.currentStep);
 				};
 
 				// user events
@@ -601,7 +601,7 @@ module.exports = function(Chart) {
 			var me = this;
 			me.tooltip = new Chart.Tooltip({
 				_chart: me,
-				_chartInstance: me,
+				_chartInstance: me,            // deprecated, backward compatibility
 				_data: me.data,
 				_options: me.options.tooltips
 			}, me);
