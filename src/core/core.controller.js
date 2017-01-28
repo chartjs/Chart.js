@@ -38,7 +38,7 @@ module.exports = function(Chart) {
 
 	/**
 	 * Updates the config of the chart
-	 * @param chart {Chart.Controller} chart to update the options for
+	 * @param chart {Chart} chart to update the options for
 	 */
 	function updateConfig(chart) {
 		var newOptions = chart.options;
@@ -56,58 +56,66 @@ module.exports = function(Chart) {
 		chart.tooltip._options = newOptions.tooltips;
 	}
 
-	/**
-	 * @class Chart.Controller
-	 * The main controller of a chart.
-	 */
-	Chart.Controller = function(item, config, instance) {
-		var me = this;
+	helpers.extend(Chart.prototype, /** @lends Chart */ {
+		/**
+		 * @private
+		 */
+		construct: function(item, config) {
+			var me = this;
 
-		config = initConfig(config);
+			config = initConfig(config);
 
-		var context = platform.acquireContext(item, config);
-		var canvas = context && context.canvas;
-		var height = canvas && canvas.height;
-		var width = canvas && canvas.width;
+			var context = platform.acquireContext(item, config);
+			var canvas = context && context.canvas;
+			var height = canvas && canvas.height;
+			var width = canvas && canvas.width;
 
-		instance.ctx = context;
-		instance.canvas = canvas;
-		instance.config = config;
-		instance.width = width;
-		instance.height = height;
-		instance.aspectRatio = height? width / height : null;
+			me.id = helpers.uid();
+			me.ctx = context;
+			me.canvas = canvas;
+			me.config = config;
+			me.width = width;
+			me.height = height;
+			me.aspectRatio = height? width / height : null;
+			me.options = config.options;
+			me._bufferedRender = false;
 
-		me.id = helpers.uid();
-		me.chart = instance;
-		me.config = config;
-		me.options = config.options;
-		me._bufferedRender = false;
+			/**
+			 * Provided for backward compatibility, Chart and Chart.Controller have been merged,
+			 * the "instance" still need to be defined since it might be called from plugins.
+			 * @prop Chart#chart
+			 * @deprecated since version 2.6.0
+			 * @todo remove at version 3
+			 * @private
+			 */
+			me.chart = me;
+			me.controller = me;  // chart.chart.controller #inception
 
-		// Add the chart instance to the global namespace
-		Chart.instances[me.id] = me;
+			// Add the chart instance to the global namespace
+			Chart.instances[me.id] = me;
 
-		Object.defineProperty(me, 'data', {
-			get: function() {
-				return me.config.data;
+			Object.defineProperty(me, 'data', {
+				get: function() {
+					return me.config.data;
+				}
+			});
+
+			if (!context || !canvas) {
+				// The given item is not a compatible context2d element, let's return before finalizing
+				// the chart initialization but after setting basic chart / controller properties that
+				// can help to figure out that the chart is not valid (e.g chart.canvas !== null);
+				// https://github.com/chartjs/Chart.js/issues/2807
+				console.error("Failed to create chart: can't acquire context from the given item");
+				return;
 			}
-		});
 
-		if (!context || !canvas) {
-			// The given item is not a compatible context2d element, let's return before finalizing
-			// the chart initialization but after setting basic chart / controller properties that
-			// can help to figure out that the chart is not valid (e.g chart.canvas !== null);
-			// https://github.com/chartjs/Chart.js/issues/2807
-			console.error("Failed to create chart: can't acquire context from the given item");
-			return me;
-		}
+			me.initialize();
+			me.update();
+		},
 
-		me.initialize();
-		me.update();
-
-		return me;
-	};
-
-	helpers.extend(Chart.Controller.prototype, /** @lends Chart.Controller.prototype */ {
+		/**
+		 * @private
+		 */
 		initialize: function() {
 			var me = this;
 
@@ -749,4 +757,13 @@ module.exports = function(Chart) {
 			return changed;
 		}
 	});
+
+	/**
+	 * Provided for backward compatibility, use Chart instead.
+	 * @class Chart.Controller
+	 * @deprecated since version 2.6.0
+	 * @todo remove at version 3
+	 * @private
+	 */
+	Chart.Controller = Chart;
 };
