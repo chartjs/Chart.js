@@ -158,6 +158,8 @@ module.exports = function(Chart) {
 			/**
 			 * @function Chart.Interaction.modes.label
 			 * @deprecated since version 2.4.0
+	 		 * @todo remove at version 3
+			 * @private
 			 */
 			label: indexMode,
 
@@ -196,6 +198,8 @@ module.exports = function(Chart) {
 			/**
 			 * @function Chart.Interaction.modes.x-axis
 			 * @deprecated since version 2.4.0. Use index mode and intersect == true
+			 * @todo remove at version 3
+			 * @private
 			 */
 			'x-axis': function(chart, e) {
 				return indexMode(chart, e, true);

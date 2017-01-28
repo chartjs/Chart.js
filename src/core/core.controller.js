@@ -373,6 +373,7 @@ module.exports = function(Chart) {
 			 * @method IPlugin#afterScaleUpdate
 			 * @deprecated since version 2.5.0
 			 * @todo remove at version 3
+			 * @private
 			 */
 			plugins.notify(me, 'afterScaleUpdate');
 			plugins.notify(me, 'afterLayout');
