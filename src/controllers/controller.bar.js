@@ -246,19 +246,20 @@ module.exports = function(Chart) {
 
 		draw: function(ease) {
 			var me = this;
+			var chart = me.chart;
 			var easingDecimal = ease || 1;
 			var metaData = me.getMeta().data;
 			var dataset = me.getDataset();
 			var i, len;
 
-			Chart.canvasHelpers.clipArea(me.chart.chart.ctx, me.chart.chartArea);
+			Chart.canvasHelpers.clipArea(chart.ctx, chart.chartArea);
 			for (i = 0, len = metaData.length; i < len; ++i) {
 				var d = dataset.data[i];
 				if (d !== null && d !== undefined && !isNaN(d)) {
 					metaData[i].transition(easingDecimal).draw();
 				}
 			}
-			Chart.canvasHelpers.unclipArea(me.chart.chart.ctx);
+			Chart.canvasHelpers.unclipArea(chart.ctx);
 		},
 
 		setHoverStyle: function(rectangle) {

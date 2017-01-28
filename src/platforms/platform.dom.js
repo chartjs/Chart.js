@@ -240,24 +240,24 @@ module.exports = function(Chart) {
 		},
 
 		addEventListener: function(chart, type, listener) {
-			var canvas = chart.chart.canvas;
+			var canvas = chart.canvas;
 			if (type === 'resize') {
 				// Note: the resize event is not supported on all browsers.
-				addResizeListener(canvas.parentNode, listener, chart.chart);
+				addResizeListener(canvas.parentNode, listener, chart);
 				return;
 			}
 
 			var stub = listener._chartjs || (listener._chartjs = {});
 			var proxies = stub.proxies || (stub.proxies = {});
 			var proxy = proxies[chart.id + '_' + type] = function(event) {
-				listener(fromNativeEvent(event, chart.chart));
+				listener(fromNativeEvent(event, chart));
 			};
 
 			helpers.addEvent(canvas, type, proxy);
 		},
 
 		removeEventListener: function(chart, type, listener) {
-			var canvas = chart.chart.canvas;
+			var canvas = chart.canvas;
 			if (type === 'resize') {
 				// Note: the resize event is not supported on all browsers.
 				removeResizeListener(canvas.parentNode, listener);

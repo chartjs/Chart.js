@@ -177,20 +177,17 @@
 	function toBeValidChart() {
 		return {
 			compare: function(actual) {
-				var chart = actual && actual.chart;
 				var message = null;
 
-				if (!(actual instanceof Chart.Controller)) {
-					message = 'Expected ' + actual + ' to be an instance of Chart.Controller';
-				} else if (!(chart instanceof Chart)) {
-					message = 'Expected chart to be an instance of Chart';
-				} else if (!(chart.canvas instanceof HTMLCanvasElement)) {
+				if (!(actual instanceof Chart)) {
+					message = 'Expected ' + actual + ' to be an instance of Chart';
+				} else if (!(actual.canvas instanceof HTMLCanvasElement)) {
 					message = 'Expected canvas to be an instance of HTMLCanvasElement';
-				} else if (!(chart.ctx instanceof CanvasRenderingContext2D)) {
+				} else if (!(actual.ctx instanceof CanvasRenderingContext2D)) {
 					message = 'Expected context to be an instance of CanvasRenderingContext2D';
-				} else if (typeof chart.height !== 'number' || !isFinite(chart.height)) {
+				} else if (typeof actual.height !== 'number' || !isFinite(actual.height)) {
 					message = 'Expected height to be a strict finite number';
-				} else if (typeof chart.width !== 'number' || !isFinite(chart.width)) {
+				} else if (typeof actual.width !== 'number' || !isFinite(actual.width)) {
 					message = 'Expected width to be a strict finite number';
 				}
 
@@ -211,8 +208,7 @@
 				}
 
 				var message = null;
-				var chart = actual.chart;
-				var canvas = chart.ctx.canvas;
+				var canvas = actual.ctx.canvas;
 				var style = getComputedStyle(canvas);
 				var pixelRatio = window.devicePixelRatio;
 				var dh = parseInt(style.height, 10);
@@ -223,10 +219,10 @@
 				var orw = rw / pixelRatio;
 
 				// sanity checks
-				if (chart.height !== orh) {
-					message = 'Expected chart height ' + chart.height + ' to be equal to original render height ' + orh;
-				} else if (chart.width !== orw) {
-					message = 'Expected chart width ' + chart.width + ' to be equal to original render width ' + orw;
+				if (actual.height !== orh) {
+					message = 'Expected chart height ' + actual.height + ' to be equal to original render height ' + orh;
+				} else if (actual.width !== orw) {
+					message = 'Expected chart width ' + actual.width + ' to be equal to original render width ' + orw;
 				}
 
 				// validity checks

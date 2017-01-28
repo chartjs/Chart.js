@@ -282,6 +282,7 @@ module.exports = function(Chart) {
 
 		draw: function(ease) {
 			var me = this;
+			var chart = me.chart;
 			var meta = me.getMeta();
 			var points = meta.data || [];
 			var easingDecimal = ease || 1;
@@ -292,16 +293,16 @@ module.exports = function(Chart) {
 				points[i].transition(easingDecimal);
 			}
 
-			Chart.canvasHelpers.clipArea(me.chart.chart.ctx, me.chart.chartArea);
+			Chart.canvasHelpers.clipArea(chart.ctx, chart.chartArea);
 			// Transition and Draw the line
-			if (lineEnabled(me.getDataset(), me.chart.options)) {
+			if (lineEnabled(me.getDataset(), chart.options)) {
 				meta.dataset.transition(easingDecimal).draw();
 			}
-			Chart.canvasHelpers.unclipArea(me.chart.chart.ctx);
+			Chart.canvasHelpers.unclipArea(chart.ctx);
 
 			// Draw the points
 			for (i=0, ilen=points.length; i<ilen; ++i) {
-				points[i].draw(me.chart.chartArea);
+				points[i].draw(chart.chartArea);
 			}
 		},
 

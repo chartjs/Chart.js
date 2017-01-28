@@ -30,7 +30,7 @@ describe('Core.Tooltip', function() {
 			var meta = chartInstance.getDatasetMeta(0);
 			var point = meta.data[1];
 
-			var node = chartInstance.chart.canvas;
+			var node = chartInstance.canvas;
 			var rect = node.getBoundingClientRect();
 
 			var evt = new MouseEvent('mousemove', {
@@ -146,7 +146,7 @@ describe('Core.Tooltip', function() {
 			var meta = chartInstance.getDatasetMeta(0);
 			var point = meta.data[1];
 
-			var node = chartInstance.chart.canvas;
+			var node = chartInstance.canvas;
 			var rect = node.getBoundingClientRect();
 
 			var evt = new MouseEvent('mousemove', {
@@ -234,7 +234,7 @@ describe('Core.Tooltip', function() {
 		var meta = chartInstance.getDatasetMeta(0);
 		var point = meta.data[1];
 
-		var node = chartInstance.chart.canvas;
+		var node = chartInstance.canvas;
 		var rect = node.getBoundingClientRect();
 
 		var evt = new MouseEvent('mousemove', {
@@ -377,7 +377,7 @@ describe('Core.Tooltip', function() {
 		var meta = chartInstance.getDatasetMeta(0);
 		var point = meta.data[1];
 
-		var node = chartInstance.chart.canvas;
+		var node = chartInstance.canvas;
 		var rect = node.getBoundingClientRect();
 
 		var evt = new MouseEvent('mousemove', {
@@ -494,7 +494,7 @@ describe('Core.Tooltip', function() {
 		var meta0 = chartInstance.getDatasetMeta(0);
 		var point0 = meta0.data[1];
 
-		var node = chartInstance.chart.canvas;
+		var node = chartInstance.canvas;
 		var rect = node.getBoundingClientRect();
 
 		var evt = new MouseEvent('mousemove', {
@@ -576,7 +576,7 @@ describe('Core.Tooltip', function() {
 		var meta0 = chartInstance.getDatasetMeta(0);
 		var point0 = meta0.data[1];
 
-		var node = chartInstance.chart.canvas;
+		var node = chartInstance.canvas;
 		var rect = node.getBoundingClientRect();
 
 		var evt = new MouseEvent('mousemove', {
@@ -644,7 +644,7 @@ describe('Core.Tooltip', function() {
 		var datasetIndex = 0;
 		var meta = chartInstance.getDatasetMeta(datasetIndex);
 		var point = meta.data[pointIndex];
-		var node = chartInstance.chart.canvas;
+		var node = chartInstance.canvas;
 		var rect = node.getBoundingClientRect();
 		var evt = new MouseEvent('mousemove', {
 			view: window,

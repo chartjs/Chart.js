@@ -1,7 +1,7 @@
 describe('Platform.dom', function() {
 
 	function waitForResize(chart, callback) {
-		var resizer = chart.chart.canvas.parentNode._chartjs.resizer;
+		var resizer = chart.canvas.parentNode._chartjs.resizer;
 		var content = resizer.contentWindow || resizer;
 		var state = content.document.readyState || 'complete';
 		var handler = function() {
@@ -40,8 +40,8 @@ describe('Platform.dom', function() {
 			var chart = new Chart(canvasId);
 
 			expect(chart).toBeValidChart();
-			expect(chart.chart.canvas).toBe(canvas);
-			expect(chart.chart.ctx).toBe(canvas.getContext('2d'));
+			expect(chart.canvas).toBe(canvas);
+			expect(chart.ctx).toBe(canvas.getContext('2d'));
 
 			chart.destroy();
 		});
@@ -51,8 +51,8 @@ describe('Platform.dom', function() {
 			var chart = new Chart(canvas);
 
 			expect(chart).toBeValidChart();
-			expect(chart.chart.canvas).toBe(canvas);
-			expect(chart.chart.ctx).toBe(canvas.getContext('2d'));
+			expect(chart.canvas).toBe(canvas);
+			expect(chart.ctx).toBe(canvas.getContext('2d'));
 
 			chart.destroy();
 		});
@@ -63,8 +63,8 @@ describe('Platform.dom', function() {
 			var chart = new Chart(context);
 
 			expect(chart).toBeValidChart();
-			expect(chart.chart.canvas).toBe(canvas);
-			expect(chart.chart.ctx).toBe(context);
+			expect(chart.canvas).toBe(canvas);
+			expect(chart.ctx).toBe(context);
 
 			chart.destroy();
 		});
@@ -74,8 +74,8 @@ describe('Platform.dom', function() {
 			var chart = new Chart([canvas]);
 
 			expect(chart).toBeValidChart();
-			expect(chart.chart.canvas).toBe(canvas);
-			expect(chart.chart.ctx).toBe(canvas.getContext('2d'));
+			expect(chart.canvas).toBe(canvas);
+			expect(chart.ctx).toBe(canvas.getContext('2d'));
 
 			chart.destroy();
 		});
@@ -254,7 +254,7 @@ describe('Platform.dom', function() {
 	describe('controller.destroy', function() {
 		it('should reset context to default values', function() {
 			var chart = acquireChart({});
-			var context = chart.chart.ctx;
+			var context = chart.ctx;
 
 			chart.destroy();
 
@@ -294,7 +294,7 @@ describe('Platform.dom', function() {
 				}
 			});
 
-			var canvas = chart.chart.canvas;
+			var canvas = chart.canvas;
 			var wrapper = canvas.parentNode;
 			wrapper.style.width = '475px';
 			waitForResize(chart, function() {
@@ -338,7 +338,7 @@ describe('Platform.dom', function() {
 				plugins: [plugin]
 			});
 
-			var node = chart.chart.canvas;
+			var node = chart.canvas;
 			var rect = node.getBoundingClientRect();
 			var clientX = (rect.left + rect.right) / 2;
 			var clientY = (rect.top + rect.bottom) / 2;
@@ -362,8 +362,8 @@ describe('Platform.dom', function() {
 			expect(notifiedEvent.type).toBe(evt.type);
 
 			// Relative Position
-			expect(notifiedEvent.x).toBe(chart.chart.width / 2);
-			expect(notifiedEvent.y).toBe(chart.chart.height / 2);
+			expect(notifiedEvent.x).toBe(chart.width / 2);
+			expect(notifiedEvent.y).toBe(chart.height / 2);
 		});
 	});
 });
