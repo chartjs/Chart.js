@@ -1,5 +1,31 @@
 // Test the rectangle element
 describe('Core.Tooltip', function() {
+	describe('config', function() {
+		it('should not include the dataset label in the body string if not defined', function() {
+			var data = {
+				datasets: [{
+					data: [10, 20, 30],
+					pointHoverBorderColor: 'rgb(255, 0, 0)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+				}],
+				labels: ['Point 1', 'Point 2', 'Point 3']
+			};
+			var tooltipItem = {
+				index: 1,
+				datasetIndex: 0,
+				xLabel: 'Point 2',
+				yLabel: '20'
+			};
+
+			var label = Chart.defaults.global.tooltips.callbacks.label(tooltipItem, data);
+			expect(label).toBe('20');
+
+			data.datasets[0].label = 'My dataset';
+			label = Chart.defaults.global.tooltips.callbacks.label(tooltipItem, data);
+			expect(label).toBe('My dataset: 20');
+		});
+	});
+
 	describe('index mode', function() {
 		it('Should only use x distance when intersect is false', function() {
 			var chart = window.acquireChart({
@@ -463,7 +489,7 @@ describe('Core.Tooltip', function() {
 		expect(tooltip._view.y).toBeCloseToPixel(190);
 	});
 
-	it('Should display information from user callbacks', function() {
+	it('Should allow sorting items', function() {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
