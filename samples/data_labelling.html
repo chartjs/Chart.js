@@ -71,12 +71,12 @@
 
         // Define a plugin to provide data labels
         Chart.plugins.register({
-            afterDatasetsDraw: function(chartInstance, easing) {
+            afterDatasetsDraw: function(chart, easing) {
                 // To only draw at the end of animation, check for easing === 1
-                var ctx = chartInstance.ctx;
+                var ctx = chart.ctx;
 
-                chartInstance.data.datasets.forEach(function (dataset, i) {
-                    var meta = chartInstance.getDatasetMeta(i);
+                chart.data.datasets.forEach(function (dataset, i) {
+                    var meta = chart.getDatasetMeta(i);
                     if (!meta.hidden) {
                         meta.data.forEach(function(element, index) {
                             // Draw the text in black, with the specified font

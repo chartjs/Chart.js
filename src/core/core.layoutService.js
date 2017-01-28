@@ -10,29 +10,29 @@ module.exports = function(Chart) {
 	Chart.layoutService = {
 		defaults: {},
 
-		// Register a box to a chartInstance. A box is simply a reference to an object that requires layout. eg. Scales, Legend, Plugins.
-		addBox: function(chartInstance, box) {
-			if (!chartInstance.boxes) {
-				chartInstance.boxes = [];
+		// Register a box to a chart. A box is simply a reference to an object that requires layout. eg. Scales, Legend, Plugins.
+		addBox: function(chart, box) {
+			if (!chart.boxes) {
+				chart.boxes = [];
 			}
-			chartInstance.boxes.push(box);
+			chart.boxes.push(box);
 		},
 
-		removeBox: function(chartInstance, box) {
-			if (!chartInstance.boxes) {
+		removeBox: function(chart, box) {
+			if (!chart.boxes) {
 				return;
 			}
-			chartInstance.boxes.splice(chartInstance.boxes.indexOf(box), 1);
+			chart.boxes.splice(chart.boxes.indexOf(box), 1);
 		},
 
 		// The most important function
-		update: function(chartInstance, width, height) {
+		update: function(chart, width, height) {
 
-			if (!chartInstance) {
+			if (!chart) {
 				return;
 			}
 
-			var layoutOptions = chartInstance.options.layout;
+			var layoutOptions = chart.options.layout;
 			var padding = layoutOptions ? layoutOptions.padding : null;
 
 			var leftPadding = 0;
@@ -53,21 +53,21 @@ module.exports = function(Chart) {
 				bottomPadding = padding.bottom || 0;
 			}
 
-			var leftBoxes = helpers.where(chartInstance.boxes, function(box) {
+			var leftBoxes = helpers.where(chart.boxes, function(box) {
 				return box.options.position === 'left';
 			});
-			var rightBoxes = helpers.where(chartInstance.boxes, function(box) {
+			var rightBoxes = helpers.where(chart.boxes, function(box) {
 				return box.options.position === 'right';
 			});
-			var topBoxes = helpers.where(chartInstance.boxes, function(box) {
+			var topBoxes = helpers.where(chart.boxes, function(box) {
 				return box.options.position === 'top';
 			});
-			var bottomBoxes = helpers.where(chartInstance.boxes, function(box) {
+			var bottomBoxes = helpers.where(chart.boxes, function(box) {
 				return box.options.position === 'bottom';
 			});
 
 			// Boxes that overlay the chartarea such as the radialLinear scale
-			var chartAreaBoxes = helpers.where(chartInstance.boxes, function(box) {
+			var chartAreaBoxes = helpers.where(chart.boxes, function(box) {
 				return box.options.position === 'chartArea';
 			});
 
@@ -348,7 +348,7 @@ module.exports = function(Chart) {
 			helpers.each(bottomBoxes, placeBox);
 
 			// Step 8
-			chartInstance.chartArea = {
+			chart.chartArea = {
 				left: totalLeftBoxesWidth,
 				top: totalTopBoxesHeight,
 				right: totalLeftBoxesWidth + maxChartAreaWidth,
@@ -357,10 +357,10 @@ module.exports = function(Chart) {
 
 			// Step 9
 			helpers.each(chartAreaBoxes, function(box) {
-				box.left = chartInstance.chartArea.left;
-				box.top = chartInstance.chartArea.top;
-				box.right = chartInstance.chartArea.right;
-				box.bottom = chartInstance.chartArea.bottom;
+				box.left = chart.chartArea.left;
+				box.top = chart.chartArea.top;
+				box.right = chart.chartArea.right;
+				box.bottom = chart.chartArea.bottom;
 
 				box.update(maxChartAreaWidth, maxChartAreaHeight);
 			});

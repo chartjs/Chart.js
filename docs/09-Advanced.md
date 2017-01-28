@@ -415,33 +415,33 @@ Plugins will be called at the following times
 Plugins should implement the `IPlugin` interface:
 ```javascript
 {
-	beforeInit: function(chartInstance) { },
-	afterInit: function(chartInstance) { },
+	beforeInit: function(chart) { },
+	afterInit: function(chart) { },
 
-	resize: function(chartInstance, newChartSize) { },
+	resize: function(chart, newChartSize) { },
 
-	beforeUpdate: function(chartInstance) { },
-	afterScaleUpdate: function(chartInstance) { }
-	beforeDatasetsUpdate: function(chartInstance) { }
-	afterDatasetsUpdate: function(chartInstance) { }
-	afterUpdate: function(chartInstance) { },
+	beforeUpdate: function(chart) { },
+	afterScaleUpdate: function(chart) { }
+	beforeDatasetsUpdate: function(chart) { }
+	afterDatasetsUpdate: function(chart) { }
+	afterUpdate: function(chart) { },
 
 	// This is called at the start of a render. It is only called once, even if the animation will run for a number of frames. Use beforeDraw or afterDraw
 	// to do something on each animation frame
-	beforeRender: function(chartInstance) { },
+	beforeRender: function(chart) { },
 
 	// Easing is for animation
-	beforeDraw: function(chartInstance, easing) { },
-	afterDraw: function(chartInstance, easing) { },
+	beforeDraw: function(chart, easing) { },
+	afterDraw: function(chart, easing) { },
 	// Before the datasets are drawn but after scales are drawn
-	beforeDatasetsDraw: function(chartInstance, easing) { },
-	afterDatasetsDraw: function(chartInstance, easing) { },
+	beforeDatasetsDraw: function(chart, easing) { },
+	afterDatasetsDraw: function(chart, easing) { },
 
-	destroy: function(chartInstance) { }
+	destroy: function(chart) { }
 
 	// Called when an event occurs on the chart
-	beforeEvent: function(chartInstance, event) {}
-	afterEvent: function(chartInstance, event) {}
+	beforeEvent: function(chart, event) {}
+	afterEvent: function(chart, event) {}
 }
 ```
 

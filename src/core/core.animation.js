@@ -30,20 +30,20 @@ module.exports = function(Chart) {
 
 		/**
 		 * @function Chart.animationService.addAnimation
-		 * @param chartInstance {ChartController} the chart to animate
+		 * @param chart {ChartController} the chart to animate
 		 * @param animationObject {IAnimation} the animation that we will animate
 		 * @param duration {Number} length of animation in ms
 		 * @param lazy {Boolean} if true, the chart is not marked as animating to enable more responsive interactions
 		 */
-		addAnimation: function(chartInstance, animationObject, duration, lazy) {
+		addAnimation: function(chart, animationObject, duration, lazy) {
 			var me = this;
 
 			if (!lazy) {
-				chartInstance.animating = true;
+				chart.animating = true;
 			}
 
 			for (var index = 0; index < me.animations.length; ++index) {
-				if (me.animations[index].chartInstance === chartInstance) {
+				if (me.animations[index].chart === chart) {
 					// replacing an in progress animation
 					me.animations[index].animationObject = animationObject;
 					return;
@@ -51,7 +51,8 @@ module.exports = function(Chart) {
 			}
 
 			me.animations.push({
-				chartInstance: chartInstance,
+				chart: chart,
+				chartInstance: chart,               // deprecated, backward compatibility
 				animationObject: animationObject
 			});
 
@@ -61,14 +62,14 @@ module.exports = function(Chart) {
 			}
 		},
 		// Cancel the animation for a given chart instance
-		cancelAnimation: function(chartInstance) {
+		cancelAnimation: function(chart) {
 			var index = helpers.findIndex(this.animations, function(animationWrapper) {
-				return animationWrapper.chartInstance === chartInstance;
+				return animationWrapper.chart === chart;
 			});
 
 			if (index !== -1) {
 				this.animations.splice(index, 1);
-				chartInstance.animating = false;
+				chart.animating = false;
 			}
 		},
 		requestAnimationFrame: function() {
@@ -106,18 +107,18 @@ module.exports = function(Chart) {
 					me.animations[i].animationObject.currentStep = me.animations[i].animationObject.numSteps;
 				}
 
-				me.animations[i].animationObject.render(me.animations[i].chartInstance, me.animations[i].animationObject);
+				me.animations[i].animationObject.render(me.animations[i].chart, me.animations[i].animationObject);
 				if (me.animations[i].animationObject.onAnimationProgress && me.animations[i].animationObject.onAnimationProgress.call) {
-					me.animations[i].animationObject.onAnimationProgress.call(me.animations[i].chartInstance, me.animations[i]);
+					me.animations[i].animationObject.onAnimationProgress.call(me.animations[i].chart, me.animations[i]);
 				}
 
 				if (me.animations[i].animationObject.currentStep === me.animations[i].animationObject.numSteps) {
 					if (me.animations[i].animationObject.onAnimationComplete && me.animations[i].animationObject.onAnimationComplete.call) {
-						me.animations[i].animationObject.onAnimationComplete.call(me.animations[i].chartInstance, me.animations[i]);
+						me.animations[i].animationObject.onAnimationComplete.call(me.animations[i].chart, me.animations[i]);
 					}
 
 					// executed the last frame. Remove the animation.
-					me.animations[i].chartInstance.animating = false;
+					me.animations[i].chart.animating = false;
 
 					me.animations.splice(i, 1);
 				} else {
