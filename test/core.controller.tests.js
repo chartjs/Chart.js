@@ -1,4 +1,4 @@
-describe('Chart.Controller', function() {
+describe('Chart', function() {
 
 	function waitForResize(chart, callback) {
 		var resizer = chart.canvas.parentNode._chartjs.resizer;
@@ -12,6 +12,17 @@ describe('Chart.Controller', function() {
 
 		Chart.helpers.addEvent(content, state !== 'complete'? 'load' : 'resize', handler);
 	}
+
+	// https://github.com/chartjs/Chart.js/issues/2481
+	// See global.deprecations.tests.js for backward compatibility
+	it('should be defined and prototype of chart instances', function() {
+		var chart = acquireChart({});
+		expect(Chart).toBeDefined();
+		expect(Chart instanceof Object).toBeTruthy();
+		expect(chart.constructor).toBe(Chart);
+		expect(chart instanceof Chart).toBeTruthy();
+		expect(Chart.prototype.isPrototypeOf(chart)).toBeTruthy();
+	});
 
 	describe('config initialization', function() {
 		it('should create missing config.data properties', function() {
