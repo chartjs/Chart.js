@@ -674,4 +674,65 @@ describe('Core.Tooltip', function() {
 		expect(tooltip._view.dataPoints[0].x).toBeCloseToPixel(point._model.x);
 		expect(tooltip._view.dataPoints[0].y).toBeCloseToPixel(point._model.y);
 	});
+
+	it('Should not update if active element has not changed', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					label: 'Dataset 1',
+					data: [10, 20, 30],
+					pointHoverBorderColor: 'rgb(255, 0, 0)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+				}, {
+					label: 'Dataset 2',
+					data: [40, 40, 40],
+					pointHoverBorderColor: 'rgb(0, 0, 255)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+				}],
+				labels: ['Point 1', 'Point 2', 'Point 3']
+			},
+			options: {
+				tooltips: {
+					mode: 'single',
+					callbacks: {
+						title: function() {
+							return 'registering callback...';
+						}
+					}
+				}
+			}
+		});
+
+		// Trigger an event over top of the
+		var meta = chart.getDatasetMeta(0);
+		var firstPoint = meta.data[1];
+
+		var node = chart.chart.canvas;
+		var rect = node.getBoundingClientRect();
+
+		var firstEvent = new MouseEvent('mousemove', {
+			view: window,
+			bubbles: false,
+			cancelable: true,
+			clientX: rect.left + firstPoint._model.x,
+			clientY: rect.top + firstPoint._model.y
+		});
+
+		var tooltip = chart.tooltip;
+		spyOn(tooltip, 'update');
+
+		/* Manually trigger rather than having an async test */
+
+		// First dispatch change event, should update tooltip
+		node.dispatchEvent(firstEvent);
+		expect(tooltip.update).toHaveBeenCalledWith(true);
+
+		// Reset calls
+		tooltip.update.calls.reset();
+
+		// Second dispatch change event (same event), should not update tooltip
+		node.dispatchEvent(firstEvent);
+		expect(tooltip.update).not.toHaveBeenCalled();
+	});
 });
