@@ -102,6 +102,7 @@ There are many extensions which are available for use with popular frameworks. S
  - <a href="https://github.com/gor181/react-chartjs-2" target="_blank">react-chartjs-2</a>
 
 #### Django
+ - <a href="https://github.com/matthisk/django-jchart" target="_blank">Django JChart</a>
  - <a href="https://github.com/novafloss/django-chartjs" target="_blank">Django Chartjs</a>
 
 #### Ruby on Rails
