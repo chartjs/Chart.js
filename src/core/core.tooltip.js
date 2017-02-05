@@ -38,6 +38,8 @@ module.exports = function(Chart) {
 		cornerRadius: 6,
 		multiKeyBackground: '#fff',
 		displayColors: true,
+		borderColor: 'rgba(0,0,0,0)',
+		borderWidth: 0,
 		callbacks: {
 			// Args are: (tooltipItems, data)
 			beforeTitle: helpers.noop,
@@ -176,7 +178,9 @@ module.exports = function(Chart) {
 			backgroundColor: tooltipOpts.backgroundColor,
 			opacity: 0,
 			legendColorBackground: tooltipOpts.multiKeyBackground,
-			displayColors: tooltipOpts.displayColors
+			displayColors: tooltipOpts.displayColors,
+			borderColor: tooltipOpts.borderColor,
+			borderWidth: tooltipOpts.borderWidth
 		};
 	}
 
@@ -608,11 +612,18 @@ module.exports = function(Chart) {
 			}
 
 			ctx.fillStyle = mergeOpacity(vm.backgroundColor, opacity);
+			ctx.lineWidth = vm.borderWidth;
+			ctx.strokeStyle = vm.borderColor;
+
 			ctx.beginPath();
 			ctx.moveTo(x1, y1);
 			ctx.lineTo(x2, y2);
 			ctx.lineTo(x3, y3);
+			ctx.stroke();
+			ctx.fill();
 			ctx.closePath();
+
+			helpers.drawRoundedRectangle(ctx, ptX, ptY, size.width, size.height, vm.cornerRadius);
 			ctx.fill();
 		},
 		drawTitle: function(pt, vm, ctx, opacity) {
@@ -720,6 +731,9 @@ module.exports = function(Chart) {
 		drawBackground: function(pt, vm, ctx, tooltipSize, opacity) {
 			ctx.fillStyle = mergeOpacity(vm.backgroundColor, opacity);
 			helpers.drawRoundedRectangle(ctx, pt.x, pt.y, tooltipSize.width, tooltipSize.height, vm.cornerRadius);
+			ctx.strokeStyle = vm.borderColor;
+			ctx.lineWidth = vm.borderWidth;
+			ctx.stroke();
 			ctx.fill();
 		},
 		draw: function() {
