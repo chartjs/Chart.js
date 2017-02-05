@@ -252,6 +252,8 @@ cornerRadius | Number | 6 | Radius of tooltip corner curves
 multiKeyBackground | Color | "#fff" | Color to draw behind the colored boxes when multiple items are in the tooltip
 displayColors | Boolean | true | if true, color boxes are shown in the tooltip
 callbacks | Object | | See the [callbacks section](#chart-configuration-tooltip-callbacks) below
+borderColor | Color | 'rgba(0,0,0,0)' | Color of the border
+borderWidth | Number | 0 | Size of the border
 
 #### Tooltip Callbacks
 
