@@ -1,8 +1,10 @@
 'use strict';
+var elementResizeDetectorMaker = require('element-resize-detector');
 
 // Chart.Platform implementation for targeting a web browser
 module.exports = function(Chart) {
 	var helpers = Chart.helpers;
+	var erd = null;
 
 	// DOM event types -> Chart.js event types.
 	// Note: only events with different types are mapped.
@@ -108,42 +110,6 @@ module.exports = function(Chart) {
 		return createEvent(type, chart, pos.x, pos.y, event);
 	}
 
-	function createResizer(handler) {
-		var iframe = document.createElement('iframe');
-		iframe.className = 'chartjs-hidden-iframe';
-		iframe.style.cssText =
-			'display:block;'+
-			'overflow:hidden;'+
-			'border:0;'+
-			'margin:0;'+
-			'top:0;'+
-			'left:0;'+
-			'bottom:0;'+
-			'right:0;'+
-			'height:100%;'+
-			'width:100%;'+
-			'position:absolute;'+
-			'pointer-events:none;'+
-			'z-index:-1;';
-
-		// Prevent the iframe to gain focus on tab.
-		// https://github.com/chartjs/Chart.js/issues/3090
-		iframe.tabIndex = -1;
-
-		// If the iframe is re-attached to the DOM, the resize listener is removed because the
-		// content is reloaded, so make sure to install the handler after the iframe is loaded.
-		// https://github.com/chartjs/Chart.js/issues/3521
-		helpers.addEvent(iframe, 'load', function() {
-			helpers.addEvent(iframe.contentWindow || iframe, 'resize', handler);
-
-			// The iframe size might have changed while loading, which can also
-			// happen if the size has been changed while detached from the DOM.
-			handler();
-		});
-
-		return iframe;
-	}
-
 	function addResizeListener(node, listener, chart) {
 		var stub = node._chartjs = {
 			ticking: false
@@ -162,10 +128,14 @@ module.exports = function(Chart) {
 			}
 		};
 
-		// Let's keep track of this added iframe and thus avoid DOM query when removing it.
-		stub.resizer = createResizer(notify);
+		if (!erd) {
+			erd = elementResizeDetectorMaker({
+				strategy: 'scroll',
+			});
+		}
 
-		node.insertBefore(stub.resizer, node.firstChild);
+		erd.listenTo(node, notify);
+		stub.resizer = true;
 	}
 
 	function removeResizeListener(node) {
@@ -173,12 +143,9 @@ module.exports = function(Chart) {
 			return;
 		}
 
-		var resizer = node._chartjs.resizer;
-		if (resizer) {
-			resizer.parentNode.removeChild(resizer);
-			node._chartjs.resizer = null;
-		}
+		erd.uninstall(node);
 
+		delete node._chartjs.resizer;
 		delete node._chartjs;
 	}
 

@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "chartjs-color": "^2.0.0",
-    "moment": "^2.10.6"
+    "moment": "^2.10.6",
+    "element-resize-detector": "^1.1.10"
   }
 }
