@@ -4,7 +4,7 @@ var elementResizeDetectorMaker = require('element-resize-detector');
 // Chart.Platform implementation for targeting a web browser
 module.exports = function(Chart) {
 	var helpers = Chart.helpers;
-	var erd = null;
+	var elementResizeDetector = null;
 
 	// DOM event types -> Chart.js event types.
 	// Note: only events with different types are mapped.
@@ -128,13 +128,13 @@ module.exports = function(Chart) {
 			}
 		};
 
-		if (!erd) {
-			erd = elementResizeDetectorMaker({
+		if (!elementResizeDetector) {
+			elementResizeDetector = elementResizeDetectorMaker({
 				strategy: 'scroll',
 			});
 		}
 
-		erd.listenTo(node, notify);
+		elementResizeDetector.listenTo(node, notify);
 		stub.resizer = true;
 	}
 
@@ -143,7 +143,7 @@ module.exports = function(Chart) {
 			return;
 		}
 
-		erd.uninstall(node);
+		elementResizeDetector.uninstall(node);
 
 		delete node._chartjs.resizer;
 		delete node._chartjs;
