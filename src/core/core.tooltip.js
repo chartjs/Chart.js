@@ -556,9 +556,16 @@ module.exports = function(Chart) {
 
 			return me;
 		},
-		drawCaret: function(tooltipPoint, size, opacity) {
-			var vm = this._view;
+		drawCaret: function(tooltipPoint, size) {
 			var ctx = this._chart.ctx;
+			var vm = this._view;
+			var caretPosition = this.getCaretPosition(tooltipPoint, size, vm);
+
+			ctx.lineTo(caretPosition.x1, caretPosition.y1);
+			ctx.lineTo(caretPosition.x2, caretPosition.y2);
+			ctx.lineTo(caretPosition.x3, caretPosition.y3);
+		},
+		getCaretPosition: function(tooltipPoint, size, vm) {
 			var x1, x2, x3;
 			var y1, y2, y3;
 			var caretSize = vm.caretSize;
@@ -571,35 +578,37 @@ module.exports = function(Chart) {
 				height = size.height;
 
 			if (yAlign === 'center') {
-				// Left or right side
+				y2 = ptY + (height / 2);
+
 				if (xAlign === 'left') {
 					x1 = ptX;
 					x2 = x1 - caretSize;
 					x3 = x1;
+
+					y1 = y2 + caretSize;
+					y3 = y2 - caretSize;
 				} else {
 					x1 = ptX + width;
 					x2 = x1 + caretSize;
 					x3 = x1;
-				}
 
-				y2 = ptY + (height / 2);
-				y1 = y2 - caretSize;
-				y3 = y2 + caretSize;
+					y1 = y2 - caretSize;
+					y3 = y2 + caretSize;
+				}
 			} else {
 				if (xAlign === 'left') {
-					x1 = ptX + cornerRadius;
-					x2 = x1 + caretSize;
+					x2 = ptX + cornerRadius + (caretSize);
+					x1 = x2 - caretSize;
 					x3 = x2 + caretSize;
 				} else if (xAlign === 'right') {
-					x1 = ptX + width - cornerRadius;
-					x2 = x1 - caretSize;
-					x3 = x2 - caretSize;
+					x2 = ptX + width - cornerRadius - caretSize;
+					x1 = x2 - caretSize;
+					x3 = x2 + caretSize;
 				} else {
 					x2 = ptX + (width / 2);
 					x1 = x2 - caretSize;
 					x3 = x2 + caretSize;
 				}
-
 				if (yAlign === 'top') {
 					y1 = ptY;
 					y2 = y1 - caretSize;
@@ -608,23 +617,13 @@ module.exports = function(Chart) {
 					y1 = ptY + height;
 					y2 = y1 + caretSize;
 					y3 = y1;
+					// invert drawing order
+					var tmp = x3;
+					x3 = x1;
+					x1 = tmp;
 				}
 			}
-
-			ctx.fillStyle = mergeOpacity(vm.backgroundColor, opacity);
-			ctx.lineWidth = vm.borderWidth;
-			ctx.strokeStyle = vm.borderColor;
-
-			ctx.beginPath();
-			ctx.moveTo(x1, y1);
-			ctx.lineTo(x2, y2);
-			ctx.lineTo(x3, y3);
-			ctx.stroke();
-			ctx.fill();
-			ctx.closePath();
-
-			helpers.drawRoundedRectangle(ctx, ptX, ptY, size.width, size.height, vm.cornerRadius);
-			ctx.fill();
+			return {x1: x1, x2: x2, x3: x3, y1: y1, y2: y2, y3: y3};
 		},
 		drawTitle: function(pt, vm, ctx, opacity) {
 			var title = vm.title;
@@ -730,11 +729,45 @@ module.exports = function(Chart) {
 		},
 		drawBackground: function(pt, vm, ctx, tooltipSize, opacity) {
 			ctx.fillStyle = mergeOpacity(vm.backgroundColor, opacity);
-			helpers.drawRoundedRectangle(ctx, pt.x, pt.y, tooltipSize.width, tooltipSize.height, vm.cornerRadius);
 			ctx.strokeStyle = vm.borderColor;
 			ctx.lineWidth = vm.borderWidth;
-			ctx.stroke();
+			var xAlign = vm.xAlign;
+			var yAlign = vm.yAlign;
+			var x = pt.x;
+			var y = pt.y;
+			var width = tooltipSize.width;
+			var height = tooltipSize.height;
+			var radius = vm.cornerRadius;
+
+			ctx.beginPath();
+			ctx.moveTo(x + radius, y);
+			if (yAlign === 'top') {
+				this.drawCaret(pt, tooltipSize);
+			}
+			ctx.lineTo(x + width - radius, y);
+			ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+			if (yAlign === 'center' && xAlign === 'right') {
+				this.drawCaret(pt, tooltipSize);
+			}
+			ctx.lineTo(x + width, y + height - radius);
+			ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+			if (yAlign === 'bottom') {
+				this.drawCaret(pt, tooltipSize);
+			}
+			ctx.lineTo(x + radius, y + height);
+			ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+			if (yAlign === 'center' && xAlign === 'left') {
+				this.drawCaret(pt, tooltipSize);
+			}
+			ctx.lineTo(x, y + radius);
+			ctx.quadraticCurveTo(x, y, x + radius, y);
+			ctx.closePath();
+
 			ctx.fill();
+
+			if (vm.borderWidth > 0) {
+				ctx.stroke();
+			}
 		},
 		draw: function() {
 			var ctx = this._chart.ctx;
@@ -759,9 +792,6 @@ module.exports = function(Chart) {
 			if (this._options.enabled) {
 				// Draw Background
 				this.drawBackground(pt, vm, ctx, tooltipSize, opacity);
-
-				// Draw Caret
-				this.drawCaret(pt, tooltipSize, opacity);
 
 				// Draw Title, Body, and Footer
 				pt.x += vm.xPadding;
