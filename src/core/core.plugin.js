@@ -321,5 +321,5 @@ module.exports = function(Chart) {
 	 * @todo remove at version 3
 	 * @private
 	 */
-	Chart.PluginBase = helpers.inherits({});
+	Chart.PluginBase = Chart.Element.extend({});
 };
