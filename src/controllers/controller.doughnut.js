@@ -183,7 +183,7 @@ module.exports = function(Chart) {
 
 			chart.borderWidth = me.getMaxBorderWidth(meta.data);
 			chart.outerRadius = Math.max((minSize - chart.borderWidth) / 2, 0);
-			chart.innerRadius = Math.max(cutoutPercentage ? (chart.outerRadius / 100) * (cutoutPercentage) : 1, 0);
+			chart.innerRadius = Math.max(cutoutPercentage ? (chart.outerRadius / 100) * (cutoutPercentage) : 0, 0);
 			chart.radiusLength = (chart.outerRadius - chart.innerRadius) / chart.getVisibleDatasetCount();
 			chart.offsetX = offset.x * chart.outerRadius;
 			chart.offsetY = offset.y * chart.outerRadius;
@@ -191,7 +191,7 @@ module.exports = function(Chart) {
 			meta.total = me.calculateTotal();
 
 			me.outerRadius = chart.outerRadius - (chart.radiusLength * me.getRingIndex(me.index));
-			me.innerRadius = me.outerRadius - chart.radiusLength;
+			me.innerRadius = Math.max(me.outerRadius - chart.radiusLength, 0);
 
 			helpers.each(meta.data, function(arc, index) {
 				me.updateElement(arc, index, reset);

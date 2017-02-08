@@ -96,9 +96,9 @@ describe('Polar area controller tests', function() {
 		expect(meta.data.length).toBe(4);
 
 		[
-			{o: 156, s: -0.5 * Math.PI, e: 0},
-			{o: 211, s: 0, e: 0.5 * Math.PI},
-			{o: 45, s: 0.5 * Math.PI, e: Math.PI},
+			{o: 168, s: -0.5 * Math.PI, e: 0},
+			{o: 228, s: 0, e: 0.5 * Math.PI},
+			{o: 48, s: 0.5 * Math.PI, e: Math.PI},
 			{o: 0, s: Math.PI, e: 1.5 * Math.PI}
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(256);
@@ -140,7 +140,7 @@ describe('Polar area controller tests', function() {
 		expect(meta.data[0]._model.x).toBeCloseToPixel(256);
 		expect(meta.data[0]._model.y).toBeCloseToPixel(272);
 		expect(meta.data[0]._model.innerRadius).toBeCloseToPixel(0);
-		expect(meta.data[0]._model.outerRadius).toBeCloseToPixel(156);
+		expect(meta.data[0]._model.outerRadius).toBeCloseToPixel(168);
 		expect(meta.data[0]._model).toEqual(jasmine.objectContaining({
 			startAngle: -0.5 * Math.PI,
 			endAngle: 0,
@@ -178,9 +178,9 @@ describe('Polar area controller tests', function() {
 		expect(meta.data.length).toBe(4);
 
 		[
-			{o: 156, s: 0, e: 0.5 * Math.PI},
-			{o: 211, s: 0.5 * Math.PI, e: Math.PI},
-			{o: 45, s: Math.PI, e: 1.5 * Math.PI},
+			{o: 168, s: 0, e: 0.5 * Math.PI},
+			{o: 228, s: 0.5 * Math.PI, e: Math.PI},
+			{o: 48, s: Math.PI, e: 1.5 * Math.PI},
 			{o: 0, s: 1.5 * Math.PI, e: 2.0 * Math.PI}
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(256);

@@ -162,10 +162,20 @@ module.exports = function(Chart) {
 		beforeBuildLabels: noop,
 		buildLabels: function() {
 			var me = this;
-			me.legendItems = me.options.labels.generateLabels.call(me, me.chart);
-			if (me.options.reverse) {
-				me.legendItems.reverse();
+			var labelOpts = me.options.labels;
+			var legendItems = labelOpts.generateLabels.call(me, me.chart);
+
+			if (labelOpts.filter) {
+				legendItems = legendItems.filter(function(item) {
+					return labelOpts.filter(item, me.chart.data);
+				});
 			}
+
+			if (me.options.reverse) {
+				legendItems.reverse();
+			}
+
+			me.legendItems = legendItems;
 		},
 		afterBuildLabels: noop,
 
@@ -404,7 +414,7 @@ module.exports = function(Chart) {
 						}
 					} else if (y + itemHeight > me.bottom) {
 						x = cursor.x = x + me.columnWidths[cursor.line] + labelOpts.padding;
-						y = cursor.y = me.top;
+						y = cursor.y = me.top + labelOpts.padding;
 						cursor.line++;
 					}
 
@@ -429,7 +439,7 @@ module.exports = function(Chart) {
 		/**
 		 * Handle an event
 		 * @private
-		 * @param e {Event} the event to handle
+		 * @param {IEvent} event - The event to handle
 		 * @return {Boolean} true if a change occured
 		 */
 		handleEvent: function(e) {
@@ -450,9 +460,9 @@ module.exports = function(Chart) {
 				return;
 			}
 
-			var position = helpers.getRelativePosition(e, me.chart.chart),
-				x = position.x,
-				y = position.y;
+			// Chart event already has relative position in it
+			var x = e.x,
+				y = e.y;
 
 			if (x >= me.left && x <= me.right && y >= me.top && y <= me.bottom) {
 				// See if we are touching one of the dataset boxes
@@ -463,11 +473,13 @@ module.exports = function(Chart) {
 					if (x >= hitBox.left && x <= hitBox.left + hitBox.width && y >= hitBox.top && y <= hitBox.top + hitBox.height) {
 						// Touching an element
 						if (type === 'click') {
-							opts.onClick.call(me, e, me.legendItems[i]);
+							// use e.native for backwards compatibility
+							opts.onClick.call(me, e.native, me.legendItems[i]);
 							changed = true;
 							break;
 						} else if (type === 'mousemove') {
-							opts.onHover.call(me, e, me.legendItems[i]);
+							// use e.native for backwards compatibility
+							opts.onHover.call(me, e.native, me.legendItems[i]);
 							changed = true;
 							break;
 						}
@@ -479,20 +491,45 @@ module.exports = function(Chart) {
 		}
 	});
 
+	function createNewLegendAndAttach(chartInstance, legendOpts) {
+		var legend = new Chart.Legend({
+			ctx: chartInstance.chart.ctx,
+			options: legendOpts,
+			chart: chartInstance
+		});
+		chartInstance.legend = legend;
+		Chart.layoutService.addBox(chartInstance, legend);
+	}
+
 	// Register the legend plugin
 	Chart.plugins.register({
 		beforeInit: function(chartInstance) {
-			var opts = chartInstance.options;
-			var legendOpts = opts.legend;
+			var legendOpts = chartInstance.options.legend;
 
 			if (legendOpts) {
-				chartInstance.legend = new Chart.Legend({
-					ctx: chartInstance.chart.ctx,
-					options: legendOpts,
-					chart: chartInstance
-				});
+				createNewLegendAndAttach(chartInstance, legendOpts);
+			}
+		},
+		beforeUpdate: function(chartInstance) {
+			var legendOpts = chartInstance.options.legend;
 
-				Chart.layoutService.addBox(chartInstance, chartInstance.legend);
+			if (legendOpts) {
+				legendOpts = helpers.configMerge(Chart.defaults.global.legend, legendOpts);
+
+				if (chartInstance.legend) {
+					chartInstance.legend.options = legendOpts;
+				} else {
+					createNewLegendAndAttach(chartInstance, legendOpts);
+				}
+			} else {
+				Chart.layoutService.removeBox(chartInstance, chartInstance.legend);
+				delete chartInstance.legend;
+			}
+		},
+		afterEvent: function(chartInstance, e) {
+			var legend = chartInstance.legend;
+			if (legend) {
+				legend.handleEvent(e);
 			}
 		}
 	});

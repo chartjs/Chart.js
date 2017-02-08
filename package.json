@@ -2,7 +2,7 @@
   "name": "chart.js",
   "homepage": "http://www.chartjs.org",
   "description": "Simple HTML5 charts using the canvas element.",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "license": "MIT",
   "main": "src/chart.js",
   "repository": {
@@ -25,7 +25,7 @@
     "gulp-replace": "^0.5.4",
     "gulp-size": "~0.4.0",
     "gulp-streamify": "^1.0.2",
-    "gulp-uglify": "~0.2.x",
+    "gulp-uglify": "~2.0.x",
     "gulp-util": "~2.2.x",
     "gulp-zip": "~3.2.0",
     "jasmine": "^2.3.2",

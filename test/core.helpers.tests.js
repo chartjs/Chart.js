@@ -206,7 +206,7 @@ describe('Core helper tests', function() {
 						minRotation: 0,
 						maxRotation: 50,
 						mirror: false,
-						padding: 10,
+						padding: 0,
 						reverse: false,
 						display: true,
 						callback: merged.scales.yAxes[1].ticks.callback, // make it nicer, then check explicitly below
@@ -242,7 +242,7 @@ describe('Core helper tests', function() {
 						minRotation: 0,
 						maxRotation: 50,
 						mirror: false,
-						padding: 10,
+						padding: 0,
 						reverse: false,
 						display: true,
 						callback: merged.scales.yAxes[2].ticks.callback, // make it nicer, then check explicitly below
@@ -299,6 +299,11 @@ describe('Core helper tests', function() {
 		expect(helpers.almostEquals(1, 1.1, 0.0001)).toBe(false);
 		expect(helpers.almostEquals(1e30, 1e30 + Number.EPSILON, 0)).toBe(false);
 		expect(helpers.almostEquals(1e30, 1e30 + Number.EPSILON, 2 * Number.EPSILON)).toBe(true);
+	});
+
+	it('should correctly determine if a numbers are essentially whole', function() {
+		expect(helpers.almostWhole(0.99999, 0.0001)).toBe(true);
+		expect(helpers.almostWhole(0.9, 0.0001)).toBe(false);
 	});
 
 	it('should generate integer ids', function() {
@@ -411,6 +416,7 @@ describe('Core helper tests', function() {
 			{_model: {x: 24, y: 120, skip: false}},
 			{_model: {x: 27, y: 125, skip: false}},
 			{_model: {x: 30, y: 105, skip: false}},
+			{_model: {x: 33, y: 110, skip: false}},
 			{_model: {x: 33, y: 110, skip: false}},
 			{_model: {x: 36, y: 170, skip: false}}
 		];
@@ -532,9 +538,20 @@ describe('Core helper tests', function() {
 				y: 110,
 				skip: false,
 				controlPointPreviousX: 32,
-				controlPointPreviousY: 105,
+				controlPointPreviousY: 110,
+				controlPointNextX: 33,
+				controlPointNextY: 110
+			}
+		},
+		{
+			_model: {
+				x: 33,
+				y: 110,
+				skip: false,
+				controlPointPreviousX: 33,
+				controlPointPreviousY: 110,
 				controlPointNextX: 34,
-				controlPointNextY: 115
+				controlPointNextY: 110
 			}
 		},
 		{

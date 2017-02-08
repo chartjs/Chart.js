@@ -237,6 +237,10 @@ module.exports = function(Chart) {
 	helpers.almostEquals = function(x, y, epsilon) {
 		return Math.abs(x - y) < epsilon;
 	};
+	helpers.almostWhole = function(x, epsilon) {
+		var rounded = Math.round(x);
+		return (((rounded - epsilon) < x) && ((rounded + epsilon) > x));
+	};
 	helpers.max = function(array) {
 		return array.reduce(function(max, value) {
 			if (!isNaN(value)) {
@@ -361,7 +365,10 @@ module.exports = function(Chart) {
 			pointBefore = i > 0 ? pointsWithTangents[i - 1] : null;
 			pointAfter = i < pointsLen - 1 ? pointsWithTangents[i + 1] : null;
 			if (pointAfter && !pointAfter.model.skip) {
-				pointCurrent.deltaK = (pointAfter.model.y - pointCurrent.model.y) / (pointAfter.model.x - pointCurrent.model.x);
+				var slopeDeltaX = (pointAfter.model.x - pointCurrent.model.x);
+
+				// In the case of two points that appear at the same x pixel, slopeDeltaX is 0
+				pointCurrent.deltaK = slopeDeltaX !== 0 ? (pointAfter.model.y - pointCurrent.model.y) / slopeDeltaX : 0;
 			}
 
 			if (!pointBefore || pointBefore.model.skip) {
@@ -671,16 +678,6 @@ module.exports = function(Chart) {
 				return window.setTimeout(callback, 1000 / 60);
 			};
 	}());
-	helpers.cancelAnimFrame = (function() {
-		return window.cancelAnimationFrame ||
-			window.webkitCancelAnimationFrame ||
-			window.mozCancelAnimationFrame ||
-			window.oCancelAnimationFrame ||
-			window.msCancelAnimationFrame ||
-			function(callback) {
-				return window.clearTimeout(callback, 1000 / 60);
-			};
-	}());
 	// -- DOM methods
 	helpers.getRelativePosition = function(evt, chart) {
 		var mouseX, mouseY;
@@ -736,23 +733,6 @@ module.exports = function(Chart) {
 		} else {
 			node['on' + eventType] = helpers.noop;
 		}
-	};
-	helpers.bindEvents = function(chartInstance, arrayOfEvents, handler) {
-		// Create the events object if it's not already present
-		var events = chartInstance.events = chartInstance.events || {};
-
-		helpers.each(arrayOfEvents, function(eventName) {
-			events[eventName] = function() {
-				handler.apply(chartInstance, arguments);
-			};
-			helpers.addEvent(chartInstance.chart.canvas, eventName, events[eventName]);
-		});
-	};
-	helpers.unbindEvents = function(chartInstance, arrayOfEvents) {
-		var canvas = chartInstance.chart.canvas;
-		helpers.each(arrayOfEvents, function(handler, eventName) {
-			helpers.removeEvent(canvas, eventName, handler);
-		});
 	};
 
 	// Private helper function to convert max-width/max-height values that may be percentages into a number
@@ -943,73 +923,6 @@ module.exports = function(Chart) {
 		}
 
 		return color(c);
-	};
-	helpers.addResizeListener = function(node, callback) {
-		var iframe = document.createElement('iframe');
-		iframe.className = 'chartjs-hidden-iframe';
-		iframe.style.cssText =
-			'display:block;'+
-			'overflow:hidden;'+
-			'border:0;'+
-			'margin:0;'+
-			'top:0;'+
-			'left:0;'+
-			'bottom:0;'+
-			'right:0;'+
-			'height:100%;'+
-			'width:100%;'+
-			'position:absolute;'+
-			'pointer-events:none;'+
-			'z-index:-1;';
-
-		// Prevent the iframe to gain focus on tab.
-		// https://github.com/chartjs/Chart.js/issues/3090
-		iframe.tabIndex = -1;
-
-		// Let's keep track of this added iframe and thus avoid DOM query when removing it.
-		var stub = node._chartjs = {
-			resizer: iframe,
-			ticking: false
-		};
-
-		// Throttle the callback notification until the next animation frame.
-		var notify = function() {
-			if (!stub.ticking) {
-				stub.ticking = true;
-				helpers.requestAnimFrame.call(window, function() {
-					if (stub.resizer) {
-						stub.ticking = false;
-						return callback();
-					}
-				});
-			}
-		};
-
-		// If the iframe is re-attached to the DOM, the resize listener is removed because the
-		// content is reloaded, so make sure to install the handler after the iframe is loaded.
-		// https://github.com/chartjs/Chart.js/issues/3521
-		helpers.addEvent(iframe, 'load', function() {
-			helpers.addEvent(iframe.contentWindow || iframe, 'resize', notify);
-
-			// The iframe size might have changed while loading, which can also
-			// happen if the size has been changed while detached from the DOM.
-			notify();
-		});
-
-		node.insertBefore(iframe, node.firstChild);
-	};
-	helpers.removeResizeListener = function(node) {
-		if (!node || !node._chartjs) {
-			return;
-		}
-
-		var iframe = node._chartjs.resizer;
-		if (iframe) {
-			iframe.parentNode.removeChild(iframe);
-			node._chartjs.resizer = null;
-		}
-
-		delete node._chartjs;
 	};
 	helpers.isArray = Array.isArray?
 		function(obj) {

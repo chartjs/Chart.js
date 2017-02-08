@@ -47,10 +47,266 @@ module.exports = function(Chart) {
 		}
 	};
 
+	function getValueCount(scale) {
+		return !scale.options.lineArc ? scale.chart.data.labels.length : 0;
+	}
+
+	function getPointLabelFontOptions(scale) {
+		var pointLabelOptions = scale.options.pointLabels;
+		var fontSize = helpers.getValueOrDefault(pointLabelOptions.fontSize, globalDefaults.defaultFontSize);
+		var fontStyle = helpers.getValueOrDefault(pointLabelOptions.fontStyle, globalDefaults.defaultFontStyle);
+		var fontFamily = helpers.getValueOrDefault(pointLabelOptions.fontFamily, globalDefaults.defaultFontFamily);
+		var font = helpers.fontString(fontSize, fontStyle, fontFamily);
+
+		return {
+			size: fontSize,
+			style: fontStyle,
+			family: fontFamily,
+			font: font
+		};
+	}
+
+	function measureLabelSize(ctx, fontSize, label) {
+		if (helpers.isArray(label)) {
+			return {
+				w: helpers.longestText(ctx, ctx.font, label),
+				h: (label.length * fontSize) + ((label.length - 1) * 1.5 * fontSize)
+			};
+		}
+
+		return {
+			w: ctx.measureText(label).width,
+			h: fontSize
+		};
+	}
+
+	function determineLimits(angle, pos, size, min, max) {
+		if (angle === min || angle === max) {
+			return {
+				start: pos - (size / 2),
+				end: pos + (size / 2)
+			};
+		} else if (angle < min || angle > max) {
+			return {
+				start: pos - size - 5,
+				end: pos
+			};
+		}
+
+		return {
+			start: pos,
+			end: pos + size + 5
+		};
+	}
+
+	/**
+	 * Helper function to fit a radial linear scale with point labels
+	 */
+	function fitWithPointLabels(scale) {
+		/*
+		 * Right, this is really confusing and there is a lot of maths going on here
+		 * The gist of the problem is here: https://gist.github.com/nnnick/696cc9c55f4b0beb8fe9
+		 *
+		 * Reaction: https://dl.dropboxusercontent.com/u/34601363/toomuchscience.gif
+		 *
+		 * Solution:
+		 *
+		 * We assume the radius of the polygon is half the size of the canvas at first
+		 * at each index we check if the text overlaps.
+		 *
+		 * Where it does, we store that angle and that index.
+		 *
+		 * After finding the largest index and angle we calculate how much we need to remove
+		 * from the shape radius to move the point inwards by that x.
+		 *
+		 * We average the left and right distances to get the maximum shape radius that can fit in the box
+		 * along with labels.
+		 *
+		 * Once we have that, we can find the centre point for the chart, by taking the x text protrusion
+		 * on each side, removing that from the size, halving it and adding the left x protrusion width.
+		 *
+		 * This will mean we have a shape fitted to the canvas, as large as it can be with the labels
+		 * and position it in the most space efficient manner
+		 *
+		 * https://dl.dropboxusercontent.com/u/34601363/yeahscience.gif
+		 */
+
+		var plFont = getPointLabelFontOptions(scale);
+
+		// Get maximum radius of the polygon. Either half the height (minus the text width) or half the width.
+		// Use this to calculate the offset + change. - Make sure L/R protrusion is at least 0 to stop issues with centre points
+		var largestPossibleRadius = Math.min(scale.height / 2, scale.width / 2);
+		var furthestLimits = {
+			l: scale.width,
+			r: 0,
+			t: scale.height,
+			b: 0
+		};
+		var furthestAngles = {};
+		var i;
+		var textSize;
+		var pointPosition;
+
+		scale.ctx.font = plFont.font;
+		scale._pointLabelSizes = [];
+
+		var valueCount = getValueCount(scale);
+		for (i = 0; i < valueCount; i++) {
+			pointPosition = scale.getPointPosition(i, largestPossibleRadius);
+			textSize = measureLabelSize(scale.ctx, plFont.size, scale.pointLabels[i] || '');
+			scale._pointLabelSizes[i] = textSize;
+
+			// Add quarter circle to make degree 0 mean top of circle
+			var angleRadians = scale.getIndexAngle(i);
+			var angle = helpers.toDegrees(angleRadians) % 360;
+			var hLimits = determineLimits(angle, pointPosition.x, textSize.w, 0, 180);
+			var vLimits = determineLimits(angle, pointPosition.y, textSize.h, 90, 270);
+
+			if (hLimits.start < furthestLimits.l) {
+				furthestLimits.l = hLimits.start;
+				furthestAngles.l = angleRadians;
+			}
+
+			if (hLimits.end > furthestLimits.r) {
+				furthestLimits.r = hLimits.end;
+				furthestAngles.r = angleRadians;
+			}
+
+			if (vLimits.start < furthestLimits.t) {
+				furthestLimits.t = vLimits.start;
+				furthestAngles.t = angleRadians;
+			}
+
+			if (vLimits.end > furthestLimits.b) {
+				furthestLimits.b = vLimits.end;
+				furthestAngles.b = angleRadians;
+			}
+		}
+
+		scale.setReductions(largestPossibleRadius, furthestLimits, furthestAngles);
+	}
+
+	/**
+	 * Helper function to fit a radial linear scale with no point labels
+	 */
+	function fit(scale) {
+		var largestPossibleRadius = Math.min(scale.height / 2, scale.width / 2);
+		scale.drawingArea = Math.round(largestPossibleRadius);
+		scale.setCenterPoint(0, 0, 0, 0);
+	}
+
+	function getTextAlignForAngle(angle) {
+		if (angle === 0 || angle === 180) {
+			return 'center';
+		} else if (angle < 180) {
+			return 'left';
+		}
+
+		return 'right';
+	}
+
+	function fillText(ctx, text, position, fontSize) {
+		if (helpers.isArray(text)) {
+			var y = position.y;
+			var spacing = 1.5 * fontSize;
+
+			for (var i = 0; i < text.length; ++i) {
+				ctx.fillText(text[i], position.x, y);
+				y+= spacing;
+			}
+		} else {
+			ctx.fillText(text, position.x, position.y);
+		}
+	}
+
+	function adjustPointPositionForLabelHeight(angle, textSize, position) {
+		if (angle === 90 || angle === 270) {
+			position.y -= (textSize.h / 2);
+		} else if (angle > 270 || angle < 90) {
+			position.y -= textSize.h;
+		}
+	}
+
+	function drawPointLabels(scale) {
+		var ctx = scale.ctx;
+		var getValueOrDefault = helpers.getValueOrDefault;
+		var opts = scale.options;
+		var angleLineOpts = opts.angleLines;
+		var pointLabelOpts = opts.pointLabels;
+
+		ctx.lineWidth = angleLineOpts.lineWidth;
+		ctx.strokeStyle = angleLineOpts.color;
+
+		var outerDistance = scale.getDistanceFromCenterForValue(opts.reverse ? scale.min : scale.max);
+
+		// Point Label Font
+		var plFont = getPointLabelFontOptions(scale);
+
+		ctx.textBaseline = 'top';
+
+		for (var i = getValueCount(scale) - 1; i >= 0; i--) {
+			if (angleLineOpts.display) {
+				var outerPosition = scale.getPointPosition(i, outerDistance);
+				ctx.beginPath();
+				ctx.moveTo(scale.xCenter, scale.yCenter);
+				ctx.lineTo(outerPosition.x, outerPosition.y);
+				ctx.stroke();
+				ctx.closePath();
+			}
+			// Extra 3px out for some label spacing
+			var pointLabelPosition = scale.getPointPosition(i, outerDistance + 5);
+
+			// Keep this in loop since we may support array properties here
+			var pointLabelFontColor = getValueOrDefault(pointLabelOpts.fontColor, globalDefaults.defaultFontColor);
+			ctx.font = plFont.font;
+			ctx.fillStyle = pointLabelFontColor;
+
+			var angleRadians = scale.getIndexAngle(i);
+			var angle = helpers.toDegrees(angleRadians);
+			ctx.textAlign = getTextAlignForAngle(angle);
+			adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition);
+			fillText(ctx, scale.pointLabels[i] || '', pointLabelPosition, plFont.size);
+		}
+	}
+
+	function drawRadiusLine(scale, gridLineOpts, radius, index) {
+		var ctx = scale.ctx;
+		ctx.strokeStyle = helpers.getValueAtIndexOrDefault(gridLineOpts.color, index - 1);
+		ctx.lineWidth = helpers.getValueAtIndexOrDefault(gridLineOpts.lineWidth, index - 1);
+
+		if (scale.options.lineArc) {
+			// Draw circular arcs between the points
+			ctx.beginPath();
+			ctx.arc(scale.xCenter, scale.yCenter, radius, 0, Math.PI * 2);
+			ctx.closePath();
+			ctx.stroke();
+		} else {
+			// Draw straight lines connecting each index
+			var valueCount = getValueCount(scale);
+
+			if (valueCount === 0) {
+				return;
+			}
+
+			ctx.beginPath();
+			var pointPosition = scale.getPointPosition(0, radius);
+			ctx.moveTo(pointPosition.x, pointPosition.y);
+
+			for (var i = 1; i < valueCount; i++) {
+				pointPosition = scale.getPointPosition(i, radius);
+				ctx.lineTo(pointPosition.x, pointPosition.y);
+			}
+
+			ctx.closePath();
+			ctx.stroke();
+		}
+	}
+
+	function numberOrZero(param) {
+		return helpers.isNumber(param) ? param : 0;
+	}
+
 	var LinearRadialScale = Chart.LinearScaleBase.extend({
-		getValueCount: function() {
-			return this.chart.data.labels.length;
-		},
 		setDimensions: function() {
 			var me = this;
 			var opts = me.options;
@@ -68,9 +324,8 @@ module.exports = function(Chart) {
 		determineDataLimits: function() {
 			var me = this;
 			var chart = me.chart;
-			me.min = null;
-			me.max = null;
-
+			var min = Number.POSITIVE_INFINITY;
+			var max = Number.NEGATIVE_INFINITY;
 
 			helpers.each(chart.data.datasets, function(dataset, datasetIndex) {
 				if (chart.isDatasetVisible(datasetIndex)) {
@@ -82,20 +337,14 @@ module.exports = function(Chart) {
 							return;
 						}
 
-						if (me.min === null) {
-							me.min = value;
-						} else if (value < me.min) {
-							me.min = value;
-						}
-
-						if (me.max === null) {
-							me.max = value;
-						} else if (value > me.max) {
-							me.max = value;
-						}
+						min = Math.min(value, min);
+						max = Math.max(value, max);
 					});
 				}
 			});
+
+			me.min = (min === Number.POSITIVE_INFINITY ? 0 : min);
+			me.max = (max === Number.NEGATIVE_INFINITY ? 0 : max);
 
 			// Common base implementation to handle ticks.min, ticks.max, ticks.beginAtZero
 			me.handleTickRangeOptions();
@@ -116,122 +365,46 @@ module.exports = function(Chart) {
 			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 		},
 		fit: function() {
-			/*
-			 * Right, this is really confusing and there is a lot of maths going on here
-			 * The gist of the problem is here: https://gist.github.com/nnnick/696cc9c55f4b0beb8fe9
-			 *
-			 * Reaction: https://dl.dropboxusercontent.com/u/34601363/toomuchscience.gif
-			 *
-			 * Solution:
-			 *
-			 * We assume the radius of the polygon is half the size of the canvas at first
-			 * at each index we check if the text overlaps.
-			 *
-			 * Where it does, we store that angle and that index.
-			 *
-			 * After finding the largest index and angle we calculate how much we need to remove
-			 * from the shape radius to move the point inwards by that x.
-			 *
-			 * We average the left and right distances to get the maximum shape radius that can fit in the box
-			 * along with labels.
-			 *
-			 * Once we have that, we can find the centre point for the chart, by taking the x text protrusion
-			 * on each side, removing that from the size, halving it and adding the left x protrusion width.
-			 *
-			 * This will mean we have a shape fitted to the canvas, as large as it can be with the labels
-			 * and position it in the most space efficient manner
-			 *
-			 * https://dl.dropboxusercontent.com/u/34601363/yeahscience.gif
-			 */
-
-			var pointLabels = this.options.pointLabels;
-			var pointLabelFontSize = helpers.getValueOrDefault(pointLabels.fontSize, globalDefaults.defaultFontSize);
-			var pointLabeFontStyle = helpers.getValueOrDefault(pointLabels.fontStyle, globalDefaults.defaultFontStyle);
-			var pointLabeFontFamily = helpers.getValueOrDefault(pointLabels.fontFamily, globalDefaults.defaultFontFamily);
-			var pointLabeFont = helpers.fontString(pointLabelFontSize, pointLabeFontStyle, pointLabeFontFamily);
-
-			// Get maximum radius of the polygon. Either half the height (minus the text width) or half the width.
-			// Use this to calculate the offset + change. - Make sure L/R protrusion is at least 0 to stop issues with centre points
-			var largestPossibleRadius = helpers.min([(this.height / 2 - pointLabelFontSize - 5), this.width / 2]),
-				pointPosition,
-				i,
-				textWidth,
-				halfTextWidth,
-				furthestRight = this.width,
-				furthestRightIndex,
-				furthestRightAngle,
-				furthestLeft = 0,
-				furthestLeftIndex,
-				furthestLeftAngle,
-				xProtrusionLeft,
-				xProtrusionRight,
-				radiusReductionRight,
-				radiusReductionLeft;
-			this.ctx.font = pointLabeFont;
-
-			for (i = 0; i < this.getValueCount(); i++) {
-				// 5px to space the text slightly out - similar to what we do in the draw function.
-				pointPosition = this.getPointPosition(i, largestPossibleRadius);
-				textWidth = this.ctx.measureText(this.pointLabels[i] ? this.pointLabels[i] : '').width + 5;
-
-				// Add quarter circle to make degree 0 mean top of circle
-				var angleRadians = this.getIndexAngle(i) + (Math.PI / 2);
-				var angle = (angleRadians * 360 / (2 * Math.PI)) % 360;
-
-				if (angle === 0 || angle === 180) {
-					// At angle 0 and 180, we're at exactly the top/bottom
-					// of the radar chart, so text will be aligned centrally, so we'll half it and compare
-					// w/left and right text sizes
-					halfTextWidth = textWidth / 2;
-					if (pointPosition.x + halfTextWidth > furthestRight) {
-						furthestRight = pointPosition.x + halfTextWidth;
-						furthestRightIndex = i;
-					}
-					if (pointPosition.x - halfTextWidth < furthestLeft) {
-						furthestLeft = pointPosition.x - halfTextWidth;
-						furthestLeftIndex = i;
-					}
-				} else if (angle < 180) {
-					// Less than half the values means we'll left align the text
-					if (pointPosition.x + textWidth > furthestRight) {
-						furthestRight = pointPosition.x + textWidth;
-						furthestRightIndex = i;
-					}
-				// More than half the values means we'll right align the text
-				} else if (pointPosition.x - textWidth < furthestLeft) {
-					furthestLeft = pointPosition.x - textWidth;
-					furthestLeftIndex = i;
-				}
+			if (this.options.lineArc) {
+				fit(this);
+			} else {
+				fitWithPointLabels(this);
 			}
-
-			xProtrusionLeft = furthestLeft;
-			xProtrusionRight = Math.ceil(furthestRight - this.width);
-
-			furthestRightAngle = this.getIndexAngle(furthestRightIndex);
-			furthestLeftAngle = this.getIndexAngle(furthestLeftIndex);
-
-			radiusReductionRight = xProtrusionRight / Math.sin(furthestRightAngle + Math.PI / 2);
-			radiusReductionLeft = xProtrusionLeft / Math.sin(furthestLeftAngle + Math.PI / 2);
-
-			// Ensure we actually need to reduce the size of the chart
-			radiusReductionRight = (helpers.isNumber(radiusReductionRight)) ? radiusReductionRight : 0;
-			radiusReductionLeft = (helpers.isNumber(radiusReductionLeft)) ? radiusReductionLeft : 0;
-
-			this.drawingArea = Math.round(largestPossibleRadius - (radiusReductionLeft + radiusReductionRight) / 2);
-			this.setCenterPoint(radiusReductionLeft, radiusReductionRight);
 		},
-		setCenterPoint: function(leftMovement, rightMovement) {
+		/**
+		 * Set radius reductions and determine new radius and center point
+		 * @private
+		 */
+		setReductions: function(largestPossibleRadius, furthestLimits, furthestAngles) {
+			var me = this;
+			var radiusReductionLeft = furthestLimits.l / Math.sin(furthestAngles.l);
+			var radiusReductionRight = Math.max(furthestLimits.r - me.width, 0) / Math.sin(furthestAngles.r);
+			var radiusReductionTop = -furthestLimits.t / Math.cos(furthestAngles.t);
+			var radiusReductionBottom = -Math.max(furthestLimits.b - me.height, 0) / Math.cos(furthestAngles.b);
+
+			radiusReductionLeft = numberOrZero(radiusReductionLeft);
+			radiusReductionRight = numberOrZero(radiusReductionRight);
+			radiusReductionTop = numberOrZero(radiusReductionTop);
+			radiusReductionBottom = numberOrZero(radiusReductionBottom);
+
+			me.drawingArea = Math.min(
+				Math.round(largestPossibleRadius - (radiusReductionLeft + radiusReductionRight) / 2),
+				Math.round(largestPossibleRadius - (radiusReductionTop + radiusReductionBottom) / 2));
+			me.setCenterPoint(radiusReductionLeft, radiusReductionRight, radiusReductionTop, radiusReductionBottom);
+		},
+		setCenterPoint: function(leftMovement, rightMovement, topMovement, bottomMovement) {
 			var me = this;
 			var maxRight = me.width - rightMovement - me.drawingArea,
-				maxLeft = leftMovement + me.drawingArea;
+				maxLeft = leftMovement + me.drawingArea,
+				maxTop = topMovement + me.drawingArea,
+				maxBottom = me.height - bottomMovement - me.drawingArea;
 
 			me.xCenter = Math.round(((maxLeft + maxRight) / 2) + me.left);
-			// Always vertically in the centre as the text height doesn't change
-			me.yCenter = Math.round((me.height / 2) + me.top);
+			me.yCenter = Math.round(((maxTop + maxBottom) / 2) + me.top);
 		},
 
 		getIndexAngle: function(index) {
-			var angleMultiplier = (Math.PI * 2) / this.getValueCount();
+			var angleMultiplier = (Math.PI * 2) / getValueCount(this);
 			var startAngle = this.chart.options && this.chart.options.startAngle ?
 				this.chart.options.startAngle :
 				0;
@@ -239,7 +412,7 @@ module.exports = function(Chart) {
 			var startAngleRadians = startAngle * Math.PI * 2 / 360;
 
 			// Start from the top instead of right, so remove a quarter of the circle
-			return index * angleMultiplier - (Math.PI / 2) + startAngleRadians;
+			return index * angleMultiplier + startAngleRadians;
 		},
 		getDistanceFromCenterForValue: function(value) {
 			var me = this;
@@ -257,7 +430,7 @@ module.exports = function(Chart) {
 		},
 		getPointPosition: function(index, distanceFromCenter) {
 			var me = this;
-			var thisAngle = me.getIndexAngle(index);
+			var thisAngle = me.getIndexAngle(index) - (Math.PI / 2);
 			return {
 				x: Math.round(Math.cos(thisAngle) * distanceFromCenter) + me.xCenter,
 				y: Math.round(Math.sin(thisAngle) * distanceFromCenter) + me.yCenter
@@ -284,8 +457,6 @@ module.exports = function(Chart) {
 			var opts = me.options;
 			var gridLineOpts = opts.gridLines;
 			var tickOpts = opts.ticks;
-			var angleLineOpts = opts.angleLines;
-			var pointLabelOpts = opts.pointLabels;
 			var getValueOrDefault = helpers.getValueOrDefault;
 
 			if (opts.display) {
@@ -305,29 +476,7 @@ module.exports = function(Chart) {
 
 						// Draw circular lines around the scale
 						if (gridLineOpts.display && index !== 0) {
-							ctx.strokeStyle = helpers.getValueAtIndexOrDefault(gridLineOpts.color, index - 1);
-							ctx.lineWidth = helpers.getValueAtIndexOrDefault(gridLineOpts.lineWidth, index - 1);
-
-							if (opts.lineArc) {
-								// Draw circular arcs between the points
-								ctx.beginPath();
-								ctx.arc(me.xCenter, me.yCenter, yCenterOffset, 0, Math.PI * 2);
-								ctx.closePath();
-								ctx.stroke();
-							} else {
-								// Draw straight lines connecting each index
-								ctx.beginPath();
-								for (var i = 0; i < me.getValueCount(); i++) {
-									var pointPosition = me.getPointPosition(i, yCenterOffset);
-									if (i === 0) {
-										ctx.moveTo(pointPosition.x, pointPosition.y);
-									} else {
-										ctx.lineTo(pointPosition.x, pointPosition.y);
-									}
-								}
-								ctx.closePath();
-								ctx.stroke();
-							}
+							drawRadiusLine(me, gridLineOpts, yCenterOffset, index);
 						}
 
 						if (tickOpts.display) {
@@ -354,59 +503,7 @@ module.exports = function(Chart) {
 				});
 
 				if (!opts.lineArc) {
-					ctx.lineWidth = angleLineOpts.lineWidth;
-					ctx.strokeStyle = angleLineOpts.color;
-
-					var outerDistance = me.getDistanceFromCenterForValue(opts.reverse ? me.min : me.max);
-
-					// Point Label Font
-					var pointLabelFontSize = getValueOrDefault(pointLabelOpts.fontSize, globalDefaults.defaultFontSize);
-					var pointLabeFontStyle = getValueOrDefault(pointLabelOpts.fontStyle, globalDefaults.defaultFontStyle);
-					var pointLabeFontFamily = getValueOrDefault(pointLabelOpts.fontFamily, globalDefaults.defaultFontFamily);
-					var pointLabeFont = helpers.fontString(pointLabelFontSize, pointLabeFontStyle, pointLabeFontFamily);
-
-					for (var i = me.getValueCount() - 1; i >= 0; i--) {
-						if (angleLineOpts.display) {
-							var outerPosition = me.getPointPosition(i, outerDistance);
-							ctx.beginPath();
-							ctx.moveTo(me.xCenter, me.yCenter);
-							ctx.lineTo(outerPosition.x, outerPosition.y);
-							ctx.stroke();
-							ctx.closePath();
-						}
-						// Extra 3px out for some label spacing
-						var pointLabelPosition = me.getPointPosition(i, outerDistance + 5);
-
-						// Keep this in loop since we may support array properties here
-						var pointLabelFontColor = getValueOrDefault(pointLabelOpts.fontColor, globalDefaults.defaultFontColor);
-						ctx.font = pointLabeFont;
-						ctx.fillStyle = pointLabelFontColor;
-
-						var pointLabels = me.pointLabels;
-
-						// Add quarter circle to make degree 0 mean top of circle
-						var angleRadians = this.getIndexAngle(i) + (Math.PI / 2);
-						var angle = (angleRadians * 360 / (2 * Math.PI)) % 360;
-
-						if (angle === 0 || angle === 180) {
-							ctx.textAlign = 'center';
-						} else if (angle < 180) {
-							ctx.textAlign = 'left';
-						} else {
-							ctx.textAlign = 'right';
-						}
-
-						// Set the correct text baseline based on outer positioning
-						if (angle === 90 || angle === 270) {
-							ctx.textBaseline = 'middle';
-						} else if (angle > 270 || angle < 90) {
-							ctx.textBaseline = 'bottom';
-						} else {
-							ctx.textBaseline = 'top';
-						}
-
-						ctx.fillText(pointLabels[i] ? pointLabels[i] : '', pointLabelPosition.x, pointLabelPosition.y);
-					}
+					drawPointLabels(me);
 				}
 			}
 		}

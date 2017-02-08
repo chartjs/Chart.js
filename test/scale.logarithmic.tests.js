@@ -33,7 +33,7 @@ describe('Logarithmic Scale tests', function() {
 				minRotation: 0,
 				maxRotation: 50,
 				mirror: false,
-				padding: 10,
+				padding: 0,
 				reverse: false,
 				display: true,
 				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
@@ -77,15 +77,13 @@ describe('Logarithmic Scale tests', function() {
 					}, {
 						id: 'yScale1',
 						type: 'logarithmic'
-					},
-						{
-							id: 'yScale2',
-							type: 'logarithmic'
-						},
-						{
-							id: 'yScale3',
-							type: 'logarithmic'
-						}]
+					}, {
+						id: 'yScale2',
+						type: 'logarithmic'
+					}, {
+						id: 'yScale3',
+						type: 'logarithmic'
+					}]
 				}
 			}
 		});
@@ -140,11 +138,10 @@ describe('Logarithmic Scale tests', function() {
 					}, {
 						id: 'yScale2',
 						type: 'logarithmic'
-					},
-						{
-							id: 'yScale3',
-							type: 'logarithmic'
-						}]
+					}, {
+						id: 'yScale3',
+						type: 'logarithmic'
+					}]
 				}
 			}
 		});
@@ -343,7 +340,7 @@ describe('Logarithmic Scale tests', function() {
 					data: [10, 5, 1, 5, 78, 100]
 				}, {
 					yAxisID: 'yScale1',
-					data: [-1000, 1000],
+					data: [0, 1000],
 				}, {
 					type: 'bar',
 					yAxisID: 'yScale0',
@@ -383,7 +380,7 @@ describe('Logarithmic Scale tests', function() {
 					type: 'bar'
 				}, {
 					yAxisID: 'yScale1',
-					data: [-1000, 1000],
+					data: [0, 1000],
 					type: 'bar'
 				}, {
 					yAxisID: 'yScale0',
@@ -717,14 +714,14 @@ describe('Logarithmic Scale tests', function() {
 		});
 
 		var xScale = chart.scales.xScale;
-		expect(xScale.getPixelForValue(80, 0, 0)).toBeCloseToPixel(495);  // right - paddingRight
-		expect(xScale.getPixelForValue(1, 0, 0)).toBeCloseToPixel(48);   // left + paddingLeft
-		expect(xScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(283);  // halfway
-		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(48);   // 0 is invalid, put it on the left.
+		expect(xScale.getPixelForValue(80, 0, 0)).toBeCloseToPixel(482);  // right - paddingRight
+		expect(xScale.getPixelForValue(1, 0, 0)).toBeCloseToPixel(37);   // left + paddingLeft
+		expect(xScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(270);  // halfway
+		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(37);   // 0 is invalid, put it on the left.
 
-		expect(xScale.getValueForPixel(495)).toBeCloseTo(80, 1e-4);
+		expect(xScale.getValueForPixel(481.5)).toBeCloseToPixel(80);
 		expect(xScale.getValueForPixel(48)).toBeCloseTo(1, 1e-4);
-		expect(xScale.getValueForPixel(283)).toBeCloseTo(10, 1e-4);
+		expect(xScale.getValueForPixel(270)).toBeCloseTo(10, 1e-4);
 
 		var yScale = chart.scales.yScale;
 		expect(yScale.getPixelForValue(80, 0, 0)).toBeCloseToPixel(32);   // top + paddingTop

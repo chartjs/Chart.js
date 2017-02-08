@@ -179,7 +179,7 @@ describe('Radar controller tests', function() {
 		});
 
 		// Use dataset level styles for lines & points
-		chart.data.datasets[0].tension = 0;
+		chart.data.datasets[0].lineTension = 0;
 		chart.data.datasets[0].backgroundColor = 'rgb(98, 98, 98)';
 		chart.data.datasets[0].borderColor = 'rgb(8, 8, 8)';
 		chart.data.datasets[0].borderWidth = 0.55;
@@ -451,5 +451,22 @@ describe('Radar controller tests', function() {
 		expect(point._model.borderColor).toBe('rgb(10, 10, 10)');
 		expect(point._model.borderWidth).toBe(5.5);
 		expect(point._model.radius).toBe(4.4);
+	});
+
+	it('should allow pointBorderWidth to be set to 0', function() {
+		var chart = window.acquireChart({
+			type: 'radar',
+			data: {
+				datasets: [{
+					data: [10, 15, 0, 4],
+					pointBorderWidth: 0
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4']
+			}
+		});
+
+		var meta = chart.getDatasetMeta(0);
+		var point = meta.data[0];
+		expect(point._model.borderWidth).toBe(0);
 	});
 });
