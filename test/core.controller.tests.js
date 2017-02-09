@@ -1,16 +1,7 @@
 describe('Chart.Controller', function() {
 
 	function waitForResize(chart, callback) {
-		var resizer = chart.chart.canvas.parentNode._chartjs.resizer;
-		var content = resizer.contentWindow || resizer;
-		var state = content.document.readyState || 'complete';
-		var handler = function() {
-			Chart.helpers.removeEvent(content, 'load', handler);
-			Chart.helpers.removeEvent(content, 'resize', handler);
-			setTimeout(callback, 50);
-		};
-
-		Chart.helpers.addEvent(content, state !== 'complete'? 'load' : 'resize', handler);
+		setTimeout(callback, 50);
 	}
 
 	describe('config initialization', function() {
@@ -480,23 +471,27 @@ describe('Chart.Controller', function() {
 	});
 
 	describe('controller.destroy', function() {
-		it('should remove the resizer element when responsive: true', function() {
+		it('should remove the resizer element when responsive: true', function(done) {
 			var chart = acquireChart({
 				options: {
 					responsive: true
 				}
 			});
 
-			var wrapper = chart.chart.canvas.parentNode;
-			var resizer = wrapper.firstChild;
+			setTimeout(function() {
+				var wrapper = chart.chart.canvas.parentNode;
+				var resizer = wrapper.lastChild;
 
-			expect(wrapper.childNodes.length).toBe(2);
-			expect(resizer.tagName).toBe('IFRAME');
+				expect(wrapper.childNodes.length).toBe(2);
+				expect(resizer.tagName).toBe('DIV');
 
-			chart.destroy();
+				chart.destroy();
 
-			expect(wrapper.childNodes.length).toBe(1);
-			expect(wrapper.firstChild.tagName).toBe('CANVAS');
+				expect(wrapper.childNodes.length).toBe(1);
+				expect(wrapper.firstChild.tagName).toBe('CANVAS');
+
+				done();
+			}, 0);
 		});
 	});
 
