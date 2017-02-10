@@ -781,6 +781,12 @@ module.exports = function(Chart) {
 
 			// Remember Last Actives
 			changed = !helpers.arrayEquals(me._active, me._lastActive);
+
+			// If tooltip didn't change, do not handle the target event
+			if (!changed) {
+				return false;
+			}
+
 			me._lastActive = me._active;
 
 			if (options.enabled || options.custom) {
