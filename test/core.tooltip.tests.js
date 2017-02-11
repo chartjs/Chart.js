@@ -692,10 +692,10 @@ describe('Core.Tooltip', function() {
 		expect(tooltip._view.dataPoints[0].index).toEqual(pointIndex);
 		expect(tooltip._view.dataPoints[0].datasetIndex).toEqual(datasetIndex);
 		expect(tooltip._view.dataPoints[0].xLabel).toEqual(
-			chart.config.data.labels[pointIndex]
+			chart.data.labels[pointIndex]
 		);
 		expect(tooltip._view.dataPoints[0].yLabel).toEqual(
-			chart.config.data.datasets[datasetIndex].data[pointIndex]
+			chart.data.datasets[datasetIndex].data[pointIndex]
 		);
 		expect(tooltip._view.dataPoints[0].x).toBeCloseToPixel(point._model.x);
 		expect(tooltip._view.dataPoints[0].y).toBeCloseToPixel(point._model.y);

@@ -98,9 +98,13 @@ module.exports = function(Chart) {
 			// Add the chart instance to the global namespace
 			Chart.instances[me.id] = me;
 
+			// Define alias to the config data: `chart.data === chart.config.data`
 			Object.defineProperty(me, 'data', {
 				get: function() {
 					return me.config.data;
+				},
+				set: function(value) {
+					me.config.data = value;
 				}
 			});
 
