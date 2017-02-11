@@ -690,22 +690,21 @@ describe('Logarithmic Scale tests', function() {
 
 	it('should get the correct pixel value for a point', function() {
 		var chart = window.acquireChart({
-			type: 'bar',
+			type: 'line',
 			data: {
 				datasets: [{
 					xAxisID: 'xScale', // for the horizontal scale
 					yAxisID: 'yScale',
-					data: [10, 5, 1, 25, 78]
+					data: [{x: 10, y: 10}, {x: 5, y: 5}, {x: 1, y: 1}, {x: 25, y: 25}, {x: 78, y: 78}]
 				}],
-				labels: []
 			},
 			options: {
 				scales: {
-					yAxes: [{
+					xAxes: [{
 						id: 'xScale',
-						type: 'logarithmic',
-						position: 'bottom'
-					}, {
+						type: 'logarithmic'
+					}],
+					yAxes: [{
 						id: 'yScale',
 						type: 'logarithmic'
 					}]
@@ -714,24 +713,24 @@ describe('Logarithmic Scale tests', function() {
 		});
 
 		var xScale = chart.scales.xScale;
-		expect(xScale.getPixelForValue(80, 0, 0)).toBeCloseToPixel(482);  // right - paddingRight
+		expect(xScale.getPixelForValue(80, 0, 0)).toBeCloseToPixel(495);  // right - paddingRight
 		expect(xScale.getPixelForValue(1, 0, 0)).toBeCloseToPixel(37);   // left + paddingLeft
-		expect(xScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(270);  // halfway
+		expect(xScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(278);  // halfway
 		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(37);   // 0 is invalid, put it on the left.
 
-		expect(xScale.getValueForPixel(481.5)).toBeCloseToPixel(80);
+		expect(xScale.getValueForPixel(495)).toBeCloseToPixel(80);
 		expect(xScale.getValueForPixel(48)).toBeCloseTo(1, 1e-4);
-		expect(xScale.getValueForPixel(270)).toBeCloseTo(10, 1e-4);
+		expect(xScale.getValueForPixel(278)).toBeCloseTo(10, 1e-4);
 
 		var yScale = chart.scales.yScale;
 		expect(yScale.getPixelForValue(80, 0, 0)).toBeCloseToPixel(32);   // top + paddingTop
-		expect(yScale.getPixelForValue(1, 0, 0)).toBeCloseToPixel(456);  // bottom - paddingBottom
-		expect(yScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(234);  // halfway
+		expect(yScale.getPixelForValue(1, 0, 0)).toBeCloseToPixel(484);  // bottom - paddingBottom
+		expect(yScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(246);  // halfway
 		expect(yScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(32);   // 0 is invalid. force it on top
 
 		expect(yScale.getValueForPixel(32)).toBeCloseTo(80, 1e-4);
-		expect(yScale.getValueForPixel(456)).toBeCloseTo(1, 1e-4);
-		expect(yScale.getValueForPixel(234)).toBeCloseTo(10, 1e-4);
+		expect(yScale.getValueForPixel(484)).toBeCloseTo(1, 1e-4);
+		expect(yScale.getValueForPixel(246)).toBeCloseTo(10, 1e-4);
 	});
 
 	it('should get the correct pixel value for a point when 0 values are present', function() {

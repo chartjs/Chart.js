@@ -105,6 +105,26 @@ describe('Chart', function() {
 			expect(options.hover.mode).toBe('dataset');
 			expect(options.title.position).toBe('bottom');
 		});
+
+		it('should override axis positions that are incorrect', function() {
+			var chart = acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						xAxes: [{
+							position: 'left',
+						}],
+						yAxes: [{
+							position: 'bottom'
+						}]
+					}
+				}
+			});
+
+			var scaleOptions = chart.options.scales;
+			expect(scaleOptions.xAxes[0].position).toBe('bottom');
+			expect(scaleOptions.yAxes[0].position).toBe('left');
+		});
 	});
 
 	describe('config.options.responsive: false', function() {
