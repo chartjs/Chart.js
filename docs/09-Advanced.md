@@ -25,7 +25,7 @@ myLineChart.destroy();
 
 #### .update(duration, lazy)
 
-Triggers an update of the chart. This can be safely called after replacing the entire data object. This will update all scales, legends, and then re-render the chart.
+Triggers an update of the chart. This can be safely called after updating the data object. This will update all scales, legends, and then re-render the chart.
 
 ```javascript
 // duration is the time for the animation of the redraw in milliseconds
@@ -33,6 +33,8 @@ Triggers an update of the chart. This can be safely called after replacing the e
 myLineChart.data.datasets[0].data[2] = 50; // Would update the first dataset's value of 'March' to be 50
 myLineChart.update(); // Calling update now animates the position of March from 90 to 50.
 ```
+
+> **Note:** replacing the data reference (e.g. `myLineChart.data = {datasets: [...]}` only works starting **version 2.6**. Prior that, replacing the entire data object could be achieved with the following workaround: `myLineChart.config.data = {datasets: [...]}`.
 
 #### .reset()
 

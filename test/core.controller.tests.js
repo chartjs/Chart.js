@@ -57,6 +57,25 @@ describe('Chart', function() {
 			expect(chart.data.datasets[1].data).toBe(ds1.data);
 		});
 
+		it('should define chart.data as an alias for config.data', function() {
+			var config = {data: {labels: [], datasets: []}};
+			var chart = acquireChart(config);
+
+			expect(chart.data).toBe(config.data);
+
+			chart.data = {labels: [1, 2, 3], datasets: [{data: [4, 5, 6]}]};
+
+			expect(config.data).toBe(chart.data);
+			expect(config.data.labels).toEqual([1, 2, 3]);
+			expect(config.data.datasets[0].data).toEqual([4, 5, 6]);
+
+			config.data = {labels: [7, 8, 9], datasets: [{data: [10, 11, 12]}]};
+
+			expect(chart.data).toBe(config.data);
+			expect(chart.data.labels).toEqual([7, 8, 9]);
+			expect(chart.data.datasets[0].data).toEqual([10, 11, 12]);
+		});
+
 		it('should initialize config with default options', function() {
 			var callback = function() {};
 
