@@ -169,7 +169,7 @@ module.exports = function(Chart) {
 			if (xScale.options.barThickness) {
 				return xScale.options.barThickness;
 			}
-			return ruler.barWidth;
+			return xScale.options.stacked ? ruler.categoryWidth * xScale.options.barPercentage : ruler.barWidth;
 		},
 
 		// Get stack index from the given dataset index accounting for stacks and the fact that not all bars are visible
@@ -200,6 +200,10 @@ module.exports = function(Chart) {
 			var stackIndex = me.getStackIndex(datasetIndex);
 			var leftTick = xScale.getPixelForValue(null, index, datasetIndex, me.chart.isCombo);
 			leftTick -= me.chart.isCombo ? (ruler.tickWidth / 2) : 0;
+
+			if (xScale.options.stacked) {
+				return leftTick + (ruler.categoryWidth / 2) + ruler.categorySpacing;
+			}
 
 			return leftTick +
 				(ruler.barWidth / 2) +
@@ -463,7 +467,7 @@ module.exports = function(Chart) {
 			if (yScale.options.barThickness) {
 				return yScale.options.barThickness;
 			}
-			return ruler.barHeight;
+			return yScale.options.stacked ? ruler.categoryHeight * yScale.options.barPercentage : ruler.barHeight;
 		},
 
 		// Get stack index from the given dataset index accounting for stacks and the fact that not all bars are visible
@@ -529,6 +533,10 @@ module.exports = function(Chart) {
 			var stackIndex = me.getStackIndex(datasetIndex);
 			var topTick = yScale.getPixelForValue(null, index, datasetIndex, me.chart.isCombo);
 			topTick -= me.chart.isCombo ? (ruler.tickHeight / 2) : 0;
+
+			if (yScale.options.stacked) {
+				return topTick + (ruler.categoryHeight / 2) + ruler.categorySpacing;
+			}
 
 			return topTick +
 				(ruler.barHeight / 2) +
