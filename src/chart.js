@@ -56,4 +56,7 @@ plugins.push(require('./plugins/plugin.filler.js')(Chart));
 
 Chart.plugins.register(plugins);
 
-window.Chart = module.exports = Chart;
+module.exports = Chart;
+if (typeof window !== 'undefined') {
+	window.Chart = Chart;
+}
