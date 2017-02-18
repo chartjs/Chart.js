@@ -280,29 +280,26 @@ module.exports = function(Chart) {
 			}
 		},
 
-		draw: function(ease) {
+		draw: function() {
 			var me = this;
 			var chart = me.chart;
 			var meta = me.getMeta();
 			var points = meta.data || [];
-			var easingDecimal = ease || 1;
-			var i, ilen;
+			var area = chart.chartArea;
+			var ilen = points.length;
+			var i = 0;
 
-			// Transition Point Locations
-			for (i=0, ilen=points.length; i<ilen; ++i) {
-				points[i].transition(easingDecimal);
-			}
+			Chart.canvasHelpers.clipArea(chart.ctx, area);
 
-			Chart.canvasHelpers.clipArea(chart.ctx, chart.chartArea);
-			// Transition and Draw the line
 			if (lineEnabled(me.getDataset(), chart.options)) {
-				meta.dataset.transition(easingDecimal).draw();
+				meta.dataset.draw();
 			}
+
 			Chart.canvasHelpers.unclipArea(chart.ctx);
 
 			// Draw the points
-			for (i=0, ilen=points.length; i<ilen; ++i) {
-				points[i].draw(chart.chartArea);
+			for (; i<ilen; ++i) {
+				points[i].draw(area);
 			}
 		},
 

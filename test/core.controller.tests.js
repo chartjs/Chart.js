@@ -616,7 +616,7 @@ describe('Chart', function() {
 
 	describe('plugin.extensions', function() {
 		it ('should notify plugin in correct order', function(done) {
-			var plugin = this.plugin = {id: 'foobar'};
+			var plugin = this.plugin = {};
 			var sequence = [];
 			var hooks = {
 				init: [
@@ -628,6 +628,8 @@ describe('Chart', function() {
 					'beforeLayout',
 					'afterLayout',
 					'beforeDatasetsUpdate',
+					'beforeDatasetUpdate',
+					'afterDatasetUpdate',
 					'afterDatasetsUpdate',
 					'afterUpdate',
 				],
@@ -635,6 +637,8 @@ describe('Chart', function() {
 					'beforeRender',
 					'beforeDraw',
 					'beforeDatasetsDraw',
+					'beforeDatasetDraw',
+					'afterDatasetDraw',
 					'afterDatasetsDraw',
 					'afterDraw',
 					'afterRender',
@@ -656,6 +660,8 @@ describe('Chart', function() {
 			});
 
 			var chart = window.acquireChart({
+				type: 'line',
+				data: {datasets: [{}]},
 				plugins: [plugin],
 				options: {
 					responsive: true
@@ -682,6 +688,29 @@ describe('Chart', function() {
 
 				done();
 			});
+		});
+
+		it('should not notify before/afterDatasetDraw if dataset is hidden', function() {
+			var sequence = [];
+			var plugin = this.plugin = {
+				beforeDatasetDraw: function(chart, args) {
+					sequence.push('before-' + args.index);
+				},
+				afterDatasetDraw: function(chart, args) {
+					sequence.push('after-' + args.index);
+				}
+			};
+
+			window.acquireChart({
+				type: 'line',
+				data: {datasets: [{}, {hidden: true}, {}]},
+				plugins: [plugin]
+			});
+
+			expect(sequence).toEqual([
+				'before-2', 'after-2',
+				'before-0', 'after-0'
+			]);
 		});
 	});
 });
