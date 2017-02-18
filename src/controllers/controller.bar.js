@@ -248,19 +248,20 @@ module.exports = function(Chart) {
 			return yScale.getPixelForValue(value);
 		},
 
-		draw: function(ease) {
+		draw: function() {
 			var me = this;
 			var chart = me.chart;
-			var easingDecimal = ease || 1;
-			var metaData = me.getMeta().data;
+			var elements = me.getMeta().data;
 			var dataset = me.getDataset();
-			var i, len;
+			var ilen = elements.length;
+			var i = 0;
+			var d;
 
 			Chart.canvasHelpers.clipArea(chart.ctx, chart.chartArea);
-			for (i = 0, len = metaData.length; i < len; ++i) {
-				var d = dataset.data[i];
+			for (; i<ilen; ++i) {
+				d = dataset.data[i];
 				if (d !== null && d !== undefined && !isNaN(d)) {
-					metaData[i].transition(easingDecimal).draw();
+					elements[i].draw();
 				}
 			}
 			Chart.canvasHelpers.unclipArea(chart.ctx);

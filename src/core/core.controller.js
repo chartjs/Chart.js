@@ -409,10 +409,32 @@ module.exports = function(Chart) {
 			}
 
 			for (var i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
-				me.getDatasetMeta(i).controller.update();
+				me.updateDataset(i);
 			}
 
 			plugins.notify(me, 'afterDatasetsUpdate');
+		},
+
+		/**
+		 * Updates dataset at index unless a plugin returns `false` to the `beforeDatasetUpdate`
+		 * hook, in which case, plugins will not be called on `afterDatasetUpdate`.
+		 * @private
+		 */
+		updateDataset: function(index) {
+			var me = this;
+			var meta = me.getDatasetMeta(index);
+			var args = {
+				meta: meta,
+				index: index
+			};
+
+			if (plugins.notify(me, 'beforeDatasetUpdate', [args]) === false) {
+				return;
+			}
+
+			meta.controller.update();
+
+			plugins.notify(me, 'afterDatasetUpdate', [args]);
 		},
 
 		render: function(duration, lazy) {
@@ -467,6 +489,8 @@ module.exports = function(Chart) {
 				easingValue = 1;
 			}
 
+			me.transition(easingValue);
+
 			if (plugins.notify(me, 'beforeDraw', [easingValue]) === false) {
 				return;
 			}
@@ -483,9 +507,24 @@ module.exports = function(Chart) {
 			me.drawDatasets(easingValue);
 
 			// Finally draw the tooltip
-			me.tooltip.transition(easingValue).draw();
+			me.tooltip.draw();
 
 			plugins.notify(me, 'afterDraw', [easingValue]);
+		},
+
+		/**
+		 * @private
+		 */
+		transition: function(easingValue) {
+			var me = this;
+
+			for (var i=0, ilen=(me.data.datasets || []).length; i<ilen; ++i) {
+				if (me.isDatasetVisible(i)) {
+					me.getDatasetMeta(i).controller.transition(easingValue);
+				}
+			}
+
+			me.tooltip.transition(easingValue);
 		},
 
 		/**
@@ -500,14 +539,37 @@ module.exports = function(Chart) {
 				return;
 			}
 
-			// Draw each dataset via its respective controller (reversed to support proper line stacking)
-			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
-				if (me.isDatasetVisible(datasetIndex)) {
-					me.getDatasetMeta(datasetIndex).controller.draw(easingValue);
+			// Draw datasets reversed to support proper line stacking
+			for (var i=(me.data.datasets || []).length - 1; i >= 0; --i) {
+				if (me.isDatasetVisible(i)) {
+					me.drawDataset(i, easingValue);
 				}
-			}, me, true);
+			}
 
 			plugins.notify(me, 'afterDatasetsDraw', [easingValue]);
+		},
+
+		/**
+		 * Draws dataset at index unless a plugin returns `false` to the `beforeDatasetDraw`
+		 * hook, in which case, plugins will not be called on `afterDatasetDraw`.
+		 * @private
+		 */
+		drawDataset: function(index, easingValue) {
+			var me = this;
+			var meta = me.getDatasetMeta(index);
+			var args = {
+				meta: meta,
+				index: index,
+				easingValue: easingValue
+			};
+
+			if (plugins.notify(me, 'beforeDatasetDraw', [args]) === false) {
+				return;
+			}
+
+			meta.controller.draw(easingValue);
+
+			plugins.notify(me, 'afterDatasetDraw', [args]);
 		},
 
 		// Get the single element that was clicked on
