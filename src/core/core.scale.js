@@ -521,12 +521,6 @@ module.exports = function(Chart) {
 			if (isHorizontal) {
 				skipRatio = false;
 
-				// Only calculate the skip ratio with the half width of longestRotateLabel if we got an actual rotation
-				// See #2584
-				if (isRotated) {
-					longestRotatedLabel /= 2;
-				}
-
 				if ((longestRotatedLabel + optionTicks.autoSkipPadding) * me.ticks.length > (me.width - (me.paddingLeft + me.paddingRight))) {
 					skipRatio = 1 + Math.floor(((longestRotatedLabel + optionTicks.autoSkipPadding) * me.ticks.length) / (me.width - (me.paddingLeft + me.paddingRight)));
 				}
