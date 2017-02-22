@@ -92,11 +92,11 @@ module.exports = function(Chart) {
 		return canvas;
 	}
 
-	function createEvent(type, chart, x, y, native) {
+	function createEvent(type, chart, x, y, nativeEvent) {
 		return {
 			type: type,
 			chart: chart,
-			native: native || null,
+			native: nativeEvent || null,
 			x: x !== undefined? x : null,
 			y: y !== undefined? y : null,
 		};
