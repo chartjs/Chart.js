@@ -729,7 +729,7 @@ module.exports = function(Chart) {
 		},
 		drawBackground: function(pt, vm, ctx, tooltipSize, opacity) {
 			ctx.fillStyle = mergeOpacity(vm.backgroundColor, opacity);
-			ctx.strokeStyle = vm.borderColor;
+			ctx.strokeStyle = mergeOpacity(vm.borderColor, opacity);
 			ctx.lineWidth = vm.borderWidth;
 			var xAlign = vm.xAlign;
 			var yAlign = vm.yAlign;
