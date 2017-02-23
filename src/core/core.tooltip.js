@@ -785,11 +785,11 @@ module.exports = function(Chart) {
 				me._active = [];
 			} else {
 				me._active = me._chart.getElementsAtEventForMode(e, options.mode, options);
-				if (me._lastActive.length > 0 && me._active.length < 1) {
-					options.callbacks.tooltipClosed.call(me, me)
+				if (me._lastActive.length && !me._active.length) {
+					options.callbacks.tooltipClosed.call(me, me);
 				}
-				if (me._lastActive.length < 1 && me._active.length > 0) {
-					options.callbacks.tooltipOpened.call(me, me)
+				if (!me._lastActive.length && me._active.length) {
+					options.callbacks.tooltipOpened.call(me, me);
 				}
 			}
 
@@ -814,7 +814,7 @@ module.exports = function(Chart) {
 				me.pivot();
 
 				if (model.x !== me._model.x && model.y !== me._model.y && changed){
-					options.callbacks.tooltipChanged.call(me, me)
+					options.callbacks.tooltipChanged.call(me, me);
 				}
 				// See if our tooltip position changed
 				changed |= (model.x !== me._model.x) || (model.y !== me._model.y);
