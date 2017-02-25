@@ -93,7 +93,7 @@ module.exports = function(Chart) {
 		// Any function can be extended by the scale type
 
 		beforeUpdate: function() {
-			helpers.callCallback(this.options.beforeUpdate, [this]);
+			helpers.callback(this.options.beforeUpdate, [this]);
 		},
 		update: function(maxWidth, maxHeight, margins) {
 			var me = this;
@@ -146,13 +146,13 @@ module.exports = function(Chart) {
 
 		},
 		afterUpdate: function() {
-			helpers.callCallback(this.options.afterUpdate, [this]);
+			helpers.callback(this.options.afterUpdate, [this]);
 		},
 
 		//
 
 		beforeSetDimensions: function() {
-			helpers.callCallback(this.options.beforeSetDimensions, [this]);
+			helpers.callback(this.options.beforeSetDimensions, [this]);
 		},
 		setDimensions: function() {
 			var me = this;
@@ -177,29 +177,29 @@ module.exports = function(Chart) {
 			me.paddingBottom = 0;
 		},
 		afterSetDimensions: function() {
-			helpers.callCallback(this.options.afterSetDimensions, [this]);
+			helpers.callback(this.options.afterSetDimensions, [this]);
 		},
 
 		// Data limits
 		beforeDataLimits: function() {
-			helpers.callCallback(this.options.beforeDataLimits, [this]);
+			helpers.callback(this.options.beforeDataLimits, [this]);
 		},
 		determineDataLimits: helpers.noop,
 		afterDataLimits: function() {
-			helpers.callCallback(this.options.afterDataLimits, [this]);
+			helpers.callback(this.options.afterDataLimits, [this]);
 		},
 
 		//
 		beforeBuildTicks: function() {
-			helpers.callCallback(this.options.beforeBuildTicks, [this]);
+			helpers.callback(this.options.beforeBuildTicks, [this]);
 		},
 		buildTicks: helpers.noop,
 		afterBuildTicks: function() {
-			helpers.callCallback(this.options.afterBuildTicks, [this]);
+			helpers.callback(this.options.afterBuildTicks, [this]);
 		},
 
 		beforeTickToLabelConversion: function() {
-			helpers.callCallback(this.options.beforeTickToLabelConversion, [this]);
+			helpers.callback(this.options.beforeTickToLabelConversion, [this]);
 		},
 		convertTicksToLabels: function() {
 			var me = this;
@@ -208,13 +208,13 @@ module.exports = function(Chart) {
 			me.ticks = me.ticks.map(tickOpts.userCallback || tickOpts.callback);
 		},
 		afterTickToLabelConversion: function() {
-			helpers.callCallback(this.options.afterTickToLabelConversion, [this]);
+			helpers.callback(this.options.afterTickToLabelConversion, [this]);
 		},
 
 		//
 
 		beforeCalculateTickRotation: function() {
-			helpers.callCallback(this.options.beforeCalculateTickRotation, [this]);
+			helpers.callback(this.options.beforeCalculateTickRotation, [this]);
 		},
 		calculateTickRotation: function() {
 			var me = this;
@@ -257,13 +257,13 @@ module.exports = function(Chart) {
 			me.labelRotation = labelRotation;
 		},
 		afterCalculateTickRotation: function() {
-			helpers.callCallback(this.options.afterCalculateTickRotation, [this]);
+			helpers.callback(this.options.afterCalculateTickRotation, [this]);
 		},
 
 		//
 
 		beforeFit: function() {
-			helpers.callCallback(this.options.beforeFit, [this]);
+			helpers.callback(this.options.beforeFit, [this]);
 		},
 		fit: function() {
 			var me = this;
@@ -381,7 +381,7 @@ module.exports = function(Chart) {
 		},
 
 		afterFit: function() {
-			helpers.callCallback(this.options.afterFit, [this]);
+			helpers.callback(this.options.afterFit, [this]);
 		},
 
 		// Shared Methods
