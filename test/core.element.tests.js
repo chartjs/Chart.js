@@ -16,11 +16,9 @@ describe('Core element tests', function() {
 
 		// First transition clones model into view
 		element.transition(0.25);
-		expect(element._view).toEqual(element._model);
-		expect(element._start).toEqual(element._model); // also cloned
 
+		expect(element._view).toEqual(element._model);
 		expect(element._view.objectProp).toBe(element._model.objectProp); // not cloned
-		expect(element._start.objectProp).toEqual(element._model.objectProp); // not cloned
 
 		element._model.numberProp = 100;
 		element._model.numberProp2 = 250;
@@ -30,6 +28,7 @@ describe('Core element tests', function() {
 		element._model.colorProp = 'rgb(255, 255, 0)';
 
 		element.transition(0.25);
+
 		expect(element._view).toEqual({
 			numberProp: 25,
 			numberProp2: 137.5,
