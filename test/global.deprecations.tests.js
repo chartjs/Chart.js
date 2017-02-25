@@ -39,6 +39,53 @@ describe('Deprecations', function() {
 				expect(proxy.width).toBe(140);
 			});
 		});
+
+		describe('Chart.Animation.animationObject', function() {
+			it('should be defined and an alias of Chart.Animation', function(done) {
+				var animation = null;
+
+				acquireChart({
+					options: {
+						animation: {
+							duration: 50,
+							onComplete: function(arg) {
+								animation = arg;
+							}
+						}
+					}
+				});
+
+				setTimeout(function() {
+					expect(animation).not.toBeNull();
+					expect(animation.animationObject).toBeDefined();
+					expect(animation.animationObject).toBe(animation);
+					done();
+				}, 200);
+			});
+		});
+
+		describe('Chart.Animation.chartInstance', function() {
+			it('should be defined and an alias of Chart.Animation.chart', function(done) {
+				var animation = null;
+				var chart = acquireChart({
+					options: {
+						animation: {
+							duration: 50,
+							onComplete: function(arg) {
+								animation = arg;
+							}
+						}
+					}
+				});
+
+				setTimeout(function() {
+					expect(animation).not.toBeNull();
+					expect(animation.chartInstance).toBeDefined();
+					expect(animation.chartInstance).toBe(chart);
+					done();
+				}, 200);
+			});
+		});
 	});
 
 	describe('Version 2.5.0', function() {

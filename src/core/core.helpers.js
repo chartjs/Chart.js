@@ -957,9 +957,9 @@ module.exports = function(Chart) {
 
 		return true;
 	};
-	helpers.callCallback = function(fn, args, _tArg) {
+	helpers.callback = function(fn, args, thisArg) {
 		if (fn && typeof fn.call === 'function') {
-			fn.apply(_tArg, args);
+			fn.apply(thisArg, args);
 		}
 	};
 	helpers.getHoverColor = function(colorValue) {
@@ -968,4 +968,12 @@ module.exports = function(Chart) {
 			colorValue :
 			helpers.color(colorValue).saturate(0.5).darken(0.1).rgbString();
 	};
+
+	/**
+	 * Provided for backward compatibility, use Chart.helpers#callback instead.
+	 * @function Chart.helpers#callCallback
+	 * @deprecated since version 2.6.0
+	 * @todo remove at version 3
+	 */
+	helpers.callCallback = helpers.callback;
 };

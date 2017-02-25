@@ -445,36 +445,34 @@ module.exports = function(Chart) {
 			}
 
 			var animationOptions = me.options.animation;
-			var onComplete = function() {
+			var onComplete = function(animation) {
 				plugins.notify(me, 'afterRender');
-				var callback = animationOptions && animationOptions.onComplete;
-				if (callback && callback.call) {
-					callback.call(me);
-				}
+				helpers.callback(animationOptions && animationOptions.onComplete, [animation], me);
 			};
 
 			if (animationOptions && ((typeof duration !== 'undefined' && duration !== 0) || (typeof duration === 'undefined' && animationOptions.duration !== 0))) {
-				var animation = new Chart.Animation();
-				animation.numSteps = (duration || animationOptions.duration) / 16.66; // 60 fps
-				animation.easing = animationOptions.easing;
+				var animation = new Chart.Animation({
+					numSteps: (duration || animationOptions.duration) / 16.66, // 60 fps
+					easing: animationOptions.easing,
 
-				// render function
-				animation.render = function(chart, animationObject) {
-					var easingFunction = helpers.easingEffects[animationObject.easing];
-					var stepDecimal = animationObject.currentStep / animationObject.numSteps;
-					var easeDecimal = easingFunction(stepDecimal);
+					render: function(chart, animationObject) {
+						var easingFunction = helpers.easingEffects[animationObject.easing];
+						var currentStep = animationObject.currentStep;
+						var stepDecimal = currentStep / animationObject.numSteps;
 
-					chart.draw(easeDecimal, stepDecimal, animationObject.currentStep);
-				};
+						chart.draw(easingFunction(stepDecimal), stepDecimal, currentStep);
+					},
 
-				// user events
-				animation.onAnimationProgress = animationOptions.onProgress;
-				animation.onAnimationComplete = onComplete;
+					onAnimationProgress: animationOptions.onProgress,
+					onAnimationComplete: onComplete
+				});
 
 				Chart.animationService.addAnimation(me, animation, duration, lazy);
 			} else {
 				me.draw();
-				onComplete();
+
+				// See https://github.com/chartjs/Chart.js/issues/3781
+				onComplete(new Chart.Animation({numSteps: 0, chart: me}));
 			}
 
 			return me;
