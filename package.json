@@ -46,7 +46,7 @@
     "main": "Chart.js"
   },
   "dependencies": {
-    "chartjs-color": "~2.0.0",
+    "chartjs-color": "^2.1.0",
     "moment": "^2.10.6"
   }
 }

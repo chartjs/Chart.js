@@ -911,19 +911,21 @@ module.exports = function(Chart) {
 		ctx.quadraticCurveTo(x, y, x + radius, y);
 		ctx.closePath();
 	};
-	helpers.color = function(c) {
-		if (!color) {
+
+	helpers.color = !color?
+		function(value) {
 			console.error('Color.js not found!');
-			return c;
-		}
+			return value;
+		} :
+		function(value) {
+			/* global CanvasGradient */
+			if (value instanceof CanvasGradient) {
+				value = Chart.defaults.global.defaultColor;
+			}
 
-		/* global CanvasGradient */
-		if (c instanceof CanvasGradient) {
-			return color(Chart.defaults.global.defaultColor);
-		}
+			return color(value);
+		};
 
-		return color(c);
-	};
 	helpers.isArray = Array.isArray?
 		function(obj) {
 			return Array.isArray(obj);
