@@ -518,6 +518,13 @@ module.exports = function(Chart) {
 
 			var itemsToDraw = [];
 
+			var countTicks = 0;
+			for (var i = 0; i < me.ticks.length; i++) {
+				if (me.ticks[i] !== undefined && me.ticks[i] !== null) {
+					++countTicks;
+				}
+			}
+
 			if (isHorizontal) {
 				skipRatio = false;
 
@@ -527,14 +534,14 @@ module.exports = function(Chart) {
 					longestRotatedLabel /= 2;
 				}
 
-				if ((longestRotatedLabel + optionTicks.autoSkipPadding) * me.ticks.length > (me.width - (me.paddingLeft + me.paddingRight))) {
-					skipRatio = 1 + Math.floor(((longestRotatedLabel + optionTicks.autoSkipPadding) * me.ticks.length) / (me.width - (me.paddingLeft + me.paddingRight)));
+				if ((longestRotatedLabel + optionTicks.autoSkipPadding) * countTicks > (me.width - (me.paddingLeft + me.paddingRight))) {
+					skipRatio = 1 + Math.floor(((longestRotatedLabel + optionTicks.autoSkipPadding) * countTicks) / (me.width - (me.paddingLeft + me.paddingRight)));
 				}
 
 				// if they defined a max number of optionTicks,
 				// increase skipRatio until that number is met
-				if (maxTicks && me.ticks.length > maxTicks) {
-					while (!skipRatio || me.ticks.length / (skipRatio || 1) > maxTicks) {
+				if (maxTicks && countTicks > maxTicks) {
+					while (!skipRatio || countTicks / (skipRatio || 1) > maxTicks) {
 						if (!skipRatio) {
 							skipRatio = 1;
 						}
