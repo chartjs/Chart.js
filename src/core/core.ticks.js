@@ -116,7 +116,7 @@ module.exports = function(Chart) {
 
 				if (tickVal === 0) {
 					exp = Math.floor(helpers.log10(dataRange.minNotZero));
-					significand = Math.floor(dataRange.minNotZero / Math.pow(10, exp));
+					significand = 1;
 
 					ticks.push(tickVal);
 					tickVal = significand * Math.pow(10, exp);

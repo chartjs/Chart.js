@@ -182,6 +182,7 @@ module.exports = function(Chart) {
 			var pixel;
 
 			var start = me.start;
+			var end = me.end;
 			var newVal = +me.getRightValue(value);
 			var range;
 			var opts = me.options;
@@ -198,27 +199,21 @@ module.exports = function(Chart) {
 			} else {
 				// Bottom - top since pixels increase downward on a screen
 				innerDimension = me.height;
-				if (start === 0 && !tickOpts.reverse) {
-					range = helpers.log10(me.end) - helpers.log10(me.minNotZero);
-					if (newVal === start) {
-						pixel = me.bottom;
-					} else if (newVal === me.minNotZero) {
-						pixel = me.bottom - innerDimension * 0.02;
+				if (start === 0 || end === 0) {
+					var zero = tickOpts.reverse ? me.top : me.bottom;
+					var min = Math.pow(10, Math.floor(helpers.log10(me.minNotZero)));
+					var max = tickOpts.reverse ? start : end;
+					range = helpers.log10(max) - Math.floor(helpers.log10(me.minNotZero));
+					var diff = innerDimension * 0.04 + (innerDimension * 0.96/ range * (helpers.log10(newVal) - Math.floor(helpers.log10(me.minNotZero))));
+					if (newVal === 0) {
+						pixel = zero;
+					} else if (newVal === min) {
+						pixel = tickOpts.reverse ? zero + innerDimension * 0.04 : zero - innerDimension * 0.04;
 					} else {
-						pixel = me.bottom - innerDimension * 0.02 - (innerDimension * 0.98/ range * (helpers.log10(newVal)-helpers.log10(me.minNotZero)));
-					}
-				} else if (me.end === 0 && tickOpts.reverse) {
-					range = helpers.log10(me.start) - helpers.log10(me.minNotZero);
-					if (newVal === me.end) {
-						pixel = me.top;
-					} else if (newVal === me.minNotZero) {
-						pixel = me.top + innerDimension * 0.02;
-					} else {
-						pixel = me.top + innerDimension * 0.02 + (innerDimension * 0.98/ range * (helpers.log10(newVal)-helpers.log10(me.minNotZero)));
+						pixel = tickOpts.reverse ? zero + diff : zero - diff;
 					}
 				} else {
 					range = helpers.log10(me.end) - helpers.log10(start);
-					innerDimension = me.height;
 					pixel = me.bottom - (innerDimension / range * (helpers.log10(newVal) - helpers.log10(start)));
 				}
 			}
