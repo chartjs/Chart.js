@@ -44,7 +44,8 @@ module.exports = function(Chart) {
 			callback: function(label) {
 				return label;
 			}
-		}
+		},
+		backgroundColors: null
 	};
 
 	function getValueCount(scale) {
@@ -253,6 +254,26 @@ module.exports = function(Chart) {
 				ctx.stroke();
 				ctx.closePath();
 			}
+
+			if (opts.backgroundColors && opts.backgroundColors.length === scale.getValueCount()) {
+				var outerPointPosition = scale.getPointPosition(i, outerDistance);
+				var previousOuterPointPosition = this.getPointPosition(i === 0 ? getValueCount(scale) - 1 : i - 1, outerDistance);
+				var nextOuterPointPosition = this.getPointPosition(i === getValueCount(scale) - 1 ? 0 : i + 1, outerDistance);
+
+				// Each color starts from the midpoint of the previous scale entry to the midpoint of the next
+				var previousOuterHalfway = {x: (previousOuterPointPosition.x + outerPointPosition.x) / 2, y: (previousOuterPointPosition.y + outerPointPosition.y) / 2};
+				var nextOuterHalfway = {x: (outerPointPosition.x + nextOuterPointPosition.x) / 2, y: (outerPointPosition.y + nextOuterPointPosition.y) / 2};
+
+				ctx.beginPath();
+				ctx.moveTo(scale.xCenter, scale.yCenter);
+				ctx.lineTo(previousOuterHalfway.x, previousOuterHalfway.y);
+				ctx.lineTo(outerPointPosition.x, outerPointPosition.y);
+				ctx.lineTo(nextOuterHalfway.x, nextOuterHalfway.y);
+				ctx.fillStyle = opts.backgroundColors[i];
+				ctx.fill();
+				ctx.closePath();
+			}
+
 			// Extra 3px out for some label spacing
 			var pointLabelPosition = scale.getPointPosition(i, outerDistance + 5);
 
