@@ -166,10 +166,20 @@ module.exports = function(Chart) {
 			var me = this;
 			var meta = me.getMeta();
 			var xScale = me.getScaleForId(meta.xAxisID);
+			var maxBarThickness = xScale.options.maxBarThickness;
+			var barWidth;
+
 			if (xScale.options.barThickness) {
 				return xScale.options.barThickness;
 			}
-			return xScale.options.stacked ? ruler.categoryWidth * xScale.options.barPercentage : ruler.barWidth;
+
+			barWidth = xScale.options.stacked ? ruler.categoryWidth * xScale.options.barPercentage : ruler.barWidth;
+
+			if (maxBarThickness && (barWidth > maxBarThickness)) {
+				return maxBarThickness;
+			}
+			
+			return barWidth;
 		},
 
 		// Get stack index from the given dataset index accounting for stacks and the fact that not all bars are visible
