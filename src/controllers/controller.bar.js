@@ -168,17 +168,13 @@ module.exports = function(Chart) {
 			var xScale = me.getScaleForId(meta.xAxisID);
 			var maxBarThickness = xScale.options.maxBarThickness;
 			var barWidth;
-
 			if (xScale.options.barThickness) {
 				return xScale.options.barThickness;
 			}
-
 			barWidth = xScale.options.stacked ? ruler.categoryWidth * xScale.options.barPercentage : ruler.barWidth;
-
 			if (maxBarThickness && (barWidth > maxBarThickness)) {
 				return maxBarThickness;
 			}
-			
 			return barWidth;
 		},
 
