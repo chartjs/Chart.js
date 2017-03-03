@@ -219,13 +219,16 @@ module.exports = function(Chart) {
 		calculateTickRotation: function() {
 			var me = this;
 			var context = me.ctx;
-			var tickOpts = me.options.ticks;
+			var options = me.options;
+			var tickOpts = options.ticks;
+			var isNotTimeScale = options.type !== 'time';
+			var maxRotation = tickOpts.maxRotation;
+			var maxLabelRotationIsNotZero = maxRotation !== 0;
 
 			// Get the width of each grid by calculating the difference
 			// between x offsets between 0 and 1.
 			var tickFont = parseFontOptions(tickOpts);
 			context.font = tickFont.font;
-
 			var labelRotation = tickOpts.minRotation || 0;
 
 			if (me.options.display && me.isHorizontal()) {
@@ -233,9 +236,23 @@ module.exports = function(Chart) {
 				var labelWidth = originalLabelWidth;
 				var cosRotation;
 				var sinRotation;
+				// Defined Arbitrary where greater than 50 is considered long label
+				var isLongLabel = labelWidth > 50;
+				// Aribtrary label rotation for long labels
+				var ROTATE_DEG_LONG_LABEL = 45;
 
 				// Allow 3 pixels x2 padding either side for label readability
 				var tickWidth = me.getPixelForTick(1) - me.getPixelForTick(0) - 6;
+
+				if (isLongLabel && maxLabelRotationIsNotZero && isNotTimeScale) {
+					var exceedMaxRotationLimit = (labelRotation + ROTATE_DEG_LONG_LABEL) > maxRotation;
+					/* Use defined rotate value, unless it exceeds max rotation, then increment by maxRotation  */
+					var rotateValue = exceedMaxRotationLimit ? maxRotation : ROTATE_DEG_LONG_LABEL;
+
+					/* Apply rotation */
+					labelRotation += rotateValue;
+					me._isRotatedLongLabel = true;
+				}
 
 				// Max label rotation can be set or default to 90 - also act as a loop counter
 				while (labelWidth > tickWidth && labelRotation < tickOpts.maxRotation) {
@@ -512,6 +529,7 @@ module.exports = function(Chart) {
 			var labelRotationRadians = helpers.toRadians(me.labelRotation);
 			var cosRotation = Math.cos(labelRotationRadians);
 			var longestRotatedLabel = me.longestLabelWidth * cosRotation;
+			var isRotatedLongLabel = me._isRotatedLongLabel;
 
 			// Make sure we draw text in the correct color and font
 			context.fillStyle = tickFontColor;
@@ -536,7 +554,7 @@ module.exports = function(Chart) {
 					}
 				}
 
-				if (!useAutoskipper) {
+				if (!useAutoskipper || isRotatedLongLabel) {
 					skipRatio = false;
 				}
 			}
