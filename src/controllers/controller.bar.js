@@ -166,10 +166,16 @@ module.exports = function(Chart) {
 			var me = this;
 			var meta = me.getMeta();
 			var xScale = me.getScaleForId(meta.xAxisID);
-			if (xScale.options.barThickness) {
-				return xScale.options.barThickness;
+			var options = xScale.options;
+			var maxBarThickness = options.maxBarThickness || Infinity;
+			var barWidth;
+
+			if (options.barThickness) {
+				return options.barThickness;
 			}
-			return xScale.options.stacked ? ruler.categoryWidth * xScale.options.barPercentage : ruler.barWidth;
+
+			barWidth = options.stacked ? ruler.categoryWidth * options.barPercentage : ruler.barWidth;
+			return Math.min(barWidth, maxBarThickness);
 		},
 
 		// Get stack index from the given dataset index accounting for stacks and the fact that not all bars are visible
@@ -465,10 +471,16 @@ module.exports = function(Chart) {
 			var me = this;
 			var meta = me.getMeta();
 			var yScale = me.getScaleForId(meta.yAxisID);
-			if (yScale.options.barThickness) {
-				return yScale.options.barThickness;
+			var options = yScale.options;
+			var maxBarThickness = options.maxBarThickness || Infinity;
+			var barHeight;
+
+			if (options.barThickness) {
+				return options.barThickness;
 			}
-			return yScale.options.stacked ? ruler.categoryHeight * yScale.options.barPercentage : ruler.barHeight;
+
+			barHeight = options.stacked ? ruler.categoryHeight * options.barPercentage : ruler.barHeight;
+			return Math.min(barHeight, maxBarThickness);
 		},
 
 		// Get stack index from the given dataset index accounting for stacks and the fact that not all bars are visible
