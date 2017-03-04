@@ -101,6 +101,7 @@ display | Boolean | true | If true, show the scale.
 id | String | "x-axis-0" | Id of the axis so that data can bind to it
 stacked | Boolean | false | If true, bars are stacked on the x-axis
 barThickness | Number | | Manually set width of each bar in pixels. If not set, the bars are sized automatically.
+maxBarThickness | Number | | Set this to ensure that the automatically sized bars are not sized thicker than this. Only works if barThickness is not set (automatic sizing is enabled).
 categoryPercentage | Number | 0.8 | Percent (0-1) of the available width (the space between the gridlines for small datasets) for each data-point to use for the bars. [Read More](#bar-chart-barpercentage-vs-categorypercentage)
 barPercentage | Number | 0.9 | Percent (0-1) of the available width each bar should be within the category percentage. 1.0 will take the whole category width and put the bars right next to each other. [Read More](#bar-chart-barpercentage-vs-categorypercentage)
 gridLines | Object |  [See Scales](#scales) |
@@ -113,6 +114,7 @@ display | Boolean | true | If true, show the scale.
 id | String | "y-axis-0" | Id of the axis so that data can bind to it.
 stacked | Boolean | false | If true, bars are stacked on the y-axis
 barThickness | Number | | Manually set height of each bar in pixels. If not set, the bars are sized automatically.
+maxBarThickness | Number | | Set this to ensure that the automatically sized bars are not sized thicker than this. Only works if barThickness is not set (automatic sizing is enabled).
 
 You can override these for your `Chart` instance by passing a second argument into the `Bar` method as an object with the keys you want to override.
 
