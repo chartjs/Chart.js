@@ -1,12 +1,14 @@
 module.exports = function(config) {
 	var configuration = {
 		browsers: ['Firefox'],
-
 		frameworks: ['browserify', 'jasmine'],
+		reporters: ['progress', 'coverage'],
 
 		preprocessors: {
-			'src/**/*.js': ['browserify']
+			'./test/jasmine.index.js': ['browserify'],
+			'./src/**/*.js': ['browserify']
 		},
+
 		browserify: {
 			debug: true,
 			transform: [['browserify-istanbul', {
@@ -15,8 +17,7 @@ module.exports = function(config) {
 				}
 			}]]
 		},
-		
-		reporters: ['progress', 'coverage'],
+
 		coverageReporter: {
 			dir: 'coverage/',
 			reporters: [
