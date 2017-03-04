@@ -509,6 +509,8 @@ module.exports = function(Chart) {
 
 	// Register the legend plugin
 	Chart.plugins.register({
+		id: 'legend',
+
 		beforeInit: function(chart) {
 			var legendOpts = chart.options.legend;
 
@@ -518,17 +520,18 @@ module.exports = function(Chart) {
 		},
 		beforeUpdate: function(chart) {
 			var legendOpts = chart.options.legend;
+			var legend = chart.legend;
 
 			if (legendOpts) {
 				legendOpts = helpers.configMerge(Chart.defaults.global.legend, legendOpts);
 
-				if (chart.legend) {
-					chart.legend.options = legendOpts;
+				if (legend) {
+					legend.options = legendOpts;
 				} else {
 					createNewLegendAndAttach(chart, legendOpts);
 				}
-			} else {
-				Chart.layoutService.removeBox(chart, chart.legend);
+			} else if (legend) {
+				Chart.layoutService.removeBox(chart, legend);
 				delete chart.legend;
 			}
 		},

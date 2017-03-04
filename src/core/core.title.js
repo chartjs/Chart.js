@@ -18,7 +18,6 @@ module.exports = function(Chart) {
 
 	var noop = helpers.noop;
 	Chart.Title = Chart.Element.extend({
-
 		initialize: function(config) {
 			var me = this;
 			helpers.extend(me, config);
@@ -198,6 +197,8 @@ module.exports = function(Chart) {
 
 	// Register the title plugin
 	Chart.plugins.register({
+		id: 'title',
+
 		beforeInit: function(chart) {
 			var titleOpts = chart.options.title;
 
@@ -207,17 +208,18 @@ module.exports = function(Chart) {
 		},
 		beforeUpdate: function(chart) {
 			var titleOpts = chart.options.title;
+			var titleBlock = chart.titleBlock;
 
 			if (titleOpts) {
 				titleOpts = helpers.configMerge(Chart.defaults.global.title, titleOpts);
 
-				if (chart.titleBlock) {
-					chart.titleBlock.options = titleOpts;
+				if (titleBlock) {
+					titleBlock.options = titleOpts;
 				} else {
 					createNewTitleBlockAndAttach(chart, titleOpts);
 				}
-			} else {
-				Chart.layoutService.removeBox(chart, chart.titleBlock);
+			} else if (titleBlock) {
+				Chart.layoutService.removeBox(chart, titleBlock);
 				delete chart.titleBlock;
 			}
 		}
