@@ -74,10 +74,10 @@ module.exports = function(Chart) {
 		 * @param {Object} layoutItem - the item to remove from the layout
 		 */
 		removeBox: function(chart, layoutItem) {
-			if (!chart.boxes) {
-				return;
+			var index = chart.boxes? chart.boxes.indexOf(layoutItem) : -1;
+			if (index !== -1) {
+				chart.boxes.splice(index, 1);
 			}
-			chart.boxes.splice(chart.boxes.indexOf(layoutItem), 1);
 		},
 
 		/**
