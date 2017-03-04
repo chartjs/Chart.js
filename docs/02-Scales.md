@@ -118,7 +118,7 @@ var chart = new Chart(ctx, {
 
 ### Category Scale
 
-The category scale will be familiar to those who have used v1.0. Labels are drawn from one of the label arrays included in the chart data. If only `data.labels` is defined, this will be used. If `data.xLabels` is defined and the axis is horizontal, this will be used. Similarly, if `data.yLabels` is defined and the axis is vertical, this property will be used. Using both `xLabels` and `yLabels` together can create a chart that uses strings for both the X and Y axes.
+The category scale will be familiar to those who have used v1.0. Labels are drawn from one of the label arrays included in the chart data, or set in the scale options. If `options.labels` is defined, this will take priority and be used. Otherwise, if only `data.labels` is defined, this will be used. If `data.xLabels` is defined and the axis is horizontal, this will be used. Similarly, if `data.yLabels` is defined and the axis is vertical, this property will be used. Using both `xLabels` and `yLabels` together can create a chart that uses strings for both the X and Y axes.
 
 #### Configuration Options
 
@@ -126,6 +126,7 @@ The category scale has the following additional options that can be set.
 
 Name | Type | Default | Description
 --- | --- | --- | ---
+labels | Array[String] | - | An array of labels to display.
 ticks.min | String | - | The minimum item to display. Must be a value in the `labels` array
 ticks.max | String | - | The maximum item to display. Must be a value in the `labels` array
 

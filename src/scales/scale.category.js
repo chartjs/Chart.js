@@ -16,7 +16,7 @@ module.exports = function(Chart) {
 		*/
 		getLabels: function() {
 			var data = this.chart.data;
-			return (this.isHorizontal() ? data.xLabels : data.yLabels) || data.labels;
+			return this.options.labels || (this.isHorizontal() ? data.xLabels : data.yLabels) || data.labels;
 		},
 		// Implement this so that
 		determineDataLimits: function() {
@@ -54,9 +54,10 @@ module.exports = function(Chart) {
 			var data = me.chart.data;
 			var isHorizontal = me.isHorizontal();
 
-			if (data.yLabels && !isHorizontal) {
+			if ((me.options.labels || data.yLabels) && !isHorizontal) {
 				return me.getRightValue(data.datasets[datasetIndex].data[index]);
 			}
+
 			return me.ticks[index - me.minIndex];
 		},
 
