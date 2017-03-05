@@ -1,3 +1,40 @@
+/* global __karma__ */
+
+function loadJSON(url, callback) {
+	var request = new XMLHttpRequest();
+	request.onreadystatechange = function() {
+		if (request.readyState === 4) {
+			return callback(JSON.parse(request.responseText));
+		}
+	};
+
+	request.overrideMimeType('application/json');
+	request.open('GET', url, true);
+	request.send(null);
+}
+
+function createCanvas(w, h) {
+	var canvas = document.createElement('canvas');
+	canvas.width = w;
+	canvas.height = h;
+	return canvas;
+}
+
+function readImageData(url, callback) {
+	var image = new Image();
+
+	image.onload = function() {
+		var h = image.height;
+		var w = image.width;
+		var canvas = createCanvas(w, h);
+		var ctx = canvas.getContext('2d');
+		ctx.drawImage(image, 0, 0, w, h);
+		callback(ctx.getImageData(0, 0, w, h));
+	};
+
+	image.src = url;
+}
+
 /**
  * Injects a new canvas (and div wrapper) and creates teh associated Chart instance
  * using the given config. Additional options allow tweaking elements generation.
@@ -69,8 +106,53 @@ function injectCSS(css) {
 	head.appendChild(style);
 }
 
+function specFromFixture(description, inputs) {
+	it(inputs.json, function(done) {
+		loadJSON(inputs.json, function(json) {
+			var chart = acquireChart(json.config, json.options);
+			if (!inputs.png) {
+				fail('Missing PNG comparison file for ' + inputs.json);
+				if (!json.debug) {
+					releaseChart(chart);
+				}
+				done();
+			}
+
+			readImageData(inputs.png, function(expected) {
+				expect(chart).toEqualImageData(expected, json);
+				releaseChart(chart);
+				done();
+			});
+		});
+	});
+}
+
+function specsFromFixtures(path) {
+	var regex = new RegExp('(^/base/test/fixtures/' + path + '.+)\\.(png|json)');
+	var inputs = {};
+
+	Object.keys(__karma__.files || {}).forEach(function(file) {
+		var matches = file.match(regex);
+		var name = matches && matches[1];
+		var type = matches && matches[2];
+
+		if (name && type) {
+			inputs[name] = inputs[name] || {};
+			inputs[name][type] = file;
+		}
+	});
+
+	return function() {
+		Object.keys(inputs).forEach(function(key) {
+			specFromFixture(key, inputs[key]);
+		});
+	};
+}
+
 module.exports = {
 	injectCSS: injectCSS,
+	createCanvas: createCanvas,
 	acquireChart: acquireChart,
-	releaseChart: releaseChart
+	releaseChart: releaseChart,
+	specsFromFixtures: specsFromFixtures
 };

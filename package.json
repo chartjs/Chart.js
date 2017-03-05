@@ -37,6 +37,7 @@
     "karma-jasmine": "^1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
     "merge-stream": "^1.0.0",
+    "pixelmatch": "^4.0.2",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.7.0",
     "yargs": "^5.0.0"
