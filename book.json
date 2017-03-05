@@ -2,7 +2,7 @@
   "root": "./docs",
   "author": "chartjs",
   "gitbook": "3.2.2",
-  "plugins": ["anchorjs"],
+  "plugins": ["anchorjs", "chartjs"],
   "pluginsConfig": {
     "anchorjs": {
       "icon": "#",
