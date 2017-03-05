@@ -171,6 +171,8 @@ function validHTMLTask() {
 
 function startTest() {
   return [
+    {pattern: './test/fixtures/**/*.json', included: false},
+    {pattern: './test/fixtures/**/*.png', included: false},
     './node_modules/moment/min/moment.min.js',
     './test/jasmine.index.js',
     './src/**/*.js',
