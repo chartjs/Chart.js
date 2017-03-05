@@ -37,6 +37,8 @@ var utils = require('./jasmine.utils');
 			'position: absolute' +
 		'}');
 
+	jasmine.specsFromFixtures = utils.specsFromFixtures;
+
 	beforeEach(function() {
 		jasmine.addMatchers(matchers);
 	});
