@@ -4,7 +4,7 @@ The logarithmic scale is use to chart numerical data. It can be placed on either
 
 ## Tick Configuration Options
 
-The following options are provided by the logarithmic scale. They are all located in the `ticks` sub options.
+The following options are provided by the logarithmic scale. They are all located in the `ticks` sub options. These options extend the [common tick configuration](README.md#tick-configuration).
 
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------

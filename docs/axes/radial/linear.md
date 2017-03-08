@@ -8,8 +8,15 @@ The following additional configuration options are provided by the radial linear
 
 The axis has configuration properties for ticks, angle lines (line that appear in a radar chart outward from the center), pointLabels (labels around the edge in a radar chart). The following sections define each of the properties in those sections.
 
+| Name | Type | Description
+| ---- | ---- | -----------
+| `angleLines` | `Object` | Angle line configuration. [more...](#angle-line-options)
+| `gridLines` | `Object` | Grid line configuration. [more...](../styling.md#grid-line-configuration)
+| `pointLabels` | `Object` | Point label configuration. [more...](#point-label-options)
+| `ticks` | `Object` | Tick configuration. [more...](#tick-options)
+
 ## Tick Options
-The following options are provided by the linear scale. They are all located in the `ticks` sub options.
+The following options are provided by the linear scale. They are all located in the `ticks` sub options. The [common tick configuration](../styling.md#tick-configuration) options are supported by this axis.
 
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------

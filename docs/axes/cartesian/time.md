@@ -4,7 +4,7 @@ The time scale is used to display times and dates. When building its ticks, it w
 
 ## Configuration Options
 
-The following options are provided by the time scale. They are all located in the `time` sub options.
+The following options are provided by the time scale. They are all located in the `time` sub options. These options extend the [common tick configuration](README.md#tick-configuration).
 
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------

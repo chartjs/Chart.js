@@ -4,7 +4,7 @@ The category scale will be familiar to those who have used v1.0. Labels are draw
 
 ## Tick Configuration Options
 
-The category scale provides the following options for configuring tick marks. They are nested in the `ticks` sub object.
+The category scale provides the following options for configuring tick marks. They are nested in the `ticks` sub object. These options extend the [common tick configuration](README.md#tick-configuration).
 
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
