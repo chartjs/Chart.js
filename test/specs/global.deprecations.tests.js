@@ -86,6 +86,27 @@ describe('Deprecations', function() {
 				}, 200);
 			});
 		});
+
+		describe('Chart.elements.Line: fill option', function() {
+			it('should decode "zero", "top" and "bottom" as "origin", "start" and "end"', function() {
+				var chart = window.acquireChart({
+					type: 'line',
+					data: {
+						datasets: [
+							{fill: 'zero'},
+							{fill: 'bottom'},
+							{fill: 'top'},
+						]
+					}
+				});
+
+				['origin', 'start', 'end'].forEach(function(expected, index) {
+					var meta = chart.getDatasetMeta(index);
+					expect(meta.$filler).toBeDefined();
+					expect(meta.$filler.fill).toBe(expected);
+				});
+			});
+		});
 	});
 
 	describe('Version 2.5.0', function() {

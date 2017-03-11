@@ -8,13 +8,13 @@
                 "data": [null, null, 2, 3, 4, -4, -2, 1, 0]
             }, {
                 "backgroundColor": "rgba(0, 192, 0, 0.25)",
-                "data": [6, 2, null, 4, 5, null, null, 2, 1]
+                "data": [5.5, 2, null, 4, 5, null, null, 2, 1]
             }, {
                 "backgroundColor": "rgba(192, 0, 0, 0.25)",
                 "data": [7, 3, 4, 5, 6, 1, 4, null, null]
             }, {
-                "backgroundColor": "rgba(0, 64, 192, 0.25)",
-                "data": [8, 7, 6, -6, -4, -6, 4, 5, 8]
+                "backgroundColor": "rgba(0, 0, 192, 0.25)",
+                "data": [8, 7, 6.5, -6, -4, -6, 4, 5, 8]
             }]
         },
         "options": {
@@ -40,7 +40,7 @@
                 },
                 "line": {
                     "borderColor": "transparent",
-                    "fill": "zero",
+                    "fill": "end",
                     "tension": 0
                 }
             }

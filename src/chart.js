@@ -49,4 +49,11 @@ require('./charts/Chart.PolarArea')(Chart);
 require('./charts/Chart.Radar')(Chart);
 require('./charts/Chart.Scatter')(Chart);
 
+// Loading built-it plugins
+var plugins = [];
+
+plugins.push(require('./plugins/plugin.filler.js')(Chart));
+
+Chart.plugins.register(plugins);
+
 window.Chart = module.exports = Chart;

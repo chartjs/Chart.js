@@ -111,10 +111,6 @@ describe('Radar controller tests', function() {
 		meta.controller.reset(); // reset first
 
 		// Line element
-		expect(meta.dataset._model.scaleTop).toBeCloseToPixel(32);
-		expect(meta.dataset._model.scaleBottom).toBeCloseToPixel(512);
-		expect(meta.dataset._model.scaleZero.x).toBeCloseToPixel(256);
-		expect(meta.dataset._model.scaleZero.y).toBeCloseToPixel(272);
 		expect(meta.dataset._model).toEqual(jasmine.objectContaining({
 			backgroundColor: 'rgb(255, 0, 0)',
 			borderCapStyle: 'round',
@@ -198,10 +194,6 @@ describe('Radar controller tests', function() {
 
 		meta.controller.update();
 
-		expect(meta.dataset._model.scaleTop).toBeCloseToPixel(32);
-		expect(meta.dataset._model.scaleBottom).toBeCloseToPixel(512);
-		expect(meta.dataset._model.scaleZero.x).toBeCloseToPixel(256);
-		expect(meta.dataset._model.scaleZero.y).toBeCloseToPixel(272);
 		expect(meta.dataset._model).toEqual(jasmine.objectContaining({
 			backgroundColor: 'rgb(98, 98, 98)',
 			borderCapStyle: 'butt',
@@ -262,10 +254,6 @@ describe('Radar controller tests', function() {
 
 		meta.controller.update();
 
-		expect(meta.dataset._model.scaleTop).toBeCloseToPixel(32);
-		expect(meta.dataset._model.scaleBottom).toBeCloseToPixel(512);
-		expect(meta.dataset._model.scaleZero.x).toBeCloseToPixel(256);
-		expect(meta.dataset._model.scaleZero.y).toBeCloseToPixel(272);
 		expect(meta.dataset._model).toEqual(jasmine.objectContaining({
 			backgroundColor: 'rgb(55, 55, 54)',
 			borderCapStyle: 'square',

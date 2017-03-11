@@ -4,17 +4,17 @@
         "data": {
             "labels": ["0", "1", "2", "3", "4", "5", "6", "7", "8"],
             "datasets": [{
-                "backgroundColor": "rgba(0, 0, 255, 0.25)",
-                "data": [null, null, 2, 3, 4, -4, -2, 1, 0]
+                "backgroundColor": "rgba(0, 0, 192, 0.25)",
+                "data": [null, null, 2, 4, 2, 1, -1, 1, 2]
             }, {
-                "backgroundColor": "rgba(0, 255, 0, 0.25)",
-                "data": [6, 2, null, 4, 5, null, null, 2, 1]
+                "backgroundColor": "rgba(0, 192, 0, 0.25)",
+                "data": [4, 2, null, 3, 2.5, null, -2, 1.5, 3]
             }, {
-                "backgroundColor": "rgba(255, 0, 0, 0.25)",
-                "data": [7, 3, 4, 5, 6, 1, 4, null, null]
+                "backgroundColor": "rgba(192, 0, 0, 0.25)",
+                "data": [3.5, 2, 1, 2.5, -2, 3, -1, null, null]
             }, {
-                "backgroundColor": "rgba(0, 0, 255, 0.25)",
-                "data": [8, 7, 6, -6, -4, -6, 4, 5, 8]
+                "backgroundColor": "rgba(128, 0, 128, 0.25)",
+                "data": [5, 6, 5, -2, -4, -3, 4, 2, 4.5]
             }]
         },
         "options": {
@@ -39,9 +39,10 @@
                     "radius": 0
                 },
                 "line": {
+                    "cubicInterpolationMode": "monotone",
                     "borderColor": "transparent",
-                    "fill": "bottom",
-                    "tension": 0
+                    "stepped": true,
+                    "fill": "origin"
                 }
             }
         }
