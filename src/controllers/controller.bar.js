@@ -112,10 +112,9 @@ module.exports = function(Chart) {
 			var me = this;
 			var meta = me.getMeta();
 			var yScale = me.getScaleForId(meta.yAxisID);
-			var base = yScale.getBaseValue();
-			var original = base;
+			var base = 0;
 
-			if ((yScale.options.stacked === true) ||
+			if (yScale.options.stacked === true ||
 				(yScale.options.stacked === undefined && meta.stack !== undefined)) {
 				var chart = me.chart;
 				var datasets = chart.data.datasets;
@@ -127,7 +126,7 @@ module.exports = function(Chart) {
 					if (currentDsMeta.bar && currentDsMeta.yAxisID === yScale.id && chart.isDatasetVisible(i) &&
 						meta.stack === currentDsMeta.stack) {
 						var currentVal = Number(currentDs.data[index]);
-						base += value < 0 ? Math.min(currentVal, original) : Math.max(currentVal, original);
+						base += value < 0 ? Math.min(currentVal, 0) : Math.max(currentVal, 0);
 					}
 				}
 
@@ -227,9 +226,8 @@ module.exports = function(Chart) {
 
 			if (yScale.options.stacked ||
 				(yScale.options.stacked === undefined && meta.stack !== undefined)) {
-				var base = yScale.getBaseValue();
-				var sumPos = base,
-					sumNeg = base;
+				var sumPos = 0,
+					sumNeg = 0;
 
 				for (var i = 0; i < datasetIndex; i++) {
 					var ds = me.chart.data.datasets[i];
@@ -418,7 +416,6 @@ module.exports = function(Chart) {
 			var meta = me.getMeta();
 			var xScale = me.getScaleForId(meta.xAxisID);
 			var base = xScale.getBaseValue();
-			var originalBase = base;
 
 			if (xScale.options.stacked ||
 				(xScale.options.stacked === undefined && meta.stack !== undefined)) {
@@ -432,7 +429,7 @@ module.exports = function(Chart) {
 					if (currentDsMeta.bar && currentDsMeta.xAxisID === xScale.id && chart.isDatasetVisible(i) &&
 						meta.stack === currentDsMeta.stack) {
 						var currentVal = Number(currentDs.data[index]);
-						base += value < 0 ? Math.min(currentVal, originalBase) : Math.max(currentVal, originalBase);
+						base += value < 0 ? Math.min(currentVal, 0) : Math.max(currentVal, 0);
 					}
 				}
 
@@ -512,9 +509,8 @@ module.exports = function(Chart) {
 
 			if (xScale.options.stacked ||
 				(xScale.options.stacked === undefined && meta.stack !== undefined)) {
-				var base = xScale.getBaseValue();
-				var sumPos = base,
-					sumNeg = base;
+				var sumPos = 0,
+					sumNeg = 0;
 
 				for (var i = 0; i < datasetIndex; i++) {
 					var ds = me.chart.data.datasets[i];
