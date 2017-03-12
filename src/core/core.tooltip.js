@@ -336,9 +336,10 @@ module.exports = function(Chart) {
 	/**
 	 * @Helper to get the location a tooltip needs to be placed at given the initial position (via the vm) and the size and alignment
 	 */
-	function getBackgroundPoint(vm, size, alignment) {
+	function getBackgroundPoint(vm, size, alignment, chart) {
 		// Background Position
 		var x = vm.x;
+		var xCaret;
 		var y = vm.y;
 
 		var caretSize = vm.caretSize;
@@ -353,6 +354,13 @@ module.exports = function(Chart) {
 			x -= size.width;
 		} else if (xAlign === 'center') {
 			x -= (size.width / 2);
+			xCaret = x;
+			if (x + size.width > chart.width) {
+				x = chart.width - size.width;
+			}
+			if (x < 0) {
+				x = 0;
+			}
 		}
 
 		if (yAlign === 'top') {
@@ -377,6 +385,7 @@ module.exports = function(Chart) {
 
 		return {
 			x: x,
+			xCaret: xCaret,
 			y: y
 		};
 	}
@@ -478,6 +487,7 @@ module.exports = function(Chart) {
 			};
 			var backgroundPoint = {
 				x: existingModel.x,
+				xCaret: existingModel.xCaret,
 				y: existingModel.y
 			};
 			var tooltipSize = {
@@ -545,7 +555,7 @@ module.exports = function(Chart) {
 				tooltipSize = getTooltipSize(this, model);
 				alignment = determineAlignment(this, tooltipSize);
 				// Final Size and Position
-				backgroundPoint = getBackgroundPoint(model, tooltipSize, alignment);
+				backgroundPoint = getBackgroundPoint(model, tooltipSize, alignment, me._chart);
 			} else {
 				model.opacity = 0;
 			}
@@ -553,6 +563,7 @@ module.exports = function(Chart) {
 			model.xAlign = alignment.xAlign;
 			model.yAlign = alignment.yAlign;
 			model.x = backgroundPoint.x;
+			model.xCaret = backgroundPoint.xCaret;
 			model.y = backgroundPoint.y;
 			model.width = tooltipSize.width;
 			model.height = tooltipSize.height;
@@ -617,7 +628,11 @@ module.exports = function(Chart) {
 					x1 = x2 - caretSize;
 					x3 = x2 + caretSize;
 				} else {
-					x2 = ptX + (width / 2);
+					if (tooltipPoint.xCaret) {
+						x2 = tooltipPoint.xCaret + (width / 2);
+					} else {
+						x2 = ptX + (width / 2);
+					}
 					x1 = x2 - caretSize;
 					x3 = x2 + caretSize;
 				}
@@ -795,6 +810,7 @@ module.exports = function(Chart) {
 			};
 			var pt = {
 				x: vm.x,
+				xCaret: vm.xCaret,
 				y: vm.y
 			};
 
