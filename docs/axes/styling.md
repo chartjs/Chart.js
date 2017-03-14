@@ -19,6 +19,8 @@ The grid line configuration is nested under the scale configuration in the `grid
 | `tickMarkLength` | `Number` | `10` | Length in pixels that the grid lines will draw into the axis area.
 | `zeroLineWidth` | `Number` | `1` | Stroke width of the grid line for the first index (index 0).
 | `zeroLineColor` | Color | `'rgba(0, 0, 0, 0.25)'` | Stroke color of the grid line for the first index (index 0).
+| `zeroLineBorderDash` | `Number[]` | `[]` | Length and spacing of dashes of the grid line for the first index (index 0). See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
+| `zeroLineBorderDashOffset` | `Number` | `0` | Offset for line dashes of the grid line for the first index (index 0). See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
 | `offsetGridLines` | `Boolean` | `false` | If true, labels are shifted to be between grid lines. This is used in the bar chart and should not generally be used.
 
 ## Tick Configuration

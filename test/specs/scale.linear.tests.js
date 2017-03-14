@@ -21,6 +21,8 @@ describe('Linear Scale', function() {
 				display: true,
 				zeroLineColor: 'rgba(0,0,0,0.25)',
 				zeroLineWidth: 1,
+				zeroLineBorderDash: [],
+				zeroLineBorderDashOffset: 0.0,
 				borderDash: [],
 				borderDashOffset: 0.0
 			},
