@@ -299,10 +299,10 @@ module.exports = function(Chart) {
 		}
 
 		olf = function(x) {
-			return x + size.width + model.caretSize > chart.width;
+			return x + size.width + model.caretSize + model.caretPadding > chart.width;
 		};
 		orf = function(x) {
-			return x - size.width - model.caretSize < 0;
+			return x - size.width - model.caretSize - model.caretPadding < 0;
 		};
 		yf = function(y) {
 			return y <= midY ? 'top' : 'bottom';
