@@ -1,3 +1,11 @@
 # Charts
 
-Chart.js comes with built-in chart types for line, bar, radar, polar area and doughnut charts. To create a new chart type, see the [developer notes](../developers/charts.md#new-charts)
+Chart.js comes with built-in chart types:
+* [line](./line.md)
+* [bar](./bar.md)
+* [radar](./radar.md)
+* [polar area](./polar.md)
+* [doughnut and pie](./doughnut.md)
+* [bubble](./bubble.md)
+
+To create a new chart type, see the [developer notes](../developers/charts.md#new-charts)
