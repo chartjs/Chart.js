@@ -18,7 +18,6 @@ module.exports = function(Chart) {
 
 	var noop = helpers.noop;
 	Chart.Title = Chart.Element.extend({
-
 		initialize: function(config) {
 			var me = this;
 			helpers.extend(me, config);
@@ -181,39 +180,47 @@ module.exports = function(Chart) {
 		}
 	});
 
-	function createNewTitleBlockAndAttach(chartInstance, titleOpts) {
+	function createNewTitleBlockAndAttach(chart, titleOpts) {
 		var title = new Chart.Title({
-			ctx: chartInstance.chart.ctx,
+			ctx: chart.ctx,
 			options: titleOpts,
-			chart: chartInstance
+			chart: chart,
+
+			// ILayoutItem parameters
+			weight: 2000, // greater than legend to be above
+			position: titleOpts.position,
+			fullWidth: titleOpts.fullWidth,
 		});
-		chartInstance.titleBlock = title;
-		Chart.layoutService.addBox(chartInstance, title);
+		chart.titleBlock = title;
+		Chart.layoutService.addBox(chart, title);
 	}
 
 	// Register the title plugin
 	Chart.plugins.register({
-		beforeInit: function(chartInstance) {
-			var titleOpts = chartInstance.options.title;
+		id: 'title',
+
+		beforeInit: function(chart) {
+			var titleOpts = chart.options.title;
 
 			if (titleOpts) {
-				createNewTitleBlockAndAttach(chartInstance, titleOpts);
+				createNewTitleBlockAndAttach(chart, titleOpts);
 			}
 		},
-		beforeUpdate: function(chartInstance) {
-			var titleOpts = chartInstance.options.title;
+		beforeUpdate: function(chart) {
+			var titleOpts = chart.options.title;
+			var titleBlock = chart.titleBlock;
 
 			if (titleOpts) {
 				titleOpts = helpers.configMerge(Chart.defaults.global.title, titleOpts);
 
-				if (chartInstance.titleBlock) {
-					chartInstance.titleBlock.options = titleOpts;
+				if (titleBlock) {
+					titleBlock.options = titleOpts;
 				} else {
-					createNewTitleBlockAndAttach(chartInstance, titleOpts);
+					createNewTitleBlockAndAttach(chart, titleOpts);
 				}
-			} else {
-				Chart.layoutService.removeBox(chartInstance, chartInstance.titleBlock);
-				delete chartInstance.titleBlock;
+			} else if (titleBlock) {
+				Chart.layoutService.removeBox(chart, titleBlock);
+				delete chart.titleBlock;
 			}
 		}
 	});

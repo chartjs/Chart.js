@@ -21,7 +21,7 @@ yLabels | Array[string] | Optional parameter that is used with the category axis
 To create a chart with configuration options, simply pass an object containing your configuration to the constructor. In the example below, a line chart is created and configured to not be responsive.
 
 ```javascript
-var chartInstance = new Chart(ctx, {
+var chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
@@ -42,13 +42,13 @@ The following example would set the hover mode to 'nearest' for all charts where
 Chart.defaults.global.hover.mode = 'nearest';
 
 // Hover mode is set to nearest because it was not overridden here
-var chartInstanceHoverModeNearest = new Chart(ctx, {
+var chartHoverModeNearest = new Chart(ctx, {
     type: 'line',
     data: data,
 });
 
 // This chart would have the hover mode that was passed in
-var chartInstanceDifferentHoverMode = new Chart(ctx, {
+var chartDifferentHoverMode = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
@@ -115,7 +115,7 @@ text | String | '' | Title text
 The example below would enable a title of 'Custom Chart Title' on the chart that is created.
 
 ```javascript
-var chartInstance = new Chart(ctx, {
+var chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
@@ -200,7 +200,7 @@ Items passed to the legend `onClick` function are the ones returned from `labels
 The following example will create a chart with the legend enabled and turn all of the text red in color.
 
 ```javascript
-var chartInstance = new Chart(ctx, {
+var chart = new Chart(ctx, {
     type: 'bar',
     data: data,
     options: {
@@ -252,6 +252,8 @@ cornerRadius | Number | 6 | Radius of tooltip corner curves
 multiKeyBackground | Color | "#fff" | Color to draw behind the colored boxes when multiple items are in the tooltip
 displayColors | Boolean | true | if true, color boxes are shown in the tooltip
 callbacks | Object | | See the [callbacks section](#chart-configuration-tooltip-callbacks) below
+borderColor | Color | 'rgba(0,0,0,0)' | Color of the border
+borderWidth | Number | 0 | Size of the border
 
 #### Tooltip Callbacks
 
@@ -267,7 +269,7 @@ afterTitle | `Array[tooltipItem], data` | Text to render after the title
 beforeBody | `Array[tooltipItem], data` | Text to render before the body section
 beforeLabel | `tooltipItem, data` | Text to render before an individual label
 label | `tooltipItem, data` | Text to render for an individual item in the tooltip
-labelColor | `tooltipItem, chartInstance` | Returns the colors to render for the tooltip item. Return as an object containing two parameters: `borderColor` and `backgroundColor`.
+labelColor | `tooltipItem, chart` | Returns the colors to render for the tooltip item. Return as an object containing two parameters: `borderColor` and `backgroundColor`.
 afterLabel | `tooltipItem, data` | Text to render after an individual label
 afterBody | `Array[tooltipItem], data` | Text to render after the body section
 beforeFooter | `Array[tooltipItem], data` | Text to render before the footer section
@@ -317,13 +319,13 @@ When configuring interaction with the graph via hover or tooltips, a number of d
 
 The following table details the modes and how they behave in conjunction with the `intersect` setting
 
-Mode | Behaviour 
---- | --- 
+Mode | Behaviour
+--- | ---
 point | Finds all of the items that intersect the point
 nearest | Gets the item that is nearest to the point. The nearest item is determined based on the distance to the center of the chart item (point, bar). If 2 or more items are at the same distance, the one with the smallest area is used. If `intersect` is true, this is only triggered when the mouse position intersects an item in the graph. This is very useful for combo charts where points are hidden behind bars.
 single (deprecated) | Finds the first item that intersects the point and returns it. Behaves like 'nearest' mode with intersect = true.
 label (deprecated) | See `'index'` mode
-index | Finds item at the same index. If the `intersect` setting is true, the first intersecting item is used to determine the index in the data. If `intersect` false the nearest item is used to determine the index. 
+index | Finds item at the same index. If the `intersect` setting is true, the first intersecting item is used to determine the index in the data. If `intersect` false the nearest item is used to determine the index.
 x-axis (deprecated) | Behaves like `'index'` mode with `intersect = false`
 dataset | Finds items in the same dataset. If the `intersect` setting is true, the first intersecting item is used to determine the index in the data. If `intersect` false the nearest item is used to determine the index.
 x | Returns all items that would intersect based on the `X` coordinate of the position only. Would be useful for a vertical cursor implementation. Note that this only applies to cartesian charts
@@ -337,29 +339,18 @@ Name | Type | Default | Description
 --- |:---:| --- | ---
 duration | Number | 1000 | The number of milliseconds an animation takes.
 easing | String | "easeOutQuart" | Easing function to use. Available options are: `'linear'`, `'easeInQuad'`, `'easeOutQuad'`, `'easeInOutQuad'`, `'easeInCubic'`, `'easeOutCubic'`, `'easeInOutCubic'`, `'easeInQuart'`, `'easeOutQuart'`, `'easeInOutQuart'`, `'easeInQuint'`, `'easeOutQuint'`, `'easeInOutQuint'`, `'easeInSine'`, `'easeOutSine'`, `'easeInOutSine'`, `'easeInExpo'`, `'easeOutExpo'`, `'easeInOutExpo'`, `'easeInCirc'`, `'easeOutCirc'`, `'easeInOutCirc'`, `'easeInElastic'`, `'easeOutElastic'`, `'easeInOutElastic'`, `'easeInBack'`, `'easeOutBack'`, `'easeInOutBack'`, `'easeInBounce'`, `'easeOutBounce'`, `'easeInOutBounce'`. See [Robert Penner's easing equations](http://robertpenner.com/easing/).
-onProgress | Function | none | Callback called on each step of an animation. Passed a single argument, an object, containing the chart instance and an object with details of the animation.
-onComplete | Function | none | Callback called at the end of an animation. Passed the same arguments as `onProgress`
+onProgress | Function | none | Callback called on each step of an animation. Passed a single argument, a `Chart.Animation` instance, see below.
+onComplete | Function | none | Callback called at the end of an animation. Passed a single argument, a `Chart.Animation` instance, see below.
 
 #### Animation Callbacks
 
-The `onProgress` and `onComplete` callbacks are useful for synchronizing an external draw to the chart animation. The callback is passed an object that implements the following interface. An example usage of these callbacks can be found on [Github](https://github.com/chartjs/Chart.js/blob/master/samples/animation/progress-bar.html). This sample displays a progress bar showing how far along the animation is.
+The `onProgress` and `onComplete` callbacks are useful for synchronizing an external draw to the chart animation. The callback is passed a `Chart.Animation` instance:
 
 ```javascript
 {
-    // Chart object
-    chartInstance,
+    // Chart instance
+    chart,
 
-    // Contains details of the on-going animation
-    animationObject,
-}
-```
-
-#### Animation Object
-
-The animation object passed to the callbacks is of type `Chart.Animation`. The object has the following parameters.
-
-```javascript
-{
     // Current Animation frame number
     currentStep: Number,
 
@@ -379,6 +370,8 @@ The animation object passed to the callbacks is of type `Chart.Animation`. The o
     onAnimationComplete: Function
 }
 ```
+
+An example usage of these callbacks can be found on [Github](https://github.com/chartjs/Chart.js/blob/master/samples/animation/progress-bar.html): this sample displays a progress bar showing how far along the animation is.
 
 ### Element Configuration
 

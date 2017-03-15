@@ -40,6 +40,20 @@ describe('Doughnut controller tests', function() {
 		expect(meta.data[3] instanceof Chart.elements.Arc).toBe(true);
 	});
 
+	it('should set the innerRadius to 0 if the config option is 0', function() {
+		var chart = window.acquireChart({
+			type: 'pie',
+			data: {
+				datasets: [{
+					data: [10, 15, 0, 4]
+				}],
+				labels: []
+			}
+		});
+
+		expect(chart.innerRadius).toBe(0);
+	});
+
 	it ('should reset and update elements', function() {
 		var chart = window.acquireChart({
 			type: 'doughnut',

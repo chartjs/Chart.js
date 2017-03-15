@@ -390,4 +390,43 @@ describe('Test the layout service', function() {
 			expect(chart.chartArea.top).toBeCloseToPixel(0);
 		});
 	});
+
+	describe('ordering by weight', function() {
+		it('should keep higher weights outside', function() {
+			var chart = window.acquireChart({
+				type: 'bar',
+				data: {
+					datasets: [
+						{
+							data: [10, 5, 0, 25, 78, -10]
+						}
+					],
+					labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5', 'tick6']
+				},
+				options: {
+					legend: {
+						display: true,
+						position: 'left',
+					},
+					title: {
+						display: true,
+						position: 'bottom',
+					},
+				},
+			}, {
+				canvas: {
+					height: 150,
+					width: 250
+				}
+			});
+
+			var xAxis = chart.scales['x-axis-0'];
+			var yAxis = chart.scales['y-axis-0'];
+			var legend = chart.legend;
+			var title = chart.titleBlock;
+
+			expect(yAxis.left).toBe(legend.right);
+			expect(xAxis.bottom).toBe(title.top);
+		});
+	});
 });

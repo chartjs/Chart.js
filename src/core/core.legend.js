@@ -439,7 +439,7 @@ module.exports = function(Chart) {
 		/**
 		 * Handle an event
 		 * @private
-		 * @param e {Event} the event to handle
+		 * @param {IEvent} event - The event to handle
 		 * @return {Boolean} true if a change occured
 		 */
 		handleEvent: function(e) {
@@ -460,9 +460,9 @@ module.exports = function(Chart) {
 				return;
 			}
 
-			var position = helpers.getRelativePosition(e, me.chart.chart),
-				x = position.x,
-				y = position.y;
+			// Chart event already has relative position in it
+			var x = e.x,
+				y = e.y;
 
 			if (x >= me.left && x <= me.right && y >= me.top && y <= me.bottom) {
 				// See if we are touching one of the dataset boxes
@@ -473,11 +473,13 @@ module.exports = function(Chart) {
 					if (x >= hitBox.left && x <= hitBox.left + hitBox.width && y >= hitBox.top && y <= hitBox.top + hitBox.height) {
 						// Touching an element
 						if (type === 'click') {
-							opts.onClick.call(me, e, me.legendItems[i]);
+							// use e.native for backwards compatibility
+							opts.onClick.call(me, e.native, me.legendItems[i]);
 							changed = true;
 							break;
 						} else if (type === 'mousemove') {
-							opts.onHover.call(me, e, me.legendItems[i]);
+							// use e.native for backwards compatibility
+							opts.onHover.call(me, e.native, me.legendItems[i]);
 							changed = true;
 							break;
 						}
@@ -489,39 +491,54 @@ module.exports = function(Chart) {
 		}
 	});
 
-	function createNewLegendAndAttach(chartInstance, legendOpts) {
+	function createNewLegendAndAttach(chart, legendOpts) {
 		var legend = new Chart.Legend({
-			ctx: chartInstance.chart.ctx,
+			ctx: chart.ctx,
 			options: legendOpts,
-			chart: chartInstance
+			chart: chart,
+
+			// ILayoutItem parameters for layout service
+			// pick a large number to ensure we are on the outside after any axes
+			weight: 1000,
+			position: legendOpts.position,
+			fullWidth: legendOpts.fullWidth,
 		});
-		chartInstance.legend = legend;
-		Chart.layoutService.addBox(chartInstance, legend);
+		chart.legend = legend;
+		Chart.layoutService.addBox(chart, legend);
 	}
 
 	// Register the legend plugin
 	Chart.plugins.register({
-		beforeInit: function(chartInstance) {
-			var legendOpts = chartInstance.options.legend;
+		id: 'legend',
+
+		beforeInit: function(chart) {
+			var legendOpts = chart.options.legend;
 
 			if (legendOpts) {
-				createNewLegendAndAttach(chartInstance, legendOpts);
+				createNewLegendAndAttach(chart, legendOpts);
 			}
 		},
-		beforeUpdate: function(chartInstance) {
-			var legendOpts = chartInstance.options.legend;
+		beforeUpdate: function(chart) {
+			var legendOpts = chart.options.legend;
+			var legend = chart.legend;
 
 			if (legendOpts) {
 				legendOpts = helpers.configMerge(Chart.defaults.global.legend, legendOpts);
 
-				if (chartInstance.legend) {
-					chartInstance.legend.options = legendOpts;
+				if (legend) {
+					legend.options = legendOpts;
 				} else {
-					createNewLegendAndAttach(chartInstance, legendOpts);
+					createNewLegendAndAttach(chart, legendOpts);
 				}
-			} else {
-				Chart.layoutService.removeBox(chartInstance, chartInstance.legend);
-				delete chartInstance.legend;
+			} else if (legend) {
+				Chart.layoutService.removeBox(chart, legend);
+				delete chart.legend;
+			}
+		},
+		afterEvent: function(chart, e) {
+			var legend = chart.legend;
+			if (legend) {
+				legend.handleEvent(e);
 			}
 		}
 	});

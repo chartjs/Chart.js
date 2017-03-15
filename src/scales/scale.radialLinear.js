@@ -10,13 +10,16 @@ module.exports = function(Chart) {
 
 		// Boolean - Whether to animate scaling the chart from the centre
 		animate: true,
-		lineArc: false,
 		position: 'chartArea',
 
 		angleLines: {
 			display: true,
 			color: 'rgba(0, 0, 0, 0.1)',
 			lineWidth: 1
+		},
+
+		gridLines: {
+			circular: false
 		},
 
 		// label settings
@@ -37,6 +40,9 @@ module.exports = function(Chart) {
 		},
 
 		pointLabels: {
+			// Boolean - if true, show point labels
+			display: true,
+
 			// Number - Point label font size in pixels
 			fontSize: 10,
 
@@ -48,7 +54,8 @@ module.exports = function(Chart) {
 	};
 
 	function getValueCount(scale) {
-		return !scale.options.lineArc ? scale.chart.data.labels.length : 0;
+		var opts = scale.options;
+		return opts.angleLines.display || opts.pointLabels.display ? scale.chart.data.labels.length : 0;
 	}
 
 	function getPointLabelFontOptions(scale) {
@@ -253,19 +260,22 @@ module.exports = function(Chart) {
 				ctx.stroke();
 				ctx.closePath();
 			}
-			// Extra 3px out for some label spacing
-			var pointLabelPosition = scale.getPointPosition(i, outerDistance + 5);
 
-			// Keep this in loop since we may support array properties here
-			var pointLabelFontColor = getValueOrDefault(pointLabelOpts.fontColor, globalDefaults.defaultFontColor);
-			ctx.font = plFont.font;
-			ctx.fillStyle = pointLabelFontColor;
+			if (pointLabelOpts.display) {
+				// Extra 3px out for some label spacing
+				var pointLabelPosition = scale.getPointPosition(i, outerDistance + 5);
 
-			var angleRadians = scale.getIndexAngle(i);
-			var angle = helpers.toDegrees(angleRadians);
-			ctx.textAlign = getTextAlignForAngle(angle);
-			adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition);
-			fillText(ctx, scale.pointLabels[i] || '', pointLabelPosition, plFont.size);
+				// Keep this in loop since we may support array properties here
+				var pointLabelFontColor = getValueOrDefault(pointLabelOpts.fontColor, globalDefaults.defaultFontColor);
+				ctx.font = plFont.font;
+				ctx.fillStyle = pointLabelFontColor;
+
+				var angleRadians = scale.getIndexAngle(i);
+				var angle = helpers.toDegrees(angleRadians);
+				ctx.textAlign = getTextAlignForAngle(angle);
+				adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition);
+				fillText(ctx, scale.pointLabels[i] || '', pointLabelPosition, plFont.size);
+			}
 		}
 	}
 
@@ -274,7 +284,7 @@ module.exports = function(Chart) {
 		ctx.strokeStyle = helpers.getValueAtIndexOrDefault(gridLineOpts.color, index - 1);
 		ctx.lineWidth = helpers.getValueAtIndexOrDefault(gridLineOpts.lineWidth, index - 1);
 
-		if (scale.options.lineArc) {
+		if (scale.options.gridLines.circular) {
 			// Draw circular arcs between the points
 			ctx.beginPath();
 			ctx.arc(scale.xCenter, scale.yCenter, radius, 0, Math.PI * 2);
@@ -365,10 +375,10 @@ module.exports = function(Chart) {
 			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 		},
 		fit: function() {
-			if (this.options.lineArc) {
-				fit(this);
-			} else {
+			if (this.options.pointLabels.display) {
 				fitWithPointLabels(this);
+			} else {
+				fit(this);
 			}
 		},
 		/**
@@ -502,7 +512,7 @@ module.exports = function(Chart) {
 					}
 				});
 
-				if (!opts.lineArc) {
+				if (opts.angleLines.display || opts.pointLabels.display) {
 					drawPointLabels(me);
 				}
 			}

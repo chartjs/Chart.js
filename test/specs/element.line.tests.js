@@ -1,5 +1,7 @@
 // Tests for the line element
-describe('Line element tests', function() {
+describe('Chart.elements.Line', function() {
+	describe('auto', jasmine.specsFromFixtures('element.line'));
+
 	it('should be constructed', function() {
 		var line = new Chart.elements.Line({
 			_datasetindex: 2,

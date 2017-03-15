@@ -9,4 +9,5 @@
 .vscode
 bower.json
 
+*.log
 *.swp

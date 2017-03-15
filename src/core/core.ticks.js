@@ -67,8 +67,8 @@ module.exports = function(Chart) {
 
 				// If min, max and stepSize is set and they make an evenly spaced scale use it.
 				if (generationOptions.min && generationOptions.max && generationOptions.stepSize) {
-					var minMaxDeltaDivisibleByStepSize = ((generationOptions.max - generationOptions.min) % generationOptions.stepSize) === 0;
-					if (minMaxDeltaDivisibleByStepSize) {
+					// If very close to our whole number, use it.
+					if (helpers.almostWhole((generationOptions.max - generationOptions.min) / generationOptions.stepSize, spacing / 1000)) {
 						niceMin = generationOptions.min;
 						niceMax = generationOptions.max;
 					}

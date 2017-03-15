@@ -12,12 +12,13 @@ var uglify = require('gulp-uglify');
 var util = require('gulp-util');
 var zip = require('gulp-zip');
 var exec = require('child_process').exec;
-var karma = require('gulp-karma');
+var karma = require('karma');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var merge = require('merge-stream');
 var collapse = require('bundle-collapser/plugin');
 var argv  = require('yargs').argv
+var path = require('path');
 var package = require('./package.json');
 
 var srcDir = './src/';
@@ -29,18 +30,10 @@ var header = "/*!\n" +
   " * http://chartjs.org/\n" +
   " * Version: {{ version }}\n" +
   " *\n" +
-  " * Copyright 2016 Nick Downie\n" +
+  " * Copyright 2017 Nick Downie\n" +
   " * Released under the MIT license\n" +
   " * https://github.com/chartjs/Chart.js/blob/master/LICENSE.md\n" +
   " */\n";
-
-var preTestFiles = [
-  './node_modules/moment/min/moment.min.js'
-];
-
-var testFiles = [
-  './test/*.js'
-];
 
 gulp.task('bower', bowerTask);
 gulp.task('build', buildTask);
@@ -53,7 +46,6 @@ gulp.task('size', ['library-size', 'module-sizes']);
 gulp.task('server', serverTask);
 gulp.task('validHTML', validHTMLTask);
 gulp.task('unittest', unittestTask);
-gulp.task('unittestWatch', unittestWatchTask);
 gulp.task('library-size', librarySizeTask);
 gulp.task('module-sizes', moduleSizesTask);
 gulp.task('_open', _openTask);
@@ -71,7 +63,15 @@ function bowerTask() {
       homepage: package.homepage,
       license: package.license,
       version: package.version,
-      main: outDir + "Chart.js"
+      main: outDir + "Chart.js",
+      ignore: [
+        '.github',
+        '.codeclimate.yml',
+        '.gitignore',
+        '.npmignore',
+        '.travis.yml',
+        'scripts'
+      ]
     }, null, 2);
 
   return file('bower.json', json, { src: true })
@@ -149,6 +149,7 @@ function lintTask() {
       'beforeEach',
       'describe',
       'expect',
+      'fail',
       'it',
       'jasmine',
       'moment',
@@ -169,37 +170,33 @@ function validHTMLTask() {
 }
 
 function startTest() {
-  return [].concat(preTestFiles).concat([
-      './src/**/*.js',
-      './test/mockContext.js'
-    ]).concat(
-      argv.inputs?
-        argv.inputs.split(';'):
-        testFiles);
+  return [
+    {pattern: './test/fixtures/**/*.json', included: false},
+    {pattern: './test/fixtures/**/*.png', included: false},
+    './node_modules/moment/min/moment.min.js',
+    './test/jasmine.index.js',
+    './src/**/*.js',
+  ].concat(
+    argv.inputs?
+      argv.inputs.split(';'):
+      ['./test/specs/**/*.js']
+  );
 }
 
-function unittestTask() {
-  return gulp.src(startTest())
-    .pipe(karma({
-      configFile: 'karma.conf.ci.js',
-      action: 'run'
-    }));
+function unittestTask(done) {
+  new karma.Server({
+    configFile: path.join(__dirname, 'karma.conf.js'),
+    singleRun: !argv.watch,
+    files: startTest(),
+  }, done).start();
 }
 
-function unittestWatchTask() {
-  return gulp.src(startTest())
-    .pipe(karma({
-      configFile: 'karma.conf.js',
-      action: 'watch'
-    }));
-}
-
-function coverageTask() {
-  return gulp.src(startTest())
-    .pipe(karma({
-      configFile: 'karma.coverage.conf.js',
-      action: 'run'
-    }));
+function coverageTask(done) {
+  new karma.Server({
+    configFile: path.join(__dirname, 'karma.coverage.conf.js'),
+    files: startTest(),
+    singleRun: true,
+  }, done).start();
 }
 
 function librarySizeTask() {

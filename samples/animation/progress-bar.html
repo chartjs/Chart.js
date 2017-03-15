@@ -33,12 +33,12 @@
                     borderColor: window.chartColors.red,
                     backgroundColor: window.chartColors.red,
                     data: [
-                        randomScalingFactor(), 
-                        randomScalingFactor(), 
-                        randomScalingFactor(), 
-                        randomScalingFactor(), 
-                        randomScalingFactor(), 
-                        randomScalingFactor(), 
+                        randomScalingFactor(),
+                        randomScalingFactor(),
+                        randomScalingFactor(),
+                        randomScalingFactor(),
+                        randomScalingFactor(),
+                        randomScalingFactor(),
                         randomScalingFactor()
                     ]
                 }, {
@@ -47,12 +47,12 @@
                     borderColor: window.chartColors.blue,
                     backgroundColor: window.chartColors.blue,
                     data: [
-                        randomScalingFactor(), 
-                        randomScalingFactor(), 
-                        randomScalingFactor(), 
-                        randomScalingFactor(), 
-                        randomScalingFactor(), 
-                        randomScalingFactor(), 
+                        randomScalingFactor(),
+                        randomScalingFactor(),
+                        randomScalingFactor(),
+                        randomScalingFactor(),
+                        randomScalingFactor(),
+                        randomScalingFactor(),
                         randomScalingFactor()
                     ]
                 }]
@@ -65,7 +65,7 @@
                 animation: {
                     duration: 2000,
                     onProgress: function(animation) {
-                        progress.value = animation.animationObject.currentStep / animation.animationObject.numSteps;
+                        progress.value = animation.currentStep / animation.numSteps;
                     },
                     onComplete: function(animation) {
                         window.setTimeout(function() {

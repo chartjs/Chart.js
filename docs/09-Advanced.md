@@ -25,7 +25,7 @@ myLineChart.destroy();
 
 #### .update(duration, lazy)
 
-Triggers an update of the chart. This can be safely called after replacing the entire data object. This will update all scales, legends, and then re-render the chart.
+Triggers an update of the chart. This can be safely called after updating the data object. This will update all scales, legends, and then re-render the chart.
 
 ```javascript
 // duration is the time for the animation of the redraw in milliseconds
@@ -33,6 +33,8 @@ Triggers an update of the chart. This can be safely called after replacing the e
 myLineChart.data.datasets[0].data[2] = 50; // Would update the first dataset's value of 'March' to be 50
 myLineChart.update(); // Calling update now animates the position of March from 90 to 50.
 ```
+
+> **Note:** replacing the data reference (e.g. `myLineChart.data = {datasets: [...]}` only works starting **version 2.6**. Prior that, replacing the entire data object could be achieved with the following workaround: `myLineChart.config.data = {datasets: [...]}`.
 
 #### .reset()
 
@@ -410,33 +412,38 @@ Plugins will be called at the following times
 * After datasets draw
 * Resize
 * Before an animation is started
+* When an event occurs on the canvas (mousemove, click, etc). This requires the `options.events` property handled
 
-Plugins should derive from Chart.PluginBase and implement the following interface
+Plugins should implement the `IPlugin` interface:
 ```javascript
 {
-	beforeInit: function(chartInstance) { },
-	afterInit: function(chartInstance) { },
+	beforeInit: function(chart) { },
+	afterInit: function(chart) { },
 
-	resize: function(chartInstance, newChartSize) { },
+	resize: function(chart, newChartSize) { },
 
-	beforeUpdate: function(chartInstance) { },
-	afterScaleUpdate: function(chartInstance) { }
-	beforeDatasetsUpdate: function(chartInstance) { }
-	afterDatasetsUpdate: function(chartInstance) { }
-	afterUpdate: function(chartInstance) { },
+	beforeUpdate: function(chart) { },
+	afterScaleUpdate: function(chart) { }
+	beforeDatasetsUpdate: function(chart) { }
+	afterDatasetsUpdate: function(chart) { }
+	afterUpdate: function(chart) { },
 
 	// This is called at the start of a render. It is only called once, even if the animation will run for a number of frames. Use beforeDraw or afterDraw
 	// to do something on each animation frame
-	beforeRender: function(chartInstance) { },
+	beforeRender: function(chart) { },
 
 	// Easing is for animation
-	beforeDraw: function(chartInstance, easing) { },
-	afterDraw: function(chartInstance, easing) { },
+	beforeDraw: function(chart, easing) { },
+	afterDraw: function(chart, easing) { },
 	// Before the datasets are drawn but after scales are drawn
-	beforeDatasetsDraw: function(chartInstance, easing) { },
-	afterDatasetsDraw: function(chartInstance, easing) { },
+	beforeDatasetsDraw: function(chart, easing) { },
+	afterDatasetsDraw: function(chart, easing) { },
 
-	destroy: function(chartInstance) { }
+	destroy: function(chart) { }
+
+	// Called when an event occurs on the chart
+	beforeEvent: function(chart, event) {}
+	afterEvent: function(chart, event) {}
 }
 ```
 
