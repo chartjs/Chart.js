@@ -64,33 +64,22 @@ The tooltip label configuration is nested below the tooltip configuration using 
 
 All functions are called with the same arguments: a [tooltip item](#chart-configuration-tooltip-item-interface) and the data object passed to the chart. All functions must return either a string or an array of strings. Arrays of strings are treated as multiple lines of text.
 
-### beforeTitle
-**Arguments:** `Array[tooltipItem], data`
-Returns the text to render before the title.
+| Name | Arguments | Description
+| ---- | --------- | -----------
+| `beforeTitle` | `Array[tooltipItem], data` | Returns the text to render before the title.
+| `title` | `Array[tooltipItem], data` | Returns text to render as the title of the tooltip.
+| `afterTitle` | `Array[tooltipItem], data` | Returns text to render after the title.
+| `beforeBody` | `Array[tooltipItem], data` | Returns text to render before the body section.
+| `beforeLabel` | `tooltipItem, data` | Returns text to render before an individual label. This will be called for each item in the tooltip.
+| `label` | `tooltipItem, data` | Returns text to render for an individual item in the tooltip.
+| `labelColor` | `tooltipItem, chart` | Returns the colors to render for the tooltip item. [more...](#label-color-callback)
+| `afterLabel` | `tooltipItem, data` | Returns text to render after an individual label.
+| `afterBody` | `Array[tooltipItem], data` | Returns text to render after the body section
+| `beforeFooter` | `Array[tooltipItem], data` | Returns text to render before the footer section.
+| `footer` | `Array[tooltipItem], data` | Returns text to render as the footer of the tooltip.
+| `afterFooter` | `Array[tooltipItem], data` | Text to render after the footer section
 
-### title
-**Arguments:** `Array[tooltipItem], data`
-Returns text to render as the title of the tooltip.
-
-### afterTitle
-**Arguments:** `Array[tooltipItem], data`
-Returns text to render after the title.
-
-### beforeBody
-**Arguments:** `Array[tooltipItem], data`
-Returns text to render before the body section.
-
-### beforeLabel
-**Arguments:** `tooltipItem, data`
-Returns text to render before an individual label. This will be called for each item in the tooltip.
-
-### label
-**Arguments:** `tooltipItem, data`
-Returns text to render for an individual item in the tooltip.
-
-### labelColor
-**Arguments:** `tooltipItem, chart`
-Returns the colors to render for the tooltip item. Return as an object containing two parameters: `borderColor` and `backgroundColor`.
+### Label Color Callback
 
 For example, to return a red box for each item in the tooltip you could do:
 ```javascript
@@ -112,25 +101,6 @@ var chart = new Chart(ctx, {
 });
 ```
 
-### afterLabel
-**Arguments:** `tooltipItem, data`
-Returns text to render after an individual label.
-
-### afterBody
-**Arguments:** `Array[tooltipItem], data`
-Returns text to render after the body section
-
-### beforeFooter
-**Arguments:** `Array[tooltipItem], data`
-Returns text to render before the footer section.
-
-### footer
-**Arguments:** `Array[tooltipItem], data`
-Returns text to render as the footer of the tooltip.
-
-### afterFooter
-**Arguments:** `Array[tooltipItem], data`
-Text to render after the footer section
 
 ### Tooltip Item Interface
 

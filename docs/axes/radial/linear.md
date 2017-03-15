@@ -47,7 +47,7 @@ In this example, the largest positive value is 50, but the data maximum is expan
 
 ```javascript
 let chart = new Chart(ctx, {
-    type: 'line',
+    type: 'radar',
     data: {
         datasets: [{
             label: 'First dataset',
@@ -56,13 +56,11 @@ let chart = new Chart(ctx, {
         labels: ['January', 'February', 'March', 'April']
     },
     options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    suggestedMin: 50
-                    suggestedMax: 100
-                }
-            }]
+        scale: {
+            ticks: {
+                suggestedMin: 50
+                suggestedMax: 100
+            }
         }
     }
 });
