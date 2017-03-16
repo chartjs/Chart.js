@@ -144,8 +144,8 @@ module.exports = function(Chart) {
 		// Use this to calculate the offset + change. - Make sure L/R protrusion is at least 0 to stop issues with centre points
 		var largestPossibleRadius = Math.min(scale.height / 2, scale.width / 2);
 		var furthestLimits = {
-			l: scale.width,
-			r: 0,
+			r: scale.width,
+			l: 0,
 			t: scale.height,
 			b: 0
 		};
