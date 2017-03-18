@@ -19,7 +19,7 @@
         },
         "options": {
             "responsive": false,
-            "spanGaps": true,
+            "spanGaps": false,
             "legend": false,
             "title": false,
             "scales": {
@@ -41,7 +41,8 @@
                 "line": {
                     "cubicInterpolationMode": "monotone",
                     "borderColor": "transparent",
-                    "fill": "zero"
+                    "stepped": true,
+                    "fill": "origin"
                 }
             }
         }

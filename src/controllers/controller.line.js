@@ -78,10 +78,6 @@ module.exports = function(Chart) {
 					fill: custom.fill ? custom.fill : (dataset.fill !== undefined ? dataset.fill : lineElementOptions.fill),
 					steppedLine: custom.steppedLine ? custom.steppedLine : helpers.getValueOrDefault(dataset.steppedLine, lineElementOptions.stepped),
 					cubicInterpolationMode: custom.cubicInterpolationMode ? custom.cubicInterpolationMode : helpers.getValueOrDefault(dataset.cubicInterpolationMode, lineElementOptions.cubicInterpolationMode),
-					// Scale
-					scaleTop: scale.top,
-					scaleBottom: scale.bottom,
-					scaleZero: scale.getBasePixel()
 				};
 
 				line.pivot();
