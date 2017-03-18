@@ -42,6 +42,7 @@ module.exports = function(Chart) {
 			helpers.extend(meta.dataset, {
 				// Utility
 				_datasetIndex: me.index,
+				_scale: scale,
 				// Data
 				_children: points,
 				_loop: true,
@@ -57,11 +58,6 @@ module.exports = function(Chart) {
 					borderDash: custom.borderDash ? custom.borderDash : (dataset.borderDash || lineElementOptions.borderDash),
 					borderDashOffset: custom.borderDashOffset ? custom.borderDashOffset : (dataset.borderDashOffset || lineElementOptions.borderDashOffset),
 					borderJoinStyle: custom.borderJoinStyle ? custom.borderJoinStyle : (dataset.borderJoinStyle || lineElementOptions.borderJoinStyle),
-
-					// Scale
-					scaleTop: scale.top,
-					scaleBottom: scale.bottom,
-					scaleZero: scale.getBasePosition()
 				}
 			});
 

@@ -1,0 +1,64 @@
+body, html {
+	font-family: sans-serif;
+	padding: 0;
+	margin: 0;
+}
+
+.content {
+	max-width: 800px;
+	margin: auto;
+	padding: 16px;
+}
+
+.wrapper {
+	min-height: 400px;
+	padding: 16px 0;
+	position: relative;
+}
+
+.wrapper.col-2 {
+	display: inline-block;
+	min-height: 256px;
+	width: 49%;
+}
+
+@media (max-width: 400px) {
+	.wrapper.col-2 {
+		width: 100%
+	}
+}
+
+.wrapper canvas {
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+.toolbar {
+	display: flex;
+}
+
+.toolbar > * {
+	margin: 0 8px 0 0;
+}
+
+.btn-on {
+	border-style: inset;
+}
+
+.analyser table {
+	color: #333;
+	font-size: 0.9rem;
+	margin: 8px 0;
+	width: 100%
+}
+
+.analyser th {
+	background-color: #f0f0f0;
+	padding: 2px;
+}
+
+.analyser td {
+	padding: 2px;
+	text-align: center;
+}

@@ -509,48 +509,6 @@ describe('Line controller tests', function() {
 
 	});
 
-	it('should find the correct scale zero when the data is all positive', function() {
-		var chart = window.acquireChart({
-			type: 'line',
-			data: {
-				datasets: [{
-					data: [10, 15, 20, 20],
-					label: 'dataset1',
-				}],
-				labels: ['label1', 'label2', 'label3', 'label4']
-			},
-		});
-
-		var meta = chart.getDatasetMeta(0);
-
-		expect(meta.dataset._model).toEqual(jasmine.objectContaining({
-			scaleTop: 32,
-			scaleBottom: 484,
-			scaleZero: 484,
-		}));
-	});
-
-	it('should find the correct scale zero when the data is all negative', function() {
-		var chart = window.acquireChart({
-			type: 'line',
-			data: {
-				datasets: [{
-					data: [-10, -15, -20, -20],
-					label: 'dataset1',
-				}],
-				labels: ['label1', 'label2', 'label3', 'label4']
-			},
-		});
-
-		var meta = chart.getDatasetMeta(0);
-
-		expect(meta.dataset._model).toEqual(jasmine.objectContaining({
-			scaleTop: 32,
-			scaleBottom: 484,
-			scaleZero: 32,
-		}));
-	});
-
 	it('should fall back to the line styles for points', function() {
 		var chart = window.acquireChart({
 			type: 'line',
