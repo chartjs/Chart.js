@@ -30,7 +30,7 @@ Triggers an update of the chart. This can be safely called after updating the da
 ```javascript
 // duration is the time for the animation of the redraw in milliseconds
 // lazy is a boolean. if true, the animation can be interrupted by other animations
-myLineChart.data.datasets[0].data[2] = 50; // Would update the first dataset's value of 'March' to be 50
+myLineChart.config.data.datasets[0].data[2] = 50; // Would update the first dataset's value of 'March' to be 50
 myLineChart.update(); // Calling update now animates the position of March from 90 to 50.
 ```
 
