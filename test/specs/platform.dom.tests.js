@@ -226,6 +226,24 @@ describe('Platform.dom', function() {
 				rw: 165, rh: 85,
 			});
 		});
+
+		// https://github.com/chartjs/Chart.js/issues/3860
+		it('should support decimal display width and/or height', function() {
+			var chart = acquireChart({
+				options: {
+					responsive: false
+				}
+			}, {
+				canvas: {
+					style: 'width: 345.42px; height: 125.42px;'
+				}
+			});
+
+			expect(chart).toBeChartOfSize({
+				dw: 345, dh: 125,
+				rw: 345, rh: 125,
+			});
+		});
 	});
 
 	describe('config.options.responsive: true (maintainAspectRatio: true)', function() {

@@ -33,7 +33,7 @@ module.exports = function(Chart) {
 	 */
 	function readUsedSize(element, property) {
 		var value = helpers.getStyle(element, property);
-		var matches = value && value.match(/(\d+)px/);
+		var matches = value && value.match(/^(\d+)(\.\d+)?px$/);
 		return matches? Number(matches[1]) : undefined;
 	}
 
