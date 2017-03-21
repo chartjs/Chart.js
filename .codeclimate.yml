@@ -4,6 +4,8 @@ engines:
     config:
       languages:
       - javascript
+    exclude_paths:
+    - "samples/samples.js"
   eslint:
     enabled: true
     channel: "eslint-3"
