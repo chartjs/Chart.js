@@ -216,6 +216,8 @@ module.exports = function(Chart) {
 					} else {
 						pixel = me.top + innerDimension * 0.02 + (innerDimension * 0.98/ range * (helpers.log10(newVal)-helpers.log10(me.minNotZero)));
 					}
+				} else if (newVal === 0) {
+					pixel = tickOpts.reverse ? me.top : me.bottom;
 				} else {
 					range = helpers.log10(me.end) - helpers.log10(start);
 					innerDimension = me.height;
