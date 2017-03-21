@@ -19,6 +19,8 @@ module.exports = function(Chart) {
 			tickMarkLength: 10,
 			zeroLineWidth: 1,
 			zeroLineColor: 'rgba(0,0,0,0.25)',
+			zeroLineBorderDash: [],
+			zeroLineBorderDashOffset: 0.0,
 			offsetGridLines: false,
 			borderDash: [],
 			borderDashOffset: 0.0
@@ -503,8 +505,6 @@ module.exports = function(Chart) {
 			var tickFont = parseFontOptions(optionTicks);
 
 			var tl = gridLines.drawTicks ? gridLines.tickMarkLength : 0;
-			var borderDash = helpers.getValueOrDefault(gridLines.borderDash, globalDefaults.borderDash);
-			var borderDashOffset = helpers.getValueOrDefault(gridLines.borderDashOffset, globalDefaults.borderDashOffset);
 
 			var scaleLabelFontColor = helpers.getValueOrDefault(scaleLabel.fontColor, globalDefaults.defaultFontColor);
 			var scaleLabelFont = parseFontOptions(scaleLabel);
@@ -561,14 +561,18 @@ module.exports = function(Chart) {
 					return;
 				}
 
-				var lineWidth, lineColor;
+				var lineWidth, lineColor, borderDash, borderDashOffset;
 				if (index === (typeof me.zeroLineIndex !== 'undefined' ? me.zeroLineIndex : 0)) {
 					// Draw the first index specially
 					lineWidth = gridLines.zeroLineWidth;
 					lineColor = gridLines.zeroLineColor;
+					borderDash = gridLines.zeroLineBorderDash;
+					borderDashOffset = gridLines.zeroLineBorderDashOffset;
 				} else {
 					lineWidth = helpers.getValueAtIndexOrDefault(gridLines.lineWidth, index);
 					lineColor = helpers.getValueAtIndexOrDefault(gridLines.color, index);
+					borderDash = helpers.getValueOrDefault(gridLines.borderDash, globalDefaults.borderDash);
+					borderDashOffset = helpers.getValueOrDefault(gridLines.borderDashOffset, globalDefaults.borderDashOffset);
 				}
 
 				// Common properties
