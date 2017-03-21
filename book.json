@@ -1,0 +1,19 @@
+{
+  "root": "./docs",
+  "author": "chartjs",
+  "gitbook": "3.2.2",
+  "plugins": ["anchorjs", "chartjs"],
+  "pluginsConfig": {
+    "anchorjs": {
+      "icon": "#",
+      "placement": "left",
+      "visible": "always"
+    },
+    "theme-default": {
+      "showLevel": false,
+      "styles": {
+        "website": "style.css"
+      }
+    }
+  }
+}
