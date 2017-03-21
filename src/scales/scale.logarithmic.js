@@ -212,6 +212,8 @@ module.exports = function(Chart) {
 					} else {
 						pixel = tickOpts.reverse ? zero + diff : zero - diff;
 					}
+				} else if (newVal === 0) {
+					pixel = tickOpts.reverse ? me.top : me.bottom;
 				} else {
 					range = helpers.log10(me.end) - helpers.log10(start);
 					pixel = me.bottom - (innerDimension / range * (helpers.log10(newVal) - helpers.log10(start)));
