@@ -37,12 +37,15 @@
 <body>
 	<div id="canvas-holder1" style="width:75%;">
 		<canvas id="chart1"></canvas>
+		<div class="chartjs-tooltip" id="tooltip-0"></div>
+		<div class="chartjs-tooltip" id="tooltip-1"></div>
 	</div>
-	<div class="chartjs-tooltip" id="tooltip-0"></div>
-	<div class="chartjs-tooltip" id="tooltip-1"></div>
 	<script>
 		var customTooltips = function (tooltip) {
 			$(this._chart.canvas).css("cursor", "pointer");
+
+			var positionY = this._chart.canvas.offsetTop;
+			var positionX = this._chart.canvas.offsetLeft;
 
 			$(".chartjs-tooltip").css({
 				opacity: 0,
@@ -60,8 +63,8 @@
 					$tooltip.html(content);
 					$tooltip.css({
 						opacity: 1,
-						top: dataPoint.y + "px",
-						left: dataPoint.x + "px",
+						top: positionY + dataPoint.y + "px",
+						left: positionX + dataPoint.x + "px",
 					});
 				});
 			}

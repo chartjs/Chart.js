@@ -36,11 +36,10 @@
 
 <body>
 	<div id="canvas-holder" style="width: 300px;">
-		<canvas id="chart-area" width="300" height="300" />
-	</div>
-
-	<div id="chartjs-tooltip">
-		<table></table>
+		<canvas id="chart-area" width="300" height="300"></canvas>
+		<div id="chartjs-tooltip">
+			<table></table>
+		</div>
 	</div>
 
 	<script>
@@ -92,12 +91,13 @@
 			tableRoot.innerHTML = innerHtml;
 		}
 
-		var position = this._chart.canvas.getBoundingClientRect();
+		var positionY = this._chart.canvas.offsetTop;
+		var positionX = this._chart.canvas.offsetLeft;
 
 		// Display, position, and set styles for font
 		tooltipEl.style.opacity = 1;
-		tooltipEl.style.left = position.left + tooltip.caretX + 'px';
-		tooltipEl.style.top = position.top + tooltip.caretY + 'px';
+		tooltipEl.style.left = positionX + tooltip.caretX + 'px';
+		tooltipEl.style.top = positionY + tooltip.caretY + 'px';
 		tooltipEl.style.fontFamily = tooltip._fontFamily;
 		tooltipEl.style.fontSize = tooltip.fontSize;
 		tooltipEl.style.fontStyle = tooltip._fontStyle;
