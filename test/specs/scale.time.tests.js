@@ -36,6 +36,7 @@ describe('Time scale tests', function() {
 			display: true,
 			gridLines: {
 				color: 'rgba(0, 0, 0, 0.1)',
+				axisColor: 'rgba(0, 0, 0, 0.1)',
 				drawBorder: true,
 				drawOnChartArea: true,
 				drawTicks: true,

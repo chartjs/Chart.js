@@ -19,6 +19,7 @@ describe('Test the radial linear scale', function() {
 			gridLines: {
 				circular: false,
 				color: 'rgba(0, 0, 0, 0.1)',
+				axisColor: 'rgba(0, 0, 0, 0.1)',
 				drawBorder: true,
 				drawOnChartArea: true,
 				drawTicks: true,
