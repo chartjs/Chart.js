@@ -48,7 +48,7 @@
 				tooltipEl = document.createElement('div');
 				tooltipEl.id = 'chartjs-tooltip';
 				tooltipEl.innerHTML = "<table></table>"
-				document.body.appendChild(tooltipEl);
+				this._chart.canvas.parentNode.appendChild(tooltipEl);
 			}
 
 			// Hide if no tooltip
@@ -95,12 +95,13 @@
 				tableRoot.innerHTML = innerHtml;
 			}
 
-			var position = this._chart.canvas.getBoundingClientRect();
+			var positionY = this._chart.canvas.offsetTop;
+			var positionX = this._chart.canvas.offsetLeft;
 
 			// Display, position, and set styles for font
 			tooltipEl.style.opacity = 1;
-			tooltipEl.style.left = position.left + tooltip.caretX + 'px';
-			tooltipEl.style.top = position.top + tooltip.caretY + 'px';
+			tooltipEl.style.left = positionX + tooltip.caretX + 'px';
+			tooltipEl.style.top = positionY + tooltip.caretY + 'px';
 			tooltipEl.style.fontFamily = tooltip._fontFamily;
 			tooltipEl.style.fontSize = tooltip.fontSize;
 			tooltipEl.style.fontStyle = tooltip._fontStyle;
