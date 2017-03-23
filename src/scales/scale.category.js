@@ -66,19 +66,14 @@ module.exports = function(Chart) {
 			// 1 is added because we need the length but we have the indexes
 			var offsetAmt = Math.max((me.maxIndex + 1 - me.minIndex - ((me.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
 
-			if (value !== undefined && isNaN(index)) {
-				var labels = me.getLabels();
-				var idx = labels.indexOf(value);
-				index = idx !== -1 ? idx : index;
-			}
-
 			// If value is a data object, then index is the index in the data array,
 			// not the index of the scale. We need to change that.
 			var valueCategory = me.isHorizontal() ? value.x : value.y;
-			if (valueCategory !== undefined) {
-				var labelsCategory = me.getLabels();
-				var idxCategory = labelsCategory.indexOf(valueCategory);
-				index = idxCategory !== -1 ? idxCategory : index;
+			if (valueCategory !== undefined || (value !== undefined && isNaN(index))) {
+				var labels = me.getLabels();
+				value = valueCategory || value;
+				var idx = labels.indexOf(value);
+				index = idx !== -1 ? idx : index;
 			}
 
 			if (me.isHorizontal()) {
