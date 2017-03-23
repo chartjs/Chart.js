@@ -210,6 +210,10 @@ module.exports = function(Chart) {
 				return leftTick + (ruler.categoryWidth / 2) + ruler.categorySpacing;
 			}
 
+			if (xScale.options.type === 'time') {
+				return leftTick;
+			}
+
 			return leftTick +
 				(ruler.barWidth / 2) +
 				ruler.categorySpacing +
