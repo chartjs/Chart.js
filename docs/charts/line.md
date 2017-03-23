@@ -43,7 +43,7 @@ All point* properties can be specified as an array. If these are set to an array
 | `pointHoverRadius` | `Number/Number[]` | The radius of the point when hovered.
 | `showLine` | `Boolean` | If false, the line is not drawn for this dataset.
 | `spanGaps` | `Boolean` | If true, lines will be drawn between points with no or null data. If false, points with `NaN` data will create a break in the line
-| `steppedLine` | `Boolean` | If true, the line is shown as a stepped line and 'lineTension' will be ignored.
+| `steppedLine` | `Boolean/String` | If true, the line is shown as a stepped line and 'lineTension' will be ignored. For String values see [Step Interpolation](#stepInterpolation)
 
 ### cubicInterpolationMode
 The following interpolation modes are supported:
@@ -78,6 +78,11 @@ The style of point. Options are:
 * 'triangle'
 
 If the option is an image, that image is drawn on the canvas using [drawImage](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/drawImage).
+
+### stepInterpolation
+The following modes are supported for steppedLine:
+* 'before'
+* 'after'.
 
 ## Configuration Options
 

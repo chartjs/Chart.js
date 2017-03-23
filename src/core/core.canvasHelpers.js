@@ -123,7 +123,11 @@ module.exports = function(Chart) {
 
 	helpers.lineTo = function(ctx, previous, target, flip) {
 		if (target.steppedLine) {
-			ctx.lineTo(target.x, previous.y);
+			if (target.steppedLine === 'after') {
+				ctx.lineTo(previous.x, target.y);
+			} else {
+				ctx.lineTo(target.x, previous.y);
+			}
 			ctx.lineTo(target.x, target.y);
 			return;
 		}
