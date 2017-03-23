@@ -72,6 +72,15 @@ module.exports = function(Chart) {
 				index = idx !== -1 ? idx : index;
 			}
 
+			// If value is a data object, then index is the index in the data array,
+			// not the index of the scale. We need to change that.
+			var valueCategory = me.isHorizontal() ? value.x : value.y;
+			if (valueCategory !== undefined) {
+				var labelsCategory = me.getLabels();
+				var idxCategory = labelsCategory.indexOf(valueCategory);
+				index = idxCategory !== -1 ? idxCategory : index;
+			}
+
 			if (me.isHorizontal()) {
 				var valueWidth = me.width / offsetAmt;
 				var widthOffset = (valueWidth * (index - me.minIndex));
