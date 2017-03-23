@@ -69,9 +69,9 @@ module.exports = function(Chart) {
 			// If value is a data object, then index is the index in the data array,
 			// not the index of the scale. We need to change that.
 			var valueCategory = me.isHorizontal() ? value.x : value.y;
-			if (valueCategory !== undefined || (value !== undefined && isNaN(index))) {
+			if (valueCategory !== undefined || (value !== undefined && isNaN(index))) {
 				var labels = me.getLabels();
-				value = valueCategory || value;
+				value = valueCategory || value;
 				var idx = labels.indexOf(value);
 				index = idx !== -1 ? idx : index;
 			}
