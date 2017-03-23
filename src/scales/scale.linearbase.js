@@ -31,7 +31,7 @@ module.exports = function(Chart) {
 				me.min = tickOpts.min;
 			} else if (tickOpts.suggestedMin !== undefined) {
 				if (me.min === null) {
-					me.min = tickOpts.suggestedMin;			
+					me.min = tickOpts.suggestedMin;
 				} else {
 					me.min = Math.min(me.min, tickOpts.suggestedMin);
 				}
