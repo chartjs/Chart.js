@@ -85,7 +85,7 @@ The line chart defines the following configuration options. These options are me
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `showLines` | `Boolean` | `true` | If false, the lines between points are not drawn.
+| `showLine` | `Boolean` | `true` | If false, the lines between points are not drawn.
 | `spanGaps` | `Boolean` | `false` | If false, NaN data causes a break in the line.
 
 ## Default Options
