@@ -507,8 +507,7 @@ module.exports = function(Chart) {
 		Chart.layoutService.addBox(chart, legend);
 	}
 
-	// Register the legend plugin
-	Chart.plugins.register({
+	return {
 		id: 'legend',
 
 		beforeInit: function(chart) {
@@ -541,5 +540,5 @@ module.exports = function(Chart) {
 				legend.handleEvent(e);
 			}
 		}
-	});
+	};
 };
