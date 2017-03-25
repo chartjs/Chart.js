@@ -3,6 +3,7 @@
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
+	var noop = helpers.noop;
 
 	Chart.defaults.global.title = {
 		display: false,
@@ -16,7 +17,6 @@ module.exports = function(Chart) {
 		text: ''
 	};
 
-	var noop = helpers.noop;
 	Chart.Title = Chart.Element.extend({
 		initialize: function(config) {
 			var me = this;
@@ -195,8 +195,7 @@ module.exports = function(Chart) {
 		Chart.layoutService.addBox(chart, title);
 	}
 
-	// Register the title plugin
-	Chart.plugins.register({
+	return {
 		id: 'title',
 
 		beforeInit: function(chart) {
@@ -223,5 +222,5 @@ module.exports = function(Chart) {
 				delete chart.titleBlock;
 			}
 		}
-	});
+	};
 };
