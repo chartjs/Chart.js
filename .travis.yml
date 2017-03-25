@@ -12,8 +12,7 @@ before_script:
 
 script:
   - gulp build
-  - gulp test
-  - gulp coverage
+  - gulp test --coverage
   - gulp package
   - gulp bower
   - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls

@@ -38,7 +38,6 @@ var header = "/*!\n" +
 gulp.task('bower', bowerTask);
 gulp.task('build', buildTask);
 gulp.task('package', packageTask);
-gulp.task('coverage', coverageTask);
 gulp.task('watch', watchTask);
 gulp.task('lint', lintTask);
 gulp.task('docs', docsTask);
@@ -202,14 +201,9 @@ function unittestTask(done) {
     configFile: path.join(__dirname, 'karma.conf.js'),
     singleRun: !argv.watch,
     files: startTest(),
-  }, done).start();
-}
-
-function coverageTask(done) {
-  new karma.Server({
-    configFile: path.join(__dirname, 'karma.coverage.conf.js'),
-    files: startTest(),
-    singleRun: true,
+    args: {
+      coverage: !!argv.coverage
+    }
   }, done).start();
 }
 
