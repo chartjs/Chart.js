@@ -15,8 +15,6 @@ require('./core/core.layoutService')(Chart);
 require('./core/core.scaleService')(Chart);
 require('./core/core.ticks.js')(Chart);
 require('./core/core.scale')(Chart);
-require('./core/core.title')(Chart);
-require('./core/core.legend')(Chart);
 require('./core/core.interaction')(Chart);
 require('./core/core.tooltip')(Chart);
 
@@ -52,7 +50,11 @@ require('./charts/Chart.Scatter')(Chart);
 // Loading built-it plugins
 var plugins = [];
 
-plugins.push(require('./plugins/plugin.filler.js')(Chart));
+plugins.push(
+    require('./plugins/plugin.filler.js')(Chart),
+    require('./plugins/plugin.legend.js')(Chart),
+    require('./plugins/plugin.title.js')(Chart)
+);
 
 Chart.plugins.register(plugins);
 
