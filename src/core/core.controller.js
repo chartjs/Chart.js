@@ -293,7 +293,12 @@ module.exports = function(Chart) {
 				if (meta.controller) {
 					meta.controller.updateIndex(datasetIndex);
 				} else {
-					meta.controller = new Chart.controllers[meta.type](me, datasetIndex);
+					var ControllerClass = Chart.controllers[meta.type];
+					if (ControllerClass === undefined) {
+						throw new Error('"' + meta.type + '" is not a chart type.');
+					}
+
+					meta.controller = new ControllerClass(me, datasetIndex);
 					newControllers.push(meta.controller);
 				}
 			}, me);

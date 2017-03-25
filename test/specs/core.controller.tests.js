@@ -144,6 +144,32 @@ describe('Chart', function() {
 			expect(scaleOptions.xAxes[0].position).toBe('bottom');
 			expect(scaleOptions.yAxes[0].position).toBe('left');
 		});
+
+		it('should throw an error if the chart type is incorrect', function() {
+			function createChart() {
+				acquireChart({
+					type: 'area',
+					data: {
+						datasets: [{
+							label: 'first',
+							data: [10, 20]
+						}],
+						labels: ['0', '1'],
+					},
+					options: {
+						scales: {
+							xAxes: [{
+								position: 'left',
+							}],
+							yAxes: [{
+								position: 'bottom'
+							}]
+						}
+					}
+				});
+			}
+			expect(createChart).toThrow(new Error('"area" is not a chart type.'));
+		});
 	});
 
 	describe('config.options.responsive: false', function() {
