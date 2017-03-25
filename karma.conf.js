@@ -1,6 +1,7 @@
 /* eslint camelcase: 0 */
 
 module.exports = function(karma) {
+	var args = karma.args || {};
 	var config = {
 		browsers: ['Firefox'],
 		frameworks: ['browserify', 'jasmine'],
@@ -27,6 +28,20 @@ module.exports = function(karma) {
 		};
 	} else {
 		config.browsers.push('Chrome');
+	}
+
+	if (args.coverage) {
+		config.reporters.push('coverage');
+		config.browserify.transform = ['browserify-istanbul'];
+
+		// https://github.com/karma-runner/karma-coverage/blob/master/docs/configuration.md
+		config.coverageReporter = {
+			dir: 'coverage/',
+			reporters: [
+				{type: 'html', subdir: 'report-html'},
+				{type: 'lcovonly', subdir: '.', file: 'lcov.info'}
+			]
+		};
 	}
 
 	karma.set(config);
