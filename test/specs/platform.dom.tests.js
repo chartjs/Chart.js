@@ -122,6 +122,9 @@ describe('Platform.dom', function() {
 		});
 
 		it('should use default "chart" aspect ratio for render and display sizes', function() {
+			var ratio = Chart.defaults.doughnut.aspectRatio;
+			Chart.defaults.doughnut.aspectRatio = 1;
+
 			var chart = acquireChart({
 				type: 'doughnut',
 				options: {
@@ -132,6 +135,8 @@ describe('Platform.dom', function() {
 					style: 'width: 425px'
 				}
 			});
+
+			Chart.defaults.doughnut.aspectRatio = ratio;
 
 			expect(chart).toBeChartOfSize({
 				dw: 425, dh: 425,

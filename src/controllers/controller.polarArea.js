@@ -29,7 +29,6 @@ module.exports = function(Chart) {
 		},
 
 		startAngle: -0.5 * Math.PI,
-		aspectRatio: 1,
 		legendCallback: function(chart) {
 			var text = [];
 			text.push('<ul class="' + chart.id + '-legend">');
