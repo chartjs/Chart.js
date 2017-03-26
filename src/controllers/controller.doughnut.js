@@ -12,7 +12,6 @@ module.exports = function(Chart) {
 			// Boolean - Whether we animate scaling the Doughnut from the centre
 			animateScale: false
 		},
-		aspectRatio: 1,
 		hover: {
 			mode: 'single'
 		},
