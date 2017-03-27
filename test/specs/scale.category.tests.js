@@ -14,7 +14,7 @@ describe('Category scale tests', function() {
 
 			gridLines: {
 				color: 'rgba(0, 0, 0, 0.1)',
-				axisColor: 'rgba(0, 0, 0, 0.1)',
+				borderColor: 'rgba(0, 0, 0, 0.1)',
 				drawBorder: true,
 				drawOnChartArea: true,
 				drawTicks: true, // draw ticks extending towards the label
