@@ -641,6 +641,58 @@ describe('Core.Tooltip', function() {
 		}));
 	});
 
+	it('should set the caretPadding based on a config setting', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					label: 'Dataset 1',
+					data: [10, 20, 30],
+					pointHoverBorderColor: 'rgb(255, 0, 0)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 0)',
+					tooltipHidden: true
+				}, {
+					label: 'Dataset 2',
+					data: [40, 40, 40],
+					pointHoverBorderColor: 'rgb(0, 0, 255)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+				}],
+				labels: ['Point 1', 'Point 2', 'Point 3']
+			},
+			options: {
+				tooltips: {
+					caretPadding: 10
+				}
+			}
+		});
+
+		// Trigger an event over top of the
+		var meta0 = chart.getDatasetMeta(0);
+		var point0 = meta0.data[1];
+
+		var node = chart.canvas;
+		var rect = node.getBoundingClientRect();
+
+		var evt = new MouseEvent('mousemove', {
+			view: window,
+			bubbles: true,
+			cancelable: true,
+			clientX: rect.left + point0._model.x,
+			clientY: rect.top + point0._model.y
+		});
+
+		// Manually trigger rather than having an async test
+		node.dispatchEvent(evt);
+
+		// Check and see if tooltip was displayed
+		var tooltip = chart.tooltip;
+
+		expect(tooltip._model).toEqual(jasmine.objectContaining({
+			// Positioning
+			caretPadding: 10,
+		}));
+	});
+
 	it('Should have dataPoints', function() {
 		var chart = window.acquireChart({
 			type: 'line',
