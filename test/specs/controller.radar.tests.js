@@ -415,7 +415,7 @@ describe('Radar controller tests', function() {
 		expect(point._model.radius).toBe(1.01);
 
 		// Can set hover style per dataset
-		chart.data.datasets[0].radius = 3.3;
+		chart.data.datasets[0].pointRadius = 3.3;
 		chart.data.datasets[0].pointBackgroundColor = 'rgb(77, 79, 81)';
 		chart.data.datasets[0].pointBorderColor = 'rgb(123, 125, 127)';
 		chart.data.datasets[0].pointBorderWidth = 2.1;
@@ -456,5 +456,27 @@ describe('Radar controller tests', function() {
 		var meta = chart.getDatasetMeta(0);
 		var point = meta.data[0];
 		expect(point._model.borderWidth).toBe(0);
+	});
+
+	it('should use the pointRadius setting over the radius setting', function() {
+		var chart = window.acquireChart({
+			type: 'radar',
+			data: {
+				datasets: [{
+					data: [10, 15, 0, 4],
+					pointRadius: 10,
+					radius: 15,
+				}, {
+					data: [20, 20, 20, 20],
+					radius: 20
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4']
+			}
+		});
+
+		var meta0 = chart.getDatasetMeta(0);
+		var meta1 = chart.getDatasetMeta(1);
+		expect(meta0.data[0]._model.radius).toBe(10);
+		expect(meta1.data[0]._model.radius).toBe(20);
 	});
 });
