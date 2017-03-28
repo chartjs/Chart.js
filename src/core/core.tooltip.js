@@ -34,6 +34,7 @@ module.exports = function(Chart) {
 		footerAlign: 'left',
 		yPadding: 6,
 		xPadding: 6,
+		caretPadding: 2,
 		caretSize: 5,
 		cornerRadius: 6,
 		multiKeyBackground: '#fff',
@@ -522,7 +523,7 @@ module.exports = function(Chart) {
 				// Initial positioning and colors
 				model.x = Math.round(tooltipPosition.x);
 				model.y = Math.round(tooltipPosition.y);
-				model.caretPadding = helpers.getValueOrDefault(tooltipPosition.padding, 2);
+				model.caretPadding = opts.caretPadding;
 				model.labelColors = labelColors;
 
 				// data points
