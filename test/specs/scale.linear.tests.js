@@ -116,7 +116,7 @@ describe('Linear Scale', function() {
 		expect(chart.scales.yScale0.min).toBe(-100);
 		expect(chart.scales.yScale0.max).toBe(150);
 	});
-	
+
 	it('Should correctly determine the max & min when no values provided and suggested minimum and maximum are set', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
