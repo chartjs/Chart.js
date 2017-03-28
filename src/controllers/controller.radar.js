@@ -79,6 +79,14 @@ module.exports = function(Chart) {
 			var pointElementOptions = me.chart.options.elements.point;
 			var pointPosition = scale.getPointPositionForValue(index, dataset.data[index]);
 
+			// Compatibility: If the properties are defined with only the old name, use those values
+			if ((dataset.radius !== undefined) && (dataset.pointRadius === undefined)) {
+				dataset.pointRadius = dataset.radius;
+			}
+			if ((dataset.hitRadius !== undefined) && (dataset.pointHitRadius === undefined)) {
+				dataset.pointHitRadius = dataset.hitRadius;
+			}
+
 			helpers.extend(point, {
 				// Utility
 				_datasetIndex: me.index,
@@ -99,7 +107,7 @@ module.exports = function(Chart) {
 					pointStyle: custom.pointStyle ? custom.pointStyle : helpers.getValueAtIndexOrDefault(dataset.pointStyle, index, pointElementOptions.pointStyle),
 
 					// Tooltip
-					hitRadius: custom.hitRadius ? custom.hitRadius : helpers.getValueAtIndexOrDefault(dataset.hitRadius, index, pointElementOptions.hitRadius)
+					hitRadius: custom.hitRadius ? custom.hitRadius : helpers.getValueAtIndexOrDefault(dataset.pointHitRadius, index, pointElementOptions.hitRadius)
 				}
 			});
 
@@ -150,7 +158,7 @@ module.exports = function(Chart) {
 			var model = point._model;
 			var pointElementOptions = this.chart.options.elements.point;
 
-			model.radius = custom.radius ? custom.radius : helpers.getValueAtIndexOrDefault(dataset.radius, index, pointElementOptions.radius);
+			model.radius = custom.radius ? custom.radius : helpers.getValueAtIndexOrDefault(dataset.pointRadius, index, pointElementOptions.radius);
 			model.backgroundColor = custom.backgroundColor ? custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointBackgroundColor, index, pointElementOptions.backgroundColor);
 			model.borderColor = custom.borderColor ? custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.pointBorderColor, index, pointElementOptions.borderColor);
 			model.borderWidth = custom.borderWidth ? custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, pointElementOptions.borderWidth);
