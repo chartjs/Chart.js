@@ -158,7 +158,7 @@ module.exports = function(Chart) {
 			var pointOptions = me.chart.options.elements.point;
 			var x, y;
 			var labels = me.chart.data.labels || [];
-			var includeOffset = (labels.length === 1 || dataset.data.length === 1) || me.chart.isCombo;
+			var includeOffset = (labels.length === 1 || dataset.data.length === 1) || me.chart.isCombo || xScale.options.gridLines.offsetGridLines;
 
 			// Compatibility: If the properties are defined with only the old name, use those values
 			if ((dataset.radius !== undefined) && (dataset.pointRadius === undefined)) {
