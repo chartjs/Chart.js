@@ -119,12 +119,11 @@ describe('Time scale tests', function() {
 
 		it('should accept labels as strings', function() {
 			var mockData = {
-				labels: ['2015-01-01T20:00:00', '2015-01-02T21:00:00', '2015-01-03T22:00:00', '2015-01-05T23:00:00', '2015-01-07T03:00', '2015-01-08T10:00', '2015-01-10T12:00'], // days
+				labels: ['2015-01-01T12:00:00', '2015-01-02T21:00:00', '2015-01-03T22:00:00', '2015-01-05T23:00:00', '2015-01-07T03:00', '2015-01-08T10:00', '2015-01-10T12:00'], // days
 			};
 
 			var scale = createScale(mockData, Chart.scaleService.getScaleDefaults('time'));
-
-			// Counts down because the lines are drawn top to bottom
+			scale.update(1000, 200);
 			expect(scale.ticks).toEqual(['Jan 1, 2015', 'Jan 2, 2015', 'Jan 3, 2015', 'Jan 4, 2015', 'Jan 5, 2015', 'Jan 6, 2015', 'Jan 7, 2015', 'Jan 8, 2015', 'Jan 9, 2015', 'Jan 10, 2015', 'Jan 11, 2015']);
 		});
 
@@ -133,8 +132,7 @@ describe('Time scale tests', function() {
 				labels: [newDateFromRef(0), newDateFromRef(1), newDateFromRef(2), newDateFromRef(4), newDateFromRef(6), newDateFromRef(7), newDateFromRef(9)], // days
 			};
 			var scale = createScale(mockData, Chart.scaleService.getScaleDefaults('time'));
-
-			// Counts down because the lines are drawn top to bottom
+			scale.update(1000, 200);
 			expect(scale.ticks).toEqual(['Jan 1, 2015', 'Jan 2, 2015', 'Jan 3, 2015', 'Jan 4, 2015', 'Jan 5, 2015', 'Jan 6, 2015', 'Jan 7, 2015', 'Jan 8, 2015', 'Jan 9, 2015', 'Jan 10, 2015', 'Jan 11, 2015']);
 		});
 
@@ -179,8 +177,8 @@ describe('Time scale tests', function() {
 				}
 			});
 
-			// Counts down because the lines are drawn top to bottom
 			var xScale = chart.scales.xScale0;
+			xScale.update(800, 200);
 			expect(xScale.ticks).toEqual(['Jan 1, 2015', 'Jan 2, 2015', 'Jan 3, 2015', 'Jan 4, 2015', 'Jan 5, 2015', 'Jan 6, 2015', 'Jan 7, 2015', 'Jan 8, 2015', 'Jan 9, 2015', 'Jan 10, 2015', 'Jan 11, 2015']);
 		});
 	});
@@ -232,6 +230,7 @@ describe('Time scale tests', function() {
 		config.time.unit = 'hour';
 
 		var scale = createScale(mockData, config);
+		scale.update(2500, 200);
 		expect(scale.ticks).toEqual(['Jan 1, 8PM', 'Jan 1, 9PM', 'Jan 1, 10PM', 'Jan 1, 11PM', 'Jan 2, 12AM', 'Jan 2, 1AM', 'Jan 2, 2AM', 'Jan 2, 3AM', 'Jan 2, 4AM', 'Jan 2, 5AM', 'Jan 2, 6AM', 'Jan 2, 7AM', 'Jan 2, 8AM', 'Jan 2, 9AM', 'Jan 2, 10AM', 'Jan 2, 11AM', 'Jan 2, 12PM', 'Jan 2, 1PM', 'Jan 2, 2PM', 'Jan 2, 3PM', 'Jan 2, 4PM', 'Jan 2, 5PM', 'Jan 2, 6PM', 'Jan 2, 7PM', 'Jan 2, 8PM', 'Jan 2, 9PM']);
 	});
 
@@ -257,6 +256,7 @@ describe('Time scale tests', function() {
 		config.time.round = 'week';
 
 		var scale = createScale(mockData, config);
+		scale.update(800, 200);
 
 		// last date is feb 15 because we round to start of week
 		expect(scale.ticks).toEqual(['Dec 28, 2014', 'Jan 4, 2015', 'Jan 11, 2015', 'Jan 18, 2015', 'Jan 25, 2015', 'Feb 1, 2015', 'Feb 8, 2015', 'Feb 15, 2015']);
@@ -264,16 +264,16 @@ describe('Time scale tests', function() {
 
 	describe('when specifying limits', function() {
 		var mockData = {
-			labels: ['2015-01-01T20:00:00', '2015-01-02T20:00:00', '2015-01-03T20:00:00'], // days
+			labels: ['2015-01-01T20:00:00', '2015-01-02T20:00:00', '2015-01-03T20:00:00'],
 		};
 
 		var config;
 		beforeEach(function() {
 			config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('time'));
-			config.time.unit = 'day';
 		});
 
 		it('should use the min option', function() {
+			config.time.unit = 'day';
 			config.time.min = '2014-12-29T04:00:00';
 
 			var scale = createScale(mockData, config);
@@ -281,6 +281,7 @@ describe('Time scale tests', function() {
 		});
 
 		it('should use the max option', function() {
+			config.time.unit = 'day';
 			config.time.max = '2015-01-05T06:00:00';
 
 			var scale = createScale(mockData, config);
@@ -380,6 +381,7 @@ describe('Time scale tests', function() {
 		});
 
 		var xScale = chart.scales.xScale0;
+		xScale.update(800, 200);
 
 		it('should be bounded by nearest year starts', function() {
 			expect(xScale.getValueForPixel(xScale.left)).toBeCloseToTime({

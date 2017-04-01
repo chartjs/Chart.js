@@ -7,7 +7,7 @@ moment = typeof(moment) === 'function' ? moment : window.moment;
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
-	var time = {
+	var interval = {
 		millisecond: {
 			size: 1,
 			steps: [1, 2, 5, 10, 20, 50, 100, 250, 500]
@@ -115,15 +115,14 @@ module.exports = function(Chart) {
 	 * @param max {Number} scale maximum
 	 * @return {String} the unit to use
 	 */
-	function determineUnit(minUnit, min, max) {
-		var units = Object.keys(time);
-		var maxTicks = 11;
+	function determineUnit(minUnit, min, max, maxTicks) {
+		var units = Object.keys(interval);
 		var unit;
 		var numUnits = units.length;
 
 		for (var i = units.indexOf(minUnit); i < numUnits; i++) {
 			unit = units[i];
-			var unitDetails = time[unit];
+			var unitDetails = interval[unit];
 			var steps = (unitDetails.steps && unitDetails.steps[unitDetails.steps.length - 1]) || unitDetails.maxStep;
 			if (steps === undefined || Math.ceil((max - min) / (steps * unitDetails.size)) <= maxTicks) {
 				break;
@@ -140,10 +139,9 @@ module.exports = function(Chart) {
 	 * @param unit {String} the unit determined by the {@see determineUnit} method
 	 * @return {Number} the axis step size as a multiple of unit
 	 */
-	function determineStepSize(min, max, unit) {
+	function determineStepSize(min, max, unit, maxTicks) {
 		// Using our unit, figoure out what we need to scale as
-		var maxTicks = 11; // eventually configure this
-		var unitDefinition = time[unit];
+		var unitDefinition = interval[unit];
 		var unitSizeInMilliSeconds = unitDefinition.size;
 		var sizeInUnits = Math.ceil((max - min) / unitSizeInMilliSeconds);
 		var multiplier = 1;
@@ -166,19 +164,40 @@ module.exports = function(Chart) {
 	}
 
 	/**
+	 * Helper for generating axis labels.
+	 * @param options {ITimeGeneratorOptions} the options for generation
+	 * @param dataRange {IRange} the data range
+	 * @param niceRange {IRange} the pretty range to display
+	 * @return {Number[]} ticks
+	 */
+	function generateTicks(options, dataRange, niceRange) {
+		var ticks = [];
+		if (options.maxTicks) {
+			var stepSize = options.stepSize;
+			ticks.push(options.min !== undefined ? options.min : niceRange.min);
+			var cur = moment(niceRange.min);
+			while (cur.add(stepSize, options.unit).valueOf() < niceRange.max) {
+				ticks.push(cur.valueOf());
+			}
+			var realMax = options.max || niceRange.max;
+			if (ticks[ticks.length - 1] !== realMax) {
+				ticks.push(realMax);
+			}
+		}
+		return ticks;
+	}
+
+	/**
 	 * @function Chart.Ticks.generators.time
-	 * @param generationOptions {ITimeGeneratorOptions} the options for generation
+	 * @param options {ITimeGeneratorOptions} the options for generation
 	 * @param dataRange {IRange} the data range
 	 * @return {Number[]} ticks
 	 */
-	Chart.Ticks.generators.time = function(generationOptions, dataRange) {
-		var ticks = [];
-		var stepSize = generationOptions.stepSize;
-
+	Chart.Ticks.generators.time = function(options, dataRange) {
 		var niceMin;
 		var niceMax;
-		var isoWeekday = generationOptions.isoWeekday;
-		if (generationOptions.unit === 'week' && isoWeekday !== false) {
+		var isoWeekday = options.isoWeekday;
+		if (options.unit === 'week' && isoWeekday !== false) {
 			niceMin = moment(dataRange.min).startOf('isoWeek').isoWeekday(isoWeekday).valueOf();
 			niceMax = moment(dataRange.max).startOf('isoWeek').isoWeekday(isoWeekday);
 			if (dataRange.max - niceMax > 0) {
@@ -186,23 +205,17 @@ module.exports = function(Chart) {
 			}
 			niceMax = niceMax.valueOf();
 		} else {
-			niceMin = moment(dataRange.min).startOf(generationOptions.unit).valueOf();
-			niceMax = moment(dataRange.max).startOf(generationOptions.unit);
+			niceMin = moment(dataRange.min).startOf(options.unit).valueOf();
+			niceMax = moment(dataRange.max).startOf(options.unit);
 			if (dataRange.max - niceMax > 0) {
-				niceMax.add(1, generationOptions.unit);
+				niceMax.add(1, options.unit);
 			}
 			niceMax = niceMax.valueOf();
 		}
-
-		// Put the values into the ticks array
-		ticks.push(generationOptions.min !== undefined ? generationOptions.min : niceMin);
-		var cur = moment(niceMin);
-		while (cur.add(stepSize, generationOptions.unit).valueOf() < niceMax) {
-			ticks.push(cur.valueOf());
-		}
-		ticks.push(generationOptions.max !== undefined ? generationOptions.max : niceMax);
-
-		return ticks;
+		return generateTicks(options, dataRange, {
+			min: niceMin,
+			max: niceMax
+		});
 	};
 
 	var TimeScale = Chart.Scale.extend({
@@ -299,32 +312,19 @@ module.exports = function(Chart) {
 				maxTimestamp = parseTime(me, timeOpts.max).valueOf();
 			}
 
-			var unit;
-			if (timeOpts.unit) {
-				unit = timeOpts.unit;
-			} else {
-				// Auto Determine Unit
-				unit = determineUnit(timeOpts.minUnit, minTimestamp || dataMin, maxTimestamp || dataMax);
-			}
+			var maxTicks = me.getLabelCapacity(minTimestamp || dataMin);
+			var unit = timeOpts.unit || determineUnit(timeOpts.minUnit, minTimestamp || dataMin, maxTimestamp || dataMax, maxTicks);
 			me.displayFormat = timeOpts.displayFormats[unit];
 
-			var stepSize;
-			if (timeOpts.stepSize) {
-				stepSize = timeOpts.stepSize;
-			} else {
-				// Auto determine step size
-				stepSize = determineStepSize(minTimestamp || dataMin, maxTimestamp || dataMax, unit);
-			}
-
-			var timeGeneratorOptions = {
-				maxTicks: 11,
+			var stepSize = timeOpts.stepSize || determineStepSize(minTimestamp || dataMin, maxTimestamp || dataMax, unit, maxTicks);
+			var ticks = me.ticks = Chart.Ticks.generators.time({
+				maxTicks: maxTicks,
 				min: minTimestamp,
 				max: maxTimestamp,
 				stepSize: stepSize,
 				unit: unit,
 				isoWeekday: timeOpts.isoWeekday
-			};
-			var ticks = me.ticks = Chart.Ticks.generators.time(timeGeneratorOptions, {
+			}, {
 				min: dataMin,
 				max: dataMax
 			});
@@ -413,6 +413,28 @@ module.exports = function(Chart) {
 			var offset = (pixel - (me.isHorizontal() ? me.left : me.top)) / innerDimension;
 			return moment(me.min + (offset * (me.max - me.min)));
 		},
+		// Crude approximation of what the label width might be
+		getLabelWidth: function(label) {
+			var me = this;
+			var ticks = me.options.ticks;
+
+			var tickLabelWidth = me.ctx.measureText(label).width;
+			var cosRotation = Math.cos(helpers.toRadians(ticks.maxRotation));
+			var sinRotation = Math.sin(helpers.toRadians(ticks.maxRotation));
+			var tickFontSize = helpers.getValueOrDefault(ticks.fontSize, Chart.defaults.global.defaultFontSize);
+			return (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation);
+		},
+		getLabelCapacity: function(exampleTime) {
+			var me = this;
+
+			me.displayFormat = me.options.time.displayFormats.millisecond;	// Pick the longest format for guestimation
+			var exampleLabel = me.tickFormatFunction(moment(exampleTime), 0, []);
+			var tickLabelWidth = me.getLabelWidth(exampleLabel);
+
+			var innerWidth = me.isHorizontal() ? me.width : me.height;
+			var labelCapacity = innerWidth / tickLabelWidth;
+			return labelCapacity;
+		}
 	});
 	Chart.scaleService.registerScaleType('time', TimeScale, defaultConfig);
 
