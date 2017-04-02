@@ -2,6 +2,27 @@
 
 A bubble chart is used to display three dimensions of data at the same time. The location of the bubble is determined by the first two dimensions and the corresponding horizontal and vertical axes. The third dimension is represented by the size of the individual bubbles. 
 
+{% chartjs %}
+{
+    "type": "bubble",
+    "data": {
+        "datasets": [{
+            "label": "First Dataset",
+            "data": [{
+                "x": 20,
+                "y": 30,
+                "r": 15
+            }, {
+                "x": 40,
+                "y": 10,
+                "r": 10
+            }],
+            "backgroundColor": "rgb(255, 99, 132)"
+        }]
+    },
+}
+{% endchartjs %}
+
 ## Example Usage
 
 ```javascript
