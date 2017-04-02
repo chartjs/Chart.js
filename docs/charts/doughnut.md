@@ -7,6 +7,28 @@ Pie and doughnut charts are effectively the same class in Chart.js, but have one
 
 They are also registered under two aliases in the `Chart` core. Other than their different default value, and different alias, they are exactly the same.
 
+{% chartjs %}
+{
+    "type": "doughnut",
+    "data": {
+        "labels": [
+            "Red",
+            "Blue",
+            "Yellow",
+        ],
+        "datasets": [{
+            "label": "My First Dataset",
+            "data": [300, 50, 100],
+            "backgroundColor": [
+                "rgb(255, 99, 132)",
+                "rgb(54, 162, 235)",
+                "rgb(255, 205, 86)",
+            ]
+        }]
+    },
+}
+{% endchartjs %}
+
 ## Example Usage
 
 ```javascript

@@ -4,6 +4,32 @@ Polar area charts are similar to pie charts, but each segment has the same angle
 
 This type of chart is often useful when we want to show a comparison data similar to a pie chart, but also show a scale of values for context.
 
+{% chartjs %}
+{
+    "type": "polarArea",
+    "data": {
+        "labels": [
+            "Red",
+            "Green",
+            "Yellow",
+            "Grey",
+            "Blue"
+        ],
+        "datasets": [{
+            "label": "My First Dataset",
+            "data": [11, 16, 7, 3, 14],
+            "backgroundColor": [
+                "rgb(255, 99, 132)",
+                "rgb(75, 192, 192)",
+                "rgb(255, 205, 86)",
+                "rgb(201, 203, 207)",
+                "rgb(54, 162, 235)"
+            ]
+        }]
+    },
+}
+{% endchartjs %}
+
 ## Example Usage
 
 ```javascript
