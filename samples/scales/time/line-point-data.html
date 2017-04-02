@@ -119,7 +119,8 @@
 
 		document.getElementById('addData').addEventListener('click', function() {
 			if (config.data.datasets.length > 0) {
-				var lastTime = myLine.scales['x-axis-0'].labelMoments[0].length ? myLine.scales['x-axis-0'].labelMoments[0][myLine.scales['x-axis-0'].labelMoments[0].length - 1] : moment();
+				var numTicks = myLine.scales['x-axis-0'].ticksAsTimestamps.length;
+				var lastTime = numTicks ? moment(myLine.scales['x-axis-0'].ticksAsTimestamps[numTicks - 1]) : moment();
 				var newTime = lastTime
 					.clone()
 					.add(1, 'day')
