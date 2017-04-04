@@ -36,6 +36,7 @@ module.exports = function(Chart) {
 				// Set ILayoutItem parameters for backwards compatibility
 				scale.fullWidth = scale.options.fullWidth;
 				scale.position = scale.options.position;
+				scale.weight = scale.options.weight;
 				Chart.layoutService.addBox(chart, scale);
 			});
 		}
