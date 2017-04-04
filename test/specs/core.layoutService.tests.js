@@ -532,7 +532,7 @@ describe('Test the layout service', function() {
 			expect(yScale4.weight).toBe(2);
 
 			var isOrderCorrect = false;
-			
+
 			// bottom axes
 			isOrderCorrect = xScale2.top < xScale0.top && xScale0.top < xScale1.top;
 			expect(isOrderCorrect).toBe(true);
@@ -540,7 +540,7 @@ describe('Test the layout service', function() {
 			// top axes
 			isOrderCorrect = xScale4.top < xScale3.top;
 			expect(isOrderCorrect).toBe(true);
-			
+
 			// left axes
 			isOrderCorrect = yScale1.left < yScale0.left && yScale0.left < yScale2.left;
 			expect(isOrderCorrect).toBe(true);
