@@ -356,7 +356,7 @@ module.exports = function(Chart) {
 					} else {
 						largestTextWidth += me.options.ticks.padding;
 					}
-					minSize.width += largestTextWidth;
+					minSize.width = Math.min(me.maxWidth, minSize.width + largestTextWidth);
 					me.paddingTop = tickFont.size / 2;
 					me.paddingBottom = tickFont.size / 2;
 				}

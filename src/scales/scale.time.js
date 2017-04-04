@@ -145,18 +145,19 @@ module.exports = function(Chart) {
 		var unitSizeInMilliSeconds = unitDefinition.size;
 		var sizeInUnits = Math.ceil((max - min) / unitSizeInMilliSeconds);
 		var multiplier = 1;
+		var range = max - min;
 
 		if (unitDefinition.steps) {
 			// Have an array of steps
 			var numSteps = unitDefinition.steps.length;
 			for (var i = 0; i < numSteps && sizeInUnits > maxTicks; i++) {
 				multiplier = unitDefinition.steps[i];
-				sizeInUnits = Math.ceil((max - min) / (unitSizeInMilliSeconds * multiplier));
+				sizeInUnits = Math.ceil(range / (unitSizeInMilliSeconds * multiplier));
 			}
 		} else {
-			while (sizeInUnits > maxTicks) {
+			while (sizeInUnits > maxTicks && maxTicks > 0) {
 				++multiplier;
-				sizeInUnits = Math.ceil((max - min) / (unitSizeInMilliSeconds * multiplier));
+				sizeInUnits = Math.ceil(range / (unitSizeInMilliSeconds * multiplier));
 			}
 		}
 

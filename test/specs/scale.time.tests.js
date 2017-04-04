@@ -471,4 +471,34 @@ describe('Time scale tests', function() {
 			unit: 'day',
 		});
 	});
+
+	it('does not create a negative width chart when hidden', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: []
+				}]
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						type: 'time',
+						time: {
+							min: moment().subtract(1, 'months'),
+							max: moment(),
+						}
+					}],
+				},
+				responsive: true,
+			},
+		}, {
+			wrapper: {
+				style: 'display: none',
+			},
+		});
+		expect(chart.scales['y-axis-0'].width).toEqual(0);
+		expect(chart.scales['y-axis-0'].maxWidth).toEqual(0);
+		expect(chart.width).toEqual(0);
+	});
 });
