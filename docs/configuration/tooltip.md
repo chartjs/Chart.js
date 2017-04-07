@@ -8,7 +8,7 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 | -----| ---- | --------| -----------
 | `enabled` | `Boolean` | `true` | Are tooltips enabled
 | `custom` | `Function` | `null` | See [custom tooltip](#custom-tooltips) section.
-| `mode` | `String` | `'nearest'` | Sets which elements appear in the tooltip. [more...](../general/interactions/modes.md#interaction-modes).
+| `mode` | `String` | `'nearest'` | Sets which elements appear in the tooltip. [more...](../general/interactions/modes.md#chart-configuration-interaction-modes).
 | `intersect` | `Boolean` | `true` | if true, the tooltip mode applies only when the mouse position intersects with an element. If false, the mode will be applied at all times.
 | `position` | `String` | `'average'` | The mode for positioning the tooltip. [more...](#position-modes)
 | `callbacks` | `Object` | | See the [callbacks section](#tooltip-callbacks)

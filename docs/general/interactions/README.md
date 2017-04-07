@@ -4,6 +4,6 @@ The hover configuration is passed into the `options.hover` namespace. The global
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `mode` | `String` | `'nearest'` | Sets which elements appear in the tooltip. See [Interaction Modes](./modes.md#interaction-modes) for details.
+| `mode` | `String` | `'nearest'` | Sets which elements appear in the tooltip. See [Interaction Modes](./modes.md#chart-configuration-interaction-modes) for details.
 | `intersect` | `Boolean` | `true` | if true, the hover mode only applies when the mouse position intersects an item on the chart.
 | `animationDuration` | `Number` | `400` | Duration in milliseconds it takes to animate hover style changes.
