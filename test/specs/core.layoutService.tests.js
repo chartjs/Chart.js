@@ -428,5 +428,126 @@ describe('Test the layout service', function() {
 			expect(yAxis.left).toBe(legend.right);
 			expect(xAxis.bottom).toBe(title.top);
 		});
+
+		it('should correctly set weights of scales and order them', function() {
+			var chart = window.acquireChart({
+				type: 'bar',
+				data: {
+					datasets: [
+						{
+							data: [10, 5, 0, 25, 78, -10]
+						}
+					],
+					labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5', 'tick6']
+				},
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'xScale0',
+							type: 'category',
+							display: true,
+							weight: 1
+						}, {
+							id: 'xScale1',
+							type: 'category',
+							display: true,
+							weight: 2
+						}, {
+							id: 'xScale2',
+							type: 'category',
+							display: true
+						}, {
+							id: 'xScale3',
+							type: 'category',
+							display: true,
+							position: 'top',
+							weight: 1
+						}, {
+							id: 'xScale4',
+							type: 'category',
+							display: true,
+							position: 'top',
+							weight: 2
+						}],
+						yAxes: [{
+							id: 'yScale0',
+							type: 'linear',
+							display: true,
+							weight: 1
+						}, {
+							id: 'yScale1',
+							type: 'linear',
+							display: true,
+							weight: 2
+						}, {
+							id: 'yScale2',
+							type: 'linear',
+							display: true
+						}, {
+							id: 'yScale3',
+							type: 'linear',
+							display: true,
+							position: 'right',
+							weight: 1
+						}, {
+							id: 'yScale4',
+							type: 'linear',
+							display: true,
+							position: 'right',
+							weight: 2
+						}]
+					}
+				}
+			}, {
+				canvas: {
+					height: 150,
+					width: 250
+				}
+			});
+
+			var xScale0 = chart.scales.xScale0;
+			var xScale1 = chart.scales.xScale1;
+			var xScale2 = chart.scales.xScale2;
+			var xScale3 = chart.scales.xScale3;
+			var xScale4 = chart.scales.xScale4;
+
+			var yScale0 = chart.scales.yScale0;
+			var yScale1 = chart.scales.yScale1;
+			var yScale2 = chart.scales.yScale2;
+			var yScale3 = chart.scales.yScale3;
+			var yScale4 = chart.scales.yScale4;
+
+			expect(xScale0.weight).toBe(1);
+			expect(xScale1.weight).toBe(2);
+			expect(xScale2.weight).toBe(0);
+
+			expect(xScale3.weight).toBe(1);
+			expect(xScale4.weight).toBe(2);
+
+			expect(yScale0.weight).toBe(1);
+			expect(yScale1.weight).toBe(2);
+			expect(yScale2.weight).toBe(0);
+
+			expect(yScale3.weight).toBe(1);
+			expect(yScale4.weight).toBe(2);
+
+			var isOrderCorrect = false;
+
+			// bottom axes
+			isOrderCorrect = xScale2.top < xScale0.top && xScale0.top < xScale1.top;
+			expect(isOrderCorrect).toBe(true);
+
+			// top axes
+			isOrderCorrect = xScale4.top < xScale3.top;
+			expect(isOrderCorrect).toBe(true);
+
+			// left axes
+			isOrderCorrect = yScale1.left < yScale0.left && yScale0.left < yScale2.left;
+			expect(isOrderCorrect).toBe(true);
+
+			// right axes
+			isOrderCorrect = yScale3.left < yScale4.left;
+			expect(isOrderCorrect).toBe(true);
+		});
 	});
 });
