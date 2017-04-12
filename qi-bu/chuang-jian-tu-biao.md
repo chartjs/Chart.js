@@ -1,31 +1,3 @@
-####使用
-用旧有的script元素引入Chart.js：
-
-```
-<script src="Chart.js"></script>
-<script>
-    var myChart = new Chart({...})
-</script>
-
-```
-
-使用模块加载引入Chart.js：
-
-```
-// Using CommonJS
-var Chart = require('chart.js')
-var myChart = new Chart({...})
-
-// ES6
-import Chart from 'chart.js'
-let myChart = new Chart({...})
-
-// Using requirejs
-require(['path/to/Chartjs'], function(Chart){
- var myChart = new Chart({...})
-})
-```
-
 ####创建图标
 为了创建一个图表，我们需要在实际使用场景中实例化**Chart**类.举个栗子：
 

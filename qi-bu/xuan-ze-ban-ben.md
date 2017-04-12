@@ -1,17 +1,3 @@
-###开始
-####下载chart.js
-你可以在github上下载最新版本的Chart.js，或是使用Chart.js的CDN地址来代替。当你下载或是克隆了这个库之后，必须使用gulp build命令来生成dist目录。Chart.js库不会存在预先编译好的版本了，所以强烈建议使用可替代的方式来下载这个库进行使用。
-####安装
-#####npm
-
-```
-npm install chart.js --save
-```
-#####bower
-
-```
-bower install chart.js --save
-```
 ####选择合适的版本
 Chart.js提供了两种不同的版本供你选择。
 

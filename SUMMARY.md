@@ -1,8 +1,11 @@
 # Summary
 
 * [Getting started（起步）](README.md)
-  * [Download&Installation（下载&安装）](qi-bu/xia-zai-an-zhuang.md)
-  * [Usage&Creating（使用&创建图表）](qi-bu/chuang-jian-tu-biao.md)
+  * [Download（下载）](qi-bu/xia-zai.md)
+  * [Installation（安装）](qi-bu/an-zhuang.md)
+  * [Selecting the Correct Build（选择版本）](qi-bu/xuan-ze-ban-ben.md)
+  * [Usage&Creating（使用）](qi-bu/shi-yong.md)
+  * [Creating a Chart（创建图表）](qi-bu/chuang-jian-tu-biao.md)
 * [配置选项](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md)
   * Chart Data
   * Creating a Chart with Options
