@@ -1,8 +1,8 @@
 # Summary
 
-* [起步](README.md)
-  * [下载&安装](qi-bu/xia-zai-an-zhuang.md)
-  * [创建图表](qi-bu/chuang-jian-tu-biao.md)
+* [Getting started（起步）](README.md)
+  * [Download&Installation（下载&安装）](qi-bu/xia-zai-an-zhuang.md)
+  * [Usage&Creating（使用&创建图表）](qi-bu/chuang-jian-tu-biao.md)
 * [配置选项](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md)
   * Chart Data
   * Creating a Chart with Options
