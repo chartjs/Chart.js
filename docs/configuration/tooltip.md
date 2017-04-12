@@ -41,6 +41,7 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 | `displayColors` | `Boolean` | `true` | if true, color boxes are shown in the tooltip
 | `borderColor` | Color | `'rgba(0,0,0,0)'` | Color of the border
 | `borderWidth` | `Number` | `0` | Size of the border
+| `reverse` | `Boolean` | `false` | if true, reverses the order of the items in the tooltip
 
 ### Position Modes
  Possible modes are:

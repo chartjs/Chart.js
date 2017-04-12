@@ -41,6 +41,7 @@ module.exports = function(Chart) {
 		displayColors: true,
 		borderColor: 'rgba(0,0,0,0)',
 		borderWidth: 0,
+		reverse: false,
 		callbacks: {
 			// Args are: (tooltipItems, data)
 			beforeTitle: helpers.noop,
@@ -423,6 +424,10 @@ module.exports = function(Chart) {
 				bodyItems.push(bodyItem);
 			});
 
+			if (me._options.reverse) {
+				bodyItems.reverse();
+			}
+
 			return bodyItems;
 		},
 
@@ -512,6 +517,10 @@ module.exports = function(Chart) {
 				helpers.each(tooltipItems, function(tooltipItem) {
 					labelColors.push(opts.callbacks.labelColor.call(me, tooltipItem, me._chart));
 				});
+
+				if (opts.reverse) {
+					labelColors.reverse();
+				}
 
 				// Build the Text Lines
 				model.title = me.getTitle(tooltipItems, data);
