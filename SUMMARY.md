@@ -30,9 +30,9 @@
   * Scatter Line Charts
   * Chart Options
   * Stacked Charts
-* [柱状图（Bar Chart）](zhu-zhuang-tu/zhu-zhuang-tu.md)
+* [Bar Chart（柱状图）](zhu-zhuang-tu/zhu-zhuang-tu.md)
   * [Introduction（介绍）](zhu-zhuang-tu/zhu-zhuang-tu.md#Introduction)
-  * [Example Usage（栗子）](zhu-zhuang-tu/zhu-zhuang-tu.md#example)
+  * [Example Usage（实例）](zhu-zhuang-tu/zhu-zhuang-tu.md#example)
   * [Dataset Structure（数据集结构）](zhu-zhuang-tu/zhu-zhuang-tu.md#dataset)
   * [Chart Options（图表选项）](zhu-zhuang-tu/zhu-zhuang-tu.md#option)
   * [barPercentage vs categoryPercentage](zhu-zhuang-tu/zhu-zhuang-tu.md#vs)
