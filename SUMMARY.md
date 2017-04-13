@@ -7,9 +7,9 @@
   * [Usage&Creating（使用）](qi-bu/xia-zai.md#shiyong)
   * [Creating a Chart（创建图表）](qi-bu/xia-zai.md#creating)
 * [配置选项](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md)
-  * Chart Data
-  * Creating a Chart with Options
-  * Global Configuration
+  * [Chart Data（图表数据）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#tu-biao-shu-ju)
+  * [Creating a Chart with Options（自定义选项创建图表）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#zi-ding-yi-xuan-xiang)
+  * [Global Configuration（全局配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#quan-ju-pei-zhi)
   * Common Chart Configuration
   * Layout Configuration
   * Title Configuration
