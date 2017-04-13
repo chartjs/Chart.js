@@ -53,7 +53,7 @@ require(['path/to/Chartjs'], function(Chart){
 ```
 
 <span id="creating"></span>
-#### 创建图标
+#### 创建图表
 为了创建一个图表，我们需要在实际使用场景中实例化**Chart**类.举个栗子：
 
 ```javascript
