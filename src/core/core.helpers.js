@@ -812,7 +812,7 @@ module.exports = function(Chart) {
 		return isNaN(ch)? h : Math.min(h, ch);
 	};
 	helpers.getStyle = function(el, property) {
-		return el.currentStyle ?
+		return (typeof el.currentStyle !== 'undefined') ?
 			el.currentStyle[property] :
 			document.defaultView.getComputedStyle(el, null).getPropertyValue(property);
 	};
