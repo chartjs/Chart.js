@@ -74,11 +74,11 @@
   * Creating Plugins
   * Building Chart.js
 * [注意事项](zhu-yi-shi-xiang/zhu-yi-shi-xiang.md)
-  * Previous versions
-  * Browser support
-  * Bugs & issues
-  * Contributing
-  * License
-  * Charting Library Comparison
-  * Popular Plugins
-  * Popular Extensions
+  * [Previous versions（之前的版本）](zhu-yi-shi-xiang/zhu-yi-shi-xiang.md#previous)
+  * [Browser support（浏览器支持）](zhu-yi-shi-xiang/zhu-yi-shi-xiang.md#browser)
+  * [Bugs & issues（bugs和issues）](zhu-yi-shi-xiang/zhu-yi-shi-xiang.md#bugs)
+  * [Contributing（贡献）](zhu-yi-shi-xiang/zhu-yi-shi-xiang.md#contribution)
+  * [License（协议）](zhu-yi-shi-xiang/zhu-yi-shi-xiang.md#license)
+  * [Charting Library Comparison（图表库对比）](zhu-yi-shi-xiang/zhu-yi-shi-xiang.md#charting)
+  * [Popular Plugins（热门插件）](zhu-yi-shi-xiang/zhu-yi-shi-xiang.md#plugin)
+  * [Popular Extensions（热门扩展）](zhu-yi-shi-xiang/zhu-yi-shi-xiang.md#extension)
