@@ -111,7 +111,7 @@
 			path: 'scales/time/line.html'
 		}, {
 			title: 'Line (point data)',
-			path: 'scales/time/line.html'
+			path: 'scales/time/line-point-data.html'
 		}, {
 			title: 'Combo',
 			path: 'scales/time/combo.html'
