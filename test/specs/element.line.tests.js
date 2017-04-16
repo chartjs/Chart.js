@@ -243,7 +243,141 @@ describe('Chart.elements.Line', function() {
 		}]);
 	});
 
-	it('should draw stepped lines', function() {
+	it('should draw stepped lines, with "before" interpolation', function() {
+
+		// Both `true` and `'before'` should draw the same steppedLine
+		var beforeInterpolations = [true, 'before'];
+
+		beforeInterpolations.forEach(function(mode) {
+			var mockContext = window.createMockContext();
+
+			// Create our points
+			var points = [];
+			points.push(new Chart.elements.Point({
+				_datasetindex: 2,
+				_index: 0,
+				_view: {
+					x: 0,
+					y: 10,
+					controlPointNextX: 0,
+					controlPointNextY: 10,
+					steppedLine: mode
+				}
+			}));
+			points.push(new Chart.elements.Point({
+				_datasetindex: 2,
+				_index: 1,
+				_view: {
+					x: 5,
+					y: 0,
+					controlPointPreviousX: 5,
+					controlPointPreviousY: 0,
+					controlPointNextX: 5,
+					controlPointNextY: 0,
+					steppedLine: mode
+				}
+			}));
+			points.push(new Chart.elements.Point({
+				_datasetindex: 2,
+				_index: 2,
+				_view: {
+					x: 15,
+					y: -10,
+					controlPointPreviousX: 15,
+					controlPointPreviousY: -10,
+					controlPointNextX: 15,
+					controlPointNextY: -10,
+					steppedLine: mode
+				}
+			}));
+			points.push(new Chart.elements.Point({
+				_datasetindex: 2,
+				_index: 3,
+				_view: {
+					x: 19,
+					y: -5,
+					controlPointPreviousX: 19,
+					controlPointPreviousY: -5,
+					controlPointNextX: 19,
+					controlPointNextY: -5,
+					steppedLine: mode
+				}
+			}));
+
+			var line = new Chart.elements.Line({
+				_datasetindex: 2,
+				_chart: {
+					ctx: mockContext,
+				},
+				_children: points,
+				// Need to provide some settings
+				_view: {
+					fill: false, // don't want to fill
+					tension: 0, // no bezier curve for now
+				}
+			});
+
+			line.draw();
+
+			expect(mockContext.getCalls()).toEqual([{
+				name: 'save',
+				args: [],
+			}, {
+				name: 'setLineCap',
+				args: ['butt']
+			}, {
+				name: 'setLineDash',
+				args: [
+					[]
+				]
+			}, {
+				name: 'setLineDashOffset',
+				args: [0.0]
+			}, {
+				name: 'setLineJoin',
+				args: ['miter']
+			}, {
+				name: 'setLineWidth',
+				args: [3]
+			}, {
+				name: 'setStrokeStyle',
+				args: ['rgba(0,0,0,0.1)']
+			}, {
+				name: 'beginPath',
+				args: []
+			}, {
+				name: 'moveTo',
+				args: [0, 10]
+			}, {
+				name: 'lineTo',
+				args: [5, 10]
+			}, {
+				name: 'lineTo',
+				args: [5, 0]
+			}, {
+				name: 'lineTo',
+				args: [15, 0]
+			}, {
+				name: 'lineTo',
+				args: [15, -10]
+			}, {
+				name: 'lineTo',
+				args: [19, -10]
+			}, {
+				name: 'lineTo',
+				args: [19, -5]
+			}, {
+				name: 'stroke',
+				args: [],
+			}, {
+				name: 'restore',
+				args: []
+			}]);
+		});
+	});
+
+	it('should draw stepped lines, with "after" interpolation', function() {
+
 		var mockContext = window.createMockContext();
 
 		// Create our points
@@ -256,7 +390,7 @@ describe('Chart.elements.Line', function() {
 				y: 10,
 				controlPointNextX: 0,
 				controlPointNextY: 10,
-				steppedLine: true
+				steppedLine: 'after'
 			}
 		}));
 		points.push(new Chart.elements.Point({
@@ -269,7 +403,7 @@ describe('Chart.elements.Line', function() {
 				controlPointPreviousY: 0,
 				controlPointNextX: 5,
 				controlPointNextY: 0,
-				steppedLine: true
+				steppedLine: 'after'
 			}
 		}));
 		points.push(new Chart.elements.Point({
@@ -282,7 +416,7 @@ describe('Chart.elements.Line', function() {
 				controlPointPreviousY: -10,
 				controlPointNextX: 15,
 				controlPointNextY: -10,
-				steppedLine: true
+				steppedLine: 'after'
 			}
 		}));
 		points.push(new Chart.elements.Point({
@@ -295,7 +429,7 @@ describe('Chart.elements.Line', function() {
 				controlPointPreviousY: -5,
 				controlPointNextX: 19,
 				controlPointNextY: -5,
-				steppedLine: true
+				steppedLine: 'after'
 			}
 		}));
 
@@ -345,19 +479,19 @@ describe('Chart.elements.Line', function() {
 			args: [0, 10]
 		}, {
 			name: 'lineTo',
-			args: [5, 10]
+			args: [0, 0]
 		}, {
 			name: 'lineTo',
 			args: [5, 0]
 		}, {
 			name: 'lineTo',
-			args: [15, 0]
+			args: [5, -10]
 		}, {
 			name: 'lineTo',
 			args: [15, -10]
 		}, {
 			name: 'lineTo',
-			args: [19, -10]
+			args: [15, -5]
 		}, {
 			name: 'lineTo',
 			args: [19, -5]
