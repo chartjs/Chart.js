@@ -13,7 +13,7 @@
   * [Common Chart Configuration（通用图表配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#tong-yong-tu-biao-pei-zhi)
   * [Layout Configuration（布局配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#bu-ju-pei-zhi)
   * [Title Configuration（标题配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#biao-ti-pei-zhi)
-  * Legend Configuration
+  * [Legend Configuration（图例配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#tu-li-pei-zhi)
   * Tooltip Configuration
   * Hover Configuration
   * Interaction Modes

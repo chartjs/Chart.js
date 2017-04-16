@@ -129,3 +129,92 @@ var chartInstance = new Chart(ctx, {
     }
 })
 ```
+
+<span id="tu-li-pei-zhi"></span>
+#### 图例配置
+
+图例配置选项通过`options.legend`命名空间进行传递。图例配置的全局选项在`Chart.defaults.global.legend`中定义：
+
+| 选项名 | 类型 | 默认值 | 描述 
+| --- | --- | --- | --- |
+| display | Boolean | true  | 是否显示图例 |
+| position | String | 'top' | 图例所在方位，可以设置为`top`, `bottom`, `left`, `right` |
+| fullWidth | Boolean | true | 宽度为canvas的百分百宽度 |
+| onClick | Function | function(event, legendItem) {} | 当图例标签注册了`click`事件时点击图例触发 |
+| onHover | Function | function(event, legendItem) {} | 当图例标签注册了`mousemove`事件时滑过图例触发 |
+| labels | Object | - | 参考下面[图例标签配置](#tu-li-biao-qian) |
+| reverse | Boolean | false | 逆序显示数据图例 |
+
+<span id="tu-li-biao-qian"></span>
+##### 图例标签配置
+
+图例标签配置在上述图例配置中的`labels`选项中进行设置:
+
+| 选项名 | 类型 | 默认值 | 描述 
+| --- | --- | --- | --- |
+| boxWidth | Number | 40 | 图例标签色块宽度 |
+| fontSize | Number | 12 | 图例字体大小 |
+| fontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | 图例字体 |
+| fontColor | Color | "#666" | 图例字体颜色 |
+| fontStyle | String | 'normal' | 图例字体风格 |
+| padding | Number | 10 | 图例色块间的边距 |
+| generateLabels | Function | function(chart) { } | 定义生成图例，默认为文字+色块，更多信息参考[图例项样式](#tu-li-yang-shi) |
+| filter | Function | null | 参考[图例项样式](#tu-li-yang-shi) |
+| usePointStyle | Boolean | false | 设置标签样式为文字大小的`点`状 |
+
+<span id="tu-li-yang-shi"></span>
+##### 图例项样式
+
+在上述图例标签配置中`labels.generateLabels`选项中进行设置，必须实现以下接口：
+
+```javascript
+{
+    // 图例显示内容
+    text: String,
+
+    // 图例色块填充色
+    fillStyle: Color,
+
+    // 设置为true时图例上将显示删除线
+    hidden: Boolean,
+
+    // For box border. See https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/lineCap
+    lineCap: String,
+
+    // For box border. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
+    lineDash: Array[Number],
+
+    // For box border. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
+    lineDashOffset: Number,
+
+    // For box border. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin
+    lineJoin: String,
+
+    // 容器边框宽度
+    lineWidth: Number,
+
+    // 容器删除色
+    strokeStyle: Color
+
+    // 图例块点状风格 (仅当`usePointStyle`设置为`true`时生效)
+    pointStyle: String
+}
+```
+##### 示例
+
+以下示例将设置图表的图例文字颜色为红色：
+
+```javascript
+var chartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: data,
+    options: {
+        legend: {
+            display: true,
+            labels: {
+                fontColor: 'rgb(255, 99, 132)'
+            }
+        }
+}
+});
+```
