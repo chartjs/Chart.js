@@ -1,6 +1,6 @@
 # Summary
 
-* [Getting started（起步）](README.md)
+* [Getting started（起步）](qi-bu/qi-bu.md)
   * [Download（下载）](qi-bu/qi-bu.md#xiazai)
   * [Installation（安装）](qi-bu/qi-bu.md#anzhuang)
   * [Selecting the Correct Build（选择版本）](qi-bu/qi-bu.md#xuanzebanben)

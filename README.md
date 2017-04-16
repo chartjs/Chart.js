@@ -1,4 +1,4 @@
 # chartjs-zh
 chartjs v2 中文文档
 
-# 测试同步
+[开始阅读](https://bit_root.gitbooks.io/chartjs-zh/)
