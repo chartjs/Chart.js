@@ -23,7 +23,7 @@
   * Patterns
   * Mixed Chart Types
 * [曲线图（Line Chart）](qu-xian-tu/qu-xian-tu.md)
-  * Introduction
+  * [Introduction](qu-xian-tu/qu-xian-tu/introduction.md)
   * Example Usage
   * Dataset Structure
   * Data Points
@@ -82,3 +82,4 @@
   * Charting Library Comparison
   * Popular Plugins
   * Popular Extensions
+
