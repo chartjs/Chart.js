@@ -218,3 +218,46 @@ var chartInstance = new Chart(ctx, {
 }
 });
 ```
+
+<span id="ti-shi-xiang-pei-zhi"></span>
+#### 提示项配置
+
+提示项配置选项通过`options.tooltips`命名空间进行传递。提示项配置的全局选项在`Chart.defaults.global.tooltips`中定义：
+
+| 选项名 | 类型 | 默认值 | 描述 
+| --- | --- | --- | --- |
+| enabled | Boolean | true | 是否显示提示 |
+| custom | Function | null | 参考后文 |
+| mode | String | 'nearest' | 提示项样式 |
+| intersect | Boolean | true | 设置为`true`时将获得焦点的时候显示提示 |
+| position | String | 'average' | 提示项显示区域 `average`, `neares` |
+| itemSort | Function | undefined | 提示项排序 |
+| filter | Function | undefined | 提示项过滤器 |
+| backgroundColor | Color | 'rgba(0,0,0,0.8)' | 提示项背景色 |
+| titleFontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | 提示项标题字体 |
+| titleFontSize | Number | 12 | 提示项标题字体大小 |
+| titleFontStyle | String | "bold" | 提示项标题字体风格 |
+| titleFontColor | Color | "#fff" | 提示项标题字体颜色 |
+| titleSpacing | Number | 2 | 提示项标题字间距 |
+| titleMarginBottom | Number | 6 | 提示项标题下外边距 |
+| bodyFontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | 提示项内容字体 |
+| bodyFontSize | Number | 12 | 提示项内容字体大小 |
+| bodyFontStyle | String | "normal" | 提示项内容字体风格 |
+| bodyFontColor | Color | "#fff" | 提示项内容字体颜色 |
+| bodySpacing | Number | 2 | 提示项内容字间距 |
+| footerFontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | 提示项页尾字体 |
+| footerFontSize | Number | 12 | 提示项页尾字体大小 |
+| footerFontStyle | String | "bold" | 提示项页尾字体风格 |
+| footerFontColor | Color | "#fff" | 提示项页尾字体颜色 |
+| footerSpacing | Number | 2 | 提示项页尾字间距 |
+| footerMarginTop | Number | 6 | 提示项页尾上外边距 |
+| xPadding | Number | 6 | 提示项左右边距 |
+| yPadding | Number | 6 | 提示项上下边距 |
+| caretSize | Number | 5 | 箭头符大小 |
+| cornerRadius | Number | 6 | 提示项边角弧度 |
+| multiKeyBackground | Color | "#fff" | 多个提示项重叠时背景色 |
+| displayColors | Boolean | true | 设置`true`时提示项显示色块 |
+| callbacks | Object | | 查看以下回调部分 |
+
+
+
