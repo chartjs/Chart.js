@@ -6,12 +6,12 @@
 #### 安装
 ##### npm
 
-```javascript
+```shell
 npm install chart.js --save
 ```
 ##### bower
 
-```javascript
+```shell
 bower install chart.js --save
 ```
 
@@ -27,7 +27,7 @@ Chart.js提供了两种不同的版本供你选择。
 #### 使用
 用旧有的script元素引入Chart.js：
 
-```javascript
+```html
 <script src="Chart.js"></script>
 <script>
     var myChart = new Chart({...})
@@ -56,7 +56,7 @@ require(['path/to/Chartjs'], function(Chart){
 #### 创建图表
 为了创建一个图表，我们需要在实际使用场景中实例化**Chart**类.举个栗子：
 
-```javascript
+```html
 <canvas id="myChart" width="400" height="400"></canvas>
 ```
 ```javascript
@@ -71,7 +71,7 @@ var ctx = "myChart";
 
 下面的代码实例化了一个y轴以0为起点，不同票数之间颜色各异的柱状图。
 
-```javascript
+```html
 <canvas id="myChart" width="400" height="400"></canvas>
 <script>
 var ctx = document.getElementById("myChart");

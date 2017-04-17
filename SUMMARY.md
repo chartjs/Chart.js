@@ -1,19 +1,19 @@
 # Summary
 
-* [Getting started（起步）](README.md)
-  * [Download（下载）](qi-bu/xia-zai.md#xiazai)
-  * [Installation（安装）](qi-bu/xia-zai.md#anzhuang)
-  * [Selecting the Correct Build（选择版本）](qi-bu/xia-zai.md#xuanzebanben)
-  * [Usage&Creating（使用）](qi-bu/xia-zai.md#shiyong)
-  * [Creating a Chart（创建图表）](qi-bu/xia-zai.md#creating)
+* [Getting started（起步）](qi-bu/qi-bu.md)
+  * [Download（下载）](qi-bu/qi-bu.md#xiazai)
+  * [Installation（安装）](qi-bu/qi-bu.md#anzhuang)
+  * [Selecting the Correct Build（选择版本）](qi-bu/qi-bu.md#xuanzebanben)
+  * [Usage&Creating（使用）](qi-bu/qi-bu.md#shiyong)
+  * [Creating a Chart（创建图表）](qi-bu/qi-bu.md#creating)
 * [配置选项](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md)
-  * Chart Data
-  * Creating a Chart with Options
-  * Global Configuration
-  * Common Chart Configuration
-  * Layout Configuration
-  * Title Configuration
-  * Legend Configuration
+  * [Chart Data（图表数据）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#tu-biao-shu-ju)
+  * [Creating a Chart with Options（自定义选项创建图表）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#zi-ding-yi-xuan-xiang)
+  * [Global Configuration（全局配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#quan-ju-pei-zhi)
+  * [Common Chart Configuration（通用图表配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#tong-yong-tu-biao-pei-zhi)
+  * [Layout Configuration（布局配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#bu-ju-pei-zhi)
+  * [Title Configuration（标题配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#biao-ti-pei-zhi)
+  * [Legend Configuration（图例配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#tu-li-pei-zhi)
   * Tooltip Configuration
   * Hover Configuration
   * Interaction Modes
