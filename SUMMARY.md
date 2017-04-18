@@ -15,7 +15,7 @@
   * [Title Configuration（标题配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#biao-ti-pei-zhi)
   * [Legend Configuration（图例配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#tu-li-pei-zhi)
   * [Tooltip Configuration（提示项配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#ti-shi-xiang-pei-zhi)
-  * Hover Configuration
+  * [Hover Configuration（悬停配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#xuan-ting-pei-zhi)
   * Interaction Modes
   * Animation Configuration
   * Element Configuration

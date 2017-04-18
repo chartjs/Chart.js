@@ -305,5 +305,18 @@ var chartInstance = new Chart(ctx, {
 }
 ```
 
+<span id="xuan-ting-pei-zhi"></span>
+#### 悬停配置
+
+悬停配置选项通过`options.hover`命名空间进行传递。悬停配置的全局选项在`Chart.defaults.global.hover`中定义：
+
+| 选项名 | 类型 | 默认值 | 描述 |
+| --- | --- | --- | --- |
+| mode | String | 'nearest' | 元素出现在提示项中，更多配置见下一段`Interaction Modes` |
+| intersect | Boolean | true | 设置为`true`时 只有鼠标与元素交叉时才出发悬停事件 |
+| animationDuration | Number | 400 | 悬停变化延续时间 毫秒 |
+| onHover | Function | null | 当触发悬停事件时执行的回调 |
+
+
 
 
