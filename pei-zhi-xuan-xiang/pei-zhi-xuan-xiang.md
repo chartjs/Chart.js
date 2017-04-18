@@ -259,5 +259,51 @@ var chartInstance = new Chart(ctx, {
 | displayColors | Boolean | true | 设置`true`时提示项显示色块 |
 | callbacks | Object | | 查看以下回调部分 |
 
+##### 提示项回调
+
+提示项标签配置由提示项配置中的`callbacks`选项声明，提示项配置为文本提供了以下几种方式的回调：
+
+| 回调名 | 参数 | 描述 |
+| ----- | --- | ---- |
+| beforeTitle | Array[tooltipItem], data | 在标题前渲染的内容 |
+| title | Array[tooltipItem], data | 标题 |
+| afterTitle | Array[tooltipItem], data	 | 在标题之后渲染的内容 |
+| beforeBody | Array[tooltipItem], data | 在正文内容前渲染的内容 |
+| beforeLabel | tooltipItem, data | 在标签前渲染的内容 |
+| label | tooltipItem, data | 标签 |
+| labelColor | tooltipItem, chartInstance | 返回提示项的颜色对象，有`borderColor `和`backgroundColor `两个属性 |
+| afterLabel | tooltipItem, data | 在标签之后渲染的内容 |
+| afterBody | Array[tooltipItem], data | 在正文内容之后渲染的内容 |
+| beforeFooter | Array[tooltipItem], data | 在页尾前渲染的内容 |
+| footer | Array[tooltipItem], data | 页尾 |
+| afterFooter | Array[tooltipItem], data | 在页尾后渲染的内容 |
+| dataPoints | Array[tooltipItem] | 列出匹配点的信息 |
+
+##### 提示项接口
+
+提示项配置实现了以下接口：
+
+```javascript
+{
+    // 提示项垂直方向的值
+    xLabel: String,
+
+    // 提示项水平方向的值
+    yLabel: String,
+
+    // 数据组序号
+    datasetIndex: Number,
+
+    // 数据在数据组中的序号
+    index: Number,
+
+    // 匹配点的x坐标
+    x: Number,
+
+    // 匹配点的y坐标
+    y: Number,
+}
+```
+
 
 
