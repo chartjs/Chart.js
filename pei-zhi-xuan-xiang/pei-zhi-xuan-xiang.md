@@ -334,5 +334,56 @@ var chartInstance = new Chart(ctx, {
 | x | 只根据x坐标查找目标 |
 | y | 只根据y坐标查找目标 |
 
+<span id="dong-hua-pei-zhi"></span>
+#### 动画配置
+
+以下动画选项可供配置，动画配置的全局选项在`Chart.defaults.global.animation`中定义：
+
+| 选项名 | 类型 | 默认值 | 描述 |
+| --- | --- | --- | --- |
+| duration | Number | 1000 | 动画时间 毫秒 |
+| easing | String | "easeOutQuart" | 滑出形式 可用的形式有`linear`, `easeInQuad`, `easeOutQuad`, `easeInOutQuad`, `easeInCubic`, `easeOutCubic`, `easeInOutCubic`, `easeInQuart`, `easeOutQuart`, `easeInOutQuart`, `easeInQuint`, `easeOutQuint`, `easeInOutQuint`, `easeInSine`, `easeOutSine`, `easeInOutSine`, `easeInExpo`, `easeOutExpo`, `easeInOutExpo`, `easeInCirc`, `easeOutCirc`, `easeInOutCirc`, `easeInElastic`, `easeOutElastic`, `easeInOutElastic`, `easeInBack`, `easeOutBack`, `easeInOutBack`, `easeInBounce`, `easeOutBounce`, `easeInOutBounce` |
+| onProgress | Function | none | 动画持续时执行的回调 |
+| onComplete | Function | none | 动画结束后的回调 |
+
+##### 动画回调
+
+动画配置中的 `onProgress `和`onComplete `回调动作可以同步外部图表的绘制，回调通过传对象实现以下接口，关于动画回调的例子见[Github](https://github.com/chartjs/Chart.js/blob/master/samples/animation/progress-bar.html)
+
+```javascript
+{
+    // 图表对象
+    chartInstance,
+
+    // 执行中动画的详细信息
+    animationObject,
+}
+```
+
+##### 动画对象
+
+传给动画回调的对象属于`Chart.Animation`类型，对象包含以下属性：
+
+```javascript
+{
+    // Current Animation frame number
+    currentStep: Number,
+
+    // Number of animation frames
+    numSteps: Number,
+
+    // Animation easing to use
+    easing: String,
+
+    // Function that renders the chart
+    render: Function,
+
+    // User callback
+    onAnimationProgress: Function,
+
+    // User callback
+    onAnimationComplete: Function
+}
+```
 
 
