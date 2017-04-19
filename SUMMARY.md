@@ -16,7 +16,7 @@
   * [Legend Configuration（图例配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#tu-li-pei-zhi)
   * [Tooltip Configuration（提示项配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#ti-shi-xiang-pei-zhi)
   * [Hover Configuration（悬停配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#xuan-ting-pei-zhi)
-  * Interaction Modes
+  * [Interaction Modes（交互模式）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#jiao-hu-mo-shi)
   * Animation Configuration
   * Element Configuration
   * Colors

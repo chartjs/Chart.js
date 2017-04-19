@@ -317,6 +317,22 @@ var chartInstance = new Chart(ctx, {
 | animationDuration | Number | 400 | 悬停变化延续时间 毫秒 |
 | onHover | Function | null | 当触发悬停事件时执行的回调 |
 
+<span id="jiao-hu-mo-shi"></span>
+#### 交互模式
+
+悬停配置和提示项配置中可以设置交互模式，以下几种模式可以配合`intersect`选项生效：
+
+| 模式 | 表现形式 |
+| --- | -------|
+| point | 查找交互点的所有目标 |
+| nearest | 查找交互点的最近目标 |
+| single (deprecated) | 同 `nearest` |
+| label (deprecated) | 见 `index` 模式 |
+| index | 查找相同序列的目标 |
+| x-axis (deprecated) | 同 `index` 同时 `intersect = false` |
+| dataset | 查找同一数据组中的目标 |
+| x | 只根据x坐标查找目标 |
+| y | 只根据y坐标查找目标 |
 
 
 
