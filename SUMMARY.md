@@ -14,11 +14,11 @@
   * [Layout Configuration（布局配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#bu-ju-pei-zhi)
   * [Title Configuration（标题配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#biao-ti-pei-zhi)
   * [Legend Configuration（图例配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#tu-li-pei-zhi)
-  * Tooltip Configuration
-  * Hover Configuration
-  * Interaction Modes
-  * Animation Configuration
-  * Element Configuration
+  * [Tooltip Configuration（提示项配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#ti-shi-xiang-pei-zhi)
+  * [Hover Configuration（悬停配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#xuan-ting-pei-zhi)
+  * [Interaction Modes（交互模式）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#jiao-hu-mo-shi)
+  * [Animation Configuration（动画配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#dong-hua-pei-zhi)
+  * [Element Configuration（元素配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#yuan-su-pei-zhi)
   * Colors
   * Patterns
   * Mixed Chart Types

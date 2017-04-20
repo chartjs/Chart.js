@@ -218,3 +218,204 @@ var chartInstance = new Chart(ctx, {
 }
 });
 ```
+
+<span id="ti-shi-xiang-pei-zhi"></span>
+#### 提示项配置
+
+提示项配置选项通过`options.tooltips`命名空间进行传递。提示项配置的全局选项在`Chart.defaults.global.tooltips`中定义：
+
+| 选项名 | 类型 | 默认值 | 描述 
+| --- | --- | --- | --- |
+| enabled | Boolean | true | 是否显示提示 |
+| custom | Function | null | 参考后文 |
+| mode | String | 'nearest' | 提示项样式 |
+| intersect | Boolean | true | 设置为`true`时将获得焦点的时候显示提示 |
+| position | String | 'average' | 提示项显示区域 `average`, `neares` |
+| itemSort | Function | undefined | 提示项排序 |
+| filter | Function | undefined | 提示项过滤器 |
+| backgroundColor | Color | 'rgba(0,0,0,0.8)' | 提示项背景色 |
+| titleFontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | 提示项标题字体 |
+| titleFontSize | Number | 12 | 提示项标题字体大小 |
+| titleFontStyle | String | "bold" | 提示项标题字体风格 |
+| titleFontColor | Color | "#fff" | 提示项标题字体颜色 |
+| titleSpacing | Number | 2 | 提示项标题字间距 |
+| titleMarginBottom | Number | 6 | 提示项标题下外边距 |
+| bodyFontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | 提示项内容字体 |
+| bodyFontSize | Number | 12 | 提示项内容字体大小 |
+| bodyFontStyle | String | "normal" | 提示项内容字体风格 |
+| bodyFontColor | Color | "#fff" | 提示项内容字体颜色 |
+| bodySpacing | Number | 2 | 提示项内容字间距 |
+| footerFontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | 提示项页尾字体 |
+| footerFontSize | Number | 12 | 提示项页尾字体大小 |
+| footerFontStyle | String | "bold" | 提示项页尾字体风格 |
+| footerFontColor | Color | "#fff" | 提示项页尾字体颜色 |
+| footerSpacing | Number | 2 | 提示项页尾字间距 |
+| footerMarginTop | Number | 6 | 提示项页尾上外边距 |
+| xPadding | Number | 6 | 提示项左右边距 |
+| yPadding | Number | 6 | 提示项上下边距 |
+| caretSize | Number | 5 | 箭头符大小 |
+| cornerRadius | Number | 6 | 提示项边角弧度 |
+| multiKeyBackground | Color | "#fff" | 多个提示项重叠时背景色 |
+| displayColors | Boolean | true | 设置`true`时提示项显示色块 |
+| callbacks | Object | | 查看以下回调部分 |
+
+##### 提示项回调
+
+提示项标签配置由提示项配置中的`callbacks`选项声明，提示项配置为文本提供了以下几种方式的回调：
+
+| 回调名 | 参数 | 描述 |
+| ----- | --- | ---- |
+| beforeTitle | Array[tooltipItem], data | 在标题前渲染的内容 |
+| title | Array[tooltipItem], data | 标题 |
+| afterTitle | Array[tooltipItem], data	 | 在标题之后渲染的内容 |
+| beforeBody | Array[tooltipItem], data | 在正文内容前渲染的内容 |
+| beforeLabel | tooltipItem, data | 在标签前渲染的内容 |
+| label | tooltipItem, data | 标签 |
+| labelColor | tooltipItem, chartInstance | 返回提示项的颜色对象，有`borderColor `和`backgroundColor `两个属性 |
+| afterLabel | tooltipItem, data | 在标签之后渲染的内容 |
+| afterBody | Array[tooltipItem], data | 在正文内容之后渲染的内容 |
+| beforeFooter | Array[tooltipItem], data | 在页尾前渲染的内容 |
+| footer | Array[tooltipItem], data | 页尾 |
+| afterFooter | Array[tooltipItem], data | 在页尾后渲染的内容 |
+| dataPoints | Array[tooltipItem] | 列出匹配点的信息 |
+
+##### 提示项接口
+
+提示项配置实现了以下接口：
+
+```javascript
+{
+    // 提示项垂直方向的值
+    xLabel: String,
+
+    // 提示项水平方向的值
+    yLabel: String,
+
+    // 数据组序号
+    datasetIndex: Number,
+
+    // 数据在数据组中的序号
+    index: Number,
+
+    // 匹配点的x坐标
+    x: Number,
+
+    // 匹配点的y坐标
+    y: Number,
+}
+```
+
+<span id="xuan-ting-pei-zhi"></span>
+#### 悬停配置
+
+悬停配置选项通过`options.hover`命名空间进行传递。悬停配置的全局选项在`Chart.defaults.global.hover`中定义：
+
+| 选项名 | 类型 | 默认值 | 描述 |
+| --- | --- | --- | --- |
+| mode | String | 'nearest' | 元素出现在提示项中，更多配置见下一段`Interaction Modes` |
+| intersect | Boolean | true | 设置为`true`时 只有鼠标与元素交叉时才出发悬停事件 |
+| animationDuration | Number | 400 | 悬停变化延续时间 毫秒 |
+| onHover | Function | null | 当触发悬停事件时执行的回调 |
+
+<span id="jiao-hu-mo-shi"></span>
+#### 交互模式
+
+悬停配置和提示项配置中可以设置交互模式，以下几种模式可以配合`intersect`选项生效：
+
+| 模式 | 表现形式 |
+| --- | -------|
+| point | 查找交互点的所有目标 |
+| nearest | 查找交互点的最近目标 |
+| single (deprecated) | 同 `nearest` |
+| label (deprecated) | 见 `index` 模式 |
+| index | 查找相同序列的目标 |
+| x-axis (deprecated) | 同 `index` 同时 `intersect = false` |
+| dataset | 查找同一数据组中的目标 |
+| x | 只根据x坐标查找目标 |
+| y | 只根据y坐标查找目标 |
+
+<span id="dong-hua-pei-zhi"></span>
+#### 动画配置
+
+以下动画选项可供配置，动画配置的全局选项在`Chart.defaults.global.animation`中定义：
+
+| 选项名 | 类型 | 默认值 | 描述 |
+| --- | --- | --- | --- |
+| duration | Number | 1000 | 动画时间 毫秒 |
+| easing | String | "easeOutQuart" | 滑出形式 可用的形式有`linear`, `easeInQuad`, `easeOutQuad`, `easeInOutQuad`, `easeInCubic`, `easeOutCubic`, `easeInOutCubic`, `easeInQuart`, `easeOutQuart`, `easeInOutQuart`, `easeInQuint`, `easeOutQuint`, `easeInOutQuint`, `easeInSine`, `easeOutSine`, `easeInOutSine`, `easeInExpo`, `easeOutExpo`, `easeInOutExpo`, `easeInCirc`, `easeOutCirc`, `easeInOutCirc`, `easeInElastic`, `easeOutElastic`, `easeInOutElastic`, `easeInBack`, `easeOutBack`, `easeInOutBack`, `easeInBounce`, `easeOutBounce`, `easeInOutBounce` |
+| onProgress | Function | none | 动画持续时执行的回调 |
+| onComplete | Function | none | 动画结束后的回调 |
+
+##### 动画回调
+
+动画配置中的 `onProgress `和`onComplete `回调动作可以同步外部图表的绘制，回调通过传对象实现以下接口，关于动画回调的例子见[Github](https://github.com/chartjs/Chart.js/blob/master/samples/animation/progress-bar.html)
+
+```javascript
+{
+    // 图表对象
+    chartInstance,
+
+    // 执行中动画的详细信息
+    animationObject,
+}
+```
+
+##### 动画对象
+
+传给动画回调的对象属于`Chart.Animation`类型，对象包含以下属性：
+
+```javascript
+{
+    // Current Animation frame number
+    currentStep: Number,
+
+    // Number of animation frames
+    numSteps: Number,
+
+    // Animation easing to use
+    easing: String,
+
+    // Function that renders the chart
+    render: Function,
+
+    // User callback
+    onAnimationProgress: Function,
+
+    // User callback
+    onAnimationComplete: Function
+}
+```
+
+<span id="yuan-su-pei-zhi"></span>
+#### 元素配置
+
+元素配置的全局选项在`Chart.defaults.global.elements`中进行配置。
+
+选项可以设置四种不同的元素：`arc`, `line`, `point`, `rectangle`，一旦对元素进行配置将会在全局生效，除非另写更明确的配置进行覆盖。
+
+##### 弧形配置
+
+| 选项名 | 类型 | 默认值 | 描述 |
+| --- | --- | --- | --- |
+| backgroundColor | Color | 'rgba(0,0,0,0.1)' | 弧形的默认填充颜色 |
+| borderColor | Color | '#fff' | 弧形边框默认颜色 |
+| borderWidth | Number | 2 | 弧形边框默认宽度 |
+
+##### 曲线配置
+
+曲线元素设置图表中的曲线样式，全局选项保存在 `Chart.defaults.global.elements.line`
+
+| 选项名 | 类型 | 默认值 | 描述 |
+| --- | --- | --- | --- |
+| tension | Number | 0.4 | 默认贝塞尔曲线张力，设置0时相当于没有贝塞尔张力 |
+| backgroundColor | Color | 'rgba(0,0,0,0.1)' | 曲线默认填充色 |
+| borderWidth | Number | 3 | 曲线默认边框宽度 |
+| borderColor | Color | 'rgba(0,0,0,0.1)' | 曲线默认边框颜色 |
+| borderCapStyle | String | 	'butt' | 详情查看[MDN](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/lineCap) |
+| borderDash | Array | [] | 详情查看[MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash) |
+| borderDashOffset | Number | 	0.0 | 详情查看[MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset) |
+| borderJoinStyle | String | 'miter' | 详情查看[MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin) |
+| capBezierPoints | Boolean | true | 设置为`true`时，贝塞尔曲线折点位于图表内，否则无限制 |
+| fill | Boolean or String | true | 设置为`true`时，默认设置填充点为`zero`，也可以设置成`top`, `bottom`，设置为`false`时不填充 |
+| stepped | Boolean | false | 设置为`true`时图表将显示折线图，没有贝塞尔弧度 |
+
