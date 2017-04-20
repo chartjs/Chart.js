@@ -386,4 +386,36 @@ var chartInstance = new Chart(ctx, {
 }
 ```
 
+<span id="yuan-su-pei-zhi"></span>
+#### 元素配置
+
+元素配置的全局选项在`Chart.defaults.global.elements`中进行配置。
+
+选项可以设置四种不同的元素：`arc`, `line`, `point`, `rectangle`，一旦对元素进行配置将会在全局生效，除非另写更明确的配置进行覆盖。
+
+##### 弧形配置
+
+| 选项名 | 类型 | 默认值 | 描述 |
+| --- | --- | --- | --- |
+| backgroundColor | Color | 'rgba(0,0,0,0.1)' | 弧形的默认填充颜色 |
+| borderColor | Color | '#fff' | 弧形边框默认颜色 |
+| borderWidth | Number | 2 | 弧形边框默认宽度 |
+
+##### 曲线配置
+
+曲线元素设置图表中的曲线样式，全局选项保存在 `Chart.defaults.global.elements.line`
+
+| 选项名 | 类型 | 默认值 | 描述 |
+| --- | --- | --- | --- |
+| tension | Number | 0.4 | 默认贝塞尔曲线张力，设置0时相当于没有贝塞尔张力 |
+| backgroundColor | Color | 'rgba(0,0,0,0.1)' | 曲线默认填充色 |
+| borderWidth | Number | 3 | 曲线默认边框宽度 |
+| borderColor | Color | 'rgba(0,0,0,0.1)' | 曲线默认边框颜色 |
+| borderCapStyle | String | 	'butt' | 详情查看[MDN](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/lineCap) |
+| borderDash | Array | [] | 详情查看[MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash) |
+| borderDashOffset | Number | 	0.0 | 详情查看[MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset) |
+| borderJoinStyle | String | 'miter' | 详情查看[MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin) |
+| capBezierPoints | Boolean | true | 设置为`true`时，贝塞尔曲线折点位于图表内，否则无限制 |
+| fill | Boolean or String | true | 设置为`true`时，默认设置填充点为`zero`，也可以设置成`top`, `bottom`，设置为`false`时不填充 |
+| stepped | Boolean | false | 设置为`true`时图表将显示折线图，没有贝塞尔弧度 |
 

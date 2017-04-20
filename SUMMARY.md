@@ -18,7 +18,7 @@
   * [Hover Configuration（悬停配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#xuan-ting-pei-zhi)
   * [Interaction Modes（交互模式）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#jiao-hu-mo-shi)
   * [Animation Configuration（动画配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#dong-hua-pei-zhi)
-  * Element Configuration
+  * [Element Configuration（元素配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#yuan-su-pei-zhi)
   * Colors
   * Patterns
   * Mixed Chart Types
