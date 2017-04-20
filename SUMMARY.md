@@ -37,10 +37,10 @@
   * [Chart Options（图表选项）](zhu-zhuang-tu/zhu-zhuang-tu.md#option)
   * [barPercentage vs categoryPercentage](zhu-zhuang-tu/zhu-zhuang-tu.md#vs)
 * [雷达图（Radar Chart）](lei-da-tu/lei-da-tu.md)
-  * Introduction
-  * Example Usage
-  * Dataset Structure
-  * Chart Options
+  * [Introduction（介绍）](lei-da-tu/lei-da-tu.md#Introduction)
+  * [Example Usage（实例）](lei-da-tu/lei-da-tu.md#example)
+  * [Dataset Structure（数据集结构）](lei-da-tu/lei-da-tu.md#dataset)
+  * [Chart Options（图表选项）](lei-da-tu/lei-da-tu.md#option)
 * [极地图（Polar Area Chart）](ji-di-tu/ji-di-tu.md)
   * Introduction
   * Example Usage
