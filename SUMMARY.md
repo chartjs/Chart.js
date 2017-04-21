@@ -36,16 +36,16 @@
   * [Dataset Structure（数据集结构）](zhu-zhuang-tu/zhu-zhuang-tu.md#dataset)
   * [Chart Options（图表选项）](zhu-zhuang-tu/zhu-zhuang-tu.md#option)
   * [barPercentage vs categoryPercentage](zhu-zhuang-tu/zhu-zhuang-tu.md#vs)
-* [雷达图（Radar Chart）](lei-da-tu/lei-da-tu.md)
+* [Radar Chart（雷达图）](lei-da-tu/lei-da-tu.md)
   * [Introduction（介绍）](lei-da-tu/lei-da-tu.md#Introduction)
   * [Example Usage（实例）](lei-da-tu/lei-da-tu.md#example)
   * [Dataset Structure（数据集结构）](lei-da-tu/lei-da-tu.md#dataset)
   * [Chart Options（图表选项）](lei-da-tu/lei-da-tu.md#option)
-* [极地图（Polar Area Chart）](ji-di-tu/ji-di-tu.md)
-  * Introduction
-  * Example Usage
-  * Dataset Structure
-  * Chart Options
+* [Polar Area Chart（极地图）](ji-di-tu/ji-di-tu.md)
+  * [Introduction（介绍）](ji-di-tu/ji-di-tu.md#Introduction)
+  * [Example Usage（实例）](ji-di-tu/ji-di-tu.md#example)
+  * [Dataset Structure（数据集结构）](ji-di-tu/ji-di-tu.md#dataset)
+  * [Chart Options（图表选项）](ji-di-tu/ji-di-tu.md#option)
 * [饼图&环形图（Pie & Doughnut Chart）](bing-tu/bing-tu.md)
   * Introduction
   * Example Usage
