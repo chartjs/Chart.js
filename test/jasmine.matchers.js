@@ -93,9 +93,9 @@ function toBeValidChart() {
 
 			if (!(actual instanceof Chart)) {
 				message = 'Expected ' + actual + ' to be an instance of Chart';
-			} else if (!(actual.canvas instanceof HTMLCanvasElement)) {
+			} else if (Object.prototype.toString.call(actual.canvas) !== '[object HTMLCanvasElement]') {
 				message = 'Expected canvas to be an instance of HTMLCanvasElement';
-			} else if (!(actual.ctx instanceof CanvasRenderingContext2D)) {
+			} else if (Object.prototype.toString.call(actual.ctx) !== '[object CanvasRenderingContext2D]') {
 				message = 'Expected context to be an instance of CanvasRenderingContext2D';
 			} else if (typeof actual.height !== 'number' || !isFinite(actual.height)) {
 				message = 'Expected height to be a strict finite number';

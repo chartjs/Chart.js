@@ -79,6 +79,28 @@ describe('Platform.dom', function() {
 
 			chart.destroy();
 		});
+
+		it('should accept a canvas from an iframe', function(done) {
+			var iframe = document.createElement('iframe');
+			iframe.onload = function() {
+				var doc = iframe.contentDocument;
+				doc.body.innerHTML += '<canvas id="chart"></canvas>';
+				var canvas = doc.getElementById('chart');
+				var chart = new Chart(canvas);
+
+				expect(chart).toBeValidChart();
+				expect(chart.canvas).toBe(canvas);
+				expect(chart.ctx).toBe(canvas.getContext('2d'));
+
+				chart.destroy();
+				canvas.remove();
+				iframe.remove();
+
+				done();
+			};
+
+			document.body.appendChild(iframe);
+		});
 	});
 
 	describe('config.options.aspectRatio', function() {

@@ -196,15 +196,21 @@ module.exports = function(Chart) {
 				item = item.canvas;
 			}
 
-			if (item instanceof HTMLCanvasElement) {
-				// To prevent canvas fingerprinting, some add-ons undefine the getContext
-				// method, for example: https://github.com/kkapsner/CanvasBlocker
-				// https://github.com/chartjs/Chart.js/issues/2807
-				var context = item.getContext && item.getContext('2d');
-				if (context instanceof CanvasRenderingContext2D) {
-					initCanvas(item, config);
-					return context;
-				}
+			// To prevent canvas fingerprinting, some add-ons undefine the getContext
+			// method, for example: https://github.com/kkapsner/CanvasBlocker
+			// https://github.com/chartjs/Chart.js/issues/2807
+			var context = item && item.getContext && item.getContext('2d');
+
+			// `instanceof HTMLCanvasElement/CanvasRenderingContext2D` fails when the item is
+			// inside an iframe or when running in a protected environment. We could guess the
+			// types from their toString() value but let's keep things flexible and assume it's
+			// a sufficient condition if the item has a context2D which has item as `canvas`.
+			// https://github.com/chartjs/Chart.js/issues/3887
+			// https://github.com/chartjs/Chart.js/issues/4102
+			// https://github.com/chartjs/Chart.js/issues/4152
+			if (context && context.canvas === item) {
+				initCanvas(item, config);
+				return context;
 			}
 
 			return null;
