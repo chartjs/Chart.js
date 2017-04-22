@@ -46,11 +46,11 @@
   * [Example Usage（实例）](ji-di-tu/ji-di-tu.md#example)
   * [Dataset Structure（数据集结构）](ji-di-tu/ji-di-tu.md#dataset)
   * [Chart Options（图表选项）](ji-di-tu/ji-di-tu.md#option)
-* [饼图&环形图（Pie & Doughnut Chart）](bing-tu/bing-tu.md)
-  * Introduction
-  * Example Usage
-  * Dataset Structure
-  * Chart Options
+* [Pie & Doughnut Chart（饼图&环形图）](bing-tu/bing-tu.md)
+  * [Introduction（介绍）](bing-tu/bing-tu.md#Introduction)
+  * [Example Usage（实例）](bing-tu/bing-tu.md#example)
+  * [Dataset Structure（数据集结构）](bing-tu/bing-tu.md#dataset)
+  * [Chart Options（图表选项）](bing-tu/bing-tu.md#option)
 * [泡泡图（Bubble Chart）](pao-pao-tu/pao-pao-tu.md)
   * Introduction
   * Example Usage
