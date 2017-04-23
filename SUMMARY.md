@@ -58,8 +58,8 @@
   * Data Object
   * Chart Options
 * [轴线选项](zhou-xian-xuan-xiang/zhou-xian-xuan-xiang.md)
-  * Common Configuration
-  * Category Scale
+  * [Common Configuration](zhou-xian-xuan-xiang/zhou-xian-xuan-xiang/common-configuration.md)
+  * [Category Scale](zhou-xian-xuan-xiang/zhou-xian-xuan-xiang/category-scale.md)
   * Linear Scale
   * Logarithmic Scale
   * Time Scale
