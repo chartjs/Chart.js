@@ -18,12 +18,15 @@ var myLineChart = new Chart(ctx, {
 ```
 
 另外也可以使用v1.0版本的语法创建一折线图
-```javascsript
+```javascript
 var myLineChart = Chart.Line(ctx, {
     data: data,
     options: options
 });
 ```
+
+<span id="DatasetStructure"></span>
+#### 数据结构
 
 
 
