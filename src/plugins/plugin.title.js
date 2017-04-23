@@ -3,13 +3,14 @@
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
+	var layout = Chart.layoutService;
 	var noop = helpers.noop;
 
 	Chart.defaults.global.title = {
 		display: false,
 		position: 'top',
-		fullWidth: true, // marks that this box should take the full width of the canvas (pushing down other boxes)
-
+		fullWidth: true,
+		weight: 2000,        // by default greater than legend (1000) to be above
 		fontStyle: 'bold',
 		padding: 10,
 
@@ -184,15 +185,12 @@ module.exports = function(Chart) {
 		var title = new Chart.Title({
 			ctx: chart.ctx,
 			options: titleOpts,
-			chart: chart,
-
-			// ILayoutItem parameters
-			weight: 2000, // greater than legend to be above
-			position: titleOpts.position,
-			fullWidth: titleOpts.fullWidth,
+			chart: chart
 		});
+
+		layout.configure(chart, title, titleOpts);
+		layout.addBox(chart, title);
 		chart.titleBlock = title;
-		Chart.layoutService.addBox(chart, title);
 	}
 
 	return {
@@ -205,6 +203,7 @@ module.exports = function(Chart) {
 				createNewTitleBlockAndAttach(chart, titleOpts);
 			}
 		},
+
 		beforeUpdate: function(chart) {
 			var titleOpts = chart.options.title;
 			var titleBlock = chart.titleBlock;
@@ -213,6 +212,7 @@ module.exports = function(Chart) {
 				titleOpts = helpers.configMerge(Chart.defaults.global.title, titleOpts);
 
 				if (titleBlock) {
+					layout.configure(chart, titleBlock, titleOpts);
 					titleBlock.options = titleOpts;
 				} else {
 					createNewTitleBlockAndAttach(chart, titleOpts);
