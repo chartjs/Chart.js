@@ -40,6 +40,7 @@
   * [Styling](axes/styling.md)
 * [Developers](developers/README.md)
   * [Chart.js API](developers/api.md)
+  * [Updating Charts](developers/updates.md)
   * [Plugins](developers/plugins.md)
   * [New Charts](developers/charts.md)
   * [New Axes](developers/axes.md)
