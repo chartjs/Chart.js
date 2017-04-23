@@ -54,18 +54,19 @@ module.exports = function(Chart) {
 		 * Register a box to a chart.
 		 * A box is simply a reference to an object that requires layout. eg. Scales, Legend, Title.
 		 * @param {Chart} chart - the chart to use
-		 * @param {ILayoutItem} layoutItem - the item to add to be layed out
+		 * @param {ILayoutItem} item - the item to add to be layed out
 		 */
-		addBox: function(chart, layoutItem) {
+		addBox: function(chart, item) {
 			if (!chart.boxes) {
 				chart.boxes = [];
 			}
 
-			// Ensure that all layout items have a weight
-			if (!layoutItem.weight) {
-				layoutItem.weight = 0;
-			}
-			chart.boxes.push(layoutItem);
+			// initialize item with default values
+			item.fullWidth = item.fullWidth || false;
+			item.position = item.position || 'top';
+			item.weight = item.weight || 0;
+
+			chart.boxes.push(item);
 		},
 
 		/**
@@ -77,6 +78,26 @@ module.exports = function(Chart) {
 			var index = chart.boxes? chart.boxes.indexOf(layoutItem) : -1;
 			if (index !== -1) {
 				chart.boxes.splice(index, 1);
+			}
+		},
+
+		/**
+		 * Sets (or updates) options on the given `item`.
+		 * @param {Chart} chart - the chart in which the item lives (or will be added to)
+		 * @param {Object} item - the item to configure with the given options
+		 * @param {Object} options - the new item options.
+		 */
+		configure: function(chart, item, options) {
+			var props = ['fullWidth', 'position', 'weight'];
+			var ilen = props.length;
+			var i = 0;
+			var prop;
+
+			for (; i<ilen; ++i) {
+				prop = props[i];
+				if (options.hasOwnProperty(prop)) {
+					item[prop] = options[prop];
+				}
 			}
 		},
 

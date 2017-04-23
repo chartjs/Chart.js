@@ -11,6 +11,7 @@ describe('Title block tests', function() {
 			display: false,
 			position: 'top',
 			fullWidth: true,
+			weight: 2000,
 			fontStyle: 'bold',
 			padding: 10,
 			text: ''
@@ -229,6 +230,33 @@ describe('Title block tests', function() {
 			chart.options.title.display = false;
 			chart.update();
 			expect(chart.titleBlock.options.display).toBe(false);
+		});
+
+		it ('should update the associated layout item', function() {
+			var chart = acquireChart({
+				type: 'line',
+				data: {},
+				options: {
+					title: {
+						fullWidth: true,
+						position: 'top',
+						weight: 150
+					}
+				}
+			});
+
+			expect(chart.titleBlock.fullWidth).toBe(true);
+			expect(chart.titleBlock.position).toBe('top');
+			expect(chart.titleBlock.weight).toBe(150);
+
+			chart.options.title.fullWidth = false;
+			chart.options.title.position = 'left';
+			chart.options.title.weight = 42;
+			chart.update();
+
+			expect(chart.titleBlock.fullWidth).toBe(false);
+			expect(chart.titleBlock.position).toBe('left');
+			expect(chart.titleBlock.weight).toBe(42);
 		});
 
 		it ('should remove the title if the new options are false', function() {

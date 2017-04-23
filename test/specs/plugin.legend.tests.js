@@ -11,6 +11,7 @@ describe('Legend block tests', function() {
 			position: 'top',
 			fullWidth: true, // marks that this box should take the full width of the canvas (pushing down other boxes)
 			reverse: false,
+			weight: 1000,
 
 			// a callback that will handle
 			onClick: jasmine.any(Function),
@@ -389,6 +390,33 @@ describe('Legend block tests', function() {
 			chart.options.legend.display = false;
 			chart.update();
 			expect(chart.legend.options.display).toBe(false);
+		});
+
+		it ('should update the associated layout item', function() {
+			var chart = acquireChart({
+				type: 'line',
+				data: {},
+				options: {
+					legend: {
+						fullWidth: true,
+						position: 'top',
+						weight: 150
+					}
+				}
+			});
+
+			expect(chart.legend.fullWidth).toBe(true);
+			expect(chart.legend.position).toBe('top');
+			expect(chart.legend.weight).toBe(150);
+
+			chart.options.legend.fullWidth = false;
+			chart.options.legend.position = 'left';
+			chart.options.legend.weight = 42;
+			chart.update();
+
+			expect(chart.legend.fullWidth).toBe(false);
+			expect(chart.legend.position).toBe('left');
+			expect(chart.legend.weight).toBe(42);
 		});
 
 		it ('should remove the legend if the new options are false', function() {

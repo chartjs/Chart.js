@@ -3,14 +3,15 @@
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
+	var layout = Chart.layoutService;
 	var noop = helpers.noop;
 
 	Chart.defaults.global.legend = {
-
 		display: true,
 		position: 'top',
-		fullWidth: true, // marks that this box should take the full width of the canvas (pushing down other boxes)
+		fullWidth: true,
 		reverse: false,
+		weight: 1000,
 
 		// a callback that will handle
 		onClick: function(e, legendItem) {
@@ -495,16 +496,12 @@ module.exports = function(Chart) {
 		var legend = new Chart.Legend({
 			ctx: chart.ctx,
 			options: legendOpts,
-			chart: chart,
-
-			// ILayoutItem parameters for layout service
-			// pick a large number to ensure we are on the outside after any axes
-			weight: 1000,
-			position: legendOpts.position,
-			fullWidth: legendOpts.fullWidth,
+			chart: chart
 		});
+
+		layout.configure(chart, legend, legendOpts);
+		layout.addBox(chart, legend);
 		chart.legend = legend;
-		Chart.layoutService.addBox(chart, legend);
 	}
 
 	return {
@@ -517,6 +514,7 @@ module.exports = function(Chart) {
 				createNewLegendAndAttach(chart, legendOpts);
 			}
 		},
+
 		beforeUpdate: function(chart) {
 			var legendOpts = chart.options.legend;
 			var legend = chart.legend;
@@ -525,15 +523,17 @@ module.exports = function(Chart) {
 				legendOpts = helpers.configMerge(Chart.defaults.global.legend, legendOpts);
 
 				if (legend) {
+					layout.configure(chart, legend, legendOpts);
 					legend.options = legendOpts;
 				} else {
 					createNewLegendAndAttach(chart, legendOpts);
 				}
 			} else if (legend) {
-				Chart.layoutService.removeBox(chart, legend);
+				layout.removeBox(chart, legend);
 				delete chart.legend;
 			}
 		},
+
 		afterEvent: function(chart, e) {
 			var legend = chart.legend;
 			if (legend) {
