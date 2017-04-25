@@ -2,19 +2,6 @@
 
 Plugins are the most efficient way to customize or change the default behavior of a chart. They have been introduced at [version 2.1.0](https://github.com/chartjs/Chart.js/releases/tag/2.1.0) (global plugins only) and extended at [version 2.5.0](https://github.com/chartjs/Chart.js/releases/tag/2.5.0) (per chart plugins and options).
 
-## Popular Plugins
-
- - <a href="https://github.com/chartjs/chartjs-plugin-annotation" target="_blank">chartjs-plugin-annotation.js</a> - Draw lines and boxes on chart area.
- - <a href="https://github.com/chartjs/chartjs-plugin-deferred" target="_blank">chartjs-plugin-deferred.js</a> - Defer initial chart update until chart scrolls into viewport.
- - <a href="https://github.com/compwright/chartjs-plugin-draggable" target="_blank">chartjs-plugin-draggable.js</a> - Makes select chart elements draggable with the mouse.
- - <a href="https://github.com/y-takey/chartjs-plugin-stacked100" target="_blank">chartjs-plugin-stacked100.js</a> - Draw 100% stacked bar chart.
- - <a href="https://github.com/chartjs/chartjs-plugin-zoom" target="_blank">chartjs-plugin-zoom.js</a> - Enable zooming and panning on charts.
- - <a href="https://github.com/chartjs/Chart.BarFunnel.js" target="_blank">Chart.BarFunnel.js</a> - Adds a bar funnel chart type.
- - <a href="https://github.com/chartjs/Chart.LinearGauge.js" target="_blank">Chart.LinearGauge.js</a> - Adds a linear gauge chart type.
- - <a href="https://github.com/chartjs/Chart.smith.js" target="_blank">Chart.Smith.js</a> - Adds a smith chart type.
-
-In addition, many plugins can be found on the [Chart.js GitHub organization](https://github.com/chartjs) or on the [npm registry](https://www.npmjs.com/search?q=chartjs-plugin-).
-
 ## Using plugins
 
 Plugins can be shared between chart instances:
