@@ -87,9 +87,8 @@ module.exports = function(Chart) {
 					backgroundColor: view.backgroundColor
 				};
 			},
-			textLabelColor: function(tooltipItem, chart){
-				console.log(chart)
-				return chart.tooltip._options.bodyFontColor ;
+			textLabelColor: function(tooltipItem, chart) {
+				return chart.tooltip._options.bodyFontColor;
 			},
 			afterLabel: helpers.noop,
 
