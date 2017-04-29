@@ -513,12 +513,9 @@ module.exports = function(Chart) {
 				// Determine colors for boxes
 				helpers.each(tooltipItems, function(tooltipItem) {
 					labelColors.push(opts.callbacks.labelColor.call(me, tooltipItem, me._chart));
-				});
-
-				// Determine colors for text
-				helpers.each(tooltipItems, function(tooltipItem) {
 					textLabelColors.push(opts.callbacks.textLabelColor.call(me, tooltipItem, me._chart));
 				});
+
 
 				// Build the Text Lines
 				model.title = me.getTitle(tooltipItems, data);
