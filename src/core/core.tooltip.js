@@ -87,6 +87,10 @@ module.exports = function(Chart) {
 					backgroundColor: view.backgroundColor
 				};
 			},
+			textLabelColor: function(tooltipItem, chart){
+				console.log(chart)
+				return chart.tooltip._options.bodyFontColor ;
+			},
 			afterLabel: helpers.noop,
 
 			// Args are: (tooltipItems, data)
@@ -95,8 +99,7 @@ module.exports = function(Chart) {
 			// Args are: (tooltipItems, data)
 			beforeFooter: helpers.noop,
 			footer: helpers.noop,
-			afterFooter: helpers.noop,
-			textLabelColor: helpers.noop
+			afterFooter: helpers.noop
 		}
 	};
 
@@ -695,7 +698,7 @@ module.exports = function(Chart) {
 						// Inner square
 						ctx.fillStyle = mergeOpacity(vm.labelColors[i].backgroundColor, opacity);
 						ctx.fillRect(pt.x + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
-						var textColor = mergeOpacity(vm.textLabelColors[i] || vm.bodyFontColor, opacity);
+						var textColor = mergeOpacity(vm.textLabelColors[i], opacity);
 						ctx.fillStyle = textColor;
 					}
 
