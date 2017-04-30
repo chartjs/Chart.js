@@ -13,19 +13,20 @@ describe('DrawLabel block tests', function() {
 			data: {
 				datasets: [
 					{data: []},
-					{drawValue:true,data: []}
+					{
+						drawValue: true,
+						data: []
+					}
 				],
 				labels: []
 			}
 		});
-
 		var meta = chart.data.datasets[1];
 		expect(meta.drawValue).toEqual(true);
-		var meta = chart.data.datasets[0];
+		meta = chart.data.datasets[0];
 		expect(meta.drawValue).not.toBe(true);
-		
 	});
-})
+});
 // it should draw value only for the dataset with drawValue = true
 // for bar, the position should be on top
 // value for scatter should be printing nicely
