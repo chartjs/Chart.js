@@ -18,6 +18,7 @@
   * [Legend](configuration/legend.md)
   * [Title](configuration/title.md)
   * [Tooltip](configuration/tooltip.md)
+  * [DataValue](configuration/dataValue.md)
   * [Elements](configuration/elements.md)
 * [Charts](charts/README.md)
   * [Line](charts/line.md)
