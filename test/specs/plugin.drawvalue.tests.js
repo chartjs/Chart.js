@@ -1,9 +1,11 @@
-describe('DrawLabel block tests', function() {
+describe('Datalabels block tests', function() {
 	it('Should have the correct default config', function() {
-		expect(Chart.defaults.global.valueLabel).toEqual({
-			fontWeight: 'normal',
-			fontColor: '#000',
-			fontSize: 10,
+		expect(Chart.defaults.global.plugins.datalabels).toEqual({
+			formatter: {
+				fontWeight: 'normal',
+				fontColor: '#000',
+				fontSize: 10
+			},
 			padding: {top: 0, left: 0}
 		});
 	});
@@ -14,7 +16,7 @@ describe('DrawLabel block tests', function() {
 				datasets: [
 					{data: []},
 					{
-						drawValue: true,
+						drawLabel: true,
 						data: []
 					}
 				],
@@ -22,11 +24,11 @@ describe('DrawLabel block tests', function() {
 			}
 		});
 		var meta = chart.data.datasets[1];
-		expect(meta.drawValue).toEqual(true);
+		expect(meta.drawLabel).toEqual(true);
 		meta = chart.data.datasets[0];
-		expect(meta.drawValue).not.toBe(true);
+		expect(meta.drawLabel).not.toBe(true);
 	});
 });
-// it should draw value only for the dataset with drawValue = true
+// it should draw value only for the dataset with drawLabel = true
 // for bar, the position should be on top
 // value for scatter should be printing nicely

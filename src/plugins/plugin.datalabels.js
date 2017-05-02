@@ -3,10 +3,12 @@
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
-	Chart.defaults.global.valueLabel = {
-		fontWeight: 'normal',
-		fontColor: '#000',
-		fontSize: 10,
+	Chart.defaults.global.plugins.datalabels = {
+		formatter: {
+			fontWeight: 'normal',
+			fontColor: '#000',
+			fontSize: 10,
+		},
 		padding: {top: 0, left: 0}
 	};
 	/**
@@ -37,7 +39,7 @@ module.exports = function(Chart) {
 	* @param index {Int} index of the dataset.
 	**/
 	function drawValue(chart, element, value, index) {
-		var opts = chart.options.valueLabel;
+		var opts = chart.options.plugins.datalabels;
 		var ctx = chart.ctx;
 		var position = element.getCenterPoint();
 		// print the value on the top of the bars.
@@ -53,8 +55,8 @@ module.exports = function(Chart) {
 		var left = position.x+ opts.padding.left;
 		// set the font of the context
 		ctx.textAlign='center';
-		ctx.fillStyle = helpers.getValueAtIndexOrDefault(opts.fontColor, index, '#000');
-		ctx.font=helpers.fontString(opts.fontSize, opts.fontWeight);
+		ctx.fillStyle = helpers.getValueAtIndexOrDefault(opts.formatter.fontColor, index, '#000');
+		ctx.font=helpers.fontString(opts.formatter.fontSize, opts.formatter.fontWeight);
 		// get the value to be displayed.
 		if (opts.value) {
 			value = opts.value.call(element, chart, value);
@@ -64,10 +66,10 @@ module.exports = function(Chart) {
 		ctx.fillText(value, left, top);
 	}
 	return {
-		id: 'valueLabel',
+		id: 'datalabels',
 		afterDatasetsDraw: function(chart) {
 			chart.data.datasets.filter(function(ds) {
-				return ds.drawValue;
+				return ds.drawLabel;
 			}).forEach(function(dataset, i) {
 				var elements = chart.getDatasetMeta(i);
 				// elements are hidden when the legends are clicked

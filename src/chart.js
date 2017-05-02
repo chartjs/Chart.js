@@ -54,7 +54,7 @@ plugins.push(
     require('./plugins/plugin.filler.js')(Chart),
     require('./plugins/plugin.legend.js')(Chart),
     require('./plugins/plugin.title.js')(Chart),
-    require('./plugins/plugin.datavalue.js')(Chart)
+    require('./plugins/plugin.datalabels.js')(Chart)
 );
 
 Chart.plugins.register(plugins);
