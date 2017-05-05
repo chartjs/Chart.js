@@ -141,7 +141,9 @@ module.exports = function(Chart) {
 				ticks.push(lastTick);
 
 				return ticks;
-			}
+			},
+
+			time: helpers.time.generateTicks
 		},
 
 		/**
