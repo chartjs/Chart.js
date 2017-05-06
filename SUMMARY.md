@@ -19,7 +19,7 @@
   * [Interaction Modes（交互模式）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#jiao-hu-mo-shi)
   * [Animation Configuration（动画配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#dong-hua-pei-zhi)
   * [Element Configuration（元素配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#yuan-su-pei-zhi)
-  * Colors
+  * [Colors（颜色）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#yan-se)
   * Patterns
   * Mixed Chart Types
 * [曲线图（Line Chart）](qu-xian-tu/qu-xian-tu.md)

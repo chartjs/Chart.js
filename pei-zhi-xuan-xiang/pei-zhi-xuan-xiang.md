@@ -419,3 +419,10 @@ var chartInstance = new Chart(ctx, {
 | fill | Boolean or String | true | 设置为`true`时，默认设置填充点为`zero`，也可以设置成`top`, `bottom`，设置为`false`时不填充 |
 | stepped | Boolean | false | 设置为`true`时图表将显示折线图，没有贝塞尔弧度 |
 
+<span id="yan-se"></span>
+#### 颜色
+
+你可以使用一系列格式去设置颜色选项。可以使用hexadecimal, RGB 或者 HSL notations，如果没有使用正确的格式，图表将默认使用全局颜色选项。全局颜色选项设置在`Chart.defaults.global.defaultColor`, 默认值为`rgba(0, 0, 0, 0.1)`。
+
+同样，你也可以传一个[CanvasGradient](https://developer.mozilla.org/en-US/docs/Web/API/CanvasPattern)对象，使用传递对象可以实现更多的效果。
+
