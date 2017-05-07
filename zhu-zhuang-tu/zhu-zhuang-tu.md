@@ -36,13 +36,13 @@ var myBarChart = new Chart(ctx, {
 
 Property            | Type	             | Usage                |
 --------------------|------------------|-----------------------|
-data                |Array<number>     |The data to plot as bars
-label               |String          |	The label for the dataset which appears in the legend and tooltips
-xAxisID             |String          |	The ID of the x axis to plot this dataset on
-yAxisID             |String	          |The ID of the y axis to plot this dataset on
-backgroundColor     |Color or Array\<Color>|	The fill color of the bars. See Colors
-borderColor         |Color or Array\<Color>|	Bar border color
-borderWidth         |Number or Array\<Number>|	Border width of bar in pixels
+data                |Array<number>     |制作柱状图的数据
+label               |String          | 出现在图例和提示工具中的数据集的标签
+xAxisID             |String          |	x轴的数据集id
+yAxisID             |String	          | y轴的数据集id
+backgroundColor     |Color or Array\<Color>|柱状体的[颜色](http://www.chartjs.org/docs/#chart-configuration-colors)
+borderColor         |Color or Array\<Color>| 柱状体边框颜色
+borderWidth         |Number or Array\<Number>|	Border width of bar in pixels
 borderSkipped       |String or Array\<String>|	Which edge to skip drawing the border for. Options are 'bottom', 'left', 'top', and 'right'
 hoverBackgroundColor|Color or Array\<Color>|	Bar background color when hovered
 hoverBorderColor    |Color or Array\<Color>|	Bar border color when hovered
