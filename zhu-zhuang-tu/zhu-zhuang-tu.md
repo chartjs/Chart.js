@@ -42,11 +42,11 @@ xAxisID             |String          |	x轴的数据集id
 yAxisID             |String	          | y轴的数据集id
 backgroundColor     |Color or Array\<Color>|柱状体的[颜色](http://www.chartjs.org/docs/#chart-configuration-colors)
 borderColor         |Color or Array\<Color>| 柱状体边框颜色
-borderWidth         |Number or Array\<Number>|	Border width of bar in pixels
-borderSkipped       |String or Array\<String>|	Which edge to skip drawing the border for. Options are 'bottom', 'left', 'top', and 'right'
-hoverBackgroundColor|Color or Array\<Color>|	Bar background color when hovered
-hoverBorderColor    |Color or Array\<Color>|	Bar border color when hovered
-hoverBorderWidth    |Number or Array\<Number>|	Border width of bar when hovered
+borderWidth         |Number or Array\<Number>|	柱状体边框宽度（像素）
+borderSkipped       |String or Array\<String>|	标记不需要边框的方位. 选项为：上，下，左，右
+hoverBackgroundColor|Color or Array\<Color>|	悬停时的柱状体颜色
+hoverBorderColor    |Color or Array\<Color>|	悬停时的柱状体边框颜色
+hoverBorderWidth    |Number or Array\<Number>|	悬停时的柱状体边框宽度
 stack               |String                 |	The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack)
 
 
