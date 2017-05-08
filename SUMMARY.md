@@ -23,13 +23,13 @@
   * Patterns
   * Mixed Chart Types
 * [曲线图（Line Chart）](qu-xian-tu/qu-xian-tu.md)
-  * Introduction
-  * Example Usage
-  * Dataset Structure
-  * Data Points
-  * Scatter Line Charts
-  * Chart Options
-  * Stacked Charts
+  * [Introduction](qu-xian-tu/qu-xian-tu.md#introduction)
+  * [Example Usage](qu-xian-tu/qu-xian-tu.md#example-usage)
+  * [Dataset Structure](qu-xian-tu/qu-xian-tu.md#dataset-structure)
+  * [Data Points](qu-xian-tu/qu-xian-tu.md#data-points)
+  * [Scatter Line Charts](qu-xian-tu/qu-xian-tu.md#scatter-line-charts)
+  * [Chart Options](qu-xian-tu/qu-xian-tu.md#chart-options)
+  * [Stacked Charts](qu-xian-tu/qu-xian-tu.md#stacked-charts)
 * [Bar Chart（柱状图）](zhu-zhuang-tu/zhu-zhuang-tu.md)
   * [Introduction（介绍）](zhu-zhuang-tu/zhu-zhuang-tu.md#Introduction)
   * [Example Usage（实例）](zhu-zhuang-tu/zhu-zhuang-tu.md#example)
