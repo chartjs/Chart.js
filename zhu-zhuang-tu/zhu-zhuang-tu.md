@@ -34,20 +34,20 @@ var myBarChart = new Chart(ctx, {
 
 其中有一些参数可以是一个具体的数组。如果存在这样的数组，那第一个元素值适用于柱图中的第一类，第二个元素值适用于柱图中的第二类，以此类推。
 
-Property            | Type	             | Usage                |
---------------------|------------------|-----------------------|
-data                |Array<number>     |制作柱状图的数据
-label               |String          | 出现在图例和提示工具中的数据集的标签
-xAxisID             |String          |	x轴的数据集id
-yAxisID             |String	          | y轴的数据集id
-backgroundColor     |Color or Array\<Color>|柱状体的[颜色](http://www.chartjs.org/docs/#chart-configuration-colors)
-borderColor         |Color or Array\<Color>| 柱状体边框颜色
-borderWidth         |Number or Array\<Number>|	柱状体边框宽度（像素）
-borderSkipped       |String or Array\<String>|	标记不需要边框的方位. 选项为：上，下，左，右
-hoverBackgroundColor|Color or Array\<Color>|	悬停时的柱状体颜色
-hoverBorderColor    |Color or Array\<Color>|	悬停时的柱状体边框颜色
-hoverBorderWidth    |Number or Array\<Number>|	悬停时的柱状体边框宽度
-stack               |String                 |	数据集集合的Id（当这些集合被重叠在一起，每一个集合都是一个单个的栈）
+Property            | Type	                 | Usage                 |
+--------------------|------------------------|-----------------------|
+data                |Array<number>           | 制作柱状图的数据
+label               |String                  | 出现在图例和提示工具中的数据集的标签
+xAxisID             |String                  | x轴的数据集id
+yAxisID             |String	                 | y轴的数据集id
+backgroundColor     |Color or Array\<Color>  | 柱状体的[颜色](http://www.chartjs.org/docs/#chart-configuration-colors)
+borderColor         |Color or Array\<Color>  | 柱状体边框颜色
+borderWidth         |Number or Array\<Number>| 柱状体边框宽度（像素）
+borderSkipped       |String or Array\<String>| 标记不需要边框的方位. 选项为：上，下，左，右
+hoverBackgroundColor|Color or Array\<Color>  | 悬停时的柱状体颜色
+hoverBorderColor    |Color or Array\<Color>  | 悬停时的柱状体边框颜色
+hoverBorderWidth    |Number or Array\<Number>| 悬停时的柱状体边框宽度
+stack               |String                  | 数据集集合的Id（当这些集合被重叠在一起，每一个集合都是一个单个的栈）
 
 
 下面是一个使用上述属性的实例：

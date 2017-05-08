@@ -25,29 +25,29 @@ var myRadarChart = new Chart(ctx, {
 
 所有以point开头的参数都可以成为一个具体的数组。如果存在这样的数组，那第一个元素值适用于雷达图中的第一个点，第二个元素值适用于雷达图中的第二个点，以此类推。
 
-Property            | Type	             | Usage                |
---------------------|------------------|-----------------------|
-data                |	Array<Number>	   | The data to plot in a line
-label	              | String	 |The label for the dataset which appears in the legend and tooltips
-fill                |  Boolean	      |If true, fill the area under the line
-lineTension | 	Number |	Bezier curve tension of the line. Set to 0 to draw straightlines. Note This was renamed from 'tension' but the old name still works.
-backgroundColor |	Color	| The fill color under the line. See Colors
-borderWidth|	Number	|The width of the line in pixels
-borderColor|	Color	|The color of the line.
-borderCapStyle|	String|	Cap style of the line. See MDN
-borderDash|	Array<Number> |	Length and spacing of dashes. See MDN
-borderDashOffset |	Number	 |Offset for line dashes. See MDN
-borderJoinStyle|	String |	Line joint style. See MDN
-pointBorderColor|	Color or Array<Color>|	The border color for points.
-pointBackgroundColor|	Color or Array<Color>|	The fill color for points
-pointBorderWidth |	Number or Array<Number>|	The width of the point border in pixels
-pointRadius|	Number or Array<Number>	| The radius of the point shape. If set to 0, nothing is rendered.
-pointHoverRadius|	 Number or Array<Number>|	The radius of the point when hovered
-pointHitRadius|	Number or Array<Number>	| The pixel size of the non-displayed point that reacts to mouse events
-pointHoverBackgroundColor|	Color or Array<Color>|	Point background color when hovered
-pointHoverBorderColor|	Color or Array<Color>|	Point border color when hovered
-pointHoverBorderWidth|	Number or Array<Number>|	Border width of point when hovered
-pointStyle|	String or Array<String>	| The style of point. Options include 'circle', 'triangle', 'rect', 'rectRounded', 'rectRot', 'cross', 'crossRot', 'star', 'line', and 'dash'
+Property                 | Type	                     | Usage                          |
+-------------------------|---------------------------|--------------------------------|
+data                     | Array<Number>	         | 绘制图线的数据
+label	                 | String	                 | 出现在图例和提示工具中的数据集的标签
+fill                     | Boolean	                 | 如果为true, 填充线下的部分
+lineTension              | Number                    | 贝赛尔曲线张力设置. 值为0时为直线. 这个属性是从之前版本的‘tension’重命名过来的，‘tension’照常使用
+backgroundColor          | Color	                 | 线下的填充色. See [Colors](http://www.chartjs.org/docs/#chart-configuration-colors)
+borderWidth              | Number	                 | 线的宽度（像素级）
+borderColor              | Color	                 | 线的颜色
+borderCapStyle           | String                    | 线尾部的样式. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap)
+borderDash               | Array<Number>             | 虚线的长度和空间设置. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
+borderDashOffset         | Number	                 | 虚线间隔. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
+borderJoinStyle          | String                    | 连接线的颜色. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin)
+pointBorderColor         | Color or Array<Color>     | 点的边框颜色
+pointBackgroundColor     | Color or Array<Color>     | 点的填充颜色
+pointBorderWidth         | Number or Array<Number>   | 点的边框宽度（像素级）
+pointRadius              | Number or Array<Number>   | 点的形状半径. 如果设为0，即不会渲染.
+pointHoverRadius         | Number or Array<Number>   | 悬停时点的半径
+pointHitRadius           | Number or Array<Number>   | 鼠标事件发生时对于之前不显示的点的半径
+pointHoverBackgroundColor| Color or Array<Color>     | 悬停时点的背景颜色
+pointHoverBorderColor    | Color or Array<Color>     | 悬停时点的边框颜色
+pointHoverBorderWidth    | Number or Array<Number>   | 悬停时点的边框宽度
+pointStyle               | String or Array<String>	 | 点的样式. 选项包括 'circle', 'triangle', 'rect', 'rectRounded', 'rectRot', 'cross', 'crossRot', 'star', 'line', and 'dash'
 
 下面是一个使用上述属性的实例：
 
@@ -88,13 +88,13 @@ var data = {
 
 柱状图的默认选项被设置在**Chart.defaults.radar**中。
 
-Name            | Type	             | Default                |  Description
---------------------|------------------|-----------------------|-----------------------|
-scale |	Object|	See Scales and Defaults for Radial Linear Scale|	Options for the one scale used on the chart. Use this to style the ticks, labels, and grid lines.
-scale.type |	String |	"radialLinear" |	As defined in "Radial Linear".
-elements.line	 | Object |	|	Options for all line elements used on the chart, as defined in the global elements, duplicated here to show Radar chart specific defaults.
-elements.line.lineTension |	Number |	0| Tension exhibited by lines when calculating splineCurve. Setting to 0 creates straight lines.
-startAngle |	Number |	0	| The number of degrees to rotate the chart clockwise.
+Name                      | Type	  | Default               |  Description
+--------------------------|-----------|-----------------------|-----------------------|
+scale                     |	Object    |	[See Scales](http://www.chartjs.org/docs/#scales) and [Defaults for Radial Linear Scale](http://www.chartjs.org/docs/#scales-radial-linear-scale)|	图表中的设置缩略的选项.适用于ticks, labels, 和grid lines.
+scale.type                |	String    |	"radialLinear"        |	在"Radial Linear"中定义
+elements.line	          | Object    |	                      |	适用于图表中所有线性选项, 作为全局元素被定义, 在这里复述是为了说明雷达图特殊的默认值.
+elements.line.lineTension |	Number    |	0                     | 计算线的锯齿程度时设置的张力表现值. 值为0时为一条直线.
+startAngle                |	Number    |	0	                  | 顺时针方向旋转图表的角度
 
 你可以依据你自己的图表情况适时的传递第二个对象参数来覆盖修改你需要修改的选项。
 
