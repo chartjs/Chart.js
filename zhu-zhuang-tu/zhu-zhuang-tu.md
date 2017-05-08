@@ -47,7 +47,7 @@ borderSkipped       |String or Array\<String>|	标记不需要边框的方位. �
 hoverBackgroundColor|Color or Array\<Color>|	悬停时的柱状体颜色
 hoverBorderColor    |Color or Array\<Color>|	悬停时的柱状体边框颜色
 hoverBorderWidth    |Number or Array\<Number>|	悬停时的柱状体边框宽度
-stack               |String                 |	The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack)
+stack               |String                 |	数据集集合的Id（当这些集合被重叠在一起，每一个集合都是一个单个的栈）
 
 
 下面是一个使用上述属性的实例：
@@ -89,28 +89,28 @@ var data = {
 
 柱状图的默认选项被设置在**Chart.defaults.bar**中。
 
-Name           | Type	             | Default                | Description|
---------------------|------------------|-----------------------|--------------------
-hover.mode	  |String	             |"label" |Label's hover mode. "label" is used since the x axis displays data by the index in the dataset.
-scales	         |Object	|-	|-
-scales.xAxes	  |Array	|	|The bar chart officially supports only 1 x-axis but uses an array to keep the API consistent. Use a scatter chart if you need multiple x axes.
-Options for xAxes | | |
-type	         |String	             |"Category"|As defined in Scales.
-display	|Boolean	|true	|If true, show the scale.
-id	       |String	|"x-axis-0"	|Id of the axis so that data can bind to it
-stacked	|Boolean	|false	|If true, bars are stacked on the x-axis
-barThickness	|Number| |Manually set width of each bar in pixels. If not set, the bars are sized automatically.
-categoryPercentage  |Number  |0.8 |Percent (0-1) of the available width (the space between the gridlines for small datasets) for each data-point to use for the bars. Read More
-barPercentage	 |Number	|0.9	|Percent (0-1) of the available width each bar should be within the category percentage. 1.0 will take the whole category width and put the bars right next to each other. Read More
-gridLines	|Object	|See Scales	
-gridLines.offsetGridLines	|Boolean	|true |If true, the bars for a particular data point fall between the grid lines. If false, the grid line will go right down the middle of the bars.
-scales.yAxes	|Array	 |[{ type: "linear" }]	
-Options for yAxes|||			
-type	|String	|"linear"	 |As defined in Scales.
-display	|Boolean	|true	|If true, show the scale.
-id	|String	|"y-axis-0"	|Id of the axis so that data can bind to it.
-stacked	|Boolean	|false	|If true, bars are stacked on the y-axis
-barThickness	|Number	|	|Manually set height of each bar in pixels. If not set, the bars are sized automatically.
+Name                | Type    | Default          | Description|
+--------------------|---------|------------------|--------------------
+hover.mode	        |String	  |"label"           |标签的悬浮模式. "label"在x轴按索引展示数据时被用到.
+scales	            |Object	  |-	             |-
+scales.xAxes	    |Array	  |                  |柱状图官方只支持一条x轴，通过数组保持API的持久性。如果你有多条轴的使用需求，请使用散射图。 
+Options for xAxes   |         |                  |
+type	            |String	  |"Category"        |在缩放时定义.
+display	            |Boolean  |true              |如果是true，显示缩放比例.
+id	                |String	  |"x-axis-0"	     |坐标轴的id，便于数据绑定
+stacked	            |Boolean  |false	         |如果是true，x轴的柱图会存在间隔
+barThickness	    |Number   |                  |像素级手动设置每一个柱图的宽度，如果没有设置，每个柱图宽度会自适应.
+categoryPercentage  |Number   |0.8               |用于设置条形图中长条的每个数据点的可用宽度的百分比（0-1）（小数据集的网格线之间的间距. 　[更多](http://www.chartjs.org/docs/#bar-chart-barpercentage-vs-categorypercentage)
+barPercentage	    |Number	  |0.9	             |每个栏的可用宽度的百分比（0-1）应在类别百分比内。 1.0将占据整个类别的宽度，并将条形图放在彼此旁边. [更多](http://www.chartjs.org/docs/#bar-chart-barpercentage-vs-categorypercentage)
+gridLines	        |Object	  |[See Scales](http://www.chartjs.org/docs/#scales)	     |
+gridLines.offsetGridLines |Boolean |true         |如果为true, 特定的柱状图数据点的条形线落在网格线之间。 如果为false, 网格线将沿着条形图的中间。
+scales.yAxes	    |Array	  |[{type:"linear"}] |	
+Options for yAxes   |         |                  |			
+type	            |String	  |"linear"	         |在[缩放](http://www.chartjs.org/docs/#scales-linear-scale)时定义.
+display	            |Boolean  |true	             |如果是true，显示缩放比例.
+id	                |String   |"y-axis-0"        |坐标轴的id，便于数据绑定.
+stacked	            |Boolean  |false             |如果是true，y轴的柱图会存在间隔
+barThickness	    |Number	  |	                 |像素级手动设置每一个柱图的宽度，如果没有设置，每个柱图宽度会自适应.
 
 你可以依据你自己的图表情况适时的传递第二个对象参数来覆盖修改你需要修改的选项。
 例如，我们有一个stacked选项为false的柱状图，我们在此基础上可以像下面这样做：
