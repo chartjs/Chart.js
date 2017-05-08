@@ -25,14 +25,14 @@ new Chart(ctx, {
 
 Property            | Type	             | Usage                |
 --------------------|------------------|-----------------------|
-data | Array<Number> |	The data to plot as arcs
-label | String |	The label for the dataset which appears in the legend and tooltips
-backgroundColor | Array<Color> | The fill color of the arcs. See Colors
-borderColor | Array<Color> |Arc border color
-borderWidth | Array<Number>	 | Border width of arcs in pixels
-hoverBackgroundColor | Array<Color> | Arc background color when hovered
-hoverBorderColor | Array<Color> | Arc border color when hovered
-hoverBorderWidth |	Array<Number> | Border width of arc when hovered
+data                | Array<Number>    | 绘制弧形的数据
+label               | String           | 出现在图例和提示工具中的数据集的标签
+backgroundColor     | Array<Color>     | 弧形的填充色. See [Colors](http://www.chartjs.org/docs/#chart-configuration-colors)
+borderColor         | Array<Color>     | 弧形边框颜色
+borderWidth         | Array<Number>	   | 弧形边框宽度（像素级）
+hoverBackgroundColor| Array<Color>     | 悬停时的弧形填充色
+hoverBorderColor    | Array<Color>     | 悬停时的弧形边框颜色
+hoverBorderWidth    | Array<Number>    | 悬停时的弧形边框宽度
 
 下面是一个使用上述属性的实例：
 
@@ -71,17 +71,17 @@ var data = {
 #### 图表选项
 这里介绍的是一些定制化极地图的具体选项。这些选项都已经合并到了[图表全局配置选项](http://www.chartjs.org/docs/#global-chart-configuration)了，包含了图表的选项。
 
-Name            | Type	             | Default                |  Description
---------------------|------------------|-----------------------|-----------------------|
-startAngle | Number | -0.5 * Math.PI | Sets the starting angle for the first item in a dataset
-scale | Object |	See Scales and Defaults for Radial Linear Scale | Options for the one scale used on the chart. Use this to style the ticks, labels, and grid.
-scale.type | String | "radialLinear" | As defined in "Radial Linear".
-scale.lineArc |	Boolean | true |	When true, lines are circular.
-animation.animateRotate |	Boolean|	true |	If true, will animate the rotation of the chart.
-animation.animateScale | Boolean | true | If true, will animate scaling the chart.
-legend.labels.generateLabels | Function | function(data) {} | Returns labels for each the legend
-legend.onClick |	Function | function(event, legendItem) {} |	Handles clicking an individual legend item
-legendCallback | Function | function(chart) | 	Generates the HTML legend via calls to generateLegend
+Name                         | Type	    | Default                |  Description
+-----------------------------|----------|------------------------|-----------------------|
+startAngle                   | Number   | -0.5 * Math.PI         | 为数据集中的第一个类型设定角度
+scale                        | Object   | [See Scales](http://www.chartjs.org/docs/#scales) and [Defaults for Radial Linear Scale](http://www.chartjs.org/docs/#scales-radial-linear-scale) | 图表中的设置缩略的选项.适用于ticks, labels, 和grid lines.
+scale.type                   | String   | "radialLinear"         | 在"Radial Linear"中定义
+scale.lineArc                | Boolean  | true                   | 值为true时, 为圆形.
+animation.animateRotate      | Boolean  | true                   | 值为true时, 图表将会带有动画效果旋转.
+animation.animateScale       | Boolean  | true                   | 值为true时, 图表将会带有动画效果缩放
+legend.labels.generateLabels | Function | function(data) {}      | 返回每一个说明的标签
+legend.onClick               | Function | function(event, legendItem) {} |	处理说明的点击事件
+legendCallback               | Function | function(chart)        | 通过调用generateLegend生成html的说明
 
 你可以依据你自己的图表情况适时的传递第二个对象参数来覆盖修改你需要修改的选项。
 

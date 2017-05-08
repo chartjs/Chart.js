@@ -36,16 +36,16 @@ var myDoughnutChart = new Chart(ctx, {
 
 <span id="dataset"></span>
 #### 数据集结构
-Property            | Type	             | Usage                |
---------------------|------------------|-----------------------|
-data|	Array<Number>|	The data to plot as arcs
-label|	String|	The label for the dataset which appears in the legend and tooltips
-backgroundColor|	Array<Color>|	The fill color of the arcs. See Colors
-borderColor|	Array<Color>|	Arc border color
-borderWidth|	Array<Number>|	Border width of arcs in pixels
-hoverBackgroundColor|	Array<Color>|	Arc background color when hovered
-hoverBorderColor|	Array<Color>|	Arc border color when hovered
-hoverBorderWidth|	Array<Number>|	Border width of arc when hovered
+Property            | Type	         | Usage                 |
+--------------------|----------------|-----------------------|
+data                | Array<Number>  | 绘制弧形的数据
+label               | String         | 出现在图例和提示工具中的数据集的标签
+backgroundColor     | Array<Color>   | 弧形的填充色. See [Colors](http://www.chartjs.org/docs/#chart-configuration-colors)
+borderColor         | Array<Color>   | 弧形边框颜色
+borderWidth         | Array<Number>  | 弧形边框宽度（像素级）
+hoverBackgroundColor| Array<Color>   | 悬停时的弧形填充色
+hoverBorderColor    | Array<Color>   | 悬停时的弧形边框颜色
+hoverBorderWidth    | Array<Number>  | 悬停时的弧形边框宽度
 
 下面是一个使用上述属性的实例：
 
@@ -79,15 +79,15 @@ var data = {
 #### 图表选项
 这里介绍的是一些定制化饼图和圆环图的具体选项。这些选项都已经合并到了[图表全局配置选项](http://www.chartjs.org/docs/#global-chart-configuration)了，包含了图表的选项。
 
-Name            | Type	             | Default                |  Description
---------------------|------------------|-----------------------|-----------------------|
-cutoutPercentage|	Number|	50 - for doughnut, 0 - for pie|The percentage of the chart that is cut out of the middle.
-rotation|Number|-0.5 * Math.PI|Starting angle to draw arcs from
-circumference|	Number|	2 * Math.PI|	Sweep to allow arcs to cover
-animation.animateRotate	|Boolean|	true| If true, will animate the rotation of the chart.
-animation.animateScale|Boolean|	false| If true, will animate scaling the Doughnut from the centre.
+Name                        | Type	             | Default                |  Description
+----------------------------|---------|-----------------------|-----------------------|
+cutoutPercentage            | Number  |	50 - for doughnut, 0 - for pie|The percentage of the chart that is cut out of the middle.
+rotation                    | Number  | -0.5 * Math.PI|Starting angle to draw arcs from
+circumference               | Number  |	2 * Math.PI|	Sweep to allow arcs to cover
+animation.animateRotate	    | Boolean |	true| If true, will animate the rotation of the chart.
+animation.animateScale      | Boolean |	false| If true, will animate scaling the Doughnut from the centre.
 legend.labels.generateLabels| Function| function(chart) {}| Returns a label for each item to be displayed on the legend.
-legend.onClick| Function| function(event, legendItem) {} | Handles clicking an individual legend item
+legend.onClick              | Function| function(event, legendItem) {} | Handles clicking an individual legend item
 
 你可以依据你自己的图表情况适时的传递第二个对象参数来覆盖修改你需要修改的选项。
 
