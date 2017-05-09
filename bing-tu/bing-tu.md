@@ -79,15 +79,15 @@ var data = {
 #### 图表选项
 这里介绍的是一些定制化饼图和圆环图的具体选项。这些选项都已经合并到了[图表全局配置选项](http://www.chartjs.org/docs/#global-chart-configuration)了，包含了图表的选项。
 
-Name                        | Type	             | Default                |  Description
-----------------------------|---------|-----------------------|-----------------------|
-cutoutPercentage            | Number  |	50 - for doughnut, 0 - for pie|The percentage of the chart that is cut out of the middle.
-rotation                    | Number  | -0.5 * Math.PI|Starting angle to draw arcs from
-circumference               | Number  |	2 * Math.PI|	Sweep to allow arcs to cover
-animation.animateRotate	    | Boolean |	true| If true, will animate the rotation of the chart.
-animation.animateScale      | Boolean |	false| If true, will animate scaling the Doughnut from the centre.
-legend.labels.generateLabels| Function| function(chart) {}| Returns a label for each item to be displayed on the legend.
-legend.onClick              | Function| function(event, legendItem) {} | Handles clicking an individual legend item
+Name                        | Type	  | Default                       |  Description
+----------------------------|---------|-------------------------------|-----------------------|
+cutoutPercentage            | Number  |	50 - for doughnut,0 - for pie | 从中间开始图表占据的比例.
+rotation                    | Number  | -0.5 * Math.PI                | 开始绘制的起始角度
+circumference               | Number  |	2 * Math.PI                   | Sweep to allow arcs to cover（允许弧形覆盖？）
+animation.animateRotate	    | Boolean |	true                          | 值为true时, 图表将会带有动画效果旋转.
+animation.animateScale      | Boolean |	false                         | 值为true时, 环形图会从中心位置开始进行缩放动画
+legend.labels.generateLabels| Function| function(chart) {}            | 返回每一个说明的标签
+legend.onClick              | Function| function(event,legendItem){}  | 通过调用generateLegend生成html的说明
 
 你可以依据你自己的图表情况适时的传递第二个对象参数来覆盖修改你需要修改的选项。
 
