@@ -74,7 +74,7 @@ All functions are called with the same arguments: a [tooltip item](#chart-config
 | `beforeLabel` | `tooltipItem, data` | Returns text to render before an individual label. This will be called for each item in the tooltip.
 | `label` | `tooltipItem, data` | Returns text to render for an individual item in the tooltip.
 | `labelColor` | `tooltipItem, chart` | Returns the colors to render for the tooltip item. [more...](#label-color-callback)
-| `textLabelColor` | `tooltipItem, chart` | Returns the colors for the text of the label for the tooltip item.
+| `labelTextColor` | `tooltipItem, chart` | Returns the colors for the text of the label for the tooltip item.
 | `afterLabel` | `tooltipItem, data` | Returns text to render after an individual label.
 | `afterBody` | `Array[tooltipItem], data` | Returns text to render after the body section
 | `beforeFooter` | `Array[tooltipItem], data` | Returns text to render before the footer section.
@@ -97,7 +97,7 @@ var chart = new Chart(ctx, {
                         backgroundColor: 'rgb(255, 0, 0)'
                     }
                 },
-                textLabelColor:function(tooltipItem, chart){
+                labelTextColor:function(tooltipItem, chart){
                     return '#543453';
                 }
             }

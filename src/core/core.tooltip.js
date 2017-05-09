@@ -87,7 +87,7 @@ module.exports = function(Chart) {
 					backgroundColor: view.backgroundColor
 				};
 			},
-			textLabelColor: function() {
+			labelTextColor: function() {
 				return this._options.bodyFontColor;
 			},
 			afterLabel: helpers.noop,
@@ -490,7 +490,7 @@ module.exports = function(Chart) {
 				model.opacity = 1;
 
 				var labelColors = [];
-				var textLabelColors = [];
+				var labelTextColors = [];
 				tooltipPosition = Chart.Tooltip.positioners[opts.position](active, me._eventPosition);
 
 				var tooltipItems = [];
@@ -515,7 +515,7 @@ module.exports = function(Chart) {
 				// Determine colors for boxes
 				helpers.each(tooltipItems, function(tooltipItem) {
 					labelColors.push(opts.callbacks.labelColor.call(me, tooltipItem, me._chart));
-					textLabelColors.push(opts.callbacks.textLabelColor.call(me, tooltipItem, me._chart));
+					labelTextColors.push(opts.callbacks.labelTextColor.call(me, tooltipItem, me._chart));
 				});
 
 
@@ -531,7 +531,7 @@ module.exports = function(Chart) {
 				model.y = Math.round(tooltipPosition.y);
 				model.caretPadding = opts.caretPadding;
 				model.labelColors = labelColors;
-				model.textLabelColors = textLabelColors;
+				model.labelTextColors = labelTextColors;
 
 				// data points
 				model.dataPoints = tooltipItems;
@@ -697,7 +697,7 @@ module.exports = function(Chart) {
 						// Inner square
 						ctx.fillStyle = mergeOpacity(vm.labelColors[i].backgroundColor, opacity);
 						ctx.fillRect(pt.x + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
-						var textColor = mergeOpacity(vm.textLabelColors[i], opacity);
+						var textColor = mergeOpacity(vm.labelTextColors[i], opacity);
 						ctx.fillStyle = textColor;
 					}
 

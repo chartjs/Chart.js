@@ -330,7 +330,7 @@ describe('Core.Tooltip', function() {
 			afterBody: [],
 			footer: [],
 			caretPadding: 2,
-			textLabelColors: ['#fff'],
+			labelTextColors: ['#fff'],
 			labelColors: [{
 				borderColor: 'rgb(255, 0, 0)',
 				backgroundColor: 'rgb(0, 255, 0)'
@@ -395,8 +395,8 @@ describe('Core.Tooltip', function() {
 						afterFooter: function() {
 							return 'afterFooter';
 						},
-						textLabelColor: function() {
-							return 'textLabelColor';
+						labelTextColor: function() {
+							return 'labelTextColor';
 						}
 					}
 				}
@@ -480,7 +480,7 @@ describe('Core.Tooltip', function() {
 			afterBody: ['afterBody'],
 			footer: ['beforeFooter', 'footer', 'afterFooter'],
 			caretPadding: 2,
-			textLabelColors: ['textLabelColor', 'textLabelColor'],
+			labelTextColors: ['labelTextColor', 'labelTextColor'],
 			labelColors: [{
 				borderColor: 'rgb(255, 0, 0)',
 				backgroundColor: 'rgb(0, 255, 0)'
