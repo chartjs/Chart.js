@@ -693,8 +693,11 @@ module.exports = function(Chart) {
 							// apply same lineSpacing as calculated @ L#320
 							y += (tickFont.size * 1.5);
 						}
-					} else {
+					} else if (!isNaN(itemToDraw.tx1)) {
 						context.fillText(label, 0, 0);
+					}
+					else {
+						context.fillText('', 0, 0);
 					}
 					context.restore();
 				}
