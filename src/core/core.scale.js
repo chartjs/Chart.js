@@ -695,8 +695,7 @@ module.exports = function(Chart) {
 						}
 					} else if (!isNaN(itemToDraw.tx1)) {
 						context.fillText(label, 0, 0);
-					}
-					else {
+					} else {
 						context.fillText('', 0, 0);
 					}
 					context.restore();
