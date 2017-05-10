@@ -57,14 +57,14 @@
   * Dataset Structure
   * Data Object
   * Chart Options
-* [轴线选项](zhou-xian-xuan-xiang/zhou-xian-xuan-xiang.md)
-  * Common Configuration
-  * Category Scale
-  * Linear Scale
-  * Logarithmic Scale
-  * Time Scale
-  * Radial Linear Scale
-  * Update Default Scale config
+* [轴线选项（Scales）](zhou-xian-xuan-xiang/zhou-xian-xuan-xiang.md)
+  * [Common Configuration（常见配置）](zhou-xian-xuan-xiang/zhou-xian-xuan-xiang.md#common)
+  * [Category Scale（类别轴线）](zhou-xian-xuan-xiang/zhou-xian-xuan-xiang.md#category)
+  * [Linear Scale（线型轴线）](zhou-xian-xuan-xiang/zhou-xian-xuan-xiang.md#linear)
+  * [Logarithmic Scale（对数轴线）](zhou-xian-xuan-xiang/zhou-xian-xuan-xiang.md#logarithmic)
+  * [Time Scale（时间轴线）](zhou-xian-xuan-xiang/zhou-xian-xuan-xiang.md#time)
+  * [Radial Linear Scale（放射形轴线）](zhou-xian-xuan-xiang/zhou-xian-xuan-xiang.md#radial)
+  * [Update Default Scale config（更新默认的轴线配置）](zhou-xian-xuan-xiang/zhou-xian-xuan-xiang.md#update)
 * [高级用法](gao-ji-yong-fa/gao-ji-yong-fa.md)
   * Prototype Methods
   * External Tooltips
