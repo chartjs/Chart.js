@@ -70,7 +70,7 @@
   * [External Tooltips（外部提示项）](gao-ji-yong-fa/gao-ji-yong-fa.md#wai-bu-ti-shi-xiang)
   * [Writing New Scale Types（自定义轴线类型）](gao-ji-yong-fa/gao-ji-yong-fa.md#zi-ding-yi-zhou-xian)
   * [Writing New Chart Types（自定义图表类型）](gao-ji-yong-fa/gao-ji-yong-fa.md#zi-ding-yi-tu-biao)
-  * Extending Existing Chart Types
+  * [Extending Existing Chart Types（扩展已有图表类型）](gao-ji-yong-fa/gao-ji-yong-fa.md#kuo-zhan)
   * Creating Plugins
   * Building Chart.js
 * [注意事项](zhu-yi-shi-xiang/zhu-yi-shi-xiang.md)

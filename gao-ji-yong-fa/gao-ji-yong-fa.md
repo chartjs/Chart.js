@@ -359,3 +359,22 @@ new Chart(ctx, {
     buildOrUpdateElements: function() {}
 }
 ```
+
+<span id="kuo-zhan"></span>
+#### 扩展已有图表类型
+
+扩展或重写已有图表类型，只用很简单的覆盖它们的构造器即可
+
+* Chart.controllers.line
+* Chart.controllers.bar
+* Chart.controllers.radar
+* Chart.controllers.doughnut
+* Chart.controllers.polarArea
+* Chart.controllers.bubble
+
+##### Bar Controller
+
+Bar controller需要特别注意一下，需要在初始化的时候声明数据组数量从而正确的计算每一个柱状的宽度。
+
+
+
