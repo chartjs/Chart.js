@@ -72,7 +72,7 @@
   * [Writing New Chart Types（自定义图表类型）](gao-ji-yong-fa/gao-ji-yong-fa.md#zi-ding-yi-tu-biao)
   * [Extending Existing Chart Types（扩展已有图表类型）](gao-ji-yong-fa/gao-ji-yong-fa.md#kuo-zhan)
   * [Creating Plugins（制作插件）](gao-ji-yong-fa/gao-ji-yong-fa.md#zhi-zuo-cha-jian)
-  * Building Chart.js
+  * [Building Chart.js（编译）](gao-ji-yong-fa/gao-ji-yong-fa.md#bian-yi)
 * [注意事项](zhu-yi-shi-xiang/zhu-yi-shi-xiang.md)
   * [Previous versions（之前的版本）](zhu-yi-shi-xiang/zhu-yi-shi-xiang.md#previous)
   * [Browser support（浏览器支持）](zhu-yi-shi-xiang/zhu-yi-shi-xiang.md#browser)

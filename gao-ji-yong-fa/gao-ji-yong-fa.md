@@ -430,4 +430,20 @@ Bar controller需要特别注意一下，需要在初始化的时候声明数据
 }
 ```
 
+<span id="bian-yi"></span>
+#### 编译
+
+Chartjs使用`gulp`进行编译，先保证安装了本地依赖以及gulp
+
+```shell
+npm install
+npm install -g gulp
+```
+
+执行编译任务
+
+```shell
+gulp build
+```
+
 
