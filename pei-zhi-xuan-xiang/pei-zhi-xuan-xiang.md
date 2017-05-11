@@ -426,3 +426,46 @@ var chartInstance = new Chart(ctx, {
 
 同样，你也可以传一个[CanvasGradient](https://developer.mozilla.org/en-US/docs/Web/API/CanvasPattern)对象，使用传递对象可以实现更多的效果。
 
+<span id="tu-an"></span>
+#### 图案
+
+选项会给图表传一个[CanvasPattern](https://developer.mozilla.org/en-US/docs/Web/API/CanvasPattern)对象，例如你想用一张图片填充数据，可以按以下方法实现：
+
+```javascript
+var img = new Image();
+img.src = 'https://example.com/my_image.png';
+img.onload = function() {
+    var ctx = document.getElementById('canvas').getContext('2d');
+    var fillPattern = ctx.createPattern(img, 'repeat');
+
+    var chart = new Chart(ctx, {
+        data: {
+            labels: ['Item 1', 'Item 2', 'Item 3'],
+            datasets: [{
+                data: [10, 20, 30],
+                backgroundColor: fillPattern
+            }]
+        }
+    })
+}
+```
+
+使用图案填充可以帮助有视力障碍的人更方便的查看你的图表。
+
+使用[Patternnomaly](https://github.com/ashiguruma/patternomaly)库可以生成数据填充图。
+
+```javascript
+var chartData = {
+    datasets: [{
+        data: [45, 25, 20, 10],
+        backgroundColor: [
+            pattern.draw('square', '#ff6384'),
+            pattern.draw('circle', '#36a2eb'),
+            pattern.draw('diamond', '#cc65fe'),
+            pattern.draw('triangle', '#ffce56'),
+        ]
+    }],
+    labels: ['Red', 'Blue', 'Purple', 'Yellow']
+};
+```
+
