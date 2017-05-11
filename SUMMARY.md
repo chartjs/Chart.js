@@ -67,7 +67,7 @@
   * [Update Default Scale config（更新默认的轴线配置）](zhou-xian-xuan-xiang/zhou-xian-xuan-xiang.md#update)
 * [高级用法](gao-ji-yong-fa/gao-ji-yong-fa.md)
   * [Prototype Methods（原型方法）](gao-ji-yong-fa/gao-ji-yong-fa.md#yuan-xing)
-  * External Tooltips
+  * [External Tooltips（外部提示项）](gao-ji-yong-fa/gao-ji-yong-fa.md#wai-bu-ti-shi-xiang)
   * Writing New Scale Types
   * Writing New Chart Types
   * Extending Existing Chart Types

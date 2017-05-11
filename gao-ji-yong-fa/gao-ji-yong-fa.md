@@ -122,3 +122,41 @@ myLineChart.getDatasetAtEvent(e);
 var meta = myChart.getDatasetMeta(0);
 var x = meta.data[0]._model.x
 ```
+
+<span id="wai-bu-ti-shi-xiang"></span>
+#### 外部提示项
+
+可以在全局或者图表配置中定义提示项
+
+```javascript
+var myPieChart = new Chart(ctx, {
+    type: 'pie',
+    data: data,
+    options: {
+        tooltips: {
+            custom: function(tooltip) {
+                // tooltip will be false if tooltip is not visible or should be hidden
+                if (!tooltip) {
+                    return;
+                }
+
+                // Otherwise, tooltip will be an object with all tooltip properties like:
+
+                // tooltip.caretSize
+                // tooltip.caretPadding
+                // tooltip.chart
+                // tooltip.cornerRadius
+                // tooltip.fillColor
+                // tooltip.font...
+                // tooltip.text
+                // tooltip.x
+                // tooltip.y
+                // tooltip.caretX
+                // tooltip.caretY
+                // etc...
+            }
+        }
+    }
+});
+```
+
