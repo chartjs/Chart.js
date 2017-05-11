@@ -69,7 +69,7 @@
   * [Prototype Methods（原型方法）](gao-ji-yong-fa/gao-ji-yong-fa.md#yuan-xing)
   * [External Tooltips（外部提示项）](gao-ji-yong-fa/gao-ji-yong-fa.md#wai-bu-ti-shi-xiang)
   * [Writing New Scale Types（自定义轴线类型）](gao-ji-yong-fa/gao-ji-yong-fa.md#zi-ding-yi-zhou-xian)
-  * Writing New Chart Types
+  * [Writing New Chart Types（自定义图表类型）](gao-ji-yong-fa/gao-ji-yong-fa.md#zi-ding-yi-tu-biao)
   * Extending Existing Chart Types
   * Creating Plugins
   * Building Chart.js
