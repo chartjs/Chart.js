@@ -21,7 +21,7 @@
   * [Element Configuration（元素配置）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#yuan-su-pei-zhi)
   * [Colors（颜色）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#yan-se)
   * [Patterns（图案）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#tu-an)
-  * Mixed Chart Types
+  * [Mixed Chart Types（混合图表类型）](pei-zhi-xuan-xiang/pei-zhi-xuan-xiang.md#hun-he-lei-xing)
 * [Line Chart（曲线图）](qu-xian-tu/qu-xian-tu.md)
   * [Introduction（介绍）](qu-xian-tu/qu-xian-tu.md#introduction)
   * [Example Usage（实例）](qu-xian-tu/qu-xian-tu.md#example-usage)

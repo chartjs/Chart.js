@@ -469,3 +469,29 @@ var chartData = {
 };
 ```
 
+<span id="hun-he-lei-xing"></span>
+#### 混合图表类型
+
+单独声明数据的类型时，可以生成混合图表，如下：
+
+```javascript
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Item 1', 'Item 2', 'Item 3'],
+        datasets: [
+            {
+                type: 'bar',
+                label: 'Bar Component',
+                data: [10, 20, 30],
+            },
+            {
+                type: 'line',
+                label: 'Line Component',
+                data: [30, 20, 10],
+            }
+        ]
+    }
+});
+```
+
