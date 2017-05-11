@@ -68,7 +68,7 @@
 * [高级用法](gao-ji-yong-fa/gao-ji-yong-fa.md)
   * [Prototype Methods（原型方法）](gao-ji-yong-fa/gao-ji-yong-fa.md#yuan-xing)
   * [External Tooltips（外部提示项）](gao-ji-yong-fa/gao-ji-yong-fa.md#wai-bu-ti-shi-xiang)
-  * Writing New Scale Types
+  * [Writing New Scale Types（自定义轴线类型）](gao-ji-yong-fa/gao-ji-yong-fa.md#zi-ding-yi-zhou-xian)
   * Writing New Chart Types
   * Extending Existing Chart Types
   * Creating Plugins

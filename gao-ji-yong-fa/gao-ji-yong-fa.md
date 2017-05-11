@@ -160,3 +160,140 @@ var myPieChart = new Chart(ctx, {
 });
 ```
 
+<span id="zi-ding-yi-zhou-xian"></span>
+#### 自定义轴线类型
+
+从`Chartjs 2.0`开始，轴线类型可以进行自定义扩展，需要继承自`Chart.Scale`
+
+```javascript
+var MyScale = Chart.Scale.extend({
+    /* extensions ... */
+});
+
+// MyScale is now derived from Chart.Scale
+```
+
+当你自定义轴线时，首先需要在全局对象中进行注册。注册时将会采用默认配置，第一条参数是一个字符串标识符，以供后面调用使用。
+
+```javascript
+Chart.scaleService.registerScaleType('myScale', MyScale, defaultConfigObject);
+```
+
+使用自定义的轴线类型时，传自定义的字符串标识进行声明即可。
+
+```javascript
+var lineChart = new Chart(ctx, {
+    data: data,
+    type: 'line',
+    options: {
+        scales: {
+            yAxes: [{
+                type: 'myScale' // this is the same key that was passed to the registerScaleType function
+            }]
+        }
+    }
+})
+```
+
+##### 轴线属性
+
+轴线实例有如下属性：
+
+```javascript
+{
+    left: Number, // left edge of the scale bounding box
+    right: Number, // right edge of the bounding box'
+    top: Number,
+    bottom: Number,
+    width: Number, // the same as right - left
+    height: Number, // the same as bottom - top
+
+    // Margin on each side. Like css, this is outside the bounding box.
+    margins: {
+        left: Number,
+        right: Number,
+        top: Number,
+        bottom: Number,
+    },
+
+    // Amount of padding on the inside of the bounding box (like CSS)
+    paddingLeft: Number,
+    paddingRight: Number,
+    paddingTop: Number,
+    paddingBottom: Number,
+}
+```
+
+##### 轴线接口
+
+自定义轴线必须实现以下接口：
+
+```javascript
+{
+    // Determines the data limits. Should set this.min and this.max to be the data max/min
+    determineDataLimits: function() {},
+
+    // Generate tick marks. this.chart is the chart instance. The data object can be accessed as this.chart.data
+    // buildTicks() should create a ticks array on the axis instance, if you intend to use any of the implementations from the base class
+    buildTicks: function() {},
+
+    // Get the value to show for the data at the given index of the the given dataset, ie this.chart.data.datasets[datasetIndex].data[index]
+    getLabelForIndex: function(index, datasetIndex) {},
+
+    // Get the pixel (x coordinate for horizontal axis, y coordinate for vertical axis) for a given value
+    // @param index: index into the ticks array
+    // @param includeOffset: if true, get the pixel halway between the given tick and the next
+    getPixelForTick: function(index, includeOffset) {},
+
+    // Get the pixel (x coordinate for horizontal axis, y coordinate for vertical axis) for a given value
+    // @param value : the value to get the pixel for
+    // @param index : index into the data array of the value
+    // @param datasetIndex : index of the dataset the value comes from
+    // @param includeOffset : if true, get the pixel halway between the given tick and the next
+    getPixelForValue: function(value, index, datasetIndex, includeOffset) {}
+
+    // Get the value for a given pixel (x coordinate for horizontal axis, y coordinate for vertical axis)
+    // @param pixel : pixel value
+    getValueForPixel: function(pixel) {}
+}
+
+```
+
+以下选项也需要实现，但是基础类中已经实现了相关内容
+
+```javascript
+{
+    // Transform the ticks array of the scale instance into strings. The default implementation simply calls this.options.ticks.callback(numericalTick, index, ticks);
+    convertTicksToLabels: function() {},
+
+    // Determine how much the labels will rotate by. The default implementation will only rotate labels if the scale is horizontal.
+    calculateTickRotation: function() {},
+
+    // Fits the scale into the canvas.
+    // this.maxWidth and this.maxHeight will tell you the maximum dimensions the scale instance can be. Scales should endeavour to be as efficient as possible with canvas space.
+    // this.margins is the amount of space you have on either side of your scale that you may expand in to. This is used already for calculating the best label rotation
+    // You must set this.minSize to be the size of your scale. It must be an object containing 2 properties: width and height.
+    // You must set this.width to be the width and this.height to be the height of the scale
+    fit: function() {},
+
+    // Draws the scale onto the canvas. this.(left|right|top|bottom) will have been populated to tell you the area on the canvas to draw in
+    // @param chartArea : an object containing four properties: left, right, top, bottom. This is the rectangle that lines, bars, etc will be drawn in. It may be used, for example, to draw grid lines.
+    draw: function(chartArea) {},
+}
+```
+
+轴线实例核心还有一些实用的方法你可能会用到
+
+```javascript
+{
+    // Returns true if the scale instance is horizontal
+    isHorizontal: function() {},
+
+    // Get the correct value from the value from this.chart.data.datasets[x].data[]
+    // If dataValue is an object, returns .x or .y depending on the return of isHorizontal()
+    // If the value is undefined, returns NaN
+    // Otherwise returns the value.
+    // Note that in all cases, the returned value is not guaranteed to be a Number
+    getRightValue: function(dataValue) {},
+}
+```
