@@ -71,7 +71,7 @@
   * [Writing New Scale Types（自定义轴线类型）](gao-ji-yong-fa/gao-ji-yong-fa.md#zi-ding-yi-zhou-xian)
   * [Writing New Chart Types（自定义图表类型）](gao-ji-yong-fa/gao-ji-yong-fa.md#zi-ding-yi-tu-biao)
   * [Extending Existing Chart Types（扩展已有图表类型）](gao-ji-yong-fa/gao-ji-yong-fa.md#kuo-zhan)
-  * Creating Plugins
+  * [Creating Plugins（制作插件）](gao-ji-yong-fa/gao-ji-yong-fa.md#zhi-zuo-cha-jian)
   * Building Chart.js
 * [注意事项](zhu-yi-shi-xiang/zhu-yi-shi-xiang.md)
   * [Previous versions（之前的版本）](zhu-yi-shi-xiang/zhu-yi-shi-xiang.md#previous)

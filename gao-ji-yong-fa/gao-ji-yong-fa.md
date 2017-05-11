@@ -376,5 +376,58 @@ new Chart(ctx, {
 
 Bar controller需要特别注意一下，需要在初始化的时候声明数据组数量从而正确的计算每一个柱状的宽度。
 
+<span id="zhi-zuo-cha-jian"></span>
+#### 制作插件
+
+从`v2.1.0`开始，调用`Chart.plugins.register`可以很简单的创建自己的插件，在以下情况下可以调用插件
+
+* Start of initialization
+* End of initialization
+* Start of update
+* After the chart scales have calculated
+* Start of datasets update
+* End of datasets update
+* End of update (before render occurs)
+* Start of draw
+* End of draw
+* Before datasets draw
+* After datasets draw 
+* Resize
+* Before an animation is started
+* When an event occurs on the canvas (mousemove, click, etc). This requires the options.events property handled
+
+插件需要实现以下接口：
+
+```javascript
+{
+    beforeInit: function(chartInstance) { },
+    afterInit: function(chartInstance) { },
+
+    resize: function(chartInstance, newChartSize) { },
+
+    beforeUpdate: function(chartInstance) { },
+    afterScaleUpdate: function(chartInstance) { }
+    beforeDatasetsUpdate: function(chartInstance) { }
+    afterDatasetsUpdate: function(chartInstance) { }
+    afterUpdate: function(chartInstance) { },
+
+    // This is called at the start of a render. It is only called once, even if the animation will run for a number of frames. Use beforeDraw or afterDraw
+    // to do something on each animation frame
+    beforeRender: function(chartInstance) { },
+
+    // Easing is for animation
+    beforeDraw: function(chartInstance, easing) { },
+    afterDraw: function(chartInstance, easing) { },
+    // Before the datasets are drawn but after scales are drawn
+    beforeDatasetsDraw: function(chartInstance, easing) { },
+    afterDatasetsDraw: function(chartInstance, easing) { },
+
+    destroy: function(chartInstance) { }
+
+    // Called when an event occurs on the chart
+    beforeEvent: function(chartInstance, event) {}
+    afterEvent: function(chartInstance, event) {}
+}
+```
 
 
