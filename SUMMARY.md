@@ -66,7 +66,7 @@
   * [Radial Linear Scale（放射形轴线）](zhou-xian-xuan-xiang/zhou-xian-xuan-xiang.md#radial)
   * [Update Default Scale config（更新默认的轴线配置）](zhou-xian-xuan-xiang/zhou-xian-xuan-xiang.md#update)
 * [高级用法](gao-ji-yong-fa/gao-ji-yong-fa.md)
-  * Prototype Methods
+  * [Prototype Methods（原型方法）](gao-ji-yong-fa/gao-ji-yong-fa.md#yuan-xing)
   * External Tooltips
   * Writing New Scale Types
   * Writing New Chart Types
