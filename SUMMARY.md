@@ -52,11 +52,11 @@
   * [Dataset Structure（数据集结构）](bing-tu/bing-tu.md#dataset)
   * [Chart Options（图表选项）](bing-tu/bing-tu.md#option)
 * [泡泡图（Bubble Chart）](pao-pao-tu/pao-pao-tu.md)
-  * Introduction
-  * Example Usage
-  * Dataset Structure
-  * Data Object
-  * Chart Options
+  * [Introduction（介绍）](pao-pao-tu/pao-pao-tu.md#jie-shao)
+  * [Example Usage（实例）](pao-pao-tu/pao-pao-tu.md#shi-li)
+  * [Dataset Structure（数据集结构）](pao-pao-tu/pao-pao-tu.md#shu-ju-ji)
+  * [Data Object（数据对象）](pao-pao-tu/pao-pao-tu.md#shu-ju-dui-xiang)
+  * [Chart Options（图表选项）](pao-pao-tu/pao-pao-tu.md)
 * [轴线选项（Scales）](zhou-xian-xuan-xiang/zhou-xian-xuan-xiang.md)
   * [Common Configuration（常见配置）](zhou-xian-xuan-xiang/zhou-xian-xuan-xiang.md#common)
   * [Category Scale（类别轴线）](zhou-xian-xuan-xiang/zhou-xian-xuan-xiang.md#category)
