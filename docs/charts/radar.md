@@ -76,8 +76,8 @@ All point* properties can be specified as an array. If these are set to an array
 | `borderDashOffset` | `Number` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
 | `borderCapStyle` | `String` | Cap style of the line. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap)
 | `borderJoinStyle` | `String` | Line joint style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin)
-| `fill` | `Boolean/String` | How to fill the area under the line. [more...](#fill)
-| `lineTension` | `Number` | Bezier curve tension of the line. Set to 0 to draw straightlines. 
+| `fill` | `Boolean/String` | How to fill the area under the line. See [area charts](area.md)
+| `lineTension` | `Number` | Bezier curve tension of the line. Set to 0 to draw straightlines.
 | `pointBackgroundColor` | `Color/Color[]` | The fill color for points.
 | `pointBorderColor` | `Color/Color[]` | The border color for points.
 | `pointBorderWidth` | `Number/Number[]` | The width of the point border in pixels.
