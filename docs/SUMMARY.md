@@ -27,6 +27,7 @@
   * [Polar Area](charts/polar.md)
   * [Bubble](charts/bubble.md)
   * [Scatter](charts/scatter.md)
+  * [Area](charts/area.md)
   * [Mixed](charts/mixed.md)
 * [Axes](axes/README.md)
   * [Cartesian](axes/cartesian/README.md)

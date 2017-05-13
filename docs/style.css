@@ -9,3 +9,7 @@ a.anchorjs-link {
 a.anchorjs-link:hover {
     color: rgba(65, 131, 196, 1);
 }
+
+sup {
+    font-size: 0.75em !important;
+}
