@@ -10,7 +10,7 @@ module.exports = function(Chart) {
 		if (typeof pointStyle === 'object') {
 			type = pointStyle.toString();
 			if (type === '[object HTMLImageElement]' || type === '[object HTMLCanvasElement]') {
-				ctx.drawImage(pointStyle, x - pointStyle.width / 2, y - pointStyle.height / 2);
+				ctx.drawImage(pointStyle, x - pointStyle.width / 2, y - pointStyle.height / 2, pointStyle.width, pointStyle.height);
 				return;
 			}
 		}

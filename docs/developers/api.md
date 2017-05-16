@@ -30,6 +30,8 @@ myLineChart.update(); // Calling update now animates the position of March from 
 
 > **Note:** replacing the data reference (e.g. `myLineChart.data = {datasets: [...]}` only works starting **version 2.6**. Prior that, replacing the entire data object could be achieved with the following workaround: `myLineChart.config.data = {datasets: [...]}`.
 
+See [Updating Charts](updates.md) for more details.
+
 ## .reset()
 
 Reset the chart to it's state before the initial animation. A new animation can then be triggered using `update`.

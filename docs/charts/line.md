@@ -56,7 +56,7 @@ All point* properties can be specified as an array. If these are set to an array
 | `borderCapStyle` | `String` | Cap style of the line. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap)
 | `borderJoinStyle` | `String` | Line joint style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin)
 | `cubicInterpolationMode` | `String` | Algorithm used to interpolate a smooth curve from the discrete data points. [more...](#cubicInterpolationMode)
-| `fill` | `Boolean/String` | How to fill the area under the line. [more...](#fill)
+| `fill` | `Boolean/String` | How to fill the area under the line. See [area charts](area.md)
 | `lineTension` | `Number` | Bezier curve tension of the line. Set to 0 to draw straightlines. This option is ignored if monotone cubic interpolation is used.
 | `pointBackgroundColor` | `Color/Color[]` | The fill color for points.
 | `pointBorderColor` | `Color/Color[]` | The border color for points.
@@ -77,19 +77,11 @@ The following interpolation modes are supported:
 * 'default'
 * 'monotone'. 
 
-The 'default' algorithm uses a custom weighted cubic interpolation, which produces pleasant curves for all types of datasets. 
+The 'default' algorithm uses a custom weighted cubic interpolation, which produces pleasant curves for all types of datasets.
 
-The 'monotone' algorithm is more suited to `y = f(x)` datasets : it preserves monotonicity (or piecewise monotonicity) of the dataset being interpolated, and ensures local extremums (if any) stay at input data points. 
+The 'monotone' algorithm is more suited to `y = f(x)` datasets : it preserves monotonicity (or piecewise monotonicity) of the dataset being interpolated, and ensures local extremums (if any) stay at input data points.
 
 If left untouched (`undefined`), the global `options.elements.line.cubicInterpolationMode` property is used.
-
-### fill
-If `true`, fill the area under the line. The line is filled to the baseline. If the y axis has a 0 value, the line is filled to that point. If the axis has only negative values, the line is filled to the highest value. If the axis has only positive values, it is filled to the lowest value.
-
-String values to fill to specific locations are:
-* `'zero'`
-* `'top'`
-* `'bottom'`
 
 ### pointStyle
 The style of point. Options are:
