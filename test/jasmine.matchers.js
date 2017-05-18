@@ -122,7 +122,7 @@ function toBeChartOfSize() {
 			var message = null;
 			var canvas = actual.ctx.canvas;
 			var style = getComputedStyle(canvas);
-			var pixelRatio = window.devicePixelRatio;
+			var pixelRatio = actual.options.devicePixelRatio || window.devicePixelRatio;
 			var dh = parseInt(style.height, 10);
 			var dw = parseInt(style.width, 10);
 			var rh = canvas.height;

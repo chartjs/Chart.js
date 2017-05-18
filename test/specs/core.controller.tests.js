@@ -555,6 +555,55 @@ describe('Chart', function() {
 		});
 	});
 
+	describe('config.options.devicePixelRatio 3', function() {
+		beforeEach(function() {
+			this.devicePixelRatio = window.devicePixelRatio;
+			window.devicePixelRatio = 1;
+		});
+
+		afterEach(function() {
+			window.devicePixelRatio = this.devicePixelRatio;
+		});
+
+		// see https://github.com/chartjs/Chart.js/issues/3575
+		it ('should scale the render size but not the "implicit" display size', function() {
+			var chart = acquireChart({
+				options: {
+					responsive: false,
+					devicePixelRatio: 3
+				}
+			}, {
+				canvas: {
+					width: 320,
+					height: 240,
+				}
+			});
+
+			expect(chart).toBeChartOfSize({
+				dw: 320, dh: 240,
+				rw: 960, rh: 720,
+			});
+		});
+
+		it ('should scale the render size but not the "explicit" display size', function() {
+			var chart = acquireChart({
+				options: {
+					responsive: false,
+					devicePixelRatio: 3
+				}
+			}, {
+				canvas: {
+					style: 'width: 320px; height: 240px'
+				}
+			});
+
+			expect(chart).toBeChartOfSize({
+				dw: 320, dh: 240,
+				rw: 960, rh: 720,
+			});
+		});
+	});
+
 	describe('controller.destroy', function() {
 		it('should remove the resizer element when responsive: true', function() {
 			var chart = acquireChart({
