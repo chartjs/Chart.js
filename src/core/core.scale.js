@@ -1,5 +1,8 @@
 'use strict';
 
+var moment = require('moment');
+moment = typeof(moment) === 'function' ? moment : window.moment;
+
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
@@ -503,7 +506,7 @@ module.exports = function(Chart) {
 
 			var tickFontColor = helpers.getValueOrDefault(optionTicks.fontColor, globalDefaults.defaultFontColor);
 			var tickFont = parseFontOptions(optionTicks);
-
+			var seniorTickFont = helpers.fontString(tickFont.size, 'bold', tickFont.family);
 			var tl = gridLines.drawTicks ? gridLines.tickMarkLength : 0;
 
 			var scaleLabelFontColor = helpers.getValueOrDefault(scaleLabel.fontColor, globalDefaults.defaultFontColor);
@@ -651,7 +654,7 @@ module.exports = function(Chart) {
 			});
 
 			// Draw all of the tick labels, tick marks, and grid lines at the correct places
-			helpers.each(itemsToDraw, function(itemToDraw) {
+			helpers.each(itemsToDraw, function(itemToDraw, index) {
 				if (gridLines.display) {
 					context.save();
 					context.lineWidth = itemToDraw.glWidth;
@@ -681,7 +684,17 @@ module.exports = function(Chart) {
 					context.save();
 					context.translate(itemToDraw.labelX, itemToDraw.labelY);
 					context.rotate(itemToDraw.rotation);
-					context.font = tickFont.font;
+					var font = tickFont.font;
+					if (me.ticksAsTimestamps) {
+						// Add bold style to senior units
+						var tickMoment = moment(me.ticksAsTimestamps[index]);
+						var tickMomentClone = tickMoment.clone();
+						if (me.majorUnit &&
+							tickMoment.valueOf() === tickMomentClone.startOf(me.majorUnit).valueOf()) {
+							font = seniorTickFont;
+						}
+					}
+					context.font = font;
 					context.textBaseline = itemToDraw.textBaseline;
 					context.textAlign = itemToDraw.textAlign;
 
