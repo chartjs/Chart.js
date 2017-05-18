@@ -26,8 +26,8 @@ module.exports = function(Chart) {
 				millisecond: 'h:mm:ss.SSS a', // 11:20:01.123 AM,
 				second: 'h:mm:ss a', // 11:20:01 AM
 				minute: 'h:mm:ss a', // 11:20:01 AM
-				hour: 'MMM D, hA', // Sept 4, 5PM
-				day: 'll', // Sep 4 2015
+				hour: 'hA', // 5PM
+				day: 'MMM D', // Sep 4
 				week: 'll', // Week 46, or maybe "[W]WW - YYYY" ?
 				month: 'MMM YYYY', // Sept 2015
 				quarter: '[Q]Q - YYYY', // Q3
@@ -154,9 +154,7 @@ module.exports = function(Chart) {
 				alignedTick += startFraction;
 				ticks.push(alignedTick);
 			}
-
 			var cur = moment(alignedTick);
-
 			while (cur.add(stepSize, options.unit).valueOf() < niceRange.max) {
 				ticks.push(cur.valueOf());
 			}
@@ -165,7 +163,6 @@ module.exports = function(Chart) {
 				ticks.push(realMax);
 			}
 		}
-
 		return ticks;
 	}
 
@@ -306,6 +303,8 @@ module.exports = function(Chart) {
 
 			me.displayFormat = timeOpts.displayFormats[unit];
 			me.seniorDisplayFormat = timeOpts.displayFormats[majorUnit];
+			me.unit = unit;
+			me.majorUnit = majorUnit;
 
 			var stepSize = timeOpts.stepSize || timeHelpers.determineStepSize(minTimestamp || dataMin, maxTimestamp || dataMax, unit, maxTicks);
 			me.ticks = timeHelpers.generateTicks({
@@ -346,7 +345,18 @@ module.exports = function(Chart) {
 		},
 		// Function to format an individual tick mark
 		tickFormatFunction: function(tick, index, ticks) {
-			var formattedTick = tick.format(this.displayFormat);
+			var formattedTick;
+			var tickClone = tick.clone();
+			if (this.majorUnit &&
+				this.seniorDisplayFormat &&
+				tick.valueOf() === tickClone.startOf(this.majorUnit).valueOf()) {
+				// format as senior unit
+				formattedTick = tick.format(this.seniorDisplayFormat);
+			} else {
+				// format as base unit
+				formattedTick = tick.format(this.displayFormat);
+			}
+
 			var tickOpts = this.options.ticks;
 			var callback = helpers.getValueOrDefault(tickOpts.callback, tickOpts.userCallback);
 
