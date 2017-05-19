@@ -10,25 +10,25 @@
     "url": "https://github.com/chartjs/Chart.js.git"
   },
   "devDependencies": {
-    "browserify": "^13.0.0",
-    "browserify-istanbul": "^0.2.1",
+    "browserify": "^14.3.0",
+    "browserify-istanbul": "^2.0.0",
     "bundle-collapser": "^1.2.1",
     "child-process-promise": "^2.2.0",
     "coveralls": "^2.11.6",
     "gitbook-cli": "^2.3.0",
     "gulp": "3.9.x",
-    "gulp-concat": "~2.1.x",
-    "gulp-connect": "~2.0.5",
+    "gulp-concat": "~2.6.x",
+    "gulp-connect": "~5.0.0",
     "gulp-eslint": "^3.0.0",
     "gulp-file": "^0.3.0",
-    "gulp-html-validator": "^0.0.2",
+    "gulp-html-validator": "^0.0.5",
     "gulp-insert": "~0.5.0",
     "gulp-replace": "^0.5.4",
-    "gulp-size": "~0.4.0",
+    "gulp-size": "~2.1.0",
     "gulp-streamify": "^1.0.2",
-    "gulp-uglify": "~2.0.x",
-    "gulp-util": "~2.2.x",
-    "gulp-zip": "~3.2.0",
+    "gulp-uglify": "~2.1.x",
+    "gulp-util": "~3.0.x",
+    "gulp-zip": "~4.0.0",
     "jasmine": "^2.5.0",
     "jasmine-core": "^2.5.0",
     "karma": "^1.5.0",
@@ -42,7 +42,7 @@
     "pixelmatch": "^4.0.2",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.7.0",
-    "yargs": "^5.0.0"
+    "yargs": "^8.0.1"
   },
   "spm": {
     "main": "Chart.js"
