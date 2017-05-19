@@ -139,14 +139,16 @@ module.exports = function(Chart) {
 		if (options.maxTicks) {
 			var stepSize = options.stepSize;
 			var startTick = options.min !== undefined ? options.min : niceRange.min;
-			var seniorUnitStart = moment(startTick).add(1, options.seniorUnit).startOf(options.seniorUnit);
-			var startRange = seniorUnitStart.valueOf() - startTick;
+			var majorUnitStart = startTick;
+			if (options.majorUnit) {
+				majorUnitStart = moment(startTick).add(1, options.majorUnit).startOf(options.majorUnit);
+			}
+			var startRange = majorUnitStart.valueOf() - startTick;
 			var startFraction = startRange % (interval[options.unit].size * stepSize);
 			var alignedTick = startTick;
 			ticks.push(startTick);
-
 			if (startTick !== alignedTick + startFraction &&
-				options.seniorUnit &&
+				options.majorUnit &&
 				!options.timeOpts.round &&
 				!options.timeOpts.isoWeekday) {
 				alignedTick += startFraction;
@@ -296,14 +298,14 @@ module.exports = function(Chart) {
 
 			var unit = timeOpts.unit || timeHelpers.determineUnit(timeOpts.minUnit, minTimestamp || dataMin, maxTimestamp || dataMax, maxTicks);
 			var units = Object.keys(interval);
-			var seniorUnit = null;
+			var majorUnit = null;
 			var unitIndex = units.indexOf(unit);
 			if (unitIndex < units.length - 1) {
-				seniorUnit = units[unitIndex + 1];
+				majorUnit = units[unitIndex + 1];
 			}
 
 			me.displayFormat = timeOpts.displayFormats[unit];
-			me.seniorDisplayFormat = timeOpts.displayFormats[seniorUnit];
+			me.seniorDisplayFormat = timeOpts.displayFormats[majorUnit];
 
 			var stepSize = timeOpts.stepSize || timeHelpers.determineStepSize(minTimestamp || dataMin, maxTimestamp || dataMax, unit, maxTicks);
 			me.ticks = timeHelpers.generateTicks({
@@ -311,7 +313,7 @@ module.exports = function(Chart) {
 				min: minTimestamp,
 				max: maxTimestamp,
 				stepSize: stepSize,
-				seniorUnit: seniorUnit,
+				majorUnit: majorUnit,
 				unit: unit,
 				timeOpts: timeOpts,
 				isoWeekday: timeOpts.isoWeekday
