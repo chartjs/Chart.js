@@ -139,14 +139,16 @@ module.exports = function(Chart) {
 		if (options.maxTicks) {
 			var stepSize = options.stepSize;
 			var startTick = options.min !== undefined ? options.min : niceRange.min;
-			var seniorUnitStart = moment(startTick).add(1, options.seniorUnit).startOf(options.seniorUnit);
-			var startRange = seniorUnitStart.valueOf() - startTick;
+			var majorUnitStart = startTick;
+			if (options.majorUnit) {
+				majorUnitStart = moment(startTick).add(1, options.majorUnit).startOf(options.majorUnit);
+			}
+			var startRange = majorUnitStart.valueOf() - startTick;
 			var startFraction = startRange % (interval[options.unit].size * stepSize);
 			var alignedTick = startTick;
 			ticks.push(startTick);
-
 			if (startTick !== alignedTick + startFraction &&
-				options.seniorUnit &&
+				options.majorUnit &&
 				!options.timeOpts.round &&
 				!options.timeOpts.isoWeekday) {
 				alignedTick += startFraction;
