@@ -203,22 +203,22 @@ var chartInstance = new Chart(ctx, {
 
 Name            | Type                | Default        | Description
 ----------------|---------------------|----------------|-----------------------|
-displayFormats  | Object              | -	           | 请看[Display Formats](http://www.chartjs.org/docs/#scales-display-formats)部分.
-isoWeekday	    | Boolean             | false	       | If true and the unit is set to 'week', iso weekdays will be used.
+displayFormats  | Object              | -	           | 请看[Display Formats](http://www.chartjs.org/docs/#scales-display-formats)部分
+isoWeekday	    | Boolean             | false	       | 如果值为true并且单元设置为‘week’，iso工作日将会被使用
 max	            | [Time](http://www.chartjs.org/docs/#scales-date-formats)	              | -	           | 如果定义了, 会覆盖数据最大值
 min	            | [Time](http://www.chartjs.org/docs/#scales-date-formats)	              | -	           | 如果定义了, 会覆盖数据最小值
-parser	        | String or Function  | -	           | 如果定义为字符串, it is interpreted as a custom format to be used by moment to parse the date. If this is a function, it must return a moment.js object given the appropriate data value.
-round	        | String	          | -	           | 如果定义了, dates will be rounded to the start of this unit. See [Time Units](http://www.chartjs.org/docs/#scales-time-units) below for the allowed units.
-tooltipFormat	| String	          | ''	           | The moment js format string to use for the tooltip.
-unit	        | String	          | -	           | 如果定义了, will force the unit to be a certain type. See [Time Units](http://www.chartjs.org/docs/#scales-time-units)s section below for details.
-unitStepSize	| Number	          | 1	           | 网格线之间的单元数.
+parser	        | String or Function  | -	           | 如果定义为字符串, 它被解释为一种自定义格式，用于解析日期。如果这是一个函数,它必须返回一个moment.js对象 给出适当的数据值
+round	        | String	          | -	           | 如果定义了, 日期将会四舍五入到单元的开始。请看[Time Units](http://www.chartjs.org/docs/#scales-time-units)查看可以使用的单元
+tooltipFormat	| String	          | ''	           | moment js字符串格式用于工具提示
+unit	        | String	          | -	           | 如果定义了, 会强制使用特定类型。请看下面的[Time Units](http://www.chartjs.org/docs/#scales-time-units)查看可以使用的单元
+unitStepSize	| Number	          | 1	           | 网格线之间的单元数
 minUnit	        | String	          | 'millisecond'  | 时间单元上最小展示格式
 
 ##### 数据格式
-When providing data for the time scale, Chart.js supports all of the formats that Moment.js accepts. See [Moment.js](http://momentjs.com/docs/#/parsing/) docs for details.
+当为时间轴线提供数据时, Chart.js支持Moment.js支持的所有时间格式。 详情请看[Moment.js](http://momentjs.com/docs/#/parsing/) 文档。
 
 ##### 展示格式
-The following display formats are used to configure how different time units are formed into strings for the axis tick marks. See moment.js for the allowable format strings.
+下面的时间格式被用来配置不同的时间单元在轴作为记号标记时的字符串展示形式。 请看[moment.js](http://momentjs.com/docs/#/displaying/format/) 查看被允许使用的字符串格式。
 
 Name            | Default 
 ----------------|------------------|
@@ -232,10 +232,10 @@ month	        | 'MMM YYYY'
 quarter	        | '[Q]Q - YYYY'
 year	        | 'YYYY'
 
-For example, to set the display format for the 'quarter' unit to show the month and year, the following config would be passed to the chart constructor.
+例如, 为“季度”单元设置显示格式，以显示月和年, 下面的配置将被传递给图表构造函数.
 
 ##### 时间单元
-The following time measurements are supported. The names can be passed as strings to the time.unit config option to force a certain unit.
+支持下裂时间度量. 这些名字可以作为字符串传递给 **time.unit** 选项来强制使用一个单元.
 
 * millisecond(毫秒)
 * second（秒）
@@ -266,11 +266,11 @@ var chartInstance = new Chart(ctx, {
 ```
 
 <span id="radial"></span>
-#### 放射形形轴线
-The radial linear scale is used specifically for the radar and polar area chart types. It overlays the chart area, rather than being positioned on one of the edges.
+#### 放射形线形轴线
+放射形线形轴线 是专门用于雷达和极坐标图类型的。 它覆盖了图表区域，而不是放在一个边缘上。
 
 ##### 配置选项
-下列额外配置选项供放射线型轴线使用.
+下列额外配置选项供放射线型轴线使用。
 
 Name            | Type                | Default  | Description
 ----------------|---------------------|----------|-----------------------|
@@ -280,7 +280,7 @@ pointLabels	    | Object	          | -	     | 详细请看下面的点标签选�
 ticks	        | Object	          | -	     | 请看下面的记号选项.
 
 ##### 角度线选项
-The following options are used to configure angled lines that radiate from the center of the chart to the point labels. They can be found in the angleLines sub options. 注意这些选项只有在lineArc为false时使用.
+下面的选项用来配置从图表中间到点标签的角度线。它们都位于angleLines子选项中。 注意这些选项只有在lineArc为false时使用。
 
 Name            | Type      | Default              | Description
 ----------------|-----------|----------------------|-----------------------|
@@ -290,7 +290,7 @@ lineWidth	    | Number    | 1                    | 角度线宽度
 
 
 ##### 点标签选项
-The following options are used to configure the point labels that are shown on the perimeter of the scale. They can be found in the pointLabels sub options.注意这些选项只有在lineArc为false时使用.
+下面的选项用来配置规模范围内的点标签。 它们都位于pointLabels子选项中.注意这些选项只有在lineArc为false时使用。
 
 Name            | Type      | Default              | Description
 ----------------|-----------|----------------------|-----------------------|
@@ -319,9 +319,9 @@ suggestedMin	   | Number	   | -	                          | 用户定义轴线�
 
 <span id="update"></span>
 #### 更新默认的轴线配置
-使用轴线提供的接口可以轻易的修改配置. 传递的部分配置修改会和当前轴线的默认配置合并.
+使用轴线提供的接口可以轻易的修改配置。 传递的部分配置修改会和当前轴线的默认配置合并。
 
-例如, 为了给所有的线型轴线设定最小值0，你可以做如下操作。如何在这操作之后创建的线型轴线都会有一个最小值0.
+例如, 为了给所有的线型轴线设定最小值0，你可以做如下操作。如何在这操作之后创建的线型轴线都会有一个最小值0。
 
 ```javascript
 Chart.scaleService.updateScaleDefaults('linear', {
