@@ -147,10 +147,7 @@ module.exports = function(Chart) {
 			var startFraction = startRange % (interval[options.unit].size * stepSize);
 			var alignedTick = startTick;
 			ticks.push(startTick);
-			if (startTick !== alignedTick + startFraction &&
-				options.majorUnit &&
-				!options.timeOpts.round &&
-				!options.timeOpts.isoWeekday) {
+			if (startTick !== alignedTick + startFraction && options.majorUnit && !options.timeOpts.round && !options.timeOpts.isoWeekday) {
 				alignedTick += startFraction;
 				ticks.push(alignedTick);
 			}
@@ -175,7 +172,7 @@ module.exports = function(Chart) {
 	Chart.Ticks.generators.time = function(options, dataRange) {
 		var niceMin;
 		var niceMax;
-		var isoWeekday = options.isoWeekday;
+		var isoWeekday = options.timeOpts.isoWeekday;
 		if (options.unit === 'week' && isoWeekday !== false) {
 			niceMin = moment(dataRange.min).startOf('isoWeek').isoWeekday(isoWeekday).valueOf();
 			niceMax = moment(dataRange.max).startOf('isoWeek').isoWeekday(isoWeekday);
@@ -343,10 +340,10 @@ module.exports = function(Chart) {
 			var formattedTick;
 			var tickClone = tick.clone();
 			if (this.majorUnit &&
-				this.seniorDisplayFormat &&
+				this.majorDisplayFormat &&
 				tick.valueOf() === tickClone.startOf(this.majorUnit).valueOf()) {
 				// format as senior unit
-				formattedTick = tick.format(this.seniorDisplayFormat);
+				formattedTick = tick.format(this.majorDisplayFormat);
 			} else {
 				// format as base unit
 				formattedTick = tick.format(this.displayFormat);
