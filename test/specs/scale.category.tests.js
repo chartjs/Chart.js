@@ -108,7 +108,7 @@ describe('Category scale tests', function() {
 		expect(scale.ticks).toEqual(mockData.xLabels);
 	});
 
-	it('Should generate ticks from the data xLabels', function() {
+	it('Should generate ticks from the data yLabels', function() {
 		var scaleID = 'myScale';
 
 		var mockData = {

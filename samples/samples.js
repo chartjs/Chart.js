@@ -117,6 +117,18 @@
 			path: 'scales/time/combo.html'
 		}]
 	}, {
+		title: 'TimeSeries scale',
+		items: [{
+			title: 'Line',
+			path: 'scales/timeseries/line.html'
+		}, {
+			title: 'Line (point data)',
+			path: 'scales/timeseries/line-point-data.html'
+		}, {
+			title: 'Combo',
+			path: 'scales/timeseries/combo.html'
+		}]
+	}, {
 		title: 'Scale options',
 		items: [{
 			title: 'Grid lines display',
