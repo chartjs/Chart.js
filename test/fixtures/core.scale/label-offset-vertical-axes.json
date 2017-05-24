@@ -1,0 +1,36 @@
+{
+    "config": {
+        "type": "horizontalBar",
+        "data": {
+            "labels": ["Red", "Blue", "Yellow", "Green"],
+            "datasets": [{
+                "data": [12, 19, 3, 5]
+            }]
+        },
+        "options": {
+            "responsive": false,
+            "spanGaps": true,
+            "legend": false,
+            "title": false,
+            "scales": {
+                "xAxes": [{
+                    "ticks": {
+                        "display": false
+                    }
+                }],
+                "yAxes": [{
+                    "ticks": {
+                        "mirror": true,
+                        "labelOffset": -30
+                    }
+                }]
+            }
+        }
+    },
+    "options": {
+        "canvas": {
+            "height": 256,
+            "width": 512
+        }
+    }
+}
