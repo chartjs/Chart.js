@@ -1,8 +1,6 @@
 # chartjs-zh
 chartjs v2 中文文档
 
-[开始阅读(gitbook)](https://bit_root.gitbooks.io/chartjs-zh/qi-bu/qi-bu.html)
-
 * [Getting started（起步）](qi-bu/qi-bu.md)
   * [Download（下载）](qi-bu/qi-bu.md#xiazai)
   * [Installation（安装）](qi-bu/qi-bu.md#anzhuang)
