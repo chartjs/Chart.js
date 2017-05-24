@@ -33,21 +33,14 @@ You can find documentation at [www.chartjs.org/docs](http://www.chartjs.org/docs
 
 ## Contributing
 
-Before submitting an issue or a pull request to the project, please take a moment to look over the [contributing guidelines](https://github.com/chartjs/Chart.js/blob/master/CONTRIBUTING.md) first.
+Before submitting an issue or a pull request, please take a moment to look over the [contributing guidelines](https://github.com/chartjs/Chart.js/blob/master/docs/developers/contributing.md) first. For support using Chart.js, please post questions with the [`chartjs` tag on Stack Overflow](http://stackoverflow.com/questions/tagged/chartjs).
 
-For support using Chart.js, please post questions with the [`chartjs` tag on Stack Overflow](http://stackoverflow.com/questions/tagged/chartjs).
+## Building
+Instructions on building and testing Chart.js can be found in [the documentation](https://github.com/chartjs/Chart.js/blob/master/docs/developers/contributing.md#building-and-testing).
 
-## Building and Testing
-
-To build, run `gulp build`.
-
-To test, run `gulp test`.
-
-To test against code standards, run `gulp lint`.
-
-More information on building and testing can be found in [gulpfile.js](gulpfile.js).
-
-Thanks to [BrowserStack](https://browserstack.com) for allowing our team to test on thousands of browsers.
+## Thanks
+- [BrowserStack](https://browserstack.com) for allowing our team to test on thousands of browsers.
+- [@n8agrin](https://twitter.com/n8agrin) for the Twitter handle donation.
 
 ## License
 

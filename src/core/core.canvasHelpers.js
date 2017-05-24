@@ -10,7 +10,7 @@ module.exports = function(Chart) {
 		if (typeof pointStyle === 'object') {
 			type = pointStyle.toString();
 			if (type === '[object HTMLImageElement]' || type === '[object HTMLCanvasElement]') {
-				ctx.drawImage(pointStyle, x - pointStyle.width / 2, y - pointStyle.height / 2);
+				ctx.drawImage(pointStyle, x - pointStyle.width / 2, y - pointStyle.height / 2, pointStyle.width, pointStyle.height);
 				return;
 			}
 		}
@@ -121,4 +121,30 @@ module.exports = function(Chart) {
 		ctx.restore();
 	};
 
+	helpers.lineTo = function(ctx, previous, target, flip) {
+		if (target.steppedLine) {
+			if (target.steppedLine === 'after') {
+				ctx.lineTo(previous.x, target.y);
+			} else {
+				ctx.lineTo(target.x, previous.y);
+			}
+			ctx.lineTo(target.x, target.y);
+			return;
+		}
+
+		if (!target.tension) {
+			ctx.lineTo(target.x, target.y);
+			return;
+		}
+
+		ctx.bezierCurveTo(
+			flip? previous.controlPointPreviousX : previous.controlPointNextX,
+			flip? previous.controlPointPreviousY : previous.controlPointNextY,
+			flip? target.controlPointNextX : target.controlPointPreviousX,
+			flip? target.controlPointNextY : target.controlPointPreviousY,
+			target.x,
+			target.y);
+	};
+
+	Chart.helpers.canvas = helpers;
 };

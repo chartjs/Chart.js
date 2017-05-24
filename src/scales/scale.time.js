@@ -7,35 +7,43 @@ moment = typeof(moment) === 'function' ? moment : window.moment;
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
-	var time = {
-		units: [{
-			name: 'millisecond',
+	var interval = {
+		millisecond: {
+			size: 1,
 			steps: [1, 2, 5, 10, 20, 50, 100, 250, 500]
-		}, {
-			name: 'second',
+		},
+		second: {
+			size: 1000,
 			steps: [1, 2, 5, 10, 30]
-		}, {
-			name: 'minute',
+		},
+		minute: {
+			size: 60000,
 			steps: [1, 2, 5, 10, 30]
-		}, {
-			name: 'hour',
+		},
+		hour: {
+			size: 3600000,
 			steps: [1, 2, 3, 6, 12]
-		}, {
-			name: 'day',
+		},
+		day: {
+			size: 86400000,
 			steps: [1, 2, 5]
-		}, {
-			name: 'week',
+		},
+		week: {
+			size: 604800000,
 			maxStep: 4
-		}, {
-			name: 'month',
+		},
+		month: {
+			size: 2.628e9,
 			maxStep: 3
-		}, {
-			name: 'quarter',
+		},
+		quarter: {
+			size: 7.884e9,
 			maxStep: 4
-		}, {
-			name: 'year',
+		},
+		year: {
+			size: 3.154e10,
 			maxStep: false
-		}]
+		}
 	};
 
 	var defaultConfig = {
@@ -61,11 +69,154 @@ module.exports = function(Chart) {
 				month: 'MMM YYYY', // Sept 2015
 				quarter: '[Q]Q - YYYY', // Q3
 				year: 'YYYY' // 2015
-			}
+			},
 		},
 		ticks: {
 			autoSkip: false
 		}
+	};
+
+	/**
+	 * Helper function to parse time to a moment object
+	 * @param axis {TimeAxis} the time axis
+	 * @param label {Date|string|number|Moment} The thing to parse
+	 * @return {Moment} parsed time
+	 */
+	function parseTime(axis, label) {
+		var timeOpts = axis.options.time;
+		if (typeof timeOpts.parser === 'string') {
+			return moment(label, timeOpts.parser);
+		}
+		if (typeof timeOpts.parser === 'function') {
+			return timeOpts.parser(label);
+		}
+		if (typeof label.getMonth === 'function' || typeof label === 'number') {
+			// Date objects
+			return moment(label);
+		}
+		if (label.isValid && label.isValid()) {
+			// Moment support
+			return label;
+		}
+		var format = timeOpts.format;
+		if (typeof format !== 'string' && format.call) {
+			// Custom parsing (return an instance of moment)
+			console.warn('options.time.format is deprecated and replaced by options.time.parser.');
+			return format(label);
+		}
+		// Moment format parsing
+		return moment(label, format);
+	}
+
+	/**
+	 * Figure out which is the best unit for the scale
+	 * @param minUnit {String} minimum unit to use
+	 * @param min {Number} scale minimum
+	 * @param max {Number} scale maximum
+	 * @return {String} the unit to use
+	 */
+	function determineUnit(minUnit, min, max, maxTicks) {
+		var units = Object.keys(interval);
+		var unit;
+		var numUnits = units.length;
+
+		for (var i = units.indexOf(minUnit); i < numUnits; i++) {
+			unit = units[i];
+			var unitDetails = interval[unit];
+			var steps = (unitDetails.steps && unitDetails.steps[unitDetails.steps.length - 1]) || unitDetails.maxStep;
+			if (steps === undefined || Math.ceil((max - min) / (steps * unitDetails.size)) <= maxTicks) {
+				break;
+			}
+		}
+
+		return unit;
+	}
+
+	/**
+	 * Determines how we scale the unit
+	 * @param min {Number} the scale minimum
+	 * @param max {Number} the scale maximum
+	 * @param unit {String} the unit determined by the {@see determineUnit} method
+	 * @return {Number} the axis step size as a multiple of unit
+	 */
+	function determineStepSize(min, max, unit, maxTicks) {
+		// Using our unit, figoure out what we need to scale as
+		var unitDefinition = interval[unit];
+		var unitSizeInMilliSeconds = unitDefinition.size;
+		var sizeInUnits = Math.ceil((max - min) / unitSizeInMilliSeconds);
+		var multiplier = 1;
+		var range = max - min;
+
+		if (unitDefinition.steps) {
+			// Have an array of steps
+			var numSteps = unitDefinition.steps.length;
+			for (var i = 0; i < numSteps && sizeInUnits > maxTicks; i++) {
+				multiplier = unitDefinition.steps[i];
+				sizeInUnits = Math.ceil(range / (unitSizeInMilliSeconds * multiplier));
+			}
+		} else {
+			while (sizeInUnits > maxTicks && maxTicks > 0) {
+				++multiplier;
+				sizeInUnits = Math.ceil(range / (unitSizeInMilliSeconds * multiplier));
+			}
+		}
+
+		return multiplier;
+	}
+
+	/**
+	 * Helper for generating axis labels.
+	 * @param options {ITimeGeneratorOptions} the options for generation
+	 * @param dataRange {IRange} the data range
+	 * @param niceRange {IRange} the pretty range to display
+	 * @return {Number[]} ticks
+	 */
+	function generateTicks(options, dataRange, niceRange) {
+		var ticks = [];
+		if (options.maxTicks) {
+			var stepSize = options.stepSize;
+			ticks.push(options.min !== undefined ? options.min : niceRange.min);
+			var cur = moment(niceRange.min);
+			while (cur.add(stepSize, options.unit).valueOf() < niceRange.max) {
+				ticks.push(cur.valueOf());
+			}
+			var realMax = options.max || niceRange.max;
+			if (ticks[ticks.length - 1] !== realMax) {
+				ticks.push(realMax);
+			}
+		}
+		return ticks;
+	}
+
+	/**
+	 * @function Chart.Ticks.generators.time
+	 * @param options {ITimeGeneratorOptions} the options for generation
+	 * @param dataRange {IRange} the data range
+	 * @return {Number[]} ticks
+	 */
+	Chart.Ticks.generators.time = function(options, dataRange) {
+		var niceMin;
+		var niceMax;
+		var isoWeekday = options.isoWeekday;
+		if (options.unit === 'week' && isoWeekday !== false) {
+			niceMin = moment(dataRange.min).startOf('isoWeek').isoWeekday(isoWeekday).valueOf();
+			niceMax = moment(dataRange.max).startOf('isoWeek').isoWeekday(isoWeekday);
+			if (dataRange.max - niceMax > 0) {
+				niceMax.add(1, 'week');
+			}
+			niceMax = niceMax.valueOf();
+		} else {
+			niceMin = moment(dataRange.min).startOf(options.unit).valueOf();
+			niceMax = moment(dataRange.max).startOf(options.unit);
+			if (dataRange.max - niceMax > 0) {
+				niceMax.add(1, options.unit);
+			}
+			niceMax = niceMax.valueOf();
+		}
+		return generateTicks(options, dataRange, {
+			min: niceMin,
+			max: niceMax
+		});
 	};
 
 	var TimeScale = Chart.Scale.extend({
@@ -76,283 +227,113 @@ module.exports = function(Chart) {
 
 			Chart.Scale.prototype.initialize.call(this);
 		},
-		getLabelMoment: function(datasetIndex, index) {
-			if (datasetIndex === null || index === null) {
-				return null;
-			}
-
-			if (typeof this.labelMoments[datasetIndex] !== 'undefined') {
-				return this.labelMoments[datasetIndex][index];
-			}
-
-			return null;
-		},
-		getLabelDiff: function(datasetIndex, index) {
-			var me = this;
-			if (datasetIndex === null || index === null) {
-				return null;
-			}
-
-			if (me.labelDiffs === undefined) {
-				me.buildLabelDiffs();
-			}
-
-			if (typeof me.labelDiffs[datasetIndex] !== 'undefined') {
-				return me.labelDiffs[datasetIndex][index];
-			}
-
-			return null;
-		},
-		getMomentStartOf: function(tick) {
-			var me = this;
-			if (me.options.time.unit === 'week' && me.options.time.isoWeekday !== false) {
-				return tick.clone().startOf('isoWeek').isoWeekday(me.options.time.isoWeekday);
-			}
-			return tick.clone().startOf(me.tickUnit);
-		},
 		determineDataLimits: function() {
 			var me = this;
-			me.labelMoments = [];
+			var timeOpts = me.options.time;
 
-			// Only parse these once. If the dataset does not have data as x,y pairs, we will use
-			// these
-			var scaleLabelMoments = [];
-			if (me.chart.data.labels && me.chart.data.labels.length > 0) {
-				helpers.each(me.chart.data.labels, function(label) {
-					var labelMoment = me.parseTime(label);
+			// We store the data range as unix millisecond timestamps so dataMin and dataMax will always be integers.
+			var dataMin = Number.MAX_SAFE_INTEGER;
+			var dataMax = Number.MIN_SAFE_INTEGER;
 
-					if (labelMoment.isValid()) {
-						if (me.options.time.round) {
-							labelMoment.startOf(me.options.time.round);
-						}
-						scaleLabelMoments.push(labelMoment);
+			var chartData = me.chart.data;
+			var parsedData = {
+				labels: [],
+				datasets: []
+			};
+
+			var timestamp;
+
+			helpers.each(chartData.labels, function(label, labelIndex) {
+				var labelMoment = parseTime(me, label);
+
+				if (labelMoment.isValid()) {
+					// We need to round the time
+					if (timeOpts.round) {
+						labelMoment.startOf(timeOpts.round);
 					}
-				}, me);
 
-				me.firstTick = moment.min.call(me, scaleLabelMoments);
-				me.lastTick = moment.max.call(me, scaleLabelMoments);
-			} else {
-				me.firstTick = null;
-				me.lastTick = null;
-			}
+					timestamp = labelMoment.valueOf();
+					dataMin = Math.min(timestamp, dataMin);
+					dataMax = Math.max(timestamp, dataMax);
 
-			helpers.each(me.chart.data.datasets, function(dataset, datasetIndex) {
-				var momentsForDataset = [];
-				var datasetVisible = me.chart.isDatasetVisible(datasetIndex);
+					// Store this value for later
+					parsedData.labels[labelIndex] = timestamp;
+				}
+			});
 
-				if (typeof dataset.data[0] === 'object' && dataset.data[0] !== null) {
-					helpers.each(dataset.data, function(value) {
-						var labelMoment = me.parseTime(me.getRightValue(value));
+			helpers.each(chartData.datasets, function(dataset, datasetIndex) {
+				var timestamps = [];
 
-						if (labelMoment.isValid()) {
-							if (me.options.time.round) {
-								labelMoment.startOf(me.options.time.round);
+				if (typeof dataset.data[0] === 'object' && dataset.data[0] !== null && me.chart.isDatasetVisible(datasetIndex)) {
+					// We have potential point data, so we need to parse this
+					helpers.each(dataset.data, function(value, dataIndex) {
+						var dataMoment = parseTime(me, me.getRightValue(value));
+
+						if (dataMoment.isValid()) {
+							if (timeOpts.round) {
+								dataMoment.startOf(timeOpts.round);
 							}
-							momentsForDataset.push(labelMoment);
 
-							if (datasetVisible) {
-								// May have gone outside the scale ranges, make sure we keep the first and last ticks updated
-								me.firstTick = me.firstTick !== null ? moment.min(me.firstTick, labelMoment) : labelMoment;
-								me.lastTick = me.lastTick !== null ? moment.max(me.lastTick, labelMoment) : labelMoment;
-							}
+							timestamp = dataMoment.valueOf();
+							dataMin = Math.min(timestamp, dataMin);
+							dataMax = Math.max(timestamp, dataMax);
+							timestamps[dataIndex] = timestamp;
 						}
-					}, me);
+					});
 				} else {
-					// We have no labels. Use the ones from the scale
-					momentsForDataset = scaleLabelMoments;
+					// We have no x coordinates, so use the ones from the labels
+					timestamps = parsedData.labels.slice();
 				}
 
-				me.labelMoments.push(momentsForDataset);
-			}, me);
+				parsedData.datasets[datasetIndex] = timestamps;
+			});
 
-			// Set these after we've done all the data
-			if (me.options.time.min) {
-				me.firstTick = me.parseTime(me.options.time.min);
-			}
-
-			if (me.options.time.max) {
-				me.lastTick = me.parseTime(me.options.time.max);
-			}
-
-			// We will modify these, so clone for later
-			me.firstTick = (me.firstTick || moment()).clone();
-			me.lastTick = (me.lastTick || moment()).clone();
-		},
-		buildLabelDiffs: function() {
-			var me = this;
-			me.labelDiffs = [];
-			var scaleLabelDiffs = [];
-			// Parse common labels once
-			if (me.chart.data.labels && me.chart.data.labels.length > 0) {
-				helpers.each(me.chart.data.labels, function(label) {
-					var labelMoment = me.parseTime(label);
-
-					if (labelMoment.isValid()) {
-						if (me.options.time.round) {
-							labelMoment.startOf(me.options.time.round);
-						}
-						scaleLabelDiffs.push(labelMoment.diff(me.firstTick, me.tickUnit, true));
-					}
-				}, me);
-			}
-
-			helpers.each(me.chart.data.datasets, function(dataset) {
-				var diffsForDataset = [];
-
-				if (typeof dataset.data[0] === 'object' && dataset.data[0] !== null) {
-					helpers.each(dataset.data, function(value) {
-						var labelMoment = me.parseTime(me.getRightValue(value));
-
-						if (labelMoment.isValid()) {
-							if (me.options.time.round) {
-								labelMoment.startOf(me.options.time.round);
-							}
-							diffsForDataset.push(labelMoment.diff(me.firstTick, me.tickUnit, true));
-						}
-					}, me);
-				} else {
-					// We have no labels. Use common ones
-					diffsForDataset = scaleLabelDiffs;
-				}
-
-				me.labelDiffs.push(diffsForDataset);
-			}, me);
+			me.dataMin = dataMin;
+			me.dataMax = dataMax;
+			me._parsedData = parsedData;
 		},
 		buildTicks: function() {
 			var me = this;
+			var timeOpts = me.options.time;
 
-			me.ctx.save();
-			var tickFontSize = helpers.getValueOrDefault(me.options.ticks.fontSize, Chart.defaults.global.defaultFontSize);
-			var tickFontStyle = helpers.getValueOrDefault(me.options.ticks.fontStyle, Chart.defaults.global.defaultFontStyle);
-			var tickFontFamily = helpers.getValueOrDefault(me.options.ticks.fontFamily, Chart.defaults.global.defaultFontFamily);
-			var tickLabelFont = helpers.fontString(tickFontSize, tickFontStyle, tickFontFamily);
-			me.ctx.font = tickLabelFont;
+			var minTimestamp;
+			var maxTimestamp;
+			var dataMin = me.dataMin;
+			var dataMax = me.dataMax;
 
-			me.ticks = [];
-			me.unitScale = 1; // How much we scale the unit by, ie 2 means 2x unit per step
-			me.scaleSizeInUnits = 0; // How large the scale is in the base unit (seconds, minutes, etc)
-
-			// Set unit override if applicable
-			if (me.options.time.unit) {
-				me.tickUnit = me.options.time.unit || 'day';
-				me.displayFormat = me.options.time.displayFormats[me.tickUnit];
-				me.scaleSizeInUnits = me.lastTick.diff(me.firstTick, me.tickUnit, true);
-				me.unitScale = helpers.getValueOrDefault(me.options.time.unitStepSize, 1);
-			} else {
-				// Determine the smallest needed unit of the time
-				var innerWidth = me.isHorizontal() ? me.width : me.height;
-
-				// Crude approximation of what the label length might be
-				var tempFirstLabel = me.tickFormatFunction(me.firstTick, 0, []);
-				var tickLabelWidth = me.ctx.measureText(tempFirstLabel).width;
-				var cosRotation = Math.cos(helpers.toRadians(me.options.ticks.maxRotation));
-				var sinRotation = Math.sin(helpers.toRadians(me.options.ticks.maxRotation));
-				tickLabelWidth = (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation);
-				var labelCapacity = innerWidth / (tickLabelWidth);
-
-				// Start as small as possible
-				me.tickUnit = me.options.time.minUnit;
-				me.scaleSizeInUnits = me.lastTick.diff(me.firstTick, me.tickUnit, true);
-				me.displayFormat = me.options.time.displayFormats[me.tickUnit];
-
-				var unitDefinitionIndex = 0;
-				var unitDefinition = time.units[unitDefinitionIndex];
-
-				// While we aren't ideal and we don't have units left
-				while (unitDefinitionIndex < time.units.length) {
-					// Can we scale this unit. If `false` we can scale infinitely
-					me.unitScale = 1;
-
-					if (helpers.isArray(unitDefinition.steps) && Math.ceil(me.scaleSizeInUnits / labelCapacity) < helpers.max(unitDefinition.steps)) {
-						// Use one of the predefined steps
-						for (var idx = 0; idx < unitDefinition.steps.length; ++idx) {
-							if (unitDefinition.steps[idx] >= Math.ceil(me.scaleSizeInUnits / labelCapacity)) {
-								me.unitScale = helpers.getValueOrDefault(me.options.time.unitStepSize, unitDefinition.steps[idx]);
-								break;
-							}
-						}
-
-						break;
-					} else if ((unitDefinition.maxStep === false) || (Math.ceil(me.scaleSizeInUnits / labelCapacity) < unitDefinition.maxStep)) {
-						// We have a max step. Scale this unit
-						me.unitScale = helpers.getValueOrDefault(me.options.time.unitStepSize, Math.ceil(me.scaleSizeInUnits / labelCapacity));
-						break;
-					} else {
-						// Move to the next unit up
-						++unitDefinitionIndex;
-						unitDefinition = time.units[unitDefinitionIndex];
-
-						me.tickUnit = unitDefinition.name;
-						var leadingUnitBuffer = me.firstTick.diff(me.getMomentStartOf(me.firstTick), me.tickUnit, true);
-						var trailingUnitBuffer = me.getMomentStartOf(me.lastTick.clone().add(1, me.tickUnit)).diff(me.lastTick, me.tickUnit, true);
-						me.scaleSizeInUnits = me.lastTick.diff(me.firstTick, me.tickUnit, true) + leadingUnitBuffer + trailingUnitBuffer;
-						me.displayFormat = me.options.time.displayFormats[unitDefinition.name];
-					}
+			if (timeOpts.min) {
+				var minMoment = parseTime(me, timeOpts.min);
+				if (timeOpts.round) {
+					minMoment.round(timeOpts.round);
 				}
+				minTimestamp = minMoment.valueOf();
 			}
 
-			var roundedStart;
-
-			// Only round the first tick if we have no hard minimum
-			if (!me.options.time.min) {
-				me.firstTick = me.getMomentStartOf(me.firstTick);
-				roundedStart = me.firstTick;
-			} else {
-				roundedStart = me.getMomentStartOf(me.firstTick);
+			if (timeOpts.max) {
+				maxTimestamp = parseTime(me, timeOpts.max).valueOf();
 			}
 
-			// Only round the last tick if we have no hard maximum
-			if (!me.options.time.max) {
-				var roundedEnd = me.getMomentStartOf(me.lastTick);
-				var delta = roundedEnd.diff(me.lastTick, me.tickUnit, true);
-				if (delta < 0) {
-					// Do not use end of because we need me to be in the next time unit
-					me.lastTick = me.getMomentStartOf(me.lastTick.add(1, me.tickUnit));
-				} else if (delta >= 0) {
-					me.lastTick = roundedEnd;
-				}
+			var maxTicks = me.getLabelCapacity(minTimestamp || dataMin);
+			var unit = timeOpts.unit || determineUnit(timeOpts.minUnit, minTimestamp || dataMin, maxTimestamp || dataMax, maxTicks);
+			me.displayFormat = timeOpts.displayFormats[unit];
 
-				me.scaleSizeInUnits = me.lastTick.diff(me.firstTick, me.tickUnit, true);
-			}
+			var stepSize = timeOpts.stepSize || determineStepSize(minTimestamp || dataMin, maxTimestamp || dataMax, unit, maxTicks);
+			me.ticks = Chart.Ticks.generators.time({
+				maxTicks: maxTicks,
+				min: minTimestamp,
+				max: maxTimestamp,
+				stepSize: stepSize,
+				unit: unit,
+				isoWeekday: timeOpts.isoWeekday
+			}, {
+				min: dataMin,
+				max: dataMax
+			});
 
-			// Tick displayFormat override
-			if (me.options.time.displayFormat) {
-				me.displayFormat = me.options.time.displayFormat;
-			}
-
-			// first tick. will have been rounded correctly if options.time.min is not specified
-			me.ticks.push(me.firstTick.clone());
-
-			// For every unit in between the first and last moment, create a moment and add it to the ticks tick
-			for (var i = me.unitScale; i <= me.scaleSizeInUnits; i += me.unitScale) {
-				var newTick = roundedStart.clone().add(i, me.tickUnit);
-
-				// Are we greater than the max time
-				if (me.options.time.max && newTick.diff(me.lastTick, me.tickUnit, true) >= 0) {
-					break;
-				}
-
-				me.ticks.push(newTick);
-			}
-
-			// Always show the right tick
-			var diff = me.ticks[me.ticks.length - 1].diff(me.lastTick, me.tickUnit);
-			if (diff !== 0 || me.scaleSizeInUnits === 0) {
-				// this is a weird case. If the <max> option is the same as the end option, we can't just diff the times because the tick was created from the roundedStart
-				// but the last tick was not rounded.
-				if (me.options.time.max) {
-					me.ticks.push(me.lastTick.clone());
-					me.scaleSizeInUnits = me.lastTick.diff(me.ticks[0], me.tickUnit, true);
-				} else {
-					me.ticks.push(me.lastTick.clone());
-					me.scaleSizeInUnits = me.lastTick.diff(me.firstTick, me.tickUnit, true);
-				}
-			}
-
-			me.ctx.restore();
-
-			// Invalidate label diffs cache
-			me.labelDiffs = undefined;
+			// At this point, we need to update our max and min given the tick values since we have expanded the
+			// range of the scale
+			me.max = helpers.max(me.ticks);
+			me.min = helpers.min(me.ticks);
 		},
 		// Get tooltip label
 		getLabelForIndex: function(index, datasetIndex) {
@@ -366,7 +347,7 @@ module.exports = function(Chart) {
 
 			// Format nicely
 			if (me.options.time.tooltipFormat) {
-				label = me.parseTime(label).format(me.options.time.tooltipFormat);
+				label = parseTime(me, label).format(me.options.time.tooltipFormat);
 			}
 
 			return label;
@@ -384,71 +365,76 @@ module.exports = function(Chart) {
 		},
 		convertTicksToLabels: function() {
 			var me = this;
-			me.tickMoments = me.ticks;
-			me.ticks = me.ticks.map(me.tickFormatFunction, me);
+			me.ticksAsTimestamps = me.ticks;
+			me.ticks = me.ticks.map(function(tick) {
+				return moment(tick);
+			}).map(me.tickFormatFunction, me);
+		},
+		getPixelForOffset: function(offset) {
+			var me = this;
+			var epochWidth = me.max - me.min;
+			var decimal = epochWidth ? (offset - me.min) / epochWidth : 0;
+
+			if (me.isHorizontal()) {
+				var valueOffset = (me.width * decimal);
+				return me.left + Math.round(valueOffset);
+			}
+
+			var heightOffset = (me.height * decimal);
+			return me.top + Math.round(heightOffset);
 		},
 		getPixelForValue: function(value, index, datasetIndex) {
 			var me = this;
 			var offset = null;
 			if (index !== undefined && datasetIndex !== undefined) {
-				offset = me.getLabelDiff(datasetIndex, index);
+				offset = me._parsedData.datasets[datasetIndex][index];
 			}
 
 			if (offset === null) {
 				if (!value || !value.isValid) {
 					// not already a moment object
-					value = me.parseTime(me.getRightValue(value));
+					value = parseTime(me, me.getRightValue(value));
 				}
+
 				if (value && value.isValid && value.isValid()) {
-					offset = value.diff(me.firstTick, me.tickUnit, true);
+					offset = value.valueOf();
 				}
 			}
 
 			if (offset !== null) {
-				var decimal = offset !== 0 ? offset / me.scaleSizeInUnits : offset;
-
-				if (me.isHorizontal()) {
-					var valueOffset = (me.width * decimal);
-					return me.left + Math.round(valueOffset);
-				}
-
-				var heightOffset = (me.height * decimal);
-				return me.top + Math.round(heightOffset);
+				return me.getPixelForOffset(offset);
 			}
 		},
 		getPixelForTick: function(index) {
-			return this.getPixelForValue(this.tickMoments[index], null, null);
+			return this.getPixelForOffset(this.ticksAsTimestamps[index]);
 		},
 		getValueForPixel: function(pixel) {
 			var me = this;
 			var innerDimension = me.isHorizontal() ? me.width : me.height;
 			var offset = (pixel - (me.isHorizontal() ? me.left : me.top)) / innerDimension;
-			offset *= me.scaleSizeInUnits;
-			return me.firstTick.clone().add(moment.duration(offset, me.tickUnit).asSeconds(), 'seconds');
+			return moment(me.min + (offset * (me.max - me.min)));
 		},
-		parseTime: function(label) {
+		// Crude approximation of what the label width might be
+		getLabelWidth: function(label) {
 			var me = this;
-			if (typeof me.options.time.parser === 'string') {
-				return moment(label, me.options.time.parser);
-			}
-			if (typeof me.options.time.parser === 'function') {
-				return me.options.time.parser(label);
-			}
-			// Date objects
-			if (typeof label.getMonth === 'function' || typeof label === 'number') {
-				return moment(label);
-			}
-			// Moment support
-			if (label.isValid && label.isValid()) {
-				return label;
-			}
-			// Custom parsing (return an instance of moment)
-			if (typeof me.options.time.format !== 'string' && me.options.time.format.call) {
-				console.warn('options.time.format is deprecated and replaced by options.time.parser. See http://nnnick.github.io/Chart.js/docs-v2/#scales-time-scale');
-				return me.options.time.format(label);
-			}
-			// Moment format parsing
-			return moment(label, me.options.time.format);
+			var ticks = me.options.ticks;
+
+			var tickLabelWidth = me.ctx.measureText(label).width;
+			var cosRotation = Math.cos(helpers.toRadians(ticks.maxRotation));
+			var sinRotation = Math.sin(helpers.toRadians(ticks.maxRotation));
+			var tickFontSize = helpers.getValueOrDefault(ticks.fontSize, Chart.defaults.global.defaultFontSize);
+			return (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation);
+		},
+		getLabelCapacity: function(exampleTime) {
+			var me = this;
+
+			me.displayFormat = me.options.time.displayFormats.millisecond;	// Pick the longest format for guestimation
+			var exampleLabel = me.tickFormatFunction(moment(exampleTime), 0, []);
+			var tickLabelWidth = me.getLabelWidth(exampleLabel);
+
+			var innerWidth = me.isHorizontal() ? me.width : me.height;
+			var labelCapacity = innerWidth / tickLabelWidth;
+			return labelCapacity;
 		}
 	});
 	Chart.scaleService.registerScaleType('time', TimeScale, defaultConfig);

@@ -1,0 +1,49 @@
+{
+    "config": {
+        "type": "radar",
+        "data": {
+            "labels": ["0", "1", "2", "3", "4", "5", "6", "7", "8"],
+            "datasets": [{
+                "backgroundColor": "rgba(0, 0, 192, 0.25)",
+                "data": [null, null, 2, 4, 2, 1, -1, 1, 2]
+            }, {
+                "backgroundColor": "rgba(0, 192, 0, 0.25)",
+                "data": [4, 2, null, 3, 2.5, null, -2, 1.5, 3]
+            }, {
+                "backgroundColor": "rgba(192, 0, 0, 0.25)",
+                "data": [3.5, 2, 1, 2.5, -2, 3, -1, null, null]
+            }, {
+                "backgroundColor": "rgba(128, 0, 128, 0.25)",
+                "data": [5, 6, 5, -2, -4, -3, 4, 2, 4.5]
+            }]
+        },
+        "options": {
+            "responsive": false,
+            "legend": false,
+            "title": false,
+            "scale": {
+                "pointLabels": {
+                    "fontSize": 0
+                },
+                "ticks": {
+                    "display": false
+                }
+            },
+            "elements": {
+                "point": {
+                    "radius": 0
+                },
+                "line": {
+                    "borderColor": "transparent",
+                    "fill": "origin"
+                }
+            }
+        }
+    },
+    "options": {
+        "canvas": {
+            "height": 256,
+            "width": 256
+        }
+    }
+}
