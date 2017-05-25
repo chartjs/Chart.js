@@ -216,9 +216,7 @@ function librarySizeTask() {
 
 function moduleSizesTask() {
   return gulp.src(srcDir + '**/*.js')
-    .pipe(uglify({
-      preserveComments: 'some'
-    }))
+    .pipe(uglify())
     .pipe(size({
       showFiles: true,
       gzip: true
