@@ -39,15 +39,15 @@ addons:
 
 deploy:
 - provider: script
-  script: ./scripts/release.sh
-  skip_cleanup: true
-  on:
-    branch: release
-- provider: script
   script: ./scripts/deploy.sh
   skip_cleanup: true
   on:
     all_branches: true
+- provider: script
+  script: ./scripts/release.sh
+  skip_cleanup: true
+  on:
+    branch: release
 - provider: releases
   api_key: $GITHUB_AUTH_TOKEN
   file:
