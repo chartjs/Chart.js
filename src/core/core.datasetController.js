@@ -148,7 +148,7 @@ module.exports = function(Chart) {
 			var me = this;
 			var type = me.datasetElementType;
 			return type && new type({
-				_chart: me.chart.chart,
+				_chart: me.chart,
 				_datasetIndex: me.index
 			});
 		},
@@ -157,7 +157,7 @@ module.exports = function(Chart) {
 			var me = this;
 			var type = me.dataElementType;
 			return type && new type({
-				_chart: me.chart.chart,
+				_chart: me.chart,
 				_datasetIndex: me.index,
 				_index: index
 			});
@@ -208,12 +208,33 @@ module.exports = function(Chart) {
 
 		update: helpers.noop,
 
-		draw: function(ease) {
-			var easingDecimal = ease || 1;
-			var i, len;
-			var metaData = this.getMeta().data;
-			for (i = 0, len = metaData.length; i < len; ++i) {
-				metaData[i].transition(easingDecimal).draw();
+		transition: function(easingValue) {
+			var meta = this.getMeta();
+			var elements = meta.data || [];
+			var ilen = elements.length;
+			var i = 0;
+
+			for (; i<ilen; ++i) {
+				elements[i].transition(easingValue);
+			}
+
+			if (meta.dataset) {
+				meta.dataset.transition(easingValue);
+			}
+		},
+
+		draw: function() {
+			var meta = this.getMeta();
+			var elements = meta.data || [];
+			var ilen = elements.length;
+			var i = 0;
+
+			if (meta.dataset) {
+				meta.dataset.draw();
+			}
+
+			for (; i<ilen; ++i) {
+				elements[i].draw();
 			}
 		},
 

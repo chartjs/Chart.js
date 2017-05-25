@@ -33,7 +33,7 @@ module.exports = function(Chart) {
 	 */
 	function readUsedSize(element, property) {
 		var value = helpers.getStyle(element, property);
-		var matches = value && value.match(/(\d+)px/);
+		var matches = value && value.match(/^(\d+)(\.\d+)?px$/);
 		return matches? Number(matches[1]) : undefined;
 	}
 
@@ -92,11 +92,11 @@ module.exports = function(Chart) {
 		return canvas;
 	}
 
-	function createEvent(type, chart, x, y, native) {
+	function createEvent(type, chart, x, y, nativeEvent) {
 		return {
 			type: type,
 			chart: chart,
-			native: native || null,
+			native: nativeEvent || null,
 			x: x !== undefined? x : null,
 			y: y !== undefined? y : null,
 		};
@@ -196,15 +196,21 @@ module.exports = function(Chart) {
 				item = item.canvas;
 			}
 
-			if (item instanceof HTMLCanvasElement) {
-				// To prevent canvas fingerprinting, some add-ons undefine the getContext
-				// method, for example: https://github.com/kkapsner/CanvasBlocker
-				// https://github.com/chartjs/Chart.js/issues/2807
-				var context = item.getContext && item.getContext('2d');
-				if (context instanceof CanvasRenderingContext2D) {
-					initCanvas(item, config);
-					return context;
-				}
+			// To prevent canvas fingerprinting, some add-ons undefine the getContext
+			// method, for example: https://github.com/kkapsner/CanvasBlocker
+			// https://github.com/chartjs/Chart.js/issues/2807
+			var context = item && item.getContext && item.getContext('2d');
+
+			// `instanceof HTMLCanvasElement/CanvasRenderingContext2D` fails when the item is
+			// inside an iframe or when running in a protected environment. We could guess the
+			// types from their toString() value but let's keep things flexible and assume it's
+			// a sufficient condition if the item has a context2D which has item as `canvas`.
+			// https://github.com/chartjs/Chart.js/issues/3887
+			// https://github.com/chartjs/Chart.js/issues/4102
+			// https://github.com/chartjs/Chart.js/issues/4152
+			if (context && context.canvas === item) {
+				initCanvas(item, config);
+				return context;
 			}
 
 			return null;
@@ -240,24 +246,24 @@ module.exports = function(Chart) {
 		},
 
 		addEventListener: function(chart, type, listener) {
-			var canvas = chart.chart.canvas;
+			var canvas = chart.canvas;
 			if (type === 'resize') {
 				// Note: the resize event is not supported on all browsers.
-				addResizeListener(canvas.parentNode, listener, chart.chart);
+				addResizeListener(canvas.parentNode, listener, chart);
 				return;
 			}
 
 			var stub = listener._chartjs || (listener._chartjs = {});
 			var proxies = stub.proxies || (stub.proxies = {});
 			var proxy = proxies[chart.id + '_' + type] = function(event) {
-				listener(fromNativeEvent(event, chart.chart));
+				listener(fromNativeEvent(event, chart));
 			};
 
 			helpers.addEvent(canvas, type, proxy);
 		},
 
 		removeEventListener: function(chart, type, listener) {
-			var canvas = chart.chart.canvas;
+			var canvas = chart.canvas;
 			if (type === 'resize') {
 				// Note: the resize event is not supported on all browsers.
 				removeResizeListener(canvas.parentNode, listener);

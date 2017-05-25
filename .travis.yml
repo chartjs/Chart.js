@@ -12,8 +12,8 @@ before_script:
 
 script:
   - gulp build
-  - gulp test
-  - gulp coverage
+  - gulp test --coverage
+  - gulp docs
   - gulp package
   - gulp bower
   - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
@@ -32,16 +32,22 @@ addons:
     packages:
       - google-chrome-stable
 
-deploy:
-# Creates a tag containing dist files and bower.json
-# Requires GITHUB_AUTH_TOKEN and GITHUB_AUTH_EMAIL environment variables
-# IMPORTANT: the script has to be set executable in the Git repository (error 127)
+
+# IMPORTANT: scripts require GITHUB_AUTH_TOKEN and GITHUB_AUTH_EMAIL environment variables
+# IMPORTANT: scripts has to be set executables in the Git repository (error 127)
 # https://github.com/travis-ci/travis-ci/issues/5538#issuecomment-225025939
+
+deploy:
 - provider: script
   script: ./scripts/release.sh
   skip_cleanup: true
   on:
     branch: release
+- provider: script
+  script: ./scripts/deploy.sh
+  skip_cleanup: true
+  on:
+    all_branches: true
 - provider: releases
   api_key: $GITHUB_AUTH_TOKEN
   file:

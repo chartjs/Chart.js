@@ -669,6 +669,11 @@ module.exports = function(Chart) {
 	};
 	// Request animation polyfill - http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
 	helpers.requestAnimFrame = (function() {
+		if (typeof window === 'undefined') {
+			return function(callback) {
+				callback();
+			};
+		}
 		return window.requestAnimationFrame ||
 			window.webkitRequestAnimationFrame ||
 			window.mozRequestAnimationFrame ||
@@ -911,19 +916,21 @@ module.exports = function(Chart) {
 		ctx.quadraticCurveTo(x, y, x + radius, y);
 		ctx.closePath();
 	};
-	helpers.color = function(c) {
-		if (!color) {
+
+	helpers.color = !color?
+		function(value) {
 			console.error('Color.js not found!');
-			return c;
-		}
+			return value;
+		} :
+		function(value) {
+			/* global CanvasGradient */
+			if (value instanceof CanvasGradient) {
+				value = Chart.defaults.global.defaultColor;
+			}
 
-		/* global CanvasGradient */
-		if (c instanceof CanvasGradient) {
-			return color(Chart.defaults.global.defaultColor);
-		}
+			return color(value);
+		};
 
-		return color(c);
-	};
 	helpers.isArray = Array.isArray?
 		function(obj) {
 			return Array.isArray(obj);
@@ -955,9 +962,9 @@ module.exports = function(Chart) {
 
 		return true;
 	};
-	helpers.callCallback = function(fn, args, _tArg) {
+	helpers.callback = function(fn, args, thisArg) {
 		if (fn && typeof fn.call === 'function') {
-			fn.apply(_tArg, args);
+			fn.apply(thisArg, args);
 		}
 	};
 	helpers.getHoverColor = function(colorValue) {
@@ -966,4 +973,12 @@ module.exports = function(Chart) {
 			colorValue :
 			helpers.color(colorValue).saturate(0.5).darken(0.1).rgbString();
 	};
+
+	/**
+	 * Provided for backward compatibility, use Chart.helpers#callback instead.
+	 * @function Chart.helpers#callCallback
+	 * @deprecated since version 2.6.0
+	 * @todo remove at version 3
+	 */
+	helpers.callCallback = helpers.callback;
 };

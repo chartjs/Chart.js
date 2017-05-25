@@ -1,12 +1,13 @@
+/_book
 /coverage
 /custom
 /dist
 /docs/index.md
+/gh-pages
 /node_modules
-
 .DS_Store
 .idea
 .vscode
 bower.json
-
+*.log
 *.swp

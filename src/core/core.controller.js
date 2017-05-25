@@ -38,7 +38,7 @@ module.exports = function(Chart) {
 
 	/**
 	 * Updates the config of the chart
-	 * @param chart {Chart.Controller} chart to update the options for
+	 * @param chart {Chart} chart to update the options for
 	 */
 	function updateConfig(chart) {
 		var newOptions = chart.options;
@@ -56,65 +56,81 @@ module.exports = function(Chart) {
 		chart.tooltip._options = newOptions.tooltips;
 	}
 
-	/**
-	 * @class Chart.Controller
-	 * The main controller of a chart.
-	 */
-	Chart.Controller = function(item, config, instance) {
-		var me = this;
+	function positionIsHorizontal(position) {
+		return position === 'top' || position === 'bottom';
+	}
 
-		config = initConfig(config);
+	helpers.extend(Chart.prototype, /** @lends Chart */ {
+		/**
+		 * @private
+		 */
+		construct: function(item, config) {
+			var me = this;
 
-		var context = platform.acquireContext(item, config);
-		var canvas = context && context.canvas;
-		var height = canvas && canvas.height;
-		var width = canvas && canvas.width;
+			config = initConfig(config);
 
-		instance.ctx = context;
-		instance.canvas = canvas;
-		instance.config = config;
-		instance.width = width;
-		instance.height = height;
-		instance.aspectRatio = height? width / height : null;
+			var context = platform.acquireContext(item, config);
+			var canvas = context && context.canvas;
+			var height = canvas && canvas.height;
+			var width = canvas && canvas.width;
 
-		me.id = helpers.uid();
-		me.chart = instance;
-		me.config = config;
-		me.options = config.options;
-		me._bufferedRender = false;
+			me.id = helpers.uid();
+			me.ctx = context;
+			me.canvas = canvas;
+			me.config = config;
+			me.width = width;
+			me.height = height;
+			me.aspectRatio = height? width / height : null;
+			me.options = config.options;
+			me._bufferedRender = false;
 
-		// Add the chart instance to the global namespace
-		Chart.instances[me.id] = me;
+			/**
+			 * Provided for backward compatibility, Chart and Chart.Controller have been merged,
+			 * the "instance" still need to be defined since it might be called from plugins.
+			 * @prop Chart#chart
+			 * @deprecated since version 2.6.0
+			 * @todo remove at version 3
+			 * @private
+			 */
+			me.chart = me;
+			me.controller = me;  // chart.chart.controller #inception
 
-		Object.defineProperty(me, 'data', {
-			get: function() {
-				return me.config.data;
+			// Add the chart instance to the global namespace
+			Chart.instances[me.id] = me;
+
+			// Define alias to the config data: `chart.data === chart.config.data`
+			Object.defineProperty(me, 'data', {
+				get: function() {
+					return me.config.data;
+				},
+				set: function(value) {
+					me.config.data = value;
+				}
+			});
+
+			if (!context || !canvas) {
+				// The given item is not a compatible context2d element, let's return before finalizing
+				// the chart initialization but after setting basic chart / controller properties that
+				// can help to figure out that the chart is not valid (e.g chart.canvas !== null);
+				// https://github.com/chartjs/Chart.js/issues/2807
+				console.error("Failed to create chart: can't acquire context from the given item");
+				return;
 			}
-		});
 
-		if (!context || !canvas) {
-			// The given item is not a compatible context2d element, let's return before finalizing
-			// the chart initialization but after setting basic chart / controller properties that
-			// can help to figure out that the chart is not valid (e.g chart.canvas !== null);
-			// https://github.com/chartjs/Chart.js/issues/2807
-			console.error("Failed to create chart: can't acquire context from the given item");
-			return me;
-		}
+			me.initialize();
+			me.update();
+		},
 
-		me.initialize();
-		me.update();
-
-		return me;
-	};
-
-	helpers.extend(Chart.Controller.prototype, /** @lends Chart.Controller.prototype */ {
+		/**
+		 * @private
+		 */
 		initialize: function() {
 			var me = this;
 
 			// Before init plugin notification
 			plugins.notify(me, 'beforeInit');
 
-			helpers.retinaScale(me.chart);
+			helpers.retinaScale(me);
 
 			me.bindEvents();
 
@@ -135,7 +151,7 @@ module.exports = function(Chart) {
 		},
 
 		clear: function() {
-			helpers.clear(this.chart);
+			helpers.clear(this);
 			return this;
 		},
 
@@ -147,26 +163,25 @@ module.exports = function(Chart) {
 
 		resize: function(silent) {
 			var me = this;
-			var chart = me.chart;
 			var options = me.options;
-			var canvas = chart.canvas;
-			var aspectRatio = (options.maintainAspectRatio && chart.aspectRatio) || null;
+			var canvas = me.canvas;
+			var aspectRatio = (options.maintainAspectRatio && me.aspectRatio) || null;
 
 			// the canvas render width and height will be casted to integers so make sure that
 			// the canvas display style uses the same integer values to avoid blurring effect.
 			var newWidth = Math.floor(helpers.getMaximumWidth(canvas));
 			var newHeight = Math.floor(aspectRatio? newWidth / aspectRatio : helpers.getMaximumHeight(canvas));
 
-			if (chart.width === newWidth && chart.height === newHeight) {
+			if (me.width === newWidth && me.height === newHeight) {
 				return;
 			}
 
-			canvas.width = chart.width = newWidth;
-			canvas.height = chart.height = newHeight;
+			canvas.width = me.width = newWidth;
+			canvas.height = me.height = newHeight;
 			canvas.style.width = newWidth + 'px';
 			canvas.style.height = newHeight + 'px';
 
-			helpers.retinaScale(chart);
+			helpers.retinaScale(me);
 
 			if (!silent) {
 				// Notify any plugins about the resize
@@ -213,16 +228,21 @@ module.exports = function(Chart) {
 			if (options.scales) {
 				items = items.concat(
 					(options.scales.xAxes || []).map(function(xAxisOptions) {
-						return {options: xAxisOptions, dtype: 'category'};
+						return {options: xAxisOptions, dtype: 'category', dposition: 'bottom'};
 					}),
 					(options.scales.yAxes || []).map(function(yAxisOptions) {
-						return {options: yAxisOptions, dtype: 'linear'};
+						return {options: yAxisOptions, dtype: 'linear', dposition: 'left'};
 					})
 				);
 			}
 
 			if (options.scale) {
-				items.push({options: options.scale, dtype: 'radialLinear', isDefault: true});
+				items.push({
+					options: options.scale,
+					dtype: 'radialLinear',
+					isDefault: true,
+					dposition: 'chartArea'
+				});
 			}
 
 			helpers.each(items, function(item) {
@@ -233,10 +253,14 @@ module.exports = function(Chart) {
 					return;
 				}
 
+				if (positionIsHorizontal(scaleOptions.position) !== positionIsHorizontal(item.dposition)) {
+					scaleOptions.position = item.dposition;
+				}
+
 				var scale = new scaleClass({
 					id: scaleOptions.id,
 					options: scaleOptions,
-					ctx: me.chart.ctx,
+					ctx: me.ctx,
 					chart: me
 				});
 
@@ -269,7 +293,12 @@ module.exports = function(Chart) {
 				if (meta.controller) {
 					meta.controller.updateIndex(datasetIndex);
 				} else {
-					meta.controller = new Chart.controllers[meta.type](me, datasetIndex);
+					var ControllerClass = Chart.controllers[meta.type];
+					if (ControllerClass === undefined) {
+						throw new Error('"' + meta.type + '" is not a chart type.');
+					}
+
+					meta.controller = new ControllerClass(me, datasetIndex);
 					newControllers.push(meta.controller);
 				}
 			}, me);
@@ -359,13 +388,14 @@ module.exports = function(Chart) {
 				return;
 			}
 
-			Chart.layoutService.update(this, this.chart.width, this.chart.height);
+			Chart.layoutService.update(this, this.width, this.height);
 
 			/**
 			 * Provided for backward compatibility, use `afterLayout` instead.
 			 * @method IPlugin#afterScaleUpdate
 			 * @deprecated since version 2.5.0
 			 * @todo remove at version 3
+			 * @private
 			 */
 			plugins.notify(me, 'afterScaleUpdate');
 			plugins.notify(me, 'afterLayout');
@@ -384,10 +414,32 @@ module.exports = function(Chart) {
 			}
 
 			for (var i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
-				me.getDatasetMeta(i).controller.update();
+				me.updateDataset(i);
 			}
 
 			plugins.notify(me, 'afterDatasetsUpdate');
+		},
+
+		/**
+		 * Updates dataset at index unless a plugin returns `false` to the `beforeDatasetUpdate`
+		 * hook, in which case, plugins will not be called on `afterDatasetUpdate`.
+		 * @private
+		 */
+		updateDataset: function(index) {
+			var me = this;
+			var meta = me.getDatasetMeta(index);
+			var args = {
+				meta: meta,
+				index: index
+			};
+
+			if (plugins.notify(me, 'beforeDatasetUpdate', [args]) === false) {
+				return;
+			}
+
+			meta.controller.update();
+
+			plugins.notify(me, 'afterDatasetUpdate', [args]);
 		},
 
 		render: function(duration, lazy) {
@@ -398,36 +450,34 @@ module.exports = function(Chart) {
 			}
 
 			var animationOptions = me.options.animation;
-			var onComplete = function() {
+			var onComplete = function(animation) {
 				plugins.notify(me, 'afterRender');
-				var callback = animationOptions && animationOptions.onComplete;
-				if (callback && callback.call) {
-					callback.call(me);
-				}
+				helpers.callback(animationOptions && animationOptions.onComplete, [animation], me);
 			};
 
 			if (animationOptions && ((typeof duration !== 'undefined' && duration !== 0) || (typeof duration === 'undefined' && animationOptions.duration !== 0))) {
-				var animation = new Chart.Animation();
-				animation.numSteps = (duration || animationOptions.duration) / 16.66; // 60 fps
-				animation.easing = animationOptions.easing;
+				var animation = new Chart.Animation({
+					numSteps: (duration || animationOptions.duration) / 16.66, // 60 fps
+					easing: animationOptions.easing,
 
-				// render function
-				animation.render = function(chartInstance, animationObject) {
-					var easingFunction = helpers.easingEffects[animationObject.easing];
-					var stepDecimal = animationObject.currentStep / animationObject.numSteps;
-					var easeDecimal = easingFunction(stepDecimal);
+					render: function(chart, animationObject) {
+						var easingFunction = helpers.easingEffects[animationObject.easing];
+						var currentStep = animationObject.currentStep;
+						var stepDecimal = currentStep / animationObject.numSteps;
 
-					chartInstance.draw(easeDecimal, stepDecimal, animationObject.currentStep);
-				};
+						chart.draw(easingFunction(stepDecimal), stepDecimal, currentStep);
+					},
 
-				// user events
-				animation.onAnimationProgress = animationOptions.onProgress;
-				animation.onAnimationComplete = onComplete;
+					onAnimationProgress: animationOptions.onProgress,
+					onAnimationComplete: onComplete
+				});
 
 				Chart.animationService.addAnimation(me, animation, duration, lazy);
 			} else {
 				me.draw();
-				onComplete();
+
+				// See https://github.com/chartjs/Chart.js/issues/3781
+				onComplete(new Chart.Animation({numSteps: 0, chart: me}));
 			}
 
 			return me;
@@ -441,6 +491,8 @@ module.exports = function(Chart) {
 			if (easingValue === undefined || easingValue === null) {
 				easingValue = 1;
 			}
+
+			me.transition(easingValue);
 
 			if (plugins.notify(me, 'beforeDraw', [easingValue]) === false) {
 				return;
@@ -458,9 +510,24 @@ module.exports = function(Chart) {
 			me.drawDatasets(easingValue);
 
 			// Finally draw the tooltip
-			me.tooltip.transition(easingValue).draw();
+			me.tooltip.draw();
 
 			plugins.notify(me, 'afterDraw', [easingValue]);
+		},
+
+		/**
+		 * @private
+		 */
+		transition: function(easingValue) {
+			var me = this;
+
+			for (var i=0, ilen=(me.data.datasets || []).length; i<ilen; ++i) {
+				if (me.isDatasetVisible(i)) {
+					me.getDatasetMeta(i).controller.transition(easingValue);
+				}
+			}
+
+			me.tooltip.transition(easingValue);
 		},
 
 		/**
@@ -475,14 +542,37 @@ module.exports = function(Chart) {
 				return;
 			}
 
-			// Draw each dataset via its respective controller (reversed to support proper line stacking)
-			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
-				if (me.isDatasetVisible(datasetIndex)) {
-					me.getDatasetMeta(datasetIndex).controller.draw(easingValue);
+			// Draw datasets reversed to support proper line stacking
+			for (var i=(me.data.datasets || []).length - 1; i >= 0; --i) {
+				if (me.isDatasetVisible(i)) {
+					me.drawDataset(i, easingValue);
 				}
-			}, me, true);
+			}
 
 			plugins.notify(me, 'afterDatasetsDraw', [easingValue]);
+		},
+
+		/**
+		 * Draws dataset at index unless a plugin returns `false` to the `beforeDatasetDraw`
+		 * hook, in which case, plugins will not be called on `afterDatasetDraw`.
+		 * @private
+		 */
+		drawDataset: function(index, easingValue) {
+			var me = this;
+			var meta = me.getDatasetMeta(index);
+			var args = {
+				meta: meta,
+				index: index,
+				easingValue: easingValue
+			};
+
+			if (plugins.notify(me, 'beforeDatasetDraw', [args]) === false) {
+				return;
+			}
+
+			meta.controller.draw(easingValue);
+
+			plugins.notify(me, 'afterDatasetDraw', [args]);
 		},
 
 		// Get the single element that was clicked on
@@ -559,7 +649,7 @@ module.exports = function(Chart) {
 
 		destroy: function() {
 			var me = this;
-			var canvas = me.chart.canvas;
+			var canvas = me.canvas;
 			var meta, i, ilen;
 
 			me.stop();
@@ -575,10 +665,10 @@ module.exports = function(Chart) {
 
 			if (canvas) {
 				me.unbindEvents();
-				helpers.clear(me.chart);
-				platform.releaseContext(me.chart.ctx);
-				me.chart.canvas = null;
-				me.chart.ctx = null;
+				helpers.clear(me);
+				platform.releaseContext(me.ctx);
+				me.canvas = null;
+				me.ctx = null;
 			}
 
 			plugins.notify(me, 'destroy');
@@ -587,14 +677,14 @@ module.exports = function(Chart) {
 		},
 
 		toBase64Image: function() {
-			return this.chart.canvas.toDataURL.apply(this.chart.canvas, arguments);
+			return this.canvas.toDataURL.apply(this.canvas, arguments);
 		},
 
 		initToolTip: function() {
 			var me = this;
 			me.tooltip = new Chart.Tooltip({
-				_chart: me.chart,
-				_chartInstance: me,
+				_chart: me,
+				_chartInstance: me,            // deprecated, backward compatibility
 				_data: me.data,
 				_options: me.options.tooltips
 			}, me);
@@ -749,4 +839,13 @@ module.exports = function(Chart) {
 			return changed;
 		}
 	});
+
+	/**
+	 * Provided for backward compatibility, use Chart instead.
+	 * @class Chart.Controller
+	 * @deprecated since version 2.6.0
+	 * @todo remove at version 3
+	 * @private
+	 */
+	Chart.Controller = Chart;
 };
