@@ -8,20 +8,23 @@
             }]
         },
         "options": {
-            "responsive": false,
-            "spanGaps": true,
             "legend": false,
             "title": false,
             "scales": {
                 "xAxes": [{
                     "ticks": {
                         "display": false
+                    },
+                    "gridLines":{
+                        "display": false
                     }
                 }],
                 "yAxes": [{
                     "ticks": {
-                        "mirror": true,
-                        "labelOffset": -30
+                        "labelOffset": 25
+                    },
+                    "gridLines":{
+                        "display": false
                     }
                 }]
             }
