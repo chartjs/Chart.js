@@ -1,5 +1,5 @@
 {
-    "tolerance": "0.004",
+    "tolerance": "0.008",
     "config": {
         "type": "horizontalBar",
         "data": {
