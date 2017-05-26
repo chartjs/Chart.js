@@ -28,7 +28,7 @@
 	<button id="removeData">Remove Data</button>
 	<script>
 		var timeFormat = 'MM/DD/YYYY HH:mm';
-		
+
 		function newDate(days) {
 			return moment().add(days, 'd').toDate();
 		}
@@ -46,12 +46,12 @@
 			type: 'line',
 			data: {
 				labels: [ // Date Objects
-					newDate(0), 
-					newDate(1), 
-					newDate(2), 
-					newDate(3), 
-					newDate(4), 
-					newDate(5), 
+					newDate(0),
+					newDate(1),
+					newDate(2),
+					newDate(3),
+					newDate(4),
+					newDate(5),
 					newDate(6)
 				],
 				datasets: [{
@@ -60,12 +60,12 @@
 					borderColor: window.chartColors.red,
 					fill: false,
 					data: [
-						randomScalingFactor(), 
-						randomScalingFactor(), 
-						randomScalingFactor(), 
-						randomScalingFactor(), 
-						randomScalingFactor(), 
-						randomScalingFactor(), 
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
 						randomScalingFactor()
 					],
 				}, {
@@ -74,12 +74,12 @@
 					borderColor: window.chartColors.blue,
 					fill: false,
 					data: [
-						randomScalingFactor(), 
-						randomScalingFactor(), 
-						randomScalingFactor(), 
-						randomScalingFactor(), 
-						randomScalingFactor(), 
-						randomScalingFactor(), 
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
 						randomScalingFactor()
 					],
 				}, {

@@ -55,8 +55,20 @@ module.exports = function(Chart) {
 		var ticks = [];
 		if (options.maxTicks) {
 			var stepSize = options.stepSize;
-			ticks.push(options.min !== undefined ? options.min : niceRange.min);
-			var cur = moment(niceRange.min);
+			var startTick = options.min !== undefined ? options.min : niceRange.min;
+			var majorUnitStart = startTick;
+			if (options.majorUnit) {
+				majorUnitStart = moment(startTick).add(1, options.majorUnit).startOf(options.majorUnit);
+			}
+			var startRange = majorUnitStart.valueOf() - startTick;
+			var startFraction = startRange % (interval[options.unit].size * stepSize);
+			var alignedTick = startTick;
+			ticks.push(startTick);
+			if (startFraction && options.majorUnit && !options.timeOpts.round && !options.timeOpts.isoWeekday) {
+				alignedTick += startFraction;
+				ticks.push(alignedTick);
+			}
+			var cur = moment(alignedTick);
 			while (cur.add(stepSize, options.unit).valueOf() < niceRange.max) {
 				ticks.push(cur.valueOf());
 			}
@@ -129,6 +141,22 @@ module.exports = function(Chart) {
 		},
 
 		/**
+		 * Determine major unit accordingly to passed unit
+		 * @param unit {String} relative unit
+		 * @return {String} major unit
+		 */
+		determineMajorUnit: function(unit) {
+			var units = Object.keys(interval);
+			var majorUnit = null;
+			var unitIndex = units.indexOf(unit);
+			if (unitIndex < units.length - 1) {
+				majorUnit = units[unitIndex + 1];
+			}
+
+			return majorUnit;
+		},
+
+		/**
 		 * Determines how we scale the unit
 		 * @param min {Number} the scale minimum
 		 * @param max {Number} the scale maximum
@@ -169,7 +197,7 @@ module.exports = function(Chart) {
 		generateTicks: function(options, dataRange) {
 			var niceMin;
 			var niceMax;
-			var isoWeekday = options.isoWeekday;
+			var isoWeekday = options.timeOpts.isoWeekday;
 			if (options.unit === 'week' && isoWeekday !== false) {
 				niceMin = moment(dataRange.min).startOf('isoWeek').isoWeekday(isoWeekday).valueOf();
 				niceMax = moment(dataRange.max).startOf('isoWeek').isoWeekday(isoWeekday);
