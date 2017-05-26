@@ -26,8 +26,8 @@ module.exports = function(Chart) {
 				millisecond: 'h:mm:ss.SSS a', // 11:20:01.123 AM,
 				second: 'h:mm:ss a', // 11:20:01 AM
 				minute: 'h:mm:ss a', // 11:20:01 AM
-				hour: 'MMM D, hA', // Sept 4, 5PM
-				day: 'll', // Sep 4 2015
+				hour: 'hA', // 5PM
+				day: 'MMM D', // Sep 4
 				week: 'll', // Week 46, or maybe "[W]WW - YYYY" ?
 				month: 'MMM YYYY', // Sept 2015
 				quarter: '[Q]Q - YYYY', // Q3
@@ -182,7 +182,18 @@ module.exports = function(Chart) {
 		},
 		// Function to format an individual tick mark
 		tickFormatFunction: function(tick, index, ticks) {
-			var formattedTick = tick.format(this.displayFormat);
+			var formattedTick;
+			var tickClone = tick.clone();
+			if (this.majorUnit &&
+				this.majorDisplayFormat &&
+				tick.valueOf() === tickClone.startOf(this.majorUnit).valueOf()) {
+				// format as senior unit
+				formattedTick = tick.format(this.majorDisplayFormat);
+			} else {
+				// format as base unit
+				formattedTick = tick.format(this.displayFormat);
+			}
+
 			var tickOpts = this.options.ticks;
 			var callback = helpers.getValueOrDefault(tickOpts.callback, tickOpts.userCallback);
 
