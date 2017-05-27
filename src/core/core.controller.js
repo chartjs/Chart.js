@@ -797,6 +797,7 @@ module.exports = function(Chart) {
 			var me = this;
 			var options = me.options || {};
 			var hoverOptions = options.hover;
+			var hoverCallback = options.onHover || options.hover.onHover;
 			var changed = false;
 
 			me.lastActive = me.lastActive || [];
@@ -809,9 +810,9 @@ module.exports = function(Chart) {
 			}
 
 			// On Hover hook
-			if (hoverOptions.onHover) {
+			if (hoverCallback) {
 				// Need to call with native event here to not break backwards compatibility
-				hoverOptions.onHover.call(me, e.native, me.active);
+				hoverCallback.call(me, e.native, me.active);
 			}
 
 			if (e.type === 'mouseup' || e.type === 'click') {
