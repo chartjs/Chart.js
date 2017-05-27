@@ -52,8 +52,9 @@ module.exports = function(Chart) {
 			var timeOpts = me.options.time;
 
 			// We store the data range as unix millisecond timestamps so dataMin and dataMax will always be integers.
-			var dataMin = Number.MAX_SAFE_INTEGER;
-			var dataMax = Number.MIN_SAFE_INTEGER;
+			// Integer constants are from the ES6 spec.
+			var dataMin = Number.MAX_SAFE_INTEGER || 9007199254740991;
+			var dataMax = Number.MIN_SAFE_INTEGER || -9007199254740991;
 
 			var chartData = me.chart.data;
 			var parsedData = {
