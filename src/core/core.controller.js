@@ -808,11 +808,9 @@ module.exports = function(Chart) {
 				me.active = me.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions);
 			}
 
-			// On Hover hook
-			if (hoverOptions.onHover) {
-				// Need to call with native event here to not break backwards compatibility
-				hoverOptions.onHover.call(me, e.native, me.active);
-			}
+			// Invoke onHover hook
+			// Need to call with native event here to not break backwards compatibility
+			helpers.callback(options.onHover || options.hover.onHover, [e.native, me.active], me);
 
 			if (e.type === 'mouseup' || e.type === 'click') {
 				if (options.onClick) {
