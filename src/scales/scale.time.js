@@ -135,8 +135,14 @@ module.exports = function(Chart) {
 			}
 
 			var maxTicks = me.getLabelCapacity(minTimestamp || dataMin);
+
 			var unit = timeOpts.unit || timeHelpers.determineUnit(timeOpts.minUnit, minTimestamp || dataMin, maxTimestamp || dataMax, maxTicks);
+			var majorUnit = timeHelpers.determineMajorUnit(unit);
+
 			me.displayFormat = timeOpts.displayFormats[unit];
+			me.majorDisplayFormat = timeOpts.displayFormats[majorUnit];
+			me.unit = unit;
+			me.majorUnit = majorUnit;
 
 			var stepSize = timeOpts.stepSize || timeHelpers.determineStepSize(minTimestamp || dataMin, maxTimestamp || dataMax, unit, maxTicks);
 			me.ticks = timeHelpers.generateTicks({
@@ -144,8 +150,9 @@ module.exports = function(Chart) {
 				min: minTimestamp,
 				max: maxTimestamp,
 				stepSize: stepSize,
+				majorUnit: majorUnit,
 				unit: unit,
-				isoWeekday: timeOpts.isoWeekday
+				timeOpts: timeOpts
 			}, {
 				min: dataMin,
 				max: dataMax
