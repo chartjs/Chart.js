@@ -287,7 +287,7 @@ describe('Time scale tests', function() {
 			config.time.max = '2015-01-05T06:00:00';
 
 			var scale = createScale(mockData, config);
-			expect(scale.ticks[scale.ticks.length - 1]).toEqual('Jan 5, 2015');
+			expect(scale.ticks[scale.ticks.length - 1]).toEqual('Jan 6, 2015');
 		});
 	});
 
@@ -331,34 +331,28 @@ describe('Time scale tests', function() {
 
 		var xScale = chart.scales.xScale0;
 
-		it('should be bounded by the nearest day beginnings', function() {
-			expect(xScale.getValueForPixel(xScale.left)).toBeCloseToTime({
-				value: moment(chart.data.labels[0]).startOf('day'),
-				unit: 'hour',
-			});
-			expect(xScale.getValueForPixel(xScale.right)).toBeCloseToTime({
-				value: moment(chart.data.labels[chart.data.labels.length - 1]).endOf('day'),
-				unit: 'hour',
-			});
+		it('should be bounded by the nearest week beginnings', function() {
+			expect(xScale.getValueForPixel(xScale.left)).toBeGreaterThan(moment(chart.data.labels[0]).startOf('week'));
+			expect(xScale.getValueForPixel(xScale.right)).toBeLessThan(moment(chart.data.labels[chart.data.labels.length - 1]).add(1, 'week').endOf('week'));
 		});
 
 		it('should convert between screen coordinates and times', function() {
-			var timeRange = moment('2015-01-11').valueOf() - moment('2015-01-01').valueOf();
-			var msInHour = 3600000;
-			var firstLabelAlong = 20 * msInHour / timeRange;
-			var firstLabelPixel = xScale.left + (xScale.width * firstLabelAlong);
-			var lastLabelAlong = (timeRange - (12 * msInHour)) / timeRange;
-			var lastLabelPixel = xScale.left + (xScale.width * lastLabelAlong);
+			var timeRange = moment(xScale.max).valueOf() - moment(xScale.min).valueOf();
+			var msPerPix = timeRange / xScale.width;
+			var firstPointOffsetMs = moment(chart.config.data.labels[0]).valueOf() - xScale.min;
+			var firstPointPixel = xScale.left + firstPointOffsetMs / msPerPix;
+			var lastPointOffsetMs = moment(chart.config.data.labels[chart.config.data.labels.length - 1]).valueOf() - xScale.min;
+			var lastPointPixel = xScale.left + lastPointOffsetMs / msPerPix;
 
-			expect(xScale.getPixelForValue('', 0, 0)).toBeCloseToPixel(firstLabelPixel);
-			expect(xScale.getPixelForValue(chart.data.labels[0])).toBeCloseToPixel(firstLabelPixel);
-			expect(xScale.getValueForPixel(firstLabelPixel)).toBeCloseToTime({
+			expect(xScale.getPixelForValue('', 0, 0)).toBeCloseToPixel(firstPointPixel);
+			expect(xScale.getPixelForValue(chart.data.labels[0])).toBeCloseToPixel(firstPointPixel);
+			expect(xScale.getValueForPixel(firstPointPixel)).toBeCloseToTime({
 				value: moment(chart.data.labels[0]),
 				unit: 'hour',
 			});
 
-			expect(xScale.getPixelForValue('', 6, 0)).toBeCloseToPixel(lastLabelPixel);
-			expect(xScale.getValueForPixel(lastLabelPixel)).toBeCloseToTime({
+			expect(xScale.getPixelForValue('', 6, 0)).toBeCloseToPixel(lastPointPixel);
+			expect(xScale.getValueForPixel(lastPointPixel)).toBeCloseToTime({
 				value: moment(chart.data.labels[6]),
 				unit: 'hour'
 			});
@@ -384,26 +378,28 @@ describe('Time scale tests', function() {
 
 		var xScale = chart.scales.xScale0;
 		xScale.update(800, 200);
+		var step = xScale.ticksAsTimestamps[1] - xScale.ticksAsTimestamps[0];
+		var stepsAmount = Math.floor((xScale.max - xScale.min) / step);
 
-		it('should be bounded by nearest year starts', function() {
+		it('should be bounded by nearest step year starts', function() {
 			expect(xScale.getValueForPixel(xScale.left)).toBeCloseToTime({
-				value: moment(chart.data.labels[0]).startOf('year'),
+				value: moment(xScale.min).startOf('year'),
 				unit: 'hour',
 			});
 			expect(xScale.getValueForPixel(xScale.right)).toBeCloseToTime({
-				value: moment(chart.data.labels[chart.data.labels - 1]).endOf('year'),
+				value: moment(xScale.min + step * stepsAmount).endOf('year'),
 				unit: 'hour',
 			});
 		});
 
 		it('should build the correct ticks', function() {
-			// Where 'correct' is a two year spacing, except the last tick which is the year end of the last point.
-			expect(xScale.ticks).toEqual(['2005', '2007', '2009', '2011', '2013', '2015', '2017', '2018']);
+			// Where 'correct' is a two year spacing.
+			expect(xScale.ticks).toEqual(['2005', '2007', '2009', '2011', '2013', '2015', '2017', '2019']);
 		});
 
 		it('should have ticks with accurate labels', function() {
 			var ticks = xScale.ticks;
-			var pixelsPerYear = xScale.width / 13;
+			var pixelsPerYear = xScale.width / 14;
 
 			for (var i = 0; i < ticks.length - 1; i++) {
 				var offset = 2 * pixelsPerYear * i;

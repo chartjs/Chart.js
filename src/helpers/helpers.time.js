@@ -57,25 +57,26 @@ module.exports = function(Chart) {
 			var stepSize = options.stepSize;
 			var startTick = options.min !== undefined ? options.min : niceRange.min;
 			var majorUnitStart = startTick;
-			if (options.majorUnit) {
-				majorUnitStart = moment(startTick).add(1, options.majorUnit).startOf(options.majorUnit);
+			var majorUnit = options.majorUnit;
+			if (majorUnit) {
+				majorUnitStart = moment(startTick).add(1, majorUnit).startOf(majorUnit);
 			}
 			var startRange = majorUnitStart.valueOf() - startTick;
-			var startFraction = startRange % (interval[options.unit].size * stepSize);
+			var stepValue = interval[options.unit].size * stepSize;
+			var startFraction = startRange % stepValue;
 			var alignedTick = startTick;
-			ticks.push(startTick);
-			if (startFraction && options.majorUnit && !options.timeOpts.round && !options.timeOpts.isoWeekday) {
-				alignedTick += startFraction;
+			if (startFraction && majorUnit && !options.timeOpts.round && !options.timeOpts.isoWeekday) {
+				alignedTick += startFraction - stepValue;
 				ticks.push(alignedTick);
+			} else {
+				ticks.push(startTick);
 			}
 			var cur = moment(alignedTick);
-			while (cur.add(stepSize, options.unit).valueOf() < niceRange.max) {
+			var realMax = options.max || niceRange.max;
+			while (cur.add(stepSize, options.unit).valueOf() < realMax) {
 				ticks.push(cur.valueOf());
 			}
-			var realMax = options.max || niceRange.max;
-			if (ticks[ticks.length - 1] !== realMax) {
-				ticks.push(realMax);
-			}
+			ticks.push(cur.valueOf());
 		}
 		return ticks;
 	}
