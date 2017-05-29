@@ -57,7 +57,7 @@ module.exports = function(Chart) {
 			var stepSize = options.stepSize;
 			var startTick = options.min !== undefined ? options.min : niceRange.min;
 			var majorUnit = options.majorUnit;
-			var majorUnitStart = majorUnit ? majorUnitStart = moment(startTick).add(1, majorUnit).startOf(majorUnit) : startTick;
+			var majorUnitStart = majorUnit ? moment(startTick).add(1, majorUnit).startOf(majorUnit) : startTick;
 			var startRange = majorUnitStart.valueOf() - startTick;
 			var stepValue = interval[options.unit].size * stepSize;
 			var startFraction = startRange % stepValue;
