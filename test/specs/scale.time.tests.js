@@ -94,7 +94,7 @@ describe('Time scale tests', function() {
 				displayFormat: false,
 				minUnit: 'millisecond',
 				displayFormats: {
-					millisecond: 'h:mm:ss.SSS a', // 11:20:01.123 AM,
+					millisecond: 'h:mm:ss.SSS a', // 11:20:01.123 AM
 					second: 'h:mm:ss a', // 11:20:01 AM
 					minute: 'h:mm:ss a', // 11:20:01 AM
 					hour: 'MMM D, hA', // Sept 4, 5PM
