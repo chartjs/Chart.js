@@ -1,5 +1,8 @@
 'use strict';
 
+var moment = require('moment');
+moment = typeof(moment) === 'function' ? moment : window.moment;
+
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
