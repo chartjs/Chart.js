@@ -687,8 +687,7 @@ module.exports = function(Chart) {
 						// Add bold style to major units
 						var tickMoment = moment(me.ticksAsTimestamps[index]);
 						var tickMomentClone = tickMoment.clone();
-						if (me.majorUnit &&
-							tickMoment.valueOf() === tickMomentClone.startOf(me.majorUnit).valueOf()) {
+						if (me.majorUnit && tickMoment.valueOf() === tickMomentClone.startOf(me.majorUnit).valueOf()) {
 							font = majorTickFont;
 						}
 					}

@@ -96,7 +96,7 @@ describe('Time scale tests', function() {
 				displayFormats: {
 					millisecond: 'h:mm:ss.SSS a', // 11:20:01.123 AM
 					second: 'h:mm:ss a', // 11:20:01 AM
-					minute: 'h:mm:ss a', // 11:20:01 AM
+					minute: 'h:mm a', // 11:20 AM
 					hour: 'hA', // 5PM
 					day: 'MMM D', // Sep 4
 					week: 'll', // Week 46, or maybe "[W]WW - YYYY" ?
