@@ -288,7 +288,7 @@ describe('Time scale tests', function() {
 
 			var scale = createScale(mockData, config);
 
-			expect(scale.ticks[scale.ticks.length - 1]).toEqual('Jan 5');
+			expect(scale.ticks[scale.ticks.length - 1]).toEqual('Jan 6');
 		});
 	});
 
