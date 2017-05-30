@@ -1,9 +1,9 @@
 {
-    "tolerance": "0.008",
+    "tolerance": "0",
     "config": {
         "type": "horizontalBar",
         "data": {
-            "labels": ["Red", "Blue", "Yellow", "Green"],
+            "labels": ["\u25C0", "\u25A0", "\u25C6", "\u25CF"],
             "datasets": [{
                 "data": [12, 19, 3, 5]
             }]
