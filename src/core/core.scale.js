@@ -1,8 +1,5 @@
 'use strict';
 
-var moment = require('moment');
-moment = typeof(moment) === 'function' ? moment : window.moment;
-
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
@@ -551,7 +548,8 @@ module.exports = function(Chart) {
 			var yTickStart = options.position === 'bottom' ? me.top : me.bottom - tl;
 			var yTickEnd = options.position === 'bottom' ? me.top + tl : me.bottom;
 
-			helpers.each(me.ticks, function(label, index) {
+			helpers.each(me.ticks, function(tick, index) {
+				var label = typeof tick === 'object' && typeof tick.value !== 'undefined' ? tick.value : tick;
 				// If the callback returned a null or undefined value, do not draw this line
 				if (label === undefined || label === null) {
 					return;
@@ -649,13 +647,14 @@ module.exports = function(Chart) {
 					glBorderDashOffset: borderDashOffset,
 					rotation: -1 * labelRotationRadians,
 					label: label,
+					major: tick.major === true,
 					textBaseline: textBaseline,
 					textAlign: textAlign
 				});
 			});
 
 			// Draw all of the tick labels, tick marks, and grid lines at the correct places
-			helpers.each(itemsToDraw, function(itemToDraw, index) {
+			helpers.each(itemsToDraw, function(itemToDraw) {
 				if (gridLines.display) {
 					context.save();
 					context.lineWidth = itemToDraw.glWidth;
@@ -685,16 +684,7 @@ module.exports = function(Chart) {
 					context.save();
 					context.translate(itemToDraw.labelX, itemToDraw.labelY);
 					context.rotate(itemToDraw.rotation);
-					var font = tickFont.font;
-					if (me.ticksAsTimestamps) {
-						// Add bold style to major units
-						var tickMoment = moment(me.ticksAsTimestamps[index]);
-						var tickMomentClone = tickMoment.clone();
-						if (me.majorUnit && tickMoment.valueOf() === tickMomentClone.startOf(me.majorUnit).valueOf()) {
-							font = majorTickFont;
-						}
-					}
-					context.font = font;
+					context.font = itemToDraw.major ? majorTickFont : tickFont.font;
 					context.textBaseline = itemToDraw.textBaseline;
 					context.textAlign = itemToDraw.textAlign;
 

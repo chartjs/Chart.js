@@ -184,11 +184,12 @@ module.exports = function(Chart) {
 		tickFormatFunction: function(tick, index, ticks) {
 			var formattedTick;
 			var tickClone = tick.clone();
-			if (this.majorUnit &&
-				this.majorDisplayFormat &&
-				tick.valueOf() === tickClone.startOf(this.majorUnit).valueOf()) {
+			var tickTimestamp = tick.valueOf();
+			var major = false;
+			if (this.majorUnit && this.majorDisplayFormat && tickTimestamp === tickClone.startOf(this.majorUnit).valueOf()) {
 				// format as senior unit
 				formattedTick = tick.format(this.majorDisplayFormat);
+				major = true;
 			} else {
 				// format as base unit
 				formattedTick = tick.format(this.displayFormat);
@@ -198,9 +199,15 @@ module.exports = function(Chart) {
 			var callback = helpers.getValueOrDefault(tickOpts.callback, tickOpts.userCallback);
 
 			if (callback) {
-				return callback(formattedTick, index, ticks);
+				return {
+					value: callback(formattedTick, index, ticks),
+					major: major
+				};
 			}
-			return formattedTick;
+			return {
+				value: formattedTick,
+				major: major
+			};
 		},
 		convertTicksToLabels: function() {
 			var me = this;
@@ -268,11 +275,12 @@ module.exports = function(Chart) {
 			var me = this;
 
 			me.displayFormat = me.options.time.displayFormats.millisecond;	// Pick the longest format for guestimation
-			var exampleLabel = me.tickFormatFunction(moment(exampleTime), 0, []);
+			var exampleLabel = me.tickFormatFunction(moment(exampleTime), 0, []).value;
 			var tickLabelWidth = me.getLabelWidth(exampleLabel);
 
 			var innerWidth = me.isHorizontal() ? me.width : me.height;
 			var labelCapacity = innerWidth / tickLabelWidth;
+
 			return labelCapacity;
 		}
 	});
