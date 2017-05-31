@@ -487,6 +487,7 @@ module.exports = function(Chart) {
 			var context = me.ctx;
 			var globalDefaults = Chart.defaults.global;
 			var optionTicks = options.ticks;
+			var optionMajorTicks = options.majorTicks ? options.majorTicks : optionTicks;
 			var gridLines = options.gridLines;
 			var scaleLabel = options.scaleLabel;
 
@@ -503,7 +504,8 @@ module.exports = function(Chart) {
 
 			var tickFontColor = helpers.getValueOrDefault(optionTicks.fontColor, globalDefaults.defaultFontColor);
 			var tickFont = parseFontOptions(optionTicks);
-			var majorTickFont = helpers.fontString(tickFont.size, 'bold', tickFont.family);
+			var majorTickFontColor = helpers.getValueOrDefault(optionMajorTicks.fontColor, globalDefaults.defaultFontColor);
+			var majorTickFont = parseFontOptions(optionMajorTicks);
 
 			var tl = gridLines.drawTicks ? gridLines.tickMarkLength : 0;
 
@@ -513,9 +515,6 @@ module.exports = function(Chart) {
 			var labelRotationRadians = helpers.toRadians(me.labelRotation);
 			var cosRotation = Math.cos(labelRotationRadians);
 			var longestRotatedLabel = me.longestLabelWidth * cosRotation;
-
-			// Make sure we draw text in the correct color and font
-			context.fillStyle = tickFontColor;
 
 			var itemsToDraw = [];
 
@@ -681,10 +680,12 @@ module.exports = function(Chart) {
 				}
 
 				if (optionTicks.display) {
+					// Make sure we draw text in the correct color and font
 					context.save();
 					context.translate(itemToDraw.labelX, itemToDraw.labelY);
 					context.rotate(itemToDraw.rotation);
-					context.font = itemToDraw.major ? majorTickFont : tickFont.font;
+					context.font = itemToDraw.major ? majorTickFont.font : tickFont.font;
+					context.fillStyle = itemToDraw.major ? majorTickFontColor : tickFontColor;
 					context.textBaseline = itemToDraw.textBaseline;
 					context.textAlign = itemToDraw.textAlign;
 

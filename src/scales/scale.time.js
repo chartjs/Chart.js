@@ -36,6 +36,19 @@ module.exports = function(Chart) {
 		},
 		ticks: {
 			autoSkip: false
+		},
+		majorTicks: {
+			beginAtZero: false,
+			minRotation: 0,
+			maxRotation: 50,
+			mirror: false,
+			padding: 0,
+			reverse: false,
+			display: true,
+			autoSkip: true,
+			autoSkipPadding: 0,
+			labelOffset: 0,
+			callback: Chart.Ticks.formatters.values
 		}
 	};
 
@@ -45,7 +58,16 @@ module.exports = function(Chart) {
 				throw new Error('Chart.js - Moment.js could not be found! You must include it before Chart.js to use the time scale. Download at https://momentjs.com');
 			}
 
+			this.mergeTicksOptions();
+
 			Chart.Scale.prototype.initialize.call(this);
+		},
+		mergeTicksOptions: function() {
+			for (var key in this.options.ticks) {
+				if (typeof this.options.majorTicks[key] === 'undefined') {
+					this.options.majorTicks[key] = this.options.ticks[key];
+				}
+			}
 		},
 		determineDataLimits: function() {
 			var me = this;
@@ -186,16 +208,18 @@ module.exports = function(Chart) {
 			var tickClone = tick.clone();
 			var tickTimestamp = tick.valueOf();
 			var major = false;
+			var tickOpts;
 			if (this.majorUnit && this.majorDisplayFormat && tickTimestamp === tickClone.startOf(this.majorUnit).valueOf()) {
 				// format as senior unit
 				formattedTick = tick.format(this.majorDisplayFormat);
+				tickOpts = this.options.majorTicks;
 				major = true;
 			} else {
 				// format as base unit
 				formattedTick = tick.format(this.displayFormat);
+				tickOpts = this.options.ticks;
 			}
 
-			var tickOpts = this.options.ticks;
 			var callback = helpers.getValueOrDefault(tickOpts.callback, tickOpts.userCallback);
 
 			if (callback) {
