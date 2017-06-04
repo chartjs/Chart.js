@@ -16,7 +16,7 @@ The following options are provided by the time scale. They are all located in th
 | `round` | `String` | `false` | If defined, dates will be rounded to the start of this unit. See [Time Units](#scales-time-units) below for the allowed units.
 | `tooltipFormat` | `String` | | The moment js format string to use for the tooltip.
 | `unit` | `String` | `false` | If defined, will force the unit to be a certain type. See [Time Units](#scales-time-units) section below for details.
-| `unitStepSize` | `Number` | `1` | The number of units between grid lines.
+| `stepSize` | `Number` | `1` | The number of units between grid lines.
 | `minUnit` | `String` | `millisecond` | The minimum display format to be used for a time unit.
 
 ## Date Formats
