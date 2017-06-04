@@ -320,7 +320,7 @@ module.exports = function(Chart) {
 
 				// Canvas setup
 				ctx.textAlign = 'left';
-				ctx.textBaseline = 'top';
+				ctx.textBaseline = 'middle';
 				ctx.lineWidth = 0.5;
 				ctx.strokeStyle = fontColor; // for strikethrough effect
 				ctx.fillStyle = fontColor; // render in correct colour
@@ -372,14 +372,18 @@ module.exports = function(Chart) {
 					ctx.restore();
 				};
 				var fillText = function(x, y, legendItem, textWidth) {
-					ctx.fillText(legendItem.text, boxWidth + (fontSize / 2) + x, y);
+					var halfFontSize = fontSize / 2;
+					var xLeft = boxWidth + halfFontSize + x;
+					var yMiddle = y + halfFontSize;
+
+					ctx.fillText(legendItem.text, xLeft, yMiddle);
 
 					if (legendItem.hidden) {
 						// Strikethrough the text if hidden
 						ctx.beginPath();
 						ctx.lineWidth = 2;
-						ctx.moveTo(boxWidth + (fontSize / 2) + x, y + (fontSize / 2));
-						ctx.lineTo(boxWidth + (fontSize / 2) + x + textWidth, y + (fontSize / 2));
+						ctx.moveTo(xLeft, yMiddle);
+						ctx.lineTo(xLeft + textWidth, yMiddle);
 						ctx.stroke();
 					}
 				};
