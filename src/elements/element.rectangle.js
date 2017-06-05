@@ -6,7 +6,7 @@ module.exports = function(Chart) {
 
 	globalOpts.elements.rectangle = {
 		backgroundColor: globalOpts.defaultColor,
-		borderWidth: 0,
+		borderWidth: 1,
 		borderColor: globalOpts.defaultColor,
 		borderSkipped: 'bottom'
 	};
