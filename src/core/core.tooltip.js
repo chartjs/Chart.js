@@ -691,6 +691,7 @@ module.exports = function(Chart) {
 						ctx.fillRect(pt.x, pt.y, bodyFontSize, bodyFontSize);
 
 						// Border
+						ctx.lineWidth = 1;
 						ctx.strokeStyle = mergeOpacity(vm.labelColors[i].borderColor, opacity);
 						ctx.strokeRect(pt.x, pt.y, bodyFontSize, bodyFontSize);
 
