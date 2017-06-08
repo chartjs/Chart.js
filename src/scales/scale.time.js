@@ -125,7 +125,7 @@ module.exports = function(Chart) {
 			if (timeOpts.min) {
 				var minMoment = timeHelpers.parseTime(me, timeOpts.min);
 				if (timeOpts.round) {
-					minMoment.round(timeOpts.round);
+					minMoment.startOf(timeOpts.round);
 				}
 				minTimestamp = minMoment.valueOf();
 			}
