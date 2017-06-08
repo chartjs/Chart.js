@@ -167,7 +167,7 @@ module.exports = function(Chart) {
 			 * Returns items at the same index. If the options.intersect parameter is true, we only return items if we intersect something
 			 * If the options.intersect mode is false, we find the nearest item and return the items at the same index as that item
 			 * @function Chart.Interaction.modes.index
-			 * @since v2.4.0
+			 * @deprecated since v2.4.0
 			 * @param chart {chart} the chart we are returning items from
 			 * @param e {Event} the event we are find things at
 			 * @param options {IInteractionOptions} options to use during interaction
