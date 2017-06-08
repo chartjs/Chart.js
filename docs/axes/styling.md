@@ -10,6 +10,7 @@ The grid line configuration is nested under the scale configuration in the `grid
 | -----| ---- | --------| -----------
 | `display` | `Boolean` | `true` | If false, do not display grid lines for this axis.
 | `color` | Color or Color[] | `'rgba(0, 0, 0, 0.1)'` | The color of the grid lines. If specified as an array, the first color applies to the first grid line, the second to the second grid line and so on.
+| `borderColor` | Color | `'rgba(0, 0, 0, 0.1)'` | The color of the border axis line near ticks.
 | `borderDash` | `Number[]` | `[]` | Length and spacing of dashes on grid lines. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
 | `borderDashOffset` | `Number` | `0` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
 | `lineWidth` | `Number or Number[]` | `1` | Stroke width of grid lines.
@@ -17,10 +18,10 @@ The grid line configuration is nested under the scale configuration in the `grid
 | `drawOnChartArea` | `Boolean` | `true` | If true, draw lines on the chart area inside the axis lines. This is useful when there are multiple axes and you need to control which grid lines are drawn.
 | `drawTicks` | `Boolean` | `true` | If true, draw lines beside the ticks in the axis area beside the chart.
 | `tickMarkLength` | `Number` | `10` | Length in pixels that the grid lines will draw into the axis area.
-| `zeroLineWidth` | `Number` | `1` | Stroke width of the grid line for the first index (index 0).
-| `zeroLineColor` | Color | `'rgba(0, 0, 0, 0.25)'` | Stroke color of the grid line for the first index (index 0).
-| `zeroLineBorderDash` | `Number[]` | `[]` | Length and spacing of dashes of the grid line for the first index (index 0). See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
-| `zeroLineBorderDashOffset` | `Number` | `0` | Offset for line dashes of the grid line for the first index (index 0). See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
+| `zeroLineWidth` | `Number` | `1` | Stroke width of the grid line for the first index (index at the value 0).
+| `zeroLineColor` | Color | `'rgba(0, 0, 0, 0.25)'` | Stroke color of the grid line for the first index (index at the value 0).
+| `zeroLineBorderDash` | `Number[]` | `[]` | Length and spacing of dashes of the grid line for the first index (index at the value 0). See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
+| `zeroLineBorderDashOffset` | `Number` | `0` | Offset for line dashes of the grid line for the first index (index at the value 0). See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
 | `offsetGridLines` | `Boolean` | `false` | If true, labels are shifted to be between grid lines. This is used in the bar chart and should not generally be used.
 
 ## Tick Configuration

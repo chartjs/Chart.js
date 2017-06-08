@@ -12,6 +12,7 @@ module.exports = function(Chart) {
 		gridLines: {
 			display: true,
 			color: 'rgba(0, 0, 0, 0.1)',
+			borderColor: 'rgba(0, 0, 0, 0.1)',
 			lineWidth: 1,
 			drawBorder: true,
 			drawOnChartArea: true,
@@ -730,7 +731,7 @@ module.exports = function(Chart) {
 			if (gridLines.drawBorder) {
 				// Draw the line at the edge of the axis
 				context.lineWidth = helpers.getValueAtIndexOrDefault(gridLines.lineWidth, 0);
-				context.strokeStyle = helpers.getValueAtIndexOrDefault(gridLines.color, 0);
+				context.strokeStyle = helpers.getValueAtIndexOrDefault(gridLines.borderColor, 0);
 				var x1 = me.left,
 					x2 = me.right,
 					y1 = me.top,
