@@ -19,9 +19,10 @@ module.exports = function(Chart) {
 			var meta = chart.getDatasetMeta(index);
 			var visible = meta && chart.isDatasetVisible(index);
 			var points = (visible && meta.dataset._children) || [];
+			var length = points.length || 0;
 
-			return !points.length? null : function(point, i) {
-				return points[i]._view || null;
+			return !length? null : function(point, i) {
+				return (i < length && points[i]._view) || null;
 			};
 		},
 
