@@ -17,7 +17,7 @@ This must be called before the canvas is reused for a new chart.
 myLineChart.destroy();
 ```
 
-## .update(duration, lazy)
+## .update(config)
 
 Triggers an update of the chart. This can be safely called after updating the data object. This will update all scales, legends, and then re-render the chart.
 
@@ -29,6 +29,23 @@ myLineChart.update(); // Calling update now animates the position of March from 
 ```
 
 > **Note:** replacing the data reference (e.g. `myLineChart.data = {datasets: [...]}` only works starting **version 2.6**. Prior that, replacing the entire data object could be achieved with the following workaround: `myLineChart.config.data = {datasets: [...]}`.
+
+A `config` object can be provided with additional configuration for the update process. This is useful when `update` is manually called inside an event handler and some different animation is desired.
+
+The following properties are supported:
+* **duration** (number): Time for the animation of the redraw in milliseconds
+* **lazy** (boolean): If true, the animation can be interrupted by other animations
+* **easing** (string): The animation easing function. See [Animation Easing](../configuration/animations.md) for possible values.
+
+Example:
+```javascript
+myChart.update({
+    duration: 800,
+    easing: 'easeOutBounce'
+})
+```
+
+> **Note:** `.update(duration, lazy)` is still supported in backwards compatibility mode.
 
 See [Updating Charts](updates.md) for more details.
 
