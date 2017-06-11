@@ -809,20 +809,10 @@ describe('Chart', function() {
 	});
 
 	describe('controller.update', function() {
-		var chart;
-		var addAnimationSpy;
-
 		beforeEach(function() {
-			chart = acquireChart({
+			this.chart = acquireChart({
 				type: 'doughnut',
-				data: {
-					labels: ['A', 'B', 'C', 'D'],
-					datasets: [{
-						data: [10, 20, 30, 100]
-					}]
-				},
 				options: {
-					cutoutPercentage: 85,
 					animation: {
 						easing: 'linear',
 						duration: 500
@@ -830,14 +820,14 @@ describe('Chart', function() {
 				}
 			});
 
-			addAnimationSpy = spyOn(Chart.animationService, 'addAnimation');
+			this.addAnimationSpy = spyOn(Chart.animationService, 'addAnimation');
 		});
 
 		it('adds an animation with the default options', function() {
-			chart.update();
+			this.chart.update();
 
-			expect(addAnimationSpy).toHaveBeenCalledWith(
-				chart,
+			expect(this.addAnimationSpy).toHaveBeenCalledWith(
+				this.chart,
 				jasmine.objectContaining({easing: 'linear'}),
 				undefined,
 				undefined
@@ -845,14 +835,14 @@ describe('Chart', function() {
 		});
 
 		it('adds an animation with the provided options', function() {
-			chart.update({
+			this.chart.update({
 				duration: 800,
 				easing: 'easeOutBounce',
 				lazy: false,
 			});
 
-			expect(addAnimationSpy).toHaveBeenCalledWith(
-				chart,
+			expect(this.addAnimationSpy).toHaveBeenCalledWith(
+				this.chart,
 				jasmine.objectContaining({easing: 'easeOutBounce'}),
 				800,
 				false

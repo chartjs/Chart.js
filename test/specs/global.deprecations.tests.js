@@ -1,20 +1,10 @@
 describe('Deprecations', function() {
 	describe('Version 2.7.0', function() {
 		describe('Chart.Controller.update(duration, lazy)', function() {
-			var chart;
-			var addAnimationSpy;
-
 			beforeEach(function() {
-				chart = acquireChart({
+				this.chart = acquireChart({
 					type: 'doughnut',
-					data: {
-						labels: ['A', 'B', 'C', 'D'],
-						datasets: [{
-							data: [10, 20, 30, 100]
-						}]
-					},
 					options: {
-						cutoutPercentage: 85,
 						animation: {
 							easing: 'linear',
 							duration: 500
@@ -22,14 +12,14 @@ describe('Deprecations', function() {
 					}
 				});
 
-				addAnimationSpy = spyOn(Chart.animationService, 'addAnimation');
+				this.addAnimationSpy = spyOn(Chart.animationService, 'addAnimation');
 			});
 
 			it('adds an animation with the provided options', function() {
-				chart.update(800, false);
+				this.chart.update(800, false);
 
-				expect(addAnimationSpy).toHaveBeenCalledWith(
-					chart,
+				expect(this.addAnimationSpy).toHaveBeenCalledWith(
+					this.chart,
 					jasmine.objectContaining({easing: 'linear'}),
 					800,
 					false
@@ -38,20 +28,10 @@ describe('Deprecations', function() {
 		});
 
 		describe('Chart.Controller.render(duration, lazy)', function() {
-			var chart;
-			var addAnimationSpy;
-
 			beforeEach(function() {
-				chart = acquireChart({
+				this.chart = acquireChart({
 					type: 'doughnut',
-					data: {
-						labels: ['A', 'B', 'C', 'D'],
-						datasets: [{
-							data: [10, 20, 30, 100]
-						}]
-					},
 					options: {
-						cutoutPercentage: 85,
 						animation: {
 							easing: 'linear',
 							duration: 500
@@ -59,14 +39,14 @@ describe('Deprecations', function() {
 					}
 				});
 
-				addAnimationSpy = spyOn(Chart.animationService, 'addAnimation');
+				this.addAnimationSpy = spyOn(Chart.animationService, 'addAnimation');
 			});
 
 			it('adds an animation with the provided options', function() {
-				chart.render(800, true);
+				this.chart.render(800, true);
 
-				expect(addAnimationSpy).toHaveBeenCalledWith(
-					chart,
+				expect(this.addAnimationSpy).toHaveBeenCalledWith(
+					this.chart,
 					jasmine.objectContaining({easing: 'linear'}),
 					800,
 					true
