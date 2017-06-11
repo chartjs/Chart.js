@@ -45,8 +45,6 @@ myChart.update({
 })
 ```
 
-> **Note:** `.update(duration, lazy)` is still supported in backwards compatibility mode.
-
 See [Updating Charts](updates.md) for more details.
 
 ## .reset()
@@ -72,8 +70,6 @@ myLineChart.render({
 	easing: 'easeOutBounce'
 });
 ```
-
-> **Note:** `.render(duration, lazy)` is still supported in backwards compatibility mode.
 
 ## .stop()
 

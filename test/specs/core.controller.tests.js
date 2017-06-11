@@ -810,11 +810,11 @@ describe('Chart', function() {
 
 	describe('controller.update', function() {
 		var chart;
-		var renderSpy;
+		var addAnimationSpy;
 
 		beforeEach(function() {
 			chart = acquireChart({
-				type: 'line',
+				type: 'doughnut',
 				data: {
 					labels: ['A', 'B', 'C', 'D'],
 					datasets: [{
@@ -822,92 +822,41 @@ describe('Chart', function() {
 					}]
 				},
 				options: {
-					responsive: true
+					cutoutPercentage: 85,
+					animation: {
+						easing: 'linear',
+						duration: 500
+					}
 				}
 			});
 
-			renderSpy = spyOn(chart, 'render');
+			addAnimationSpy = spyOn(Chart.animationService, 'addAnimation');
 		});
 
-		describe('when _bufferedRender is true', function() {
-			beforeEach(function() {
-				chart._bufferedRender = true;
-			});
+		it('adds an animation with the default options', function() {
+			chart.update();
 
-			it('does not call render', function() {
-				chart.update({
-					duration: 800,
-					easing: 'easeOutBounce'
-				});
-
-				expect(renderSpy).not.toHaveBeenCalled();
-			});
-
-			it('builds _bufferedRequest with config properties', function() {
-				chart.update({
-					duration: 800,
-					easing: 'easeOutBounce'
-				});
-
-				expect(chart._bufferedRequest).toEqual({
-					duration: 800,
-					lazy: undefined,
-					easing: 'easeOutBounce'
-				});
-			});
+			expect(addAnimationSpy).toHaveBeenCalledWith(
+				chart,
+				jasmine.objectContaining({easing: 'linear'}),
+				undefined,
+				undefined
+			);
 		});
 
-		describe('when _bufferedRender is false', function() {
-			beforeEach(function() {
-				chart._bufferedRender = false;
+		it('adds an animation with the provided options', function() {
+			chart.update({
+				duration: 800,
+				easing: 'easeOutBounce',
+				lazy: false,
 			});
 
-			it('calls render with the config object', function() {
-				chart.update({
-					duration: 800,
-					easing: 'easeOutBounce'
-				});
-
-				expect(renderSpy).toHaveBeenCalledWith({
-					duration: 800,
-					easing: 'easeOutBounce'
-				});
-			});
-		});
-
-		describe('when using backwards compatibility', function() {
-			describe('when _bufferedRender is true', function() {
-				beforeEach(function() {
-					chart._bufferedRender = true;
-				});
-
-				it('does not call render', function() {
-					chart.update(800, false);
-
-					expect(renderSpy).not.toHaveBeenCalled();
-				});
-
-				it('builds _bufferedRequest with duration and lazy properties', function() {
-					chart.update(800, false);
-
-					expect(chart._bufferedRequest).toEqual({
-						duration: 800,
-						lazy: false,
-						easing: undefined
-					});
-				});
-			});
-
-			describe('when _bufferedRender is false', function() {
-				it('calls render with duration and lazy properties', function() {
-					chart.update(800, true);
-
-					expect(renderSpy).toHaveBeenCalledWith({
-						duration: 800,
-						lazy: true
-					});
-				});
-			});
+			expect(addAnimationSpy).toHaveBeenCalledWith(
+				chart,
+				jasmine.objectContaining({easing: 'easeOutBounce'}),
+				800,
+				false
+			);
 		});
 	});
 });

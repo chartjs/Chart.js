@@ -1,4 +1,80 @@
 describe('Deprecations', function() {
+	describe('Version 2.7.0', function() {
+		describe('Chart.Controller.update(duration, lazy)', function() {
+			var chart;
+			var addAnimationSpy;
+
+			beforeEach(function() {
+				chart = acquireChart({
+					type: 'doughnut',
+					data: {
+						labels: ['A', 'B', 'C', 'D'],
+						datasets: [{
+							data: [10, 20, 30, 100]
+						}]
+					},
+					options: {
+						cutoutPercentage: 85,
+						animation: {
+							easing: 'linear',
+							duration: 500
+						}
+					}
+				});
+
+				addAnimationSpy = spyOn(Chart.animationService, 'addAnimation');
+			});
+
+			it('adds an animation with the provided options', function() {
+				chart.update(800, false);
+
+				expect(addAnimationSpy).toHaveBeenCalledWith(
+					chart,
+					jasmine.objectContaining({easing: 'linear'}),
+					800,
+					false
+				);
+			});
+		});
+
+		describe('Chart.Controller.render(duration, lazy)', function() {
+			var chart;
+			var addAnimationSpy;
+
+			beforeEach(function() {
+				chart = acquireChart({
+					type: 'doughnut',
+					data: {
+						labels: ['A', 'B', 'C', 'D'],
+						datasets: [{
+							data: [10, 20, 30, 100]
+						}]
+					},
+					options: {
+						cutoutPercentage: 85,
+						animation: {
+							easing: 'linear',
+							duration: 500
+						}
+					}
+				});
+
+				addAnimationSpy = spyOn(Chart.animationService, 'addAnimation');
+			});
+
+			it('adds an animation with the provided options', function() {
+				chart.render(800, true);
+
+				expect(addAnimationSpy).toHaveBeenCalledWith(
+					chart,
+					jasmine.objectContaining({easing: 'linear'}),
+					800,
+					true
+				);
+			});
+		});
+	});
+
 	describe('Version 2.6.0', function() {
 		// https://github.com/chartjs/Chart.js/issues/2481
 		describe('Chart.Controller', function() {
