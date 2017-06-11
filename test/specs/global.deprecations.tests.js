@@ -15,7 +15,7 @@ describe('Deprecations', function() {
 				this.addAnimationSpy = spyOn(Chart.animationService, 'addAnimation');
 			});
 
-			it('adds an animation with the provided options', function() {
+			it('should add an animation with the provided options', function() {
 				this.chart.update(800, false);
 
 				expect(this.addAnimationSpy).toHaveBeenCalledWith(
@@ -42,7 +42,7 @@ describe('Deprecations', function() {
 				this.addAnimationSpy = spyOn(Chart.animationService, 'addAnimation');
 			});
 
-			it('adds an animation with the provided options', function() {
+			it('should add an animation with the provided options', function() {
 				this.chart.render(800, true);
 
 				expect(this.addAnimationSpy).toHaveBeenCalledWith(

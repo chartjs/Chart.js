@@ -823,7 +823,7 @@ describe('Chart', function() {
 			this.addAnimationSpy = spyOn(Chart.animationService, 'addAnimation');
 		});
 
-		it('adds an animation with the default options', function() {
+		it('should add an animation with the default options', function() {
 			this.chart.update();
 
 			expect(this.addAnimationSpy).toHaveBeenCalledWith(
@@ -834,7 +834,7 @@ describe('Chart', function() {
 			);
 		});
 
-		it('adds an animation with the provided options', function() {
+		it('should add an animation with the provided options', function() {
 			this.chart.update({
 				duration: 800,
 				easing: 'easeOutBounce',
