@@ -57,15 +57,23 @@ Reset the chart to it's state before the initial animation. A new animation can 
 myLineChart.reset();
 ```
 
-## .render(duration, lazy)
+## .render(config)
 
 Triggers a redraw of all chart elements. Note, this does not update elements for new data. Use `.update()` in that case.
+
+See `.update(config)` for more details on the config object.
 
 ```javascript
 // duration is the time for the animation of the redraw in milliseconds
 // lazy is a boolean. if true, the animation can be interrupted by other animations
-myLineChart.render(duration, lazy);
+myLineChart.render({
+	duration: 800,
+	lazy: false,
+	easing: 'easeOutBounce'
+});
 ```
+
+> **Note:** `.render(duration, lazy)` is still supported in backwards compatibility mode.
 
 ## .stop()
 
