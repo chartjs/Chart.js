@@ -807,4 +807,107 @@ describe('Chart', function() {
 			]);
 		});
 	});
+
+	describe('controller.update', function() {
+		var chart;
+		var renderSpy;
+
+		beforeEach(function() {
+			chart = acquireChart({
+				type: 'line',
+				data: {
+					labels: ['A', 'B', 'C', 'D'],
+					datasets: [{
+						data: [10, 20, 30, 100]
+					}]
+				},
+				options: {
+					responsive: true
+				}
+			});
+
+			renderSpy = spyOn(chart, 'render');
+		});
+
+		describe('when _bufferedRender is true', function() {
+			beforeEach(function() {
+				chart._bufferedRender = true;
+			});
+
+			it('does not call render', function() {
+				chart.update({
+					duration: 800,
+					easing: 'easeOutBounce'
+				});
+
+				expect(renderSpy).not.toHaveBeenCalled();
+			});
+
+			it('builds _bufferedRequest with config properties', function() {
+				chart.update({
+					duration: 800,
+					easing: 'easeOutBounce'
+				});
+
+				expect(chart._bufferedRequest).toEqual({
+					duration: 800,
+					lazy: undefined,
+					easing: 'easeOutBounce'
+				});
+			});
+		});
+
+		describe('when _bufferedRender is false', function() {
+			beforeEach(function() {
+				chart._bufferedRender = false;
+			});
+
+			it('calls render with the config object', function() {
+				chart.update({
+					duration: 800,
+					easing: 'easeOutBounce'
+				});
+
+				expect(renderSpy).toHaveBeenCalledWith({
+					duration: 800,
+					easing: 'easeOutBounce'
+				});
+			});
+		});
+
+		describe('when using backwards compatibility', function() {
+			describe('when _bufferedRender is true', function() {
+				beforeEach(function() {
+					chart._bufferedRender = true;
+				});
+
+				it('does not call render', function() {
+					chart.update(800, false);
+
+					expect(renderSpy).not.toHaveBeenCalled();
+				});
+
+				it('builds _bufferedRequest with duration and lazy properties', function() {
+					chart.update(800, false);
+
+					expect(chart._bufferedRequest).toEqual({
+						duration: 800,
+						lazy: false,
+						easing: undefined
+					});
+				});
+			});
+
+			describe('when _bufferedRender is false', function() {
+				it('calls render with duration and lazy properties', function() {
+					chart.update(800, true);
+
+					expect(renderSpy).toHaveBeenCalledWith({
+						duration: 800,
+						lazy: true
+					});
+				});
+			});
+		});
+	});
 });
