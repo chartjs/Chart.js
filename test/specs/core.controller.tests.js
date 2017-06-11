@@ -807,4 +807,46 @@ describe('Chart', function() {
 			]);
 		});
 	});
+
+	describe('controller.update', function() {
+		beforeEach(function() {
+			this.chart = acquireChart({
+				type: 'doughnut',
+				options: {
+					animation: {
+						easing: 'linear',
+						duration: 500
+					}
+				}
+			});
+
+			this.addAnimationSpy = spyOn(Chart.animationService, 'addAnimation');
+		});
+
+		it('should add an animation with the default options', function() {
+			this.chart.update();
+
+			expect(this.addAnimationSpy).toHaveBeenCalledWith(
+				this.chart,
+				jasmine.objectContaining({easing: 'linear'}),
+				undefined,
+				undefined
+			);
+		});
+
+		it('should add an animation with the provided options', function() {
+			this.chart.update({
+				duration: 800,
+				easing: 'easeOutBounce',
+				lazy: false,
+			});
+
+			expect(this.addAnimationSpy).toHaveBeenCalledWith(
+				this.chart,
+				jasmine.objectContaining({easing: 'easeOutBounce'}),
+				800,
+				false
+			);
+		});
+	});
 });

@@ -1,4 +1,60 @@
 describe('Deprecations', function() {
+	describe('Version 2.7.0', function() {
+		describe('Chart.Controller.update(duration, lazy)', function() {
+			beforeEach(function() {
+				this.chart = acquireChart({
+					type: 'doughnut',
+					options: {
+						animation: {
+							easing: 'linear',
+							duration: 500
+						}
+					}
+				});
+
+				this.addAnimationSpy = spyOn(Chart.animationService, 'addAnimation');
+			});
+
+			it('should add an animation with the provided options', function() {
+				this.chart.update(800, false);
+
+				expect(this.addAnimationSpy).toHaveBeenCalledWith(
+					this.chart,
+					jasmine.objectContaining({easing: 'linear'}),
+					800,
+					false
+				);
+			});
+		});
+
+		describe('Chart.Controller.render(duration, lazy)', function() {
+			beforeEach(function() {
+				this.chart = acquireChart({
+					type: 'doughnut',
+					options: {
+						animation: {
+							easing: 'linear',
+							duration: 500
+						}
+					}
+				});
+
+				this.addAnimationSpy = spyOn(Chart.animationService, 'addAnimation');
+			});
+
+			it('should add an animation with the provided options', function() {
+				this.chart.render(800, true);
+
+				expect(this.addAnimationSpy).toHaveBeenCalledWith(
+					this.chart,
+					jasmine.objectContaining({easing: 'linear'}),
+					800,
+					true
+				);
+			});
+		});
+	});
+
 	describe('Version 2.6.0', function() {
 		// https://github.com/chartjs/Chart.js/issues/2481
 		describe('Chart.Controller', function() {
