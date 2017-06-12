@@ -97,23 +97,24 @@ module.exports = function(Chart) {
 		// Any function can be extended by the scale type
 
 		mergeTicksOptions: function() {
-			if (this.options.ticks.minor === false) {
-				this.options.ticks.minor = {
+			var ticks = this.options.ticks;
+			if (ticks.minor === false) {
+				ticks.minor = {
 					display: false
 				};
 			}
-			if (this.options.ticks.major === false) {
-				this.options.ticks.major = {
+			if (ticks.major === false) {
+				ticks.major = {
 					display: false
 				};
 			}
-			for (var key in this.options.ticks) {
+			for (var key in ticks) {
 				if (key !== 'major' && key !== 'minor') {
-					if (typeof this.options.ticks.minor[key] === 'undefined') {
-						this.options.ticks.minor[key] = this.options.ticks[key];
+					if (typeof ticks.minor[key] === 'undefined') {
+						ticks.minor[key] = ticks[key];
 					}
-					if (typeof this.options.ticks.major[key] === 'undefined') {
-						this.options.ticks.major[key] = this.options.ticks[key];
+					if (typeof ticks.major[key] === 'undefined') {
+						ticks.major[key] = ticks[key];
 					}
 				}
 			}
@@ -511,7 +512,7 @@ module.exports = function(Chart) {
 			var context = me.ctx;
 			var globalDefaults = Chart.defaults.global;
 			var optionTicks = options.ticks.minor;
-			var optionMajorTicks = options.ticks.major ? options.ticks.major : optionTicks;
+			var optionMajorTicks = options.ticks.major || optionTicks;
 			var gridLines = options.gridLines;
 			var scaleLabel = options.scaleLabel;
 
@@ -572,7 +573,7 @@ module.exports = function(Chart) {
 			var yTickEnd = options.position === 'bottom' ? me.top + tl : me.bottom;
 
 			helpers.each(me.ticks, function(tick, index) {
-				var label = typeof tick === 'object' && typeof tick.value !== 'undefined' ? tick.value : tick;
+				var label = (tick && tick.value) || tick;
 				// If the callback returned a null or undefined value, do not draw this line
 				if (label === undefined || label === null) {
 					return;
@@ -670,7 +671,7 @@ module.exports = function(Chart) {
 					glBorderDashOffset: borderDashOffset,
 					rotation: -1 * labelRotationRadians,
 					label: label,
-					major: tick.major === true,
+					major: tick.major,
 					textBaseline: textBaseline,
 					textAlign: textAlign
 				});
