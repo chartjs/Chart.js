@@ -48,7 +48,9 @@ module.exports = function(Chart) {
 			autoSkipPadding: 0,
 			labelOffset: 0,
 			// We pass through arrays to be rendered as multiline labels, we convert Others to strings here.
-			callback: Chart.Ticks.formatters.values
+			callback: Chart.Ticks.formatters.values,
+			minor: {},
+			major: {}
 		}
 	};
 
@@ -94,6 +96,28 @@ module.exports = function(Chart) {
 		// Any function defined here is inherited by all scale types.
 		// Any function can be extended by the scale type
 
+		mergeTicksOptions: function() {
+			if (this.options.ticks.minor === false) {
+				this.options.ticks.minor = {
+					display: false
+				};
+			}
+			if (this.options.ticks.major === false) {
+				this.options.ticks.major = {
+					display: false
+				};
+			}
+			for (var key in this.options.ticks) {
+				if (key !== 'major' && key !== 'minor') {
+					if (typeof this.options.ticks.minor[key] === 'undefined') {
+						this.options.ticks.minor[key] = this.options.ticks[key];
+					}
+					if (typeof this.options.ticks.major[key] === 'undefined') {
+						this.options.ticks.major[key] = this.options.ticks[key];
+					}
+				}
+			}
+		},
 		beforeUpdate: function() {
 			helpers.callback(this.options.beforeUpdate, [this]);
 		},
@@ -486,8 +510,8 @@ module.exports = function(Chart) {
 
 			var context = me.ctx;
 			var globalDefaults = Chart.defaults.global;
-			var optionTicks = options.ticks;
-			var optionMajorTicks = options.majorTicks ? options.majorTicks : optionTicks;
+			var optionTicks = options.ticks.minor;
+			var optionMajorTicks = options.ticks.major ? options.ticks.major : optionTicks;
 			var gridLines = options.gridLines;
 			var scaleLabel = options.scaleLabel;
 

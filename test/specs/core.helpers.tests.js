@@ -215,6 +215,8 @@ describe('Core helper tests', function() {
 						autoSkip: true,
 						autoSkipPadding: 0,
 						labelOffset: 0,
+						minor: {},
+						major: {},
 					},
 					type: 'linear'
 				}, {
@@ -253,6 +255,8 @@ describe('Core helper tests', function() {
 						autoSkip: true,
 						autoSkipPadding: 0,
 						labelOffset: 0,
+						minor: {},
+						major: {},
 					},
 					type: 'linear'
 				}]

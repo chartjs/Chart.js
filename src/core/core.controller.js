@@ -265,6 +265,7 @@ module.exports = function(Chart) {
 				});
 
 				scales[scale.id] = scale;
+				scale.mergeTicksOptions();
 
 				// TODO(SB): I think we should be able to remove this custom case (options.scale)
 				// and consider it as a regular scale part of the "scales"" map only! This would

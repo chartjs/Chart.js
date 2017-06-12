@@ -42,7 +42,9 @@ describe('Linear Scale', function() {
 				callback: defaultConfig.ticks.callback, // make this work nicer, then check below
 				autoSkip: true,
 				autoSkipPadding: 0,
-				labelOffset: 0
+				labelOffset: 0,
+				minor: {},
+				major: {},
 			}
 		});
 
