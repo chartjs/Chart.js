@@ -135,7 +135,7 @@ describe('Time scale tests', function() {
 			scale.update(1000, 200);
 			var ticks = getTicksValues(scale.ticks);
 
-			expect(ticks).toEqual(['Jan 1', 'Jan 2', 'Jan 3', 'Jan 4, 2015', 'Jan 5', 'Jan 6', 'Jan 7', 'Jan 8', 'Jan 9', 'Jan 10', 'Jan 11, 2015']);
+			expect(ticks).toEqual(['Jan 2015', 'Jan 2', 'Jan 3', 'Jan 4', 'Jan 5', 'Jan 6', 'Jan 7', 'Jan 8', 'Jan 9', 'Jan 10', 'Jan 11']);
 		});
 
 		it('should accept labels as date objects', function() {
@@ -146,7 +146,7 @@ describe('Time scale tests', function() {
 			scale.update(1000, 200);
 			var ticks = getTicksValues(scale.ticks);
 
-			expect(ticks).toEqual(['Jan 1', 'Jan 2', 'Jan 3', 'Jan 4, 2015', 'Jan 5', 'Jan 6', 'Jan 7', 'Jan 8', 'Jan 9', 'Jan 10', 'Jan 11, 2015']);
+			expect(ticks).toEqual(['Jan 2015', 'Jan 2', 'Jan 3', 'Jan 4', 'Jan 5', 'Jan 6', 'Jan 7', 'Jan 8', 'Jan 9', 'Jan 10', 'Jan 11']);
 		});
 
 		it('should accept data as xy points', function() {
@@ -194,7 +194,7 @@ describe('Time scale tests', function() {
 			xScale.update(800, 200);
 			var ticks = getTicksValues(xScale.ticks);
 
-			expect(ticks).toEqual(['Jan 1', 'Jan 2', 'Jan 3', 'Jan 4, 2015', 'Jan 5', 'Jan 6', 'Jan 7', 'Jan 8', 'Jan 9', 'Jan 10', 'Jan 11, 2015']);
+			expect(ticks).toEqual(['Jan 2015', 'Jan 2', 'Jan 3', 'Jan 4', 'Jan 5', 'Jan 6', 'Jan 7', 'Jan 8', 'Jan 9', 'Jan 10', 'Jan 11']);
 		});
 	});
 
@@ -262,7 +262,7 @@ describe('Time scale tests', function() {
 		var scale = createScale(mockData, config);
 		var ticks = getTicksValues(scale.ticks);
 
-		expect(ticks).toEqual(['Jan 1', 'Jan 2', 'Jan 3']);
+		expect(ticks).toEqual(['Jan 2015', 'Jan 2', 'Jan 3']);
 	});
 
 	it('should build ticks using the config diff', function() {
@@ -297,7 +297,7 @@ describe('Time scale tests', function() {
 			config.time.min = '2014-12-29T04:00:00';
 
 			var scale = createScale(mockData, config);
-			expect(scale.ticks[0].value).toEqual('Dec 29');
+			expect(scale.ticks[0].value).toEqual('Dec 28');
 		});
 
 		it('should use the max option', function() {
