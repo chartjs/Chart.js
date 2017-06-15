@@ -77,6 +77,28 @@ describe('Title block tests', function() {
 		});
 	});
 
+	it('should have the correct size when there are multiple lines of text', function() {
+		var chart = {};
+
+		var options = Chart.helpers.clone(Chart.defaults.global.title);
+		options.text = ['line1', 'line2'];
+		options.position = 'left';
+		options.display = true;
+		options.lineHeight = 15;
+
+		var title = new Chart.Title({
+			chart: chart,
+			options: options
+		});
+
+		var minSize = title.update(200, 400);
+
+		expect(minSize).toEqual({
+			width: 50,
+			height: 400
+		});
+	});
+
 	it('should draw correctly horizontally', function() {
 		var chart = {};
 		var context = window.createMockContext();
