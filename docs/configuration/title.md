@@ -14,7 +14,8 @@ The title configuration is passed into the `options.title` namespace. The global
 | `fontColor` | Color | `'#666'` | Font color
 | `fontStyle` | `String` | `'bold'` | Font style
 | `padding` | `Number` | `10` | Number of pixels to add above and below the title text.
-| `text` | `String` | `''` | Title text to display
+| `lineHeight` | `Number` | `undefined` | Height of line of text. If not specified, the `fontSize` is used.
+| `text` | `String/String[]`  | `''` | Title text to display. If specified as an array, text is rendered on multiple lines.
 
 ### Position
 Possible title position values are:
