@@ -145,13 +145,16 @@ module.exports = function(Chart) {
 		 */
 		determineMajorUnit: function(unit) {
 			var units = Object.keys(interval);
-			var majorUnit = null;
 			var unitIndex = units.indexOf(unit);
-			if (unitIndex < units.length - 1) {
-				majorUnit = units[unitIndex + 1];
+			while (unitIndex < units.length) {
+				var majorUnit = units[++unitIndex];
+				// exclude 'week' and 'quarter' units
+				if (majorUnit !== 'week' && majorUnit !== 'quarter') {
+					return majorUnit;
+				}
 			}
 
-			return majorUnit;
+			return null;
 		},
 
 		/**

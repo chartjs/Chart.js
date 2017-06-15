@@ -48,7 +48,9 @@ module.exports = function(Chart) {
 			autoSkipPadding: 0,
 			labelOffset: 0,
 			// We pass through arrays to be rendered as multiline labels, we convert Others to strings here.
-			callback: Chart.Ticks.formatters.values
+			callback: Chart.Ticks.formatters.values,
+			minor: {},
+			major: {}
 		}
 	};
 
@@ -94,6 +96,29 @@ module.exports = function(Chart) {
 		// Any function defined here is inherited by all scale types.
 		// Any function can be extended by the scale type
 
+		mergeTicksOptions: function() {
+			var ticks = this.options.ticks;
+			if (ticks.minor === false) {
+				ticks.minor = {
+					display: false
+				};
+			}
+			if (ticks.major === false) {
+				ticks.major = {
+					display: false
+				};
+			}
+			for (var key in ticks) {
+				if (key !== 'major' && key !== 'minor') {
+					if (typeof ticks.minor[key] === 'undefined') {
+						ticks.minor[key] = ticks[key];
+					}
+					if (typeof ticks.major[key] === 'undefined') {
+						ticks.major[key] = ticks[key];
+					}
+				}
+			}
+		},
 		beforeUpdate: function() {
 			helpers.callback(this.options.beforeUpdate, [this]);
 		},
@@ -486,7 +511,8 @@ module.exports = function(Chart) {
 
 			var context = me.ctx;
 			var globalDefaults = Chart.defaults.global;
-			var optionTicks = options.ticks;
+			var optionTicks = options.ticks.minor;
+			var optionMajorTicks = options.ticks.major || optionTicks;
 			var gridLines = options.gridLines;
 			var scaleLabel = options.scaleLabel;
 
@@ -503,6 +529,8 @@ module.exports = function(Chart) {
 
 			var tickFontColor = helpers.getValueOrDefault(optionTicks.fontColor, globalDefaults.defaultFontColor);
 			var tickFont = parseFontOptions(optionTicks);
+			var majorTickFontColor = helpers.getValueOrDefault(optionMajorTicks.fontColor, globalDefaults.defaultFontColor);
+			var majorTickFont = parseFontOptions(optionMajorTicks);
 
 			var tl = gridLines.drawTicks ? gridLines.tickMarkLength : 0;
 
@@ -512,9 +540,6 @@ module.exports = function(Chart) {
 			var labelRotationRadians = helpers.toRadians(me.labelRotation);
 			var cosRotation = Math.cos(labelRotationRadians);
 			var longestRotatedLabel = me.longestLabelWidth * cosRotation;
-
-			// Make sure we draw text in the correct color and font
-			context.fillStyle = tickFontColor;
 
 			var itemsToDraw = [];
 
@@ -547,7 +572,8 @@ module.exports = function(Chart) {
 			var yTickStart = options.position === 'bottom' ? me.top : me.bottom - tl;
 			var yTickEnd = options.position === 'bottom' ? me.top + tl : me.bottom;
 
-			helpers.each(me.ticks, function(label, index) {
+			helpers.each(me.ticks, function(tick, index) {
+				var label = (tick && tick.value) || tick;
 				// If the callback returned a null or undefined value, do not draw this line
 				if (label === undefined || label === null) {
 					return;
@@ -645,6 +671,7 @@ module.exports = function(Chart) {
 					glBorderDashOffset: borderDashOffset,
 					rotation: -1 * labelRotationRadians,
 					label: label,
+					major: tick.major,
 					textBaseline: textBaseline,
 					textAlign: textAlign
 				});
@@ -678,10 +705,12 @@ module.exports = function(Chart) {
 				}
 
 				if (optionTicks.display) {
+					// Make sure we draw text in the correct color and font
 					context.save();
 					context.translate(itemToDraw.labelX, itemToDraw.labelY);
 					context.rotate(itemToDraw.rotation);
-					context.font = tickFont.font;
+					context.font = itemToDraw.major ? majorTickFont.font : tickFont.font;
+					context.fillStyle = itemToDraw.major ? majorTickFontColor : tickFontColor;
 					context.textBaseline = itemToDraw.textBaseline;
 					context.textAlign = itemToDraw.textAlign;
 
