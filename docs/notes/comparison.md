@@ -12,7 +12,7 @@ Library Features
 | Extendable to Custom Charts | &check; | &check; | |  |
 | Supports Modern Browsers | &check; | &check; | &check; | &check; |
 | Extensive Documentation | &check; | &check; | &check; | &check; |
-| Open Source | &check; | &check; | &check; | &check; |
+| Open Source | &check; | &check; | | &check; |
 
 Built in Chart Types
 
