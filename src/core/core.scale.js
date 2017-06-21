@@ -580,11 +580,11 @@ module.exports = function(Chart) {
 					return;
 				}
 
-				var isLastTick = me.ticks.length === index + 1 && optionTicks.autoSkipLast;
+				var autoSkip = index % skipRatio > 0;
+				var autoSkipLastTick = index + skipRatio >= me.ticks.length && optionTicks.autoSkipLast;
+				var includeLastTick = me.ticks.length === index + 1 && optionTicks.autoSkipLast;
 
-				// Since we always show the last tick,we need may need to hide the last shown one before
-				var shouldSkip = (skipRatio > 1 && index % skipRatio > 0) || (index % skipRatio === 0 && isLastTick);
-				if (shouldSkip && !isLastTick || (label === undefined || label === null)) {
+				if ((autoSkip || autoSkipLastTick) && !includeLastTick) {
 					return;
 				}
 
