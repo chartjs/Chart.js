@@ -214,6 +214,7 @@ describe('Core helper tests', function() {
 						callback: merged.scales.yAxes[1].ticks.callback, // make it nicer, then check explicitly below
 						autoSkip: true,
 						autoSkipPadding: 0,
+						autoSkipLast: true,
 						labelOffset: 0,
 						minor: {},
 						major: {},
@@ -254,6 +255,7 @@ describe('Core helper tests', function() {
 						callback: merged.scales.yAxes[2].ticks.callback, // make it nicer, then check explicitly below
 						autoSkip: true,
 						autoSkipPadding: 0,
+						autoSkipLast: true,
 						labelOffset: 0,
 						minor: {},
 						major: {},

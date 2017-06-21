@@ -41,6 +41,7 @@ describe('Logarithmic Scale tests', function() {
 				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
 				autoSkip: true,
 				autoSkipPadding: 0,
+				autoSkipLast: true,
 				labelOffset: 0,
 				minor: {},
 				major: {},
