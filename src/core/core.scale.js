@@ -46,6 +46,7 @@ module.exports = function(Chart) {
 			display: true,
 			autoSkip: true,
 			autoSkipPadding: 0,
+			autoSkipLast: true,
 			labelOffset: 0,
 			// We pass through arrays to be rendered as multiline labels, we convert Others to strings here.
 			callback: Chart.Ticks.formatters.values,
@@ -579,10 +580,10 @@ module.exports = function(Chart) {
 					return;
 				}
 
-				var isLastTick = me.ticks.length === index + 1;
+				var isLastTick = me.ticks.length === index + 1 && optionTicks.autoSkipLast;
 
 				// Since we always show the last tick,we need may need to hide the last shown one before
-				var shouldSkip = (skipRatio > 1 && index % skipRatio > 0) || (index % skipRatio === 0 && index + skipRatio >= me.ticks.length);
+				var shouldSkip = (skipRatio > 1 && index % skipRatio > 0) || (index % skipRatio === 0 && isLastTick);
 				if (shouldSkip && !isLastTick || (label === undefined || label === null)) {
 					return;
 				}
