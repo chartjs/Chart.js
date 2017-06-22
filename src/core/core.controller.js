@@ -169,7 +169,7 @@ module.exports = function(Chart) {
 
 			// the canvas render width and height will be casted to integers so make sure that
 			// the canvas display style uses the same integer values to avoid blurring effect.
-			
+
             // Default values. Set to 0 instead of canvas.size because the size defaults to 300x150 if the element is collased
 			var newWidth = 0;
 			var newHeight = 0;
