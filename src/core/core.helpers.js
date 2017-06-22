@@ -964,7 +964,7 @@ module.exports = function(Chart) {
 	};
 	helpers.callback = function(fn, args, thisArg) {
 		if (fn && typeof fn.call === 'function') {
-			fn.apply(thisArg, args);
+			return fn.apply(thisArg, args);
 		}
 	};
 	helpers.getHoverColor = function(colorValue) {
