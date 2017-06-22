@@ -170,17 +170,17 @@ module.exports = function(Chart) {
 			// the canvas render width and height will be casted to integers so make sure that
 			// the canvas display style uses the same integer values to avoid blurring effect.
 			
-            //Default values. Set to 0 instead of canvas.size because the size defaults to 300x150 if the element is collased
-            var newWidth = 0;
-            var newHeight = 0;
+            // Default values. Set to 0 instead of canvas.size because the size defaults to 300x150 if the element is collased
+			var newWidth = 0;
+			var newHeight = 0;
 
-            //Avoid issues with the canvas having negative maximum width and/or height due to element being collapsed
-            if (Math.floor(helpers.getMaximumWidth(canvas)) >= 0) {
-                newWidth = Math.floor(helpers.getMaximumWidth(canvas));
-            }
-            if (helpers.getMaximumHeight(canvas) >= 0) {
-                newHeight = Math.floor(aspectRatio ? newWidth / aspectRatio : helpers.getMaximumHeight(canvas));
-            }
+            // Avoid issues with the canvas having negative maximum width and/or height due to element being collapsed
+			if (Math.floor(helpers.getMaximumWidth(canvas)) >= 0) {
+				newWidth = Math.floor(helpers.getMaximumWidth(canvas));
+			}
+			if (helpers.getMaximumHeight(canvas) >= 0) {
+				newHeight = Math.floor(aspectRatio ? newWidth / aspectRatio : helpers.getMaximumHeight(canvas));
+			}
 
 			if (me.width === newWidth && me.height === newHeight) {
 				return;
