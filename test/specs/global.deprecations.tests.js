@@ -218,6 +218,35 @@ describe('Deprecations', function() {
 				expect(Chart.helpers.callCallback).toBe(Chart.helpers.callback);
 			});
 		});
+
+		describe('Time Axis: unitStepSize option', function() {
+			it('should use the stepSize property', function() {
+				var chart = window.acquireChart({
+					type: 'line',
+					data: {
+						labels: ['2015-01-01T20:00:00', '2015-01-01T21:00:00'],
+					},
+					options: {
+						scales: {
+							xAxes: [{
+								id: 'time',
+								type: 'time',
+								time: {
+									unit: 'hour',
+									unitStepSize: 2
+								}
+							}]
+						}
+					}
+				});
+
+				var ticks = chart.scales.time.ticks.map(function(tick) {
+					return tick.value;
+				});
+
+				expect(ticks).toEqual(['8PM', '10PM']);
+			});
+		});
 	});
 
 	describe('Version 2.5.0', function() {
