@@ -215,8 +215,8 @@ module.exports = function(Chart) {
 	 * returns `false`, the datasets update is cancelled until another `update` is triggered.
 	 * @param {Chart} chart - The chart instance.
 	 * @param {Object} args - The call arguments.
-	 * @param {Object} args.index - The dataset index.
-	 * @param {Number} args.meta - The dataset metadata.
+	 * @param {Number} args.index - The dataset index.
+	 * @param {Object} args.meta - The dataset metadata.
 	 * @param {Object} options - The plugin options.
 	 * @returns {Boolean} `false` to cancel the chart datasets drawing.
 	 */
@@ -226,8 +226,8 @@ module.exports = function(Chart) {
 	 * that this hook will not be called if the datasets update has been previously cancelled.
 	 * @param {Chart} chart - The chart instance.
 	 * @param {Object} args - The call arguments.
-	 * @param {Object} args.index - The dataset index.
-	 * @param {Number} args.meta - The dataset metadata.
+	 * @param {Number} args.index - The dataset index.
+	 * @param {Object} args.meta - The dataset metadata.
 	 * @param {Object} options - The plugin options.
 	 */
 	/**
@@ -302,8 +302,8 @@ module.exports = function(Chart) {
 	 * is cancelled until another `render` is triggered.
 	 * @param {Chart} chart - The chart instance.
 	 * @param {Object} args - The call arguments.
-	 * @param {Object} args.index - The dataset index.
-	 * @param {Number} args.meta - The dataset metadata.
+	 * @param {Number} args.index - The dataset index.
+	 * @param {Object} args.meta - The dataset metadata.
 	 * @param {Number} args.easingValue - The current animation value, between 0.0 and 1.0.
 	 * @param {Object} options - The plugin options.
 	 * @returns {Boolean} `false` to cancel the chart datasets drawing.
@@ -315,8 +315,8 @@ module.exports = function(Chart) {
 	 * if the datasets drawing has been previously cancelled.
 	 * @param {Chart} chart - The chart instance.
 	 * @param {Object} args - The call arguments.
-	 * @param {Object} args.index - The dataset index.
-	 * @param {Number} args.meta - The dataset metadata.
+	 * @param {Number} args.index - The dataset index.
+	 * @param {Object} args.meta - The dataset metadata.
 	 * @param {Number} args.easingValue - The current animation value, between 0.0 and 1.0.
 	 * @param {Object} options - The plugin options.
 	 */
