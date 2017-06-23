@@ -130,6 +130,10 @@ module.exports = function(Chart) {
 		// https://github.com/chartjs/Chart.js/issues/3090
 		iframe.tabIndex = -1;
 
+		// Prevent iframe from gaining focus on ItemMode keyboard navigation
+		// Accessibility bug fix
+		iframe.setAttribute('aria-hidden', 'true');
+
 		// If the iframe is re-attached to the DOM, the resize listener is removed because the
 		// content is reloaded, so make sure to install the handler after the iframe is loaded.
 		// https://github.com/chartjs/Chart.js/issues/3521
