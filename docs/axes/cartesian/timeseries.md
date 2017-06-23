@@ -17,7 +17,7 @@ The following options are provided by the timeseries scale. They are all located
 
 ## Date Formats
 
-When providing data for the time scale, Chart.js supports all of the formats that Moment.js accepts. See [Moment.js docs](http://momentjs.com/docs/#/parsing/) for details.
+When providing data for the timeseries scale, Chart.js supports all of the formats that Moment.js accepts. See [Moment.js docs](http://momentjs.com/docs/#/parsing/) for details.
 
 ## Time Units
 
@@ -33,7 +33,7 @@ The following time measurements are supported. The names can be passed as string
 * quarter
 * year
 
-For example, to create a chart with a time scale that always displayed units per month, the following config could be used.
+For example, to create a chart with a timeseries scale that always displayed units per month, the following config could be used.
 
 ```javascript
 var chart = new Chart(ctx, {
