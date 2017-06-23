@@ -17,7 +17,7 @@ The following options are provided by the time scale. They are all located in th
 | `tooltipFormat` | `String` | | The moment js format string to use for the tooltip.
 | `unit` | `String` | `false` | If defined, will force the unit to be a certain type. See [Time Units](#scales-time-units) section below for details.
 | `stepSize` | `Number` | `1` | The number of units between grid lines.
-| `minUnit` | `String` | `millisecond` | The minimum display format to be used for a time unit.
+| `minUnit` | `String` | `'millisecond'` | The minimum display format to be used for a time unit.
 
 ## Date Formats
 
@@ -58,17 +58,17 @@ var chart = new Chart(ctx, {
 ## Display Formats
 The following display formats are used to configure how different time units are formed into strings for the axis tick marks. See [moment.js](http://momentjs.com/docs/#/displaying/format/) for the allowable format strings.
 
-Name | Default
---- | ---
-millisecond | 'SSS [ms]'
-second | 'h:mm:ss a'
-minute | 'h:mm:ss a'
-hour | 'MMM D, hA'
-day | 'll'
-week | 'll'
-month | 'MMM YYYY'
-quarter | '[Q]Q - YYYY'
-year | 'YYYY'
+Name | Default | Example
+--- | --- | ---
+millisecond | 'h:mm:ss.SSS a' | 11:20:01.123 AM
+second | 'h:mm:ss a' | 11:20:01 AM
+minute | 'h:mm a' | 11:20 AM
+hour | 'hA' | 11AM
+day | 'MMM D' | Sep 4
+week | 'll' | Sep 4 2015
+month | 'MMM YYYY' | Sep 2015
+quarter | '[Q]Q - YYYY' | Q3 - 2015
+year | 'YYYY' | 2015
 
 For example, to set the display format for the 'quarter' unit to show the month and year, the following config would be passed to the chart constructor.
 
