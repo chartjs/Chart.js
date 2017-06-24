@@ -141,7 +141,7 @@ module.exports = function(Chart) {
 	 */
 	function getBaseModel(tooltipOpts) {
 		var globalDefaults = Chart.defaults.global;
-		var getValueOrDefault = helpers.getValueOrDefault;
+		var valueOrDefault = helpers.valueOrDefault;
 
 		return {
 			// Positioning
@@ -152,26 +152,26 @@ module.exports = function(Chart) {
 
 			// Body
 			bodyFontColor: tooltipOpts.bodyFontColor,
-			_bodyFontFamily: getValueOrDefault(tooltipOpts.bodyFontFamily, globalDefaults.defaultFontFamily),
-			_bodyFontStyle: getValueOrDefault(tooltipOpts.bodyFontStyle, globalDefaults.defaultFontStyle),
+			_bodyFontFamily: valueOrDefault(tooltipOpts.bodyFontFamily, globalDefaults.defaultFontFamily),
+			_bodyFontStyle: valueOrDefault(tooltipOpts.bodyFontStyle, globalDefaults.defaultFontStyle),
 			_bodyAlign: tooltipOpts.bodyAlign,
-			bodyFontSize: getValueOrDefault(tooltipOpts.bodyFontSize, globalDefaults.defaultFontSize),
+			bodyFontSize: valueOrDefault(tooltipOpts.bodyFontSize, globalDefaults.defaultFontSize),
 			bodySpacing: tooltipOpts.bodySpacing,
 
 			// Title
 			titleFontColor: tooltipOpts.titleFontColor,
-			_titleFontFamily: getValueOrDefault(tooltipOpts.titleFontFamily, globalDefaults.defaultFontFamily),
-			_titleFontStyle: getValueOrDefault(tooltipOpts.titleFontStyle, globalDefaults.defaultFontStyle),
-			titleFontSize: getValueOrDefault(tooltipOpts.titleFontSize, globalDefaults.defaultFontSize),
+			_titleFontFamily: valueOrDefault(tooltipOpts.titleFontFamily, globalDefaults.defaultFontFamily),
+			_titleFontStyle: valueOrDefault(tooltipOpts.titleFontStyle, globalDefaults.defaultFontStyle),
+			titleFontSize: valueOrDefault(tooltipOpts.titleFontSize, globalDefaults.defaultFontSize),
 			_titleAlign: tooltipOpts.titleAlign,
 			titleSpacing: tooltipOpts.titleSpacing,
 			titleMarginBottom: tooltipOpts.titleMarginBottom,
 
 			// Footer
 			footerFontColor: tooltipOpts.footerFontColor,
-			_footerFontFamily: getValueOrDefault(tooltipOpts.footerFontFamily, globalDefaults.defaultFontFamily),
-			_footerFontStyle: getValueOrDefault(tooltipOpts.footerFontStyle, globalDefaults.defaultFontStyle),
-			footerFontSize: getValueOrDefault(tooltipOpts.footerFontSize, globalDefaults.defaultFontSize),
+			_footerFontFamily: valueOrDefault(tooltipOpts.footerFontFamily, globalDefaults.defaultFontFamily),
+			_footerFontStyle: valueOrDefault(tooltipOpts.footerFontStyle, globalDefaults.defaultFontStyle),
+			footerFontSize: valueOrDefault(tooltipOpts.footerFontSize, globalDefaults.defaultFontSize),
 			_footerAlign: tooltipOpts.footerAlign,
 			footerSpacing: tooltipOpts.footerSpacing,
 			footerMarginTop: tooltipOpts.footerMarginTop,

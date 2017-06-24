@@ -61,11 +61,11 @@ module.exports = function(Chart) {
 	}
 
 	function parseFontOptions(options) {
-		var getValueOrDefault = helpers.getValueOrDefault;
+		var valueOrDefault = helpers.valueOrDefault;
 		var globalDefaults = Chart.defaults.global;
-		var size = getValueOrDefault(options.fontSize, globalDefaults.defaultFontSize);
-		var style = getValueOrDefault(options.fontStyle, globalDefaults.defaultFontStyle);
-		var family = getValueOrDefault(options.fontFamily, globalDefaults.defaultFontFamily);
+		var size = valueOrDefault(options.fontSize, globalDefaults.defaultFontSize);
+		var style = valueOrDefault(options.fontStyle, globalDefaults.defaultFontStyle);
+		var family = valueOrDefault(options.fontFamily, globalDefaults.defaultFontFamily);
 
 		return {
 			size: size,
@@ -308,7 +308,7 @@ module.exports = function(Chart) {
 			var isHorizontal = me.isHorizontal();
 
 			var tickFont = parseFontOptions(tickOpts);
-			var scaleLabelLineHeight = helpers.getValueOrDefault(scaleLabelOpts.lineHeight, parseFontOptions(scaleLabelOpts).size * 1.5);
+			var scaleLabelLineHeight = helpers.valueOrDefault(scaleLabelOpts.lineHeight, parseFontOptions(scaleLabelOpts).size * 1.5);
 			var tickMarkLength = opts.gridLines.tickMarkLength;
 
 			// Width
@@ -527,14 +527,14 @@ module.exports = function(Chart) {
 				maxTicks = optionTicks.maxTicksLimit;
 			}
 
-			var tickFontColor = helpers.getValueOrDefault(optionTicks.fontColor, globalDefaults.defaultFontColor);
+			var tickFontColor = helpers.valueOrDefault(optionTicks.fontColor, globalDefaults.defaultFontColor);
 			var tickFont = parseFontOptions(optionTicks);
-			var majorTickFontColor = helpers.getValueOrDefault(optionMajorTicks.fontColor, globalDefaults.defaultFontColor);
+			var majorTickFontColor = helpers.valueOrDefault(optionMajorTicks.fontColor, globalDefaults.defaultFontColor);
 			var majorTickFont = parseFontOptions(optionMajorTicks);
 
 			var tl = gridLines.drawTicks ? gridLines.tickMarkLength : 0;
 
-			var scaleLabelFontColor = helpers.getValueOrDefault(scaleLabel.fontColor, globalDefaults.defaultFontColor);
+			var scaleLabelFontColor = helpers.valueOrDefault(scaleLabel.fontColor, globalDefaults.defaultFontColor);
 			var scaleLabelFont = parseFontOptions(scaleLabel);
 
 			var labelRotationRadians = helpers.toRadians(me.labelRotation);
@@ -595,10 +595,10 @@ module.exports = function(Chart) {
 					borderDash = gridLines.zeroLineBorderDash;
 					borderDashOffset = gridLines.zeroLineBorderDashOffset;
 				} else {
-					lineWidth = helpers.getValueAtIndexOrDefault(gridLines.lineWidth, index);
-					lineColor = helpers.getValueAtIndexOrDefault(gridLines.color, index);
-					borderDash = helpers.getValueOrDefault(gridLines.borderDash, globalDefaults.borderDash);
-					borderDashOffset = helpers.getValueOrDefault(gridLines.borderDashOffset, globalDefaults.borderDashOffset);
+					lineWidth = helpers.valueAtIndexOrDefault(gridLines.lineWidth, index);
+					lineColor = helpers.valueAtIndexOrDefault(gridLines.color, index);
+					borderDash = helpers.valueOrDefault(gridLines.borderDash, globalDefaults.borderDash);
+					borderDashOffset = helpers.valueOrDefault(gridLines.borderDashOffset, globalDefaults.borderDashOffset);
 				}
 
 				// Common properties
@@ -734,7 +734,7 @@ module.exports = function(Chart) {
 				var scaleLabelX;
 				var scaleLabelY;
 				var rotation = 0;
-				var halfLineHeight = helpers.getValueOrDefault(scaleLabel.lineHeight, scaleLabelFont.size) / 2;
+				var halfLineHeight = helpers.valueOrDefault(scaleLabel.lineHeight, scaleLabelFont.size) / 2;
 
 				if (isHorizontal) {
 					scaleLabelX = me.left + ((me.right - me.left) / 2); // midpoint of the width
@@ -759,8 +759,8 @@ module.exports = function(Chart) {
 
 			if (gridLines.drawBorder) {
 				// Draw the line at the edge of the axis
-				context.lineWidth = helpers.getValueAtIndexOrDefault(gridLines.lineWidth, 0);
-				context.strokeStyle = helpers.getValueAtIndexOrDefault(gridLines.color, 0);
+				context.lineWidth = helpers.valueAtIndexOrDefault(gridLines.lineWidth, 0);
+				context.strokeStyle = helpers.valueAtIndexOrDefault(gridLines.color, 0);
 				var x1 = me.left,
 					x2 = me.right,
 					y1 = me.top,

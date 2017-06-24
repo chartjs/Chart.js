@@ -60,11 +60,11 @@ module.exports = function(Chart) {
 							var ds = data.datasets[0];
 							var arc = meta.data[i];
 							var custom = arc.custom || {};
-							var getValueAtIndexOrDefault = helpers.getValueAtIndexOrDefault;
+							var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
 							var arcOpts = chart.options.elements.arc;
-							var fill = custom.backgroundColor ? custom.backgroundColor : getValueAtIndexOrDefault(ds.backgroundColor, i, arcOpts.backgroundColor);
-							var stroke = custom.borderColor ? custom.borderColor : getValueAtIndexOrDefault(ds.borderColor, i, arcOpts.borderColor);
-							var bw = custom.borderWidth ? custom.borderWidth : getValueAtIndexOrDefault(ds.borderWidth, i, arcOpts.borderWidth);
+							var fill = custom.backgroundColor ? custom.backgroundColor : valueAtIndexOrDefault(ds.backgroundColor, i, arcOpts.backgroundColor);
+							var stroke = custom.borderColor ? custom.borderColor : valueAtIndexOrDefault(ds.borderColor, i, arcOpts.borderColor);
+							var bw = custom.borderWidth ? custom.borderWidth : valueAtIndexOrDefault(ds.borderWidth, i, arcOpts.borderWidth);
 
 							return {
 								text: label,
@@ -144,7 +144,6 @@ module.exports = function(Chart) {
 			var opts = chart.options;
 			var animationOpts = opts.animation;
 			var scale = chart.scale;
-			var getValueAtIndexOrDefault = helpers.getValueAtIndexOrDefault;
 			var labels = chart.data.labels;
 
 			var circumference = me.calculateCircumference(dataset.data[index]);
@@ -183,7 +182,7 @@ module.exports = function(Chart) {
 					outerRadius: reset ? resetRadius : distance,
 					startAngle: reset && animationOpts.animateRotate ? datasetStartAngle : startAngle,
 					endAngle: reset && animationOpts.animateRotate ? datasetStartAngle : endAngle,
-					label: getValueAtIndexOrDefault(labels, index, labels[index])
+					label: helpers.valueAtIndexOrDefault(labels, index, labels[index])
 				}
 			});
 

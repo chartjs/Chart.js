@@ -21,7 +21,7 @@ module.exports = function(Chart) {
 			var chart = me.chart;
 			var data = chart.data;
 			var datasets = data.datasets;
-			var getValueOrDefault = helpers.getValueOrDefault;
+			var valueOrDefault = helpers.valueOrDefault;
 			var isHorizontal = me.isHorizontal();
 			function IDMatches(meta) {
 				return isHorizontal ? meta.xAxisID === me.id : meta.yAxisID === me.id;
@@ -120,8 +120,8 @@ module.exports = function(Chart) {
 				});
 			}
 
-			me.min = getValueOrDefault(tickOpts.min, me.min);
-			me.max = getValueOrDefault(tickOpts.max, me.max);
+			me.min = valueOrDefault(tickOpts.min, me.min);
+			me.max = valueOrDefault(tickOpts.max, me.max);
 
 			if (me.min === me.max) {
 				if (me.min !== 0 && me.min !== null) {

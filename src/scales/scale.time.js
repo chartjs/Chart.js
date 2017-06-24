@@ -200,7 +200,7 @@ module.exports = function(Chart) {
 				tickOpts = this.options.ticks.minor;
 			}
 
-			var callback = helpers.getValueOrDefault(tickOpts.callback, tickOpts.userCallback);
+			var callback = helpers.valueOrDefault(tickOpts.callback, tickOpts.userCallback);
 
 			if (callback) {
 				return {
@@ -272,7 +272,7 @@ module.exports = function(Chart) {
 			var tickLabelWidth = me.ctx.measureText(label).width;
 			var cosRotation = Math.cos(helpers.toRadians(ticks.maxRotation));
 			var sinRotation = Math.sin(helpers.toRadians(ticks.maxRotation));
-			var tickFontSize = helpers.getValueOrDefault(ticks.fontSize, Chart.defaults.global.defaultFontSize);
+			var tickFontSize = helpers.valueOrDefault(ticks.fontSize, Chart.defaults.global.defaultFontSize);
 			return (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation);
 		},
 		getLabelCapacity: function(exampleTime) {

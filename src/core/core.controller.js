@@ -249,7 +249,7 @@ module.exports = function(Chart) {
 
 			helpers.each(items, function(item) {
 				var scaleOptions = item.options;
-				var scaleType = helpers.getValueOrDefault(scaleOptions.type, item.dtype);
+				var scaleType = helpers.valueOrDefault(scaleOptions.type, item.dtype);
 				var scaleClass = Chart.scaleService.getScaleConstructor(scaleType);
 				if (!scaleClass) {
 					return;

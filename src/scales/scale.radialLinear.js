@@ -60,9 +60,9 @@ module.exports = function(Chart) {
 
 	function getPointLabelFontOptions(scale) {
 		var pointLabelOptions = scale.options.pointLabels;
-		var fontSize = helpers.getValueOrDefault(pointLabelOptions.fontSize, globalDefaults.defaultFontSize);
-		var fontStyle = helpers.getValueOrDefault(pointLabelOptions.fontStyle, globalDefaults.defaultFontStyle);
-		var fontFamily = helpers.getValueOrDefault(pointLabelOptions.fontFamily, globalDefaults.defaultFontFamily);
+		var fontSize = helpers.valueOrDefault(pointLabelOptions.fontSize, globalDefaults.defaultFontSize);
+		var fontStyle = helpers.valueOrDefault(pointLabelOptions.fontStyle, globalDefaults.defaultFontStyle);
+		var fontFamily = helpers.valueOrDefault(pointLabelOptions.fontFamily, globalDefaults.defaultFontFamily);
 		var font = helpers.fontString(fontSize, fontStyle, fontFamily);
 
 		return {
@@ -236,7 +236,7 @@ module.exports = function(Chart) {
 
 	function drawPointLabels(scale) {
 		var ctx = scale.ctx;
-		var getValueOrDefault = helpers.getValueOrDefault;
+		var valueOrDefault = helpers.valueOrDefault;
 		var opts = scale.options;
 		var angleLineOpts = opts.angleLines;
 		var pointLabelOpts = opts.pointLabels;
@@ -266,7 +266,7 @@ module.exports = function(Chart) {
 				var pointLabelPosition = scale.getPointPosition(i, outerDistance + 5);
 
 				// Keep this in loop since we may support array properties here
-				var pointLabelFontColor = getValueOrDefault(pointLabelOpts.fontColor, globalDefaults.defaultFontColor);
+				var pointLabelFontColor = valueOrDefault(pointLabelOpts.fontColor, globalDefaults.defaultFontColor);
 				ctx.font = plFont.font;
 				ctx.fillStyle = pointLabelFontColor;
 
@@ -281,8 +281,8 @@ module.exports = function(Chart) {
 
 	function drawRadiusLine(scale, gridLineOpts, radius, index) {
 		var ctx = scale.ctx;
-		ctx.strokeStyle = helpers.getValueAtIndexOrDefault(gridLineOpts.color, index - 1);
-		ctx.lineWidth = helpers.getValueAtIndexOrDefault(gridLineOpts.lineWidth, index - 1);
+		ctx.strokeStyle = helpers.valueAtIndexOrDefault(gridLineOpts.color, index - 1);
+		ctx.lineWidth = helpers.valueAtIndexOrDefault(gridLineOpts.lineWidth, index - 1);
 
 		if (scale.options.gridLines.circular) {
 			// Draw circular arcs between the points
@@ -328,7 +328,7 @@ module.exports = function(Chart) {
 			me.yCenter = Math.round(me.height / 2);
 
 			var minSize = helpers.min([me.height, me.width]);
-			var tickFontSize = helpers.getValueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize);
+			var tickFontSize = helpers.valueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize);
 			me.drawingArea = opts.display ? (minSize / 2) - (tickFontSize / 2 + tickOpts.backdropPaddingY) : (minSize / 2);
 		},
 		determineDataLimits: function() {
@@ -361,7 +361,7 @@ module.exports = function(Chart) {
 		},
 		getTickLimit: function() {
 			var tickOpts = this.options.ticks;
-			var tickFontSize = helpers.getValueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize);
+			var tickFontSize = helpers.valueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize);
 			return Math.min(tickOpts.maxTicksLimit ? tickOpts.maxTicksLimit : 11, Math.ceil(this.drawingArea / (1.5 * tickFontSize)));
 		},
 		convertTicksToLabels: function() {
@@ -467,15 +467,15 @@ module.exports = function(Chart) {
 			var opts = me.options;
 			var gridLineOpts = opts.gridLines;
 			var tickOpts = opts.ticks;
-			var getValueOrDefault = helpers.getValueOrDefault;
+			var valueOrDefault = helpers.valueOrDefault;
 
 			if (opts.display) {
 				var ctx = me.ctx;
 
 				// Tick Font
-				var tickFontSize = getValueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize);
-				var tickFontStyle = getValueOrDefault(tickOpts.fontStyle, globalDefaults.defaultFontStyle);
-				var tickFontFamily = getValueOrDefault(tickOpts.fontFamily, globalDefaults.defaultFontFamily);
+				var tickFontSize = valueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize);
+				var tickFontStyle = valueOrDefault(tickOpts.fontStyle, globalDefaults.defaultFontStyle);
+				var tickFontFamily = valueOrDefault(tickOpts.fontFamily, globalDefaults.defaultFontFamily);
 				var tickLabelFont = helpers.fontString(tickFontSize, tickFontStyle, tickFontFamily);
 
 				helpers.each(me.ticks, function(label, index) {
@@ -490,7 +490,7 @@ module.exports = function(Chart) {
 						}
 
 						if (tickOpts.display) {
-							var tickFontColor = getValueOrDefault(tickOpts.fontColor, globalDefaults.defaultFontColor);
+							var tickFontColor = valueOrDefault(tickOpts.fontColor, globalDefaults.defaultFontColor);
 							ctx.font = tickLabelFont;
 
 							if (tickOpts.showLabelBackdrop) {

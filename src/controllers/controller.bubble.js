@@ -79,7 +79,7 @@ module.exports = function(Chart) {
 					radius: reset ? 0 : custom.radius ? custom.radius : me.getRadius(data),
 
 					// Tooltip
-					hitRadius: custom.hitRadius ? custom.hitRadius : helpers.getValueAtIndexOrDefault(dataset.hitRadius, index, pointElementOptions.hitRadius)
+					hitRadius: custom.hitRadius ? custom.hitRadius : helpers.valueAtIndexOrDefault(dataset.hitRadius, index, pointElementOptions.hitRadius)
 				}
 			});
 
@@ -105,7 +105,7 @@ module.exports = function(Chart) {
 			var index = point._index;
 			var custom = point.custom || {};
 			var model = point._model;
-			model.radius = custom.hoverRadius ? custom.hoverRadius : (helpers.getValueAtIndexOrDefault(dataset.hoverRadius, index, me.chart.options.elements.point.hoverRadius)) + me.getRadius(dataset.data[index]);
+			model.radius = custom.hoverRadius ? custom.hoverRadius : (helpers.valueAtIndexOrDefault(dataset.hoverRadius, index, me.chart.options.elements.point.hoverRadius)) + me.getRadius(dataset.data[index]);
 		},
 
 		removeHoverStyle: function(point) {

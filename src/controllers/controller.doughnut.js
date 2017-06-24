@@ -46,11 +46,11 @@ module.exports = function(Chart) {
 							var ds = data.datasets[0];
 							var arc = meta.data[i];
 							var custom = arc && arc.custom || {};
-							var getValueAtIndexOrDefault = helpers.getValueAtIndexOrDefault;
+							var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
 							var arcOpts = chart.options.elements.arc;
-							var fill = custom.backgroundColor ? custom.backgroundColor : getValueAtIndexOrDefault(ds.backgroundColor, i, arcOpts.backgroundColor);
-							var stroke = custom.borderColor ? custom.borderColor : getValueAtIndexOrDefault(ds.borderColor, i, arcOpts.borderColor);
-							var bw = custom.borderWidth ? custom.borderWidth : getValueAtIndexOrDefault(ds.borderWidth, i, arcOpts.borderWidth);
+							var fill = custom.backgroundColor ? custom.backgroundColor : valueAtIndexOrDefault(ds.backgroundColor, i, arcOpts.backgroundColor);
+							var stroke = custom.borderColor ? custom.borderColor : valueAtIndexOrDefault(ds.borderColor, i, arcOpts.borderColor);
+							var bw = custom.borderWidth ? custom.borderWidth : valueAtIndexOrDefault(ds.borderWidth, i, arcOpts.borderWidth);
 
 							return {
 								text: label,
@@ -211,7 +211,7 @@ module.exports = function(Chart) {
 				circumference = reset && animationOpts.animateRotate ? 0 : arc.hidden ? 0 : me.calculateCircumference(dataset.data[index]) * (opts.circumference / (2.0 * Math.PI)),
 				innerRadius = reset && animationOpts.animateScale ? 0 : me.innerRadius,
 				outerRadius = reset && animationOpts.animateScale ? 0 : me.outerRadius,
-				valueAtIndexOrDefault = helpers.getValueAtIndexOrDefault;
+				valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
 
 			helpers.extend(arc, {
 				// Utility

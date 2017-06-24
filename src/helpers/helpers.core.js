@@ -58,7 +58,7 @@ module.exports = function(Chart) {
 		 * @param {*} defaultValue - The value to return if `value` is undefined.
 		 * @returns {*}
 		 */
-		getValueOrDefault: function(value, defaultValue) {
+		valueOrDefault: function(value, defaultValue) {
 			return typeof value === 'undefined'? defaultValue : value;
 		},
 
@@ -69,17 +69,8 @@ module.exports = function(Chart) {
 		 * @param {*} defaultValue - The value to return if `value[index]` is undefined.
 		 * @returns {*}
 		 */
-		getValueAtIndexOrDefault: function(value, index, defaultValue) {
-			if (helpers.isNullOrUndef(value)) {
-				return defaultValue;
-			}
-
-			if (helpers.isArray(value)) {
-				value = value[index];
-				return typeof value === 'undefined'? defaultValue : value;
-			}
-
-			return value;
+		valueAtIndexOrDefault: function(value, index, defaultValue) {
+			return helpers.valueOrDefault(helpers.isArray(value)? value[index] : value, defaultValue);
 		},
 
 		/**
@@ -179,4 +170,22 @@ module.exports = function(Chart) {
 	helpers.indexOf = function(array, item, fromIndex) {
 		return Array.prototype.indexOf.call(array, item, fromIndex);
 	};
+
+	/**
+	 * Provided for backward compatibility, use Chart.helpers.valueOrDefault instead.
+	 * @function Chart.helpers.getValueOrDefault
+	 * @deprecated since version 2.7.0
+	 * @todo remove at version 3
+	 * @private
+	 */
+	helpers.getValueOrDefault = helpers.valueOrDefault;
+
+	/**
+	 * Provided for backward compatibility, use Chart.helpers.valueAtIndexOrDefault instead.
+	 * @function Chart.helpers.getValueAtIndexOrDefault
+	 * @deprecated since version 2.7.0
+	 * @todo remove at version 3
+	 * @private
+	 */
+	helpers.getValueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
 };

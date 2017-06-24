@@ -106,7 +106,7 @@ module.exports = function(Chart) {
 		beforeFit: noop,
 		fit: function() {
 			var me = this,
-				valueOrDefault = helpers.getValueOrDefault,
+				valueOrDefault = helpers.valueOrDefault,
 				opts = me.options,
 				globalDefaults = Chart.defaults.global,
 				display = opts.display,
@@ -140,7 +140,7 @@ module.exports = function(Chart) {
 		draw: function() {
 			var me = this,
 				ctx = me.ctx,
-				valueOrDefault = helpers.getValueOrDefault,
+				valueOrDefault = helpers.valueOrDefault,
 				opts = me.options,
 				globalDefaults = Chart.defaults.global;
 
