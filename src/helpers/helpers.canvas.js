@@ -1,10 +1,50 @@
 'use strict';
 
 module.exports = function(Chart) {
-	// Global Chart canvas helpers object for drawing items to canvas
-	var helpers = Chart.canvasHelpers = {};
+	var helpers = Chart.helpers;
 
-	helpers.drawPoint = function(ctx, pointStyle, radius, x, y) {
+	/**
+	 * @namespace Chart.helpers.canvas
+	 */
+	helpers.canvas = {
+		/**
+		 * Clears the entire canvas associated to the given `chart`.
+		 * @param {Chart} chart - The chart for which to clear the canvas.
+		 */
+		clear: function(chart) {
+			chart.ctx.clearRect(0, 0, chart.width, chart.height);
+		},
+
+		/**
+		 * Creates a "path" for a rectangle with rounded corners at position (x, y) with a
+		 * given size (width, height) and the same `radius` for all corners.
+		 * @param {CanvasRenderingContext2D} ctx - The canvas 2D Context.
+		 * @param {Number} x - The x axis of the coordinate for the rectangle starting point.
+		 * @param {Number} y - The y axis of the coordinate for the rectangle starting point.
+		 * @param {Number} width - The rectangle's width.
+		 * @param {Number} height - The rectangle's height.
+		 * @param {Number} radius - The rounded amount (in pixels) for the four corners.
+		 * @todo handler `radius` as top-left, top-right, bottom-right, bottom-left array/object?
+		 * @todo clamp `radius` to the maximum "correct" value.
+		 */
+		roundedRect: function(ctx, x, y, width, height, radius) {
+			if (radius) {
+				ctx.moveTo(x + radius, y);
+				ctx.lineTo(x + width - radius, y);
+				ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+				ctx.lineTo(x + width, y + height - radius);
+				ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+				ctx.lineTo(x + radius, y + height);
+				ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+				ctx.lineTo(x, y + radius);
+				ctx.quadraticCurveTo(x, y, x + radius, y);
+			} else {
+				ctx.rect(x, y, width, height);
+			}
+		}
+	};
+
+	helpers.canvas.drawPoint = function(ctx, pointStyle, radius, x, y) {
 		var type, edgeLength, xOffset, yOffset, height, size;
 
 		if (typeof pointStyle === 'object') {
@@ -48,7 +88,9 @@ module.exports = function(Chart) {
 			var leftX = x - offset;
 			var topY = y - offset;
 			var sideSize = Math.SQRT2 * radius;
-			Chart.helpers.drawRoundedRectangle(ctx, leftX, topY, sideSize, sideSize, radius / 2);
+			ctx.beginPath();
+			this.roundedRect(ctx, leftX, topY, sideSize, sideSize, radius / 2);
+			ctx.closePath();
 			ctx.fill();
 			break;
 		case 'rectRot':
@@ -110,18 +152,18 @@ module.exports = function(Chart) {
 		ctx.stroke();
 	};
 
-	helpers.clipArea = function(ctx, clipArea) {
+	helpers.canvas.clipArea = function(ctx, clipArea) {
 		ctx.save();
 		ctx.beginPath();
 		ctx.rect(clipArea.left, clipArea.top, clipArea.right - clipArea.left, clipArea.bottom - clipArea.top);
 		ctx.clip();
 	};
 
-	helpers.unclipArea = function(ctx) {
+	helpers.canvas.unclipArea = function(ctx) {
 		ctx.restore();
 	};
 
-	helpers.lineTo = function(ctx, previous, target, flip) {
+	helpers.canvas.lineTo = function(ctx, previous, target, flip) {
 		if (target.steppedLine) {
 			if (target.steppedLine === 'after') {
 				ctx.lineTo(previous.x, target.y);
@@ -146,5 +188,34 @@ module.exports = function(Chart) {
 			target.y);
 	};
 
-	Chart.helpers.canvas = helpers;
+	/**
+	 * Provided for backward compatibility, use Chart.helpers.canvas instead.
+	 * @namespace Chart.canvasHelpers
+	 * @deprecated since version 2.6.0
+	 * @todo remove at version 3
+	 * @private
+	 */
+	Chart.canvasHelpers = helpers.canvas;
+
+	/**
+	 * Provided for backward compatibility, use Chart.helpers.canvas.clear instead.
+	 * @namespace Chart.helpers.clear
+	 * @deprecated since version 2.7.0
+	 * @todo remove at version 3
+	 * @private
+	 */
+	helpers.clear = helpers.canvas.clear;
+
+	/**
+	 * Provided for backward compatibility, use Chart.helpers.canvas.roundedRect instead.
+	 * @namespace Chart.helpers.drawRoundedRectangle
+	 * @deprecated since version 2.7.0
+	 * @todo remove at version 3
+	 * @private
+	 */
+	helpers.drawRoundedRectangle = function(ctx) {
+		ctx.beginPath();
+		helpers.canvas.roundedRect.apply(this, arguments);
+		ctx.closePath();
+	};
 };

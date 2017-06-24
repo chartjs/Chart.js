@@ -3,11 +3,12 @@
  */
 var Chart = require('./core/core.js')();
 
+require('./helpers/helpers.core')(Chart);
 require('./core/core.helpers')(Chart);
 require('./helpers/helpers.time')(Chart);
+require('./helpers/helpers.canvas')(Chart);
 
 require('./platforms/platform.js')(Chart);
-require('./core/core.canvasHelpers')(Chart);
 require('./core/core.element')(Chart);
 require('./core/core.plugin.js')(Chart);
 require('./core/core.animation')(Chart);
