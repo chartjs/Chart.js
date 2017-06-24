@@ -44,7 +44,7 @@ rules:
   accessor-pairs: 2
   array-callback-return: 0
   block-scoped-var: 0
-  complexity: [2, 6]
+  complexity: [2, 10]
   consistent-return: 0
   curly: [2, all]
   default-case: 2
