@@ -229,7 +229,7 @@ module.exports = function(Chart) {
 			var initial = canvas._chartjs.initial;
 			['height', 'width'].forEach(function(prop) {
 				var value = initial[prop];
-				if (value === undefined || value === null) {
+				if (helpers.isNullOrUndef(value)) {
 					canvas.removeAttribute(prop);
 				} else {
 					canvas.setAttribute(prop, value);

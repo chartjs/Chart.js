@@ -1,8 +1,8 @@
 describe('Deprecations', function() {
 	describe('Version 2.7.0', function() {
 		describe('Chart.Controller.update(duration, lazy)', function() {
-			beforeEach(function() {
-				this.chart = acquireChart({
+			it('should add an animation with the provided options', function() {
+				var chart = acquireChart({
 					type: 'doughnut',
 					options: {
 						animation: {
@@ -12,14 +12,12 @@ describe('Deprecations', function() {
 					}
 				});
 
-				this.addAnimationSpy = spyOn(Chart.animationService, 'addAnimation');
-			});
+				spyOn(Chart.animationService, 'addAnimation');
 
-			it('should add an animation with the provided options', function() {
-				this.chart.update(800, false);
+				chart.update(800, false);
 
-				expect(this.addAnimationSpy).toHaveBeenCalledWith(
-					this.chart,
+				expect(Chart.animationService.addAnimation).toHaveBeenCalledWith(
+					chart,
 					jasmine.objectContaining({easing: 'linear'}),
 					800,
 					false
@@ -28,8 +26,8 @@ describe('Deprecations', function() {
 		});
 
 		describe('Chart.Controller.render(duration, lazy)', function() {
-			beforeEach(function() {
-				this.chart = acquireChart({
+			it('should add an animation with the provided options', function() {
+				var chart = acquireChart({
 					type: 'doughnut',
 					options: {
 						animation: {
@@ -39,18 +37,54 @@ describe('Deprecations', function() {
 					}
 				});
 
-				this.addAnimationSpy = spyOn(Chart.animationService, 'addAnimation');
-			});
+				spyOn(Chart.animationService, 'addAnimation');
 
-			it('should add an animation with the provided options', function() {
-				this.chart.render(800, true);
+				chart.render(800, true);
 
-				expect(this.addAnimationSpy).toHaveBeenCalledWith(
-					this.chart,
+				expect(Chart.animationService.addAnimation).toHaveBeenCalledWith(
+					chart,
 					jasmine.objectContaining({easing: 'linear'}),
 					800,
 					true
 				);
+			});
+		});
+
+		describe('Chart.helpers.indexOf', function() {
+			it('should be defined and a function', function() {
+				expect(Chart.helpers.indexOf).toBeDefined();
+				expect(typeof Chart.helpers.indexOf).toBe('function');
+			});
+			it('should returns the correct index', function() {
+				expect(Chart.helpers.indexOf([1, 2, 42], 42)).toBe(2);
+				expect(Chart.helpers.indexOf([1, 2, 42], 3)).toBe(-1);
+				expect(Chart.helpers.indexOf([1, 42, 2, 42], 42, 2)).toBe(3);
+				expect(Chart.helpers.indexOf([1, 42, 2, 42], 3, 2)).toBe(-1);
+			});
+		});
+
+		describe('Chart.helpers.clear', function() {
+			it('should be defined and an alias of Chart.helpers.canvas.clear', function() {
+				expect(Chart.helpers.clear).toBeDefined();
+				expect(Chart.helpers.clear).toBe(Chart.helpers.canvas.clear);
+			});
+		});
+
+		describe('Chart.helpers.drawRoundedRectangle', function() {
+			it('should be defined and a function', function() {
+				expect(Chart.helpers.drawRoundedRectangle).toBeDefined();
+				expect(typeof Chart.helpers.drawRoundedRectangle).toBe('function');
+			});
+			it('should call Chart.helpers.canvas.roundedRect', function() {
+				var ctx = window.createMockContext();
+				spyOn(Chart.helpers.canvas, 'roundedRect');
+
+				Chart.helpers.drawRoundedRectangle(ctx, 10, 20, 30, 40, 5);
+
+				var calls = ctx.getCalls();
+				expect(calls[0]).toEqual({name: 'beginPath', args: []});
+				expect(calls[calls.length-1]).toEqual({name: 'closePath', args: []});
+				expect(Chart.helpers.canvas.roundedRect).toHaveBeenCalledWith(ctx, 10, 20, 30, 40, 5);
 			});
 		});
 	});
@@ -161,6 +195,13 @@ describe('Deprecations', function() {
 					expect(meta.$filler).toBeDefined();
 					expect(meta.$filler.fill).toBe(expected);
 				});
+			});
+		});
+
+		describe('Chart.helpers.callCallback', function() {
+			it('should be defined and an alias of Chart.helpers.callback', function() {
+				expect(Chart.helpers.callCallback).toBeDefined();
+				expect(Chart.helpers.callCallback).toBe(Chart.helpers.callback);
 			});
 		});
 	});

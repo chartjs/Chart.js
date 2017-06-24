@@ -209,9 +209,9 @@ describe('Point element tests', function() {
 		}]);
 
 		var drawRoundedRectangleSpy = jasmine.createSpy('drawRoundedRectangle');
-		var drawRoundedRectangle = Chart.helpers.drawRoundedRectangle;
+		var drawRoundedRectangle = Chart.helpers.canvas.roundedRect;
 		var offset = point._view.radius / Math.SQRT2;
-		Chart.helpers.drawRoundedRectangle = drawRoundedRectangleSpy;
+		Chart.helpers.canvas.roundedRect = drawRoundedRectangleSpy;
 		mockContext.resetCalls();
 		point._view.pointStyle = 'rectRounded';
 		point.draw();
@@ -231,7 +231,7 @@ describe('Point element tests', function() {
 			})
 		);
 
-		Chart.helpers.drawRoundedRectangle = drawRoundedRectangle;
+		Chart.helpers.canvas.roundedRect = drawRoundedRectangle;
 		mockContext.resetCalls();
 		point._view.pointStyle = 'rectRot';
 		point.draw();

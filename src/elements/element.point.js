@@ -94,7 +94,7 @@ module.exports = function(Chart) {
 				ctx.fillStyle = color(ctx.fillStyle).alpha(ratio).rgbString();
 			}
 
-			Chart.canvasHelpers.drawPoint(ctx, pointStyle, radius, x, y);
+			Chart.helpers.canvas.drawPoint(ctx, pointStyle, radius, x, y);
 		}
 	});
 };
