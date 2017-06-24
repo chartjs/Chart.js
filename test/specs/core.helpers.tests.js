@@ -6,25 +6,6 @@ describe('Core helper tests', function() {
 		helpers = window.Chart.helpers;
 	});
 
-	it('should clone an object', function() {
-		var testData = {
-			myProp1: 'abc',
-			myProp2: ['a', 'b'],
-			myProp3: {
-				myProp4: 5,
-				myProp5: [1, 2]
-			}
-		};
-
-		var clone = helpers.clone(testData);
-		expect(clone).toEqual(testData);
-		expect(clone).not.toBe(testData);
-
-		expect(clone.myProp2).not.toBe(testData.myProp2);
-		expect(clone.myProp3).not.toBe(testData.myProp3);
-		expect(clone.myProp3.myProp5).not.toBe(testData.myProp3.myProp5);
-	});
-
 	it('should extend an object', function() {
 		var original = {
 			myProp1: 'abc',
