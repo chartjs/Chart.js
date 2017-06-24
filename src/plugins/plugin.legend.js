@@ -361,6 +361,9 @@ module.exports = function(Chart) {
 
 						// Draw pointStyle as legend symbol
 						Chart.canvasHelpers.drawPoint(ctx, legendItem.pointStyle, radius, centerX, centerY);
+					} else if (opts.labels && opts.labels.useLineStyle) {
+						// Draw line as legend symbol
+						ctx.strokeRect(x, y + fontSize / 2, boxWidth, 0);
 					} else {
 						// Draw box as legend symbol
 						if (!isLineWidthZero) {
