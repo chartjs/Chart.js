@@ -156,6 +156,31 @@ describe('Legend block tests', function() {
 		}]);
 	});
 
+	it('should not throw when the label options are missing', function() {
+		var makeChart = function() {
+			window.acquireChart({
+				type: 'bar',
+				data: {
+					datasets: [{
+						label: 'dataset1',
+						backgroundColor: '#f31',
+						borderCapStyle: 'butt',
+						borderDash: [2, 2],
+						borderDashOffset: 5.5,
+						data: []
+					}],
+					labels: []
+				},
+				options: {
+					legend: {
+						labels: false,
+					}
+				}
+			});
+		};
+		expect(makeChart).not.toThrow();
+	});
+
 	it('should draw correctly', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
