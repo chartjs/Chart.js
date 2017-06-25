@@ -282,6 +282,24 @@ describe('Time scale tests', function() {
 		expect(ticks).toEqual(['Dec 28, 2014', 'Jan 4, 2015', 'Jan 11, 2015', 'Jan 18, 2015', 'Jan 25, 2015', 'Feb 2015', 'Feb 8, 2015', 'Feb 15, 2015']);
 	});
 
+	describe('config step size', function() {
+		it('should use the stepSize property', function() {
+			var mockData = {
+				labels: ['2015-01-01T20:00:00', '2015-01-01T21:00:00'],
+			};
+
+			var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('time'));
+			config.time.unit = 'hour';
+			config.time.stepSize = 2;
+
+			var scale = createScale(mockData, config);
+			scale.update(2500, 200);
+			var ticks = getTicksValues(scale.ticks);
+
+			expect(ticks).toEqual(['8PM', '10PM']);
+		});
+	});
+
 	describe('when specifying limits', function() {
 		var mockData = {
 			labels: ['2015-01-01T20:00:00', '2015-01-02T20:00:00', '2015-01-03T20:00:00'],
