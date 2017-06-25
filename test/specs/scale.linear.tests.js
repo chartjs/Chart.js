@@ -877,4 +877,33 @@ describe('Linear Scale', function() {
 		expect(chart.scales['x-axis-0'].min).toEqual(0);
 		expect(chart.scales['x-axis-0'].max).toEqual(1);
 	});
+
+	it('max and min value should be valid when min is set and all datasets are hidden', function() {
+		var barData = {
+			labels: ['S1', 'S2', 'S3'],
+			datasets: [{
+				label: 'dataset 1',
+				backgroundColor: '#382765',
+				data: [2500, 2000, 1500],
+				hidden: true,
+			}]
+		};
+
+		var chart = window.acquireChart({
+			type: 'horizontalBar',
+			data: barData,
+			options: {
+				scales: {
+					xAxes: [{
+						ticks: {
+							min: 20
+						}
+					}]
+				}
+			}
+		});
+
+		expect(chart.scales['x-axis-0'].min).toEqual(20);
+		expect(chart.scales['x-axis-0'].max).toEqual(21);
+	});
 });
