@@ -69,7 +69,7 @@ module.exports = function(Chart) {
 				// These properties are arrays of items
 				if (base.hasOwnProperty(key)) {
 					helpers.each(value, function(valueObj, index) {
-						var axisType = helpers.getValueOrDefault(valueObj.type, key === 'xAxes' ? 'category' : 'linear');
+						var axisType = helpers.valueOrDefault(valueObj.type, key === 'xAxes' ? 'category' : 'linear');
 						var axisDefaults = Chart.scaleService.getScaleDefaults(axisType);
 						if (index >= base[key].length || !base[key][index].type) {
 							base[key].push(helpers.configMerge(axisDefaults, valueObj));
@@ -84,7 +84,7 @@ module.exports = function(Chart) {
 				} else {
 					base[key] = [];
 					helpers.each(value, function(valueObj) {
-						var axisType = helpers.getValueOrDefault(valueObj.type, key === 'xAxes' ? 'category' : 'linear');
+						var axisType = helpers.valueOrDefault(valueObj.type, key === 'xAxes' ? 'category' : 'linear');
 						base[key].push(helpers.configMerge(Chart.scaleService.getScaleDefaults(axisType), valueObj));
 					});
 				}

@@ -74,42 +74,42 @@ describe('Chart.helpers.core', function() {
 		});
 	});
 
-	describe('getValueOrDefault', function() {
+	describe('valueOrDefault', function() {
 		it('should return value if defined', function() {
 			var object = {};
 			var array = [];
 
-			expect(helpers.getValueOrDefault(null, 42)).toBe(null);
-			expect(helpers.getValueOrDefault(false, 42)).toBe(false);
-			expect(helpers.getValueOrDefault(object, 42)).toBe(object);
-			expect(helpers.getValueOrDefault(array, 42)).toBe(array);
-			expect(helpers.getValueOrDefault('', 42)).toBe('');
-			expect(helpers.getValueOrDefault(0, 42)).toBe(0);
+			expect(helpers.valueOrDefault(null, 42)).toBe(null);
+			expect(helpers.valueOrDefault(false, 42)).toBe(false);
+			expect(helpers.valueOrDefault(object, 42)).toBe(object);
+			expect(helpers.valueOrDefault(array, 42)).toBe(array);
+			expect(helpers.valueOrDefault('', 42)).toBe('');
+			expect(helpers.valueOrDefault(0, 42)).toBe(0);
 		});
 		it('should return default if undefined', function() {
-			expect(helpers.getValueOrDefault(undefined, 42)).toBe(42);
-			expect(helpers.getValueOrDefault({}.foo, 42)).toBe(42);
+			expect(helpers.valueOrDefault(undefined, 42)).toBe(42);
+			expect(helpers.valueOrDefault({}.foo, 42)).toBe(42);
 		});
 	});
 
-	describe('getValueAtIndexOrDefault', function() {
+	describe('valueAtIndexOrDefault', function() {
 		it('should return the passed value if not an array', function() {
-			expect(helpers.getValueAtIndexOrDefault(0, 0, 42)).toBe(0);
-			expect(helpers.getValueAtIndexOrDefault('', 0, 42)).toBe('');
-			expect(helpers.getValueAtIndexOrDefault(false, 0, 42)).toBe(false);
-			expect(helpers.getValueAtIndexOrDefault(98, 0, 42)).toBe(98);
-		});
-		it('should return the default value if the passed value is null or undefined', function() {
-			expect(helpers.getValueAtIndexOrDefault(null, 0, 42)).toBe(42);
-			expect(helpers.getValueAtIndexOrDefault(undefined, 0, 42)).toBe(42);
+			expect(helpers.valueAtIndexOrDefault(0, 0, 42)).toBe(0);
+			expect(helpers.valueAtIndexOrDefault('', 0, 42)).toBe('');
+			expect(helpers.valueAtIndexOrDefault(null, 0, 42)).toBe(null);
+			expect(helpers.valueAtIndexOrDefault(false, 0, 42)).toBe(false);
+			expect(helpers.valueAtIndexOrDefault(98, 0, 42)).toBe(98);
 		});
 		it('should return the value at index if defined', function() {
-			expect(helpers.getValueAtIndexOrDefault([1, false, 'foo'], 1, 42)).toBe(false);
-			expect(helpers.getValueAtIndexOrDefault([1, false, 'foo'], 2, 42)).toBe('foo');
+			expect(helpers.valueAtIndexOrDefault([1, false, 'foo'], 1, 42)).toBe(false);
+			expect(helpers.valueAtIndexOrDefault([1, false, 'foo'], 2, 42)).toBe('foo');
+		});
+		it('should return the default value if the passed value is undefined', function() {
+			expect(helpers.valueAtIndexOrDefault(undefined, 0, 42)).toBe(42);
 		});
 		it('should return the default value if value at index is undefined', function() {
-			expect(helpers.getValueAtIndexOrDefault([1, false, 'foo'], 3, 42)).toBe(42);
-			expect(helpers.getValueAtIndexOrDefault([1, undefined, 'foo'], 1, 42)).toBe(42);
+			expect(helpers.valueAtIndexOrDefault([1, false, 'foo'], 3, 42)).toBe(42);
+			expect(helpers.valueAtIndexOrDefault([1, undefined, 'foo'], 1, 42)).toBe(42);
 		});
 	});
 

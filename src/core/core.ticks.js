@@ -101,13 +101,13 @@ module.exports = function(Chart) {
 			 */
 			logarithmic: function(generationOptions, dataRange) {
 				var ticks = [];
-				var getValueOrDefault = helpers.getValueOrDefault;
+				var valueOrDefault = helpers.valueOrDefault;
 
 				// Figure out what the max number of ticks we can support it is based on the size of
 				// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
 				// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on
 				// the graph
-				var tickVal = getValueOrDefault(generationOptions.min, Math.pow(10, Math.floor(helpers.log10(dataRange.min))));
+				var tickVal = valueOrDefault(generationOptions.min, Math.pow(10, Math.floor(helpers.log10(dataRange.min))));
 
 				var endExp = Math.floor(helpers.log10(dataRange.max));
 				var endSignificand = Math.ceil(dataRange.max / Math.pow(10, endExp));
@@ -137,7 +137,7 @@ module.exports = function(Chart) {
 					tickVal = significand * Math.pow(10, exp);
 				} while (exp < endExp || (exp === endExp && significand < endSignificand));
 
-				var lastTick = getValueOrDefault(generationOptions.max, tickVal);
+				var lastTick = valueOrDefault(generationOptions.max, tickVal);
 				ticks.push(lastTick);
 
 				return ticks;

@@ -70,6 +70,20 @@ describe('Deprecations', function() {
 			});
 		});
 
+		describe('Chart.helpers.getValueOrDefault', function() {
+			it('should be defined and an alias of Chart.helpers.valueOrDefault', function() {
+				expect(Chart.helpers.getValueOrDefault).toBeDefined();
+				expect(Chart.helpers.getValueOrDefault).toBe(Chart.helpers.valueOrDefault);
+			});
+		});
+
+		describe('Chart.helpers.getValueAtIndexOrDefault', function() {
+			it('should be defined and an alias of Chart.helpers.valueAtIndexOrDefault', function() {
+				expect(Chart.helpers.getValueAtIndexOrDefault).toBeDefined();
+				expect(Chart.helpers.getValueAtIndexOrDefault).toBe(Chart.helpers.valueAtIndexOrDefault);
+			});
+		});
+
 		describe('Chart.helpers.drawRoundedRectangle', function() {
 			it('should be defined and a function', function() {
 				expect(Chart.helpers.drawRoundedRectangle).toBeDefined();

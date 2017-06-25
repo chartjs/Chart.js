@@ -242,7 +242,7 @@ module.exports = function(Chart) {
 			var dataset = this.chart.data.datasets[element._datasetIndex],
 				index = element._index,
 				custom = element.custom || {},
-				valueOrDefault = helpers.getValueAtIndexOrDefault,
+				valueOrDefault = helpers.valueAtIndexOrDefault,
 				model = element._model;
 
 			model.backgroundColor = custom.backgroundColor ? custom.backgroundColor : valueOrDefault(dataset.backgroundColor, index, elementOpts.backgroundColor);
@@ -254,7 +254,7 @@ module.exports = function(Chart) {
 			var dataset = this.chart.data.datasets[element._datasetIndex],
 				index = element._index,
 				custom = element.custom || {},
-				valueOrDefault = helpers.getValueAtIndexOrDefault,
+				valueOrDefault = helpers.valueAtIndexOrDefault,
 				getHoverColor = helpers.getHoverColor,
 				model = element._model;
 
