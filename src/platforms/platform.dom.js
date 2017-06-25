@@ -92,6 +92,38 @@ module.exports = function(Chart) {
 		return canvas;
 	}
 
+	/**
+	 * Detects support for options object argument in addEventListener.
+	 * https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Safely_detecting_option_support
+	 * @private
+	 */
+	var supportsEventListenerOptions = (function() {
+		var supports = false;
+		try {
+			var options = Object.defineProperty({}, 'passive', {
+				get: function() {
+					supports = true;
+				}
+			});
+			window.addEventListener('e', null, options);
+		} catch (e) {
+			// continue regardless of error
+		}
+		return supports;
+	}());
+
+	// Default passive to true as expected by Chrome for 'touchstart' and 'touchend' events.
+	// https://github.com/chartjs/Chart.js/issues/4287
+	var eventListenerOptions = supportsEventListenerOptions? {passive: true} : false;
+
+	function addEventListener(node, type, listener) {
+		node.addEventListener(type, listener, eventListenerOptions);
+	}
+
+	function removeEventListener(node, type, listener) {
+		node.removeEventListener(type, listener, eventListenerOptions);
+	}
+
 	function createEvent(type, chart, x, y, nativeEvent) {
 		return {
 			type: type,
@@ -137,8 +169,8 @@ module.exports = function(Chart) {
 		// If the iframe is re-attached to the DOM, the resize listener is removed because the
 		// content is reloaded, so make sure to install the handler after the iframe is loaded.
 		// https://github.com/chartjs/Chart.js/issues/3521
-		helpers.addEvent(iframe, 'load', function() {
-			helpers.addEvent(iframe.contentWindow || iframe, 'resize', handler);
+		addEventListener(iframe, 'load', function() {
+			addEventListener(iframe.contentWindow || iframe, 'resize', handler);
 
 			// The iframe size might have changed while loading, which can also
 			// happen if the size has been changed while detached from the DOM.
@@ -185,6 +217,28 @@ module.exports = function(Chart) {
 
 		delete node._chartjs;
 	}
+
+	/**
+	 * Provided for backward compatibility, use EventTarget.addEventListener instead.
+	 * EventTarget.addEventListener compatibility: Chrome, Opera 7, Safari, FF1.5+, IE9+
+	 * @see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
+	 * @function Chart.helpers.addEvent
+	 * @deprecated since version 2.7.0
+	 * @todo remove at version 3
+	 * @private
+	 */
+	helpers.addEvent = addEventListener;
+
+	/**
+	 * Provided for backward compatibility, use EventTarget.removeEventListener instead.
+	 * EventTarget.removeEventListener compatibility: Chrome, Opera 7, Safari, FF1.5+, IE9+
+	 * @see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener
+	 * @function Chart.helpers.removeEvent
+	 * @deprecated since version 2.7.0
+	 * @todo remove at version 3
+	 * @private
+	 */
+	helpers.removeEvent = removeEventListener;
 
 	return {
 		acquireContext: function(item, config) {
@@ -263,7 +317,7 @@ module.exports = function(Chart) {
 				listener(fromNativeEvent(event, chart));
 			};
 
-			helpers.addEvent(canvas, type, proxy);
+			addEventListener(canvas, type, proxy);
 		},
 
 		removeEventListener: function(chart, type, listener) {
@@ -281,7 +335,7 @@ module.exports = function(Chart) {
 				return;
 			}
 
-			helpers.removeEvent(canvas, type, proxy);
+			removeEventListener(canvas, type, proxy);
 		}
 	};
 };

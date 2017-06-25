@@ -101,6 +101,33 @@ describe('Deprecations', function() {
 				expect(Chart.helpers.canvas.roundedRect).toHaveBeenCalledWith(ctx, 10, 20, 30, 40, 5);
 			});
 		});
+
+		describe('Chart.helpers.addEvent', function() {
+			it('should be defined and a function', function() {
+				expect(Chart.helpers.addEvent).toBeDefined();
+				expect(typeof Chart.helpers.addEvent).toBe('function');
+			});
+			it('should correctly add event listener', function() {
+				var listener = jasmine.createSpy('spy');
+				Chart.helpers.addEvent(window, 'test', listener);
+				window.dispatchEvent(new Event('test'));
+				expect(listener).toHaveBeenCalled();
+			});
+		});
+
+		describe('Chart.helpers.removeEvent', function() {
+			it('should be defined and a function', function() {
+				expect(Chart.helpers.removeEvent).toBeDefined();
+				expect(typeof Chart.helpers.removeEvent).toBe('function');
+			});
+			it('should correctly remove event listener', function() {
+				var listener = jasmine.createSpy('spy');
+				Chart.helpers.addEvent(window, 'test', listener);
+				Chart.helpers.removeEvent(window, 'test', listener);
+				window.dispatchEvent(new Event('test'));
+				expect(listener).not.toHaveBeenCalled();
+			});
+		});
 	});
 
 	describe('Version 2.6.0', function() {
