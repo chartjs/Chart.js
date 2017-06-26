@@ -1,22 +1,22 @@
 /**
  * @namespace Chart
  */
-var Chart = require('./core/core.js')();
+var Chart = require('./core/core')();
 
 require('./helpers/helpers.core')(Chart);
 require('./core/core.helpers')(Chart);
 require('./helpers/helpers.time')(Chart);
 require('./helpers/helpers.canvas')(Chart);
 
-require('./platforms/platform.js')(Chart);
+require('./platforms/platform')(Chart);
 require('./core/core.element')(Chart);
-require('./core/core.plugin.js')(Chart);
+require('./core/core.plugin')(Chart);
 require('./core/core.animation')(Chart);
 require('./core/core.controller')(Chart);
 require('./core/core.datasetController')(Chart);
 require('./core/core.layoutService')(Chart);
 require('./core/core.scaleService')(Chart);
-require('./core/core.ticks.js')(Chart);
+require('./core/core.ticks')(Chart);
 require('./core/core.scale')(Chart);
 require('./core/core.interaction')(Chart);
 require('./core/core.tooltip')(Chart);
@@ -26,7 +26,7 @@ require('./elements/element.line')(Chart);
 require('./elements/element.point')(Chart);
 require('./elements/element.rectangle')(Chart);
 
-require('./scales/scale.linearbase.js')(Chart);
+require('./scales/scale.linearbase')(Chart);
 require('./scales/scale.category')(Chart);
 require('./scales/scale.linear')(Chart);
 require('./scales/scale.logarithmic')(Chart);
@@ -54,9 +54,9 @@ require('./charts/Chart.Scatter')(Chart);
 var plugins = [];
 
 plugins.push(
-    require('./plugins/plugin.filler.js')(Chart),
-    require('./plugins/plugin.legend.js')(Chart),
-    require('./plugins/plugin.title.js')(Chart)
+    require('./plugins/plugin.filler')(Chart),
+    require('./plugins/plugin.legend')(Chart),
+    require('./plugins/plugin.title')(Chart)
 );
 
 Chart.plugins.register(plugins);
