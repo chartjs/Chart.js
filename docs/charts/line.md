@@ -62,7 +62,7 @@ All point* properties can be specified as an array. If these are set to an array
 | `pointBorderColor` | `Color/Color[]` | The border color for points.
 | `pointBorderWidth` | `Number/Number[]` | The width of the point border in pixels.
 | `pointRadius` | `Number/Number[]` | The radius of the point shape. If set to 0, the point is not rendered.
-| `pointStyle` | `String/String[]/Image/Image[]` | Style of the point. [more...](#pointStyle)
+| `pointStyle` | `String/String[]/Image/Image[]/Function` | Style of the point. [more...](#pointStyle)
 | `pointHitRadius` | `Number/Number[]` | The pixel size of the non-displayed point that reacts to mouse events.
 | `pointHoverBackgroundColor` | `Color/Color[]` | Point background color when hovered.
 | `pointHoverBorderColor` | `Color/Color[]` | Point border color when hovered.
@@ -97,6 +97,8 @@ The style of point. Options are:
 * 'triangle'
 
 If the option is an image, that image is drawn on the canvas using [drawImage](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/drawImage).
+
+If the option is a Function, it must take in two parameters - index and dataset - and return a pointStyle of either one of the above point options or an image. This can be used to draw a different point depending on the index of the point.
 
 ### Stepped Line
 The following values are supported for `steppedLine`:
