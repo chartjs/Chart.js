@@ -22,8 +22,9 @@ module.exports = function(Chart) {
 		// Get tooltip label
 		getLabelForIndex: function(index, datasetIndex) {
 			var me = this;
-			var label = me.chart.data.labels && index < me.chart.data.labels.length ? me.chart.data.labels[index] : '';
-			var value = me.chart.data.datasets[datasetIndex].data[index];
+			var chartData = me.chart.data;
+			var label = chartData.labels && index < chartData.labels.length ? chartData.labels[index] : '';
+			var value = chartData.datasets[datasetIndex].data[index];
 
 			if (value !== null && typeof value === 'object') {
 				label = me.getRightValue(value);

@@ -98,7 +98,6 @@ describe('TimeSeries scale tests', function() {
 				format: false,
 				unit: false,
 				round: false,
-				displayFormat: false,
 				minUnit: 'millisecond',
 				displayFormats: {
 					millisecond: 'h:mm:ss.SSS a', // 11:20:01.123 AM
