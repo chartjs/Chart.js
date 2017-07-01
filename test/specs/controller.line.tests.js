@@ -730,4 +730,34 @@ describe('Line controller tests', function() {
 
 		expect(point._model.borderWidth).toBe(0);
 	});
+
+	it('should use the correct point style when provided a function', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: [10, 15, 0, -4],
+					label: 'dataset1',
+					pointStyle: function(index, dataset) {
+						if (index === 0) {
+							return 'triangle';
+						} else if (index === dataset.data.length - 1) {
+							return 'square';
+						}
+						return 'circle';
+					}
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4']
+			}
+		});
+
+		var meta = chart.getDatasetMeta(0);
+		var firstPoint = meta.data[0];
+		var secondPoint = meta.data[1];
+		var lastPoint = meta.data[3];
+
+		expect(firstPoint._model.pointStyle).toBe('triangle');
+		expect(secondPoint._model.pointStyle).toBe('circle');
+		expect(lastPoint._model.pointStyle).toBe('square');
+	});
 });

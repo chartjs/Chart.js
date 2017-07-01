@@ -184,7 +184,7 @@ module.exports = function(Chart) {
 				skip: custom.skip || isNaN(x) || isNaN(y),
 				// Appearance
 				radius: custom.radius || helpers.valueAtIndexOrDefault(dataset.pointRadius, index, pointOptions.radius),
-				pointStyle: custom.pointStyle || helpers.valueAtIndexOrDefault(dataset.pointStyle, index, pointOptions.pointStyle),
+				pointStyle: me.getPointStyle(custom, dataset, index, pointOptions),
 				backgroundColor: me.getPointBackgroundColor(point, index),
 				borderColor: me.getPointBorderColor(point, index),
 				borderWidth: me.getPointBorderWidth(point, index),
@@ -328,6 +328,16 @@ module.exports = function(Chart) {
 			model.backgroundColor = me.getPointBackgroundColor(point, index);
 			model.borderColor = me.getPointBorderColor(point, index);
 			model.borderWidth = me.getPointBorderWidth(point, index);
+		},
+
+		getPointStyle: function(custom, dataset, index, pointOptions) {
+			var pointStyle = custom.pointStyle || dataset.pointStyle;
+
+			if (pointStyle instanceof Function) {
+				return pointStyle(index, dataset);
+			}
+
+			return helpers.valueAtIndexOrDefault(pointStyle, index, pointOptions.pointStyle);
 		}
 	});
 };
