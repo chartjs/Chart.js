@@ -147,6 +147,110 @@ module.exports = function(Chart) {
 			}
 
 			return true;
+		},
+
+		/**
+		 * Returns a deep copy of `source` without keeping references on objects and arrays.
+		 * @param {*} source - The value to clone.
+		 * @returns {*}
+		 */
+		clone: function(source) {
+			if (helpers.isArray(source)) {
+				return source.map(helpers.clone);
+			}
+
+			if (helpers.isObject(source)) {
+				var target = {};
+				var keys = Object.keys(source);
+				var klen = keys.length;
+				var k = 0;
+
+				for (; k<klen; ++k) {
+					target[keys[k]] = helpers.clone(source[keys[k]]);
+				}
+
+				return target;
+			}
+
+			return source;
+		},
+
+		/**
+		 * The default merger when Chart.helpers.merge is called without merger option.
+		 * Note(SB): this method is also used by configMerge and scaleMerge as fallback.
+		 * @private
+		 */
+		_merger: function(key, target, source, options) {
+			var tval = target[key];
+			var sval = source[key];
+
+			if (helpers.isObject(tval) && helpers.isObject(sval)) {
+				helpers.merge(tval, sval, options);
+			} else {
+				target[key] = helpers.clone(sval);
+			}
+		},
+
+		/**
+		 * Merges source[key] in target[key] only if target[key] is undefined.
+		 * @private
+		 */
+		_mergerIf: function(key, target, source) {
+			var tval = target[key];
+			var sval = source[key];
+
+			if (helpers.isObject(tval) && helpers.isObject(sval)) {
+				helpers.mergeIf(tval, sval);
+			} else if (!target.hasOwnProperty(key)) {
+				target[key] = helpers.clone(sval);
+			}
+		},
+
+		/**
+		 * Recursively deep copies `source` properties into `target` with the given `options`.
+		 * IMPORTANT: `target` is not cloned and will be updated with `source` properties.
+		 * @param {Object} target - The target object in which all sources are merged into.
+		 * @param {Object|Array(Object)} source - Object(s) to merge into `target`.
+		 * @param {Object} [options] - Merging options:
+		 * @param {Function} [options.merger] - The merge method (key, target, source, options)
+		 * @returns {Object} The `target` object.
+		 */
+		merge: function(target, source, options) {
+			var sources = helpers.isArray(source)? source : [source];
+			var ilen = sources.length;
+			var merge, i, keys, klen, k;
+
+			if (!helpers.isObject(target)) {
+				return target;
+			}
+
+			options = options || {};
+			merge = options.merger || helpers._merger;
+
+			for (i=0; i<ilen; ++i) {
+				source = sources[i];
+				if (!helpers.isObject(source)) {
+					continue;
+				}
+
+				keys = Object.keys(source);
+				for (k=0, klen = keys.length; k<klen; ++k) {
+					merge(keys[k], target, source, options);
+				}
+			}
+
+			return target;
+		},
+
+		/**
+		 * Recursively deep copies `source` properties into `target` *only* if not defined in target.
+		 * IMPORTANT: `target` is not cloned and will be updated with `source` properties.
+		 * @param {Object} target - The target object in which all sources are merged into.
+		 * @param {Object|Array(Object)} source - Object(s) to merge into `target`.
+		 * @returns {Object} The `target` object.
+		 */
+		mergeIf: function(target, source) {
+			return helpers.merge(target, source, {merger: helpers._mergerIf});
 		}
 	};
 

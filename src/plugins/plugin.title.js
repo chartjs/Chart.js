@@ -224,7 +224,7 @@ module.exports = function(Chart) {
 			var titleBlock = chart.titleBlock;
 
 			if (titleOpts) {
-				titleOpts = helpers.configMerge(Chart.defaults.global.title, titleOpts);
+				helpers.mergeIf(titleOpts, Chart.defaults.global.title);
 
 				if (titleBlock) {
 					layout.configure(chart, titleBlock, titleOpts);

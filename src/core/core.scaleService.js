@@ -22,7 +22,7 @@ module.exports = function(Chart) {
 		},
 		getScaleDefaults: function(type) {
 			// Return the scale defaults merged with the global settings so that we always use the latest ones
-			return this.defaults.hasOwnProperty(type) ? helpers.scaleMerge(Chart.defaults.scale, this.defaults[type]) : {};
+			return this.defaults.hasOwnProperty(type) ? helpers.merge({}, [Chart.defaults.scale, this.defaults[type]]) : {};
 		},
 		updateScaleDefaults: function(type, additions) {
 			var defaults = this.defaults;

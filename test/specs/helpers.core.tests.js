@@ -236,4 +236,137 @@ describe('Chart.helpers.core', function() {
 			expect(helpers.arrayEquals([o0, o1, o2], [o0, o1, o2])).toBeTruthy();
 		});
 	});
+
+	describe('clone', function() {
+		it('should clone primitive values', function() {
+			expect(helpers.clone()).toBe(undefined);
+			expect(helpers.clone(null)).toBe(null);
+			expect(helpers.clone(true)).toBe(true);
+			expect(helpers.clone(42)).toBe(42);
+			expect(helpers.clone('foo')).toBe('foo');
+		});
+		it('should perform a deep copy of arrays', function() {
+			var o0 = {a: 42};
+			var o1 = {s: 's'};
+			var a0 = ['bar'];
+			var a1 = [a0, o0, 2];
+			var f0 = function() {};
+			var input = [a1, o1, f0, 42, 'foo'];
+			var output = helpers.clone(input);
+
+			expect(output).toEqual(input);
+			expect(output).not.toBe(input);
+			expect(output[0]).not.toBe(a1);
+			expect(output[0][0]).not.toBe(a0);
+			expect(output[1]).not.toBe(o1);
+		});
+		it('should perform a deep copy of objects', function() {
+			var a0 = ['bar'];
+			var a1 = [1, 2, 3];
+			var o0 = {a: a1, i: 42};
+			var f0 = function() {};
+			var input = {o: o0, a: a0, f: f0, s: 'foo', i: 42};
+			var output = helpers.clone(input);
+
+			expect(output).toEqual(input);
+			expect(output).not.toBe(input);
+			expect(output.o).not.toBe(o0);
+			expect(output.o.a).not.toBe(a1);
+			expect(output.a).not.toBe(a0);
+		});
+	});
+
+	describe('merge', function() {
+		it('should update target and return it', function() {
+			var target = {a: 1};
+			var result = helpers.merge(target, {a: 2, b: 'foo'});
+			expect(target).toEqual({a: 2, b: 'foo'});
+			expect(target).toBe(result);
+		});
+		it('should return target if not an object', function() {
+			expect(helpers.merge(undefined, {a: 42})).toEqual(undefined);
+			expect(helpers.merge(null, {a: 42})).toEqual(null);
+			expect(helpers.merge('foo', {a: 42})).toEqual('foo');
+			expect(helpers.merge(['foo', 'bar'], {a: 42})).toEqual(['foo', 'bar']);
+		});
+		it('should ignore sources which are not objects', function() {
+			expect(helpers.merge({a: 42})).toEqual({a: 42});
+			expect(helpers.merge({a: 42}, null)).toEqual({a: 42});
+			expect(helpers.merge({a: 42}, 42)).toEqual({a: 42});
+		});
+		it('should recursively overwrite target with source properties', function() {
+			expect(helpers.merge({a: {b: 1}}, {a: {c: 2}})).toEqual({a: {b: 1, c: 2}});
+			expect(helpers.merge({a: {b: 1}}, {a: {b: 2}})).toEqual({a: {b: 2}});
+			expect(helpers.merge({a: [1, 2]}, {a: [3, 4]})).toEqual({a: [3, 4]});
+			expect(helpers.merge({a: 42}, {a: {b: 0}})).toEqual({a: {b: 0}});
+			expect(helpers.merge({a: 42}, {a: null})).toEqual({a: null});
+			expect(helpers.merge({a: 42}, {a: undefined})).toEqual({a: undefined});
+		});
+		it('should merge multiple sources in the correct order', function() {
+			var t0 = {a: {b: 1, c: [1, 2]}};
+			var s0 = {a: {d: 3}, e: {f: 4}};
+			var s1 = {a: {b: 5}};
+			var s2 = {a: {c: [6, 7]}, e: 'foo'};
+
+			expect(helpers.merge(t0, [s0, s1, s2])).toEqual({a: {b: 5, c: [6, 7], d: 3}, e: 'foo'});
+		});
+		it('should deep copy merged values from sources', function() {
+			var a0 = ['foo'];
+			var a1 = [1, 2, 3];
+			var o0 = {a: a1, i: 42};
+			var output = helpers.merge({}, {a: a0, o: o0});
+
+			expect(output).toEqual({a: a0, o: o0});
+			expect(output.a).not.toBe(a0);
+			expect(output.o).not.toBe(o0);
+			expect(output.o.a).not.toBe(a1);
+		});
+	});
+
+	describe('mergeIf', function() {
+		it('should update target and return it', function() {
+			var target = {a: 1};
+			var result = helpers.mergeIf(target, {a: 2, b: 'foo'});
+			expect(target).toEqual({a: 1, b: 'foo'});
+			expect(target).toBe(result);
+		});
+		it('should return target if not an object', function() {
+			expect(helpers.mergeIf(undefined, {a: 42})).toEqual(undefined);
+			expect(helpers.mergeIf(null, {a: 42})).toEqual(null);
+			expect(helpers.mergeIf('foo', {a: 42})).toEqual('foo');
+			expect(helpers.mergeIf(['foo', 'bar'], {a: 42})).toEqual(['foo', 'bar']);
+		});
+		it('should ignore sources which are not objects', function() {
+			expect(helpers.mergeIf({a: 42})).toEqual({a: 42});
+			expect(helpers.mergeIf({a: 42}, null)).toEqual({a: 42});
+			expect(helpers.mergeIf({a: 42}, 42)).toEqual({a: 42});
+		});
+		it('should recursively copy source properties in target only if they do not exist in target', function() {
+			expect(helpers.mergeIf({a: {b: 1}}, {a: {c: 2}})).toEqual({a: {b: 1, c: 2}});
+			expect(helpers.mergeIf({a: {b: 1}}, {a: {b: 2}})).toEqual({a: {b: 1}});
+			expect(helpers.mergeIf({a: [1, 2]}, {a: [3, 4]})).toEqual({a: [1, 2]});
+			expect(helpers.mergeIf({a: 0}, {a: {b: 2}})).toEqual({a: 0});
+			expect(helpers.mergeIf({a: null}, {a: 42})).toEqual({a: null});
+			expect(helpers.mergeIf({a: undefined}, {a: 42})).toEqual({a: undefined});
+		});
+		it('should merge multiple sources in the correct order', function() {
+			var t0 = {a: {b: 1, c: [1, 2]}};
+			var s0 = {a: {d: 3}, e: {f: 4}};
+			var s1 = {a: {b: 5}};
+			var s2 = {a: {c: [6, 7]}, e: 'foo'};
+
+			expect(helpers.mergeIf(t0, [s0, s1, s2])).toEqual({a: {b: 1, c: [1, 2], d: 3}, e: {f: 4}});
+		});
+		it('should deep copy merged values from sources', function() {
+			var a0 = ['foo'];
+			var a1 = [1, 2, 3];
+			var o0 = {a: a1, i: 42};
+			var output = helpers.mergeIf({}, {a: a0, o: o0});
+
+			expect(output).toEqual({a: a0, o: o0});
+			expect(output.a).not.toBe(a0);
+			expect(output.o).not.toBe(o0);
+			expect(output.o.a).not.toBe(a1);
+		});
+	});
 });

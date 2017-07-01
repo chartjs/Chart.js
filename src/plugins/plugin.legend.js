@@ -524,7 +524,7 @@ module.exports = function(Chart) {
 			var legend = chart.legend;
 
 			if (legendOpts) {
-				legendOpts = helpers.configMerge(Chart.defaults.global.legend, legendOpts);
+				helpers.mergeIf(legendOpts, Chart.defaults.global.legend);
 
 				if (legend) {
 					layout.configure(chart, legend, legendOpts);
