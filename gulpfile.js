@@ -137,25 +137,9 @@ function lintTask() {
   // to fix, let's turn them as warnings and rewrite code later progressively.
   var options = {
     rules: {
-      'complexity': [1, 6],
+      'complexity': [1, 10],
       'max-statements': [1, 30]
-    },
-    globals: [
-      'Chart',
-      'acquireChart',
-      'afterAll',
-      'afterEach',
-      'beforeAll',
-      'beforeEach',
-      'describe',
-      'expect',
-      'fail',
-      'it',
-      'jasmine',
-      'moment',
-      'spyOn',
-      'xit'
-    ]
+    }
   };
 
   return gulp.src(files)

@@ -1,0 +1,12 @@
+env:
+  jasmine: true
+
+globals:
+  acquireChart: true
+  Chart: true
+  moment: true
+
+# http://eslint.org/docs/rules/
+rules:
+  # Best Practices
+  complexity: 0
