@@ -24,20 +24,22 @@ module.exports = function(Chart) {
 		 * @param {Number} width - The rectangle's width.
 		 * @param {Number} height - The rectangle's height.
 		 * @param {Number} radius - The rounded amount (in pixels) for the four corners.
-		 * @todo handler `radius` as top-left, top-right, bottom-right, bottom-left array/object?
-		 * @todo clamp `radius` to the maximum "correct" value.
+		 * @todo handle `radius` as top-left, top-right, bottom-right, bottom-left array/object?
 		 */
 		roundedRect: function(ctx, x, y, width, height, radius) {
 			if (radius) {
-				ctx.moveTo(x + radius, y);
-				ctx.lineTo(x + width - radius, y);
-				ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-				ctx.lineTo(x + width, y + height - radius);
-				ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-				ctx.lineTo(x + radius, y + height);
-				ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-				ctx.lineTo(x, y + radius);
-				ctx.quadraticCurveTo(x, y, x + radius, y);
+				var rx = Math.min(radius, width/2);
+				var ry = Math.min(radius, height/2);
+
+				ctx.moveTo(x + rx, y);
+				ctx.lineTo(x + width - rx, y);
+				ctx.quadraticCurveTo(x + width, y, x + width, y + ry);
+				ctx.lineTo(x + width, y + height - ry);
+				ctx.quadraticCurveTo(x + width, y + height, x + width - rx, y + height);
+				ctx.lineTo(x + rx, y + height);
+				ctx.quadraticCurveTo(x, y + height, x, y + height - ry);
+				ctx.lineTo(x, y + ry);
+				ctx.quadraticCurveTo(x, y, x + rx, y);
 			} else {
 				ctx.rect(x, y, width, height);
 			}
