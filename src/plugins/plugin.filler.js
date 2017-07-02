@@ -296,6 +296,7 @@ module.exports = function(Chart) {
 				return;
 			}
 
+			var ctx = chart.ctx;
 			var el = meta.el;
 			var view = el._view;
 			var points = el._children || [];
@@ -303,7 +304,9 @@ module.exports = function(Chart) {
 			var color = view.backgroundColor || defaults.global.defaultColor;
 
 			if (mapper && color && points.length) {
-				doFill(chart.ctx, points, mapper, view, color, el._loop);
+				helpers.canvas.clipArea(ctx, chart.chartArea);
+				doFill(ctx, points, mapper, view, color, el._loop);
+				helpers.canvas.unclipArea(ctx);
 			}
 		}
 	};
