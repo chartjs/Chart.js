@@ -1,58 +1,56 @@
 'use strict';
 
-module.exports = function(Chart) {
-	var helpers = Chart.helpers;
+var helpers = require('./helpers.core');
+
+/**
+ * @namespace Chart.helpers.canvas
+ */
+var exports = module.exports = {
+	/**
+	 * Clears the entire canvas associated to the given `chart`.
+	 * @param {Chart} chart - The chart for which to clear the canvas.
+	 */
+	clear: function(chart) {
+		chart.ctx.clearRect(0, 0, chart.width, chart.height);
+	},
 
 	/**
-	 * @namespace Chart.helpers.canvas
+	 * Creates a "path" for a rectangle with rounded corners at position (x, y) with a
+	 * given size (width, height) and the same `radius` for all corners.
+	 * @param {CanvasRenderingContext2D} ctx - The canvas 2D Context.
+	 * @param {Number} x - The x axis of the coordinate for the rectangle starting point.
+	 * @param {Number} y - The y axis of the coordinate for the rectangle starting point.
+	 * @param {Number} width - The rectangle's width.
+	 * @param {Number} height - The rectangle's height.
+	 * @param {Number} radius - The rounded amount (in pixels) for the four corners.
+	 * @todo handle `radius` as top-left, top-right, bottom-right, bottom-left array/object?
 	 */
-	helpers.canvas = {
-		/**
-		 * Clears the entire canvas associated to the given `chart`.
-		 * @param {Chart} chart - The chart for which to clear the canvas.
-		 */
-		clear: function(chart) {
-			chart.ctx.clearRect(0, 0, chart.width, chart.height);
-		},
+	roundedRect: function(ctx, x, y, width, height, radius) {
+		if (radius) {
+			var rx = Math.min(radius, width/2);
+			var ry = Math.min(radius, height/2);
 
-		/**
-		 * Creates a "path" for a rectangle with rounded corners at position (x, y) with a
-		 * given size (width, height) and the same `radius` for all corners.
-		 * @param {CanvasRenderingContext2D} ctx - The canvas 2D Context.
-		 * @param {Number} x - The x axis of the coordinate for the rectangle starting point.
-		 * @param {Number} y - The y axis of the coordinate for the rectangle starting point.
-		 * @param {Number} width - The rectangle's width.
-		 * @param {Number} height - The rectangle's height.
-		 * @param {Number} radius - The rounded amount (in pixels) for the four corners.
-		 * @todo handle `radius` as top-left, top-right, bottom-right, bottom-left array/object?
-		 */
-		roundedRect: function(ctx, x, y, width, height, radius) {
-			if (radius) {
-				var rx = Math.min(radius, width/2);
-				var ry = Math.min(radius, height/2);
-
-				ctx.moveTo(x + rx, y);
-				ctx.lineTo(x + width - rx, y);
-				ctx.quadraticCurveTo(x + width, y, x + width, y + ry);
-				ctx.lineTo(x + width, y + height - ry);
-				ctx.quadraticCurveTo(x + width, y + height, x + width - rx, y + height);
-				ctx.lineTo(x + rx, y + height);
-				ctx.quadraticCurveTo(x, y + height, x, y + height - ry);
-				ctx.lineTo(x, y + ry);
-				ctx.quadraticCurveTo(x, y, x + rx, y);
-			} else {
-				ctx.rect(x, y, width, height);
-			}
+			ctx.moveTo(x + rx, y);
+			ctx.lineTo(x + width - rx, y);
+			ctx.quadraticCurveTo(x + width, y, x + width, y + ry);
+			ctx.lineTo(x + width, y + height - ry);
+			ctx.quadraticCurveTo(x + width, y + height, x + width - rx, y + height);
+			ctx.lineTo(x + rx, y + height);
+			ctx.quadraticCurveTo(x, y + height, x, y + height - ry);
+			ctx.lineTo(x, y + ry);
+			ctx.quadraticCurveTo(x, y, x + rx, y);
+		} else {
+			ctx.rect(x, y, width, height);
 		}
-	};
+	},
 
-	helpers.canvas.drawPoint = function(ctx, pointStyle, radius, x, y) {
+	drawPoint: function(ctx, style, radius, x, y) {
 		var type, edgeLength, xOffset, yOffset, height, size;
 
-		if (typeof pointStyle === 'object') {
-			type = pointStyle.toString();
+		if (typeof style === 'object') {
+			type = style.toString();
 			if (type === '[object HTMLImageElement]' || type === '[object HTMLCanvasElement]') {
-				ctx.drawImage(pointStyle, x - pointStyle.width / 2, y - pointStyle.height / 2, pointStyle.width, pointStyle.height);
+				ctx.drawImage(style, x - style.width / 2, y - style.height / 2, style.width, style.height);
 				return;
 			}
 		}
@@ -61,7 +59,7 @@ module.exports = function(Chart) {
 			return;
 		}
 
-		switch (pointStyle) {
+		switch (style) {
 		// Default includes circle
 		default:
 			ctx.beginPath();
@@ -152,20 +150,20 @@ module.exports = function(Chart) {
 		}
 
 		ctx.stroke();
-	};
+	},
 
-	helpers.canvas.clipArea = function(ctx, clipArea) {
+	clipArea: function(ctx, area) {
 		ctx.save();
 		ctx.beginPath();
-		ctx.rect(clipArea.left, clipArea.top, clipArea.right - clipArea.left, clipArea.bottom - clipArea.top);
+		ctx.rect(area.left, area.top, area.right - area.left, area.bottom - area.top);
 		ctx.clip();
-	};
+	},
 
-	helpers.canvas.unclipArea = function(ctx) {
+	unclipArea: function(ctx) {
 		ctx.restore();
-	};
+	},
 
-	helpers.canvas.lineTo = function(ctx, previous, target, flip) {
+	lineTo: function(ctx, previous, target, flip) {
 		if (target.steppedLine) {
 			if (target.steppedLine === 'after') {
 				ctx.lineTo(previous.x, target.y);
@@ -188,36 +186,29 @@ module.exports = function(Chart) {
 			flip? target.controlPointNextY : target.controlPointPreviousY,
 			target.x,
 			target.y);
-	};
+	}
+};
 
-	/**
-	 * Provided for backward compatibility, use Chart.helpers.canvas instead.
-	 * @namespace Chart.canvasHelpers
-	 * @deprecated since version 2.6.0
-	 * @todo remove at version 3
-	 * @private
-	 */
-	Chart.canvasHelpers = helpers.canvas;
+// DEPRECATIONS
 
-	/**
-	 * Provided for backward compatibility, use Chart.helpers.canvas.clear instead.
-	 * @namespace Chart.helpers.clear
-	 * @deprecated since version 2.7.0
-	 * @todo remove at version 3
-	 * @private
-	 */
-	helpers.clear = helpers.canvas.clear;
+/**
+ * Provided for backward compatibility, use Chart.helpers.canvas.clear instead.
+ * @namespace Chart.helpers.clear
+ * @deprecated since version 2.7.0
+ * @todo remove at version 3
+ * @private
+ */
+helpers.clear = exports.clear;
 
-	/**
-	 * Provided for backward compatibility, use Chart.helpers.canvas.roundedRect instead.
-	 * @namespace Chart.helpers.drawRoundedRectangle
-	 * @deprecated since version 2.7.0
-	 * @todo remove at version 3
-	 * @private
-	 */
-	helpers.drawRoundedRectangle = function(ctx) {
-		ctx.beginPath();
-		helpers.canvas.roundedRect.apply(this, arguments);
-		ctx.closePath();
-	};
+/**
+ * Provided for backward compatibility, use Chart.helpers.canvas.roundedRect instead.
+ * @namespace Chart.helpers.drawRoundedRectangle
+ * @deprecated since version 2.7.0
+ * @todo remove at version 3
+ * @private
+ */
+helpers.drawRoundedRectangle = function(ctx) {
+	ctx.beginPath();
+	exports.roundedRect.apply(exports, arguments);
+	ctx.closePath();
 };

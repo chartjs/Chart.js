@@ -1,7 +1,8 @@
 'use strict';
 
+var helpers = require('../helpers/index');
+
 module.exports = function(Chart) {
-	var helpers = Chart.helpers;
 
 	/**
 	 * Helper function to get relative position for an event

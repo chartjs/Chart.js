@@ -1,5 +1,7 @@
 'use strict';
 
+var helpers = require('../helpers/index');
+
 module.exports = function(Chart) {
 	/**
 	 * Plugin based on discussion from the following Chart.js issues:
@@ -11,7 +13,6 @@ module.exports = function(Chart) {
 	};
 
 	var defaults = Chart.defaults;
-	var helpers = Chart.helpers;
 	var mappers = {
 		dataset: function(source) {
 			var index = source.fill;

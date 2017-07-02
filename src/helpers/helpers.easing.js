@@ -1,8 +1,11 @@
 'use strict';
 
+var helpers = require('./helpers.core');
+
 /**
  * Easing functions adapted from Robert Penner's easing equations.
- * http://www.robertpenner.com/easing/
+ * @namespace Chart.helpers.easingEffects
+ * @see http://www.robertpenner.com/easing/
  */
 var effects = {
 	linear: function(t) {
@@ -231,22 +234,17 @@ var effects = {
 	}
 };
 
-module.exports = function(Chart) {
-	/**
-	 * @namespace Chart.helpers.easing.effects
-	 */
-	Chart.helpers.easing = {
-		effects: effects
-	};
-
-	/**
-	 * Provided for backward compatibility, use Chart.helpers.easing.effects instead.
-	 * @function Chart.helpers.easingEffects
-	 * @deprecated since version 2.7.0
-	 * @todo remove at version 3
-	 * @private
-	 */
-	Chart.helpers.easingEffects = effects;
-
-	return Chart.helpers.easing;
+module.exports = {
+	effects: effects
 };
+
+// DEPRECATIONS
+
+/**
+ * Provided for backward compatibility, use Chart.helpers.easing.effects instead.
+ * @function Chart.helpers.easingEffects
+ * @deprecated since version 2.7.0
+ * @todo remove at version 3
+ * @private
+ */
+helpers.easingEffects = effects;

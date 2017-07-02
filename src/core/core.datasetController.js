@@ -1,8 +1,8 @@
 'use strict';
 
-module.exports = function(Chart) {
+var helpers = require('../helpers/index');
 
-	var helpers = Chart.helpers;
+module.exports = function(Chart) {
 
 	var arrayEvents = ['push', 'pop', 'shift', 'splice', 'unshift'];
 

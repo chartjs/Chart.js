@@ -1,8 +1,8 @@
 'use strict';
 
-module.exports = function(Chart) {
+var helpers = require('../helpers/index');
 
-	var helpers = Chart.helpers;
+module.exports = function(Chart) {
 
 	Chart.defaults.line = {
 		showLines: true,
@@ -285,13 +285,13 @@ module.exports = function(Chart) {
 			var ilen = points.length;
 			var i = 0;
 
-			Chart.helpers.canvas.clipArea(chart.ctx, area);
+			helpers.canvas.clipArea(chart.ctx, area);
 
 			if (lineEnabled(me.getDataset(), chart.options)) {
 				meta.dataset.draw();
 			}
 
-			Chart.helpers.canvas.unclipArea(chart.ctx);
+			helpers.canvas.unclipArea(chart.ctx);
 
 			// Draw the points
 			for (; i<ilen; ++i) {

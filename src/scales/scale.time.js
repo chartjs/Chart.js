@@ -4,9 +4,10 @@
 var moment = require('moment');
 moment = typeof(moment) === 'function' ? moment : window.moment;
 
+var helpers = require('../helpers/index');
+
 module.exports = function(Chart) {
 
-	var helpers = Chart.helpers;
 	var timeHelpers = helpers.time;
 
 	var defaultConfig = {

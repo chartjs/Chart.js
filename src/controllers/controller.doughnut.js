@@ -1,9 +1,10 @@
 'use strict';
 
+var helpers = require('../helpers/index');
+
 module.exports = function(Chart) {
 
-	var helpers = Chart.helpers,
-		defaults = Chart.defaults;
+	var defaults = Chart.defaults;
 
 	defaults.doughnut = {
 		animation: {

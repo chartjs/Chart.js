@@ -1,8 +1,9 @@
 'use strict';
 
+var helpers = require('../helpers/index');
+
 module.exports = function(Chart) {
 
-	var helpers = Chart.helpers;
 	var globalDefaults = Chart.defaults.global;
 
 	Chart.defaults.global.elements.line = {

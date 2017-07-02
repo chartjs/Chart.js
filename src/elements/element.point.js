@@ -1,9 +1,10 @@
 'use strict';
 
+var helpers = require('../helpers/index');
+
 module.exports = function(Chart) {
 
-	var helpers = Chart.helpers,
-		globalOpts = Chart.defaults.global,
+	var globalOpts = Chart.defaults.global,
 		defaultColor = globalOpts.defaultColor;
 
 	globalOpts.elements.point = {
@@ -64,7 +65,7 @@ module.exports = function(Chart) {
 			var radius = vm.radius;
 			var x = vm.x;
 			var y = vm.y;
-			var color = Chart.helpers.color;
+			var color = helpers.color;
 			var errMargin = 1.01; // 1.01 is margin for Accumulated error. (Especially Edge, IE.)
 			var ratio = 0;
 
@@ -94,7 +95,7 @@ module.exports = function(Chart) {
 				ctx.fillStyle = color(ctx.fillStyle).alpha(ratio).rgbString();
 			}
 
-			Chart.helpers.canvas.drawPoint(ctx, pointStyle, radius, x, y);
+			helpers.canvas.drawPoint(ctx, pointStyle, radius, x, y);
 		}
 	});
 };

@@ -1,9 +1,10 @@
 'use strict';
 
+var helpers = require('../helpers/index');
+
 module.exports = function(Chart) {
 
-	var helpers = Chart.helpers,
-		globalOpts = Chart.defaults.global;
+	var globalOpts = Chart.defaults.global;
 
 	globalOpts.elements.arc = {
 		backgroundColor: globalOpts.defaultColor,

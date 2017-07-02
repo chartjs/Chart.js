@@ -1,10 +1,9 @@
 'use strict';
 
 var color = require('chartjs-color');
+var helpers = require('../helpers/index');
 
 module.exports = function(Chart) {
-
-	var helpers = Chart.helpers;
 
 	function interpolate(start, view, model, ease) {
 		var keys = Object.keys(model);

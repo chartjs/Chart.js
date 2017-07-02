@@ -1,9 +1,10 @@
 'use strict';
 
+var helpers = require('../helpers/index');
+
 module.exports = function(Chart) {
 
-	var helpers = Chart.helpers,
-		noop = helpers.noop;
+	var noop = helpers.noop;
 
 	Chart.LinearScaleBase = Chart.Scale.extend({
 		handleTickRangeOptions: function() {

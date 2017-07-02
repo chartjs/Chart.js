@@ -1,8 +1,9 @@
 'use strict';
 
+var helpers = require('../helpers/index');
+
 // Chart.Platform implementation for targeting a web browser
-module.exports = function(Chart) {
-	var helpers = Chart.helpers;
+module.exports = function() {
 
 	// DOM event types -> Chart.js event types.
 	// Note: only events with different types are mapped.

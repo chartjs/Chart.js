@@ -3,11 +3,10 @@
  */
 var Chart = require('./core/core')();
 
-require('./helpers/helpers.core')(Chart);
-require('./helpers/helpers.easing')(Chart);
+Chart.helpers = require('./helpers/index');
+
+// @todo dispatch these helpers into appropriated helpers/helpers.* file and write unit tests!
 require('./core/core.helpers')(Chart);
-require('./helpers/helpers.time')(Chart);
-require('./helpers/helpers.canvas')(Chart);
 
 require('./platforms/platform')(Chart);
 require('./core/core.element')(Chart);
@@ -66,3 +65,14 @@ module.exports = Chart;
 if (typeof window !== 'undefined') {
 	window.Chart = Chart;
 }
+
+// DEPRECATIONS
+
+/**
+ * Provided for backward compatibility, use Chart.helpers.canvas instead.
+ * @namespace Chart.canvasHelpers
+ * @deprecated since version 2.6.0
+ * @todo remove at version 3
+ * @private
+ */
+Chart.canvasHelpers = Chart.helpers.canvas;
