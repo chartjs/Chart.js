@@ -401,7 +401,7 @@ describe('Test the radial linear scale', function() {
 			y: 275,
 		});
 
-		chart.scale.options.reverse = true;
+		chart.scale.options.ticks.reverse = true;
 		chart.update();
 
 		expect(chart.scale.getDistanceFromCenterForValue(chart.scale.min)).toBe(233);
