@@ -128,6 +128,19 @@ myLineChart.getElementAtEvent(e);
 // => returns the first element at the event point.
 ```
 
+To get an item that was clicked on, `getElementAtEvent` can be used.
+
+```javascript
+function clickHandler(evt) {
+    var item = myChart.getElementAtEvent(evt)[0];
+
+    if (item) {
+        var label = myChart.data.labels[firstPoint._index];
+        var value = myChart.data.datasets[firstPoint._datasetIndex].data[firstPoint._index];
+    }
+}
+```
+
 ## .getElementsAtEvent(e)
 
 Looks for the element under the event point, then returns all elements at the same data index. This is used internally for 'label' mode highlighting.
