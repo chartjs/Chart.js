@@ -41,7 +41,7 @@ Finds the first item that intersects the point and returns it. Behaves like 'nea
 See `'index'` mode
 
 ## index
-Finds item at the same index. If the `intersect` setting is true, the first intersecting item is used to determine the index in the data. If `intersect` false the nearest item is used to determine the index. 
+Finds item at the same index. If the `intersect` setting is true, the first intersecting item is used to determine the index in the data. If `intersect` false the nearest item, in the x direction, is used to determine the index. 
 
 ```javascript
 var chart = new Chart(ctx, {
@@ -50,6 +50,21 @@ var chart = new Chart(ctx, {
     options: {
         tooltips: {
             mode: 'index'
+        }
+    }
+})
+```
+
+## index-y
+Finds the item at the same index along the Y axis. If the `intersect` setting is true, the first intersecting item is used to determine the index in the data. If `intersect` false the nearest item, in the y direction, is used to determine the index. 
+
+```javascript
+var chart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+        tooltips: {
+            mode: 'index-y'
         }
     }
 })
