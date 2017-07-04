@@ -730,4 +730,24 @@ describe('Line controller tests', function() {
 
 		expect(point._model.borderWidth).toBe(0);
 	});
+
+	it('should allow an array as the point border width setting', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: [10, 15, 0, -4],
+					label: 'dataset1',
+					pointBorderWidth: [1, 2, 3, 4]
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4']
+			}
+		});
+
+		var meta = chart.getDatasetMeta(0);
+		expect(meta.data[0]._model.borderWidth).toBe(1);
+		expect(meta.data[1]._model.borderWidth).toBe(2);
+		expect(meta.data[2]._model.borderWidth).toBe(3);
+		expect(meta.data[3]._model.borderWidth).toBe(4);
+	});
 });

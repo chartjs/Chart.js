@@ -137,7 +137,7 @@ module.exports = function(Chart) {
 
 			if (!isNaN(custom.borderWidth)) {
 				borderWidth = custom.borderWidth;
-			} else if (!isNaN(dataset.pointBorderWidth)) {
+			} else if (!isNaN(dataset.pointBorderWidth) || helpers.isArray(dataset.pointBorderWidth)) {
 				borderWidth = helpers.valueAtIndexOrDefault(dataset.pointBorderWidth, index, borderWidth);
 			} else if (!isNaN(dataset.borderWidth)) {
 				borderWidth = dataset.borderWidth;
