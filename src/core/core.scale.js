@@ -61,20 +61,6 @@ module.exports = function(Chart) {
 	}
 
 	/**
-	 * Calculate the mid point between 2 values
-	 *
-	 * This is really the same thing as the average
-	 *
-	 * @param point1 numeric value
-	 * @param point2 numeric value
-	 * @return the mid point between point1 and point2
-	 */
-	function midPoint(point1, point2) {
-		return (point1 + point2) / 2;
-		// return point1 + ((point2 - point1) / 2);
-	}
-
-	/**
 	 * Calculate text origin and alignment
 	 *
 	 * Center origin and alignment prefered, but shift to start or end when using
@@ -87,29 +73,28 @@ module.exports = function(Chart) {
 	 * @return object with text placment origin coordinate and alignment
 	 */
 	function useEndOnTruncate(isForward, centerPoint, halfWidth, maxExtent) {
-		var positionProperties = {
-			coord: centerPoint,
-			alignment: 'center'
-		};
-		// Do the start trunction check first to get 'start' alignment when both
-		// ends would truncate
+		var coord = centerPoint;
+		var align = 'center';
 		if (isForward) {// right side up text
 			if (centerPoint < halfWidth) {// would truncate the start
-				positionProperties.coord = 0;
-				positionProperties.alignment = 'start';
+				coord = 0;
+				align = 'start';
 			} else if (centerPoint + halfWidth > maxExtent) {// would truncate the end
-				positionProperties.coord = maxExtent;
-				positionProperties.alignment = 'end';
+				coord = maxExtent;
+				align = 'end';
 			}// end of (forward) text truncation checks
 		} else if (centerPoint + halfWidth > maxExtent) {// would truncate the start
-			positionProperties.coord = maxExtent;
-			positionProperties.alignment = 'start';
+			coord = maxExtent;
+			align = 'start';
 		} else if (centerPoint < halfWidth) {// would truncate the end
-			positionProperties.coord = 0;
-			positionProperties.alignment = 'end';
+			coord = 0;
+			align = 'end';
 		}// end of (reverse) text truncation checks
 
-		return positionProperties;
+		return {
+			origin: coord,
+			textAlign: align
+		};
 	}// ./useEndOnTruncate(…){
 
 	/**
@@ -129,40 +114,44 @@ module.exports = function(Chart) {
 	 */
 	function constrainedTextCenter(ctx, text, cnstr) {
 		var txtProperties;
+		var x;
+		var y;
+		var rotation = 0;
+		var halfTextWidth = ctx.measureText(text).width / 2;
 		var isForward = cnstr.position !== 'left'; // All text is right side up,
 			// except for Y Axis placed on the left of the chart
-		var halfTextWidth = ctx.measureText(text).width / 2;
-		var out = {
-			positionX: 0,
-			positionY: 0,
-			rotation: 0,
-			hAlign: 'center'
-		};
+		var container = cnstr.container;
 
-		if (cnstr.isHorizontal) {// is horizontal text
-			txtProperties = useEndOnTruncate(isForward,
-				midPoint(cnstr.container.left, cnstr.container.right),
+		if (cnstr.isHorizontal) {
+			txtProperties = useEndOnTruncate(
+				isForward,
+				(container.left + container.right) / 2, // chart body horizontal midpoint
 				halfTextWidth,
-				cnstr.container.right + cnstr.container.margins.right);
-			out.positionX = txtProperties.coord;
+				container.right + container.margins.right);// canvas right maximum
+			x = txtProperties.origin;
 
-			out.positionY = cnstr.position === 'bottom' ?
-				cnstr.container.bottom - cnstr.verticalOffset :
-				cnstr.container.top + cnstr.verticalOffset;
+			y = cnstr.position === 'bottom' ?
+				container.bottom - cnstr.baselineOffset :
+				container.top + cnstr.baselineOffset;
 		} else {// not (cnstr.isHorizontal) // is vertical text
-			txtProperties = useEndOnTruncate(isForward,
-				midPoint(cnstr.container.top, cnstr.container.bottom),
+			txtProperties = useEndOnTruncate(
+				isForward,
+				(container.top + container.bottom) / 2, // chart body vertical midpoint
 				halfTextWidth,
-				cnstr.container.bottom + cnstr.container.margins.bottom);
-			out.positionY = txtProperties.coord;
+				container.bottom + container.margins.bottom);// canvas bottom maximum
+			y = txtProperties.origin;
 
-			out.positionX = isForward ? // is text on the right side of the chart ?
-				cnstr.container.right - cnstr.verticalOffset :
-				cnstr.container.left + cnstr.verticalOffset;
-			out.rotation = isForward ? 0.5 * Math.PI : -0.5 * Math.PI;
+			x = isForward ? // is text on the right side of the chart ?
+				container.right - cnstr.baselineOffset :
+				container.left + cnstr.baselineOffset;
+			rotation = isForward ? 0.5 * Math.PI : -0.5 * Math.PI;
 		}// ./else not (cnstr.isHorizontal)
-		out.hAlign = txtProperties.alignment;
-		return out;
+		return {
+			x: x,
+			y: y,
+			rotation: rotation,
+			textAlign: txtProperties.textAlign
+		};
 	}// ./constrainedTextCenter(…)
 
 	function parseFontOptions(options) {
@@ -842,16 +831,19 @@ module.exports = function(Chart) {
 				context.fillStyle = scaleLabelFontColor; // render in correct colour
 				context.font = scaleLabelFont.font;
 
-				var placement = constrainedTextCenter(context, scaleLabel.labelString, {
-					container: me,
-					isHorizontal: isHorizontal,
-					verticalOffset: helpers.valueOrDefault(scaleLabel.lineHeight, scaleLabelFont.size) / 2,
-					position: options.position
-				});
+				var placement = constrainedTextCenter(
+					context,
+					scaleLabel.labelString, {
+						container: me,
+						isHorizontal: isHorizontal,
+						baselineOffset: helpers.valueOrDefault(scaleLabel.lineHeight, scaleLabelFont.size) / 2,
+						position: options.position
+					}
+				);
 
-				context.translate(placement.positionX, placement.positionY);
+				context.translate(placement.x, placement.y);
 				context.rotate(placement.rotation);
-				context.textAlign = placement.hAlign;
+				context.textAlign = placement.textAlign;
 				context.textBaseline = 'middle';
 				context.fillText(scaleLabel.labelString, 0, 0);
 				context.restore();
