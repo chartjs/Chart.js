@@ -484,7 +484,7 @@ module.exports = function(Chart) {
 					easing: config.easing || animationOptions.easing,
 
 					render: function(chart, animationObject) {
-						var easingFunction = helpers.easingEffects[animationObject.easing];
+						var easingFunction = helpers.easing.effects[animationObject.easing];
 						var currentStep = animationObject.currentStep;
 						var stepDecimal = currentStep / animationObject.numSteps;
 
