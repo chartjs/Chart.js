@@ -84,6 +84,13 @@ describe('Deprecations', function() {
 			});
 		});
 
+		describe('Chart.helpers.easingEffects', function() {
+			it('should be defined and an alias of Chart.helpers.easing.effects', function() {
+				expect(Chart.helpers.easingEffects).toBeDefined();
+				expect(Chart.helpers.easingEffects).toBe(Chart.helpers.easing.effects);
+			});
+		});
+
 		describe('Chart.helpers.drawRoundedRectangle', function() {
 			it('should be defined and a function', function() {
 				expect(Chart.helpers.drawRoundedRectangle).toBeDefined();

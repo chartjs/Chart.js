@@ -4,6 +4,7 @@
 var Chart = require('./core/core')();
 
 require('./helpers/helpers.core')(Chart);
+require('./helpers/helpers.easing')(Chart);
 require('./core/core.helpers')(Chart);
 require('./helpers/helpers.time')(Chart);
 require('./helpers/helpers.canvas')(Chart);
