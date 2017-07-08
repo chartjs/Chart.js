@@ -131,9 +131,9 @@ var effects = {
 			return 1;
 		}
 		if (!p) {
-			p = 1 * 0.3;
+			p = 0.3;
 		}
-		if (a < Math.abs(1)) {
+		if (a < 1) {
 			a = 1;
 			s = p / 4;
 		} else {
@@ -153,9 +153,9 @@ var effects = {
 			return 1;
 		}
 		if (!p) {
-			p = 1 * 0.3;
+			p = 0.3;
 		}
-		if (a < Math.abs(1)) {
+		if (a < 1) {
 			a = 1;
 			s = p / 4;
 		} else {
@@ -175,9 +175,9 @@ var effects = {
 			return 1;
 		}
 		if (!p) {
-			p = 0.3 * 1.5;
+			p = 0.45;
 		}
-		if (a < Math.abs(1)) {
+		if (a < 1) {
 			a = 1;
 			s = p / 4;
 		} else {
