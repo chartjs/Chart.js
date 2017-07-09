@@ -56,7 +56,7 @@ The following options can be included in a polar area chart dataset to configure
 
 ## Config Options
 
-These are the customisation options specific to Polar Area charts. These options are merged with the [global chart configuration options](#global-chart-configuration), and form the options of the chart.
+These are the customisation options specific to Polar Area charts. These options are merged with the [global chart default options](#default-options), and form the options of the chart.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

@@ -73,7 +73,7 @@ Some properties can be specified as an array. If these are set to an array value
 | `backgroundColor` | `Color/Color[]` | The fill color of the bar. See [Colors](../general/colors.md#colors)
 | `borderColor` | `Color/Color[]` | The color of the bar border. See [Colors](../general/colors.md#colors)
 | `borderWidth` | `Number/Number[]` | The stroke width of the bar in pixels.
-| `borderSkipped` | `String` | Which edge to skip drawing the border for. [more...](#borderSkipped)
+| `borderSkipped` | `String` | Which edge to skip drawing the border for. [more...](#borderskipped)
 | `hoverBackgroundColor` | `Color/Color[]` | The fill colour of the bars when hovered.
 | `hoverBorderColor` | `Color/Color[]` | The stroke colour of the bars when hovered.
 | `hoverBorderWidth` | `Number/Number[]` | The stroke width of the bars when hovered.
@@ -93,11 +93,11 @@ The bar chart defines the following configuration options. These options are mer
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `barPercentage` | `Number` | `0.9` | Percent (0-1) of the available width each bar should be within the category percentage. 1.0 will take the whole category width and put the bars right next to each other. [more...](#bar-chart-barpercentage-vs-categorypercentage)
-| `categoryPercentage` | `Number` | `0.8` | Percent (0-1) of the available width (the space between the gridlines for small datasets) for each data-point to use for the bars. [more...](#bar-chart-barpercentage-vs-categorypercentage)
+| `barPercentage` | `Number` | `0.9` | Percent (0-1) of the available width each bar should be within the category percentage. 1.0 will take the whole category width and put the bars right next to each other. [more...](#barpercentage-vs-categorypercentage)
+| `categoryPercentage` | `Number` | `0.8` | Percent (0-1) of the available width (the space between the gridlines for small datasets) for each data-point to use for the bars. [more...](#barpercentage-vs-categorypercentage)
 | `barThickness` | `Number` | | Manually set width of each bar in pixels. If not set, the bars are sized automatically using `barPercentage` and `categoryPercentage`;
 | `maxBarThickness` | `Number` | | Set this to ensure that the automatically sized bars are not sized thicker than this. Only works if barThickness is not set (automatic sizing is enabled).
-| `gridLines.offsetGridLines` | `Boolean` | `true` | If true, the bars for a particular data point fall between the grid lines. If false, the grid line will go right down the middle of the bars. [more...](#offsetGridLines)
+| `gridLines.offsetGridLines` | `Boolean` | `true` | If true, the bars for a particular data point fall between the grid lines. If false, the grid line will go right down the middle of the bars. [more...](#offsetgridlines)
 
 ### offsetGridLines
 If true, the bars for a particular data point fall between the grid lines. If false, the grid line will go right down the middle of the bars. It is unlikely that this will ever need to be changed in practice. It exists more as a way to reuse the axis code by configuring the existing axis slightly differently.
@@ -235,6 +235,6 @@ var myBarChart = new Chart(ctx, {
 ```
 
 ## Config Options
-The configuration options for the horizontal bar chart are the same as for the [bar chart](../bar/config-options.md#config-options). However, any options specified on the x axis in a bar chart, are applied to the y axis in a horizontal bar chart.
+The configuration options for the horizontal bar chart are the same as for the [bar chart](#configuration-options). However, any options specified on the x axis in a bar chart, are applied to the y axis in a horizontal bar chart.
 
 The default horizontal bar configuration is specified in `Chart.defaults.horizontalBar`.

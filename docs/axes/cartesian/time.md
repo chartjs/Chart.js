@@ -13,9 +13,9 @@ The following options are provided by the time scale. They are all located in th
 | `max` | [Time](#date-formats) | | If defined, this will override the data maximum
 | `min` | [Time](#date-formats) | | If defined, this will override the data minimum
 | `parser` | `String` or `Function` | | Custom parser for dates. [more...](#parser)
-| `round` | `String` | `false` | If defined, dates will be rounded to the start of this unit. See [Time Units](#scales-time-units) below for the allowed units.
+| `round` | `String` | `false` | If defined, dates will be rounded to the start of this unit. See [Time Units](#time-units) below for the allowed units.
 | `tooltipFormat` | `String` | | The moment js format string to use for the tooltip.
-| `unit` | `String` | `false` | If defined, will force the unit to be a certain type. See [Time Units](#scales-time-units) section below for details.
+| `unit` | `String` | `false` | If defined, will force the unit to be a certain type. See [Time Units](#time-units) section below for details.
 | `stepSize` | `Number` | `1` | The number of units between grid lines.
 | `minUnit` | `String` | `'millisecond'` | The minimum display format to be used for a time unit.
 
