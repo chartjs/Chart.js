@@ -26,7 +26,7 @@ module.exports = function(Chart) {
 			var label = chartData.labels && index < chartData.labels.length ? chartData.labels[index] : '';
 			var value = chartData.datasets[datasetIndex].data[index];
 
-			if (value !== null && typeof value === 'object') {
+			if (helpers.isObject(value)) {
 				label = me.getRightValue(value);
 			}
 
@@ -37,7 +37,7 @@ module.exports = function(Chart) {
 
 			return label;
 		},
-    // Function to format an individual tick mark
+		// Function to format an individual tick mark
 		tickFormatFunction: function(tick, index, ticks) {
 			var formattedTick;
 			var tickClone = tick.clone();
@@ -57,14 +57,8 @@ module.exports = function(Chart) {
 
 			var callback = helpers.valueOrDefault(tickOpts.callback, tickOpts.userCallback);
 
-			if (callback) {
-				return {
-					value: callback(formattedTick, index, ticks),
-					major: major
-				};
-			}
 			return {
-				value: formattedTick,
+				value: callback ? callback(formattedTick, index, ticks) : formattedTick,
 				major: major
 			};
 		},

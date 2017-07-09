@@ -58,54 +58,61 @@ module.exports = function(Chart) {
 		determineDataLimits: function() {
 			var me = this;
 			var timeOpts = me.options.time;
-
 			var chartData = me.chart.data;
 			var parsedData = {
 				labels: [],
 				datasets: []
 			};
 
-			helpers.each(me.getLabels(), function(label, labelIndex) {
-				var labelMoment = timeHelpers.parseTime(me, label);
+			var labels = me.getLabels();
+			if (labels) {
+				for (var labelIndex = 0; labelIndex < labels.length; labelIndex++) {
+					var label = labels[labelIndex];
+					var labelMoment = timeHelpers.parseTime(me, label);
 
-				if (labelMoment.isValid()) {
-					// We need to round the time
-					if (timeOpts.round) {
-						labelMoment.startOf(timeOpts.round);
-					}
-					// Store this value for later
-					parsedData.labels[labelIndex] = labelMoment.valueOf();
-				}
-			});
-
-			helpers.each(chartData.datasets, function(dataset, datasetIndex) {
-				var timestamps = [];
-
-				if (typeof dataset.data[0] === 'object' && dataset.data[0] !== null && me.chart.isDatasetVisible(datasetIndex)) {
-					// We have potential point data, so we need to parse this
-					helpers.each(dataset.data, function(value, dataIndex) {
-						var dataMoment = timeHelpers.parseTime(me, me.getRightValue(value));
-
-						if (dataMoment.isValid()) {
-							if (timeOpts.round) {
-								dataMoment.startOf(timeOpts.round);
-							}
-
-							timestamps[dataIndex] = dataMoment.valueOf();
+					if (labelMoment.isValid()) {
+						// We need to round the time
+						if (timeOpts.round) {
+							labelMoment.startOf(timeOpts.round);
 						}
-					});
-				} else {
-					// We have no x coordinates, so use the ones from the labels
-					timestamps = parsedData.labels.slice();
+						// Store this value for later
+						parsedData.labels[labelIndex] = labelMoment.valueOf();
+					}
 				}
+			}
 
-				parsedData.datasets[datasetIndex] = timestamps;
-			});
+			if (chartData.datasets) {
+				for (var datasetIndex = 0; datasetIndex < chartData.datasets.length; datasetIndex++) {
+					var dataset = chartData.datasets[datasetIndex];
+					var timestamps = [];
+
+					if (typeof dataset.data[0] === 'object' && dataset.data[0] !== null && me.chart.isDatasetVisible(datasetIndex)) {
+						// We have potential point data, so we need to parse this
+						for (var dataIndex = 0; dataIndex < dataset.data.length; dataIndex++) {
+							var value = dataset.data[dataIndex];
+							var dataMoment = timeHelpers.parseTime(me, me.getRightValue(value));
+
+							if (dataMoment.isValid()) {
+								if (timeOpts.round) {
+									dataMoment.startOf(timeOpts.round);
+								}
+
+								timestamps[dataIndex] = dataMoment.valueOf();
+							}
+						}
+					} else {
+						// We have no x coordinates, so use the ones from the labels
+						timestamps = parsedData.labels.slice();
+					}
+
+					parsedData.datasets[datasetIndex] = timestamps;
+				}
+			}
 
 			var allTimestamps = parsedData.labels;
-			helpers.each(parsedData.datasets, function(value) {
-				allTimestamps = allTimestamps.concat(value);
-			});
+			for (var parsedDatasetIndex = 0; parsedDatasetIndex < parsedData.datasets.length; parsedDatasetIndex++) {
+				allTimestamps = allTimestamps.concat(parsedData.datasets[parsedDatasetIndex]);
+			}
 
 			allTimestamps = arrayUnique(allTimestamps).sort(function(a, b) {
 				return a - b;
