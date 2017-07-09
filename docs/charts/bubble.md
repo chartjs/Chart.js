@@ -53,7 +53,7 @@ All properties, except `label` can be specified as an array. If these are set to
 
 ## Config Options
 
-The bubble chart has no unique configuration options. To configure options common to all of the bubbles, the [point element options](../configuration/elements/point.md#point-configuration) are used.
+The bubble chart has no unique configuration options. To configure options common to all of the bubbles, the [point element options](../configuration/elements.md#point-configuration) are used.
 
 ## Default Options
 
