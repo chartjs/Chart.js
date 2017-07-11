@@ -39,16 +39,6 @@ module.exports = function(Chart) {
 	};
 
 	var TimeScale = Chart.TimeScaleBase.extend({
-		initialize: function() {
-			if (!moment) {
-				throw new Error('Chart.js - Moment.js could not be found! You must include it before Chart.js to use the time scale. Download at https://momentjs.com');
-			}
-
-			this.mergeTicksOptions();
-
-			Chart.Scale.prototype.initialize.call(this);
-		},
-
 		determineDataLimits: function() {
 			var me = this;
 			var timeOpts = me.options.time;

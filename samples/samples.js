@@ -105,7 +105,7 @@
 			path: 'scales/logarithmic/scatter.html'
 		}]
 	}, {
-		title: 'Time and TimeSeries scale',
+		title: 'Time scale',
 		items: [{
 			title: 'Line',
 			path: 'scales/time/line.html'

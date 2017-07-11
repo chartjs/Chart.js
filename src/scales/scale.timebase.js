@@ -65,9 +65,13 @@ module.exports = function(Chart) {
 		convertTicksToLabels: function() {
 			var me = this;
 			me.ticksAsTimestamps = me.ticks;
-			me.ticks = me.ticks.map(function(tick) {
-				return moment(tick);
-			}).map(me.tickFormatFunction, me);
+
+			var formattedTicks = [];
+			for (var tickIndex = 0; tickIndex < me.ticks.length; tickIndex++) {
+				formattedTicks.push(me.tickFormatFunction(moment(me.ticks[tickIndex])));
+			}
+
+			me.ticks = formattedTicks;
 		},
 		// Crude approximation of what the label width might be
 		getLabelWidth: function(label) {
