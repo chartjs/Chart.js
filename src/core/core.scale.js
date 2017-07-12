@@ -66,30 +66,35 @@ module.exports = function(Chart) {
 	 * Center origin and alignment prefered, but shift to start or end when using
 	 * center would cause truncation.
 	 *
+	 * @param ctx CanvasRenderingContext2D drawing context
+	 * @param cnstr object with text placement contraints
 	 * @param isForward true when the text is to be placed right side up
 	 * @param centerPoint coordinate value to center text in the target area
 	 * @param halfWidth one half the width of the text to be placed
 	 * @param maxExtend the maximum coordinate beyond which truncation will occur
 	 * @return object with text placment origin coordinate and alignment
 	 */
-	function useEndOnTruncate(isForward, centerPoint, halfWidth, maxExtent) {
+	function useEndOnTruncate(ctx, cnstr, isForward, centerPoint, text, maxExtent) {
 		var coord = centerPoint;
 		var align = 'center';
-		if (isForward) {// right side up text
-			if (centerPoint < halfWidth) {// would truncate the start
-				coord = 0;
-				align = 'start';
-			} else if (centerPoint + halfWidth > maxExtent) {// would truncate the end
+		if (cnstr.constrain === true) {// Really true, not just truthy
+			var halfWidth = ctx.measureText(text).width / 2;
+			if (isForward) {// right side up text
+				if (centerPoint < halfWidth) {// would truncate the start
+					coord = 0;
+					align = 'start';
+				} else if (centerPoint + halfWidth > maxExtent) {// would truncate the end
+					coord = maxExtent;
+					align = 'end';
+				}// end of (forward) text truncation checks
+			} else if (centerPoint + halfWidth > maxExtent) {// would truncate the start
 				coord = maxExtent;
+				align = 'start';
+			} else if (centerPoint < halfWidth) {// would truncate the end
+				coord = 0;
 				align = 'end';
-			}// end of (forward) text truncation checks
-		} else if (centerPoint + halfWidth > maxExtent) {// would truncate the start
-			coord = maxExtent;
-			align = 'start';
-		} else if (centerPoint < halfWidth) {// would truncate the end
-			coord = 0;
-			align = 'end';
-		}// end of (reverse) text truncation checks
+			}// end of (reverse) text truncation checks
+		}// ./if (cnstr.constrain)
 
 		return {
 			origin: coord,
@@ -117,16 +122,17 @@ module.exports = function(Chart) {
 		var x;
 		var y;
 		var rotation = 0;
-		var halfTextWidth = ctx.measureText(text).width / 2;
 		var isForward = cnstr.position !== 'left'; // All text is right side up,
 			// except for Y Axis placed on the left of the chart
 		var container = cnstr.container;
 
 		if (cnstr.isHorizontal) {
 			txtProperties = useEndOnTruncate(
+				ctx,
+				cnstr,
 				isForward,
 				(container.left + container.right) / 2, // chart body horizontal midpoint
-				halfTextWidth,
+				text,
 				container.right + container.margins.right);// canvas right maximum
 			x = txtProperties.origin;
 
@@ -135,9 +141,11 @@ module.exports = function(Chart) {
 				container.top + cnstr.baselineOffset;
 		} else {// not (cnstr.isHorizontal) // is vertical text
 			txtProperties = useEndOnTruncate(
+				ctx,
+				cnstr,
 				isForward,
 				(container.top + container.bottom) / 2, // chart body vertical midpoint
-				halfTextWidth,
+				text,
 				container.bottom + container.margins.bottom);// canvas bottom maximum
 			y = txtProperties.origin;
 
@@ -837,6 +845,7 @@ module.exports = function(Chart) {
 						container: me,
 						isHorizontal: isHorizontal,
 						baselineOffset: helpers.valueOrDefault(scaleLabel.lineHeight, scaleLabelFont.size) / 2,
+						constrain: helpers.valueOrDefault(scaleLabel.constrain, false),
 						position: options.position
 					}
 				);
