@@ -16,7 +16,8 @@
                         "display": false
                     },
                     "gridLines":{
-                        "display": false
+                        "display": false,
+                        "drawBorder": false
                     }
                 }],
                 "yAxes": [{
@@ -24,7 +25,8 @@
                         "labelOffset": 25
                     },
                     "gridLines":{
-                        "display": false
+                        "display": false,
+                        "drawBorder": false
                     }
                 }]
             }
