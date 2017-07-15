@@ -69,9 +69,9 @@ All point* properties can be specified as an array. If these are set to an array
 | Name | Type | Description
 | ---- | ---- | -----------
 | `label` | `String` | The label for the dataset which appears in the legend and tooltips.
-| `backgroundColor` | `Color/Color[]` | The fill color under the line. See [Colors](../general/colors.md#colors)
-| `borderColor` | `Color/Color[]` | The color of the line. See [Colors](../general/colors.md#colors)
-| `borderWidth` | `Number/Number[]` | The width of the line in pixels.
+| `backgroundColor` | `Color` | The fill color under the line. See [Colors](../general/colors.md#colors)
+| `borderColor` | `Color` | The color of the line. See [Colors](../general/colors.md#colors)
+| `borderWidth` | `Number` | The width of the line in pixels.
 | `borderDash` | `Number[]` | Length and spacing of dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
 | `borderDashOffset` | `Number` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
 | `borderCapStyle` | `String` | Cap style of the line. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap)
