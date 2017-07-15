@@ -15,7 +15,7 @@ module.exports = function(Chart) {
 		*/
 		getLabels: function() {
 			var data = this.chart.data;
-			return (this.isHorizontal() ? data.xLabels : data.yLabels) || data.labels;
+			return this.options.labels || (this.isHorizontal() ? data.xLabels : data.yLabels) || data.labels;
 		},
 
 		determineDataLimits: function() {
