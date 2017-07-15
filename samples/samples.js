@@ -115,6 +115,9 @@
 		}, {
 			title: 'Combo',
 			path: 'scales/time/combo.html'
+		}, {
+			title: 'Line (timeseries scale)',
+			path: 'scales/time/line-timeseries.html'
 		}]
 	}, {
 		title: 'Scale options',

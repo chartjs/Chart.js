@@ -34,7 +34,7 @@
     * [Category](axes/cartesian/category.md)
     * [Linear](axes/cartesian/linear.md)
     * [Logarithmic](axes/cartesian/logarithmic.md)
-    * [Time](axes/cartesian/time.md) 
+    * [Time and TimeSeries](axes/cartesian/time.md)
   * [Radial](axes/radial/README.md)
     * [Linear](axes/radial/linear.md)
   * [Labelling](axes/labelling.md)

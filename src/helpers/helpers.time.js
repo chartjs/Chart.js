@@ -219,7 +219,6 @@ module.exports = function(Chart) {
 				max: niceMax
 			});
 		}
-
 	};
 
 };
