@@ -1,8 +1,9 @@
 'use strict';
 
+var helpers = require('../helpers/index');
+
 module.exports = function(Chart) {
 
-	var helpers = Chart.helpers;
 	var layout = Chart.layoutService;
 	var noop = helpers.noop;
 

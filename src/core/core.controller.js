@@ -1,8 +1,8 @@
 'use strict';
 
-module.exports = function(Chart) {
+var helpers = require('../helpers/index');
 
-	var helpers = Chart.helpers;
+module.exports = function(Chart) {
 	var plugins = Chart.plugins;
 	var platform = Chart.platform;
 

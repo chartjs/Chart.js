@@ -3,9 +3,9 @@
 'use strict';
 
 var color = require('chartjs-color');
+var helpers = require('../helpers/index');
 
 module.exports = function(Chart) {
-	var helpers = Chart.helpers;
 
 	// -- Basic js utility methods
 

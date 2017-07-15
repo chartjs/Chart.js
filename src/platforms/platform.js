@@ -1,8 +1,10 @@
 'use strict';
 
+var helpers = require('../helpers/index');
+
 // By default, select the browser (DOM) platform.
 // @TODO Make possible to select another platform at build time.
-var implementation = require('./platform.dom.js');
+var implementation = require('./platform.dom');
 
 module.exports = function(Chart) {
 	/**
@@ -65,5 +67,5 @@ module.exports = function(Chart) {
 	 * @prop {Number} y - The mouse y position, relative to the canvas (null for incompatible events)
 	 */
 
-	Chart.helpers.extend(Chart.platform, implementation(Chart));
+	helpers.extend(Chart.platform, implementation(Chart));
 };

@@ -1,8 +1,9 @@
 'use strict';
 
+var helpers = require('../helpers/index');
+
 module.exports = function(Chart) {
 
-	var helpers = Chart.helpers;
 	var layout = Chart.layoutService;
 	var noop = helpers.noop;
 
@@ -360,7 +361,7 @@ module.exports = function(Chart) {
 						var centerY = y + offSet;
 
 						// Draw pointStyle as legend symbol
-						Chart.helpers.canvas.drawPoint(ctx, legendItem.pointStyle, radius, centerX, centerY);
+						helpers.canvas.drawPoint(ctx, legendItem.pointStyle, radius, centerX, centerY);
 					} else {
 						// Draw box as legend symbol
 						if (!isLineWidthZero) {
