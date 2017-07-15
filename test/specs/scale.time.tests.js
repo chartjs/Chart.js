@@ -23,6 +23,12 @@ describe('Time scale tests', function() {
 		});
 	}
 
+	function fetchTickPositions(scale) {
+		return scale.ticks.map(function(tick, index) {
+			return scale.getPixelForTick(index);
+		});
+	}
+
 	beforeEach(function() {
 		// Need a time matcher for getValueFromPixel
 		jasmine.addMatchers({
@@ -83,6 +89,8 @@ describe('Time scale tests', function() {
 				minRotation: 0,
 				maxRotation: 50,
 				mirror: false,
+				mode: 'linear',
+				source: 'auto',
 				padding: 0,
 				reverse: false,
 				display: true,
@@ -417,7 +425,8 @@ describe('Time scale tests', function() {
 
 		var xScale = chart.scales.xScale0;
 		xScale.update(800, 200);
-		var step = xScale.ticksAsTimestamps[1] - xScale.ticksAsTimestamps[0];
+
+		var step = xScale.ticks[1].time - xScale.ticks[0].time;
 		var stepsAmount = Math.floor((xScale.max - xScale.min) / step);
 
 		it('should be bounded by nearest step year starts', function() {
@@ -533,5 +542,154 @@ describe('Time scale tests', function() {
 		expect(chart.scales['y-axis-0'].width).toEqual(0);
 		expect(chart.scales['y-axis-0'].maxWidth).toEqual(0);
 		expect(chart.width).toEqual(0);
+	});
+
+	describe('when ticks.source', function() {
+		describe('is "labels"', function() {
+			beforeEach(function() {
+				this.chart = window.acquireChart({
+					type: 'line',
+					data: {
+						labels: ['2017', '2019', '2020', '2025', '2042'],
+						datasets: [{data: [0, 1, 2, 3, 4, 5]}]
+					},
+					options: {
+						scales: {
+							xAxes: [{
+								id: 'x',
+								type: 'time',
+								time: {
+									parser: 'YYYY'
+								},
+								ticks: {
+									source: 'labels'
+								}
+							}]
+						}
+					}
+				});
+			});
+
+			it ('should generate ticks from "data.labels"', function() {
+				expect(getTicksValues(this.chart.scales.x.ticks)).toEqual([
+					'2017', '2019', '2020', '2025', '2042']);
+			});
+			it ('should extend ticks with min and max if outside the time range', function() {
+				var chart = this.chart;
+				var options = chart.options.scales.xAxes[0];
+
+				options.time.min = '2012';
+				options.time.max = '2051';
+				chart.update();
+
+				expect(getTicksValues(this.chart.scales.x.ticks)).toEqual([
+					'2012', '2017', '2019', '2020', '2025', '2042', '2051']);
+			});
+			it ('should shrink ticks with min and max if inside the time range', function() {
+				var chart = this.chart;
+				var options = chart.options.scales.xAxes[0];
+
+				options.time.min = '2022';
+				options.time.max = '2032';
+				chart.update();
+
+				expect(getTicksValues(this.chart.scales.x.ticks)).toEqual([
+					'2022', '2025', '2032']);
+			});
+			it ('should not duplicate ticks if min and max are the labels limits', function() {
+				var chart = this.chart;
+				var options = chart.options.scales.xAxes[0];
+
+				options.time.min = '2017';
+				options.time.max = '2042';
+				chart.update();
+
+				expect(getTicksValues(this.chart.scales.x.ticks)).toEqual([
+					'2017', '2019', '2020', '2025', '2042']);
+			});
+		});
+	});
+
+	describe('when ticks.mode', function() {
+		describe('is "series"', function() {
+			it ('should space ticks out with the same gap, whatever their time values', function() {
+				var chart = window.acquireChart({
+					type: 'line',
+					data: {
+						labels: ['2017', '2019', '2020', '2025', '2042'],
+						datasets: [{data: [0, 1, 2, 3, 4, 5]}]
+					},
+					options: {
+						scales: {
+							xAxes: [{
+								id: 'x',
+								type: 'time',
+								time: {
+									parser: 'YYYY'
+								},
+								ticks: {
+									mode: 'series',
+									source: 'labels'
+								}
+							}],
+							yAxes: [{
+								display: false
+							}]
+						}
+					}
+				});
+
+				var scale = chart.scales.x;
+				var start = scale.left;
+				var slice = scale.width / 4;
+				var pixels = fetchTickPositions(scale);
+
+				expect(pixels[0]).toBeCloseToPixel(start);
+				expect(pixels[1]).toBeCloseToPixel(start + slice);
+				expect(pixels[2]).toBeCloseToPixel(start + slice * 2);
+				expect(pixels[3]).toBeCloseToPixel(start + slice * 3);
+				expect(pixels[4]).toBeCloseToPixel(start + slice * 4);
+			});
+		});
+		describe('is "linear"', function() {
+			it ('should space ticks out with a gap relative to their time values', function() {
+				var chart = window.acquireChart({
+					type: 'line',
+					data: {
+						labels: ['2017', '2019', '2020', '2025', '2042'],
+						datasets: [{data: [0, 1, 2, 3, 4, 5]}]
+					},
+					options: {
+						scales: {
+							xAxes: [{
+								id: 'x',
+								type: 'time',
+								time: {
+									parser: 'YYYY'
+								},
+								ticks: {
+									mode: 'linear',
+									source: 'labels'
+								}
+							}],
+							yAxes: [{
+								display: false
+							}]
+						}
+					}
+				});
+
+				var scale = chart.scales.x;
+				var start = scale.left;
+				var slice = scale.width / (2042 - 2017);
+				var pixels = fetchTickPositions(scale);
+
+				expect(pixels[0]).toBeCloseToPixel(start);
+				expect(pixels[1]).toBeCloseToPixel(start + slice * (2019 - 2017));
+				expect(pixels[2]).toBeCloseToPixel(start + slice * (2020 - 2017));
+				expect(pixels[3]).toBeCloseToPixel(start + slice * (2025 - 2017));
+				expect(pixels[4]).toBeCloseToPixel(start + slice * (2042 - 2017));
+			});
+		});
 	});
 });
