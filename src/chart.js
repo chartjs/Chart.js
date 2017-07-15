@@ -8,7 +8,8 @@ Chart.helpers = require('./helpers/index');
 // @todo dispatch these helpers into appropriated helpers/helpers.* file and write unit tests!
 require('./core/core.helpers')(Chart);
 
-require('./platforms/platform')(Chart);
+Chart.platform = require('./platforms/platform');
+
 require('./core/core.element')(Chart);
 require('./core/core.plugin')(Chart);
 require('./core/core.animation')(Chart);
