@@ -148,7 +148,6 @@ describe('Category scale tests', function() {
 
 		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
 		config.position = 'left'; // y axis
-		config.id = scaleID;
 		config.labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'];
 
 		var Constructor = Chart.scaleService.getScaleConstructor('category');
