@@ -1,10 +1,10 @@
 'use strict';
 
 var helpers = require('../helpers/index');
+var platform = require('../platforms/platform');
 
 module.exports = function(Chart) {
 	var plugins = Chart.plugins;
-	var platform = Chart.platform;
 
 	// Create a dictionary of chart types, to allow for extension of existing types
 	Chart.types = {};
