@@ -1,12 +1,12 @@
 # Category Cartesian Axis
 
-The category scale will be familiar to those who have used v1.0. Labels are drawn from one of the label arrays included in the chart data. If only `data.labels` is defined, this will be used. If `data.xLabels` is defined and the axis is horizontal, this will be used. Similarly, if `data.yLabels` is defined and the axis is vertical, this property will be used. Using both `xLabels` and `yLabels` together can create a chart that uses strings for both the X and Y axes.
+The category scale will be familiar to those who have used v1.0. If global configuration is used, labels are drawn from one of the label arrays included in the chart data. If only `data.labels` is defined, this will be used. If `data.xLabels` is defined and the axis is horizontal, this will be used. Similarly, if `data.yLabels` is defined and the axis is vertical, this property will be used. Using both `xLabels` and `yLabels` together can create a chart that uses strings for both the X and Y axes.
 
-Specifying any of the settings above implicitly defines the x axis as `type: category`if not defined otherwise. For more fine-grained control of category labels, it is (as of 2.7) also possible to add `labels` as part of the explicit category axis definition.
+Specifying any of the settings above implicitly defines the x axis as `type: category`if not defined otherwise. For more fine-grained control of category labels it is also possible to add `labels` as part of the category axis definition. Doing so does not apply the global defaults for bar charts.
 
 ## Category Axis Definition
 
-Implicit:
+Globally:
 
 ```javascript
 let chart = new Chart(ctx, {
@@ -17,7 +17,7 @@ let chart = new Chart(ctx, {
     },
 });
 ```
-Explicit:
+As part of axis definition:
 
 ```javascript
 let chart = new Chart(ctx, {
