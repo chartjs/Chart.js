@@ -516,7 +516,7 @@ describe('Logarithmic Scale tests', function() {
 			type: 'bar',
 			data: {
 				datasets: [{
-					data: [11, 0.8, 0, 28, 7]
+					data: [11, 76, 0, 28, 7]
 				}],
 				labels: []
 			},
@@ -537,9 +537,9 @@ describe('Logarithmic Scale tests', function() {
 
 		// Counts down because the lines are drawn top to bottom
 		expect(chart.scales.yScale).toEqual(jasmine.objectContaining({
-			ticks: [30, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0.9, 0.8, 0],
+			ticks: [80, 70, 60, 50, 40, 30, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
 			start: 0,
-			end: 30
+			end: 80
 		}));
 	});
 
@@ -604,7 +604,7 @@ describe('Logarithmic Scale tests', function() {
 
 		// Counts down because the lines are drawn top to bottom
 		expect(chart.scales.yScale).toEqual(jasmine.objectContaining({
-			ticks: [0, 9, 10, 20, 30],
+			ticks: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30],
 			start: 30,
 			end: 0
 		}));
@@ -763,10 +763,11 @@ describe('Logarithmic Scale tests', function() {
 		var yScale = chart.scales.yScale;
 		expect(yScale.getPixelForValue(70, 0, 0)).toBeCloseToPixel(32);   // top + paddingTop
 		expect(yScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(484);  // bottom - paddingBottom
-		expect(yScale.getPixelForValue(0.063, 0, 0)).toBeCloseToPixel(475);  // minNotZero 2% from range
-		expect(yScale.getPixelForValue(0.5, 0, 0)).toBeCloseToPixel(344);
-		expect(yScale.getPixelForValue(4, 0, 0)).toBeCloseToPixel(213);
-		expect(yScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(155);
+		expect(yScale.getPixelForValue(0.01, 0, 0)).toBeCloseToPixel(466); // first possible tick - 4% from range
+		expect(yScale.getPixelForValue(0.063, 0, 0)).toBeCloseToPixel(376);  // minNotZero
+		expect(yScale.getPixelForValue(0.5, 0, 0)).toBeCloseToPixel(274);
+		expect(yScale.getPixelForValue(4, 0, 0)).toBeCloseToPixel(172);
+		expect(yScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(127);
 		expect(yScale.getPixelForValue(63, 0, 0)).toBeCloseToPixel(38.5);
 
 		chart.options.scales.yAxes[0].ticks.reverse = true;   // Reverse mode
@@ -774,10 +775,11 @@ describe('Logarithmic Scale tests', function() {
 
 		expect(yScale.getPixelForValue(70, 0, 0)).toBeCloseToPixel(484); // bottom - paddingBottom
 		expect(yScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(32);  // top + paddingTop
-		expect(yScale.getPixelForValue(0.063, 0, 0)).toBeCloseToPixel(41);  // minNotZero 2% from range
-		expect(yScale.getPixelForValue(0.5, 0, 0)).toBeCloseToPixel(172);
-		expect(yScale.getPixelForValue(4, 0, 0)).toBeCloseToPixel(303);
-		expect(yScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(361);
+		expect(yScale.getPixelForValue(0.01, 0, 0)).toBeCloseToPixel(51);  // first possible tick - 4% from range
+		expect(yScale.getPixelForValue(0.063, 0, 0)).toBeCloseToPixel(140);  // minNotZero
+		expect(yScale.getPixelForValue(0.5, 0, 0)).toBeCloseToPixel(241);
+		expect(yScale.getPixelForValue(4, 0, 0)).toBeCloseToPixel(344);
+		expect(yScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(389);
 		expect(yScale.getPixelForValue(63, 0, 0)).toBeCloseToPixel(477);
 	});
 });
