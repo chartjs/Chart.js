@@ -1,6 +1,7 @@
 'use strict';
 
 var helpers = require('../helpers/index');
+var Ticks = require('../core/core.ticks');
 
 module.exports = function(Chart) {
 
@@ -94,7 +95,7 @@ module.exports = function(Chart) {
 				max: tickOpts.max,
 				stepSize: helpers.valueOrDefault(tickOpts.fixedStepSize, tickOpts.stepSize)
 			};
-			var ticks = me.ticks = Chart.Ticks.generators.linear(numericGeneratorOptions, me);
+			var ticks = me.ticks = Ticks.generators.linear(numericGeneratorOptions, me);
 
 			me.handleDirectionalChanges();
 

@@ -1,6 +1,7 @@
 'use strict';
 
 var helpers = require('../helpers/index');
+var Ticks = require('../core/core.ticks');
 
 module.exports = function(Chart) {
 
@@ -9,7 +10,7 @@ module.exports = function(Chart) {
 
 		// label settings
 		ticks: {
-			callback: Chart.Ticks.formatters.logarithmic
+			callback: Ticks.formatters.logarithmic
 		}
 	};
 
@@ -142,7 +143,7 @@ module.exports = function(Chart) {
 				min: tickOpts.min,
 				max: tickOpts.max
 			};
-			var ticks = me.ticks = Chart.Ticks.generators.logarithmic(generationOptions, me);
+			var ticks = me.ticks = Ticks.generators.logarithmic(generationOptions, me);
 
 			if (!me.isHorizontal()) {
 				// We are in a vertical orientation. The top value is the highest. So reverse the array

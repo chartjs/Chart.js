@@ -8,7 +8,10 @@ Chart.helpers = require('./helpers/index');
 // @todo dispatch these helpers into appropriated helpers/helpers.* file and write unit tests!
 require('./core/core.helpers')(Chart);
 
+Chart.defaults = require('./core/core.defaults');
+Chart.Interaction = require('./core/core.interaction');
 Chart.platform = require('./platforms/platform');
+Chart.Ticks = require('./core/core.ticks');
 
 require('./core/core.element')(Chart);
 require('./core/core.plugin')(Chart);
@@ -17,9 +20,7 @@ require('./core/core.controller')(Chart);
 require('./core/core.datasetController')(Chart);
 require('./core/core.layoutService')(Chart);
 require('./core/core.scaleService')(Chart);
-require('./core/core.ticks')(Chart);
 require('./core/core.scale')(Chart);
-require('./core/core.interaction')(Chart);
 require('./core/core.tooltip')(Chart);
 
 require('./elements/element.arc')(Chart);
@@ -42,6 +43,7 @@ require('./controllers/controller.doughnut')(Chart);
 require('./controllers/controller.line')(Chart);
 require('./controllers/controller.polarArea')(Chart);
 require('./controllers/controller.radar')(Chart);
+require('./controllers/controller.scatter')(Chart);
 
 require('./charts/Chart.Bar')(Chart);
 require('./charts/Chart.Bubble')(Chart);

@@ -3,6 +3,7 @@
 'use strict';
 
 var color = require('chartjs-color');
+var defaults = require('./core.defaults');
 var helpers = require('../helpers/index');
 
 module.exports = function(Chart) {
@@ -43,7 +44,7 @@ module.exports = function(Chart) {
 			merger: function(key, target, source, options) {
 				if (key === 'xAxes' || key === 'yAxes') {
 					var slen = source[key].length;
-					var i, type, scale, defaults;
+					var i, type, scale;
 
 					if (!target[key]) {
 						target[key] = [];
@@ -52,7 +53,6 @@ module.exports = function(Chart) {
 					for (i = 0; i < slen; ++i) {
 						scale = source[key][i];
 						type = helpers.valueOrDefault(scale.type, key === 'xAxes'? 'category' : 'linear');
-						defaults = Chart.scaleService.getScaleDefaults(type);
 
 						if (i >= target[key].length) {
 							target[key].push({});
@@ -61,7 +61,7 @@ module.exports = function(Chart) {
 						if (!target[key][i].type || (scale.type && scale.type !== target[key][i].type)) {
 							// new/untyped scale or type changed: let's apply the new defaults
 							// then merge source scale to correctly overwrite the defaults.
-							helpers.merge(target[key][i], [defaults, scale]);
+							helpers.merge(target[key][i], [Chart.scaleService.getScaleDefaults(type), scale]);
 						} else {
 							// scales type are the same
 							helpers.merge(target[key][i], scale);
@@ -612,7 +612,7 @@ module.exports = function(Chart) {
 		function(value) {
 			/* global CanvasGradient */
 			if (value instanceof CanvasGradient) {
-				value = Chart.defaults.global.defaultColor;
+				value = defaults.global.defaultColor;
 			}
 
 			return color(value);

@@ -1,23 +1,24 @@
 'use strict';
 
+var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
+
+defaults._set('global', {
+	title: {
+		display: false,
+		fontStyle: 'bold',
+		fullWidth: true,
+		padding: 10,
+		position: 'top',
+		text: '',
+		weight: 2000         // by default greater than legend (1000) to be above
+	}
+});
 
 module.exports = function(Chart) {
 
 	var layout = Chart.layoutService;
 	var noop = helpers.noop;
-
-	Chart.defaults.global.title = {
-		display: false,
-		position: 'top',
-		fullWidth: true,
-		weight: 2000,        // by default greater than legend (1000) to be above
-		fontStyle: 'bold',
-		padding: 10,
-
-		// actual title
-		text: ''
-	};
 
 	Chart.Title = Chart.Element.extend({
 		initialize: function(config) {
@@ -109,9 +110,8 @@ module.exports = function(Chart) {
 			var me = this,
 				valueOrDefault = helpers.valueOrDefault,
 				opts = me.options,
-				globalDefaults = Chart.defaults.global,
 				display = opts.display,
-				fontSize = valueOrDefault(opts.fontSize, globalDefaults.defaultFontSize),
+				fontSize = valueOrDefault(opts.fontSize, defaults.global.defaultFontSize),
 				minSize = me.minSize,
 				lineCount = helpers.isArray(opts.text) ? opts.text.length : 1,
 				lineHeight = valueOrDefault(opts.lineHeight, fontSize),
@@ -143,7 +143,7 @@ module.exports = function(Chart) {
 				ctx = me.ctx,
 				valueOrDefault = helpers.valueOrDefault,
 				opts = me.options,
-				globalDefaults = Chart.defaults.global;
+				globalDefaults = defaults.global;
 
 			if (opts.display) {
 				var fontSize = valueOrDefault(opts.fontSize, globalDefaults.defaultFontSize),
@@ -225,7 +225,7 @@ module.exports = function(Chart) {
 			var titleBlock = chart.titleBlock;
 
 			if (titleOpts) {
-				helpers.mergeIf(titleOpts, Chart.defaults.global.title);
+				helpers.mergeIf(titleOpts, defaults.global.title);
 
 				if (titleBlock) {
 					layout.configure(chart, titleBlock, titleOpts);

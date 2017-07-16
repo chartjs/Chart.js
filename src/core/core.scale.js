@@ -1,58 +1,60 @@
 'use strict';
 
+var defaults = require('./core.defaults');
 var helpers = require('../helpers/index');
+var Ticks = require('./core.ticks');
+
+defaults._set('scale', {
+	display: true,
+	position: 'left',
+
+	// grid line settings
+	gridLines: {
+		display: true,
+		color: 'rgba(0, 0, 0, 0.1)',
+		lineWidth: 1,
+		drawBorder: true,
+		drawOnChartArea: true,
+		drawTicks: true,
+		tickMarkLength: 10,
+		zeroLineWidth: 1,
+		zeroLineColor: 'rgba(0,0,0,0.25)',
+		zeroLineBorderDash: [],
+		zeroLineBorderDashOffset: 0.0,
+		offsetGridLines: false,
+		borderDash: [],
+		borderDashOffset: 0.0
+	},
+
+	// scale label
+	scaleLabel: {
+		// actual label
+		labelString: '',
+
+		// display property
+		display: false,
+	},
+
+	// label settings
+	ticks: {
+		beginAtZero: false,
+		minRotation: 0,
+		maxRotation: 50,
+		mirror: false,
+		padding: 0,
+		reverse: false,
+		display: true,
+		autoSkip: true,
+		autoSkipPadding: 0,
+		labelOffset: 0,
+		// We pass through arrays to be rendered as multiline labels, we convert Others to strings here.
+		callback: Ticks.formatters.values,
+		minor: {},
+		major: {}
+	}
+});
 
 module.exports = function(Chart) {
-
-	Chart.defaults.scale = {
-		display: true,
-		position: 'left',
-
-		// grid line settings
-		gridLines: {
-			display: true,
-			color: 'rgba(0, 0, 0, 0.1)',
-			lineWidth: 1,
-			drawBorder: true,
-			drawOnChartArea: true,
-			drawTicks: true,
-			tickMarkLength: 10,
-			zeroLineWidth: 1,
-			zeroLineColor: 'rgba(0,0,0,0.25)',
-			zeroLineBorderDash: [],
-			zeroLineBorderDashOffset: 0.0,
-			offsetGridLines: false,
-			borderDash: [],
-			borderDashOffset: 0.0
-		},
-
-		// scale label
-		scaleLabel: {
-			// actual label
-			labelString: '',
-
-			// display property
-			display: false,
-		},
-
-		// label settings
-		ticks: {
-			beginAtZero: false,
-			minRotation: 0,
-			maxRotation: 50,
-			mirror: false,
-			padding: 0,
-			reverse: false,
-			display: true,
-			autoSkip: true,
-			autoSkipPadding: 0,
-			labelOffset: 0,
-			// We pass through arrays to be rendered as multiline labels, we convert Others to strings here.
-			callback: Chart.Ticks.formatters.values,
-			minor: {},
-			major: {}
-		}
-	};
 
 	function computeTextSize(context, tick, font) {
 		return helpers.isArray(tick) ?
@@ -62,7 +64,7 @@ module.exports = function(Chart) {
 
 	function parseFontOptions(options) {
 		var valueOrDefault = helpers.valueOrDefault;
-		var globalDefaults = Chart.defaults.global;
+		var globalDefaults = defaults.global;
 		var size = valueOrDefault(options.fontSize, globalDefaults.defaultFontSize);
 		var style = valueOrDefault(options.fontStyle, globalDefaults.defaultFontStyle);
 		var family = valueOrDefault(options.fontFamily, globalDefaults.defaultFontFamily);
@@ -511,7 +513,7 @@ module.exports = function(Chart) {
 			}
 
 			var context = me.ctx;
-			var globalDefaults = Chart.defaults.global;
+			var globalDefaults = defaults.global;
 			var optionTicks = options.ticks.minor;
 			var optionMajorTicks = options.ticks.major || optionTicks;
 			var gridLines = options.gridLines;

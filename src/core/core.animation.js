@@ -1,16 +1,19 @@
 /* global window: false */
 'use strict';
 
+var defaults = require('./core.defaults');
 var helpers = require('../helpers/index');
 
-module.exports = function(Chart) {
-
-	Chart.defaults.global.animation = {
+defaults._set('global', {
+	animation: {
 		duration: 1000,
 		easing: 'easeOutQuart',
 		onProgress: helpers.noop,
 		onComplete: helpers.noop
-	};
+	}
+});
+
+module.exports = function(Chart) {
 
 	Chart.Animation = Chart.Element.extend({
 		chart: null, // the animation associated chart instance

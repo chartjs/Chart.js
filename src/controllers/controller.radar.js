@@ -1,19 +1,20 @@
 'use strict';
 
+var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 
-module.exports = function(Chart) {
-
-	Chart.defaults.radar = {
-		scale: {
-			type: 'radialLinear'
-		},
-		elements: {
-			line: {
-				tension: 0 // no bezier in radar
-			}
+defaults._set('radar', {
+	scale: {
+		type: 'radialLinear'
+	},
+	elements: {
+		line: {
+			tension: 0 // no bezier in radar
 		}
-	};
+	}
+});
+
+module.exports = function(Chart) {
 
 	Chart.controllers.radar = Chart.DatasetController.extend({
 
