@@ -1,10 +1,13 @@
 'use strict';
 
+var defaults = require('./core.defaults');
 var helpers = require('../helpers/index');
 
-module.exports = function(Chart) {
+defaults._set('global', {
+	plugins: {}
+});
 
-	Chart.defaults.global.plugins = {};
+module.exports = function(Chart) {
 
 	/**
 	 * The plugin service singleton
@@ -128,7 +131,6 @@ module.exports = function(Chart) {
 			var plugins = [];
 			var descriptors = [];
 			var config = (chart && chart.config) || {};
-			var defaults = Chart.defaults.global.plugins;
 			var options = (config.options && config.options.plugins) || {};
 
 			this._plugins.concat(config.plugins || []).forEach(function(plugin) {
@@ -144,7 +146,7 @@ module.exports = function(Chart) {
 				}
 
 				if (opts === true) {
-					opts = helpers.clone(defaults[id]);
+					opts = helpers.clone(defaults.global.plugins[id]);
 				}
 
 				plugins.push(plugin);

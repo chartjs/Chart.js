@@ -1,23 +1,27 @@
 'use strict';
 
+var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 
+var defaultColor = defaults.global.defaultColor;
+
+defaults._set('global', {
+	elements: {
+		point: {
+			radius: 3,
+			pointStyle: 'circle',
+			backgroundColor: defaultColor,
+			borderColor: defaultColor,
+			borderWidth: 1,
+			// Hover
+			hitRadius: 1,
+			hoverRadius: 4,
+			hoverBorderWidth: 1
+		}
+	}
+});
+
 module.exports = function(Chart) {
-
-	var globalOpts = Chart.defaults.global,
-		defaultColor = globalOpts.defaultColor;
-
-	globalOpts.elements.point = {
-		radius: 3,
-		pointStyle: 'circle',
-		backgroundColor: defaultColor,
-		borderWidth: 1,
-		borderColor: defaultColor,
-		// Hover
-		hitRadius: 1,
-		hoverRadius: 4,
-		hoverBorderWidth: 1
-	};
 
 	function xRange(mouseX) {
 		var vm = this._view;
@@ -74,7 +78,7 @@ module.exports = function(Chart) {
 			}
 
 			ctx.strokeStyle = vm.borderColor || defaultColor;
-			ctx.lineWidth = helpers.valueOrDefault(vm.borderWidth, globalOpts.elements.point.borderWidth);
+			ctx.lineWidth = helpers.valueOrDefault(vm.borderWidth, defaults.global.elements.point.borderWidth);
 			ctx.fillStyle = vm.backgroundColor || defaultColor;
 
 			// Cliping for Points.

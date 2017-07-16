@@ -1,5 +1,6 @@
 'use strict';
 
+var defaults = require('./core.defaults');
 var helpers = require('../helpers/index');
 
 module.exports = function(Chart) {
@@ -13,21 +14,21 @@ module.exports = function(Chart) {
 
 		// Scale config defaults
 		defaults: {},
-		registerScaleType: function(type, scaleConstructor, defaults) {
+		registerScaleType: function(type, scaleConstructor, scaleDefaults) {
 			this.constructors[type] = scaleConstructor;
-			this.defaults[type] = helpers.clone(defaults);
+			this.defaults[type] = helpers.clone(scaleDefaults);
 		},
 		getScaleConstructor: function(type) {
 			return this.constructors.hasOwnProperty(type) ? this.constructors[type] : undefined;
 		},
 		getScaleDefaults: function(type) {
 			// Return the scale defaults merged with the global settings so that we always use the latest ones
-			return this.defaults.hasOwnProperty(type) ? helpers.merge({}, [Chart.defaults.scale, this.defaults[type]]) : {};
+			return this.defaults.hasOwnProperty(type) ? helpers.merge({}, [defaults.scale, this.defaults[type]]) : {};
 		},
 		updateScaleDefaults: function(type, additions) {
-			var defaults = this.defaults;
-			if (defaults.hasOwnProperty(type)) {
-				defaults[type] = helpers.extend(defaults[type], additions);
+			var me = this;
+			if (me.defaults.hasOwnProperty(type)) {
+				me.defaults[type] = helpers.extend(me.defaults[type], additions);
 			}
 		},
 		addScalesToLayout: function(chart) {

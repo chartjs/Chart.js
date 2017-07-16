@@ -1,15 +1,19 @@
 'use strict';
 
+var defaults = require('../core/core.defaults');
+
+defaults._set('global', {
+	elements: {
+		rectangle: {
+			backgroundColor: defaults.global.defaultColor,
+			borderColor: defaults.global.defaultColor,
+			borderSkipped: 'bottom',
+			borderWidth: 0
+		}
+	}
+});
+
 module.exports = function(Chart) {
-
-	var globalOpts = Chart.defaults.global;
-
-	globalOpts.elements.rectangle = {
-		backgroundColor: globalOpts.defaultColor,
-		borderWidth: 0,
-		borderColor: globalOpts.defaultColor,
-		borderSkipped: 'bottom'
-	};
 
 	function isVertical(bar) {
 		return bar._view.width !== undefined;

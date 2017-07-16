@@ -4,6 +4,7 @@
 var moment = require('moment');
 moment = typeof(moment) === 'function' ? moment : window.moment;
 
+var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 
 module.exports = function(Chart) {
@@ -274,7 +275,7 @@ module.exports = function(Chart) {
 			var tickLabelWidth = me.ctx.measureText(label).width;
 			var cosRotation = Math.cos(helpers.toRadians(ticks.maxRotation));
 			var sinRotation = Math.sin(helpers.toRadians(ticks.maxRotation));
-			var tickFontSize = helpers.valueOrDefault(ticks.fontSize, Chart.defaults.global.defaultFontSize);
+			var tickFontSize = helpers.valueOrDefault(ticks.fontSize, defaults.global.defaultFontSize);
 			return (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation);
 		},
 		getLabelCapacity: function(exampleTime) {

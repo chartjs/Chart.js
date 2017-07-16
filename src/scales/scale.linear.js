@@ -1,13 +1,15 @@
 'use strict';
 
+var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
+var Ticks = require('../core/core.ticks');
 
 module.exports = function(Chart) {
 
 	var defaultConfig = {
 		position: 'left',
 		ticks: {
-			callback: Chart.Ticks.formatters.linear
+			callback: Ticks.formatters.linear
 		}
 	};
 
@@ -139,7 +141,7 @@ module.exports = function(Chart) {
 				maxTicks = Math.min(tickOpts.maxTicksLimit ? tickOpts.maxTicksLimit : 11, Math.ceil(me.width / 50));
 			} else {
 				// The factor of 2 used to scale the font size has been experimentally determined.
-				var tickFontSize = helpers.valueOrDefault(tickOpts.fontSize, Chart.defaults.global.defaultFontSize);
+				var tickFontSize = helpers.valueOrDefault(tickOpts.fontSize, defaults.global.defaultFontSize);
 				maxTicks = Math.min(tickOpts.maxTicksLimit ? tickOpts.maxTicksLimit : 11, Math.ceil(me.height / (2 * tickFontSize)));
 			}
 

@@ -1,28 +1,29 @@
 'use strict';
 
+var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 
+defaults._set('line', {
+	showLines: true,
+	spanGaps: false,
+
+	hover: {
+		mode: 'label'
+	},
+
+	scales: {
+		xAxes: [{
+			type: 'category',
+			id: 'x-axis-0'
+		}],
+		yAxes: [{
+			type: 'linear',
+			id: 'y-axis-0'
+		}]
+	}
+});
+
 module.exports = function(Chart) {
-
-	Chart.defaults.line = {
-		showLines: true,
-		spanGaps: false,
-
-		hover: {
-			mode: 'label'
-		},
-
-		scales: {
-			xAxes: [{
-				type: 'category',
-				id: 'x-axis-0'
-			}],
-			yAxes: [{
-				type: 'linear',
-				id: 'y-axis-0'
-			}]
-		}
-	};
 
 	function lineEnabled(dataset, options) {
 		return helpers.valueOrDefault(dataset.showLine, options.showLines);

@@ -1,6 +1,8 @@
 'use strict';
 
+var defaults = require('./core.defaults');
 var helpers = require('../helpers/index');
+var Interaction = require('./core.interaction');
 var platform = require('../platforms/platform');
 
 module.exports = function(Chart) {
@@ -29,8 +31,8 @@ module.exports = function(Chart) {
 		data.labels = data.labels || [];
 
 		config.options = helpers.configMerge(
-			Chart.defaults.global,
-			Chart.defaults[config.type],
+			defaults.global,
+			defaults[config.type],
 			config.options || {});
 
 		return config;
@@ -601,19 +603,19 @@ module.exports = function(Chart) {
 		// Get the single element that was clicked on
 		// @return : An object containing the dataset index and element index of the matching element. Also contains the rectangle that was draw
 		getElementAtEvent: function(e) {
-			return Chart.Interaction.modes.single(this, e);
+			return Interaction.modes.single(this, e);
 		},
 
 		getElementsAtEvent: function(e) {
-			return Chart.Interaction.modes.label(this, e, {intersect: true});
+			return Interaction.modes.label(this, e, {intersect: true});
 		},
 
 		getElementsAtXAxis: function(e) {
-			return Chart.Interaction.modes['x-axis'](this, e, {intersect: true});
+			return Interaction.modes['x-axis'](this, e, {intersect: true});
 		},
 
 		getElementsAtEventForMode: function(e, mode, options) {
-			var method = Chart.Interaction.modes[mode];
+			var method = Interaction.modes[mode];
 			if (typeof method === 'function') {
 				return method(this, e, options);
 			}
@@ -622,7 +624,7 @@ module.exports = function(Chart) {
 		},
 
 		getDatasetAtEvent: function(e) {
-			return Chart.Interaction.modes.dataset(this, e, {intersect: true});
+			return Interaction.modes.dataset(this, e, {intersect: true});
 		},
 
 		getDatasetMeta: function(datasetIndex) {

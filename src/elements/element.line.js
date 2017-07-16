@@ -1,23 +1,28 @@
 'use strict';
 
+var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 
+var globalDefaults = defaults.global;
+
+defaults._set('global', {
+	elements: {
+		line: {
+			tension: 0.4,
+			backgroundColor: globalDefaults.defaultColor,
+			borderWidth: 3,
+			borderColor: globalDefaults.defaultColor,
+			borderCapStyle: 'butt',
+			borderDash: [],
+			borderDashOffset: 0.0,
+			borderJoinStyle: 'miter',
+			capBezierPoints: true,
+			fill: true, // do we fill in the area between the line and its base axis
+		}
+	}
+});
+
 module.exports = function(Chart) {
-
-	var globalDefaults = Chart.defaults.global;
-
-	Chart.defaults.global.elements.line = {
-		tension: 0.4,
-		backgroundColor: globalDefaults.defaultColor,
-		borderWidth: 3,
-		borderColor: globalDefaults.defaultColor,
-		borderCapStyle: 'butt',
-		borderDash: [],
-		borderDashOffset: 0.0,
-		borderJoinStyle: 'miter',
-		capBezierPoints: true,
-		fill: true, // do we fill in the area between the line and its base axis
-	};
 
 	Chart.elements.Line = Chart.Element.extend({
 		draw: function() {

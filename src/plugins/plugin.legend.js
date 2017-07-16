@@ -1,13 +1,10 @@
 'use strict';
 
+var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 
-module.exports = function(Chart) {
-
-	var layout = Chart.layoutService;
-	var noop = helpers.noop;
-
-	Chart.defaults.global.legend = {
+defaults._set('global', {
+	legend: {
 		display: true,
 		position: 'top',
 		fullWidth: true,
@@ -64,7 +61,27 @@ module.exports = function(Chart) {
 				}, this) : [];
 			}
 		}
-	};
+	},
+
+	legendCallback: function(chart) {
+		var text = [];
+		text.push('<ul class="' + chart.id + '-legend">');
+		for (var i = 0; i < chart.data.datasets.length; i++) {
+			text.push('<li><span style="background-color:' + chart.data.datasets[i].backgroundColor + '"></span>');
+			if (chart.data.datasets[i].label) {
+				text.push(chart.data.datasets[i].label);
+			}
+			text.push('</li>');
+		}
+		text.push('</ul>');
+		return text.join('');
+	}
+});
+
+module.exports = function(Chart) {
+
+	var layout = Chart.layoutService;
+	var noop = helpers.noop;
 
 	/**
 	 * Helper function to get the box width based on the usePointStyle option
@@ -192,7 +209,7 @@ module.exports = function(Chart) {
 
 			var ctx = me.ctx;
 
-			var globalDefault = Chart.defaults.global,
+			var globalDefault = defaults.global,
 				valueOrDefault = helpers.valueOrDefault,
 				fontSize = valueOrDefault(labelOpts.fontSize, globalDefault.defaultFontSize),
 				fontStyle = valueOrDefault(labelOpts.fontStyle, globalDefault.defaultFontStyle),
@@ -304,7 +321,7 @@ module.exports = function(Chart) {
 			var me = this;
 			var opts = me.options;
 			var labelOpts = opts.labels;
-			var globalDefault = Chart.defaults.global,
+			var globalDefault = defaults.global,
 				lineDefault = globalDefault.elements.line,
 				legendWidth = me.width,
 				lineWidths = me.lineWidths;
@@ -525,7 +542,7 @@ module.exports = function(Chart) {
 			var legend = chart.legend;
 
 			if (legendOpts) {
-				helpers.mergeIf(legendOpts, Chart.defaults.global.legend);
+				helpers.mergeIf(legendOpts, defaults.global.legend);
 
 				if (legend) {
 					layout.configure(chart, legend, legendOpts);

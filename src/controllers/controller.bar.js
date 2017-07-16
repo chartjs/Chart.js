@@ -1,32 +1,91 @@
 'use strict';
 
+var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 
-module.exports = function(Chart) {
+defaults._set('bar', {
+	hover: {
+		mode: 'label'
+	},
 
-	Chart.defaults.bar = {
-		hover: {
-			mode: 'label'
-		},
+	scales: {
+		xAxes: [{
+			type: 'category',
 
-		scales: {
-			xAxes: [{
-				type: 'category',
+			// Specific to Bar Controller
+			categoryPercentage: 0.8,
+			barPercentage: 0.9,
 
-				// Specific to Bar Controller
-				categoryPercentage: 0.8,
-				barPercentage: 0.9,
+			// grid line settings
+			gridLines: {
+				offsetGridLines: true
+			}
+		}],
 
-				// grid line settings
-				gridLines: {
-					offsetGridLines: true
-				}
-			}],
-			yAxes: [{
-				type: 'linear'
-			}]
+		yAxes: [{
+			type: 'linear'
+		}]
+	}
+});
+
+defaults._set('horizontalBar', {
+	hover: {
+		mode: 'label'
+	},
+
+	scales: {
+		xAxes: [{
+			type: 'linear',
+			position: 'bottom'
+		}],
+
+		yAxes: [{
+			position: 'left',
+			type: 'category',
+
+			// Specific to Horizontal Bar Controller
+			categoryPercentage: 0.8,
+			barPercentage: 0.9,
+
+			// grid line settings
+			gridLines: {
+				offsetGridLines: true
+			}
+		}]
+	},
+
+	elements: {
+		rectangle: {
+			borderSkipped: 'left'
 		}
-	};
+	},
+
+	tooltips: {
+		callbacks: {
+			title: function(item, data) {
+				// Pick first xLabel for now
+				var title = '';
+
+				if (item.length > 0) {
+					if (item[0].yLabel) {
+						title = item[0].yLabel;
+					} else if (data.labels.length > 0 && item[0].index < data.labels.length) {
+						title = data.labels[item[0].index];
+					}
+				}
+
+				return title;
+			},
+
+			label: function(item, data) {
+				var datasetLabel = data.datasets[item.datasetIndex].label || '';
+				return datasetLabel + ': ' + item.xLabel;
+			}
+		}
+	}
+});
+
+module.exports = function(Chart) {
 
 	Chart.controllers.bar = Chart.DatasetController.extend({
 
@@ -308,62 +367,6 @@ module.exports = function(Chart) {
 			model.borderWidth = custom.borderWidth ? custom.borderWidth : helpers.valueAtIndexOrDefault(dataset.borderWidth, index, rectangleElementOptions.borderWidth);
 		}
 	});
-
-
-	// including horizontalBar in the bar file, instead of a file of its own
-	// it extends bar (like pie extends doughnut)
-	Chart.defaults.horizontalBar = {
-		hover: {
-			mode: 'label'
-		},
-
-		scales: {
-			xAxes: [{
-				type: 'linear',
-				position: 'bottom'
-			}],
-			yAxes: [{
-				position: 'left',
-				type: 'category',
-
-				// Specific to Horizontal Bar Controller
-				categoryPercentage: 0.8,
-				barPercentage: 0.9,
-
-				// grid line settings
-				gridLines: {
-					offsetGridLines: true
-				}
-			}]
-		},
-		elements: {
-			rectangle: {
-				borderSkipped: 'left'
-			}
-		},
-		tooltips: {
-			callbacks: {
-				title: function(tooltipItems, data) {
-					// Pick first xLabel for now
-					var title = '';
-
-					if (tooltipItems.length > 0) {
-						if (tooltipItems[0].yLabel) {
-							title = tooltipItems[0].yLabel;
-						} else if (data.labels.length > 0 && tooltipItems[0].index < data.labels.length) {
-							title = data.labels[tooltipItems[0].index];
-						}
-					}
-
-					return title;
-				},
-				label: function(tooltipItem, data) {
-					var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
-					return datasetLabel + ': ' + tooltipItem.xLabel;
-				}
-			}
-		}
-	};
 
 	Chart.controllers.horizontalBar = Chart.controllers.bar.extend({
 		/**
