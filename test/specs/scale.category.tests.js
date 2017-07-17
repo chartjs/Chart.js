@@ -137,32 +137,25 @@ describe('Category scale tests', function() {
 	});
 
 	it('Should generate ticks from the axis labels', function() {
-		var scaleID = 'myScale';
-
-		var mockData = {
-			datasets: [{
-				xAxisID: scaleID,
+		var labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'];
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
 				data: [10, 5, 0, 25, 78]
-			}]
-		};
-
-		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
-		config.position = 'left'; // y axis
-		config.labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'];
-
-		var Constructor = Chart.scaleService.getScaleConstructor('category');
-		var scale = new Constructor({
-			ctx: {},
-			options: config,
-			chart: {
-				data: mockData
 			},
-			id: scaleID
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'x',
+						type: 'category',
+						labels: labels
+					}]
+				}
+			}
 		});
 
-		scale.determineDataLimits();
-		scale.buildTicks();
-		expect(scale.ticks).toEqual(config.labels);
+		var scale = chart.scales.x;
+		expect(scale.ticks).toEqual(labels);
 	});
 
 	it ('should get the correct label for the index', function() {
