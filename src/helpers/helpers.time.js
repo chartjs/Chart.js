@@ -3,6 +3,8 @@
 var moment = require('moment');
 moment = typeof(moment) === 'function' ? moment : window.moment;
 
+var helpers = require('./helpers.core');
+
 var interval = {
 	millisecond: {
 		size: 1,
@@ -53,25 +55,35 @@ function generateTicksNiceRange(options, dataRange, niceRange) {
 	var ticks = [];
 	if (options.maxTicks) {
 		var stepSize = options.stepSize;
-		var startTick = options.min !== undefined ? options.min : niceRange.min;
+		var startTick = helpers.isNullOrUndef(options.min) ? niceRange.min : options.min;
 		var majorUnit = options.majorUnit;
 		var majorUnitStart = majorUnit ? moment(startTick).add(1, majorUnit).startOf(majorUnit) : startTick;
 		var startRange = majorUnitStart.valueOf() - startTick;
 		var stepValue = interval[options.unit].size * stepSize;
 		var startFraction = startRange % stepValue;
 		var alignedTick = startTick;
-		if (startFraction && majorUnit && !options.timeOpts.round && !options.timeOpts.isoWeekday) {
+
+		// first tick
+		if (startFraction && majorUnit && !options.timeOpts.round && !options.timeOpts.isoWeekday && helpers.isNullOrUndef(options.min)) {
 			alignedTick += startFraction - stepValue;
 			ticks.push(alignedTick);
 		} else {
 			ticks.push(startTick);
 		}
+
+		// generate remaining ticks
 		var cur = moment(alignedTick);
-		var realMax = options.max || niceRange.max;
+		var realMax = helpers.isNullOrUndef(options.max) ? niceRange.max : options.max;
 		while (cur.add(stepSize, options.unit).valueOf() < realMax) {
 			ticks.push(cur.valueOf());
 		}
-		ticks.push(cur.valueOf());
+
+		// last tick
+		if (helpers.isNullOrUndef(options.max)) {
+			ticks.push(cur.valueOf());
+		} else {
+			ticks.push(realMax);
+		}
 	}
 	return ticks;
 }

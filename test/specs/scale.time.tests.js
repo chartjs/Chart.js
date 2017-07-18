@@ -315,7 +315,7 @@ describe('Time scale tests', function() {
 			config.time.min = '2014-12-29T04:00:00';
 
 			var scale = createScale(mockData, config);
-			expect(scale.ticks[0].value).toEqual('Dec 28');
+			expect(scale.ticks[0].value).toEqual('Dec 29');
 		});
 
 		it('should use the max option', function() {
@@ -324,7 +324,7 @@ describe('Time scale tests', function() {
 
 			var scale = createScale(mockData, config);
 
-			expect(scale.ticks[scale.ticks.length - 1].value).toEqual('Jan 6');
+			expect(scale.ticks[scale.ticks.length - 1].value).toEqual('Jan 5');
 		});
 	});
 
@@ -420,7 +420,7 @@ describe('Time scale tests', function() {
 		var step = xScale.ticksAsTimestamps[1] - xScale.ticksAsTimestamps[0];
 		var stepsAmount = Math.floor((xScale.max - xScale.min) / step);
 
-		it('should be bounded by nearest step year starts', function() {
+		it('should be bounded by nearest step''s year start and end', function() {
 			expect(xScale.getValueForPixel(xScale.left)).toBeCloseToTime({
 				value: moment(xScale.min).startOf('year'),
 				unit: 'hour',
