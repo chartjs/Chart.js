@@ -43,17 +43,17 @@ describe('Time scale tests', function() {
 		});
 	});
 
-	it('Should load moment.js as a dependency', function() {
+	it('should load moment.js as a dependency', function() {
 		expect(window.moment).not.toBe(undefined);
 	});
 
-	it('Should register the constructor with the scale service', function() {
+	it('should register the constructor with the scale service', function() {
 		var Constructor = Chart.scaleService.getScaleConstructor('time');
 		expect(Constructor).not.toBe(undefined);
 		expect(typeof Constructor).toBe('function');
 	});
 
-	it('Should have the correct default config', function() {
+	it('should have the correct default config', function() {
 		var defaultConfig = Chart.scaleService.getScaleDefaults('time');
 		expect(defaultConfig).toEqual({
 			display: true,
@@ -328,7 +328,7 @@ describe('Time scale tests', function() {
 		});
 	});
 
-	it('Should use the isoWeekday option', function() {
+	it('should use the isoWeekday option', function() {
 		var mockData = {
 			labels: [
 				'2015-01-01T20:00:00', // Thursday
@@ -420,7 +420,7 @@ describe('Time scale tests', function() {
 		var step = xScale.ticksAsTimestamps[1] - xScale.ticksAsTimestamps[0];
 		var stepsAmount = Math.floor((xScale.max - xScale.min) / step);
 
-		it('should be bounded by nearest step''s year start and end', function() {
+		it('should be bounded by nearest step\'s year start and end', function() {
 			expect(xScale.getValueForPixel(xScale.left)).toBeCloseToTime({
 				value: moment(xScale.min).startOf('year'),
 				unit: 'hour',
