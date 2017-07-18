@@ -45,3 +45,6 @@ In addition, many plugins can be found on the [npm registry](https://www.npmjs.c
 
 ### Vue.js
  - <a href="https://github.com/apertureless/vue-chartjs/" target="_blank">vue-chartjs</a>
+
+### Java
+ - <a href="https://github.com/mdewilde/chart/" target="_blank">Chart.java</a>
