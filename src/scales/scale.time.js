@@ -17,7 +17,7 @@ function sorter(a, b) {
  * a decimal between 0 and 1: 0 being the start of the scale (left or top) and 1 the other
  * extremity (left + width or top + height). Note that it would be more optimized to directly
  * store pre-computed pixels, but the scale dimensions are not guaranteed at the time we need
- * to create the lookup table.
+ * to create the lookup table. The table ALWAYS contains at least two items: min and max.
  *
  * @param {Number[]} timestamps - timestamps sorted from lowest to highest.
  * @param {Boolean} linear - If true, timestamps will be spread linearly along the min/max
@@ -25,34 +25,34 @@ function sorter(a, b) {
  * false, timestamps will be positioned at the same distance from each other. In this case,
  * only timestamps that break the time linearity are registered, meaning that in the best
  * case, all timestamps are linear, the table contains only min and max.
- *
- * @private
  */
-function buildLookupTable(timestamps, linear) {
-	var ilen = timestamps.length;
-	var table, i, prev, curr, next;
-
-	if (ilen === 0) {
-		return [];
-	}
-
-	if (linear) {
+function buildLookupTable(timestamps, min, max, linear) {
+	if (linear || !timestamps.length) {
 		return [
-			{time: timestamps[0], pos: 0},
-			{time: timestamps[ilen - 1], pos: 1}
+			{time: min, pos: 0},
+			{time: max, pos: 1}
 		];
 	}
 
-	table = [];
+	var table = [];
+	var items = timestamps.slice(0);
+	var i, ilen, prev, curr, next;
 
-	for (i = 0; i<ilen; ++i) {
-		next = timestamps[i + 1] || 0;
-		prev = timestamps[i - 1] || 0;
-		curr = timestamps[i];
+	if (min < timestamps[0]) {
+		items.unshift(min);
+	}
+	if (max > timestamps[timestamps.length - 1]) {
+		items.push(max);
+	}
+
+	for (i = 0, ilen = items.length; i<ilen; ++i) {
+		next = items[i + 1] || 0;
+		prev = items[i - 1] || 0;
+		curr = items[i];
 
 		// only add points that breaks the scale linearity
 		if (Math.round((next + prev) / 2) !== curr) {
-			table.push({time: curr, pos: ilen > 1 ? i / (ilen - 1) : 0});
+			table.push({time: curr, pos: i / (ilen - 1)});
 		}
 	}
 
@@ -84,6 +84,26 @@ function lookup(table, key, value) {
 
 	// given value is outside table (after last item)
 	return {lo: i1, hi: null};
+}
+
+/**
+ * Linearly interpolates the given source `value` using the table items `skey` values and
+ * returns the associated `tkey` value. For example, interpolate(table, 'time', 42, 'pos')
+ * returns the position for a timestamp equal to 42. If value is out of bounds, values at
+ * index [0, 1] or [n - 1, n] are used for the interpolation.
+ */
+function interpolate(table, skey, sval, tkey) {
+	var range = lookup(table, skey, sval);
+
+	// Note: the lookup table ALWAYS contains at least 2 items (min and max)
+	var prev = !range.lo ? table[0] : !range.hi ? table[table.length - 2] : range.lo;
+	var next = !range.lo ? table[1] : !range.hi ? table[table.length - 1] : range.hi;
+
+	var span = next[skey] - prev[skey];
+	var ratio = span ? (sval - prev[skey]) / span : 0;
+	var offset = (next[tkey] - prev[tkey]) * ratio;
+
+	return prev[tkey] + offset;
 }
 
 function parse(input, scale) {
@@ -191,7 +211,7 @@ module.exports = function(Chart) {
 							timestamps[i][j] = timestamp;
 						}
 					} else {
-						timestamps[i] = labels.slice();
+						timestamps[i] = labels.slice(0);
 					}
 				} else {
 					timestamps[i] = [];
@@ -239,12 +259,6 @@ module.exports = function(Chart) {
 						ticks.push(timestamp);
 					}
 				}
-				if (ticks[0] > min) {
-					ticks.unshift(min);
-				}
-				if (ticks[ticks.length - 1] < max) {
-					ticks.push(max);
-				}
 			} else {
 				stepSize = helpers.valueOrDefault(timeOpts.stepSize, timeOpts.unitStepSize);
 				stepSize = stepSize || timeHelpers.determineStepSize(min, max, unit, capacity);
@@ -262,17 +276,20 @@ module.exports = function(Chart) {
 					max: max
 				});
 
+				// Recompute min/max, the ticks generation might have changed them (BUG?)
+				min = ticks.length? ticks[0] : min;
+				max = ticks.length? ticks[ticks.length - 1] : max;
 			}
 
 			me.ticks = ticks;
-			me.min = ticks[0];
-			me.max = ticks[ticks.length - 1];
+			me.min = min;
+			me.max = max;
 			me.unit = unit;
 			me.majorUnit = majorUnit;
 			me.displayFormat = formats[unit];
 			me.majorDisplayFormat = formats[majorUnit];
 
-			model.table = buildLookupTable(ticks, ticksOpts.mode === 'linear');
+			model.table = buildLookupTable(ticks, min, max, ticksOpts.mode === 'linear');
 		},
 
 		getLabelForIndex: function(index, datasetIndex) {
@@ -334,21 +351,11 @@ module.exports = function(Chart) {
 		getPixelForOffset: function(time) {
 			var me = this;
 			var model = me._model;
-			var table = model.table;
-			var range = lookup(table, 'time', time);
-
-			// If value is out of bounds, use ticks [0, 1] or [n-1, n] for interpolation,
-			// note that the lookup table always contains at least 2 items (min and max)
-			var prev = !range.lo ? table[0] : !range.hi ? table[table.length - 2] : range.lo;
-			var next = !range.lo ? table[1] : !range.hi ? table[table.length - 1] : range.hi;
-
-			var span = next.time - prev.time;
-			var ratio = span ? (time - prev.time) / span : 0;
-			var offset = (next.pos - prev.pos) * ratio;
 			var size = model.horizontal ? me.width : me.height;
 			var start = model.horizontal ? me.left : me.top;
+			var pos = interpolate(model.table, 'time', time, 'pos');
 
-			return start + size * (prev.pos + offset);
+			return start + size * pos;
 		},
 
 		getPixelForValue: function(value, index, datasetIndex) {
@@ -377,22 +384,12 @@ module.exports = function(Chart) {
 		getValueForPixel: function(pixel) {
 			var me = this;
 			var model = me._model;
-			var table = model.table;
 			var size = model.horizontal ? me.width : me.height;
 			var start = model.horizontal ? me.left : me.top;
 			var pos = size ? (pixel - start) / size : 0;
-			var range = lookup(table, 'pos', pos);
+			var time = interpolate(model.table, 'pos', pos, 'time');
 
-			// if pixel is out of bounds, use ticks [0, 1] or [n-1, n] for interpolation,
-			// note that the lookup table always contains at least 2 items (min and max)
-			var prev = !range.lo ? table[0] : !range.hi ? table[table.length - 2] : range.lo;
-			var next = !range.lo ? table[1] : !range.hi ? table[table.length - 1] : range.hi;
-
-			var span = next.pos - prev.pos;
-			var ratio = span? (pos - prev.pos) / span : 0;
-			var offset = (next.time - prev.time) * ratio;
-
-			return moment(prev.time + offset);
+			return moment(time);
 		},
 
 		/**
