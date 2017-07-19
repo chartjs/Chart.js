@@ -46,12 +46,12 @@ function buildLookupTable(timestamps, min, max, linear) {
 	}
 
 	for (i = 0, ilen = items.length; i<ilen; ++i) {
-		next = items[i + 1] || 0;
-		prev = items[i - 1] || 0;
+		next = items[i + 1];
+		prev = items[i - 1];
 		curr = items[i];
 
 		// only add points that breaks the scale linearity
-		if (Math.round((next + prev) / 2) !== curr) {
+		if (prev === undefined || next === undefined || Math.round((next + prev) / 2) !== curr) {
 			table.push({time: curr, pos: i / (ilen - 1)});
 		}
 	}
@@ -66,7 +66,7 @@ function lookup(table, key, value) {
 	var mid, i0, i1;
 
 	while (lo >= 0 && lo <= hi) {
-		mid = ((lo + hi) >> 1);
+		mid = (lo + hi) >> 1;
 		i0 = table[mid - 1] || null;
 		i1 = table[mid];
 
@@ -260,8 +260,8 @@ module.exports = function(Chart) {
 					}
 				}
 			} else {
-				stepSize = helpers.valueOrDefault(timeOpts.stepSize, timeOpts.unitStepSize);
-				stepSize = stepSize || timeHelpers.determineStepSize(min, max, unit, capacity);
+				stepSize = helpers.valueOrDefault(timeOpts.stepSize, timeOpts.unitStepSize)
+					|| timeHelpers.determineStepSize(min, max, unit, capacity);
 
 				ticks = timeHelpers.generateTicks({
 					maxTicks: capacity,
@@ -277,8 +277,8 @@ module.exports = function(Chart) {
 				});
 
 				// Recompute min/max, the ticks generation might have changed them (BUG?)
-				min = ticks.length? ticks[0] : min;
-				max = ticks.length? ticks[ticks.length - 1] : max;
+				min = ticks.length ? ticks[0] : min;
+				max = ticks.length ? ticks[ticks.length - 1] : max;
 			}
 
 			me.ticks = ticks;
