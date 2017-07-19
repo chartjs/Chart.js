@@ -108,7 +108,7 @@ describe('Category scale tests', function() {
 		expect(scale.ticks).toEqual(mockData.xLabels);
 	});
 
-	it('Should generate ticks from the data xLabels', function() {
+	it('Should generate ticks from the data yLabels', function() {
 		var scaleID = 'myScale';
 
 		var mockData = {
@@ -134,6 +134,28 @@ describe('Category scale tests', function() {
 		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.ticks).toEqual(mockData.yLabels);
+	});
+
+	it('Should generate ticks from the axis labels', function() {
+		var labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'];
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				data: [10, 5, 0, 25, 78]
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'x',
+						type: 'category',
+						labels: labels
+					}]
+				}
+			}
+		});
+
+		var scale = chart.scales.x;
+		expect(scale.ticks).toEqual(labels);
 	});
 
 	it ('should get the correct label for the index', function() {
