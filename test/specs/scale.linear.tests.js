@@ -28,8 +28,9 @@ describe('Linear Scale', function() {
 			},
 			position: 'left',
 			scaleLabel: {
-				labelString: '',
 				display: false,
+				labelString: '',
+				lineHeight: 1.2
 			},
 			ticks: {
 				beginAtZero: false,
@@ -772,15 +773,15 @@ describe('Linear Scale', function() {
 		expect(xScale.paddingBottom).toBeCloseToPixel(0);
 		expect(xScale.paddingLeft).toBeCloseToPixel(0);
 		expect(xScale.paddingRight).toBeCloseToPixel(0);
-		expect(xScale.width).toBeCloseToPixel(450);
-		expect(xScale.height).toBeCloseToPixel(46);
+		expect(xScale.width).toBeCloseToPixel(454);
+		expect(xScale.height).toBeCloseToPixel(42);
 
 		expect(yScale.paddingTop).toBeCloseToPixel(0);
 		expect(yScale.paddingBottom).toBeCloseToPixel(0);
 		expect(yScale.paddingLeft).toBeCloseToPixel(0);
 		expect(yScale.paddingRight).toBeCloseToPixel(0);
-		expect(yScale.width).toBeCloseToPixel(48);
-		expect(yScale.height).toBeCloseToPixel(434);
+		expect(yScale.width).toBeCloseToPixel(44);
+		expect(yScale.height).toBeCloseToPixel(438);
 	});
 
 	it('should fit correctly when display is turned off', function() {
@@ -820,7 +821,8 @@ describe('Linear Scale', function() {
 							drawBorder: false
 						},
 						scaleLabel: {
-							display: false
+							display: false,
+							lineHeight: 1.2
 						},
 						ticks: {
 							display: false,

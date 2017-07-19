@@ -75,8 +75,9 @@ describe('Time scale tests', function() {
 			},
 			position: 'bottom',
 			scaleLabel: {
+				display: false,
 				labelString: '',
-				display: false
+				lineHeight: 1.2
 			},
 			ticks: {
 				beginAtZero: false,

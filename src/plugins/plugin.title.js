@@ -8,6 +8,7 @@ defaults._set('global', {
 		display: false,
 		fontStyle: 'bold',
 		fullWidth: true,
+		lineHeight: 1.2,
 		padding: 10,
 		position: 'top',
 		text: '',
@@ -114,7 +115,7 @@ module.exports = function(Chart) {
 				fontSize = valueOrDefault(opts.fontSize, defaults.global.defaultFontSize),
 				minSize = me.minSize,
 				lineCount = helpers.isArray(opts.text) ? opts.text.length : 1,
-				lineHeight = valueOrDefault(opts.lineHeight, fontSize),
+				lineHeight = helpers.options.toLineHeight(opts.lineHeight, fontSize),
 				textSize = display ? (lineCount * lineHeight) + (opts.padding * 2) : 0;
 
 			if (me.isHorizontal()) {
@@ -150,7 +151,8 @@ module.exports = function(Chart) {
 					fontStyle = valueOrDefault(opts.fontStyle, globalDefaults.defaultFontStyle),
 					fontFamily = valueOrDefault(opts.fontFamily, globalDefaults.defaultFontFamily),
 					titleFont = helpers.fontString(fontSize, fontStyle, fontFamily),
-					lineHeight = valueOrDefault(opts.lineHeight, fontSize),
+					lineHeight = helpers.options.toLineHeight(opts.lineHeight, fontSize),
+					offset = lineHeight/2 + opts.padding,
 					rotation = 0,
 					titleX,
 					titleY,
@@ -166,10 +168,10 @@ module.exports = function(Chart) {
 				// Horizontal
 				if (me.isHorizontal()) {
 					titleX = left + ((right - left) / 2); // midpoint of the width
-					titleY = top + ((bottom - top) / 2); // midpoint of the height
+					titleY = top + offset;
 					maxWidth = right - left;
 				} else {
-					titleX = opts.position === 'left' ? left + (fontSize / 2) : right - (fontSize / 2);
+					titleX = opts.position === 'left' ? left + offset : right - offset;
 					titleY = top + ((bottom - top) / 2);
 					maxWidth = bottom - top;
 					rotation = Math.PI * (opts.position === 'left' ? -0.5 : 0.5);
