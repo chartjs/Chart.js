@@ -7,9 +7,131 @@ moment = typeof(moment) === 'function' ? moment : window.moment;
 var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 
+function sorter(a, b) {
+	return a - b;
+}
+
+/**
+ * Returns an array of {time, pos} objects used to interpolate a specific `time` or position
+ * (`pos`) on the scale, by searching entries before and after the requested value. `pos` is
+ * a decimal between 0 and 1: 0 being the start of the scale (left or top) and 1 the other
+ * extremity (left + width or top + height). Note that it would be more optimized to directly
+ * store pre-computed pixels, but the scale dimensions are not guaranteed at the time we need
+ * to create the lookup table. The table ALWAYS contains at least two items: min and max.
+ *
+ * @param {Number[]} timestamps - timestamps sorted from lowest to highest.
+ * @param {Boolean} linear - If true, timestamps will be spread linearly along the min/max
+ * range, so basically, the table will contains only two items: {min, 0} and {max, 1}. If
+ * false, timestamps will be positioned at the same distance from each other. In this case,
+ * only timestamps that break the time linearity are registered, meaning that in the best
+ * case, all timestamps are linear, the table contains only min and max.
+ */
+function buildLookupTable(timestamps, min, max, linear) {
+	if (linear || !timestamps.length) {
+		return [
+			{time: min, pos: 0},
+			{time: max, pos: 1}
+		];
+	}
+
+	var table = [];
+	var items = timestamps.slice(0);
+	var i, ilen, prev, curr, next;
+
+	if (min < timestamps[0]) {
+		items.unshift(min);
+	}
+	if (max > timestamps[timestamps.length - 1]) {
+		items.push(max);
+	}
+
+	for (i = 0, ilen = items.length; i<ilen; ++i) {
+		next = items[i + 1];
+		prev = items[i - 1];
+		curr = items[i];
+
+		// only add points that breaks the scale linearity
+		if (prev === undefined || next === undefined || Math.round((next + prev) / 2) !== curr) {
+			table.push({time: curr, pos: i / (ilen - 1)});
+		}
+	}
+
+	return table;
+}
+
+// @see adapted from http://www.anujgakhar.com/2014/03/01/binary-search-in-javascript/
+function lookup(table, key, value) {
+	var lo = 0;
+	var hi = table.length - 1;
+	var mid, i0, i1;
+
+	while (lo >= 0 && lo <= hi) {
+		mid = (lo + hi) >> 1;
+		i0 = table[mid - 1] || null;
+		i1 = table[mid];
+
+		if (!i0) {
+			// given value is outside table (before first item)
+			return {lo: null, hi: i1};
+		} else if (i1[key] < value) {
+			lo = mid + 1;
+		} else if (i0[key] > value) {
+			hi = mid - 1;
+		} else {
+			return {lo: i0, hi: i1};
+		}
+	}
+
+	// given value is outside table (after last item)
+	return {lo: i1, hi: null};
+}
+
+/**
+ * Linearly interpolates the given source `value` using the table items `skey` values and
+ * returns the associated `tkey` value. For example, interpolate(table, 'time', 42, 'pos')
+ * returns the position for a timestamp equal to 42. If value is out of bounds, values at
+ * index [0, 1] or [n - 1, n] are used for the interpolation.
+ */
+function interpolate(table, skey, sval, tkey) {
+	var range = lookup(table, skey, sval);
+
+	// Note: the lookup table ALWAYS contains at least 2 items (min and max)
+	var prev = !range.lo ? table[0] : !range.hi ? table[table.length - 2] : range.lo;
+	var next = !range.lo ? table[1] : !range.hi ? table[table.length - 1] : range.hi;
+
+	var span = next[skey] - prev[skey];
+	var ratio = span ? (sval - prev[skey]) / span : 0;
+	var offset = (next[tkey] - prev[tkey]) * ratio;
+
+	return prev[tkey] + offset;
+}
+
+function parse(input, scale) {
+	if (helpers.isNullOrUndef(input)) {
+		return null;
+	}
+
+	var round = scale.options.time.round;
+	var value = scale.getRightValue(input);
+	var time = value.isValid ? value : helpers.time.parseTime(scale, value);
+	if (!time || !time.isValid()) {
+		return null;
+	}
+
+	if (round) {
+		time.startOf(round);
+	}
+
+	return time.valueOf();
+}
+
 module.exports = function(Chart) {
 
 	var timeHelpers = helpers.time;
+
+	// Integer constants are from the ES6 spec.
+	var MIN_INTEGER = Number.MIN_SAFE_INTEGER || -9007199254740991;
+	var MAX_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
 
 	var defaultConfig = {
 		position: 'bottom',
@@ -37,7 +159,9 @@ module.exports = function(Chart) {
 			},
 		},
 		ticks: {
-			autoSkip: false
+			autoSkip: false,
+			mode: 'linear',   // 'linear|series'
+			source: 'auto'    // 'auto|labels'
 		}
 	};
 
@@ -51,246 +175,254 @@ module.exports = function(Chart) {
 
 			Chart.Scale.prototype.initialize.call(this);
 		},
+
 		determineDataLimits: function() {
 			var me = this;
-			var timeOpts = me.options.time;
+			var chart = me.chart;
+			var options = me.options;
+			var datasets = chart.data.datasets || [];
+			var min = MAX_INTEGER;
+			var max = MIN_INTEGER;
+			var timestamps = [];
+			var labels = [];
+			var i, j, ilen, jlen, data, timestamp;
 
-			// We store the data range as unix millisecond timestamps so dataMin and dataMax will always be integers.
-			// Integer constants are from the ES6 spec.
-			var dataMin = Number.MAX_SAFE_INTEGER || 9007199254740991;
-			var dataMax = Number.MIN_SAFE_INTEGER || -9007199254740991;
+			// Convert labels to timestamps
+			for (i = 0, ilen = chart.data.labels.length; i < ilen; ++i) {
+				timestamp = parse(chart.data.labels[i], me);
+				min = Math.min(min, timestamp);
+				max = Math.max(max, timestamp);
+				labels.push(timestamp);
+			}
 
-			var chartData = me.chart.data;
-			var parsedData = {
-				labels: [],
-				datasets: []
-			};
+			// Convert data to timestamps
+			for (i = 0, ilen = datasets.length; i < ilen; ++i) {
+				if (chart.isDatasetVisible(i)) {
+					data = datasets[i].data;
 
-			var timestamp;
+					// Let's consider that all data have the same format.
+					if (helpers.isObject(data[0])) {
+						timestamps[i] = [];
 
-			helpers.each(chartData.labels, function(label, labelIndex) {
-				var labelMoment = timeHelpers.parseTime(me, label);
-
-				if (labelMoment.isValid()) {
-					// We need to round the time
-					if (timeOpts.round) {
-						labelMoment.startOf(timeOpts.round);
-					}
-
-					timestamp = labelMoment.valueOf();
-					dataMin = Math.min(timestamp, dataMin);
-					dataMax = Math.max(timestamp, dataMax);
-
-					// Store this value for later
-					parsedData.labels[labelIndex] = timestamp;
-				}
-			});
-
-			helpers.each(chartData.datasets, function(dataset, datasetIndex) {
-				var timestamps = [];
-
-				if (typeof dataset.data[0] === 'object' && dataset.data[0] !== null && me.chart.isDatasetVisible(datasetIndex)) {
-					// We have potential point data, so we need to parse this
-					helpers.each(dataset.data, function(value, dataIndex) {
-						var dataMoment = timeHelpers.parseTime(me, me.getRightValue(value));
-
-						if (dataMoment.isValid()) {
-							if (timeOpts.round) {
-								dataMoment.startOf(timeOpts.round);
-							}
-
-							timestamp = dataMoment.valueOf();
-							dataMin = Math.min(timestamp, dataMin);
-							dataMax = Math.max(timestamp, dataMax);
-							timestamps[dataIndex] = timestamp;
+						for (j = 0, jlen = data.length; j < jlen; ++j) {
+							timestamp = parse(data[j], me);
+							min = Math.min(min, timestamp);
+							max = Math.max(max, timestamp);
+							timestamps[i][j] = timestamp;
 						}
-					});
+					} else {
+						timestamps[i] = labels.slice(0);
+					}
 				} else {
-					// We have no x coordinates, so use the ones from the labels
-					timestamps = parsedData.labels.slice();
+					timestamps[i] = [];
 				}
+			}
 
-				parsedData.datasets[datasetIndex] = timestamps;
-			});
+			// Enforce limits with user min/max options
+			min = parse(options.time.min, me) || min;
+			max = parse(options.time.max, me) || max;
 
-			me.dataMin = dataMin;
-			me.dataMax = dataMax;
-			me._parsedData = parsedData;
+			// In case there is no valid min/max, let's use today limits
+			min = min === MAX_INTEGER ? +moment().startOf('day') : min;
+			max = max === MIN_INTEGER ? +moment().endOf('day') + 1 : max;
+
+			me._model = {
+				datasets: timestamps,
+				horizontal: me.isHorizontal(),
+				labels: labels.sort(sorter),    // Sort labels **after** data have been converted
+				min: Math.min(min, max),        // Make sure that max is **strictly** higher ...
+				max: Math.max(min + 1, max),    // ... than min (required by the lookup table)
+				offset: null,
+				size: null,
+				table: []
+			};
 		},
+
 		buildTicks: function() {
 			var me = this;
+			var model = me._model;
+			var min = model.min;
+			var max = model.max;
 			var timeOpts = me.options.time;
-
-			var minTimestamp;
-			var maxTimestamp;
-			var dataMin = me.dataMin;
-			var dataMax = me.dataMax;
-
-			if (timeOpts.min) {
-				var minMoment = timeHelpers.parseTime(me, timeOpts.min);
-				if (timeOpts.round) {
-					minMoment.startOf(timeOpts.round);
-				}
-				minTimestamp = minMoment.valueOf();
-			}
-
-			if (timeOpts.max) {
-				maxTimestamp = timeHelpers.parseTime(me, timeOpts.max).valueOf();
-			}
-
-			var maxTicks = me.getLabelCapacity(minTimestamp || dataMin);
-
-			var unit = timeOpts.unit || timeHelpers.determineUnit(timeOpts.minUnit, minTimestamp || dataMin, maxTimestamp || dataMax, maxTicks);
+			var ticksOpts = me.options.ticks;
+			var formats = timeOpts.displayFormats;
+			var capacity = me.getLabelCapacity(min);
+			var unit = timeOpts.unit || timeHelpers.determineUnit(timeOpts.minUnit, min, max, capacity);
 			var majorUnit = timeHelpers.determineMajorUnit(unit);
+			var ticks = [];
+			var i, ilen, timestamp, stepSize;
 
-			me.displayFormat = timeOpts.displayFormats[unit];
-			me.majorDisplayFormat = timeOpts.displayFormats[majorUnit];
+			if (ticksOpts.source === 'labels') {
+				for (i = 0, ilen = model.labels.length; i < ilen; ++i) {
+					timestamp = model.labels[i];
+					if (timestamp >= min && timestamp <= max) {
+						ticks.push(timestamp);
+					}
+				}
+			} else {
+				stepSize = helpers.valueOrDefault(timeOpts.stepSize, timeOpts.unitStepSize)
+					|| timeHelpers.determineStepSize(min, max, unit, capacity);
+
+				ticks = timeHelpers.generateTicks({
+					maxTicks: capacity,
+					min: parse(timeOpts.min, me),
+					max: parse(timeOpts.max, me),
+					stepSize: stepSize,
+					majorUnit: majorUnit,
+					unit: unit,
+					timeOpts: timeOpts
+				}, {
+					min: min,
+					max: max
+				});
+
+				// Recompute min/max, the ticks generation might have changed them (BUG?)
+				min = ticks.length ? ticks[0] : min;
+				max = ticks.length ? ticks[ticks.length - 1] : max;
+			}
+
+			me.ticks = ticks;
+			me.min = min;
+			me.max = max;
 			me.unit = unit;
 			me.majorUnit = majorUnit;
+			me.displayFormat = formats[unit];
+			me.majorDisplayFormat = formats[majorUnit];
 
-			var optionStepSize = helpers.valueOrDefault(timeOpts.stepSize, timeOpts.unitStepSize);
-			var stepSize = optionStepSize || timeHelpers.determineStepSize(minTimestamp || dataMin, maxTimestamp || dataMax, unit, maxTicks);
-			me.ticks = timeHelpers.generateTicks({
-				maxTicks: maxTicks,
-				min: minTimestamp,
-				max: maxTimestamp,
-				stepSize: stepSize,
-				majorUnit: majorUnit,
-				unit: unit,
-				timeOpts: timeOpts
-			}, {
-				min: dataMin,
-				max: dataMax
-			});
-
-			// At this point, we need to update our max and min given the tick values since we have expanded the
-			// range of the scale
-			me.max = helpers.max(me.ticks);
-			me.min = helpers.min(me.ticks);
+			model.table = buildLookupTable(ticks, min, max, ticksOpts.mode === 'linear');
 		},
-		// Get tooltip label
+
 		getLabelForIndex: function(index, datasetIndex) {
 			var me = this;
-			var label = me.chart.data.labels && index < me.chart.data.labels.length ? me.chart.data.labels[index] : '';
-			var value = me.chart.data.datasets[datasetIndex].data[index];
+			var data = me.chart.data;
+			var timeOpts = me.options.time;
+			var label = data.labels && index < data.labels.length ? data.labels[index] : '';
+			var value = data.datasets[datasetIndex].data[index];
 
-			if (value !== null && typeof value === 'object') {
+			if (helpers.isObject(value)) {
 				label = me.getRightValue(value);
 			}
-
-			// Format nicely
-			if (me.options.time.tooltipFormat) {
-				label = timeHelpers.parseTime(me, label).format(me.options.time.tooltipFormat);
+			if (timeOpts.tooltipFormat) {
+				label = timeHelpers.parseTime(me, label).format(timeOpts.tooltipFormat);
 			}
 
 			return label;
 		},
-		// Function to format an individual tick mark
+
+		/**
+		 * Function to format an individual tick mark
+		 * @private
+		 */
 		tickFormatFunction: function(tick, index, ticks) {
-			var formattedTick;
-			var tickClone = tick.clone();
-			var tickTimestamp = tick.valueOf();
-			var major = false;
-			var tickOpts;
-			if (this.majorUnit && this.majorDisplayFormat && tickTimestamp === tickClone.startOf(this.majorUnit).valueOf()) {
-				// format as major unit
-				formattedTick = tick.format(this.majorDisplayFormat);
-				tickOpts = this.options.ticks.major;
-				major = true;
-			} else {
-				// format as minor (base) unit
-				formattedTick = tick.format(this.displayFormat);
-				tickOpts = this.options.ticks.minor;
+			var me = this;
+			var options = me.options;
+			var time = tick.valueOf();
+			var majorUnit = me.majorUnit;
+			var majorFormat = me.majorDisplayFormat;
+			var majorTime = tick.clone().startOf(me.majorUnit).valueOf();
+			var major = majorUnit && majorFormat && time === majorTime;
+			var formattedTick = tick.format(major? majorFormat : me.displayFormat);
+			var tickOpts = major? options.ticks.major : options.ticks.minor;
+			var formatter = helpers.valueOrDefault(tickOpts.callback, tickOpts.userCallback);
+
+			if (formatter) {
+				formattedTick = formatter(formattedTick, index, ticks);
 			}
 
-			var callback = helpers.valueOrDefault(tickOpts.callback, tickOpts.userCallback);
-
-			if (callback) {
-				return {
-					value: callback(formattedTick, index, ticks),
-					major: major
-				};
-			}
 			return {
 				value: formattedTick,
-				major: major
+				major: major,
+				time: time,
 			};
 		},
+
 		convertTicksToLabels: function() {
-			var me = this;
-			me.ticksAsTimestamps = me.ticks;
-			me.ticks = me.ticks.map(function(tick) {
-				return moment(tick);
-			}).map(me.tickFormatFunction, me);
-		},
-		getPixelForOffset: function(offset) {
-			var me = this;
-			var epochWidth = me.max - me.min;
-			var decimal = epochWidth ? (offset - me.min) / epochWidth : 0;
+			var ticks = this.ticks;
+			var i, ilen;
 
-			if (me.isHorizontal()) {
-				var valueOffset = (me.width * decimal);
-				return me.left + Math.round(valueOffset);
+			for (i = 0, ilen = ticks.length; i < ilen; ++i) {
+				ticks[i] = this.tickFormatFunction(moment(ticks[i]));
 			}
-
-			var heightOffset = (me.height * decimal);
-			return me.top + Math.round(heightOffset);
 		},
+
+		/**
+		 * @private
+		 */
+		getPixelForOffset: function(time) {
+			var me = this;
+			var model = me._model;
+			var size = model.horizontal ? me.width : me.height;
+			var start = model.horizontal ? me.left : me.top;
+			var pos = interpolate(model.table, 'time', time, 'pos');
+
+			return start + size * pos;
+		},
+
 		getPixelForValue: function(value, index, datasetIndex) {
 			var me = this;
-			var offset = null;
+			var time = null;
+
 			if (index !== undefined && datasetIndex !== undefined) {
-				offset = me._parsedData.datasets[datasetIndex][index];
+				time = me._model.datasets[datasetIndex][index];
 			}
 
-			if (offset === null) {
-				if (!value || !value.isValid) {
-					// not already a moment object
-					value = timeHelpers.parseTime(me, me.getRightValue(value));
-				}
-
-				if (value && value.isValid && value.isValid()) {
-					offset = value.valueOf();
-				}
+			if (time === null) {
+				time = parse(value, me);
 			}
 
-			if (offset !== null) {
-				return me.getPixelForOffset(offset);
+			if (time !== null) {
+				return me.getPixelForOffset(time);
 			}
 		},
+
 		getPixelForTick: function(index) {
-			return this.getPixelForOffset(this.ticksAsTimestamps[index]);
+			return index >= 0 && index < this.ticks.length ?
+				this.getPixelForOffset(this.ticks[index].time) :
+				null;
 		},
+
 		getValueForPixel: function(pixel) {
 			var me = this;
-			var innerDimension = me.isHorizontal() ? me.width : me.height;
-			var offset = (pixel - (me.isHorizontal() ? me.left : me.top)) / innerDimension;
-			return moment(me.min + (offset * (me.max - me.min)));
+			var model = me._model;
+			var size = model.horizontal ? me.width : me.height;
+			var start = model.horizontal ? me.left : me.top;
+			var pos = size ? (pixel - start) / size : 0;
+			var time = interpolate(model.table, 'pos', pos, 'time');
+
+			return moment(time);
 		},
-		// Crude approximation of what the label width might be
+
+		/**
+		 * Crude approximation of what the label width might be
+		 * @private
+		 */
 		getLabelWidth: function(label) {
 			var me = this;
-			var ticks = me.options.ticks;
-
+			var ticksOpts = me.options.ticks;
 			var tickLabelWidth = me.ctx.measureText(label).width;
-			var cosRotation = Math.cos(helpers.toRadians(ticks.maxRotation));
-			var sinRotation = Math.sin(helpers.toRadians(ticks.maxRotation));
-			var tickFontSize = helpers.valueOrDefault(ticks.fontSize, defaults.global.defaultFontSize);
+			var angle = helpers.toRadians(ticksOpts.maxRotation);
+			var cosRotation = Math.cos(angle);
+			var sinRotation = Math.sin(angle);
+			var tickFontSize = helpers.valueOrDefault(ticksOpts.fontSize, defaults.global.defaultFontSize);
+
 			return (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation);
 		},
+
+		/**
+		 * @private
+		 */
 		getLabelCapacity: function(exampleTime) {
 			var me = this;
 
 			me.displayFormat = me.options.time.displayFormats.millisecond;	// Pick the longest format for guestimation
+
 			var exampleLabel = me.tickFormatFunction(moment(exampleTime), 0, []).value;
 			var tickLabelWidth = me.getLabelWidth(exampleLabel);
-
 			var innerWidth = me.isHorizontal() ? me.width : me.height;
-			var labelCapacity = innerWidth / tickLabelWidth;
 
-			return labelCapacity;
+			return innerWidth / tickLabelWidth;
 		}
 	});
-	Chart.scaleService.registerScaleType('time', TimeScale, defaultConfig);
 
+	Chart.scaleService.registerScaleType('time', TimeScale, defaultConfig);
 };
