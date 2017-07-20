@@ -85,18 +85,18 @@ module.exports = Element.extend({
 
 		// Cliping for Points.
 		// going out from inner charArea?
-		if ((chartArea !== undefined) && ((model.x < chartArea.left) || (chartArea.right*errMargin < model.x) || (model.y < chartArea.top) || (chartArea.bottom*errMargin < model.y))) {
+		if ((chartArea !== undefined) && ((model.x < chartArea.left) || (chartArea.right * errMargin < model.x) || (model.y < chartArea.top) || (chartArea.bottom * errMargin < model.y))) {
 			// Point fade out
 			if (model.x < chartArea.left) {
 				ratio = (x - model.x) / (chartArea.left - model.x);
-			} else if (chartArea.right*errMargin < model.x) {
+			} else if (chartArea.right * errMargin < model.x) {
 				ratio = (model.x - x) / (model.x - chartArea.right);
 			} else if (model.y < chartArea.top) {
 				ratio = (y - model.y) / (chartArea.top - model.y);
-			} else if (chartArea.bottom*errMargin < model.y) {
+			} else if (chartArea.bottom * errMargin < model.y) {
 				ratio = (model.y - y) / (model.y - chartArea.bottom);
 			}
-			ratio = Math.round(ratio*100) / 100;
+			ratio = Math.round(ratio * 100) / 100;
 			ctx.strokeStyle = color(ctx.strokeStyle).alpha(ratio).rgbString();
 			ctx.fillStyle = color(ctx.fillStyle).alpha(ratio).rgbString();
 		}

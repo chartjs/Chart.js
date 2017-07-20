@@ -170,7 +170,7 @@ module.exports = function(Chart) {
 			var metaData = meta.data;
 			var i, ilen;
 
-			for (i=0, ilen=data.length; i<ilen; ++i) {
+			for (i = 0, ilen = data.length; i < ilen; ++i) {
 				metaData[i] = metaData[i] || me.createMetaData(i);
 			}
 
@@ -214,7 +214,7 @@ module.exports = function(Chart) {
 			var ilen = elements.length;
 			var i = 0;
 
-			for (; i<ilen; ++i) {
+			for (; i < ilen; ++i) {
 				elements[i].transition(easingValue);
 			}
 
@@ -233,7 +233,7 @@ module.exports = function(Chart) {
 				meta.dataset.draw();
 			}
 
-			for (; i<ilen; ++i) {
+			for (; i < ilen; ++i) {
 				elements[i].draw();
 			}
 		},
@@ -284,7 +284,7 @@ module.exports = function(Chart) {
 		 * @private
 		 */
 		insertElements: function(start, count) {
-			for (var i=0; i<count; ++i) {
+			for (var i = 0; i < count; ++i) {
 				this.addElementAndReset(start + i);
 			}
 		},
@@ -293,7 +293,7 @@ module.exports = function(Chart) {
 		 * @private
 		 */
 		onDataPush: function() {
-			this.insertElements(this.getDataset().data.length-1, arguments.length);
+			this.insertElements(this.getDataset().data.length - 1, arguments.length);
 		},
 
 		/**

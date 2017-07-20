@@ -150,7 +150,7 @@ describe('Chart.helpers.core', function() {
 		it('should return the value returned by fn', function() {
 			expect(helpers.callback(helpers.noop, [41])).toBe(undefined);
 			expect(helpers.callback(function(i) {
-				return i+1;
+				return i + 1;
 			}, [41])).toBe(42);
 		});
 	});

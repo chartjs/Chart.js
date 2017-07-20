@@ -37,7 +37,7 @@ var helpers = {
 	 * @returns {Boolean}
 	 * @function
 	 */
-	isArray: Array.isArray? Array.isArray : function(value) {
+	isArray: Array.isArray ? Array.isArray : function(value) {
 		return Object.prototype.toString.call(value) === '[object Array]';
 	},
 
@@ -58,7 +58,7 @@ var helpers = {
 	 * @returns {*}
 	 */
 	valueOrDefault: function(value, defaultValue) {
-		return typeof value === 'undefined'? defaultValue : value;
+		return typeof value === 'undefined' ? defaultValue : value;
 	},
 
 	/**
@@ -69,7 +69,7 @@ var helpers = {
 	 * @returns {*}
 	 */
 	valueAtIndexOrDefault: function(value, index, defaultValue) {
-		return helpers.valueOrDefault(helpers.isArray(value)? value[index] : value, defaultValue);
+		return helpers.valueOrDefault(helpers.isArray(value) ? value[index] : value, defaultValue);
 	},
 
 	/**
@@ -131,7 +131,7 @@ var helpers = {
 			return false;
 		}
 
-		for (i = 0, ilen=a0.length; i < ilen; ++i) {
+		for (i = 0, ilen = a0.length; i < ilen; ++i) {
 			v0 = a0[i];
 			v1 = a1[i];
 
@@ -164,7 +164,7 @@ var helpers = {
 			var klen = keys.length;
 			var k = 0;
 
-			for (; k<klen; ++k) {
+			for (; k < klen; ++k) {
 				target[keys[k]] = helpers.clone(source[keys[k]]);
 			}
 
@@ -215,7 +215,7 @@ var helpers = {
 	 * @returns {Object} The `target` object.
 	 */
 	merge: function(target, source, options) {
-		var sources = helpers.isArray(source)? source : [source];
+		var sources = helpers.isArray(source) ? source : [source];
 		var ilen = sources.length;
 		var merge, i, keys, klen, k;
 
@@ -226,14 +226,14 @@ var helpers = {
 		options = options || {};
 		merge = options.merger || helpers._merger;
 
-		for (i=0; i<ilen; ++i) {
+		for (i = 0; i < ilen; ++i) {
 			source = sources[i];
 			if (!helpers.isObject(source)) {
 				continue;
 			}
 
 			keys = Object.keys(source);
-			for (k=0, klen = keys.length; k<klen; ++k) {
+			for (k = 0, klen = keys.length; k < klen; ++k) {
 				merge(keys[k], target, source, options);
 			}
 		}

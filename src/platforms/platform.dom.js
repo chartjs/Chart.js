@@ -39,7 +39,7 @@ var eventTypeMap = {
 function readUsedSize(element, property) {
 	var value = helpers.getStyle(element, property);
 	var matches = value && value.match(/^(\d+)(\.\d+)?px$/);
-	return matches? Number(matches[1]) : undefined;
+	return matches ? Number(matches[1]) : undefined;
 }
 
 /**
@@ -119,7 +119,7 @@ var supportsEventListenerOptions = (function() {
 
 // Default passive to true as expected by Chrome for 'touchstart' and 'touchend' events.
 // https://github.com/chartjs/Chart.js/issues/4287
-var eventListenerOptions = supportsEventListenerOptions? {passive: true} : false;
+var eventListenerOptions = supportsEventListenerOptions ? {passive: true} : false;
 
 function addEventListener(node, type, listener) {
 	node.addEventListener(type, listener, eventListenerOptions);
@@ -134,8 +134,8 @@ function createEvent(type, chart, x, y, nativeEvent) {
 		type: type,
 		chart: chart,
 		native: nativeEvent || null,
-		x: x !== undefined? x : null,
-		y: y !== undefined? y : null,
+		x: x !== undefined ? x : null,
+		y: y !== undefined ? y : null,
 	};
 }
 
@@ -149,18 +149,18 @@ function createResizer(handler) {
 	var iframe = document.createElement('iframe');
 	iframe.className = 'chartjs-hidden-iframe';
 	iframe.style.cssText =
-		'display:block;'+
-		'overflow:hidden;'+
-		'border:0;'+
-		'margin:0;'+
-		'top:0;'+
-		'left:0;'+
-		'bottom:0;'+
-		'right:0;'+
-		'height:100%;'+
-		'width:100%;'+
-		'position:absolute;'+
-		'pointer-events:none;'+
+		'display:block;' +
+		'overflow:hidden;' +
+		'border:0;' +
+		'margin:0;' +
+		'top:0;' +
+		'left:0;' +
+		'bottom:0;' +
+		'right:0;' +
+		'height:100%;' +
+		'width:100%;' +
+		'position:absolute;' +
+		'pointer-events:none;' +
 		'z-index:-1;';
 
 	// Prevent the iframe to gain focus on tab.

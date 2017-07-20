@@ -41,8 +41,8 @@ window.randomScalingFactor = function() {
 
 		rand: function(min, max) {
 			var seed = this._seed;
-			min = min === undefined? 0 : min;
-			max = max === undefined? 1 : max;
+			min = min === undefined ? 0 : min;
+			max = max === undefined ? 1 : max;
 			this._seed = (seed * 9301 + 49297) % 233280;
 			return min + (this._seed / 233280) * (max - min);
 		},
@@ -59,7 +59,7 @@ window.randomScalingFactor = function() {
 			var data = [];
 			var i, value;
 
-			for (i=0; i<count; ++i) {
+			for (i = 0; i < count; ++i) {
 				value = (from[i] || 0) + this.rand(min, max);
 				if (this.rand() <= continuity) {
 					data.push(Math.round(dfactor * value) / dfactor);
@@ -76,14 +76,14 @@ window.randomScalingFactor = function() {
 			var min = cfg.min || 0;
 			var max = cfg.max || 100;
 			var count = cfg.count || 8;
-			var step = (max-min) / count;
+			var step = (max - min) / count;
 			var decimals = cfg.decimals || 8;
 			var dfactor = Math.pow(10, decimals) || 0;
 			var prefix = cfg.prefix || '';
 			var values = [];
 			var i;
 
-			for (i=min; i<max; i+=step) {
+			for (i = min; i < max; i += step) {
 				values.push(prefix + Math.round(dfactor * i) / dfactor);
 			}
 
@@ -97,8 +97,8 @@ window.randomScalingFactor = function() {
 			var values = [];
 			var i, value;
 
-			for (i=0; i<count; ++i) {
-				value = Months[Math.ceil(i)%12];
+			for (i = 0; i < count; ++i) {
+				value = Months[Math.ceil(i) % 12];
 				values.push(value.substring(0, section));
 			}
 
@@ -106,7 +106,7 @@ window.randomScalingFactor = function() {
 		},
 
 		transparentize: function(color, opacity) {
-			var alpha = opacity === undefined? 0.5 : 1 - opacity;
+			var alpha = opacity === undefined ? 0.5 : 1 - opacity;
 			return Chart.helpers.color(color).alpha(alpha).rgbString();
 		},
 

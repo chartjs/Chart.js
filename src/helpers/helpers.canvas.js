@@ -27,8 +27,8 @@ var exports = module.exports = {
 	 */
 	roundedRect: function(ctx, x, y, width, height, radius) {
 		if (radius) {
-			var rx = Math.min(radius, width/2);
-			var ry = Math.min(radius, height/2);
+			var rx = Math.min(radius, width / 2);
+			var ry = Math.min(radius, height / 2);
 
 			ctx.moveTo(x + rx, y);
 			ctx.lineTo(x + width - rx, y);
@@ -180,10 +180,10 @@ var exports = module.exports = {
 		}
 
 		ctx.bezierCurveTo(
-			flip? previous.controlPointPreviousX : previous.controlPointNextX,
-			flip? previous.controlPointPreviousY : previous.controlPointNextY,
-			flip? target.controlPointNextX : target.controlPointPreviousX,
-			flip? target.controlPointNextY : target.controlPointPreviousY,
+			flip ? previous.controlPointPreviousX : previous.controlPointNextX,
+			flip ? previous.controlPointPreviousY : previous.controlPointNextY,
+			flip ? target.controlPointNextX : target.controlPointPreviousX,
+			flip ? target.controlPointNextY : target.controlPointPreviousY,
 			target.x,
 			target.y);
 	}

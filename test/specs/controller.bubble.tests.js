@@ -162,7 +162,7 @@ describe('Bubble controller tests', function() {
 
 		chart.update();
 
-		for (var i=0; i<4; ++i) {
+		for (var i = 0; i < 4; ++i) {
 			expect(meta.data[i]._model).toEqual(jasmine.objectContaining({
 				backgroundColor: 'rgb(98, 98, 98)',
 				borderColor: 'rgb(8, 8, 8)',

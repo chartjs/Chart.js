@@ -153,7 +153,7 @@ module.exports = function(Chart) {
 					fontFamily = valueOrDefault(opts.fontFamily, globalDefaults.defaultFontFamily),
 					titleFont = helpers.fontString(fontSize, fontStyle, fontFamily),
 					lineHeight = helpers.options.toLineHeight(opts.lineHeight, fontSize),
-					offset = lineHeight/2 + opts.padding,
+					offset = lineHeight / 2 + opts.padding,
 					rotation = 0,
 					titleX,
 					titleY,

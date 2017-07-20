@@ -49,7 +49,7 @@ module.exports = function(Chart) {
 				chart.animating = true;
 			}
 
-			for (i=0, ilen=animations.length; i < ilen; ++i) {
+			for (i = 0, ilen = animations.length; i < ilen; ++i) {
 				if (animations[i].chart === chart) {
 					animations[i] = animation;
 					return;

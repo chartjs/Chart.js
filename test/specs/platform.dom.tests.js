@@ -10,7 +10,7 @@ describe('Platform.dom', function() {
 			setTimeout(callback, 50);
 		};
 
-		Chart.helpers.addEvent(content, state !== 'complete'? 'load' : 'resize', handler);
+		Chart.helpers.addEvent(content, state !== 'complete' ? 'load' : 'resize', handler);
 	}
 
 	describe('context acquisition', function() {

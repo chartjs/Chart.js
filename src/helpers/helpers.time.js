@@ -1,7 +1,7 @@
 'use strict';
 
 var moment = require('moment');
-moment = typeof(moment) === 'function' ? moment : window.moment;
+moment = typeof moment === 'function' ? moment : window.moment;
 
 var helpers = require('./helpers.core');
 
@@ -55,7 +55,7 @@ function generateTicksNiceRange(options, dataRange, niceRange) {
 	var ticks = [];
 	if (options.maxTicks) {
 		var stepSize = options.stepSize;
-		var startTick = helpers.isNullOrUndef(options.min)? niceRange.min : options.min;
+		var startTick = helpers.isNullOrUndef(options.min) ? niceRange.min : options.min;
 		var majorUnit = options.majorUnit;
 		var majorUnitStart = majorUnit ? moment(startTick).add(1, majorUnit).startOf(majorUnit) : startTick;
 		var startRange = majorUnitStart.valueOf() - startTick;
