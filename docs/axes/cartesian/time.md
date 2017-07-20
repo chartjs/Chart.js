@@ -2,6 +2,25 @@
 
 The time scale is used to display times and dates. When building its ticks, it will automatically calculate the most comfortable unit base on the size of the scale.
 
+## Data Sets
+
+### Input Data
+
+The x-axis data points may additionally be specified via the `t` attribute when using the time scale.
+
+    data: [{
+        x: new Date(),
+        y: 1
+    }, {
+        t: new Date(),
+        y: 10
+    }]
+
+
+### Date Formats
+
+When providing data for the time scale, Chart.js supports all of the formats that Moment.js accepts. See [Moment.js docs](http://momentjs.com/docs/#/parsing/) for details.
+
 ## Configuration Options
 
 The following options are provided by the time scale. They are all located in the `time` sub options. These options extend the [common tick configuration](README.md#tick-configuration).
@@ -19,11 +38,7 @@ The following options are provided by the time scale. They are all located in th
 | `stepSize` | `Number` | `1` | The number of units between grid lines.
 | `minUnit` | `String` | `'millisecond'` | The minimum display format to be used for a time unit.
 
-## Date Formats
-
-When providing data for the time scale, Chart.js supports all of the formats that Moment.js accepts. See [Moment.js docs](http://momentjs.com/docs/#/parsing/) for details.
-
-## Time Units
+### Time Units
 
 The following time measurements are supported. The names can be passed as strings to the `time.unit` config option to force a certain unit.
 
@@ -55,7 +70,7 @@ var chart = new Chart(ctx, {
 })
 ```
 
-## Display Formats
+### Display Formats
 The following display formats are used to configure how different time units are formed into strings for the axis tick marks. See [moment.js](http://momentjs.com/docs/#/displaying/format/) for the allowable format strings.
 
 Name | Default | Example
@@ -91,7 +106,7 @@ var chart = new Chart(ctx, {
 })
 ```
 
-## Parser
+### Parser
 If this property is defined as a string, it is interpreted as a custom format to be used by moment to parse the date. 
 
 If this is a function, it must return a moment.js object given the appropriate data value.
