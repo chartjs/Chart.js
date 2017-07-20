@@ -28,11 +28,13 @@ defaults._set('scale', {
 
 	// scale label
 	scaleLabel: {
+		// display property
+		display: false,
+
 		// actual label
 		labelString: '',
 
-		// display property
-		display: false,
+		lineHeight: 1.2
 	},
 
 	// label settings
@@ -75,6 +77,12 @@ module.exports = function(Chart) {
 			family: family,
 			font: helpers.fontString(size, style, family)
 		};
+	}
+
+	function parseLineHeight(options) {
+		return helpers.options.toLineHeight(
+			helpers.valueOrDefault(options.lineHeight, 1.2),
+			helpers.valueOrDefault(options.fontSize, defaults.global.defaultFontSize));
 	}
 
 	Chart.Scale = Chart.Element.extend({
@@ -310,8 +318,8 @@ module.exports = function(Chart) {
 			var isHorizontal = me.isHorizontal();
 
 			var tickFont = parseFontOptions(tickOpts);
-			var scaleLabelLineHeight = helpers.valueOrDefault(scaleLabelOpts.lineHeight, parseFontOptions(scaleLabelOpts).size * 1.5);
 			var tickMarkLength = opts.gridLines.tickMarkLength;
+			var scaleLabelLineHeight = parseLineHeight(scaleLabelOpts);
 
 			// Width
 			if (isHorizontal) {
@@ -738,7 +746,7 @@ module.exports = function(Chart) {
 				var scaleLabelX;
 				var scaleLabelY;
 				var rotation = 0;
-				var halfLineHeight = helpers.valueOrDefault(scaleLabel.lineHeight, scaleLabelFont.size) / 2;
+				var halfLineHeight = parseLineHeight(scaleLabel) / 2;
 
 				if (isHorizontal) {
 					scaleLabelX = me.left + ((me.right - me.left) / 2); // midpoint of the width

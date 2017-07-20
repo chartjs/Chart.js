@@ -10,7 +10,7 @@ The scale label configuration is nested under the scale configuration in the `sc
 | -----| ---- | --------| -----------
 | `display` | `Boolean` | `false` | If true, display the axis title.
 | `labelString` | `String` | `''` | The text for the title. (i.e. "# of People" or "Response Choices").
-| `lineHeight` | `Number` | `` | Height of an individual line of text. If not defined, the font size is used.
+| `lineHeight` | `Number|String` | `1.2` | Height of an individual line of text (see [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height))
 | `fontColor` | Color | `'#666'` | Font color for scale title.
 | `fontFamily` | `String` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family for the scale title, follows CSS font-family options.
 | `fontSize` | `Number` | `12` | Font size for scale title.

@@ -128,8 +128,9 @@ describe('Core helper tests', function() {
 					},
 					position: 'right',
 					scaleLabel: {
-						labelString: '',
 						display: false,
+						labelString: '',
+						lineHeight: 1.2
 					},
 					ticks: {
 						beginAtZero: false,
@@ -168,8 +169,9 @@ describe('Core helper tests', function() {
 					},
 					position: 'left',
 					scaleLabel: {
-						labelString: '',
 						display: false,
+						labelString: '',
+						lineHeight: 1.2
 					},
 					ticks: {
 						beginAtZero: false,
