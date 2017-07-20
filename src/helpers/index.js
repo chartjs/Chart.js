@@ -3,4 +3,3 @@
 module.exports = require('./helpers.core');
 module.exports.easing = require('./helpers.easing');
 module.exports.canvas = require('./helpers.canvas');
-module.exports.time = require('./helpers.time');
