@@ -9,11 +9,12 @@ Chart.helpers = require('./helpers/index');
 require('./core/core.helpers')(Chart);
 
 Chart.defaults = require('./core/core.defaults');
+Chart.Element = require('./core/core.element');
+Chart.elements = require('./elements/index');
 Chart.Interaction = require('./core/core.interaction');
 Chart.platform = require('./platforms/platform');
 Chart.Ticks = require('./core/core.ticks');
 
-require('./core/core.element')(Chart);
 require('./core/core.plugin')(Chart);
 require('./core/core.animation')(Chart);
 require('./core/core.controller')(Chart);
@@ -22,11 +23,6 @@ require('./core/core.layoutService')(Chart);
 require('./core/core.scaleService')(Chart);
 require('./core/core.scale')(Chart);
 require('./core/core.tooltip')(Chart);
-
-require('./elements/element.arc')(Chart);
-require('./elements/element.line')(Chart);
-require('./elements/element.point')(Chart);
-require('./elements/element.rectangle')(Chart);
 
 require('./scales/scale.linearbase')(Chart);
 require('./scales/scale.category')(Chart);

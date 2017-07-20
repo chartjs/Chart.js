@@ -1,6 +1,7 @@
 'use strict';
 
 var defaults = require('./core.defaults');
+var Element = require('./core.element');
 var helpers = require('../helpers/index');
 
 defaults._set('global', {
@@ -380,7 +381,7 @@ module.exports = function(Chart) {
 		};
 	}
 
-	Chart.Tooltip = Chart.Element.extend({
+	Chart.Tooltip = Element.extend({
 		initialize: function() {
 			this._model = getBaseModel(this._options);
 		},

@@ -2,6 +2,7 @@
 'use strict';
 
 var defaults = require('./core.defaults');
+var Element = require('./core.element');
 var helpers = require('../helpers/index');
 
 defaults._set('global', {
@@ -15,7 +16,7 @@ defaults._set('global', {
 
 module.exports = function(Chart) {
 
-	Chart.Animation = Chart.Element.extend({
+	Chart.Animation = Element.extend({
 		chart: null, // the animation associated chart instance
 		currentStep: 0, // the current animation step
 		numSteps: 60, // default number of steps

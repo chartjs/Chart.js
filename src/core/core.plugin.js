@@ -1,6 +1,7 @@
 'use strict';
 
 var defaults = require('./core.defaults');
+var Element = require('./core.element');
 var helpers = require('../helpers/index');
 
 defaults._set('global', {
@@ -369,5 +370,5 @@ module.exports = function(Chart) {
 	 * @todo remove at version 3
 	 * @private
 	 */
-	Chart.PluginBase = Chart.Element.extend({});
+	Chart.PluginBase = Element.extend({});
 };
