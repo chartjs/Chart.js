@@ -312,15 +312,6 @@ module.exports = function(Chart) {
 				}
 			}, me);
 
-			if (types.length > 1) {
-				for (var i = 1; i < types.length; i++) {
-					if (types[i] !== types[i - 1]) {
-						me.isCombo = true;
-						break;
-					}
-				}
-			}
-
 			return newControllers;
 		},
 

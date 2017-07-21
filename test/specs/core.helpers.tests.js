@@ -127,6 +127,7 @@ describe('Core helper tests', function() {
 						borderDashOffset: 0.0
 					},
 					position: 'right',
+					offset: false,
 					scaleLabel: {
 						display: false,
 						labelString: '',
@@ -168,6 +169,7 @@ describe('Core helper tests', function() {
 						borderDashOffset: 0.0
 					},
 					position: 'left',
+					offset: false,
 					scaleLabel: {
 						display: false,
 						labelString: '',

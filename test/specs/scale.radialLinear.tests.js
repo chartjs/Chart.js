@@ -39,6 +39,7 @@ describe('Test the radial linear scale', function() {
 				callback: defaultConfig.pointLabels.callback, // make this nicer, then check explicitly below
 			},
 			position: 'chartArea',
+			offset: false,
 			scaleLabel: {
 				display: false,
 				labelString: '',

@@ -1108,7 +1108,7 @@ describe('Bar controller tests', function() {
 			{x: 224, y: 32}
 		].forEach(function(values, i) {
 			expect(meta.data[i]._model.base).toBeCloseToPixel(484);
-			expect(meta.data[i]._model.width).toBeCloseToPixel(40);
+			expect(meta.data[i]._model.width).toBeCloseToPixel(42);
 			expect(meta.data[i]._model.x).toBeCloseToPixel(values.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(values.y);
 		});
@@ -1150,7 +1150,7 @@ describe('Bar controller tests', function() {
 			{b: 258, x: 224, y: 32}
 		].forEach(function(values, i) {
 			expect(meta.data[i]._model.base).toBeCloseToPixel(values.b);
-			expect(meta.data[i]._model.width).toBeCloseToPixel(40);
+			expect(meta.data[i]._model.width).toBeCloseToPixel(42);
 			expect(meta.data[i]._model.x).toBeCloseToPixel(values.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(values.y);
 		});
@@ -1517,6 +1517,154 @@ describe('Bar controller tests', function() {
 					}
 				}
 			};
+		});
+	});
+
+	describe('Bar thickness with a category scale', function() {
+		[undefined, 20].forEach(function(barThickness) {
+			describe('When barThickness is ' + barThickness, function() {
+				beforeEach(function() {
+					this.chart = window.acquireChart({
+						type: 'bar',
+						data: {
+							datasets: [{
+								data: [1, 2]
+							}, {
+								data: [1, 2]
+							}],
+							labels: ['label1', 'label2', 'label3']
+						},
+						options: {
+							scales: {
+								xAxes: [{
+									id: 'x',
+									type: 'category',
+									barThickness: barThickness
+								}],
+								yAxes: [{
+									type: 'linear'
+								}]
+							}
+						}
+					});
+				});
+
+				it('should correctly set bar width', function() {
+					var chart = this.chart;
+					var expected, i, ilen, meta;
+
+					if (barThickness) {
+						expected = barThickness;
+					} else {
+						var scale = chart.scales.x;
+						var options = chart.options.scales.xAxes[0];
+						var categoryPercentage = options.categoryPercentage;
+						var barPercentage = options.barPercentage;
+						var tickInterval = scale.getPixelForTick(1) - scale.getPixelForTick(0);
+
+						expected = tickInterval * categoryPercentage / 2 * barPercentage;
+					}
+
+					for (i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
+						meta = chart.getDatasetMeta(i);
+						expect(meta.data[0]._model.width).toBeCloseToPixel(expected);
+						expect(meta.data[1]._model.width).toBeCloseToPixel(expected);
+					}
+				});
+
+				it('should correctly set bar width if maxBarThickness is specified', function() {
+					var chart = this.chart;
+					var options = chart.options.scales.xAxes[0];
+					var i, ilen, meta;
+
+					options.maxBarThickness = 10;
+					chart.update();
+
+					for (i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
+						meta = chart.getDatasetMeta(i);
+						expect(meta.data[0]._model.width).toBeCloseToPixel(10);
+						expect(meta.data[1]._model.width).toBeCloseToPixel(10);
+					}
+				});
+			});
+		});
+	});
+
+	describe('Bar thickness with a time scale', function() {
+		['auto', 'data', 'labels'].forEach(function(source) {
+			['series', 'linear'].forEach(function(distribution) {
+				describe('When ticks.source is "' + source + '", distribution is "' + distribution + '"', function() {
+					beforeEach(function() {
+						this.chart = window.acquireChart({
+							type: 'bar',
+							data: {
+								datasets: [{
+									data: [1, 2, 3]
+								}, {
+									data: [1, 2, 3]
+								}],
+								labels: ['2017', '2018', '2020']
+							},
+							options: {
+								scales: {
+									xAxes: [{
+										id: 'x',
+										type: 'time',
+										time: {
+											unit: 'year',
+											parser: 'YYYY'
+										},
+										ticks: {
+											source: source
+										},
+										offset: true,
+										distribution: distribution
+									}],
+									yAxes: [{
+										type: 'linear'
+									}]
+								}
+							}
+						});
+					});
+
+					it('should correctly set bar width', function() {
+						var chart = this.chart;
+						var scale = chart.scales.x;
+						var options = chart.options.scales.xAxes[0];
+						var categoryPercentage = options.categoryPercentage;
+						var barPercentage = options.barPercentage;
+						var firstInterval = scale.getPixelForValue('2018') - scale.getPixelForValue('2017');
+						var firstExpected = firstInterval * categoryPercentage / 2 * barPercentage;
+						var lastInterval = scale.getPixelForValue('2020') - scale.getPixelForValue('2018');
+						var lastExpected = lastInterval * categoryPercentage / 2 * barPercentage;
+						var i, ilen, meta;
+
+						for (i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
+							meta = chart.getDatasetMeta(i);
+							expect(meta.data[0]._model.width).toBeCloseToPixel(firstExpected);
+							expect(meta.data[1]._model.width).toBeCloseToPixel((firstExpected + lastExpected) / 2);
+							expect(meta.data[2]._model.width).toBeCloseToPixel(lastExpected);
+						}
+					});
+
+					it('should correctly set bar width if maxBarThickness is specified', function() {
+						var chart = this.chart;
+						var options = chart.options.scales.xAxes[0];
+						var i, ilen, meta;
+
+						options.maxBarThickness = 10;
+						chart.update();
+
+						for (i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
+							meta = chart.getDatasetMeta(i);
+							expect(meta.data[0]._model.width).toBeCloseToPixel(10);
+							expect(meta.data[1]._model.width).toBeCloseToPixel(10);
+							expect(meta.data[2]._model.width).toBeCloseToPixel(10);
+						}
+					});
+				});
+			});
 		});
 	});
 });

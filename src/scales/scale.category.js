@@ -60,10 +60,11 @@ module.exports = function(Chart) {
 		},
 
 		// Used to get data value locations.  Value can either be an index or a numerical value
-		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
+		getPixelForValue: function(value, index) {
 			var me = this;
+			var offset = me.options.offset;
 			// 1 is added because we need the length but we have the indexes
-			var offsetAmt = Math.max((me.maxIndex + 1 - me.minIndex - ((me.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
+			var offsetAmt = Math.max((me.maxIndex + 1 - me.minIndex - (offset ? 0 : 1)), 1);
 
 			// If value is a data object, then index is the index in the data array,
 			// not the index of the scale. We need to change that.
@@ -82,7 +83,7 @@ module.exports = function(Chart) {
 				var valueWidth = me.width / offsetAmt;
 				var widthOffset = (valueWidth * (index - me.minIndex));
 
-				if (me.options.gridLines.offsetGridLines && includeOffset || me.maxIndex === me.minIndex && includeOffset) {
+				if (offset) {
 					widthOffset += (valueWidth / 2);
 				}
 
@@ -91,25 +92,26 @@ module.exports = function(Chart) {
 			var valueHeight = me.height / offsetAmt;
 			var heightOffset = (valueHeight * (index - me.minIndex));
 
-			if (me.options.gridLines.offsetGridLines && includeOffset) {
+			if (offset) {
 				heightOffset += (valueHeight / 2);
 			}
 
 			return me.top + Math.round(heightOffset);
 		},
-		getPixelForTick: function(index, includeOffset) {
-			return this.getPixelForValue(this.ticks[index], index + this.minIndex, null, includeOffset);
+		getPixelForTick: function(index) {
+			return this.getPixelForValue(this.ticks[index], index + this.minIndex, null);
 		},
 		getValueForPixel: function(pixel) {
 			var me = this;
+			var offset = me.options.offset;
 			var value;
-			var offsetAmt = Math.max((me.ticks.length - ((me.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
+			var offsetAmt = Math.max((me._ticks.length - (offset ? 0 : 1)), 1);
 			var horz = me.isHorizontal();
 			var valueDimension = (horz ? me.width : me.height) / offsetAmt;
 
 			pixel -= horz ? me.left : me.top;
 
-			if (me.options.gridLines.offsetGridLines) {
+			if (offset) {
 				pixel -= (valueDimension / 2);
 			}
 
@@ -119,7 +121,7 @@ module.exports = function(Chart) {
 				value = Math.round(pixel / valueDimension);
 			}
 
-			return value;
+			return value + me.minIndex;
 		},
 		getBasePixel: function() {
 			return this.bottom;

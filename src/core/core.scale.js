@@ -8,6 +8,7 @@ var Ticks = require('./core.ticks');
 defaults._set('scale', {
 	display: true,
 	position: 'left',
+	offset: false,
 
 	// grid line settings
 	gridLines: {
@@ -521,14 +522,15 @@ module.exports = function(Chart) {
 		getValueForPixel: helpers.noop,
 
 		// Used for tick location, should
-		getPixelForTick: function(index, includeOffset) {
+		getPixelForTick: function(index) {
 			var me = this;
+			var offset = me.options.offset;
 			if (me.isHorizontal()) {
 				var innerWidth = me.width - (me.paddingLeft + me.paddingRight);
-				var tickWidth = innerWidth / Math.max((me._ticks.length - ((me.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
+				var tickWidth = innerWidth / Math.max((me._ticks.length - (offset ? 0 : 1)), 1);
 				var pixel = (tickWidth * index) + me.paddingLeft;
 
-				if (includeOffset) {
+				if (offset) {
 					pixel += tickWidth / 2;
 				}
 
@@ -541,7 +543,7 @@ module.exports = function(Chart) {
 		},
 
 		// Utility for getting the pixel location of a percentage of scale
-		getPixelForDecimal: function(decimal /* , includeOffset*/) {
+		getPixelForDecimal: function(decimal) {
 			var me = this;
 			if (me.isHorizontal()) {
 				var innerWidth = me.width - (me.paddingLeft + me.paddingRight);
@@ -659,7 +661,7 @@ module.exports = function(Chart) {
 			helpers.each(ticks, function(tick, index) {
 				var label = tick.label;
 				var lineWidth, lineColor, borderDash, borderDashOffset;
-				if (index === (typeof me.zeroLineIndex !== 'undefined' ? me.zeroLineIndex : 0)) {
+				if (index === (typeof me.zeroLineIndex !== 'undefined' ? me.zeroLineIndex : 0) && (options.offset === gridLines.offsetGridLines)) {
 					// Draw the first index specially
 					lineWidth = gridLines.zeroLineWidth;
 					lineColor = gridLines.zeroLineColor;
@@ -693,8 +695,22 @@ module.exports = function(Chart) {
 						labelY = me.bottom - labelYOffset;
 					}
 
-					var xLineValue = me.getPixelForTick(index) + helpers.aliasPixel(lineWidth); // xvalues for grid lines
-					labelX = me.getPixelForTick(index, gridLines.offsetGridLines) + optionTicks.labelOffset; // x values for optionTicks (need to consider offsetLabel option)
+					var xLineValue; // xvalues for grid lines
+					if (gridLines.offsetGridLines && ticks.length > 1) {
+						if (index === 0) {
+							xLineValue = (me.getPixelForTick(0) * 3 - me.getPixelForTick(1)) / 2;
+							if (xLineValue < me.left) {
+								lineColor = 'rgba(0,0,0,0)';
+							}
+						} else {
+							xLineValue = (me.getPixelForTick(index - 1) + me.getPixelForTick(index)) / 2;
+						}
+					} else {
+						xLineValue = me.getPixelForTick(index);
+					}
+					xLineValue += helpers.aliasPixel(lineWidth);
+
+					labelX = me.getPixelForTick(index) + optionTicks.labelOffset; // x values for optionTicks (need to consider offsetLabel option)
 
 					tx1 = tx2 = x1 = x2 = xLineValue;
 					ty1 = yTickStart;
@@ -715,9 +731,22 @@ module.exports = function(Chart) {
 
 					labelX = isLeft ? me.right - labelXOffset : me.left + labelXOffset;
 
-					var yLineValue = me.getPixelForTick(index); // xvalues for grid lines
+					var yLineValue; // yvalues for grid lines
+					if (gridLines.offsetGridLines && ticks.length > 1) {
+						if (index === 0) {
+							yLineValue = (me.getPixelForTick(0) * 3 - me.getPixelForTick(1)) / 2;
+							if (yLineValue < me.top) {
+								lineColor = 'rgba(0,0,0,0)';
+							}
+						} else {
+							yLineValue = (me.getPixelForTick(index - 1) + me.getPixelForTick(index)) / 2;
+						}
+					} else {
+						yLineValue = me.getPixelForTick(index);
+					}
 					yLineValue += helpers.aliasPixel(lineWidth);
-					labelY = me.getPixelForTick(index, gridLines.offsetGridLines) + optionTicks.labelOffset;
+
+					labelY = me.getPixelForTick(index) + optionTicks.labelOffset;
 
 					tx1 = xTickStart;
 					tx2 = xTickEnd;
