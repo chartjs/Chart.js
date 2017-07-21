@@ -1,6 +1,7 @@
 'use strict';
 
 var defaults = require('../core/core.defaults');
+var Element = require('../core/core.element');
 var helpers = require('../helpers/index');
 
 defaults._set('global', {
@@ -95,7 +96,7 @@ module.exports = function(Chart) {
 			labelOpts.boxWidth;
 	}
 
-	Chart.Legend = Chart.Element.extend({
+	Chart.Legend = Element.extend({
 
 		initialize: function(config) {
 			helpers.extend(this, config);

@@ -7,6 +7,7 @@
 'use strict';
 
 var defaults = require('../core/core.defaults');
+var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
 defaults._set('global', {
@@ -17,7 +18,7 @@ defaults._set('global', {
 	}
 });
 
-module.exports = function(Chart) {
+module.exports = function() {
 
 	var mappers = {
 		dataset: function(source) {
@@ -272,7 +273,7 @@ module.exports = function(Chart) {
 				el = meta.dataset;
 				source = null;
 
-				if (el && el._model && el instanceof Chart.elements.Line) {
+				if (el && el._model && el instanceof elements.Line) {
 					source = {
 						visible: chart.isDatasetVisible(i),
 						fill: decodeFill(el, i, count),

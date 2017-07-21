@@ -1,6 +1,7 @@
 'use strict';
 
 var defaults = require('../core/core.defaults');
+var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
 defaults._set('radar', {
@@ -18,9 +19,9 @@ module.exports = function(Chart) {
 
 	Chart.controllers.radar = Chart.DatasetController.extend({
 
-		datasetElementType: Chart.elements.Line,
+		datasetElementType: elements.Line,
 
-		dataElementType: Chart.elements.Point,
+		dataElementType: elements.Point,
 
 		linkScales: helpers.noop,
 

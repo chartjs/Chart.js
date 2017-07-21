@@ -1,6 +1,7 @@
 'use strict';
 
 var defaults = require('../core/core.defaults');
+var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
 defaults._set('polarArea', {
@@ -111,7 +112,7 @@ module.exports = function(Chart) {
 
 	Chart.controllers.polarArea = Chart.DatasetController.extend({
 
-		dataElementType: Chart.elements.Arc,
+		dataElementType: elements.Arc,
 
 		linkScales: helpers.noop,
 

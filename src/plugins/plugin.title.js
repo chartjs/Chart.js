@@ -1,6 +1,7 @@
 'use strict';
 
 var defaults = require('../core/core.defaults');
+var Element = require('../core/core.element');
 var helpers = require('../helpers/index');
 
 defaults._set('global', {
@@ -21,7 +22,7 @@ module.exports = function(Chart) {
 	var layout = Chart.layoutService;
 	var noop = helpers.noop;
 
-	Chart.Title = Chart.Element.extend({
+	Chart.Title = Element.extend({
 		initialize: function(config) {
 			var me = this;
 			helpers.extend(me, config);

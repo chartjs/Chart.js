@@ -1,6 +1,7 @@
 'use strict';
 
 var defaults = require('../core/core.defaults');
+var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
 defaults._set('doughnut', {
@@ -126,7 +127,7 @@ module.exports = function(Chart) {
 
 	Chart.controllers.doughnut = Chart.controllers.pie = Chart.DatasetController.extend({
 
-		dataElementType: Chart.elements.Arc,
+		dataElementType: elements.Arc,
 
 		linkScales: helpers.noop,
 
@@ -281,16 +282,16 @@ module.exports = function(Chart) {
 		},
 
 		// gets the max border or hover width to properly scale pie charts
-		getMaxBorderWidth: function(elements) {
+		getMaxBorderWidth: function(arcs) {
 			var max = 0,
 				index = this.index,
-				length = elements.length,
+				length = arcs.length,
 				borderWidth,
 				hoverWidth;
 
 			for (var i = 0; i < length; i++) {
-				borderWidth = elements[i]._model ? elements[i]._model.borderWidth : 0;
-				hoverWidth = elements[i]._chart ? elements[i]._chart.config.data.datasets[index].hoverBorderWidth : 0;
+				borderWidth = arcs[i]._model ? arcs[i]._model.borderWidth : 0;
+				hoverWidth = arcs[i]._chart ? arcs[i]._chart.config.data.datasets[index].hoverBorderWidth : 0;
 
 				max = borderWidth > max ? borderWidth : max;
 				max = hoverWidth > max ? hoverWidth : max;

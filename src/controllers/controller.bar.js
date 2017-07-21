@@ -1,6 +1,7 @@
 'use strict';
 
 var defaults = require('../core/core.defaults');
+var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
 defaults._set('bar', {
@@ -89,7 +90,7 @@ module.exports = function(Chart) {
 
 	Chart.controllers.bar = Chart.DatasetController.extend({
 
-		dataElementType: Chart.elements.Rectangle,
+		dataElementType: elements.Rectangle,
 
 		initialize: function() {
 			var me = this;
@@ -104,13 +105,13 @@ module.exports = function(Chart) {
 
 		update: function(reset) {
 			var me = this;
-			var elements = me.getMeta().data;
+			var rects = me.getMeta().data;
 			var i, ilen;
 
 			me._ruler = me.getRuler();
 
-			for (i = 0, ilen = elements.length; i < ilen; ++i) {
-				me.updateElement(elements[i], i, reset);
+			for (i = 0, ilen = rects.length; i < ilen; ++i) {
+				me.updateElement(rects[i], i, reset);
 			}
 		},
 
@@ -326,9 +327,9 @@ module.exports = function(Chart) {
 		draw: function() {
 			var me = this;
 			var chart = me.chart;
-			var elements = me.getMeta().data;
+			var rects = me.getMeta().data;
 			var dataset = me.getDataset();
-			var ilen = elements.length;
+			var ilen = rects.length;
 			var i = 0;
 			var d;
 
@@ -337,7 +338,7 @@ module.exports = function(Chart) {
 			for (; i<ilen; ++i) {
 				d = dataset.data[i];
 				if (d !== null && d !== undefined && !isNaN(d)) {
-					elements[i].draw();
+					rects[i].draw();
 				}
 			}
 

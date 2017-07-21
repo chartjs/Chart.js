@@ -1,6 +1,7 @@
 'use strict';
 
 var defaults = require('./core.defaults');
+var Element = require('./core.element');
 var helpers = require('../helpers/index');
 var Ticks = require('./core.ticks');
 
@@ -85,7 +86,7 @@ module.exports = function(Chart) {
 			helpers.valueOrDefault(options.fontSize, defaults.global.defaultFontSize));
 	}
 
-	Chart.Scale = Chart.Element.extend({
+	Chart.Scale = Element.extend({
 		/**
 		 * Get the padding needed for the scale
 		 * @method getPadding
