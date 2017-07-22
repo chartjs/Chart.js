@@ -98,7 +98,7 @@ function injectCSS(css) {
 	var head = document.getElementsByTagName('head')[0];
 	var style = document.createElement('style');
 	style.setAttribute('type', 'text/css');
-	if (style.styleSheet) {   // IE
+	if (style.styleSheet) { // IE
 		style.styleSheet.cssText = css;
 	} else {
 		style.appendChild(document.createTextNode(css));

@@ -42,7 +42,7 @@ describe('Category scale tests', function() {
 				padding: 0,
 				reverse: false,
 				display: true,
-				callback: defaultConfig.ticks.callback,  // make this nicer, then check explicitly below
+				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
 				autoSkip: true,
 				autoSkipPadding: 0,
 				labelOffset: 0,

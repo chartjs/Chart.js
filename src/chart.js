@@ -53,9 +53,9 @@ require('./charts/Chart.Scatter')(Chart);
 var plugins = [];
 
 plugins.push(
-    require('./plugins/plugin.filler')(Chart),
-    require('./plugins/plugin.legend')(Chart),
-    require('./plugins/plugin.title')(Chart)
+	require('./plugins/plugin.filler')(Chart),
+	require('./plugins/plugin.legend')(Chart),
+	require('./plugins/plugin.title')(Chart)
 );
 
 Chart.plugins.register(plugins);
