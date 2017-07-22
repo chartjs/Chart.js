@@ -10,7 +10,7 @@ describe('Chart', function() {
 			setTimeout(callback, 50);
 		};
 
-		Chart.helpers.addEvent(content, state !== 'complete'? 'load' : 'resize', handler);
+		Chart.helpers.addEvent(content, state !== 'complete' ? 'load' : 'resize', handler);
 	}
 
 	// https://github.com/chartjs/Chart.js/issues/2481

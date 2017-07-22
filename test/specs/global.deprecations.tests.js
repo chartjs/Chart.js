@@ -104,7 +104,7 @@ describe('Deprecations', function() {
 
 				var calls = ctx.getCalls();
 				expect(calls[0]).toEqual({name: 'beginPath', args: []});
-				expect(calls[calls.length-1]).toEqual({name: 'closePath', args: []});
+				expect(calls[calls.length - 1]).toEqual({name: 'closePath', args: []});
 				expect(Chart.helpers.canvas.roundedRect).toHaveBeenCalledWith(ctx, 10, 20, 30, 40, 5);
 			});
 		});
@@ -172,7 +172,7 @@ describe('Deprecations', function() {
 				expect(proxy.canvas instanceof HTMLCanvasElement).toBeTruthy();
 				expect(proxy.ctx instanceof CanvasRenderingContext2D).toBeTruthy();
 				expect(proxy.currentDevicePixelRatio).toBe(window.devicePixelRatio || 1);
-				expect(proxy.aspectRatio).toBe(140/320);
+				expect(proxy.aspectRatio).toBe(140 / 320);
 				expect(proxy.height).toBe(320);
 				expect(proxy.width).toBe(140);
 			});

@@ -23,7 +23,6 @@ var package = require('./package.json');
 
 var srcDir = './src/';
 var outDir = './dist/';
-var testDir = './test/';
 
 var header = "/*!\n" +
   " * Chart.js\n" +
@@ -128,8 +127,9 @@ function packageTask() {
 
 function lintTask() {
   var files = [
-    srcDir + '**/*.js',
-    testDir + '**/*.js'
+    'samples/**/*.js',
+    'src/**/*.js',
+    'test/**/*.js'
   ];
 
   // NOTE(SB) codeclimate has 'complexity' and 'max-statements' eslint rules way too strict
@@ -174,8 +174,8 @@ function startTest() {
     './test/jasmine.index.js',
     './src/**/*.js',
   ].concat(
-    argv.inputs?
-      argv.inputs.split(';'):
+    argv.inputs ?
+      argv.inputs.split(';') :
       ['./test/specs/**/*.js']
   );
 }

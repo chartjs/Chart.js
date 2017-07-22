@@ -20,7 +20,7 @@
 				return;
 			}
 
-			for (i=0, ilen=datasets.length; i<ilen; ++i) {
+			for (i = 0, ilen = datasets.length; i < ilen; ++i) {
 				meta = chart.getDatasetMeta(i).$filler;
 				if (meta) {
 					dataset = datasets[i];

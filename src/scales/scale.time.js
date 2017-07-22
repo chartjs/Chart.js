@@ -2,7 +2,7 @@
 'use strict';
 
 var moment = require('moment');
-moment = typeof(moment) === 'function' ? moment : window.moment;
+moment = typeof moment === 'function' ? moment : window.moment;
 
 var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
@@ -45,7 +45,7 @@ function buildLookupTable(timestamps, min, max, linear) {
 		items.push(max);
 	}
 
-	for (i = 0, ilen = items.length; i<ilen; ++i) {
+	for (i = 0, ilen = items.length; i < ilen; ++i) {
 		next = items[i + 1];
 		prev = items[i - 1];
 		curr = items[i];
@@ -331,8 +331,8 @@ module.exports = function(Chart) {
 			var majorFormat = me.majorDisplayFormat;
 			var majorTime = tick.clone().startOf(me.majorUnit).valueOf();
 			var major = majorUnit && majorFormat && time === majorTime;
-			var formattedTick = tick.format(major? majorFormat : me.displayFormat);
-			var tickOpts = major? options.ticks.major : options.ticks.minor;
+			var formattedTick = tick.format(major ? majorFormat : me.displayFormat);
+			var tickOpts = major ? options.ticks.major : options.ticks.minor;
 			var formatter = helpers.valueOrDefault(tickOpts.callback, tickOpts.userCallback);
 
 			if (formatter) {

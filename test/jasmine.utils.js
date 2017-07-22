@@ -68,8 +68,8 @@ function acquireChart(config, options) {
 
 	// by default, remove chart animation and auto resize
 	config.options = config.options || {};
-	config.options.animation = config.options.animation === undefined? false : config.options.animation;
-	config.options.responsive = config.options.responsive === undefined? false : config.options.responsive;
+	config.options.animation = config.options.animation === undefined ? false : config.options.animation;
+	config.options.responsive = config.options.responsive === undefined ? false : config.options.responsive;
 	config.options.defaultFontFamily = config.options.defaultFontFamily || 'Arial';
 
 	wrapper.appendChild(canvas);

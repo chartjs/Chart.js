@@ -45,8 +45,8 @@ describe('Chart.helpers.easing', function() {
 			var values = [];
 			var i;
 
-			for (i=0; i<=count; ++i) {
-				values.push(Math.round(accuracy * fn(i/count)) / accuracy);
+			for (i = 0; i <= count; ++i) {
+				values.push(Math.round(accuracy * fn(i / count)) / accuracy);
 			}
 
 			return values;

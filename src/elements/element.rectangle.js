@@ -66,7 +66,7 @@ module.exports = Element.extend({
 			top = vm.y;
 			bottom = vm.base;
 			signX = 1;
-			signY = bottom > top? 1: -1;
+			signY = bottom > top ? 1 : -1;
 			borderSkipped = vm.borderSkipped || 'bottom';
 		} else {
 			// horizontal bar
@@ -74,7 +74,7 @@ module.exports = Element.extend({
 			right = vm.x;
 			top = vm.y - vm.height / 2;
 			bottom = vm.y + vm.height / 2;
-			signX = right > left? 1: -1;
+			signX = right > left ? 1 : -1;
 			signY = 1;
 			borderSkipped = vm.borderSkipped || 'left';
 		}
@@ -84,13 +84,13 @@ module.exports = Element.extend({
 		if (borderWidth) {
 			// borderWidth shold be less than bar width and bar height.
 			var barSize = Math.min(Math.abs(left - right), Math.abs(top - bottom));
-			borderWidth = borderWidth > barSize? barSize: borderWidth;
+			borderWidth = borderWidth > barSize ? barSize : borderWidth;
 			var halfStroke = borderWidth / 2;
 			// Adjust borderWidth when bar top position is near vm.base(zero).
-			var borderLeft = left + (borderSkipped !== 'left'? halfStroke * signX: 0);
-			var borderRight = right + (borderSkipped !== 'right'? -halfStroke * signX: 0);
-			var borderTop = top + (borderSkipped !== 'top'? halfStroke * signY: 0);
-			var borderBottom = bottom + (borderSkipped !== 'bottom'? -halfStroke * signY: 0);
+			var borderLeft = left + (borderSkipped !== 'left' ? halfStroke * signX : 0);
+			var borderRight = right + (borderSkipped !== 'right' ? -halfStroke * signX : 0);
+			var borderTop = top + (borderSkipped !== 'top' ? halfStroke * signY : 0);
+			var borderBottom = bottom + (borderSkipped !== 'bottom' ? -halfStroke * signY : 0);
 			// not become a vertical line?
 			if (borderLeft !== borderRight) {
 				top = borderTop;

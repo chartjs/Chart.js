@@ -156,11 +156,11 @@ module.exports = function(Chart) {
 			var ipixels = me.calculateBarIndexPixels(me.index, index, ruler);
 
 			model.horizontal = horizontal;
-			model.base = reset? base : vpixels.base;
-			model.x = horizontal? reset? base : vpixels.head : ipixels.center;
-			model.y = horizontal? ipixels.center : reset? base : vpixels.head;
-			model.height = horizontal? ipixels.size : undefined;
-			model.width = horizontal? undefined : ipixels.size;
+			model.base = reset ? base : vpixels.base;
+			model.x = horizontal ? reset ? base : vpixels.head : ipixels.center;
+			model.y = horizontal ? ipixels.center : reset ? base : vpixels.head;
+			model.height = horizontal ? ipixels.size : undefined;
+			model.width = horizontal ? undefined : ipixels.size;
 		},
 
 		/**
@@ -200,7 +200,7 @@ module.exports = function(Chart) {
 			var chart = me.chart;
 			var scale = me.getIndexScale();
 			var stacked = scale.options.stacked;
-			var ilen = last === undefined? chart.data.datasets.length : last + 1;
+			var ilen = last === undefined ? chart.data.datasets.length : last + 1;
 			var stacks = [];
 			var i, meta;
 
@@ -233,7 +233,7 @@ module.exports = function(Chart) {
 			var scale = me.getIndexScale();
 			var options = scale.options;
 			var stackCount = me.getStackCount();
-			var fullSize = scale.isHorizontal()? scale.width : scale.height;
+			var fullSize = scale.isHorizontal() ? scale.width : scale.height;
 			var tickSize = fullSize / scale.ticks.length;
 			var categorySize = tickSize * options.categoryPercentage;
 			var fullBarSize = categorySize / stackCount;
@@ -311,7 +311,7 @@ module.exports = function(Chart) {
 			var base = scale.getPixelForValue(null, index, datasetIndex, isCombo);
 			var size = ruler.barSize;
 
-			base -= isCombo? ruler.tickSize / 2 : 0;
+			base -= isCombo ? ruler.tickSize / 2 : 0;
 			base += ruler.fullBarSize * stackIndex;
 			base += ruler.categorySpacing / 2;
 			base += ruler.barSpacing / 2;
@@ -335,7 +335,7 @@ module.exports = function(Chart) {
 
 			helpers.canvas.clipArea(chart.ctx, chart.chartArea);
 
-			for (; i<ilen; ++i) {
+			for (; i < ilen; ++i) {
 				d = dataset.data[i];
 				if (d !== null && d !== undefined && !isNaN(d)) {
 					rects[i].draw();

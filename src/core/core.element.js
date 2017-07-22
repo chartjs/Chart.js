@@ -7,7 +7,7 @@ function interpolate(start, view, model, ease) {
 	var keys = Object.keys(model);
 	var i, ilen, key, actual, origin, target, type, c0, c1;
 
-	for (i=0, ilen=keys.length; i<ilen; ++i) {
+	for (i = 0, ilen = keys.length; i < ilen; ++i) {
 		key = keys[i];
 
 		target = model[key];
@@ -30,9 +30,9 @@ function interpolate(start, view, model, ease) {
 
 		origin = start[key];
 
-		type = typeof(target);
+		type = typeof target;
 
-		if (type === typeof(origin)) {
+		if (type === typeof origin) {
 			if (type === 'string') {
 				c0 = color(origin);
 				if (c0.valid) {
