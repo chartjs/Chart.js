@@ -176,6 +176,16 @@ module.exports = function(Chart) {
 			Chart.Scale.prototype.initialize.call(this);
 		},
 
+		/**
+		 * Allows data to be referenced via 't' attribute
+		 */
+		getRightValue: function(rawValue) {
+			if (rawValue && rawValue.t !== undefined) {
+				rawValue = rawValue.t;
+			}
+			return Chart.Scale.prototype.getRightValue.call(this, rawValue);
+		},
+
 		determineDataLimits: function() {
 			var me = this;
 			var chart = me.chart;

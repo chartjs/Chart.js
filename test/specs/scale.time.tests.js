@@ -205,6 +205,54 @@ describe('Time scale tests', function() {
 
 			expect(ticks).toEqual(['Jan 2015', 'Jan 2', 'Jan 3', 'Jan 4', 'Jan 5', 'Jan 6', 'Jan 7', 'Jan 8', 'Jan 9', 'Jan 10', 'Jan 11']);
 		});
+
+		it('should accept data as ty points', function() {
+			var chart = window.acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						xAxisID: 'tScale0',
+						data: [{
+							t: newDateFromRef(0),
+							y: 1
+						}, {
+							t: newDateFromRef(1),
+							y: 10
+						}, {
+							t: newDateFromRef(2),
+							y: 0
+						}, {
+							t: newDateFromRef(4),
+							y: 5
+						}, {
+							t: newDateFromRef(6),
+							y: 77
+						}, {
+							t: newDateFromRef(7),
+							y: 9
+						}, {
+							t: newDateFromRef(9),
+							y: 5
+						}]
+					}],
+				},
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'tScale0',
+							type: 'time',
+							position: 'bottom'
+						}],
+					}
+				}
+			});
+
+			var tScale = chart.scales.tScale0;
+			tScale.update(800, 200);
+			var ticks = getTicksValues(tScale.ticks);
+
+			expect(ticks).toEqual(['Jan 2015', 'Jan 2', 'Jan 3', 'Jan 4', 'Jan 5', 'Jan 6', 'Jan 7', 'Jan 8', 'Jan 9', 'Jan 10', 'Jan 11']);
+		});
 	});
 
 	it('should allow custom time parsers', function() {
