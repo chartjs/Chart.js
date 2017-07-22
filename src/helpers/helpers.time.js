@@ -62,18 +62,28 @@ function generateTicksNiceRange(options, dataRange, niceRange) {
 		var stepValue = interval[options.unit].size * stepSize;
 		var startFraction = startRange % stepValue;
 		var alignedTick = startTick;
-		if (startFraction && majorUnit && !options.timeOpts.round && !options.timeOpts.isoWeekday) {
+
+		// first tick
+		if (startFraction && majorUnit && !options.timeOpts.round && !options.timeOpts.isoWeekday && helpers.isNullOrUndef(options.min)) {
 			alignedTick += startFraction - stepValue;
 			ticks.push(alignedTick);
 		} else {
 			ticks.push(startTick);
 		}
+
+		// generate remaining ticks
 		var cur = moment(alignedTick);
-		var realMax = options.max || niceRange.max;
+		var realMax = helpers.isNullOrUndef(options.max) ? niceRange.max : options.max;
 		while (cur.add(stepSize, options.unit).valueOf() < realMax) {
 			ticks.push(cur.valueOf());
 		}
-		ticks.push(cur.valueOf());
+
+		// last tick
+		if (helpers.isNullOrUndef(options.max)) {
+			ticks.push(cur.valueOf());
+		} else {
+			ticks.push(realMax);
+		}
 	}
 	return ticks;
 }
