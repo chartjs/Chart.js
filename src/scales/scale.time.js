@@ -13,47 +13,47 @@ var MAX_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
 
 var INTERVALS = {
 	millisecond: {
-		major: true,
+		common: true,
 		size: 1,
 		steps: [1, 2, 5, 10, 20, 50, 100, 250, 500]
 	},
 	second: {
-		major: true,
+		common: true,
 		size: 1000,
 		steps: [1, 2, 5, 10, 30]
 	},
 	minute: {
-		major: true,
+		common: true,
 		size: 60000,
 		steps: [1, 2, 5, 10, 30]
 	},
 	hour: {
-		major: true,
+		common: true,
 		size: 3600000,
 		steps: [1, 2, 3, 6, 12]
 	},
 	day: {
-		major: true,
+		common: true,
 		size: 86400000,
 		steps: [1, 2, 5]
 	},
 	week: {
-		major: false,
+		common: false,
 		size: 604800000,
 		steps: [1, 2, 3, 4]
 	},
 	month: {
-		major: true,
+		common: true,
 		size: 2.628e9,
 		steps: [1, 2, 3]
 	},
 	quarter: {
-		major: false,
+		common: false,
 		size: 7.884e9,
 		steps: [1, 2, 3, 4]
 	},
 	year: {
-		major: true,
+		common: true,
 		size: 3.154e10
 	}
 };
@@ -240,6 +240,9 @@ function determineUnit(minUnit, min, max, capacity) {
 	var i, interval, factor;
 
 	for (i = UNITS.indexOf(minUnit); i < ilen - 1; ++i) {
+		if (!INTERVALS[UNITS[i]].common) {
+			continue;
+		}
 		interval = INTERVALS[UNITS[i]];
 		factor = interval.steps ? interval.steps[interval.steps.length - 1] : MAX_INTEGER;
 
@@ -253,7 +256,7 @@ function determineUnit(minUnit, min, max, capacity) {
 
 function determineMajorUnit(unit) {
 	for (var i = UNITS.indexOf(unit) + 1, ilen = UNITS.length; i < ilen; ++i) {
-		if (INTERVALS[UNITS[i]].major) {
+		if (INTERVALS[UNITS[i]].common) {
 			return UNITS[i];
 		}
 	}
@@ -322,12 +325,13 @@ module.exports = function(Chart) {
 			minUnit: 'millisecond',
 
 			// defaults to unit's corresponding unitFormat below or override using pattern string from http://momentjs.com/docs/#/displaying/format/
+			// Use more detailed date strings on major ticks and summary info on minor ticks
 			displayFormats: {
 				millisecond: 'h:mm:ss.SSS a', // 11:20:01.123 AM,
 				second: 'h:mm:ss a', // 11:20:01 AM
-				minute: 'h:mm a', // 11:20 AM
-				hour: 'hA', // 5PM
-				day: 'MMM D', // Sep 4
+				minute: 'h:mm:ss a', // 11:20:01 AM
+				hour: 'MMM D, hA', // Sept 4, 5PM
+				day: 'll', // Sep 4 2015
 				week: 'll', // Week 46, or maybe "[W]WW - YYYY" ?
 				month: 'MMM YYYY', // Sept 2015
 				quarter: '[Q]Q - YYYY', // Q3
@@ -379,6 +383,23 @@ module.exports = function(Chart) {
 			this.mergeTicksOptions();
 
 			Chart.Scale.prototype.initialize.call(this);
+		},
+
+		mergeTicksOptions: function() {
+			Chart.Scale.prototype.mergeTicksOptions.call(this);
+
+			var opts = this.options;
+			var ticks = opts.ticks;
+			var time = opts.time;
+			var minor = ticks.minor;
+			var major = ticks.major;
+			var displayFormats = time.displayFormats;
+			if (typeof minor.displayFormats === 'undefined') {
+				minor.displayFormats = displayFormats;
+			}
+			if (typeof major.displayFormats === 'undefined') {
+				major.displayFormats = displayFormats;
+			}
 		},
 
 		update: function() {
@@ -507,8 +528,7 @@ module.exports = function(Chart) {
 			// PRIVATE
 			me._unit = unit;
 			me._majorUnit = majorUnit;
-			me._displayFormat = formats[unit];
-			me._majorDisplayFormat = formats[majorUnit];
+			me._minorDisplayFormat = formats[unit];
 			me._table = buildLookupTable(ticks, min, max, ticksOpts.mode === 'linear');
 		},
 
@@ -533,15 +553,22 @@ module.exports = function(Chart) {
 		 * Function to format an individual tick mark
 		 * @private
 		 */
-		tickFormatFunction: function(tick, index, ticks) {
+		tickFormatFunction: function(tick, index, ticks, displayFormatOverride) {
 			var me = this;
 			var options = me.options;
+			var ticksOpts = options.ticks;
 			var time = tick.valueOf();
-			var majorUnit = me._majorUnit;
-			var majorFormat = me._majorDisplayFormat;
-			var majorTime = tick.clone().startOf(me._majorUnit).valueOf();
+			var majorUnit, majorFormat, majorTime;
+			if (displayFormatOverride === undefined) {
+				majorUnit = me._majorUnit;
+				majorFormat = ticksOpts.major.displayFormats[majorUnit];
+				majorTime = tick.clone().startOf(majorUnit).valueOf();
+			}
 			var major = majorUnit && majorFormat && time === majorTime;
-			var formattedTick = tick.format(major ? majorFormat : me._displayFormat);
+			var formattedTick = tick.format(
+				displayFormatOverride !== undefined ? displayFormatOverride :
+				major ? majorFormat :
+				me._minorDisplayFormat);
 			var tickOpts = major ? options.ticks.major : options.ticks.minor;
 			var formatter = helpers.valueOrDefault(tickOpts.callback, tickOpts.userCallback);
 
@@ -632,9 +659,9 @@ module.exports = function(Chart) {
 		getLabelCapacity: function(exampleTime) {
 			var me = this;
 
-			me._displayFormat = me.options.time.displayFormats.millisecond;	// Pick the longest format for guestimation
+			var displayFormat = me.options.time.displayFormats.millisecond;	// Pick the longest format for guestimation
 
-			var exampleLabel = me.tickFormatFunction(moment(exampleTime), 0, []).value;
+			var exampleLabel = me.tickFormatFunction(moment(exampleTime), 0, [], displayFormat).value;
 			var tickLabelWidth = me.getLabelWidth(exampleLabel);
 			var innerWidth = me.isHorizontal() ? me.width : me.height;
 
