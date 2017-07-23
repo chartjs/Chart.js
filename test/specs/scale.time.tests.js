@@ -144,7 +144,7 @@ describe('Time scale tests', function() {
 			scale.update(1000, 200);
 			var ticks = getTicksValues(scale.ticks);
 
-			expect(ticks).toEqual(['Jan 2015', 'Jan 2', 'Jan 3', 'Jan 4', 'Jan 5', 'Jan 6', 'Jan 7', 'Jan 8', 'Jan 9', 'Jan 10', 'Jan 11']);
+			expect(ticks).toEqual(['Jan 2015asdf', 'Jan 2', 'Jan 3', 'Jan 4', 'Jan 5', 'Jan 6', 'Jan 7', 'Jan 8', 'Jan 9', 'Jan 10', 'Jan 11']);
 		});
 
 		it('should accept labels as date objects', function() {
