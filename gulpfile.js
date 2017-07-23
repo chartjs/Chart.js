@@ -188,7 +188,9 @@ function unittestTask(done) {
     args: {
       coverage: !!argv.coverage
     }
-  }, done).start();
+  }, function() {
+    done();
+  }).start();
 }
 
 function librarySizeTask() {
