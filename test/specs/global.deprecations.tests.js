@@ -268,6 +268,9 @@ describe('Deprecations', function() {
 								time: {
 									unit: 'hour',
 									unitStepSize: 2
+								},
+								ticks: {
+									bounds: 'labels'
 								}
 							}]
 						}
