@@ -177,7 +177,7 @@ describe('Category scale tests', function() {
 		});
 
 		var scale = chart.scales.x;
-		expect(scale.ticks).toEqual(labels);
+		expect(scale.getLabelForIndex(1)).toBe('tick2');
 	});
 
 	// NOTE: test for vertical line chart
