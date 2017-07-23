@@ -7,6 +7,59 @@ moment = typeof moment === 'function' ? moment : window.moment;
 var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 
+// Integer constants are from the ES6 spec.
+var MIN_INTEGER = Number.MIN_SAFE_INTEGER || -9007199254740991;
+var MAX_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
+
+var INTERVALS = {
+	millisecond: {
+		major: true,
+		size: 1,
+		steps: [1, 2, 5, 10, 20, 50, 100, 250, 500]
+	},
+	second: {
+		major: true,
+		size: 1000,
+		steps: [1, 2, 5, 10, 30]
+	},
+	minute: {
+		major: true,
+		size: 60000,
+		steps: [1, 2, 5, 10, 30]
+	},
+	hour: {
+		major: true,
+		size: 3600000,
+		steps: [1, 2, 3, 6, 12]
+	},
+	day: {
+		major: true,
+		size: 86400000,
+		steps: [1, 2, 5]
+	},
+	week: {
+		major: false,
+		size: 604800000,
+		steps: [1, 2, 3, 4]
+	},
+	month: {
+		major: true,
+		size: 2.628e9,
+		steps: [1, 2, 3]
+	},
+	quarter: {
+		major: false,
+		size: 7.884e9,
+		steps: [1, 2, 3, 4]
+	},
+	year: {
+		major: true,
+		size: 3.154e10
+	}
+};
+
+var UNITS = Object.keys(INTERVALS);
+
 function sorter(a, b) {
 	return a - b;
 }
@@ -106,32 +159,155 @@ function interpolate(table, skey, sval, tkey) {
 	return prev[tkey] + offset;
 }
 
+/**
+ * Convert the given value to a moment object using the given time options.
+ * @see http://momentjs.com/docs/#/parsing/
+ */
+function momentify(value, options) {
+	var parser = options.parser;
+	var format = options.parser || options.format;
+
+	if (typeof parser === 'function') {
+		return parser(value);
+	}
+
+	if (typeof value === 'string' && typeof format === 'string') {
+		return moment(value, format);
+	}
+
+	if (!(value instanceof moment)) {
+		value = moment(value);
+	}
+
+	if (value.isValid()) {
+		return value;
+	}
+
+	// Labels are in an incompatible moment format and no `parser` has been provided.
+	// The user might still use the deprecated `format` option to convert his inputs.
+	if (typeof format === 'function') {
+		return format(value);
+	}
+
+	return value;
+}
+
 function parse(input, scale) {
 	if (helpers.isNullOrUndef(input)) {
 		return null;
 	}
 
-	var round = scale.options.time.round;
-	var value = scale.getRightValue(input);
-	var time = value.isValid ? value : helpers.time.parseTime(scale, value);
-	if (!time || !time.isValid()) {
+	var options = scale.options.time;
+	var value = momentify(scale.getRightValue(input), options);
+	if (!value.isValid()) {
 		return null;
 	}
 
-	if (round) {
-		time.startOf(round);
+	if (options.round) {
+		value.startOf(options.round);
 	}
 
-	return time.valueOf();
+	return value.valueOf();
+}
+
+/**
+ * Returns the number of unit to skip to be able to display up to `capacity` number of ticks
+ * in `unit` for the given `min` / `max` range and respecting the interval steps constraints.
+ */
+function determineStepSize(min, max, unit, capacity) {
+	var range = max - min;
+	var interval = INTERVALS[unit];
+	var milliseconds = interval.size;
+	var steps = interval.steps;
+	var i, ilen, factor;
+
+	if (!steps) {
+		return Math.ceil(range / ((capacity || 1) * milliseconds));
+	}
+
+	for (i = 0, ilen = steps.length; i < ilen; ++i) {
+		factor = steps[i];
+		if (Math.ceil(range / (milliseconds * factor)) <= capacity) {
+			break;
+		}
+	}
+
+	return factor;
+}
+
+function determineUnit(minUnit, min, max, capacity) {
+	var ilen = UNITS.length;
+	var i, interval, factor;
+
+	for (i = UNITS.indexOf(minUnit); i < ilen - 1; ++i) {
+		interval = INTERVALS[UNITS[i]];
+		factor = interval.steps ? interval.steps[interval.steps.length - 1] : MAX_INTEGER;
+
+		if (Math.ceil((max - min) / (factor * interval.size)) <= capacity) {
+			return UNITS[i];
+		}
+	}
+
+	return UNITS[ilen - 1];
+}
+
+function determineMajorUnit(unit) {
+	for (var i = UNITS.indexOf(unit) + 1, ilen = UNITS.length; i < ilen; ++i) {
+		if (INTERVALS[UNITS[i]].major) {
+			return UNITS[i];
+		}
+	}
+}
+
+/**
+ * Generates timestamps between min and max, rounded to the `minor` unit, aligned on
+ * the `major` unit, spaced with `stepSize` and using the given scale time `options`.
+ * Important: this method can return ticks outside the min and max range, it's the
+ * responsibility of the calling code to clamp values if needed.
+ */
+function generate(min, max, minor, major, stepSize, options) {
+	var weekday = minor === 'week' ? options.isoWeekday : false;
+	var interval = INTERVALS[minor];
+	var first = moment(min);
+	var last = moment(max);
+	var ticks = [];
+	var time;
+
+	// For 'week' unit, handle the first day of week option
+	if (weekday) {
+		first = first.isoWeekday(weekday);
+		last = last.isoWeekday(weekday);
+	}
+
+	// Align first/last ticks on unit
+	first = first.startOf(weekday ? 'day' : minor);
+	last = last.startOf(weekday ? 'day' : minor);
+
+	// Make sure that the last tick include max
+	if (last < max) {
+		last.add(1, minor);
+	}
+
+	time = moment(first);
+
+	if (major && !weekday && !options.round) {
+		// Align the first tick on the previous `minor` unit aligned on the `major` unit:
+		// we first aligned time on the previous `major` unit then add the number of full
+		// stepSize there is between first and the previous major time.
+		time.startOf(major);
+		time.add(~~((first - time) / (interval.size * stepSize)) * stepSize, minor);
+	}
+
+	for (; time < last; time.add(stepSize, minor)) {
+		ticks.push(+time);
+	}
+
+	ticks.push(+time);
+
+	return ticks;
 }
 
 module.exports = function(Chart) {
-
-	var timeHelpers = helpers.time;
-
-	// Integer constants are from the ES6 spec.
-	var MIN_INTEGER = Number.MIN_SAFE_INTEGER || -9007199254740991;
-	var MAX_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
 
 	var defaultConfig = {
 		position: 'bottom',
@@ -165,6 +341,10 @@ module.exports = function(Chart) {
 		}
 	};
 
+	Chart.Ticks.generators.time = function(opts, range) {
+		return generate(range.min, range.max, opts.unit, opts.majorUnit, opts.stepSize, opts.timeOpts);
+	};
+
 	var TimeScale = Chart.Scale.extend({
 		initialize: function() {
 			if (!moment) {
@@ -174,6 +354,18 @@ module.exports = function(Chart) {
 			this.mergeTicksOptions();
 
 			Chart.Scale.prototype.initialize.call(this);
+		},
+
+		update: function() {
+			var me = this;
+			var options = me.options;
+
+			// DEPRECATIONS: output a message only one time per update
+			if (options.time && options.time.format) {
+				console.warn('options.time.format is deprecated and replaced by options.time.parser.');
+			}
+
+			return Chart.Scale.prototype.update.apply(me, arguments);
 		},
 
 		/**
@@ -242,8 +434,6 @@ module.exports = function(Chart) {
 				labels: labels.sort(sorter),    // Sort labels **after** data have been converted
 				min: Math.min(min, max),        // Make sure that max is **strictly** higher ...
 				max: Math.max(min + 1, max),    // ... than min (required by the lookup table)
-				offset: null,
-				size: null,
 				table: []
 			};
 		},
@@ -257,38 +447,31 @@ module.exports = function(Chart) {
 			var ticksOpts = me.options.ticks;
 			var formats = timeOpts.displayFormats;
 			var capacity = me.getLabelCapacity(min);
-			var unit = timeOpts.unit || timeHelpers.determineUnit(timeOpts.minUnit, min, max, capacity);
-			var majorUnit = timeHelpers.determineMajorUnit(unit);
+			var unit = timeOpts.unit || determineUnit(timeOpts.minUnit, min, max, capacity);
+			var majorUnit = determineMajorUnit(unit);
+			var timestamps = [];
 			var ticks = [];
 			var i, ilen, timestamp, stepSize;
 
-			if (ticksOpts.source === 'labels') {
-				for (i = 0, ilen = model.labels.length; i < ilen; ++i) {
-					timestamp = model.labels[i];
-					if (timestamp >= min && timestamp <= max) {
-						ticks.push(timestamp);
-					}
-				}
-			} else {
+			if (ticksOpts.source === 'auto') {
 				stepSize = helpers.valueOrDefault(timeOpts.stepSize, timeOpts.unitStepSize)
-					|| timeHelpers.determineStepSize(min, max, unit, capacity);
+					|| determineStepSize(min, max, unit, capacity);
 
-				ticks = timeHelpers.generateTicks({
-					maxTicks: capacity,
-					min: parse(timeOpts.min, me),
-					max: parse(timeOpts.max, me),
-					stepSize: stepSize,
-					majorUnit: majorUnit,
-					unit: unit,
-					timeOpts: timeOpts
-				}, {
-					min: min,
-					max: max
-				});
+				timestamps = generate(min, max, unit, majorUnit, stepSize, timeOpts);
 
-				// Recompute min/max, the ticks generation might have changed them (BUG?)
-				min = ticks.length ? ticks[0] : min;
-				max = ticks.length ? ticks[ticks.length - 1] : max;
+				// Expand min/max to the generated ticks
+				min = helpers.isNullOrUndef(timeOpts.min) && timestamps.length ? timestamps[0] : min;
+				max = helpers.isNullOrUndef(timeOpts.max) && timestamps.length ? timestamps[timestamps.length - 1] : max;
+			} else {
+				timestamps = model.labels;
+			}
+
+			// Remove ticks outside the min/max range
+			for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
+				timestamp = timestamps[i];
+				if (timestamp >= min && timestamp <= max) {
+					ticks.push(timestamp);
+				}
 			}
 
 			me.ticks = ticks;
@@ -313,7 +496,7 @@ module.exports = function(Chart) {
 				label = me.getRightValue(value);
 			}
 			if (timeOpts.tooltipFormat) {
-				label = timeHelpers.parseTime(me, label).format(timeOpts.tooltipFormat);
+				label = momentify(label, timeOpts).format(timeOpts.tooltipFormat);
 			}
 
 			return label;
@@ -430,7 +613,7 @@ module.exports = function(Chart) {
 			var tickLabelWidth = me.getLabelWidth(exampleLabel);
 			var innerWidth = me.isHorizontal() ? me.width : me.height;
 
-			return innerWidth / tickLabelWidth;
+			return Math.floor(innerWidth / tickLabelWidth);
 		}
 	});
 

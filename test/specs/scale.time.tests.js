@@ -372,7 +372,7 @@ describe('Time scale tests', function() {
 			config.time.min = '2014-12-29T04:00:00';
 
 			var scale = createScale(mockData, config);
-			expect(scale.ticks[0].value).toEqual('Dec 29');
+			expect(scale.ticks[0].value).toEqual('Dec 31');
 		});
 
 		it('should use the max option', function() {

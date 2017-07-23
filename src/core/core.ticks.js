@@ -139,9 +139,7 @@ module.exports = {
 			ticks.push(lastTick);
 
 			return ticks;
-		},
-
-		time: helpers.time.generateTicks
+		}
 	},
 
 	/**
