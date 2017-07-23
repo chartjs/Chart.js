@@ -31,7 +31,8 @@ defaults._set('bar', {
 
 defaults._set('horizontalBar', {
 	hover: {
-		mode: 'label'
+		mode: 'index',
+		axis: 'y'
 	},
 
 	scales: {
@@ -82,7 +83,9 @@ defaults._set('horizontalBar', {
 				var datasetLabel = data.datasets[item.datasetIndex].label || '';
 				return datasetLabel + ': ' + item.xLabel;
 			}
-		}
+		},
+		mode: 'index',
+		axis: 'y'
 	}
 });
 
