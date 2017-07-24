@@ -113,6 +113,9 @@
 			title: 'Line (point data)',
 			path: 'scales/time/line-point-data.html'
 		}, {
+			title: 'Time Series',
+			path: 'scales/time/financial.html'
+		}, {
 			title: 'Combo',
 			path: 'scales/time/combo.html'
 		}]
