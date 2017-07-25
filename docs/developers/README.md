@@ -15,7 +15,12 @@ Latest builds are available for testing at:
  - http://chartjs.org/dist/master/Chart.min.js
  - http://chartjs.org/dist/master/Chart.bundle.min.js
 
-*Note*: These development builds are only available via HTTP. In order to include them in JSFiddle or CodePen, these need to be accessed via HTTP, too. The development build MUST not be used for production purposes or as replacement for CDN.
+The latest Chart.js samples are also avaiable:
+
+ - http://www.chartjs.org/samples/master
+
+*Note*: These development builds are only available via HTTP. In order to include them in JSFiddle or CodePen, these need to be accessed via HTTP, too (use links above).
+**WARNING: The development builds MUST not be used for production purposes or as replacement for CDN.*
 
 # Browser support
 
