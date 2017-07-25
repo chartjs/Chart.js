@@ -260,18 +260,23 @@ function determineMajorUnit(unit) {
 }
 
 /**
- * Generates timestamps between min and max, rounded to the `minor` unit, aligned on
- * the `major` unit, spaced with `stepSize` and using the given scale time `options`.
+ * Generates a maximum of `capacity` timestamps between min and max, rounded to the
+ * `minor` unit, aligned on the `major` unit and using the given scale time `options`.
  * Important: this method can return ticks outside the min and max range, it's the
  * responsibility of the calling code to clamp values if needed.
  */
-function generate(min, max, minor, major, stepSize, options) {
+function generate(min, max, minor, major, capacity, options) {
+	var stepSize = helpers.valueOrDefault(options.stepSize, options.unitStepSize);
 	var weekday = minor === 'week' ? options.isoWeekday : false;
 	var interval = INTERVALS[minor];
 	var first = moment(min);
 	var last = moment(max);
 	var ticks = [];
 	var time;
+
+	if (!stepSize) {
+		stepSize = determineStepSize(min, max, minor, capacity);
+	}
 
 	// For 'week' unit, handle the first day of week option
 	if (weekday) {
@@ -348,8 +353,9 @@ module.exports = function(Chart) {
 
 			/**
 			 * Ticks generation input values:
-			 * - 'labels': generates ticks from user given `data.labels` values ONLY.
 			 * - 'auto': generates "optimal" ticks based on scale size and time options.
+			 * - 'data': generates ticks from data (including labels from data {t|x|y} objects).
+			 * - 'labels': generates ticks from user given `data.labels` values ONLY.
 			 * @see https://github.com/chartjs/Chart.js/pull/4507
 			 * @since 2.7.0
 			 */
@@ -472,15 +478,22 @@ module.exports = function(Chart) {
 			var majorUnit = determineMajorUnit(unit);
 			var timestamps = [];
 			var ticks = [];
-			var i, ilen, timestamp, stepSize;
+			var hash = {};
+			var i, ilen, timestamp;
 
-			if (ticksOpts.source === 'auto') {
-				stepSize = helpers.valueOrDefault(timeOpts.stepSize, timeOpts.unitStepSize)
-					|| determineStepSize(min, max, unit, capacity);
-
-				timestamps = generate(min, max, unit, majorUnit, stepSize, timeOpts);
-			} else {
+			switch (ticksOpts.source) {
+			case 'data':
+				for (i = 0, ilen = me._datasets.length; i < ilen; ++i) {
+					timestamps.push.apply(timestamps, me._datasets[i]);
+				}
+				timestamps.sort(sorter);
+				break;
+			case 'labels':
 				timestamps = me._labels;
+				break;
+			case 'auto':
+			default:
+				timestamps = generate(min, max, unit, majorUnit, capacity, timeOpts);
 			}
 
 			if (ticksOpts.bounds === 'labels' && timestamps.length) {
@@ -492,10 +505,12 @@ module.exports = function(Chart) {
 			min = parse(timeOpts.min, me) || min;
 			max = parse(timeOpts.max, me) || max;
 
-			// Remove ticks outside the min/max range
+			// Remove ticks outside the min/max range and duplicated entries
 			for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
 				timestamp = timestamps[i];
-				if (timestamp >= min && timestamp <= max) {
+				if (timestamp >= min && timestamp <= max && !hash[timestamp]) {
+					// hash is used to efficiently detect timestamp duplicates
+					hash[timestamp] = true;
 					ticks.push(timestamp);
 				}
 			}
