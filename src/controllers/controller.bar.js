@@ -239,10 +239,14 @@ module.exports = function(Chart) {
 			var fullBarSize = categorySize / stackCount;
 			var barSize = fullBarSize * options.barPercentage;
 
-			barSize = Math.min(
+			var setBarSize = Math.min(
 				helpers.valueOrDefault(options.barThickness, barSize),
 				helpers.valueOrDefault(options.maxBarThickness, Infinity));
 
+			if(barSize != setBarSize) {
+				barSize = setBarSize;
+				fullBarSize = barSize / options.barPercentage;
+			}
 			return {
 				stackCount: stackCount,
 				tickSize: tickSize,
