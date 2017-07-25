@@ -243,7 +243,7 @@ module.exports = function(Chart) {
 				helpers.valueOrDefault(options.barThickness, barSize),
 				helpers.valueOrDefault(options.maxBarThickness, Infinity));
 
-			if(barSize != setBarSize) {
+			if (barSize !== setBarSize) {
 				barSize = setBarSize;
 				fullBarSize = barSize / options.barPercentage;
 			}
