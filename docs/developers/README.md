@@ -1,5 +1,26 @@
 # Developers
+
 Developer features allow extending and enhancing Chart.js in many different ways.
+
+# Latest documentation and samples
+
+The latest version of the documentation, including unreleased features, is always available at:
+
+ - [documentation master](http://www.chartjs.org/docs/master/)
+ - [samples gallery](http://www.chartjs.org/samples/master)
+
+# Testing development releases
+
+Tools like [JSFiddle](http://jsfiddle.net) and [CodePen](http://codepen.io) allow quick prototying and validation of Chart.js functionalities. One common problem is that this requires the built version of the Chart.js library.
+
+Latest builds are available for testing at:
+
+ - http://chartjs.org/dist/master/Chart.min.js
+ - http://chartjs.org/dist/master/Chart.bundle.min.js
+
+*Note*: These development builds are only available via HTTP. In order to include them in JSFiddle or CodePen, these need to be accessed via HTTP, too (use links above).
+
+**WARNING: The development builds MUST not be used for production purposes or as replacement for CDN.**
 
 # Browser support
 
