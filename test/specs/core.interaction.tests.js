@@ -79,83 +79,165 @@ describe('Core.Interaction', function() {
 	});
 
 	describe('index mode', function() {
-		it ('should return all items at the same index', function() {
-			var chart = window.acquireChart({
-				type: 'line',
-				data: {
-					datasets: [{
-						label: 'Dataset 1',
-						data: [10, 20, 30],
-						pointHoverBorderColor: 'rgb(255, 0, 0)',
-						pointHoverBackgroundColor: 'rgb(0, 255, 0)'
-					}, {
-						label: 'Dataset 2',
-						data: [40, 40, 40],
-						pointHoverBorderColor: 'rgb(0, 0, 255)',
-						pointHoverBackgroundColor: 'rgb(0, 255, 255)'
-					}],
-					labels: ['Point 1', 'Point 2', 'Point 3']
-				}
+		describe('intersect: true', function() {
+			it ('gets correct items', function() {
+				var chart = window.acquireChart({
+					type: 'line',
+					data: {
+						datasets: [{
+							label: 'Dataset 1',
+							data: [10, 20, 30],
+							pointHoverBorderColor: 'rgb(255, 0, 0)',
+							pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+						}, {
+							label: 'Dataset 2',
+							data: [40, 40, 40],
+							pointHoverBorderColor: 'rgb(0, 0, 255)',
+							pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+						}],
+						labels: ['Point 1', 'Point 2', 'Point 3']
+					}
+				});
+
+				// Trigger an event over top of the
+				var meta0 = chart.getDatasetMeta(0);
+				var meta1 = chart.getDatasetMeta(1);
+				var point = meta0.data[1];
+
+				var node = chart.canvas;
+				var rect = node.getBoundingClientRect();
+
+				var evt = {
+					view: window,
+					bubbles: true,
+					cancelable: true,
+					clientX: rect.left + point._model.x,
+					clientY: rect.top + point._model.y,
+					currentTarget: node
+				};
+
+				var elements = Chart.Interaction.modes.index(chart, evt, {intersect: true});
+				expect(elements).toEqual([point, meta1.data[1]]);
 			});
-
-			// Trigger an event over top of the
-			var meta0 = chart.getDatasetMeta(0);
-			var meta1 = chart.getDatasetMeta(1);
-			var point = meta0.data[1];
-
-			var node = chart.canvas;
-			var rect = node.getBoundingClientRect();
-
-			var evt = {
-				view: window,
-				bubbles: true,
-				cancelable: true,
-				clientX: rect.left + point._model.x,
-				clientY: rect.top + point._model.y,
-				currentTarget: node
-			};
-
-			var elements = Chart.Interaction.modes.index(chart, evt, {intersect: true});
-			expect(elements).toEqual([point, meta1.data[1]]);
 		});
 
-		it ('should return all items at the same index when intersect is false', function() {
-			var chart = window.acquireChart({
-				type: 'line',
-				data: {
-					datasets: [{
-						label: 'Dataset 1',
-						data: [10, 20, 30],
-						pointHoverBorderColor: 'rgb(255, 0, 0)',
-						pointHoverBackgroundColor: 'rgb(0, 255, 0)'
-					}, {
-						label: 'Dataset 2',
-						data: [40, 40, 40],
-						pointHoverBorderColor: 'rgb(0, 0, 255)',
-						pointHoverBackgroundColor: 'rgb(0, 255, 255)'
-					}],
-					labels: ['Point 1', 'Point 2', 'Point 3']
-				}
+		describe ('intersect: false', function() {
+			it ('axis: x gets correct items', function() {
+				var chart = window.acquireChart({
+					type: 'line',
+					data: {
+						datasets: [{
+							label: 'Dataset 1',
+							data: [10, 20, 30],
+							pointHoverBorderColor: 'rgb(255, 0, 0)',
+							pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+						}, {
+							label: 'Dataset 2',
+							data: [40, 40, 40],
+							pointHoverBorderColor: 'rgb(0, 0, 255)',
+							pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+						}],
+						labels: ['Point 1', 'Point 2', 'Point 3']
+					}
+				});
+
+				// Trigger an event over top of the
+				var meta0 = chart.getDatasetMeta(0);
+				var meta1 = chart.getDatasetMeta(1);
+
+				var node = chart.canvas;
+				var rect = node.getBoundingClientRect();
+
+				var evt = {
+					view: window,
+					bubbles: true,
+					cancelable: true,
+					clientX: rect.left,
+					clientY: rect.top,
+					currentTarget: node
+				};
+
+				var elements = Chart.Interaction.modes.index(chart, evt, {intersect: false});
+				expect(elements).toEqual([meta0.data[0], meta1.data[0]]);
 			});
 
-			// Trigger an event over top of the
-			var meta0 = chart.getDatasetMeta(0);
-			var meta1 = chart.getDatasetMeta(1);
+			it ('axis: y gets correct items', function() {
+				var chart = window.acquireChart({
+					type: 'horizontalBar',
+					data: {
+						datasets: [{
+							label: 'Dataset 1',
+							data: [10, 20, 30],
+							pointHoverBorderColor: 'rgb(255, 0, 0)',
+							pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+						}, {
+							label: 'Dataset 2',
+							data: [40, 40, 40],
+							pointHoverBorderColor: 'rgb(0, 0, 255)',
+							pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+						}],
+						labels: ['Point 1', 'Point 2', 'Point 3']
+					}
+				});
 
-			var node = chart.canvas;
-			var rect = node.getBoundingClientRect();
+				// Trigger an event over top of the
+				var meta0 = chart.getDatasetMeta(0);
+				var meta1 = chart.getDatasetMeta(1);
 
-			var evt = {
-				view: window,
-				bubbles: true,
-				cancelable: true,
-				clientX: rect.left,
-				clientY: rect.top,
-				currentTarget: node
-			};
+				var node = chart.canvas;
+				var center = meta0.data[0].getCenterPoint();
 
-			var elements = Chart.Interaction.modes.index(chart, evt, {intersect: false});
-			expect(elements).toEqual([meta0.data[0], meta1.data[0]]);
+				var evt = {
+					view: window,
+					bubbles: true,
+					cancelable: true,
+					clientX: center.x,
+					clientY: center.y + 30,
+					currentTarget: node
+				};
+
+				var elements = Chart.Interaction.modes.index(chart, evt, {axis: 'y', intersect: false});
+				expect(elements).toEqual([meta0.data[0], meta1.data[0]]);
+			});
+
+			it ('axis: xy gets correct items', function() {
+				var chart = window.acquireChart({
+					type: 'line',
+					data: {
+						datasets: [{
+							label: 'Dataset 1',
+							data: [10, 20, 30],
+							pointHoverBorderColor: 'rgb(255, 0, 0)',
+							pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+						}, {
+							label: 'Dataset 2',
+							data: [40, 40, 40],
+							pointHoverBorderColor: 'rgb(0, 0, 255)',
+							pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+						}],
+						labels: ['Point 1', 'Point 2', 'Point 3']
+					}
+				});
+
+				// Trigger an event over top of the
+				var meta0 = chart.getDatasetMeta(0);
+				var meta1 = chart.getDatasetMeta(1);
+
+				var node = chart.canvas;
+				var rect = node.getBoundingClientRect();
+
+				var evt = {
+					view: window,
+					bubbles: true,
+					cancelable: true,
+					clientX: rect.left,
+					clientY: rect.top,
+					currentTarget: node
+				};
+
+				var elements = Chart.Interaction.modes.index(chart, evt, {axis: 'xy', intersect: false});
+				expect(elements).toEqual([meta0.data[0], meta1.data[0]]);
+			});
 		});
 	});
 
