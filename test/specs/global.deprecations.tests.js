@@ -281,7 +281,7 @@ describe('Deprecations', function() {
 					return tick.value;
 				});
 
-				expect(ticks).toEqual(['8PM', '10PM']);
+				expect(ticks).toEqual(['Jan 1, 8PM', 'Jan 1, 10PM']);
 			});
 		});
 	});
