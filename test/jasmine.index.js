@@ -24,6 +24,7 @@ var utils = require('./jasmine.utils');
 
 	window.acquireChart = acquireChart;
 	window.releaseChart = releaseChart;
+	window.waitForResize = utils.waitForResize;
 	window.createMockContext = createMockContext;
 
 	// some style initialization to limit differences between browsers across different plateforms.

@@ -1,18 +1,5 @@
 describe('Platform.dom', function() {
 
-	function waitForResize(chart, callback) {
-		var resizer = chart.canvas.parentNode._chartjs.resizer;
-		var content = resizer.contentWindow || resizer;
-		var state = content.document.readyState || 'complete';
-		var handler = function() {
-			Chart.helpers.removeEvent(content, 'load', handler);
-			Chart.helpers.removeEvent(content, 'resize', handler);
-			setTimeout(callback, 50);
-		};
-
-		Chart.helpers.addEvent(content, state !== 'complete' ? 'load' : 'resize', handler);
-	}
-
 	describe('context acquisition', function() {
 		var canvasId = 'chartjs-canvas';
 

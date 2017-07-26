@@ -1,18 +1,5 @@
 describe('Chart', function() {
 
-	function waitForResize(chart, callback) {
-		var resizer = chart.canvas.parentNode._chartjs.resizer;
-		var content = resizer.contentWindow || resizer;
-		var state = content.document.readyState || 'complete';
-		var handler = function() {
-			Chart.helpers.removeEvent(content, 'load', handler);
-			Chart.helpers.removeEvent(content, 'resize', handler);
-			setTimeout(callback, 50);
-		};
-
-		Chart.helpers.addEvent(content, state !== 'complete' ? 'load' : 'resize', handler);
-	}
-
 	// https://github.com/chartjs/Chart.js/issues/2481
 	// See global.deprecations.tests.js for backward compatibility
 	it('should be defined and prototype of chart instances', function() {

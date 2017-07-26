@@ -149,10 +149,20 @@ function specsFromFixtures(path) {
 	};
 }
 
+function waitForResize(chart, callback) {
+	var override = chart.resize;
+	chart.resize = function() {
+		chart.resize = override;
+		override.apply(this, arguments);
+		callback();
+	};
+}
+
 module.exports = {
 	injectCSS: injectCSS,
 	createCanvas: createCanvas,
 	acquireChart: acquireChart,
 	releaseChart: releaseChart,
-	specsFromFixtures: specsFromFixtures
+	specsFromFixtures: specsFromFixtures,
+	waitForResize: waitForResize
 };
