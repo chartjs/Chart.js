@@ -281,8 +281,8 @@ describe('Time scale tests', function() {
 							round: true,
 							parser: function(label) {
 								return label === 'foo' ?
-									moment(946771200000) :  // 02/01/2000 @ 12:00am (UTC)
-									moment(1462665600000);  // 05/08/2016 @ 12:00am (UTC)
+									moment('2000/01/02', 'YYYY/MM/DD') :
+									moment('2016/05/08', 'YYYY/MM/DD');
 							}
 						},
 						ticks: {
