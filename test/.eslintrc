@@ -5,6 +5,7 @@ globals:
   acquireChart: true
   Chart: true
   moment: true
+  waitForResize: true
 
 # http://eslint.org/docs/rules/
 rules:

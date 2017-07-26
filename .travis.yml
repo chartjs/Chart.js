@@ -22,13 +22,8 @@ sudo: required
 dist: trusty
 
 addons:
+  chrome: stable
   firefox: latest
-  apt:
-    sources:
-      - google-chrome
-    packages:
-      - google-chrome-stable
-
 
 # IMPORTANT: scripts require GITHUB_AUTH_TOKEN and GITHUB_AUTH_EMAIL environment variables
 # IMPORTANT: scripts has to be set executables in the Git repository (error 127)
