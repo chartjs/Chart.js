@@ -312,6 +312,23 @@ function generate(min, max, minor, major, capacity, options) {
 	return ticks;
 }
 
+function ticksFromTimestamps(values, majorUnit) {
+	var ticks = [];
+	var i, ilen, value, major;
+
+	for (i = 0, ilen = values.length; i < ilen; ++i) {
+		value = values[i];
+		major = majorUnit ? value === +moment(value).startOf(majorUnit) : false;
+
+		ticks.push({
+			value: value,
+			major: major
+		});
+	}
+
+	return ticks;
+}
+
 module.exports = function(Chart) {
 
 	var defaultConfig = {
@@ -515,16 +532,17 @@ module.exports = function(Chart) {
 				}
 			}
 
-			me.ticks = ticks;
 			me.min = min;
 			me.max = max;
 
 			// PRIVATE
 			me._unit = unit;
 			me._majorUnit = majorUnit;
-			me._displayFormat = formats[unit];
-			me._majorDisplayFormat = formats[majorUnit];
+			me._minorFormat = formats[unit];
+			me._majorFormat = formats[majorUnit];
 			me._table = buildLookupTable(ticks, min, max, ticksOpts.mode === 'linear');
+
+			return ticksFromTimestamps(ticks, majorUnit);
 		},
 
 		getLabelForIndex: function(index, datasetIndex) {
@@ -553,31 +571,25 @@ module.exports = function(Chart) {
 			var options = me.options;
 			var time = tick.valueOf();
 			var majorUnit = me._majorUnit;
-			var majorFormat = me._majorDisplayFormat;
+			var majorFormat = me._majorFormat;
 			var majorTime = tick.clone().startOf(me._majorUnit).valueOf();
 			var major = majorUnit && majorFormat && time === majorTime;
-			var formattedTick = tick.format(major ? majorFormat : me._displayFormat);
+			var label = tick.format(major ? majorFormat : me._minorFormat);
 			var tickOpts = major ? options.ticks.major : options.ticks.minor;
 			var formatter = helpers.valueOrDefault(tickOpts.callback, tickOpts.userCallback);
 
-			if (formatter) {
-				formattedTick = formatter(formattedTick, index, ticks);
-			}
-
-			return {
-				value: formattedTick,
-				major: major,
-				time: time,
-			};
+			return formatter ? formatter(label, index, ticks) : label;
 		},
 
-		convertTicksToLabels: function() {
-			var ticks = this.ticks;
+		convertTicksToLabels: function(ticks) {
+			var labels = [];
 			var i, ilen;
 
 			for (i = 0, ilen = ticks.length; i < ilen; ++i) {
-				ticks[i] = this.tickFormatFunction(moment(ticks[i]));
+				labels.push(this.tickFormatFunction(moment(ticks[i].value), i, ticks));
 			}
+
+			return labels;
 		},
 
 		/**
@@ -610,8 +622,9 @@ module.exports = function(Chart) {
 		},
 
 		getPixelForTick: function(index) {
-			return index >= 0 && index < this.ticks.length ?
-				this.getPixelForOffset(this.ticks[index].time) :
+			var ticks = this.getTicks();
+			return index >= 0 && index < ticks.length ?
+				this.getPixelForOffset(ticks[index].value) :
 				null;
 		},
 
@@ -647,9 +660,9 @@ module.exports = function(Chart) {
 		getLabelCapacity: function(exampleTime) {
 			var me = this;
 
-			me._displayFormat = me.options.time.displayFormats.millisecond;	// Pick the longest format for guestimation
+			me._minorFormat = me.options.time.displayFormats.millisecond;	// Pick the longest format for guestimation
 
-			var exampleLabel = me.tickFormatFunction(moment(exampleTime), 0, []).value;
+			var exampleLabel = me.tickFormatFunction(moment(exampleTime), 0, []);
 			var tickLabelWidth = me.getLabelWidth(exampleLabel);
 			var innerWidth = me.isHorizontal() ? me.width : me.height;
 
