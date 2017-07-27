@@ -819,7 +819,7 @@ describe('Core.Tooltip', function() {
 		expect(tooltip.update).not.toHaveBeenCalled();
 	});
 
-	it('Should split newlines into separate lines', function() {
+	it('Should split newlines into separate lines in user callbacks', function() {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
@@ -841,37 +841,37 @@ describe('Core.Tooltip', function() {
 					mode: 'label',
 					callbacks: {
 						beforeTitle: function() {
-							return 'beforeTitle';
+							return 'beforeTitle\nnewline';
 						},
 						title: function() {
 							return 'title\nnewline';
 						},
 						afterTitle: function() {
-							return 'afterTitle';
+							return 'afterTitle\nnewline';
 						},
 						beforeBody: function() {
-							return 'beforeBody';
+							return 'beforeBody\nnewline';
 						},
 						beforeLabel: function() {
-							return 'beforeLabel';
+							return 'beforeLabel\nnewline';
 						},
 						label: function() {
 							return 'label';
 						},
 						afterLabel: function() {
-							return 'afterLabel';
+							return 'afterLabel\nnewline';
 						},
 						afterBody: function() {
-							return 'afterBody';
+							return 'afterBody\nnewline';
 						},
 						beforeFooter: function() {
-							return 'beforeFooter';
+							return 'beforeFooter\nnewline';
 						},
 						footer: function() {
-							return 'footer';
+							return 'footer\nnewline';
 						},
 						afterFooter: function() {
-							return 'afterFooter';
+							return 'afterFooter\nnewline';
 						},
 						labelTextColor: function() {
 							return 'labelTextColor';
@@ -882,8 +882,8 @@ describe('Core.Tooltip', function() {
 		});
 
 		// Trigger an event over top of the
-		var meta0 = chart.getDatasetMeta(0);
-		var point0 = meta0.data[1];
+		var meta = chart.getDatasetMeta(0);
+		var point = meta.data[1];
 
 		var node = chart.canvas;
 		var rect = node.getBoundingClientRect();
@@ -892,8 +892,8 @@ describe('Core.Tooltip', function() {
 			view: window,
 			bubbles: true,
 			cancelable: true,
-			clientX: rect.left + point0._model.x,
-			clientY: rect.top + point0._model.y
+			clientX: rect.left + point._model.x,
+			clientY: rect.top + point._model.y
 		});
 
 		// Manually trigger rather than having an async test
@@ -901,33 +901,72 @@ describe('Core.Tooltip', function() {
 
 		// Check and see if tooltip was displayed
 		var tooltip = chart.tooltip;
+		var globalDefaults = Chart.defaults.global;
 
 		expect(tooltip._view).toEqual(jasmine.objectContaining({
 			// Positioning
-			xAlign: 'left',
-			yAlign: 'center',
+			xPadding: 6,
+			yPadding: 6,
+			xAlign: 'center',
+			yAlign: 'top',
+
+			// Body
+			bodyFontColor: '#fff',
+			_bodyFontFamily: globalDefaults.defaultFontFamily,
+			_bodyFontStyle: globalDefaults.defaultFontStyle,
+			_bodyAlign: 'left',
+			bodyFontSize: globalDefaults.defaultFontSize,
+			bodySpacing: 2,
+
+			// Title
+			titleFontColor: '#fff',
+			_titleFontFamily: globalDefaults.defaultFontFamily,
+			_titleFontStyle: 'bold',
+			titleFontSize: globalDefaults.defaultFontSize,
+			_titleAlign: 'left',
+			titleSpacing: 2,
+			titleMarginBottom: 6,
+
+			// Footer
+			footerFontColor: '#fff',
+			_footerFontFamily: globalDefaults.defaultFontFamily,
+			_footerFontStyle: 'bold',
+			footerFontSize: globalDefaults.defaultFontSize,
+			_footerAlign: 'left',
+			footerSpacing: 2,
+			footerMarginTop: 6,
+
+			// Appearance
+			caretSize: 5,
+			cornerRadius: 6,
+			backgroundColor: 'rgba(0,0,0,0.8)',
+			opacity: 1,
+			legendColorBackground: '#fff',
 
 			// Text
-			title: ['title', 'newline'],
-			beforeBody: [],
+			title: ['beforeTitle', 'newline', 'title', 'newline', 'afterTitle', 'newline'],
+			beforeBody: ['beforeBody', 'newline'],
 			body: [{
-				before: [],
-				lines: ['Dataset 2: 40'],
-				after: []
+				before: ['beforeLabel', 'newline'],
+				lines: ['label'],
+				after: ['afterLabel', 'newline']
 			}, {
-				before: [],
-				lines: ['Dataset 1: 20'],
-				after: []
+				before: ['beforeLabel', 'newline'],
+				lines: ['label'],
+				after: ['afterLabel', 'newline']
 			}],
-			afterBody: [],
-			footer: [],
+			afterBody: ['afterBody', 'newline'],
+			footer: ['beforeFooter', 'newline', 'footer', 'newline', 'afterFooter', 'newline'],
+			caretPadding: 2,
+			labelTextColors: ['labelTextColor', 'labelTextColor'],
 			labelColors: [{
-				borderColor: 'rgb(0, 0, 255)',
-				backgroundColor: 'rgb(0, 255, 255)'
-			}, {
 				borderColor: 'rgb(255, 0, 0)',
 				backgroundColor: 'rgb(0, 255, 0)'
+			}, {
+				borderColor: 'rgb(0, 0, 255)',
+				backgroundColor: 'rgb(0, 255, 255)'
 			}]
 		}));
 	});
+
 });

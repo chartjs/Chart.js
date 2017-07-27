@@ -120,6 +120,19 @@ module.exports = function(Chart) {
 		return base;
 	}
 
+	/**
+	 * Returns array of strings split by newline
+	 * @param {String} value - The value to split by newline.
+	 * @returns {Array} value - Returned from String split() method
+	 * @function
+	 */
+	function splitNewlines(str) {
+		if (typeof str === 'string' || str instanceof String) {
+			return str.split('\n');
+		}
+		return str || [];
+	}
+
 	// Private helper to create a tooltip item model
 	// @param element : the chart element (point, arc, bar) to create the tooltip item for
 	// @return : new tooltip item
@@ -398,16 +411,16 @@ module.exports = function(Chart) {
 				afterTitle = callbacks.afterTitle.apply(me, arguments);
 
 			var lines = [];
-			lines = pushOrConcat(lines, beforeTitle);
-			lines = pushOrConcat(lines, title);
-			lines = pushOrConcat(lines, afterTitle);
+			lines = pushOrConcat(lines, splitNewlines(beforeTitle));
+			lines = pushOrConcat(lines, splitNewlines(title));
+			lines = pushOrConcat(lines, splitNewlines(afterTitle));
 
 			return lines;
 		},
 
 		// Args are: (tooltipItem, data)
 		getBeforeBody: function() {
-			var lines = this._options.callbacks.beforeBody.apply(this, arguments);
+			var lines = splitNewlines(this._options.callbacks.beforeBody.apply(this, arguments));
 			return helpers.isArray(lines) ? lines : lines !== undefined ? [lines] : [];
 		},
 
@@ -423,9 +436,9 @@ module.exports = function(Chart) {
 					lines: [],
 					after: []
 				};
-				pushOrConcat(bodyItem.before, callbacks.beforeLabel.call(me, tooltipItem, data));
+				pushOrConcat(bodyItem.before, splitNewlines(callbacks.beforeLabel.call(me, tooltipItem, data)));
 				pushOrConcat(bodyItem.lines, callbacks.label.call(me, tooltipItem, data));
-				pushOrConcat(bodyItem.after, callbacks.afterLabel.call(me, tooltipItem, data));
+				pushOrConcat(bodyItem.after, splitNewlines(callbacks.afterLabel.call(me, tooltipItem, data)));
 
 				bodyItems.push(bodyItem);
 			});
@@ -435,7 +448,7 @@ module.exports = function(Chart) {
 
 		// Args are: (tooltipItem, data)
 		getAfterBody: function() {
-			var lines = this._options.callbacks.afterBody.apply(this, arguments);
+			var lines = splitNewlines(this._options.callbacks.afterBody.apply(this, arguments));
 			return helpers.isArray(lines) ? lines : lines !== undefined ? [lines] : [];
 		},
 
@@ -450,9 +463,9 @@ module.exports = function(Chart) {
 			var afterFooter = callbacks.afterFooter.apply(me, arguments);
 
 			var lines = [];
-			lines = pushOrConcat(lines, beforeFooter);
-			lines = pushOrConcat(lines, footer);
-			lines = pushOrConcat(lines, afterFooter);
+			lines = pushOrConcat(lines, splitNewlines(beforeFooter));
+			lines = pushOrConcat(lines, splitNewlines(footer));
+			lines = pushOrConcat(lines, splitNewlines(afterFooter));
 
 			return lines;
 		},
