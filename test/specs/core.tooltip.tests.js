@@ -818,4 +818,116 @@ describe('Core.Tooltip', function() {
 		node.dispatchEvent(firstEvent);
 		expect(tooltip.update).not.toHaveBeenCalled();
 	});
+
+	it('Should split newlines into separate lines', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					label: 'Dataset 1',
+					data: [10, 20, 30],
+					pointHoverBorderColor: 'rgb(255, 0, 0)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+				}, {
+					label: 'Dataset 2',
+					data: [40, 40, 40],
+					pointHoverBorderColor: 'rgb(0, 0, 255)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+				}],
+				labels: ['Point 1', 'Point 2', 'Point 3']
+			},
+			options: {
+				tooltips: {
+					mode: 'label',
+					callbacks: {
+						beforeTitle: function() {
+							return 'beforeTitle';
+						},
+						title: function() {
+							return 'title\nnewline';
+						},
+						afterTitle: function() {
+							return 'afterTitle';
+						},
+						beforeBody: function() {
+							return 'beforeBody';
+						},
+						beforeLabel: function() {
+							return 'beforeLabel';
+						},
+						label: function() {
+							return 'label';
+						},
+						afterLabel: function() {
+							return 'afterLabel';
+						},
+						afterBody: function() {
+							return 'afterBody';
+						},
+						beforeFooter: function() {
+							return 'beforeFooter';
+						},
+						footer: function() {
+							return 'footer';
+						},
+						afterFooter: function() {
+							return 'afterFooter';
+						},
+						labelTextColor: function() {
+							return 'labelTextColor';
+						}
+					}
+				}
+			}
+		});
+
+		// Trigger an event over top of the
+		var meta0 = chart.getDatasetMeta(0);
+		var point0 = meta0.data[1];
+
+		var node = chart.canvas;
+		var rect = node.getBoundingClientRect();
+
+		var evt = new MouseEvent('mousemove', {
+			view: window,
+			bubbles: true,
+			cancelable: true,
+			clientX: rect.left + point0._model.x,
+			clientY: rect.top + point0._model.y
+		});
+
+		// Manually trigger rather than having an async test
+		node.dispatchEvent(evt);
+
+		// Check and see if tooltip was displayed
+		var tooltip = chart.tooltip;
+
+		expect(tooltip._view).toEqual(jasmine.objectContaining({
+			// Positioning
+			xAlign: 'left',
+			yAlign: 'center',
+
+			// Text
+			title: ['title', 'newline'],
+			beforeBody: [],
+			body: [{
+				before: [],
+				lines: ['Dataset 2: 40'],
+				after: []
+			}, {
+				before: [],
+				lines: ['Dataset 1: 20'],
+				after: []
+			}],
+			afterBody: [],
+			footer: [],
+			labelColors: [{
+				borderColor: 'rgb(0, 0, 255)',
+				backgroundColor: 'rgb(0, 255, 255)'
+			}, {
+				borderColor: 'rgb(255, 0, 0)',
+				backgroundColor: 'rgb(0, 255, 0)'
+			}]
+		}));
+	});
 });
