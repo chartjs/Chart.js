@@ -180,23 +180,35 @@ module.exports = function(Chart) {
 			me.determineDataLimits();
 			me.afterDataLimits();
 
-			// Ticks
+			// Ticks - `this.ticks` is now DEPRECATED!
+			// Internal ticks are now stored as objects in the PRIVATE `this._ticks` member
+			// and must not be accessed directly from outside this class. `this.ticks` being
+			// around for long time and not marked as private, we can't change its structure
+			// without unexpected breaking changes. If you need to access the scale ticks,
+			// use scale.getTicks() instead.
+
 			me.beforeBuildTicks();
+
+			// New implementations should return an array of objects but for BACKWARD COMPAT,
+			// we still support no return (`this.ticks` internally set by calling this method).
 			ticks = me.buildTicks() || [];
+
 			me.afterBuildTicks();
 
 			me.beforeTickToLabelConversion();
+
+			// New implementations should return the formatted tick labels but for BACKWARD
+			// COMPAT, we still support no return (`this.ticks` internally changed by calling
+			// this method and supposed to contain only string values).
 			labels = me.convertTicksToLabels(ticks) || me.ticks;
+
 			me.afterTickToLabelConversion();
 
 			me.ticks = labels;   // BACKWARD COMPATIBILITY
 
-			// IMPORTANT: from this point, we consider that this.ticks will NEVER change!
-			// Internal ticks are now stored as object in the PRIVATE this._ticks member and
-			// must not be accessed directly from outside this class. this.ticks is around
-			// for long time and hasn't been marked private, so we can't change its structure
-			// without unexpected breaking changes. If you need to access the scale ticks,
-			// use scale.getTicks() instead.
+			// IMPORTANT: from this point, we consider that `this.ticks` will NEVER change!
+
+			// BACKWARD COMPAT: synchronize `_ticks` with labels (so potentially `this.ticks`)
 			for (i = 0, ilen = labels.length; i < ilen; ++i) {
 				label = labels[i];
 				tick = ticks[i];
