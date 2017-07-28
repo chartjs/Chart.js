@@ -41,7 +41,7 @@ Finds the first item that intersects the point and returns it. Behaves like 'nea
 See `'index'` mode
 
 ## index
-Finds item at the same index. If the `intersect` setting is true, the first intersecting item is used to determine the index in the data. If `intersect` false the nearest item is used to determine the index. 
+Finds item at the same index. If the `intersect` setting is true, the first intersecting item is used to determine the index in the data. If `intersect` false the nearest item, in the x direction, is used to determine the index. 
 
 ```javascript
 var chart = new Chart(ctx, {
@@ -50,6 +50,21 @@ var chart = new Chart(ctx, {
     options: {
         tooltips: {
             mode: 'index'
+        }
+    }
+})
+```
+
+To use index mode in a chart like the horizontal bar chart, where we search along the y direction, you can use the `axis` setting introduced in v2.7.0. By setting this value to `'y'` on the y direction is used.
+
+```javascript
+var chart = new Chart(ctx, {
+    type: 'horizontalBar',
+    data: data,
+    options: {
+        tooltips: {
+            mode: 'index',
+            axis: 'y'
         }
     }
 })
