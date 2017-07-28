@@ -3,10 +3,8 @@
 // Test the rectangle element
 describe('Core.Interaction', function() {
 	describe('point mode', function() {
-		var chart;
-
 		beforeEach(function() {
-			chart = window.acquireChart({
+			this.chart = window.acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -26,6 +24,7 @@ describe('Core.Interaction', function() {
 		});
 
 		it ('should return all items under the point', function() {
+			var chart = this.chart;
 			var meta0 = chart.getDatasetMeta(0);
 			var meta1 = chart.getDatasetMeta(1);
 			var point = meta0.data[1];
@@ -43,6 +42,7 @@ describe('Core.Interaction', function() {
 		});
 
 		it ('should return an empty array when no items are found', function() {
+			var chart = this.chart;
 			var evt = {
 				type: 'click',
 				chart: chart,
@@ -58,10 +58,8 @@ describe('Core.Interaction', function() {
 
 	describe('index mode', function() {
 		describe('intersect: true', function() {
-			var chart;
-
 			beforeEach(function() {
-				chart = window.acquireChart({
+				this.chart = window.acquireChart({
 					type: 'line',
 					data: {
 						datasets: [{
@@ -81,6 +79,7 @@ describe('Core.Interaction', function() {
 			});
 
 			it ('gets correct items', function() {
+				var chart = this.chart;
 				var meta0 = chart.getDatasetMeta(0);
 				var meta1 = chart.getDatasetMeta(1);
 				var point = meta0.data[1];
@@ -98,6 +97,7 @@ describe('Core.Interaction', function() {
 			});
 
 			it ('returns empty array when nothing found', function() {
+				var chart = this.chart;
 				var evt = {
 					type: 'click',
 					chart: chart,
@@ -112,7 +112,6 @@ describe('Core.Interaction', function() {
 		});
 
 		describe ('intersect: false', function() {
-			var chart;
 			var data = {
 				datasets: [{
 					label: 'Dataset 1',
@@ -129,13 +128,14 @@ describe('Core.Interaction', function() {
 			};
 
 			beforeEach(function() {
-				chart = window.acquireChart({
+				this.chart = window.acquireChart({
 					type: 'line',
 					data: data
 				});
 			});
 
 			it ('axis: x gets correct items', function() {
+				var chart = this.chart;
 				var meta0 = chart.getDatasetMeta(0);
 				var meta1 = chart.getDatasetMeta(1);
 
@@ -152,7 +152,7 @@ describe('Core.Interaction', function() {
 			});
 
 			it ('axis: y gets correct items', function() {
-				chart = window.acquireChart({
+				var chart = window.acquireChart({
 					type: 'horizontalBar',
 					data: data
 				});
@@ -174,6 +174,7 @@ describe('Core.Interaction', function() {
 			});
 
 			it ('axis: xy gets correct items', function() {
+				var chart = this.chart;
 				var meta0 = chart.getDatasetMeta(0);
 				var meta1 = chart.getDatasetMeta(1);
 
@@ -193,10 +194,8 @@ describe('Core.Interaction', function() {
 
 	describe('dataset mode', function() {
 		describe('intersect: true', function() {
-			var chart;
-
 			beforeEach(function() {
-				chart = window.acquireChart({
+				this.chart = window.acquireChart({
 					type: 'line',
 					data: {
 						datasets: [{
@@ -216,6 +215,7 @@ describe('Core.Interaction', function() {
 			});
 
 			it ('should return all items in the dataset of the first item found', function() {
+				var chart = this.chart;
 				var meta = chart.getDatasetMeta(0);
 				var point = meta.data[1];
 
@@ -232,6 +232,7 @@ describe('Core.Interaction', function() {
 			});
 
 			it ('should return an empty array if nothing found', function() {
+				var chart = this.chart;
 				var evt = {
 					type: 'click',
 					chart: chart,
@@ -246,7 +247,6 @@ describe('Core.Interaction', function() {
 		});
 
 		describe('intersect: false', function() {
-			var chart;
 			var data = {
 				datasets: [{
 					label: 'Dataset 1',
@@ -263,14 +263,14 @@ describe('Core.Interaction', function() {
 			};
 
 			beforeEach(function() {
-				chart = window.acquireChart({
+				this.chart = window.acquireChart({
 					type: 'line',
 					data: data
 				});
 			});
 
 			it ('axis: x gets correct items', function() {
-				chart = window.acquireChart({
+				var chart = window.acquireChart({
 					type: 'horizontalBar',
 					data: data
 				});
@@ -290,6 +290,7 @@ describe('Core.Interaction', function() {
 			});
 
 			it ('axis: y gets correct items', function() {
+				var chart = this.chart;
 				var evt = {
 					type: 'click',
 					chart: chart,
@@ -305,6 +306,7 @@ describe('Core.Interaction', function() {
 			});
 
 			it ('axis: xy gets correct items', function() {
+				var chart = this.chart;
 				var evt = {
 					type: 'click',
 					chart: chart,
@@ -323,10 +325,8 @@ describe('Core.Interaction', function() {
 
 	describe('nearest mode', function() {
 		describe('intersect: false', function() {
-			var chart;
-
 			beforeEach(function() {
-				chart = window.acquireChart({
+				this.chart = window.acquireChart({
 					type: 'line',
 					data: {
 						datasets: [{
@@ -348,6 +348,7 @@ describe('Core.Interaction', function() {
 			});
 
 			it ('axis: xy should return the nearest item', function() {
+				var chart = this.chart;
 				var evt = {
 					type: 'click',
 					chart: chart,
@@ -363,7 +364,7 @@ describe('Core.Interaction', function() {
 			});
 
 			it ('should return the smallest item if more than 1 are at the same distance', function() {
-				// Trigger an event over top of the
+				var chart = this.chart;
 				var meta0 = chart.getDatasetMeta(0);
 				var meta1 = chart.getDatasetMeta(1);
 
@@ -387,6 +388,7 @@ describe('Core.Interaction', function() {
 			});
 
 			it ('should return the lowest dataset index if size and area are the same', function() {
+				var chart = this.chart;
 				// Make equal sized points at index: 1
 				chart.data.datasets[0].pointRadius[1] = 10;
 				chart.update();
@@ -416,10 +418,8 @@ describe('Core.Interaction', function() {
 		});
 
 		describe('intersect: true', function() {
-			var chart;
-
 			beforeEach(function() {
-				chart = window.acquireChart({
+				this.chart = window.acquireChart({
 					type: 'line',
 					data: {
 						datasets: [{
@@ -439,7 +439,7 @@ describe('Core.Interaction', function() {
 			});
 
 			it ('should return the nearest item', function() {
-				// Trigger an event over top of the
+				var chart = this.chart;
 				var meta = chart.getDatasetMeta(1);
 				var point = meta.data[1];
 
@@ -467,6 +467,7 @@ describe('Core.Interaction', function() {
 			});
 
 			it ('should return the nearest item even if 2 intersect', function() {
+				var chart = this.chart;
 				chart.data.datasets[0].pointRadius = [5, 30, 5];
 				chart.data.datasets[0].data[1] = 39;
 
@@ -494,6 +495,7 @@ describe('Core.Interaction', function() {
 			});
 
 			it ('should return the smallest item if more than 1 are at the same distance', function() {
+				var chart = this.chart;
 				chart.data.datasets[0].pointRadius = [5, 5, 5];
 				chart.data.datasets[0].data[1] = 40;
 
@@ -521,6 +523,7 @@ describe('Core.Interaction', function() {
 			});
 
 			it ('should return the item at the lowest dataset index if distance and area are the same', function() {
+				var chart = this.chart;
 				chart.data.datasets[0].pointRadius = [5, 10, 5];
 				chart.data.datasets[0].data[1] = 40;
 
@@ -551,10 +554,8 @@ describe('Core.Interaction', function() {
 	});
 
 	describe('x mode', function() {
-		var chart;
-
 		beforeEach(function() {
-			chart = window.acquireChart({
+			this.chart = window.acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -576,7 +577,7 @@ describe('Core.Interaction', function() {
 		});
 
 		it('should return items at the same x value when intersect is false', function() {
-			// Trigger an event over top of the
+			var chart = this.chart;
 			var meta0 = chart.getDatasetMeta(0);
 			var meta1 = chart.getDatasetMeta(1);
 
@@ -610,7 +611,7 @@ describe('Core.Interaction', function() {
 		});
 
 		it('should return items at the same x value when intersect is true', function() {
-			// Trigger an event over top of the
+			var chart = this.chart;
 			var meta0 = chart.getDatasetMeta(0);
 			var meta1 = chart.getDatasetMeta(1);
 
@@ -645,10 +646,8 @@ describe('Core.Interaction', function() {
 	});
 
 	describe('y mode', function() {
-		var chart;
-
 		beforeEach(function() {
-			chart = window.acquireChart({
+			this.chart = window.acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -670,7 +669,7 @@ describe('Core.Interaction', function() {
 		});
 
 		it('should return items at the same y value when intersect is false', function() {
-			// Trigger an event over top of the
+			var chart = this.chart;
 			var meta0 = chart.getDatasetMeta(0);
 			var meta1 = chart.getDatasetMeta(1);
 
@@ -704,7 +703,7 @@ describe('Core.Interaction', function() {
 		});
 
 		it('should return items at the same y value when intersect is true', function() {
-			// Trigger an event over top of the
+			var chart = this.chart;
 			var meta0 = chart.getDatasetMeta(0);
 			var meta1 = chart.getDatasetMeta(1);
 
