@@ -420,7 +420,8 @@ describe('Chart', function() {
 
 			waitForResize(chart, function() {
 				var resizer = wrapper.firstChild;
-				expect(resizer.tagName).toBe('IFRAME');
+				expect(resizer.className).toBe('chartjs-size-monitor');
+				expect(resizer.tagName).toBe('DIV');
 				expect(chart).toBeChartOfSize({
 					dw: 455, dh: 355,
 					rw: 455, rh: 355,
@@ -687,7 +688,8 @@ describe('Chart', function() {
 				var wrapper = chart.canvas.parentNode;
 				var resizer = wrapper.firstChild;
 				expect(wrapper.childNodes.length).toBe(2);
-				expect(resizer.tagName).toBe('IFRAME');
+				expect(resizer.className).toBe('chartjs-size-monitor');
+				expect(resizer.tagName).toBe('DIV');
 
 				chart.destroy();
 
