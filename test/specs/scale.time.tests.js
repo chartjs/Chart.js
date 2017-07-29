@@ -102,6 +102,7 @@ describe('Time scale tests', function() {
 				isoWeekday: false,
 				displayFormat: false,
 				minUnit: 'millisecond',
+				tooltipFormat: defaultConfig.time.tooltipFormat,
 				displayFormats: {
 					millisecond: 'h:mm:ss.SSS a', // 11:20:01.123 AM
 					second: 'h:mm:ss a', // 11:20:01 AM

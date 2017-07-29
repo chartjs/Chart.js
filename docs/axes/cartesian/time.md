@@ -36,7 +36,7 @@ The following options are provided by the time scale. You may also set options p
 | `time.min` | [Time](#date-formats) | | If defined, this will override the data minimum
 | `time.parser` | `String/Function` | | Custom parser for dates. [more...](#parser)
 | `time.round` | `String` | `false` | If defined, dates will be rounded to the start of this unit. See [Time Units](#time-units) below for the allowed units.
-| `time.tooltipFormat` | `String` | | The moment js format string to use for the tooltip.
+| `time.tooltipFormat` | `String/Function` | | The moment js format string to use for the tooltip. [more...](#tooltip-format)
 | `time.unit` | `String` | `false` | If defined, will force the unit to be a certain type. See [Time Units](#time-units) section below for details.
 | `time.stepSize` | `Number` | `1` | The number of units between grid lines.
 | `time.minUnit` | `String` | `'millisecond'` | The minimum display format to be used for a time unit.
@@ -147,6 +147,11 @@ The `ticks.source` property controls the ticks generation
 * `'labels'`: generates ticks from user given `data.labels` values ONLY
 
 ### Parser
-If this property is defined as a string, it is interpreted as a custom format to be used by moment to parse the date. 
+If this property is defined as a string, it is interpreted as a custom format to be used by Moment.js to parse the date. 
 
-If this is a function, it must return a moment.js object given the appropriate data value.
+If this is a function, it must return a Moment.js object given the appropriate data value.
+
+### Tooltip Format
+If this property is defined as a string, it is interpreted as a custom format to be used by Moment.js to format the date. 
+
+If this is a function, it must return a custom format to be used by Moment.js to format the date.
