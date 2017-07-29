@@ -8,6 +8,13 @@ module.exports = function(Chart) {
 	var noop = helpers.noop;
 
 	Chart.LinearScaleBase = Chart.Scale.extend({
+		getRightValue: function(value) {
+			if (typeof value === 'string') {
+				return +value;
+			}
+			return Chart.Scale.prototype.getRightValue.call(this, value);
+		},
+
 		handleTickRangeOptions: function() {
 			var me = this;
 			var opts = me.options;

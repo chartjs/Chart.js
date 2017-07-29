@@ -152,6 +152,12 @@ The `data` property of a dataset for a bar chart is specified as a an array of n
 data: [20, 10]
 ```
 
+You can also specify the dataset as x/y coordinates.
+
+```javascript
+data: [{x:'2016-12-25', y:20}, {'2016-12-26', y:10}]
+```
+
 # Stacked Bar Chart
 
 Bar charts can be configured into stacked bar charts by changing the settings on the X and Y axes to enable stacking. Stacked bar charts can be used to show how one data series is made up of a number of smaller pieces.
