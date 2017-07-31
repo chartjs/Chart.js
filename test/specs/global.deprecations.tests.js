@@ -277,8 +277,8 @@ describe('Deprecations', function() {
 					}
 				});
 
-				var ticks = chart.scales.time.ticks.map(function(tick) {
-					return tick.value;
+				var ticks = chart.scales.time.getTicks().map(function(tick) {
+					return tick.label;
 				});
 
 				expect(ticks).toEqual(['8PM', '10PM']);
