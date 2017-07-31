@@ -23,20 +23,23 @@ When providing data for the time scale, Chart.js supports all of the formats tha
 
 ## Configuration Options
 
-The following options are provided by the time scale. They are all located in the `time` sub options. These options extend the [common tick configuration](README.md#tick-configuration).
+The following options are provided by the time scale. You may also set options provided by the [common tick configuration](README.md#tick-configuration).
 
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
-| `displayFormats` | `Object` | | Sets how different time units are displayed. [more...](#display-formats)
-| `isoWeekday` | `Boolean` | `false` | If true and the unit is set to 'week', iso weekdays will be used.
-| `max` | [Time](#date-formats) | | If defined, this will override the data maximum
-| `min` | [Time](#date-formats) | | If defined, this will override the data minimum
-| `parser` | `String` or `Function` | | Custom parser for dates. [more...](#parser)
-| `round` | `String` | `false` | If defined, dates will be rounded to the start of this unit. See [Time Units](#time-units) below for the allowed units.
-| `tooltipFormat` | `String` | | The moment js format string to use for the tooltip.
-| `unit` | `String` | `false` | If defined, will force the unit to be a certain type. See [Time Units](#time-units) section below for details.
-| `stepSize` | `Number` | `1` | The number of units between grid lines.
-| `minUnit` | `String` | `'millisecond'` | The minimum display format to be used for a time unit.
+| `distribution` | `String` | `linear` | How data is plotted. [more...](#scale-distribution)
+| `bounds` | `String` | `data` | Determines the scale bounds. [more...](#scale-bounds)
+| `ticks.source` | `String` | `auto` | How ticks are generated. [more...](#ticks-source)
+| `time.displayFormats` | `Object` | | Sets how different time units are displayed. [more...](#display-formats)
+| `time.isoWeekday` | `Boolean` | `false` | If true and the unit is set to 'week', then the first day of the week will be Monday. Otherwise, it will be Sunday.
+| `time.max` | [Time](#date-formats) | | If defined, this will override the data maximum
+| `time.min` | [Time](#date-formats) | | If defined, this will override the data minimum
+| `time.parser` | `String` or `Function` | | Custom parser for dates. [more...](#parser)
+| `time.round` | `String` | `false` | If defined, dates will be rounded to the start of this unit. See [Time Units](#time-units) below for the allowed units.
+| `time.tooltipFormat` | `String` | | The moment js format string to use for the tooltip.
+| `time.unit` | `String` | `false` | If defined, will force the unit to be a certain type. See [Time Units](#time-units) section below for details.
+| `time.stepSize` | `Number` | `1` | The number of units between grid lines.
+| `time.minUnit` | `String` | `'millisecond'` | The minimum display format to be used for a time unit.
 
 ### Time Units
 
@@ -105,6 +108,43 @@ var chart = new Chart(ctx, {
     }
 })
 ```
+
+### Scale Distribution
+
+The `distribution` property controls the data distribution along the scale:
+
+  * `'linear'`: data are spread according to their time (distances can vary)
+  * `'series'`: data are spread at the same distance from each other
+
+```javascript
+var chart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+        scales: {
+            xAxes: [{
+                type: 'time',
+                distribution: 'series'
+            }]
+        }
+    }
+})
+```
+
+### Scale Bounds
+
+The `bounds` property controls the scale boundary strategy (bypassed by min/max time options)
+
+* `'data'`: make sure data are fully visible, labels outside are removed
+* `'ticks'`: make sure ticks are fully visible, data outside are truncated
+
+### Ticks Source
+
+The `ticks.source` property controls the ticks generation
+
+* `'auto'`: generates "optimal" ticks based on scale size and time options.
+* `'data'`: generates ticks from data (including labels from data `{t|x|y}` objects)
+* `'labels'`: generates ticks from user given `data.labels` values ONLY
 
 ### Parser
 If this property is defined as a string, it is interpreted as a custom format to be used by moment to parse the date. 
