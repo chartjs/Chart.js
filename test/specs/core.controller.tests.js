@@ -397,7 +397,7 @@ describe('Chart', function() {
 			});
 		});
 
-		it('should resize the canvas if attached to the DOM after construction', function(done) {
+		it('should resize the canvas when attached to a different parent', function(done) {
 			var canvas = document.createElement('canvas');
 			var wrapper = document.createElement('div');
 			var body = window.document.body;
