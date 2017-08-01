@@ -361,6 +361,15 @@ module.exports = function(Chart) {
 		 */
 		distribution: 'linear',
 
+		/**
+		 * Scale boundary strategy (bypassed by min/max time options)
+		 * - `data`: make sure data are fully visible, ticks outside are removed
+		 * - `ticks`: make sure ticks are fully visible, data outside are truncated
+		 * @see https://github.com/chartjs/Chart.js/pull/4556
+		 * @since 2.7.0
+		 */
+		bounds: 'data',
+
 		time: {
 			parser: false, // false == a pattern string from http://momentjs.com/docs/#/parsing/string-format/ or a custom callback that converts its argument to a moment
 			format: false, // DEPRECATED false == date objects, moment object, callback or a pattern string from http://momentjs.com/docs/#/parsing/string-format/
@@ -394,16 +403,7 @@ module.exports = function(Chart) {
 			 * @see https://github.com/chartjs/Chart.js/pull/4507
 			 * @since 2.7.0
 			 */
-			source: 'auto',
-
-			/**
-			 * Ticks boundary strategy (bypassed by min/max time options)
-			 * - `data`: make sure data are fully visible, labels outside are removed
-			 * - `labels`: make sure labels are fully visible, data outside are truncated
-			 * @see https://github.com/chartjs/Chart.js/pull/4556
-			 * @since 2.7.0
-			 */
-			bounds: 'data'
+			source: 'auto'
 		}
 	};
 
@@ -520,7 +520,6 @@ module.exports = function(Chart) {
 			var max = me.max;
 			var options = me.options;
 			var timeOpts = options.time;
-			var ticksOpts = options.ticks;
 			var formats = timeOpts.displayFormats;
 			var capacity = me.getLabelCapacity(min);
 			var unit = timeOpts.unit || determineUnit(timeOpts.minUnit, min, max, capacity);
@@ -529,7 +528,7 @@ module.exports = function(Chart) {
 			var ticks = [];
 			var i, ilen, timestamp;
 
-			switch (ticksOpts.source) {
+			switch (options.ticks.source) {
 			case 'data':
 				timestamps = me._timestamps.data;
 				break;
@@ -541,7 +540,7 @@ module.exports = function(Chart) {
 				timestamps = generate(min, max, unit, majorUnit, capacity, timeOpts);
 			}
 
-			if (ticksOpts.bounds === 'labels' && timestamps.length) {
+			if (options.bounds === 'ticks' && timestamps.length) {
 				min = timestamps[0];
 				max = timestamps[timestamps.length - 1];
 			}

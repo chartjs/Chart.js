@@ -77,6 +77,7 @@ describe('Time scale tests', function() {
 				labelString: '',
 				lineHeight: 1.2
 			},
+			bounds: 'data',
 			distribution: 'linear',
 			ticks: {
 				beginAtZero: false,
@@ -84,7 +85,6 @@ describe('Time scale tests', function() {
 				maxRotation: 50,
 				mirror: false,
 				source: 'auto',
-				bounds: 'data',
 				padding: 0,
 				reverse: false,
 				display: true,
@@ -137,7 +137,7 @@ describe('Time scale tests', function() {
 			scale.update(1000, 200);
 			var ticks = getTicksLabels(scale);
 
-			// `ticks.bounds === 'data'`: first and last ticks removed since outside the data range
+			// `bounds === 'data'`: first and last ticks removed since outside the data range
 			expect(ticks).toEqual(['Jan 2', 'Jan 3', 'Jan 4', 'Jan 5', 'Jan 6', 'Jan 7', 'Jan 8', 'Jan 9', 'Jan 10']);
 		});
 
@@ -149,7 +149,7 @@ describe('Time scale tests', function() {
 			scale.update(1000, 200);
 			var ticks = getTicksLabels(scale);
 
-			// `ticks.bounds === 'data'`: first and last ticks removed since outside the data range
+			// `bounds === 'data'`: first and last ticks removed since outside the data range
 			expect(ticks).toEqual(['Jan 2', 'Jan 3', 'Jan 4', 'Jan 5', 'Jan 6', 'Jan 7', 'Jan 8', 'Jan 9', 'Jan 10']);
 		});
 
@@ -198,7 +198,7 @@ describe('Time scale tests', function() {
 			xScale.update(800, 200);
 			var ticks = getTicksLabels(xScale);
 
-			// `ticks.bounds === 'data'`: first and last ticks removed since outside the data range
+			// `bounds === 'data'`: first and last ticks removed since outside the data range
 			expect(ticks).toEqual(['Jan 2', 'Jan 3', 'Jan 4', 'Jan 5', 'Jan 6', 'Jan 7', 'Jan 8', 'Jan 9', 'Jan 10']);
 		});
 
@@ -247,7 +247,7 @@ describe('Time scale tests', function() {
 			tScale.update(800, 200);
 			var ticks = getTicksLabels(tScale);
 
-			// `ticks.bounds === 'data'`: first and last ticks removed since outside the data range
+			// `bounds === 'data'`: first and last ticks removed since outside the data range
 			expect(ticks).toEqual(['Jan 2', 'Jan 3', 'Jan 4', 'Jan 5', 'Jan 6', 'Jan 7', 'Jan 8', 'Jan 9', 'Jan 10']);
 		});
 	});
@@ -314,11 +314,9 @@ describe('Time scale tests', function() {
 		};
 
 		var config = Chart.helpers.mergeIf({
+			bounds: 'ticks',
 			time: {
 				minUnit: 'day'
-			},
-			ticks: {
-				bounds: 'labels'
 			}
 		}, Chart.scaleService.getScaleDefaults('time'));
 
@@ -334,12 +332,10 @@ describe('Time scale tests', function() {
 		};
 
 		var config = Chart.helpers.mergeIf({
+			bounds: 'ticks',
 			time: {
 				unit: 'week',
 				round: 'week'
-			},
-			ticks: {
-				bounds: 'labels'
 			}
 		}, Chart.scaleService.getScaleDefaults('time'));
 
@@ -358,12 +354,10 @@ describe('Time scale tests', function() {
 			};
 
 			var config = Chart.helpers.mergeIf({
+				bounds: 'ticks',
 				time: {
 					unit: 'hour',
 					stepSize: 2
-				},
-				ticks: {
-					bounds: 'labels'
 				}
 			}, Chart.scaleService.getScaleDefaults('time'));
 
@@ -413,12 +407,10 @@ describe('Time scale tests', function() {
 		};
 
 		var config = Chart.helpers.mergeIf({
+			bounds: 'ticks',
 			time: {
 				unit: 'week',
 				isoWeekday: 3 // Wednesday
-			},
-			ticks: {
-				bounds: 'labels'
 			}
 		}, Chart.scaleService.getScaleDefaults('time'));
 
@@ -505,10 +497,8 @@ describe('Time scale tests', function() {
 						xAxes: [{
 							id: 'xScale0',
 							type: 'time',
-							position: 'bottom',
-							ticks: {
-								bounds: 'labels'
-							}
+							bounds: 'ticks',
+							position: 'bottom'
 						}],
 					}
 				}
@@ -943,7 +933,7 @@ describe('Time scale tests', function() {
 		});
 	});
 
-	describe('when ticks.bounds', function() {
+	describe('when bounds', function() {
 		describe('is "data"', function() {
 			it ('should preserve the data range', function() {
 				var chart = window.acquireChart({
@@ -957,12 +947,10 @@ describe('Time scale tests', function() {
 							xAxes: [{
 								id: 'x',
 								type: 'time',
+								bounds: 'data',
 								time: {
 									parser: 'MM/DD HH:mm',
 									unit: 'day'
-								},
-								ticks: {
-									bounds: 'data'
 								}
 							}],
 							yAxes: [{
@@ -996,12 +984,10 @@ describe('Time scale tests', function() {
 							xAxes: [{
 								id: 'x',
 								type: 'time',
+								bounds: 'ticks',
 								time: {
 									parser: 'MM/DD HH:mm',
 									unit: 'day'
-								},
-								ticks: {
-									bounds: 'labels'
 								}
 							}],
 							yAxes: [{
@@ -1026,8 +1012,8 @@ describe('Time scale tests', function() {
 
 	describe('when time.min and/or time.max are defined', function() {
 		['auto', 'data', 'labels'].forEach(function(source) {
-			['data', 'labels'].forEach(function(bounds) {
-				describe('and source is "' + source + '" and bounds "' + bounds + '"', function() {
+			['data', 'ticks'].forEach(function(bounds) {
+				describe('and ticks.source is "' + source + '" and bounds "' + bounds + '"', function() {
 					beforeEach(function() {
 						this.chart = window.acquireChart({
 							type: 'line',
@@ -1040,13 +1026,13 @@ describe('Time scale tests', function() {
 									xAxes: [{
 										id: 'x',
 										type: 'time',
+										bounds: bounds,
 										time: {
 											parser: 'MM/DD HH:mm',
 											unit: 'day'
 										},
 										ticks: {
-											source: source,
-											bounds: bounds
+											source: source
 										}
 									}],
 									yAxes: [{
