@@ -60,6 +60,8 @@ plugins.push(
 
 Chart.plugins.register(plugins);
 
+Chart.platform.initialize();
+
 module.exports = Chart;
 if (typeof window !== 'undefined') {
 	window.Chart = Chart;
