@@ -420,8 +420,10 @@ module.exports = function(Chart) {
 
 		// Args are: (tooltipItem, data)
 		getBeforeBody: function() {
-			var lines = splitNewlines(this._options.callbacks.beforeBody.apply(this, arguments));
-			return helpers.isArray(lines) ? lines : lines !== undefined ? [lines] : [];
+			var lines = [];
+			lines = pushOrConcat(lines, splitNewlines(this._options.callbacks.beforeBody.apply(this, arguments)));
+
+			return lines;
 		},
 
 		// Args are: (tooltipItem, data)
@@ -448,8 +450,10 @@ module.exports = function(Chart) {
 
 		// Args are: (tooltipItem, data)
 		getAfterBody: function() {
-			var lines = splitNewlines(this._options.callbacks.afterBody.apply(this, arguments));
-			return helpers.isArray(lines) ? lines : lines !== undefined ? [lines] : [];
+			var lines = [];
+			lines = pushOrConcat(lines, splitNewlines(this._options.callbacks.afterBody.apply(this, arguments)));
+
+			return lines;
 		},
 
 		// Get the footer and beforeFooter and afterFooter lines
