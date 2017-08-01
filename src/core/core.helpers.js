@@ -500,6 +500,10 @@ module.exports = function(Chart) {
 	};
 	helpers.getMaximumWidth = function(domNode) {
 		var container = domNode.parentNode;
+		if (!container) {
+			return domNode.clientWidth;
+		}
+
 		var paddingLeft = parseInt(helpers.getStyle(container, 'padding-left'), 10);
 		var paddingRight = parseInt(helpers.getStyle(container, 'padding-right'), 10);
 		var w = container.clientWidth - paddingLeft - paddingRight;
@@ -508,6 +512,10 @@ module.exports = function(Chart) {
 	};
 	helpers.getMaximumHeight = function(domNode) {
 		var container = domNode.parentNode;
+		if (!container) {
+			return domNode.clientHeight;
+		}
+
 		var paddingTop = parseInt(helpers.getStyle(container, 'padding-top'), 10);
 		var paddingBottom = parseInt(helpers.getStyle(container, 'padding-bottom'), 10);
 		var h = container.clientHeight - paddingTop - paddingBottom;

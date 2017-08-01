@@ -6,19 +6,21 @@
 
 var helpers = require('../helpers/index');
 
+var EXPANDO_KEY = '$chartjs';
+var CSS_PREFIX = 'chartjs-';
+var CSS_RENDER_MONITOR = CSS_PREFIX + 'render-monitor';
+var CSS_RENDER_ANIMATION = CSS_PREFIX + 'render-animation';
+var ANIMATION_START_EVENTS = ['animationstart', 'webkitAnimationStart'];
+
 /**
  * DOM event types -> Chart.js event types.
  * Note: only events with different types are mapped.
  * @see https://developer.mozilla.org/en-US/docs/Web/Events
  */
-
-var eventTypeMap = {
-	// Touch events
+var EVENT_TYPES = {
 	touchstart: 'mousedown',
 	touchmove: 'mousemove',
 	touchend: 'mouseup',
-
-	// Pointer events
 	pointerenter: 'mouseenter',
 	pointerdown: 'mousedown',
 	pointermove: 'mousemove',
@@ -56,7 +58,7 @@ function initCanvas(canvas, config) {
 	var renderWidth = canvas.getAttribute('width');
 
 	// Chart.js modifies some canvas values that we want to restore on destroy
-	canvas._chartjs = {
+	canvas[EXPANDO_KEY] = {
 		initial: {
 			height: renderHeight,
 			width: renderWidth,
@@ -140,9 +142,27 @@ function createEvent(type, chart, x, y, nativeEvent) {
 }
 
 function fromNativeEvent(event, chart) {
-	var type = eventTypeMap[event.type] || event.type;
+	var type = EVENT_TYPES[event.type] || event.type;
 	var pos = helpers.getRelativePosition(event, chart);
 	return createEvent(type, chart, pos.x, pos.y, event);
+}
+
+function throttled(fn, thisArg) {
+	var ticking = false;
+	var args = [];
+
+	return function() {
+		args = Array.prototype.slice.call(arguments);
+		thisArg = thisArg || this;
+
+		if (!ticking) {
+			ticking = true;
+			helpers.requestAnimFrame.call(window, function() {
+				ticking = false;
+				fn.apply(thisArg, args);
+			});
+		}
+	};
 }
 
 function createResizer(handler) {
@@ -176,7 +196,6 @@ function createResizer(handler) {
 	// https://github.com/chartjs/Chart.js/issues/3521
 	addEventListener(iframe, 'load', function() {
 		addEventListener(iframe.contentWindow || iframe, 'resize', handler);
-
 		// The iframe size might have changed while loading, which can also
 		// happen if the size has been changed while detached from the DOM.
 		handler();
@@ -185,45 +204,100 @@ function createResizer(handler) {
 	return iframe;
 }
 
-function addResizeListener(node, listener, chart) {
-	var stub = node._chartjs = {
-		ticking: false
-	};
-
-	// Throttle the callback notification until the next animation frame.
-	var notify = function() {
-		if (!stub.ticking) {
-			stub.ticking = true;
-			helpers.requestAnimFrame.call(window, function() {
-				if (stub.resizer) {
-					stub.ticking = false;
-					return listener(createEvent('resize', chart));
-				}
-			});
+// https://davidwalsh.name/detect-node-insertion
+function watchForRender(node, handler) {
+	var expando = node[EXPANDO_KEY] || (node[EXPANDO_KEY] = {});
+	var proxy = expando.renderProxy = function(e) {
+		if (e.animationName === CSS_RENDER_ANIMATION) {
+			handler();
 		}
 	};
 
-	// Let's keep track of this added iframe and thus avoid DOM query when removing it.
-	stub.resizer = createResizer(notify);
+	helpers.each(ANIMATION_START_EVENTS, function(type) {
+		addEventListener(node, type, proxy);
+	});
 
-	node.insertBefore(stub.resizer, node.firstChild);
+	node.classList.add(CSS_RENDER_MONITOR);
+}
+
+function unwatchForRender(node) {
+	var expando = node[EXPANDO_KEY] || {};
+	var proxy = expando.renderProxy;
+
+	if (proxy) {
+		helpers.each(ANIMATION_START_EVENTS, function(type) {
+			removeEventListener(node, type, proxy);
+		});
+
+		delete expando.renderProxy;
+	}
+
+	node.classList.remove(CSS_RENDER_MONITOR);
+}
+
+function addResizeListener(node, listener, chart) {
+	var expando = node[EXPANDO_KEY] || (node[EXPANDO_KEY] = {});
+
+	// Let's keep track of this added resizer and thus avoid DOM query when removing it.
+	var resizer = expando.resizer = createResizer(throttled(function() {
+		if (expando.resizer) {
+			return listener(createEvent('resize', chart));
+		}
+	}));
+
+	// The resizer needs to be attached to the node parent, so we first need to be
+	// sure that `node` is attached to the DOM before injecting the resizer element.
+	watchForRender(node, function() {
+		if (expando.resizer) {
+			var container = node.parentNode;
+			if (container && container !== resizer.parentNode) {
+				container.insertBefore(resizer, container.firstChild);
+			}
+		}
+	});
 }
 
 function removeResizeListener(node) {
-	if (!node || !node._chartjs) {
-		return;
-	}
+	var expando = node[EXPANDO_KEY] || {};
+	var resizer = expando.resizer;
 
-	var resizer = node._chartjs.resizer;
-	if (resizer) {
+	delete expando.resizer;
+	unwatchForRender(node);
+
+	if (resizer && resizer.parentNode) {
 		resizer.parentNode.removeChild(resizer);
-		node._chartjs.resizer = null;
+	}
+}
+
+function injectCSS(platform, css) {
+	// http://stackoverflow.com/q/3922139
+	var style = platform._style || document.createElement('style');
+	if (!platform._style) {
+		platform._style = style;
+		css = '/* Chart.js */\n' + css;
+		style.setAttribute('type', 'text/css');
+		document.getElementsByTagName('head')[0].appendChild(style);
 	}
 
-	delete node._chartjs;
+	style.appendChild(document.createTextNode(css));
 }
 
 module.exports = {
+	initialize: function() {
+		var keyframes = 'from{opacity:0.99}to{opacity:1}';
+
+		injectCSS(this,
+			// DOM rendering detection
+			// https://davidwalsh.name/detect-node-insertion
+			'@-webkit-keyframes ' + CSS_RENDER_ANIMATION + '{' + keyframes + '}' +
+			'@keyframes ' + CSS_RENDER_ANIMATION + '{' + keyframes + '}' +
+			'.' + CSS_RENDER_MONITOR + '{' +
+				'-webkit-animation:' + CSS_RENDER_ANIMATION + ' 0.001s;' +
+				'animation:' + CSS_RENDER_ANIMATION + ' 0.001s;' +
+			'}'
+		);
+	},
+
 	acquireContext: function(item, config) {
 		if (typeof item === 'string') {
 			item = document.getElementById(item);
@@ -259,11 +333,11 @@ module.exports = {
 
 	releaseContext: function(context) {
 		var canvas = context.canvas;
-		if (!canvas._chartjs) {
+		if (!canvas[EXPANDO_KEY]) {
 			return;
 		}
 
-		var initial = canvas._chartjs.initial;
+		var initial = canvas[EXPANDO_KEY].initial;
 		['height', 'width'].forEach(function(prop) {
 			var value = initial[prop];
 			if (helpers.isNullOrUndef(value)) {
@@ -283,19 +357,19 @@ module.exports = {
 		// https://www.w3.org/TR/2011/WD-html5-20110525/the-canvas-element.html
 		canvas.width = canvas.width;
 
-		delete canvas._chartjs;
+		delete canvas[EXPANDO_KEY];
 	},
 
 	addEventListener: function(chart, type, listener) {
 		var canvas = chart.canvas;
 		if (type === 'resize') {
 			// Note: the resize event is not supported on all browsers.
-			addResizeListener(canvas.parentNode, listener, chart);
+			addResizeListener(canvas, listener, chart);
 			return;
 		}
 
-		var stub = listener._chartjs || (listener._chartjs = {});
-		var proxies = stub.proxies || (stub.proxies = {});
+		var expando = listener[EXPANDO_KEY] || (listener[EXPANDO_KEY] = {});
+		var proxies = expando.proxies || (expando.proxies = {});
 		var proxy = proxies[chart.id + '_' + type] = function(event) {
 			listener(fromNativeEvent(event, chart));
 		};
@@ -307,12 +381,12 @@ module.exports = {
 		var canvas = chart.canvas;
 		if (type === 'resize') {
 			// Note: the resize event is not supported on all browsers.
-			removeResizeListener(canvas.parentNode, listener);
+			removeResizeListener(canvas, listener);
 			return;
 		}
 
-		var stub = listener._chartjs || {};
-		var proxies = stub.proxies || {};
+		var expando = listener[EXPANDO_KEY] || {};
+		var proxies = expando.proxies || {};
 		var proxy = proxies[chart.id + '_' + type];
 		if (!proxy) {
 			return;
