@@ -102,11 +102,11 @@ function initCanvas(canvas, config) {
  * https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Safely_detecting_option_support
  * @private
  */
-var supportsEventListenerOptions = (function() {
+var supportsEventListenerOptions = (function () {
 	var supports = false;
 	try {
 		var options = Object.defineProperty({}, 'passive', {
-			get: function() {
+			get: function () {
 				supports = true;
 			}
 		});
@@ -174,7 +174,7 @@ function createResizer(handler) {
 	// If the iframe is re-attached to the DOM, the resize listener is removed because the
 	// content is reloaded, so make sure to install the handler after the iframe is loaded.
 	// https://github.com/chartjs/Chart.js/issues/3521
-	addEventListener(iframe, 'load', function() {
+	addEventListener(iframe, 'load', function () {
 		addEventListener(iframe.contentWindow || iframe, 'resize', handler);
 
 		// The iframe size might have changed while loading, which can also
@@ -191,15 +191,17 @@ function addResizeListener(node, listener, chart) {
 	};
 
 	// Throttle the callback notification until the next animation frame.
-	var notify = function() {
+	var notify = function () {
 		if (!stub.ticking) {
 			stub.ticking = true;
-			helpers.requestAnimFrame.call(window, function() {
-				if (stub.resizer) {
-					stub.ticking = false;
-					return listener(createEvent('resize', chart));
-				}
-			});
+			var run = function () {
+				stub.ticking = false;
+				return listener(createEvent('resize', chart));
+			};
+			if (chart.options.animation.animateResize)
+				helpers.requestAnimFrame.call(window, run);
+			else
+				window.setTimeout(run, 0);
 		}
 	};
 
@@ -224,7 +226,7 @@ function removeResizeListener(node) {
 }
 
 module.exports = {
-	acquireContext: function(item, config) {
+	acquireContext: function (item, config) {
 		if (typeof item === 'string') {
 			item = document.getElementById(item);
 		} else if (item.length) {
@@ -257,14 +259,14 @@ module.exports = {
 		return null;
 	},
 
-	releaseContext: function(context) {
+	releaseContext: function (context) {
 		var canvas = context.canvas;
 		if (!canvas._chartjs) {
 			return;
 		}
 
 		var initial = canvas._chartjs.initial;
-		['height', 'width'].forEach(function(prop) {
+		['height', 'width'].forEach(function (prop) {
 			var value = initial[prop];
 			if (helpers.isNullOrUndef(value)) {
 				canvas.removeAttribute(prop);
@@ -273,7 +275,7 @@ module.exports = {
 			}
 		});
 
-		helpers.each(initial.style || {}, function(value, key) {
+		helpers.each(initial.style || {}, function (value, key) {
 			canvas.style[key] = value;
 		});
 
@@ -286,7 +288,7 @@ module.exports = {
 		delete canvas._chartjs;
 	},
 
-	addEventListener: function(chart, type, listener) {
+	addEventListener: function (chart, type, listener) {
 		var canvas = chart.canvas;
 		if (type === 'resize') {
 			// Note: the resize event is not supported on all browsers.
@@ -296,14 +298,14 @@ module.exports = {
 
 		var stub = listener._chartjs || (listener._chartjs = {});
 		var proxies = stub.proxies || (stub.proxies = {});
-		var proxy = proxies[chart.id + '_' + type] = function(event) {
+		var proxy = proxies[chart.id + '_' + type] = function (event) {
 			listener(fromNativeEvent(event, chart));
 		};
 
 		addEventListener(canvas, type, proxy);
 	},
 
-	removeEventListener: function(chart, type, listener) {
+	removeEventListener: function (chart, type, listener) {
 		var canvas = chart.canvas;
 		if (type === 'resize') {
 			// Note: the resize event is not supported on all browsers.

@@ -6,12 +6,12 @@ var color = require('chartjs-color');
 var defaults = require('./core.defaults');
 var helpers = require('../helpers/index');
 
-module.exports = function(Chart) {
+module.exports = function (Chart) {
 
 	// -- Basic js utility methods
 
-	helpers.extend = function(base) {
-		var setFn = function(value, key) {
+	helpers.extend = function (base) {
+		var setFn = function (value, key) {
 			base[key] = value;
 		};
 		for (var i = 1, ilen = arguments.length; i < ilen; i++) {
@@ -20,9 +20,9 @@ module.exports = function(Chart) {
 		return base;
 	};
 
-	helpers.configMerge = function(/* objects ... */) {
+	helpers.configMerge = function (/* objects ... */) {
 		return helpers.merge(helpers.clone(arguments[0]), [].slice.call(arguments, 1), {
-			merger: function(key, target, source, options) {
+			merger: function (key, target, source, options) {
 				var tval = target[key] || {};
 				var sval = source[key];
 
@@ -39,9 +39,9 @@ module.exports = function(Chart) {
 		});
 	};
 
-	helpers.scaleMerge = function(/* objects ... */) {
+	helpers.scaleMerge = function (/* objects ... */) {
 		return helpers.merge(helpers.clone(arguments[0]), [].slice.call(arguments, 1), {
-			merger: function(key, target, source, options) {
+			merger: function (key, target, source, options) {
 				if (key === 'xAxes' || key === 'yAxes') {
 					var slen = source[key].length;
 					var i, type, scale;
@@ -74,13 +74,13 @@ module.exports = function(Chart) {
 		});
 	};
 
-	helpers.where = function(collection, filterCallback) {
+	helpers.where = function (collection, filterCallback) {
 		if (helpers.isArray(collection) && Array.prototype.filter) {
 			return collection.filter(filterCallback);
 		}
 		var filtered = [];
 
-		helpers.each(collection, function(item) {
+		helpers.each(collection, function (item) {
 			if (filterCallback(item)) {
 				filtered.push(item);
 			}
@@ -89,10 +89,10 @@ module.exports = function(Chart) {
 		return filtered;
 	};
 	helpers.findIndex = Array.prototype.findIndex ?
-		function(array, callback, scope) {
+		function (array, callback, scope) {
 			return array.findIndex(callback, scope);
 		} :
-		function(array, callback, scope) {
+		function (array, callback, scope) {
 			scope = scope === undefined ? array : scope;
 			for (var i = 0, ilen = array.length; i < ilen; ++i) {
 				if (callback.call(scope, array[i], i, array)) {
@@ -101,7 +101,7 @@ module.exports = function(Chart) {
 			}
 			return -1;
 		};
-	helpers.findNextWhere = function(arrayToSearch, filterCallback, startIndex) {
+	helpers.findNextWhere = function (arrayToSearch, filterCallback, startIndex) {
 		// Default to start of the array
 		if (helpers.isNullOrUndef(startIndex)) {
 			startIndex = -1;
@@ -113,7 +113,7 @@ module.exports = function(Chart) {
 			}
 		}
 	};
-	helpers.findPreviousWhere = function(arrayToSearch, filterCallback, startIndex) {
+	helpers.findPreviousWhere = function (arrayToSearch, filterCallback, startIndex) {
 		// Default to end of the array
 		if (helpers.isNullOrUndef(startIndex)) {
 			startIndex = arrayToSearch.length;
@@ -125,14 +125,14 @@ module.exports = function(Chart) {
 			}
 		}
 	};
-	helpers.inherits = function(extensions) {
+	helpers.inherits = function (extensions) {
 		// Basic javascript inheritance based on the model created in Backbone.js
 		var me = this;
-		var ChartElement = (extensions && extensions.hasOwnProperty('constructor')) ? extensions.constructor : function() {
+		var ChartElement = (extensions && extensions.hasOwnProperty('constructor')) ? extensions.constructor : function () {
 			return me.apply(this, arguments);
 		};
 
-		var Surrogate = function() {
+		var Surrogate = function () {
 			this.constructor = ChartElement;
 		};
 		Surrogate.prototype = me.prototype;
@@ -149,26 +149,26 @@ module.exports = function(Chart) {
 		return ChartElement;
 	};
 	// -- Math methods
-	helpers.isNumber = function(n) {
+	helpers.isNumber = function (n) {
 		return !isNaN(parseFloat(n)) && isFinite(n);
 	};
-	helpers.almostEquals = function(x, y, epsilon) {
+	helpers.almostEquals = function (x, y, epsilon) {
 		return Math.abs(x - y) < epsilon;
 	};
-	helpers.almostWhole = function(x, epsilon) {
+	helpers.almostWhole = function (x, epsilon) {
 		var rounded = Math.round(x);
 		return (((rounded - epsilon) < x) && ((rounded + epsilon) > x));
 	};
-	helpers.max = function(array) {
-		return array.reduce(function(max, value) {
+	helpers.max = function (array) {
+		return array.reduce(function (max, value) {
 			if (!isNaN(value)) {
 				return Math.max(max, value);
 			}
 			return max;
 		}, Number.NEGATIVE_INFINITY);
 	};
-	helpers.min = function(array) {
-		return array.reduce(function(min, value) {
+	helpers.min = function (array) {
+		return array.reduce(function (min, value) {
 			if (!isNaN(value)) {
 				return Math.min(min, value);
 			}
@@ -176,10 +176,10 @@ module.exports = function(Chart) {
 		}, Number.POSITIVE_INFINITY);
 	};
 	helpers.sign = Math.sign ?
-		function(x) {
+		function (x) {
 			return Math.sign(x);
 		} :
-		function(x) {
+		function (x) {
 			x = +x; // convert to a number
 			if (x === 0 || isNaN(x)) {
 				return x;
@@ -187,20 +187,20 @@ module.exports = function(Chart) {
 			return x > 0 ? 1 : -1;
 		};
 	helpers.log10 = Math.log10 ?
-		function(x) {
+		function (x) {
 			return Math.log10(x);
 		} :
-		function(x) {
+		function (x) {
 			return Math.log(x) / Math.LN10;
 		};
-	helpers.toRadians = function(degrees) {
+	helpers.toRadians = function (degrees) {
 		return degrees * (Math.PI / 180);
 	};
-	helpers.toDegrees = function(radians) {
+	helpers.toDegrees = function (radians) {
 		return radians * (180 / Math.PI);
 	};
 	// Gets the angle from vertical upright to the point about a centre.
-	helpers.getAngleFromPoint = function(centrePoint, anglePoint) {
+	helpers.getAngleFromPoint = function (centrePoint, anglePoint) {
 		var distanceFromXCenter = anglePoint.x - centrePoint.x,
 			distanceFromYCenter = anglePoint.y - centrePoint.y,
 			radialDistanceFromCenter = Math.sqrt(distanceFromXCenter * distanceFromXCenter + distanceFromYCenter * distanceFromYCenter);
@@ -216,13 +216,13 @@ module.exports = function(Chart) {
 			distance: radialDistanceFromCenter
 		};
 	};
-	helpers.distanceBetweenPoints = function(pt1, pt2) {
+	helpers.distanceBetweenPoints = function (pt1, pt2) {
 		return Math.sqrt(Math.pow(pt2.x - pt1.x, 2) + Math.pow(pt2.y - pt1.y, 2));
 	};
-	helpers.aliasPixel = function(pixelWidth) {
+	helpers.aliasPixel = function (pixelWidth) {
 		return (pixelWidth % 2 === 0) ? 0 : 0.5;
 	};
-	helpers.splineCurve = function(firstPoint, middlePoint, afterPoint, t) {
+	helpers.splineCurve = function (firstPoint, middlePoint, afterPoint, t) {
 		// Props to Rob Spencer at scaled innovation for his post on splining between points
 		// http://scaledinnovation.com/analytics/splines/aboutSplines.html
 
@@ -257,13 +257,13 @@ module.exports = function(Chart) {
 		};
 	};
 	helpers.EPSILON = Number.EPSILON || 1e-14;
-	helpers.splineCurveMonotone = function(points) {
+	helpers.splineCurveMonotone = function (points) {
 		// This function calculates Bézier control points in a similar way than |splineCurve|,
 		// but preserves monotonicity of the provided data and ensures no local extremums are added
 		// between the dataset discrete points due to the interpolation.
 		// See : https://en.wikipedia.org/wiki/Monotone_cubic_interpolation
 
-		var pointsWithTangents = (points || []).map(function(point) {
+		var pointsWithTangents = (points || []).map(function (point) {
 			return {
 				model: point._model,
 				deltaK: 0,
@@ -348,20 +348,20 @@ module.exports = function(Chart) {
 			}
 		}
 	};
-	helpers.nextItem = function(collection, index, loop) {
+	helpers.nextItem = function (collection, index, loop) {
 		if (loop) {
 			return index >= collection.length - 1 ? collection[0] : collection[index + 1];
 		}
 		return index >= collection.length - 1 ? collection[collection.length - 1] : collection[index + 1];
 	};
-	helpers.previousItem = function(collection, index, loop) {
+	helpers.previousItem = function (collection, index, loop) {
 		if (loop) {
 			return index <= 0 ? collection[collection.length - 1] : collection[index - 1];
 		}
 		return index <= 0 ? collection[0] : collection[index - 1];
 	};
 	// Implementation of the nice number algorithm used in determining where axis labels will go
-	helpers.niceNum = function(range, round) {
+	helpers.niceNum = function (range, round) {
 		var exponent = Math.floor(helpers.log10(range));
 		var fraction = range / Math.pow(10, exponent);
 		var niceFraction;
@@ -389,9 +389,9 @@ module.exports = function(Chart) {
 		return niceFraction * Math.pow(10, exponent);
 	};
 	// Request animation polyfill - http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
-	helpers.requestAnimFrame = (function() {
+	helpers.requestAnimFrame = (function () {
 		if (typeof window === 'undefined') {
-			return function(callback) {
+			return function (callback) {
 				callback();
 			};
 		}
@@ -400,12 +400,12 @@ module.exports = function(Chart) {
 			window.mozRequestAnimationFrame ||
 			window.oRequestAnimationFrame ||
 			window.msRequestAnimationFrame ||
-			function(callback) {
+			function (callback) {
 				return window.setTimeout(callback, 1000 / 60);
 			};
 	}());
 	// -- DOM methods
-	helpers.getRelativePosition = function(evt, chart) {
+	helpers.getRelativePosition = function (evt, chart) {
 		var mouseX, mouseY;
 		var e = evt.originalEvent || evt,
 			canvas = evt.currentTarget || evt.srcElement,
@@ -490,15 +490,16 @@ module.exports = function(Chart) {
 
 		return 'none';
 	}
+
 	// returns Number or undefined if no constraint
-	helpers.getConstraintWidth = function(domNode) {
+	helpers.getConstraintWidth = function (domNode) {
 		return getConstraintDimension(domNode, 'max-width', 'clientWidth');
 	};
 	// returns Number or undefined if no constraint
-	helpers.getConstraintHeight = function(domNode) {
+	helpers.getConstraintHeight = function (domNode) {
 		return getConstraintDimension(domNode, 'max-height', 'clientHeight');
 	};
-	helpers.getMaximumWidth = function(domNode) {
+	helpers.getMaximumWidth = function (domNode) {
 		var container = domNode.parentNode;
 		var paddingLeft = parseInt(helpers.getStyle(container, 'padding-left'), 10);
 		var paddingRight = parseInt(helpers.getStyle(container, 'padding-right'), 10);
@@ -506,7 +507,7 @@ module.exports = function(Chart) {
 		var cw = helpers.getConstraintWidth(domNode);
 		return isNaN(cw) ? w : Math.min(w, cw);
 	};
-	helpers.getMaximumHeight = function(domNode) {
+	helpers.getMaximumHeight = function (domNode) {
 		var container = domNode.parentNode;
 		var paddingTop = parseInt(helpers.getStyle(container, 'padding-top'), 10);
 		var paddingBottom = parseInt(helpers.getStyle(container, 'padding-bottom'), 10);
@@ -514,12 +515,12 @@ module.exports = function(Chart) {
 		var ch = helpers.getConstraintHeight(domNode);
 		return isNaN(ch) ? h : Math.min(h, ch);
 	};
-	helpers.getStyle = function(el, property) {
+	helpers.getStyle = function (el, property) {
 		return el.currentStyle ?
 			el.currentStyle[property] :
 			document.defaultView.getComputedStyle(el, null).getPropertyValue(property);
 	};
-	helpers.retinaScale = function(chart, forceRatio) {
+	helpers.retinaScale = function (chart, forceRatio) {
 		var pixelRatio = chart.currentDevicePixelRatio = forceRatio || window.devicePixelRatio || 1;
 		if (pixelRatio === 1) {
 			return;
@@ -540,10 +541,10 @@ module.exports = function(Chart) {
 		canvas.style.width = width + 'px';
 	};
 	// -- Canvas methods
-	helpers.fontString = function(pixelSize, fontStyle, fontFamily) {
+	helpers.fontString = function (pixelSize, fontStyle, fontFamily) {
 		return fontStyle + ' ' + pixelSize + 'px ' + fontFamily;
 	};
-	helpers.longestText = function(ctx, font, arrayOfThings, cache) {
+	helpers.longestText = function (ctx, font, arrayOfThings, cache) {
 		cache = cache || {};
 		var data = cache.data = cache.data || {};
 		var gc = cache.garbageCollect = cache.garbageCollect || [];
@@ -556,14 +557,14 @@ module.exports = function(Chart) {
 
 		ctx.font = font;
 		var longest = 0;
-		helpers.each(arrayOfThings, function(thing) {
+		helpers.each(arrayOfThings, function (thing) {
 			// Undefined strings and arrays should not be measured
 			if (thing !== undefined && thing !== null && helpers.isArray(thing) !== true) {
 				longest = helpers.measureText(ctx, data, gc, longest, thing);
 			} else if (helpers.isArray(thing)) {
 				// if it is an array lets measure each element
 				// to do maybe simplify this function a bit so we can do this more recursively?
-				helpers.each(thing, function(nestedThing) {
+				helpers.each(thing, function (nestedThing) {
 					// Undefined strings and arrays should not be measured
 					if (nestedThing !== undefined && nestedThing !== null && !helpers.isArray(nestedThing)) {
 						longest = helpers.measureText(ctx, data, gc, longest, nestedThing);
@@ -581,7 +582,7 @@ module.exports = function(Chart) {
 		}
 		return longest;
 	};
-	helpers.measureText = function(ctx, data, gc, longest, string) {
+	helpers.measureText = function (ctx, data, gc, longest, string) {
 		var textWidth = data[string];
 		if (!textWidth) {
 			textWidth = data[string] = ctx.measureText(string).width;
@@ -592,9 +593,9 @@ module.exports = function(Chart) {
 		}
 		return longest;
 	};
-	helpers.numberOfLabelLines = function(arrayOfThings) {
+	helpers.numberOfLabelLines = function (arrayOfThings) {
 		var numberOfLines = 1;
-		helpers.each(arrayOfThings, function(thing) {
+		helpers.each(arrayOfThings, function (thing) {
 			if (helpers.isArray(thing)) {
 				if (thing.length > numberOfLines) {
 					numberOfLines = thing.length;
@@ -605,11 +606,11 @@ module.exports = function(Chart) {
 	};
 
 	helpers.color = !color ?
-		function(value) {
+		function (value) {
 			console.error('Color.js not found!');
 			return value;
 		} :
-		function(value) {
+		function (value) {
 			/* global CanvasGradient */
 			if (value instanceof CanvasGradient) {
 				value = defaults.global.defaultColor;
@@ -618,7 +619,7 @@ module.exports = function(Chart) {
 			return color(value);
 		};
 
-	helpers.getHoverColor = function(colorValue) {
+	helpers.getHoverColor = function (colorValue) {
 		/* global CanvasPattern */
 		return (colorValue instanceof CanvasPattern) ?
 			colorValue :
