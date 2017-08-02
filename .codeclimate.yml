@@ -8,7 +8,7 @@ engines:
     - "samples/samples.js"
   eslint:
     enabled: true
-    channel: "eslint-3"
+    channel: "eslint-4"
   fixme:
     enabled: true
 ratings:
