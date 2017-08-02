@@ -13,6 +13,11 @@ var implementation = require('./platform.dom');
  */
 module.exports = helpers.extend({
 	/**
+	 * @since 2.7.0
+	 */
+	initialize: function() {},
+
+	/**
 	 * Called at chart construction time, returns a context2d instance implementing
 	 * the [W3C Canvas 2D Context API standard]{@link https://www.w3.org/TR/2dcontext/}.
 	 * @param {*} item - The native item from which to acquire context (platform specific)

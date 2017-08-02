@@ -265,20 +265,18 @@ describe('Deprecations', function() {
 							xAxes: [{
 								id: 'time',
 								type: 'time',
+								bounds: 'ticks',
 								time: {
 									unit: 'hour',
 									unitStepSize: 2
-								},
-								ticks: {
-									bounds: 'labels'
 								}
 							}]
 						}
 					}
 				});
 
-				var ticks = chart.scales.time.ticks.map(function(tick) {
-					return tick.value;
+				var ticks = chart.scales.time.getTicks().map(function(tick) {
+					return tick.label;
 				});
 
 				expect(ticks).toEqual(['8PM', '10PM']);

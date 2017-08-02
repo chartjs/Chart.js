@@ -47,6 +47,10 @@ describe('Core.Tooltip', function() {
 				options: {
 					tooltips: {
 						mode: 'index',
+						intersect: false,
+					},
+					hover: {
+						mode: 'index',
 						intersect: false
 					}
 				}

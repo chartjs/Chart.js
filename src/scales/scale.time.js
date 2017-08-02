@@ -64,6 +64,22 @@ function sorter(a, b) {
 	return a - b;
 }
 
+function arrayUnique(items) {
+	var hash = {};
+	var out = [];
+	var i, ilen, item;
+
+	for (i = 0, ilen = items.length; i < ilen; ++i) {
+		item = items[i];
+		if (!hash[item]) {
+			hash[item] = true;
+			out.push(item);
+		}
+	}
+
+	return out;
+}
+
 /**
  * Returns an array of {time, pos} objects used to interpolate a specific `time` or position
  * (`pos`) on the scale, by searching entries before and after the requested value. `pos` is
@@ -73,14 +89,14 @@ function sorter(a, b) {
  * to create the lookup table. The table ALWAYS contains at least two items: min and max.
  *
  * @param {Number[]} timestamps - timestamps sorted from lowest to highest.
- * @param {Boolean} linear - If true, timestamps will be spread linearly along the min/max
- * range, so basically, the table will contains only two items: {min, 0} and {max, 1}. If
- * false, timestamps will be positioned at the same distance from each other. In this case,
- * only timestamps that break the time linearity are registered, meaning that in the best
- * case, all timestamps are linear, the table contains only min and max.
+ * @param {String} distribution - If 'linear', timestamps will be spread linearly along the min
+ * and max range, so basically, the table will contains only two items: {min, 0} and {max, 1}.
+ * If 'series', timestamps will be positioned at the same distance from each other. In this
+ * case, only timestamps that break the time linearity are registered, meaning that in the
+ * best case, all timestamps are linear, the table contains only min and max.
  */
-function buildLookupTable(timestamps, min, max, linear) {
-	if (linear || !timestamps.length) {
+function buildLookupTable(timestamps, min, max, distribution) {
+	if (distribution === 'linear' || !timestamps.length) {
 		return [
 			{time: min, pos: 0},
 			{time: max, pos: 1}
@@ -88,15 +104,17 @@ function buildLookupTable(timestamps, min, max, linear) {
 	}
 
 	var table = [];
-	var items = timestamps.slice(0);
+	var items = [min];
 	var i, ilen, prev, curr, next;
 
-	if (min < timestamps[0]) {
-		items.unshift(min);
+	for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
+		curr = timestamps[i];
+		if (curr > min && curr < max) {
+			items.push(curr);
+		}
 	}
-	if (max > timestamps[timestamps.length - 1]) {
-		items.push(max);
-	}
+
+	items.push(max);
 
 	for (i = 0, ilen = items.length; i < ilen; ++i) {
 		next = items[i + 1];
@@ -312,10 +330,45 @@ function generate(min, max, minor, major, capacity, options) {
 	return ticks;
 }
 
+function ticksFromTimestamps(values, majorUnit) {
+	var ticks = [];
+	var i, ilen, value, major;
+
+	for (i = 0, ilen = values.length; i < ilen; ++i) {
+		value = values[i];
+		major = majorUnit ? value === +moment(value).startOf(majorUnit) : false;
+
+		ticks.push({
+			value: value,
+			major: major
+		});
+	}
+
+	return ticks;
+}
+
 module.exports = function(Chart) {
 
 	var defaultConfig = {
 		position: 'bottom',
+
+		/**
+		 * Data distribution along the scale:
+		 * - 'linear': data are spread according to their time (distances can vary),
+		 * - 'series': data are spread at the same distance from each other.
+		 * @see https://github.com/chartjs/Chart.js/pull/4507
+		 * @since 2.7.0
+		 */
+		distribution: 'linear',
+
+		/**
+		 * Scale boundary strategy (bypassed by min/max time options)
+		 * - `data`: make sure data are fully visible, ticks outside are removed
+		 * - `ticks`: make sure ticks are fully visible, data outside are truncated
+		 * @see https://github.com/chartjs/Chart.js/pull/4556
+		 * @since 2.7.0
+		 */
+		bounds: 'data',
 
 		time: {
 			parser: false, // false == a pattern string from http://momentjs.com/docs/#/parsing/string-format/ or a custom callback that converts its argument to a moment
@@ -343,15 +396,6 @@ module.exports = function(Chart) {
 			autoSkip: false,
 
 			/**
-			 * Ticks distribution along the scale:
-			 * - 'linear': ticks and data are spread according to their time (distances can vary),
-			 * - 'series': ticks and data are spread at the same distance from each other.
-			 * @see https://github.com/chartjs/Chart.js/pull/4507
-			 * @since 2.7.0
-			 */
-			mode: 'linear',
-
-			/**
 			 * Ticks generation input values:
 			 * - 'auto': generates "optimal" ticks based on scale size and time options.
 			 * - 'data': generates ticks from data (including labels from data {t|x|y} objects).
@@ -359,16 +403,7 @@ module.exports = function(Chart) {
 			 * @see https://github.com/chartjs/Chart.js/pull/4507
 			 * @since 2.7.0
 			 */
-			source: 'auto',
-
-			/**
-			 * Ticks boundary strategy (bypassed by min/max time options)
-			 * - `data`: make sure data are fully visible, labels outside are removed
-			 * - `labels`: make sure labels are fully visible, data outside are truncated
-			 * @see https://github.com/chartjs/Chart.js/pull/4556
-			 * @since 2.7.0
-			 */
-			bounds: 'data'
+			source: 'auto'
 		}
 	};
 
@@ -413,42 +448,52 @@ module.exports = function(Chart) {
 			var me = this;
 			var chart = me.chart;
 			var options = me.options;
-			var datasets = chart.data.datasets || [];
 			var min = parse(options.time.min, me) || MAX_INTEGER;
 			var max = parse(options.time.max, me) || MIN_INTEGER;
 			var timestamps = [];
+			var datasets = [];
 			var labels = [];
 			var i, j, ilen, jlen, data, timestamp;
 
 			// Convert labels to timestamps
 			for (i = 0, ilen = chart.data.labels.length; i < ilen; ++i) {
-				timestamp = parse(chart.data.labels[i], me);
-				min = Math.min(min, timestamp);
-				max = Math.max(max, timestamp);
-				labels.push(timestamp);
+				labels.push(parse(chart.data.labels[i], me));
 			}
 
 			// Convert data to timestamps
-			for (i = 0, ilen = datasets.length; i < ilen; ++i) {
+			for (i = 0, ilen = (chart.data.datasets || []).length; i < ilen; ++i) {
 				if (chart.isDatasetVisible(i)) {
-					data = datasets[i].data;
+					data = chart.data.datasets[i].data;
 
 					// Let's consider that all data have the same format.
 					if (helpers.isObject(data[0])) {
-						timestamps[i] = [];
+						datasets[i] = [];
 
 						for (j = 0, jlen = data.length; j < jlen; ++j) {
 							timestamp = parse(data[j], me);
-							min = Math.min(min, timestamp);
-							max = Math.max(max, timestamp);
-							timestamps[i][j] = timestamp;
+							timestamps.push(timestamp);
+							datasets[i][j] = timestamp;
 						}
 					} else {
-						timestamps[i] = labels.slice(0);
+						timestamps.push.apply(timestamps, labels);
+						datasets[i] = labels.slice(0);
 					}
 				} else {
-					timestamps[i] = [];
+					datasets[i] = [];
 				}
+			}
+
+			if (labels.length) {
+				// Sort labels **after** data have been converted
+				labels = arrayUnique(labels).sort(sorter);
+				min = Math.min(min, labels[0]);
+				max = Math.max(max, labels[labels.length - 1]);
+			}
+
+			if (timestamps.length) {
+				timestamps = arrayUnique(timestamps).sort(sorter);
+				min = Math.min(min, timestamps[0]);
+				max = Math.max(max, timestamps[timestamps.length - 1]);
 			}
 
 			// In case there is no valid min/max, let's use today limits
@@ -460,43 +505,42 @@ module.exports = function(Chart) {
 			me.max = Math.max(min + 1, max);
 
 			// PRIVATE
-			me._datasets = timestamps;
 			me._horizontal = me.isHorizontal();
-			me._labels = labels.sort(sorter);    // Sort labels **after** data have been converted
 			me._table = [];
+			me._timestamps = {
+				data: timestamps,
+				datasets: datasets,
+				labels: labels
+			};
 		},
 
 		buildTicks: function() {
 			var me = this;
 			var min = me.min;
 			var max = me.max;
-			var timeOpts = me.options.time;
-			var ticksOpts = me.options.ticks;
+			var options = me.options;
+			var timeOpts = options.time;
 			var formats = timeOpts.displayFormats;
 			var capacity = me.getLabelCapacity(min);
 			var unit = timeOpts.unit || determineUnit(timeOpts.minUnit, min, max, capacity);
 			var majorUnit = determineMajorUnit(unit);
 			var timestamps = [];
 			var ticks = [];
-			var hash = {};
 			var i, ilen, timestamp;
 
-			switch (ticksOpts.source) {
+			switch (options.ticks.source) {
 			case 'data':
-				for (i = 0, ilen = me._datasets.length; i < ilen; ++i) {
-					timestamps.push.apply(timestamps, me._datasets[i]);
-				}
-				timestamps.sort(sorter);
+				timestamps = me._timestamps.data;
 				break;
 			case 'labels':
-				timestamps = me._labels;
+				timestamps = me._timestamps.labels;
 				break;
 			case 'auto':
 			default:
 				timestamps = generate(min, max, unit, majorUnit, capacity, timeOpts);
 			}
 
-			if (ticksOpts.bounds === 'labels' && timestamps.length) {
+			if (options.bounds === 'ticks' && timestamps.length) {
 				min = timestamps[0];
 				max = timestamps[timestamps.length - 1];
 			}
@@ -505,26 +549,25 @@ module.exports = function(Chart) {
 			min = parse(timeOpts.min, me) || min;
 			max = parse(timeOpts.max, me) || max;
 
-			// Remove ticks outside the min/max range and duplicated entries
+			// Remove ticks outside the min/max range
 			for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
 				timestamp = timestamps[i];
-				if (timestamp >= min && timestamp <= max && !hash[timestamp]) {
-					// hash is used to efficiently detect timestamp duplicates
-					hash[timestamp] = true;
+				if (timestamp >= min && timestamp <= max) {
 					ticks.push(timestamp);
 				}
 			}
 
-			me.ticks = ticks;
 			me.min = min;
 			me.max = max;
 
 			// PRIVATE
 			me._unit = unit;
 			me._majorUnit = majorUnit;
-			me._displayFormat = formats[unit];
-			me._majorDisplayFormat = formats[majorUnit];
-			me._table = buildLookupTable(ticks, min, max, ticksOpts.mode === 'linear');
+			me._minorFormat = formats[unit];
+			me._majorFormat = formats[majorUnit];
+			me._table = buildLookupTable(me._timestamps.data, min, max, options.distribution);
+
+			return ticksFromTimestamps(ticks, majorUnit);
 		},
 
 		getLabelForIndex: function(index, datasetIndex) {
@@ -553,31 +596,25 @@ module.exports = function(Chart) {
 			var options = me.options;
 			var time = tick.valueOf();
 			var majorUnit = me._majorUnit;
-			var majorFormat = me._majorDisplayFormat;
+			var majorFormat = me._majorFormat;
 			var majorTime = tick.clone().startOf(me._majorUnit).valueOf();
 			var major = majorUnit && majorFormat && time === majorTime;
-			var formattedTick = tick.format(major ? majorFormat : me._displayFormat);
+			var label = tick.format(major ? majorFormat : me._minorFormat);
 			var tickOpts = major ? options.ticks.major : options.ticks.minor;
 			var formatter = helpers.valueOrDefault(tickOpts.callback, tickOpts.userCallback);
 
-			if (formatter) {
-				formattedTick = formatter(formattedTick, index, ticks);
-			}
-
-			return {
-				value: formattedTick,
-				major: major,
-				time: time,
-			};
+			return formatter ? formatter(label, index, ticks) : label;
 		},
 
-		convertTicksToLabels: function() {
-			var ticks = this.ticks;
+		convertTicksToLabels: function(ticks) {
+			var labels = [];
 			var i, ilen;
 
 			for (i = 0, ilen = ticks.length; i < ilen; ++i) {
-				ticks[i] = this.tickFormatFunction(moment(ticks[i]));
+				labels.push(this.tickFormatFunction(moment(ticks[i].value), i, ticks));
 			}
+
+			return labels;
 		},
 
 		/**
@@ -597,7 +634,7 @@ module.exports = function(Chart) {
 			var time = null;
 
 			if (index !== undefined && datasetIndex !== undefined) {
-				time = me._datasets[datasetIndex][index];
+				time = me._timestamps.datasets[datasetIndex][index];
 			}
 
 			if (time === null) {
@@ -610,8 +647,9 @@ module.exports = function(Chart) {
 		},
 
 		getPixelForTick: function(index) {
-			return index >= 0 && index < this.ticks.length ?
-				this.getPixelForOffset(this.ticks[index].time) :
+			var ticks = this.getTicks();
+			return index >= 0 && index < ticks.length ?
+				this.getPixelForOffset(ticks[index].value) :
 				null;
 		},
 
@@ -647,9 +685,9 @@ module.exports = function(Chart) {
 		getLabelCapacity: function(exampleTime) {
 			var me = this;
 
-			me._displayFormat = me.options.time.displayFormats.millisecond;	// Pick the longest format for guestimation
+			me._minorFormat = me.options.time.displayFormats.millisecond;	// Pick the longest format for guestimation
 
-			var exampleLabel = me.tickFormatFunction(moment(exampleTime), 0, []).value;
+			var exampleLabel = me.tickFormatFunction(moment(exampleTime), 0, []);
 			var tickLabelWidth = me.getLabelWidth(exampleLabel);
 			var innerWidth = me.isHorizontal() ? me.width : me.height;
 

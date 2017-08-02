@@ -289,9 +289,13 @@ module.exports = function (Chart) {
 
 			helpers.each(me.data.datasets, function (dataset, datasetIndex) {
 				var meta = me.getDatasetMeta(datasetIndex);
-				if (!meta.type) {
-					meta.type = dataset.type || me.config.type;
+				var type = dataset.type || me.config.type;
+
+				if (meta.type && meta.type !== type) {
+					me.destroyDatasetMeta(datasetIndex);
+					meta = me.getDatasetMeta(datasetIndex);
 				}
+				meta.type = type;
 
 				types.push(meta.type);
 
@@ -673,20 +677,30 @@ module.exports = function (Chart) {
 			return this.options.legendCallback(this);
 		},
 
+		/**
+		 * @private
+		 */
+		destroyDatasetMeta: function(datasetIndex) {
+			var id = this.id;
+			var dataset = this.data.datasets[datasetIndex];
+			var meta = dataset._meta && dataset._meta[id];
+
+			if (meta) {
+				meta.controller.destroy();
+				delete dataset._meta[id];
+			}
+		},
+
 		destroy: function () {
 			var me = this;
 			var canvas = me.canvas;
-			var meta, i, ilen;
+			var i, ilen;
 
 			me.stop();
 
 			// dataset controllers need to cleanup associated data
 			for (i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
-				meta = me.getDatasetMeta(i);
-				if (meta.controller) {
-					meta.controller.destroy();
-					meta.controller = null;
-				}
+				me.destroyDatasetMeta(i);
 			}
 
 			if (canvas) {
@@ -732,9 +746,7 @@ module.exports = function (Chart) {
 				listeners[type] = listener;
 			});
 
-			// Responsiveness is currently based on the use of an iframe, however this method causes
-			// performance issues and could be troublesome when used with ad blockers. So make sure
-			// that the user is still able to create a chart without iframe when responsive is false.
+			// Elements used to detect size change should not be injected for non responsive charts.
 			// See https://github.com/chartjs/Chart.js/issues/2210
 			if (me.options.responsive) {
 				listener = function () {

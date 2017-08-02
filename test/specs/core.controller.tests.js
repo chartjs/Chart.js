@@ -363,6 +363,91 @@ describe('Chart', function() {
 			});
 		});
 
+		// https://github.com/chartjs/Chart.js/issues/3790
+		it('should resize the canvas if attached to the DOM after construction', function(done) {
+			var canvas = document.createElement('canvas');
+			var wrapper = document.createElement('div');
+			var body = window.document.body;
+			var chart = new Chart(canvas, {
+				type: 'line',
+				options: {
+					responsive: true,
+					maintainAspectRatio: false
+				}
+			});
+
+			expect(chart).toBeChartOfSize({
+				dw: 0, dh: 0,
+				rw: 0, rh: 0,
+			});
+
+			wrapper.style.cssText = 'width: 455px; height: 355px';
+			wrapper.appendChild(canvas);
+			body.appendChild(wrapper);
+
+			waitForResize(chart, function() {
+				expect(chart).toBeChartOfSize({
+					dw: 455, dh: 355,
+					rw: 455, rh: 355,
+				});
+
+				body.removeChild(wrapper);
+				chart.destroy();
+				done();
+			});
+		});
+
+		it('should resize the canvas when attached to a different parent', function(done) {
+			var canvas = document.createElement('canvas');
+			var wrapper = document.createElement('div');
+			var body = window.document.body;
+			var chart = new Chart(canvas, {
+				type: 'line',
+				options: {
+					responsive: true,
+					maintainAspectRatio: false
+				}
+			});
+
+			expect(chart).toBeChartOfSize({
+				dw: 0, dh: 0,
+				rw: 0, rh: 0,
+			});
+
+			wrapper.style.cssText = 'width: 455px; height: 355px';
+			wrapper.appendChild(canvas);
+			body.appendChild(wrapper);
+
+			waitForResize(chart, function() {
+				var resizer = wrapper.firstChild;
+				expect(resizer.className).toBe('chartjs-size-monitor');
+				expect(resizer.tagName).toBe('DIV');
+				expect(chart).toBeChartOfSize({
+					dw: 455, dh: 355,
+					rw: 455, rh: 355,
+				});
+
+				var target = document.createElement('div');
+				target.style.cssText = 'width: 640px; height: 480px';
+				target.appendChild(canvas);
+				body.appendChild(target);
+
+				waitForResize(chart, function() {
+					expect(target.firstChild).toBe(resizer);
+					expect(wrapper.firstChild).toBe(null);
+					expect(chart).toBeChartOfSize({
+						dw: 640, dh: 480,
+						rw: 640, rh: 480,
+					});
+
+					body.removeChild(wrapper);
+					body.removeChild(target);
+					chart.destroy();
+					done();
+				});
+			});
+		});
+
 		// https://github.com/chartjs/Chart.js/issues/3521
 		it('should resize the canvas after the wrapper has been re-attached to the DOM', function(done) {
 			var chart = acquireChart({
@@ -592,23 +677,27 @@ describe('Chart', function() {
 	});
 
 	describe('controller.destroy', function() {
-		it('should remove the resizer element when responsive: true', function() {
+		it('should remove the resizer element when responsive: true', function(done) {
 			var chart = acquireChart({
 				options: {
 					responsive: true
 				}
 			});
 
-			var wrapper = chart.canvas.parentNode;
-			var resizer = wrapper.firstChild;
+			waitForResize(chart, function() {
+				var wrapper = chart.canvas.parentNode;
+				var resizer = wrapper.firstChild;
+				expect(wrapper.childNodes.length).toBe(2);
+				expect(resizer.className).toBe('chartjs-size-monitor');
+				expect(resizer.tagName).toBe('DIV');
 
-			expect(wrapper.childNodes.length).toBe(2);
-			expect(resizer.tagName).toBe('IFRAME');
+				chart.destroy();
 
-			chart.destroy();
+				expect(wrapper.childNodes.length).toBe(1);
+				expect(wrapper.firstChild.tagName).toBe('CANVAS');
 
-			expect(wrapper.childNodes.length).toBe(1);
-			expect(wrapper.firstChild.tagName).toBe('CANVAS');
+				done();
+			});
 		});
 	});
 
@@ -692,6 +781,41 @@ describe('Chart', function() {
 
 			chart.update();
 			expect(chart.tooltip._options).toEqual(jasmine.objectContaining(newTooltipConfig));
+		});
+
+		it ('should update the metadata', function() {
+			var cfg = {
+				data: {
+					labels: ['A', 'B', 'C', 'D'],
+					datasets: [{
+						type: 'line',
+						data: [10, 20, 30, 0]
+					}]
+				},
+				options: {
+					responsive: true,
+					scales: {
+						xAxes: [{
+							type: 'time'
+						}],
+						yAxes: [{
+							scaleLabel: {
+								display: true,
+								labelString: 'Value'
+							}
+						}]
+					}
+				}
+			};
+			var chart = acquireChart(cfg);
+			var meta = chart.getDatasetMeta(0);
+			expect(meta.type).toBe('line');
+
+			// change the dataset to bar and check that meta was updated
+			chart.config.data.datasets[0].type = 'bar';
+			chart.update();
+			meta = chart.getDatasetMeta(0);
+			expect(meta.type).toBe('bar');
 		});
 	});
 
