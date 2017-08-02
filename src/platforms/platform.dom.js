@@ -165,43 +165,62 @@ function throttled(fn, thisArg) {
 	};
 }
 
+// Implementation based on https://github.com/marcj/css-element-queries
 function createResizer(handler) {
-	var iframe = document.createElement('iframe');
-	iframe.className = 'chartjs-hidden-iframe';
-	iframe.style.cssText =
-		'display:block;' +
-		'overflow:hidden;' +
-		'border:0;' +
-		'margin:0;' +
-		'top:0;' +
-		'left:0;' +
-		'bottom:0;' +
-		'right:0;' +
-		'height:100%;' +
-		'width:100%;' +
+	var resizer = document.createElement('div');
+	var cls = CSS_PREFIX + 'size-monitor';
+	var maxSize = 1000000;
+	var style =
 		'position:absolute;' +
+		'left:0;' +
+		'top:0;' +
+		'right:0;' +
+		'bottom:0;' +
+		'overflow:hidden;' +
 		'pointer-events:none;' +
+		'visibility:hidden;' +
 		'z-index:-1;';
 
-	// Prevent the iframe to gain focus on tab.
-	// https://github.com/chartjs/Chart.js/issues/3090
-	iframe.tabIndex = -1;
+	resizer.style.cssText = style;
+	resizer.className = cls;
+	resizer.innerHTML =
+		'<div class="' + cls + '-expand" style="' + style + '">' +
+			'<div style="' +
+				'position:absolute;' +
+				'width:' + maxSize + 'px;' +
+				'height:' + maxSize + 'px;' +
+				'left:0;' +
+				'top:0">' +
+			'</div>' +
+		'</div>' +
+		'<div class="' + cls + '-shrink" style="' + style + '">' +
+			'<div style="' +
+				'position:absolute;' +
+				'width:200%;' +
+				'height:200%;' +
+				'left:0; ' +
+				'top:0">' +
+			'</div>' +
+		'</div>';
 
-	// Prevent iframe from gaining focus on ItemMode keyboard navigation
-	// Accessibility bug fix
-	iframe.setAttribute('aria-hidden', 'true');
+	var expand = resizer.childNodes[0];
+	var shrink = resizer.childNodes[1];
 
-	// If the iframe is re-attached to the DOM, the resize listener is removed because the
-	// content is reloaded, so make sure to install the handler after the iframe is loaded.
-	// https://github.com/chartjs/Chart.js/issues/3521
-	addEventListener(iframe, 'load', function() {
-		addEventListener(iframe.contentWindow || iframe, 'resize', handler);
-		// The iframe size might have changed while loading, which can also
-		// happen if the size has been changed while detached from the DOM.
+	resizer._reset = function() {
+		expand.scrollLeft = maxSize;
+		expand.scrollTop = maxSize;
+		shrink.scrollLeft = maxSize;
+		shrink.scrollTop = maxSize;
+	};
+	var onScroll = function() {
+		resizer._reset();
 		handler();
-	});
+	};
 
-	return iframe;
+	addEventListener(expand, 'scroll', onScroll.bind(expand, 'expand'));
+	addEventListener(shrink, 'scroll', onScroll.bind(shrink, 'shrink'));
+
+	return resizer;
 }
 
 // https://davidwalsh.name/detect-node-insertion
@@ -253,6 +272,9 @@ function addResizeListener(node, listener, chart) {
 			if (container && container !== resizer.parentNode) {
 				container.insertBefore(resizer, container.firstChild);
 			}
+
+			// The container size might have changed, let's reset the resizer state.
+			resizer._reset();
 		}
 	});
 }
