@@ -407,10 +407,6 @@ module.exports = function(Chart) {
 		}
 	};
 
-	Chart.Ticks.generators.time = function(opts, range) {
-		return generate(range.min, range.max, opts.unit, opts.majorUnit, opts.stepSize, opts.timeOpts);
-	};
-
 	var TimeScale = Chart.Scale.extend({
 		initialize: function() {
 			if (!moment) {
