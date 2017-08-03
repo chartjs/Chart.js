@@ -14,7 +14,8 @@ env:
 before_install:
   - export CHROME_BIN=/usr/bin/google-chrome
   - export DISPLAY=:99.0
-  - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then sh -e /etc/init.d/xvfb start; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ]; then sh -e /etc/init.d/xvfb start; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then ( sudo Xvfb :99 -ac -screen 0 1024x768x8; echo ok )& fi
 
 install:
   - source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
