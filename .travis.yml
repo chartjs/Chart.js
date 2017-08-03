@@ -11,10 +11,17 @@ addons:
   firefox: latest
   chrome: stable
 
+env:
+  - TRAVIS_NODE_VERSION=6
+
 before_install:
-  - "export CHROME_BIN=/usr/bin/google-chrome"
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
+  - export CHROME_BIN=/usr/bin/google-chrome
+  - export DISPLAY=:99.0
+  - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then sh -e /etc/init.d/xvfb start; fi
+
+install:
+  - source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
+  - npm install
 
 script:
   - |
