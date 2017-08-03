@@ -1,7 +1,4 @@
 language: ruby
-#language: node_js
-#node_js:
-#  - "6"
 
 os:
   - linux
@@ -21,7 +18,8 @@ before_install:
 
 install:
   - source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
-  - npm install
+  - npm install --dev
+  - npm install -G gulp
 
 script:
   - |
