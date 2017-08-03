@@ -188,7 +188,10 @@ function unittestTask(done) {
     args: {
       coverage: !!argv.coverage
     }
-  }, done).start();
+  }, function(error) {
+    error = error ? new Error('Karma returned with the error code: ' + error) : undefined;
+    done(error);
+  }).start();
 }
 
 function librarySizeTask() {
