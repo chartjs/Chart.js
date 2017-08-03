@@ -179,14 +179,11 @@ module.exports = function(Chart) {
 		},
 		getPixelForValue: function(value) {
 			var me = this;
-			var innerDimension;
-			var pixel;
-
 			var start = me.start;
 			var newVal = +me.getRightValue(value);
-			var range;
 			var opts = me.options;
 			var tickOpts = opts.ticks;
+			var innerDimension, pixel, range;
 
 			if (me.isHorizontal()) {
 				range = helpers.log10(me.end) - helpers.log10(start); // todo: if start === 0

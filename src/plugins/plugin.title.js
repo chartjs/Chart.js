@@ -109,15 +109,15 @@ module.exports = function(Chart) {
 
 		beforeFit: noop,
 		fit: function() {
-			var me = this,
-				valueOrDefault = helpers.valueOrDefault,
-				opts = me.options,
-				display = opts.display,
-				fontSize = valueOrDefault(opts.fontSize, defaults.global.defaultFontSize),
-				minSize = me.minSize,
-				lineCount = helpers.isArray(opts.text) ? opts.text.length : 1,
-				lineHeight = helpers.options.toLineHeight(opts.lineHeight, fontSize),
-				textSize = display ? (lineCount * lineHeight) + (opts.padding * 2) : 0;
+			var me = this;
+			var valueOrDefault = helpers.valueOrDefault;
+			var opts = me.options;
+			var display = opts.display;
+			var fontSize = valueOrDefault(opts.fontSize, defaults.global.defaultFontSize);
+			var minSize = me.minSize;
+			var lineCount = helpers.isArray(opts.text) ? opts.text.length : 1;
+			var lineHeight = helpers.options.toLineHeight(opts.lineHeight, fontSize);
+			var textSize = display ? (lineCount * lineHeight) + (opts.padding * 2) : 0;
 
 			if (me.isHorizontal()) {
 				minSize.width = me.maxWidth; // fill all the width
@@ -141,27 +141,25 @@ module.exports = function(Chart) {
 
 		// Actually draw the title block on the canvas
 		draw: function() {
-			var me = this,
-				ctx = me.ctx,
-				valueOrDefault = helpers.valueOrDefault,
-				opts = me.options,
-				globalDefaults = defaults.global;
+			var me = this;
+			var ctx = me.ctx;
+			var valueOrDefault = helpers.valueOrDefault;
+			var opts = me.options;
+			var globalDefaults = defaults.global;
 
 			if (opts.display) {
-				var fontSize = valueOrDefault(opts.fontSize, globalDefaults.defaultFontSize),
-					fontStyle = valueOrDefault(opts.fontStyle, globalDefaults.defaultFontStyle),
-					fontFamily = valueOrDefault(opts.fontFamily, globalDefaults.defaultFontFamily),
-					titleFont = helpers.fontString(fontSize, fontStyle, fontFamily),
-					lineHeight = helpers.options.toLineHeight(opts.lineHeight, fontSize),
-					offset = lineHeight / 2 + opts.padding,
-					rotation = 0,
-					titleX,
-					titleY,
-					top = me.top,
-					left = me.left,
-					bottom = me.bottom,
-					right = me.right,
-					maxWidth;
+				var fontSize = valueOrDefault(opts.fontSize, globalDefaults.defaultFontSize);
+				var fontStyle = valueOrDefault(opts.fontStyle, globalDefaults.defaultFontStyle);
+				var fontFamily = valueOrDefault(opts.fontFamily, globalDefaults.defaultFontFamily);
+				var titleFont = helpers.fontString(fontSize, fontStyle, fontFamily);
+				var lineHeight = helpers.options.toLineHeight(opts.lineHeight, fontSize);
+				var offset = lineHeight / 2 + opts.padding;
+				var rotation = 0;
+				var top = me.top;
+				var left = me.left;
+				var bottom = me.bottom;
+				var right = me.right;
+				var maxWidth, titleX, titleY;
 
 				ctx.fillStyle = valueOrDefault(opts.fontColor, globalDefaults.defaultFontColor); // render in correct colour
 				ctx.font = titleFont;
