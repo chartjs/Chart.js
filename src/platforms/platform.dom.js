@@ -147,22 +147,30 @@ function fromNativeEvent(event, chart) {
 	return createEvent(type, chart, pos.x, pos.y, event);
 }
 
-function throttled(fn, thisArg) {
-	var ticking = false;
-	var args = [];
+/**
+ * throttle.
+ * @param {Boolean} [anim=true]
+ * @param {Function} fn callback-function
+ * @param {Object} scope for execute callback-function
+ * @return {Function}
+ */
+function throttled(anim, fn, scope) {
+	anim = anim !== false;
+	var ticking = false,
+		args = [];
 
 	return function() {
 		args = Array.prototype.slice.call(arguments);
-		thisArg = thisArg || this;
+		scope = scope || this;
 
 		var run = function() {
 			ticking = false;
-			fn.apply(thisArg, args);
+			fn.apply(scope, args);
 		};
 
 		if (!ticking) {
 			ticking = true;
-			if (chart.options.animation.animateResize)
+			if (anim)
 				helpers.requestAnimFrame.call(window, run);
 			else
 				window.setTimeout(run, 0);
@@ -259,15 +267,22 @@ function unwatchForRender(node) {
 	node.classList.remove(CSS_RENDER_MONITOR);
 }
 
+/**
+ * adding resize-listener for redraw Chart-object
+ * @param node
+ * @param {Function} listener
+ * @param {Chart} chart
+ */
 function addResizeListener(node, listener, chart) {
 	var expando = node[EXPANDO_KEY] || (node[EXPANDO_KEY] = {});
 
 	// Let's keep track of this added resizer and thus avoid DOM query when removing it.
-	var resizer = expando.resizer = createResizer(throttled(function() {
-		if (expando.resizer) {
-			return listener(createEvent('resize', chart));
-		}
-	}));
+	var resizer = expando.resizer = createResizer(throttled(chart.options.animation.animateResize,
+		function () {
+			if (expando.resizer) {
+				return listener(createEvent('resize', chart));
+			}
+		}));
 
 	// The resizer needs to be attached to the node parent, so we first need to be
 	// sure that `node` is attached to the DOM before injecting the resizer element.

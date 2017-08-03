@@ -9,10 +9,16 @@ defaults._set('global', {
 	animation: {
 		/**
 		 * on resize apply animation effect
-		 * @cfg [animateResize=true]
+		 * @cfg {Boolean} [animateResize=true]
 		 */
 		animateResize: true,
-		duration: 1000,
+		/**
+		 * Duration for all animates.
+		 * If u want to change the duration of a specific animation, specify it n the current parameter will be
+		 * ignored for it
+		 * @cfg {Number} [duration=1e3]
+		 */
+		duration: 1e3,
 		easing: 'easeOutQuart',
 		onProgress: helpers.noop,
 		onComplete: helpers.noop
@@ -87,10 +93,14 @@ module.exports = function (Chart) {
 				// Skip animation frame requests until the active one is executed.
 				// This can happen when processing mouse events, e.g. 'mousemove'
 				// and 'mouseout' events will trigger multiple renders.
-				me.request = helpers.requestAnimFrame.call(window, function () {
+				var run = function () {
 					me.request = null;
 					me.startDigest();
-				});
+				};
+				if (this.options.animation.duration)
+					me.request = helpers.requestAnimFrame.call(window, run);
+				else
+					me.request = window.setTimeout(run, 0);
 			}
 		},
 
