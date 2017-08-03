@@ -1,10 +1,18 @@
-language: node_js
-node_js:
-	- "6"
+language: ruby
+#language: node_js
+#node_js:
+#  - "6"
 
 os:
 	- linux
 	- osx
+
+sudo: required
+dist: trusty
+
+addons:
+	chrome: stable
+	firefox: latest
 
 before_install:
 	- "export CHROME_BIN=/usr/bin/google-chrome"
@@ -29,10 +37,4 @@ script:
 notifications:
 	slack: chartjs:pcfCZR6ugg5TEcaLtmIfQYuA
 
-sudo: required
-dist: trusty
-
-addons:
-	chrome: stable
-	firefox: latest
 
