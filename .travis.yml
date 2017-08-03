@@ -35,3 +35,4 @@ dist: trusty
 addons:
 	chrome: stable
 	firefox: latest
+
