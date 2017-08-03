@@ -4,34 +4,29 @@ language: ruby
 #  - "6"
 
 os:
-	- linux
-	- osx
+  - linux
+  - osx
 
 addons:
-	firefox: latest
-	chrome: stable
+  firefox: latest
+  chrome: stable
 
 before_install:
-	- "export CHROME_BIN=/usr/bin/google-chrome"
-	- "export DISPLAY=:99.0"
-	- "sh -e /etc/init.d/xvfb start"
+  - "export CHROME_BIN=/usr/bin/google-chrome"
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
 
 script:
-	- |
-		if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then
-			gulp build
-			gulp test --coverage
-			gulp docs
-			gulp package
-			gulp bower
-			cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
-		fi
-	- |
-		if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-			gulp test
-		fi
-
-notifications:
-	slack: chartjs:pcfCZR6ugg5TEcaLtmIfQYuA
-
-
+  - |
+    if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then
+      gulp build
+      gulp test --coverage
+      gulp docs
+      gulp package
+      gulp bower
+      cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
+    fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      gulp test
+    fi
