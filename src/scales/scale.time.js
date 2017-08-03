@@ -15,42 +15,44 @@ var INTERVALS = {
 	millisecond: {
 		major: true,
 		size: 1,
-		steps: [1, 2, 5, 10, 20, 50, 100, 250, 500]
+		steps: [1, 2, 5, 10, 20, 25, 50, 100, 250, 500]
 	},
 	second: {
 		major: true,
 		size: 1000,
-		steps: [1, 2, 5, 10, 30]
+		steps: [1, 2, 5, 10, 15, 30]
 	},
 	minute: {
 		major: true,
 		size: 60000,
-		steps: [1, 2, 5, 10, 30]
+		steps: [1, 2, 5, 10, 15, 30]
 	},
 	hour: {
 		major: true,
 		size: 3600000,
-		steps: [1, 2, 3, 6, 12]
+		steps: [1, 2, 3, 4, 6, 12]
 	},
 	day: {
 		major: true,
 		size: 86400000,
-		steps: [1, 2, 5]
+		// months can't be evenly divided into days consistently (since months have
+		// varying numbers of days), so we just plot as many days as we can
+		steps: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 	},
 	week: {
 		major: false,
 		size: 604800000,
-		steps: [1, 2, 3, 4]
+		steps: [1, 2]
 	},
 	month: {
 		major: true,
 		size: 2.628e9,
-		steps: [1, 2, 3]
+		steps: [1, 2, 3, 4, 6]
 	},
 	quarter: {
 		major: false,
 		size: 7.884e9,
-		steps: [1, 2, 3, 4]
+		steps: [1, 2]
 	},
 	year: {
 		major: true,
@@ -231,6 +233,11 @@ function parse(input, scale) {
 /**
  * Returns the number of unit to skip to be able to display up to `capacity` number of ticks
  * in `unit` for the given `min` / `max` range and respecting the interval steps constraints.
+ * @param min {number} minimum tick millis
+ * @param max {number} maximum tick millis
+ * @param unit {string} the time unit the ticks are being displayed as
+ * @param capacity {number} the number of labels we have room to display
+ * @return {string} the number of ticks to skip before displaying the next one
  */
 function determineStepSize(min, max, unit, capacity) {
 	var range = max - min;
@@ -275,59 +282,6 @@ function determineMajorUnit(unit) {
 			return UNITS[i];
 		}
 	}
-}
-
-/**
- * Generates a maximum of `capacity` timestamps between min and max, rounded to the
- * `minor` unit, aligned on the `major` unit and using the given scale time `options`.
- * Important: this method can return ticks outside the min and max range, it's the
- * responsibility of the calling code to clamp values if needed.
- */
-function generate(min, max, minor, major, capacity, options) {
-	var stepSize = helpers.valueOrDefault(options.stepSize, options.unitStepSize);
-	var weekday = minor === 'week' ? options.isoWeekday : false;
-	var interval = INTERVALS[minor];
-	var first = moment(min);
-	var last = moment(max);
-	var ticks = [];
-	var time;
-
-	if (!stepSize) {
-		stepSize = determineStepSize(min, max, minor, capacity);
-	}
-
-	// For 'week' unit, handle the first day of week option
-	if (weekday) {
-		first = first.isoWeekday(weekday);
-		last = last.isoWeekday(weekday);
-	}
-
-	// Align first/last ticks on unit
-	first = first.startOf(weekday ? 'day' : minor);
-	last = last.startOf(weekday ? 'day' : minor);
-
-	// Make sure that the last tick include max
-	if (last < max) {
-		last.add(1, minor);
-	}
-
-	time = moment(first);
-
-	if (major && !weekday && !options.round) {
-		// Align the first tick on the previous `minor` unit aligned on the `major` unit:
-		// we first aligned time on the previous `major` unit then add the number of full
-		// stepSize there is between first and the previous major time.
-		time.startOf(major);
-		time.add(~~((first - time) / (interval.size * stepSize)) * stepSize, minor);
-	}
-
-	for (; time < last; time.add(stepSize, minor)) {
-		ticks.push(+time);
-	}
-
-	ticks.push(+time);
-
-	return ticks;
 }
 
 function ticksFromTimestamps(values, majorUnit) {
@@ -517,12 +471,13 @@ module.exports = function(Chart) {
 			var options = me.options;
 			var timeOpts = options.time;
 			var formats = timeOpts.displayFormats;
-			var capacity = me.getLabelCapacity(min);
+			var capacity = me.getLabelCapacity(min, me.isHorizontal() ? me.width : me.height);
 			var unit = timeOpts.unit || determineUnit(timeOpts.minUnit, min, max, capacity);
 			var majorUnit = determineMajorUnit(unit);
 			var timestamps = [];
 			var ticks = [];
 			var i, ilen, timestamp;
+			me._table = buildLookupTable(me._timestamps.data, min, max, options.distribution);
 
 			switch (options.ticks.source) {
 			case 'data':
@@ -533,7 +488,7 @@ module.exports = function(Chart) {
 				break;
 			case 'auto':
 			default:
-				timestamps = generate(min, max, unit, majorUnit, capacity, timeOpts);
+				timestamps = me.generate(min, max, unit, majorUnit, timeOpts);
 			}
 
 			if (options.bounds === 'ticks' && timestamps.length) {
@@ -561,9 +516,69 @@ module.exports = function(Chart) {
 			me._majorUnit = majorUnit;
 			me._minorFormat = formats[unit];
 			me._majorFormat = formats[majorUnit];
-			me._table = buildLookupTable(me._timestamps.data, min, max, options.distribution);
 
 			return ticksFromTimestamps(ticks, majorUnit);
+		},
+
+		/**
+		 * Generates a maximum number of timestamps between min and max attempting to align
+		 * points on the `major` unit and using the given scale time `options`.
+		 * Important: this method can return ticks outside the min and max range, it's the
+		 * responsibility of the calling code to clamp values if needed.
+		 * @private
+		 */
+		generate: function(min, max, minor, major, options) {
+			var me = this;
+			var optStepSize = helpers.valueOrDefault(options.stepSize, options.unitStepSize);
+			var weekday = minor === 'week' ? options.isoWeekday : false;
+			var first = moment(min);
+			var last = moment(max);
+			var ticks = [];
+			var time, i, ilen, majorTicks, width, capacity, stepSize, steps;
+
+			// This will happen in the case that minor is year and there is no larger time interval
+			if (!major) {
+				major = minor;
+			}
+
+			// For 'week' unit, handle the first day of week option
+			if (weekday) {
+				first = first.isoWeekday(weekday);
+				last = last.isoWeekday(weekday);
+			}
+
+			// First generate major ticks
+			// It's okay to generate outside min/max range. Extra ticks will be removed by caller
+			first = first.startOf(major);
+			last = last.endOf(major);
+			time = first.clone();
+			majorTicks = [+first];
+			while (time.add(1, major) < last) {
+				majorTicks.push(+time);
+			}
+			majorTicks.push(+last);
+			ticks = ticks.concat(majorTicks);
+
+			// Generate minor ticks in between major ticks
+			if (major !== minor) {
+				for (i = 1, ilen = majorTicks.length; i < ilen; i++) {
+					first = moment(majorTicks[i - 1]);
+					last = moment(majorTicks[i]);
+					width = me.getPixelForOffset(majorTicks[i]) - me.getPixelForOffset(majorTicks[i - 1]);
+					capacity = me.getLabelCapacity(min, width);
+					stepSize = optStepSize ? optStepSize : determineStepSize(first, last, minor, capacity);
+					// Divide the major unit more evenly in the case that stepSize does not evenly divide majorUnit
+					// This should have an effect only when minor === 'days' && major === 'months'
+					stepSize = last.diff(first, minor) / Math.floor(last.diff(first, minor) / stepSize);
+
+					for (time = first, steps = 0; time < last; steps += stepSize) {
+						time = first.clone().add(Math.round(steps), minor);
+						ticks.push(+time.clone().startOf(minor));
+					}
+				}
+			}
+
+			return arrayUnique(ticks).sort(sorter);
 		},
 
 		getLabelForIndex: function(index, datasetIndex) {
@@ -678,16 +693,15 @@ module.exports = function(Chart) {
 		/**
 		 * @private
 		 */
-		getLabelCapacity: function(exampleTime) {
+		getLabelCapacity: function(exampleTime, width) {
 			var me = this;
 
 			me._minorFormat = me.options.time.displayFormats.millisecond;	// Pick the longest format for guestimation
 
 			var exampleLabel = me.tickFormatFunction(moment(exampleTime), 0, []);
 			var tickLabelWidth = me.getLabelWidth(exampleLabel);
-			var innerWidth = me.isHorizontal() ? me.width : me.height;
 
-			return Math.floor(innerWidth / tickLabelWidth);
+			return Math.floor(width / tickLabelWidth);
 		}
 	});
 
