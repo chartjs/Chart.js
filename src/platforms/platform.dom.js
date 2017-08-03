@@ -104,11 +104,11 @@ function initCanvas(canvas, config) {
  * https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Safely_detecting_option_support
  * @private
  */
-var supportsEventListenerOptions = (function() {
+var supportsEventListenerOptions = (function () {
 	var supports = false;
 	try {
 		var options = Object.defineProperty({}, 'passive', {
-			get: function() {
+			get: function () {
 				supports = true;
 			}
 		});
@@ -147,20 +147,33 @@ function fromNativeEvent(event, chart) {
 	return createEvent(type, chart, pos.x, pos.y, event);
 }
 
-function throttled(fn, thisArg) {
-	var ticking = false;
-	var args = [];
+/**
+ * throttle.
+ * @param {Boolean} [anim=true]
+ * @param {Function} fn callback-function
+ * @param {Object} scope for execute callback-function
+ * @return {Function}
+ */
+function throttled(anim, fn, scope) {
+	anim = anim !== false;
+	var ticking = false,
+		args = [];
 
 	return function() {
 		args = Array.prototype.slice.call(arguments);
-		thisArg = thisArg || this;
+		scope = scope || this;
+
+		var run = function() {
+			ticking = false;
+			fn.apply(scope, args);
+		};
 
 		if (!ticking) {
 			ticking = true;
-			helpers.requestAnimFrame.call(window, function() {
-				ticking = false;
-				fn.apply(thisArg, args);
-			});
+			if (anim)
+				helpers.requestAnimFrame.call(window, run);
+			else
+				window.setTimeout(run, 0);
 		}
 	};
 }
@@ -254,15 +267,22 @@ function unwatchForRender(node) {
 	node.classList.remove(CSS_RENDER_MONITOR);
 }
 
+/**
+ * adding resize-listener for redraw Chart-object
+ * @param node
+ * @param {Function} listener
+ * @param {Chart} chart
+ */
 function addResizeListener(node, listener, chart) {
 	var expando = node[EXPANDO_KEY] || (node[EXPANDO_KEY] = {});
 
 	// Let's keep track of this added resizer and thus avoid DOM query when removing it.
-	var resizer = expando.resizer = createResizer(throttled(function() {
-		if (expando.resizer) {
-			return listener(createEvent('resize', chart));
-		}
-	}));
+	var resizer = expando.resizer = createResizer(throttled(chart.options.animation.animateResize,
+		function () {
+			if (expando.resizer) {
+				return listener(createEvent('resize', chart));
+			}
+		}));
 
 	// The resizer needs to be attached to the node parent, so we first need to be
 	// sure that `node` is attached to the DOM before injecting the resizer element.
@@ -320,7 +340,7 @@ module.exports = {
 		);
 	},
 
-	acquireContext: function(item, config) {
+	acquireContext: function (item, config) {
 		if (typeof item === 'string') {
 			item = document.getElementById(item);
 		} else if (item.length) {
@@ -353,14 +373,14 @@ module.exports = {
 		return null;
 	},
 
-	releaseContext: function(context) {
+	releaseContext: function (context) {
 		var canvas = context.canvas;
 		if (!canvas[EXPANDO_KEY]) {
 			return;
 		}
 
 		var initial = canvas[EXPANDO_KEY].initial;
-		['height', 'width'].forEach(function(prop) {
+		['height', 'width'].forEach(function (prop) {
 			var value = initial[prop];
 			if (helpers.isNullOrUndef(value)) {
 				canvas.removeAttribute(prop);
@@ -369,7 +389,7 @@ module.exports = {
 			}
 		});
 
-		helpers.each(initial.style || {}, function(value, key) {
+		helpers.each(initial.style || {}, function (value, key) {
 			canvas.style[key] = value;
 		});
 
@@ -382,7 +402,7 @@ module.exports = {
 		delete canvas[EXPANDO_KEY];
 	},
 
-	addEventListener: function(chart, type, listener) {
+	addEventListener: function (chart, type, listener) {
 		var canvas = chart.canvas;
 		if (type === 'resize') {
 			// Note: the resize event is not supported on all browsers.
@@ -392,14 +412,14 @@ module.exports = {
 
 		var expando = listener[EXPANDO_KEY] || (listener[EXPANDO_KEY] = {});
 		var proxies = expando.proxies || (expando.proxies = {});
-		var proxy = proxies[chart.id + '_' + type] = function(event) {
+		var proxy = proxies[chart.id + '_' + type] = function (event) {
 			listener(fromNativeEvent(event, chart));
 		};
 
 		addEventListener(canvas, type, proxy);
 	},
 
-	removeEventListener: function(chart, type, listener) {
+	removeEventListener: function (chart, type, listener) {
 		var canvas = chart.canvas;
 		if (type === 'resize') {
 			// Note: the resize event is not supported on all browsers.

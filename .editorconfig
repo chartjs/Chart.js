@@ -8,3 +8,5 @@ end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = false
+spaces_around_operators = false
+indent_brace_style = K&R

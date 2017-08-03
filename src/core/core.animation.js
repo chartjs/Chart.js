@@ -7,14 +7,25 @@ var helpers = require('../helpers/index');
 
 defaults._set('global', {
 	animation: {
-		duration: 1000,
+		/**
+		 * on resize apply animation effect
+		 * @cfg {Boolean} [animateResize=true]
+		 */
+		animateResize: true,
+		/**
+		 * Duration for all animates.
+		 * If u want to change the duration of a specific animation, specify it n the current parameter will be
+		 * ignored for it
+		 * @cfg {Number} [duration=1e3]
+		 */
+		duration: 1e3,
 		easing: 'easeOutQuart',
 		onProgress: helpers.noop,
 		onComplete: helpers.noop
 	}
 });
 
-module.exports = function(Chart) {
+module.exports = function (Chart) {
 
 	Chart.Animation = Element.extend({
 		chart: null, // the animation associated chart instance
@@ -39,9 +50,10 @@ module.exports = function(Chart) {
 		 * @param {Number} duration - The animation duration in ms.
 		 * @param {Boolean} lazy - if true, the chart is not marked as animating to enable more responsive interactions
 		 */
-		addAnimation: function(chart, animation, duration, lazy) {
-			var animations = this.animations;
-			var i, ilen;
+		addAnimation: function (chart, animation, duration, lazy) {
+			if (duration === 0) return;
+			var animations = this.animations,
+				i, ilen;
 
 			animation.chart = chart;
 
@@ -64,8 +76,8 @@ module.exports = function(Chart) {
 			}
 		},
 
-		cancelAnimation: function(chart) {
-			var index = helpers.findIndex(this.animations, function(animation) {
+		cancelAnimation: function (chart) {
+			var index = helpers.findIndex(this.animations, function (animation) {
 				return animation.chart === chart;
 			});
 
@@ -75,13 +87,13 @@ module.exports = function(Chart) {
 			}
 		},
 
-		requestAnimationFrame: function() {
+		requestAnimationFrame: function () {
 			var me = this;
 			if (me.request === null) {
 				// Skip animation frame requests until the active one is executed.
 				// This can happen when processing mouse events, e.g. 'mousemove'
 				// and 'mouseout' events will trigger multiple renders.
-				me.request = helpers.requestAnimFrame.call(window, function() {
+				me.request = helpers.requestAnimFrame.call(window, function () {
 					me.request = null;
 					me.startDigest();
 				});
@@ -91,7 +103,7 @@ module.exports = function(Chart) {
 		/**
 		 * @private
 		 */
-		startDigest: function() {
+		startDigest: function () {
 			var me = this;
 			var startTime = Date.now();
 			var framesToDrop = 0;
@@ -105,7 +117,7 @@ module.exports = function(Chart) {
 
 			var endTime = Date.now();
 
-			me.dropFrames += (endTime - startTime) / me.frameDuration;
+			me.dropFrames += me.frameDuration ? ((endTime - startTime) / me.frameDuration) : 0;
 
 			// Do we have more stuff to animate?
 			if (me.animations.length > 0) {
@@ -116,10 +128,10 @@ module.exports = function(Chart) {
 		/**
 		 * @private
 		 */
-		advance: function(count) {
-			var animations = this.animations;
-			var animation, chart;
-			var i = 0;
+		advance: function (count) {
+			var animations = this.animations,
+				animation, chart,
+				i = 0;
 
 			while (i < animations.length) {
 				animation = animations[i];
@@ -149,7 +161,7 @@ module.exports = function(Chart) {
 	 * @todo remove at version 3
 	 */
 	Object.defineProperty(Chart.Animation.prototype, 'animationObject', {
-		get: function() {
+		get: function () {
 			return this;
 		}
 	});
@@ -161,10 +173,10 @@ module.exports = function(Chart) {
 	 * @todo remove at version 3
 	 */
 	Object.defineProperty(Chart.Animation.prototype, 'chartInstance', {
-		get: function() {
+		get: function () {
 			return this.chart;
 		},
-		set: function(value) {
+		set: function (value) {
 			this.chart = value;
 		}
 	});
