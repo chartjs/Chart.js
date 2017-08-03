@@ -18,8 +18,8 @@ before_install:
 
 install:
   - source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
-  - npm install --dev
-  - npm install -G gulp
+  - npm install
+  - npm install -g gulp
 
 script:
   - |
@@ -33,5 +33,5 @@ script:
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      gulp test
+      gulp unittest
     fi
