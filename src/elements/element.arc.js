@@ -28,12 +28,9 @@ module.exports = Element.extend({
 		var vm = this._view;
 
 		if (vm) {
-			var pointRelativePosition = helpers.getAngleFromPoint(vm, {
-					x: chartX,
-					y: chartY
-				}),
-				angle = pointRelativePosition.angle,
-				distance = pointRelativePosition.distance;
+			var pointRelativePosition = helpers.getAngleFromPoint(vm, {x: chartX, y: chartY});
+			var	angle = pointRelativePosition.angle;
+			var distance = pointRelativePosition.distance;
 
 			// Sanitise angle range
 			var startAngle = vm.startAngle;
@@ -49,8 +46,8 @@ module.exports = Element.extend({
 			}
 
 			// Check if within the range of the open/close angle
-			var betweenAngles = (angle >= startAngle && angle <= endAngle),
-				withinRadius = (distance >= vm.innerRadius && distance <= vm.outerRadius);
+			var betweenAngles = (angle >= startAngle && angle <= endAngle);
+			var withinRadius = (distance >= vm.innerRadius && distance <= vm.outerRadius);
 
 			return (betweenAngles && withinRadius);
 		}
@@ -74,9 +71,9 @@ module.exports = Element.extend({
 
 	tooltipPosition: function() {
 		var vm = this._view;
+		var centreAngle = vm.startAngle + ((vm.endAngle - vm.startAngle) / 2);
+		var rangeFromCentre = (vm.outerRadius - vm.innerRadius) / 2 + vm.innerRadius;
 
-		var centreAngle = vm.startAngle + ((vm.endAngle - vm.startAngle) / 2),
-			rangeFromCentre = (vm.outerRadius - vm.innerRadius) / 2 + vm.innerRadius;
 		return {
 			x: vm.x + (Math.cos(centreAngle) * rangeFromCentre),
 			y: vm.y + (Math.sin(centreAngle) * rangeFromCentre)
@@ -84,11 +81,10 @@ module.exports = Element.extend({
 	},
 
 	draw: function() {
-
-		var ctx = this._chart.ctx,
-			vm = this._view,
-			sA = vm.startAngle,
-			eA = vm.endAngle;
+		var ctx = this._chart.ctx;
+		var vm = this._view;
+		var sA = vm.startAngle;
+		var eA = vm.endAngle;
 
 		ctx.beginPath();
 

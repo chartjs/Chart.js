@@ -146,20 +146,17 @@ module.exports = function(Chart) {
 
 		update: function(reset) {
 			var me = this;
-			var chart = me.chart,
-				chartArea = chart.chartArea,
-				opts = chart.options,
-				arcOpts = opts.elements.arc,
-				availableWidth = chartArea.right - chartArea.left - arcOpts.borderWidth,
-				availableHeight = chartArea.bottom - chartArea.top - arcOpts.borderWidth,
-				minSize = Math.min(availableWidth, availableHeight),
-				offset = {
-					x: 0,
-					y: 0
-				},
-				meta = me.getMeta(),
-				cutoutPercentage = opts.cutoutPercentage,
-				circumference = opts.circumference;
+			var chart = me.chart;
+			var chartArea = chart.chartArea;
+			var opts = chart.options;
+			var arcOpts = opts.elements.arc;
+			var availableWidth = chartArea.right - chartArea.left - arcOpts.borderWidth;
+			var availableHeight = chartArea.bottom - chartArea.top - arcOpts.borderWidth;
+			var minSize = Math.min(availableWidth, availableHeight);
+			var offset = {x: 0, y: 0};
+			var meta = me.getMeta();
+			var cutoutPercentage = opts.cutoutPercentage;
+			var circumference = opts.circumference;
 
 			// If the chart's circumference isn't a full circle, calculate minSize as a ratio of the width/height of the arc
 			if (circumference < Math.PI * 2.0) {
@@ -199,19 +196,19 @@ module.exports = function(Chart) {
 
 		updateElement: function(arc, index, reset) {
 			var me = this;
-			var chart = me.chart,
-				chartArea = chart.chartArea,
-				opts = chart.options,
-				animationOpts = opts.animation,
-				centerX = (chartArea.left + chartArea.right) / 2,
-				centerY = (chartArea.top + chartArea.bottom) / 2,
-				startAngle = opts.rotation, // non reset case handled later
-				endAngle = opts.rotation, // non reset case handled later
-				dataset = me.getDataset(),
-				circumference = reset && animationOpts.animateRotate ? 0 : arc.hidden ? 0 : me.calculateCircumference(dataset.data[index]) * (opts.circumference / (2.0 * Math.PI)),
-				innerRadius = reset && animationOpts.animateScale ? 0 : me.innerRadius,
-				outerRadius = reset && animationOpts.animateScale ? 0 : me.outerRadius,
-				valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
+			var chart = me.chart;
+			var chartArea = chart.chartArea;
+			var opts = chart.options;
+			var animationOpts = opts.animation;
+			var centerX = (chartArea.left + chartArea.right) / 2;
+			var centerY = (chartArea.top + chartArea.bottom) / 2;
+			var startAngle = opts.rotation; // non reset case handled later
+			var endAngle = opts.rotation; // non reset case handled later
+			var dataset = me.getDataset();
+			var circumference = reset && animationOpts.animateRotate ? 0 : arc.hidden ? 0 : me.calculateCircumference(dataset.data[index]) * (opts.circumference / (2.0 * Math.PI));
+			var innerRadius = reset && animationOpts.animateScale ? 0 : me.innerRadius;
+			var outerRadius = reset && animationOpts.animateScale ? 0 : me.outerRadius;
+			var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
 
 			helpers.extend(arc, {
 				// Utility
@@ -283,11 +280,11 @@ module.exports = function(Chart) {
 
 		// gets the max border or hover width to properly scale pie charts
 		getMaxBorderWidth: function(arcs) {
-			var max = 0,
-				index = this.index,
-				length = arcs.length,
-				borderWidth,
-				hoverWidth;
+			var max = 0;
+			var index = this.index;
+			var length = arcs.length;
+			var borderWidth;
+			var hoverWidth;
 
 			for (var i = 0; i < length; i++) {
 				borderWidth = arcs[i]._model ? arcs[i]._model.borderWidth : 0;
