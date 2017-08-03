@@ -7,12 +7,9 @@ os:
 	- linux
 	- osx
 
-sudo: required
-dist: trusty
-
 addons:
-	chrome: stable
 	firefox: latest
+	chrome: stable
 
 before_install:
 	- "export CHROME_BIN=/usr/bin/google-chrome"
