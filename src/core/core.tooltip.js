@@ -126,8 +126,8 @@ module.exports = function(Chart) {
 	function createTooltipItem(element) {
 		var xScale = element._xScale;
 		var yScale = element._yScale || element._scale; // handle radar || polarArea charts
-		var index = element._index,
-			datasetIndex = element._datasetIndex;
+		var index = element._index;
+		var datasetIndex = element._datasetIndex;
 
 		return {
 			xLabel: xScale ? xScale.getLabelForIndex(index, datasetIndex) : '',
@@ -210,9 +210,9 @@ module.exports = function(Chart) {
 
 		var titleLineCount = model.title.length;
 		var footerLineCount = model.footer.length;
-		var titleFontSize = model.titleFontSize,
-			bodyFontSize = model.bodyFontSize,
-			footerFontSize = model.footerFontSize;
+		var titleFontSize = model.titleFontSize;
+		var bodyFontSize = model.bodyFontSize;
+		var footerFontSize = model.footerFontSize;
 
 		height += titleLineCount * titleFontSize; // Title Lines
 		height += titleLineCount ? (titleLineCount - 1) * model.titleSpacing : 0; // Title Line Spacing
@@ -341,13 +341,13 @@ module.exports = function(Chart) {
 		var x = vm.x;
 		var y = vm.y;
 
-		var caretSize = vm.caretSize,
-			caretPadding = vm.caretPadding,
-			cornerRadius = vm.cornerRadius,
-			xAlign = alignment.xAlign,
-			yAlign = alignment.yAlign,
-			paddingAndSize = caretSize + caretPadding,
-			radiusAndPadding = cornerRadius + caretPadding;
+		var caretSize = vm.caretSize;
+		var caretPadding = vm.caretPadding;
+		var cornerRadius = vm.cornerRadius;
+		var xAlign = alignment.xAlign;
+		var yAlign = alignment.yAlign;
+		var paddingAndSize = caretSize + caretPadding;
+		var radiusAndPadding = cornerRadius + caretPadding;
 
 		if (xAlign === 'right') {
 			x -= size.width;
@@ -393,9 +393,9 @@ module.exports = function(Chart) {
 			var opts = me._options;
 			var callbacks = opts.callbacks;
 
-			var beforeTitle = callbacks.beforeTitle.apply(me, arguments),
-				title = callbacks.title.apply(me, arguments),
-				afterTitle = callbacks.afterTitle.apply(me, arguments);
+			var beforeTitle = callbacks.beforeTitle.apply(me, arguments);
+			var title = callbacks.title.apply(me, arguments);
+			var afterTitle = callbacks.afterTitle.apply(me, arguments);
 
 			var lines = [];
 			lines = pushOrConcat(lines, beforeTitle);
@@ -578,16 +578,15 @@ module.exports = function(Chart) {
 			ctx.lineTo(caretPosition.x3, caretPosition.y3);
 		},
 		getCaretPosition: function(tooltipPoint, size, vm) {
-			var x1, x2, x3;
-			var y1, y2, y3;
+			var x1, x2, x3, y1, y2, y3;
 			var caretSize = vm.caretSize;
 			var cornerRadius = vm.cornerRadius;
-			var xAlign = vm.xAlign,
-				yAlign = vm.yAlign;
-			var ptX = tooltipPoint.x,
-				ptY = tooltipPoint.y;
-			var width = size.width,
-				height = size.height;
+			var xAlign = vm.xAlign;
+			var yAlign = vm.yAlign;
+			var ptX = tooltipPoint.x;
+			var ptY = tooltipPoint.y;
+			var width = size.width;
+			var height = size.height;
 
 			if (yAlign === 'center') {
 				y2 = ptY + (height / 2);
@@ -644,8 +643,8 @@ module.exports = function(Chart) {
 				ctx.textAlign = vm._titleAlign;
 				ctx.textBaseline = 'top';
 
-				var titleFontSize = vm.titleFontSize,
-					titleSpacing = vm.titleSpacing;
+				var titleFontSize = vm.titleFontSize;
+				var titleSpacing = vm.titleSpacing;
 
 				ctx.fillStyle = mergeOpacity(vm.titleFontColor, opacity);
 				ctx.font = helpers.fontString(titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
@@ -915,10 +914,9 @@ module.exports = function(Chart) {
 		nearest: function(elements, eventPosition) {
 			var x = eventPosition.x;
 			var y = eventPosition.y;
-
-			var nearestElement;
 			var minDistance = Number.POSITIVE_INFINITY;
-			var i, len;
+			var i, len, nearestElement;
+
 			for (i = 0, len = elements.length; i < len; ++i) {
 				var el = elements[i];
 				if (el && el.hasValue()) {

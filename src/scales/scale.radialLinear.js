@@ -153,9 +153,7 @@ module.exports = function(Chart) {
 			b: 0
 		};
 		var furthestAngles = {};
-		var i;
-		var textSize;
-		var pointPosition;
+		var i, textSize, pointPosition;
 
 		scale.ctx.font = plFont.font;
 		scale._pointLabelSizes = [];
@@ -408,10 +406,10 @@ module.exports = function(Chart) {
 		},
 		setCenterPoint: function(leftMovement, rightMovement, topMovement, bottomMovement) {
 			var me = this;
-			var maxRight = me.width - rightMovement - me.drawingArea,
-				maxLeft = leftMovement + me.drawingArea,
-				maxTop = topMovement + me.drawingArea,
-				maxBottom = me.height - bottomMovement - me.drawingArea;
+			var maxRight = me.width - rightMovement - me.drawingArea;
+			var maxLeft = leftMovement + me.drawingArea;
+			var maxTop = topMovement + me.drawingArea;
+			var maxBottom = me.height - bottomMovement - me.drawingArea;
 
 			me.xCenter = Math.round(((maxLeft + maxRight) / 2) + me.left);
 			me.yCenter = Math.round(((maxTop + maxBottom) / 2) + me.top);

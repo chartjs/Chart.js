@@ -325,8 +325,7 @@ module.exports = function(Chart) {
 			if (labels.length && me.options.display && me.isHorizontal()) {
 				var originalLabelWidth = helpers.longestText(context, tickFont.font, labels, me.longestTextCache);
 				var labelWidth = originalLabelWidth;
-				var cosRotation;
-				var sinRotation;
+				var cosRotation, sinRotation;
 
 				// Allow 3 pixels x2 padding either side for label readability
 				var tickWidth = me.getPixelForTick(1) - me.getPixelForTick(0) - 6;
@@ -833,10 +832,10 @@ module.exports = function(Chart) {
 				// Draw the line at the edge of the axis
 				context.lineWidth = helpers.valueAtIndexOrDefault(gridLines.lineWidth, 0);
 				context.strokeStyle = helpers.valueAtIndexOrDefault(gridLines.color, 0);
-				var x1 = me.left,
-					x2 = me.right,
-					y1 = me.top,
-					y2 = me.bottom;
+				var x1 = me.left;
+				var x2 = me.right;
+				var y1 = me.top;
+				var y2 = me.bottom;
 
 				var aliasPixel = helpers.aliasPixel(context.lineWidth);
 				if (isHorizontal) {
