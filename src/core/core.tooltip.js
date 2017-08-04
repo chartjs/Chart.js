@@ -394,6 +394,14 @@ module.exports = function(Chart) {
 		};
 	}
 
+	/**
+	 * @Helper to build before and after body lines
+	 */
+	function getBeforeAfterBodyLines(callback) {
+		return pushOrConcat([], splitNewlines(callback));
+	}
+
+
 	Chart.Tooltip = Element.extend({
 		initialize: function() {
 			this._model = getBaseModel(this._options);
@@ -420,7 +428,7 @@ module.exports = function(Chart) {
 
 		// Args are: (tooltipItem, data)
 		getBeforeBody: function() {
-			return pushOrConcat([], splitNewlines(this._options.callbacks.beforeBody.apply(this, arguments)));
+			return getBeforeAfterBodyLines(this._options.callbacks.beforeBody.apply(this, arguments));
 		},
 
 		// Args are: (tooltipItem, data)
@@ -447,6 +455,8 @@ module.exports = function(Chart) {
 
 		// Args are: (tooltipItem, data)
 		getAfterBody: function() {
+			return getBeforeAfterBodyLines(this._options.callbacks.afterBody.apply(this, arguments));
+
 			return pushOrConcat([], splitNewlines(this._options.callbacks.afterBody.apply(this, arguments)));
 		},
 
