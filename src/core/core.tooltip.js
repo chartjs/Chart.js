@@ -456,8 +456,6 @@ module.exports = function(Chart) {
 		// Args are: (tooltipItem, data)
 		getAfterBody: function() {
 			return getBeforeAfterBodyLines(this._options.callbacks.afterBody.apply(this, arguments));
-
-			return pushOrConcat([], splitNewlines(this._options.callbacks.afterBody.apply(this, arguments)));
 		},
 
 		// Get the footer and beforeFooter and afterFooter lines
