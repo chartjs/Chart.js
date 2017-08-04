@@ -420,7 +420,8 @@ describe('Chart', function() {
 
 			waitForResize(chart, function() {
 				var resizer = wrapper.firstChild;
-				expect(resizer.tagName).toBe('IFRAME');
+				expect(resizer.className).toBe('chartjs-size-monitor');
+				expect(resizer.tagName).toBe('DIV');
 				expect(chart).toBeChartOfSize({
 					dw: 455, dh: 355,
 					rw: 455, rh: 355,
@@ -687,7 +688,8 @@ describe('Chart', function() {
 				var wrapper = chart.canvas.parentNode;
 				var resizer = wrapper.firstChild;
 				expect(wrapper.childNodes.length).toBe(2);
-				expect(resizer.tagName).toBe('IFRAME');
+				expect(resizer.className).toBe('chartjs-size-monitor');
+				expect(resizer.tagName).toBe('DIV');
 
 				chart.destroy();
 
@@ -779,6 +781,41 @@ describe('Chart', function() {
 
 			chart.update();
 			expect(chart.tooltip._options).toEqual(jasmine.objectContaining(newTooltipConfig));
+		});
+
+		it ('should update the metadata', function() {
+			var cfg = {
+				data: {
+					labels: ['A', 'B', 'C', 'D'],
+					datasets: [{
+						type: 'line',
+						data: [10, 20, 30, 0]
+					}]
+				},
+				options: {
+					responsive: true,
+					scales: {
+						xAxes: [{
+							type: 'time'
+						}],
+						yAxes: [{
+							scaleLabel: {
+								display: true,
+								labelString: 'Value'
+							}
+						}]
+					}
+				}
+			};
+			var chart = acquireChart(cfg);
+			var meta = chart.getDatasetMeta(0);
+			expect(meta.type).toBe('line');
+
+			// change the dataset to bar and check that meta was updated
+			chart.config.data.datasets[0].type = 'bar';
+			chart.update();
+			meta = chart.getDatasetMeta(0);
+			expect(meta.type).toBe('bar');
 		});
 	});
 

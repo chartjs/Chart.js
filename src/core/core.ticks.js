@@ -109,8 +109,7 @@ module.exports = {
 
 			var endExp = Math.floor(helpers.log10(dataRange.max));
 			var endSignificand = Math.ceil(dataRange.max / Math.pow(10, endExp));
-			var exp;
-			var significand;
+			var exp, significand;
 
 			if (tickVal === 0) {
 				exp = Math.floor(helpers.log10(dataRange.minNotZero));

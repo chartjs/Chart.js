@@ -265,12 +265,10 @@ describe('Deprecations', function() {
 							xAxes: [{
 								id: 'time',
 								type: 'time',
+								bounds: 'ticks',
 								time: {
 									unit: 'hour',
 									unitStepSize: 2
-								},
-								ticks: {
-									bounds: 'labels'
 								}
 							}]
 						}
