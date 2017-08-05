@@ -22,6 +22,10 @@ var utils = require('./jasmine.utils');
 		return new Context();
 	}
 
+	// force ratio=1 for tests on high-res/retina devices
+	// fixes https://github.com/chartjs/Chart.js/issues/4515
+	window.devicePixelRatio = 1;
+
 	window.acquireChart = acquireChart;
 	window.releaseChart = releaseChart;
 	window.waitForResize = utils.waitForResize;

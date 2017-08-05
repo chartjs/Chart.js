@@ -394,8 +394,8 @@ describe('Platform.dom', function() {
 			expect(notifiedEvent.type).toBe(evt.type);
 
 			// Relative Position
-			expect(notifiedEvent.x).toBe(chart.width / 2);
-			expect(notifiedEvent.y).toBe(chart.height / 2);
+			expect(notifiedEvent.x).toBeCloseToPixel(chart.width / 2);
+			expect(notifiedEvent.y).toBeCloseToPixel(chart.height / 2);
 		});
 	});
 });

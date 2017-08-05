@@ -188,7 +188,12 @@ function unittestTask(done) {
     args: {
       coverage: !!argv.coverage
     }
-  }, done).start();
+  },
+  // https://github.com/karma-runner/gulp-karma/issues/18
+  function(error) {
+    error = error ? new Error('Karma returned with the error code: ' + error) : undefined;
+    done(error);
+  }).start();
 }
 
 function librarySizeTask() {
