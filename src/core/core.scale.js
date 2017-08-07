@@ -569,6 +569,55 @@ module.exports = function(Chart) {
 				0;
 		},
 
+		/**
+		 * Returns a subset of ticks to be plotted to avoid overlapping labels.
+		 * @private
+		 */
+		_autoSkip: function(ticks) {
+			var skipRatio;
+			var me = this;
+			var isHorizontal = me.isHorizontal();
+			var optionTicks = me.options.ticks.minor;
+			var tickCount = ticks.length;
+			var labelRotationRadians = helpers.toRadians(me.labelRotation);
+			var cosRotation = Math.cos(labelRotationRadians);
+			var longestRotatedLabel = me.longestLabelWidth * cosRotation;
+			var result = [];
+			var i, tick, shouldSkip;
+
+			// figure out the maximum number of gridlines to show
+			var maxTicks;
+			if (optionTicks.maxTicksLimit) {
+				maxTicks = optionTicks.maxTicksLimit;
+			}
+
+			if (isHorizontal) {
+				skipRatio = false;
+
+				if ((longestRotatedLabel + optionTicks.autoSkipPadding) * tickCount > (me.width - (me.paddingLeft + me.paddingRight))) {
+					skipRatio = 1 + Math.floor(((longestRotatedLabel + optionTicks.autoSkipPadding) * tickCount) / (me.width - (me.paddingLeft + me.paddingRight)));
+				}
+
+				// if they defined a max number of optionTicks,
+				// increase skipRatio until that number is met
+				if (maxTicks && tickCount > maxTicks) {
+					skipRatio = Math.max(skipRatio, Math.floor(tickCount / maxTicks));
+				}
+			}
+
+			for (i = 0; i < tickCount; i++) {
+				tick = ticks[i];
+
+				// Since we always show the last tick,we need may need to hide the last shown one before
+				shouldSkip = (skipRatio > 1 && i % skipRatio > 0) || (i % skipRatio === 0 && i + skipRatio >= tickCount);
+				if (shouldSkip && i !== tickCount - 1 || helpers.isNullOrUndef(tick.label)) {
+					continue;
+				}
+				result.push(tick);
+			}
+			return result;
+		},
+
 		// Actually draw the scale on the canvas
 		// @param {rectangle} chartArea : the area of the chart to draw full grid lines on
 		draw: function(chartArea) {
@@ -586,16 +635,9 @@ module.exports = function(Chart) {
 			var scaleLabel = options.scaleLabel;
 
 			var isRotated = me.labelRotation !== 0;
-			var skipRatio;
-			var useAutoskipper = optionTicks.autoSkip;
 			var isHorizontal = me.isHorizontal();
 
-			// figure out the maximum number of gridlines to show
-			var maxTicks;
-			if (optionTicks.maxTicksLimit) {
-				maxTicks = optionTicks.maxTicksLimit;
-			}
-
+			var ticks = optionTicks.autoSkip ? me._autoSkip(me.getTicks()) : me.getTicks();
 			var tickFontColor = helpers.valueOrDefault(optionTicks.fontColor, globalDefaults.defaultFontColor);
 			var tickFont = parseFontOptions(optionTicks);
 			var majorTickFontColor = helpers.valueOrDefault(optionMajorTicks.fontColor, globalDefaults.defaultFontColor);
@@ -605,58 +647,17 @@ module.exports = function(Chart) {
 
 			var scaleLabelFontColor = helpers.valueOrDefault(scaleLabel.fontColor, globalDefaults.defaultFontColor);
 			var scaleLabelFont = parseFontOptions(scaleLabel);
-
 			var labelRotationRadians = helpers.toRadians(me.labelRotation);
-			var cosRotation = Math.cos(labelRotationRadians);
-			var longestRotatedLabel = me.longestLabelWidth * cosRotation;
-			var tickCount = me._ticks.length;
 
 			var itemsToDraw = [];
-
-			if (isHorizontal) {
-				skipRatio = false;
-
-				if ((longestRotatedLabel + optionTicks.autoSkipPadding) * tickCount > (me.width - (me.paddingLeft + me.paddingRight))) {
-					skipRatio = 1 + Math.floor(((longestRotatedLabel + optionTicks.autoSkipPadding) * tickCount) / (me.width - (me.paddingLeft + me.paddingRight)));
-				}
-
-				// if they defined a max number of optionTicks,
-				// increase skipRatio until that number is met
-				if (maxTicks && tickCount > maxTicks) {
-					while (!skipRatio || tickCount / (skipRatio || 1) > maxTicks) {
-						if (!skipRatio) {
-							skipRatio = 1;
-						}
-						skipRatio += 1;
-					}
-				}
-
-				if (!useAutoskipper) {
-					skipRatio = false;
-				}
-			}
-
 
 			var xTickStart = options.position === 'right' ? me.left : me.right - tl;
 			var xTickEnd = options.position === 'right' ? me.left + tl : me.right;
 			var yTickStart = options.position === 'bottom' ? me.top : me.bottom - tl;
 			var yTickEnd = options.position === 'bottom' ? me.top + tl : me.bottom;
 
-			helpers.each(me._ticks, function(tick, index) {
+			helpers.each(ticks, function(tick, index) {
 				var label = tick.label;
-				// If the callback returned a null or undefined value, do not draw this line
-				if (helpers.isNullOrUndef(label)) {
-					return;
-				}
-
-				var isLastTick = tickCount === index + 1;
-
-				// Since we always show the last tick,we need may need to hide the last shown one before
-				var shouldSkip = (skipRatio > 1 && index % skipRatio > 0) || (index % skipRatio === 0 && index + skipRatio >= tickCount);
-				if (shouldSkip && !isLastTick || helpers.isNullOrUndef(label)) {
-					return;
-				}
-
 				var lineWidth, lineColor, borderDash, borderDashOffset;
 				if (index === (typeof me.zeroLineIndex !== 'undefined' ? me.zeroLineIndex : 0)) {
 					// Draw the first index specially
