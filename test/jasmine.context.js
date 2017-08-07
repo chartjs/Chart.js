@@ -89,6 +89,7 @@ Context.prototype._initMethods = function() {
 		},
 		moveTo: function() {},
 		quadraticCurveTo: function() {},
+		rect: function() {},
 		restore: function() {},
 		rotate: function() {},
 		save: function() {},

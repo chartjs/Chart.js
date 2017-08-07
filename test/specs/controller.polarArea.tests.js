@@ -5,8 +5,8 @@ describe('Polar area controller tests', function() {
 			type: 'polarArea',
 			data: {
 				datasets: [
-				{data: []},
-				{data: []}
+					{data: []},
+					{data: []}
 				],
 				labels: []
 			}

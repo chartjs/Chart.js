@@ -1,17 +1,25 @@
+/**
+ * Plugin based on discussion from the following Chart.js issues:
+ * @see https://github.com/chartjs/Chart.js/issues/2380#issuecomment-279961569
+ * @see https://github.com/chartjs/Chart.js/issues/2440#issuecomment-256461897
+ */
+
 'use strict';
 
-module.exports = function(Chart) {
-	/**
-	 * Plugin based on discussion from the following Chart.js issues:
-	 * @see https://github.com/chartjs/Chart.js/issues/2380#issuecomment-279961569
-	 * @see https://github.com/chartjs/Chart.js/issues/2440#issuecomment-256461897
-	 */
-	Chart.defaults.global.plugins.filler = {
-		propagate: true
-	};
+var defaults = require('../core/core.defaults');
+var elements = require('../elements/index');
+var helpers = require('../helpers/index');
 
-	var defaults = Chart.defaults;
-	var helpers = Chart.helpers;
+defaults._set('global', {
+	plugins: {
+		filler: {
+			propagate: true
+		}
+	}
+});
+
+module.exports = function() {
+
 	var mappers = {
 		dataset: function(source) {
 			var index = source.fill;
@@ -19,21 +27,22 @@ module.exports = function(Chart) {
 			var meta = chart.getDatasetMeta(index);
 			var visible = meta && chart.isDatasetVisible(index);
 			var points = (visible && meta.dataset._children) || [];
+			var length = points.length || 0;
 
-			return !points.length? null : function(point, i) {
-				return points[i]._view || null;
+			return !length ? null : function(point, i) {
+				return (i < length && points[i]._view) || null;
 			};
 		},
 
 		boundary: function(source) {
 			var boundary = source.boundary;
-			var x = boundary? boundary.x : null;
-			var y = boundary? boundary.y : null;
+			var x = boundary ? boundary.x : null;
+			var y = boundary ? boundary.y : null;
 
 			return function(point) {
 				return {
-					x: x === null? point.x : x,
-					y: y === null? point.y : y,
+					x: x === null ? point.x : x,
+					y: y === null ? point.y : y,
 				};
 			};
 		}
@@ -105,9 +114,9 @@ module.exports = function(Chart) {
 		// controllers might still use it (e.g. the Smith chart).
 
 		if (fill === 'start') {
-			target = model.scaleBottom === undefined? scale.bottom : model.scaleBottom;
+			target = model.scaleBottom === undefined ? scale.bottom : model.scaleBottom;
 		} else if (fill === 'end') {
-			target = model.scaleTop === undefined? scale.top : model.scaleTop;
+			target = model.scaleTop === undefined ? scale.top : model.scaleTop;
 		} else if (model.scaleZero !== undefined) {
 			target = model.scaleZero;
 		} else if (scale.getBasePosition) {
@@ -124,8 +133,8 @@ module.exports = function(Chart) {
 			if (typeof target === 'number' && isFinite(target)) {
 				horizontal = scale.isHorizontal();
 				return {
-					x: horizontal? target : null,
-					y: horizontal? null : target
+					x: horizontal ? target : null,
+					y: horizontal ? null : target
 				};
 			}
 		}
@@ -192,16 +201,16 @@ module.exports = function(Chart) {
 
 		// building first area curve (normal)
 		ctx.moveTo(curve0[0].x, curve0[0].y);
-		for (i=1; i<len0; ++i) {
-			helpers.canvas.lineTo(ctx, curve0[i-1], curve0[i]);
+		for (i = 1; i < len0; ++i) {
+			helpers.canvas.lineTo(ctx, curve0[i - 1], curve0[i]);
 		}
 
 		// joining the two area curves
-		ctx.lineTo(curve1[len1-1].x, curve1[len1-1].y);
+		ctx.lineTo(curve1[len1 - 1].x, curve1[len1 - 1].y);
 
 		// building opposite area curve (reverse)
-		for (i=len1-1; i>0; --i) {
-			helpers.canvas.lineTo(ctx, curve1[i], curve1[i-1], true);
+		for (i = len1 - 1; i > 0; --i) {
+			helpers.canvas.lineTo(ctx, curve1[i], curve1[i - 1], true);
 		}
 	}
 
@@ -217,7 +226,7 @@ module.exports = function(Chart) {
 		ctx.beginPath();
 
 		for (i = 0, ilen = (count + !!loop); i < ilen; ++i) {
-			index = i%count;
+			index = i % count;
 			p0 = points[index]._view;
 			p1 = mapper(p0, index, view);
 			d0 = isDrawable(p0);
@@ -264,7 +273,7 @@ module.exports = function(Chart) {
 				el = meta.dataset;
 				source = null;
 
-				if (el && el._model && el instanceof Chart.elements.Line) {
+				if (el && el._model && el instanceof elements.Line) {
 					source = {
 						visible: chart.isDatasetVisible(i),
 						fill: decodeFill(el, i, count),
@@ -277,7 +286,7 @@ module.exports = function(Chart) {
 				sources.push(source);
 			}
 
-			for (i=0; i<count; ++i) {
+			for (i = 0; i < count; ++i) {
 				source = sources[i];
 				if (!source) {
 					continue;
@@ -295,6 +304,7 @@ module.exports = function(Chart) {
 				return;
 			}
 
+			var ctx = chart.ctx;
 			var el = meta.el;
 			var view = el._view;
 			var points = el._children || [];
@@ -302,7 +312,9 @@ module.exports = function(Chart) {
 			var color = view.backgroundColor || defaults.global.defaultColor;
 
 			if (mapper && color && points.length) {
-				doFill(chart.ctx, points, mapper, view, color, el._loop);
+				helpers.canvas.clipArea(ctx, chart.chartArea);
+				doFill(ctx, points, mapper, view, color, el._loop);
+				helpers.canvas.unclipArea(ctx);
 			}
 		}
 	};

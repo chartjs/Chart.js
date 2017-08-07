@@ -2,7 +2,6 @@
 
 module.exports = function(Chart) {
 
-	var helpers = Chart.helpers;
 	// Default config for a category scale
 	var defaultConfig = {
 		position: 'bottom'
@@ -16,7 +15,7 @@ module.exports = function(Chart) {
 		*/
 		getLabels: function() {
 			var data = this.chart.data;
-			return (this.isHorizontal() ? data.xLabels : data.yLabels) || data.labels;
+			return this.options.labels || (this.isHorizontal() ? data.xLabels : data.yLabels) || data.labels;
 		},
 
 		determineDataLimits: function() {
@@ -28,13 +27,13 @@ module.exports = function(Chart) {
 
 			if (me.options.ticks.min !== undefined) {
 				// user specified min value
-				findIndex = helpers.indexOf(labels, me.options.ticks.min);
+				findIndex = labels.indexOf(me.options.ticks.min);
 				me.minIndex = findIndex !== -1 ? findIndex : me.minIndex;
 			}
 
 			if (me.options.ticks.max !== undefined) {
 				// user specified max value
-				findIndex = helpers.indexOf(labels, me.options.ticks.max);
+				findIndex = labels.indexOf(me.options.ticks.max);
 				me.maxIndex = findIndex !== -1 ? findIndex : me.maxIndex;
 			}
 

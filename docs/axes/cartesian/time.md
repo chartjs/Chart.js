@@ -2,6 +2,25 @@
 
 The time scale is used to display times and dates. When building its ticks, it will automatically calculate the most comfortable unit base on the size of the scale.
 
+## Data Sets
+
+### Input Data
+
+The x-axis data points may additionally be specified via the `t` attribute when using the time scale.
+
+    data: [{
+        x: new Date(),
+        y: 1
+    }, {
+        t: new Date(),
+        y: 10
+    }]
+
+
+### Date Formats
+
+When providing data for the time scale, Chart.js supports all of the formats that Moment.js accepts. See [Moment.js docs](http://momentjs.com/docs/#/parsing/) for details.
+
 ## Configuration Options
 
 The following options are provided by the time scale. They are all located in the `time` sub options. These options extend the [common tick configuration](README.md#tick-configuration).
@@ -13,17 +32,13 @@ The following options are provided by the time scale. They are all located in th
 | `max` | [Time](#date-formats) | | If defined, this will override the data maximum
 | `min` | [Time](#date-formats) | | If defined, this will override the data minimum
 | `parser` | `String` or `Function` | | Custom parser for dates. [more...](#parser)
-| `round` | `String` | `false` | If defined, dates will be rounded to the start of this unit. See [Time Units](#scales-time-units) below for the allowed units.
+| `round` | `String` | `false` | If defined, dates will be rounded to the start of this unit. See [Time Units](#time-units) below for the allowed units.
 | `tooltipFormat` | `String` | | The moment js format string to use for the tooltip.
-| `unit` | `String` | `false` | If defined, will force the unit to be a certain type. See [Time Units](#scales-time-units) section below for details.
-| `unitStepSize` | `Number` | `1` | The number of units between grid lines.
-| `minUnit` | `String` | `millisecond` | The minimum display format to be used for a time unit.
+| `unit` | `String` | `false` | If defined, will force the unit to be a certain type. See [Time Units](#time-units) section below for details.
+| `stepSize` | `Number` | `1` | The number of units between grid lines.
+| `minUnit` | `String` | `'millisecond'` | The minimum display format to be used for a time unit.
 
-## Date Formats
-
-When providing data for the time scale, Chart.js supports all of the formats that Moment.js accepts. See [Moment.js docs](http://momentjs.com/docs/#/parsing/) for details.
-
-## Time Units
+### Time Units
 
 The following time measurements are supported. The names can be passed as strings to the `time.unit` config option to force a certain unit.
 
@@ -55,20 +70,20 @@ var chart = new Chart(ctx, {
 })
 ```
 
-## Display Formats
+### Display Formats
 The following display formats are used to configure how different time units are formed into strings for the axis tick marks. See [moment.js](http://momentjs.com/docs/#/displaying/format/) for the allowable format strings.
 
-Name | Default
---- | ---
-millisecond | 'SSS [ms]'
-second | 'h:mm:ss a'
-minute | 'h:mm:ss a'
-hour | 'MMM D, hA'
-day | 'll'
-week | 'll'
-month | 'MMM YYYY'
-quarter | '[Q]Q - YYYY'
-year | 'YYYY'
+Name | Default | Example
+--- | --- | ---
+millisecond | 'h:mm:ss.SSS a' | 11:20:01.123 AM
+second | 'h:mm:ss a' | 11:20:01 AM
+minute | 'h:mm a' | 11:20 AM
+hour | 'hA' | 11AM
+day | 'MMM D' | Sep 4
+week | 'll' | Sep 4 2015
+month | 'MMM YYYY' | Sep 2015
+quarter | '[Q]Q - YYYY' | Q3 - 2015
+year | 'YYYY' | 2015
 
 For example, to set the display format for the 'quarter' unit to show the month and year, the following config would be passed to the chart constructor.
 
@@ -91,7 +106,7 @@ var chart = new Chart(ctx, {
 })
 ```
 
-## Parser
+### Parser
 If this property is defined as a string, it is interpreted as a custom format to be used by moment to parse the date. 
 
 If this is a function, it must return a moment.js object given the appropriate data value.

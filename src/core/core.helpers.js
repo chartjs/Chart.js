@@ -3,47 +3,13 @@
 'use strict';
 
 var color = require('chartjs-color');
+var defaults = require('./core.defaults');
+var helpers = require('../helpers/index');
 
 module.exports = function(Chart) {
-	// Global Chart helpers object for utility methods and classes
-	var helpers = Chart.helpers = {};
 
 	// -- Basic js utility methods
-	helpers.each = function(loopable, callback, self, reverse) {
-		// Check to see if null or undefined firstly.
-		var i, len;
-		if (helpers.isArray(loopable)) {
-			len = loopable.length;
-			if (reverse) {
-				for (i = len - 1; i >= 0; i--) {
-					callback.call(self, loopable[i], i);
-				}
-			} else {
-				for (i = 0; i < len; i++) {
-					callback.call(self, loopable[i], i);
-				}
-			}
-		} else if (typeof loopable === 'object') {
-			var keys = Object.keys(loopable);
-			len = keys.length;
-			for (i = 0; i < len; i++) {
-				callback.call(self, loopable[keys[i]], keys[i]);
-			}
-		}
-	};
-	helpers.clone = function(obj) {
-		var objClone = {};
-		helpers.each(obj, function(value, key) {
-			if (helpers.isArray(value)) {
-				objClone[key] = value.slice(0);
-			} else if (typeof value === 'object' && value !== null) {
-				objClone[key] = helpers.clone(value);
-			} else {
-				objClone[key] = value;
-			}
-		});
-		return objClone;
-	};
+
 	helpers.extend = function(base) {
 		var setFn = function(value, key) {
 			base[key] = value;
@@ -53,102 +19,61 @@ module.exports = function(Chart) {
 		}
 		return base;
 	};
-	// Need a special merge function to chart configs since they are now grouped
-	helpers.configMerge = function(_base) {
-		var base = helpers.clone(_base);
-		helpers.each(Array.prototype.slice.call(arguments, 1), function(extension) {
-			helpers.each(extension, function(value, key) {
-				var baseHasProperty = base.hasOwnProperty(key);
-				var baseVal = baseHasProperty ? base[key] : {};
+
+	helpers.configMerge = function(/* objects ... */) {
+		return helpers.merge(helpers.clone(arguments[0]), [].slice.call(arguments, 1), {
+			merger: function(key, target, source, options) {
+				var tval = target[key] || {};
+				var sval = source[key];
 
 				if (key === 'scales') {
-					// Scale config merging is complex. Add our own function here for that
-					base[key] = helpers.scaleMerge(baseVal, value);
+					// scale config merging is complex. Add our own function here for that
+					target[key] = helpers.scaleMerge(tval, sval);
 				} else if (key === 'scale') {
-					// Used in polar area & radar charts since there is only one scale
-					base[key] = helpers.configMerge(baseVal, Chart.scaleService.getScaleDefaults(value.type), value);
-				} else if (baseHasProperty
-						&& typeof baseVal === 'object'
-						&& !helpers.isArray(baseVal)
-						&& baseVal !== null
-						&& typeof value === 'object'
-						&& !helpers.isArray(value)) {
-					// If we are overwriting an object with an object, do a merge of the properties.
-					base[key] = helpers.configMerge(baseVal, value);
+					// used in polar area & radar charts since there is only one scale
+					target[key] = helpers.merge(tval, [Chart.scaleService.getScaleDefaults(sval.type), sval]);
 				} else {
-					// can just overwrite the value in this case
-					base[key] = value;
+					helpers._merger(key, target, source, options);
 				}
-			});
+			}
 		});
-
-		return base;
 	};
-	helpers.scaleMerge = function(_base, extension) {
-		var base = helpers.clone(_base);
 
-		helpers.each(extension, function(value, key) {
-			if (key === 'xAxes' || key === 'yAxes') {
-				// These properties are arrays of items
-				if (base.hasOwnProperty(key)) {
-					helpers.each(value, function(valueObj, index) {
-						var axisType = helpers.getValueOrDefault(valueObj.type, key === 'xAxes' ? 'category' : 'linear');
-						var axisDefaults = Chart.scaleService.getScaleDefaults(axisType);
-						if (index >= base[key].length || !base[key][index].type) {
-							base[key].push(helpers.configMerge(axisDefaults, valueObj));
-						} else if (valueObj.type && valueObj.type !== base[key][index].type) {
-							// Type changed. Bring in the new defaults before we bring in valueObj so that valueObj can override the correct scale defaults
-							base[key][index] = helpers.configMerge(base[key][index], axisDefaults, valueObj);
-						} else {
-							// Type is the same
-							base[key][index] = helpers.configMerge(base[key][index], valueObj);
+	helpers.scaleMerge = function(/* objects ... */) {
+		return helpers.merge(helpers.clone(arguments[0]), [].slice.call(arguments, 1), {
+			merger: function(key, target, source, options) {
+				if (key === 'xAxes' || key === 'yAxes') {
+					var slen = source[key].length;
+					var i, type, scale;
+
+					if (!target[key]) {
+						target[key] = [];
+					}
+
+					for (i = 0; i < slen; ++i) {
+						scale = source[key][i];
+						type = helpers.valueOrDefault(scale.type, key === 'xAxes' ? 'category' : 'linear');
+
+						if (i >= target[key].length) {
+							target[key].push({});
 						}
-					});
-				} else {
-					base[key] = [];
-					helpers.each(value, function(valueObj) {
-						var axisType = helpers.getValueOrDefault(valueObj.type, key === 'xAxes' ? 'category' : 'linear');
-						base[key].push(helpers.configMerge(Chart.scaleService.getScaleDefaults(axisType), valueObj));
-					});
-				}
-			} else if (base.hasOwnProperty(key) && typeof base[key] === 'object' && base[key] !== null && typeof value === 'object') {
-				// If we are overwriting an object with an object, do a merge of the properties.
-				base[key] = helpers.configMerge(base[key], value);
 
-			} else {
-				// can just overwrite the value in this case
-				base[key] = value;
+						if (!target[key][i].type || (scale.type && scale.type !== target[key][i].type)) {
+							// new/untyped scale or type changed: let's apply the new defaults
+							// then merge source scale to correctly overwrite the defaults.
+							helpers.merge(target[key][i], [Chart.scaleService.getScaleDefaults(type), scale]);
+						} else {
+							// scales type are the same
+							helpers.merge(target[key][i], scale);
+						}
+					}
+				} else {
+					helpers._merger(key, target, source, options);
+				}
 			}
 		});
-
-		return base;
 	};
-	helpers.getValueAtIndexOrDefault = function(value, index, defaultValue) {
-		if (value === undefined || value === null) {
-			return defaultValue;
-		}
 
-		if (helpers.isArray(value)) {
-			return index < value.length ? value[index] : defaultValue;
-		}
-
-		return value;
-	};
-	helpers.getValueOrDefault = function(value, defaultValue) {
-		return value === undefined ? defaultValue : value;
-	};
-	helpers.indexOf = Array.prototype.indexOf?
-		function(array, item) {
-			return array.indexOf(item);
-		}:
-		function(array, item) {
-			for (var i = 0, ilen = array.length; i < ilen; ++i) {
-				if (array[i] === item) {
-					return i;
-				}
-			}
-			return -1;
-		};
 	helpers.where = function(collection, filterCallback) {
 		if (helpers.isArray(collection) && Array.prototype.filter) {
 			return collection.filter(filterCallback);
@@ -163,12 +88,12 @@ module.exports = function(Chart) {
 
 		return filtered;
 	};
-	helpers.findIndex = Array.prototype.findIndex?
+	helpers.findIndex = Array.prototype.findIndex ?
 		function(array, callback, scope) {
 			return array.findIndex(callback, scope);
 		} :
 		function(array, callback, scope) {
-			scope = scope === undefined? array : scope;
+			scope = scope === undefined ? array : scope;
 			for (var i = 0, ilen = array.length; i < ilen; ++i) {
 				if (callback.call(scope, array[i], i, array)) {
 					return i;
@@ -178,7 +103,7 @@ module.exports = function(Chart) {
 		};
 	helpers.findNextWhere = function(arrayToSearch, filterCallback, startIndex) {
 		// Default to start of the array
-		if (startIndex === undefined || startIndex === null) {
+		if (helpers.isNullOrUndef(startIndex)) {
 			startIndex = -1;
 		}
 		for (var i = startIndex + 1; i < arrayToSearch.length; i++) {
@@ -190,7 +115,7 @@ module.exports = function(Chart) {
 	};
 	helpers.findPreviousWhere = function(arrayToSearch, filterCallback, startIndex) {
 		// Default to end of the array
-		if (startIndex === undefined || startIndex === null) {
+		if (helpers.isNullOrUndef(startIndex)) {
 			startIndex = arrayToSearch.length;
 		}
 		for (var i = startIndex - 1; i >= 0; i--) {
@@ -223,13 +148,6 @@ module.exports = function(Chart) {
 
 		return ChartElement;
 	};
-	helpers.noop = function() {};
-	helpers.uid = (function() {
-		var id = 0;
-		return function() {
-			return id++;
-		};
-	}());
 	// -- Math methods
 	helpers.isNumber = function(n) {
 		return !isNaN(parseFloat(n)) && isFinite(n);
@@ -257,7 +175,7 @@ module.exports = function(Chart) {
 			return min;
 		}, Number.POSITIVE_INFINITY);
 	};
-	helpers.sign = Math.sign?
+	helpers.sign = Math.sign ?
 		function(x) {
 			return Math.sign(x);
 		} :
@@ -268,7 +186,7 @@ module.exports = function(Chart) {
 			}
 			return x > 0 ? 1 : -1;
 		};
-	helpers.log10 = Math.log10?
+	helpers.log10 = Math.log10 ?
 		function(x) {
 			return Math.log10(x);
 		} :
@@ -283,9 +201,9 @@ module.exports = function(Chart) {
 	};
 	// Gets the angle from vertical upright to the point about a centre.
 	helpers.getAngleFromPoint = function(centrePoint, anglePoint) {
-		var distanceFromXCenter = anglePoint.x - centrePoint.x,
-			distanceFromYCenter = anglePoint.y - centrePoint.y,
-			radialDistanceFromCenter = Math.sqrt(distanceFromXCenter * distanceFromXCenter + distanceFromYCenter * distanceFromYCenter);
+		var distanceFromXCenter = anglePoint.x - centrePoint.x;
+		var distanceFromYCenter = anglePoint.y - centrePoint.y;
+		var radialDistanceFromCenter = Math.sqrt(distanceFromXCenter * distanceFromXCenter + distanceFromYCenter * distanceFromYCenter);
 
 		var angle = Math.atan2(distanceFromYCenter, distanceFromXCenter);
 
@@ -310,9 +228,9 @@ module.exports = function(Chart) {
 
 		// This function must also respect "skipped" points
 
-		var previous = firstPoint.skip ? middlePoint : firstPoint,
-			current = middlePoint,
-			next = afterPoint.skip ? middlePoint : afterPoint;
+		var previous = firstPoint.skip ? middlePoint : firstPoint;
+		var current = middlePoint;
+		var next = afterPoint.skip ? middlePoint : afterPoint;
 
 		var d01 = Math.sqrt(Math.pow(current.x - previous.x, 2) + Math.pow(current.y - previous.y, 2));
 		var d12 = Math.sqrt(Math.pow(next.x - current.x, 2) + Math.pow(next.y - current.y, 2));
@@ -470,203 +388,6 @@ module.exports = function(Chart) {
 
 		return niceFraction * Math.pow(10, exponent);
 	};
-	// Easing functions adapted from Robert Penner's easing equations
-	// http://www.robertpenner.com/easing/
-	var easingEffects = helpers.easingEffects = {
-		linear: function(t) {
-			return t;
-		},
-		easeInQuad: function(t) {
-			return t * t;
-		},
-		easeOutQuad: function(t) {
-			return -1 * t * (t - 2);
-		},
-		easeInOutQuad: function(t) {
-			if ((t /= 1 / 2) < 1) {
-				return 1 / 2 * t * t;
-			}
-			return -1 / 2 * ((--t) * (t - 2) - 1);
-		},
-		easeInCubic: function(t) {
-			return t * t * t;
-		},
-		easeOutCubic: function(t) {
-			return 1 * ((t = t / 1 - 1) * t * t + 1);
-		},
-		easeInOutCubic: function(t) {
-			if ((t /= 1 / 2) < 1) {
-				return 1 / 2 * t * t * t;
-			}
-			return 1 / 2 * ((t -= 2) * t * t + 2);
-		},
-		easeInQuart: function(t) {
-			return t * t * t * t;
-		},
-		easeOutQuart: function(t) {
-			return -1 * ((t = t / 1 - 1) * t * t * t - 1);
-		},
-		easeInOutQuart: function(t) {
-			if ((t /= 1 / 2) < 1) {
-				return 1 / 2 * t * t * t * t;
-			}
-			return -1 / 2 * ((t -= 2) * t * t * t - 2);
-		},
-		easeInQuint: function(t) {
-			return 1 * (t /= 1) * t * t * t * t;
-		},
-		easeOutQuint: function(t) {
-			return 1 * ((t = t / 1 - 1) * t * t * t * t + 1);
-		},
-		easeInOutQuint: function(t) {
-			if ((t /= 1 / 2) < 1) {
-				return 1 / 2 * t * t * t * t * t;
-			}
-			return 1 / 2 * ((t -= 2) * t * t * t * t + 2);
-		},
-		easeInSine: function(t) {
-			return -1 * Math.cos(t / 1 * (Math.PI / 2)) + 1;
-		},
-		easeOutSine: function(t) {
-			return 1 * Math.sin(t / 1 * (Math.PI / 2));
-		},
-		easeInOutSine: function(t) {
-			return -1 / 2 * (Math.cos(Math.PI * t / 1) - 1);
-		},
-		easeInExpo: function(t) {
-			return (t === 0) ? 1 : 1 * Math.pow(2, 10 * (t / 1 - 1));
-		},
-		easeOutExpo: function(t) {
-			return (t === 1) ? 1 : 1 * (-Math.pow(2, -10 * t / 1) + 1);
-		},
-		easeInOutExpo: function(t) {
-			if (t === 0) {
-				return 0;
-			}
-			if (t === 1) {
-				return 1;
-			}
-			if ((t /= 1 / 2) < 1) {
-				return 1 / 2 * Math.pow(2, 10 * (t - 1));
-			}
-			return 1 / 2 * (-Math.pow(2, -10 * --t) + 2);
-		},
-		easeInCirc: function(t) {
-			if (t >= 1) {
-				return t;
-			}
-			return -1 * (Math.sqrt(1 - (t /= 1) * t) - 1);
-		},
-		easeOutCirc: function(t) {
-			return 1 * Math.sqrt(1 - (t = t / 1 - 1) * t);
-		},
-		easeInOutCirc: function(t) {
-			if ((t /= 1 / 2) < 1) {
-				return -1 / 2 * (Math.sqrt(1 - t * t) - 1);
-			}
-			return 1 / 2 * (Math.sqrt(1 - (t -= 2) * t) + 1);
-		},
-		easeInElastic: function(t) {
-			var s = 1.70158;
-			var p = 0;
-			var a = 1;
-			if (t === 0) {
-				return 0;
-			}
-			if ((t /= 1) === 1) {
-				return 1;
-			}
-			if (!p) {
-				p = 1 * 0.3;
-			}
-			if (a < Math.abs(1)) {
-				a = 1;
-				s = p / 4;
-			} else {
-				s = p / (2 * Math.PI) * Math.asin(1 / a);
-			}
-			return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * 1 - s) * (2 * Math.PI) / p));
-		},
-		easeOutElastic: function(t) {
-			var s = 1.70158;
-			var p = 0;
-			var a = 1;
-			if (t === 0) {
-				return 0;
-			}
-			if ((t /= 1) === 1) {
-				return 1;
-			}
-			if (!p) {
-				p = 1 * 0.3;
-			}
-			if (a < Math.abs(1)) {
-				a = 1;
-				s = p / 4;
-			} else {
-				s = p / (2 * Math.PI) * Math.asin(1 / a);
-			}
-			return a * Math.pow(2, -10 * t) * Math.sin((t * 1 - s) * (2 * Math.PI) / p) + 1;
-		},
-		easeInOutElastic: function(t) {
-			var s = 1.70158;
-			var p = 0;
-			var a = 1;
-			if (t === 0) {
-				return 0;
-			}
-			if ((t /= 1 / 2) === 2) {
-				return 1;
-			}
-			if (!p) {
-				p = 1 * (0.3 * 1.5);
-			}
-			if (a < Math.abs(1)) {
-				a = 1;
-				s = p / 4;
-			} else {
-				s = p / (2 * Math.PI) * Math.asin(1 / a);
-			}
-			if (t < 1) {
-				return -0.5 * (a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * 1 - s) * (2 * Math.PI) / p));
-			}
-			return a * Math.pow(2, -10 * (t -= 1)) * Math.sin((t * 1 - s) * (2 * Math.PI) / p) * 0.5 + 1;
-		},
-		easeInBack: function(t) {
-			var s = 1.70158;
-			return 1 * (t /= 1) * t * ((s + 1) * t - s);
-		},
-		easeOutBack: function(t) {
-			var s = 1.70158;
-			return 1 * ((t = t / 1 - 1) * t * ((s + 1) * t + s) + 1);
-		},
-		easeInOutBack: function(t) {
-			var s = 1.70158;
-			if ((t /= 1 / 2) < 1) {
-				return 1 / 2 * (t * t * (((s *= (1.525)) + 1) * t - s));
-			}
-			return 1 / 2 * ((t -= 2) * t * (((s *= (1.525)) + 1) * t + s) + 2);
-		},
-		easeInBounce: function(t) {
-			return 1 - easingEffects.easeOutBounce(1 - t);
-		},
-		easeOutBounce: function(t) {
-			if ((t /= 1) < (1 / 2.75)) {
-				return 1 * (7.5625 * t * t);
-			} else if (t < (2 / 2.75)) {
-				return 1 * (7.5625 * (t -= (1.5 / 2.75)) * t + 0.75);
-			} else if (t < (2.5 / 2.75)) {
-				return 1 * (7.5625 * (t -= (2.25 / 2.75)) * t + 0.9375);
-			}
-			return 1 * (7.5625 * (t -= (2.625 / 2.75)) * t + 0.984375);
-		},
-		easeInOutBounce: function(t) {
-			if (t < 1 / 2) {
-				return easingEffects.easeInBounce(t * 2) * 0.5;
-			}
-			return easingEffects.easeOutBounce(t * 2 - 1) * 0.5 + 1 * 0.5;
-		}
-	};
 	// Request animation polyfill - http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
 	helpers.requestAnimFrame = (function() {
 		if (typeof window === 'undefined') {
@@ -686,9 +407,9 @@ module.exports = function(Chart) {
 	// -- DOM methods
 	helpers.getRelativePosition = function(evt, chart) {
 		var mouseX, mouseY;
-		var e = evt.originalEvent || evt,
-			canvas = evt.currentTarget || evt.srcElement,
-			boundingRect = canvas.getBoundingClientRect();
+		var e = evt.originalEvent || evt;
+		var canvas = evt.currentTarget || evt.srcElement;
+		var boundingRect = canvas.getBoundingClientRect();
 
 		var touches = e.touches;
 		if (touches && touches.length > 0) {
@@ -721,29 +442,11 @@ module.exports = function(Chart) {
 		};
 
 	};
-	helpers.addEvent = function(node, eventType, method) {
-		if (node.addEventListener) {
-			node.addEventListener(eventType, method);
-		} else if (node.attachEvent) {
-			node.attachEvent('on' + eventType, method);
-		} else {
-			node['on' + eventType] = method;
-		}
-	};
-	helpers.removeEvent = function(node, eventType, handler) {
-		if (node.removeEventListener) {
-			node.removeEventListener(eventType, handler, false);
-		} else if (node.detachEvent) {
-			node.detachEvent('on' + eventType, handler);
-		} else {
-			node['on' + eventType] = helpers.noop;
-		}
-	};
 
 	// Private helper function to convert max-width/max-height values that may be percentages into a number
 	function parseMaxStyle(styleValue, node, parentProperty) {
 		var valueInPixels;
-		if (typeof(styleValue) === 'string') {
+		if (typeof styleValue === 'string') {
 			valueInPixels = parseInt(styleValue, 10);
 
 			if (styleValue.indexOf('%') !== -1) {
@@ -781,8 +484,8 @@ module.exports = function(Chart) {
 
 		if (hasCNode || hasCContainer) {
 			return Math.min(
-				hasCNode? parseMaxStyle(constrainedNode, domNode, percentageProperty) : infinity,
-				hasCContainer? parseMaxStyle(constrainedContainer, parentNode, percentageProperty) : infinity);
+				hasCNode ? parseMaxStyle(constrainedNode, domNode, percentageProperty) : infinity,
+				hasCContainer ? parseMaxStyle(constrainedContainer, parentNode, percentageProperty) : infinity);
 		}
 
 		return 'none';
@@ -797,27 +500,35 @@ module.exports = function(Chart) {
 	};
 	helpers.getMaximumWidth = function(domNode) {
 		var container = domNode.parentNode;
+		if (!container) {
+			return domNode.clientWidth;
+		}
+
 		var paddingLeft = parseInt(helpers.getStyle(container, 'padding-left'), 10);
 		var paddingRight = parseInt(helpers.getStyle(container, 'padding-right'), 10);
 		var w = container.clientWidth - paddingLeft - paddingRight;
 		var cw = helpers.getConstraintWidth(domNode);
-		return isNaN(cw)? w : Math.min(w, cw);
+		return isNaN(cw) ? w : Math.min(w, cw);
 	};
 	helpers.getMaximumHeight = function(domNode) {
 		var container = domNode.parentNode;
+		if (!container) {
+			return domNode.clientHeight;
+		}
+
 		var paddingTop = parseInt(helpers.getStyle(container, 'padding-top'), 10);
 		var paddingBottom = parseInt(helpers.getStyle(container, 'padding-bottom'), 10);
 		var h = container.clientHeight - paddingTop - paddingBottom;
 		var ch = helpers.getConstraintHeight(domNode);
-		return isNaN(ch)? h : Math.min(h, ch);
+		return isNaN(ch) ? h : Math.min(h, ch);
 	};
 	helpers.getStyle = function(el, property) {
 		return el.currentStyle ?
 			el.currentStyle[property] :
 			document.defaultView.getComputedStyle(el, null).getPropertyValue(property);
 	};
-	helpers.retinaScale = function(chart) {
-		var pixelRatio = chart.currentDevicePixelRatio = window.devicePixelRatio || 1;
+	helpers.retinaScale = function(chart, forceRatio) {
+		var pixelRatio = chart.currentDevicePixelRatio = forceRatio || window.devicePixelRatio || 1;
 		if (pixelRatio === 1) {
 			return;
 		}
@@ -837,9 +548,6 @@ module.exports = function(Chart) {
 		canvas.style.width = width + 'px';
 	};
 	// -- Canvas methods
-	helpers.clear = function(chart) {
-		chart.ctx.clearRect(0, 0, chart.width, chart.height);
-	};
 	helpers.fontString = function(pixelSize, fontStyle, fontFamily) {
 		return fontStyle + ' ' + pixelSize + 'px ' + fontFamily;
 	};
@@ -903,21 +611,8 @@ module.exports = function(Chart) {
 		});
 		return numberOfLines;
 	};
-	helpers.drawRoundedRectangle = function(ctx, x, y, width, height, radius) {
-		ctx.beginPath();
-		ctx.moveTo(x + radius, y);
-		ctx.lineTo(x + width - radius, y);
-		ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-		ctx.lineTo(x + width, y + height - radius);
-		ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-		ctx.lineTo(x + radius, y + height);
-		ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-		ctx.lineTo(x, y + radius);
-		ctx.quadraticCurveTo(x, y, x + radius, y);
-		ctx.closePath();
-	};
 
-	helpers.color = !color?
+	helpers.color = !color ?
 		function(value) {
 			console.error('Color.js not found!');
 			return value;
@@ -925,60 +620,16 @@ module.exports = function(Chart) {
 		function(value) {
 			/* global CanvasGradient */
 			if (value instanceof CanvasGradient) {
-				value = Chart.defaults.global.defaultColor;
+				value = defaults.global.defaultColor;
 			}
 
 			return color(value);
 		};
 
-	helpers.isArray = Array.isArray?
-		function(obj) {
-			return Array.isArray(obj);
-		} :
-		function(obj) {
-			return Object.prototype.toString.call(obj) === '[object Array]';
-		};
-	// ! @see http://stackoverflow.com/a/14853974
-	helpers.arrayEquals = function(a0, a1) {
-		var i, ilen, v0, v1;
-
-		if (!a0 || !a1 || a0.length !== a1.length) {
-			return false;
-		}
-
-		for (i = 0, ilen=a0.length; i < ilen; ++i) {
-			v0 = a0[i];
-			v1 = a1[i];
-
-			if (v0 instanceof Array && v1 instanceof Array) {
-				if (!helpers.arrayEquals(v0, v1)) {
-					return false;
-				}
-			} else if (v0 !== v1) {
-				// NOTE: two different object instances will never be equal: {x:20} != {x:20}
-				return false;
-			}
-		}
-
-		return true;
-	};
-	helpers.callback = function(fn, args, thisArg) {
-		if (fn && typeof fn.call === 'function') {
-			fn.apply(thisArg, args);
-		}
-	};
 	helpers.getHoverColor = function(colorValue) {
 		/* global CanvasPattern */
 		return (colorValue instanceof CanvasPattern) ?
 			colorValue :
 			helpers.color(colorValue).saturate(0.5).darken(0.1).rgbString();
 	};
-
-	/**
-	 * Provided for backward compatibility, use Chart.helpers#callback instead.
-	 * @function Chart.helpers#callCallback
-	 * @deprecated since version 2.6.0
-	 * @todo remove at version 3
-	 */
-	helpers.callCallback = helpers.callback;
 };

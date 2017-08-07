@@ -68,8 +68,8 @@ function acquireChart(config, options) {
 
 	// by default, remove chart animation and auto resize
 	config.options = config.options || {};
-	config.options.animation = config.options.animation === undefined? false : config.options.animation;
-	config.options.responsive = config.options.responsive === undefined? false : config.options.responsive;
+	config.options.animation = config.options.animation === undefined ? false : config.options.animation;
+	config.options.responsive = config.options.responsive === undefined ? false : config.options.responsive;
 	config.options.defaultFontFamily = config.options.defaultFontFamily || 'Arial';
 
 	wrapper.appendChild(canvas);
@@ -98,7 +98,7 @@ function injectCSS(css) {
 	var head = document.getElementsByTagName('head')[0];
 	var style = document.createElement('style');
 	style.setAttribute('type', 'text/css');
-	if (style.styleSheet) {   // IE
+	if (style.styleSheet) { // IE
 		style.styleSheet.cssText = css;
 	} else {
 		style.appendChild(document.createTextNode(css));
@@ -149,10 +149,20 @@ function specsFromFixtures(path) {
 	};
 }
 
+function waitForResize(chart, callback) {
+	var override = chart.resize;
+	chart.resize = function() {
+		chart.resize = override;
+		override.apply(this, arguments);
+		callback();
+	};
+}
+
 module.exports = {
 	injectCSS: injectCSS,
 	createCanvas: createCanvas,
 	acquireChart: acquireChart,
 	releaseChart: releaseChart,
-	specsFromFixtures: specsFromFixtures
+	specsFromFixtures: specsFromFixtures,
+	waitForResize: waitForResize
 };

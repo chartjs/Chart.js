@@ -17,7 +17,7 @@ This must be called before the canvas is reused for a new chart.
 myLineChart.destroy();
 ```
 
-## .update(duration, lazy)
+## .update(config)
 
 Triggers an update of the chart. This can be safely called after updating the data object. This will update all scales, legends, and then re-render the chart.
 
@@ -30,6 +30,21 @@ myLineChart.update(); // Calling update now animates the position of March from 
 
 > **Note:** replacing the data reference (e.g. `myLineChart.data = {datasets: [...]}` only works starting **version 2.6**. Prior that, replacing the entire data object could be achieved with the following workaround: `myLineChart.config.data = {datasets: [...]}`.
 
+A `config` object can be provided with additional configuration for the update process. This is useful when `update` is manually called inside an event handler and some different animation is desired.
+
+The following properties are supported:
+* **duration** (number): Time for the animation of the redraw in milliseconds
+* **lazy** (boolean): If true, the animation can be interrupted by other animations
+* **easing** (string): The animation easing function. See [Animation Easing](../configuration/animations.md) for possible values.
+
+Example:
+```javascript
+myChart.update({
+    duration: 800,
+    easing: 'easeOutBounce'
+})
+```
+
 See [Updating Charts](updates.md) for more details.
 
 ## .reset()
@@ -40,14 +55,20 @@ Reset the chart to it's state before the initial animation. A new animation can 
 myLineChart.reset();
 ```
 
-## .render(duration, lazy)
+## .render(config)
 
 Triggers a redraw of all chart elements. Note, this does not update elements for new data. Use `.update()` in that case.
+
+See `.update(config)` for more details on the config object.
 
 ```javascript
 // duration is the time for the animation of the redraw in milliseconds
 // lazy is a boolean. if true, the animation can be interrupted by other animations
-myLineChart.render(duration, lazy);
+myLineChart.render({
+	duration: 800,
+	lazy: false,
+	easing: 'easeOutBounce'
+});
 ```
 
 ## .stop()
@@ -105,6 +126,19 @@ Calling `getElementAtEvent(event)` on your Chart instance passing an argument of
 ```javascript
 myLineChart.getElementAtEvent(e);
 // => returns the first element at the event point.
+```
+
+To get an item that was clicked on, `getElementAtEvent` can be used.
+
+```javascript
+function clickHandler(evt) {
+    var item = myChart.getElementAtEvent(evt)[0];
+
+    if (item) {
+        var label = myChart.data.labels[firstPoint._index];
+        var value = myChart.data.datasets[firstPoint._datasetIndex].data[firstPoint._index];
+    }
+}
 ```
 
 ## .getElementsAtEvent(e)

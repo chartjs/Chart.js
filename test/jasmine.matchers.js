@@ -33,7 +33,7 @@ function buildPixelMatchPreview(actual, expected, diff, threshold, tolerance, co
 			'diff: ' + count + 'px ' +
 			'(' + toPercent(ratio) + '%)<br/>' +
 			'thr: ' + toPercent(threshold) + '%, ' +
-			'tol: '+ toPercent(tolerance) + '%'
+			'tol: ' + toPercent(tolerance) + '%'
 		}
 	].forEach(function(values) {
 		var item = document.createElement('div');
@@ -104,7 +104,7 @@ function toBeValidChart() {
 			}
 
 			return {
-				message: message? message : 'Expected ' + actual + ' to be valid chart',
+				message: message ? message : 'Expected ' + actual + ' to be valid chart',
 				pass: !message
 			};
 		}
@@ -122,9 +122,9 @@ function toBeChartOfSize() {
 			var message = null;
 			var canvas = actual.ctx.canvas;
 			var style = getComputedStyle(canvas);
-			var pixelRatio = window.devicePixelRatio;
-			var dh = parseInt(style.height, 10);
-			var dw = parseInt(style.width, 10);
+			var pixelRatio = actual.options.devicePixelRatio || window.devicePixelRatio;
+			var dh = parseInt(style.height, 10) || 0;
+			var dw = parseInt(style.width, 10) || 0;
 			var rh = canvas.height;
 			var rw = canvas.width;
 			var orh = rh / pixelRatio;
@@ -149,7 +149,7 @@ function toBeChartOfSize() {
 			}
 
 			return {
-				message: message? message : 'Expected ' + actual + ' to be a chart of size ' + expected,
+				message: message ? message : 'Expected ' + actual + ' to be a chart of size ' + expected,
 				pass: !message
 			};
 		}
@@ -161,8 +161,8 @@ function toEqualImageData() {
 		compare: function(actual, expected, opts) {
 			var message = null;
 			var debug = opts.debug || false;
-			var tolerance = opts.tolerance === undefined? 0.001 : opts.tolerance;
-			var threshold = opts.threshold === undefined? 0.1 : opts.threshold;
+			var tolerance = opts.tolerance === undefined ? 0.001 : opts.tolerance;
+			var threshold = opts.threshold === undefined ? 0.1 : opts.threshold;
 			var ctx, idata, ddata, w, h, count, ratio;
 
 			if (actual instanceof Chart) {

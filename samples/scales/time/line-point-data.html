@@ -77,10 +77,10 @@
 			},
 			options: {
 				responsive: true,
-                title:{
-                    display:true,
-                    text:"Chart.js Time Point Data"
-                },
+				title:{
+					display:true,
+					text:"Chart.js Time Point Data"
+				},
 				scales: {
 					xAxes: [{
 						type: "time",
@@ -88,7 +88,13 @@
 						scaleLabel: {
 							display: true,
 							labelString: 'Date'
-						}
+						},
+                        ticks: {
+                            major: {
+                                fontStyle: "bold",
+                                fontColor: "#FF0000"
+                            }
+                        }
 					}],
 					yAxes: [{
 						display: true,
@@ -104,7 +110,6 @@
 		window.onload = function() {
 			var ctx = document.getElementById("canvas").getContext("2d");
 			window.myLine = new Chart(ctx, config);
-
 		};
 
 		document.getElementById('randomizeData').addEventListener('click', function() {

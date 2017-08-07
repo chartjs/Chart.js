@@ -30,8 +30,9 @@ describe('Category scale tests', function() {
 			},
 			position: 'bottom',
 			scaleLabel: {
+				display: false,
 				labelString: '',
-				display: false
+				lineHeight: 1.2
 			},
 			ticks: {
 				beginAtZero: false,
@@ -41,10 +42,12 @@ describe('Category scale tests', function() {
 				padding: 0,
 				reverse: false,
 				display: true,
-				callback: defaultConfig.ticks.callback,  // make this nicer, then check explicitly below
+				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
 				autoSkip: true,
 				autoSkipPadding: 0,
-				labelOffset: 0
+				labelOffset: 0,
+				minor: {},
+				major: {},
 			}
 		});
 
@@ -106,7 +109,7 @@ describe('Category scale tests', function() {
 		expect(scale.ticks).toEqual(mockData.xLabels);
 	});
 
-	it('Should generate ticks from the data xLabels', function() {
+	it('Should generate ticks from the data yLabels', function() {
 		var scaleID = 'myScale';
 
 		var mockData = {
@@ -132,6 +135,28 @@ describe('Category scale tests', function() {
 		scale.determineDataLimits();
 		scale.buildTicks();
 		expect(scale.ticks).toEqual(mockData.yLabels);
+	});
+
+	it('Should generate ticks from the axis labels', function() {
+		var labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'];
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				data: [10, 5, 0, 25, 78]
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'x',
+						type: 'category',
+						labels: labels
+					}]
+				}
+			}
+		});
+
+		var scale = chart.scales.x;
+		expect(scale.ticks).toEqual(labels);
 	});
 
 	it ('should get the correct label for the index', function() {

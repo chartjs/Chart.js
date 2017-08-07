@@ -28,8 +28,9 @@ describe('Linear Scale', function() {
 			},
 			position: 'left',
 			scaleLabel: {
-				labelString: '',
 				display: false,
+				labelString: '',
+				lineHeight: 1.2
 			},
 			ticks: {
 				beginAtZero: false,
@@ -42,7 +43,9 @@ describe('Linear Scale', function() {
 				callback: defaultConfig.ticks.callback, // make this work nicer, then check below
 				autoSkip: true,
 				autoSkipPadding: 0,
-				labelOffset: 0
+				labelOffset: 0,
+				minor: {},
+				major: {},
 			}
 		});
 
@@ -770,15 +773,15 @@ describe('Linear Scale', function() {
 		expect(xScale.paddingBottom).toBeCloseToPixel(0);
 		expect(xScale.paddingLeft).toBeCloseToPixel(0);
 		expect(xScale.paddingRight).toBeCloseToPixel(0);
-		expect(xScale.width).toBeCloseToPixel(450);
-		expect(xScale.height).toBeCloseToPixel(46);
+		expect(xScale.width).toBeCloseToPixel(454);
+		expect(xScale.height).toBeCloseToPixel(42);
 
 		expect(yScale.paddingTop).toBeCloseToPixel(0);
 		expect(yScale.paddingBottom).toBeCloseToPixel(0);
 		expect(yScale.paddingLeft).toBeCloseToPixel(0);
 		expect(yScale.paddingRight).toBeCloseToPixel(0);
-		expect(yScale.width).toBeCloseToPixel(48);
-		expect(yScale.height).toBeCloseToPixel(434);
+		expect(yScale.width).toBeCloseToPixel(44);
+		expect(yScale.height).toBeCloseToPixel(438);
 	});
 
 	it('should fit correctly when display is turned off', function() {
@@ -818,7 +821,8 @@ describe('Linear Scale', function() {
 							drawBorder: false
 						},
 						scaleLabel: {
-							display: false
+							display: false,
+							lineHeight: 1.2
 						},
 						ticks: {
 							display: false,
@@ -874,5 +878,34 @@ describe('Linear Scale', function() {
 
 		expect(chart.scales['x-axis-0'].min).toEqual(0);
 		expect(chart.scales['x-axis-0'].max).toEqual(1);
+	});
+
+	it('max and min value should be valid when min is set and all datasets are hidden', function() {
+		var barData = {
+			labels: ['S1', 'S2', 'S3'],
+			datasets: [{
+				label: 'dataset 1',
+				backgroundColor: '#382765',
+				data: [2500, 2000, 1500],
+				hidden: true,
+			}]
+		};
+
+		var chart = window.acquireChart({
+			type: 'horizontalBar',
+			data: barData,
+			options: {
+				scales: {
+					xAxes: [{
+						ticks: {
+							min: 20
+						}
+					}]
+				}
+			}
+		});
+
+		expect(chart.scales['x-axis-0'].min).toEqual(20);
+		expect(chart.scales['x-axis-0'].max).toEqual(21);
 	});
 });

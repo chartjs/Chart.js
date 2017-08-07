@@ -69,9 +69,9 @@ All point* properties can be specified as an array. If these are set to an array
 | Name | Type | Description
 | ---- | ---- | -----------
 | `label` | `String` | The label for the dataset which appears in the legend and tooltips.
-| `backgroundColor` | `Color/Color[]` | The fill color under the line. See [Colors](../general/colors.md#colors)
-| `borderColor` | `Color/Color[]` | The color of the line. See [Colors](../general/colors.md#colors)
-| `borderWidth` | `Number/Number[]` | The width of the line in pixels.
+| `backgroundColor` | `Color` | The fill color under the line. See [Colors](../general/colors.md#colors)
+| `borderColor` | `Color` | The color of the line. See [Colors](../general/colors.md#colors)
+| `borderWidth` | `Number` | The width of the line in pixels.
 | `borderDash` | `Number[]` | Length and spacing of dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
 | `borderDashOffset` | `Number` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
 | `borderCapStyle` | `String` | Cap style of the line. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap)
@@ -82,7 +82,7 @@ All point* properties can be specified as an array. If these are set to an array
 | `pointBorderColor` | `Color/Color[]` | The border color for points.
 | `pointBorderWidth` | `Number/Number[]` | The width of the point border in pixels.
 | `pointRadius` | `Number/Number[]` | The radius of the point shape. If set to 0, the point is not rendered.
-| `pointStyle` | `String/String[]/Image/Image[]` | Style of the point. [more...](#pointStyle)
+| `pointStyle` | `String/String[]/Image/Image[]` | Style of the point. [more...](#pointstyle)
 | `pointHitRadius` | `Number/Number[]` | The pixel size of the non-displayed point that reacts to mouse events.
 | `pointHoverBackgroundColor` | `Color/Color[]` | Point background color when hovered.
 | `pointHoverBorderColor` | `Color/Color[]` | Point border color when hovered.

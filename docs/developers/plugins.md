@@ -1,6 +1,6 @@
 # Plugins
 
-Plugins are the most efficient way to customize or change the default behavior of a chart. They have been introduced at [version 2.1.0](https://github.com/chartjs/Chart.js/releases/tag/2.1.0) (global plugins only) and extended at [version 2.5.0](https://github.com/chartjs/Chart.js/releases/tag/2.5.0) (per chart plugins and options).
+Plugins are the most efficient way to customize or change the default behavior of a chart. They have been introduced at [version 2.1.0](https://github.com/chartjs/Chart.js/releases/tag/2.1.0) (global plugins only) and extended at [version 2.5.0](https://github.com/chartjs/Chart.js/releases/tag/v2.5.0) (per chart plugins and options).
 
 ## Using plugins
 
@@ -106,7 +106,7 @@ var chart = new Chart(ctx, {
 
 ## Plugin Core API
 
-Available hooks (as of version 2.5):
+Available hooks (as of version 2.6):
 
 * beforeInit
 * afterInit
@@ -116,12 +116,16 @@ Available hooks (as of version 2.5):
 * afterLayout
 * beforeDatasetsUpdate *(cancellable)*
 * afterDatasetsUpdate
+* beforeDatasetUpdate *(cancellable)*
+* afterDatasetUpdate
 * beforeRender *(cancellable)*
 * afterRender
 * beforeDraw *(cancellable)*
 * afterDraw
 * beforeDatasetsDraw *(cancellable)*
 * afterDatasetsDraw
+* beforeDatasetDraw *(cancellable)*
+* afterDatasetDraw
 * beforeEvent *(cancellable)*
 * afterEvent
 * resize

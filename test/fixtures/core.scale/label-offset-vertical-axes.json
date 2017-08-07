@@ -1,0 +1,41 @@
+{
+    "config": {
+        "type": "horizontalBar",
+        "data": {
+            "labels": ["\u25C0", "\u25A0", "\u25C6", "\u25CF"],
+            "datasets": [{
+                "data": [12, 19, 3, 5]
+            }]
+        },
+        "options": {
+            "legend": false,
+            "title": false,
+            "scales": {
+                "xAxes": [{
+                    "ticks": {
+                        "display": false
+                    },
+                    "gridLines":{
+                        "display": false,
+                        "drawBorder": false
+                    }
+                }],
+                "yAxes": [{
+                    "ticks": {
+                        "labelOffset": 25
+                    },
+                    "gridLines":{
+                        "display": false,
+                        "drawBorder": false
+                    }
+                }]
+            }
+        }
+    },
+    "options": {
+        "canvas": {
+            "height": 256,
+            "width": 512
+        }
+    }
+}
