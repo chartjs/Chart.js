@@ -504,8 +504,19 @@ module.exports = function(Chart) {
 			return domNode.clientWidth;
 		}
 
-		var paddingLeft = parseInt(helpers.getStyle(container, 'padding-left'), 10);
-		var paddingRight = parseInt(helpers.getStyle(container, 'padding-right'), 10);
+		var paddingLeft = helpers.getStyle(container, 'padding-left');
+		var paddingRight = helpers.getStyle(container, 'padding-right');
+		
+		if (paddingLeft.indexOf('%') > -1)
+		    paddingLeft = container.clientWidth / parseInt(paddingLeft, 10);
+		else
+		    paddingLeft = parseInt(paddingLeft, 10);
+
+		if (paddingRight.indexOf('%') > -1)
+		    paddingRight = container.clientWidth / parseInt(paddingRight, 10);
+		else
+		    paddingRight = parseInt(paddingRight, 10);
+		
 		var w = container.clientWidth - paddingLeft - paddingRight;
 		var cw = helpers.getConstraintWidth(domNode);
 		return isNaN(cw) ? w : Math.min(w, cw);
@@ -516,8 +527,19 @@ module.exports = function(Chart) {
 			return domNode.clientHeight;
 		}
 
-		var paddingTop = parseInt(helpers.getStyle(container, 'padding-top'), 10);
-		var paddingBottom = parseInt(helpers.getStyle(container, 'padding-bottom'), 10);
+		var paddingTop = helpers.getStyle(container, 'padding-top');
+		var paddingBottom = helpers.getStyle(container, 'padding-bottom');
+		
+		if (paddingTop.indexOf('%') > -1)
+		    paddingTop = container.clientHeight / parseInt(paddingTop, 10);
+		else
+		    paddingTop = parseInt(paddingTop, 10);
+
+		if (paddingBottom.indexOf('%') > -1)
+		    paddingBottom = container.clientHeight / parseInt(paddingBottom, 10);
+		else
+		    paddingBottom = parseInt(paddingBottom, 10);
+		
 		var h = container.clientHeight - paddingTop - paddingBottom;
 		var ch = helpers.getConstraintHeight(domNode);
 		return isNaN(ch) ? h : Math.min(h, ch);
