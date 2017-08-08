@@ -513,7 +513,7 @@ module.exports = function(Chart) {
 		    paddingLeft = parseInt(paddingLeft, 10);
 		}
 
-		if (paddingRight.indexOf('%') > -1){
+		if (paddingRight.indexOf('%') > -1) {
 		    paddingRight = container.clientWidth / parseInt(paddingRight, 10);
 		} else {
 		    paddingRight = parseInt(paddingRight, 10);
@@ -531,7 +531,7 @@ module.exports = function(Chart) {
 
 		var paddingTop = helpers.getStyle(container, 'padding-top');
 		var paddingBottom = helpers.getStyle(container, 'padding-bottom');
-		
+
 		if (paddingTop.indexOf('%') > -1) {
 		    paddingTop = container.clientHeight / parseInt(paddingTop, 10);
 		} else {
