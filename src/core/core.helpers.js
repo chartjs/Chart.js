@@ -508,15 +508,15 @@ module.exports = function(Chart) {
 		var paddingRight = helpers.getStyle(container, 'padding-right');
 
 		if (paddingLeft.indexOf('%') > -1) {
-		    paddingLeft = container.clientWidth / parseInt(paddingLeft, 10);
+			paddingLeft = container.clientWidth / parseInt(paddingLeft, 10);
 		} else {
-		    paddingLeft = parseInt(paddingLeft, 10);
+			paddingLeft = parseInt(paddingLeft, 10);
 		}
 
 		if (paddingRight.indexOf('%') > -1) {
-		    paddingRight = container.clientWidth / parseInt(paddingRight, 10);
+			paddingRight = container.clientWidth / parseInt(paddingRight, 10);
 		} else {
-		    paddingRight = parseInt(paddingRight, 10);
+			paddingRight = parseInt(paddingRight, 10);
 		}
 
 		var w = container.clientWidth - paddingLeft - paddingRight;
@@ -533,13 +533,13 @@ module.exports = function(Chart) {
 		var paddingBottom = helpers.getStyle(container, 'padding-bottom');
 
 		if (paddingTop.indexOf('%') > -1) {
-		    paddingTop = container.clientHeight / parseInt(paddingTop, 10);
+			paddingTop = container.clientHeight / parseInt(paddingTop, 10);
 		} else {
-		    paddingTop = parseInt(paddingTop, 10);
+			paddingTop = parseInt(paddingTop, 10);
 		}
 
 		if (paddingBottom.indexOf('%') > -1) {
-		    paddingBottom = container.clientHeight / parseInt(paddingBottom, 10);
+			paddingBottom = container.clientHeight / parseInt(paddingBottom, 10);
 		} else {
 			paddingBottom = parseInt(paddingBottom, 10);
 		}
