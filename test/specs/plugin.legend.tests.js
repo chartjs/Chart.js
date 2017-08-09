@@ -20,6 +20,8 @@ describe('Legend block tests', function() {
 			labels: {
 				boxWidth: 40,
 				padding: 10,
+				center: true,
+				hiddenSymbol: 'stroke',
 				generateLabels: jasmine.any(Function)
 			}
 		});
@@ -63,6 +65,8 @@ describe('Legend block tests', function() {
 			lineWidth: undefined,
 			strokeStyle: undefined,
 			pointStyle: undefined,
+			center: undefined,
+			hiddenSymbol: undefined,
 			datasetIndex: 0
 		}, {
 			text: 'dataset2',
@@ -75,6 +79,8 @@ describe('Legend block tests', function() {
 			lineWidth: undefined,
 			strokeStyle: undefined,
 			pointStyle: undefined,
+			center: undefined,
+			hiddenSymbol: undefined,
 			datasetIndex: 1
 		}, {
 			text: 'dataset3',
@@ -84,6 +90,8 @@ describe('Legend block tests', function() {
 			lineDash: undefined,
 			lineDashOffset: undefined,
 			lineJoin: undefined,
+			center: undefined,
+			hiddenSymbol: undefined,
 			lineWidth: 10,
 			strokeStyle: 'green',
 			pointStyle: 'crossRot',
@@ -140,6 +148,8 @@ describe('Legend block tests', function() {
 			lineWidth: undefined,
 			strokeStyle: undefined,
 			pointStyle: undefined,
+			center: undefined,
+			hiddenSymbol: undefined,
 			datasetIndex: 0
 		}, {
 			text: 'dataset3',
@@ -149,6 +159,8 @@ describe('Legend block tests', function() {
 			lineDash: undefined,
 			lineDashOffset: undefined,
 			lineJoin: undefined,
+			center: undefined,
+			hiddenSymbol: undefined,
 			lineWidth: 10,
 			strokeStyle: 'green',
 			pointStyle: 'crossRot',
@@ -172,9 +184,7 @@ describe('Legend block tests', function() {
 					labels: []
 				},
 				options: {
-					legend: {
-						labels: false,
-					}
+					legend: {}
 				}
 			});
 		};

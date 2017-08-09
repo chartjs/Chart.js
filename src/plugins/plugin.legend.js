@@ -1,11 +1,12 @@
 'use strict';
 
-var defaults = require('../core/core.defaults');
-var Element = require('../core/core.element');
-var helpers = require('../helpers/index');
+module.exports = function(Chart) {
 
-defaults._set('global', {
-	legend: {
+	var helpers = Chart.helpers;
+	var layout = Chart.layoutService;
+	var noop = helpers.noop;
+
+	Chart.defaults.global.legend = {
 		display: true,
 		position: 'top',
 		fullWidth: true,
@@ -30,6 +31,8 @@ defaults._set('global', {
 		labels: {
 			boxWidth: 40,
 			padding: 10,
+			center: true,
+			hiddenSymbol: 'stroke',
 			// Generates labels shown in the legend
 			// Valid properties to return:
 			// text : text to display
@@ -46,6 +49,8 @@ defaults._set('global', {
 				return helpers.isArray(data.datasets) ? data.datasets.map(function(dataset, i) {
 					return {
 						text: dataset.label,
+						center: dataset.center,
+						hiddenSymbol: dataset.hiddenSymbol,
 						fillStyle: (!helpers.isArray(dataset.backgroundColor) ? dataset.backgroundColor : dataset.backgroundColor[0]),
 						hidden: !chart.isDatasetVisible(i),
 						lineCap: dataset.borderCapStyle,
@@ -62,27 +67,7 @@ defaults._set('global', {
 				}, this) : [];
 			}
 		}
-	},
-
-	legendCallback: function(chart) {
-		var text = [];
-		text.push('<ul class="' + chart.id + '-legend">');
-		for (var i = 0; i < chart.data.datasets.length; i++) {
-			text.push('<li><span style="background-color:' + chart.data.datasets[i].backgroundColor + '"></span>');
-			if (chart.data.datasets[i].label) {
-				text.push(chart.data.datasets[i].label);
-			}
-			text.push('</li>');
-		}
-		text.push('</ul>');
-		return text.join('');
-	}
-});
-
-module.exports = function(Chart) {
-
-	var layout = Chart.layoutService;
-	var noop = helpers.noop;
+	};
 
 	/**
 	 * Helper function to get the box width based on the usePointStyle option
@@ -96,7 +81,38 @@ module.exports = function(Chart) {
 			labelOpts.boxWidth;
 	}
 
-	Chart.Legend = Element.extend({
+	/**
+	 * Draw the appropriate symbol based on configuration
+	 * @param name {String} the symbol name
+	 */
+
+	function drawHiddenSymbol(name, ctx, boxWidth, fontSize, textWidth, x, y) {
+		ctx.save();
+		switch (name) {
+		case 'check':
+			var padding = boxWidth / 8;
+			ctx.beginPath();
+			ctx.lineWidth = 4;
+			ctx.strokeStyle = '#ffffff';
+			ctx.lineCap = 'round';
+			ctx.moveTo(x + padding, y + (fontSize / 2));
+			ctx.lineTo((boxWidth / 2) + x, y + fontSize - padding);
+			ctx.lineTo((boxWidth + x) - padding, y + padding);
+			ctx.stroke();
+			break;
+		case 'stroke':
+		default:
+			// Strikethrough the text
+			ctx.beginPath();
+			ctx.lineWidth = 2;
+			ctx.moveTo(boxWidth + (fontSize / 2) + x, y + (fontSize / 2));
+			ctx.lineTo(boxWidth + (fontSize / 2) + x + textWidth, y + (fontSize / 2));
+			ctx.stroke();
+		}
+		ctx.restore();
+	}
+
+	Chart.Legend = Chart.Element.extend({
 
 		initialize: function(config) {
 			helpers.extend(this, config);
@@ -182,8 +198,8 @@ module.exports = function(Chart) {
 		beforeBuildLabels: noop,
 		buildLabels: function() {
 			var me = this;
-			var labelOpts = me.options.labels || {};
-			var legendItems = helpers.callback(labelOpts.generateLabels, [me.chart], me) || [];
+			var labelOpts = me.options.labels;
+			var legendItems = labelOpts.generateLabels.call(me, me.chart);
 
 			if (labelOpts.filter) {
 				legendItems = legendItems.filter(function(item) {
@@ -210,12 +226,12 @@ module.exports = function(Chart) {
 
 			var ctx = me.ctx;
 
-			var globalDefault = defaults.global;
-			var valueOrDefault = helpers.valueOrDefault;
-			var fontSize = valueOrDefault(labelOpts.fontSize, globalDefault.defaultFontSize);
-			var fontStyle = valueOrDefault(labelOpts.fontStyle, globalDefault.defaultFontStyle);
-			var fontFamily = valueOrDefault(labelOpts.fontFamily, globalDefault.defaultFontFamily);
-			var labelFont = helpers.fontString(fontSize, fontStyle, fontFamily);
+			var globalDefault = Chart.defaults.global;
+			var	itemOrDefault = helpers.getValueOrDefault;
+			var	fontSize = itemOrDefault(labelOpts.fontSize, globalDefault.defaultFontSize);
+			var	fontStyle = itemOrDefault(labelOpts.fontStyle, globalDefault.defaultFontStyle);
+			var	fontFamily = itemOrDefault(labelOpts.fontFamily, globalDefault.defaultFontFamily);
+			var	labelFont = helpers.fontString(fontSize, fontStyle, fontFamily);
 
 			// Reset hit boxes
 			var hitboxes = me.legendHitBoxes = [];
@@ -322,24 +338,24 @@ module.exports = function(Chart) {
 			var me = this;
 			var opts = me.options;
 			var labelOpts = opts.labels;
-			var globalDefault = defaults.global;
-			var lineDefault = globalDefault.elements.line;
-			var legendWidth = me.width;
-			var lineWidths = me.lineWidths;
+			var globalDefault = Chart.defaults.global;
+			var	lineDefault = globalDefault.elements.line;
+			var	legendWidth = me.width;
+			var	lineWidths = me.lineWidths;
 
 			if (opts.display) {
 				var ctx = me.ctx;
-				var valueOrDefault = helpers.valueOrDefault;
-				var fontColor = valueOrDefault(labelOpts.fontColor, globalDefault.defaultFontColor);
-				var fontSize = valueOrDefault(labelOpts.fontSize, globalDefault.defaultFontSize);
-				var fontStyle = valueOrDefault(labelOpts.fontStyle, globalDefault.defaultFontStyle);
-				var fontFamily = valueOrDefault(labelOpts.fontFamily, globalDefault.defaultFontFamily);
-				var labelFont = helpers.fontString(fontSize, fontStyle, fontFamily);
 				var cursor;
+				var itemOrDefault = helpers.getValueOrDefault;
+				var fontColor = itemOrDefault(labelOpts.fontColor, globalDefault.defaultFontColor);
+				var fontSize = itemOrDefault(labelOpts.fontSize, globalDefault.defaultFontSize);
+				var fontStyle = itemOrDefault(labelOpts.fontStyle, globalDefault.defaultFontStyle);
+				var fontFamily = itemOrDefault(labelOpts.fontFamily, globalDefault.defaultFontFamily);
+				var labelFont = helpers.fontString(fontSize, fontStyle, fontFamily);
 
 				// Canvas setup
 				ctx.textAlign = 'left';
-				ctx.textBaseline = 'middle';
+				ctx.textBaseline = 'top';
 				ctx.lineWidth = 0.5;
 				ctx.strokeStyle = fontColor; // for strikethrough effect
 				ctx.fillStyle = fontColor; // render in correct colour
@@ -357,17 +373,17 @@ module.exports = function(Chart) {
 					// Set the ctx for the box
 					ctx.save();
 
-					ctx.fillStyle = valueOrDefault(legendItem.fillStyle, globalDefault.defaultColor);
-					ctx.lineCap = valueOrDefault(legendItem.lineCap, lineDefault.borderCapStyle);
-					ctx.lineDashOffset = valueOrDefault(legendItem.lineDashOffset, lineDefault.borderDashOffset);
-					ctx.lineJoin = valueOrDefault(legendItem.lineJoin, lineDefault.borderJoinStyle);
-					ctx.lineWidth = valueOrDefault(legendItem.lineWidth, lineDefault.borderWidth);
-					ctx.strokeStyle = valueOrDefault(legendItem.strokeStyle, globalDefault.defaultColor);
-					var isLineWidthZero = (valueOrDefault(legendItem.lineWidth, lineDefault.borderWidth) === 0);
+					ctx.fillStyle = itemOrDefault(legendItem.fillStyle, globalDefault.defaultColor);
+					ctx.lineCap = itemOrDefault(legendItem.lineCap, lineDefault.borderCapStyle);
+					ctx.lineDashOffset = itemOrDefault(legendItem.lineDashOffset, lineDefault.borderDashOffset);
+					ctx.lineJoin = itemOrDefault(legendItem.lineJoin, lineDefault.borderJoinStyle);
+					ctx.lineWidth = itemOrDefault(legendItem.lineWidth, lineDefault.borderWidth);
+					ctx.strokeStyle = itemOrDefault(legendItem.strokeStyle, globalDefault.defaultColor);
+					var isLineWidthZero = (itemOrDefault(legendItem.lineWidth, lineDefault.borderWidth) === 0);
 
 					if (ctx.setLineDash) {
 						// IE 9 and 10 do not support line dash
-						ctx.setLineDash(valueOrDefault(legendItem.lineDash, lineDefault.borderDash));
+						ctx.setLineDash(itemOrDefault(legendItem.lineDash, lineDefault.borderDash));
 					}
 
 					if (opts.labels && opts.labels.usePointStyle) {
@@ -379,7 +395,7 @@ module.exports = function(Chart) {
 						var centerY = y + offSet;
 
 						// Draw pointStyle as legend symbol
-						helpers.canvas.drawPoint(ctx, legendItem.pointStyle, radius, centerX, centerY);
+						Chart.canvasHelpers.drawPoint(ctx, legendItem.pointStyle, radius, centerX, centerY);
 					} else {
 						// Draw box as legend symbol
 						if (!isLineWidthZero) {
@@ -391,19 +407,14 @@ module.exports = function(Chart) {
 					ctx.restore();
 				};
 				var fillText = function(x, y, legendItem, textWidth) {
-					var halfFontSize = fontSize / 2;
-					var xLeft = boxWidth + halfFontSize + x;
-					var yMiddle = y + halfFontSize;
+					ctx.fillText(legendItem.text, boxWidth + (fontSize / 2) + x, y);
 
-					ctx.fillText(legendItem.text, xLeft, yMiddle);
-
-					if (legendItem.hidden) {
-						// Strikethrough the text if hidden
-						ctx.beginPath();
-						ctx.lineWidth = 2;
-						ctx.moveTo(xLeft, yMiddle);
-						ctx.lineTo(xLeft + textWidth, yMiddle);
-						ctx.stroke();
+					if (labelOpts.hiddenSymbol === 'check') {
+						if (!legendItem.hidden) {
+							drawHiddenSymbol(labelOpts.hiddenSymbol, ctx, boxWidth, fontSize, textWidth, x, y);
+						}
+					} else if (legendItem.hidden) {
+						drawHiddenSymbol(labelOpts.hiddenSymbol, ctx, boxWidth, fontSize, textWidth, x, y);
 					}
 				};
 
@@ -411,7 +422,7 @@ module.exports = function(Chart) {
 				var isHorizontal = me.isHorizontal();
 				if (isHorizontal) {
 					cursor = {
-						x: me.left + ((legendWidth - lineWidths[0]) / 2),
+						x: me.left + ((labelOpts.center ? (legendWidth - lineWidths[0]) : 0) / 2),
 						y: me.top + labelOpts.padding,
 						line: 0
 					};
@@ -426,9 +437,9 @@ module.exports = function(Chart) {
 				var itemHeight = fontSize + labelOpts.padding;
 				helpers.each(me.legendItems, function(legendItem, i) {
 					var textWidth = ctx.measureText(legendItem.text).width;
-					var width = boxWidth + (fontSize / 2) + textWidth;
-					var x = cursor.x;
-					var y = cursor.y;
+					var	width = boxWidth + (fontSize / 2) + textWidth;
+					var	x = cursor.x;
+					var	y = cursor.y;
 
 					if (isHorizontal) {
 						if (x + width >= legendWidth) {
@@ -543,7 +554,7 @@ module.exports = function(Chart) {
 			var legend = chart.legend;
 
 			if (legendOpts) {
-				helpers.mergeIf(legendOpts, defaults.global.legend);
+				legendOpts = helpers.configMerge(Chart.defaults.global.legend, legendOpts);
 
 				if (legend) {
 					layout.configure(chart, legend, legendOpts);
