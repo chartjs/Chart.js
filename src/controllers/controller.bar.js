@@ -160,7 +160,7 @@ module.exports = function(Chart) {
 			var vscale = me.getValueScale();
 			var base = vscale.getBasePixel();
 			var horizontal = vscale.isHorizontal();
-			var ruler = (!me._ruler || index >= me._ruler.length) ? me.getRuler() : me._ruler;
+			var ruler = me._ruler || me.getRuler();
 			var vpixels = me.calculateBarValuePixels(me.index, index);
 			var ipixels = me.calculateBarIndexPixels(me.index, index, ruler);
 
@@ -240,55 +240,25 @@ module.exports = function(Chart) {
 		getRuler: function() {
 			var me = this;
 			var scale = me.getIndexScale();
-			var options = scale.options;
 			var stackCount = me.getStackCount();
 			var datasetIndex = me.index;
-			var length = me.getMeta().data.length;
 			var pixels = [];
-			var ruler = [];
 			var isHorizontal = scale.isHorizontal();
-			var min = isHorizontal ? scale.left : scale.top;
-			var max = min + (isHorizontal ? scale.width : scale.height);
-			var i, leftSampleSize, rightSampleSize, leftCategorySize, rightCategorySize, fullBarSize, barSize;
+			var start = isHorizontal ? scale.left : scale.top;
+			var end = start + (isHorizontal ? scale.width : scale.height);
+			var i, ilen;
 
-			// First pass: store data pixels
-			for (i = 0; i < length; ++i) {
+			for (i = 0, ilen = me.getMeta().data.length; i < ilen; ++i) {
 				pixels.push(scale.getPixelForValue(null, i, datasetIndex));
 			}
 
-			// Second pass: calculate the left and right half of bar size separately
-			for (i = 0; i < length; ++i) {
-				if (i > 0) {
-					leftSampleSize = (pixels[i] - pixels[i - 1]) / 2; // half of the left interval
-				} else if (length > 1) {
-					leftSampleSize = (pixels[1] - pixels[0]) / 2; // half of the right interval
-				} else {
-					leftSampleSize = pixels[0] > min ? pixels[0] - min : max - pixels[0];
-				}
-				if (i < length - 1) {
-					rightSampleSize = (pixels[i + 1] - pixels[i]) / 2; // half of the right interval
-				} else if (length > 1) {
-					rightSampleSize = (pixels[length - 1] - pixels[length - 2]) / 2; // half of the left interval
-				} else {
-					rightSampleSize = pixels[0] < max ? max - pixels[0] : pixels[0] - min;
-				}
-				leftCategorySize = leftSampleSize * options.categoryPercentage;
-				rightCategorySize = rightSampleSize * options.categoryPercentage;
-				fullBarSize = (leftCategorySize + rightCategorySize) / stackCount;
-				barSize = fullBarSize * options.barPercentage;
-
-				barSize = Math.min(
-					helpers.valueOrDefault(options.barThickness, barSize),
-					helpers.valueOrDefault(options.maxBarThickness, Infinity));
-
-				ruler.push({
-					base: pixels[i] - leftCategorySize + (fullBarSize - barSize) / 2,
-					fullBarSize: fullBarSize,
-					barSize: barSize
-				});
-			}
-
-			return ruler;
+			return {
+				pixels: pixels,
+				start: start,
+				end: end,
+				stackCount: stackCount,
+				scale: scale
+			};
 		},
 
 		/**
@@ -341,11 +311,45 @@ module.exports = function(Chart) {
 		 */
 		calculateBarIndexPixels: function(datasetIndex, index, ruler) {
 			var me = this;
+			var options = ruler.scale.options;
 			var stackIndex = me.getStackIndex(datasetIndex);
-			var base = ruler[index].base;
-			var size = ruler[index].barSize;
+			var pixels = ruler.pixels;
+			var base = pixels[index];
+			var length = pixels.length;
+			var start = ruler.start;
+			var end = ruler.end;
+			var leftSampleSize, rightSampleSize, leftCategorySize, rightCategorySize, fullBarSize, size;
 
-			base += ruler[index].fullBarSize * stackIndex;
+			if (length === 1) {
+				leftSampleSize = base > start ? base - start : end - base;
+				rightSampleSize = base < end ? end - base : base - start;
+			} else {
+				if (index > 0) {
+					leftSampleSize = (base - pixels[index - 1]) / 2;
+					if (index === length - 1) {
+						rightSampleSize = leftSampleSize;
+					}
+				}
+				if (index < length - 1) {
+					rightSampleSize = (pixels[index + 1] - base) / 2;
+					if (index === 0) {
+						leftSampleSize = rightSampleSize;
+					}
+				}
+			}
+
+			leftCategorySize = leftSampleSize * options.categoryPercentage;
+			rightCategorySize = rightSampleSize * options.categoryPercentage;
+			fullBarSize = (leftCategorySize + rightCategorySize) / ruler.stackCount;
+			size = fullBarSize * options.barPercentage;
+
+			size = Math.min(
+				helpers.valueOrDefault(options.barThickness, size),
+				helpers.valueOrDefault(options.maxBarThickness, Infinity));
+
+			base -= leftCategorySize;
+			base += fullBarSize * stackIndex;
+			base += (fullBarSize - size) / 2;
 
 			return {
 				size: size,
