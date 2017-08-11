@@ -69,6 +69,19 @@ function labelsFromTicks(ticks) {
 	return labels;
 }
 
+function getLineValue(scale, index, offsetGridLines) {
+	var lineValue = scale.getPixelForTick(index);
+
+	if (offsetGridLines) {
+		if (index === 0) {
+			lineValue -= (scale.getPixelForTick(1) - lineValue) / 2;
+		} else {
+			lineValue -= (lineValue - scale.getPixelForTick(index - 1)) / 2;
+		}
+	}
+	return lineValue;
+}
+
 module.exports = function(Chart) {
 
 	function computeTextSize(context, tick, font) {
@@ -695,18 +708,9 @@ module.exports = function(Chart) {
 						labelY = me.bottom - labelYOffset;
 					}
 
-					var xLineValue; // xvalues for grid lines
-					if (gridLines.offsetGridLines && ticks.length > 1) {
-						if (index === 0) {
-							xLineValue = (me.getPixelForTick(0) * 3 - me.getPixelForTick(1)) / 2;
-							if (xLineValue < me.left) {
-								lineColor = 'rgba(0,0,0,0)';
-							}
-						} else {
-							xLineValue = (me.getPixelForTick(index - 1) + me.getPixelForTick(index)) / 2;
-						}
-					} else {
-						xLineValue = me.getPixelForTick(index);
+					var xLineValue = getLineValue(me, index, gridLines.offsetGridLines && ticks.length > 1);
+					if (xLineValue < me.left) {
+						lineColor = 'rgba(0,0,0,0)';
 					}
 					xLineValue += helpers.aliasPixel(lineWidth);
 
@@ -731,18 +735,9 @@ module.exports = function(Chart) {
 
 					labelX = isLeft ? me.right - labelXOffset : me.left + labelXOffset;
 
-					var yLineValue; // yvalues for grid lines
-					if (gridLines.offsetGridLines && ticks.length > 1) {
-						if (index === 0) {
-							yLineValue = (me.getPixelForTick(0) * 3 - me.getPixelForTick(1)) / 2;
-							if (yLineValue < me.top) {
-								lineColor = 'rgba(0,0,0,0)';
-							}
-						} else {
-							yLineValue = (me.getPixelForTick(index - 1) + me.getPixelForTick(index)) / 2;
-						}
-					} else {
-						yLineValue = me.getPixelForTick(index);
+					var yLineValue = getLineValue(me, index, gridLines.offsetGridLines && ticks.length > 1);
+					if (yLineValue < me.top) {
+						lineColor = 'rgba(0,0,0,0)';
 					}
 					yLineValue += helpers.aliasPixel(lineWidth);
 
