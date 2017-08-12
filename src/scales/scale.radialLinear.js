@@ -373,9 +373,7 @@ module.exports = function(Chart) {
 			// Point labels
 			me.pointLabels = me.chart.data.labels.map(me.options.pointLabels.callback, me);
 		},
-		getLabelForIndex: function(index, datasetIndex) {
-			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
-		},
+		getLabelForIndex: helpers.scale.getLabelForIndex,
 		fit: function() {
 			if (this.options.pointLabels.display) {
 				fitWithPointLabels(this);

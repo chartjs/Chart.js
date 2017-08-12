@@ -34,5 +34,8 @@ module.exports = {
 			width: 0,
 			height: 0
 		};
+	},
+	getLabelForIndex: function(index, datasetIndex) {
+		return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 	}
 };
