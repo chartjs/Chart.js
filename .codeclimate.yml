@@ -13,9 +13,9 @@ ratings:
   paths:
   - "src/**/*.js"
 exclude_paths:
-- test/
-- docs/
-- samples/
-- scripts/
-- *.md
-- *.json
+- 'test/'
+- 'docs/'
+- 'samples/'
+- 'scripts/'
+- '**.md'
+- '**.json'
