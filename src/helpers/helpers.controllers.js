@@ -28,5 +28,5 @@ module.exports = {
 
 		text.push('</ul>');
 		return text.join('');
-	},
+	}
 };
