@@ -13,9 +13,12 @@ ratings:
   paths:
   - "src/**/*.js"
 exclude_paths:
+- '.github/'
 - 'test/'
 - 'docs/'
 - 'samples/'
 - 'scripts/'
 - '**.md'
 - '**.json'
+- 'gulpfile.js'
+- 'karma.conf.js'
