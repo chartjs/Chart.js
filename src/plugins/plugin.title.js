@@ -13,7 +13,7 @@ defaults._set('global', {
 		padding: 10,
 		position: 'top',
 		text: '',
-		weight: 2000         // by default greater than legend (1000) to be above
+		weight: 2000 // by default greater than legend (1000) to be above
 	}
 });
 

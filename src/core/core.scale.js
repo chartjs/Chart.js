@@ -204,7 +204,7 @@ module.exports = function(Chart) {
 
 			me.afterTickToLabelConversion();
 
-			me.ticks = labels;   // BACKWARD COMPATIBILITY
+			me.ticks = labels; // BACKWARD COMPATIBILITY
 
 			// IMPORTANT: from this point, we consider that `this.ticks` will NEVER change!
 
@@ -565,8 +565,8 @@ module.exports = function(Chart) {
 
 			return me.beginAtZero ? 0 :
 				min < 0 && max < 0 ? max :
-				min > 0 && max > 0 ? min :
-				0;
+					min > 0 && max > 0 ? min :
+						0;
 		},
 
 		/**

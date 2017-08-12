@@ -459,9 +459,9 @@ module.exports = function(Chart) {
 
 			return me.getPointPositionForValue(0,
 				me.beginAtZero ? 0 :
-				min < 0 && max < 0 ? max :
-				min > 0 && max > 0 ? min :
-				0);
+					min < 0 && max < 0 ? max :
+						min > 0 && max > 0 ? min :
+							0);
 		},
 
 		draw: function() {

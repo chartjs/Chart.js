@@ -9,8 +9,8 @@ defaults._set('scatter', {
 
 	scales: {
 		xAxes: [{
-			id: 'x-axis-1',    // need an ID so datasets can reference the scale
-			type: 'linear',    // scatter should not use a category axis
+			id: 'x-axis-1', // need an ID so datasets can reference the scale
+			type: 'linear', // scatter should not use a category axis
 			position: 'bottom'
 		}],
 		yAxes: [{
@@ -25,7 +25,7 @@ defaults._set('scatter', {
 	tooltips: {
 		callbacks: {
 			title: function() {
-				return '';     // doesn't make sense for scatter since data are formatted as a point
+				return ''; // doesn't make sense for scatter since data are formatted as a point
 			},
 			label: function(item) {
 				return '(' + item.xLabel + ', ' + item.yLabel + ')';
