@@ -40,7 +40,7 @@ module.exports = function(Chart) {
 		//
 
 		beforeSetDimensions: noop,
-		setDimensions: helpers.plugins.setDimensions,
+		setDimensions: helpers.scale.setDimensions,
 		afterSetDimensions: noop,
 
 		//
