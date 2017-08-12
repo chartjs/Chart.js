@@ -611,7 +611,8 @@ module.exports = function(Chart) {
 				// Since we always show the last tick,we need may need to hide the last shown one before
 				shouldSkip = (skipRatio > 1 && i % skipRatio > 0) || (i % skipRatio === 0 && i + skipRatio >= tickCount);
 				if (shouldSkip && i !== tickCount - 1 || helpers.isNullOrUndef(tick.label)) {
-					continue;
+					// leave tick in place but make sure it's not displayed (#4635)
+					delete tick.label;
 				}
 				result.push(tick);
 			}
@@ -657,6 +658,11 @@ module.exports = function(Chart) {
 			var yTickEnd = options.position === 'bottom' ? me.top + tl : me.bottom;
 
 			helpers.each(ticks, function(tick, index) {
+				// autoskipper skipped this tick (#4635)
+				if (tick.label === undefined) {
+					return;
+				}
+
 				var label = tick.label;
 				var lineWidth, lineColor, borderDash, borderDashOffset;
 				if (index === (typeof me.zeroLineIndex !== 'undefined' ? me.zeroLineIndex : 0)) {
