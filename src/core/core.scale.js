@@ -9,6 +9,10 @@ defaults._set('scale', {
 	display: true,
 	position: 'left',
 	offset: false,
+	borderColor: 'rgba(0, 0, 0, 0.4)',
+	borderWidth: 0,
+	borderDash: [],
+	borderDashOffset: 0.0,
 
 	// grid line settings
 	gridLines: {
@@ -809,14 +813,15 @@ module.exports = function(Chart) {
 				});
 			});
 
-			// When offsetGridLines is enabled, there is one less tick mark than
-			// there are tick labels, thefore it has to be manually added
+			// When offsetGridLines is enabled, there should be one more tick mark than there
+			// are ticks in scale.ticks array, thefore the missing gridLine has to be manually added
 			if (gridLines.offsetGridLines) {
+				var aliasPixel = helpers.aliasPixel(gridLines.lineWidth);
 				itemsToDraw.push({
-					tx1: !isHorizontal ? xTickStart : chartArea.right,
-					ty1: !isHorizontal ? chartArea.bottom : yTickStart,
-					tx2: !isHorizontal ? xTickEnd : chartArea.right,
-					ty2: !isHorizontal ? chartArea.bottom : yTickEnd,
+					tx1: !isHorizontal ? xTickStart : chartArea.right + aliasPixel,
+					ty1: !isHorizontal ? chartArea.bottom + aliasPixel : yTickStart,
+					tx2: !isHorizontal ? xTickEnd : chartArea.right + aliasPixel,
+					ty2: !isHorizontal ? chartArea.bottom + aliasPixel : yTickEnd,
 					tmWidth: gridLines.lineWidth,
 					tmColor: gridLines.color,
 					tmBorderDash: gridLines.borderDash,
@@ -900,6 +905,40 @@ module.exports = function(Chart) {
 				context.fillStyle = scaleLabelFontColor; // render in correct colour
 				context.font = scaleLabelFont.font;
 				context.fillText(scaleLabel.labelString, 0, 0);
+				context.restore();
+			}
+
+			// gridLines.drawBorder is deprecated
+			if (gridLines.drawBorder && options.borderColor !== null && options.borderWidth !== 0 && options.borderWidth !== null) {
+				// Draw the scale border
+				context.lineWidth = options.borderWidth;
+				context.strokeStyle = options.borderColor;
+				if (context.setLineDash) {
+					context.setLineDash(helpers.getValueOrDefault(options.borderDash, globalDefaults.borderDash));
+					context.lineDashOffset = helpers.getValueOrDefault(options.borderDashOffset, globalDefaults.borderDashOffset);
+				}
+
+				var x1 = Math.round(me.left);
+				var x2 = Math.round(me.right);
+				var y1 = Math.round(me.top);
+				var y2 = Math.round(me.bottom);
+
+				if (isHorizontal) {
+					y1 = y2 = options.position === 'top' ? me.bottom : me.top;
+					y1 += helpers.aliasPixel(context.lineWidth);
+					y2 += helpers.aliasPixel(context.lineWidth);
+				} else {
+					x1 = x2 = options.position === 'left' ? me.right : me.left;
+					x1 += helpers.aliasPixel(context.lineWidth);
+					x2 += helpers.aliasPixel(context.lineWidth);
+				}
+
+				context.beginPath();
+
+				context.moveTo(x1, y1);
+				context.lineTo(x2, y2);
+
+				context.stroke();
 				context.restore();
 			}
 		}
