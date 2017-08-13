@@ -89,13 +89,10 @@ describe('Core helper tests', function() {
 					axisProp: 456
 				}, {
 					display: true,
-					border: {
-						display: false,
-						color: 'rgba(0, 0, 0, 0.4)',
-						lineWidth: 1,
-						borderDash: [],
-						borderDashOffset: 0.0
-					},
+					borderColor: 'rgba(0, 0, 0, 0.4)',
+					borderWidth: 0,
+					borderDash: [],
+					borderDashOffset: 0.0,
 					gridLines: {
 						color: 'rgba(0, 0, 0, 0.1)',
 						drawBorder: true,
@@ -133,14 +130,10 @@ describe('Core helper tests', function() {
 					type: 'linear'
 				}, {
 					display: true,
-
-					border: {
-						display: false,
-						color: 'rgba(0, 0, 0, 0.4)',
-						lineWidth: 1,
-						borderDash: [],
-						borderDashOffset: 0.0
-					},
+					borderColor: 'rgba(0, 0, 0, 0.4)',
+					borderWidth: 0,
+					borderDash: [],
+					borderDashOffset: 0.0,
 					gridLines: {
 						color: 'rgba(0, 0, 0, 0.1)',
 						drawBorder: true,
