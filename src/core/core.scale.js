@@ -204,7 +204,7 @@ module.exports = function(Chart) {
 
 			me.afterTickToLabelConversion();
 
-			me.ticks = labels;   // BACKWARD COMPATIBILITY
+			me.ticks = labels; // BACKWARD COMPATIBILITY
 
 			// IMPORTANT: from this point, we consider that `this.ticks` will NEVER change!
 
@@ -247,28 +247,7 @@ module.exports = function(Chart) {
 		beforeSetDimensions: function() {
 			helpers.callback(this.options.beforeSetDimensions, [this]);
 		},
-		setDimensions: function() {
-			var me = this;
-			// Set the unconstrained dimension before label rotation
-			if (me.isHorizontal()) {
-				// Reset position before calculating rotation
-				me.width = me.maxWidth;
-				me.left = 0;
-				me.right = me.width;
-			} else {
-				me.height = me.maxHeight;
-
-				// Reset position before calculating rotation
-				me.top = 0;
-				me.bottom = me.height;
-			}
-
-			// Reset padding
-			me.paddingLeft = 0;
-			me.paddingTop = 0;
-			me.paddingRight = 0;
-			me.paddingBottom = 0;
-		},
+		setDimensions: helpers.scale.setDimensions,
 		afterSetDimensions: function() {
 			helpers.callback(this.options.afterSetDimensions, [this]);
 		},
@@ -565,8 +544,8 @@ module.exports = function(Chart) {
 
 			return me.beginAtZero ? 0 :
 				min < 0 && max < 0 ? max :
-				min > 0 && max > 0 ? min :
-				0;
+					min > 0 && max > 0 ? min :
+						0;
 		},
 
 		/**
