@@ -671,7 +671,7 @@ module.exports = Element.extend({
 	},
 
 	// Actually draw the scale on the canvas
-	// @param {rectangle} chartArea : the area of the chart to draw full grid lines on
+	// @param {rectangle} chartArea : the area of the chart to draw all ticks and labels on
 	draw: function(chartArea) {
 		var me = this;
 		var options = me.options;
@@ -732,7 +732,7 @@ module.exports = Element.extend({
 			}
 
 			// Common properties
-			var tx1, ty1, tx2, ty2, x1, y1, x2, y2, labelX, labelY;
+			var tx1, ty1, tx2, ty2, labelX, labelY;
 			var textAlign = 'middle';
 			var textBaseline = 'middle';
 			var tickPadding = optionTicks.padding;
@@ -760,11 +760,9 @@ module.exports = Element.extend({
 
 				labelX = me.getPixelForTick(index) + optionTicks.labelOffset; // x values for optionTicks (need to consider offsetLabel option)
 
-				tx1 = tx2 = x1 = x2 = xLineValue;
+				tx1 = tx2 = xLineValue;
 				ty1 = yTickStart;
 				ty2 = yTickEnd;
-				y1 = chartArea.top;
-				y2 = chartArea.bottom + axisWidth;
 			} else {
 				var isLeft = options.position === 'left';
 				var labelXOffset;
@@ -789,9 +787,7 @@ module.exports = Element.extend({
 
 				tx1 = xTickStart;
 				tx2 = xTickEnd;
-				x1 = chartArea.left;
-				x2 = chartArea.right + axisWidth;
-				ty1 = ty2 = y1 = y2 = yLineValue;
+				ty1 = ty2 = yLineValue;
 			}
 
 			itemsToDraw.push({
@@ -799,16 +795,12 @@ module.exports = Element.extend({
 				ty1: ty1,
 				tx2: tx2,
 				ty2: ty2,
-				x1: x1,
-				y1: y1,
-				x2: x2,
-				y2: y2,
 				labelX: labelX,
 				labelY: labelY,
-				glWidth: lineWidth,
-				glColor: lineColor,
-				glBorderDash: borderDash,
-				glBorderDashOffset: borderDashOffset,
+				tmWidth: lineWidth,
+				tmColor: lineColor,
+				tmBorderDash: borderDash,
+				tmBorderDashOffset: borderDashOffset,
 				rotation: -1 * labelRotationRadians,
 				label: label,
 				major: tick.major,
@@ -817,15 +809,30 @@ module.exports = Element.extend({
 			});
 		});
 
-		// Draw all of the tick labels, tick marks, and grid lines at the correct places
+		// When offsetGridLines is enabled, there is one less tick mark than
+		// there are tick labels, thefore it has to be manually added
+		if (gridLines.offsetGridLines) {
+			itemsToDraw.push({
+				tx1: !isHorizontal ? xTickStart : chartArea.right,
+				ty1: !isHorizontal ? chartArea.bottom : yTickStart,
+				tx2: !isHorizontal ? xTickEnd : chartArea.right,
+				ty2: !isHorizontal ? chartArea.bottom : yTickEnd,
+				tmWidth: gridLines.lineWidth,
+				tmColor: gridLines.color,
+				tmBorderDash: gridLines.borderDash,
+				tmBorderDashOffset: gridLines.borderDashOffset
+			});
+		}
+
+		// Draw all of the tick labels and tick marks at the correct places
 		helpers.each(itemsToDraw, function(itemToDraw) {
 			if (gridLines.display) {
 				context.save();
-				context.lineWidth = itemToDraw.glWidth;
-				context.strokeStyle = itemToDraw.glColor;
+				context.lineWidth = itemToDraw.tmWidth;
+				context.strokeStyle = itemToDraw.tmColor;
 				if (context.setLineDash) {
-					context.setLineDash(itemToDraw.glBorderDash);
-					context.lineDashOffset = itemToDraw.glBorderDashOffset;
+					context.setLineDash(itemToDraw.tmBorderDash);
+					context.lineDashOffset = itemToDraw.tmBorderDashOffset;
 				}
 
 				context.beginPath();
@@ -835,40 +842,32 @@ module.exports = Element.extend({
 					context.lineTo(itemToDraw.tx2, itemToDraw.ty2);
 				}
 
-				if (gridLines.drawOnChartArea) {
-					context.moveTo(itemToDraw.x1, itemToDraw.y1);
-					context.lineTo(itemToDraw.x2, itemToDraw.y2);
+				if (optionTicks.display && itemToDraw.label !== undefined && itemToDraw.label !== '') {
+					// Make sure we draw text in the correct color and font
+					context.save();
+					context.translate(itemToDraw.labelX, itemToDraw.labelY);
+					context.rotate(itemToDraw.rotation);
+					context.font = itemToDraw.major ? majorTickFont.font : tickFont.font;
+					context.fillStyle = itemToDraw.major ? majorTickFontColor : tickFontColor;
+					context.textBaseline = itemToDraw.textBaseline;
+					context.textAlign = itemToDraw.textAlign;
+
+					var label = itemToDraw.label;
+					if (helpers.isArray(label)) {
+						for (var i = 0, y = 0; i < label.length; ++i) {
+							// We just make sure the multiline element is a string here..
+							context.fillText('' + label[i], 0, y);
+							// apply same lineSpacing as calculated @ L#320
+							y += (tickFont.size * 1.5);
+						}
+					} else {
+						context.fillText(label, 0, 0);
+					}
+					context.restore();
 				}
+
 
 				context.stroke();
-				context.restore();
-			}
-
-			if (optionTicks.display) {
-				// Make sure we draw text in the correct color and font
-				context.save();
-				context.translate(itemToDraw.labelX, itemToDraw.labelY);
-				context.rotate(itemToDraw.rotation);
-				context.font = itemToDraw.major ? majorTickFont.font : tickFont.font;
-				context.fillStyle = itemToDraw.major ? majorTickFontColor : tickFontColor;
-				context.textBaseline = itemToDraw.textBaseline;
-				context.textAlign = itemToDraw.textAlign;
-
-				var label = itemToDraw.label;
-				if (helpers.isArray(label)) {
-					var lineCount = label.length;
-					var lineHeight = tickFont.size * 1.5;
-					var y = me.isHorizontal() ? 0 : -lineHeight * (lineCount - 1) / 2;
-
-					for (var i = 0; i < lineCount; ++i) {
-						// We just make sure the multiline element is a string here..
-						context.fillText('' + label[i], 0, y);
-						// apply same lineSpacing as calculated @ L#320
-						y += lineHeight;
-					}
-				} else {
-					context.fillText(label, 0, 0);
-				}
 				context.restore();
 			}
 		});
@@ -903,32 +902,6 @@ module.exports = Element.extend({
 			context.font = scaleLabelFont.font;
 			context.fillText(scaleLabel.labelString, 0, 0);
 			context.restore();
-		}
-
-		if (gridLines.drawBorder) {
-			// Draw the line at the edge of the axis
-			context.lineWidth = helpers.valueAtIndexOrDefault(gridLines.lineWidth, 0);
-			context.strokeStyle = helpers.valueAtIndexOrDefault(gridLines.color, 0);
-			var x1 = me.left;
-			var x2 = me.right + axisWidth;
-			var y1 = me.top;
-			var y2 = me.bottom + axisWidth;
-
-			var aliasPixel = helpers.aliasPixel(context.lineWidth);
-			if (isHorizontal) {
-				y1 = y2 = options.position === 'top' ? me.bottom : me.top;
-				y1 += aliasPixel;
-				y2 += aliasPixel;
-			} else {
-				x1 = x2 = options.position === 'left' ? me.right : me.left;
-				x1 += aliasPixel;
-				x2 += aliasPixel;
-			}
-
-			context.beginPath();
-			context.moveTo(x1, y1);
-			context.lineTo(x2, y2);
-			context.stroke();
 		}
 	}
 });
