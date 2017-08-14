@@ -14,6 +14,7 @@ ratings:
   - "src/**/*.js"
 exclude_paths:
 - '.github/'
+- 'dist/'
 - 'test/'
 - 'docs/'
 - 'samples/'
