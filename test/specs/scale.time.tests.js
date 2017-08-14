@@ -72,6 +72,7 @@ describe('Time scale tests', function() {
 				borderDashOffset: 0.0
 			},
 			position: 'bottom',
+			offset: false,
 			scaleLabel: {
 				display: false,
 				labelString: '',
@@ -1083,6 +1084,87 @@ describe('Time scale tests', function() {
 							expect(tick.value <= +moment(max, 'MM/DD HH:mm')).toBeTruthy();
 						});
 					});
+				});
+			});
+		});
+	});
+
+	['auto', 'data', 'labels'].forEach(function(source) {
+		['series', 'linear'].forEach(function(distribution) {
+			describe('when ticks.source is "' + source + '" and distribution is "' + distribution + '"', function() {
+				beforeEach(function() {
+					this.chart = window.acquireChart({
+						type: 'line',
+						data: {
+							labels: ['2017', '2019', '2020', '2025', '2042'],
+							datasets: [{data: [0, 1, 2, 3, 4, 5]}]
+						},
+						options: {
+							scales: {
+								xAxes: [{
+									id: 'x',
+									type: 'time',
+									time: {
+										parser: 'YYYY'
+									},
+									ticks: {
+										source: source
+									},
+									distribution: distribution
+								}]
+							}
+						}
+					});
+				});
+
+				it ('should not add offset from the edges', function() {
+					var scale = this.chart.scales.x;
+
+					expect(scale.getPixelForValue('2017')).toBeCloseToPixel(scale.left);
+					expect(scale.getPixelForValue('2042')).toBeCloseToPixel(scale.left + scale.width);
+				});
+
+				it ('should add offset from the edges if offset is true', function() {
+					var chart = this.chart;
+					var scale = chart.scales.x;
+					var options = chart.options.scales.xAxes[0];
+
+					options.offset = true;
+					chart.update();
+
+					var numTicks = scale.ticks.length;
+					var firstTickInterval = scale.getPixelForTick(1) - scale.getPixelForTick(0);
+					var lastTickInterval = scale.getPixelForTick(numTicks - 1) - scale.getPixelForTick(numTicks - 2);
+
+					expect(scale.getPixelForValue('2017')).toBeCloseToPixel(scale.left + firstTickInterval / 2);
+					expect(scale.getPixelForValue('2042')).toBeCloseToPixel(scale.left + scale.width - lastTickInterval / 2);
+				});
+
+				it ('should not add offset if min and max extend the labels range', function() {
+					var chart = this.chart;
+					var scale = chart.scales.x;
+					var options = chart.options.scales.xAxes[0];
+
+					options.time.min = '2012';
+					options.time.max = '2051';
+					chart.update();
+
+					expect(scale.getPixelForValue('2012')).toBeCloseToPixel(scale.left);
+					expect(scale.getPixelForValue('2051')).toBeCloseToPixel(scale.left + scale.width);
+				});
+
+				it ('should not add offset if min and max extend the labels range and offset is true', function() {
+					var chart = this.chart;
+					var scale = chart.scales.x;
+					var options = chart.options.scales.xAxes[0];
+
+					options.time.min = '2012';
+					options.time.max = '2051';
+					options.offset = true;
+					chart.update();
+
+					expect(scale.getPixelForValue('2012')).toBeCloseToPixel(scale.left);
+					expect(scale.getPixelForValue('2051')).toBeCloseToPixel(scale.left + scale.width);
 				});
 			});
 		});

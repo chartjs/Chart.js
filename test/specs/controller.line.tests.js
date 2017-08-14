@@ -250,7 +250,7 @@ describe('Line controller tests', function() {
 		var meta = chart.getDatasetMeta(0);
 		// 1 point
 		var point = meta.data[0];
-		expect(point._model.x).toBeCloseToPixel(262);
+		expect(point._model.x).toBeCloseToPixel(27);
 
 		// 2 points
 		chart.data.labels = ['One', 'Two'];

@@ -17,6 +17,9 @@ defaults._set('bar', {
 			categoryPercentage: 0.8,
 			barPercentage: 0.9,
 
+			// offset settings
+			offset: true,
+
 			// grid line settings
 			gridLines: {
 				offsetGridLines: true
@@ -48,6 +51,9 @@ defaults._set('horizontalBar', {
 			// Specific to Horizontal Bar Controller
 			categoryPercentage: 0.8,
 			barPercentage: 0.9,
+
+			// offset settings
+			offset: true,
 
 			// grid line settings
 			gridLines: {
@@ -234,26 +240,23 @@ module.exports = function(Chart) {
 		getRuler: function() {
 			var me = this;
 			var scale = me.getIndexScale();
-			var options = scale.options;
 			var stackCount = me.getStackCount();
-			var fullSize = scale.isHorizontal() ? scale.width : scale.height;
-			var tickSize = fullSize / scale.getTicks().length;
-			var categorySize = tickSize * options.categoryPercentage;
-			var fullBarSize = categorySize / stackCount;
-			var barSize = fullBarSize * options.barPercentage;
+			var datasetIndex = me.index;
+			var pixels = [];
+			var isHorizontal = scale.isHorizontal();
+			var start = isHorizontal ? scale.left : scale.top;
+			var end = start + (isHorizontal ? scale.width : scale.height);
+			var i, ilen;
 
-			barSize = Math.min(
-				helpers.valueOrDefault(options.barThickness, barSize),
-				helpers.valueOrDefault(options.maxBarThickness, Infinity));
+			for (i = 0, ilen = me.getMeta().data.length; i < ilen; ++i) {
+				pixels.push(scale.getPixelForValue(null, i, datasetIndex));
+			}
 
 			return {
+				pixels: pixels,
+				start: start,
+				end: end,
 				stackCount: stackCount,
-				tickSize: tickSize,
-				categorySize: categorySize,
-				categorySpacing: tickSize - categorySize,
-				fullBarSize: fullBarSize,
-				barSize: barSize,
-				barSpacing: fullBarSize - barSize,
 				scale: scale
 			};
 		},
@@ -308,16 +311,45 @@ module.exports = function(Chart) {
 		 */
 		calculateBarIndexPixels: function(datasetIndex, index, ruler) {
 			var me = this;
-			var scale = ruler.scale;
-			var isCombo = me.chart.isCombo;
+			var options = ruler.scale.options;
 			var stackIndex = me.getStackIndex(datasetIndex);
-			var base = scale.getPixelForValue(null, index, datasetIndex, isCombo);
-			var size = ruler.barSize;
+			var pixels = ruler.pixels;
+			var base = pixels[index];
+			var length = pixels.length;
+			var start = ruler.start;
+			var end = ruler.end;
+			var leftSampleSize, rightSampleSize, leftCategorySize, rightCategorySize, fullBarSize, size;
 
-			base -= isCombo ? ruler.tickSize / 2 : 0;
-			base += ruler.fullBarSize * stackIndex;
-			base += ruler.categorySpacing / 2;
-			base += ruler.barSpacing / 2;
+			if (length === 1) {
+				leftSampleSize = base > start ? base - start : end - base;
+				rightSampleSize = base < end ? end - base : base - start;
+			} else {
+				if (index > 0) {
+					leftSampleSize = (base - pixels[index - 1]) / 2;
+					if (index === length - 1) {
+						rightSampleSize = leftSampleSize;
+					}
+				}
+				if (index < length - 1) {
+					rightSampleSize = (pixels[index + 1] - base) / 2;
+					if (index === 0) {
+						leftSampleSize = rightSampleSize;
+					}
+				}
+			}
+
+			leftCategorySize = leftSampleSize * options.categoryPercentage;
+			rightCategorySize = rightSampleSize * options.categoryPercentage;
+			fullBarSize = (leftCategorySize + rightCategorySize) / ruler.stackCount;
+			size = fullBarSize * options.barPercentage;
+
+			size = Math.min(
+				helpers.valueOrDefault(options.barThickness, size),
+				helpers.valueOrDefault(options.maxBarThickness, Infinity));
+
+			base -= leftCategorySize;
+			base += fullBarSize * stackIndex;
+			base += (fullBarSize - size) / 2;
 
 			return {
 				size: size,

@@ -330,6 +330,37 @@ function generate(min, max, minor, major, capacity, options) {
 	return ticks;
 }
 
+/**
+ * Returns the right and left offsets from edges in the form of {left, right}.
+ * Offsets are added when the `offset` option is true.
+ */
+function computeOffsets(table, ticks, min, max, options) {
+	var left = 0;
+	var right = 0;
+	var upper, lower;
+
+	if (options.offset && ticks.length) {
+		if (!options.time.min) {
+			upper = ticks.length > 1 ? ticks[1] : max;
+			lower = ticks[0];
+			left = (
+				interpolate(table, 'time', upper, 'pos') -
+				interpolate(table, 'time', lower, 'pos')
+			) / 2;
+		}
+		if (!options.time.max) {
+			upper = ticks[ticks.length - 1];
+			lower = ticks.length > 1 ? ticks[ticks.length - 2] : min;
+			right = (
+				interpolate(table, 'time', upper, 'pos') -
+				interpolate(table, 'time', lower, 'pos')
+			) / 2;
+		}
+	}
+
+	return {left: left, right: right};
+}
+
 function ticksFromTimestamps(values, majorUnit) {
 	var ticks = [];
 	var i, ilen, value, major;
@@ -443,9 +474,9 @@ module.exports = function(Chart) {
 		determineDataLimits: function() {
 			var me = this;
 			var chart = me.chart;
-			var options = me.options;
-			var min = parse(options.time.min, me) || MAX_INTEGER;
-			var max = parse(options.time.max, me) || MIN_INTEGER;
+			var timeOpts = me.options.time;
+			var min = parse(timeOpts.min, me) || MAX_INTEGER;
+			var max = parse(timeOpts.max, me) || MIN_INTEGER;
 			var timestamps = [];
 			var datasets = [];
 			var labels = [];
@@ -562,6 +593,7 @@ module.exports = function(Chart) {
 			me._minorFormat = formats[unit];
 			me._majorFormat = formats[majorUnit];
 			me._table = buildLookupTable(me._timestamps.data, min, max, options.distribution);
+			me._offsets = computeOffsets(me._table, ticks, min, max, options);
 
 			return ticksFromTimestamps(ticks, majorUnit);
 		},
@@ -622,7 +654,7 @@ module.exports = function(Chart) {
 			var start = me._horizontal ? me.left : me.top;
 			var pos = interpolate(me._table, 'time', time, 'pos');
 
-			return start + size * pos;
+			return start + size * (me._offsets.left + pos) / (me._offsets.left + 1 + me._offsets.right);
 		},
 
 		getPixelForValue: function(value, index, datasetIndex) {
@@ -653,7 +685,7 @@ module.exports = function(Chart) {
 			var me = this;
 			var size = me._horizontal ? me.width : me.height;
 			var start = me._horizontal ? me.left : me.top;
-			var pos = size ? (pixel - start) / size : 0;
+			var pos = (size ? (pixel - start) / size : 0) * (me._offsets.left + 1 + me._offsets.left) - me._offsets.right;
 			var time = interpolate(me._table, 'pos', pos, 'time');
 
 			return moment(time);
