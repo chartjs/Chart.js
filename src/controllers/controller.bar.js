@@ -164,7 +164,7 @@ function computeFlexCategoryTraits(index, ruler, options) {
 	if (prev === null) {
 		// first data: its size is double based on the next point or,
 		// if it's also the last data, we use the scale end extremity.
-		prev = curr - (next === null ? ruler.end - curr : next - curr);
+		prev = curr - (next === null ? Math.max(curr - ruler.start, ruler.end - curr) * 2 : next - curr);
 	}
 
 	if (next === null) {

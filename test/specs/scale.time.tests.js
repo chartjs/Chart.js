@@ -1276,16 +1276,35 @@ describe('Time scale tests', function() {
 					var chart = this.chart;
 					var scale = chart.scales.x;
 					var options = chart.options.scales.xAxes[0];
+					var minInterval;
 
 					options.offset = true;
 					chart.update();
 
-					var numTicks = scale.ticks.length;
-					var firstTickInterval = scale.getPixelForTick(1) - scale.getPixelForTick(0);
-					var lastTickInterval = scale.getPixelForTick(numTicks - 1) - scale.getPixelForTick(numTicks - 2);
+					if (source === 'auto' && distribution === 'series') {
+						minInterval = scale.getPixelForTick(5) - scale.getPixelForTick(4);
+					} else {
+						minInterval = scale.getPixelForValue('2020') - scale.getPixelForValue('2019');
+					}
 
-					expect(scale.getPixelForValue('2017')).toBeCloseToPixel(scale.left + firstTickInterval / 2);
-					expect(scale.getPixelForValue('2042')).toBeCloseToPixel(scale.left + scale.width - lastTickInterval / 2);
+					expect(scale.getPixelForValue('2017')).toBeCloseToPixel(scale.left + minInterval / 2);
+					expect(scale.getPixelForValue('2042')).toBeCloseToPixel(scale.left + scale.width - minInterval / 2);
+				});
+
+				it ('should add offset from the edges if offset is true and barThickness is "flex"', function() {
+					var chart = this.chart;
+					var scale = chart.scales.x;
+					var options = chart.options.scales.xAxes[0];
+
+					options.offset = true;
+					options.barThickness = 'flex';
+					chart.update();
+
+					var firstInterval = scale.getPixelForValue('2019') - scale.getPixelForValue('2017');
+					var lastInterval = scale.getPixelForValue('2042') - scale.getPixelForValue('2025');
+
+					expect(scale.getPixelForValue('2017')).toBeCloseToPixel(scale.left + firstInterval / 2);
+					expect(scale.getPixelForValue('2042')).toBeCloseToPixel(scale.left + scale.width - lastInterval / 2);
 				});
 
 				it ('should not add offset if min and max extend the labels range', function() {

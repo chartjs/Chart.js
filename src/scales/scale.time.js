@@ -361,27 +361,54 @@ function generate(min, max, capacity, options) {
  * Returns the right and left offsets from edges in the form of {left, right}.
  * Offsets are added when the `offset` option is true.
  */
-function computeOffsets(table, ticks, min, max, options) {
+function computeOffsets(table, ticks, data, min, max, options) {
+	var pos = [];
+	var minInterval = 1;
+	var timeOpts = options.time;
+	var barThickness = options.barThickness;
 	var left = 0;
 	var right = 0;
-	var upper, lower;
+	var i, ilen, curr, prev, length, width;
 
-	if (options.offset && ticks.length) {
-		if (!options.time.min) {
-			upper = ticks.length > 1 ? ticks[1] : max;
-			lower = ticks[0];
-			left = (
-				interpolate(table, 'time', upper, 'pos') -
-				interpolate(table, 'time', lower, 'pos')
-			) / 2;
+	if (options.offset) {
+		data.forEach(function(timestamp) {
+			if (timestamp >= min && timestamp <= max) {
+				pos.push(interpolate(table, 'time', timestamp, 'pos'));
+			}
+		});
+
+		if (!barThickness) {
+			[data, ticks].forEach(function(timestamps) {
+				for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
+					curr = interpolate(table, 'time', timestamps[i], 'pos');
+					minInterval = i > 0 ? Math.min(minInterval, curr - prev) : minInterval;
+					prev = curr;
+				}
+			});
 		}
-		if (!options.time.max) {
-			upper = ticks[ticks.length - 1];
-			lower = ticks.length > 1 ? ticks[ticks.length - 2] : min;
-			right = (
-				interpolate(table, 'time', upper, 'pos') -
-				interpolate(table, 'time', lower, 'pos')
-			) / 2;
+
+		length = pos.length;
+		if (length) {
+			if (!timeOpts.min) {
+				if (length === 1) {
+					width = (1 - pos[0]) * 2;
+				} else if (barThickness) {
+					width = pos[1] - pos[0];
+				} else {
+					width = minInterval;
+				}
+				left = Math.max(width / 2 - pos[0], 0);
+			}
+			if (!timeOpts.max) {
+				if (length === 1) {
+					width = pos[0] * 2;
+				} else if (barThickness) {
+					width = pos[length - 1] - pos[length - 2];
+				} else {
+					width = minInterval;
+				}
+				right = Math.max(width / 2 - (1 - pos[length - 1]), 0);
+			}
 		}
 	}
 
@@ -643,7 +670,7 @@ module.exports = function() {
 			me._unit = timeOpts.unit || determineUnitForFormatting(ticks, timeOpts.minUnit, me.min, me.max);
 			me._majorUnit = determineMajorUnit(me._unit);
 			me._table = buildLookupTable(me._timestamps.data, min, max, options.distribution);
-			me._offsets = computeOffsets(me._table, ticks, min, max, options);
+			me._offsets = computeOffsets(me._table, ticks, me._timestamps.data, min, max, options);
 			me._labelFormat = determineLabelFormat(me._timestamps.data, timeOpts);
 
 			return ticksFromTimestamps(ticks, me._majorUnit);
