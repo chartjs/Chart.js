@@ -96,7 +96,7 @@ module.exports = function(Chart) {
 		},
 
 		getRadius: function(value) {
-			return value.r || this.chart.options.elements.point.radius;
+			return (value && typeof value.r !== 'undefined') ? value.r : this.chart.options.elements.point.radius;
 		},
 
 		setHoverStyle: function(point) {
