@@ -243,17 +243,31 @@ module.exports = function(Chart) {
 			var stackCount = me.getStackCount();
 			var datasetIndex = me.index;
 			var pixels = [];
+			var orderedPixels = [];
+			var order = [];
 			var isHorizontal = scale.isHorizontal();
 			var start = isHorizontal ? scale.left : scale.top;
 			var end = start + (isHorizontal ? scale.width : scale.height);
-			var i, ilen;
+			var i, ilen, pixel;
 
 			for (i = 0, ilen = me.getMeta().data.length; i < ilen; ++i) {
-				pixels.push(scale.getPixelForValue(null, i, datasetIndex));
+				pixel = scale.getPixelForValue(null, i, datasetIndex);
+				if (pixel !== undefined) {
+					pixels.push({index: i, value: pixel});
+				}
+			}
+
+			pixels.sort(function(a, b) {
+				return a.value - b.value;
+			});
+			for (i = 0, ilen = pixels.length; i < ilen; ++i) {
+				orderedPixels.push(pixels[i].value);
+				order[pixels[i].index] = i;
 			}
 
 			return {
-				pixels: pixels,
+				pixels: orderedPixels,
+				order: order,
 				start: start,
 				end: end,
 				stackCount: stackCount,
@@ -314,11 +328,13 @@ module.exports = function(Chart) {
 			var options = ruler.scale.options;
 			var stackIndex = me.getStackIndex(datasetIndex);
 			var pixels = ruler.pixels;
-			var base = pixels[index];
 			var length = pixels.length;
 			var start = ruler.start;
 			var end = ruler.end;
-			var leftSampleSize, rightSampleSize, leftCategorySize, rightCategorySize, fullBarSize, size;
+			var base, leftSampleSize, rightSampleSize, leftCategorySize, rightCategorySize, fullBarSize, size;
+
+			index = ruler.order[index];
+			base = pixels[index];
 
 			if (length === 1) {
 				leftSampleSize = base > start ? base - start : end - base;
