@@ -29,7 +29,7 @@ module.exports = function(Chart) {
 		onHover: null,
 
 		labels: {
-			boxWidth: 40,
+			boxWidth: 20,
 			padding: 10,
 			center: true,
 			hiddenSymbol: 'stroke',
@@ -79,6 +79,18 @@ module.exports = function(Chart) {
 		return labelOpts.usePointStyle ?
 			fontSize * Math.SQRT2 :
 			labelOpts.boxWidth;
+	}
+
+	/**
+	 * Helper function to get the box height based on the usePointStyle option
+	 * @param labelopts {Object} the label options on the legend
+	 * @param fontSize {Number} the label font size
+	 * @return {Number} height of the color box area
+	 */
+	function getBoxHeight(labelOpts, boxWidth) {
+		return labelOpts.boxHeight ?
+			labelOpts.boxHeight
+			: Math.ceil(boxWidth * 0.7);
 	}
 
 	/**
@@ -363,6 +375,7 @@ module.exports = function(Chart) {
 
 				var boxWidth = getBoxWidth(labelOpts, fontSize);
 				var hitboxes = me.legendHitBoxes;
+				const boxHeight = getBoxHeight(labelOpts, boxWidth);
 
 				// current position
 				var drawLegendBox = function(x, y, legendItem) {
@@ -372,7 +385,6 @@ module.exports = function(Chart) {
 
 					// Set the ctx for the box
 					ctx.save();
-
 					ctx.fillStyle = itemOrDefault(legendItem.fillStyle, globalDefault.defaultColor);
 					ctx.lineCap = itemOrDefault(legendItem.lineCap, lineDefault.borderCapStyle);
 					ctx.lineDashOffset = itemOrDefault(legendItem.lineDashOffset, lineDefault.borderDashOffset);
@@ -399,23 +411,15 @@ module.exports = function(Chart) {
 					} else {
 						// Draw box as legend symbol
 						if (!isLineWidthZero) {
-							ctx.strokeRect(x, y, boxWidth, fontSize);
+							ctx.strokeRect(x, y, boxWidth, boxHeight);
 						}
-						ctx.fillRect(x, y, boxWidth, fontSize);
+						ctx.fillRect(x, y, boxWidth, boxHeight);
 					}
 
 					ctx.restore();
 				};
 				var fillText = function(x, y, legendItem, textWidth) {
 					ctx.fillText(legendItem.text, boxWidth + (fontSize / 2) + x, y);
-
-					if (labelOpts.hiddenSymbol === 'check') {
-						if (!legendItem.hidden) {
-							drawHiddenSymbol(labelOpts.hiddenSymbol, ctx, boxWidth, fontSize, textWidth, x, y);
-						}
-					} else if (legendItem.hidden) {
-						drawHiddenSymbol(labelOpts.hiddenSymbol, ctx, boxWidth, fontSize, textWidth, x, y);
-					}
 				};
 
 				// Horizontal
@@ -434,10 +438,10 @@ module.exports = function(Chart) {
 					};
 				}
 
-				var itemHeight = fontSize + labelOpts.padding;
+				var itemHeight = boxHeight + labelOpts.padding;
 				helpers.each(me.legendItems, function(legendItem, i) {
 					var textWidth = ctx.measureText(legendItem.text).width;
-					var	width = boxWidth + (fontSize / 2) + textWidth;
+					var	width = boxWidth + boxHeight + textWidth;
 					var	x = cursor.x;
 					var	y = cursor.y;
 
@@ -458,8 +462,17 @@ module.exports = function(Chart) {
 					hitboxes[i].left = x;
 					hitboxes[i].top = y;
 
+					const textY = y + (boxHeight - fontSize);
+
 					// Fill the actual label
-					fillText(x, y, legendItem, textWidth);
+					fillText(x, textY, legendItem, textWidth);
+					if (labelOpts.hiddenSymbol === 'check') {
+						if (!legendItem.hidden) {
+							drawHiddenSymbol(labelOpts.hiddenSymbol, ctx, boxWidth, boxHeight, textWidth, x, y);
+						}
+					} else if (legendItem.hidden) {
+						drawHiddenSymbol(labelOpts.hiddenSymbol, ctx, boxWidth, boxHeight, textWidth, x, y);
+					}
 
 					if (isHorizontal) {
 						cursor.x += width + (labelOpts.padding);

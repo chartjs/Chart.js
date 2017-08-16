@@ -18,7 +18,7 @@ describe('Legend block tests', function() {
 			onHover: null,
 
 			labels: {
-				boxWidth: 40,
+				boxWidth: 20,
 				padding: 10,
 				center: true,
 				hiddenSymbol: 'stroke',
@@ -220,9 +220,9 @@ describe('Legend block tests', function() {
 		expect(chart.legend.legendHitBoxes.length).toBe(3);
 
 		[
-			{h: 12, l: 101, t: 10, w: 93},
-			{h: 12, l: 205, t: 10, w: 93},
-			{h: 12, l: 308, t: 10, w: 93}
+			{h: 12, l: 131, t: 10, w: 73},
+			{h: 12, l: 222, t: 10, w: 73},
+			{h: 12, l: 313, t: 10, w: 73}
 		].forEach(function(expected, i) {
 			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
 			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
