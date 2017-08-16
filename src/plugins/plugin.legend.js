@@ -418,7 +418,7 @@ module.exports = function(Chart) {
 
 					ctx.restore();
 				};
-				var fillText = function(x, y, legendItem, textWidth) {
+				var fillText = function(x, y, legendItem) {
 					ctx.fillText(legendItem.text, boxWidth + (fontSize / 2) + x, y);
 				};
 
