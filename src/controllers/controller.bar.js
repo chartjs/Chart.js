@@ -362,7 +362,7 @@ module.exports = function(Chart) {
 		draw: function() {
 			var me = this;
 			var chart = me.chart;
-			var scale = me.getIndexScale();
+			var scale = me.getValueScale();
 			var rects = me.getMeta().data;
 			var dataset = me.getDataset();
 			var ilen = rects.length;

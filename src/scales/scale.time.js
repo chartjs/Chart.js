@@ -71,7 +71,7 @@ function arrayUnique(items) {
 
 	for (i = 0, ilen = items.length; i < ilen; ++i) {
 		item = items[i];
-		if (!hash[item]) {
+		if (item !== null && !hash[item]) {
 			hash[item] = true;
 			out.push(item);
 		}
