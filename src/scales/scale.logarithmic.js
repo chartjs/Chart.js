@@ -217,11 +217,35 @@ module.exports = function(Chart) {
 			var me = this;
 			var range = helpers.log10(me.end) - helpers.log10(me.start);
 			var value, innerDimension;
+			var tickOpts = me.options.ticks;
 
-			if (me.isHorizontal()) {
+			if (me.start === 0 || me.end === 0) {
+				var zero = me.isHorizontal() ? (tickOpts.reverse ? me.right : me.left) : (tickOpts.reverse ? me.top : me.bottom);
+				range = helpers.log10(tickOpts.reverse ? me.start : me.end) - Math.floor(helpers.log10(me.minNotZero));
+				var fontSize = helpers.getValueOrDefault(tickOpts.fontSize, Chart.defaults.global.defaultFontSize);
+				var diff = fontSize;
+				innerDimension -= diff;
+
+				//
+				var pixelMinNotZero;
+				if (me.isHorizontal()) {
+					pixelMinNotZero = tickOpts.reverse ? zero - diff : zero + diff;
+				} else {
+					pixelMinNotZero = tickOpts.reverse ? zero + diff : zero - diff;
+				}
+
+				if (pixel === zero) {
+					value = 0;
+				} else if (pixel === pixelMinNotZero) {
+					value = me.minNotZero;
+				} else {
+					var p = me.isHorizontal() ? (tickOpts.reverse ? zero - diff - pixel : zero + diff + pixel) : (tickOpts.reverse ? zero + diff + pixel : zero - diff - pixel);
+					value = me.minNotZero * Math.pow(10, p * range / innerDimension);
+				}
+			} else if (me.isHorizontal()) {
 				innerDimension = me.width;
 				value = me.start * Math.pow(10, (pixel - me.left) * range / innerDimension);
-			} else {  // todo: if start === 0
+			} else {
 				innerDimension = me.height;
 				value = Math.pow(10, (me.bottom - pixel) * range / innerDimension) / me.start;
 			}
