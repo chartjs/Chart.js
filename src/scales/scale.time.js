@@ -71,7 +71,7 @@ function arrayUnique(items) {
 
 	for (i = 0, ilen = items.length; i < ilen; ++i) {
 		item = items[i];
-		if (item !== null && !hash[item]) {
+		if (!hash[item]) {
 			hash[item] = true;
 			out.push(item);
 		}
@@ -480,11 +480,16 @@ module.exports = function(Chart) {
 			var timestamps = [];
 			var datasets = [];
 			var labels = [];
+			var rawLabels = [];
 			var i, j, ilen, jlen, data, timestamp;
 
 			// Convert labels to timestamps
 			for (i = 0, ilen = chart.data.labels.length; i < ilen; ++i) {
-				labels.push(parse(chart.data.labels[i], me));
+				timestamp = parse(chart.data.labels[i], me);
+				if (timestamp !== null) {
+					labels.push(timestamp);
+				}
+				rawLabels.push(timestamp);
 			}
 
 			// Convert data to timestamps
@@ -498,12 +503,14 @@ module.exports = function(Chart) {
 
 						for (j = 0, jlen = data.length; j < jlen; ++j) {
 							timestamp = parse(data[j], me);
-							timestamps.push(timestamp);
+							if (timestamp !== null) {
+								timestamps.push(timestamp);
+							}
 							datasets[i][j] = timestamp;
 						}
 					} else {
 						timestamps.push.apply(timestamps, labels);
-						datasets[i] = labels.slice(0);
+						datasets[i] = rawLabels.slice(0);
 					}
 				} else {
 					datasets[i] = [];
