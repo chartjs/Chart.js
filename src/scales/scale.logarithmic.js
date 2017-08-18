@@ -178,46 +178,38 @@ module.exports = function(Chart) {
 		},
 		getPixelForValue: function(value) {
 			var me = this;
-			var innerDimension;
-			var pixel;
-
+			var innerDimension = me.isHorizontal() ? me.width : me.height;
 			var start = me.start;
 			var end = me.end;
 			var newVal = +me.getRightValue(value);
-			var range;
 			var opts = me.options;
 			var tickOpts = opts.ticks;
+			var zero = me.isHorizontal() ? (tickOpts.reverse ? me.right : me.left) : (tickOpts.reverse ? me.top : me.bottom);
 
-			if (me.isHorizontal()) {
-				range = helpers.log10(me.end) - helpers.log10(start); // todo: if start === 0
-				if (newVal === 0) {
-					pixel = me.left;
-				} else {
-					innerDimension = me.width;
-					pixel = me.left + (innerDimension / range * (helpers.log10(newVal) - helpers.log10(start)));
+			var pixel, range, valueOffset;
+
+			if (start === 0 || end === 0) { // 0 is in range
+				var min = Math.pow(10, Math.floor(helpers.log10(me.minNotZero)));
+				var max = tickOpts.reverse ? start : end;
+				range = helpers.log10(max) - Math.floor(helpers.log10(me.minNotZero));
+				var fontSize = helpers.getValueOrDefault(tickOpts.fontSize, Chart.defaults.global.defaultFontSize);
+				var diff = fontSize;
+				innerDimension -= diff;
+
+				if (newVal === 0) { // 0
+					pixel = zero;
+				} else if (newVal === min) { // 0 in range, minNotZero
+					pixel = me.isHorizontal() ? (tickOpts.reverse ? zero - diff : zero + diff) : (tickOpts.reverse ? zero + diff : zero - diff);
+				} else { // 0 in range, common case
+					valueOffset = innerDimension / range * (helpers.log10(newVal) - Math.floor(helpers.log10(me.minNotZero)));
+					pixel = me.isHorizontal()
+						? (tickOpts.reverse ? zero - diff - valueOffset : zero + diff + valueOffset)
+						: (tickOpts.reverse ? zero + diff + valueOffset : zero - diff - valueOffset);
 				}
-			} else {
-				// Bottom - top since pixels increase downward on a screen
-				innerDimension = me.height;
-				if (start === 0 || end === 0) {
-					var zero = tickOpts.reverse ? me.top : me.bottom;
-					var min = Math.pow(10, Math.floor(helpers.log10(me.minNotZero)));
-					var max = tickOpts.reverse ? start : end;
-					range = helpers.log10(max) - Math.floor(helpers.log10(me.minNotZero));
-					var diff = innerDimension * 0.04 + (innerDimension * 0.96/ range * (helpers.log10(newVal) - Math.floor(helpers.log10(me.minNotZero))));
-					if (newVal === 0) {
-						pixel = zero;
-					} else if (newVal === min) {
-						pixel = tickOpts.reverse ? zero + innerDimension * 0.04 : zero - innerDimension * 0.04;
-					} else {
-						pixel = tickOpts.reverse ? zero + diff : zero - diff;
-					}
-				} else if (newVal === 0) {
-					pixel = tickOpts.reverse ? me.top : me.bottom;
-				} else {
-					range = helpers.log10(me.end) - helpers.log10(start);
-					pixel = me.bottom - (innerDimension / range * (helpers.log10(newVal) - helpers.log10(start)));
-				}
+			} else { // 0 is not in range
+				range = helpers.log10(end) - helpers.log10(start);
+				valueOffset = innerDimension / range * (helpers.log10(newVal) - helpers.log10(start));
+				pixel = me.isHorizontal() ? me.left + valueOffset : me.bottom - valueOffset;
 			}
 			return pixel;
 		},
