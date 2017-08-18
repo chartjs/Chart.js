@@ -274,20 +274,6 @@ describe('Bubble controller tests', function() {
 	});
 
 	describe('Interactions', function() {
-		function triggerElementEvent(chart, type, el) {
-			var node = chart.canvas;
-			var rect = node.getBoundingClientRect();
-			var event = new MouseEvent(type, {
-				clientX: rect.left + el._model.x,
-				clientY: rect.top + el._model.y,
-				cancelable: true,
-				bubbles: true,
-				view: window
-			});
-
-			node.dispatchEvent(event);
-		}
-
 		beforeEach(function() {
 			this.chart = window.acquireChart({
 				type: 'bubble',
@@ -330,13 +316,13 @@ describe('Bubble controller tests', function() {
 			var chart = this.chart;
 			var point = chart.getDatasetMeta(0).data[0];
 
-			triggerElementEvent(chart, 'mousemove', point);
+			jasmine.triggerMouseEvent(chart, 'mousemove', point);
 			expect(point._model.backgroundColor).toBe('rgb(49, 135, 221)');
 			expect(point._model.borderColor).toBe('rgb(22, 89, 156)');
 			expect(point._model.borderWidth).toBe(1);
 			expect(point._model.radius).toBe(20 + 4);
 
-			triggerElementEvent(chart, 'mouseout', point);
+			jasmine.triggerMouseEvent(chart, 'mouseout', point);
 			expect(point._model.backgroundColor).toBe('rgb(100, 150, 200)');
 			expect(point._model.borderColor).toBe('rgb(50, 100, 150)');
 			expect(point._model.borderWidth).toBe(2);
@@ -356,13 +342,13 @@ describe('Bubble controller tests', function() {
 
 			chart.update();
 
-			triggerElementEvent(chart, 'mousemove', point);
+			jasmine.triggerMouseEvent(chart, 'mousemove', point);
 			expect(point._model.backgroundColor).toBe('rgb(200, 100, 150)');
 			expect(point._model.borderColor).toBe('rgb(150, 50, 100)');
 			expect(point._model.borderWidth).toBe(8.4);
 			expect(point._model.radius).toBe(20 + 4.2);
 
-			triggerElementEvent(chart, 'mouseout', point);
+			jasmine.triggerMouseEvent(chart, 'mouseout', point);
 			expect(point._model.backgroundColor).toBe('rgb(100, 150, 200)');
 			expect(point._model.borderColor).toBe('rgb(50, 100, 150)');
 			expect(point._model.borderWidth).toBe(2);
@@ -382,13 +368,13 @@ describe('Bubble controller tests', function() {
 
 			chart.update();
 
-			triggerElementEvent(chart, 'mousemove', point);
+			jasmine.triggerMouseEvent(chart, 'mousemove', point);
 			expect(point._model.backgroundColor).toBe('rgb(200, 100, 150)');
 			expect(point._model.borderColor).toBe('rgb(150, 50, 100)');
 			expect(point._model.borderWidth).toBe(8.4);
 			expect(point._model.radius).toBe(20 + 4.2);
 
-			triggerElementEvent(chart, 'mouseout', point);
+			jasmine.triggerMouseEvent(chart, 'mouseout', point);
 			expect(point._model.backgroundColor).toBe('rgb(100, 150, 200)');
 			expect(point._model.borderColor).toBe('rgb(50, 100, 150)');
 			expect(point._model.borderWidth).toBe(2);
@@ -408,13 +394,13 @@ describe('Bubble controller tests', function() {
 
 			chart.update();
 
-			triggerElementEvent(chart, 'mousemove', point);
+			jasmine.triggerMouseEvent(chart, 'mousemove', point);
 			expect(point._model.backgroundColor).toBe('rgb(200, 100, 150)');
 			expect(point._model.borderColor).toBe('rgb(150, 50, 100)');
 			expect(point._model.borderWidth).toBe(8.4);
 			expect(point._model.radius).toBe(20 + 4.2);
 
-			triggerElementEvent(chart, 'mouseout', point);
+			jasmine.triggerMouseEvent(chart, 'mouseout', point);
 			expect(point._model.backgroundColor).toBe('rgb(100, 150, 200)');
 			expect(point._model.borderColor).toBe('rgb(50, 100, 150)');
 			expect(point._model.borderWidth).toBe(2);
