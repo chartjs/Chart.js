@@ -140,12 +140,9 @@ module.exports = function(Chart) {
 			// Scriptable options
 			var context = {
 				chart: chart,
-				datasetIndex: me.index,
-				datasetCount: datasets.length,
-				dataset: dataset,
 				dataIndex: index,
-				dataCount: dataset.data.length,
-				data: data
+				dataset: dataset,
+				datasetIndex: me.index
 			};
 
 			var keys = [

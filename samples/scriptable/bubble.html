@@ -30,13 +30,13 @@
 		utils.srand(110);
 
 		function colorize(opaque, context) {
-			var data = context.data;
-			var x = data.x / 100;
-			var y = data.y / 100;
+			var value = context.dataset.data[context.dataIndex];
+			var x = value.x / 100;
+			var y = value.y / 100;
 			var r = x < 0 && y < 0 ? 250 : x < 0 ? 150 : y < 0 ? 50 : 0;
 			var g = x < 0 && y < 0 ? 0 : x < 0 ? 50 : y < 0 ? 150 : 250;
 			var b = x < 0 && y < 0 ? 0 : x > 0 && y > 0 ? 250 : 150;
-			var a = opaque ? 1 : 0.5 * data.v / 1000;
+			var a = opaque ? 1 : 0.5 * value.v / 1000;
 
 			return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
 		}
@@ -86,13 +86,14 @@
 					},
 
 					hoverBorderWidth: function(context) {
-						return Math.round(8 * context.data.v / 1000);
+						var value = context.dataset.data[context.dataIndex];
+						return Math.round(8 * value.v / 1000);
 					},
 
 					radius: function(context) {
-						var data = context.data;
+						var value = context.dataset.data[context.dataIndex];
 						var size = context.chart.width;
-						var base = Math.abs(data.v) / 1000;
+						var base = Math.abs(value.v) / 1000;
 						return (size / 24) * base;
 					}
 				}
