@@ -257,6 +257,8 @@ module.exports = function(Chart) {
 				}
 			}
 
+			// The ordered pixels and the index translation table are stored in the ruler.
+			// They are used for bar width calculation.
 			pixels.sort(function(a, b) {
 				return a.value - b.value;
 			});
@@ -333,6 +335,7 @@ module.exports = function(Chart) {
 			var end = ruler.end;
 			var base, leftSampleSize, rightSampleSize, leftCategorySize, rightCategorySize, fullBarSize, size;
 
+			// The index is translated so that it points to the ordered pixel
 			index = ruler.order[index];
 			base = pixels[index];
 
