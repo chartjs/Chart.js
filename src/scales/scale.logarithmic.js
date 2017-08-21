@@ -218,10 +218,11 @@ module.exports = function(Chart) {
 			var range = helpers.log10(me.end) - helpers.log10(me.start);
 			var value, innerDimension;
 			var tickOpts = me.options.ticks;
+			var reverse = tickOpts.reverse;
 
 			if (me.start === 0 || me.end === 0) {
-				var zero = me.isHorizontal() ? (tickOpts.reverse ? me.right : me.left) : (tickOpts.reverse ? me.top : me.bottom);
-				range = helpers.log10(tickOpts.reverse ? me.start : me.end) - Math.floor(helpers.log10(me.minNotZero));
+				var zeroPixel = me.isHorizontal() ? (reverse ? me.right : me.left) : (reverse ? me.top : me.bottom);
+				range = helpers.log10(reverse ? me.start : me.end) - Math.floor(helpers.log10(me.minNotZero));
 				var fontSize = helpers.getValueOrDefault(tickOpts.fontSize, Chart.defaults.global.defaultFontSize);
 				var diff = fontSize;
 				innerDimension -= diff;
@@ -229,17 +230,19 @@ module.exports = function(Chart) {
 				//
 				var pixelMinNotZero;
 				if (me.isHorizontal()) {
-					pixelMinNotZero = tickOpts.reverse ? zero - diff : zero + diff;
+					pixelMinNotZero = reverse ? zeroPixel - diff : zeroPixel + diff;
 				} else {
-					pixelMinNotZero = tickOpts.reverse ? zero + diff : zero - diff;
+					pixelMinNotZero = reverse ? zeroPixel + diff : zeroPixel - diff;
 				}
 
-				if (pixel === zero) {
+				if (pixel === zeroPixel) {
 					value = 0;
 				} else if (pixel === pixelMinNotZero) {
 					value = me.minNotZero;
 				} else {
-					var p = me.isHorizontal() ? (tickOpts.reverse ? zero - diff - pixel : zero + diff + pixel) : (tickOpts.reverse ? zero + diff + pixel : zero - diff - pixel);
+					var p = me.isHorizontal()
+					 ? (reverse ? zeroPixel - diff - pixel : zeroPixel + diff + pixel)
+					 : (reverse ? zeroPxel + diff + pixel : zeroPixel - diff - pixel);
 					value = me.minNotZero * Math.pow(10, p * range / innerDimension);
 				}
 			} else if (me.isHorizontal()) {
