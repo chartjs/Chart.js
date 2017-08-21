@@ -651,7 +651,7 @@ module.exports = function(Chart) {
 
 				var i, len;
 				for (i = 0, len = title.length; i < len; ++i) {
-					var xPos = vm._titleAlign === 'center' ? pt.x + tooltipSize.width/2 : pt.x;
+					var xPos = vm._titleAlign === 'center' ? pt.x + tooltipSize.width / 2 : pt.x;
 					ctx.fillText(title[i], xPos, pt.y);
 					pt.y += titleFontSize + titleSpacing; // Line Height and spacing
 
@@ -673,7 +673,7 @@ module.exports = function(Chart) {
 			// Before Body
 			var xLinePadding = 0;
 			var fillLineOfText = function(line) {
-				var xPos = vm._bodyAlign === 'center' ? pt.x + xLinePadding + tooltipSize.width/2: pt.x + xLinePadding;
+				var xPos = vm._bodyAlign === 'center' ? pt.x + xLinePadding + tooltipSize.width / 2: pt.x + xLinePadding;
 				ctx.fillText(line, xPos, pt.y);
 				pt.y += bodyFontSize + bodySpacing;
 			};
@@ -733,7 +733,7 @@ module.exports = function(Chart) {
 				ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
 
 				helpers.each(footer, function(line) {
-					var xPos = vm._footerAlign === 'center' ? pt.x + tooltipSize.width/2: pt.x;
+					var xPos = vm._footerAlign === 'center' ? pt.x + tooltipSize.width / 2: pt.x;
 					ctx.fillText(line, xPos, pt.y);
 					pt.y += vm.footerFontSize + vm.footerSpacing;
 				});
