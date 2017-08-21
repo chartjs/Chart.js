@@ -636,7 +636,7 @@ module.exports = function(Chart) {
 			}
 			return {x1: x1, x2: x2, x3: x3, y1: y1, y2: y2, y3: y3};
 		},
-		drawTitle: function(pt, vm, ctx, opacity) {
+		drawTitle: function(pt, vm, ctx, opacity, tooltipSize) {
 			var title = vm.title;
 
 			if (title.length) {
@@ -651,7 +651,8 @@ module.exports = function(Chart) {
 
 				var i, len;
 				for (i = 0, len = title.length; i < len; ++i) {
-					ctx.fillText(title[i], pt.x, pt.y);
+					var xPos = vm._titleAlign === 'center' ? pt.x + tooltipSize.width/2 : pt.x;
+					ctx.fillText(title[i], xPos, pt.y);
 					pt.y += titleFontSize + titleSpacing; // Line Height and spacing
 
 					if (i + 1 === title.length) {
@@ -660,7 +661,7 @@ module.exports = function(Chart) {
 				}
 			}
 		},
-		drawBody: function(pt, vm, ctx, opacity) {
+		drawBody: function(pt, vm, ctx, opacity, tooltipSize) {
 			var bodyFontSize = vm.bodyFontSize;
 			var bodySpacing = vm.bodySpacing;
 			var body = vm.body;
@@ -672,7 +673,8 @@ module.exports = function(Chart) {
 			// Before Body
 			var xLinePadding = 0;
 			var fillLineOfText = function(line) {
-				ctx.fillText(line, pt.x + xLinePadding, pt.y);
+				var xPos = vm._bodyAlign === 'center' ? pt.x + xLinePadding + tooltipSize.width/2: pt.x + xLinePadding;
+				ctx.fillText(line, xPos, pt.y);
 				pt.y += bodyFontSize + bodySpacing;
 			};
 
@@ -718,7 +720,7 @@ module.exports = function(Chart) {
 			helpers.each(vm.afterBody, fillLineOfText);
 			pt.y -= bodySpacing; // Remove last body spacing
 		},
-		drawFooter: function(pt, vm, ctx, opacity) {
+		drawFooter: function(pt, vm, ctx, opacity, tooltipSize) {
 			var footer = vm.footer;
 
 			if (footer.length) {
@@ -731,7 +733,8 @@ module.exports = function(Chart) {
 				ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
 
 				helpers.each(footer, function(line) {
-					ctx.fillText(line, pt.x, pt.y);
+					var xPos = vm._footerAlign === 'center' ? pt.x + tooltipSize.width/2: pt.x;
+					ctx.fillText(line, xPos, pt.y);
 					pt.y += vm.footerFontSize + vm.footerSpacing;
 				});
 			}
@@ -806,17 +809,17 @@ module.exports = function(Chart) {
 				this.drawBackground(pt, vm, ctx, tooltipSize, opacity);
 
 				// Draw Title, Body, and Footer
-				pt.x += vm.xPadding;
+				// pt.x += vm.xPadding;
 				pt.y += vm.yPadding;
 
 				// Titles
-				this.drawTitle(pt, vm, ctx, opacity);
+				this.drawTitle(pt, vm, ctx, opacity, tooltipSize);
 
 				// Body
-				this.drawBody(pt, vm, ctx, opacity);
+				this.drawBody(pt, vm, ctx, opacity, tooltipSize);
 
 				// Footer
-				this.drawFooter(pt, vm, ctx, opacity);
+				this.drawFooter(pt, vm, ctx, opacity, tooltipSize);
 			}
 		},
 
