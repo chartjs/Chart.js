@@ -347,10 +347,7 @@ module.exports = function(Chart) {
 
 				var boxWidth = getBoxWidth(labelOpts, fontSize);
 				var hitboxes = me.legendHitBoxes;
-<<<<<<< HEAD
-=======
 				var boxHeight = getBoxHeight(labelOpts, boxWidth);
->>>>>>> 952f85f... replace const with var
 
 				// current position
 				var drawLegendBox = function(x, y, legendItem) {
