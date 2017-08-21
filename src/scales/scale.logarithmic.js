@@ -241,8 +241,8 @@ module.exports = function(Chart) {
 					value = me.minNotZero;
 				} else {
 					var p = me.isHorizontal()
-					 ? (reverse ? zeroPixel - diff - pixel : zeroPixel + diff + pixel)
-					 : (reverse ? zeroPxel + diff + pixel : zeroPixel - diff - pixel);
+						? (reverse ? zeroPixel - diff - pixel : zeroPixel + diff + pixel)
+						: (reverse ? zeroPixel + diff + pixel : zeroPixel - diff - pixel);
 					value = me.minNotZero * Math.pow(10, p * range / innerDimension);
 				}
 			} else if (me.isHorizontal()) {
