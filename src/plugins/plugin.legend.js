@@ -347,6 +347,10 @@ module.exports = function(Chart) {
 
 				var boxWidth = getBoxWidth(labelOpts, fontSize);
 				var hitboxes = me.legendHitBoxes;
+<<<<<<< HEAD
+=======
+				var boxHeight = getBoxHeight(labelOpts, boxWidth);
+>>>>>>> 952f85f... replace const with var
 
 				// current position
 				var drawLegendBox = function(x, y, legendItem) {
@@ -446,6 +450,8 @@ module.exports = function(Chart) {
 
 					hitboxes[i].left = x;
 					hitboxes[i].top = y;
+
+					var textY = y + (boxHeight - fontSize);
 
 					// Fill the actual label
 					fillText(x, y, legendItem, textWidth);
