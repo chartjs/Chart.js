@@ -108,7 +108,7 @@ module.exports = function(Chart) {
 			ctx.strokeStyle = '#ffffff';
 			ctx.lineCap = 'round';
 			ctx.moveTo(x + padding, y + (fontSize / 2));
-			ctx.lineTo((boxWidth / 2) + x, y + fontSize - padding);
+			ctx.lineTo((boxWidth / 2) + x, y + (fontSize - padding));
 			ctx.lineTo((boxWidth + x) - padding, y + padding);
 			ctx.stroke();
 			break;
@@ -375,7 +375,7 @@ module.exports = function(Chart) {
 
 				var boxWidth = getBoxWidth(labelOpts, fontSize);
 				var hitboxes = me.legendHitBoxes;
-				var boxHeight = getBoxHeight(labelOpts, boxWidth);
+				const boxHeight = getBoxHeight(labelOpts, boxWidth);
 
 				// current position
 				var drawLegendBox = function(x, y, legendItem) {
@@ -418,7 +418,7 @@ module.exports = function(Chart) {
 
 					ctx.restore();
 				};
-				var fillText = function(x, y, legendItem) {
+				var fillText = function(x, y, legendItem, textWidth) {
 					ctx.fillText(legendItem.text, boxWidth + (fontSize / 2) + x, y);
 				};
 
@@ -462,7 +462,7 @@ module.exports = function(Chart) {
 					hitboxes[i].left = x;
 					hitboxes[i].top = y;
 
-					var textY = y + (boxHeight - fontSize);
+					const textY = y + (boxHeight - fontSize);
 
 					// Fill the actual label
 					fillText(x, textY, legendItem, textWidth);
