@@ -80,6 +80,7 @@ module.exports = function(Chart) {
 					y: reset ? yScale.getBasePixel() : yScale.getPixelForValue(data, index, dsIndex),
 					// Appearance
 					radius: reset ? 0 : custom.radius ? custom.radius : me.getRadius(data),
+					pointStyle: reset ? pointElementOptions.pointStyle : custom.pointStyle ? custom.pointStyle : helpers.getValueAtIndexOrDefault(dataset.pointStyle, index, pointElementOptions.pointStyle),
 
 					// Tooltip
 					hitRadius: custom.hitRadius ? custom.hitRadius : helpers.valueAtIndexOrDefault(dataset.hitRadius, index, pointElementOptions.hitRadius)
@@ -96,7 +97,7 @@ module.exports = function(Chart) {
 		},
 
 		getRadius: function(value) {
-			return value.r || this.chart.options.elements.point.radius;
+			return (value && typeof value.r !== 'undefined') ? value.r : this.chart.options.elements.point.radius;
 		},
 
 		setHoverStyle: function(point) {
