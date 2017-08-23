@@ -819,7 +819,7 @@ describe('Logarithmic Scale tests', function() {
 		expect(xScale.getPixelForValue(70, 0, 0)).toBeCloseToPixel(495);
 		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(44);
 		expect(xScale.getPixelForValue(0.01, 0, 0)).toBeCloseToPixel(56);
-		expect(xScale.getPixelForValue(0.063, 0, 0)).toBeCloseToPixel(149);
+		expect(xScale.getPixelForValue(0.063, 0, 0)).toBeCloseToPixel(147);
 		expect(xScale.getPixelForValue(0.5, 0, 0)).toBeCloseToPixel(250);
 		expect(xScale.getPixelForValue(4, 0, 0)).toBeCloseToPixel(353);
 		expect(xScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(398);
