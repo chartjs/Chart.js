@@ -1174,11 +1174,13 @@ describe('Bar controller tests', function() {
 					xAxes: [{
 						type: 'category',
 						stacked: true,
-						barPercentage: 1
+						barPercentage: 1,
+						display: false
 					}],
 					yAxes: [{
 						type: 'logarithmic',
 						stacked: true,
+						display: false
 					}]
 				}
 			}
@@ -1187,10 +1189,10 @@ describe('Bar controller tests', function() {
 		var meta0 = chart.getDatasetMeta(0);
 
 		[
-			{b: 484, w: 92, x: 94, y: 484},
-			{b: 484, w: 92, x: 208, y: 136},
-			{b: 484, w: 92, x: 322, y: 484},
-			{b: 484, w: 92, x: 436, y: 136}
+			{b: 512, w: 102, x: 64, y: 512},
+			{b: 512, w: 102, x: 192, y: 143},
+			{b: 512, w: 102, x: 320, y: 512},
+			{b: 512, w: 102, x: 449, y: 143}
 		].forEach(function(values, i) {
 			expect(meta0.data[i]._model.base).toBeCloseToPixel(values.b);
 			expect(meta0.data[i]._model.width).toBeCloseToPixel(values.w);
@@ -1201,10 +1203,10 @@ describe('Bar controller tests', function() {
 		var meta1 = chart.getDatasetMeta(1);
 
 		[
-			{b: 484, w: 92, x: 94, y: 122},
-			{b: 136, w: 92, x: 208, y: 122},
-			{b: 484, w: 92, x: 322, y: 484},
-			{b: 136, w: 92, x: 436, y: 32}
+			{b: 512, w: 102, x: 64, y: 127},
+			{b: 143, w: 102, x: 192, y: 127},
+			{b: 512, w: 102, x: 320, y: 512},
+			{b: 143, w: 102, x: 449, y: 32}
 		].forEach(function(values, i) {
 			expect(meta1.data[i]._model.base).toBeCloseToPixel(values.b);
 			expect(meta1.data[i]._model.width).toBeCloseToPixel(values.w);
