@@ -480,16 +480,11 @@ module.exports = function(Chart) {
 			var timestamps = [];
 			var datasets = [];
 			var labels = [];
-			var rawLabels = [];
 			var i, j, ilen, jlen, data, timestamp;
 
 			// Convert labels to timestamps
 			for (i = 0, ilen = chart.data.labels.length; i < ilen; ++i) {
-				timestamp = parse(chart.data.labels[i], me);
-				if (timestamp !== null) {
-					labels.push(timestamp);
-				}
-				rawLabels.push(timestamp);
+				labels.push(parse(chart.data.labels[i], me));
 			}
 
 			// Convert data to timestamps
@@ -503,14 +498,12 @@ module.exports = function(Chart) {
 
 						for (j = 0, jlen = data.length; j < jlen; ++j) {
 							timestamp = parse(data[j], me);
-							if (timestamp !== null) {
-								timestamps.push(timestamp);
-							}
+							timestamps.push(timestamp);
 							datasets[i][j] = timestamp;
 						}
 					} else {
 						timestamps.push.apply(timestamps, labels);
-						datasets[i] = rawLabels.slice(0);
+						datasets[i] = labels.slice(0);
 					}
 				} else {
 					datasets[i] = [];
