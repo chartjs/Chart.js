@@ -8,8 +8,11 @@ Example:
 
 ```javascript
 color: function(context) {
-    return context.data < 0 ? 'red' :   // draw negative values in red
-        index%2 ? 'blue' : 'green';    // else, alternate values in blue and green
+    var index = context.dataIndex;
+    var value = context.dataset.data[index];
+    return value < 0 ? 'red' :  // draw negative values in red
+        index % 2 ? 'blue' :    // else, alternate values in blue and green
+        'green';
 }
 ```
 
