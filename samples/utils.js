@@ -12,10 +12,6 @@ window.chartColors = {
 	grey: 'rgb(201, 203, 207)'
 };
 
-window.randomScalingFactor = function() {
-	return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 100);
-};
-
 (function(global) {
 	var Months = [
 		'January',
@@ -30,6 +26,18 @@ window.randomScalingFactor = function() {
 		'October',
 		'November',
 		'December'
+	];
+
+	var COLORS = [
+		'#4dc9f6',
+		'#f67019',
+		'#f53794',
+		'#537bc4',
+		'#acc236',
+		'#166a8f',
+		'#00a950',
+		'#58595b',
+		'#8549ba'
 	];
 
 	var Samples = global.Samples || (global.Samples = {});
@@ -105,6 +113,10 @@ window.randomScalingFactor = function() {
 			return values;
 		},
 
+		color: function(index) {
+			return COLORS[index % COLORS.length];
+		},
+
 		transparentize: function(color, opacity) {
 			var alpha = opacity === undefined ? 0.5 : 1 - opacity;
 			return Chart.helpers.color(color).alpha(alpha).rgbString();
@@ -114,6 +126,11 @@ window.randomScalingFactor = function() {
 	};
 
 	Samples.utils.srand(Date.now());
+
+	// DEPRECATED
+	window.randomScalingFactor = function() {
+		return Math.round(Samples.utils.rand(-100, 100));
+	};
 
 }(this));
 

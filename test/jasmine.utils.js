@@ -158,11 +158,26 @@ function waitForResize(chart, callback) {
 	};
 }
 
+function triggerMouseEvent(chart, type, el) {
+	var node = chart.canvas;
+	var rect = node.getBoundingClientRect();
+	var event = new MouseEvent(type, {
+		clientX: rect.left + el._model.x,
+		clientY: rect.top + el._model.y,
+		cancelable: true,
+		bubbles: true,
+		view: window
+	});
+
+	node.dispatchEvent(event);
+}
+
 module.exports = {
 	injectCSS: injectCSS,
 	createCanvas: createCanvas,
 	acquireChart: acquireChart,
 	releaseChart: releaseChart,
 	specsFromFixtures: specsFromFixtures,
+	triggerMouseEvent: triggerMouseEvent,
 	waitForResize: waitForResize
 };

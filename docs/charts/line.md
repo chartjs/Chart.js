@@ -6,11 +6,11 @@ A line chart is a way of plotting data points on a line. Often, it is used to sh
     "type": "line",
     "data": {
         "labels": [
-            "January", 
-            "February", 
-            "March", 
-            "April", 
-            "May", 
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
             "June",
             "July"
         ],
@@ -62,7 +62,7 @@ All point* properties can be specified as an array. If these are set to an array
 | `pointBorderColor` | `Color/Color[]` | The border color for points.
 | `pointBorderWidth` | `Number/Number[]` | The width of the point border in pixels.
 | `pointRadius` | `Number/Number[]` | The radius of the point shape. If set to 0, the point is not rendered.
-| `pointStyle` | `String/String[]/Image/Image[]` | Style of the point. [more...](#pointstyle)
+| `pointStyle` | `String/String[]/Image/Image[]` | Style of the point. [more...](../configuration/elements#point-styles)
 | `pointHitRadius` | `Number/Number[]` | The pixel size of the non-displayed point that reacts to mouse events.
 | `pointHoverBackgroundColor` | `Color/Color[]` | Point background color when hovered.
 | `pointHoverBorderColor` | `Color/Color[]` | Point border color when hovered.
@@ -75,28 +75,13 @@ All point* properties can be specified as an array. If these are set to an array
 ### cubicInterpolationMode
 The following interpolation modes are supported:
 * 'default'
-* 'monotone'. 
+* 'monotone'.
 
 The 'default' algorithm uses a custom weighted cubic interpolation, which produces pleasant curves for all types of datasets.
 
 The 'monotone' algorithm is more suited to `y = f(x)` datasets : it preserves monotonicity (or piecewise monotonicity) of the dataset being interpolated, and ensures local extremums (if any) stay at input data points.
 
 If left untouched (`undefined`), the global `options.elements.line.cubicInterpolationMode` property is used.
-
-### pointStyle
-The style of point. Options are:
-* 'circle'
-* 'cross'
-* 'crossRot'
-* 'dash'. 
-* 'line'
-* 'rect'
-* 'rectRounded'
-* 'rectRot'
-* 'star'
-* 'triangle'
-
-If the option is an image, that image is drawn on the canvas using [drawImage](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/drawImage).
 
 ### Stepped Line
 The following values are supported for `steppedLine`:
@@ -127,7 +112,7 @@ Chart.defaults.line.spanGaps = true;
 
 ## Data Structure
 
-The `data` property of a dataset for a line chart can be passed in two formats. 
+The `data` property of a dataset for a line chart can be passed in two formats.
 
 ### Number[]
 ```javascript

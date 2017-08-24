@@ -168,6 +168,12 @@
 			path: 'tooltips/custom-points.html'
 		}]
 	}, {
+		title: 'Scriptable',
+		items: [{
+			title: 'Bubble Chart',
+			path: 'scriptable/bubble.html'
+		}]
+	}, {
 		title: 'Advanced',
 		items: [{
 			title: 'Progress bar',
