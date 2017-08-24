@@ -36,12 +36,16 @@ describe('Bar controller tests', function() {
 				labels: []
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
 					xAxes: [{
-						id: 'firstXScaleID'
+						id: 'firstXScaleID',
+						display: false
 					}],
 					yAxes: [{
-						id: 'firstYScaleID'
+						id: 'firstYScaleID',
+						display: false
 					}]
 				}
 			}
@@ -115,12 +119,16 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
+					legend: false,
+					title: false,
 					scales: {
 						xAxes: [{
-							stacked: true
+							stacked: true,
+							display: false
 						}],
 						yAxes: [{
-							stacked: true
+							stacked: true,
+							display: false
 						}]
 					}
 				}
@@ -148,12 +156,16 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
+					legend: false,
+					title: false,
 					scales: {
 						xAxes: [{
-							stacked: false
+							stacked: false,
+							display: false
 						}],
 						yAxes: [{
-							stacked: false
+							stacked: false,
+							display: false
 						}]
 					}
 				}
@@ -204,12 +216,16 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
+					legend: false,
+					title: false,
 					scales: {
 						xAxes: [{
-							stacked: true
+							stacked: true,
+							display: false
 						}],
 						yAxes: [{
-							stacked: true
+							stacked: true,
+							display: false
 						}]
 					}
 				}
@@ -237,12 +253,16 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
+					legend: false,
+					title: false,
 					scales: {
 						xAxes: [{
-							stacked: false
+							stacked: false,
+							display: false
 						}],
 						yAxes: [{
-							stacked: false
+							stacked: false,
+							display: false
 						}]
 					}
 				}
@@ -293,12 +313,16 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
+					legend: false,
+					title: false,
 					scales: {
 						xAxes: [{
-							stacked: true
+							stacked: true,
+							display: false
 						}],
 						yAxes: [{
-							stacked: true
+							stacked: true,
+							display: false
 						}]
 					}
 				}
@@ -326,12 +350,16 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
+					legend: false,
+					title: false,
 					scales: {
 						xAxes: [{
-							stacked: false
+							stacked: false,
+							display: false
 						}],
 						yAxes: [{
-							stacked: false
+							stacked: false,
+							display: false
 						}]
 					}
 				}
@@ -409,12 +437,16 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
+					legend: false,
+					title: false,
 					scales: {
 						xAxes: [{
-							stacked: true
+							stacked: true,
+							display: false
 						}],
 						yAxes: [{
-							stacked: true
+							stacked: true,
+							display: false
 						}]
 					}
 				}
@@ -445,12 +477,16 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
+					legend: false,
+					title: false,
 					scales: {
 						xAxes: [{
-							stacked: false
+							stacked: false,
+							display: false
 						}],
 						yAxes: [{
-							stacked: false
+							stacked: false,
+							display: false
 						}]
 					}
 				}
@@ -507,12 +543,16 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
+					legend: false,
+					title: false,
 					scales: {
 						xAxes: [{
-							stacked: true
+							stacked: true,
+							display: false
 						}],
 						yAxes: [{
-							stacked: true
+							stacked: true,
+							display: false
 						}]
 					}
 				}
@@ -543,12 +583,16 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
+					legend: false,
+					title: false,
 					scales: {
 						xAxes: [{
-							stacked: false
+							stacked: false,
+							display: false
 						}],
 						yAxes: [{
-							stacked: false
+							stacked: false,
+							display: false
 						}]
 					}
 				}
@@ -605,12 +649,16 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
+					legend: false,
+					title: false,
 					scales: {
 						xAxes: [{
-							stacked: true
+							stacked: true,
+							display: false
 						}],
 						yAxes: [{
-							stacked: true
+							stacked: true,
+							display: false
 						}]
 					}
 				}
@@ -641,12 +689,16 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
+					legend: false,
+					title: false,
 					scales: {
 						xAxes: [{
-							stacked: false
+							stacked: false,
+							display: false
 						}],
 						yAxes: [{
-							stacked: false
+							stacked: false,
+							display: false
 						}]
 					}
 				}
@@ -695,6 +747,8 @@ describe('Bar controller tests', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				elements: {
 					rectangle: {
 						backgroundColor: 'red',
@@ -706,11 +760,13 @@ describe('Bar controller tests', function() {
 				scales: {
 					xAxes: [{
 						id: 'firstXScaleID',
-						type: 'category'
+						type: 'category',
+						display: false
 					}],
 					yAxes: [{
 						id: 'firstYScaleID',
-						type: 'linear'
+						type: 'linear',
+						display: false
 					}]
 				}
 			}
@@ -726,8 +782,8 @@ describe('Bar controller tests', function() {
 		expect(meta.data.length).toBe(2);
 
 		[
-			{x: 113, y: 484},
-			{x: 229, y: 32}
+			{x: 89, y: 512},
+			{x: 217, y: 0}
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._datasetIndex).toBe(1);
 			expect(meta.data[i]._index).toBe(i);
@@ -735,8 +791,8 @@ describe('Bar controller tests', function() {
 			expect(meta.data[i]._yScale).toBe(chart.scales.firstYScaleID);
 			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(expected.y);
-			expect(meta.data[i]._model.base).toBeCloseToPixel(936);
-			expect(meta.data[i]._model.width).toBeCloseToPixel(40);
+			expect(meta.data[i]._model.base).toBeCloseToPixel(1024);
+			expect(meta.data[i]._model.width).toBeCloseToPixel(46);
 			expect(meta.data[i]._model).toEqual(jasmine.objectContaining({
 				datasetLabel: chart.data.datasets[1].label,
 				label: chart.data.labels[i],
@@ -771,12 +827,16 @@ describe('Bar controller tests', function() {
 				labels: ['label1', 'label2']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
 					xAxes: [{
-						type: 'category'
+						type: 'category',
+						display: false
 					}],
 					yAxes: [{
-						type: 'linear'
+						type: 'linear',
+						display: false
 					}]
 				}
 			}
@@ -788,10 +848,10 @@ describe('Bar controller tests', function() {
 		var bar1 = meta.data[0];
 		var bar2 = meta.data[1];
 
-		expect(bar1._model.x).toBeCloseToPixel(187);
-		expect(bar1._model.y).toBeCloseToPixel(132);
-		expect(bar2._model.x).toBeCloseToPixel(422);
-		expect(bar2._model.y).toBeCloseToPixel(32);
+		expect(bar1._model.x).toBeCloseToPixel(179);
+		expect(bar1._model.y).toBeCloseToPixel(114);
+		expect(bar2._model.x).toBeCloseToPixel(435);
+		expect(bar2._model.y).toBeCloseToPixel(0);
 	});
 
 	it('should update elements when the scales are stacked', function() {
@@ -808,13 +868,17 @@ describe('Bar controller tests', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
 					xAxes: [{
-						type: 'category'
+						type: 'category',
+						display: false
 					}],
 					yAxes: [{
 						type: 'linear',
-						stacked: true
+						stacked: true,
+						display: false
 					}]
 				}
 			}
@@ -823,10 +887,10 @@ describe('Bar controller tests', function() {
 		var meta0 = chart.getDatasetMeta(0);
 
 		[
-			{b: 290, w: 83 / 2, x: 63, y: 161},
-			{b: 290, w: 83 / 2, x: 179, y: 419},
-			{b: 290, w: 83 / 2, x: 295, y: 161},
-			{b: 290, w: 83 / 2, x: 411, y: 419}
+			{b: 293, w: 92 / 2, x: 38, y: 146},
+			{b: 293, w: 92 / 2, x: 166, y: 439},
+			{b: 293, w: 92 / 2, x: 295, y: 146},
+			{b: 293, w: 92 / 2, x: 422, y: 439}
 		].forEach(function(values, i) {
 			expect(meta0.data[i]._model.base).toBeCloseToPixel(values.b);
 			expect(meta0.data[i]._model.width).toBeCloseToPixel(values.w);
@@ -837,10 +901,10 @@ describe('Bar controller tests', function() {
 		var meta1 = chart.getDatasetMeta(1);
 
 		[
-			{b: 161, w: 83 / 2, x: 109, y: 32},
-			{b: 290, w: 83 / 2, x: 225, y: 97},
-			{b: 161, w: 83 / 2, x: 341, y: 161},
-			{b: 419, w: 83 / 2, x: 457, y: 471}
+			{b: 146, w: 92 / 2, x: 89, y: 0},
+			{b: 293, w: 92 / 2, x: 217, y: 73},
+			{b: 146, w: 92 / 2, x: 345, y: 146},
+			{b: 439, w: 92 / 2, x: 473, y: 497}
 		].forEach(function(values, i) {
 			expect(meta1.data[i]._model.base).toBeCloseToPixel(values.b);
 			expect(meta1.data[i]._model.width).toBeCloseToPixel(values.w);
@@ -863,13 +927,17 @@ describe('Bar controller tests', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
 					xAxes: [{
-						type: 'category'
+						type: 'category',
+						display: false
 					}],
 					yAxes: [{
 						type: 'linear',
 						stacked: true,
+						display: false,
 						ticks: {
 							min: 50,
 							max: 100
@@ -882,10 +950,10 @@ describe('Bar controller tests', function() {
 		var meta0 = chart.getDatasetMeta(0);
 
 		[
-			{b: 936, w: 83 / 2, x: 65.5, y: 484},
-			{b: 936, w: 83 / 2, x: 180.5, y: 755},
-			{b: 936, w: 83 / 2, x: 296.5, y: 846},
-			{b: 936, w: 83 / 2, x: 411.5, y: 32}
+			{b: 1024, w: 92 / 2, x: 38, y: 512},
+			{b: 1024, w: 92 / 2, x: 166, y: 819},
+			{b: 1024, w: 92 / 2, x: 294, y: 922},
+			{b: 1024, w: 92 / 2, x: 422.5, y: 0}
 		].forEach(function(values, i) {
 			expect(meta0.data[i]._model.base).toBeCloseToPixel(values.b);
 			expect(meta0.data[i]._model.width).toBeCloseToPixel(values.w);
@@ -896,10 +964,10 @@ describe('Bar controller tests', function() {
 		var meta1 = chart.getDatasetMeta(1);
 
 		[
-			{b: 484, w: 83 / 2, x: 111.5, y: 32},
-			{b: 755, w: 83 / 2, x: 226.5, y: 32},
-			{b: 846, w: 83 / 2, x: 342.5, y: 32},
-			{b: 32, w: 83 / 2, x: 457.5, y: 32}
+			{b: 512, w: 92 / 2, x: 89, y: 0},
+			{b: 819, w: 92 / 2, x: 217, y: 0},
+			{b: 922, w: 92 / 2, x: 345, y: 0},
+			{b: 0, w: 92 / 2, x: 473.5, y: 0}
 		].forEach(function(values, i) {
 			expect(meta1.data[i]._model.base).toBeCloseToPixel(values.b);
 			expect(meta1.data[i]._model.width).toBeCloseToPixel(values.w);
@@ -922,13 +990,17 @@ describe('Bar controller tests', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
 					xAxes: [{
 						type: 'category',
-						stacked: true
+						stacked: true,
+						display: false
 					}],
 					yAxes: [{
-						type: 'linear'
+						type: 'linear',
+						display: false
 					}]
 				}
 			}
@@ -937,10 +1009,10 @@ describe('Bar controller tests', function() {
 		var meta0 = chart.getDatasetMeta(0);
 
 		[
-			{b: 290, w: 83, x: 86, y: 32},
-			{b: 290, w: 83, x: 202, y: 419},
-			{b: 290, w: 83, x: 318, y: 161},
-			{b: 290, w: 83, x: 434, y: 419}
+			{b: 293, w: 92, x: 64, y: 0},
+			{b: 293, w: 92, x: 192, y: 439},
+			{b: 293, w: 92, x: 320, y: 146},
+			{b: 293, w: 92, x: 448, y: 439}
 		].forEach(function(values, i) {
 			expect(meta0.data[i]._model.base).toBeCloseToPixel(values.b);
 			expect(meta0.data[i]._model.width).toBeCloseToPixel(values.w);
@@ -951,10 +1023,10 @@ describe('Bar controller tests', function() {
 		var meta1 = chart.getDatasetMeta(1);
 
 		[
-			{b: 290, w: 83, x: 86, y: 161},
-			{b: 290, w: 83, x: 202, y: 97},
-			{b: 290, w: 83, x: 318, y: 290},
-			{b: 290, w: 83, x: 434, y: 471}
+			{b: 293, w: 92, x: 64, y: 146},
+			{b: 293, w: 92, x: 192, y: 73},
+			{b: 293, w: 92, x: 320, y: 293},
+			{b: 293, w: 92, x: 448, y: 497}
 		].forEach(function(values, i) {
 			expect(meta1.data[i]._model.base).toBeCloseToPixel(values.b);
 			expect(meta1.data[i]._model.width).toBeCloseToPixel(values.w);
@@ -977,13 +1049,17 @@ describe('Bar controller tests', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
 					xAxes: [{
-						type: 'category'
+						type: 'category',
+						display: false
 					}],
 					yAxes: [{
 						type: 'linear',
-						stacked: true
+						stacked: true,
+						display: false
 					}]
 				}
 			}
@@ -992,10 +1068,10 @@ describe('Bar controller tests', function() {
 		var meta0 = chart.getDatasetMeta(0);
 
 		[
-			{b: 290, w: 83 / 2, x: 63, y: 161},
-			{b: 290, w: 83 / 2, x: 179, y: 419},
-			{b: 290, w: 83 / 2, x: 295, y: 161},
-			{b: 290, w: 83 / 2, x: 411, y: 419}
+			{b: 293, w: 92 / 2, x: 38, y: 146},
+			{b: 293, w: 92 / 2, x: 166, y: 439},
+			{b: 293, w: 92 / 2, x: 295, y: 146},
+			{b: 293, w: 92 / 2, x: 422, y: 439}
 		].forEach(function(values, i) {
 			expect(meta0.data[i]._model.base).toBeCloseToPixel(values.b);
 			expect(meta0.data[i]._model.width).toBeCloseToPixel(values.w);
@@ -1006,10 +1082,10 @@ describe('Bar controller tests', function() {
 		var meta1 = chart.getDatasetMeta(1);
 
 		[
-			{b: 161, w: 83 / 2, x: 109, y: 32},
-			{b: 290, w: 83 / 2, x: 225, y: 97},
-			{b: 161, w: 83 / 2, x: 341, y: 161},
-			{b: 419, w: 83 / 2, x: 457, y: 471}
+			{b: 146, w: 92 / 2, x: 89, y: 0},
+			{b: 293, w: 92 / 2, x: 217, y: 73},
+			{b: 146, w: 92 / 2, x: 345, y: 146},
+			{b: 439, w: 92 / 2, x: 473, y: 497}
 		].forEach(function(values, i) {
 			expect(meta1.data[i]._model.base).toBeCloseToPixel(values.b);
 			expect(meta1.data[i]._model.width).toBeCloseToPixel(values.w);
@@ -1034,13 +1110,17 @@ describe('Bar controller tests', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
 					xAxes: [{
-						type: 'category'
+						type: 'category',
+						display: false
 					}],
 					yAxes: [{
 						type: 'linear',
-						stacked: true
+						stacked: true,
+						display: false
 					}]
 				}
 			}
@@ -1049,10 +1129,10 @@ describe('Bar controller tests', function() {
 		var meta0 = chart.getDatasetMeta(0);
 
 		[
-			{b: 290, w: 83, x: 86, y: 161},
-			{b: 290, w: 83, x: 202, y: 419},
-			{b: 290, w: 83, x: 318, y: 161},
-			{b: 290, w: 83, x: 434, y: 419}
+			{b: 293, w: 92, x: 64, y: 146},
+			{b: 293, w: 92, x: 192, y: 439},
+			{b: 293, w: 92, x: 320, y: 146},
+			{b: 293, w: 92, x: 448, y: 439}
 		].forEach(function(values, i) {
 			expect(meta0.data[i]._model.base).toBeCloseToPixel(values.b);
 			expect(meta0.data[i]._model.width).toBeCloseToPixel(values.w);
@@ -1063,10 +1143,10 @@ describe('Bar controller tests', function() {
 		var meta = chart.getDatasetMeta(1);
 
 		[
-			{b: 161, w: 83, x: 86, y: 32},
-			{b: 290, w: 83, x: 202, y: 97},
-			{b: 161, w: 83, x: 318, y: 161},
-			{b: 419, w: 83, x: 434, y: 471}
+			{b: 146, w: 92, x: 64, y: 0},
+			{b: 293, w: 92, x: 192, y: 73},
+			{b: 146, w: 92, x: 320, y: 146},
+			{b: 439, w: 92, x: 448, y: 497}
 		].forEach(function(values, i) {
 			expect(meta.data[i]._model.base).toBeCloseToPixel(values.b);
 			expect(meta.data[i]._model.width).toBeCloseToPixel(values.w);
@@ -1089,12 +1169,16 @@ describe('Bar controller tests', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
 					xAxes: [{
-						type: 'category'
+						type: 'category',
+						display: false
 					}],
 					yAxes: [{
 						stacked: true,
+						display: false,
 						type: 'linear'
 					}]
 				}
@@ -1104,11 +1188,11 @@ describe('Bar controller tests', function() {
 		var meta = chart.getDatasetMeta(1);
 
 		[
-			{x: 108, y: 258},
-			{x: 224, y: 32}
+			{x: 89, y: 256},
+			{x: 217, y: 0}
 		].forEach(function(values, i) {
-			expect(meta.data[i]._model.base).toBeCloseToPixel(484);
-			expect(meta.data[i]._model.width).toBeCloseToPixel(42);
+			expect(meta.data[i]._model.base).toBeCloseToPixel(512);
+			expect(meta.data[i]._model.width).toBeCloseToPixel(46);
 			expect(meta.data[i]._model.x).toBeCloseToPixel(values.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(values.y);
 		});
@@ -1131,12 +1215,16 @@ describe('Bar controller tests', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
 					xAxes: [{
-						type: 'category'
+						type: 'category',
+						display: false
 					}],
 					yAxes: [{
 						stacked: true,
+						display: false,
 						type: 'linear'
 					}]
 				}
@@ -1146,11 +1234,11 @@ describe('Bar controller tests', function() {
 		var meta = chart.getDatasetMeta(2);
 
 		[
-			{b: 371, x: 108, y: 258},
-			{b: 258, x: 224, y: 32}
+			{b: 384, x: 89, y: 256},
+			{b: 256, x: 217, y: 0}
 		].forEach(function(values, i) {
 			expect(meta.data[i]._model.base).toBeCloseToPixel(values.b);
-			expect(meta.data[i]._model.width).toBeCloseToPixel(42);
+			expect(meta.data[i]._model.width).toBeCloseToPixel(46);
 			expect(meta.data[i]._model.x).toBeCloseToPixel(values.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(values.y);
 		});
@@ -1170,12 +1258,14 @@ describe('Bar controller tests', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
 					xAxes: [{
 						type: 'category',
 						stacked: true,
+						display: false,
 						barPercentage: 1,
-						display: false
 					}],
 					yAxes: [{
 						type: 'logarithmic',
@@ -1190,9 +1280,9 @@ describe('Bar controller tests', function() {
 
 		[
 			{b: 512, w: 102, x: 64, y: 512},
-			{b: 512, w: 102, x: 192, y: 143},
+			{b: 512, w: 102, x: 192, y: 118},
 			{b: 512, w: 102, x: 320, y: 512},
-			{b: 512, w: 102, x: 449, y: 143}
+			{b: 512, w: 102, x: 449, y: 118}
 		].forEach(function(values, i) {
 			expect(meta0.data[i]._model.base).toBeCloseToPixel(values.b);
 			expect(meta0.data[i]._model.width).toBeCloseToPixel(values.w);
@@ -1203,10 +1293,10 @@ describe('Bar controller tests', function() {
 		var meta1 = chart.getDatasetMeta(1);
 
 		[
-			{b: 512, w: 102, x: 64, y: 127},
-			{b: 143, w: 102, x: 192, y: 127},
+			{b: 512, w: 102, x: 64, y: 102},
+			{b: 118, w: 102, x: 192, y: 102},
 			{b: 512, w: 102, x: 320, y: 512},
-			{b: 143, w: 102, x: 449, y: 32}
+			{b: 118, w: 102, x: 449, y: 0}
 		].forEach(function(values, i) {
 			expect(meta1.data[i]._model.base).toBeCloseToPixel(values.b);
 			expect(meta1.data[i]._model.width).toBeCloseToPixel(values.w);
@@ -1257,6 +1347,8 @@ describe('Bar controller tests', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				elements: {
 					rectangle: {
 						backgroundColor: 'rgb(255, 0, 0)',
@@ -1321,6 +1413,8 @@ describe('Bar controller tests', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				elements: {
 					rectangle: {
 						backgroundColor: 'rgb(255, 0, 0)',
@@ -1412,8 +1506,11 @@ describe('Bar controller tests', function() {
 				type: 'bar',
 				data: this.data,
 				options: {
+					legend: false,
+					title: false,
 					scales: {
 						xAxes: [{
+							display: false,
 							ticks: {
 								min: 'March',
 								max: 'May',
@@ -1429,14 +1526,18 @@ describe('Bar controller tests', function() {
 				type: 'bar',
 				data: this.data,
 				options: {
+					legend: false,
+					title: false,
 					scales: {
 						xAxes: [{
+							display: false,
 							ticks: {
 								min: 'March',
 								max: 'May',
 							}
 						}],
 						yAxes: [{
+							display: false,
 							stacked: true
 						}]
 					}
@@ -1489,6 +1590,8 @@ describe('Bar controller tests', function() {
 				type: 'horizontalBar',
 				data: this.data,
 				options: {
+					legend: false,
+					title: false,
 					scales: {
 						yAxes: [{
 							ticks: {
@@ -1506,11 +1609,15 @@ describe('Bar controller tests', function() {
 				type: 'horizontalBar',
 				data: this.data,
 				options: {
+					legend: false,
+					title: false,
 					scales: {
 						xAxes: [{
+							display: false,
 							stacked: true
 						}],
 						yAxes: [{
+							display: false,
 							ticks: {
 								min: 'March',
 								max: 'May',
@@ -1537,14 +1644,18 @@ describe('Bar controller tests', function() {
 							labels: ['label1', 'label2', 'label3']
 						},
 						options: {
+							legend: false,
+							title: false,
 							scales: {
 								xAxes: [{
 									id: 'x',
 									type: 'category',
+									display: false,
 									barThickness: barThickness
 								}],
 								yAxes: [{
-									type: 'linear'
+									type: 'linear',
+									display: false
 								}]
 							}
 						}
@@ -1608,10 +1719,13 @@ describe('Bar controller tests', function() {
 								labels: ['2017', '2018', '2020']
 							},
 							options: {
+								legend: false,
+								title: false,
 								scales: {
 									xAxes: [{
 										id: 'x',
 										type: 'time',
+										display: false,
 										time: {
 											unit: 'year',
 											parser: 'YYYY'
@@ -1623,7 +1737,8 @@ describe('Bar controller tests', function() {
 										distribution: distribution
 									}],
 									yAxes: [{
-										type: 'linear'
+										type: 'linear',
+										display: false
 									}]
 								}
 							}
