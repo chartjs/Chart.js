@@ -165,7 +165,7 @@ var exports = module.exports = {
 
 	lineTo: function(ctx, previous, target, flip) {
 		if (target.steppedLine) {
-			if (target.steppedLine === 'after') {
+			if ((target.steppedLine === 'after' && !flip) || (target.steppedLine !== 'after' && flip)) {
 				ctx.lineTo(previous.x, target.y);
 			} else {
 				ctx.lineTo(target.x, previous.y);
