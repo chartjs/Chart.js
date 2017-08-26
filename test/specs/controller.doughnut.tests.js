@@ -1,5 +1,24 @@
 // Test the bar controller
 describe('Doughnut controller tests', function() {
+
+	// set global test options
+	beforeAll(function() {
+		this._options = Chart.helpers.clone(Chart.defaults);
+		Chart.helpers.merge(Chart.defaults, {
+			global: {
+				plugins: {
+					legend: false,
+					title: false
+				}
+			}
+		});
+	});
+
+	// restore default chart config
+	afterAll(function() {
+		Chart.helpers.merge(Chart.defaults, this._options);
+	});
+
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'doughnut',
@@ -99,9 +118,9 @@ describe('Doughnut controller tests', function() {
 			{c: 0}
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(256);
-			expect(meta.data[i]._model.y).toBeCloseToPixel(272);
-			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(239);
-			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(179);
+			expect(meta.data[i]._model.y).toBeCloseToPixel(256);
+			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(254);
+			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(190);
 			expect(meta.data[i]._model.circumference).toBeCloseTo(expected.c, 8);
 			expect(meta.data[i]._model).toEqual(jasmine.objectContaining({
 				startAngle: Math.PI * -0.5,
@@ -122,9 +141,9 @@ describe('Doughnut controller tests', function() {
 			{c: 2.4434609527, s: 2.2689280275, e: 4.7123889803}
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(256);
-			expect(meta.data[i]._model.y).toBeCloseToPixel(272);
-			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(239);
-			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(179);
+			expect(meta.data[i]._model.y).toBeCloseToPixel(256);
+			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(254);
+			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(190);
 			expect(meta.data[i]._model.circumference).toBeCloseTo(expected.c, 8);
 			expect(meta.data[i]._model.startAngle).toBeCloseTo(expected.s, 8);
 			expect(meta.data[i]._model.endAngle).toBeCloseTo(expected.e, 8);
@@ -192,10 +211,10 @@ describe('Doughnut controller tests', function() {
 			{c: Math.PI / 8, s: Math.PI, e: Math.PI + Math.PI / 8},
 			{c: 3 * Math.PI / 8, s: Math.PI + Math.PI / 8, e: Math.PI + Math.PI / 2}
 		].forEach(function(expected, i) {
-			expect(meta.data[i]._model.x).toBeCloseToPixel(495);
-			expect(meta.data[i]._model.y).toBeCloseToPixel(511);
-			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(478);
-			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(359);
+			expect(meta.data[i]._model.x).toBeCloseToPixel(510);
+			expect(meta.data[i]._model.y).toBeCloseToPixel(510);
+			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(509);
+			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(381);
 			expect(meta.data[i]._model.circumference).toBeCloseTo(expected.c, 8);
 			expect(meta.data[i]._model.startAngle).toBeCloseTo(expected.s, 8);
 			expect(meta.data[i]._model.endAngle).toBeCloseTo(expected.e, 8);
