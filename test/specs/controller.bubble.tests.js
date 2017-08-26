@@ -1,5 +1,25 @@
 // Test the bubble controller
 describe('Bubble controller tests', function() {
+
+	// set global test options
+	beforeAll(function() {
+		this._options = Chart.helpers.clone(Chart.defaults);
+		Chart.helpers.merge(Chart.defaults, {
+			global: {
+				legend: false,
+				title: false
+			},
+			scale: {
+				display: false
+			}
+		});
+	});
+
+	// restore default chart config
+	afterAll(function() {
+		Chart.helpers.merge(Chart.defaults, this._options);
+	});
+
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'bubble',
@@ -134,10 +154,10 @@ describe('Bubble controller tests', function() {
 		var meta = chart.getDatasetMeta(0);
 
 		[
-			{r: 5, x: 28, y: 32},
-			{r: 1, x: 183, y: 484},
-			{r: 2, x: 338, y: 461},
-			{r: 1, x: 492, y: 32}
+			{r: 5, x: 0, y: 0},
+			{r: 1, x: 171, y: 512},
+			{r: 2, x: 341, y: 486},
+			{r: 1, x: 512, y: 0}
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.radius).toBe(expected.r);
 			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);
