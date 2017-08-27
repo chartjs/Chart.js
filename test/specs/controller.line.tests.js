@@ -1,13 +1,13 @@
-// Test the line controller
-describe('Line controller tests', function() {
+describe('Chart.controllers.line', function() {
 
-	// set global test options
 	beforeAll(function() {
-		this._options = Chart.helpers.clone(Chart.defaults);
-		Chart.helpers.merge(Chart.defaults, {
+		// set global test options
+		this._defaults = jasmine.overrideDefaults({
 			global: {
-				legend: false,
-				title: false
+				plugins: {
+					legend: false,
+					title: false
+				}
 			},
 			scale: {
 				display: false
@@ -15,9 +15,9 @@ describe('Line controller tests', function() {
 		});
 	});
 
-	// restore default chart config
 	afterAll(function() {
-		Chart.helpers.merge(Chart.defaults, this._options);
+		// restore default chart config
+		jasmine.overrideDefaults(this._defaults);
 	});
 
 	it('should be constructed', function() {

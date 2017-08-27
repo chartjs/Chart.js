@@ -172,11 +172,47 @@ function triggerMouseEvent(chart, type, el) {
 	node.dispatchEvent(event);
 }
 
+/**
+ * Merges the given values into `Chart.defaults` and returns previous overwritten values.
+ */
+function overrideDefaults(values) {
+	var helpers = Chart.helpers;
+	var diff = {};
+
+	function merger(key, target, source, options) {
+		var changes = options.changes || {};
+		var tval = target[key];
+		var sval = source[key];
+
+		if (helpers.isObject(tval) && helpers.isObject(sval)) {
+			helpers.merge(tval, sval, {
+				changes: changes[key] = {},
+				merger: merger
+			});
+		} else {
+			changes[key] = helpers.clone(tval);
+			if (sval !== undefined) {
+				target[key] = helpers.clone(sval);
+			} else {
+				delete target[key];
+			}
+		}
+	}
+
+	helpers.merge(Chart.defaults, values, {
+		changes: diff,
+		merger: merger
+	});
+
+	return diff;
+}
+
 module.exports = {
 	injectCSS: injectCSS,
 	createCanvas: createCanvas,
 	acquireChart: acquireChart,
 	releaseChart: releaseChart,
+	overrideDefaults: overrideDefaults,
 	specsFromFixtures: specsFromFixtures,
 	triggerMouseEvent: triggerMouseEvent,
 	waitForResize: waitForResize

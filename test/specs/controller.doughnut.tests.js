@@ -1,10 +1,8 @@
-// Test the bar controller
-describe('Doughnut controller tests', function() {
+describe('Chart.controllers.doughnut', function() {
 
-	// set global test options
 	beforeAll(function() {
-		this._options = Chart.helpers.clone(Chart.defaults);
-		Chart.helpers.merge(Chart.defaults, {
+		// set global test options
+		this._defaults = jasmine.overrideDefaults({
 			global: {
 				plugins: {
 					legend: false,
@@ -14,9 +12,9 @@ describe('Doughnut controller tests', function() {
 		});
 	});
 
-	// restore default chart config
 	afterAll(function() {
-		Chart.helpers.merge(Chart.defaults, this._options);
+		// restore default chart config
+		jasmine.overrideDefaults(this._defaults);
 	});
 
 	it('should be constructed', function() {
