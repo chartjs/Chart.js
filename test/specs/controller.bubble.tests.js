@@ -1,5 +1,4 @@
-// Test the bubble controller
-describe('Bubble controller tests', function() {
+describe('Chart.controllers.bubble', function() {
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'bubble',
@@ -120,12 +119,16 @@ describe('Bubble controller tests', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
 					xAxes: [{
-						type: 'category'
+						type: 'category',
+						display: false
 					}],
 					yAxes: [{
-						type: 'linear'
+						type: 'linear',
+						display: false
 					}]
 				}
 			}
@@ -134,10 +137,10 @@ describe('Bubble controller tests', function() {
 		var meta = chart.getDatasetMeta(0);
 
 		[
-			{r: 5, x: 28, y: 32},
-			{r: 1, x: 183, y: 484},
-			{r: 2, x: 338, y: 461},
-			{r: 1, x: 492, y: 32}
+			{r: 5, x: 0, y: 0},
+			{r: 1, x: 171, y: 512},
+			{r: 2, x: 341, y: 486},
+			{r: 1, x: 512, y: 0}
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.radius).toBe(expected.r);
 			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);

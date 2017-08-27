@@ -1,5 +1,4 @@
-// Test the bar controller
-describe('Bar controller tests', function() {
+describe('Chart.controllers.bar', function() {
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
@@ -36,16 +35,12 @@ describe('Bar controller tests', function() {
 				labels: []
 			},
 			options: {
-				legend: false,
-				title: false,
 				scales: {
 					xAxes: [{
-						id: 'firstXScaleID',
-						display: false
+						id: 'firstXScaleID'
 					}],
 					yAxes: [{
-						id: 'firstYScaleID',
-						display: false
+						id: 'firstYScaleID'
 					}]
 				}
 			}
@@ -119,16 +114,12 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
-					legend: false,
-					title: false,
 					scales: {
 						xAxes: [{
-							stacked: true,
-							display: false
+							stacked: true
 						}],
 						yAxes: [{
-							stacked: true,
-							display: false
+							stacked: true
 						}]
 					}
 				}
@@ -156,16 +147,12 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
-					legend: false,
-					title: false,
 					scales: {
 						xAxes: [{
-							stacked: false,
-							display: false
+							stacked: false
 						}],
 						yAxes: [{
-							stacked: false,
-							display: false
+							stacked: false
 						}]
 					}
 				}
@@ -216,16 +203,12 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
-					legend: false,
-					title: false,
 					scales: {
 						xAxes: [{
-							stacked: true,
-							display: false
+							stacked: true
 						}],
 						yAxes: [{
-							stacked: true,
-							display: false
+							stacked: true
 						}]
 					}
 				}
@@ -253,16 +236,12 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
-					legend: false,
-					title: false,
 					scales: {
 						xAxes: [{
-							stacked: false,
-							display: false
+							stacked: false
 						}],
 						yAxes: [{
-							stacked: false,
-							display: false
+							stacked: false
 						}]
 					}
 				}
@@ -313,16 +292,12 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
-					legend: false,
-					title: false,
 					scales: {
 						xAxes: [{
-							stacked: true,
-							display: false
+							stacked: true
 						}],
 						yAxes: [{
-							stacked: true,
-							display: false
+							stacked: true
 						}]
 					}
 				}
@@ -350,16 +325,12 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
-					legend: false,
-					title: false,
 					scales: {
 						xAxes: [{
-							stacked: false,
-							display: false
+							stacked: false
 						}],
 						yAxes: [{
-							stacked: false,
-							display: false
+							stacked: false
 						}]
 					}
 				}
@@ -437,16 +408,12 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
-					legend: false,
-					title: false,
 					scales: {
 						xAxes: [{
-							stacked: true,
-							display: false
+							stacked: true
 						}],
 						yAxes: [{
-							stacked: true,
-							display: false
+							stacked: true
 						}]
 					}
 				}
@@ -477,16 +444,12 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
-					legend: false,
-					title: false,
 					scales: {
 						xAxes: [{
-							stacked: false,
-							display: false
+							stacked: false
 						}],
 						yAxes: [{
-							stacked: false,
-							display: false
+							stacked: false
 						}]
 					}
 				}
@@ -543,16 +506,12 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
-					legend: false,
-					title: false,
 					scales: {
 						xAxes: [{
-							stacked: true,
-							display: false
+							stacked: true
 						}],
 						yAxes: [{
-							stacked: true,
-							display: false
+							stacked: true
 						}]
 					}
 				}
@@ -583,16 +542,12 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
-					legend: false,
-					title: false,
 					scales: {
 						xAxes: [{
-							stacked: false,
-							display: false
+							stacked: false
 						}],
 						yAxes: [{
-							stacked: false,
-							display: false
+							stacked: false
 						}]
 					}
 				}
@@ -649,16 +604,12 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
-					legend: false,
-					title: false,
 					scales: {
 						xAxes: [{
-							stacked: true,
-							display: false
+							stacked: true
 						}],
 						yAxes: [{
-							stacked: true,
-							display: false
+							stacked: true
 						}]
 					}
 				}
@@ -689,16 +640,12 @@ describe('Bar controller tests', function() {
 					labels: []
 				},
 				options: {
-					legend: false,
-					title: false,
 					scales: {
 						xAxes: [{
-							stacked: false,
-							display: false
+							stacked: false
 						}],
 						yAxes: [{
-							stacked: false,
-							display: false
+							stacked: false
 						}]
 					}
 				}
@@ -877,8 +824,8 @@ describe('Bar controller tests', function() {
 					}],
 					yAxes: [{
 						type: 'linear',
-						stacked: true,
-						display: false
+						display: false,
+						stacked: true
 					}]
 				}
 			}
@@ -936,8 +883,8 @@ describe('Bar controller tests', function() {
 					}],
 					yAxes: [{
 						type: 'linear',
-						stacked: true,
 						display: false,
+						stacked: true,
 						ticks: {
 							min: 50,
 							max: 100
@@ -995,8 +942,8 @@ describe('Bar controller tests', function() {
 				scales: {
 					xAxes: [{
 						type: 'category',
-						stacked: true,
-						display: false
+						display: false,
+						stacked: true
 					}],
 					yAxes: [{
 						type: 'linear',
@@ -1058,8 +1005,8 @@ describe('Bar controller tests', function() {
 					}],
 					yAxes: [{
 						type: 'linear',
-						stacked: true,
-						display: false
+						display: false,
+						stacked: true
 					}]
 				}
 			}
@@ -1119,8 +1066,8 @@ describe('Bar controller tests', function() {
 					}],
 					yAxes: [{
 						type: 'linear',
-						stacked: true,
-						display: false
+						display: false,
+						stacked: true
 					}]
 				}
 			}
@@ -1177,9 +1124,9 @@ describe('Bar controller tests', function() {
 						display: false
 					}],
 					yAxes: [{
-						stacked: true,
+						type: 'linear',
 						display: false,
-						type: 'linear'
+						stacked: true,
 					}]
 				}
 			}
@@ -1223,9 +1170,9 @@ describe('Bar controller tests', function() {
 						display: false
 					}],
 					yAxes: [{
-						stacked: true,
+						type: 'linear',
 						display: false,
-						type: 'linear'
+						stacked: true
 					}]
 				}
 			}
@@ -1263,14 +1210,14 @@ describe('Bar controller tests', function() {
 				scales: {
 					xAxes: [{
 						type: 'category',
-						stacked: true,
 						display: false,
+						stacked: true,
 						barPercentage: 1,
 					}],
 					yAxes: [{
 						type: 'logarithmic',
-						stacked: true,
-						display: false
+						display: false,
+						stacked: true
 					}]
 				}
 			}
@@ -1347,8 +1294,6 @@ describe('Bar controller tests', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				legend: false,
-				title: false,
 				elements: {
 					rectangle: {
 						backgroundColor: 'rgb(255, 0, 0)',
@@ -1413,8 +1358,6 @@ describe('Bar controller tests', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				legend: false,
-				title: false,
 				elements: {
 					rectangle: {
 						backgroundColor: 'rgb(255, 0, 0)',
@@ -1506,11 +1449,8 @@ describe('Bar controller tests', function() {
 				type: 'bar',
 				data: this.data,
 				options: {
-					legend: false,
-					title: false,
 					scales: {
 						xAxes: [{
-							display: false,
 							ticks: {
 								min: 'March',
 								max: 'May',
@@ -1526,18 +1466,14 @@ describe('Bar controller tests', function() {
 				type: 'bar',
 				data: this.data,
 				options: {
-					legend: false,
-					title: false,
 					scales: {
 						xAxes: [{
-							display: false,
 							ticks: {
 								min: 'March',
 								max: 'May',
 							}
 						}],
 						yAxes: [{
-							display: false,
 							stacked: true
 						}]
 					}
@@ -1590,8 +1526,6 @@ describe('Bar controller tests', function() {
 				type: 'horizontalBar',
 				data: this.data,
 				options: {
-					legend: false,
-					title: false,
 					scales: {
 						yAxes: [{
 							ticks: {
@@ -1609,15 +1543,11 @@ describe('Bar controller tests', function() {
 				type: 'horizontalBar',
 				data: this.data,
 				options: {
-					legend: false,
-					title: false,
 					scales: {
 						xAxes: [{
-							display: false,
 							stacked: true
 						}],
 						yAxes: [{
-							display: false,
 							ticks: {
 								min: 'March',
 								max: 'May',
@@ -1650,12 +1580,10 @@ describe('Bar controller tests', function() {
 								xAxes: [{
 									id: 'x',
 									type: 'category',
-									display: false,
 									barThickness: barThickness
 								}],
 								yAxes: [{
 									type: 'linear',
-									display: false
 								}]
 							}
 						}
@@ -1725,7 +1653,6 @@ describe('Bar controller tests', function() {
 									xAxes: [{
 										id: 'x',
 										type: 'time',
-										display: false,
 										time: {
 											unit: 'year',
 											parser: 'YYYY'
@@ -1737,8 +1664,7 @@ describe('Bar controller tests', function() {
 										distribution: distribution
 									}],
 									yAxes: [{
-										type: 'linear',
-										display: false
+										type: 'linear'
 									}]
 								}
 							}
