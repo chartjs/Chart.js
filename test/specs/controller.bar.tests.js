@@ -1,25 +1,4 @@
 describe('Chart.controllers.bar', function() {
-
-	beforeAll(function() {
-		// set global test options
-		this._defaults = jasmine.overrideDefaults({
-			global: {
-				plugins: {
-					legend: false,
-					title: false
-				}
-			},
-			scale: {
-				display: false
-			}
-		});
-	});
-
-	afterAll(function() {
-		// restore default chart config
-		jasmine.overrideDefaults(this._defaults);
-	});
-
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
@@ -715,6 +694,8 @@ describe('Chart.controllers.bar', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				elements: {
 					rectangle: {
 						backgroundColor: 'red',
@@ -726,11 +707,13 @@ describe('Chart.controllers.bar', function() {
 				scales: {
 					xAxes: [{
 						id: 'firstXScaleID',
-						type: 'category'
+						type: 'category',
+						display: false
 					}],
 					yAxes: [{
 						id: 'firstYScaleID',
-						type: 'linear'
+						type: 'linear',
+						display: false
 					}]
 				}
 			}
@@ -791,12 +774,16 @@ describe('Chart.controllers.bar', function() {
 				labels: ['label1', 'label2']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
 					xAxes: [{
-						type: 'category'
+						type: 'category',
+						display: false
 					}],
 					yAxes: [{
-						type: 'linear'
+						type: 'linear',
+						display: false
 					}]
 				}
 			}
@@ -828,12 +815,16 @@ describe('Chart.controllers.bar', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
 					xAxes: [{
-						type: 'category'
+						type: 'category',
+						display: false
 					}],
 					yAxes: [{
 						type: 'linear',
+						display: false,
 						stacked: true
 					}]
 				}
@@ -883,12 +874,16 @@ describe('Chart.controllers.bar', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
 					xAxes: [{
-						type: 'category'
+						type: 'category',
+						display: false
 					}],
 					yAxes: [{
 						type: 'linear',
+						display: false,
 						stacked: true,
 						ticks: {
 							min: 50,
@@ -942,13 +937,17 @@ describe('Chart.controllers.bar', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
 					xAxes: [{
 						type: 'category',
+						display: false,
 						stacked: true
 					}],
 					yAxes: [{
-						type: 'linear'
+						type: 'linear',
+						display: false
 					}]
 				}
 			}
@@ -997,12 +996,16 @@ describe('Chart.controllers.bar', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
 					xAxes: [{
-						type: 'category'
+						type: 'category',
+						display: false
 					}],
 					yAxes: [{
 						type: 'linear',
+						display: false,
 						stacked: true
 					}]
 				}
@@ -1054,12 +1057,16 @@ describe('Chart.controllers.bar', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
 					xAxes: [{
-						type: 'category'
+						type: 'category',
+						display: false
 					}],
 					yAxes: [{
 						type: 'linear',
+						display: false,
 						stacked: true
 					}]
 				}
@@ -1109,13 +1116,17 @@ describe('Chart.controllers.bar', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
 					xAxes: [{
-						type: 'category'
+						type: 'category',
+						display: false
 					}],
 					yAxes: [{
+						type: 'linear',
+						display: false,
 						stacked: true,
-						type: 'linear'
 					}]
 				}
 			}
@@ -1151,13 +1162,17 @@ describe('Chart.controllers.bar', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
 					xAxes: [{
-						type: 'category'
+						type: 'category',
+						display: false
 					}],
 					yAxes: [{
-						stacked: true,
-						type: 'linear'
+						type: 'linear',
+						display: false,
+						stacked: true
 					}]
 				}
 			}
@@ -1190,14 +1205,18 @@ describe('Chart.controllers.bar', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
 					xAxes: [{
 						type: 'category',
+						display: false,
 						stacked: true,
 						barPercentage: 1,
 					}],
 					yAxes: [{
 						type: 'logarithmic',
+						display: false,
 						stacked: true
 					}]
 				}

@@ -42,7 +42,6 @@ var utils = require('./jasmine.utils');
 			'position: absolute' +
 		'}');
 
-	jasmine.overrideDefaults = utils.overrideDefaults;
 	jasmine.specsFromFixtures = utils.specsFromFixtures;
 	jasmine.triggerMouseEvent = utils.triggerMouseEvent;
 

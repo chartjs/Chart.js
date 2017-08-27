@@ -1,25 +1,4 @@
 describe('Chart.controllers.polarArea', function() {
-
-	beforeAll(function() {
-		// set global test options
-		this._defaults = jasmine.overrideDefaults({
-			global: {
-				plugins: {
-					legend: false,
-					title: false
-				}
-			},
-			scale: {
-				display: false
-			}
-		});
-	});
-
-	afterAll(function() {
-		// restore default chart config
-		jasmine.overrideDefaults(this._defaults);
-	});
-
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'polarArea',
@@ -102,6 +81,8 @@ describe('Chart.controllers.polarArea', function() {
 			},
 			options: {
 				showLines: true,
+				legend: false,
+				title: false,
 				elements: {
 					arc: {
 						backgroundColor: 'rgb(255, 0, 0)',
@@ -183,6 +164,8 @@ describe('Chart.controllers.polarArea', function() {
 			},
 			options: {
 				showLines: true,
+				legend: false,
+				title: false,
 				startAngle: 0, // default is -0.5 * Math.PI
 				elements: {
 					arc: {

@@ -1,22 +1,4 @@
 describe('Chart.controllers.doughnut', function() {
-
-	beforeAll(function() {
-		// set global test options
-		this._defaults = jasmine.overrideDefaults({
-			global: {
-				plugins: {
-					legend: false,
-					title: false
-				}
-			}
-		});
-	});
-
-	afterAll(function() {
-		// restore default chart config
-		jasmine.overrideDefaults(this._defaults);
-	});
-
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'doughnut',
@@ -86,6 +68,8 @@ describe('Chart.controllers.doughnut', function() {
 				labels: ['label0', 'label1', 'label2', 'label3']
 			},
 			options: {
+				legend: false,
+				title: false,
 				animation: {
 					animateRotate: true,
 					animateScale: false
@@ -187,6 +171,8 @@ describe('Chart.controllers.doughnut', function() {
 				labels: ['label0', 'label1']
 			},
 			options: {
+				legend: false,
+				title: false,
 				cutoutPercentage: 50,
 				rotation: Math.PI,
 				circumference: Math.PI * 0.5,

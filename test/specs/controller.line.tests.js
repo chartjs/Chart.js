@@ -1,25 +1,4 @@
 describe('Chart.controllers.line', function() {
-
-	beforeAll(function() {
-		// set global test options
-		this._defaults = jasmine.overrideDefaults({
-			global: {
-				plugins: {
-					legend: false,
-					title: false
-				}
-			},
-			scale: {
-				display: false
-			}
-		});
-	});
-
-	afterAll(function() {
-		// restore default chart config
-		jasmine.overrideDefaults(this._defaults);
-	});
-
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'line',
@@ -195,6 +174,8 @@ describe('Chart.controllers.line', function() {
 			},
 			options: {
 				showLines: true,
+				legend: false,
+				title: false,
 				elements: {
 					point: {
 						backgroundColor: 'red',
@@ -203,10 +184,12 @@ describe('Chart.controllers.line', function() {
 				},
 				scales: {
 					xAxes: [{
-						id: 'firstXScaleID'
+						id: 'firstXScaleID',
+						display: false
 					}],
 					yAxes: [{
-						id: 'firstYScaleID'
+						id: 'firstYScaleID',
+						display: false
 					}]
 				}
 			},
@@ -254,11 +237,17 @@ describe('Chart.controllers.line', function() {
 				}]
 			},
 			options: {
+				legend: false,
+				title: false,
 				hover: {
 					mode: 'single'
 				},
 				scales: {
+					xAxes: [{
+						display: false,
+					}],
 					yAxes: [{
+						display: false,
 						ticks: {
 							beginAtZero: true
 						}
@@ -320,8 +309,14 @@ describe('Chart.controllers.line', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
+					xAxes: [{
+						display: false,
+					}],
 					yAxes: [{
+						display: false,
 						stacked: true
 					}]
 				}
@@ -372,12 +367,19 @@ describe('Chart.controllers.line', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
+					xAxes: [{
+						display: false,
+					}],
 					yAxes: [{
+						display: false,
 						stacked: true
 					}, {
+						id: 'secondAxis',
 						type: 'linear',
-						id: 'secondAxis'
+						display: false
 					}]
 				}
 			}
@@ -447,8 +449,14 @@ describe('Chart.controllers.line', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
+					xAxes: [{
+						display: false,
+					}],
 					yAxes: [{
+						display: false,
 						stacked: true
 					}]
 				}
@@ -495,8 +503,14 @@ describe('Chart.controllers.line', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
+					xAxes: [{
+						display: false,
+					}],
 					yAxes: [{
+						display: false,
 						stacked: true
 					}]
 				}

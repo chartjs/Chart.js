@@ -1,25 +1,4 @@
 describe('Chart.controllers.bubble', function() {
-
-	beforeAll(function() {
-		// set global test options
-		this._defaults = jasmine.overrideDefaults({
-			global: {
-				plugins: {
-					legend: false,
-					title: false
-				}
-			},
-			scale: {
-				display: false
-			}
-		});
-	});
-
-	afterAll(function() {
-		// restore default chart config
-		jasmine.overrideDefaults(this._defaults);
-	});
-
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'bubble',
@@ -140,12 +119,16 @@ describe('Chart.controllers.bubble', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
 					xAxes: [{
-						type: 'category'
+						type: 'category',
+						display: false
 					}],
 					yAxes: [{
-						type: 'linear'
+						type: 'linear',
+						display: false
 					}]
 				}
 			}
