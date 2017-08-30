@@ -135,7 +135,7 @@ function createEvent(type, chart, x, y, nativeEvent) {
 	return {
 		type: type,
 		chart: chart,
-		'native': nativeEvent || null,
+		'native': nativeEvent || null, // eslint-disable-quote-props
 		x: x !== undefined ? x : null,
 		y: y !== undefined ? y : null,
 	};

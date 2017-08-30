@@ -32,6 +32,7 @@ describe('Core.Interaction', function() {
 			var evt = {
 				type: 'click',
 				chart: chart,
+				// eslint-disable-quote-props
 				'native': true, // needed otherwise things its a DOM event
 				x: point._model.x,
 				y: point._model.y,
@@ -46,6 +47,7 @@ describe('Core.Interaction', function() {
 			var evt = {
 				type: 'click',
 				chart: chart,
+				// eslint-disable-quote-props
 				'native': true, // needed otherwise things its a DOM event
 				x: 0,
 				y: 0
@@ -87,6 +89,7 @@ describe('Core.Interaction', function() {
 				var evt = {
 					type: 'click',
 					chart: chart,
+					// eslint-disable-quote-props
 					'native': true, // needed otherwise things its a DOM event
 					x: point._model.x,
 					y: point._model.y,
@@ -101,6 +104,7 @@ describe('Core.Interaction', function() {
 				var evt = {
 					type: 'click',
 					chart: chart,
+					// eslint-disable-quote-props
 					'native': true, // needed otherwise things its a DOM event
 					x: 0,
 					y: 0,
@@ -142,6 +146,7 @@ describe('Core.Interaction', function() {
 				var evt = {
 					type: 'click',
 					chart: chart,
+					// eslint-disable-quote-props
 					'native': true, // needed otherwise things its a DOM event
 					x: 0,
 					y: 0
@@ -164,6 +169,7 @@ describe('Core.Interaction', function() {
 				var evt = {
 					type: 'click',
 					chart: chart,
+					// eslint-disable-quote-props
 					'native': true, // needed otherwise things its a DOM event
 					x: center.x,
 					y: center.y + 30,
@@ -181,6 +187,7 @@ describe('Core.Interaction', function() {
 				var evt = {
 					type: 'click',
 					chart: chart,
+					// eslint-disable-quote-props
 					'native': true, // needed otherwise things its a DOM event
 					x: 0,
 					y: 0
@@ -222,6 +229,7 @@ describe('Core.Interaction', function() {
 				var evt = {
 					type: 'click',
 					chart: chart,
+					// eslint-disable-quote-props
 					'native': true, // needed otherwise things its a DOM event
 					x: point._model.x,
 					y: point._model.y
@@ -236,6 +244,7 @@ describe('Core.Interaction', function() {
 				var evt = {
 					type: 'click',
 					chart: chart,
+					// eslint-disable-quote-props
 					'native': true, // needed otherwise things its a DOM event
 					x: 0,
 					y: 0
@@ -278,6 +287,7 @@ describe('Core.Interaction', function() {
 				var evt = {
 					type: 'click',
 					chart: chart,
+					// eslint-disable-quote-props
 					'native': true, // needed otherwise things its a DOM event
 					x: 0,
 					y: 0
@@ -294,6 +304,7 @@ describe('Core.Interaction', function() {
 				var evt = {
 					type: 'click',
 					chart: chart,
+					// eslint-disable-quote-props
 					'native': true, // needed otherwise things its a DOM event
 					x: 0,
 					y: 0
@@ -310,6 +321,7 @@ describe('Core.Interaction', function() {
 				var evt = {
 					type: 'click',
 					chart: chart,
+					// eslint-disable-quote-props
 					'native': true, // needed otherwise things its a DOM event
 					x: 0,
 					y: 0
@@ -352,6 +364,7 @@ describe('Core.Interaction', function() {
 				var evt = {
 					type: 'click',
 					chart: chart,
+					// eslint-disable-quote-props
 					'native': true, // needed otherwise things its a DOM event
 					x: 0,
 					y: 0
@@ -377,6 +390,7 @@ describe('Core.Interaction', function() {
 				var evt = {
 					type: 'click',
 					chart: chart,
+					// eslint-disable-quote-props
 					'native': true, // needed otherwise things its a DOM event
 					x: pt.x,
 					y: pt.y
@@ -406,6 +420,7 @@ describe('Core.Interaction', function() {
 				var evt = {
 					type: 'click',
 					chart: chart,
+					// eslint-disable-quote-props
 					'native': true, // needed otherwise things its a DOM event
 					x: pt.x,
 					y: pt.y
@@ -446,6 +461,7 @@ describe('Core.Interaction', function() {
 				var evt = {
 					type: 'click',
 					chart: chart,
+					// eslint-disable-quote-props
 					'native': true, // needed otherwise things its a DOM event
 					x: point._view.x + 15,
 					y: point._view.y
@@ -458,6 +474,7 @@ describe('Core.Interaction', function() {
 				evt = {
 					type: 'click',
 					chart: chart,
+					// eslint-disable-quote-props
 					'native': true,
 					x: point._view.x,
 					y: point._view.y
@@ -485,6 +502,7 @@ describe('Core.Interaction', function() {
 				var evt = {
 					type: 'click',
 					chart: chart,
+					// eslint-disable-quote-props
 					'native': true, // needed otherwise things its a DOM event
 					x: pt.x,
 					y: pt.y
@@ -513,6 +531,7 @@ describe('Core.Interaction', function() {
 				var evt = {
 					type: 'click',
 					chart: chart,
+					// eslint-disable-quote-props
 					'native': true, // needed otherwise things its a DOM event
 					x: pt.x,
 					y: pt.y
@@ -541,6 +560,7 @@ describe('Core.Interaction', function() {
 				var evt = {
 					type: 'click',
 					chart: chart,
+					// eslint-disable-quote-props
 					'native': true, // needed otherwise things its a DOM event
 					x: pt.x,
 					y: pt.y
@@ -590,6 +610,7 @@ describe('Core.Interaction', function() {
 			var evt = {
 				type: 'click',
 				chart: chart,
+				// eslint-disable-quote-props
 				'native': true, // needed otherwise things its a DOM event
 				x: pt.x,
 				y: 0
@@ -601,6 +622,7 @@ describe('Core.Interaction', function() {
 			evt = {
 				type: 'click',
 				chart: chart,
+				// eslint-disable-quote-props
 				'native': true, // needed otherwise things its a DOM event
 				x: pt.x + 20,
 				y: 0
@@ -624,6 +646,7 @@ describe('Core.Interaction', function() {
 			var evt = {
 				type: 'click',
 				chart: chart,
+				// eslint-disable-quote-props
 				'native': true, // needed otherwise things its a DOM event
 				x: pt.x,
 				y: 0
@@ -635,6 +658,7 @@ describe('Core.Interaction', function() {
 			evt = {
 				type: 'click',
 				chart: chart,
+				// eslint-disable-quote-props
 				'native': true, // needed otherwise things its a DOM event
 				x: pt.x,
 				y: pt.y
@@ -682,6 +706,7 @@ describe('Core.Interaction', function() {
 			var evt = {
 				type: 'click',
 				chart: chart,
+				// eslint-disable-quote-props
 				'native': true,
 				x: 0,
 				y: pt.y,
@@ -693,6 +718,7 @@ describe('Core.Interaction', function() {
 			evt = {
 				type: 'click',
 				chart: chart,
+				// eslint-disable-quote-props
 				'native': true,
 				x: pt.x,
 				y: pt.y + 20, // out of range
@@ -716,6 +742,7 @@ describe('Core.Interaction', function() {
 			var evt = {
 				type: 'click',
 				chart: chart,
+				// eslint-disable-quote-props
 				'native': true,
 				x: 0,
 				y: pt.y
@@ -727,6 +754,7 @@ describe('Core.Interaction', function() {
 			evt = {
 				type: 'click',
 				chart: chart,
+				// eslint-disable-quote-props
 				'native': true,
 				x: pt.x,
 				y: pt.y,

@@ -388,7 +388,7 @@ describe('Platform.dom', function() {
 
 			// Check that notifiedEvent is correct
 			expect(notifiedEvent).not.toBe(undefined);
-			expect(notifiedEvent['native']).toBe(evt);
+			expect(notifiedEvent['native']).toBe(evt); // eslint-disable-dot-notation
 
 			// Is type correctly translated
 			expect(notifiedEvent.type).toBe(evt.type);

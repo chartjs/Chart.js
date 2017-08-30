@@ -9,6 +9,7 @@ var helpers = require('../helpers/index');
  * @returns {Point} the event position
  */
 function getRelativePosition(e, chart) {
+	// eslint-disable-dot-notation
 	if (e['native']) {
 		return {
 			x: e.x,
