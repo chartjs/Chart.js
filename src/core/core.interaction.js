@@ -9,7 +9,7 @@ var helpers = require('../helpers/index');
  * @returns {Point} the event position
  */
 function getRelativePosition(e, chart) {
-	if (e.native) {
+	if (e['native']) {
 		return {
 			x: e.x,
 			y: e.y

@@ -498,12 +498,12 @@ module.exports = function(Chart) {
 						// Touching an element
 						if (type === 'click') {
 							// use e.native for backwards compatibility
-							opts.onClick.call(me, e.native, me.legendItems[i]);
+							opts.onClick.call(me, e['native'], me.legendItems[i]);
 							changed = true;
 							break;
 						} else if (type === 'mousemove') {
 							// use e.native for backwards compatibility
-							opts.onHover.call(me, e.native, me.legendItems[i]);
+							opts.onHover.call(me, e['native'], me.legendItems[i]);
 							changed = true;
 							break;
 						}
