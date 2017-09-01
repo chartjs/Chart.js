@@ -40,11 +40,7 @@ describe('Test the radial linear scale', function() {
 			},
 			position: 'chartArea',
 			offset: false,
-			scaleLabel: {
-				display: false,
-				labelString: '',
-				lineHeight: 1.2
-			},
+			scaleLabel: Chart.defaults.scale.scaleLabel,
 			ticks: {
 				backdropColor: 'rgba(255,255,255,0.75)',
 				backdropPaddingY: 2,

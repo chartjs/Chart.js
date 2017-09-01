@@ -128,11 +128,7 @@ describe('Core helper tests', function() {
 					},
 					position: 'right',
 					offset: false,
-					scaleLabel: {
-						display: false,
-						labelString: '',
-						lineHeight: 1.2
-					},
+					scaleLabel: Chart.defaults.scale.scaleLabel,
 					ticks: {
 						beginAtZero: false,
 						minRotation: 0,
@@ -170,11 +166,7 @@ describe('Core helper tests', function() {
 					},
 					position: 'left',
 					offset: false,
-					scaleLabel: {
-						display: false,
-						labelString: '',
-						lineHeight: 1.2
-					},
+					scaleLabel: Chart.defaults.scale.scaleLabel,
 					ticks: {
 						beginAtZero: false,
 						minRotation: 0,

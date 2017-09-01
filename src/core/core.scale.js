@@ -36,7 +36,14 @@ defaults._set('scale', {
 		// actual label
 		labelString: '',
 
-		lineHeight: 1.2
+		// line height
+		lineHeight: 1.2,
+
+		// top/bottom padding
+		padding: {
+			top: 4,
+			bottom: 4
+		}
 	},
 
 	// label settings
@@ -391,7 +398,6 @@ module.exports = function(Chart) {
 
 			var tickFont = parseFontOptions(tickOpts);
 			var tickMarkLength = opts.gridLines.tickMarkLength;
-			var scaleLabelLineHeight = parseLineHeight(scaleLabelOpts);
 
 			// Width
 			if (isHorizontal) {
@@ -410,10 +416,14 @@ module.exports = function(Chart) {
 
 			// Are we showing a title for the scale?
 			if (scaleLabelOpts.display && display) {
+				var scaleLabelLineHeight = parseLineHeight(scaleLabelOpts);
+				var scaleLabelPadding = helpers.options.toPadding(scaleLabelOpts.padding);
+				var deltaHeight = scaleLabelLineHeight + scaleLabelPadding.height;
+
 				if (isHorizontal) {
-					minSize.height += scaleLabelLineHeight;
+					minSize.height += deltaHeight;
 				} else {
-					minSize.width += scaleLabelLineHeight;
+					minSize.width += deltaHeight;
 				}
 			}
 
@@ -435,16 +445,17 @@ module.exports = function(Chart) {
 					// TODO - improve this calculation
 					var labelHeight = (sinRotation * largestTextWidth)
 						+ (tickFont.size * tallestLabelHeightInLines)
-						+ (lineSpace * tallestLabelHeightInLines);
+						+ (lineSpace * (tallestLabelHeightInLines - 1))
+						+ lineSpace; // padding
 
 					minSize.height = Math.min(me.maxHeight, minSize.height + labelHeight + tickPadding);
-					me.ctx.font = tickFont.font;
 
+					me.ctx.font = tickFont.font;
 					var firstLabelWidth = computeTextSize(me.ctx, labels[0], tickFont.font);
 					var lastLabelWidth = computeTextSize(me.ctx, labels[labels.length - 1], tickFont.font);
 
-					// Ensure that our ticks are always inside the canvas. When rotated, ticks are right aligned which means that the right padding is dominated
-					// by the font height
+					// Ensure that our ticks are always inside the canvas. When rotated, ticks are right aligned
+					// which means that the right padding is dominated by the font height
 					if (me.labelRotation !== 0) {
 						me.paddingLeft = opts.position === 'bottom' ? (cosRotation * firstLabelWidth) + 3 : (cosRotation * lineSpace) + 3; // add 3 px to move away from canvas edges
 						me.paddingRight = opts.position === 'bottom' ? (cosRotation * lineSpace) + 3 : (cosRotation * lastLabelWidth) + 3;
@@ -453,15 +464,18 @@ module.exports = function(Chart) {
 						me.paddingRight = lastLabelWidth / 2 + 3;
 					}
 				} else {
-					// A vertical axis is more constrained by the width. Labels are the dominant factor here, so get that length first
-					// Account for padding
-
+					// A vertical axis is more constrained by the width. Labels are the
+					// dominant factor here, so get that length first and account for padding
 					if (tickOpts.mirror) {
 						largestTextWidth = 0;
 					} else {
-						largestTextWidth += tickPadding;
+						// use lineSpace for consistency with horizontal axis
+						// tickPadding is not implemented for horizontal
+						largestTextWidth += tickPadding + lineSpace;
 					}
+
 					minSize.width = Math.min(me.maxWidth, minSize.width + largestTextWidth);
+
 					me.paddingTop = tickFont.size / 2;
 					me.paddingBottom = tickFont.size / 2;
 				}
@@ -663,6 +677,7 @@ module.exports = function(Chart) {
 
 			var scaleLabelFontColor = helpers.valueOrDefault(scaleLabel.fontColor, globalDefaults.defaultFontColor);
 			var scaleLabelFont = parseFontOptions(scaleLabel);
+			var scaleLabelPadding = helpers.options.toPadding(scaleLabel.padding);
 			var labelRotationRadians = helpers.toRadians(me.labelRotation);
 
 			var itemsToDraw = [];
@@ -840,10 +855,14 @@ module.exports = function(Chart) {
 
 				if (isHorizontal) {
 					scaleLabelX = me.left + ((me.right - me.left) / 2); // midpoint of the width
-					scaleLabelY = options.position === 'bottom' ? me.bottom - halfLineHeight : me.top + halfLineHeight;
+					scaleLabelY = options.position === 'bottom'
+						? me.bottom - halfLineHeight - scaleLabelPadding.bottom
+						: me.top + halfLineHeight + scaleLabelPadding.top;
 				} else {
 					var isLeft = options.position === 'left';
-					scaleLabelX = isLeft ? me.left + halfLineHeight : me.right - halfLineHeight;
+					scaleLabelX = isLeft
+						? me.left + halfLineHeight + scaleLabelPadding.top
+						: me.right - halfLineHeight - scaleLabelPadding.top;
 					scaleLabelY = me.top + ((me.bottom - me.top) / 2);
 					rotation = isLeft ? -0.5 * Math.PI : 0.5 * Math.PI;
 				}

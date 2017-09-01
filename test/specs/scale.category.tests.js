@@ -30,11 +30,7 @@ describe('Category scale tests', function() {
 			},
 			position: 'bottom',
 			offset: false,
-			scaleLabel: {
-				display: false,
-				labelString: '',
-				lineHeight: 1.2
-			},
+			scaleLabel: Chart.defaults.scale.scaleLabel,
 			ticks: {
 				beginAtZero: false,
 				minRotation: 0,
@@ -215,7 +211,7 @@ describe('Category scale tests', function() {
 		});
 
 		var xScale = chart.scales.xScale0;
-		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(23);
+		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(23 + 6); // plus lineHeight
 		expect(xScale.getValueForPixel(23)).toBe(0);
 
 		expect(xScale.getPixelForValue(0, 4, 0)).toBeCloseToPixel(487);
@@ -224,7 +220,7 @@ describe('Category scale tests', function() {
 		xScale.options.offset = true;
 		chart.update();
 
-		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(69);
+		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(69 + 6); // plus lineHeight
 		expect(xScale.getValueForPixel(69)).toBe(0);
 
 		expect(xScale.getPixelForValue(0, 4, 0)).toBeCloseToPixel(441);
@@ -258,8 +254,8 @@ describe('Category scale tests', function() {
 		});
 
 		var xScale = chart.scales.xScale0;
-		expect(xScale.getPixelForValue('tick_1', 0, 0)).toBeCloseToPixel(23);
-		expect(xScale.getPixelForValue('tick_1', 1, 0)).toBeCloseToPixel(139);
+		expect(xScale.getPixelForValue('tick_1', 0, 0)).toBeCloseToPixel(23 + 6); // plus lineHeight
+		expect(xScale.getPixelForValue('tick_1', 1, 0)).toBeCloseToPixel(143);
 	});
 
 	it ('Should get the correct pixel for a value when horizontal and zoomed', function() {
@@ -293,13 +289,13 @@ describe('Category scale tests', function() {
 		});
 
 		var xScale = chart.scales.xScale0;
-		expect(xScale.getPixelForValue(0, 1, 0)).toBeCloseToPixel(23);
+		expect(xScale.getPixelForValue(0, 1, 0)).toBeCloseToPixel(23 + 6); // plus lineHeight
 		expect(xScale.getPixelForValue(0, 3, 0)).toBeCloseToPixel(496);
 
 		xScale.options.offset = true;
 		chart.update();
 
-		expect(xScale.getPixelForValue(0, 1, 0)).toBeCloseToPixel(102);
+		expect(xScale.getPixelForValue(0, 1, 0)).toBeCloseToPixel(102 + 6); // plus lineHeight
 		expect(xScale.getPixelForValue(0, 3, 0)).toBeCloseToPixel(417);
 	});
 

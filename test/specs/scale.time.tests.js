@@ -73,11 +73,7 @@ describe('Time scale tests', function() {
 			},
 			position: 'bottom',
 			offset: false,
-			scaleLabel: {
-				display: false,
-				labelString: '',
-				lineHeight: 1.2
-			},
+			scaleLabel: Chart.defaults.scale.scaleLabel,
 			bounds: 'data',
 			distribution: 'linear',
 			ticks: {
