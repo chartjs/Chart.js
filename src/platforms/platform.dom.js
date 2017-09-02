@@ -305,6 +305,13 @@ function injectCSS(platform, css) {
 }
 
 module.exports = {
+	/**
+	 * This property holds whether this platform is enabled for the current environment.
+	 * Currently used by platform.js to select the proper implementation.
+	 * @private
+	 */
+	_enabled: typeof window !== 'undefined' && typeof document !== 'undefined',
+
 	initialize: function() {
 		var keyframes = 'from{opacity:0.99}to{opacity:1}';
 
