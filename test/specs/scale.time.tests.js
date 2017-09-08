@@ -94,7 +94,9 @@ describe('Time scale tests', function() {
 				autoSkipPadding: 0,
 				labelOffset: 0,
 				minor: {},
-				major: {},
+				major: {
+					enabled: false
+				},
 			},
 			time: {
 				parser: false,
@@ -306,7 +308,7 @@ describe('Time scale tests', function() {
 		scale.update(2500, 200);
 		var ticks = getTicksLabels(scale);
 
-		expect(ticks).toEqual(['8PM', '9PM', '10PM', '11PM', 'Jan 2', '1AM', '2AM', '3AM', '4AM', '5AM', '6AM', '7AM', '8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM', '6PM', '7PM', '8PM', '9PM']);
+		expect(ticks).toEqual(['8PM', '9PM', '10PM', '11PM', '12AM', '1AM', '2AM', '3AM', '4AM', '5AM', '6AM', '7AM', '8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM', '6PM', '7PM', '8PM', '9PM']);
 	});
 
 	it('build ticks honoring the minUnit', function() {
@@ -324,7 +326,7 @@ describe('Time scale tests', function() {
 		var scale = createScale(mockData, config);
 		var ticks = getTicksLabels(scale);
 
-		expect(ticks).toEqual(['Jan 2015', 'Jan 2', 'Jan 3']);
+		expect(ticks).toEqual(['Jan 1', 'Jan 2', 'Jan 3']);
 	});
 
 	it('should build ticks using the config diff', function() {
@@ -345,7 +347,7 @@ describe('Time scale tests', function() {
 		var ticks = getTicksLabels(scale);
 
 		// last date is feb 15 because we round to start of week
-		expect(ticks).toEqual(['Dec 28, 2014', 'Jan 4, 2015', 'Jan 11, 2015', 'Jan 18, 2015', 'Jan 25, 2015', 'Feb 2015', 'Feb 8, 2015', 'Feb 15, 2015']);
+		expect(ticks).toEqual(['Dec 28, 2014', 'Jan 4, 2015', 'Jan 11, 2015', 'Jan 18, 2015', 'Jan 25, 2015', 'Feb 1, 2015', 'Feb 8, 2015', 'Feb 15, 2015']);
 	});
 
 	describe('config step size', function() {

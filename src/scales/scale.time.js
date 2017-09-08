@@ -284,8 +284,10 @@ function determineMajorUnit(unit) {
  * responsibility of the calling code to clamp values if needed.
  */
 function generate(min, max, minor, major, capacity, options) {
-	var stepSize = helpers.valueOrDefault(options.stepSize, options.unitStepSize);
-	var weekday = minor === 'week' ? options.isoWeekday : false;
+	var timeOpts = options.time;
+	var stepSize = helpers.valueOrDefault(timeOpts.stepSize, timeOpts.unitStepSize);
+	var weekday = minor === 'week' ? timeOpts.isoWeekday : false;
+	var majorTicksEnabled = options.ticks.major.enabled;
 	var interval = INTERVALS[minor];
 	var first = moment(min);
 	var last = moment(max);
@@ -313,7 +315,7 @@ function generate(min, max, minor, major, capacity, options) {
 
 	time = moment(first);
 
-	if (major && !weekday && !options.round) {
+	if (majorTicksEnabled && major && !weekday && !timeOpts.round) {
 		// Align the first tick on the previous `minor` unit aligned on the `major` unit:
 		// we first aligned time on the previous `major` unit then add the number of full
 		// stepSize there is between first and the previous major time.
@@ -434,7 +436,11 @@ module.exports = function(Chart) {
 			 * @see https://github.com/chartjs/Chart.js/pull/4507
 			 * @since 2.7.0
 			 */
-			source: 'auto'
+			source: 'auto',
+
+			major: {
+				enabled: false
+			}
 		}
 	};
 
@@ -564,7 +570,7 @@ module.exports = function(Chart) {
 				break;
 			case 'auto':
 			default:
-				timestamps = generate(min, max, unit, majorUnit, capacity, timeOpts);
+				timestamps = generate(min, max, unit, majorUnit, capacity, options);
 			}
 
 			if (options.bounds === 'ticks' && timestamps.length) {
@@ -626,9 +632,10 @@ module.exports = function(Chart) {
 			var majorUnit = me._majorUnit;
 			var majorFormat = me._majorFormat;
 			var majorTime = tick.clone().startOf(me._majorUnit).valueOf();
-			var major = majorUnit && majorFormat && time === majorTime;
+			var majorTickOpts = options.ticks.major;
+			var major = majorTickOpts.enabled && majorUnit && majorFormat && time === majorTime;
 			var label = tick.format(major ? majorFormat : me._minorFormat);
-			var tickOpts = major ? options.ticks.major : options.ticks.minor;
+			var tickOpts = major ? majorTickOpts : options.ticks.minor;
 			var formatter = helpers.valueOrDefault(tickOpts.callback, tickOpts.userCallback);
 
 			return formatter ? formatter(label, index, ticks) : label;
