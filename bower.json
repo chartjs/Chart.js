@@ -1,0 +1,16 @@
+{
+  "name": "chart.js",
+  "description": "Simple HTML5 charts using the canvas element.",
+  "homepage": "http://www.chartjs.org",
+  "license": "MIT",
+  "version": "2.7.0",
+  "main": "./dist/Chart.js",
+  "ignore": [
+    ".github",
+    ".codeclimate.yml",
+    ".gitignore",
+    ".npmignore",
+    ".travis.yml",
+    "scripts"
+  ]
+}
