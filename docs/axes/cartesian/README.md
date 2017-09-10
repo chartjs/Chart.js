@@ -15,6 +15,7 @@ All of the included cartesian axes support a number of common options.
 | -----| ---- | --------| -----------
 | `type` | `String` | | Type of scale being employed. Custom scales can be created and registered with a string key. This allows changing the type of an axis for a chart.
 | `position` | `String` | | Position of the axis in the chart. Possible values are: `'top'`, `'left'`, `'bottom'`, `'right'`
+| `offset` | `Boolean` | `false` | If true, extra space is added to the both edges and the axis is scaled to fit into the chart area. This is set to `true` in the bar chart by default.
 | `id` | `String` | | The ID is used to link datasets and scale axes together. [more...](#axis-id)
 | `gridLines` | `Object` | | Grid line configuration. [more...](../styling.md#grid-line-configuration)
 | `scaleLabel` | `Object` | | Scale title configuration. [more...](../labelling.md#scale-title-configuration)
@@ -31,7 +32,7 @@ The following options are common to all cartesian axes but do not apply to other
 | `maxRotation` | `Number` | `90` | Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. *Note: Only applicable to horizontal scales.*
 | `minRotation` | `Number` | `0` | Minimum rotation for tick labels. *Note: Only applicable to horizontal scales.*
 | `mirror` | `Boolean` | `false` | Flips tick labels around axis, displaying the labels inside the chart instead of outside. *Note: Only applicable to vertical scales.*
-| `padding` | `Number` | `10` | Padding between the tick label and the axis. *Note: Only applicable to horizontal scales.*
+| `padding` | `Number` | `10` | Padding between the tick label and the axis. When set on a vertical axis, this applies in the horizontal (X) direction. When set on a horizontal axis, this applies in the vertical (Y) direction.
 
 ## Axis ID
 The properties `dataset.xAxisID` or `dataset.yAxisID` have to match the scale properties `scales.xAxes.id` or `scales.yAxes.id`. This is especially needed if multi-axes charts are used.

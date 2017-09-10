@@ -113,6 +113,9 @@
 			title: 'Line (point data)',
 			path: 'scales/time/line-point-data.html'
 		}, {
+			title: 'Time Series',
+			path: 'scales/time/financial.html'
+		}, {
 			title: 'Combo',
 			path: 'scales/time/combo.html'
 		}]
@@ -166,6 +169,12 @@
 		}, {
 			title: 'HTML tooltips (points)',
 			path: 'tooltips/custom-points.html'
+		}]
+	}, {
+		title: 'Scriptable',
+		items: [{
+			title: 'Bubble Chart',
+			path: 'scriptable/bubble.html'
 		}]
 	}, {
 		title: 'Advanced',

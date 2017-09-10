@@ -1,5 +1,3 @@
-/* global Chart */
-
 'use strict';
 
 window.chartColors = {
@@ -10,10 +8,6 @@ window.chartColors = {
 	blue: 'rgb(54, 162, 235)',
 	purple: 'rgb(153, 102, 255)',
 	grey: 'rgb(201, 203, 207)'
-};
-
-window.randomScalingFactor = function() {
-	return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 100);
 };
 
 (function(global) {
@@ -32,7 +26,21 @@ window.randomScalingFactor = function() {
 		'December'
 	];
 
+	var COLORS = [
+		'#4dc9f6',
+		'#f67019',
+		'#f53794',
+		'#537bc4',
+		'#acc236',
+		'#166a8f',
+		'#00a950',
+		'#58595b',
+		'#8549ba'
+	];
+
 	var Samples = global.Samples || (global.Samples = {});
+	var Color = global.Color;
+
 	Samples.utils = {
 		// Adapted from http://indiegamr.com/generate-repeatable-random-numbers-in-js/
 		srand: function(seed) {
@@ -41,8 +49,8 @@ window.randomScalingFactor = function() {
 
 		rand: function(min, max) {
 			var seed = this._seed;
-			min = min === undefined? 0 : min;
-			max = max === undefined? 1 : max;
+			min = min === undefined ? 0 : min;
+			max = max === undefined ? 1 : max;
 			this._seed = (seed * 9301 + 49297) % 233280;
 			return min + (this._seed / 233280) * (max - min);
 		},
@@ -59,7 +67,7 @@ window.randomScalingFactor = function() {
 			var data = [];
 			var i, value;
 
-			for (i=0; i<count; ++i) {
+			for (i = 0; i < count; ++i) {
 				value = (from[i] || 0) + this.rand(min, max);
 				if (this.rand() <= continuity) {
 					data.push(Math.round(dfactor * value) / dfactor);
@@ -76,14 +84,14 @@ window.randomScalingFactor = function() {
 			var min = cfg.min || 0;
 			var max = cfg.max || 100;
 			var count = cfg.count || 8;
-			var step = (max-min) / count;
+			var step = (max - min) / count;
 			var decimals = cfg.decimals || 8;
 			var dfactor = Math.pow(10, decimals) || 0;
 			var prefix = cfg.prefix || '';
 			var values = [];
 			var i;
 
-			for (i=min; i<max; i+=step) {
+			for (i = min; i < max; i += step) {
 				values.push(prefix + Math.round(dfactor * i) / dfactor);
 			}
 
@@ -97,23 +105,43 @@ window.randomScalingFactor = function() {
 			var values = [];
 			var i, value;
 
-			for (i=0; i<count; ++i) {
-				value = Months[Math.ceil(i)%12];
+			for (i = 0; i < count; ++i) {
+				value = Months[Math.ceil(i) % 12];
 				values.push(value.substring(0, section));
 			}
 
 			return values;
 		},
 
-		transparentize: function(color, opacity) {
-			var alpha = opacity === undefined? 0.5 : 1 - opacity;
-			return Chart.helpers.color(color).alpha(alpha).rgbString();
+		color: function(index) {
+			return COLORS[index % COLORS.length];
 		},
 
-		merge: Chart.helpers.configMerge
+		transparentize: function(color, opacity) {
+			var alpha = opacity === undefined ? 0.5 : 1 - opacity;
+			return Color(color).alpha(alpha).rgbString();
+		}
 	};
+
+	// DEPRECATED
+	window.randomScalingFactor = function() {
+		return Math.round(Samples.utils.rand(-100, 100));
+	};
+
+	// INITIALIZATION
 
 	Samples.utils.srand(Date.now());
 
-}(this));
+	// Google Analytics
+	/* eslint-disable */
+	if (document.location.hostname.match(/^(www\.)?chartjs\.org$/)) {
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+		ga('create', 'UA-28909194-3', 'auto');
+		ga('send', 'pageview');
+	}
+	/* eslint-enable */
 
+}(this));

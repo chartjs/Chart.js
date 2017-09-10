@@ -13,11 +13,12 @@ In addition, many charts can be found on the [npm registry](https://www.npmjs.co
 
 ## Plugins
 
- - <a href="https://github.com/chartjs/chartjs-plugin-annotation" target="_blank">chartjs-plugin-annotation.js</a> - Draw lines and boxes on chart area.
- - <a href="https://github.com/chartjs/chartjs-plugin-deferred" target="_blank">chartjs-plugin-deferred.js</a> - Defer initial chart update until chart scrolls into viewport.
- - <a href="https://github.com/compwright/chartjs-plugin-draggable" target="_blank">chartjs-plugin-draggable.js</a> - Makes select chart elements draggable with the mouse.
- - <a href="https://github.com/y-takey/chartjs-plugin-stacked100" target="_blank">chartjs-plugin-stacked100.js</a> - Draw 100% stacked bar chart.
- - <a href="https://github.com/chartjs/chartjs-plugin-zoom" target="_blank">chartjs-plugin-zoom.js</a> - Enable zooming and panning on charts.
+ - <a href="https://github.com/chartjs/chartjs-plugin-annotation" target="_blank">chartjs-plugin-annotation</a> - Draws lines and boxes on chart area.
+ - <a href="https://github.com/chartjs/chartjs-plugin-datalabels" target="_blank">chartjs-plugin-datalabels</a> - Displays labels on data for any type of charts.
+ - <a href="https://github.com/chartjs/chartjs-plugin-deferred" target="_blank">chartjs-plugin-deferred</a> - Defers initial chart update until chart scrolls into viewport.
+ - <a href="https://github.com/compwright/chartjs-plugin-draggable" target="_blank">chartjs-plugin-draggable</a> - Makes select chart elements draggable with the mouse.
+ - <a href="https://github.com/y-takey/chartjs-plugin-stacked100" target="_blank">chartjs-plugin-stacked100</a> - Draws 100% stacked bar chart.
+ - <a href="https://github.com/chartjs/chartjs-plugin-zoom" target="_blank">chartjs-plugin-zoom</a> - Enables zooming and panning on charts.
 
 In addition, many plugins can be found on the [npm registry](https://www.npmjs.com/search?q=chartjs-plugin-).
 
@@ -45,3 +46,6 @@ In addition, many plugins can be found on the [npm registry](https://www.npmjs.c
 
 ### Vue.js
  - <a href="https://github.com/apertureless/vue-chartjs/" target="_blank">vue-chartjs</a>
+
+### Java
+ - <a href="https://github.com/mdewilde/chart/" target="_blank">Chart.java</a>

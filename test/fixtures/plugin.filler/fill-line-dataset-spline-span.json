@@ -13,7 +13,7 @@
                 "fill": "+1"
             }, {
                 "backgroundColor": "rgba(0, 0, 255, 0.25)",
-                "data": [0, 2, 0, -2, 0, 2, 0, null, null],
+                "data": [0, 2, 0, -2, 0, 2, 0],
                 "fill": 3
             }, {
                 "backgroundColor": "rgba(255, 0, 255, 0.25)",
@@ -32,14 +32,10 @@
             "title": false,
             "scales": {
                 "xAxes": [{
-                    "ticks": {
-                        "display": false
-                    }
+                    "display": false
                 }],
                 "yAxes": [{
-                    "ticks": {
-                        "display": false
-                    }
+                    "display": false
                 }]
             },
             "elements": {

@@ -1,18 +1,5 @@
 describe('Platform.dom', function() {
 
-	function waitForResize(chart, callback) {
-		var resizer = chart.canvas.parentNode._chartjs.resizer;
-		var content = resizer.contentWindow || resizer;
-		var state = content.document.readyState || 'complete';
-		var handler = function() {
-			Chart.helpers.removeEvent(content, 'load', handler);
-			Chart.helpers.removeEvent(content, 'resize', handler);
-			setTimeout(callback, 50);
-		};
-
-		Chart.helpers.addEvent(content, state !== 'complete'? 'load' : 'resize', handler);
-	}
-
 	describe('context acquisition', function() {
 		var canvasId = 'chartjs-canvas';
 
@@ -122,6 +109,9 @@ describe('Platform.dom', function() {
 		});
 
 		it('should use default "chart" aspect ratio for render and display sizes', function() {
+			var ratio = Chart.defaults.doughnut.aspectRatio;
+			Chart.defaults.doughnut.aspectRatio = 1;
+
 			var chart = acquireChart({
 				type: 'doughnut',
 				options: {
@@ -132,6 +122,8 @@ describe('Platform.dom', function() {
 					style: 'width: 425px'
 				}
 			});
+
+			Chart.defaults.doughnut.aspectRatio = ratio;
 
 			expect(chart).toBeChartOfSize({
 				dw: 425, dh: 425,
@@ -402,8 +394,8 @@ describe('Platform.dom', function() {
 			expect(notifiedEvent.type).toBe(evt.type);
 
 			// Relative Position
-			expect(notifiedEvent.x).toBe(chart.width / 2);
-			expect(notifiedEvent.y).toBe(chart.height / 2);
+			expect(notifiedEvent.x).toBeCloseToPixel(chart.width / 2);
+			expect(notifiedEvent.y).toBeCloseToPixel(chart.height / 2);
 		});
 	});
 });

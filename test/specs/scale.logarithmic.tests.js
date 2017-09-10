@@ -26,10 +26,8 @@ describe('Logarithmic Scale tests', function() {
 				borderDashOffset: 0.0
 			},
 			position: 'left',
-			scaleLabel: {
-				labelString: '',
-				display: false,
-			},
+			offset: false,
+			scaleLabel: Chart.defaults.scale.scaleLabel,
 			ticks: {
 				beginAtZero: false,
 				minRotation: 0,
@@ -41,7 +39,9 @@ describe('Logarithmic Scale tests', function() {
 				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
 				autoSkip: true,
 				autoSkipPadding: 0,
-				labelOffset: 0
+				labelOffset: 0,
+				minor: {},
+				major: {},
 			},
 		});
 
@@ -715,20 +715,20 @@ describe('Logarithmic Scale tests', function() {
 		});
 
 		var xScale = chart.scales.xScale;
-		expect(xScale.getPixelForValue(80, 0, 0)).toBeCloseToPixel(495);  // right - paddingRight
-		expect(xScale.getPixelForValue(1, 0, 0)).toBeCloseToPixel(37);   // left + paddingLeft
-		expect(xScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(278);  // halfway
-		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(37);   // 0 is invalid, put it on the left.
+		expect(xScale.getPixelForValue(80, 0, 0)).toBeCloseToPixel(495); // right - paddingRight
+		expect(xScale.getPixelForValue(1, 0, 0)).toBeCloseToPixel(37 + 6); // left + paddingLeft + lineSpace
+		expect(xScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(278 + 6 / 2); // halfway
+		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(37 + 6); // 0 is invalid, put it on the left.
 
 		expect(xScale.getValueForPixel(495)).toBeCloseToPixel(80);
 		expect(xScale.getValueForPixel(48)).toBeCloseTo(1, 1e-4);
 		expect(xScale.getValueForPixel(278)).toBeCloseTo(10, 1e-4);
 
 		var yScale = chart.scales.yScale;
-		expect(yScale.getPixelForValue(80, 0, 0)).toBeCloseToPixel(32);   // top + paddingTop
+		expect(yScale.getPixelForValue(80, 0, 0)).toBeCloseToPixel(32);  // top + paddingTop
 		expect(yScale.getPixelForValue(1, 0, 0)).toBeCloseToPixel(484);  // bottom - paddingBottom
-		expect(yScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(246);  // halfway
-		expect(yScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(484);   // 0 is invalid. force it on bottom
+		expect(yScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(246); // halfway
+		expect(yScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(484);  // 0 is invalid. force it on bottom
 
 		expect(yScale.getValueForPixel(32)).toBeCloseTo(80, 1e-4);
 		expect(yScale.getValueForPixel(484)).toBeCloseTo(1, 1e-4);
@@ -759,20 +759,20 @@ describe('Logarithmic Scale tests', function() {
 		});
 
 		var yScale = chart.scales.yScale;
-		expect(yScale.getPixelForValue(70, 0, 0)).toBeCloseToPixel(32);   // top + paddingTop
-		expect(yScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(484);  // bottom - paddingBottom
-		expect(yScale.getPixelForValue(0.063, 0, 0)).toBeCloseToPixel(475);  // minNotZero 2% from range
+		expect(yScale.getPixelForValue(70, 0, 0)).toBeCloseToPixel(32);     // top + paddingTop
+		expect(yScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(484);     // bottom - paddingBottom
+		expect(yScale.getPixelForValue(0.063, 0, 0)).toBeCloseToPixel(475); // minNotZero 2% from range
 		expect(yScale.getPixelForValue(0.5, 0, 0)).toBeCloseToPixel(344);
 		expect(yScale.getPixelForValue(4, 0, 0)).toBeCloseToPixel(213);
 		expect(yScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(155);
 		expect(yScale.getPixelForValue(63, 0, 0)).toBeCloseToPixel(38.5);
 
-		chart.options.scales.yAxes[0].ticks.reverse = true;   // Reverse mode
+		chart.options.scales.yAxes[0].ticks.reverse = true;	// Reverse mode
 		chart.update();
 
-		expect(yScale.getPixelForValue(70, 0, 0)).toBeCloseToPixel(484); // bottom - paddingBottom
-		expect(yScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(32);  // top + paddingTop
-		expect(yScale.getPixelForValue(0.063, 0, 0)).toBeCloseToPixel(41);  // minNotZero 2% from range
+		expect(yScale.getPixelForValue(70, 0, 0)).toBeCloseToPixel(484);   // bottom - paddingBottom
+		expect(yScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(32);     // top + paddingTop
+		expect(yScale.getPixelForValue(0.063, 0, 0)).toBeCloseToPixel(41); // minNotZero 2% from range
 		expect(yScale.getPixelForValue(0.5, 0, 0)).toBeCloseToPixel(172);
 		expect(yScale.getPixelForValue(4, 0, 0)).toBeCloseToPixel(303);
 		expect(yScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(361);

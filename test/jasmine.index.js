@@ -22,8 +22,13 @@ var utils = require('./jasmine.utils');
 		return new Context();
 	}
 
+	// force ratio=1 for tests on high-res/retina devices
+	// fixes https://github.com/chartjs/Chart.js/issues/4515
+	window.devicePixelRatio = 1;
+
 	window.acquireChart = acquireChart;
 	window.releaseChart = releaseChart;
+	window.waitForResize = utils.waitForResize;
 	window.createMockContext = createMockContext;
 
 	// some style initialization to limit differences between browsers across different plateforms.
@@ -38,6 +43,7 @@ var utils = require('./jasmine.utils');
 		'}');
 
 	jasmine.specsFromFixtures = utils.specsFromFixtures;
+	jasmine.triggerMouseEvent = utils.triggerMouseEvent;
 
 	beforeEach(function() {
 		jasmine.addMatchers(matchers);

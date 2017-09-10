@@ -7,7 +7,7 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
 | `enabled` | `Boolean` | `true` | Are tooltips enabled
-| `custom` | `Function` | `null` | See [custom tooltip](#custom-tooltips) section.
+| `custom` | `Function` | `null` | See [custom tooltip](#external-custom-tooltips) section.
 | `mode` | `String` | `'nearest'` | Sets which elements appear in the tooltip. [more...](../general/interactions/modes.md#interaction-modes).
 | `intersect` | `Boolean` | `true` | if true, the tooltip mode applies only when the mouse position intersects with an element. If false, the mode will be applied at all times.
 | `position` | `String` | `'average'` | The mode for positioning the tooltip. [more...](#position-modes)
@@ -53,17 +53,17 @@ New modes can be defined by adding functions to the Chart.Tooltip.positioners ma
 
 ### Sort Callback
 
-Allows sorting of [tooltip items](#chart-configuration-tooltip-item-interface). Must implement at minimum a function that can be passed to [Array.prototype.sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort).  This function can also accept a third parameter that is the data object passed to the chart.
+Allows sorting of [tooltip items](#tooltip-item-interface). Must implement at minimum a function that can be passed to [Array.prototype.sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort).  This function can also accept a third parameter that is the data object passed to the chart.
 
 ### Filter Callback
 
-Allows filtering of [tooltip items](#chart-configuration-tooltip-item-interface). Must implement at minimum a function that can be passed to [Array.prototype.filter](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/filter). This function can also accept a second parameter that is the data object passed to the chart.
+Allows filtering of [tooltip items](#tooltip-item-interface). Must implement at minimum a function that can be passed to [Array.prototype.filter](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/filter). This function can also accept a second parameter that is the data object passed to the chart.
 
 ## Tooltip Callbacks
 
 The tooltip label configuration is nested below the tooltip configuration using the `callbacks` key. The tooltip has the following callbacks for providing text. For all functions, 'this' will be the tooltip object created from the Chart.Tooltip constructor.
 
-All functions are called with the same arguments: a [tooltip item](#chart-configuration-tooltip-item-interface) and the data object passed to the chart. All functions must return either a string or an array of strings. Arrays of strings are treated as multiple lines of text.
+All functions are called with the same arguments: a [tooltip item](#tooltip-item-interface) and the data object passed to the chart. All functions must return either a string or an array of strings. Arrays of strings are treated as multiple lines of text.
 
 | Name | Arguments | Description
 | ---- | --------- | -----------
@@ -74,6 +74,7 @@ All functions are called with the same arguments: a [tooltip item](#chart-config
 | `beforeLabel` | `tooltipItem, data` | Returns text to render before an individual label. This will be called for each item in the tooltip.
 | `label` | `tooltipItem, data` | Returns text to render for an individual item in the tooltip.
 | `labelColor` | `tooltipItem, chart` | Returns the colors to render for the tooltip item. [more...](#label-color-callback)
+| `labelTextColor` | `tooltipItem, chart` | Returns the colors for the text of the label for the tooltip item.
 | `afterLabel` | `tooltipItem, data` | Returns text to render after an individual label.
 | `afterBody` | `Array[tooltipItem], data` | Returns text to render after the body section
 | `beforeFooter` | `Array[tooltipItem], data` | Returns text to render before the footer section.
@@ -95,6 +96,9 @@ var chart = new Chart(ctx, {
                         borderColor: 'rgb(255, 0, 0)',
                         backgroundColor: 'rgb(255, 0, 0)'
                     }
+                },
+                labelTextColor:function(tooltipItem, chart){
+                    return '#543453';
                 }
             }
         }

@@ -1,46 +1,54 @@
 'use strict';
 
-module.exports = function(Chart) {
+var defaults = require('../core/core.defaults');
+var elements = require('../elements/index');
+var helpers = require('../helpers/index');
 
-	var helpers = Chart.helpers;
+defaults._set('bubble', {
+	hover: {
+		mode: 'single'
+	},
 
-	Chart.defaults.bubble = {
-		hover: {
-			mode: 'single'
-		},
+	scales: {
+		xAxes: [{
+			type: 'linear', // bubble should probably use a linear scale by default
+			position: 'bottom',
+			id: 'x-axis-0' // need an ID so datasets can reference the scale
+		}],
+		yAxes: [{
+			type: 'linear',
+			position: 'left',
+			id: 'y-axis-0'
+		}]
+	},
 
-		scales: {
-			xAxes: [{
-				type: 'linear', // bubble should probably use a linear scale by default
-				position: 'bottom',
-				id: 'x-axis-0' // need an ID so datasets can reference the scale
-			}],
-			yAxes: [{
-				type: 'linear',
-				position: 'left',
-				id: 'y-axis-0'
-			}]
-		},
-
-		tooltips: {
-			callbacks: {
-				title: function() {
-					// Title doesn't make sense for scatter since we format the data as a point
-					return '';
-				},
-				label: function(tooltipItem, data) {
-					var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
-					var dataPoint = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-					return datasetLabel + ': (' + tooltipItem.xLabel + ', ' + tooltipItem.yLabel + ', ' + dataPoint.r + ')';
-				}
+	tooltips: {
+		callbacks: {
+			title: function() {
+				// Title doesn't make sense for scatter since we format the data as a point
+				return '';
+			},
+			label: function(item, data) {
+				var datasetLabel = data.datasets[item.datasetIndex].label || '';
+				var dataPoint = data.datasets[item.datasetIndex].data[item.index];
+				return datasetLabel + ': (' + item.xLabel + ', ' + item.yLabel + ', ' + dataPoint.r + ')';
 			}
 		}
-	};
+	}
+});
+
+
+module.exports = function(Chart) {
 
 	Chart.controllers.bubble = Chart.DatasetController.extend({
+		/**
+		 * @protected
+		 */
+		dataElementType: elements.Point,
 
-		dataElementType: Chart.elements.Point,
-
+		/**
+		 * @protected
+		 */
 		update: function(reset) {
 			var me = this;
 			var meta = me.getMeta();
@@ -52,71 +60,121 @@ module.exports = function(Chart) {
 			});
 		},
 
+		/**
+		 * @protected
+		 */
 		updateElement: function(point, index, reset) {
 			var me = this;
 			var meta = me.getMeta();
+			var custom = point.custom || {};
 			var xScale = me.getScaleForId(meta.xAxisID);
 			var yScale = me.getScaleForId(meta.yAxisID);
-
-			var custom = point.custom || {};
-			var dataset = me.getDataset();
-			var data = dataset.data[index];
-			var pointElementOptions = me.chart.options.elements.point;
+			var options = me._resolveElementOptions(point, index);
+			var data = me.getDataset().data[index];
 			var dsIndex = me.index;
 
-			helpers.extend(point, {
-				// Utility
-				_xScale: xScale,
-				_yScale: yScale,
-				_datasetIndex: dsIndex,
-				_index: index,
+			var x = reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(typeof data === 'object' ? data : NaN, index, dsIndex);
+			var y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(data, index, dsIndex);
 
-				// Desired view properties
-				_model: {
-					x: reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(typeof data === 'object' ? data : NaN, index, dsIndex, me.chart.isCombo),
-					y: reset ? yScale.getBasePixel() : yScale.getPixelForValue(data, index, dsIndex),
-					// Appearance
-					radius: reset ? 0 : custom.radius ? custom.radius : me.getRadius(data),
-
-					// Tooltip
-					hitRadius: custom.hitRadius ? custom.hitRadius : helpers.getValueAtIndexOrDefault(dataset.hitRadius, index, pointElementOptions.hitRadius)
-				}
-			});
-
-			// Trick to reset the styles of the point
-			Chart.DatasetController.prototype.removeHoverStyle.call(me, point, pointElementOptions);
-
-			var model = point._model;
-			model.skip = custom.skip ? custom.skip : (isNaN(model.x) || isNaN(model.y));
+			point._xScale = xScale;
+			point._yScale = yScale;
+			point._options = options;
+			point._datasetIndex = dsIndex;
+			point._index = index;
+			point._model = {
+				backgroundColor: options.backgroundColor,
+				borderColor: options.borderColor,
+				borderWidth: options.borderWidth,
+				hitRadius: options.hitRadius,
+				pointStyle: options.pointStyle,
+				radius: reset ? 0 : options.radius,
+				skip: custom.skip || isNaN(x) || isNaN(y),
+				x: x,
+				y: y,
+			};
 
 			point.pivot();
 		},
 
-		getRadius: function(value) {
-			return value.r || this.chart.options.elements.point.radius;
-		},
-
+		/**
+		 * @protected
+		 */
 		setHoverStyle: function(point) {
-			var me = this;
-			Chart.DatasetController.prototype.setHoverStyle.call(me, point);
-
-			// Radius
-			var dataset = me.chart.data.datasets[point._datasetIndex];
-			var index = point._index;
-			var custom = point.custom || {};
 			var model = point._model;
-			model.radius = custom.hoverRadius ? custom.hoverRadius : (helpers.getValueAtIndexOrDefault(dataset.hoverRadius, index, me.chart.options.elements.point.hoverRadius)) + me.getRadius(dataset.data[index]);
+			var options = point._options;
+
+			model.backgroundColor = helpers.valueOrDefault(options.hoverBackgroundColor, helpers.getHoverColor(options.backgroundColor));
+			model.borderColor = helpers.valueOrDefault(options.hoverBorderColor, helpers.getHoverColor(options.borderColor));
+			model.borderWidth = helpers.valueOrDefault(options.hoverBorderWidth, options.borderWidth);
+			model.radius = options.radius + options.hoverRadius;
 		},
 
+		/**
+		 * @protected
+		 */
 		removeHoverStyle: function(point) {
-			var me = this;
-			Chart.DatasetController.prototype.removeHoverStyle.call(me, point, me.chart.options.elements.point);
-
-			var dataVal = me.chart.data.datasets[point._datasetIndex].data[point._index];
-			var custom = point.custom || {};
 			var model = point._model;
+			var options = point._options;
 
-			model.radius = custom.radius ? custom.radius : me.getRadius(dataVal);
+			model.backgroundColor = options.backgroundColor;
+			model.borderColor = options.borderColor;
+			model.borderWidth = options.borderWidth;
+			model.radius = options.radius;
+		},
+
+		/**
+		 * @private
+		 */
+		_resolveElementOptions: function(point, index) {
+			var me = this;
+			var chart = me.chart;
+			var datasets = chart.data.datasets;
+			var dataset = datasets[me.index];
+			var custom = point.custom || {};
+			var options = chart.options.elements.point;
+			var resolve = helpers.options.resolve;
+			var data = dataset.data[index];
+			var values = {};
+			var i, ilen, key;
+
+			// Scriptable options
+			var context = {
+				chart: chart,
+				dataIndex: index,
+				dataset: dataset,
+				datasetIndex: me.index
+			};
+
+			var keys = [
+				'backgroundColor',
+				'borderColor',
+				'borderWidth',
+				'hoverBackgroundColor',
+				'hoverBorderColor',
+				'hoverBorderWidth',
+				'hoverRadius',
+				'hitRadius',
+				'pointStyle'
+			];
+
+			for (i = 0, ilen = keys.length; i < ilen; ++i) {
+				key = keys[i];
+				values[key] = resolve([
+					custom[key],
+					dataset[key],
+					options[key]
+				], context, index);
+			}
+
+			// Custom radius resolution
+			values.radius = resolve([
+				custom.radius,
+				data ? data.r : undefined,
+				dataset.radius,
+				options.radius
+			], context, index);
+
+			return values;
 		}
 	});
 };

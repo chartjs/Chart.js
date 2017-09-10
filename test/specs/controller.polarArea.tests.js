@@ -1,12 +1,11 @@
-// Test the polar area controller
-describe('Polar area controller tests', function() {
+describe('Chart.controllers.polarArea', function() {
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'polarArea',
 			data: {
 				datasets: [
-				{data: []},
-				{data: []}
+					{data: []},
+					{data: []}
 				],
 				labels: []
 			}
@@ -82,6 +81,8 @@ describe('Polar area controller tests', function() {
 			},
 			options: {
 				showLines: true,
+				legend: false,
+				title: false,
 				elements: {
 					arc: {
 						backgroundColor: 'rgb(255, 0, 0)',
@@ -96,13 +97,13 @@ describe('Polar area controller tests', function() {
 		expect(meta.data.length).toBe(4);
 
 		[
-			{o: 168, s: -0.5 * Math.PI, e: 0},
-			{o: 228, s: 0, e: 0.5 * Math.PI},
-			{o: 48, s: 0.5 * Math.PI, e: Math.PI},
+			{o: 179, s: -0.5 * Math.PI, e: 0},
+			{o: 243, s: 0, e: 0.5 * Math.PI},
+			{o: 51, s: 0.5 * Math.PI, e: Math.PI},
 			{o: 0, s: Math.PI, e: 1.5 * Math.PI}
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(256);
-			expect(meta.data[i]._model.y).toBeCloseToPixel(272);
+			expect(meta.data[i]._model.y).toBeCloseToPixel(256);
 			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(0);
 			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(expected.o);
 			expect(meta.data[i]._model.startAngle).toBe(expected.s);
@@ -138,9 +139,9 @@ describe('Polar area controller tests', function() {
 		chart.update();
 
 		expect(meta.data[0]._model.x).toBeCloseToPixel(256);
-		expect(meta.data[0]._model.y).toBeCloseToPixel(272);
+		expect(meta.data[0]._model.y).toBeCloseToPixel(256);
 		expect(meta.data[0]._model.innerRadius).toBeCloseToPixel(0);
-		expect(meta.data[0]._model.outerRadius).toBeCloseToPixel(168);
+		expect(meta.data[0]._model.outerRadius).toBeCloseToPixel(179);
 		expect(meta.data[0]._model).toEqual(jasmine.objectContaining({
 			startAngle: -0.5 * Math.PI,
 			endAngle: 0,
@@ -163,6 +164,8 @@ describe('Polar area controller tests', function() {
 			},
 			options: {
 				showLines: true,
+				legend: false,
+				title: false,
 				startAngle: 0, // default is -0.5 * Math.PI
 				elements: {
 					arc: {
@@ -178,13 +181,13 @@ describe('Polar area controller tests', function() {
 		expect(meta.data.length).toBe(4);
 
 		[
-			{o: 168, s: 0, e: 0.5 * Math.PI},
-			{o: 228, s: 0.5 * Math.PI, e: Math.PI},
-			{o: 48, s: Math.PI, e: 1.5 * Math.PI},
+			{o: 179, s: 0, e: 0.5 * Math.PI},
+			{o: 243, s: 0.5 * Math.PI, e: Math.PI},
+			{o: 51, s: Math.PI, e: 1.5 * Math.PI},
 			{o: 0, s: 1.5 * Math.PI, e: 2.0 * Math.PI}
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(256);
-			expect(meta.data[i]._model.y).toBeCloseToPixel(272);
+			expect(meta.data[i]._model.y).toBeCloseToPixel(256);
 			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(0);
 			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(expected.o);
 			expect(meta.data[i]._model.startAngle).toBe(expected.s);

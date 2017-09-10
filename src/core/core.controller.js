@@ -1,10 +1,12 @@
 'use strict';
 
-module.exports = function(Chart) {
+var defaults = require('./core.defaults');
+var helpers = require('../helpers/index');
+var Interaction = require('./core.interaction');
+var platform = require('../platforms/platform');
 
-	var helpers = Chart.helpers;
+module.exports = function(Chart) {
 	var plugins = Chart.plugins;
-	var platform = Chart.platform;
 
 	// Create a dictionary of chart types, to allow for extension of existing types
 	Chart.types = {};
@@ -29,8 +31,8 @@ module.exports = function(Chart) {
 		data.labels = data.labels || [];
 
 		config.options = helpers.configMerge(
-			Chart.defaults.global,
-			Chart.defaults[config.type],
+			defaults.global,
+			defaults[config.type],
 			config.options || {});
 
 		return config;
@@ -80,7 +82,7 @@ module.exports = function(Chart) {
 			me.config = config;
 			me.width = width;
 			me.height = height;
-			me.aspectRatio = height? width / height : null;
+			me.aspectRatio = height ? width / height : null;
 			me.options = config.options;
 			me._bufferedRender = false;
 
@@ -93,7 +95,7 @@ module.exports = function(Chart) {
 			 * @private
 			 */
 			me.chart = me;
-			me.controller = me;  // chart.chart.controller #inception
+			me.controller = me; // chart.chart.controller #inception
 
 			// Add the chart instance to the global namespace
 			Chart.instances[me.id] = me;
@@ -130,7 +132,7 @@ module.exports = function(Chart) {
 			// Before init plugin notification
 			plugins.notify(me, 'beforeInit');
 
-			helpers.retinaScale(me);
+			helpers.retinaScale(me, me.options.devicePixelRatio);
 
 			me.bindEvents();
 
@@ -151,7 +153,7 @@ module.exports = function(Chart) {
 		},
 
 		clear: function() {
-			helpers.clear(this);
+			helpers.canvas.clear(this);
 			return this;
 		},
 
@@ -169,8 +171,10 @@ module.exports = function(Chart) {
 
 			// the canvas render width and height will be casted to integers so make sure that
 			// the canvas display style uses the same integer values to avoid blurring effect.
-			var newWidth = Math.floor(helpers.getMaximumWidth(canvas));
-			var newHeight = Math.floor(aspectRatio? newWidth / aspectRatio : helpers.getMaximumHeight(canvas));
+
+			// Set to 0 instead of canvas.size because the size defaults to 300x150 if the element is collased
+			var newWidth = Math.max(0, Math.floor(helpers.getMaximumWidth(canvas)));
+			var newHeight = Math.max(0, Math.floor(aspectRatio ? newWidth / aspectRatio : helpers.getMaximumHeight(canvas)));
 
 			if (me.width === newWidth && me.height === newHeight) {
 				return;
@@ -181,7 +185,7 @@ module.exports = function(Chart) {
 			canvas.style.width = newWidth + 'px';
 			canvas.style.height = newHeight + 'px';
 
-			helpers.retinaScale(me);
+			helpers.retinaScale(me, options.devicePixelRatio);
 
 			if (!silent) {
 				// Notify any plugins about the resize
@@ -247,7 +251,7 @@ module.exports = function(Chart) {
 
 			helpers.each(items, function(item) {
 				var scaleOptions = item.options;
-				var scaleType = helpers.getValueOrDefault(scaleOptions.type, item.dtype);
+				var scaleType = helpers.valueOrDefault(scaleOptions.type, item.dtype);
 				var scaleClass = Chart.scaleService.getScaleConstructor(scaleType);
 				if (!scaleClass) {
 					return;
@@ -265,6 +269,7 @@ module.exports = function(Chart) {
 				});
 
 				scales[scale.id] = scale;
+				scale.mergeTicksOptions();
 
 				// TODO(SB): I think we should be able to remove this custom case (options.scale)
 				// and consider it as a regular scale part of the "scales"" map only! This would
@@ -284,9 +289,13 @@ module.exports = function(Chart) {
 
 			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
 				var meta = me.getDatasetMeta(datasetIndex);
-				if (!meta.type) {
-					meta.type = dataset.type || me.config.type;
+				var type = dataset.type || me.config.type;
+
+				if (meta.type && meta.type !== type) {
+					me.destroyDatasetMeta(datasetIndex);
+					meta = me.getDatasetMeta(datasetIndex);
 				}
+				meta.type = type;
 
 				types.push(meta.type);
 
@@ -302,15 +311,6 @@ module.exports = function(Chart) {
 					newControllers.push(meta.controller);
 				}
 			}, me);
-
-			if (types.length > 1) {
-				for (var i = 1; i < types.length; i++) {
-					if (types[i] !== types[i - 1]) {
-						me.isCombo = true;
-						break;
-					}
-				}
-			}
 
 			return newControllers;
 		},
@@ -334,8 +334,16 @@ module.exports = function(Chart) {
 			this.tooltip.initialize();
 		},
 
-		update: function(animationDuration, lazy) {
+		update: function(config) {
 			var me = this;
+
+			if (!config || typeof config !== 'object') {
+				// backwards compatibility
+				config = {
+					duration: config,
+					lazy: arguments[1]
+				};
+			}
 
 			updateConfig(me);
 
@@ -368,11 +376,12 @@ module.exports = function(Chart) {
 
 			if (me._bufferedRender) {
 				me._bufferedRequest = {
-					lazy: lazy,
-					duration: animationDuration
+					duration: config.duration,
+					easing: config.easing,
+					lazy: config.lazy
 				};
 			} else {
-				me.render(animationDuration, lazy);
+				me.render(config);
 			}
 		},
 
@@ -442,8 +451,19 @@ module.exports = function(Chart) {
 			plugins.notify(me, 'afterDatasetUpdate', [args]);
 		},
 
-		render: function(duration, lazy) {
+		render: function(config) {
 			var me = this;
+
+			if (!config || typeof config !== 'object') {
+				// backwards compatibility
+				config = {
+					duration: config,
+					lazy: arguments[1]
+				};
+			}
+
+			var duration = config.duration;
+			var lazy = config.lazy;
 
 			if (plugins.notify(me, 'beforeRender') === false) {
 				return;
@@ -458,10 +478,10 @@ module.exports = function(Chart) {
 			if (animationOptions && ((typeof duration !== 'undefined' && duration !== 0) || (typeof duration === 'undefined' && animationOptions.duration !== 0))) {
 				var animation = new Chart.Animation({
 					numSteps: (duration || animationOptions.duration) / 16.66, // 60 fps
-					easing: animationOptions.easing,
+					easing: config.easing || animationOptions.easing,
 
 					render: function(chart, animationObject) {
-						var easingFunction = helpers.easingEffects[animationObject.easing];
+						var easingFunction = helpers.easing.effects[animationObject.easing];
 						var currentStep = animationObject.currentStep;
 						var stepDecimal = currentStep / animationObject.numSteps;
 
@@ -488,7 +508,7 @@ module.exports = function(Chart) {
 
 			me.clear();
 
-			if (easingValue === undefined || easingValue === null) {
+			if (helpers.isNullOrUndef(easingValue)) {
 				easingValue = 1;
 			}
 
@@ -521,7 +541,7 @@ module.exports = function(Chart) {
 		transition: function(easingValue) {
 			var me = this;
 
-			for (var i=0, ilen=(me.data.datasets || []).length; i<ilen; ++i) {
+			for (var i = 0, ilen = (me.data.datasets || []).length; i < ilen; ++i) {
 				if (me.isDatasetVisible(i)) {
 					me.getDatasetMeta(i).controller.transition(easingValue);
 				}
@@ -543,7 +563,7 @@ module.exports = function(Chart) {
 			}
 
 			// Draw datasets reversed to support proper line stacking
-			for (var i=(me.data.datasets || []).length - 1; i >= 0; --i) {
+			for (var i = (me.data.datasets || []).length - 1; i >= 0; --i) {
 				if (me.isDatasetVisible(i)) {
 					me.drawDataset(i, easingValue);
 				}
@@ -578,19 +598,19 @@ module.exports = function(Chart) {
 		// Get the single element that was clicked on
 		// @return : An object containing the dataset index and element index of the matching element. Also contains the rectangle that was draw
 		getElementAtEvent: function(e) {
-			return Chart.Interaction.modes.single(this, e);
+			return Interaction.modes.single(this, e);
 		},
 
 		getElementsAtEvent: function(e) {
-			return Chart.Interaction.modes.label(this, e, {intersect: true});
+			return Interaction.modes.label(this, e, {intersect: true});
 		},
 
 		getElementsAtXAxis: function(e) {
-			return Chart.Interaction.modes['x-axis'](this, e, {intersect: true});
+			return Interaction.modes['x-axis'](this, e, {intersect: true});
 		},
 
 		getElementsAtEventForMode: function(e, mode, options) {
-			var method = Chart.Interaction.modes[mode];
+			var method = Interaction.modes[mode];
 			if (typeof method === 'function') {
 				return method(this, e, options);
 			}
@@ -599,7 +619,7 @@ module.exports = function(Chart) {
 		},
 
 		getDatasetAtEvent: function(e) {
-			return Chart.Interaction.modes.dataset(this, e, {intersect: true});
+			return Interaction.modes.dataset(this, e, {intersect: true});
 		},
 
 		getDatasetMeta: function(datasetIndex) {
@@ -627,7 +647,7 @@ module.exports = function(Chart) {
 
 		getVisibleDatasetCount: function() {
 			var count = 0;
-			for (var i = 0, ilen = this.data.datasets.length; i<ilen; ++i) {
+			for (var i = 0, ilen = this.data.datasets.length; i < ilen; ++i) {
 				if (this.isDatasetVisible(i)) {
 					count++;
 				}
@@ -640,32 +660,42 @@ module.exports = function(Chart) {
 
 			// meta.hidden is a per chart dataset hidden flag override with 3 states: if true or false,
 			// the dataset.hidden value is ignored, else if null, the dataset hidden state is returned.
-			return typeof meta.hidden === 'boolean'? !meta.hidden : !this.data.datasets[datasetIndex].hidden;
+			return typeof meta.hidden === 'boolean' ? !meta.hidden : !this.data.datasets[datasetIndex].hidden;
 		},
 
 		generateLegend: function() {
 			return this.options.legendCallback(this);
 		},
 
+		/**
+		 * @private
+		 */
+		destroyDatasetMeta: function(datasetIndex) {
+			var id = this.id;
+			var dataset = this.data.datasets[datasetIndex];
+			var meta = dataset._meta && dataset._meta[id];
+
+			if (meta) {
+				meta.controller.destroy();
+				delete dataset._meta[id];
+			}
+		},
+
 		destroy: function() {
 			var me = this;
 			var canvas = me.canvas;
-			var meta, i, ilen;
+			var i, ilen;
 
 			me.stop();
 
 			// dataset controllers need to cleanup associated data
 			for (i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
-				meta = me.getDatasetMeta(i);
-				if (meta.controller) {
-					meta.controller.destroy();
-					meta.controller = null;
-				}
+				me.destroyDatasetMeta(i);
 			}
 
 			if (canvas) {
 				me.unbindEvents();
-				helpers.clear(me);
+				helpers.canvas.clear(me);
 				platform.releaseContext(me.ctx);
 				me.canvas = null;
 				me.ctx = null;
@@ -684,11 +714,10 @@ module.exports = function(Chart) {
 			var me = this;
 			me.tooltip = new Chart.Tooltip({
 				_chart: me,
-				_chartInstance: me,            // deprecated, backward compatibility
+				_chartInstance: me, // deprecated, backward compatibility
 				_data: me.data,
 				_options: me.options.tooltips
 			}, me);
-			me.tooltip.initialize();
 		},
 
 		/**
@@ -706,9 +735,7 @@ module.exports = function(Chart) {
 				listeners[type] = listener;
 			});
 
-			// Responsiveness is currently based on the use of an iframe, however this method causes
-			// performance issues and could be troublesome when used with ad blockers. So make sure
-			// that the user is still able to create a chart without iframe when responsive is false.
+			// Elements used to detect size change should not be injected for non responsive charts.
 			// See https://github.com/chartjs/Chart.js/issues/2210
 			if (me.options.responsive) {
 				listener = function() {
@@ -737,10 +764,10 @@ module.exports = function(Chart) {
 		},
 
 		updateHoverStyle: function(elements, mode, enabled) {
-			var method = enabled? 'setHoverStyle' : 'removeHoverStyle';
+			var method = enabled ? 'setHoverStyle' : 'removeHoverStyle';
 			var element, i, ilen;
 
-			for (i=0, ilen=elements.length; i<ilen; ++i) {
+			for (i = 0, ilen = elements.length; i < ilen; ++i) {
 				element = elements[i];
 				if (element) {
 					this.getDatasetMeta(element._datasetIndex).controller[method](element);
@@ -771,7 +798,7 @@ module.exports = function(Chart) {
 			var bufferedRequest = me._bufferedRequest;
 			if (bufferedRequest) {
 				// If we have an update that was triggered, we need to do a normal render
-				me.render(bufferedRequest.duration, bufferedRequest.lazy);
+				me.render(bufferedRequest);
 			} else if (changed && !me.animating) {
 				// If entering, leaving, or changing elements, animate the change via pivot
 				me.stop();
@@ -808,11 +835,9 @@ module.exports = function(Chart) {
 				me.active = me.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions);
 			}
 
-			// On Hover hook
-			if (hoverOptions.onHover) {
-				// Need to call with native event here to not break backwards compatibility
-				hoverOptions.onHover.call(me, e.native, me.active);
-			}
+			// Invoke onHover hook
+			// Need to call with native event here to not break backwards compatibility
+			helpers.callback(options.onHover || options.hover.onHover, [e.native, me.active], me);
 
 			if (e.type === 'mouseup' || e.type === 'click') {
 				if (options.onClick) {

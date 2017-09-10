@@ -1,9 +1,12 @@
 'use strict';
 
+var defaults = require('../core/core.defaults');
+var helpers = require('../helpers/index');
+var Ticks = require('../core/core.ticks');
+
 module.exports = function(Chart) {
 
-	var helpers = Chart.helpers;
-	var globalDefaults = Chart.defaults.global;
+	var globalDefaults = defaults.global;
 
 	var defaultConfig = {
 		display: true,
@@ -36,7 +39,7 @@ module.exports = function(Chart) {
 			// Number - The backdrop padding to the side of the label in pixels
 			backdropPaddingX: 2,
 
-			callback: Chart.Ticks.formatters.linear
+			callback: Ticks.formatters.linear
 		},
 
 		pointLabels: {
@@ -60,9 +63,9 @@ module.exports = function(Chart) {
 
 	function getPointLabelFontOptions(scale) {
 		var pointLabelOptions = scale.options.pointLabels;
-		var fontSize = helpers.getValueOrDefault(pointLabelOptions.fontSize, globalDefaults.defaultFontSize);
-		var fontStyle = helpers.getValueOrDefault(pointLabelOptions.fontStyle, globalDefaults.defaultFontStyle);
-		var fontFamily = helpers.getValueOrDefault(pointLabelOptions.fontFamily, globalDefaults.defaultFontFamily);
+		var fontSize = helpers.valueOrDefault(pointLabelOptions.fontSize, globalDefaults.defaultFontSize);
+		var fontStyle = helpers.valueOrDefault(pointLabelOptions.fontStyle, globalDefaults.defaultFontStyle);
+		var fontFamily = helpers.valueOrDefault(pointLabelOptions.fontFamily, globalDefaults.defaultFontFamily);
 		var font = helpers.fontString(fontSize, fontStyle, fontFamily);
 
 		return {
@@ -150,9 +153,7 @@ module.exports = function(Chart) {
 			b: 0
 		};
 		var furthestAngles = {};
-		var i;
-		var textSize;
-		var pointPosition;
+		var i, textSize, pointPosition;
 
 		scale.ctx.font = plFont.font;
 		scale._pointLabelSizes = [];
@@ -219,7 +220,7 @@ module.exports = function(Chart) {
 
 			for (var i = 0; i < text.length; ++i) {
 				ctx.fillText(text[i], position.x, y);
-				y+= spacing;
+				y += spacing;
 			}
 		} else {
 			ctx.fillText(text, position.x, position.y);
@@ -236,7 +237,7 @@ module.exports = function(Chart) {
 
 	function drawPointLabels(scale) {
 		var ctx = scale.ctx;
-		var getValueOrDefault = helpers.getValueOrDefault;
+		var valueOrDefault = helpers.valueOrDefault;
 		var opts = scale.options;
 		var angleLineOpts = opts.angleLines;
 		var pointLabelOpts = opts.pointLabels;
@@ -244,7 +245,7 @@ module.exports = function(Chart) {
 		ctx.lineWidth = angleLineOpts.lineWidth;
 		ctx.strokeStyle = angleLineOpts.color;
 
-		var outerDistance = scale.getDistanceFromCenterForValue(opts.reverse ? scale.min : scale.max);
+		var outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
 
 		// Point Label Font
 		var plFont = getPointLabelFontOptions(scale);
@@ -266,7 +267,7 @@ module.exports = function(Chart) {
 				var pointLabelPosition = scale.getPointPosition(i, outerDistance + 5);
 
 				// Keep this in loop since we may support array properties here
-				var pointLabelFontColor = getValueOrDefault(pointLabelOpts.fontColor, globalDefaults.defaultFontColor);
+				var pointLabelFontColor = valueOrDefault(pointLabelOpts.fontColor, globalDefaults.defaultFontColor);
 				ctx.font = plFont.font;
 				ctx.fillStyle = pointLabelFontColor;
 
@@ -281,8 +282,8 @@ module.exports = function(Chart) {
 
 	function drawRadiusLine(scale, gridLineOpts, radius, index) {
 		var ctx = scale.ctx;
-		ctx.strokeStyle = helpers.getValueAtIndexOrDefault(gridLineOpts.color, index - 1);
-		ctx.lineWidth = helpers.getValueAtIndexOrDefault(gridLineOpts.lineWidth, index - 1);
+		ctx.strokeStyle = helpers.valueAtIndexOrDefault(gridLineOpts.color, index - 1);
+		ctx.lineWidth = helpers.valueAtIndexOrDefault(gridLineOpts.lineWidth, index - 1);
 
 		if (scale.options.gridLines.circular) {
 			// Draw circular arcs between the points
@@ -328,7 +329,7 @@ module.exports = function(Chart) {
 			me.yCenter = Math.round(me.height / 2);
 
 			var minSize = helpers.min([me.height, me.width]);
-			var tickFontSize = helpers.getValueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize);
+			var tickFontSize = helpers.valueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize);
 			me.drawingArea = opts.display ? (minSize / 2) - (tickFontSize / 2 + tickOpts.backdropPaddingY) : (minSize / 2);
 		},
 		determineDataLimits: function() {
@@ -361,11 +362,12 @@ module.exports = function(Chart) {
 		},
 		getTickLimit: function() {
 			var tickOpts = this.options.ticks;
-			var tickFontSize = helpers.getValueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize);
+			var tickFontSize = helpers.valueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize);
 			return Math.min(tickOpts.maxTicksLimit ? tickOpts.maxTicksLimit : 11, Math.ceil(this.drawingArea / (1.5 * tickFontSize)));
 		},
 		convertTicksToLabels: function() {
 			var me = this;
+
 			Chart.LinearScaleBase.prototype.convertTicksToLabels.call(me);
 
 			// Point labels
@@ -404,10 +406,10 @@ module.exports = function(Chart) {
 		},
 		setCenterPoint: function(leftMovement, rightMovement, topMovement, bottomMovement) {
 			var me = this;
-			var maxRight = me.width - rightMovement - me.drawingArea,
-				maxLeft = leftMovement + me.drawingArea,
-				maxTop = topMovement + me.drawingArea,
-				maxBottom = me.height - bottomMovement - me.drawingArea;
+			var maxRight = me.width - rightMovement - me.drawingArea;
+			var maxLeft = leftMovement + me.drawingArea;
+			var maxTop = topMovement + me.drawingArea;
+			var maxBottom = me.height - bottomMovement - me.drawingArea;
 
 			me.xCenter = Math.round(((maxLeft + maxRight) / 2) + me.left);
 			me.yCenter = Math.round(((maxTop + maxBottom) / 2) + me.top);
@@ -433,7 +435,7 @@ module.exports = function(Chart) {
 
 			// Take into account half font size + the yPadding of the top value
 			var scalingFactor = me.drawingArea / (me.max - me.min);
-			if (me.options.reverse) {
+			if (me.options.ticks.reverse) {
 				return (me.max - value) * scalingFactor;
 			}
 			return (value - me.min) * scalingFactor;
@@ -456,9 +458,9 @@ module.exports = function(Chart) {
 			var max = me.max;
 
 			return me.getPointPositionForValue(0,
-				me.beginAtZero? 0:
-				min < 0 && max < 0? max :
-				min > 0 && max > 0? min :
+				me.beginAtZero ? 0 :
+				min < 0 && max < 0 ? max :
+				min > 0 && max > 0 ? min :
 				0);
 		},
 
@@ -467,22 +469,22 @@ module.exports = function(Chart) {
 			var opts = me.options;
 			var gridLineOpts = opts.gridLines;
 			var tickOpts = opts.ticks;
-			var getValueOrDefault = helpers.getValueOrDefault;
+			var valueOrDefault = helpers.valueOrDefault;
 
 			if (opts.display) {
 				var ctx = me.ctx;
+				var startAngle = this.getIndexAngle(0);
 
 				// Tick Font
-				var tickFontSize = getValueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize);
-				var tickFontStyle = getValueOrDefault(tickOpts.fontStyle, globalDefaults.defaultFontStyle);
-				var tickFontFamily = getValueOrDefault(tickOpts.fontFamily, globalDefaults.defaultFontFamily);
+				var tickFontSize = valueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize);
+				var tickFontStyle = valueOrDefault(tickOpts.fontStyle, globalDefaults.defaultFontStyle);
+				var tickFontFamily = valueOrDefault(tickOpts.fontFamily, globalDefaults.defaultFontFamily);
 				var tickLabelFont = helpers.fontString(tickFontSize, tickFontStyle, tickFontFamily);
 
 				helpers.each(me.ticks, function(label, index) {
 					// Don't draw a centre value (if it is minimum)
-					if (index > 0 || opts.reverse) {
+					if (index > 0 || tickOpts.reverse) {
 						var yCenterOffset = me.getDistanceFromCenterForValue(me.ticksAsNumbers[index]);
-						var yHeight = me.yCenter - yCenterOffset;
 
 						// Draw circular lines around the scale
 						if (gridLineOpts.display && index !== 0) {
@@ -490,15 +492,19 @@ module.exports = function(Chart) {
 						}
 
 						if (tickOpts.display) {
-							var tickFontColor = getValueOrDefault(tickOpts.fontColor, globalDefaults.defaultFontColor);
+							var tickFontColor = valueOrDefault(tickOpts.fontColor, globalDefaults.defaultFontColor);
 							ctx.font = tickLabelFont;
+
+							ctx.save();
+							ctx.translate(me.xCenter, me.yCenter);
+							ctx.rotate(startAngle);
 
 							if (tickOpts.showLabelBackdrop) {
 								var labelWidth = ctx.measureText(label).width;
 								ctx.fillStyle = tickOpts.backdropColor;
 								ctx.fillRect(
-									me.xCenter - labelWidth / 2 - tickOpts.backdropPaddingX,
-									yHeight - tickFontSize / 2 - tickOpts.backdropPaddingY,
+									-labelWidth / 2 - tickOpts.backdropPaddingX,
+									-yCenterOffset - tickFontSize / 2 - tickOpts.backdropPaddingY,
 									labelWidth + tickOpts.backdropPaddingX * 2,
 									tickFontSize + tickOpts.backdropPaddingY * 2
 								);
@@ -507,7 +513,8 @@ module.exports = function(Chart) {
 							ctx.textAlign = 'center';
 							ctx.textBaseline = 'middle';
 							ctx.fillStyle = tickFontColor;
-							ctx.fillText(label, me.xCenter, yHeight);
+							ctx.fillText(label, 0, -yCenterOffset);
+							ctx.restore();
 						}
 					}
 				});

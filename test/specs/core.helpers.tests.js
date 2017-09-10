@@ -6,78 +6,6 @@ describe('Core helper tests', function() {
 		helpers = window.Chart.helpers;
 	});
 
-	it('should iterate over an array and pass the extra data to that function', function() {
-		var testData = [0, 9, 'abc'];
-		var scope = {}; // fake out the scope and ensure that 'this' is the correct thing
-
-		helpers.each(testData, function(item, index) {
-			expect(item).not.toBe(undefined);
-			expect(index).not.toBe(undefined);
-
-			expect(testData[index]).toBe(item);
-			expect(this).toBe(scope);
-		}, scope);
-
-		// Reverse iteration
-		var iterated = [];
-		helpers.each(testData, function(item, index) {
-			expect(item).not.toBe(undefined);
-			expect(index).not.toBe(undefined);
-
-			expect(testData[index]).toBe(item);
-			expect(this).toBe(scope);
-
-			iterated.push(item);
-		}, scope, true);
-
-		expect(iterated.slice().reverse()).toEqual(testData);
-	});
-
-	it('should iterate over properties in an object', function() {
-		var testData = {
-			myProp1: 'abc',
-			myProp2: 276,
-			myProp3: ['a', 'b']
-		};
-
-		helpers.each(testData, function(value, key) {
-			if (key === 'myProp1') {
-				expect(value).toBe('abc');
-			} else if (key === 'myProp2') {
-				expect(value).toBe(276);
-			} else if (key === 'myProp3') {
-				expect(value).toEqual(['a', 'b']);
-			} else {
-				expect(false).toBe(true);
-			}
-		});
-	});
-
-	it('should not error when iterating over a null object', function() {
-		expect(function() {
-			helpers.each(undefined);
-		}).not.toThrow();
-	});
-
-	it('should clone an object', function() {
-		var testData = {
-			myProp1: 'abc',
-			myProp2: ['a', 'b'],
-			myProp3: {
-				myProp4: 5,
-				myProp5: [1, 2]
-			}
-		};
-
-		var clone = helpers.clone(testData);
-		expect(clone).toEqual(testData);
-		expect(clone).not.toBe(testData);
-
-		expect(clone.myProp2).not.toBe(testData.myProp2);
-		expect(clone.myProp3).not.toBe(testData.myProp3);
-		expect(clone.myProp3.myProp5).not.toBe(testData.myProp3.myProp5);
-	});
-
 	it('should extend an object', function() {
 		var original = {
 			myProp1: 'abc',
@@ -199,10 +127,8 @@ describe('Core helper tests', function() {
 						borderDashOffset: 0.0
 					},
 					position: 'right',
-					scaleLabel: {
-						labelString: '',
-						display: false,
-					},
+					offset: false,
+					scaleLabel: Chart.defaults.scale.scaleLabel,
 					ticks: {
 						beginAtZero: false,
 						minRotation: 0,
@@ -215,6 +141,8 @@ describe('Core helper tests', function() {
 						autoSkip: true,
 						autoSkipPadding: 0,
 						labelOffset: 0,
+						minor: {},
+						major: {},
 					},
 					type: 'linear'
 				}, {
@@ -237,10 +165,8 @@ describe('Core helper tests', function() {
 						borderDashOffset: 0.0
 					},
 					position: 'left',
-					scaleLabel: {
-						labelString: '',
-						display: false,
-					},
+					offset: false,
+					scaleLabel: Chart.defaults.scale.scaleLabel,
 					ticks: {
 						beginAtZero: false,
 						minRotation: 0,
@@ -253,6 +179,8 @@ describe('Core helper tests', function() {
 						autoSkip: true,
 						autoSkipPadding: 0,
 						labelOffset: 0,
+						minor: {},
+						major: {},
 					},
 					type: 'linear'
 				}]
@@ -262,14 +190,6 @@ describe('Core helper tests', function() {
 		// Are these actually functions
 		expect(merged.scales.yAxes[1].ticks.callback).toEqual(jasmine.any(Function));
 		expect(merged.scales.yAxes[2].ticks.callback).toEqual(jasmine.any(Function));
-	});
-
-	it('should get value or default', function() {
-		expect(helpers.getValueAtIndexOrDefault(98, 0, 56)).toBe(98);
-		expect(helpers.getValueAtIndexOrDefault(0, 0, 56)).toBe(0);
-		expect(helpers.getValueAtIndexOrDefault(undefined, undefined, 56)).toBe(56);
-		expect(helpers.getValueAtIndexOrDefault([1, 2, 3], 1, 100)).toBe(2);
-		expect(helpers.getValueAtIndexOrDefault([1, 2, 3], 3, 100)).toBe(100);
 	});
 
 	it('should filter an array', function() {
@@ -584,20 +504,6 @@ describe('Core helper tests', function() {
 		expect(helpers.previousItem(testData, 1, true)).toEqual(0);
 	});
 
-	it('should clear a canvas', function() {
-		var context = window.createMockContext();
-		helpers.clear({
-			width: 100,
-			height: 150,
-			ctx: context
-		});
-
-		expect(context.getCalls()).toEqual([{
-			name: 'clearRect',
-			args: [0, 0, 100, 150]
-		}]);
-	});
-
 	it('should return the width of the longest text in an Array and 2D Array', function() {
 		var context = window.createMockContext();
 		var font = "normal 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
@@ -658,46 +564,6 @@ describe('Core helper tests', function() {
 		expect(helpers.numberOfLabelLines(arrayOfThings1)).toEqual(1);
 		expect(helpers.numberOfLabelLines(arrayOfThings2)).toEqual(2);
 		expect(helpers.numberOfLabelLines(arrayOfThings3)).toEqual(3);
-	});
-
-	it('should draw a rounded rectangle', function() {
-		var context = window.createMockContext();
-		helpers.drawRoundedRectangle(context, 10, 20, 30, 40, 5);
-
-		expect(context.getCalls()).toEqual([{
-			name: 'beginPath',
-			args: []
-		}, {
-			name: 'moveTo',
-			args: [15, 20]
-		}, {
-			name: 'lineTo',
-			args: [35, 20]
-		}, {
-			name: 'quadraticCurveTo',
-			args: [40, 20, 40, 25]
-		}, {
-			name: 'lineTo',
-			args: [40, 55]
-		}, {
-			name: 'quadraticCurveTo',
-			args: [40, 60, 35, 60]
-		}, {
-			name: 'lineTo',
-			args: [15, 60]
-		}, {
-			name: 'quadraticCurveTo',
-			args: [10, 60, 10, 55]
-		}, {
-			name: 'lineTo',
-			args: [10, 25]
-		}, {
-			name: 'quadraticCurveTo',
-			args: [10, 20, 15, 20]
-		}, {
-			name: 'closePath',
-			args: []
-		}]);
 	});
 
 	it ('should get the maximum width and height for a node', function() {

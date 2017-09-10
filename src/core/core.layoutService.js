@@ -1,8 +1,8 @@
 'use strict';
 
-module.exports = function(Chart) {
+var helpers = require('../helpers/index');
 
-	var helpers = Chart.helpers;
+module.exports = function(Chart) {
 
 	function filterByPosition(array, position) {
 		return helpers.where(array, function(v) {
@@ -75,7 +75,7 @@ module.exports = function(Chart) {
 		 * @param {Object} layoutItem - the item to remove from the layout
 		 */
 		removeBox: function(chart, layoutItem) {
-			var index = chart.boxes? chart.boxes.indexOf(layoutItem) : -1;
+			var index = chart.boxes ? chart.boxes.indexOf(layoutItem) : -1;
 			if (index !== -1) {
 				chart.boxes.splice(index, 1);
 			}
@@ -93,7 +93,7 @@ module.exports = function(Chart) {
 			var i = 0;
 			var prop;
 
-			for (; i<ilen; ++i) {
+			for (; i < ilen; ++i) {
 				prop = props[i];
 				if (options.hasOwnProperty(prop)) {
 					item[prop] = options[prop];
@@ -113,26 +113,12 @@ module.exports = function(Chart) {
 				return;
 			}
 
-			var layoutOptions = chart.options.layout;
-			var padding = layoutOptions ? layoutOptions.padding : null;
-
-			var leftPadding = 0;
-			var rightPadding = 0;
-			var topPadding = 0;
-			var bottomPadding = 0;
-
-			if (!isNaN(padding)) {
-				// options.layout.padding is a number. assign to all
-				leftPadding = padding;
-				rightPadding = padding;
-				topPadding = padding;
-				bottomPadding = padding;
-			} else {
-				leftPadding = padding.left || 0;
-				rightPadding = padding.right || 0;
-				topPadding = padding.top || 0;
-				bottomPadding = padding.bottom || 0;
-			}
+			var layoutOptions = chart.options.layout || {};
+			var padding = helpers.options.toPadding(layoutOptions.padding);
+			var leftPadding = padding.left;
+			var rightPadding = padding.right;
+			var topPadding = padding.top;
+			var bottomPadding = padding.bottom;
 
 			var leftBoxes = filterByPosition(chart.boxes, 'left');
 			var rightBoxes = filterByPosition(chart.boxes, 'right');

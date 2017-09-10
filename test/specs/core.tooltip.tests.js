@@ -47,6 +47,10 @@ describe('Core.Tooltip', function() {
 				options: {
 					tooltips: {
 						mode: 'index',
+						intersect: false,
+					},
+					hover: {
+						mode: 'index',
 						intersect: false
 					}
 				}
@@ -139,7 +143,7 @@ describe('Core.Tooltip', function() {
 				}]
 			}));
 
-			expect(tooltip._view.x).toBeCloseToPixel(263);
+			expect(tooltip._view.x).toBeCloseToPixel(266);
 			expect(tooltip._view.y).toBeCloseToPixel(155);
 		});
 
@@ -330,13 +334,14 @@ describe('Core.Tooltip', function() {
 			afterBody: [],
 			footer: [],
 			caretPadding: 2,
+			labelTextColors: ['#fff'],
 			labelColors: [{
 				borderColor: 'rgb(255, 0, 0)',
 				backgroundColor: 'rgb(0, 255, 0)'
 			}]
 		}));
 
-		expect(tooltip._view.x).toBeCloseToPixel(263);
+		expect(tooltip._view.x).toBeCloseToPixel(266);
 		expect(tooltip._view.y).toBeCloseToPixel(312);
 	});
 
@@ -393,6 +398,9 @@ describe('Core.Tooltip', function() {
 						},
 						afterFooter: function() {
 							return 'afterFooter';
+						},
+						labelTextColor: function() {
+							return 'labelTextColor';
 						}
 					}
 				}
@@ -476,6 +484,7 @@ describe('Core.Tooltip', function() {
 			afterBody: ['afterBody'],
 			footer: ['beforeFooter', 'footer', 'afterFooter'],
 			caretPadding: 2,
+			labelTextColors: ['labelTextColor', 'labelTextColor'],
 			labelColors: [{
 				borderColor: 'rgb(255, 0, 0)',
 				backgroundColor: 'rgb(0, 255, 0)'
@@ -485,7 +494,7 @@ describe('Core.Tooltip', function() {
 			}]
 		}));
 
-		expect(tooltip._view.x).toBeCloseToPixel(211);
+		expect(tooltip._view.x).toBeCloseToPixel(214);
 		expect(tooltip._view.y).toBeCloseToPixel(190);
 	});
 
@@ -565,7 +574,7 @@ describe('Core.Tooltip', function() {
 			}]
 		}));
 
-		expect(tooltip._view.x).toBeCloseToPixel(263);
+		expect(tooltip._view.x).toBeCloseToPixel(266);
 		expect(tooltip._view.y).toBeCloseToPixel(155);
 	});
 

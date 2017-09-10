@@ -4,8 +4,6 @@ engines:
     config:
       languages:
       - javascript
-    exclude_paths:
-    - "samples/samples.js"
   eslint:
     enabled: true
     channel: "eslint-3"
@@ -15,7 +13,13 @@ ratings:
   paths:
   - "src/**/*.js"
 exclude_paths:
-- dist/**/*
-- node_modules/**/*
-- test/**/*
-- coverage/**/*
+- '.github/'
+- 'dist/'
+- 'test/'
+- 'docs/'
+- 'samples/'
+- 'scripts/'
+- '**.md'
+- '**.json'
+- 'gulpfile.js'
+- 'karma.conf.js'

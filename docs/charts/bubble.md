@@ -1,6 +1,6 @@
 # Bubble Chart
 
-A bubble chart is used to display three dimensions of data at the same time. The location of the bubble is determined by the first two dimensions and the corresponding horizontal and vertical axes. The third dimension is represented by the size of the individual bubbles. 
+A bubble chart is used to display three dimensions of data at the same time. The location of the bubble is determined by the first two dimensions and the corresponding horizontal and vertical axes. The third dimension is represented by the size of the individual bubbles.
 
 {% chartjs %}
 {
@@ -38,22 +38,52 @@ var myBubbleChart = new Chart(ctx,{
 
 The bubble chart allows a number of properties to be specified for each dataset. These are used to set display properties for a specific dataset. For example, the colour of the bubbles is generally set this way.
 
-All properties, except `label` can be specified as an array. If these are set to an array value, the first value applies to the first bubble in the dataset, the second value to the second bubble, and so on.
+| Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) |  Default
+| ---- | ---- | :----: | :----: | ----
+| [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0,0,0,0.1)'`
+| [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0,0,0,0.1)'`
+| [`borderWidth`](#styling) | `Number` | Yes | Yes | `3`
+| [`data`](#data-structure) | `Object[]` | - | - | **required**
+| [`hoverBackgroundColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
+| [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
+| [`hoverBorderWidth`](#interactions) | `Number` | Yes | Yes | `1`
+| [`hoverRadius`](#interactions) | `Number` | Yes | Yes | `4`
+| [`hitRadius`](#interactions) | `Number` | Yes | Yes | `1`
+| [`label`](#labeling) | `String` | - | - | `undefined`
+| [`pointStyle`](#styling) | `String` | Yes | Yes | `circle`
+| [`radius`](#styling) | `Number` | Yes | Yes | `3`
 
-| Name | Type | Description
-| ---- | ---- | -----------
-| `label` | `String` | The label for the dataset which appears in the legend and tooltips.
-| `backgroundColor` | `Color/Color[]` | The fill color for bubbles.
-| `borderColor` | `Color/Color[]` | The border color for bubbles.
-| `borderWidth` | `Number/Number[]` | The width of the point bubbles in pixels.
-| `hoverBackgroundColor` | `Color/Color[]` | Bubble background color when hovered.
-| `hoverBorderColor` | `Color/Color[]` | Bubble border color when hovered.
-| `hoverBorderWidth` | `Number/Number[]` | Border width of point when hovered.
-| `hoverRadius` | `Number/Number[]` | Additional radius to add to data radius on hover.
+### Labeling
 
-## Config Options
+`label` defines the text associated to the dataset and which appears in the legend and tooltips.
 
-The bubble chart has no unique configuration options. To configure options common to all of the bubbles, the [point element options](../configuration/elements/point.md#point-configuration) are used.
+### Styling
+
+The style of each bubble can be controlled with the following properties:
+
+| Name | Description
+| ---- | ----
+| `backgroundColor` | bubble background color
+| `borderColor` | bubble border color
+| `borderWidth` | bubble border width (in pixels)
+| `pointStyle` | bubble [shape style](../configuration/elements#point-styles)
+| `radius` | bubble radius (in pixels)
+
+All these values, if `undefined`, fallback to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options.
+
+### Interactions
+
+The interaction with each bubble can be controlled with the following properties:
+
+| Name | Description
+| ---- | -----------
+| `hoverBackgroundColor` | bubble background color when hovered
+| `hoverBorderColor` | bubble border color hovered
+| `hoverBorderWidth` | bubble border width when hovered (in pixels)
+| `hoverRadius` | bubble **additional** radius when hovered (in pixels)
+| `hitRadius` | bubble **additional** radius for hit detection (in pixels)
+
+All these values, if `undefined`, fallback to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options.
 
 ## Default Options
 
@@ -61,11 +91,7 @@ We can also change the default values for the Bubble chart type. Doing so will g
 
 ## Data Structure
 
-For a bubble chart, datasets need to contain an array of data points. Each point must implement the [bubble data object](#bubble-data-object) interface.
-
-### Bubble Data Object
-
-Data for the bubble chart is passed in the form of an object. The object must implement the following interface. It is important to note that the radius property, `r` is **not** scaled by the chart. It is the raw radius in pixels of the bubble that is drawn on the canvas.
+Bubble chart datasets need to contain a `data` array of points, each points represented by an object containing the following properties:
 
 ```javascript
 {
@@ -75,7 +101,9 @@ Data for the bubble chart is passed in the form of an object. The object must im
     // Y Value
     y: <Number>,
 
-    // Radius of bubble. This is not scaled.
+    // Bubble radius in pixels (not scaled).
     r: <Number>
 }
 ```
+
+**Important:** the radius property, `r` is **not** scaled by the chart, it is the raw radius in pixels of the bubble that is drawn on the canvas.

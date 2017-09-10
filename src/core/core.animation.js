@@ -1,18 +1,22 @@
 /* global window: false */
 'use strict';
 
-module.exports = function(Chart) {
+var defaults = require('./core.defaults');
+var Element = require('./core.element');
+var helpers = require('../helpers/index');
 
-	var helpers = Chart.helpers;
-
-	Chart.defaults.global.animation = {
+defaults._set('global', {
+	animation: {
 		duration: 1000,
 		easing: 'easeOutQuart',
 		onProgress: helpers.noop,
 		onComplete: helpers.noop
-	};
+	}
+});
 
-	Chart.Animation = Chart.Element.extend({
+module.exports = function(Chart) {
+
+	Chart.Animation = Element.extend({
 		chart: null, // the animation associated chart instance
 		currentStep: 0, // the current animation step
 		numSteps: 60, // default number of steps
@@ -45,7 +49,7 @@ module.exports = function(Chart) {
 				chart.animating = true;
 			}
 
-			for (i=0, ilen=animations.length; i < ilen; ++i) {
+			for (i = 0, ilen = animations.length; i < ilen; ++i) {
 				if (animations[i].chart === chart) {
 					animations[i] = animation;
 					return;

@@ -1,5 +1,4 @@
-// Test the line controller
-describe('Line controller tests', function() {
+describe('Chart.controllers.line', function() {
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'line',
@@ -175,6 +174,8 @@ describe('Line controller tests', function() {
 			},
 			options: {
 				showLines: true,
+				legend: false,
+				title: false,
 				elements: {
 					point: {
 						backgroundColor: 'red',
@@ -183,10 +184,12 @@ describe('Line controller tests', function() {
 				},
 				scales: {
 					xAxes: [{
-						id: 'firstXScaleID'
+						id: 'firstXScaleID',
+						display: false
 					}],
 					yAxes: [{
-						id: 'firstYScaleID'
+						id: 'firstYScaleID',
+						display: false
 					}]
 				}
 			},
@@ -203,8 +206,8 @@ describe('Line controller tests', function() {
 
 
 		[
-			{x: 33, y: 484},
-			{x: 186, y: 32}
+			{x: 0, y: 512},
+			{x: 171, y: 0}
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._datasetIndex).toBe(0);
 			expect(meta.data[i]._index).toBe(i);
@@ -234,11 +237,17 @@ describe('Line controller tests', function() {
 				}]
 			},
 			options: {
+				legend: false,
+				title: false,
 				hover: {
 					mode: 'single'
 				},
 				scales: {
+					xAxes: [{
+						display: false,
+					}],
 					yAxes: [{
+						display: false,
 						ticks: {
 							beginAtZero: true
 						}
@@ -250,7 +259,7 @@ describe('Line controller tests', function() {
 		var meta = chart.getDatasetMeta(0);
 		// 1 point
 		var point = meta.data[0];
-		expect(point._model.x).toBeCloseToPixel(262);
+		expect(point._model.x).toBeCloseToPixel(0);
 
 		// 2 points
 		chart.data.labels = ['One', 'Two'];
@@ -259,8 +268,8 @@ describe('Line controller tests', function() {
 
 		var points = meta.data;
 
-		expect(points[0]._model.x).toBeCloseToPixel(27);
-		expect(points[1]._model.x).toBeCloseToPixel(498);
+		expect(points[0]._model.x).toBeCloseToPixel(0);
+		expect(points[1]._model.x).toBeCloseToPixel(512);
 
 		// 3 points
 		chart.data.labels = ['One', 'Two', 'Three'];
@@ -269,9 +278,9 @@ describe('Line controller tests', function() {
 
 		points = meta.data;
 
-		expect(points[0]._model.x).toBeCloseToPixel(27);
-		expect(points[1]._model.x).toBeCloseToPixel(260);
-		expect(points[2]._model.x).toBeCloseToPixel(493);
+		expect(points[0]._model.x).toBeCloseToPixel(0);
+		expect(points[1]._model.x).toBeCloseToPixel(256);
+		expect(points[2]._model.x).toBeCloseToPixel(512);
 
 		// 4 points
 		chart.data.labels = ['One', 'Two', 'Three', 'Four'];
@@ -280,10 +289,10 @@ describe('Line controller tests', function() {
 
 		points = meta.data;
 
-		expect(points[0]._model.x).toBeCloseToPixel(27);
-		expect(points[1]._model.x).toBeCloseToPixel(184);
+		expect(points[0]._model.x).toBeCloseToPixel(0);
+		expect(points[1]._model.x).toBeCloseToPixel(171);
 		expect(points[2]._model.x).toBeCloseToPixel(340);
-		expect(points[3]._model.x).toBeCloseToPixel(497);
+		expect(points[3]._model.x).toBeCloseToPixel(512);
 	});
 
 	it('should update elements when the y scale is stacked', function() {
@@ -300,8 +309,14 @@ describe('Line controller tests', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
+					xAxes: [{
+						display: false,
+					}],
 					yAxes: [{
+						display: false,
 						stacked: true
 					}]
 				}
@@ -311,10 +326,10 @@ describe('Line controller tests', function() {
 		var meta0 = chart.getDatasetMeta(0);
 
 		[
-			{x: 28, y: 161},
-			{x: 183, y: 419},
-			{x: 338, y: 161},
-			{x: 492, y: 419}
+			{x: 0, y: 146},
+			{x: 171, y: 439},
+			{x: 341, y: 146},
+			{x: 512, y: 439}
 		].forEach(function(values, i) {
 			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
 			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
@@ -323,10 +338,10 @@ describe('Line controller tests', function() {
 		var meta1 = chart.getDatasetMeta(1);
 
 		[
-			{x: 28, y: 32},
-			{x: 183, y: 97},
-			{x: 338, y: 161},
-			{x: 492, y: 471}
+			{x: 0, y: 0},
+			{x: 171, y: 73},
+			{x: 341, y: 146},
+			{x: 512, y: 497}
 		].forEach(function(values, i) {
 			expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
 			expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
@@ -352,12 +367,19 @@ describe('Line controller tests', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
+					xAxes: [{
+						display: false,
+					}],
 					yAxes: [{
+						display: false,
 						stacked: true
 					}, {
+						id: 'secondAxis',
 						type: 'linear',
-						id: 'secondAxis'
+						display: false
 					}]
 				}
 			}
@@ -366,10 +388,10 @@ describe('Line controller tests', function() {
 		var meta0 = chart.getDatasetMeta(0);
 
 		[
-			{x: 56, y: 161},
-			{x: 202, y: 419},
-			{x: 347, y: 161},
-			{x: 492, y: 419}
+			{x: 0, y: 146},
+			{x: 171, y: 439},
+			{x: 341, y: 146},
+			{x: 512, y: 439}
 		].forEach(function(values, i) {
 			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
 			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
@@ -378,10 +400,10 @@ describe('Line controller tests', function() {
 		var meta1 = chart.getDatasetMeta(1);
 
 		[
-			{x: 56, y: 32},
-			{x: 202, y: 97},
-			{x: 347, y: 161},
-			{x: 492, y: 471}
+			{x: 0, y: 0},
+			{x: 171, y: 73},
+			{x: 341, y: 146},
+			{x: 512, y: 497}
 		].forEach(function(values, i) {
 			expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
 			expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
@@ -427,8 +449,14 @@ describe('Line controller tests', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
+					xAxes: [{
+						display: false,
+					}],
 					yAxes: [{
+						display: false,
 						stacked: true
 					}]
 				}
@@ -438,10 +466,10 @@ describe('Line controller tests', function() {
 		var meta0 = chart.getDatasetMeta(0);
 
 		[
-			{x: 28, y: 161},
-			{x: 183, y: 419},
-			{x: 338, y: 161},
-			{x: 492, y: 419}
+			{x: 0, y: 146},
+			{x: 171, y: 439},
+			{x: 341, y: 146},
+			{x: 512, y: 439}
 		].forEach(function(values, i) {
 			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
 			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
@@ -450,10 +478,10 @@ describe('Line controller tests', function() {
 		var meta1 = chart.getDatasetMeta(1);
 
 		[
-			{x: 28, y: 32},
-			{x: 183, y: 97},
-			{x: 338, y: 161},
-			{x: 492, y: 471}
+			{x: 0, y: 0},
+			{x: 171, y: 73},
+			{x: 341, y: 146},
+			{x: 512, y: 497}
 		].forEach(function(values, i) {
 			expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
 			expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
@@ -475,8 +503,14 @@ describe('Line controller tests', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
+				legend: false,
+				title: false,
 				scales: {
+					xAxes: [{
+						display: false,
+					}],
 					yAxes: [{
+						display: false,
 						stacked: true
 					}]
 				}
@@ -486,10 +520,10 @@ describe('Line controller tests', function() {
 		var meta0 = chart.getDatasetMeta(0);
 
 		[
-			{x: 28, y: 161},
-			{x: 183, y: 419},
-			{x: 338, y: 161},
-			{x: 492, y: 419}
+			{x: 0, y: 146},
+			{x: 171, y: 439},
+			{x: 341, y: 146},
+			{x: 512, y: 439}
 		].forEach(function(values, i) {
 			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
 			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
@@ -498,10 +532,10 @@ describe('Line controller tests', function() {
 		var meta1 = chart.getDatasetMeta(1);
 
 		[
-			{x: 28, y: 32},
-			{x: 183, y: 97},
-			{x: 338, y: 161},
-			{x: 492, y: 471}
+			{x: 0, y: 0},
+			{x: 171, y: 73},
+			{x: 341, y: 146},
+			{x: 512, y: 497}
 		].forEach(function(values, i) {
 			expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
 			expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
@@ -729,5 +763,25 @@ describe('Line controller tests', function() {
 		var point = meta.data[0];
 
 		expect(point._model.borderWidth).toBe(0);
+	});
+
+	it('should allow an array as the point border width setting', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: [10, 15, 0, -4],
+					label: 'dataset1',
+					pointBorderWidth: [1, 2, 3, 4]
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4']
+			}
+		});
+
+		var meta = chart.getDatasetMeta(0);
+		expect(meta.data[0]._model.borderWidth).toBe(1);
+		expect(meta.data[1]._model.borderWidth).toBe(2);
+		expect(meta.data[2]._model.borderWidth).toBe(3);
+		expect(meta.data[3]._model.borderWidth).toBe(4);
 	});
 });

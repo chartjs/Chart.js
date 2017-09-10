@@ -44,7 +44,7 @@ rules:
   accessor-pairs: 2
   array-callback-return: 0
   block-scoped-var: 0
-  complexity: [2, 6]
+  complexity: [2, 10]
   consistent-return: 0
   curly: [2, all]
   default-case: 2
@@ -183,7 +183,7 @@ rules:
   object-curly-spacing: [2, never]
   object-property-newline: 0
   one-var-declaration-per-line: 2
-  one-var: 0
+  one-var: [2, {initialized: never}]
   operator-assignment: 0
   operator-linebreak: 0
   padded-blocks: 0
@@ -197,8 +197,8 @@ rules:
   space-before-blocks: [2, always]
   space-before-function-paren: [2, never]
   space-in-parens: [2, never]
-  space-infix-ops: 0
-  space-unary-ops: 0
+  space-infix-ops: 2
+  space-unary-ops: [2, {words: true, nonwords: false}]
   spaced-comment: [2, always]
   unicode-bom: 0
   wrap-regex: 2

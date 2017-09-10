@@ -1,15 +1,16 @@
 'use strict';
 
-module.exports = function(Chart) {
+var helpers = require('../helpers/index');
+var Ticks = require('../core/core.ticks');
 
-	var helpers = Chart.helpers;
+module.exports = function(Chart) {
 
 	var defaultConfig = {
 		position: 'left',
 
 		// label settings
 		ticks: {
-			callback: Chart.Ticks.formatters.logarithmic
+			callback: Ticks.formatters.logarithmic
 		}
 	};
 
@@ -21,7 +22,7 @@ module.exports = function(Chart) {
 			var chart = me.chart;
 			var data = chart.data;
 			var datasets = data.datasets;
-			var getValueOrDefault = helpers.getValueOrDefault;
+			var valueOrDefault = helpers.valueOrDefault;
 			var isHorizontal = me.isHorizontal();
 			function IDMatches(meta) {
 				return isHorizontal ? meta.xAxisID === me.id : meta.yAxisID === me.id;
@@ -120,8 +121,8 @@ module.exports = function(Chart) {
 				});
 			}
 
-			me.min = getValueOrDefault(tickOpts.min, me.min);
-			me.max = getValueOrDefault(tickOpts.max, me.max);
+			me.min = valueOrDefault(tickOpts.min, me.min);
+			me.max = valueOrDefault(tickOpts.max, me.max);
 
 			if (me.min === me.max) {
 				if (me.min !== 0 && me.min !== null) {
@@ -142,7 +143,7 @@ module.exports = function(Chart) {
 				min: tickOpts.min,
 				max: tickOpts.max
 			};
-			var ticks = me.ticks = Chart.Ticks.generators.logarithmic(generationOptions, me);
+			var ticks = me.ticks = Ticks.generators.logarithmic(generationOptions, me);
 
 			if (!me.isHorizontal()) {
 				// We are in a vertical orientation. The top value is the highest. So reverse the array
@@ -178,14 +179,11 @@ module.exports = function(Chart) {
 		},
 		getPixelForValue: function(value) {
 			var me = this;
-			var innerDimension;
-			var pixel;
-
 			var start = me.start;
 			var newVal = +me.getRightValue(value);
-			var range;
 			var opts = me.options;
 			var tickOpts = opts.ticks;
+			var innerDimension, pixel, range;
 
 			if (me.isHorizontal()) {
 				range = helpers.log10(me.end) - helpers.log10(start); // todo: if start === 0
@@ -205,7 +203,7 @@ module.exports = function(Chart) {
 					} else if (newVal === me.minNotZero) {
 						pixel = me.bottom - innerDimension * 0.02;
 					} else {
-						pixel = me.bottom - innerDimension * 0.02 - (innerDimension * 0.98/ range * (helpers.log10(newVal)-helpers.log10(me.minNotZero)));
+						pixel = me.bottom - innerDimension * 0.02 - (innerDimension * 0.98 / range * (helpers.log10(newVal) - helpers.log10(me.minNotZero)));
 					}
 				} else if (me.end === 0 && tickOpts.reverse) {
 					range = helpers.log10(me.start) - helpers.log10(me.minNotZero);
@@ -214,7 +212,7 @@ module.exports = function(Chart) {
 					} else if (newVal === me.minNotZero) {
 						pixel = me.top + innerDimension * 0.02;
 					} else {
-						pixel = me.top + innerDimension * 0.02 + (innerDimension * 0.98/ range * (helpers.log10(newVal)-helpers.log10(me.minNotZero)));
+						pixel = me.top + innerDimension * 0.02 + (innerDimension * 0.98 / range * (helpers.log10(newVal) - helpers.log10(me.minNotZero)));
 					}
 				} else if (newVal === 0) {
 					pixel = tickOpts.reverse ? me.top : me.bottom;
@@ -234,7 +232,7 @@ module.exports = function(Chart) {
 			if (me.isHorizontal()) {
 				innerDimension = me.width;
 				value = me.start * Math.pow(10, (pixel - me.left) * range / innerDimension);
-			} else {  // todo: if start === 0
+			} else { // todo: if start === 0
 				innerDimension = me.height;
 				value = Math.pow(10, (me.bottom - pixel) * range / innerDimension) / me.start;
 			}

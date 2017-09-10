@@ -39,10 +39,8 @@ describe('Test the radial linear scale', function() {
 				callback: defaultConfig.pointLabels.callback, // make this nicer, then check explicitly below
 			},
 			position: 'chartArea',
-			scaleLabel: {
-				labelString: '',
-				display: false,
-			},
+			offset: false,
+			scaleLabel: Chart.defaults.scale.scaleLabel,
 			ticks: {
 				backdropColor: 'rgba(255,255,255,0.75)',
 				backdropPaddingY: 2,
@@ -58,7 +56,9 @@ describe('Test the radial linear scale', function() {
 				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
 				autoSkip: true,
 				autoSkipPadding: 0,
-				labelOffset: 0
+				labelOffset: 0,
+				minor: {},
+				major: {},
 			},
 		});
 
@@ -399,7 +399,7 @@ describe('Test the radial linear scale', function() {
 			y: 275,
 		});
 
-		chart.scale.options.reverse = true;
+		chart.scale.options.ticks.reverse = true;
 		chart.update();
 
 		expect(chart.scale.getDistanceFromCenterForValue(chart.scale.min)).toBe(233);
