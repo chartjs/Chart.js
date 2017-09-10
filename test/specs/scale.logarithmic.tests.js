@@ -27,11 +27,7 @@ describe('Logarithmic Scale tests', function() {
 			},
 			position: 'left',
 			offset: false,
-			scaleLabel: {
-				display: false,
-				labelString: '',
-				lineHeight: 1.2
-			},
+			scaleLabel: Chart.defaults.scale.scaleLabel,
 			ticks: {
 				beginAtZero: false,
 				minRotation: 0,
@@ -720,9 +716,9 @@ describe('Logarithmic Scale tests', function() {
 
 		var xScale = chart.scales.xScale;
 		expect(xScale.getPixelForValue(80, 0, 0)).toBeCloseToPixel(495); // right - paddingRight
-		expect(xScale.getPixelForValue(1, 0, 0)).toBeCloseToPixel(37);   // left + paddingLeft
-		expect(xScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(278); // halfway
-		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(37);   // 0 is invalid, put it on the left.
+		expect(xScale.getPixelForValue(1, 0, 0)).toBeCloseToPixel(37 + 6); // left + paddingLeft + lineSpace
+		expect(xScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(278 + 6 / 2); // halfway
+		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(37 + 6); // 0 is invalid, put it on the left.
 
 		expect(xScale.getValueForPixel(495)).toBeCloseToPixel(80);
 		expect(xScale.getValueForPixel(48)).toBeCloseTo(1, 1e-4);
