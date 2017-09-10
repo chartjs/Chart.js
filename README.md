@@ -1,8 +1,6 @@
 # Chart.js
 
-[![Build Status](https://travis-ci.org/chartjs/Chart.js.svg?branch=master)](https://travis-ci.org/chartjs/Chart.js) [![Code Climate](https://codeclimate.com/github/chartjs/Chart.js/badges/gpa.svg)](https://codeclimate.com/github/chartjs/Chart.js) [![Coverage Status](https://coveralls.io/repos/github/chartjs/Chart.js/badge.svg?branch=master)](https://coveralls.io/github/chartjs/Chart.js?branch=master)
-
-[![Chart.js on Slack](https://img.shields.io/badge/slack-Chart.js-blue.svg)](https://chart-js-automation.herokuapp.com/)
+[![travis](https://img.shields.io/travis/chartjs/Chart.js.svg?style=flat-square&maxAge=60)](https://travis-ci.org/chartjs/Chart.js) [![codeclimate](https://img.shields.io/codeclimate/github/chartjs/Chart.js.svg?style=flat-square&maxAge=600)](https://codeclimate.com/github/chartjs/Chart.js) [![coveralls](https://img.shields.io/coveralls/chartjs/Chart.js.svg?style=flat-square&maxAge=600)](https://coveralls.io/github/chartjs/Chart.js?branch=master) [![slack](https://img.shields.io/badge/slack-Chart.js-blue.svg?style=flat-square&maxAge=3600)](https://chart-js-automation.herokuapp.com/)
 
 *Simple HTML5 Charts using the canvas element* [chartjs.org](http://www.chartjs.org)
 

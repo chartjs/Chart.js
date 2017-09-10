@@ -35,11 +35,11 @@
 		};
 
 		function generateData(config) {
-			return utils.numbers(utils.merge(inputs, config || {}));
+			return utils.numbers(Chart.helpers.merge(inputs, config || {}));
 		}
 
 		function generateLabels(config) {
-			return utils.months(utils.merge({
+			return utils.months(Chart.helpers.merge({
 				count: inputs.count,
 				section: 3
 			}, config || {}));
@@ -85,7 +85,7 @@
 						fill: boundary
 					}]
 				},
-				options: utils.merge(options, {
+				options: Chart.helpers.merge(options, {
 					title: {
 						text: 'fill: ' + boundary,
 						display: true
