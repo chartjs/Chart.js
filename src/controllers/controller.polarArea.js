@@ -173,7 +173,7 @@ module.exports = function(Chart) {
 			if (customAngles === undefined) {
 				startAngle = datasetStartAngle + (circumference * visibleCount);
 			} else {
-				datasetStartAngle + previousAngle
+				startAngle = datasetStartAngle + previousAngle;
 			}
 			var endAngle = startAngle + (arc.hidden ? 0 : circumference);
 
