@@ -223,5 +223,6 @@ module.exports = function(Chart) {
 			if (count > 0 && !isNaN(value)) {
 				return count == 1 ? 2 * Math.PI : customAngles[index];
 			}
+		}
 	});
 };
