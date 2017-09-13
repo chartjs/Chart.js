@@ -138,11 +138,11 @@ module.exports = function(Chart) {
 			});
 		},
 
-		getStartAngle: function (customAngles, dataSetData, metaData, datasetStartAngle, index) {
+		getStartAngle: function(customAngles, dataSetData, metaData, datasetStartAngle, circumference, index) {
 
 			// If there is NaN data before us, we need to calculate the starting angle correctly.
 			// We could be way more efficient here, but its unlikely that the polar area chart will have a lot of data
-			
+
 			var previousAngle = 0;
 			var visibleCount = 0;
 
@@ -161,7 +161,7 @@ module.exports = function(Chart) {
 				startAngle = datasetStartAngle + previousAngle;
 			}
 
-			return startAngle
+			return startAngle;
 		},
 		updateElement: function(arc, index, reset) {
 			var me = this;
@@ -172,6 +172,7 @@ module.exports = function(Chart) {
 			var scale = chart.scale;
 			var labels = chart.data.labels;
 			var customAngles = opts.customAngles;
+			var meta = me.getMeta();
 
 			var circumference = me.calculateCircumference(dataset.data[index], index);
 			var centerX = scale.xCenter;
@@ -180,8 +181,8 @@ module.exports = function(Chart) {
 			// var negHalfPI = -0.5 * Math.PI;
 			var datasetStartAngle = opts.startAngle;
 			var distance = arc.hidden ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
-			
-			var startAngle = getStartAngle(customAngles, dataset.data, meta.data, datasetStartAngle, index);
+
+			var startAngle = me.getStartAngle(customAngles, dataset.data, meta.data, datasetStartAngle, circumference, index);
 			var endAngle = startAngle + (arc.hidden ? 0 : circumference);
 
 			var resetRadius = animationOpts.animateScale ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
