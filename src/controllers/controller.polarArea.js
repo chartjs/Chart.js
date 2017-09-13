@@ -169,7 +169,12 @@ module.exports = function(Chart) {
 			// var negHalfPI = -0.5 * Math.PI;
 			var datasetStartAngle = opts.startAngle;
 			var distance = arc.hidden ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
-			var startAngle = customAngles === undefined ? datasetStartAngle + (circumference * visibleCount) : datasetStartAngle + previousAngle
+			var startAngle = 0;
+			if (customAngles === undefined) {
+				startAngle = datasetStartAngle + (circumference * visibleCount);
+			} else {
+				datasetStartAngle + previousAngle
+			}
 			var endAngle = startAngle + (arc.hidden ? 0 : circumference);
 
 			var resetRadius = animationOpts.animateScale ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
