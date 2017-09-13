@@ -154,11 +154,11 @@ module.exports = function(Chart) {
 
 			// If there is NaN data before us, we need to calculate the starting angle correctly.
 			// We could be way more efficient here, but its unlikely that the polar area chart will have a lot of data
-			var previousAngle = 0
+			var previousAngle = 0;
 			var visibleCount = 0;
 			var meta = me.getMeta();
 			for (var i = 0; i < index; ++i) {
-				previousAngle += customAngles[visibleCount]
+				previousAngle += customAngles[visibleCount];
 				if (!isNaN(dataset.data[i]) && !meta.data[i].hidden) {
 					++visibleCount;
 				}
@@ -167,7 +167,7 @@ module.exports = function(Chart) {
 			// var negHalfPI = -0.5 * Math.PI;
 			var datasetStartAngle = opts.startAngle;
 			var distance = arc.hidden ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
-			var startAngle = datasetStartAngle + previousAngle
+			var startAngle = datasetStartAngle + previousAngle;
 			var endAngle = startAngle + (arc.hidden ? 0 : circumference);
 
 			var resetRadius = animationOpts.animateScale ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
@@ -214,14 +214,14 @@ module.exports = function(Chart) {
 			return count;
 		},
 
-		calculateCircumference: function (value, index) {
+		calculateCircumference: function(value, index) {
 			var me = this;
 			var chart = me.chart;
 			var opts = chart.options;
 			var customAngles = opts.customAngles;
 			var count = this.getMeta().count;
 			if (count > 0 && !isNaN(value)) {
-				return count == 1 ? 2 * Math.PI : customAngles[index];
+				return count === 1 ? 2 * Math.PI : customAngles[index];
 			}
 			return 0;
 		}
