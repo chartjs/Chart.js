@@ -138,6 +138,31 @@ module.exports = function(Chart) {
 			});
 		},
 
+		getStartAngle: function (customAngles, dataSetData, metaData, datasetStartAngle, index) {
+
+			// If there is NaN data before us, we need to calculate the starting angle correctly.
+			// We could be way more efficient here, but its unlikely that the polar area chart will have a lot of data
+			
+			var previousAngle = 0;
+			var visibleCount = 0;
+
+			for (var i = 0; i < index; ++i) {
+				if (customAngles !== undefined) {
+					previousAngle += customAngles[visibleCount];
+				}
+				if (!isNaN(dataSetData[i]) && !metaData[i].hidden) {
+					++visibleCount;
+				}
+			}
+			var startAngle = 0;
+			if (customAngles === undefined) {
+				startAngle = datasetStartAngle + (circumference * visibleCount);
+			} else {
+				startAngle = datasetStartAngle + previousAngle;
+			}
+
+			return startAngle
+		},
 		updateElement: function(arc, index, reset) {
 			var me = this;
 			var chart = me.chart;
@@ -152,29 +177,11 @@ module.exports = function(Chart) {
 			var centerX = scale.xCenter;
 			var centerY = scale.yCenter;
 
-			// If there is NaN data before us, we need to calculate the starting angle correctly.
-			// We could be way more efficient here, but its unlikely that the polar area chart will have a lot of data
-			var previousAngle = 0;
-			var visibleCount = 0;
-			var meta = me.getMeta();
-			for (var i = 0; i < index; ++i) {
-				if (customAngles !== undefined) {
-					previousAngle += customAngles[visibleCount];
-				}
-				if (!isNaN(dataset.data[i]) && !meta.data[i].hidden) {
-					++visibleCount;
-				}
-			}
-
 			// var negHalfPI = -0.5 * Math.PI;
 			var datasetStartAngle = opts.startAngle;
 			var distance = arc.hidden ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
-			var startAngle = 0;
-			if (customAngles === undefined) {
-				startAngle = datasetStartAngle + (circumference * visibleCount);
-			} else {
-				startAngle = datasetStartAngle + previousAngle;
-			}
+			
+			var startAngle = getStartAngle(customAngles, dataset.data, meta.data, datasetStartAngle, index);
 			var endAngle = startAngle + (arc.hidden ? 0 : circumference);
 
 			var resetRadius = animationOpts.animateScale ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
