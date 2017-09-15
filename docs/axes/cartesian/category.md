@@ -40,7 +40,7 @@ The category scale provides the following options for configuring tick marks. Th
 
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
-| labels | Array[String] | - | An array of labels to display.
+| `labels` | `Array[String]` | - | An array of labels to display.
 | `min` | `String` | | The minimum item to display. [more...](#min-max-configuration)
 | `max` | `String` | | The maximum item to display. [more...](#min-max-configuration)
 
