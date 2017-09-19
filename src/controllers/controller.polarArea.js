@@ -145,8 +145,10 @@ module.exports = function(Chart) {
 
 			var previousAngle = 0;
 			var visibleCount = 0;
+			var startAngle = 0;
+			var i = 0;
 
-			for (var i = 0; i < index; ++i) {
+			for (i = 0; i < index; ++i) {
 				if (customAngles !== undefined) {
 					previousAngle += customAngles[visibleCount];
 				}
@@ -154,7 +156,6 @@ module.exports = function(Chart) {
 					++visibleCount;
 				}
 			}
-			var startAngle = 0;
 			if (customAngles === undefined) {
 				startAngle = datasetStartAngle + (circumference * visibleCount);
 			} else {
