@@ -283,7 +283,7 @@ function determineMajorUnit(unit) {
  * Important: this method can return ticks outside the min and max range, it's the
  * responsibility of the calling code to clamp values if needed.
  */
-function generate(min, max, minor, major, capacity, options) {
+function generate(timestamps, min, max, minor, major, capacity, options) {
 	var timeOpts = options.time;
 	var stepSize = helpers.valueOrDefault(timeOpts.stepSize, timeOpts.unitStepSize);
 	var weekday = minor === 'week' ? timeOpts.isoWeekday : false;
@@ -292,7 +292,7 @@ function generate(min, max, minor, major, capacity, options) {
 	var first = moment(min);
 	var last = moment(max);
 	var ticks = [];
-	var time;
+	var i, time, minorStart;
 
 	if (!stepSize) {
 		stepSize = determineStepSize(min, max, minor, capacity);
@@ -313,6 +313,28 @@ function generate(min, max, minor, major, capacity, options) {
 		last.add(1, minor);
 	}
 
+	// for series we want to include only user supplied timestamps
+	if (options.distribution === 'series') {
+		time = timestamps[i];
+		minorStart = +moment(time).startOf(minor);
+		if (+moment(time) === minorStart) {
+			ticks.push(time);
+		}
+		for (i = 1; i < timestamps.length; i++) {
+			time = timestamps[i];
+			minorStart = +moment(time).startOf(minor);
+			if (ticks.length === 0) {
+				if (minorStart >= +moment(timestamps[i - 1])) {
+					ticks.push(time);
+				}
+			} else if (minorStart >= +moment(ticks[ticks.length - 1]).add(stepSize, minor).startOf(minor)) {
+				ticks.push(time);
+			}
+		}
+		return ticks;
+	}
+
+	// for linear distribution we calculate the ticks from scratch
 	time = moment(first);
 
 	if (majorTicksEnabled && major && !weekday && !timeOpts.round) {
@@ -570,7 +592,7 @@ module.exports = function(Chart) {
 				break;
 			case 'auto':
 			default:
-				timestamps = generate(min, max, unit, majorUnit, capacity, options);
+				timestamps = generate(me._timestamps.data, min, max, unit, majorUnit, capacity, options);
 			}
 
 			if (options.bounds === 'ticks' && timestamps.length) {
