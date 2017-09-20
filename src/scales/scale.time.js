@@ -553,7 +553,6 @@ module.exports = function(Chart) {
 			var max = me.max;
 			var options = me.options;
 			var timeOpts = options.time;
-			var formats = timeOpts.displayFormats;
 			var capacity = me.getLabelCapacity(min);
 			var unit = timeOpts.unit || determineUnit(timeOpts.minUnit, min, max, capacity);
 			var majorUnit = determineMajorUnit(unit);
@@ -596,8 +595,6 @@ module.exports = function(Chart) {
 			// PRIVATE
 			me._unit = unit;
 			me._majorUnit = majorUnit;
-			me._minorFormat = formats[unit];
-			me._majorFormat = formats[majorUnit];
 			me._table = buildLookupTable(me._timestamps.data, min, max, options.distribution);
 			me._offsets = computeOffsets(me._table, ticks, min, max, options);
 
@@ -625,16 +622,18 @@ module.exports = function(Chart) {
 		 * Function to format an individual tick mark
 		 * @private
 		 */
-		tickFormatFunction: function(tick, index, ticks) {
+		tickFormatFunction: function(tick, index, ticks, formatOverride) {
 			var me = this;
 			var options = me.options;
 			var time = tick.valueOf();
+			var formats = options.time.displayFormats;
+			var minorFormat = formats[me._unit];
 			var majorUnit = me._majorUnit;
-			var majorFormat = me._majorFormat;
+			var majorFormat = formats[majorUnit];
 			var majorTime = tick.clone().startOf(me._majorUnit).valueOf();
 			var majorTickOpts = options.ticks.major;
 			var major = majorTickOpts.enabled && majorUnit && majorFormat && time === majorTime;
-			var label = tick.format(major ? majorFormat : me._minorFormat);
+			var label = tick.format(formatOverride ? formatOverride : major ? majorFormat : minorFormat);
 			var tickOpts = major ? majorTickOpts : options.ticks.minor;
 			var formatter = helpers.valueOrDefault(tickOpts.callback, tickOpts.userCallback);
 
@@ -720,9 +719,9 @@ module.exports = function(Chart) {
 		getLabelCapacity: function(exampleTime) {
 			var me = this;
 
-			me._minorFormat = me.options.time.displayFormats.millisecond;	// Pick the longest format for guestimation
+			var formatOverride = me.options.time.displayFormats.millisecond;	// Pick the longest format for guestimation
 
-			var exampleLabel = me.tickFormatFunction(moment(exampleTime), 0, []);
+			var exampleLabel = me.tickFormatFunction(moment(exampleTime), 0, [], formatOverride);
 			var tickLabelWidth = me.getLabelWidth(exampleLabel);
 			var innerWidth = me.isHorizontal() ? me.width : me.height;
 
