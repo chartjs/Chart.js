@@ -51,6 +51,28 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 
 New modes can be defined by adding functions to the Chart.Tooltip.positioners map.
 
+Example:
+```javascript
+/**
+ * Custom positioner
+ * @function Chart.Tooltip.positioners.custom
+ * @param elements {Chart.Element[]} the tooltip elements
+ * @param eventPosition {Point} the position of the event in canvas coordinates
+ * @returns {Point} the tooltip position
+ */
+Chart.Tooltip.positioners.custom = function(elements, eventPosition) {
+    /** @type {Chart.Tooltip} */
+    var tooltip = this;
+	    
+    /* ... */
+	    
+    return {
+        x: 0,
+        y: 0
+    };
+}
+```
+
 ### Sort Callback
 
 Allows sorting of [tooltip items](#tooltip-item-interface). Must implement at minimum a function that can be passed to [Array.prototype.sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort).  This function can also accept a third parameter that is the data object passed to the chart.
