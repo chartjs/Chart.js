@@ -11,18 +11,18 @@ var streamify = require('gulp-streamify');
 var uglify = require('gulp-uglify');
 var util = require('gulp-util');
 var zip = require('gulp-zip');
-var exec = require('child_process').exec;
-var karma = require('gulp-karma');
+var exec = require('child-process-promise').exec;
+var karma = require('karma');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var merge = require('merge-stream');
 var collapse = require('bundle-collapser/plugin');
 var argv  = require('yargs').argv
+var path = require('path');
 var package = require('./package.json');
 
 var srcDir = './src/';
 var outDir = './dist/';
-var testDir = './test/';
 
 var header = "/*!\n" +
   " * Chart.js\n" +
@@ -34,26 +34,17 @@ var header = "/*!\n" +
   " * https://github.com/chartjs/Chart.js/blob/master/LICENSE.md\n" +
   " */\n";
 
-var preTestFiles = [
-  './node_modules/moment/min/moment.min.js'
-];
-
-var testFiles = [
-  './test/*.js'
-];
-
 gulp.task('bower', bowerTask);
 gulp.task('build', buildTask);
 gulp.task('package', packageTask);
-gulp.task('coverage', coverageTask);
 gulp.task('watch', watchTask);
 gulp.task('lint', lintTask);
+gulp.task('docs', docsTask);
 gulp.task('test', ['lint', 'validHTML', 'unittest']);
 gulp.task('size', ['library-size', 'module-sizes']);
 gulp.task('server', serverTask);
 gulp.task('validHTML', validHTMLTask);
 gulp.task('unittest', unittestTask);
-gulp.task('unittestWatch', unittestWatchTask);
 gulp.task('library-size', librarySizeTask);
 gulp.task('module-sizes', moduleSizesTask);
 gulp.task('_open', _openTask);
@@ -136,8 +127,9 @@ function packageTask() {
 
 function lintTask() {
   var files = [
-    srcDir + '**/*.js',
-    testDir + '**/*.js'
+    'samples/**/*.js',
+    'src/**/*.js',
+    'test/**/*.js'
   ];
 
   // NOTE(SB) codeclimate has 'complexity' and 'max-statements' eslint rules way too strict
@@ -145,24 +137,9 @@ function lintTask() {
   // to fix, let's turn them as warnings and rewrite code later progressively.
   var options = {
     rules: {
-      'complexity': [1, 6],
+      'complexity': [1, 10],
       'max-statements': [1, 30]
-    },
-    globals: [
-      'Chart',
-      'acquireChart',
-      'afterAll',
-      'afterEach',
-      'beforeAll',
-      'beforeEach',
-      'describe',
-      'expect',
-      'it',
-      'jasmine',
-      'moment',
-      'spyOn',
-      'xit'
-    ]
+    }
   };
 
   return gulp.src(files)
@@ -171,43 +148,52 @@ function lintTask() {
     .pipe(eslint.failAfterError());
 }
 
+function docsTask(done) {
+  const script = require.resolve('gitbook-cli/bin/gitbook.js');
+  const cmd = process.execPath;
+
+  exec([cmd, script, 'install', './'].join(' ')).then(() => {
+    return exec([cmd, script, 'build', './', './dist/docs'].join(' '));
+  }).catch((err) => {
+    console.error(err.stdout);
+  }).then(() => {
+    done();
+  });
+}
+
 function validHTMLTask() {
   return gulp.src('samples/*.html')
     .pipe(htmlv());
 }
 
 function startTest() {
-  return [].concat(preTestFiles).concat([
-      './src/**/*.js',
-      './test/mockContext.js'
-    ]).concat(
-      argv.inputs?
-        argv.inputs.split(';'):
-        testFiles);
+  return [
+    {pattern: './test/fixtures/**/*.json', included: false},
+    {pattern: './test/fixtures/**/*.png', included: false},
+    './node_modules/moment/min/moment.min.js',
+    './test/jasmine.index.js',
+    './src/**/*.js',
+  ].concat(
+    argv.inputs ?
+      argv.inputs.split(';') :
+      ['./test/specs/**/*.js']
+  );
 }
 
-function unittestTask() {
-  return gulp.src(startTest())
-    .pipe(karma({
-      configFile: 'karma.conf.ci.js',
-      action: 'run'
-    }));
-}
-
-function unittestWatchTask() {
-  return gulp.src(startTest())
-    .pipe(karma({
-      configFile: 'karma.conf.js',
-      action: 'watch'
-    }));
-}
-
-function coverageTask() {
-  return gulp.src(startTest())
-    .pipe(karma({
-      configFile: 'karma.coverage.conf.js',
-      action: 'run'
-    }));
+function unittestTask(done) {
+  new karma.Server({
+    configFile: path.join(__dirname, 'karma.conf.js'),
+    singleRun: !argv.watch,
+    files: startTest(),
+    args: {
+      coverage: !!argv.coverage
+    }
+  },
+  // https://github.com/karma-runner/gulp-karma/issues/18
+  function(error) {
+    error = error ? new Error('Karma returned with the error code: ' + error) : undefined;
+    done(error);
+  }).start();
 }
 
 function librarySizeTask() {
@@ -219,9 +205,7 @@ function librarySizeTask() {
 
 function moduleSizesTask() {
   return gulp.src(srcDir + '**/*.js')
-    .pipe(uglify({
-      preserveComments: 'some'
-    }))
+    .pipe(uglify())
     .pipe(size({
       showFiles: true,
       gzip: true

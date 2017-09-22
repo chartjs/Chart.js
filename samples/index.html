@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="icon" href="favicon.ico">
+	<script src="samples.js"></script>
+	<script src="utils.js"></script>
+	<title>Chart.js samples</title>
+</head>
+<body>
+	<div class="content">
+		<div class="header">
+			<div class="chartjs-title">Samples</div>
+			<div class="chartjs-caption">Simple yet flexible JavaScript charting for designers &amp; developers</div>
+			<div class="chartjs-links">
+				<a class="btn btn-chartjs" href="http://www.chartjs.org">Website</a>
+				<a class="btn btn-docs" href="http://www.chartjs.org/docs">Documentation</a>
+				<a class="btn btn-gh" href="https://github.com/chartjs/Chart.js">GitHub</a>
+			</div>
+		</div>
+
+		<div id="categories" class="samples-categories"></div>
+	</div>
+
+	<script>
+		function createCategory(item) {
+			var el = document.createElement('div');
+			el.className = 'samples-category';
+			el.innerHTML =
+				'<div class="title">' + item.title + '</div>' +
+				'<div class="items"></div>';
+			return el;
+		}
+
+		function createEntry(item) {
+			var el = document.createElement('div');
+			el.className = 'samples-entry';
+			el.innerHTML = '<a class="title" href="' + item.path + '">' + item.title + '</a>';
+			return el;
+		}
+
+		var categories = document.getElementById('categories');
+		Samples.items.forEach(function(item) {
+			var category = createCategory(item);
+			var children = category.getElementsByClassName('items')[0];
+
+			(item.items || []).forEach(function(item) {
+				children.appendChild(createEntry(item));
+			});
+
+			categories.appendChild(category);
+		});
+	</script>
+</body>
+</html>

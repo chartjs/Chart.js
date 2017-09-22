@@ -1,0 +1,51 @@
+{
+    "config": {
+        "type": "line",
+        "data": {
+            "labels": ["0", "1", "2", "3", "4", "5", "6", "7", "8"],
+            "datasets": [{
+                "backgroundColor": "rgba(0, 0, 192, 0.25)",
+                "data": [null, null, 2, 3, 4, -4, -2, 1, 0]
+            }, {
+                "backgroundColor": "rgba(0, 192, 0, 0.25)",
+                "data": [5.5, 2, null, 4, 5, null, null, 2, 1]
+            }, {
+                "backgroundColor": "rgba(192, 0, 0, 0.25)",
+                "data": [7, 3, 4, 5, 6, 1, 4, null, null]
+            }, {
+                "backgroundColor": "rgba(0, 0, 192, 0.25)",
+                "data": [8, 7, 6.5, -6, -4, -6, 4, 5, 8]
+            }]
+        },
+        "options": {
+            "responsive": false,
+            "spanGaps": false,
+            "legend": false,
+            "title": false,
+            "scales": {
+                "xAxes": [{
+                    "display": false
+                }],
+                "yAxes": [{
+                    "display": false
+                }]
+            },
+            "elements": {
+                "point": {
+                    "radius": 0
+                },
+                "line": {
+                    "borderColor": "transparent",
+                    "fill": "end",
+                    "tension": 0
+                }
+            }
+        }
+    },
+    "options": {
+        "canvas": {
+            "height": 256,
+            "width": 512
+        }
+    }
+}

@@ -1,19 +1,16 @@
 language: node_js
 node_js:
-  - "5.10"
+  - "6"
 
 before_install:
   - "export CHROME_BIN=/usr/bin/google-chrome"
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
 
-before_script:
-  - npm install
-
 script:
   - gulp build
-  - gulp test
-  - gulp coverage
+  - gulp test --coverage
+  - gulp docs
   - gulp package
   - gulp bower
   - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
@@ -25,18 +22,19 @@ sudo: required
 dist: trusty
 
 addons:
+  chrome: stable
   firefox: latest
-  apt:
-    sources:
-      - google-chrome
-    packages:
-      - google-chrome-stable
+
+# IMPORTANT: scripts require GITHUB_AUTH_TOKEN and GITHUB_AUTH_EMAIL environment variables
+# IMPORTANT: scripts has to be set executables in the Git repository (error 127)
+# https://github.com/travis-ci/travis-ci/issues/5538#issuecomment-225025939
 
 deploy:
-# Creates a tag containing dist files and bower.json
-# Requires GITHUB_AUTH_TOKEN and GITHUB_AUTH_EMAIL environment variables
-# IMPORTANT: the script has to be set executable in the Git repository (error 127)
-# https://github.com/travis-ci/travis-ci/issues/5538#issuecomment-225025939
+- provider: script
+  script: ./scripts/deploy.sh
+  skip_cleanup: true
+  on:
+    all_branches: true
 - provider: script
   script: ./scripts/release.sh
   skip_cleanup: true
