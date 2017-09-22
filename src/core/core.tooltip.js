@@ -685,9 +685,7 @@ module.exports = function(Chart) {
 
 			// Draw body lines now
 			helpers.each(body, function(bodyItem, i) {
-				var labelTextColor = mergeOpacity(vm.labelTextColors[i], opacity);
-
-				ctx.fillStyle = labelTextColor;
+				ctx.fillStyle = mergeOpacity(vm.labelTextColors[i], opacity);
 				helpers.each(bodyItem.before, fillLineOfText);
 
 				helpers.each(bodyItem.lines, function(line) {
