@@ -273,7 +273,7 @@ module.exports = function(Chart) {
 	 * @param {Object} options - The plugin options.
 	 * @returns {Boolean} `false` to cancel the chart drawing.
 	 */
-	 /**
+	/**
  	 * @method IPlugin#beforeTooltips
  	 * @desc Called before drawing `tooltips` at every animation frame specified by the given
  	 * easing value. If any plugin returns `false`, the frame drawing is cancelled until
