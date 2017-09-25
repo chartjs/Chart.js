@@ -529,6 +529,9 @@ module.exports = function(Chart) {
 
 			me.drawDatasets(easingValue);
 
+			// notify before drawing tooltips
+            plugins.notify(me, 'beforeTooltips', [easingValue]);
+
 			// Finally draw the tooltip
 			me.tooltip.draw();
 
