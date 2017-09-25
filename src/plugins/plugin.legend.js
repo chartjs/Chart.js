@@ -407,6 +407,7 @@ module.exports = function(Chart) {
 					}
 				};
 
+
 				// Horizontal
 				var isHorizontal = me.isHorizontal();
 				if (isHorizontal) {
@@ -416,14 +417,14 @@ module.exports = function(Chart) {
 						line: 0
 					};
 				} else {
+					var itemHeight = fontSize + labelOpts.padding;
 					cursor = {
 						x: me.left + labelOpts.padding,
-						y: me.top + labelOpts.padding,
+						y: me.top + labelOpts.padding + (me.height - (itemHeight * me.legendItems.length)) / 2,
 						line: 0
 					};
 				}
 
-				var itemHeight = fontSize + labelOpts.padding;
 				helpers.each(me.legendItems, function(legendItem, i) {
 					var textWidth = ctx.measureText(legendItem.text).width;
 					var width = boxWidth + (fontSize / 2) + textWidth;
