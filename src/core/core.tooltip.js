@@ -568,16 +568,16 @@ module.exports = function(Chart) {
 
 			return me;
 		},
-		drawCaret: function(tooltipPoint, size) {
+		drawCaret: function(tooltipPoint) {
 			var ctx = this._chart.ctx;
 			var vm = this._view;
-			var caretPosition = this.getCaretPosition(tooltipPoint, size, vm);
+			var caretPosition = this.getCaretPosition(tooltipPoint, vm);
 
 			ctx.lineTo(caretPosition.x1, caretPosition.y1);
 			ctx.lineTo(caretPosition.x2, caretPosition.y2);
 			ctx.lineTo(caretPosition.x3, caretPosition.y3);
 		},
-		getCaretPosition: function(tooltipPoint, size, vm) {
+		getCaretPosition: function(tooltipPoint, vm) {
 			var x1, x2, x3, y1, y2, y3;
 			var caretSize = vm.caretSize;
 			var cornerRadius = vm.cornerRadius;
@@ -585,8 +585,8 @@ module.exports = function(Chart) {
 			var yAlign = vm.yAlign;
 			var ptX = tooltipPoint.x;
 			var ptY = tooltipPoint.y;
-			var width = size.width;
-			var height = size.height;
+			var width = vm.width;
+			var height = vm.height;
 
 			if (yAlign === 'center') {
 				y2 = ptY + (height / 2);
@@ -636,7 +636,7 @@ module.exports = function(Chart) {
 			}
 			return {x1: x1, x2: x2, x3: x3, y1: y1, y2: y2, y3: y3};
 		},
-		drawTitle: function(pt, vm, ctx, opacity, tooltipSize) {
+		drawTitle: function(pt, vm, ctx, opacity) {
 			var title = vm.title;
 
 			if (title.length) {
@@ -651,7 +651,7 @@ module.exports = function(Chart) {
 
 				var i, len;
 				for (i = 0, len = title.length; i < len; ++i) {
-					var xPos = vm._titleAlign === 'center' ? pt.x + tooltipSize.width / 2 : pt.x;
+					var xPos = vm._titleAlign === 'center' ? pt.x + vm.width / 2 : pt.x;
 					ctx.fillText(title[i], xPos, pt.y);
 					pt.y += titleFontSize + titleSpacing; // Line Height and spacing
 
@@ -661,7 +661,7 @@ module.exports = function(Chart) {
 				}
 			}
 		},
-		drawBody: function(pt, vm, ctx, opacity, tooltipSize) {
+		drawBody: function(pt, vm, ctx, opacity) {
 			var bodyFontSize = vm.bodyFontSize;
 			var bodySpacing = vm.bodySpacing;
 			var body = vm.body;
@@ -673,7 +673,7 @@ module.exports = function(Chart) {
 			// Before Body
 			var xLinePadding = 0;
 			var fillLineOfText = function(line) {
-				var xPos = vm._bodyAlign === 'center' ? pt.x + xLinePadding + tooltipSize.width / 2: pt.x + xLinePadding;
+				var xPos = vm._bodyAlign === 'center' ? pt.x + xLinePadding + vm.width / 2: pt.x + xLinePadding;
 				ctx.fillText(line, xPos, pt.y);
 				pt.y += bodyFontSize + bodySpacing;
 			};
@@ -720,7 +720,7 @@ module.exports = function(Chart) {
 			helpers.each(vm.afterBody, fillLineOfText);
 			pt.y -= bodySpacing; // Remove last body spacing
 		},
-		drawFooter: function(pt, vm, ctx, opacity, tooltipSize) {
+		drawFooter: function(pt, vm, ctx, opacity) {
 			var footer = vm.footer;
 
 			if (footer.length) {
@@ -733,13 +733,13 @@ module.exports = function(Chart) {
 				ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
 
 				helpers.each(footer, function(line) {
-					var xPos = vm._footerAlign === 'center' ? pt.x + tooltipSize.width / 2: pt.x;
+					var xPos = vm._footerAlign === 'center' ? pt.x + vm.width / 2: pt.x;
 					ctx.fillText(line, xPos, pt.y);
 					pt.y += vm.footerFontSize + vm.footerSpacing;
 				});
 			}
 		},
-		drawBackground: function(pt, vm, ctx, tooltipSize, opacity) {
+		drawBackground: function(pt, vm, ctx, opacity) {
 			ctx.fillStyle = mergeOpacity(vm.backgroundColor, opacity);
 			ctx.strokeStyle = mergeOpacity(vm.borderColor, opacity);
 			ctx.lineWidth = vm.borderWidth;
@@ -747,29 +747,29 @@ module.exports = function(Chart) {
 			var yAlign = vm.yAlign;
 			var x = pt.x;
 			var y = pt.y;
-			var width = tooltipSize.width;
-			var height = tooltipSize.height;
+			var width = vm.width;
+			var height = vm.height;
 			var radius = vm.cornerRadius;
 
 			ctx.beginPath();
 			ctx.moveTo(x + radius, y);
 			if (yAlign === 'top') {
-				this.drawCaret(pt, tooltipSize);
+				this.drawCaret(pt);
 			}
 			ctx.lineTo(x + width - radius, y);
 			ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
 			if (yAlign === 'center' && xAlign === 'right') {
-				this.drawCaret(pt, tooltipSize);
+				this.drawCaret(pt);
 			}
 			ctx.lineTo(x + width, y + height - radius);
 			ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
 			if (yAlign === 'bottom') {
-				this.drawCaret(pt, tooltipSize);
+				this.drawCaret(pt);
 			}
 			ctx.lineTo(x + radius, y + height);
 			ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
 			if (yAlign === 'center' && xAlign === 'left') {
-				this.drawCaret(pt, tooltipSize);
+				this.drawCaret(pt);
 			}
 			ctx.lineTo(x, y + radius);
 			ctx.quadraticCurveTo(x, y, x + radius, y);
@@ -809,17 +809,16 @@ module.exports = function(Chart) {
 				this.drawBackground(pt, vm, ctx, tooltipSize, opacity);
 
 				// Draw Title, Body, and Footer
-				// pt.x += vm.xPadding;
 				pt.y += vm.yPadding;
 
 				// Titles
-				this.drawTitle(pt, vm, ctx, opacity, tooltipSize);
+				this.drawTitle(pt, vm, ctx, opacity);
 
 				// Body
-				this.drawBody(pt, vm, ctx, opacity, tooltipSize);
+				this.drawBody(pt, vm, ctx, opacity);
 
 				// Footer
-				this.drawFooter(pt, vm, ctx, opacity, tooltipSize);
+				this.drawFooter(pt, vm, ctx, opacity,);
 			}
 		},
 
