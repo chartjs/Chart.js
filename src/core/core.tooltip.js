@@ -818,7 +818,7 @@ module.exports = function(Chart) {
 				this.drawBody(pt, vm, ctx, opacity);
 
 				// Footer
-				this.drawFooter(pt, vm, ctx, opacity,);
+				this.drawFooter(pt, vm, ctx, opacity);
 			}
 		},
 
