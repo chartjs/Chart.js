@@ -53,6 +53,8 @@ defaults._set('polarArea', {
 		labels: {
 			generateLabels: function(chart) {
 				var data = chart.data;
+				var opts = chart.options.legend.labels;
+				var fontSize = helpers.valueOrDefault(opts.fontSize, defaults.global.defaultFontSize);
 				if (data.labels.length && data.datasets.length) {
 					return data.labels.map(function(label, i) {
 						var meta = chart.getDatasetMeta(0);
@@ -64,14 +66,15 @@ defaults._set('polarArea', {
 						var fill = custom.backgroundColor ? custom.backgroundColor : valueAtIndexOrDefault(ds.backgroundColor, i, arcOpts.backgroundColor);
 						var stroke = custom.borderColor ? custom.borderColor : valueAtIndexOrDefault(ds.borderColor, i, arcOpts.borderColor);
 						var bw = custom.borderWidth ? custom.borderWidth : valueAtIndexOrDefault(ds.borderWidth, i, arcOpts.borderWidth);
-
+						var itemLegendSymbol = (opts.usePointStyle && ((ds.pointStyle && ds.pointStyle[i]) || defaults.global.elements.point.pointStyle)) || (ds.legendSymbol && ds.legendSymbol[i]) || (opts.legendSymbol);
 						return {
 							text: label,
 							fillStyle: fill,
 							strokeStyle: stroke,
 							lineWidth: bw,
 							hidden: isNaN(ds.data[i]) || meta.data[i].hidden,
-
+							legendSymbol: itemLegendSymbol,
+							boxWidth: (opts.usePointStyle && (fontSize * Math.SQRT2)) || (itemLegendSymbol.slice(-2) === 'Lg' ? opts.boxWidth : (fontSize * Math.SQRT2)),
 							// Extra data used for toggling the correct item
 							index: i
 						};

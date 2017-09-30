@@ -37,6 +37,7 @@ The legend label configuration is nested below the legend configuration using th
 | `generateLabels` | `Function` | | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See [Legend Item](#legend-item-interface) for details.
 | `filter` | `Function` | `null` | Filters legend items out of the legend. Receives 2 parameters, a [Legend Item](#legend-item-interface) and the chart data.
 | `usePointStyle` | `Boolean` | `false` | Label style will match corresponding point style (size is based on fontSize, boxWidth is not used in this case).
+| `legendSymbol` | `String` | `rectLg` | Symbol to display as label when usePointStyle is false (size is based on fontSize except for large symbol (ending with Lg) where boxWidth is used in this case). Values are rectLg, lineLg, rectRoundedLg and other values from [PointStyle](./elements.md/#point-styles)
 
 ## Legend Item Interface
 
