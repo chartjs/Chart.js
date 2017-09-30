@@ -74,6 +74,13 @@ Items passed to the legend `onClick` function are the ones returned from `labels
 
     // Point style of the legend box (only used if usePointStyle is true)
     pointStyle: String
+
+    // Symbol used on the legend item. if usePointStyles is true, pointStyle is used. Otherwise, if present, the value on dataset is selected. 
+    // If none of them, the value from legend/labels is selected (default value is rectLg).
+    legendSymbol: String
+
+    // Width of legend symbol when pointStyle is not used and large (ends by Lg) legendSymbol value is selected
+    boxWidth: Number
 }
 ```
 

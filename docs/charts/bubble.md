@@ -52,6 +52,8 @@ The bubble chart allows a number of properties to be specified for each dataset.
 | [`label`](#labeling) | `String` | - | - | `undefined`
 | [`pointStyle`](#styling) | `String` | Yes | Yes | `circle`
 | [`radius`](#styling) | `Number` | Yes | Yes | `3`
+| `legendSymbol` | `String` | Yes | Yes | `rectLg`
+
 
 ### Labeling
 
