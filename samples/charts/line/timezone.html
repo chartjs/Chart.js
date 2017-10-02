@@ -1,0 +1,102 @@
+
+<!doctype html>
+<html>
+
+<head>
+	<title>Line Chart</title>
+	<script src="../../../dist/Chart.bundle.js"></script>
+    <script src="../../utils.js"></script>
+    <style>
+    canvas{
+		user-select : none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+    </style>
+</head>
+
+<body>
+
+	<canvas id="canvas" width="1000" height="250"></canvas>
+	<canvas id="canvas2" width="1000" height="250"></canvas>
+	<script>
+
+		var testData = [0, 22, 15, 70, 35, 41, 31, 110, 59, 530, 200, 100, 225, 50, 20, 55, 90, 0];
+  		var testLabel = ["2017-01-15 00:00:00 -0500", "2017-01-15 10:00:00 -0500", "2017-01-15 12:00:00 -0500", "2017-01-15 14:00:00 -0500", "2017-01-15 18:00:00 -0500", "2017-01-15 20:00:00 -0500", "2017-01-16 00:00:00 -0500", "2017-01-16 02:00:00 -0500", "2017-01-16 04:00:00 -0500", "2017-01-16 06:00:00 -0500", "2017-01-16 08:00:00 -0500", "2017-01-16 10:00:00 -0500", "2017-01-17 00:00:00 -0500", "2017-01-17 04:00:00 -0500", "2017-01-17 06:00:00 -0500", "2017-01-17 16:00:00 -0500", "2017-01-17 18:00:00 -0500", "2017-01-24 00:00:00 -0500"];
+		var config = {
+    		type: 'line',
+		    data: {
+      			labels: testLabel,
+      			datasets: [{
+        			data: testData,
+        			borderColor: "rgba(220,20,20,1)",
+        			backgroundColor: "rgba(220,20,20,0.5)"
+      			}]
+    		},
+    		options: {
+      			legend: {
+        			display: false
+      			},
+      			scales: {
+        			xAxes: [{
+          				maxBarThickness: 10,
+          				type: "time",
+          				time: {
+							unit: 'day',
+							timezone: 'America/New_York',
+							tooltipFormat : 'YYYY-MM-DD HH:mm:SS ZZ'
+          				}
+        			}],
+        			yAxes: [{
+          				ticks: {
+            				beginAtZero: true
+          				}
+        			}]
+      			}
+    		}
+  		}
+		var config2 = {
+    		type: 'line',
+		    data: {
+      			labels: testLabel,
+      			datasets: [{
+        			data: testData,
+        			borderColor: "rgba(220,20,20,1)",
+        			backgroundColor: "rgba(220,20,20,0.5)"
+      			}]
+    		},
+    		options: {
+      			legend: {
+        			display: false
+      			},
+      			scales: {
+        			xAxes: [{
+          				maxBarThickness: 10,
+          				type: "time",
+          				time: {
+							unit: 'day',
+							timezone: 'America/Los_Angeles',
+							tooltipFormat : 'YYYY-MM-DD HH:mm:SS ZZ'
+          				}
+        			}],
+        			yAxes: [{
+          				ticks: {
+            				beginAtZero: true
+          				}
+        			}]
+      			}
+    		}
+  		}
+
+  		var ctx = document.getElementById("canvas").getContext("2d");
+		new Chart(ctx, config);
+		var ctx2 = document.getElementById("canvas2").getContext("2d");
+		new Chart(ctx2, config2);
+
+	</script>
+
+
+</body>
+
+</html>
