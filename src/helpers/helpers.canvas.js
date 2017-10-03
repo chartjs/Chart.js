@@ -46,13 +46,8 @@ var exports = module.exports = {
 
 	drawPoint: function(ctx, style, width, fontSize, x, y, isLineWidthZero) {
 
-<<<<<<< HEAD
-		if (typeof style === 'object') {
-			var type = style.toString();
-=======
 		if (style && typeof style === 'object') {
 			type = style.toString();
->>>>>>> ab76e167b85b8e95acf9b23218d91f43978ba004
 			if (type === '[object HTMLImageElement]' || type === '[object HTMLCanvasElement]') {
 				ctx.drawImage(style, x, y, style.width, style.height);
 				return;
