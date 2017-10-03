@@ -52,15 +52,16 @@ defaults._set('doughnut', {
 						var fill = custom.backgroundColor ? custom.backgroundColor : valueAtIndexOrDefault(ds.backgroundColor, i, arcOpts.backgroundColor);
 						var stroke = custom.borderColor ? custom.borderColor : valueAtIndexOrDefault(ds.borderColor, i, arcOpts.borderColor);
 						var bw = custom.borderWidth ? custom.borderWidth : valueAtIndexOrDefault(ds.borderWidth, i, arcOpts.borderWidth);
-						var itemLegendSymbol = (opts.usePointStyle && ((ds.pointStyle && ds.pointStyle[i]) || defaults.global.elements.point.pointStyle)) || (ds.legendSymbol && ds.legendSymbol[i]) || (opts.legendSymbol);
+						var itemLegendSymbolLarge = typeof (ds.legendSymbolLarge && ds.legendSymbolLarge[i]) !== 'undefined' ? ds.legendSymbolLarge[i] : (typeof opts.legendSymbolLarge !== 'undefined' ? opts.legendSymbolLarge : (opts.usePointStyle ? false : true));
 						return {
 							text: label,
 							fillStyle: fill,
 							strokeStyle: stroke,
 							lineWidth: bw,
 							hidden: isNaN(ds.data[i]) || meta.data[i].hidden,
-							legendSymbol: itemLegendSymbol,
-							boxWidth: (opts.usePointStyle && (fontSize * Math.SQRT2)) || (itemLegendSymbol.slice(-2) === 'Lg' ? opts.boxWidth : (fontSize * Math.SQRT2)),
+							legendSymbol: (opts.usePointStyle && ((ds.pointStyle && ds.pointStyle[i]) || defaults.global.elements.point.pointStyle)) || (ds.legendSymbol && ds.legendSymbol[i]) || (opts.legendSymbol),
+							legendSymbolLarge: itemLegendSymbolLarge,
+							boxWidth: itemLegendSymbolLarge ? opts.boxWidth : fontSize,
 							// Extra data used for toggling the correct item
 							index: i
 						};

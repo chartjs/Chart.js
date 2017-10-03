@@ -52,8 +52,8 @@ The bubble chart allows a number of properties to be specified for each dataset.
 | [`label`](#labeling) | `String` | - | - | `undefined`
 | [`pointStyle`](#styling) | `String` | Yes | Yes | `circle`
 | [`radius`](#styling) | `Number` | Yes | Yes | `3`
-| `legendSymbol` | `String` | Yes | Yes | `rectLg`
-
+| [`legendSymbol`](#styling) | `String` | Yes | Yes | `rect`
+| [`legendSymbolLarge`](#styling) | `Boolean` | Yes | Yes | if usePointStyle then `false` otherwise `true`
 
 ### Labeling
 
@@ -70,8 +70,10 @@ The style of each bubble can be controlled with the following properties:
 | `borderWidth` | bubble border width (in pixels)
 | `pointStyle` | bubble [shape style](../configuration/elements#point-styles)
 | `radius` | bubble radius (in pixels)
+| `legendSymbol` | Symbol to display as label when usePointStyle is false or undefined. Available values from [PointStyle](./elements.md/#point-styles)
+| `legendSymbolLarge` |  If set to true, the legend symbol width is using boxWidth value for his width, otherwise fontSize is used.
 
-All these values, if `undefined`, fallback to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options.
+All these values (except for legendSymbol and legendSymbolLarge), if `undefined`, fallback to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options.
 
 ### Interactions
 

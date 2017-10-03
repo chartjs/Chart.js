@@ -27,7 +27,7 @@ defaults._set('global', {
 		onHover: null,
 
 		labels: {
-			legendSymbol: 'rectLg',
+			legendSymbol: 'rect',
 			boxWidth: 40,
 			padding: 10,
 			// Generates labels shown in the legend
@@ -42,13 +42,14 @@ defaults._set('global', {
 			// lineJoin :
 			// lineWidth :
 			// legendSymbol : which symbol to use for the legend start with pointStyle then dataset level and finally options/legend/label level
-			// boxWidth : if not usePointStyle and legendSymbol ends with Lg then use boxWidth value otherwise use fontSize * Math.SQRT2
+			// legendSymbolLarge: boolean impacting boxWidth
+			// boxWidth : if LegendSymbolLarge is true used boxWidth otherwise use fontSize * Math.SQRT2
 			generateLabels: function(chart) {
 				var data = chart.data;
 				var opts = chart.options.legend.labels;
 				var fontSize = helpers.valueOrDefault(opts.fontSize, defaults.global.defaultFontSize);
 				return helpers.isArray(data.datasets) ? data.datasets.map(function(dataset, i) {
-					var itemLegendSymbol = (opts.usePointStyle && (dataset.pointStyle || defaults.global.elements.point.pointStyle)) || dataset.legendSymbol || (opts.legendSymbol);
+					var itemLegendSymbolLarge = typeof dataset.legendSymbolLarge !== 'undefined' ? dataset.legendSymbolLarge : (typeof opts.legendSymbolLarge !== 'undefined' ? opts.legendSymbolLarge : (opts.usePointStyle ? false : true));
 					return {
 						text: dataset.label,
 						fillStyle: (!helpers.isArray(dataset.backgroundColor) ? dataset.backgroundColor : dataset.backgroundColor[0]),
@@ -60,8 +61,9 @@ defaults._set('global', {
 						lineWidth: dataset.borderWidth,
 						strokeStyle: dataset.borderColor,
 						pointStyle: dataset.pointStyle,
-						legendSymbol: itemLegendSymbol,
-						boxWidth: (opts.usePointStyle && (fontSize * Math.SQRT2)) || (itemLegendSymbol.slice(-2) === 'Lg' ? opts.boxWidth : (fontSize * Math.SQRT2)),
+						legendSymbol: (opts.usePointStyle && (dataset.pointStyle || defaults.global.elements.point.pointStyle)) || dataset.legendSymbol || (opts.legendSymbol),
+						legendSymbolLarge: itemLegendSymbolLarge,
+						boxWidth: itemLegendSymbolLarge ? opts.boxWidth : fontSize,
 						// Below is extra data used for toggling the datasets
 						datasetIndex: i
 					};
@@ -360,37 +362,9 @@ module.exports = function(Chart) {
 						// IE 9 and 10 do not support line dash
 						ctx.setLineDash(valueOrDefault(legendItem.lineDash, lineDefault.borderDash));
 					}
-					switch (legendItem.legendSymbol) {
-					default:
-						// Recalculate x and y for drawPoint() because its expecting
-						// x and y to be center of figure (instead of top left)
-						var radius = fontSize * Math.SQRT2 / 2;
-						var offSet = radius / Math.SQRT2;
-						var centerX = x + offSet + 5;
-						var centerY = y + offSet;
-						helpers.canvas.drawPoint(ctx, legendItem.legendSymbol, radius, centerX, centerY);
-						break;
-					case 'rectLg':
-						if (!isLineWidthZero) {
-							ctx.strokeRect(x, y, legendItem.boxWidth, fontSize);
-						}
-						ctx.fillRect(x, y, legendItem.boxWidth, fontSize);
-						break;
-					case 'lineLg':
-						ctx.beginPath();
-						ctx.moveTo(x, y + (fontSize / 2));
-						ctx.lineTo(x + legendItem.boxWidth, y + (fontSize / 2));
-						ctx.closePath();
-						ctx.stroke();
-						break;
-					case 'rectRoundedLg':
-						ctx.beginPath();
-						helpers.canvas.roundedRect(ctx, x, y, legendItem.boxWidth, fontSize, fontSize * Math.SQRT2 / 4);
-						ctx.closePath();
-						ctx.fill();
-						ctx.stroke();
-						break;
-					}
+
+					helpers.canvas.drawPoint(ctx, legendItem.legendSymbol, legendItem.boxWidth, fontSize, x, y, isLineWidthZero);
+
 					ctx.restore();
 				};
 				var fillText = function(x, y, legendItem, textWidth) {
