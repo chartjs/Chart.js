@@ -44,10 +44,10 @@ var exports = module.exports = {
 		}
 	},
 
-	drawPoint: function(ctx, style, width, fontSize, x, y, isLineWidthZero) {
+	drawPoint: function(ctx, style, width, height, x, y, isLineWidthZero) {
 
 		if (style && typeof style === 'object') {
-			type = style.toString();
+			var type = style.toString();
 			if (type === '[object HTMLImageElement]' || type === '[object HTMLCanvasElement]') {
 				ctx.drawImage(style, x, y, style.width, style.height);
 				return;
@@ -63,10 +63,10 @@ var exports = module.exports = {
 		default:
 			ctx.beginPath();
 			//	display standard circle if height and width are the same otherwise display a RectRounded
-			if (width === fontSize) {
+			if (width === height) {
 				ctx.arc(x + width / 2, y + width / 2, width / 2, 0, Math.PI * 2);
 			} else {
-				this.roundedRect(ctx, x, y, width, fontSize, width / 2);
+				this.roundedRect(ctx, x, y, width, height, width / 2);
 			}
 			ctx.closePath();
 			ctx.fill();
@@ -76,15 +76,15 @@ var exports = module.exports = {
 			break;
 		case 'rect':
 			if (!isLineWidthZero) {
-				ctx.strokeRect(x, y, width, fontSize);
+				ctx.strokeRect(x, y, width, height);
 			}
-			ctx.fillRect(x, y, width, fontSize);
+			ctx.fillRect(x, y, width, height);
 			break;
 		case 'triangle':
 			ctx.beginPath();
-			ctx.moveTo(x, y + fontSize);
+			ctx.moveTo(x, y + height);
 			ctx.lineTo(x + width / 2, y);
-			ctx.lineTo(x + width, y + fontSize);
+			ctx.lineTo(x + width, y + height);
 			ctx.closePath();
 			ctx.fill();
 			if (!isLineWidthZero) {
@@ -93,7 +93,7 @@ var exports = module.exports = {
 			break;
 		case 'rectRounded':
 			ctx.beginPath();
-			this.roundedRect(ctx, x, y, width, fontSize, fontSize * Math.SQRT2 / 4);
+			this.roundedRect(ctx, x, y, width, height, height * Math.SQRT2 / 4);
 			ctx.closePath();
 			ctx.fill();
 			if (!isLineWidthZero) {
@@ -102,10 +102,10 @@ var exports = module.exports = {
 			break;
 		case 'rectRot':
 			ctx.beginPath();
-			ctx.moveTo(x, y + fontSize / 2);
+			ctx.moveTo(x, y + height / 2);
 			ctx.lineTo(x + width / 2, y);
-			ctx.lineTo(x + width, y + fontSize / 2);
-			ctx.lineTo(x + width / 2, y + fontSize);
+			ctx.lineTo(x + width, y + height / 2);
+			ctx.lineTo(x + width / 2, y + height);
 			ctx.closePath();
 			ctx.fill();
 			if (!isLineWidthZero) {
@@ -115,17 +115,17 @@ var exports = module.exports = {
 		case 'cross':
 			ctx.beginPath();
 			ctx.moveTo(x + width / 2, y);
-			ctx.lineTo(x + width / 2, y + fontSize);
-			ctx.moveTo(x, y + fontSize / 2);
-			ctx.lineTo(x + width, y + fontSize / 2);
+			ctx.lineTo(x + width / 2, y + height);
+			ctx.moveTo(x, y + height / 2);
+			ctx.lineTo(x + width, y + height / 2);
 			ctx.closePath();
 			ctx.stroke();
 			break;
 		case 'crossRot':
 			ctx.beginPath();
 			ctx.moveTo(x, y);
-			ctx.lineTo(x + width, y + fontSize);
-			ctx.moveTo(x, y + fontSize);
+			ctx.lineTo(x + width, y + height);
+			ctx.moveTo(x, y + height);
 			ctx.lineTo(x + width, y);
 			ctx.closePath();
 			ctx.stroke();
@@ -133,27 +133,27 @@ var exports = module.exports = {
 		case 'star':
 			ctx.beginPath();
 			ctx.moveTo(x + width / 2, y);
-			ctx.lineTo(x + width / 2, y + fontSize);
-			ctx.moveTo(x, y + fontSize / 2);
-			ctx.lineTo(x + width, y + fontSize / 2);
+			ctx.lineTo(x + width / 2, y + height);
+			ctx.moveTo(x, y + height / 2);
+			ctx.lineTo(x + width, y + height / 2);
 			ctx.moveTo(x, y);
-			ctx.lineTo(x + width, y + fontSize);
-			ctx.moveTo(x, y + fontSize);
+			ctx.lineTo(x + width, y + height);
+			ctx.moveTo(x, y + height);
 			ctx.lineTo(x + width, y);
 			ctx.closePath();
 			ctx.stroke();
 			break;
 		case 'line':
 			ctx.beginPath();
-			ctx.moveTo(x, y + fontSize / 2);
-			ctx.lineTo(x + width, y + fontSize / 2);
+			ctx.moveTo(x, y + height / 2);
+			ctx.lineTo(x + width, y + height / 2);
 			ctx.closePath();
 			ctx.stroke();
 			break;
 		case 'dash':
 			ctx.beginPath();
-			ctx.moveTo(x + width / 2, y + fontSize / 2);
-			ctx.lineTo(x + width, y + fontSize / 2);
+			ctx.moveTo(x + width / 2, y + height / 2);
+			ctx.lineTo(x + width, y + height / 2);
 			ctx.closePath();
 			ctx.stroke();
 			break;
