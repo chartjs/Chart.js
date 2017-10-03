@@ -129,21 +129,30 @@ describe('Default Configs', function() {
 				hidden: false,
 				index: 0,
 				strokeStyle: '#000',
-				lineWidth: 2
+				lineWidth: 2,
+				legendSymbol: 'rect',
+				legendSymbolLarge: true,
+				boxWidth: 40
 			}, {
 				text: 'label2',
 				fillStyle: 'green',
 				hidden: false,
 				index: 1,
 				strokeStyle: '#000',
-				lineWidth: 2
+				lineWidth: 2,
+				legendSymbol: 'rect',
+				legendSymbolLarge: true,
+				boxWidth: 40
 			}, {
 				text: 'label3',
 				fillStyle: 'blue',
 				hidden: true,
 				index: 2,
 				strokeStyle: '#000',
-				lineWidth: 2
+				lineWidth: 2,
+				legendSymbol: 'rect',
+				legendSymbolLarge: true,
+				boxWidth: 40
 			}];
 			expect(chart.legend.legendItems).toEqual(expected);
 		});
@@ -245,21 +254,30 @@ describe('Default Configs', function() {
 				hidden: false,
 				index: 0,
 				strokeStyle: '#000',
-				lineWidth: 2
+				lineWidth: 2,
+				legendSymbol: 'rect',
+				legendSymbolLarge: true,
+				boxWidth: 40
 			}, {
 				text: 'label2',
 				fillStyle: 'green',
 				hidden: false,
 				index: 1,
 				strokeStyle: '#000',
-				lineWidth: 2
+				lineWidth: 2,
+				legendSymbol: 'rect',
+				legendSymbolLarge: true,
+				boxWidth: 40
 			}, {
 				text: 'label3',
 				fillStyle: 'blue',
 				hidden: true,
 				index: 2,
 				strokeStyle: '#000',
-				lineWidth: 2
+				lineWidth: 2,
+				legendSymbol: 'rect',
+				legendSymbolLarge: true,
+				boxWidth: 40
 			}];
 			expect(chart.legend.legendItems).toEqual(expected);
 		});

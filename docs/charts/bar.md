@@ -77,6 +77,9 @@ Some properties can be specified as an array. If these are set to an array value
 | `hoverBackgroundColor` | `Color/Color[]` | The fill colour of the bars when hovered.
 | `hoverBorderColor` | `Color/Color[]` | The stroke colour of the bars when hovered.
 | `hoverBorderWidth` | `Number/Number[]` | The stroke width of the bars when hovered.
+| `legendSymbol` | `String` | Symbol to display as label when usePointStyle is false or undefined. Available values from [PointStyle](./elements.md/#point-styles)
+| `legendSymbolLarge` | `Boolean` | If True, the legend symbol width is using boxWidth value for his width, otherwise fontSize is used. By default this value is False when usePointStyle is True and True when usePointStyle is False or undefined
+
 
 ### borderSkipped
 This setting is used to avoid drawing the bar stroke at the base of the fill. In general, this does not need to be changed except when creating chart types that derive from a bar chart.

@@ -62,6 +62,9 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | `hoverBackgroundColor` | `Color[]` | The fill colour of the arcs when hovered.
 | `hoverBorderColor` | `Color[]` | The stroke colour of the arcs when hovered.
 | `hoverBorderWidth` | `Number[]` | The stroke width of the arcs when hovered.
+| `legendSymbol` | `String[]` | Symbol to display as label when usePointStyle is false or undefined. Available values from [PointStyle](./elements.md/#point-styles)
+| `legendSymbolLarge` | `Boolean[]` | If True, the legend symbol width is using boxWidth value for his width, otherwise fontSize is used. By default this value is False when usePointStyle is True and True when usePointStyle is False or undefined
+
 
 ## Config Options
 

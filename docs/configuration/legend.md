@@ -37,6 +37,9 @@ The legend label configuration is nested below the legend configuration using th
 | `generateLabels` | `Function` | | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See [Legend Item](#legend-item-interface) for details.
 | `filter` | `Function` | `null` | Filters legend items out of the legend. Receives 2 parameters, a [Legend Item](#legend-item-interface) and the chart data.
 | `usePointStyle` | `Boolean` | `false` | Label style will match corresponding point style (size is based on fontSize, boxWidth is not used in this case).
+| `legendSymbol` | `String` | `rect` | Symbol to display as label when usePointStyle is false or undefined. Available values from [PointStyle](./elements.md/#point-styles)
+| `legendSymbolLarge` | `Boolean` | if usePointStyle then `false` otherwise `true` | If True, the legend symbol width is using boxWidth value for his width, otherwise fontSize is used. 
+
 
 ## Legend Item Interface
 
@@ -73,6 +76,16 @@ Items passed to the legend `onClick` function are the ones returned from `labels
 
     // Point style of the legend box (only used if usePointStyle is true)
     pointStyle: String
+
+    // Symbol used on the legend item. if usePointStyles is true, pointStyle is used. Otherwise, if present, the value on dataset is selected. 
+    // If none of them are there, the value from legend/labels is selected (default value is rect).
+    legendSymbol: String
+	
+	// define if boxWidth is used as width (true) or fontSize (false)
+	legendSymbolLarge: Boolean
+
+    // Width of legend symbol used if legendSymbolLarge is true
+    boxWidth: Number
 }
 ```
 

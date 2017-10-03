@@ -71,6 +71,9 @@ All point* properties can be specified as an array. If these are set to an array
 | `showLine` | `Boolean` | If false, the line is not drawn for this dataset.
 | `spanGaps` | `Boolean` | If true, lines will be drawn between points with no or null data. If false, points with `NaN` data will create a break in the line
 | `steppedLine` | `Boolean/String` | If the line is shown as a stepped line. [more...](#stepped-line)
+| `legendSymbol` | `String` | Symbol to display as label when usePointStyle is false or undefined. Available values from [PointStyle](./elements.md/#point-styles)
+| `legendSymbolLarge` | `Boolean` | If True, the legend symbol width is using boxWidth value for his width, otherwise fontSize is used. By default this value is False when usePointStyle is True and True when usePointStyle is False or undefined
+
 
 ### cubicInterpolationMode
 The following interpolation modes are supported:
