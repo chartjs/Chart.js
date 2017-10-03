@@ -13,47 +13,47 @@ var MAX_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
 
 var INTERVALS = {
 	millisecond: {
-		major: true,
+		common: true,
 		size: 1,
 		steps: [1, 2, 5, 10, 20, 50, 100, 250, 500]
 	},
 	second: {
-		major: true,
+		common: true,
 		size: 1000,
 		steps: [1, 2, 5, 10, 30]
 	},
 	minute: {
-		major: true,
+		common: true,
 		size: 60000,
 		steps: [1, 2, 5, 10, 30]
 	},
 	hour: {
-		major: true,
+		common: true,
 		size: 3600000,
 		steps: [1, 2, 3, 6, 12]
 	},
 	day: {
-		major: true,
+		common: true,
 		size: 86400000,
 		steps: [1, 2, 5]
 	},
 	week: {
-		major: false,
+		common: false,
 		size: 604800000,
 		steps: [1, 2, 3, 4]
 	},
 	month: {
-		major: true,
+		common: true,
 		size: 2.628e9,
 		steps: [1, 2, 3]
 	},
 	quarter: {
-		major: false,
+		common: false,
 		size: 7.884e9,
 		steps: [1, 2, 3, 4]
 	},
 	year: {
-		major: true,
+		common: true,
 		size: 3.154e10
 	}
 };
@@ -261,7 +261,7 @@ function determineUnit(minUnit, min, max, capacity) {
 		interval = INTERVALS[UNITS[i]];
 		factor = interval.steps ? interval.steps[interval.steps.length - 1] : MAX_INTEGER;
 
-		if (Math.ceil((max - min) / (factor * interval.size)) <= capacity) {
+		if (interval.common && Math.ceil((max - min) / (factor * interval.size)) <= capacity) {
 			return UNITS[i];
 		}
 	}
@@ -271,7 +271,7 @@ function determineUnit(minUnit, min, max, capacity) {
 
 function determineMajorUnit(unit) {
 	for (var i = UNITS.indexOf(unit) + 1, ilen = UNITS.length; i < ilen; ++i) {
-		if (INTERVALS[UNITS[i]].major) {
+		if (INTERVALS[UNITS[i]].common) {
 			return UNITS[i];
 		}
 	}
