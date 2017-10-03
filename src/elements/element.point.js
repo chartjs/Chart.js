@@ -101,6 +101,6 @@ module.exports = Element.extend({
 			ctx.fillStyle = color(ctx.fillStyle).alpha(ratio).rgbString();
 		}
 
-		helpers.canvas.drawPoint(ctx, pointStyle, radius, x, y);
+		helpers.canvas.drawPoint(ctx, pointStyle, radius * 2, radius * 2, x - radius, y - radius, ctx.lineWidth === 0);
 	}
 });

@@ -44,112 +44,121 @@ var exports = module.exports = {
 		}
 	},
 
-	drawPoint: function(ctx, style, radius, x, y) {
-		var type, edgeLength, xOffset, yOffset, height, size;
+	drawPoint: function(ctx, style, width, fontSize, x, y, isLineWidthZero) {
 
 		if (typeof style === 'object') {
-			type = style.toString();
+			var type = style.toString();
 			if (type === '[object HTMLImageElement]' || type === '[object HTMLCanvasElement]') {
-				ctx.drawImage(style, x - style.width / 2, y - style.height / 2, style.width, style.height);
+				ctx.drawImage(style, x, y, style.width, style.height);
 				return;
 			}
 		}
 
-		if (isNaN(radius) || radius <= 0) {
+		if (isNaN(width) || width <= 0) {
 			return;
 		}
 
 		switch (style) {
-		// Default includes circle
+		// Default circle
 		default:
 			ctx.beginPath();
-			ctx.arc(x, y, radius, 0, Math.PI * 2);
+			//	display standard circle if height and width are the same otherwise display a RectRounded
+			if (width === fontSize) {
+				ctx.arc(x + width / 2, y + width / 2, width / 2, 0, Math.PI * 2);
+			} else {
+				this.roundedRect(ctx, x, y, width, fontSize, width / 2);
+			}
 			ctx.closePath();
 			ctx.fill();
+			if (!isLineWidthZero) {
+				ctx.stroke();
+			}
+			break;
+		case 'rect':
+			if (!isLineWidthZero) {
+				ctx.strokeRect(x, y, width, fontSize);
+			}
+			ctx.fillRect(x, y, width, fontSize);
 			break;
 		case 'triangle':
 			ctx.beginPath();
-			edgeLength = 3 * radius / Math.sqrt(3);
-			height = edgeLength * Math.sqrt(3) / 2;
-			ctx.moveTo(x - edgeLength / 2, y + height / 3);
-			ctx.lineTo(x + edgeLength / 2, y + height / 3);
-			ctx.lineTo(x, y - 2 * height / 3);
+			ctx.moveTo(x, y + fontSize);
+			ctx.lineTo(x + width / 2, y);
+			ctx.lineTo(x + width, y + fontSize);
 			ctx.closePath();
 			ctx.fill();
-			break;
-		case 'rect':
-			size = 1 / Math.SQRT2 * radius;
-			ctx.beginPath();
-			ctx.fillRect(x - size, y - size, 2 * size, 2 * size);
-			ctx.strokeRect(x - size, y - size, 2 * size, 2 * size);
+			if (!isLineWidthZero) {
+				ctx.stroke();
+			}
 			break;
 		case 'rectRounded':
-			var offset = radius / Math.SQRT2;
-			var leftX = x - offset;
-			var topY = y - offset;
-			var sideSize = Math.SQRT2 * radius;
 			ctx.beginPath();
-			this.roundedRect(ctx, leftX, topY, sideSize, sideSize, radius / 2);
+			this.roundedRect(ctx, x, y, width, fontSize, fontSize * Math.SQRT2 / 4);
 			ctx.closePath();
 			ctx.fill();
+			if (!isLineWidthZero) {
+				ctx.stroke();
+			}
 			break;
 		case 'rectRot':
-			size = 1 / Math.SQRT2 * radius;
 			ctx.beginPath();
-			ctx.moveTo(x - size, y);
-			ctx.lineTo(x, y + size);
-			ctx.lineTo(x + size, y);
-			ctx.lineTo(x, y - size);
+			ctx.moveTo(x, y + fontSize / 2);
+			ctx.lineTo(x + width / 2, y);
+			ctx.lineTo(x + width, y + fontSize / 2);
+			ctx.lineTo(x + width / 2, y + fontSize);
 			ctx.closePath();
 			ctx.fill();
+			if (!isLineWidthZero) {
+				ctx.stroke();
+			}
 			break;
 		case 'cross':
 			ctx.beginPath();
-			ctx.moveTo(x, y + radius);
-			ctx.lineTo(x, y - radius);
-			ctx.moveTo(x - radius, y);
-			ctx.lineTo(x + radius, y);
+			ctx.moveTo(x + width / 2, y);
+			ctx.lineTo(x + width / 2, y + fontSize);
+			ctx.moveTo(x, y + fontSize / 2);
+			ctx.lineTo(x + width, y + fontSize / 2);
 			ctx.closePath();
+			ctx.stroke();
 			break;
 		case 'crossRot':
 			ctx.beginPath();
-			xOffset = Math.cos(Math.PI / 4) * radius;
-			yOffset = Math.sin(Math.PI / 4) * radius;
-			ctx.moveTo(x - xOffset, y - yOffset);
-			ctx.lineTo(x + xOffset, y + yOffset);
-			ctx.moveTo(x - xOffset, y + yOffset);
-			ctx.lineTo(x + xOffset, y - yOffset);
+			ctx.moveTo(x, y);
+			ctx.lineTo(x + width, y + fontSize);
+			ctx.moveTo(x, y + fontSize);
+			ctx.lineTo(x + width, y);
 			ctx.closePath();
+			ctx.stroke();
 			break;
 		case 'star':
 			ctx.beginPath();
-			ctx.moveTo(x, y + radius);
-			ctx.lineTo(x, y - radius);
-			ctx.moveTo(x - radius, y);
-			ctx.lineTo(x + radius, y);
-			xOffset = Math.cos(Math.PI / 4) * radius;
-			yOffset = Math.sin(Math.PI / 4) * radius;
-			ctx.moveTo(x - xOffset, y - yOffset);
-			ctx.lineTo(x + xOffset, y + yOffset);
-			ctx.moveTo(x - xOffset, y + yOffset);
-			ctx.lineTo(x + xOffset, y - yOffset);
+			ctx.moveTo(x + width / 2, y);
+			ctx.lineTo(x + width / 2, y + fontSize);
+			ctx.moveTo(x, y + fontSize / 2);
+			ctx.lineTo(x + width, y + fontSize / 2);
+			ctx.moveTo(x, y);
+			ctx.lineTo(x + width, y + fontSize);
+			ctx.moveTo(x, y + fontSize);
+			ctx.lineTo(x + width, y);
 			ctx.closePath();
+			ctx.stroke();
 			break;
 		case 'line':
 			ctx.beginPath();
-			ctx.moveTo(x - radius, y);
-			ctx.lineTo(x + radius, y);
+			ctx.moveTo(x, y + fontSize / 2);
+			ctx.lineTo(x + width, y + fontSize / 2);
 			ctx.closePath();
+			ctx.stroke();
 			break;
 		case 'dash':
 			ctx.beginPath();
-			ctx.moveTo(x, y);
-			ctx.lineTo(x + radius, y);
+			ctx.moveTo(x + width / 2, y + fontSize / 2);
+			ctx.lineTo(x + width, y + fontSize / 2);
 			ctx.closePath();
+			ctx.stroke();
 			break;
 		}
 
-		ctx.stroke();
 	},
 
 	clipArea: function(ctx, area) {

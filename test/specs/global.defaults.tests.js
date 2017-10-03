@@ -130,7 +130,8 @@ describe('Default Configs', function() {
 				index: 0,
 				strokeStyle: '#000',
 				lineWidth: 2,
-				legendSymbol: 'rectLg',
+				legendSymbol: 'rect',
+				legendSymbolLarge: true,
 				boxWidth: 40
 			}, {
 				text: 'label2',
@@ -139,7 +140,8 @@ describe('Default Configs', function() {
 				index: 1,
 				strokeStyle: '#000',
 				lineWidth: 2,
-				legendSymbol: 'rectLg',
+				legendSymbol: 'rect',
+				legendSymbolLarge: true,
 				boxWidth: 40
 			}, {
 				text: 'label3',
@@ -148,7 +150,8 @@ describe('Default Configs', function() {
 				index: 2,
 				strokeStyle: '#000',
 				lineWidth: 2,
-				legendSymbol: 'rectLg',
+				legendSymbol: 'rect',
+				legendSymbolLarge: true,
 				boxWidth: 40
 			}];
 			expect(chart.legend.legendItems).toEqual(expected);
@@ -252,7 +255,8 @@ describe('Default Configs', function() {
 				index: 0,
 				strokeStyle: '#000',
 				lineWidth: 2,
-				legendSymbol: 'rectLg',
+				legendSymbol: 'rect',
+				legendSymbolLarge: true,
 				boxWidth: 40
 			}, {
 				text: 'label2',
@@ -261,7 +265,8 @@ describe('Default Configs', function() {
 				index: 1,
 				strokeStyle: '#000',
 				lineWidth: 2,
-				legendSymbol: 'rectLg',
+				legendSymbol: 'rect',
+				legendSymbolLarge: true,
 				boxWidth: 40
 			}, {
 				text: 'label3',
@@ -270,7 +275,8 @@ describe('Default Configs', function() {
 				index: 2,
 				strokeStyle: '#000',
 				lineWidth: 2,
-				legendSymbol: 'rectLg',
+				legendSymbol: 'rect',
+				legendSymbolLarge: true,
 				boxWidth: 40
 			}];
 			expect(chart.legend.legendItems).toEqual(expected);
