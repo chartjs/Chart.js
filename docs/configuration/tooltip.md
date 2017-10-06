@@ -243,7 +243,7 @@ The tooltip model contains parameters that can be used to render the tooltip.
 
     // Body
     // The body lines that need to be rendered
-    // Each pbject contains 3 parameters
+    // Each object contains 3 parameters
     // before: String[] // lines of text before the line with the color square
     // lines: String[], // lines of text to render as the main item with color square
     // after: String[], // lines of text to render after the main lines
