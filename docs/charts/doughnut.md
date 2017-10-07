@@ -62,6 +62,7 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | `hoverBackgroundColor` | `Color[]` | The fill colour of the arcs when hovered.
 | `hoverBorderColor` | `Color[]` | The stroke colour of the arcs when hovered.
 | `hoverBorderWidth` | `Number[]` | The stroke width of the arcs when hovered.
+| `legend` | `object` | Style of the legend if point style is not used. [more...](../configuration/legend.md/#dataset-legend-configuration)
 
 ## Config Options
 

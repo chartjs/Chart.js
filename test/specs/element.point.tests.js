@@ -116,6 +116,9 @@ describe('Point element tests', function() {
 			y: 15,
 			ctx: mockContext
 		};
+		var tx = point._view.x - point._view.radius;
+		var ty = point._view.y - point._view.radius;
+		var tw = point._view.radius * 2;
 
 		point.draw();
 
@@ -163,13 +166,13 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'moveTo',
-			args: [10 - 3 * 2 / Math.sqrt(3) / 2, 15 + 3 * 2 / Math.sqrt(3) * Math.sqrt(3) / 2 / 3]
+			args: [tx, ty + tw]
 		}, {
 			name: 'lineTo',
-			args: [10 + 3 * 2 / Math.sqrt(3) / 2, 15 + 3 * 2 / Math.sqrt(3) * Math.sqrt(3) / 2 / 3],
+			args: [tx + tw / 2, ty],
 		}, {
 			name: 'lineTo',
-			args: [10, 15 - 2 * 3 * 2 / Math.sqrt(3) * Math.sqrt(3) / 2 / 3],
+			args: [tx + tw, ty + tw],
 		}, {
 			name: 'closePath',
 			args: [],
@@ -198,11 +201,14 @@ describe('Point element tests', function() {
 			name: 'beginPath',
 			args: []
 		}, {
-			name: 'fillRect',
-			args: [10 - 1 / Math.SQRT2 * 2, 15 - 1 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2]
+			name: 'rect',
+			args: [tx, ty, tw, tw]
 		}, {
-			name: 'strokeRect',
-			args: [10 - 1 / Math.SQRT2 * 2, 15 - 1 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2]
+			name: 'closePath',
+			args: [],
+		}, {
+			name: 'fill',
+			args: [],
 		}, {
 			name: 'stroke',
 			args: []
@@ -210,7 +216,6 @@ describe('Point element tests', function() {
 
 		var drawRoundedRectangleSpy = jasmine.createSpy('drawRoundedRectangle');
 		var drawRoundedRectangle = Chart.helpers.canvas.roundedRect;
-		var offset = point._view.radius / Math.SQRT2;
 		Chart.helpers.canvas.roundedRect = drawRoundedRectangleSpy;
 		mockContext.resetCalls();
 		point._view.pointStyle = 'rectRounded';
@@ -218,11 +223,11 @@ describe('Point element tests', function() {
 
 		expect(drawRoundedRectangleSpy).toHaveBeenCalledWith(
 			mockContext,
-			10 - offset,
-			15 - offset,
-			Math.SQRT2 * 2,
-			Math.SQRT2 * 2,
-			2 / 2
+			tx,
+			ty,
+			tw,
+			tw,
+			tw * Math.SQRT2 / 4
 		);
 		expect(mockContext.getCalls()).toContain(
 			jasmine.objectContaining({
@@ -250,16 +255,16 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'moveTo',
-			args: [10 - 1 / Math.SQRT2 * 2, 15]
+			args: [tx, ty + tw / 2]
 		}, {
 			name: 'lineTo',
-			args: [10, 15 + 1 / Math.SQRT2 * 2]
+			args: [tx + tw / 2, ty]
 		}, {
 			name: 'lineTo',
-			args: [10 + 1 / Math.SQRT2 * 2, 15],
+			args: [tx + tw, ty + tw / 2],
 		}, {
 			name: 'lineTo',
-			args: [10, 15 - 1 / Math.SQRT2 * 2],
+			args: [tx + tw / 2, ty + tw],
 		}, {
 			name: 'closePath',
 			args: []
@@ -289,16 +294,16 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'moveTo',
-			args: [10, 17]
+			args: [tx + tw / 2, ty]
 		}, {
 			name: 'lineTo',
-			args: [10, 13],
+			args: [tx + tw / 2, ty + tw],
 		}, {
 			name: 'moveTo',
-			args: [8, 15],
+			args: [tx, ty + tw / 2],
 		}, {
 			name: 'lineTo',
-			args: [12, 15],
+			args: [tx + tw, ty + tw / 2],
 		}, {
 			name: 'closePath',
 			args: [],
@@ -325,16 +330,16 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'moveTo',
-			args: [10 - Math.cos(Math.PI / 4) * 2, 15 - Math.sin(Math.PI / 4) * 2]
+			args: [tx, ty]
 		}, {
 			name: 'lineTo',
-			args: [10 + Math.cos(Math.PI / 4) * 2, 15 + Math.sin(Math.PI / 4) * 2],
+			args: [tx + tw, ty + tw],
 		}, {
 			name: 'moveTo',
-			args: [10 - Math.cos(Math.PI / 4) * 2, 15 + Math.sin(Math.PI / 4) * 2],
+			args: [tx, ty + tw],
 		}, {
 			name: 'lineTo',
-			args: [10 + Math.cos(Math.PI / 4) * 2, 15 - Math.sin(Math.PI / 4) * 2],
+			args: [tx + tw, ty],
 		}, {
 			name: 'closePath',
 			args: [],
@@ -361,28 +366,28 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'moveTo',
-			args: [10, 17]
+			args: [tx + tw / 2, ty]
 		}, {
 			name: 'lineTo',
-			args: [10, 13],
+			args: [tx + tw / 2, ty + tw],
 		}, {
 			name: 'moveTo',
-			args: [8, 15],
+			args: [tx, ty + tw / 2],
 		}, {
 			name: 'lineTo',
-			args: [12, 15],
+			args: [tx + tw, ty + tw / 2],
 		}, {
 			name: 'moveTo',
-			args: [10 - Math.cos(Math.PI / 4) * 2, 15 - Math.sin(Math.PI / 4) * 2]
+			args: [tx, ty]
 		}, {
 			name: 'lineTo',
-			args: [10 + Math.cos(Math.PI / 4) * 2, 15 + Math.sin(Math.PI / 4) * 2],
+			args: [tx + tw, ty + tw],
 		}, {
 			name: 'moveTo',
-			args: [10 - Math.cos(Math.PI / 4) * 2, 15 + Math.sin(Math.PI / 4) * 2],
+			args: [tx, ty + tw],
 		}, {
 			name: 'lineTo',
-			args: [10 + Math.cos(Math.PI / 4) * 2, 15 - Math.sin(Math.PI / 4) * 2],
+			args: [tx + tw, ty],
 		}, {
 			name: 'closePath',
 			args: [],
@@ -409,10 +414,10 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'moveTo',
-			args: [8, 15]
+			args: [tx, ty + tw / 2]
 		}, {
 			name: 'lineTo',
-			args: [12, 15],
+			args: [tx + tw, ty + tw / 2],
 		}, {
 			name: 'closePath',
 			args: [],
@@ -439,10 +444,10 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'moveTo',
-			args: [10, 15]
+			args: [tx + tw / 2, ty + tw / 2]
 		}, {
 			name: 'lineTo',
-			args: [12, 15],
+			args: [tx + tw, ty + tw / 2],
 		}, {
 			name: 'closePath',
 			args: [],

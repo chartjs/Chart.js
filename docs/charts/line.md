@@ -71,6 +71,7 @@ All point* properties can be specified as an array. If these are set to an array
 | `showLine` | `Boolean` | If false, the line is not drawn for this dataset.
 | `spanGaps` | `Boolean` | If true, lines will be drawn between points with no or null data. If false, points with `NaN` data will create a break in the line
 | `steppedLine` | `Boolean/String` | If the line is shown as a stepped line. [more...](#stepped-line)
+| `legend` | `object` | Style of the legend if point style is not used. [more...](../configuration/legend.md/#dataset-legend-configuration)
 
 ### cubicInterpolationMode
 The following interpolation modes are supported:

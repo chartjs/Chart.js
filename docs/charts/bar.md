@@ -6,12 +6,12 @@ A bar chart provides a way of showing data values represented as vertical bars. 
     "type": "bar",
     "data": {
         "labels": [
-            "January", 
-            "February", 
-            "March", 
-            "April", 
-            "May", 
-            "June", 
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
             "July"
         ],
         "datasets": [{
@@ -77,6 +77,7 @@ Some properties can be specified as an array. If these are set to an array value
 | `hoverBackgroundColor` | `Color/Color[]` | The fill colour of the bars when hovered.
 | `hoverBorderColor` | `Color/Color[]` | The stroke colour of the bars when hovered.
 | `hoverBorderWidth` | `Number/Number[]` | The stroke width of the bars when hovered.
+| `legend` | `object` | Style of the legend if point style is not used. [more...](../configuration/legend.md/#dataset-legend-configuration)
 
 ### borderSkipped
 This setting is used to avoid drawing the bar stroke at the base of the fill. In general, this does not need to be changed except when creating chart types that derive from a bar chart.

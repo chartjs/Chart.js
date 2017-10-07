@@ -8,9 +8,9 @@ They are often useful for comparing the points of two or more different data set
     "type": "radar",
     "data": {
         "labels": [
-            "Eating", 
-            "Drinking", 
-            "Sleeping", 
+            "Eating",
+            "Drinking",
+            "Sleeping",
             "Designing",
             "Coding",
             "Cycling",
@@ -88,13 +88,14 @@ All point* properties can be specified as an array. If these are set to an array
 | `pointHoverBorderColor` | `Color/Color[]` | Point border color when hovered.
 | `pointHoverBorderWidth` | `Number/Number[]` | Border width of point when hovered.
 | `pointHoverRadius` | `Number/Number[]` | The radius of the point when hovered.
+| `legend` | `object` | Style of the legend if point style is not used. [more...](../configuration/legend.md/#dataset-legend-configuration)
 
 ### pointStyle
 The style of point. Options are:
 * 'circle'
 * 'cross'
 * 'crossRot'
-* 'dash'. 
+* 'dash'.
 * 'line'
 * 'rect'
 * 'rectRounded'
@@ -127,7 +128,7 @@ It is common to want to apply a configuration setting to all created radar chart
 
 ## Data Structure
 
-The `data` property of a dataset for a radar chart is specified as a an array of numbers. Each point in the data array corresponds to the label at the same index on the x axis. 
+The `data` property of a dataset for a radar chart is specified as a an array of numbers. Each point in the data array corresponds to the label at the same index on the x axis.
 
 ```javascript
 data: [20, 10]

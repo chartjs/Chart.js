@@ -39,6 +39,7 @@ defaults._set('doughnut', {
 		labels: {
 			generateLabels: function(chart) {
 				var data = chart.data;
+				var opts = chart.options.legend.labels;
 				if (data.labels.length && data.datasets.length) {
 					return data.labels.map(function(label, i) {
 						var meta = chart.getDatasetMeta(0);
@@ -50,14 +51,14 @@ defaults._set('doughnut', {
 						var fill = custom.backgroundColor ? custom.backgroundColor : valueAtIndexOrDefault(ds.backgroundColor, i, arcOpts.backgroundColor);
 						var stroke = custom.borderColor ? custom.borderColor : valueAtIndexOrDefault(ds.borderColor, i, arcOpts.borderColor);
 						var bw = custom.borderWidth ? custom.borderWidth : valueAtIndexOrDefault(ds.borderWidth, i, arcOpts.borderWidth);
-
 						return {
 							text: label,
 							fillStyle: fill,
-							strokeStyle: stroke,
-							lineWidth: bw,
+							strokeStyle: helpers.valueOrDefault((ds.legend && ds.legend.borderColor && ds.legend.borderColor[i]), stroke),
+							lineWidth: helpers.valueOrDefault((ds.legend && ds.legend.borderWidth && ds.legend.borderWidth[i]), bw),
 							hidden: isNaN(ds.data[i]) || meta.data[i].hidden,
-
+							legendSymbol: helpers.valueOrDefault((ds.legend && ds.legend.symbol && ds.legend.symbol[i]), opts.symbol),
+							boxWidth: helpers.valueOrDefault((ds.legend && ds.legend.boxWidth && ds.legend.boxWidth[i]), opts.boxWidth),
 							// Extra data used for toggling the correct item
 							index: i
 						};

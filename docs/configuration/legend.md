@@ -10,7 +10,7 @@ The legend configuration is passed into the `options.legend` namespace. The glob
 | `display` | `Boolean` | `true` | is the legend shown
 | `position` | `String` | `'top'` | Position of the legend. [more...](#position)
 | `fullWidth` | `Boolean` | `true` | Marks that this box should take the full width of the canvas (pushing down other boxes). This is unlikely to need to be changed in day-to-day use.
-| `onClick` | `Function` | | A callback that is called when a click event is registered on a label item 
+| `onClick` | `Function` | | A callback that is called when a click event is registered on a label item
 | `onHover` | `Function` | | A callback that is called when a 'mousemove' event is registered on top of a label item
 | `reverse` | `Boolean` | `false` | Legend will show datasets in reverse order.
 | `labels` | `Object` | | See the [Legend Label Configuration](#legend-label-configuration) section below.
@@ -28,7 +28,7 @@ The legend label configuration is nested below the legend configuration using th
 
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
-| `boxWidth` | `Number` | `40` | width of coloured box
+| `boxWidth` | `Number` | `40` | width of symbol if point style not used
 | `fontSize` | `Number` | `12` | font size of text
 | `fontStyle` | `String` | `'normal'` | font style of text
 | `fontColor` | Color | `'#666'` | Color of text
@@ -37,6 +37,7 @@ The legend label configuration is nested below the legend configuration using th
 | `generateLabels` | `Function` | | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See [Legend Item](#legend-item-interface) for details.
 | `filter` | `Function` | `null` | Filters legend items out of the legend. Receives 2 parameters, a [Legend Item](#legend-item-interface) and the chart data.
 | `usePointStyle` | `Boolean` | `false` | Label style will match corresponding point style (size is based on fontSize, boxWidth is not used in this case).
+| `symbol` | `String` | `rect` | Legend symbol to display if point style is not used. Available values from [PointStyle](./elements.md/#point-styles)
 
 ## Legend Item Interface
 
@@ -73,6 +74,12 @@ Items passed to the legend `onClick` function are the ones returned from `labels
 
     // Point style of the legend box (only used if usePointStyle is true)
     pointStyle: String
+
+    // Legend symbol to display if point style is not used.
+    symbol: String
+
+	// Width of legend symbol if point style is not used.
+    boxWidth: Number
 }
 ```
 
@@ -164,3 +171,18 @@ var chart = new Chart(ctx, {
     }
 });
 ```
+
+### Dataset Legend Configuration
+
+The following legend properties can be defined at dataset level. Array is accepted for
+all those properties for doughnut and polar chart types.
+
+| Name | Type | Description
+| -----| ---- | -----------
+| `symbol` | `String` | Legend symbol to display if point style is not used. Available values from [PointStyle](./elements.md/#point-styles).
+| `boxWidth` | `Number` | width of symbol if point style not used
+| `borderWidth` | `Number` | width of symbol border or symbol line
+| `borderColor` | `Number` | color of symbol border or symbol line
+
+
+
