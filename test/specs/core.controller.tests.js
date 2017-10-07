@@ -495,6 +495,45 @@ describe('Chart', function() {
 				});
 			});
 		});
+
+		// https://github.com/chartjs/Chart.js/issues/4737
+		it('should resize the canvas when re-creating the chart', function(done) {
+			var chart = acquireChart({
+				options: {
+					responsive: true
+				}
+			}, {
+				wrapper: {
+					style: 'width: 320px'
+				}
+			});
+
+			waitForResize(chart, function() {
+				var canvas = chart.canvas;
+				expect(chart).toBeChartOfSize({
+					dw: 320, dh: 320,
+					rw: 320, rh: 320,
+				});
+
+				chart.destroy();
+				chart = new Chart(canvas, {
+					type: 'line',
+					options: {
+						responsive: true
+					}
+				});
+
+				canvas.parentNode.style.width = '455px';
+				waitForResize(chart, function() {
+					expect(chart).toBeChartOfSize({
+						dw: 455, dh: 455,
+						rw: 455, rh: 455,
+					});
+
+					done();
+				});
+			});
+		});
 	});
 
 	describe('config.options.responsive: true (maintainAspectRatio: true)', function() {
@@ -627,7 +666,7 @@ describe('Chart', function() {
 		});
 	});
 
-	describe('config.options.devicePixelRatio 3', function() {
+	describe('config.options.devicePixelRatio', function() {
 		beforeEach(function() {
 			this.devicePixelRatio = window.devicePixelRatio;
 			window.devicePixelRatio = 1;
