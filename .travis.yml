@@ -23,7 +23,7 @@ dist: trusty
 
 addons:
   chrome: stable
-  firefox: latest
+  firefox: "54.0"
 
 # IMPORTANT: scripts require GITHUB_AUTH_TOKEN and GITHUB_AUTH_EMAIL environment variables
 # IMPORTANT: scripts has to be set executables in the Git repository (error 127)
