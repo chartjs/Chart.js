@@ -253,7 +253,10 @@ function determineStepSize(min, max, unit, capacity) {
 	return factor;
 }
 
-function determineUnit(minUnit, min, max, capacity) {
+/**
+ * Figures out what unit results in an appropriate number of auto-generated ticks
+ */
+function determineUnitForAutoTicks(minUnit, min, max, capacity) {
 	var ilen = UNITS.length;
 	var i, interval, factor;
 
@@ -267,6 +270,24 @@ function determineUnit(minUnit, min, max, capacity) {
 	}
 
 	return UNITS[ilen - 1];
+}
+
+/**
+ * Figures out what unit to format a set of ticks with
+ */
+function determineUnitForFormatting(ticks, minUnit, min, max) {
+	var duration = moment.duration(moment(max).diff(moment(min)));
+	var ilen = UNITS.length;
+	var i, unit;
+
+	for (i = ilen - 1; i >= UNITS.indexOf(minUnit); i--) {
+		unit = UNITS[i];
+		if (INTERVALS[unit].common && duration.as(unit) >= ticks.length) {
+			return unit;
+		}
+	}
+
+	return UNITS[minUnit ? UNITS.indexOf(minUnit) : 0];
 }
 
 function determineMajorUnit(unit) {
@@ -283,8 +304,10 @@ function determineMajorUnit(unit) {
  * Important: this method can return ticks outside the min and max range, it's the
  * responsibility of the calling code to clamp values if needed.
  */
-function generate(min, max, minor, major, capacity, options) {
+function generate(min, max, capacity, options) {
 	var timeOpts = options.time;
+	var minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, capacity);
+	var major = determineMajorUnit(minor);
 	var stepSize = helpers.valueOrDefault(timeOpts.stepSize, timeOpts.unitStepSize);
 	var weekday = minor === 'week' ? timeOpts.isoWeekday : false;
 	var majorTicksEnabled = options.ticks.major.enabled;
@@ -553,10 +576,6 @@ module.exports = function(Chart) {
 			var max = me.max;
 			var options = me.options;
 			var timeOpts = options.time;
-			var formats = timeOpts.displayFormats;
-			var capacity = me.getLabelCapacity(min);
-			var unit = timeOpts.unit || determineUnit(timeOpts.minUnit, min, max, capacity);
-			var majorUnit = determineMajorUnit(unit);
 			var timestamps = [];
 			var ticks = [];
 			var i, ilen, timestamp;
@@ -570,7 +589,7 @@ module.exports = function(Chart) {
 				break;
 			case 'auto':
 			default:
-				timestamps = generate(min, max, unit, majorUnit, capacity, options);
+				timestamps = generate(min, max, me.getLabelCapacity(min), options);
 			}
 
 			if (options.bounds === 'ticks' && timestamps.length) {
@@ -594,14 +613,12 @@ module.exports = function(Chart) {
 			me.max = max;
 
 			// PRIVATE
-			me._unit = unit;
-			me._majorUnit = majorUnit;
-			me._minorFormat = formats[unit];
-			me._majorFormat = formats[majorUnit];
+			me._unit = timeOpts.unit || determineUnitForFormatting(ticks, timeOpts.minUnit, me.min, me.max);
+			me._majorUnit = determineMajorUnit(me._unit);
 			me._table = buildLookupTable(me._timestamps.data, min, max, options.distribution);
 			me._offsets = computeOffsets(me._table, ticks, min, max, options);
 
-			return ticksFromTimestamps(ticks, majorUnit);
+			return ticksFromTimestamps(ticks, me._majorUnit);
 		},
 
 		getLabelForIndex: function(index, datasetIndex) {
@@ -625,16 +642,18 @@ module.exports = function(Chart) {
 		 * Function to format an individual tick mark
 		 * @private
 		 */
-		tickFormatFunction: function(tick, index, ticks) {
+		tickFormatFunction: function(tick, index, ticks, formatOverride) {
 			var me = this;
 			var options = me.options;
 			var time = tick.valueOf();
+			var formats = options.time.displayFormats;
+			var minorFormat = formats[me._unit];
 			var majorUnit = me._majorUnit;
-			var majorFormat = me._majorFormat;
-			var majorTime = tick.clone().startOf(me._majorUnit).valueOf();
+			var majorFormat = formats[majorUnit];
+			var majorTime = tick.clone().startOf(majorUnit).valueOf();
 			var majorTickOpts = options.ticks.major;
 			var major = majorTickOpts.enabled && majorUnit && majorFormat && time === majorTime;
-			var label = tick.format(major ? majorFormat : me._minorFormat);
+			var label = tick.format(formatOverride ? formatOverride : major ? majorFormat : minorFormat);
 			var tickOpts = major ? majorTickOpts : options.ticks.minor;
 			var formatter = helpers.valueOrDefault(tickOpts.callback, tickOpts.userCallback);
 
@@ -720,9 +739,9 @@ module.exports = function(Chart) {
 		getLabelCapacity: function(exampleTime) {
 			var me = this;
 
-			me._minorFormat = me.options.time.displayFormats.millisecond;	// Pick the longest format for guestimation
+			var formatOverride = me.options.time.displayFormats.millisecond;	// Pick the longest format for guestimation
 
-			var exampleLabel = me.tickFormatFunction(moment(exampleTime), 0, []);
+			var exampleLabel = me.tickFormatFunction(moment(exampleTime), 0, [], formatOverride);
 			var tickLabelWidth = me.getLabelWidth(exampleLabel);
 			var innerWidth = me.isHorizontal() ? me.width : me.height;
 
