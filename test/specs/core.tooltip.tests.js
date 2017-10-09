@@ -826,7 +826,7 @@ describe('Core.Tooltip', function() {
 	describe('positioners', function() {
 		it('Should call custom positioner with correct parameters and scope', function() {
 
-			Chart.Tooltip.positioners.test = function test(elements, eventPosition) {
+			Chart.Tooltip.positioners.test = function(elements, eventPosition) {
 
 				expect(this instanceof Chart.Tooltip).toBe(true);
 				expect(elements instanceof Array).toBe(true);
