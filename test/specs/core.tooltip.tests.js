@@ -826,17 +826,11 @@ describe('Core.Tooltip', function() {
 	describe('positioners', function() {
 		it('Should call custom positioner with correct parameters and scope', function() {
 
-			Chart.Tooltip.positioners.test = function(elements, eventPosition) {
-
-				expect(this instanceof Chart.Tooltip).toBe(true);
-				expect(elements instanceof Array).toBe(true);
-				expect(eventPosition.hasOwnProperty('x') && eventPosition.hasOwnProperty('y')).toBe(true);
-
-				return {
-					x: 0,
-					y: 0
-				};
+			Chart.Tooltip.positioners.test = function() {
+				return {x: 0, y: 0};
 			};
+
+			spyOn(Chart.Tooltip.positioners, 'test').and.callThrough();
 
 			var chart = window.acquireChart({
 				type: 'line',
@@ -879,6 +873,13 @@ describe('Core.Tooltip', function() {
 
 			// Manually trigger rather than having an async test
 			node.dispatchEvent(evt);
+
+			var fn = Chart.Tooltip.positioners.test;
+			expect(fn.calls.count()).toBe(1);
+			expect(fn.calls.first().args[0] instanceof Array).toBe(true);
+			expect(fn.calls.first().args[1].hasOwnProperty('x')).toBe(true);
+			expect(fn.calls.first().args[1].hasOwnProperty('y')).toBe(true);
+			expect(fn.calls.first().object instanceof Chart.Tooltip).toBe(true);
 		});
 	});
 });
