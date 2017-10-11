@@ -318,7 +318,7 @@ module.exports = function(Chart) {
 			var length = pixels.length;
 			var start = ruler.start;
 			var end = ruler.end;
-			var leftSampleSize, rightSampleSize, leftCategorySize, rightCategorySize, fullBarSize, size;
+			var leftSampleSize, rightSampleSize, leftCategorySize, rightCategorySize, fullBarSize, size, rescale;
 
 			if (length === 1) {
 				leftSampleSize = base > start ? base - start : end - base;
@@ -342,10 +342,14 @@ module.exports = function(Chart) {
 			rightCategorySize = rightSampleSize * options.categoryPercentage;
 			fullBarSize = (leftCategorySize + rightCategorySize) / ruler.stackCount;
 			size = fullBarSize * options.barPercentage;
+			size = helpers.valueOrDefault(options.barThickness, size);
 
-			size = Math.min(
-				helpers.valueOrDefault(options.barThickness, size),
-				helpers.valueOrDefault(options.maxBarThickness, Infinity));
+			if (size > helpers.valueOrDefault(options.maxBarThickness, Infinity)) {
+				rescale = options.maxBarThickness / fullBarSize;
+				leftCategorySize *= rescale;
+				rightCategorySize *= rescale;
+				size = fullBarSize = (leftCategorySize + rightCategorySize) / ruler.stackCount;
+			}
 
 			base -= leftCategorySize;
 			base += fullBarSize * stackIndex;

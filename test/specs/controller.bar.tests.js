@@ -1191,6 +1191,53 @@ describe('Chart.controllers.bar', function() {
 		});
 	});
 
+	it('should get the correct bar points when maxBarThickness is applied', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					data: [10, 55, 90, 10],
+					stack: 'stack1'
+				}],
+				labels: ['2017-01-15 00:00:00 +0000', '2017-01-17 16:00:00 +0000', '2017-01-17 18:00:00 +0000', '2017-01-24 00:00:00 +0000']
+			},
+			options: {
+				legend: false,
+				title: false,
+				scales: {
+					xAxes: [{
+						maxBarThickness: 10,
+						type: 'time',
+						time: {
+							unit: 'day'
+						},
+						display: false
+					}],
+					yAxes: [{
+						ticks: {
+							beginAtZero: true
+						},
+						display: false
+					}]
+				}
+			}
+		});
+
+		var meta = chart.getDatasetMeta(0);
+
+		[
+			{b: 512, x: 0, y: 455, w: 10},
+			{b: 512, x: 147, y: 199, w: 10},
+			{b: 512, x: 161, y: 0, w: 10},
+			{b: 512, x: 512, y: 455, w: 10}
+		].forEach(function(values, i) {
+			expect(meta.data[i]._model.base).toBeCloseToPixel(values.b);
+			expect(meta.data[i]._model.x).toBeCloseToPixel(values.x);
+			expect(meta.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta.data[i]._model.width).toBeCloseToPixel(values.w);
+		});
+	});
+
 	it('should update elements when the scales are stacked and the y axis is logarithmic', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
