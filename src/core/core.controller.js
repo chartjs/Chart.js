@@ -528,7 +528,7 @@ module.exports = function(Chart) {
 			}
 
 			me.drawDatasets(easingValue);
-			me.drawTooltip(easingValue);
+			me._drawTooltip(easingValue);
 
 			plugins.notify(me, 'afterDraw', [easingValue]);
 		},
@@ -598,7 +598,7 @@ module.exports = function(Chart) {
 		 * hook, in which case, plugins will not be called on `afterTooltipDraw`.
 		 * @private
 		 */
-		drawTooltip: function(easingValue) {
+		_drawTooltip: function(easingValue) {
 			var me = this;
 			var tooltip = me.tooltip;
 			var args = {
