@@ -274,16 +274,6 @@ module.exports = function(Chart) {
 	 * @returns {Boolean} `false` to cancel the chart drawing.
 	 */
 	/**
- 	 * @method IPlugin#beforeTooltipDraw
- 	 * @desc Called before drawing `tooltips` at every animation frame specified by the given
- 	 * easing value. If any plugin returns `false`, the frame drawing is cancelled until
- 	 * another `render` is triggered.
- 	 * @param {Chart.Controller} chart - The chart instance.
- 	 * @param {Number} easingValue - The current animation value, between 0.0 and 1.0.
- 	 * @param {Object} options - The plugin options.
- 	 * @returns {Boolean} `false` to cancel the chart drawing.
- 	 */
-	/**
 	 * @method IPlugin#afterDraw
 	 * @desc Called after the `chart` has been drawn for the specific easing value. Note
 	 * that this hook will not be called if the drawing has been previously cancelled.
@@ -333,6 +323,27 @@ module.exports = function(Chart) {
 	 * @param {Number} args.easingValue - The current animation value, between 0.0 and 1.0.
 	 * @param {Object} options - The plugin options.
 	 */
+	 /**
+  	 * @method IPlugin#beforeTooltipDraw
+	 * @desc Called before drawing the `tooltip`. If any plugin returns `false`,
+	 * the tooltip drawing is cancelled until another `render` is triggered.
+	 * @param {Chart} chart - The chart instance.
+	 * @param {Object} args - The call arguments.
+	 * @param {Object} args.tooltip - The tooltip.
+	 * @param {Object} options - The plugin options.
+	 * @param {Number} args.easingValue - The current animation value, between 0.0 and 1.0.
+	 * @returns {Boolean} `false` to cancel the chart tooltip drawing.
+  	 */
+	 /**
+ 	 * @method IPlugin#afterTooltipDraw
+  	 * @desc Called after drawing the `tooltip`. Note that this hook will not
+ 	 * be called if the tooltip drawing has been previously cancelled.
+ 	 * @param {Chart} chart - The chart instance.
+ 	 * @param {Object} args - The call arguments.
+ 	 * @param {Object} args.tooltip - The tooltip.
+	 * @param {Number} args.easingValue - The current animation value, between 0.0 and 1.0.
+ 	 * @param {Object} options - The plugin options.
+ 	 */
 	/**
 	 * @method IPlugin#beforeEvent
  	 * @desc Called before processing the specified `event`. If any plugin returns `false`,
