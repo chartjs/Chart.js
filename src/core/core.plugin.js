@@ -330,8 +330,8 @@ module.exports = function(Chart) {
 	 * @param {Chart} chart - The chart instance.
 	 * @param {Object} args - The call arguments.
 	 * @param {Object} args.tooltip - The tooltip.
-	 * @param {Object} options - The plugin options.
 	 * @param {Number} args.easingValue - The current animation value, between 0.0 and 1.0.
+	 * @param {Object} options - The plugin options.
 	 * @returns {Boolean} `false` to cancel the chart tooltip drawing.
   	 */
 	/**
