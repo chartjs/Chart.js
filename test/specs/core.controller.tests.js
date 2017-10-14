@@ -845,6 +845,8 @@ describe('Chart', function() {
 					'beforeDatasetDraw',
 					'afterDatasetDraw',
 					'afterDatasetsDraw',
+					'beforeTooltipDraw',
+					'afterTooltipDraw',
 					'afterDraw',
 					'afterRender',
 				],
