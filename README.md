@@ -23,7 +23,7 @@ bower install chart.js --save
 
 Chart.js provides two different builds that are available for your use. The `Chart.js` and `Chart.min.js` files include Chart.js and the accompanying color parsing library. If this version is used and you require the use of the time axis, [Moment.js](http://momentjs.com/) will need to be included before Chart.js.
 
-The `Chart.bundle.js` and `Chart.bundle.min.js` builds include Moment.js in a single file. This version should be used if you require time axes and want a single file to include, select this version. Do not use this build if your application already includes Moment.js. If you do, Moment.js will be included twice, increasing the page load time and potentially introducing version issues.
+The `Chart.bundle.js` and `Chart.bundle.min.js` builds include Moment.js and Moment-timezone.js in a single file. This version should be used if you require time axes and want a single file to include, select this version. Do not use this build if your application already includes Moment.js and Moment-timezone.js (optional). If you do, those files will be included twice, increasing the page load time and potentially introducing version issues.
 
 ## Documentation
 

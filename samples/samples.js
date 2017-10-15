@@ -43,6 +43,9 @@
 		}, {
 			title: 'Point sizes',
 			path: 'charts/line/point-sizes.html'
+		}, {
+			title: 'Timezone',
+			path: 'charts/line/timezone.html'
 		}]
 	}, {
 		title: 'Area charts',

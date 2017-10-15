@@ -1,8 +1,38 @@
 /* global window: false */
 'use strict';
 
-var moment = require('moment');
+var moment = require('moment-timezone');
 moment = typeof moment === 'function' ? moment : window.moment;
+
+// manage moment timezone
+moment.prototype.tzFormat = function(tz, format) {
+	if (moment.tz && tz && moment.tz.zone(tz)) {
+		this.tz(tz);
+	}
+	return this.format(format);
+};
+
+moment.prototype.tzStartOf = function(tz, unit) {
+	if (moment.tz && tz && moment.tz.zone(tz)) {
+		this.tz(tz);
+	}
+	return this.startOf(unit);
+};
+
+moment.prototype.tzEndOf = function(tz, unit) {
+	if (moment.tz && tz && moment.tz.zone(tz)) {
+		this.tz(tz);
+	}
+	return this.endOf(unit);
+};
+
+moment.prototype.tzIsoWeekday = function(tz, unit) {
+	if (moment.tz && tz && moment.tz.zone(tz)) {
+		this.tz(tz);
+	}
+	return this.isoWeekday(unit);
+};
+
 
 var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
@@ -182,11 +212,12 @@ function interpolate(table, skey, sval, tkey) {
  * @see http://momentjs.com/docs/#/parsing/
  */
 function momentify(value, options) {
+
 	var parser = options.parser;
 	var format = options.parser || options.format;
 
 	if (typeof parser === 'function') {
-		return parser(value);
+		return moment(parser(value));
 	}
 
 	if (typeof value === 'string' && typeof format === 'string') {
@@ -222,7 +253,7 @@ function parse(input, scale) {
 	}
 
 	if (options.round) {
-		value.startOf(options.round);
+		value.tzStartOf(options.timezone, options.round);
 	}
 
 	return value.valueOf();
@@ -285,6 +316,7 @@ function determineMajorUnit(unit) {
  */
 function generate(min, max, minor, major, capacity, options) {
 	var timeOpts = options.time;
+	var tz = timeOpts.timezone;
 	var stepSize = helpers.valueOrDefault(timeOpts.stepSize, timeOpts.unitStepSize);
 	var weekday = minor === 'week' ? timeOpts.isoWeekday : false;
 	var majorTicksEnabled = options.ticks.major.enabled;
@@ -300,13 +332,13 @@ function generate(min, max, minor, major, capacity, options) {
 
 	// For 'week' unit, handle the first day of week option
 	if (weekday) {
-		first = first.isoWeekday(weekday);
-		last = last.isoWeekday(weekday);
+		first = first.tzIsoWeekday(tz, weekday);
+		last = last.tzIsoWeekday(tz, weekday);
 	}
 
 	// Align first/last ticks on unit
-	first = first.startOf(weekday ? 'day' : minor);
-	last = last.startOf(weekday ? 'day' : minor);
+	first = first.tzStartOf(tz, weekday ? 'day' : minor);
+	last = last.tzStartOf(tz, weekday ? 'day' : minor);
 
 	// Make sure that the last tick include max
 	if (last < max) {
@@ -319,7 +351,7 @@ function generate(min, max, minor, major, capacity, options) {
 		// Align the first tick on the previous `minor` unit aligned on the `major` unit:
 		// we first aligned time on the previous `major` unit then add the number of full
 		// stepSize there is between first and the previous major time.
-		time.startOf(major);
+		time.tzStartOf(tz, major);
 		time.add(~~((first - time) / (interval.size * stepSize)) * stepSize, minor);
 	}
 
@@ -363,13 +395,13 @@ function computeOffsets(table, ticks, min, max, options) {
 	return {left: left, right: right};
 }
 
-function ticksFromTimestamps(values, majorUnit) {
+function ticksFromTimestamps(values, majorUnit, tz) {
 	var ticks = [];
 	var i, ilen, value, major;
 
 	for (i = 0, ilen = values.length; i < ilen; ++i) {
 		value = values[i];
-		major = majorUnit ? value === +moment(value).startOf(majorUnit) : false;
+		major = majorUnit ? value === +moment(value).tzStartOf(tz, majorUnit) : false;
 
 		ticks.push({
 			value: value,
@@ -481,6 +513,7 @@ module.exports = function(Chart) {
 			var me = this;
 			var chart = me.chart;
 			var timeOpts = me.options.time;
+			var tz = timeOpts.timezone;
 			var min = parse(timeOpts.min, me) || MAX_INTEGER;
 			var max = parse(timeOpts.max, me) || MIN_INTEGER;
 			var timestamps = [];
@@ -530,8 +563,8 @@ module.exports = function(Chart) {
 			}
 
 			// In case there is no valid min/max, let's use today limits
-			min = min === MAX_INTEGER ? +moment().startOf('day') : min;
-			max = max === MIN_INTEGER ? +moment().endOf('day') + 1 : max;
+			min = min === MAX_INTEGER ? +moment().tzStartOf(tz, 'day') : min;
+			max = max === MIN_INTEGER ? +moment().tzEndOf(tz, 'day') + 1 : max;
 
 			// Make sure that max is strictly higher than min (required by the lookup table)
 			me.min = Math.min(min, max);
@@ -553,6 +586,7 @@ module.exports = function(Chart) {
 			var max = me.max;
 			var options = me.options;
 			var timeOpts = options.time;
+			var tz = timeOpts.timezone;
 			var formats = timeOpts.displayFormats;
 			var capacity = me.getLabelCapacity(min);
 			var unit = timeOpts.unit || determineUnit(timeOpts.minUnit, min, max, capacity);
@@ -601,13 +635,14 @@ module.exports = function(Chart) {
 			me._table = buildLookupTable(me._timestamps.data, min, max, options.distribution);
 			me._offsets = computeOffsets(me._table, ticks, min, max, options);
 
-			return ticksFromTimestamps(ticks, majorUnit);
+			return ticksFromTimestamps(ticks, majorUnit, tz);
 		},
 
 		getLabelForIndex: function(index, datasetIndex) {
 			var me = this;
 			var data = me.chart.data;
 			var timeOpts = me.options.time;
+			var tz = timeOpts.timezone;
 			var label = data.labels && index < data.labels.length ? data.labels[index] : '';
 			var value = data.datasets[datasetIndex].data[index];
 
@@ -615,7 +650,7 @@ module.exports = function(Chart) {
 				label = me.getRightValue(value);
 			}
 			if (timeOpts.tooltipFormat) {
-				label = momentify(label, timeOpts).format(timeOpts.tooltipFormat);
+				label = momentify(label, timeOpts).tzFormat(tz, timeOpts.tooltipFormat);
 			}
 
 			return label;
@@ -628,13 +663,15 @@ module.exports = function(Chart) {
 		tickFormatFunction: function(tick, index, ticks) {
 			var me = this;
 			var options = me.options;
+			var timeOpts = options.time;
+			var tz = timeOpts.timezone;
 			var time = tick.valueOf();
 			var majorUnit = me._majorUnit;
 			var majorFormat = me._majorFormat;
-			var majorTime = tick.clone().startOf(me._majorUnit).valueOf();
+			var majorTime = tick.clone().tzStartOf(tz, me._majorUnit).valueOf();
 			var majorTickOpts = options.ticks.major;
 			var major = majorTickOpts.enabled && majorUnit && majorFormat && time === majorTime;
-			var label = tick.format(major ? majorFormat : me._minorFormat);
+			var label = tick.tzFormat(tz, major ? majorFormat : me._minorFormat);
 			var tickOpts = major ? majorTickOpts : options.ticks.minor;
 			var formatter = helpers.valueOrDefault(tickOpts.callback, tickOpts.userCallback);
 
