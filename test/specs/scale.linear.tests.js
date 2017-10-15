@@ -548,6 +548,34 @@ describe('Linear Scale', function() {
 		expect(chart.scales.yScale0.ticks).toEqual(['11', '9', '7', '5', '3', '1']);
 	});
 
+	it('Should create integer steps if integerSteps is true', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					yAxisID: 'yScale0',
+					data: [0, 1, 2, 1, 0, 1]
+				}],
+				labels: ['a', 'b', 'c', 'd', 'e', 'f']
+			},
+			options: {
+				scales: {
+					yAxes: [{
+						id: 'yScale0',
+						type: 'linear',
+						ticks: {
+							integerSteps: true
+						}
+					}]
+				}
+			}
+		});
+
+		expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
+		expect(chart.scales.yScale0.min).toBe(0);
+		expect(chart.scales.yScale0.max).toBe(2);
+		expect(chart.scales.yScale0.ticks).toEqual(['2', '1', '0']);
+	});
 
 	it('should forcibly include 0 in the range if the beginAtZero option is used', function() {
 		var chart = window.acquireChart({
