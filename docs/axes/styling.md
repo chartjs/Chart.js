@@ -9,7 +9,7 @@ The grid line configuration is nested under the scale configuration in the `grid
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
 | `display` | `Boolean` | `true` | If false, do not display grid lines for this axis.
-| `color` | Color or Color[] | `'rgba(0, 0, 0, 0.1)'` | The color of the grid lines. If specified as an array, the first color applies to the first grid line, the second to the second grid line and so on.
+| `color` | `Color` or `Color[]` | `'rgba(0, 0, 0, 0.1)'` | The color of the grid lines. If specified as an array, the first color applies to the first grid line, the second to the second grid line and so on.
 | `borderDash` | `Number[]` | `[]` | Length and spacing of dashes on grid lines. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
 | `borderDashOffset` | `Number` | `0` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
 | `lineWidth` | `Number or Number[]` | `1` | Stroke width of grid lines.
@@ -18,7 +18,7 @@ The grid line configuration is nested under the scale configuration in the `grid
 | `drawTicks` | `Boolean` | `true` | If true, draw lines beside the ticks in the axis area beside the chart.
 | `tickMarkLength` | `Number` | `10` | Length in pixels that the grid lines will draw into the axis area.
 | `zeroLineWidth` | `Number` | `1` | Stroke width of the grid line for the first index (index 0).
-| `zeroLineColor` | Color | `'rgba(0, 0, 0, 0.25)'` | Stroke color of the grid line for the first index (index 0).
+| `zeroLineColor` | `Color` | `'rgba(0, 0, 0, 0.25)'` | Stroke color of the grid line for the first index (index 0).
 | `zeroLineBorderDash` | `Number[]` | `[]` | Length and spacing of dashes of the grid line for the first index (index 0). See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
 | `zeroLineBorderDashOffset` | `Number` | `0` | Offset for line dashes of the grid line for the first index (index 0). See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
 | `offsetGridLines` | `Boolean` | `false` | If true, grid lines will be shifted to be between labels. This is set to `true` in the bar chart by default.
@@ -30,7 +30,7 @@ The tick configuration is nested under the scale configuration in the `ticks` ke
 | -----| ---- | --------| -----------
 | `callback` | `Function` | | Returns the string representation of the tick value as it should be displayed on the chart. See [callback](../axes/labelling.md#creating-custom-tick-formats).
 | `display` | `Boolean` | `true` | If true, show tick marks
-| `fontColor` | Color | `'#666'` | Font color for tick labels.
+| `fontColor` | `Color` | `'#666'` | Font color for tick labels.
 | `fontFamily` | `String` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family for the tick labels, follows CSS font-family options.
 | `fontSize` | `Number` | `12` | Font size for the tick labels.
 | `fontStyle` | `String` | `'normal'` | Font style for the tick labels, follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit).
@@ -44,7 +44,7 @@ The minorTick configuration is nested under the ticks configuration in the `mino
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
 | `callback` | `Function` | | Returns the string representation of the tick value as it should be displayed on the chart. See [callback](../axes/labelling.md#creating-custom-tick-formats).
-| `fontColor` | Color | `'#666'` | Font color for tick labels.
+| `fontColor` | `Color` | `'#666'` | Font color for tick labels.
 | `fontFamily` | `String` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family for the tick labels, follows CSS font-family options.
 | `fontSize` | `Number` | `12` | Font size for the tick labels.
 | `fontStyle` | `String` | `'normal'` | Font style for the tick labels, follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit).
@@ -55,7 +55,7 @@ The majorTick configuration is nested under the ticks configuration in the `majo
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
 | `callback` | `Function` | | Returns the string representation of the tick value as it should be displayed on the chart. See [callback](../axes/labelling.md#creating-custom-tick-formats).
-| `fontColor` | Color | `'#666'` | Font color for tick labels.
+| `fontColor` | `Color` | `'#666'` | Font color for tick labels.
 | `fontFamily` | `String` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family for the tick labels, follows CSS font-family options.
 | `fontSize` | `Number` | `12` | Font size for the tick labels.
 | `fontStyle` | `String` | `'normal'` | Font style for the tick labels, follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit).
