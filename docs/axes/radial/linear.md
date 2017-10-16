@@ -20,7 +20,7 @@ The following options are provided by the linear scale. They are all located in 
 
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
-| `backdropColor` | Color | `'rgba(255, 255, 255, 0.75)'` | Color of label backdrops
+| `backdropColor` | `Color` | `'rgba(255, 255, 255, 0.75)'` | Color of label backdrops
 | `backdropPaddingX` | `Number` | `2` | Horizontal padding of label backdrop.
 | `backdropPaddingY` | `Number` | `2` | Vertical padding of label backdrop.
 | `beginAtZero` | `Boolean` | `false` | if true, scale will include 0 if it is not already included.
@@ -94,7 +94,7 @@ The following options are used to configure angled lines that radiate from the c
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
 | `display` | `Boolean` | `true` | if true, angle lines are shown
-| `color` | Color | `rgba(0, 0, 0, 0.1)` | Color of angled lines
+| `color` | `Color` | `rgba(0, 0, 0, 0.1)` | Color of angled lines
 | `lineWidth` | `Number` | `1` | Width of angled lines
 
 ## Point Label Options
@@ -104,7 +104,7 @@ The following options are used to configure the point labels that are shown on t
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
 | `callback` | `Function` | | Callback function to transform data labels to point labels. The default implementation simply returns the current string.
-| `fontColor` | Color | `'#666'` | Font color for point labels.
+| `fontColor` | `Color` | `'#666'` | Font color for point labels.
 | `fontFamily` | `String` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family to use when rendering labels.
 | `fontSize` | `Number` | 10 | font size in pixels
 | `fontStyle` | `String` | `'normal'` | Font style to use when rendering point labels.
