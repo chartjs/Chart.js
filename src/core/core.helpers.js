@@ -431,6 +431,19 @@ module.exports = function(Chart) {
 		var width = boundingRect.right - boundingRect.left - paddingLeft - paddingRight;
 		var height = boundingRect.bottom - boundingRect.top - paddingTop - paddingBottom;
 
+		if ( /chrome/i.test( navigator.userAgent ) ) {
+			// In Chrome zoom of a parent node requires to adjust mouseX/mouseY
+			var parent = canvas.parentNode;
+			while ( parent.parentNode != null ) {
+				if ( parent.style.zoom && parent.style.zoom != 1 ) {
+					mouseX /= parent.style.zoom;
+					mouseY /= parent.style.zoom;
+					break;
+				}
+				parent = parent.parentNode;
+			}
+		}
+
 		// We divide by the current device pixel ratio, because the canvas is scaled up by that amount in each direction. However
 		// the backend model is in unscaled coordinates. Since we are going to deal with our model coordinates, we go back here
 		mouseX = Math.round((mouseX - boundingRect.left - paddingLeft) / (width) * canvas.width / chart.currentDevicePixelRatio);
