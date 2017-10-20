@@ -548,8 +548,8 @@ module.exports = function(Chart) {
 
 			if (timestamps.length) {
 				timestamps = arrayUnique(timestamps).sort(sorter);
-				min = Math.min(min, timestamps[0]);
-				max = Math.max(max, timestamps[timestamps.length - 1]);
+				min = min === MAX_INTEGER ? timestamps[0] : min;
+				max = max === MIN_INTEGER ? timestamps[timestamps.length - 1] : max;
 			}
 
 			min = parse(timeOpts.min, me) || min;
