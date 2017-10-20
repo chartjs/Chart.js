@@ -504,8 +504,8 @@ module.exports = function(Chart) {
 			var me = this;
 			var chart = me.chart;
 			var timeOpts = me.options.time;
-			var min = parse(timeOpts.min, me) || MAX_INTEGER;
-			var max = parse(timeOpts.max, me) || MIN_INTEGER;
+			var min = MAX_INTEGER;
+			var max = MIN_INTEGER;
 			var timestamps = [];
 			var datasets = [];
 			var labels = [];
@@ -551,6 +551,9 @@ module.exports = function(Chart) {
 				min = Math.min(min, timestamps[0]);
 				max = Math.max(max, timestamps[timestamps.length - 1]);
 			}
+
+			min = parse(timeOpts.min, me) || min;
+			max = parse(timeOpts.max, me) || max;
 
 			// In case there is no valid min/max, let's use today limits
 			min = min === MAX_INTEGER ? +moment().startOf('day') : min;
