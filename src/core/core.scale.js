@@ -806,7 +806,7 @@ module.exports = Element.extend({
 				tmBorderDash: borderDash,
 				tmBorderDashOffset: borderDashOffset,
 				rotation: -1 * labelRotationRadians,
-				label: label,
+				label: '' + label,
 				major: tick.major,
 				textBaseline: textBaseline,
 				textAlign: textAlign
@@ -814,7 +814,7 @@ module.exports = Element.extend({
 		});
 
 		// When offsetGridLines is enabled, there should be one more tick mark than there
-		// are ticks in scale.ticks array, thefore the missing gridLine has to be manually added
+		// are ticks in scale.ticks array, therefore the missing gridLine has to be manually added
 		if (gridLines.offsetGridLines) {
 			var aliasPixel = helpers.aliasPixel(gridLines.lineWidth);
 			itemsToDraw.push({
@@ -822,8 +822,8 @@ module.exports = Element.extend({
 				ty1: !isHorizontal ? chartArea.bottom + aliasPixel : yTickStart,
 				tx2: !isHorizontal ? xTickEnd : chartArea.right + aliasPixel,
 				ty2: !isHorizontal ? chartArea.bottom + aliasPixel : yTickEnd,
-				tmWidth: gridLines.lineWidth,
-				tmColor: gridLines.color,
+				tmWidth: helpers.valueAtIndexOrDefault(gridLines.lineWidth, ticks.length),
+				tmColor: helpers.valueAtIndexOrDefault(gridLines.color, ticks.length),
 				tmBorderDash: gridLines.borderDash,
 				tmBorderDashOffset: gridLines.borderDashOffset
 			});
@@ -847,7 +847,7 @@ module.exports = Element.extend({
 					context.lineTo(itemToDraw.tx2, itemToDraw.ty2);
 				}
 
-				if (optionTicks.display && itemToDraw.label !== undefined && itemToDraw.label !== '') {
+				if (optionTicks.display && itemToDraw.label) {
 					// Make sure we draw text in the correct color and font
 					context.save();
 					context.translate(itemToDraw.labelX, itemToDraw.labelY);
@@ -906,7 +906,7 @@ module.exports = Element.extend({
 		}
 
 		// gridLines.drawBorder is deprecated
-		if (gridLines.drawBorder && options.borderColor !== null && options.borderWidth !== 0 && options.borderWidth !== null) {
+		if (gridLines.drawBorder && options.borderColor && options.borderWidth) {
 			// Draw the scale border
 			context.lineWidth = options.borderWidth;
 			context.strokeStyle = options.borderColor;
