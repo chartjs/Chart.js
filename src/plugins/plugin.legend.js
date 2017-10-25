@@ -94,7 +94,7 @@ module.exports = function(Chart) {
 		if (labelOpts.useSquareBox) {
 			return Math.min(fontSize, labelOpts.boxWidth);
 		}
-		
+
 		return labelOpts.usePointStyle ?
 			fontSize * Math.SQRT2 :
 			labelOpts.boxWidth;
@@ -391,7 +391,7 @@ module.exports = function(Chart) {
 							boxHeight = boxWidth;
 							y += (fontSize - boxHeight) / 2;
 						}
-						
+
 						// Draw box as legend symbol
 						if (!isLineWidthZero) {
 							ctx.strokeRect(x, y, boxWidth, boxHeight);
