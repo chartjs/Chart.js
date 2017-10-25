@@ -91,6 +91,10 @@ module.exports = function(Chart) {
 	 * @return {Number} width of the color box area
 	 */
 	function getBoxWidth(labelOpts, fontSize) {
+		if (labelOpts.useSquareBox) {
+			return Math.min(fontSize, labelOpts.boxWidth);
+		}
+		
 		return labelOpts.usePointStyle ?
 			fontSize * Math.SQRT2 :
 			labelOpts.boxWidth;
@@ -381,11 +385,18 @@ module.exports = function(Chart) {
 						// Draw pointStyle as legend symbol
 						helpers.canvas.drawPoint(ctx, legendItem.pointStyle, radius, centerX, centerY);
 					} else {
+						var boxHeight = fontSize;
+
+						if (opts.labels.useSquareBox) {
+							boxHeight = boxWidth;
+							y += (fontSize - boxHeight) / 2;
+						}
+						
 						// Draw box as legend symbol
 						if (!isLineWidthZero) {
-							ctx.strokeRect(x, y, boxWidth, fontSize);
+							ctx.strokeRect(x, y, boxWidth, boxHeight);
 						}
-						ctx.fillRect(x, y, boxWidth, fontSize);
+						ctx.fillRect(x, y, boxWidth, boxHeight);
 					}
 
 					ctx.restore();
