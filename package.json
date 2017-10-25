@@ -50,6 +50,6 @@
   },
   "dependencies": {
     "chartjs-color": "~2.2.0",
-    "moment": "~2.19.1"
+    "moment": "^2.19.1"
   }
 }
