@@ -91,13 +91,15 @@ module.exports = function(Chart) {
 	 * @return {Number} width of the color box area
 	 */
 	function getBoxWidth(labelOpts, fontSize) {
-		if (labelOpts.useSquareBox) {
-			return Math.min(fontSize, labelOpts.boxWidth);
-		}
-
 		return labelOpts.usePointStyle ?
 			fontSize * Math.SQRT2 :
 			labelOpts.boxWidth;
+	}
+
+	function getBoxHeight(labelOpts, fontSize) {
+		return labelOpts.boxHeight ?
+			labelOpts.boxHeight :
+			fontSize;
 	}
 
 	Chart.Legend = Element.extend({
@@ -350,6 +352,7 @@ module.exports = function(Chart) {
 				ctx.font = labelFont;
 
 				var boxWidth = getBoxWidth(labelOpts, fontSize);
+				var boxHeight = getBoxHeight(labelOpts, fontSize);
 				var hitboxes = me.legendHitBoxes;
 
 				// current position
@@ -385,12 +388,7 @@ module.exports = function(Chart) {
 						// Draw pointStyle as legend symbol
 						helpers.canvas.drawPoint(ctx, legendItem.pointStyle, radius, centerX, centerY);
 					} else {
-						var boxHeight = fontSize;
-
-						if (opts.labels.useSquareBox) {
-							boxHeight = boxWidth;
-							y += (fontSize - boxHeight) / 2;
-						}
+						y += (fontSize - boxHeight) / 2;
 
 						// Draw box as legend symbol
 						if (!isLineWidthZero) {
