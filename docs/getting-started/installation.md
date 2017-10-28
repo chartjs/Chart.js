@@ -3,6 +3,7 @@ Chart.js can be installed via npm or bower. It is recommended to get Chart.js th
 
 ## npm
 [![npm](https://img.shields.io/npm/v/chart.js.svg?style=flat-square&maxAge=600)](https://npmjs.com/package/chart.js)
+[![npm](https://img.shields.io/npm/dm/chart.js.svg?style=flat-square&maxAge=600)](https://npmjs.com/package/chart.js)
 
 ```bash
 npm install chart.js --save
@@ -16,9 +17,19 @@ bower install chart.js --save
 ```
 
 ## CDN
-[![cdn](https://img.shields.io/cdnjs/v/Chart.js.svg?label=cdn&style=flat-square&maxAge=600)](https://cdnjs.com/libraries/Chart.js)
+### CDNJS
+[![cdnjs](https://img.shields.io/cdnjs/v/Chart.js.svg?style=flat-square&maxAge=600)](https://cdnjs.com/libraries/Chart.js)
 
-or just use these [Chart.js CDN](https://cdnjs.com/libraries/Chart.js) links.
+Chart.js built files are available on [CDNJS](https://cdnjs.com/):
+
+https://cdnjs.com/libraries/Chart.js
+
+### jsDelivr
+[![jsdelivr](https://img.shields.io/npm/v/chart.js.svg?label=jsdelivr&style=flat-square&maxAge=600)](https://cdn.jsdelivr.net/npm/chart.js@latest/dist/) [![jsdelivr hits](https://data.jsdelivr.com/v1/package/npm/chart.js/badge)](https://www.jsdelivr.com/package/npm/chart.js)
+
+Chart.js built files are also available through [jsDelivr](http://www.jsdelivr.com/):
+
+https://www.jsdelivr.com/package/npm/chart.js?path=dist
 
 ## Github
 [![github](https://img.shields.io/github/release/chartjs/Chart.js.svg?style=flat-square&maxAge=600)](https://github.com/chartjs/Chart.js/releases/latest)

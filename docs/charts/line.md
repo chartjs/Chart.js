@@ -50,7 +50,7 @@ All point* properties can be specified as an array. If these are set to an array
 | `yAxisID` | `String` | The ID of the y axis to plot this dataset on. If not specified, this defaults to the ID of the first found y axis.
 | `backgroundColor` | `Color` | The fill color under the line. See [Colors](../general/colors.md#colors)
 | `borderColor` | `Color` | The color of the line. See [Colors](../general/colors.md#colors)
-| `borderWidth` | `Number/` | The width of the line in pixels.
+| `borderWidth` | `Number` | The width of the line in pixels.
 | `borderDash` | `Number[]` | Length and spacing of dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
 | `borderDashOffset` | `Number` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
 | `borderCapStyle` | `String` | Cap style of the line. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap)

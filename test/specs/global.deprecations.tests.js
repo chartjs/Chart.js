@@ -325,6 +325,45 @@ describe('Deprecations', function() {
 		});
 	});
 
+	describe('Version 2.4.0', function() {
+		describe('x-axis mode', function() {
+			it ('behaves like index mode with intersect: false', function() {
+				var data = {
+					datasets: [{
+						label: 'Dataset 1',
+						data: [10, 20, 30],
+						pointHoverBorderColor: 'rgb(255, 0, 0)',
+						pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+					}, {
+						label: 'Dataset 2',
+						data: [40, 40, 40],
+						pointHoverBorderColor: 'rgb(0, 0, 255)',
+						pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+					}],
+					labels: ['Point 1', 'Point 2', 'Point 3']
+				};
+
+				var chart = window.acquireChart({
+					type: 'line',
+					data: data
+				});
+				var meta0 = chart.getDatasetMeta(0);
+				var meta1 = chart.getDatasetMeta(1);
+
+				var evt = {
+					type: 'click',
+					chart: chart,
+					native: true, // needed otherwise things its a DOM event
+					x: 0,
+					y: 0
+				};
+
+				var elements = Chart.Interaction.modes['x-axis'](chart, evt);
+				expect(elements).toEqual([meta0.data[0], meta1.data[0]]);
+			});
+		});
+	});
+
 	describe('Version 2.1.5', function() {
 		// https://github.com/chartjs/Chart.js/pull/2752
 		describe('Chart.pluginService', function() {

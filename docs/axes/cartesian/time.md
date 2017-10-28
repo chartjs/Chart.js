@@ -34,7 +34,7 @@ The following options are provided by the time scale. You may also set options p
 | `time.isoWeekday` | `Boolean` | `false` | If true and the unit is set to 'week', then the first day of the week will be Monday. Otherwise, it will be Sunday.
 | `time.max` | [Time](#date-formats) | | If defined, this will override the data maximum
 | `time.min` | [Time](#date-formats) | | If defined, this will override the data minimum
-| `time.parser` | `String` or `Function` | | Custom parser for dates. [more...](#parser)
+| `time.parser` | `String/Function` | | Custom parser for dates. [more...](#parser)
 | `time.round` | `String` | `false` | If defined, dates will be rounded to the start of this unit. See [Time Units](#time-units) below for the allowed units.
 | `time.tooltipFormat` | `String` | | The moment js format string to use for the tooltip.
 | `time.unit` | `String` | `false` | If defined, will force the unit to be a certain type. See [Time Units](#time-units) section below for details.

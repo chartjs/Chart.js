@@ -75,7 +75,13 @@ function acquireChart(config, options) {
 	wrapper.appendChild(canvas);
 	window.document.body.appendChild(wrapper);
 
-	chart = new Chart(canvas.getContext('2d'), config);
+	try {
+		chart = new Chart(canvas.getContext('2d'), config);
+	} catch (e) {
+		window.document.body.removeChild(wrapper);
+		throw e;
+	}
+
 	chart.$test = {
 		persistent: options.persistent,
 		wrapper: wrapper
