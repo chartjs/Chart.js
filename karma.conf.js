@@ -3,7 +3,7 @@
 module.exports = function(karma) {
 	var args = karma.args || {};
 	var config = {
-		browsers: ['Firefox'],
+		browsers: [],//['Firefox'],
 		frameworks: ['browserify', 'jasmine'],
 		reporters: ['progress', 'kjhtml'],
 
