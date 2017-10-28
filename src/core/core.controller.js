@@ -371,6 +371,14 @@ module.exports = function(Chart) {
 
 			me.updateDatasets();
 
+			// Need to reset tooltip in case it is displayed with elements that are removed
+			// after update.
+			me.tooltip.initialize();
+
+			// Last active contains items that were previously in the tooltip.
+			// When we reset the tooltip, we need to clear it
+			me.lastActive = [];
+
 			// Do this before render so that any plugins that need final scale updates can use it
 			plugins.notify(me, 'afterUpdate');
 

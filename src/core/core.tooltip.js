@@ -384,6 +384,7 @@ module.exports = function(Chart) {
 	Chart.Tooltip = Element.extend({
 		initialize: function() {
 			this._model = getBaseModel(this._options);
+			this._lastActive = [];
 		},
 
 		// Get the title
