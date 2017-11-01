@@ -201,10 +201,12 @@ module.exports = function(Chart) {
 		},
 
 		/**
-		 * Returns the effective number of stacks based on groups and bar visibility.
+		 * Returns the stacks based on groups and bar visibility.
 		 * @private
+		 * @param {number=} [last] - The dataset index
+		 * @returns {Array} [stacks] - The stack list
 		 */
-		getStackCount: function(last) {
+		getStacks: function(last) {
 			var me = this;
 			var chart = me.chart;
 			var scale = me.getIndexScale();
@@ -223,15 +225,33 @@ module.exports = function(Chart) {
 				}
 			}
 
-			return stacks.length;
+			return stacks;
+		},
+
+		/**
+		 * Returns the effective number of stacks based on groups and bar visibility.
+		 * @private
+		 */
+		getStackCount: function() {
+			return this.getStacks().length;
 		},
 
 		/**
 		 * Returns the stack index for the given dataset based on groups and bar visibility.
 		 * @private
+		 * @param {number=} [datasetIndex] - The dataset index
+		 * @param {String=} [name] - The stack name to find
+		 * @returns {number} [index] - The stack index
 		 */
-		getStackIndex: function(datasetIndex) {
-			return this.getStackCount(datasetIndex) - 1;
+		getStackIndex: function(datasetIndex, name) {
+			var stacks = this.getStacks(datasetIndex);
+			var index = (name !== undefined)
+				? stacks.indexOf(name)
+				: -1; // indexOf returns -1 if element is not present
+
+			return (index === -1)
+				? stacks.length - 1
+				: index;
 		},
 
 		/**
@@ -312,7 +332,8 @@ module.exports = function(Chart) {
 		calculateBarIndexPixels: function(datasetIndex, index, ruler) {
 			var me = this;
 			var options = ruler.scale.options;
-			var stackIndex = me.getStackIndex(datasetIndex);
+			var meta = me.getMeta();
+			var stackIndex = me.getStackIndex(datasetIndex, meta.stack);
 			var pixels = ruler.pixels;
 			var base = pixels[index];
 			var length = pixels.length;
@@ -322,7 +343,7 @@ module.exports = function(Chart) {
 
 			if (length === 1) {
 				leftSampleSize = base > start ? base - start : end - base;
-				rightSampleSize = base < end ? end - base : base - start;
+				rightSampleSize = leftSampleSize;
 			} else {
 				if (index > 0) {
 					leftSampleSize = (base - pixels[index - 1]) / 2;
