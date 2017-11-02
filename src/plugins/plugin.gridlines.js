@@ -74,7 +74,7 @@ module.exports = function() {
 		// Marks scale border positions to prevent overlapping of gridLines and scale borders
 		helpers.each(chart.scales, function(scale) {
 			var scaleOptions = scale.options;
-			var glHashByOrientantion = gridLinesHash[!scale.isHorizontal() ? 'horizontal' : 'vertical'];
+			var glHashByOrientation = gridLinesHash[!scale.isHorizontal() ? 'horizontal' : 'vertical'];
 			var borderPosition;
 
 			// gridLines.drawBorder is deprecated
@@ -85,14 +85,14 @@ module.exports = function() {
 					borderPosition = scale.position === 'left' ? scale.right : scale.left;
 				}
 
-				glHashByOrientantion[Math.round(borderPosition)] = true;
+				glHashByOrientation[Math.round(borderPosition)] = true;
 			}
 		});
 
 		// Collects gridLines
 		helpers.each(chart.scales, function(scale) {
 			var scaleOptions = scale.options;
-			var glHashByOrientantion = gridLinesHash[scale.isHorizontal() ? 'horizontal' : 'vertical'];
+			var glHashByOrientation = gridLinesHash[scale.isHorizontal() ? 'horizontal' : 'vertical'];
 			var position;
 
 			if (scaleOptions.display && scaleOptions.gridLines.display && scaleOptions.gridLines.drawOnChartArea) {
@@ -103,8 +103,8 @@ module.exports = function() {
 
 					position = getLineValue(scale, tickIndex, scaleOptions.gridLines.offsetGridLines && ticksCount > 1);
 
-					if (glHashByOrientantion[position] === undefined) {
-						glHashByOrientantion[position] = true;
+					if (glHashByOrientation[position] === undefined) {
+						glHashByOrientation[position] = true;
 						lines.push(getGridLine(chart, scale, position, tickIndex));
 					}
 				}
@@ -114,8 +114,8 @@ module.exports = function() {
 				if (scaleOptions.gridLines.offsetGridLines) {
 					position = Math.round(!scale.isHorizontal() ? scale.bottom : scale.right);
 
-					if (glHashByOrientantion[position] === undefined) {
-						glHashByOrientantion[position] = true;
+					if (glHashByOrientation[position] === undefined) {
+						glHashByOrientation[position] = true;
 						lines.push(getGridLine(chart, scale, position, undefined));
 					}
 				}

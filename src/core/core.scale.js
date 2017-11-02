@@ -923,14 +923,15 @@ module.exports = function(Chart) {
 				var y1 = Math.round(me.top);
 				var y2 = Math.round(me.bottom);
 
+				var borderAliasPixel = helpers.aliasPixel(context.lineWidth);
 				if (isHorizontal) {
 					y1 = y2 = options.position === 'top' ? me.bottom : me.top;
-					y1 += helpers.aliasPixel(context.lineWidth);
-					y2 += helpers.aliasPixel(context.lineWidth);
+					y1 += borderAliasPixel;
+					y2 += borderAliasPixel;
 				} else {
 					x1 = x2 = options.position === 'left' ? me.right : me.left;
-					x1 += helpers.aliasPixel(context.lineWidth);
-					x2 += helpers.aliasPixel(context.lineWidth);
+					x1 += borderAliasPixel;
+					x2 += borderAliasPixel;
 				}
 
 				context.beginPath();
