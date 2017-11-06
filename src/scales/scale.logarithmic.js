@@ -182,9 +182,9 @@ module.exports = function(Chart) {
 		 *
 		 * @Private
 		 * @param {Number} [value] - The minimum not zero value.
-		 * @return {number} [firstTickValu] - The first tick value.
+		 * @return {Number} [firstTickValue] - The first tick value.
 		 */
-		getFirstTickValue(value) {
+		getFirstTickValue: function(value) {
 			var exp = Math.floor(helpers.log10(value));
 			var significand = Math.floor(value / Math.pow(10, exp));
 
