@@ -192,13 +192,13 @@ module.exports = function(Chart) {
 		},
 		getPixelForValue: function(value) {
 			var me = this;
-			var realValue = +me.getRightValue(value);
 			var reverse = me.options.ticks.reverse;
 			var log10 = helpers.log10;
 			var firstTickValue = me.getFirstTickValue(me.minNotZero);
 			var offset = 0;
-			var baseValue, innerDimension, pixel, start, end, sign;
+			var innerDimension, pixel, start, end, sign;
 
+			value = +me.getRightValue(value);
 			if (reverse) {
 				start = me.end;
 				end = me.start;
@@ -208,7 +208,6 @@ module.exports = function(Chart) {
 				end = me.end;
 				sign = 1;
 			}
-			baseValue = start;
 			if (me.isHorizontal()) {
 				innerDimension = me.width;
 				pixel = reverse ? me.right : me.left;
@@ -217,8 +216,8 @@ module.exports = function(Chart) {
 				sign *= -1; // invert, since the upper-left corner of the canvas is at pixel (0, 0)
 				pixel = reverse ? me.top : me.bottom;
 			}
-			if (realValue !== baseValue) {
-				if (baseValue === 0) { // include zero tick
+			if (value !== start) {
+				if (start === 0) { // include zero tick
 					offset = helpers.getValueOrDefault(
 						me.options.ticks.fontSize,
 						Chart.defaults.global.defaultFontSize
@@ -226,8 +225,8 @@ module.exports = function(Chart) {
 					innerDimension -= offset;
 					start = firstTickValue;
 				}
-				if (realValue !== 0) {
-					offset += innerDimension / (log10(end) - log10(start)) * (log10(realValue) - log10(start));
+				if (value !== 0) {
+					offset += innerDimension / (log10(end) - log10(start)) * (log10(value) - log10(start));
 				}
 				pixel += sign * offset;
 			}
@@ -238,7 +237,7 @@ module.exports = function(Chart) {
 			var reverse = me.options.ticks.reverse;
 			var log10 = helpers.log10;
 			var firstTickValue = me.getFirstTickValue(me.minNotZero);
-			var innerDimension, start, end, baseValue, value;
+			var innerDimension, start, end, value;
 
 			if (reverse) {
 				start = me.end;
@@ -247,7 +246,6 @@ module.exports = function(Chart) {
 				start = me.start;
 				end = me.end;
 			}
-			baseValue = start;
 			if (me.isHorizontal()) {
 				innerDimension = me.width;
 				value = reverse ? me.right - pixel : pixel - me.left;
@@ -255,8 +253,8 @@ module.exports = function(Chart) {
 				innerDimension = me.height;
 				value = reverse ? pixel - me.top : me.bottom - pixel;
 			}
-			if (value !== baseValue) {
-				if (baseValue === 0) { // include zero tick
+			if (value !== start) {
+				if (start === 0) { // include zero tick
 					var offset = helpers.getValueOrDefault(
 						me.options.ticks.fontSize,
 						Chart.defaults.global.defaultFontSize
