@@ -177,42 +177,45 @@ module.exports = function(Chart) {
 		getPixelForTick: function(index) {
 			return this.getPixelForValue(this.tickValues[index]);
 		},
+		/**
+		 * Returns the value of the first tick
+		 *
+		 * @Private
+		 * @param {Number} [value] - The minimum not zero value.
+		 * @return {number} [firstTickValu] - The first tick value.
+		 */
+		getFirstTickValue(value) {
+			var exp = Math.floor(helpers.log10(value));
+			var significand = Math.floor(value / Math.pow(10, exp));
+
+			return significand * Math.pow(10, exp);
+		},
 		getPixelForValue: function(value) {
 			var me = this;
 			var realValue = +me.getRightValue(value);
 			var reverse = me.options.ticks.reverse;
-			var lg = helpers.log10;
-			var exp = Math.floor(lg(me.minNotZero));
-			var significand = Math.floor(me.minNotZero / Math.pow(10, exp));
-			var firstTickValue = significand * Math.pow(10, exp);
+			var log10 = helpers.log10;
+			var firstTickValue = me.getFirstTickValue(me.minNotZero);
 			var offset = 0;
-			var baseValue, innerDimension, pixel, range, sign;
+			var baseValue, innerDimension, pixel, start, end, sign;
 
 			if (reverse) {
-				range = {
-					start: me.end,
-					end: me.start
-				};
+				start = me.end;
+				end = me.start;
 				sign = -1;
 			} else {
-				range = {
-					start: me.start,
-					end: me.end
-				};
+				start = me.start;
+				end = me.end;
 				sign = 1;
 			}
-			baseValue = range.start;
+			baseValue = start;
 			if (me.isHorizontal()) {
 				innerDimension = me.width;
-				pixel = (reverse)
-					? me.right
-					: me.left;
+				pixel = reverse ? me.right : me.left;
 			} else {
 				innerDimension = me.height;
 				sign *= -1; // invert, since the upper-left corner of the canvas is at pixel (0, 0)
-				pixel = (reverse)
-					? me.top
-					: me.bottom;
+				pixel = reverse ? me.top : me.bottom;
 			}
 			if (realValue !== baseValue) {
 				if (baseValue === 0) { // include zero tick
@@ -221,10 +224,10 @@ module.exports = function(Chart) {
 						Chart.defaults.global.defaultFontSize
 					);
 					innerDimension -= offset;
-					range.start = firstTickValue;
+					start = firstTickValue;
 				}
 				if (realValue !== 0) {
-					offset += innerDimension / (lg(range.end) - lg(range.start)) * (lg(realValue) - lg(range.start));
+					offset += innerDimension / (log10(end) - log10(start)) * (log10(realValue) - log10(start));
 				}
 				pixel += sign * offset;
 			}
@@ -233,26 +236,24 @@ module.exports = function(Chart) {
 		getValueForPixel: function(pixel) {
 			var me = this;
 			var reverse = me.options.ticks.reverse;
-			var lg = helpers.log10;
-			var exp = Math.floor(lg(me.minNotZero));
-			var significand = Math.floor(me.minNotZero / Math.pow(10, exp));
-			var firstTickValue = significand * Math.pow(10, exp);
-			var range = (reverse)
-				? {start: me.end, end: me.start}
-				: {start: me.start, end: me.end};
-			var baseValue = range.start;
-			var innerDimension, value;
+			var log10 = helpers.log10;
+			var firstTickValue = me.getFirstTickValue(me.minNotZero);
+			var innerDimension, start, end, baseValue, value;
 
+			if (reverse) {
+				start = me.end;
+				end = me.start;
+			} else {
+				start = me.start;
+				end = me.end;
+			}
+			baseValue = start;
 			if (me.isHorizontal()) {
 				innerDimension = me.width;
-				value = (reverse)
-					? me.right - pixel
-					: pixel - me.left;
+				value = reverse ? me.right - pixel : pixel - me.left;
 			} else {
 				innerDimension = me.height;
-				value = (reverse)
-					? pixel - me.top
-					: me.bottom - pixel;
+				value = reverse ? pixel - me.top : me.bottom - pixel;
 			}
 			if (value !== baseValue) {
 				if (baseValue === 0) { // include zero tick
@@ -262,11 +263,11 @@ module.exports = function(Chart) {
 					);
 					value -= offset;
 					innerDimension -= offset;
-					range.start = firstTickValue;
+					start = firstTickValue;
 				}
-				value *= lg(range.end) - lg(range.start);
+				value *= log10(end) - log10(start);
 				value /= innerDimension;
-				value = Math.pow(10, lg(range.start) + value);
+				value = Math.pow(10, log10(start) + value);
 			}
 			return value;
 		}
