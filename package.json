@@ -49,7 +49,7 @@
     "main": "Chart.js"
   },
   "dependencies": {
-    "chartjs-color": "~2.2.0",
-    "moment": "~2.19.1"
+    "chartjs-color": "^2.1.0",
+    "moment": "^2.10.2"
   }
 }
