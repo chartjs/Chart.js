@@ -735,7 +735,7 @@ describe('Logarithmic Scale tests', function() {
 		expect(yScale.getValueForPixel(246)).toBeCloseTo(10, 1e-4);
 	});
 
-	it('should get the correct pixel value for a point when 0 values are present', function() {
+	it('should get the correct pixel value for a point when 0 values are present (vertical)', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
@@ -759,23 +759,78 @@ describe('Logarithmic Scale tests', function() {
 		});
 
 		var yScale = chart.scales.yScale;
-		expect(yScale.getPixelForValue(70, 0, 0)).toBeCloseToPixel(32);     // top + paddingTop
-		expect(yScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(484);     // bottom - paddingBottom
-		expect(yScale.getPixelForValue(0.063, 0, 0)).toBeCloseToPixel(475); // minNotZero 2% from range
-		expect(yScale.getPixelForValue(0.5, 0, 0)).toBeCloseToPixel(344);
-		expect(yScale.getPixelForValue(4, 0, 0)).toBeCloseToPixel(213);
-		expect(yScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(155);
+		expect(yScale.getPixelForValue(70, 0, 0)).toBeCloseToPixel(32);   // top + paddingTop
+		expect(yScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(484);  // bottom - paddingBottom
+		expect(yScale.getPixelForValue(0.01, 0, 0)).toBeCloseToPixel(472); // first possible tick
+		expect(yScale.getPixelForValue(0.063, 0, 0)).toBeCloseToPixel(381);  // minNotZero
+		expect(yScale.getPixelForValue(0.5, 0, 0)).toBeCloseToPixel(278);
+		expect(yScale.getPixelForValue(4, 0, 0)).toBeCloseToPixel(174);
+		expect(yScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(127);
 		expect(yScale.getPixelForValue(63, 0, 0)).toBeCloseToPixel(38.5);
 
-		chart.options.scales.yAxes[0].ticks.reverse = true;	// Reverse mode
+		chart.options.scales.yAxes[0].ticks.reverse = true;   // Reverse mode
 		chart.update();
 
-		expect(yScale.getPixelForValue(70, 0, 0)).toBeCloseToPixel(484);   // bottom - paddingBottom
-		expect(yScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(32);     // top + paddingTop
-		expect(yScale.getPixelForValue(0.063, 0, 0)).toBeCloseToPixel(41); // minNotZero 2% from range
-		expect(yScale.getPixelForValue(0.5, 0, 0)).toBeCloseToPixel(172);
-		expect(yScale.getPixelForValue(4, 0, 0)).toBeCloseToPixel(303);
-		expect(yScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(361);
+		expect(yScale.getPixelForValue(70, 0, 0)).toBeCloseToPixel(484); // bottom - paddingBottom
+		expect(yScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(32);  // top + paddingTop
+		expect(yScale.getPixelForValue(0.01, 0, 0)).toBeCloseToPixel(44);  // first possible tick
+		expect(yScale.getPixelForValue(0.063, 0, 0)).toBeCloseToPixel(135);  // minNotZero
+		expect(yScale.getPixelForValue(0.5, 0, 0)).toBeCloseToPixel(238);
+		expect(yScale.getPixelForValue(4, 0, 0)).toBeCloseToPixel(342);
+		expect(yScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(389);
 		expect(yScale.getPixelForValue(63, 0, 0)).toBeCloseToPixel(477);
+	});
+
+	it('should get the correct pixel value for a point when 0 values are present (horizontal)', function() {
+		var chart = window.acquireChart({
+			type: 'horizontalBar',
+			data: {
+				labels: ['data 1', 'data 2', 'data 3', 'data 4', 'data 5', 'data 6'],
+				datasets: [{
+					xAxisID: 'xScale',
+					yAxisID: 'yScale',
+					data: [0.063, 4, 0, 63, 10, 0.5],
+				}],
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'xScale',
+						type: 'logarithmic',
+						display: true,
+						ticks: {
+							reverse: false,
+						},
+					}],
+					yAxes: [{
+						id: 'yScale',
+						type: 'category',
+						display: true,
+					}]
+				}
+			}
+		});
+
+		var xScale = chart.scales.xScale;
+		expect(xScale.getPixelForValue(70, 0, 0)).toBeCloseToPixel(495);
+		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(44);
+		expect(xScale.getPixelForValue(0.01, 0, 0)).toBeCloseToPixel(56);
+		expect(xScale.getPixelForValue(0.063, 0, 0)).toBeCloseToPixel(147);
+		expect(xScale.getPixelForValue(0.5, 0, 0)).toBeCloseToPixel(250);
+		expect(xScale.getPixelForValue(4, 0, 0)).toBeCloseToPixel(353);
+		expect(xScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(398);
+		expect(xScale.getPixelForValue(63, 0, 0)).toBeCloseToPixel(490);
+
+		chart.options.scales.xAxes[0].ticks.reverse = true;   // Reverse mode
+		chart.update();
+
+		expect(xScale.getPixelForValue(70, 0, 0)).toBeCloseToPixel(44);
+		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(505);
+		expect(xScale.getPixelForValue(0.01, 0, 0)).toBeCloseToPixel(493);
+		expect(xScale.getPixelForValue(0.063, 0, 0)).toBeCloseToPixel(400);
+		expect(xScale.getPixelForValue(0.5, 0, 0)).toBeCloseToPixel(295);
+		expect(xScale.getPixelForValue(4, 0, 0)).toBeCloseToPixel(189);
+		expect(xScale.getPixelForValue(10, 0, 0)).toBeCloseToPixel(143);
+		expect(xScale.getPixelForValue(63, 0, 0)).toBeCloseToPixel(49);
 	});
 });
