@@ -50,6 +50,7 @@
   },
   "dependencies": {
     "chartjs-color": "^2.1.0",
-    "moment": "^2.10.2"
+    "moment": "^2.10.2",
+    "moment-timezone": "^0.5.14"
   }
 }

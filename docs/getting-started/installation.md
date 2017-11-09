@@ -54,4 +54,4 @@ Files:
 * `dist/Chart.bundle.js`
 * `dist/Chart.bundle.min.js`
 
-The bundled version includes Moment.js built into the same file. This version should be used if you wish to use time axes and want a single file to include. Do not use this build if your application already includes Moment.js. If you do, Moment.js will be included twice, increasing the page load time and potentially introducing version issues.
+The bundled version includes Moment.js and Moment-timezone.js built into the same file. This version should be used if you wish to use time axes and want a single file to include. Do not use this build if your application already includes Moment.js and Moment-Timezone.js (optional). If you do, those librairies will be included twice, increasing the page load time and potentially introducing version issues.
