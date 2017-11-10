@@ -913,7 +913,7 @@ describe('Core.Tooltip', function() {
 		});
 
 		// Trigger an event over top of the slice
-		for (var slice=0; slice<2; slice++) {
+		for (var slice = 0; slice < 2; slice++) {
 			var meta = chart.getDatasetMeta(0);
 			var point = meta.data[slice].getCenterPoint();
 			var tooltipPosition = meta.data[slice].tooltipPosition();
@@ -931,7 +931,7 @@ describe('Core.Tooltip', function() {
 
 			// Lets cycle while tooltip is narrower than chart area
 			var infiniteCycleDefense = 70;
-			for (var i=0; i<infiniteCycleDefense; i++) {
+			for (var i = 0; i < infiniteCycleDefense; i++) {
 				chart.config.data.labels[slice] = chart.config.data.labels[slice] + 'l';
 				chart.update();
 				node.dispatchEvent(mouseOutEvent);
