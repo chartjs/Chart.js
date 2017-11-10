@@ -178,13 +178,12 @@ module.exports = function(Chart) {
 			return this.getPixelForValue(this.tickValues[index]);
 		},
 		/**
-		 * Returns the value of the first tick
-		 *
-		 * @Private
-		 * @param {Number} [value] - The minimum not zero value.
-		 * @return {Number} [firstTickValue] - The first tick value.
+		 * Returns the value of the first tick.
+		 * @param {Number} value - The minimum not zero value.
+		 * @return {Number} The first tick value.
+		 * @private
 		 */
-		getFirstTickValue: function(value) {
+		_getFirstTickValue: function(value) {
 			var exp = Math.floor(helpers.log10(value));
 			var significand = Math.floor(value / Math.pow(10, exp));
 
@@ -194,7 +193,7 @@ module.exports = function(Chart) {
 			var me = this;
 			var reverse = me.options.ticks.reverse;
 			var log10 = helpers.log10;
-			var firstTickValue = me.getFirstTickValue(me.minNotZero);
+			var firstTickValue = me._getFirstTickValue(me.minNotZero);
 			var offset = 0;
 			var innerDimension, pixel, start, end, sign;
 
@@ -236,7 +235,7 @@ module.exports = function(Chart) {
 			var me = this;
 			var reverse = me.options.ticks.reverse;
 			var log10 = helpers.log10;
-			var firstTickValue = me.getFirstTickValue(me.minNotZero);
+			var firstTickValue = me._getFirstTickValue(me.minNotZero);
 			var innerDimension, start, end, value;
 
 			if (reverse) {
