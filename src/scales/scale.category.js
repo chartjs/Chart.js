@@ -53,9 +53,11 @@ module.exports = function(Chart) {
 			var data = me.chart.data;
 			var isHorizontal = me.isHorizontal();
 
+			// vertical category axis - label is determined by data value at index
 			if (data.yLabels && !isHorizontal) {
 				return me.getRightValue(data.datasets[datasetIndex].data[index]);
 			}
+
 			return me.ticks[index - me.minIndex];
 		},
 

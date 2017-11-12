@@ -53,100 +53,20 @@ describe('Category scale tests', function() {
 	});
 
 	it('Should generate ticks from the data labels', function() {
-		var scaleID = 'myScale';
-
-		var mockData = {
-			datasets: [{
-				yAxisID: scaleID,
-				data: [10, 5, 0, 25, 78]
-			}],
-			labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']
-		};
-
-		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
-		var Constructor = Chart.scaleService.getScaleConstructor('category');
-		var scale = new Constructor({
-			ctx: {},
-			options: config,
-			chart: {
-				data: mockData
-			},
-			id: scaleID
-		});
-
-		scale.determineDataLimits();
-		scale.buildTicks();
-		expect(scale.ticks).toEqual(mockData.labels);
-	});
-
-	it('Should generate ticks from the data xLabels', function() {
-		var scaleID = 'myScale';
-
-		var mockData = {
-			datasets: [{
-				yAxisID: scaleID,
-				data: [10, 5, 0, 25, 78]
-			}],
-			xLabels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']
-		};
-
-		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
-		var Constructor = Chart.scaleService.getScaleConstructor('category');
-		var scale = new Constructor({
-			ctx: {},
-			options: config,
-			chart: {
-				data: mockData
-			},
-			id: scaleID
-		});
-
-		scale.determineDataLimits();
-		scale.buildTicks();
-		expect(scale.ticks).toEqual(mockData.xLabels);
-	});
-
-	it('Should generate ticks from the data yLabels', function() {
-		var scaleID = 'myScale';
-
-		var mockData = {
-			datasets: [{
-				yAxisID: scaleID,
-				data: [10, 5, 0, 25, 78]
-			}],
-			yLabels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']
-		};
-
-		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
-		config.position = 'left'; // y axis
-		var Constructor = Chart.scaleService.getScaleConstructor('category');
-		var scale = new Constructor({
-			ctx: {},
-			options: config,
-			chart: {
-				data: mockData
-			},
-			id: scaleID
-		});
-
-		scale.determineDataLimits();
-		scale.buildTicks();
-		expect(scale.ticks).toEqual(mockData.yLabels);
-	});
-
-	it('Should generate ticks from the axis labels', function() {
 		var labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'];
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
-				data: [10, 5, 0, 25, 78]
+				datasets: [{
+					data: [10, 5, 0, 25, 78],
+				}],
+				labels: labels
 			},
 			options: {
 				scales: {
 					xAxes: [{
 						id: 'x',
-						type: 'category',
-						labels: labels
+						type: 'category'
 					}]
 				}
 			}
@@ -156,32 +76,183 @@ describe('Category scale tests', function() {
 		expect(scale.ticks).toEqual(labels);
 	});
 
-	it ('should get the correct label for the index', function() {
-		var scaleID = 'myScale';
-
-		var mockData = {
-			datasets: [{
-				yAxisID: scaleID,
-				data: [10, 5, 0, 25, 78]
-			}],
-			labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']
-		};
-
-		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
-		var Constructor = Chart.scaleService.getScaleConstructor('category');
-		var scale = new Constructor({
-			ctx: {},
-			options: config,
-			chart: {
-				data: mockData
+	it('Should generate ticks from the data xLabels', function() {
+		var labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'];
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: [10, 5, 0, 25, 78],
+				}],
+				xLabels: labels
 			},
-			id: scaleID
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'x',
+						type: 'category'
+					}]
+				}
+			}
 		});
 
-		scale.determineDataLimits();
-		scale.buildTicks();
+		var scale = chart.scales.x;
+		expect(scale.ticks).toEqual(labels);
+	});
 
+	it('Should generate ticks from the data yLabels', function() {
+		var labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'];
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					xAxisID: 'x',
+					data: [10, 5, 0, 25, 78],
+				}],
+				yLabels: labels
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'x',
+						type: 'linear'
+					}],
+					yAxes: [{
+						id: 'y',
+						type: 'category',
+					}]
+				}
+			}
+		});
+
+		var scale = chart.scales.y;
+		expect(scale.ticks).toEqual(labels);
+	});
+
+	it ('Should get the correct data label for the index', function() {
+		var labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'];
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: [10, 5, 0, 25, 78],
+				}],
+				labels: labels
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'x',
+						type: 'category'
+					}]
+				}
+			}
+		});
+
+		var scale = chart.scales.x;
 		expect(scale.getLabelForIndex(1)).toBe('tick2');
+	});
+
+	it('Should get the correct data xLabel for the index', function() {
+		var labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'];
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: [10, 5, 0, 25, 78],
+				}],
+				xLabels: labels
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'x',
+						type: 'category'
+					}]
+				}
+			}
+		});
+
+		var scale = chart.scales.x;
+		expect(scale.getLabelForIndex(1)).toBe('tick2');
+	});
+
+	// NOTE: test for vertical line chart
+	// 		 chart type not currently support
+	// it('Should get the correct data yLabel for the index', function() {
+	// 	var labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'];
+	// 	var chart = window.acquireChart({
+	// 		type: 'line',
+	// 		data: {
+	// 			datasets: [{
+	// 				xAxisID: 'x',
+	// 				data: [10, 5, 0, 25, 78],
+	// 			}],
+	// 			yLabels: labels
+	// 		},
+	// 		options: {
+	// 			scales: {
+	// 				xAxes: [{
+	// 					id: 'x',
+	// 					type: 'linear'
+	// 				}],
+	// 				yAxes: [{
+	// 					id: 'y',
+	// 					type: 'category',
+	// 				}]
+	// 			}
+	// 		}
+	// 	});
+
+	// 	var scale = chart.scales.y;
+	// 	expect(scale.getLabelForIndex(1)).toBe('tick2');
+	// });
+
+	// test for #3278
+	it('Should get the correct tooltip for the index', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				xLabels: ["APR", "MAY", "JUN", "JUL", "AUG", "SEP"],
+				yLabels: ['A+', 'A', 'B', 'C', 'D'],
+				datasets: [{
+					label: 'Grade',
+					data: ['A+', 'B', 'C', 'B', 'B'],
+				}]
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'x',
+						type: 'category'
+					}],
+					yAxes: [{
+						id: 'y',
+						type: 'category'
+					}]
+				}
+			}
+		});
+
+		// fake out the tooltip hover and force the tooltip to update
+		chart.tooltip._active = [chart.getDatasetMeta(0).data[0]];
+		chart.tooltip.update();
+
+		expect(chart.tooltip._model.body).toEqual([{
+			before: [],
+			lines: ['Grade: A+'],
+			after: []
+		}]);
+
+		// fake out the tooltip hover and force the tooltip to update
+		chart.tooltip._active = [chart.getDatasetMeta(0).data[1]];
+		chart.tooltip.update();
+
+		expect(chart.tooltip._model.body).toEqual([{
+			before: [],
+			lines: ['Grade: B'],
+			after: []
+		}]);
 	});
 
 	it ('Should get the correct pixel for a value when horizontal', function() {
