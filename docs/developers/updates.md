@@ -28,7 +28,7 @@ function removeData(chart) {
 
 To update the options, mutating the options property in place or passing in a new options object are supported.
 
-- If the options are mutated in place, other option properties would be preserved.
+- If the options are mutated in place, other option properties would be preserved, including those calculated by Chart.js.
 - If created as a new object, it would be like creating a new chart with the options - old options would be discarded.
 
 ```javascript
@@ -60,7 +60,7 @@ function updateConfigAsNewObject(chart) {
 Scales can be updated separately without changing other options.
 To update the scales, pass in an object containing all the customization including those unchanged ones.
 
-Variables referencing any one from `chart.scales` would be lost after updating scales with a new id or the changed type.
+Variables referencing any one from `chart.scales` would be lost after updating scales with a new `id` or the changed `type`.
 
 ```javascript
 function updateScales(chart) {
@@ -80,6 +80,17 @@ function updateScales(chart) {
     // need to update the reference
     xScale = chart.scales['newId'];
     yScale = chart.scales['y-axis-0'];
+}
+```
+
+You can also update a specific scale either by specifying its index or id.
+
+```javascript
+function updateScale(chart) {
+    chart.options.scales.yAxes[0] = {
+        type: 'logarithmic'
+    }
+    chart.update();
 }
 ```
 
