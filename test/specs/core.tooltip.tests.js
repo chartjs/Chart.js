@@ -764,7 +764,7 @@ describe('Core.Tooltip', function() {
 
 	it('Should not update if active element has not changed', function() {
 		var chart = window.acquireChart({
-			type: 'bar',
+			type: 'line',
 			data: {
 				datasets: [{
 					label: 'Dataset 1',
