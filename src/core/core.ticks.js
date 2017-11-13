@@ -80,10 +80,15 @@ module.exports = {
 				numSpaces = Math.ceil(numSpaces);
 			}
 
-			// Put the values into the ticks array
+			var precision = 1;
+			if (spacing < 1) {
+				precision = Math.pow(10, spacing.toPrecision().length - 2);
+				niceMin = Math.round(niceMin * precision) / precision;
+				niceMax = Math.round(niceMax * precision) / precision;
+			}
 			ticks.push(generationOptions.min !== undefined ? generationOptions.min : niceMin);
 			for (var j = 1; j < numSpaces; ++j) {
-				ticks.push(niceMin + (j * spacing));
+				ticks.push(niceMin + Math.round(j * spacing * precision) / precision);
 			}
 			ticks.push(generationOptions.max !== undefined ? generationOptions.max : niceMax);
 
