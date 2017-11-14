@@ -202,7 +202,7 @@ module.exports = function(Chart) {
 
 		/**
 		 * Returns the stacks based on groups and bar visibility.
-		 * @param {Number=} [last] - The dataset index
+		 * @param {Number} [last] - The dataset index
 		 * @returns {Array} The stack list
 		 * @private
 		 */
@@ -238,8 +238,8 @@ module.exports = function(Chart) {
 
 		/**
 		 * Returns the stack index for the given dataset based on groups and bar visibility.
-		 * @param {Number=} [datasetIndex] - The dataset index
-		 * @param {String=} [name] - The stack name to find
+		 * @param {Number} [datasetIndex] - The dataset index
+		 * @param {String} [name] - The stack name to find
 		 * @returns {Number} The stack index
 		 * @private
 		 */
