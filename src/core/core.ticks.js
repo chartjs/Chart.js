@@ -88,7 +88,7 @@ module.exports = {
 			}
 			ticks.push(generationOptions.min !== undefined ? generationOptions.min : niceMin);
 			for (var j = 1; j < numSpaces; ++j) {
-				ticks.push(niceMin + Math.round(j * spacing * precision) / precision);
+				ticks.push(Math.round((niceMin + j * spacing) * precision) / precision);
 			}
 			ticks.push(generationOptions.max !== undefined ? generationOptions.max : niceMax);
 
