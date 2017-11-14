@@ -82,7 +82,7 @@ module.exports = {
 
 			var precision = 1;
 			if (spacing < 1) {
-				precision = Math.pow(10, spacing.toPrecision().length - 2);
+				precision = Math.pow(10, spacing.toString().length - 2);
 				niceMin = Math.round(niceMin * precision) / precision;
 				niceMax = Math.round(niceMax * precision) / precision;
 			}
