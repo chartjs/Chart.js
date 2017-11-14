@@ -759,8 +759,8 @@ describe('Chart', function() {
 
 			// Verify that points are at their initial correct location,
 			// then we will reset and see that they moved
-			expect(meta.data[0]._model.y).toBe(333);
-			expect(meta.data[1]._model.y).toBe(183);
+			expect(meta.data[0]._model.y).toBeCloseToPixel(333);
+			expect(meta.data[1]._model.y).toBeCloseToPixel(183);
 			expect(meta.data[2]._model.y).toBe(32);
 			expect(meta.data[3]._model.y).toBe(484);
 
