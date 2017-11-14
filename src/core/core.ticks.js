@@ -126,6 +126,7 @@ module.exports = {
 				exp = Math.floor(helpers.log10(tickVal));
 				significand = Math.floor(tickVal / Math.pow(10, exp));
 			}
+			var precision = exp < 0 ? Math.pow(10, Math.abs(exp)) : 1;
 
 			do {
 				ticks.push(tickVal);
@@ -134,9 +135,10 @@ module.exports = {
 				if (significand === 10) {
 					significand = 1;
 					++exp;
+					precision = exp >= 0 ? 1 : precision;
 				}
 
-				tickVal = significand * Math.pow(10, exp);
+				tickVal = Math.round(significand * Math.pow(10, exp) * precision) / precision;
 			} while (exp < endExp || (exp === endExp && significand < endSignificand));
 
 			var lastTick = valueOrDefault(generationOptions.max, tickVal);
