@@ -927,10 +927,9 @@ module.exports = function(Chart) {
 				context.stroke();
 			}
 
-			if(gridLines.border) {
+			if (gridLines.border) {
 				helpers.each(ticks, function(tick, index) {
 					// autoskipper skipped this tick (#4635)
-	
 					var borderWidth, borderColor;
 					if (index === me.zeroLineIndex) {
 						// Draw the first index specially
@@ -940,7 +939,6 @@ module.exports = function(Chart) {
 						borderWidth = helpers.valueAtIndexOrDefault(gridLines.borderWidth, index);
 						borderColor = helpers.valueAtIndexOrDefault(gridLines.color, index);
 					}
-	
 					itemsToDraw.push({
 						glWidth: borderWidth,
 						glColor: borderColor,
