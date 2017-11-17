@@ -50,6 +50,7 @@
   },
   "dependencies": {
     "chartjs-color": "^2.1.0",
+    "gulp-uglifyes": "0.1.2",
     "moment": "^2.10.2"
   }
 }
