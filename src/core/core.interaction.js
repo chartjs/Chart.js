@@ -293,6 +293,16 @@ module.exports = {
 			if (options.intersect && !intersectsItem) {
 				items = [];
 			}
+
+			if (options.single) {
+				return items.reduce((acc, value) => {
+					if (!acc.find(d => d._datasetIndex === value._datasetIndex)) {
+						acc.push(value);
+					}
+					return acc;
+				}, []);
+			}
+
 			return items;
 		},
 
