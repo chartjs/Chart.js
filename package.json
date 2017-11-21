@@ -49,7 +49,9 @@
     "main": "Chart.js"
   },
   "dependencies": {
-    "chartjs-color": "^2.1.0",
-    "moment": "^2.10.2"
+    "chartjs-color": "^2.1.0"
+  },
+  "peerDependencies": {
+	"moment": "^2.10.2"
   }
 }
