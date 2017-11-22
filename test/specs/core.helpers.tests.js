@@ -725,6 +725,23 @@ describe('Core helper tests', function() {
 		document.body.removeChild(div);
 	});
 
+	it ('should leave styled height and width on canvas if explicitly set', function() {
+		var chart = window.acquireChart({}, {
+			canvas: {
+				height: 200,
+				width: 200,
+				style: 'height: 400px; width: 400px;'
+			}
+		});
+
+		helpers.retinaScale(chart, true);
+
+		var canvas = chart.canvas;
+
+		expect(canvas.style.height).toBe('400px');
+		expect(canvas.style.width).toBe('400px');
+	});
+
 	describe('Color helper', function() {
 		function isColorInstance(obj) {
 			return typeof obj === 'object' && obj.hasOwnProperty('values') && obj.values.hasOwnProperty('rgb');
