@@ -550,4 +550,34 @@ describe('Test the layout service', function() {
 			expect(isOrderCorrect).toBe(true);
 		});
 	});
+
+	describe('box sizing', function() {
+		it('should correctly compute y-axis width to fit labels', function() {
+			var chart = window.acquireChart({
+				type: 'bar',
+				data: {
+					labels: ['tick 1', 'tick 2', 'tick 3', 'tick 4', 'tick 5'],
+					datasets: [{
+						data: [0, 2.25, 1.5, 1.25, 2.5]
+					}],
+				},
+				options: {
+					legend: {
+						display: false,
+					},
+				},
+			}, {
+				canvas: {
+					height: 256,
+					width: 256
+				}
+			});
+			var yAxis = chart.scales['y-axis-0'];
+
+			// issue #4441: y-axis labels partially hidden.
+			// minimum horizontal space required to fit labels
+			expect(yAxis.width).toBeCloseToPixel(33);
+			expect(yAxis.ticks).toEqual(['2.5', '2.0', '1.5', '1.0', '0.5', '0']);
+		});
+	});
 });
