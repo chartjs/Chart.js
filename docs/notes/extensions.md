@@ -50,3 +50,6 @@ In addition, many plugins can be found on the [npm registry](https://www.npmjs.c
 
 ### Java
  - <a href="https://github.com/mdewilde/chart/" target="_blank">Chart.java</a>
+
+### Ember.js
+ - <a href="https://github.com/aomran/ember-cli-chart" target="_blank">ember-cli-chart</a>
