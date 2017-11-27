@@ -104,8 +104,8 @@ function computeMinSampleSize(scale, pixels) {
 	var ticks = scale.getTicks();
 	var prev, curr, i, ilen;
 
-	for (i = 0, ilen = pixels.length; i < ilen; ++i) {
-		min = i > 0 ? Math.min(min, pixels[i] - pixels[i - 1]) : min;
+	for (i = 1, ilen = pixels.length; i < ilen; ++i) {
+		min = Math.min(min, pixels[i] - pixels[i - 1]);
 	}
 
 	for (i = 0, ilen = ticks.length; i < ilen; ++i) {
@@ -118,15 +118,15 @@ function computeMinSampleSize(scale, pixels) {
 }
 
 /**
- * Computes the "ideal" sample range based on the absolute bar thickness or, if undefined or
- * null, uses the smallest interval (see computeMinSampleSize) that prevents bar overlapping.
+ * Computes an "ideal" category based on the absolute bar thickness or, if undefined or null,
+ * uses the smallest interval (see computeMinSampleSize) that prevents bar overlapping. This
+ * mode currently always generates bars equally sized (until we introduce scriptable options?).
  * @private
  */
-function computeFitSampleRange(index, ruler, options) {
+function computeFitCategoryTraits(index, ruler, options) {
 	var thickness = options.barThickness;
 	var count = ruler.stackCount;
-	var pixels = ruler.pixels;
-	var curr = pixels[index];
+	var curr = ruler.pixels[index];
 	var size, ratio;
 
 	if (helpers.isNullOrUndef(thickness)) {
@@ -148,11 +148,12 @@ function computeFitSampleRange(index, ruler, options) {
 }
 
 /**
- * Computes a "dynamic" sample range that globally arranges bars side by side (no
- * gap when percentage options are 1), based on the previous and following range.
+ * Computes an "optimal" category that globally arranges bars side by side (no gap when
+ * percentage options are 1), based on the previous and following categories. This mode
+ * generates bars with different widths when data are not evenly spaced.
  * @private
  */
-function computeFlexSampleRange(index, ruler, options) {
+function computeFlexCategoryTraits(index, ruler, options) {
 	var pixels = ruler.pixels;
 	var curr = pixels[index];
 	var prev = index > 0 ? pixels[index - 1] : null;
@@ -424,8 +425,8 @@ module.exports = function(Chart) {
 			var me = this;
 			var options = ruler.scale.options;
 			var range = options.barThickness === 'flex'
-				? computeFlexSampleRange(index, ruler, options)
-				: computeFitSampleRange(index, ruler, options);
+				? computeFlexCategoryTraits(index, ruler, options)
+				: computeFitCategoryTraits(index, ruler, options);
 
 			var stackIndex = me.getStackIndex(datasetIndex, me.getMeta().stack);
 			var center = range.start + (range.chunk * stackIndex) + (range.chunk / 2);
