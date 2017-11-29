@@ -36,7 +36,7 @@ https://www.jsdelivr.com/package/npm/chart.js?path=dist
 
 You can download the latest version of [Chart.js on GitHub](https://github.com/chartjs/Chart.js/releases/latest).
 
-If you download or clone the repository, you must [build](../developers/contributing.md#building-chartjs) Chart.js to generate the dist files. Chart.js no longer comes with prebuilt release versions, so an alternative option to downloading the repo is **strongly** advised.
+If you download or clone the repository, you must [build](../developers/contributing.md#building-and-testing) Chart.js to generate the dist files. Chart.js no longer comes with prebuilt release versions, so an alternative option to downloading the repo is **strongly** advised.
 
 # Selecting the Correct Build
 
