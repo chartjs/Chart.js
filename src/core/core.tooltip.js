@@ -852,27 +852,27 @@ module.exports = function(Chart) {
 			// Remember Last Actives
 			changed = !helpers.arrayEquals(me._active, me._lastActive);
 
-			// If tooltip didn't change, do not handle the target event
-			if (!changed) {
-				return false;
+			// Only handle target event on tooltip change
+			if (changed) {
+				me._lastActive = me._active;
+
+				if (options.enabled || options.custom) {
+					me._eventPosition = {
+						x: e.x,
+						y: e.y
+					};
+
+					var model = me._model;
+					me.update(true);
+
+					// See if our tooltip position changed
+					changed |= (model.x !== me._model.x) || (model.y !== me._model.y);
+				}
 			}
 
-			me._lastActive = me._active;
-
-			if (options.enabled || options.custom) {
-				me._eventPosition = {
-					x: e.x,
-					y: e.y
-				};
-
-				var model = me._model;
-				me.update(true);
-				me.pivot();
-
-				// See if our tooltip position changed
-				changed |= (model.x !== me._model.x) || (model.y !== me._model.y);
-			}
-
+			// always call me.pivot before returning to
+			// reset me._start for smooth animations issue #4989
+			me.pivot();
 			return changed;
 		}
 	});
