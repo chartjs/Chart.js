@@ -12,3 +12,4 @@
 bower.json
 *.log
 *.swp
+*.stackdump
