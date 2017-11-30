@@ -864,15 +864,10 @@ module.exports = function(Chart) {
 
 					var model = me._model;
 					me.update(true);
-
-					// See if our tooltip position changed
-					changed |= (model.x !== me._model.x) || (model.y !== me._model.y);
+					me.pivot();
 				}
 			}
 
-			// always call me.pivot before returning to
-			// reset me._start for smooth animations issue #4989
-			me.pivot();
 			return changed;
 		}
 	});
