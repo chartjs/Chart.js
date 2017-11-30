@@ -862,7 +862,6 @@ module.exports = function(Chart) {
 						y: e.y
 					};
 
-					var model = me._model;
 					me.update(true);
 					me.pivot();
 				}
