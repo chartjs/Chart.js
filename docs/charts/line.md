@@ -119,7 +119,7 @@ The `data` property of a dataset for a line chart can be passed in two formats.
 data: [20, 10]
 ```
 
-When the `data` array is an array of numbers, the x axis is generally a [category](../axes/cartesian/category.md#Category Axis). The points are placed onto the axis using their position in the array. When a line chart is created with a category axis, the `labels` property of the data object must be specified.
+When the `data` array is an array of numbers, the x axis is generally a [category](../axes/cartesian/category.md#category-cartesian-axis). The points are placed onto the axis using their position in the array. When a line chart is created with a category axis, the `labels` property of the data object must be specified.
 
 ### Point[]
 

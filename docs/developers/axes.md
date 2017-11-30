@@ -78,14 +78,14 @@ To work with Chart.js, custom scale types must implement the following interface
 
     // Get the pixel (x coordinate for horizontal axis, y coordinate for vertical axis) for a given value
     // @param index: index into the ticks array
-    // @param includeOffset: if true, get the pixel halway between the given tick and the next
+    // @param includeOffset: if true, get the pixel halfway between the given tick and the next
     getPixelForTick: function(index, includeOffset) {},
 
     // Get the pixel (x coordinate for horizontal axis, y coordinate for vertical axis) for a given value
     // @param value : the value to get the pixel for
     // @param index : index into the data array of the value
     // @param datasetIndex : index of the dataset the value comes from
-    // @param includeOffset : if true, get the pixel halway between the given tick and the next
+    // @param includeOffset : if true, get the pixel halfway between the given tick and the next
     getPixelForValue: function(value, index, datasetIndex, includeOffset) {}
 
     // Get the value for a given pixel (x coordinate for horizontal axis, y coordinate for vertical axis)

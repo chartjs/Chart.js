@@ -30,7 +30,7 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 | `footerFontSize` | `Number` | `12` | Footer font size
 | `footerFontStyle` | `String` | `'bold'` | Footer font style
 | `footerFontColor` | `Color` | `'#fff'` | Footer font color
-| `footerSpacing` | `Number` | `2` | Spacing to add to top and bottom of each fotter line.
+| `footerSpacing` | `Number` | `2` | Spacing to add to top and bottom of each footer line.
 | `footerMarginTop` | `Number` | `6` | Margin to add before drawing the footer.
 | `xPadding` | `Number` | `6` | Padding to add on left and right of tooltip.
 | `yPadding` | `Number` | `6` | Padding to add on top and bottom of tooltip.

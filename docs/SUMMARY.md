@@ -7,6 +7,7 @@
   * [Usage](getting-started/usage.md)
 * [General](general/README.md)
   * [Responsive](general/responsive.md)
+  * [Pixel Ratio](general/device-pixel-ratio.md)
   * [Interactions](general/interactions/README.md)
     * [Events](general/interactions/events.md)
     * [Modes](general/interactions/modes.md)
