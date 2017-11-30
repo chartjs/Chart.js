@@ -808,23 +808,19 @@ describe('Core.Tooltip', function() {
 
 		var tooltip = chart.tooltip;
 		spyOn(tooltip, 'update');
-		spyOn(tooltip, 'pivot');
 
 		/* Manually trigger rather than having an async test */
 
 		// First dispatch change event, should update tooltip
 		node.dispatchEvent(firstEvent);
 		expect(tooltip.update).toHaveBeenCalledWith(true);
-		expect(tooltip.pivot).toHaveBeenCalledWith();
 
 		// Reset calls
 		tooltip.update.calls.reset();
-		tooltip.pivot.calls.reset();
 
 		// Second dispatch change event (same event), should not update tooltip
 		node.dispatchEvent(firstEvent);
 		expect(tooltip.update).not.toHaveBeenCalled();
-		expect(tooltip.pivot).toHaveBeenCalledWith();
 	});
 
 	describe('positioners', function() {
