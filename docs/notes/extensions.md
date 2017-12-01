@@ -25,7 +25,12 @@ In addition, many plugins can be found on the [npm registry](https://www.npmjs.c
 
 ## Integrations
 
-### Angular
+### Angular (v2+)
+
+ - <a href="https://github.com/emn178/angular2-chartjs" target="_blank">emn178/angular2-chartjs</a>
+ - <a href="https://github.com/valor-software/ng2-charts" target="_blank">valor-software/ng2-charts</a>
+
+### Angular (v1)
  - <a href="https://github.com/jtblin/angular-chart.js" target="_blank">angular-chart.js</a>
  - <a href="https://github.com/carlcraig/tc-angular-chartjs" target="_blank">tc-angular-chartjs</a>
  - <a href="https://github.com/petermelias/angular-chartjs" target="_blank">angular-chartjs</a>
