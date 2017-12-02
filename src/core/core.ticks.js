@@ -80,10 +80,15 @@ module.exports = {
 				numSpaces = Math.ceil(numSpaces);
 			}
 
-			// Put the values into the ticks array
+			var precision = 1;
+			if (spacing < 1) {
+				precision = Math.pow(10, spacing.toString().length - 2);
+				niceMin = Math.round(niceMin * precision) / precision;
+				niceMax = Math.round(niceMax * precision) / precision;
+			}
 			ticks.push(generationOptions.min !== undefined ? generationOptions.min : niceMin);
 			for (var j = 1; j < numSpaces; ++j) {
-				ticks.push(niceMin + (j * spacing));
+				ticks.push(Math.round((niceMin + j * spacing) * precision) / precision);
 			}
 			ticks.push(generationOptions.max !== undefined ? generationOptions.max : niceMax);
 
@@ -121,6 +126,7 @@ module.exports = {
 				exp = Math.floor(helpers.log10(tickVal));
 				significand = Math.floor(tickVal / Math.pow(10, exp));
 			}
+			var precision = exp < 0 ? Math.pow(10, Math.abs(exp)) : 1;
 
 			do {
 				ticks.push(tickVal);
@@ -129,9 +135,10 @@ module.exports = {
 				if (significand === 10) {
 					significand = 1;
 					++exp;
+					precision = exp >= 0 ? 1 : precision;
 				}
 
-				tickVal = significand * Math.pow(10, exp);
+				tickVal = Math.round(significand * Math.pow(10, exp) * precision) / precision;
 			} while (exp < endExp || (exp === endExp && significand < endSignificand));
 
 			var lastTick = valueOrDefault(generationOptions.max, tickVal);
