@@ -555,7 +555,7 @@ module.exports = function(Chart) {
 				}
 			}
 
-			me.tooltip.transition(easingValue);
+			me.tooltip.transition(easingValue, true);
 		},
 
 		/**
@@ -824,7 +824,9 @@ module.exports = function(Chart) {
 			// for smooth tooltip animations issue #4989
 			// the tooltip should be the source of change
 			if (tooltip) {
-				changed = tooltip.handleEvent(e);
+				changed = tooltip.animating
+					? tooltip.handleEvent(e)
+					: changed | tooltip.handleEvent(e);
 			}
 
 			plugins.notify(me, 'afterEvent', [e]);

@@ -72,7 +72,7 @@ helpers.extend(Element.prototype, {
 		return me;
 	},
 
-	transition: function(ease) {
+	transition: function(ease, setAnimating) {
 		var me = this;
 		var model = me._model;
 		var start = me._start;
@@ -80,6 +80,9 @@ helpers.extend(Element.prototype, {
 
 		// No animation -> No Transition
 		if (!model || ease === 1) {
+			if (setAnimating) {
+				me.animating = false;
+			}
 			me._view = model;
 			me._start = null;
 			return me;
@@ -94,6 +97,10 @@ helpers.extend(Element.prototype, {
 		}
 
 		interpolate(start, view, model, ease);
+
+		if (setAnimating && !me.animating) {
+			me.animating = true;
+		}
 
 		return me;
 	},
