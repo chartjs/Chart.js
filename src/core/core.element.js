@@ -35,12 +35,10 @@ function interpolate(start, view, model, ease) {
 		if (type === typeof origin) {
 			if (type === 'string') {
 				c0 = color(origin);
-				if (c0.valid) {
-					c1 = color(target);
-					if (c1.valid) {
-						view[key] = c1.mix(c0, ease).rgbString();
-						continue;
-					}
+				c1 = color(target);
+				if (c0.valid && c1.valid) {
+					view[key] = c1.mix(c0, ease).rgbString();
+					continue;
 				}
 			} else if (type === 'number' && isFinite(origin) && isFinite(target)) {
 				view[key] = origin + (target - origin) * ease;
@@ -80,11 +78,9 @@ helpers.extend(Element.prototype, {
 
 		// No animation -> No Transition
 		if (!model || ease === 1) {
-			if (setAnimating) {
-				me.animating = false;
-			}
 			me._view = model;
 			me._start = null;
+			delete me.animating;
 			return me;
 		}
 
@@ -96,11 +92,11 @@ helpers.extend(Element.prototype, {
 			start = me._start = {};
 		}
 
-		interpolate(start, view, model, ease);
-
 		if (setAnimating && !me.animating) {
 			me.animating = true;
 		}
+
+		interpolate(start, view, model, ease);
 
 		return me;
 	},
