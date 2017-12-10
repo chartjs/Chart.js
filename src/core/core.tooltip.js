@@ -34,6 +34,8 @@ defaults._set('global', {
 		displayColors: true,
 		borderColor: 'rgba(0,0,0,0)',
 		borderWidth: 0,
+		verticalGuideBorderColor: 'rgba(0,0,0,0)',
+		verticalGuideBorderWidth: 0,
 		callbacks: {
 			// Args are: (tooltipItems, data)
 			beforeTitle: helpers.noop,
@@ -188,7 +190,9 @@ module.exports = function(Chart) {
 			legendColorBackground: tooltipOpts.multiKeyBackground,
 			displayColors: tooltipOpts.displayColors,
 			borderColor: tooltipOpts.borderColor,
-			borderWidth: tooltipOpts.borderWidth
+			borderWidth: tooltipOpts.borderWidth,
+			verticalGuideBorderWidth: tooltipOpts.verticalGuideBorderWidth,
+			verticalGuideBorderColor: tooltipOpts.verticalGuideBorderColor
 		};
 	}
 
@@ -787,6 +791,28 @@ module.exports = function(Chart) {
 				ctx.stroke();
 			}
 		},
+		drawVerticalGuideLine: function(vm, ctx, opacity) {
+			if (vm.verticalGuideBorderWidth <= 0) {
+				return;
+			}
+
+			var chart = this._chart;
+			ctx.save();
+
+			ctx.strokeStyle = mergeOpacity(vm.verticalGuideBorderColor, opacity);
+			ctx.lineWidth = vm.verticalGuideBorderWidth;
+
+			var x = vm.caretX;
+			x += helpers.aliasPixel(ctx.lineWidth);
+
+			ctx.beginPath();
+			ctx.moveTo(x, chart.chartArea.top);
+			ctx.lineTo(x, chart.chartArea.bottom);
+			ctx.closePath();
+			ctx.stroke();
+
+			ctx.restore();
+		},
 		draw: function() {
 			var ctx = this._chart.ctx;
 			var vm = this._view;
@@ -811,6 +837,9 @@ module.exports = function(Chart) {
 			var hasTooltipContent = vm.title.length || vm.beforeBody.length || vm.body.length || vm.afterBody.length || vm.footer.length;
 
 			if (this._options.enabled && hasTooltipContent) {
+
+				this.drawVerticalGuideLine(vm, ctx, opacity);
+
 				// Draw Background
 				this.drawBackground(pt, vm, ctx, tooltipSize, opacity);
 
@@ -948,6 +977,34 @@ module.exports = function(Chart) {
 			return {
 				x: x,
 				y: y
+			};
+		},
+		/**
+		 * Gets the tooltip position beside a vertical axis
+		 * @function Chart.Tooltip.positioners.besideAxis
+		 * @param elements {Chart.Element[]} the tooltip elements
+		 * @returns {Point} the tooltip position
+		 */
+		besideAxis: function(elements) {
+			if (!elements.length) {
+				return false;
+			}
+
+			var x = 0;
+
+			var el = elements[0];
+			if (el && el.hasValue()) {
+				var pos = el.tooltipPosition();
+				x += pos.x;
+			} else {
+				return false;
+			}
+
+			var chart = el._chart;
+
+			return {
+				x: Math.round(x),
+				y: Math.round(chart.height / 2)
 			};
 		}
 	};

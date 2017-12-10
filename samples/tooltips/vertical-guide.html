@@ -2,7 +2,7 @@
 <html>
 
 <head>
-	<title>Tooltip Interaction Modes</title>
+	<title>Tooltip Vertical Guide</title>
 	<script src="../../dist/Chart.bundle.js"></script>
 	<script src="../utils.js"></script>
 	<style>
@@ -41,18 +41,6 @@
 						backgroundColor: window.chartColors.red,
 						data: [10, 30, 46, 2, 8, 50, 0],
 						fill: false,
-					}, {
-						label: "My Second dataset",
-						borderColor: window.chartColors.blue,
-						backgroundColor: window.chartColors.blue,
-						data: [7, 49, 46, 13, 25, 30, 22],
-						fill: false,
-					}, {
-						label: "My Third dataset",
-						borderColor: window.chartColors.blue,
-						backgroundColor: window.chartColors.blue,
-						data: [7, 49, 46, 13, 25, 30, 22],
-						fill: false,
 					}]
 				},
 				options: {
@@ -65,6 +53,8 @@
 						position: position,
 						mode: 'index',
 						intersect: false,
+						verticalGuideBorderWidth: 1,
+						verticalGuideBorderColor: '#000000'
 					},
 				}
 			};
@@ -73,7 +63,7 @@
 		window.onload = function() {
 			var container = document.querySelector('.container');
 
-			['average', 'nearest', 'besideAxis'].forEach(function(position) {
+			['besideAxis'].forEach(function(position) {
 				var div = document.createElement('div');
 				div.classList.add('chart-container');
 
