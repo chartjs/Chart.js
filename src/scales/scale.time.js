@@ -240,7 +240,7 @@ function determineStepSize(min, max, unit, capacity) {
 	var i, ilen, factor;
 
 	if (!steps) {
-		return Math.ceil(range / ((capacity || 1) * milliseconds));
+		return Math.ceil(range / (capacity * milliseconds));
 	}
 
 	for (i = 0, ilen = steps.length; i < ilen; ++i) {
@@ -748,7 +748,8 @@ module.exports = function(Chart) {
 			var tickLabelWidth = me.getLabelWidth(exampleLabel);
 			var innerWidth = me.isHorizontal() ? me.width : me.height;
 
-			return Math.floor(innerWidth / tickLabelWidth);
+			var capacity = Math.floor(innerWidth / tickLabelWidth);
+			return capacity > 0 ? capacity : 1;
 		}
 	});
 
