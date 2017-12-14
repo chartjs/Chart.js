@@ -1,3 +1,5 @@
+var testTz = 'Etc/UTC';
+var testTzNum = '+0000';
 // Time scale tests
 describe('Time scale tests', function() {
 	function createScale(data, options) {
@@ -43,6 +45,10 @@ describe('Time scale tests', function() {
 
 	it('should load moment.js as a dependency', function() {
 		expect(window.moment).not.toBe(undefined);
+	});
+
+	it('should load moment-timezone.js as a dependency', function() {
+		expect(window.moment.tz).not.toBe(undefined);
 	});
 
 	it('should register the constructor with the scale service', function() {
@@ -123,7 +129,7 @@ describe('Time scale tests', function() {
 	describe('when given inputs of different types', function() {
 		// Helper to build date objects
 		function newDateFromRef(days) {
-			return moment('01/01/2015 12:00', 'DD/MM/YYYY HH:mm').add(days, 'd').toDate();
+			return moment('01/01/2015 12:00 ' + testTzNum, 'DD/MM/YYYY HH:mm Z').add(days, 'd').toDate();
 		}
 
 		it('should accept labels as strings', function() {
@@ -269,11 +275,12 @@ describe('Time scale tests', function() {
 						position: 'bottom',
 						time: {
 							unit: 'day',
+							timezone: testTz,
 							round: true,
 							parser: function(label) {
 								return label === 'foo' ?
-									moment('2000/01/02', 'YYYY/MM/DD') :
-									moment('2016/05/08', 'YYYY/MM/DD');
+									moment('2000/01/02', 'YYYY/MM/DD').tz(testTz) :
+									moment('2016/05/08', 'YYYY/MM/DD').tz(testTz);
 							}
 						},
 						ticks: {
@@ -305,6 +312,22 @@ describe('Time scale tests', function() {
 		var ticks = getTicksLabels(scale);
 
 		expect(ticks).toEqual(['8PM', '9PM', '10PM', '11PM', '12AM', '1AM', '2AM', '3AM', '4AM', '5AM', '6AM', '7AM', '8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM', '6PM', '7PM', '8PM', '9PM']);
+	});
+
+	it('should build ticks using the config unit and timezone', function() {
+		var mockData = {
+			labels: ['2015-01-01T20:00:00-00:00', '2015-01-02T21:00:00-00:00'], // days
+		};
+
+		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('time'));
+		config.time.unit = 'hour';
+		config.time.timezone = 'America/New_York';
+
+		var scale = createScale(mockData, config);
+		scale.update(2500, 200);
+		var ticks = getTicksLabels(scale);
+
+		expect(ticks).toEqual(['3PM', '4PM', '5PM', '6PM', '7PM', '8PM', '9PM', '10PM', '11PM', '12AM', '1AM', '2AM', '3AM', '4AM', '5AM', '6AM', '7AM', '8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM']);
 	});
 
 	it('build ticks honoring the minUnit', function() {
@@ -456,7 +479,10 @@ describe('Time scale tests', function() {
 						xAxes: [{
 							id: 'xScale0',
 							type: 'time',
-							position: 'bottom'
+							position: 'bottom',
+							time: {
+								timezone: testTz
+							}
 						}],
 					}
 				}
@@ -468,8 +494,8 @@ describe('Time scale tests', function() {
 		it('should be bounded by the nearest week beginnings', function() {
 			var chart = this.chart;
 			var scale = this.scale;
-			expect(scale.getValueForPixel(scale.left)).toBeGreaterThan(moment(chart.data.labels[0]).startOf('week'));
-			expect(scale.getValueForPixel(scale.right)).toBeLessThan(moment(chart.data.labels[chart.data.labels.length - 1]).add(1, 'week').endOf('week'));
+			expect(scale.getValueForPixel(scale.left)).toBeGreaterThan(moment(chart.data.labels[0]).tz(testTz).startOf('week'));
+			expect(scale.getValueForPixel(scale.right)).toBeLessThan(moment(chart.data.labels[chart.data.labels.length - 1]).add(1, 'week').tz(testTz).endOf('week'));
 		});
 
 		it('should convert between screen coordinates and times', function() {
@@ -502,7 +528,7 @@ describe('Time scale tests', function() {
 			this.chart = window.acquireChart({
 				type: 'line',
 				data: {
-					labels: ['2005-07-04', '2017-01-20'],
+					labels: ['2005-07-04T00:00' + testTzNum, '2017-01-20T00:00' + testTzNum],
 				},
 				options: {
 					scales: {
@@ -510,7 +536,10 @@ describe('Time scale tests', function() {
 							id: 'xScale0',
 							type: 'time',
 							bounds: 'ticks',
-							position: 'bottom'
+							position: 'bottom',
+							time: {
+								timezone: testTz
+							}
 						}],
 					}
 				}
@@ -527,11 +556,11 @@ describe('Time scale tests', function() {
 			var stepsAmount = Math.floor((scale.max - scale.min) / step);
 
 			expect(scale.getValueForPixel(scale.left)).toBeCloseToTime({
-				value: moment(scale.min).startOf('year'),
+				value: moment(scale.min).tz(testTz).startOf('year'),
 				unit: 'hour',
 			});
 			expect(scale.getValueForPixel(scale.right)).toBeCloseToTime({
-				value: moment(scale.min + step * stepsAmount).endOf('year'),
+				value: moment(scale.min + step * stepsAmount).tz(testTz).endOf('year'),
 				unit: 'hour',
 			});
 		});
@@ -549,7 +578,7 @@ describe('Time scale tests', function() {
 			for (var i = 0; i < ticks.length - 1; i++) {
 				var offset = 2 * pixelsPerYear * i;
 				expect(scale.getValueForPixel(scale.left + offset)).toBeCloseToTime({
-					value: moment(ticks[i].label + '-01-01'),
+					value: moment(ticks[i].label + '-01-01T00:00' + testTzNum),
 					unit: 'day',
 					threshold: 0.5,
 				});
@@ -572,7 +601,10 @@ describe('Time scale tests', function() {
 					xAxes: [{
 						id: 'xScale0',
 						type: 'time',
-						position: 'bottom'
+						position: 'bottom',
+						time: {
+							timezone: testTz
+						}
 					}],
 				}
 			}
@@ -599,7 +631,10 @@ describe('Time scale tests', function() {
 					xAxes: [{
 						id: 'xScale0',
 						display: true,
-						type: 'time'
+						type: 'time',
+						time: {
+							timezone: testTz
+						}
 					}]
 				}
 			}
@@ -656,7 +691,8 @@ describe('Time scale tests', function() {
 								id: 'x',
 								type: 'time',
 								time: {
-									parser: 'YYYY'
+									parser: 'YYYY',
+									timezone: testTz
 								},
 								ticks: {
 									source: 'labels'
@@ -709,9 +745,8 @@ describe('Time scale tests', function() {
 
 				chart.data.labels = [];
 				chart.update();
-
-				expect(scale.min).toEqual(+moment().startOf('day'));
-				expect(scale.max).toEqual(+moment().endOf('day') + 1);
+				expect(scale.min).toEqual(+moment().tz(testTz).startOf('day'));
+				expect(scale.max).toEqual(+moment().tz(testTz).endOf('day') + 1);
 				expect(getTicksLabels(scale)).toEqual([]);
 			});
 		});
@@ -737,7 +772,8 @@ describe('Time scale tests', function() {
 								id: 'x',
 								type: 'time',
 								time: {
-									parser: 'YYYY'
+									parser: 'YYYY',
+									timezone: testTz
 								},
 								ticks: {
 									source: 'data'
@@ -814,7 +850,8 @@ describe('Time scale tests', function() {
 								id: 'x',
 								type: 'time',
 								time: {
-									parser: 'YYYY'
+									parser: 'YYYY',
+									timezone: testTz
 								},
 								distribution: 'series',
 								ticks: {
@@ -898,7 +935,8 @@ describe('Time scale tests', function() {
 								id: 'x',
 								type: 'time',
 								time: {
-									parser: 'YYYY'
+									parser: 'YYYY',
+									timezone: testTz
 								},
 								distribution: 'linear',
 								ticks: {
@@ -962,7 +1000,8 @@ describe('Time scale tests', function() {
 								bounds: 'data',
 								time: {
 									parser: 'MM/DD HH:mm',
-									unit: 'day'
+									unit: 'day',
+									timezone: testTz
 								}
 							}],
 							yAxes: [{
@@ -988,7 +1027,7 @@ describe('Time scale tests', function() {
 				var chart = window.acquireChart({
 					type: 'line',
 					data: {
-						labels: ['02/20 08:00', '02/21 09:00', '02/22 10:00', '02/23 11:00'],
+						labels: ['02/20 08:00 ' + testTzNum, '02/21 09:00 ' + testTzNum, '02/22 10:00 ' + testTzNum, '02/23 11:00 ' + testTzNum],
 						datasets: [{data: [0, 1, 2, 3, 4, 5]}]
 					},
 					options: {
@@ -998,8 +1037,9 @@ describe('Time scale tests', function() {
 								type: 'time',
 								bounds: 'ticks',
 								time: {
-									parser: 'MM/DD HH:mm',
-									unit: 'day'
+									parser: 'MM/DD HH:mm Z',
+									unit: 'day',
+									timezone: testTz
 								}
 							}],
 							yAxes: [{
@@ -1014,8 +1054,8 @@ describe('Time scale tests', function() {
 
 				expect(scale.min).toEqual(ticks[0].value);
 				expect(scale.max).toEqual(ticks[ticks.length - 1].value);
-				expect(scale.getPixelForValue('02/20 08:00')).toBeCloseToPixel(60);
-				expect(scale.getPixelForValue('02/23 11:00')).toBeCloseToPixel(426);
+				expect(scale.getPixelForValue('02/20 08:00 +0000')).toBeCloseToPixel(60);
+				expect(scale.getPixelForValue('02/23 11:00 +0000')).toBeCloseToPixel(426);
 				expect(getTicksLabels(scale)).toEqual([
 					'Feb 20', 'Feb 21', 'Feb 22', 'Feb 23', 'Feb 24']);
 			});
@@ -1041,7 +1081,8 @@ describe('Time scale tests', function() {
 										bounds: bounds,
 										time: {
 											parser: 'MM/DD HH:mm',
-											unit: 'day'
+											unit: 'day',
+											timezone: testTz
 										},
 										ticks: {
 											source: source
@@ -1116,7 +1157,8 @@ describe('Time scale tests', function() {
 									id: 'x',
 									type: 'time',
 									time: {
-										parser: 'YYYY'
+										parser: 'YYYY',
+										timezone: testTz
 									},
 									ticks: {
 										source: source

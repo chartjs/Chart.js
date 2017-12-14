@@ -94,6 +94,7 @@ function buildTask() {
 
   var nonBundled = browserify('./src/chart.js', { standalone: 'Chart' })
     .ignore('moment')
+    .ignore('moment-timezone')
     .plugin(collapse)
     .bundle()
     .pipe(source('Chart.js'))
@@ -171,6 +172,7 @@ function startTest() {
     {pattern: './test/fixtures/**/*.json', included: false},
     {pattern: './test/fixtures/**/*.png', included: false},
     './node_modules/moment/min/moment.min.js',
+    './node_modules/moment-timezone/builds/moment-timezone-with-data-2012-2022.min.js',
     './test/jasmine.index.js',
     './src/**/*.js',
   ].concat(
