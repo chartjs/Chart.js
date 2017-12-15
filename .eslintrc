@@ -149,7 +149,7 @@ rules:
   max-nested-callbacks: 0
   max-params: 0
   max-statements-per-line: 0
-  max-statements: 0
+  max-statements: [2, 30]
   multiline-ternary: 0
   new-cap: 0
   new-parens: 2
