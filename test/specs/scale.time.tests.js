@@ -703,7 +703,7 @@ describe('Time scale tests', function() {
 				expect(getTicksLabels(scale)).toEqual([
 					'2017', '2019', '2020', '2025', '2042']);
 			});
-			it ('should correctly handle empty `data.labels`', function() {
+			it ('should correctly handle empty `data.labels` using "day" if `time.unit` is undefined`', function() {
 				var chart = this.chart;
 				var scale = chart.scales.x;
 
@@ -712,6 +712,19 @@ describe('Time scale tests', function() {
 
 				expect(scale.min).toEqual(+moment().startOf('day'));
 				expect(scale.max).toEqual(+moment().endOf('day') + 1);
+				expect(getTicksLabels(scale)).toEqual([]);
+			});
+			it ('should correctly handle empty `data.labels` using `time.unit`', function() {
+				var chart = this.chart;
+				var scale = chart.scales.x;
+				var options = chart.options.scales.xAxes[0];
+
+				options.time.unit = 'year';
+				chart.data.labels = [];
+				chart.update();
+
+				expect(scale.min).toEqual(+moment().startOf('year'));
+				expect(scale.max).toEqual(+moment().endOf('year') + 1);
 				expect(getTicksLabels(scale)).toEqual([]);
 			});
 		});
@@ -784,7 +797,7 @@ describe('Time scale tests', function() {
 				expect(getTicksLabels(scale)).toEqual([
 					'2017', '2018', '2019', '2020', '2025', '2042', '2043']);
 			});
-			it ('should correctly handle empty `data.labels`', function() {
+			it ('should correctly handle empty `data.labels` using "day" if `time.unit` is undefined`', function() {
 				var chart = this.chart;
 				var scale = chart.scales.x;
 
@@ -795,6 +808,21 @@ describe('Time scale tests', function() {
 				expect(scale.max).toEqual(+moment('2043', 'YYYY'));
 				expect(getTicksLabels(scale)).toEqual([
 					'2018', '2020', '2043']);
+			});
+			it ('should correctly handle empty `data.labels` and hidden datasets using `time.unit`', function() {
+				var chart = this.chart;
+				var scale = chart.scales.x;
+				var options = chart.options.scales.xAxes[0];
+
+				options.time.unit = 'year';
+				chart.data.labels = [];
+				var meta = chart.getDatasetMeta(1);
+				meta.hidden = true;
+				chart.update();
+
+				expect(scale.min).toEqual(+moment().startOf('year'));
+				expect(scale.max).toEqual(+moment().endOf('year') + 1);
+				expect(getTicksLabels(scale)).toEqual([]);
 			});
 		});
 	});
