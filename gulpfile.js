@@ -29,7 +29,7 @@ var header = "/*!\n" +
   " * http://chartjs.org/\n" +
   " * Version: {{ version }}\n" +
   " *\n" +
-  " * Copyright 2017 Nick Downie\n" +
+  " * Copyright " + (new Date().getFullYear()) + " Chart.js Contributors\n" +
   " * Released under the MIT license\n" +
   " * https://github.com/chartjs/Chart.js/blob/master/LICENSE.md\n" +
   " */\n";
