@@ -50,7 +50,20 @@ module.exports = helpers.extend({
 	 * @param {String} type - The ({@link IEvent}) type to remove
 	 * @param {Function} listener - The listener function to remove from the event target.
 	 */
-	removeEventListener: function() {}
+	removeEventListener: function() {},
+
+	/**
+	 * Calculates the browsers default scroll bar width
+	 * @returns {number} the width of the vertical scroll bar in pixles
+	 */
+	getDefaultScrollBarWidth: function() {},
+
+	/**
+	 * Iterates through parent nodes of the given node looking for a toggle-able scroll bar
+	 * @param {Chart} chart - the Chart that is looking for a parent with a scroll bar
+	 * @returns {Boolean} true if a parent node has a visible toggle-able scroll bar
+	 */
+	detectScrollBarInParents: function() {}
 
 }, implementation);
 

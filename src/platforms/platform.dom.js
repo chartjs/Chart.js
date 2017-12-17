@@ -311,6 +311,39 @@ function injectCSS(platform, css) {
 	style.appendChild(document.createTextNode(css));
 }
 
+function getDefaultScrollBarWidth() {
+	// https://stackoverflow.com/a/13382873
+	var outer = document.createElement('div');
+	outer.style.visibility = 'hidden';
+	outer.style.width = '100px';
+	outer.style.msOverflowStyle = 'scrollbar'; // needed for WinJS apps
+
+	document.body.appendChild(outer);
+
+	var widthNoScroll = outer.offsetWidth;
+	// force scrollbars
+	outer.style.overflow = 'scroll';
+
+	// add innerdiv
+	var inner = document.createElement('div');
+	inner.style.width = '100%';
+	outer.appendChild(inner);
+
+	var widthWithScroll = inner.offsetWidth;
+
+	// remove divs
+	outer.parentNode.removeChild(outer);
+
+	return widthNoScroll - widthWithScroll;
+}
+
+// Detect if node has vertical scrollbar css is set to 'auto'
+// and if node currently has a scroll bar
+function hasAutoScrollBar(node) {
+	var overflowY = window.getComputedStyle(node)['overflow-y'];
+	return overflowY === 'auto' && node.scrollHeight > node.clientHeight;
+}
+
 module.exports = {
 	/**
 	 * This property holds whether this platform is enabled for the current environment.
@@ -429,6 +462,30 @@ module.exports = {
 		}
 
 		removeEventListener(canvas, type, proxy);
+	},
+
+	getDefaultScrollBarWidth: function() {
+		return getDefaultScrollBarWidth();
+	},
+
+	// Loop through node's parent elements to see if any have a scrollbar
+	detectScrollBarInParents: function(node) {
+		var parentNode = node.parentElement;
+		while (parentNode) {
+			if (hasAutoScrollBar(parentNode)) {
+				return true;
+			}
+			parentNode = parentNode.parentElement;
+		}
+
+		// We don't care if the scroll bar is static (hidden or scroll)
+		var documentOverflow = document.documentElement.style['overflow-y'];
+		if (documentOverflow === 'scroll' || documentOverflow === 'hidden') {
+			return false;
+		}
+
+		// This checks for a top level scroll bar
+		return window.innerWidth > document.documentElement.clientWidth;
 	}
 };
 

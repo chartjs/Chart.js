@@ -87,6 +87,7 @@ module.exports = function(Chart) {
 			me.width = width;
 			me.height = height;
 			me.aspectRatio = height ? width / height : null;
+			me.defaultScrollWidth = platform.getDefaultScrollBarWidth();
 			me.options = config.options;
 			me._bufferedRender = false;
 
@@ -178,6 +179,14 @@ module.exports = function(Chart) {
 
 			// Set to 0 instead of canvas.size because the size defaults to 300x150 if the element is collased
 			var newWidth = Math.max(0, Math.floor(helpers.getMaximumWidth(canvas)));
+
+			// If a scroll bar is visible add scroll bar's width to
+			// the chart width to prevent infinite resizing
+			// see https://github.com/chartjs/Chart.js/issues/2127
+			if (options.ignoreScrollBar && platform.detectScrollBarInParents(canvas) && newWidth > 0) {
+				newWidth += me.defaultScrollWidth;
+			}
+
 			var newHeight = Math.max(0, Math.floor(aspectRatio ? newWidth / aspectRatio : helpers.getMaximumHeight(canvas)));
 
 			if (me.width === newWidth && me.height === newHeight) {
