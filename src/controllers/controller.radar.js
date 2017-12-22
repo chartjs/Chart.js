@@ -30,6 +30,7 @@ module.exports = function(Chart) {
 			var meta = me.getMeta();
 			var line = meta.dataset;
 			var points = meta.data;
+			var options = me.chart.options;
 			var custom = line.custom || {};
 			var dataset = me.getDataset();
 			var lineElementOptions = me.chart.options.elements.line;
