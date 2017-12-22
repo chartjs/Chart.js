@@ -482,7 +482,7 @@ describe('Chart.controllers.radar', function() {
 	});
 
 	it('should allow spanGaps to be set to true', function() {
-		var chart = window.acquirechart({
+		var chart = window.acquireChart({
 			type: 'radar',
 			data: {
 				datasets: [{
