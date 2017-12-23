@@ -493,6 +493,6 @@ describe('Chart.controllers.radar', function() {
 			}
 		});
 		var meta = chart.getDatasetMeta(0);
-		expect(meta._model.spanGaps).toBe(true);
+		expect(meta.dataset._model.spanGaps).toBe(true);
 	});
 });

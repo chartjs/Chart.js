@@ -267,12 +267,10 @@ module.exports = function(Chart) {
 				var pointLabelPosition = scale.getPointPosition(i, outerDistance + 5);
 
 				// Keep this in loop since we may support array properties here
-				var pointLabelFontColor = valueOrDefault(pointLabelOpts.fontColor, globalDefaults.defaultFontColor);
-				var pointLabelFontColorFormatted = helpers.isArray(pointLabelFontColor) ?
-					pointLabelFontColor[i] : pointLabelFontColor;
+				var pointLabelFontColor = helpers.valueAtIndexOrDefault(pointLabelOpts.fontColor, i, globalDefaults.defaultFontColor);
 
 				ctx.font = plFont.font;
-				ctx.fillStyle = pointLabelFontColorFormatted;
+				ctx.fillStyle = pointLabelFontColor;
 
 				var angleRadians = scale.getIndexAngle(i);
 				var angle = helpers.toDegrees(angleRadians);
