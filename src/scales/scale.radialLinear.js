@@ -237,7 +237,6 @@ module.exports = function(Chart) {
 
 	function drawPointLabels(scale) {
 		var ctx = scale.ctx;
-		var valueOrDefault = helpers.valueOrDefault;
 		var opts = scale.options;
 		var angleLineOpts = opts.angleLines;
 		var pointLabelOpts = opts.pointLabels;
@@ -470,6 +469,7 @@ module.exports = function(Chart) {
 			var opts = me.options;
 			var gridLineOpts = opts.gridLines;
 			var tickOpts = opts.ticks;
+			var valueOrDefault = helpers.valueOrDefault;
 
 			if (opts.display) {
 				var ctx = me.ctx;
