@@ -1,0 +1,42 @@
+{
+    "config": {
+        "type": "line",
+        "data": {
+            "labels": ["0", "1", "2", "3", "4"],
+            "datasets": [{
+                "backgroundColor": "rgba(0, 0, 192, 0.25)",
+                "data": [2, 3, 4, null, 1]
+            }]
+        },
+        "options": {
+            "responsive": false,
+            "spanGaps": true,
+            "legend": false,
+            "title": false,
+            "scales": {
+                "xAxes": [{
+                    "display": false
+                }],
+                "yAxes": [{
+                    "display": false
+                }]
+            },
+            "elements": {
+                "point": {
+                    "radius": 0
+                },
+                "line": {
+                    "borderColor": "transparent",
+                    "fill": "end",
+                    "tension": 0
+                }
+            }
+        }
+    },
+    "options": {
+        "canvas": {
+            "height": 256,
+            "width": 512
+        }
+    }
+}

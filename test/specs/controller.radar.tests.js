@@ -1,4 +1,6 @@
 describe('Chart.controllers.radar', function() {
+	describe('auto', jasmine.specsFromFixtures('controller.radar'));
+
 	it('Should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'radar',
