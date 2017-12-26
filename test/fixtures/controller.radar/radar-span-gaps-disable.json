@@ -1,34 +1,29 @@
 {
     "config": {
-        "type": "line",
+        "debug": true,
+        "type": "radar",
         "data": {
-            "labels": ["0", "1", "2", "3", "4"],
+            "labels": ["0", "1", "2", "3", "4", "5", "6", "7"],
             "datasets": [{
-                "backgroundColor": "rgba(0, 0, 192, 0.25)",
-                "data": [2, 3, 4, null, 1]
+                "backgroundColor": "transparent",
+                "data": [4, 2, null, 3, 2.5, null, 2, 4],
+                "spanGaps": false
             }]
         },
         "options": {
             "responsive": false,
-            "spanGaps": false,
             "legend": false,
             "title": false,
-            "scales": {
-                "xAxes": [{
-                    "display": false
-                }],
-                "yAxes": [{
-                    "display": false
-                }]
+            "scale": {
+                "display": false
             },
             "elements": {
                 "point": {
                     "radius": 0
                 },
                 "line": {
-                    "borderColor": "transparent",
-                    "fill": "end",
-                    "tension": 0
+                    "borderColor": "pink",
+                    "fill": "origin"
                 }
             }
         }
@@ -36,7 +31,7 @@
     "options": {
         "canvas": {
             "height": 256,
-            "width": 512
+            "width": 256
         }
     }
 }
