@@ -7,6 +7,9 @@ engines:
   eslint:
     enabled: true
     channel: "eslint-4"
+    include_paths:
+    - 'test/'
+    - 'samples/'
   fixme:
     enabled: true
 ratings:
