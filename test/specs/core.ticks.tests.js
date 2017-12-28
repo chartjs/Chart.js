@@ -1,4 +1,13 @@
 describe('Test tick generators', function() {
+	// formatters are used as default config values so users want to be able to reference them
+	it('Should expose formatters api', function() {
+		expect(typeof Chart.Ticks).toBeDefined();
+		expect(typeof Chart.Ticks.formatters).toBeDefined();
+		expect(typeof Chart.Ticks.formatters.values).toBe('function');
+		expect(typeof Chart.Ticks.formatters.linear).toBe('function');
+		expect(typeof Chart.Ticks.formatters.logarithmic).toBe('function');
+	});
+
 	it('Should generate linear spaced ticks with correct precision', function() {
 		var chart = window.acquireChart({
 			type: 'line',

@@ -13,6 +13,7 @@ Chart.Element = require('./core/core.element');
 Chart.elements = require('./elements/index');
 Chart.Interaction = require('./core/core.interaction');
 Chart.platform = require('./platforms/platform');
+Chart.Ticks = require('./core/core.ticks');
 
 require('./core/core.plugin')(Chart);
 require('./core/core.animation')(Chart);
