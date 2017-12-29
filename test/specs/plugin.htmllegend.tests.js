@@ -86,7 +86,7 @@ describe('HTML Legend block tests', function() {
 
 		// check manually created DOM legend
 		legendContainer.innerHTML = ''; // remove legend
-		var legend = chart.generateLegend(legendContainer); // should recreate legend
+		legend = chart.generateLegend(legendContainer); // should recreate legend
 		expect(legend.nodeType).toBe(Node.ELEMENT_NODE); // should return DOM node
 		expect(legend.nodeName).toBe('DIV');
 		expect(legend).toBe(legendContainer.childNodes[0]); // container should contain legend
@@ -95,7 +95,7 @@ describe('HTML Legend block tests', function() {
 		// check if HTML generated legend still is attached to DOM
 		legendContainer.innerHTML = ''; // remove legend
 		chart.options.htmllegend.output = 'HTML';
-		var legend = chart.generateLegend(legendContainer); // should recreate HTML legend
+		legend = chart.generateLegend(legendContainer); // should recreate HTML legend
 		expect(legend).toBe(legendContainer.childNodes[0].outerHTML); // container should contain legend
 		expect(legend).toBe(expectedLegend);
 	});
@@ -105,7 +105,9 @@ describe('HTML Legend block tests', function() {
 			type: 'bar',
 			data: {},
 			options: {
-				htmllegend: function() { return '<div>HTML legend</div>'; }
+				htmllegend: function() {
+					return '<div>HTML legend</div>';
+				}
 			}
 		});
 
@@ -119,7 +121,9 @@ describe('HTML Legend block tests', function() {
 			data: {},
 			options: {
 				htmllegend: {
-					callback: function() { return '<div>HTML legend</div>'; }
+					callback: function() {
+						return '<div>HTML legend</div>';
+					}
 				}
 			}
 		});
