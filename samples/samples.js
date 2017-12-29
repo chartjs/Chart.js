@@ -146,6 +146,9 @@
 			title: 'Positioning',
 			path: 'legend/positioning.html'
 		}, {
+			title: 'HTML legend',
+			path: 'legend/html-legend.html'
+		}, {
 			title: 'Point style',
 			path: 'legend/point-style.html'
 		}]

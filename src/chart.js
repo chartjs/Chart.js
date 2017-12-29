@@ -54,6 +54,7 @@ var plugins = [];
 plugins.push(
 	require('./plugins/plugin.filler')(Chart),
 	require('./plugins/plugin.legend')(Chart),
+	require('./plugins/plugin.htmllegend')(Chart),
 	require('./plugins/plugin.title')(Chart)
 );
 

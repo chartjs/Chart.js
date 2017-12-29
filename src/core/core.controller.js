@@ -722,7 +722,7 @@ module.exports = function(Chart) {
 		},
 
 		generateLegend: function() {
-			return this.options.legendCallback(this);
+			return this.htmllegend.generate.apply(this.htmllegend, arguments);
 		},
 
 		/**
