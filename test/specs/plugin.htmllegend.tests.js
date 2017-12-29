@@ -105,30 +105,21 @@ describe('HTML Legend block tests', function() {
 			type: 'bar',
 			data: {},
 			options: {
-				htmllegend: function() {
-					return '<div>HTML legend</div>';
-				}
-			}
-		});
-
-		var expectedLegend = '<div>HTML legend</div>';
-		expect(chart.generateLegend()).toBe(expectedLegend);
-	});
-
-	it('should use user defined callback function', function() {
-		var chart = window.acquireChart({
-			type: 'bar',
-			data: {},
-			options: {
 				htmllegend: {
 					callback: function() {
-						return '<div>HTML legend</div>';
+						return '<div>options.htmllegend.callback</div>';
 					}
 				}
 			}
 		});
 
-		var expectedLegend = '<div>HTML legend</div>';
-		expect(chart.generateLegend()).toBe(expectedLegend);
+		// check callback function
+		expect(chart.generateLegend()).toBe('<div>options.htmllegend.callback</div>');
+
+		// set direct callback function setting
+		chart.options.htmllegend = function() {
+			return '<div>options.htmllegend</div>';
+		};
+		expect(chart.generateLegend()).toBe('<div>options.htmllegend</div>');
 	});
 });
