@@ -164,3 +164,7 @@ var chart = new Chart(ctx, {
     }
 });
 ```
+
+Note that legendCallback is not called automatically and you must call `generateLegend()` yourself in code when creating a legend using this method.
+
+
