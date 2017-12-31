@@ -138,6 +138,32 @@ module.exports = function(Chart) {
 			});
 		},
 
+		getStartAngle: function(customAngles, dataSetData, metaData, datasetStartAngle, circumference, index) {
+
+			// If there is NaN data before us, we need to calculate the starting angle correctly.
+			// We could be way more efficient here, but its unlikely that the polar area chart will have a lot of data
+
+			var previousAngle = 0;
+			var visibleCount = 0;
+			var startAngle = 0;
+			var i = 0;
+
+			for (i = 0; i < index; ++i) {
+				if (customAngles !== undefined) {
+					previousAngle += customAngles[visibleCount];
+				}
+				if (!isNaN(dataSetData[i]) && !metaData[i].hidden) {
+					++visibleCount;
+				}
+			}
+			if (customAngles === undefined) {
+				startAngle = datasetStartAngle + (circumference * visibleCount);
+			} else {
+				startAngle = datasetStartAngle + previousAngle;
+			}
+
+			return startAngle;
+		},
 		updateElement: function(arc, index, reset) {
 			var me = this;
 			var chart = me.chart;
@@ -146,25 +172,18 @@ module.exports = function(Chart) {
 			var animationOpts = opts.animation;
 			var scale = chart.scale;
 			var labels = chart.data.labels;
+			var customAngles = opts.customAngles;
+			var meta = me.getMeta();
 
-			var circumference = me.calculateCircumference(dataset.data[index]);
+			var circumference = me.calculateCircumference(dataset.data[index], index);
 			var centerX = scale.xCenter;
 			var centerY = scale.yCenter;
-
-			// If there is NaN data before us, we need to calculate the starting angle correctly.
-			// We could be way more efficient here, but its unlikely that the polar area chart will have a lot of data
-			var visibleCount = 0;
-			var meta = me.getMeta();
-			for (var i = 0; i < index; ++i) {
-				if (!isNaN(dataset.data[i]) && !meta.data[i].hidden) {
-					++visibleCount;
-				}
-			}
 
 			// var negHalfPI = -0.5 * Math.PI;
 			var datasetStartAngle = opts.startAngle;
 			var distance = arc.hidden ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
-			var startAngle = datasetStartAngle + (circumference * visibleCount);
+
+			var startAngle = me.getStartAngle(customAngles, dataset.data, meta.data, datasetStartAngle, circumference, index);
 			var endAngle = startAngle + (arc.hidden ? 0 : circumference);
 
 			var resetRadius = animationOpts.animateScale ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
@@ -211,10 +230,17 @@ module.exports = function(Chart) {
 			return count;
 		},
 
-		calculateCircumference: function(value) {
+		calculateCircumference: function(value, index) {
+			var me = this;
+			var chart = me.chart;
+			var opts = chart.options;
+			var customAngles = opts.customAngles;
 			var count = this.getMeta().count;
 			if (count > 0 && !isNaN(value)) {
-				return (2 * Math.PI) / count;
+				if (customAngles === undefined) {
+					return (2 * Math.PI) / count;
+				}
+				return count === 1 ? 2 * Math.PI : customAngles[index];
 			}
 			return 0;
 		}
