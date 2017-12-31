@@ -18,8 +18,10 @@ describe('Legend block tests', function() {
 			onHover: null,
 
 			labels: {
-				boxWidth: 40,
+				boxWidth: 20,
 				padding: 10,
+				center: true,
+				hiddenSymbol: 'stroke',
 				generateLabels: jasmine.any(Function)
 			}
 		});
@@ -63,6 +65,8 @@ describe('Legend block tests', function() {
 			lineWidth: undefined,
 			strokeStyle: undefined,
 			pointStyle: undefined,
+			center: undefined,
+			hiddenSymbol: undefined,
 			datasetIndex: 0
 		}, {
 			text: 'dataset2',
@@ -75,6 +79,8 @@ describe('Legend block tests', function() {
 			lineWidth: undefined,
 			strokeStyle: undefined,
 			pointStyle: undefined,
+			center: undefined,
+			hiddenSymbol: undefined,
 			datasetIndex: 1
 		}, {
 			text: 'dataset3',
@@ -84,6 +90,8 @@ describe('Legend block tests', function() {
 			lineDash: undefined,
 			lineDashOffset: undefined,
 			lineJoin: undefined,
+			center: undefined,
+			hiddenSymbol: undefined,
 			lineWidth: 10,
 			strokeStyle: 'green',
 			pointStyle: 'crossRot',
@@ -140,6 +148,8 @@ describe('Legend block tests', function() {
 			lineWidth: undefined,
 			strokeStyle: undefined,
 			pointStyle: undefined,
+			center: undefined,
+			hiddenSymbol: undefined,
 			datasetIndex: 0
 		}, {
 			text: 'dataset3',
@@ -149,6 +159,8 @@ describe('Legend block tests', function() {
 			lineDash: undefined,
 			lineDashOffset: undefined,
 			lineJoin: undefined,
+			center: undefined,
+			hiddenSymbol: undefined,
 			lineWidth: 10,
 			strokeStyle: 'green',
 			pointStyle: 'crossRot',
@@ -172,9 +184,7 @@ describe('Legend block tests', function() {
 					labels: []
 				},
 				options: {
-					legend: {
-						labels: false,
-					}
+					legend: {}
 				}
 			});
 		};
@@ -210,9 +220,9 @@ describe('Legend block tests', function() {
 		expect(chart.legend.legendHitBoxes.length).toBe(3);
 
 		[
-			{h: 12, l: 101, t: 10, w: 93},
-			{h: 12, l: 205, t: 10, w: 93},
-			{h: 12, l: 308, t: 10, w: 93}
+			{h: 12, l: 131, t: 10, w: 73},
+			{h: 12, l: 222, t: 10, w: 73},
+			{h: 12, l: 313, t: 10, w: 73}
 		].forEach(function(expected, i) {
 			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
 			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
