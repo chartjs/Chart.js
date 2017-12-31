@@ -96,6 +96,12 @@ module.exports = function(Chart) {
 			labelOpts.boxWidth;
 	}
 
+	function getBoxHeight(labelOpts, fontSize) {
+		return labelOpts.boxHeight ?
+			labelOpts.boxHeight :
+			fontSize;
+	}
+
 	Chart.Legend = Element.extend({
 
 		initialize: function(config) {
@@ -346,6 +352,7 @@ module.exports = function(Chart) {
 				ctx.font = labelFont;
 
 				var boxWidth = getBoxWidth(labelOpts, fontSize);
+				var boxHeight = getBoxHeight(labelOpts, fontSize);
 				var hitboxes = me.legendHitBoxes;
 
 				// current position
@@ -381,11 +388,13 @@ module.exports = function(Chart) {
 						// Draw pointStyle as legend symbol
 						helpers.canvas.drawPoint(ctx, legendItem.pointStyle, radius, centerX, centerY);
 					} else {
+						y += (fontSize - boxHeight) / 2;
+
 						// Draw box as legend symbol
 						if (!isLineWidthZero) {
-							ctx.strokeRect(x, y, boxWidth, fontSize);
+							ctx.strokeRect(x, y, boxWidth, boxHeight);
 						}
-						ctx.fillRect(x, y, boxWidth, fontSize);
+						ctx.fillRect(x, y, boxWidth, boxHeight);
 					}
 
 					ctx.restore();
