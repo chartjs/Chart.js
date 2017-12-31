@@ -41,13 +41,16 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 | `displayColors` | `Boolean` | `true` | if true, color boxes are shown in the tooltip
 | `borderColor` | `Color` | `'rgba(0,0,0,0)'` | Color of the border
 | `borderWidth` | `Number` | `0` | Size of the border
+| `verticalGuideBorderColor` | `Color` | `'rgba(0,0,0,0)'` | Color of the vertical guide border
+| `verticalGuideBorderWidth` | `Number` | `0` | Size of the vertical guid border
 
 ### Position Modes
  Possible modes are:
 * 'average'
 * 'nearest'
+* 'besideAxis'
 
-'average' mode will place the tooltip at the average position of the items displayed in the tooltip. 'nearest' will place the tooltip at the position of the element closest to the event position.
+'average' mode will place the tooltip at the average position of the items displayed in the tooltip. 'nearest' will place the tooltip at the position of the element closest to the event position. 'besideAxis' will place tooltip beside the vertical line connecting items displayed in the tooltip.
 
 New modes can be defined by adding functions to the Chart.Tooltip.positioners map.
 
