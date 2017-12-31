@@ -709,7 +709,14 @@ module.exports = function(Chart) {
 						ctx.strokeRect(pt.x, pt.y, bodyFontSize, bodyFontSize);
 
 						// Inner square
-						ctx.fillStyle = mergeOpacity(vm.labelColors[i].backgroundColor, opacity);
+						var bgColor = vm.labelColors[i].backgroundColor;
+						if (bgColor instanceof CanvasPattern) {
+							// Pattern
+							ctx.fillStyle = vm.labelColors[i].backgroundColor;
+						} else {
+							// Solid color
+							ctx.fillStyle = mergeOpacity(bgColor, opacity);
+						}
 						ctx.fillRect(pt.x + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
 						ctx.fillStyle = textColor;
 					}
