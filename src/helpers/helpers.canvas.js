@@ -77,6 +77,16 @@ var exports = module.exports = {
 			ctx.closePath();
 			ctx.fill();
 			break;
+		case 'triangleRot':
+			ctx.beginPath();
+			edgeLength = 3 * radius / Math.sqrt(3);
+			height = edgeLength * Math.sqrt(3) / 2;
+			ctx.moveTo(x - edgeLength / 2, y - height / 3);
+			ctx.lineTo(x + edgeLength / 2, y - height / 3);
+			ctx.lineTo(x, y + 2 * height / 3);
+			ctx.closePath();
+			ctx.fill();
+			break;
 		case 'rect':
 			size = 1 / Math.SQRT2 * radius;
 			ctx.beginPath();
