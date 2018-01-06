@@ -1,0 +1,5 @@
+extends: chartjs
+
+env:
+  browser: true
+  node: true
