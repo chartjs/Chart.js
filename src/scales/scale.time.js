@@ -231,6 +231,11 @@ function parse(input, scale) {
 /**
  * Returns the number of unit to skip to be able to display up to `capacity` number of ticks
  * in `unit` for the given `min` / `max` range and respecting the interval steps constraints.
+ * @param min {number} minimum tick millis
+ * @param max {number} maximum tick millis
+ * @param unit {string} the time unit the ticks are being displayed as
+ * @param capacity {number} the number of labels we have room to display
+ * @return {string} the number of ticks to skip before displaying the next one
  */
 function determineStepSize(min, max, unit, capacity) {
 	var range = max - min;
@@ -403,6 +408,21 @@ function ticksFromTimestamps(values, majorUnit) {
 	return ticks;
 }
 
+/**
+ * Show the most specific time format by default
+ */
+function defaultTooltipFormat(context) {
+	var value = context.dataset.data[context.dataIndex];
+	var momentDate = momentify(value, context.options.time);
+	if (momentDate.millisecond() !== 0) {
+		return 'MMM D, YYYY h:mm:ss.SSS a';
+	}
+	if (momentDate.second() !== 0 || momentDate.minute() !== 0 || momentDate.hour() !== 0) {
+		return 'MMM D, YYYY h:mm:ss a';
+	}
+	return 'MMM D, YYYY';
+}
+
 module.exports = function(Chart) {
 
 	var defaultConfig = {
@@ -434,6 +454,7 @@ module.exports = function(Chart) {
 			displayFormat: false, // DEPRECATED
 			isoWeekday: false, // override week start day - see http://momentjs.com/docs/#/get-set/iso-weekday/
 			minUnit: 'millisecond',
+			tooltipFormat: defaultTooltipFormat,
 
 			// defaults to unit's corresponding unitFormat below or override using pattern string from http://momentjs.com/docs/#/displaying/format/
 			displayFormats: {
@@ -627,19 +648,31 @@ module.exports = function(Chart) {
 
 		getLabelForIndex: function(index, datasetIndex) {
 			var me = this;
-			var data = me.chart.data;
-			var timeOpts = me.options.time;
+			var chart = me.chart;
+			var data = chart.data;
+			var options = me.options;
+			var timeOpts = options.time;
+			var tooltipFormat = timeOpts.tooltipFormat;
 			var label = data.labels && index < data.labels.length ? data.labels[index] : '';
 			var value = data.datasets[datasetIndex].data[index];
+			var context = {
+				chart: chart,
+				options: options,
+				dataIndex: index,
+				dataset: chart.data.datasets[datasetIndex],
+				datasetIndex: datasetIndex
+			};
+			var momentDate;
 
-			if (helpers.isObject(value)) {
-				label = me.getRightValue(value);
-			}
-			if (timeOpts.tooltipFormat) {
-				label = momentify(label, timeOpts).format(timeOpts.tooltipFormat);
+			if (!helpers.isObject(value)) {
+				return label;
 			}
 
-			return label;
+			momentDate = momentify(me.getRightValue(value), timeOpts);
+			tooltipFormat = typeof tooltipFormat === 'function'
+				? tooltipFormat.call(me, context)
+				: tooltipFormat;
+			return momentDate.format(tooltipFormat);
 		},
 
 		/**
