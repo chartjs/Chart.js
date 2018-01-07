@@ -14,9 +14,9 @@ Chart.elements = require('./elements/index');
 Chart.Interaction = require('./core/core.interaction');
 Chart.layout = require('./core/core.layout');
 Chart.platform = require('./platforms/platform');
+Chart.plugins = require('./core/core.plugins');
 Chart.Ticks = require('./core/core.ticks');
 
-require('./core/core.plugin')(Chart);
 require('./core/core.animation')(Chart);
 require('./core/core.controller')(Chart);
 require('./core/core.datasetController')(Chart);
@@ -50,15 +50,12 @@ require('./charts/Chart.Radar')(Chart);
 require('./charts/Chart.Scatter')(Chart);
 
 // Loading built-it plugins
-var plugins = [];
-
-plugins.push(
-	require('./plugins/plugin.filler')(Chart),
-	require('./plugins/plugin.legend')(Chart),
-	require('./plugins/plugin.title')(Chart)
-);
-
-Chart.plugins.register(plugins);
+var plugins = require('./plugins');
+for (var k in plugins) {
+	if (plugins.hasOwnProperty(k)) {
+		Chart.plugins.register(plugins[k]);
+	}
+}
 
 Chart.platform.initialize();
 
@@ -68,6 +65,43 @@ if (typeof window !== 'undefined') {
 }
 
 // DEPRECATIONS
+
+/**
+ * Provided for backward compatibility, not available anymore
+ * @namespace Chart.Legend
+ * @deprecated since version 2.1.5
+ * @todo remove at version 3
+ * @private
+ */
+Chart.Legend = plugins.legend._element;
+
+/**
+ * Provided for backward compatibility, not available anymore
+ * @namespace Chart.Title
+ * @deprecated since version 2.1.5
+ * @todo remove at version 3
+ * @private
+ */
+Chart.Title = plugins.title._element;
+
+/**
+ * Provided for backward compatibility, use Chart.plugins instead
+ * @namespace Chart.pluginService
+ * @deprecated since version 2.1.5
+ * @todo remove at version 3
+ * @private
+ */
+Chart.pluginService = Chart.plugins;
+
+/**
+ * Provided for backward compatibility, inheriting from Chart.PlugingBase has no
+ * effect, instead simply create/register plugins via plain JavaScript objects.
+ * @interface Chart.PluginBase
+ * @deprecated since version 2.5.0
+ * @todo remove at version 3
+ * @private
+ */
+Chart.PluginBase = Chart.Element.extend({});
 
 /**
  * Provided for backward compatibility, use Chart.helpers.canvas instead.

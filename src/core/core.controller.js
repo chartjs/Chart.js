@@ -5,9 +5,9 @@ var helpers = require('../helpers/index');
 var Interaction = require('./core.interaction');
 var layout = require('./core.layout');
 var platform = require('../platforms/platform');
+var plugins = require('./core.plugins');
 
 module.exports = function(Chart) {
-	var plugins = Chart.plugins;
 
 	// Create a dictionary of chart types, to allow for extension of existing types
 	Chart.types = {};

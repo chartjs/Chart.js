@@ -381,5 +381,23 @@ describe('Deprecations', function() {
 				expect(Chart.pluginService).toBe(Chart.plugins);
 			});
 		});
+
+		describe('Chart.Legend', function() {
+			it('should be defined and an instance of Chart.Element', function() {
+				var legend = new Chart.Legend({});
+				expect(Chart.Legend).toBeDefined();
+				expect(legend).not.toBe(undefined);
+				expect(legend instanceof Chart.Element).toBeTruthy();
+			});
+		});
+
+		describe('Chart.Title', function() {
+			it('should be defined and an instance of Chart.Element', function() {
+				var title = new Chart.Title({});
+				expect(Chart.Title).toBeDefined();
+				expect(title).not.toBe(undefined);
+				expect(title instanceof Chart.Element).toBeTruthy();
+			});
+		});
 	});
 });
