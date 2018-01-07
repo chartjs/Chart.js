@@ -1,4 +1,13 @@
 describe('Deprecations', function() {
+	describe('Version 2.8.0', function() {
+		describe('Chart.layoutService', function() {
+			it('should be defined and an alias of Chart.layout', function() {
+				expect(Chart.layoutService).toBeDefined();
+				expect(Chart.layoutService).toBe(Chart.layout);
+			});
+		});
+	});
+
 	describe('Version 2.7.0', function() {
 		describe('Chart.Controller.update(duration, lazy)', function() {
 			it('should add an animation with the provided options', function() {
@@ -302,8 +311,8 @@ describe('Deprecations', function() {
 					'afterLayout'
 				];
 
-				var override = Chart.layoutService.update;
-				Chart.layoutService.update = function() {
+				var override = Chart.layout.update;
+				Chart.layout.update = function() {
 					sequence.push('layoutUpdate');
 					override.apply(this, arguments);
 				};

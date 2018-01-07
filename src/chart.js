@@ -12,6 +12,7 @@ Chart.defaults = require('./core/core.defaults');
 Chart.Element = require('./core/core.element');
 Chart.elements = require('./elements/index');
 Chart.Interaction = require('./core/core.interaction');
+Chart.layout = require('./core/core.layout');
 Chart.platform = require('./platforms/platform');
 Chart.Ticks = require('./core/core.ticks');
 
@@ -19,7 +20,6 @@ require('./core/core.plugin')(Chart);
 require('./core/core.animation')(Chart);
 require('./core/core.controller')(Chart);
 require('./core/core.datasetController')(Chart);
-require('./core/core.layoutService')(Chart);
 require('./core/core.scaleService')(Chart);
 require('./core/core.scale')(Chart);
 require('./core/core.tooltip')(Chart);
@@ -77,3 +77,12 @@ if (typeof window !== 'undefined') {
  * @private
  */
 Chart.canvasHelpers = Chart.helpers.canvas;
+
+/**
+ * Provided for backward compatibility, use Chart.layout instead.
+ * @namespace Chart.layoutService
+ * @deprecated since version 2.8.0
+ * @todo remove at version 3
+ * @private
+ */
+Chart.layoutService = Chart.layout;

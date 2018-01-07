@@ -3,6 +3,7 @@
 var defaults = require('./core.defaults');
 var helpers = require('../helpers/index');
 var Interaction = require('./core.interaction');
+var layout = require('./core.layout');
 var platform = require('../platforms/platform');
 
 module.exports = function(Chart) {
@@ -46,7 +47,7 @@ module.exports = function(Chart) {
 		var newOptions = chart.options;
 
 		helpers.each(chart.scales, function(scale) {
-			Chart.layoutService.removeBox(chart, scale);
+			layout.removeBox(chart, scale);
 		});
 
 		newOptions = helpers.configMerge(
@@ -435,7 +436,7 @@ module.exports = function(Chart) {
 				return;
 			}
 
-			Chart.layoutService.update(this, this.width, this.height);
+			layout.update(this, this.width, this.height);
 
 			/**
 			 * Provided for backward compatibility, use `afterLayout` instead.
