@@ -3,6 +3,7 @@
 var defaults = require('../core/core.defaults');
 var Element = require('../core/core.element');
 var helpers = require('../helpers/index');
+var layout = require('../core/core.layout');
 
 defaults._set('global', {
 	title: {
@@ -19,7 +20,6 @@ defaults._set('global', {
 
 module.exports = function(Chart) {
 
-	var layout = Chart.layoutService;
 	var noop = helpers.noop;
 
 	Chart.Title = Element.extend({
@@ -235,7 +235,7 @@ module.exports = function(Chart) {
 					createNewTitleBlockAndAttach(chart, titleOpts);
 				}
 			} else if (titleBlock) {
-				Chart.layoutService.removeBox(chart, titleBlock);
+				layout.removeBox(chart, titleBlock);
 				delete chart.titleBlock;
 			}
 		}
