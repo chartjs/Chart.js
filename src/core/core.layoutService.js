@@ -172,6 +172,12 @@ module.exports = function(Chart) {
 			// Step 1
 			var chartWidth = width - leftPadding - rightPadding;
 			var chartHeight = height - topPadding - bottomPadding;
+			if (chartWidth < 0) {
+				chartWidth = 0;
+			}
+			if (chartHeight < 0) {
+				chartHeight = 0;
+			}
 			var chartAreaWidth = chartWidth / 2; // min 50%
 			var chartAreaHeight = chartHeight / 2; // min 50%
 
