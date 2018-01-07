@@ -9,6 +9,10 @@ defaults._set('scale', {
 	display: true,
 	position: 'left',
 	offset: false,
+	borderColor: 'rgba(0, 0, 0, 0.4)',
+	borderWidth: 0,
+	borderDash: [],
+	borderDashOffset: 0.0,
 
 	// grid line settings
 	gridLines: {
@@ -672,7 +676,7 @@ module.exports = function(Chart) {
 		},
 
 		// Actually draw the scale on the canvas
-		// @param {rectangle} chartArea : the area of the chart to draw full grid lines on
+		// @param {rectangle} chartArea : the area of the chart to draw all ticks and labels on
 		draw: function(chartArea) {
 			var me = this;
 			var options = me.options;
@@ -732,7 +736,7 @@ module.exports = function(Chart) {
 				}
 
 				// Common properties
-				var tx1, ty1, tx2, ty2, x1, y1, x2, y2, labelX, labelY;
+				var tx1, ty1, tx2, ty2, labelX, labelY;
 				var textAlign = 'middle';
 				var textBaseline = 'middle';
 				var tickPadding = optionTicks.padding;
@@ -760,11 +764,9 @@ module.exports = function(Chart) {
 
 					labelX = me.getPixelForTick(index) + optionTicks.labelOffset; // x values for optionTicks (need to consider offsetLabel option)
 
-					tx1 = tx2 = x1 = x2 = xLineValue;
+					tx1 = tx2 = xLineValue;
 					ty1 = yTickStart;
 					ty2 = yTickEnd;
-					y1 = chartArea.top;
-					y2 = chartArea.bottom;
 				} else {
 					var isLeft = options.position === 'left';
 					var labelXOffset;
@@ -789,9 +791,7 @@ module.exports = function(Chart) {
 
 					tx1 = xTickStart;
 					tx2 = xTickEnd;
-					x1 = chartArea.left;
-					x2 = chartArea.right;
-					ty1 = ty2 = y1 = y2 = yLineValue;
+					ty1 = ty2 = yLineValue;
 				}
 
 				itemsToDraw.push({
@@ -799,33 +799,45 @@ module.exports = function(Chart) {
 					ty1: ty1,
 					tx2: tx2,
 					ty2: ty2,
-					x1: x1,
-					y1: y1,
-					x2: x2,
-					y2: y2,
 					labelX: labelX,
 					labelY: labelY,
-					glWidth: lineWidth,
-					glColor: lineColor,
-					glBorderDash: borderDash,
-					glBorderDashOffset: borderDashOffset,
+					tmWidth: lineWidth,
+					tmColor: lineColor,
+					tmBorderDash: borderDash,
+					tmBorderDashOffset: borderDashOffset,
 					rotation: -1 * labelRotationRadians,
-					label: label,
+					label: '' + label,
 					major: tick.major,
 					textBaseline: textBaseline,
 					textAlign: textAlign
 				});
 			});
 
-			// Draw all of the tick labels, tick marks, and grid lines at the correct places
+			// When offsetGridLines is enabled, there should be one more tick mark than there
+			// are ticks in scale.ticks array, therefore the missing gridLine has to be manually added
+			if (gridLines.offsetGridLines) {
+				var aliasPixel = helpers.aliasPixel(gridLines.lineWidth);
+				itemsToDraw.push({
+					tx1: !isHorizontal ? xTickStart : chartArea.right + aliasPixel,
+					ty1: !isHorizontal ? chartArea.bottom + aliasPixel : yTickStart,
+					tx2: !isHorizontal ? xTickEnd : chartArea.right + aliasPixel,
+					ty2: !isHorizontal ? chartArea.bottom + aliasPixel : yTickEnd,
+					tmWidth: helpers.valueAtIndexOrDefault(gridLines.lineWidth, ticks.length),
+					tmColor: helpers.valueAtIndexOrDefault(gridLines.color, ticks.length),
+					tmBorderDash: gridLines.borderDash,
+					tmBorderDashOffset: gridLines.borderDashOffset
+				});
+			}
+
+			// Draw all of the tick labels and tick marks at the correct places
 			helpers.each(itemsToDraw, function(itemToDraw) {
 				if (gridLines.display) {
 					context.save();
-					context.lineWidth = itemToDraw.glWidth;
-					context.strokeStyle = itemToDraw.glColor;
+					context.lineWidth = itemToDraw.tmWidth;
+					context.strokeStyle = itemToDraw.tmColor;
 					if (context.setLineDash) {
-						context.setLineDash(itemToDraw.glBorderDash);
-						context.lineDashOffset = itemToDraw.glBorderDashOffset;
+						context.setLineDash(itemToDraw.tmBorderDash);
+						context.lineDashOffset = itemToDraw.tmBorderDashOffset;
 					}
 
 					context.beginPath();
@@ -835,16 +847,11 @@ module.exports = function(Chart) {
 						context.lineTo(itemToDraw.tx2, itemToDraw.ty2);
 					}
 
-					if (gridLines.drawOnChartArea) {
-						context.moveTo(itemToDraw.x1, itemToDraw.y1);
-						context.lineTo(itemToDraw.x2, itemToDraw.y2);
-					}
-
 					context.stroke();
 					context.restore();
 				}
 
-				if (optionTicks.display) {
+				if (optionTicks.display && itemToDraw.label) {
 					// Make sure we draw text in the correct color and font
 					context.save();
 					context.translate(itemToDraw.labelX, itemToDraw.labelY);
@@ -901,30 +908,39 @@ module.exports = function(Chart) {
 				context.restore();
 			}
 
-			if (gridLines.drawBorder) {
-				// Draw the line at the edge of the axis
-				context.lineWidth = helpers.valueAtIndexOrDefault(gridLines.lineWidth, 0);
-				context.strokeStyle = helpers.valueAtIndexOrDefault(gridLines.color, 0);
-				var x1 = me.left;
-				var x2 = me.right;
-				var y1 = me.top;
-				var y2 = me.bottom;
+			// gridLines.drawBorder is deprecated
+			if (gridLines.drawBorder && options.borderColor && options.borderWidth) {
+				// Draw the scale border
+				context.lineWidth = options.borderWidth;
+				context.strokeStyle = options.borderColor;
+				if (context.setLineDash) {
+					context.setLineDash(helpers.getValueOrDefault(options.borderDash, globalDefaults.borderDash));
+					context.lineDashOffset = helpers.getValueOrDefault(options.borderDashOffset, globalDefaults.borderDashOffset);
+				}
 
-				var aliasPixel = helpers.aliasPixel(context.lineWidth);
+				var x1 = Math.round(me.left);
+				var x2 = Math.round(me.right);
+				var y1 = Math.round(me.top);
+				var y2 = Math.round(me.bottom);
+
+				var borderAliasPixel = helpers.aliasPixel(context.lineWidth);
 				if (isHorizontal) {
 					y1 = y2 = options.position === 'top' ? me.bottom : me.top;
-					y1 += aliasPixel;
-					y2 += aliasPixel;
+					y1 += borderAliasPixel;
+					y2 += borderAliasPixel;
 				} else {
 					x1 = x2 = options.position === 'left' ? me.right : me.left;
-					x1 += aliasPixel;
-					x2 += aliasPixel;
+					x1 += borderAliasPixel;
+					x2 += borderAliasPixel;
 				}
 
 				context.beginPath();
+
 				context.moveTo(x1, y1);
 				context.lineTo(x2, y2);
+
 				context.stroke();
+				context.restore();
 			}
 		}
 	});

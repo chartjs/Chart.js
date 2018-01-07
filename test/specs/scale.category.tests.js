@@ -11,7 +11,10 @@ describe('Category scale tests', function() {
 		var defaultConfig = Chart.scaleService.getScaleDefaults('category');
 		expect(defaultConfig).toEqual({
 			display: true,
-
+			borderColor: 'rgba(0, 0, 0, 0.4)',
+			borderWidth: 0,
+			borderDash: [],
+			borderDashOffset: 0.0,
 			gridLines: {
 				color: 'rgba(0, 0, 0, 0.1)',
 				drawBorder: true,
