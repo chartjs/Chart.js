@@ -1,6 +1,6 @@
 # Legend Configuration
 
-The chart legend displays data about the datasets that area appearing on the chart.
+The chart legend displays data about the datasets that are appearing on the chart.
 
 ## Configuration options
 The legend configuration is passed into the `options.legend` namespace. The global options for the chart legend is defined in `Chart.defaults.global.legend`.
@@ -10,7 +10,7 @@ The legend configuration is passed into the `options.legend` namespace. The glob
 | `display` | `Boolean` | `true` | is the legend shown
 | `position` | `String` | `'top'` | Position of the legend. [more...](#position)
 | `fullWidth` | `Boolean` | `true` | Marks that this box should take the full width of the canvas (pushing down other boxes). This is unlikely to need to be changed in day-to-day use.
-| `onClick` | `Function` | | A callback that is called when a click event is registered on a label item 
+| `onClick` | `Function` | | A callback that is called when a click event is registered on a label item
 | `onHover` | `Function` | | A callback that is called when a 'mousemove' event is registered on top of a label item
 | `reverse` | `Boolean` | `false` | Legend will show datasets in reverse order.
 | `labels` | `Object` | | See the [Legend Label Configuration](#legend-label-configuration) section below.
@@ -146,25 +146,3 @@ var chart = new Chart(ctx, {
 ```
 
 Now when you click the legend in this chart, the visibility of the first two datasets will be linked together.
-
-## HTML Legends
-
-Sometimes you need a very complex legend. In these cases, it makes sense to generate an HTML legend. Charts provide a `generateLegend()` method on their prototype that returns an HTML string for the legend.
-
-To configure how this legend is generated, you can change the `legendCallback` config property.
-
-```javascript
-var chart = new Chart(ctx, {
-    type: 'line',
-    data: data,
-    options: {
-        legendCallback: function(chart) {
-            // Return the HTML string here.
-        }
-    }
-});
-```
-
-Note that legendCallback is not called automatically and you must call `generateLegend()` yourself in code when creating a legend using this method.
-
-

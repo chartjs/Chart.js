@@ -1,0 +1,208 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>HTML Legend Positions</title>
+    <script src="../../dist/Chart.bundle.js"></script>
+    <script src="../utils.js"></script>
+    <style>
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+        .chart-container {
+            width: 500px;
+            margin-left: 40px;
+            margin-right: 40px;
+            position: relative;
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .legend-container {
+            position: absolute;
+        }
+        .position-top-left {
+            left: 70px;
+            top: 45px;
+        }
+        .position-top-right {
+            right: 25px;
+            top: 45px;
+        }
+        .position-bottom-left {
+            left: 70px;
+            bottom: 60px;
+        }
+        .position-bottom-right {
+            right: 25px;
+            bottom: 60px;
+        }
+        [class$="-legend"] {
+            background-color: rgba(255, 255, 255, 0.55);
+            border: 1px solid #666;
+            color: #666;
+            display: inline-block;
+            font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+            font-size: 12px;
+            list-style: none;
+            margin: 0;
+            padding: 5px 6px;
+        }
+        [class$="-legend"] > li {
+            cursor: pointer;
+            vertical-align: middle;
+        }
+        [class$="-legend"] > li.hidden {
+            text-decoration: line-through;
+        }
+        [class$="-legend"] > li > span:first-child {
+            background-clip: padding-box;
+            box-sizing: border-box;
+            display: inline-block;
+            height: 14px;
+            margin-right: 6px;
+            width: 40px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="chart-container">
+            <canvas id="chart-legend-top-left"></canvas>
+            <div class="legend-container position-top-left"></div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chart-legend-top-right"></canvas>
+            <div class="legend-container position-top-right"></div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chart-legend-bottom-left"></canvas>
+            <div class="legend-container position-bottom-left"></div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chart-legend-bottom-right"></canvas>
+            <div class="legend-container position-bottom-right"></div>
+        </div>
+    </div>
+    <script>
+        var color = Chart.helpers.color;
+        function onClickCallback(event) {
+            event = event || window.event;
+
+            var target = event.target || event.srcElement;
+            if (target.nodeName === 'UL') {
+                return; // event has been fired on parent
+            }
+
+            // find a direct descendant from the parent element
+            while (target && target.nodeName !== 'LI') {
+                target = target.parentElement;
+            }
+
+            if (!target) {
+              return; // something went wrong, no target found
+            }
+
+            var parent = target.parentElement;
+            var chartId = parseInt(parent.classList[0].split('-')[0], 10);
+            var chart = Chart.instances[chartId];
+            var index = Array.prototype.slice.call(parent.children).indexOf(target);
+
+            chart.legend.options.onClick.call(chart, event, chart.legend.legendItems[index]);
+
+            var hidden = chart.legend.legendItems[index].hidden; // legend item has been updated
+            target.classList.toggle('hidden', hidden);
+        }
+        function createConfig(legendPosition, colorName) {
+            return {
+                type: 'line',
+                data: {
+                    labels: ["January", "February", "March", "April", "May", "June", "July"],
+                    datasets: [{
+                        label: "My First dataset",
+                        data: [
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor()
+                        ],
+                        backgroundColor: color(window.chartColors[colorName]).alpha(0.5).rgbString(),
+                        borderColor: window.chartColors[colorName],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        display: false,
+                    },
+                    htmllegend: {
+                        listeners: {
+                            click: onClickCallback
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Month'
+                            }
+                        }],
+                        yAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Value'
+                            }
+                        }]
+                    },
+                    title: {
+                        display: true,
+                        text: 'HTML Legend Position: ' + legendPosition
+                    }
+                }
+            };
+        }
+
+
+        window.onload = function() {
+            [{
+                id: 'chart-legend-top-left',
+                legendPosition: 'top-left',
+                color: 'red'
+            }, {
+                id: 'chart-legend-top-right',
+                legendPosition: 'top-right',
+                color: 'blue'
+            }, {
+                id: 'chart-legend-bottom-left',
+                legendPosition: 'bottom-left',
+                color: 'green'
+            }, {
+                id: 'chart-legend-bottom-right',
+                legendPosition: 'bottom-right',
+                color: 'yellow'
+            }].forEach(function(details) {
+                var canvas = document.getElementById(details.id);
+                var legendContainer = canvas.parentElement.getElementsByClassName('legend-container')[0];
+                var config = createConfig(details.legendPosition, details.color);
+                var chart = new Chart(canvas, config);
+                chart.generateLegend(legendContainer);
+            })
+        };
+    </script>
+</body>
+
+</html>

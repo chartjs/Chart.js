@@ -18,6 +18,7 @@
   * [Animations](configuration/animations.md)
   * [Layout](configuration/layout.md)
   * [Legend](configuration/legend.md)
+  * [HTML Legend](configuration/htmllegend.md)
   * [Title](configuration/title.md)
   * [Tooltip](configuration/tooltip.md)
   * [Elements](configuration/elements.md)
