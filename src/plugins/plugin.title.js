@@ -3,7 +3,7 @@
 var defaults = require('../core/core.defaults');
 var Element = require('../core/core.element');
 var helpers = require('../helpers/index');
-var layout = require('../core/core.layout');
+var layouts = require('../core/core.layouts');
 
 var noop = helpers.noop;
 
@@ -206,8 +206,8 @@ function createNewTitleBlockAndAttach(chart, titleOpts) {
 		chart: chart
 	});
 
-	layout.configure(chart, title, titleOpts);
-	layout.addBox(chart, title);
+	layouts.configure(chart, title, titleOpts);
+	layouts.addBox(chart, title);
 	chart.titleBlock = title;
 }
 
@@ -239,13 +239,13 @@ module.exports = {
 			helpers.mergeIf(titleOpts, defaults.global.title);
 
 			if (titleBlock) {
-				layout.configure(chart, titleBlock, titleOpts);
+				layouts.configure(chart, titleBlock, titleOpts);
 				titleBlock.options = titleOpts;
 			} else {
 				createNewTitleBlockAndAttach(chart, titleOpts);
 			}
 		} else if (titleBlock) {
-			layout.removeBox(chart, titleBlock);
+			layouts.removeBox(chart, titleBlock);
 			delete chart.titleBlock;
 		}
 	}

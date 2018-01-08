@@ -12,7 +12,7 @@ Chart.defaults = require('./core/core.defaults');
 Chart.Element = require('./core/core.element');
 Chart.elements = require('./elements/index');
 Chart.Interaction = require('./core/core.interaction');
-Chart.layout = require('./core/core.layout');
+Chart.layouts = require('./core/core.layouts');
 Chart.platform = require('./platforms/platform');
 Chart.plugins = require('./core/core.plugins');
 Chart.Ticks = require('./core/core.ticks');
@@ -113,10 +113,10 @@ Chart.PluginBase = Chart.Element.extend({});
 Chart.canvasHelpers = Chart.helpers.canvas;
 
 /**
- * Provided for backward compatibility, use Chart.layout instead.
+ * Provided for backward compatibility, use Chart.layouts instead.
  * @namespace Chart.layoutService
  * @deprecated since version 2.8.0
  * @todo remove at version 3
  * @private
  */
-Chart.layoutService = Chart.layout;
+Chart.layoutService = Chart.layouts;

@@ -1,9 +1,9 @@
 describe('Deprecations', function() {
 	describe('Version 2.8.0', function() {
 		describe('Chart.layoutService', function() {
-			it('should be defined and an alias of Chart.layout', function() {
+			it('should be defined and an alias of Chart.layouts', function() {
 				expect(Chart.layoutService).toBeDefined();
-				expect(Chart.layoutService).toBe(Chart.layout);
+				expect(Chart.layoutService).toBe(Chart.layouts);
 			});
 		});
 	});
@@ -311,8 +311,8 @@ describe('Deprecations', function() {
 					'afterLayout'
 				];
 
-				var override = Chart.layout.update;
-				Chart.layout.update = function() {
+				var override = Chart.layouts.update;
+				Chart.layouts.update = function() {
 					sequence.push('layoutUpdate');
 					override.apply(this, arguments);
 				};
