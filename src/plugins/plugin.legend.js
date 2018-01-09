@@ -3,7 +3,7 @@
 var defaults = require('../core/core.defaults');
 var Element = require('../core/core.element');
 var helpers = require('../helpers/index');
-var layout = require('../core/core.layout');
+var layouts = require('../core/core.layouts');
 
 var noop = helpers.noop;
 
@@ -523,8 +523,8 @@ function createNewLegendAndAttach(chart, legendOpts) {
 		chart: chart
 	});
 
-	layout.configure(chart, legend, legendOpts);
-	layout.addBox(chart, legend);
+	layouts.configure(chart, legend, legendOpts);
+	layouts.addBox(chart, legend);
 	chart.legend = legend;
 }
 
@@ -556,13 +556,13 @@ module.exports = {
 			helpers.mergeIf(legendOpts, defaults.global.legend);
 
 			if (legend) {
-				layout.configure(chart, legend, legendOpts);
+				layouts.configure(chart, legend, legendOpts);
 				legend.options = legendOpts;
 			} else {
 				createNewLegendAndAttach(chart, legendOpts);
 			}
 		} else if (legend) {
-			layout.removeBox(chart, legend);
+			layouts.removeBox(chart, legend);
 			delete chart.legend;
 		}
 	},
