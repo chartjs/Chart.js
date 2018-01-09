@@ -79,7 +79,7 @@ helpers.extend(Element.prototype, {
 		var view = me._view;
 
 		// No animation -> No Transition
-		if (!model || ease === 1 || ( this._chart && this._chart.animating == false ) ) {
+		if (!model || ease === 1 || (this._chart && this._chart.animating === false)) {
 			me._view = model;
 			me._start = null;
 			return me;
