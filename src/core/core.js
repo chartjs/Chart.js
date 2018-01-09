@@ -4,7 +4,7 @@ var defaults = require('./core.defaults');
 
 defaults._set('global', {
 	responsive: true,
-  responsiveScaleToParent: false,
+	responsiveScaleToParent: false,
 	responsiveAnimationDuration: 0,
 	maintainAspectRatio: true,
 	events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'],

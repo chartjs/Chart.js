@@ -513,13 +513,13 @@ module.exports = function(Chart) {
 		// making the chart visually bigger, so let's enforce it to the "correct" values.
 		// See https://github.com/chartjs/Chart.js/issues/3575
 		if (!canvas.style.height && !canvas.style.width) {
-      if (scaleToParent) {
-        canvas.style.width = '100%';
-        canvas.style.height = '100%';
-      } else {
-        canvas.style.height = height + 'px';
-        canvas.style.width = width + 'px';
-      }
+			if (scaleToParent) {
+				canvas.style.width = '100%';
+				canvas.style.height = '100%';
+			} else {
+				canvas.style.height = height + 'px';
+				canvas.style.width = width + 'px';
+			}
 		}
 	};
 	// -- Canvas methods
