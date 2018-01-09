@@ -187,10 +187,15 @@ module.exports = function(Chart) {
 
 			canvas.width = me.width = newWidth;
 			canvas.height = me.height = newHeight;
-			canvas.style.width = newWidth + 'px';
-			canvas.style.height = newHeight + 'px';
+      if (me.options.responsiveScaleToParent) {
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+      } else {
+        canvas.style.width = newWidth + 'px';
+        canvas.style.height = newHeight + 'px';
+      }
 
-			helpers.retinaScale(me, options.devicePixelRatio);
+			helpers.retinaScale(me, options.devicePixelRatio, me.options.responsiveScaleToParent);
 
 			if (!silent) {
 				// Notify any plugins about the resize
