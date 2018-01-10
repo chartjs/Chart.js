@@ -15,19 +15,21 @@
 </head>
 
 <body>
-    <div style="width: 75%">
+    <div style="width: 60%">
         <canvas id="canvas"></canvas>
     </div>
     <button id="randomizeData">Randomize Data</button>
+    <div style="width: 60%">
+        <canvas id="canvas2"></canvas>
+    </div>
     <script>
         var chartData = {
             labels: ["January", "February", "March", "April", "May", "June", "July"],
             datasets: [{
-                type: 'line',
+                type: 'scatter',
                 label: 'Dataset 1',
                 borderColor: window.chartColors.blue,
                 borderWidth: 2,
-                fill: false,
                 data: [
                     randomScalingFactor(),
                     randomScalingFactor(),
@@ -38,9 +40,11 @@
                     randomScalingFactor()
                 ]
             }, {
-                type: 'bar',
+                type: 'line',
                 label: 'Dataset 2',
-                backgroundColor: window.chartColors.red,
+                borderColor: window.chartColors.red,
+                fill: false,
+                borderWidth: 2,
                 data: [
                     randomScalingFactor(),
                     randomScalingFactor(),
@@ -50,8 +54,6 @@
                     randomScalingFactor(),
                     randomScalingFactor()
                 ],
-                borderColor: 'white',
-                borderWidth: 2
             }, {
                 type: 'bar',
                 label: 'Dataset 3',
@@ -85,6 +87,22 @@
                     }
                 }
             });
+            var ctx2 = document.getElementById("canvas2").getContext("2d");
+            window.myMixedChart2 = new Chart(ctx2, {
+                type: 'line',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Chart.js Combo Bar Line Chart'
+                    },
+                    tooltips: {
+                        mode: 'index',
+                        intersect: true
+                    }
+                }
+            });
         };
 
         document.getElementById('randomizeData').addEventListener('click', function() {
@@ -94,6 +112,7 @@
                 });
             });
             window.myMixedChart.update();
+            window.myMixedChart2.update();
         });
     </script>
 </body>

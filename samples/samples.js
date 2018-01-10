@@ -80,7 +80,7 @@
 			title: 'Radar',
 			path: 'charts/radar.html'
 		}, {
-			title: 'Combo bar/line',
+			title: 'Combo bar/line/scatter',
 			path: 'charts/combo-bar-line.html'
 		}]
 	}, {

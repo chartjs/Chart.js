@@ -37,6 +37,10 @@ defaults._set('scatter', {
 module.exports = function(Chart) {
 
 	// Scatter charts use line controllers
-	Chart.controllers.scatter = Chart.controllers.line;
+	Chart.controllers.scatter = Chart.controllers.line.extend({
+		lineEnabled: function() {
+			return false;
+		},
+	});
 
 };

@@ -4,7 +4,7 @@ var defaults = require('../core/core.defaults');
 var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
-defaults._set('bar', {
+var defaultBar = {
 	hover: {
 		mode: 'label'
 	},
@@ -30,7 +30,8 @@ defaults._set('bar', {
 			type: 'linear'
 		}]
 	}
-});
+};
+defaults._set('bar', defaultBar);
 
 defaults._set('horizontalBar', {
 	hover: {
@@ -427,6 +428,13 @@ module.exports = function(Chart) {
 			var range = options.barThickness === 'flex'
 				? computeFlexCategoryTraits(index, ruler, options)
 				: computeFitCategoryTraits(index, ruler, options);
+
+			if (options.categoryPercentage === undefined) {
+				options.categoryPercentage = defaultBar.scales.xAxes[0].categoryPercentage;
+			}
+			if (options.barPercentage === undefined) {
+				options.barPercentage = defaultBar.scales.xAxes[0].barPercentage;
+			}
 
 			var stackIndex = me.getStackIndex(datasetIndex, me.getMeta().stack);
 			var center = range.start + (range.chunk * stackIndex) + (range.chunk / 2);
