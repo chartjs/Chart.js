@@ -285,7 +285,14 @@ module.exports = function(Chart) {
 		 * @private
 		 */
 		getIndexScale: function() {
-			return this.getScaleForId(this.getIndexScaleId());
+			var scale = this.getScaleForId(this.getIndexScaleId());
+			if (scale.options.categoryPercentage === undefined) {
+				scale.options.categoryPercentage = defaultBar.scales.xAxes[0].categoryPercentage;
+			}
+			if (scale.options.barPercentage === undefined) {
+				scale.options.barPercentage = defaultBar.scales.xAxes[0].barPercentage;
+			}
+			return scale;
 		},
 
 		/**
@@ -428,14 +435,6 @@ module.exports = function(Chart) {
 			var range = options.barThickness === 'flex'
 				? computeFlexCategoryTraits(index, ruler, options)
 				: computeFitCategoryTraits(index, ruler, options);
-
-			if (options.categoryPercentage === undefined) {
-				options.categoryPercentage = defaultBar.scales.xAxes[0].categoryPercentage;
-			}
-			if (options.barPercentage === undefined) {
-				options.barPercentage = defaultBar.scales.xAxes[0].barPercentage;
-			}
-
 			var stackIndex = me.getStackIndex(datasetIndex, me.getMeta().stack);
 			var center = range.start + (range.chunk * stackIndex) + (range.chunk / 2);
 			var size = Math.min(
