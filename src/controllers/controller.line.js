@@ -26,6 +26,10 @@ defaults._set('line', {
 
 module.exports = function(Chart) {
 
+	function lineEnabled(dataset, options) {
+		return helpers.valueOrDefault(dataset.showLine, options.showLines);
+	}
+
 	Chart.controllers.line = Chart.DatasetController.extend({
 
 		datasetElementType: elements.Line,
@@ -327,7 +331,7 @@ module.exports = function(Chart) {
 		},
 
 		lineEnabled: function(dataset, options) {
-			return helpers.valueOrDefault(dataset.showLine, options.showLines);
+			return lineEnabled(dataset, options);
 		},
 
 	});
