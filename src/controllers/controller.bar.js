@@ -4,7 +4,7 @@ var defaults = require('../core/core.defaults');
 var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
-var defaultBar = {
+defaults._set('bar', {
 	hover: {
 		mode: 'label'
 	},
@@ -30,8 +30,7 @@ var defaultBar = {
 			type: 'linear'
 		}]
 	}
-};
-defaults._set('bar', defaultBar);
+});
 
 defaults._set('horizontalBar', {
 	hover: {
@@ -285,8 +284,7 @@ module.exports = function(Chart) {
 		 * @private
 		 */
 		getIndexScale: function() {
-			var scale = this.getScaleForId(this.getIndexScaleId());
-			return scale;
+			return this.getScaleForId(this.getIndexScaleId());
 		},
 
 		/**
@@ -429,6 +427,7 @@ module.exports = function(Chart) {
 			var range = options.barThickness === 'flex'
 				? computeFlexCategoryTraits(index, ruler, options)
 				: computeFitCategoryTraits(index, ruler, options);
+
 			var stackIndex = me.getStackIndex(datasetIndex, me.getMeta().stack);
 			var center = range.start + (range.chunk * stackIndex) + (range.chunk / 2);
 			var size = Math.min(
