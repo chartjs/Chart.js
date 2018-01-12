@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+
+<head>
+		<title>Mixed Chart</title>
+		<script src="../../dist/Chart.bundle.js"></script>
+		<script src="../utils.js"></script>
+		<style>
+			canvas {
+					-moz-user-select: none;
+					-webkit-user-select: none;
+					-ms-user-select: none;
+			}
+			div {
+				display: flex;
+				flex-wrap: wrap;
+			}
+			div div {
+				flex-grow: 1;
+				width: 30%;
+				margin: 0.5em;
+				height: 20em;
+				min-width: 25em;
+			}
+		</style>
+</head>
+
+<body>
+		<button id="randomizeData">Randomize Data</button>
+		<div id="container">
+		</div>
+		<script>
+			var parents = ['scatter', 'line', 'bubble', 'bar', 'horizontalBar', undefined];
+			var childs = [
+				{type:'scatter', color:'#f844'},
+				{type:'scatter', color:'#f844'},
+				{type:'line', color:'#4f84', fill:false},
+				{type:'bubble', color:'#8f44'},
+				{type:'line', color:'#f484'},
+				{type:'bar', color:'#48f4'},
+				{type:'bar', color:'#84f4'},
+				//{type:'horizontalBar', color:'#84f4'} // not supported yet
+			]
+			var size = 8;
+			var charts = [];
+			parents.forEach(function(parent) {
+				var datasets = [];
+				var c = -1;
+				var labels = [];
+				childs.forEach(function(child) {
+					c++;
+					var data = [];
+					for(var i = 0 ; i < size ; i++) {
+						if(child.type === 'bubble') {
+							data.push({x:randomScalingFactor(), y:randomScalingFactor(),r:Math.max(randomScalingFactor()/2, 20)});
+						} else {
+							data.push(randomScalingFactor());
+						}
+						if(!c) {
+							labels.push('label '+(i+1));
+						}
+					}
+					datasets.push({
+						type: child.type,
+						label: child.type,
+						borderColor: child.color,
+						backgroundColor: child.color,
+						data: data,
+					});
+					if(child.fill !== undefined) {
+						datasets[datasets.length-1].fill = child.fill;
+					}
+				});
+				var div = document.createElement("div");
+				var canvas = document.createElement("canvas");
+				canvas.id = parent;
+				div.appendChild(canvas);
+				document.getElementById("container").appendChild(div);
+				var str = ''; 
+				childs.forEach(function(child) {
+					str += child.type + ', ';
+				})
+				str = str.slice(0,-2);
+				charts.push(new Chart(canvas.getContext("2d"), {
+					type: parent,
+					data: {
+						labels: labels,
+						datasets: datasets,
+					},
+					options: {
+						responsive: true,
+						title: {
+							display: true,
+							text: 'Main type : ' + parent + ' | Childs : ' + str,
+						},
+						tooltips: {
+							mode: 'index',
+							intersect: true
+						}
+					}
+				}));
+			});
+				console.log(charts);
+			document.getElementById('randomizeData').addEventListener('click', function() {
+				
+					charts.forEach(function(chart) {
+						chart.data.datasets.forEach(function(dataset) {
+							dataset.data = dataset.data.map(function(a) {
+									if(a.r) {
+										return {x:randomScalingFactor(),y:randomScalingFactor(),r:Math.max(randomScalingFactor()/3, 10)};
+									}
+									return randomScalingFactor();
+							});
+					});
+						chart.update();
+					});
+				console.log(charts);
+				});
+		</script>
+</body>
+
+</html>

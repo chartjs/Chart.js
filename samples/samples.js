@@ -80,8 +80,11 @@
 			title: 'Radar',
 			path: 'charts/radar.html'
 		}, {
-			title: 'Combo bar/line/scatter',
+			title: 'Combo bar/line',
 			path: 'charts/combo-bar-line.html'
+		}, {
+			title: 'Mixed',
+			path: 'charts/mixed-chart.html'
 		}]
 	}, {
 		title: 'Linear scale',
