@@ -148,6 +148,9 @@ module.exports = function(Chart) {
 		// Any function can be extended by the scale type
 
 		mergeTicksOptions: function() {
+			if (!this.options.ticks) {
+				return;
+			}
 			var ticks = this.options.ticks;
 			if (ticks.minor === false) {
 				ticks.minor = {

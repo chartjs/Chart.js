@@ -31,10 +31,74 @@ module.exports = function(Chart) {
 		data.datasets = data.datasets || [];
 		data.labels = data.labels || [];
 
-		config.options = helpers.configMerge(
+
+		// Merge options for mixed charts
+		// [1] Does not work if axes are stacked
+		// [2] Only triggered if there are at least 2 different types
+		// [3] If there is at least one 'bar' chart, main type is set to 'bar'
+		// [4] If the main chart has no type and there's no 'bar' child chart,
+		//     we set the main chart to 'line'
+		//     This way, users can use a mixed chart without having to set a main type
+		var isStacked = false;
+		var optionstmp = helpers.configMerge(
 			defaults.global,
 			defaults[config.type],
 			config.options || {});
+		if (optionstmp && optionstmp.scales && optionstmp.scales.xAxes && optionstmp.scales.yAxes) {
+			optionstmp.scales.xAxes.forEach(function(axe) {
+				if (axe.stacked === true) {
+					isStacked = true; // [1]
+				}
+			});
+			optionstmp.scales.yAxes.forEach(function(axe) {
+				if (axe.stacked === true) {
+					isStacked = true; // [1]
+				}
+			});
+		}
+
+		var alreadyMerged = false;
+		if (!isStacked && data && data.datasets && data.datasets.length >= 2) { // [2]
+			var type = null;
+			var isMixed = false;
+			var hasBarType = false;
+			data.datasets.forEach(function(dataset) {
+				if (type && dataset.type && type !== dataset.type) {
+					isMixed = true; // [2]
+				} else if (dataset.type) {
+					type = dataset.type;
+				}
+				if (dataset.type === 'bar') {
+					hasBarType = true;
+				}
+			});
+			if (isMixed) {
+				if (hasBarType) { // [3]
+					config.options = helpers.configMerge(
+						defaults.global,
+						defaults.bar,
+						config.options || {});
+				} else {
+					config.options = helpers.configMerge(
+						defaults.global,
+						defaults[config.type || 'line'], // [4]
+						config.options || {});
+				}
+
+				data.datasets.forEach(function(dataset) {
+					config.options = helpers.configMerge(defaults[dataset.type], config.options || {});
+				});
+				alreadyMerged = true;
+			}
+		}
+
+		// Merge
+		if (!alreadyMerged) {
+			config.options = helpers.configMerge(
+				defaults.global,
+				defaults[config.type],
+				config.options || {});
+		}
 
 		return config;
 	}

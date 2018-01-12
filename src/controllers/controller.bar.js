@@ -286,12 +286,6 @@ module.exports = function(Chart) {
 		 */
 		getIndexScale: function() {
 			var scale = this.getScaleForId(this.getIndexScaleId());
-			if (scale.options.categoryPercentage === undefined) {
-				scale.options.categoryPercentage = defaultBar.scales.xAxes[0].categoryPercentage;
-			}
-			if (scale.options.barPercentage === undefined) {
-				scale.options.barPercentage = defaultBar.scales.xAxes[0].barPercentage;
-			}
 			return scale;
 		},
 
