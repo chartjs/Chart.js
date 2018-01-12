@@ -15,40 +15,18 @@
 </head>
 
 <body>
-    <div style="width: 60%">
+    <div style="width: 75%">
         <canvas id="canvas"></canvas>
     </div>
     <button id="randomizeData">Randomize Data</button>
-    <div style="width: 60%">
-        <canvas id="canvas2"></canvas>
-    </div>
-    <div style="width: 60%">
-        <canvas id="canvas3"></canvas>
-    </div>
-    <div style="width: 60%">
-        <canvas id="canvas4"></canvas>
-    </div>
     <script>
         var chartData = {
             labels: ["January", "February", "March", "April", "May", "June", "July"],
             datasets: [{
-                type: 'scatter',
+                type: 'line',
                 label: 'Dataset 1',
                 borderColor: window.chartColors.blue,
                 borderWidth: 2,
-                data: [
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor()
-                ]
-            }, {
-                type: 'line',
-                label: 'Dataset 3',
-                borderColor: window.chartColors.green,
                 fill: false,
                 data: [
                     randomScalingFactor(),
@@ -58,26 +36,11 @@
                     randomScalingFactor(),
                     randomScalingFactor(),
                     randomScalingFactor()
-                ]
-            }, {
-                type: 'bubble',
-                label: 'Dataset 4',
-                borderColor: window.chartColors.black,
-                borderWidth: 2,
-                data: [
-                    {x:randomScalingFactor(),y:randomScalingFactor(),r:Math.max(randomScalingFactor(), 20)},
-                    {x:randomScalingFactor(),y:randomScalingFactor(),r:Math.max(randomScalingFactor(), 20)},
-                    {x:randomScalingFactor(),y:randomScalingFactor(),r:Math.max(randomScalingFactor(), 20)},
-                    {x:randomScalingFactor(),y:randomScalingFactor(),r:Math.max(randomScalingFactor(), 20)},
-                    {x:randomScalingFactor(),y:randomScalingFactor(),r:Math.max(randomScalingFactor(), 20)},
-                    {x:randomScalingFactor(),y:randomScalingFactor(),r:Math.max(randomScalingFactor(), 20)},
-                    {x:randomScalingFactor(),y:randomScalingFactor(),r:Math.max(randomScalingFactor(), 20)},
                 ]
             }, {
                 type: 'bar',
                 label: 'Dataset 2',
                 backgroundColor: window.chartColors.red,
-                borderWidth: 2,
                 data: [
                     randomScalingFactor(),
                     randomScalingFactor(),
@@ -87,86 +50,12 @@
                     randomScalingFactor(),
                     randomScalingFactor()
                 ],
+                borderColor: 'white',
+                borderWidth: 2
             }, {
                 type: 'bar',
-                label: 'Dataset 2',
-                backgroundColor: '#ef15',
-                borderWidth: 2,
-                data: [
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor()
-                ],
-            }, {
-                type: 'line',
                 label: 'Dataset 3',
-                backgroundColor: '#48f2',
-                fill: 'start',
-                data: [
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor()
-                ]
-            }]
-
-        };
-        var chartDataNoBar = {
-            labels: ["January", "February", "March", "April", "May", "June", "July"],
-            datasets: [{
-                type: 'scatter',
-                label: 'Dataset 1',
-                borderColor: window.chartColors.blue,
-                borderWidth: 2,
-                data: [
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor()
-                ]
-            }, {
-                type: 'line',
-                label: 'Dataset 3',
-                borderColor: window.chartColors.green,
-                fill: false,
-                data: [
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor()
-                ]
-            }, {
-                type: 'bubble',
-                label: 'Dataset 4',
-                borderColor: window.chartColors.black,
-                borderWidth: 2,
-                data: [
-                    {x:randomScalingFactor(),y:randomScalingFactor(),r:Math.max(randomScalingFactor(), 20)},
-                    {x:randomScalingFactor(),y:randomScalingFactor(),r:Math.max(randomScalingFactor(), 20)},
-                    {x:randomScalingFactor(),y:randomScalingFactor(),r:Math.max(randomScalingFactor(), 20)},
-                    {x:randomScalingFactor(),y:randomScalingFactor(),r:Math.max(randomScalingFactor(), 20)},
-                    {x:randomScalingFactor(),y:randomScalingFactor(),r:Math.max(randomScalingFactor(), 20)},
-                    {x:randomScalingFactor(),y:randomScalingFactor(),r:Math.max(randomScalingFactor(), 20)},
-                    {x:randomScalingFactor(),y:randomScalingFactor(),r:Math.max(randomScalingFactor(), 20)},
-                ]
-            }, {
-                type: 'line',
-                label: 'Dataset 3',
-                backgroundColor: '#48f2',
-                fill: 'start',
+                backgroundColor: window.chartColors.green,
                 data: [
                     randomScalingFactor(),
                     randomScalingFactor(),
@@ -196,69 +85,15 @@
                     }
                 }
             });
-            var ctx2 = document.getElementById("canvas2").getContext("2d");
-            window.myMixedChart2 = new Chart(ctx2, {
-                type: 'line',
-                data: chartData,
-                options: {
-                    responsive: true,
-                    title: {
-                        display: true,
-                        text: 'Chart.js Combo Bar Line Chart'
-                    },
-                    tooltips: {
-                        mode: 'index',
-                        intersect: true
-                    }
-                }
-            });
-            var ctx3 = document.getElementById("canvas3").getContext("2d");
-            window.myMixedChart3 = new Chart(ctx3, {
-                //type: undefined,
-                data: chartData,
-                options: {
-                    responsive: true,
-                    title: {
-                        display: true,
-                        text: 'Chart.js Combo Bar Line Chart'
-                    },
-                    tooltips: {
-                        mode: 'index',
-                        intersect: true
-                    }
-                }
-            });
-            var ctx4 = document.getElementById("canvas4").getContext("2d");
-            window.myMixedChart4 = new Chart(ctx4, {
-                //type: undefined,
-                data: chartDataNoBar,
-                options: {
-                    responsive: true,
-                    title: {
-                        display: true,
-                        text: 'Chart.js Combo Bar Line Chart'
-                    },
-                    tooltips: {
-                        mode: 'index',
-                        intersect: true
-                    }
-                }
-            });
         };
 
         document.getElementById('randomizeData').addEventListener('click', function() {
             chartData.datasets.forEach(function(dataset) {
-                dataset.data = dataset.data.map(function(a) {
-                		if(a.r) {
-                			return {x:randomScalingFactor(),y:randomScalingFactor(),r:Math.max(randomScalingFactor()/2, 10)};
-                		}
+                dataset.data = dataset.data.map(function() {
                     return randomScalingFactor();
                 });
             });
             window.myMixedChart.update();
-            window.myMixedChart2.update();
-            window.myMixedChart3.update();
-            window.myMixedChart4.update();
         });
     </script>
 </body>
