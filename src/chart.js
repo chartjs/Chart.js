@@ -2,7 +2,7 @@
  * @namespace Chart
  */
 var Chart = require('./core/core')();
-
+a={a=}
 Chart.helpers = require('./helpers/index');
 
 // @todo dispatch these helpers into appropriated helpers/helpers.* file and write unit tests!

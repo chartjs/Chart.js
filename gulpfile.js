@@ -20,6 +20,7 @@ var collapse = require('bundle-collapser/plugin');
 var argv  = require('yargs').argv
 var path = require('path');
 var package = require('./package.json');
+var through = require('through2')
 
 var srcDir = './src/';
 var outDir = './dist/';
@@ -78,11 +79,15 @@ function bowerTask() {
 }
 
 function buildTask() {
-
   var bundled = browserify('./src/chart.js', { standalone: 'Chart' })
     .plugin(collapse)
     .bundle()
-    .on('error', function (err) { util.log(util.colors.red('[Error]'), err.toString()); this.emit('end');})
+    .on('error', function (err) {
+      util.log(util.colors.red('[Error]'), err.toString())
+      require('fs').writeFileSync(outDir+'Chart.bundle.js', 'console.error("Gulp: ' + err.toString() + '")');
+      require('fs').writeFileSync(outDir+'Chart.bundle.min.js', 'console.error("Gulp: ' + err.toString() + '")');
+      this.emit('end');
+     })
     .pipe(source('Chart.bundle.js'))
     .pipe(insert.prepend(header))
     .pipe(streamify(replace('{{ version }}', package.version)))
@@ -97,7 +102,12 @@ function buildTask() {
     .ignore('moment')
     .plugin(collapse)
     .bundle()
-    .on('error', function (err) { util.log(util.colors.red('[Error]'), err.toString()); this.emit('end');})
+    .on('error', function (err) {
+      util.log(util.colors.red('[Error]'), err.toString())
+      require('fs').writeFileSync(outDir+'Chart.js', 'console.error("Gulp: ' + err.toString() + '")');
+      require('fs').writeFileSync(outDir+'Chart.min.js', 'console.error("Gulp: ' + err.toString() + '")');
+      this.emit('end');
+     })
     .pipe(source('Chart.js'))
     .pipe(insert.prepend(header))
     .pipe(streamify(replace('{{ version }}', package.version)))
