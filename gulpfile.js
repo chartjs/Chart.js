@@ -23,9 +23,9 @@ var fs = require('fs');
 var package = require('./package.json');
 
 var argv = yargs
-  .option('force-output', {default: 'false'})
-  .option('silent-errors', {default: 'false'})
-  .option('verbose', {default: 'false'})
+  .option('force-output', {default: false})
+  .option('silent-errors', {default: false})
+  .option('verbose', {default: false})
   .argv
 
 var srcDir = './src/';
