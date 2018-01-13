@@ -82,6 +82,11 @@ function buildTask() {
 
   var errorHandler = function (err) {
     util.log(util.colors.red('[Error]'), err.toString());
+    var browserError = 'console.error("Gulp: ' + err.toString() + '")';
+    fs.writeFileSync(outDir+'Chart.js', browserError);
+    fs.writeFileSync(outDir+'Chart.min.js', browserError);
+    fs.writeFileSync(outDir+'Chart.bundle.js', browserError);
+    fs.writeFileSync(outDir+'Chart.bundle.min.js', browserError);
     this.emit('end');
   }
 
