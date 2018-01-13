@@ -17,9 +17,16 @@ var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var merge = require('merge-stream');
 var collapse = require('bundle-collapser/plugin');
-var argv  = require('yargs').argv
+var yargs = require('yargs');
 var path = require('path');
+var fs = require('fs');
 var package = require('./package.json');
+
+var argv = yargs
+  .option('force-output', {default: false})
+  .option('silent-errors', {default: false})
+  .option('verbose', {default: false})
+  .argv
 
 var srcDir = './src/';
 var outDir = './dist/';
@@ -33,6 +40,10 @@ var header = "/*!\n" +
   " * Released under the MIT license\n" +
   " * https://github.com/chartjs/Chart.js/blob/master/LICENSE.md\n" +
   " */\n";
+
+if (argv.verbose) {
+  util.log("Gulp running with options: " + JSON.stringify(argv, null, 2));
+}
 
 gulp.task('bower', bowerTask);
 gulp.task('build', buildTask);
@@ -79,9 +90,25 @@ function bowerTask() {
 
 function buildTask() {
 
+  var errorHandler = function (err) {
+    if(argv.forceOutput) {
+      var browserError = 'console.error("Gulp: ' + err.toString() + '")';
+      ['Chart', 'Chart.min', 'Chart.bundle', 'Chart.bundle.min'].forEach(function(fileName) {
+        fs.writeFileSync(outDir+fileName+'.js', browserError);
+      });
+    }
+    if(argv.silentErrors) {
+      util.log(util.colors.red('[Error]'), err.toString());
+      this.emit('end');
+    } else {
+      throw err;
+    }
+  }
+
   var bundled = browserify('./src/chart.js', { standalone: 'Chart' })
     .plugin(collapse)
     .bundle()
+    .on('error', errorHandler)
     .pipe(source('Chart.bundle.js'))
     .pipe(insert.prepend(header))
     .pipe(streamify(replace('{{ version }}', package.version)))
@@ -96,6 +123,7 @@ function buildTask() {
     .ignore('moment')
     .plugin(collapse)
     .bundle()
+    .on('error', errorHandler)
     .pipe(source('Chart.js'))
     .pipe(insert.prepend(header))
     .pipe(streamify(replace('{{ version }}', package.version)))
