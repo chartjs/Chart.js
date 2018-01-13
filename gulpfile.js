@@ -20,6 +20,7 @@ var collapse = require('bundle-collapser/plugin');
 var argv  = require('yargs').argv
 var path = require('path');
 var package = require('./package.json');
+var fs = require('fs');
 
 var srcDir = './src/';
 var outDir = './dist/';
@@ -83,8 +84,8 @@ function buildTask() {
     .bundle()
     .on('error', function (err) {
       util.log(util.colors.red('[Error]'), err.toString())
-      require('fs').writeFileSync(outDir+'Chart.bundle.js', 'console.error("Gulp: ' + err.toString() + '")');
-      require('fs').writeFileSync(outDir+'Chart.bundle.min.js', 'console.error("Gulp: ' + err.toString() + '")');
+      fs.writeFileSync(outDir+'Chart.bundle.js', 'console.error("Gulp: ' + err.toString() + '")');
+      fs.writeFileSync(outDir+'Chart.bundle.min.js', 'console.error("Gulp: ' + err.toString() + '")');
       this.emit('end');
      })
     .pipe(source('Chart.bundle.js'))
@@ -103,8 +104,8 @@ function buildTask() {
     .bundle()
     .on('error', function (err) {
       util.log(util.colors.red('[Error]'), err.toString())
-      require('fs').writeFileSync(outDir+'Chart.js', 'console.error("Gulp: ' + err.toString() + '")');
-      require('fs').writeFileSync(outDir+'Chart.min.js', 'console.error("Gulp: ' + err.toString() + '")');
+      fs.writeFileSync(outDir+'Chart.js', 'console.error("Gulp: ' + err.toString() + '")');
+      fs.writeFileSync(outDir+'Chart.min.js', 'console.error("Gulp: ' + err.toString() + '")');
       this.emit('end');
      })
     .pipe(source('Chart.js'))
