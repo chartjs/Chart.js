@@ -20,7 +20,6 @@ var collapse = require('bundle-collapser/plugin');
 var argv  = require('yargs').argv
 var path = require('path');
 var package = require('./package.json');
-var through = require('through2')
 
 var srcDir = './src/';
 var outDir = './dist/';
