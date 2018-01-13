@@ -17,11 +17,14 @@ var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var merge = require('merge-stream');
 var collapse = require('bundle-collapser/plugin');
-var argv  = require('yargs').argv
+var argv  = require('yargs')
+  .option('force-output', {default: 'false'})
+  .option('silent-errors', {default: 'false'})
+  .option('verbose', {default: 'false'})
+  .argv
 var path = require('path');
-var package = require('./package.json');
 var fs = require('fs');
-var minimist = require('minimist');
+var package = require('./package.json');
 
 var srcDir = './src/';
 var outDir = './dist/';
@@ -36,8 +39,9 @@ var header = "/*!\n" +
   " * https://github.com/chartjs/Chart.js/blob/master/LICENSE.md\n" +
   " */\n";
 
-var options = minimist(process.argv.slice(2));
-util.log("Gulp running with options: "+JSON.stringify(options, null, 2));
+if (argv.verbose) {
+  util.log("Gulp running with options: " + JSON.stringify(argv, null, 2));
+}
 
 gulp.task('bower', bowerTask);
 gulp.task('build', buildTask);
@@ -85,14 +89,14 @@ function bowerTask() {
 function buildTask() {
 
   var errorHandler = function (err) {
-    util.log(util.colors.red('[Error]'), err.toString());
-    if(options['force-output']) {
+    if(argv.forceOutput) {
       var browserError = 'console.error("Gulp: ' + err.toString() + '")';
       ['Chart', 'Chart.min', 'Chart.bundle', 'Chart.bundle.min'].forEach(function(fileName) {
         fs.writeFileSync(outDir+fileName+'.js', browserError);
       });
     }
-    if(options['silent-errors']) {
+    if(argv.silentErrors) {
+      util.log(util.colors.red('[Error]'), err.toString());
       this.emit('end');
     } else {
       throw err;
@@ -157,7 +161,7 @@ function lintTask() {
   // NOTE(SB) codeclimate has 'complexity' and 'max-statements' eslint rules way too strict
   // compare to what the current codebase can support, and since it's not straightforward
   // to fix, let's turn them as warnings and rewrite code later progressively.
-  var eslintOptions = {
+  var options = {
     rules: {
       'complexity': [1, 10],
       'max-statements': [1, 30]
@@ -165,7 +169,7 @@ function lintTask() {
   };
 
   return gulp.src(files)
-    .pipe(eslint(eslintOptions))
+    .pipe(eslint(options))
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
 }
