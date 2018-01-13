@@ -17,7 +17,7 @@ var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var merge = require('merge-stream');
 var collapse = require('bundle-collapser/plugin');
-var argv  = require('yargs')
+var argv = require('yargs')
   .option('force-output', {default: 'false'})
   .option('silent-errors', {default: 'false'})
   .option('verbose', {default: 'false'})
