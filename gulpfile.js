@@ -79,6 +79,7 @@ function bowerTask() {
 }
 
 function buildTask() {
+
   var bundled = browserify('./src/chart.js', { standalone: 'Chart' })
     .plugin(collapse)
     .bundle()
