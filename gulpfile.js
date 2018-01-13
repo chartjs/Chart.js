@@ -17,14 +17,16 @@ var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var merge = require('merge-stream');
 var collapse = require('bundle-collapser/plugin');
-var argv = require('yargs')
+var yargs = require('yargs');
+var path = require('path');
+var fs = require('fs');
+var package = require('./package.json');
+
+var argv = yargs
   .option('force-output', {default: 'false'})
   .option('silent-errors', {default: 'false'})
   .option('verbose', {default: 'false'})
   .argv
-var path = require('path');
-var fs = require('fs');
-var package = require('./package.json');
 
 var srcDir = './src/';
 var outDir = './dist/';
