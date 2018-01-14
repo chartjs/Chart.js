@@ -15,16 +15,17 @@ function generateTicks(generationOptions, dataRange) {
 	// for details.
 
 	var spacing;
+
 	if (generationOptions.stepSize && generationOptions.stepSize > 0) {
 		spacing = generationOptions.stepSize;
 	} else {
 		var niceRange = helpers.niceNum(dataRange.max - dataRange.min, false);
 		spacing = helpers.niceNum(niceRange / (generationOptions.maxTicks - 1), true);
 
-		var precision = generationOptions.precision;
-		if (precision !== undefined) {
+		var spacingPrecision = generationOptions.precision;
+		if (spacingPrecision !== undefined) {
 			// If the user specified a precision, round to that number of decimal places
-			var factor = Math.pow(10, precision);
+			var factor = Math.pow(10, spacingPrecision);
 			spacing = Math.ceil(spacing * factor) / factor;
 		}
 	}
