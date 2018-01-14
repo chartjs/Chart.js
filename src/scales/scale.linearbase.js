@@ -21,9 +21,11 @@ function generateTicks(generationOptions, dataRange) {
 		var niceRange = helpers.niceNum(dataRange.max - dataRange.min, false);
 		spacing = helpers.niceNum(niceRange / (generationOptions.maxTicks - 1), true);
 
-		if (generationOptions.integerSteps && spacing !== Math.round(spacing)) {
-			// If forcing integer steps, and our step is not an integer, scale up
-			spacing = Math.ceil(spacing);
+		var precision = generationOptions.precision;
+		if (precision !== undefined) {
+			// If the user specified a precision, round to that number of decimal places
+			var factor = Math.pow(10, precision);
+			spacing = Math.ceil(spacing * factor) / factor;
 		}
 	}
 	var niceMin = Math.floor(dataRange.min / spacing) * spacing;
@@ -159,7 +161,7 @@ module.exports = function(Chart) {
 				maxTicks: maxTicks,
 				min: tickOpts.min,
 				max: tickOpts.max,
-				integerSteps: tickOpts.integerSteps,
+				precision: tickOpts.precision,
 				stepSize: helpers.valueOrDefault(tickOpts.fixedStepSize, tickOpts.stepSize)
 			};
 			var ticks = me.ticks = generateTicks(numericGeneratorOptions, me);
