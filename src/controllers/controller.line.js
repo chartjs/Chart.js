@@ -46,7 +46,7 @@ module.exports = function(Chart) {
 			var scale = me.getScaleForId(meta.yAxisID);
 			var i, ilen, custom;
 			var dataset = me.getDataset();
-			var showLine = this.lineEnabled(dataset, options);
+			var showLine = lineEnabled(dataset, options);
 
 			// Update Line
 			if (showLine) {
@@ -287,7 +287,7 @@ module.exports = function(Chart) {
 
 			helpers.canvas.clipArea(chart.ctx, area);
 
-			if (this.lineEnabled(me.getDataset(), chart.options)) {
+			if (lineEnabled(me.getDataset(), chart.options)) {
 				meta.dataset.draw();
 			}
 
@@ -328,11 +328,6 @@ module.exports = function(Chart) {
 			model.backgroundColor = me.getPointBackgroundColor(point, index);
 			model.borderColor = me.getPointBorderColor(point, index);
 			model.borderWidth = me.getPointBorderWidth(point, index);
-		},
-
-		lineEnabled: function(dataset, options) {
-			return lineEnabled(dataset, options);
-		},
-
+		}
 	});
 };
