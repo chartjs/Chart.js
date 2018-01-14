@@ -33,26 +33,48 @@ module.exports = function(Chart) {
 
 
 		// Merge options for mixed charts
-		// If there is at least one 'bar' chart, main type is set to 'bar'
-		// If the main chart has no type and there's no 'bar' child chart,
-		// we set the main chart to 'line'
-		// This way, users can use a mixed chart without having to set a main type
+		// Some charts are more compatible than others
+		// For example, childs 'line' work with 'bar' parent, but not the opposite
+		// The typesByPriotity array ensure that the less compatibles chart are used
+		// in priority for the parent chart.
+		// So if there is at least one 'bar' chart, main type is set to 'bar'
+		// If no type at all is set, we use 'line'
+		// Users can use a mixed chart without having to set a main type
+		// and it alows more compatibility between charts
 		var types = [];
 		var typesByPriotity = [
 			'bar',
 			'line',
 			'scatter',
 			'horizontalBar',
-			'bubble'
+			'bubble',
+			'doughnut',
+			'global',
+			'pie',
+			'polarArea',
+			'radar',
+			'scale',
 		];
-		var defaultType = 'line';
-		var mainType;
-		types.push(config.type); // necessary if parent type is set and some children ar not
+		// Ensure that charts added in plugins will have top priority
+		for (var key in defaults) {
+			if(!typesByPriotity.includes(key)) {
+				typesByPriotity.unshift(key);
+			}
+		}
+
+		// Necessary if parent type is set and some identical children ar not
+		// relying on the fact that the parent type is already set
+		// Example: 'bar' parent with childs [undefined, undefined, line]
+		types.push(config.type);
+
 		if (data && data.datasets) {
 			data.datasets.forEach(function(dataset) {
 				types.push(dataset.type);
 			});
 		}
+
+		var defaultType = 'line';
+		var mainType;
 		for (var i = 0; i < typesByPriotity.length; i++) {
 			if (types.includes(typesByPriotity[i])) {
 				mainType = typesByPriotity[i];
