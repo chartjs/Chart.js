@@ -80,13 +80,13 @@
 			]
 			childs.forEach(function(child1) {
 				childs.forEach(function(child2) {
-					childs.forEach(function(child3) {
-						parent = undefined;
+					//childs.forEach(function(child3) {
 						sets.unshift({
-							parents: [undefined],
-							childs: [child1, child2, child3],
+							//parents: [child1.type],
+							parents: [undefined], // works on branch 'mixed'
+							childs: [child1, child2/*, child3*/],
 						})
-					});
+					//});
 				});
 			});
 			var size = 8;
@@ -132,7 +132,7 @@
 					var childListstr = ''; 
 					childs.forEach(function(child) {
 						childListstr += child.type + ', ';
-					})
+					});
 					childListstr = childListstr.slice(0,-2);
 					charts.push(new Chart(canvas.getContext("2d"), {
 						type: parent,
@@ -161,12 +161,12 @@
 				charts.forEach(function(chart) {
 					chart.data.datasets.forEach(function(dataset) {
 						dataset.data = dataset.data.map(function(a) {
-								if (a.r) {
-									return {x:randomScalingFactor(),y:randomScalingFactor(),r:Math.max(randomScalingFactor()/3, 10)};
-								} else if (a.x) {
-									return {x:randomScalingFactor(),y:randomScalingFactor()};
-								}
-								return randomScalingFactor();
+							if (a.r) {
+								return {x: randomScalingFactor(), y: randomScalingFactor(), r: Math.max(randomScalingFactor()/3, 10)};
+							} else if (a.x) {
+								return {x: randomScalingFactor(), y: randomScalingFactor()};
+							}
+							return randomScalingFactor();
 						});
 					});
 					chart.update();

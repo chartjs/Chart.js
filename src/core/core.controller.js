@@ -31,67 +31,66 @@ module.exports = function(Chart) {
 		data.datasets = data.datasets || [];
 		data.labels = data.labels || [];
 
-
-		// Merge options for mixed charts
+		// Merge defaults
 		// Some charts are more compatible than others
 		// For example, childs 'line' work with 'bar' parent, but not the opposite
 		// The typesByPriotity array ensure that the less compatibles chart are used
 		// in priority for the parent chart.
 		// So if there is at least one 'bar' chart, main type is set to 'bar'
-		// If no type at all is set, we use 'line'
+		// If no type at all is set, we use 'global' only
 		// Users can use a mixed chart without having to set a main type
 		// and it alows more compatibility between charts
-		var types = [];
+		var types = ['global'];
 		var typesByPriotity = [
 			'bar',
 			'line',
-			'scatter',
 			'horizontalBar',
+			'scatter',
 			'bubble',
 			'doughnut',
-			'global',
 			'pie',
 			'polarArea',
 			'radar',
 			'scale',
+			'global',
 		];
-		// Ensure that charts added in plugins will have top priority
+
+		// Ensure that defaults added in plugins will have top priority
 		for (var key in defaults) {
 			if (!typesByPriotity.includes(key)) {
 				typesByPriotity.unshift(key);
 			}
 		}
 
-		// Necessary if parent type is set and some identical children ar not
-		// relying on the fact that the parent type is already set
+		// Add parent type
+		// Necessary if parent type is set and some children are not set,
+		// because they are relying on the fact that the parent type is already set
 		// Example: 'bar' parent with childs [undefined, undefined, line]
-		types.push(config.type);
+		if(config.type) {
+			types.push(config.type);
+		}
 
+		// Add all the child types
 		if (data && data.datasets) {
 			data.datasets.forEach(function(dataset) {
 				types.push(dataset.type);
 			});
 		}
 
-		var defaultType = 'line';
-		var mainType;
-		for (var i = 0; i < typesByPriotity.length; i++) {
-			if (types.includes(typesByPriotity[i])) {
-				mainType = typesByPriotity[i];
-				break;
-			}
-		}
-		config.options = helpers.configMerge(
-			defaults.global,
-			mainType ? defaults[mainType] : defaults[config.type || defaultType],
-			config.options || {});
-		if (data && data.datasets) {
-			data.datasets.forEach(function(dataset) {
-				if (dataset.type !== undefined) {
-					config.options = helpers.configMerge(defaults[dataset.type], config.options || {});
-				}
-			});
-		}
+		// Sort the types by priority
+		types.sort(function(typeA, typeB) {
+			return typesByPriotity.indexOf(typeA) - typesByPriotity.indexOf(typeB);
+		});
+
+		// if we want to respect users choice for the main type
+		// if (config.type) {
+		//	types.unshift(config.type);
+		// }
+
+		// Apply the defaults according to the types
+		types.forEach(function(type) {
+			config.options = helpers.configMerge(defaults[type], config.options || {});
+		});
 
 		return config;
 	}
