@@ -1,4 +1,4 @@
-describe('Chart.controllers.line', function() {
+describe('Chart.controllers.scatter', function() {
 
 	it('should not draw a line if the options showLines is not set', function() {
 		var chart = window.acquireChart({
