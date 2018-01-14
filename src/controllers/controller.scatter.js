@@ -20,7 +20,7 @@ defaults._set('scatter', {
 		}]
 	},
 
-	showLines: false,
+	showLines: true,
 
 	tooltips: {
 		callbacks: {
