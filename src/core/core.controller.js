@@ -57,7 +57,7 @@ module.exports = function(Chart) {
 		];
 		// Ensure that charts added in plugins will have top priority
 		for (var key in defaults) {
-			if(!typesByPriotity.includes(key)) {
+			if (!typesByPriotity.includes(key)) {
 				typesByPriotity.unshift(key);
 			}
 		}

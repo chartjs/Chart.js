@@ -1,6 +1,6 @@
 describe('mixed chart', function() {
 
-	fit('should draw all elements', function() {
+	it('should draw all elements', function() {
 		var randomScalingFactor = function() {
 			return Math.random() * (200) - 100;
 		};
@@ -16,7 +16,7 @@ describe('mixed chart', function() {
 			childsTmp.forEach(function(child2) {
 				childsTmp.forEach(function(child3) {
 					sets.unshift({
-						parents: ['bar'],
+						parents: [undefined],
 						childs: [child1, child2, child3],
 					});
 				});
@@ -88,7 +88,9 @@ describe('mixed chart', function() {
 				});
 
 				var meta = chart.getDatasetMeta(0);
-				spyOn(meta.dataset, 'draw');
+				if (meta.dataset) {
+					spyOn(meta.dataset, 'draw');
+				}
 				spyOn(meta.data[0], 'draw');
 				spyOn(meta.data[1], 'draw');
 				spyOn(meta.data[2], 'draw');
