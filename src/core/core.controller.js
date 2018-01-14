@@ -37,17 +37,31 @@ module.exports = function(Chart) {
 		// If the main chart has no type and there's no 'bar' child chart,
 		// we set the main chart to 'line'
 		// This way, users can use a mixed chart without having to set a main type
-		var hasBarType = false;
+		var types = [];
+		var typesByPriotity = [
+			'bar',
+			'line',
+			'scatter',
+			'horizontalBar',
+			'bubble'
+		];
+		var defaultType = 'line';
+		var mainType;
+		types.push(config.type); // necessary if parent type is set and some children ar not
 		if (data && data.datasets) {
 			data.datasets.forEach(function(dataset) {
-				if (dataset.type === 'bar') {
-					hasBarType = true;
-				}
+				types.push(dataset.type);
 			});
+		}
+		for (var i = 0; i < typesByPriotity.length; i++) {
+			if (types.includes(typesByPriotity[i])) {
+				mainType = typesByPriotity[i];
+				break;
+			}
 		}
 		config.options = helpers.configMerge(
 			defaults.global,
-			hasBarType ? defaults.bar : defaults[config.type || 'line'],
+			mainType ? defaults[mainType] : defaults[config.type || defaultType],
 			config.options || {});
 		if (data && data.datasets) {
 			data.datasets.forEach(function(dataset) {

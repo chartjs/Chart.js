@@ -7,9 +7,11 @@
 		<script src="../utils.js"></script>
 		<style>
 			canvas {
-					-moz-user-select: none;
-					-webkit-user-select: none;
-					-ms-user-select: none;
+				-moz-user-select: none;
+				-webkit-user-select: none;
+				-ms-user-select: none;
+				width: 255px;
+				height: 255px;
 			}
 			div {
 				display: flex;
@@ -17,10 +19,7 @@
 			}
 			div div {
 				flex-grow: 1;
-				width: 30%;
-				margin: 0.5em;
-				height: 15em;
-				min-width: 20em;
+				width: 33%;
 			}
 		</style>
 </head>
@@ -71,6 +70,25 @@
 					]
 				}
 			];
+			sets = [];
+			childs = [
+				{type:'scatter', color:'#f844'},
+				{type:'line', color:'#f484', fill:false},
+				{type:'bubble', color:'#8f44'},
+				{type:'bar', color:'#48f4'},
+				{type:'horizontalBar', color:'#84f4'},
+			]
+			childs.forEach(function(child1) {
+				childs.forEach(function(child2) {
+					childs.forEach(function(child3) {
+						parent = undefined;
+						sets.unshift({
+							parents: [undefined],
+							childs: [child1, child2, child3],
+						})
+					});
+				});
+			});
 			var size = 8;
 			var charts = [];
 			sets.forEach(function(set) {
@@ -126,7 +144,7 @@
 							responsive: true,
 							title: {
 								display: true,
-								text: 'Main type : ' + parent + ' | Childs : ' + childListstr,
+								text: 'Parent type : ' + parent + ' | Childs : ' + childListstr,
 							},
 							tooltips: {
 								mode: 'index',
@@ -134,6 +152,9 @@
 							}
 						}
 					}));
+					/*charts[charts.length-1].update();
+					var meta = charts[charts.length-1].getDatasetMeta(2)
+					console.log(meta.data.length)*/
 				});
 			});
 			console.log(charts);
