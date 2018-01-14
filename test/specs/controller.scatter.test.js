@@ -1,6 +1,6 @@
 describe('Chart.controllers.line', function() {
 
-	fit('should not draw a line if the options showLines is not set', function() {
+	it('should not draw a line if the options showLines is not set', function() {
 		var chart = window.acquireChart({
 			type: 'scatter',
 			data: {
@@ -36,7 +36,7 @@ describe('Chart.controllers.line', function() {
 		expect(meta.data[4].draw.calls.count()).toBe(1);
 	});
 
-	fit('should not draw a line if the options showLines set to false', function() {
+	it('should not draw a line if the options showLines set to false', function() {
 		var chart = window.acquireChart({
 			type: 'scatter',
 			data: {
@@ -52,7 +52,7 @@ describe('Chart.controllers.line', function() {
 				}],
 			},
 			options: {
-				showLines: true
+				showLines: false
 			}
 		});
 
@@ -74,7 +74,7 @@ describe('Chart.controllers.line', function() {
 		expect(meta.data[4].draw.calls.count()).toBe(1);
 	});
 
-	fit('should draw a line if the options showLines is set to true', function() {
+	it('should draw a line if the options showLines is set to true', function() {
 		var chart = window.acquireChart({
 			type: 'scatter',
 			data: {
