@@ -5,7 +5,6 @@ var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
 defaults._set('line', {
-	showLines: true,
 	spanGaps: false,
 
 	hover: {
@@ -26,10 +25,6 @@ defaults._set('line', {
 
 module.exports = function(Chart) {
 
-	function lineEnabled(dataset, options) {
-		return helpers.valueOrDefault(dataset.showLine, options.showLines);
-	}
-
 	Chart.controllers.line = Chart.DatasetController.extend({
 
 		datasetElementType: elements.Line,
@@ -46,7 +41,7 @@ module.exports = function(Chart) {
 			var scale = me.getScaleForId(meta.yAxisID);
 			var i, ilen, custom;
 			var dataset = me.getDataset();
-			var showLine = lineEnabled(dataset, options);
+			var showLine = me._lineEnabled(dataset, options);
 
 			// Update Line
 			if (showLine) {
@@ -300,7 +295,7 @@ module.exports = function(Chart) {
 			var halfBorderWidth;
 			var i = 0;
 
-			if (lineEnabled(me.getDataset(), chart.options)) {
+			if (me._lineEnabled(me.getDataset(), chart.options)) {
 				halfBorderWidth = (meta.dataset._model.borderWidth || 0) / 2;
 
 				helpers.canvas.clipArea(chart.ctx, {
@@ -340,5 +335,13 @@ module.exports = function(Chart) {
 			model.borderWidth = custom.hoverBorderWidth || helpers.valueAtIndexOrDefault(dataset.pointHoverBorderWidth, index, model.borderWidth);
 			model.radius = custom.hoverRadius || helpers.valueAtIndexOrDefault(dataset.pointHoverRadius, index, this.chart.options.elements.point.hoverRadius);
 		},
+
+        /**
+         * To be called only by scatter chart
+         * @private
+         */
+		_lineEnabled: function(dataset, options) {
+			return helpers.valueOrDefault(dataset.showLine, helpers.valueOrDefault(options.showLines, true));
+		}
 	});
 };

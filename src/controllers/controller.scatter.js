@@ -1,6 +1,7 @@
 'use strict';
 
 var defaults = require('../core/core.defaults');
+var helpers = require('../helpers/index');
 
 defaults._set('scatter', {
 	hover: {
@@ -20,8 +21,6 @@ defaults._set('scatter', {
 		}]
 	},
 
-	showLines: false,
-
 	tooltips: {
 		callbacks: {
 			title: function() {
@@ -36,7 +35,15 @@ defaults._set('scatter', {
 
 module.exports = function(Chart) {
 
-	// Scatter charts use line controllers
-	Chart.controllers.scatter = Chart.controllers.line;
+	Chart.controllers.scatter = Chart.controllers.line.extend({
+
+		/**
+		 * @private
+		 */
+		_lineEnabled: function(dataset, options) {
+			return helpers.valueOrDefault(dataset.showLine, helpers.valueOrDefault(options.showLines, false));
+		}
+
+	});
 
 };
