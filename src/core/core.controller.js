@@ -66,14 +66,16 @@ module.exports = function(Chart) {
 		// Necessary if parent type is set and some children are not set,
 		// because they are relying on the fact that the parent type is already set
 		// Example: 'bar' parent with childs [undefined, undefined, line]
-		if(config.type) {
+		if (config.type) {
 			types.push(config.type);
 		}
 
 		// Add all the child types
 		if (data && data.datasets) {
 			data.datasets.forEach(function(dataset) {
-				types.push(dataset.type);
+				if (dataset.type) {
+					types.push(dataset.type);
+				}
 			});
 		}
 
