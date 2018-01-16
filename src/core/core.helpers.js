@@ -498,26 +498,24 @@ module.exports = function(Chart) {
 	helpers.getConstraintHeight = function(domNode) {
 		return getConstraintDimension(domNode, 'max-height', 'clientHeight');
 	};
+	helper.calculatePadding = function(padding, parentDimension) {
+		
+		padding = helpers.getStyle(container, padding);
+
+		if (padding.indexOf('%') > -1) {
+			return parentDimension / parseInt(padding, 10);
+		} else {
+			return parseInt(padding, 10);
+		}
+	};
 	helpers.getMaximumWidth = function(domNode) {
 		var container = domNode.parentNode;
 		if (!container) {
 			return domNode.clientWidth;
 		}
 
-		var paddingLeft = helpers.getStyle(container, 'padding-left');
-		var paddingRight = helpers.getStyle(container, 'padding-right');
-
-		if (paddingLeft.indexOf('%') > -1) {
-			paddingLeft = container.clientWidth / parseInt(paddingLeft, 10);
-		} else {
-			paddingLeft = parseInt(paddingLeft, 10);
-		}
-
-		if (paddingRight.indexOf('%') > -1) {
-			paddingRight = container.clientWidth / parseInt(paddingRight, 10);
-		} else {
-			paddingRight = parseInt(paddingRight, 10);
-		}
+		var paddingLeft = helpers.calculatePadding('padding-left', container.clientWidth);
+		var paddingRight = helpers.calculatePadding('padding-right', container.clientWidth);		
 
 		var w = container.clientWidth - paddingLeft - paddingRight;
 		var cw = helpers.getConstraintWidth(domNode);
@@ -529,20 +527,8 @@ module.exports = function(Chart) {
 			return domNode.clientHeight;
 		}
 
-		var paddingTop = helpers.getStyle(container, 'padding-top');
-		var paddingBottom = helpers.getStyle(container, 'padding-bottom');
-
-		if (paddingTop.indexOf('%') > -1) {
-			paddingTop = container.clientHeight / parseInt(paddingTop, 10);
-		} else {
-			paddingTop = parseInt(paddingTop, 10);
-		}
-
-		if (paddingBottom.indexOf('%') > -1) {
-			paddingBottom = container.clientHeight / parseInt(paddingBottom, 10);
-		} else {
-			paddingBottom = parseInt(paddingBottom, 10);
-		}
+		var paddingTop = helpers.calculatePadding('padding-top', container.clientHeight);
+		var paddingBottom = helpers.calculatePadding('padding-bottom', container.clientHeight);		
 
 		var h = container.clientHeight - paddingTop - paddingBottom;
 		var ch = helpers.getConstraintHeight(domNode);
