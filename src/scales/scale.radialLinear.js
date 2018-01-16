@@ -267,15 +267,46 @@ module.exports = function(Chart) {
 				var pointLabelPosition = scale.getPointPosition(i, outerDistance + 5);
 
 				// Keep this in loop since we may support array properties here
-				var pointLabelFontColor = valueOrDefault(pointLabelOpts.fontColor, globalDefaults.defaultFontColor);
 				ctx.font = plFont.font;
-				ctx.fillStyle = pointLabelFontColor;
-
 				var angleRadians = scale.getIndexAngle(i);
 				var angle = helpers.toDegrees(angleRadians);
 				ctx.textAlign = getTextAlignForAngle(angle);
-				adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition);
-				fillText(ctx, scale.pointLabels[i] || '', pointLabelPosition, plFont.size);
+				var pointLabelFontColor = null;
+
+				// Point Label Color
+				if (pointLabelOpts.fontColor) {
+					// handle scale.pointLabels[i] as string or array combined with pointLabelFontColor as string or array or none given.
+					if (typeof scale.pointLabels[i] === 'string') {
+						if (typeof pointLabelOpts.fontColor === 'string') {
+							pointLabelFontColor = valueOrDefault(pointLabelOpts.fontColor, globalDefaults.defaultFontColor);
+						} else {
+							pointLabelFontColor = valueOrDefault(pointLabelOpts.fontColor[0], globalDefaults.defaultFontColor);
+						}
+						adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition);
+						ctx.fillStyle = pointLabelFontColor;
+						fillText(ctx, scale.pointLabels[i] || '', pointLabelPosition, plFont.size);
+					} else {
+						var yOffset = 0;
+						for (var x = 0; x < scale.pointLabels[i].length; x++) {
+							if (typeof pointLabelOpts.fontColor === 'string') {
+								pointLabelFontColor = valueOrDefault(pointLabelOpts.fontColor, globalDefaults.defaultFontColor);
+							} else {
+								pointLabelFontColor = valueOrDefault(pointLabelOpts.fontColor[x], globalDefaults.defaultFontColor);
+							}
+							var pointLabelPosition1 = JSON.parse(JSON.stringify(pointLabelPosition));
+							pointLabelPosition1.y += yOffset;
+							adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition1);
+							ctx.fillStyle = pointLabelFontColor;
+							fillText(ctx, scale.pointLabels[i][x] || '', pointLabelPosition1, plFont.size);
+							yOffset += plFont.size + 5;
+						}
+					}
+				} else {
+					pointLabelFontColor = valueOrDefault(pointLabelOpts.fontColor, globalDefaults.defaultFontColor);
+					adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition);
+					ctx.fillStyle = pointLabelFontColor;
+					fillText(ctx, scale.pointLabels[i] || '', pointLabelPosition, plFont.size);
+				}
 			}
 		}
 	}
