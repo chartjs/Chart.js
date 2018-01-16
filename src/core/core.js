@@ -6,6 +6,7 @@ defaults._set('global', {
 	responsive: true,
 	responsiveAnimationDuration: 0,
 	maintainAspectRatio: true,
+	ignoreScrollBar: true,
 	events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'],
 	hover: {
 		onHover: null,
