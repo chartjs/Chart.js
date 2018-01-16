@@ -498,8 +498,7 @@ module.exports = function(Chart) {
 	helpers.getConstraintHeight = function(domNode) {
 		return getConstraintDimension(domNode, 'max-height', 'clientHeight');
 	};
-	helper.calculatePadding = function(padding, parentDimension) {
-		
+	helpers.calculatePadding = function (container, padding, parentDimension) {
 		padding = helpers.getStyle(container, padding);
 
 		if (padding.indexOf('%') > -1) {
@@ -514,8 +513,8 @@ module.exports = function(Chart) {
 			return domNode.clientWidth;
 		}
 
-		var paddingLeft = helpers.calculatePadding('padding-left', container.clientWidth);
-		var paddingRight = helpers.calculatePadding('padding-right', container.clientWidth);		
+		var paddingLeft = helpers.calculatePadding(container, 'padding-left', container.clientWidth);
+		var paddingRight = helpers.calculatePadding(container, 'padding-right', container.clientWidth);
 
 		var w = container.clientWidth - paddingLeft - paddingRight;
 		var cw = helpers.getConstraintWidth(domNode);
@@ -527,8 +526,8 @@ module.exports = function(Chart) {
 			return domNode.clientHeight;
 		}
 
-		var paddingTop = helpers.calculatePadding('padding-top', container.clientHeight);
-		var paddingBottom = helpers.calculatePadding('padding-bottom', container.clientHeight);		
+		var paddingTop = helpers.calculatePadding(container, 'padding-top', container.clientHeight);
+		var paddingBottom = helpers.calculatePadding(container, 'padding-bottom', container.clientHeight);
 
 		var h = container.clientHeight - paddingTop - paddingBottom;
 		var ch = helpers.getConstraintHeight(domNode);
