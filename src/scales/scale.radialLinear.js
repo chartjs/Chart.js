@@ -271,9 +271,9 @@ module.exports = function(Chart) {
 				var angleRadians = scale.getIndexAngle(i);
 				var angle = helpers.toDegrees(angleRadians);
 				ctx.textAlign = getTextAlignForAngle(angle);
-				var pointLabelFontColor = null;
 
 				// Point Label Color
+                var pointLabelFontColor = null;
 				if (pointLabelOpts.fontColor) {
 					// handle scale.pointLabels[i] as string or array combined with pointLabelFontColor as string or array or none given.
 					if (typeof scale.pointLabels[i] === 'string') {
@@ -293,11 +293,11 @@ module.exports = function(Chart) {
 							} else {
 								pointLabelFontColor = valueOrDefault(pointLabelOpts.fontColor[x], globalDefaults.defaultFontColor);
 							}
-							var pointLabelPosition1 = JSON.parse(JSON.stringify(pointLabelPosition));
-							pointLabelPosition1.y += yOffset;
-							adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition1);
+							var pointLabelPositionNew = JSON.parse(JSON.stringify(pointLabelPosition));
+							pointLabelPositionNew.y += yOffset;
+							adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPositionNew);
 							ctx.fillStyle = pointLabelFontColor;
-							fillText(ctx, scale.pointLabels[i][x] || '', pointLabelPosition1, plFont.size);
+							fillText(ctx, scale.pointLabels[i][x] || '', pointLabelPositionNew, plFont.size);
 							yOffset += plFont.size + 5;
 						}
 					}
