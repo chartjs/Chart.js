@@ -498,14 +498,10 @@ module.exports = function(Chart) {
 	helpers.getConstraintHeight = function(domNode) {
 		return getConstraintDimension(domNode, 'max-height', 'clientHeight');
 	};
-	helpers.calculatePadding = function (container, padding, parentDimension) {
+	helpers.calculatePadding = function(container, padding, parentDimension) {
 		padding = helpers.getStyle(container, padding);
 
-		if (padding.indexOf('%') > -1) {
-			return parentDimension / parseInt(padding, 10);
-		} else {
-			return parseInt(padding, 10);
-		}
+		return padding.indexOf('%') > -1 ? parentDimension / parseInt(padding, 10) : parseInt(padding, 10);
 	};
 	helpers.getMaximumWidth = function(domNode) {
 		var container = domNode.parentNode;
