@@ -88,8 +88,8 @@ module.exports = Element.extend({
 
 		ctx.beginPath();
 
-		ctx.arc(vm.x, vm.y, vm.outerRadius, sA, eA);
-		ctx.arc(vm.x, vm.y, vm.innerRadius, eA, sA, true);
+		ctx.arc(vm.x, vm.y, Math.abs(vm.outerRadius), sA, eA);
+		ctx.arc(vm.x, vm.y, Math.abs(vm.innerRadius), eA, sA, true);
 
 		ctx.closePath();
 		ctx.strokeStyle = vm.borderColor;

@@ -288,7 +288,7 @@ module.exports = function(Chart) {
 		if (scale.options.gridLines.circular) {
 			// Draw circular arcs between the points
 			ctx.beginPath();
-			ctx.arc(scale.xCenter, scale.yCenter, radius, 0, Math.PI * 2);
+			ctx.arc(scale.xCenter, scale.yCenter, Math.abs(radius), 0, Math.PI * 2);
 			ctx.closePath();
 			ctx.stroke();
 		} else {

@@ -63,7 +63,7 @@ var exports = module.exports = {
 		// Default includes circle
 		default:
 			ctx.beginPath();
-			ctx.arc(x, y, radius, 0, Math.PI * 2);
+			ctx.arc(x, y, Math.abs(radius), 0, Math.PI * 2);
 			ctx.closePath();
 			ctx.fill();
 			break;
