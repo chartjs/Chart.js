@@ -31,7 +31,7 @@ The legend label configuration is nested below the legend configuration using th
 | `boxWidth` | `Number` | `40` | width of symbol if point style not used
 | `fontSize` | `Number` | `12` | font size of text
 | `fontStyle` | `String` | `'normal'` | font style of text
-| `fontColor` | Color | `'#666'` | Color of text
+| `fontColor` | `Color` | `'#666'` | Color of text
 | `fontFamily` | `String` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family of legend text.
 | `padding` | `Number` | `10` | Padding between rows of colored boxes.
 | `generateLabels` | `Function` | | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See [Legend Item](#legend-item-interface) for details.
@@ -171,6 +171,7 @@ var chart = new Chart(ctx, {
     }
 });
 ```
+Note that legendCallback is not called automatically and you must call `generateLegend()` yourself in code when creating a legend using this method.
 
 ### Dataset Legend Configuration
 

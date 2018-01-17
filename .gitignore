@@ -6,9 +6,11 @@
 /gh-pages
 /jsdoc
 /node_modules
+/package-lock.json
 .DS_Store
 .idea
 .vscode
 bower.json
 *.log
 *.swp
+*.stackdump

@@ -1,4 +1,6 @@
 describe('Chart.controllers.bar', function() {
+	describe('auto', jasmine.specsFromFixtures('controller.bar'));
+
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
@@ -1626,86 +1628,6 @@ describe('Chart.controllers.bar', function() {
 						expect(meta.data[0]._model.width).toBeCloseToPixel(10);
 						expect(meta.data[1]._model.width).toBeCloseToPixel(10);
 					}
-				});
-			});
-		});
-	});
-
-	describe('Bar thickness with a time scale', function() {
-		['auto', 'data', 'labels'].forEach(function(source) {
-			['series', 'linear'].forEach(function(distribution) {
-				describe('When ticks.source is "' + source + '", distribution is "' + distribution + '"', function() {
-					beforeEach(function() {
-						this.chart = window.acquireChart({
-							type: 'bar',
-							data: {
-								datasets: [{
-									data: [1, 2, 3]
-								}, {
-									data: [1, 2, 3]
-								}],
-								labels: ['2017', '2018', '2020']
-							},
-							options: {
-								legend: false,
-								title: false,
-								scales: {
-									xAxes: [{
-										id: 'x',
-										type: 'time',
-										time: {
-											unit: 'year',
-											parser: 'YYYY'
-										},
-										ticks: {
-											source: source
-										},
-										offset: true,
-										distribution: distribution
-									}],
-									yAxes: [{
-										type: 'linear'
-									}]
-								}
-							}
-						});
-					});
-
-					it('should correctly set bar width', function() {
-						var chart = this.chart;
-						var scale = chart.scales.x;
-						var options = chart.options.scales.xAxes[0];
-						var categoryPercentage = options.categoryPercentage;
-						var barPercentage = options.barPercentage;
-						var firstInterval = scale.getPixelForValue('2018') - scale.getPixelForValue('2017');
-						var firstExpected = firstInterval * categoryPercentage / 2 * barPercentage;
-						var lastInterval = scale.getPixelForValue('2020') - scale.getPixelForValue('2018');
-						var lastExpected = lastInterval * categoryPercentage / 2 * barPercentage;
-						var i, ilen, meta;
-
-						for (i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
-							meta = chart.getDatasetMeta(i);
-							expect(meta.data[0]._model.width).toBeCloseToPixel(firstExpected);
-							expect(meta.data[1]._model.width).toBeCloseToPixel((firstExpected + lastExpected) / 2);
-							expect(meta.data[2]._model.width).toBeCloseToPixel(lastExpected);
-						}
-					});
-
-					it('should correctly set bar width if maxBarThickness is specified', function() {
-						var chart = this.chart;
-						var options = chart.options.scales.xAxes[0];
-						var i, ilen, meta;
-
-						options.maxBarThickness = 10;
-						chart.update();
-
-						for (i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
-							meta = chart.getDatasetMeta(i);
-							expect(meta.data[0]._model.width).toBeCloseToPixel(10);
-							expect(meta.data[1]._model.width).toBeCloseToPixel(10);
-							expect(meta.data[2]._model.width).toBeCloseToPixel(10);
-						}
-					});
 				});
 			});
 		});

@@ -1,25 +1,19 @@
-engines:
+version: "2"
+plugins:
   duplication:
     enabled: true
     config:
       languages:
-      - javascript
-  eslint:
-    enabled: true
-    channel: "eslint-3"
+        - javascript
   fixme:
     enabled: true
-ratings:
-  paths:
-  - "src/**/*.js"
-exclude_paths:
-- '.github/'
-- 'dist/'
-- 'test/'
-- 'docs/'
-- 'samples/'
-- 'scripts/'
-- '**.md'
-- '**.json'
-- 'gulpfile.js'
-- 'karma.conf.js'
+exclude_patterns:
+  - "dist/"
+  - "docs/"
+  - "samples/"
+  - "scripts/"
+  - "test/"
+  - "*.js"
+  - "*.json"
+  - "*.md"
+  - ".*"

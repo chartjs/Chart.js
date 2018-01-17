@@ -40,4 +40,4 @@ var chart = new Chart(ctx, {
 
 It's that easy to get started using Chart.js! From here you can explore the many options that can help you customise your charts with scales, tooltips, labels, colors, custom actions, and much more.
 
-There are many examples of Chart.js that are available in the `/samples` folder of `Chart.js.zip` that is attatched to every [release](https://github.com/chartjs/Chart.js/releases).
+There are many examples of Chart.js that are available in the `/samples` folder of `Chart.js.zip` that is attached to every [release](https://github.com/chartjs/Chart.js/releases).

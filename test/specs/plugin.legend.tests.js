@@ -1,10 +1,5 @@
 // Test the rectangle element
 describe('Legend block tests', function() {
-	it('Should be constructed', function() {
-		var legend = new Chart.Legend({});
-		expect(legend).not.toBe(undefined);
-	});
-
 	it('should have the correct default config', function() {
 		expect(Chart.defaults.global.legend).toEqual({
 			display: true,

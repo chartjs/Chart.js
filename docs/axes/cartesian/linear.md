@@ -20,7 +20,7 @@ The following options are provided by the linear scale. They are all located in 
 
 Given the number of axis range settings, it is important to understand how they all interact with each other.
 
-The `suggestedMax` and `suggestedMin` settings only change the data values that are used to scale the axis. These are useful for extending the range of the axis while maintaing the auto fit behaviour.
+The `suggestedMax` and `suggestedMin` settings only change the data values that are used to scale the axis. These are useful for extending the range of the axis while maintaining the auto fit behaviour.
 
 ```javascript
 let minDataValue = Math.min(mostNegativeValue, options.ticks.suggestedMin);
@@ -43,7 +43,7 @@ let chart = new Chart(ctx, {
         scales: {
             yAxes: [{
                 ticks: {
-                    suggestedMin: 50
+                    suggestedMin: 50,
                     suggestedMax: 100
                 }
             }]

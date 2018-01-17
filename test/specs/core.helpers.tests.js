@@ -6,26 +6,6 @@ describe('Core helper tests', function() {
 		helpers = window.Chart.helpers;
 	});
 
-	it('should extend an object', function() {
-		var original = {
-			myProp1: 'abc',
-			myProp2: 56
-		};
-
-		var extension = {
-			myProp3: [2, 5, 6],
-			myProp2: 0
-		};
-
-		helpers.extend(original, extension);
-
-		expect(original).toEqual({
-			myProp1: 'abc',
-			myProp2: 0,
-			myProp3: [2, 5, 6],
-		});
-	});
-
 	it('should merge a normal config without scales', function() {
 		var baseConfig = {
 			valueProp: 5,
@@ -743,6 +723,23 @@ describe('Core helper tests', function() {
 		expect(helpers.getMaximumHeight(innerDiv)).toBe(150);
 
 		document.body.removeChild(div);
+	});
+
+	it ('should leave styled height and width on canvas if explicitly set', function() {
+		var chart = window.acquireChart({}, {
+			canvas: {
+				height: 200,
+				width: 200,
+				style: 'height: 400px; width: 400px;'
+			}
+		});
+
+		helpers.retinaScale(chart, true);
+
+		var canvas = chart.canvas;
+
+		expect(canvas.style.height).toBe('400px');
+		expect(canvas.style.width).toBe('400px');
 	});
 
 	describe('Color helper', function() {
