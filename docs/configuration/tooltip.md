@@ -103,6 +103,32 @@ All functions are called with the same arguments: a [tooltip item](#tooltip-item
 | `footer` | `Array[tooltipItem], data` | Returns text to render as the footer of the tooltip.
 | `afterFooter` | `Array[tooltipItem], data` | Text to render after the footer section
 
+### Label Callback
+
+The label callback can change the text that displays for a given data point. A common example to round data values; the following example rounds the data to two decimal places.
+
+```javascript
+var chart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+        tooltips: {
+            callbacks: {
+                label: function(tooltipItem, data) {
+                    var label = data.datasets[tooltipItem.datasetIndex].label || '';
+
+                    if (label) {
+                        label += ': ';
+                    }
+                    label += Math.round(tooltipItem.yLabel * 100) / 100;
+                    return label;
+                }
+            }
+        }
+    }
+});
+```
+
 ### Label Color Callback
 
 For example, to return a red box for each item in the tooltip you could do:
