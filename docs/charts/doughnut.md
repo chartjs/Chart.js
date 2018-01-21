@@ -55,7 +55,6 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 
 | Name | Type | Description
 | ---- | ---- | -----------
-| `label` | `String` | The label for the dataset which appears in the legend and tooltips.
 | `backgroundColor` | `Color[]` | The fill color of the arcs in the dataset. See [Colors](../general/colors.md#colors)
 | `borderColor` | `Color[]` | The border color of the arcs in the dataset. See [Colors](../general/colors.md#colors)
 | `borderWidth` | `Number[]` | The border width of the arcs in the dataset.
