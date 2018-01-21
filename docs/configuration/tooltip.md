@@ -6,7 +6,7 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
-| `enabled` | `Boolean` | `true` | Are tooltips enabled
+| `enabled` | `Boolean` | `true` | Are on-canvas tooltips enabled
 | `custom` | `Function` | `null` | See [custom tooltip](#external-custom-tooltips) section.
 | `mode` | `String` | `'nearest'` | Sets which elements appear in the tooltip. [more...](../general/interactions/modes.md#interaction-modes).
 | `intersect` | `Boolean` | `true` | if true, the tooltip mode applies only when the mouse position intersects with an element. If false, the mode will be applied at all times.
@@ -191,6 +191,9 @@ var myPieChart = new Chart(ctx, {
     data: data,
     options: {
         tooltips: {
+            // Disable the on-canvas tooltip
+            enabled: false,
+
             custom: function(tooltipModel) {
                 // Tooltip Element
                 var tooltipEl = document.getElementById('chartjs-tooltip');
@@ -199,7 +202,7 @@ var myPieChart = new Chart(ctx, {
                 if (!tooltipEl) {
                     tooltipEl = document.createElement('div');
                     tooltipEl.id = 'chartjs-tooltip';
-                    tooltipEl.innerHTML = "<table></table>"
+                    tooltipEl.innerHTML = "<table></table>";
                     document.body.appendChild(tooltipEl);
                 }
 
@@ -238,7 +241,7 @@ var myPieChart = new Chart(ctx, {
                         var style = 'background:' + colors.backgroundColor;
                         style += '; border-color:' + colors.borderColor;
                         style += '; border-width: 2px';
-                        var span = '<span class="chartjs-tooltip-key" style="' + style + '"></span>';
+                        var span = '<span style="' + style + '"></span>';
                         innerHtml += '<tr><td>' + span + body + '</td></tr>';
                     });
                     innerHtml += '</tbody>';
@@ -252,11 +255,12 @@ var myPieChart = new Chart(ctx, {
 
                 // Display, position, and set styles for font
                 tooltipEl.style.opacity = 1;
+                tooltipEl.style.position = 'absolute';
                 tooltipEl.style.left = position.left + tooltipModel.caretX + 'px';
                 tooltipEl.style.top = position.top + tooltipModel.caretY + 'px';
-                tooltipEl.style.fontFamily = tooltipModel._fontFamily;
-                tooltipEl.style.fontSize = tooltipModel.fontSize;
-                tooltipEl.style.fontStyle = tooltipModel._fontStyle;
+                tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
+                tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
+                tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
                 tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
             }
         }
@@ -264,7 +268,7 @@ var myPieChart = new Chart(ctx, {
 });
 ```
 
-See `samples/tooltips/line-customTooltips.html` for examples on how to get started.
+See [samples](http://www.chartjs.org/samples/) for examples on how to get started with custom tooltips.
 
 ## Tooltip Model
 The tooltip model contains parameters that can be used to render the tooltip.
