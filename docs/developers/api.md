@@ -132,9 +132,9 @@ To get an item that was clicked on, `getElementAtEvent` can be used.
 
 ```javascript
 function clickHandler(evt) {
-    var item = myChart.getElementAtEvent(evt)[0];
+    var firstPoint = myChart.getElementAtEvent(evt)[0];
 
-    if (item) {
+    if (firstPoint) {
         var label = myChart.data.labels[firstPoint._index];
         var value = myChart.data.datasets[firstPoint._datasetIndex].data[firstPoint._index];
     }
