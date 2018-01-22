@@ -192,6 +192,10 @@ module.exports = function(Chart) {
 
 			helpers.retinaScale(me, options.devicePixelRatio);
 
+			if (newWidth === 0 || newHeight === 0) {
+				return;
+			}
+
 			if (!silent) {
 				// Notify any plugins about the resize
 				var newSize = {width: newWidth, height: newHeight};
