@@ -79,14 +79,14 @@ module.exports = Element.extend({
 			return;
 		}
 
-		
+
 		ctx.strokeStyle = helpers.valueOrDefault(vm.borderWidth, defaults.global.elements.point.borderWidth) === 0 ?
-												'rgba(0,0,0,0)' :
-												vm.borderColor || defaultColor;
-		
+			'rgba(0,0,0,0)' :
+			vm.borderColor || defaultColor;
+
 		ctx.lineWidth = helpers.valueOrDefault(vm.borderWidth, defaults.global.elements.point.borderWidth);
 		ctx.fillStyle = vm.backgroundColor || defaultColor;
-		
+
 		// Cliping for Points.
 		// going out from inner charArea?
 		if ((chartArea !== undefined) && ((model.x < chartArea.left) || (chartArea.right * errMargin < model.x) || (model.y < chartArea.top) || (chartArea.bottom * errMargin < model.y))) {
