@@ -79,12 +79,12 @@ module.exports = Element.extend({
 			return;
 		}
 
-
-		ctx.strokeStyle = helpers.valueOrDefault(vm.borderWidth, defaults.global.elements.point.borderWidth) === 0 ?
+		var finalLineWidth = helpers.valueOrDefault(vm.borderWidth, defaults.global.elements.point.borderWidth);
+		ctx.strokeStyle = finalLineWidth === 0 ?
 			'rgba(0,0,0,0)' :
 			vm.borderColor || defaultColor;
 
-		ctx.lineWidth = helpers.valueOrDefault(vm.borderWidth, defaults.global.elements.point.borderWidth);
+		ctx.lineWidth = finalLineWidth;
 		ctx.fillStyle = vm.backgroundColor || defaultColor;
 
 		// Cliping for Points.
