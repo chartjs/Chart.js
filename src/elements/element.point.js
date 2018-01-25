@@ -84,6 +84,7 @@ module.exports = Element.extend({
 			'rgba(0,0,0,0)' :
 			vm.borderColor || defaultColor;
 
+		// Will disregard any value that is not a number > 0
 		ctx.lineWidth = finalLineWidth;
 		ctx.fillStyle = vm.backgroundColor || defaultColor;
 
