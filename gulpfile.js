@@ -20,7 +20,9 @@ var collapse = require('bundle-collapser/plugin');
 var yargs = require('yargs');
 var path = require('path');
 var fs = require('fs');
+var htmllint = require('gulp-htmllint');
 var package = require('./package.json');
+var htmllintOptions = require('./.htmllintrc.js');
 
 var argv = yargs
   .option('force-output', {default: false})
@@ -30,6 +32,12 @@ var argv = yargs
 
 var srcDir = './src/';
 var outDir = './dist/';
+
+var htmlFiles = [
+  './samples/*.html',
+  './samples/*/*.html',
+  './samples/*/*/*.html',
+];
 
 var header = "/*!\n" +
   " * Chart.js\n" +
@@ -50,8 +58,9 @@ gulp.task('build', buildTask);
 gulp.task('package', packageTask);
 gulp.task('watch', watchTask);
 gulp.task('lint', lintTask);
+gulp.task('lint-html', lintHtmlTask);
 gulp.task('docs', docsTask);
-gulp.task('test', ['lint', 'validHTML', 'unittest']);
+gulp.task('test', ['lint', 'lint-html', 'validHTML', 'unittest']);
 gulp.task('size', ['library-size', 'module-sizes']);
 gulp.task('server', serverTask);
 gulp.task('validHTML', validHTMLTask);
@@ -174,6 +183,11 @@ function lintTask() {
     .pipe(eslint(options))
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
+}
+
+function lintHtmlTask() {
+  return gulp.src(htmlFiles)
+    .pipe(htmllint(htmllintOptions));
 }
 
 function docsTask(done) {

@@ -18,7 +18,7 @@
 <body>
 	<div style="width:1000px">
 		<canvas id="chart1"></canvas>
-	<div>
+	</div>
 	<br>
 	<br>
 	Chart Type:
@@ -94,7 +94,7 @@
 
 		document.getElementById('update').addEventListener('click', function() {
 			var type = document.getElementById('type').value;
- 			chart.config.data.datasets[0].type = type;
+			chart.config.data.datasets[0].type = type;
 			chart.update();
 		});
 

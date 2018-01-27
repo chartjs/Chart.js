@@ -24,6 +24,7 @@
     "gulp-eslint": "^4.0.0",
     "gulp-file": "^0.3.0",
     "gulp-html-validator": "^0.0.5",
+    "gulp-htmllint": "0.0.15",
     "gulp-insert": "~0.5.0",
     "gulp-replace": "^0.6.1",
     "gulp-size": "~2.1.0",
