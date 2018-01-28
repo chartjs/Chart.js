@@ -108,7 +108,7 @@ module.exports = function(Chart) {
 
 	// Helper to push or concat based on if the 2nd parameter is an array or not
 	function pushOrConcat(base, toPush) {
-		if (toPush) {
+		if (!helpers.isNullOrUndef(toPush)) {
 			if (helpers.isArray(toPush)) {
 				// base = base.concat(toPush);
 				Array.prototype.push.apply(base, toPush);
