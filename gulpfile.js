@@ -24,8 +24,6 @@ var htmllint = require('gulp-htmllint');
 var package = require('./package.json');
 var htmllintOptions = require('./.htmllintrc.js');
 
-var gulpIf = require('gulp-if');
-
 var argv = yargs
   .option('force-output', {default: false})
   .option('silent-errors', {default: false})
@@ -157,24 +155,19 @@ function packageTask() {
   .pipe(zip('Chart.js.zip'))
   .pipe(gulp.dest(outDir));
 }
-function isFixed(file) {
-	// Has ESLint fixed the file contents?
-	return file.eslint != null && file.eslint.fixed;
-}
+
 function lintTask() {
   var files = [
-    //'samples/**/*.js',
-    //'src/**/*.js',
-    //'test/**/*.js',
-    './samples/**/*.html',
-    //'dist/test.html'
+    'samples/**/*.js',
+    'src/**/*.js',
+    'test/**/*.js',
+    './samples/**/*.html'
   ];
 
   // NOTE(SB) codeclimate has 'complexity' and 'max-statements' eslint rules way too strict
   // compare to what the current codebase can support, and since it's not straightforward
   // to fix, let's turn them as warnings and rewrite code later progressively.
   var options = {
-    fix: true,
     rules: {
       'complexity': [1, 10],
       'max-statements': [1, 30]
@@ -184,7 +177,6 @@ function lintTask() {
   return gulp.src(files)
     .pipe(eslint(options))
     .pipe(eslint.format())
-    .pipe(gulpIf(isFixed, gulp.dest('./samples/')))
     .pipe(eslint.failAfterError());
 }
 
