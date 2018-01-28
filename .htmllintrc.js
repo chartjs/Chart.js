@@ -1,9 +1,6 @@
 module.exports = {
 	'rules': {
-		//'indent-style': 'tabs',
-		//'indent-width': 1,
-		'indent-style': false,
-		'indent-width': 2,
+		'indent-style': 'tabs',
 		'attr-quote-style': 'double',
 		'spec-char-escape': false,
 		'attr-bans': ['align', 'background', 'bgcolor', 'border', 'frameborder', 'longdesc', 'marginwidth', 'marginheight', 'scrolling', 'syle'/*, 'width'*/],

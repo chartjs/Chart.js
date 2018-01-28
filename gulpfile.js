@@ -26,19 +26,12 @@ var htmllintOptions = require('./.htmllintrc.js');
 
 var argv = yargs
   .option('force-output', {default: false})
-  .option('lint-script-elements', {default: false})
   .option('silent-errors', {default: false})
   .option('verbose', {default: false})
   .argv
 
 var srcDir = './src/';
 var outDir = './dist/';
-
-var htmlFiles = [
-  './samples/*.html',
-  './samples/*/*.html',
-  './samples/*/*/*.html',
-];
 
 var header = "/*!\n" +
   " * Chart.js\n" +
@@ -167,11 +160,10 @@ function lintTask() {
   var files = [
     'samples/**/*.js',
     'src/**/*.js',
-    'test/**/*.js'
+    'test/**/*.js',
+    './samples/**/*.html',
+    'dist/test.html'
   ];
-  if (argv.lintScriptElements) {
-    files = files.concat(htmlFiles);
-  }
 
   // NOTE(SB) codeclimate has 'complexity' and 'max-statements' eslint rules way too strict
   // compare to what the current codebase can support, and since it's not straightforward
@@ -190,7 +182,8 @@ function lintTask() {
 }
 
 function lintHtmlTask() {
-  return gulp.src(htmlFiles)
+  return gulp.src(['./samples/**/*.html', 
+    'dist/test.html'])
     .pipe(htmllint(htmllintOptions));
 }
 
