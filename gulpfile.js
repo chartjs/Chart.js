@@ -168,6 +168,7 @@ function lintTask() {
     'src/**/*.js',
     'test/**/*.js'
   ];
+  //files = files.concat(htmlFiles);
 
   // NOTE(SB) codeclimate has 'complexity' and 'max-statements' eslint rules way too strict
   // compare to what the current codebase can support, and since it's not straightforward

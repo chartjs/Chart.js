@@ -17,6 +17,7 @@
     "coveralls": "^3.0.0",
     "eslint": "^4.9.0",
     "eslint-config-chartjs": "^0.1.0",
+    "eslint-plugin-html": "^4.0.2",
     "gitbook-cli": "^2.3.2",
     "gulp": "3.9.x",
     "gulp-concat": "~2.6.x",
