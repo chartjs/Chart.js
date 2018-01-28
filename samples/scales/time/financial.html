@@ -33,10 +33,10 @@
 		}
 
 		function randomBar(date, lastClose) {
-			var open = randomNumber(lastClose * .95, lastClose * 1.05);
-			var close = randomNumber(open * .95, open * 1.05);
+			var open = randomNumber(lastClose * 0.95, lastClose * 1.05);
+			var close = randomNumber(open * 0.95, open * 1.05);
 			var high = randomNumber(Math.max(open, close), Math.max(open, close) * 1.1);
-			var low = randomNumber(Math.min(open, close) * .9, Math.min(open, close));
+			var low = randomNumber(Math.min(open, close) * 0.9, Math.min(open, close));
 			return {
 				t: date.valueOf(),
 				y: close
@@ -55,7 +55,7 @@
 			}
 		}
 
-		var ctx = document.getElementById("chart1").getContext("2d");
+		var ctx = document.getElementById('chart1').getContext('2d');
 		ctx.canvas.width = 1000;
 		ctx.canvas.height = 300;
 		var cfg = {
@@ -63,7 +63,7 @@
 			data: {
 				labels: labels,
 				datasets: [{
-					label: "CHRT - Chart.js Corporation",
+					label: 'CHRT - Chart.js Corporation',
 					data: data,
 					type: 'line',
 					pointRadius: 0,

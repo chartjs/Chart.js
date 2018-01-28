@@ -81,7 +81,7 @@
 				var colors = tooltip.labelColors[i];
 				var style = 'background:' + colors.backgroundColor;
 				style += '; border-color:' + colors.borderColor;
-				style += '; border-width: 2px'; 
+				style += '; border-width: 2px';
 				var span = '<span class="chartjs-tooltip-key" style="' + style + '"></span>';
 				innerHtml += '<tr><td>' + span + body + '</td></tr>';
 			});
@@ -118,11 +118,11 @@
 				],
 			}],
 			labels: [
-				"Red",
-				"Orange",
-				"Yellow",
-				"Green",
-				"Blue"
+				'Red',
+				'Orange',
+				'Yellow',
+				'Green',
+				'Blue'
 			]
 		},
 		options: {
@@ -137,8 +137,8 @@
 	};
 
 	window.onload = function() {
-			var ctx = document.getElementById("chart-area").getContext("2d");
-			window.myPie = new Chart(ctx, config);
+		var ctx = document.getElementById('chart-area').getContext('2d');
+		window.myPie = new Chart(ctx, config);
 	};
 	</script>
 </body>

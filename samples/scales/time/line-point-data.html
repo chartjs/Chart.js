@@ -38,7 +38,7 @@
 			type: 'line',
 			data: {
 				datasets: [{
-					label: "Dataset with string point data",
+					label: 'Dataset with string point data',
 					backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
 					borderColor: window.chartColors.red,
 					fill: false,
@@ -56,7 +56,7 @@
 						y: randomScalingFactor()
 					}],
 				}, {
-					label: "Dataset with date object point data",
+					label: 'Dataset with date object point data',
 					backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
 					borderColor: window.chartColors.blue,
 					fill: false,
@@ -77,24 +77,24 @@
 			},
 			options: {
 				responsive: true,
-				title:{
-					display:true,
-					text:"Chart.js Time Point Data"
+				title: {
+					display: true,
+					text: 'Chart.js Time Point Data'
 				},
 				scales: {
 					xAxes: [{
-						type: "time",
+						type: 'time',
 						display: true,
 						scaleLabel: {
 							display: true,
 							labelString: 'Date'
 						},
-												ticks: {
-														major: {
-																fontStyle: "bold",
-																fontColor: "#FF0000"
-														}
-												}
+						ticks: {
+							major: {
+								fontStyle: 'bold',
+								fontColor: '#FF0000'
+							}
+						}
 					}],
 					yAxes: [{
 						display: true,
@@ -108,7 +108,7 @@
 		};
 
 		window.onload = function() {
-			var ctx = document.getElementById("canvas").getContext("2d");
+			var ctx = document.getElementById('canvas').getContext('2d');
 			window.myLine = new Chart(ctx, config);
 		};
 

@@ -23,9 +23,9 @@
 	var color = Chart.helpers.color;
 	var scatterChartData = {
 		datasets: [{
-			label: "My First dataset",
-			xAxisID: "x-axis-1",
-			yAxisID: "y-axis-1",
+			label: 'My First dataset',
+			xAxisID: 'x-axis-1',
+			yAxisID: 'y-axis-1',
 			borderColor: window.chartColors.red,
 			backgroundColor: color(window.chartColors.red).alpha(0.2).rgbString(),
 			data: [{
@@ -51,9 +51,9 @@
 				y: randomScalingFactor(),
 			}]
 		}, {
-			label: "My Second dataset",
-			xAxisID: "x-axis-1",
-			yAxisID: "y-axis-2",
+			label: 'My Second dataset',
+			xAxisID: 'x-axis-1',
+			yAxisID: 'y-axis-2',
 			borderColor: window.chartColors.blue,
 			backgroundColor: color(window.chartColors.blue).alpha(0.2).rgbString(),
 			data: [{
@@ -82,7 +82,7 @@
 	};
 
 	window.onload = function() {
-		var ctx = document.getElementById("canvas").getContext("2d");
+		var ctx = document.getElementById('canvas').getContext('2d');
 		window.myScatter = Chart.Scatter(ctx, {
 			data: scatterChartData,
 			options: {
@@ -95,22 +95,22 @@
 				},
 				scales: {
 					xAxes: [{
-						position: "bottom",
+						position: 'bottom',
 						gridLines: {
-							zeroLineColor: "rgba(0,0,0,1)"
+							zeroLineColor: 'rgba(0,0,0,1)'
 						}
 					}],
 					yAxes: [{
-						type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+						type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
 						display: true,
-						position: "left",
-						id: "y-axis-1",
+						position: 'left',
+						id: 'y-axis-1',
 					}, {
-						type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+						type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
 						display: true,
-						position: "right",
+						position: 'right',
 						reverse: true,
-						id: "y-axis-2",
+						id: 'y-axis-2',
 
 						// grid line settings
 						gridLines: {

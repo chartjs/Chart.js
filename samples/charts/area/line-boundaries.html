@@ -98,7 +98,7 @@
 		function toggleSmooth(btn) {
 			var value = btn.classList.toggle('btn-on');
 			Chart.helpers.each(Chart.instances, function(chart) {
-				chart.options.elements.line.tension = value? 0.4 : 0.000001;
+				chart.options.elements.line.tension = value ? 0.4 : 0.000001;
 				chart.update();
 			});
 		}
