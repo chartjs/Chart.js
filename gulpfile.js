@@ -190,8 +190,7 @@ function lintTask() {
 }
 
 function lintHtmlTask() {
-  return gulp.src(['./samples/**/*.html',
-    'dist/test.html'])
+  return gulp.src('./samples/**/*.html')
     .pipe(htmllint(htmllintOptions));
 }
 
