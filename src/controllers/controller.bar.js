@@ -213,8 +213,8 @@ module.exports = function(Chart) {
 
 		updateElement: function(rectangle, index, reset) {
 			var me = this;
-			var meta = me.getMeta();
 			var chart = me.chart;
+			var meta = me.getMeta();
 			var dataset = me.getDataset();
 
 			rectangle._xScale = me.getScaleForId(meta.xAxisID);
