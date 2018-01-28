@@ -26,7 +26,7 @@ var htmllintOptions = require('./.htmllintrc.js');
 
 var argv = yargs
   .option('force-output', {default: false})
-  .option('lint-script-tags', {default: false})
+  .option('lint-script-elements', {default: false})
   .option('silent-errors', {default: false})
   .option('verbose', {default: false})
   .argv
@@ -169,7 +169,7 @@ function lintTask() {
     'src/**/*.js',
     'test/**/*.js'
   ];
-  if (argv.lintScriptTags) {
+  if (argv.lintScriptElements) {
     files = files.concat(htmlFiles);
   }
 
