@@ -163,11 +163,11 @@ function isFixed(file) {
 }
 function lintTask() {
   var files = [
-    'samples/**/*.js',
-    'src/**/*.js',
-    'test/**/*.js',
+    //'samples/**/*.js',
+    //'src/**/*.js',
+    //'test/**/*.js',
     './samples/**/*.html',
-    'dist/test.html'
+    //'dist/test.html'
   ];
 
   // NOTE(SB) codeclimate has 'complexity' and 'max-statements' eslint rules way too strict
@@ -184,7 +184,7 @@ function lintTask() {
   return gulp.src(files)
     .pipe(eslint(options))
     .pipe(eslint.format())
-    .pipe(gulpIf(isFixed, gulp.dest('./')))
+    .pipe(gulpIf(isFixed, gulp.dest('./samples/')))
     .pipe(eslint.failAfterError());
 }
 
