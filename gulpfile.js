@@ -26,6 +26,7 @@ var htmllintOptions = require('./.htmllintrc.js');
 
 var argv = yargs
   .option('force-output', {default: false})
+  .option('lint-script-tags', {default: false})
   .option('silent-errors', {default: false})
   .option('verbose', {default: false})
   .argv
@@ -168,7 +169,9 @@ function lintTask() {
     'src/**/*.js',
     'test/**/*.js'
   ];
-  //files = files.concat(htmlFiles);
+  if (argv.lintScriptTags) {
+    files = files.concat(htmlFiles);
+  }
 
   // NOTE(SB) codeclimate has 'complexity' and 'max-statements' eslint rules way too strict
   // compare to what the current codebase can support, and since it's not straightforward
