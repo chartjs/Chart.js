@@ -213,28 +213,9 @@ module.exports = function(Chart) {
 
 		updateElement: function(rectangle, index, reset) {
 			var me = this;
-			var chart = me.chart;
-			var meta = me.getMeta();
-			var dataset = me.getDataset();
-			var custom = rectangle.custom || {};
-			var rectangleOptions = chart.options.elements.rectangle;
-
-			rectangle._xScale = me.getScaleForId(meta.xAxisID);
-			rectangle._yScale = me.getScaleForId(meta.yAxisID);
-			rectangle._datasetIndex = me.index;
 			rectangle._index = index;
-
-			rectangle._model = {
-				datasetLabel: dataset.label,
-				label: chart.data.labels[index],
-				borderSkipped: custom.borderSkipped ? custom.borderSkipped : rectangleOptions.borderSkipped,
-				backgroundColor: custom.backgroundColor ? custom.backgroundColor : helpers.valueAtIndexOrDefault(dataset.backgroundColor, index, rectangleOptions.backgroundColor),
-				borderColor: custom.borderColor ? custom.borderColor : helpers.valueAtIndexOrDefault(dataset.borderColor, index, rectangleOptions.borderColor),
-				borderWidth: custom.borderWidth ? custom.borderWidth : helpers.valueAtIndexOrDefault(dataset.borderWidth, index, rectangleOptions.borderWidth)
-			};
-
+			me.updateRectangle(rectangle);
 			me.updateElementGeometry(rectangle, index, reset);
-
 			rectangle.pivot();
 		},
 
@@ -474,16 +455,38 @@ module.exports = function(Chart) {
 		},
 
 		removeHoverStyle: function(rectangle) {
-			var dataset = this.chart.data.datasets[rectangle._datasetIndex];
+			this.updateRectangle(rectangle);
+		},
+
+		updateRectangle: function(rectangle, options) {
+			var me = this;
+			var chart = this.chart;
+			var dataset = this.getDataset();
 			var index = rectangle._index;
 			var custom = rectangle.custom || {};
-			var model = rectangle._model;
-			var rectangleElementOptions = this.chart.options.elements.rectangle;
+			var meta = me.getMeta();
+			options = options ? options : this.getElementOptions();
 
-			model.backgroundColor = custom.backgroundColor ? custom.backgroundColor : helpers.valueAtIndexOrDefault(dataset.backgroundColor, index, rectangleElementOptions.backgroundColor);
-			model.borderColor = custom.borderColor ? custom.borderColor : helpers.valueAtIndexOrDefault(dataset.borderColor, index, rectangleElementOptions.borderColor);
-			model.borderWidth = custom.borderWidth ? custom.borderWidth : helpers.valueAtIndexOrDefault(dataset.borderWidth, index, rectangleElementOptions.borderWidth);
+			rectangle._xScale = me.getScaleForId(meta.xAxisID);
+			rectangle._yScale = me.getScaleForId(meta.yAxisID);
+			rectangle._datasetIndex = me.index;
+
+			if (!rectangle._model) {
+				rectangle._model = {};
+			}
+
+			rectangle._model.datasetLabel = dataset.label;
+			rectangle._model.label = chart.data.labels[index];
+			rectangle._model.borderSkipped = custom.borderSkipped ? custom.borderSkipped : options.borderSkipped;
+			rectangle._model.backgroundColor = custom.backgroundColor ? custom.backgroundColor : helpers.valueAtIndexOrDefault(dataset.backgroundColor, index, options.backgroundColor);
+			rectangle._model.borderColor = custom.borderColor ? custom.borderColor : helpers.valueAtIndexOrDefault(dataset.borderColor, index, options.borderColor);
+			rectangle._model.borderWidth = custom.borderWidth ? custom.borderWidth : helpers.valueAtIndexOrDefault(dataset.borderWidth, index, options.borderWidth);
+		},
+
+		getElementOptions: function() {
+			return this.chart.options.elements.rectangle;
 		}
+
 	});
 
 	Chart.controllers.horizontalBar = Chart.controllers.bar.extend({
