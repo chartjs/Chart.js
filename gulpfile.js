@@ -161,8 +161,7 @@ function lintTask() {
     'samples/**/*.js',
     'src/**/*.js',
     'test/**/*.js',
-    './samples/**/*.html',
-    //'./dist/test.html'
+    './samples/**/*.html'
   ];
 
   // NOTE(SB) codeclimate has 'complexity' and 'max-statements' eslint rules way too strict
@@ -172,10 +171,15 @@ function lintTask() {
     rules: {
       'complexity': [1, 10],
       'max-statements': [1, 30],
-      'no-new': 0, // TODO
-      'camelcase': 0, //TODO
+      'no-new': 0, // TODO : is this allowed ?
+      //TODO : see 
+      // /Chart.js/samples/charts/area/line-datasets.html
+      // 125:5  error  Identifier 'samples_filler_analyser' is not in camel case  camelcase
+      // /Chart.js/samples/charts/area/radar.html
+      // 103:5  error  Identifier 'samples_filler_analyser' is not in camel case  camelcase
+      'camelcase': 0,
     },
-    globals: [
+    globals: [ // TODO : do we need to use window.randomScalingFactor everytime ?
       '$',
       'Chart',
       'moment',
