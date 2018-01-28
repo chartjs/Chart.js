@@ -476,12 +476,13 @@ module.exports = function(Chart) {
 			var dataset = me.getDataset();
 			var index = rectangle._index;
 			var custom = rectangle.custom || {};
+			var model = rectangle._model;
 			options = options ? options : this.getElementOptions();
 
-			rectangle._model.borderSkipped = custom.borderSkipped ? custom.borderSkipped : options.borderSkipped;
-			rectangle._model.backgroundColor = custom.backgroundColor ? custom.backgroundColor : helpers.valueAtIndexOrDefault(dataset.backgroundColor, index, options.backgroundColor);
-			rectangle._model.borderColor = custom.borderColor ? custom.borderColor : helpers.valueAtIndexOrDefault(dataset.borderColor, index, options.borderColor);
-			rectangle._model.borderWidth = custom.borderWidth ? custom.borderWidth : helpers.valueAtIndexOrDefault(dataset.borderWidth, index, options.borderWidth);
+			model.borderSkipped = custom.borderSkipped ? custom.borderSkipped : options.borderSkipped;
+			model.backgroundColor = custom.backgroundColor ? custom.backgroundColor : helpers.valueAtIndexOrDefault(dataset.backgroundColor, index, options.backgroundColor);
+			model.borderColor = custom.borderColor ? custom.borderColor : helpers.valueAtIndexOrDefault(dataset.borderColor, index, options.borderColor);
+			model.borderWidth = custom.borderWidth ? custom.borderWidth : helpers.valueAtIndexOrDefault(dataset.borderWidth, index, options.borderWidth);
 		},
 
 		getElementOptions: function() {
