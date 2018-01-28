@@ -182,6 +182,42 @@ describe('Point element tests', function() {
 		}]);
 
 		mockContext.resetCalls();
+		point._view.pointStyle = 'triangleInv';
+		point.draw();
+
+		expect(mockContext.getCalls()).toEqual([{
+			name: 'setStrokeStyle',
+			args: ['rgba(1, 2, 3, 1)']
+		}, {
+			name: 'setLineWidth',
+			args: [6]
+		}, {
+			name: 'setFillStyle',
+			args: ['rgba(0, 255, 0)']
+		}, {
+			name: 'beginPath',
+			args: []
+		}, {
+			name: 'moveTo',
+			args: [10 - 3 * 2 / Math.sqrt(3) / 2, 15 - 3 * 2 / Math.sqrt(3) * Math.sqrt(3) / 2 / 3]
+		}, {
+			name: 'lineTo',
+			args: [10 + 3 * 2 / Math.sqrt(3) / 2, 15 - 3 * 2 / Math.sqrt(3) * Math.sqrt(3) / 2 / 3],
+		}, {
+			name: 'lineTo',
+			args: [10, 15 + 2 * 3 * 2 / Math.sqrt(3) * Math.sqrt(3) / 2 / 3],
+		}, {
+			name: 'closePath',
+			args: [],
+		}, {
+			name: 'fill',
+			args: [],
+		}, {
+			name: 'stroke',
+			args: []
+		}]);
+
+		mockContext.resetCalls();
 		point._view.pointStyle = 'rect';
 		point.draw();
 
