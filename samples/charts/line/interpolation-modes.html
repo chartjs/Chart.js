@@ -91,9 +91,9 @@ var config = {
 				};
 
 				document.getElementById('randomizeData').addEventListener('click', function() {
-	for (var i = 0, len = datapoints.length; i < len; ++i) {
-				datapoints[i] = Math.random() < 0.05 ? NaN : randomScalingFactor();
-	}
+					for (var i = 0, len = datapoints.length; i < len; ++i) {
+						datapoints[i] = Math.random() < 0.05 ? NaN : randomScalingFactor();
+					}
 					window.myLine.update();
 				});
 

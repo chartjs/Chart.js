@@ -22,7 +22,6 @@
 		<br>
 		<button id="randomizeData">Randomize Data</button>
 		<script>
-				var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 				var progress = document.getElementById('animationProgress');
 				var config = {
 					type: 'line',
@@ -67,7 +66,7 @@
 							onProgress: function(animation) {
 								progress.value = animation.currentStep / animation.numSteps;
 							},
-							onComplete: function(animation) {
+							onComplete: function() {
 								window.setTimeout(function() {
 									progress.value = 0;
 								}, 2000);

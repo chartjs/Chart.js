@@ -161,7 +161,8 @@ function lintTask() {
     'samples/**/*.js',
     'src/**/*.js',
     'test/**/*.js',
-    './samples/**/*.html'
+    './samples/**/*.html',
+    //'./dist/test.html'
   ];
 
   // NOTE(SB) codeclimate has 'complexity' and 'max-statements' eslint rules way too strict
@@ -170,8 +171,16 @@ function lintTask() {
   var options = {
     rules: {
       'complexity': [1, 10],
-      'max-statements': [1, 30]
-    }
+      'max-statements': [1, 30],
+      'no-new': 0, // TODO
+      'camelcase': 0, //TODO
+    },
+    globals: [
+      '$',
+      'Chart',
+      'moment',
+      'randomScalingFactor',
+    ]
   };
 
   return gulp.src(files)
@@ -181,7 +190,7 @@ function lintTask() {
 }
 
 function lintHtmlTask() {
-  return gulp.src(['./samples/**/*.html', 
+  return gulp.src(['./samples/**/*.html',
     'dist/test.html'])
     .pipe(htmllint(htmllintOptions));
 }

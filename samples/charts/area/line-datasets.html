@@ -16,16 +16,16 @@
 			<canvas id="chart-0"></canvas>
 		</div>
 		<div class="toolbar">
-			<button onclick="togglePropagate(this)">Propagate</button>
-			<button onclick="toggleSmooth(this)">Smooth</button>
-			<button onclick="randomize(this)">Randomize</button>
+			<button id="togglePropagate">Propagate</button>
+			<button id="toggleSmooth">Smooth</button>
+			<button id="randomize">Randomize</button>
 		</div>
 		<div id="chart-analyser" class="analyser"></div>
 	</div>
 
 	<script>
 		var presets = window.chartColors;
-		var utils = Samples.utils;
+		var utils = window.Samples.utils;
 		var inputs = {
 			min: 20,
 			max: 80,
@@ -38,7 +38,7 @@
 			return utils.numbers(inputs);
 		}
 
-		function generateLabels(config) {
+		function generateLabels() {
 			return utils.months({count: inputs.count});
 		}
 
@@ -122,7 +122,7 @@
 				filler: {
 					propagate: false
 				},
-				samples_filler_analyser: {
+				samples_filler_analyser: { // TODO
 					target: 'chart-analyser'
 				}
 			}
@@ -152,6 +152,18 @@
 			});
 			chart.update();
 		}
+
+		document.getElementById('togglePropagate').onclick = function() {
+			togglePropagate(this);
+		};
+
+		document.getElementById('toggleSmooth').onclick = function() {
+			toggleSmooth(this);
+		};
+
+		document.getElementById('randomize').onclick = function() {
+			randomize(this);
+		};
 	</script>
 </body>
 </html>

@@ -132,7 +132,7 @@
 				document.getElementById('removeData').addEventListener('click', function() {
 					barChartData.labels.splice(-1, 1); // remove the label first
 
-					barChartData.datasets.forEach(function(dataset, datasetIndex) {
+					barChartData.datasets.forEach(function(dataset) {
 						dataset.data.pop();
 					});
 

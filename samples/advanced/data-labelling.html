@@ -71,7 +71,7 @@
 
 				// Define a plugin to provide data labels
 				Chart.plugins.register({
-					afterDatasetsDraw: function(chart, easing) {
+					afterDatasetsDraw: function(chart/* , easing */) { // TODO : remove easing ?
 						// To only draw at the end of animation, check for easing === 1
 						var ctx = chart.ctx;
 

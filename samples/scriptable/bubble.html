@@ -13,9 +13,9 @@
 	<div class="content">
 		<div class="wrapper"><canvas id="chart-0"></canvas></div>
 		<div class="toolbar">
-			<button onclick="randomize(this)">Randomize</button>
-			<button onclick="addDataset(this)">Add Dataset</button>
-			<button onclick="removeDataset(this)">Remove Dataset</button>
+			<button id="randomize">Randomize</button>
+			<button id="addDataset">Add Dataset</button>
+			<button id="removeDataset">Remove Dataset</button>
 		</div>
 	</div>
 
@@ -24,8 +24,7 @@
 		var MIN_XY = -150;
 		var MAX_XY = 100;
 
-		var presets = window.chartColors;
-		var utils = Samples.utils;
+		var utils = window.Samples.utils;
 
 		utils.srand(110);
 
@@ -124,6 +123,18 @@
 			chart.data.datasets.shift();
 			chart.update();
 		}
+
+		document.getElementById('randomize').onclick = function() {
+			randomize(this);
+		};
+
+		document.getElementById('addDataset').onclick = function() {
+			addDataset(this);
+		};
+
+		document.getElementById('removeDataset').onclick = function() {
+			removeDataset(this);
+		};
 	</script>
 </body>
 </html>

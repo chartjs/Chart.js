@@ -8,9 +8,9 @@
 	<script src="../../utils.js"></script>
 	<style>
 		canvas {
-				-moz-user-select: none;
-				-webkit-user-select: none;
-				-ms-user-select: none;
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
 		}
 	</style>
 </head>
@@ -35,10 +35,6 @@
 
 		function newDateString(days) {
 			return moment().add(days, 'd').format(timeFormat);
-		}
-
-		function newTimestamp(days) {
-			return moment().add(days, 'd').unix();
 		}
 
 		var color = Chart.helpers.color;
@@ -195,7 +191,7 @@
 		document.getElementById('removeData').addEventListener('click', function() {
 			config.data.labels.splice(-1, 1); // remove the label first
 
-			config.data.datasets.forEach(function(dataset, datasetIndex) {
+			config.data.datasets.forEach(function(dataset) {
 				dataset.data.pop();
 			});
 

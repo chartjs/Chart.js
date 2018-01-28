@@ -162,7 +162,7 @@
 				document.getElementById('removeData').addEventListener('click', function() {
 					config.data.labels.splice(-1, 1); // remove the label first
 
-					config.data.datasets.forEach(function(dataset, datasetIndex) {
+					config.data.datasets.forEach(function(dataset) {
 						dataset.data.pop();
 					});
 

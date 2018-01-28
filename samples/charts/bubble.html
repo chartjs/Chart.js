@@ -179,7 +179,7 @@
 				});
 
 				document.getElementById('removeData').addEventListener('click', function() {
-					bubbleChartData.datasets.forEach(function(dataset, datasetIndex) {
+					bubbleChartData.datasets.forEach(function(dataset) {
 						dataset.data.pop();
 					});
 
