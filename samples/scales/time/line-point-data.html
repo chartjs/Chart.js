@@ -126,9 +126,9 @@
 			if (config.data.datasets.length > 0) {
 				// var numTicks = window.myLine.scales['x-axis-0'].ticksAsTimestamps.length; // TODO : check
 				var numTicks = window.myLine.scales['x-axis-0'].ticks.length;
-				//var lastTime = numTicks ? moment(window.myLine.scales['x-axis-0'].ticksAsTimestamps[numTicks - 1]) : moment();
+				// var lastTime = numTicks ? moment(window.myLine.scales['x-axis-0'].ticksAsTimestamps[numTicks - 1]) : moment();
 				var lastTime = numTicks ? moment(window.myLine.scales['x-axis-0'].ticks[numTicks - 1]) : moment();
-				
+
 				var newTime = lastTime
 					.clone()
 					.add(1, 'day')
