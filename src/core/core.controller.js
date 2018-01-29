@@ -870,7 +870,7 @@ module.exports = function(Chart) {
 			if (bufferedRequest) {
 				// If we have an update that was triggered, we need to do a normal render
 				me.render(bufferedRequest);
-			} else if (changed && !me.animating) {
+			} else if (changed && !me.animating && me.options.tooltips.enabled) {
 				// If entering, leaving, or changing elements, animate the change via pivot
 				me.stop();
 
