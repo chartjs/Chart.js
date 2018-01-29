@@ -213,20 +213,7 @@ module.exports = function(Chart) {
 
 		updateElement: function(rectangle, index, reset) {
 			var me = this;
-			var meta = me.getMeta();
-			var chart = me.chart;
-			var dataset = me.getDataset();
-
-			rectangle._xScale = me.getScaleForId(meta.xAxisID);
-			rectangle._yScale = me.getScaleForId(meta.yAxisID);
-			rectangle._datasetIndex = me.index;
 			rectangle._index = index;
-
-			rectangle._model = {
-				datasetLabel: dataset.label,
-				label: chart.data.labels[index]
-			};
-
 			me.updateRectangle(rectangle);
 			me.updateElementGeometry(rectangle, index, reset);
 			rectangle.pivot();
@@ -473,11 +460,23 @@ module.exports = function(Chart) {
 
 		updateRectangle: function(rectangle, options) {
 			var me = this;
-			var dataset = me.getDataset();
+			var chart = this.chart;
+			var dataset = this.getDataset();
 			var index = rectangle._index;
 			var custom = rectangle.custom || {};
+			var meta = me.getMeta();
 			options = options ? options : this.getElementOptions();
 
+			rectangle._xScale = me.getScaleForId(meta.xAxisID);
+			rectangle._yScale = me.getScaleForId(meta.yAxisID);
+			rectangle._datasetIndex = me.index;
+
+			if (!rectangle._model) {
+				rectangle._model = {};
+			}
+
+			rectangle._model.datasetLabel = dataset.label;
+			rectangle._model.label = chart.data.labels[index];
 			rectangle._model.borderSkipped = custom.borderSkipped ? custom.borderSkipped : options.borderSkipped;
 			rectangle._model.backgroundColor = custom.backgroundColor ? custom.backgroundColor : helpers.valueAtIndexOrDefault(dataset.backgroundColor, index, options.backgroundColor);
 			rectangle._model.borderColor = custom.borderColor ? custom.borderColor : helpers.valueAtIndexOrDefault(dataset.borderColor, index, options.borderColor);
