@@ -3,7 +3,6 @@ var concat = require('gulp-concat');
 var connect = require('gulp-connect');
 var eslint = require('gulp-eslint');
 var file = require('gulp-file');
-var htmlv = require('gulp-html-validator');
 var insert = require('gulp-insert');
 var replace = require('gulp-replace');
 var size = require('gulp-size');
@@ -51,10 +50,11 @@ gulp.task('bower', bowerTask);
 gulp.task('build', buildTask);
 gulp.task('package', packageTask);
 gulp.task('watch', watchTask);
-gulp.task('lint', lintTask);
+gulp.task('lint', ['lint-html', 'lint-js']);
 gulp.task('lint-html', lintHtmlTask);
+gulp.task('lint-js', lintJsTask);
 gulp.task('docs', docsTask);
-gulp.task('test', ['lint', 'lint-html', 'validHTML', 'unittest']);
+gulp.task('test', ['lint', 'unittest']);
 gulp.task('size', ['library-size', 'module-sizes']);
 gulp.task('server', serverTask);
 gulp.task('validHTML', validHTMLTask);
@@ -156,12 +156,12 @@ function packageTask() {
   .pipe(gulp.dest(outDir));
 }
 
-function lintTask() {
+function lintJsTask() {
   var files = [
+    'samples/**/*.html',
     'samples/**/*.js',
     'src/**/*.js',
     'test/**/*.js',
-    './samples/**/*.html'
   ];
 
   // NOTE(SB) codeclimate has 'complexity' and 'max-statements' eslint rules way too strict
