@@ -180,7 +180,7 @@ function lintJsTask() {
 }
 
 function lintHtmlTask() {
-  return gulp.src('./samples/***.html')
+  return gulp.src('samples/**/*.html')
     .pipe(htmllint({
       config: '.htmllintrc.json' // file needs to be proper JSON
     }));
