@@ -7,4 +7,3 @@ globals:
 
 rules:
   no-new: 0
-  camelcase: 0
