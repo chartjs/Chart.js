@@ -867,10 +867,11 @@ module.exports = function(Chart) {
 			plugins.notify(me, 'afterEvent', [e]);
 
 			var bufferedRequest = me._bufferedRequest;
+			var valueOrDefault = helpers.valueOrDefault;
 			if (bufferedRequest) {
 				// If we have an update that was triggered, we need to do a normal render
 				me.render(bufferedRequest);
-			} else if (changed && !me.animating && me.options.tooltips.enabled) {
+			} else if (changed && !me.animating && (valueOrDefault(me.options.tooltips.enabled, true) || valueOrDefault(me.options.hover.enabled, true))) {
 				// If entering, leaving, or changing elements, animate the change via pivot
 				me.stop();
 
