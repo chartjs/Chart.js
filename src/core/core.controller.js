@@ -924,7 +924,7 @@ module.exports = function(Chart) {
 			}
 
 			// Built in hover styling
-			if (me.active.length && hoverOptions.mode) {
+			if (me.active.length && hoverOptions.mode && helpers.valueOrDefault(hoverOptions.enabled, true)) {
 				me.updateHoverStyle(me.active, hoverOptions.mode, true);
 			}
 
