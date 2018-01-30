@@ -21,7 +21,6 @@ var path = require('path');
 var fs = require('fs');
 var htmllint = require('gulp-htmllint');
 var package = require('./package.json');
-var htmllintOptions = require('./.htmllintrc.js');
 
 var argv = yargs
   .option('force-output', {default: false})
@@ -181,8 +180,10 @@ function lintJsTask() {
 }
 
 function lintHtmlTask() {
-  return gulp.src('./samples/**/*.html')
-    .pipe(htmllint(htmllintOptions));
+  return gulp.src('./samples/***.html')
+    .pipe(htmllint({
+      config: '.htmllintrc.json' // file needs to be proper JSON
+    }));
 }
 
 function docsTask(done) {
