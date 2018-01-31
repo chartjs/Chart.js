@@ -181,7 +181,9 @@ function lintJsTask() {
 
 function lintHtmlTask() {
   return gulp.src('samples/**/*.html')
-    .pipe(htmllint());
+    .pipe(htmllint({
+      failOnError: true,
+    }));
 }
 
 function docsTask(done) {
