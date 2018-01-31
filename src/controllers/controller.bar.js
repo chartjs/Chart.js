@@ -480,16 +480,7 @@ module.exports = function(Chart) {
 		},
 
 		removeHoverStyle: function(rectangle) {
-			var dataset = this.chart.data.datasets[rectangle._datasetIndex];
-			var index = rectangle._index;
-			var custom = rectangle.custom || {};
-			var model = rectangle._model;
-			var options = rectangle.$previousStyle ? rectangle.$previousStyle : this.chart.options.elements.rectangle;
-
-			model.backgroundColor = custom.backgroundColor ? custom.backgroundColor : helpers.valueAtIndexOrDefault(dataset.backgroundColor, index, options.backgroundColor);
-			model.borderColor = custom.borderColor ? custom.borderColor : helpers.valueAtIndexOrDefault(dataset.borderColor, index, options.borderColor);
-			model.borderWidth = custom.borderWidth ? custom.borderWidth : helpers.valueAtIndexOrDefault(dataset.borderWidth, index, options.borderWidth);
-
+			helpers.merge(rectangle._model, rectangle.$previousStyle || {});
 			delete rectangle.$previousStyle;
 		}
 	});
