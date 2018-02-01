@@ -122,12 +122,14 @@
 			window.myLine.update();
 		});
 
-		document.getElementById('addData').addEventListener('click', function() { // TODO : fix issue with addData
+		// TODO : fix issue with addData
+		// See https://github.com/chartjs/Chart.js/issues/5197
+		// The Add Data button for this sample has no effect.
+		// An error is logged in the console.
+		document.getElementById('addData').addEventListener('click', function() {
 			if (config.data.datasets.length > 0) {
-				// var numTicks = window.myLine.scales['x-axis-0'].ticksAsTimestamps.length; // TODO : check
-				var numTicks = window.myLine.scales['x-axis-0'].ticks.length;
-				// var lastTime = numTicks ? moment(window.myLine.scales['x-axis-0'].ticksAsTimestamps[numTicks - 1]) : moment();
-				var lastTime = numTicks ? moment(window.myLine.scales['x-axis-0'].ticks[numTicks - 1]) : moment();
+				var numTicks = window.myLine.scales['x-axis-0'].ticksAsTimestamps.length;
+				var lastTime = numTicks ? moment(window.myLine.scales['x-axis-0'].ticksAsTimestamps[numTicks - 1]) : moment();
 
 				var newTime = lastTime
 					.clone()
