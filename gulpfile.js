@@ -56,7 +56,6 @@ gulp.task('docs', docsTask);
 gulp.task('test', ['lint', 'unittest']);
 gulp.task('size', ['library-size', 'module-sizes']);
 gulp.task('server', serverTask);
-gulp.task('validHTML', validHTMLTask);
 gulp.task('unittest', unittestTask);
 gulp.task('library-size', librarySizeTask);
 gulp.task('module-sizes', moduleSizesTask);
@@ -197,11 +196,6 @@ function docsTask(done) {
   }).then(() => {
     done();
   });
-}
-
-function validHTMLTask() {
-  return gulp.src('samples/*.html')
-    .pipe(htmlv());
 }
 
 function startTest() {
