@@ -2,28 +2,28 @@
 <html>
 
 <head>
-		<title>Radar Chart</title>
-		<script src="../../dist/Chart.bundle.js"></script>
-		<script src="../utils.js"></script>
-		<style>
+	<title>Radar Chart</title>
+	<script src="../../dist/Chart.bundle.js"></script>
+	<script src="../utils.js"></script>
+	<style>
 		canvas {
-				-moz-user-select: none;
-				-webkit-user-select: none;
-				-ms-user-select: none;
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
 		}
-		</style>
+	</style>
 </head>
 
 <body>
-		<div style="width:40%">
-				<canvas id="canvas"></canvas>
-		</div>
-		<button id="randomizeData">Randomize Data</button>
-		<button id="addDataset">Add Dataset</button>
-		<button id="removeDataset">Remove Dataset</button>
-		<button id="addData">Add Data</button>
-		<button id="removeData">Remove Data</button>
-		<script>
+	<div style="width:40%">
+		<canvas id="canvas"></canvas>
+	</div>
+	<button id="randomizeData">Randomize Data</button>
+	<button id="addDataset">Add Dataset</button>
+	<button id="removeDataset">Remove Dataset</button>
+	<button id="addData">Add Data</button>
+	<button id="removeData">Remove Data</button>
+	<script>
 		var randomScalingFactor = function() {
 			return Math.round(Math.random() * 100);
 		};
@@ -140,7 +140,7 @@
 
 			window.myRadar.update();
 		});
-		</script>
+	</script>
 </body>
 
 </html>

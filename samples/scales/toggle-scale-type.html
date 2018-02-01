@@ -2,24 +2,24 @@
 <html>
 
 <head>
-		<title>Toggle Scale Type</title>
-		<script src="../../dist/Chart.bundle.js"></script>
-		<script src="../utils.js"></script>
-		<style>
-		canvas {
-				-moz-user-select: none;
-				-webkit-user-select: none;
-				-ms-user-select: none;
-		}
-		</style>
+	<title>Toggle Scale Type</title>
+	<script src="../../dist/Chart.bundle.js"></script>
+	<script src="../utils.js"></script>
+	<style>
+	canvas {
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+	</style>
 </head>
 
 <body>
-		<div style="width:75%;">
-				<canvas id="canvas"></canvas>
-		</div>
-		<button id="toggleScale">Toggle Scale Type</button>
-		<script>
+	<div style="width:75%;">
+		<canvas id="canvas"></canvas>
+	</div>
+	<button id="toggleScale">Toggle Scale Type</button>
+	<script>
 		var randomScalingFactor = function() {
 			return Math.ceil(Math.random() * 10.0) * Math.pow(10, Math.ceil(Math.random() * 5));
 		};
@@ -93,7 +93,7 @@
 
 			window.myLine.update();
 		});
-		</script>
+	</script>
 </body>
 
 </html>

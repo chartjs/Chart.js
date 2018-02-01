@@ -2,19 +2,19 @@
 <html>
 
 <head>
-		<title>Pie Chart</title>
-		<script src="../../dist/Chart.bundle.js"></script>
-		<script src="../utils.js"></script>
+	<title>Pie Chart</title>
+	<script src="../../dist/Chart.bundle.js"></script>
+	<script src="../utils.js"></script>
 </head>
 
 <body>
-		<div id="canvas-holder" style="width:40%">
-				<canvas id="chart-area"></canvas>
-		</div>
-		<button id="randomizeData">Randomize Data</button>
-		<button id="addDataset">Add Dataset</button>
-		<button id="removeDataset">Remove Dataset</button>
-		<script>
+	<div id="canvas-holder" style="width:40%">
+		<canvas id="chart-area"></canvas>
+	</div>
+	<button id="randomizeData">Randomize Data</button>
+	<button id="addDataset">Add Dataset</button>
+	<button id="removeDataset">Remove Dataset</button>
+	<script>
 		var randomScalingFactor = function() {
 			return Math.round(Math.random() * 100);
 		};
@@ -91,7 +91,7 @@
 			config.data.datasets.splice(0, 1);
 			window.myPie.update();
 		});
-		</script>
+	</script>
 </body>
 
 </html>

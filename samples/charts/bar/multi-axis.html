@@ -2,24 +2,24 @@
 <html>
 
 <head>
-		<title>Bar Chart Multi Axis</title>
-		<script src="../../../dist/Chart.bundle.js"></script>
-		<script src="../../utils.js"></script>
-		<style>
-		canvas {
-				-moz-user-select: none;
-				-webkit-user-select: none;
-				-ms-user-select: none;
-		}
-		</style>
+	<title>Bar Chart Multi Axis</title>
+	<script src="../../../dist/Chart.bundle.js"></script>
+	<script src="../../utils.js"></script>
+	<style>
+	canvas {
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+	</style>
 </head>
 
 <body>
-		<div style="width: 75%">
-				<canvas id="canvas"></canvas>
-		</div>
-		<button id="randomizeData">Randomize Data</button>
-		<script>
+	<div style="width: 75%">
+		<canvas id="canvas"></canvas>
+	</div>
+	<button id="randomizeData">Randomize Data</button>
+	<script>
 		var barChartData = {
 			labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
 			datasets: [{
@@ -102,7 +102,7 @@
 			});
 			window.myBar.update();
 		});
-		</script>
+	</script>
 </body>
 
 </html>

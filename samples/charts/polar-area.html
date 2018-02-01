@@ -2,26 +2,26 @@
 <html>
 
 <head>
-		<title>Polar Area Chart</title>
-		<script src="../../dist/Chart.bundle.js"></script>
-		<script src="../utils.js"></script>
-		<style>
+	<title>Polar Area Chart</title>
+	<script src="../../dist/Chart.bundle.js"></script>
+	<script src="../utils.js"></script>
+	<style>
 		canvas {
-				-moz-user-select: none;
-				-webkit-user-select: none;
-				-ms-user-select: none;
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
 		}
-		</style>
+	</style>
 </head>
 
 <body>
-		<div id="canvas-holder" style="width:50%">
-				<canvas id="chart-area"></canvas>
-		</div>
-		<button id="randomizeData">Randomize Data</button>
-		<button id="addData">Add Data</button>
-		<button id="removeData">Remove Data</button>
-		<script>
+	<div id="canvas-holder" style="width:50%">
+		<canvas id="chart-area"></canvas>
+	</div>
+	<button id="randomizeData">Randomize Data</button>
+	<button id="addData">Add Data</button>
+	<button id="removeData">Remove Data</button>
+	<script>
 		var randomScalingFactor = function() {
 			return Math.round(Math.random() * 100);
 		};
@@ -111,7 +111,7 @@
 			});
 			window.myPolarArea.update();
 		});
-		</script>
+	</script>
 </body>
 
 </html>
