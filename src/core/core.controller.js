@@ -584,6 +584,11 @@ module.exports = function(Chart) {
 
 			for (var i = 0, ilen = (me.data.datasets || []).length; i < ilen; ++i) {
 				if (me.isDatasetVisible(i)) {
+
+					if (!me.getDatasetMeta(i).controller) {
+						throw new Error("Failed to access dataset meta, was update() called after data was defined?")
+					}
+
 					me.getDatasetMeta(i).controller.transition(easingValue);
 				}
 			}
