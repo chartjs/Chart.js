@@ -12,7 +12,7 @@ New contributions to the library are welcome, but we ask that you please follow 
 
 # Joining the project
 
- Active committers and contributors are invited to introduce yourself and request commit access to this project. We have a very active Slack community that you can join [here](https://chart-js-automation.herokuapp.com/). If you think you can help, we'd love to have you!
+ Active committers and contributors are invited to introduce yourself and request commit access to this project. We have a very active Slack community that you can join [here](https://chartjs-slack.herokuapp.com/). If you think you can help, we'd love to have you!
 
 # Building and Testing
 
