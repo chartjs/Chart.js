@@ -18,8 +18,8 @@
 		<div class="wrapper col-2"><canvas id="chart-3"></canvas></div>
 
 		<div class="toolbar">
-			<button id="toggleSmooth">Smooth</button>
-			<button id="randomize">Randomize</button>
+			<button onclick="toggleSmooth(this)">Smooth</button>
+			<button onclick="randomize(this)">Randomize</button>
 		</div>
 	</div>
 
@@ -115,14 +115,6 @@
 				chart.update();
 			});
 		}
-
-		document.getElementById('toggleSmooth').onclick = function() {
-			toggleSmooth(this);
-		};
-
-		document.getElementById('randomize').onclick = function() {
-			randomize(this);
-		};
 	</script>
 </body>
 </html>

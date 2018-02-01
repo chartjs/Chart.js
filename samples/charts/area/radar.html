@@ -16,9 +16,9 @@
 			<canvas id="chart-0"></canvas>
 		</div>
 		<div class="toolbar">
-			<button id="togglePropagate">Propagate</button>
-			<button id="toggleSmooth">Smooth</button>
-			<button id="randomize">Randomize</button>
+			<button onclick="togglePropagate(this)">Propagate</button>
+			<button onclick="toggleSmooth(this)">Smooth</button>
+			<button onclick="randomize(this)">Randomize</button>
 		</div>
 		<div id="chart-analyser" class="analyser"></div>
 	</div>
@@ -131,19 +131,6 @@
 			});
 			chart.update();
 		}
-
-		document.getElementById('togglePropagate').onclick = function() {
-			togglePropagate(this);
-		};
-
-		document.getElementById('toggleSmooth').onclick = function() {
-			toggleSmooth(this);
-		};
-
-		document.getElementById('randomize').onclick = function() {
-			randomize(this);
-		};
-
 	</script>
 </body>
 </html>
