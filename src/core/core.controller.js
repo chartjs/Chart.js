@@ -586,7 +586,7 @@ module.exports = function(Chart) {
 				if (me.isDatasetVisible(i)) {
 
 					if (!me.getDatasetMeta(i).controller) {
-						throw new Error("Failed to access dataset meta, was update() called after data was defined?")
+						throw new Error('Failed to access dataset meta, was update() called after data was defined?');
 					}
 
 					me.getDatasetMeta(i).controller.transition(easingValue);
