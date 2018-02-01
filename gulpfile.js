@@ -160,7 +160,7 @@ function lintJsTask() {
     'samples/**/*.html',
     'samples/**/*.js',
     'src/**/*.js',
-    'test/**/*.js',
+    'test/**/*.js'
   ];
 
   // NOTE(SB) codeclimate has 'complexity' and 'max-statements' eslint rules way too strict
@@ -169,8 +169,8 @@ function lintJsTask() {
   var options = {
     rules: {
       'complexity': [1, 10],
-      'max-statements': [1, 30],
-    },
+      'max-statements': [1, 30]
+    }
   };
 
   return gulp.src(files)
