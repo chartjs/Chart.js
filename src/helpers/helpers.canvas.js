@@ -11,7 +11,9 @@ var exports = module.exports = {
 	 * @param {Chart} chart - The chart for which to clear the canvas.
 	 */
 	clear: function(chart) {
-		chart.ctx.clearRect(0, 0, chart.width, chart.height);
+		if(chart && chart.ctx) {
+			chart.ctx.clearRect(0, 0, chart.width, chart.height);
+		}
 	},
 
 	/**
