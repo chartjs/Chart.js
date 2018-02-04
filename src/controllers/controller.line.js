@@ -24,11 +24,11 @@ defaults._set('line', {
 	}
 });
 
-module.exports = function(Chart) {
+function lineEnabled(dataset, options) {
+	return helpers.valueOrDefault(dataset.showLine, options.showLines);
+}
 
-	function lineEnabled(dataset, options) {
-		return helpers.valueOrDefault(dataset.showLine, options.showLines);
-	}
+module.exports = function(Chart) {
 
 	Chart.controllers.line = Chart.DatasetController.extend({
 
