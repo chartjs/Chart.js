@@ -80,7 +80,7 @@ module.exports = function(Chart) {
 			}
 
 			if (me.isHorizontal()) {
-				var valueWidth = me.width / offsetAmt;
+				var valueWidth = (me.width - 5) / offsetAmt;
 				var widthOffset = (valueWidth * (index - me.minIndex));
 
 				if (offset) {
