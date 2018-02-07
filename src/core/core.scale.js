@@ -857,6 +857,11 @@ module.exports = function(Chart) {
 
 					var label = itemToDraw.label;
 					if (helpers.isArray(label)) {
+						if (label.length % 2 === 0) {
+							context.translate(0, (-tickFont.size * (label.length / 2)) / 2);
+						} else {
+							context.translate(0, -tickFont.size * (label.length / 2));
+						}
 						for (var i = 0, y = 0; i < label.length; ++i) {
 							// We just make sure the multiline element is a string here..
 							context.fillText('' + label[i], 0, y);
