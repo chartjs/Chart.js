@@ -692,7 +692,7 @@ module.exports = Element.extend({
 			var yTickEnd = options.position === 'bottom' ? me.top + axisWidth + tl : me.bottom + axisWidth;
 			var yRotationOffset = 0;
 
-			if (me.labelRotation < 0){
+			if (me.labelRotation < 0) {
 				var longestText = helpers.longestText(context, tickFont.font, labelsFromTicks(ticks), me.longestTextCache);
 				var sinRotation = Math.abs(Math.sin(labelRotationRadians));
 				yRotationOffset = sinRotation * longestText;
