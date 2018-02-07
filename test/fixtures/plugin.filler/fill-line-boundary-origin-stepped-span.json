@@ -24,14 +24,10 @@
             "title": false,
             "scales": {
                 "xAxes": [{
-                    "ticks": {
-                        "display": false
-                    }
+                    "display": false
                 }],
                 "yAxes": [{
-                    "ticks": {
-                        "display": false
-                    }
+                    "display": false
                 }]
             },
             "elements": {

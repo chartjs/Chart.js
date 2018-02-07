@@ -43,6 +43,7 @@ var utils = require('./jasmine.utils');
 		'}');
 
 	jasmine.specsFromFixtures = utils.specsFromFixtures;
+	jasmine.triggerMouseEvent = utils.triggerMouseEvent;
 
 	beforeEach(function() {
 		jasmine.addMatchers(matchers);

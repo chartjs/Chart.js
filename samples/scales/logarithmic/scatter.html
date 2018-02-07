@@ -2,29 +2,29 @@
 <html>
 
 <head>
-    <title>Scatter Chart</title>
-    <script src="../../../dist/Chart.bundle.js"></script>
-    <script src="../../utils.js"></script>
-    <style>
-    canvas {
-        -moz-user-select: none;
-        -webkit-user-select: none;
-        -ms-user-select: none;
-    }
-    </style>
+	<title>Scatter Chart</title>
+	<script src="../../../dist/Chart.bundle.js"></script>
+	<script src="../../utils.js"></script>
+	<style>
+	canvas {
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+	</style>
 </head>
 
 <body>
-    <div style="width:75%">
-        <canvas id="canvas"></canvas>
-    </div>
-    <script>
-    var color = Chart.helpers.color;
-    var scatterChartData = {
-        datasets: [{
-        	borderColor: window.chartColors.red,
-        	backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
-            label: "V(node2)",
+	<div style="width:75%">
+		<canvas id="canvas"></canvas>
+	</div>
+	<script>
+	var color = Chart.helpers.color;
+	var scatterChartData = {
+		datasets: [{
+			borderColor: window.chartColors.red,
+			backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+			label: 'V(node2)',
 			data: [{
 				x: 1,
 				y: -1.711e-2,
@@ -118,54 +118,54 @@
 			}, {
 				x: 1000,
 				y: -3.596e1,
-			},]
-        }]
-    };
+			}]
+		}]
+	};
 
-    window.onload = function() {
-        var ctx = document.getElementById("canvas").getContext("2d");
-        window.myScatter = Chart.Scatter(ctx, {
-        	data: scatterChartData,
-        	options: {
-        		title: {
-	                display: true,
-	                text: 'Chart.js Scatter Chart - Logarithmic X-Axis'
-	            },
-	            scales: {
-	            	xAxes: [{
-	            		type: 'logarithmic',
-	            		position: 'bottom',
-	            		ticks: {
-	            			userCallback: function(tick) {
-	            				var remain = tick / (Math.pow(10, Math.floor(Chart.helpers.log10(tick))));
-	            				if (remain === 1 || remain === 2 || remain === 5) {
-	            					return tick.toString() + "Hz";
-	            				}
-	            				return '';
-	            			},
-	            		},
-	            		scaleLabel: {
-	            			labelString: 'Frequency',
-	            			display: true,
-	            		}
-	            	}],
-	            	yAxes: [{
-	            		type: 'linear',
-	            		ticks: {
-	            			userCallback: function(tick) {
-	            				return tick.toString() + "dB";
-	            			}
-	            		},
-	            		scaleLabel: {
-	            			labelString: 'Voltage',
-	            			display: true
-	            		}
-	            	}]
-	            }
-            }
-        });
-    };
-    </script>
+	window.onload = function() {
+		var ctx = document.getElementById('canvas').getContext('2d');
+		window.myScatter = Chart.Scatter(ctx, {
+			data: scatterChartData,
+			options: {
+				title: {
+					display: true,
+					text: 'Chart.js Scatter Chart - Logarithmic X-Axis'
+				},
+				scales: {
+					xAxes: [{
+						type: 'logarithmic',
+						position: 'bottom',
+						ticks: {
+							userCallback: function(tick) {
+								var remain = tick / (Math.pow(10, Math.floor(Chart.helpers.log10(tick))));
+								if (remain === 1 || remain === 2 || remain === 5) {
+									return tick.toString() + 'Hz';
+								}
+								return '';
+							},
+						},
+						scaleLabel: {
+							labelString: 'Frequency',
+							display: true,
+						}
+					}],
+					yAxes: [{
+						type: 'linear',
+						ticks: {
+							userCallback: function(tick) {
+								return tick.toString() + 'dB';
+							}
+						},
+						scaleLabel: {
+							labelString: 'Voltage',
+							display: true
+						}
+					}]
+				}
+			}
+		});
+	};
+	</script>
 </body>
 
 </html>

@@ -1,4 +1,13 @@
 describe('Deprecations', function() {
+	describe('Version 2.8.0', function() {
+		describe('Chart.layoutService', function() {
+			it('should be defined and an alias of Chart.layouts', function() {
+				expect(Chart.layoutService).toBeDefined();
+				expect(Chart.layoutService).toBe(Chart.layouts);
+			});
+		});
+	});
+
 	describe('Version 2.7.0', function() {
 		describe('Chart.Controller.update(duration, lazy)', function() {
 			it('should add an animation with the provided options', function() {
@@ -302,8 +311,8 @@ describe('Deprecations', function() {
 					'afterLayout'
 				];
 
-				var override = Chart.layoutService.update;
-				Chart.layoutService.update = function() {
+				var override = Chart.layouts.update;
+				Chart.layouts.update = function() {
 					sequence.push('layoutUpdate');
 					override.apply(this, arguments);
 				};
@@ -325,12 +334,69 @@ describe('Deprecations', function() {
 		});
 	});
 
+	describe('Version 2.4.0', function() {
+		describe('x-axis mode', function() {
+			it ('behaves like index mode with intersect: false', function() {
+				var data = {
+					datasets: [{
+						label: 'Dataset 1',
+						data: [10, 20, 30],
+						pointHoverBorderColor: 'rgb(255, 0, 0)',
+						pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+					}, {
+						label: 'Dataset 2',
+						data: [40, 40, 40],
+						pointHoverBorderColor: 'rgb(0, 0, 255)',
+						pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+					}],
+					labels: ['Point 1', 'Point 2', 'Point 3']
+				};
+
+				var chart = window.acquireChart({
+					type: 'line',
+					data: data
+				});
+				var meta0 = chart.getDatasetMeta(0);
+				var meta1 = chart.getDatasetMeta(1);
+
+				var evt = {
+					type: 'click',
+					chart: chart,
+					native: true, // needed otherwise things its a DOM event
+					x: 0,
+					y: 0
+				};
+
+				var elements = Chart.Interaction.modes['x-axis'](chart, evt);
+				expect(elements).toEqual([meta0.data[0], meta1.data[0]]);
+			});
+		});
+	});
+
 	describe('Version 2.1.5', function() {
 		// https://github.com/chartjs/Chart.js/pull/2752
 		describe('Chart.pluginService', function() {
 			it('should be defined and an alias of Chart.plugins', function() {
 				expect(Chart.pluginService).toBeDefined();
 				expect(Chart.pluginService).toBe(Chart.plugins);
+			});
+		});
+
+		describe('Chart.Legend', function() {
+			it('should be defined and an instance of Chart.Element', function() {
+				var legend = new Chart.Legend({});
+				expect(Chart.Legend).toBeDefined();
+				expect(legend).not.toBe(undefined);
+				expect(legend instanceof Chart.Element).toBeTruthy();
+			});
+		});
+
+		describe('Chart.Title', function() {
+			it('should be defined and an instance of Chart.Element', function() {
+				var title = new Chart.Title({});
+				expect(Chart.Title).toBeDefined();
+				expect(title).not.toBe(undefined);
+				expect(title instanceof Chart.Element).toBeTruthy();
 			});
 		});
 	});

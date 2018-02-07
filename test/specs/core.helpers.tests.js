@@ -6,26 +6,6 @@ describe('Core helper tests', function() {
 		helpers = window.Chart.helpers;
 	});
 
-	it('should extend an object', function() {
-		var original = {
-			myProp1: 'abc',
-			myProp2: 56
-		};
-
-		var extension = {
-			myProp3: [2, 5, 6],
-			myProp2: 0
-		};
-
-		helpers.extend(original, extension);
-
-		expect(original).toEqual({
-			myProp1: 'abc',
-			myProp2: 0,
-			myProp3: [2, 5, 6],
-		});
-	});
-
 	it('should merge a normal config without scales', function() {
 		var baseConfig = {
 			valueProp: 5,
@@ -127,11 +107,8 @@ describe('Core helper tests', function() {
 						borderDashOffset: 0.0
 					},
 					position: 'right',
-					scaleLabel: {
-						display: false,
-						labelString: '',
-						lineHeight: 1.2
-					},
+					offset: false,
+					scaleLabel: Chart.defaults.scale.scaleLabel,
 					ticks: {
 						beginAtZero: false,
 						minRotation: 0,
@@ -168,11 +145,8 @@ describe('Core helper tests', function() {
 						borderDashOffset: 0.0
 					},
 					position: 'left',
-					scaleLabel: {
-						display: false,
-						labelString: '',
-						lineHeight: 1.2
-					},
+					offset: false,
+					scaleLabel: Chart.defaults.scale.scaleLabel,
 					ticks: {
 						beginAtZero: false,
 						minRotation: 0,
@@ -750,6 +724,23 @@ describe('Core helper tests', function() {
 
 		document.body.removeChild(div);
 	});
+  
+  it ('should leave styled height and width on canvas if explicitly set', function() {
+		var chart = window.acquireChart({}, {
+			canvas: {
+				height: 200,
+				width: 200,
+				style: 'height: 400px; width: 400px;'
+			}
+		});
+
+		helpers.retinaScale(chart, true);
+
+		var canvas = chart.canvas;
+
+		expect(canvas.style.height).toBe('400px');
+		expect(canvas.style.width).toBe('400px');
+  });
 
 	it ('Should get padding of parent as number (pixels) when defined as percent (returns incorrectly in IE11)', function() {
 

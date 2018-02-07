@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Scriptable > Bubble | Chart.js sample</title>
+	<link rel="stylesheet" type="text/css" href="../style.css">
+	<script src="../../dist/Chart.js"></script>
+	<script src="../utils.js"></script>
+</head>
+<body>
+	<div class="content">
+		<div class="wrapper"><canvas id="chart-0"></canvas></div>
+		<div class="toolbar">
+			<button onclick="randomize(this)">Randomize</button>
+			<button onclick="addDataset(this)">Add Dataset</button>
+			<button onclick="removeDataset(this)">Remove Dataset</button>
+		</div>
+	</div>
+
+	<script>
+		var DATA_COUNT = 16;
+		var MIN_XY = -150;
+		var MAX_XY = 100;
+
+		var utils = Samples.utils;
+
+		utils.srand(110);
+
+		function colorize(opaque, context) {
+			var value = context.dataset.data[context.dataIndex];
+			var x = value.x / 100;
+			var y = value.y / 100;
+			var r = x < 0 && y < 0 ? 250 : x < 0 ? 150 : y < 0 ? 50 : 0;
+			var g = x < 0 && y < 0 ? 0 : x < 0 ? 50 : y < 0 ? 150 : 250;
+			var b = x < 0 && y < 0 ? 0 : x > 0 && y > 0 ? 250 : 150;
+			var a = opaque ? 1 : 0.5 * value.v / 1000;
+
+			return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+		}
+
+		function generateData() {
+			var data = [];
+			var i;
+
+			for (i = 0; i < DATA_COUNT; ++i) {
+				data.push({
+					x: utils.rand(MIN_XY, MAX_XY),
+					y: utils.rand(MIN_XY, MAX_XY),
+					v: utils.rand(0, 1000)
+				});
+			}
+
+			return data;
+		}
+
+		var data = {
+			datasets: [{
+				data: generateData()
+			}, {
+				data: generateData()
+			}]
+		};
+
+		var options = {
+			aspectRatio: 1,
+			legend: false,
+			tooltips: false,
+
+			elements: {
+				point: {
+					backgroundColor: colorize.bind(null, false),
+
+					borderColor: colorize.bind(null, true),
+
+					borderWidth: function(context) {
+						return Math.min(Math.max(1, context.datasetIndex + 1), 8);
+					},
+
+					hoverBackgroundColor: 'transparent',
+
+					hoverBorderColor: function(context) {
+						return utils.color(context.datasetIndex);
+					},
+
+					hoverBorderWidth: function(context) {
+						var value = context.dataset.data[context.dataIndex];
+						return Math.round(8 * value.v / 1000);
+					},
+
+					radius: function(context) {
+						var value = context.dataset.data[context.dataIndex];
+						var size = context.chart.width;
+						var base = Math.abs(value.v) / 1000;
+						return (size / 24) * base;
+					}
+				}
+			}
+		};
+
+		var chart = new Chart('chart-0', {
+			type: 'bubble',
+			data: data,
+			options: options
+		});
+
+		// eslint-disable-next-line no-unused-vars
+		function randomize() {
+			chart.data.datasets.forEach(function(dataset) {
+				dataset.data = generateData();
+			});
+			chart.update();
+		}
+
+		// eslint-disable-next-line no-unused-vars
+		function addDataset() {
+			chart.data.datasets.push({
+				data: generateData()
+			});
+			chart.update();
+		}
+
+		// eslint-disable-next-line no-unused-vars
+		function removeDataset() {
+			chart.data.datasets.shift();
+			chart.update();
+		}
+	</script>
+</body>
+</html>

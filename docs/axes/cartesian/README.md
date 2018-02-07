@@ -15,6 +15,7 @@ All of the included cartesian axes support a number of common options.
 | -----| ---- | --------| -----------
 | `type` | `String` | | Type of scale being employed. Custom scales can be created and registered with a string key. This allows changing the type of an axis for a chart.
 | `position` | `String` | | Position of the axis in the chart. Possible values are: `'top'`, `'left'`, `'bottom'`, `'right'`
+| `offset` | `Boolean` | `false` | If true, extra space is added to the both edges and the axis is scaled to fit into the chart area. This is set to `true` in the bar chart by default.
 | `id` | `String` | | The ID is used to link datasets and scale axes together. [more...](#axis-id)
 | `gridLines` | `Object` | | Grid line configuration. [more...](../styling.md#grid-line-configuration)
 | `scaleLabel` | `Object` | | Scale title configuration. [more...](../labelling.md#scale-title-configuration)
@@ -74,13 +75,13 @@ var myChart = new Chart(ctx, {
     data: {
         datasets: [{
             data: [20, 50, 100, 75, 25, 0],
-            label: 'Left dataset'
+            label: 'Left dataset',
 
             // This binds the dataset to the left y axis
             yAxisID: 'left-y-axis'
         }, {
-            data: [0.1, 0.5, 1.0, 2.0, 1.5, 0]
-            label: 'Right dataset'
+            data: [0.1, 0.5, 1.0, 2.0, 1.5, 0],
+            label: 'Right dataset',
 
             // This binds the dataset to the right y axis
             yAxisID: 'right-y-axis',

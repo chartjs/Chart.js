@@ -236,6 +236,13 @@ function watchForRender(node, handler) {
 		addEventListener(node, type, proxy);
 	});
 
+	// #4737: Chrome might skip the CSS animation when the CSS_RENDER_MONITOR class
+	// is removed then added back immediately (same animation frame?). Accessing the
+	// `offsetParent` property will force a reflow and re-evaluate the CSS animation.
+	// https://gist.github.com/paulirish/5d52fb081b3570c81e3a#box-metrics
+	// https://github.com/chartjs/Chart.js/issues/4737
+	expando.reflow = !!node.offsetParent;
+
 	node.classList.add(CSS_RENDER_MONITOR);
 }
 
@@ -305,6 +312,13 @@ function injectCSS(platform, css) {
 }
 
 module.exports = {
+	/**
+	 * This property holds whether this platform is enabled for the current environment.
+	 * Currently used by platform.js to select the proper implementation.
+	 * @private
+	 */
+	_enabled: typeof window !== 'undefined' && typeof document !== 'undefined',
+
 	initialize: function() {
 		var keyframes = 'from{opacity:0.99}to{opacity:1}';
 

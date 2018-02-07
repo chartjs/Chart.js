@@ -22,12 +22,7 @@
             "legend": false,
             "title": false,
             "scale": {
-                "pointLabels": {
-                    "fontSize": 0
-                },
-                "ticks": {
-                    "display": false
-                }
+                "display": false
             },
             "elements": {
                 "point": {

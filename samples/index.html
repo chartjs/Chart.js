@@ -7,6 +7,7 @@
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<link rel="icon" href="favicon.ico">
 	<script src="samples.js"></script>
+	<script src="utils.js"></script>
 	<title>Chart.js samples</title>
 </head>
 <body>
@@ -46,8 +47,8 @@
 			var category = createCategory(item);
 			var children = category.getElementsByClassName('items')[0];
 
-			(item.items || []).forEach(function(item) {
-				children.appendChild(createEntry(item));
+			(item.items || []).forEach(function(item2) {
+				children.appendChild(createEntry(item2));
 			});
 
 			categories.appendChild(category);

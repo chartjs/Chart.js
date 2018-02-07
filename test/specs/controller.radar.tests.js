@@ -1,5 +1,4 @@
-// Test the polar area controller
-describe('Radar controller tests', function() {
+describe('Chart.controllers.radar', function() {
 	it('Should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'radar',
@@ -80,6 +79,8 @@ describe('Radar controller tests', function() {
 			},
 			options: {
 				showLines: true,
+				legend: false,
+				title: false,
 				elements: {
 					line: {
 						backgroundColor: 'rgb(255, 0, 0)',
@@ -124,10 +125,10 @@ describe('Radar controller tests', function() {
 		}));
 
 		[
-			{x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
-			{x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
-			{x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
-			{x: 256, y: 272, cppx: 256, cppy: 272, cpnx: 256, cpny: 272},
+			{x: 256, y: 256, cppx: 256, cppy: 256, cpnx: 256, cpny: 256},
+			{x: 256, y: 256, cppx: 256, cppy: 256, cpnx: 256, cpny: 256},
+			{x: 256, y: 256, cppx: 256, cppy: 256, cpnx: 256, cpny: 256},
+			{x: 256, y: 256, cppx: 256, cppy: 256, cpnx: 256, cpny: 256},
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(expected.y);
@@ -151,10 +152,10 @@ describe('Radar controller tests', function() {
 		meta.controller.update();
 
 		[
-			{x: 256, y: 133, cppx: 246, cppy: 133, cpnx: 272, cpny: 133},
-			{x: 464, y: 272, cppx: 464, cppy: 264, cpnx: 464, cpny: 278},
-			{x: 256, y: 272, cppx: 276.9, cppy: 272, cpnx: 250.4, cpny: 272},
-			{x: 200, y: 272, cppx: 200, cppy: 275, cpnx: 200, cpny: 261},
+			{x: 256, y: 117, cppx: 246, cppy: 117, cpnx: 272, cpny: 117},
+			{x: 464, y: 256, cppx: 464, cppy: 248, cpnx: 464, cpny: 262},
+			{x: 256, y: 256, cppx: 276.9, cppy: 256, cpnx: 250.4, cpny: 256},
+			{x: 200, y: 256, cppx: 200, cppy: 259, cpnx: 200, cpny: 245},
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(expected.y);
@@ -208,10 +209,10 @@ describe('Radar controller tests', function() {
 
 		// Since tension is now 0, we don't care about the control points
 		[
-			{x: 256, y: 133},
-			{x: 464, y: 272},
-			{x: 256, y: 272},
-			{x: 200, y: 272},
+			{x: 256, y: 117},
+			{x: 464, y: 256},
+			{x: 256, y: 256},
+			{x: 200, y: 256},
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(expected.y);
@@ -267,11 +268,11 @@ describe('Radar controller tests', function() {
 		}));
 
 		expect(meta.data[0]._model.x).toBeCloseToPixel(256);
-		expect(meta.data[0]._model.y).toBeCloseToPixel(133);
+		expect(meta.data[0]._model.y).toBeCloseToPixel(117);
 		expect(meta.data[0]._model.controlPointPreviousX).toBeCloseToPixel(241);
-		expect(meta.data[0]._model.controlPointPreviousY).toBeCloseToPixel(133);
+		expect(meta.data[0]._model.controlPointPreviousY).toBeCloseToPixel(117);
 		expect(meta.data[0]._model.controlPointNextX).toBeCloseToPixel(281);
-		expect(meta.data[0]._model.controlPointNextY).toBeCloseToPixel(133);
+		expect(meta.data[0]._model.controlPointNextY).toBeCloseToPixel(117);
 		expect(meta.data[0]._model).toEqual(jasmine.objectContaining({
 			radius: 2.2,
 			backgroundColor: 'rgb(0, 1, 3)',

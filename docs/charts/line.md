@@ -6,11 +6,11 @@ A line chart is a way of plotting data points on a line. Often, it is used to sh
     "type": "line",
     "data": {
         "labels": [
-            "January", 
-            "February", 
-            "March", 
-            "April", 
-            "May", 
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
             "June",
             "July"
         ],
@@ -50,7 +50,7 @@ All point* properties can be specified as an array. If these are set to an array
 | `yAxisID` | `String` | The ID of the y axis to plot this dataset on. If not specified, this defaults to the ID of the first found y axis.
 | `backgroundColor` | `Color` | The fill color under the line. See [Colors](../general/colors.md#colors)
 | `borderColor` | `Color` | The color of the line. See [Colors](../general/colors.md#colors)
-| `borderWidth` | `Number/` | The width of the line in pixels.
+| `borderWidth` | `Number` | The width of the line in pixels.
 | `borderDash` | `Number[]` | Length and spacing of dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
 | `borderDashOffset` | `Number` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
 | `borderCapStyle` | `String` | Cap style of the line. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap)
@@ -62,7 +62,7 @@ All point* properties can be specified as an array. If these are set to an array
 | `pointBorderColor` | `Color/Color[]` | The border color for points.
 | `pointBorderWidth` | `Number/Number[]` | The width of the point border in pixels.
 | `pointRadius` | `Number/Number[]` | The radius of the point shape. If set to 0, the point is not rendered.
-| `pointStyle` | `String/String[]/Image/Image[]` | Style of the point. [more...](#pointstyle)
+| `pointStyle` | `String/String[]/Image/Image[]` | Style of the point. [more...](../configuration/elements#point-styles)
 | `pointHitRadius` | `Number/Number[]` | The pixel size of the non-displayed point that reacts to mouse events.
 | `pointHoverBackgroundColor` | `Color/Color[]` | Point background color when hovered.
 | `pointHoverBorderColor` | `Color/Color[]` | Point border color when hovered.
@@ -75,28 +75,13 @@ All point* properties can be specified as an array. If these are set to an array
 ### cubicInterpolationMode
 The following interpolation modes are supported:
 * 'default'
-* 'monotone'. 
+* 'monotone'.
 
 The 'default' algorithm uses a custom weighted cubic interpolation, which produces pleasant curves for all types of datasets.
 
 The 'monotone' algorithm is more suited to `y = f(x)` datasets : it preserves monotonicity (or piecewise monotonicity) of the dataset being interpolated, and ensures local extremums (if any) stay at input data points.
 
 If left untouched (`undefined`), the global `options.elements.line.cubicInterpolationMode` property is used.
-
-### pointStyle
-The style of point. Options are:
-* 'circle'
-* 'cross'
-* 'crossRot'
-* 'dash'. 
-* 'line'
-* 'rect'
-* 'rectRounded'
-* 'rectRot'
-* 'star'
-* 'triangle'
-
-If the option is an image, that image is drawn on the canvas using [drawImage](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/drawImage).
 
 ### Stepped Line
 The following values are supported for `steppedLine`:
@@ -127,14 +112,14 @@ Chart.defaults.line.spanGaps = true;
 
 ## Data Structure
 
-The `data` property of a dataset for a line chart can be passed in two formats. 
+The `data` property of a dataset for a line chart can be passed in two formats.
 
 ### Number[]
 ```javascript
 data: [20, 10]
 ```
 
-When the `data` array is an array of numbers, the x axis is generally a [category](../axes/cartesian/category.md#Category Axis). The points are placed onto the axis using their position in the array. When a line chart is created with a category axis, the `labels` property of the data object must be specified.
+When the `data` array is an array of numbers, the x axis is generally a [category](../axes/cartesian/category.md#category-cartesian-axis). The points are placed onto the axis using their position in the array. When a line chart is created with a category axis, the `labels` property of the data object must be specified.
 
 ### Point[]
 

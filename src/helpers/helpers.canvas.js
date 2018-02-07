@@ -47,7 +47,7 @@ var exports = module.exports = {
 	drawPoint: function(ctx, style, radius, x, y) {
 		var type, edgeLength, xOffset, yOffset, height, size;
 
-		if (typeof style === 'object') {
+		if (style && typeof style === 'object') {
 			type = style.toString();
 			if (type === '[object HTMLImageElement]' || type === '[object HTMLCanvasElement]') {
 				ctx.drawImage(style, x - style.width / 2, y - style.height / 2, style.width, style.height);
@@ -165,7 +165,7 @@ var exports = module.exports = {
 
 	lineTo: function(ctx, previous, target, flip) {
 		if (target.steppedLine) {
-			if (target.steppedLine === 'after') {
+			if ((target.steppedLine === 'after' && !flip) || (target.steppedLine !== 'after' && flip)) {
 				ctx.lineTo(previous.x, target.y);
 			} else {
 				ctx.lineTo(target.x, previous.y);

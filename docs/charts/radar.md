@@ -8,9 +8,9 @@ They are often useful for comparing the points of two or more different data set
     "type": "radar",
     "data": {
         "labels": [
-            "Eating", 
-            "Drinking", 
-            "Sleeping", 
+            "Eating",
+            "Drinking",
+            "Sleeping",
             "Designing",
             "Coding",
             "Cycling",
@@ -94,7 +94,7 @@ The style of point. Options are:
 * 'circle'
 * 'cross'
 * 'crossRot'
-* 'dash'. 
+* 'dash'.
 * 'line'
 * 'rect'
 * 'rectRounded'
@@ -127,7 +127,7 @@ It is common to want to apply a configuration setting to all created radar chart
 
 ## Data Structure
 
-The `data` property of a dataset for a radar chart is specified as a an array of numbers. Each point in the data array corresponds to the label at the same index on the x axis. 
+The `data` property of a dataset for a radar chart is specified as a an array of numbers. Each point in the data array corresponds to the label at the same index on the x axis.
 
 ```javascript
 data: [20, 10]

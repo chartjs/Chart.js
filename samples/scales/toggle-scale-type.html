@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Toggle Scale Type</title>
+	<script src="../../dist/Chart.bundle.js"></script>
+	<script src="../utils.js"></script>
+	<style>
+	canvas {
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+	</style>
+</head>
+
+<body>
+	<div style="width:75%;">
+		<canvas id="canvas"></canvas>
+	</div>
+	<button id="toggleScale">Toggle Scale Type</button>
+	<script>
+		var randomScalingFactor = function() {
+			return Math.ceil(Math.random() * 10.0) * Math.pow(10, Math.ceil(Math.random() * 5));
+		};
+
+		var type = 'linear';
+
+		var config = {
+			type: 'line',
+			data: {
+				labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+				datasets: [{
+					label: 'My First dataset',
+					backgroundColor: window.chartColors.red,
+					borderColor: window.chartColors.red,
+					fill: false,
+					data: [
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor()
+					],
+				}, {
+					label: 'My Second dataset',
+					backgroundColor: window.chartColors.blue,
+					borderColor: window.chartColors.blue,
+					fill: false,
+					data: [
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor()
+					],
+				}]
+			},
+			options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'Chart.js Line Chart - ' + type
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+					}],
+					yAxes: [{
+						display: true,
+						type: type
+					}]
+				}
+			}
+		};
+
+		window.onload = function() {
+			var ctx = document.getElementById('canvas').getContext('2d');
+			window.myLine = new Chart(ctx, config);
+		};
+
+		document.getElementById('toggleScale').addEventListener('click', function() {
+			type = type === 'linear' ? 'logarithmic' : 'linear';
+			window.myLine.options.title.text = 'Chart.js Line Chart - ' + type;
+			window.myLine.options.scales.yAxes[0] = {
+				display: true,
+				type: type
+			};
+
+			window.myLine.update();
+		});
+	</script>
+</body>
+
+</html>

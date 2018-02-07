@@ -35,11 +35,11 @@
 		};
 
 		function generateData(config) {
-			return utils.numbers(utils.merge(inputs, config || {}));
+			return utils.numbers(Chart.helpers.merge(inputs, config || {}));
 		}
 
 		function generateLabels(config) {
-			return utils.months(utils.merge({
+			return utils.months(Chart.helpers.merge({
 				count: inputs.count,
 				section: 3
 			}, config || {}));
@@ -85,7 +85,7 @@
 						fill: boundary
 					}]
 				},
-				options: utils.merge(options, {
+				options: Chart.helpers.merge(options, {
 					title: {
 						text: 'fill: ' + boundary,
 						display: true
@@ -94,15 +94,16 @@
 			});
 		});
 
-
+		// eslint-disable-next-line no-unused-vars
 		function toggleSmooth(btn) {
 			var value = btn.classList.toggle('btn-on');
 			Chart.helpers.each(Chart.instances, function(chart) {
-				chart.options.elements.line.tension = value? 0.4 : 0.000001;
+				chart.options.elements.line.tension = value ? 0.4 : 0.000001;
 				chart.update();
 			});
 		}
 
+		// eslint-disable-next-line no-unused-vars
 		function randomize() {
 			var seed = utils.rand();
 			Chart.helpers.each(Chart.instances, function(chart) {

@@ -26,18 +26,18 @@ There are a number of config callbacks that can be used to change parameters in 
 | Name | Arguments | Description
 | ---- | --------- | -----------
 | `beforeUpdate` | `axis` | Callback called before the update process starts.
-| `beforeSetDimensions` | `axis` | Callback that runs before dimensions are set. 
+| `beforeSetDimensions` | `axis` | Callback that runs before dimensions are set.
 | `afterSetDimensions` | `axis` | Callback that runs after dimensions are set.
 | `beforeDataLimits` | `axis` | Callback that runs before data limits are determined.
 | `afterDataLimits` | `axis` | Callback that runs after data limits are determined.
 | `beforeBuildTicks` | `axis` | Callback that runs before ticks are created.
 | `afterBuildTicks` | `axis` | Callback that runs after ticks are created. Useful for filtering ticks.
 | `beforeTickToLabelConversion` | `axis` | Callback that runs before ticks are converted into strings.
-| `afterTickToLabelConversion` | `axis` | Callback that runs after ticks are converted into strings. 
+| `afterTickToLabelConversion` | `axis` | Callback that runs after ticks are converted into strings.
 | `beforeCalculateTickRotation` | `axis` | Callback that runs before tick rotation is determined.
 | `afterCalculateTickRotation` | `axis` | Callback that runs after tick rotation is determined.
-| `beforeFit` | `axis` | Callback that runs before the scale fits to the canvas. 
-| `afterFit` | `axis` | Callback that runs after the scale fits to the canvas. 
+| `beforeFit` | `axis` | Callback that runs before the scale fits to the canvas.
+| `afterFit` | `axis` | Callback that runs after the scale fits to the canvas.
 | `afterUpdate` | `axis` | Callback that runs at the end of the update process.
 
 ## Updating Axis Defaults

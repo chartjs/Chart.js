@@ -1,10 +1,11 @@
 'use strict';
 
 var helpers = require('../helpers/index');
+var basic = require('./platform.basic');
+var dom = require('./platform.dom');
 
-// By default, select the browser (DOM) platform.
 // @TODO Make possible to select another platform at build time.
-var implementation = require('./platform.dom');
+var implementation = dom._enabled ? dom : basic;
 
 /**
  * @namespace Chart.platform

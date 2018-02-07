@@ -18,13 +18,29 @@ Global point options: `Chart.defaults.global.elements.point`
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
 | `radius` | `Number` | `3` | Point radius.
-| `pointStyle` | `String` | `circle` | Point style.
+| [`pointStyle`](#point-styles) | `String` | `circle` | Point style.
 | `backgroundColor` | `Color` | `'rgba(0,0,0,0.1)'` | Point fill color.
 | `borderWidth` | `Number` | `1` | Point stroke width.
 | `borderColor` | `Color` | `'rgba(0,0,0,0.1)'` | Point stroke color.
 | `hitRadius` | `Number` | `1` | Extra radius added to point radius for hit detection.
 | `hoverRadius` | `Number` | `4` | Point radius when hovered.
 | `hoverBorderWidth` | `Number` | `1` | Stroke width when hovered.
+
+### Point Styles
+
+The following values are supported:
+- `'circle'`
+- `'cross'`
+- `'crossRot'`
+- `'dash'`
+- `'line'`
+- `'rect'`
+- `'rectRounded'`
+- `'rectRot'`
+- `'star'`
+- `'triangle'`
+
+If the value is an image, that image is drawn on the canvas using [drawImage](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/drawImage).
 
 ## Line Configuration
 Line elements are used to represent the line in a line chart.

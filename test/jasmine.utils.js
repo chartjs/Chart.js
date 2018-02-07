@@ -75,7 +75,13 @@ function acquireChart(config, options) {
 	wrapper.appendChild(canvas);
 	window.document.body.appendChild(wrapper);
 
-	chart = new Chart(canvas.getContext('2d'), config);
+	try {
+		chart = new Chart(canvas.getContext('2d'), config);
+	} catch (e) {
+		window.document.body.removeChild(wrapper);
+		throw e;
+	}
+
 	chart.$test = {
 		persistent: options.persistent,
 		wrapper: wrapper
@@ -112,9 +118,6 @@ function specFromFixture(description, inputs) {
 			var chart = acquireChart(json.config, json.options);
 			if (!inputs.png) {
 				fail('Missing PNG comparison file for ' + inputs.json);
-				if (!json.debug) {
-					releaseChart(chart);
-				}
 				done();
 			}
 
@@ -158,11 +161,26 @@ function waitForResize(chart, callback) {
 	};
 }
 
+function triggerMouseEvent(chart, type, el) {
+	var node = chart.canvas;
+	var rect = node.getBoundingClientRect();
+	var event = new MouseEvent(type, {
+		clientX: rect.left + el._model.x,
+		clientY: rect.top + el._model.y,
+		cancelable: true,
+		bubbles: true,
+		view: window
+	});
+
+	node.dispatchEvent(event);
+}
+
 module.exports = {
 	injectCSS: injectCSS,
 	createCanvas: createCanvas,
 	acquireChart: acquireChart,
 	releaseChart: releaseChart,
 	specsFromFixtures: specsFromFixtures,
+	triggerMouseEvent: triggerMouseEvent,
 	waitForResize: waitForResize
 };
