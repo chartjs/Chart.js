@@ -724,8 +724,8 @@ describe('Core helper tests', function() {
 
 		document.body.removeChild(div);
 	});
-  
-  it ('should leave styled height and width on canvas if explicitly set', function() {
+
+	it ('should leave styled height and width on canvas if explicitly set', function() {
 		var chart = window.acquireChart({}, {
 			canvas: {
 				height: 200,
@@ -740,7 +740,7 @@ describe('Core helper tests', function() {
 
 		expect(canvas.style.height).toBe('400px');
 		expect(canvas.style.width).toBe('400px');
-  });
+	});
 
 	it ('Should get padding of parent as number (pixels) when defined as percent (returns incorrectly in IE11)', function() {
 
@@ -752,7 +752,7 @@ describe('Core helper tests', function() {
 
 		// Inner DIV to have 10% padding of parent
 		var innerDiv = document.createElement('div');
-		
+
 		div.appendChild(innerDiv);
 
 		var canvas = document.createElement('canvas');
@@ -760,15 +760,17 @@ describe('Core helper tests', function() {
 
 		var container = canvas.parentNode;
 
-		//No padding
+		// No padding
 		expect(helpers.calculatePadding(container, 'padding-right', container.clientWidth)).toBe(0);
 		expect(helpers.getMaximumWidth(canvas)).toBe(300);
 
-		innerDiv.style.padding = '10%';//test with percentage
+		// test with percentage
+		innerDiv.style.padding = '10%';
 		expect(helpers.calculatePadding(container, 'padding-right', container.clientWidth)).toBe(30);
 		expect(helpers.getMaximumWidth(canvas)).toBe(240);
 
-		innerDiv.style.padding = '10px';//test with pixels
+		// test with pixels
+		innerDiv.style.padding = '10px';
 		expect(helpers.calculatePadding(container, 'padding-right', container.clientWidth)).toBe(10);
 		expect(helpers.getMaximumWidth(canvas)).toBe(280);
 
