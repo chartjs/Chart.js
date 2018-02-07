@@ -438,8 +438,8 @@ module.exports = Element.extend({
 				me.longestLabelWidth = largestTextWidth;
 
 				var angleRadians = helpers.toRadians(me.labelRotation);
-				var cosRotation = Math.cos(angleRadians);
-				var sinRotation = Math.sin(angleRadians);
+				var cosRotation = Math.abs(Math.cos(angleRadians));
+				var sinRotation = Math.abs(Math.sin(angleRadians));
 
 				// TODO - improve this calculation
 				var labelHeight = (sinRotation * largestTextWidth)
@@ -709,6 +709,12 @@ module.exports = Element.extend({
 		var xTickEnd = options.position === 'right' ? me.left + tl : me.right;
 		var yTickStart = options.position === 'bottom' ? me.top + axisWidth : me.bottom - tl - axisWidth;
 		var yTickEnd = options.position === 'bottom' ? me.top + axisWidth + tl : me.bottom + axisWidth;
+		var yRotationOffset = 0;
+
+		if (me.labelRotation < 0) {
+			var sinRotation = Math.abs(Math.sin(labelRotationRadians));
+			yRotationOffset = sinRotation * me.longestLabelWidth;
+		}
 
 		helpers.each(ticks, function(tick, index) {
 			// autoskipper skipped this tick (#4635)
@@ -738,7 +744,7 @@ module.exports = Element.extend({
 			var tickPadding = optionTicks.padding;
 
 			if (isHorizontal) {
-				var labelYOffset = tl + tickPadding;
+				var labelYOffset = tl + tickPadding + yRotationOffset;
 
 				if (options.position === 'bottom') {
 					// bottom
