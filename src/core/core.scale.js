@@ -857,11 +857,11 @@ module.exports = function(Chart) {
 
 					var label = itemToDraw.label;
 					if (helpers.isArray(label)) {
-						var lineCount = label.length / 2;
+						var lineCount = label.length;
 						var lineHeight = tickFont.size * 1.5;
-						var y = me.isHorizontal() ? 0 : -lineHeight * lineCount / 1.2;
+						var y = me.isHorizontal() ? 0 : -lineHeight * (lineCount - 1) / 2;
 
-						for (var i = 0; i < label.length; ++i) {
+						for (var i = 0; i < lineCount; ++i) {
 							// We just make sure the multiline element is a string here..
 							context.fillText('' + label[i], 0, y);
 							// apply same lineSpacing as calculated @ L#320
