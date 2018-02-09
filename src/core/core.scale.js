@@ -710,6 +710,42 @@ module.exports = function(Chart) {
 			var yTickStart = options.position === 'bottom' ? me.top + axisWidth : me.bottom - tl - axisWidth;
 			var yTickEnd = options.position === 'bottom' ? me.top + axisWidth + tl : me.bottom + axisWidth;
 
+			const displayedTicks = me.ticks.reduce((accum, tick, index) => {
+				if (tick) {
+					accum.push({
+						value: tick,
+						index: index,
+					});
+				}
+				return accum;
+			}, []);
+
+			let labelOffsets = [];
+			for (let i = 0; i < displayedTicks.length; i++) {
+				if (me.ticks.length > (displayedTicks[displayedTicks.length - 1].index + 1)) {
+					let rightTickIndex;
+					if (displayedTicks[i + 1]) {
+						rightTickIndex = displayedTicks[i + 1].index;
+					} else {
+						rightTickIndex = me.ticks.length;
+					}
+					const leftTickIndex = displayedTicks[i].index;
+
+					const leftTickLocation = me.getPixelForTick(leftTickIndex);
+
+					// The rightTickIndex corresponds to the first tick of the next month.
+					// We want the last tick of the current month for centering labels.
+					const rightTickLocation = me.getPixelForTick(rightTickIndex - 1);
+
+					const offsetValue = Math.ceil((rightTickLocation - leftTickLocation) / 2);
+
+					labelOffsets.push({
+						index: displayedTicks[i].index,
+						value: offsetValue,
+					});
+				}
+			}
+
 			helpers.each(ticks, function(tick, index) {
 				// autoskipper skipped this tick (#4635)
 				if (helpers.isNullOrUndef(tick.label)) {
@@ -758,7 +794,24 @@ module.exports = function(Chart) {
 					}
 					xLineValue += helpers.aliasPixel(lineWidth);
 
-					labelX = me.getPixelForTick(index) + optionTicks.labelOffset; // x values for optionTicks (need to consider offsetLabel option)
+					let centeringOffset = 0;
+
+					if (optionTicks.centerLabels) {
+						labelOffsets.forEach(offset => {
+							if (offset.index === index) {
+								centeringOffset = offset.value;
+							}
+						});
+
+						if (index === 0) {
+							centeringOffset += 7;
+						}
+						if (index === labelOffsets[labelOffsets.length - 1].index) {
+							centeringOffset -= 7;
+						}
+					}
+
+					labelX = me.getPixelForTick(index) + optionTicks.labelOffset + centeringOffset; // x values for optionTicks (need to consider offsetLabel option)
 
 					tx1 = tx2 = x1 = x2 = xLineValue;
 					ty1 = yTickStart;
