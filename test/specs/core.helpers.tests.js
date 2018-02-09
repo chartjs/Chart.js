@@ -761,17 +761,14 @@ describe('Core helper tests', function() {
 		var container = canvas.parentNode;
 
 		// No padding
-		expect(helpers.calculatePadding(container, 'padding-right', container.clientWidth)).toBe(0);
 		expect(helpers.getMaximumWidth(canvas)).toBe(300);
 
 		// test with percentage
 		innerDiv.style.padding = '10%';
-		expect(helpers.calculatePadding(container, 'padding-right', container.clientWidth)).toBe(30);
 		expect(helpers.getMaximumWidth(canvas)).toBe(240);
 
 		// test with pixels
 		innerDiv.style.padding = '10px';
-		expect(helpers.calculatePadding(container, 'padding-right', container.clientWidth)).toBe(10);
 		expect(helpers.getMaximumWidth(canvas)).toBe(280);
 
 		document.body.removeChild(div);
