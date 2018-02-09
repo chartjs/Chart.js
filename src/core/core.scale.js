@@ -859,10 +859,8 @@ module.exports = function(Chart) {
 					if (helpers.isArray(label)) {
 						var lineCount = label.length / 2;
 						var lineHeight = tickFont.size * 1.5;
-						var y = 0;
-						if (!me.isHorizontal()) {
-							y = -tickFont.size * lineCount;
-						}
+						var y = me.isHorizontal() ? 0 : -lineHeight * lineCount / 1.2;
+
 						for (var i = 0; i < label.length; ++i) {
 							// We just make sure the multiline element is a string here..
 							context.fillText('' + label[i], 0, y);
