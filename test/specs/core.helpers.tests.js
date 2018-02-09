@@ -758,8 +758,6 @@ describe('Core helper tests', function() {
 		var canvas = document.createElement('canvas');
 		innerDiv.appendChild(canvas);
 
-		var container = canvas.parentNode;
-
 		// No padding
 		expect(helpers.getMaximumWidth(canvas)).toBe(300);
 
