@@ -1,0 +1,36 @@
+{
+    "config": {
+        "type": "radar",
+        "data": {
+            "labels": ["0", "1", "2", "3", "4", "5", "6", "7"],
+            "datasets": [{
+                "backgroundColor": "transparent",
+                "data": [4, 2, null, 3, 2.5, null, 2, 4],
+                "spanGaps": true
+            }]
+        },
+        "options": {
+            "responsive": false,
+            "legend": false,
+            "title": false,
+            "scale": {
+                "display": false
+            },
+            "elements": {
+                "point": {
+                    "radius": 0
+                },
+                "line": {
+                    "borderColor": "pink",
+                    "fill": "origin"
+                }
+            }
+        }
+    },
+    "options": {
+        "canvas": {
+            "height": 256,
+            "width": 256
+        }
+    }
+}

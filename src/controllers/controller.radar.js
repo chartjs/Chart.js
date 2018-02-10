@@ -30,6 +30,7 @@ module.exports = function(Chart) {
 			var meta = me.getMeta();
 			var line = meta.dataset;
 			var points = meta.data;
+			var options = me.chart.options;
 			var custom = line.custom || {};
 			var dataset = me.getDataset();
 			var lineElementOptions = me.chart.options.elements.line;
@@ -50,7 +51,8 @@ module.exports = function(Chart) {
 				// Model
 				_model: {
 					// Appearance
-					tension: custom.tension ? custom.tension : helpers.valueOrDefault(dataset.lineTension, lineElementOptions.tension),
+					// This option gives lines the ability to span gaps
+					spanGaps: (dataset.spanGaps !== undefined ? dataset.spanGaps : options.spanGaps),
 					backgroundColor: custom.backgroundColor ? custom.backgroundColor : (dataset.backgroundColor || lineElementOptions.backgroundColor),
 					borderWidth: custom.borderWidth ? custom.borderWidth : (dataset.borderWidth || lineElementOptions.borderWidth),
 					borderColor: custom.borderColor ? custom.borderColor : (dataset.borderColor || lineElementOptions.borderColor),

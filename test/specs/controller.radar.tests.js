@@ -1,4 +1,6 @@
 describe('Chart.controllers.radar', function() {
+	describe('auto', jasmine.specsFromFixtures('controller.radar'));
+
 	it('Should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'radar',
@@ -479,5 +481,20 @@ describe('Chart.controllers.radar', function() {
 		var meta1 = chart.getDatasetMeta(1);
 		expect(meta0.data[0]._model.radius).toBe(10);
 		expect(meta1.data[0]._model.radius).toBe(20);
+	});
+
+	it('should allow spanGaps to be set to true', function() {
+		var chart = window.acquireChart({
+			type: 'radar',
+			data: {
+				datasets: [{
+					data: [10, 15, NaN, 4],
+					spanGaps: true,
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4'],
+			}
+		});
+		var meta = chart.getDatasetMeta(0);
+		expect(meta.dataset._model.spanGaps).toBe(true);
 	});
 });
