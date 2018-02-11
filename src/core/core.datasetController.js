@@ -247,7 +247,6 @@ module.exports = function(Chart) {
 			var dataset = this.chart.data.datasets[element._datasetIndex];
 			var index = element._index;
 			var custom = element.custom || {};
-			var valueOrDefault = helpers.valueAtIndexOrDefault;
 			var getHoverColor = helpers.getHoverColor;
 			var model = element._model;
 
