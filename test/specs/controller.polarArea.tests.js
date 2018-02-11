@@ -329,15 +329,17 @@ describe('Chart.controllers.polarArea', function() {
 		chart.options.elements.arc.backgroundColor = 'rgb(45, 46, 47)';
 		chart.options.elements.arc.borderColor = 'rgb(50, 51, 52)';
 		chart.options.elements.arc.borderWidth = 10.1;
-		chart.update();
-		expect(arc._model.backgroundColor).toBe('rgb(45, 46, 47)');
-		expect(arc._model.borderColor).toBe('rgb(50, 51, 52)');
-		expect(arc._model.borderWidth).toBe(10.1);
+
 		meta.controller.setHoverStyle(arc);
 		chart.update();
 
+		expect(arc._model.backgroundColor).toBe('rgb(45, 46, 47)');
+		expect(arc._model.borderColor).toBe('rgb(50, 51, 52)');
+		expect(arc._model.borderWidth).toBe(10.1);
+
 		meta.controller.removeHoverStyle(arc);
 		chart.update();
+
 		expect(arc._model.backgroundColor).toBe('rgb(45, 46, 47)');
 		expect(arc._model.borderColor).toBe('rgb(50, 51, 52)');
 		expect(arc._model.borderWidth).toBe(10.1);

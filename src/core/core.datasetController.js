@@ -257,9 +257,18 @@ module.exports = function(Chart) {
 				borderWidth: model.borderWidth
 			};
 
-			model.backgroundColor = custom.hoverBackgroundColor ? custom.hoverBackgroundColor : valueOrDefault(dataset.hoverBackgroundColor, index, getHoverColor(model.backgroundColor));
-			model.borderColor = custom.hoverBorderColor ? custom.hoverBorderColor : valueOrDefault(dataset.hoverBorderColor, index, getHoverColor(model.borderColor));
-			model.borderWidth = custom.hoverBorderWidth ? custom.hoverBorderWidth : valueOrDefault(dataset.hoverBorderWidth, index, model.borderWidth);
+			model.backgroundColor
+					= custom.hoverBackgroundColor
+					? custom.hoverBackgroundColor
+					: helpers.valueAtIndexOrDefault(dataset.hoverBackgroundColor, index, getHoverColor(model.backgroundColor));
+			model.borderColor
+					= custom.hoverBorderColor
+					? custom.hoverBorderColor
+					: helpers.valueAtIndexOrDefault(dataset.hoverBorderColor, index, getHoverColor(model.borderColor));
+			model.borderWidth
+					= custom.hoverBorderWidth
+					? custom.hoverBorderWidth
+					: helpers.valueAtIndexOrDefault(dataset.hoverBorderWidth, index, model.borderWidth);
 		},
 
 		/**

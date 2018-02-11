@@ -461,32 +461,6 @@ module.exports = function(Chart) {
 
 			helpers.canvas.unclipArea(chart.ctx);
 		},
-
-		setHoverStyle: function(element) {
-			var dataset = this.chart.data.datasets[element._datasetIndex];
-			var index = element._index;
-			var custom = element.custom || {};
-			var model = element._model;
-
-			element.$previousStyle = {
-				backgroundColor: model.backgroundColor,
-				borderColor: model.borderColor,
-				borderWidth: model.borderWidth
-			};
-
-			model.backgroundColor
-					= custom.hoverBackgroundColor
-					? custom.hoverBackgroundColor
-					: helpers.valueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.getHoverColor(model.backgroundColor));
-			model.borderColor
-					= custom.hoverBorderColor
-					? custom.hoverBorderColor
-					: helpers.valueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.getHoverColor(model.borderColor));
-			model.borderWidth
-					= custom.hoverBorderWidth
-					? custom.hoverBorderWidth
-					: helpers.valueAtIndexOrDefault(dataset.hoverBorderWidth, index, model.borderWidth);
-		},
 	});
 
 	Chart.controllers.horizontalBar = Chart.controllers.bar.extend({
