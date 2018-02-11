@@ -488,10 +488,10 @@ module.exports = function(Chart) {
 					: helpers.valueAtIndexOrDefault(dataset.hoverBorderWidth, index, model.borderWidth);
 		},
 
-		removeHoverStyle: function(rectangle) {
-			helpers.merge(rectangle._model, rectangle.$previousStyle || {});
-			delete rectangle.$previousStyle;
-		}
+		removeHoverStyle: function(element) {
+			helpers.merge(element._model, element.$previousStyle || {});
+			delete element.$previousStyle;
+		},
 	});
 
 	Chart.controllers.horizontalBar = Chart.controllers.bar.extend({
