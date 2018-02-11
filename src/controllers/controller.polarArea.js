@@ -197,6 +197,19 @@ module.exports = function(Chart) {
 			Chart.DatasetController.prototype.removeHoverStyle.call(this, arc, this.chart.options.elements.arc);
 		},
 
+		/* removeHoverStyle: function(element, elementOpts) {
+			elementOpts = elementOpts || {};
+			var dataset = this.chart.data.datasets[element._datasetIndex];
+			var index = element._index;
+			var custom = element.custom || {};
+			var valueOrDefault = helpers.valueAtIndexOrDefault;
+			var model = element._model;
+
+			model.backgroundColor = custom.backgroundColor ? custom.backgroundColor : valueOrDefault(dataset.backgroundColor, index, elementOpts.backgroundColor);
+			model.borderColor = custom.borderColor ? custom.borderColor : valueOrDefault(dataset.borderColor, index, elementOpts.borderColor);
+			model.borderWidth = custom.borderWidth ? custom.borderWidth : valueOrDefault(dataset.borderWidth, index, elementOpts.borderWidth);
+		}, */
+
 		countVisibleElements: function() {
 			var dataset = this.getDataset();
 			var meta = this.getMeta();

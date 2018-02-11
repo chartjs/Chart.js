@@ -157,7 +157,7 @@ module.exports = function(Chart) {
 					= custom.hoverRadius
 					? custom.hoverRadius
 					: helpers.valueAtIndexOrDefault(dataset.pointHoverRadius, index, this.chart.options.elements.point.hoverRadius);
-			model.backgroundColor 
+			model.backgroundColor
 					= custom.hoverBackgroundColor
 					? custom.hoverBackgroundColor
 					: helpers.valueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.getHoverColor(model.backgroundColor));
