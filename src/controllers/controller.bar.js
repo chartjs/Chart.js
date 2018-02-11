@@ -474,10 +474,8 @@ module.exports = function(Chart) {
 					if (!isNaN(scale.getRightValue(Yvalue[1])) && !isNaN(scale.getRightValue(Yvalue[0]))) {
 						rects[i].draw();
 					}
-				} else {
-					if (!isNaN(scale.getRightValue(Yvalue))) {
+				} else if (!isNaN(scale.getRightValue(Yvalue))) {
 						rects[i].draw();
-					}
 				}
 			}
 
