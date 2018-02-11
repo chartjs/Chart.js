@@ -90,9 +90,9 @@ defaults._set('horizontalBar', {
 				//  float-bar support, if y arguments are array tooltip will show bottom and up values
 				var Yvalue = data.datasets[item.datasetIndex].data[item.index];
 				if (helpers.isArray(Yvalue)) {
-					datasetLabel + ': ' + Yvalue[0] + ' - ' + Yvalue[1];
+					datasetLabel += ': ' + Yvalue[0] + ' - ' + Yvalue[1];
 				} else {
-					datasetLabel + ': ' + item.xLabel;
+					datasetLabel += ': ' + item.xLabel;
 				}
 				return datasetLabel;
 			}
@@ -469,8 +469,8 @@ module.exports = function(Chart) {
 
 			//  float-bar support, if y arguments are array function will use bottom value as bar start point
 			for (; i < ilen; ++i) {
-			var Yvalue = dataset.data[i];
-				if(helpers.isArray(Yvalue)) {
+				var Yvalue = dataset.data[i];
+				if (helpers.isArray(Yvalue)) {
 					if (!isNaN(scale.getRightValue(Yvalue[1])) && !isNaN(scale.getRightValue(Yvalue[0]))) {
 						rects[i].draw();
 					}

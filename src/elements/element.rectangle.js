@@ -133,16 +133,16 @@ module.exports = Element.extend({
 		var corner = cornerAt(0);
 		ctx.moveTo(corner[0], corner[1]);
 		//	float-bar support, let's rectangle allow to have all borders, assign corners_count to 5 instead of 4, so we are allowing to fill all sides.
-		var corners_count = 4;
+		var cornersCount = 4;
 
 		if (borderSkipped === 'none') {
-			corners_count = 5;
+			cornersCount = 5;
 		}
 
-        for (var i = 1; i < corners_count; i++) {
-            corner = cornerAt(i);
-            ctx.lineTo(corner[0], corner[1]);
-        }
+		for (var i = 1; i < cornersCount; i++) {
+			corner = cornerAt(i);
+			ctx.lineTo(corner[0], corner[1]);
+		}
 
 		ctx.fill();
 		if (borderWidth) {
