@@ -68,14 +68,13 @@ defaults._set('global', {
 				if (label) {
 					label += ': ';
 				}
-
 				//	float-bar support, if y arguments are array tooltip will show bottom and up values
-                if (!helpers.isArray(data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index])) {
-                    label += tooltipItem.yLabel;
-                } else {
-                    label += data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index][0] + ' - ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index][1];
-                }
-
+				var Yvalue = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+				if (helpers.isArray(Yvalue)) {
+					label += Yvalue[0] + ' - ' + Yvalue[1];
+				} else {
+					label += tooltipItem.yLabel;
+				}
 				return label;
 			},
 			labelColor: function(tooltipItem, chart) {
