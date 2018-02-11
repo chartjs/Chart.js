@@ -299,14 +299,14 @@ module.exports = function(Chart) {
 			}
 		},
 
-		setHoverStyle: function(point) {
+		setHoverStyle: function(element) {
 			// Point
-			var dataset = this.chart.data.datasets[point._datasetIndex];
-			var index = point._index;
-			var custom = point.custom || {};
-			var model = point._model;
+			var dataset = this.chart.data.datasets[element._datasetIndex];
+			var index = element._index;
+			var custom = element.custom || {};
+			var model = element._model;
 
-			point.$previousStyle = {
+			element.$previousStyle = {
 				backgroundColor: model.backgroundColor,
 				borderColor: model.borderColor,
 				borderWidth: model.borderWidth,

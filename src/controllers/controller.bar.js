@@ -462,13 +462,13 @@ module.exports = function(Chart) {
 			helpers.canvas.unclipArea(chart.ctx);
 		},
 
-		setHoverStyle: function(rectangle) {
-			var dataset = this.chart.data.datasets[rectangle._datasetIndex];
-			var index = rectangle._index;
-			var custom = rectangle.custom || {};
-			var model = rectangle._model;
+		setHoverStyle: function(element) {
+			var dataset = this.chart.data.datasets[element._datasetIndex];
+			var index = element._index;
+			var custom = element.custom || {};
+			var model = element._model;
 
-			rectangle.$previousStyle = {
+			element.$previousStyle = {
 				backgroundColor: model.backgroundColor,
 				borderColor: model.borderColor,
 				borderWidth: model.borderWidth
