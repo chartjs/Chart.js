@@ -142,7 +142,13 @@ module.exports = function(Chart) {
 					var meta = chart.getDatasetMeta(datasetIndex);
 					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 						helpers.each(dataset.data, function(rawValue, index) {
-							var value = +me.getRightValue(rawValue);
+							//	float-bar support, if y arguments are array scales will check Y value for min&max values
+							var value;
+							if (helpers.isArray(rawValue)) {
+								value = +me.getRightValue(rawValue[1]);
+							} else {
+								value = +me.getRightValue(rawValue);
+							}
 							// invalid, hidden and negative values are ignored
 							if (isNaN(value) || meta.data[index].hidden || value < 0) {
 								return;
@@ -159,7 +165,6 @@ module.exports = function(Chart) {
 							} else if (value > me.max) {
 								me.max = value;
 							}
-
 							if (value !== 0 && (me.minNotZero === null || value < me.minNotZero)) {
 								me.minNotZero = value;
 							}

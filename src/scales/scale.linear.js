@@ -106,7 +106,7 @@ module.exports = function(Chart) {
 					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 						helpers.each(dataset.data, function(rawValue, index) {
 							//	float-bar support, if y arguments are array scales will check Y value for min&max values
-							var value = 0;
+							var value;
 							if (helpers.isArray(rawValue)) {
 								value = +me.getRightValue(rawValue[1]);
 							} else {
