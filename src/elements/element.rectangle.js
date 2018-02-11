@@ -133,8 +133,8 @@ module.exports = Element.extend({
 		var corner = cornerAt(0);
 		ctx.moveTo(corner[0], corner[1]);
 
-        //float-bar support, let's rectangle allow to have all borders, assign corners_count to 5 instead of 4, so we are allowing to fill all sides.
-        if(borderSkipped == 'none') {
+        //	float-bar support, let's rectangle allow to have all borders, assign corners_count to 5 instead of 4, so we are allowing to fill all sides.
+        if (borderSkipped == 'none') {
             var corners_count = 5;
         } else {
             var corners_count = 4;

@@ -87,13 +87,13 @@ defaults._set('horizontalBar', {
 
 			label: function(item, data) {
 				var datasetLabel = data.datasets[item.datasetIndex].label || '';
-
-                //float-bar support, if y arguments are array tooltip will show bottom and up values
-                if(!helpers.isArray(data.datasets[item.datasetIndex].data[item.index])) {
-                    return datasetLabel + ': ' + item.xLabel;
+				//  float-bar support, if y arguments are array tooltip will show bottom and up values
+				if (!helpers.isArray(data.datasets[item.datasetIndex].data[item.index])) {
+                    datasetLabel + ': ' + item.xLabel;
                 } else {
-                    return datasetLabel + ': ' +  data.datasets[item.datasetIndex].data[item.index][0] + ' - ' + data.datasets[item.datasetIndex].data[item.index][1];
+                    datasetLabel + ': ' + data.datasets[item.datasetIndex].data[item.index][0] + ' - ' + data.datasets[item.datasetIndex].data[item.index][1];
                 }
+                return datasetLabel;
 			}
 		},
 		mode: 'index',
@@ -225,8 +225,8 @@ module.exports = function(Chart) {
 			var custom = rectangle.custom || {};
 			var rectangleOptions = chart.options.elements.rectangle;
 
-			//float-bar support, if y arguments are array lets override rectangles styles, assigning no skippingBorder
-            if(helpers.isArray(dataset.data[index])) {
+			//  float-bar support, if y arguments are array lets override rectangles styles, assigning no skippingBorder
+            if (helpers.isArray(dataset.data[index])) {
                 rectangleOptions.borderSkipped = 'none';
             }
 
@@ -394,11 +394,11 @@ module.exports = function(Chart) {
 			var meta = me.getMeta();
 			var scale = me.getValueScale();
 			var datasets = chart.data.datasets;
-            //float-bar support, if y arguments are array function will use top - bottom value to calculate bar height
+            //  float-bar support, if y arguments are array function will use top - bottom value to calculate bar height
             var value = helpers.isArray(datasets[datasetIndex].data[index]) ? (scale.getRightValue(datasets[datasetIndex].data[index][1]) - scale.getRightValue(datasets[datasetIndex].data[index][0])) : scale.getRightValue(datasets[datasetIndex].data[index]);
             var stacked = scale.options.stacked;
 			var stack = meta.stack;
-            //float-bar support, if y arguments are array function will use bottom value as bar start point
+            //  float-bar support, if y arguments are array function will use bottom value as bar start point
             var start = helpers.isArray(datasets[datasetIndex].data[index]) ? datasets[datasetIndex].data[index][0] : 0;
             var i, imeta, ivalue, base, head, size;
 
@@ -466,7 +466,7 @@ module.exports = function(Chart) {
 
 			helpers.canvas.clipArea(chart.ctx, chart.chartArea);
 
-            //float-bar support, if y arguments are array function will use bottom value as bar start point
+            //  float-bar support, if y arguments are array function will use bottom value as bar start point
             for (; i < ilen; ++i) {
                 if(!helpers.isArray(dataset.data[i])) {
                     if (!isNaN(scale.getRightValue(dataset.data[i]))) {
