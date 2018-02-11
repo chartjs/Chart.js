@@ -193,12 +193,8 @@ module.exports = function(Chart) {
 			arc.pivot();
 		},
 
-		removeHoverStyle: function(arc) {
-			Chart.DatasetController.prototype.removeHoverStyle.call(this, arc, this.chart.options.elements.arc);
-		},
-
-		/* removeHoverStyle: function(element, elementOpts) {
-			elementOpts = elementOpts || {};
+		removeHoverStyle: function(element) {
+			var elementOpts = this.chart.options.elements.arc;
 			var dataset = this.chart.data.datasets[element._datasetIndex];
 			var index = element._index;
 			var custom = element.custom || {};
@@ -208,7 +204,7 @@ module.exports = function(Chart) {
 			model.backgroundColor = custom.backgroundColor ? custom.backgroundColor : valueOrDefault(dataset.backgroundColor, index, elementOpts.backgroundColor);
 			model.borderColor = custom.borderColor ? custom.borderColor : valueOrDefault(dataset.borderColor, index, elementOpts.borderColor);
 			model.borderWidth = custom.borderWidth ? custom.borderWidth : valueOrDefault(dataset.borderWidth, index, elementOpts.borderWidth);
-		}, */
+		},
 
 		countVisibleElements: function() {
 			var dataset = this.getDataset();

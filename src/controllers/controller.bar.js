@@ -487,11 +487,6 @@ module.exports = function(Chart) {
 					? custom.hoverBorderWidth
 					: helpers.valueAtIndexOrDefault(dataset.hoverBorderWidth, index, model.borderWidth);
 		},
-
-		removeHoverStyle: function(element) {
-			helpers.merge(element._model, element.$previousStyle || {});
-			delete element.$previousStyle;
-		},
 	});
 
 	Chart.controllers.horizontalBar = Chart.controllers.bar.extend({

@@ -170,10 +170,5 @@ module.exports = function(Chart) {
 					? custom.hoverBorderWidth
 					: helpers.valueAtIndexOrDefault(dataset.pointHoverBorderWidth, index, model.borderWidth);
 		},
-
-		removeHoverStyle: function(element) {
-			helpers.merge(element._model, element.$previousStyle || {});
-			delete element.$previousStyle;
-		},
 	});
 };
