@@ -301,7 +301,7 @@ describe('Chart.controllers.polarArea', function() {
 		expect(arc._model.borderWidth).toBe(5.5);
 	});
 
-	fit('should remove hover styles', function() {
+	it('should remove hover styles', function() {
 		var chart = window.acquireChart({
 			type: 'polarArea',
 			data: {

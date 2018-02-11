@@ -238,7 +238,7 @@ module.exports = function(Chart) {
 			}
 		},
 
-		/* removeHoverStyle: function(element, elementOpts) {
+		removeHoverStyle: function(element, elementOpts) {
 			elementOpts = elementOpts || {};
 			var dataset = this.chart.data.datasets[element._datasetIndex];
 			var index = element._index;
@@ -249,11 +249,11 @@ module.exports = function(Chart) {
 			model.backgroundColor = custom.backgroundColor ? custom.backgroundColor : valueOrDefault(dataset.backgroundColor, index, elementOpts.backgroundColor);
 			model.borderColor = custom.borderColor ? custom.borderColor : valueOrDefault(dataset.borderColor, index, elementOpts.borderColor);
 			model.borderWidth = custom.borderWidth ? custom.borderWidth : valueOrDefault(dataset.borderWidth, index, elementOpts.borderWidth);
-		}, */
-		removeHoverStyle: function(element) {
+		},
+		/*removeHoverStyle: function(element) {
 			helpers.merge(element._model, element.$previousStyle || {});
 			delete element.$previousStyle;
-		},
+		},*/
 
 		setHoverStyle: function(element) {
 			var dataset = this.chart.data.datasets[element._datasetIndex];
