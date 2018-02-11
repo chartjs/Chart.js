@@ -475,7 +475,7 @@ module.exports = function(Chart) {
 						rects[i].draw();
 					}
 				} else if (!isNaN(scale.getRightValue(Yvalue))) {
-						rects[i].draw();
+					rects[i].draw();
 				}
 			}
 

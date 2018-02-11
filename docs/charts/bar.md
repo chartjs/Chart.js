@@ -6,17 +6,17 @@ A bar chart provides a way of showing data values represented as vertical bars. 
     "type": "bar",
     "data": {
         "labels": [
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
+            "January", 
+            "February", 
+            "March", 
+            "April", 
+            "May", 
+            "June", 
             "July"
         ],
         "datasets": [{
             "label": "My First Dataset",
-            "data": [65, 59, 80, 81, 56, 55, 40],
+            "data": [65, 59, 80, 81, 56, 55, 40, [10, 20]],
             "fill": false,
             "backgroundColor": [
                 "rgba(255, 99, 132, 0.2)",
@@ -86,6 +86,7 @@ Options are:
 * 'left'
 * 'top'
 * 'right'
+* 'none' - in the case of floating bar chart we need to have all borders, so you can pass 'none' to draw all borders
 
 ## Configuration Options
 
@@ -146,10 +147,10 @@ Sample:     |==============|
 
 ## Data Structure
 
-The `data` property of a dataset for a bar chart is specified as a an array of numbers. Each point in the data array corresponds to the label at the same index on the x axis.
-
+The `data` property of a dataset for a bar chart is specified as a an array of numbers or arrays. Each point in the data array corresponds to the label at the same index on the x axis.
+For floating bar chart you can use array for a specific Y value passing two numbers. First one will be used as lowY and second one as highY.
 ```javascript
-data: [20, 10]
+data: [20, 10, [10, 20]]
 ```
 
 You can also specify the dataset as x/y coordinates when using the [time scale](../axes/cartesian/time.md#time-cartesian-axis).
@@ -196,7 +197,7 @@ A horizontal bar chart is a variation on a vertical bar chart. It is sometimes u
         "labels": ["January", "February", "March", "April", "May", "June", "July"],
         "datasets": [{
             "label": "My First Dataset",
-            "data": [65, 59, 80, 81, 56, 55, 40],
+            "data": [65, 59, 80, 81, 56, 55, 40, [10, 20]],
             "fill": false,
             "backgroundColor": [
                 "rgba(255, 99, 132, 0.2)",
