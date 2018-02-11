@@ -94,15 +94,16 @@
 			});
 		});
 
-
+		// eslint-disable-next-line no-unused-vars
 		function toggleSmooth(btn) {
 			var value = btn.classList.toggle('btn-on');
 			Chart.helpers.each(Chart.instances, function(chart) {
-				chart.options.elements.line.tension = value? 0.4 : 0.000001;
+				chart.options.elements.line.tension = value ? 0.4 : 0.000001;
 				chart.update();
 			});
 		}
 
+		// eslint-disable-next-line no-unused-vars
 		function randomize() {
 			var seed = utils.rand();
 			Chart.helpers.each(Chart.instances, function(chart) {

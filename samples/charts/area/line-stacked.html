@@ -7,9 +7,9 @@
 	<script src="../../utils.js"></script>
 	<style>
 		canvas {
-				-moz-user-select: none;
-				-webkit-user-select: none;
-				-ms-user-select: none;
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
 		}
 	</style>
 </head>
@@ -26,70 +26,70 @@
 	<button id="addData">Add Data</button>
 	<button id="removeData">Remove Data</button>
 	<script>
-		var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+		var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 		var config = {
 			type: 'line',
 			data: {
-				labels: ["January", "February", "March", "April", "May", "June", "July"],
+				labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
 				datasets: [{
-					label: "My First dataset",
+					label: 'My First dataset',
 					borderColor: window.chartColors.red,
 					backgroundColor: window.chartColors.red,
 					data: [
-                        randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor()
-                    ],
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor()
+					],
 				}, {
-					label: "My Second dataset",
+					label: 'My Second dataset',
 					borderColor: window.chartColors.blue,
 					backgroundColor: window.chartColors.blue,
 					data: [
-                        randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor()
-                    ],
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor()
+					],
 				}, {
-					label: "My Third dataset",
+					label: 'My Third dataset',
 					borderColor: window.chartColors.green,
 					backgroundColor: window.chartColors.green,
 					data: [
-                        randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor()
-                    ],
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor()
+					],
 				}, {
-					label: "My Third dataset",
+					label: 'My Third dataset',
 					borderColor: window.chartColors.yellow,
 					backgroundColor: window.chartColors.yellow,
 					data: [
-                        randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor()
-                    ],
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor()
+					],
 				}]
 			},
 			options: {
 				responsive: true,
-				title:{
-					display:true,
-					text:"Chart.js Line Chart - Stacked Area"
+				title: {
+					display: true,
+					text: 'Chart.js Line Chart - Stacked Area'
 				},
 				tooltips: {
 					mode: 'index',
@@ -116,7 +116,7 @@
 		};
 
 		window.onload = function() {
-			var ctx = document.getElementById("canvas").getContext("2d");
+			var ctx = document.getElementById('canvas').getContext('2d');
 			window.myLine = new Chart(ctx, config);
 		};
 
@@ -171,7 +171,7 @@
 		document.getElementById('removeData').addEventListener('click', function() {
 			config.data.labels.splice(-1, 1); // remove the label first
 
-			config.data.datasets.forEach(function(dataset, datasetIndex) {
+			config.data.datasets.forEach(function(dataset) {
 				dataset.data.pop();
 			});
 

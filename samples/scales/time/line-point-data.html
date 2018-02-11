@@ -7,11 +7,11 @@
 	<script src="../../../dist/Chart.js"></script>
 	<script src="../../utils.js"></script>
 	<style>
-    canvas {
-        -moz-user-select: none;
-        -webkit-user-select: none;
-        -ms-user-select: none;
-    }
+		canvas {
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+		}
 	</style>
 </head>
 
@@ -38,7 +38,7 @@
 			type: 'line',
 			data: {
 				datasets: [{
-					label: "Dataset with string point data",
+					label: 'Dataset with string point data',
 					backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
 					borderColor: window.chartColors.red,
 					fill: false,
@@ -56,7 +56,7 @@
 						y: randomScalingFactor()
 					}],
 				}, {
-					label: "Dataset with date object point data",
+					label: 'Dataset with date object point data',
 					backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
 					borderColor: window.chartColors.blue,
 					fill: false,
@@ -77,24 +77,24 @@
 			},
 			options: {
 				responsive: true,
-				title:{
-					display:true,
-					text:"Chart.js Time Point Data"
+				title: {
+					display: true,
+					text: 'Chart.js Time Point Data'
 				},
 				scales: {
 					xAxes: [{
-						type: "time",
+						type: 'time',
 						display: true,
 						scaleLabel: {
 							display: true,
 							labelString: 'Date'
 						},
-                        ticks: {
-                            major: {
-                                fontStyle: "bold",
-                                fontColor: "#FF0000"
-                            }
-                        }
+						ticks: {
+							major: {
+								fontStyle: 'bold',
+								fontColor: '#FF0000'
+							}
+						}
 					}],
 					yAxes: [{
 						display: true,
@@ -108,7 +108,7 @@
 		};
 
 		window.onload = function() {
-			var ctx = document.getElementById("canvas").getContext("2d");
+			var ctx = document.getElementById('canvas').getContext('2d');
 			window.myLine = new Chart(ctx, config);
 		};
 
@@ -122,10 +122,15 @@
 			window.myLine.update();
 		});
 
+		// TODO : fix issue with addData
+		// See https://github.com/chartjs/Chart.js/issues/5197
+		// The Add Data button for this sample has no effect.
+		// An error is logged in the console.
 		document.getElementById('addData').addEventListener('click', function() {
 			if (config.data.datasets.length > 0) {
-				var numTicks = myLine.scales['x-axis-0'].ticksAsTimestamps.length;
-				var lastTime = numTicks ? moment(myLine.scales['x-axis-0'].ticksAsTimestamps[numTicks - 1]) : moment();
+				var numTicks = window.myLine.scales['x-axis-0'].ticksAsTimestamps.length;
+				var lastTime = numTicks ? moment(window.myLine.scales['x-axis-0'].ticksAsTimestamps[numTicks - 1]) : moment();
+
 				var newTime = lastTime
 					.clone()
 					.add(1, 'day')
@@ -143,7 +148,7 @@
 		});
 
 		document.getElementById('removeData').addEventListener('click', function() {
-			config.data.datasets.forEach(function(dataset, datasetIndex) {
+			config.data.datasets.forEach(function(dataset) {
 				dataset.data.pop();
 			});
 

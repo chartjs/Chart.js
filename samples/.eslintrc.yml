@@ -1,0 +1,9 @@
+globals:
+  $: true
+  Chart: true
+  Samples: true
+  moment: true
+  randomScalingFactor: true
+
+rules:
+  no-new: 0
