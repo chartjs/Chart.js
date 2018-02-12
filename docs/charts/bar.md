@@ -6,12 +6,12 @@ A bar chart provides a way of showing data values represented as vertical bars. 
     "type": "bar",
     "data": {
         "labels": [
-            "January", 
-            "February", 
-            "March", 
-            "April", 
-            "May", 
-            "June", 
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
             "July"
         ],
         "datasets": [{
