@@ -1,3 +1,25 @@
+# hudl/Chart.js
+*Hudl maintained fork of* [Chart.js](http://www.chartjs.org)
+
+## Hudl features
+### Centerd x-axis labels on time series
+
+[Implementation](https://github.com/hudl/Chart.js/pull/2)
+
+#### How to use
+This works on time series charts with evenly spaced data points and unevenly spaced tick marks  
+*example*
+
+
+*Tell your chart to center the remaining labels*  
+Add `centerLabels: true` to `scales.xAxes.ticks` within your `options` object.
+
+## Making changes
+*Warning*: Changes must be made using ES5 syntax. `node_modules` is not run through babel before being built.
+
+## Creating a new release
+placeholder
+
 # Chart.js
 
 [![travis](https://img.shields.io/travis/chartjs/Chart.js.svg?style=flat-square&maxAge=60)](https://travis-ci.org/chartjs/Chart.js) [![coveralls](https://img.shields.io/coveralls/chartjs/Chart.js.svg?style=flat-square&maxAge=600)](https://coveralls.io/github/chartjs/Chart.js?branch=master) [![codeclimate](https://img.shields.io/codeclimate/maintainability/chartjs/Chart.js.svg?style=flat-square&maxAge=600)](https://codeclimate.com/github/chartjs/Chart.js) [![slack](https://img.shields.io/badge/slack-chartjs-blue.svg?style=flat-square&maxAge=3600)](https://chartjs-slack.herokuapp.com/)
