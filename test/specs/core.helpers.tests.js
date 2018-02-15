@@ -194,8 +194,12 @@ describe('Core helper tests', function() {
 
 	it('should do a log10 operation', function() {
 		expect(helpers.log10(0)).toBe(-Infinity);
-		expect(helpers.log10(1)).toBe(0);
-		expect(helpers.log10(1000)).toBeCloseTo(3, 1e-9);
+
+		// Check all allowed powers of 10, which should return integer values
+		var maxPowerOf10 = Math.floor(helpers.log10(Number.MAX_VALUE));
+		for (var i = 0; i < maxPowerOf10; i += 1) {
+			expect(helpers.log10(Math.pow(10, i))).toBe(i);
+		}
 	});
 
 	it('should correctly determine if two numbers are essentially equal', function() {
