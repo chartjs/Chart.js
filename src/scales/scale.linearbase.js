@@ -14,6 +14,8 @@ function generateTicks(generationOptions, dataRange) {
 	// "nice number" algorithm. See http://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
 	// for details.
 
+	var factor;
+	var precision;
 	var spacing;
 
 	if (generationOptions.stepSize && generationOptions.stepSize > 0) {
@@ -22,10 +24,10 @@ function generateTicks(generationOptions, dataRange) {
 		var niceRange = helpers.niceNum(dataRange.max - dataRange.min, false);
 		spacing = helpers.niceNum(niceRange / (generationOptions.maxTicks - 1), true);
 
-		var spacingPrecision = generationOptions.precision;
-		if (spacingPrecision !== undefined) {
+		precision = generationOptions.precision;
+		if (precision !== undefined) {
 			// If the user specified a precision, round to that number of decimal places
-			var factor = Math.pow(10, spacingPrecision);
+			factor = Math.pow(10, precision);
 			spacing = Math.ceil(spacing * factor) / factor;
 		}
 	}
@@ -49,7 +51,7 @@ function generateTicks(generationOptions, dataRange) {
 		numSpaces = Math.ceil(numSpaces);
 	}
 
-	var precision = 1;
+	precision = 1;
 	if (spacing < 1) {
 		precision = Math.pow(10, spacing.toString().length - 2);
 		niceMin = Math.round(niceMin * precision) / precision;
