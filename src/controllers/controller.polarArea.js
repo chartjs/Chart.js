@@ -139,7 +139,6 @@ module.exports = function(Chart) {
 			meta.count = me.countVisibleElements();
 
 			var start = opts.startAngle || 0;
-			me._starts = {};
 			for (var i = 0; i < meta.count; i++) {
 				me._starts[i] = start;
 				var angle = me.computeAngle(dataset.data[i], i);
