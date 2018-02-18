@@ -116,6 +116,10 @@ module.exports = function(Chart) {
 
 		linkScales: helpers.noop,
 
+		_starts: {},
+
+		_angles: {},
+
 		update: function(reset) {
 			var me = this;
 			var chart = me.chart;
@@ -123,6 +127,7 @@ module.exports = function(Chart) {
 			var meta = me.getMeta();
 			var opts = chart.options;
 			var arcOpts = opts.elements.arc;
+			var dataset = me.getDataset();
 			var minSize = Math.min(chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
 			chart.outerRadius = Math.max((minSize - arcOpts.borderWidth / 2) / 2, 0);
 			chart.innerRadius = Math.max(opts.cutoutPercentage ? (chart.outerRadius / 100) * (opts.cutoutPercentage) : 1, 0);
@@ -132,6 +137,15 @@ module.exports = function(Chart) {
 			me.innerRadius = me.outerRadius - chart.radiusLength;
 
 			meta.count = me.countVisibleElements();
+
+			var start = opts.startAngle || 0;
+			me._starts = {};
+			for (var i = 0; i < meta.count; i++) {
+				me._starts[i] = start;
+				var angle = me.computeAngle(dataset.data[i], i);
+				me._angles[i] = angle;
+				start += angle;
+			}
 
 			helpers.each(meta.data, function(arc, index) {
 				me.updateElement(arc, index, reset);
@@ -147,7 +161,6 @@ module.exports = function(Chart) {
 			var scale = chart.scale;
 			var labels = chart.data.labels;
 
-			var circumference = me.calculateCircumference(dataset.data[index]);
 			var centerX = scale.xCenter;
 			var centerY = scale.yCenter;
 
@@ -164,8 +177,8 @@ module.exports = function(Chart) {
 			// var negHalfPI = -0.5 * Math.PI;
 			var datasetStartAngle = opts.startAngle;
 			var distance = arc.hidden ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
-			var startAngle = datasetStartAngle + (circumference * visibleCount);
-			var endAngle = startAngle + (arc.hidden ? 0 : circumference);
+			var startAngle = me._starts[index];
+			var endAngle = startAngle + (arc.hidden ? 0 : me._angles[index]);
 
 			var resetRadius = animationOpts.animateScale ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
 
@@ -211,12 +224,29 @@ module.exports = function(Chart) {
 			return count;
 		},
 
-		calculateCircumference: function(value) {
+		computeAngle: function(value, index) {
+			var me = this;
 			var count = this.getMeta().count;
-			if (count > 0 && !isNaN(value)) {
-				return (2 * Math.PI) / count;
+			if (count <= 0 || isNaN(value)) {
+				return 0;
 			}
-			return 0;
+
+			var defaultAngle = (2 * Math.PI) / count;
+			var angleOption = me.chart.options.angle || defaultAngle;
+			var resolve = helpers.options.resolve;
+			var dataset = me.getDataset();
+
+			// Scriptable options
+			var context = {
+				chart: me.chart,
+				dataIndex: index,
+				dataset: dataset,
+				datasetIndex: me.index
+			};
+
+			return resolve([
+				angleOption
+			], context, index);
 		}
 	});
 };

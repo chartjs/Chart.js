@@ -1,0 +1,21 @@
+{
+    "debug": true,
+    "config": {
+        "debug": true,
+        "type": "polarArea",
+        "data": {
+            "labels": ["A", "B", "C", "D", "E"],
+            "datasets": [{
+                "data": [11, 16, 21, 7, 10]
+            }]
+        },
+        "options": {
+            "angle": [
+                1.0566, 1.7566, 1.0566, 2.1566, 0.2566
+            ],
+            "responsive": false,
+            "legend": false,
+            "title": false
+        }
+    }
+}
