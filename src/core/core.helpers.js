@@ -163,7 +163,7 @@ module.exports = function(Chart) {
 			// Check for whole powers of 10,
 			// which due to floating point rounding error should be corrected.
 			var powerOf10 = Math.round(exponent);
-			var isPowerOf10 = (x / Math.pow(10, powerOf10)) === 1;
+			var isPowerOf10 = x === Math.pow(10, powerOf10);
 
 			return isPowerOf10 ? powerOf10 : exponent;
 		};
