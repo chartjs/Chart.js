@@ -116,10 +116,6 @@ module.exports = function(Chart) {
 
 		linkScales: helpers.noop,
 
-		_starts: {},
-
-		_angles: {},
-
 		update: function(reset) {
 			var me = this;
 			var chart = me.chart;
@@ -129,6 +125,10 @@ module.exports = function(Chart) {
 			var arcOpts = opts.elements.arc;
 			var dataset = me.getDataset();
 			var minSize = Math.min(chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
+			var start = opts.startAngle || 0;
+			var starts = [];
+			var angles = [];
+			var i, ilen, angle;
 			chart.outerRadius = Math.max((minSize - arcOpts.borderWidth / 2) / 2, 0);
 			chart.innerRadius = Math.max(opts.cutoutPercentage ? (chart.outerRadius / 100) * (opts.cutoutPercentage) : 1, 0);
 			chart.radiusLength = (chart.outerRadius - chart.innerRadius) / chart.getVisibleDatasetCount();
@@ -138,13 +138,15 @@ module.exports = function(Chart) {
 
 			meta.count = me.countVisibleElements();
 
-			var start = opts.startAngle || 0;
-			for (var i = 0; i < meta.count; i++) {
-				me._starts[i] = start;
-				var angle = me.computeAngle(dataset.data[i], i);
-				me._angles[i] = angle;
+			for (i = 0, ilen = dataset.data.length; i < ilen; i++) {
+				starts[i] = start;
+				angle = me._computeAngle(i);
+				angles[i] = angle;
 				start += angle;
 			}
+
+			me._starts = starts;
+			me._angles = angles;
 
 			helpers.each(meta.data, function(arc, index) {
 				me.updateElement(arc, index, reset);
@@ -223,17 +225,17 @@ module.exports = function(Chart) {
 			return count;
 		},
 
-		computeAngle: function(value, index) {
+		_computeAngle: function(index) {
 			var me = this;
 			var count = this.getMeta().count;
-			if (count <= 0 || isNaN(value)) {
+			var dataset = me.getDataset();
+			var meta = me.getMeta();
+			var value = dataset.data[index];
+			var isHidden = meta.data[index].hidden;
+
+			if (count <= 0 || isNaN(value) || isHidden) {
 				return 0;
 			}
-
-			var defaultAngle = (2 * Math.PI) / count;
-			var angleOption = me.chart.options.angle || defaultAngle;
-			var resolve = helpers.options.resolve;
-			var dataset = me.getDataset();
 
 			// Scriptable options
 			var context = {
@@ -243,8 +245,9 @@ module.exports = function(Chart) {
 				datasetIndex: me.index
 			};
 
-			return resolve([
-				angleOption
+			return helpers.options.resolve([
+				me.chart.options.angle,
+				(2 * Math.PI) / count
 			], context, index);
 		}
 	});
