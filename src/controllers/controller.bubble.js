@@ -87,6 +87,7 @@ module.exports = function(Chart) {
 				borderWidth: options.borderWidth,
 				hitRadius: options.hitRadius,
 				pointStyle: options.pointStyle,
+				pointRotation: options.pointRotation,
 				radius: reset ? 0 : options.radius,
 				skip: custom.skip || isNaN(x) || isNaN(y),
 				x: x,
@@ -154,7 +155,8 @@ module.exports = function(Chart) {
 				'hoverBorderWidth',
 				'hoverRadius',
 				'hitRadius',
-				'pointStyle'
+				'pointStyle',
+				'pointRotation'
 			];
 
 			for (i = 0, ilen = keys.length; i < ilen; ++i) {
@@ -173,7 +175,6 @@ module.exports = function(Chart) {
 				dataset.radius,
 				options.radius
 			], context, index);
-
 			return values;
 		}
 	});

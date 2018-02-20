@@ -148,6 +148,21 @@ module.exports = function(Chart) {
 			return borderWidth;
 		},
 
+		getPointRotation: function(point, index) {
+			var pointRotation = this.chart.options.elements.point.pointRotation;
+			var dataset = this.getDataset();
+			var custom = point.custom || {};
+
+			if (!isNaN(custom.pointRotation)) {
+				pointRotation = custom.pointRotation;
+			} else if (!isNaN(dataset.pointRotation) || helpers.isArray(dataset.pointRotation)) {
+				pointRotation = helpers.valueAtIndexOrDefault(dataset.pointRotation, index, pointRotation);
+			} else if (!isNaN(dataset.pointRotation)) {
+				pointRotation = dataset.pointRotation;
+			}
+			return pointRotation;
+		},
+
 		updateElement: function(point, index, reset) {
 			var me = this;
 			var meta = me.getMeta();
@@ -185,6 +200,7 @@ module.exports = function(Chart) {
 				// Appearance
 				radius: custom.radius || helpers.valueAtIndexOrDefault(dataset.pointRadius, index, pointOptions.radius),
 				pointStyle: custom.pointStyle || helpers.valueAtIndexOrDefault(dataset.pointStyle, index, pointOptions.pointStyle),
+				pointRotation: me.getPointRotation(point, index),
 				backgroundColor: me.getPointBackgroundColor(point, index),
 				borderColor: me.getPointBorderColor(point, index),
 				borderWidth: me.getPointBorderWidth(point, index),
