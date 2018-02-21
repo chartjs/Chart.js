@@ -6,7 +6,17 @@ var helpers = require('../helpers/index');
 
 defaults._set('radar', {
 	scale: {
-		type: 'radialLinear'
+		type: 'radialLinear',
+		ticks: {
+			// Boolean - Show a backdrop to the scale label
+			showLabelBackdrop: true,
+			// String - The colour of the label backdrop
+			backdropColor: 'rgba(255,255,255,0.75)',
+			// Number - The backdrop padding above & below the label in pixels
+			backdropPaddingY: 2,
+			// Number - The backdrop padding to the side of the label in pixels
+			backdropPaddingX: 2
+		}
 	},
 	elements: {
 		line: {
