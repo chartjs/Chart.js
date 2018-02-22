@@ -135,7 +135,7 @@ module.exports = Element.extend({
 		//	float-bar support, let's rectangle allow to have all borders, assign corners_count to 5 instead of 4, so we are allowing to fill all sides.
 		var cornersCount = 4;
 
-		if (borderSkipped === 'none') {
+		if (borderSkipped === false) {
 			cornersCount = 5;
 		}
 

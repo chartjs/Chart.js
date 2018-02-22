@@ -142,13 +142,7 @@ module.exports = function(Chart) {
 					var meta = chart.getDatasetMeta(datasetIndex);
 					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 						helpers.each(dataset.data, function(rawValue, index) {
-							//	float-bar support, if y arguments are array scales will check Y value for min&max values
-							var value;
-							if (helpers.isArray(rawValue)) {
-								value = +me.getRightValue(rawValue[1]);
-							} else {
-								value = +me.getRightValue(rawValue);
-							}
+							var value = +me.getRightValue(rawValue);
 							// invalid, hidden and negative values are ignored
 							if (isNaN(value) || meta.data[index].hidden || value < 0) {
 								return;

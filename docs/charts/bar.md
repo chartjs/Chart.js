@@ -86,7 +86,7 @@ Options are:
 * 'left'
 * 'top'
 * 'right'
-* 'none' - in the case of floating bar chart we need to have all borders, so you can pass 'none' to draw all borders
+* false - in the case of floating bar chart we need to have all borders, so you can set var to false to draw all borders
 
 ## Configuration Options
 
@@ -148,7 +148,7 @@ Sample:     |==============|
 ## Data Structure
 
 The `data` property of a dataset for a bar chart is specified as a an array of numbers or arrays. Each point in the data array corresponds to the label at the same index on the x axis.
-For floating bar chart you can use array for a specific Y value passing two numbers. First one will be used as lowY and second one as highY.
+For floating bar chart you can use array for a specific Y value passing two numbers. First one will be used as min value and second one as max value for a bar.
 ```javascript
 data: [20, 10, [10, 20]]
 ```
