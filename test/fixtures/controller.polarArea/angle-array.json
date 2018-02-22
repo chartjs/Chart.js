@@ -1,7 +1,5 @@
 {
-    "debug": true,
     "config": {
-        "debug": true,
         "type": "polarArea",
         "data": {
             "labels": ["A", "B", "C", "D", "E"],

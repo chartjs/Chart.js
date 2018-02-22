@@ -126,8 +126,8 @@ module.exports = function(Chart) {
 			var dataset = me.getDataset();
 			var minSize = Math.min(chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
 			var start = opts.startAngle || 0;
-			var starts = [];
-			var angles = [];
+			var starts = me._starts = [];
+			var angles = me._angles = [];
 			var i, ilen, angle;
 			chart.outerRadius = Math.max((minSize - arcOpts.borderWidth / 2) / 2, 0);
 			chart.innerRadius = Math.max(opts.cutoutPercentage ? (chart.outerRadius / 100) * (opts.cutoutPercentage) : 1, 0);
@@ -144,9 +144,6 @@ module.exports = function(Chart) {
 				angles[i] = angle;
 				start += angle;
 			}
-
-			me._starts = starts;
-			me._angles = angles;
 
 			helpers.each(meta.data, function(arc, index) {
 				me.updateElement(arc, index, reset);
@@ -225,15 +222,16 @@ module.exports = function(Chart) {
 			return count;
 		},
 
+		/**
+		 * @private
+		 */
 		_computeAngle: function(index) {
 			var me = this;
 			var count = this.getMeta().count;
 			var dataset = me.getDataset();
 			var meta = me.getMeta();
-			var value = dataset.data[index];
-			var isHidden = meta.data[index].hidden;
 
-			if (count <= 0 || isNaN(value) || isHidden) {
+			if (isNaN(dataset.data[index]) || meta.data[index].hidden) {
 				return 0;
 			}
 
