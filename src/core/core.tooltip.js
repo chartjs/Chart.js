@@ -507,11 +507,8 @@ module.exports = function(Chart) {
 				tooltipPosition = Chart.Tooltip.positioners[opts.position].call(me, active, me._eventPosition);
 
 				var tooltipItems = [];
-				var border = active[0]._xScale.left + 7; // 7 used for graph offset
-				if (existingModel.x > border) {
-					for (i = 0, len = active.length; i < len; ++i) {
-						tooltipItems.push(createTooltipItem(active[i]));
-					}
+				for (i = 0, len = active.length; i < len; ++i) {
+					tooltipItems.push(createTooltipItem(active[i]));
 				}
 
 				// If the user provided a filter function, use it to modify the tooltip items
@@ -853,7 +850,6 @@ module.exports = function(Chart) {
 			} else if (e.x > globalChartArea) {
 				me._active = me._chart.getElementsAtEventForMode(e, options.mode, options);
 			}
-
 
 			// Remember Last Actives
 			changed = !helpers.arrayEquals(me._active, me._lastActive);
