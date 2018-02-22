@@ -162,16 +162,6 @@ module.exports = function(Chart) {
 			var centerX = scale.xCenter;
 			var centerY = scale.yCenter;
 
-			// If there is NaN data before us, we need to calculate the starting angle correctly.
-			// We could be way more efficient here, but its unlikely that the polar area chart will have a lot of data
-			var visibleCount = 0;
-			var meta = me.getMeta();
-			for (var i = 0; i < index; ++i) {
-				if (!isNaN(dataset.data[i]) && !meta.data[i].hidden) {
-					++visibleCount;
-				}
-			}
-
 			// var negHalfPI = -0.5 * Math.PI;
 			var datasetStartAngle = opts.startAngle;
 			var distance = arc.hidden ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
