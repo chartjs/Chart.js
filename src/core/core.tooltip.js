@@ -98,6 +98,7 @@ defaults._set('global', {
 
 module.exports = function(Chart) {
 
+	var globalChartArea = 0;
 	/**
  	 * Helper method to merge the opacity into a color
  	 */
@@ -267,6 +268,7 @@ module.exports = function(Chart) {
 		var model = tooltip._model;
 		var chart = tooltip._chart;
 		var chartArea = tooltip._chart.chartArea;
+		globalChartArea = chartArea.left;
 		var xAlign = 'center';
 		var yAlign = 'center';
 
@@ -848,9 +850,10 @@ module.exports = function(Chart) {
 			// Find Active Elements for tooltips
 			if (e.type === 'mouseout') {
 				me._active = [];
-			} else {
+			} else if (e.x > globalChartArea) {
 				me._active = me._chart.getElementsAtEventForMode(e, options.mode, options);
 			}
+
 
 			// Remember Last Actives
 			changed = !helpers.arrayEquals(me._active, me._lastActive);
