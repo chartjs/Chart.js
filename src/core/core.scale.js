@@ -521,7 +521,7 @@ module.exports = function(Chart) {
 					rawValue = rawValue[0];
 				} else if (!isNaN(rawValue[1])) {
 					rawValue = rawValue[1];
- 				}
+				}
 			}
 			// Null and undefined values first
 			if (helpers.isNullOrUndef(rawValue)) {

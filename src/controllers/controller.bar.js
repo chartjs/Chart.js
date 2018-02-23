@@ -411,13 +411,13 @@ module.exports = function(Chart) {
 						imeta.stack === stack &&
 						imeta.controller.getValueScaleId() === scale.id &&
 						chart.isDatasetVisible(i)) {
-						// float-bar support for stacked chars, if y arguments are array we don''t need to omit this here. Start for next char value in some point should include value of prev point + min Y value
-						var Yvalue = datasets[i].data[index];
-						ivalue = scale.getRightValue(Yvalue);
-						if (helpers.isArray(Yvalue)) {
-							 start += 0;
+						// float-bar support for stacked chars, if y arguments are array we don't need to omit this here. Start for next char value in some point should include value of prev point + min Y value
+						var Yvalue1 = datasets[i].data[index];
+						ivalue = scale.getRightValue(Yvalue1);
+						if (helpers.isArray(Yvalue1)) {
+							start += 0;
 						} else if ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0)) {
-							 start += ivalue;
+							start += ivalue;
 						}
 					}
 				}
