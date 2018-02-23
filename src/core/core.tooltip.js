@@ -839,13 +839,14 @@ module.exports = function(Chart) {
 			var me = this;
 			var options = me._options;
 			var changed = false;
+			var border = me._chart.chartArea;
 
 			me._lastActive = me._lastActive || [];
 
 			// Find Active Elements for tooltips
 			if (e.type === 'mouseout') {
 				me._active = [];
-			} else if (e.x > me._chart.chartArea.left) {
+			} else if (e.x > border.left && e.x < border.right) {
 				me._active = me._chart.getElementsAtEventForMode(e, options.mode, options);
 			}
 
