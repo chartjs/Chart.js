@@ -515,9 +515,13 @@ module.exports = function(Chart) {
 
 		// Get the correct value. NaN bad inputs, If the value type is object get the x or y based on whether we are horizontal or not
 		getRightValue: function(rawValue) {
-			// Float-bar support. Check if array so be aware of min/max Y values.
+			// Float-bar support. Check if array so be aware of min/max Y values. Return min for stacked chars and max for general char
 			if (helpers.isArray(rawValue)) {
-				rawValue = rawValue[0];
+				if ((this.chart.options.scales.yAxes[0].stacked || this.chart.options.scales.xAxes[0].stacked) && !isNaN(rawValue[0])) {
+					rawValue = rawValue[0];
+				} else if (!isNaN(rawValue[1])) {
+					rawValue = rawValue[1];
+ 				}
 			}
 			// Null and undefined values first
 			if (helpers.isNullOrUndef(rawValue)) {
