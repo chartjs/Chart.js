@@ -228,7 +228,7 @@ module.exports = function(Chart) {
 
 			//  float-bar support, if y arguments are array lets override rectangles styles, assigning no skippingBorder
 			if (helpers.isArray(dataset.data[index])) {
-				rectangleOptions.borderSkipped = null;
+				custom.borderSkipped = null;
 			}
 
 			rectangle._xScale = me.getScaleForId(meta.xAxisID);
@@ -239,7 +239,7 @@ module.exports = function(Chart) {
 			rectangle._model = {
 				datasetLabel: dataset.label,
 				label: chart.data.labels[index],
-				borderSkipped: custom.borderSkipped ? custom.borderSkipped : rectangleOptions.borderSkipped,
+				borderSkipped: custom.borderSkipped || custom.borderSkipped === null  ? custom.borderSkipped : rectangleOptions.borderSkipped,
 				backgroundColor: custom.backgroundColor ? custom.backgroundColor : helpers.valueAtIndexOrDefault(dataset.backgroundColor, index, rectangleOptions.backgroundColor),
 				borderColor: custom.borderColor ? custom.borderColor : helpers.valueAtIndexOrDefault(dataset.borderColor, index, rectangleOptions.borderColor),
 				borderWidth: custom.borderWidth ? custom.borderWidth : helpers.valueAtIndexOrDefault(dataset.borderWidth, index, rectangleOptions.borderWidth)
