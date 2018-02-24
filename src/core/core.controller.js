@@ -691,6 +691,9 @@ module.exports = function(Chart) {
 			if (!dataset._meta) {
 				dataset._meta = {};
 			}
+			if (!dataset.data) {
+				dataset.data = [];
+			}
 			dataset.data = me.formatDataset(dataset.data);
 			var meta = dataset._meta[me.id];
 			if (!meta) {
@@ -983,6 +986,9 @@ module.exports = function(Chart) {
 			var result = false;
 			for (var i = 0; i < dataArray.length; i++) {
 				var item = dataArray[i];
+				if (item === null || item === undefined || item.x === undefined) {
+					break;
+				}
 				if (labelArray.indexOf(item.x) > -1) {
 					result = true;
 				}
