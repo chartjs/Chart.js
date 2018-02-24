@@ -67,16 +67,26 @@ module.exports = Element.extend({
 			bottom = vm.base;
 			signX = 1;
 			signY = bottom > top ? 1 : -1;
-			borderSkipped = vm.borderSkipped === null ? null : 'bottom';
-		} else {
-			// horizontal bar
-			left = vm.base;
-			right = vm.x;
-			top = vm.y - vm.height / 2;
+			// no border support
+			if (vm.borderSkipped === null) {
+				borderSkipped = null;
+			} else {
+				borderSkipped = vm.borderSkipped || 'bottom';
+			}
+        } else {
+            // horizontal bar
+            left = vm.base;
+            right = vm.x;
+            top = vm.y - vm.height / 2;
 			bottom = vm.y + vm.height / 2;
 			signX = right > left ? 1 : -1;
 			signY = 1;
-			borderSkipped = vm.borderSkipped === null ? null : 'left';
+			// no border support
+			if (vm.borderSkipped === null) {
+				borderSkipped = null;
+			} else {
+				borderSkipped = vm.borderSkipped || 'left';
+			}
 		}
 
 		// Canvas doesn't allow us to stroke inside the width so we can
@@ -120,15 +130,9 @@ module.exports = Element.extend({
 
 		// Find first (starting) corner with fallback to 'bottom'
 		var borders = ['bottom', 'left', 'top', 'right'];
-		var startCorner;
-		//	float-bar support, no border support
-		if (borderSkipped === null) {
+		var startCorner = borders.indexOf(borderSkipped, 0);
+		if (startCorner === -1) {
 			startCorner = 0;
-		} else {
-			startCorner = borders.indexOf(borderSkipped, 0);
-			if (startCorner === -1) {
-				startCorner = 0;
-			}
 		}
 
 		function cornerAt(index) {
