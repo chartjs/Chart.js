@@ -73,11 +73,11 @@ module.exports = Element.extend({
 			} else {
 				borderSkipped = vm.borderSkipped || 'bottom';
 			}
-        } else {
-            // horizontal bar
-            left = vm.base;
-            right = vm.x;
-            top = vm.y - vm.height / 2;
+		} else {
+			// horizontal bar
+			left = vm.base;
+			right = vm.x;
+			top = vm.y - vm.height / 2;
 			bottom = vm.y + vm.height / 2;
 			signX = right > left ? 1 : -1;
 			signY = 1;
