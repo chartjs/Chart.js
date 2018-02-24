@@ -239,7 +239,7 @@ module.exports = function(Chart) {
 			rectangle._model = {
 				datasetLabel: dataset.label,
 				label: chart.data.labels[index],
-				borderSkipped: custom.borderSkipped || custom.borderSkipped === null  ? custom.borderSkipped : rectangleOptions.borderSkipped,
+				borderSkipped: custom.borderSkipped || custom.borderSkipped === null ? custom.borderSkipped : rectangleOptions.borderSkipped,
 				backgroundColor: custom.backgroundColor ? custom.backgroundColor : helpers.valueAtIndexOrDefault(dataset.backgroundColor, index, rectangleOptions.backgroundColor),
 				borderColor: custom.borderColor ? custom.borderColor : helpers.valueAtIndexOrDefault(dataset.borderColor, index, rectangleOptions.borderColor),
 				borderWidth: custom.borderWidth ? custom.borderWidth : helpers.valueAtIndexOrDefault(dataset.borderWidth, index, rectangleOptions.borderWidth)
