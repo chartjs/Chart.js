@@ -691,7 +691,7 @@ module.exports = function(Chart) {
 			if (!dataset._meta) {
 				dataset._meta = {};
 			}
-
+			dataset.data = me.formatDataset(dataset.data);
 			var meta = dataset._meta[me.id];
 			if (!meta) {
 				meta = dataset._meta[me.id] = {
@@ -933,7 +933,62 @@ module.exports = function(Chart) {
 			me.lastActive = me.active;
 
 			return changed;
-		}
+		},
+		/**
+		 * format the data list if the data is missing some points in the datasets.
+		 * @private
+		 * @param {array} dataArray array to format
+		 * @return {array} the formated array
+		 */
+		formatDataset: function(dataArray) {
+			var labels = this.chart.data.labels;
+			var tmp = dataArray.slice(0);
+			var labelLen = labels.length;
+			var dataLen = dataArray.length;
+			var result = dataArray;
+			var match = this.dataInLabel(tmp, labels)
+			if (match && dataLen < labelLen) {
+				for (var i = 0; i < labels.length; i++) {
+					var label = labels[i];
+					result[i] = {x: label, y: this.getY(label, tmp)};
+				}
+			}
+			return result;
+		},
+		/**
+		* return the y data of the label, if no this label, return null
+		* @private
+		* @param {string} label the label in the labels array
+		* @param {array} dataArray the data in the datasets.
+		* @return {number} the y data according to the label
+		*/
+		getY: function(label, dataArray) {
+			var y = null;
+			for (var i = 0; i < dataArray.length; i++) {
+				var item = dataArray[i];
+				if (item.x === label) {
+					y = item.y;
+				}
+			}
+			return y;
+        },
+        /**
+		* find if the data in datasets is existed in the labels
+		* @private
+		* @param {array} dataArray the data in the datasets
+		* @param {array} labelArray the label in the labels array
+		* @return {boolean} the match result, true is included
+		*/
+        dataInLabel: function(dataArray, labelArray) {
+			var result = false
+			for (var i = 0; i < dataArray.length; i++) {
+				var item = dataArray[i]
+				if (labelArray.indexOf(item.x) > -1) {
+					result = true
+				}
+			}
+			return result
+		},
 	});
 
 	/**
