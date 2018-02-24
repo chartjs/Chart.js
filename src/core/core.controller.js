@@ -946,7 +946,7 @@ module.exports = function(Chart) {
 			var labelLen = labels.length;
 			var dataLen = dataArray.length;
 			var result = dataArray;
-			var match = this.dataInLabel(tmp, labels)
+			var match = this.dataInLabel(tmp, labels);
 			if (match && dataLen < labelLen) {
 				for (var i = 0; i < labels.length; i++) {
 					var label = labels[i];
@@ -971,23 +971,23 @@ module.exports = function(Chart) {
 				}
 			}
 			return y;
-        },
-        /**
+		},
+		/**
 		* find if the data in datasets is existed in the labels
 		* @private
 		* @param {array} dataArray the data in the datasets
 		* @param {array} labelArray the label in the labels array
 		* @return {boolean} the match result, true is included
 		*/
-        dataInLabel: function(dataArray, labelArray) {
-			var result = false
+		dataInLabel: function(dataArray, labelArray) {
+			var result = false;
 			for (var i = 0; i < dataArray.length; i++) {
-				var item = dataArray[i]
+				var item = dataArray[i];
 				if (labelArray.indexOf(item.x) > -1) {
-					result = true
+					result = true;
 				}
 			}
-			return result
+			return result;
 		},
 	});
 
