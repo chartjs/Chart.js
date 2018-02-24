@@ -694,6 +694,7 @@ module.exports = function(Chart) {
 			if (!dataset.data) {
 				dataset.data = [];
 			}
+			// format the data if the data array is missing some point according to the labels
 			dataset.data = me.formatDataset(dataset.data);
 			var meta = dataset._meta[me.id];
 			if (!meta) {
