@@ -67,7 +67,7 @@ module.exports = Element.extend({
 			bottom = vm.base;
 			signX = 1;
 			signY = bottom > top ? 1 : -1;
-			borderSkipped = vm.borderSkipped === null ? null : 'bottom';
+			borderSkipped = vm.borderSkipped || 'bottom';
 		} else {
 			// horizontal bar
 			left = vm.base;
@@ -76,7 +76,7 @@ module.exports = Element.extend({
 			bottom = vm.y + vm.height / 2;
 			signX = right > left ? 1 : -1;
 			signY = 1;
-			borderSkipped = vm.borderSkipped === null ? null : 'left';
+			borderSkipped = vm.borderSkipped || 'left';
 		}
 
 		// Canvas doesn't allow us to stroke inside the width so we can
