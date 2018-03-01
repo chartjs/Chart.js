@@ -722,7 +722,7 @@ module.exports = function(Chart) {
 
 			let labelOffsets = [];
 			for (let i = 0; i < displayedTicks.length; i++) {
-				if (me.ticks.length > (displayedTicks[displayedTicks.length - 1].index + 1)) {
+				if (me.ticks.length >= (displayedTicks[displayedTicks.length - 1].index + 1)) {
 					let rightTickIndex;
 					if (displayedTicks[i + 1]) {
 						rightTickIndex = displayedTicks[i + 1].index;
@@ -806,7 +806,7 @@ module.exports = function(Chart) {
 						if (index === 0) {
 							centeringOffset += 7;
 						}
-						if (index === labelOffsets[labelOffsets.length - 1].index) {
+						if (labelOffsets[labelOffsets.length - 1] && (index === labelOffsets[labelOffsets.length - 1].index)) {
 							centeringOffset -= 7;
 						}
 					}
