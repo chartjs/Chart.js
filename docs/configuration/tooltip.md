@@ -6,7 +6,7 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
-| `enabled` | `Boolean` | `true` | Are tooltips enabled
+| `enabled` | `Boolean` | `true` | Are on-canvas tooltips enabled
 | `custom` | `Function` | `null` | See [custom tooltip](#external-custom-tooltips) section.
 | `mode` | `String` | `'nearest'` | Sets which elements appear in the tooltip. [more...](../general/interactions/modes.md#interaction-modes).
 | `intersect` | `Boolean` | `true` | if true, the tooltip mode applies only when the mouse position intersects with an element. If false, the mode will be applied at all times.
@@ -30,7 +30,7 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 | `footerFontSize` | `Number` | `12` | Footer font size
 | `footerFontStyle` | `String` | `'bold'` | Footer font style
 | `footerFontColor` | `Color` | `'#fff'` | Footer font color
-| `footerSpacing` | `Number` | `2` | Spacing to add to top and bottom of each fotter line.
+| `footerSpacing` | `Number` | `2` | Spacing to add to top and bottom of each footer line.
 | `footerMarginTop` | `Number` | `6` | Margin to add before drawing the footer.
 | `xPadding` | `Number` | `6` | Padding to add on left and right of tooltip.
 | `yPadding` | `Number` | `6` | Padding to add on top and bottom of tooltip.
@@ -63,9 +63,9 @@ Example:
 Chart.Tooltip.positioners.custom = function(elements, eventPosition) {
     /** @type {Chart.Tooltip} */
     var tooltip = this;
-	    
+
     /* ... */
-	    
+
     return {
         x: 0,
         y: 0
@@ -102,6 +102,32 @@ All functions are called with the same arguments: a [tooltip item](#tooltip-item
 | `beforeFooter` | `Array[tooltipItem], data` | Returns text to render before the footer section.
 | `footer` | `Array[tooltipItem], data` | Returns text to render as the footer of the tooltip.
 | `afterFooter` | `Array[tooltipItem], data` | Text to render after the footer section
+
+### Label Callback
+
+The label callback can change the text that displays for a given data point. A common example to round data values; the following example rounds the data to two decimal places.
+
+```javascript
+var chart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+        tooltips: {
+            callbacks: {
+                label: function(tooltipItem, data) {
+                    var label = data.datasets[tooltipItem.datasetIndex].label || '';
+
+                    if (label) {
+                        label += ': ';
+                    }
+                    label += Math.round(tooltipItem.yLabel * 100) / 100;
+                    return label;
+                }
+            }
+        }
+    }
+});
+```
 
 ### Label Color Callback
 
@@ -165,6 +191,9 @@ var myPieChart = new Chart(ctx, {
     data: data,
     options: {
         tooltips: {
+            // Disable the on-canvas tooltip
+            enabled: false,
+
             custom: function(tooltipModel) {
                 // Tooltip Element
                 var tooltipEl = document.getElementById('chartjs-tooltip');
@@ -173,7 +202,7 @@ var myPieChart = new Chart(ctx, {
                 if (!tooltipEl) {
                     tooltipEl = document.createElement('div');
                     tooltipEl.id = 'chartjs-tooltip';
-                    tooltipEl.innerHTML = "<table></table>"
+                    tooltipEl.innerHTML = "<table></table>";
                     document.body.appendChild(tooltipEl);
                 }
 
@@ -212,7 +241,7 @@ var myPieChart = new Chart(ctx, {
                         var style = 'background:' + colors.backgroundColor;
                         style += '; border-color:' + colors.borderColor;
                         style += '; border-width: 2px';
-                        var span = '<span class="chartjs-tooltip-key" style="' + style + '"></span>';
+                        var span = '<span style="' + style + '"></span>';
                         innerHtml += '<tr><td>' + span + body + '</td></tr>';
                     });
                     innerHtml += '</tbody>';
@@ -226,11 +255,12 @@ var myPieChart = new Chart(ctx, {
 
                 // Display, position, and set styles for font
                 tooltipEl.style.opacity = 1;
+                tooltipEl.style.position = 'absolute';
                 tooltipEl.style.left = position.left + tooltipModel.caretX + 'px';
                 tooltipEl.style.top = position.top + tooltipModel.caretY + 'px';
-                tooltipEl.style.fontFamily = tooltipModel._fontFamily;
-                tooltipEl.style.fontSize = tooltipModel.fontSize;
-                tooltipEl.style.fontStyle = tooltipModel._fontStyle;
+                tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
+                tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
+                tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
                 tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
             }
         }
@@ -238,7 +268,7 @@ var myPieChart = new Chart(ctx, {
 });
 ```
 
-See `samples/tooltips/line-customTooltips.html` for examples on how to get started.
+See [samples](http://www.chartjs.org/samples/) for examples on how to get started with custom tooltips.
 
 ## Tooltip Model
 The tooltip model contains parameters that can be used to render the tooltip.

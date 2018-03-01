@@ -2,6 +2,7 @@
 
 var defaults = require('./core.defaults');
 var helpers = require('../helpers/index');
+var layouts = require('./core.layouts');
 
 module.exports = function(Chart) {
 
@@ -38,7 +39,7 @@ module.exports = function(Chart) {
 				scale.fullWidth = scale.options.fullWidth;
 				scale.position = scale.options.position;
 				scale.weight = scale.options.weight;
-				Chart.layoutService.addBox(chart, scale);
+				layouts.addBox(chart, scale);
 			});
 		}
 	};

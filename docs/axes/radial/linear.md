@@ -36,7 +36,7 @@ The following options are provided by the linear scale. They are all located in 
 
 Given the number of axis range settings, it is important to understand how they all interact with each other.
 
-The `suggestedMax` and `suggestedMin` settings only change the data values that are used to scale the axis. These are useful for extending the range of the axis while maintaing the auto fit behaviour.
+The `suggestedMax` and `suggestedMin` settings only change the data values that are used to scale the axis. These are useful for extending the range of the axis while maintaining the auto fit behaviour.
 
 ```javascript
 let minDataValue = Math.min(mostNegativeValue, options.ticks.suggestedMin);
@@ -58,7 +58,7 @@ let chart = new Chart(ctx, {
     options: {
         scale: {
             ticks: {
-                suggestedMin: 50
+                suggestedMin: 50,
                 suggestedMax: 100
             }
         }
@@ -104,7 +104,7 @@ The following options are used to configure the point labels that are shown on t
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
 | `callback` | `Function` | | Callback function to transform data labels to point labels. The default implementation simply returns the current string.
-| `fontColor` | `Color` | `'#666'` | Font color for point labels.
+| `fontColor` | `Color/Color[]` | `'#666'` | Font color for point labels.
 | `fontFamily` | `String` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family to use when rendering labels.
 | `fontSize` | `Number` | 10 | font size in pixels
 | `fontStyle` | `String` | `'normal'` | Font style to use when rendering point labels.

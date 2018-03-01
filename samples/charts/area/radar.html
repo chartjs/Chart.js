@@ -41,7 +41,7 @@
 			return values;
 		}
 
-		function generateLabels(config) {
+		function generateLabels() {
 			return utils.months({count: inputs.count});
 		}
 
@@ -100,7 +100,7 @@
 				filler: {
 					propagate: false
 				},
-				samples_filler_analyser: {
+				'samples-filler-analyser': {
 					target: 'chart-analyser'
 				}
 			}
@@ -112,18 +112,21 @@
 			options: options
 		});
 
+		// eslint-disable-next-line no-unused-vars
 		function togglePropagate(btn) {
 			var value = btn.classList.toggle('btn-on');
 			chart.options.plugins.filler.propagate = value;
 			chart.update();
 		}
 
+		// eslint-disable-next-line no-unused-vars
 		function toggleSmooth(btn) {
 			var value = btn.classList.toggle('btn-on');
-			chart.options.elements.line.tension = value? 0.4 : 0.000001;
+			chart.options.elements.line.tension = value ? 0.4 : 0.000001;
 			chart.update();
 		}
 
+		// eslint-disable-next-line no-unused-vars
 		function randomize() {
 			inputs.from = [];
 			chart.data.datasets.forEach(function(dataset) {

@@ -24,7 +24,6 @@
 		var MIN_XY = -150;
 		var MAX_XY = 100;
 
-		var presets = window.chartColors;
 		var utils = Samples.utils;
 
 		utils.srand(110);
@@ -106,13 +105,15 @@
 			options: options
 		});
 
+		// eslint-disable-next-line no-unused-vars
 		function randomize() {
 			chart.data.datasets.forEach(function(dataset) {
-				dataset.data = generateData()
+				dataset.data = generateData();
 			});
 			chart.update();
 		}
 
+		// eslint-disable-next-line no-unused-vars
 		function addDataset() {
 			chart.data.datasets.push({
 				data: generateData()
@@ -120,6 +121,7 @@
 			chart.update();
 		}
 
+		// eslint-disable-next-line no-unused-vars
 		function removeDataset() {
 			chart.data.datasets.shift();
 			chart.update();

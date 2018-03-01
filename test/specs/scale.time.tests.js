@@ -584,6 +584,115 @@ describe('Time scale tests', function() {
 		expect(xScale.getLabelForIndex(6, 0)).toBe('2015-01-10T12:00');
 	});
 
+	it('should get the correct label when time is specified as a string', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					xAxisID: 'xScale0',
+					data: [{t: '2015-01-01T20:00:00', y: 10}, {t: '2015-01-02T21:00:00', y: 3}]
+				}],
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'xScale0',
+						type: 'time',
+						position: 'bottom'
+					}],
+				}
+			}
+		});
+
+		var xScale = chart.scales.xScale0;
+		expect(xScale.getLabelForIndex(0, 0)).toBeTruthy();
+		expect(xScale.getLabelForIndex(0, 0)).toBe('2015-01-01T20:00:00');
+	});
+
+	it('should get the correct label for a timestamp with milliseconds', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					xAxisID: 'xScale0',
+					data: [
+						{t: +new Date('2018-01-08 05:14:23.234'), y: 10},
+						{t: +new Date('2018-01-09 06:17:43.426'), y: 3}
+					]
+				}],
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'xScale0',
+						type: 'time',
+						position: 'bottom'
+					}],
+				}
+			}
+		});
+
+		var xScale = chart.scales.xScale0;
+		var label = xScale.getLabelForIndex(0, 0);
+		expect(label).toEqual('Jan 8, 2018 5:14:23.234 am');
+	});
+
+	it('should get the correct label for a timestamp with time', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					xAxisID: 'xScale0',
+					data: [
+						{t: +new Date('2018-01-08 05:14:23'), y: 10},
+						{t: +new Date('2018-01-09 06:17:43'), y: 3}
+					]
+				}],
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'xScale0',
+						type: 'time',
+						position: 'bottom'
+					}],
+				}
+			}
+		});
+
+		var xScale = chart.scales.xScale0;
+		var label = xScale.getLabelForIndex(0, 0);
+		expect(label).toEqual('Jan 8, 2018 5:14:23 am');
+	});
+
+	it('should get the correct label for a timestamp representing a date', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					xAxisID: 'xScale0',
+					data: [
+						{t: +new Date('2018-01-08 00:00:00'), y: 10},
+						{t: +new Date('2018-01-09 00:00:00'), y: 3}
+					]
+				}],
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'xScale0',
+						type: 'time',
+						position: 'bottom'
+					}],
+				}
+			}
+		});
+
+		var xScale = chart.scales.xScale0;
+		var label = xScale.getLabelForIndex(0, 0);
+		expect(label).toEqual('Jan 8, 2018');
+	});
+
 	it('should get the correct pixel for only one data in the dataset', function() {
 		var chart = window.acquireChart({
 			type: 'line',
@@ -703,7 +812,7 @@ describe('Time scale tests', function() {
 				expect(getTicksLabels(scale)).toEqual([
 					'2017', '2019', '2020', '2025', '2042']);
 			});
-			it ('should correctly handle empty `data.labels`', function() {
+			it ('should correctly handle empty `data.labels` using "day" if `time.unit` is undefined`', function() {
 				var chart = this.chart;
 				var scale = chart.scales.x;
 
@@ -712,6 +821,19 @@ describe('Time scale tests', function() {
 
 				expect(scale.min).toEqual(+moment().startOf('day'));
 				expect(scale.max).toEqual(+moment().endOf('day') + 1);
+				expect(getTicksLabels(scale)).toEqual([]);
+			});
+			it ('should correctly handle empty `data.labels` using `time.unit`', function() {
+				var chart = this.chart;
+				var scale = chart.scales.x;
+				var options = chart.options.scales.xAxes[0];
+
+				options.time.unit = 'year';
+				chart.data.labels = [];
+				chart.update();
+
+				expect(scale.min).toEqual(+moment().startOf('year'));
+				expect(scale.max).toEqual(+moment().endOf('year') + 1);
 				expect(getTicksLabels(scale)).toEqual([]);
 			});
 		});
@@ -784,7 +906,7 @@ describe('Time scale tests', function() {
 				expect(getTicksLabels(scale)).toEqual([
 					'2017', '2018', '2019', '2020', '2025', '2042', '2043']);
 			});
-			it ('should correctly handle empty `data.labels`', function() {
+			it ('should correctly handle empty `data.labels` using "day" if `time.unit` is undefined`', function() {
 				var chart = this.chart;
 				var scale = chart.scales.x;
 
@@ -795,6 +917,21 @@ describe('Time scale tests', function() {
 				expect(scale.max).toEqual(+moment('2043', 'YYYY'));
 				expect(getTicksLabels(scale)).toEqual([
 					'2018', '2020', '2043']);
+			});
+			it ('should correctly handle empty `data.labels` and hidden datasets using `time.unit`', function() {
+				var chart = this.chart;
+				var scale = chart.scales.x;
+				var options = chart.options.scales.xAxes[0];
+
+				options.time.unit = 'year';
+				chart.data.labels = [];
+				var meta = chart.getDatasetMeta(1);
+				meta.hidden = true;
+				chart.update();
+
+				expect(scale.min).toEqual(+moment().startOf('year'));
+				expect(scale.max).toEqual(+moment().endOf('year') + 1);
+				expect(getTicksLabels(scale)).toEqual([]);
 			});
 		});
 	});

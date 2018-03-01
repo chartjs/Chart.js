@@ -18,13 +18,19 @@ In addition, many charts can be found on the [npm registry](https://www.npmjs.co
  - <a href="https://github.com/chartjs/chartjs-plugin-deferred" target="_blank">chartjs-plugin-deferred</a> - Defers initial chart update until chart scrolls into viewport.
  - <a href="https://github.com/compwright/chartjs-plugin-draggable" target="_blank">chartjs-plugin-draggable</a> - Makes select chart elements draggable with the mouse.
  - <a href="https://github.com/y-takey/chartjs-plugin-stacked100" target="_blank">chartjs-plugin-stacked100</a> - Draws 100% stacked bar chart.
+ - <a href="https://github.com/everestate/chartjs-plugin-waterfall" target="_blank">chartjs-plugin-waterfall</a> - Enables easy use of waterfall charts.
  - <a href="https://github.com/chartjs/chartjs-plugin-zoom" target="_blank">chartjs-plugin-zoom</a> - Enables zooming and panning on charts.
 
 In addition, many plugins can be found on the [npm registry](https://www.npmjs.com/search?q=chartjs-plugin-).
 
 ## Integrations
 
-### Angular
+### Angular (v2+)
+
+ - <a href="https://github.com/emn178/angular2-chartjs" target="_blank">emn178/angular2-chartjs</a>
+ - <a href="https://github.com/valor-software/ng2-charts" target="_blank">valor-software/ng2-charts</a>
+
+### Angular (v1)
  - <a href="https://github.com/jtblin/angular-chart.js" target="_blank">angular-chart.js</a>
  - <a href="https://github.com/carlcraig/tc-angular-chartjs" target="_blank">tc-angular-chartjs</a>
  - <a href="https://github.com/petermelias/angular-chartjs" target="_blank">angular-chartjs</a>
@@ -49,3 +55,9 @@ In addition, many plugins can be found on the [npm registry](https://www.npmjs.c
 
 ### Java
  - <a href="https://github.com/mdewilde/chart/" target="_blank">Chart.java</a>
+
+### GWT (Google Web toolkit)
+ - <a href="https://github.com/pepstock-org/Charba" target="_blank">Charba</a>
+
+### Ember.js
+ - <a href="https://github.com/aomran/ember-cli-chart" target="_blank">ember-cli-chart</a>

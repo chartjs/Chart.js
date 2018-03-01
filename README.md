@@ -1,6 +1,6 @@
 # Chart.js
 
-[![travis](https://img.shields.io/travis/chartjs/Chart.js.svg?style=flat-square&maxAge=60)](https://travis-ci.org/chartjs/Chart.js) [![codeclimate](https://img.shields.io/codeclimate/github/chartjs/Chart.js.svg?style=flat-square&maxAge=600)](https://codeclimate.com/github/chartjs/Chart.js) [![coveralls](https://img.shields.io/coveralls/chartjs/Chart.js.svg?style=flat-square&maxAge=600)](https://coveralls.io/github/chartjs/Chart.js?branch=master) [![slack](https://img.shields.io/badge/slack-Chart.js-blue.svg?style=flat-square&maxAge=3600)](https://chart-js-automation.herokuapp.com/)
+[![travis](https://img.shields.io/travis/chartjs/Chart.js.svg?style=flat-square&maxAge=60)](https://travis-ci.org/chartjs/Chart.js) [![coveralls](https://img.shields.io/coveralls/chartjs/Chart.js.svg?style=flat-square&maxAge=600)](https://coveralls.io/github/chartjs/Chart.js?branch=master) [![codeclimate](https://img.shields.io/codeclimate/maintainability/chartjs/Chart.js.svg?style=flat-square&maxAge=600)](https://codeclimate.com/github/chartjs/Chart.js) [![slack](https://img.shields.io/badge/slack-chartjs-blue.svg?style=flat-square&maxAge=3600)](https://chartjs-slack.herokuapp.com/)
 
 *Simple HTML5 Charts using the canvas element* [chartjs.org](http://www.chartjs.org)
 
@@ -19,11 +19,23 @@ To install via bower:
 bower install chart.js --save
 ```
 
-#### Selecting the Correct Build
+### Selecting the Correct Build
 
-Chart.js provides two different builds that are available for your use. The `Chart.js` and `Chart.min.js` files include Chart.js and the accompanying color parsing library. If this version is used and you require the use of the time axis, [Moment.js](http://momentjs.com/) will need to be included before Chart.js.
+Chart.js provides two different builds for you to choose: `Stand-Alone Build`, `Bundled Build`.
 
-The `Chart.bundle.js` and `Chart.bundle.min.js` builds include Moment.js in a single file. This version should be used if you require time axes and want a single file to include, select this version. Do not use this build if your application already includes Moment.js. If you do, Moment.js will be included twice, increasing the page load time and potentially introducing version issues.
+#### Stand-Alone Build
+Files:
+* `dist/Chart.js`
+* `dist/Chart.min.js`
+
+The stand-alone build includes Chart.js as well as the color parsing library. If this version is used, you are required to include [Moment.js](http://momentjs.com/) before Chart.js for the functionality of the time axis.
+
+#### Bundled Build
+Files:
+* `dist/Chart.bundle.js`
+* `dist/Chart.bundle.min.js`
+
+The bundled build includes Moment.js in a single file. You should use this version if you require time axes and want to include a single file. You should not use this build if your application already included Moment.js. Otherwise, Moment.js will be included twice which results in increasing page load time and possible version compatability issues.
 
 ## Documentation
 

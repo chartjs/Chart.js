@@ -35,7 +35,7 @@
 
 <body>
 	<div id="canvas-holder1" style="width:75%;">
-		<canvas id="chart"/>
+		<canvas id="chart"></canvas>
 	</div>
 	<script>
 		Chart.defaults.global.pointHitDetectionRadius = 1;
@@ -47,7 +47,7 @@
 			if (!tooltipEl) {
 				tooltipEl = document.createElement('div');
 				tooltipEl.id = 'chartjs-tooltip';
-				tooltipEl.innerHTML = "<table></table>"
+				tooltipEl.innerHTML = '<table></table>';
 				this._chart.canvas.parentNode.appendChild(tooltipEl);
 			}
 
@@ -85,7 +85,7 @@
 					var colors = tooltip.labelColors[i];
 					var style = 'background:' + colors.backgroundColor;
 					style += '; border-color:' + colors.borderColor;
-					style += '; border-width: 2px'; 
+					style += '; border-width: 2px';
 					var span = '<span class="chartjs-tooltip-key" style="' + style + '"></span>';
 					innerHtml += '<tr><td>' + span + body + '</td></tr>';
 				});
@@ -102,54 +102,54 @@
 			tooltipEl.style.opacity = 1;
 			tooltipEl.style.left = positionX + tooltip.caretX + 'px';
 			tooltipEl.style.top = positionY + tooltip.caretY + 'px';
-			tooltipEl.style.fontFamily = tooltip._fontFamily;
-			tooltipEl.style.fontSize = tooltip.fontSize;
-			tooltipEl.style.fontStyle = tooltip._fontStyle;
+			tooltipEl.style.fontFamily = tooltip._bodyFontFamily;
+			tooltipEl.style.fontSize = tooltip.bodyFontSize + 'px';
+			tooltipEl.style.fontStyle = tooltip._bodyFontStyle;
 			tooltipEl.style.padding = tooltip.yPadding + 'px ' + tooltip.xPadding + 'px';
 		};
 
 		var lineChartData = {
-			labels: ["January", "February", "March", "April", "May", "June", "July"],
+			labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
 			datasets: [{
-				label: "My First dataset",
+				label: 'My First dataset',
 				borderColor: window.chartColors.red,
 				pointBackgroundColor: window.chartColors.red,
 				fill: false,
 				data: [
-					randomScalingFactor(), 
-					randomScalingFactor(), 
-					randomScalingFactor(), 
-					randomScalingFactor(), 
-					randomScalingFactor(), 
-					randomScalingFactor(), 
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
 					randomScalingFactor()
 				]
 			}, {
-				label: "My Second dataset",
+				label: 'My Second dataset',
 				borderColor: window.chartColors.blue,
 				pointBackgroundColor: window.chartColors.blue,
 				fill: false,
 				data: [
-					randomScalingFactor(), 
-					randomScalingFactor(), 
-					randomScalingFactor(), 
-					randomScalingFactor(), 
-					randomScalingFactor(), 
-					randomScalingFactor(), 
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
 					randomScalingFactor()
 				]
 			}]
 		};
 
 		window.onload = function() {
-			var chartEl = document.getElementById("chart");
+			var chartEl = document.getElementById('chart');
 			window.myLine = new Chart(chartEl, {
 				type: 'line',
 				data: lineChartData,
 				options: {
-					title:{
-						display:true,
-						text:'Chart.js Line Chart - Custom Tooltips'
+					title: {
+						display: true,
+						text: 'Chart.js Line Chart - Custom Tooltips'
 					},
 					tooltips: {
 						enabled: false,

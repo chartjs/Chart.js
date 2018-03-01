@@ -339,6 +339,39 @@ describe('Chart.plugins', function() {
 
 			expect(plugin.hook).toHaveBeenCalled();
 			expect(plugin.hook.calls.first().args[1]).toEqual({a: 'foobar'});
+
+			delete Chart.defaults.global.plugins.a;
+		});
+
+		// https://github.com/chartjs/Chart.js/issues/5111#issuecomment-355934167
+		it('should invalidate cache when update plugin options', function() {
+			var plugin = {id: 'a', hook: function() {}};
+			var chart = window.acquireChart({
+				plugins: [plugin],
+				options: {
+					plugins: {
+						a: {
+							foo: 'foo'
+						}
+					}
+				},
+			});
+
+			spyOn(plugin, 'hook');
+
+			Chart.plugins.notify(chart, 'hook');
+
+			expect(plugin.hook).toHaveBeenCalled();
+			expect(plugin.hook.calls.first().args[1]).toEqual({foo: 'foo'});
+
+			chart.options.plugins.a = {bar: 'bar'};
+			chart.update();
+
+			plugin.hook.calls.reset();
+			Chart.plugins.notify(chart, 'hook');
+
+			expect(plugin.hook).toHaveBeenCalled();
+			expect(plugin.hook.calls.first().args[1]).toEqual({bar: 'bar'});
 		});
 	});
 });

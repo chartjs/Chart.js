@@ -1,0 +1,42 @@
+{
+    "config": {
+        "type": "bar",
+        "data": {
+            "labels": ["2017", "2018", "2019", "2024", "2025"],
+            "datasets": [{
+                "backgroundColor": "rgba(255, 99, 132, 0.5)",
+                "data": [1, null, 3, 4, 5]
+            }]
+        },
+        "options": {
+            "responsive": false,
+            "legend": false,
+            "title": false,
+            "scales": {
+                "xAxes": [{
+                    "type": "time",
+                    "offset": true,
+                    "display": false,
+                    "barPercentage": 1,
+                    "categoryPercentage": 1,
+                    "barThickness": 128,
+                    "ticks": {
+                        "source": "labels"
+                    }
+                }],
+                "yAxes": [{
+                    "display": false,
+                    "ticks": {
+                        "beginAtZero": true
+                    }
+                }]
+            }
+        }
+    },
+    "options": {
+        "canvas": {
+            "height": 256,
+            "width": 512
+        }
+    }
+}

@@ -10,7 +10,7 @@ The legend configuration is passed into the `options.legend` namespace. The glob
 | `display` | `Boolean` | `true` | is the legend shown
 | `position` | `String` | `'top'` | Position of the legend. [more...](#position)
 | `fullWidth` | `Boolean` | `true` | Marks that this box should take the full width of the canvas (pushing down other boxes). This is unlikely to need to be changed in day-to-day use.
-| `onClick` | `Function` | | A callback that is called when a click event is registered on a label item 
+| `onClick` | `Function` | | A callback that is called when a click event is registered on a label item
 | `onHover` | `Function` | | A callback that is called when a 'mousemove' event is registered on top of a label item
 | `reverse` | `Boolean` | `false` | Legend will show datasets in reverse order.
 | `labels` | `Object` | | See the [Legend Label Configuration](#legend-label-configuration) section below.
@@ -164,3 +164,7 @@ var chart = new Chart(ctx, {
     }
 });
 ```
+
+Note that legendCallback is not called automatically and you must call `generateLegend()` yourself in code when creating a legend using this method.
+
+

@@ -1,5 +1,14 @@
-// Tests of the scale service
-describe('Test the layout service', function() {
+describe('Chart.layouts', function() {
+	it('should be exposed through Chart.layouts', function() {
+		expect(Chart.layouts).toBeDefined();
+		expect(typeof Chart.layouts).toBe('object');
+		expect(Chart.layouts.defaults).toBeDefined();
+		expect(Chart.layouts.addBox).toBeDefined();
+		expect(Chart.layouts.removeBox).toBeDefined();
+		expect(Chart.layouts.configure).toBeDefined();
+		expect(Chart.layouts.update).toBeDefined();
+	});
+
 	// Disable tests which need to be rewritten based on changes introduced by
 	// the following changes: https://github.com/chartjs/Chart.js/pull/2346
 	// using xit marks the test as pending: http://jasmine.github.io/2.0/introduction.html#section-Pending_Specs
@@ -548,6 +557,36 @@ describe('Test the layout service', function() {
 			// right axes
 			isOrderCorrect = yScale3.left < yScale4.left;
 			expect(isOrderCorrect).toBe(true);
+		});
+	});
+
+	describe('box sizing', function() {
+		it('should correctly compute y-axis width to fit labels', function() {
+			var chart = window.acquireChart({
+				type: 'bar',
+				data: {
+					labels: ['tick 1', 'tick 2', 'tick 3', 'tick 4', 'tick 5'],
+					datasets: [{
+						data: [0, 2.25, 1.5, 1.25, 2.5]
+					}],
+				},
+				options: {
+					legend: {
+						display: false,
+					},
+				},
+			}, {
+				canvas: {
+					height: 256,
+					width: 256
+				}
+			});
+			var yAxis = chart.scales['y-axis-0'];
+
+			// issue #4441: y-axis labels partially hidden.
+			// minimum horizontal space required to fit labels
+			expect(yAxis.width).toBeCloseToPixel(33);
+			expect(yAxis.ticks).toEqual(['2.5', '2.0', '1.5', '1.0', '0.5', '0']);
 		});
 	});
 });

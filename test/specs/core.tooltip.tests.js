@@ -764,7 +764,7 @@ describe('Core.Tooltip', function() {
 
 	it('Should not update if active element has not changed', function() {
 		var chart = window.acquireChart({
-			type: 'bar',
+			type: 'line',
 			data: {
 				datasets: [{
 					label: 'Dataset 1',
@@ -881,5 +881,72 @@ describe('Core.Tooltip', function() {
 			expect(fn.calls.first().args[1].hasOwnProperty('y')).toBe(true);
 			expect(fn.calls.first().object instanceof Chart.Tooltip).toBe(true);
 		});
+	});
+
+	it('Should avoid tooltip truncation in x axis if there is enough space to show tooltip without truncation', function() {
+		var chart = window.acquireChart({
+			type: 'pie',
+			data: {
+				datasets: [{
+					data: [
+						50,
+						50
+					],
+					backgroundColor: [
+						'rgb(255, 0, 0)',
+						'rgb(0, 255, 0)'
+					],
+					label: 'Dataset 1'
+				}],
+				labels: [
+					'Red long tooltip text to avoid unnecessary loop steps',
+					'Green long tooltip text to avoid unnecessary loop steps'
+				]
+			},
+			options: {
+				responsive: true,
+				animation: {
+					// without this slice center point is calculated wrong
+					animateRotate: false
+				}
+			}
+		});
+
+		// Trigger an event over top of the slice
+		for (var slice = 0; slice < 2; slice++) {
+			var meta = chart.getDatasetMeta(0);
+			var point = meta.data[slice].getCenterPoint();
+			var tooltipPosition = meta.data[slice].tooltipPosition();
+			var node = chart.canvas;
+			var rect = node.getBoundingClientRect();
+
+			var mouseMoveEvent = new MouseEvent('mousemove', {
+				view: window,
+				bubbles: true,
+				cancelable: true,
+				clientX: rect.left + point.x,
+				clientY: rect.top + point.y
+			});
+			var mouseOutEvent = new MouseEvent('mouseout');
+
+			// Lets cycle while tooltip is narrower than chart area
+			var infiniteCycleDefense = 70;
+			for (var i = 0; i < infiniteCycleDefense; i++) {
+				chart.config.data.labels[slice] = chart.config.data.labels[slice] + 'l';
+				chart.update();
+				node.dispatchEvent(mouseOutEvent);
+				node.dispatchEvent(mouseMoveEvent);
+				var model = chart.tooltip._model;
+				expect(model.x).toBeGreaterThanOrEqual(0);
+				if (model.width <= chart.width) {
+					expect(model.x + model.width).toBeLessThanOrEqual(chart.width);
+				}
+				expect(model.caretX).toBe(tooltipPosition.x);
+				// if tooltip is longer than chart area then all tests done
+				if (model.width > chart.width) {
+					break;
+				}
+			}
+		}
 	});
 });
