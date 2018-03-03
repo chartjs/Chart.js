@@ -125,7 +125,7 @@ module.exports = function(Chart) {
 			var angles = me._angles = [];
 			var i, ilen, angle;
 			
-			me.updateRadius();
+			me._updateRadius();
 			
 			meta.count = me.countVisibleElements();
 
@@ -141,7 +141,10 @@ module.exports = function(Chart) {
 			});
 		},
 
-		updateRadius: function() {
+		/**
+		 * @private
+		 */
+		_updateRadius: function() {
 			var me = this;
 			var chart = me.chart;
 			var chartArea = chart.chartArea;
