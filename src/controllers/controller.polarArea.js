@@ -124,9 +124,9 @@ module.exports = function(Chart) {
 			var starts = me._starts = [];
 			var angles = me._angles = [];
 			var i, ilen, angle;
-			
+
 			me._updateRadius();
-			
+
 			meta.count = me.countVisibleElements();
 
 			for (i = 0, ilen = dataset.data.length; i < ilen; i++) {
