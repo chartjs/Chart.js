@@ -844,7 +844,7 @@ module.exports = function(Chart) {
 			me._lastActive = me._lastActive || [];
 
 			// Find Active Elements for tooltips
-			if (e.type === 'mouseout' || e.x < area.left || e.x > area.right || e.y < area.top || e.y > area.bottom) {
+			if (e.type === 'mouseout' || e.x < area.left || e.x > area.right) {
 				me._active = [];
 			} else {
 				me._active = me._chart.getElementsAtEventForMode(e, options.mode, options);
