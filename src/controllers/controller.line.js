@@ -283,11 +283,17 @@ module.exports = function(Chart) {
 			var points = meta.data || [];
 			var area = chart.chartArea;
 			var ilen = points.length;
+			var dataset = me.getDataset();
 			var i = 0;
 
-			helpers.canvas.clipArea(chart.ctx, area);
+			helpers.canvas.clipArea(chart.ctx, {
+				left: area.left,
+				right: area.right,
+				top: area.top - dataset.borderWidth / 2,
+				bottom: area.bottom + dataset.borderWidth / 2
+			});
 
-			if (lineEnabled(me.getDataset(), chart.options)) {
+			if (lineEnabled(dataset, chart.options)) {
 				meta.dataset.draw();
 			}
 
