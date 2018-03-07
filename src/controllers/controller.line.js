@@ -284,13 +284,15 @@ module.exports = function(Chart) {
 			var area = chart.chartArea;
 			var ilen = points.length;
 			var dataset = me.getDataset();
+			var lineElementOptions = chart.options.elements.line;
+			var halfBorderWidth = helpers.valueOrDefault(dataset.borderWidth, lineElementOptions.borderWidth) / 2;
 			var i = 0;
 
 			helpers.canvas.clipArea(chart.ctx, {
 				left: area.left,
 				right: area.right,
-				top: area.top - dataset.borderWidth / 2,
-				bottom: area.bottom + dataset.borderWidth / 2
+				top: area.top - halfBorderWidth,
+				bottom: area.bottom + halfBorderWidth
 			});
 
 			if (lineEnabled(dataset, chart.options)) {
