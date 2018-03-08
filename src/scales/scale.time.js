@@ -211,7 +211,7 @@ function momentify(value, options) {
 }
 
 function parse(input, scale) {
-	if (helpers.isNullOrUndef(input)) {
+	if (helpers.isNullOrUndef(input) || helpers.isArray(input)) {
 		return null;
 	}
 
@@ -549,6 +549,9 @@ module.exports = function(Chart) {
 
 						for (j = 0, jlen = data.length; j < jlen; ++j) {
 							timestamp = parse(data[j], me);
+							if (helpers.isNullOrUndef(timestamp)) {
+								continue;
+							}
 							timestamps.push(timestamp);
 							datasets[i][j] = timestamp;
 						}
