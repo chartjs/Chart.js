@@ -157,8 +157,6 @@ module.exports = function(Chart) {
 				pointRotation = custom.pointRotation;
 			} else if (!isNaN(dataset.pointRotation) || helpers.isArray(dataset.pointRotation)) {
 				pointRotation = helpers.valueAtIndexOrDefault(dataset.pointRotation, index, pointRotation);
-			} else if (!isNaN(dataset.pointRotation)) {
-				pointRotation = dataset.pointRotation;
 			}
 			return pointRotation;
 		},
