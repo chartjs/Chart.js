@@ -535,7 +535,7 @@ module.exports = function(Chart) {
 					onAnimationComplete: onComplete
 				});
 
-				Chart.animationService.addAnimation(me, animation, duration, lazy);
+				Chart.animationService.addAnimation(me, animation, duration || animationOptions.duration, lazy);
 			} else {
 				me.draw();
 
