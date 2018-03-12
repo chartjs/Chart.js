@@ -37,6 +37,7 @@ function parseVisibleItems(chart, handler) {
 		for (j = 0, jlen = meta.data.length; j < jlen; ++j) {
 			var element = meta.data[j];
 			if (!element._view.skip) {
+				element.datasetlength = meta.data.length;
 				handler(element);
 			}
 		}
@@ -277,10 +278,23 @@ module.exports = {
 			var position = getRelativePosition(e, chart);
 			var items = [];
 			var intersectsItem = false;
+			var j;
 
 			parseVisibleItems(chart, function(element) {
-				if (element.inXRange(position.x)) {
-					items.push(element);
+				if (element.datasetlength < 40) {
+					if (element.inXRange(position.x)) {
+						items.push(element);
+					}
+				} else if (element.datasetlength >= 40) {
+					if (element.inXRangeSmall(position.x)) {
+						items.push(element);
+						// Cleanup extra elements
+						if (items.length > 1) {
+							for (j = 1; j <= items.length; j++) {
+								items.splice(j, 1);
+							}
+						}
+					}
 				}
 
 				if (element.inRange(position.x, position.y)) {
@@ -293,6 +307,7 @@ module.exports = {
 			if (options.intersect && !intersectsItem) {
 				items = [];
 			}
+
 			return items;
 		},
 
