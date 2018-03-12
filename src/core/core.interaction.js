@@ -278,7 +278,6 @@ module.exports = {
 			var position = getRelativePosition(e, chart);
 			var items = [];
 			var intersectsItem = false;
-			var j;
 
 			parseVisibleItems(chart, function(element) {
 				if (element.datasetlength < 40) {
@@ -290,13 +289,10 @@ module.exports = {
 						items.push(element);
 						// Cleanup extra elements
 						if (items.length > 1) {
-							for (j = 1; j <= items.length; j++) {
-								items.splice(j, 1);
-							}
+							items.splice(1, items.length);
 						}
 					}
 				}
-
 				if (element.inRange(position.x, position.y)) {
 					intersectsItem = true;
 				}
@@ -307,7 +303,6 @@ module.exports = {
 			if (options.intersect && !intersectsItem) {
 				items = [];
 			}
-
 			return items;
 		},
 
