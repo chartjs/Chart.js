@@ -1,6 +1,6 @@
 # Legend Configuration
 
-The chart legend displays data about the datasets that area appearing on the chart.
+The chart legend displays data about the datasets that are appearing on the chart.
 
 ## Configuration options
 The legend configuration is passed into the `options.legend` namespace. The global options for the chart legend is defined in `Chart.defaults.global.legend`.
