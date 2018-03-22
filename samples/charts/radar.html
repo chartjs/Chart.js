@@ -15,7 +15,7 @@
 </head>
 
 <body>
-	<div style="width:40%">
+	<div style="width:70%">
 		<canvas id="canvas"></canvas>
 	</div>
 	<button id="randomizeData">Randomize Data</button>
@@ -56,7 +56,7 @@
 						randomScalingFactor(),
 						randomScalingFactor(),
 						randomScalingFactor(),
-						randomScalingFactor(),
+						null,
 						randomScalingFactor(),
 						randomScalingFactor(),
 						randomScalingFactor()
@@ -64,6 +64,7 @@
 				}]
 			},
 			options: {
+				spanGaps: true,
 				legend: {
 					position: 'top',
 				},

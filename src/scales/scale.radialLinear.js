@@ -428,8 +428,8 @@ module.exports = function(Chart) {
 		getDistanceFromCenterForValue: function(value) {
 			var me = this;
 
-			if (value === null) {
-				return 0; // null always in center
+			if (value === null || isNaN(value)) {
+				return NaN;
 			}
 
 			// Take into account half font size + the yPadding of the top value
