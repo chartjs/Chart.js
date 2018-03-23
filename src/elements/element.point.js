@@ -83,7 +83,7 @@ module.exports = Element.extend({
 		ctx.lineWidth = helpers.valueOrDefault(vm.borderWidth, defaults.global.elements.point.borderWidth);
 		ctx.fillStyle = vm.backgroundColor || defaultColor;
 
-		// Cliping for Points.
+		// Clipping for Points.
 		// going out from inner charArea?
 		if ((chartArea !== undefined) && ((model.x < chartArea.left) || (chartArea.right * errMargin < model.x) || (model.y < chartArea.top) || (chartArea.bottom * errMargin < model.y))) {
 			// Point fade out
@@ -97,10 +97,13 @@ module.exports = Element.extend({
 				ratio = (model.y - y) / (model.y - chartArea.bottom);
 			}
 			ratio = Math.round(ratio * 100) / 100;
-			ctx.strokeStyle = color(ctx.strokeStyle).alpha(ratio).rgbString();
-			ctx.fillStyle = color(ctx.fillStyle).alpha(ratio).rgbString();
+			if (ratio >= 0.01) {
+				ctx.strokeStyle = color(ctx.strokeStyle).alpha(ratio).rgbString();
+				ctx.fillStyle = color(ctx.fillStyle).alpha(ratio).rgbString();
+				helpers.canvas.drawPoint(ctx, pointStyle, radius, x, y);
+			}
+		} else {
+			helpers.canvas.drawPoint(ctx, pointStyle, radius, x, y);
 		}
-
-		helpers.canvas.drawPoint(ctx, pointStyle, radius, x, y);
 	}
 });
