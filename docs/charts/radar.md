@@ -88,6 +88,7 @@ All point* properties can be specified as an array. If these are set to an array
 | `pointHoverBorderColor` | `Color/Color[]` | Point border color when hovered.
 | `pointHoverBorderWidth` | `Number/Number[]` | Border width of point when hovered.
 | `pointHoverRadius` | `Number/Number[]` | The radius of the point when hovered.
+| `spanGaps` | `Boolean` | If true, lines will be drawn between points with no or null data. If false, points with `NaN` data will create a break in the line
 
 ### pointStyle
 The style of point. Options are:
