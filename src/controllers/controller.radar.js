@@ -152,25 +152,6 @@ module.exports = function(Chart) {
 				model.controlPointNextX = capControlPoint(controlPoints.next.x, area.left, area.right);
 				model.controlPointNextY = capControlPoint(controlPoints.next.y, area.top, area.bottom);
 			}
-			// helpers.each(meta.data, function(point, index) {
-			// 	var model = point._model;
-			// 	var controlPoints = helpers.splineCurve(
-			// 		helpers.previousItem(meta.data, index, true)._model,
-			// 		model,
-			// 		helpers.nextItem(meta.data, index, true)._model,
-			// 		model.tension
-			// 	);
-
-			// 	// Prevent the bezier going outside of the bounds of the graph
-			// 	model.controlPointPreviousX = Math.max(Math.min(controlPoints.previous.x, chartArea.right), chartArea.left);
-			// 	model.controlPointPreviousY = Math.max(Math.min(controlPoints.previous.y, chartArea.bottom), chartArea.top);
-
-			// 	model.controlPointNextX = Math.max(Math.min(controlPoints.next.x, chartArea.right), chartArea.left);
-			// 	model.controlPointNextY = Math.max(Math.min(controlPoints.next.y, chartArea.bottom), chartArea.top);
-
-			// 	// Now pivot the point for animation
-			// 	point.pivot();
-			// });
 		},
 
 		setHoverStyle: function(point) {
