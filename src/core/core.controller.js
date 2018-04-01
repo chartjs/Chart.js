@@ -8,6 +8,7 @@ var Interaction = require('./core.interaction');
 var layouts = require('./core.layouts');
 var platform = require('../platforms/platform');
 var plugins = require('./core.plugins');
+var scaleService = require('../core/core.scaleService');
 var Tooltip = require('./core.tooltip');
 
 module.exports = function(Chart) {
@@ -278,7 +279,7 @@ module.exports = function(Chart) {
 					scale.ctx = me.ctx;
 					scale.chart = me;
 				} else {
-					var scaleClass = Chart.scaleService.getScaleConstructor(scaleType);
+					var scaleClass = scaleService.getScaleConstructor(scaleType);
 					if (!scaleClass) {
 						return;
 					}
@@ -310,7 +311,7 @@ module.exports = function(Chart) {
 
 			me.scales = scales;
 
-			Chart.scaleService.addScalesToLayout(this);
+			scaleService.addScalesToLayout(this);
 		},
 
 		buildOrUpdateControllers: function() {

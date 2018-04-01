@@ -13,6 +13,8 @@ describe('Chart namespace', function() {
 			expect(Chart.layouts instanceof Object).toBeTruthy();
 			expect(Chart.plugins instanceof Object).toBeTruthy();
 			expect(Chart.platform instanceof Object).toBeTruthy();
+			expect(Chart.Scale instanceof Object).toBeTruthy();
+			expect(Chart.scaleService instanceof Object).toBeTruthy();
 			expect(Chart.Ticks instanceof Object).toBeTruthy();
 			expect(Chart.Tooltip instanceof Object).toBeTruthy();
 			expect(Chart.Tooltip.positioners instanceof Object).toBeTruthy();
