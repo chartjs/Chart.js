@@ -2,6 +2,7 @@
 
 var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
+var scaleService = require('../core/core.scaleService');
 var Ticks = require('../core/core.ticks');
 
 module.exports = function(Chart) {
@@ -524,6 +525,6 @@ module.exports = function(Chart) {
 			}
 		}
 	});
-	Chart.scaleService.registerScaleType('radialLinear', LinearRadialScale, defaultConfig);
 
+	scaleService.registerScaleType('radialLinear', LinearRadialScale, defaultConfig);
 };

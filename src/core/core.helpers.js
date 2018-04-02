@@ -5,8 +5,9 @@
 var color = require('chartjs-color');
 var defaults = require('./core.defaults');
 var helpers = require('../helpers/index');
+var scaleService = require('../core/core.scaleService');
 
-module.exports = function(Chart) {
+module.exports = function() {
 
 	// -- Basic js utility methods
 
@@ -21,7 +22,7 @@ module.exports = function(Chart) {
 					target[key] = helpers.scaleMerge(tval, sval);
 				} else if (key === 'scale') {
 					// used in polar area & radar charts since there is only one scale
-					target[key] = helpers.merge(tval, [Chart.scaleService.getScaleDefaults(sval.type), sval]);
+					target[key] = helpers.merge(tval, [scaleService.getScaleDefaults(sval.type), sval]);
 				} else {
 					helpers._merger(key, target, source, options);
 				}
@@ -51,7 +52,7 @@ module.exports = function(Chart) {
 						if (!target[key][i].type || (scale.type && scale.type !== target[key][i].type)) {
 							// new/untyped scale or type changed: let's apply the new defaults
 							// then merge source scale to correctly overwrite the defaults.
-							helpers.merge(target[key][i], [Chart.scaleService.getScaleDefaults(type), scale]);
+							helpers.merge(target[key][i], [scaleService.getScaleDefaults(type), scale]);
 						} else {
 							// scales type are the same
 							helpers.merge(target[key][i], scale);
