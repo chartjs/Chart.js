@@ -283,9 +283,7 @@ module.exports = function(Chart) {
 			var points = meta.data || [];
 			var area = chart.chartArea;
 			var ilen = points.length;
-			var dataset = me.getDataset();
-			var lineElementOptions = chart.options.elements.line;
-			var halfBorderWidth = helpers.valueOrDefault(dataset.borderWidth, lineElementOptions.borderWidth) / 2;
+			var halfBorderWidth = (meta.dataset._model.borderWidth || 0) / 2;
 			var i = 0;
 
 			helpers.canvas.clipArea(chart.ctx, {
@@ -295,7 +293,7 @@ module.exports = function(Chart) {
 				bottom: area.bottom + halfBorderWidth
 			});
 
-			if (lineEnabled(dataset, chart.options)) {
+			if (lineEnabled(me.getDataset(), chart.options)) {
 				meta.dataset.draw();
 			}
 
