@@ -522,7 +522,7 @@ module.exports = function(Chart) {
 				helpers.callback(animationOptions && animationOptions.onComplete, [animation], me);
 			};
 
-			if (animationOptions && ((typeof duration !== 'undefined' && duration !== 0) || (typeof duration === 'undefined' && animationOptions.duration !== 0))) {
+			if (animationOptions && (duration || animationOptions.duration)) {
 				var animation = new Animation({
 					numSteps: (duration || animationOptions.duration) / 16.66, // 60 fps
 					easing: config.easing || animationOptions.easing,
