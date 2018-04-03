@@ -509,22 +509,24 @@ module.exports = function(Chart) {
 				};
 			}
 
-			var duration = config.duration;
+			var animationOptions = me.options.animation;
+			var duration = typeof config.duration !== 'undefined'
+				? config.duration
+				: animationOptions && animationOptions.duration;
 			var lazy = config.lazy;
 
 			if (plugins.notify(me, 'beforeRender') === false) {
 				return;
 			}
 
-			var animationOptions = me.options.animation;
 			var onComplete = function(animation) {
 				plugins.notify(me, 'afterRender');
 				helpers.callback(animationOptions && animationOptions.onComplete, [animation], me);
 			};
 
-			if (animationOptions && (duration || animationOptions.duration)) {
+			if (animationOptions && duration) {
 				var animation = new Animation({
-					numSteps: (duration || animationOptions.duration) / 16.66, // 60 fps
+					numSteps: duration / 16.66, // 60 fps
 					easing: config.easing || animationOptions.easing,
 
 					render: function(chart, animationObject) {
@@ -539,7 +541,7 @@ module.exports = function(Chart) {
 					onAnimationComplete: onComplete
 				});
 
-				animations.addAnimation(me, animation, duration || animationOptions.duration, lazy);
+				animations.addAnimation(me, animation, duration, lazy);
 			} else {
 				me.draw();
 
