@@ -220,30 +220,21 @@ function doFill(ctx, points, mapper, view, color, loop) {
 	var len0 = 0;
 	var len1 = 0;
 	var i, ilen, index, p0, p1, d0, d1;
-	var loopOffset = 0;
-
-	if (loop) {
-		// Find the first non-skipped point and make
-		// sure we get back to that because the first
-		// point could be the one we are skipping
-		for (i = 0; i < count; ++i) {
-			p0 = points[i]._view;
-			if (isDrawable(p0)) {
-				// Add one to make sure we go over the length
-				loopOffset = i + 1;
-				break;
-			}
-		}
-	}
+	var loopOffset;
 
 	ctx.beginPath();
 
-	for (i = 0, ilen = (count + loopOffset); i < ilen; ++i) {
+	for (i = 0, ilen = count; i < ilen; ++i) {
 		index = i % count;
 		p0 = points[index]._view;
 		p1 = mapper(p0, index, view);
 		d0 = isDrawable(p0);
 		d1 = isDrawable(p1);
+
+		if (loop && loopOffset === undefined && d0) {
+			loopOffset = i + 1;
+			ilen = count + loopOffset;
+		}
 
 		if (d0 && d1) {
 			len0 = curve0.push(p0);

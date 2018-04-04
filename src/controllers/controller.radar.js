@@ -51,7 +51,7 @@ module.exports = function(Chart) {
 				// Model
 				_model: {
 					// Appearance
-					spanGaps: dataset.spanGaps ? dataset.spanGaps : me.chart.options.spanGaps,
+					spanGaps: dataset.spanGaps !== undefined ? dataset.spanGaps : me.chart.options.spanGaps,
 					tension: custom.tension ? custom.tension : helpers.valueOrDefault(dataset.lineTension, lineElementOptions.tension),
 					backgroundColor: custom.backgroundColor ? custom.backgroundColor : (dataset.backgroundColor || lineElementOptions.backgroundColor),
 					borderWidth: custom.borderWidth ? custom.borderWidth : (dataset.borderWidth || lineElementOptions.borderWidth),
@@ -139,8 +139,7 @@ module.exports = function(Chart) {
 			}
 
 			for (i = 0, ilen = points.length; i < ilen; ++i) {
-				point = points[i];
-				model = point._model;
+				model = points[i]._model;
 				controlPoints = helpers.splineCurve(
 					helpers.previousItem(points, i, true)._model,
 					model,
