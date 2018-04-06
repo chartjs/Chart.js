@@ -172,7 +172,7 @@ module.exports = Element.extend({
 		helpers.callback(this.options.beforeUpdate, [this]);
 	},
 
-	update: function(maxWidth, maxHeight, margins) {
+	update: function(maxWidth, maxHeight, useCachedLimits, margins) {
 		var me = this;
 		var i, ilen, labels, label, ticks, tick;
 
@@ -196,9 +196,11 @@ module.exports = Element.extend({
 		me.afterSetDimensions();
 
 		// Data min/max
-		me.beforeDataLimits();
-		me.determineDataLimits();
-		me.afterDataLimits();
+		if (!useCachedLimits || !this.options.dataLimitCaching) {
+			me.beforeDataLimits();
+			me.determineDataLimits();
+			me.afterDataLimits();
+		}
 
 		// Ticks - `this.ticks` is now DEPRECATED!
 		// Internal ticks are now stored as objects in the PRIVATE `this._ticks` member
