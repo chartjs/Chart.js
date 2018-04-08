@@ -280,17 +280,11 @@ module.exports = {
 			var intersectsItem = false;
 
 			parseVisibleItems(chart, function(element) {
-				if (element.datasetlength < 40) {
-					if (element.inXRange(position.x)) {
-						items.push(element);
-					}
-				} else if (element.datasetlength >= 40) {
-					if (element.inXRangeSmall(position.x)) {
-						items.push(element);
-						// Cleanup extra elements
-						if (items.length > 1) {
-							items.splice(1, items.length);
-						}
+				if (element.inXRange(position.x)) {
+					items.push(element);
+					// Cleanup extra elements
+					if (items.length > 1) {
+						items.splice(1, items.length);
 					}
 				}
 				if (element.inRange(position.x, position.y)) {

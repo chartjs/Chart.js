@@ -24,11 +24,6 @@ defaults._set('global', {
 
 function xRange(mouseX) {
 	var vm = this._view;
-	return vm ? (Math.abs(mouseX - vm.x) < vm.radius + vm.hitRadius) : false;
-}
-
-function xRangeSmall(mouseX) {
-	var vm = this._view;
 	return vm ? (Math.abs(mouseX - vm.x) < 2) : false;
 }
 
@@ -45,7 +40,6 @@ module.exports = Element.extend({
 
 	inLabelRange: xRange,
 	inXRange: xRange,
-	inXRangeSmall: xRangeSmall,
 	inYRange: yRange,
 
 	getCenterPoint: function() {
