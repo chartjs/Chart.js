@@ -705,8 +705,8 @@ module.exports = Element.extend({
 		var itemsToDraw = [];
 
 		var axisWidth = me.options.gridLines.lineWidth;
-		var xTickStart = options.position === 'right' ? me.right : me.right - axisWidth - tl;
-		var xTickEnd = options.position === 'right' ? me.right + tl : me.right;
+		var xTickStart = options.position === 'right' ? me.left : me.right - axisWidth - tl;
+		var xTickEnd = options.position === 'right' ? me.left + tl : me.right;
 		var yTickStart = options.position === 'bottom' ? me.top + axisWidth : me.bottom - tl - axisWidth;
 		var yTickEnd = options.position === 'bottom' ? me.top + axisWidth + tl : me.bottom + axisWidth;
 
