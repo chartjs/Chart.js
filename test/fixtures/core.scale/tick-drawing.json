@@ -1,0 +1,79 @@
+{
+    "config": {
+        "type": "horizontalBar",
+        "data": {
+            "labels": ["January", "February", "March", "April", "May", "June", "July"],
+			"datasets": []
+        },
+        "options": {
+            "legend": false,
+            "title": false,
+            "scales": {
+                "xAxes": [{
+                    "type": "category",
+                    "position": "top",
+                    "id": "x-axis-1",
+                    "ticks": {
+                        "display": false
+                    },
+                    "gridLines":{
+                        "drawOnChartArea": false,
+                        "drawBorder": false,
+                        "color": "rgba(0, 0, 0, 1)",
+                        "zeroLineColor": "rgba(0, 0, 0, 1)"
+                    }
+                }, {
+                    "type": "category",
+                    "position": "bottom",
+                    "id": "x-axis-2",
+                    "ticks": {
+                        "display": false
+                    },
+                    "gridLines":{
+                        "drawOnChartArea": false,
+                        "drawBorder": false,
+                        "color": "rgba(0, 0, 0, 1)",
+                        "zeroLineColor": "rgba(0, 0, 0, 1)"
+                    }
+                }],
+                "yAxes": [{
+                    "position": "left",
+                    "id": "y-axis-1",
+                    "type": "linear",
+                    "ticks": {
+                        "display": false,
+                        "min": -100,
+                        "max": 100
+                    },
+                    "gridLines":{
+                        "drawOnChartArea": false,
+                        "drawBorder": false,
+                        "color": "rgba(0, 0, 0, 1)",
+                        "zeroLineColor": "rgba(0, 0, 0, 1)"
+                    }
+                }, {
+                    "type": "linear",
+                    "id": "y-axis-2",
+                    "position": "right",
+                    "ticks": {
+                        "display": false,
+                        "min": 0,
+                        "max": 50
+                    },
+                    "gridLines":{
+                        "drawOnChartArea": false,
+                        "drawBorder": false,
+                        "color": "rgba(0, 0, 0, 1)",
+                        "zeroLineColor": "rgba(0, 0, 0, 1)"
+                    }
+                }]
+            }
+        }
+    },
+    "options": {
+        "canvas": {
+            "height": 256,
+            "width": 512
+        }
+    }
+}
