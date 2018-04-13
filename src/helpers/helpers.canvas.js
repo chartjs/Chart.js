@@ -76,22 +76,22 @@ var exports = module.exports = {
 			ctx.beginPath();
 			edgeLength = 3 * radius / Math.sqrt(3);
 			height = edgeLength * Math.sqrt(3) / 2;
-			ctx.moveTo(edgeLength / 2, height / 3);
+			ctx.moveTo(-edgeLength / 2, height / 3);
 			ctx.lineTo(edgeLength / 2, height / 3);
-			ctx.lineTo(0, 0 - 2 * height / 3);
+			ctx.lineTo(0, -2 * height / 3);
 			ctx.closePath();
 			ctx.fill();
 			break;
 		case 'rect':
 			size = 1 / Math.SQRT2 * radius;
 			ctx.beginPath();
-			ctx.fillRect(size, size, 2 * size, 2 * size);
-			ctx.strokeRect(size, size, 2 * size, 2 * size);
+			ctx.fillRect(-size, -size, 2 * size, 2 * size);
+			ctx.strokeRect(-size, -size, 2 * size, 2 * size);
 			break;
 		case 'rectRounded':
 			var offset = radius / Math.SQRT2;
-			var leftX = offset;
-			var topY = offset;
+			var leftX = -offset;
+			var topY = -offset;
 			var sideSize = Math.SQRT2 * radius;
 			ctx.beginPath();
 			this.roundedRect(ctx, leftX, topY, sideSize, sideSize, radius / 2);
@@ -101,18 +101,18 @@ var exports = module.exports = {
 		case 'rectRot':
 			size = 1 / Math.SQRT2 * radius;
 			ctx.beginPath();
-			ctx.moveTo(size, 0);
+			ctx.moveTo(-size, 0);
 			ctx.lineTo(0, size);
 			ctx.lineTo(size, 0);
-			ctx.lineTo(0, size);
+			ctx.lineTo(0, -size);
 			ctx.closePath();
 			ctx.fill();
 			break;
 		case 'cross':
 			ctx.beginPath();
 			ctx.moveTo(0, radius);
-			ctx.lineTo(0, radius);
-			ctx.moveTo(radius, 0);
+			ctx.lineTo(0, -radius);
+			ctx.moveTo(-radius, 0);
 			ctx.lineTo(radius, 0);
 			ctx.closePath();
 			break;
@@ -120,29 +120,29 @@ var exports = module.exports = {
 			ctx.beginPath();
 			xOffset = Math.cos(Math.PI / 4) * radius;
 			yOffset = Math.sin(Math.PI / 4) * radius;
-			ctx.moveTo(xOffset, yOffset);
+			ctx.moveTo(-xOffset, -yOffset);
 			ctx.lineTo(xOffset, yOffset);
-			ctx.moveTo(xOffset, yOffset);
-			ctx.lineTo(xOffset, yOffset);
+			ctx.moveTo(-xOffset, yOffset);
+			ctx.lineTo(xOffset, -yOffset);
 			ctx.closePath();
 			break;
 		case 'star':
 			ctx.beginPath();
 			ctx.moveTo(0, radius);
-			ctx.lineTo(0, radius);
-			ctx.moveTo(radius, 0);
+			ctx.lineTo(0, -radius);
+			ctx.moveTo(-radius, 0);
 			ctx.lineTo(radius, 0);
 			xOffset = Math.cos(Math.PI / 4) * radius;
 			yOffset = Math.sin(Math.PI / 4) * radius;
-			ctx.moveTo(xOffset, yOffset);
+			ctx.moveTo(-xOffset, -yOffset);
 			ctx.lineTo(xOffset, yOffset);
-			ctx.moveTo(xOffset, yOffset);
-			ctx.lineTo(xOffset, yOffset);
+			ctx.moveTo(-xOffset, yOffset);
+			ctx.lineTo(xOffset, -yOffset);
 			ctx.closePath();
 			break;
 		case 'line':
 			ctx.beginPath();
-			ctx.moveTo(radius, 0);
+			ctx.moveTo(-radius, 0);
 			ctx.lineTo(radius, 0);
 			ctx.closePath();
 			break;
