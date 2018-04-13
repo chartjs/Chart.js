@@ -63,14 +63,12 @@ var exports = module.exports = {
 		ctx.save();
 		ctx.translate(x, y);
 		ctx.rotate(rotation * Math.PI / 180);
-		x = 0;
-		y = 0;
 
 		switch (style) {
 		// Default includes circle
 		default:
 			ctx.beginPath();
-			ctx.arc(x, y, radius, 0, Math.PI * 2);
+			ctx.arc(0, 0, radius, 0, Math.PI * 2);
 			ctx.closePath();
 			ctx.fill();
 			break;
@@ -78,22 +76,22 @@ var exports = module.exports = {
 			ctx.beginPath();
 			edgeLength = 3 * radius / Math.sqrt(3);
 			height = edgeLength * Math.sqrt(3) / 2;
-			ctx.moveTo(x - edgeLength / 2, y + height / 3);
-			ctx.lineTo(x + edgeLength / 2, y + height / 3);
-			ctx.lineTo(x, y - 2 * height / 3);
+			ctx.moveTo(edgeLength / 2, height / 3);
+			ctx.lineTo(edgeLength / 2, height / 3);
+			ctx.lineTo(0, 0 - 2 * height / 3);
 			ctx.closePath();
 			ctx.fill();
 			break;
 		case 'rect':
 			size = 1 / Math.SQRT2 * radius;
 			ctx.beginPath();
-			ctx.fillRect(x - size, y - size, 2 * size, 2 * size);
-			ctx.strokeRect(x - size, y - size, 2 * size, 2 * size);
+			ctx.fillRect(size, size, 2 * size, 2 * size);
+			ctx.strokeRect(size, size, 2 * size, 2 * size);
 			break;
 		case 'rectRounded':
 			var offset = radius / Math.SQRT2;
-			var leftX = x - offset;
-			var topY = y - offset;
+			var leftX = offset;
+			var topY = offset;
 			var sideSize = Math.SQRT2 * radius;
 			ctx.beginPath();
 			this.roundedRect(ctx, leftX, topY, sideSize, sideSize, radius / 2);
@@ -103,55 +101,55 @@ var exports = module.exports = {
 		case 'rectRot':
 			size = 1 / Math.SQRT2 * radius;
 			ctx.beginPath();
-			ctx.moveTo(x - size, y);
-			ctx.lineTo(x, y + size);
-			ctx.lineTo(x + size, y);
-			ctx.lineTo(x, y - size);
+			ctx.moveTo(size, 0);
+			ctx.lineTo(0, size);
+			ctx.lineTo(size, 0);
+			ctx.lineTo(0, size);
 			ctx.closePath();
 			ctx.fill();
 			break;
 		case 'cross':
 			ctx.beginPath();
-			ctx.moveTo(x, y + radius);
-			ctx.lineTo(x, y - radius);
-			ctx.moveTo(x - radius, y);
-			ctx.lineTo(x + radius, y);
+			ctx.moveTo(0, radius);
+			ctx.lineTo(0, radius);
+			ctx.moveTo(radius, 0);
+			ctx.lineTo(radius, 0);
 			ctx.closePath();
 			break;
 		case 'crossRot':
 			ctx.beginPath();
 			xOffset = Math.cos(Math.PI / 4) * radius;
 			yOffset = Math.sin(Math.PI / 4) * radius;
-			ctx.moveTo(x - xOffset, y - yOffset);
-			ctx.lineTo(x + xOffset, y + yOffset);
-			ctx.moveTo(x - xOffset, y + yOffset);
-			ctx.lineTo(x + xOffset, y - yOffset);
+			ctx.moveTo(xOffset, yOffset);
+			ctx.lineTo(xOffset, yOffset);
+			ctx.moveTo(xOffset, yOffset);
+			ctx.lineTo(xOffset, yOffset);
 			ctx.closePath();
 			break;
 		case 'star':
 			ctx.beginPath();
-			ctx.moveTo(x, y + radius);
-			ctx.lineTo(x, y - radius);
-			ctx.moveTo(x - radius, y);
-			ctx.lineTo(x + radius, y);
+			ctx.moveTo(0, radius);
+			ctx.lineTo(0, radius);
+			ctx.moveTo(radius, 0);
+			ctx.lineTo(radius, 0);
 			xOffset = Math.cos(Math.PI / 4) * radius;
 			yOffset = Math.sin(Math.PI / 4) * radius;
-			ctx.moveTo(x - xOffset, y - yOffset);
-			ctx.lineTo(x + xOffset, y + yOffset);
-			ctx.moveTo(x - xOffset, y + yOffset);
-			ctx.lineTo(x + xOffset, y - yOffset);
+			ctx.moveTo(xOffset, yOffset);
+			ctx.lineTo(xOffset, yOffset);
+			ctx.moveTo(xOffset, yOffset);
+			ctx.lineTo(xOffset, yOffset);
 			ctx.closePath();
 			break;
 		case 'line':
 			ctx.beginPath();
-			ctx.moveTo(x - radius, y);
-			ctx.lineTo(x + radius, y);
+			ctx.moveTo(radius, 0);
+			ctx.lineTo(radius, 0);
 			ctx.closePath();
 			break;
 		case 'dash':
 			ctx.beginPath();
-			ctx.moveTo(x, y);
-			ctx.lineTo(x + radius, y);
+			ctx.moveTo(0, 0);
+			ctx.lineTo(radius, 0);
 			ctx.closePath();
 			break;
 		}

@@ -87,7 +87,7 @@ module.exports = function(Chart) {
 				borderWidth: options.borderWidth,
 				hitRadius: options.hitRadius,
 				pointStyle: options.pointStyle,
-				pointRotation: options.pointRotation,
+				pointRotation: options.rotation,
 				radius: reset ? 0 : options.radius,
 				skip: custom.skip || isNaN(x) || isNaN(y),
 				x: x,
@@ -156,7 +156,7 @@ module.exports = function(Chart) {
 				'hoverRadius',
 				'hitRadius',
 				'pointStyle',
-				'pointRotation'
+				'rotation'
 			];
 
 			for (i = 0, ilen = keys.length; i < ilen; ++i) {

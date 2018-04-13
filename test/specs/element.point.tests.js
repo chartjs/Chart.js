@@ -108,7 +108,7 @@ describe('Point element tests', function() {
 		point._view = {
 			radius: 2,
 			pointStyle: 'circle',
-			pointRotation: 25,
+			rotation: 25,
 			hitRadius: 3,
 			borderColor: 'rgba(1, 2, 3, 1)',
 			borderWidth: 6,
