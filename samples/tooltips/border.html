@@ -34,9 +34,9 @@
 			return {
 				type: 'line',
 				data: {
-					labels: ["January", "February", "March", "April", "May", "June", "July"],
+					labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
 					datasets: [{
-						label: "Dataset",
+						label: 'Dataset',
 						borderColor: window.chartColors.red,
 						backgroundColor: window.chartColors.red,
 						data: [10, 30, 46, 2, 8, 50, 0],
@@ -45,7 +45,7 @@
 				},
 				options: {
 					responsive: true,
-					title:{
+					title: {
 						display: true,
 						text: 'Sample tooltip with border'
 					},
@@ -78,7 +78,6 @@
 			var ctx = canvas.getContext('2d');
 			var config = createConfig();
 			new Chart(ctx, config);
-			console.log(config);
 		};
 	</script>
 </body>

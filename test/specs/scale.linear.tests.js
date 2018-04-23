@@ -548,6 +548,66 @@ describe('Linear Scale', function() {
 		expect(chart.scales.yScale0.ticks).toEqual(['11', '9', '7', '5', '3', '1']);
 	});
 
+	describe('precision', function() {
+		it('Should create integer steps if precision is 0', function() {
+			var chart = window.acquireChart({
+				type: 'bar',
+				data: {
+					datasets: [{
+						yAxisID: 'yScale0',
+						data: [0, 1, 2, 1, 0, 1]
+					}],
+					labels: ['a', 'b', 'c', 'd', 'e', 'f']
+				},
+				options: {
+					scales: {
+						yAxes: [{
+							id: 'yScale0',
+							type: 'linear',
+							ticks: {
+								precision: 0
+							}
+						}]
+					}
+				}
+			});
+
+			expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
+			expect(chart.scales.yScale0.min).toBe(0);
+			expect(chart.scales.yScale0.max).toBe(2);
+			expect(chart.scales.yScale0.ticks).toEqual(['2', '1', '0']);
+		});
+
+		it('Should round the step size to the given number of decimal places', function() {
+			var chart = window.acquireChart({
+				type: 'bar',
+				data: {
+					datasets: [{
+						yAxisID: 'yScale0',
+						data: [0, 0.001, 0.002, 0.003, 0, 0.001]
+					}],
+					labels: ['a', 'b', 'c', 'd', 'e', 'f']
+				},
+				options: {
+					scales: {
+						yAxes: [{
+							id: 'yScale0',
+							type: 'linear',
+							ticks: {
+								precision: 2
+							}
+						}]
+					}
+				}
+			});
+
+			expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
+			expect(chart.scales.yScale0.min).toBe(0);
+			expect(chart.scales.yScale0.max).toBe(0.01);
+			expect(chart.scales.yScale0.ticks).toEqual(['0.01', '0']);
+		});
+	});
+
 
 	it('should forcibly include 0 in the range if the beginAtZero option is used', function() {
 		var chart = window.acquireChart({
