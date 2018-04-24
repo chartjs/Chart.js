@@ -87,7 +87,14 @@ defaults._set('horizontalBar', {
 
 			label: function(item, data) {
 				var datasetLabel = data.datasets[item.datasetIndex].label || '';
-				return datasetLabel + ': ' + item.xLabel;
+				//  float-bar support, if y arguments are array tooltip will show bottom and up values
+				var Yvalue = data.datasets[item.datasetIndex].data[item.index];
+				if (helpers.isArray(Yvalue)) {
+					datasetLabel += ': ' + Yvalue[0] + ' - ' + Yvalue[1];
+				} else {
+					datasetLabel += ': ' + item.xLabel;
+				}
+				return datasetLabel;
 			}
 		},
 		mode: 'index',
@@ -219,6 +226,11 @@ module.exports = function(Chart) {
 			var custom = rectangle.custom || {};
 			var rectangleOptions = chart.options.elements.rectangle;
 
+			//  float-bar support, if y arguments are array lets override rectangles styles, assigning no skippingBorder
+			if (helpers.isArray(dataset.data[index])) {
+				custom.borderSkipped = null;
+			}
+
 			rectangle._xScale = me.getScaleForId(meta.xAxisID);
 			rectangle._yScale = me.getScaleForId(meta.yAxisID);
 			rectangle._datasetIndex = me.index;
@@ -227,7 +239,7 @@ module.exports = function(Chart) {
 			rectangle._model = {
 				datasetLabel: dataset.label,
 				label: chart.data.labels[index],
-				borderSkipped: custom.borderSkipped ? custom.borderSkipped : rectangleOptions.borderSkipped,
+				borderSkipped: custom.borderSkipped || custom.borderSkipped === null ? custom.borderSkipped : rectangleOptions.borderSkipped,
 				backgroundColor: custom.backgroundColor ? custom.backgroundColor : helpers.valueAtIndexOrDefault(dataset.backgroundColor, index, rectangleOptions.backgroundColor),
 				borderColor: custom.borderColor ? custom.borderColor : helpers.valueAtIndexOrDefault(dataset.borderColor, index, rectangleOptions.borderColor),
 				borderWidth: custom.borderWidth ? custom.borderWidth : helpers.valueAtIndexOrDefault(dataset.borderWidth, index, rectangleOptions.borderWidth)
@@ -383,12 +395,14 @@ module.exports = function(Chart) {
 			var meta = me.getMeta();
 			var scale = me.getValueScale();
 			var datasets = chart.data.datasets;
-			var value = scale.getRightValue(datasets[datasetIndex].data[index]);
+			// float-bar support, if y arguments are array function will use top - bottom value to calculate bar height
+			var Yvalue = datasets[datasetIndex].data[index];
+			var value = helpers.isArray(Yvalue) ? (scale.getRightValue(Yvalue[1]) - scale.getRightValue(Yvalue[0])) : scale.getRightValue(Yvalue);
 			var stacked = scale.options.stacked;
 			var stack = meta.stack;
-			var start = 0;
+			// float-bar support, if y arguments are array function will use bottom value as bar start point
+			var start = helpers.isArray(Yvalue) ? Yvalue[0] : 0;
 			var i, imeta, ivalue, base, head, size;
-
 			if (stacked || (stacked === undefined && stack !== undefined)) {
 				for (i = 0; i < datasetIndex; ++i) {
 					imeta = chart.getDatasetMeta(i);
@@ -397,9 +411,12 @@ module.exports = function(Chart) {
 						imeta.stack === stack &&
 						imeta.controller.getValueScaleId() === scale.id &&
 						chart.isDatasetVisible(i)) {
-
-						ivalue = scale.getRightValue(datasets[i].data[index]);
-						if ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0)) {
+						// float-bar support for stacked chars, if y arguments are array we don't need to omit this here. Start for next char value in some point should include value of prev point + min Y value
+						var Yvalue1 = datasets[i].data[index];
+						ivalue = scale.getRightValue(Yvalue1);
+						if (helpers.isArray(Yvalue1)) {
+							start += 0;
+						} else if ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0)) {
 							start += ivalue;
 						}
 					}
@@ -453,8 +470,14 @@ module.exports = function(Chart) {
 
 			helpers.canvas.clipArea(chart.ctx, chart.chartArea);
 
+			//  float-bar support, if y arguments are array function will use bottom value as bar start point
 			for (; i < ilen; ++i) {
-				if (!isNaN(scale.getRightValue(dataset.data[i]))) {
+				var Yvalue = dataset.data[i];
+				if (helpers.isArray(Yvalue)) {
+					if (!isNaN(scale.getRightValue(Yvalue[1])) && !isNaN(scale.getRightValue(Yvalue[0]))) {
+						rects[i].draw();
+					}
+				} else if (!isNaN(scale.getRightValue(Yvalue))) {
 					rects[i].draw();
 				}
 			}

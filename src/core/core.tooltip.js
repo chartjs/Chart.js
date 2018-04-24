@@ -68,7 +68,13 @@ defaults._set('global', {
 				if (label) {
 					label += ': ';
 				}
-				label += tooltipItem.yLabel;
+				//	float-bar support, if y arguments are array tooltip will show bottom and up values
+				var Yvalue = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+				if (helpers.isArray(Yvalue)) {
+					label += Yvalue[0] + ' - ' + Yvalue[1];
+				} else {
+					label += tooltipItem.yLabel;
+				}
 				return label;
 			},
 			labelColor: function(tooltipItem, chart) {
