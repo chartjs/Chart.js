@@ -2,6 +2,7 @@
 
 var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
+var scaleService = require('../core/core.scaleService');
 var Ticks = require('../core/core.ticks');
 
 module.exports = function(Chart) {
@@ -186,6 +187,6 @@ module.exports = function(Chart) {
 			return this.getPixelForValue(this.ticksAsNumbers[index]);
 		}
 	});
-	Chart.scaleService.registerScaleType('linear', LinearScale, defaultConfig);
 
+	scaleService.registerScaleType('linear', LinearScale, defaultConfig);
 };

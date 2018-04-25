@@ -6,7 +6,7 @@ You can also pass a [CanvasGradient](https://developer.mozilla.org/en-US/docs/We
 
 ## Patterns and Gradients
 
-An alternative option is to pass a [CanvasPattern](https://developer.mozilla.org/en-US/docs/Web/API/CanvasPattern) or [CanvasGradient](https://developer.mozilla.org/en/docs/Web/API/CanvasGradient) object instead of a string colour. 
+An alternative option is to pass a [CanvasPattern](https://developer.mozilla.org/en-US/docs/Web/API/CanvasPattern) or [CanvasGradient](https://developer.mozilla.org/en/docs/Web/API/CanvasGradient) object instead of a string colour.
 
 For example, if you wanted to fill a dataset with a pattern from an image you could do the following.
 

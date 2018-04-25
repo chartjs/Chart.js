@@ -18,7 +18,7 @@
 <body>
 	<div style="width:1000px">
 		<canvas id="chart1"></canvas>
-	<div>
+	</div>
 	<br>
 	<br>
 	Chart Type:
@@ -33,10 +33,8 @@
 		}
 
 		function randomBar(date, lastClose) {
-			var open = randomNumber(lastClose * .95, lastClose * 1.05);
-			var close = randomNumber(open * .95, open * 1.05);
-			var high = randomNumber(Math.max(open, close), Math.max(open, close) * 1.1);
-			var low = randomNumber(Math.min(open, close) * .9, Math.min(open, close));
+			var open = randomNumber(lastClose * 0.95, lastClose * 1.05);
+			var close = randomNumber(open * 0.95, open * 1.05);
 			return {
 				t: date.valueOf(),
 				y: close
@@ -55,7 +53,7 @@
 			}
 		}
 
-		var ctx = document.getElementById("chart1").getContext("2d");
+		var ctx = document.getElementById('chart1').getContext('2d');
 		ctx.canvas.width = 1000;
 		ctx.canvas.height = 300;
 		var cfg = {
@@ -63,7 +61,7 @@
 			data: {
 				labels: labels,
 				datasets: [{
-					label: "CHRT - Chart.js Corporation",
+					label: 'CHRT - Chart.js Corporation',
 					data: data,
 					type: 'line',
 					pointRadius: 0,
@@ -94,7 +92,7 @@
 
 		document.getElementById('update').addEventListener('click', function() {
 			var type = document.getElementById('type').value;
- 			chart.config.data.datasets[0].type = type;
+			chart.config.data.datasets[0].type = type;
 			chart.update();
 		});
 

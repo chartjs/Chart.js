@@ -1,4 +1,3 @@
-// Test the bubble chart default config
 describe('Default Configs', function() {
 	describe('Bubble Chart', function() {
 		it('should return correct tooltip strings', function() {

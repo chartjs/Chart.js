@@ -41,9 +41,9 @@ At this point we have a chart rendering how we'd like. It's important to note th
   "type": "bar",
   "data": {
     "labels": [
-      "January", 
-      "February", 
-      "March", 
+      "January",
+      "February",
+      "March",
       "April"
     ],
     "datasets": [{

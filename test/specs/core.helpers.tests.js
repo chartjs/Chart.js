@@ -194,8 +194,12 @@ describe('Core helper tests', function() {
 
 	it('should do a log10 operation', function() {
 		expect(helpers.log10(0)).toBe(-Infinity);
-		expect(helpers.log10(1)).toBe(0);
-		expect(helpers.log10(1000)).toBeCloseTo(3, 1e-9);
+
+		// Check all allowed powers of 10, which should return integer values
+		var maxPowerOf10 = Math.floor(helpers.log10(Number.MAX_VALUE));
+		for (var i = 0; i < maxPowerOf10; i += 1) {
+			expect(helpers.log10(Math.pow(10, i))).toBe(i);
+		}
 	});
 
 	it('should correctly determine if two numbers are essentially equal', function() {
@@ -740,6 +744,36 @@ describe('Core helper tests', function() {
 
 		expect(canvas.style.height).toBe('400px');
 		expect(canvas.style.width).toBe('400px');
+	});
+
+	it ('Should get padding of parent as number (pixels) when defined as percent (returns incorrectly in IE11)', function() {
+
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = '300px';
+		div.style.height = '300px';
+		document.body.appendChild(div);
+
+		// Inner DIV to have 10% padding of parent
+		var innerDiv = document.createElement('div');
+
+		div.appendChild(innerDiv);
+
+		var canvas = document.createElement('canvas');
+		innerDiv.appendChild(canvas);
+
+		// No padding
+		expect(helpers.getMaximumWidth(canvas)).toBe(300);
+
+		// test with percentage
+		innerDiv.style.padding = '10%';
+		expect(helpers.getMaximumWidth(canvas)).toBe(240);
+
+		// test with pixels
+		innerDiv.style.padding = '10px';
+		expect(helpers.getMaximumWidth(canvas)).toBe(280);
+
+		document.body.removeChild(div);
 	});
 
 	describe('Color helper', function() {
