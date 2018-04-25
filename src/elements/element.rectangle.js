@@ -67,7 +67,12 @@ module.exports = Element.extend({
 			bottom = vm.base;
 			signX = 1;
 			signY = bottom > top ? 1 : -1;
-			borderSkipped = vm.borderSkipped || 'bottom';
+			// no border support
+			if (vm.borderSkipped === null) {
+				borderSkipped = null;
+			} else {
+				borderSkipped = vm.borderSkipped || 'bottom';
+			}
 		} else {
 			// horizontal bar
 			left = vm.base;
@@ -76,7 +81,12 @@ module.exports = Element.extend({
 			bottom = vm.y + vm.height / 2;
 			signX = right > left ? 1 : -1;
 			signY = 1;
-			borderSkipped = vm.borderSkipped || 'left';
+			// no border support
+			if (vm.borderSkipped === null) {
+				borderSkipped = null;
+			} else {
+				borderSkipped = vm.borderSkipped || 'left';
+			}
 		}
 
 		// Canvas doesn't allow us to stroke inside the width so we can
@@ -132,8 +142,14 @@ module.exports = Element.extend({
 		// Draw rectangle from 'startCorner'
 		var corner = cornerAt(0);
 		ctx.moveTo(corner[0], corner[1]);
+		//	float-bar support, let's rectangle allow to have all borders, assign corners_count to 5 instead of 4, so we are allowing to fill all sides.
+		var cornersCount = 4;
 
-		for (var i = 1; i < 4; i++) {
+		if (borderSkipped === null) {
+			cornersCount = 5;
+		}
+
+		for (var i = 1; i < cornersCount; i++) {
 			corner = cornerAt(i);
 			ctx.lineTo(corner[0], corner[1]);
 		}
