@@ -537,7 +537,6 @@ module.exports = Element.extend({
 		return rawValue;
 	},
 
-<<<<<<< HEAD
 	/**
 	 * Used to get the value to display in the tooltip for the data at the given index
 	 * @param index
@@ -575,77 +574,6 @@ module.exports = Element.extend({
 
 			if (offset) {
 				pixel += tickWidth / 2;
-=======
-				var finalVal = me.left + Math.round(pixel);
-				finalVal += me.isFullWidth() ? me.margins.left : 0;
-				return finalVal;
-			}
-			var innerHeight = me.height - (me.paddingTop + me.paddingBottom);
-			return me.top + (index * (innerHeight / (me._ticks.length - 1)));
-		},
-
-		/**
-		 * Utility for getting the pixel location of a percentage of scale
-		 * The coordinate (0, 0) is at the upper-left corner of the canvas
-		 */
-		getPixelForDecimal: function(decimal) {
-			var me = this;
-			if (me.isHorizontal()) {
-				var innerWidth = me.width - (me.paddingLeft + me.paddingRight);
-				var valueOffset = (innerWidth * decimal) + me.paddingLeft;
-
-				var finalVal = me.left + Math.round(valueOffset);
-				finalVal += me.isFullWidth() ? me.margins.left : 0;
-				return finalVal;
-			}
-			return me.top + (decimal * me.height);
-		},
-
-		/**
-		 * Returns the pixel for the minimum chart value
-		 * The coordinate (0, 0) is at the upper-left corner of the canvas
-		 */
-		getBasePixel: function() {
-			return this.getPixelForValue(this.getBaseValue());
-		},
-
-		getBaseValue: function() {
-			var me = this;
-			var min = me.min;
-			var max = me.max;
-
-			return me.beginAtZero ? 0 :
-				min < 0 && max < 0 ? max :
-				min > 0 && max > 0 ? min :
-				0;
-		},
-
-		/**
-		 * Returns a subset of ticks to be plotted to avoid overlapping labels.
-		 * @private
-		 */
-		_autoSkip: function(ticks) {
-			var skipRatio;
-			var me = this;
-			var isHorizontal = me.isHorizontal();
-			var optionTicks = me.options.ticks.minor;
-			var tickCount = ticks.length;
-
-			// take the largest of either the width or height when rotated
-			// when at 90deg then the height of the text is its width
-			var labelRotationRadians = helpers.toRadians(me.labelRotation);
-			var cosRotation = Math.abs(Math.cos(labelRotationRadians));
-			var sinRotation = Math.abs(Math.sin(labelRotationRadians));
-			var longestRotatedLabel = Math.max(me.longestLabelWidth * cosRotation, me.options.ticks.fontSize * sinRotation);
-
-			var result = [];
-			var i, tick, shouldSkip;
-
-			// figure out the maximum number of gridlines to show
-			var maxTicks;
-			if (optionTicks.maxTicksLimit) {
-				maxTicks = optionTicks.maxTicksLimit;
->>>>>>> Measure text size for autoscale when rotated
 			}
 
 			var finalVal = me.left + Math.round(pixel);
@@ -702,9 +630,14 @@ module.exports = Element.extend({
 		var isHorizontal = me.isHorizontal();
 		var optionTicks = me.options.ticks.minor;
 		var tickCount = ticks.length;
+
+		// take the largest of either the width or height when rotated
+		// when at 90deg then the height of the text is its width
 		var labelRotationRadians = helpers.toRadians(me.labelRotation);
-		var cosRotation = Math.cos(labelRotationRadians);
-		var longestRotatedLabel = me.longestLabelWidth * cosRotation;
+		var cosRotation = Math.abs(Math.cos(labelRotationRadians));
+		var sinRotation = Math.abs(Math.sin(labelRotationRadians));
+		var longestRotatedLabel = Math.max(me.longestLabelWidth * cosRotation, me.options.ticks.fontSize * sinRotation);
+
 		var result = [];
 		var i, tick, shouldSkip;
 
