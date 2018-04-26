@@ -656,53 +656,8 @@ module.exports = Element.extend({
 			}
 		}
 
-<<<<<<< HEAD
 		for (i = 0; i < tickCount; i++) {
 			tick = ticks[i];
-=======
-			var context = me.ctx;
-			var globalDefaults = defaults.global;
-			var optionTicks = options.ticks.minor;
-			var optionMajorTicks = options.ticks.major || optionTicks;
-			var gridLines = options.gridLines;
-			var scaleLabel = options.scaleLabel;
-
-			var isRotated = me.labelRotation !== 0;
-			var isHorizontal = me.isHorizontal();
-
-			var ticks = optionTicks.autoSkip ? me._autoSkip(me.getTicks()) : me.getTicks();
-			var tickFontColor = helpers.valueOrDefault(optionTicks.fontColor, globalDefaults.defaultFontColor);
-			var tickFont = parseFontOptions(optionTicks);
-			var majorTickFontColor = helpers.valueOrDefault(optionMajorTicks.fontColor, globalDefaults.defaultFontColor);
-			var majorTickFont = parseFontOptions(optionMajorTicks);
-
-			var tl = gridLines.drawTicks ? gridLines.tickMarkLength : 0;
-
-			var scaleLabelFontColor = helpers.valueOrDefault(scaleLabel.fontColor, globalDefaults.defaultFontColor);
-			var scaleLabelFont = parseFontOptions(scaleLabel);
-			var scaleLabelPadding = helpers.options.toPadding(scaleLabel.padding);
-			var labelRotationRadians = helpers.toRadians(me.labelRotation);
-
-			var itemsToDraw = [];
-
-			var axisWidth = me.options.gridLines.lineWidth;
-			var xTickStart = options.position === 'right' ? me.right : me.right - axisWidth - tl;
-			var xTickEnd = options.position === 'right' ? me.right + tl : me.right;
-			var yTickStart = options.position === 'bottom' ? me.top + axisWidth : me.bottom - tl - axisWidth;
-			var yTickEnd = options.position === 'bottom' ? me.top + axisWidth + tl : me.bottom + axisWidth;
-			var yRotationOffset = 0;
-
-			if (me.labelRotation < 0) {
-				var sinRotation = Math.abs(Math.sin(labelRotationRadians));
-				yRotationOffset = sinRotation * me.longestLabelWidth;
-			}
-
-			helpers.each(ticks, function(tick, index) {
-				// autoskipper skipped this tick (#4635)
-				if (helpers.isNullOrUndef(tick.label)) {
-					return;
-				}
->>>>>>> Update core.scale.js
 
 			// Since we always show the last tick,we need may need to hide the last shown one before
 			shouldSkip = (skipRatio > 1 && i % skipRatio > 0) || (i % skipRatio === 0 && i + skipRatio >= tickCount);
