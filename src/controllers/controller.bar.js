@@ -88,9 +88,9 @@ defaults._set('horizontalBar', {
 			label: function(item, data) {
 				var datasetLabel = data.datasets[item.datasetIndex].label || '';
 				//  float-bar support, if y arguments are array tooltip will show bottom and up values
-				var Yvalue = data.datasets[item.datasetIndex].data[item.index];
-				if (helpers.isArray(Yvalue)) {
-					datasetLabel += ': ' + Yvalue[0] + ' - ' + Yvalue[1];
+				var yValue = data.datasets[item.datasetIndex].data[item.index];
+				if (helpers.isArray(yValue)) {
+					datasetLabel += ': ' + yValue[0] + ' - ' + yValue[1];
 				} else {
 					datasetLabel += ': ' + item.xLabel;
 				}
@@ -396,12 +396,12 @@ module.exports = function(Chart) {
 			var scale = me.getValueScale();
 			var datasets = chart.data.datasets;
 			// float-bar support, if y arguments are array function will use top - bottom value to calculate bar height
-			var Yvalue = datasets[datasetIndex].data[index];
-			var value = helpers.isArray(Yvalue) ? (scale.getRightValue(Yvalue[1]) - scale.getRightValue(Yvalue[0])) : scale.getRightValue(Yvalue);
+			var yValue = datasets[datasetIndex].data[index];
+			var value = helpers.isArray(yValue) ? (scale.getRightValue(yValue[1]) - scale.getRightValue(yValue[0])) : scale.getRightValue(yValue);
 			var stacked = scale.options.stacked;
 			var stack = meta.stack;
 			// float-bar support, if y arguments are array function will use bottom value as bar start point
-			var start = helpers.isArray(Yvalue) ? Yvalue[0] : 0;
+			var start = helpers.isArray(yValue) ? yValue[0] : 0;
 			var i, imeta, ivalue, base, head, size;
 			if (stacked || (stacked === undefined && stack !== undefined)) {
 				for (i = 0; i < datasetIndex; ++i) {
@@ -412,11 +412,8 @@ module.exports = function(Chart) {
 						imeta.controller.getValueScaleId() === scale.id &&
 						chart.isDatasetVisible(i)) {
 						// float-bar support for stacked chars, if y arguments are array we don't need to omit this here. Start for next char value in some point should include value of prev point + min Y value
-						var Yvalue1 = datasets[i].data[index];
-						ivalue = scale.getRightValue(Yvalue1);
-						if (helpers.isArray(Yvalue1)) {
-							start += 0;
-						} else if ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0)) {
+						ivalue = scale.getRightValue(datasets[i].data[index]);
+						if ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0)) {
 							start += ivalue;
 						}
 					}
@@ -472,12 +469,12 @@ module.exports = function(Chart) {
 
 			//  float-bar support, if y arguments are array function will use bottom value as bar start point
 			for (; i < ilen; ++i) {
-				var Yvalue = dataset.data[i];
-				if (helpers.isArray(Yvalue)) {
-					if (!isNaN(scale.getRightValue(Yvalue[1])) && !isNaN(scale.getRightValue(Yvalue[0]))) {
+				var yValue = dataset.data[i];
+				if (helpers.isArray(yValue)) {
+					if (!isNaN(scale.getRightValue(yValue[1])) && !isNaN(scale.getRightValue(yValue[0]))) {
 						rects[i].draw();
 					}
-				} else if (!isNaN(scale.getRightValue(Yvalue))) {
+				} else if (!isNaN(scale.getRightValue(yValue))) {
 					rects[i].draw();
 				}
 			}
