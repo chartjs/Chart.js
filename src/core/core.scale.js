@@ -480,60 +480,10 @@ module.exports = Element.extend({
 			}
 		}
 
-			me.handleMargins();
+		me.handleMargins();
 
-			me.width = minSize.width;
-			me.height = minSize.height;
-		},
-
-		/**
-		 * Handle margins and padding interactions
-		 * @private
-		 */
-		handleMargins: function() {
-			var me = this;
-			if (me.margins) {
-				me.paddingLeft = Math.max(me.paddingLeft - me.margins.left, 0);
-				me.paddingTop = Math.max(me.paddingTop - me.margins.top, 0);
-				me.paddingRight = Math.max(me.paddingRight - me.margins.right, 0);
-				me.paddingBottom = Math.max(me.paddingBottom - me.margins.bottom, 0);
-			}
-		},
-
-		afterFit: function() {
-			helpers.callback(this.options.afterFit, [this]);
-		},
-
-		// Shared Methods
-		isHorizontal: function() {
-			return this.options.position === 'top' || this.options.position === 'bottom';
-		},
-		isFullWidth: function() {
-			return (this.options.fullWidth);
-		},
-
-		// Get the correct value. NaN bad inputs, If the value type is object get the x or y based on whether we are horizontal or not
-		getRightValue: function(rawValue) {
-			// Float-bar support. Check if array so be aware of min/max Y values.
-			if (helpers.isArray(rawValue)) {
-				rawValue = rawValue[1];
-			}
-			// Null and undefined values first
-			if (helpers.isNullOrUndef(rawValue)) {
-				return NaN;
-			}
-			// isNaN(object) returns true, so make sure NaN is checking for a number; Discard Infinite values
-			if (typeof rawValue === 'number' && !isFinite(rawValue)) {
-				return NaN;
-			}
-			// If it is in fact an object, dive in one more level
-			if (rawValue) {
-				if (this.isHorizontal()) {
-					if (rawValue.x !== undefined) {
-						return this.getRightValue(rawValue.x);
-					}
-				} else if (rawValue.y !== undefined) {
-					return this.getRightValue(rawValue.y);
+		me.width = minSize.width;
+		me.height = minSize.height;
 	},
 
 	/**
@@ -564,6 +514,10 @@ module.exports = Element.extend({
 
 	// Get the correct value. NaN bad inputs, If the value type is object get the x or y based on whether we are horizontal or not
 	getRightValue: function(rawValue) {
+		// Float-bar support. Check if array so be aware of min/max Y values.
+		if (helpers.isArray(rawValue)) {
+			rawValue = rawValue[1];
+		}
 		// Null and undefined values first
 		if (helpers.isNullOrUndef(rawValue)) {
 			return NaN;
