@@ -1,4 +1,13 @@
 describe('Deprecations', function() {
+	describe('Version 2.8.0', function() {
+		describe('Chart.layoutService', function() {
+			it('should be defined and an alias of Chart.layouts', function() {
+				expect(Chart.layoutService).toBeDefined();
+				expect(Chart.layoutService).toBe(Chart.layouts);
+			});
+		});
+	});
+
 	describe('Version 2.7.0', function() {
 		describe('Chart.Controller.update(duration, lazy)', function() {
 			it('should add an animation with the provided options', function() {
@@ -302,8 +311,8 @@ describe('Deprecations', function() {
 					'afterLayout'
 				];
 
-				var override = Chart.layoutService.update;
-				Chart.layoutService.update = function() {
+				var override = Chart.layouts.update;
+				Chart.layouts.update = function() {
 					sequence.push('layoutUpdate');
 					override.apply(this, arguments);
 				};
@@ -370,6 +379,24 @@ describe('Deprecations', function() {
 			it('should be defined and an alias of Chart.plugins', function() {
 				expect(Chart.pluginService).toBeDefined();
 				expect(Chart.pluginService).toBe(Chart.plugins);
+			});
+		});
+
+		describe('Chart.Legend', function() {
+			it('should be defined and an instance of Chart.Element', function() {
+				var legend = new Chart.Legend({});
+				expect(Chart.Legend).toBeDefined();
+				expect(legend).not.toBe(undefined);
+				expect(legend instanceof Chart.Element).toBeTruthy();
+			});
+		});
+
+		describe('Chart.Title', function() {
+			it('should be defined and an instance of Chart.Element', function() {
+				var title = new Chart.Title({});
+				expect(Chart.Title).toBeDefined();
+				expect(title).not.toBe(undefined);
+				expect(title instanceof Chart.Element).toBeTruthy();
 			});
 		});
 	});

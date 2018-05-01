@@ -205,6 +205,46 @@ describe('Chart.controllers.doughnut', function() {
 		});
 	});
 
+	it('should treat negative values as positive', function() {
+		var chart = window.acquireChart({
+			type: 'doughnut',
+			data: {
+				datasets: [{
+					data: [-1, -3]
+				}],
+				labels: ['label0', 'label1']
+			},
+			options: {
+				legend: false,
+				title: false,
+				cutoutPercentage: 50,
+				rotation: Math.PI,
+				circumference: Math.PI * 0.5,
+				elements: {
+					arc: {
+						backgroundColor: 'rgb(255, 0, 0)',
+						borderColor: 'rgb(0, 0, 255)',
+						borderWidth: 2
+					}
+				}
+			}
+		});
+
+		var meta = chart.getDatasetMeta(0);
+
+		expect(meta.data.length).toBe(2);
+
+		// Only startAngle, endAngle and circumference should be different.
+		[
+			{c: Math.PI / 8, s: Math.PI, e: Math.PI + Math.PI / 8},
+			{c: 3 * Math.PI / 8, s: Math.PI + Math.PI / 8, e: Math.PI + Math.PI / 2}
+		].forEach(function(expected, i) {
+			expect(meta.data[i]._model.circumference).toBeCloseTo(expected.c, 8);
+			expect(meta.data[i]._model.startAngle).toBeCloseTo(expected.s, 8);
+			expect(meta.data[i]._model.endAngle).toBeCloseTo(expected.e, 8);
+		});
+	});
+
 	it ('should draw all arcs', function() {
 		var chart = window.acquireChart({
 			type: 'doughnut',

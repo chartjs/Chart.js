@@ -34,15 +34,15 @@
 			return {
 				type: 'line',
 				data: {
-					labels: ["January", "February", "March", "April", "May", "June", "July"],
+					labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
 					datasets: [{
-						label: "My First dataset",
+						label: 'My First dataset',
 						borderColor: window.chartColors.red,
 						backgroundColor: window.chartColors.red,
 						data: [10, 30, 46, 2, 8, 50, 0],
 						fill: false,
 					}, {
-						label: "My Second dataset",
+						label: 'My Second dataset',
 						borderColor: window.chartColors.blue,
 						backgroundColor: window.chartColors.blue,
 						data: [7, 49, 46, 13, 25, 30, 22],
@@ -51,7 +51,7 @@
 				},
 				options: {
 					responsive: true,
-					title:{
+					title: {
 						display: true,
 						text: 'Mode: ' + mode + ', intersect = ' + intersect
 					},
@@ -117,7 +117,7 @@
 				var ctx = canvas.getContext('2d');
 				var config = createConfig(details.mode, details.intersect);
 				new Chart(ctx, config);
-			})
+			});
 		};
 	</script>
 </body>

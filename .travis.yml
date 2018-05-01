@@ -13,7 +13,7 @@ script:
   - gulp docs
   - gulp package
   - gulp bower
-  - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
+  - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls || true
 
 notifications:
   slack: chartjs:pcfCZR6ugg5TEcaLtmIfQYuA

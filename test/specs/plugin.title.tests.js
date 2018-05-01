@@ -1,11 +1,6 @@
 // Test the rectangle element
 
 describe('Title block tests', function() {
-	it('Should be constructed', function() {
-		var title = new Chart.Title({});
-		expect(title).not.toBe(undefined);
-	});
-
 	it('Should have the correct default config', function() {
 		expect(Chart.defaults.global.title).toEqual({
 			display: false,

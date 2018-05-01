@@ -14,7 +14,13 @@ module.exports = function(karma) {
 
 		browserify: {
 			debug: true
-		}
+		},
+
+		// These settings deal with browser disconnects. We had seen test flakiness from Firefox
+		// [Firefox 56.0.0 (Linux 0.0.0)]: Disconnected (1 times), because no message in 10000 ms.
+		// https://github.com/jasmine/jasmine/issues/1327#issuecomment-332939551
+		browserNoActivityTimeout: 60000,
+		browserDisconnectTolerance: 3
 	};
 
 	// https://swizec.com/blog/how-to-run-javascript-tests-in-chrome-on-travis/swizec/6647

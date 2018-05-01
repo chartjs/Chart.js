@@ -369,4 +369,57 @@ describe('Chart.helpers.core', function() {
 			expect(output.o.a).not.toBe(a1);
 		});
 	});
+
+	describe('extend', function() {
+		it('should merge object properties in target and return target', function() {
+			var target = {a: 'abc', b: 56};
+			var object = {b: 0, c: [2, 5, 6]};
+			var result = helpers.extend(target, object);
+
+			expect(result).toBe(target);
+			expect(target).toEqual({a: 'abc', b: 0, c: [2, 5, 6]});
+		});
+		it('should merge multiple objects properties in target', function() {
+			var target = {a: 0, b: 1};
+			var o0 = {a: 2, c: 3, d: 4};
+			var o1 = {a: 5, c: 6};
+			var o2 = {a: 7, e: 8};
+
+			helpers.extend(target, o0, o1, o2);
+
+			expect(target).toEqual({a: 7, b: 1, c: 6, d: 4, e: 8});
+		});
+		it('should not deeply merge object properties in target', function() {
+			var target = {a: {b: 0, c: 1}};
+			var object = {a: {b: 2, d: 3}};
+
+			helpers.extend(target, object);
+
+			expect(target).toEqual({a: {b: 2, d: 3}});
+			expect(target.a).toBe(object.a);
+		});
+	});
+
+	describe('inherits', function() {
+		it('should return a derived class', function() {
+			var A = function() {};
+			A.prototype.p0 = 41;
+			A.prototype.p1 = function() {
+				return '42';
+			};
+
+			A.inherits = helpers.inherits;
+			var B = A.inherits({p0: 43, p2: [44]});
+			var C = A.inherits({p3: 45, p4: [46]});
+			var b = new B();
+
+			expect(b instanceof A).toBeTruthy();
+			expect(b instanceof B).toBeTruthy();
+			expect(b instanceof C).toBeFalsy();
+
+			expect(b.p0).toBe(43);
+			expect(b.p1()).toBe('42');
+			expect(b.p2).toEqual([44]);
+		});
+	});
 });

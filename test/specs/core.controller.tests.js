@@ -495,6 +495,45 @@ describe('Chart', function() {
 				});
 			});
 		});
+
+		// https://github.com/chartjs/Chart.js/issues/4737
+		it('should resize the canvas when re-creating the chart', function(done) {
+			var chart = acquireChart({
+				options: {
+					responsive: true
+				}
+			}, {
+				wrapper: {
+					style: 'width: 320px'
+				}
+			});
+
+			waitForResize(chart, function() {
+				var canvas = chart.canvas;
+				expect(chart).toBeChartOfSize({
+					dw: 320, dh: 320,
+					rw: 320, rh: 320,
+				});
+
+				chart.destroy();
+				chart = new Chart(canvas, {
+					type: 'line',
+					options: {
+						responsive: true
+					}
+				});
+
+				canvas.parentNode.style.width = '455px';
+				waitForResize(chart, function() {
+					expect(chart).toBeChartOfSize({
+						dw: 455, dh: 455,
+						rw: 455, rh: 455,
+					});
+
+					done();
+				});
+			});
+		});
 	});
 
 	describe('config.options.responsive: true (maintainAspectRatio: true)', function() {
@@ -627,7 +666,7 @@ describe('Chart', function() {
 		});
 	});
 
-	describe('config.options.devicePixelRatio 3', function() {
+	describe('config.options.devicePixelRatio', function() {
 		beforeEach(function() {
 			this.devicePixelRatio = window.devicePixelRatio;
 			window.devicePixelRatio = 1;
@@ -720,8 +759,8 @@ describe('Chart', function() {
 
 			// Verify that points are at their initial correct location,
 			// then we will reset and see that they moved
-			expect(meta.data[0]._model.y).toBe(333);
-			expect(meta.data[1]._model.y).toBe(183);
+			expect(meta.data[0]._model.y).toBeCloseToPixel(333);
+			expect(meta.data[1]._model.y).toBeCloseToPixel(183);
 			expect(meta.data[2]._model.y).toBe(32);
 			expect(meta.data[3]._model.y).toBe(484);
 
@@ -736,6 +775,38 @@ describe('Chart', function() {
 	});
 
 	describe('config update', function() {
+		it ('should update options', function() {
+			var chart = acquireChart({
+				type: 'line',
+				data: {
+					labels: ['A', 'B', 'C', 'D'],
+					datasets: [{
+						data: [10, 20, 30, 100]
+					}]
+				},
+				options: {
+					responsive: true
+				}
+			});
+
+			chart.options = {
+				responsive: false,
+				scales: {
+					yAxes: [{
+						ticks: {
+							min: 0,
+							max: 10
+						}
+					}]
+				}
+			};
+			chart.update();
+
+			var yScale = chart.scales['y-axis-0'];
+			expect(yScale.options.ticks.min).toBe(0);
+			expect(yScale.options.ticks.max).toBe(10);
+		});
+
 		it ('should update scales options', function() {
 			var chart = acquireChart({
 				type: 'line',
@@ -757,6 +828,79 @@ describe('Chart', function() {
 			var yScale = chart.scales['y-axis-0'];
 			expect(yScale.options.ticks.min).toBe(0);
 			expect(yScale.options.ticks.max).toBe(10);
+		});
+
+		it ('should update scales options from new object', function() {
+			var chart = acquireChart({
+				type: 'line',
+				data: {
+					labels: ['A', 'B', 'C', 'D'],
+					datasets: [{
+						data: [10, 20, 30, 100]
+					}]
+				},
+				options: {
+					responsive: true
+				}
+			});
+
+			var newScalesConfig = {
+				yAxes: [{
+					ticks: {
+						min: 0,
+						max: 10
+					}
+				}]
+			};
+			chart.options.scales = newScalesConfig;
+
+			chart.update();
+
+			var yScale = chart.scales['y-axis-0'];
+			expect(yScale.options.ticks.min).toBe(0);
+			expect(yScale.options.ticks.max).toBe(10);
+		});
+
+		it ('should remove discarded scale', function() {
+			var chart = acquireChart({
+				type: 'line',
+				data: {
+					labels: ['A', 'B', 'C', 'D'],
+					datasets: [{
+						data: [10, 20, 30, 100]
+					}]
+				},
+				options: {
+					responsive: true,
+					scales: {
+						yAxes: [{
+							id: 'yAxis0',
+							ticks: {
+								min: 0,
+								max: 10
+							}
+						}]
+					}
+				}
+			});
+
+			var newScalesConfig = {
+				yAxes: [{
+					ticks: {
+						min: 0,
+						max: 10
+					}
+				}]
+			};
+			chart.options.scales = newScalesConfig;
+
+			chart.update();
+
+			var yScale = chart.scales.yAxis0;
+			expect(yScale).toBeUndefined();
+			var newyScale = chart.scales['y-axis-0'];
+			expect(newyScale.options.ticks.min).toBe(0);
+			expect(newyScale.options.ticks.max).toBe(10);
 		});
 
 		it ('should update tooltip options', function() {
@@ -781,6 +925,54 @@ describe('Chart', function() {
 
 			chart.update();
 			expect(chart.tooltip._options).toEqual(jasmine.objectContaining(newTooltipConfig));
+		});
+
+		it ('should reset the tooltip on update', function() {
+			var chart = acquireChart({
+				type: 'line',
+				data: {
+					labels: ['A', 'B', 'C', 'D'],
+					datasets: [{
+						data: [10, 20, 30, 100]
+					}]
+				},
+				options: {
+					responsive: true,
+					tooltip: {
+						mode: 'nearest'
+					}
+				}
+			});
+
+			// Trigger an event over top of a point to
+			// put an item into the tooltip
+			var meta = chart.getDatasetMeta(0);
+			var point = meta.data[1];
+
+			var node = chart.canvas;
+			var rect = node.getBoundingClientRect();
+
+			var evt = new MouseEvent('mousemove', {
+				view: window,
+				bubbles: true,
+				cancelable: true,
+				clientX: rect.left + point._model.x,
+				clientY: 0
+			});
+
+			// Manually trigger rather than having an async test
+			node.dispatchEvent(evt);
+
+			// Check and see if tooltip was displayed
+			var tooltip = chart.tooltip;
+
+			expect(chart.lastActive).toEqual([point]);
+			expect(tooltip._lastActive).toEqual([]);
+
+			// Update and confirm tooltip is reset
+			chart.update();
+			expect(chart.lastActive).toEqual([]);
+			expect(tooltip._lastActive).toEqual([]);
 		});
 
 		it ('should update the metadata', function() {
@@ -845,6 +1037,8 @@ describe('Chart', function() {
 					'beforeDatasetDraw',
 					'afterDatasetDraw',
 					'afterDatasetsDraw',
+					'beforeTooltipDraw',
+					'afterTooltipDraw',
 					'afterDraw',
 					'afterRender',
 				],
