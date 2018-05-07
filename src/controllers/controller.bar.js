@@ -411,7 +411,6 @@ module.exports = function(Chart) {
 						imeta.stack === stack &&
 						imeta.controller.getValueScaleId() === scale.id &&
 						chart.isDatasetVisible(i)) {
-						// float-bar support for stacked charts, if y arguments are array we don't need to omit this here. Start for next char value in some point should include value of prev point + min Y value
 						ivalue = scale.getRightValue(datasets[i].data[index]);
 						if ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0)) {
 							start += ivalue;
