@@ -2,6 +2,7 @@
 
 var defaults = require('../core/core.defaults');
 var Element = require('../core/core.element');
+var helpers = require('../helpers/index');
 
 defaults._set('global', {
 	elements: {

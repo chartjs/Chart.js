@@ -71,7 +71,7 @@ defaults._set('global', {
 				//	float-bar support, if y arguments are array tooltip will show bottom and up values
 				var yValue = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 				if (helpers.isArray(yValue)) {
-					label += yValue[0] + ' - ' + yValue[1];
+					label += yValue.join(' ; ');
 				} else {
 					label += tooltipItem.yLabel;
 				}
