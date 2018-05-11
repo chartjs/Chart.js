@@ -90,8 +90,8 @@ defaults._set('horizontalBar', {
 				//  float-bar support, if y arguments are array tooltip will show bottom and up values
 				var yValue = data.datasets[item.datasetIndex].data[item.index];
 				if (helpers.isArray(yValue)) {
-					datasetLabel += ': ' + yValue[0] + ' - ' + yValue[1];
-				} else {
+					datasetLabel += ': ' + yValue.join(' ; ');
+                } else {
 					datasetLabel += ': ' + item.xLabel;
 				}
 				return datasetLabel;
@@ -239,7 +239,7 @@ module.exports = function(Chart) {
 			rectangle._model = {
 				datasetLabel: dataset.label,
 				label: chart.data.labels[index],
-				borderSkipped: custom.borderSkipped || custom.borderSkipped === null ? custom.borderSkipped : rectangleOptions.borderSkipped,
+				borderSkipped: helpers.valueOrDefault(custom.borderSkipped, rectangleOptions.borderSkipped),
 				backgroundColor: custom.backgroundColor ? custom.backgroundColor : helpers.valueAtIndexOrDefault(dataset.backgroundColor, index, rectangleOptions.backgroundColor),
 				borderColor: custom.borderColor ? custom.borderColor : helpers.valueAtIndexOrDefault(dataset.borderColor, index, rectangleOptions.borderColor),
 				borderWidth: custom.borderWidth ? custom.borderWidth : helpers.valueAtIndexOrDefault(dataset.borderWidth, index, rectangleOptions.borderWidth)
@@ -403,6 +403,7 @@ module.exports = function(Chart) {
 			// float-bar support, if y arguments are array function will use bottom value as bar start point
 			var start = helpers.isArray(yValue) ? yValue[0] : 0;
 			var i, imeta, ivalue, base, head, size;
+
 			if (stacked || (stacked === undefined && stack !== undefined)) {
 				for (i = 0; i < datasetIndex; ++i) {
 					imeta = chart.getDatasetMeta(i);
@@ -411,6 +412,7 @@ module.exports = function(Chart) {
 						imeta.stack === stack &&
 						imeta.controller.getValueScaleId() === scale.id &&
 						chart.isDatasetVisible(i)) {
+
 						ivalue = scale.getRightValue(datasets[i].data[index]);
 						if ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0)) {
 							start += ivalue;
