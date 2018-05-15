@@ -87,13 +87,9 @@ defaults._set('horizontalBar', {
 
 			label: function(item, data) {
 				var datasetLabel = data.datasets[item.datasetIndex].label || '';
-				//  float-bar support, if y arguments are array tooltip will show bottom and up values
-				var yValue = data.datasets[item.datasetIndex].data[item.index];
-				if (helpers.isArray(yValue)) {
-					datasetLabel += ': ' + yValue.join(' ; ');
-                } else {
-					datasetLabel += ': ' + item.xLabel;
-				}
+
+				datasetLabel += ': ' + item.xLabel;
+
 				return datasetLabel;
 			}
 		},
@@ -397,11 +393,18 @@ module.exports = function(Chart) {
 			var datasets = chart.data.datasets;
 			// float-bar support, if y arguments are array function will use top - bottom value to calculate bar height
 			var yValue = datasets[datasetIndex].data[index];
-			var value = helpers.isArray(yValue) ? (scale.getRightValue(yValue[1]) - scale.getRightValue(yValue[0])) : scale.getRightValue(yValue);
+			var rValue = scale.getRightValue(yValue);
+			var value = helpers.isArray(rValue) ? rValue[2] : rValue;
 			var stacked = scale.options.stacked;
 			var stack = meta.stack;
-			// float-bar support, if y arguments are array function will use bottom value as bar start point
-			var start = helpers.isArray(yValue) ? yValue[0] : 0;
+			// float-bar support, if y arguments are array function will use proper value as bar start point
+			var start = 0;
+			if (helpers.isArray(rValue) && rValue[2] <= 0 ) {
+				start = rValue[1];
+			} else if (helpers.isArray(rValue) && rValue[2] > 0) {
+				start = rValue[0];
+			}
+
 			var i, imeta, ivalue, base, head, size;
 
 			if (stacked || (stacked === undefined && stack !== undefined)) {
@@ -414,6 +417,13 @@ module.exports = function(Chart) {
 						chart.isDatasetVisible(i)) {
 
 						ivalue = scale.getRightValue(datasets[i].data[index]);
+						// float-bar support
+						if (helpers.isArray(ivalue) && ivalue[2] <= 0 ) {
+							ivalue = ivalue[0];
+						} else if (helpers.isArray(ivalue) && ivalue[2] > 0) {
+							ivalue = ivalue[1];
+						}
+
 						if ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0)) {
 							start += ivalue;
 						}

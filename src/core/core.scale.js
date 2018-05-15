@@ -514,10 +514,7 @@ module.exports = Element.extend({
 
 	// Get the correct value. NaN bad inputs, If the value type is object get the x or y based on whether we are horizontal or not
 	getRightValue: function(rawValue) {
-		// Float-bar support. Check if array so be aware of min/max Y values.
-		if (helpers.isArray(rawValue)) {
-			rawValue = rawValue[1];
-		}
+
 		// Null and undefined values first
 		if (helpers.isNullOrUndef(rawValue)) {
 			return NaN;
@@ -526,6 +523,12 @@ module.exports = Element.extend({
 		if (typeof rawValue === 'number' && !isFinite(rawValue)) {
 			return NaN;
 		}
+
+		// Float-bar support. Handling arrays
+		if (helpers.isArray(rawValue)) {
+			return this.getRightValueLowHigh(rawValue);
+		}
+
 		// If it is in fact an object, dive in one more level
 		if (rawValue) {
 			if (this.isHorizontal()) {
@@ -541,7 +544,34 @@ module.exports = Element.extend({
 		return rawValue;
 	},
 
-	/**
+	// Get the correct Y low and high values. NaN bad inputs. Returns 3 values, lowY as first element, highY as second and actual Yvalue as third.
+	getRightValueLowHigh: function(rawValue) {
+		if (!helpers.isArray(rawValue)) {
+			return this.getRightValue(rawValue);
+		}
+		// Null and undefined values first
+		if (typeof rawValue[0] === 'number' && !isFinite(rawValue[0])) {
+			return NaN;
+		}
+		// Null and undefined values first
+		if (typeof rawValue[1] === 'number' && !isFinite(rawValue[1])) {
+			return NaN;
+		}
+
+		var lowY =  rawValue[0] <= rawValue[1] ? rawValue[0] : rawValue[1];
+		var highY = rawValue[0] > rawValue[1] ? rawValue[0] : rawValue[1];
+		var valueY = 0;
+
+		//calculate the proper Y value depending on negative or positive values of the highY and lowY
+		if (lowY >= 0 && highY > 0) {
+			valueY = highY - lowY;
+		} else if (lowY <= 0 && highY <= 0) {
+			valueY = lowY - highY;
+		}
+		// Value is good, return it
+		return [this.getRightValue(lowY), this.getRightValue(highY), this.getRightValue(valueY)];
+	},
+/**
 	 * Used to get the value to display in the tooltip for the data at the given index
 	 * @param index
 	 * @param datasetIndex

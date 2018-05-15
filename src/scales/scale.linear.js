@@ -74,7 +74,19 @@ module.exports = function(Chart) {
 
 					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 						helpers.each(dataset.data, function(rawValue, index) {
-							var value = +me.getRightValue(rawValue);
+							var value, valueR;
+							valueR = me.getRightValue(rawValue);
+
+							if (helpers.isArray(valueR)) {
+								if (valueR[2] <= 0) {
+									value = +me.getRightValue(valueR[0]);
+								} else if (valueR[2] > 0) {
+									value = +me.getRightValue(valueR[1]);
+								}
+							} else {
+								value = +me.getRightValue(valueR);
+							}
+
 							if (isNaN(value) || meta.data[index].hidden) {
 								return;
 							}
@@ -106,7 +118,23 @@ module.exports = function(Chart) {
 					var meta = chart.getDatasetMeta(datasetIndex);
 					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 						helpers.each(dataset.data, function(rawValue, index) {
-							var value = +me.getRightValue(rawValue);
+							var value, valueR;
+							valueR = me.getRightValue(rawValue);
+
+							if (helpers.isArray(valueR)) {
+								if (valueR[2] <= 0) {
+									value = +me.getRightValue(valueR[0]);
+								} else if (valueR[2] > 0) {
+									value = +me.getRightValue(valueR[1]);
+								}
+							} else {
+								value = +me.getRightValue(valueR);
+							}
+
+							if (isNaN(value) || meta.data[index].hidden) {
+								return;
+							}
+
 							if (isNaN(value) || meta.data[index].hidden) {
 								return;
 							}
@@ -156,7 +184,12 @@ module.exports = function(Chart) {
 			}
 		},
 		getLabelForIndex: function(index, datasetIndex) {
-			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
+			var yValue = this.chart.data.datasets[datasetIndex].data[index];
+			if (helpers.isArray(yValue)) {
+				return yValue.join(' ; ');
+			} else {
+				return +this.getRightValue(yValue);
+			}
 		},
 		// Utils
 		getPixelForValue: function(value) {

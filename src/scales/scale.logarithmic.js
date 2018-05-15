@@ -119,7 +119,19 @@ module.exports = function(Chart) {
 
 						helpers.each(dataset.data, function(rawValue, index) {
 							var values = valuesPerStack[key];
-							var value = +me.getRightValue(rawValue);
+							var value, valueR;
+							valueR = me.getRightValue(rawValue);
+
+							if (helpers.isArray(valueR)) {
+								if (valueR[2] < 0) {
+									return;
+								} else if (valueR[2] >= 0) {
+									value = +me.getRightValue(valueR[1]);
+								}
+							} else {
+								value =  +me.getRightValue(valueR);
+							}
+
 							// invalid, hidden and negative values are ignored
 							if (isNaN(value) || meta.data[index].hidden || value < 0) {
 								return;
@@ -144,7 +156,23 @@ module.exports = function(Chart) {
 					var meta = chart.getDatasetMeta(datasetIndex);
 					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 						helpers.each(dataset.data, function(rawValue, index) {
-							var value = +me.getRightValue(rawValue);
+                            var value, valueR;
+                            valueR = +me.getRightValue(rawValue);
+
+                            if (helpers.isArray(valueR)) {
+                                if (valueR[2] < 0) {
+                                    return;
+                                } else if (valueR[2] >= 0) {
+                                    value = +me.getRightValue(valueR[1]);
+                                }
+                            } else {
+                                value = +me.getRightValue(valueR);
+                            }
+
+                            if (isNaN(value) || meta.data[index].hidden) {
+                                return;
+                            }
+
 							// invalid, hidden and negative values are ignored
 							if (isNaN(value) || meta.data[index].hidden || value < 0) {
 								return;
@@ -247,7 +275,12 @@ module.exports = function(Chart) {
 		},
 		// Get the correct tooltip label
 		getLabelForIndex: function(index, datasetIndex) {
-			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
+			var yValue = this.chart.data.datasets[datasetIndex].data[index];
+			if (helpers.isArray(yValue)) {
+				return yValue.join(' ; ');
+			} else {
+				return +this.getRightValue(yValue);
+			}
 		},
 		getPixelForTick: function(index) {
 			return this.getPixelForValue(this.tickValues[index]);
