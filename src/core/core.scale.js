@@ -568,8 +568,47 @@ module.exports = Element.extend({
 		} else if (lowY <= 0 && highY <= 0) {
 			valueY = lowY - highY;
 		}
+
 		// Value is good, return it
-		return [this.getRightValue(lowY), this.getRightValue(highY), this.getRightValue(valueY)];
+		return valueY;
+	},
+
+	getRightValueLow: function(rawValue) {
+		if (!helpers.isArray(rawValue)) {
+			return this.getRightValue(rawValue);
+		}
+		// Null and undefined values first
+		if (typeof rawValue[0] === 'number' && !isFinite(rawValue[0])) {
+			return NaN;
+		}
+		// Null and undefined values first
+		if (typeof rawValue[1] === 'number' && !isFinite(rawValue[1])) {
+			return NaN;
+		}
+
+		var lowY =  rawValue[0] <= rawValue[1] ? rawValue[0] : rawValue[1];
+
+        // Value is good, return it
+		return lowY;
+	},
+
+	getRightValueHigh: function(rawValue) {
+		if (!helpers.isArray(rawValue)) {
+			return this.getRightValue(rawValue);
+		}
+        // Null and undefined values first
+		if (typeof rawValue[0] === 'number' && !isFinite(rawValue[0])) {
+			return NaN;
+		}
+        // Null and undefined values first
+		if (typeof rawValue[1] === 'number' && !isFinite(rawValue[1])) {
+			return NaN;
+		}
+
+		var highY = rawValue[0] > rawValue[1] ? rawValue[0] : rawValue[1];
+
+		// Value is good, return it
+		return highY;
 	},
 /**
 	 * Used to get the value to display in the tooltip for the data at the given index

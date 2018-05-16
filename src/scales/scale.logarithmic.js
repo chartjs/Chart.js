@@ -122,14 +122,14 @@ module.exports = function(Chart) {
 							var value, valueR;
 							valueR = me.getRightValue(rawValue);
 
-							if (helpers.isArray(valueR)) {
-								if (valueR[2] < 0) {
+							if (helpers.isArray(rawValue)) {
+								if (valueR <= 0 ) {
 									return;
-								} else if (valueR[2] >= 0) {
-									value = +me.getRightValue(valueR[1]);
+								} else if (valueR > 0) {
+									value = +me.getRightValueHigh(rawValue);
 								}
 							} else {
-								value =  +me.getRightValue(valueR);
+								value = +valueR;
 							}
 
 							// invalid, hidden and negative values are ignored
@@ -156,22 +156,18 @@ module.exports = function(Chart) {
 					var meta = chart.getDatasetMeta(datasetIndex);
 					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 						helpers.each(dataset.data, function(rawValue, index) {
-                            var value, valueR;
-                            valueR = +me.getRightValue(rawValue);
+							var value, valueR;
+							valueR = me.getRightValue(rawValue);
 
-                            if (helpers.isArray(valueR)) {
-                                if (valueR[2] < 0) {
-                                    return;
-                                } else if (valueR[2] >= 0) {
-                                    value = +me.getRightValue(valueR[1]);
-                                }
-                            } else {
-                                value = +me.getRightValue(valueR);
-                            }
-
-                            if (isNaN(value) || meta.data[index].hidden) {
-                                return;
-                            }
+							if (helpers.isArray(rawValue)) {
+								if (valueR <= 0 ) {
+									return;
+								} else if (valueR > 0) {
+									value = +me.getRightValueHigh(rawValue);
+								}
+							} else {
+								value = +valueR;
+							}
 
 							// invalid, hidden and negative values are ignored
 							if (isNaN(value) || meta.data[index].hidden || value < 0) {

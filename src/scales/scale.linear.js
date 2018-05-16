@@ -77,14 +77,14 @@ module.exports = function(Chart) {
 							var value, valueR;
 							valueR = me.getRightValue(rawValue);
 
-							if (helpers.isArray(valueR)) {
-								if (valueR[2] <= 0) {
-									value = +me.getRightValue(valueR[0]);
-								} else if (valueR[2] > 0) {
-									value = +me.getRightValue(valueR[1]);
+							if (helpers.isArray(rawValue)) {
+								if (valueR <= 0 ) {
+									value = +me.getRightValueLow(rawValue);
+								} else if (valueR > 0) {
+									value = +me.getRightValueHigh(rawValue);
 								}
 							} else {
-								value = +me.getRightValue(valueR);
+								value = +valueR;
 							}
 
 							if (isNaN(value) || meta.data[index].hidden) {
@@ -121,18 +121,14 @@ module.exports = function(Chart) {
 							var value, valueR;
 							valueR = me.getRightValue(rawValue);
 
-							if (helpers.isArray(valueR)) {
-								if (valueR[2] <= 0) {
-									value = +me.getRightValue(valueR[0]);
-								} else if (valueR[2] > 0) {
-									value = +me.getRightValue(valueR[1]);
+							if (helpers.isArray(rawValue)) {
+								if (valueR <= 0 ) {
+									value = +me.getRightValueLow(rawValue);
+								} else if (valueR > 0) {
+									value = +me.getRightValueHigh(rawValue);
 								}
 							} else {
-								value = +me.getRightValue(valueR);
-							}
-
-							if (isNaN(value) || meta.data[index].hidden) {
-								return;
+								value = +valueR;
 							}
 
 							if (isNaN(value) || meta.data[index].hidden) {

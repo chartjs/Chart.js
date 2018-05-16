@@ -393,19 +393,22 @@ module.exports = function(Chart) {
 			var datasets = chart.data.datasets;
 			// float-bar support, if y arguments are array function will use top - bottom value to calculate bar height
 			var yValue = datasets[datasetIndex].data[index];
-			var rValue = scale.getRightValue(yValue);
-			var value = helpers.isArray(rValue) ? rValue[2] : rValue;
+			var value = scale.getRightValue(yValue);
 			var stacked = scale.options.stacked;
 			var stack = meta.stack;
 			// float-bar support, if y arguments are array function will use proper value as bar start point
 			var start = 0;
-			if (helpers.isArray(rValue) && rValue[2] <= 0 ) {
-				start = rValue[1];
-			} else if (helpers.isArray(rValue) && rValue[2] > 0) {
-				start = rValue[0];
+
+			if (helpers.isArray(yValue)) {
+				if (value <= 0 ) {
+					start = scale.getRightValueHigh(yValue);
+				} else if (value > 0) {
+					start = scale.getRightValueLow(yValue);
+				}
 			}
 
-			var i, imeta, ivalue, base, head, size;
+
+			var i, imeta, ivalue, base, head, size, yStackValue;
 
 			if (stacked || (stacked === undefined && stack !== undefined)) {
 				for (i = 0; i < datasetIndex; ++i) {
@@ -416,12 +419,15 @@ module.exports = function(Chart) {
 						imeta.controller.getValueScaleId() === scale.id &&
 						chart.isDatasetVisible(i)) {
 
-						ivalue = scale.getRightValue(datasets[i].data[index]);
+						yStackValue = datasets[i].data[index];
+						ivalue = scale.getRightValue(yStackValue);
 						// float-bar support
-						if (helpers.isArray(ivalue) && ivalue[2] <= 0 ) {
-							ivalue = ivalue[0];
-						} else if (helpers.isArray(ivalue) && ivalue[2] > 0) {
-							ivalue = ivalue[1];
+						if (helpers.isArray(yStackValue)) {
+							if (ivalue <= 0 ) {
+								ivalue = scale.getRightValueLow(ivalue);
+							} else if (ivalue > 0) {
+								ivalue = scale.getRightValueHigh(ivalue);
+							}
 						}
 
 						if ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0)) {
