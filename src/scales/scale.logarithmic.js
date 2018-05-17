@@ -255,12 +255,8 @@ module.exports = function(Chart) {
 		},
 		// Get the correct tooltip label
 		getLabelForIndex: function(index, datasetIndex) {
-			var yValue = this.chart.data.datasets[datasetIndex].data[index];
-			if (helpers.isArray(yValue)) {
-				return yValue.join(' ; ');
-			} else {
-				return +this.getRightValue(yValue);
-			}
+            var value = getScaleLabel( this.chart.data.datasets[datasetIndex].data[index]);
+            return +this.getRightValue(value);
 		},
 		getPixelForTick: function(index) {
 			return this.getPixelForValue(this.tickValues[index]);

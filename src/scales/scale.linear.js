@@ -164,12 +164,8 @@ module.exports = function(Chart) {
 			}
 		},
 		getLabelForIndex: function(index, datasetIndex) {
-			var lyValue = this.chart.data.datasets[datasetIndex].data[index];
-			if (helpers.isArray(lyValue)) {
-				return lyValue.join(' ; ');
-			} else {
-				return +this.getRightValue(lyValue);
-			}
+            var value = getScaleLabel( this.chart.data.datasets[datasetIndex].data[index]);
+            return +this.getRightValue(value);
 		},
 		// Utils
 		getPixelForValue: function(value) {

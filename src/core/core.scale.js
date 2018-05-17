@@ -515,12 +515,8 @@ module.exports = Element.extend({
 	// Get the correct value. NaN bad inputs, If the value type is object get the x or y based on whether we are horizontal or not
 	getRightValue: function(rawValue) {
 
-		// Null and undefined values first
-		if (helpers.isNullOrUndef(rawValue)) {
-			return NaN;
-		}
-		// isNaN(object) returns true, so make sure NaN is checking for a number; Discard Infinite values
-		if (typeof rawValue === 'number' && !isFinite(rawValue)) {
+		// Null and undefined values first. isNaN(object) returns true, so make sure NaN is checking for a number; Discard Infinite values
+		if (helpers.isNullOrUndef(rawValue) || (typeof rawValue === 'number' && !isFinite(rawValue))) {
 			return NaN;
 		}
 
@@ -546,15 +542,6 @@ module.exports = Element.extend({
 
 	// Get the correct Y low and high values. NaN bad inputs. Returns 3 values, lowY as first element, highY as second and actual Yvalue as third.
 	getRightValueLowHigh: function(rawValue) {
-		// Null and undefined values first
-		if (typeof rawValue[0] === 'number' && !isFinite(rawValue[0])) {
-			return NaN;
-		}
-		// Null and undefined values first
-		if (typeof rawValue[1] === 'number' && !isFinite(rawValue[1])) {
-			return NaN;
-		}
-
 		var lowY =  rawValue[0] <= rawValue[1] ? rawValue[0] : rawValue[1];
 		var highY = rawValue[0] > rawValue[1] ? rawValue[0] : rawValue[1];
 		var valueY = 0;
@@ -571,14 +558,10 @@ module.exports = Element.extend({
 	},
 
 	getRightValueLow: function(rawValue) {
-		// Null and undefined values first
-		if (typeof rawValue[0] === 'number' && !isFinite(rawValue[0])) {
-			return NaN;
-		}
-		// Null and undefined values first
-		if (typeof rawValue[1] === 'number' && !isFinite(rawValue[1])) {
-			return NaN;
-		}
+
+       if (!getArrayYvaluesCheck(rawValue)) {
+           return;
+       }
 
 		var lowY =  rawValue[0] <= rawValue[1] ? rawValue[0] : rawValue[1];
 
@@ -587,14 +570,10 @@ module.exports = Element.extend({
 	},
 
 	getRightValueHigh: function(rawValue) {
-		// Null and undefined values first
-		if (typeof rawValue[0] === 'number' && !isFinite(rawValue[0])) {
-			return NaN;
-		}
-        // Null and undefined values first
-		if (typeof rawValue[1] === 'number' && !isFinite(rawValue[1])) {
-			return NaN;
-		}
+
+        if (!getArrayYvaluesCheck(rawValue)) {
+            return;
+        }
 
 		var highY = rawValue[0] > rawValue[1] ? rawValue[0] : rawValue[1];
 
@@ -607,11 +586,7 @@ module.exports = Element.extend({
 		var start = 0;
 
 		if (helpers.isArray(rawValue)) {
-			if (value <= 0 ) {
-				start = this.getRightValueHigh(rawValue);
-			} else if (value > 0) {
-				start = this.getRightValueLow(rawValue);
-			}
+			start = value > 0 ? this.getRightValueLow(rawValue) : this.getRightValueHigh(rawValue);
 		}
 
 		return start;
@@ -621,15 +596,32 @@ module.exports = Element.extend({
 
 		var gap = rawValue;
 
-		if (helpers.isArray(rawValue)) {
-			if (value <= 0 ) {
-				gap = this.getRightValueLow(rawValue);
-			} else if (value > 0) {
-				gap = this.getRightValueHigh(rawValue);
-			}
-		}
+        if (helpers.isArray(rawValue)) {
+            gap = value <= 0 ? this.getRightValueLow(rawValue) : this.getRightValueHigh(rawValue);
+        }
 
 		return gap;
+	},
+
+    getArrayYvaluesCheck: function(rawValue) {
+        // Null and undefined values first
+        if (typeof rawValue[0] === 'number' && !isFinite(rawValue[0])) {
+            return false;
+        }
+        // Null and undefined values first
+        if (typeof rawValue[1] === 'number' && !isFinite(rawValue[1])) {
+            return false;
+        }
+
+        return true;
+    },
+
+	getScaleLabel: function() {
+        if (helpers.isArray(lyValue)) {
+            return lyValue.join(' ; ');
+        } else {
+            return +this.getRightValue(lyValue);
+        }
 	},
 /**
 	 * Used to get the value to display in the tooltip for the data at the given index
