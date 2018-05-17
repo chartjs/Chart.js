@@ -545,61 +545,41 @@ module.exports = Element.extend({
 		var lowY =  rawValue[0] <= rawValue[1] ? rawValue[0] : rawValue[1];
 		var highY = rawValue[0] > rawValue[1] ? rawValue[0] : rawValue[1];
 		var valueY = 0;
-
 		//calculate the proper Y value depending on negative or positive values of the highY and lowY
 		if (lowY >= 0 && highY > 0) {
 			valueY = highY - lowY;
 		} else if (lowY <= 0 && highY <= 0) {
 			valueY = lowY - highY;
 		}
-
 		// Value is good, return it
 		return valueY;
 	},
 
 	getRightValueLow: function(rawValue) {
-
-       if (!getArrayYvaluesCheck(rawValue)) {
-           return;
-       }
-
 		var lowY =  rawValue[0] <= rawValue[1] ? rawValue[0] : rawValue[1];
-
         // Value is good, return it
 		return lowY;
 	},
 
 	getRightValueHigh: function(rawValue) {
-
-        if (!getArrayYvaluesCheck(rawValue)) {
-            return;
-        }
-
 		var highY = rawValue[0] > rawValue[1] ? rawValue[0] : rawValue[1];
-
 		// Value is good, return it
 		return highY;
 	},
 
 	getRightStartPoint: function(rawValue, value) {
-
 		var start = 0;
-
 		if (helpers.isArray(rawValue)) {
 			start = value > 0 ? this.getRightValueLow(rawValue) : this.getRightValueHigh(rawValue);
 		}
-
 		return start;
     },
 
 	getRightGapPoint: function(rawValue, value) {
-
 		var gap = rawValue;
-
-        if (helpers.isArray(rawValue)) {
-            gap = value <= 0 ? this.getRightValueLow(rawValue) : this.getRightValueHigh(rawValue);
+        if (this.getArrayYvaluesCheck(rawValue)) {
+            gap = value <= 0 ? rawValue : this.getRightValueHigh(rawValue);
         }
-
 		return gap;
 	},
 
@@ -612,7 +592,6 @@ module.exports = Element.extend({
         if (typeof rawValue[1] === 'number' && !isFinite(rawValue[1])) {
             return false;
         }
-
         return true;
     },
 

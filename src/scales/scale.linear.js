@@ -76,7 +76,6 @@ module.exports = function(Chart) {
 						helpers.each(dataset.data, function(rawValue, index) {
 							var value, valueR;
 							valueR = me.getRightValue(rawValue);
-
                             value = me.getRightGapPoint(rawValue, valueR);
 
 							if (isNaN(value) || meta.data[index].hidden) {
@@ -112,7 +111,6 @@ module.exports = function(Chart) {
 						helpers.each(dataset.data, function(rawValue, index) {
 							var value, valueR;
                             valueR = me.getRightValue(rawValue);
-
                             value = me.getRightGapPoint(rawValue, valueR);
 
 							if (isNaN(value) || meta.data[index].hidden) {
@@ -164,8 +162,7 @@ module.exports = function(Chart) {
 			}
 		},
 		getLabelForIndex: function(index, datasetIndex) {
-            var value = getScaleLabel( this.chart.data.datasets[datasetIndex].data[index]);
-            return +this.getRightValue(value);
+            return +this.getRightValue(this.getScaleLabel(this.chart.data.datasets[datasetIndex].data[index]));
 		},
 		// Utils
 		getPixelForValue: function(value) {

@@ -408,7 +408,6 @@ module.exports = function(Chart) {
 						imeta.stack === stack &&
 						imeta.controller.getValueScaleId() === scale.id &&
 						chart.isDatasetVisible(i)) {
-
 						yStackValue = datasets[i].data[index];
 						yStackValueR = scale.getRightValue(yStackValue);
 						// float-bar support

@@ -121,7 +121,6 @@ module.exports = function(Chart) {
 							var values = valuesPerStack[key];
 							var value, valueR;
 							valueR = me.getRightValue(rawValue);
-
                             value = me.getRightGapPoint(rawValue, valueR);
 
 							// invalid, hidden and negative values are ignored
@@ -150,9 +149,7 @@ module.exports = function(Chart) {
 						helpers.each(dataset.data, function(rawValue, index) {
 							var value, valueR;
 							valueR = me.getRightValue(rawValue);
-
                             value = me.getRightGapPoint(rawValue, valueR);
-
 							// invalid, hidden and negative values are ignored
 							if (isNaN(value) || meta.data[index].hidden || value < 0) {
 								return;
@@ -255,8 +252,7 @@ module.exports = function(Chart) {
 		},
 		// Get the correct tooltip label
 		getLabelForIndex: function(index, datasetIndex) {
-            var value = getScaleLabel( this.chart.data.datasets[datasetIndex].data[index]);
-            return +this.getRightValue(value);
+            return +this.getRightValue(this.getScaleLabel(this.chart.data.datasets[datasetIndex].data[index]));
 		},
 		getPixelForTick: function(index) {
 			return this.getPixelForValue(this.tickValues[index]);
