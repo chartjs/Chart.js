@@ -514,7 +514,6 @@ module.exports = Element.extend({
 
 	// Get the correct value. NaN bad inputs, If the value type is object get the x or y based on whether we are horizontal or not
 	getRightValue: function(rawValue) {
-
 		// Null and undefined values first. isNaN(object) returns true, so make sure NaN is checking for a number; Discard Infinite values
 		if (helpers.isNullOrUndef(rawValue) || (typeof rawValue === 'number' && !isFinite(rawValue))) {
 			return NaN;
@@ -542,10 +541,10 @@ module.exports = Element.extend({
 
 	// Get the correct Y low and high values. NaN bad inputs. Returns 3 values, lowY as first element, highY as second and actual Yvalue as third.
 	getRightValueLowHigh: function(rawValue) {
-		var lowY =  rawValue[0] <= rawValue[1] ? rawValue[0] : rawValue[1];
+		var lowY = rawValue[0] <= rawValue[1] ? rawValue[0] : rawValue[1];
 		var highY = rawValue[0] > rawValue[1] ? rawValue[0] : rawValue[1];
 		var valueY = 0;
-		//calculate the proper Y value depending on negative or positive values of the highY and lowY
+		// calculate the proper Y value depending on negative or positive values of the highY and lowY
 		if (lowY >= 0 && highY > 0) {
 			valueY = highY - lowY;
 		} else if (lowY <= 0 && highY <= 0) {
@@ -556,8 +555,8 @@ module.exports = Element.extend({
 	},
 
 	getRightValueLow: function(rawValue) {
-		var lowY =  rawValue[0] <= rawValue[1] ? rawValue[0] : rawValue[1];
-        // Value is good, return it
+		var lowY = rawValue[0] <= rawValue[1] ? rawValue[0] : rawValue[1];
+		// Value is good, return it
 		return lowY;
 	},
 
@@ -577,30 +576,29 @@ module.exports = Element.extend({
 
 	getRightGapPoint: function(rawValue, value) {
 		var gap = rawValue;
-        if (this.getArrayYvaluesCheck(rawValue)) {
-            gap = value <= 0 ? rawValue : this.getRightValueHigh(rawValue);
-        }
+		if (helpers.isArray(rawValue) && this.getArrayYvaluesCheck(rawValue)) {
+			gap = value <= 0 ? rawValue : this.getRightValueHigh(rawValue);
+		}
 		return gap;
 	},
 
-    getArrayYvaluesCheck: function(rawValue) {
-        // Null and undefined values first
-        if (typeof rawValue[0] === 'number' && !isFinite(rawValue[0])) {
-            return false;
-        }
-        // Null and undefined values first
-        if (typeof rawValue[1] === 'number' && !isFinite(rawValue[1])) {
-            return false;
-        }
-        return true;
-    },
+	getArrayYvaluesCheck: function(rawValue) {
+		// Null and undefined values first
+		if (typeof rawValue[0] === 'number' && !isFinite(rawValue[0])) {
+			return false;
+		}
+		// Null and undefined values first
+		if (typeof rawValue[1] === 'number' && !isFinite(rawValue[1])) {
+			return false;
+		}
+		return true;
+	},
 
-	getScaleLabel: function() {
-        if (helpers.isArray(lyValue)) {
-            return lyValue.join(' ; ');
-        } else {
-            return +this.getRightValue(lyValue);
-        }
+	getScaleLabel: function(value) {
+		if (helpers.isArray(value)) {
+			return lyValue.join(' ; ');
+		}
+		return +this.getRightValue(value);
 	},
 /**
 	 * Used to get the value to display in the tooltip for the data at the given index
