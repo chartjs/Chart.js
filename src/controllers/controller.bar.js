@@ -397,18 +397,8 @@ module.exports = function(Chart) {
 			var stacked = scale.options.stacked;
 			var stack = meta.stack;
 			// float-bar support, if y arguments are array function will use proper value as bar start point
-			var start = 0;
-
-			if (helpers.isArray(yValue)) {
-				if (value <= 0 ) {
-					start = scale.getRightValueHigh(yValue);
-				} else if (value > 0) {
-					start = scale.getRightValueLow(yValue);
-				}
-			}
-
-
-			var i, imeta, ivalue, base, head, size, yStackValue;
+			var start = scale.getRightStartPoint(yValue, value);
+			var i, imeta, ivalue, base, head, size, yStackValue, yStackValueR;
 
 			if (stacked || (stacked === undefined && stack !== undefined)) {
 				for (i = 0; i < datasetIndex; ++i) {
@@ -420,15 +410,9 @@ module.exports = function(Chart) {
 						chart.isDatasetVisible(i)) {
 
 						yStackValue = datasets[i].data[index];
-						ivalue = scale.getRightValue(yStackValue);
+						yStackValueR = scale.getRightValue(yStackValue);
 						// float-bar support
-						if (helpers.isArray(yStackValue)) {
-							if (ivalue <= 0 ) {
-								ivalue = scale.getRightValueLow(ivalue);
-							} else if (ivalue > 0) {
-								ivalue = scale.getRightValueHigh(ivalue);
-							}
-						}
+						ivalue = scale.getRightGapPoint(yStackValue, yStackValueR);
 
 						if ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0)) {
 							start += ivalue;

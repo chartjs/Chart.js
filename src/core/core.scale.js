@@ -546,9 +546,6 @@ module.exports = Element.extend({
 
 	// Get the correct Y low and high values. NaN bad inputs. Returns 3 values, lowY as first element, highY as second and actual Yvalue as third.
 	getRightValueLowHigh: function(rawValue) {
-		if (!helpers.isArray(rawValue)) {
-			return this.getRightValue(rawValue);
-		}
 		// Null and undefined values first
 		if (typeof rawValue[0] === 'number' && !isFinite(rawValue[0])) {
 			return NaN;
@@ -574,9 +571,6 @@ module.exports = Element.extend({
 	},
 
 	getRightValueLow: function(rawValue) {
-		if (!helpers.isArray(rawValue)) {
-			return this.getRightValue(rawValue);
-		}
 		// Null and undefined values first
 		if (typeof rawValue[0] === 'number' && !isFinite(rawValue[0])) {
 			return NaN;
@@ -593,10 +587,7 @@ module.exports = Element.extend({
 	},
 
 	getRightValueHigh: function(rawValue) {
-		if (!helpers.isArray(rawValue)) {
-			return this.getRightValue(rawValue);
-		}
-        // Null and undefined values first
+		// Null and undefined values first
 		if (typeof rawValue[0] === 'number' && !isFinite(rawValue[0])) {
 			return NaN;
 		}
@@ -609,6 +600,36 @@ module.exports = Element.extend({
 
 		// Value is good, return it
 		return highY;
+	},
+
+	getRightStartPoint: function(rawValue, value) {
+
+		var start = 0;
+
+		if (helpers.isArray(rawValue)) {
+			if (value <= 0 ) {
+				start = this.getRightValueHigh(rawValue);
+			} else if (value > 0) {
+				start = this.getRightValueLow(rawValue);
+			}
+		}
+
+		return start;
+    },
+
+	getRightGapPoint: function(rawValue, value) {
+
+		var gap = rawValue;
+
+		if (helpers.isArray(rawValue)) {
+			if (value <= 0 ) {
+				gap = this.getRightValueLow(rawValue);
+			} else if (value > 0) {
+				gap = this.getRightValueHigh(rawValue);
+			}
+		}
+
+		return gap;
 	},
 /**
 	 * Used to get the value to display in the tooltip for the data at the given index

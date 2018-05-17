@@ -77,15 +77,7 @@ module.exports = function(Chart) {
 							var value, valueR;
 							valueR = me.getRightValue(rawValue);
 
-							if (helpers.isArray(rawValue)) {
-								if (valueR <= 0 ) {
-									value = +me.getRightValueLow(rawValue);
-								} else if (valueR > 0) {
-									value = +me.getRightValueHigh(rawValue);
-								}
-							} else {
-								value = +valueR;
-							}
+                            value = me.getRightGapPoint(rawValue, valueR);
 
 							if (isNaN(value) || meta.data[index].hidden) {
 								return;
@@ -119,17 +111,9 @@ module.exports = function(Chart) {
 					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 						helpers.each(dataset.data, function(rawValue, index) {
 							var value, valueR;
-							valueR = me.getRightValue(rawValue);
+                            valueR = me.getRightValue(rawValue);
 
-							if (helpers.isArray(rawValue)) {
-								if (valueR <= 0 ) {
-									value = +me.getRightValueLow(rawValue);
-								} else if (valueR > 0) {
-									value = +me.getRightValueHigh(rawValue);
-								}
-							} else {
-								value = +valueR;
-							}
+                            value = me.getRightGapPoint(rawValue, valueR);
 
 							if (isNaN(value) || meta.data[index].hidden) {
 								return;
@@ -180,11 +164,11 @@ module.exports = function(Chart) {
 			}
 		},
 		getLabelForIndex: function(index, datasetIndex) {
-			var yValue = this.chart.data.datasets[datasetIndex].data[index];
-			if (helpers.isArray(yValue)) {
-				return yValue.join(' ; ');
+			var lyValue = this.chart.data.datasets[datasetIndex].data[index];
+			if (helpers.isArray(lyValue)) {
+				return lyValue.join(' ; ');
 			} else {
-				return +this.getRightValue(yValue);
+				return +this.getRightValue(lyValue);
 			}
 		},
 		// Utils

@@ -122,15 +122,7 @@ module.exports = function(Chart) {
 							var value, valueR;
 							valueR = me.getRightValue(rawValue);
 
-							if (helpers.isArray(rawValue)) {
-								if (valueR <= 0 ) {
-									return;
-								} else if (valueR > 0) {
-									value = +me.getRightValueHigh(rawValue);
-								}
-							} else {
-								value = +valueR;
-							}
+                            value = me.getRightGapPoint(rawValue, valueR);
 
 							// invalid, hidden and negative values are ignored
 							if (isNaN(value) || meta.data[index].hidden || value < 0) {
@@ -159,15 +151,7 @@ module.exports = function(Chart) {
 							var value, valueR;
 							valueR = me.getRightValue(rawValue);
 
-							if (helpers.isArray(rawValue)) {
-								if (valueR <= 0 ) {
-									return;
-								} else if (valueR > 0) {
-									value = +me.getRightValueHigh(rawValue);
-								}
-							} else {
-								value = +valueR;
-							}
+                            value = me.getRightGapPoint(rawValue, valueR);
 
 							// invalid, hidden and negative values are ignored
 							if (isNaN(value) || meta.data[index].hidden || value < 0) {
