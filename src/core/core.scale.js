@@ -572,7 +572,7 @@ module.exports = Element.extend({
 			start = value > 0 ? this.getRightValueLow(rawValue) : this.getRightValueHigh(rawValue);
 		}
 		return start;
-    },
+	},
 
 	getRightGapPoint: function(rawValue, value) {
 		var gap = rawValue;
@@ -596,11 +596,11 @@ module.exports = Element.extend({
 
 	getScaleLabel: function(value) {
 		if (helpers.isArray(value)) {
-			return lyValue.join(' ; ');
+			return value.join(' ; ');
 		}
 		return +this.getRightValue(value);
 	},
-/**
+	/**
 	 * Used to get the value to display in the tooltip for the data at the given index
 	 * @param index
 	 * @param datasetIndex
