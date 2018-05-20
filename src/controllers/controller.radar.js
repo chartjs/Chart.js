@@ -67,7 +67,7 @@ module.exports = function(Chart) {
 			meta.dataset.pivot();
 
 			// Update Points
-			for (i = 0, ilen = points.length; i < ilen; ++i) {
+			for (i = 0, ilen = points.length; i < ilen; i++) {
 				me.updateElement(points[i], i, reset);
 			}
 
@@ -75,7 +75,7 @@ module.exports = function(Chart) {
 			me.updateBezierControlPoints();
 
 			// Now pivot the point for animation
-			for (i = 0, ilen = points.length; i < ilen; ++i) {
+			for (i = 0, ilen = points.length; i < ilen; i++) {
 				points[i].pivot();
 			}
 		},

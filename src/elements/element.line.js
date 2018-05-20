@@ -36,7 +36,7 @@ module.exports = Element.extend({
 
 		// If we are looping, adding the first non-skipped point again
 		if (me._loop && points.length) {
-			for (index = 0; index < points.length; ++ index) {
+			for (index = 0; index < points.length; index++) {
 				current = points[index];
 				if (!current._view.skip) {
 					points.push(current);
