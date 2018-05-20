@@ -51,7 +51,7 @@ module.exports = function(Chart) {
 				// Model
 				_model: {
 					// Appearance
-					spanGaps: dataset.spanGaps !== undefined ? dataset.spanGaps : me.chart.options.spanGaps,
+					spanGaps: helpers.valueOrDefault(dataset.spanGaps, me.chart.options.spanGaps),
 					tension: custom.tension ? custom.tension : helpers.valueOrDefault(dataset.lineTension, lineElementOptions.tension),
 					backgroundColor: custom.backgroundColor ? custom.backgroundColor : (dataset.backgroundColor || lineElementOptions.backgroundColor),
 					borderWidth: custom.borderWidth ? custom.borderWidth : (dataset.borderWidth || lineElementOptions.borderWidth),
