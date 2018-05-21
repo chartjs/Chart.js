@@ -634,7 +634,7 @@ module.exports = Element.extend({
 		var cosRotation = Math.cos(labelRotationRadians);
 		var longestRotatedLabel = me.longestLabelWidth * cosRotation;
 		var result = [];
-		var i, tick, shouldSkip;
+		var i, tick;
 
 		// figure out the maximum number of gridlines to show
 		var maxTicks;
@@ -642,31 +642,44 @@ module.exports = Element.extend({
 			maxTicks = optionTicks.maxTicksLimit;
 		}
 
-		if (isHorizontal) {
-			skipRatio = false;
+		var evenLabelSpacing;
+    if (optionTicks.evenLabelSpacing) {
+      evenLabelSpacing = optionTicks.evenLabelSpacing;
+    }
 
-			if ((longestRotatedLabel + optionTicks.autoSkipPadding) * tickCount > (me.width - (me.paddingLeft + me.paddingRight))) {
-				skipRatio = 1 + Math.floor(((longestRotatedLabel + optionTicks.autoSkipPadding) * tickCount) / (me.width - (me.paddingLeft + me.paddingRight)));
-			}
+    if (isHorizontal) {
+      skipRatio = false;
 
-			// if they defined a max number of optionTicks,
-			// increase skipRatio until that number is met
-			if (maxTicks && tickCount > maxTicks) {
-				skipRatio = Math.max(skipRatio, Math.floor(tickCount / maxTicks));
-			}
-		}
+      if ((longestRotatedLabel + optionTicks.autoSkipPadding) * tickCount > (me.width - (me.paddingLeft + me.paddingRight))) {
+        skipRatio = 1 + Math.floor(((longestRotatedLabel + optionTicks.autoSkipPadding) * tickCount) / (me.width - (me.paddingLeft + me.paddingRight)));
+      }
 
-		for (i = 0; i < tickCount; i++) {
-			tick = ticks[i];
+      // if they defined a max number of optionTicks,
+      // increase skipRatio until that number is met
+      if (maxTicks && tickCount > maxTicks) {
+        skipRatio = Math.max(skipRatio, Math.floor(tickCount / maxTicks));
+      }
+    }
 
-			// Since we always show the last tick,we need may need to hide the last shown one before
-			shouldSkip = (skipRatio > 1 && i % skipRatio > 0) || (i % skipRatio === 0 && i + skipRatio >= tickCount);
-			if (shouldSkip && i !== tickCount - 1) {
-				// leave tick in place but make sure it's not displayed (#4635)
-				delete tick.label;
-			}
-			result.push(tick);
-		}
+    for (i = 0; i < tickCount; i++) {
+      tick = ticks[i];
+
+      
+      if (evenLabelSpacing) {
+        if (skipRatio > 1 && i % skipRatio > 0) {
+          // leave tick in place but make sure it's not displayed (#4635)
+          delete tick.label;
+        }
+      } else {
+        if ((i !== tickCount - 1) && ( // Always show last tick
+            (skipRatio > 1 && i % skipRatio > 0) ||
+            (i % skipRatio === 0 && i + skipRatio >= tickCount))) { // Since we always show the last tick,we need may need to hide the last shown one before
+          // leave tick in place but make sure it's not displayed (#4635)
+          delete tick.label;
+        }
+      }
+      result.push(tick);
+    }
 		return result;
 	},
 
