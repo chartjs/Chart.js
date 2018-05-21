@@ -694,7 +694,7 @@ module.exports = function(Chart) {
 			if (!dataset.data) {
 				dataset.data = [];
 			}
-			// format the data if the data array is missing some point according to the labels
+			// Format the data if the data array is missing some point according to the labels
 			dataset.data = me.formatDataset(dataset.data);
 			var meta = dataset._meta[me.id];
 			if (!meta) {
@@ -939,7 +939,7 @@ module.exports = function(Chart) {
 			return changed;
 		},
 		/**
-		 * format the data list if the data is missing some points in the datasets.
+		 * Format the data list if the data is missing some points in the datasets.
 		 * @private
 		 * @param {array} dataArray array to format
 		 * @return {array} the formated array
@@ -947,11 +947,9 @@ module.exports = function(Chart) {
 		formatDataset: function(dataArray) {
 			var labels = this.chart.data.labels;
 			var tmp = dataArray.slice(0);
-			var labelLen = labels.length;
-			var dataLen = dataArray.length;
 			var result = dataArray;
 			var match = this.dataInLabel(tmp, labels);
-			if (match && dataLen < labelLen) {
+			if (match && dataArray.length < labels.length) {
 				for (var i = 0; i < labels.length; i++) {
 					var label = labels[i];
 					result[i] = {x: label, y: this.getY(label, tmp)};
@@ -960,12 +958,12 @@ module.exports = function(Chart) {
 			return result;
 		},
 		/**
-		* return the y data of the label, if no this label, return null
-		* @private
-		* @param {string} label the label in the labels array
-		* @param {array} dataArray the data in the datasets.
-		* @return {number} the y data according to the label
-		*/
+		 * Return the y data of the label, if no this label, return null
+		 * @private
+		 * @param {string} label the label in the labels array
+		 * @param {array} dataArray the data in the datasets.
+		 * @return {number} the y data according to the label
+		 */
 		getY: function(label, dataArray) {
 			var y = null;
 			for (var i = 0; i < dataArray.length; i++) {
@@ -977,24 +975,23 @@ module.exports = function(Chart) {
 			return y;
 		},
 		/**
-		* find if the data in datasets is existed in the labels
-		* @private
-		* @param {array} dataArray the data in the datasets
-		* @param {array} labelArray the label in the labels array
-		* @return {boolean} the match result, true is included
-		*/
+		 * Find if the data in datasets exists in the labels
+		 * @private
+		 * @param {array} dataArray the data in the datasets
+		 * @param {array} labelArray the label in the labels array
+		 * @return {boolean} the match result, true is included
+		 */
 		dataInLabel: function(dataArray, labelArray) {
-			var result = false;
 			for (var i = 0; i < dataArray.length; i++) {
 				var item = dataArray[i];
 				if (item === null || item === undefined || item.x === undefined) {
 					break;
 				}
 				if (labelArray.indexOf(item.x) > -1) {
-					result = true;
+                    return true
 				}
 			}
-			return result;
+			return false
 		},
 	});
 
