@@ -396,10 +396,10 @@ module.exports = function(Chart) {
 			var stacked = scale.options.stacked;
 			var stack = meta.stack;
 			// float-bar support, if y arguments are array function will use proper value as bar start point
-            var start = 0;
-            if (value.min != value.max) {
-                start = value.val > 0 ? value.min : value.max;
-            }
+			var start = 0;
+			if (value.min !== value.max) {
+				start = value.val > 0 ? value.min : value.max;
+			}
 
 			var i, imeta, ivalue, base, head, size, yStackValue;
 
@@ -413,10 +413,10 @@ module.exports = function(Chart) {
 						chart.isDatasetVisible(i)) {
 						yStackValue = scale.parseValue(datasets[i].data[index]);
 
-                        if (yStackValue.min == yStackValue.max) {
-                            ivalue = yStackValue.val;
-                        } else {
-                            ivalue = yStackValue.val <= 0 ? yStackValue.min : yStackValue.max;
+						if (yStackValue.min === yStackValue.max) {
+							ivalue = yStackValue.val;
+						} else {
+							ivalue = yStackValue.val <= 0 ? yStackValue.min : yStackValue.max;
 						}
 
 						if ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0)) {

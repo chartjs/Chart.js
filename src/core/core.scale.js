@@ -565,8 +565,8 @@ module.exports = Element.extend({
     },
 
 	getScaleLabel: function(rawValue) {
-        var v = scale.parseValue(rawValue);
-        return v.min == v.max ? v.min : v.min + " ; " v.max;
+        var v = this.parseValue(rawValue);
+        return v.min == v.max ? v.min : v.min + " ; " + v.max;
 	},
 	/**
 	 * Used to get the value to display in the tooltip for the data at the given index

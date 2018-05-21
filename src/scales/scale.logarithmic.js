@@ -118,7 +118,8 @@ module.exports = function(Chart) {
 						}
 
 						helpers.each(dataset.data, function(rawValue, index) {
-                            var value = me.parseValue(rawValue);
+							var values = valuesPerStack[key];
+							var value = me.parseValue(rawValue);
 
 							// invalid, hidden and negative values are ignored
 							if (isNaN(value.val) || meta.data[index].hidden || value.val < 0) {
@@ -144,7 +145,7 @@ module.exports = function(Chart) {
 					var meta = chart.getDatasetMeta(datasetIndex);
 					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 						helpers.each(dataset.data, function(rawValue, index) {
-                            var value = me.parseValue(rawValue);
+							var value = me.parseValue(rawValue);
 							// invalid, hidden and negative values are ignored
 							if (isNaN(value.val) || meta.data[index].hidden || value.val < 0) {
 								return;
@@ -247,8 +248,8 @@ module.exports = function(Chart) {
 		},
 		// Get the correct tooltip label
 		getLabelForIndex: function(index, datasetIndex) {
-            var value = this.chart.data.datasets[datasetIndex].data[index];
-            return this.getScaleLabel(value);
+			var value = this.chart.data.datasets[datasetIndex].data[index];
+			return this.getScaleLabel(value);
 		},
 		getPixelForTick: function(index) {
 			return this.getPixelForValue(this.tickValues[index]);
