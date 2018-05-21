@@ -67,6 +67,43 @@ module.exports = function(Chart) {
 		return position === 'top' || position === 'bottom';
 	}
 
+	/**
+	 * Return the y data of the label, if no this label, return null
+	 * @private
+	 * @param {string} label the label in the labels array
+	 * @param {array} dataArray the data in the datasets.
+	 * @return {number} the y data according to the label
+	 */
+	function getY(label, dataArray) {
+		var y = null;
+		for (var i = 0; i < dataArray.length; i++) {
+			var item = dataArray[i];
+			if (item.x === label) {
+				y = item.y;
+			}
+		}
+		return y;
+	}
+	/**
+	 * Find if the data in datasets exists in the labels
+	 * @private
+	 * @param {array} dataArray the data in the datasets
+	 * @param {array} labelArray the label in the labels array
+	 * @return {boolean} the match result, true is included
+	 */
+	function dataInLabel(dataArray, labelArray) {
+		for (var i = 0; i < dataArray.length; i++) {
+			var item = dataArray[i];
+			if (item === null || item === undefined || item.x === undefined) {
+				break;
+			}
+			if (labelArray.indexOf(item.x) > -1) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	helpers.extend(Chart.prototype, /** @lends Chart */ {
 		/**
 		 * @private
@@ -695,7 +732,7 @@ module.exports = function(Chart) {
 				dataset.data = [];
 			}
 			// Format the data if the data array is missing some point according to the labels
-			dataset.data = me.formatDataset(dataset.data);
+			dataset.data = me._formatDataset(dataset.data);
 			var meta = dataset._meta[me.id];
 			if (!meta) {
 				meta = dataset._meta[me.id] = {
@@ -944,54 +981,18 @@ module.exports = function(Chart) {
 		 * @param {array} dataArray array to format
 		 * @return {array} the formated array
 		 */
-		formatDataset: function(dataArray) {
+		_formatDataset: function(dataArray) {
 			var labels = this.chart.data.labels;
 			var tmp = dataArray.slice(0);
 			var result = dataArray;
-			var match = this.dataInLabel(tmp, labels);
+			var match = dataInLabel(tmp, labels);
 			if (match && dataArray.length < labels.length) {
 				for (var i = 0; i < labels.length; i++) {
 					var label = labels[i];
-					result[i] = {x: label, y: this.getY(label, tmp)};
+					result[i] = {x: label, y: getY(label, tmp)};
 				}
 			}
 			return result;
-		},
-		/**
-		 * Return the y data of the label, if no this label, return null
-		 * @private
-		 * @param {string} label the label in the labels array
-		 * @param {array} dataArray the data in the datasets.
-		 * @return {number} the y data according to the label
-		 */
-		getY: function(label, dataArray) {
-			var y = null;
-			for (var i = 0; i < dataArray.length; i++) {
-				var item = dataArray[i];
-				if (item.x === label) {
-					y = item.y;
-				}
-			}
-			return y;
-		},
-		/**
-		 * Find if the data in datasets exists in the labels
-		 * @private
-		 * @param {array} dataArray the data in the datasets
-		 * @param {array} labelArray the label in the labels array
-		 * @return {boolean} the match result, true is included
-		 */
-		dataInLabel: function(dataArray, labelArray) {
-			for (var i = 0; i < dataArray.length; i++) {
-				var item = dataArray[i];
-				if (item === null || item === undefined || item.x === undefined) {
-					break;
-				}
-				if (labelArray.indexOf(item.x) > -1) {
-					return true;
-				}
-			}
-			return false;
 		},
 	});
 
