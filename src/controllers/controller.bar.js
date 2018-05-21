@@ -392,13 +392,16 @@ module.exports = function(Chart) {
 			var scale = me.getValueScale();
 			var datasets = chart.data.datasets;
 			// float-bar support, if y arguments are array function will use top - bottom value to calculate bar height
-			var yValue = datasets[datasetIndex].data[index];
-			var value = scale.getRightValue(yValue);
+			var value = scale.parseValue(datasets[datasetIndex].data[index]);
 			var stacked = scale.options.stacked;
 			var stack = meta.stack;
 			// float-bar support, if y arguments are array function will use proper value as bar start point
-			var start = scale.getRightStartPoint(yValue, value);
-			var i, imeta, ivalue, base, head, size, yStackValue, yStackValueR;
+            var start = 0;
+            if (value.min != value.max) {
+                start = value.val > 0 ? value.min : value.max;
+            }
+
+			var i, imeta, ivalue, base, head, size, yStackValue;
 
 			if (stacked || (stacked === undefined && stack !== undefined)) {
 				for (i = 0; i < datasetIndex; ++i) {
@@ -408,10 +411,13 @@ module.exports = function(Chart) {
 						imeta.stack === stack &&
 						imeta.controller.getValueScaleId() === scale.id &&
 						chart.isDatasetVisible(i)) {
-						yStackValue = datasets[i].data[index];
-						yStackValueR = scale.getRightValue(yStackValue);
-						// float-bar support
-						ivalue = scale.getRightGapPoint(yStackValue, yStackValueR);
+						yStackValue = scale.parseValue(datasets[i].data[index]);
+
+                        if (yStackValue.min == yStackValue.max) {
+                            ivalue = yStackValue.val;
+                        } else {
+                            ivalue = yStackValue.val <= 0 ? yStackValue.min : yStackValue.max;
+						}
 
 						if ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0)) {
 							start += ivalue;

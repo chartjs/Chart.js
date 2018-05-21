@@ -118,17 +118,14 @@ module.exports = function(Chart) {
 						}
 
 						helpers.each(dataset.data, function(rawValue, index) {
-							var values = valuesPerStack[key];
-							var value, valueR;
-							valueR = me.getRightValue(rawValue);
-							value = me.getRightGapPoint(rawValue, valueR);
+                            var value = me.parseValue(rawValue);
 
 							// invalid, hidden and negative values are ignored
-							if (isNaN(value) || meta.data[index].hidden || value < 0) {
+							if (isNaN(value.val) || meta.data[index].hidden || value.val < 0) {
 								return;
 							}
 							values[index] = values[index] || 0;
-							values[index] += value;
+							values[index] += value.max;
 						});
 					}
 				});
@@ -147,28 +144,26 @@ module.exports = function(Chart) {
 					var meta = chart.getDatasetMeta(datasetIndex);
 					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 						helpers.each(dataset.data, function(rawValue, index) {
-							var value, valueR;
-							valueR = me.getRightValue(rawValue);
-							value = me.getRightGapPoint(rawValue, valueR);
+                            var value = me.parseValue(rawValue);
 							// invalid, hidden and negative values are ignored
-							if (isNaN(value) || meta.data[index].hidden || value < 0) {
+							if (isNaN(value.val) || meta.data[index].hidden || value.val < 0) {
 								return;
 							}
 
 							if (me.min === null) {
-								me.min = value;
-							} else if (value < me.min) {
-								me.min = value;
+								me.min = value.min;
+							} else if (value.min < me.min) {
+								me.min = value.min;
 							}
 
 							if (me.max === null) {
-								me.max = value;
-							} else if (value > me.max) {
-								me.max = value;
+								me.max = value.max;
+							} else if (value.max > me.max) {
+								me.max = value.max;
 							}
 
-							if (value !== 0 && (me.minNotZero === null || value < me.minNotZero)) {
-								me.minNotZero = value;
+							if (value.min !== 0 && (me.minNotZero === null || value.min < me.minNotZero)) {
+								me.minNotZero = value.min;
 							}
 						});
 					}
@@ -252,7 +247,8 @@ module.exports = function(Chart) {
 		},
 		// Get the correct tooltip label
 		getLabelForIndex: function(index, datasetIndex) {
-			return +this.getRightValue(this.getScaleLabel(this.chart.data.datasets[datasetIndex].data[index]));
+            var value = this.chart.data.datasets[datasetIndex].data[index];
+            return this.getScaleLabel(value);
 		},
 		getPixelForTick: function(index) {
 			return this.getPixelForValue(this.tickValues[index]);

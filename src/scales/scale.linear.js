@@ -74,11 +74,9 @@ module.exports = function(Chart) {
 
 					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 						helpers.each(dataset.data, function(rawValue, index) {
-							var value, valueR;
-							valueR = me.getRightValue(rawValue);
-							value = me.getRightGapPoint(rawValue, valueR);
+                            var value = me.parseValue(rawValue);
 
-							if (isNaN(value) || meta.data[index].hidden) {
+							if (isNaN(value.val) || meta.data[index].hidden) {
 								return;
 							}
 
@@ -87,10 +85,10 @@ module.exports = function(Chart) {
 
 							if (opts.relativePoints) {
 								positiveValues[index] = 100;
-							} else if (value < 0) {
-								negativeValues[index] += value;
+							} else if (value.val < 0) {
+								negativeValues[index] += value.min;
 							} else {
-								positiveValues[index] += value;
+								positiveValues[index] += value.max;
 							}
 						});
 					}
@@ -109,24 +107,22 @@ module.exports = function(Chart) {
 					var meta = chart.getDatasetMeta(datasetIndex);
 					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 						helpers.each(dataset.data, function(rawValue, index) {
-							var value, valueR;
-							valueR = me.getRightValue(rawValue);
-							value = me.getRightGapPoint(rawValue, valueR);
+                            var value = me.parseValue(rawValue);
 
-							if (isNaN(value) || meta.data[index].hidden) {
+							if (isNaN(value.val) || meta.data[index].hidden) {
 								return;
 							}
 
 							if (me.min === null) {
-								me.min = value;
+								me.min = value.min;
 							} else if (value < me.min) {
-								me.min = value;
+								me.min = value.min;
 							}
 
 							if (me.max === null) {
-								me.max = value;
+								me.max = value.max;
 							} else if (value > me.max) {
-								me.max = value;
+								me.max = value.max;
 							}
 						});
 					}
@@ -163,7 +159,7 @@ module.exports = function(Chart) {
 		},
 		getLabelForIndex: function(index, datasetIndex) {
 			var value = this.chart.data.datasets[datasetIndex].data[index];
-			return +this.getRightValue(this.getScaleLabel(value));
+			return this.getScaleLabel(value);
 		},
 		// Utils
 		getPixelForValue: function(value) {

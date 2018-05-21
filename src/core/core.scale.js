@@ -521,7 +521,7 @@ module.exports = Element.extend({
 
 		// Float-bar support. Handling arrays
 		if (helpers.isArray(rawValue)) {
-			return this.getRightValueLowHigh(rawValue);
+			return [this.getRightValue(rawValue[0]), this.getRightValue(rawValue[1])];
 		}
 
 		// If it is in fact an object, dive in one more level
@@ -538,6 +538,31 @@ module.exports = Element.extend({
 		// Value is good, return it
 		return rawValue;
 	},
+
+    parseValue: function(rawValue) {
+        var value = this.getRightValue(rawValue);
+        var min, max;
+
+        if (helpers.isArray(value)) {
+            min = value[0] <= value[1] ? value[0] : value[1];
+            max = value[0] > value[1] ? value[0] : value[1];
+
+            if (min >= 0 && max > 0) {
+                value = max - min;
+            } else if (min <= 0 && max <= 0) {
+                value = min - max;
+            }
+        } else {
+            min = value;
+            max = value;
+        }
+
+        return {
+            min: min,
+            max: max,
+            val: value
+        }
+    },
 
 	// Get the correct Y low and high values. NaN bad inputs. Returns 3 values, lowY as first element, highY as second and actual Yvalue as third.
 	getRightValueLowHigh: function(rawValue) {
@@ -594,11 +619,9 @@ module.exports = Element.extend({
 		return true;
 	},
 
-	getScaleLabel: function(value) {
-		if (helpers.isArray(value)) {
-			return value.join(' ; ');
-		}
-		return +this.getRightValue(value);
+	getScaleLabel: function(rawValue) {
+        var v = scale.parseValue(rawValue);
+        return v.min == v.max ? v.min : v.min + " ; " v.max;
 	},
 	/**
 	 * Used to get the value to display in the tooltip for the data at the given index
