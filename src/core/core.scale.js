@@ -636,12 +636,20 @@ module.exports = Element.extend({
 		var result = [];
 		var i, tick;
 
+    // Specifiy the label spacing
+		var labelSpacing;
+		if (optionTicks.labelSpacing) {
+      labelSpacing = optionTicks.labelSpacing;
+      // If not an even number, reject
+      if (labelSpacing !== Math.floor(labelSpacing)) {
+        labelSpacing = undefined;
+      }
+		}
 		// figure out the maximum number of gridlines to show
 		var maxTicks;
 		if (optionTicks.maxTicksLimit) {
 			maxTicks = optionTicks.maxTicksLimit;
 		}
-
 		var evenLabelSpacing;
     if (optionTicks.evenLabelSpacing) {
       evenLabelSpacing = optionTicks.evenLabelSpacing;
@@ -659,13 +667,17 @@ module.exports = Element.extend({
       if (maxTicks && tickCount > maxTicks) {
         skipRatio = Math.max(skipRatio, Math.floor(tickCount / maxTicks));
       }
+
+      // Requesting a label spacing cancels other settings established by maxTicks
+      if (labelSpacing) {
+        skipRatio = labelSpacing;
+      }
     }
 
     for (i = 0; i < tickCount; i++) {
       tick = ticks[i];
 
-      
-      if (evenLabelSpacing) {
+      if (evenLabelSpacing || labelSpacing) {
         if (skipRatio > 1 && i % skipRatio > 0) {
           // leave tick in place but make sure it's not displayed (#4635)
           delete tick.label;
