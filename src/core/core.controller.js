@@ -988,10 +988,10 @@ module.exports = function(Chart) {
 					break;
 				}
 				if (labelArray.indexOf(item.x) > -1) {
-                    return true
+					return true;
 				}
 			}
-			return false
+			return false;
 		},
 	});
 
