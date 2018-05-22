@@ -87,10 +87,7 @@ defaults._set('horizontalBar', {
 
 			label: function(item, data) {
 				var datasetLabel = data.datasets[item.datasetIndex].label || '';
-
-				datasetLabel += ': ' + item.xLabel;
-
-				return datasetLabel;
+				return datasetLabel + ': ' + item.xLabel;
 			}
 		},
 		mode: 'index',
@@ -397,11 +394,10 @@ module.exports = function(Chart) {
 			var stack = meta.stack;
 			// float-bar support, if y arguments are array function will use proper value as bar start point
 			var start = 0;
+			var i, imeta, ivalue, base, head, size, yStackValue;
 			if (value.min !== value.max) {
 				start = value.val > 0 ? value.min : value.max;
 			}
-
-			var i, imeta, ivalue, base, head, size, yStackValue;
 
 			if (stacked || (stacked === undefined && stack !== undefined)) {
 				for (i = 0; i < datasetIndex; ++i) {

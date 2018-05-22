@@ -76,7 +76,7 @@ module.exports = function(Chart) {
 						helpers.each(dataset.data, function(rawValue, index) {
 							var value = me.parseValue(rawValue);
 
-							if (isNaN(value.val) || meta.data[index].hidden) {
+							if (isNaN(value.min) || isNaN(value.max) || meta.data[index].hidden) {
 								return;
 							}
 
@@ -85,7 +85,7 @@ module.exports = function(Chart) {
 
 							if (opts.relativePoints) {
 								positiveValues[index] = 100;
-							} else if (value.val < 0) {
+							} else if (value.min < 0 || value.max < 0 ) {
 								negativeValues[index] += value.min;
 							} else {
 								positiveValues[index] += value.max;
@@ -109,19 +109,19 @@ module.exports = function(Chart) {
 						helpers.each(dataset.data, function(rawValue, index) {
 							var value = me.parseValue(rawValue);
 
-							if (isNaN(value.val) || meta.data[index].hidden) {
+							if (isNaN(value.min) || isNaN(value.max) || meta.data[index].hidden) {
 								return;
 							}
 
 							if (me.min === null) {
 								me.min = value.min;
-							} else if (value < me.min) {
+							} else if (value.min < me.min) {
 								me.min = value.min;
 							}
 
 							if (me.max === null) {
 								me.max = value.max;
-							} else if (value > me.max) {
+							} else if (value.max > me.max) {
 								me.max = value.max;
 							}
 						});
@@ -158,8 +158,7 @@ module.exports = function(Chart) {
 			}
 		},
 		getLabelForIndex: function(index, datasetIndex) {
-			var value = this.chart.data.datasets[datasetIndex].data[index];
-			return this.getScaleLabel(value);
+			return this.getScaleLabel(this.chart.data.datasets[datasetIndex].data[index]);
 		},
 		// Utils
 		getPixelForValue: function(value) {
