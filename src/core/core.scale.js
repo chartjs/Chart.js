@@ -636,14 +636,14 @@ module.exports = Element.extend({
 		var result = [];
 		var i, tick;
 
-    // Specifiy the label spacing
+		// Specifiy the label spacing
 		var labelSpacing;
 		if (optionTicks.labelSpacing) {
-      labelSpacing = optionTicks.labelSpacing;
-      // If not an even number, reject
-      if (labelSpacing !== Math.floor(labelSpacing)) {
-        labelSpacing = undefined;
-      }
+			labelSpacing = optionTicks.labelSpacing;
+			// If not an even number, reject
+			if (labelSpacing !== Math.floor(labelSpacing)) {
+				labelSpacing = undefined;
+			}
 		}
 		// figure out the maximum number of gridlines to show
 		var maxTicks;
@@ -651,47 +651,47 @@ module.exports = Element.extend({
 			maxTicks = optionTicks.maxTicksLimit;
 		}
 		var evenLabelSpacing;
-    if (optionTicks.evenLabelSpacing) {
-      evenLabelSpacing = optionTicks.evenLabelSpacing;
-    }
+		if (optionTicks.evenLabelSpacing) {
+			evenLabelSpacing = optionTicks.evenLabelSpacing;
+		}
 
-    if (isHorizontal) {
-      skipRatio = false;
+		if (isHorizontal) {
+			skipRatio = false;
 
-      if ((longestRotatedLabel + optionTicks.autoSkipPadding) * tickCount > (me.width - (me.paddingLeft + me.paddingRight))) {
-        skipRatio = 1 + Math.floor(((longestRotatedLabel + optionTicks.autoSkipPadding) * tickCount) / (me.width - (me.paddingLeft + me.paddingRight)));
-      }
+			if ((longestRotatedLabel + optionTicks.autoSkipPadding) * tickCount > (me.width - (me.paddingLeft + me.paddingRight))) {
+			skipRatio = 1 + Math.floor(((longestRotatedLabel + optionTicks.autoSkipPadding) * tickCount) / (me.width - (me.paddingLeft + me.paddingRight)));
+			}
 
-      // if they defined a max number of optionTicks,
-      // increase skipRatio until that number is met
-      if (maxTicks && tickCount > maxTicks) {
-        skipRatio = Math.max(skipRatio, Math.floor(tickCount / maxTicks));
-      }
+			// if they defined a max number of optionTicks,
+			// increase skipRatio until that number is met
+			if (maxTicks && tickCount > maxTicks) {
+			skipRatio = Math.max(skipRatio, Math.floor(tickCount / maxTicks));
+			}
 
-      // Requesting a label spacing cancels other settings established by maxTicks
-      if (labelSpacing) {
-        skipRatio = labelSpacing;
-      }
-    }
+			// Requesting a label spacing cancels other settings established by maxTicks
+			if (labelSpacing) {
+			skipRatio = labelSpacing;
+			}
+		}
 
-    for (i = 0; i < tickCount; i++) {
-      tick = ticks[i];
+		for (i = 0; i < tickCount; i++) {
+			tick = ticks[i];
 
-      if (evenLabelSpacing || labelSpacing) {
-        if (skipRatio > 1 && i % skipRatio > 0) {
-          // leave tick in place but make sure it's not displayed (#4635)
-          delete tick.label;
-        }
-      } else {
-        if ((i !== tickCount - 1) && ( // Always show last tick
-            (skipRatio > 1 && i % skipRatio > 0) ||
-            (i % skipRatio === 0 && i + skipRatio >= tickCount))) { // Since we always show the last tick,we need may need to hide the last shown one before
-          // leave tick in place but make sure it's not displayed (#4635)
-          delete tick.label;
-        }
-      }
-      result.push(tick);
-    }
+			if (evenLabelSpacing || labelSpacing) {
+				if (skipRatio > 1 && i % skipRatio > 0) {
+					// leave tick in place but make sure it's not displayed (#4635)
+					delete tick.label;
+				}
+			} else {
+				if ((i !== tickCount - 1) && ( // Always show last tick
+				(skipRatio > 1 && i % skipRatio > 0) ||
+				(i % skipRatio === 0 && i + skipRatio >= tickCount))) { // Since we always show the last tick,we need may need to hide the last shown one before
+					// leave tick in place but make sure it's not displayed (#4635)
+					delete tick.label;
+				}
+			}
+			result.push(tick);
+		}
 		return result;
 	},
 
