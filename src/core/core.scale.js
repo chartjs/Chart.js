@@ -683,11 +683,10 @@ module.exports = Element.extend({
 					delete tick.label;
 				}
 			} else if ((i !== tickCount - 1) && ( // Always show last tick
-				(skipRatio > 1 && i % skipRatio > 0) ||
-				(i % skipRatio === 0 && i + skipRatio >= tickCount))) { // Since we always show the last tick,we need may need to hide the last shown one before
-					// leave tick in place but make sure it's not displayed (#4635)
-					delete tick.label;
-				}
+					(skipRatio > 1 && i % skipRatio > 0) ||
+					(i % skipRatio === 0 && i + skipRatio >= tickCount))) { // Since we always show the last tick,we need may need to hide the last shown one before
+				// leave tick in place but make sure it's not displayed (#4635)
+				delete tick.label;
 			}
 			result.push(tick);
 		}
