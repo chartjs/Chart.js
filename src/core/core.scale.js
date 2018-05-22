@@ -659,18 +659,18 @@ module.exports = Element.extend({
 			skipRatio = false;
 
 			if ((longestRotatedLabel + optionTicks.autoSkipPadding) * tickCount > (me.width - (me.paddingLeft + me.paddingRight))) {
-			skipRatio = 1 + Math.floor(((longestRotatedLabel + optionTicks.autoSkipPadding) * tickCount) / (me.width - (me.paddingLeft + me.paddingRight)));
+				skipRatio = 1 + Math.floor(((longestRotatedLabel + optionTicks.autoSkipPadding) * tickCount) / (me.width - (me.paddingLeft + me.paddingRight)));
 			}
 
 			// if they defined a max number of optionTicks,
 			// increase skipRatio until that number is met
 			if (maxTicks && tickCount > maxTicks) {
-			skipRatio = Math.max(skipRatio, Math.floor(tickCount / maxTicks));
+				skipRatio = Math.max(skipRatio, Math.floor(tickCount / maxTicks));
 			}
 
 			// Requesting a label spacing cancels other settings established by maxTicks
 			if (labelSpacing) {
-			skipRatio = labelSpacing;
+				skipRatio = labelSpacing;
 			}
 		}
 
@@ -682,8 +682,7 @@ module.exports = Element.extend({
 					// leave tick in place but make sure it's not displayed (#4635)
 					delete tick.label;
 				}
-			} else {
-				if ((i !== tickCount - 1) && ( // Always show last tick
+			} else if ((i !== tickCount - 1) && ( // Always show last tick
 				(skipRatio > 1 && i % skipRatio > 0) ||
 				(i % skipRatio === 0 && i + skipRatio >= tickCount))) { // Since we always show the last tick,we need may need to hide the last shown one before
 					// leave tick in place but make sure it's not displayed (#4635)
