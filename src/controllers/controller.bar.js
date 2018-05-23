@@ -396,7 +396,7 @@ module.exports = function(Chart) {
 			var start = 0;
 			var i, imeta, ivalue, base, head, size, yStackValue;
 			if (value.min !== value.max) {
-				start = value.val > 0 ? value.min : value.max;
+				start = value.val >= 0 ? value.min : value.max;
 			}
 
 			if (stacked || (stacked === undefined && stack !== undefined)) {
