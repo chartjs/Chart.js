@@ -147,7 +147,7 @@ module.exports = function(Chart) {
 						helpers.each(dataset.data, function(rawValue, index) {
 							var value = me.parseValue(rawValue);
 							// invalid, hidden and negative values are ignored
-							if (isNaN(value.val) || meta.data[index].hidden || value.val < 0) {
+							if (isNaN(value.min) || isNaN(value.max) || meta.data[index].hidden || value.min < 0 || value.max < 0) {
 								return;
 							}
 

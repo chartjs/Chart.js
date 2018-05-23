@@ -540,7 +540,7 @@ module.exports = Element.extend({
 	},
 
 	parseValue: function(rawValue) {
-		var value = this.getRightValue(rawValue);
+		var value = +this.getRightValue(rawValue);
 		var min, max;
 		if (helpers.isArray(value)) {
 			min = value[0] <= value[1] ? value[0] : value[1];
