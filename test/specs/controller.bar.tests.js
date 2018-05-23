@@ -1372,13 +1372,21 @@ describe('Chart.controllers.bar', function() {
 
 		var meta = chart.getDatasetMeta(1);
 		var bar = meta.data[0];
+		var helpers = window.Chart.helpers;
 
 		// Change default
 		chart.options.elements.rectangle.backgroundColor = 'rgb(128, 128, 128)';
 		chart.options.elements.rectangle.borderColor = 'rgb(15, 15, 15)';
 		chart.options.elements.rectangle.borderWidth = 3.14;
 
-		// Remove to defaults
+		chart.update();
+		expect(bar._model.backgroundColor).toBe('rgb(128, 128, 128)');
+		expect(bar._model.borderColor).toBe('rgb(15, 15, 15)');
+		expect(bar._model.borderWidth).toBe(3.14);
+		meta.controller.setHoverStyle(bar);
+		expect(bar._model.backgroundColor).toBe(helpers.getHoverColor('rgb(128, 128, 128)'));
+		expect(bar._model.borderColor).toBe(helpers.getHoverColor('rgb(15, 15, 15)'));
+		expect(bar._model.borderWidth).toBe(3.14);
 		meta.controller.removeHoverStyle(bar);
 		expect(bar._model.backgroundColor).toBe('rgb(128, 128, 128)');
 		expect(bar._model.borderColor).toBe('rgb(15, 15, 15)');
@@ -1389,6 +1397,14 @@ describe('Chart.controllers.bar', function() {
 		chart.data.datasets[1].borderColor = ['rgb(9, 9, 9)', 'rgb(0, 0, 0)'];
 		chart.data.datasets[1].borderWidth = [2.5, 5];
 
+		chart.update();
+		expect(bar._model.backgroundColor).toBe('rgb(255, 255, 255)');
+		expect(bar._model.borderColor).toBe('rgb(9, 9, 9)');
+		expect(bar._model.borderWidth).toBe(2.5);
+		meta.controller.setHoverStyle(bar);
+		expect(bar._model.backgroundColor).toBe(helpers.getHoverColor('rgb(255, 255, 255)'));
+		expect(bar._model.borderColor).toBe(helpers.getHoverColor('rgb(9, 9, 9)'));
+		expect(bar._model.borderWidth).toBe(2.5);
 		meta.controller.removeHoverStyle(bar);
 		expect(bar._model.backgroundColor).toBe('rgb(255, 255, 255)');
 		expect(bar._model.borderColor).toBe('rgb(9, 9, 9)');
@@ -1401,6 +1417,14 @@ describe('Chart.controllers.bar', function() {
 			borderWidth: 1.5
 		};
 
+		chart.update();
+		expect(bar._model.backgroundColor).toBe('rgb(255, 0, 0)');
+		expect(bar._model.borderColor).toBe('rgb(0, 255, 0)');
+		expect(bar._model.borderWidth).toBe(1.5);
+		meta.controller.setHoverStyle(bar);
+		expect(bar._model.backgroundColor).toBe(helpers.getHoverColor('rgb(255, 0, 0)'));
+		expect(bar._model.borderColor).toBe(helpers.getHoverColor('rgb(0, 255, 0)'));
+		expect(bar._model.borderWidth).toBe(1.5);
 		meta.controller.removeHoverStyle(bar);
 		expect(bar._model.backgroundColor).toBe('rgb(255, 0, 0)');
 		expect(bar._model.borderColor).toBe('rgb(0, 255, 0)');
