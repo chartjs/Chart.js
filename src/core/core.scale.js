@@ -539,34 +539,33 @@ module.exports = Element.extend({
 		return rawValue;
 	},
 
-    parseValue: function(rawValue) {
-        var value = this.getRightValue(rawValue);
-        var min, max;
+	parseValue: function(rawValue) {
+		var value = this.getRightValue(rawValue);
+		var min, max;
+		if (helpers.isArray(value)) {
+			min = value[0] <= value[1] ? value[0] : value[1];
+			max = value[0] > value[1] ? value[0] : value[1];
 
-        if (helpers.isArray(value)) {
-            min = value[0] <= value[1] ? value[0] : value[1];
-            max = value[0] > value[1] ? value[0] : value[1];
+			if (min >= 0 && max > 0) {
+				value = max - min;
+			} else if (min <= 0 && max <= 0) {
+				value = min - max;
+			}
+		} else {
+			min = value;
+			max = value;
+		}
 
-            if (min >= 0 && max > 0) {
-                value = max - min;
-            } else if (min <= 0 && max <= 0) {
-                value = min - max;
-            }
-        } else {
-            min = value;
-            max = value;
-        }
-
-        return {
-            min: min,
-            max: max,
-            val: value
-        }
-    },
+		return {
+			min: min,
+			max: max,
+			val: value
+		};
+	},
 
 	getScaleLabel: function(rawValue) {
-        var v = this.parseValue(rawValue);
-        return v.min == v.max ? v.min : v.min + " ; " + v.max;
+		var v = this.parseValue(rawValue);
+		return v.min === v.max ? v.min : v.min + ' ; ' + v.max;
 	},
 	/**
 	 * Used to get the value to display in the tooltip for the data at the given index
