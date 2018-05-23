@@ -68,7 +68,7 @@ module.exports = function(Chart) {
 		}
 	};
 
-	var LogarithmicScale = Scale.extend({
+	var LogarithmicScale = Chart.Scale.extend({
 		determineDataLimits: function() {
 			var me = this;
 			var opts = me.options;

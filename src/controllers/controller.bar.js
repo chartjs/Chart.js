@@ -415,7 +415,7 @@ module.exports = function(Chart) {
 							ivalue = yStackValue.val <= 0 ? yStackValue.min : yStackValue.max;
 						}
 
-						if ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0)) {
+						if ((value.min < 0 && ivalue < 0) || (value.max >= 0 && ivalue > 0)) {
 							start += ivalue;
 						}
 					}
@@ -423,7 +423,7 @@ module.exports = function(Chart) {
 			}
 
 			base = scale.getPixelForValue(start);
-			head = scale.getPixelForValue(start + value);
+			head = scale.getPixelForValue(start + value.val);
 			size = (head - base) / 2;
 
 			return {
