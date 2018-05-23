@@ -6,10 +6,10 @@ The time scale is used to display times and dates. When building its ticks, it w
 
 ### Input Data
 
-The x-axis data points may additionally be specified via the `t` attribute when using the time scale.
+The x-axis data points may additionally be specified via the `t` or `x` attribute when using the time scale.
 
     data: [{
-        t: new Date(),
+        x: new Date(),
         y: 1
     }, {
         t: new Date(),
