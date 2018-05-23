@@ -408,7 +408,7 @@ module.exports = function(Chart) {
 						imeta.controller.getValueScaleId() === scale.id &&
 						chart.isDatasetVisible(i)) {
 						yStackValue = scale.parseValue(datasets[i].data[index]);
-						var ivalue = yStackValue.val;
+						ivalue = yStackValue.val;
 
 						if (yStackValue.min !== yStackValue.max) {
 							ivalue = yStackValue.val <= 0 ? yStackValue.min : yStackValue.max;

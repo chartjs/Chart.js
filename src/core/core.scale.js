@@ -543,8 +543,8 @@ module.exports = Element.extend({
 		var value = +this.getRightValue(rawValue);
 		var min, max;
 		if (helpers.isArray(value)) {
-			min = value[0] <= value[1] ? value[0] : value[1];
-			max = value[0] > value[1] ? value[0] : value[1];
+			min = Math.min(value[0], value[1]);
+			max = Math.max(value[0], value[1]);
 
 			if (min >= 0 && max > 0) {
 				value = max - min;
