@@ -75,14 +75,13 @@ module.exports = function(Chart) {
 	 * @return {number} the y data according to the label
 	 */
 	function getY(label, dataArray) {
-		var y = null;
 		for (var i = 0; i < dataArray.length; i++) {
 			var item = dataArray[i];
 			if (item.x === label) {
-				y = item.y;
+				return item.y;
 			}
 		}
-		return y;
+		return null;
 	}
 	/**
 	 * Find if the data in datasets exists in the labels
