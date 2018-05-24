@@ -616,7 +616,7 @@ module.exports = function() {
 				break;
 			case 'auto':
 			default:
-				timestamps = generate(min, max, me.getLabelCapacity(min), options);
+				timestamps = generate(min, max, me._getLabelCapacity(min), options);
 			}
 
 			if (options.bounds === 'ticks' && timestamps.length) {
@@ -673,7 +673,7 @@ module.exports = function() {
 		 * Function to format an individual tick mark
 		 * @private
 		 */
-		tickFormatFunction: function(tick, index, ticks, formatOverride) {
+		_tickFormatFunction: function(tick, index, ticks, formatOverride) {
 			var me = this;
 			var options = me.options;
 			var time = tick.valueOf();
@@ -696,7 +696,7 @@ module.exports = function() {
 			var i, ilen;
 
 			for (i = 0, ilen = ticks.length; i < ilen; ++i) {
-				labels.push(this.tickFormatFunction(moment(ticks[i].value), i, ticks));
+				labels.push(this._tickFormatFunction(moment(ticks[i].value), i, ticks));
 			}
 
 			return labels;
@@ -705,7 +705,7 @@ module.exports = function() {
 		/**
 		 * @private
 		 */
-		getPixelForOffset: function(time) {
+		_getPixelForOffset: function(time) {
 			var me = this;
 			var size = me._horizontal ? me.width : me.height;
 			var start = me._horizontal ? me.left : me.top;
@@ -727,14 +727,14 @@ module.exports = function() {
 			}
 
 			if (time !== null) {
-				return me.getPixelForOffset(time);
+				return me._getPixelForOffset(time);
 			}
 		},
 
 		getPixelForTick: function(index) {
 			var ticks = this.getTicks();
 			return index >= 0 && index < ticks.length ?
-				this.getPixelForOffset(ticks[index].value) :
+				this._getPixelForOffset(ticks[index].value) :
 				null;
 		},
 
@@ -752,7 +752,7 @@ module.exports = function() {
 		 * Crude approximation of what the label width might be
 		 * @private
 		 */
-		getLabelWidth: function(label) {
+		_getLabelWidth: function(label) {
 			var me = this;
 			var ticksOpts = me.options.ticks;
 			var tickLabelWidth = me.ctx.measureText(label).width;
@@ -767,13 +767,13 @@ module.exports = function() {
 		/**
 		 * @private
 		 */
-		getLabelCapacity: function(exampleTime) {
+		_getLabelCapacity: function(exampleTime) {
 			var me = this;
 
 			var formatOverride = me.options.time.displayFormats.millisecond;	// Pick the longest format for guestimation
 
-			var exampleLabel = me.tickFormatFunction(moment(exampleTime), 0, [], formatOverride);
-			var tickLabelWidth = me.getLabelWidth(exampleLabel);
+			var exampleLabel = me._tickFormatFunction(moment(exampleTime), 0, [], formatOverride);
+			var tickLabelWidth = me._getLabelWidth(exampleLabel);
 			var innerWidth = me.isHorizontal() ? me.width : me.height;
 
 			var capacity = Math.floor(innerWidth / tickLabelWidth);
