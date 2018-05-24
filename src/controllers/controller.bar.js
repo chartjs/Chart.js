@@ -388,16 +388,13 @@ module.exports = function(Chart) {
 			var meta = me.getMeta();
 			var scale = me.getValueScale();
 			var datasets = chart.data.datasets;
-			// float-bar support, if y arguments are array function will use top - bottom value to calculate bar height
-			var value = scale.parseValue(datasets[datasetIndex].data[index]);
+			var value = scale._parseValue(datasets[datasetIndex].data[index]);
 			var stacked = scale.options.stacked;
 			var stack = meta.stack;
-			// float-bar support, if y arguments are array function will use proper value as bar start point
-			var start = 0;
 			var i, imeta, ivalue, base, head, size, yStackValue;
-			if (value.min !== value.max) {
-				start = value.val >= 0 ? value.min : value.max;
-			}
+			var start = value.max >= 0 && value.min >= 0 ? value.min : value.max;
+
+			value.value = value.max >= 0 && value.min >= 0 ? value.max - value.min : value.min - value.max;
 
 			if (stacked || (stacked === undefined && stack !== undefined)) {
 				for (i = 0; i < datasetIndex; ++i) {
@@ -407,14 +404,10 @@ module.exports = function(Chart) {
 						imeta.stack === stack &&
 						imeta.controller.getValueScaleId() === scale.id &&
 						chart.isDatasetVisible(i)) {
-						yStackValue = scale.parseValue(datasets[i].data[index]);
-						ivalue = yStackValue.val;
+						yStackValue = scale._parseValue(datasets[i].data[index]);
+						ivalue = yStackValue.min >= 0 && yStackValue.max >= 0 ? yStackValue.max : yStackValue.min;
 
-						if (yStackValue.min !== yStackValue.max) {
-							ivalue = yStackValue.val <= 0 ? yStackValue.min : yStackValue.max;
-						}
-
-						if ((value.min < 0 && ivalue < 0) || (value.max >= 0 && ivalue > 0)) {
+						if ((value.min <= 0 && ivalue < 0) || (value.max >= 0 && ivalue > 0)) {
 							start += ivalue;
 						}
 					}
@@ -422,7 +415,7 @@ module.exports = function(Chart) {
 			}
 
 			base = scale.getPixelForValue(start);
-			head = scale.getPixelForValue(start + value.val);
+			head = scale.getPixelForValue(start + value.value);
 			size = (head - base) / 2;
 
 			return {

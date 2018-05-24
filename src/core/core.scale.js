@@ -539,32 +539,31 @@ module.exports = Element.extend({
 		return rawValue;
 	},
 
-	parseValue: function(rawValue) {
-		var value = +this.getRightValue(rawValue);
-		var min, max;
-		if (helpers.isArray(value)) {
-			min = Math.min(value[0], value[1]);
-			max = Math.max(value[0], value[1]);
+	/**
+	* @private
+	*/
+	_parseValue: function(raw) {
+		var value = this.getRightValue(raw);
+		var start, end;
 
-			if (min >= 0 && max > 0) {
-				value = max - min;
-			} else if (min <= 0 && max <= 0) {
-				value = min - max;
-			}
+		if (helpers.isArray(value)) {
+			start = value[0];
+			end = value[1];
 		} else {
-			min = value;
-			max = value;
+			start = 0;
+			end = value;
 		}
 
 		return {
-			min: min,
-			max: max,
-			val: value
+			min: Math.min(start, end),
+			max: Math.max(start, end),
+			start: start,
+			end: end
 		};
 	},
 
 	getScaleLabel: function(rawValue) {
-		var v = this.parseValue(rawValue);
+		var v = this._parseValue(rawValue);
 		return v.min === v.max ? v.min : v.min + ' ; ' + v.max;
 	},
 	/**

@@ -74,7 +74,7 @@ module.exports = function(Chart) {
 
 					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 						helpers.each(dataset.data, function(rawValue, index) {
-							var value = me.parseValue(rawValue);
+							var value = me._parseValue(rawValue);
 
 							if (isNaN(value.min) || isNaN(value.max) || meta.data[index].hidden) {
 								return;
@@ -107,7 +107,7 @@ module.exports = function(Chart) {
 					var meta = chart.getDatasetMeta(datasetIndex);
 					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 						helpers.each(dataset.data, function(rawValue, index) {
-							var value = me.parseValue(rawValue);
+							var value = me._parseValue(rawValue);
 
 							if (isNaN(value.min) || isNaN(value.max) || meta.data[index].hidden) {
 								return;

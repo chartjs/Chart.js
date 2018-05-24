@@ -119,7 +119,7 @@ module.exports = function(Chart) {
 
 						helpers.each(dataset.data, function(rawValue, index) {
 							var values = valuesPerStack[key];
-							var value = me.parseValue(rawValue);
+							var value = me._parseValue(rawValue);
 
 							// invalid, hidden and negative values are ignored
 							if (isNaN(value.max) || meta.data[index].hidden || value.max < 0) {
@@ -145,7 +145,7 @@ module.exports = function(Chart) {
 					var meta = chart.getDatasetMeta(datasetIndex);
 					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 						helpers.each(dataset.data, function(rawValue, index) {
-							var value = me.parseValue(rawValue);
+							var value = me._parseValue(rawValue);
 							// invalid, hidden and negative values are ignored
 							if (isNaN(value.min) || isNaN(value.max) || meta.data[index].hidden || value.min < 0 || value.max < 0) {
 								return;
