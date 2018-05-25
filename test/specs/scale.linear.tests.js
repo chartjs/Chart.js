@@ -905,7 +905,7 @@ describe('Linear Scale', function() {
 		expect(chart.scales['x-axis-0'].min).toEqual(20);
 		expect(chart.scales['x-axis-0'].max).toEqual(21);
 	});
-	
+
 	it('max setting should be used if it set to zero', function() {
 		var barData = {
 			labels: ['S1', 'S2', 'S3'],
