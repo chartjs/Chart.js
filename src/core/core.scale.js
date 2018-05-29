@@ -540,8 +540,9 @@ module.exports = Element.extend({
 	},
 
 	/**
-	* @private
-	*/
+	 * @private
+	 * Parse array and generic values into object
+	 */
 	_parseValue: function(raw) {
 		var value = this.getRightValue(raw);
 		var start, end;
@@ -562,10 +563,6 @@ module.exports = Element.extend({
 		};
 	},
 
-	getScaleLabel: function(rawValue) {
-		var v = this._parseValue(rawValue);
-		return v.min === v.max ? v.min : v.min + ' ; ' + v.max;
-	},
 	/**
 	 * Used to get the value to display in the tooltip for the data at the given index
 	 * @param index

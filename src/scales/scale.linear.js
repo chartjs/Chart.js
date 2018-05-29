@@ -85,7 +85,7 @@ module.exports = function(Chart) {
 
 							if (opts.relativePoints) {
 								positiveValues[index] = 100;
-							} else if (value.min < 0 || value.max < 0) {
+							} else if (value.min < 0) {
 								negativeValues[index] += value.min;
 							} else {
 								positiveValues[index] += value.max;
@@ -158,7 +158,8 @@ module.exports = function(Chart) {
 			}
 		},
 		getLabelForIndex: function(index, datasetIndex) {
-			return this.getScaleLabel(this.chart.data.datasets[datasetIndex].data[index]);
+			var v = this._parseValue(rawValue);
+			return v.start !== 0 ? v.end : v.start + ' ; ' + v.end;
 		},
 		// Utils
 		getPixelForValue: function(value) {

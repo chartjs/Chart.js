@@ -392,9 +392,8 @@ module.exports = function(Chart) {
 			var stacked = scale.options.stacked;
 			var stack = meta.stack;
 			var i, imeta, ivalue, base, head, size, yStackValue;
-			var start = value.max >= 0 && value.min >= 0 ? value.min : value.max;
-
-			value.value = value.max >= 0 && value.min >= 0 ? value.max - value.min : value.min - value.max;
+			var value.start = value.max >= 0 && value.min >= 0 ? value.min : value.max;
+			var yValue = value.max >= 0 && value.min >= 0 ? value.max - value.min : value.min - value.max;
 
 			if (stacked || (stacked === undefined && stack !== undefined)) {
 				for (i = 0; i < datasetIndex; ++i) {
@@ -407,15 +406,15 @@ module.exports = function(Chart) {
 						yStackValue = scale._parseValue(datasets[i].data[index]);
 						ivalue = yStackValue.min >= 0 && yStackValue.max >= 0 ? yStackValue.max : yStackValue.min;
 
-						if ((value.min <= 0 && ivalue < 0) || (value.max >= 0 && ivalue > 0)) {
-							start += ivalue;
+						if ((value.min < 0 && ivalue < 0) || (value.max >= 0 && ivalue > 0)) {
+							value.start += ivalue;
 						}
 					}
 				}
 			}
 
-			base = scale.getPixelForValue(start);
-			head = scale.getPixelForValue(start + value.value);
+			base = scale.getPixelForValue(value.start);
+			head = scale.getPixelForValue(value.start + yValue);
 			size = (head - base) / 2;
 
 			return {
@@ -463,12 +462,8 @@ module.exports = function(Chart) {
 
 			//  float-bar support, if y arguments are array function will use bottom value as bar start point
 			for (; i < ilen; ++i) {
-				var yValue = dataset.data[i];
-				if (helpers.isArray(yValue)) {
-					if (!isNaN(scale.getRightValue(yValue[1])) && !isNaN(scale.getRightValue(yValue[0]))) {
-						rects[i].draw();
-					}
-				} else if (!isNaN(scale.getRightValue(yValue))) {
+				var val = scale._parseValue(dataset.data[i]);
+				if (!helpers.isNaN(val.start) && !helpers.isNaN(val.end)) {
 					rects[i].draw();
 				}
 			}
