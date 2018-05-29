@@ -418,7 +418,7 @@ function determineAlignment(tooltip, size) {
 }
 
 /**
- * @Helper to get the location a tooltip needs to be placed at given the initial position (via the vm) and the size and alignment
+ * Helper to get the location a tooltip needs to be placed at given the initial position (via the vm) and the size and alignment
  */
 function getBackgroundPoint(vm, size, alignment, chart) {
 	// Background Position
@@ -472,7 +472,7 @@ function getBackgroundPoint(vm, size, alignment, chart) {
 }
 
 /**
- * @Helper to build before and after body lines
+ * Helper to build before and after body lines
  */
 function getBeforeAfterBodyLines(callback) {
 	return pushOrConcat([], splitNewlines(callback));
