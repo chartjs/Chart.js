@@ -68,7 +68,7 @@ The style of each bubble can be controlled with the following properties:
 | `borderColor` | bubble border color
 | `borderWidth` | bubble border width (in pixels)
 | `pointStyle` | bubble [shape style](../configuration/elements#point-styles)
-| `rotation` | bubble rotation (in degrees)
+| `pointRotation` | bubble rotation (in degrees)
 | `radius` | bubble radius (in pixels)
 
 All these values, if `undefined`, fallback to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options.

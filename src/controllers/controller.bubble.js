@@ -156,7 +156,7 @@ module.exports = function(Chart) {
 				'hoverRadius',
 				'hitRadius',
 				'pointStyle',
-				'rotation'
+				'pointRotation'
 			];
 
 			for (i = 0, ilen = keys.length; i < ilen; ++i) {
