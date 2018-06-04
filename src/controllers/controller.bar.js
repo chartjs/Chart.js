@@ -392,7 +392,7 @@ module.exports = function(Chart) {
 			var stacked = scale.options.stacked;
 			var stack = meta.stack;
 			var i, imeta, ivalue, base, head, size, yStackValue;
-			var value.start = value.max >= 0 && value.min >= 0 ? value.min : value.max;
+			var start = value.max >= 0 && value.min >= 0 ? value.min : value.max;
 			var yValue = value.max >= 0 && value.min >= 0 ? value.max - value.min : value.min - value.max;
 
 			if (stacked || (stacked === undefined && stack !== undefined)) {
@@ -407,14 +407,14 @@ module.exports = function(Chart) {
 						ivalue = yStackValue.min >= 0 && yStackValue.max >= 0 ? yStackValue.max : yStackValue.min;
 
 						if ((value.min < 0 && ivalue < 0) || (value.max >= 0 && ivalue > 0)) {
-							value.start += ivalue;
+							start += ivalue;
 						}
 					}
 				}
 			}
 
-			base = scale.getPixelForValue(value.start);
-			head = scale.getPixelForValue(value.start + yValue);
+			base = scale.getPixelForValue(start);
+			head = scale.getPixelForValue(start + yValue);
 			size = (head - base) / 2;
 
 			return {
