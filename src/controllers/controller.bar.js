@@ -463,7 +463,7 @@ module.exports = function(Chart) {
 			//  float-bar support, if y arguments are array function will use bottom value as bar start point
 			for (; i < ilen; ++i) {
 				var val = scale._parseValue(dataset.data[i]);
-				if (!helpers.isNaN(val.start) && !helpers.isNaN(val.end)) {
+				if (!isNaN(val.start) && !isNaN(val.end)) {
 					rects[i].draw();
 				}
 			}
