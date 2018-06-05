@@ -244,7 +244,7 @@ module.exports = function(Chart) {
 			};
 
 			return helpers.options.resolve([
-				me.chart.options.angle,
+				me.chart.options.elements.arc.angle,
 				(2 * Math.PI) / count
 			], context, index);
 		}

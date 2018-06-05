@@ -16,9 +16,13 @@
             }]
         },
         "options": {
-            "angle": [
-                1.0566, 1.7566, 1.0566, 2.1566, 0.2566
-            ],
+            "elements": {
+                "arc": {
+                    "angle": [
+                        1.0566, 1.7566, 1.0566, 2.1566, 0.2566
+                    ]
+                }
+            },
             "responsive": false,
             "legend": false,
             "title": false,
