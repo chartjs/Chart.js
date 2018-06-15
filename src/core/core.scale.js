@@ -850,7 +850,7 @@ module.exports = Element.extend({
 				context.translate(itemToDraw.labelX, itemToDraw.labelY);
 				context.rotate(itemToDraw.rotation);
 				context.font = itemToDraw.major ? majorTickFont.font : tickFont.font;
-				if (Object.prototype.toString.call(tickFontColor) === '[object Array]') {
+				if (helpers.isArray(tickFontColor)) {
 					context.fillStyle = itemToDraw.major ? majorTickFontColor[index] : tickFontColor[index];
 				} else if (typeof tickFontColor === 'function') {
 					context.fillStyle = tickFontColor(itemToDraw.label, index);
