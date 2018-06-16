@@ -332,14 +332,12 @@ describe('Chart.controllers.polarArea', function() {
 
 		meta.controller.setHoverStyle(arc);
 		chart.update();
-
 		expect(arc._model.backgroundColor).toBe('rgb(45, 46, 47)');
 		expect(arc._model.borderColor).toBe('rgb(50, 51, 52)');
 		expect(arc._model.borderWidth).toBe(10.1);
 
 		meta.controller.removeHoverStyle(arc);
 		chart.update();
-
 		expect(arc._model.backgroundColor).toBe('rgb(45, 46, 47)');
 		expect(arc._model.borderColor).toBe('rgb(50, 51, 52)');
 		expect(arc._model.borderWidth).toBe(10.1);
