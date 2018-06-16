@@ -1,7 +1,9 @@
 <!--
 Please consider the following before submitting an issue:
 
-- Issues are reserved for BUG reports and FEATURE requests, DO NOT create issues for questions or support requests.
+- Ask questions and get support on StackOverflow: https://stackoverflow.com/questions/tagged/chart.js
+- DO NOT create issues for questions or support requests.
+- Issues are reserved for BUG reports and FEATURE requests.
 - Most features should start as plugins outside of Chart.js (http://www.chartjs.org/docs/#advanced-usage-creating-plugins).
 - Bug reports MUST be submitted with an interactive example (http://codepen.io/pen?template=JXVYzq).
 - Chart.js 1.x is NOT supported anymore, new issues will be disregarded.
