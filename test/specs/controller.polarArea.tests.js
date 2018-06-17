@@ -1,3 +1,5 @@
+describe('auto', jasmine.specsFromFixtures('controller.polarArea'));
+
 describe('Chart.controllers.polarArea', function() {
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
