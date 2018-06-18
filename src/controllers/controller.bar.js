@@ -406,7 +406,7 @@ module.exports = function(Chart) {
 						yStackValue = scale._parseValue(datasets[i].data[index]);
 						ivalue = yStackValue.min >= 0 && yStackValue.max >= 0 ? yStackValue.max : yStackValue.min;
 
-						if ((yValue < 0 && ivalue < 0) || (yValue > 0 && ivalue > 0)) {
+						if ((yValue < 0 && ivalue < 0) || (yValue >= 0 && ivalue >= 0)) {
 							start += ivalue;
 						}
 					}
