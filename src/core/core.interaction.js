@@ -293,6 +293,15 @@ module.exports = {
 			if (options.intersect && !intersectsItem) {
 				items = [];
 			}
+			if (options.onlyOne) {
+				const byIndex = {};
+				items.forEach(element => {
+					if (!byIndex[element._datasetIndex]) {
+						byIndex[element._datasetIndex] = element;
+					}
+				});
+				return Object.values(byIndex);
+			}
 			return items;
 		},
 
