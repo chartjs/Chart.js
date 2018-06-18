@@ -294,8 +294,8 @@ module.exports = {
 				items = [];
 			}
 			if (options.onlyOne) {
-				const byIndex = {};
-				items.forEach(element => {
+				var byIndex = {};
+				items.forEach(function(element) {
 					if (!byIndex[element._datasetIndex]) {
 						byIndex[element._datasetIndex] = element;
 					}
