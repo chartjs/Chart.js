@@ -906,7 +906,7 @@ describe('Linear Scale', function() {
 		expect(chart.scales['x-axis-0'].max).toEqual(21);
 	});
 
-	it('max setting should be used if it set to zero', function() {
+	it('min/max/stepSize settings should be used if set to zero', function() {
 		var barData = {
 			labels: ['S1', 'S2', 'S3'],
 			datasets: [{
@@ -924,14 +924,17 @@ describe('Linear Scale', function() {
 				scales: {
 					xAxes: [{
 						ticks: {
-							min: -3000,
-							max: 0
+							min: 0,
+							max: 0,
+							stepSize: 0
 						}
 					}]
 				}
 			}
 		});
 
+		expect(chart.scales['x-axis-0'].min).toEqual(0);
 		expect(chart.scales['x-axis-0'].max).toEqual(0);
+		expect(chart.scales['x-axis-0'].stepSize).toEqual(0);
 	});
 });
