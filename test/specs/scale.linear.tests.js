@@ -906,14 +906,13 @@ describe('Linear Scale', function() {
 		expect(chart.scales['x-axis-0'].max).toEqual(21);
 	});
 
-	it('min/max/stepSize settings should be used if set to zero', function() {
+	it('min settings should be used if set to zero', function() {
 		var barData = {
 			labels: ['S1', 'S2', 'S3'],
 			datasets: [{
 				label: 'dataset 1',
 				backgroundColor: '#382765',
-				data: [-2500, -2000, -1500],
-				hidden: true,
+				data: [2500, 2000, 1500]
 			}]
 		};
 
@@ -925,8 +924,7 @@ describe('Linear Scale', function() {
 					xAxes: [{
 						ticks: {
 							min: 0,
-							max: 0,
-							stepSize: 0
+							max: 3000
 						}
 					}]
 				}
@@ -934,7 +932,33 @@ describe('Linear Scale', function() {
 		});
 
 		expect(chart.scales['x-axis-0'].min).toEqual(0);
+	});
+
+	it('max settings should be used if set to zero', function() {
+		var barData = {
+			labels: ['S1', 'S2', 'S3'],
+			datasets: [{
+				label: 'dataset 1',
+				backgroundColor: '#382765',
+				data: [-2500, -2000, -1500]
+			}]
+		};
+
+		var chart = window.acquireChart({
+			type: 'horizontalBar',
+			data: barData,
+			options: {
+				scales: {
+					xAxes: [{
+						ticks: {
+							min: -3000,
+							max: 0
+						}
+					}]
+				}
+			}
+		});
+
 		expect(chart.scales['x-axis-0'].max).toEqual(0);
-		expect(chart.scales['x-axis-0'].stepSize).toEqual(0);
 	});
 });
