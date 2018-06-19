@@ -262,7 +262,7 @@ var myPieChart = new Chart(ctx, {
                 tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
                 tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
                 tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
-				tooltipEl.style.pointerEvents = 'none';
+                tooltipEl.style.pointerEvents = 'none';
             }
         }
     }
