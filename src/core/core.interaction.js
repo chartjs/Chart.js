@@ -293,7 +293,7 @@ module.exports = {
 			if (options.intersect && !intersectsItem) {
 				items = [];
 			}
-			if (options.onlyOne) {
+			if (options.onePerDataset) {
 				var byIndex = {};
 				items.forEach(function(element) {
 					if (!byIndex[element._datasetIndex]) {
