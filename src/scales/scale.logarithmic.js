@@ -151,6 +151,10 @@ module.exports = function(Chart) {
 								return;
 							}
 
+							if (value.min === 0) {
+								value.min = value.max;
+							}
+
 							if (me.min === null) {
 								me.min = value.min;
 							} else if (value.min < me.min) {

@@ -83,6 +83,10 @@ module.exports = function(Chart) {
 							positiveValues[index] = positiveValues[index] || 0;
 							negativeValues[index] = negativeValues[index] || 0;
 
+							if (value.min === 0) {
+								value.min = value.max;
+							}
+
 							if (opts.relativePoints) {
 								positiveValues[index] = 100;
 							} else if (value.min < 0) {
@@ -111,6 +115,10 @@ module.exports = function(Chart) {
 
 							if (isNaN(value.min) || isNaN(value.max) || meta.data[index].hidden) {
 								return;
+							}
+
+							if (value.min === 0) {
+								value.min = value.max;
 							}
 
 							if (me.min === null) {
