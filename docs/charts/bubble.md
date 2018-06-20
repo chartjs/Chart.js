@@ -51,7 +51,7 @@ The bubble chart allows a number of properties to be specified for each dataset.
 | [`hitRadius`](#interactions) | `Number` | Yes | Yes | `1`
 | [`label`](#labeling) | `String` | - | - | `undefined`
 | [`pointStyle`](#styling) | `String` | Yes | Yes | `circle`
-| [`pointRotation`](#styling) | `Number` | Yes | Yes | `0`
+| [`rotation`](#styling) | `Number` | Yes | Yes | `0`
 | [`radius`](#styling) | `Number` | Yes | Yes | `3`
 
 ### Labeling
