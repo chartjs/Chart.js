@@ -167,7 +167,7 @@ module.exports = function(Chart) {
 		},
 		getLabelForIndex: function(index, datasetIndex) {
 			var v = this._parseValue(this.chart.data.datasets[datasetIndex].data[index]);
-			return v.start !== 0 ? v.end : v.start + ' ; ' + v.end;
+			return v.start === 0 ? v.end : v.start + ' ; ' + v.end;
 		},
 		// Utils
 		getPixelForValue: function(value) {

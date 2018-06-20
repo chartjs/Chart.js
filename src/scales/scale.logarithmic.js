@@ -253,7 +253,7 @@ module.exports = function(Chart) {
 		// Get the correct tooltip label
 		getLabelForIndex: function(index, datasetIndex) {
 			var v = this._parseValue(this.chart.data.datasets[datasetIndex].data[index]);
-			return v.start !== 0 ? v.end : v.start + ' ; ' + v.end;
+			return v.start === 0 ? v.end : v.start + ' ; ' + v.end;
 		},
 		getPixelForTick: function(index) {
 			return this.getPixelForValue(this.tickValues[index]);
