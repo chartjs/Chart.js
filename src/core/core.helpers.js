@@ -450,10 +450,7 @@ module.exports = function() {
 	// @see http://www.nathanaeljones.com/blog/2013/reading-max-width-cross-browser
 	function getConstraintDimension(domNode, maxStyle, percentageProperty) {
 		var view = document.defaultView;
-		var parentNode = domNode.parentNode;
-		if (parentNode && parentNode.host) {
-			parentNode = parentNode.host;
-		}
+		var parentNode = helpers.getParentNode(domNode);
 		var constrainedNode = view.getComputedStyle(domNode)[maxStyle];
 		var constrainedContainer = view.getComputedStyle(parentNode)[maxStyle];
 		var hasCNode = isConstrainedValue(constrainedNode);
@@ -484,10 +481,7 @@ module.exports = function() {
 
 		return padding.indexOf('%') > -1 ? parentDimension / parseInt(padding, 10) : parseInt(padding, 10);
 	};
-	/**
-	 * @private
-	 */
-	helpers._getParentNode = function(domNode) {
+	helpers.getParentNode = function(domNode) {
 		var parent = domNode.parentNode;
 		if (parent && parent.host) {
 			parent = parent.host;
@@ -495,7 +489,7 @@ module.exports = function() {
 		return parent;
 	};
 	helpers.getMaximumWidth = function(domNode) {
-		var container = helpers._getParentNode(domNode);
+		var container = helpers.getParentNode(domNode);
 		if (!container) {
 			return domNode.clientWidth;
 		}
@@ -509,7 +503,7 @@ module.exports = function() {
 		return isNaN(cw) ? w : Math.min(w, cw);
 	};
 	helpers.getMaximumHeight = function(domNode) {
-		var container = helpers._getParentNode(domNode);
+		var container = helpers.getParentNode(domNode);
 		if (!container) {
 			return domNode.clientHeight;
 		}
