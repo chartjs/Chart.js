@@ -484,13 +484,20 @@ module.exports = function() {
 
 		return padding.indexOf('%') > -1 ? parentDimension / parseInt(padding, 10) : parseInt(padding, 10);
 	};
+	/**
+	 * @private
+	 */
+	helpers._getParentNode = function(domNode) {
+		var parent = domNode.parentNode;
+		if (parent && parent.host) {
+			parent = parent.host;
+		}
+		return parent;
+	};
 	helpers.getMaximumWidth = function(domNode) {
-		var container = domNode.parentNode;
+		var container = helpers._getParentNode(domNode);
 		if (!container) {
 			return domNode.clientWidth;
-		}
-		if (container.host) {
-			container = container.host;
 		}
 
 		var clientWidth = container.clientWidth;
@@ -502,12 +509,9 @@ module.exports = function() {
 		return isNaN(cw) ? w : Math.min(w, cw);
 	};
 	helpers.getMaximumHeight = function(domNode) {
-		var container = domNode.parentNode;
+		var container = helpers._getParentNode(domNode);
 		if (!container) {
 			return domNode.clientHeight;
-		}
-		if (container.host) {
-			container = container.host;
 		}
 
 		var clientHeight = container.clientHeight;
