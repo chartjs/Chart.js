@@ -568,6 +568,31 @@ describe('Core helper tests', function() {
 		document.body.removeChild(div);
 	});
 
+	it ('should get the maximum width and height for a node in a ShadowRoot', function() {
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = '200px';
+		div.style.height = '300px';
+
+		document.body.appendChild(div);
+
+		if (!div.attachShadow) {
+			// Shadow DOM is not natively supported
+			return;
+		}
+
+		var shadow = div.attachShadow({mode: 'closed'});
+
+		// Create the div we want to get the max size for
+		var innerDiv = document.createElement('div');
+		shadow.appendChild(innerDiv);
+
+		expect(helpers.getMaximumWidth(innerDiv)).toBe(200);
+		expect(helpers.getMaximumHeight(innerDiv)).toBe(300);
+
+		document.body.removeChild(div);
+	});
+
 	it ('should get the maximum width of a node that has a max-width style', function() {
 		// Create div with fixed size as a test bed
 		var div = document.createElement('div');

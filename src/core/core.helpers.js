@@ -451,6 +451,9 @@ module.exports = function() {
 	function getConstraintDimension(domNode, maxStyle, percentageProperty) {
 		var view = document.defaultView;
 		var parentNode = domNode.parentNode;
+		if (parentNode && parentNode.host) {
+			parentNode = parentNode.host;
+		}
 		var constrainedNode = view.getComputedStyle(domNode)[maxStyle];
 		var constrainedContainer = view.getComputedStyle(parentNode)[maxStyle];
 		var hasCNode = isConstrainedValue(constrainedNode);
@@ -486,6 +489,9 @@ module.exports = function() {
 		if (!container) {
 			return domNode.clientWidth;
 		}
+		if (container.host) {
+			container = container.host;
+		}
 
 		var clientWidth = container.clientWidth;
 		var paddingLeft = helpers._calculatePadding(container, 'padding-left', clientWidth);
@@ -499,6 +505,9 @@ module.exports = function() {
 		var container = domNode.parentNode;
 		if (!container) {
 			return domNode.clientHeight;
+		}
+		if (container.host) {
+			container = container.host;
 		}
 
 		var clientHeight = container.clientHeight;
