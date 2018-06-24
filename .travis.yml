@@ -57,3 +57,7 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
+
+cache:
+  directories:
+    - "node_modules"
