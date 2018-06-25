@@ -125,7 +125,7 @@ module.exports = function(Chart) {
 			var meta = me.getMeta();
 			var area = me.chart.chartArea;
 			var points = meta.data || [];
-			var i, ilen, point, model, controlPoints;
+			var i, ilen, model, controlPoints;
 
 			// Only consider points that are drawn in case the spanGaps option is used
 			if (meta.dataset._model.spanGaps) {
