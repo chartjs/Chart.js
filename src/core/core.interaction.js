@@ -293,16 +293,29 @@ module.exports = {
 			if (options.intersect && !intersectsItem) {
 				items = [];
 			}
-			if (options.onePerDataset) {
-				var byIndex = {};
-				items.forEach(function(element) {
-					if (!byIndex[element._datasetIndex]) {
-						byIndex[element._datasetIndex] = element;
-					}
-				});
-				return Object.values(byIndex);
-			}
-			return items;
+
+			// group by dataset
+			var byIndex = items.reduce(function(res, element) {
+				if (!res[element._datasetIndex]) {
+					res[element._datasetIndex] = [element];
+				} else {
+					res[element._datasetIndex].push(element);
+				}
+				return res;
+			}, {});
+
+			// sort by distance
+			Object.values(byIndex).forEach(function(elements) {
+				elements.sort(function(a, b) {
+					var centerA = a.getCenterPoint();
+					var centerB = b.getCenterPoint();
+					var distanceA = distanceMetric(position, centerA);
+					var distanceB = distanceMetric(position, centerB);
+					return distanceA - distanceB;
+				})
+			});
+
+			return Object.values(byIndex).map(els => els[0]);
 		},
 
 		/**
