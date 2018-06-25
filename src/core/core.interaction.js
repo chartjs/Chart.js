@@ -275,6 +275,7 @@ module.exports = {
 		 */
 		x: function(chart, e, options) {
 			var position = getRelativePosition(e, chart);
+			var distanceMetric = getDistanceMetricForAxis('x');
 			var items = [];
 			var intersectsItem = false;
 
@@ -312,10 +313,14 @@ module.exports = {
 					var distanceA = distanceMetric(position, centerA);
 					var distanceB = distanceMetric(position, centerB);
 					return distanceA - distanceB;
-				})
+				});
 			});
 
-			return Object.values(byIndex).map(els => els[0]);
+			return Object.values(byIndex).map(
+				function(els) {
+					return els[0];
+				}
+			);
 		},
 
 		/**
