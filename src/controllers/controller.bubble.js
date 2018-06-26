@@ -102,24 +102,16 @@ module.exports = function(Chart) {
 		setHoverStyle: function(point) {
 			var model = point._model;
 			var options = point._options;
-
+			point.$previousStyle = {
+				backgroundColor: model.backgroundColor,
+				borderColor: model.borderColor,
+				borderWidth: model.borderWidth,
+				radius: model.radius
+			};
 			model.backgroundColor = helpers.valueOrDefault(options.hoverBackgroundColor, helpers.getHoverColor(options.backgroundColor));
 			model.borderColor = helpers.valueOrDefault(options.hoverBorderColor, helpers.getHoverColor(options.borderColor));
 			model.borderWidth = helpers.valueOrDefault(options.hoverBorderWidth, options.borderWidth);
 			model.radius = options.radius + options.hoverRadius;
-		},
-
-		/**
-		 * @protected
-		 */
-		removeHoverStyle: function(point) {
-			var model = point._model;
-			var options = point._options;
-
-			model.backgroundColor = options.backgroundColor;
-			model.borderColor = options.borderColor;
-			model.borderWidth = options.borderWidth;
-			model.radius = options.radius;
 		},
 
 		/**

@@ -199,13 +199,16 @@ module.exports = function(Chart) {
 			});
 
 			// Apply border and fill style
-			me.removeHoverStyle(arc);
+			var elementOpts = this.chart.options.elements.arc;
+			var custom = arc.custom || {};
+			var valueOrDefault = helpers.valueAtIndexOrDefault;
+			var model = arc._model;
+
+			model.backgroundColor = custom.backgroundColor ? custom.backgroundColor : valueOrDefault(dataset.backgroundColor, index, elementOpts.backgroundColor);
+			model.borderColor = custom.borderColor ? custom.borderColor : valueOrDefault(dataset.borderColor, index, elementOpts.borderColor);
+			model.borderWidth = custom.borderWidth ? custom.borderWidth : valueOrDefault(dataset.borderWidth, index, elementOpts.borderWidth);
 
 			arc.pivot();
-		},
-
-		removeHoverStyle: function(arc) {
-			Chart.DatasetController.prototype.removeHoverStyle.call(this, arc, this.chart.options.elements.arc);
 		},
 
 		countVisibleElements: function() {
