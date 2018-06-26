@@ -222,7 +222,7 @@ describe('Point element tests', function() {
 			15 - offset,
 			Math.SQRT2 * 2,
 			Math.SQRT2 * 2,
-			2 / 2
+			2 * 0.425
 		);
 		expect(mockContext.getCalls()).toContain(
 			jasmine.objectContaining({
