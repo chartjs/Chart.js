@@ -37,6 +37,7 @@ function parseVisibleItems(chart, handler) {
 		for (j = 0, jlen = meta.data.length; j < jlen; ++j) {
 			var element = meta.data[j];
 			if (!element._view.skip) {
+				element.datasetlength = meta.data.length;
 				handler(element);
 			}
 		}
@@ -281,8 +282,11 @@ module.exports = {
 			parseVisibleItems(chart, function(element) {
 				if (element.inXRange(position.x)) {
 					items.push(element);
+					// Cleanup extra elements
+					if (items.length > 1) {
+						items.splice(1, items.length);
+					}
 				}
-
 				if (element.inRange(position.x, position.y)) {
 					intersectsItem = true;
 				}

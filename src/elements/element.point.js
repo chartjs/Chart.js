@@ -24,7 +24,7 @@ defaults._set('global', {
 
 function xRange(mouseX) {
 	var vm = this._view;
-	return vm ? (Math.abs(mouseX - vm.x) < vm.radius + vm.hitRadius) : false;
+	return vm ? (Math.abs(mouseX - vm.x) < 2) : false;
 }
 
 function yRange(mouseY) {
