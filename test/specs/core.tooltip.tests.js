@@ -68,7 +68,7 @@ describe('Core.Tooltip', function() {
 				bubbles: true,
 				cancelable: true,
 				clientX: rect.left + point._model.x,
-				clientY: 0
+				clientY: rect.left + point._model.y
 			});
 
 			// Manually trigger rather than having an async test
