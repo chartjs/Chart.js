@@ -556,22 +556,53 @@ describe('Core.Interaction', function() {
 	describe('x mode', function() {
 		beforeEach(function() {
 			this.chart = window.acquireChart({
-				type: 'line',
+				type: 'scatter',
 				data: {
 					datasets: [{
 						label: 'Dataset 1',
-						data: [10, 40, 30],
-						pointRadius: [5, 10, 5],
+						data: [
+							{
+								x: 1,
+								y: 10
+							},
+							{
+								x: 2,
+								y: 40
+							},
+							{
+								x: 2,
+								y: 40
+							},
+							{
+								x: 3,
+								y: 30
+							}],
+						pointRadius: [10, 5, 10, 5],
 						pointHoverBorderColor: 'rgb(255, 0, 0)',
 						pointHoverBackgroundColor: 'rgb(0, 255, 0)'
 					}, {
 						label: 'Dataset 2',
-						data: [40, 40, 40],
-						pointRadius: [10, 10, 10],
+						data: [
+							{
+								x: 1,
+								y: 40
+							},
+							{
+								x: 2,
+								y: 40
+							},
+							{
+								x: 2,
+								y: 40
+							},
+							{
+								x: 3,
+								y: 40
+							}],
+						pointRadius: [10, 5, 10, 5],
 						pointHoverBorderColor: 'rgb(0, 0, 255)',
 						pointHoverBackgroundColor: 'rgb(0, 255, 255)'
-					}],
-					labels: ['Point 1', 'Point 2', 'Point 3']
+					}]
 				}
 			});
 		});
@@ -610,7 +641,7 @@ describe('Core.Interaction', function() {
 			expect(elements).toEqual([]);
 		});
 
-		it('should return items at the same x value when intersect is true', function() {
+		it('should return one item per dataset at the same x value when intersect is true', function() {
 			var chart = this.chart;
 			var meta0 = chart.getDatasetMeta(0);
 			var meta1 = chart.getDatasetMeta(1);
