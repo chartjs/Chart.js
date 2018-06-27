@@ -83,12 +83,13 @@ module.exports = function(Chart) {
 							positiveValues[index] = positiveValues[index] || 0;
 							negativeValues[index] = negativeValues[index] || 0;
 
-							if (value.min === 0 && !opts.ticks.beginAtZero) {
+							if (value.min === 0) {
 								value.min = value.max;
+							} else if (value.max === 0) {
+								value.max = value.min;
 							}
-							
 
-							if (opts.relativePoints) {
+                            if (opts.relativePoints) {
 								positiveValues[index] = 100;
 							} else if (value.min < 0) {
 								negativeValues[index] += value.min;
@@ -118,8 +119,10 @@ module.exports = function(Chart) {
 								return;
 							}
 
-							if (value.min === 0 && !opts.ticks.beginAtZero) {
+							if (value.min === 0) {
 								value.min = value.max;
+							} else if (value.max === 0) {
+								value.max = value.min;
 							}
 
 							if (me.min === null) {
