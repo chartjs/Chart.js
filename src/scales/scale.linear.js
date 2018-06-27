@@ -86,6 +86,7 @@ module.exports = function(Chart) {
 							if (value.min === 0 && !opts.ticks.beginAtZero) {
 								value.min = value.max;
 							}
+							
 
 							if (opts.relativePoints) {
 								positiveValues[index] = 100;
