@@ -117,6 +117,8 @@ module.exports = function(Chart) {
 								return;
 							}
 
+                            console.log(optionTicks);
+
 							if (value.min === 0) {
 								value.min = value.max;
 							}
