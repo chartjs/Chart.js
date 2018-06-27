@@ -83,7 +83,7 @@ module.exports = function(Chart) {
 							positiveValues[index] = positiveValues[index] || 0;
 							negativeValues[index] = negativeValues[index] || 0;
 
-							if (value.min === 0) {
+							if (value.min === 0 && !opts.ticks.beginAtZero) {
 								value.min = value.max;
 							}
 
@@ -117,9 +117,7 @@ module.exports = function(Chart) {
 								return;
 							}
 
-                            console.log(optionTicks);
-
-							if (value.min === 0) {
+							if (value.min === 0 && !opts.ticks.beginAtZero) {
 								value.min = value.max;
 							}
 
