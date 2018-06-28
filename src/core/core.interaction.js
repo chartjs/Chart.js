@@ -297,7 +297,7 @@ module.exports = {
 
 			// group by dataset
 			var byIndex = items.reduce(function(res, element) {
-				if (!res[element._datasetIndex]) {
+				if (res[element._datasetIndex] === undefined) {
 					res[element._datasetIndex] = [element];
 				} else {
 					res[element._datasetIndex].push(element);
@@ -306,8 +306,8 @@ module.exports = {
 			}, {});
 
 			// sort by distance
-			Object.values(byIndex).forEach(function(elements) {
-				elements.sort(function(a, b) {
+			Object.keys(byIndex).forEach(function(key) {
+				byIndex[key].sort(function(a, b) {
 					var centerA = a.getCenterPoint();
 					var centerB = b.getCenterPoint();
 					var distanceA = distanceMetric(position, centerA);
