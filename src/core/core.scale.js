@@ -76,11 +76,15 @@ function labelsFromTicks(ticks) {
 	return labels;
 }
 
-function getLineValue(scale, index, offsetGridLines) {
+function getPixelForGridLine(scale, index, offsetGridLines) {
 	var lineValue = scale.getPixelForTick(index);
 
 	if (offsetGridLines) {
-		if (index === 0) {
+		if (scale.getTicks().length === 1) {
+			lineValue -= scale.isHorizontal() ?
+				Math.max(lineValue - scale.left, scale.right - lineValue) :
+				Math.max(lineValue - scale.top, scale.bottom - lineValue);
+		} else if (index === 0) {
 			lineValue -= (scale.getPixelForTick(1) - lineValue) / 2;
 		} else {
 			lineValue -= (lineValue - scale.getPixelForTick(index - 1)) / 2;
@@ -754,7 +758,7 @@ module.exports = Element.extend({
 					labelY = me.bottom - labelYOffset;
 				}
 
-				var xLineValue = getLineValue(me, index, gridLines.offsetGridLines && ticks.length > 1);
+				var xLineValue = getPixelForGridLine(me, index, gridLines.offsetGridLines);
 				if (xLineValue < me.left - epsilon) {
 					lineColor = 'rgba(0,0,0,0)';
 				}
@@ -781,7 +785,7 @@ module.exports = Element.extend({
 
 				labelX = isLeft ? me.right - labelXOffset : me.left + labelXOffset;
 
-				var yLineValue = getLineValue(me, index, gridLines.offsetGridLines && ticks.length > 1);
+				var yLineValue = getPixelForGridLine(me, index, gridLines.offsetGridLines);
 				if (yLineValue < me.top - epsilon) {
 					lineColor = 'rgba(0,0,0,0)';
 				}
