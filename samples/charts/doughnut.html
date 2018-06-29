@@ -23,6 +23,7 @@
 	<button id="removeDataset">Remove Dataset</button>
 	<button id="addData">Add Data</button>
 	<button id="removeData">Remove Data</button>
+	<button id="changeCircleSize">Semi/Full Circle</button>
 	<script>
 		var randomScalingFactor = function() {
 			return Math.round(Math.random() * 100);
@@ -135,6 +136,18 @@
 				dataset.data.pop();
 				dataset.backgroundColor.pop();
 			});
+
+			window.myDoughnut.update();
+		});
+
+		document.getElementById('changeCircleSize').addEventListener('click', function() {
+			if (window.myDoughnut.options.circumference === Math.PI) {
+				window.myDoughnut.options.circumference = 2 * Math.PI;
+				window.myDoughnut.options.rotation = -Math.PI / 2;
+			} else {
+				window.myDoughnut.options.circumference = Math.PI;
+				window.myDoughnut.options.rotation = -Math.PI;
+			}
 
 			window.myDoughnut.update();
 		});

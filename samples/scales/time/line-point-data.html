@@ -121,27 +121,16 @@
 
 			window.myLine.update();
 		});
-
-		// TODO : fix issue with addData
-		// See https://github.com/chartjs/Chart.js/issues/5197
-		// The Add Data button for this sample has no effect.
-		// An error is logged in the console.
 		document.getElementById('addData').addEventListener('click', function() {
 			if (config.data.datasets.length > 0) {
-				var numTicks = window.myLine.scales['x-axis-0'].ticksAsTimestamps.length;
-				var lastTime = numTicks ? moment(window.myLine.scales['x-axis-0'].ticksAsTimestamps[numTicks - 1]) : moment();
-
-				var newTime = lastTime
-					.clone()
-					.add(1, 'day')
-					.format('MM/DD/YYYY HH:mm');
-
-				for (var index = 0; index < config.data.datasets.length; ++index) {
-					config.data.datasets[index].data.push({
-						x: newTime,
-						y: randomScalingFactor()
-					});
-				}
+				config.data.datasets[0].data.push({
+					x: newDateString(config.data.datasets[0].data.length + 2),
+					y: randomScalingFactor()
+				});
+				config.data.datasets[1].data.push({
+					x: newDate(config.data.datasets[1].data.length + 2),
+					y: randomScalingFactor()
+				});
 
 				window.myLine.update();
 			}

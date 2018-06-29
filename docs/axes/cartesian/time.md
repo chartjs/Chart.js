@@ -6,7 +6,7 @@ The time scale is used to display times and dates. When building its ticks, it w
 
 ### Input Data
 
-The x-axis data points may additionally be specified via the `t` attribute when using the time scale.
+The x-axis data points may additionally be specified via the `t` or `x` attribute when using the time scale.
 
     data: [{
         x: new Date(),
@@ -64,6 +64,7 @@ var chart = new Chart(ctx, {
     options: {
         scales: {
             xAxes: [{
+                type: 'time',
                 time: {
                     unit: 'month'
                 }
