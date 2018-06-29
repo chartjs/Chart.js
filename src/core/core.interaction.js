@@ -316,9 +316,9 @@ module.exports = {
 				});
 			});
 
-			return Object.values(byIndex).map(
-				function(els) {
-					return els[0];
+			return Object.keys(byIndex).map(
+				function(key) {
+					return byIndex[key][0];
 				}
 			);
 		},
