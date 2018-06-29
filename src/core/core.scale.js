@@ -564,25 +564,7 @@ module.exports = Element.extend({
 	 * Returns the location of the tick at the given index
 	 * The coordinate (0, 0) is at the upper-left corner of the canvas
 	 */
-	getPixelForTick: function(index) {
-		var me = this;
-		var offset = me.options.offset;
-		if (me.isHorizontal()) {
-			var innerWidth = me.width - (me.paddingLeft + me.paddingRight);
-			var tickWidth = innerWidth / Math.max((me._ticks.length - (offset ? 0 : 1)), 1);
-			var pixel = (tickWidth * index) + me.paddingLeft;
-
-			if (offset) {
-				pixel += tickWidth / 2;
-			}
-
-			var finalVal = me.left + Math.round(pixel);
-			finalVal += me.isFullWidth() ? me.margins.left : 0;
-			return finalVal;
-		}
-		var innerHeight = me.height - (me.paddingTop + me.paddingBottom);
-		return me.top + (index * (innerHeight / (me._ticks.length - 1)));
-	},
+	getPixelForTick: helpers.noop,
 
 	/**
 	 * Utility for getting the pixel location of a percentage of scale
