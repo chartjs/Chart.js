@@ -640,7 +640,7 @@ module.exports = Element.extend({
 		var labelSpacing;
 		if (optionTicks.labelSpacing) {
 			labelSpacing = optionTicks.labelSpacing;
-			// If not an even number, reject
+			// If not an integer, reject
 			if (labelSpacing !== Math.floor(labelSpacing)) {
 				labelSpacing = undefined;
 			}
