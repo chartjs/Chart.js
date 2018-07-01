@@ -636,7 +636,7 @@ module.exports = Element.extend({
 		var result = [];
 		var i, tick;
 
-		// Specifiy the label spacing
+		// Specify the label spacing
 		var labelSpacing;
 		if (optionTicks.labelSpacing) {
 			labelSpacing = optionTicks.labelSpacing;
