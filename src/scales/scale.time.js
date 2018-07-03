@@ -22,7 +22,7 @@ var INTERVALS = {
 	second: {
 		common: true,
 		size: 1000,
-		steps: [1, 2, 5, 10, 30]
+		steps: [1, 2, 5, 10, 15, 30]
 	},
 	minute: {
 		common: true,
