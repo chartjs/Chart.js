@@ -82,7 +82,10 @@ Items passed to the legend `onClick` function are the ones returned from `labels
     strokeStyle: Color,
 
     // Point style of the legend box (only used if usePointStyle is true)
-    pointStyle: string
+    pointStyle: string | Image,
+
+    // Rotation of the point in degrees (only used if usePointStyle is true)
+    rotation: number
 }
 ```
 

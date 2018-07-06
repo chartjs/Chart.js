@@ -59,20 +59,14 @@ defaults._set('polarArea', {
 				if (data.labels.length && data.datasets.length) {
 					return data.labels.map(function(label, i) {
 						var meta = chart.getDatasetMeta(0);
-						var ds = data.datasets[0];
-						var arc = meta.data[i];
-						var custom = arc.custom || {};
-						var arcOpts = chart.options.elements.arc;
-						var fill = resolve([custom.backgroundColor, ds.backgroundColor, arcOpts.backgroundColor], undefined, i);
-						var stroke = resolve([custom.borderColor, ds.borderColor, arcOpts.borderColor], undefined, i);
-						var bw = resolve([custom.borderWidth, ds.borderWidth, arcOpts.borderWidth], undefined, i);
+						var style = meta.controller.getStyle(i);
 
 						return {
 							text: label,
-							fillStyle: fill,
-							strokeStyle: stroke,
-							lineWidth: bw,
-							hidden: isNaN(ds.data[i]) || meta.data[i].hidden,
+							fillStyle: style.backgroundColor,
+							strokeStyle: style.borderColor,
+							lineWidth: style.borderWidth,
+							hidden: isNaN(data.datasets[0].data[i]) || meta.data[i].hidden,
 
 							// Extra data used for toggling the correct item
 							index: i

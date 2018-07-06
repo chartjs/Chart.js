@@ -125,6 +125,15 @@ module.exports = DatasetController.extend({
 	/**
 	 * @private
 	 */
+	_resolveElementOptions: function(element, index) {
+		return index >= 0
+			? this._resolvePointOptions(element, index)
+			: this._resolveLineOptions(element);
+	},
+
+	/**
+	 * @private
+	 */
 	_resolvePointOptions: function(element, index) {
 		var me = this;
 		var chart = me.chart;

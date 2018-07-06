@@ -49,18 +49,25 @@ defaults._set('global', {
 			// lineWidth :
 			generateLabels: function(chart) {
 				var data = chart.data;
+				var options = chart.options.legend || {};
+				var usePointStyle = options.labels && options.labels.usePointStyle;
+
 				return helpers.isArray(data.datasets) ? data.datasets.map(function(dataset, i) {
+					var meta = chart.getDatasetMeta(i);
+					var style = meta.controller.getStyle(usePointStyle ? 0 : undefined);
+
 					return {
 						text: dataset.label,
-						fillStyle: (!helpers.isArray(dataset.backgroundColor) ? dataset.backgroundColor : dataset.backgroundColor[0]),
+						fillStyle: style.backgroundColor,
 						hidden: !chart.isDatasetVisible(i),
-						lineCap: dataset.borderCapStyle,
-						lineDash: dataset.borderDash,
-						lineDashOffset: dataset.borderDashOffset,
-						lineJoin: dataset.borderJoinStyle,
-						lineWidth: dataset.borderWidth,
-						strokeStyle: dataset.borderColor,
-						pointStyle: dataset.pointStyle,
+						lineCap: style.borderCapStyle,
+						lineDash: style.borderDash,
+						lineDashOffset: style.borderDashOffset,
+						lineJoin: style.borderJoinStyle,
+						lineWidth: style.borderWidth,
+						strokeStyle: style.borderColor,
+						pointStyle: style.pointStyle,
+						rotation: style.rotation,
 
 						// Below is extra data used for toggling the datasets
 						datasetIndex: i
@@ -377,7 +384,7 @@ var Legend = Element.extend({
 					ctx.setLineDash(valueOrDefault(legendItem.lineDash, lineDefault.borderDash));
 				}
 
-				if (opts.labels && opts.labels.usePointStyle) {
+				if (labelOpts && labelOpts.usePointStyle) {
 					// Recalculate x and y for drawPoint() because its expecting
 					// x and y to be center of figure (instead of top left)
 					var radius = boxWidth * Math.SQRT2 / 2;
@@ -385,13 +392,13 @@ var Legend = Element.extend({
 					var centerY = y + fontSize / 2;
 
 					// Draw pointStyle as legend symbol
-					helpers.canvas.drawPoint(ctx, legendItem.pointStyle, radius, centerX, centerY);
+					helpers.canvas.drawPoint(ctx, legendItem.pointStyle, radius, centerX, centerY, legendItem.rotation);
 				} else {
 					// Draw box as legend symbol
+					ctx.fillRect(x, y, boxWidth, fontSize);
 					if (lineWidth !== 0) {
 						ctx.strokeRect(x, y, boxWidth, fontSize);
 					}
-					ctx.fillRect(x, y, boxWidth, fontSize);
 				}
 
 				ctx.restore();

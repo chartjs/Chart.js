@@ -293,6 +293,39 @@ helpers.extend(DatasetController.prototype, {
 		}
 	},
 
+	/**
+	 * Returns a set of predefined style properties that should be used to represent the dataset
+	 * or the data if the index is specified
+	 * @params {number} index - data index
+	 * @return {IStyleInterface} style object
+	 */
+	getStyle: function(index) {
+		var me = this;
+		var meta = me.getMeta();
+		var element, style;
+
+		if (meta.dataset && index === undefined) {
+			element = meta.dataset;
+		} else {
+			index = index || 0;
+			element = meta.data[index];
+		}
+		style = me._resolveElementOptions(element || {}, index);
+
+		if (style.fill === false || style.fill === null) {
+			style.backgroundColor = 'rgba(0,0,0,0)';
+		}
+
+		return style;
+	},
+
+	/**
+	 * @private
+	 */
+	_resolveElementOptions: function() {
+		throw new Error('This method is not implemented.');
+	},
+
 	removeHoverStyle: function(element) {
 		helpers.merge(element._model, element.$previousStyle || {});
 		delete element.$previousStyle;
