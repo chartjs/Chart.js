@@ -108,6 +108,7 @@ describe('Point element tests', function() {
 		point._view = {
 			radius: 2,
 			pointStyle: 'circle',
+			rotation: 25,
 			hitRadius: 3,
 			borderColor: 'rgba(1, 2, 3, 1)',
 			borderWidth: 6,
@@ -129,11 +130,20 @@ describe('Point element tests', function() {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
 		}, {
+			name: 'save',
+			args: []
+		}, {
+			name: 'translate',
+			args: [10, 15]
+		}, {
+			name: 'rotate',
+			args: [25 * Math.PI / 180]
+		}, {
 			name: 'beginPath',
 			args: []
 		}, {
 			name: 'arc',
-			args: [10, 15, 2, 0, 2 * Math.PI]
+			args: [0, 0, 2, 0, 2 * Math.PI]
 		}, {
 			name: 'closePath',
 			args: [],
@@ -142,6 +152,9 @@ describe('Point element tests', function() {
 			args: [],
 		}, {
 			name: 'stroke',
+			args: []
+		}, {
+			name: 'restore',
 			args: []
 		}]);
 
@@ -159,17 +172,26 @@ describe('Point element tests', function() {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
 		}, {
+			name: 'save',
+			args: []
+		}, {
+			name: 'translate',
+			args: [10, 15]
+		}, {
+			name: 'rotate',
+			args: [25 * Math.PI / 180]
+		}, {
 			name: 'beginPath',
 			args: []
 		}, {
 			name: 'moveTo',
-			args: [10 - 3 * 2 / Math.sqrt(3) / 2, 15 + 3 * 2 / Math.sqrt(3) * Math.sqrt(3) / 2 / 3]
+			args: [0 - 3 * 2 / Math.sqrt(3) / 2, 0 + 3 * 2 / Math.sqrt(3) * Math.sqrt(3) / 2 / 3]
 		}, {
 			name: 'lineTo',
-			args: [10 + 3 * 2 / Math.sqrt(3) / 2, 15 + 3 * 2 / Math.sqrt(3) * Math.sqrt(3) / 2 / 3],
+			args: [0 + 3 * 2 / Math.sqrt(3) / 2, 0 + 3 * 2 / Math.sqrt(3) * Math.sqrt(3) / 2 / 3],
 		}, {
 			name: 'lineTo',
-			args: [10, 15 - 2 * 3 * 2 / Math.sqrt(3) * Math.sqrt(3) / 2 / 3],
+			args: [0, 0 - 2 * 3 * 2 / Math.sqrt(3) * Math.sqrt(3) / 2 / 3],
 		}, {
 			name: 'closePath',
 			args: [],
@@ -178,6 +200,9 @@ describe('Point element tests', function() {
 			args: [],
 		}, {
 			name: 'stroke',
+			args: []
+		}, {
+			name: 'restore',
 			args: []
 		}]);
 
@@ -195,16 +220,28 @@ describe('Point element tests', function() {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
 		}, {
+			name: 'save',
+			args: []
+		}, {
+			name: 'translate',
+			args: [10, 15]
+		}, {
+			name: 'rotate',
+			args: [25 * Math.PI / 180]
+		}, {
 			name: 'beginPath',
 			args: []
 		}, {
 			name: 'fillRect',
-			args: [10 - 1 / Math.SQRT2 * 2, 15 - 1 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2]
+			args: [0 - 1 / Math.SQRT2 * 2, 0 - 1 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2]
 		}, {
 			name: 'strokeRect',
-			args: [10 - 1 / Math.SQRT2 * 2, 15 - 1 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2]
+			args: [0 - 1 / Math.SQRT2 * 2, 0 - 1 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2]
 		}, {
 			name: 'stroke',
+			args: []
+		}, {
+			name: 'restore',
 			args: []
 		}]);
 
@@ -218,8 +255,8 @@ describe('Point element tests', function() {
 
 		expect(drawRoundedRectangleSpy).toHaveBeenCalledWith(
 			mockContext,
-			10 - offset,
-			15 - offset,
+			0 - offset,
+			0 - offset,
 			Math.SQRT2 * 2,
 			Math.SQRT2 * 2,
 			2 * 0.425
@@ -246,20 +283,29 @@ describe('Point element tests', function() {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
 		}, {
+			name: 'save',
+			args: []
+		}, {
+			name: 'translate',
+			args: [10, 15]
+		}, {
+			name: 'rotate',
+			args: [25 * Math.PI / 180]
+		}, {
 			name: 'beginPath',
 			args: []
 		}, {
 			name: 'moveTo',
-			args: [10 - 1 / Math.SQRT2 * 2, 15]
+			args: [0 - 1 / Math.SQRT2 * 2, 0]
 		}, {
 			name: 'lineTo',
-			args: [10, 15 + 1 / Math.SQRT2 * 2]
+			args: [0, 0 + 1 / Math.SQRT2 * 2]
 		}, {
 			name: 'lineTo',
-			args: [10 + 1 / Math.SQRT2 * 2, 15],
+			args: [0 + 1 / Math.SQRT2 * 2, 0],
 		}, {
 			name: 'lineTo',
-			args: [10, 15 - 1 / Math.SQRT2 * 2],
+			args: [0, 0 - 1 / Math.SQRT2 * 2],
 		}, {
 			name: 'closePath',
 			args: []
@@ -268,6 +314,9 @@ describe('Point element tests', function() {
 			args: [],
 		}, {
 			name: 'stroke',
+			args: []
+		}, {
+			name: 'restore',
 			args: []
 		}]);
 
@@ -285,25 +334,37 @@ describe('Point element tests', function() {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
 		}, {
+			name: 'save',
+			args: []
+		}, {
+			name: 'translate',
+			args: [10, 15]
+		}, {
+			name: 'rotate',
+			args: [25 * Math.PI / 180]
+		}, {
 			name: 'beginPath',
 			args: []
 		}, {
 			name: 'moveTo',
-			args: [10, 17]
+			args: [0, 2]
 		}, {
 			name: 'lineTo',
-			args: [10, 13],
+			args: [0, -2],
 		}, {
 			name: 'moveTo',
-			args: [8, 15],
+			args: [-2, 0],
 		}, {
 			name: 'lineTo',
-			args: [12, 15],
+			args: [2, 0],
 		}, {
 			name: 'closePath',
 			args: [],
 		}, {
 			name: 'stroke',
+			args: []
+		}, {
+			name: 'restore',
 			args: []
 		}]);
 
@@ -321,25 +382,37 @@ describe('Point element tests', function() {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
 		}, {
+			name: 'save',
+			args: []
+		}, {
+			name: 'translate',
+			args: [10, 15]
+		}, {
+			name: 'rotate',
+			args: [25 * Math.PI / 180]
+		}, {
 			name: 'beginPath',
 			args: []
 		}, {
 			name: 'moveTo',
-			args: [10 - Math.cos(Math.PI / 4) * 2, 15 - Math.sin(Math.PI / 4) * 2]
+			args: [0 - Math.cos(Math.PI / 4) * 2, 0 - Math.sin(Math.PI / 4) * 2]
 		}, {
 			name: 'lineTo',
-			args: [10 + Math.cos(Math.PI / 4) * 2, 15 + Math.sin(Math.PI / 4) * 2],
+			args: [0 + Math.cos(Math.PI / 4) * 2, 0 + Math.sin(Math.PI / 4) * 2],
 		}, {
 			name: 'moveTo',
-			args: [10 - Math.cos(Math.PI / 4) * 2, 15 + Math.sin(Math.PI / 4) * 2],
+			args: [0 - Math.cos(Math.PI / 4) * 2, 0 + Math.sin(Math.PI / 4) * 2],
 		}, {
 			name: 'lineTo',
-			args: [10 + Math.cos(Math.PI / 4) * 2, 15 - Math.sin(Math.PI / 4) * 2],
+			args: [0 + Math.cos(Math.PI / 4) * 2, 0 - Math.sin(Math.PI / 4) * 2],
 		}, {
 			name: 'closePath',
 			args: [],
 		}, {
 			name: 'stroke',
+			args: []
+		}, {
+			name: 'restore',
 			args: []
 		}]);
 
@@ -357,37 +430,49 @@ describe('Point element tests', function() {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
 		}, {
+			name: 'save',
+			args: []
+		}, {
+			name: 'translate',
+			args: [10, 15]
+		}, {
+			name: 'rotate',
+			args: [25 * Math.PI / 180]
+		}, {
 			name: 'beginPath',
 			args: []
 		}, {
 			name: 'moveTo',
-			args: [10, 17]
+			args: [0, 2]
 		}, {
 			name: 'lineTo',
-			args: [10, 13],
+			args: [0, -2],
 		}, {
 			name: 'moveTo',
-			args: [8, 15],
+			args: [-2, 0],
 		}, {
 			name: 'lineTo',
-			args: [12, 15],
+			args: [2, 0],
 		}, {
 			name: 'moveTo',
-			args: [10 - Math.cos(Math.PI / 4) * 2, 15 - Math.sin(Math.PI / 4) * 2]
+			args: [0 - Math.cos(Math.PI / 4) * 2, 0 - Math.sin(Math.PI / 4) * 2]
 		}, {
 			name: 'lineTo',
-			args: [10 + Math.cos(Math.PI / 4) * 2, 15 + Math.sin(Math.PI / 4) * 2],
+			args: [0 + Math.cos(Math.PI / 4) * 2, 0 + Math.sin(Math.PI / 4) * 2],
 		}, {
 			name: 'moveTo',
-			args: [10 - Math.cos(Math.PI / 4) * 2, 15 + Math.sin(Math.PI / 4) * 2],
+			args: [0 - Math.cos(Math.PI / 4) * 2, 0 + Math.sin(Math.PI / 4) * 2],
 		}, {
 			name: 'lineTo',
-			args: [10 + Math.cos(Math.PI / 4) * 2, 15 - Math.sin(Math.PI / 4) * 2],
+			args: [0 + Math.cos(Math.PI / 4) * 2, 0 - Math.sin(Math.PI / 4) * 2],
 		}, {
 			name: 'closePath',
 			args: [],
 		}, {
 			name: 'stroke',
+			args: []
+		}, {
+			name: 'restore',
 			args: []
 		}]);
 
@@ -405,19 +490,31 @@ describe('Point element tests', function() {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
 		}, {
+			name: 'save',
+			args: []
+		}, {
+			name: 'translate',
+			args: [10, 15]
+		}, {
+			name: 'rotate',
+			args: [25 * Math.PI / 180]
+		}, {
 			name: 'beginPath',
 			args: []
 		}, {
 			name: 'moveTo',
-			args: [8, 15]
+			args: [-2, 0]
 		}, {
 			name: 'lineTo',
-			args: [12, 15],
+			args: [2, 0],
 		}, {
 			name: 'closePath',
 			args: [],
 		}, {
 			name: 'stroke',
+			args: []
+		}, {
+			name: 'restore',
 			args: []
 		}]);
 
@@ -435,19 +532,31 @@ describe('Point element tests', function() {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
 		}, {
+			name: 'save',
+			args: []
+		}, {
+			name: 'translate',
+			args: [10, 15]
+		}, {
+			name: 'rotate',
+			args: [25 * Math.PI / 180]
+		}, {
 			name: 'beginPath',
 			args: []
 		}, {
 			name: 'moveTo',
-			args: [10, 15]
+			args: [0, 0]
 		}, {
 			name: 'lineTo',
-			args: [12, 15],
+			args: [2, 0],
 		}, {
 			name: 'closePath',
 			args: [],
 		}, {
 			name: 'stroke',
+			args: []
+		}, {
+			name: 'restore',
 			args: []
 		}]);
 
@@ -484,11 +593,20 @@ describe('Point element tests', function() {
 			name: 'setFillStyle',
 			args: ['rgba(0,0,0,0.1)']
 		}, {
+			name: 'save',
+			args: []
+		}, {
+			name: 'translate',
+			args: [10, 15]
+		}, {
+			name: 'rotate',
+			args: [0]
+		}, {
 			name: 'beginPath',
 			args: []
 		}, {
 			name: 'arc',
-			args: [10, 15, 2, 0, 2 * Math.PI]
+			args: [0, 0, 2, 0, 2 * Math.PI]
 		}, {
 			name: 'closePath',
 			args: [],
@@ -497,6 +615,9 @@ describe('Point element tests', function() {
 			args: [],
 		}, {
 			name: 'stroke',
+			args: []
+		}, {
+			name: 'restore',
 			args: []
 		}]);
 	});

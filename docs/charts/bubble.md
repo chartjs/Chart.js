@@ -51,6 +51,7 @@ The bubble chart allows a number of properties to be specified for each dataset.
 | [`hitRadius`](#interactions) | `Number` | Yes | Yes | `1`
 | [`label`](#labeling) | `String` | - | - | `undefined`
 | [`pointStyle`](#styling) | `String` | Yes | Yes | `circle`
+| [`rotation`](#styling) | `Number` | Yes | Yes | `0`
 | [`radius`](#styling) | `Number` | Yes | Yes | `3`
 
 ### Labeling
@@ -67,6 +68,7 @@ The style of each bubble can be controlled with the following properties:
 | `borderColor` | bubble border color
 | `borderWidth` | bubble border width (in pixels)
 | `pointStyle` | bubble [shape style](../configuration/elements#point-styles)
+| `rotation` | bubble rotation (in degrees)
 | `radius` | bubble radius (in pixels)
 
 All these values, if `undefined`, fallback to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options.
