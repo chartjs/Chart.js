@@ -6,6 +6,32 @@ describe('Deprecations', function() {
 				expect(Chart.layoutService).toBe(Chart.layouts);
 			});
 		});
+
+		describe('Legend Labels: usePointStyle option', function() {
+			it('should use the style property', function() {
+				var chart = window.acquireChart({
+					type: 'line',
+					data: {
+						datasets: [{
+							label: '',
+							data: []
+						}],
+						labels: []
+					},
+					options: {
+						legend: {
+							labels: {
+								usePointStyle: true
+							}
+						}
+					}
+				});
+
+				expect(chart.legend.legendItems[0].style).toEqual('point');
+				expect(chart.legend.legendHitBoxes[0].height).toBeCloseToPixel(12);
+				expect(chart.legend.legendHitBoxes[0].width).toBeCloseToPixel(23);
+			});
+		});
 	});
 
 	describe('Version 2.7.0', function() {

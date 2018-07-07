@@ -58,6 +58,7 @@ describe('Legend block tests', function() {
 			lineWidth: undefined,
 			strokeStyle: undefined,
 			pointStyle: undefined,
+			style: undefined,
 			datasetIndex: 0
 		}, {
 			text: 'dataset2',
@@ -70,6 +71,7 @@ describe('Legend block tests', function() {
 			lineWidth: undefined,
 			strokeStyle: undefined,
 			pointStyle: undefined,
+			style: undefined,
 			datasetIndex: 1
 		}, {
 			text: 'dataset3',
@@ -82,6 +84,7 @@ describe('Legend block tests', function() {
 			lineWidth: 10,
 			strokeStyle: 'green',
 			pointStyle: 'crossRot',
+			style: undefined,
 			datasetIndex: 2
 		}]);
 	});
@@ -135,6 +138,7 @@ describe('Legend block tests', function() {
 			lineWidth: undefined,
 			strokeStyle: undefined,
 			pointStyle: undefined,
+			style: undefined,
 			datasetIndex: 0
 		}, {
 			text: 'dataset3',
@@ -147,7 +151,121 @@ describe('Legend block tests', function() {
 			lineWidth: 10,
 			strokeStyle: 'green',
 			pointStyle: 'crossRot',
+			style: undefined,
 			datasetIndex: 2
+		}]);
+	});
+
+	it('should set the label styles correctly when the dataset types are mixed', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					type: 'line',
+					label: 'dataset1',
+					backgroundColor: '#f31',
+					borderCapStyle: 'butt',
+					borderDash: [2, 2],
+					borderDashOffset: 5.5,
+					data: []
+				}, {
+					type: 'bar',
+					label: 'dataset2',
+					hidden: true,
+					borderJoinStyle: 'miter',
+					data: [],
+					legendHidden: true
+				}],
+				labels: []
+			}
+		});
+
+		expect(chart.legend.legendItems).toEqual([{
+			text: 'dataset1',
+			fillStyle: '#f31',
+			hidden: false,
+			lineCap: 'butt',
+			lineDash: [2, 2],
+			lineDashOffset: 5.5,
+			lineJoin: undefined,
+			lineWidth: undefined,
+			strokeStyle: undefined,
+			pointStyle: undefined,
+			style: 'line',
+			datasetIndex: 0
+		}, {
+			text: 'dataset2',
+			fillStyle: undefined,
+			hidden: true,
+			lineCap: undefined,
+			lineDash: undefined,
+			lineDashOffset: undefined,
+			lineJoin: 'miter',
+			lineWidth: undefined,
+			strokeStyle: undefined,
+			pointStyle: undefined,
+			style: undefined,
+			datasetIndex: 1
+		}]);
+	});
+
+	it('should set the label style to point when the style option is set to point', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					type: 'line',
+					label: 'dataset1',
+					backgroundColor: '#f31',
+					borderCapStyle: 'butt',
+					borderDash: [2, 2],
+					borderDashOffset: 5.5,
+					data: []
+				}, {
+					type: 'bar',
+					label: 'dataset2',
+					hidden: true,
+					borderJoinStyle: 'miter',
+					data: [],
+					legendHidden: true
+				}],
+				labels: []
+			},
+			options: {
+				legend: {
+					labels: {
+						style: 'point'
+					},
+				}
+			}
+		});
+
+		expect(chart.legend.legendItems).toEqual([{
+			text: 'dataset1',
+			fillStyle: '#f31',
+			hidden: false,
+			lineCap: 'butt',
+			lineDash: [2, 2],
+			lineDashOffset: 5.5,
+			lineJoin: undefined,
+			lineWidth: undefined,
+			strokeStyle: undefined,
+			pointStyle: undefined,
+			style: 'point',
+			datasetIndex: 0
+		}, {
+			text: 'dataset2',
+			fillStyle: undefined,
+			hidden: true,
+			lineCap: undefined,
+			lineDash: undefined,
+			lineDashOffset: undefined,
+			lineJoin: 'miter',
+			lineWidth: undefined,
+			strokeStyle: undefined,
+			pointStyle: undefined,
+			style: 'point',
+			datasetIndex: 1
 		}]);
 	});
 
@@ -176,7 +294,7 @@ describe('Legend block tests', function() {
 		expect(makeChart).not.toThrow();
 	});
 
-	it('should draw correctly', function() {
+	it('should draw correctly when the style option is set to point', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
@@ -387,6 +505,53 @@ describe('Legend block tests', function() {
 			"name": "fillText",
 			"args": ["dataset3", 228, 132]
 		}]);*/
+	});
+
+	it('should draw correctly when ', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					label: 'dataset1',
+					backgroundColor: '#f31',
+					borderCapStyle: 'butt',
+					borderDash: [2, 2],
+					borderDashOffset: 5.5,
+					data: []
+				}, {
+					label: 'dataset2',
+					hidden: true,
+					borderJoinStyle: 'miter',
+					data: []
+				}, {
+					label: 'dataset3',
+					borderWidth: 10,
+					borderColor: 'green',
+					data: []
+				}],
+				labels: []
+			},
+			options: {
+				legend: {
+					labels: {
+						style: 'point'
+					},
+				}
+			}
+		});
+
+		expect(chart.legend.legendHitBoxes.length).toBe(3);
+
+		[
+			{h: 12, l: 137, t: 10, w: 70},
+			{h: 12, l: 216, t: 10, w: 70},
+			{h: 12, l: 295, t: 10, w: 70}
+		].forEach(function(expected, i) {
+			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
+			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
+			expect(chart.legend.legendHitBoxes[i].top).toBeCloseToPixel(expected.t);
+			expect(chart.legend.legendHitBoxes[i].width).toBeCloseToPixel(expected.w);
+		});
 	});
 
 	describe('config update', function() {

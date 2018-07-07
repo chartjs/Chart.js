@@ -47,6 +47,19 @@ defaults._set('global', {
 			generateLabels: function(chart) {
 				var data = chart.data;
 				return helpers.isArray(data.datasets) ? data.datasets.map(function(dataset, i) {
+					var labelOpts = chart.options.legend.labels;
+					var style = labelOpts.style;
+					var type = chart.getDatasetMeta(i).type;
+
+					if (!style) {
+						// `usePointStyle` is deprecated. To be removed at version 3
+						if (labelOpts.usePointStyle) {
+							style = 'point';
+						} else if (type === 'line' || type === 'radar') {
+							style = 'line';
+						}
+					}
+
 					return {
 						text: dataset.label,
 						fillStyle: (!helpers.isArray(dataset.backgroundColor) ? dataset.backgroundColor : dataset.backgroundColor[0]),
@@ -58,6 +71,7 @@ defaults._set('global', {
 						lineWidth: dataset.borderWidth,
 						strokeStyle: dataset.borderColor,
 						pointStyle: dataset.pointStyle,
+						style: style,
 
 						// Below is extra data used for toggling the datasets
 						datasetIndex: i
@@ -83,13 +97,14 @@ defaults._set('global', {
 });
 
 /**
- * Helper function to get the box width based on the usePointStyle option
- * @param labelopts {Object} the label options on the legend
+ * Helper function to get the box width based on the style option
+ * @param legendItem {Object} the legend item
+ * @param labelOpts {Object} the label options on the legend
  * @param fontSize {Number} the label font size
  * @return {Number} width of the color box area
  */
-function getBoxWidth(labelOpts, fontSize) {
-	return labelOpts.usePointStyle ?
+function getBoxWidth(legendItem, labelOpts, fontSize) {
+	return legendItem.style === 'point' ?
 		fontSize * Math.SQRT2 :
 		labelOpts.boxWidth;
 }
@@ -247,7 +262,7 @@ var Legend = Element.extend({
 				ctx.textBaseline = 'top';
 
 				helpers.each(me.legendItems, function(legendItem, i) {
-					var boxWidth = getBoxWidth(labelOpts, fontSize);
+					var boxWidth = getBoxWidth(legendItem, labelOpts, fontSize);
 					var width = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
 
 					if (lineWidths[lineWidths.length - 1] + width + labelOpts.padding >= me.width) {
@@ -277,7 +292,7 @@ var Legend = Element.extend({
 				var itemHeight = fontSize + vPadding;
 
 				helpers.each(me.legendItems, function(legendItem, i) {
-					var boxWidth = getBoxWidth(labelOpts, fontSize);
+					var boxWidth = getBoxWidth(legendItem, labelOpts, fontSize);
 					var itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
 
 					// If too tall, go to new column
@@ -346,11 +361,10 @@ var Legend = Element.extend({
 			ctx.fillStyle = fontColor; // render in correct colour
 			ctx.font = labelFont;
 
-			var boxWidth = getBoxWidth(labelOpts, fontSize);
 			var hitboxes = me.legendHitBoxes;
 
 			// current position
-			var drawLegendBox = function(x, y, legendItem) {
+			var drawLegendBox = function(x, y, legendItem, boxWidth) {
 				if (isNaN(boxWidth) || boxWidth <= 0) {
 					return;
 				}
@@ -371,7 +385,7 @@ var Legend = Element.extend({
 					ctx.setLineDash(valueOrDefault(legendItem.lineDash, lineDefault.borderDash));
 				}
 
-				if (opts.labels && opts.labels.usePointStyle) {
+				if (legendItem.style === 'point') {
 					// Recalculate x and y for drawPoint() because its expecting
 					// x and y to be center of figure (instead of top left)
 					var radius = fontSize * Math.SQRT2 / 2;
@@ -381,6 +395,14 @@ var Legend = Element.extend({
 
 					// Draw pointStyle as legend symbol
 					helpers.canvas.drawPoint(ctx, legendItem.pointStyle, radius, centerX, centerY);
+				} else if (legendItem.style === 'line') {
+					// Draw line as legend symbol
+					if (!isLineWidthZero) {
+						ctx.beginPath();
+						ctx.moveTo(x, y + fontSize / 2);
+						ctx.lineTo(x + boxWidth, y + fontSize / 2);
+						ctx.stroke();
+					}
 				} else {
 					// Draw box as legend symbol
 					if (!isLineWidthZero) {
@@ -391,7 +413,7 @@ var Legend = Element.extend({
 
 				ctx.restore();
 			};
-			var fillText = function(x, y, legendItem, textWidth) {
+			var fillText = function(x, y, legendItem, boxWidth, textWidth) {
 				var halfFontSize = fontSize / 2;
 				var xLeft = boxWidth + halfFontSize + x;
 				var yMiddle = y + halfFontSize;
@@ -426,6 +448,7 @@ var Legend = Element.extend({
 
 			var itemHeight = fontSize + labelOpts.padding;
 			helpers.each(me.legendItems, function(legendItem, i) {
+				var boxWidth = getBoxWidth(legendItem, labelOpts, fontSize);
 				var textWidth = ctx.measureText(legendItem.text).width;
 				var width = boxWidth + (fontSize / 2) + textWidth;
 				var x = cursor.x;
@@ -443,13 +466,13 @@ var Legend = Element.extend({
 					cursor.line++;
 				}
 
-				drawLegendBox(x, y, legendItem);
+				drawLegendBox(x, y, legendItem, boxWidth);
 
 				hitboxes[i].left = x;
 				hitboxes[i].top = y;
 
 				// Fill the actual label
-				fillText(x, y, legendItem, textWidth);
+				fillText(x, y, legendItem, boxWidth, textWidth);
 
 				if (isHorizontal) {
 					cursor.x += width + (labelOpts.padding);
