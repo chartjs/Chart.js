@@ -41,6 +41,7 @@ var exports = module.exports = {
 			ctx.arcTo(x, y + height, x, y + height - r, r);
 			ctx.lineTo(x, y + r);
 			ctx.arcTo(x, y, x + r, y, r);
+			ctx.closePath();
 		} else {
 			ctx.rect(x, y, width, height);
 		}
@@ -65,17 +66,16 @@ var exports = module.exports = {
 		ctx.save();
 		ctx.translate(x, y);
 		ctx.rotate(rotation * Math.PI / 180);
+		ctx.beginPath();
 
 		switch (style) {
 		// Default includes circle
 		default:
-			ctx.beginPath();
 			ctx.arc(0, 0, radius, 0, Math.PI * 2);
 			ctx.closePath();
 			ctx.fill();
 			break;
 		case 'triangle':
-			ctx.beginPath();
 			edgeLength = 3 * radius / Math.sqrt(3);
 			height = edgeLength * Math.sqrt(3) / 2;
 			ctx.moveTo(-edgeLength / 2, height / 3);
@@ -86,16 +86,14 @@ var exports = module.exports = {
 			break;
 		case 'rect':
 			size = 1 / Math.SQRT2 * radius;
-			ctx.beginPath();
-			ctx.fillRect(-size, -size, 2 * size, 2 * size);
-			ctx.strokeRect(-size, -size, 2 * size, 2 * size);
+			ctx.rect(-size, -size, 2 * size, 2 * size);
+			ctx.fill();
 			break;
 		case 'rectRounded':
 			var offset = radius / Math.SQRT2;
 			var leftX = -offset;
 			var topY = -offset;
 			var sideSize = Math.SQRT2 * radius;
-			ctx.beginPath();
 
 			// NOTE(SB) the rounded rect implementation changed to use `arcTo`
 			// instead of `quadraticCurveTo` since it generates better results
@@ -103,12 +101,10 @@ var exports = module.exports = {
 			// results visually closer to the previous impl.
 			this.roundedRect(ctx, leftX, topY, sideSize, sideSize, radius * 0.425);
 
-			ctx.closePath();
 			ctx.fill();
 			break;
 		case 'rectRot':
 			size = 1 / Math.SQRT2 * radius;
-			ctx.beginPath();
 			ctx.moveTo(-size, 0);
 			ctx.lineTo(0, size);
 			ctx.lineTo(size, 0);
@@ -117,25 +113,20 @@ var exports = module.exports = {
 			ctx.fill();
 			break;
 		case 'cross':
-			ctx.beginPath();
 			ctx.moveTo(0, radius);
 			ctx.lineTo(0, -radius);
 			ctx.moveTo(-radius, 0);
 			ctx.lineTo(radius, 0);
-			ctx.closePath();
 			break;
 		case 'crossRot':
-			ctx.beginPath();
 			xOffset = Math.cos(Math.PI / 4) * radius;
 			yOffset = Math.sin(Math.PI / 4) * radius;
 			ctx.moveTo(-xOffset, -yOffset);
 			ctx.lineTo(xOffset, yOffset);
 			ctx.moveTo(-xOffset, yOffset);
 			ctx.lineTo(xOffset, -yOffset);
-			ctx.closePath();
 			break;
 		case 'star':
-			ctx.beginPath();
 			ctx.moveTo(0, radius);
 			ctx.lineTo(0, -radius);
 			ctx.moveTo(-radius, 0);
@@ -146,19 +137,14 @@ var exports = module.exports = {
 			ctx.lineTo(xOffset, yOffset);
 			ctx.moveTo(-xOffset, yOffset);
 			ctx.lineTo(xOffset, -yOffset);
-			ctx.closePath();
 			break;
 		case 'line':
-			ctx.beginPath();
 			ctx.moveTo(-radius, 0);
 			ctx.lineTo(radius, 0);
-			ctx.closePath();
 			break;
 		case 'dash':
-			ctx.beginPath();
 			ctx.moveTo(0, 0);
 			ctx.lineTo(radius, 0);
-			ctx.closePath();
 			break;
 		}
 
@@ -224,5 +210,4 @@ helpers.clear = exports.clear;
 helpers.drawRoundedRectangle = function(ctx) {
 	ctx.beginPath();
 	exports.roundedRect.apply(exports, arguments);
-	ctx.closePath();
 };

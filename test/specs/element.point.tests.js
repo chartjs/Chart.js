@@ -232,11 +232,11 @@ describe('Point element tests', function() {
 			name: 'beginPath',
 			args: []
 		}, {
-			name: 'fillRect',
+			name: 'rect',
 			args: [0 - 1 / Math.SQRT2 * 2, 0 - 1 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2]
 		}, {
-			name: 'strokeRect',
-			args: [0 - 1 / Math.SQRT2 * 2, 0 - 1 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2, 2 / Math.SQRT2 * 2]
+			name: 'fill',
+			args: []
 		}, {
 			name: 'stroke',
 			args: []
@@ -358,9 +358,6 @@ describe('Point element tests', function() {
 			name: 'lineTo',
 			args: [2, 0],
 		}, {
-			name: 'closePath',
-			args: [],
-		}, {
 			name: 'stroke',
 			args: []
 		}, {
@@ -405,9 +402,6 @@ describe('Point element tests', function() {
 		}, {
 			name: 'lineTo',
 			args: [0 + Math.cos(Math.PI / 4) * 2, 0 - Math.sin(Math.PI / 4) * 2],
-		}, {
-			name: 'closePath',
-			args: [],
 		}, {
 			name: 'stroke',
 			args: []
@@ -466,9 +460,6 @@ describe('Point element tests', function() {
 			name: 'lineTo',
 			args: [0 + Math.cos(Math.PI / 4) * 2, 0 - Math.sin(Math.PI / 4) * 2],
 		}, {
-			name: 'closePath',
-			args: [],
-		}, {
 			name: 'stroke',
 			args: []
 		}, {
@@ -508,9 +499,6 @@ describe('Point element tests', function() {
 			name: 'lineTo',
 			args: [2, 0],
 		}, {
-			name: 'closePath',
-			args: [],
-		}, {
 			name: 'stroke',
 			args: []
 		}, {
@@ -549,9 +537,6 @@ describe('Point element tests', function() {
 		}, {
 			name: 'lineTo',
 			args: [2, 0],
-		}, {
-			name: 'closePath',
-			args: [],
 		}, {
 			name: 'stroke',
 			args: []

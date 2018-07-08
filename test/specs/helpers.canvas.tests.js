@@ -36,7 +36,8 @@ describe('Chart.helpers.canvas', function() {
 				{name: 'lineTo', args: [15, 60]},
 				{name: 'arcTo', args: [10, 60, 10, 55, 5]},
 				{name: 'lineTo', args: [10, 25]},
-				{name: 'arcTo', args: [10, 20, 15, 20, 5]}
+				{name: 'arcTo', args: [10, 20, 15, 20, 5]},
+				{name: 'closePath', args: []}
 			]);
 		});
 		it('should optimize path if radius is 0', function() {
