@@ -255,9 +255,9 @@ var myPieChart = new Chart(ctx, {
 
                 // Display, position, and set styles for font
                 tooltipEl.style.opacity = 1;
-                tooltipEl.style.position = 'fixed';
-                tooltipEl.style.left = position.left + tooltipModel.caretX + 'px';
-                tooltipEl.style.top = position.top + tooltipModel.caretY + 'px';
+                tooltipEl.style.position = 'absolute';
+                tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
+                tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
                 tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
                 tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
                 tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
