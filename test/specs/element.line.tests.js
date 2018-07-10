@@ -1880,6 +1880,9 @@ describe('Chart.elements.Line', function() {
 			name: 'lineTo',
 			args: [19, -5]
 		}, {
+			name: 'lineTo',
+			args: [5, 0]
+		}, {
 			name: 'stroke',
 			args: [],
 		}, {
