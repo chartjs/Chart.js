@@ -358,6 +358,9 @@ describe('Point element tests', function() {
 			name: 'lineTo',
 			args: [2, 0],
 		}, {
+			name: 'fill',
+			args: []
+		}, {
 			name: 'stroke',
 			args: []
 		}, {
@@ -402,6 +405,9 @@ describe('Point element tests', function() {
 		}, {
 			name: 'lineTo',
 			args: [0 + Math.cos(Math.PI / 4) * 2, 0 - Math.sin(Math.PI / 4) * 2],
+		}, {
+			name: 'fill',
+			args: []
 		}, {
 			name: 'stroke',
 			args: []
@@ -460,6 +466,9 @@ describe('Point element tests', function() {
 			name: 'lineTo',
 			args: [0 + Math.cos(Math.PI / 4) * 2, 0 - Math.sin(Math.PI / 4) * 2],
 		}, {
+			name: 'fill',
+			args: []
+		}, {
 			name: 'stroke',
 			args: []
 		}, {
@@ -499,6 +508,9 @@ describe('Point element tests', function() {
 			name: 'lineTo',
 			args: [2, 0],
 		}, {
+			name: 'fill',
+			args: []
+		}, {
 			name: 'stroke',
 			args: []
 		}, {
@@ -537,6 +549,9 @@ describe('Point element tests', function() {
 		}, {
 			name: 'lineTo',
 			args: [2, 0],
+		}, {
+			name: 'fill',
+			args: []
 		}, {
 			name: 'stroke',
 			args: []

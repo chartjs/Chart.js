@@ -42,6 +42,7 @@ var exports = module.exports = {
 			ctx.lineTo(x, y + r);
 			ctx.arcTo(x, y, x + r, y, r);
 			ctx.closePath();
+			ctx.moveTo(x, y);
 		} else {
 			ctx.rect(x, y, width, height);
 		}
@@ -73,7 +74,6 @@ var exports = module.exports = {
 		default:
 			ctx.arc(0, 0, radius, 0, Math.PI * 2);
 			ctx.closePath();
-			ctx.fill();
 			break;
 		case 'triangle':
 			edgeLength = 3 * radius / Math.sqrt(3);
@@ -82,12 +82,10 @@ var exports = module.exports = {
 			ctx.lineTo(edgeLength / 2, height / 3);
 			ctx.lineTo(0, -2 * height / 3);
 			ctx.closePath();
-			ctx.fill();
 			break;
 		case 'rect':
 			size = 1 / Math.SQRT2 * radius;
 			ctx.rect(-size, -size, 2 * size, 2 * size);
-			ctx.fill();
 			break;
 		case 'rectRounded':
 			var offset = radius / Math.SQRT2;
@@ -100,8 +98,6 @@ var exports = module.exports = {
 			// when rect is almost a circle. 0.425 (instead of 0.5) produces
 			// results visually closer to the previous impl.
 			this.roundedRect(ctx, leftX, topY, sideSize, sideSize, radius * 0.425);
-
-			ctx.fill();
 			break;
 		case 'rectRot':
 			size = 1 / Math.SQRT2 * radius;
@@ -110,7 +106,6 @@ var exports = module.exports = {
 			ctx.lineTo(size, 0);
 			ctx.lineTo(0, -size);
 			ctx.closePath();
-			ctx.fill();
 			break;
 		case 'cross':
 			ctx.moveTo(0, radius);
@@ -148,6 +143,7 @@ var exports = module.exports = {
 			break;
 		}
 
+		ctx.fill();
 		ctx.stroke();
 		ctx.restore();
 	},
