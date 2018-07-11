@@ -76,14 +76,12 @@ This example sets up a chart with a y axis that creates ticks at `0, 0.5, 1, 1.5
 
 ```javascript
 let options = {
-    scales: {
-        yAxes: [{
-            ticks: {
-                max: 5,
-                min: 0,
-                stepSize: 0.5
-            }
-        }]
+    scale: {
+        ticks: {
+            max: 5,
+            min: 0,
+            stepSize: 0.5
+        }
     }
 };
 ```
