@@ -9,6 +9,7 @@ The grid line configuration is nested under the scale configuration in the `grid
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
 | `display` | `Boolean` | `true` | If false, do not display grid lines for this axis.
+| `circular` | `Boolean` | `false` | If true, gridlines are circular (on radar chart only)
 | `color` | `Color/Color[]` | `'rgba(0, 0, 0, 0.1)'` | The color of the grid lines. If specified as an array, the first color applies to the first grid line, the second to the second grid line and so on.
 | `borderDash` | `Number[]` | `[]` | Length and spacing of dashes on grid lines. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
 | `borderDashOffset` | `Number` | `0` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
