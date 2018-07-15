@@ -2,7 +2,7 @@
 
 Chart.js can be integrated with plain JavaScript or with different module loaders. The examples below show how to load Chart.js in different systems.
 
-## ES6 Modules
+## Webpack
 
 ```javascript
 import Chart from 'chart.js';
