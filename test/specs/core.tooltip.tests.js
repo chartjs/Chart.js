@@ -949,4 +949,152 @@ describe('Core.Tooltip', function() {
 			}
 		}
 	});
+
+	it('Should split newlines into separate lines in user callbacks', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					label: 'Dataset 1',
+					data: [10, 20, 30],
+					pointHoverBorderColor: 'rgb(255, 0, 0)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+				}, {
+					label: 'Dataset 2',
+					data: [40, 40, 40],
+					pointHoverBorderColor: 'rgb(0, 0, 255)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+				}],
+				labels: ['Point 1', 'Point 2', 'Point 3']
+			},
+			options: {
+				tooltips: {
+					mode: 'label',
+					callbacks: {
+						beforeTitle: function() {
+							return 'beforeTitle\nnewline';
+						},
+						title: function() {
+							return 'title\nnewline';
+						},
+						afterTitle: function() {
+							return 'afterTitle\nnewline';
+						},
+						beforeBody: function() {
+							return 'beforeBody\nnewline';
+						},
+						beforeLabel: function() {
+							return 'beforeLabel\nnewline';
+						},
+						label: function() {
+							return 'label';
+						},
+						afterLabel: function() {
+							return 'afterLabel\nnewline';
+						},
+						afterBody: function() {
+							return 'afterBody\nnewline';
+						},
+						beforeFooter: function() {
+							return 'beforeFooter\nnewline';
+						},
+						footer: function() {
+							return 'footer\nnewline';
+						},
+						afterFooter: function() {
+							return 'afterFooter\nnewline';
+						},
+						labelTextColor: function() {
+							return 'labelTextColor';
+						}
+					}
+				}
+			}
+		});
+
+		// Trigger an event over top of the
+		var meta = chart.getDatasetMeta(0);
+		var point = meta.data[1];
+		var node = chart.canvas;
+		var rect = node.getBoundingClientRect();
+		var evt = new MouseEvent('mousemove', {
+			view: window,
+			bubbles: true,
+			cancelable: true,
+			clientX: rect.left + point._model.x,
+			clientY: rect.top + point._model.y
+		});
+
+		// Manually trigger rather than having an async test
+		node.dispatchEvent(evt);
+
+		// Check and see if tooltip was displayed
+		var tooltip = chart.tooltip;
+		var globalDefaults = Chart.defaults.global;
+
+		expect(tooltip._view).toEqual(jasmine.objectContaining({
+			// Positioning
+			xPadding: 6,
+			yPadding: 6,
+			xAlign: 'center',
+			yAlign: 'top',
+
+			// Body
+			bodyFontColor: '#fff',
+			_bodyFontFamily: globalDefaults.defaultFontFamily,
+			_bodyFontStyle: globalDefaults.defaultFontStyle,
+			_bodyAlign: 'left',
+			bodyFontSize: globalDefaults.defaultFontSize,
+			bodySpacing: 2,
+
+			// Title
+			titleFontColor: '#fff',
+			_titleFontFamily: globalDefaults.defaultFontFamily,
+			_titleFontStyle: 'bold',
+			titleFontSize: globalDefaults.defaultFontSize,
+			_titleAlign: 'left',
+			titleSpacing: 2,
+			titleMarginBottom: 6,
+
+			// Footer
+			footerFontColor: '#fff',
+			_footerFontFamily: globalDefaults.defaultFontFamily,
+			_footerFontStyle: 'bold',
+			footerFontSize: globalDefaults.defaultFontSize,
+			_footerAlign: 'left',
+			footerSpacing: 2,
+			footerMarginTop: 6,
+
+			// Appearance
+			caretSize: 5,
+			cornerRadius: 6,
+			backgroundColor: 'rgba(0,0,0,0.8)',
+			opacity: 1,
+			legendColorBackground: '#fff',
+
+			// Text
+			title: ['beforeTitle', 'newline', 'title', 'newline', 'afterTitle', 'newline'],
+			beforeBody: ['beforeBody', 'newline'],
+			body: [{
+				before: ['beforeLabel', 'newline'],
+				lines: ['label'],
+				after: ['afterLabel', 'newline']
+			}, {
+				before: ['beforeLabel', 'newline'],
+				lines: ['label'],
+				after: ['afterLabel', 'newline']
+			}],
+			afterBody: ['afterBody', 'newline'],
+			footer: ['beforeFooter', 'newline', 'footer', 'newline', 'afterFooter', 'newline'],
+			caretPadding: 2,
+			labelTextColors: ['labelTextColor', 'labelTextColor'],
+			labelColors: [{
+				borderColor: 'rgb(255, 0, 0)',
+				backgroundColor: 'rgb(0, 255, 0)'
+			}, {
+				borderColor: 'rgb(0, 0, 255)',
+				backgroundColor: 'rgb(0, 255, 255)'
+			}]
+		}));
+	});
 });

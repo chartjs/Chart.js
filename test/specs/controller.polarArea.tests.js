@@ -1,3 +1,5 @@
+describe('auto', jasmine.specsFromFixtures('controller.polarArea'));
+
 describe('Chart.controllers.polarArea', function() {
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
@@ -330,7 +332,14 @@ describe('Chart.controllers.polarArea', function() {
 		chart.options.elements.arc.borderColor = 'rgb(50, 51, 52)';
 		chart.options.elements.arc.borderWidth = 10.1;
 
+		meta.controller.setHoverStyle(arc);
+		chart.update();
+		expect(arc._model.backgroundColor).toBe('rgb(45, 46, 47)');
+		expect(arc._model.borderColor).toBe('rgb(50, 51, 52)');
+		expect(arc._model.borderWidth).toBe(10.1);
+
 		meta.controller.removeHoverStyle(arc);
+		chart.update();
 		expect(arc._model.backgroundColor).toBe('rgb(45, 46, 47)');
 		expect(arc._model.borderColor).toBe('rgb(50, 51, 52)');
 		expect(arc._model.borderWidth).toBe(10.1);
@@ -341,6 +350,7 @@ describe('Chart.controllers.polarArea', function() {
 		chart.data.datasets[0].borderWidth = 2.1;
 
 		meta.controller.removeHoverStyle(arc);
+		chart.update();
 		expect(arc._model.backgroundColor).toBe('rgb(77, 79, 81)');
 		expect(arc._model.borderColor).toBe('rgb(123, 125, 127)');
 		expect(arc._model.borderWidth).toBe(2.1);
@@ -353,6 +363,7 @@ describe('Chart.controllers.polarArea', function() {
 		};
 
 		meta.controller.removeHoverStyle(arc);
+		chart.update();
 		expect(arc._model.backgroundColor).toBe('rgb(0, 0, 0)');
 		expect(arc._model.borderColor).toBe('rgb(10, 10, 10)');
 		expect(arc._model.borderWidth).toBe(5.5);

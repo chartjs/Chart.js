@@ -82,6 +82,7 @@ All point* properties can be specified as an array. If these are set to an array
 | `pointBorderColor` | `Color/Color[]` | The border color for points.
 | `pointBorderWidth` | `Number/Number[]` | The width of the point border in pixels.
 | `pointRadius` | `Number/Number[]` | The radius of the point shape. If set to 0, the point is not rendered.
+| `pointRotation` | `Number/Number[]` | The rotation of the point in degrees.
 | `pointStyle` | `String/String[]/Image/Image[]` | Style of the point. [more...](#pointstyle)
 | `pointHitRadius` | `Number/Number[]` | The pixel size of the non-displayed point that reacts to mouse events.
 | `pointHoverBackgroundColor` | `Color/Color[]` | Point background color when hovered.

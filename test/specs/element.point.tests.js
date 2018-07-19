@@ -108,6 +108,7 @@ describe('Point element tests', function() {
 		point._view = {
 			radius: 2,
 			pointStyle: 'circle',
+			rotation: 25,
 			hitRadius: 3,
 			borderColor: 'rgba(1, 2, 3, 1)',
 			borderWidth: 6,
@@ -132,11 +133,20 @@ describe('Point element tests', function() {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
 		}, {
+			name: 'save',
+			args: []
+		}, {
+			name: 'translate',
+			args: [10, 15]
+		}, {
+			name: 'rotate',
+			args: [25 * Math.PI / 180]
+		}, {
 			name: 'beginPath',
 			args: []
 		}, {
 			name: 'arc',
-			args: [10, 15, 2, 0, 2 * Math.PI]
+			args: [0, 0, 2, 0, 2 * Math.PI]
 		}, {
 			name: 'closePath',
 			args: [],
@@ -145,6 +155,9 @@ describe('Point element tests', function() {
 			args: [],
 		}, {
 			name: 'stroke',
+			args: []
+		}, {
+			name: 'restore',
 			args: []
 		}]);
 
@@ -161,6 +174,15 @@ describe('Point element tests', function() {
 		}, {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
+		}, {
+			name: 'save',
+			args: []
+		}, {
+			name: 'translate',
+			args: [10, 15]
+		}, {
+			name: 'rotate',
+			args: [25 * Math.PI / 180]
 		}, {
 			name: 'beginPath',
 			args: []
@@ -182,6 +204,9 @@ describe('Point element tests', function() {
 		}, {
 			name: 'stroke',
 			args: []
+		}, {
+			name: 'restore',
+			args: []
 		}]);
 
 		mockContext.resetCalls();
@@ -198,6 +223,15 @@ describe('Point element tests', function() {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
 		}, {
+			name: 'save',
+			args: []
+		}, {
+			name: 'translate',
+			args: [10, 15]
+		}, {
+			name: 'rotate',
+			args: [25 * Math.PI / 180]
+		}, {
 			name: 'beginPath',
 			args: []
 		}, {
@@ -211,6 +245,9 @@ describe('Point element tests', function() {
 			args: [],
 		}, {
 			name: 'stroke',
+			args: []
+		}, {
+			name: 'restore',
 			args: []
 		}]);
 
@@ -251,6 +288,15 @@ describe('Point element tests', function() {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
 		}, {
+			name: 'save',
+			args: []
+		}, {
+			name: 'translate',
+			args: [10, 15]
+		}, {
+			name: 'rotate',
+			args: [25 * Math.PI / 180]
+		}, {
 			name: 'beginPath',
 			args: []
 		}, {
@@ -274,6 +320,9 @@ describe('Point element tests', function() {
 		}, {
 			name: 'stroke',
 			args: []
+		}, {
+			name: 'restore',
+			args: []
 		}]);
 
 		mockContext.resetCalls();
@@ -289,6 +338,15 @@ describe('Point element tests', function() {
 		}, {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
+		}, {
+			name: 'save',
+			args: []
+		}, {
+			name: 'translate',
+			args: [10, 15]
+		}, {
+			name: 'rotate',
+			args: [25 * Math.PI / 180]
 		}, {
 			name: 'beginPath',
 			args: []
@@ -309,6 +367,9 @@ describe('Point element tests', function() {
 			args: [],
 		}, {
 			name: 'stroke',
+			args: []
+		}, {
+			name: 'restore',
 			args: []
 		}]);
 
@@ -326,6 +387,15 @@ describe('Point element tests', function() {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
 		}, {
+			name: 'save',
+			args: []
+		}, {
+			name: 'translate',
+			args: [10, 15]
+		}, {
+			name: 'rotate',
+			args: [25 * Math.PI / 180]
+		}, {
 			name: 'beginPath',
 			args: []
 		}, {
@@ -346,6 +416,9 @@ describe('Point element tests', function() {
 		}, {
 			name: 'stroke',
 			args: []
+		}, {
+			name: 'restore',
+			args: []
 		}]);
 
 		mockContext.resetCalls();
@@ -361,6 +434,15 @@ describe('Point element tests', function() {
 		}, {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
+		}, {
+			name: 'save',
+			args: []
+		}, {
+			name: 'translate',
+			args: [10, 15]
+		}, {
+			name: 'rotate',
+			args: [25 * Math.PI / 180]
 		}, {
 			name: 'beginPath',
 			args: []
@@ -394,6 +476,9 @@ describe('Point element tests', function() {
 		}, {
 			name: 'stroke',
 			args: []
+		}, {
+			name: 'restore',
+			args: []
 		}]);
 
 		mockContext.resetCalls();
@@ -410,6 +495,15 @@ describe('Point element tests', function() {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
 		}, {
+			name: 'save',
+			args: []
+		}, {
+			name: 'translate',
+			args: [10, 15]
+		}, {
+			name: 'rotate',
+			args: [25 * Math.PI / 180]
+		}, {
 			name: 'beginPath',
 			args: []
 		}, {
@@ -423,6 +517,9 @@ describe('Point element tests', function() {
 			args: [],
 		}, {
 			name: 'stroke',
+			args: []
+		}, {
+			name: 'restore',
 			args: []
 		}]);
 
@@ -440,6 +537,15 @@ describe('Point element tests', function() {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
 		}, {
+			name: 'save',
+			args: []
+		}, {
+			name: 'translate',
+			args: [10, 15]
+		}, {
+			name: 'rotate',
+			args: [25 * Math.PI / 180]
+		}, {
 			name: 'beginPath',
 			args: []
 		}, {
@@ -453,6 +559,9 @@ describe('Point element tests', function() {
 			args: [],
 		}, {
 			name: 'stroke',
+			args: []
+		}, {
+			name: 'restore',
 			args: []
 		}]);
 
@@ -489,11 +598,20 @@ describe('Point element tests', function() {
 			name: 'setFillStyle',
 			args: ['rgba(0,0,0,0.1)']
 		}, {
+			name: 'save',
+			args: []
+		}, {
+			name: 'translate',
+			args: [10, 15]
+		}, {
+			name: 'rotate',
+			args: [0]
+		}, {
 			name: 'beginPath',
 			args: []
 		}, {
 			name: 'arc',
-			args: [10, 15, 2, 0, 2 * Math.PI]
+			args: [0, 0, 2, 0, 2 * Math.PI]
 		}, {
 			name: 'closePath',
 			args: [],
@@ -502,6 +620,9 @@ describe('Point element tests', function() {
 			args: [],
 		}, {
 			name: 'stroke',
+			args: []
+		}, {
+			name: 'restore',
 			args: []
 		}]);
 	});

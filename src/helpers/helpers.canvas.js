@@ -27,34 +27,36 @@ var exports = module.exports = {
 	 */
 	roundedRect: function(ctx, x, y, width, height, radius) {
 		if (radius) {
-			var rx = Math.min(radius, width / 2);
-			var ry = Math.min(radius, height / 2);
+			// NOTE(SB) `epsilon` helps to prevent minor artifacts appearing
+			// on Chrome when `r` is exactly half the height or the width.
+			var epsilon = 0.0000001;
+			var r = Math.min(radius, (height / 2) - epsilon, (width / 2) - epsilon);
 
-			ctx.moveTo(x + rx, y);
-			ctx.lineTo(x + width - rx, y);
-			ctx.quadraticCurveTo(x + width, y, x + width, y + ry);
-			ctx.lineTo(x + width, y + height - ry);
-			ctx.quadraticCurveTo(x + width, y + height, x + width - rx, y + height);
-			ctx.lineTo(x + rx, y + height);
-			ctx.quadraticCurveTo(x, y + height, x, y + height - ry);
-			ctx.lineTo(x, y + ry);
-			ctx.quadraticCurveTo(x, y, x + rx, y);
+			ctx.moveTo(x + r, y);
+			ctx.lineTo(x + width - r, y);
+			ctx.arcTo(x + width, y, x + width, y + r, r);
+			ctx.lineTo(x + width, y + height - r);
+			ctx.arcTo(x + width, y + height, x + width - r, y + height, r);
+			ctx.lineTo(x + r, y + height);
+			ctx.arcTo(x, y + height, x, y + height - r, r);
+			ctx.lineTo(x, y + r);
+			ctx.arcTo(x, y, x + r, y, r);
 		} else {
 			ctx.rect(x, y, width, height);
 		}
 	},
 
-	drawPoint: function(ctx, style, radius, x, y) {
+	drawPoint: function(ctx, style, radius, x, y, rotation) {
 		// call draw Symbol with converted radius to width and height
 		// and move x, y to the top left corner
-		if (this.drawSymbol(ctx, style, radius * 2, radius * 2, x - radius, y - radius)) {
+		if (this.drawSymbol(ctx, style, radius * 2, radius * 2, x - radius, y - radius), rotation) {
 			// Only Stroke when return true
 			ctx.stroke();
 		}
 	},
 
-	drawSymbol: function(ctx, style, width, height, x, y) {
-
+	drawSymbol: function(ctx, style, width, height, x, y, rotation) {
+		rotation = rotation || 0;
 		if (style && typeof style === 'object') {
 			var type = style.toString();
 			if (type === '[object HTMLImageElement]' || type === '[object HTMLCanvasElement]') {
@@ -65,7 +67,13 @@ var exports = module.exports = {
 		if (isNaN(width) || width <= 0) {
 			return false;
 		}
+
+		ctx.save();
+		ctx.translate(x, y);
+		ctx.rotate(rotation * Math.PI / 180);
+
 		ctx.beginPath();
+
 		switch (style) {
 		// Default circle
 		default:

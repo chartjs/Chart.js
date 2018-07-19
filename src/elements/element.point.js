@@ -68,6 +68,7 @@ module.exports = Element.extend({
 		var model = this._model;
 		var ctx = this._chart.ctx;
 		var pointStyle = vm.pointStyle;
+		var rotation = vm.rotation;
 		var radius = vm.radius;
 		var x = vm.x;
 		var y = vm.y;
@@ -82,7 +83,7 @@ module.exports = Element.extend({
 			ctx.strokeStyle = vm.borderColor || defaultColor;
 			ctx.lineWidth = helpers.valueOrDefault(vm.borderWidth, defaults.global.elements.point.borderWidth);
 			ctx.fillStyle = vm.backgroundColor || defaultColor;
-			helpers.canvas.drawPoint(ctx, pointStyle, radius, x, y);
+			helpers.canvas.drawPoint(ctx, pointStyle, radius, x, y, rotation);
 		}
 	}
 });
