@@ -71,9 +71,9 @@ var exports = module.exports = {
 			return false;
 		}
 
-		ctx.save();
-		ctx.translate(x, y);
-		ctx.rotate(rotation * Math.PI / 180);
+		//ctx.save();
+		//ctx.translate(x, y);
+		//ctx.rotate(rotation * Math.PI / 180);
 
 		ctx.beginPath();
 

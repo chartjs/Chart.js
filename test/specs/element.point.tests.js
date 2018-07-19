@@ -132,7 +132,7 @@ describe('Point element tests', function() {
 		}, {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
-		}, {
+/*		}, {
 			name: 'save',
 			args: []
 		}, {
@@ -140,7 +140,7 @@ describe('Point element tests', function() {
 			args: [tx, ty]
 		}, {
 			name: 'rotate',
-			args: [25 * Math.PI / 180]
+			args: [25 * Math.PI / 180] */
 		}, {
 			name: 'beginPath',
 			args: []
@@ -174,7 +174,7 @@ describe('Point element tests', function() {
 		}, {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
-		}, {
+/*		}, {
 			name: 'save',
 			args: []
 		}, {
@@ -182,7 +182,7 @@ describe('Point element tests', function() {
 			args: [tx, ty]
 		}, {
 			name: 'rotate',
-			args: [25 * Math.PI / 180]
+			args: [25 * Math.PI / 180]*/
 		}, {
 			name: 'beginPath',
 			args: []
@@ -222,7 +222,7 @@ describe('Point element tests', function() {
 		}, {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
-		}, {
+/*		}, {
 			name: 'save',
 			args: []
 		}, {
@@ -230,7 +230,7 @@ describe('Point element tests', function() {
 			args: [tx, ty]
 		}, {
 			name: 'rotate',
-			args: [25 * Math.PI / 180]
+			args: [25 * Math.PI / 180] */
 		}, {
 			name: 'beginPath',
 			args: []
@@ -287,7 +287,7 @@ describe('Point element tests', function() {
 		}, {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
-		}, {
+/*		}, {
 			name: 'save',
 			args: []
 		}, {
@@ -295,7 +295,7 @@ describe('Point element tests', function() {
 			args: [tx, ty]
 		}, {
 			name: 'rotate',
-			args: [25 * Math.PI / 180]
+			args: [25 * Math.PI / 180] */
 		}, {
 			name: 'beginPath',
 			args: []
@@ -338,7 +338,7 @@ describe('Point element tests', function() {
 		}, {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
-		}, {
+/*		}, {
 			name: 'save',
 			args: []
 		}, {
@@ -346,7 +346,7 @@ describe('Point element tests', function() {
 			args: [tx, ty]
 		}, {
 			name: 'rotate',
-			args: [25 * Math.PI / 180]
+			args: [25 * Math.PI / 180] */
 		}, {
 			name: 'beginPath',
 			args: []
@@ -386,7 +386,7 @@ describe('Point element tests', function() {
 		}, {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
-		}, {
+/*		}, {
 			name: 'save',
 			args: []
 		}, {
@@ -394,7 +394,7 @@ describe('Point element tests', function() {
 			args: [tx, ty]
 		}, {
 			name: 'rotate',
-			args: [25 * Math.PI / 180]
+			args: [25 * Math.PI / 180] */
 		}, {
 			name: 'beginPath',
 			args: []
@@ -434,7 +434,7 @@ describe('Point element tests', function() {
 		}, {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
-		}, {
+/*		}, {
 			name: 'save',
 			args: []
 		}, {
@@ -442,7 +442,7 @@ describe('Point element tests', function() {
 			args: [tx, ty]
 		}, {
 			name: 'rotate',
-			args: [25 * Math.PI / 180]
+			args: [25 * Math.PI / 180] */
 		}, {
 			name: 'beginPath',
 			args: []
@@ -494,7 +494,7 @@ describe('Point element tests', function() {
 		}, {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
-		}, {
+/*		}, {
 			name: 'save',
 			args: []
 		}, {
@@ -502,7 +502,7 @@ describe('Point element tests', function() {
 			args: [tx, ty]
 		}, {
 			name: 'rotate',
-			args: [25 * Math.PI / 180]
+			args: [25 * Math.PI / 180] */
 		}, {
 			name: 'beginPath',
 			args: []
@@ -536,7 +536,7 @@ describe('Point element tests', function() {
 		}, {
 			name: 'setFillStyle',
 			args: ['rgba(0, 255, 0)']
-		}, {
+/*		}, {
 			name: 'save',
 			args: []
 		}, {
@@ -544,7 +544,7 @@ describe('Point element tests', function() {
 			args: [tx, ty]
 		}, {
 			name: 'rotate',
-			args: [25 * Math.PI / 180]
+			args: [25 * Math.PI / 180] */
 		}, {
 			name: 'beginPath',
 			args: []
@@ -599,7 +599,7 @@ describe('Point element tests', function() {
 		}, {
 			name: 'setFillStyle',
 			args: ['rgba(0,0,0,0.1)']
-		}, {
+/*		}, {
 			name: 'save',
 			args: []
 		}, {
@@ -607,7 +607,7 @@ describe('Point element tests', function() {
 			args: [tx, ty]
 		}, {
 			name: 'rotate',
-			args: [0]
+			args: [0] */
 		}, {
 			name: 'beginPath',
 			args: []
