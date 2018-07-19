@@ -49,14 +49,17 @@ var exports = module.exports = {
 	drawPoint: function(ctx, style, radius, x, y, rotation) {
 		// call draw Symbol with converted radius to width and height
 		// and move x, y to the top left corner
-		if (this.drawSymbol(ctx, style, radius * 2, radius * 2, x - radius, y - radius), rotation) {
+
+		if (this.drawSymbol(ctx, style, radius * 2, radius * 2, x - radius, y - radius, rotation)) {
 			// Only Stroke when return true
 			ctx.stroke();
+			ctx.restore();
 		}
 	},
 
 	drawSymbol: function(ctx, style, width, height, x, y, rotation) {
 		rotation = rotation || 0;
+
 		if (style && typeof style === 'object') {
 			var type = style.toString();
 			if (type === '[object HTMLImageElement]' || type === '[object HTMLCanvasElement]') {

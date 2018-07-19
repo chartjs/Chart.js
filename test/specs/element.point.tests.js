@@ -137,7 +137,7 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'translate',
-			args: [10, 15]
+			args: [tx, ty]
 		}, {
 			name: 'rotate',
 			args: [25 * Math.PI / 180]
@@ -146,7 +146,7 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'arc',
-			args: [0, 0, 2, 0, 2 * Math.PI]
+			args: [10, 15, 2, 0, 2 * Math.PI]
 		}, {
 			name: 'closePath',
 			args: [],
@@ -179,7 +179,7 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'translate',
-			args: [10, 15]
+			args: [tx, ty]
 		}, {
 			name: 'rotate',
 			args: [25 * Math.PI / 180]
@@ -227,7 +227,7 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'translate',
-			args: [10, 15]
+			args: [tx, ty]
 		}, {
 			name: 'rotate',
 			args: [25 * Math.PI / 180]
@@ -292,7 +292,7 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'translate',
-			args: [10, 15]
+			args: [tx, ty]
 		}, {
 			name: 'rotate',
 			args: [25 * Math.PI / 180]
@@ -343,7 +343,7 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'translate',
-			args: [10, 15]
+			args: [tx, ty]
 		}, {
 			name: 'rotate',
 			args: [25 * Math.PI / 180]
@@ -391,7 +391,7 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'translate',
-			args: [10, 15]
+			args: [tx, ty]
 		}, {
 			name: 'rotate',
 			args: [25 * Math.PI / 180]
@@ -439,7 +439,7 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'translate',
-			args: [10, 15]
+			args: [tx, ty]
 		}, {
 			name: 'rotate',
 			args: [25 * Math.PI / 180]
@@ -499,7 +499,7 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'translate',
-			args: [10, 15]
+			args: [tx, ty]
 		}, {
 			name: 'rotate',
 			args: [25 * Math.PI / 180]
@@ -541,7 +541,7 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'translate',
-			args: [10, 15]
+			args: [tx, ty]
 		}, {
 			name: 'rotate',
 			args: [25 * Math.PI / 180]
@@ -585,6 +585,8 @@ describe('Point element tests', function() {
 			y: 15,
 			ctx: mockContext
 		};
+		var tx = point._view.x - point._view.radius;
+		var ty = point._view.y - point._view.radius;
 
 		point.draw();
 
@@ -602,7 +604,7 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'translate',
-			args: [10, 15]
+			args: [tx, ty]
 		}, {
 			name: 'rotate',
 			args: [0]
@@ -611,7 +613,7 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'arc',
-			args: [0, 0, 2, 0, 2 * Math.PI]
+			args: [10, 15, 2, 0, 2 * Math.PI]
 		}, {
 			name: 'closePath',
 			args: [],
@@ -646,6 +648,8 @@ describe('Point element tests', function() {
 			ctx: mockContext,
 			skip: true
 		};
+		var tx = point._view.x - point._view.radius;
+		var ty = point._view.y - point._view.radius;
 
 		point.draw();
 
