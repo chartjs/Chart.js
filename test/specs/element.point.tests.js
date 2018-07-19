@@ -648,8 +648,6 @@ describe('Point element tests', function() {
 			ctx: mockContext,
 			skip: true
 		};
-		var tx = point._view.x - point._view.radius;
-		var ty = point._view.y - point._view.radius;
 
 		point.draw();
 
