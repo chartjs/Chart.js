@@ -53,12 +53,13 @@ var exports = module.exports = {
 		if (this.drawSymbol(ctx, style, radius * 2, radius * 2, x - radius, y - radius, rotation)) {
 			// Only Stroke when return true
 			ctx.stroke();
-			ctx.restore();
+			if (rotation) {
+				ctx.restore();
+			}
 		}
 	},
 
 	drawSymbol: function(ctx, style, width, height, x, y, rotation) {
-		rotation = rotation || 0;
 
 		if (style && typeof style === 'object') {
 			var type = style.toString();
@@ -70,10 +71,17 @@ var exports = module.exports = {
 		if (isNaN(width) || width <= 0) {
 			return false;
 		}
-
-		//ctx.save();
-		//ctx.translate(x, y);
-		//ctx.rotate(rotation * Math.PI / 180);
+		var vx, vy;
+		if (rotation) {
+			ctx.save();
+			ctx.translate(x, y);
+			ctx.rotate(rotation * Math.PI / 180);
+			vx = 0;
+			vy = 0;
+		} else {
+			vx = x;
+			vy = y;
+		}
 
 		ctx.beginPath();
 
@@ -82,71 +90,71 @@ var exports = module.exports = {
 		default:
 			//	display standard circle if height and width are the same otherwise display a RectRounded
 			if (width === height) {
-				ctx.arc(x + width / 2, y + width / 2, width / 2, 0, Math.PI * 2);
+				ctx.arc(vx + width / 2, vy + height / 2, width / 2, 0, Math.PI * 2);
 			} else {
-				this.roundedRect(ctx, x, y, width, height, width / 2);
+				this.roundedRect(ctx, vx, vy, width, height, width / 2);
 			}
 			ctx.closePath();
 			ctx.fill();
 			break;
 		case 'rect':
-			ctx.rect(x, y, width, height);
+			ctx.rect(vx, vy, width, height);
 			ctx.closePath();
 			ctx.fill();
 			break;
 		case 'triangle':
-			ctx.moveTo(x, y + height);
-			ctx.lineTo(x + width / 2, y);
-			ctx.lineTo(x + width, y + height);
+			ctx.moveTo(vx, vy + height);
+			ctx.lineTo(vx + width / 2, vy);
+			ctx.lineTo(vx + width, vy + height);
 			ctx.closePath();
 			ctx.fill();
 			break;
 		case 'rectRounded':
-			this.roundedRect(ctx, x, y, width, height, height * Math.SQRT2 / 4);
+			this.roundedRect(ctx, vx, vy, width, height, height * Math.SQRT2 / 4);
 			ctx.closePath();
 			ctx.fill();
 			break;
 		case 'rectRot':
-			ctx.moveTo(x, y + height / 2);
-			ctx.lineTo(x + width / 2, y);
-			ctx.lineTo(x + width, y + height / 2);
-			ctx.lineTo(x + width / 2, y + height);
+			ctx.moveTo(vx, vy + height / 2);
+			ctx.lineTo(vx + width / 2, vy);
+			ctx.lineTo(vx + width, vy + height / 2);
+			ctx.lineTo(vx + width / 2, vy + height);
 			ctx.closePath();
 			ctx.fill();
 			break;
 		case 'cross':
-			ctx.moveTo(x + width / 2, y);
-			ctx.lineTo(x + width / 2, y + height);
-			ctx.moveTo(x, y + height / 2);
-			ctx.lineTo(x + width, y + height / 2);
+			ctx.moveTo(vx + width / 2, vy);
+			ctx.lineTo(vx + width / 2, vy + height);
+			ctx.moveTo(vx, vy + height / 2);
+			ctx.lineTo(vx + width, vy + height / 2);
 			ctx.closePath();
 			break;
 		case 'crossRot':
-			ctx.moveTo(x, y);
-			ctx.lineTo(x + width, y + height);
-			ctx.moveTo(x, y + height);
-			ctx.lineTo(x + width, y);
+			ctx.moveTo(vx, vy);
+			ctx.lineTo(vx + width, vy + height);
+			ctx.moveTo(vx, vy + height);
+			ctx.lineTo(vx + width, vy);
 			ctx.closePath();
 			break;
 		case 'star':
-			ctx.moveTo(x + width / 2, y);
-			ctx.lineTo(x + width / 2, y + height);
-			ctx.moveTo(x, y + height / 2);
-			ctx.lineTo(x + width, y + height / 2);
-			ctx.moveTo(x, y);
-			ctx.lineTo(x + width, y + height);
-			ctx.moveTo(x, y + height);
-			ctx.lineTo(x + width, y);
+			ctx.moveTo(vx + width / 2, vy);
+			ctx.lineTo(vx + width / 2, vy + height);
+			ctx.moveTo(vx, vy + height / 2);
+			ctx.lineTo(vx + width, vy + height / 2);
+			ctx.moveTo(vx, vy);
+			ctx.lineTo(vx + width, vy + height);
+			ctx.moveTo(vx, vy + height);
+			ctx.lineTo(vx + width, vy);
 			ctx.closePath();
 			break;
 		case 'line':
-			ctx.moveTo(x, y + height / 2);
-			ctx.lineTo(x + width, y + height / 2);
+			ctx.moveTo(vx, vy + height / 2);
+			ctx.lineTo(vx + width, vy + height / 2);
 			ctx.closePath();
 			break;
 		case 'dash':
-			ctx.moveTo(x + width / 2, y + height / 2);
-			ctx.lineTo(x + width, y + height / 2);
+			ctx.moveTo(vx + width / 2, vy + height / 2);
+			ctx.lineTo(vx + width, vy + height / 2);
 			ctx.closePath();
 			break;
 		}
