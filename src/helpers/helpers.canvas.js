@@ -74,8 +74,9 @@ var exports = module.exports = {
 		var vx, vy;
 		if (rotation) {
 			ctx.save();
-			ctx.translate(x, y);
+			ctx.translate(x + width / 2, y + width / 2);
 			ctx.rotate(rotation * Math.PI / 180);
+			ctx.translate(-width / 2, -width / 2);
 			vx = 0;
 			vy = 0;
 		} else {

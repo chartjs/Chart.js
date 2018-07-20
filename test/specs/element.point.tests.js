@@ -137,10 +137,13 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'translate',
-			args: [tx, ty]
+			args: [tx + tw / 2, ty + tw / 2]
 		}, {
 			name: 'rotate',
 			args: [25 * Math.PI / 180]
+		}, {
+			name: 'translate',
+			args: [-tw / 2, -tw / 2]
 		}, {
 			name: 'beginPath',
 			args: []
@@ -179,10 +182,13 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'translate',
-			args: [tx, ty]
+			args: [tx + tw / 2, ty + tw / 2]
 		}, {
 			name: 'rotate',
 			args: [25 * Math.PI / 180]
+		}, {
+			name: 'translate',
+			args: [-tw / 2, -tw / 2]
 		}, {
 			name: 'beginPath',
 			args: []
@@ -227,10 +233,13 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'translate',
-			args: [tx, ty]
+			args: [tx + tw / 2, ty + tw / 2]
 		}, {
 			name: 'rotate',
 			args: [25 * Math.PI / 180]
+		}, {
+			name: 'translate',
+			args: [-tw / 2, -tw / 2]
 		}, {
 			name: 'beginPath',
 			args: []
@@ -292,10 +301,13 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'translate',
-			args: [tx, ty]
+			args: [tx + tw / 2, ty + tw / 2]
 		}, {
 			name: 'rotate',
 			args: [25 * Math.PI / 180]
+		}, {
+			name: 'translate',
+			args: [-tw / 2, -tw / 2]
 		}, {
 			name: 'beginPath',
 			args: []
@@ -343,10 +355,13 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'translate',
-			args: [tx, ty]
+			args: [tx + tw / 2, ty + tw / 2]
 		}, {
 			name: 'rotate',
 			args: [25 * Math.PI / 180]
+		}, {
+			name: 'translate',
+			args: [-tw / 2, -tw / 2]
 		}, {
 			name: 'beginPath',
 			args: []
@@ -391,10 +406,13 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'translate',
-			args: [tx, ty]
+			args: [tx + tw / 2, ty + tw / 2]
 		}, {
 			name: 'rotate',
 			args: [25 * Math.PI / 180]
+		}, {
+			name: 'translate',
+			args: [-tw / 2, -tw / 2]
 		}, {
 			name: 'beginPath',
 			args: []
@@ -439,10 +457,13 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'translate',
-			args: [tx, ty]
+			args: [tx + tw / 2, ty + tw / 2]
 		}, {
 			name: 'rotate',
 			args: [25 * Math.PI / 180]
+		}, {
+			name: 'translate',
+			args: [-tw / 2, -tw / 2]
 		}, {
 			name: 'beginPath',
 			args: []
@@ -499,10 +520,13 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'translate',
-			args: [tx, ty]
+			args: [tx + tw / 2, ty + tw / 2]
 		}, {
 			name: 'rotate',
 			args: [25 * Math.PI / 180]
+		}, {
+			name: 'translate',
+			args: [-tw / 2, -tw / 2]
 		}, {
 			name: 'beginPath',
 			args: []
@@ -541,10 +565,13 @@ describe('Point element tests', function() {
 			args: []
 		}, {
 			name: 'translate',
-			args: [tx, ty]
+			args: [tx + tw / 2, ty + tw / 2]
 		}, {
 			name: 'rotate',
 			args: [25 * Math.PI / 180]
+		}, {
+			name: 'translate',
+			args: [-tw / 2, -tw / 2]
 		}, {
 			name: 'beginPath',
 			args: []
