@@ -308,11 +308,7 @@ module.exports = {
 			// sort by distance
 			Object.keys(byIndex).forEach(function(key) {
 				byIndex[key].sort(function(a, b) {
-					var centerA = a.getCenterPoint();
-					var centerB = b.getCenterPoint();
-					var distanceA = distanceMetric(position, centerA);
-					var distanceB = distanceMetric(position, centerB);
-					return distanceA - distanceB;
+					return distanceMetric(position, a.getCenterPoint()) - distanceMetric(position, b.getCenterPoint());
 				});
 			});
 
