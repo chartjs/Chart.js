@@ -37,7 +37,7 @@ defaults._set('global', {
 		callbacks: {
 			// Args are: (tooltipItems, data)
 			beforeTitle: helpers.noop,
-			title: function(tooltipItems, data) {
+			title: function(tooltipItems, data, mode) {
 				// Pick first xLabel for now
 				var title = '';
 				var labels = data.labels;
@@ -47,7 +47,11 @@ defaults._set('global', {
 					var item = tooltipItems[0];
 
 					if (item.xLabel) {
-						title = item.xLabel;
+						if (mode === 'dataset') {
+							title = data.datasets[item.datasetIndex].label || '';
+						} else {
+							title = item.xLabel;
+						}
 					} else if (labelCount > 0 && item.index < labelCount) {
 						title = labels[item.index];
 					}
@@ -62,11 +66,13 @@ defaults._set('global', {
 
 			// Args are: (tooltipItem, data)
 			beforeLabel: helpers.noop,
-			label: function(tooltipItem, data) {
+			label: function(tooltipItem, data, mode) {
 				var label = data.datasets[tooltipItem.datasetIndex].label || '';
-
 				if (label) {
 					label += ': ';
+					if (mode === 'dataset') {
+						label = tooltipItem.xLabel + ': ';
+					}
 				}
 				label += tooltipItem.yLabel;
 				return label;
@@ -309,6 +315,9 @@ function getTooltipSize(tooltip, model) {
 
 	// Title width
 	var widthPadding = 0;
+	if (tooltip._options.mode === 'dataset') {
+		widthPadding = model.displayColors ? (titleFontSize + 2) : 0;
+	}
 	var maxLineWidth = function(line) {
 		width = Math.max(width, ctx.measureText(line).width + widthPadding);
 	};
@@ -321,7 +330,9 @@ function getTooltipSize(tooltip, model) {
 	helpers.each(model.beforeBody.concat(model.afterBody), maxLineWidth);
 
 	// Body lines may include some extra width due to the color box
-	widthPadding = model.displayColors ? (bodyFontSize + 2) : 0;
+	if (tooltip._options.mode !== 'dataset') {
+		widthPadding = model.displayColors ? (bodyFontSize + 2) : 0;
+	}
 	helpers.each(body, function(bodyItem) {
 		helpers.each(bodyItem.before, maxLineWidth);
 		helpers.each(bodyItem.lines, maxLineWidth);
@@ -520,8 +531,9 @@ var exports = module.exports = Element.extend({
 				lines: [],
 				after: []
 			};
+			var mode = me._options.mode;
 			pushOrConcat(bodyItem.before, splitNewlines(callbacks.beforeLabel.call(me, tooltipItem, data)));
-			pushOrConcat(bodyItem.lines, callbacks.label.call(me, tooltipItem, data));
+			pushOrConcat(bodyItem.lines, callbacks.label.call(me, tooltipItem, data, mode));
 			pushOrConcat(bodyItem.after, splitNewlines(callbacks.afterLabel.call(me, tooltipItem, data)));
 
 			bodyItems.push(bodyItem);
@@ -620,7 +632,7 @@ var exports = module.exports = Element.extend({
 
 
 			// Build the Text Lines
-			model.title = me.getTitle(tooltipItems, data);
+			model.title = me.getTitle(tooltipItems, data, me._options.mode);
 			model.beforeBody = me.getBeforeBody(tooltipItems, data);
 			model.body = me.getBody(tooltipItems, data);
 			model.afterBody = me.getAfterBody(tooltipItems, data);
@@ -734,7 +746,7 @@ var exports = module.exports = Element.extend({
 		return {x1: x1, x2: x2, x3: x3, y1: y1, y2: y2, y3: y3};
 	},
 
-	drawTitle: function(pt, vm, ctx, opacity) {
+	drawTitle: function(pt, vm, ctx, opacity, mode) {
 		var title = vm.title;
 
 		if (title.length) {
@@ -743,13 +755,36 @@ var exports = module.exports = Element.extend({
 
 			var titleFontSize = vm.titleFontSize;
 			var titleSpacing = vm.titleSpacing;
+			var drawColorBoxes;
+			var xLinePadding = 0;
+			if (mode === 'dataset') {
+				drawColorBoxes = vm.displayColors;
+				xLinePadding = drawColorBoxes ? (titleFontSize + 2) : 0;
+			}
 
 			ctx.fillStyle = mergeOpacity(vm.titleFontColor, opacity);
 			ctx.font = helpers.fontString(titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
 
 			var i, len;
 			for (i = 0, len = title.length; i < len; ++i) {
-				ctx.fillText(title[i], pt.x, pt.y);
+				var textColor = mergeOpacity(vm.labelTextColors[i], opacity);
+				// Draw Legend-like boxes if needed
+				if (drawColorBoxes) {
+					// Fill a white rect so that colours merge nicely if the opacity is < 1
+					ctx.fillStyle = mergeOpacity(vm.legendColorBackground, opacity);
+					ctx.fillRect(pt.x, pt.y, titleFontSize, titleFontSize);
+
+					// Border
+					ctx.lineWidth = 1;
+					ctx.strokeStyle = mergeOpacity(vm.labelColors[i].borderColor, opacity);
+					ctx.strokeRect(pt.x, pt.y, titleFontSize, titleFontSize);
+
+					// Inner square
+					ctx.fillStyle = mergeOpacity(vm.labelColors[i].backgroundColor, opacity);
+					ctx.fillRect(pt.x + 1, pt.y + 1, titleFontSize - 2, titleFontSize - 2);
+					ctx.fillStyle = textColor;
+				}
+				ctx.fillText(title[i], pt.x + xLinePadding, pt.y);
 				pt.y += titleFontSize + titleSpacing; // Line Height and spacing
 
 				if (i + 1 === title.length) {
@@ -759,7 +794,7 @@ var exports = module.exports = Element.extend({
 		}
 	},
 
-	drawBody: function(pt, vm, ctx, opacity) {
+	drawBody: function(pt, vm, ctx, opacity, mode) {
 		var bodyFontSize = vm.bodyFontSize;
 		var bodySpacing = vm.bodySpacing;
 		var body = vm.body;
@@ -778,10 +813,11 @@ var exports = module.exports = Element.extend({
 		// Before body lines
 		ctx.fillStyle = mergeOpacity(vm.bodyFontColor, opacity);
 		helpers.each(vm.beforeBody, fillLineOfText);
-
-		var drawColorBoxes = vm.displayColors;
-		xLinePadding = drawColorBoxes ? (bodyFontSize + 2) : 0;
-
+		var drawColorBoxes;
+		if (mode !== 'dataset') {
+			drawColorBoxes = vm.displayColors;
+			xLinePadding = drawColorBoxes ? (bodyFontSize + 2) : 0;
+		}
 		// Draw body lines now
 		helpers.each(body, function(bodyItem, i) {
 			var textColor = mergeOpacity(vm.labelTextColors[i], opacity);
@@ -914,10 +950,10 @@ var exports = module.exports = Element.extend({
 			pt.y += vm.yPadding;
 
 			// Titles
-			this.drawTitle(pt, vm, ctx, opacity);
+			this.drawTitle(pt, vm, ctx, opacity, this._options.mode);
 
 			// Body
-			this.drawBody(pt, vm, ctx, opacity);
+			this.drawBody(pt, vm, ctx, opacity, this._options.mode);
 
 			// Footer
 			this.drawFooter(pt, vm, ctx, opacity);
