@@ -105,7 +105,7 @@ module.exports = function(Chart) {
 				_model: {
 					x: reset ? scale.xCenter : pointPosition.x, // value not used in dataset scale, but we want a consistent API between scales
 					y: reset ? scale.yCenter : pointPosition.y,
-					skip: custom.skip || isNaN(dataset.data[index]),
+					skip: custom.skip || isNaN(dataset.data[index]) || dataset.data[index] === null,
 
 					// Appearance
 					tension: custom.tension ? custom.tension : helpers.valueOrDefault(dataset.lineTension, me.chart.options.elements.line.tension),
