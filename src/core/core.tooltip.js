@@ -746,7 +746,7 @@ var exports = module.exports = Element.extend({
 		return {x1: x1, x2: x2, x3: x3, y1: y1, y2: y2, y3: y3};
 	},
 
-	drawTitle: function(pt, vm, ctx, opacity, mode) {
+	drawTitle: function(pt, vm, ctx, opacity) {
 		var title = vm.title;
 
 		if (title.length) {
@@ -757,7 +757,7 @@ var exports = module.exports = Element.extend({
 			var titleSpacing = vm.titleSpacing;
 			var drawColorBoxes;
 			var xLinePadding = 0;
-			if (mode === 'dataset') {
+			if (this._options.mode === 'dataset') {
 				drawColorBoxes = vm.displayColors;
 				xLinePadding = drawColorBoxes ? (titleFontSize + 2) : 0;
 			}
@@ -794,7 +794,7 @@ var exports = module.exports = Element.extend({
 		}
 	},
 
-	drawBody: function(pt, vm, ctx, opacity, mode) {
+	drawBody: function(pt, vm, ctx, opacity) {
 		var bodyFontSize = vm.bodyFontSize;
 		var bodySpacing = vm.bodySpacing;
 		var body = vm.body;
@@ -814,7 +814,7 @@ var exports = module.exports = Element.extend({
 		ctx.fillStyle = mergeOpacity(vm.bodyFontColor, opacity);
 		helpers.each(vm.beforeBody, fillLineOfText);
 		var drawColorBoxes;
-		if (mode !== 'dataset') {
+		if (this._options.mode !== 'dataset') {
 			drawColorBoxes = vm.displayColors;
 			xLinePadding = drawColorBoxes ? (bodyFontSize + 2) : 0;
 		}
@@ -950,10 +950,10 @@ var exports = module.exports = Element.extend({
 			pt.y += vm.yPadding;
 
 			// Titles
-			this.drawTitle(pt, vm, ctx, opacity, this._options.mode);
+			this.drawTitle(pt, vm, ctx, opacity);
 
 			// Body
-			this.drawBody(pt, vm, ctx, opacity, this._options.mode);
+			this.drawBody(pt, vm, ctx, opacity);
 
 			// Footer
 			this.drawFooter(pt, vm, ctx, opacity);
