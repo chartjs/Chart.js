@@ -3,9 +3,27 @@
 module.exports = function(karma) {
 	var args = karma.args || {};
 	var config = {
-		browsers: ['Firefox'],
 		frameworks: ['browserify', 'jasmine'],
 		reporters: ['progress', 'kjhtml'],
+		browsers: ['chrome', 'firefox'],
+
+		// Explicitly disable hardware acceleration to make image
+		// diff more stable when ran on Travis and dev machine.
+		// https://github.com/chartjs/Chart.js/pull/5629
+		customLaunchers: {
+			chrome: {
+				base: 'Chrome',
+				flags: [
+					'--disable-accelerated-2d-canvas'
+				]
+			},
+			firefox: {
+				base: 'Firefox',
+				prefs: {
+					'layers.acceleration.disabled': true
+				}
+			}
+		},
 
 		preprocessors: {
 			'./test/jasmine.index.js': ['browserify'],
@@ -24,15 +42,7 @@ module.exports = function(karma) {
 
 	// https://swizec.com/blog/how-to-run-javascript-tests-in-chrome-on-travis/swizec/6647
 	if (process.env.TRAVIS) {
-		config.browsers.push('chrome_travis_ci');
-		config.customLaunchers = {
-			chrome_travis_ci: {
-				base: 'Chrome',
-				flags: ['--no-sandbox']
-			}
-		};
-	} else {
-		config.browsers.push('Chrome');
+		config.customLaunchers.chrome.flags.push('--no-sandbox');
 	}
 
 	if (args.coverage) {
