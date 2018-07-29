@@ -220,15 +220,21 @@ function doFill(ctx, points, mapper, view, color, loop) {
 	var len0 = 0;
 	var len1 = 0;
 	var i, ilen, index, p0, p1, d0, d1;
+	var loopOffset;
 
 	ctx.beginPath();
 
-	for (i = 0, ilen = (count + !!loop); i < ilen; ++i) {
+	for (i = 0, ilen = count; i < ilen; ++i) {
 		index = i % count;
 		p0 = points[index]._view;
 		p1 = mapper(p0, index, view);
 		d0 = isDrawable(p0);
 		d1 = isDrawable(p1);
+
+		if (loop && loopOffset === undefined && d0) {
+			loopOffset = i + 1;
+			ilen = count + loopOffset;
+		}
 
 		if (d0 && d1) {
 			len0 = curve0.push(p0);

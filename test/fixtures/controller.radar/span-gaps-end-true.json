@@ -1,0 +1,28 @@
+{
+    "type": "radar",
+    "data": {
+        "labels": ["A", "B", "C", "D", "E"],
+        "datasets": [{
+            "label": "Dataset",
+            "backgroundColor": "#FF6384",
+            "borderColor": "#FF6384",
+            "pointBackgroundColor": "#FF6384",
+            "data": [10, 20, 30, 50, null]
+        }]
+    },
+    "options": {
+        "spanGaps": true,
+        "legend": {
+            "display": false
+        },
+        "title": {
+            "display": false
+        },
+        "scale": {
+            "display": false,
+            "ticks": {
+                "beginAtZero": true
+            }
+        }
+    }
+}

@@ -34,9 +34,15 @@ module.exports = Element.extend({
 		var lastDrawnIndex = -1;
 		var index, current, previous, currentVM;
 
-		// If we are looping, adding the first point again
+		// If we are looping, adding the first non-skipped point again
 		if (me._loop && points.length) {
-			points.push(points[0]);
+			for (index = 0; index < points.length; index++) {
+				current = points[index];
+				if (!current._view.skip) {
+					points.push(current);
+					break;
+				}
+			}
 		}
 
 		ctx.save();
