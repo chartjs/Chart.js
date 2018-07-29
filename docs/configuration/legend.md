@@ -7,7 +7,7 @@ The legend configuration is passed into the `options.legend` namespace. The glob
 
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
-| `display` | `Boolean` | `true` | is the legend shown
+| `display` | `Boolean` | `true` | Whether the legend is shown
 | `position` | `String` | `'top'` | Position of the legend. [more...](#position)
 | `fullWidth` | `Boolean` | `true` | Marks that this box should take the full width of the canvas (pushing down other boxes). This is unlikely to need to be changed in day-to-day use.
 | `onClick` | `Function` | | A callback that is called when a click event is registered on a label item
@@ -28,15 +28,28 @@ The legend label configuration is nested below the legend configuration using th
 
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
-| `boxWidth` | `Number` | `40` | width of coloured box
-| `fontSize` | `Number` | `12` | font size of text
-| `fontStyle` | `String` | `'normal'` | font style of text
+| `boxWidth` | `Number` | `40` | Width of coloured box
+| `fontSize` | `Number` | `12` | Font size of text
+| `fontStyle` | `String` | `'normal'` | Font style of text
 | `fontColor` | `Color` | `'#666'` | Color of text
 | `fontFamily` | `String` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family of legend text.
 | `padding` | `Number` | `10` | Padding between rows of colored boxes.
 | `generateLabels` | `Function` | | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See [Legend Item](#legend-item-interface) for details.
 | `filter` | `Function` | `null` | Filters legend items out of the legend. Receives 2 parameters, a [Legend Item](#legend-item-interface) and the chart data.
-| `usePointStyle` | `Boolean` | `false` | Label style will match corresponding point style (size is based on fontSize, boxWidth is not used in this case).
+| `style` | `String` | | Style of the label item. [more...](#label-style)
+
+### Label Style
+
+Possible label style values are:
+* `'box'`
+* `'line'`
+* `'point'`
+
+`'box'` will draw a box using the background color, border width and color of the corresponding element.
+`'line'` will draw a line using the corresponding line style.
+`'point'` will make the label style match the corresponding point style (size is based on `fontSize`, `boxWidth` is not used in this case).
+
+If not set, the `'line'` style is used for line elements, and the `'box'` style for other elements.
 
 ## Legend Item Interface
 
@@ -53,26 +66,29 @@ Items passed to the legend `onClick` function are the ones returned from `labels
     // If true, this item represents a hidden dataset. Label will be rendered with a strike-through effect
     hidden: Boolean,
 
-    // For box border. See https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/lineCap
+    // For line border. See https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/lineCap
     lineCap: String,
 
-    // For box border. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
+    // For line border. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
     lineDash: Array[Number],
 
-    // For box border. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
+    // For line border. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
     lineDashOffset: Number,
 
-    // For box border. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin
+    // For line border. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin
     lineJoin: String,
 
-    // Width of box border
+    // Width of box border or line
     lineWidth: Number,
 
-    // Stroke style of the legend box
-    strokeStyle: Color
+    // Stroke style of the legend box or line
+    strokeStyle: Color,
 
-    // Point style of the legend box (only used if usePointStyle is true)
-    pointStyle: String
+    // Point style of the legend box (only used if style is 'point')
+    pointStyle: String,
+
+    // Style of the legend box
+    style: String
 }
 ```
 
@@ -91,7 +107,7 @@ var chart = new Chart(ctx, {
                 fontColor: 'rgb(255, 99, 132)'
             }
         }
-}
+    }
 });
 ```
 
@@ -107,7 +123,7 @@ function(e, legendItem) {
     var meta = ci.getDatasetMeta(index);
 
     // See controller.isDatasetVisible comment
-    meta.hidden = meta.hidden === null? !ci.data.datasets[index].hidden : null;
+    meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
 
     // We hid a dataset ... rerender the chart
     ci.update();
@@ -118,7 +134,7 @@ Lets say we wanted instead to link the display of the first two datasets. We cou
 
 ```javascript
 var defaultLegendClickHandler = Chart.defaults.global.legend.onClick;
-var newLegendClickHandler = function (e, legendItem) {
+var newLegendClickHandler = function(e, legendItem) {
     var index = legendItem.datasetIndex;
 
     if (index > 1) {
@@ -128,11 +144,11 @@ var newLegendClickHandler = function (e, legendItem) {
         let ci = this.chart;
         [ci.getDatasetMeta(0),
          ci.getDatasetMeta(1)].forEach(function(meta) {
-            meta.hidden = meta.hidden === null? !ci.data.datasets[index].hidden : null;
+            meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
         });
         ci.update();
     }
-};
+});
 
 var chart = new Chart(ctx, {
     type: 'line',

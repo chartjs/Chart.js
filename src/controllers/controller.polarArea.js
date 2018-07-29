@@ -64,6 +64,8 @@ defaults._set('polarArea', {
 						var fill = custom.backgroundColor ? custom.backgroundColor : valueAtIndexOrDefault(ds.backgroundColor, i, arcOpts.backgroundColor);
 						var stroke = custom.borderColor ? custom.borderColor : valueAtIndexOrDefault(ds.borderColor, i, arcOpts.borderColor);
 						var bw = custom.borderWidth ? custom.borderWidth : valueAtIndexOrDefault(ds.borderWidth, i, arcOpts.borderWidth);
+						var labelOpts = chart.options.legend.labels;
+						var style = labelOpts.style;
 
 						return {
 							text: label,
@@ -71,6 +73,8 @@ defaults._set('polarArea', {
 							strokeStyle: stroke,
 							lineWidth: bw,
 							hidden: isNaN(ds.data[i]) || meta.data[i].hidden,
+							// `usePointStyle` is deprecated. To be removed at version 3
+							style: !style && labelOpts.usePointStyle ? 'point' : style,
 
 							// Extra data used for toggling the correct item
 							index: i
