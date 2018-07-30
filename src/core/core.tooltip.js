@@ -47,11 +47,7 @@ defaults._set('global', {
 					var item = tooltipItems[0];
 
 					if (item.xLabel) {
-						if (mode === 'dataset') {
-							title = data.datasets[item.datasetIndex].label || '';
-						} else {
-							title = item.xLabel;
-						}
+						title = (mode === 'dataset' ? data.datasets[item.datasetIndex].label || '' : item.xLabel);
 					} else if (labelCount > 0 && item.index < labelCount) {
 						title = labels[item.index];
 					}
@@ -67,12 +63,9 @@ defaults._set('global', {
 			// Args are: (tooltipItem, data)
 			beforeLabel: helpers.noop,
 			label: function(tooltipItem, data, mode) {
-				var label = data.datasets[tooltipItem.datasetIndex].label || '';
+				var label = (mode === 'dataset' ? tooltipItem.xLabel : data.datasets[tooltipItem.datasetIndex].label) || '';
 				if (label) {
 					label += ': ';
-					if (mode === 'dataset') {
-						label = tooltipItem.xLabel + ': ';
-					}
 				}
 				label += tooltipItem.yLabel;
 				return label;
