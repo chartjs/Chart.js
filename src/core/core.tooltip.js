@@ -482,6 +482,25 @@ function getBeforeAfterBodyLines(callback) {
 	return pushOrConcat([], splitNewlines(callback));
 }
 
+/**
+ * Helper method to draw box items
+ */
+function drawBoxes(pt, vm, ctx, fontSize, opacity, i) {
+	// Fill a white rect so that colours merge nicely if the opacity is < 1
+	ctx.fillStyle = mergeOpacity(vm.legendColorBackground, opacity);
+	ctx.fillRect(pt.x, pt.y, fontSize, fontSize);
+
+	// Border
+	ctx.lineWidth = 1;
+	ctx.strokeStyle = mergeOpacity(vm.labelColors[i].borderColor, opacity);
+	ctx.strokeRect(pt.x, pt.y, fontSize, fontSize);
+
+	// Inner square
+	ctx.fillStyle = mergeOpacity(vm.labelColors[i].backgroundColor, opacity);
+	ctx.fillRect(pt.x + 1, pt.y + 1, fontSize - 2, fontSize - 2);
+	ctx.fillStyle = mergeOpacity(vm.labelTextColors[i], opacity);
+}
+
 var exports = module.exports = Element.extend({
 	initialize: function() {
 		this._model = getBaseModel(this._options);
@@ -760,22 +779,9 @@ var exports = module.exports = Element.extend({
 
 			var i, len;
 			for (i = 0, len = title.length; i < len; ++i) {
-				var textColor = mergeOpacity(vm.labelTextColors[i], opacity);
 				// Draw Legend-like boxes if needed
 				if (drawColorBoxes) {
-					// Fill a white rect so that colours merge nicely if the opacity is < 1
-					ctx.fillStyle = mergeOpacity(vm.legendColorBackground, opacity);
-					ctx.fillRect(pt.x, pt.y, titleFontSize, titleFontSize);
-
-					// Border
-					ctx.lineWidth = 1;
-					ctx.strokeStyle = mergeOpacity(vm.labelColors[i].borderColor, opacity);
-					ctx.strokeRect(pt.x, pt.y, titleFontSize, titleFontSize);
-
-					// Inner square
-					ctx.fillStyle = mergeOpacity(vm.labelColors[i].backgroundColor, opacity);
-					ctx.fillRect(pt.x + 1, pt.y + 1, titleFontSize - 2, titleFontSize - 2);
-					ctx.fillStyle = textColor;
+					drawBoxes(pt, vm, ctx, titleFontSize, opacity, i);
 				}
 				ctx.fillText(title[i], pt.x + xLinePadding, pt.y);
 				pt.y += titleFontSize + titleSpacing; // Line Height and spacing
@@ -811,29 +817,16 @@ var exports = module.exports = Element.extend({
 			drawColorBoxes = vm.displayColors;
 			xLinePadding = drawColorBoxes ? (bodyFontSize + 2) : 0;
 		}
+
 		// Draw body lines now
 		helpers.each(body, function(bodyItem, i) {
-			var textColor = mergeOpacity(vm.labelTextColors[i], opacity);
-			ctx.fillStyle = textColor;
 			helpers.each(bodyItem.before, fillLineOfText);
-
 			helpers.each(bodyItem.lines, function(line) {
 				// Draw Legend-like boxes if needed
 				if (drawColorBoxes) {
-					// Fill a white rect so that colours merge nicely if the opacity is < 1
-					ctx.fillStyle = mergeOpacity(vm.legendColorBackground, opacity);
-					ctx.fillRect(pt.x, pt.y, bodyFontSize, bodyFontSize);
-
-					// Border
-					ctx.lineWidth = 1;
-					ctx.strokeStyle = mergeOpacity(vm.labelColors[i].borderColor, opacity);
-					ctx.strokeRect(pt.x, pt.y, bodyFontSize, bodyFontSize);
-
-					// Inner square
-					ctx.fillStyle = mergeOpacity(vm.labelColors[i].backgroundColor, opacity);
-					ctx.fillRect(pt.x + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
-					ctx.fillStyle = textColor;
+					drawBoxes(pt, vm, ctx, bodyFontSize, opacity, i);
 				}
+				ctx.fillStyle = mergeOpacity(vm.labelTextColors[i], opacity);
 
 				fillLineOfText(line);
 			});
