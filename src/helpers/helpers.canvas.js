@@ -41,6 +41,8 @@ var exports = module.exports = {
 			ctx.arcTo(x, y + height, x, y + height - r, r);
 			ctx.lineTo(x, y + r);
 			ctx.arcTo(x, y, x + r, y, r);
+			ctx.closePath();
+			ctx.moveTo(x, y);
 		} else {
 			ctx.rect(x, y, width, height);
 		}
@@ -96,12 +98,10 @@ var exports = module.exports = {
 				this.roundedRect(ctx, vx, vy, width, height, width / 2);
 			}
 			ctx.closePath();
-			ctx.fill();
 			break;
 		case 'rect':
 			ctx.rect(vx, vy, width, height);
 			ctx.closePath();
-			ctx.fill();
 			break;
 		case 'triangle':
 			ctx.moveTo(vx, vy + height);
@@ -121,7 +121,6 @@ var exports = module.exports = {
 			ctx.lineTo(vx + width, vy + height / 2);
 			ctx.lineTo(vx + width / 2, vy + height);
 			ctx.closePath();
-			ctx.fill();
 			break;
 		case 'cross':
 			ctx.moveTo(vx + width / 2, vy);
@@ -221,5 +220,4 @@ helpers.clear = exports.clear;
 helpers.drawRoundedRectangle = function(ctx) {
 	ctx.beginPath();
 	exports.roundedRect.apply(exports, arguments);
-	ctx.closePath();
 };

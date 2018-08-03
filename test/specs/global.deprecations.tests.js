@@ -113,7 +113,6 @@ describe('Deprecations', function() {
 
 				var calls = ctx.getCalls();
 				expect(calls[0]).toEqual({name: 'beginPath', args: []});
-				expect(calls[calls.length - 1]).toEqual({name: 'closePath', args: []});
 				expect(Chart.helpers.canvas.roundedRect).toHaveBeenCalledWith(ctx, 10, 20, 30, 40, 5);
 			});
 		});

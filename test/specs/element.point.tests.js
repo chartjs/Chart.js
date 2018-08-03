@@ -1,6 +1,6 @@
-// Test the point element
+describe('Chart.elements.Point', function() {
+	describe('auto', jasmine.specsFromFixtures('element.point'));
 
-describe('Point element tests', function() {
 	it ('Should be constructed', function() {
 		var point = new Chart.elements.Point({
 			_datasetIndex: 2,
