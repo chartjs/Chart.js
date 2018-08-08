@@ -102,7 +102,7 @@
 			var colorName = colorNames[horizontalBarChartData.datasets.length % colorNames.length];
 			var dsColor = window.chartColors[colorName];
 			var newDataset = {
-				label: 'Dataset ' + horizontalBarChartData.datasets.length,
+				label: 'Dataset ' + (horizontalBarChartData.datasets.length + 1),
 				backgroundColor: color(dsColor).alpha(0.5).rgbString(),
 				borderColor: dsColor,
 				data: []
@@ -130,7 +130,7 @@
 		});
 
 		document.getElementById('removeDataset').addEventListener('click', function() {
-			horizontalBarChartData.datasets.splice(0, 1);
+			horizontalBarChartData.datasets.pop();
 			window.myHorizontalBar.update();
 		});
 

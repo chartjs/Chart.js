@@ -95,7 +95,7 @@
 			var colorName = colorNames[barChartData.datasets.length % colorNames.length];
 			var dsColor = window.chartColors[colorName];
 			var newDataset = {
-				label: 'Dataset ' + barChartData.datasets.length,
+				label: 'Dataset ' + (barChartData.datasets.length + 1),
 				backgroundColor: color(dsColor).alpha(0.5).rgbString(),
 				borderColor: dsColor,
 				borderWidth: 1,
@@ -125,7 +125,7 @@
 		});
 
 		document.getElementById('removeDataset').addEventListener('click', function() {
-			barChartData.datasets.splice(0, 1);
+			barChartData.datasets.pop();
 			window.myBar.update();
 		});
 
