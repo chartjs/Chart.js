@@ -377,18 +377,19 @@ function computeOffsets(table, ticks, data, min, max, options) {
 			}
 		});
 
-		if (!barThickness) {
-			[data, ticks].forEach(function(timestamps) {
-				for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
-					curr = interpolate(table, 'time', timestamps[i], 'pos');
-					minInterval = i > 0 ? Math.min(minInterval, curr - prev) : minInterval;
-					prev = curr;
-				}
-			});
-		}
-
 		length = pos.length;
 		if (length) {
+			// Calculate minInterval
+			if (!barThickness) {
+				[data, ticks].forEach(function(timestamps) {
+					for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
+						curr = interpolate(table, 'time', timestamps[i], 'pos');
+						minInterval = i > 0 ? Math.min(minInterval, curr - prev) : minInterval;
+						prev = curr;
+					}
+				});
+			}
+
 			if (!timeOpts.min) {
 				if (length === 1) {
 					width = (1 - pos[0]) * 2;
