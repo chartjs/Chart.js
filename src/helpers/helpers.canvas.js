@@ -51,17 +51,10 @@ var exports = module.exports = {
 	drawPoint: function(ctx, style, radius, x, y, rotation) {
 		// call draw Symbol with converted radius to width and height
 		// and move x, y to the top left corner
-
-		if (this.drawSymbol(ctx, style, radius * 2, radius * 2, x - radius, y - radius, rotation)) {
-			// Only Stroke when return true
-			ctx.stroke();
-			if (rotation) {
-				ctx.restore();
-			}
-		}
+		this.drawSymbol(ctx, style, radius * 2, radius * 2, x - radius, y - radius, rotation, true);
 	},
 
-	drawSymbol: function(ctx, style, width, height, x, y, rotation) {
+	drawSymbol: function(ctx, style, width, height, x, y, rotation, isPoint) {
 
 		if (style && typeof style === 'object') {
 			var type = style.toString();
@@ -85,6 +78,12 @@ var exports = module.exports = {
 			vx = x;
 			vy = y;
 		}
+		var radius = width / 2;
+		var yRadius = height / 2;
+		var padLeft = isPoint ? radius - width / 2 / Math.sqrt(2) : 0;
+		var padRight = isPoint ? radius + width / 2 / Math.sqrt(2) : width;
+		var padTop = isPoint ? radius - height / 2 / Math.sqrt(2) : 0;
+		var padBottom = isPoint ? radius + height / 2 / Math.sqrt(2) : height;
 
 		ctx.beginPath();
 
@@ -93,70 +92,68 @@ var exports = module.exports = {
 		default:
 			//	display standard circle if height and width are the same otherwise display a RectRounded
 			if (width === height) {
-				ctx.arc(vx + width / 2, vy + height / 2, width / 2, 0, Math.PI * 2);
+				ctx.arc(vx + radius, vy + radius, radius, 0, Math.PI * 2);
 			} else {
-				this.roundedRect(ctx, vx, vy, width, height, width / 2);
+				this.roundedRect(ctx, vx + padLeft, vy + padTop, -padLeft + padRight, -padTop + padBottom, radius * 0.425);
 			}
 			ctx.closePath();
 			break;
 		case 'rect':
-			ctx.rect(vx, vy, width, height);
+			ctx.rect(vx + padLeft, vy + padTop, -padLeft + padRight, -padTop + padBottom);
 			ctx.closePath();
 			break;
 		case 'triangle':
-			ctx.moveTo(vx, vy + height);
-			ctx.lineTo(vx + width / 2, vy);
-			ctx.lineTo(vx + width, vy + height);
+			ctx.moveTo(vx + radius, vy);
+			ctx.lineTo(vx + radius - (radius * Math.sqrt(3) / 2), vy + height * 0.75);
+			ctx.lineTo(vx + radius + (radius * Math.sqrt(3) / 2), vy + height * 0.75);
 			ctx.closePath();
-			ctx.fill();
 			break;
 		case 'rectRounded':
-			this.roundedRect(ctx, vx, vy, width, height, height * Math.SQRT2 / 4);
+			this.roundedRect(ctx, vx + padLeft, vy + padTop, -padLeft + padRight, -padTop + padBottom, radius * 0.425);
 			ctx.closePath();
-			ctx.fill();
 			break;
 		case 'rectRot':
-			ctx.moveTo(vx, vy + height / 2);
-			ctx.lineTo(vx + width / 2, vy);
-			ctx.lineTo(vx + width, vy + height / 2);
-			ctx.lineTo(vx + width / 2, vy + height);
+			ctx.moveTo(vx + padLeft, vy + yRadius);
+			ctx.lineTo(vx + radius, vy + padTop);
+			ctx.lineTo(vx + padRight, vy + yRadius);
+			ctx.lineTo(vx + radius, vy + padBottom);
 			ctx.closePath();
 			break;
 		case 'cross':
-			ctx.moveTo(vx + width / 2, vy);
-			ctx.lineTo(vx + width / 2, vy + height);
-			ctx.moveTo(vx, vy + height / 2);
-			ctx.lineTo(vx + width, vy + height / 2);
-			ctx.closePath();
+			ctx.moveTo(vx + radius, vy);
+			ctx.lineTo(vx + radius, vy + height);
+			ctx.moveTo(vx, vy + yRadius);
+			ctx.lineTo(vx + width, vy + yRadius);
 			break;
 		case 'crossRot':
-			ctx.moveTo(vx, vy);
-			ctx.lineTo(vx + width, vy + height);
-			ctx.moveTo(vx, vy + height);
-			ctx.lineTo(vx + width, vy);
-			ctx.closePath();
+			ctx.moveTo(vx + padLeft, vy + padTop);
+			ctx.lineTo(vx + padRight, vy + padBottom);
+			ctx.moveTo(vx + padLeft, vy + padBottom);
+			ctx.lineTo(vx + padRight, vy + padTop);
 			break;
 		case 'star':
-			ctx.moveTo(vx + width / 2, vy);
-			ctx.lineTo(vx + width / 2, vy + height);
-			ctx.moveTo(vx, vy + height / 2);
-			ctx.lineTo(vx + width, vy + height / 2);
-			ctx.moveTo(vx, vy);
-			ctx.lineTo(vx + width, vy + height);
-			ctx.moveTo(vx, vy + height);
-			ctx.lineTo(vx + width, vy);
-			ctx.closePath();
+			ctx.moveTo(vx + radius, vy);
+			ctx.lineTo(vx + radius, vy + height);
+			ctx.moveTo(vx, vy + yRadius);
+			ctx.lineTo(vx + width, vy + yRadius);
+			ctx.moveTo(vx + padLeft, vy + padTop);
+			ctx.lineTo(vx + padRight, vy + padBottom);
+			ctx.moveTo(vx + padLeft, vy + padBottom);
+			ctx.lineTo(vx + padRight, vy + padTop);
 			break;
 		case 'line':
-			ctx.moveTo(vx, vy + height / 2);
-			ctx.lineTo(vx + width, vy + height / 2);
-			ctx.closePath();
+			ctx.moveTo(vx, vy + yRadius);
+			ctx.lineTo(vx + width, vy + yRadius);
 			break;
 		case 'dash':
-			ctx.moveTo(vx + width / 2, vy + height / 2);
-			ctx.lineTo(vx + width, vy + height / 2);
-			ctx.closePath();
+			ctx.moveTo(vx + radius, vy + yRadius);
+			ctx.lineTo(vx + width, vy + yRadius);
 			break;
+		}
+		ctx.fill();
+		ctx.stroke();
+		if (rotation) {
+			ctx.restore();
 		}
 		return true;
 

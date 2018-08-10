@@ -120,6 +120,7 @@ describe('Chart.elements.Point', function() {
 		var tx = point._view.x - point._view.radius;
 		var ty = point._view.y - point._view.radius;
 		var tw = point._view.radius * 2;
+		var zx = point._view.radius / Math.sqrt(2);
 
 		point.draw();
 
@@ -194,13 +195,13 @@ describe('Chart.elements.Point', function() {
 			args: []
 		}, {
 			name: 'moveTo',
-			args: [0, tw]
+			args: [tw / 2, 0]
 		}, {
 			name: 'lineTo',
-			args: [tw / 2, 0],
+			args: [tw / 2 - tw * Math.sqrt(3) / 4, tw * 0.75],
 		}, {
 			name: 'lineTo',
-			args: [tw, tw],
+			args: [tw / 2 + tw * Math.sqrt(3) / 4, tw * 0.75],
 		}, {
 			name: 'closePath',
 			args: [],
@@ -245,7 +246,7 @@ describe('Chart.elements.Point', function() {
 			args: []
 		}, {
 			name: 'rect',
-			args: [0, 0, tw, tw]
+			args: [tw / 2 - zx, tw / 2 - zx, zx * 2, zx * 2]
 		}, {
 			name: 'closePath',
 			args: [],
@@ -269,11 +270,11 @@ describe('Chart.elements.Point', function() {
 
 		expect(drawRoundedRectangleSpy).toHaveBeenCalledWith(
 			mockContext,
-			0,
-			0,
-			tw,
-			tw,
-			tw * Math.SQRT2 / 4
+			tw / 2 - zx,
+			tw / 2 - zx,
+			zx * 2,
+			zx * 2,
+			tw * 0.2125
 		);
 		expect(mockContext.getCalls()).toContain(
 			jasmine.objectContaining({
@@ -313,16 +314,16 @@ describe('Chart.elements.Point', function() {
 			args: []
 		}, {
 			name: 'moveTo',
-			args: [0, tw / 2]
+			args: [tw / 2 - zx, tw / 2]
 		}, {
 			name: 'lineTo',
-			args: [tw / 2, 0]
+			args: [tw / 2, tw / 2 - zx]
 		}, {
 			name: 'lineTo',
-			args: [tw, tw / 2],
+			args: [tw / 2 + zx, tw / 2],
 		}, {
 			name: 'lineTo',
-			args: [tw / 2, tw],
+			args: [tw / 2, tw / 2 + zx],
 		}, {
 			name: 'closePath',
 			args: []
@@ -378,7 +379,7 @@ describe('Chart.elements.Point', function() {
 			name: 'lineTo',
 			args: [tw, tw / 2],
 		}, {
-			name: 'closePath',
+			name: 'fill',
 			args: [],
 		}, {
 			name: 'stroke',
@@ -418,18 +419,18 @@ describe('Chart.elements.Point', function() {
 			args: []
 		}, {
 			name: 'moveTo',
-			args: [0, 0]
+			args: [tw / 2 - zx, tw / 2 - zx]
 		}, {
 			name: 'lineTo',
-			args: [tw, tw],
+			args: [tw / 2 + zx, tw / 2 + zx],
 		}, {
 			name: 'moveTo',
-			args: [0, tw],
+			args: [tw / 2 - zx, tw / 2 + zx],
 		}, {
 			name: 'lineTo',
-			args: [tw, 0],
+			args: [tw / 2 + zx, tw / 2 - zx],
 		}, {
-			name: 'closePath',
+			name: 'fill',
 			args: [],
 		}, {
 			name: 'stroke',
@@ -481,18 +482,18 @@ describe('Chart.elements.Point', function() {
 			args: [tw, tw / 2],
 		}, {
 			name: 'moveTo',
-			args: [0, 0]
+			args: [tw / 2 - zx, tw / 2 - zx]
 		}, {
 			name: 'lineTo',
-			args: [tw, tw],
+			args: [tw / 2 + zx, tw / 2 + zx],
 		}, {
 			name: 'moveTo',
-			args: [0, tw],
+			args: [tw / 2 - zx, tw / 2 + zx],
 		}, {
 			name: 'lineTo',
-			args: [tw, 0],
+			args: [tw / 2 + zx, tw / 2 - zx],
 		}, {
-			name: 'closePath',
+			name: 'fill',
 			args: [],
 		}, {
 			name: 'stroke',
@@ -537,7 +538,7 @@ describe('Chart.elements.Point', function() {
 			name: 'lineTo',
 			args: [tw, tw / 2],
 		}, {
-			name: 'closePath',
+			name: 'fill',
 			args: [],
 		}, {
 			name: 'stroke',
@@ -582,7 +583,7 @@ describe('Chart.elements.Point', function() {
 			name: 'lineTo',
 			args: [tw, tw / 2],
 		}, {
-			name: 'closePath',
+			name: 'fill',
 			args: [],
 		}, {
 			name: 'stroke',
