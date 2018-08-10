@@ -634,12 +634,25 @@ module.exports = Element.extend({
 		var cosRotation = Math.cos(labelRotationRadians);
 		var longestRotatedLabel = me.longestLabelWidth * cosRotation;
 		var result = [];
-		var i, tick, shouldSkip;
+		var i, tick;
 
+		// Specify the label spacing
+		var labelSpacing;
+		if (optionTicks.labelSpacing) {
+			labelSpacing = optionTicks.labelSpacing;
+			// If not an integer, reject
+			if (labelSpacing !== Math.floor(labelSpacing)) {
+				labelSpacing = undefined;
+			}
+		}
 		// figure out the maximum number of gridlines to show
 		var maxTicks;
 		if (optionTicks.maxTicksLimit) {
 			maxTicks = optionTicks.maxTicksLimit;
+		}
+		var evenLabelSpacing;
+		if (optionTicks.evenLabelSpacing) {
+			evenLabelSpacing = optionTicks.evenLabelSpacing;
 		}
 
 		if (isHorizontal) {
@@ -654,14 +667,24 @@ module.exports = Element.extend({
 			if (maxTicks && tickCount > maxTicks) {
 				skipRatio = Math.max(skipRatio, Math.floor(tickCount / maxTicks));
 			}
+
+			// Requesting a label spacing cancels other settings established by maxTicks
+			if (labelSpacing) {
+				skipRatio = labelSpacing;
+			}
 		}
 
 		for (i = 0; i < tickCount; i++) {
 			tick = ticks[i];
 
-			// Since we always show the last tick,we need may need to hide the last shown one before
-			shouldSkip = (skipRatio > 1 && i % skipRatio > 0) || (i % skipRatio === 0 && i + skipRatio >= tickCount);
-			if (shouldSkip && i !== tickCount - 1) {
+			if (evenLabelSpacing || labelSpacing) {
+				if (skipRatio > 1 && i % skipRatio > 0) {
+					// leave tick in place but make sure it's not displayed (#4635)
+					delete tick.label;
+				}
+			} else if ((i !== tickCount - 1) && ( // Always show last tick
+				(skipRatio > 1 && i % skipRatio > 0) ||
+				(i % skipRatio === 0 && i + skipRatio >= tickCount))) { // Since we always show the last tick,we need may need to hide the last shown one before
 				// leave tick in place but make sure it's not displayed (#4635)
 				delete tick.label;
 			}
