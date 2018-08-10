@@ -71,6 +71,42 @@ module.exports = function(Chart) {
 		return position === 'top' || position === 'bottom';
 	}
 
+	/**
+	 * Return the y data of the label, if no this label, return null
+	 * @private
+	 * @param {string} label the label in the labels array
+	 * @param {array} dataArray the data in the datasets.
+	 * @return {number} the y data according to the label
+	 */
+	function getY(label, dataArray) {
+		for (var i = 0; i < dataArray.length; i++) {
+			var item = dataArray[i];
+			if (item.x === label) {
+				return item.y;
+			}
+		}
+		return null;
+	}
+	/**
+	 * Find if the data in datasets exists in the labels
+	 * @private
+	 * @param {array} dataArray the data in the datasets
+	 * @param {array} labelArray the label in the labels array
+	 * @return {boolean} the match result, true is included
+	 */
+	function dataInLabel(dataArray, labelArray) {
+		for (var i = 0; i < dataArray.length; i++) {
+			var item = dataArray[i];
+			if (item === null || item === undefined || item.x === undefined) {
+				break;
+			}
+			if (labelArray.indexOf(item.x) > -1) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	helpers.extend(Chart.prototype, /** @lends Chart */ {
 		/**
 		 * @private
@@ -701,7 +737,11 @@ module.exports = function(Chart) {
 			if (!dataset._meta) {
 				dataset._meta = {};
 			}
-
+			if (!dataset.data) {
+				dataset.data = [];
+			}
+			// Format the data if the data array is missing some point according to the labels
+			dataset.data = me._formatDataset(dataset.data);
 			var meta = dataset._meta[me.id];
 			if (!meta) {
 				meta = dataset._meta[me.id] = {
@@ -946,7 +986,26 @@ module.exports = function(Chart) {
 			me.lastActive = me.active;
 
 			return changed;
-		}
+		},
+		/**
+		 * Format the data list if the data is missing some points in the datasets.
+		 * @private
+		 * @param {array} dataArray array to format
+		 * @return {array} the formated array
+		 */
+		_formatDataset: function(dataArray) {
+			var labels = this.chart.data.labels;
+			var tmp = dataArray.slice(0);
+			var result = dataArray;
+			var match = dataInLabel(tmp, labels);
+			if (match && dataArray.length < labels.length) {
+				for (var i = 0; i < labels.length; i++) {
+					var label = labels[i];
+					result[i] = {x: label, y: getY(label, tmp)};
+				}
+			}
+			return result;
+		},
 	});
 
 	/**
