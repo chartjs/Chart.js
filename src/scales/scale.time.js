@@ -358,7 +358,11 @@ function generate(min, max, capacity, options) {
 }
 
 /**
- * Returns the right and left offsets from edges in the form of {left, right}.
+ * Returns the right and left offsets from the edges of the chart in the form of {left, right}
+ * where each values is a relative width to the scale and ranges between 0 and 1.
+ * They add extra margins on the both sides by scaling down the original scale.
+ * Offsets are typically used for bar charts. They are calculated based on intervals
+ * between the data points to keep the leftmost and rightmost bars from being cut.
  * Offsets are added when the `offset` option is true.
  */
 function computeOffsets(table, ticks, data, min, max, options) {
@@ -370,47 +374,51 @@ function computeOffsets(table, ticks, data, min, max, options) {
 	var right = 0;
 	var i, ilen, curr, prev, length, width;
 
-	if (options.offset) {
-		data.forEach(function(timestamp) {
-			if (timestamp >= min && timestamp <= max) {
-				pos.push(interpolate(table, 'time', timestamp, 'pos'));
+	if (!options.offset) {
+		return {left: 0, right: 0};
+	}
+
+	data.forEach(function(timestamp) {
+		if (timestamp >= min && timestamp <= max) {
+			pos.push(interpolate(table, 'time', timestamp, 'pos'));
+		}
+	});
+
+	length = pos.length;
+	if (!length) {
+		return {left: 0, right: 0};
+	}
+
+	if (!barThickness) {
+		// Calculate minInterval
+		[data, ticks].forEach(function(timestamps) {
+			for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
+				curr = interpolate(table, 'time', timestamps[i], 'pos');
+				minInterval = i > 0 ? Math.min(minInterval, curr - prev) : minInterval;
+				prev = curr;
 			}
 		});
+	}
 
-		length = pos.length;
-		if (length) {
-			// Calculate minInterval
-			if (!barThickness) {
-				[data, ticks].forEach(function(timestamps) {
-					for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
-						curr = interpolate(table, 'time', timestamps[i], 'pos');
-						minInterval = i > 0 ? Math.min(minInterval, curr - prev) : minInterval;
-						prev = curr;
-					}
-				});
-			}
-
-			if (!timeOpts.min) {
-				if (length === 1) {
-					width = (1 - pos[0]) * 2;
-				} else if (barThickness) {
-					width = pos[1] - pos[0];
-				} else {
-					width = minInterval;
-				}
-				left = Math.max(width / 2 - pos[0], 0);
-			}
-			if (!timeOpts.max) {
-				if (length === 1) {
-					width = pos[0] * 2;
-				} else if (barThickness) {
-					width = pos[length - 1] - pos[length - 2];
-				} else {
-					width = minInterval;
-				}
-				right = Math.max(width / 2 - (1 - pos[length - 1]), 0);
-			}
+	if (!timeOpts.min) {
+		if (length === 1) {
+			width = (1 - pos[0]) * 2;
+		} else if (barThickness) {
+			width = pos[1] - pos[0];
+		} else {
+			width = minInterval;
 		}
+		left = Math.max(width / 2 - pos[0], 0);
+	}
+	if (!timeOpts.max) {
+		if (length === 1) {
+			width = pos[0] * 2;
+		} else if (barThickness) {
+			width = pos[length - 1] - pos[length - 2];
+		} else {
+			width = minInterval;
+		}
+		right = Math.max(width / 2 - (1 - pos[length - 1]), 0);
 	}
 
 	return {left: left, right: right};
