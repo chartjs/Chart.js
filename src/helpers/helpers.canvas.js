@@ -81,7 +81,7 @@ var exports = module.exports = {
 		var radius = width / 2;
 		var yRadius = height / 2;
 
-		// some symbols are not usign the full width when they're called as a point
+		// some symbols are not using the full width when they're called as a point
 		// e.g. rect, rectRounded, rectRot, crossRot and star
 		// Following variables are used to define the pading value for those symbols
 		// the full width and height is used when symbol is called as legend.
