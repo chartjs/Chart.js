@@ -49,7 +49,7 @@ var exports = module.exports = {
 	},
 
 	drawPoint: function(ctx, style, radius, x, y, rotation) {
-		// call draw Symbol with converted radius to width and height
+		// call drawSymbol with converted radius to width and height
 		// and move x, y to the top left corner
 		this.drawSymbol(ctx, style, radius * 2, radius * 2, x - radius, y - radius, rotation, true);
 	},
@@ -80,6 +80,11 @@ var exports = module.exports = {
 		}
 		var radius = width / 2;
 		var yRadius = height / 2;
+
+		// some symbols are not usign the full width when they're called as a point
+		// e.g. rect, rectRounded, rectRot, crossRot and star
+		// Following variables are used to define the pading value for those symbols
+		// the full width and height is used when symbol is called as legend.
 		var padLeft = isPoint ? radius - width / 2 / Math.sqrt(2) : 0;
 		var padRight = isPoint ? radius + width / 2 / Math.sqrt(2) : width;
 		var padTop = isPoint ? radius - height / 2 / Math.sqrt(2) : 0;

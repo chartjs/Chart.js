@@ -78,7 +78,7 @@ Items passed to the legend `onClick` function are the ones returned from `labels
     // Legend symbol to display if point style is not used.
     symbol: String
 
-	// Width of legend symbol if point style is not used.
+    // Width of legend symbol if point style is not used.
     boxWidth: Number
 }
 ```
