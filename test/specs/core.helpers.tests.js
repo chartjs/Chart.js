@@ -172,6 +172,30 @@ describe('Core helper tests', function() {
 		expect(merged.scales.yAxes[2].ticks.callback).toEqual(jasmine.any(Function));
 	});
 
+	it('should merge deleted scale properties', function() {
+		var baseConfig = {
+			scales: {
+				xAxes: [{
+					type: 'time',
+					distribution: 'series',
+					time: {
+						min: 234982734,
+						max: 234982735
+					}
+				}]
+			}
+		};
+
+		var originalConfig = helpers.clone(baseConfig);
+
+		delete baseConfig.scales.xAxes[0].time.min;
+		delete baseConfig.scales.xAxes[0].time.max;
+
+		var merged = helpers.configMerge(baseConfig, originalConfig);
+
+		expect(merged).toEqual(originalConfig);
+	});
+
 	it('should filter an array', function() {
 		var data = [-10, 0, 6, 0, 7];
 		var callback = function(item) {
