@@ -354,9 +354,11 @@ function determineAlignment(tooltip, size) {
 	var xAlign = 'center';
 	var yAlign = 'center';
 
-	if (model.y < size.height) {
+	// If the tooltip is vertically centered then the bounds of the tooltip move up by half the height of the tooltip
+	var yPos = (tooltip._options.yAlign === 'center') ? (model.y - size.height / 2) : model.y;
+	if (yPos < size.height) {
 		yAlign = 'top';
-	} else if (model.y > (chart.height - size.height)) {
+	} else if (yPos > (chart.height - size.height)) {
 		yAlign = 'bottom';
 	}
 
