@@ -79,8 +79,8 @@ module.exports = Element.extend({
 
 		// Clipping for Points.
 		if (chartArea === undefined || (model.x >= chartArea.left && chartArea.right * errMargin >= model.x && model.y >= chartArea.top && chartArea.bottom * errMargin >= model.y)) {
-			ctx.lineWidth = helpers.valueOrDefault(vm.borderWidth, defaults.global.elements.point.borderWidth);
 			ctx.strokeStyle = ctx.lineWidth === 0 ? 'rgba(0,0,0,0)' : vm.borderColor || defaultColor;
+			ctx.lineWidth = helpers.valueOrDefault(vm.borderWidth, defaults.global.elements.point.borderWidth);
 			ctx.fillStyle = vm.backgroundColor || defaultColor;
 			helpers.canvas.drawPoint(ctx, pointStyle, radius, x, y);
 		}
