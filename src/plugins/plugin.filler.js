@@ -190,17 +190,41 @@ function isDrawable(point) {
 	return point && !point.skip;
 }
 
-function drawArea(ctx, curve0, curve1, len0, len1) {
-	var i;
+function drawArea(ctx, curve0, curve1, len0, len1, mode, area) {
+	var i, above, below;
 
 	if (!len0 || !len1) {
 		return;
+	}
+
+	switch (mode) {
+	case 'above':
+		above = true;
+		break;
+	case 'below':
+		below = true;
+		break;
+	default:
+		above = false;
+		below = false;
+	}
+	if (below || above) {
+		var clipPath = new Path2D();
+		if (above) {
+			clipPath.moveTo(area.right, area.top);
+		} else {
+			clipPath.moveTo(area.left, area.top);
+			clipPath.lineTo(curve0[0].x, curve0[0].y);
+		}
 	}
 
 	// building first area curve (normal)
 	ctx.moveTo(curve0[0].x, curve0[0].y);
 	for (i = 1; i < len0; ++i) {
 		helpers.canvas.lineTo(ctx, curve0[i - 1], curve0[i]);
+		if (below) {
+			clipPath.lineTo(curve0[i].x, curve0[i].y);
+		}
 	}
 
 	// joining the two area curves
@@ -208,11 +232,24 @@ function drawArea(ctx, curve0, curve1, len0, len1) {
 
 	// building opposite area curve (reverse)
 	for (i = len1 - 1; i > 0; --i) {
+		if (above) {
+			clipPath.lineTo(curve1[i].x, curve1[i].y);
+		}
 		helpers.canvas.lineTo(ctx, curve1[i], curve1[i - 1], true);
+	}
+	if (above || below) {
+		if (above) {
+			clipPath.lineTo(curve1[0].x, curve1[0].y);
+			clipPath.lineTo(area.left, area.top);
+		} else {
+			clipPath.lineTo(area.right, area.top);
+		}
+		clipPath.closePath();
+		ctx.clip(clipPath);
 	}
 }
 
-function doFill(ctx, points, mapper, view, color, loop) {
+function doFill(ctx, points, mapper, view, color, loop, mode, area) {
 	var count = points.length;
 	var span = view.spanGaps;
 	var curve0 = [];
@@ -235,7 +272,7 @@ function doFill(ctx, points, mapper, view, color, loop) {
 			len1 = curve1.push(p1);
 		} else if (len0 && len1) {
 			if (!span) {
-				drawArea(ctx, curve0, curve1, len0, len1);
+				drawArea(ctx, curve0, curve1, len0, len1, mode, area);
 				len0 = len1 = 0;
 				curve0 = [];
 				curve1 = [];
@@ -250,7 +287,7 @@ function doFill(ctx, points, mapper, view, color, loop) {
 		}
 	}
 
-	drawArea(ctx, curve0, curve1, len0, len1);
+	drawArea(ctx, curve0, curve1, len0, len1, mode, area);
 
 	ctx.closePath();
 	ctx.fillStyle = color;
@@ -298,6 +335,7 @@ module.exports = {
 
 	beforeDatasetDraw: function(chart, args) {
 		var meta = args.meta.$filler;
+		var mode = chart.options.plugins.filler.mode || '';
 		if (!meta) {
 			return;
 		}
@@ -311,7 +349,7 @@ module.exports = {
 
 		if (mapper && color && points.length) {
 			helpers.canvas.clipArea(ctx, chart.chartArea);
-			doFill(ctx, points, mapper, view, color, el._loop);
+			doFill(ctx, points, mapper, view, color, el._loop, mode, chart.chartArea);
 			helpers.canvas.unclipArea(ctx);
 		}
 	}
