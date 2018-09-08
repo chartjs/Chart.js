@@ -190,7 +190,7 @@ function docsTask(done) {
   const cmd = process.execPath;
 
   exec([cmd, script, 'install', './'].join(' ')).then(() => {
-    return exec([cmd, script, 'build', './', './dist/docs'].join(' '));
+    return exec([cmd, script, argv.watch ? 'serve' : 'build', './', './dist/docs'].join(' '));
   }).catch((err) => {
     console.error(err.stdout);
   }).then(() => {
