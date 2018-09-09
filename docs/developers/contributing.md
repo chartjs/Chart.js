@@ -37,6 +37,7 @@ The following commands are now available from the repository root:
 > gulp lint                 // perform code linting (ESLint)
 > gulp test                 // perform code linting and run unit tests
 > gulp docs                 // build the documentation in ./dist/docs
+> gulp docs --watch         // starts the gitbook live reloaded server
 ```
 
 More information can be found in [gulpfile.js](https://github.com/chartjs/Chart.js/blob/master/gulpfile.js).
