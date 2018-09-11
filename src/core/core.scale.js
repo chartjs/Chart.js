@@ -116,6 +116,48 @@ function parseLineHeight(options) {
 		helpers.valueOrDefault(options.fontSize, defaults.global.defaultFontSize));
 }
 
+function fillTextVertical(context, text, x, y) {
+	var arrText = text.split('');
+	var arrWidth = arrText.map(function(letter) {
+		return context.measureText(letter).width;
+	});
+
+	context.translate(0, 0);
+	var align = context.textAlign;
+	var baseline = context.textBaseline;
+
+	if (align === 'left') {
+		x = x + Math.max.apply(null, arrWidth) / 2;
+	} else if (align === 'right') {
+		x = x - Math.max.apply(null, arrWidth) / 2;
+	}
+	if (baseline === 'bottom' || baseline === 'alphabetic' || baseline === 'ideographic') {
+		y = y - arrWidth[0] / 2;
+	} else if (baseline === 'top' || baseline === 'hanging') {
+		y = y + arrWidth[0] / 2;
+	}
+
+	context.textAlign = 'center';
+	context.textBaseline = 'middle';
+	arrText.forEach(function(letter, index) {
+		context.setTransform(1, 0, 0, 1, 0, 0);
+		var letterWidth = arrWidth[index];
+		var code = letter.charCodeAt(0);
+		if (code <= 256) {
+			context.translate(x, y);
+			context.rotate(90 * Math.PI / 180);
+			context.translate(-x, -y);
+		} else if (index > 0 && text.charCodeAt(index - 1) < 256) {
+			y = y + arrWidth[index - 1] / 2;
+		}
+		context.fillText(letter, x, y);
+		letterWidth = arrWidth[index];
+		y = y + letterWidth;
+	});
+	context.textAlign = align;
+	context.textBaseline = baseline;
+}
+
 module.exports = Element.extend({
 	/**
 	 * Get the padding needed for the scale
@@ -901,7 +943,13 @@ module.exports = Element.extend({
 			context.textBaseline = 'middle';
 			context.fillStyle = scaleLabelFontColor; // render in correct colour
 			context.font = scaleLabelFont.font;
-			context.fillText(scaleLabel.labelString, 0, 0);
+
+			if (scaleLabel.ChineseVertical) {
+				fillTextVertical(context, scaleLabel.text, scaleLabelX, scaleLabelY);
+			} else {
+				context.fillText(scaleLabel.labelString, 0, 0);
+			}
+
 			context.restore();
 		}
 
