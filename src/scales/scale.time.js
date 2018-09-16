@@ -132,6 +132,46 @@ function buildLookupTable(timestamps, min, max, distribution) {
 	return table;
 }
 
+/**
+ * Has the same functionatilites as `buildLookupTable` but this functions
+ * builds an inverted table for the time scale
+ */
+function buildLookupTableReverse(timestamps, min, max, distribution) {
+
+	if (distribution === 'linear' || !timestamps.length) {
+		return [
+			{time: max, pos: 0},
+			{time: min, pos: 1}
+		];
+	}
+
+	var table = [];
+	var items = [max];
+	var i, ilen, prev, curr, next;
+
+	for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
+		curr = timestamps[i];
+		if (curr > min && curr < max) {
+			items.push(curr);
+		}
+	}
+
+	items.push(min);
+
+	for (i = 0, ilen = items.length; i < ilen; ++i) {
+		next = items[i + 1];
+		prev = items[i - 1];
+		curr = items[i];
+
+		// only add points that breaks the scale linearity
+		if (prev === undefined || next === undefined || Math.round((next + prev) / 2) !== curr) {
+			table.push({time: curr, pos: i / (ilen - 1)});
+		}
+	}
+
+	return table;
+}
+
 // @see adapted from http://www.anujgakhar.com/2014/03/01/binary-search-in-javascript/
 function lookup(table, key, value) {
 	var lo = 0;
@@ -160,13 +200,47 @@ function lookup(table, key, value) {
 }
 
 /**
+ * @see adapted from http://www.anujgakhar.com/2014/03/01/binary-search-in-javascript/
+ * This binary search is altered to do a reverse lookup
+ */
+function lookupReverse(table, key, value) {
+	var lo = table.length - 1;
+	var hi = 0;
+	var mid, i0, i1;
+
+	while (hi >= 0 && hi <= lo) {
+		mid = (lo + hi) >> 1;
+		i0 = table[mid];
+		i1 = table[mid - 1] || null;
+		if (!i1) {
+			// given value is outside table (before first item)
+			return {lo: null, hi: i0};
+		} else if (i1[key] < value) {
+			lo = mid - 1;
+		} else if (i0[key] > value) {
+			hi = mid + 1;
+		} else {
+			return {lo: i0, hi: i1};
+		}
+	}
+
+	// given value is outside table (after last item)
+	return {lo: i0, hi: null};
+}
+
+/**
  * Linearly interpolates the given source `value` using the table items `skey` values and
  * returns the associated `tkey` value. For example, interpolate(table, 'time', 42, 'pos')
  * returns the position for a timestamp equal to 42. If value is out of bounds, values at
  * index [0, 1] or [n - 1, n] are used for the interpolation.
  */
-function interpolate(table, skey, sval, tkey) {
-	var range = lookup(table, skey, sval);
+function interpolate(table, skey, sval, tkey, isReverse) {
+	var range = '';
+	if (isReverse) {
+		range = lookupReverse(table, skey, sval);
+	} else {
+		range = lookup(table, skey, sval);
+	}
 
 	// Note: the lookup table ALWAYS contains at least 2 items (min and max)
 	var prev = !range.lo ? table[0] : !range.hi ? table[table.length - 2] : range.lo;
@@ -365,22 +439,23 @@ function computeOffsets(table, ticks, min, max, options) {
 	var left = 0;
 	var right = 0;
 	var upper, lower;
+	var isReverse = options.ticks.reverse;
 
 	if (options.offset && ticks.length) {
 		if (!options.time.min) {
 			upper = ticks.length > 1 ? ticks[1] : max;
 			lower = ticks[0];
 			left = (
-				interpolate(table, 'time', upper, 'pos') -
-				interpolate(table, 'time', lower, 'pos')
+				interpolate(table, 'time', upper, 'pos', isReverse) -
+				interpolate(table, 'time', lower, 'pos', isReverse)
 			) / 2;
 		}
 		if (!options.time.max) {
 			upper = ticks[ticks.length - 1];
 			lower = ticks.length > 1 ? ticks[ticks.length - 2] : min;
 			right = (
-				interpolate(table, 'time', upper, 'pos') -
-				interpolate(table, 'time', lower, 'pos')
+				interpolate(table, 'time', upper, 'pos', isReverse) -
+				interpolate(table, 'time', lower, 'pos', isReverse)
 			) / 2;
 		}
 	}
@@ -602,6 +677,7 @@ module.exports = function() {
 			var min = me.min;
 			var max = me.max;
 			var options = me.options;
+			var isReverse = me.options.ticks.reverse;
 			var timeOpts = options.time;
 			var timestamps = [];
 			var ticks = [];
@@ -642,7 +718,11 @@ module.exports = function() {
 			// PRIVATE
 			me._unit = timeOpts.unit || determineUnitForFormatting(ticks, timeOpts.minUnit, me.min, me.max);
 			me._majorUnit = determineMajorUnit(me._unit);
-			me._table = buildLookupTable(me._timestamps.data, min, max, options.distribution);
+			if (isReverse) {
+				me._table = buildLookupTableReverse(me._timestamps.data.reverse(), min, max, options.distribution);
+			} else {
+				me._table = buildLookupTable(me._timestamps.data, min, max, options.distribution);
+			}
 			me._offsets = computeOffsets(me._table, ticks, min, max, options);
 			me._labelFormat = determineLabelFormat(me._timestamps.data, timeOpts);
 
@@ -707,9 +787,10 @@ module.exports = function() {
 		 */
 		getPixelForOffset: function(time) {
 			var me = this;
+			var isReverse = me.options.ticks.reverse;
 			var size = me._horizontal ? me.width : me.height;
 			var start = me._horizontal ? me.left : me.top;
-			var pos = interpolate(me._table, 'time', time, 'pos');
+			var pos = interpolate(me._table, 'time', time, 'pos', isReverse);
 
 			return start + size * (me._offsets.left + pos) / (me._offsets.left + 1 + me._offsets.right);
 		},
@@ -740,10 +821,11 @@ module.exports = function() {
 
 		getValueForPixel: function(pixel) {
 			var me = this;
+			var isReverse = me.options.ticks.reverse;
 			var size = me._horizontal ? me.width : me.height;
 			var start = me._horizontal ? me.left : me.top;
 			var pos = (size ? (pixel - start) / size : 0) * (me._offsets.left + 1 + me._offsets.left) - me._offsets.right;
-			var time = interpolate(me._table, 'pos', pos, 'time');
+			var time = interpolate(me._table, 'pos', pos, 'time', isReverse);
 
 			return moment(time);
 		},
