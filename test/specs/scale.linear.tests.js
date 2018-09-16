@@ -212,6 +212,31 @@ describe('Linear Scale', function() {
 		expect(chart.scales.yScale0.max).toBe(90);
 	});
 
+	it('Should correctly determine the max & min data values for small numbers', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					yAxisID: 'yScale0',
+					data: [-1e-8, 3e-8, -4e-8, 6e-8]
+				}],
+				labels: ['a', 'b', 'c', 'd']
+			},
+			options: {
+				scales: {
+					yAxes: [{
+						id: 'yScale0',
+						type: 'linear'
+					}]
+				}
+			}
+		});
+
+		expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
+		expect(chart.scales.yScale0.min * 1e8).toBeCloseTo(-4);
+		expect(chart.scales.yScale0.max * 1e8).toBeCloseTo(6);
+	});
+
 	it('Should correctly determine the max & min for scatter data', function() {
 		var chart = window.acquireChart({
 			type: 'line',
