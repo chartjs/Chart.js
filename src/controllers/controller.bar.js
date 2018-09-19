@@ -382,8 +382,10 @@ module.exports = function(Chart) {
 			var chart = me.chart;
 			var meta = me.getMeta();
 			var scale = me.getValueScale();
+			var isHorizontal = scale.isHorizontal();
 			var datasets = chart.data.datasets;
 			var value = scale.getRightValue(datasets[datasetIndex].data[index]);
+			var minSize = datasets[datasetIndex].minSize;
 			var stacked = scale.options.stacked;
 			var stack = meta.stack;
 			var start = 0;
@@ -409,6 +411,15 @@ module.exports = function(Chart) {
 			base = scale.getPixelForValue(start);
 			head = scale.getPixelForValue(start + value);
 			size = (head - base) / 2;
+
+			if (minSize !== undefined && Math.abs(size) < minSize) {
+				size = minSize;
+				if (value >= 0 && !isHorizontal || value < 0 && isHorizontal) {
+					head = base - minSize;
+				} else {
+					head = base + minSize;
+				}
+			}
 
 			return {
 				size: size,
