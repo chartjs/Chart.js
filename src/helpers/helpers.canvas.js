@@ -49,7 +49,7 @@ var exports = module.exports = {
 
 		// Add custom style.
 		if (style && typeof style === 'function') {
-            style(ctx, radius, x, y);
+			style(ctx, radius, x, y);
 			return;
 		}
 
