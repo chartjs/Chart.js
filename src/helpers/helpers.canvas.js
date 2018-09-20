@@ -47,6 +47,12 @@ var exports = module.exports = {
 	drawPoint: function(ctx, style, radius, x, y) {
 		var type, edgeLength, xOffset, yOffset, height, size;
 
+		// Add custom style.
+		if (style && typeof style === 'function') {
+            style(ctx, style, radius, x, y);
+			return;
+		}
+
 		if (style && typeof style === 'object') {
 			type = style.toString();
 			if (type === '[object HTMLImageElement]' || type === '[object HTMLCanvasElement]') {
