@@ -29,11 +29,12 @@ module.exports = function(Chart) {
 			var me = this;
 			var meta = me.getMeta();
 			var line = meta.dataset;
-			var points = meta.data;
+			var points = meta.data || [];
 			var custom = line.custom || {};
 			var dataset = me.getDataset();
 			var lineElementOptions = me.chart.options.elements.line;
 			var scale = me.chart.scale;
+			var i, ilen;
 
 			// Compatibility: If the properties are defined with only the old name, use those values
 			if ((dataset.tension !== undefined) && (dataset.lineTension === undefined)) {
@@ -65,12 +66,17 @@ module.exports = function(Chart) {
 			meta.dataset.pivot();
 
 			// Update Points
-			helpers.each(points, function(point, index) {
-				me.updateElement(point, index, reset);
-			}, me);
+			for (i = 0, ilen = points.length; i < ilen; i++) {
+				me.updateElement(points[i], i, reset);
+			}
 
 			// Update bezier control points
 			me.updateBezierControlPoints();
+
+			// Now pivot the point for animation
+			for (i = 0, ilen = points.length; i < ilen; i++) {
+				points[i].pivot();
+			}
 		},
 		updateElement: function(point, index, reset) {
 			var me = this;
@@ -116,28 +122,31 @@ module.exports = function(Chart) {
 			point._model.skip = custom.skip ? custom.skip : (isNaN(point._model.x) || isNaN(point._model.y));
 		},
 		updateBezierControlPoints: function() {
-			var chartArea = this.chart.chartArea;
-			var meta = this.getMeta();
+			var me = this;
+			var meta = me.getMeta();
+			var area = me.chart.chartArea;
+			var points = meta.data || [];
+			var i, ilen, model, controlPoints;
 
-			helpers.each(meta.data, function(point, index) {
-				var model = point._model;
-				var controlPoints = helpers.splineCurve(
-					helpers.previousItem(meta.data, index, true)._model,
+			function capControlPoint(pt, min, max) {
+				return Math.max(Math.min(pt, max), min);
+			}
+
+			for (i = 0, ilen = points.length; i < ilen; i++) {
+				model = points[i]._model;
+				controlPoints = helpers.splineCurve(
+					helpers.previousItem(points, i, true)._model,
 					model,
-					helpers.nextItem(meta.data, index, true)._model,
+					helpers.nextItem(points, i, true)._model,
 					model.tension
 				);
 
 				// Prevent the bezier going outside of the bounds of the graph
-				model.controlPointPreviousX = Math.max(Math.min(controlPoints.previous.x, chartArea.right), chartArea.left);
-				model.controlPointPreviousY = Math.max(Math.min(controlPoints.previous.y, chartArea.bottom), chartArea.top);
-
-				model.controlPointNextX = Math.max(Math.min(controlPoints.next.x, chartArea.right), chartArea.left);
-				model.controlPointNextY = Math.max(Math.min(controlPoints.next.y, chartArea.bottom), chartArea.top);
-
-				// Now pivot the point for animation
-				point.pivot();
-			});
+				model.controlPointPreviousX = capControlPoint(controlPoints.previous.x, area.left, area.right);
+				model.controlPointPreviousY = capControlPoint(controlPoints.previous.y, area.top, area.bottom);
+				model.controlPointNextX = capControlPoint(controlPoints.next.x, area.left, area.right);
+				model.controlPointNextY = capControlPoint(controlPoints.next.y, area.top, area.bottom);
+			}
 		},
 
 		setHoverStyle: function(point) {
