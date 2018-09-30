@@ -534,10 +534,11 @@ module.exports = function() {
 			var datasets = [];
 			var labels = [];
 			var i, j, ilen, jlen, data, timestamp;
+			var dataLabels = chart.data.labels || [];
 
 			// Convert labels to timestamps
-			for (i = 0, ilen = chart.data.labels.length; i < ilen; ++i) {
-				labels.push(parse(chart.data.labels[i], me));
+			for (i = 0, ilen = dataLabels.length; i < ilen; ++i) {
+				labels.push(parse(dataLabels[i], me));
 			}
 
 			// Convert data to timestamps
