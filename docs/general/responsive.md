@@ -16,7 +16,7 @@ Chart.js provides a [few options](#configuration-options) to enable responsivene
 | `responsive` | `Boolean` | `true` | Resizes the chart canvas when its container does ([important note...](#important-note)).
 | `responsiveAnimationDuration` | `Number` | `0` | Duration in milliseconds it takes to animate to new size after a resize event.
 | `maintainAspectRatio` | `Boolean` | `true` | Maintain the original canvas aspect ratio `(width / height)` when resizing.
-| `aspectRatio` | `Number` | `width / height` | You can define your custom aspect ratio. If you want a 1:1 aspect ratio just set this property to 1. This doesn't work when you define a custom `width` and `height`.
+| `aspectRatio` | `Number` | `width / height` | You can define your custom aspect ratio. If you want a 1:1 aspect ratio just set this property to 1. This property doesn't take effect when you define a custom `height`.
 | `onResize` | `Function` | `null` | Called when a resize occurs. Gets passed two arguments: the chart instance and the new size.
 
 ## Important Note
