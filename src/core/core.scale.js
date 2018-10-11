@@ -333,7 +333,7 @@ module.exports = Element.extend({
 		var me = this;
 		var context = me.ctx;
 		var tickOpts = me.options.ticks;
-		var labels = labelsFromTicks(me._ticks);
+		var labels = tickOpts.autoSkip ? me._autoSkip(me.getTicks()) : me.getTicks();
 
 		// Get the width of each grid by calculating the difference
 		// between x offsets between 0 and 1.
