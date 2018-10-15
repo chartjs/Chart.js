@@ -1,4 +1,6 @@
 describe('Chart.controllers.radar', function() {
+	describe('auto', jasmine.specsFromFixtures('controller.radar'));
+
 	it('Should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'radar',
@@ -410,6 +412,7 @@ describe('Chart.controllers.radar', function() {
 		chart.options.elements.point.radius = 1.01;
 
 		meta.controller.removeHoverStyle(point);
+		chart.update();
 		expect(point._model.backgroundColor).toBe('rgb(45, 46, 47)');
 		expect(point._model.borderColor).toBe('rgb(50, 51, 52)');
 		expect(point._model.borderWidth).toBe(10.1);
@@ -422,6 +425,7 @@ describe('Chart.controllers.radar', function() {
 		chart.data.datasets[0].pointBorderWidth = 2.1;
 
 		meta.controller.removeHoverStyle(point);
+		chart.update();
 		expect(point._model.backgroundColor).toBe('rgb(77, 79, 81)');
 		expect(point._model.borderColor).toBe('rgb(123, 125, 127)');
 		expect(point._model.borderWidth).toBe(2.1);
@@ -436,6 +440,7 @@ describe('Chart.controllers.radar', function() {
 		};
 
 		meta.controller.removeHoverStyle(point);
+		chart.update();
 		expect(point._model.backgroundColor).toBe('rgb(0, 0, 0)');
 		expect(point._model.borderColor).toBe('rgb(10, 10, 10)');
 		expect(point._model.borderWidth).toBe(5.5);

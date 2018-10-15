@@ -19,6 +19,7 @@ Global point options: `Chart.defaults.global.elements.point`
 | -----| ---- | --------| -----------
 | `radius` | `Number` | `3` | Point radius.
 | [`pointStyle`](#point-styles) | `String` | `circle` | Point style.
+| `rotation` | `Number` | `0` | Point rotation (in degrees).
 | `backgroundColor` | `Color` | `'rgba(0,0,0,0.1)'` | Point fill color.
 | `borderWidth` | `Number` | `1` | Point stroke width.
 | `borderColor` | `Color` | `'rgba(0,0,0,0.1)'` | Point stroke color.

@@ -20,7 +20,7 @@ var yargs = require('yargs');
 var path = require('path');
 var fs = require('fs');
 var htmllint = require('gulp-htmllint');
-var package = require('./package.json');
+var pkg = require('./package.json');
 
 var argv = yargs
   .option('force-output', {default: false})
@@ -69,11 +69,11 @@ gulp.task('default', ['build', 'watch']);
  */
 function bowerTask() {
   var json = JSON.stringify({
-      name: package.name,
-      description: package.description,
-      homepage: package.homepage,
-      license: package.license,
-      version: package.version,
+      name: pkg.name,
+      description: pkg.description,
+      homepage: pkg.homepage,
+      license: pkg.license,
+      version: pkg.version,
       main: outDir + "Chart.js",
       ignore: [
         '.github',
@@ -112,11 +112,11 @@ function buildTask() {
     .on('error', errorHandler)
     .pipe(source('Chart.bundle.js'))
     .pipe(insert.prepend(header))
-    .pipe(streamify(replace('{{ version }}', package.version)))
+    .pipe(streamify(replace('{{ version }}', pkg.version)))
     .pipe(gulp.dest(outDir))
     .pipe(streamify(uglify()))
     .pipe(insert.prepend(header))
-    .pipe(streamify(replace('{{ version }}', package.version)))
+    .pipe(streamify(replace('{{ version }}', pkg.version)))
     .pipe(streamify(concat('Chart.bundle.min.js')))
     .pipe(gulp.dest(outDir));
 
@@ -127,11 +127,11 @@ function buildTask() {
     .on('error', errorHandler)
     .pipe(source('Chart.js'))
     .pipe(insert.prepend(header))
-    .pipe(streamify(replace('{{ version }}', package.version)))
+    .pipe(streamify(replace('{{ version }}', pkg.version)))
     .pipe(gulp.dest(outDir))
     .pipe(streamify(uglify()))
     .pipe(insert.prepend(header))
-    .pipe(streamify(replace('{{ version }}', package.version)))
+    .pipe(streamify(replace('{{ version }}', pkg.version)))
     .pipe(streamify(concat('Chart.min.js')))
     .pipe(gulp.dest(outDir));
 
@@ -190,7 +190,7 @@ function docsTask(done) {
   const cmd = process.execPath;
 
   exec([cmd, script, 'install', './'].join(' ')).then(() => {
-    return exec([cmd, script, 'build', './', './dist/docs'].join(' '));
+    return exec([cmd, script, argv.watch ? 'serve' : 'build', './', './dist/docs'].join(' '));
   }).catch((err) => {
     console.error(err.stdout);
   }).then(() => {
