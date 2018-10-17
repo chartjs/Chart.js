@@ -30,8 +30,6 @@ module.exports = function(Chart) {
 				return isHorizontal ? meta.xAxisID === me.id : meta.yAxisID === me.id;
 			}
 
-			me.minBarLength = opts.minBarLength;
-
 			// First Calculate the range
 			me.min = null;
 			me.max = null;
