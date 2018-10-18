@@ -97,6 +97,7 @@ The bar chart defines the following configuration options. These options are mer
 | `categoryPercentage` | `Number` | `0.8` | Percent (0-1) of the available width each category should be within the sample width. [more...](#barpercentage-vs-categorypercentage)
 | `barThickness` | `Number/String` | | Manually set width of each bar in pixels. If set to `'flex'`, it computes "optimal" sample widths that globally arrange bars side by side. If not set (default), bars are equally sized based on the smallest interval. [more...](#barthickness)
 | `maxBarThickness` | `Number` | | Set this to ensure that bars are not sized thicker than this.
+| `minBarLength` | `Number` | | Set this to ensure that bars have a minimum length in pixels.
 | `gridLines.offsetGridLines` | `Boolean` | `true` | If true, the bars for a particular data point fall between the grid lines. The grid line will move to the left by one half of the tick interval. If false, the grid line will go right down the middle of the bars. [more...](#offsetgridlines)
 
 ### barThickness

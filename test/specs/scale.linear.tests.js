@@ -1046,4 +1046,52 @@ describe('Linear Scale', function() {
 
 		expect(chart.scales['x-axis-0'].max).toEqual(0);
 	});
+
+	it('minBarLength settings should be used on Y axis on bar chart', function() {
+		var minBarLength = 4;
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					data: [0.05, -0.05, 10, 15, 20, 25, 30, 35]
+				}]
+			},
+			options: {
+				scales: {
+					yAxes: [{
+						minBarLength: minBarLength
+					}]
+				}
+			}
+		});
+
+		var data = chart.getDatasetMeta(0).data;
+
+		expect(data[0]._model.base - minBarLength).toEqual(data[0]._model.y);
+		expect(data[1]._model.base + minBarLength).toEqual(data[1]._model.y);
+	});
+
+	it('minBarLength settings should be used on X axis on horizontalBar chart', function() {
+		var minBarLength = 4;
+		var chart = window.acquireChart({
+			type: 'horizontalBar',
+			data: {
+				datasets: [{
+					data: [0.05, -0.05, 10, 15, 20, 25, 30, 35]
+				}]
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						minBarLength: minBarLength
+					}]
+				}
+			}
+		});
+
+		var data = chart.getDatasetMeta(0).data;
+
+		expect(data[0]._model.base + minBarLength).toEqual(data[0]._model.x);
+		expect(data[1]._model.base - minBarLength).toEqual(data[1]._model.x);
+	});
 });
