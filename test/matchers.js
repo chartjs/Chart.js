@@ -1,7 +1,7 @@
 'use strict';
 
 var pixelmatch = require('pixelmatch');
-var utils = require('./jasmine.utils');
+var utils = require('./utils');
 
 function toPercent(value) {
 	return Math.round(value * 10000) / 100;

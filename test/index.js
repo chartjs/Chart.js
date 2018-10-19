@@ -1,6 +1,9 @@
-var Context = require('./jasmine.context');
-var matchers = require('./jasmine.matchers');
-var utils = require('./jasmine.utils');
+'use strict';
+
+var fixture = require('./fixture');
+var Context = require('./context');
+var matchers = require('./matchers');
+var utils = require('./utils');
 
 (function() {
 
@@ -42,7 +45,7 @@ var utils = require('./jasmine.utils');
 			'position: absolute' +
 		'}');
 
-	jasmine.specsFromFixtures = utils.specsFromFixtures;
+	jasmine.fixture = fixture;
 	jasmine.triggerMouseEvent = utils.triggerMouseEvent;
 
 	beforeEach(function() {

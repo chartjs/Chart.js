@@ -1,5 +1,5 @@
 describe('Chart.elements.Point', function() {
-	describe('auto', jasmine.specsFromFixtures('element.point'));
+	describe('auto', jasmine.fixture.specs('element.point'));
 
 	it ('Should be constructed', function() {
 		var point = new Chart.elements.Point({

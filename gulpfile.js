@@ -198,27 +198,15 @@ function docsTask(done) {
   });
 }
 
-function startTest() {
-  return [
-    {pattern: './test/fixtures/**/*.json', included: false},
-    {pattern: './test/fixtures/**/*.png', included: false},
-    './node_modules/moment/min/moment.min.js',
-    './test/jasmine.index.js',
-    './src/**/*.js',
-  ].concat(
-    argv.inputs ?
-      argv.inputs.split(';') :
-      ['./test/specs/**/*.js']
-  );
-}
-
 function unittestTask(done) {
   new karma.Server({
     configFile: path.join(__dirname, 'karma.conf.js'),
     singleRun: !argv.watch,
-    files: startTest(),
     args: {
-      coverage: !!argv.coverage
+      coverage: !!argv.coverage,
+      inputs: argv.inputs
+        ? argv.inputs.split(';')
+        : ['./test/specs/**/*.js']
     }
   },
   // https://github.com/karma-runner/gulp-karma/issues/18
