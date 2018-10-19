@@ -61,31 +61,69 @@ var myBarChart = new Chart(ctx, {
 ```
 
 ## Dataset Properties
-The bar chart allows a number of properties to be specified for each dataset. These are used to set display properties for a specific dataset. For example, the colour of the bars is generally set this way.
 
-Some properties can be specified as an array. If these are set to an array value, the first value applies to the first bar, the second value to the second bar, and so on.
+The bar chart allows a number of properties to be specified for each dataset.
+These are used to set display properties for a specific dataset. For example,
+the color of the bars is generally set this way.
 
-| Name | Type | Description
-| ---- | ---- | -----------
-| `label` | `String` | The label for the dataset which appears in the legend and tooltips.
-| `xAxisID` | `String` | The ID of the x axis to plot this dataset on. If not specified, this defaults to the ID of the first found x axis.
-| `yAxisID` | `String` | The ID of the y axis to plot this dataset on. If not specified, this defaults to the ID of the first found y axis.
-| `backgroundColor` | `Color/Color[]` | The fill color of the bar. See [Colors](../general/colors.md#colors).
-| `borderColor` | `Color/Color[]` | The color of the bar border. See [Colors](../general/colors.md#colors).
-| `borderWidth` | `Number/Number[]` | The stroke width of the bar in pixels.
-| `borderSkipped` | `String` | Which edge to skip drawing the border for. [more...](#borderskipped)
-| `hoverBackgroundColor` | `Color/Color[]` | The fill colour of the bars when hovered.
-| `hoverBorderColor` | `Color/Color[]` | The stroke colour of the bars when hovered.
-| `hoverBorderWidth` | `Number/Number[]` | The stroke width of the bars when hovered.
+| Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) |  Default
+| ---- | ---- | :----: | :----: | ----
+| [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0,0,0,0.1)'`
+| [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0,0,0,0.1)'`
+| [`borderSkipped`](#borderskipped) | `String` | Yes | Yes | `'bottom'`
+| [`borderWidth`](#styling) | `Number` | Yes | Yes | `0`
+| [`data`](#data-structure) | `Object[]` | - | - | **required**
+| [`hoverBackgroundColor`](#interactions) | [`Color`](../general/colors.md) | - | - | `undefined`
+| [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | - | - | `undefined`
+| [`hoverBorderWidth`](#interactions) | `Number` | - | - | `1`
+| [`label`](#general) | `String` | - | - | `''`
+| [`xAxisID`](#general) | `String` | - | - | first x axis
+| [`yAxisID`](#general) | `String` | - | - | first y axis
 
-### borderSkipped
-This setting is used to avoid drawing the bar stroke at the base of the fill. In general, this does not need to be changed except when creating chart types that derive from a bar chart.
+### General
+
+| Name | Description
+| ---- | ----
+| `label` | The label for the dataset which appears in the legend and tooltips.
+| `xAxisID` | The ID of the x axis to plot this dataset on.
+| `yAxisID` | The ID of the y axis to plot this dataset on.
+
+### Styling
+
+The style of each bar can be controlled with the following properties:
+
+| Name | Description
+| ---- | ----
+| `backgroundColor` | The bar background color.
+| `borderColor` | The bar border color.
+| [`borderSkipped`](#borderskipped) | The edge to skip when drawing bar.
+| `borderWidth` | The bar border width (in pixels).
+
+All these values, if `undefined`, fallback to the associated [`elements.rectangle.*`](../configuration/elements.md#rectangle-configuration) options.
+
+#### borderSkipped
+
+This setting is used to avoid drawing the bar stroke at the base of the fill.
+In general, this does not need to be changed except when creating chart types
+that derive from a bar chart.
 
 Options are:
-* 'bottom'
-* 'left'
-* 'top'
-* 'right'
+* `'bottom'`
+* `'left'`
+* `'top'`
+* `'right'`
+
+### Interactions
+
+The interaction with each bar can be controlled with the following properties:
+
+| Name | Description
+| ---- | -----------
+| `hoverBackgroundColor` | The bar background color when hovered.
+| `hoverBorderColor` | The bar border color hovered.
+| `hoverBorderWidth` | The bar border width when hovered (in pixels).
+
+All these values, if `undefined`, fallback to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options.
 
 ## Configuration Options
 
