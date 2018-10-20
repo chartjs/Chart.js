@@ -1,5 +1,5 @@
 describe('Chart.controllers.radar', function() {
-	describe('auto', jasmine.specsFromFixtures('controller.radar'));
+	describe('auto', jasmine.fixture.specs('controller.radar'));
 
 	it('Should be constructed', function() {
 		var chart = window.acquireChart({

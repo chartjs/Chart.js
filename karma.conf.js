@@ -25,9 +25,18 @@ module.exports = function(karma) {
 			}
 		},
 
+		files: [
+			{pattern: 'test/fixtures/**/*.js', included: false},
+			{pattern: 'test/fixtures/**/*.json', included: false},
+			{pattern: 'test/fixtures/**/*.png', included: false},
+			'node_modules/moment/min/moment.min.js',
+			'test/index.js',
+			'src/**/*.js'
+		].concat(args.inputs),
+
 		preprocessors: {
-			'./test/jasmine.index.js': ['browserify'],
-			'./src/**/*.js': ['browserify']
+			'test/index.js': ['browserify'],
+			'src/**/*.js': ['browserify']
 		},
 
 		browserify: {
