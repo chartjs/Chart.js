@@ -56,6 +56,24 @@ describe('Chart.helpers.core', function() {
 		});
 	});
 
+	describe('isFinite', function() {
+		it('should return true if value is a finite number', function() {
+			expect(helpers.isFinite(0)).toBeTruthy();
+			// eslint-disable-next-line no-new-wrappers
+			expect(helpers.isFinite(new Number(10))).toBeTruthy();
+		});
+
+		it('should return false if the value is infinite', function() {
+			expect(helpers.isFinite(Number.POSITIVE_INFINITY)).toBeFalsy();
+			expect(helpers.isFinite(Number.NEGATIVE_INFINITY)).toBeFalsy();
+		});
+
+		it('should return false if the value is not a number', function() {
+			expect(helpers.isFinite('a')).toBeFalsy();
+			expect(helpers.isFinite({})).toBeFalsy();
+		});
+	});
+
 	describe('isNullOrUndef', function() {
 		it('should return true if value is null/undefined', function() {
 			expect(helpers.isNullOrUndef(null)).toBeTruthy();
