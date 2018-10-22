@@ -52,6 +52,15 @@ var helpers = {
 	},
 
 	/**
+	 * Returns true if `value` is a finite number, else returns false
+	 * @param {*} value  - The value to test.
+	 * @returns {Boolean}
+	 */
+	isFinite: function(value) {
+		return (typeof value === 'number' || value instanceof Number) && isFinite(value);
+	},
+
+	/**
 	 * Returns `value` if defined, else returns `defaultValue`.
 	 * @param {*} value - The value to return if defined.
 	 * @param {*} defaultValue - The value to return if `value` is undefined.
