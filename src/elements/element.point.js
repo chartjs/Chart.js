@@ -72,14 +72,14 @@ module.exports = Element.extend({
 		var radius = vm.radius;
 		var x = vm.x;
 		var y = vm.y;
-		var errMargin = 1.01; // 1.01 is margin for Accumulated error. (Especially Edge, IE.)
+		var epsilon = 0.0000001; // 0.0000001 is margin in pixels for Accumulated error.
 
 		if (vm.skip) {
 			return;
 		}
 
 		// Clipping for Points.
-		if (chartArea === undefined || (model.x >= chartArea.left && chartArea.right * errMargin >= model.x && model.y >= chartArea.top && chartArea.bottom * errMargin >= model.y)) {
+		if (chartArea === undefined || (model.x > chartArea.left - epsilon && chartArea.right + epsilon > model.x && model.y > chartArea.top - epsilon && chartArea.bottom + epsilon > model.y)) {
 			ctx.strokeStyle = vm.borderColor || defaultColor;
 			ctx.lineWidth = helpers.valueOrDefault(vm.borderWidth, defaults.global.elements.point.borderWidth);
 			ctx.fillStyle = vm.backgroundColor || defaultColor;
