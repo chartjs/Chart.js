@@ -128,7 +128,7 @@ module.exports = function(Chart) {
 			var resolve = helpers.options.resolve;
 			var data = dataset.data[index];
 			var values = {};
-			var i, ilen, key;
+			var key;
 
 			// Scriptable options
 			var context = {
@@ -151,7 +151,7 @@ module.exports = function(Chart) {
 				'rotation'
 			];
 
-			for (i = 0, ilen = keys.length; i < ilen; ++i) {
+			for (var i = 0; i < keys.length; ++i) {
 				key = keys[i];
 				values[key] = resolve([
 					custom[key],

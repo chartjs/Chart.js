@@ -96,10 +96,9 @@ module.exports = {
 	 */
 	notify: function(chart, hook, args) {
 		var descriptors = this.descriptors(chart);
-		var ilen = descriptors.length;
-		var i, descriptor, plugin, params, method;
+		var descriptor, plugin, params, method;
 
-		for (i = 0; i < ilen; ++i) {
+		for (var i = 0; i < descriptors.length; ++i) {
 			descriptor = descriptors[i];
 			plugin = descriptor.plugin;
 			method = plugin[hook];

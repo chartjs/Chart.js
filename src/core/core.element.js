@@ -5,9 +5,9 @@ var helpers = require('../helpers/index');
 
 function interpolate(start, view, model, ease) {
 	var keys = Object.keys(model);
-	var i, ilen, key, actual, origin, target, type, c0, c1;
+	var key, actual, origin, target, type, c0, c1;
 
-	for (i = 0, ilen = keys.length; i < ilen; ++i) {
+	for (var i = 0; i < keys.length; ++i) {
 		key = keys[i];
 
 		target = model[key];

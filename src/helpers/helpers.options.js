@@ -75,10 +75,8 @@ module.exports = {
 	 * @since 2.7.0
 	 */
 	resolve: function(inputs, context, index) {
-		var i, ilen, value;
-
-		for (i = 0, ilen = inputs.length; i < ilen; ++i) {
-			value = inputs[i];
+		for (var i = 0; i < inputs.length; ++i) {
+			var value = inputs[i];
 			if (value === undefined) {
 				continue;
 			}

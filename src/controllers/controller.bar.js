@@ -102,13 +102,13 @@ defaults._set('horizontalBar', {
 function computeMinSampleSize(scale, pixels) {
 	var min = scale.isHorizontal() ? scale.width : scale.height;
 	var ticks = scale.getTicks();
-	var prev, curr, i, ilen;
+	var prev, curr;
 
-	for (i = 1, ilen = pixels.length; i < ilen; ++i) {
+	for (var i = 1; i < pixels.length; ++i) {
 		min = Math.min(min, pixels[i] - pixels[i - 1]);
 	}
 
-	for (i = 0, ilen = ticks.length; i < ilen; ++i) {
+	for (var i = 0; i < ticks.length; ++i) {
 		curr = scale.getPixelForTick(i);
 		min = i > 0 ? Math.min(min, curr - prev) : min;
 		prev = curr;
@@ -202,11 +202,10 @@ module.exports = function(Chart) {
 		update: function(reset) {
 			var me = this;
 			var rects = me.getMeta().data;
-			var i, ilen;
 
 			me._ruler = me.getRuler();
 
-			for (i = 0, ilen = rects.length; i < ilen; ++i) {
+			for (var i = 0; i < rects.length; ++i) {
 				me.updateElement(rects[i], i, reset);
 			}
 		},
@@ -300,9 +299,9 @@ module.exports = function(Chart) {
 			var stacked = scale.options.stacked;
 			var ilen = last === undefined ? chart.data.datasets.length : last + 1;
 			var stacks = [];
-			var i, meta;
+			var meta;
 
-			for (i = 0; i < ilen; ++i) {
+			for (var i = 0; i < ilen; ++i) {
 				meta = chart.getDatasetMeta(i);
 				if (meta.bar && chart.isDatasetVisible(i) &&
 					(stacked === false ||
@@ -459,12 +458,10 @@ module.exports = function(Chart) {
 			var scale = me.getValueScale();
 			var rects = me.getMeta().data;
 			var dataset = me.getDataset();
-			var ilen = rects.length;
-			var i = 0;
 
 			helpers.canvas.clipArea(chart.ctx, chart.chartArea);
 
-			for (; i < ilen; ++i) {
+			for (var i = 0; i < rects.length; ++i) {
 				if (!isNaN(scale.getRightValue(dataset.data[i]))) {
 					rects[i].draw();
 				}

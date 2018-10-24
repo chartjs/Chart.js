@@ -134,13 +134,13 @@ var helpers = {
 	 * @returns {Boolean}
 	 */
 	arrayEquals: function(a0, a1) {
-		var i, ilen, v0, v1;
+		var v0, v1;
 
 		if (!a0 || !a1 || a0.length !== a1.length) {
 			return false;
 		}
 
-		for (i = 0, ilen = a0.length; i < ilen; ++i) {
+		for (var i = 0; i < a0.length; ++i) {
 			v0 = a0[i];
 			v1 = a1[i];
 
@@ -225,8 +225,7 @@ var helpers = {
 	 */
 	merge: function(target, source, options) {
 		var sources = helpers.isArray(source) ? source : [source];
-		var ilen = sources.length;
-		var merge, i, keys, klen, k;
+		var merge, keys;
 
 		if (!helpers.isObject(target)) {
 			return target;
@@ -235,14 +234,14 @@ var helpers = {
 		options = options || {};
 		merge = options.merger || helpers._merger;
 
-		for (i = 0; i < ilen; ++i) {
+		for (var i = 0; i < sources.length; ++i) {
 			source = sources[i];
 			if (!helpers.isObject(source)) {
 				continue;
 			}
 
 			keys = Object.keys(source);
-			for (k = 0, klen = keys.length; k < klen; ++k) {
+			for (var k = 0; k < keys.length; ++k) {
 				merge(keys[k], target, source, options);
 			}
 		}
@@ -272,7 +271,7 @@ var helpers = {
 		var setFn = function(value, key) {
 			target[key] = value;
 		};
-		for (var i = 1, ilen = arguments.length; i < ilen; ++i) {
+		for (var i = 1; i < arguments.length; ++i) {
 			helpers.each(arguments[i], setFn);
 		}
 		return target;

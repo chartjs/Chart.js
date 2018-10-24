@@ -69,9 +69,8 @@ function sorter(a, b) {
 function arrayUnique(items) {
 	var hash = {};
 	var out = [];
-	var i, ilen, item;
 
-	for (i = 0, ilen = items.length; i < ilen; ++i) {
+	for (var i = 0; i < items.length; ++i) {
 		item = items[i];
 		if (!hash[item]) {
 			hash[item] = true;
@@ -107,9 +106,9 @@ function buildLookupTable(timestamps, min, max, distribution) {
 
 	var table = [];
 	var items = [min];
-	var i, ilen, prev, curr, next;
+	var ilen, prev, curr, next;
 
-	for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
+	for (var i = 0; i < timestamps.length; ++i) {
 		curr = timestamps[i];
 		if (curr > min && curr < max) {
 			items.push(curr);
@@ -118,7 +117,7 @@ function buildLookupTable(timestamps, min, max, distribution) {
 
 	items.push(max);
 
-	for (i = 0, ilen = items.length; i < ilen; ++i) {
+	for (var i = 0, ilen = items.length; i < ilen; ++i) {
 		next = items[i + 1];
 		prev = items[i - 1];
 		curr = items[i];
@@ -239,13 +238,13 @@ function determineStepSize(min, max, unit, capacity) {
 	var interval = INTERVALS[unit];
 	var milliseconds = interval.size;
 	var steps = interval.steps;
-	var i, ilen, factor;
+	var factor;
 
 	if (!steps) {
 		return Math.ceil(range / (capacity * milliseconds));
 	}
 
-	for (i = 0, ilen = steps.length; i < ilen; ++i) {
+	for (var i = 0; i < steps.length; ++i) {
 		factor = steps[i];
 		if (Math.ceil(range / (milliseconds * factor)) <= capacity) {
 			break;
@@ -260,9 +259,9 @@ function determineStepSize(min, max, unit, capacity) {
  */
 function determineUnitForAutoTicks(minUnit, min, max, capacity) {
 	var ilen = UNITS.length;
-	var i, interval, factor;
+	var interval, factor, ilen;
 
-	for (i = UNITS.indexOf(minUnit); i < ilen - 1; ++i) {
+	for (var i = UNITS.indexOf(minUnit); i < ilen - 1; ++i) {
 		interval = INTERVALS[UNITS[i]];
 		factor = interval.steps ? interval.steps[interval.steps.length - 1] : MAX_INTEGER;
 
@@ -293,7 +292,7 @@ function determineUnitForFormatting(ticks, minUnit, min, max) {
 }
 
 function determineMajorUnit(unit) {
-	for (var i = UNITS.indexOf(unit) + 1, ilen = UNITS.length; i < ilen; ++i) {
+	for (var i = UNITS.indexOf(unit) + 1; i < UNITS.length; ++i) {
 		if (INTERVALS[UNITS[i]].common) {
 			return UNITS[i];
 		}
@@ -390,9 +389,9 @@ function computeOffsets(table, ticks, min, max, options) {
 
 function ticksFromTimestamps(values, majorUnit) {
 	var ticks = [];
-	var i, ilen, value, major;
+	var value, major;
 
-	for (i = 0, ilen = values.length; i < ilen; ++i) {
+	for (var i = 0; i < values.length; ++i) {
 		value = values[i];
 		major = majorUnit ? value === +moment(value).startOf(majorUnit) : false;
 
@@ -406,12 +405,11 @@ function ticksFromTimestamps(values, majorUnit) {
 }
 
 function determineLabelFormat(data, timeOpts) {
-	var i, momentDate, hasTime;
-	var ilen = data.length;
+	var momentDate, hasTime;
 
 	// find the label with the most parts (milliseconds, minutes, etc.)
 	// format all labels with the same level of detail as the most specific label
-	for (i = 0; i < ilen; i++) {
+	for (var i = 0; i < data.length; i++) {
 		momentDate = momentify(data[i], timeOpts);
 		if (momentDate.millisecond() !== 0) {
 			return 'MMM D, YYYY h:mm:ss.SSS a';
@@ -533,7 +531,7 @@ module.exports = function() {
 			var timestamps = [];
 			var datasets = [];
 			var labels = [];
-			var i, j, ilen, jlen, data, timestamp;
+			var i, ilen, data, timestamp;
 			var dataLabels = chart.data.labels || [];
 
 			// Convert labels to timestamps
@@ -550,7 +548,7 @@ module.exports = function() {
 					if (helpers.isObject(data[0])) {
 						datasets[i] = [];
 
-						for (j = 0, jlen = data.length; j < jlen; ++j) {
+						for (var j = 0; j < data.length; ++j) {
 							timestamp = parse(data[j], me);
 							timestamps.push(timestamp);
 							datasets[i][j] = timestamp;
@@ -606,7 +604,7 @@ module.exports = function() {
 			var timeOpts = options.time;
 			var timestamps = [];
 			var ticks = [];
-			var i, ilen, timestamp;
+			var timestamp;
 
 			switch (options.ticks.source) {
 			case 'data':
@@ -630,7 +628,7 @@ module.exports = function() {
 			max = parse(timeOpts.max, me) || max;
 
 			// Remove ticks outside the min/max range
-			for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
+			for (var i = 0; i < timestamps.length; ++i) {
 				timestamp = timestamps[i];
 				if (timestamp >= min && timestamp <= max) {
 					ticks.push(timestamp);
@@ -694,9 +692,8 @@ module.exports = function() {
 
 		convertTicksToLabels: function(ticks) {
 			var labels = [];
-			var i, ilen;
 
-			for (i = 0, ilen = ticks.length; i < ilen; ++i) {
+			for (var i = 0; i < ticks.length; ++i) {
 				labels.push(this.tickFormatFunction(moment(ticks[i].value), i, ticks));
 			}
 

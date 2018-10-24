@@ -67,9 +67,8 @@ defaults._set('scale', {
 
 function labelsFromTicks(ticks) {
 	var labels = [];
-	var i, ilen;
 
-	for (i = 0, ilen = ticks.length; i < ilen; ++i) {
+	for (var i = 0; i < ticks.length; ++i) {
 		labels.push(ticks[i].label);
 	}
 
@@ -174,7 +173,7 @@ module.exports = Element.extend({
 
 	update: function(maxWidth, maxHeight, margins) {
 		var me = this;
-		var i, ilen, labels, label, ticks, tick;
+		var labels, label, ticks, tick;
 
 		// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
 		me.beforeUpdate();
@@ -229,7 +228,7 @@ module.exports = Element.extend({
 		// IMPORTANT: from this point, we consider that `this.ticks` will NEVER change!
 
 		// BACKWARD COMPAT: synchronize `_ticks` with labels (so potentially `this.ticks`)
-		for (i = 0, ilen = labels.length; i < ilen; ++i) {
+		for (var i = 0; i < labels.length; ++i) {
 			label = labels[i];
 			tick = ticks[i];
 			if (!tick) {

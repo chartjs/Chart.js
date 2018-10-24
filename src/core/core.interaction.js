@@ -26,15 +26,15 @@ function getRelativePosition(e, chart) {
  */
 function parseVisibleItems(chart, handler) {
 	var datasets = chart.data.datasets;
-	var meta, i, j, ilen, jlen;
+	var meta;
 
-	for (i = 0, ilen = datasets.length; i < ilen; ++i) {
+	for (var i = 0; i < datasets.length; ++i) {
 		if (!chart.isDatasetVisible(i)) {
 			continue;
 		}
 
 		meta = chart.getDatasetMeta(i);
-		for (j = 0, jlen = meta.data.length; j < jlen; ++j) {
+		for (var j = 0; j < meta.data.length; ++j) {
 			var element = meta.data[j];
 			if (!element._view.skip) {
 				handler(element);

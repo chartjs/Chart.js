@@ -87,11 +87,9 @@ module.exports = {
 	 */
 	configure: function(chart, item, options) {
 		var props = ['fullWidth', 'position', 'weight'];
-		var ilen = props.length;
-		var i = 0;
 		var prop;
 
-		for (; i < ilen; ++i) {
+		for (var i = 0; i < props.length; ++i) {
 			prop = props[i];
 			if (options.hasOwnProperty(prop)) {
 				item[prop] = options[prop];

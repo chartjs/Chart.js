@@ -27,7 +27,6 @@ module.exports = {
 	 */
 	addAnimation: function(chart, animation, duration, lazy) {
 		var animations = this.animations;
-		var i, ilen;
 
 		animation.chart = chart;
 
@@ -35,7 +34,7 @@ module.exports = {
 			chart.animating = true;
 		}
 
-		for (i = 0, ilen = animations.length; i < ilen; ++i) {
+		for (var i = 0; i < animations.length; ++i) {
 			if (animations[i].chart === chart) {
 				animations[i] = animation;
 				return;

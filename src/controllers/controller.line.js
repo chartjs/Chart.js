@@ -44,7 +44,7 @@ module.exports = function(Chart) {
 			var options = me.chart.options;
 			var lineElementOptions = options.elements.line;
 			var scale = me.getScaleForId(meta.yAxisID);
-			var i, ilen, custom;
+			var custom;
 			var dataset = me.getDataset();
 			var showLine = lineEnabled(dataset, options);
 
@@ -86,7 +86,7 @@ module.exports = function(Chart) {
 			}
 
 			// Update Points
-			for (i = 0, ilen = points.length; i < ilen; ++i) {
+			for (var i = 0; i < points.length; ++i) {
 				me.updateElement(points[i], i, reset);
 			}
 
@@ -95,7 +95,7 @@ module.exports = function(Chart) {
 			}
 
 			// Now pivot the point for animation
-			for (i = 0, ilen = points.length; i < ilen; ++i) {
+			for (var i = 0; i < points.length; ++i) {
 				points[i].pivot();
 			}
 		},
@@ -247,7 +247,7 @@ module.exports = function(Chart) {
 			var meta = me.getMeta();
 			var area = me.chart.chartArea;
 			var points = (meta.data || []);
-			var i, ilen, point, model, controlPoints;
+			var point, model, controlPoints;
 
 			// Only consider points that are drawn in case the spanGaps option is used
 			if (meta.dataset._model.spanGaps) {
@@ -263,7 +263,7 @@ module.exports = function(Chart) {
 			if (meta.dataset._model.cubicInterpolationMode === 'monotone') {
 				helpers.splineCurveMonotone(points);
 			} else {
-				for (i = 0, ilen = points.length; i < ilen; ++i) {
+				for (var i = 0; i < points.length; ++i) {
 					point = points[i];
 					model = point._model;
 					controlPoints = helpers.splineCurve(
@@ -280,7 +280,7 @@ module.exports = function(Chart) {
 			}
 
 			if (me.chart.options.elements.line.capBezierPoints) {
-				for (i = 0, ilen = points.length; i < ilen; ++i) {
+				for (var i = 0; i < points.length; ++i) {
 					model = points[i]._model;
 					model.controlPointPreviousX = capControlPoint(model.controlPointPreviousX, area.left, area.right);
 					model.controlPointPreviousY = capControlPoint(model.controlPointPreviousY, area.top, area.bottom);
@@ -296,9 +296,7 @@ module.exports = function(Chart) {
 			var meta = me.getMeta();
 			var points = meta.data || [];
 			var area = chart.chartArea;
-			var ilen = points.length;
 			var halfBorderWidth;
-			var i = 0;
 
 			if (lineEnabled(me.getDataset(), chart.options)) {
 				halfBorderWidth = (meta.dataset._model.borderWidth || 0) / 2;
@@ -316,7 +314,7 @@ module.exports = function(Chart) {
 			}
 
 			// Draw the points
-			for (; i < ilen; ++i) {
+			for (var i = 0; i < points.length; ++i) {
 				points[i].draw(area);
 			}
 		},

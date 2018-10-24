@@ -168,9 +168,8 @@ module.exports = function(Chart) {
 			var meta = me.getMeta();
 			var data = me.getDataset().data || [];
 			var metaData = meta.data;
-			var i, ilen;
 
-			for (i = 0, ilen = data.length; i < ilen; ++i) {
+			for (var i = 0; i < data.length; ++i) {
 				metaData[i] = metaData[i] || me.createMetaData(i);
 			}
 
@@ -211,10 +210,8 @@ module.exports = function(Chart) {
 		transition: function(easingValue) {
 			var meta = this.getMeta();
 			var elements = meta.data || [];
-			var ilen = elements.length;
-			var i = 0;
 
-			for (; i < ilen; ++i) {
+			for (var i = 0; i < elements.length; ++i) {
 				elements[i].transition(easingValue);
 			}
 
@@ -226,14 +223,12 @@ module.exports = function(Chart) {
 		draw: function() {
 			var meta = this.getMeta();
 			var elements = meta.data || [];
-			var ilen = elements.length;
-			var i = 0;
 
 			if (meta.dataset) {
 				meta.dataset.draw();
 			}
 
-			for (; i < ilen; ++i) {
+			for (var i = 0; i < elements.length; ++i) {
 				elements[i].draw();
 			}
 		},

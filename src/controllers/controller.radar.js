@@ -34,7 +34,6 @@ module.exports = function(Chart) {
 			var dataset = me.getDataset();
 			var lineElementOptions = me.chart.options.elements.line;
 			var scale = me.chart.scale;
-			var i, ilen;
 
 			// Compatibility: If the properties are defined with only the old name, use those values
 			if ((dataset.tension !== undefined) && (dataset.lineTension === undefined)) {
@@ -66,7 +65,7 @@ module.exports = function(Chart) {
 			meta.dataset.pivot();
 
 			// Update Points
-			for (i = 0, ilen = points.length; i < ilen; i++) {
+			for (var i = 0; i < points.length; i++) {
 				me.updateElement(points[i], i, reset);
 			}
 
@@ -74,7 +73,7 @@ module.exports = function(Chart) {
 			me.updateBezierControlPoints();
 
 			// Now pivot the point for animation
-			for (i = 0, ilen = points.length; i < ilen; i++) {
+			for (var i = 0; i < points.length; i++) {
 				points[i].pivot();
 			}
 		},
@@ -126,13 +125,13 @@ module.exports = function(Chart) {
 			var meta = me.getMeta();
 			var area = me.chart.chartArea;
 			var points = meta.data || [];
-			var i, ilen, model, controlPoints;
+			var model, controlPoints;
 
 			function capControlPoint(pt, min, max) {
 				return Math.max(Math.min(pt, max), min);
 			}
 
-			for (i = 0, ilen = points.length; i < ilen; i++) {
+			for (var i = 0; i < points.length; i++) {
 				model = points[i]._model;
 				controlPoints = helpers.splineCurve(
 					helpers.previousItem(points, i, true)._model,
