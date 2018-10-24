@@ -174,6 +174,26 @@ module.exports = function() {
 	helpers.toDegrees = function(radians) {
 		return radians * (180 / Math.PI);
 	};
+
+	/**
+	 * Returns the number of decimal places
+	 * i.e. the number of digits after the decimal point, of the value of this Number.
+	 * @param {Number} x - A number.
+	 * @returns {Number} The number of decimal places.
+	 */
+	helpers.decimalPlaces = function(x) {
+		if (!helpers.isFinite(x)) {
+			return;
+		}
+		var e = 1;
+		var p = 0;
+		while (Math.round(x * e) / e !== x) {
+			e *= 10;
+			p++;
+		}
+		return p;
+	};
+
 	// Gets the angle from vertical upright to the point about a centre.
 	helpers.getAngleFromPoint = function(centrePoint, anglePoint) {
 		var distanceFromXCenter = anglePoint.x - centrePoint.x;

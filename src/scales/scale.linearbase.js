@@ -15,36 +15,41 @@ function generateTicks(generationOptions, dataRange) {
 	// "nice number" algorithm. See http://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
 	// for details.
 
-	var factor;
-	var precision;
-	var spacing;
+	var stepSize = generationOptions.stepSize;
+	var min = generationOptions.min;
+	var max = generationOptions.max;
+	var spacing, precision, factor, niceRange, niceMin, niceMax, numSpaces;
 
-	if (generationOptions.stepSize && generationOptions.stepSize > 0) {
-		spacing = generationOptions.stepSize;
+	if (stepSize && stepSize > 0) {
+		spacing = stepSize;
 	} else {
-		var niceRange = helpers.niceNum(dataRange.max - dataRange.min, false);
+		niceRange = helpers.niceNum(dataRange.max - dataRange.min, false);
 		spacing = helpers.niceNum(niceRange / (generationOptions.maxTicks - 1), true);
 
 		precision = generationOptions.precision;
-		if (precision !== undefined) {
+		if (!helpers.isNullOrUndef(precision)) {
 			// If the user specified a precision, round to that number of decimal places
 			factor = Math.pow(10, precision);
 			spacing = Math.ceil(spacing * factor) / factor;
 		}
 	}
-	var niceMin = Math.floor(dataRange.min / spacing) * spacing;
-	var niceMax = Math.ceil(dataRange.max / spacing) * spacing;
+	// If a precision is not specified, calculate factor based on spacing
+	if (!factor) {
+		factor = Math.pow(10, helpers.decimalPlaces(spacing));
+	}
+	niceMin = Math.floor(dataRange.min / spacing) * spacing;
+	niceMax = Math.ceil(dataRange.max / spacing) * spacing;
 
 	// If min, max and stepSize is set and they make an evenly spaced scale use it.
-	if (!helpers.isNullOrUndef(generationOptions.min) && !helpers.isNullOrUndef(generationOptions.max) && generationOptions.stepSize) {
+	if (!helpers.isNullOrUndef(min) && !helpers.isNullOrUndef(max) && stepSize) {
 		// If very close to our whole number, use it.
-		if (helpers.almostWhole((generationOptions.max - generationOptions.min) / generationOptions.stepSize, spacing / 1000)) {
-			niceMin = generationOptions.min;
-			niceMax = generationOptions.max;
+		if (helpers.almostWhole((max - min) / stepSize, spacing / 1000)) {
+			niceMin = min;
+			niceMax = max;
 		}
 	}
 
-	var numSpaces = (niceMax - niceMin) / spacing;
+	numSpaces = (niceMax - niceMin) / spacing;
 	// If very close to our rounded value, use it.
 	if (helpers.almostEquals(numSpaces, Math.round(numSpaces), spacing / 1000)) {
 		numSpaces = Math.round(numSpaces);
@@ -52,17 +57,13 @@ function generateTicks(generationOptions, dataRange) {
 		numSpaces = Math.ceil(numSpaces);
 	}
 
-	precision = 1;
-	if (spacing < 1) {
-		precision = Math.pow(10, 1 - Math.floor(helpers.log10(spacing)));
-		niceMin = Math.round(niceMin * precision) / precision;
-		niceMax = Math.round(niceMax * precision) / precision;
-	}
-	ticks.push(generationOptions.min !== undefined ? generationOptions.min : niceMin);
+	niceMin = Math.round(niceMin * factor) / factor;
+	niceMax = Math.round(niceMax * factor) / factor;
+	ticks.push(helpers.isNullOrUndef(min) ? niceMin : min);
 	for (var j = 1; j < numSpaces; ++j) {
-		ticks.push(Math.round((niceMin + j * spacing) * precision) / precision);
+		ticks.push(Math.round((niceMin + j * spacing) * factor) / factor);
 	}
-	ticks.push(generationOptions.max !== undefined ? generationOptions.max : niceMax);
+	ticks.push(helpers.isNullOrUndef(max) ? niceMax : max);
 
 	return ticks;
 }

@@ -238,6 +238,17 @@ describe('Core helper tests', function() {
 		expect(helpers.toDegrees(Math.PI * 3 / 2)).toBe(270);
 	});
 
+	it('should get the correct number of decimal places', function() {
+		expect(helpers.decimalPlaces(100)).toBe(0);
+		expect(helpers.decimalPlaces(1)).toBe(0);
+		expect(helpers.decimalPlaces(0)).toBe(0);
+		expect(helpers.decimalPlaces(0.01)).toBe(2);
+		expect(helpers.decimalPlaces(-0.01)).toBe(2);
+		expect(helpers.decimalPlaces('1')).toBe(undefined);
+		expect(helpers.decimalPlaces('')).toBe(undefined);
+		expect(helpers.decimalPlaces(undefined)).toBe(undefined);
+	});
+
 	it('should get an angle from a point', function() {
 		var center = {
 			x: 0,
