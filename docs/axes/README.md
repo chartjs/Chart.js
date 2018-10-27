@@ -4,15 +4,15 @@ Axes are an integral part of a chart. They are used to determine how data maps t
 
 In a radial chart, such as a radar chart or a polar area chart, there is a single axis that maps points in the angular and radial directions. These are known as ['radial axes'](./radial/README.md#radial-axes).
 
-Scales in Chart.js >V2.0 are significantly more powerful, but also different than those of v1.0.
+Scales in Chart.js >v2.0 are significantly more powerful, but also different than those of v1.0.
 * Multiple X & Y axes are supported.
 * A built-in label auto-skip feature detects would-be overlapping ticks and labels and removes every nth label to keep things displaying normally.
-* Scale titles are supported
-* New scale types can be extended without writing an entirely new chart type
+* Scale titles are supported.
+* New scale types can be extended without writing an entirely new chart type.
 
 # Common Configuration
 
-The following properties are common to all axes provided by Chart.js
+The following properties are common to all axes provided by Chart.js.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

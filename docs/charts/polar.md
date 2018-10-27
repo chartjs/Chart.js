@@ -46,8 +46,8 @@ The following options can be included in a polar area chart dataset to configure
 
 | Name | Type | Description
 | ---- | ---- | -----------
-| `backgroundColor` | `Color[]` | The fill color of the arcs in the dataset. See [Colors](../general/colors.md#colors)
-| `borderColor` | `Color[]` | The border color of the arcs in the dataset. See [Colors](../general/colors.md#colors)
+| `backgroundColor` | `Color[]` | The fill color of the arcs in the dataset. See [Colors](../general/colors.md#colors).
+| `borderColor` | `Color[]` | The border color of the arcs in the dataset. See [Colors](../general/colors.md#colors).
 | `borderWidth` | `Number[]` | The border width of the arcs in the dataset.
 | `hoverBackgroundColor` | `Color[]` | The fill colour of the arcs when hovered.
 | `hoverBorderColor` | `Color[]` | The stroke colour of the arcs when hovered.

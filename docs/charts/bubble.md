@@ -64,12 +64,12 @@ The style of each bubble can be controlled with the following properties:
 
 | Name | Description
 | ---- | ----
-| `backgroundColor` | bubble background color
-| `borderColor` | bubble border color
-| `borderWidth` | bubble border width (in pixels)
-| `pointStyle` | bubble [shape style](../configuration/elements#point-styles)
-| `rotation` | bubble rotation (in degrees)
-| `radius` | bubble radius (in pixels)
+| `backgroundColor` | bubble background color.
+| `borderColor` | bubble border color.
+| `borderWidth` | bubble border width (in pixels).
+| `pointStyle` | bubble [shape style](../configuration/elements#point-styles).
+| `rotation` | bubble rotation (in degrees).
+| `radius` | bubble radius (in pixels).
 
 All these values, if `undefined`, fallback to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options.
 
@@ -79,11 +79,11 @@ The interaction with each bubble can be controlled with the following properties
 
 | Name | Description
 | ---- | -----------
-| `hoverBackgroundColor` | bubble background color when hovered
-| `hoverBorderColor` | bubble border color hovered
-| `hoverBorderWidth` | bubble border width when hovered (in pixels)
-| `hoverRadius` | bubble **additional** radius when hovered (in pixels)
-| `hitRadius` | bubble **additional** radius for hit detection (in pixels)
+| `hoverBackgroundColor` | bubble background color when hovered.
+| `hoverBorderColor` | bubble border color hovered.
+| `hoverBorderWidth` | bubble border width when hovered (in pixels).
+| `hoverRadius` | bubble **additional** radius when hovered (in pixels).
+| `hitRadius` | bubble **additional** radius for hit detection (in pixels).
 
 All these values, if `undefined`, fallback to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options.
 

@@ -68,10 +68,10 @@ Some properties can be specified as an array. If these are set to an array value
 | Name | Type | Description
 | ---- | ---- | -----------
 | `label` | `String` | The label for the dataset which appears in the legend and tooltips.
-| `xAxisID` | `String` | The ID of the x axis to plot this dataset on. If not specified, this defaults to the ID of the first found x axis
+| `xAxisID` | `String` | The ID of the x axis to plot this dataset on. If not specified, this defaults to the ID of the first found x axis.
 | `yAxisID` | `String` | The ID of the y axis to plot this dataset on. If not specified, this defaults to the ID of the first found y axis.
-| `backgroundColor` | `Color/Color[]` | The fill color of the bar. See [Colors](../general/colors.md#colors)
-| `borderColor` | `Color/Color[]` | The color of the bar border. See [Colors](../general/colors.md#colors)
+| `backgroundColor` | `Color/Color[]` | The fill color of the bar. See [Colors](../general/colors.md#colors).
+| `borderColor` | `Color/Color[]` | The color of the bar border. See [Colors](../general/colors.md#colors).
 | `borderWidth` | `Number/Number[]` | The stroke width of the bar in pixels.
 | `borderSkipped` | `String` | Which edge to skip drawing the border for. [more...](#borderskipped)
 | `hoverBackgroundColor` | `Color/Color[]` | The fill colour of the bars when hovered.
@@ -193,7 +193,7 @@ The following dataset properties are specific to stacked bar charts.
 
 | Name | Type | Description
 | ---- | ---- | -----------
-| `stack` | `String` | The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack)
+| `stack` | `String` | The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack).
 
 # Horizontal Bar Chart
 A horizontal bar chart is a variation on a vertical bar chart. It is sometimes used to show trend data, and the comparison of multiple data sets side by side.

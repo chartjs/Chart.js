@@ -13,7 +13,7 @@ Chart.defaults.global.elements.rectangle.borderWidth = 2;
 ## Point Configuration
 Point elements are used to represent the points in a line chart or a bubble chart.
 
-Global point options: `Chart.defaults.global.elements.point`
+Global point options: `Chart.defaults.global.elements.point`.
 
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
@@ -46,7 +46,7 @@ If the value is an image, that image is drawn on the canvas using [drawImage](ht
 ## Line Configuration
 Line elements are used to represent the line in a line chart.
 
-Global line options: `Chart.defaults.global.elements.line`
+Global line options: `Chart.defaults.global.elements.line`.
 
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
@@ -54,10 +54,10 @@ Global line options: `Chart.defaults.global.elements.line`
 | `backgroundColor` | `Color` | `'rgba(0,0,0,0.1)'` | Line fill color.
 | `borderWidth` | `Number` | `3` | Line stroke width.
 | `borderColor` | `Color` | `'rgba(0,0,0,0.1)'` | Line stroke color.
-| `borderCapStyle` | `String` | `'butt'` | Line cap style (see [MDN](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/lineCap)).
-| `borderDash` | `Array` | `[]` | Line dash (see [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)).
-| `borderDashOffset` | `Number` | `0` | Line dash offset (see [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)).
-| `borderJoinStyle` | `String` | `'miter` | Line join style (see [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin)).
+| `borderCapStyle` | `String` | `'butt'` | Line cap style. See [MDN](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/lineCap).
+| `borderDash` | `Array` | `[]` | Line dash. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
+| `borderDashOffset` | `Number` | `0` | Line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
+| `borderJoinStyle` | `String` | `'miter` | Line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
 | `capBezierPoints` | `Boolean` | `true` | `true` to keep Bézier control inside the chart, `false` for no restriction.
 | `fill` | `Boolean/String` | `true` | Fill location: `'zero'`, `'top'`, `'bottom'`, `true` (eq. `'zero'`) or `false` (no fill).
 | `stepped` | `Boolean` | `false` | `true` to show the line as a stepped line (`tension` will be ignored).
@@ -65,7 +65,7 @@ Global line options: `Chart.defaults.global.elements.line`
 ## Rectangle Configuration
 Rectangle elements are used to represent the bars in a bar chart.
 
-Global rectangle options: `Chart.defaults.global.elements.rectangle`
+Global rectangle options: `Chart.defaults.global.elements.rectangle`.
 
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------

@@ -38,7 +38,7 @@ var chart = new Chart(ctx, {
 Finds the first item that intersects the point and returns it. Behaves like 'nearest' mode with intersect = true.
 
 ## label (deprecated)
-See `'index'` mode
+See `'index'` mode.
 
 ## index
 Finds item at the same index. If the `intersect` setting is true, the first intersecting item is used to determine the index in the data. If `intersect` false the nearest item, in the x direction, is used to determine the index.
@@ -89,7 +89,7 @@ var chart = new Chart(ctx, {
 ```
 
 ## x
-Returns all items that would intersect based on the `X` coordinate of the position only. Would be useful for a vertical cursor implementation. Note that this only applies to cartesian charts
+Returns all items that would intersect based on the `X` coordinate of the position only. Would be useful for a vertical cursor implementation. Note that this only applies to cartesian charts.
 
 ```javascript
 var chart = new Chart(ctx, {

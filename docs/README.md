@@ -10,7 +10,7 @@ You can download the latest version of Chart.js from the [GitHub releases](https
 
 It's easy to get started with Chart.js. All that's required is the script included in your page along with a single `<canvas>` node to render the chart.
 
-In this example, we create a bar chart for a single dataset and render that in our page. You can see all the ways to use Chart.js in the [usage documentation](./getting-started/usage.md)
+In this example, we create a bar chart for a single dataset and render that in our page. You can see all the ways to use Chart.js in the [usage documentation](./getting-started/usage.md).
 ```html
 <canvas id="myChart" width="400" height="400"></canvas>
 <script>
