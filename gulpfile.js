@@ -233,9 +233,6 @@ function moduleSizesTask() {
 }
 
 function watchTask() {
-  if (util.env.test) {
-    return gulp.watch('./src/**', ['build', 'unittest', 'unittestWatch']);
-  }
   return gulp.watch('./src/**', ['build']);
 }
 
