@@ -6,10 +6,10 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
-| `enabled` | `Boolean` | `true` | Are on-canvas tooltips enabled.
+| `enabled` | `Boolean` | `true` | Are on-canvas tooltips enabled?
 | `custom` | `Function` | `null` | See [custom tooltip](#external-custom-tooltips) section.
 | `mode` | `String` | `'nearest'` | Sets which elements appear in the tooltip. [more...](../general/interactions/modes.md#interaction-modes).
-| `intersect` | `Boolean` | `true` | if true, the tooltip mode applies only when the mouse position intersects with an element. If false, the mode will be applied at all times.
+| `intersect` | `Boolean` | `true` | If true, the tooltip mode applies only when the mouse position intersects with an element. If false, the mode will be applied at all times.
 | `position` | `String` | `'average'` | The mode for positioning the tooltip. [more...](#position-modes)
 | `callbacks` | `Object` | | See the [callbacks section](#tooltip-callbacks).
 | `itemSort` | `Function` | | Sort tooltip items. [more...](#sort-callback)
@@ -38,7 +38,7 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 | `caretSize` | `Number` | `5` | Size, in px, of the tooltip arrow.
 | `cornerRadius` | `Number` | `6` | Radius of tooltip corner curves.
 | `multiKeyBackground` | `Color` | `'#fff'` | Color to draw behind the colored boxes when multiple items are in the tooltip.
-| `displayColors` | `Boolean` | `true` | Ff true, color boxes are shown in the tooltip.
+| `displayColors` | `Boolean` | `true` | If true, color boxes are shown in the tooltip.
 | `borderColor` | `Color` | `'rgba(0,0,0,0)'` | Color of the border.
 | `borderWidth` | `Number` | `0` | Size of the border.
 

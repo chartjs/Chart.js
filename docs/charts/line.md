@@ -74,9 +74,9 @@ All point* properties can be specified as an array. If these are set to an array
 | `steppedLine` | `Boolean/String` | If the line is shown as a stepped line. [more...](#stepped-line)
 
 ### cubicInterpolationMode
-The following interpolation modes are supported:
+The following interpolation modes are supported.
 * 'default'
-* 'monotone'.
+* 'monotone'
 
 The 'default' algorithm uses a custom weighted cubic interpolation, which produces pleasant curves for all types of datasets.
 
@@ -85,7 +85,7 @@ The 'monotone' algorithm is more suited to `y = f(x)` datasets : it preserves mo
 If left untouched (`undefined`), the global `options.elements.line.cubicInterpolationMode` property is used.
 
 ### Stepped Line
-The following values are supported for `steppedLine`:
+The following values are supported for `steppedLine`.
 * `false`:  No Step Interpolation (default)
 * `true`: Step-before Interpolation (eq. 'before')
 * `'before'`: Step-before Interpolation

@@ -7,7 +7,7 @@ The title configuration is passed into the `options.title` namespace. The global
 
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
-| `display` | `Boolean` | `false` | Is the title shown.
+| `display` | `Boolean` | `false` | Is the title shown?
 | `position` | `String` | `'top'` | Position of title. [more...](#position)
 | `fontSize` | `Number` | `12` | Font size.
 | `fontFamily` | `String` |  `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family for the title text.

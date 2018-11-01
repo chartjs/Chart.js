@@ -134,16 +134,16 @@ var chart = new Chart(ctx, {
 
 ### Scale Bounds
 
-The `bounds` property controls the scale boundary strategy (bypassed by min/max time options):
+The `bounds` property controls the scale boundary strategy (bypassed by min/max time options).
 
 * `'data'`: make sure data are fully visible, labels outside are removed
 * `'ticks'`: make sure ticks are fully visible, data outside are truncated
 
 ### Ticks Source
 
-The `ticks.source` property controls the ticks generation:
+The `ticks.source` property controls the ticks generation.
 
-* `'auto'`: generates "optimal" ticks based on scale size and time options.
+* `'auto'`: generates "optimal" ticks based on scale size and time options
 * `'data'`: generates ticks from data (including labels from data `{t|x|y}` objects)
 * `'labels'`: generates ticks from user given `data.labels` values ONLY
 
