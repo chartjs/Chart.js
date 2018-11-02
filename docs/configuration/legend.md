@@ -7,11 +7,11 @@ The legend configuration is passed into the `options.legend` namespace. The glob
 
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
-| `display` | `Boolean` | `true` | is the legend shown
+| `display` | `Boolean` | `true` | Is the legend shown?
 | `position` | `String` | `'top'` | Position of the legend. [more...](#position)
 | `fullWidth` | `Boolean` | `true` | Marks that this box should take the full width of the canvas (pushing down other boxes). This is unlikely to need to be changed in day-to-day use.
-| `onClick` | `Function` | | A callback that is called when a click event is registered on a label item
-| `onHover` | `Function` | | A callback that is called when a 'mousemove' event is registered on top of a label item
+| `onClick` | `Function` | | A callback that is called when a click event is registered on a label item.
+| `onHover` | `Function` | | A callback that is called when a 'mousemove' event is registered on top of a label item.
 | `reverse` | `Boolean` | `false` | Legend will show datasets in reverse order.
 | `labels` | `Object` | | See the [Legend Label Configuration](#legend-label-configuration) section below.
 
@@ -28,10 +28,10 @@ The legend label configuration is nested below the legend configuration using th
 
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
-| `boxWidth` | `Number` | `40` | width of coloured box
-| `fontSize` | `Number` | `12` | font size of text
-| `fontStyle` | `String` | `'normal'` | font style of text
-| `fontColor` | `Color` | `'#666'` | Color of text
+| `boxWidth` | `Number` | `40` | Width of coloured box.
+| `fontSize` | `Number` | `12` | Font size of text.
+| `fontStyle` | `String` | `'normal'` | Font style of text.
+| `fontColor` | `Color` | `'#666'` | Color of text.
 | `fontFamily` | `String` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family of legend text.
 | `padding` | `Number` | `10` | Padding between rows of colored boxes.
 | `generateLabels` | `Function` | | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See [Legend Item](#legend-item-interface) for details.
@@ -166,5 +166,3 @@ var chart = new Chart(ctx, {
 ```
 
 Note that legendCallback is not called automatically and you must call `generateLegend()` yourself in code when creating a legend using this method.
-
-

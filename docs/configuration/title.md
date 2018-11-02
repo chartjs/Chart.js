@@ -7,14 +7,14 @@ The title configuration is passed into the `options.title` namespace. The global
 
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
-| `display` | `Boolean` | `false` | is the title shown
+| `display` | `Boolean` | `false` | Is the title shown?
 | `position` | `String` | `'top'` | Position of title. [more...](#position)
-| `fontSize` | `Number` | `12` | Font size
+| `fontSize` | `Number` | `12` | Font size.
 | `fontFamily` | `String` |  `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family for the title text.
-| `fontColor` | `Color` | `'#666'` | Font color
-| `fontStyle` | `String` | `'bold'` | Font style
+| `fontColor` | `Color` | `'#666'` | Font color.
+| `fontStyle` | `String` | `'bold'` | Font style.
 | `padding` | `Number` | `10` | Number of pixels to add above and below the title text.
-| `lineHeight` | `Number/String` | `1.2` | Height of an individual line of text (see [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height))
+| `lineHeight` | `Number/String` | `1.2` | Height of an individual line of text. See [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height).
 | `text` | `String/String[]` | `''` | Title text to display. If specified as an array, text is rendered on multiple lines.
 
 ### Position

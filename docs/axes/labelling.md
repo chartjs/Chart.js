@@ -10,7 +10,7 @@ The scale label configuration is nested under the scale configuration in the `sc
 | -----| ---- | --------| -----------
 | `display` | `Boolean` | `false` | If true, display the axis title.
 | `labelString` | `String` | `''` | The text for the title. (i.e. "# of People" or "Response Choices").
-| `lineHeight` | `Number/String` | `1.2` | Height of an individual line of text (see [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height))
+| `lineHeight` | `Number/String` | `1.2` | Height of an individual line of text (see [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height)).
 | `fontColor` | `Color` | `'#666'` | Font color for scale title.
 | `fontFamily` | `String` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family for the scale title, follows CSS font-family options.
 | `fontSize` | `Number` | `12` | Font size for scale title.
@@ -20,7 +20,7 @@ The scale label configuration is nested under the scale configuration in the `sc
 ## Creating Custom Tick Formats
 
 It is also common to want to change the tick marks to include information about the data type. For example, adding a dollar sign ('$'). To do this, you need to override the `ticks.callback` method in the axis configuration.
-In the following example, every label of the Y axis would be displayed with a dollar sign at the front..
+In the following example, every label of the Y axis would be displayed with a dollar sign at the front.
 
 If the callback returns `null` or `undefined` the associated grid line will be hidden.
 

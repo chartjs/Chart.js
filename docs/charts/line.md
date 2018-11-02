@@ -46,17 +46,17 @@ All point* properties can be specified as an array. If these are set to an array
 | Name | Type | Description
 | ---- | ---- | -----------
 | `label` | `String` | The label for the dataset which appears in the legend and tooltips.
-| `xAxisID` | `String` | The ID of the x axis to plot this dataset on. If not specified, this defaults to the ID of the first found x axis
+| `xAxisID` | `String` | The ID of the x axis to plot this dataset on. If not specified, this defaults to the ID of the first found x axis.
 | `yAxisID` | `String` | The ID of the y axis to plot this dataset on. If not specified, this defaults to the ID of the first found y axis.
-| `backgroundColor` | `Color` | The fill color under the line. See [Colors](../general/colors.md#colors)
-| `borderColor` | `Color` | The color of the line. See [Colors](../general/colors.md#colors)
+| `backgroundColor` | `Color` | The fill color under the line. See [Colors](../general/colors.md#colors).
+| `borderColor` | `Color` | The color of the line. See [Colors](../general/colors.md#colors).
 | `borderWidth` | `Number` | The width of the line in pixels.
-| `borderDash` | `Number[]` | Length and spacing of dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
-| `borderDashOffset` | `Number` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
-| `borderCapStyle` | `String` | Cap style of the line. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap)
-| `borderJoinStyle` | `String` | Line joint style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin)
+| `borderDash` | `Number[]` | Length and spacing of dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
+| `borderDashOffset` | `Number` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
+| `borderCapStyle` | `String` | Cap style of the line. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap).
+| `borderJoinStyle` | `String` | Line joint style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
 | `cubicInterpolationMode` | `String` | Algorithm used to interpolate a smooth curve from the discrete data points. [more...](#cubicinterpolationmode)
-| `fill` | `Boolean/String` | How to fill the area under the line. See [area charts](area.md)
+| `fill` | `Boolean/String` | How to fill the area under the line. See [area charts](area.md).
 | `lineTension` | `Number` | Bezier curve tension of the line. Set to 0 to draw straightlines. This option is ignored if monotone cubic interpolation is used.
 | `pointBackgroundColor` | `Color/Color[]` | The fill color for points.
 | `pointBorderColor` | `Color/Color[]` | The border color for points.
@@ -70,13 +70,13 @@ All point* properties can be specified as an array. If these are set to an array
 | `pointHoverBorderWidth` | `Number/Number[]` | Border width of point when hovered.
 | `pointHoverRadius` | `Number/Number[]` | The radius of the point when hovered.
 | `showLine` | `Boolean` | If false, the line is not drawn for this dataset.
-| `spanGaps` | `Boolean` | If true, lines will be drawn between points with no or null data. If false, points with `NaN` data will create a break in the line
+| `spanGaps` | `Boolean` | If true, lines will be drawn between points with no or null data. If false, points with `NaN` data will create a break in the line.
 | `steppedLine` | `Boolean/String` | If the line is shown as a stepped line. [more...](#stepped-line)
 
 ### cubicInterpolationMode
-The following interpolation modes are supported:
+The following interpolation modes are supported.
 * 'default'
-* 'monotone'.
+* 'monotone'
 
 The 'default' algorithm uses a custom weighted cubic interpolation, which produces pleasant curves for all types of datasets.
 
@@ -85,7 +85,7 @@ The 'monotone' algorithm is more suited to `y = f(x)` datasets : it preserves mo
 If left untouched (`undefined`), the global `options.elements.line.cubicInterpolationMode` property is used.
 
 ### Stepped Line
-The following values are supported for `steppedLine`:
+The following values are supported for `steppedLine`.
 * `false`:  No Step Interpolation (default)
 * `true`: Step-before Interpolation (eq. 'before')
 * `'before'`: Step-before Interpolation

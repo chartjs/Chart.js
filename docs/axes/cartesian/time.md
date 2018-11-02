@@ -32,8 +32,8 @@ The following options are provided by the time scale. You may also set options p
 | `ticks.source` | `String` | `auto` | How ticks are generated. [more...](#ticks-source)
 | `time.displayFormats` | `Object` | | Sets how different time units are displayed. [more...](#display-formats)
 | `time.isoWeekday` | `Boolean` | `false` | If true and the unit is set to 'week', then the first day of the week will be Monday. Otherwise, it will be Sunday.
-| `time.max` | [Time](#date-formats) | | If defined, this will override the data maximum
-| `time.min` | [Time](#date-formats) | | If defined, this will override the data minimum
+| `time.max` | [Time](#date-formats) | | If defined, this will override the data maximum.
+| `time.min` | [Time](#date-formats) | | If defined, this will override the data minimum.
 | `time.parser` | `String/Function` | | Custom parser for dates. [more...](#parser)
 | `time.round` | `String` | `false` | If defined, dates will be rounded to the start of this unit. See [Time Units](#time-units) below for the allowed units.
 | `time.tooltipFormat` | `String` | | The moment js format string to use for the tooltip.
@@ -134,16 +134,16 @@ var chart = new Chart(ctx, {
 
 ### Scale Bounds
 
-The `bounds` property controls the scale boundary strategy (bypassed by min/max time options)
+The `bounds` property controls the scale boundary strategy (bypassed by min/max time options).
 
 * `'data'`: make sure data are fully visible, labels outside are removed
 * `'ticks'`: make sure ticks are fully visible, data outside are truncated
 
 ### Ticks Source
 
-The `ticks.source` property controls the ticks generation
+The `ticks.source` property controls the ticks generation.
 
-* `'auto'`: generates "optimal" ticks based on scale size and time options.
+* `'auto'`: generates "optimal" ticks based on scale size and time options
 * `'data'`: generates ticks from data (including labels from data `{t|x|y}` objects)
 * `'labels'`: generates ticks from user given `data.labels` values ONLY
 
