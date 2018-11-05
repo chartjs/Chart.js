@@ -14,6 +14,7 @@ In addition, many charts can be found on the [npm registry](https://www.npmjs.co
 ## Plugins
 
  - <a href="https://github.com/chartjs/chartjs-plugin-annotation" target="_blank">chartjs-plugin-annotation</a> - Draws lines and boxes on chart area.
+ - <a href="https://github.com/nagix/chartjs-plugin-colorschemes" target="_blank">chartjs-plugin-colorschemes</a> - Enables automatic coloring using predefined color schemes.
  - <a href="https://github.com/chartjs/chartjs-plugin-datalabels" target="_blank">chartjs-plugin-datalabels</a> - Displays labels on data for any type of charts.
  - <a href="https://github.com/chartjs/chartjs-plugin-deferred" target="_blank">chartjs-plugin-deferred</a> - Defers initial chart update until chart scrolls into viewport.
  - <a href="https://github.com/compwright/chartjs-plugin-draggable" target="_blank">chartjs-plugin-draggable</a> - Makes select chart elements draggable with the mouse.
