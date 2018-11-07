@@ -487,7 +487,7 @@ var exports = module.exports = Element.extend({
 	// Dispatch mouse event on current mouse position
 	// Called in Chart.update()
 	dispatchMouseEvent: function() {
-		var mousePosition = this._mousePosition
+		var mousePosition = this._mousePosition;
 		if (mousePosition && mousePosition.x && mousePosition.y) {
 			var event = new MouseEvent('mousemove', {
 				view: window,
@@ -495,8 +495,8 @@ var exports = module.exports = Element.extend({
 				cancelable: true,
 				clientX: mousePosition.x,
 				clientY: mousePosition.y
-			})
-			this._chart.canvas.dispatchEvent(event)
+			});
+			this._chart.canvas.dispatchEvent(event);
 		}
 	},
 
@@ -957,13 +957,13 @@ var exports = module.exports = Element.extend({
 		// Buffer the current mouse position to refire event on chart update
 		if (e.type === 'mouseout') {
 			me._active = [];
-			me._mousePosition = {}
+			me._mousePosition = {};
 		} else {
 			me._active = me._chart.getElementsAtEventForMode(e, options.mode, options);
 			me._mousePosition = {
 				x: e.native.clientX,
 				y: e.native.clientY
-			}
+			};
 		}
 
 		// Remember Last Actives

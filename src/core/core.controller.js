@@ -415,7 +415,7 @@ module.exports = function(Chart) {
 			// Need to reset tooltip in case it is displayed with elements that are removed
 			// after update.
 			me.tooltip.initialize();
-			
+
 			// Fire a mouse event on last known position
 			me.tooltip.dispatchMouseEvent();
 
