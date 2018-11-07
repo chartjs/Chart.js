@@ -187,6 +187,9 @@
 		}, {
 			title: 'Data labelling (plugin)',
 			path: 'advanced/data-labelling.html'
+		}, {
+			title: 'Realtime data update',
+			path: 'advanced/live-data.html'
 		}]
 	}];
 
