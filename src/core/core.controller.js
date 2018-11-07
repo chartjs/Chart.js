@@ -416,9 +416,8 @@ module.exports = function(Chart) {
 			// after update.
 			me.tooltip.initialize();
 
-			// Last active contains items that were previously in the tooltip.
-			// When we reset the tooltip, we need to clear it
-			me.lastActive = [];
+			// Fire a mouse event on last known position
+			me.tooltip.dispatchMouseEvent();
 
 			// Do this before render so that any plugins that need final scale updates can use it
 			plugins.notify(me, 'afterUpdate');

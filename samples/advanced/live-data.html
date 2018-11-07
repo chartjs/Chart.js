@@ -22,30 +22,29 @@
 	<br>
 	<button id="pause">Pause/Resume</button>
 	<script>
-		var timeFormat = 'MM/DD/YYYY HH:mm'
-		var pause = false
+		var pause = false;
 
 		function moveToNewest(chart) {
-			var firstTick = chart.scales['x-axis-0'].min
-			var lastTick = chart.scales['x-axis-0'].max
-			var data = chart.config.data.datasets[0].data
+			var firstTick = chart.scales['x-axis-0'].min;
+			var lastTick = chart.scales['x-axis-0'].max;
+			var data = chart.config.data.datasets[0].data;
 			if (data.length) {
 				if (data[data.length - 1].x > lastTick) {
-					chart.scales['x-axis-0'].options.time.max = data[data.length - 1].x + (lastTick - firstTick) / 10
-					chart.scales['x-axis-0'].options.time.min = data[data.length - 1].x - ((lastTick - firstTick) / 10) * 9
+					chart.scales['x-axis-0'].options.time.max = data[data.length - 1].x + (lastTick - firstTick) / 10;
+					chart.scales['x-axis-0'].options.time.min = data[data.length - 1].x - ((lastTick - firstTick) / 10) * 9;
 				}
 			}
 		}
 
 		Chart.plugins.register({
-			beforeInit: function (chart) {
-				setInterval(() => {
+			beforeInit: function(chart) {
+				setInterval(function() {
 					if (chart.config.options.live) {
-						moveToNewest(chart)
+						moveToNewest(chart);
 					}
-				}, 1000)
+				}, 1000);
 			}
-		})
+		});
 
 		var config = {
 			type: 'line',
@@ -56,8 +55,8 @@
 					showLine: false,
 					borderColor: window.chartColors.red,
 					backgroundColor: window.chartColors.red,
-					data: Array(60).fill().map((item, index) => {
-						return {x: (Date.now() - 60000) + index * 1000, y: randomScalingFactor()}
+					data: Array(60).fill().map(function(item, index) {
+						return {x: (Date.now() - 60000) + index * 1000, y: randomScalingFactor()};
 					})
 				}]
 			},
@@ -73,15 +72,15 @@
 				scales: {
 					xAxes: [
 						{
-							type: "time",
+							type: 'time',
 							time: {
 								min: Date.now() - 60000,
 								max: Date.now() + 0.5 * 60000,
-								tooltipFormat: "ll H:mm:ss",
+								tooltipFormat: 'll H:mm:ss',
 								displayFormats: {
-									minute: "H:mm",
-									second: "H:mm:ss",
-									hour: "H:mm"
+									minute: 'H:mm',
+									second: 'H:mm:ss',
+									hour: 'H:mm'
 								}
 							},
 							ticks: {
@@ -93,22 +92,24 @@
 			}
 		};
 
-		window.onload = function () {
+		window.onload = function() {
 			var ctx = document.getElementById('canvas').getContext('2d');
 			window.myLine = new Chart(ctx, config);
 
-			window.timer = setInterval(() => {
-				if (pause) return
-				config.data.datasets[0].data.push({x: Date.now(), y:randomScalingFactor()})
+			window.timer = setInterval(function() {
+				if (pause) {
+					return;
+				}
+				config.data.datasets[0].data.push({x: Date.now(), y: randomScalingFactor()});
 				while (config.data.datasets[0].data.length > 100) {
-					config.data.datasets[0].data.shift()
+					config.data.datasets[0].data.shift();
 				}
 				window.myLine.update();
-			},1000)
+			}, 1000);
 		};
 
-		document.getElementById('pause').addEventListener('click', function () {
-			pause = !pause
+		document.getElementById('pause').addEventListener('click', function() {
+			pause = !pause;
 		});
 	</script>
 </body>
