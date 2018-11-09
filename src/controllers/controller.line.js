@@ -327,6 +327,7 @@ module.exports = function(Chart) {
 			var index = element._index;
 			var custom = element.custom || {};
 			var model = element._model;
+			var pointOpts = this.chart.options.elements.point; 
 
 			element.$previousStyle = {
 				backgroundColor: model.backgroundColor,
@@ -337,8 +338,8 @@ module.exports = function(Chart) {
 
 			model.backgroundColor = custom.hoverBackgroundColor || helpers.valueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.getHoverColor(model.backgroundColor));
 			model.borderColor = custom.hoverBorderColor || helpers.valueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.getHoverColor(model.borderColor));
-			model.borderWidth = custom.hoverBorderWidth || helpers.valueAtIndexOrDefault(dataset.pointHoverBorderWidth, index, this.chart.options.elements.point.hoverBorderWidth);
-			model.radius = custom.hoverRadius || helpers.valueAtIndexOrDefault(dataset.pointHoverRadius, index, this.chart.options.elements.point.hoverRadius);
+			model.borderWidth = custom.hoverBorderWidth || helpers.valueAtIndexOrDefault(dataset.pointHoverBorderWidth, index, helpers.valueOrDefault(pointOpts.hoverBorderWidth, model.borderWidth));
+			model.radius = custom.hoverRadius || helpers.valueAtIndexOrDefault(dataset.pointHoverRadius, index, pointOpts.hoverRadius);
 		},
 	});
 };
