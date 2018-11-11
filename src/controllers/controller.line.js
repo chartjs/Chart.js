@@ -327,8 +327,8 @@ module.exports = function(Chart) {
 			var index = element._index;
 			var custom = element.custom || {};
 			var model = element._model;
-			var pointOpts = this.chart.options.elements.point; 
-
+			var pointOpts = this.chart.options.elements.point;
+			
 			element.$previousStyle = {
 				backgroundColor: model.backgroundColor,
 				borderColor: model.borderColor,
