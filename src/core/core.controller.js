@@ -416,6 +416,10 @@ module.exports = function(Chart) {
 			// after update.
 			me.tooltip.initialize();
 
+			// Last active contains items that were previously in the tooltip.
+			// When we reset the tooltip, we need to clear it
+			me.lastActive = [];
+
 			// Fire a mouse event on last known position
 			me.tooltip.dispatchMouseEvent();
 
@@ -580,6 +584,8 @@ module.exports = function(Chart) {
 			}
 
 			me.drawDatasets(easingValue);
+			// Fire a mouse event on last known position
+			me.tooltip.dispatchMouseEvent();
 			me._drawTooltip(easingValue);
 
 			plugins.notify(me, 'afterDraw', [easingValue]);
