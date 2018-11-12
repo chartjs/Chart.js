@@ -573,6 +573,35 @@ describe('Linear Scale', function() {
 		expect(chart.scales.yScale0.ticks).toEqual(['11', '9', '7', '5', '3', '1']);
 	});
 
+	it('Should create decimal steps if stepSize is a decimal number', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					yAxisID: 'yScale0',
+					data: [10, 3, 6, 8, 3, 1]
+				}],
+				labels: ['a', 'b', 'c', 'd', 'e', 'f']
+			},
+			options: {
+				scales: {
+					yAxes: [{
+						id: 'yScale0',
+						type: 'linear',
+						ticks: {
+							stepSize: 2.5
+						}
+					}]
+				}
+			}
+		});
+
+		expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
+		expect(chart.scales.yScale0.min).toBe(0);
+		expect(chart.scales.yScale0.max).toBe(10);
+		expect(chart.scales.yScale0.ticks).toEqual(['10', '7.5', '5', '2.5', '0']);
+	});
+
 	describe('precision', function() {
 		it('Should create integer steps if precision is 0', function() {
 			var chart = window.acquireChart({
