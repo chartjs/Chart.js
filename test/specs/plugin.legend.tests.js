@@ -176,7 +176,7 @@ describe('Legend block tests', function() {
 		expect(makeChart).not.toThrow();
 	});
 
-	it('should draw correctly', function() {
+	it('should draw correctly when the legend is positioned on the top', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
@@ -205,9 +205,9 @@ describe('Legend block tests', function() {
 		expect(chart.legend.legendHitBoxes.length).toBe(3);
 
 		[
-			{h: 12, l: 101, t: 10, w: 93},
-			{h: 12, l: 205, t: 10, w: 93},
-			{h: 12, l: 308, t: 10, w: 93}
+			{h: 12, l: 107, t: 10, w: 93},
+			{h: 12, l: 210, t: 10, w: 93},
+			{h: 12, l: 312, t: 10, w: 93}
 		].forEach(function(expected, i) {
 			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
 			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
@@ -387,6 +387,142 @@ describe('Legend block tests', function() {
 			"name": "fillText",
 			"args": ["dataset3", 228, 132]
 		}]);*/
+	});
+
+	it('should draw correctly when the legend is positioned on the left', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					label: 'dataset1',
+					backgroundColor: '#f31',
+					borderCapStyle: 'butt',
+					borderDash: [2, 2],
+					borderDashOffset: 5.5,
+					data: []
+				}, {
+					label: 'dataset2',
+					hidden: true,
+					borderJoinStyle: 'miter',
+					data: []
+				}, {
+					label: 'dataset3',
+					borderWidth: 10,
+					borderColor: 'green',
+					data: []
+				}],
+				labels: []
+			},
+			options: {
+				legend: {
+					position: 'left'
+				}
+			}
+		});
+
+		expect(chart.legend.legendHitBoxes.length).toBe(3);
+
+		[
+			{h: 12, l: 10, t: 16, w: 93},
+			{h: 12, l: 10, t: 38, w: 93},
+			{h: 12, l: 10, t: 60, w: 93}
+		].forEach(function(expected, i) {
+			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
+			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
+			expect(chart.legend.legendHitBoxes[i].top).toBeCloseToPixel(expected.t);
+			expect(chart.legend.legendHitBoxes[i].width).toBeCloseToPixel(expected.w);
+		});
+	});
+
+	it('should draw correctly when the legend is positioned on the top and has multiple rows', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [1, 2, 3, 4, 5].map(function(n) {
+					return {
+						label: 'dataset' + n,
+						data: []
+					};
+				}),
+				labels: []
+			}
+		});
+
+		expect(chart.legend.left).toBeCloseToPixel(0);
+		expect(chart.legend.top).toBeCloseToPixel(0);
+		expect(chart.legend.width).toBeCloseToPixel(512);
+		expect(chart.legend.height).toBeCloseToPixel(54);
+		expect(chart.legend.legendHitBoxes.length).toBe(5);
+		expect(chart.legend.legendHitBoxes.length).toBe(5);
+
+		[
+			{h: 12, l: 56, t: 10, w: 93},
+			{h: 12, l: 158, t: 10, w: 93},
+			{h: 12, l: 261, t: 10, w: 93},
+			{h: 12, l: 364, t: 10, w: 93},
+			{h: 12, l: 210, t: 32, w: 93}
+		].forEach(function(expected, i) {
+			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
+			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
+			expect(chart.legend.legendHitBoxes[i].top).toBeCloseToPixel(expected.t);
+			expect(chart.legend.legendHitBoxes[i].width).toBeCloseToPixel(expected.w);
+		});
+	});
+
+	it('should draw correctly when the legend is positioned on the left and has multiple columns', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22].map(function(n) {
+					return {
+						label: 'dataset' + n,
+						data: []
+					};
+				}),
+				labels: []
+			},
+			options: {
+				legend: {
+					position: 'left'
+				}
+			}
+		});
+
+		expect(chart.legend.left).toBeCloseToPixel(0);
+		expect(chart.legend.top).toBeCloseToPixel(6);
+		expect(chart.legend.width).toBeCloseToPixel(228.7);
+		expect(chart.legend.height).toBeCloseToPixel(478);
+		expect(chart.legend.legendHitBoxes.length).toBe(22);
+
+		[
+			{h: 12, l: 10, t: 16, w: 93},
+			{h: 12, l: 10, t: 38, w: 93},
+			{h: 12, l: 10, t: 60, w: 93},
+			{h: 12, l: 10, t: 82, w: 93},
+			{h: 12, l: 10, t: 104, w: 93},
+			{h: 12, l: 10, t: 126, w: 93},
+			{h: 12, l: 10, t: 148, w: 93},
+			{h: 12, l: 10, t: 170, w: 93},
+			{h: 12, l: 10, t: 192, w: 93},
+			{h: 12, l: 10, t: 214, w: 99},
+			{h: 12, l: 10, t: 236, w: 99},
+			{h: 12, l: 10, t: 258, w: 99},
+			{h: 12, l: 10, t: 280, w: 99},
+			{h: 12, l: 10, t: 302, w: 99},
+			{h: 12, l: 10, t: 324, w: 99},
+			{h: 12, l: 10, t: 346, w: 99},
+			{h: 12, l: 10, t: 368, w: 99},
+			{h: 12, l: 10, t: 390, w: 99},
+			{h: 12, l: 10, t: 412, w: 99},
+			{h: 12, l: 10, t: 434, w: 99},
+			{h: 12, l: 10, t: 456, w: 99},
+			{h: 12, l: 119, t: 16, w: 99}
+		].forEach(function(expected, i) {
+			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
+			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
+			expect(chart.legend.legendHitBoxes[i].top).toBeCloseToPixel(expected.t);
+			expect(chart.legend.legendHitBoxes[i].width).toBeCloseToPixel(expected.w);
+		});
 	});
 
 	describe('config update', function() {
