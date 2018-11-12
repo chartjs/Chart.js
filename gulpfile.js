@@ -186,16 +186,16 @@ function lintHtmlTask() {
 }
 
 function docsTask(done) {
-  const script = require.resolve('gitbook-cli/bin/gitbook.js');
-  const cmd = process.execPath;
+  var script = require.resolve('gitbook-cli/bin/gitbook.js');
+  var cmd = '"' + process.execPath + '"';
 
   exec([cmd, script, 'install', './'].join(' ')).then(() => {
     return exec([cmd, script, argv.watch ? 'serve' : 'build', './', './dist/docs'].join(' '));
-  }).catch((err) => {
-    console.error(err.stdout);
   }).then(() => {
     done();
-  });
+  }).catch((err) => {
+    done(new Error(err.stdout || err));
+  })
 }
 
 function unittestTask(done) {

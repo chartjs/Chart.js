@@ -213,27 +213,24 @@ module.exports = function(Chart) {
 
 		updateElement: function(rectangle, index, reset) {
 			var me = this;
-			var chart = me.chart;
 			var meta = me.getMeta();
 			var dataset = me.getDataset();
-			var custom = rectangle.custom || {};
-			var rectangleOptions = chart.options.elements.rectangle;
+			var options = me._resolveElementOptions(rectangle, index);
 
 			rectangle._xScale = me.getScaleForId(meta.xAxisID);
 			rectangle._yScale = me.getScaleForId(meta.yAxisID);
 			rectangle._datasetIndex = me.index;
 			rectangle._index = index;
-
 			rectangle._model = {
+				backgroundColor: options.backgroundColor,
+				borderColor: options.borderColor,
+				borderSkipped: options.borderSkipped,
+				borderWidth: options.borderWidth,
 				datasetLabel: dataset.label,
-				label: chart.data.labels[index],
-				borderSkipped: custom.borderSkipped ? custom.borderSkipped : rectangleOptions.borderSkipped,
-				backgroundColor: custom.backgroundColor ? custom.backgroundColor : helpers.valueAtIndexOrDefault(dataset.backgroundColor, index, rectangleOptions.backgroundColor),
-				borderColor: custom.borderColor ? custom.borderColor : helpers.valueAtIndexOrDefault(dataset.borderColor, index, rectangleOptions.borderColor),
-				borderWidth: custom.borderWidth ? custom.borderWidth : helpers.valueAtIndexOrDefault(dataset.borderWidth, index, rectangleOptions.borderWidth)
+				label: me.chart.data.labels[index]
 			};
 
-			me.updateElementGeometry(rectangle, index, reset);
+			me._updateElementGeometry(rectangle, index, reset);
 
 			rectangle.pivot();
 		},
@@ -241,7 +238,7 @@ module.exports = function(Chart) {
 		/**
 		 * @private
 		 */
-		updateElementGeometry: function(rectangle, index, reset) {
+		_updateElementGeometry: function(rectangle, index, reset) {
 			var me = this;
 			var model = rectangle._model;
 			var vscale = me.getValueScale();
@@ -472,6 +469,47 @@ module.exports = function(Chart) {
 
 			helpers.canvas.unclipArea(chart.ctx);
 		},
+
+		/**
+		 * @private
+		 */
+		_resolveElementOptions: function(rectangle, index) {
+			var me = this;
+			var chart = me.chart;
+			var datasets = chart.data.datasets;
+			var dataset = datasets[me.index];
+			var custom = rectangle.custom || {};
+			var options = chart.options.elements.rectangle;
+			var resolve = helpers.options.resolve;
+			var values = {};
+			var i, ilen, key;
+
+			// Scriptable options
+			var context = {
+				chart: chart,
+				dataIndex: index,
+				dataset: dataset,
+				datasetIndex: me.index
+			};
+
+			var keys = [
+				'backgroundColor',
+				'borderColor',
+				'borderSkipped',
+				'borderWidth'
+			];
+
+			for (i = 0, ilen = keys.length; i < ilen; ++i) {
+				key = keys[i];
+				values[key] = resolve([
+					custom[key],
+					dataset[key],
+					options[key]
+				], context, index);
+			}
+
+			return values;
+		}
 	});
 
 	Chart.controllers.horizontalBar = Chart.controllers.bar.extend({

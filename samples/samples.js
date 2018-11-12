@@ -176,6 +176,9 @@
 	}, {
 		title: 'Scriptable',
 		items: [{
+			title: 'Bar Chart',
+			path: 'scriptable/bar.html'
+		}, {
 			title: 'Bubble Chart',
 			path: 'scriptable/bubble.html'
 		}]
