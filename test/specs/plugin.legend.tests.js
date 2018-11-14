@@ -525,6 +525,43 @@ describe('Legend block tests', function() {
 		});
 	});
 
+	it('should not draw legend items outside of the chart bounds', function() {
+		var chart = window.acquireChart(
+			{
+				type: 'line',
+				data: {
+					datasets: [1, 2, 3].map(function(n) {
+						return {
+							label: 'dataset' + n,
+							data: []
+						};
+					}),
+					labels: []
+				},
+				options: {
+					legend: {
+						position: 'right'
+					}
+				}
+			},
+			{
+				canvas: {
+					width: 512,
+					height: 105
+				}
+			}
+		);
+
+		// Check some basic assertions about the test setup
+		expect(chart.width).toBe(512);
+		expect(chart.legend.legendHitBoxes.length).toBe(3);
+
+		// Check whether any legend items reach outside the established bounds
+		chart.legend.legendHitBoxes.forEach(function(item) {
+			expect(item.left + item.width).toBeLessThanOrEqual(chart.width);
+		});
+	});
+
 	describe('config update', function() {
 		it ('should update the options', function() {
 			var chart = acquireChart({
