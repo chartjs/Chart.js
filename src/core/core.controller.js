@@ -430,9 +430,6 @@ module.exports = function(Chart) {
 			// When we reset the tooltip, we need to clear it
 			me.lastActive = [];
 
-			// Refresh the tooltip using the last known event
-			me._refresh();
-
 			// Do this before render so that any plugins that need final scale updates can use it
 			plugins.notify(me, 'afterUpdate');
 
@@ -594,8 +591,7 @@ module.exports = function(Chart) {
 			}
 
 			me.drawDatasets(easingValue);
-			// Refresh the tooltip with the last known mouse event
-			me._refresh();
+
 			me._drawTooltip(easingValue);
 
 			plugins.notify(me, 'afterDraw', [easingValue]);
@@ -614,6 +610,11 @@ module.exports = function(Chart) {
 			}
 
 			me.tooltip.transition(easingValue);
+
+			// Refresh the tooltip on each step of the transition
+			if (easingValue === 1 || me.animating) {
+				me._refresh();
+			}
 		},
 
 		/**
