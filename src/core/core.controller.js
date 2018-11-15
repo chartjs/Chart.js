@@ -373,7 +373,7 @@ module.exports = function(Chart) {
 		 * Refresh the tooltip when the chart is updated
 		 * @private
 		 */
-		_refresh: function () {
+		_refresh: function() {
 			if (this._lastEvent) {
 				this.eventHandler(this._lastEvent);
 			}
@@ -431,7 +431,7 @@ module.exports = function(Chart) {
 			me.lastActive = [];
 
 			// Refresh the tooltip using the last known event
-			me._refresh()
+			me._refresh();
 
 			// Do this before render so that any plugins that need final scale updates can use it
 			plugins.notify(me, 'afterUpdate');
@@ -595,7 +595,7 @@ module.exports = function(Chart) {
 
 			me.drawDatasets(easingValue);
 			// Refresh the tooltip with the last known mouse event
-			me._refresh()
+			me._refresh();
 			me._drawTooltip(easingValue);
 
 			plugins.notify(me, 'afterDraw', [easingValue]);
