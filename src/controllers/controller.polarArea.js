@@ -148,10 +148,9 @@ module.exports = DatasetController.extend({
 		var chart = me.chart;
 		var chartArea = chart.chartArea;
 		var opts = chart.options;
-		var arcOpts = opts.elements.arc;
 		var minSize = Math.min(chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
 
-		chart.outerRadius = Math.max((minSize - arcOpts.borderWidth / 2) / 2, 0);
+		chart.outerRadius = Math.max(minSize / 2, 0);
 		chart.innerRadius = Math.max(opts.cutoutPercentage ? (chart.outerRadius / 100) * (opts.cutoutPercentage) : 1, 0);
 		chart.radiusLength = (chart.outerRadius - chart.innerRadius) / chart.getVisibleDatasetCount();
 
@@ -206,6 +205,7 @@ module.exports = DatasetController.extend({
 		model.backgroundColor = custom.backgroundColor ? custom.backgroundColor : valueOrDefault(dataset.backgroundColor, index, elementOpts.backgroundColor);
 		model.borderColor = custom.borderColor ? custom.borderColor : valueOrDefault(dataset.borderColor, index, elementOpts.borderColor);
 		model.borderWidth = custom.borderWidth ? custom.borderWidth : valueOrDefault(dataset.borderWidth, index, elementOpts.borderWidth);
+		model.borderAlign = custom.borderAlign ? custom.borderAlign : valueOrDefault(dataset.borderAlign, index, elementOpts.borderAlign);
 
 		arc.pivot();
 	},

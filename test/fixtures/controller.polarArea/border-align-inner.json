@@ -1,0 +1,42 @@
+{
+    "config": {
+        "type": "polarArea",
+        "data": {
+            "labels": ["A", "B", "C", "D", "E"],
+            "datasets": [{
+                "data": [11, 16, 21, 1, 10],
+                "backgroundColor": [
+                    "rgba(255, 99, 132, 0.8)",
+                    "rgba(54, 162, 235, 0.8)",
+                    "rgba(255, 206, 86, 0.8)",
+                    "rgba(75, 192, 192, 0.8)",
+                    "rgba(153, 102, 255, 0.8)"
+                ],
+                "borderWidth": 20,
+                "borderColor": [
+                    "rgb(255, 99, 132)",
+                    "rgb(54, 162, 235)",
+                    "rgb(255, 206, 86)",
+                    "rgb(75, 192, 192)",
+                    "rgb(153, 102, 255)"
+                ],
+                "borderAlign": "inner"
+            }]
+        },
+        "options": {
+            "elements": {
+                "arc": {
+                    "angle": [
+                        0.0378, 0.1892, 0.3786, 1.8925, 3.7849
+                    ]
+                }
+            },
+            "responsive": false,
+            "legend": false,
+            "title": false,
+            "scale": {
+                "display": false
+            }
+        }
+    }
+}

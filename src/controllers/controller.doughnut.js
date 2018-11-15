@@ -143,9 +143,8 @@ module.exports = DatasetController.extend({
 		var chart = me.chart;
 		var chartArea = chart.chartArea;
 		var opts = chart.options;
-		var arcOpts = opts.elements.arc;
-		var availableWidth = chartArea.right - chartArea.left - arcOpts.borderWidth;
-		var availableHeight = chartArea.bottom - chartArea.top - arcOpts.borderWidth;
+		var availableWidth = chartArea.right - chartArea.left;
+		var availableHeight = chartArea.bottom - chartArea.top;
 		var minSize = Math.min(availableWidth, availableHeight);
 		var offset = {x: 0, y: 0};
 		var meta = me.getMeta();
@@ -171,7 +170,7 @@ module.exports = DatasetController.extend({
 			offset = {x: (max.x + min.x) * -0.5, y: (max.y + min.y) * -0.5};
 		}
 
-		chart.borderWidth = me.getMaxBorderWidth(meta.data);
+		chart.borderWidth = me.getMaxBorderWidth();
 		chart.outerRadius = Math.max((minSize - chart.borderWidth) / 2, 0);
 		chart.innerRadius = Math.max(cutoutPercentage ? (chart.outerRadius / 100) * (cutoutPercentage) : 0, 0);
 		chart.radiusLength = (chart.outerRadius - chart.innerRadius) / chart.getVisibleDatasetCount();
@@ -231,6 +230,7 @@ module.exports = DatasetController.extend({
 		model.backgroundColor = custom.backgroundColor ? custom.backgroundColor : valueOrDefault(dataset.backgroundColor, index, elementOpts.backgroundColor);
 		model.borderColor = custom.borderColor ? custom.borderColor : valueOrDefault(dataset.borderColor, index, elementOpts.borderColor);
 		model.borderWidth = custom.borderWidth ? custom.borderWidth : valueOrDefault(dataset.borderWidth, index, elementOpts.borderWidth);
+		model.borderAlign = custom.borderAlign ? custom.borderAlign : valueOrDefault(dataset.borderAlign, index, elementOpts.borderAlign);
 
 		// Set correct angles if not resetting
 		if (!reset || !animationOpts.animateRotate) {
@@ -276,18 +276,41 @@ module.exports = DatasetController.extend({
 
 	// gets the max border or hover width to properly scale pie charts
 	getMaxBorderWidth: function(arcs) {
+		var me = this;
 		var max = 0;
-		var index = this.index;
-		var length = arcs.length;
-		var borderWidth;
-		var hoverWidth;
+		var index = me.index;
+		var chart = me.chart;
+		var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
+		var elementOpts = chart.options.elements.arc;
+		var i, ilen, dataset, custom, borderAlign, borderWidth, hoverWidth;
 
-		for (var i = 0; i < length; i++) {
-			borderWidth = arcs[i]._model ? arcs[i]._model.borderWidth : 0;
-			hoverWidth = arcs[i]._chart ? arcs[i]._chart.config.data.datasets[index].hoverBorderWidth : 0;
+		if (!arcs) {
+			// Find the outmost visible dataset
+			for (i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
+				if (chart.isDatasetVisible(i)) {
+					arcs = chart.getDatasetMeta(i).data;
+					index = i;
+					break;
+				}
+			}
+		}
 
-			max = borderWidth > max ? borderWidth : max;
-			max = hoverWidth > max ? hoverWidth : max;
+		if (!arcs) {
+			return 0;
+		}
+
+		dataset = chart.data.datasets[index];
+
+		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
+			custom = arcs[i].custom || {};
+			borderAlign = custom.borderAlign ? custom.borderAlign : valueAtIndexOrDefault(dataset.borderAlign, i, elementOpts.borderAlign);
+			if (borderAlign !== 'inner') {
+				borderWidth = custom.borderWidth ? custom.borderWidth : valueAtIndexOrDefault(dataset.borderWidth, i, elementOpts.borderWidth);
+				hoverWidth = custom.hoverBorderWidth ? custom.hoverBorderWidth : valueAtIndexOrDefault(dataset.hoverBorderWidth, i, borderWidth);
+
+				max = borderWidth > max ? borderWidth : max;
+				max = hoverWidth > max ? hoverWidth : max;
+			}
 		}
 		return max;
 	}
