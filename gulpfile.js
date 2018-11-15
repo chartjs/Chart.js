@@ -49,19 +49,19 @@ gulp.task('bower', bowerTask);
 gulp.task('build', buildTask);
 gulp.task('package', packageTask);
 gulp.task('watch', watchTask);
-gulp.task('lint', ['lint-html', 'lint-js']);
 gulp.task('lint-html', lintHtmlTask);
 gulp.task('lint-js', lintJsTask);
+gulp.task('lint', gulp.parallel('lint-html', 'lint-js'));
 gulp.task('docs', docsTask);
-gulp.task('test', ['lint', 'unittest']);
-gulp.task('size', ['library-size', 'module-sizes']);
 gulp.task('server', serverTask);
 gulp.task('unittest', unittestTask);
+gulp.task('test', gulp.parallel('lint', 'unittest'));
 gulp.task('library-size', librarySizeTask);
 gulp.task('module-sizes', moduleSizesTask);
+gulp.task('size', gulp.parallel('library-size', 'module-sizes'));
 gulp.task('_open', _openTask);
-gulp.task('dev', ['server', 'default']);
-gulp.task('default', ['build', 'watch']);
+gulp.task('default', gulp.parallel('build', 'watch'));
+gulp.task('dev', gulp.parallel('server', 'default'));
 
 /**
  * Generates the bower.json manifest file which will be pushed along release tags.
@@ -233,7 +233,7 @@ function moduleSizesTask() {
 }
 
 function watchTask() {
-  return gulp.watch('./src/**', ['build']);
+  return gulp.watch('./src/**', gulp.parallel('build'));
 }
 
 function serverTask() {

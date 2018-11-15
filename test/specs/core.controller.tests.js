@@ -949,25 +949,13 @@ describe('Chart', function() {
 			var meta = chart.getDatasetMeta(0);
 			var point = meta.data[1];
 
-			var node = chart.canvas;
-			var rect = node.getBoundingClientRect();
-
-			var evt = new MouseEvent('mousemove', {
-				view: window,
-				bubbles: true,
-				cancelable: true,
-				clientX: rect.left + point._model.x,
-				clientY: 0
-			});
-
-			// Manually trigger rather than having an async test
-			node.dispatchEvent(evt);
+			jasmine.triggerMouseEvent(chart, 'mousemove', point);
 
 			// Check and see if tooltip was displayed
 			var tooltip = chart.tooltip;
 
 			expect(chart.lastActive).toEqual([point]);
-			expect(tooltip._lastActive).toEqual([]);
+			expect(tooltip._lastActive).toEqual([point]);
 
 			// Update and confirm tooltip is reset
 			chart.update();
