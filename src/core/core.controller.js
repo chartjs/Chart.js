@@ -369,6 +369,16 @@ module.exports = function(Chart) {
 			this.tooltip.initialize();
 		},
 
+		/**
+		 * Refresh the tooltip when the chart is updated
+		 * @private
+		 */
+		_refresh: function() {
+			if (this._lastEvent) {
+				this.eventHandler(this._lastEvent);
+			}
+		},
+
 		update: function(config) {
 			var me = this;
 
@@ -420,8 +430,8 @@ module.exports = function(Chart) {
 			// When we reset the tooltip, we need to clear it
 			me.lastActive = [];
 
-			// Fire a mouse event on last known position
-			me.tooltip.dispatchMouseEvent();
+			// Refresh the tooltip using the last known event
+			me._refresh();
 
 			// Do this before render so that any plugins that need final scale updates can use it
 			plugins.notify(me, 'afterUpdate');
@@ -584,8 +594,8 @@ module.exports = function(Chart) {
 			}
 
 			me.drawDatasets(easingValue);
-			// Fire a mouse event on last known position
-			me.tooltip.dispatchMouseEvent();
+			// Refresh the tooltip with the last known mouse event
+			me._refresh();
 			me._drawTooltip(easingValue);
 
 			plugins.notify(me, 'afterDraw', [easingValue]);
@@ -867,6 +877,8 @@ module.exports = function(Chart) {
 			// Buffer any update calls so that renders do not occur
 			me._bufferedRender = true;
 			me._bufferedRequest = null;
+			// Store the last event so we can handle it again when updating the chart
+			me._lastEvent = e;
 
 			var changed = me.handleEvent(e);
 			// for smooth tooltip animations issue #4989
