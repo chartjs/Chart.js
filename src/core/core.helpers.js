@@ -506,7 +506,7 @@ module.exports = function() {
 	 */
 	helpers._getParentNode = function(domNode) {
 		var parent = domNode.parentNode;
-		if (parent && parent.host) {
+		if (parent && parent.toString() === '[object ShadowRoot]') {
 			parent = parent.host;
 		}
 		return parent;
