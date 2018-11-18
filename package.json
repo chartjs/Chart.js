@@ -22,12 +22,15 @@
   "bugs": {
     "url": "https://github.com/chartjs/Chart.js/issues"
   },
+  "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
+  },
   "devDependencies": {
     "coveralls": "^3.0.0",
     "eslint": "^5.9.0",
     "eslint-config-chartjs": "^0.1.0",
     "eslint-plugin-html": "^5.0.0",
-    "gitbook-cli": "^2.3.2",
     "gulp": "^4.0.0",
     "gulp-eslint": "^5.0.0",
     "gulp-file": "^0.4.0",
@@ -54,6 +57,7 @@
     "rollup-plugin-istanbul": "^2.0.1",
     "rollup-plugin-node-resolve": "^3.4.0",
     "rollup-plugin-terser": "^3.0.0",
+    "vuepress": "^0.14.5",
     "watchify": "^3.9.0",
     "yargs": "^12.0.5"
   },

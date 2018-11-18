@@ -44,7 +44,7 @@ function run(bin, args, done) {
   return new Promise(function(resolve, reject) {
     var exe = '"' + process.execPath + '"';
     var src = require.resolve(bin);
-    var ps = exec([exe, src].concat(args || []).join(' '));
+    var ps = exec([exe, src].concat(args || []).join(' '), { cwd: '.' });
 
     ps.stdout.pipe(process.stdout);
     ps.stderr.pipe(process.stderr);
@@ -134,12 +134,11 @@ function lintHtmlTask() {
     }));
 }
 
-function docsTask() {
-  var bin = 'gitbook-cli/bin/gitbook.js';
-  var cmd = argv.watch ? 'serve' : 'build';
+function docsTask(done) {
+  var bin = 'vuepress/bin/vuepress.js';
+  var cmd = argv.watch ? 'dev' : 'build';
 
-  return run(bin, ['install', './'])
-    .then(() => run(bin, [cmd, './', './dist/docs']));
+  return run(bin, [cmd, 'docs']);
 }
 
 function unittestTask(done) {
