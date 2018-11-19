@@ -154,10 +154,10 @@ describe('Chart.controllers.radar', function() {
 		meta.controller.update();
 
 		[
-			{x: 256, y: 117, cppx: 246, cppy: 117, cpnx: 272, cpny: 117},
-			{x: 464, y: 256, cppx: 464, cppy: 248, cpnx: 464, cpny: 262},
-			{x: 256, y: 256, cppx: 276.9, cppy: 256, cpnx: 250.4, cpny: 256},
-			{x: 200, y: 256, cppx: 200, cppy: 259, cpnx: 200, cpny: 245},
+			{x: 256, y: 116, cppx: 246, cppy: 116, cpnx: 273, cpny: 116},
+			{x: 466, y: 256, cppx: 466, cppy: 248, cpnx: 466, cpny: 262},
+			{x: 256, y: 256, cppx: 277, cppy: 256, cpnx: 250.4, cpny: 256},
+			{x: 200, y: 256, cppx: 200, cppy: 260, cpnx: 200, cpny: 246},
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(expected.y);
@@ -211,8 +211,8 @@ describe('Chart.controllers.radar', function() {
 
 		// Since tension is now 0, we don't care about the control points
 		[
-			{x: 256, y: 117},
-			{x: 464, y: 256},
+			{x: 256, y: 116},
+			{x: 466, y: 256},
 			{x: 256, y: 256},
 			{x: 200, y: 256},
 		].forEach(function(expected, i) {
@@ -270,11 +270,11 @@ describe('Chart.controllers.radar', function() {
 		}));
 
 		expect(meta.data[0]._model.x).toBeCloseToPixel(256);
-		expect(meta.data[0]._model.y).toBeCloseToPixel(117);
+		expect(meta.data[0]._model.y).toBeCloseToPixel(116);
 		expect(meta.data[0]._model.controlPointPreviousX).toBeCloseToPixel(241);
-		expect(meta.data[0]._model.controlPointPreviousY).toBeCloseToPixel(117);
+		expect(meta.data[0]._model.controlPointPreviousY).toBeCloseToPixel(116);
 		expect(meta.data[0]._model.controlPointNextX).toBeCloseToPixel(281);
-		expect(meta.data[0]._model.controlPointNextY).toBeCloseToPixel(117);
+		expect(meta.data[0]._model.controlPointNextY).toBeCloseToPixel(116);
 		expect(meta.data[0]._model).toEqual(jasmine.objectContaining({
 			radius: 2.2,
 			backgroundColor: 'rgb(0, 1, 3)',

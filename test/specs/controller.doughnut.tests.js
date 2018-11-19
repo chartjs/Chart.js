@@ -195,10 +195,10 @@ describe('Chart.controllers.doughnut', function() {
 			{c: Math.PI / 8, s: Math.PI, e: Math.PI + Math.PI / 8},
 			{c: 3 * Math.PI / 8, s: Math.PI + Math.PI / 8, e: Math.PI + Math.PI / 2}
 		].forEach(function(expected, i) {
-			expect(meta.data[i]._model.x).toBeCloseToPixel(510);
-			expect(meta.data[i]._model.y).toBeCloseToPixel(510);
-			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(509);
-			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(381);
+			expect(meta.data[i]._model.x).toBeCloseToPixel(511);
+			expect(meta.data[i]._model.y).toBeCloseToPixel(511);
+			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(510);
+			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(382);
 			expect(meta.data[i]._model.circumference).toBeCloseTo(expected.c, 8);
 			expect(meta.data[i]._model.startAngle).toBeCloseTo(expected.s, 8);
 			expect(meta.data[i]._model.endAngle).toBeCloseTo(expected.e, 8);
