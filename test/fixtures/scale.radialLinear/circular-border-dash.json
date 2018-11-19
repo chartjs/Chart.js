@@ -1,0 +1,34 @@
+{
+    "config": {
+        "type": "radar",
+        "data": {
+            "labels": ["A", "B", "C", "D", "E"]
+        },
+        "options": {
+            "responsive": false,
+            "legend": false,
+            "title": false,
+            "scale": {
+                "gridLines": {
+                    "circular": true,
+                    "color": "rgba(0, 0, 255, 0.5)",
+                    "lineWidth": 1,
+                    "borderDash": [4, 2],
+                    "borderDashOffset": 2
+                },
+                "angleLines": {
+                    "color": "rgba(0, 0, 255, 0.5)",
+                    "lineWidth": 1,
+                    "borderDash": [4, 2],
+                    "borderDashOffset": 2
+                },
+                "pointLabels": {
+                    "display": false
+                },
+                "ticks": {
+                    "display": false
+                }
+            }
+        }
+    }
+}

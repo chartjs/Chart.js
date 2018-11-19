@@ -728,13 +728,13 @@ module.exports = Element.extend({
 				// Draw the first index specially
 				lineWidth = gridLines.zeroLineWidth;
 				lineColor = gridLines.zeroLineColor;
-				borderDash = gridLines.zeroLineBorderDash;
-				borderDashOffset = gridLines.zeroLineBorderDashOffset;
+				borderDash = gridLines.zeroLineBorderDash || [];
+				borderDashOffset = gridLines.zeroLineBorderDashOffset || 0.0;
 			} else {
 				lineWidth = helpers.valueAtIndexOrDefault(gridLines.lineWidth, index);
 				lineColor = helpers.valueAtIndexOrDefault(gridLines.color, index);
-				borderDash = helpers.valueOrDefault(gridLines.borderDash, globalDefaults.borderDash);
-				borderDashOffset = helpers.valueOrDefault(gridLines.borderDashOffset, globalDefaults.borderDashOffset);
+				borderDash = gridLines.borderDash || [];
+				borderDashOffset = gridLines.borderDashOffset || 0.0;
 			}
 
 			// Common properties
@@ -825,10 +825,13 @@ module.exports = Element.extend({
 
 		// Draw all of the tick labels, tick marks, and grid lines at the correct places
 		helpers.each(itemsToDraw, function(itemToDraw) {
-			if (gridLines.display) {
+			var glWidth = itemToDraw.glWidth;
+			var glColor = itemToDraw.glColor;
+
+			if (gridLines.display && glWidth && glColor) {
 				context.save();
-				context.lineWidth = itemToDraw.glWidth;
-				context.strokeStyle = itemToDraw.glColor;
+				context.lineWidth = glWidth;
+				context.strokeStyle = glColor;
 				if (context.setLineDash) {
 					context.setLineDash(itemToDraw.glBorderDash);
 					context.lineDashOffset = itemToDraw.glBorderDashOffset;
