@@ -790,7 +790,7 @@ describe('Core helper tests', function() {
 		div.style.height = '300px';
 		document.body.appendChild(div);
 
-		// Inner DIV to have 10% padding of parent
+		// Inner DIV to have 5% padding of parent
 		var innerDiv = document.createElement('div');
 
 		div.appendChild(innerDiv);
@@ -802,8 +802,8 @@ describe('Core helper tests', function() {
 		expect(helpers.getMaximumWidth(canvas)).toBe(300);
 
 		// test with percentage
-		innerDiv.style.padding = '10%';
-		expect(helpers.getMaximumWidth(canvas)).toBe(240);
+		innerDiv.style.padding = '5%';
+		expect(helpers.getMaximumWidth(canvas)).toBe(270);
 
 		// test with pixels
 		innerDiv.style.padding = '10px';
