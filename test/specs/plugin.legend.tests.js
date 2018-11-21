@@ -205,8 +205,8 @@ describe('Legend block tests', function() {
 		expect(chart.legend.legendHitBoxes.length).toBe(3);
 
 		[
-			{h: 12, l: 107, t: 10, w: 93},
-			{h: 12, l: 210, t: 10, w: 93},
+			{h: 12, l: 106, t: 10, w: 93},
+			{h: 12, l: 209, t: 10, w: 93},
 			{h: 12, l: 312, t: 10, w: 93}
 		].forEach(function(expected, i) {
 			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
@@ -438,9 +438,9 @@ describe('Legend block tests', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
-				datasets: [1, 2, 3, 4, 5].map(function(n) {
+				datasets: Array.apply(null, Array(9)).map(function() {
 					return {
-						label: 'dataset' + n,
+						label: ' ',
 						data: []
 					};
 				}),
@@ -452,15 +452,18 @@ describe('Legend block tests', function() {
 		expect(chart.legend.top).toBeCloseToPixel(0);
 		expect(chart.legend.width).toBeCloseToPixel(512);
 		expect(chart.legend.height).toBeCloseToPixel(54);
-		expect(chart.legend.legendHitBoxes.length).toBe(5);
-		expect(chart.legend.legendHitBoxes.length).toBe(5);
+		expect(chart.legend.legendHitBoxes.length).toBe(9);
 
 		[
-			{h: 12, l: 56, t: 10, w: 93},
-			{h: 12, l: 158, t: 10, w: 93},
-			{h: 12, l: 261, t: 10, w: 93},
-			{h: 12, l: 364, t: 10, w: 93},
-			{h: 12, l: 210, t: 32, w: 93}
+			{h: 12, l: 24, t: 10, w: 49},
+			{h: 12, l: 83, t: 10, w: 49},
+			{h: 12, l: 142, t: 10, w: 49},
+			{h: 12, l: 202, t: 10, w: 49},
+			{h: 12, l: 261, t: 10, w: 49},
+			{h: 12, l: 320, t: 10, w: 49},
+			{h: 12, l: 380, t: 10, w: 49},
+			{h: 12, l: 439, t: 10, w: 49},
+			{h: 12, l: 231, t: 32, w: 49}
 		].forEach(function(expected, i) {
 			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
 			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
@@ -473,9 +476,9 @@ describe('Legend block tests', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
-				datasets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22].map(function(n) {
+				datasets: Array.apply(null, Array(22)).map(function() {
 					return {
-						label: 'dataset' + n,
+						label: ' ',
 						data: []
 					};
 				}),
@@ -490,33 +493,33 @@ describe('Legend block tests', function() {
 
 		expect(chart.legend.left).toBeCloseToPixel(0);
 		expect(chart.legend.top).toBeCloseToPixel(6);
-		expect(chart.legend.width).toBeCloseToPixel(228.7);
+		expect(chart.legend.width).toBeCloseToPixel(128);
 		expect(chart.legend.height).toBeCloseToPixel(478);
 		expect(chart.legend.legendHitBoxes.length).toBe(22);
 
 		[
-			{h: 12, l: 10, t: 16, w: 93},
-			{h: 12, l: 10, t: 38, w: 93},
-			{h: 12, l: 10, t: 60, w: 93},
-			{h: 12, l: 10, t: 82, w: 93},
-			{h: 12, l: 10, t: 104, w: 93},
-			{h: 12, l: 10, t: 126, w: 93},
-			{h: 12, l: 10, t: 148, w: 93},
-			{h: 12, l: 10, t: 170, w: 93},
-			{h: 12, l: 10, t: 192, w: 93},
-			{h: 12, l: 10, t: 214, w: 99},
-			{h: 12, l: 10, t: 236, w: 99},
-			{h: 12, l: 10, t: 258, w: 99},
-			{h: 12, l: 10, t: 280, w: 99},
-			{h: 12, l: 10, t: 302, w: 99},
-			{h: 12, l: 10, t: 324, w: 99},
-			{h: 12, l: 10, t: 346, w: 99},
-			{h: 12, l: 10, t: 368, w: 99},
-			{h: 12, l: 10, t: 390, w: 99},
-			{h: 12, l: 10, t: 412, w: 99},
-			{h: 12, l: 10, t: 434, w: 99},
-			{h: 12, l: 10, t: 456, w: 99},
-			{h: 12, l: 119, t: 16, w: 99}
+			{h: 12, l: 10, t: 16, w: 49},
+			{h: 12, l: 10, t: 38, w: 49},
+			{h: 12, l: 10, t: 60, w: 49},
+			{h: 12, l: 10, t: 82, w: 49},
+			{h: 12, l: 10, t: 104, w: 49},
+			{h: 12, l: 10, t: 126, w: 49},
+			{h: 12, l: 10, t: 148, w: 49},
+			{h: 12, l: 10, t: 170, w: 49},
+			{h: 12, l: 10, t: 192, w: 49},
+			{h: 12, l: 10, t: 214, w: 49},
+			{h: 12, l: 10, t: 236, w: 49},
+			{h: 12, l: 10, t: 258, w: 49},
+			{h: 12, l: 10, t: 280, w: 49},
+			{h: 12, l: 10, t: 302, w: 49},
+			{h: 12, l: 10, t: 324, w: 49},
+			{h: 12, l: 10, t: 346, w: 49},
+			{h: 12, l: 10, t: 368, w: 49},
+			{h: 12, l: 10, t: 390, w: 49},
+			{h: 12, l: 10, t: 412, w: 49},
+			{h: 12, l: 10, t: 434, w: 49},
+			{h: 12, l: 10, t: 456, w: 49},
+			{h: 12, l: 69, t: 16, w: 49}
 		].forEach(function(expected, i) {
 			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
 			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
