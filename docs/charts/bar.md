@@ -139,6 +139,16 @@ The bar chart defines the following configuration options. These options are mer
 | `gridLines.offsetGridLines` | `Boolean` | `true` | If true, the bars for a particular data point fall between the grid lines. The grid line will move to the left by one half of the tick interval. If false, the grid line will go right down the middle of the bars. [more...](#offsetgridlines)
 
 ### barThickness
+This option needs to be configured on x axis in scales property.
+```javascript
+options: {
+  scales: {
+    xAxes: [{
+      barThickness: 6
+    }]
+  }
+}
+```
 If this value is a number, it is applied to the width of each bar, in pixels. When this is enforced, `barPercentage` and `categoryPercentage` are ignored.
 
 If set to `'flex'`, the base sample widths are calculated automatically based on the previous and following samples so that they take the full available widths without overlap. Then, bars are sized using `barPercentage` and `categoryPercentage`. There is no gap when the percentage options are 1. This mode generates bars with different widths when data are not evenly spaced.
