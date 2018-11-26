@@ -125,9 +125,8 @@ The interaction with each bar can be controlled with the following properties:
 
 All these values, if `undefined`, fallback to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options.
 
-## Configuration Options
-
-The bar chart defines the following configuration options. These options are merged with the global chart configuration options, `Chart.defaults.global`, to form the options passed to the chart.
+## Scale Configuration
+The bar chart accepts the following configuration from the associated `scale` options:
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -138,17 +137,24 @@ The bar chart defines the following configuration options. These options are mer
 | `minBarLength` | `Number` | | Set this to ensure that bars have a minimum length in pixels.
 | `gridLines.offsetGridLines` | `Boolean` | `true` | If true, the bars for a particular data point fall between the grid lines. The grid line will move to the left by one half of the tick interval. If false, the grid line will go right down the middle of the bars. [more...](#offsetgridlines)
 
-### barThickness
-This setting applies to the axis configuration.
+### Example Usage
+
 ```javascript
-options: {
+options = {
     scales: {
         xAxes: [{
-            barThickness: 6
+            barPercentage: 0.5,
+            barThickness: 6,
+            maxBarThickness: 8,
+            minBarLength: 2,
+            gridLines: {
+                offsetGridLines: true
+            }
         }]
     }
 }
 ```
+### barThickness
 If this value is a number, it is applied to the width of each bar, in pixels. When this is enforced, `barPercentage` and `categoryPercentage` are ignored.
 
 If set to `'flex'`, the base sample widths are calculated automatically based on the previous and following samples so that they take the full available widths without overlap. Then, bars are sized using `barPercentage` and `categoryPercentage`. There is no gap when the percentage options are 1. This mode generates bars with different widths when data are not evenly spaced.
