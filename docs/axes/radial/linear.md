@@ -95,6 +95,8 @@ The following options are used to configure angled lines that radiate from the c
 | `display` | `Boolean` | `true` | if true, angle lines are shown.
 | `color` | `Color` | `rgba(0, 0, 0, 0.1)` | Color of angled lines.
 | `lineWidth` | `Number` | `1` | Width of angled lines.
+| `borderDash` | `Number[]` | `[]` | Length and spacing of dashes on angled lines. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
+| `borderDashOffset` | `Number` | `0.0` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
 
 ## Point Label Options
 

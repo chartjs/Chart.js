@@ -1,5 +1,7 @@
 // Tests for the radial linear scale used by the polar area and radar charts
 describe('Test the radial linear scale', function() {
+	describe('auto', jasmine.fixture.specs('scale.radialLinear'));
+
 	it('Should register the constructor with the scale service', function() {
 		var Constructor = Chart.scaleService.getScaleConstructor('radialLinear');
 		expect(Constructor).not.toBe(undefined);
@@ -12,7 +14,9 @@ describe('Test the radial linear scale', function() {
 			angleLines: {
 				display: true,
 				color: 'rgba(0, 0, 0, 0.1)',
-				lineWidth: 1
+				lineWidth: 1,
+				borderDash: [],
+				borderDashOffset: 0.0
 			},
 			animate: true,
 			display: true,
