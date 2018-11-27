@@ -11,6 +11,7 @@ defaults._set('global', {
 	legend: {
 		display: true,
 		position: 'top',
+		align: 'center',
 		fullWidth: true,
 		reverse: false,
 		weight: 1000,
@@ -407,24 +408,41 @@ var Legend = Element.extend({
 					ctx.stroke();
 				}
 			};
+			var itemHeight = fontSize + labelOpts.padding;
 
 			// Horizontal
 			var isHorizontal = me.isHorizontal();
 			if (isHorizontal) {
+				// default to center as this is the original behaviour of just position
+				var alignedX = me.left + ((legendWidth - lineWidths[0]) / 2);
+				if (opts.align === 'start') {
+					alignedX = me.left;
+				} else if (opts.align === 'end') {
+					alignedX = ((me.right - lineWidths[0]));
+				}
 				cursor = {
-					x: me.left + ((legendWidth - lineWidths[0]) / 2) + labelOpts.padding,
+					x: alignedX + labelOpts.padding,
 					y: me.top + labelOpts.padding,
 					line: 0
 				};
 			} else {
+				// default to top as this is the original behaviour of just position
+				var alignedY = me.top;
+				var maxItemsPerColumn = Math.floor((me.minSize.height - labelOpts.padding) / itemHeight);
+				var legendHeight = Math.min(me.legendItems.length, maxItemsPerColumn) * itemHeight + labelOpts.padding;
+				// var legendHeight = (fontSize + labelOpts.padding) * me.legendItems.length;
+				if (opts.align === 'end') {
+					alignedY = ((me.bottom - legendHeight));
+				} else if (opts.align === 'center') {
+					alignedY = (((me.bottom - legendHeight) / 2));
+				}
 				cursor = {
 					x: me.left + labelOpts.padding,
-					y: me.top + labelOpts.padding,
+					y: alignedY + labelOpts.padding,
 					line: 0
 				};
 			}
 
-			var itemHeight = fontSize + labelOpts.padding;
 			helpers.each(me.legendItems, function(legendItem, i) {
 				var textWidth = ctx.measureText(legendItem.text).width;
 				var width = boxWidth + (fontSize / 2) + textWidth;
@@ -438,11 +456,28 @@ var Legend = Element.extend({
 					if (i > 0 && x + width + labelOpts.padding > me.left + me.minSize.width) {
 						y = cursor.y += itemHeight;
 						cursor.line++;
-						x = cursor.x = me.left + ((legendWidth - lineWidths[cursor.line]) / 2) + labelOpts.padding;
+						// We must account for the align parameter when resetting the x position
+						alignedX = me.left + ((legendWidth - lineWidths[cursor.line]) / 2);
+						if (opts.align === 'start') {
+							alignedX = me.left;
+						} else if (opts.align === 'end') {
+							alignedX = ((me.right - lineWidths[cursor.line]));
+						}
+						x = cursor.x = alignedX + labelOpts.padding;
 					}
 				} else if (i > 0 && y + itemHeight > me.top + me.minSize.height) {
 					x = cursor.x = x + me.columnWidths[cursor.line] + labelOpts.padding;
-					y = cursor.y = me.top + labelOpts.padding;
+					// We must account for the align parameter when resetting the y position
+					alignedY = me.top;
+					maxItemsPerColumn = Math.floor((me.minSize.height - labelOpts.padding) / itemHeight);
+					legendHeight = Math.min(me.legendItems.length, maxItemsPerColumn) * itemHeight + labelOpts.padding;
+					// var legendHeight = (fontSize + labelOpts.padding) * me.legendItems.length;
+					if (opts.align === 'end') {
+						alignedY = ((me.bottom - legendHeight));
+					} else if (opts.align === 'center') {
+						alignedY = (((me.bottom - legendHeight) / 2));
+					}
+					y = cursor.y = alignedY + labelOpts.padding;
 					cursor.line++;
 				}
 

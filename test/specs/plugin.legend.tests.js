@@ -4,6 +4,7 @@ describe('Legend block tests', function() {
 		expect(Chart.defaults.global.legend).toEqual({
 			display: true,
 			position: 'top',
+			align: 'center',
 			fullWidth: true, // marks that this box should take the full width of the canvas (pushing down other boxes)
 			reverse: false,
 			weight: 1000,
@@ -176,7 +177,7 @@ describe('Legend block tests', function() {
 		expect(makeChart).not.toThrow();
 	});
 
-	it('should draw correctly when the legend is positioned on the top', function() {
+	it('should draw correctly when the legend is positioned on the top and align start', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
@@ -199,6 +200,58 @@ describe('Legend block tests', function() {
 					data: []
 				}],
 				labels: []
+			},
+			options: {
+				legend: {
+					position: 'top',
+					align: 'start'
+				}
+			}
+		});
+
+		expect(chart.legend.legendHitBoxes.length).toBe(3);
+
+		[
+			{h: 12, l: 10, t: 10, w: 93},
+			{h: 12, l: 113, t: 10, w: 93},
+			{h: 12, l: 216, t: 10, w: 93}
+		].forEach(function(expected, i) {
+			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
+			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
+			expect(chart.legend.legendHitBoxes[i].top).toBeCloseToPixel(expected.t);
+			expect(chart.legend.legendHitBoxes[i].width).toBeCloseToPixel(expected.w);
+		});
+	});
+
+	it('should draw correctly when the legend is positioned on the top and align center', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					label: 'dataset1',
+					backgroundColor: '#f31',
+					borderCapStyle: 'butt',
+					borderDash: [2, 2],
+					borderDashOffset: 5.5,
+					data: []
+				}, {
+					label: 'dataset2',
+					hidden: true,
+					borderJoinStyle: 'miter',
+					data: []
+				}, {
+					label: 'dataset3',
+					borderWidth: 10,
+					borderColor: 'green',
+					data: []
+				}],
+				labels: []
+			},
+			options: {
+				legend: {
+					position: 'top',
+					align: 'center'
+				}
 			}
 		});
 
@@ -389,7 +442,7 @@ describe('Legend block tests', function() {
 		}]);*/
 	});
 
-	it('should draw correctly when the legend is positioned on the left', function() {
+	it('should draw correctly when the legend is positioned on the top and align end', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
@@ -415,7 +468,54 @@ describe('Legend block tests', function() {
 			},
 			options: {
 				legend: {
-					position: 'left'
+					position: 'top',
+					align: 'end'
+				}
+			}
+		});
+
+		expect(chart.legend.legendHitBoxes.length).toBe(3);
+
+		[
+			{h: 12, l: 203, t: 10, w: 93},
+			{h: 12, l: 306, t: 10, w: 93},
+			{h: 12, l: 409, t: 10, w: 93}
+		].forEach(function(expected, i) {
+			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
+			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
+			expect(chart.legend.legendHitBoxes[i].top).toBeCloseToPixel(expected.t);
+			expect(chart.legend.legendHitBoxes[i].width).toBeCloseToPixel(expected.w);
+		});
+	});
+
+	it('should draw correctly when the legend is positioned on the left and align start', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					label: 'dataset1',
+					backgroundColor: '#f31',
+					borderCapStyle: 'butt',
+					borderDash: [2, 2],
+					borderDashOffset: 5.5,
+					data: []
+				}, {
+					label: 'dataset2',
+					hidden: true,
+					borderJoinStyle: 'miter',
+					data: []
+				}, {
+					label: 'dataset3',
+					borderWidth: 10,
+					borderColor: 'green',
+					data: []
+				}],
+				labels: []
+			},
+			options: {
+				legend: {
+					position: 'left',
+					align: 'start'
 				}
 			}
 		});
@@ -434,7 +534,99 @@ describe('Legend block tests', function() {
 		});
 	});
 
-	it('should draw correctly when the legend is positioned on the top and has multiple rows', function() {
+	it('should draw correctly when the legend is positioned on the left and align center', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					label: 'dataset1',
+					backgroundColor: '#f31',
+					borderCapStyle: 'butt',
+					borderDash: [2, 2],
+					borderDashOffset: 5.5,
+					data: []
+				}, {
+					label: 'dataset2',
+					hidden: true,
+					borderJoinStyle: 'miter',
+					data: []
+				}, {
+					label: 'dataset3',
+					borderWidth: 10,
+					borderColor: 'green',
+					data: []
+				}],
+				labels: []
+			},
+			options: {
+				legend: {
+					position: 'left',
+					align: 'center'
+				}
+			}
+		});
+
+		expect(chart.legend.legendHitBoxes.length).toBe(3);
+
+		[
+			{h: 12, l: 10, t: 214, w: 93},
+			{h: 12, l: 10, t: 236, w: 93},
+			{h: 12, l: 10, t: 258, w: 93}
+		].forEach(function(expected, i) {
+			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
+			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
+			expect(chart.legend.legendHitBoxes[i].top).toBeCloseToPixel(expected.t);
+			expect(chart.legend.legendHitBoxes[i].width).toBeCloseToPixel(expected.w);
+		});
+	});
+
+	it('should draw correctly when the legend is positioned on the left and align end', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					label: 'dataset1',
+					backgroundColor: '#f31',
+					borderCapStyle: 'butt',
+					borderDash: [2, 2],
+					borderDashOffset: 5.5,
+					data: []
+				}, {
+					label: 'dataset2',
+					hidden: true,
+					borderJoinStyle: 'miter',
+					data: []
+				}, {
+					label: 'dataset3',
+					borderWidth: 10,
+					borderColor: 'green',
+					data: []
+				}],
+				labels: []
+			},
+			options: {
+				legend: {
+					position: 'left',
+					align: 'end'
+				}
+			}
+		});
+
+		expect(chart.legend.legendHitBoxes.length).toBe(3);
+
+		[
+			{h: 12, l: 10, t: 418, w: 93},
+			{h: 12, l: 10, t: 440, w: 93},
+			{h: 12, l: 10, t: 462, w: 93}
+		].forEach(function(expected, i) {
+			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
+			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
+			expect(chart.legend.legendHitBoxes[i].top).toBeCloseToPixel(expected.t);
+			expect(chart.legend.legendHitBoxes[i].width).toBeCloseToPixel(expected.w);
+		});
+	});
+
+	it('should draw correctly when the legend is positioned on the top, align start, and has multiple rows', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
@@ -445,6 +637,56 @@ describe('Legend block tests', function() {
 					};
 				}),
 				labels: []
+			},
+			options: {
+				legend: {
+					position: 'top',
+					align: 'start'
+				}
+			}
+		});
+
+		expect(chart.legend.left).toBeCloseToPixel(0);
+		expect(chart.legend.top).toBeCloseToPixel(0);
+		expect(chart.legend.width).toBeCloseToPixel(512);
+		expect(chart.legend.height).toBeCloseToPixel(54);
+		expect(chart.legend.legendHitBoxes.length).toBe(9);
+
+		[
+			{h: 12, l: 10, t: 10, w: 49},
+			{h: 12, l: 69, t: 10, w: 49},
+			{h: 12, l: 128, t: 10, w: 49},
+			{h: 12, l: 187, t: 10, w: 49},
+			{h: 12, l: 247, t: 10, w: 49},
+			{h: 12, l: 306, t: 10, w: 49},
+			{h: 12, l: 365, t: 10, w: 49},
+			{h: 12, l: 424, t: 10, w: 49},
+			{h: 12, l: 10, t: 32, w: 49}
+		].forEach(function(expected, i) {
+			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
+			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
+			expect(chart.legend.legendHitBoxes[i].top).toBeCloseToPixel(expected.t);
+			expect(chart.legend.legendHitBoxes[i].width).toBeCloseToPixel(expected.w);
+		});
+	});
+
+	it('should draw correctly when the legend is positioned on the top, align center, and has multiple rows', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: Array.apply(null, Array(9)).map(function() {
+					return {
+						label: ' ',
+						data: []
+					};
+				}),
+				labels: []
+			},
+			options: {
+				legend: {
+					position: 'top',
+					align: 'center'
+				}
 			}
 		});
 
@@ -472,7 +714,51 @@ describe('Legend block tests', function() {
 		});
 	});
 
-	it('should draw correctly when the legend is positioned on the left and has multiple columns', function() {
+	it('should draw correctly when the legend is positioned on the top, align end, and has multiple rows', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: Array.apply(null, Array(9)).map(function() {
+					return {
+						label: ' ',
+						data: []
+					};
+				}),
+				labels: []
+			},
+			options: {
+				legend: {
+					position: 'top',
+					align: 'end'
+				}
+			}
+		});
+
+		expect(chart.legend.left).toBeCloseToPixel(0);
+		expect(chart.legend.top).toBeCloseToPixel(0);
+		expect(chart.legend.width).toBeCloseToPixel(512);
+		expect(chart.legend.height).toBeCloseToPixel(54);
+		expect(chart.legend.legendHitBoxes.length).toBe(9);
+
+		[
+			{h: 12, l: 38, t: 10, w: 49},
+			{h: 12, l: 97, t: 10, w: 49},
+			{h: 12, l: 156, t: 10, w: 49},
+			{h: 12, l: 215, t: 10, w: 49},
+			{h: 12, l: 274, t: 10, w: 49},
+			{h: 12, l: 333, t: 10, w: 49},
+			{h: 12, l: 392, t: 10, w: 49},
+			{h: 12, l: 452, t: 10, w: 49},
+			{h: 12, l: 452, t: 32, w: 49}
+		].forEach(function(expected, i) {
+			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
+			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
+			expect(chart.legend.legendHitBoxes[i].top).toBeCloseToPixel(expected.t);
+			expect(chart.legend.legendHitBoxes[i].width).toBeCloseToPixel(expected.w);
+		});
+	});
+
+	it('should draw correctly when the legend is positioned on the left, align start, and has multiple columns', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
@@ -486,7 +772,8 @@ describe('Legend block tests', function() {
 			},
 			options: {
 				legend: {
-					position: 'left'
+					position: 'left',
+					align: 'start'
 				}
 			}
 		});

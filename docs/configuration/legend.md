@@ -9,6 +9,7 @@ The legend configuration is passed into the `options.legend` namespace. The glob
 | -----| ---- | --------| -----------
 | `display` | `Boolean` | `true` | Is the legend shown?
 | `position` | `String` | `'top'` | Position of the legend. [more...](#position)
+| `align`    | `String` | `'center'` | The alignment of the legend. [more...](#align)
 | `fullWidth` | `Boolean` | `true` | Marks that this box should take the full width of the canvas (pushing down other boxes). This is unlikely to need to be changed in day-to-day use.
 | `onClick` | `Function` | | A callback that is called when a click event is registered on a label item.
 | `onHover` | `Function` | | A callback that is called when a 'mousemove' event is registered on top of a label item.
@@ -21,6 +22,14 @@ Position of the legend. Options are:
 * `'left'`
 * `'bottom'`
 * `'right'`
+
+## Align
+The alignment of the legend.  
+
+* `'start'`
+* `'center'` (default)
+* `'end'`
+
 
 ## Legend Label Configuration
 
