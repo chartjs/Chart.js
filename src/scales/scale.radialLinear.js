@@ -497,6 +497,10 @@ module.exports = function(Chart) {
 				var tickFontFamily = valueOrDefault(tickOpts.fontFamily, globalDefaults.defaultFontFamily);
 				var tickLabelFont = helpers.fontString(tickFontSize, tickFontStyle, tickFontFamily);
 
+				if (opts.angleLines.display || opts.pointLabels.display) {
+					drawPointLabels(me);
+				}
+
 				helpers.each(me.ticks, function(label, index) {
 					// Don't draw a centre value (if it is minimum)
 					if (index > 0 || tickOpts.reverse) {
@@ -534,10 +538,6 @@ module.exports = function(Chart) {
 						}
 					}
 				});
-
-				if (opts.angleLines.display || opts.pointLabels.display) {
-					drawPointLabels(me);
-				}
 			}
 		}
 	});
