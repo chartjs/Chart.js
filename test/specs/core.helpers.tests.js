@@ -848,6 +848,13 @@ describe('Core helper tests', function() {
 			};
 		});
 
+		it('should return a CanvasGradient when called with a CanvasGradient', function() {
+			var context = document.createElement('canvas').getContext('2d');
+			var gradient = context.createLinearGradient(0, 1, 2, 3);
+
+			expect(helpers.getHoverColor(gradient) instanceof CanvasGradient).toBe(true);
+		});
+
 		it('should return a modified version of color when called with a color', function() {
 			var originalColorRGB = 'rgb(70, 191, 189)';
 
