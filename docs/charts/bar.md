@@ -164,20 +164,6 @@ If not set (default), the base sample widths are calculated using the smallest i
 ### offsetGridLines
 If true, the bars for a particular data point fall between the grid lines. The grid line will move to the left by one half of the tick interval, which is the space between the grid lines. If false, the grid line will go right down the middle of the bars. This is set to true for a category scale in a bar chart while false for other scales or chart types by default.
 
-This setting applies to the axis configuration. If axes are added to the chart, this setting will need to be set for each new axis.
-
-```javascript
-options = {
-    scales: {
-        xAxes: [{
-            gridLines: {
-                offsetGridLines: true
-            }
-        }]
-    }
-}
-```
-
 ## Default Options
 
 It is common to want to apply a configuration setting to all created bar charts. The global bar chart settings are stored in `Chart.defaults.bar`. Changing the global options only affects charts created after the change. Existing charts are not changed.
