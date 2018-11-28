@@ -1,6 +1,10 @@
 describe('Chart.controllers.radar', function() {
 	describe('auto', jasmine.fixture.specs('controller.radar'));
 
+	it('should be registered as dataset controller', function() {
+		expect(typeof Chart.controllers.radar).toBe('function');
+	});
+
 	it('Should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'radar',

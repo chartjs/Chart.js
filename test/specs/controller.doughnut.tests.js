@@ -1,4 +1,9 @@
 describe('Chart.controllers.doughnut', function() {
+	it('should be registered as dataset controller', function() {
+		expect(typeof Chart.controllers.doughnut).toBe('function');
+		expect(Chart.controllers.doughnut).toBe(Chart.controllers.pie);
+	});
+
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'doughnut',
