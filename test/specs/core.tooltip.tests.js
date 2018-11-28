@@ -1,5 +1,7 @@
 // Test the rectangle element
 describe('Core.Tooltip', function() {
+	describe('auto', jasmine.fixture.specs('core.tooltip'));
+
 	describe('config', function() {
 		it('should not include the dataset label in the body string if not defined', function() {
 			var data = {

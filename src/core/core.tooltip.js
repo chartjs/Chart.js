@@ -168,14 +168,6 @@ var positioners = {
 	}
 };
 
-/**
- * Helper method to merge the opacity into a color
- */
-function mergeOpacity(colorString, opacity) {
-	var color = helpers.color(colorString);
-	return color.alpha(opacity * color.alpha()).rgbaString();
-}
-
 // Helper to push or concat based on if the 2nd parameter is an array or not
 function pushOrConcat(base, toPush) {
 	if (toPush) {
@@ -734,7 +726,7 @@ var exports = module.exports = Element.extend({
 		return {x1: x1, x2: x2, x3: x3, y1: y1, y2: y2, y3: y3};
 	},
 
-	drawTitle: function(pt, vm, ctx, opacity) {
+	drawTitle: function(pt, vm, ctx) {
 		var title = vm.title;
 
 		if (title.length) {
@@ -744,7 +736,7 @@ var exports = module.exports = Element.extend({
 			var titleFontSize = vm.titleFontSize;
 			var titleSpacing = vm.titleSpacing;
 
-			ctx.fillStyle = mergeOpacity(vm.titleFontColor, opacity);
+			ctx.fillStyle = vm.titleFontColor;
 			ctx.font = helpers.fontString(titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
 
 			var i, len;
@@ -759,7 +751,7 @@ var exports = module.exports = Element.extend({
 		}
 	},
 
-	drawBody: function(pt, vm, ctx, opacity) {
+	drawBody: function(pt, vm, ctx) {
 		var bodyFontSize = vm.bodyFontSize;
 		var bodySpacing = vm.bodySpacing;
 		var body = vm.body;
@@ -776,7 +768,7 @@ var exports = module.exports = Element.extend({
 		};
 
 		// Before body lines
-		ctx.fillStyle = mergeOpacity(vm.bodyFontColor, opacity);
+		ctx.fillStyle = vm.bodyFontColor;
 		helpers.each(vm.beforeBody, fillLineOfText);
 
 		var drawColorBoxes = vm.displayColors;
@@ -784,7 +776,7 @@ var exports = module.exports = Element.extend({
 
 		// Draw body lines now
 		helpers.each(body, function(bodyItem, i) {
-			var textColor = mergeOpacity(vm.labelTextColors[i], opacity);
+			var textColor = vm.labelTextColors[i];
 			ctx.fillStyle = textColor;
 			helpers.each(bodyItem.before, fillLineOfText);
 
@@ -792,16 +784,16 @@ var exports = module.exports = Element.extend({
 				// Draw Legend-like boxes if needed
 				if (drawColorBoxes) {
 					// Fill a white rect so that colours merge nicely if the opacity is < 1
-					ctx.fillStyle = mergeOpacity(vm.legendColorBackground, opacity);
+					ctx.fillStyle = vm.legendColorBackground;
 					ctx.fillRect(pt.x, pt.y, bodyFontSize, bodyFontSize);
 
 					// Border
 					ctx.lineWidth = 1;
-					ctx.strokeStyle = mergeOpacity(vm.labelColors[i].borderColor, opacity);
+					ctx.strokeStyle = vm.labelColors[i].borderColor;
 					ctx.strokeRect(pt.x, pt.y, bodyFontSize, bodyFontSize);
 
 					// Inner square
-					ctx.fillStyle = mergeOpacity(vm.labelColors[i].backgroundColor, opacity);
+					ctx.fillStyle = vm.labelColors[i].backgroundColor;
 					ctx.fillRect(pt.x + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
 					ctx.fillStyle = textColor;
 				}
@@ -820,7 +812,7 @@ var exports = module.exports = Element.extend({
 		pt.y -= bodySpacing; // Remove last body spacing
 	},
 
-	drawFooter: function(pt, vm, ctx, opacity) {
+	drawFooter: function(pt, vm, ctx) {
 		var footer = vm.footer;
 
 		if (footer.length) {
@@ -829,7 +821,7 @@ var exports = module.exports = Element.extend({
 			ctx.textAlign = vm._footerAlign;
 			ctx.textBaseline = 'top';
 
-			ctx.fillStyle = mergeOpacity(vm.footerFontColor, opacity);
+			ctx.fillStyle = vm.footerFontColor;
 			ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
 
 			helpers.each(footer, function(line) {
@@ -839,9 +831,9 @@ var exports = module.exports = Element.extend({
 		}
 	},
 
-	drawBackground: function(pt, vm, ctx, tooltipSize, opacity) {
-		ctx.fillStyle = mergeOpacity(vm.backgroundColor, opacity);
-		ctx.strokeStyle = mergeOpacity(vm.borderColor, opacity);
+	drawBackground: function(pt, vm, ctx, tooltipSize) {
+		ctx.fillStyle = vm.backgroundColor;
+		ctx.strokeStyle = vm.borderColor;
 		ctx.lineWidth = vm.borderWidth;
 		var xAlign = vm.xAlign;
 		var yAlign = vm.yAlign;
@@ -906,21 +898,26 @@ var exports = module.exports = Element.extend({
 		var hasTooltipContent = vm.title.length || vm.beforeBody.length || vm.body.length || vm.afterBody.length || vm.footer.length;
 
 		if (this._options.enabled && hasTooltipContent) {
+			ctx.save();
+			ctx.globalAlpha = opacity;
+
 			// Draw Background
-			this.drawBackground(pt, vm, ctx, tooltipSize, opacity);
+			this.drawBackground(pt, vm, ctx, tooltipSize);
 
 			// Draw Title, Body, and Footer
 			pt.x += vm.xPadding;
 			pt.y += vm.yPadding;
 
 			// Titles
-			this.drawTitle(pt, vm, ctx, opacity);
+			this.drawTitle(pt, vm, ctx);
 
 			// Body
-			this.drawBody(pt, vm, ctx, opacity);
+			this.drawBody(pt, vm, ctx);
 
 			// Footer
-			this.drawFooter(pt, vm, ctx, opacity);
+			this.drawFooter(pt, vm, ctx);
+
+			ctx.restore();
 		}
 	},
 
