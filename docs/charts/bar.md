@@ -125,9 +125,8 @@ The interaction with each bar can be controlled with the following properties:
 
 All these values, if `undefined`, fallback to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options.
 
-## Configuration Options
-
-The bar chart defines the following configuration options. These options are merged with the global chart configuration options, `Chart.defaults.global`, to form the options passed to the chart.
+## Scale Configuration
+The bar chart accepts the following configuration from the associated `scale` options:
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -138,6 +137,23 @@ The bar chart defines the following configuration options. These options are mer
 | `minBarLength` | `Number` | | Set this to ensure that bars have a minimum length in pixels.
 | `gridLines.offsetGridLines` | `Boolean` | `true` | If true, the bars for a particular data point fall between the grid lines. The grid line will move to the left by one half of the tick interval. If false, the grid line will go right down the middle of the bars. [more...](#offsetgridlines)
 
+### Example Usage
+
+```javascript
+options = {
+    scales: {
+        xAxes: [{
+            barPercentage: 0.5,
+            barThickness: 6,
+            maxBarThickness: 8,
+            minBarLength: 2,
+            gridLines: {
+                offsetGridLines: true
+            }
+        }]
+    }
+}
+```
 ### barThickness
 If this value is a number, it is applied to the width of each bar, in pixels. When this is enforced, `barPercentage` and `categoryPercentage` are ignored.
 
@@ -147,20 +163,6 @@ If not set (default), the base sample widths are calculated using the smallest i
 
 ### offsetGridLines
 If true, the bars for a particular data point fall between the grid lines. The grid line will move to the left by one half of the tick interval, which is the space between the grid lines. If false, the grid line will go right down the middle of the bars. This is set to true for a category scale in a bar chart while false for other scales or chart types by default.
-
-This setting applies to the axis configuration. If axes are added to the chart, this setting will need to be set for each new axis.
-
-```javascript
-options = {
-    scales: {
-        xAxes: [{
-            gridLines: {
-                offsetGridLines: true
-            }
-        }]
-    }
-}
-```
 
 ## Default Options
 
@@ -287,6 +289,6 @@ var myBarChart = new Chart(ctx, {
 ```
 
 ## Config Options
-The configuration options for the horizontal bar chart are the same as for the [bar chart](#configuration-options). However, any options specified on the x axis in a bar chart, are applied to the y axis in a horizontal bar chart.
+The configuration options for the horizontal bar chart are the same as for the [bar chart](#scale-configuration). However, any options specified on the x axis in a bar chart, are applied to the y axis in a horizontal bar chart.
 
 The default horizontal bar configuration is specified in `Chart.defaults.horizontalBar`.
