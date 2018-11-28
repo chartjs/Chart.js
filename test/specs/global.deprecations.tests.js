@@ -1,5 +1,32 @@
 describe('Deprecations', function() {
 	describe('Version 2.8.0', function() {
+		[
+			['Bar', 'bar'],
+			['Bubble', 'bubble'],
+			['Doughnut', 'doughnut'],
+			['Line', 'line'],
+			['PolarArea', 'polarArea'],
+			['Radar', 'radar'],
+			['Scatter', 'scatter']
+		].forEach(function(descriptor) {
+			var klass = descriptor[0];
+			var type = descriptor[1];
+
+			describe('Chart.' + klass, function() {
+				it('should be defined as a function', function() {
+					expect(Chart[klass]).toBeDefined();
+					expect(typeof Chart[klass]).toBe('function');
+				});
+				it('should create a chart of type "' + type + '"', function() {
+					var chart = new Chart[klass]('foo', {data: {}});
+					expect(chart instanceof Chart.Controller).toBeTruthy();
+					expect(chart.config.type).toBe(type);
+				});
+			});
+		});
+	});
+
+	describe('Version 2.7.3', function() {
 		describe('Chart.layoutService', function() {
 			it('should be defined and an alias of Chart.layouts', function() {
 				expect(Chart.layoutService).toBeDefined();
