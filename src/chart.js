@@ -42,14 +42,6 @@ require('./controllers/controller.polarArea')(Chart);
 require('./controllers/controller.radar')(Chart);
 require('./controllers/controller.scatter')(Chart);
 
-require('./charts/Chart.Bar')(Chart);
-require('./charts/Chart.Bubble')(Chart);
-require('./charts/Chart.Doughnut')(Chart);
-require('./charts/Chart.Line')(Chart);
-require('./charts/Chart.PolarArea')(Chart);
-require('./charts/Chart.Radar')(Chart);
-require('./charts/Chart.Scatter')(Chart);
-
 // Loading built-in plugins
 var plugins = require('./plugins');
 for (var k in plugins) {
@@ -116,8 +108,33 @@ Chart.canvasHelpers = Chart.helpers.canvas;
 /**
  * Provided for backward compatibility, use Chart.layouts instead.
  * @namespace Chart.layoutService
- * @deprecated since version 2.8.0
+ * @deprecated since version 2.7.3
  * @todo remove at version 3
  * @private
  */
 Chart.layoutService = Chart.layouts;
+
+/**
+ * Provided for backward compatibility, instead we should create a new Chart
+ * by setting the type in the config (`new Chart(id, {type: '{chart-type}'}`).
+ * @deprecated since version 2.8.0
+ * @todo remove at version 3
+ */
+Chart.helpers.each(
+	[
+		'Bar',
+		'Bubble',
+		'Doughnut',
+		'Line',
+		'PolarArea',
+		'Radar',
+		'Scatter'
+	],
+	function(klass) {
+		Chart[klass] = function(ctx, cfg) {
+			return new Chart(ctx, Chart.helpers.merge(cfg || {}, {
+				type: klass.charAt(0).toLowerCase() + klass.slice(1)
+			}));
+		};
+	}
+);
