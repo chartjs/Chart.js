@@ -1,4 +1,8 @@
 describe('Chart.controllers.scatter', function() {
+	it('should be registered as dataset controller', function() {
+		expect(typeof Chart.controllers.scatter).toBe('function');
+	});
+
 	describe('showLines option', function() {
 		it('should not draw a line if undefined', function() {
 			var chart = window.acquireChart({

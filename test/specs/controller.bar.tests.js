@@ -1,6 +1,11 @@
 describe('Chart.controllers.bar', function() {
 	describe('auto', jasmine.fixture.specs('controller.bar'));
 
+	it('should be registered as dataset controller', function() {
+		expect(typeof Chart.controllers.bar).toBe('function');
+		expect(typeof Chart.controllers.horizontalBar).toBe('function');
+	});
+
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'bar',

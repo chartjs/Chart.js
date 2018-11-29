@@ -2,6 +2,7 @@
 
 var Animation = require('./core.animation');
 var animations = require('./core.animations');
+var controllers = require('../controllers/index');
 var defaults = require('./core.defaults');
 var helpers = require('../helpers/index');
 var Interaction = require('./core.interaction');
@@ -19,9 +20,6 @@ module.exports = function(Chart) {
 	// Store a reference to each instance - allowing us to globally resize chart instances on window resize.
 	// Destroy method on the chart will remove the instance of the chart from this reference.
 	Chart.instances = {};
-
-	// Controllers available for dataset visualization eg. bar, line, slice, etc.
-	Chart.controllers = {};
 
 	/**
 	 * Initializes the given config with global and chart default values.
@@ -337,7 +335,7 @@ module.exports = function(Chart) {
 					meta.controller.updateIndex(datasetIndex);
 					meta.controller.linkScales();
 				} else {
-					var ControllerClass = Chart.controllers[meta.type];
+					var ControllerClass = controllers[meta.type];
 					if (ControllerClass === undefined) {
 						throw new Error('"' + meta.type + '" is not a chart type.');
 					}

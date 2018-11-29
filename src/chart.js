@@ -10,6 +10,8 @@ require('./core/core.helpers')(Chart);
 
 Chart.Animation = require('./core/core.animation');
 Chart.animationService = require('./core/core.animations');
+Chart.controllers = require('./controllers/index');
+Chart.DatasetController = require('./core/core.datasetController');
 Chart.defaults = require('./core/core.defaults');
 Chart.Element = require('./core/core.element');
 Chart.elements = require('./elements/index');
@@ -23,7 +25,6 @@ Chart.Ticks = require('./core/core.ticks');
 Chart.Tooltip = require('./core/core.tooltip');
 
 require('./core/core.controller')(Chart);
-require('./core/core.datasetController')(Chart);
 
 require('./scales/scale.linearbase')(Chart);
 require('./scales/scale.category')(Chart);
@@ -31,16 +32,6 @@ require('./scales/scale.linear')(Chart);
 require('./scales/scale.logarithmic')(Chart);
 require('./scales/scale.radialLinear')(Chart);
 require('./scales/scale.time')(Chart);
-
-// Controllers must be loaded after elements
-// See Chart.core.datasetController.dataElementType
-require('./controllers/controller.bar')(Chart);
-require('./controllers/controller.bubble')(Chart);
-require('./controllers/controller.doughnut')(Chart);
-require('./controllers/controller.line')(Chart);
-require('./controllers/controller.polarArea')(Chart);
-require('./controllers/controller.radar')(Chart);
-require('./controllers/controller.scatter')(Chart);
 
 // Loading built-in plugins
 var plugins = require('./plugins');

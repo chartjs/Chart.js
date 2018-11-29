@@ -1,6 +1,10 @@
-describe('auto', jasmine.fixture.specs('controller.polarArea'));
-
 describe('Chart.controllers.polarArea', function() {
+	describe('auto', jasmine.fixture.specs('controller.polarArea'));
+
+	it('should be registered as dataset controller', function() {
+		expect(typeof Chart.controllers.polarArea).toBe('function');
+	});
+
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'polarArea',
