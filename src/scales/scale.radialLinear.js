@@ -249,7 +249,7 @@ module.exports = function(Chart) {
 
 	function adjustPointPositionForLabelHeight(angle, textSize, position, padding) {
 		var paddingValue = padding ? padding : 0;
-		var squarePadding = Math.sqrt(paddingValue)
+		var squarePadding = Math.sqrt(paddingValue);
 
 		if (angle === 0) {
 			position.y -= (textSize.h + paddingValue);
