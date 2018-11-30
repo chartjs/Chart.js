@@ -247,11 +247,31 @@ module.exports = function(Chart) {
 		}
 	}
 
-	function adjustPointPositionForLabelHeight(angle, textSize, position) {
-		if (angle === 90 || angle === 270) {
+	function adjustPointPositionForLabelHeight(angle, textSize, position, padding) {
+		var paddingValue = padding ? padding : 0;
+
+		if (angle === 0) {
+			position.y -= (textSize.h + paddingValue);
+		} else if (angle === 90) {
 			position.y -= (textSize.h / 2);
-		} else if (angle > 270 || angle < 90) {
-			position.y -= textSize.h;
+			position.x += paddingValue;
+		} else if (angle === 180) {
+			position.x += paddingValue;
+		} else if (angle === 270) {
+			position.y -= (textSize.h / 2);
+			position.x -= paddingValue;
+		} else if (angle > 270) {
+			position.y -= (textSize.h + paddingValue / 2);
+			position.x -= (paddingValue / 2);
+		} else if (angle < 90) {
+			position.y -= (textSize.h + paddingValue / 2);
+			position.x += (paddingValue / 2);
+		} else if (angle < 180) {
+			position.y += (paddingValue / 2);
+			position.x += (paddingValue / 2);
+		} else {
+			position.y += (paddingValue / 2);
+			position.x -= (paddingValue / 2);
 		}
 	}
 
@@ -300,7 +320,7 @@ module.exports = function(Chart) {
 				var angleRadians = scale.getIndexAngle(i);
 				var angle = helpers.toDegrees(angleRadians);
 				ctx.textAlign = getTextAlignForAngle(angle);
-				adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition);
+				adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition, pointLabelOpts.padding);
 				fillText(ctx, scale.pointLabels[i] || '', pointLabelPosition, plFont.size);
 			}
 		}
