@@ -1,6 +1,5 @@
 var gulp = require('gulp');
 var concat = require('gulp-concat');
-var connect = require('gulp-connect');
 var eslint = require('gulp-eslint');
 var file = require('gulp-file');
 var insert = require('gulp-insert');
@@ -26,7 +25,7 @@ var argv = yargs
   .option('force-output', {default: false})
   .option('silent-errors', {default: false})
   .option('verbose', {default: false})
-  .argv
+  .argv;
 
 var srcDir = './src/';
 var outDir = './dist/';
@@ -53,15 +52,12 @@ gulp.task('lint-html', lintHtmlTask);
 gulp.task('lint-js', lintJsTask);
 gulp.task('lint', gulp.parallel('lint-html', 'lint-js'));
 gulp.task('docs', docsTask);
-gulp.task('server', serverTask);
 gulp.task('unittest', unittestTask);
 gulp.task('test', gulp.parallel('lint', 'unittest'));
 gulp.task('library-size', librarySizeTask);
 gulp.task('module-sizes', moduleSizesTask);
 gulp.task('size', gulp.parallel('library-size', 'module-sizes'));
-gulp.task('_open', _openTask);
 gulp.task('default', gulp.parallel('build', 'watch'));
-gulp.task('dev', gulp.parallel('server', 'default'));
 
 /**
  * Generates the bower.json manifest file which will be pushed along release tags.
@@ -136,7 +132,6 @@ function buildTask() {
     .pipe(gulp.dest(outDir));
 
   return merge(bundled, nonBundled);
-
 }
 
 function packageTask() {
@@ -234,17 +229,4 @@ function moduleSizesTask() {
 
 function watchTask() {
   return gulp.watch('./src/**', gulp.parallel('build'));
-}
-
-function serverTask() {
-  connect.server({
-    port: 8000
-  });
-}
-
-// Convenience task for opening the project straight from the command line
-
-function _openTask() {
-  exec('open http://localhost:8000');
-  exec('subl .');
 }
