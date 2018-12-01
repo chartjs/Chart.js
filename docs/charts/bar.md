@@ -73,9 +73,9 @@ the color of the bars is generally set this way.
 | [`borderSkipped`](#borderskipped) | `String` | Yes | Yes | `'bottom'`
 | [`borderWidth`](#styling) | `Number` | Yes | Yes | `0`
 | [`data`](#data-structure) | `Object[]` | - | - | **required**
-| [`hoverBackgroundColor`](#interactions) | [`Color`](../general/colors.md) | - | - | `undefined`
-| [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | - | - | `undefined`
-| [`hoverBorderWidth`](#interactions) | `Number` | - | - | `1`
+| [`hoverBackgroundColor`](#interactions) | [`Color`](../general/colors.md) | - | Yes | `undefined`
+| [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | - | Yes | `undefined`
+| [`hoverBorderWidth`](#interactions) | `Number` | - | Yes | `1`
 | [`label`](#general) | `String` | - | - | `''`
 | [`xAxisID`](#general) | `String` | - | - | first x axis
 | [`yAxisID`](#general) | `String` | - | - | first y axis
