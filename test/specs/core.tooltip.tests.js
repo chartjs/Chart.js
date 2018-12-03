@@ -145,7 +145,7 @@ describe('Core.Tooltip', function() {
 				}]
 			}));
 
-			expect(tooltip._view.x).toBeCloseToPixel(266);
+			expect(tooltip._view.x).toBeCloseToPixel(267);
 			expect(tooltip._view.y).toBeCloseToPixel(155);
 		});
 
@@ -343,7 +343,7 @@ describe('Core.Tooltip', function() {
 			}]
 		}));
 
-		expect(tooltip._view.x).toBeCloseToPixel(266);
+		expect(tooltip._view.x).toBeCloseToPixel(267);
 		expect(tooltip._view.y).toBeCloseToPixel(312);
 	});
 
@@ -576,7 +576,7 @@ describe('Core.Tooltip', function() {
 			}]
 		}));
 
-		expect(tooltip._view.x).toBeCloseToPixel(266);
+		expect(tooltip._view.x).toBeCloseToPixel(267);
 		expect(tooltip._view.y).toBeCloseToPixel(155);
 	});
 

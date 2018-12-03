@@ -29,7 +29,7 @@ describe('Core.scale', function() {
 		labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'],
 		offsetGridLines: false,
 		offset: true,
-		expected: [51.5, 154.5, 256.5, 358.5, 461.5]
+		expected: [51.5, 153.5, 256.5, 358.5, 460.5]
 	}, {
 		labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'],
 		offsetGridLines: true,
@@ -39,7 +39,7 @@ describe('Core.scale', function() {
 		labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'],
 		offsetGridLines: true,
 		offset: true,
-		expected: [0, 103, 205.5, 307.5, 410]
+		expected: [-0.5, 102.5, 204.5, 307.5, 409.5]
 	}, {
 		labels: ['tick1'],
 		offsetGridLines: false,
@@ -146,7 +146,7 @@ describe('Core.scale', function() {
 			chart.draw();
 
 			expect(yScale.ctx.getCalls().filter(function(x) {
-				return x.name === 'moveTo' && x.args[0] === 0;
+				return x.name === 'moveTo' && x.args[0] === 1;
 			}).map(function(x) {
 				return x.args[1];
 			})).toEqual(test.expected);

@@ -24,6 +24,13 @@ describe('Deprecations', function() {
 				});
 			});
 		});
+
+		describe('Chart.helpers.aliasPixel', function() {
+			it('should be defined and a function', function() {
+				expect(Chart.helpers.aliasPixel).toBeDefined();
+				expect(typeof Chart.helpers.aliasPixel).toBe('function');
+			});
+		});
 	});
 
 	describe('Version 2.7.3', function() {

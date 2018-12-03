@@ -477,8 +477,8 @@ module.exports = function(Chart) {
 			var me = this;
 			var thisAngle = me.getIndexAngle(index) - (Math.PI / 2);
 			return {
-				x: Math.round(Math.cos(thisAngle) * distanceFromCenter) + me.xCenter,
-				y: Math.round(Math.sin(thisAngle) * distanceFromCenter) + me.yCenter
+				x: Math.cos(thisAngle) * distanceFromCenter + me.xCenter,
+				y: Math.sin(thisAngle) * distanceFromCenter + me.yCenter
 			};
 		},
 		getPointPositionForValue: function(index, value) {
