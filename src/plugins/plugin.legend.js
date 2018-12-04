@@ -29,14 +29,12 @@ defaults._set('global', {
 
 			if (isHidden === null) {
 				meta.hidden = !isDatasetHidden;
-				if (doHideAxisOnDataHide) {
-					labelAxisConfig.display = !meta.hidden;
-				}
 			} else {
 				meta.hidden = null;
-				if (doHideAxisOnDataHide) {
-					labelAxisConfig.display = !isDatasetHidden;
-				}
+			}
+
+			if (doHideAxisOnDataHide) {
+				labelAxisConfig.display = isHidden === null ? !meta.hidden : !isDatasetHidden;
 			}
 
 			// We hid a dataset ... rerender the chart
