@@ -2,7 +2,7 @@
 
 [![travis](https://img.shields.io/travis/chartjs/Chart.js.svg?style=flat-square&maxAge=60)](https://travis-ci.org/chartjs/Chart.js) [![coveralls](https://img.shields.io/coveralls/chartjs/Chart.js.svg?style=flat-square&maxAge=600)](https://coveralls.io/github/chartjs/Chart.js?branch=master) [![codeclimate](https://img.shields.io/codeclimate/maintainability/chartjs/Chart.js.svg?style=flat-square&maxAge=600)](https://codeclimate.com/github/chartjs/Chart.js) [![slack](https://img.shields.io/badge/slack-chartjs-blue.svg?style=flat-square&maxAge=3600)](https://chartjs-slack.herokuapp.com/)
 
-*Simple HTML5 Charts using the canvas element* [chartjs.org](http://www.chartjs.org)
+*Simple HTML5 Charts using the canvas element* [chartjs.org](https://www.chartjs.org)
 
 ## Installation
 
@@ -39,7 +39,7 @@ The bundled build includes Moment.js in a single file. You should use this versi
 
 ## Documentation
 
-You can find documentation at [www.chartjs.org/docs](http://www.chartjs.org/docs). The markdown files that build the site are available under `/docs`. Previous version documentation is available at [www.chartjs.org/docs/latest/developers/#previous-versions](http://www.chartjs.org/docs/latest/developers/#previous-versions).
+You can find documentation at [www.chartjs.org/docs](https://www.chartjs.org/docs). The markdown files that build the site are available under `/docs`. Previous version documentation is available at [www.chartjs.org/docs/latest/developers/#previous-versions](https://www.chartjs.org/docs/latest/developers/#previous-versions).
 
 ## Contributing
 
