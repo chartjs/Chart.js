@@ -685,7 +685,35 @@ module.exports = Element.extend({
 	draw: function(chartArea) {
 		var me = this;
 		var options = me.options;
-		if (!options.display) {
+
+		var atLeastOneDatasetForAxisIsVisible;
+		if (me.type === 'linear' && options.hideAxisOnDataHide) {
+			var datasetIndexesForAxis = me.chart.data.datasets.reduce(function(acc, record, idx) {
+				if (record.yAxisID === me.id) {
+					acc.push(idx);
+				}
+				return acc;
+			}, []);
+
+			var datasetsMetaForAxis = datasetIndexesForAxis.map(function(index) {
+				return me.chart.getDatasetMeta(index);
+			});
+
+			datasetsMetaForAxis.forEach(function(meta, dsmIdx) {
+				if (meta.hidden === null) {
+					var datasetIndex = datasetIndexesForAxis[dsmIdx];
+					if (!me.chart.data.datasets[datasetIndex].hidden) {
+						atLeastOneDatasetForAxisIsVisible = true;
+					}
+				} else if (!meta.hidden) {
+					atLeastOneDatasetForAxisIsVisible = true;
+				}
+			});
+		} else {
+			atLeastOneDatasetForAxisIsVisible = true;
+		}
+
+		if (!options.display || !atLeastOneDatasetForAxisIsVisible) {
 			return;
 		}
 

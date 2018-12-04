@@ -22,7 +22,22 @@ defaults._set('global', {
 			var meta = ci.getDatasetMeta(index);
 
 			// See controller.isDatasetVisible comment
-			meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
+			var isHidden = meta.hidden;
+			var labelAxisConfig = ci.scales[meta.yAxisID].options;
+			var doHideAxisOnDataHide = labelAxisConfig.hideAxisOnDataHide;
+			var isDatasetHidden = ci.data.datasets[index].hidden;
+
+			if (isHidden === null) {
+				meta.hidden = !isDatasetHidden;
+				if (doHideAxisOnDataHide) {
+					labelAxisConfig.display = !meta.hidden;
+				}
+			} else {
+				meta.hidden = null;
+				if (doHideAxisOnDataHide) {
+					labelAxisConfig.display = !isDatasetHidden;
+				}
+			}
 
 			// We hid a dataset ... rerender the chart
 			ci.update();
