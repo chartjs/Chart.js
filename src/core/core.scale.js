@@ -397,6 +397,7 @@ module.exports = Element.extend({
 		var scaleLabelOpts = opts.scaleLabel;
 		var gridLineOpts = opts.gridLines;
 		var display = opts.display;
+		var position = opts.position;
 		var isHorizontal = me.isHorizontal();
 
 		var tickFont = parseFontOptions(tickOpts);
@@ -456,16 +457,21 @@ module.exports = Element.extend({
 				me.ctx.font = tickFont.font;
 				var firstLabelWidth = computeTextSize(me.ctx, labels[0], tickFont.font);
 				var lastLabelWidth = computeTextSize(me.ctx, labels[labels.length - 1], tickFont.font);
+				var offsetLeft = me.getPixelForTick(0) - me.left;
+				var offsetRight = me.right - me.getPixelForTick(labels.length - 1);
+				var paddingLeft, paddingRight;
 
 				// Ensure that our ticks are always inside the canvas. When rotated, ticks are right aligned
 				// which means that the right padding is dominated by the font height
 				if (me.labelRotation !== 0) {
-					me.paddingLeft = opts.position === 'bottom' ? (cosRotation * firstLabelWidth) + 3 : (cosRotation * lineSpace) + 3; // add 3 px to move away from canvas edges
-					me.paddingRight = opts.position === 'bottom' ? (cosRotation * lineSpace) + 3 : (cosRotation * lastLabelWidth) + 3;
+					paddingLeft = position === 'bottom' ? (cosRotation * firstLabelWidth) : (cosRotation * lineSpace);
+					paddingRight = position === 'bottom' ? (cosRotation * lineSpace) : (cosRotation * lastLabelWidth);
 				} else {
-					me.paddingLeft = firstLabelWidth / 2 + 3; // add 3 px to move away from canvas edges
-					me.paddingRight = lastLabelWidth / 2 + 3;
+					paddingLeft = firstLabelWidth / 2;
+					paddingRight = lastLabelWidth / 2;
 				}
+				me.paddingLeft = Math.max(paddingLeft - offsetLeft, 0) + 3; // add 3 px to move away from canvas edges
+				me.paddingRight = Math.max(paddingRight - offsetRight, 0) + 3;
 			} else {
 				// A vertical axis is more constrained by the width. Labels are the
 				// dominant factor here, so get that length first and account for padding
