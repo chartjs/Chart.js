@@ -220,11 +220,11 @@ describe('Category scale tests', function() {
 		xScale.options.offset = true;
 		chart.update();
 
-		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(69 + 6); // plus lineHeight
+		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(71 + 6); // plus lineHeight
 		expect(xScale.getValueForPixel(69)).toBe(0);
 
-		expect(xScale.getPixelForValue(0, 4, 0)).toBeCloseToPixel(441);
-		expect(xScale.getValueForPixel(397)).toBe(4);
+		expect(xScale.getPixelForValue(0, 4, 0)).toBeCloseToPixel(461);
+		expect(xScale.getValueForPixel(417)).toBe(4);
 	});
 
 	it ('Should get the correct pixel for a value when there are repeated labels', function() {
@@ -295,8 +295,8 @@ describe('Category scale tests', function() {
 		xScale.options.offset = true;
 		chart.update();
 
-		expect(xScale.getPixelForValue(0, 1, 0)).toBeCloseToPixel(102 + 6); // plus lineHeight
-		expect(xScale.getPixelForValue(0, 3, 0)).toBeCloseToPixel(417);
+		expect(xScale.getPixelForValue(0, 1, 0)).toBeCloseToPixel(103 + 6); // plus lineHeight
+		expect(xScale.getPixelForValue(0, 3, 0)).toBeCloseToPixel(429);
 	});
 
 	it ('should get the correct pixel for a value when vertical', function() {
