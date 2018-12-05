@@ -12,6 +12,24 @@ var plugins = require('./core.plugins');
 var scaleService = require('../core/core.scaleService');
 var Tooltip = require('./core.tooltip');
 
+function mergeDefaults(options, type) {
+	options = helpers.configMerge(
+		defaults.global,
+		defaults[type],
+		options || {});
+
+	// Hover and tooltips follow interaction options by default.
+	options.hover = helpers.configMerge(
+		options.interaction,
+		options.hover);
+
+	options.tooltips = helpers.configMerge(
+		options.interaction,
+		options.tooltips);
+
+	return options;
+}
+
 module.exports = function(Chart) {
 
 	// Create a dictionary of chart types, to allow for extension of existing types
@@ -33,10 +51,7 @@ module.exports = function(Chart) {
 		data.datasets = data.datasets || [];
 		data.labels = data.labels || [];
 
-		config.options = helpers.configMerge(
-			defaults.global,
-			defaults[config.type],
-			config.options || {});
+		config.options = mergeDefaults(config.options, config.type);
 
 		return config;
 	}
@@ -52,10 +67,7 @@ module.exports = function(Chart) {
 			layouts.removeBox(chart, scale);
 		});
 
-		newOptions = helpers.configMerge(
-			Chart.defaults.global,
-			Chart.defaults[chart.config.type],
-			newOptions);
+		newOptions = mergeDefaults(newOptions, chart.config.type);
 
 		chart.options = chart.config.options = newOptions;
 		chart.ensureScalesHaveIDs();

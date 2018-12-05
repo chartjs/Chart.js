@@ -5,7 +5,7 @@ var BarController = require('./controller.bar');
 var defaults = require('../core/core.defaults');
 
 defaults._set('horizontalBar', {
-	hover: {
+	interaction: {
 		mode: 'index',
 		axis: 'y'
 	},
@@ -55,9 +55,7 @@ defaults._set('horizontalBar', {
 				var datasetLabel = data.datasets[item.datasetIndex].label || '';
 				return datasetLabel + ': ' + item.xLabel;
 			}
-		},
-		mode: 'index',
-		axis: 'y'
+		}
 	}
 });
 

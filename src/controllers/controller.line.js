@@ -9,7 +9,7 @@ defaults._set('line', {
 	showLines: true,
 	spanGaps: false,
 
-	hover: {
+	interaction: {
 		mode: 'label'
 	},
 

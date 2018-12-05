@@ -12,7 +12,7 @@ defaults._set('doughnut', {
 		// Boolean - Whether we animate scaling the Doughnut from the centre
 		animateScale: false
 	},
-	hover: {
+	interaction: {
 		mode: 'single'
 	},
 	legendCallback: function(chart) {

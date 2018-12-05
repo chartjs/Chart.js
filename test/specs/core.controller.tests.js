@@ -69,7 +69,7 @@ describe('Chart', function() {
 			var defaults = Chart.defaults;
 			defaults.global.responsiveAnimationDuration = 42;
 			defaults.global.hover.onHover = callback;
-			defaults.line.hover.mode = 'x-axis';
+			defaults.line.interaction.mode = 'x-axis';
 			defaults.line.spanGaps = true;
 
 			var chart = acquireChart({
@@ -83,12 +83,15 @@ describe('Chart', function() {
 			expect(options.responsiveAnimationDuration).toBe(42);
 			expect(options.hover.onHover).toBe(callback);
 			expect(options.hover.mode).toBe('x-axis');
+			expect(options.tooltips.mode).toBe('x-axis');
+			expect(options.tooltips.position).toBe(defaults.global.tooltips.position);
+			expect(options.tooltips.callbacks.label).toBe(defaults.global.tooltips.callbacks.label);
 		});
 
 		it('should override default options', function() {
 			var defaults = Chart.defaults;
 			defaults.global.responsiveAnimationDuration = 42;
-			defaults.line.hover.mode = 'x-axis';
+			defaults.line.interaction.mode = 'x-axis';
 			defaults.line.spanGaps = true;
 
 			var chart = acquireChart({

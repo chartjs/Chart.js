@@ -4,7 +4,7 @@ var LineController = require('./controller.line');
 var defaults = require('../core/core.defaults');
 
 defaults._set('scatter', {
-	hover: {
+	interaction: {
 		mode: 'single'
 	},
 

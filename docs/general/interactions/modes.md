@@ -2,6 +2,8 @@
 
 When configuring interaction with the graph via hover or tooltips, a number of different modes are available.
 
+`options.hover` and `options.tooltips` extend from `options.interaction`. So if `mode`, `intersect` or any other common settings are configured only in `options.interaction`, both hover and tooltips obey that.
+
 The modes are detailed below and how they behave in conjunction with the `intersect` setting.
 
 ## point
@@ -12,7 +14,7 @@ var chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
-        tooltips: {
+        interaction: {
             mode: 'point'
         }
     }
@@ -27,7 +29,7 @@ var chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
-        tooltips: {
+        interaction: {
             mode: 'nearest'
         }
     }
@@ -48,7 +50,7 @@ var chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
-        tooltips: {
+        interaction: {
             mode: 'index'
         }
     }
@@ -62,7 +64,7 @@ var chart = new Chart(ctx, {
     type: 'horizontalBar',
     data: data,
     options: {
-        tooltips: {
+        interaction: {
             mode: 'index',
             axis: 'y'
         }
@@ -81,7 +83,7 @@ var chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
-        tooltips: {
+        interaction: {
             mode: 'dataset'
         }
     }
@@ -96,7 +98,7 @@ var chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
-        tooltips: {
+        interaction: {
             mode: 'x'
         }
     }
@@ -111,7 +113,7 @@ var chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
-        tooltips: {
+        interaction: {
             mode: 'y'
         }
     }

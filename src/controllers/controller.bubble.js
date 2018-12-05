@@ -6,7 +6,7 @@ var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
 defaults._set('bubble', {
-	hover: {
+	interaction: {
 		mode: 'single'
 	},
 

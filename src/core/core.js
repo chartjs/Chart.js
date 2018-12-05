@@ -9,8 +9,6 @@ defaults._set('global', {
 	events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'],
 	hover: {
 		onHover: null,
-		mode: 'nearest',
-		intersect: true,
 		animationDuration: 400
 	},
 	onClick: null,

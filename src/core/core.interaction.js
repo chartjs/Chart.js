@@ -1,6 +1,14 @@
 'use strict';
 
+var defaults = require('./core.defaults');
 var helpers = require('../helpers/index');
+
+defaults._set('global', {
+	interaction: {
+		mode: 'nearest',
+		intersect: true
+	},
+});
 
 /**
  * Helper function to get relative position for an event
