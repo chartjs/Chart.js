@@ -311,7 +311,7 @@ module.exports = DatasetController.extend({
 		var scale = me.getValueScale();
 		var isHorizontal = scale.isHorizontal();
 		var datasets = chart.data.datasets;
-		var value = scale.getRightValue(datasets[datasetIndex].data[index]);
+		var value = +scale.getRightValue(datasets[datasetIndex].data[index]);
 		var minBarLength = scale.options.minBarLength;
 		var stacked = scale.options.stacked;
 		var stack = meta.stack;
@@ -327,9 +327,11 @@ module.exports = DatasetController.extend({
 					imeta.controller.getValueScaleId() === scale.id &&
 					chart.isDatasetVisible(i)) {
 
-					ivalue = scale.getRightValue(datasets[i].data[index]);
+					ivalue = +scale.getRightValue(datasets[i].data[index]);
 					if ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0)) {
 						start += ivalue;
+					} else if (minBarLength && value === 0 && ivalue === 0) {
+						start = scale.getValueForPixel(scale.getPixelForValue(start) + minBarLength);
 					}
 				}
 			}
