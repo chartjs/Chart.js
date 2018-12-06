@@ -25,15 +25,20 @@ defaults._set('global', {
 			var isHidden = meta.hidden;
 			var labelAxisConfig = ci.scales[meta.yAxisID].options;
 			var doHideAxisOnDataHide = labelAxisConfig.hideAxisOnDataHide;
+			var allDatasetsForAxis = ci.data.datasets.filter(function(dataset) {
+				return dataset.yAxisID === meta.yAxisID;
+			});
 			var isDatasetHidden = ci.data.datasets[index].hidden;
 
-			if (isHidden === null) {
-				meta.hidden = !isDatasetHidden;
-			} else {
-				meta.hidden = null;
-			}
+			var isAtLeastOneDatasetForAxisVisible = allDatasetsForAxis.some(function(dataset) {
+				return !dataset.hidden;
+			});
 
-			if (doHideAxisOnDataHide) {
+			meta.hidden = isHidden === null ? !isDatasetHidden : null;
+
+			if (isAtLeastOneDatasetForAxisVisible || !doHideAxisOnDataHide) {
+				labelAxisConfig.display = true;
+			} else {
 				labelAxisConfig.display = isHidden === null ? !meta.hidden : !isDatasetHidden;
 			}
 
