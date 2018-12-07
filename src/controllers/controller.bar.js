@@ -217,55 +217,59 @@ module.exports = DatasetController.extend({
 	/**
 	 * Returns the stacks based on groups and bar visibility.
 	 * @param {Number} [last] - The dataset index
+	 * @param {Number} [index] - The data index
 	 * @returns {Array} The stack list
 	 * @private
 	 */
-	_getStacks: function(last) {
+	_getStacks: function(last, index) {
 		var me = this;
 		var chart = me.chart;
 		var scale = me.getIndexScale();
 		var stacked = scale.options.stacked;
-		var ilen = last === undefined ? chart.data.datasets.length : last + 1;
+		var datasets = chart.data.datasets;
+		var ilen = last === undefined ? datasets.length : last + 1;
 		var stacks = [];
-		var i, meta;
+		var i, meta, hasData;
 
 		for (i = 0; i < ilen; ++i) {
 			meta = chart.getDatasetMeta(i);
-			if (meta.bar && chart.isDatasetVisible(i) &&
+			hasData = index === undefined || Number(scale.getRightValue(helpers.valueAtIndexOrDefault(datasets[i].data, index, 0)));
+			if (meta.bar && chart.isDatasetVisible(i) && hasData &&
 				(stacked === false ||
-				(stacked === true && stacks.indexOf(meta.stack) === -1) ||
-				(stacked === undefined && (meta.stack === undefined || stacks.indexOf(meta.stack) === -1)))) {
+					(stacked === true && stacks.indexOf(meta.stack) === -1) ||
+					(stacked === undefined && (meta.stack === undefined || stacks.indexOf(meta.stack) === -1)))) {
 				stacks.push(meta.stack);
 			}
 		}
-
 		return stacks;
 	},
 
 	/**
 	 * Returns the effective number of stacks based on groups and bar visibility.
+	 * @param {Number} [index] - The data index
 	 * @private
 	 */
-	getStackCount: function() {
-		return this._getStacks().length;
+	getStackCount: function(index) {
+		return this._getStacks(undefined, index).length;
 	},
 
 	/**
 	 * Returns the stack index for the given dataset based on groups and bar visibility.
-	 * @param {Number} [datasetIndex] - The dataset index
-	 * @param {String} [name] - The stack name to find
+	 * @param {Number} datasetIndex - The dataset index
+	 * @param {String} name - The stack name to find
+	 * @param {Number} [index] - The data index
 	 * @returns {Number} The stack index
 	 * @private
 	 */
-	getStackIndex: function(datasetIndex, name) {
-		var stacks = this._getStacks(datasetIndex);
-		var index = (name !== undefined)
+	getStackIndex: function(datasetIndex, name, index) {
+		var stacks = this._getStacks(datasetIndex, index);
+		var stackIndex = (name !== undefined)
 			? stacks.indexOf(name)
 			: -1; // indexOf returns -1 if element is not present
 
-		return (index === -1)
+		return (stackIndex === -1)
 			? stacks.length - 1
-			: index;
+			: stackIndex;
 	},
 
 	/**
@@ -366,11 +370,13 @@ module.exports = DatasetController.extend({
 			? computeFlexCategoryTraits(index, ruler, options)
 			: computeFitCategoryTraits(index, ruler, options);
 
-		var stackIndex = me.getStackIndex(datasetIndex, me.getMeta().stack);
-		var center = range.start + (range.chunk * stackIndex) + (range.chunk / 2);
+		var stackIndex = me.getStackIndex(datasetIndex, me.getMeta().stack, index);
+		var stackCount = me.getStackCount(index);
+		var chunk = range.chunk * ruler.stackCount / stackCount;
+		var center = range.start + (chunk * stackIndex) + (chunk / 2);
 		var size = Math.min(
 			helpers.valueOrDefault(options.maxBarThickness, Infinity),
-			range.chunk * range.ratio);
+			chunk * range.ratio);
 
 		return {
 			base: center - size / 2,
