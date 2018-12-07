@@ -22,25 +22,7 @@ defaults._set('global', {
 			var meta = ci.getDatasetMeta(index);
 
 			// See controller.isDatasetVisible comment
-			var isHidden = meta.hidden;
-			var labelAxisConfig = ci.scales[meta.yAxisID].options;
-			var doHideAxisOnDataHide = labelAxisConfig.hideAxisOnDataHide;
-			var allDatasetsForAxis = ci.data.datasets.filter(function(dataset) {
-				return dataset.yAxisID === meta.yAxisID;
-			});
-			var isDatasetHidden = ci.data.datasets[index].hidden;
-
-			var isAtLeastOneDatasetForAxisVisible = allDatasetsForAxis.some(function(dataset) {
-				return !dataset.hidden;
-			});
-
-			meta.hidden = isHidden === null ? !isDatasetHidden : null;
-
-			if (isAtLeastOneDatasetForAxisVisible || !doHideAxisOnDataHide) {
-				labelAxisConfig.display = true;
-			} else {
-				labelAxisConfig.display = isHidden === null ? !meta.hidden : !isDatasetHidden;
-			}
+			meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
 
 			// We hid a dataset ... rerender the chart
 			ci.update();

@@ -680,40 +680,39 @@ module.exports = Element.extend({
 		return result;
 	},
 
+	/**
+	 * @private
+	 */
+	_isVisible: function() {
+		var me = this;
+		var chart = me.chart;
+		var display = me.options.display;
+		var i, ilen, meta;
+
+		if (display !== 'auto') {
+			return !!display;
+		}
+
+		// When 'auto', the scale is visible if at least one associated dataset is visible.
+		for (i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
+			if (chart.isDatasetVisible(i)) {
+				meta = chart.getDatasetMeta(i);
+				if (meta.xAxisID === me.id || meta.yAxisID === me.id) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	},
+
 	// Actually draw the scale on the canvas
 	// @param {rectangle} chartArea : the area of the chart to draw full grid lines on
 	draw: function(chartArea) {
 		var me = this;
 		var options = me.options;
 
-		var atLeastOneDatasetForAxisIsVisible;
-		if (me.type === 'linear' && options.hideAxisOnDataHide) {
-			var datasetIndexesForAxis = me.chart.data.datasets.reduce(function(acc, record, idx) {
-				if (record.yAxisID === me.id) {
-					acc.push(idx);
-				}
-				return acc;
-			}, []);
-
-			var datasetsMetaForAxis = datasetIndexesForAxis.map(function(index) {
-				return me.chart.getDatasetMeta(index);
-			});
-
-			datasetsMetaForAxis.forEach(function(meta, dsmIdx) {
-				if (meta.hidden === null) {
-					var datasetIndex = datasetIndexesForAxis[dsmIdx];
-					if (!me.chart.data.datasets[datasetIndex].hidden) {
-						atLeastOneDatasetForAxisIsVisible = true;
-					}
-				} else if (!meta.hidden) {
-					atLeastOneDatasetForAxisIsVisible = true;
-				}
-			});
-		} else {
-			atLeastOneDatasetForAxisIsVisible = true;
-		}
-
-		if (!options.display || !atLeastOneDatasetForAxisIsVisible) {
+		if (!me._isVisible()) {
 			return;
 		}
 

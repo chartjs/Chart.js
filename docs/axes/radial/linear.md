@@ -12,7 +12,6 @@ The axis has configuration properties for ticks, angle lines (line that appear i
 | ---- | ---- | -----------
 | `angleLines` | `Object` | Angle line configuration. [more...](#angle-line-options)
 | `gridLines` | `Object` | Grid line configuration. [more...](../styling.md#grid-line-configuration)
-| `hideAxisOnDataHide` | `Boolean` | `false` | If true, axis will not be drawn when a dataset is toggled off / hidden 
 | `pointLabels` | `Object` | Point label configuration. [more...](#point-label-options)
 | `ticks` | `Object` | Tick configuration. [more...](#tick-options)
 
