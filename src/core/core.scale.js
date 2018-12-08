@@ -396,7 +396,7 @@ module.exports = Element.extend({
 		var tickOpts = opts.ticks;
 		var scaleLabelOpts = opts.scaleLabel;
 		var gridLineOpts = opts.gridLines;
-		var display = opts.display;
+		var display = this._isVisible();
 		var position = opts.position;
 		var isHorizontal = me.isHorizontal();
 
