@@ -398,10 +398,10 @@ describe('Test the radial linear scale', function() {
 
 		expect(chart.scale.getDistanceFromCenterForValue(chart.scale.min)).toBe(0);
 		expect(chart.scale.getDistanceFromCenterForValue(chart.scale.max)).toBe(232);
-		expect(chart.scale.getPointPositionForValue(1, 5)).toEqual({
-			x: 270,
-			y: 275,
-		});
+
+		var position = chart.scale.getPointPositionForValue(1, 5);
+		expect(position.x).toBeCloseToPixel(270);
+		expect(position.y).toBeCloseToPixel(275);
 
 		chart.scale.options.ticks.reverse = true;
 		chart.update();

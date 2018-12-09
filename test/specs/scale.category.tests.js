@@ -328,19 +328,19 @@ describe('Category scale tests', function() {
 		});
 
 		var yScale = chart.scales.yScale0;
-		expect(yScale.getPixelForValue(0, 0, 0)).toBe(32);
+		expect(yScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(32);
 		expect(yScale.getValueForPixel(32)).toBe(0);
 
-		expect(yScale.getPixelForValue(0, 4, 0)).toBe(484);
+		expect(yScale.getPixelForValue(0, 4, 0)).toBeCloseToPixel(484);
 		expect(yScale.getValueForPixel(484)).toBe(4);
 
 		yScale.options.offset = true;
 		chart.update();
 
-		expect(yScale.getPixelForValue(0, 0, 0)).toBe(77);
+		expect(yScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(77);
 		expect(yScale.getValueForPixel(77)).toBe(0);
 
-		expect(yScale.getPixelForValue(0, 4, 0)).toBe(439);
+		expect(yScale.getPixelForValue(0, 4, 0)).toBeCloseToPixel(439);
 		expect(yScale.getValueForPixel(439)).toBe(4);
 	});
 
@@ -378,13 +378,13 @@ describe('Category scale tests', function() {
 
 		var yScale = chart.scales.yScale0;
 
-		expect(yScale.getPixelForValue(0, 1, 0)).toBe(32);
-		expect(yScale.getPixelForValue(0, 3, 0)).toBe(484);
+		expect(yScale.getPixelForValue(0, 1, 0)).toBeCloseToPixel(32);
+		expect(yScale.getPixelForValue(0, 3, 0)).toBeCloseToPixel(484);
 
 		yScale.options.offset = true;
 		chart.update();
 
-		expect(yScale.getPixelForValue(0, 1, 0)).toBe(107);
-		expect(yScale.getPixelForValue(0, 3, 0)).toBe(409);
+		expect(yScale.getPixelForValue(0, 1, 0)).toBeCloseToPixel(107);
+		expect(yScale.getPixelForValue(0, 3, 0)).toBeCloseToPixel(409);
 	});
 });

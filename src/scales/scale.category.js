@@ -90,7 +90,7 @@ module.exports = function() {
 					widthOffset += (valueWidth / 2);
 				}
 
-				return me.left + Math.round(widthOffset);
+				return me.left + widthOffset;
 			}
 			var valueHeight = me.height / offsetAmt;
 			var heightOffset = (valueHeight * (index - me.minIndex));
@@ -99,7 +99,7 @@ module.exports = function() {
 				heightOffset += (valueHeight / 2);
 			}
 
-			return me.top + Math.round(heightOffset);
+			return me.top + heightOffset;
 		},
 		getPixelForTick: function(index) {
 			return this.getPixelForValue(this.ticks[index], index + this.minIndex, null);

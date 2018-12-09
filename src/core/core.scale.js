@@ -586,7 +586,7 @@ module.exports = Element.extend({
 				pixel += tickWidth / 2;
 			}
 
-			var finalVal = me.left + Math.round(pixel);
+			var finalVal = me.left + pixel;
 			finalVal += me.isFullWidth() ? me.margins.left : 0;
 			return finalVal;
 		}
@@ -604,7 +604,7 @@ module.exports = Element.extend({
 			var innerWidth = me.width - (me.paddingLeft + me.paddingRight);
 			var valueOffset = (innerWidth * decimal) + me.paddingLeft;
 
-			var finalVal = me.left + Math.round(valueOffset);
+			var finalVal = me.left + valueOffset;
 			finalVal += me.isFullWidth() ? me.margins.left : 0;
 			return finalVal;
 		}
@@ -689,14 +689,17 @@ module.exports = Element.extend({
 			return;
 		}
 
+		var chart = me.chart;
 		var context = me.ctx;
 		var globalDefaults = defaults.global;
 		var optionTicks = options.ticks.minor;
 		var optionMajorTicks = options.ticks.major || optionTicks;
 		var gridLines = options.gridLines;
 		var scaleLabel = options.scaleLabel;
+		var position = options.position;
 
 		var isRotated = me.labelRotation !== 0;
+		var isMirrored = optionTicks.mirror;
 		var isHorizontal = me.isHorizontal();
 
 		var ticks = optionTicks.autoSkip ? me._autoSkip(me.getTicks()) : me.getTicks();
@@ -704,6 +707,8 @@ module.exports = Element.extend({
 		var tickFont = parseFontOptions(optionTicks);
 		var majorTickFontColor = helpers.valueOrDefault(optionMajorTicks.fontColor, globalDefaults.defaultFontColor);
 		var majorTickFont = parseFontOptions(optionMajorTicks);
+		var tickPadding = optionTicks.padding;
+		var labelOffset = optionTicks.labelOffset;
 
 		var tl = gridLines.drawTicks ? gridLines.tickMarkLength : 0;
 
@@ -714,11 +719,27 @@ module.exports = Element.extend({
 
 		var itemsToDraw = [];
 
-		var axisWidth = helpers.valueAtIndexOrDefault(me.options.gridLines.lineWidth, 0);
-		var xTickStart = options.position === 'right' ? me.left : me.right - axisWidth - tl;
-		var xTickEnd = options.position === 'right' ? me.left + tl : me.right;
-		var yTickStart = options.position === 'bottom' ? me.top + axisWidth : me.bottom - tl - axisWidth;
-		var yTickEnd = options.position === 'bottom' ? me.top + axisWidth + tl : me.bottom + axisWidth;
+		var axisWidth = gridLines.drawBorder ? helpers.valueAtIndexOrDefault(gridLines.lineWidth, 0, 0) : 0;
+		var alignPixel = helpers._alignPixel;
+		var borderValue, tickStart, tickEnd;
+
+		if (position === 'top') {
+			borderValue = alignPixel(chart, me.bottom, axisWidth);
+			tickStart = me.bottom - tl;
+			tickEnd = borderValue - axisWidth / 2;
+		} else if (position === 'bottom') {
+			borderValue = alignPixel(chart, me.top, axisWidth);
+			tickStart = borderValue + axisWidth / 2;
+			tickEnd = me.top + tl;
+		} else if (position === 'left') {
+			borderValue = alignPixel(chart, me.right, axisWidth);
+			tickStart = me.right - tl;
+			tickEnd = borderValue - axisWidth / 2;
+		} else {
+			borderValue = alignPixel(chart, me.left, axisWidth);
+			tickStart = borderValue + axisWidth / 2;
+			tickEnd = me.left + tl;
+		}
 
 		var epsilon = 0.0000001; // 0.0000001 is margin in pixels for Accumulated error.
 
@@ -744,66 +765,58 @@ module.exports = Element.extend({
 			}
 
 			// Common properties
-			var tx1, ty1, tx2, ty2, x1, y1, x2, y2, labelX, labelY;
-			var textAlign = 'middle';
+			var tx1, ty1, tx2, ty2, x1, y1, x2, y2, labelX, labelY, textAlign;
 			var textBaseline = 'middle';
-			var tickPadding = optionTicks.padding;
+			var lineValue = getPixelForGridLine(me, index, gridLines.offsetGridLines);
 
 			if (isHorizontal) {
 				var labelYOffset = tl + tickPadding;
 
-				if (options.position === 'bottom') {
-					// bottom
-					textBaseline = !isRotated ? 'top' : 'middle';
-					textAlign = !isRotated ? 'center' : 'right';
-					labelY = me.top + labelYOffset;
-				} else {
-					// top
+				if (lineValue < me.left - epsilon) {
+					lineColor = 'rgba(0,0,0,0)';
+				}
+
+				tx1 = tx2 = x1 = x2 = alignPixel(chart, lineValue, lineWidth);
+				ty1 = tickStart;
+				ty2 = tickEnd;
+				labelX = me.getPixelForTick(index) + labelOffset; // x values for optionTicks (need to consider offsetLabel option)
+
+				if (position === 'top') {
+					y1 = alignPixel(chart, chartArea.top, axisWidth) + axisWidth / 2;
+					y2 = chartArea.bottom;
 					textBaseline = !isRotated ? 'bottom' : 'middle';
 					textAlign = !isRotated ? 'center' : 'left';
 					labelY = me.bottom - labelYOffset;
-				}
-
-				var xLineValue = getPixelForGridLine(me, index, gridLines.offsetGridLines);
-				if (xLineValue < me.left - epsilon) {
-					lineColor = 'rgba(0,0,0,0)';
-				}
-				xLineValue += helpers.aliasPixel(lineWidth);
-
-				labelX = me.getPixelForTick(index) + optionTicks.labelOffset; // x values for optionTicks (need to consider offsetLabel option)
-
-				tx1 = tx2 = x1 = x2 = xLineValue;
-				ty1 = yTickStart;
-				ty2 = yTickEnd;
-				y1 = chartArea.top;
-				y2 = chartArea.bottom + axisWidth;
-			} else {
-				var isLeft = options.position === 'left';
-				var labelXOffset;
-
-				if (optionTicks.mirror) {
-					textAlign = isLeft ? 'left' : 'right';
-					labelXOffset = tickPadding;
 				} else {
-					textAlign = isLeft ? 'right' : 'left';
-					labelXOffset = tl + tickPadding;
+					y1 = chartArea.top;
+					y2 = alignPixel(chart, chartArea.bottom, axisWidth) - axisWidth / 2;
+					textBaseline = !isRotated ? 'top' : 'middle';
+					textAlign = !isRotated ? 'center' : 'right';
+					labelY = me.top + labelYOffset;
 				}
+			} else {
+				var labelXOffset = (isMirrored ? 0 : tl) + tickPadding;
 
-				labelX = isLeft ? me.right - labelXOffset : me.left + labelXOffset;
-
-				var yLineValue = getPixelForGridLine(me, index, gridLines.offsetGridLines);
-				if (yLineValue < me.top - epsilon) {
+				if (lineValue < me.top - epsilon) {
 					lineColor = 'rgba(0,0,0,0)';
 				}
-				yLineValue += helpers.aliasPixel(lineWidth);
 
-				labelY = me.getPixelForTick(index) + optionTicks.labelOffset;
+				tx1 = tickStart;
+				tx2 = tickEnd;
+				ty1 = ty2 = y1 = y2 = alignPixel(chart, lineValue, lineWidth);
+				labelY = me.getPixelForTick(index) + labelOffset;
 
-				tx1 = xTickStart;
-				tx2 = xTickEnd;
-				x1 = chartArea.left;
-				x2 = chartArea.right + axisWidth;
-				ty1 = ty2 = y1 = y2 = yLineValue;
+				if (position === 'left') {
+					x1 = alignPixel(chart, chartArea.left, axisWidth) + axisWidth / 2;
+					x2 = chartArea.right;
+					textAlign = isMirrored ? 'left' : 'right';
+					labelX = me.right - labelXOffset;
+				} else {
+					x1 = chartArea.left;
+					x2 = alignPixel(chart, chartArea.right, axisWidth) - axisWidth / 2;
+					textAlign = isMirrored ? 'right' : 'left';
+					labelX = me.left + labelXOffset;
+				}
 			}
 
 			itemsToDraw.push({
@@ -873,7 +886,7 @@ module.exports = Element.extend({
 				if (helpers.isArray(label)) {
 					var lineCount = label.length;
 					var lineHeight = tickFont.size * 1.5;
-					var y = me.isHorizontal() ? 0 : -lineHeight * (lineCount - 1) / 2;
+					var y = isHorizontal ? 0 : -lineHeight * (lineCount - 1) / 2;
 
 					for (var i = 0; i < lineCount; ++i) {
 						// We just make sure the multiline element is a string here..
@@ -897,11 +910,11 @@ module.exports = Element.extend({
 
 			if (isHorizontal) {
 				scaleLabelX = me.left + ((me.right - me.left) / 2); // midpoint of the width
-				scaleLabelY = options.position === 'bottom'
+				scaleLabelY = position === 'bottom'
 					? me.bottom - halfLineHeight - scaleLabelPadding.bottom
 					: me.top + halfLineHeight + scaleLabelPadding.top;
 			} else {
-				var isLeft = options.position === 'left';
+				var isLeft = position === 'left';
 				scaleLabelX = isLeft
 					? me.left + halfLineHeight + scaleLabelPadding.top
 					: me.right - halfLineHeight - scaleLabelPadding.top;
@@ -920,26 +933,24 @@ module.exports = Element.extend({
 			context.restore();
 		}
 
-		if (gridLines.drawBorder) {
+		if (axisWidth) {
 			// Draw the line at the edge of the axis
-			context.lineWidth = helpers.valueAtIndexOrDefault(gridLines.lineWidth, 0);
-			context.strokeStyle = helpers.valueAtIndexOrDefault(gridLines.color, 0);
-			var x1 = me.left;
-			var x2 = me.right + axisWidth;
-			var y1 = me.top;
-			var y2 = me.bottom + axisWidth;
+			var firstLineWidth = axisWidth;
+			var lastLineWidth = helpers.valueAtIndexOrDefault(gridLines.lineWidth, ticks.length - 1, 0);
+			var x1, x2, y1, y2;
 
-			var aliasPixel = helpers.aliasPixel(context.lineWidth);
 			if (isHorizontal) {
-				y1 = y2 = options.position === 'top' ? me.bottom : me.top;
-				y1 += aliasPixel;
-				y2 += aliasPixel;
+				x1 = alignPixel(chart, me.left, firstLineWidth) - firstLineWidth / 2;
+				x2 = alignPixel(chart, me.right, lastLineWidth) + lastLineWidth / 2;
+				y1 = y2 = borderValue;
 			} else {
-				x1 = x2 = options.position === 'left' ? me.right : me.left;
-				x1 += aliasPixel;
-				x2 += aliasPixel;
+				y1 = alignPixel(chart, me.top, firstLineWidth) - firstLineWidth / 2;
+				y2 = alignPixel(chart, me.bottom, lastLineWidth) + lastLineWidth / 2;
+				x1 = x2 = borderValue;
 			}
 
+			context.lineWidth = axisWidth;
+			context.strokeStyle = helpers.valueAtIndexOrDefault(gridLines.color, 0);
 			context.beginPath();
 			context.moveTo(x1, y1);
 			context.lineTo(x2, y2);

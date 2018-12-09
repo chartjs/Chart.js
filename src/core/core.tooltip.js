@@ -124,8 +124,8 @@ var positioners = {
 		}
 
 		return {
-			x: Math.round(x / count),
-			y: Math.round(y / count)
+			x: x / count,
+			y: y / count
 		};
 	},
 
@@ -619,8 +619,8 @@ var exports = module.exports = Element.extend({
 			model.footer = me.getFooter(tooltipItems, data);
 
 			// Initial positioning and colors
-			model.x = Math.round(tooltipPosition.x);
-			model.y = Math.round(tooltipPosition.y);
+			model.x = tooltipPosition.x;
+			model.y = tooltipPosition.y;
 			model.caretPadding = opts.caretPadding;
 			model.labelColors = labelColors;
 			model.labelTextColors = labelTextColors;
