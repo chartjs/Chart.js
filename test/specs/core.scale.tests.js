@@ -20,6 +20,60 @@ describe('Core.scale', function() {
 		});
 	});
 
+	describe('displaying xAxis ticks with autoSkip=true', function() {
+		function getChart(data) {
+			return window.acquireChart({
+				type: 'line',
+				data: data,
+				options: {
+					scales: {
+						xAxes: [{
+							ticks: {
+								autoSkip: true
+							}
+						}]
+					}
+				}
+			});
+		}
+
+		function lastTick(chart) {
+			var xAxis = chart.scales['x-axis-0'];
+			var ticks = xAxis.getTicks();
+			return ticks[ticks.length - 1];
+		}
+
+		it('should display the last tick if it fits evenly with other ticks', function() {
+			var chart = getChart({
+				labels: [
+					'January 2018', 'February 2018', 'March 2018', 'April 2018',
+					'May 2018', 'June 2018', 'July 2018', 'August 2018',
+					'September 2018'
+				],
+				datasets: [{
+					data: [12, 19, 3, 5, 2, 3, 7, 8, 9]
+				}]
+			});
+
+			expect(lastTick(chart).label).toEqual('September 2018');
+		});
+
+		it('should not display the last tick if it does not fit evenly', function() {
+			var chart = getChart({
+				labels: [
+					'January 2018', 'February 2018', 'March 2018', 'April 2018',
+					'May 2018', 'June 2018', 'July 2018', 'August 2018',
+					'September 2018', 'October 2018', 'November 2018', 'December 2018'
+				],
+				datasets: [{
+					data: [12, 19, 3, 5, 2, 3, 7, 8, 9, 10, 11, 12]
+				}]
+			});
+
+			expect(lastTick(chart).label).toBeUndefined();
+		});
+	});
+
 	var gridLineTests = [{
 		labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'],
 		offsetGridLines: false,
