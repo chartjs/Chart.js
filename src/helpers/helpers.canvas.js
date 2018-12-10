@@ -12,7 +12,7 @@ var TWO_THIRDS_PI = PI * 2 / 3;
 /**
  * @namespace Chart.helpers.canvas
  */
-var exports = module.exports = {
+var exports = {
 	/**
 	 * Clears the entire canvas associated to the given `chart`.
 	 * @param {Chart} chart - The chart for which to clear the canvas.
@@ -208,6 +208,8 @@ var exports = module.exports = {
 			target.y);
 	}
 };
+
+module.exports = exports;
 
 // DEPRECATIONS
 
