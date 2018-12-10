@@ -152,4 +152,134 @@ describe('Core.scale', function() {
 			})).toEqual(test.expected);
 		});
 	});
+
+	describe('given the axes display option is set to auto', function() {
+		describe('for the x axes', function() {
+			it('should draw the axes if at least one associated dataset is visible', function() {
+				var chart = window.acquireChart({
+					type: 'line',
+					data: {
+						datasets: [{
+							data: [100, 200, 100, 50],
+							xAxisId: 'foo',
+							hidden: true,
+							labels: ['Q1', 'Q2', 'Q3', 'Q4']
+						}, {
+							data: [100, 200, 100, 50],
+							xAxisId: 'foo',
+							labels: ['Q1', 'Q2', 'Q3', 'Q4']
+						}]
+					},
+					options: {
+						scales: {
+							xAxes: [{
+								id: 'foo',
+								display: 'auto'
+							}],
+							yAxes: [{
+								type: 'category',
+								id: 'yScale0'
+							}]
+						}
+					}
+				});
+
+				var scale = chart.scales.foo;
+				scale.ctx = window.createMockContext();
+				chart.draw();
+
+				expect(scale.ctx.getCalls().length > 0).toBe(true);
+			});
+
+			it('should not draw the axes if no associated datasets are visible', function() {
+				var chart = window.acquireChart({
+					type: 'line',
+					data: {
+						datasets: [{
+							data: [100, 200, 100, 50],
+							xAxisId: 'foo',
+							hidden: true,
+							labels: ['Q1', 'Q2', 'Q3', 'Q4']
+						}]
+					},
+					options: {
+						scales: {
+							xAxes: [{
+								id: 'foo',
+								display: 'auto'
+							}]
+						}
+					}
+				});
+
+				var scale = chart.scales.foo;
+				scale.ctx = window.createMockContext();
+				chart.draw();
+
+				expect(scale.ctx.getCalls().length).toBe(0);
+			});
+		});
+
+		describe('for the y axes', function() {
+			it('should draw the axes if at least one associated dataset is visible', function() {
+				var chart = window.acquireChart({
+					type: 'line',
+					data: {
+						datasets: [{
+							data: [100, 200, 100, 50],
+							yAxisId: 'foo',
+							hidden: true,
+							labels: ['Q1', 'Q2', 'Q3', 'Q4']
+						}, {
+							data: [100, 200, 100, 50],
+							yAxisId: 'foo',
+							labels: ['Q1', 'Q2', 'Q3', 'Q4']
+						}]
+					},
+					options: {
+						scales: {
+							yAxes: [{
+								id: 'foo',
+								display: 'auto'
+							}]
+						}
+					}
+				});
+
+				var scale = chart.scales.foo;
+				scale.ctx = window.createMockContext();
+				chart.draw();
+
+				expect(scale.ctx.getCalls().length > 0).toBe(true);
+			});
+
+			it('should not draw the axes if no associated datasets are visible', function() {
+				var chart = window.acquireChart({
+					type: 'line',
+					data: {
+						datasets: [{
+							data: [100, 200, 100, 50],
+							yAxisId: 'foo',
+							hidden: true,
+							labels: ['Q1', 'Q2', 'Q3', 'Q4']
+						}]
+					},
+					options: {
+						scales: {
+							yAxes: [{
+								id: 'foo',
+								display: 'auto'
+							}]
+						}
+					}
+				});
+
+				var scale = chart.scales.foo;
+				scale.ctx = window.createMockContext();
+				chart.draw();
+
+				expect(scale.ctx.getCalls().length).toBe(0);
+			});
+		});
+	});
 });
