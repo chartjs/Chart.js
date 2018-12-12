@@ -148,8 +148,10 @@ module.exports = DatasetController.extend({
 		var minSize = Math.min(availableWidth, availableHeight);
 		var offset = {x: 0, y: 0};
 		var meta = me.getMeta();
+		var arcs = meta.data;
 		var cutoutPercentage = opts.cutoutPercentage;
 		var circumference = opts.circumference;
+		var i, ilen;
 
 		// If the chart's circumference isn't a full circle, calculate minSize as a ratio of the width/height of the arc
 		if (circumference < Math.PI * 2.0) {
@@ -170,6 +172,10 @@ module.exports = DatasetController.extend({
 			offset = {x: (max.x + min.x) * -0.5, y: (max.y + min.y) * -0.5};
 		}
 
+		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
+			arcs[i]._options = me._resolveElementOptions(arcs[i], i, reset);
+		}
+
 		chart.borderWidth = me.getMaxBorderWidth();
 		chart.outerRadius = Math.max((minSize - chart.borderWidth) / 2, 0);
 		chart.innerRadius = Math.max(cutoutPercentage ? (chart.outerRadius / 100) * (cutoutPercentage) : 0, 0);
@@ -182,9 +188,9 @@ module.exports = DatasetController.extend({
 		me.outerRadius = chart.outerRadius - (chart.radiusLength * me.getRingIndex(me.index));
 		me.innerRadius = Math.max(me.outerRadius - chart.radiusLength, 0);
 
-		helpers.each(meta.data, function(arc, index) {
-			me.updateElement(arc, index, reset);
-		});
+		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
+			me.updateElement(arcs[i], i, reset);
+		}
 	},
 
 	updateElement: function(arc, index, reset) {
@@ -201,7 +207,7 @@ module.exports = DatasetController.extend({
 		var circumference = reset && animationOpts.animateRotate ? 0 : arc.hidden ? 0 : me.calculateCircumference(dataset.data[index]) * (opts.circumference / (2.0 * Math.PI));
 		var innerRadius = reset && animationOpts.animateScale ? 0 : me.innerRadius;
 		var outerRadius = reset && animationOpts.animateScale ? 0 : me.outerRadius;
-		var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
+		var options = arc._options || {};
 
 		helpers.extend(arc, {
 			// Utility
@@ -210,6 +216,10 @@ module.exports = DatasetController.extend({
 
 			// Desired view properties
 			_model: {
+				backgroundColor: options.backgroundColor,
+				borderColor: options.borderColor,
+				borderWidth: options.borderWidth,
+				borderAlign: options.borderAlign,
 				x: centerX + chart.offsetX,
 				y: centerY + chart.offsetY,
 				startAngle: startAngle,
@@ -217,20 +227,11 @@ module.exports = DatasetController.extend({
 				circumference: circumference,
 				outerRadius: outerRadius,
 				innerRadius: innerRadius,
-				label: valueAtIndexOrDefault(dataset.label, index, chart.data.labels[index])
+				label: helpers.valueAtIndexOrDefault(dataset.label, index, chart.data.labels[index])
 			}
 		});
 
 		var model = arc._model;
-
-		// Resets the visual styles
-		var custom = arc.custom || {};
-		var valueOrDefault = helpers.valueAtIndexOrDefault;
-		var elementOpts = this.chart.options.elements.arc;
-		model.backgroundColor = custom.backgroundColor ? custom.backgroundColor : valueOrDefault(dataset.backgroundColor, index, elementOpts.backgroundColor);
-		model.borderColor = custom.borderColor ? custom.borderColor : valueOrDefault(dataset.borderColor, index, elementOpts.borderColor);
-		model.borderWidth = custom.borderWidth ? custom.borderWidth : valueOrDefault(dataset.borderWidth, index, elementOpts.borderWidth);
-		model.borderAlign = custom.borderAlign ? custom.borderAlign : valueOrDefault(dataset.borderAlign, index, elementOpts.borderAlign);
 
 		// Set correct angles if not resetting
 		if (!reset || !animationOpts.animateRotate) {
@@ -278,18 +279,18 @@ module.exports = DatasetController.extend({
 	getMaxBorderWidth: function(arcs) {
 		var me = this;
 		var max = 0;
-		var index = me.index;
 		var chart = me.chart;
-		var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
-		var elementOpts = chart.options.elements.arc;
-		var i, ilen, dataset, custom, borderAlign, borderWidth, hoverWidth;
+		var i, ilen, meta, arc, controller, options, borderWidth, hoverWidth;
 
 		if (!arcs) {
 			// Find the outmost visible dataset
 			for (i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
 				if (chart.isDatasetVisible(i)) {
-					arcs = chart.getDatasetMeta(i).data;
-					index = i;
+					meta = chart.getDatasetMeta(i);
+					arcs = meta.data;
+					if (i !== me.index) {
+						controller = meta.controller;
+					}
 					break;
 				}
 			}
@@ -299,19 +300,35 @@ module.exports = DatasetController.extend({
 			return 0;
 		}
 
-		dataset = chart.data.datasets[index];
-
 		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
-			custom = arcs[i].custom || {};
-			borderAlign = custom.borderAlign ? custom.borderAlign : valueAtIndexOrDefault(dataset.borderAlign, i, elementOpts.borderAlign);
-			if (borderAlign !== 'inner') {
-				borderWidth = custom.borderWidth ? custom.borderWidth : valueAtIndexOrDefault(dataset.borderWidth, i, elementOpts.borderWidth);
-				hoverWidth = custom.hoverBorderWidth ? custom.hoverBorderWidth : valueAtIndexOrDefault(dataset.hoverBorderWidth, i, borderWidth);
+			arc = arcs[i];
+			options = controller ? controller._resolveElementOptions(arc, i) : arc._options;
+			if (options.borderAlign !== 'inner') {
+				borderWidth = options.borderWidth;
+				hoverWidth = options.hoverBorderWidth;
 
 				max = borderWidth > max ? borderWidth : max;
 				max = hoverWidth > max ? hoverWidth : max;
 			}
 		}
 		return max;
+	},
+
+	/**
+	 * @private
+	 */
+	_resolveElementOptions: function(arc, index) {
+		var me = this;
+		var dataset = me.getDataset();
+		var custom = arc.custom || {};
+		var options = me.chart.options.elements.arc;
+		var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
+
+		return {
+			backgroundColor: custom.backgroundColor ? custom.backgroundColor : valueAtIndexOrDefault(dataset.backgroundColor, index, options.backgroundColor),
+			borderColor: custom.borderColor ? custom.borderColor : valueAtIndexOrDefault(dataset.borderColor, index, options.borderColor),
+			borderWidth: custom.borderWidth ? custom.borderWidth : valueAtIndexOrDefault(dataset.borderWidth, index, options.borderWidth),
+			borderAlign: custom.borderAlign ? custom.borderAlign : valueAtIndexOrDefault(dataset.borderAlign, index, options.borderAlign)
+		};
 	}
 });
