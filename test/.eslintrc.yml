@@ -1,4 +1,8 @@
+parserOptions:
+  ecmaVersion: 5 # don't rely on default, since its changed by env: es6
+
 env:
+  es6: true # also changes default ecmaVersion to 6
   jasmine: true
 
 globals:

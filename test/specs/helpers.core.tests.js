@@ -21,6 +21,15 @@ describe('Chart.helpers.core', function() {
 			expect(helpers.isArray([42])).toBeTruthy();
 			expect(helpers.isArray(new Array())).toBeTruthy();
 			expect(helpers.isArray(Array.prototype)).toBeTruthy();
+			expect(helpers.isArray(new Int8Array(2))).toBeTruthy();
+			expect(helpers.isArray(new Uint8Array())).toBeTruthy();
+			expect(helpers.isArray(new Uint8ClampedArray([128, 244]))).toBeTruthy();
+			expect(helpers.isArray(new Int16Array())).toBeTruthy();
+			expect(helpers.isArray(new Uint16Array())).toBeTruthy();
+			expect(helpers.isArray(new Int32Array())).toBeTruthy();
+			expect(helpers.isArray(new Uint32Array())).toBeTruthy();
+			expect(helpers.isArray(new Float32Array([1.2]))).toBeTruthy();
+			expect(helpers.isArray(new Float64Array([]))).toBeTruthy();
 		});
 		it('should return false if value is not an array', function() {
 			expect(helpers.isArray()).toBeFalsy();

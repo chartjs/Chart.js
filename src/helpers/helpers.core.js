@@ -32,13 +32,20 @@ var helpers = {
 	},
 
 	/**
-	 * Returns true if `value` is an array, else returns false.
+	 * Returns true if `value` is an array (including typed arrays), else returns false.
 	 * @param {*} value - The value to test.
 	 * @returns {Boolean}
 	 * @function
 	 */
-	isArray: Array.isArray ? Array.isArray : function(value) {
-		return Object.prototype.toString.call(value) === '[object Array]';
+	isArray: function(value) {
+		if (Array.isArray && Array.isArray(value)) {
+			return true;
+		}
+		var type = Object.prototype.toString.call(value);
+		if (type.substr(0, 7) === '[object' && type.substr(-6) === 'Array]') {
+			return true;
+		}
+		return false;
 	},
 
 	/**
