@@ -726,18 +726,19 @@ module.exports = Element.extend({
 	/**
 	 * Actually draw the scale on the canvas
 	 * @param {object} chartArea - the area of the chart to draw full grid lines on
+	 * @param {boolean} top - drawing on top / after datasets
 	 */
-	draw: function(chartArea) {
+	draw: function(chartArea, top) {
 		var me = this;
 		var options = me.options;
+		var optionTicks = options.ticks;
 
-		if (!me._isVisible()) {
+		if (!me._isVisible() || (top && optionTicks.display !== 'top')) {
 			return;
 		}
 
 		var chart = me.chart;
 		var context = me.ctx;
-		var optionTicks = options.ticks;
 		var gridLines = options.gridLines;
 		var scaleLabel = options.scaleLabel;
 		var position = options.position;
@@ -891,7 +892,7 @@ module.exports = Element.extend({
 			var glWidth = itemToDraw.glWidth;
 			var glColor = itemToDraw.glColor;
 
-			if (gridLines.display && glWidth && glColor) {
+			if (gridLines.display && glWidth && glColor && !top) {
 				context.save();
 				context.lineWidth = glWidth;
 				context.strokeStyle = glColor;
@@ -916,7 +917,7 @@ module.exports = Element.extend({
 				context.restore();
 			}
 
-			if (optionTicks.display) {
+			if (optionTicks.display && (optionTicks.display === 'top') === top) {
 				var tickFont = itemToDraw.major ? tickFonts.major : tickFonts.minor;
 
 				// Make sure we draw text in the correct color and font

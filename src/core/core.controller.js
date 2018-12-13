@@ -645,10 +645,15 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 
 		// Draw all the scales
 		helpers.each(me.boxes, function(box) {
-			box.draw(me.chartArea);
+			box.draw(me.chartArea, false);
 		}, me);
 
 		me.drawDatasets(easingValue);
+
+		helpers.each(me.boxes, function(box) {
+			box.draw(me.chartArea, true);
+		}, me);
+
 		me._drawTooltip(easingValue);
 
 		plugins.notify(me, 'afterDraw', [easingValue]);

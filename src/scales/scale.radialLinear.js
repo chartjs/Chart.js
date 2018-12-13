@@ -473,60 +473,71 @@ module.exports = LinearScaleBase.extend({
 			0);
 	},
 
-	draw: function() {
+	/**
+	 * Actually draw the scale on the canvas
+	 * @param {object} chartArea - the area of the chart
+	 * @param {boolean} top - drawing on top / after datasets
+	 */
+	draw: function(chartArea, top) {
 		var me = this;
 		var opts = me.options;
 		var gridLineOpts = opts.gridLines;
 		var tickOpts = opts.ticks;
 
-		if (opts.display) {
-			var ctx = me.ctx;
-			var startAngle = this.getIndexAngle(0);
-			var tickFont = helpers.options._parseFont(tickOpts);
+		if (!opts.display || (top && tickOpts.display !== 'top')) {
+			return;
+		}
 
-			if (opts.angleLines.display || opts.pointLabels.display) {
-				drawPointLabels(me);
-			}
+		var ctx = me.ctx;
+		var startAngle = this.getIndexAngle(0);
+		var tickFont = helpers.options._parseFont(tickOpts);
 
-			helpers.each(me.ticks, function(label, index) {
-				// Don't draw a centre value (if it is minimum)
-				if (index > 0 || tickOpts.reverse) {
-					var yCenterOffset = me.getDistanceFromCenterForValue(me.ticksAsNumbers[index]);
+		if (!top && (opts.angleLines.display || opts.pointLabels.display)) {
+			drawPointLabels(me);
+		}
 
-					// Draw circular lines around the scale
-					if (gridLineOpts.display && index !== 0) {
-						drawRadiusLine(me, gridLineOpts, yCenterOffset, index);
+		helpers.each(me.ticks, function(label, index) {
+			// Don't draw a centre value (if it is minimum)
+			if (index > 0 || tickOpts.reverse) {
+				var yCenterOffset = me.getDistanceFromCenterForValue(me.ticksAsNumbers[index]);
+
+				// Draw circular lines around the scale
+				if (gridLineOpts.display && index !== 0 && !top) {
+					drawRadiusLine(me, gridLineOpts, yCenterOffset, index);
+				}
+
+				if (tickOpts.display) {
+					var tickFontColor = valueOrDefault(tickOpts.fontColor, defaults.global.defaultFontColor);
+					ctx.font = tickFont.string;
+
+					ctx.save();
+					ctx.translate(me.xCenter, me.yCenter);
+					ctx.rotate(startAngle);
+
+					// Backdrop is drawn behind even if label is drawn on top
+					if (tickOpts.showLabelBackdrop && !top) {
+						var labelWidth = ctx.measureText(label).width;
+						ctx.fillStyle = tickOpts.backdropColor;
+						ctx.fillRect(
+							-labelWidth / 2 - tickOpts.backdropPaddingX,
+							-yCenterOffset - tickFont.size / 2 - tickOpts.backdropPaddingY,
+							labelWidth + tickOpts.backdropPaddingX * 2,
+							tickFont.size + tickOpts.backdropPaddingY * 2
+						);
 					}
 
-					if (tickOpts.display) {
-						var tickFontColor = valueOrDefault(tickOpts.fontColor, defaults.global.defaultFontColor);
-						ctx.font = tickFont.string;
-
-						ctx.save();
-						ctx.translate(me.xCenter, me.yCenter);
-						ctx.rotate(startAngle);
-
-						if (tickOpts.showLabelBackdrop) {
-							var labelWidth = ctx.measureText(label).width;
-							ctx.fillStyle = tickOpts.backdropColor;
-							ctx.fillRect(
-								-labelWidth / 2 - tickOpts.backdropPaddingX,
-								-yCenterOffset - tickFont.size / 2 - tickOpts.backdropPaddingY,
-								labelWidth + tickOpts.backdropPaddingX * 2,
-								tickFont.size + tickOpts.backdropPaddingY * 2
-							);
-						}
-
+					if ((tickOpts.display === 'top') === top) {
 						ctx.textAlign = 'center';
 						ctx.textBaseline = 'middle';
 						ctx.fillStyle = tickFontColor;
 						ctx.fillText(label, 0, -yCenterOffset);
-						ctx.restore();
 					}
+					ctx.restore();
 				}
-			});
-		}
+			}
+		});
 	}
+
 });
 
 // INTERNAL: static default options, registered in src/index.js
