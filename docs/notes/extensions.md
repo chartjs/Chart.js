@@ -69,4 +69,3 @@ In addition, many plugins can be found on the [npm registry](https://www.npmjs.c
 ### Omi (v5+)
 
  - <a href="https://github.com/Tencent/omi/tree/master/packages/omi-chart" target="_blank">omi-chart</a>
- 
