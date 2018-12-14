@@ -48,6 +48,21 @@ Before submitting an issue or a pull request, please take a moment to look over 
 ## Building
 Instructions on building and testing Chart.js can be found in [the documentation](https://github.com/chartjs/Chart.js/blob/master/docs/developers/contributing.md#building-and-testing).
 
+## Web Components of chart.js
+
+[Omi-chart](https://github.com/Tencent/omi/tree/master/packages/omi-chart) - Simple HTML5 Charts using <strong>chart-x</strong> tag powered by <a href="https://github.com/Tencent/omi">omi</a> and <a href="https://www.chartjs.org/" rel="nofollow">chart.js</a>.
+
+#### Supports type
+
+* `<chart-bar />`
+* `<chart-line />`
+* `<chart-scatter />`
+* `<chart-pie />`
+* `<chart-doughnut />`
+* `<chart-radar />`
+* `<chart-polar-area />`
+* `<chart-bubble />`
+
 ## Thanks
 - [BrowserStack](https://browserstack.com) for allowing our team to test on thousands of browsers.
 - [@n8agrin](https://twitter.com/n8agrin) for the Twitter handle donation.
