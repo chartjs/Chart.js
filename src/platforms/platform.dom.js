@@ -166,9 +166,15 @@ function throttled(fn, thisArg) {
 	};
 }
 
+function createDiv(cls, style) {
+	var el = document.createElement('div');
+	el.style.cssText = style || '';
+	el.className = cls || '';
+	return el;
+}
+
 // Implementation based on https://github.com/marcj/css-element-queries
 function createResizer(handler) {
-	var resizer = document.createElement('div');
 	var cls = CSS_PREFIX + 'size-monitor';
 	var maxSize = 1000000;
 	var style =
@@ -182,37 +188,36 @@ function createResizer(handler) {
 		'visibility:hidden;' +
 		'z-index:-1;';
 
-	resizer.style.cssText = style;
-	resizer.className = cls;
-	resizer.innerHTML =
-		'<div class="' + cls + '-expand" style="' + style + '">' +
-			'<div style="' +
-				'position:absolute;' +
-				'width:' + maxSize + 'px;' +
-				'height:' + maxSize + 'px;' +
-				'left:0;' +
-				'top:0">' +
-			'</div>' +
-		'</div>' +
-		'<div class="' + cls + '-shrink" style="' + style + '">' +
-			'<div style="' +
-				'position:absolute;' +
-				'width:200%;' +
-				'height:200%;' +
-				'left:0; ' +
-				'top:0">' +
-			'</div>' +
-		'</div>';
+	// NOTE(SB) Don't use innerHTML because it could be considered unsafe.
+	// https://github.com/chartjs/Chart.js/issues/5902
+	var resizer = createDiv(cls, style);
+	var expand = createDiv(cls + '-expand', style);
+	var shrink = createDiv(cls + '-shrink', style);
 
-	var expand = resizer.childNodes[0];
-	var shrink = resizer.childNodes[1];
+	expand.appendChild(createDiv('',
+		'position:absolute;' +
+		'height:' + maxSize + 'px;' +
+		'width:' + maxSize + 'px;' +
+		'left:0;' +
+		'top:0;'
+	));
+	shrink.appendChild(createDiv('',
+		'position:absolute;' +
+		'height:200%;' +
+		'width:200%;' +
+		'left:0;' +
+		'top:0;'
+	));
 
+	resizer.appendChild(expand);
+	resizer.appendChild(shrink);
 	resizer._reset = function() {
 		expand.scrollLeft = maxSize;
 		expand.scrollTop = maxSize;
 		shrink.scrollLeft = maxSize;
 		shrink.scrollTop = maxSize;
 	};
+
 	var onScroll = function() {
 		resizer._reset();
 		handler();
