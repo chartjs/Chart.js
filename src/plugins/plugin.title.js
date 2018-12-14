@@ -7,12 +7,13 @@ var layouts = require('../core/core.layouts');
 
 var noop = helpers.noop;
 
+var globalDefaults = defaults.global;
+
 defaults._set('global', {
 	title: {
 		display: false,
 		fontStyle: 'bold',
 		fullWidth: true,
-		lineHeight: 1.2,
 		padding: 10,
 		position: 'top',
 		text: '',
@@ -111,14 +112,12 @@ var Title = Element.extend({
 	beforeFit: noop,
 	fit: function() {
 		var me = this;
-		var valueOrDefault = helpers.valueOrDefault;
 		var opts = me.options;
 		var display = opts.display;
-		var fontSize = valueOrDefault(opts.fontSize, defaults.global.defaultFontSize);
 		var minSize = me.minSize;
 		var lineCount = helpers.isArray(opts.text) ? opts.text.length : 1;
-		var lineHeight = helpers.options.toLineHeight(opts.lineHeight, fontSize);
-		var textSize = display ? (lineCount * lineHeight) + (opts.padding * 2) : 0;
+		var fontOpts = helpers.options.parseFontOptions(opts, globalDefaults);
+		var textSize = display ? (lineCount * fontOpts.lineHeight) + (opts.padding * 2) : 0;
 
 		if (me.isHorizontal()) {
 			minSize.width = me.maxWidth; // fill all the width
@@ -146,14 +145,10 @@ var Title = Element.extend({
 		var ctx = me.ctx;
 		var valueOrDefault = helpers.valueOrDefault;
 		var opts = me.options;
-		var globalDefaults = defaults.global;
 
 		if (opts.display) {
-			var fontSize = valueOrDefault(opts.fontSize, globalDefaults.defaultFontSize);
-			var fontStyle = valueOrDefault(opts.fontStyle, globalDefaults.defaultFontStyle);
-			var fontFamily = valueOrDefault(opts.fontFamily, globalDefaults.defaultFontFamily);
-			var titleFont = helpers.fontString(fontSize, fontStyle, fontFamily);
-			var lineHeight = helpers.options.toLineHeight(opts.lineHeight, fontSize);
+			var fontOpts = helpers.options.parseFontOptions(opts, globalDefaults);
+			var lineHeight = fontOpts.lineHeight;
 			var offset = lineHeight / 2 + opts.padding;
 			var rotation = 0;
 			var top = me.top;
@@ -163,7 +158,7 @@ var Title = Element.extend({
 			var maxWidth, titleX, titleY;
 
 			ctx.fillStyle = valueOrDefault(opts.fontColor, globalDefaults.defaultFontColor); // render in correct colour
-			ctx.font = titleFont;
+			ctx.font = fontOpts.font;
 
 			// Horizontal
 			if (me.isHorizontal()) {
@@ -236,7 +231,7 @@ module.exports = {
 		var titleBlock = chart.titleBlock;
 
 		if (titleOpts) {
-			helpers.mergeIf(titleOpts, defaults.global.title);
+			helpers.mergeIf(titleOpts, globalDefaults.title);
 
 			if (titleBlock) {
 				layouts.configure(chart, titleBlock, titleOpts);

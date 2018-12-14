@@ -9,9 +9,6 @@ describe('Core.scale', function() {
 			// actual label
 			labelString: '',
 
-			// actual label
-			lineHeight: 1.2,
-
 			// top/bottom padding
 			padding: {
 				top: 4,

@@ -65,6 +65,22 @@ module.exports = {
 		};
 	},
 
+	parseFontOptions: function(options, globalDefaults) {
+		var valueOrDefault = helpers.valueOrDefault;
+		var size = valueOrDefault(options.fontSize, globalDefaults.defaultFontSize);
+		var style = valueOrDefault(options.fontStyle, globalDefaults.defaultFontStyle);
+		var family = valueOrDefault(options.fontFamily, globalDefaults.defaultFontFamily);
+		var lineHeight = valueOrDefault(options.lineHeight, globalDefaults.defaultlineHeight);
+
+		return {
+			size: size,
+			style: style,
+			family: family,
+			font: helpers.fontString(size, style, family),
+			lineHeight: this.toLineHeight(lineHeight, size)
+		};
+	},
+
 	/**
 	 * Evaluates the given `inputs` sequentially and returns the first defined value.
 	 * @param {Array[]} inputs - An array of values, falling back to the last value.

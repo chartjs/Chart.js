@@ -131,10 +131,10 @@ describe('Chart.controllers.radar', function() {
 		}));
 
 		[
-			{x: 256, y: 256, cppx: 256, cppy: 256, cpnx: 256, cpny: 256},
-			{x: 256, y: 256, cppx: 256, cppy: 256, cpnx: 256, cpny: 256},
-			{x: 256, y: 256, cppx: 256, cppy: 256, cpnx: 256, cpny: 256},
-			{x: 256, y: 256, cppx: 256, cppy: 256, cpnx: 256, cpny: 256},
+			{x: 256, y: 260, cppx: 256, cppy: 260, cpnx: 256, cpny: 260},
+			{x: 256, y: 260, cppx: 256, cppy: 260, cpnx: 256, cpny: 260},
+			{x: 256, y: 260, cppx: 256, cppy: 260, cpnx: 256, cpny: 260},
+			{x: 256, y: 260, cppx: 256, cppy: 260, cpnx: 256, cpny: 260},
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(expected.y);
@@ -158,10 +158,10 @@ describe('Chart.controllers.radar', function() {
 		meta.controller.update();
 
 		[
-			{x: 256, y: 117, cppx: 246, cppy: 117, cpnx: 272, cpny: 117},
-			{x: 464, y: 256, cppx: 464, cppy: 248, cpnx: 464, cpny: 262},
-			{x: 256, y: 256, cppx: 277, cppy: 256, cpnx: 250, cpny: 256},
-			{x: 200, y: 256, cppx: 200, cppy: 259, cpnx: 200, cpny: 245},
+			{x: 256, y: 120, cppx: 246, cppy: 120, cpnx: 272, cpny: 120},
+			{x: 464, y: 260, cppx: 464, cppy: 252, cpnx: 464, cpny: 266},
+			{x: 256, y: 260, cppx: 277, cppy: 260, cpnx: 250, cpny: 260},
+			{x: 200, y: 260, cppx: 200, cppy: 264, cpnx: 200, cpny: 250},
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(expected.y);
@@ -215,10 +215,10 @@ describe('Chart.controllers.radar', function() {
 
 		// Since tension is now 0, we don't care about the control points
 		[
-			{x: 256, y: 117},
-			{x: 464, y: 256},
-			{x: 256, y: 256},
-			{x: 200, y: 256},
+			{x: 256, y: 120},
+			{x: 464, y: 260},
+			{x: 256, y: 260},
+			{x: 200, y: 260},
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(expected.y);
@@ -274,11 +274,11 @@ describe('Chart.controllers.radar', function() {
 		}));
 
 		expect(meta.data[0]._model.x).toBeCloseToPixel(256);
-		expect(meta.data[0]._model.y).toBeCloseToPixel(117);
+		expect(meta.data[0]._model.y).toBeCloseToPixel(120);
 		expect(meta.data[0]._model.controlPointPreviousX).toBeCloseToPixel(241);
-		expect(meta.data[0]._model.controlPointPreviousY).toBeCloseToPixel(117);
+		expect(meta.data[0]._model.controlPointPreviousY).toBeCloseToPixel(120);
 		expect(meta.data[0]._model.controlPointNextX).toBeCloseToPixel(281);
-		expect(meta.data[0]._model.controlPointNextY).toBeCloseToPixel(117);
+		expect(meta.data[0]._model.controlPointNextY).toBeCloseToPixel(120);
 		expect(meta.data[0]._model).toEqual(jasmine.objectContaining({
 			radius: 2.2,
 			backgroundColor: 'rgb(0, 1, 3)',

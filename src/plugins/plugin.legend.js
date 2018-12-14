@@ -7,6 +7,8 @@ var layouts = require('../core/core.layouts');
 
 var noop = helpers.noop;
 
+var globalDefault = defaults.global;
+
 defaults._set('global', {
 	legend: {
 		display: true,
@@ -211,12 +213,8 @@ var Legend = Element.extend({
 
 		var ctx = me.ctx;
 
-		var globalDefault = defaults.global;
-		var valueOrDefault = helpers.valueOrDefault;
-		var fontSize = valueOrDefault(labelOpts.fontSize, globalDefault.defaultFontSize);
-		var fontStyle = valueOrDefault(labelOpts.fontStyle, globalDefault.defaultFontStyle);
-		var fontFamily = valueOrDefault(labelOpts.fontFamily, globalDefault.defaultFontFamily);
-		var labelFont = helpers.fontString(fontSize, fontStyle, fontFamily);
+		var labelFont = helpers.options.parseFontOptions(labelOpts, globalDefault);
+		var fontSize = labelFont.size;
 
 		// Reset hit boxes
 		var hitboxes = me.legendHitBoxes = [];
@@ -234,7 +232,7 @@ var Legend = Element.extend({
 
 		// Increase sizes here
 		if (display) {
-			ctx.font = labelFont;
+			ctx.font = labelFont.font;
 
 			if (isHorizontal) {
 				// Labels
@@ -323,7 +321,6 @@ var Legend = Element.extend({
 		var me = this;
 		var opts = me.options;
 		var labelOpts = opts.labels;
-		var globalDefault = defaults.global;
 		var lineDefault = globalDefault.elements.line;
 		var legendWidth = me.width;
 		var lineWidths = me.lineWidths;
@@ -332,10 +329,8 @@ var Legend = Element.extend({
 			var ctx = me.ctx;
 			var valueOrDefault = helpers.valueOrDefault;
 			var fontColor = valueOrDefault(labelOpts.fontColor, globalDefault.defaultFontColor);
-			var fontSize = valueOrDefault(labelOpts.fontSize, globalDefault.defaultFontSize);
-			var fontStyle = valueOrDefault(labelOpts.fontStyle, globalDefault.defaultFontStyle);
-			var fontFamily = valueOrDefault(labelOpts.fontFamily, globalDefault.defaultFontFamily);
-			var labelFont = helpers.fontString(fontSize, fontStyle, fontFamily);
+			var labelFont = helpers.options.parseFontOptions(labelOpts, globalDefault);
+			var fontSize = labelFont.size;
 			var cursor;
 
 			// Canvas setup
@@ -344,7 +339,7 @@ var Legend = Element.extend({
 			ctx.lineWidth = 0.5;
 			ctx.strokeStyle = fontColor; // for strikethrough effect
 			ctx.fillStyle = fontColor; // render in correct colour
-			ctx.font = labelFont;
+			ctx.font = labelFont.font;
 
 			var boxWidth = getBoxWidth(labelOpts, fontSize);
 			var hitboxes = me.legendHitBoxes;

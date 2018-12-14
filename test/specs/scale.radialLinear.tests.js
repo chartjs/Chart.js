@@ -349,9 +349,9 @@ describe('Test the radial linear scale', function() {
 			}
 		});
 
-		expect(chart.scale.drawingArea).toBe(232);
+		expect(chart.scale.drawingArea).toBe(227);
 		expect(chart.scale.xCenter).toBe(256);
-		expect(chart.scale.yCenter).toBe(279);
+		expect(chart.scale.yCenter).toBe(284);
 	});
 
 	it('should correctly get the label for a given data index', function() {
@@ -397,16 +397,16 @@ describe('Test the radial linear scale', function() {
 		});
 
 		expect(chart.scale.getDistanceFromCenterForValue(chart.scale.min)).toBe(0);
-		expect(chart.scale.getDistanceFromCenterForValue(chart.scale.max)).toBe(232);
+		expect(chart.scale.getDistanceFromCenterForValue(chart.scale.max)).toBe(227);
 
 		var position = chart.scale.getPointPositionForValue(1, 5);
 		expect(position.x).toBeCloseToPixel(270);
-		expect(position.y).toBeCloseToPixel(275);
+		expect(position.y).toBeCloseToPixel(278);
 
 		chart.scale.options.ticks.reverse = true;
 		chart.update();
 
-		expect(chart.scale.getDistanceFromCenterForValue(chart.scale.min)).toBe(232);
+		expect(chart.scale.getDistanceFromCenterForValue(chart.scale.min)).toBe(227);
 		expect(chart.scale.getDistanceFromCenterForValue(chart.scale.max)).toBe(0);
 	});
 
