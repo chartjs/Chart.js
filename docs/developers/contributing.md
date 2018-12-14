@@ -30,7 +30,8 @@ This will install the local development dependencies for Chart.js, along with a 
 The following commands are now available from the repository root:
 
 ```bash
-> gulp build                // build Chart.js in ./dist
+> gulp build                // build dist files in ./dist
+> gulp build --watch        // build and watch for changes
 > gulp unittest             // run tests from ./test/specs
 > gulp unittest --watch     // run tests and watch for source changes
 > gulp unittest --coverage  // run tests and generate coverage reports in ./coverage

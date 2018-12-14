@@ -2,8 +2,6 @@
 'use strict';
 
 var moment = require('moment');
-moment = typeof moment === 'function' ? moment : window.moment;
-
 var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 var Scale = require('../core/core.scale');

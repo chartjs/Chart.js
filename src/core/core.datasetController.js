@@ -74,7 +74,7 @@ function unlistenArrayEvents(array, listener) {
 }
 
 // Base class for all dataset controllers (line, bar, etc)
-var DatasetController = module.exports = function(chart, datasetIndex) {
+var DatasetController = function(chart, datasetIndex) {
 	this.initialize(chart, datasetIndex);
 };
 
@@ -324,3 +324,5 @@ helpers.extend(DatasetController.prototype, {
 });
 
 DatasetController.extend = helpers.inherits;
+
+module.exports = DatasetController;

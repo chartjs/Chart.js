@@ -470,7 +470,7 @@ function getBeforeAfterBodyLines(callback) {
 	return pushOrConcat([], splitNewlines(callback));
 }
 
-var exports = module.exports = Element.extend({
+var exports = Element.extend({
 	initialize: function() {
 		this._model = getBaseModel(this._options);
 		this._lastActive = [];
@@ -968,3 +968,4 @@ var exports = module.exports = Element.extend({
  */
 exports.positioners = positioners;
 
+module.exports = exports;
