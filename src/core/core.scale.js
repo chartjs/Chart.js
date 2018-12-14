@@ -193,7 +193,8 @@ module.exports = Element.extend({
 		// we still support no return (`this.ticks` internally set by calling this method).
 		ticks = me.buildTicks() || [];
 
-		me.afterBuildTicks();
+		// Allow modification of ticks in callback.
+		ticks = me.afterBuildTicks(ticks) || ticks;
 
 		me.beforeTickToLabelConversion();
 
@@ -287,8 +288,15 @@ module.exports = Element.extend({
 		helpers.callback(this.options.beforeBuildTicks, [this]);
 	},
 	buildTicks: helpers.noop,
-	afterBuildTicks: function() {
-		helpers.callback(this.options.afterBuildTicks, [this]);
+	afterBuildTicks: function(ticks) {
+		var me = this;
+		// ticks is empty for old axis implementations here
+		if (ticks.length) {
+			return helpers.callback(me.options.afterBuildTicks, [me, ticks]);
+		}
+		// Support old implementatios (that modified `this.ticks` directly in buildTicks)
+		me.ticks = helpers.callback(me.options.afterBuildTicks, [me, me.ticks]) || me.ticks;
+		return ticks;
 	},
 
 	beforeTickToLabelConversion: function() {
