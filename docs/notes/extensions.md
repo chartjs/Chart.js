@@ -28,10 +28,6 @@ In addition, many plugins can be found on the [npm registry](https://www.npmjs.c
 
 ## Integrations
 
-## Omi (v5+)
-
- - <a href="https://github.com/Tencent/omi/tree/master/packages/omi-chart" target="_blank">omi-chart</a>
- 
 ### Angular (v2+)
 
  - <a href="https://github.com/emn178/angular2-chartjs" target="_blank">emn178/angular2-chartjs</a>
@@ -69,3 +65,8 @@ In addition, many plugins can be found on the [npm registry](https://www.npmjs.c
 
 ### Ember.js
  - <a href="https://github.com/aomran/ember-cli-chart" target="_blank">ember-cli-chart</a>
+ 
+### Omi (v5+)
+
+ - <a href="https://github.com/Tencent/omi/tree/master/packages/omi-chart" target="_blank">omi-chart</a>
+ 
