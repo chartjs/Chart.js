@@ -188,7 +188,8 @@ describe('Core.scale', function() {
 				scale.ctx = window.createMockContext();
 				chart.draw();
 
-				expect(scale.ctx.getCalls().length > 0).toBe(true);
+				expect(scale.ctx.getCalls().length).toBeGreaterThan(0);
+				expect(scale.height).toBeGreaterThan(0);
 			});
 
 			it('should not draw the axes if no associated datasets are visible', function() {
@@ -217,6 +218,7 @@ describe('Core.scale', function() {
 				chart.draw();
 
 				expect(scale.ctx.getCalls().length).toBe(0);
+				expect(scale.height).toBe(0);
 			});
 		});
 
@@ -250,7 +252,8 @@ describe('Core.scale', function() {
 				scale.ctx = window.createMockContext();
 				chart.draw();
 
-				expect(scale.ctx.getCalls().length > 0).toBe(true);
+				expect(scale.ctx.getCalls().length).toBeGreaterThan(0);
+				expect(scale.width).toBeGreaterThan(0);
 			});
 
 			it('should not draw the axes if no associated datasets are visible', function() {
@@ -279,6 +282,7 @@ describe('Core.scale', function() {
 				chart.draw();
 
 				expect(scale.ctx.getCalls().length).toBe(0);
+				expect(scale.width).toBe(0);
 			});
 		});
 	});
