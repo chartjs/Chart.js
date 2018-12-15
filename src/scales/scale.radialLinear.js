@@ -255,7 +255,7 @@ module.exports = function(Chart) {
 		} else if (angle > 270 || angle < 90) {
 			position.y -= textSize.h;
 		}
-		if(paddingValue) {
+		if (paddingValue) {
 			rad = helpers.toRadians(angle);
 			position.x += Math.sin(rad) * paddingValue;
 			position.y -= Math.cos(rad) * paddingValue;
