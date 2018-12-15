@@ -109,3 +109,4 @@ The following options are used to configure the point labels that are shown on t
 | `fontFamily` | `String` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family to use when rendering labels.
 | `fontSize` | `Number` | 10 | font size in pixels.
 | `fontStyle` | `String` | `'normal'` | Font style to use when rendering point labels.
+| `padding` | `Number` | 0 | Padding between chart and point labels.

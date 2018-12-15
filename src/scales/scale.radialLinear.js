@@ -248,31 +248,17 @@ module.exports = function(Chart) {
 	}
 
 	function adjustPointPositionForLabelHeight(angle, textSize, position, padding) {
+		var rad;
 		var paddingValue = padding ? padding : 0;
-		var squarePadding = Math.sqrt(paddingValue);
-
-		if (angle === 0) {
-			position.y -= (textSize.h + paddingValue);
-		} else if (angle === 90) {
+		if (angle === 90 || angle === 270) {
 			position.y -= (textSize.h / 2);
-			position.x += paddingValue;
-		} else if (angle === 180) {
-			position.x += paddingValue;
-		} else if (angle === 270) {
-			position.y -= (textSize.h / 2);
-			position.x -= paddingValue;
-		} else if (angle > 270) {
-			position.y -= (textSize.h + squarePadding);
-			position.x -= squarePadding;
-		} else if (angle < 90) {
-			position.y -= (textSize.h + squarePadding);
-			position.x += squarePadding;
-		} else if (angle < 180) {
-			position.y += squarePadding;
-			position.x += squarePadding;
-		} else {
-			position.y += squarePadding;
-			position.x -= squarePadding;
+		} else if (angle > 270 || angle < 90) {
+			position.y -= textSize.h;
+		}
+		if(paddingValue) {
+			rad = helpers.toRadians(angle);
+			position.x += Math.sin(rad) * paddingValue;
+			position.y -= Math.cos(rad) * paddingValue;
 		}
 	}
 
