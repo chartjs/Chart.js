@@ -58,8 +58,8 @@ var myChart = new Chart(ctx, {
 
 Before submitting an issue or a pull request to the project, please take a moment to look over the [contributing guidelines](https://github.com/chartjs/Chart.js/blob/master/docs/developers/contributing.md) first.
 
-For support using Chart.js, please post questions with the [`chartjs` tag on Stack Overflow](http://stackoverflow.com/questions/tagged/chartjs).
+For support using Chart.js, please post questions with the [`chartjs` tag on Stack Overflow](https://stackoverflow.com/questions/tagged/chartjs).
 
 ## License
 
-Chart.js is available under the [MIT license](http://opensource.org/licenses/MIT).
+Chart.js is available under the [MIT license](https://opensource.org/licenses/MIT).

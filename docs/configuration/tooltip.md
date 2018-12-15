@@ -269,7 +269,7 @@ var myPieChart = new Chart(ctx, {
 });
 ```
 
-See [samples](http://www.chartjs.org/samples/) for examples on how to get started with custom tooltips.
+See [samples](https://www.chartjs.org/samples/) for examples on how to get started with custom tooltips.
 
 ## Tooltip Model
 The tooltip model contains parameters that can be used to render the tooltip.

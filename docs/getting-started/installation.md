@@ -27,7 +27,7 @@ https://cdnjs.com/libraries/Chart.js
 ### jsDelivr
 [![jsdelivr](https://img.shields.io/npm/v/chart.js.svg?label=jsdelivr&style=flat-square&maxAge=600)](https://cdn.jsdelivr.net/npm/chart.js@latest/dist/) [![jsdelivr hits](https://data.jsdelivr.com/v1/package/npm/chart.js/badge)](https://www.jsdelivr.com/package/npm/chart.js)
 
-Chart.js built files are also available through [jsDelivr](http://www.jsdelivr.com/):
+Chart.js built files are also available through [jsDelivr](https://www.jsdelivr.com/):
 
 https://www.jsdelivr.com/package/npm/chart.js?path=dist
 
@@ -47,7 +47,7 @@ Files:
 * `dist/Chart.js`
 * `dist/Chart.min.js`
 
-The stand-alone build includes Chart.js as well as the color parsing library. If this version is used, you are required to include [Moment.js](http://momentjs.com/) before Chart.js for the functionality of the time axis.
+The stand-alone build includes Chart.js as well as the color parsing library. If this version is used, you are required to include [Moment.js](https://momentjs.com/) before Chart.js for the functionality of the time axis.
 
 ## Bundled Build
 Files:
