@@ -19,7 +19,7 @@ The x-axis data points may additionally be specified via the `t` or `x` attribut
 
 ### Date Formats
 
-When providing data for the time scale, Chart.js supports all of the formats that Moment.js accepts. See [Moment.js docs](http://momentjs.com/docs/#/parsing/) for details.
+When providing data for the time scale, Chart.js supports all of the formats that Moment.js accepts. See [Moment.js docs](https://momentjs.com/docs/#/parsing/) for details.
 
 ## Configuration Options
 
@@ -75,7 +75,7 @@ var chart = new Chart(ctx, {
 ```
 
 ### Display Formats
-The following display formats are used to configure how different time units are formed into strings for the axis tick marks. See [moment.js](http://momentjs.com/docs/#/displaying/format/) for the allowable format strings.
+The following display formats are used to configure how different time units are formed into strings for the axis tick marks. See [moment.js](https://momentjs.com/docs/#/displaying/format/) for the allowable format strings.
 
 Name | Default | Example
 --- | --- | ---
