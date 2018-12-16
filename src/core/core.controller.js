@@ -33,7 +33,7 @@ module.exports = function(Chart) {
 		data.datasets = data.datasets || [];
 		data.labels = data.labels || [];
 
-		config.options = helpers.configMerge(
+		config.options = helpers.utility.configMerge(
 			defaults.global,
 			defaults[config.type],
 			config.options || {});
@@ -52,7 +52,7 @@ module.exports = function(Chart) {
 			layouts.removeBox(chart, scale);
 		});
 
-		newOptions = helpers.configMerge(
+		newOptions = helpers.utility.configMerge(
 			Chart.defaults.global,
 			Chart.defaults[chart.config.type],
 			newOptions);

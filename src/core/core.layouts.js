@@ -3,7 +3,7 @@
 var helpers = require('../helpers/helpers.core');
 
 function filterByPosition(array, position) {
-	return helpers.where(array, function(v) {
+	return helpers.utility.where(array, function(v) {
 		return v.position === position;
 	});
 }
@@ -237,7 +237,7 @@ module.exports = {
 
 		// Function to fit a box
 		function fitBox(box) {
-			var minBoxSize = helpers.findNextWhere(minBoxSizes, function(minBox) {
+			var minBoxSize = helpers.utility.findNextWhere(minBoxSizes, function(minBox) {
 				return minBox.box === box;
 			});
 
@@ -283,7 +283,7 @@ module.exports = {
 		});
 
 		function finalFitVerticalBox(box) {
-			var minBoxSize = helpers.findNextWhere(minBoxSizes, function(minSize) {
+			var minBoxSize = helpers.utility.findNextWhere(minBoxSizes, function(minSize) {
 				return minSize.box === box;
 			});
 

@@ -6,3 +6,4 @@ module.exports.canvas = require('./helpers.canvas');
 module.exports.options = require('./helpers.options');
 module.exports.math = require('./helpers.math');
 module.exports.dom = require('./helpers.dom');
+module.exports.utility = require('./helpers.utility');

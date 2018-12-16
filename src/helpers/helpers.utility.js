@@ -1,15 +1,13 @@
-/* global window: false */
-/* global document: false */
 'use strict';
 
-var helpers = require('../helpers/index');
+var helpers = require('./helpers.core');
 var scaleService = require('../core/core.scaleService');
 
-module.exports = function() {
-
-	// -- Basic js utility methods
-
-	helpers.configMerge = function(/* objects ... */) {
+/**
+ * @namespace Chart.helpers.utility
+ */
+module.exports = {
+	configMerge: function(/* objects ... */) {
 		return helpers.merge(helpers.clone(arguments[0]), [].slice.call(arguments, 1), {
 			merger: function(key, target, source, options) {
 				var tval = target[key] || {};
@@ -17,7 +15,7 @@ module.exports = function() {
 
 				if (key === 'scales') {
 					// scale config merging is complex. Add our own function here for that
-					target[key] = helpers.scaleMerge(tval, sval);
+					target[key] = helpers.utility.scaleMerge(tval, sval);
 				} else if (key === 'scale') {
 					// used in polar area & radar charts since there is only one scale
 					target[key] = helpers.merge(tval, [scaleService.getScaleDefaults(sval.type), sval]);
@@ -26,9 +24,9 @@ module.exports = function() {
 				}
 			}
 		});
-	};
+	},
 
-	helpers.scaleMerge = function(/* objects ... */) {
+	scaleMerge: function(/* objects ... */) {
 		return helpers.merge(helpers.clone(arguments[0]), [].slice.call(arguments, 1), {
 			merger: function(key, target, source, options) {
 				if (key === 'xAxes' || key === 'yAxes') {
@@ -61,9 +59,9 @@ module.exports = function() {
 				}
 			}
 		});
-	};
+	},
 
-	helpers.where = function(collection, filterCallback) {
+	where: function(collection, filterCallback) {
 		if (helpers.isArray(collection) && Array.prototype.filter) {
 			return collection.filter(filterCallback);
 		}
@@ -76,8 +74,9 @@ module.exports = function() {
 		});
 
 		return filtered;
-	};
-	helpers.findIndex = Array.prototype.findIndex ?
+	},
+
+	findIndex: Array.prototype.findIndex ?
 		function(array, callback, scope) {
 			return array.findIndex(callback, scope);
 		} :
@@ -89,8 +88,9 @@ module.exports = function() {
 				}
 			}
 			return -1;
-		};
-	helpers.findNextWhere = function(arrayToSearch, filterCallback, startIndex) {
+		},
+
+	findNextWhere: function(arrayToSearch, filterCallback, startIndex) {
 		// Default to start of the array
 		if (helpers.isNullOrUndef(startIndex)) {
 			startIndex = -1;
@@ -101,8 +101,9 @@ module.exports = function() {
 				return currentItem;
 			}
 		}
-	};
-	helpers.findPreviousWhere = function(arrayToSearch, filterCallback, startIndex) {
+	},
+
+	findPreviousWhere: function(arrayToSearch, filterCallback, startIndex) {
 		// Default to end of the array
 		if (helpers.isNullOrUndef(startIndex)) {
 			startIndex = arrayToSearch.length;
@@ -113,5 +114,5 @@ module.exports = function() {
 				return currentItem;
 			}
 		}
-	};
+	}
 };

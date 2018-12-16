@@ -51,7 +51,7 @@ module.exports = {
 	},
 
 	cancelAnimation: function(chart) {
-		var index = helpers.findIndex(this.animations, function(animation) {
+		var index = helpers.utility.findIndex(this.animations, function(animation) {
 			return animation.chart === chart;
 		});
 
