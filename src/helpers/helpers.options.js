@@ -1,5 +1,6 @@
 'use strict';
 
+var defaults = require('../core/core.defaults');
 var helpers = require('./helpers.core');
 
 /**
@@ -65,20 +66,44 @@ module.exports = {
 		};
 	},
 
-	parseFontOptions: function(options, globalDefaults) {
-		var valueOrDefault = helpers.valueOrDefault;
-		var size = valueOrDefault(options.fontSize, globalDefaults.defaultFontSize);
-		var style = valueOrDefault(options.fontStyle, globalDefaults.defaultFontStyle);
-		var family = valueOrDefault(options.fontFamily, globalDefaults.defaultFontFamily);
-		var lineHeight = valueOrDefault(options.lineHeight, globalDefaults.defaultlineHeight);
+	/**
+	 * Converts the given font object into a CSS font string.
+	 * @param {Object} font - A font object.
+	 * @return {Stringg} The CSS font string. See https://developer.mozilla.org/en-US/docs/Web/CSS/font
+	 */
+	toFontString: function(font) {
+		if (!font || helpers.isNullOrUndef(font.size) || helpers.isNullOrUndef(font.family)) {
+			return null;
+		}
 
-		return {
+		return (font.style ? font.style + ' ' : '')
+			+ (font.weight ? font.weight + ' ' : '')
+			+ font.size + 'px '
+			+ font.family;
+	},
+
+	/**
+	 * Parses font options and returns the font object.
+	 * @param {Object} options - A object that contains font opttons to be parsed.
+	 * @return {Object} The font object.
+	 * @todo Support font.* options and renamed to toFont().
+	 * @private
+	 */
+	_parseFont: function(options) {
+		var valueOrDefault = helpers.valueOrDefault;
+		var globalDefaults = defaults.global;
+		var size = valueOrDefault(options.fontSize, globalDefaults.defaultFontSize);
+		var font = {
+			family: valueOrDefault(options.fontFamily, globalDefaults.defaultFontFamily),
+			lineHeight: helpers.options.toLineHeight(valueOrDefault(options.lineHeight, globalDefaults.defaultLineHeight), size),
 			size: size,
-			style: style,
-			family: family,
-			font: helpers.fontString(size, style, family),
-			lineHeight: this.toLineHeight(lineHeight, size)
+			style: valueOrDefault(options.fontStyle, globalDefaults.defaultFontStyle),
+			weight: null,
+			string: ''
 		};
+
+		font.string = helpers.options.toFontString(font);
+		return font;
 	},
 
 	/**

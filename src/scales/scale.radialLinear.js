@@ -7,8 +7,6 @@ var Ticks = require('../core/core.ticks');
 
 module.exports = function(Chart) {
 
-	var globalDefaults = defaults.global;
-
 	var defaultConfig = {
 		display: true,
 
@@ -68,7 +66,7 @@ module.exports = function(Chart) {
 		var tickOpts = opts.ticks;
 
 		if (tickOpts.display && opts.display) {
-			return helpers.valueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize) + tickOpts.backdropPaddingY * 2;
+			return helpers.valueOrDefault(tickOpts.fontSize, defaults.global.defaultFontSize) + tickOpts.backdropPaddingY * 2;
 		}
 		return 0;
 	}
@@ -138,7 +136,7 @@ module.exports = function(Chart) {
 		 * https://dl.dropboxusercontent.com/u/34601363/yeahscience.gif
 		 */
 
-		var plFont = helpers.options.parseFontOptions(scale.options.pointLabels, globalDefaults);
+		var plFont = helpers.options._parseFont(scale.options.pointLabels);
 
 		// Get maximum radius of the polygon. Either half the height (minus the text width) or half the width.
 		// Use this to calculate the offset + change. - Make sure L/R protrusion is at least 0 to stop issues with centre points
@@ -151,7 +149,7 @@ module.exports = function(Chart) {
 		var furthestAngles = {};
 		var i, textSize, pointPosition;
 
-		scale.ctx.font = plFont.font;
+		scale.ctx.font = plFont.string;
 		scale._pointLabelSizes = [];
 
 		var valueCount = getValueCount(scale);
@@ -243,9 +241,9 @@ module.exports = function(Chart) {
 		var outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
 
 		// Point Label Font
-		var plFont = helpers.options.parseFontOptions(pointLabelOpts, globalDefaults);
+		var plFont = helpers.options._parseFont(pointLabelOpts);
 
-		ctx.font = plFont.font;
+		ctx.font = plFont.string;
 		ctx.textBaseline = 'middle';
 
 		for (var i = getValueCount(scale) - 1; i >= 0; i--) {
@@ -263,7 +261,7 @@ module.exports = function(Chart) {
 				var pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + 5);
 
 				// Keep this in loop since we may support array properties here
-				var pointLabelFontColor = helpers.valueAtIndexOrDefault(pointLabelOpts.fontColor, i, globalDefaults.defaultFontColor);
+				var pointLabelFontColor = helpers.valueAtIndexOrDefault(pointLabelOpts.fontColor, i, defaults.global.defaultFontColor);
 				ctx.fillStyle = pointLabelFontColor;
 
 				var angleRadians = scale.getIndexAngle(i);
@@ -477,7 +475,7 @@ module.exports = function(Chart) {
 			if (opts.display) {
 				var ctx = me.ctx;
 				var startAngle = this.getIndexAngle(0);
-				var tickFont = helpers.options.parseFontOptions(tickOpts, globalDefaults);
+				var tickFont = helpers.options._parseFont(tickOpts);
 
 				if (opts.angleLines.display || opts.pointLabels.display) {
 					drawPointLabels(me);
@@ -494,8 +492,8 @@ module.exports = function(Chart) {
 						}
 
 						if (tickOpts.display) {
-							var tickFontColor = valueOrDefault(tickOpts.fontColor, globalDefaults.defaultFontColor);
-							ctx.font = tickFont.font;
+							var tickFontColor = valueOrDefault(tickOpts.fontColor, defaults.global.defaultFontColor);
+							ctx.font = tickFont.string;
 
 							ctx.save();
 							ctx.translate(me.xCenter, me.yCenter);

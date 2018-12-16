@@ -7,8 +7,6 @@ var layouts = require('../core/core.layouts');
 
 var noop = helpers.noop;
 
-var globalDefaults = defaults.global;
-
 defaults._set('global', {
 	title: {
 		display: false,
@@ -116,7 +114,7 @@ var Title = Element.extend({
 		var display = opts.display;
 		var minSize = me.minSize;
 		var lineCount = helpers.isArray(opts.text) ? opts.text.length : 1;
-		var fontOpts = helpers.options.parseFontOptions(opts, globalDefaults);
+		var fontOpts = helpers.options._parseFont(opts);
 		var textSize = display ? (lineCount * fontOpts.lineHeight) + (opts.padding * 2) : 0;
 
 		if (me.isHorizontal()) {
@@ -147,7 +145,7 @@ var Title = Element.extend({
 		var opts = me.options;
 
 		if (opts.display) {
-			var fontOpts = helpers.options.parseFontOptions(opts, globalDefaults);
+			var fontOpts = helpers.options._parseFont(opts);
 			var lineHeight = fontOpts.lineHeight;
 			var offset = lineHeight / 2 + opts.padding;
 			var rotation = 0;
@@ -157,8 +155,8 @@ var Title = Element.extend({
 			var right = me.right;
 			var maxWidth, titleX, titleY;
 
-			ctx.fillStyle = valueOrDefault(opts.fontColor, globalDefaults.defaultFontColor); // render in correct colour
-			ctx.font = fontOpts.font;
+			ctx.fillStyle = valueOrDefault(opts.fontColor, defaults.global.defaultFontColor); // render in correct colour
+			ctx.font = fontOpts.string;
 
 			// Horizontal
 			if (me.isHorizontal()) {
@@ -231,7 +229,7 @@ module.exports = {
 		var titleBlock = chart.titleBlock;
 
 		if (titleOpts) {
-			helpers.mergeIf(titleOpts, globalDefaults.title);
+			helpers.mergeIf(titleOpts, defaults.global.title);
 
 			if (titleBlock) {
 				layouts.configure(chart, titleBlock, titleOpts);

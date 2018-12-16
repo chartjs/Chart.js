@@ -7,8 +7,6 @@ var layouts = require('../core/core.layouts');
 
 var noop = helpers.noop;
 
-var globalDefault = defaults.global;
-
 defaults._set('global', {
 	legend: {
 		display: true,
@@ -213,7 +211,7 @@ var Legend = Element.extend({
 
 		var ctx = me.ctx;
 
-		var labelFont = helpers.options.parseFontOptions(labelOpts, globalDefault);
+		var labelFont = helpers.options._parseFont(labelOpts);
 		var fontSize = labelFont.size;
 
 		// Reset hit boxes
@@ -232,7 +230,7 @@ var Legend = Element.extend({
 
 		// Increase sizes here
 		if (display) {
-			ctx.font = labelFont.font;
+			ctx.font = labelFont.string;
 
 			if (isHorizontal) {
 				// Labels
@@ -321,15 +319,17 @@ var Legend = Element.extend({
 		var me = this;
 		var opts = me.options;
 		var labelOpts = opts.labels;
-		var lineDefault = globalDefault.elements.line;
+		var globalDefaults = defaults.global;
+		var defaultColor = globalDefaults.defaultColor;
+		var lineDefault = globalDefaults.elements.line;
 		var legendWidth = me.width;
 		var lineWidths = me.lineWidths;
 
 		if (opts.display) {
 			var ctx = me.ctx;
 			var valueOrDefault = helpers.valueOrDefault;
-			var fontColor = valueOrDefault(labelOpts.fontColor, globalDefault.defaultFontColor);
-			var labelFont = helpers.options.parseFontOptions(labelOpts, globalDefault);
+			var fontColor = valueOrDefault(labelOpts.fontColor, globalDefaults.defaultFontColor);
+			var labelFont = helpers.options._parseFont(labelOpts);
 			var fontSize = labelFont.size;
 			var cursor;
 
@@ -339,7 +339,7 @@ var Legend = Element.extend({
 			ctx.lineWidth = 0.5;
 			ctx.strokeStyle = fontColor; // for strikethrough effect
 			ctx.fillStyle = fontColor; // render in correct colour
-			ctx.font = labelFont.font;
+			ctx.font = labelFont.string;
 
 			var boxWidth = getBoxWidth(labelOpts, fontSize);
 			var hitboxes = me.legendHitBoxes;
@@ -353,12 +353,12 @@ var Legend = Element.extend({
 				// Set the ctx for the box
 				ctx.save();
 
-				ctx.fillStyle = valueOrDefault(legendItem.fillStyle, globalDefault.defaultColor);
+				ctx.fillStyle = valueOrDefault(legendItem.fillStyle, defaultColor);
 				ctx.lineCap = valueOrDefault(legendItem.lineCap, lineDefault.borderCapStyle);
 				ctx.lineDashOffset = valueOrDefault(legendItem.lineDashOffset, lineDefault.borderDashOffset);
 				ctx.lineJoin = valueOrDefault(legendItem.lineJoin, lineDefault.borderJoinStyle);
 				ctx.lineWidth = valueOrDefault(legendItem.lineWidth, lineDefault.borderWidth);
-				ctx.strokeStyle = valueOrDefault(legendItem.strokeStyle, globalDefault.defaultColor);
+				ctx.strokeStyle = valueOrDefault(legendItem.strokeStyle, defaultColor);
 				var isLineWidthZero = (valueOrDefault(legendItem.lineWidth, lineDefault.borderWidth) === 0);
 
 				if (ctx.setLineDash) {

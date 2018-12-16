@@ -73,6 +73,8 @@ module.exports = Element.extend({
 		var x = vm.x;
 		var y = vm.y;
 		var epsilon = 0.0000001; // 0.0000001 is margin in pixels for Accumulated error.
+		var globalDefaults = defaults.global;
+		var defaultColor = globalDefaults.defaultColor; // eslint-disable-line no-shadow
 
 		if (vm.skip) {
 			return;
@@ -81,7 +83,7 @@ module.exports = Element.extend({
 		// Clipping for Points.
 		if (chartArea === undefined || (model.x > chartArea.left - epsilon && chartArea.right + epsilon > model.x && model.y > chartArea.top - epsilon && chartArea.bottom + epsilon > model.y)) {
 			ctx.strokeStyle = vm.borderColor || defaultColor;
-			ctx.lineWidth = helpers.valueOrDefault(vm.borderWidth, defaults.global.elements.point.borderWidth);
+			ctx.lineWidth = helpers.valueOrDefault(vm.borderWidth, globalDefaults.elements.point.borderWidth);
 			ctx.fillStyle = vm.backgroundColor || defaultColor;
 			helpers.canvas.drawPoint(ctx, pointStyle, radius, x, y, rotation);
 		}

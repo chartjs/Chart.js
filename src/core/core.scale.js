@@ -5,8 +5,6 @@ var Element = require('./core.element');
 var helpers = require('../helpers/index');
 var Ticks = require('./core.ticks');
 
-var globalDefaults = defaults.global;
-
 defaults._set('scale', {
 	display: true,
 	position: 'left',
@@ -319,13 +317,13 @@ module.exports = Element.extend({
 
 		// Get the width of each grid by calculating the difference
 		// between x offsets between 0 and 1.
-		var tickFont = helpers.options.parseFontOptions(tickOpts, globalDefaults);
-		context.font = tickFont.font;
+		var tickFont = helpers.options._parseFont(tickOpts);
+		context.font = tickFont.string;
 
 		var labelRotation = tickOpts.minRotation || 0;
 
 		if (labels.length && me.options.display && me.isHorizontal()) {
-			var originalLabelWidth = helpers.longestText(context, tickFont.font, labels, me.longestTextCache);
+			var originalLabelWidth = helpers.longestText(context, tickFont.string, labels, me.longestTextCache);
 			var labelWidth = originalLabelWidth;
 			var cosRotation, sinRotation;
 
@@ -378,7 +376,8 @@ module.exports = Element.extend({
 		var position = opts.position;
 		var isHorizontal = me.isHorizontal();
 
-		var tickFont = helpers.options.parseFontOptions(tickOpts, globalDefaults);
+		var parseFont = helpers.options._parseFont;
+		var tickFont = parseFont(tickOpts);
 		var tickMarkLength = opts.gridLines.tickMarkLength;
 
 		// Width
@@ -398,7 +397,7 @@ module.exports = Element.extend({
 
 		// Are we showing a title for the scale?
 		if (scaleLabelOpts.display && display) {
-			var scaleLabelFont = helpers.options.parseFontOptions(scaleLabelOpts, globalDefaults);
+			var scaleLabelFont = parseFont(scaleLabelOpts);
 			var scaleLabelPadding = helpers.options.toPadding(scaleLabelOpts.padding);
 			var deltaHeight = scaleLabelFont.lineHeight + scaleLabelPadding.height;
 
@@ -411,7 +410,7 @@ module.exports = Element.extend({
 
 		// Don't bother fitting the ticks if we are not showing them
 		if (tickOpts.display && display) {
-			var largestTextWidth = helpers.longestText(me.ctx, tickFont.font, labels, me.longestTextCache);
+			var largestTextWidth = helpers.longestText(me.ctx, tickFont.string, labels, me.longestTextCache);
 			var tallestLabelHeightInLines = helpers.numberOfLabelLines(labels);
 			var lineSpace = tickFont.size * 0.5;
 			var tickPadding = me.options.ticks.padding;
@@ -431,9 +430,9 @@ module.exports = Element.extend({
 
 				minSize.height = Math.min(me.maxHeight, minSize.height + labelHeight + tickPadding);
 
-				me.ctx.font = tickFont.font;
-				var firstLabelWidth = computeTextSize(me.ctx, labels[0], tickFont.font);
-				var lastLabelWidth = computeTextSize(me.ctx, labels[labels.length - 1], tickFont.font);
+				me.ctx.font = tickFont.string;
+				var firstLabelWidth = computeTextSize(me.ctx, labels[0], tickFont.string);
+				var lastLabelWidth = computeTextSize(me.ctx, labels[labels.length - 1], tickFont.string);
 				var offsetLeft = me.getPixelForTick(0) - me.left;
 				var offsetRight = me.right - me.getPixelForTick(labels.length - 1);
 				var paddingLeft, paddingRight;
@@ -666,6 +665,8 @@ module.exports = Element.extend({
 
 		var chart = me.chart;
 		var context = me.ctx;
+		var globalDefaults = defaults.global;
+		var defaultFontColor = globalDefaults.defaultFontColor;
 		var optionTicks = options.ticks.minor;
 		var optionMajorTicks = options.ticks.major || optionTicks;
 		var gridLines = options.gridLines;
@@ -676,18 +677,20 @@ module.exports = Element.extend({
 		var isMirrored = optionTicks.mirror;
 		var isHorizontal = me.isHorizontal();
 
+		var parseFont = helpers.options._parseFont;
 		var ticks = optionTicks.autoSkip ? me._autoSkip(me.getTicks()) : me.getTicks();
-		var tickFontColor = helpers.valueOrDefault(optionTicks.fontColor, globalDefaults.defaultFontColor);
-		var tickFont = helpers.options.parseFontOptions(optionTicks, globalDefaults);
-		var majorTickFontColor = helpers.valueOrDefault(optionMajorTicks.fontColor, globalDefaults.defaultFontColor);
-		var majorTickFont = helpers.options.parseFontOptions(optionMajorTicks, globalDefaults);
+		var tickFontColor = helpers.valueOrDefault(optionTicks.fontColor, defaultFontColor);
+		var tickFont = parseFont(optionTicks);
+		var lineHeight = tickFont.lineHeight;
+		var majorTickFontColor = helpers.valueOrDefault(optionMajorTicks.fontColor, defaultFontColor);
+		var majorTickFont = parseFont(optionMajorTicks);
 		var tickPadding = optionTicks.padding;
 		var labelOffset = optionTicks.labelOffset;
 
 		var tl = gridLines.drawTicks ? gridLines.tickMarkLength : 0;
 
-		var scaleLabelFontColor = helpers.valueOrDefault(scaleLabel.fontColor, globalDefaults.defaultFontColor);
-		var scaleLabelFont = helpers.options.parseFontOptions(scaleLabel, globalDefaults);
+		var scaleLabelFontColor = helpers.valueOrDefault(scaleLabel.fontColor, defaultFontColor);
+		var scaleLabelFont = parseFont(scaleLabel);
 		var scaleLabelPadding = helpers.options.toPadding(scaleLabel.padding);
 		var labelRotationRadians = helpers.toRadians(me.labelRotation);
 
@@ -758,13 +761,13 @@ module.exports = Element.extend({
 				if (position === 'top') {
 					y1 = alignPixel(chart, chartArea.top, axisWidth) + axisWidth / 2;
 					y2 = chartArea.bottom;
-					textOffset = ((!isRotated ? 0.5 : 1) - labelCount) * tickFont.lineHeight;
+					textOffset = ((!isRotated ? 0.5 : 1) - labelCount) * lineHeight;
 					textAlign = !isRotated ? 'center' : 'left';
 					labelY = me.bottom - labelYOffset;
 				} else {
 					y1 = chartArea.top;
 					y2 = alignPixel(chart, chartArea.bottom, axisWidth) - axisWidth / 2;
-					textOffset = (!isRotated ? 0.5 : 0) * tickFont.lineHeight;
+					textOffset = (!isRotated ? 0.5 : 0) * lineHeight;
 					textAlign = !isRotated ? 'center' : 'right';
 					labelY = me.top + labelYOffset;
 				}
@@ -779,7 +782,7 @@ module.exports = Element.extend({
 				tx2 = tickEnd;
 				ty1 = ty2 = y1 = y2 = alignPixel(chart, lineValue, lineWidth);
 				labelY = me.getPixelForTick(index) + labelOffset;
-				textOffset = (1 - labelCount) * tickFont.lineHeight / 2;
+				textOffset = (1 - labelCount) * lineHeight / 2;
 
 				if (position === 'left') {
 					x1 = alignPixel(chart, chartArea.left, axisWidth) + axisWidth / 2;
@@ -852,7 +855,7 @@ module.exports = Element.extend({
 				context.save();
 				context.translate(itemToDraw.labelX, itemToDraw.labelY);
 				context.rotate(itemToDraw.rotation);
-				context.font = itemToDraw.major ? majorTickFont.font : tickFont.font;
+				context.font = itemToDraw.major ? majorTickFont.string : tickFont.string;
 				context.fillStyle = itemToDraw.major ? majorTickFontColor : tickFontColor;
 				context.textBaseline = 'middle';
 				context.textAlign = itemToDraw.textAlign;
@@ -863,7 +866,7 @@ module.exports = Element.extend({
 					for (var i = 0; i < label.length; ++i) {
 						// We just make sure the multiline element is a string here..
 						context.fillText('' + label[i], 0, y);
-						y += tickFont.lineHeight;
+						y += lineHeight;
 					}
 				} else {
 					context.fillText(label, 0, y);
@@ -899,7 +902,7 @@ module.exports = Element.extend({
 			context.textAlign = 'center';
 			context.textBaseline = 'middle';
 			context.fillStyle = scaleLabelFontColor; // render in correct colour
-			context.font = scaleLabelFont.font;
+			context.font = scaleLabelFont.string;
 			context.fillText(scaleLabel.labelString, 0, 0);
 			context.restore();
 		}
