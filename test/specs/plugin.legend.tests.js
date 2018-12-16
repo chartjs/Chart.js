@@ -217,7 +217,7 @@ describe('Legend block tests', function() {
 
 		// NOTE(SB) We should get ride of the following tests and use image diff instead.
 		// For now, as discussed with Evert Timberg, simply comment out.
-		// See http://humblesoftware.github.io/js-imagediff/test.html
+		// See https://humblesoftware.github.io/js-imagediff/test.html
 		/* chart.legend.ctx = window.createMockContext();
 		chart.update();
 

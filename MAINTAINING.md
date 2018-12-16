@@ -5,7 +5,7 @@ Chart.js relies on [Travis CI](https://travis-ci.org/) to automate the library [
 ### Releasing a New Version
 
 1. draft release notes on [GitHub](https://github.com/chartjs/Chart.js/releases/new) for the upcoming tag
-1. update `master` `package.json` version using [semver](http://semver.org/) semantic
+1. update `master` `package.json` version using [semver](https://semver.org/) semantic
 1. merge `master` into the `release` branch
 1. follow the build process on [Travis CI](https://travis-ci.org/chartjs/Chart.js)
 

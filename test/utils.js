@@ -85,7 +85,7 @@ function releaseChart(chart) {
 }
 
 function injectCSS(css) {
-	// http://stackoverflow.com/q/3922139
+	// https://stackoverflow.com/q/3922139
 	var head = document.getElementsByTagName('head')[0];
 	var style = document.createElement('style');
 	style.setAttribute('type', 'text/css');
