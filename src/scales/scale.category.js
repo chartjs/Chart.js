@@ -49,10 +49,20 @@ module.exports = Scale.extend({
 
 	getLabelForIndex: function(index, datasetIndex) {
 		var me = this;
-		var data = me.chart.data;
+		var chart = me.chart;
+		var data = chart.data;
 		var isHorizontal = me.isHorizontal();
 
-		if (data.yLabels && !isHorizontal) {
+		var ds = chart.getDatasetMeta(datasetIndex).controller;
+
+		// Do we have a getValuesScaleId function? (eg. bar chart)
+		var isValueScale = ds.getValueScaleId
+			? ds.getValueScaleId() === me.id
+			: !isHorizontal;
+
+		// FIXME For non-bar charts we assume vertical axis is a value scale
+		// and thus should return getRightValue
+		if (isValueScale) {
 			return me.getRightValue(data.datasets[datasetIndex].data[index]);
 		}
 		return me.ticks[index - me.minIndex];
