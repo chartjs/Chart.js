@@ -7,7 +7,7 @@ globals:
   moment: true
   waitForResize: true
 
-# http://eslint.org/docs/rules/
+# https://eslint.org/docs/rules/
 rules:
   # Best Practices
   complexity: 0

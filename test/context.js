@@ -1,4 +1,4 @@
-// Code from http://stackoverflow.com/questions/4406864/html-canvas-unit-testing
+// Code from https://stackoverflow.com/questions/4406864/html-canvas-unit-testing
 var Context = function() {
 	this._calls = []; // names/args of recorded calls
 	this._initMethods();

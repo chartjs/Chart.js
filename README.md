@@ -2,7 +2,7 @@
 
 [![travis](https://img.shields.io/travis/chartjs/Chart.js.svg?style=flat-square&maxAge=60)](https://travis-ci.org/chartjs/Chart.js) [![coveralls](https://img.shields.io/coveralls/chartjs/Chart.js.svg?style=flat-square&maxAge=600)](https://coveralls.io/github/chartjs/Chart.js?branch=master) [![codeclimate](https://img.shields.io/codeclimate/maintainability/chartjs/Chart.js.svg?style=flat-square&maxAge=600)](https://codeclimate.com/github/chartjs/Chart.js) [![slack](https://img.shields.io/badge/slack-chartjs-blue.svg?style=flat-square&maxAge=3600)](https://chartjs-slack.herokuapp.com/)
 
-*Simple HTML5 Charts using the canvas element* [chartjs.org](http://www.chartjs.org)
+*Simple HTML5 Charts using the canvas element* [chartjs.org](https://www.chartjs.org)
 
 ## Installation
 
@@ -28,7 +28,7 @@ Files:
 * `dist/Chart.js`
 * `dist/Chart.min.js`
 
-The stand-alone build includes Chart.js as well as the color parsing library. If this version is used, you are required to include [Moment.js](http://momentjs.com/) before Chart.js for the functionality of the time axis.
+The stand-alone build includes Chart.js as well as the color parsing library. If this version is used, you are required to include [Moment.js](https://momentjs.com/) before Chart.js for the functionality of the time axis.
 
 #### Bundled Build
 Files:
@@ -39,11 +39,11 @@ The bundled build includes Moment.js in a single file. You should use this versi
 
 ## Documentation
 
-You can find documentation at [www.chartjs.org/docs](http://www.chartjs.org/docs). The markdown files that build the site are available under `/docs`. Previous version documentation is available at [www.chartjs.org/docs/latest/developers/#previous-versions](http://www.chartjs.org/docs/latest/developers/#previous-versions).
+You can find documentation at [www.chartjs.org/docs](https://www.chartjs.org/docs). The markdown files that build the site are available under `/docs`. Previous version documentation is available at [www.chartjs.org/docs/latest/developers/#previous-versions](https://www.chartjs.org/docs/latest/developers/#previous-versions).
 
 ## Contributing
 
-Before submitting an issue or a pull request, please take a moment to look over the [contributing guidelines](https://github.com/chartjs/Chart.js/blob/master/docs/developers/contributing.md) first. For support using Chart.js, please post questions with the [`chartjs` tag on Stack Overflow](http://stackoverflow.com/questions/tagged/chartjs).
+Before submitting an issue or a pull request, please take a moment to look over the [contributing guidelines](https://github.com/chartjs/Chart.js/blob/master/docs/developers/contributing.md) first. For support using Chart.js, please post questions with the [`chartjs` tag on Stack Overflow](https://stackoverflow.com/questions/tagged/chartjs).
 
 ## Building
 Instructions on building and testing Chart.js can be found in [the documentation](https://github.com/chartjs/Chart.js/blob/master/docs/developers/contributing.md#building-and-testing).
@@ -54,4 +54,4 @@ Instructions on building and testing Chart.js can be found in [the documentation
 
 ## License
 
-Chart.js is available under the [MIT license](http://opensource.org/licenses/MIT).
+Chart.js is available under the [MIT license](https://opensource.org/licenses/MIT).
