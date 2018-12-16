@@ -201,6 +201,7 @@ data: [20, 10]
 ```
 
 You can also specify the dataset as x/y coordinates when using the [time scale](../axes/cartesian/time.md#time-cartesian-axis).
+If you would like the bar aligned at given x-location instead of automatic spacing, set `stacked: false` to x-axis.
 
 ```javascript
 data: [{x:'2016-12-25', y:20}, {x:'2016-12-26', y:10}]

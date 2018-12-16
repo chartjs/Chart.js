@@ -367,7 +367,10 @@ module.exports = DatasetController.extend({
 			: computeFitCategoryTraits(index, ruler, options);
 
 		var stackIndex = me.getStackIndex(datasetIndex, me.getMeta().stack);
-		var center = range.start + (range.chunk * stackIndex) + (range.chunk / 2);
+		var center = options.stacked === false
+			? ruler.scale.getPixelForValue(null, index, datasetIndex)
+			: range.start + (range.chunk * stackIndex) + (range.chunk / 2);
+
 		var size = Math.min(
 			helpers.valueOrDefault(options.maxBarThickness, Infinity),
 			range.chunk * range.ratio);
