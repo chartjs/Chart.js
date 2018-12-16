@@ -16,7 +16,7 @@ function getRelativePosition(e, chart) {
 		};
 	}
 
-	return helpers.getRelativePosition(e, chart);
+	return helpers.dom.getRelativePosition(e, chart);
 }
 
 /**
