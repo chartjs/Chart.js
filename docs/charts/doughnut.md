@@ -55,12 +55,21 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 
 | Name | Type | Description
 | ---- | ---- | -----------
-| `backgroundColor` | `Color[]` | The fill color of the arcs in the dataset. See [Colors](../general/colors.md#colors).
-| `borderColor` | `Color[]` | The border color of the arcs in the dataset. See [Colors](../general/colors.md#colors).
-| `borderWidth` | `Number[]` | The border width of the arcs in the dataset.
-| `hoverBackgroundColor` | `Color[]` | The fill colour of the arcs when hovered.
-| `hoverBorderColor` | `Color[]` | The stroke colour of the arcs when hovered.
-| `hoverBorderWidth` | `Number[]` | The stroke width of the arcs when hovered.
+| `backgroundColor` | `Color/Color[]` | The fill color of the arcs in the dataset. See [Colors](../general/colors.md#colors).
+| `borderColor` | `Color/Color[]` | The border color of the arcs in the dataset. See [Colors](../general/colors.md#colors).
+| `borderWidth` | `Number/Number[]` | The border width of the arcs in the dataset.
+| `borderAlign` | `String/String[]` | The border alignment of the arcs in the dataset. [more...](#border-alignment)
+| `hoverBackgroundColor` | `Color/Color[]` | The fill colour of the arcs when hovered.
+| `hoverBorderColor` | `Color/Color[]` | The stroke colour of the arcs when hovered.
+| `hoverBorderWidth` | `Number/Number[]` | The stroke width of the arcs when hovered.
+
+### Border Alignment
+
+The following values are supported for `borderAlign`.
+* `'center'` (default)
+* `'inner'`
+
+When `'center'` is set, the borders of arcs next to each other will overlap. When `'inner'` is set, it is guaranteed that all the borders are not overlap.
 
 ## Config Options
 

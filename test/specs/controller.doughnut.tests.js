@@ -1,4 +1,6 @@
 describe('Chart.controllers.doughnut', function() {
+	describe('auto', jasmine.fixture.specs('controller.doughnut'));
+
 	it('should be registered as dataset controller', function() {
 		expect(typeof Chart.controllers.doughnut).toBe('function');
 		expect(Chart.controllers.doughnut).toBe(Chart.controllers.pie);
@@ -106,8 +108,8 @@ describe('Chart.controllers.doughnut', function() {
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(256);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(256);
-			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(254);
-			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(190);
+			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(256);
+			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(192);
 			expect(meta.data[i]._model.circumference).toBeCloseTo(expected.c, 8);
 			expect(meta.data[i]._model).toEqual(jasmine.objectContaining({
 				startAngle: Math.PI * -0.5,
@@ -129,8 +131,8 @@ describe('Chart.controllers.doughnut', function() {
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(256);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(256);
-			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(254);
-			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(190);
+			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(256);
+			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(192);
 			expect(meta.data[i]._model.circumference).toBeCloseTo(expected.c, 8);
 			expect(meta.data[i]._model.startAngle).toBeCloseTo(expected.s, 8);
 			expect(meta.data[i]._model.endAngle).toBeCloseTo(expected.e, 8);
@@ -200,10 +202,10 @@ describe('Chart.controllers.doughnut', function() {
 			{c: Math.PI / 8, s: Math.PI, e: Math.PI + Math.PI / 8},
 			{c: 3 * Math.PI / 8, s: Math.PI + Math.PI / 8, e: Math.PI + Math.PI / 2}
 		].forEach(function(expected, i) {
-			expect(meta.data[i]._model.x).toBeCloseToPixel(511);
-			expect(meta.data[i]._model.y).toBeCloseToPixel(511);
-			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(510);
-			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(382);
+			expect(meta.data[i]._model.x).toBeCloseToPixel(512);
+			expect(meta.data[i]._model.y).toBeCloseToPixel(512);
+			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(512);
+			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(384);
 			expect(meta.data[i]._model.circumference).toBeCloseTo(expected.c, 8);
 			expect(meta.data[i]._model.startAngle).toBeCloseTo(expected.s, 8);
 			expect(meta.data[i]._model.endAngle).toBeCloseTo(expected.e, 8);
@@ -405,4 +407,52 @@ describe('Chart.controllers.doughnut', function() {
 		expect(arc._model.borderColor).toBe('rgb(17, 17, 17)');
 		expect(arc._model.borderWidth).toBe(3.14159);
 	});
+
+	it ('should calculate radiuses based on the border widths of the visible outermost dataset', function() {
+		var chart = window.acquireChart({
+			type: 'doughnut',
+			data: {
+				datasets: [{
+					data: [2, 4],
+					borderWidth: 4,
+					hidden: true
+				}, {
+					data: [1, 3],
+					borderWidth: 8
+				}, {
+					data: [1, 0],
+					borderWidth: 12
+				}],
+				labels: ['label0', 'label1']
+			},
+			options: {
+				legend: false,
+				title: false
+			}
+		});
+
+		chart.update();
+
+		expect(chart.chartArea.bottom - chart.chartArea.top).toBe(512);
+		expect(chart.borderWidth).toBe(8);
+		expect(chart.outerRadius).toBe(252);
+		expect(chart.innerRadius).toBe(126);
+		expect(chart.radiusLength).toBe(63);
+
+		var controller = chart.getDatasetMeta(0).controller;
+		expect(controller.getMaxBorderWidth()).toBe(8);
+		expect(controller.outerRadius).toBe(252);
+		expect(controller.innerRadius).toBe(189);
+
+		controller = chart.getDatasetMeta(1).controller;
+		expect(controller.getMaxBorderWidth()).toBe(8);
+		expect(controller.outerRadius).toBe(252);
+		expect(controller.innerRadius).toBe(189);
+
+		controller = chart.getDatasetMeta(2).controller;
+		expect(controller.getMaxBorderWidth()).toBe(8);
+		expect(controller.outerRadius).toBe(189);
+		expect(controller.innerRadius).toBe(126);
+	});
+
 });

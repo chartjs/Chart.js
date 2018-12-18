@@ -79,6 +79,7 @@ Context.prototype._initMethods = function() {
 		beginPath: function() {},
 		bezierCurveTo: function() {},
 		clearRect: function() {},
+		clip: function() {},
 		closePath: function() {},
 		fill: function() {},
 		fillRect: function() {},

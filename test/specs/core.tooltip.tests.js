@@ -943,7 +943,7 @@ describe('Core.Tooltip', function() {
 				if (model.width <= chart.width) {
 					expect(model.x + model.width).toBeLessThanOrEqual(chart.width);
 				}
-				expect(model.caretX).toBe(tooltipPosition.x);
+				expect(model.caretX).toBeCloseToPixel(tooltipPosition.x);
 				// if tooltip is longer than chart area then all tests done
 				if (model.width > chart.width) {
 					break;
