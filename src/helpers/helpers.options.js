@@ -4,6 +4,23 @@ var defaults = require('../core/core.defaults');
 var helpers = require('./helpers.core');
 
 /**
+ * Converts the given font object into a CSS font string.
+ * @param {Object} font - A font object.
+ * @return {Stringg} The CSS font string. See https://developer.mozilla.org/en-US/docs/Web/CSS/font
+ * @private
+ */
+function toFontString(font) {
+	if (!font || helpers.isNullOrUndef(font.size) || helpers.isNullOrUndef(font.family)) {
+		return null;
+	}
+
+	return (font.style ? font.style + ' ' : '')
+		+ (font.weight ? font.weight + ' ' : '')
+		+ font.size + 'px '
+		+ font.family;
+}
+
+/**
  * @alias Chart.helpers.options
  * @namespace
  */
@@ -67,22 +84,6 @@ module.exports = {
 	},
 
 	/**
-	 * Converts the given font object into a CSS font string.
-	 * @param {Object} font - A font object.
-	 * @return {Stringg} The CSS font string. See https://developer.mozilla.org/en-US/docs/Web/CSS/font
-	 */
-	toFontString: function(font) {
-		if (!font || helpers.isNullOrUndef(font.size) || helpers.isNullOrUndef(font.family)) {
-			return null;
-		}
-
-		return (font.style ? font.style + ' ' : '')
-			+ (font.weight ? font.weight + ' ' : '')
-			+ font.size + 'px '
-			+ font.family;
-	},
-
-	/**
 	 * Parses font options and returns the font object.
 	 * @param {Object} options - A object that contains font opttons to be parsed.
 	 * @return {Object} The font object.
@@ -102,7 +103,7 @@ module.exports = {
 			string: ''
 		};
 
-		font.string = helpers.options.toFontString(font);
+		font.string = toFontString(font);
 		return font;
 	},
 

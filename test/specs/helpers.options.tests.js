@@ -66,31 +66,6 @@ describe('Chart.helpers.options', function() {
 		});
 	});
 
-	describe('toFontString', function() {
-		var toFontString = options.toFontString;
-
-		it('should return null if the given font is invalid', function() {
-			expect(toFontString({})).toBeNull();
-			expect(toFontString(null)).toBeNull();
-			expect(toFontString(undefined)).toBeNull();
-			expect(toFontString(42)).toBeNull();
-			expect(toFontString('foo')).toBeNull();
-			expect(toFontString(new Date())).toBeNull();
-		});
-		it('should return null if size or family are missing', function() {
-			expect(toFontString({style: 'italic', weight: 300, size: 12})).toBeNull();
-			expect(toFontString({style: 'italic', weight: 300, family: 'serif'})).toBeNull();
-		});
-		it('should return the string representation of the given font', function() {
-			expect(toFontString({style: 'italic', weight: 300, size: 12, family: 'serif'})).toBe('italic 300 12px serif');
-		});
-		it('weigth and style should be optional', function() {
-			expect(toFontString({size: 12, family: 'serif'})).toBe('12px serif');
-			expect(toFontString({style: 'italic', size: 12, family: 'serif'})).toBe('italic 12px serif');
-			expect(toFontString({weight: 300, size: 12, family: 'serif'})).toBe('300 12px serif');
-		});
-	});
-
 	describe('_parseFont', function() {
 		var parseFont = options._parseFont;
 
@@ -129,6 +104,34 @@ describe('Chart.helpers.options', function() {
 				style: 'zzz',
 				weight: null
 			});
+		});
+		it('should return null as a font string if fontSize or fontFamily are missing', function() {
+			var global = Chart.defaults.global;
+
+			Chart.defaults.global = {};
+
+			expect(parseFont({
+				fontStyle: 'italic',
+				fontSize: 12
+			}).string).toBeNull();
+			expect(parseFont({
+				fontStyle: 'italic',
+				fontFamily: 'serif'
+			}).string).toBeNull();
+
+			Chart.defaults.global = global;
+		});
+		it('fontStyle should be optional for font strings', function() {
+			var global = Chart.defaults.global;
+
+			Chart.defaults.global = {};
+
+			expect(parseFont({
+				fontSize: 12,
+				fontFamily: 'serif'
+			}).string).toBe('12px serif');
+
+			Chart.defaults.global = global;
 		});
 	});
 
