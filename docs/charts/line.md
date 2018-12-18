@@ -90,7 +90,7 @@ The following values are supported for `steppedLine`.
 * `true`: Step-before Interpolation (eq. 'before')
 * `'before'`: Step-before Interpolation
 * `'after'`: Step-after Interpolation
-* `'midpoint'`: Step-midpoint Interpolation
+* `'middle'`: Step-middle Interpolation
 
 If the `steppedLine` value is set to anything other than false, `lineTension` will be ignored.
 
