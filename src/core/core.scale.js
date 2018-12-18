@@ -396,7 +396,7 @@ module.exports = Element.extend({
 		var tickOpts = opts.ticks;
 		var scaleLabelOpts = opts.scaleLabel;
 		var gridLineOpts = opts.gridLines;
-		var display = opts.display;
+		var display = me._isVisible();
 		var position = opts.position;
 		var isHorizontal = me.isHorizontal();
 
@@ -678,12 +678,39 @@ module.exports = Element.extend({
 		return result;
 	},
 
+	/**
+	 * @private
+	 */
+	_isVisible: function() {
+		var me = this;
+		var chart = me.chart;
+		var display = me.options.display;
+		var i, ilen, meta;
+
+		if (display !== 'auto') {
+			return !!display;
+		}
+
+		// When 'auto', the scale is visible if at least one associated dataset is visible.
+		for (i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
+			if (chart.isDatasetVisible(i)) {
+				meta = chart.getDatasetMeta(i);
+				if (meta.xAxisID === me.id || meta.yAxisID === me.id) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	},
+
 	// Actually draw the scale on the canvas
 	// @param {rectangle} chartArea : the area of the chart to draw full grid lines on
 	draw: function(chartArea) {
 		var me = this;
 		var options = me.options;
-		if (!options.display) {
+
+		if (!me._isVisible()) {
 			return;
 		}
 

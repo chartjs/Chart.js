@@ -16,7 +16,7 @@ The following properties are common to all axes provided by Chart.js.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `display` | `Boolean` | `true` | If set to `false` the axis is hidden from view. Overrides *gridLines.display*, *scaleLabel.display*, and *ticks.display*.
+| `display` | `Boolean`/`String` | `true` | Controls the axis global visibility (visible when `true`, hidden when `false`). When `display: 'auto'`, the axis is visible only if at least one associated dataset is visible.
 | `callbacks` | `Object` | | Callback functions to hook into the axis lifecycle. [more...](#callbacks)
 | `weight` | `Number` | `0` | The weight used to sort the axis. Higher weights are further away from the chart area.
 
