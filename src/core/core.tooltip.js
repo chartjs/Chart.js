@@ -464,6 +464,25 @@ function getBackgroundPoint(vm, size, alignment, chart) {
 }
 
 /**
+ * Align pt.x to match given aling (and using xPadding)
+ * @param {object} pt - point to aling {x}
+ * @param {object} vm - rectangle text should be aligned in (x, y, width, height, xPadding)
+ * @param {string} align - left, center, right
+ */
+function xAlignText(pt, vm, align) {
+	switch (align) {
+	case 'center':
+		pt.x = vm.x + vm.width / 2;
+		break;
+	case 'right':
+		pt.x = vm.x + vm.width - vm.xPadding;
+		break;
+	default:
+		pt.x = vm.x + vm.xPadding;
+	}
+}
+
+/**
  * Helper to build before and after body lines
  */
 function getBeforeAfterBodyLines(callback) {
@@ -905,16 +924,18 @@ var exports = Element.extend({
 			this.drawBackground(pt, vm, ctx, tooltipSize);
 
 			// Draw Title, Body, and Footer
-			pt.x += vm.xPadding;
 			pt.y += vm.yPadding;
 
 			// Titles
+			xAlignText(pt, vm, vm._titleAlign);
 			this.drawTitle(pt, vm, ctx);
 
 			// Body
+			xAlignText(pt, vm, vm._bodyAlign);
 			this.drawBody(pt, vm, ctx);
 
 			// Footer
+			xAlignText(pt, vm, vm._footerAlign);
 			this.drawFooter(pt, vm, ctx);
 
 			ctx.restore();
