@@ -363,7 +363,6 @@ function computeOffsets(table, ticks, min, max, options) {
 	var left = 0;
 	var right = 0;
 	var upper, lower;
-	var isReverse = options.ticks.reverse;
 
 	if (options.offset && ticks.length) {
 		if (!options.time.min) {
@@ -384,7 +383,7 @@ function computeOffsets(table, ticks, min, max, options) {
 		}
 	}
 
-	return isReverse ? {left: right, right: left} : {left: left, right: right};
+	return options.ticks.reverse ? {left: right, right: left} : {left: left, right: right};
 }
 
 function ticksFromTimestamps(values, majorUnit) {
