@@ -363,6 +363,7 @@ function computeOffsets(table, ticks, min, max, options) {
 	var left = 0;
 	var right = 0;
 	var upper, lower;
+	var isReverse = options.ticks.reverse;
 
 	if (options.offset && ticks.length) {
 		if (!options.time.min) {
@@ -383,7 +384,7 @@ function computeOffsets(table, ticks, min, max, options) {
 		}
 	}
 
-	return {left: left, right: right};
+	return isReverse ? {left: right, right: left} : {left: left, right: right};
 }
 
 function ticksFromTimestamps(values, majorUnit) {
@@ -706,11 +707,13 @@ module.exports = function() {
 		 */
 		getPixelForOffset: function(time) {
 			var me = this;
+			var isReverse = me.options.ticks.reverse;
 			var size = me._horizontal ? me.width : me.height;
-			var start = me._horizontal ? me.left : me.top;
+			var start = me._horizontal ? isReverse ? me.right : me.left : isReverse ? me.bottom : me.top;
 			var pos = interpolate(me._table, 'time', time, 'pos');
+			var offset = size * (me._offsets.left + pos) / (me._offsets.left + 1 + me._offsets.right);
 
-			return start + size * (me._offsets.left + pos) / (me._offsets.left + 1 + me._offsets.right);
+			return isReverse ? start - offset : start + offset;
 		},
 
 		getPixelForValue: function(value, index, datasetIndex) {

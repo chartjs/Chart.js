@@ -1317,4 +1317,191 @@ describe('Time scale tests', function() {
 			});
 		});
 	});
+
+	describe('when ticks.reverse', function() {
+		describe('is "true"', function() {
+			it ('should reverse the labels', function() {
+				this.chart = window.acquireChart({
+					type: 'line',
+					data: {
+						labels: ['2017', '2019', '2020', '2025', '2042'],
+						datasets: [{data: [0, 1, 2, 3, 4, 5]}]
+					},
+					options: {
+						scales: {
+							xAxes: [{
+								id: 'x',
+								type: 'time',
+								time: {
+									parser: 'YYYY',
+								},
+								ticks: {
+									source: 'labels',
+									reverse: true
+								}
+							}],
+							yAxes: [{
+								display: false
+							}]
+						}
+					}
+				});
+				var scale = this.chart.scales.x;
+				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(scale.left + scale.width);
+				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(scale.left);
+			});
+		});
+	});
+
+	describe('when ticks.reverse is "true" and distribution', function() {
+		describe('is "series"', function() {
+			beforeEach(function() {
+				this.chart = window.acquireChart({
+					type: 'line',
+					data: {
+						labels: ['2017', '2019', '2020', '2025', '2042'],
+						datasets: [{data: [0, 1, 2, 3, 4, 5]}]
+					},
+					options: {
+						scales: {
+							xAxes: [{
+								id: 'x',
+								type: 'time',
+								time: {
+									parser: 'YYYY'
+								},
+								distribution: 'series',
+								ticks: {
+									source: 'labels',
+									reverse: true
+								}
+							}],
+							yAxes: [{
+								display: false
+							}]
+						}
+					}
+				});
+			});
+
+			it ('should reverse the labels and space data out with the same gap, whatever their time values', function() {
+				var scale = this.chart.scales.x;
+				var start = scale.left;
+				var slice = scale.width / 4;
+
+				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(start + slice * 4);
+				expect(scale.getPixelForValue('2019')).toBeCloseToPixel(start + slice * 3);
+				expect(scale.getPixelForValue('2020')).toBeCloseToPixel(start + slice * 2);
+				expect(scale.getPixelForValue('2025')).toBeCloseToPixel(start + slice);
+				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(start);
+			});
+
+			it ('should reverse the labels and should add a step before if scale.min is before the first data', function() {
+				var chart = this.chart;
+				var scale = chart.scales.x;
+				var options = chart.options.scales.xAxes[0];
+
+				options.time.min = '2012';
+				chart.update();
+
+				var start = scale.left;
+				var slice = scale.width / 5;
+
+				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(start + slice * 4);
+				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(start);
+			});
+
+			it ('should reverse the labels and should add a step after if scale.max is after the last data', function() {
+				var chart = this.chart;
+				var scale = chart.scales.x;
+				var options = chart.options.scales.xAxes[0];
+
+				options.time.max = '2050';
+				chart.update();
+
+				var start = scale.left;
+				var slice = scale.width / 5;
+
+				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(start + slice * 5);
+				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(start + slice);
+			});
+
+			it ('should reverse the labels and should add steps before and after if scale.min/max are outside the data range', function() {
+				var chart = this.chart;
+				var scale = chart.scales.x;
+				var options = chart.options.scales.xAxes[0];
+
+				options.time.min = '2012';
+				options.time.max = '2050';
+				chart.update();
+
+				var start = scale.left;
+				var slice = scale.width / 6;
+
+				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(start + slice * 5);
+				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(start + slice);
+			});
+		});
+		describe('is "linear"', function() {
+			beforeEach(function() {
+				this.chart = window.acquireChart({
+					type: 'line',
+					data: {
+						labels: ['2017', '2019', '2020', '2025', '2042'],
+						datasets: [{data: [0, 1, 2, 3, 4, 5]}]
+					},
+					options: {
+						scales: {
+							xAxes: [{
+								id: 'x',
+								type: 'time',
+								time: {
+									parser: 'YYYY'
+								},
+								distribution: 'linear',
+								ticks: {
+									source: 'labels',
+									reverse: true
+								}
+							}],
+							yAxes: [{
+								display: false
+							}]
+						}
+					}
+				});
+			});
+
+			it ('should reverse the labels and should space data out with a gap relative to their time values', function() {
+				var scale = this.chart.scales.x;
+				var start = scale.left;
+				var slice = scale.width / (2042 - 2017);
+
+				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(start + slice * (2042 - 2017));
+				expect(scale.getPixelForValue('2019')).toBeCloseToPixel(start + slice * (2042 - 2019));
+				expect(scale.getPixelForValue('2020')).toBeCloseToPixel(start + slice * (2042 - 2020));
+				expect(scale.getPixelForValue('2025')).toBeCloseToPixel(start + slice * (2042 - 2025));
+				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(start);
+			});
+
+			it ('should reverse the labels and should take in account scale min and max if outside the ticks range', function() {
+				var chart = this.chart;
+				var scale = chart.scales.x;
+				var options = chart.options.scales.xAxes[0];
+
+				options.time.min = '2012';
+				options.time.max = '2050';
+				chart.update();
+
+				var start = scale.left;
+				var slice = scale.width / (2050 - 2012);
+
+				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(start + slice * (2050 - 2017));
+				expect(scale.getPixelForValue('2019')).toBeCloseToPixel(start + slice * (2050 - 2019));
+				expect(scale.getPixelForValue('2020')).toBeCloseToPixel(start + slice * (2050 - 2020));
+				expect(scale.getPixelForValue('2025')).toBeCloseToPixel(start + slice * (2050 - 2025));
+				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(start + slice * (2050 - 2042));
+			});
+		});
+	});
 });
