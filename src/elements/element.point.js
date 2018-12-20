@@ -4,17 +4,11 @@ var defaults = require('../core/core.defaults');
 var Element = require('../core/core.element');
 var helpers = require('../helpers/index');
 
-var valueOrDefault = helpers.valueOrDefault;
-
-var defaultColor = defaults.global.defaultColor;
-
 defaults._set('global', {
 	elements: {
 		point: {
 			radius: 3,
 			pointStyle: 'circle',
-			backgroundColor: defaultColor,
-			borderColor: defaultColor,
 			borderWidth: 1,
 			// Hover
 			hitRadius: 1,
@@ -75,6 +69,7 @@ module.exports = Element.extend({
 		var y = vm.y;
 		var globalDefaults = defaults.global;
 		var defaultColor = globalDefaults.defaultColor; // eslint-disable-line no-shadow
+		var valueOrDefault = helpers.valueOrDefault;
 
 		if (vm.skip) {
 			return;
@@ -82,9 +77,9 @@ module.exports = Element.extend({
 
 		// Clipping for Points.
 		if (chartArea === undefined || helpers.canvas._isPointInArea(vm, chartArea)) {
-			ctx.strokeStyle = vm.borderColor || defaultColor;
+			ctx.strokeStyle = valueOrDefault(vm.borderColor, defaultColor);
 			ctx.lineWidth = valueOrDefault(vm.borderWidth, globalDefaults.elements.point.borderWidth);
-			ctx.fillStyle = vm.backgroundColor || defaultColor;
+			ctx.fillStyle = valueOrDefault(vm.backgroundColor, defaultColor);
 			helpers.canvas.drawPoint(ctx, pointStyle, radius, x, y, rotation);
 		}
 	}

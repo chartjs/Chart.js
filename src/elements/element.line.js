@@ -4,17 +4,11 @@ var defaults = require('../core/core.defaults');
 var Element = require('../core/core.element');
 var helpers = require('../helpers/index');
 
-var valueOrDefault = helpers.valueOrDefault;
-
-var defaultColor = defaults.global.defaultColor;
-
 defaults._set('global', {
 	elements: {
 		line: {
 			tension: 0.4,
-			backgroundColor: defaultColor,
 			borderWidth: 3,
-			borderColor: defaultColor,
 			borderCapStyle: 'butt',
 			borderDash: [],
 			borderDashOffset: 0.0,
@@ -36,6 +30,7 @@ module.exports = Element.extend({
 		var globalOptionLineElements = globalDefaults.elements.line;
 		var lastDrawnIndex = -1;
 		var index, current, previous, currentVM;
+		var valueOrDefault = helpers.valueOrDefault;
 
 		// If we are looping, adding the first point again
 		if (me._loop && points.length) {
@@ -45,7 +40,7 @@ module.exports = Element.extend({
 		ctx.save();
 
 		// Stroke Line Options
-		ctx.lineCap = vm.borderCapStyle || globalOptionLineElements.borderCapStyle;
+		ctx.lineCap = valueOrDefault(vm.borderCapStyle, globalOptionLineElements.borderCapStyle);
 
 		// IE 9 and 10 do not support line dash
 		if (ctx.setLineDash) {
@@ -53,9 +48,9 @@ module.exports = Element.extend({
 		}
 
 		ctx.lineDashOffset = valueOrDefault(vm.borderDashOffset, globalOptionLineElements.borderDashOffset);
-		ctx.lineJoin = vm.borderJoinStyle || globalOptionLineElements.borderJoinStyle;
+		ctx.lineJoin = valueOrDefault(vm.borderJoinStyle, globalOptionLineElements.borderJoinStyle);
 		ctx.lineWidth = valueOrDefault(vm.borderWidth, globalOptionLineElements.borderWidth);
-		ctx.strokeStyle = vm.borderColor || globalDefaults.defaultColor;
+		ctx.strokeStyle = valueOrDefault(vm.borderColor, globalDefaults.defaultColor);
 
 		// Stroke Line
 		ctx.beginPath();

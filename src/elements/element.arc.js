@@ -7,7 +7,6 @@ var helpers = require('../helpers/index');
 defaults._set('global', {
 	elements: {
 		arc: {
-			backgroundColor: defaults.global.defaultColor,
 			borderColor: '#fff',
 			borderWidth: 2,
 			borderAlign: 'center'
@@ -89,6 +88,9 @@ module.exports = Element.extend({
 		var pixelMargin = (vm.borderAlign === 'inner') ? 0.33 : 0;
 		var angleMargin;
 
+		var defaultColor = defaults.global.defaultColor;
+		var valueOrDefault = helpers.valueOrDefault;
+
 		ctx.save();
 
 		ctx.beginPath();
@@ -96,7 +98,7 @@ module.exports = Element.extend({
 		ctx.arc(vm.x, vm.y, vm.innerRadius, eA, sA, true);
 		ctx.closePath();
 
-		ctx.fillStyle = vm.backgroundColor;
+		ctx.fillStyle = valueOrDefault(vm.backgroundColor, defaultColor);
 		ctx.fill();
 
 		if (vm.borderWidth) {
@@ -127,7 +129,7 @@ module.exports = Element.extend({
 				ctx.lineJoin = 'bevel';
 			}
 
-			ctx.strokeStyle = vm.borderColor;
+			ctx.strokeStyle = valueOrDefault(vm.borderColor, defaultColor);
 			ctx.stroke();
 		}
 
