@@ -353,13 +353,13 @@ var Legend = Element.extend({
 				// Set the ctx for the box
 				ctx.save();
 
+				var lineWidth = valueOrDefault(legendItem.lineWidth, lineDefault.borderWidth);
 				ctx.fillStyle = valueOrDefault(legendItem.fillStyle, defaultColor);
 				ctx.lineCap = valueOrDefault(legendItem.lineCap, lineDefault.borderCapStyle);
 				ctx.lineDashOffset = valueOrDefault(legendItem.lineDashOffset, lineDefault.borderDashOffset);
 				ctx.lineJoin = valueOrDefault(legendItem.lineJoin, lineDefault.borderJoinStyle);
-				ctx.lineWidth = valueOrDefault(legendItem.lineWidth, lineDefault.borderWidth);
+				ctx.lineWidth = lineWidth;
 				ctx.strokeStyle = valueOrDefault(legendItem.strokeStyle, defaultColor);
-				var isLineWidthZero = (valueOrDefault(legendItem.lineWidth, lineDefault.borderWidth) === 0);
 
 				if (ctx.setLineDash) {
 					// IE 9 and 10 do not support line dash
@@ -378,7 +378,7 @@ var Legend = Element.extend({
 					helpers.canvas.drawPoint(ctx, legendItem.pointStyle, radius, centerX, centerY);
 				} else {
 					// Draw box as legend symbol
-					if (!isLineWidthZero) {
+					if (lineWidth !== 0) {
 						ctx.strokeRect(x, y, boxWidth, fontSize);
 					}
 					ctx.fillRect(x, y, boxWidth, fontSize);
