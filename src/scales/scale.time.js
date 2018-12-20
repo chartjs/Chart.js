@@ -383,7 +383,7 @@ function computeOffsets(table, ticks, min, max, options) {
 		}
 	}
 
-	return options.ticks.reverse ? {start: -end, end: -start} : {start: start, end: end};
+	return options.ticks.reverse ? {start: end, end: start} : {start: start, end: end};
 }
 
 function ticksFromTimestamps(values, majorUnit) {
@@ -638,16 +638,16 @@ module.exports = function() {
 			me.min = min;
 			me.max = max;
 
-			if (options.ticks.reverse) {
-				ticks.reverse();
-			}
-
 			// PRIVATE
 			me._unit = timeOpts.unit || determineUnitForFormatting(ticks, timeOpts.minUnit, me.min, me.max);
 			me._majorUnit = determineMajorUnit(me._unit);
 			me._table = buildLookupTable(me._timestamps.data, min, max, options.distribution);
 			me._offsets = computeOffsets(me._table, ticks, min, max, options);
 			me._labelFormat = determineLabelFormat(me._timestamps.data, timeOpts);
+
+			if (options.ticks.reverse) {
+				ticks.reverse();
+			}
 
 			return ticksFromTimestamps(ticks, me._majorUnit);
 		},
