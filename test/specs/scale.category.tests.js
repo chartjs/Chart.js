@@ -340,8 +340,8 @@ describe('Category scale tests', function() {
 		expect(yScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(77);
 		expect(yScale.getValueForPixel(77)).toBe(0);
 
-		expect(yScale.getPixelForValue(0, 4, 0)).toBeCloseToPixel(439);
-		expect(yScale.getValueForPixel(439)).toBe(4);
+		expect(yScale.getPixelForValue(0, 4, 0)).toBeCloseToPixel(437);
+		expect(yScale.getValueForPixel(437)).toBe(4);
 	});
 
 	it ('should get the correct pixel for a value when vertical and zoomed', function() {
@@ -385,6 +385,6 @@ describe('Category scale tests', function() {
 		chart.update();
 
 		expect(yScale.getPixelForValue(0, 1, 0)).toBeCloseToPixel(107);
-		expect(yScale.getPixelForValue(0, 3, 0)).toBeCloseToPixel(409);
+		expect(yScale.getPixelForValue(0, 3, 0)).toBeCloseToPixel(407);
 	});
 });

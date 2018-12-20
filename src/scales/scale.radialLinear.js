@@ -7,8 +7,6 @@ var Ticks = require('../core/core.ticks');
 
 module.exports = function(Chart) {
 
-	var globalDefaults = defaults.global;
-
 	var defaultConfig = {
 		display: true,
 
@@ -64,42 +62,26 @@ module.exports = function(Chart) {
 		return opts.angleLines.display || opts.pointLabels.display ? scale.chart.data.labels.length : 0;
 	}
 
-	function getPointLabelFontOptions(scale) {
-		var pointLabelOptions = scale.options.pointLabels;
-		var fontSize = helpers.valueOrDefault(pointLabelOptions.fontSize, globalDefaults.defaultFontSize);
-		var fontStyle = helpers.valueOrDefault(pointLabelOptions.fontStyle, globalDefaults.defaultFontStyle);
-		var fontFamily = helpers.valueOrDefault(pointLabelOptions.fontFamily, globalDefaults.defaultFontFamily);
-		var font = helpers.fontString(fontSize, fontStyle, fontFamily);
-
-		return {
-			size: fontSize,
-			style: fontStyle,
-			family: fontFamily,
-			font: font
-		};
-	}
-
-	function getTickFontSize(scale) {
-		var opts = scale.options;
+	function getTickBackdropHeight(opts) {
 		var tickOpts = opts.ticks;
 
 		if (tickOpts.display && opts.display) {
-			return helpers.valueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize);
+			return helpers.valueOrDefault(tickOpts.fontSize, defaults.global.defaultFontSize) + tickOpts.backdropPaddingY * 2;
 		}
 		return 0;
 	}
 
-	function measureLabelSize(ctx, fontSize, label) {
+	function measureLabelSize(ctx, lineHeight, label) {
 		if (helpers.isArray(label)) {
 			return {
 				w: helpers.longestText(ctx, ctx.font, label),
-				h: (label.length * fontSize) + ((label.length - 1) * 1.5 * fontSize)
+				h: label.length * lineHeight
 			};
 		}
 
 		return {
 			w: ctx.measureText(label).width,
-			h: fontSize
+			h: lineHeight
 		};
 	}
 
@@ -111,14 +93,14 @@ module.exports = function(Chart) {
 			};
 		} else if (angle < min || angle > max) {
 			return {
-				start: pos - size - 5,
+				start: pos - size,
 				end: pos
 			};
 		}
 
 		return {
 			start: pos,
-			end: pos + size + 5
+			end: pos + size
 		};
 	}
 
@@ -154,28 +136,26 @@ module.exports = function(Chart) {
 		 * https://dl.dropboxusercontent.com/u/34601363/yeahscience.gif
 		 */
 
-		var plFont = getPointLabelFontOptions(scale);
-		var paddingTop = getTickFontSize(scale) / 2;
+		var plFont = helpers.options._parseFont(scale.options.pointLabels);
 
 		// Get maximum radius of the polygon. Either half the height (minus the text width) or half the width.
 		// Use this to calculate the offset + change. - Make sure L/R protrusion is at least 0 to stop issues with centre points
-		var largestPossibleRadius = Math.min(scale.height / 2, scale.width / 2);
 		var furthestLimits = {
-			r: scale.width,
 			l: 0,
-			t: scale.height,
-			b: 0
+			r: scale.width,
+			t: 0,
+			b: scale.height
 		};
 		var furthestAngles = {};
 		var i, textSize, pointPosition;
 
-		scale.ctx.font = plFont.font;
+		scale.ctx.font = plFont.string;
 		scale._pointLabelSizes = [];
 
 		var valueCount = getValueCount(scale);
 		for (i = 0; i < valueCount; i++) {
-			pointPosition = scale.getPointPosition(i, largestPossibleRadius);
-			textSize = measureLabelSize(scale.ctx, plFont.size, scale.pointLabels[i] || '');
+			pointPosition = scale.getPointPosition(i, scale.drawingArea + 5);
+			textSize = measureLabelSize(scale.ctx, plFont.lineHeight, scale.pointLabels[i] || '');
 			scale._pointLabelSizes[i] = textSize;
 
 			// Add quarter circle to make degree 0 mean top of circle
@@ -205,22 +185,7 @@ module.exports = function(Chart) {
 			}
 		}
 
-		if (paddingTop && -paddingTop < furthestLimits.t) {
-			furthestLimits.t = -paddingTop;
-			furthestAngles.t = 0;
-		}
-
-		scale.setReductions(largestPossibleRadius, furthestLimits, furthestAngles);
-	}
-
-	/**
-	 * Helper function to fit a radial linear scale with no point labels
-	 */
-	function fit(scale) {
-		var paddingTop = getTickFontSize(scale) / 2;
-		var largestPossibleRadius = Math.min((scale.height - paddingTop) / 2, scale.width / 2);
-		scale.drawingArea = Math.floor(largestPossibleRadius);
-		scale.setCenterPoint(0, 0, paddingTop, 0);
+		scale.setReductions(scale.drawingArea, furthestLimits, furthestAngles);
 	}
 
 	function getTextAlignForAngle(angle) {
@@ -233,17 +198,17 @@ module.exports = function(Chart) {
 		return 'right';
 	}
 
-	function fillText(ctx, text, position, fontSize) {
-		if (helpers.isArray(text)) {
-			var y = position.y;
-			var spacing = 1.5 * fontSize;
+	function fillText(ctx, text, position, lineHeight) {
+		var y = position.y + lineHeight / 2;
+		var i, ilen;
 
-			for (var i = 0; i < text.length; ++i) {
+		if (helpers.isArray(text)) {
+			for (i = 0, ilen = text.length; i < ilen; ++i) {
 				ctx.fillText(text[i], position.x, y);
-				y += spacing;
+				y += lineHeight;
 			}
 		} else {
-			ctx.fillText(text, position.x, position.y);
+			ctx.fillText(text, position.x, y);
 		}
 	}
 
@@ -263,6 +228,7 @@ module.exports = function(Chart) {
 		var pointLabelOpts = opts.pointLabels;
 		var lineWidth = helpers.valueOrDefault(angleLineOpts.lineWidth, gridLineOpts.lineWidth);
 		var lineColor = helpers.valueOrDefault(angleLineOpts.color, gridLineOpts.color);
+		var tickBackdropHeight = getTickBackdropHeight(opts);
 
 		ctx.save();
 		ctx.lineWidth = lineWidth;
@@ -275,10 +241,10 @@ module.exports = function(Chart) {
 		var outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
 
 		// Point Label Font
-		var plFont = getPointLabelFontOptions(scale);
+		var plFont = helpers.options._parseFont(pointLabelOpts);
 
-		ctx.font = plFont.font;
-		ctx.textBaseline = 'top';
+		ctx.font = plFont.string;
+		ctx.textBaseline = 'middle';
 
 		for (var i = getValueCount(scale) - 1; i >= 0; i--) {
 			if (angleLineOpts.display && lineWidth && lineColor) {
@@ -290,18 +256,19 @@ module.exports = function(Chart) {
 			}
 
 			if (pointLabelOpts.display) {
-				// Extra 3px out for some label spacing
-				var pointLabelPosition = scale.getPointPosition(i, outerDistance + 5);
+				// Extra pixels out for some label spacing
+				var extra = (i === 0 ? tickBackdropHeight / 2 : 0);
+				var pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + 5);
 
 				// Keep this in loop since we may support array properties here
-				var pointLabelFontColor = helpers.valueAtIndexOrDefault(pointLabelOpts.fontColor, i, globalDefaults.defaultFontColor);
+				var pointLabelFontColor = helpers.valueAtIndexOrDefault(pointLabelOpts.fontColor, i, defaults.global.defaultFontColor);
 				ctx.fillStyle = pointLabelFontColor;
 
 				var angleRadians = scale.getIndexAngle(i);
 				var angle = helpers.toDegrees(angleRadians);
 				ctx.textAlign = getTextAlignForAngle(angle);
 				adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition);
-				fillText(ctx, scale.pointLabels[i] || '', pointLabelPosition, plFont.size);
+				fillText(ctx, scale.pointLabels[i] || '', pointLabelPosition, plFont.lineHeight);
 			}
 		}
 		ctx.restore();
@@ -353,17 +320,14 @@ module.exports = function(Chart) {
 	var LinearRadialScale = Chart.LinearScaleBase.extend({
 		setDimensions: function() {
 			var me = this;
-			var opts = me.options;
-			var tickOpts = opts.ticks;
+
 			// Set the unconstrained dimension before label rotation
 			me.width = me.maxWidth;
 			me.height = me.maxHeight;
+			me.paddingTop = getTickBackdropHeight(me.options) / 2;
 			me.xCenter = Math.floor(me.width / 2);
-			me.yCenter = Math.floor(me.height / 2);
-
-			var minSize = helpers.min([me.height, me.width]);
-			var tickFontSize = helpers.valueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize);
-			me.drawingArea = opts.display ? (minSize / 2) - (tickFontSize / 2 + tickOpts.backdropPaddingY) : (minSize / 2);
+			me.yCenter = Math.floor((me.height - me.paddingTop) / 2);
+			me.drawingArea = Math.min(me.height - me.paddingTop, me.width) / 2;
 		},
 		determineDataLimits: function() {
 			var me = this;
@@ -394,9 +358,10 @@ module.exports = function(Chart) {
 			me.handleTickRangeOptions();
 		},
 		getTickLimit: function() {
-			var tickOpts = this.options.ticks;
-			var tickFontSize = helpers.valueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize);
-			return Math.min(tickOpts.maxTicksLimit ? tickOpts.maxTicksLimit : 11, Math.ceil(this.drawingArea / (1.5 * tickFontSize)));
+			var opts = this.options;
+			var tickOpts = opts.ticks;
+			var tickBackdropHeight = getTickBackdropHeight(opts);
+			return Math.min(tickOpts.maxTicksLimit ? tickOpts.maxTicksLimit : 11, Math.ceil(this.drawingArea / tickBackdropHeight));
 		},
 		convertTicksToLabels: function() {
 			var me = this;
@@ -410,10 +375,13 @@ module.exports = function(Chart) {
 			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 		},
 		fit: function() {
-			if (this.options.pointLabels.display) {
-				fitWithPointLabels(this);
+			var me = this;
+			var opts = me.options;
+
+			if (opts.display && opts.pointLabels.display) {
+				fitWithPointLabels(me);
 			} else {
-				fit(this);
+				me.setCenterPoint(0, 0, 0, 0);
 			}
 		},
 		/**
@@ -425,7 +393,7 @@ module.exports = function(Chart) {
 			var radiusReductionLeft = furthestLimits.l / Math.sin(furthestAngles.l);
 			var radiusReductionRight = Math.max(furthestLimits.r - me.width, 0) / Math.sin(furthestAngles.r);
 			var radiusReductionTop = -furthestLimits.t / Math.cos(furthestAngles.t);
-			var radiusReductionBottom = -Math.max(furthestLimits.b - me.height, 0) / Math.cos(furthestAngles.b);
+			var radiusReductionBottom = -Math.max(furthestLimits.b - (me.height - me.paddingTop), 0) / Math.cos(furthestAngles.b);
 
 			radiusReductionLeft = numberOrZero(radiusReductionLeft);
 			radiusReductionRight = numberOrZero(radiusReductionRight);
@@ -442,10 +410,10 @@ module.exports = function(Chart) {
 			var maxRight = me.width - rightMovement - me.drawingArea;
 			var maxLeft = leftMovement + me.drawingArea;
 			var maxTop = topMovement + me.drawingArea;
-			var maxBottom = me.height - bottomMovement - me.drawingArea;
+			var maxBottom = (me.height - me.paddingTop) - bottomMovement - me.drawingArea;
 
 			me.xCenter = Math.floor(((maxLeft + maxRight) / 2) + me.left);
-			me.yCenter = Math.floor(((maxTop + maxBottom) / 2) + me.top);
+			me.yCenter = Math.floor(((maxTop + maxBottom) / 2) + me.top + me.paddingTop);
 		},
 
 		getIndexAngle: function(index) {
@@ -507,12 +475,7 @@ module.exports = function(Chart) {
 			if (opts.display) {
 				var ctx = me.ctx;
 				var startAngle = this.getIndexAngle(0);
-
-				// Tick Font
-				var tickFontSize = valueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize);
-				var tickFontStyle = valueOrDefault(tickOpts.fontStyle, globalDefaults.defaultFontStyle);
-				var tickFontFamily = valueOrDefault(tickOpts.fontFamily, globalDefaults.defaultFontFamily);
-				var tickLabelFont = helpers.fontString(tickFontSize, tickFontStyle, tickFontFamily);
+				var tickFont = helpers.options._parseFont(tickOpts);
 
 				if (opts.angleLines.display || opts.pointLabels.display) {
 					drawPointLabels(me);
@@ -529,8 +492,8 @@ module.exports = function(Chart) {
 						}
 
 						if (tickOpts.display) {
-							var tickFontColor = valueOrDefault(tickOpts.fontColor, globalDefaults.defaultFontColor);
-							ctx.font = tickLabelFont;
+							var tickFontColor = valueOrDefault(tickOpts.fontColor, defaults.global.defaultFontColor);
+							ctx.font = tickFont.string;
 
 							ctx.save();
 							ctx.translate(me.xCenter, me.yCenter);
@@ -541,9 +504,9 @@ module.exports = function(Chart) {
 								ctx.fillStyle = tickOpts.backdropColor;
 								ctx.fillRect(
 									-labelWidth / 2 - tickOpts.backdropPaddingX,
-									-yCenterOffset - tickFontSize / 2 - tickOpts.backdropPaddingY,
+									-yCenterOffset - tickFont.size / 2 - tickOpts.backdropPaddingY,
 									labelWidth + tickOpts.backdropPaddingX * 2,
-									tickFontSize + tickOpts.backdropPaddingY * 2
+									tickFont.size + tickOpts.backdropPaddingY * 2
 								);
 							}
 

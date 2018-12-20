@@ -761,16 +761,16 @@ describe('Chart', function() {
 			// then we will reset and see that they moved
 			expect(meta.data[0]._model.y).toBeCloseToPixel(333);
 			expect(meta.data[1]._model.y).toBeCloseToPixel(183);
-			expect(meta.data[2]._model.y).toBe(32);
-			expect(meta.data[3]._model.y).toBe(484);
+			expect(meta.data[2]._model.y).toBeCloseToPixel(32);
+			expect(meta.data[3]._model.y).toBeCloseToPixel(482);
 
 			chart.reset();
 
 			// For a line chart, the animation state is the bottom
-			expect(meta.data[0]._model.y).toBe(484);
-			expect(meta.data[1]._model.y).toBe(484);
-			expect(meta.data[2]._model.y).toBe(484);
-			expect(meta.data[3]._model.y).toBe(484);
+			expect(meta.data[0]._model.y).toBeCloseToPixel(482);
+			expect(meta.data[1]._model.y).toBeCloseToPixel(482);
+			expect(meta.data[2]._model.y).toBeCloseToPixel(482);
+			expect(meta.data[3]._model.y).toBeCloseToPixel(482);
 		});
 	});
 

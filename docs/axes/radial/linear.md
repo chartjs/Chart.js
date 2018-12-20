@@ -109,3 +109,4 @@ The following options are used to configure the point labels that are shown on t
 | `fontFamily` | `String` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family to use when rendering labels.
 | `fontSize` | `Number` | 10 | font size in pixels.
 | `fontStyle` | `String` | `'normal'` | Font style to use when rendering point labels.
+| `lineHeight` | `Number/String` | `1.2` | Height of an individual line of text (see [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height)).

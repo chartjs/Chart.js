@@ -19,6 +19,7 @@ defaults._set('global', {
 	defaultFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 	defaultFontSize: 12,
 	defaultFontStyle: 'normal',
+	defaultLineHeight: 1.2,
 	showLines: true,
 
 	// Element defaults defined in element extensions
