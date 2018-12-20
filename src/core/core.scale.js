@@ -628,8 +628,8 @@ module.exports = Element.extend({
 		var padding = optionTicks.autoSkipPadding;
 		var w = me.longestLabelWidth + padding || 0;
 
-		var tickFont = parseFontOptions(optionTicks);
-		var h = me._maxLabelLines * tickFont.size * 1.2 + padding;
+		var tickFont = helpers.options._parseFont(optionTicks);
+		var h = me._maxLabelLines * tickFont.lineHeight + padding;
 
 		// Calculate space needed for 1 tick in axis direction.
 		var tickSize = isHorizontal
