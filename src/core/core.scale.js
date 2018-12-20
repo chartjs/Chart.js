@@ -352,7 +352,7 @@ module.exports = Element.extend({
 			var cosRotation, sinRotation;
 
 			// Allow 3 pixels x2 padding either side for label readability
-			var tickWidth = Math.abs(me.getPixelForTick(1) - me.getPixelForTick(0)) - 6;
+			var tickWidth = me.getPixelForTick(1) - me.getPixelForTick(0) - 6;
 
 			// Max label rotation can be set or default to 90 - also act as a loop counter
 			while (labelWidth > tickWidth && labelRotation < tickOpts.maxRotation) {

@@ -356,19 +356,19 @@ function generate(min, max, capacity, options) {
 }
 
 /**
- * Returns the right and left offsets from edges in the form of {left, right}.
+ * Returns the end and start offsets from edges in the form of {start, end}.
  * Offsets are added when the `offset` option is true.
  */
 function computeOffsets(table, ticks, min, max, options) {
-	var left = 0;
-	var right = 0;
+	var start = 0;
+	var end = 0;
 	var upper, lower;
 
 	if (options.offset && ticks.length) {
 		if (!options.time.min) {
 			upper = ticks.length > 1 ? ticks[1] : max;
 			lower = ticks[0];
-			left = (
+			start = (
 				interpolate(table, 'time', upper, 'pos') -
 				interpolate(table, 'time', lower, 'pos')
 			) / 2;
@@ -376,14 +376,14 @@ function computeOffsets(table, ticks, min, max, options) {
 		if (!options.time.max) {
 			upper = ticks[ticks.length - 1];
 			lower = ticks.length > 1 ? ticks[ticks.length - 2] : min;
-			right = (
+			end = (
 				interpolate(table, 'time', upper, 'pos') -
 				interpolate(table, 'time', lower, 'pos')
 			) / 2;
 		}
 	}
 
-	return options.ticks.reverse ? {left: right, right: left} : {left: left, right: right};
+	return options.ticks.reverse ? {start: -end, end: -start} : {start: start, end: end};
 }
 
 function ticksFromTimestamps(values, majorUnit) {
@@ -638,6 +638,10 @@ module.exports = function() {
 			me.min = min;
 			me.max = max;
 
+			if (options.ticks.reverse) {
+				ticks.reverse();
+			}
+
 			// PRIVATE
 			me._unit = timeOpts.unit || determineUnitForFormatting(ticks, timeOpts.minUnit, me.min, me.max);
 			me._majorUnit = determineMajorUnit(me._unit);
@@ -710,7 +714,7 @@ module.exports = function() {
 			var size = me._horizontal ? me.width : me.height;
 			var start = me._horizontal ? isReverse ? me.right : me.left : isReverse ? me.bottom : me.top;
 			var pos = interpolate(me._table, 'time', time, 'pos');
-			var offset = size * (me._offsets.left + pos) / (me._offsets.left + 1 + me._offsets.right);
+			var offset = size * (me._offsets.start + pos) / (me._offsets.start + 1 + me._offsets.end);
 
 			return isReverse ? start - offset : start + offset;
 		},
@@ -743,7 +747,7 @@ module.exports = function() {
 			var me = this;
 			var size = me._horizontal ? me.width : me.height;
 			var start = me._horizontal ? me.left : me.top;
-			var pos = (size ? (pixel - start) / size : 0) * (me._offsets.left + 1 + me._offsets.left) - me._offsets.right;
+			var pos = (size ? (pixel - start) / size : 0) * (me._offsets.start + 1 + me._offsets.start) - me._offsets.end;
 			var time = interpolate(me._table, 'pos', pos, 'time');
 
 			return moment(time);
