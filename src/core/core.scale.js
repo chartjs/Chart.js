@@ -415,6 +415,9 @@ module.exports = Element.extend({
 			var lineSpace = tickFont.size * 0.5;
 			var tickPadding = me.options.ticks.padding;
 
+			// Store max number of lines used in labels for _autoSkip
+			me._maxLabelLines = tallestLabelHeightInLines;
+
 			if (isHorizontal) {
 				// A horizontal axis is more constrained by the height.
 				me.longestLabelWidth = largestTextWidth;
@@ -616,9 +619,32 @@ module.exports = Element.extend({
 		var isHorizontal = me.isHorizontal();
 		var optionTicks = me.options.ticks.minor;
 		var tickCount = ticks.length;
-		var labelRotationRadians = helpers.toRadians(me.labelRotation);
-		var cosRotation = Math.cos(labelRotationRadians);
-		var longestRotatedLabel = me.longestLabelWidth * cosRotation;
+
+		// Calculate space needed by label in axis direction.
+		var rot = helpers.toRadians(me.labelRotation);
+		var cos = Math.abs(Math.cos(rot));
+		var sin = Math.abs(Math.sin(rot));
+
+		var padding = optionTicks.autoSkipPadding;
+		var w = me.longestLabelWidth + padding || 0;
+
+		var tickFont = helpers.options._parseFont(optionTicks);
+		var h = me._maxLabelLines * tickFont.lineHeight + padding;
+
+		// Calculate space needed for 1 tick in axis direction.
+		var tickSize = isHorizontal
+			? h * cos > w * sin ? w / cos : h / sin
+			: h * sin < w * cos ? h / cos : w / sin;
+
+		// Total space needed to display all ticks. First and last ticks are
+		// drawn as their center at end of axis, so tickCount-1
+		var ticksLength = tickSize * (tickCount - 1);
+
+		// Axis length
+		var axisLength = isHorizontal
+			? me.width - (me.paddingLeft + me.paddingRight)
+			: me.height - (me.paddingTop + me.PaddingBottom);
+
 		var result = [];
 		var i, tick;
 
@@ -628,18 +654,16 @@ module.exports = Element.extend({
 			maxTicks = optionTicks.maxTicksLimit;
 		}
 
-		if (isHorizontal) {
-			skipRatio = false;
+		skipRatio = false;
 
-			if ((longestRotatedLabel + optionTicks.autoSkipPadding) * tickCount > (me.width - (me.paddingLeft + me.paddingRight))) {
-				skipRatio = 1 + Math.floor(((longestRotatedLabel + optionTicks.autoSkipPadding) * tickCount) / (me.width - (me.paddingLeft + me.paddingRight)));
-			}
+		if (ticksLength > axisLength) {
+			skipRatio = 1 + Math.floor(ticksLength / axisLength);
+		}
 
-			// if they defined a max number of optionTicks,
-			// increase skipRatio until that number is met
-			if (maxTicks && tickCount > maxTicks) {
-				skipRatio = Math.max(skipRatio, Math.floor(tickCount / maxTicks));
-			}
+		// if they defined a max number of optionTicks,
+		// increase skipRatio until that number is met
+		if (maxTicks && tickCount > maxTicks) {
+			skipRatio = Math.max(skipRatio, 1 + Math.floor(tickCount / maxTicks));
 		}
 
 		for (i = 0; i < tickCount; i++) {
