@@ -802,6 +802,17 @@ var exports = Element.extend({
 			helpers.each(bodyItem.lines, function(line) {
 				// Draw Legend-like boxes if needed
 				if (drawColorBoxes) {
+					switch (vm._bodyAlign) {
+						case 'center':
+							xLinePadding /= 2;
+							pt.x -= ctx.measureText(line).width / 2 + xLinePadding;
+							break;
+						case 'right':
+							xLinePadding = 0;
+							xAlignText(pt, vm, 'left');
+							break;
+					}
+
 					// Fill a white rect so that colours merge nicely if the opacity is < 1
 					ctx.fillStyle = vm.legendColorBackground;
 					ctx.fillRect(pt.x, pt.y, bodyFontSize, bodyFontSize);
@@ -815,6 +826,9 @@ var exports = Element.extend({
 					ctx.fillStyle = vm.labelColors[i].backgroundColor;
 					ctx.fillRect(pt.x + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
 					ctx.fillStyle = textColor;
+
+					// re-align for center / right
+					xAlignText(pt, vm, vm._bodyAlign);
 				}
 
 				fillLineOfText(line);
