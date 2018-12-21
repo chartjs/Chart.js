@@ -330,8 +330,6 @@ module.exports = DatasetController.extend({
 					ivalue = +scale.getRightValue(datasets[i].data[index]);
 					if ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0)) {
 						start += ivalue;
-					} else if (minBarLength && value === 0 && ivalue === 0) {
-						start = scale.getValueForPixel(scale.getPixelForValue(start) + minBarLength);
 					}
 				}
 			}
@@ -339,7 +337,7 @@ module.exports = DatasetController.extend({
 
 		base = scale.getPixelForValue(start);
 		head = scale.getPixelForValue(start + value);
-		size = (head - base) / 2;
+		size = head - base;
 
 		if (minBarLength !== undefined && Math.abs(size) < minBarLength) {
 			size = minBarLength;
