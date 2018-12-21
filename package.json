@@ -47,6 +47,8 @@
     "karma-jasmine": "^2.0.1",
     "karma-jasmine-html-reporter": "^1.4.0",
     "karma-rollup-preprocessor": "^6.1.1",
+    "moment": "^2.10.2",
+    "luxon": "^1.2.1",
     "merge-stream": "^1.0.1",
     "pixelmatch": "^4.0.2",
     "rollup": "^0.67.4",
@@ -58,7 +60,9 @@
     "yargs": "^12.0.5"
   },
   "dependencies": {
-    "chartjs-color": "^2.1.0",
+    "chartjs-color": "^2.1.0"
+  },
+  "peerDependencies": {
     "moment": "^2.10.2"
   }
 }

@@ -113,8 +113,11 @@
 			title: 'Line (point data)',
 			path: 'scales/time/line-point-data.html'
 		}, {
-			title: 'Time Series',
+			title: 'Time Series - Moment',
 			path: 'scales/time/financial.html'
+		}, {
+			title: 'Time Series - Luxon',
+			path: 'scales/time/financial-luxon.html'
 		}, {
 			title: 'Combo',
 			path: 'scales/time/combo.html'
