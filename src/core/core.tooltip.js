@@ -803,14 +803,16 @@ var exports = Element.extend({
 				// Draw Legend-like boxes if needed
 				if (drawColorBoxes) {
 					switch (vm._bodyAlign) {
-						case 'center':
-							xLinePadding /= 2;
-							pt.x -= ctx.measureText(line).width / 2 + xLinePadding;
-							break;
-						case 'right':
-							xLinePadding = 0;
-							xAlignText(pt, vm, 'left');
-							break;
+					case 'center':
+						xLinePadding /= 2;
+						pt.x -= ctx.measureText(line).width / 2 + xLinePadding;
+						break;
+					case 'right':
+						xLinePadding = 0;
+						xAlignText(pt, vm, 'left');
+						break;
+					default:
+						break;
 					}
 
 					// Fill a white rect so that colours merge nicely if the opacity is < 1
