@@ -37,7 +37,7 @@ function computeMinSampleSize(scale, pixels) {
 	var prev, curr, i, ilen;
 
 	for (i = 1, ilen = pixels.length; i < ilen; ++i) {
-		min = Math.min(min, pixels[i] - pixels[i - 1]);
+		min = Math.min(min, Math.abs(pixels[i] - pixels[i - 1]));
 	}
 
 	for (i = 0, ilen = ticks.length; i < ilen; ++i) {
@@ -95,8 +95,8 @@ function computeFlexCategoryTraits(index, ruler, options) {
 
 	if (prev === null) {
 		// first data: its size is double based on the next point or,
-		// if it's also the last data, we use the scale end extremity.
-		prev = curr - (next === null ? ruler.end - curr : next - curr);
+		// if it's also the last data, we use the scale size.
+		prev = curr - (next === null ? ruler.end - ruler.start : next - curr);
 	}
 
 	if (next === null) {
@@ -104,8 +104,8 @@ function computeFlexCategoryTraits(index, ruler, options) {
 		next = curr + curr - prev;
 	}
 
-	start = curr - ((curr - prev) / 2) * percent;
-	size = ((next - prev) / 2) * percent;
+	start = curr - (curr - Math.min(prev, next)) / 2 * percent;
+	size = Math.abs(next - prev) / 2 * percent;
 
 	return {
 		chunk: size / ruler.stackCount,

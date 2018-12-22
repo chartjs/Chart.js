@@ -1320,7 +1320,7 @@ describe('Time scale tests', function() {
 
 	describe('when ticks.reverse', function() {
 		describe('is "true"', function() {
-			it ('should reverse the labels', function() {
+			beforeEach(function() {
 				this.chart = window.acquireChart({
 					type: 'line',
 					data: {
@@ -1346,9 +1346,28 @@ describe('Time scale tests', function() {
 						}
 					}
 				});
+			});
+
+			it ('should reverse the labels', function() {
 				var scale = this.chart.scales.x;
 				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(scale.left + scale.width);
 				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(scale.left);
+			});
+
+			it ('should reverse the bars and add offsets if offset is true', function() {
+				var chart = this.chart;
+				var scale = chart.scales.x;
+				var options = chart.options.scales.xAxes[0];
+
+				options.offset = true;
+				chart.update();
+
+				var numTicks = scale.ticks.length;
+				var firstTickInterval = scale.getPixelForTick(1) - scale.getPixelForTick(0);
+				var lastTickInterval = scale.getPixelForTick(numTicks - 1) - scale.getPixelForTick(numTicks - 2);
+
+				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(scale.left + scale.width - lastTickInterval / 2);
+				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(scale.left + firstTickInterval / 2);
 			});
 		});
 	});
