@@ -172,6 +172,13 @@ var exports = {
 		ctx.stroke();
 	},
 
+	isPointInArea: function(point, area) {
+		var epsilon = 1e-6; // 1e-6 is margin in pixels for Accumulated error.
+
+		return point.x > area.left - epsilon && point.x < area.right + epsilon &&
+			point.y > area.top - epsilon && point.y < area.bottom + epsilon;
+	},
+
 	clipArea: function(ctx, area) {
 		ctx.save();
 		ctx.beginPath();

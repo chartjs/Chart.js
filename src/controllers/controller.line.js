@@ -281,10 +281,16 @@ module.exports = DatasetController.extend({
 		if (me.chart.options.elements.line.capBezierPoints) {
 			for (i = 0, ilen = points.length; i < ilen; ++i) {
 				model = points[i]._model;
-				model.controlPointPreviousX = capControlPoint(model.controlPointPreviousX, area.left, area.right);
-				model.controlPointPreviousY = capControlPoint(model.controlPointPreviousY, area.top, area.bottom);
-				model.controlPointNextX = capControlPoint(model.controlPointNextX, area.left, area.right);
-				model.controlPointNextY = capControlPoint(model.controlPointNextY, area.top, area.bottom);
+				if (helpers.canvas.isPointInArea(model, area)) {
+					if (i > 0 && helpers.canvas.isPointInArea(points[i - 1]._model, area)) {
+						model.controlPointPreviousX = capControlPoint(model.controlPointPreviousX, area.left, area.right);
+						model.controlPointPreviousY = capControlPoint(model.controlPointPreviousY, area.top, area.bottom);
+					}
+					if (i < points.length - 1 && helpers.canvas.isPointInArea(points[i + 1]._model, area)) {
+						model.controlPointNextX = capControlPoint(model.controlPointNextX, area.left, area.right);
+						model.controlPointNextY = capControlPoint(model.controlPointNextY, area.top, area.bottom);
+					}
+				}
 			}
 		}
 	},
