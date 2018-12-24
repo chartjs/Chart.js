@@ -774,13 +774,16 @@ var exports = Element.extend({
 		var bodyFontSize = vm.bodyFontSize;
 		var bodySpacing = vm.bodySpacing;
 		var body = vm.body;
+		var drawColorBoxes = vm.displayColors;
+		var textColor, textWidth;
+		var xLinePadding = 0;
+		var textX = pt.x;
 
 		ctx.textAlign = vm._bodyAlign;
 		ctx.textBaseline = 'top';
 		ctx.font = helpers.fontString(bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
 
 		// Before Body
-		var xLinePadding = 0;
 		var fillLineOfText = function(line) {
 			ctx.fillText(line, pt.x + xLinePadding, pt.y);
 			pt.y += bodyFontSize + bodySpacing;
@@ -790,28 +793,30 @@ var exports = Element.extend({
 		ctx.fillStyle = vm.bodyFontColor;
 		helpers.each(vm.beforeBody, fillLineOfText);
 
-		var drawColorBoxes = vm.displayColors;
-		xLinePadding = drawColorBoxes ? (bodyFontSize + 2) : 0;
+		xLinePadding = drawColorBoxes && vm._bodyAlign !== 'right'
+			? vm._bodyAlign === 'center' ? (bodyFontSize / 2 + 1) : (bodyFontSize + 2)
+			: 0;
 
 		// Draw body lines now
 		helpers.each(body, function(bodyItem, i) {
-			var textColor = vm.labelTextColors[i];
+			pt.x = textX;
+			textColor = vm.labelTextColors[i];
 			ctx.fillStyle = textColor;
 			helpers.each(bodyItem.before, fillLineOfText);
 
 			helpers.each(bodyItem.lines, function(line) {
 				// Draw Legend-like boxes if needed
 				if (drawColorBoxes) {
+					textWidth = ctx.measureText(line).width;
 					switch (vm._bodyAlign) {
 					case 'center':
-						xLinePadding /= 2;
-						pt.x -= ctx.measureText(line).width / 2 + xLinePadding;
+						pt.x = textX - textWidth / 2 - xLinePadding;
 						break;
 					case 'right':
-						xLinePadding = 0;
-						xAlignText(pt, vm, 'left');
+						pt.x = textX - textWidth - bodyFontSize - 2;
 						break;
 					default:
+						pt.x = textX;
 						break;
 					}
 
@@ -829,8 +834,7 @@ var exports = Element.extend({
 					ctx.fillRect(pt.x + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
 					ctx.fillStyle = textColor;
 
-					// re-align for center / right
-					xAlignText(pt, vm, vm._bodyAlign);
+					pt.x = textX;
 				}
 
 				fillLineOfText(line);
