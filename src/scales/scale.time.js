@@ -531,7 +531,7 @@ module.exports = function() {
 			var timestamps = [];
 			var datasets = [];
 			var labels = [];
-			var i, j, k, ilen, jlen, data, timestamp;
+			var i, j, ilen, jlen, data, timestamp;
 			var dataLabels = chart.data.labels || [];
 
 			// Convert labels to timestamps
@@ -554,8 +554,8 @@ module.exports = function() {
 							datasets[i][j] = timestamp;
 						}
 					} else {
-						for (k = 0; k < labels.length; ++k) {
-							timestamps.push(labels[k]);
+						for (j = 0; j < labels.length; ++j) {
+							timestamps.push(labels[j]);
 						}
 						datasets[i] = labels.slice(0);
 					}
