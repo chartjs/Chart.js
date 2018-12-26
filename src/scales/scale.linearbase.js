@@ -18,13 +18,30 @@ function generateTicks(generationOptions, dataRange) {
 	var stepSize = generationOptions.stepSize;
 	var min = generationOptions.min;
 	var max = generationOptions.max;
-	var spacing, precision, factor, niceRange, niceMin, niceMax, numSpaces;
+	var spacing, precision, factor, niceMin, niceMax, numSpaces, maxNumSpaces;
 
 	if (stepSize && stepSize > 0) {
 		spacing = stepSize;
+		if (generationOptions.maxTicksLimit) {
+			maxNumSpaces = generationOptions.maxTicksLimit - 1;
+			// spacing is set to stepSize multiplied by a nice number of
+			// Math.ceil((max - min) / maxNumSpaces / stepSize) = num of steps that should be grouped
+			spacing *= helpers.niceNum(Math.ceil((dataRange.max - dataRange.min) / maxNumSpaces / stepSize));
+			numSpaces = Math.ceil(dataRange.max / spacing) - Math.floor(dataRange.min / spacing);
+			if (numSpaces > maxNumSpaces) {
+				// If the calculated num of spaces exceeds maxNumSpaces, recalculate it
+				spacing = helpers.niceNum(Math.ceil(numSpaces * spacing / maxNumSpaces / stepSize)) * stepSize;
+			}
+		}
 	} else {
-		niceRange = helpers.niceNum(dataRange.max - dataRange.min, false);
-		spacing = helpers.niceNum(niceRange / (generationOptions.maxTicks - 1), true);
+		maxNumSpaces = generationOptions.maxTicks - 1;
+		// spacing is set to a nice number of (max - min) / maxNumSpaces
+		spacing = helpers.niceNum((dataRange.max - dataRange.min) / maxNumSpaces);
+		numSpaces = Math.ceil(dataRange.max / spacing) - Math.floor(dataRange.min / spacing);
+		if (numSpaces > maxNumSpaces) {
+			// If the calculated num of spaces exceeds maxNumSpaces, recalculate it
+			spacing = helpers.niceNum(numSpaces * spacing / maxNumSpaces);
+		}
 
 		precision = generationOptions.precision;
 		if (!helpers.isNullOrUndef(precision)) {
@@ -155,7 +172,7 @@ module.exports = function(Chart) {
 			var tickOpts = opts.ticks;
 
 			// Figure out what the max number of ticks we can support it is based on the size of
-			// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
+			// the axis area. For now, we say that the minimum tick spacing in pixels must be 40
 			// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on
 			// the graph. Make sure we always have at least 2 ticks
 			var maxTicks = me.getTickLimit();
@@ -163,6 +180,7 @@ module.exports = function(Chart) {
 
 			var numericGeneratorOptions = {
 				maxTicks: maxTicks,
+				maxTicksLimit: tickOpts.maxTicksLimit,
 				min: tickOpts.min,
 				max: tickOpts.max,
 				precision: tickOpts.precision,
