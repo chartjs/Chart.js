@@ -773,13 +773,15 @@ var exports = Element.extend({
 	drawBody: function(pt, vm, ctx) {
 		var bodyFontSize = vm.bodyFontSize;
 		var bodySpacing = vm.bodySpacing;
+		var bodyAlign = vm._bodyAlign;
 		var body = vm.body;
 		var drawColorBoxes = vm.displayColors;
+		var labelColors = vm.labelColors;
 		var textColor, textWidth;
 		var xLinePadding = 0;
 		var textX = pt.x;
 
-		ctx.textAlign = vm._bodyAlign;
+		ctx.textAlign = bodyAlign;
 		ctx.textBaseline = 'top';
 		ctx.font = helpers.fontString(bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
 
@@ -793,8 +795,8 @@ var exports = Element.extend({
 		ctx.fillStyle = vm.bodyFontColor;
 		helpers.each(vm.beforeBody, fillLineOfText);
 
-		xLinePadding = drawColorBoxes && vm._bodyAlign !== 'right'
-			? vm._bodyAlign === 'center' ? (bodyFontSize / 2 + 1) : (bodyFontSize + 2)
+		xLinePadding = drawColorBoxes && bodyAlign !== 'right'
+			? bodyAlign === 'center' ? (bodyFontSize / 2 + 1) : (bodyFontSize + 2)
 			: 0;
 
 		// Draw body lines now
@@ -808,7 +810,7 @@ var exports = Element.extend({
 				// Draw Legend-like boxes if needed
 				if (drawColorBoxes) {
 					textWidth = ctx.measureText(line).width;
-					switch (vm._bodyAlign) {
+					switch (bodyAlign) {
 					case 'center':
 						pt.x = textX - textWidth / 2 - xLinePadding;
 						break;
@@ -826,11 +828,11 @@ var exports = Element.extend({
 
 					// Border
 					ctx.lineWidth = 1;
-					ctx.strokeStyle = vm.labelColors[i].borderColor;
+					ctx.strokeStyle = labelColors[i].borderColor;
 					ctx.strokeRect(pt.x, pt.y, bodyFontSize, bodyFontSize);
 
 					// Inner square
-					ctx.fillStyle = vm.labelColors[i].backgroundColor;
+					ctx.fillStyle = labelColors[i].backgroundColor;
 					ctx.fillRect(pt.x + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
 					ctx.fillStyle = textColor;
 
