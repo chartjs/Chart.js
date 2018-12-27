@@ -465,9 +465,9 @@ function getBackgroundPoint(vm, size, alignment, chart) {
 
 /**
  * Align pt.x to match given align (and using xPadding)
- * @param {object} pt - point to align {x}
- * @param {object} vm - rectangle text should be aligned in (x, y, width, height, xPadding)
- * @param {string} align - left, center, right
+ * @param {Object} pt - point to align {x}
+ * @param {Object} vm - rectangle text should be aligned in {x, y, width, height, xPadding}
+ * @param {String} align - left, center or right
  */
 function xAlignText(pt, vm, align) {
 	switch (align) {
