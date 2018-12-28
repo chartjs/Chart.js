@@ -358,10 +358,23 @@ module.exports = function(Chart) {
 			me.handleTickRangeOptions();
 		},
 		getTickLimit: function() {
-			var opts = this.options;
+			var me = this;
+			var opts = me.options;
 			var tickOpts = opts.ticks;
-			var tickBackdropHeight = getTickBackdropHeight(opts);
-			return Math.min(tickOpts.maxTicksLimit ? tickOpts.maxTicksLimit : 11, Math.ceil(this.drawingArea / tickBackdropHeight));
+			var stepSize = tickOpts.stepSize;
+			var maxTicksLimit = tickOpts.maxTicksLimit;
+			var maxTicks;
+
+			if (stepSize > 0) {
+				maxTicks = Math.ceil(me.max / stepSize) - Math.floor(me.min / stepSize) + 1;
+			} else {
+				maxTicks = Math.ceil(me.drawingArea / getTickBackdropHeight(opts));
+			}
+			if (maxTicksLimit || !(stepSize > 0)) {
+				maxTicks = Math.min(maxTicksLimit || 11, maxTicks);
+			}
+
+			return maxTicks;
 		},
 		convertTicksToLabels: function() {
 			var me = this;

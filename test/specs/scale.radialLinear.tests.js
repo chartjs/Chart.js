@@ -311,6 +311,12 @@ describe('Test the radial linear scale', function() {
 		chart.update();
 
 		expect(chart.scale.ticks).toEqual(['0.5', '1.0', '1.5', '2.0', '2.5']);
+
+		chart.options.scale.ticks.min = 0.3;
+		chart.options.scale.ticks.max = 2.8;
+		chart.update();
+
+		expect(chart.scale.ticks).toEqual(['0.3', '0.5', '1.0', '1.5', '2.0', '2.5', '2.8']);
 	});
 
 	it('Should build labels using the user supplied callback', function() {

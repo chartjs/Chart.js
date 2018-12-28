@@ -570,7 +570,7 @@ describe('Linear Scale', function() {
 		expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
 		expect(chart.scales.yScale0.min).toBe(1);
 		expect(chart.scales.yScale0.max).toBe(11);
-		expect(chart.scales.yScale0.ticks).toEqual(['11', '9', '7', '5', '3', '1']);
+		expect(chart.scales.yScale0.ticks).toEqual(['11', '10', '8', '6', '4', '2', '1']);
 	});
 
 	it('Should create decimal steps if stepSize is a decimal number', function() {
@@ -788,6 +788,12 @@ describe('Linear Scale', function() {
 		chart.update();
 
 		expect(chart.scales.yScale.ticks).toEqual(['2.5', '2.0', '1.5', '1.0', '0.5']);
+
+		chart.options.scales.yAxes[0].ticks.min = 0.3;
+		chart.options.scales.yAxes[0].ticks.max = 2.8;
+		chart.update();
+
+		expect(chart.scales.yScale.ticks).toEqual(['2.8', '2.5', '2.0', '1.5', '1.0', '0.5', '0.3']);
 	});
 
 	it('Should build labels using the user supplied callback', function() {

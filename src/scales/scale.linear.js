@@ -1,6 +1,5 @@
 'use strict';
 
-var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 var scaleService = require('../core/core.scaleService');
 var Ticks = require('../core/core.ticks');
@@ -134,16 +133,22 @@ module.exports = function(Chart) {
 			this.handleTickRangeOptions();
 		},
 		getTickLimit: function() {
-			var maxTicks;
 			var me = this;
 			var tickOpts = me.options.ticks;
+			var stepSize = tickOpts.stepSize;
+			var maxTicksLimit = tickOpts.maxTicksLimit;
+			var maxTicks, tickFont;
 
-			if (me.isHorizontal()) {
-				maxTicks = Math.min(tickOpts.maxTicksLimit ? tickOpts.maxTicksLimit : 11, Math.ceil(me.width / 40));
+			if (stepSize > 0) {
+				maxTicks = Math.ceil(me.max / stepSize) - Math.floor(me.min / stepSize) + 1;
+			} else if (me.isHorizontal()) {
+				maxTicks = Math.ceil(me.width / 40);
 			} else {
-				// The factor of 2 used to scale the font size has been experimentally determined.
-				var tickFontSize = helpers.valueOrDefault(tickOpts.fontSize, defaults.global.defaultFontSize);
-				maxTicks = Math.min(tickOpts.maxTicksLimit ? tickOpts.maxTicksLimit : 11, Math.ceil(me.height / (1.5 * tickFontSize)));
+				tickFont = helpers.options._parseFont(tickOpts);
+				maxTicks = Math.ceil(me.height / tickFont.lineHeight);
+			}
+			if (maxTicksLimit || !(stepSize > 0)) {
+				maxTicks = Math.min(maxTicksLimit || 11, maxTicks);
 			}
 
 			return maxTicks;
