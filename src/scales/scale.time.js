@@ -554,7 +554,7 @@ module.exports = function() {
 							datasets[i][j] = timestamp;
 						}
 					} else {
-						for (j = 0; j < labels.length; ++j) {
+						for (j = 0, jlen = labels.length; j < jlen; ++j) {
 							timestamps.push(labels[j]);
 						}
 						datasets[i] = labels.slice(0);
