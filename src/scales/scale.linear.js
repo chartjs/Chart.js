@@ -132,26 +132,16 @@ module.exports = function(Chart) {
 			// Common base implementation to handle ticks.min, ticks.max, ticks.beginAtZero
 			this.handleTickRangeOptions();
 		},
-		getTickLimit: function() {
+		// Returns the maximum number of ticks based on the scale dimension
+		_computeTickLimit: function() {
 			var me = this;
-			var tickOpts = me.options.ticks;
-			var stepSize = tickOpts.stepSize;
-			var maxTicksLimit = tickOpts.maxTicksLimit;
-			var maxTicks, tickFont;
+			var tickFont;
 
-			if (stepSize > 0) {
-				maxTicks = Math.ceil(me.max / stepSize) - Math.floor(me.min / stepSize) + 1;
-			} else if (me.isHorizontal()) {
-				maxTicks = Math.ceil(me.width / 40);
-			} else {
-				tickFont = helpers.options._parseFont(tickOpts);
-				maxTicks = Math.ceil(me.height / tickFont.lineHeight);
+			if (me.isHorizontal()) {
+				return Math.ceil(me.width / 40);
 			}
-			if (maxTicksLimit || !(stepSize > 0)) {
-				maxTicks = Math.min(maxTicksLimit || 11, maxTicks);
-			}
-
-			return maxTicks;
+			tickFont = helpers.options._parseFont(me.options.ticks);
+			return Math.ceil(me.height / tickFont.lineHeight);
 		},
 		// Called after the ticks are built. We need
 		handleDirectionalChanges: function() {

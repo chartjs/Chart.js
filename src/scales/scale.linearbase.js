@@ -16,7 +16,7 @@ function generateTicks(generationOptions, dataRange) {
 	// for details.
 
 	var stepSize = generationOptions.stepSize;
-	var unit = stepSize > 0 ? stepSize : 1;
+	var unit = stepSize || 1;
 	var maxNumSpaces = generationOptions.maxTicks - 1;
 	var min = generationOptions.min;
 	var max = generationOptions.max;
@@ -32,20 +32,20 @@ function generateTicks(generationOptions, dataRange) {
 		spacing = helpers.niceNum(numSpaces * spacing / maxNumSpaces / unit) * unit;
 	}
 
-	if (!(stepSize > 0) && !helpers.isNullOrUndef(precision)) {
+	if (stepSize || helpers.isNullOrUndef(precision)) {
+		// If a precision is not specified, calculate factor based on spacing
+		factor = Math.pow(10, helpers.decimalPlaces(spacing));
+	} else {
 		// If the user specified a precision, round to that number of decimal places
 		factor = Math.pow(10, precision);
 		spacing = Math.ceil(spacing * factor) / factor;
-	} else {
-		// If a precision is not specified, calculate factor based on spacing
-		factor = Math.pow(10, helpers.decimalPlaces(spacing));
 	}
 
 	niceMin = Math.floor(dataRange.min / spacing) * spacing;
 	niceMax = Math.ceil(dataRange.max / spacing) * spacing;
 
 	// If min, max and stepSize is set and they make an evenly spaced scale use it.
-	if (stepSize > 0) {
+	if (stepSize) {
 		// If very close to our whole number, use it.
 		if (!helpers.isNullOrUndef(min) && helpers.almostWhole(min / spacing, spacing / 1000)) {
 			niceMin = min;
@@ -152,7 +152,32 @@ module.exports = function(Chart) {
 				}
 			}
 		},
-		getTickLimit: noop,
+
+		getTickLimit: function() {
+			var me = this;
+			var tickOpts = me.options.ticks;
+			var stepSize = tickOpts.stepSize;
+			var maxTicksLimit = tickOpts.maxTicksLimit;
+			var maxTicks;
+
+			if (stepSize) {
+				maxTicks = Math.ceil(me.max / stepSize) - Math.floor(me.min / stepSize) + 1;
+			} else {
+				maxTicks = me._computeTickLimit();
+				maxTicksLimit = maxTicksLimit || 11;
+			}
+
+			if (maxTicksLimit) {
+				maxTicks = Math.min(maxTicksLimit, maxTicks);
+			}
+
+			return maxTicks;
+		},
+
+		_computeTickLimit: function() {
+			return Number.POSITIVE_INFINITY;
+		},
+
 		handleDirectionalChanges: noop,
 
 		buildTicks: function() {

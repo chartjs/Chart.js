@@ -357,24 +357,9 @@ module.exports = function(Chart) {
 			// Common base implementation to handle ticks.min, ticks.max, ticks.beginAtZero
 			me.handleTickRangeOptions();
 		},
-		getTickLimit: function() {
-			var me = this;
-			var opts = me.options;
-			var tickOpts = opts.ticks;
-			var stepSize = tickOpts.stepSize;
-			var maxTicksLimit = tickOpts.maxTicksLimit;
-			var maxTicks;
-
-			if (stepSize > 0) {
-				maxTicks = Math.ceil(me.max / stepSize) - Math.floor(me.min / stepSize) + 1;
-			} else {
-				maxTicks = Math.ceil(me.drawingArea / getTickBackdropHeight(opts));
-			}
-			if (maxTicksLimit || !(stepSize > 0)) {
-				maxTicks = Math.min(maxTicksLimit || 11, maxTicks);
-			}
-
-			return maxTicks;
+		// Returns the maximum number of ticks based on the scale dimension
+		_computeTickLimit: function() {
+			return Math.ceil(this.drawingArea / getTickBackdropHeight(this.options));
 		},
 		convertTicksToLabels: function() {
 			var me = this;
