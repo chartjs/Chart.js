@@ -243,13 +243,16 @@ module.exports = DatasetController.extend({
 
 	updateBezierControlPoints: function() {
 		var me = this;
+		var chart = me.chart;
 		var meta = me.getMeta();
-		var area = me.chart.chartArea;
-		var points = (meta.data || []);
+		var lineModel = meta.dataset._model;
+		var area = chart.chartArea;
+		var points = meta.data || [];
+		var isPointInArea = helpers.canvas.isPointInArea;
 		var i, ilen, point, model, controlPoints;
 
 		// Only consider points that are drawn in case the spanGaps option is used
-		if (meta.dataset._model.spanGaps) {
+		if (lineModel.spanGaps) {
 			points = points.filter(function(pt) {
 				return !pt._model.skip;
 			});
@@ -259,7 +262,7 @@ module.exports = DatasetController.extend({
 			return Math.max(Math.min(pt, max), min);
 		}
 
-		if (meta.dataset._model.cubicInterpolationMode === 'monotone') {
+		if (lineModel.cubicInterpolationMode === 'monotone') {
 			helpers.splineCurveMonotone(points);
 		} else {
 			for (i = 0, ilen = points.length; i < ilen; ++i) {
@@ -269,7 +272,7 @@ module.exports = DatasetController.extend({
 					helpers.previousItem(points, i)._model,
 					model,
 					helpers.nextItem(points, i)._model,
-					meta.dataset._model.tension
+					lineModel.tension
 				);
 				model.controlPointPreviousX = controlPoints.previous.x;
 				model.controlPointPreviousY = controlPoints.previous.y;
@@ -278,15 +281,15 @@ module.exports = DatasetController.extend({
 			}
 		}
 
-		if (me.chart.options.elements.line.capBezierPoints) {
+		if (chart.options.elements.line.capBezierPoints) {
 			for (i = 0, ilen = points.length; i < ilen; ++i) {
 				model = points[i]._model;
-				if (helpers.canvas.isPointInArea(model, area)) {
-					if (i > 0 && helpers.canvas.isPointInArea(points[i - 1]._model, area)) {
+				if (isPointInArea(model, area)) {
+					if (i > 0 && isPointInArea(points[i - 1]._model, area)) {
 						model.controlPointPreviousX = capControlPoint(model.controlPointPreviousX, area.left, area.right);
 						model.controlPointPreviousY = capControlPoint(model.controlPointPreviousY, area.top, area.bottom);
 					}
-					if (i < points.length - 1 && helpers.canvas.isPointInArea(points[i + 1]._model, area)) {
+					if (i < points.length - 1 && isPointInArea(points[i + 1]._model, area)) {
 						model.controlPointNextX = capControlPoint(model.controlPointNextX, area.left, area.right);
 						model.controlPointNextY = capControlPoint(model.controlPointNextY, area.top, area.bottom);
 					}
