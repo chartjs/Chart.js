@@ -304,17 +304,13 @@ function removeResizeListener(node) {
 	}
 }
 
-function injectCSS(platform, css) {
+function injectCSS(css) {
 	// https://stackoverflow.com/q/3922139
-	var style = platform._style || document.createElement('style');
-	if (!platform._style) {
-		platform._style = style;
-		css = '/* Chart.js */\n' + css;
-		style.setAttribute('type', 'text/css');
-		document.getElementsByTagName('head')[0].appendChild(style);
-	}
-
-	style.appendChild(document.createTextNode(css));
+	var linkElement = document.createElement('link');
+	linkElement.setAttribute('rel', 'stylesheet');
+	linkElement.setAttribute('type', 'text/css');
+	linkElement.setAttribute('href', 'data:text/css;charset=UTF-8,' + encodeURIComponent(css));
+	document.getElementsByTagName('head')[0].appendChild(linkElement);
 }
 
 module.exports = {
@@ -328,7 +324,7 @@ module.exports = {
 	initialize: function() {
 		var keyframes = 'from{opacity:0.99}to{opacity:1}';
 
-		injectCSS(this,
+		injectCSS(
 			// DOM rendering detection
 			// https://davidwalsh.name/detect-node-insertion
 			'@-webkit-keyframes ' + CSS_RENDER_ANIMATION + '{' + keyframes + '}' +
