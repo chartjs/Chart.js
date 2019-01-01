@@ -43,6 +43,10 @@ function generateTicks(generationOptions, dataRange) {
 		factor = Math.pow(10, precision);
 		spacing = Math.ceil(spacing * factor) / factor;
 	}
+
+	// Loop here is for the case when min / spacing === max / spacing
+	// This happens due to float inccuracy when min and max are really close to each other
+	// One case: min = 1.8548483304974972 and max = 1.8548483304974974
 	do {
 		niceMin = Math.floor(dataRange.min / spacing) * spacing;
 		niceMax = Math.ceil(dataRange.max / spacing) * spacing;
