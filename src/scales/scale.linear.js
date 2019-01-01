@@ -1,6 +1,5 @@
 'use strict';
 
-var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 var scaleService = require('../core/core.scaleService');
 var Ticks = require('../core/core.ticks');
@@ -133,20 +132,16 @@ module.exports = function(Chart) {
 			// Common base implementation to handle ticks.min, ticks.max, ticks.beginAtZero
 			this.handleTickRangeOptions();
 		},
-		getTickLimit: function() {
-			var maxTicks;
+		// Returns the maximum number of ticks based on the scale dimension
+		_computeTickLimit: function() {
 			var me = this;
-			var tickOpts = me.options.ticks;
+			var tickFont;
 
 			if (me.isHorizontal()) {
-				maxTicks = Math.min(tickOpts.maxTicksLimit ? tickOpts.maxTicksLimit : 11, Math.ceil(me.width / 50));
-			} else {
-				// The factor of 2 used to scale the font size has been experimentally determined.
-				var tickFontSize = helpers.valueOrDefault(tickOpts.fontSize, defaults.global.defaultFontSize);
-				maxTicks = Math.min(tickOpts.maxTicksLimit ? tickOpts.maxTicksLimit : 11, Math.ceil(me.height / (2 * tickFontSize)));
+				return Math.ceil(me.width / 40);
 			}
-
-			return maxTicks;
+			tickFont = helpers.options._parseFont(me.options.ticks);
+			return Math.ceil(me.height / tickFont.lineHeight);
 		},
 		// Called after the ticks are built. We need
 		handleDirectionalChanges: function() {

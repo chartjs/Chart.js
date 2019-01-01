@@ -282,6 +282,43 @@ describe('Test the radial linear scale', function() {
 		expect(chart.scale.end).toBe(0);
 	});
 
+	it('Should correctly limit the maximum number of ticks', function() {
+		var chart = window.acquireChart({
+			type: 'radar',
+			data: {
+				labels: ['label1', 'label2', 'label3'],
+				datasets: [{
+					data: [0.5, 1.5, 2.5]
+				}]
+			},
+			options: {
+				scale: {
+					pointLabels: {
+						display: false
+					}
+				}
+			}
+		});
+
+		expect(chart.scale.ticks).toEqual(['0.5', '1.0', '1.5', '2.0', '2.5']);
+
+		chart.options.scale.ticks.maxTicksLimit = 11;
+		chart.update();
+
+		expect(chart.scale.ticks).toEqual(['0.5', '1.0', '1.5', '2.0', '2.5']);
+
+		chart.options.scale.ticks.stepSize = 0.01;
+		chart.update();
+
+		expect(chart.scale.ticks).toEqual(['0.5', '1.0', '1.5', '2.0', '2.5']);
+
+		chart.options.scale.ticks.min = 0.3;
+		chart.options.scale.ticks.max = 2.8;
+		chart.update();
+
+		expect(chart.scale.ticks).toEqual(['0.3', '0.5', '1.0', '1.5', '2.0', '2.5', '2.8']);
+	});
+
 	it('Should build labels using the user supplied callback', function() {
 		var chart = window.acquireChart({
 			type: 'radar',

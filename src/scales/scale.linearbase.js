@@ -16,35 +16,41 @@ function generateTicks(generationOptions, dataRange) {
 	// for details.
 
 	var stepSize = generationOptions.stepSize;
+	var unit = stepSize || 1;
+	var maxNumSpaces = generationOptions.maxTicks - 1;
 	var min = generationOptions.min;
 	var max = generationOptions.max;
-	var spacing, precision, factor, niceRange, niceMin, niceMax, numSpaces;
+	var precision = generationOptions.precision;
+	var spacing, factor, niceMin, niceMax, numSpaces;
 
-	if (stepSize && stepSize > 0) {
-		spacing = stepSize;
-	} else {
-		niceRange = helpers.niceNum(dataRange.max - dataRange.min, false);
-		spacing = helpers.niceNum(niceRange / (generationOptions.maxTicks - 1), true);
-
-		precision = generationOptions.precision;
-		if (!helpers.isNullOrUndef(precision)) {
-			// If the user specified a precision, round to that number of decimal places
-			factor = Math.pow(10, precision);
-			spacing = Math.ceil(spacing * factor) / factor;
-		}
+	// spacing is set to a nice number of the dataRange divided by maxNumSpaces.
+	// stepSize is used as a minimum unit if it is specified.
+	spacing = helpers.niceNum((dataRange.max - dataRange.min) / maxNumSpaces / unit) * unit;
+	numSpaces = Math.ceil(dataRange.max / spacing) - Math.floor(dataRange.min / spacing);
+	if (numSpaces > maxNumSpaces) {
+		// If the calculated num of spaces exceeds maxNumSpaces, recalculate it
+		spacing = helpers.niceNum(numSpaces * spacing / maxNumSpaces / unit) * unit;
 	}
-	// If a precision is not specified, calculate factor based on spacing
-	if (!factor) {
+
+	if (stepSize || helpers.isNullOrUndef(precision)) {
+		// If a precision is not specified, calculate factor based on spacing
 		factor = Math.pow(10, helpers.decimalPlaces(spacing));
+	} else {
+		// If the user specified a precision, round to that number of decimal places
+		factor = Math.pow(10, precision);
+		spacing = Math.ceil(spacing * factor) / factor;
 	}
+
 	niceMin = Math.floor(dataRange.min / spacing) * spacing;
 	niceMax = Math.ceil(dataRange.max / spacing) * spacing;
 
 	// If min, max and stepSize is set and they make an evenly spaced scale use it.
-	if (!helpers.isNullOrUndef(min) && !helpers.isNullOrUndef(max) && stepSize) {
+	if (stepSize) {
 		// If very close to our whole number, use it.
-		if (helpers.almostWhole((max - min) / stepSize, spacing / 1000)) {
+		if (!helpers.isNullOrUndef(min) && helpers.almostWhole(min / spacing, spacing / 1000)) {
 			niceMin = min;
+		}
+		if (!helpers.isNullOrUndef(max) && helpers.almostWhole(max / spacing, spacing / 1000)) {
 			niceMax = max;
 		}
 	}
@@ -146,7 +152,32 @@ module.exports = function(Chart) {
 				}
 			}
 		},
-		getTickLimit: noop,
+
+		getTickLimit: function() {
+			var me = this;
+			var tickOpts = me.options.ticks;
+			var stepSize = tickOpts.stepSize;
+			var maxTicksLimit = tickOpts.maxTicksLimit;
+			var maxTicks;
+
+			if (stepSize) {
+				maxTicks = Math.ceil(me.max / stepSize) - Math.floor(me.min / stepSize) + 1;
+			} else {
+				maxTicks = me._computeTickLimit();
+				maxTicksLimit = maxTicksLimit || 11;
+			}
+
+			if (maxTicksLimit) {
+				maxTicks = Math.min(maxTicksLimit, maxTicks);
+			}
+
+			return maxTicks;
+		},
+
+		_computeTickLimit: function() {
+			return Number.POSITIVE_INFINITY;
+		},
+
 		handleDirectionalChanges: noop,
 
 		buildTicks: function() {
@@ -155,7 +186,7 @@ module.exports = function(Chart) {
 			var tickOpts = opts.ticks;
 
 			// Figure out what the max number of ticks we can support it is based on the size of
-			// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
+			// the axis area. For now, we say that the minimum tick spacing in pixels must be 40
 			// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on
 			// the graph. Make sure we always have at least 2 ticks
 			var maxTicks = me.getTickLimit();

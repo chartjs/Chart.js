@@ -570,7 +570,7 @@ describe('Linear Scale', function() {
 		expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
 		expect(chart.scales.yScale0.min).toBe(1);
 		expect(chart.scales.yScale0.max).toBe(11);
-		expect(chart.scales.yScale0.ticks).toEqual(['11', '9', '7', '5', '3', '1']);
+		expect(chart.scales.yScale0.ticks).toEqual(['11', '10', '8', '6', '4', '2', '1']);
 	});
 
 	it('Should create decimal steps if stepSize is a decimal number', function() {
@@ -747,6 +747,53 @@ describe('Linear Scale', function() {
 			}
 		});
 		expect(chart.scales.yScale0.ticks).toEqual(['0.06', '0.05', '0.04', '0.03', '0.02', '0.01', '0']);
+	});
+
+	it('Should correctly limit the maximum number of ticks', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				labels: ['a', 'b'],
+				datasets: [{
+					data: [0.5, 2.5]
+				}]
+			},
+			options: {
+				scales: {
+					yAxes: [{
+						id: 'yScale'
+					}]
+				}
+			}
+		});
+
+		expect(chart.scales.yScale.ticks).toEqual(['2.5', '2.0', '1.5', '1.0', '0.5']);
+
+		chart.options.scales.yAxes[0].ticks.maxTicksLimit = 11;
+		chart.update();
+
+		expect(chart.scales.yScale.ticks).toEqual(['2.5', '2.0', '1.5', '1.0', '0.5']);
+
+		chart.options.scales.yAxes[0].ticks.maxTicksLimit = 21;
+		chart.update();
+
+		expect(chart.scales.yScale.ticks).toEqual([
+			'2.5', '2.4', '2.3', '2.2', '2.1', '2.0', '1.9', '1.8', '1.7', '1.6',
+			'1.5', '1.4', '1.3', '1.2', '1.1', '1.0', '0.9', '0.8', '0.7', '0.6',
+			'0.5'
+		]);
+
+		chart.options.scales.yAxes[0].ticks.maxTicksLimit = 11;
+		chart.options.scales.yAxes[0].ticks.stepSize = 0.01;
+		chart.update();
+
+		expect(chart.scales.yScale.ticks).toEqual(['2.5', '2.0', '1.5', '1.0', '0.5']);
+
+		chart.options.scales.yAxes[0].ticks.min = 0.3;
+		chart.options.scales.yAxes[0].ticks.max = 2.8;
+		chart.update();
+
+		expect(chart.scales.yScale.ticks).toEqual(['2.8', '2.5', '2.0', '1.5', '1.0', '0.5', '0.3']);
 	});
 
 	it('Should build labels using the user supplied callback', function() {
