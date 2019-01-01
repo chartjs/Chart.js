@@ -24,6 +24,7 @@ function generateTicks(generationOptions, dataRange) {
 	var max = generationOptions.max;
 	var precision = generationOptions.precision;
 	var spacing, factor, niceMin, niceMax, numSpaces;
+	var i = 0;
 
 	// spacing is set to a nice number of the dataRange divided by maxNumSpaces.
 	// stepSize is used as a minimum unit if it is specified.
@@ -42,9 +43,12 @@ function generateTicks(generationOptions, dataRange) {
 		factor = Math.pow(10, precision);
 		spacing = Math.ceil(spacing * factor) / factor;
 	}
-
-	niceMin = Math.floor(dataRange.min / spacing) * spacing;
-	niceMax = Math.ceil(dataRange.max / spacing) * spacing;
+	do {
+		niceMin = Math.floor(dataRange.min / spacing) * spacing;
+		niceMax = Math.ceil(dataRange.max / spacing) * spacing;
+		spacing *= 2;
+	} while (niceMin === niceMax && ++i < 8);
+	spacing /= 2;
 
 	// If min, max and stepSize is set and they make an evenly spaced scale use it.
 	if (stepSize) {
