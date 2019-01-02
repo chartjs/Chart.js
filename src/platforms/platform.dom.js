@@ -304,17 +304,17 @@ function removeResizeListener(node) {
 	}
 }
 
-function injectCSS(platform, css) {
-	// https://stackoverflow.com/q/3922139
+function injectCSS(platform, rules) {
 	var style = platform._style || document.createElement('style');
 	if (!platform._style) {
 		platform._style = style;
-		css = '/* Chart.js */\n' + css;
 		style.setAttribute('type', 'text/css');
 		document.getElementsByTagName('head')[0].appendChild(style);
 	}
 
-	style.appendChild(document.createTextNode(css));
+	rules.forEach(function(rule) {
+		style.sheet.insertRule(rule, style.sheet.cssRules.length);
+	});
 }
 
 module.exports = {
@@ -328,16 +328,14 @@ module.exports = {
 	initialize: function() {
 		var keyframes = 'from{opacity:0.99}to{opacity:1}';
 
-		injectCSS(this,
+		injectCSS(this, [
 			// DOM rendering detection
 			// https://davidwalsh.name/detect-node-insertion
-			'@-webkit-keyframes ' + CSS_RENDER_ANIMATION + '{' + keyframes + '}' +
-			'@keyframes ' + CSS_RENDER_ANIMATION + '{' + keyframes + '}' +
+			'@keyframes ' + CSS_RENDER_ANIMATION + '{' + keyframes + '}',
 			'.' + CSS_RENDER_MONITOR + '{' +
-				'-webkit-animation:' + CSS_RENDER_ANIMATION + ' 0.001s;' +
 				'animation:' + CSS_RENDER_ANIMATION + ' 0.001s;' +
 			'}'
-		);
+		]);
 	},
 
 	acquireContext: function(item, config) {
