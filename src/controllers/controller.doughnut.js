@@ -131,15 +131,19 @@ module.exports = DatasetController.extend({
 
 		for (var j = 0; j < datasetIndex; ++j) {
 			if (this.chart.isDatasetVisible(j)) {
-				var ringWeight = this.chart.data.datasets[j].weight;
-				if (!ringWeight) {
-					ringWeight = 1;
-				}
-				ringWeightOffset += ringWeight;
+				ringWeightOffset += this.getRingWeight(j);
 			}
 		}
 
 		return ringWeightOffset;
+	},
+
+	getRingWeight: function(dataSetIndex) {
+		var ringWeight = this.chart.data.datasets[dataSetIndex].weight;
+		if (!ringWeight) {
+			ringWeight = 1;
+		}
+		return ringWeight;
 	},
 
 	update: function(reset) {
