@@ -509,22 +509,24 @@ module.exports = function(Chart) {
 				};
 			}
 
-			var duration = config.duration;
+			var animationOptions = me.options.animation;
+			var duration = typeof config.duration !== 'undefined'
+				? config.duration
+				: animationOptions && animationOptions.duration;
 			var lazy = config.lazy;
 
 			if (plugins.notify(me, 'beforeRender') === false) {
 				return;
 			}
 
-			var animationOptions = me.options.animation;
 			var onComplete = function(animation) {
 				plugins.notify(me, 'afterRender');
 				helpers.callback(animationOptions && animationOptions.onComplete, [animation], me);
 			};
 
-			if (animationOptions && ((typeof duration !== 'undefined' && duration !== 0) || (typeof duration === 'undefined' && animationOptions.duration !== 0))) {
+			if (animationOptions && duration) {
 				var animation = new Animation({
-					numSteps: (duration || animationOptions.duration) / 16.66, // 60 fps
+					numSteps: duration / 16.66, // 60 fps
 					easing: config.easing || animationOptions.easing,
 
 					render: function(chart, animationObject) {

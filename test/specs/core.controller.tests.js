@@ -1122,7 +1122,7 @@ describe('Chart', function() {
 			expect(this.addAnimationSpy).toHaveBeenCalledWith(
 				this.chart,
 				jasmine.objectContaining({easing: 'linear'}),
-				undefined,
+				500,
 				undefined
 			);
 		});
