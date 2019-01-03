@@ -62,7 +62,7 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | `hoverBackgroundColor` | `Color/Color[]` | The fill colour of the arcs when hovered.
 | `hoverBorderColor` | `Color/Color[]` | The stroke colour of the arcs when hovered.
 | `hoverBorderWidth` | `Number/Number[]` | The stroke width of the arcs when hovered.
-| `weight` | `Number` | The relative thickness of the dataset when there are multiple datasets provided. The default weight of each dataset is 1. Providing any other numerical value will allow the pie or doughnut dataset to be drawn with a thickness relative to the default size. For example a weight of 2 will allow the dataset to be drawn double its typical dataset thickness. NOTE: The weight attribute will only have an affect on a pie or doughnut chart if there is more than one dataset. Using weight on a pie or doughnut dataset when there is only one dataset in the chart will have no affect.
+| `weight` | `Number` | The relative thickness of the dataset. The default weight of each dataset is 1. Providing a value for weight will allow the pie or doughnut dataset to be drawn with a thickness relative to the sum of all the dataset weights.
 
 ### Border Alignment
 
