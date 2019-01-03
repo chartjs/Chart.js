@@ -17,6 +17,7 @@ function generateTicks(generationOptions, dataRange) {
 	// "nice number" algorithm. See https://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
 	// for details.
 
+	var MAX_PRECISION = 1e14;
 	var stepSize = generationOptions.stepSize;
 	var unit = stepSize || 1;
 	var maxNumSpaces = generationOptions.maxTicks - 1;
@@ -24,6 +25,10 @@ function generateTicks(generationOptions, dataRange) {
 	var max = generationOptions.max;
 	var precision = generationOptions.precision;
 	var spacing, factor, niceMin, niceMax, numSpaces;
+
+	// sanitize dataRangee to MAX_PRECISION
+	dataRange.min = Math.floor(dataRange.min * MAX_PRECISION) / MAX_PRECISION;
+	dataRange.max = Math.ceil(dataRange.max * MAX_PRECISION) / MAX_PRECISION;
 
 	// spacing is set to a nice number of the dataRange divided by maxNumSpaces.
 	// stepSize is used as a minimum unit if it is specified.
@@ -45,12 +50,6 @@ function generateTicks(generationOptions, dataRange) {
 
 	niceMin = Math.floor(dataRange.min / spacing) * spacing;
 	niceMax = Math.ceil(dataRange.max / spacing) * spacing;
-
-	if (niceMin === niceMax) {
-		// This happens due to float inccuracy when min and max are really close to each other
-		// One case: min = 1.8548483304974972 and max = 1.8548483304974974
-		return [dataRange.min, dataRange.max];
-	}
 
 	// If min, max and stepSize is set and they make an evenly spaced scale use it.
 	if (stepSize) {
