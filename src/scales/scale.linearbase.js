@@ -49,8 +49,7 @@ function generateTicks(generationOptions, dataRange) {
 	if (niceMin === niceMax) {
 		// This happens due to float inccuracy when min and max are really close to each other
 		// One case: min = 1.8548483304974972 and max = 1.8548483304974974
-		ticks.push(dataRange.min, dataRange.max);
-		return ticks;
+		return [dataRange.min, dataRange.max];
 	}
 
 	// If min, max and stepSize is set and they make an evenly spaced scale use it.
