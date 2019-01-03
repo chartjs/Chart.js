@@ -1171,7 +1171,7 @@ describe('Linear Scale', function() {
 		expect(data[1]._model.base - minBarLength).toEqual(data[1]._model.x);
 	});
 
-	it('Should ensure that the scale has a max and min that are not equal when data contains values that are very close to each other', function() {
+	it('Should generate max and min that are not equal when data contains values that are very close to each other', function() {
 		var chart = window.acquireChart({
 			type: 'scatter',
 			data: {

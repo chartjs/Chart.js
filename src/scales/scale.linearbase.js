@@ -18,6 +18,7 @@ function generateTicks(generationOptions, dataRange) {
 	// for details.
 
 	var MAX_PRECISION = 1e14;
+	var MIN_SPACING = 2e-15;
 	var stepSize = generationOptions.stepSize;
 	var unit = stepSize || 1;
 	var maxNumSpaces = generationOptions.maxTicks - 1;
@@ -27,13 +28,14 @@ function generateTicks(generationOptions, dataRange) {
 	var spacing, factor, niceMin, niceMax, numSpaces;
 
 	// sanitize dataRangee to MAX_PRECISION
-	dataRange.min = Math.floor(dataRange.min * MAX_PRECISION) / MAX_PRECISION;
-	dataRange.max = Math.ceil(dataRange.max * MAX_PRECISION) / MAX_PRECISION;
+	var rmin = Math.floor(dataRange.min * MAX_PRECISION) / MAX_PRECISION;
+	var rmax = Math.ceil(dataRange.max * MAX_PRECISION) / MAX_PRECISION;
 
 	// spacing is set to a nice number of the dataRange divided by maxNumSpaces.
 	// stepSize is used as a minimum unit if it is specified.
-	spacing = helpers.niceNum((dataRange.max - dataRange.min) / maxNumSpaces / unit) * unit;
-	numSpaces = Math.ceil(dataRange.max / spacing) - Math.floor(dataRange.min / spacing);
+	// use MIN_SPACING as lower bound to avoid uneven steps with tiny numbers
+	spacing = Math.max(helpers.niceNum((rmax - rmin) / maxNumSpaces / unit) * unit, MIN_SPACING);
+	numSpaces = Math.ceil(rmax / spacing) - Math.floor(rmin / spacing);
 	if (numSpaces > maxNumSpaces) {
 		// If the calculated num of spaces exceeds maxNumSpaces, recalculate it
 		spacing = helpers.niceNum(numSpaces * spacing / maxNumSpaces / unit) * unit;
@@ -48,8 +50,8 @@ function generateTicks(generationOptions, dataRange) {
 		spacing = Math.ceil(spacing * factor) / factor;
 	}
 
-	niceMin = Math.floor(dataRange.min / spacing) * spacing;
-	niceMax = Math.ceil(dataRange.max / spacing) * spacing;
+	niceMin = Math.floor(rmin / spacing) * spacing;
+	niceMax = Math.ceil(rmax / spacing) * spacing;
 
 	// If min, max and stepSize is set and they make an evenly spaced scale use it.
 	if (stepSize) {
@@ -69,7 +71,6 @@ function generateTicks(generationOptions, dataRange) {
 	} else {
 		numSpaces = Math.ceil(numSpaces);
 	}
-
 	niceMin = Math.round(niceMin * factor) / factor;
 	niceMax = Math.round(niceMax * factor) / factor;
 	ticks.push(helpers.isNullOrUndef(min) ? niceMin : min);
