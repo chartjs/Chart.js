@@ -151,7 +151,7 @@ module.exports = DatasetController.extend({
 		var arcs = meta.data;
 		var cutoutPercentage = opts.cutoutPercentage;
 		var circumference = opts.circumference;
-		var chartWeight = chart.data.datasets[me.index].weight || 1;
+		var chartWeight = me._getRingWeight(me.index);
 		var i, ilen;
 
 		// If the chart's circumference isn't a full circle, calculate minSize as a ratio of the width/height of the arc
