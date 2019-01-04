@@ -2,7 +2,6 @@
 
 var helpers = require('../helpers/index');
 var LinearScaleBase = require('./scale.linearbase');
-var scales = require('../core/core.scaleService');
 var Ticks = require('../core/core.ticks');
 
 var defaultConfig = {
@@ -12,7 +11,7 @@ var defaultConfig = {
 	}
 };
 
-var LinearScale = LinearScaleBase.extend({
+module.exports = LinearScaleBase.extend({
 	determineDataLimits: function() {
 		var me = this;
 		var opts = me.options;
@@ -187,6 +186,5 @@ var LinearScale = LinearScaleBase.extend({
 	}
 });
 
-module.exports = function() {
-	scales.registerScaleType('linear', LinearScale, defaultConfig);
-};
+// INTERNAL: static default options, registered in src/chart.js
+module.exports._defaults = defaultConfig;

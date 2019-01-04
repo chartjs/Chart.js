@@ -3,7 +3,6 @@
 var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 var LinearScaleBase = require('./scale.linearbase');
-var scales = require('../core/core.scaleService');
 var Ticks = require('../core/core.ticks');
 
 var defaultConfig = {
@@ -316,7 +315,7 @@ function numberOrZero(param) {
 	return helpers.isNumber(param) ? param : 0;
 }
 
-var LinearRadialScale = LinearScaleBase.extend({
+module.exports = LinearScaleBase.extend({
 	setDimensions: function() {
 		var me = this;
 
@@ -529,6 +528,5 @@ var LinearRadialScale = LinearScaleBase.extend({
 	}
 });
 
-module.exports = function() {
-	scales.registerScaleType('radialLinear', LinearRadialScale, defaultConfig);
-};
+// INTERNAL: static default options, registered in src/chart.js
+module.exports._defaults = defaultConfig;

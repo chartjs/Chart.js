@@ -3,7 +3,6 @@
 var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 var Scale = require('../core/core.scale');
-var scales = require('../core/core.scaleService');
 var Ticks = require('../core/core.ticks');
 
 /**
@@ -53,6 +52,7 @@ function generateTicks(generationOptions, dataRange) {
 	return ticks;
 }
 
+// INTERNAL: static default options, registered in src/chart.js
 var defaultConfig = {
 	position: 'left',
 
@@ -62,7 +62,7 @@ var defaultConfig = {
 	}
 };
 
-var LogarithmicScale = Scale.extend({
+module.exports = Scale.extend({
 	determineDataLimits: function() {
 		var me = this;
 		var opts = me.options;
@@ -347,6 +347,5 @@ var LogarithmicScale = Scale.extend({
 	}
 });
 
-module.exports = function() {
-	scales.registerScaleType('logarithmic', LogarithmicScale, defaultConfig);
-};
+// INTERNAL: static default options, registered in src/chart.js
+module.exports._defaults = defaultConfig;

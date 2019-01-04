@@ -5,7 +5,6 @@ var moment = require('moment');
 var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 var Scale = require('../core/core.scale');
-var scales = require('../core/core.scaleService');
 
 // Integer constants are from the ES6 spec.
 var MIN_INTEGER = Number.MIN_SAFE_INTEGER || -9007199254740991;
@@ -488,7 +487,7 @@ var defaultConfig = {
 	}
 };
 
-var TimeScale = Scale.extend({
+module.exports = Scale.extend({
 	initialize: function() {
 		if (!moment) {
 			throw new Error('Chart.js - Moment.js could not be found! You must include it before Chart.js to use the time scale. Download at https://momentjs.com');
@@ -788,6 +787,5 @@ var TimeScale = Scale.extend({
 	}
 });
 
-module.exports = function() {
-	scales.registerScaleType('time', TimeScale, defaultConfig);
-};
+// INTERNAL: static default options, registered in src/chart.js
+module.exports._defaults = defaultConfig;
