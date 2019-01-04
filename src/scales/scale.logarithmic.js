@@ -3,6 +3,7 @@
 var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 var Scale = require('../core/core.scale');
+var scales = require('../core/core.scaleService');
 var Ticks = require('../core/core.ticks');
 
 /**
@@ -346,6 +347,6 @@ var LogarithmicScale = Scale.extend({
 	}
 });
 
-module.exports = function(scales) {
+module.exports = function() {
 	scales.registerScaleType('logarithmic', LogarithmicScale, defaultConfig);
 };

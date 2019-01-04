@@ -2,6 +2,7 @@
 
 var helpers = require('../helpers/index');
 var LinearScaleBase = require('./scale.linearbase');
+var scales = require('../core/core.scaleService');
 var Ticks = require('../core/core.ticks');
 
 var defaultConfig = {
@@ -186,6 +187,6 @@ var LinearScale = LinearScaleBase.extend({
 	}
 });
 
-module.exports = function(scales) {
+module.exports = function() {
 	scales.registerScaleType('linear', LinearScale, defaultConfig);
 };

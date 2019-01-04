@@ -1,6 +1,7 @@
 'use strict';
 
 var Scale = require('../core/core.scale');
+var scales = require('../core/core.scaleService');
 
 var defaultConfig = {
 	position: 'bottom'
@@ -130,6 +131,6 @@ var CategoryScale = Scale.extend({
 	}
 });
 
-module.exports = function(scales) {
+module.exports = function() {
 	scales.registerScaleType('category', CategoryScale, defaultConfig);
 };

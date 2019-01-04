@@ -5,6 +5,7 @@ var moment = require('moment');
 var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 var Scale = require('../core/core.scale');
+var scales = require('../core/core.scaleService');
 
 // Integer constants are from the ES6 spec.
 var MIN_INTEGER = Number.MIN_SAFE_INTEGER || -9007199254740991;
@@ -787,6 +788,6 @@ var TimeScale = Scale.extend({
 	}
 });
 
-module.exports = function(scales) {
+module.exports = function() {
 	scales.registerScaleType('time', TimeScale, defaultConfig);
 };

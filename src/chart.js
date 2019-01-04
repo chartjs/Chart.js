@@ -30,7 +30,7 @@ require('./core/core.controller')(Chart);
 // Register built-in scales
 var scales = require('./scales');
 Chart.helpers.each(scales, function(register) {
-	register(Chart.scaleService);
+	register();
 });
 
 // Loading built-in plugins
