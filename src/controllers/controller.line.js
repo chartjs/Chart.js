@@ -5,6 +5,8 @@ var defaults = require('../core/core.defaults');
 var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
+var _isPointInArea = helpers.canvas._isPointInArea;
+
 defaults._set('line', {
 	showLines: true,
 	spanGaps: false,
@@ -248,7 +250,6 @@ module.exports = DatasetController.extend({
 		var lineModel = meta.dataset._model;
 		var area = chart.chartArea;
 		var points = meta.data || [];
-		var isPointInArea = helpers.canvas.isPointInArea;
 		var i, ilen, point, model, controlPoints;
 
 		// Only consider points that are drawn in case the spanGaps option is used
@@ -284,12 +285,12 @@ module.exports = DatasetController.extend({
 		if (chart.options.elements.line.capBezierPoints) {
 			for (i = 0, ilen = points.length; i < ilen; ++i) {
 				model = points[i]._model;
-				if (isPointInArea(model, area)) {
-					if (i > 0 && isPointInArea(points[i - 1]._model, area)) {
+				if (_isPointInArea(model, area)) {
+					if (i > 0 && _isPointInArea(points[i - 1]._model, area)) {
 						model.controlPointPreviousX = capControlPoint(model.controlPointPreviousX, area.left, area.right);
 						model.controlPointPreviousY = capControlPoint(model.controlPointPreviousY, area.top, area.bottom);
 					}
-					if (i < points.length - 1 && isPointInArea(points[i + 1]._model, area)) {
+					if (i < points.length - 1 && _isPointInArea(points[i + 1]._model, area)) {
 						model.controlPointNextX = capControlPoint(model.controlPointNextX, area.left, area.right);
 						model.controlPointNextY = capControlPoint(model.controlPointNextY, area.top, area.bottom);
 					}

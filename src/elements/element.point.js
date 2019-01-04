@@ -79,7 +79,7 @@ module.exports = Element.extend({
 		}
 
 		// Clipping for Points.
-		if (chartArea === undefined || helpers.canvas.isPointInArea(vm, chartArea)) {
+		if (chartArea === undefined || helpers.canvas._isPointInArea(vm, chartArea)) {
 			ctx.strokeStyle = vm.borderColor || defaultColor;
 			ctx.lineWidth = helpers.valueOrDefault(vm.borderWidth, globalDefaults.elements.point.borderWidth);
 			ctx.fillStyle = vm.backgroundColor || defaultColor;
