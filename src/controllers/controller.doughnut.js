@@ -138,37 +138,6 @@ module.exports = DatasetController.extend({
 		return ringIndex;
 	},
 
-	// Get radius length offset of the dataset in relation to the visible datasets weights. This allows determining the inner and outer radius correctly
-	getRingWeightedOffset: function(datasetIndex) {
-		var ringWeightOffset = 0;
-
-		for (var j = 0; j < datasetIndex; ++j) {
-			if (this.chart.isDatasetVisible(j)) {
-				ringWeightOffset += this.getRingWeight(j);
-			}
-		}
-
-		return ringWeightOffset;
-	},
-
-	getRingWeight: function(dataSetIndex) {
-		var ringWeight = this.chart.data.datasets[dataSetIndex].weight;
-		if (!ringWeight) {
-			ringWeight = 1;
-		}
-		return ringWeight;
-	},
-
-	getVisibleDatasetTotalWeight: function() {
-		var totalWeight = 0;
-		for (var i = 0, ilen = this.chart.data.datasets.length; i < ilen; ++i) {
-			if (this.chart.isDatasetVisible(i)) {
-				totalWeight += this.getRingWeight(i);
-			}
-		}
-		return totalWeight;
-	},
-
 	update: function(reset) {
 		var me = this;
 		var chart = me.chart;
@@ -211,13 +180,13 @@ module.exports = DatasetController.extend({
 		chart.borderWidth = me.getMaxBorderWidth();
 		chart.outerRadius = Math.max((minSize - chart.borderWidth) / 2, 0);
 		chart.innerRadius = Math.max(cutoutPercentage ? (chart.outerRadius / 100) * (cutoutPercentage) : 0, 0);
-		chart.radiusLength = (chart.outerRadius - chart.innerRadius) / me.getVisibleDatasetTotalWeight();
+		chart.radiusLength = (chart.outerRadius - chart.innerRadius) / me._getVisibleDatasetTotalWeight();
 		chart.offsetX = offset.x * chart.outerRadius;
 		chart.offsetY = offset.y * chart.outerRadius;
 
 		meta.total = me.calculateTotal();
 
-		me.outerRadius = chart.outerRadius - (chart.radiusLength * me.getRingWeightedOffset(me.index));
+		me.outerRadius = chart.outerRadius - (chart.radiusLength * me._getRingWeightedOffset(me.index));
 		me.innerRadius = Math.max(me.outerRadius - (chart.radiusLength * chartWeight), 0);
 
 		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
@@ -362,5 +331,35 @@ module.exports = DatasetController.extend({
 			borderWidth: custom.borderWidth ? custom.borderWidth : valueAtIndexOrDefault(dataset.borderWidth, index, options.borderWidth),
 			borderAlign: custom.borderAlign ? custom.borderAlign : valueAtIndexOrDefault(dataset.borderAlign, index, options.borderAlign)
 		};
+	},
+
+	/**
+	 * Get radius length offset of the dataset in relation to the visible datasets weights. This allows determining the inner and outer radius correctly
+	 * @private
+	 */
+	_getRingWeightedOffset: function(datasetIndex) {
+		var ringWeightOffset = 0;
+
+		for (var i = 0; i < datasetIndex; ++i) {
+			if (this.chart.isDatasetVisible(i)) {
+				ringWeightOffset += this._getRingWeight(i);
+			}
+		}
+
+		return ringWeightOffset;
+	},
+
+	/**
+	 * @private
+	 */
+	_getRingWeight: function(dataSetIndex) {
+		return this.chart.data.datasets[dataSetIndex].weight || 1;
+	},
+
+	/**
+	 * @private
+	 */
+	_getVisibleDatasetTotalWeight: function() {
+		return this._getRingWeightedOffset(this.chart.data.datasets.length);
 	}
 });
