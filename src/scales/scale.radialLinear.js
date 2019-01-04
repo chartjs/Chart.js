@@ -106,33 +106,32 @@ function determineLimits(angle, pos, size, min, max) {
  * Helper function to fit a radial linear scale with point labels
  */
 function fitWithPointLabels(scale) {
-	/*
-		* Right, this is really confusing and there is a lot of maths going on here
-		* The gist of the problem is here: https://gist.github.com/nnnick/696cc9c55f4b0beb8fe9
-		*
-		* Reaction: https://dl.dropboxusercontent.com/u/34601363/toomuchscience.gif
-		*
-		* Solution:
-		*
-		* We assume the radius of the polygon is half the size of the canvas at first
-		* at each index we check if the text overlaps.
-		*
-		* Where it does, we store that angle and that index.
-		*
-		* After finding the largest index and angle we calculate how much we need to remove
-		* from the shape radius to move the point inwards by that x.
-		*
-		* We average the left and right distances to get the maximum shape radius that can fit in the box
-		* along with labels.
-		*
-		* Once we have that, we can find the centre point for the chart, by taking the x text protrusion
-		* on each side, removing that from the size, halving it and adding the left x protrusion width.
-		*
-		* This will mean we have a shape fitted to the canvas, as large as it can be with the labels
-		* and position it in the most space efficient manner
-		*
-		* https://dl.dropboxusercontent.com/u/34601363/yeahscience.gif
-		*/
+
+	// Right, this is really confusing and there is a lot of maths going on here
+	// The gist of the problem is here: https://gist.github.com/nnnick/696cc9c55f4b0beb8fe9
+	//
+	// Reaction: https://dl.dropboxusercontent.com/u/34601363/toomuchscience.gif
+	//
+	// Solution:
+	//
+	// We assume the radius of the polygon is half the size of the canvas at first
+	// at each index we check if the text overlaps.
+	//
+	// Where it does, we store that angle and that index.
+	//
+	// After finding the largest index and angle we calculate how much we need to remove
+	// from the shape radius to move the point inwards by that x.
+	//
+	// We average the left and right distances to get the maximum shape radius that can fit in the box
+	// along with labels.
+	//
+	// Once we have that, we can find the centre point for the chart, by taking the x text protrusion
+	// on each side, removing that from the size, halving it and adding the left x protrusion width.
+	//
+	// This will mean we have a shape fitted to the canvas, as large as it can be with the labels
+	// and position it in the most space efficient manner
+	//
+	// https://dl.dropboxusercontent.com/u/34601363/yeahscience.gif
 
 	var plFont = helpers.options._parseFont(scale.options.pointLabels);
 
