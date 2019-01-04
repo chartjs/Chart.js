@@ -17,6 +17,7 @@ Chart.Element = require('./core/core.element');
 Chart.elements = require('./elements/index');
 Chart.Interaction = require('./core/core.interaction');
 Chart.layouts = require('./core/core.layouts');
+Chart.LinearScaleBase = require('./scales/scale.linearbase');
 Chart.platform = require('./platforms/platform');
 Chart.plugins = require('./core/core.plugins');
 Chart.Scale = require('./core/core.scale');
@@ -26,12 +27,11 @@ Chart.Tooltip = require('./core/core.tooltip');
 
 require('./core/core.controller')(Chart);
 
-require('./scales/scale.linearbase')(Chart);
-require('./scales/scale.category')(Chart);
-require('./scales/scale.linear')(Chart);
-require('./scales/scale.logarithmic')(Chart);
-require('./scales/scale.radialLinear')(Chart);
-require('./scales/scale.time')(Chart);
+// Register built-in scales
+var scales = require('./scales');
+Chart.helpers.each(scales, function(register) {
+	register(Chart.scaleService);
+});
 
 // Loading built-in plugins
 var plugins = require('./plugins');
