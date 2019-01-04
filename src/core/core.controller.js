@@ -726,20 +726,6 @@ module.exports = function(Chart) {
 			return count;
 		},
 
-		getVisibleDatasetWeight: function() {
-			var totalWeight = 0;
-			for (var i = 0, ilen = this.data.datasets.length; i < ilen; ++i) {
-				if (this.isDatasetVisible(i)) {
-					var currWeight = this.data.datasets[i].weight;
-					if (!currWeight) {
-						currWeight = 1;
-					}
-					totalWeight += currWeight;
-				}
-			}
-			return totalWeight;
-		},
-
 		isDatasetVisible: function(datasetIndex) {
 			var meta = this.getDatasetMeta(datasetIndex);
 

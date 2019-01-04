@@ -125,8 +125,21 @@ module.exports = DatasetController.extend({
 
 	linkScales: helpers.noop,
 
+	// Get index of the dataset in relation to the visible datasets. This allows determining the inner and outer radius correctly
+	getRingIndex: function(datasetIndex) {
+		var ringIndex = 0;
+
+		for (var j = 0; j < datasetIndex; ++j) {
+			if (this.chart.isDatasetVisible(j)) {
+				++ringIndex;
+			}
+		}
+
+		return ringIndex;
+	},
+
 	// Get radius length offset of the dataset in relation to the visible datasets weights. This allows determining the inner and outer radius correctly
-	getRingWeightOffset: function(datasetIndex) {
+	getRingWeightedOffset: function(datasetIndex) {
 		var ringWeightOffset = 0;
 
 		for (var j = 0; j < datasetIndex; ++j) {
@@ -146,6 +159,20 @@ module.exports = DatasetController.extend({
 		return ringWeight;
 	},
 
+	getVisibleDatasetTotalWeight: function() {
+		var totalWeight = 0;
+		for (var i = 0, ilen = this.chart.data.datasets.length; i < ilen; ++i) {
+			if (this.chart.isDatasetVisible(i)) {
+				var currWeight = this.chart.data.datasets[i].weight;
+				if (!currWeight) {
+					currWeight = 1;
+				}
+				totalWeight += currWeight;
+			}
+		}
+		return totalWeight;
+	},
+
 	update: function(reset) {
 		var me = this;
 		var chart = me.chart;
@@ -159,7 +186,7 @@ module.exports = DatasetController.extend({
 		var arcs = meta.data;
 		var cutoutPercentage = opts.cutoutPercentage;
 		var circumference = opts.circumference;
-		var chartWeight = (chart.data.datasets[me.index].weight) ? chart.data.datasets[me.index].weight : 1;
+		var chartWeight = chart.data.datasets[me.index].weight ? chart.data.datasets[me.index].weight : 1;
 		var i, ilen;
 
 		// If the chart's circumference isn't a full circle, calculate minSize as a ratio of the width/height of the arc
@@ -188,13 +215,13 @@ module.exports = DatasetController.extend({
 		chart.borderWidth = me.getMaxBorderWidth();
 		chart.outerRadius = Math.max((minSize - chart.borderWidth) / 2, 0);
 		chart.innerRadius = Math.max(cutoutPercentage ? (chart.outerRadius / 100) * (cutoutPercentage) : 0, 0);
-		chart.radiusLength = (chart.outerRadius - chart.innerRadius) / chart.getVisibleDatasetWeight();
+		chart.radiusLength = (chart.outerRadius - chart.innerRadius) / me.getVisibleDatasetTotalWeight();
 		chart.offsetX = offset.x * chart.outerRadius;
 		chart.offsetY = offset.y * chart.outerRadius;
 
 		meta.total = me.calculateTotal();
 
-		me.outerRadius = chart.outerRadius - (chart.radiusLength * me.getRingWeightOffset(me.index));
+		me.outerRadius = chart.outerRadius - (chart.radiusLength * me.getRingWeightedOffset(me.index));
 		me.innerRadius = Math.max(me.outerRadius - (chart.radiusLength * chartWeight), 0);
 
 		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
