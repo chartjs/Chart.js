@@ -8,9 +8,6 @@ var helpers = require('../helpers/index');
 
 var EXPANDO_KEY = '$chartjs';
 var CSS_PREFIX = 'chartjs-';
-var CSS_RENDER_MONITOR = CSS_PREFIX + 'render-monitor';
-var CSS_RENDER_ANIMATION = CSS_PREFIX + 'render-animation';
-var ANIMATION_START_EVENTS = ['animationstart', 'webkitAnimationStart'];
 
 /**
  * DOM event types -> Chart.js event types.
@@ -229,42 +226,70 @@ function createResizer(handler) {
 	return resizer;
 }
 
-// https://davidwalsh.name/detect-node-insertion
+// https://davidwalsh.name/mutationobserver-api
 function watchForRender(node, handler) {
-	var expando = node[EXPANDO_KEY] || (node[EXPANDO_KEY] = {});
-	var proxy = expando.renderProxy = function(e) {
-		if (e.animationName === CSS_RENDER_ANIMATION) {
-			handler();
-		}
-	};
+	var root = (node.ownerDocument || document).body;
+	var expando = root[EXPANDO_KEY] || (root[EXPANDO_KEY] = {});
+	var listeners = expando._listeners || (expando._listeners = []);
+	var attached = root.contains(node);
 
-	helpers.each(ANIMATION_START_EVENTS, function(type) {
-		addEventListener(node, type, proxy);
+	// MutationObserver is not supported on IE10, however we use this feature only
+	// to detect when a node is attached to the DOM. Checking if MutationObserver
+	// is defined allows us to keep support for old browsers when the node is
+	// already attached, which is the case in most situations.
+
+	if (!expando._observer && typeof MutationObserver !== 'undefined') {
+		expando._observer = new MutationObserver(function() {
+
+			// Checking all mutation records added / removed nodes to determine
+			// if our canvas are attached / detached would be less optimal than
+			// checking if watched nodes are attached to the root. Note that if
+			// the canvas is attached to a wrapper, which one not attached to
+			// the tree, only the wrapper will be reported added.
+
+			listeners.forEach(function(listener) {
+				attached = root.contains(node);
+				if (attached && !listener.attached) {
+					listener.handler();
+				}
+				listener.attached = attached;
+			});
+		});
+
+		expando._observer.observe(root, {
+			childList: true,
+			subtree: true
+		});
+	}
+
+	listeners.push({
+		attached: attached,
+		handler: handler,
+		node: node
 	});
 
-	// #4737: Chrome might skip the CSS animation when the CSS_RENDER_MONITOR class
-	// is removed then added back immediately (same animation frame?). Accessing the
-	// `offsetParent` property will force a reflow and re-evaluate the CSS animation.
-	// https://gist.github.com/paulirish/5d52fb081b3570c81e3a#box-metrics
-	// https://github.com/chartjs/Chart.js/issues/4737
-	expando.reflow = !!node.offsetParent;
-
-	node.classList.add(CSS_RENDER_MONITOR);
+	if (attached) {
+		handler();
+	}
 }
 
 function unwatchForRender(node) {
-	var expando = node[EXPANDO_KEY] || {};
-	var proxy = expando.renderProxy;
+	var root = (node.ownerDocument || document).body;
+	var expando = root[EXPANDO_KEY] || {};
+	var listeners = expando._listeners || [];
+	var i, ilen;
 
-	if (proxy) {
-		helpers.each(ANIMATION_START_EVENTS, function(type) {
-			removeEventListener(node, type, proxy);
-		});
-
-		delete expando.renderProxy;
+	for (i = 0, ilen = listeners.length; i < ilen; ++i) {
+		if (listeners[i].node === node) {
+			listeners.splice(i, 1);
+			break;
+		}
 	}
 
-	node.classList.remove(CSS_RENDER_MONITOR);
+	if (!listeners.length) {
+		delete expando._listeners;
+		delete expando._observer;
+	}
 }
 
 function addResizeListener(node, listener, chart) {
@@ -304,19 +329,6 @@ function removeResizeListener(node) {
 	}
 }
 
-function injectCSS(platform, css) {
-	// https://stackoverflow.com/q/3922139
-	var style = platform._style || document.createElement('style');
-	if (!platform._style) {
-		platform._style = style;
-		css = '/* Chart.js */\n' + css;
-		style.setAttribute('type', 'text/css');
-		document.getElementsByTagName('head')[0].appendChild(style);
-	}
-
-	style.appendChild(document.createTextNode(css));
-}
-
 module.exports = {
 	/**
 	 * This property holds whether this platform is enabled for the current environment.
@@ -324,21 +336,6 @@ module.exports = {
 	 * @private
 	 */
 	_enabled: typeof window !== 'undefined' && typeof document !== 'undefined',
-
-	initialize: function() {
-		var keyframes = 'from{opacity:0.99}to{opacity:1}';
-
-		injectCSS(this,
-			// DOM rendering detection
-			// https://davidwalsh.name/detect-node-insertion
-			'@-webkit-keyframes ' + CSS_RENDER_ANIMATION + '{' + keyframes + '}' +
-			'@keyframes ' + CSS_RENDER_ANIMATION + '{' + keyframes + '}' +
-			'.' + CSS_RENDER_MONITOR + '{' +
-				'-webkit-animation:' + CSS_RENDER_ANIMATION + ' 0.001s;' +
-				'animation:' + CSS_RENDER_ANIMATION + ' 0.001s;' +
-			'}'
-		);
-	},
 
 	acquireContext: function(item, config) {
 		if (typeof item === 'string') {
