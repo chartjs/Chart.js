@@ -163,11 +163,7 @@ module.exports = DatasetController.extend({
 		var totalWeight = 0;
 		for (var i = 0, ilen = this.chart.data.datasets.length; i < ilen; ++i) {
 			if (this.chart.isDatasetVisible(i)) {
-				var currWeight = this.chart.data.datasets[i].weight;
-				if (!currWeight) {
-					currWeight = 1;
-				}
-				totalWeight += currWeight;
+				totalWeight += this.getRingWeight(i);
 			}
 		}
 		return totalWeight;
