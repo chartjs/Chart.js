@@ -52,7 +52,6 @@ function generateTicks(generationOptions, dataRange) {
 	return ticks;
 }
 
-// INTERNAL: static default options, registered in src/chart.js
 var defaultConfig = {
 	position: 'left',
 
