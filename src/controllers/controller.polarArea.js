@@ -32,7 +32,7 @@ defaults._set('polarArea', {
 		}
 	},
 
-	startAngle: -0.5 * Math.PI,
+	startAngle: 0,
 	legendCallback: function(chart) {
 		var list = document.createElement('ul');
 		var data = chart.data;
@@ -106,6 +106,12 @@ defaults._set('polarArea', {
 	}
 });
 
+function getStartAngleRadians(deg) {
+	// radianLinear scale draws angleLines using startAngle. 0 is excepted to be at top.
+	// Here we adjust to standard unit circle used in drawing, where 0 is at right.
+	return helpers.toRadians(deg) - 0.5 * Math.PI;
+}
+
 module.exports = DatasetController.extend({
 
 	dataElementType: elements.Arc,
@@ -138,13 +144,10 @@ module.exports = DatasetController.extend({
 	},
 
 	update: function(mode) {
-		var me = this;
-		var meta = me._cachedMeta;
-		var arcs = meta.data;
+		const arcs = this._cachedMeta.data;
 
-		me._updateRadius();
-
-		me.updateElements(arcs, 0, mode);
+		this._updateRadius();
+		this.updateElements(arcs, 0, mode);
 	},
 
 	/**
@@ -175,7 +178,7 @@ module.exports = DatasetController.extend({
 		const scale = chart.scales.r;
 		const centerX = scale.xCenter;
 		const centerY = scale.yCenter;
-		const datasetStartAngle = opts.startAngle || 0;
+		const datasetStartAngle = getStartAngleRadians(opts.startAngle);
 		let angle = datasetStartAngle;
 		let i;
 

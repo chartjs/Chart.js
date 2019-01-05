@@ -380,14 +380,11 @@ class RadialLinearScale extends LinearScaleBase {
 
 	getIndexAngle(index) {
 		var chart = this.chart;
-		var angleMultiplier = 360 / chart.data.labels.length;
+		var angleMultiplier = (Math.PI * 2) / chart.data.labels.length;
 		var options = chart.options || {};
 		var startAngle = options.startAngle || 0;
 
-		// Start from the top instead of right, so remove a quarter of the circle
-		var angle = (index * angleMultiplier + startAngle) % 360;
-
-		return (angle < 0 ? angle + 360 : angle) * Math.PI * 2 / 360;
+		return index * angleMultiplier + helpers.toRadians(startAngle);
 	}
 
 	getDistanceFromCenterForValue(value) {
