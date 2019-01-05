@@ -17,7 +17,6 @@ Chart.Element = require('./core/core.element');
 Chart.elements = require('./elements/index');
 Chart.Interaction = require('./core/core.interaction');
 Chart.layouts = require('./core/core.layouts');
-Chart.LinearScaleBase = require('./scales/scale.linearbase');
 Chart.platform = require('./platforms/platform');
 Chart.plugins = require('./core/core.plugins');
 Chart.Scale = require('./core/core.scale');
@@ -104,6 +103,15 @@ Chart.canvasHelpers = Chart.helpers.canvas;
  * @private
  */
 Chart.layoutService = Chart.layouts;
+
+/**
+ * Provided for backward compatibility, not available anymore.
+ * @namespace Chart.LinearScaleBase
+ * @deprecated since version 2.8
+ * @todo remove at version 3
+ * @private
+ */
+Chart.LinearScaleBase = require('./scales/scale.linearbase');
 
 /**
  * Provided for backward compatibility, instead we should create a new Chart

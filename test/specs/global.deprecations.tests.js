@@ -31,6 +31,14 @@ describe('Deprecations', function() {
 				expect(typeof Chart.helpers.aliasPixel).toBe('function');
 			});
 		});
+
+		describe('Chart.LinearScaleBase', function() {
+			it('should be defined and inherit from Chart.Scale', function() {
+				expect(Chart.LinearScaleBase).toBeDefined();
+				expect(typeof Chart.LinearScaleBase).toBe('function');
+				expect(Chart.LinearScaleBase.prototype instanceof Chart.Scale).toBeTruthy();
+			});
+		});
 	});
 
 	describe('Version 2.7.3', function() {
