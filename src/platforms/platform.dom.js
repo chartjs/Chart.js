@@ -226,12 +226,38 @@ function createResizer(handler) {
 	return resizer;
 }
 
+function containsAncestor(nodes, node) {
+	for (var i = 0, ilen = nodes.length; i < ilen; ++i) {
+		if (nodes[i].contains(node)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Returns true if `node` has been added to one of the mutated nodes, thus
+ * is attached to the DOM. Iterate the reverse way since we only care about
+ * the state of the last mutation of `node`.
+ */
+function isNodeAdded(mutations, node) {
+	for (var i = mutations.length - 1; i >= 0; --i) {
+		if (containsAncestor(mutations[i].addedNodes, node)) {
+			return true;
+		}
+		if (containsAncestor(mutations[i].removedNodes, node)) {
+			return false;
+		}
+	}
+	return false;
+}
+
 // https://davidwalsh.name/mutationobserver-api
 function watchForRender(node, handler) {
 	var root = (node.ownerDocument || document).body;
 	var expando = root[EXPANDO_KEY] || (root[EXPANDO_KEY] = {});
 	var listeners = expando._listeners || (expando._listeners = []);
-	var attached = root.contains(node);
+	var i, ilen;
 
 	// MutationObserver is not supported on IE10, however we use this feature only
 	// to detect when a node is attached to the DOM. Checking if MutationObserver
@@ -239,21 +265,12 @@ function watchForRender(node, handler) {
 	// already attached, which is the case in most situations.
 
 	if (!expando._observer && typeof MutationObserver !== 'undefined') {
-		expando._observer = new MutationObserver(function() {
-
-			// Checking all mutation records added / removed nodes to determine
-			// if our canvas are attached / detached would be less optimal than
-			// checking if watched nodes are attached to the root. Note that if
-			// the canvas is attached to a wrapper, which one not attached to
-			// the tree, only the wrapper will be reported added.
-
-			listeners.forEach(function(listener) {
-				attached = root.contains(node);
-				if (attached && !listener.attached) {
-					listener.handler();
+		expando._observer = new MutationObserver(function(mutations) {
+			for (i = 0, ilen = listeners.length; i < ilen; ++i) {
+				if (isNodeAdded(mutations, listeners[i].node)) {
+					listeners[i].handler();
 				}
-				listener.attached = attached;
-			});
+			}
 		});
 
 		expando._observer.observe(root, {
@@ -263,12 +280,11 @@ function watchForRender(node, handler) {
 	}
 
 	listeners.push({
-		attached: attached,
 		handler: handler,
 		node: node
 	});
 
-	if (attached) {
+	if (root.contains(node)) {
 		handler();
 	}
 }
