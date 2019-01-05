@@ -6,7 +6,15 @@ var Chart = require('./core/core')();
 Chart.helpers = require('./helpers/index');
 
 // @todo dispatch these helpers into appropriated helpers/helpers.* file and write unit tests!
-require('./core/core.helpers')(Chart);
+require('./core/core.helpers')();
+
+// Not included in ./helpers/index to break circular dependency
+// It depends on defaults and defaults depends on helpers
+require('./helpers/helpers.color');
+
+// Not included in ./helpers/index to break circular dependency
+// It depends on scaleService and scaleService depends on helpers
+require('./helpers/helpers.merge');
 
 Chart.Animation = require('./core/core.animation');
 Chart.animationService = require('./core/core.animations');
