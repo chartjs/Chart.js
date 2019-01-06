@@ -1450,8 +1450,8 @@ describe('Chart.controllers.bar', function() {
 		expect(bar._model.borderColor).toBe('rgb(15, 15, 15)');
 		expect(bar._model.borderWidth).toBe(3.14);
 		meta.controller.setHoverStyle(bar);
-		expect(bar._model.backgroundColor).toBe(helpers.getHoverColor('rgb(128, 128, 128)'));
-		expect(bar._model.borderColor).toBe(helpers.getHoverColor('rgb(15, 15, 15)'));
+		expect(bar._model.backgroundColor).toBe(helpers.canvas.getHoverColor('rgb(128, 128, 128)'));
+		expect(bar._model.borderColor).toBe(helpers.canvas.getHoverColor('rgb(15, 15, 15)'));
 		expect(bar._model.borderWidth).toBe(3.14);
 		meta.controller.removeHoverStyle(bar);
 		expect(bar._model.backgroundColor).toBe('rgb(128, 128, 128)');
@@ -1468,8 +1468,8 @@ describe('Chart.controllers.bar', function() {
 		expect(bar._model.borderColor).toBe('rgb(9, 9, 9)');
 		expect(bar._model.borderWidth).toBe(2.5);
 		meta.controller.setHoverStyle(bar);
-		expect(bar._model.backgroundColor).toBe(helpers.getHoverColor('rgb(255, 255, 255)'));
-		expect(bar._model.borderColor).toBe(helpers.getHoverColor('rgb(9, 9, 9)'));
+		expect(bar._model.backgroundColor).toBe(helpers.canvas.getHoverColor('rgb(255, 255, 255)'));
+		expect(bar._model.borderColor).toBe(helpers.canvas.getHoverColor('rgb(9, 9, 9)'));
 		expect(bar._model.borderWidth).toBe(2.5);
 		meta.controller.removeHoverStyle(bar);
 		expect(bar._model.backgroundColor).toBe('rgb(255, 255, 255)');
@@ -1488,8 +1488,8 @@ describe('Chart.controllers.bar', function() {
 		expect(bar._model.borderColor).toBe('rgb(0, 255, 0)');
 		expect(bar._model.borderWidth).toBe(1.5);
 		meta.controller.setHoverStyle(bar);
-		expect(bar._model.backgroundColor).toBe(helpers.getHoverColor('rgb(255, 0, 0)'));
-		expect(bar._model.borderColor).toBe(helpers.getHoverColor('rgb(0, 255, 0)'));
+		expect(bar._model.backgroundColor).toBe(helpers.canvas.getHoverColor('rgb(255, 0, 0)'));
+		expect(bar._model.borderColor).toBe(helpers.canvas.getHoverColor('rgb(0, 255, 0)'));
 		expect(bar._model.borderWidth).toBe(1.5);
 		meta.controller.removeHoverStyle(bar);
 		expect(bar._model.backgroundColor).toBe('rgb(255, 0, 0)');

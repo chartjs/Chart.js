@@ -72,7 +72,7 @@ function getTickBackdropHeight(opts) {
 function measureLabelSize(ctx, lineHeight, label) {
 	if (helpers.isArray(label)) {
 		return {
-			w: helpers.longestText(ctx, ctx.font, label),
+			w: helpers.canvas.longestText(ctx, ctx.font, label),
 			h: label.length * lineHeight
 		};
 	}

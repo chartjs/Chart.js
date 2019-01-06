@@ -92,7 +92,7 @@ function getPixelForGridLine(scale, index, offsetGridLines) {
 
 function computeTextSize(context, tick, font) {
 	return helpers.isArray(tick) ?
-		helpers.longestText(context, font, tick) :
+		helpers.canvas.longestText(context, font, tick) :
 		context.measureText(tick).width;
 }
 
@@ -323,7 +323,7 @@ module.exports = Element.extend({
 		var labelRotation = tickOpts.minRotation || 0;
 
 		if (labels.length && me.options.display && me.isHorizontal()) {
-			var originalLabelWidth = helpers.longestText(context, tickFont.string, labels, me.longestTextCache);
+			var originalLabelWidth = helpers.canvas.longestText(context, tickFont.font, labels, me.longestTextCache);
 			var labelWidth = originalLabelWidth;
 			var cosRotation, sinRotation;
 
@@ -410,8 +410,8 @@ module.exports = Element.extend({
 
 		// Don't bother fitting the ticks if we are not showing them
 		if (tickOpts.display && display) {
-			var largestTextWidth = helpers.longestText(me.ctx, tickFont.string, labels, me.longestTextCache);
-			var tallestLabelHeightInLines = helpers.numberOfLabelLines(labels);
+			var largestTextWidth = helpers.canvas.longestText(me.ctx, tickFont.font, labels, me.longestTextCache);
+			var tallestLabelHeightInLines = helpers.canvas.numberOfLabelLines(labels);
 			var lineSpace = tickFont.size * 0.5;
 			var tickPadding = me.options.ticks.padding;
 

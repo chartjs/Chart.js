@@ -246,7 +246,7 @@ helpers.extend(DatasetController.prototype, {
 		var index = element._index;
 		var custom = element.custom || {};
 		var valueOrDefault = helpers.valueAtIndexOrDefault;
-		var getHoverColor = helpers.getHoverColor;
+		var getHoverColor = helpers.canvas.getHoverColor;
 		var model = element._model;
 
 		element.$previousStyle = {

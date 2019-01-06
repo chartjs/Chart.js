@@ -1,5 +1,7 @@
 'use strict';
 
+var color = require('chartjs-color');
+var defaults = require('../core/core.defaults');
 var helpers = require('./helpers.core');
 
 var PI = Math.PI;
@@ -225,6 +227,112 @@ var exports = {
 			flip ? target.controlPointNextY : target.controlPointPreviousY,
 			target.x,
 			target.y);
+	},
+
+	// ### TODO Obviously it's not a Canvas' deal. Put method somewhere else.
+	// Request animation polyfill - http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
+	requestAnimFrame: (function() {
+		if (typeof window === 'undefined') {
+			return function(callback) {
+				callback();
+			};
+		}
+		return window.requestAnimationFrame ||
+			window.webkitRequestAnimationFrame ||
+			window.mozRequestAnimationFrame ||
+			window.oRequestAnimationFrame ||
+			window.msRequestAnimationFrame ||
+			function(callback) {
+				return window.setTimeout(callback, 1000 / 60);
+			};
+	}()),
+
+	fontString: function(pixelSize, fontStyle, fontFamily) {
+		return fontStyle + ' ' + pixelSize + 'px ' + fontFamily;
+	},
+
+	longestText: function(ctx, font, arrayOfThings, cache) {
+		cache = cache || {};
+		var data = cache.data = cache.data || {};
+		var gc = cache.garbageCollect = cache.garbageCollect || [];
+
+		if (cache.font !== font) {
+			data = cache.data = {};
+			gc = cache.garbageCollect = [];
+			cache.font = font;
+		}
+
+		ctx.font = font;
+		var longest = 0;
+		helpers.each(arrayOfThings, function(thing) {
+			// Undefined strings and arrays should not be measured
+			if (thing !== undefined && thing !== null && helpers.isArray(thing) !== true) {
+				longest = exports.measureText(ctx, data, gc, longest, thing);
+			} else if (helpers.isArray(thing)) {
+				// if it is an array lets measure each element
+				// to do maybe simplify this function a bit so we can do this more recursively?
+				helpers.each(thing, function(nestedThing) {
+					// Undefined strings and arrays should not be measured
+					if (nestedThing !== undefined && nestedThing !== null && !helpers.isArray(nestedThing)) {
+						longest = exports.measureText(ctx, data, gc, longest, nestedThing);
+					}
+				});
+			}
+		});
+
+		var gcLen = gc.length / 2;
+		if (gcLen > arrayOfThings.length) {
+			for (var i = 0; i < gcLen; i++) {
+				delete data[gc[i]];
+			}
+			gc.splice(0, gcLen);
+		}
+		return longest;
+	},
+
+	measureText: function(ctx, data, gc, longest, string) {
+		var textWidth = data[string];
+		if (!textWidth) {
+			textWidth = data[string] = ctx.measureText(string).width;
+			gc.push(string);
+		}
+		if (textWidth > longest) {
+			longest = textWidth;
+		}
+		return longest;
+	},
+
+	numberOfLabelLines: function(arrayOfThings) {
+		var numberOfLines = 1;
+		helpers.each(arrayOfThings, function(thing) {
+			if (helpers.isArray(thing)) {
+				if (thing.length > numberOfLines) {
+					numberOfLines = thing.length;
+				}
+			}
+		});
+		return numberOfLines;
+	},
+
+	color: !color ?
+		function(value) {
+			console.error('Color.js not found!');
+			return value;
+		} :
+		function(value) {
+			/* global CanvasGradient */
+			if (value instanceof CanvasGradient) {
+				value = defaults.defaultColor;
+			}
+
+			return color(value);
+		},
+
+	getHoverColor: function(colorValue) {
+		/* global CanvasPattern */
+		return (colorValue instanceof CanvasPattern || colorValue instanceof CanvasGradient) ?
+			colorValue :
+			exports.color(colorValue).saturate(0.5).darken(0.1).rgbString();
 	}
 };
 

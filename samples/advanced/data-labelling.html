@@ -21,7 +21,7 @@
 	</div>
 	<button id="randomizeData">Randomize Data</button>
 	<script>
-		var color = Chart.helpers.color;
+		var color = Chart.helpers.canvas.color;
 		var barChartData = {
 			labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
 			datasets: [{
@@ -84,7 +84,7 @@
 							var fontSize = 16;
 							var fontStyle = 'normal';
 							var fontFamily = 'Helvetica Neue';
-							ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
+							ctx.font = Chart.helpers.canvas.fontString(fontSize, fontStyle, fontFamily);
 
 							// Just naively convert to string for now
 							var dataString = dataset.data[index].toString();

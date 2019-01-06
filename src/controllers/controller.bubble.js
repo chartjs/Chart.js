@@ -109,8 +109,8 @@ module.exports = DatasetController.extend({
 			radius: model.radius
 		};
 
-		model.backgroundColor = helpers.valueOrDefault(options.hoverBackgroundColor, helpers.getHoverColor(options.backgroundColor));
-		model.borderColor = helpers.valueOrDefault(options.hoverBorderColor, helpers.getHoverColor(options.borderColor));
+		model.backgroundColor = helpers.valueOrDefault(options.hoverBackgroundColor, helpers.canvas.getHoverColor(options.backgroundColor));
+		model.borderColor = helpers.valueOrDefault(options.hoverBorderColor, helpers.canvas.getHoverColor(options.borderColor));
 		model.borderWidth = helpers.valueOrDefault(options.hoverBorderWidth, options.borderWidth);
 		model.radius = options.radius + options.hoverRadius;
 	},

@@ -305,11 +305,11 @@ function getTooltipSize(tooltip, model) {
 		width = Math.max(width, ctx.measureText(line).width + widthPadding);
 	};
 
-	ctx.font = helpers.fontString(titleFontSize, model._titleFontStyle, model._titleFontFamily);
+	ctx.font = helpers.canvas.fontString(titleFontSize, model._titleFontStyle, model._titleFontFamily);
 	helpers.each(model.title, maxLineWidth);
 
 	// Body width
-	ctx.font = helpers.fontString(bodyFontSize, model._bodyFontStyle, model._bodyFontFamily);
+	ctx.font = helpers.canvas.fontString(bodyFontSize, model._bodyFontStyle, model._bodyFontFamily);
 	helpers.each(model.beforeBody.concat(model.afterBody), maxLineWidth);
 
 	// Body lines may include some extra width due to the color box
@@ -324,7 +324,7 @@ function getTooltipSize(tooltip, model) {
 	widthPadding = 0;
 
 	// Footer width
-	ctx.font = helpers.fontString(footerFontSize, model._footerFontStyle, model._footerFontFamily);
+	ctx.font = helpers.canvas.fontString(footerFontSize, model._footerFontStyle, model._footerFontFamily);
 	helpers.each(model.footer, maxLineWidth);
 
 	// Add padding
@@ -737,7 +737,7 @@ var exports = Element.extend({
 			var titleSpacing = vm.titleSpacing;
 
 			ctx.fillStyle = vm.titleFontColor;
-			ctx.font = helpers.fontString(titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
+			ctx.font = helpers.canvas.fontString(titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
 
 			var i, len;
 			for (i = 0, len = title.length; i < len; ++i) {
@@ -758,7 +758,7 @@ var exports = Element.extend({
 
 		ctx.textAlign = vm._bodyAlign;
 		ctx.textBaseline = 'top';
-		ctx.font = helpers.fontString(bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
+		ctx.font = helpers.canvas.fontString(bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
 
 		// Before Body
 		var xLinePadding = 0;
@@ -822,7 +822,7 @@ var exports = Element.extend({
 			ctx.textBaseline = 'top';
 
 			ctx.fillStyle = vm.footerFontColor;
-			ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
+			ctx.font = helpers.canvas.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
 
 			helpers.each(footer, function(line) {
 				ctx.fillText(line, pt.x, pt.y);
