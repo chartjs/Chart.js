@@ -1,6 +1,6 @@
 'use strict';
 
-var helpers = require('../helpers/index');
+var helpers = require('../helpers/helpers.core');
 
 function filterByPosition(array, position) {
 	return helpers.where(array, function(v) {
