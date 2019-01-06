@@ -4,6 +4,7 @@ var helpers = require('../helpers/index');
 var Scale = require('../core/core.scale');
 
 var noop = helpers.noop;
+var isNullOrUndef = helpers.isNullOrUndef;
 
 /**
  * Generate a set of linear ticks
@@ -17,7 +18,6 @@ function generateTicks(generationOptions, dataRange) {
 	// "nice number" algorithm. See https://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
 	// for details.
 
-	// Minimum spacing between ticks
 	var MIN_SPACING = 1e-14;
 	var stepSize = generationOptions.stepSize;
 	var unit = stepSize || 1;
@@ -25,17 +25,13 @@ function generateTicks(generationOptions, dataRange) {
 	var min = generationOptions.min;
 	var max = generationOptions.max;
 	var precision = generationOptions.precision;
-	var spacing, factor, niceMin, niceMax, numSpaces;
-
 	var rmin = dataRange.min;
 	var rmax = dataRange.max;
-	var isNullOrUndef = helpers.isNullOrUndef;
+	var spacing = helpers.niceNum((rmax - rmin) / maxNumSpaces / unit) * unit;
+	var factor, niceMin, niceMax, numSpaces;
 
-	// spacing is set to a nice number of the dataRange divided by maxNumSpaces.
-	// stepSize is used as a minimum unit if it is specified.
-	spacing = helpers.niceNum((rmax - rmin) / maxNumSpaces / unit) * unit;
-
-	// In case of really small numbers and min / max are undefined, default to rmin / rmax
+	// Beyond MIN_SPACING floating point numbers being to lose precision
+	// such that we can't do the math necessary to generate ticks
 	if (spacing < MIN_SPACING && isNullOrUndef(min) && isNullOrUndef(max)) {
 		return [rmin, rmax];
 	}
