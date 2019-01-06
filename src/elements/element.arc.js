@@ -29,7 +29,7 @@ module.exports = Element.extend({
 		var vm = this._view;
 
 		if (vm) {
-			var pointRelativePosition = helpers.getAngleFromPoint(vm, {x: chartX, y: chartY});
+			var pointRelativePosition = helpers.math.getAngleFromPoint(vm, {x: chartX, y: chartY});
 			var	angle = pointRelativePosition.angle;
 			var distance = pointRelativePosition.distance;
 

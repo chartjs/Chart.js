@@ -106,7 +106,7 @@ helpers.extend(Element.prototype, {
 	},
 
 	hasValue: function() {
-		return helpers.isNumber(this._model.x) && helpers.isNumber(this._model.y);
+		return helpers.math.isNumber(this._model.x) && helpers.math.isNumber(this._model.y);
 	}
 });
 

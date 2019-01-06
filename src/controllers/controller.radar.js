@@ -135,10 +135,10 @@ module.exports = DatasetController.extend({
 
 		for (i = 0, ilen = points.length; i < ilen; i++) {
 			model = points[i]._model;
-			controlPoints = helpers.splineCurve(
-				helpers.previousItem(points, i, true)._model,
+			controlPoints = helpers.math.splineCurve(
+				helpers.math.previousItem(points, i, true)._model,
 				model,
-				helpers.nextItem(points, i, true)._model,
+				helpers.math.nextItem(points, i, true)._model,
 				model.tension
 			);
 

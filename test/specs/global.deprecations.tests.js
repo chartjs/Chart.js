@@ -25,10 +25,10 @@ describe('Deprecations', function() {
 			});
 		});
 
-		describe('Chart.helpers.aliasPixel', function() {
+		describe('Chart.helpers.math.aliasPixel', function() {
 			it('should be defined and a function', function() {
-				expect(Chart.helpers.aliasPixel).toBeDefined();
-				expect(typeof Chart.helpers.aliasPixel).toBe('function');
+				expect(Chart.helpers.math.aliasPixel).toBeDefined();
+				expect(typeof Chart.helpers.math.aliasPixel).toBe('function');
 			});
 		});
 

@@ -27,16 +27,16 @@ function generateTicks(generationOptions, dataRange) {
 
 	// spacing is set to a nice number of the dataRange divided by maxNumSpaces.
 	// stepSize is used as a minimum unit if it is specified.
-	spacing = helpers.niceNum((dataRange.max - dataRange.min) / maxNumSpaces / unit) * unit;
+	spacing = helpers.math.niceNum((dataRange.max - dataRange.min) / maxNumSpaces / unit) * unit;
 	numSpaces = Math.ceil(dataRange.max / spacing) - Math.floor(dataRange.min / spacing);
 	if (numSpaces > maxNumSpaces) {
 		// If the calculated num of spaces exceeds maxNumSpaces, recalculate it
-		spacing = helpers.niceNum(numSpaces * spacing / maxNumSpaces / unit) * unit;
+		spacing = helpers.math.niceNum(numSpaces * spacing / maxNumSpaces / unit) * unit;
 	}
 
 	if (stepSize || helpers.isNullOrUndef(precision)) {
 		// If a precision is not specified, calculate factor based on spacing
-		factor = Math.pow(10, helpers.decimalPlaces(spacing));
+		factor = Math.pow(10, helpers.math.decimalPlaces(spacing));
 	} else {
 		// If the user specified a precision, round to that number of decimal places
 		factor = Math.pow(10, precision);
@@ -49,17 +49,17 @@ function generateTicks(generationOptions, dataRange) {
 	// If min, max and stepSize is set and they make an evenly spaced scale use it.
 	if (stepSize) {
 		// If very close to our whole number, use it.
-		if (!helpers.isNullOrUndef(min) && helpers.almostWhole(min / spacing, spacing / 1000)) {
+		if (!helpers.isNullOrUndef(min) && helpers.math.almostWhole(min / spacing, spacing / 1000)) {
 			niceMin = min;
 		}
-		if (!helpers.isNullOrUndef(max) && helpers.almostWhole(max / spacing, spacing / 1000)) {
+		if (!helpers.isNullOrUndef(max) && helpers.math.almostWhole(max / spacing, spacing / 1000)) {
 			niceMax = max;
 		}
 	}
 
 	numSpaces = (niceMax - niceMin) / spacing;
 	// If very close to our rounded value, use it.
-	if (helpers.almostEquals(numSpaces, Math.round(numSpaces), spacing / 1000)) {
+	if (helpers.math.almostEquals(numSpaces, Math.round(numSpaces), spacing / 1000)) {
 		numSpaces = Math.round(numSpaces);
 	} else {
 		numSpaces = Math.ceil(numSpaces);
@@ -93,8 +93,8 @@ module.exports = Scale.extend({
 		// do nothing since that would make the chart weird. If the user really wants a weird chart
 		// axis, they can manually override it
 		if (tickOpts.beginAtZero) {
-			var minSign = helpers.sign(me.min);
-			var maxSign = helpers.sign(me.max);
+			var minSign = helpers.math.sign(me.min);
+			var maxSign = helpers.math.sign(me.max);
 
 			if (minSign < 0 && maxSign < 0) {
 				// move the top up to 0
@@ -203,8 +203,8 @@ module.exports = Scale.extend({
 
 		// At this point, we need to update our max and min given the tick values since we have expanded the
 		// range of the scale
-		me.max = helpers.max(ticks);
-		me.min = helpers.min(ticks);
+		me.max = helpers.math.max(ticks);
+		me.min = helpers.math.min(ticks);
 
 		if (tickOpts.reverse) {
 			ticks.reverse();

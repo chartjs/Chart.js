@@ -61,7 +61,7 @@ module.exports = Element.extend({
 
 		for (index = 0; index < points.length; ++index) {
 			current = points[index];
-			previous = helpers.previousItem(points, index);
+			previous = helpers.math.previousItem(points, index);
 			currentVM = current._view;
 
 			// First point moves to it's starting position no matter what

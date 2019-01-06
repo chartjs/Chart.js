@@ -264,15 +264,15 @@ module.exports = DatasetController.extend({
 		}
 
 		if (lineModel.cubicInterpolationMode === 'monotone') {
-			helpers.splineCurveMonotone(points);
+			helpers.math.splineCurveMonotone(points);
 		} else {
 			for (i = 0, ilen = points.length; i < ilen; ++i) {
 				point = points[i];
 				model = point._model;
-				controlPoints = helpers.splineCurve(
-					helpers.previousItem(points, i)._model,
+				controlPoints = helpers.math.splineCurve(
+					helpers.math.previousItem(points, i)._model,
 					model,
-					helpers.nextItem(points, i)._model,
+					helpers.math.nextItem(points, i)._model,
 					lineModel.tension
 				);
 				model.controlPointPreviousX = controlPoints.previous.x;

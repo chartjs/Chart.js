@@ -15,20 +15,20 @@ function generateTicks(generationOptions, dataRange) {
 	var ticks = [];
 	var valueOrDefault = helpers.valueOrDefault;
 
-	var tickVal = valueOrDefault(generationOptions.min, Math.pow(10, Math.floor(helpers.log10(dataRange.min))));
+	var tickVal = valueOrDefault(generationOptions.min, Math.pow(10, Math.floor(helpers.math.log10(dataRange.min))));
 
-	var endExp = Math.floor(helpers.log10(dataRange.max));
+	var endExp = Math.floor(helpers.math.log10(dataRange.max));
 	var endSignificand = Math.ceil(dataRange.max / Math.pow(10, endExp));
 	var exp, significand;
 
 	if (tickVal === 0) {
-		exp = Math.floor(helpers.log10(dataRange.minNotZero));
+		exp = Math.floor(helpers.math.log10(dataRange.minNotZero));
 		significand = Math.floor(dataRange.minNotZero / Math.pow(10, exp));
 
 		ticks.push(tickVal);
 		tickVal = significand * Math.pow(10, exp);
 	} else {
-		exp = Math.floor(helpers.log10(tickVal));
+		exp = Math.floor(helpers.math.log10(tickVal));
 		significand = Math.floor(tickVal / Math.pow(10, exp));
 	}
 	var precision = exp < 0 ? Math.pow(10, Math.abs(exp)) : 1;
@@ -125,8 +125,8 @@ module.exports = Scale.extend({
 
 			helpers.each(valuesPerStack, function(valuesForType) {
 				if (valuesForType.length > 0) {
-					var minVal = helpers.min(valuesForType);
-					var maxVal = helpers.max(valuesForType);
+					var minVal = helpers.math.min(valuesForType);
+					var maxVal = helpers.math.max(valuesForType);
 					me.min = me.min === null ? minVal : Math.min(me.min, minVal);
 					me.max = me.max === null ? maxVal : Math.max(me.max, maxVal);
 				}
@@ -180,26 +180,26 @@ module.exports = Scale.extend({
 
 		if (me.min === me.max) {
 			if (me.min !== 0 && me.min !== null) {
-				me.min = Math.pow(10, Math.floor(helpers.log10(me.min)) - 1);
-				me.max = Math.pow(10, Math.floor(helpers.log10(me.max)) + 1);
+				me.min = Math.pow(10, Math.floor(helpers.math.log10(me.min)) - 1);
+				me.max = Math.pow(10, Math.floor(helpers.math.log10(me.max)) + 1);
 			} else {
 				me.min = DEFAULT_MIN;
 				me.max = DEFAULT_MAX;
 			}
 		}
 		if (me.min === null) {
-			me.min = Math.pow(10, Math.floor(helpers.log10(me.max)) - 1);
+			me.min = Math.pow(10, Math.floor(helpers.math.log10(me.max)) - 1);
 		}
 		if (me.max === null) {
 			me.max = me.min !== 0
-				? Math.pow(10, Math.floor(helpers.log10(me.min)) + 1)
+				? Math.pow(10, Math.floor(helpers.math.log10(me.min)) + 1)
 				: DEFAULT_MAX;
 		}
 		if (me.minNotZero === null) {
 			if (me.min > 0) {
 				me.minNotZero = me.min;
 			} else if (me.max < 1) {
-				me.minNotZero = Math.pow(10, Math.floor(helpers.log10(me.max)));
+				me.minNotZero = Math.pow(10, Math.floor(helpers.math.log10(me.max)));
 			} else {
 				me.minNotZero = DEFAULT_MIN;
 			}
@@ -220,8 +220,8 @@ module.exports = Scale.extend({
 
 		// At this point, we need to update our max and min given the tick values since we have expanded the
 		// range of the scale
-		me.max = helpers.max(ticks);
-		me.min = helpers.min(ticks);
+		me.max = helpers.math.max(ticks);
+		me.min = helpers.math.min(ticks);
 
 		if (tickOpts.reverse) {
 			reverse = !reverse;
@@ -258,7 +258,7 @@ module.exports = Scale.extend({
 	 * @private
 	 */
 	_getFirstTickValue: function(value) {
-		var exp = Math.floor(helpers.log10(value));
+		var exp = Math.floor(helpers.math.log10(value));
 		var significand = Math.floor(value / Math.pow(10, exp));
 
 		return significand * Math.pow(10, exp);
@@ -267,7 +267,7 @@ module.exports = Scale.extend({
 	getPixelForValue: function(value) {
 		var me = this;
 		var reverse = me.options.ticks.reverse;
-		var log10 = helpers.log10;
+		var log10 = helpers.math.log10;
 		var firstTickValue = me._getFirstTickValue(me.minNotZero);
 		var offset = 0;
 		var innerDimension, pixel, start, end, sign;
@@ -310,7 +310,7 @@ module.exports = Scale.extend({
 	getValueForPixel: function(pixel) {
 		var me = this;
 		var reverse = me.options.ticks.reverse;
-		var log10 = helpers.log10;
+		var log10 = helpers.math.log10;
 		var firstTickValue = me._getFirstTickValue(me.minNotZero);
 		var innerDimension, start, end, value;
 

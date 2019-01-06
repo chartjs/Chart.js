@@ -91,8 +91,8 @@ module.exports = LinearScaleBase.extend({
 
 			helpers.each(valuesPerStack, function(valuesForType) {
 				var values = valuesForType.positiveValues.concat(valuesForType.negativeValues);
-				var minVal = helpers.min(values);
-				var maxVal = helpers.max(values);
+				var minVal = helpers.math.min(values);
+				var maxVal = helpers.math.max(values);
 				me.min = me.min === null ? minVal : Math.min(me.min, minVal);
 				me.max = me.max === null ? maxVal : Math.max(me.max, maxVal);
 			});

@@ -332,7 +332,7 @@ module.exports = Element.extend({
 
 			// Max label rotation can be set or default to 90 - also act as a loop counter
 			while (labelWidth > tickWidth && labelRotation < tickOpts.maxRotation) {
-				var angleRadians = helpers.toRadians(labelRotation);
+				var angleRadians = helpers.math.toRadians(labelRotation);
 				cosRotation = Math.cos(angleRadians);
 				sinRotation = Math.sin(angleRadians);
 
@@ -422,7 +422,7 @@ module.exports = Element.extend({
 				// A horizontal axis is more constrained by the height.
 				me.longestLabelWidth = largestTextWidth;
 
-				var angleRadians = helpers.toRadians(me.labelRotation);
+				var angleRadians = helpers.math.toRadians(me.labelRotation);
 				var cosRotation = Math.cos(angleRadians);
 				var sinRotation = Math.sin(angleRadians);
 
@@ -621,7 +621,7 @@ module.exports = Element.extend({
 		var tickCount = ticks.length;
 
 		// Calculate space needed by label in axis direction.
-		var rot = helpers.toRadians(me.labelRotation);
+		var rot = helpers.math.toRadians(me.labelRotation);
 		var cos = Math.abs(Math.cos(rot));
 		var sin = Math.abs(Math.sin(rot));
 
@@ -743,12 +743,12 @@ module.exports = Element.extend({
 		var scaleLabelFontColor = helpers.valueOrDefault(scaleLabel.fontColor, defaultFontColor);
 		var scaleLabelFont = parseFont(scaleLabel);
 		var scaleLabelPadding = helpers.options.toPadding(scaleLabel.padding);
-		var labelRotationRadians = helpers.toRadians(me.labelRotation);
+		var labelRotationRadians = helpers.math.toRadians(me.labelRotation);
 
 		var itemsToDraw = [];
 
 		var axisWidth = gridLines.drawBorder ? helpers.valueAtIndexOrDefault(gridLines.lineWidth, 0, 0) : 0;
-		var alignPixel = helpers._alignPixel;
+		var alignPixel = helpers.math._alignPixel;
 		var borderValue, tickStart, tickEnd;
 
 		if (position === 'top') {
