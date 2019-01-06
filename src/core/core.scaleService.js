@@ -1,7 +1,7 @@
 'use strict';
 
 var defaults = require('./core.defaults');
-var helpers = require('../helpers/index');
+var helpers = require('../helpers/helpers.core');
 var layouts = require('./core.layouts');
 
 module.exports = {
