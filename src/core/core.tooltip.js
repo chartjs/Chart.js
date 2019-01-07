@@ -769,13 +769,14 @@ var exports = Element.extend({
 		var drawColorBoxes = vm.displayColors;
 		var labelColors = vm.labelColors;
 		var xLinePadding = 0;
-		var textColor, x;
-
-		pt.x = getAlignedX(vm, bodyAlign);
+		var colorX = drawColorBoxes ? getAlignedX(vm, 'left') : 0;
+		var textColor;
 
 		ctx.textAlign = bodyAlign;
 		ctx.textBaseline = 'top';
 		ctx.font = helpers.fontString(bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
+
+		pt.x = getAlignedX(vm, bodyAlign);
 
 		// Before Body
 		var fillLineOfText = function(line) {
@@ -800,20 +801,18 @@ var exports = Element.extend({
 			helpers.each(bodyItem.lines, function(line) {
 				// Draw Legend-like boxes if needed
 				if (drawColorBoxes) {
-					x = getAlignedX(vm, 'left');
-
 					// Fill a white rect so that colours merge nicely if the opacity is < 1
 					ctx.fillStyle = vm.legendColorBackground;
-					ctx.fillRect(x, pt.y, bodyFontSize, bodyFontSize);
+					ctx.fillRect(colorX, pt.y, bodyFontSize, bodyFontSize);
 
 					// Border
 					ctx.lineWidth = 1;
 					ctx.strokeStyle = labelColors[i].borderColor;
-					ctx.strokeRect(x, pt.y, bodyFontSize, bodyFontSize);
+					ctx.strokeRect(colorX, pt.y, bodyFontSize, bodyFontSize);
 
 					// Inner square
 					ctx.fillStyle = labelColors[i].backgroundColor;
-					ctx.fillRect(x + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
+					ctx.fillRect(colorX + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
 					ctx.fillStyle = textColor;
 				}
 
