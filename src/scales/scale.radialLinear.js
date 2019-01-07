@@ -141,7 +141,7 @@ function fitWithPointLabels(scale) {
 		l: 0,
 		r: scale.width,
 		t: 0,
-		b: scale.height
+		b: scale.height - scale.paddingTop
 	};
 	var furthestAngles = {};
 	var i, textSize, pointPosition;
