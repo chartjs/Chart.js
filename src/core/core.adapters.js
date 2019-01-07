@@ -8,8 +8,8 @@
 
 function abstract() {
 	throw new Error(
-		'This method is not implemented: either no adapter ' +
-		'can be found or provide an incomplete integration.'
+		'This method is not implemented: either no adapter can ' +
+		'be found or an incomplete integration was provided.'
 	);
 }
 
