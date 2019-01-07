@@ -463,23 +463,12 @@ function getBackgroundPoint(vm, size, alignment, chart) {
 	};
 }
 
-/**
- * Align pt.x to match given align (and using xPadding)
- * @param {Object} pt - point to align {x}
- * @param {Object} vm - rectangle text should be aligned in {x, y, width, height, xPadding}
- * @param {String} align - left, center or right
- */
-function xAlignText(pt, vm, align) {
-	switch (align) {
-	case 'center':
-		pt.x = vm.x + vm.width / 2;
-		break;
-	case 'right':
-		pt.x = vm.x + vm.width - vm.xPadding;
-		break;
-	default:
-		pt.x = vm.x + vm.xPadding;
-	}
+function getAlignedX(vm, align) {
+	return align === 'center'
+		? vm.x + vm.width / 2
+		: align === 'right'
+			? vm.x + vm.width - vm.xPadding
+			: vm.x + vm.xPadding;
 }
 
 /**
@@ -749,6 +738,8 @@ var exports = Element.extend({
 		var title = vm.title;
 
 		if (title.length) {
+			pt.x = getAlignedX(vm, vm._titleAlign);
+
 			ctx.textAlign = vm._titleAlign;
 			ctx.textBaseline = 'top';
 
@@ -777,9 +768,10 @@ var exports = Element.extend({
 		var body = vm.body;
 		var drawColorBoxes = vm.displayColors;
 		var labelColors = vm.labelColors;
-		var textColor, textWidth;
 		var xLinePadding = 0;
-		var textX = pt.x;
+		var textColor, x;
+
+		pt.x = getAlignedX(vm, bodyAlign);
 
 		ctx.textAlign = bodyAlign;
 		ctx.textBaseline = 'top';
@@ -801,7 +793,6 @@ var exports = Element.extend({
 
 		// Draw body lines now
 		helpers.each(body, function(bodyItem, i) {
-			pt.x = textX;
 			textColor = vm.labelTextColors[i];
 			ctx.fillStyle = textColor;
 			helpers.each(bodyItem.before, fillLineOfText);
@@ -809,34 +800,21 @@ var exports = Element.extend({
 			helpers.each(bodyItem.lines, function(line) {
 				// Draw Legend-like boxes if needed
 				if (drawColorBoxes) {
-					textWidth = ctx.measureText(line).width;
-					switch (bodyAlign) {
-					case 'center':
-						pt.x = textX - textWidth / 2 - xLinePadding;
-						break;
-					case 'right':
-						pt.x = textX - textWidth - bodyFontSize - 2;
-						break;
-					default:
-						pt.x = textX;
-						break;
-					}
+					x = getAlignedX(vm, 'left');
 
 					// Fill a white rect so that colours merge nicely if the opacity is < 1
 					ctx.fillStyle = vm.legendColorBackground;
-					ctx.fillRect(pt.x, pt.y, bodyFontSize, bodyFontSize);
+					ctx.fillRect(x, pt.y, bodyFontSize, bodyFontSize);
 
 					// Border
 					ctx.lineWidth = 1;
 					ctx.strokeStyle = labelColors[i].borderColor;
-					ctx.strokeRect(pt.x, pt.y, bodyFontSize, bodyFontSize);
+					ctx.strokeRect(x, pt.y, bodyFontSize, bodyFontSize);
 
 					// Inner square
 					ctx.fillStyle = labelColors[i].backgroundColor;
-					ctx.fillRect(pt.x + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
+					ctx.fillRect(x + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
 					ctx.fillStyle = textColor;
-
-					pt.x = textX;
 				}
 
 				fillLineOfText(line);
@@ -857,6 +835,7 @@ var exports = Element.extend({
 		var footer = vm.footer;
 
 		if (footer.length) {
+			pt.x = getAlignedX(vm, vm._footerAlign);
 			pt.y += vm.footerMarginTop;
 
 			ctx.textAlign = vm._footerAlign;
@@ -949,15 +928,12 @@ var exports = Element.extend({
 			pt.y += vm.yPadding;
 
 			// Titles
-			xAlignText(pt, vm, vm._titleAlign);
 			this.drawTitle(pt, vm, ctx);
 
 			// Body
-			xAlignText(pt, vm, vm._bodyAlign);
 			this.drawBody(pt, vm, ctx);
 
 			// Footer
-			xAlignText(pt, vm, vm._footerAlign);
 			this.drawFooter(pt, vm, ctx);
 
 			ctx.restore();
