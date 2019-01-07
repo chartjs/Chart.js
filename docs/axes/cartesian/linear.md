@@ -12,6 +12,7 @@ The following options are provided by the linear scale. They are all located in 
 | `min` | `Number` | | User defined minimum number for the scale, overrides minimum value from data. [more...](#axis-range-settings)
 | `max` | `Number` | | User defined maximum number for the scale, overrides maximum value from data. [more...](#axis-range-settings)
 | `maxTicksLimit` | `Number` | `11` | Maximum number of ticks and gridlines to show.
+| `precision` | `Number` | | if defined and `stepSize` is not specified, the step size will be rounded to this many decimal places.
 | `stepSize` | `Number` | | User defined fixed step size for the scale. [more...](#step-size)
 | `suggestedMax` | `Number` | | Adjustment used when calculating the maximum data value. [more...](#axis-range-settings)
 | `suggestedMin` | `Number` | | Adjustment used when calculating the minimum data value. [more...](#axis-range-settings)

@@ -355,6 +355,8 @@ describe('Chart.controllers.doughnut', function() {
 		var meta = chart.getDatasetMeta(0);
 		var arc = meta.data[0];
 
+		chart.update();
+		meta.controller.setHoverStyle(arc);
 		meta.controller.removeHoverStyle(arc);
 		expect(arc._model.backgroundColor).toBe('rgb(255, 0, 0)');
 		expect(arc._model.borderColor).toBe('rgb(0, 0, 255)');
@@ -365,6 +367,8 @@ describe('Chart.controllers.doughnut', function() {
 		chart.data.datasets[0].borderColor = 'rgb(18, 18, 18)';
 		chart.data.datasets[0].borderWidth = 1.56;
 
+		chart.update();
+		meta.controller.setHoverStyle(arc);
 		meta.controller.removeHoverStyle(arc);
 		expect(arc._model.backgroundColor).toBe('rgb(9, 9, 9)');
 		expect(arc._model.borderColor).toBe('rgb(18, 18, 18)');
@@ -375,6 +379,8 @@ describe('Chart.controllers.doughnut', function() {
 		chart.data.datasets[0].borderColor = ['rgb(18, 18, 18)'];
 		chart.data.datasets[0].borderWidth = [0.1, 1.56];
 
+		chart.update();
+		meta.controller.setHoverStyle(arc);
 		meta.controller.removeHoverStyle(arc);
 		expect(arc._model.backgroundColor).toBe('rgb(255, 255, 255)');
 		expect(arc._model.borderColor).toBe('rgb(18, 18, 18)');
@@ -387,6 +393,8 @@ describe('Chart.controllers.doughnut', function() {
 			borderWidth: 3.14159,
 		};
 
+		chart.update();
+		meta.controller.setHoverStyle(arc);
 		meta.controller.removeHoverStyle(arc);
 		expect(arc._model.backgroundColor).toBe('rgb(7, 7, 7)');
 		expect(arc._model.borderColor).toBe('rgb(17, 17, 17)');

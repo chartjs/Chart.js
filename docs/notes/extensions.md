@@ -18,6 +18,8 @@ In addition, many charts can be found on the [npm registry](https://www.npmjs.co
  - <a href="https://github.com/chartjs/chartjs-plugin-deferred" target="_blank">chartjs-plugin-deferred</a> - Defers initial chart update until chart scrolls into viewport.
  - <a href="https://github.com/compwright/chartjs-plugin-draggable" target="_blank">chartjs-plugin-draggable</a> - Makes select chart elements draggable with the mouse.
  - <a href="https://github.com/y-takey/chartjs-plugin-stacked100" target="_blank">chartjs-plugin-stacked100</a> - Draws 100% stacked bar chart.
+ - <a href="https://github.com/nagix/chartjs-plugin-streaming" target="_blank">chartjs-plugin-streaming</a> - Enables to create live streaming charts.
+ - <a href="https://github.com/nagix/chartjs-plugin-style" target="_blank">chartjs-plugin-style</a> - Provides more styling options.
  - <a href="https://github.com/everestate/chartjs-plugin-waterfall" target="_blank">chartjs-plugin-waterfall</a> - Enables easy use of waterfall charts.
  - <a href="https://github.com/chartjs/chartjs-plugin-zoom" target="_blank">chartjs-plugin-zoom</a> - Enables zooming and panning on charts.
 
@@ -55,6 +57,7 @@ In addition, many plugins can be found on the [npm registry](https://www.npmjs.c
 
 ### Java
  - <a href="https://github.com/mdewilde/chart/" target="_blank">Chart.java</a>
+ - <a href="https://github.com/adessoAG/wicked-charts" target="_blank">Wicked-Charts</a>
 
 ### GWT (Google Web toolkit)
  - <a href="https://github.com/pepstock-org/Charba" target="_blank">Charba</a>

@@ -212,6 +212,31 @@ describe('Linear Scale', function() {
 		expect(chart.scales.yScale0.max).toBe(90);
 	});
 
+	it('Should correctly determine the max & min data values for small numbers', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					yAxisID: 'yScale0',
+					data: [-1e-8, 3e-8, -4e-8, 6e-8]
+				}],
+				labels: ['a', 'b', 'c', 'd']
+			},
+			options: {
+				scales: {
+					yAxes: [{
+						id: 'yScale0',
+						type: 'linear'
+					}]
+				}
+			}
+		});
+
+		expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
+		expect(chart.scales.yScale0.min * 1e8).toBeCloseTo(-4);
+		expect(chart.scales.yScale0.max * 1e8).toBeCloseTo(6);
+	});
+
 	it('Should correctly determine the max & min for scatter data', function() {
 		var chart = window.acquireChart({
 			type: 'line',
@@ -546,6 +571,66 @@ describe('Linear Scale', function() {
 		expect(chart.scales.yScale0.min).toBe(1);
 		expect(chart.scales.yScale0.max).toBe(11);
 		expect(chart.scales.yScale0.ticks).toEqual(['11', '9', '7', '5', '3', '1']);
+	});
+
+	describe('precision', function() {
+		it('Should create integer steps if precision is 0', function() {
+			var chart = window.acquireChart({
+				type: 'bar',
+				data: {
+					datasets: [{
+						yAxisID: 'yScale0',
+						data: [0, 1, 2, 1, 0, 1]
+					}],
+					labels: ['a', 'b', 'c', 'd', 'e', 'f']
+				},
+				options: {
+					scales: {
+						yAxes: [{
+							id: 'yScale0',
+							type: 'linear',
+							ticks: {
+								precision: 0
+							}
+						}]
+					}
+				}
+			});
+
+			expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
+			expect(chart.scales.yScale0.min).toBe(0);
+			expect(chart.scales.yScale0.max).toBe(2);
+			expect(chart.scales.yScale0.ticks).toEqual(['2', '1', '0']);
+		});
+
+		it('Should round the step size to the given number of decimal places', function() {
+			var chart = window.acquireChart({
+				type: 'bar',
+				data: {
+					datasets: [{
+						yAxisID: 'yScale0',
+						data: [0, 0.001, 0.002, 0.003, 0, 0.001]
+					}],
+					labels: ['a', 'b', 'c', 'd', 'e', 'f']
+				},
+				options: {
+					scales: {
+						yAxes: [{
+							id: 'yScale0',
+							type: 'linear',
+							ticks: {
+								precision: 2
+							}
+						}]
+					}
+				}
+			});
+
+			expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
+			expect(chart.scales.yScale0.min).toBe(0);
+			expect(chart.scales.yScale0.max).toBe(0.01);
+			expect(chart.scales.yScale0.ticks).toEqual(['0.01', '0']);
+		});
 	});
 
 
@@ -904,5 +989,61 @@ describe('Linear Scale', function() {
 
 		expect(chart.scales['x-axis-0'].min).toEqual(20);
 		expect(chart.scales['x-axis-0'].max).toEqual(21);
+	});
+
+	it('min settings should be used if set to zero', function() {
+		var barData = {
+			labels: ['S1', 'S2', 'S3'],
+			datasets: [{
+				label: 'dataset 1',
+				backgroundColor: '#382765',
+				data: [2500, 2000, 1500]
+			}]
+		};
+
+		var chart = window.acquireChart({
+			type: 'horizontalBar',
+			data: barData,
+			options: {
+				scales: {
+					xAxes: [{
+						ticks: {
+							min: 0,
+							max: 3000
+						}
+					}]
+				}
+			}
+		});
+
+		expect(chart.scales['x-axis-0'].min).toEqual(0);
+	});
+
+	it('max settings should be used if set to zero', function() {
+		var barData = {
+			labels: ['S1', 'S2', 'S3'],
+			datasets: [{
+				label: 'dataset 1',
+				backgroundColor: '#382765',
+				data: [-2500, -2000, -1500]
+			}]
+		};
+
+		var chart = window.acquireChart({
+			type: 'horizontalBar',
+			data: barData,
+			options: {
+				scales: {
+					xAxes: [{
+						ticks: {
+							min: -3000,
+							max: 0
+						}
+					}]
+				}
+			}
+		});
+
+		expect(chart.scales['x-axis-0'].max).toEqual(0);
 	});
 });

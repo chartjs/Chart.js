@@ -30,13 +30,15 @@ describe('Chart.helpers.canvas', function() {
 			expect(context.getCalls()).toEqual([
 				{name: 'moveTo', args: [15, 20]},
 				{name: 'lineTo', args: [35, 20]},
-				{name: 'quadraticCurveTo', args: [40, 20, 40, 25]},
+				{name: 'arcTo', args: [40, 20, 40, 25, 5]},
 				{name: 'lineTo', args: [40, 55]},
-				{name: 'quadraticCurveTo', args: [40, 60, 35, 60]},
+				{name: 'arcTo', args: [40, 60, 35, 60, 5]},
 				{name: 'lineTo', args: [15, 60]},
-				{name: 'quadraticCurveTo', args: [10, 60, 10, 55]},
+				{name: 'arcTo', args: [10, 60, 10, 55, 5]},
 				{name: 'lineTo', args: [10, 25]},
-				{name: 'quadraticCurveTo', args: [10, 20, 15, 20]}
+				{name: 'arcTo', args: [10, 20, 15, 20, 5]},
+				{name: 'closePath', args: []},
+				{name: 'moveTo', args: [10, 20]}
 			]);
 		});
 		it('should optimize path if radius is 0', function() {

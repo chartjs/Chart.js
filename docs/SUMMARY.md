@@ -6,6 +6,7 @@
   * [Integration](getting-started/integration.md)
   * [Usage](getting-started/usage.md)
 * [General](general/README.md)
+  * [Accessibility](general/accessibility.md)
   * [Responsive](general/responsive.md)
   * [Pixel Ratio](general/device-pixel-ratio.md)
   * [Interactions](general/interactions/README.md)
