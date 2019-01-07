@@ -189,7 +189,9 @@ function toTimestamp(input, options) {
 
 	// Only parse if its not a timestamp already
 	if (!helpers.isFinite(value)) {
-		value = adapter.parse(value, format);
+		value = typeof format === 'string'
+			? adapter.parse(value, format)
+			: adapter.parse(value);
 	}
 
 	if (value !== null) {
@@ -203,7 +205,7 @@ function toTimestamp(input, options) {
 
 		// `format` could return something else than a timestamp, if so, parse it
 		if (!helpers.isFinite(value)) {
-			value = adapter.parse(value, format);
+			value = adapter.parse(value);
 		}
 	}
 
