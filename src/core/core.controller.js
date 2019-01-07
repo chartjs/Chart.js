@@ -510,9 +510,7 @@ module.exports = function(Chart) {
 			}
 
 			var animationOptions = me.options.animation;
-			var duration = typeof config.duration !== 'undefined'
-				? config.duration
-				: animationOptions && animationOptions.duration;
+			var duration = helpers.valueOrDefault(config.duration, animationOptions && animationOptions.duration);
 			var lazy = config.lazy;
 
 			if (plugins.notify(me, 'beforeRender') === false) {

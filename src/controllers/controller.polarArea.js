@@ -5,6 +5,8 @@ var defaults = require('../core/core.defaults');
 var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
+var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
+
 defaults._set('polarArea', {
 	scale: {
 		type: 'radialLinear',
@@ -60,11 +62,10 @@ defaults._set('polarArea', {
 						var ds = data.datasets[0];
 						var arc = meta.data[i];
 						var custom = arc.custom || {};
-						var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
 						var arcOpts = chart.options.elements.arc;
-						var fill = custom.backgroundColor ? custom.backgroundColor : valueAtIndexOrDefault(ds.backgroundColor, i, arcOpts.backgroundColor);
-						var stroke = custom.borderColor ? custom.borderColor : valueAtIndexOrDefault(ds.borderColor, i, arcOpts.borderColor);
-						var bw = custom.borderWidth ? custom.borderWidth : valueAtIndexOrDefault(ds.borderWidth, i, arcOpts.borderWidth);
+						var fill = custom.backgroundColor || valueAtIndexOrDefault(ds.backgroundColor, i, arcOpts.backgroundColor);
+						var stroke = custom.borderColor || valueAtIndexOrDefault(ds.borderColor, i, arcOpts.borderColor);
+						var bw = !isNaN(custom.borderWidth) ? custom.borderWidth : valueAtIndexOrDefault(ds.borderWidth, i, arcOpts.borderWidth);
 
 						return {
 							text: label,
@@ -192,20 +193,19 @@ module.exports = DatasetController.extend({
 				outerRadius: reset ? resetRadius : distance,
 				startAngle: reset && animationOpts.animateRotate ? datasetStartAngle : startAngle,
 				endAngle: reset && animationOpts.animateRotate ? datasetStartAngle : endAngle,
-				label: helpers.valueAtIndexOrDefault(labels, index, labels[index])
+				label: valueAtIndexOrDefault(labels, index, labels[index])
 			}
 		});
 
 		// Apply border and fill style
 		var elementOpts = this.chart.options.elements.arc;
 		var custom = arc.custom || {};
-		var valueOrDefault = helpers.valueAtIndexOrDefault;
 		var model = arc._model;
 
-		model.backgroundColor = custom.backgroundColor ? custom.backgroundColor : valueOrDefault(dataset.backgroundColor, index, elementOpts.backgroundColor);
-		model.borderColor = custom.borderColor ? custom.borderColor : valueOrDefault(dataset.borderColor, index, elementOpts.borderColor);
-		model.borderWidth = custom.borderWidth ? custom.borderWidth : valueOrDefault(dataset.borderWidth, index, elementOpts.borderWidth);
-		model.borderAlign = custom.borderAlign ? custom.borderAlign : valueOrDefault(dataset.borderAlign, index, elementOpts.borderAlign);
+		model.backgroundColor = custom.backgroundColor || valueAtIndexOrDefault(dataset.backgroundColor, index, elementOpts.backgroundColor);
+		model.borderColor = custom.borderColor || valueAtIndexOrDefault(dataset.borderColor, index, elementOpts.borderColor);
+		model.borderWidth = !isNaN(custom.borderWidth) ? custom.borderWidth : valueAtIndexOrDefault(dataset.borderWidth, index, elementOpts.borderWidth);
+		model.borderAlign = custom.borderAlign || valueAtIndexOrDefault(dataset.borderAlign, index, elementOpts.borderAlign);
 
 		arc.pivot();
 	},

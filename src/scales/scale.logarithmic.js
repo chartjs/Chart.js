@@ -5,6 +5,8 @@ var helpers = require('../helpers/index');
 var Scale = require('../core/core.scale');
 var Ticks = require('../core/core.ticks');
 
+var valueOrDefault = helpers.valueOrDefault;
+
 /**
  * Generate a set of logarithmic ticks
  * @param generationOptions the options used to generate the ticks
@@ -13,7 +15,6 @@ var Ticks = require('../core/core.ticks');
  */
 function generateTicks(generationOptions, dataRange) {
 	var ticks = [];
-	var valueOrDefault = helpers.valueOrDefault;
 
 	var tickVal = valueOrDefault(generationOptions.min, Math.pow(10, Math.floor(helpers.log10(dataRange.min))));
 
@@ -171,7 +172,6 @@ module.exports = Scale.extend({
 		var me = this;
 		var opts = me.options;
 		var tickOpts = opts.ticks;
-		var valueOrDefault = helpers.valueOrDefault;
 		var DEFAULT_MIN = 1;
 		var DEFAULT_MAX = 10;
 

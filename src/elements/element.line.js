@@ -50,9 +50,9 @@ module.exports = Element.extend({
 			ctx.setLineDash(vm.borderDash || globalOptionLineElements.borderDash);
 		}
 
-		ctx.lineDashOffset = vm.borderDashOffset || globalOptionLineElements.borderDashOffset;
+		ctx.lineDashOffset = helpers.valueOrDefault(vm.borderDashOffset, globalOptionLineElements.borderDashOffset);
 		ctx.lineJoin = vm.borderJoinStyle || globalOptionLineElements.borderJoinStyle;
-		ctx.lineWidth = vm.borderWidth || globalOptionLineElements.borderWidth;
+		ctx.lineWidth = helpers.valueOrDefault(vm.borderWidth, globalOptionLineElements.borderWidth);
 		ctx.strokeStyle = vm.borderColor || globalDefaults.defaultColor;
 
 		// Stroke Line

@@ -5,6 +5,9 @@ var defaults = require('../core/core.defaults');
 var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
+var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
+var fallback = helpers.options._fallback;
+
 defaults._set('radar', {
 	scale: {
 		type: 'radialLinear'
@@ -50,15 +53,15 @@ module.exports = DatasetController.extend({
 			// Model
 			_model: {
 				// Appearance
-				tension: custom.tension ? custom.tension : helpers.valueOrDefault(dataset.lineTension, lineElementOptions.tension),
-				backgroundColor: custom.backgroundColor ? custom.backgroundColor : (dataset.backgroundColor || lineElementOptions.backgroundColor),
-				borderWidth: custom.borderWidth ? custom.borderWidth : (dataset.borderWidth || lineElementOptions.borderWidth),
-				borderColor: custom.borderColor ? custom.borderColor : (dataset.borderColor || lineElementOptions.borderColor),
-				fill: custom.fill ? custom.fill : (dataset.fill !== undefined ? dataset.fill : lineElementOptions.fill),
-				borderCapStyle: custom.borderCapStyle ? custom.borderCapStyle : (dataset.borderCapStyle || lineElementOptions.borderCapStyle),
-				borderDash: custom.borderDash ? custom.borderDash : (dataset.borderDash || lineElementOptions.borderDash),
-				borderDashOffset: custom.borderDashOffset ? custom.borderDashOffset : (dataset.borderDashOffset || lineElementOptions.borderDashOffset),
-				borderJoinStyle: custom.borderJoinStyle ? custom.borderJoinStyle : (dataset.borderJoinStyle || lineElementOptions.borderJoinStyle),
+				tension: fallback(custom.tension, dataset.lineTension, lineElementOptions.tension),
+				backgroundColor: fallback(custom.backgroundColor, dataset.backgroundColor, lineElementOptions.backgroundColor),
+				borderWidth: fallback(custom.borderWidth, dataset.borderWidth, lineElementOptions.borderWidth),
+				borderColor: fallback(custom.borderColor, dataset.borderColor, lineElementOptions.borderColor),
+				fill: fallback(custom.fill, dataset.fill, lineElementOptions.fill),
+				borderCapStyle: fallback(custom.borderCapStyle, dataset.borderCapStyle, lineElementOptions.borderCapStyle),
+				borderDash: fallback(custom.borderDash, dataset.borderDash, lineElementOptions.borderDash),
+				borderDashOffset: fallback(custom.borderDashOffset, dataset.borderDashOffset, lineElementOptions.borderDashOffset),
+				borderJoinStyle: fallback(custom.borderJoinStyle, dataset.borderJoinStyle, lineElementOptions.borderJoinStyle),
 			}
 		});
 
@@ -106,20 +109,20 @@ module.exports = DatasetController.extend({
 				y: reset ? scale.yCenter : pointPosition.y,
 
 				// Appearance
-				tension: custom.tension ? custom.tension : helpers.valueOrDefault(dataset.lineTension, me.chart.options.elements.line.tension),
-				radius: custom.radius ? custom.radius : helpers.valueAtIndexOrDefault(dataset.pointRadius, index, pointElementOptions.radius),
-				backgroundColor: custom.backgroundColor ? custom.backgroundColor : helpers.valueAtIndexOrDefault(dataset.pointBackgroundColor, index, pointElementOptions.backgroundColor),
-				borderColor: custom.borderColor ? custom.borderColor : helpers.valueAtIndexOrDefault(dataset.pointBorderColor, index, pointElementOptions.borderColor),
-				borderWidth: custom.borderWidth ? custom.borderWidth : helpers.valueAtIndexOrDefault(dataset.pointBorderWidth, index, pointElementOptions.borderWidth),
-				pointStyle: custom.pointStyle ? custom.pointStyle : helpers.valueAtIndexOrDefault(dataset.pointStyle, index, pointElementOptions.pointStyle),
-				rotation: custom.rotation ? custom.rotation : helpers.valueAtIndexOrDefault(dataset.pointRotation, index, pointElementOptions.rotation),
+				tension: fallback(custom.tension, dataset.lineTension, me.chart.options.elements.line.tension),
+				radius: !isNaN(custom.radius) ? custom.radius : valueAtIndexOrDefault(dataset.pointRadius, index, pointElementOptions.radius),
+				backgroundColor: custom.backgroundColor || valueAtIndexOrDefault(dataset.pointBackgroundColor, index, pointElementOptions.backgroundColor),
+				borderColor: custom.borderColor || valueAtIndexOrDefault(dataset.pointBorderColor, index, pointElementOptions.borderColor),
+				borderWidth: !isNaN(custom.borderWidth) ? custom.borderWidth : valueAtIndexOrDefault(dataset.pointBorderWidth, index, pointElementOptions.borderWidth),
+				pointStyle: custom.pointStyle || valueAtIndexOrDefault(dataset.pointStyle, index, pointElementOptions.pointStyle),
+				rotation: !isNaN(custom.rotation) ? custom.rotation : valueAtIndexOrDefault(dataset.pointRotation, index, pointElementOptions.rotation),
 
 				// Tooltip
-				hitRadius: custom.hitRadius ? custom.hitRadius : helpers.valueAtIndexOrDefault(dataset.pointHitRadius, index, pointElementOptions.hitRadius)
+				hitRadius: !isNaN(custom.hitRadius) ? custom.hitRadius : valueAtIndexOrDefault(dataset.pointHitRadius, index, pointElementOptions.hitRadius)
 			}
 		});
 
-		point._model.skip = custom.skip ? custom.skip : (isNaN(point._model.x) || isNaN(point._model.y));
+		point._model.skip = custom.skip || isNaN(point._model.x) || isNaN(point._model.y);
 	},
 
 	updateBezierControlPoints: function() {
@@ -164,9 +167,9 @@ module.exports = DatasetController.extend({
 			radius: model.radius
 		};
 
-		model.radius = custom.hoverRadius ? custom.hoverRadius : helpers.valueAtIndexOrDefault(dataset.pointHoverRadius, index, this.chart.options.elements.point.hoverRadius);
-		model.backgroundColor = custom.hoverBackgroundColor ? custom.hoverBackgroundColor : helpers.valueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.getHoverColor(model.backgroundColor));
-		model.borderColor = custom.hoverBorderColor ? custom.hoverBorderColor : helpers.valueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.getHoverColor(model.borderColor));
-		model.borderWidth = custom.hoverBorderWidth ? custom.hoverBorderWidth : helpers.valueAtIndexOrDefault(dataset.pointHoverBorderWidth, index, model.borderWidth);
+		model.radius = !isNaN(custom.hoverRadius) ? custom.hoverRadius : valueAtIndexOrDefault(dataset.pointHoverRadius, index, this.chart.options.elements.point.hoverRadius);
+		model.backgroundColor = custom.hoverBackgroundColor || valueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.getHoverColor(model.backgroundColor));
+		model.borderColor = custom.hoverBorderColor || valueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.getHoverColor(model.borderColor));
+		model.borderWidth = !isNaN(custom.hoverBorderWidth) ? custom.hoverBorderWidth : valueAtIndexOrDefault(dataset.pointHoverBorderWidth, index, model.borderWidth);
 	}
 });

@@ -197,4 +197,29 @@ describe('Chart.helpers.options', function() {
 			expect(resolve([input, ['foo', 'bar']], {v: 42}, 1)).toBe('bar');
 		});
 	});
+
+	describe('_fallback', function() {
+		var fallback = options._fallback;
+
+		it('should return the first value if defined', function() {
+			var object = {};
+			var array = [];
+
+			expect(fallback(null, 21, 42)).toBe(null);
+			expect(fallback(false, 21, 42)).toBe(false);
+			expect(fallback(object, 21, 42)).toBe(object);
+			expect(fallback(array, 21, 42)).toBe(array);
+			expect(fallback('', 21, 42)).toBe('');
+			expect(fallback(0, 21, 42)).toBe(0);
+		});
+		it('should return the second value if the first value is undefined', function() {
+			expect(fallback(undefined, 21, 42)).toBe(21);
+			expect(fallback({}.foo, 21, 42)).toBe(21);
+		});
+		it('should return the last value if others are undefined', function() {
+			expect(fallback(undefined, 42)).toBe(42);
+			expect(fallback(undefined, undefined, 42)).toBe(42);
+			expect(fallback(undefined, undefined, undefined, 42)).toBe(42);
+		});
+	});
 });

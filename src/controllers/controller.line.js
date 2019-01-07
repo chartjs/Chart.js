@@ -5,7 +5,10 @@ var defaults = require('../core/core.defaults');
 var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
-var _isPointInArea = helpers.canvas._isPointInArea;
+var valueOrDefault = helpers.valueOrDefault;
+var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
+var fallback = helpers.options._fallback;
+var isPointInArea = helpers.canvas._isPointInArea;
 
 defaults._set('line', {
 	showLines: true,
@@ -28,7 +31,7 @@ defaults._set('line', {
 });
 
 function lineEnabled(dataset, options) {
-	return helpers.valueOrDefault(dataset.showLine, options.showLines);
+	return valueOrDefault(dataset.showLine, options.showLines);
 }
 
 module.exports = DatasetController.extend({
@@ -69,18 +72,18 @@ module.exports = DatasetController.extend({
 				// The default behavior of lines is to break at null values, according
 				// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158
 				// This option gives lines the ability to span gaps
-				spanGaps: dataset.spanGaps ? dataset.spanGaps : options.spanGaps,
-				tension: custom.tension ? custom.tension : helpers.valueOrDefault(dataset.lineTension, lineElementOptions.tension),
-				backgroundColor: custom.backgroundColor ? custom.backgroundColor : (dataset.backgroundColor || lineElementOptions.backgroundColor),
-				borderWidth: custom.borderWidth ? custom.borderWidth : (dataset.borderWidth || lineElementOptions.borderWidth),
-				borderColor: custom.borderColor ? custom.borderColor : (dataset.borderColor || lineElementOptions.borderColor),
-				borderCapStyle: custom.borderCapStyle ? custom.borderCapStyle : (dataset.borderCapStyle || lineElementOptions.borderCapStyle),
-				borderDash: custom.borderDash ? custom.borderDash : (dataset.borderDash || lineElementOptions.borderDash),
-				borderDashOffset: custom.borderDashOffset ? custom.borderDashOffset : (dataset.borderDashOffset || lineElementOptions.borderDashOffset),
-				borderJoinStyle: custom.borderJoinStyle ? custom.borderJoinStyle : (dataset.borderJoinStyle || lineElementOptions.borderJoinStyle),
-				fill: custom.fill ? custom.fill : (dataset.fill !== undefined ? dataset.fill : lineElementOptions.fill),
-				steppedLine: custom.steppedLine ? custom.steppedLine : helpers.valueOrDefault(dataset.steppedLine, lineElementOptions.stepped),
-				cubicInterpolationMode: custom.cubicInterpolationMode ? custom.cubicInterpolationMode : helpers.valueOrDefault(dataset.cubicInterpolationMode, lineElementOptions.cubicInterpolationMode),
+				spanGaps: valueOrDefault(dataset.spanGaps, options.spanGaps),
+				tension: fallback(custom.tension, dataset.lineTension, lineElementOptions.tension),
+				backgroundColor: fallback(custom.backgroundColor, dataset.backgroundColor, lineElementOptions.backgroundColor),
+				borderWidth: fallback(custom.borderWidth, dataset.borderWidth, lineElementOptions.borderWidth),
+				borderColor: fallback(custom.borderColor, dataset.borderColor, lineElementOptions.borderColor),
+				borderCapStyle: fallback(custom.borderCapStyle, dataset.borderCapStyle, lineElementOptions.borderCapStyle),
+				borderDash: fallback(custom.borderDash, dataset.borderDash, lineElementOptions.borderDash),
+				borderDashOffset: fallback(custom.borderDashOffset, dataset.borderDashOffset, lineElementOptions.borderDashOffset),
+				borderJoinStyle: fallback(custom.borderJoinStyle, dataset.borderJoinStyle, lineElementOptions.borderJoinStyle),
+				fill: fallback(custom.fill, dataset.fill, lineElementOptions.fill),
+				steppedLine: fallback(custom.steppedLine, dataset.steppedLine, lineElementOptions.stepped),
+				cubicInterpolationMode: fallback(custom.cubicInterpolationMode, dataset.cubicInterpolationMode, lineElementOptions.cubicInterpolationMode),
 			};
 
 			line.pivot();
@@ -109,7 +112,7 @@ module.exports = DatasetController.extend({
 		if (custom.backgroundColor) {
 			backgroundColor = custom.backgroundColor;
 		} else if (dataset.pointBackgroundColor) {
-			backgroundColor = helpers.valueAtIndexOrDefault(dataset.pointBackgroundColor, index, backgroundColor);
+			backgroundColor = valueAtIndexOrDefault(dataset.pointBackgroundColor, index, backgroundColor);
 		} else if (dataset.backgroundColor) {
 			backgroundColor = dataset.backgroundColor;
 		}
@@ -125,7 +128,7 @@ module.exports = DatasetController.extend({
 		if (custom.borderColor) {
 			borderColor = custom.borderColor;
 		} else if (dataset.pointBorderColor) {
-			borderColor = helpers.valueAtIndexOrDefault(dataset.pointBorderColor, index, borderColor);
+			borderColor = valueAtIndexOrDefault(dataset.pointBorderColor, index, borderColor);
 		} else if (dataset.borderColor) {
 			borderColor = dataset.borderColor;
 		}
@@ -141,7 +144,7 @@ module.exports = DatasetController.extend({
 		if (!isNaN(custom.borderWidth)) {
 			borderWidth = custom.borderWidth;
 		} else if (!isNaN(dataset.pointBorderWidth) || helpers.isArray(dataset.pointBorderWidth)) {
-			borderWidth = helpers.valueAtIndexOrDefault(dataset.pointBorderWidth, index, borderWidth);
+			borderWidth = valueAtIndexOrDefault(dataset.pointBorderWidth, index, borderWidth);
 		} else if (!isNaN(dataset.borderWidth)) {
 			borderWidth = dataset.borderWidth;
 		}
@@ -157,7 +160,7 @@ module.exports = DatasetController.extend({
 		if (!isNaN(custom.rotation)) {
 			pointRotation = custom.rotation;
 		} else if (!isNaN(dataset.pointRotation) || helpers.isArray(dataset.pointRotation)) {
-			pointRotation = helpers.valueAtIndexOrDefault(dataset.pointRotation, index, pointRotation);
+			pointRotation = valueAtIndexOrDefault(dataset.pointRotation, index, pointRotation);
 		}
 		return pointRotation;
 	},
@@ -197,8 +200,8 @@ module.exports = DatasetController.extend({
 			y: y,
 			skip: custom.skip || isNaN(x) || isNaN(y),
 			// Appearance
-			radius: custom.radius || helpers.valueAtIndexOrDefault(dataset.pointRadius, index, pointOptions.radius),
-			pointStyle: custom.pointStyle || helpers.valueAtIndexOrDefault(dataset.pointStyle, index, pointOptions.pointStyle),
+			radius: !isNaN(custom.radius) ? custom.radius : valueAtIndexOrDefault(dataset.pointRadius, index, pointOptions.radius),
+			pointStyle: custom.pointStyle || valueAtIndexOrDefault(dataset.pointStyle, index, pointOptions.pointStyle),
 			rotation: me.getPointRotation(point, index),
 			backgroundColor: me.getPointBackgroundColor(point, index),
 			borderColor: me.getPointBorderColor(point, index),
@@ -206,7 +209,7 @@ module.exports = DatasetController.extend({
 			tension: meta.dataset._model ? meta.dataset._model.tension : 0,
 			steppedLine: meta.dataset._model ? meta.dataset._model.steppedLine : false,
 			// Tooltip
-			hitRadius: custom.hitRadius || helpers.valueAtIndexOrDefault(dataset.pointHitRadius, index, pointOptions.hitRadius)
+			hitRadius: !isNaN(custom.hitRadius) ? custom.hitRadius : valueAtIndexOrDefault(dataset.pointHitRadius, index, pointOptions.hitRadius)
 		};
 	},
 
@@ -285,12 +288,12 @@ module.exports = DatasetController.extend({
 		if (chart.options.elements.line.capBezierPoints) {
 			for (i = 0, ilen = points.length; i < ilen; ++i) {
 				model = points[i]._model;
-				if (_isPointInArea(model, area)) {
-					if (i > 0 && _isPointInArea(points[i - 1]._model, area)) {
+				if (isPointInArea(model, area)) {
+					if (i > 0 && isPointInArea(points[i - 1]._model, area)) {
 						model.controlPointPreviousX = capControlPoint(model.controlPointPreviousX, area.left, area.right);
 						model.controlPointPreviousY = capControlPoint(model.controlPointPreviousY, area.top, area.bottom);
 					}
-					if (i < points.length - 1 && _isPointInArea(points[i + 1]._model, area)) {
+					if (i < points.length - 1 && isPointInArea(points[i + 1]._model, area)) {
 						model.controlPointNextX = capControlPoint(model.controlPointNextX, area.left, area.right);
 						model.controlPointNextY = capControlPoint(model.controlPointNextY, area.top, area.bottom);
 					}
@@ -344,9 +347,9 @@ module.exports = DatasetController.extend({
 			radius: model.radius
 		};
 
-		model.backgroundColor = custom.hoverBackgroundColor || helpers.valueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.getHoverColor(model.backgroundColor));
-		model.borderColor = custom.hoverBorderColor || helpers.valueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.getHoverColor(model.borderColor));
-		model.borderWidth = custom.hoverBorderWidth || helpers.valueAtIndexOrDefault(dataset.pointHoverBorderWidth, index, model.borderWidth);
-		model.radius = custom.hoverRadius || helpers.valueAtIndexOrDefault(dataset.pointHoverRadius, index, this.chart.options.elements.point.hoverRadius);
+		model.backgroundColor = custom.hoverBackgroundColor || valueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.getHoverColor(model.backgroundColor));
+		model.borderColor = custom.hoverBorderColor || valueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.getHoverColor(model.borderColor));
+		model.borderWidth = !isNaN(custom.hoverBorderWidth) ? custom.hoverBorderWidth : valueAtIndexOrDefault(dataset.pointHoverBorderWidth, index, model.borderWidth);
+		model.radius = !isNaN(custom.hoverRadius) ? custom.hoverRadius : valueAtIndexOrDefault(dataset.pointHoverRadius, index, this.chart.options.elements.point.hoverRadius);
 	}
 });

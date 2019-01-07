@@ -6,6 +6,8 @@ var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 var Scale = require('../core/core.scale');
 
+var valueOrDefault = helpers.valueOrDefault;
+
 // Integer constants are from the ES6 spec.
 var MIN_INTEGER = Number.MIN_SAFE_INTEGER || -9007199254740991;
 var MAX_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
@@ -307,7 +309,7 @@ function generate(min, max, capacity, options) {
 	var timeOpts = options.time;
 	var minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, capacity);
 	var major = determineMajorUnit(minor);
-	var stepSize = helpers.valueOrDefault(timeOpts.stepSize, timeOpts.unitStepSize);
+	var stepSize = valueOrDefault(timeOpts.stepSize, timeOpts.unitStepSize);
 	var weekday = minor === 'week' ? timeOpts.isoWeekday : false;
 	var majorTicksEnabled = options.ticks.major.enabled;
 	var interval = INTERVALS[minor];
@@ -690,7 +692,7 @@ module.exports = Scale.extend({
 		var major = majorTickOpts.enabled && majorUnit && majorFormat && time === majorTime;
 		var label = tick.format(formatOverride ? formatOverride : major ? majorFormat : minorFormat);
 		var tickOpts = major ? majorTickOpts : options.ticks.minor;
-		var formatter = helpers.valueOrDefault(tickOpts.callback, tickOpts.userCallback);
+		var formatter = valueOrDefault(tickOpts.callback, tickOpts.userCallback);
 
 		return formatter ? formatter(label, index, ticks) : label;
 	},
@@ -765,7 +767,7 @@ module.exports = Scale.extend({
 		var angle = helpers.toRadians(ticksOpts.maxRotation);
 		var cosRotation = Math.cos(angle);
 		var sinRotation = Math.sin(angle);
-		var tickFontSize = helpers.valueOrDefault(ticksOpts.fontSize, defaults.global.defaultFontSize);
+		var tickFontSize = valueOrDefault(ticksOpts.fontSize, defaults.global.defaultFontSize);
 
 		return (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation);
 	},
