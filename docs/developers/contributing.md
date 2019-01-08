@@ -4,8 +4,8 @@ New contributions to the library are welcome, but we ask that you please follow 
 
 - Use tabs for indentation, not spaces.
 - Only change the individual files in `/src`.
-- Check that your code will pass `eslint` code standards, `gulp lint` will run this for you.
-- Check that your code will pass tests, `gulp test` will run tests for you.
+- Check that your code will pass `eslint` code standards, `npm run gulp lint` will run this for you.
+- Check that your code will pass tests, `npm run gulp test` will run tests for you.
 - Keep pull requests concise, and document new functionality in the relevant `.md` file.
 - Consider whether your changes are useful for all users, or if creating a Chart.js [plugin](plugins.md) would be more appropriate.
 - Avoid breaking changes unless there is an upcoming major release, which are infrequent. We encourage people to write plugins for most new advanced features, so care a lot about backwards compatibility.
@@ -22,23 +22,22 @@ Firstly, we need to ensure development dependencies are installed. With node and
 
 ```bash
 > npm install
-> npm install -g gulp
 ```
 
-This will install the local development dependencies for Chart.js, along with a CLI for the JavaScript task runner <a href="https://gulpjs.com/" target="_blank">gulp</a>.
+This will install the local development dependencies for Chart.js including a CLI for the JavaScript task runner <a href="https://gulpjs.com/" target="_blank">gulp</a>.
 
 The following commands are now available from the repository root:
 
 ```bash
-> gulp build                // build dist files in ./dist
-> gulp build --watch        // build and watch for changes
-> gulp unittest             // run tests from ./test/specs
-> gulp unittest --watch     // run tests and watch for source changes
-> gulp unittest --coverage  // run tests and generate coverage reports in ./coverage
-> gulp lint                 // perform code linting (ESLint)
-> gulp test                 // perform code linting and run unit tests
-> gulp docs                 // build the documentation in ./dist/docs
-> gulp docs --watch         // starts the gitbook live reloaded server
+> npm run gulp build                // build dist files in ./dist
+> npm run gulp build --watch        // build and watch for changes
+> npm run gulp unittest             // run tests from ./test/specs
+> npm run gulp unittest --watch     // run tests and watch for source changes
+> npm run gulp unittest --coverage  // run tests and generate coverage reports in ./coverage
+> npm run gulp lint                 // perform code linting (ESLint)
+> npm run gulp test                 // perform code linting and run unit tests
+> npm run gulp docs                 // build the documentation in ./dist/docs
+> npm run gulp docs --watch         // starts the gitbook live reloaded server
 ```
 
 More information can be found in [gulpfile.js](https://github.com/chartjs/Chart.js/blob/master/gulpfile.js).

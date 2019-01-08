@@ -22,6 +22,9 @@
   "bugs": {
     "url": "https://github.com/chartjs/Chart.js/issues"
   },
+  "scripts": {
+    "gulp": "gulp"
+  },
   "devDependencies": {
     "coveralls": "^3.0.0",
     "eslint": "^5.9.0",
