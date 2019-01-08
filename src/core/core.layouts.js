@@ -1,5 +1,6 @@
 'use strict';
 
+var defaults = require('./core.defaults');
 var helpers = require('../helpers/index');
 
 function filterByPosition(array, position) {
@@ -24,6 +25,17 @@ function sortByWeight(array, reverse) {
 		delete v._tmpIndex_;
 	});
 }
+
+defaults._set('global', {
+	layout: {
+		padding: {
+			top: 0,
+			right: 0,
+			bottom: 0,
+			left: 0
+		}
+	}
+});
 
 /**
  * @interface ILayoutItem

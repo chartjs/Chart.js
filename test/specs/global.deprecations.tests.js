@@ -14,7 +14,6 @@ describe('Deprecations', function() {
 
 			describe('Chart.' + klass, function() {
 				it('should be defined as a function', function() {
-					expect(Chart[klass]).toBeDefined();
 					expect(typeof Chart[klass]).toBe('function');
 				});
 				it('should create a chart of type "' + type + '"', function() {
@@ -26,17 +25,21 @@ describe('Deprecations', function() {
 		});
 
 		describe('Chart.helpers.aliasPixel', function() {
-			it('should be defined and a function', function() {
-				expect(Chart.helpers.aliasPixel).toBeDefined();
+			it('should be defined as a function', function() {
 				expect(typeof Chart.helpers.aliasPixel).toBe('function');
 			});
 		});
 
 		describe('Chart.LinearScaleBase', function() {
 			it('should be defined and inherit from Chart.Scale', function() {
-				expect(Chart.LinearScaleBase).toBeDefined();
 				expect(typeof Chart.LinearScaleBase).toBe('function');
 				expect(Chart.LinearScaleBase.prototype instanceof Chart.Scale).toBeTruthy();
+			});
+		});
+
+		describe('Chart.types', function() {
+			it('should be defined as an empty object', function() {
+				expect(Chart.types).toEqual({});
 			});
 		});
 	});
@@ -103,7 +106,6 @@ describe('Deprecations', function() {
 
 		describe('Chart.helpers.indexOf', function() {
 			it('should be defined and a function', function() {
-				expect(Chart.helpers.indexOf).toBeDefined();
 				expect(typeof Chart.helpers.indexOf).toBe('function');
 			});
 			it('should returns the correct index', function() {
@@ -144,7 +146,6 @@ describe('Deprecations', function() {
 
 		describe('Chart.helpers.drawRoundedRectangle', function() {
 			it('should be defined and a function', function() {
-				expect(Chart.helpers.drawRoundedRectangle).toBeDefined();
 				expect(typeof Chart.helpers.drawRoundedRectangle).toBe('function');
 			});
 			it('should call Chart.helpers.canvas.roundedRect', function() {
@@ -161,7 +162,6 @@ describe('Deprecations', function() {
 
 		describe('Chart.helpers.addEvent', function() {
 			it('should be defined and a function', function() {
-				expect(Chart.helpers.addEvent).toBeDefined();
 				expect(typeof Chart.helpers.addEvent).toBe('function');
 			});
 			it('should correctly add event listener', function() {
@@ -174,7 +174,6 @@ describe('Deprecations', function() {
 
 		describe('Chart.helpers.removeEvent', function() {
 			it('should be defined and a function', function() {
-				expect(Chart.helpers.removeEvent).toBeDefined();
 				expect(typeof Chart.helpers.removeEvent).toBe('function');
 			});
 			it('should correctly remove event listener', function() {
