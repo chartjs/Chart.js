@@ -74,7 +74,7 @@ The style of each arc can be controlled with the following properties:
 | `borderColor` | arc border color.
 | `borderWidth` | arc border width (in pixels).
 
-All these values, if `undefined`, fallback to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options.
+All these values, if `undefined`, fallback to the associated [`elements.arc.*`](../configuration/elements.md#arc-configuration) options.
 
 ### Border Alignment
 
@@ -91,7 +91,7 @@ The interaction with each arc can be controlled with the following properties:
 | Name | Description
 | ---- | -----------
 | `hoverBackgroundColor` | arc background color when hovered.
-| `hoverBorderColor` | arc border color hovered.
+| `hoverBorderColor` | arc border color when hovered.
 | `hoverBorderWidth` | arc border width when hovered (in pixels).
 
 All these values, if `undefined`, fallback to the associated [`elements.arc.*`](../configuration/elements.md#arc-configuration) options.

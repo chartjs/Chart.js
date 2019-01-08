@@ -80,7 +80,7 @@ The interaction with each bubble can be controlled with the following properties
 | Name | Description
 | ---- | -----------
 | `hoverBackgroundColor` | bubble background color when hovered.
-| `hoverBorderColor` | bubble border color hovered.
+| `hoverBorderColor` | bubble border color when hovered.
 | `hoverBorderWidth` | bubble border width when hovered (in pixels).
 | `hoverRadius` | bubble **additional** radius when hovered (in pixels).
 | `hitRadius` | bubble **additional** radius for hit detection (in pixels).
