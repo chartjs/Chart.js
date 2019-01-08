@@ -463,6 +463,14 @@ function getBackgroundPoint(vm, size, alignment, chart) {
 	};
 }
 
+function getAlignedX(vm, align) {
+	return align === 'center'
+		? vm.x + vm.width / 2
+		: align === 'right'
+			? vm.x + vm.width - vm.xPadding
+			: vm.x + vm.xPadding;
+}
+
 /**
  * Helper to build before and after body lines
  */
@@ -730,6 +738,8 @@ var exports = Element.extend({
 		var title = vm.title;
 
 		if (title.length) {
+			pt.x = getAlignedX(vm, vm._titleAlign);
+
 			ctx.textAlign = vm._titleAlign;
 			ctx.textBaseline = 'top';
 
@@ -754,14 +764,21 @@ var exports = Element.extend({
 	drawBody: function(pt, vm, ctx) {
 		var bodyFontSize = vm.bodyFontSize;
 		var bodySpacing = vm.bodySpacing;
+		var bodyAlign = vm._bodyAlign;
 		var body = vm.body;
+		var drawColorBoxes = vm.displayColors;
+		var labelColors = vm.labelColors;
+		var xLinePadding = 0;
+		var colorX = drawColorBoxes ? getAlignedX(vm, 'left') : 0;
+		var textColor;
 
-		ctx.textAlign = vm._bodyAlign;
+		ctx.textAlign = bodyAlign;
 		ctx.textBaseline = 'top';
 		ctx.font = helpers.fontString(bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
 
+		pt.x = getAlignedX(vm, bodyAlign);
+
 		// Before Body
-		var xLinePadding = 0;
 		var fillLineOfText = function(line) {
 			ctx.fillText(line, pt.x + xLinePadding, pt.y);
 			pt.y += bodyFontSize + bodySpacing;
@@ -771,12 +788,13 @@ var exports = Element.extend({
 		ctx.fillStyle = vm.bodyFontColor;
 		helpers.each(vm.beforeBody, fillLineOfText);
 
-		var drawColorBoxes = vm.displayColors;
-		xLinePadding = drawColorBoxes ? (bodyFontSize + 2) : 0;
+		xLinePadding = drawColorBoxes && bodyAlign !== 'right'
+			? bodyAlign === 'center' ? (bodyFontSize / 2 + 1) : (bodyFontSize + 2)
+			: 0;
 
 		// Draw body lines now
 		helpers.each(body, function(bodyItem, i) {
-			var textColor = vm.labelTextColors[i];
+			textColor = vm.labelTextColors[i];
 			ctx.fillStyle = textColor;
 			helpers.each(bodyItem.before, fillLineOfText);
 
@@ -785,16 +803,16 @@ var exports = Element.extend({
 				if (drawColorBoxes) {
 					// Fill a white rect so that colours merge nicely if the opacity is < 1
 					ctx.fillStyle = vm.legendColorBackground;
-					ctx.fillRect(pt.x, pt.y, bodyFontSize, bodyFontSize);
+					ctx.fillRect(colorX, pt.y, bodyFontSize, bodyFontSize);
 
 					// Border
 					ctx.lineWidth = 1;
-					ctx.strokeStyle = vm.labelColors[i].borderColor;
-					ctx.strokeRect(pt.x, pt.y, bodyFontSize, bodyFontSize);
+					ctx.strokeStyle = labelColors[i].borderColor;
+					ctx.strokeRect(colorX, pt.y, bodyFontSize, bodyFontSize);
 
 					// Inner square
-					ctx.fillStyle = vm.labelColors[i].backgroundColor;
-					ctx.fillRect(pt.x + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
+					ctx.fillStyle = labelColors[i].backgroundColor;
+					ctx.fillRect(colorX + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
 					ctx.fillStyle = textColor;
 				}
 
@@ -816,6 +834,7 @@ var exports = Element.extend({
 		var footer = vm.footer;
 
 		if (footer.length) {
+			pt.x = getAlignedX(vm, vm._footerAlign);
 			pt.y += vm.footerMarginTop;
 
 			ctx.textAlign = vm._footerAlign;
@@ -905,7 +924,6 @@ var exports = Element.extend({
 			this.drawBackground(pt, vm, ctx, tooltipSize);
 
 			// Draw Title, Body, and Footer
-			pt.x += vm.xPadding;
 			pt.y += vm.yPadding;
 
 			// Titles

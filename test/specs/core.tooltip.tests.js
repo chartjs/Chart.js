@@ -1099,4 +1099,174 @@ describe('Core.Tooltip', function() {
 			}]
 		}));
 	});
+
+	describe('text align', function() {
+		var globalDefaults = Chart.defaults.global;
+		var makeView = function(title, body, footer) {
+			return {
+				// Positioning
+				x: 100,
+				y: 100,
+				width: 100,
+				height: 100,
+				xPadding: 5,
+				yPadding: 5,
+				xAlign: 'left',
+				yAlign: 'top',
+
+				// Body
+				bodyFontColor: '#fff',
+				_bodyFontFamily: globalDefaults.defaultFontFamily,
+				_bodyFontStyle: globalDefaults.defaultFontStyle,
+				_bodyAlign: body,
+				bodyFontSize: globalDefaults.defaultFontSize,
+				bodySpacing: 2,
+
+				// Title
+				titleFontColor: '#fff',
+				_titleFontFamily: globalDefaults.defaultFontFamily,
+				_titleFontStyle: 'bold',
+				titleFontSize: globalDefaults.defaultFontSize,
+				_titleAlign: title,
+				titleSpacing: 2,
+				titleMarginBottom: 6,
+
+				// Footer
+				footerFontColor: '#fff',
+				_footerFontFamily: globalDefaults.defaultFontFamily,
+				_footerFontStyle: 'bold',
+				footerFontSize: globalDefaults.defaultFontSize,
+				_footerAlign: footer,
+				footerSpacing: 2,
+				footerMarginTop: 6,
+
+				// Appearance
+				caretSize: 5,
+				cornerRadius: 6,
+				borderColor: '#aaa',
+				borderWidth: 1,
+				backgroundColor: 'rgba(0,0,0,0.8)',
+				opacity: 1,
+				legendColorBackground: '#fff',
+
+				// Text
+				title: ['title'],
+				beforeBody: [],
+				body: [{
+					before: [],
+					lines: ['label'],
+					after: []
+				}],
+				afterBody: [],
+				footer: ['footer'],
+				caretPadding: 2,
+				labelTextColors: ['#fff'],
+				labelColors: [{
+					borderColor: 'rgb(255, 0, 0)',
+					backgroundColor: 'rgb(0, 255, 0)'
+				}, {
+					borderColor: 'rgb(0, 0, 255)',
+					backgroundColor: 'rgb(0, 255, 255)'
+				}]
+			};
+		};
+		var drawBody = [
+			{name: 'save', args: []},
+			{name: 'setFillStyle', args: ['rgba(0,0,0,0.8)']},
+			{name: 'setStrokeStyle', args: ['#aaa']},
+			{name: 'setLineWidth', args: [1]},
+			{name: 'beginPath', args: []},
+			{name: 'moveTo', args: [106, 100]},
+			{name: 'lineTo', args: [106, 100]},
+			{name: 'lineTo', args: [111, 95]},
+			{name: 'lineTo', args: [116, 100]},
+			{name: 'lineTo', args: [194, 100]},
+			{name: 'quadraticCurveTo', args: [200, 100, 200, 106]},
+			{name: 'lineTo', args: [200, 194]},
+			{name: 'quadraticCurveTo', args: [200, 200, 194, 200]},
+			{name: 'lineTo', args: [106, 200]},
+			{name: 'quadraticCurveTo', args: [100, 200, 100, 194]},
+			{name: 'lineTo', args: [100, 106]},
+			{name: 'quadraticCurveTo', args: [100, 100, 106, 100]},
+			{name: 'closePath', args: []},
+			{name: 'fill', args: []},
+			{name: 'stroke', args: []}
+		];
+
+		var mockContext = window.createMockContext();
+		var tooltip = new Chart.Tooltip({
+			_options: globalDefaults.tooltips,
+			_chart: {
+				ctx: mockContext,
+			}
+		});
+
+		it('Should go left', function() {
+			mockContext.resetCalls();
+			tooltip._view = makeView('left', 'left', 'left');
+			tooltip.draw();
+
+			expect(mockContext.getCalls()).toEqual(Array.prototype.concat(drawBody, [
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['title', 105, 105]},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['label', 105, 123]},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['footer', 105, 141]},
+				{name: 'restore', args: []}
+			]));
+		});
+
+		it('Should go right', function() {
+			mockContext.resetCalls();
+			tooltip._view = makeView('right', 'right', 'right');
+			tooltip.draw();
+
+			expect(mockContext.getCalls()).toEqual(Array.prototype.concat(drawBody, [
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['title', 195, 105]},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['label', 195, 123]},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['footer', 195, 141]},
+				{name: 'restore', args: []}
+			]));
+		});
+
+		it('Should center', function() {
+			mockContext.resetCalls();
+			tooltip._view = makeView('center', 'center', 'center');
+			tooltip.draw();
+
+			expect(mockContext.getCalls()).toEqual(Array.prototype.concat(drawBody, [
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['title', 150, 105]},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['label', 150, 123]},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['footer', 150, 141]},
+				{name: 'restore', args: []}
+			]));
+		});
+
+		it('Should allow mixed', function() {
+			mockContext.resetCalls();
+			tooltip._view = makeView('right', 'center', 'left');
+			tooltip.draw();
+
+			expect(mockContext.getCalls()).toEqual(Array.prototype.concat(drawBody, [
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['title', 195, 105]},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['label', 150, 123]},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['footer', 105, 141]},
+				{name: 'restore', args: []}
+			]));
+		});
+	});
 });
