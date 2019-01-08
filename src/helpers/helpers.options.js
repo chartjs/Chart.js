@@ -134,22 +134,5 @@ module.exports = {
 				return value;
 			}
 		}
-	},
-
-	/**
-	 * Returns the first defined value from the given `args`.
-	 * @param {*} args - The arguments from which the first defined value is to be returned.
-	 * @returns {*}
-	 */
-	_fallback: function() {
-		var i, ilen, value;
-
-		for (i = 0, ilen = arguments.length - 1; i < ilen; ++i) {
-			value = arguments[i];
-			if (typeof value !== 'undefined') {
-				return value;
-			}
-		}
-		return arguments[i];
 	}
 };

@@ -2,7 +2,7 @@
 
 var helpers = require('../helpers/index');
 
-var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
+var resolve = helpers.options.resolve;
 
 var arrayEvents = ['push', 'pop', 'shift', 'splice', 'unshift'];
 
@@ -256,9 +256,9 @@ helpers.extend(DatasetController.prototype, {
 			borderWidth: model.borderWidth
 		};
 
-		model.backgroundColor = custom.hoverBackgroundColor || valueAtIndexOrDefault(dataset.hoverBackgroundColor, index, getHoverColor(model.backgroundColor));
-		model.borderColor = custom.hoverBorderColor || valueAtIndexOrDefault(dataset.hoverBorderColor, index, getHoverColor(model.borderColor));
-		model.borderWidth = !isNaN(custom.hoverBorderWidth) ? custom.hoverBorderWidth : valueAtIndexOrDefault(dataset.hoverBorderWidth, index, model.borderWidth);
+		model.backgroundColor = resolve([custom.hoverBackgroundColor, dataset.hoverBackgroundColor, getHoverColor(model.backgroundColor)], undefined, index);
+		model.borderColor = resolve([custom.hoverBorderColor, dataset.hoverBorderColor, getHoverColor(model.borderColor)], undefined, index);
+		model.borderWidth = resolve([custom.hoverBorderWidth, dataset.hoverBorderWidth, model.borderWidth], undefined, index);
 	},
 
 	/**

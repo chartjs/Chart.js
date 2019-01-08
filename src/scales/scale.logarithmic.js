@@ -170,8 +170,7 @@ module.exports = Scale.extend({
 
 	handleTickRangeOptions: function() {
 		var me = this;
-		var opts = me.options;
-		var tickOpts = opts.ticks;
+		var tickOpts = me.options.ticks;
 		var DEFAULT_MIN = 1;
 		var DEFAULT_MAX = 10;
 
@@ -208,8 +207,7 @@ module.exports = Scale.extend({
 
 	buildTicks: function() {
 		var me = this;
-		var opts = me.options;
-		var tickOpts = opts.ticks;
+		var tickOpts = me.options.ticks;
 		var reverse = !me.isHorizontal();
 
 		var generationOptions = {
@@ -266,7 +264,8 @@ module.exports = Scale.extend({
 
 	getPixelForValue: function(value) {
 		var me = this;
-		var reverse = me.options.ticks.reverse;
+		var tickOpts = me.options.ticks;
+		var reverse = tickOpts.reverse;
 		var log10 = helpers.log10;
 		var firstTickValue = me._getFirstTickValue(me.minNotZero);
 		var offset = 0;
@@ -292,10 +291,7 @@ module.exports = Scale.extend({
 		}
 		if (value !== start) {
 			if (start === 0) { // include zero tick
-				offset = helpers.getValueOrDefault(
-					me.options.ticks.fontSize,
-					defaults.global.defaultFontSize
-				);
+				offset = valueOrDefault(tickOpts.fontSize, defaults.global.defaultFontSize);
 				innerDimension -= offset;
 				start = firstTickValue;
 			}
@@ -309,7 +305,8 @@ module.exports = Scale.extend({
 
 	getValueForPixel: function(pixel) {
 		var me = this;
-		var reverse = me.options.ticks.reverse;
+		var tickOpts = me.options.ticks;
+		var reverse = tickOpts.reverse;
 		var log10 = helpers.log10;
 		var firstTickValue = me._getFirstTickValue(me.minNotZero);
 		var innerDimension, start, end, value;
@@ -330,10 +327,7 @@ module.exports = Scale.extend({
 		}
 		if (value !== start) {
 			if (start === 0) { // include zero tick
-				var offset = helpers.getValueOrDefault(
-					me.options.ticks.fontSize,
-					defaults.global.defaultFontSize
-				);
+				var offset = valueOrDefault(tickOpts.fontSize, defaults.global.defaultFontSize);
 				value -= offset;
 				innerDimension -= offset;
 				start = firstTickValue;

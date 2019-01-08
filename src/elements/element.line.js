@@ -30,6 +30,7 @@ module.exports = Element.extend({
 		var ctx = me._chart.ctx;
 		var spanGaps = vm.spanGaps;
 		var points = me._children.slice(); // clone array
+		var valueOrDefault = helpers.valueOrDefault;
 		var globalDefaults = defaults.global;
 		var globalOptionLineElements = globalDefaults.elements.line;
 		var lastDrawnIndex = -1;
@@ -50,9 +51,9 @@ module.exports = Element.extend({
 			ctx.setLineDash(vm.borderDash || globalOptionLineElements.borderDash);
 		}
 
-		ctx.lineDashOffset = helpers.valueOrDefault(vm.borderDashOffset, globalOptionLineElements.borderDashOffset);
+		ctx.lineDashOffset = valueOrDefault(vm.borderDashOffset, globalOptionLineElements.borderDashOffset);
 		ctx.lineJoin = vm.borderJoinStyle || globalOptionLineElements.borderJoinStyle;
-		ctx.lineWidth = helpers.valueOrDefault(vm.borderWidth, globalOptionLineElements.borderWidth);
+		ctx.lineWidth = valueOrDefault(vm.borderWidth, globalOptionLineElements.borderWidth);
 		ctx.strokeStyle = vm.borderColor || globalDefaults.defaultColor;
 
 		// Stroke Line

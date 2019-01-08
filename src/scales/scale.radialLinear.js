@@ -7,7 +7,6 @@ var Ticks = require('../core/core.ticks');
 
 var valueOrDefault = helpers.valueOrDefault;
 var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
-var fallback = helpers.options._fallback;
 
 var defaultConfig = {
 	display: true,
@@ -227,6 +226,7 @@ function drawPointLabels(scale) {
 	var angleLineOpts = opts.angleLines;
 	var gridLineOpts = opts.gridLines;
 	var pointLabelOpts = opts.pointLabels;
+	var resolve = helpers.options.resolve;
 	var lineWidth = valueOrDefault(angleLineOpts.lineWidth, gridLineOpts.lineWidth);
 	var lineColor = valueOrDefault(angleLineOpts.color, gridLineOpts.color);
 	var tickBackdropHeight = getTickBackdropHeight(opts);
@@ -235,8 +235,8 @@ function drawPointLabels(scale) {
 	ctx.lineWidth = lineWidth;
 	ctx.strokeStyle = lineColor;
 	if (ctx.setLineDash) {
-		ctx.setLineDash(fallback(angleLineOpts.borderDash, gridLineOpts.borderDash, []));
-		ctx.lineDashOffset = fallback(angleLineOpts.borderDashOffset, gridLineOpts.borderDashOffset, 0.0);
+		ctx.setLineDash(resolve([angleLineOpts.borderDash, gridLineOpts.borderDash, []]));
+		ctx.lineDashOffset = resolve([angleLineOpts.borderDashOffset, gridLineOpts.borderDashOffset, 0.0]);
 	}
 
 	var outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
