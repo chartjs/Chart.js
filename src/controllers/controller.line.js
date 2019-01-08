@@ -5,8 +5,10 @@ var defaults = require('../core/core.defaults');
 var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
+var getHoverColor = helpers.getHoverColor;
 var valueOrDefault = helpers.valueOrDefault;
 var resolve = helpers.options.resolve;
+var isPointInArea = helpers.canvas._isPointInArea;
 
 defaults._set('line', {
 	showLines: true,
@@ -236,7 +238,6 @@ module.exports = DatasetController.extend({
 		var lineModel = meta.dataset._model;
 		var area = chart.chartArea;
 		var points = meta.data || [];
-		var isPointInArea = helpers.canvas._isPointInArea;
 		var i, ilen, point, model, controlPoints;
 
 		// Only consider points that are drawn in case the spanGaps option is used
@@ -323,7 +324,6 @@ module.exports = DatasetController.extend({
 		var index = element._index;
 		var custom = element.custom || {};
 		var model = element._model;
-		var getHoverColor = helpers.getHoverColor;
 
 		element.$previousStyle = {
 			backgroundColor: model.backgroundColor,

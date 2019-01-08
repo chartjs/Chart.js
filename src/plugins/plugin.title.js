@@ -141,7 +141,6 @@ var Title = Element.extend({
 	draw: function() {
 		var me = this;
 		var ctx = me.ctx;
-		var valueOrDefault = helpers.valueOrDefault;
 		var opts = me.options;
 
 		if (opts.display) {
@@ -155,7 +154,7 @@ var Title = Element.extend({
 			var right = me.right;
 			var maxWidth, titleX, titleY;
 
-			ctx.fillStyle = valueOrDefault(opts.fontColor, defaults.global.defaultFontColor); // render in correct colour
+			ctx.fillStyle = helpers.valueOrDefault(opts.fontColor, defaults.global.defaultFontColor); // render in correct colour
 			ctx.font = fontOpts.string;
 
 			// Horizontal

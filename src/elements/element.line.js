@@ -4,6 +4,8 @@ var defaults = require('../core/core.defaults');
 var Element = require('../core/core.element');
 var helpers = require('../helpers/index');
 
+var valueOrDefault = helpers.valueOrDefault;
+
 var defaultColor = defaults.global.defaultColor;
 
 defaults._set('global', {
@@ -30,7 +32,6 @@ module.exports = Element.extend({
 		var ctx = me._chart.ctx;
 		var spanGaps = vm.spanGaps;
 		var points = me._children.slice(); // clone array
-		var valueOrDefault = helpers.valueOrDefault;
 		var globalDefaults = defaults.global;
 		var globalOptionLineElements = globalDefaults.elements.line;
 		var lastDrawnIndex = -1;

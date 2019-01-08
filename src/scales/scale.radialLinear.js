@@ -7,6 +7,7 @@ var Ticks = require('../core/core.ticks');
 
 var valueOrDefault = helpers.valueOrDefault;
 var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
+var resolve = helpers.options.resolve;
 
 var defaultConfig = {
 	display: true,
@@ -226,7 +227,6 @@ function drawPointLabels(scale) {
 	var angleLineOpts = opts.angleLines;
 	var gridLineOpts = opts.gridLines;
 	var pointLabelOpts = opts.pointLabels;
-	var resolve = helpers.options.resolve;
 	var lineWidth = valueOrDefault(angleLineOpts.lineWidth, gridLineOpts.lineWidth);
 	var lineColor = valueOrDefault(angleLineOpts.color, gridLineOpts.color);
 	var tickBackdropHeight = getTickBackdropHeight(opts);

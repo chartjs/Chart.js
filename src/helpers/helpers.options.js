@@ -3,6 +3,8 @@
 var defaults = require('../core/core.defaults');
 var helpers = require('./helpers.core');
 
+var valueOrDefault = helpers.valueOrDefault;
+
 /**
  * Converts the given font object into a CSS font string.
  * @param {Object} font - A font object.
@@ -91,7 +93,6 @@ module.exports = {
 	 * @private
 	 */
 	_parseFont: function(options) {
-		var valueOrDefault = helpers.valueOrDefault;
 		var globalDefaults = defaults.global;
 		var size = valueOrDefault(options.fontSize, globalDefaults.defaultFontSize);
 		var font = {

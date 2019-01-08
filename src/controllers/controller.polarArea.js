@@ -245,7 +245,7 @@ module.exports = DatasetController.extend({
 			datasetIndex: me.index
 		};
 
-		return helpers.options.resolve([
+		return resolve([
 			me.chart.options.elements.arc.angle,
 			(2 * Math.PI) / count
 		], context, index);

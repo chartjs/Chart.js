@@ -5,6 +5,9 @@ var Element = require('./core.element');
 var helpers = require('../helpers/index');
 var Ticks = require('./core.ticks');
 
+var valueOrDefault = helpers.valueOrDefault;
+var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
+
 defaults._set('scale', {
 	display: true,
 	position: 'left',
@@ -728,8 +731,6 @@ module.exports = Element.extend({
 		var isMirrored = optionTicks.mirror;
 		var isHorizontal = me.isHorizontal();
 
-		var valueOrDefault = helpers.valueOrDefault;
-		var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
 		var parseFont = helpers.options._parseFont;
 		var ticks = optionTicks.autoSkip ? me._autoSkip(me.getTicks()) : me.getTicks();
 		var tickFontColor = valueOrDefault(optionTicks.fontColor, defaultFontColor);
