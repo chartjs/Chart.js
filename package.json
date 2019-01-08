@@ -23,7 +23,9 @@
     "url": "https://github.com/chartjs/Chart.js/issues"
   },
   "scripts": {
-    "gulp": "gulp"
+    "gulp": "gulp",
+    "start": "npm run gulp build --watch",
+    "test": "npm run gulp test"
   },
   "devDependencies": {
     "coveralls": "^3.0.0",
