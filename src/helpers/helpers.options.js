@@ -8,7 +8,7 @@ var valueOrDefault = helpers.valueOrDefault;
 /**
  * Converts the given font object into a CSS font string.
  * @param {Object} font - A font object.
- * @return {Stringg} The CSS font string. See https://developer.mozilla.org/en-US/docs/Web/CSS/font
+ * @return {String} The CSS font string. See https://developer.mozilla.org/en-US/docs/Web/CSS/font
  * @private
  */
 function toFontString(font) {
@@ -87,7 +87,7 @@ module.exports = {
 
 	/**
 	 * Parses font options and returns the font object.
-	 * @param {Object} options - A object that contains font opttons to be parsed.
+	 * @param {Object} options - A object that contains font options to be parsed.
 	 * @return {Object} The font object.
 	 * @todo Support font.* options and renamed to toFont().
 	 * @private

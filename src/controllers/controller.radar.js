@@ -5,7 +5,6 @@ var defaults = require('../core/core.defaults');
 var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
-var getHoverColor = helpers.getHoverColor;
 var resolve = helpers.options.resolve;
 
 defaults._set('radar', {
@@ -159,6 +158,7 @@ module.exports = DatasetController.extend({
 		var custom = point.custom || {};
 		var index = point._index;
 		var model = point._model;
+		var getHoverColor = helpers.getHoverColor;
 
 		point.$previousStyle = {
 			backgroundColor: model.backgroundColor,

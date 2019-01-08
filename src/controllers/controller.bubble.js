@@ -5,7 +5,6 @@ var defaults = require('../core/core.defaults');
 var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
-var getHoverColor = helpers.getHoverColor;
 var valueOrDefault = helpers.valueOrDefault;
 var resolve = helpers.options.resolve;
 
@@ -105,6 +104,7 @@ module.exports = DatasetController.extend({
 	setHoverStyle: function(point) {
 		var model = point._model;
 		var options = point._options;
+		var getHoverColor = helpers.getHoverColor;
 
 		point.$previousStyle = {
 			backgroundColor: model.backgroundColor,

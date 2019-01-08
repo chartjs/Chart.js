@@ -2,7 +2,6 @@
 
 var helpers = require('../helpers/index');
 
-var getHoverColor = helpers.getHoverColor;
 var resolve = helpers.options.resolve;
 
 var arrayEvents = ['push', 'pop', 'shift', 'splice', 'unshift'];
@@ -249,6 +248,7 @@ helpers.extend(DatasetController.prototype, {
 		var index = element._index;
 		var custom = element.custom || {};
 		var model = element._model;
+		var getHoverColor = helpers.getHoverColor;
 
 		element.$previousStyle = {
 			backgroundColor: model.backgroundColor,
