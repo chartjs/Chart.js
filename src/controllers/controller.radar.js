@@ -5,6 +5,8 @@ var defaults = require('../core/core.defaults');
 var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
+var resolve = helpers.options.resolve;
+
 defaults._set('radar', {
 	scale: {
 		type: 'radialLinear'
@@ -50,15 +52,15 @@ module.exports = DatasetController.extend({
 			// Model
 			_model: {
 				// Appearance
-				tension: custom.tension ? custom.tension : helpers.valueOrDefault(dataset.lineTension, lineElementOptions.tension),
-				backgroundColor: custom.backgroundColor ? custom.backgroundColor : (dataset.backgroundColor || lineElementOptions.backgroundColor),
-				borderWidth: custom.borderWidth ? custom.borderWidth : (dataset.borderWidth || lineElementOptions.borderWidth),
-				borderColor: custom.borderColor ? custom.borderColor : (dataset.borderColor || lineElementOptions.borderColor),
-				fill: custom.fill ? custom.fill : (dataset.fill !== undefined ? dataset.fill : lineElementOptions.fill),
-				borderCapStyle: custom.borderCapStyle ? custom.borderCapStyle : (dataset.borderCapStyle || lineElementOptions.borderCapStyle),
-				borderDash: custom.borderDash ? custom.borderDash : (dataset.borderDash || lineElementOptions.borderDash),
-				borderDashOffset: custom.borderDashOffset ? custom.borderDashOffset : (dataset.borderDashOffset || lineElementOptions.borderDashOffset),
-				borderJoinStyle: custom.borderJoinStyle ? custom.borderJoinStyle : (dataset.borderJoinStyle || lineElementOptions.borderJoinStyle),
+				tension: resolve([custom.tension, dataset.lineTension, lineElementOptions.tension]),
+				backgroundColor: resolve([custom.backgroundColor, dataset.backgroundColor, lineElementOptions.backgroundColor]),
+				borderWidth: resolve([custom.borderWidth, dataset.borderWidth, lineElementOptions.borderWidth]),
+				borderColor: resolve([custom.borderColor, dataset.borderColor, lineElementOptions.borderColor]),
+				fill: resolve([custom.fill, dataset.fill, lineElementOptions.fill]),
+				borderCapStyle: resolve([custom.borderCapStyle, dataset.borderCapStyle, lineElementOptions.borderCapStyle]),
+				borderDash: resolve([custom.borderDash, dataset.borderDash, lineElementOptions.borderDash]),
+				borderDashOffset: resolve([custom.borderDashOffset, dataset.borderDashOffset, lineElementOptions.borderDashOffset]),
+				borderJoinStyle: resolve([custom.borderJoinStyle, dataset.borderJoinStyle, lineElementOptions.borderJoinStyle]),
 			}
 		});
 
@@ -106,20 +108,20 @@ module.exports = DatasetController.extend({
 				y: reset ? scale.yCenter : pointPosition.y,
 
 				// Appearance
-				tension: custom.tension ? custom.tension : helpers.valueOrDefault(dataset.lineTension, me.chart.options.elements.line.tension),
-				radius: custom.radius ? custom.radius : helpers.valueAtIndexOrDefault(dataset.pointRadius, index, pointElementOptions.radius),
-				backgroundColor: custom.backgroundColor ? custom.backgroundColor : helpers.valueAtIndexOrDefault(dataset.pointBackgroundColor, index, pointElementOptions.backgroundColor),
-				borderColor: custom.borderColor ? custom.borderColor : helpers.valueAtIndexOrDefault(dataset.pointBorderColor, index, pointElementOptions.borderColor),
-				borderWidth: custom.borderWidth ? custom.borderWidth : helpers.valueAtIndexOrDefault(dataset.pointBorderWidth, index, pointElementOptions.borderWidth),
-				pointStyle: custom.pointStyle ? custom.pointStyle : helpers.valueAtIndexOrDefault(dataset.pointStyle, index, pointElementOptions.pointStyle),
-				rotation: custom.rotation ? custom.rotation : helpers.valueAtIndexOrDefault(dataset.pointRotation, index, pointElementOptions.rotation),
+				tension: resolve([custom.tension, dataset.lineTension, me.chart.options.elements.line.tension]),
+				radius: resolve([custom.radius, dataset.pointRadius, pointElementOptions.radius], undefined, index),
+				backgroundColor: resolve([custom.backgroundColor, dataset.pointBackgroundColor, pointElementOptions.backgroundColor], undefined, index),
+				borderColor: resolve([custom.borderColor, dataset.pointBorderColor, pointElementOptions.borderColor], undefined, index),
+				borderWidth: resolve([custom.borderWidth, dataset.pointBorderWidth, pointElementOptions.borderWidth], undefined, index),
+				pointStyle: resolve([custom.pointStyle, dataset.pointStyle, pointElementOptions.pointStyle], undefined, index),
+				rotation: resolve([custom.rotation, dataset.pointRotation, pointElementOptions.rotation], undefined, index),
 
 				// Tooltip
-				hitRadius: custom.hitRadius ? custom.hitRadius : helpers.valueAtIndexOrDefault(dataset.pointHitRadius, index, pointElementOptions.hitRadius)
+				hitRadius: resolve([custom.hitRadius, dataset.pointHitRadius, pointElementOptions.hitRadius], undefined, index)
 			}
 		});
 
-		point._model.skip = custom.skip ? custom.skip : (isNaN(point._model.x) || isNaN(point._model.y));
+		point._model.skip = custom.skip || isNaN(point._model.x) || isNaN(point._model.y);
 	},
 
 	updateBezierControlPoints: function() {
@@ -156,6 +158,7 @@ module.exports = DatasetController.extend({
 		var custom = point.custom || {};
 		var index = point._index;
 		var model = point._model;
+		var getHoverColor = helpers.getHoverColor;
 
 		point.$previousStyle = {
 			backgroundColor: model.backgroundColor,
@@ -164,9 +167,9 @@ module.exports = DatasetController.extend({
 			radius: model.radius
 		};
 
-		model.radius = custom.hoverRadius ? custom.hoverRadius : helpers.valueAtIndexOrDefault(dataset.pointHoverRadius, index, this.chart.options.elements.point.hoverRadius);
-		model.backgroundColor = custom.hoverBackgroundColor ? custom.hoverBackgroundColor : helpers.valueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.getHoverColor(model.backgroundColor));
-		model.borderColor = custom.hoverBorderColor ? custom.hoverBorderColor : helpers.valueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.getHoverColor(model.borderColor));
-		model.borderWidth = custom.hoverBorderWidth ? custom.hoverBorderWidth : helpers.valueAtIndexOrDefault(dataset.pointHoverBorderWidth, index, model.borderWidth);
+		model.radius = resolve([custom.hoverRadius, dataset.pointHoverRadius, this.chart.options.elements.point.hoverRadius], undefined, index);
+		model.backgroundColor = resolve([custom.hoverBackgroundColor, dataset.pointHoverBackgroundColor, getHoverColor(model.backgroundColor)], undefined, index);
+		model.borderColor = resolve([custom.hoverBorderColor, dataset.pointHoverBorderColor, getHoverColor(model.borderColor)], undefined, index);
+		model.borderWidth = resolve([custom.hoverBorderWidth, dataset.pointHoverBorderWidth, model.borderWidth], undefined, index);
 	}
 });

@@ -5,6 +5,8 @@ var defaults = require('../core/core.defaults');
 var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
+var resolve = helpers.options.resolve;
+
 defaults._set('bar', {
 	hover: {
 		mode: 'label'
@@ -410,7 +412,6 @@ module.exports = DatasetController.extend({
 		var dataset = datasets[me.index];
 		var custom = rectangle.custom || {};
 		var options = chart.options.elements.rectangle;
-		var resolve = helpers.options.resolve;
 		var values = {};
 		var i, ilen, key;
 

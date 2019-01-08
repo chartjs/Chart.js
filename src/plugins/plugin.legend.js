@@ -6,6 +6,7 @@ var helpers = require('../helpers/index');
 var layouts = require('../core/core.layouts');
 
 var noop = helpers.noop;
+var valueOrDefault = helpers.valueOrDefault;
 
 defaults._set('global', {
 	legend: {
@@ -327,7 +328,6 @@ var Legend = Element.extend({
 
 		if (opts.display) {
 			var ctx = me.ctx;
-			var valueOrDefault = helpers.valueOrDefault;
 			var fontColor = valueOrDefault(labelOpts.fontColor, globalDefaults.defaultFontColor);
 			var labelFont = helpers.options._parseFont(labelOpts);
 			var fontSize = labelFont.size;

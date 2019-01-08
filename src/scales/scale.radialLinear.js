@@ -5,6 +5,10 @@ var helpers = require('../helpers/index');
 var LinearScaleBase = require('./scale.linearbase');
 var Ticks = require('../core/core.ticks');
 
+var valueOrDefault = helpers.valueOrDefault;
+var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
+var resolve = helpers.options.resolve;
+
 var defaultConfig = {
 	display: true,
 
@@ -64,7 +68,7 @@ function getTickBackdropHeight(opts) {
 	var tickOpts = opts.ticks;
 
 	if (tickOpts.display && opts.display) {
-		return helpers.valueOrDefault(tickOpts.fontSize, defaults.global.defaultFontSize) + tickOpts.backdropPaddingY * 2;
+		return valueOrDefault(tickOpts.fontSize, defaults.global.defaultFontSize) + tickOpts.backdropPaddingY * 2;
 	}
 	return 0;
 }
@@ -223,16 +227,16 @@ function drawPointLabels(scale) {
 	var angleLineOpts = opts.angleLines;
 	var gridLineOpts = opts.gridLines;
 	var pointLabelOpts = opts.pointLabels;
-	var lineWidth = helpers.valueOrDefault(angleLineOpts.lineWidth, gridLineOpts.lineWidth);
-	var lineColor = helpers.valueOrDefault(angleLineOpts.color, gridLineOpts.color);
+	var lineWidth = valueOrDefault(angleLineOpts.lineWidth, gridLineOpts.lineWidth);
+	var lineColor = valueOrDefault(angleLineOpts.color, gridLineOpts.color);
 	var tickBackdropHeight = getTickBackdropHeight(opts);
 
 	ctx.save();
 	ctx.lineWidth = lineWidth;
 	ctx.strokeStyle = lineColor;
 	if (ctx.setLineDash) {
-		ctx.setLineDash(helpers.valueOrDefault(angleLineOpts.borderDash, gridLineOpts.borderDash) || []);
-		ctx.lineDashOffset = helpers.valueOrDefault(angleLineOpts.borderDashOffset, gridLineOpts.borderDashOffset) || 0.0;
+		ctx.setLineDash(resolve([angleLineOpts.borderDash, gridLineOpts.borderDash, []]));
+		ctx.lineDashOffset = resolve([angleLineOpts.borderDashOffset, gridLineOpts.borderDashOffset, 0.0]);
 	}
 
 	var outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
@@ -258,7 +262,7 @@ function drawPointLabels(scale) {
 			var pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + 5);
 
 			// Keep this in loop since we may support array properties here
-			var pointLabelFontColor = helpers.valueAtIndexOrDefault(pointLabelOpts.fontColor, i, defaults.global.defaultFontColor);
+			var pointLabelFontColor = valueAtIndexOrDefault(pointLabelOpts.fontColor, i, defaults.global.defaultFontColor);
 			ctx.fillStyle = pointLabelFontColor;
 
 			var angleRadians = scale.getIndexAngle(i);
@@ -275,8 +279,8 @@ function drawRadiusLine(scale, gridLineOpts, radius, index) {
 	var ctx = scale.ctx;
 	var circular = gridLineOpts.circular;
 	var valueCount = getValueCount(scale);
-	var lineColor = helpers.valueAtIndexOrDefault(gridLineOpts.color, index - 1);
-	var lineWidth = helpers.valueAtIndexOrDefault(gridLineOpts.lineWidth, index - 1);
+	var lineColor = valueAtIndexOrDefault(gridLineOpts.color, index - 1);
+	var lineWidth = valueAtIndexOrDefault(gridLineOpts.lineWidth, index - 1);
 	var pointPosition;
 
 	if ((!circular && !valueCount) || !lineColor || !lineWidth) {
@@ -475,7 +479,6 @@ module.exports = LinearScaleBase.extend({
 		var opts = me.options;
 		var gridLineOpts = opts.gridLines;
 		var tickOpts = opts.ticks;
-		var valueOrDefault = helpers.valueOrDefault;
 
 		if (opts.display) {
 			var ctx = me.ctx;

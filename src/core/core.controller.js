@@ -12,6 +12,8 @@ var plugins = require('./core.plugins');
 var scaleService = require('../core/core.scaleService');
 var Tooltip = require('./core.tooltip');
 
+var valueOrDefault = helpers.valueOrDefault;
+
 module.exports = function(Chart) {
 
 	// Create a dictionary of chart types, to allow for extension of existing types
@@ -265,7 +267,7 @@ module.exports = function(Chart) {
 			helpers.each(items, function(item) {
 				var scaleOptions = item.options;
 				var id = scaleOptions.id;
-				var scaleType = helpers.valueOrDefault(scaleOptions.type, item.dtype);
+				var scaleType = valueOrDefault(scaleOptions.type, item.dtype);
 
 				if (positionIsHorizontal(scaleOptions.position) !== positionIsHorizontal(item.dposition)) {
 					scaleOptions.position = item.dposition;
@@ -510,9 +512,7 @@ module.exports = function(Chart) {
 			}
 
 			var animationOptions = me.options.animation;
-			var duration = typeof config.duration !== 'undefined'
-				? config.duration
-				: animationOptions && animationOptions.duration;
+			var duration = valueOrDefault(config.duration, animationOptions && animationOptions.duration);
 			var lazy = config.lazy;
 
 			if (plugins.notify(me, 'beforeRender') === false) {

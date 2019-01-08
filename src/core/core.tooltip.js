@@ -4,6 +4,8 @@ var defaults = require('./core.defaults');
 var Element = require('./core.element');
 var helpers = require('../helpers/index');
 
+var valueOrDefault = helpers.valueOrDefault;
+
 defaults._set('global', {
 	tooltips: {
 		enabled: true,
@@ -221,7 +223,6 @@ function createTooltipItem(element) {
  */
 function getBaseModel(tooltipOpts) {
 	var globalDefaults = defaults.global;
-	var valueOrDefault = helpers.valueOrDefault;
 
 	return {
 		// Positioning
