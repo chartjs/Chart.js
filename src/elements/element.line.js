@@ -44,7 +44,7 @@ module.exports = Element.extend({
 
 		// IE 9 and 10 do not support line dash
 		if (ctx.setLineDash) {
-			ctx.setLineDash(vm.borderDash || globalOptionLineElements.borderDash);
+			ctx.setLineDash(valueOrDefault(vm.borderDash, globalOptionLineElements.borderDash));
 		}
 
 		ctx.lineDashOffset = valueOrDefault(vm.borderDashOffset, globalOptionLineElements.borderDashOffset);
