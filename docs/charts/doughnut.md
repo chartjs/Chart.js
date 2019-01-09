@@ -62,7 +62,7 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | `hoverBackgroundColor` | `Color/Color[]` | The fill colour of the arcs when hovered.
 | `hoverBorderColor` | `Color/Color[]` | The stroke colour of the arcs when hovered.
 | `hoverBorderWidth` | `Number/Number[]` | The stroke width of the arcs when hovered.
-| `weight` | `Number` | The relative thickness of the dataset. The default weight of each dataset is 1. Providing a value for weight will allow the pie or doughnut dataset to be drawn with a thickness relative to the sum of all the dataset weights.
+| `flex` | `Number` | The relative thickness of the dataset. The default flex value of each dataset is 1. Providing a value for flex will allow the pie or doughnut dataset to be drawn with a thickness relative to the sum of all the dataset flex values.
 
 ### Border Alignment
 
