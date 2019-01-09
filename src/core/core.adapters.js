@@ -33,9 +33,7 @@ module.exports._date = {
 	 * Returns a map of time formats for the supported units.
 	 * @returns {{string: string}}
 	 */
-	formats: function() {
-		return {};
-	},
+	formats: abstract,
 
 	/**
 	 * Returns a map of date/time formats for the following presets:
@@ -44,9 +42,7 @@ module.exports._date = {
 	 * 'date': date
 	 * @returns {{string: string}}
 	 */
-	presets: function() {
-		return {};
-	},
+	presets: abstract,
 
 	/**
 	 * Parses the given `value` and return the associated timestamp.
