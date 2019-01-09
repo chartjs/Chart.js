@@ -344,7 +344,6 @@ module.exports = DatasetController.extend({
 		var dataset = me.getDataset();
 		var custom = arc.custom || {};
 		var options = chart.options.elements.arc;
-		var resolve = helpers.options.resolve;
 		var values = {};
 		var i, ilen, key;
 
