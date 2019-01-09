@@ -662,8 +662,8 @@ describe('Time scale tests', function() {
 				datasets: [{
 					xAxisID: 'xScale0',
 					data: [
-						{t: +new Date('2018-01-08 00:00:00Z'), y: 10},
-						{t: +new Date('2018-01-09 00:00:00Z'), y: 3}
+						{t: +new Date('2018-01-08 00:00:00'), y: 10},
+						{t: +new Date('2018-01-09 00:00:00'), y: 3}
 					]
 				}],
 			},

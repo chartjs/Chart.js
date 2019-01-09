@@ -419,7 +419,7 @@ function determineLabelFormat(timestamps) {
 		if (ts % INTERVALS.second.size !== 0) {
 			return presets.full;
 		}
-		if (ts % INTERVALS.day.size !== 0) {
+		if (!hasTime && adapter.startOf(ts, 'day') !== ts) {
 			hasTime = true;
 		}
 	}
