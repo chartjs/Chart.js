@@ -1,7 +1,7 @@
 /**
  * @namespace Chart
  */
-var Chart = require('./core/core')();
+var Chart = require('./core/core.controller');
 
 Chart.helpers = require('./helpers/index');
 
@@ -23,8 +23,6 @@ Chart.Scale = require('./core/core.scale');
 Chart.scaleService = require('./core/core.scaleService');
 Chart.Ticks = require('./core/core.ticks');
 Chart.Tooltip = require('./core/core.tooltip');
-
-require('./core/core.controller')(Chart);
 
 // Register built-in scales
 var scales = require('./scales');
