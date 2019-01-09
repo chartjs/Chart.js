@@ -410,23 +410,23 @@ function ticksFromTimestamps(values, majorUnit) {
  * Return the time format for the label with the most parts (milliseconds, second, etc.)
  */
 function determineLabelFormat(timestamps) {
-	var presets = adapter.presets(true);
+	var presets = adapter.presets();
 	var ilen = timestamps.length;
 	var i, ts, hasTime;
 
 	for (i = 0; i < ilen; i++) {
 		ts = timestamps[i];
 		if (ts % INTERVALS.second.size !== 0) {
-			return presets.millisecond;
+			return presets.full;
 		}
 		if (ts % INTERVALS.day.size !== 0) {
 			hasTime = true;
 		}
 	}
 	if (hasTime) {
-		return presets.second;
+		return presets.time;
 	}
-	return presets.day;
+	return presets.date;
 }
 
 var defaultConfig = {
@@ -499,7 +499,7 @@ module.exports = Scale.extend({
 		// supposed to contain *all* unit/string pairs but this can't be resolved
 		// when loading the scale (adapters are loaded afterward), so let's populate
 		// missing formats on update
-		helpers.mergeIf(time.displayFormats, adapter.presets());
+		helpers.mergeIf(time.displayFormats, adapter.formats());
 
 		return Scale.prototype.update.apply(me, arguments);
 	},

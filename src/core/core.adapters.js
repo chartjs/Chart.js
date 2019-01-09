@@ -25,13 +25,23 @@ function abstract() {
  * @typedef {('millisecond'|'second'|'minute'|'hour'|'day'|'week'|'month'|'quarter'|'year')}
  * @memberof Chart._adapters._date
  * @name Unit
- * */
+ */
 
 /** @lends Chart._adapters._date */
 module.exports._date = {
 	/**
 	 * Returns a map of time formats for the supported units.
-	 * @param {boolean} [long] - query for long formats.
+	 * @returns {{string: string}}
+	 */
+	formats: function() {
+		return {};
+	},
+
+	/**
+	 * Returns a map of date/time formats for the following presets:
+	 * 'full': date + time + millisecond
+	 * 'time': date + time
+	 * 'date': date
 	 * @returns {{string: string}}
 	 */
 	presets: function() {

@@ -6,7 +6,7 @@ var moment = require('moment');
 var adapter = require('../core/core.adapters')._date;
 var helpers = require('../helpers/helpers.core');
 
-var SHORT_PRESETS = {
+var FORMATS = {
 	millisecond: 'h:mm:ss.SSS a',
 	second: 'h:mm:ss a',
 	minute: 'h:mm a',
@@ -18,23 +18,21 @@ var SHORT_PRESETS = {
 	year: 'YYYY'
 };
 
-var LONG_PRESETS = {
-	millisecond: 'MMM D, YYYY h:mm:ss.SSS a',
-	second: 'MMM D, YYYY h:mm:ss a',
-	minute: 'MMM D, YYYY h:mm a',
-	hour: 'MMM D, YYYY hA',
-	day: 'MMM D, YYYY',
-	week: 'll',
-	month: 'MMM YYYY',
-	quarter: '[Q]Q - YYYY',
-	year: 'YYYY'
+var PRESETS = {
+	full: 'MMM D, YYYY h:mm:ss.SSS a',
+	time: 'MMM D, YYYY h:mm:ss a',
+	date: 'MMM D, YYYY'
 };
 
 helpers.merge(adapter, moment ? {
 	_id: 'moment', // DEBUG ONLY
 
-	presets: function(long) {
-		return long ? LONG_PRESETS : SHORT_PRESETS;
+	formats: function() {
+		return FORMATS;
+	},
+
+	presets: function() {
+		return PRESETS;
 	},
 
 	parse: function(value, format) {
