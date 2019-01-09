@@ -329,7 +329,6 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 
 	buildOrUpdateControllers: function() {
 		var me = this;
-		var types = [];
 		var newControllers = [];
 
 		helpers.each(me.data.datasets, function(dataset, datasetIndex) {
@@ -341,8 +340,6 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 				meta = me.getDatasetMeta(datasetIndex);
 			}
 			meta.type = type;
-
-			types.push(meta.type);
 
 			if (meta.controller) {
 				meta.controller.updateIndex(datasetIndex);
