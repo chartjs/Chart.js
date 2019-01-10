@@ -22,7 +22,7 @@ Firstly, we need to ensure development dependencies are installed. With node and
 
 ```bash
 > npm install
-> npm install -g gulp
+> npm install -g gulp-cli
 ```
 
 This will install the local development dependencies for Chart.js, along with a CLI for the JavaScript task runner <a href="https://gulpjs.com/" target="_blank">gulp</a>.

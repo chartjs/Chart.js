@@ -120,10 +120,10 @@ The interaction with each bar can be controlled with the following properties:
 | Name | Description
 | ---- | -----------
 | `hoverBackgroundColor` | The bar background color when hovered.
-| `hoverBorderColor` | The bar border color hovered.
+| `hoverBorderColor` | The bar border color when hovered.
 | `hoverBorderWidth` | The bar border width when hovered (in pixels).
 
-All these values, if `undefined`, fallback to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options.
+All these values, if `undefined`, fallback to the associated [`elements.rectangle.*`](../configuration/elements.md#rectangle-configuration) options.
 
 ## Scale Configuration
 The bar chart accepts the following configuration from the associated `scale` options:

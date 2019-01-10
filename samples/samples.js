@@ -187,9 +187,6 @@
 		items: [{
 			title: 'Progress bar',
 			path: 'advanced/progress-bar.html'
-		}, {
-			title: 'Data labelling (plugin)',
-			path: 'advanced/data-labelling.html'
 		}]
 	}];
 

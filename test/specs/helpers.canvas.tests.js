@@ -86,4 +86,18 @@ describe('Chart.helpers.canvas', function() {
 			expect(context.getCalls()).toEqual([{name: 'rect', args: [10, 20, 30, 40]}]);
 		});
 	});
+
+	describe('isPointInArea', function() {
+		it('should determine if a point is in the area', function() {
+			var isPointInArea = helpers.canvas._isPointInArea;
+			var area = {left: 0, top: 0, right: 512, bottom: 256};
+
+			expect(isPointInArea({x: 0, y: 0}, area)).toBe(true);
+			expect(isPointInArea({x: -1e-12, y: -1e-12}, area)).toBe(true);
+			expect(isPointInArea({x: 512, y: 256}, area)).toBe(true);
+			expect(isPointInArea({x: 512 + 1e-12, y: 256 + 1e-12}, area)).toBe(true);
+			expect(isPointInArea({x: -1e-3, y: 0}, area)).toBe(false);
+			expect(isPointInArea({x: 0, y: 256 + 1e-3}, area)).toBe(false);
+		});
+	});
 });

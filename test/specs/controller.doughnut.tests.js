@@ -278,136 +278,6 @@ describe('Chart.controllers.doughnut', function() {
 		expect(meta.data[3].draw.calls.count()).toBe(1);
 	});
 
-	it ('should set the hover style of an arc', function() {
-		var chart = window.acquireChart({
-			type: 'doughnut',
-			data: {
-				datasets: [{
-					data: [10, 15, 0, 4]
-				}],
-				labels: ['label0', 'label1', 'label2', 'label3']
-			},
-			options: {
-				elements: {
-					arc: {
-						backgroundColor: 'rgb(255, 0, 0)',
-						borderColor: 'rgb(0, 0, 255)',
-						borderWidth: 2,
-					}
-				}
-			}
-		});
-
-		var meta = chart.getDatasetMeta(0);
-		var arc = meta.data[0];
-
-		meta.controller.setHoverStyle(arc);
-		expect(arc._model.backgroundColor).toBe('rgb(230, 0, 0)');
-		expect(arc._model.borderColor).toBe('rgb(0, 0, 230)');
-		expect(arc._model.borderWidth).toBe(2);
-
-		// Set a dataset style to take precedence
-		chart.data.datasets[0].hoverBackgroundColor = 'rgb(9, 9, 9)';
-		chart.data.datasets[0].hoverBorderColor = 'rgb(18, 18, 18)';
-		chart.data.datasets[0].hoverBorderWidth = 1.56;
-
-		meta.controller.setHoverStyle(arc);
-		expect(arc._model.backgroundColor).toBe('rgb(9, 9, 9)');
-		expect(arc._model.borderColor).toBe('rgb(18, 18, 18)');
-		expect(arc._model.borderWidth).toBe(1.56);
-
-		// Dataset styles can be an array
-		chart.data.datasets[0].hoverBackgroundColor = ['rgb(255, 255, 255)', 'rgb(9, 9, 9)'];
-		chart.data.datasets[0].hoverBorderColor = ['rgb(18, 18, 18)'];
-		chart.data.datasets[0].hoverBorderWidth = [0.1, 1.56];
-
-		meta.controller.setHoverStyle(arc);
-		expect(arc._model.backgroundColor).toBe('rgb(255, 255, 255)');
-		expect(arc._model.borderColor).toBe('rgb(18, 18, 18)');
-		expect(arc._model.borderWidth).toBe(0.1);
-
-		// Element custom styles also work
-		arc.custom = {
-			hoverBackgroundColor: 'rgb(7, 7, 7)',
-			hoverBorderColor: 'rgb(17, 17, 17)',
-			hoverBorderWidth: 3.14159,
-		};
-
-		meta.controller.setHoverStyle(arc);
-		expect(arc._model.backgroundColor).toBe('rgb(7, 7, 7)');
-		expect(arc._model.borderColor).toBe('rgb(17, 17, 17)');
-		expect(arc._model.borderWidth).toBe(3.14159);
-	});
-
-	it ('should unset the hover style of an arc', function() {
-		var chart = window.acquireChart({
-			type: 'doughnut',
-			data: {
-				datasets: [{
-					data: [10, 15, 0, 4]
-				}],
-				labels: ['label0', 'label1', 'label2', 'label3']
-			},
-			options: {
-				elements: {
-					arc: {
-						backgroundColor: 'rgb(255, 0, 0)',
-						borderColor: 'rgb(0, 0, 255)',
-						borderWidth: 2,
-					}
-				}
-			}
-		});
-
-		var meta = chart.getDatasetMeta(0);
-		var arc = meta.data[0];
-
-		chart.update();
-		meta.controller.setHoverStyle(arc);
-		meta.controller.removeHoverStyle(arc);
-		expect(arc._model.backgroundColor).toBe('rgb(255, 0, 0)');
-		expect(arc._model.borderColor).toBe('rgb(0, 0, 255)');
-		expect(arc._model.borderWidth).toBe(2);
-
-		// Set a dataset style to take precedence
-		chart.data.datasets[0].backgroundColor = 'rgb(9, 9, 9)';
-		chart.data.datasets[0].borderColor = 'rgb(18, 18, 18)';
-		chart.data.datasets[0].borderWidth = 1.56;
-
-		chart.update();
-		meta.controller.setHoverStyle(arc);
-		meta.controller.removeHoverStyle(arc);
-		expect(arc._model.backgroundColor).toBe('rgb(9, 9, 9)');
-		expect(arc._model.borderColor).toBe('rgb(18, 18, 18)');
-		expect(arc._model.borderWidth).toBe(1.56);
-
-		// Dataset styles can be an array
-		chart.data.datasets[0].backgroundColor = ['rgb(255, 255, 255)', 'rgb(9, 9, 9)'];
-		chart.data.datasets[0].borderColor = ['rgb(18, 18, 18)'];
-		chart.data.datasets[0].borderWidth = [0.1, 1.56];
-
-		chart.update();
-		meta.controller.setHoverStyle(arc);
-		meta.controller.removeHoverStyle(arc);
-		expect(arc._model.backgroundColor).toBe('rgb(255, 255, 255)');
-		expect(arc._model.borderColor).toBe('rgb(18, 18, 18)');
-		expect(arc._model.borderWidth).toBe(0.1);
-
-		// Element custom styles also work
-		arc.custom = {
-			backgroundColor: 'rgb(7, 7, 7)',
-			borderColor: 'rgb(17, 17, 17)',
-			borderWidth: 3.14159,
-		};
-
-		chart.update();
-		meta.controller.setHoverStyle(arc);
-		meta.controller.removeHoverStyle(arc);
-		expect(arc._model.backgroundColor).toBe('rgb(7, 7, 7)');
-		expect(arc._model.borderColor).toBe('rgb(17, 17, 17)');
-		expect(arc._model.borderWidth).toBe(3.14159);
-	});
-
 	it ('should calculate radiuses based on the border widths of the visible outermost dataset', function() {
 		var chart = window.acquireChart({
 			type: 'doughnut',
@@ -455,4 +325,111 @@ describe('Chart.controllers.doughnut', function() {
 		expect(controller.innerRadius).toBe(126);
 	});
 
+	describe('Interactions', function() {
+		beforeEach(function() {
+			this.chart = window.acquireChart({
+				type: 'doughnut',
+				data: {
+					labels: ['label1', 'label2', 'label3', 'label4'],
+					datasets: [{
+						data: [10, 15, 0, 4]
+					}]
+				},
+				options: {
+					cutoutPercentage: 0,
+					elements: {
+						arc: {
+							backgroundColor: 'rgb(100, 150, 200)',
+							borderColor: 'rgb(50, 100, 150)',
+							borderWidth: 2,
+						}
+					}
+				}
+			});
+		});
+
+		it ('should handle default hover styles', function() {
+			var chart = this.chart;
+			var arc = chart.getDatasetMeta(0).data[0];
+
+			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
+			expect(arc._model.backgroundColor).toBe('rgb(49, 135, 221)');
+			expect(arc._model.borderColor).toBe('rgb(22, 89, 156)');
+			expect(arc._model.borderWidth).toBe(2);
+
+			jasmine.triggerMouseEvent(chart, 'mouseout', arc);
+			expect(arc._model.backgroundColor).toBe('rgb(100, 150, 200)');
+			expect(arc._model.borderColor).toBe('rgb(50, 100, 150)');
+			expect(arc._model.borderWidth).toBe(2);
+		});
+
+		it ('should handle hover styles defined via dataset properties', function() {
+			var chart = this.chart;
+			var arc = chart.getDatasetMeta(0).data[0];
+
+			Chart.helpers.merge(chart.data.datasets[0], {
+				hoverBackgroundColor: 'rgb(200, 100, 150)',
+				hoverBorderColor: 'rgb(150, 50, 100)',
+				hoverBorderWidth: 8.4,
+			});
+
+			chart.update();
+
+			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
+			expect(arc._model.backgroundColor).toBe('rgb(200, 100, 150)');
+			expect(arc._model.borderColor).toBe('rgb(150, 50, 100)');
+			expect(arc._model.borderWidth).toBe(8.4);
+
+			jasmine.triggerMouseEvent(chart, 'mouseout', arc);
+			expect(arc._model.backgroundColor).toBe('rgb(100, 150, 200)');
+			expect(arc._model.borderColor).toBe('rgb(50, 100, 150)');
+			expect(arc._model.borderWidth).toBe(2);
+		});
+
+		it ('should handle hover styles defined via element options', function() {
+			var chart = this.chart;
+			var arc = chart.getDatasetMeta(0).data[0];
+
+			Chart.helpers.merge(chart.options.elements.arc, {
+				hoverBackgroundColor: 'rgb(200, 100, 150)',
+				hoverBorderColor: 'rgb(150, 50, 100)',
+				hoverBorderWidth: 8.4,
+			});
+
+			chart.update();
+
+			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
+			expect(arc._model.backgroundColor).toBe('rgb(200, 100, 150)');
+			expect(arc._model.borderColor).toBe('rgb(150, 50, 100)');
+			expect(arc._model.borderWidth).toBe(8.4);
+
+			jasmine.triggerMouseEvent(chart, 'mouseout', arc);
+			expect(arc._model.backgroundColor).toBe('rgb(100, 150, 200)');
+			expect(arc._model.borderColor).toBe('rgb(50, 100, 150)');
+			expect(arc._model.borderWidth).toBe(2);
+		});
+
+		it ('should handle hover styles defined via element custom', function() {
+			var chart = this.chart;
+			var arc = chart.getDatasetMeta(0).data[0];
+
+			arc.custom = {
+				hoverBackgroundColor: 'rgb(200, 100, 150)',
+				hoverBorderColor: 'rgb(150, 50, 100)',
+				hoverBorderWidth: 8.4,
+			};
+
+			chart.update();
+
+			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
+			expect(arc._model.backgroundColor).toBe('rgb(200, 100, 150)');
+			expect(arc._model.borderColor).toBe('rgb(150, 50, 100)');
+			expect(arc._model.borderWidth).toBe(8.4);
+
+			jasmine.triggerMouseEvent(chart, 'mouseout', arc);
+			expect(arc._model.backgroundColor).toBe('rgb(100, 150, 200)');
+			expect(arc._model.borderColor).toBe('rgb(50, 100, 150)');
+			expect(arc._model.borderWidth).toBe(2);
+		});
+	});
 });

@@ -1170,4 +1170,29 @@ describe('Linear Scale', function() {
 		expect(data[0]._model.base + minBarLength).toEqual(data[0]._model.x);
 		expect(data[1]._model.base - minBarLength).toEqual(data[1]._model.x);
 	});
+
+	it('Should generate max and min that are not equal when data contains values that are very close to each other', function() {
+		var chart = window.acquireChart({
+			type: 'scatter',
+			data: {
+				datasets: [{
+					data: [
+						{x: 1, y: 1.8548483304974972},
+						{x: 2, y: 1.8548483304974974},
+					]
+				}],
+			},
+			options: {
+				scales: {
+					yAxes: [{
+						id: 'yScale0',
+						type: 'linear',
+					}]
+				}
+			}
+		});
+
+		expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
+		expect(chart.scales.yScale0.max).toBeGreaterThan(chart.scales.yScale0.min);
+	});
 });

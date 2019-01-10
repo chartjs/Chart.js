@@ -4,6 +4,8 @@ var defaults = require('../core/core.defaults');
 var Element = require('../core/core.element');
 var helpers = require('../helpers/index');
 
+var valueOrDefault = helpers.valueOrDefault;
+
 var defaultColor = defaults.global.defaultColor;
 
 defaults._set('global', {
@@ -50,9 +52,9 @@ module.exports = Element.extend({
 			ctx.setLineDash(vm.borderDash || globalOptionLineElements.borderDash);
 		}
 
-		ctx.lineDashOffset = vm.borderDashOffset || globalOptionLineElements.borderDashOffset;
+		ctx.lineDashOffset = valueOrDefault(vm.borderDashOffset, globalOptionLineElements.borderDashOffset);
 		ctx.lineJoin = vm.borderJoinStyle || globalOptionLineElements.borderJoinStyle;
-		ctx.lineWidth = vm.borderWidth || globalOptionLineElements.borderWidth;
+		ctx.lineWidth = valueOrDefault(vm.borderWidth, globalOptionLineElements.borderWidth);
 		ctx.strokeStyle = vm.borderColor || globalDefaults.defaultColor;
 
 		// Stroke Line

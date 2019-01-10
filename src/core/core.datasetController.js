@@ -2,6 +2,8 @@
 
 var helpers = require('../helpers/index');
 
+var resolve = helpers.options.resolve;
+
 var arrayEvents = ['push', 'pop', 'shift', 'splice', 'unshift'];
 
 /**
@@ -245,9 +247,8 @@ helpers.extend(DatasetController.prototype, {
 		var dataset = this.chart.data.datasets[element._datasetIndex];
 		var index = element._index;
 		var custom = element.custom || {};
-		var valueOrDefault = helpers.valueAtIndexOrDefault;
-		var getHoverColor = helpers.getHoverColor;
 		var model = element._model;
+		var getHoverColor = helpers.getHoverColor;
 
 		element.$previousStyle = {
 			backgroundColor: model.backgroundColor,
@@ -255,9 +256,9 @@ helpers.extend(DatasetController.prototype, {
 			borderWidth: model.borderWidth
 		};
 
-		model.backgroundColor = custom.hoverBackgroundColor ? custom.hoverBackgroundColor : valueOrDefault(dataset.hoverBackgroundColor, index, getHoverColor(model.backgroundColor));
-		model.borderColor = custom.hoverBorderColor ? custom.hoverBorderColor : valueOrDefault(dataset.hoverBorderColor, index, getHoverColor(model.borderColor));
-		model.borderWidth = custom.hoverBorderWidth ? custom.hoverBorderWidth : valueOrDefault(dataset.hoverBorderWidth, index, model.borderWidth);
+		model.backgroundColor = resolve([custom.hoverBackgroundColor, dataset.hoverBackgroundColor, getHoverColor(model.backgroundColor)], undefined, index);
+		model.borderColor = resolve([custom.hoverBorderColor, dataset.hoverBorderColor, getHoverColor(model.borderColor)], undefined, index);
+		model.borderWidth = resolve([custom.hoverBorderWidth, dataset.hoverBorderWidth, model.borderWidth], undefined, index);
 	},
 
 	/**

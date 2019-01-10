@@ -4,6 +4,8 @@ var defaults = require('../core/core.defaults');
 var Element = require('../core/core.element');
 var helpers = require('../helpers/index');
 
+var valueOrDefault = helpers.valueOrDefault;
+
 var defaultColor = defaults.global.defaultColor;
 
 defaults._set('global', {
@@ -65,14 +67,12 @@ module.exports = Element.extend({
 
 	draw: function(chartArea) {
 		var vm = this._view;
-		var model = this._model;
 		var ctx = this._chart.ctx;
 		var pointStyle = vm.pointStyle;
 		var rotation = vm.rotation;
 		var radius = vm.radius;
 		var x = vm.x;
 		var y = vm.y;
-		var epsilon = 0.0000001; // 0.0000001 is margin in pixels for Accumulated error.
 		var globalDefaults = defaults.global;
 		var defaultColor = globalDefaults.defaultColor; // eslint-disable-line no-shadow
 
@@ -81,9 +81,9 @@ module.exports = Element.extend({
 		}
 
 		// Clipping for Points.
-		if (chartArea === undefined || (model.x > chartArea.left - epsilon && chartArea.right + epsilon > model.x && model.y > chartArea.top - epsilon && chartArea.bottom + epsilon > model.y)) {
+		if (chartArea === undefined || helpers.canvas._isPointInArea(vm, chartArea)) {
 			ctx.strokeStyle = vm.borderColor || defaultColor;
-			ctx.lineWidth = helpers.valueOrDefault(vm.borderWidth, globalDefaults.elements.point.borderWidth);
+			ctx.lineWidth = valueOrDefault(vm.borderWidth, globalDefaults.elements.point.borderWidth);
 			ctx.fillStyle = vm.backgroundColor || defaultColor;
 			helpers.canvas.drawPoint(ctx, pointStyle, radius, x, y, rotation);
 		}

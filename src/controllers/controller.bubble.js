@@ -5,6 +5,9 @@ var defaults = require('../core/core.defaults');
 var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
+var valueOrDefault = helpers.valueOrDefault;
+var resolve = helpers.options.resolve;
+
 defaults._set('bubble', {
 	hover: {
 		mode: 'single'
@@ -101,6 +104,7 @@ module.exports = DatasetController.extend({
 	setHoverStyle: function(point) {
 		var model = point._model;
 		var options = point._options;
+		var getHoverColor = helpers.getHoverColor;
 
 		point.$previousStyle = {
 			backgroundColor: model.backgroundColor,
@@ -109,9 +113,9 @@ module.exports = DatasetController.extend({
 			radius: model.radius
 		};
 
-		model.backgroundColor = helpers.valueOrDefault(options.hoverBackgroundColor, helpers.getHoverColor(options.backgroundColor));
-		model.borderColor = helpers.valueOrDefault(options.hoverBorderColor, helpers.getHoverColor(options.borderColor));
-		model.borderWidth = helpers.valueOrDefault(options.hoverBorderWidth, options.borderWidth);
+		model.backgroundColor = valueOrDefault(options.hoverBackgroundColor, getHoverColor(options.backgroundColor));
+		model.borderColor = valueOrDefault(options.hoverBorderColor, getHoverColor(options.borderColor));
+		model.borderWidth = valueOrDefault(options.hoverBorderWidth, options.borderWidth);
 		model.radius = options.radius + options.hoverRadius;
 	},
 
@@ -125,7 +129,6 @@ module.exports = DatasetController.extend({
 		var dataset = datasets[me.index];
 		var custom = point.custom || {};
 		var options = chart.options.elements.point;
-		var resolve = helpers.options.resolve;
 		var data = dataset.data[index];
 		var values = {};
 		var i, ilen, key;
