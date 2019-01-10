@@ -53,7 +53,7 @@ All point* properties can be specified as an array. If these are set to an array
 | [`borderJoinStyle`](#styling) | `String` | - | - | `'miter'`
 | [`borderWidth`](#styling) | `Number` | - | - | `0`
 | [`cubicInterpolationMode`](#cubicInterpolationMode) | `String` | - | - | `''`
-| [`fill`](#styling) | `Boolean/String` | No | No | `true`
+| [`fill`](#styling) | `Boolean/String` | - | - | `true`
 | [`label`](#general) | `String` | - | - | `''`
 | [`lineTension`](#styling) | `Number` | - | - | `0.4`
 | [`pointBackgroundColor`](#styling) | `Color/Color[]` | Yes | Yes | `'rgba(0,0,0,0.1)'`
