@@ -294,7 +294,7 @@ module.exports = Element.extend({
 		if (helpers.isArray(ticks) && ticks.length) {
 			return helpers.callback(me.options.afterBuildTicks, [me, ticks]);
 		}
-		// Support old implementatios (that modified `this.ticks` directly in buildTicks)
+		// Support old implementations (that modified `this.ticks` directly in buildTicks)
 		me.ticks = helpers.callback(me.options.afterBuildTicks, [me, me.ticks]) || me.ticks;
 		return ticks;
 	},
