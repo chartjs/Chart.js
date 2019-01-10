@@ -114,14 +114,6 @@ module.exports = DatasetController.extend({
 		var xScale = me.getScaleForId(meta.xAxisID);
 		var x, y;
 
-		// Compatibility: If the properties are defined with only the old name, use those values
-		if ((dataset.radius !== undefined) && (dataset.pointRadius === undefined)) {
-			dataset.pointRadius = dataset.radius;
-		}
-		if ((dataset.hitRadius !== undefined) && (dataset.pointHitRadius === undefined)) {
-			dataset.pointHitRadius = dataset.hitRadius;
-		}
-
 		// Do this after the compatibility code above
 		var options = me._resolveElementOptions(point, index);
 
@@ -164,7 +156,6 @@ module.exports = DatasetController.extend({
 		var dataset = datasets[me.index];
 		var custom = point.custom || {};
 		var options = chart.options.elements.point;
-		var data = dataset.data[index];
 		var values = {};
 		var i, ilen, key;
 
@@ -200,14 +191,6 @@ module.exports = DatasetController.extend({
 				options[key]
 			], context, index);
 		}
-
-		// Custom radius resolution
-		values.radius = resolve([
-			custom.radius,
-			data ? data.r : undefined,
-			dataset.radius,
-			options.radius
-		], context, index);
 
 		return values;
 	},
