@@ -291,7 +291,7 @@ module.exports = Element.extend({
 	afterBuildTicks: function(ticks) {
 		var me = this;
 		// ticks is empty for old axis implementations here
-		if (ticks.length) {
+		if (helpers.isArray(ticks) && ticks.length) {
 			return helpers.callback(me.options.afterBuildTicks, [me, ticks]);
 		}
 		// Support old implementatios (that modified `this.ticks` directly in buildTicks)
