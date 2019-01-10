@@ -54,20 +54,20 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`fill`](#styling) | `Boolean/String` | - | - | `true`
 | [`label`](#general) | `String` | - | - | `''`
 | [`lineTension`](#styling) | `Number` | - | - | `0.4`
-| [`pointBackgroundColor`](#styling) | `Color/Color[]` | Yes | Yes | `'rgba(0,0,0,0.1)'`
-| [`pointBorderColor`](#styling) | `Color/Color[]` | Yes | Yes | `'rgba(0,0,0,0.1)'`
-| [`pointBorderWidth`](#styling) | `Number/Number[]` | Yes | Yes | `1`
-| [`pointRadius`](#styling) | `Number/Number[]` | Yes | Yes | `3`
-| [`pointStyle`](#styling) | `String/String[]/Image/Image[]` | Yes | Yes | `'circle'`
-| [`pointRotation`](#styling) | `Number/Number[]` | Yes | Yes | `1`
-| [`pointHitRadius`](#styling) | `Number/Number[]` | Yes | Yes | `1`
+| [`pointBackgroundColor`](#styling) | `Color` | Yes | Yes | `'rgba(0,0,0,0.1)'`
+| [`pointBorderColor`](#styling) | `Color` | Yes | Yes | `'rgba(0,0,0,0.1)'`
+| [`pointBorderWidth`](#styling) | `Number` | Yes | Yes | `1`
+| [`pointRadius`](#styling) | `Number` | Yes | Yes | `3`
+| [`pointStyle`](#styling) | `String/Image` | Yes | Yes | `'circle'`
+| [`pointRotation`](#styling) | `Number` | Yes | Yes | `1`
+| [`pointHitRadius`](#styling) | `Number` | Yes | Yes | `1`
 | [`steppedLine`](#stepped-line) | `Boolean/String` | - | - | `false`
 | [`xAxisID`](#general) | `String` | - | - | first x axis
 | [`yAxisID`](#general) | `String` | - | - | first y axis
-| [`pointHoverBackgroundColor`](#interactions) | `Color/Color[]` | Yes | Yes | `undefined`
-| [`pointHoverBorderColor`](#interactions) | `Color/Color[]` | Yes | Yes | `undefined`
-| [`pointHoverBorderWidth`](#interactions) | `Number/Number[]` | Yes | Yes | `undefined`
-| [`pointHoverRadius`](#interactions) | `Number/Number[]` | Yes | Yes | `undefined`
+| [`pointHoverBackgroundColor`](#interactions) | `Color` | Yes | Yes | `undefined`
+| [`pointHoverBorderColor`](#interactions) | `Color` | Yes | Yes | `undefined`
+| [`pointHoverBorderWidth`](#interactions) | `Number` | Yes | Yes | `undefined`
+| [`pointHoverRadius`](#interactions) | `Number` | Yes | Yes | `undefined`
 | [`showLine`](#general) | `Boolean` | - | - | `undefined`
 | [`spanGaps`](#general) | `Boolean` | - | - | `false`
 
