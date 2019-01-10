@@ -55,10 +55,10 @@ module.exports = Scale.extend({
 
 		var ds = chart.getDatasetMeta(datasetIndex).controller;
 
-		// For scales supporting getValueScaleId, we can be sure if this is a value scale.
+		// For controllers supporting getValueScaleId, we can be sure if this is a value scale.
 		// For others, vertical scale is assumed to be value.
 		// Note: This assumption works correctly for all charts with {x,y} data,
-		// because getRightValue returns correct thing regardless if its a label or value.
+		// because getRightValue returns correct thing regardless if it's a index or value.
 		var isValueScale = ds.getValueScaleId
 			? ds.getValueScaleId() === me.id
 			: !isHorizontal;
