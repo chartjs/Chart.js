@@ -55,6 +55,7 @@ module.exports = DatasetController.extend({
 		if (showLine) {
 			custom = line.custom || {};
 
+			// Compatibility: If the properties are defined with only the old name, use those values
 			if ((dataset.tension !== undefined) && (dataset.lineTension === undefined)) {
 				dataset.lineTension = dataset.tension;
 			}
@@ -113,7 +114,6 @@ module.exports = DatasetController.extend({
 		var xScale = me.getScaleForId(meta.xAxisID);
 		var x, y;
 
-		// Do this after the compatibility code above
 		var options = me._resolveElementOptions(point, index);
 
 		x = xScale.getPixelForValue(typeof value === 'object' ? value : NaN, index, datasetIndex);
