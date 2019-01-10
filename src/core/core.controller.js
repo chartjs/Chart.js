@@ -430,6 +430,9 @@ module.exports = function(Chart) {
 			// When we reset the tooltip, we need to clear it
 			me.lastActive = [];
 
+			// Refresh existing tooltip, otherwise the tooltip will flicker at the update
+			me._refresh();
+
 			// Do this before render so that any plugins that need final scale updates can use it
 			plugins.notify(me, 'afterUpdate');
 
@@ -878,8 +881,12 @@ module.exports = function(Chart) {
 			// Buffer any update calls so that renders do not occur
 			me._bufferedRender = true;
 			me._bufferedRequest = null;
+
 			// Store the last event so we can handle it again when updating the chart
-			me._lastEvent = e;
+			// Only do this when the event is not a click to prevent redoing legend clicks etc.
+			if (e.type !== 'click') {
+				me._lastEvent = e;
+			}
 
 			var changed = me.handleEvent(e);
 			// for smooth tooltip animations issue #4989
