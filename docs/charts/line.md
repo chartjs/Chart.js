@@ -41,8 +41,6 @@ var myLineChart = new Chart(ctx, {
 
 The line chart allows a number of properties to be specified for each dataset. These are used to set display properties for a specific dataset. For example, the colour of a line is generally set this way.
 
-All point* properties can be specified as an array. If these are set to an array value, the first value applies to the first point, the second value to the second point, and so on.
-
 | Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) |  Default
 | ---- | ---- | :----: | :----: | ----
 | [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | - | - | `'rgba(0,0,0,0.1)'`

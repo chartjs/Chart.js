@@ -55,7 +55,6 @@ module.exports = DatasetController.extend({
 		if (showLine) {
 			custom = line.custom || {};
 
-			// Compatibility: If the properties are defined with only the old name, use those values
 			if ((dataset.tension !== undefined) && (dataset.lineTension === undefined)) {
 				dataset.lineTension = dataset.tension;
 			}
