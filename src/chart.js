@@ -31,7 +31,7 @@ Chart.helpers.each(scales, function(scale, type) {
 	Chart.scaleService.registerScaleType(type, scale, scale._defaults);
 });
 
-// Built-in adapters (loaded for side effects)
+// Load to register built-in adapters (as side effects)
 require('./adapters');
 
 // Loading built-in plugins

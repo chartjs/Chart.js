@@ -86,6 +86,8 @@ module.exports._date = {
 	 * Returns start of `unit` for the given `timestamp`.
 	 * @param {number} timestamp - the input timestamp
 	 * @param {Unit} unit - the unit as string
+	 * @param {number} [weekday] - the ISO day of the week with 1 being Monday
+	 * and 7 being Sunday (only needed if param *unit* is `isoWeek`).
 	 * @function
 	 */
 	startOf: abstract,

@@ -56,10 +56,10 @@ helpers.merge(adapter, moment ? {
 		return moment.duration(moment(max).diff(moment(min))).as(unit);
 	},
 
-	startOf: function(time, unit, opt) {
+	startOf: function(time, unit, weekday) {
 		time = moment(time);
 		if (unit === 'isoWeek') {
-			return +time.isoWeekday(opt);
+			return +time.isoWeekday(weekday);
 		}
 		return +time.startOf(unit);
 	},
