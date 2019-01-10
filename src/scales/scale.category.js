@@ -57,7 +57,7 @@ module.exports = Scale.extend({
 
 		// For scales supporting getValueScaleId, we can be sure if this is a value scale.
 		// For others, vertical scale is assumed to be value.
-		// Note: This assumptiom works correctly for all charts with {x,y} data,
+		// Note: This assumption works correctly for all charts with {x,y} data,
 		// because getRightValue returns correct thing regardless if its a label or value.
 		var isValueScale = ds.getValueScaleId
 			? ds.getValueScaleId() === me.id
