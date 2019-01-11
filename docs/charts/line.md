@@ -43,33 +43,33 @@ The line chart allows a number of properties to be specified for each dataset. T
 
 | Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) |  Default
 | ---- | ---- | :----: | :----: | ----
-| [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | - | - | `'rgba(0,0,0,0.1)'`
-| [`borderCapStyle`](#styling) | `String` | - | - | `'butt'`
-| [`borderColor`](#styling) | [`Color`](../general/colors.md) | - | - | `'rgba(0,0,0,0.1)'`
-| [`borderDash`](#styling) | `Number[]` | - | - | `[]`
-| [`borderDashOffset`](#styling) | `Number` | - | - | `0`
-| [`borderJoinStyle`](#styling) | `String` | - | - | `'miter'`
-| [`borderWidth`](#styling) | `Number` | - | - | `0`
+| [`backgroundColor`](#line-styling) | [`Color`](../general/colors.md) | - | - | `'rgba(0,0,0,0.1)'`
+| [`borderCapStyle`](#line-styling) | `String` | - | - | `'butt'`
+| [`borderColor`](#line-styling) | [`Color`](../general/colors.md) | - | - | `'rgba(0,0,0,0.1)'`
+| [`borderDash`](#line-styling) | `Number[]` | - | - | `[]`
+| [`borderDashOffset`](#line-styling) | `Number` | - | - | `0`
+| [`borderJoinStyle`](#line-styling) | `String` | - | - | `'miter'`
+| [`borderWidth`](#line-styling) | `Number` | - | - | `0`
 | [`cubicInterpolationMode`](#cubicInterpolationMode) | `String` | - | - | `''`
-| [`fill`](#styling) | `Boolean/String` | - | - | `true`
+| [`fill`](#line-styling) | `Boolean/String` | - | - | `true`
 | [`label`](#general) | `String` | - | - | `''`
-| [`lineTension`](#styling) | `Number` | - | - | `0.4`
-| [`pointBackgroundColor`](#styling) | `Color` | Yes | Yes | `'rgba(0,0,0,0.1)'`
-| [`pointBorderColor`](#styling) | `Color` | Yes | Yes | `'rgba(0,0,0,0.1)'`
-| [`pointBorderWidth`](#styling) | `Number` | Yes | Yes | `1`
-| [`pointRadius`](#styling) | `Number` | Yes | Yes | `3`
-| [`pointStyle`](#styling) | `String/Image` | Yes | Yes | `'circle'`
-| [`pointRotation`](#styling) | `Number` | Yes | Yes | `1`
-| [`pointHitRadius`](#styling) | `Number` | Yes | Yes | `1`
-| [`steppedLine`](#stepped-line) | `Boolean/String` | - | - | `false`
-| [`xAxisID`](#general) | `String` | - | - | first x axis
-| [`yAxisID`](#general) | `String` | - | - | first y axis
+| [`lineTension`](#line-styling) | `Number` | - | - | `0.4`
+| [`pointBackgroundColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0,0,0,0.1)'`
+| [`pointBorderColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0,0,0,0.1)'`
+| [`pointBorderWidth`](#point-styling) | `Number` | Yes | Yes | `1`
+| [`pointHitRadius`](#point-styling) | `Number` | Yes | Yes | `1`
 | [`pointHoverBackgroundColor`](#interactions) | `Color` | Yes | Yes | `undefined`
 | [`pointHoverBorderColor`](#interactions) | `Color` | Yes | Yes | `undefined`
 | [`pointHoverBorderWidth`](#interactions) | `Number` | Yes | Yes | `undefined`
 | [`pointHoverRadius`](#interactions) | `Number` | Yes | Yes | `undefined`
+| [`pointRadius`](#point-styling) | `Number` | Yes | Yes | `3`
+| [`pointRotation`](#point-styling) | `Number` | Yes | Yes | `1`
+| [`pointStyle`](#point-styling) | `String/Image` | Yes | Yes | `'circle'`
 | [`showLine`](#general) | `Boolean` | - | - | `undefined`
 | [`spanGaps`](#general) | `Boolean` | - | - | `false`
+| [`steppedLine`](#stepped-line) | `Boolean/String` | - | - | `false`
+| [`xAxisID`](#general) | `String` | - | - | first x axis
+| [`yAxisID`](#general) | `String` | - | - | first y axis
 
 ### General
 
@@ -79,9 +79,23 @@ The line chart allows a number of properties to be specified for each dataset. T
 | `xAxisID` | The ID of the x axis to plot this dataset on.
 | `yAxisID` | The ID of the y axis to plot this dataset on.
 
-### Styling
+### Point Styling
 
-The style of the line and each point can be controlled with the following properties:
+The style of each point can be controlled with the following properties:
+
+| Name | Description
+| ---- | ----
+| `pointBackgroundColor` | The fill color for points.
+| `pointBorderColor` | The border color for points.
+| `pointBorderWidth` | The width of the point border in pixels.
+| `pointHitRadius` | The pixel size of the non-displayed point that reacts to mouse events.
+| `pointRadius` | The radius of the point shape. If set to 0, the point is not rendered.
+| `pointRotation` | The rotation of the point in degrees.
+| `pointStyle` | Style of the point. [more...](../configuration/elements#point-styles)
+
+### Line Styling
+
+The style of the line can be controlled with the following properties:
 
 | Name | Description
 | ---- | ----
@@ -94,17 +108,8 @@ The style of the line and each point can be controlled with the following proper
 | `borderWidth` | The line width (in pixels).
 | `fill` | How to fill the area under the line. See [area charts](area.md).
 | `lineTension` | Bezier curve tension of the line. Set to 0 to draw straightlines. This option is ignored if monotone cubic interpolation is used.
-| `pointBackgroundColor` | The fill color for points.
-| `pointBorderColor` | The border color for points.
-| `pointBorderWidth` | The width of the point border in pixels.
-| `pointRadius` | The radius of the point shape. If set to 0, the point is not rendered.
-| `pointStyle` | Style of the point. [more...](../configuration/elements#point-styles)
-| `pointRotation` | The rotation of the point in degrees.
-| `pointHitRadius` | The pixel size of the non-displayed point that reacts to mouse events.
 | `showLine` | If false, the line is not drawn for this dataset.
 | `spanGaps` | If true, lines will be drawn between points with no or null data. If false, points with `NaN` data will create a break in the line.
-
-All these values, if `undefined`, fallback to the associated [`elements.line.*`](../configuration/elements.md#line-configuration) or [`'elements.point.*`](../configuration/elements.md#point-configuration) options.
 
 ### Interactions
 
@@ -116,8 +121,6 @@ The interaction with each point can be controlled with the following properties:
 | `pointHoverBorderColor` | Point border color when hovered.
 | `pointHoverBorderWidth` | Border width of point when hovered.
 | `pointHoverRadius` | The radius of the point when hovered.
-
-All these values, if `undefined`, fallback to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options.
 
 ### cubicInterpolationMode
 The following interpolation modes are supported.
