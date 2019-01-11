@@ -31,7 +31,7 @@ There are a number of config callbacks that can be used to change parameters in 
 | `beforeDataLimits` | `axis` | Callback that runs before data limits are determined.
 | `afterDataLimits` | `axis` | Callback that runs after data limits are determined.
 | `beforeBuildTicks` | `axis` | Callback that runs before ticks are created.
-| `afterBuildTicks` | `axis` | Callback that runs after ticks are created. Useful for filtering ticks.
+| `afterBuildTicks` | `axis`, `ticks` | Callback that runs after ticks are created. Useful for filtering ticks. Should return the filtered ticks.
 | `beforeTickToLabelConversion` | `axis` | Callback that runs before ticks are converted into strings.
 | `afterTickToLabelConversion` | `axis` | Callback that runs after ticks are converted into strings.
 | `beforeCalculateTickRotation` | `axis` | Callback that runs before tick rotation is determined.

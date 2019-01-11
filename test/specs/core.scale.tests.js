@@ -341,4 +341,99 @@ describe('Core.scale', function() {
 			});
 		});
 	});
+
+	describe('afterBuildTicks', function() {
+		it('should allow filtering of ticks', function() {
+			var labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'];
+			var chart = window.acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'x',
+							type: 'category',
+							labels: labels,
+							afterBuildTicks: function(axis, ticks) {
+								return ticks.slice(1);
+							}
+						}]
+					}
+				}
+			});
+
+			var scale = chart.scales.x;
+			expect(scale.ticks).toEqual(labels.slice(1));
+		});
+
+		it('should allow filtering of ticks (for new implementation of buildTicks)', function() {
+			var chart = window.acquireChart({
+				type: 'line',
+				data: {
+					labels: ['2016', '2017', '2018']
+				},
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'x',
+							type: 'time',
+							time: {
+								parser: 'YYYY'
+							},
+							ticks: {
+								source: 'labels'
+							},
+							afterBuildTicks: function(axis, ticks) {
+								return ticks.slice(1);
+							}
+						}]
+					}
+				}
+			});
+
+			var scale = chart.scales.x;
+			expect(scale.ticks.length).toEqual(2);
+		});
+
+		it('should allow no return value from callback', function() {
+			var labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'];
+			var chart = window.acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'x',
+							type: 'category',
+							labels: labels,
+							afterBuildTicks: function() { }
+						}]
+					}
+				}
+			});
+
+			var scale = chart.scales.x;
+			expect(scale.ticks).toEqual(labels);
+		});
+
+		it('should allow empty ticks', function() {
+			var labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'];
+			var chart = window.acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'x',
+							type: 'category',
+							labels: labels,
+							afterBuildTicks: function() {
+								return [];
+							}
+						}]
+					}
+				}
+			});
+
+			var scale = chart.scales.x;
+			expect(scale.ticks.length).toBe(0);
+		});
+	});
 });
