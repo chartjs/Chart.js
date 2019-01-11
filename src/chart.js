@@ -8,6 +8,7 @@ Chart.helpers = require('./helpers/index');
 // @todo dispatch these helpers into appropriated helpers/helpers.* file and write unit tests!
 require('./core/core.helpers')(Chart);
 
+Chart._adapters = require('./core/core.adapters');
 Chart.Animation = require('./core/core.animation');
 Chart.animationService = require('./core/core.animations');
 Chart.controllers = require('./controllers/index');
@@ -29,6 +30,9 @@ var scales = require('./scales');
 Chart.helpers.each(scales, function(scale, type) {
 	Chart.scaleService.registerScaleType(type, scale, scale._defaults);
 });
+
+// Load to register built-in adapters (as side effects)
+require('./adapters');
 
 // Loading built-in plugins
 var plugins = require('./plugins');

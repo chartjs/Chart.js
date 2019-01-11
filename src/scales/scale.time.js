@@ -1,7 +1,7 @@
 /* global window: false */
 'use strict';
 
-var moment = require('moment');
+var adapter = require('../core/core.adapters')._date;
 var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 var Scale = require('../core/core.scale');
@@ -178,34 +178,35 @@ function interpolate(table, skey, sval, tkey) {
 	return prev[tkey] + offset;
 }
 
-/**
- * Convert the given value to a moment object using the given time options.
- * @see https://momentjs.com/docs/#/parsing/
- */
-function momentify(value, options) {
+function toTimestamp(input, options) {
 	var parser = options.parser;
-	var format = options.parser || options.format;
+	var format = parser || options.format;
+	var value = input;
 
 	if (typeof parser === 'function') {
-		return parser(value);
+		value = parser(value);
 	}
 
-	if (typeof value === 'string' && typeof format === 'string') {
-		return moment(value, format);
+	// Only parse if its not a timestamp already
+	if (!helpers.isFinite(value)) {
+		value = typeof format === 'string'
+			? adapter.parse(value, format)
+			: adapter.parse(value);
 	}
 
-	if (!(value instanceof moment)) {
-		value = moment(value);
+	if (value !== null) {
+		return +value;
 	}
 
-	if (value.isValid()) {
-		return value;
-	}
+	// Labels are in an incompatible format and no `parser` has been provided.
+	// The user might still use the deprecated `format` option for parsing.
+	if (!parser && typeof format === 'function') {
+		value = format(input);
 
-	// Labels are in an incompatible moment format and no `parser` has been provided.
-	// The user might still use the deprecated `format` option to convert his inputs.
-	if (typeof format === 'function') {
-		return format(value);
+		// `format` could return something else than a timestamp, if so, parse it
+		if (!helpers.isFinite(value)) {
+			value = adapter.parse(value);
+		}
 	}
 
 	return value;
@@ -217,16 +218,16 @@ function parse(input, scale) {
 	}
 
 	var options = scale.options.time;
-	var value = momentify(scale.getRightValue(input), options);
-	if (!value.isValid()) {
-		return null;
+	var value = toTimestamp(scale.getRightValue(input), options);
+	if (value === null) {
+		return value;
 	}
 
 	if (options.round) {
-		value.startOf(options.round);
+		value = +adapter.startOf(value, options.round);
 	}
 
-	return value.valueOf();
+	return value;
 }
 
 /**
@@ -277,13 +278,12 @@ function determineUnitForAutoTicks(minUnit, min, max, capacity) {
  * Figures out what unit to format a set of ticks with
  */
 function determineUnitForFormatting(ticks, minUnit, min, max) {
-	var duration = moment.duration(moment(max).diff(moment(min)));
 	var ilen = UNITS.length;
 	var i, unit;
 
 	for (i = ilen - 1; i >= UNITS.indexOf(minUnit); i--) {
 		unit = UNITS[i];
-		if (INTERVALS[unit].common && duration.as(unit) >= ticks.length) {
+		if (INTERVALS[unit].common && adapter.diff(max, min, unit) >= ticks.length) {
 			return unit;
 		}
 	}
@@ -313,8 +313,8 @@ function generate(min, max, capacity, options) {
 	var weekday = minor === 'week' ? timeOpts.isoWeekday : false;
 	var majorTicksEnabled = options.ticks.major.enabled;
 	var interval = INTERVALS[minor];
-	var first = moment(min);
-	var last = moment(max);
+	var first = min;
+	var last = max;
 	var ticks = [];
 	var time;
 
@@ -324,30 +324,30 @@ function generate(min, max, capacity, options) {
 
 	// For 'week' unit, handle the first day of week option
 	if (weekday) {
-		first = first.isoWeekday(weekday);
-		last = last.isoWeekday(weekday);
+		first = +adapter.startOf(first, 'isoWeek', weekday);
+		last = +adapter.startOf(last, 'isoWeek', weekday);
 	}
 
 	// Align first/last ticks on unit
-	first = first.startOf(weekday ? 'day' : minor);
-	last = last.startOf(weekday ? 'day' : minor);
+	first = +adapter.startOf(first, weekday ? 'day' : minor);
+	last = +adapter.startOf(last, weekday ? 'day' : minor);
 
 	// Make sure that the last tick include max
 	if (last < max) {
-		last.add(1, minor);
+		last = +adapter.add(last, 1, minor);
 	}
 
-	time = moment(first);
+	time = first;
 
 	if (majorTicksEnabled && major && !weekday && !timeOpts.round) {
 		// Align the first tick on the previous `minor` unit aligned on the `major` unit:
 		// we first aligned time on the previous `major` unit then add the number of full
 		// stepSize there is between first and the previous major time.
-		time.startOf(major);
-		time.add(~~((first - time) / (interval.size * stepSize)) * stepSize, minor);
+		time = +adapter.startOf(time, major);
+		time = +adapter.add(time, ~~((first - time) / (interval.size * stepSize)) * stepSize, minor);
 	}
 
-	for (; time < last; time.add(stepSize, minor)) {
+	for (; time < last; time = +adapter.add(time, stepSize, minor)) {
 		ticks.push(+time);
 	}
 
@@ -395,7 +395,7 @@ function ticksFromTimestamps(values, majorUnit) {
 
 	for (i = 0, ilen = values.length; i < ilen; ++i) {
 		value = values[i];
-		major = majorUnit ? value === +moment(value).startOf(majorUnit) : false;
+		major = majorUnit ? value === +adapter.startOf(value, majorUnit) : false;
 
 		ticks.push({
 			value: value,
@@ -406,25 +406,27 @@ function ticksFromTimestamps(values, majorUnit) {
 	return ticks;
 }
 
-function determineLabelFormat(data, timeOpts) {
-	var i, momentDate, hasTime;
-	var ilen = data.length;
+/**
+ * Return the time format for the label with the most parts (milliseconds, second, etc.)
+ */
+function determineLabelFormat(timestamps) {
+	var presets = adapter.presets();
+	var ilen = timestamps.length;
+	var i, ts, hasTime;
 
-	// find the label with the most parts (milliseconds, minutes, etc.)
-	// format all labels with the same level of detail as the most specific label
 	for (i = 0; i < ilen; i++) {
-		momentDate = momentify(data[i], timeOpts);
-		if (momentDate.millisecond() !== 0) {
-			return 'MMM D, YYYY h:mm:ss.SSS a';
+		ts = timestamps[i];
+		if (ts % INTERVALS.second.size !== 0) {
+			return presets.full;
 		}
-		if (momentDate.second() !== 0 || momentDate.minute() !== 0 || momentDate.hour() !== 0) {
+		if (!hasTime && adapter.startOf(ts, 'day') !== ts) {
 			hasTime = true;
 		}
 	}
 	if (hasTime) {
-		return 'MMM D, YYYY h:mm:ss a';
+		return presets.time;
 	}
-	return 'MMM D, YYYY';
+	return presets.date;
 }
 
 var defaultConfig = {
@@ -456,19 +458,7 @@ var defaultConfig = {
 		displayFormat: false, // DEPRECATED
 		isoWeekday: false, // override week start day - see https://momentjs.com/docs/#/get-set/iso-weekday/
 		minUnit: 'millisecond',
-
-		// defaults to unit's corresponding unitFormat below or override using pattern string from https://momentjs.com/docs/#/displaying/format/
-		displayFormats: {
-			millisecond: 'h:mm:ss.SSS a', // 11:20:01.123 AM,
-			second: 'h:mm:ss a', // 11:20:01 AM
-			minute: 'h:mm a', // 11:20 AM
-			hour: 'hA', // 5PM
-			day: 'MMM D', // Sep 4
-			week: 'll', // Week 46, or maybe "[W]WW - YYYY" ?
-			month: 'MMM YYYY', // Sept 2015
-			quarter: '[Q]Q - YYYY', // Q3
-			year: 'YYYY' // 2015
-		},
+		displayFormats: {}
 	},
 	ticks: {
 		autoSkip: false,
@@ -491,23 +481,25 @@ var defaultConfig = {
 
 module.exports = Scale.extend({
 	initialize: function() {
-		if (!moment) {
-			throw new Error('Chart.js - Moment.js could not be found! You must include it before Chart.js to use the time scale. Download at https://momentjs.com');
-		}
-
 		this.mergeTicksOptions();
-
 		Scale.prototype.initialize.call(this);
 	},
 
 	update: function() {
 		var me = this;
 		var options = me.options;
+		var time = options.time || (options.time = {});
 
 		// DEPRECATIONS: output a message only one time per update
-		if (options.time && options.time.format) {
+		if (time.format) {
 			console.warn('options.time.format is deprecated and replaced by options.time.parser.');
 		}
+
+		// Backward compatibility: before introducing adapter, `displayFormats` was
+		// supposed to contain *all* unit/string pairs but this can't be resolved
+		// when loading the scale (adapters are loaded afterward), so let's populate
+		// missing formats on update
+		helpers.mergeIf(time.displayFormats, adapter.formats());
 
 		return Scale.prototype.update.apply(me, arguments);
 	},
@@ -582,8 +574,8 @@ module.exports = Scale.extend({
 		max = parse(timeOpts.max, me) || max;
 
 		// In case there is no valid min/max, set limits based on unit time option
-		min = min === MAX_INTEGER ? +moment().startOf(unit) : min;
-		max = max === MIN_INTEGER ? +moment().endOf(unit) + 1 : max;
+		min = min === MAX_INTEGER ? +adapter.startOf(+new Date(), unit) : min;
+		max = max === MIN_INTEGER ? +adapter.endOf(+new Date(), unit) + 1 : max;
 
 		// Make sure that max is strictly higher than min (required by the lookup table)
 		me.min = Math.min(min, max);
@@ -646,7 +638,7 @@ module.exports = Scale.extend({
 		me._majorUnit = determineMajorUnit(me._unit);
 		me._table = buildLookupTable(me._timestamps.data, min, max, options.distribution);
 		me._offsets = computeOffsets(me._table, ticks, min, max, options);
-		me._labelFormat = determineLabelFormat(me._timestamps.data, timeOpts);
+		me._labelFormat = determineLabelFormat(me._timestamps.data);
 
 		if (options.ticks.reverse) {
 			ticks.reverse();
@@ -666,31 +658,30 @@ module.exports = Scale.extend({
 			label = me.getRightValue(value);
 		}
 		if (timeOpts.tooltipFormat) {
-			return momentify(label, timeOpts).format(timeOpts.tooltipFormat);
+			return adapter.format(toTimestamp(label, timeOpts), timeOpts.tooltipFormat);
 		}
 		if (typeof label === 'string') {
 			return label;
 		}
 
-		return momentify(label, timeOpts).format(me._labelFormat);
+		return adapter.format(toTimestamp(label, timeOpts), me._labelFormat);
 	},
 
 	/**
 	 * Function to format an individual tick mark
 	 * @private
 	 */
-	tickFormatFunction: function(tick, index, ticks, formatOverride) {
+	tickFormatFunction: function(time, index, ticks, format) {
 		var me = this;
 		var options = me.options;
-		var time = tick.valueOf();
 		var formats = options.time.displayFormats;
 		var minorFormat = formats[me._unit];
 		var majorUnit = me._majorUnit;
 		var majorFormat = formats[majorUnit];
-		var majorTime = tick.clone().startOf(majorUnit).valueOf();
+		var majorTime = +adapter.startOf(time, majorUnit);
 		var majorTickOpts = options.ticks.major;
 		var major = majorTickOpts.enabled && majorUnit && majorFormat && time === majorTime;
-		var label = tick.format(formatOverride ? formatOverride : major ? majorFormat : minorFormat);
+		var label = adapter.format(time, format ? format : major ? majorFormat : minorFormat);
 		var tickOpts = major ? majorTickOpts : options.ticks.minor;
 		var formatter = valueOrDefault(tickOpts.callback, tickOpts.userCallback);
 
@@ -702,7 +693,7 @@ module.exports = Scale.extend({
 		var i, ilen;
 
 		for (i = 0, ilen = ticks.length; i < ilen; ++i) {
-			labels.push(this.tickFormatFunction(moment(ticks[i].value), i, ticks));
+			labels.push(this.tickFormatFunction(ticks[i].value, i, ticks));
 		}
 
 		return labels;
@@ -753,7 +744,8 @@ module.exports = Scale.extend({
 		var pos = (size ? (pixel - start) / size : 0) * (me._offsets.start + 1 + me._offsets.start) - me._offsets.end;
 		var time = interpolate(me._table, 'pos', pos, 'time');
 
-		return moment(time);
+		// DEPRECATION, we should return time directly
+		return adapter._create(time);
 	},
 
 	/**
@@ -778,13 +770,13 @@ module.exports = Scale.extend({
 	getLabelCapacity: function(exampleTime) {
 		var me = this;
 
-		var formatOverride = me.options.time.displayFormats.millisecond;	// Pick the longest format for guestimation
-
-		var exampleLabel = me.tickFormatFunction(moment(exampleTime), 0, [], formatOverride);
+		// pick the longest format (milliseconds) for guestimation
+		var format = me.options.time.displayFormats.millisecond;
+		var exampleLabel = me.tickFormatFunction(exampleTime, 0, [], format);
 		var tickLabelWidth = me.getLabelWidth(exampleLabel);
 		var innerWidth = me.isHorizontal() ? me.width : me.height;
-
 		var capacity = Math.floor(innerWidth / tickLabelWidth);
+
 		return capacity > 0 ? capacity : 1;
 	}
 });
