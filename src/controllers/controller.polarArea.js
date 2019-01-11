@@ -138,10 +138,7 @@ module.exports = DatasetController.extend({
 		}
 
 		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
-			arcs[i]._options = me._resolveElementOptions(arcs[i], i, reset);
-		}
-
-		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
+			arcs[i]._options = me._resolveElementOptions(arcs[i], i);
 			me.updateElement(arcs[i], i, reset);
 		}
 	},
