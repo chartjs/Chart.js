@@ -3,6 +3,7 @@
 const commonjs = require('rollup-plugin-commonjs');
 const resolve = require('rollup-plugin-node-resolve');
 const terser = require('rollup-plugin-terser').terser;
+const optional = require('./rollup.plugins').optional;
 const pkg = require('./package.json');
 
 const input = 'src/chart.js';
@@ -21,7 +22,10 @@ module.exports = [
 		input: input,
 		plugins: [
 			resolve(),
-			commonjs()
+			commonjs(),
+			optional({
+				include: ['moment']
+			})
 		],
 		output: {
 			name: 'Chart',
@@ -42,6 +46,9 @@ module.exports = [
 		plugins: [
 			resolve(),
 			commonjs(),
+			optional({
+				include: ['moment']
+			}),
 			terser({
 				output: {
 					preamble: banner
