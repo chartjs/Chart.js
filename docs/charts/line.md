@@ -93,6 +93,8 @@ The style of each point can be controlled with the following properties:
 | `pointRotation` | The rotation of the point in degrees.
 | `pointStyle` | Style of the point. [more...](../configuration/elements#point-styles)
 
+All these values, if `undefined`, fallback first to the dataset options then to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options. 
+
 ### Line Styling
 
 The style of the line can be controlled with the following properties:
@@ -110,6 +112,8 @@ The style of the line can be controlled with the following properties:
 | `lineTension` | Bezier curve tension of the line. Set to 0 to draw straightlines. This option is ignored if monotone cubic interpolation is used.
 | `showLine` | If false, the line is not drawn for this dataset.
 | `spanGaps` | If true, lines will be drawn between points with no or null data. If false, points with `NaN` data will create a break in the line.
+
+All these values, if `undefined`, fallback to the associated [`elements.line.*`](../configuration/elements.md#line-configuration) options.
 
 ### Interactions
 
