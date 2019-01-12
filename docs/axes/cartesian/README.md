@@ -28,7 +28,7 @@ The following options are common to all cartesian axes but do not apply to other
 | -----| ---- | --------| -----------
 | `autoSkip` | `Boolean` | `true` | If true, automatically calculates how many labels that can be shown and hides labels accordingly. Turn it off to show all labels no matter what.
 | `autoSkipPadding` | `Number` | `0` | Padding between the ticks on the horizontal axis when `autoSkip` is enabled. *Note: Only applicable to horizontal scales.*
-| `labelOffset` | `Number` | `0` | Distance in pixels to offset the label from the centre point of the tick (in the y direction for the x axis, and the x direction for the y axis). *Note: this can cause labels at the edges to be cropped by the edge of the canvas*
+| `labelOffset` | `Number` | `0` | Distance in pixels to offset the label from the centre point of the tick (in the x direction for the x axis, and the y direction for the y axis). *Note: this can cause labels at the edges to be cropped by the edge of the canvas*
 | `maxRotation` | `Number` | `90` | Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. *Note: Only applicable to horizontal scales.*
 | `minRotation` | `Number` | `0` | Minimum rotation for tick labels. *Note: Only applicable to horizontal scales.*
 | `mirror` | `Boolean` | `false` | Flips tick labels around axis, displaying the labels inside the chart instead of outside. *Note: Only applicable to vertical scales.*
