@@ -6,7 +6,7 @@
   "license": "MIT",
   "jsdelivr": "dist/Chart.min.js",
   "unpkg": "dist/Chart.min.js",
-  "main": "src/chart.js",
+  "main": "dist/Chart.js",
   "keywords": [
     "canvas",
     "charts",
