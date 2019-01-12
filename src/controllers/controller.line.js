@@ -320,6 +320,7 @@ module.exports = DatasetController.extend({
 	setHoverStyle: function(point) {
 		var model = point._model;
 		var options = point._options;
+		var getHoverColor = helpers.getHoverColor;
 
 		point.$previousStyle = {
 			backgroundColor: model.backgroundColor,
@@ -328,8 +329,8 @@ module.exports = DatasetController.extend({
 			radius: model.radius
 		};
 
-		model.backgroundColor = valueOrDefault(options.hoverBackgroundColor, helpers.getHoverColor(options.backgroundColor));
-		model.borderColor = valueOrDefault(options.hoverBorderColor, helpers.getHoverColor(options.borderColor));
+		model.backgroundColor = valueOrDefault(options.hoverBackgroundColor, getHoverColor(options.backgroundColor));
+		model.borderColor = valueOrDefault(options.hoverBorderColor, getHoverColor(options.borderColor));
 		model.borderWidth = valueOrDefault(options.hoverBorderWidth, options.borderWidth);
 		model.radius = valueOrDefault(options.hoverRadius, options.radius);
 	},
