@@ -51,20 +51,23 @@ module.exports = Scale.extend({
 	getLabelForIndex: function(index, datasetIndex) {
 		var me = this;
 		var chart = me.chart;
-		var data = chart.data;
+		var data = chart.data.datasets[datasetIndex].data;
+		var value = data && index < data.length ? data[index] : false;
 		var isHorizontal = me.isHorizontal();
 		var controller = chart.getDatasetMeta(datasetIndex).controller;
 
 		// For controllers supporting getValueScaleId, we can be sure if this is a value scale.
 		// For object data ({x,y} etc.) we can rely on getRightValue to return correct thing.
-		// For others, check if data is a label and use that instead (so this is an value index, but values are labels)
-		var isValueScale = controller.getValueScaleId
+		// For others, check if value is a label and use that instead (so `index` is an index of a value, but values are labels)
+		var useGetRightValue = controller.getValueScaleId
 			? controller.getValueScaleId() === me.id
-			: helpers.isObject(data[0]) || (!isHorizontal && me.getLabels().indexOf(data.datasets[datasetIndex].data[index]) !== -1);
+			: value && (helpers.isObject(value) || (!isHorizontal && me.getLabels().indexOf(value) !== -1));
 
-		if (isValueScale) {
-			return me.getRightValue(data.datasets[datasetIndex].data[index]);
+		if (useGetRightValue) {
+			return me.getRightValue(value);
 		}
+
+		// So `index` is an index of a label (aka tick)
 		return me.ticks[index - me.minIndex];
 	},
 
