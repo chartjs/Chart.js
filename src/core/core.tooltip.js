@@ -4,7 +4,7 @@ var defaults = require('./core.defaults');
 var Element = require('./core.element');
 var helpers = require('../helpers/index');
 
-var valueOrDefault = helpers.valueOrDefault;
+var resolve = helpers.options.resolve;
 
 defaults._set('global', {
 	tooltips: {
@@ -13,20 +13,27 @@ defaults._set('global', {
 		mode: 'nearest',
 		position: 'average',
 		intersect: true,
+
+		// scriptable, no index, context for all tooltip
 		backgroundColor: 'rgba(0,0,0,0.8)',
 		titleFontStyle: 'bold',
 		titleSpacing: 2,
 		titleMarginBottom: 6,
 		titleFontColor: '#fff',
 		titleAlign: 'left',
+
+		// scriptable, index, context for row
 		bodySpacing: 2,
 		bodyFontColor: '#fff',
 		bodyAlign: 'left',
 		footerFontStyle: 'bold',
+
+		// scriptable, no index, context for all tooltip
 		footerSpacing: 2,
 		footerMarginTop: 6,
 		footerFontColor: '#fff',
 		footerAlign: 'left',
+
 		yPadding: 6,
 		xPadding: 6,
 		caretPadding: 2,
@@ -36,6 +43,7 @@ defaults._set('global', {
 		displayColors: true,
 		borderColor: 'rgba(0,0,0,0)',
 		borderWidth: 0,
+
 		callbacks: {
 			// Args are: (tooltipItems, data)
 			beforeTitle: helpers.noop,
@@ -232,8 +240,12 @@ function createTooltipItem(element) {
  * Helper to get the reset model for the tooltip
  * @param tooltipOpts {object} the tooltip options
  */
-function getBaseModel(tooltipOpts) {
+function getBaseModel(tooltipOpts, chart, tooltipItems) {
 	var globalDefaults = defaults.global;
+	var context = {
+		chart: chart,
+		tooltipItems: tooltipItems,
+	};
 
 	return {
 		// Positioning
@@ -244,39 +256,39 @@ function getBaseModel(tooltipOpts) {
 
 		// Body
 		bodyFontColor: tooltipOpts.bodyFontColor,
-		_bodyFontFamily: valueOrDefault(tooltipOpts.bodyFontFamily, globalDefaults.defaultFontFamily),
-		_bodyFontStyle: valueOrDefault(tooltipOpts.bodyFontStyle, globalDefaults.defaultFontStyle),
+		_bodyFontFamily: resolve([tooltipOpts.bodyFontFamily, globalDefaults.defaultFontFamily]),
+		_bodyFontStyle: resolve([tooltipOpts.bodyFontStyle, globalDefaults.defaultFontStyle]),
 		_bodyAlign: tooltipOpts.bodyAlign,
-		bodyFontSize: valueOrDefault(tooltipOpts.bodyFontSize, globalDefaults.defaultFontSize),
+		bodyFontSize: resolve([tooltipOpts.bodyFontSize, globalDefaults.defaultFontSize]),
 		bodySpacing: tooltipOpts.bodySpacing,
 
 		// Title
-		titleFontColor: tooltipOpts.titleFontColor,
-		_titleFontFamily: valueOrDefault(tooltipOpts.titleFontFamily, globalDefaults.defaultFontFamily),
-		_titleFontStyle: valueOrDefault(tooltipOpts.titleFontStyle, globalDefaults.defaultFontStyle),
-		titleFontSize: valueOrDefault(tooltipOpts.titleFontSize, globalDefaults.defaultFontSize),
-		_titleAlign: tooltipOpts.titleAlign,
-		titleSpacing: tooltipOpts.titleSpacing,
-		titleMarginBottom: tooltipOpts.titleMarginBottom,
+		titleFontColor: resolve([tooltipOpts.titleFontColor], context),
+		_titleFontFamily: resolve([tooltipOpts.titleFontFamily, globalDefaults.defaultFontFamily], context),
+		_titleFontStyle: resolve([tooltipOpts.titleFontStyle, globalDefaults.defaultFontStyle], context),
+		titleFontSize: resolve([tooltipOpts.titleFontSize, globalDefaults.defaultFontSize], context),
+		_titleAlign: resolve([tooltipOpts.titleAlign], context),
+		titleSpacing: resolve([tooltipOpts.titleSpacing], context),
+		titleMarginBottom: resolve([tooltipOpts.titleMarginBottom], context),
 
 		// Footer
-		footerFontColor: tooltipOpts.footerFontColor,
-		_footerFontFamily: valueOrDefault(tooltipOpts.footerFontFamily, globalDefaults.defaultFontFamily),
-		_footerFontStyle: valueOrDefault(tooltipOpts.footerFontStyle, globalDefaults.defaultFontStyle),
-		footerFontSize: valueOrDefault(tooltipOpts.footerFontSize, globalDefaults.defaultFontSize),
-		_footerAlign: tooltipOpts.footerAlign,
-		footerSpacing: tooltipOpts.footerSpacing,
-		footerMarginTop: tooltipOpts.footerMarginTop,
+		footerFontColor: resolve([tooltipOpts.footerFontColor], context),
+		_footerFontFamily: resolve([tooltipOpts.footerFontFamily, globalDefaults.defaultFontFamily], context),
+		_footerFontStyle: resolve([tooltipOpts.footerFontStyle, globalDefaults.defaultFontStyle], context),
+		footerFontSize: resolve([tooltipOpts.footerFontSize, globalDefaults.defaultFontSize], context),
+		_footerAlign: resolve([tooltipOpts.footerAlign], context),
+		footerSpacing: resolve([tooltipOpts.footerSpacing], context),
+		footerMarginTop: resolve([tooltipOpts.footerMarginTop], context),
 
 		// Appearance
-		caretSize: tooltipOpts.caretSize,
-		cornerRadius: tooltipOpts.cornerRadius,
-		backgroundColor: tooltipOpts.backgroundColor,
+		caretSize: resolve([tooltipOpts.caretSize], context),
+		cornerRadius: resolve([tooltipOpts.cornerRadius], context),
+		backgroundColor: resolve([tooltipOpts.backgroundColor], context),
 		opacity: 0,
-		legendColorBackground: tooltipOpts.multiKeyBackground,
-		displayColors: tooltipOpts.displayColors,
-		borderColor: tooltipOpts.borderColor,
-		borderWidth: tooltipOpts.borderWidth
+		legendColorBackground: resolve([tooltipOpts.multiKeyBackground], context),
+		displayColors: resolve([tooltipOpts.displayColors], context),
+		borderColor: resolve([tooltipOpts.borderColor], context),
+		borderWidth: resolve([tooltipOpts.borderWidth], context),
 	};
 }
 
@@ -354,7 +366,7 @@ function getTooltipSize(tooltip, model) {
 function determineAlignment(tooltip, size) {
 	var model = tooltip._model;
 	var chart = tooltip._chart;
-	var chartArea = tooltip._chart.chartArea;
+	var chartArea = chart.chartArea;
 	var xAlign = 'center';
 	var yAlign = 'center';
 
@@ -492,7 +504,7 @@ function getBeforeAfterBodyLines(callback) {
 
 var exports = Element.extend({
 	initialize: function() {
-		this._model = getBaseModel(this._options);
+		this._model = getBaseModel(this._options, this._chart, []);
 		this._lastActive = [];
 	},
 
@@ -596,25 +608,25 @@ var exports = Element.extend({
 		};
 
 		var tooltipItems = [];
-		var model = me._model = getBaseModel(opts);
+		for (i = 0, len = active.length; i < len; ++i) {
+			tooltipItems.push(createTooltipItem(active[i]));
+		}
 
-			for (i = 0, len = active.length; i < len; ++i) {
-				tooltipItems.push(createTooltipItem(active[i]));
-			}
+		// If the user provided a filter function, use it to modify the tooltip items
+		if (opts.filter) {
+			tooltipItems = tooltipItems.filter(function(a) {
+				return opts.filter(a, data);
+			});
+		}
 
-			// If the user provided a filter function, use it to modify the tooltip items
-			if (opts.filter) {
-				tooltipItems = tooltipItems.filter(function(a) {
-					return opts.filter(a, data);
-				});
-			}
+		// If the user provided a sorting function, use it to modify the tooltip items
+		if (opts.itemSort) {
+			tooltipItems = tooltipItems.sort(function(a, b) {
+				return opts.itemSort(a, b, data);
+			});
+		}
 
-			// If the user provided a sorting function, use it to modify the tooltip items
-			if (opts.itemSort) {
-				tooltipItems = tooltipItems.sort(function(a, b) {
-					return opts.itemSort(a, b, data);
-				});
-			}
+		var model = me._model = getBaseModel(opts, me._chart, tooltipItems);
 
 		if (active.length) {
 			model.opacity = 1;
