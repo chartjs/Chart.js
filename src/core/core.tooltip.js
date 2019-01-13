@@ -573,10 +573,9 @@ var exports = Element.extend({
 		// that does _view = _model if ease === 1. This causes the 2nd tooltip update to set properties in both the view and model at the same time
 		// which breaks any animations.
 		var existingModel = me._model;
-		var model = me._model = getBaseModel(opts);
 		var active = me._active;
-
 		var data = me._data;
+		var i, len;
 
 		// In the case where active.length === 0 we need to keep these at existing values for good animations
 		var alignment = {
@@ -596,16 +595,9 @@ var exports = Element.extend({
 			y: existingModel.caretY
 		};
 
-		var i, len;
+		var tooltipItems = [];
+		var model = me._model = getBaseModel(opts);
 
-		if (active.length) {
-			model.opacity = 1;
-
-			var labelColors = [];
-			var labelTextColors = [];
-			tooltipPosition = positioners[opts.position].call(me, active, me._eventPosition);
-
-			var tooltipItems = [];
 			for (i = 0, len = active.length; i < len; ++i) {
 				tooltipItems.push(createTooltipItem(active[i]));
 			}
@@ -623,6 +615,13 @@ var exports = Element.extend({
 					return opts.itemSort(a, b, data);
 				});
 			}
+
+		if (active.length) {
+			model.opacity = 1;
+
+			var labelColors = [];
+			var labelTextColors = [];
+			tooltipPosition = positioners[opts.position].call(me, active, me._eventPosition);
 
 			// Determine colors for boxes
 			helpers.each(tooltipItems, function(tooltipItem) {
