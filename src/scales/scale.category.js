@@ -1,5 +1,6 @@
 'use strict';
 
+var helpers = require('../helpers/index');
 var Scale = require('../core/core.scale');
 
 var defaultConfig = {
@@ -52,16 +53,14 @@ module.exports = Scale.extend({
 		var chart = me.chart;
 		var data = chart.data;
 		var isHorizontal = me.isHorizontal();
-
-		var ds = chart.getDatasetMeta(datasetIndex).controller;
+		var controller = chart.getDatasetMeta(datasetIndex).controller;
 
 		// For controllers supporting getValueScaleId, we can be sure if this is a value scale.
-		// For others, vertical scale is assumed to be value.
-		// Note: This assumption works correctly for all charts with {x,y} data,
-		// because getRightValue returns correct thing regardless if it's a index or value.
-		var isValueScale = ds.getValueScaleId
-			? ds.getValueScaleId() === me.id
-			: !isHorizontal;
+		// For object data ({x,y} etc.) we can rely on getRightValue to return correct thing.
+		// For others, check if data is a label and use that instead (so this is an value index, but values are labels)
+		var isValueScale = controller.getValueScaleId
+			? controller.getValueScaleId() === me.id
+			: helpers.isObject(data[0]) || (!isHorizontal && me.getLabels().indexOf(data.datasets[datasetIndex].data[index]) !== -1);
 
 		if (isValueScale) {
 			return me.getRightValue(data.datasets[datasetIndex].data[index]);
