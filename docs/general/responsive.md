@@ -33,7 +33,10 @@ The chart can also be programmatically resized by modifying the container size:
 
 ```javascript
 chart.canvas.parentNode.style.height = '128px';
+chart.canvas.parentNode.style.width = '128px';
 ```
+
+Note that in order for the above code to correctly resize the chart height, the [`maintainAspectRatio`](#configuration-options) option must also be set to `false`.
 
 ## Printing Resizeable Charts
 
