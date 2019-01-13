@@ -57,11 +57,13 @@ module.exports = Scale.extend({
 		var controller = chart.getDatasetMeta(datasetIndex).controller;
 
 		// For controllers supporting getValueScaleId, we can be sure if this is a value scale.
-		// For object data ({x,y} etc.) we can rely on getRightValue to return correct thing.
-		// For others, check if value is a label and use that instead (so `index` is an index of a value, but values are labels)
+		// For vertical scale, assume chart orientation is horizontal and check
+		//   1. Value is object ({x,y} etc.) we can rely on getRightValue to return correct thing.
+		// 	 2. Value is a label, use that instead (so `index` is an index of a value, but values are labels)
+		//      * getRightValue call is not needed in this case, but its ok.
 		var useGetRightValue = controller.getValueScaleId
 			? controller.getValueScaleId() === me.id
-			: value && (helpers.isObject(value) || (!isHorizontal && me.getLabels().indexOf(value) !== -1));
+			: !isHorizontal && value && (helpers.isObject(value) || (me.getLabels().indexOf(value) !== -1));
 
 		if (useGetRightValue) {
 			return me.getRightValue(value);
