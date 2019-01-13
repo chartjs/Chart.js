@@ -123,6 +123,7 @@ module.exports = DatasetController.extend({
 		var start = me.chart.options.startAngle || 0;
 		var starts = me._starts = [];
 		var angles = me._angles = [];
+		var arcs = meta.data;
 		var i, ilen, angle;
 
 		me._updateRadius();
@@ -136,9 +137,10 @@ module.exports = DatasetController.extend({
 			start += angle;
 		}
 
-		helpers.each(meta.data, function(arc, index) {
-			me.updateElement(arc, index, reset);
-		});
+		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
+			arcs[i]._options = me._resolveElementOptions(arcs[i], i);
+			me.updateElement(arcs[i], i, reset);
+		}
 	},
 
 	/**
@@ -178,6 +180,7 @@ module.exports = DatasetController.extend({
 		var endAngle = startAngle + (arc.hidden ? 0 : me._angles[index]);
 
 		var resetRadius = animationOpts.animateScale ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
+		var options = arc._options || {};
 
 		helpers.extend(arc, {
 			// Utility
@@ -187,6 +190,10 @@ module.exports = DatasetController.extend({
 
 			// Desired view properties
 			_model: {
+				backgroundColor: options.backgroundColor,
+				borderColor: options.borderColor,
+				borderWidth: options.borderWidth,
+				borderAlign: options.borderAlign,
 				x: centerX,
 				y: centerY,
 				innerRadius: 0,
@@ -196,16 +203,6 @@ module.exports = DatasetController.extend({
 				label: helpers.valueAtIndexOrDefault(labels, index, labels[index])
 			}
 		});
-
-		// Apply border and fill style
-		var elementOpts = this.chart.options.elements.arc;
-		var custom = arc.custom || {};
-		var model = arc._model;
-
-		model.backgroundColor = resolve([custom.backgroundColor, dataset.backgroundColor, elementOpts.backgroundColor], undefined, index);
-		model.borderColor = resolve([custom.borderColor, dataset.borderColor, elementOpts.borderColor], undefined, index);
-		model.borderWidth = resolve([custom.borderWidth, dataset.borderWidth, elementOpts.borderWidth], undefined, index);
-		model.borderAlign = resolve([custom.borderAlign, dataset.borderAlign, elementOpts.borderAlign], undefined, index);
 
 		arc.pivot();
 	},
@@ -222,6 +219,68 @@ module.exports = DatasetController.extend({
 		});
 
 		return count;
+	},
+
+	/**
+	 * @protected
+	 */
+	setHoverStyle: function(arc) {
+		var model = arc._model;
+		var options = arc._options;
+		var getHoverColor = helpers.getHoverColor;
+		var valueOrDefault = helpers.valueOrDefault;
+
+		arc.$previousStyle = {
+			backgroundColor: model.backgroundColor,
+			borderColor: model.borderColor,
+			borderWidth: model.borderWidth,
+		};
+
+		model.backgroundColor = valueOrDefault(options.hoverBackgroundColor, getHoverColor(options.backgroundColor));
+		model.borderColor = valueOrDefault(options.hoverBorderColor, getHoverColor(options.borderColor));
+		model.borderWidth = valueOrDefault(options.hoverBorderWidth, options.borderWidth);
+	},
+
+	/**
+	 * @private
+	 */
+	_resolveElementOptions: function(arc, index) {
+		var me = this;
+		var chart = me.chart;
+		var dataset = me.getDataset();
+		var custom = arc.custom || {};
+		var options = chart.options.elements.arc;
+		var values = {};
+		var i, ilen, key;
+
+		// Scriptable options
+		var context = {
+			chart: chart,
+			dataIndex: index,
+			dataset: dataset,
+			datasetIndex: me.index
+		};
+
+		var keys = [
+			'backgroundColor',
+			'borderColor',
+			'borderWidth',
+			'borderAlign',
+			'hoverBackgroundColor',
+			'hoverBorderColor',
+			'hoverBorderWidth',
+		];
+
+		for (i = 0, ilen = keys.length; i < ilen; ++i) {
+			key = keys[i];
+			values[key] = resolve([
+				custom[key],
+				dataset[key],
+				options[key]
+			], context, index);
+		}
+
+		return values;
 	},
 
 	/**

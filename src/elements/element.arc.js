@@ -92,7 +92,7 @@ module.exports = Element.extend({
 		ctx.save();
 
 		ctx.beginPath();
-		ctx.arc(vm.x, vm.y, vm.outerRadius - pixelMargin, sA, eA);
+		ctx.arc(vm.x, vm.y, Math.max(vm.outerRadius - pixelMargin, 0), sA, eA);
 		ctx.arc(vm.x, vm.y, vm.innerRadius, eA, sA, true);
 		ctx.closePath();
 
