@@ -60,10 +60,10 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'#fff'`
 | [`borderWidth`](#styling) | `Number` | Yes | Yes | `2`
 | [`data`](#data-structure) | `Number[]` | - | - | **required**
-| [`flex`](#styling) | `Number` | No | No | `1` 
 | [`hoverBackgroundColor`](#interations) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderWidth`](#interactions) | `Number` | Yes | Yes | `undefined`
+| [`weight`](#styling) | `Number` | No | No | `1`
 
 ### Styling
 
@@ -74,7 +74,7 @@ The style of each arc can be controlled with the following properties:
 | `backgroundColor` | arc background color.
 | `borderColor` | arc border color.
 | `borderWidth` | arc border width (in pixels).
-| `flex` | The relative thickness of the dataset. Providing a value for flex will allow the pie or doughnut dataset to be drawn with a thickness relative to the sum of all the dataset flex values.
+| `weight` | The relative thickness of the dataset. Providing a value for weight will allow the pie or doughnut dataset to be drawn with a thickness relative to the sum of all the dataset weight values.
 
 All these values, if `undefined`, fallback to the associated [`elements.arc.*`](../configuration/elements.md#arc-configuration) options.
 

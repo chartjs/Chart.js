@@ -152,7 +152,7 @@ module.exports = DatasetController.extend({
 		var arcs = meta.data;
 		var cutoutPercentage = opts.cutoutPercentage;
 		var circumference = opts.circumference;
-		var chartFlex = me._getRingFlex(me.index);
+		var chartWeight = me._getRingWeight(me.index);
 		var i, ilen;
 
 		// If the chart's circumference isn't a full circle, calculate minSize as a ratio of the width/height of the arc
@@ -181,14 +181,14 @@ module.exports = DatasetController.extend({
 		chart.borderWidth = me.getMaxBorderWidth();
 		chart.outerRadius = Math.max((minSize - chart.borderWidth) / 2, 0);
 		chart.innerRadius = Math.max(cutoutPercentage ? (chart.outerRadius / 100) * (cutoutPercentage) : 0, 0);
-		chart.radiusLength = (chart.outerRadius - chart.innerRadius) / me._getVisibleDatasetFlexTotal();
+		chart.radiusLength = (chart.outerRadius - chart.innerRadius) / me._getVisibleDatasetWeightTotal();
 		chart.offsetX = offset.x * chart.outerRadius;
 		chart.offsetY = offset.y * chart.outerRadius;
 
 		meta.total = me.calculateTotal();
 
-		me.outerRadius = chart.outerRadius - (chart.radiusLength * me._getRingFlexOffset(me.index));
-		me.innerRadius = Math.max(me.outerRadius - (chart.radiusLength * chartFlex), 0);
+		me.outerRadius = chart.outerRadius - (chart.radiusLength * me._getRingWeightOffset(me.index));
+		me.innerRadius = Math.max(me.outerRadius - (chart.radiusLength * chartWeight), 0);
 
 		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
 			me.updateElement(arcs[i], i, reset);
@@ -382,29 +382,29 @@ module.exports = DatasetController.extend({
 	 * Get radius length offset of the dataset in relation to the visible datasets weights. This allows determining the inner and outer radius correctly
 	 * @private
 	 */
-	_getRingFlexOffset: function(datasetIndex) {
-		var ringFlexOffset = 0;
+	_getRingWeightOffset: function(datasetIndex) {
+		var ringWeightOffset = 0;
 
 		for (var i = 0; i < datasetIndex; ++i) {
 			if (this.chart.isDatasetVisible(i)) {
-				ringFlexOffset += this._getRingFlex(i);
+				ringWeightOffset += this._getRingWeight(i);
 			}
 		}
 
-		return ringFlexOffset;
+		return ringWeightOffset;
 	},
 
 	/**
 	 * @private
 	 */
-	_getRingFlex: function(dataSetIndex) {
-		return this.chart.data.datasets[dataSetIndex].flex || 1;
+	_getRingWeight: function(dataSetIndex) {
+		return this.chart.data.datasets[dataSetIndex].weight || 1;
 	},
 
 	/**
 	 * @private
 	 */
-	_getVisibleDatasetFlexTotal: function() {
-		return this._getRingFlexOffset(this.chart.data.datasets.length);
+	_getVisibleDatasetWeightTotal: function() {
+		return this._getRingWeightOffset(this.chart.data.datasets.length);
 	}
 });
