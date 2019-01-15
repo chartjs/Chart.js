@@ -131,6 +131,34 @@ helpers.extend(DatasetController.prototype, {
 		return this.chart.scales[scaleID];
 	},
 
+	/**
+	 * @private
+	 */
+	getValueScaleId: function() {
+		return this.getMeta().yAxisID;
+	},
+
+	/**
+	 * @private
+	 */
+	getIndexScaleId: function() {
+		return this.getMeta().xAxisID;
+	},
+
+	/**
+	 * @private
+	 */
+	getValueScale: function() {
+		return this.getScaleForId(this.getValueScaleId());
+	},
+
+	/**
+	 * @private
+	 */
+	getIndexScale: function() {
+		return this.getScaleForId(this.getIndexScaleId());
+	},
+
 	reset: function() {
 		this.update(true);
 	},

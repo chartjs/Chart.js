@@ -189,34 +189,6 @@ module.exports = DatasetController.extend({
 	},
 
 	/**
-	 * @private
-	 */
-	getValueScaleId: function() {
-		return this.getMeta().yAxisID;
-	},
-
-	/**
-	 * @private
-	 */
-	getIndexScaleId: function() {
-		return this.getMeta().xAxisID;
-	},
-
-	/**
-	 * @private
-	 */
-	getValueScale: function() {
-		return this.getScaleForId(this.getValueScaleId());
-	},
-
-	/**
-	 * @private
-	 */
-	getIndexScale: function() {
-		return this.getScaleForId(this.getIndexScaleId());
-	},
-
-	/**
 	 * Returns the stacks based on groups and bar visibility.
 	 * @param {Number} [last] - The dataset index
 	 * @returns {Array} The stack list

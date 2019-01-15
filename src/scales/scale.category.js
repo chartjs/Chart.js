@@ -1,6 +1,5 @@
 'use strict';
 
-var helpers = require('../helpers/index');
 var Scale = require('../core/core.scale');
 
 var defaultConfig = {
@@ -51,25 +50,11 @@ module.exports = Scale.extend({
 	getLabelForIndex: function(index, datasetIndex) {
 		var me = this;
 		var chart = me.chart;
-		var data = chart.data.datasets[datasetIndex].data;
-		var value = data && index < data.length ? data[index] : false;
-		var isHorizontal = me.isHorizontal();
-		var controller = chart.getDatasetMeta(datasetIndex).controller;
 
-		// For controllers supporting getValueScaleId, we can be sure if this is a value scale.
-		// For vertical scale, assume chart orientation is horizontal and check
-		//   1. Value is object ({x,y} etc.) we can rely on getRightValue to return correct thing.
-		// 	 2. Value is a label, use that instead (so `index` is an index of a value, but values are labels)
-		//      * getRightValue call is not needed in this case, but its ok.
-		var useGetRightValue = controller.getValueScaleId
-			? controller.getValueScaleId() === me.id
-			: !isHorizontal && value && (helpers.isObject(value) || (me.getLabels().indexOf(value) !== -1));
-
-		if (useGetRightValue) {
-			return me.getRightValue(value);
+		if (chart.getDatasetMeta(datasetIndex).controller.getValueScaleId() === me.id) {
+			return me.getRightValue(chart.data.datasets[datasetIndex].data[index]);
 		}
 
-		// So `index` is an index of a label (aka tick)
 		return me.ticks[index - me.minIndex];
 	},
 
