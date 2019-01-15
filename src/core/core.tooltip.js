@@ -244,7 +244,6 @@ function getBaseModel(tooltipOpts, chart, tooltipItems) {
 	var globalDefaults = defaults.global;
 	var context = {
 		chart: chart,
-		tooltipItems: tooltipItems,
 	};
 
 	return {
@@ -289,6 +288,8 @@ function getBaseModel(tooltipOpts, chart, tooltipItems) {
 		displayColors: resolve([tooltipOpts.displayColors], context),
 		borderColor: resolve([tooltipOpts.borderColor], context),
 		borderWidth: resolve([tooltipOpts.borderWidth], context),
+
+		dataPoints: [],
 	};
 }
 
@@ -575,6 +576,11 @@ var exports = Element.extend({
 		lines = pushOrConcat(lines, splitNewlines(afterFooter));
 
 		return lines;
+	},
+
+	// Get the list of tooltip items currently displayed
+	items: function() {
+		return this._model.dataPoints;
 	},
 
 	update: function(changed) {
