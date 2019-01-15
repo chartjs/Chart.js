@@ -41,37 +41,90 @@ var myLineChart = new Chart(ctx, {
 
 The line chart allows a number of properties to be specified for each dataset. These are used to set display properties for a specific dataset. For example, the colour of a line is generally set this way.
 
-All point* properties can be specified as an array. If these are set to an array value, the first value applies to the first point, the second value to the second point, and so on.
+| Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) |  Default
+| ---- | ---- | :----: | :----: | ----
+| [`backgroundColor`](#line-styling) | [`Color`](../general/colors.md) | - | - | `'rgba(0,0,0,0.1)'`
+| [`borderCapStyle`](#line-styling) | `String` | - | - | `'butt'`
+| [`borderColor`](#line-styling) | [`Color`](../general/colors.md) | - | - | `'rgba(0,0,0,0.1)'`
+| [`borderDash`](#line-styling) | `Number[]` | - | - | `[]`
+| [`borderDashOffset`](#line-styling) | `Number` | - | - | `0`
+| [`borderJoinStyle`](#line-styling) | `String` | - | - | `'miter'`
+| [`borderWidth`](#line-styling) | `Number` | - | - | `0`
+| [`cubicInterpolationMode`](#cubicInterpolationMode) | `String` | - | - | `''`
+| [`fill`](#line-styling) | `Boolean/String` | - | - | `true`
+| [`label`](#general) | `String` | - | - | `''`
+| [`lineTension`](#line-styling) | `Number` | - | - | `0.4`
+| [`pointBackgroundColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0,0,0,0.1)'`
+| [`pointBorderColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0,0,0,0.1)'`
+| [`pointBorderWidth`](#point-styling) | `Number` | Yes | Yes | `1`
+| [`pointHitRadius`](#point-styling) | `Number` | Yes | Yes | `1`
+| [`pointHoverBackgroundColor`](#interactions) | `Color` | Yes | Yes | `undefined`
+| [`pointHoverBorderColor`](#interactions) | `Color` | Yes | Yes | `undefined`
+| [`pointHoverBorderWidth`](#interactions) | `Number` | Yes | Yes | `undefined`
+| [`pointHoverRadius`](#interactions) | `Number` | Yes | Yes | `undefined`
+| [`pointRadius`](#point-styling) | `Number` | Yes | Yes | `3`
+| [`pointRotation`](#point-styling) | `Number` | Yes | Yes | `1`
+| [`pointStyle`](#point-styling) | `String/Image` | Yes | Yes | `'circle'`
+| [`showLine`](#general) | `Boolean` | - | - | `undefined`
+| [`spanGaps`](#general) | `Boolean` | - | - | `false`
+| [`steppedLine`](#stepped-line) | `Boolean/String` | - | - | `false`
+| [`xAxisID`](#general) | `String` | - | - | first x axis
+| [`yAxisID`](#general) | `String` | - | - | first y axis
 
-| Name | Type | Description
-| ---- | ---- | -----------
-| `label` | `String` | The label for the dataset which appears in the legend and tooltips.
-| `xAxisID` | `String` | The ID of the x axis to plot this dataset on. If not specified, this defaults to the ID of the first found x axis.
-| `yAxisID` | `String` | The ID of the y axis to plot this dataset on. If not specified, this defaults to the ID of the first found y axis.
-| `backgroundColor` | `Color` | The fill color under the line. See [Colors](../general/colors.md#colors).
-| `borderColor` | `Color` | The color of the line. See [Colors](../general/colors.md#colors).
-| `borderWidth` | `Number` | The width of the line in pixels.
-| `borderDash` | `Number[]` | Length and spacing of dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
-| `borderDashOffset` | `Number` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
-| `borderCapStyle` | `String` | Cap style of the line. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap).
-| `borderJoinStyle` | `String` | Line joint style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
-| `cubicInterpolationMode` | `String` | Algorithm used to interpolate a smooth curve from the discrete data points. [more...](#cubicinterpolationmode)
-| `fill` | `Boolean/String` | How to fill the area under the line. See [area charts](area.md).
-| `lineTension` | `Number` | Bezier curve tension of the line. Set to 0 to draw straightlines. This option is ignored if monotone cubic interpolation is used.
-| `pointBackgroundColor` | `Color/Color[]` | The fill color for points.
-| `pointBorderColor` | `Color/Color[]` | The border color for points.
-| `pointBorderWidth` | `Number/Number[]` | The width of the point border in pixels.
-| `pointRadius` | `Number/Number[]` | The radius of the point shape. If set to 0, the point is not rendered.
-| `pointStyle` | `String/String[]/Image/Image[]` | Style of the point. [more...](../configuration/elements#point-styles)
-| `pointRotation` | `Number/Number[]` | The rotation of the point in degrees.
-| `pointHitRadius` | `Number/Number[]` | The pixel size of the non-displayed point that reacts to mouse events.
-| `pointHoverBackgroundColor` | `Color/Color[]` | Point background color when hovered.
-| `pointHoverBorderColor` | `Color/Color[]` | Point border color when hovered.
-| `pointHoverBorderWidth` | `Number/Number[]` | Border width of point when hovered.
-| `pointHoverRadius` | `Number/Number[]` | The radius of the point when hovered.
-| `showLine` | `Boolean` | If false, the line is not drawn for this dataset.
-| `spanGaps` | `Boolean` | If true, lines will be drawn between points with no or null data. If false, points with `NaN` data will create a break in the line.
-| `steppedLine` | `Boolean/String` | If the line is shown as a stepped line. [more...](#stepped-line)
+### General
+
+| Name | Description
+| ---- | ----
+| `label` | The label for the dataset which appears in the legend and tooltips.
+| `xAxisID` | The ID of the x axis to plot this dataset on.
+| `yAxisID` | The ID of the y axis to plot this dataset on.
+
+### Point Styling
+
+The style of each point can be controlled with the following properties:
+
+| Name | Description
+| ---- | ----
+| `pointBackgroundColor` | The fill color for points.
+| `pointBorderColor` | The border color for points.
+| `pointBorderWidth` | The width of the point border in pixels.
+| `pointHitRadius` | The pixel size of the non-displayed point that reacts to mouse events.
+| `pointRadius` | The radius of the point shape. If set to 0, the point is not rendered.
+| `pointRotation` | The rotation of the point in degrees.
+| `pointStyle` | Style of the point. [more...](../configuration/elements#point-styles)
+
+All these values, if `undefined`, fallback first to the dataset options then to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options. 
+
+### Line Styling
+
+The style of the line can be controlled with the following properties:
+
+| Name | Description
+| ---- | ----
+| `backgroundColor` | The line fill color.
+| `borderCapStyle` | Cap style of the line. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap).
+| `borderColor` | The line color.
+| `borderDash` | Length and spacing of dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
+| `borderDashOffset` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
+| `borderJoinStyle` | Line joint style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
+| `borderWidth` | The line width (in pixels).
+| `fill` | How to fill the area under the line. See [area charts](area.md).
+| `lineTension` | Bezier curve tension of the line. Set to 0 to draw straightlines. This option is ignored if monotone cubic interpolation is used.
+| `showLine` | If false, the line is not drawn for this dataset.
+| `spanGaps` | If true, lines will be drawn between points with no or null data. If false, points with `NaN` data will create a break in the line.
+
+All these values, if `undefined`, fallback to the associated [`elements.line.*`](../configuration/elements.md#line-configuration) options.
+
+### Interactions
+
+The interaction with each point can be controlled with the following properties:
+
+| Name | Description
+| ---- | -----------
+| `pointHoverBackgroundColor` | Point background color when hovered.
+| `pointHoverBorderColor` | Point border color when hovered.
+| `pointHoverBorderWidth` | Border width of point when hovered.
+| `pointHoverRadius` | The radius of the point when hovered.
 
 ### cubicInterpolationMode
 The following interpolation modes are supported.
