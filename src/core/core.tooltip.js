@@ -240,57 +240,81 @@ function createTooltipItem(element) {
  * Helper to get the reset model for the tooltip
  * @param tooltipOpts {object} the tooltip options
  */
-function getBaseModel(tooltipOpts, chart, tooltipItems) {
+function getBaseModel(tooltipOpts, chart) {
 	var globalDefaults = defaults.global;
 	var context = {
 		chart: chart,
 	};
+	var defaultFontColor = 'defaultFontColor';
+	var defaultFontFamily = 'defaultFontFamily';
+	var defaultFontSize = 'defaultFontSize';
+	var defaultFontStyle = 'defaultFontStyle';
+	var DEFAULT_MAP = {
+		bodyFontColor: defaultFontColor,
+		bodyFontFamily: defaultFontFamily,
+		bodyFontSize: defaultFontSize,
+		bodyFontStyle: defaultFontStyle,
+		footerFontColor: defaultFontColor,
+		footerFontFamily: defaultFontFamily,
+		footerFontSize: defaultFontSize,
+		footerFontStyle: defaultFontStyle,
+		titleFontColor: defaultFontColor,
+		titleFontFamily: defaultFontFamily,
+		titleFontSize: defaultFontSize,
+		titleFontStyle: defaultFontStyle,
+	};
+	var i, ilen, key;
+	var keys = [
+		'bodyFontColor', 'bodyFontSize',
+		'titleFontColor', 'titleFontSize',
+		'titleSpacing', 'titleMarginBottom',
+		'footerFontColor', 'footerFontSize',
+		'footerSpacing', 'footerMarginTop',
+		'caretSize', 'cornerRadius', 'backgroundColor',
+		'displayColors', 'borderColor', 'borderWidth',
+	];
+	var underscoreKeys = [
+		'bodyFontFamily', 'bodyFontStyle',
+		'titleFontFamily', 'titleFontStyle',
+		'titleAlign',
+		'footerFontFamily', 'footerFontStyle',
+		'footerAlign'
+	];
 
-	return {
+	var model = {
 		// Positioning
 		xPadding: tooltipOpts.xPadding,
 		yPadding: tooltipOpts.yPadding,
 		xAlign: tooltipOpts.xAlign,
 		yAlign: tooltipOpts.yAlign,
 
-		// Body
-		bodyFontColor: tooltipOpts.bodyFontColor,
-		_bodyFontFamily: resolve([tooltipOpts.bodyFontFamily, globalDefaults.defaultFontFamily]),
-		_bodyFontStyle: resolve([tooltipOpts.bodyFontStyle, globalDefaults.defaultFontStyle]),
 		_bodyAlign: tooltipOpts.bodyAlign,
-		bodyFontSize: resolve([tooltipOpts.bodyFontSize, globalDefaults.defaultFontSize]),
 		bodySpacing: tooltipOpts.bodySpacing,
-
-		// Title
-		titleFontColor: resolve([tooltipOpts.titleFontColor], context),
-		_titleFontFamily: resolve([tooltipOpts.titleFontFamily, globalDefaults.defaultFontFamily], context),
-		_titleFontStyle: resolve([tooltipOpts.titleFontStyle, globalDefaults.defaultFontStyle], context),
-		titleFontSize: resolve([tooltipOpts.titleFontSize, globalDefaults.defaultFontSize], context),
-		_titleAlign: resolve([tooltipOpts.titleAlign], context),
-		titleSpacing: resolve([tooltipOpts.titleSpacing], context),
-		titleMarginBottom: resolve([tooltipOpts.titleMarginBottom], context),
-
-		// Footer
-		footerFontColor: resolve([tooltipOpts.footerFontColor], context),
-		_footerFontFamily: resolve([tooltipOpts.footerFontFamily, globalDefaults.defaultFontFamily], context),
-		_footerFontStyle: resolve([tooltipOpts.footerFontStyle, globalDefaults.defaultFontStyle], context),
-		footerFontSize: resolve([tooltipOpts.footerFontSize, globalDefaults.defaultFontSize], context),
-		_footerAlign: resolve([tooltipOpts.footerAlign], context),
-		footerSpacing: resolve([tooltipOpts.footerSpacing], context),
-		footerMarginTop: resolve([tooltipOpts.footerMarginTop], context),
-
-		// Appearance
-		caretSize: resolve([tooltipOpts.caretSize], context),
-		cornerRadius: resolve([tooltipOpts.cornerRadius], context),
-		backgroundColor: resolve([tooltipOpts.backgroundColor], context),
 		opacity: 0,
-		legendColorBackground: resolve([tooltipOpts.multiKeyBackground], context),
-		displayColors: resolve([tooltipOpts.displayColors], context),
-		borderColor: resolve([tooltipOpts.borderColor], context),
-		borderWidth: resolve([tooltipOpts.borderWidth], context),
-
 		dataPoints: [],
 	};
+
+	for (i = 0, ilen = keys.length; i < ilen; ++i) {
+		key = keys[i];
+		model[key] = resolve([
+			tooltipOpts[key],
+			globalDefaults[DEFAULT_MAP[key]]
+		], context);
+	}
+
+	for (i = 0, ilen = underscoreKeys.length; i < ilen; ++i) {
+		key = underscoreKeys[i];
+		model['_' + key] = resolve([
+			tooltipOpts[key],
+			globalDefaults[DEFAULT_MAP[key]]
+		], context);
+	}
+
+	model.legendColorBackground = resolve([
+		tooltipOpts.multiKeyBackground,
+	], context);
+
+	return model;
 }
 
 /**
@@ -505,7 +529,7 @@ function getBeforeAfterBodyLines(callback) {
 
 var exports = Element.extend({
 	initialize: function() {
-		this._model = getBaseModel(this._options, this._chart, []);
+		this._model = getBaseModel(this._options, this._chart);
 		this._lastActive = [];
 	},
 
@@ -632,7 +656,7 @@ var exports = Element.extend({
 			});
 		}
 
-		var model = me._model = getBaseModel(opts, me._chart, tooltipItems);
+		var model = me._model = getBaseModel(opts, me._chart);
 
 		if (active.length) {
 			model.opacity = 1;
