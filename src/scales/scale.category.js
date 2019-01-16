@@ -51,7 +51,7 @@ module.exports = Scale.extend({
 		var me = this;
 		var chart = me.chart;
 
-		if (chart.getDatasetMeta(datasetIndex).controller.getValueScaleId() === me.id) {
+		if (chart.getDatasetMeta(datasetIndex).controller._getValueScaleId() === me.id) {
 			return me.getRightValue(chart.data.datasets[datasetIndex].data[index]);
 		}
 

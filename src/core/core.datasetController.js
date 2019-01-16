@@ -134,29 +134,29 @@ helpers.extend(DatasetController.prototype, {
 	/**
 	 * @private
 	 */
-	getValueScaleId: function() {
+	_getValueScaleId: function() {
 		return this.getMeta().yAxisID;
 	},
 
 	/**
 	 * @private
 	 */
-	getIndexScaleId: function() {
+	_getIndexScaleId: function() {
 		return this.getMeta().xAxisID;
 	},
 
 	/**
 	 * @private
 	 */
-	getValueScale: function() {
-		return this.getScaleForId(this.getValueScaleId());
+	_getValueScale: function() {
+		return this.getScaleForId(this._getValueScaleId());
 	},
 
 	/**
 	 * @private
 	 */
-	getIndexScale: function() {
-		return this.getScaleForId(this.getIndexScaleId());
+	_getIndexScale: function() {
+		return this.getScaleForId(this._getIndexScaleId());
 	},
 
 	reset: function() {
