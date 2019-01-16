@@ -2,6 +2,9 @@
 
 var defaults = require('../core/core.defaults');
 var Element = require('../core/core.element');
+var helpers = require('../helpers/index');
+
+var defaultColor = defaults.global.defaultColor;
 
 var defaultColor = defaults.global.defaultColor;
 
@@ -69,7 +72,8 @@ module.exports = Element.extend({
 			bottom = vm.base;
 			signX = 1;
 			signY = bottom > top ? 1 : -1;
-			borderSkipped = vm.borderSkipped || 'bottom';
+			// no border support
+			borderSkipped = helpers.valueOrDefault(vm.borderSkipped, 'bottom');
 		} else {
 			// horizontal bar
 			left = vm.base;
@@ -78,7 +82,8 @@ module.exports = Element.extend({
 			bottom = vm.y + vm.height / 2;
 			signX = right > left ? 1 : -1;
 			signY = 1;
-			borderSkipped = vm.borderSkipped || 'left';
+			// no border support
+			borderSkipped = helpers.valueOrDefault(vm.borderSkipped, 'left');
 		}
 
 		// Canvas doesn't allow us to stroke inside the width so we can
@@ -134,8 +139,9 @@ module.exports = Element.extend({
 		// Draw rectangle from 'startCorner'
 		var corner = cornerAt(0);
 		ctx.moveTo(corner[0], corner[1]);
+		var cornersCount = borderSkipped === null ? 4 : 3;
 
-		for (var i = 1; i < 4; i++) {
+		for (var i = 1; i <= cornersCount; i++) {
 			corner = cornerAt(i);
 			ctx.lineTo(corner[0], corner[1]);
 		}
