@@ -1,6 +1,6 @@
 # Interactions
 
-The hover configuration is passed into the `options.hover` namespace. The global hover configuration is at `Chart.defaults.global.hover`. To configure which events trigger chart interactions, see [events](./events.md#events). 
+The hover configuration is passed into the `options.hover` namespace. The global hover configuration is at `Chart.defaults.global.hover`. To configure which events trigger chart interactions, see [events](./events.md#events).
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

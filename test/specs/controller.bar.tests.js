@@ -1,5 +1,10 @@
 describe('Chart.controllers.bar', function() {
-	describe('auto', jasmine.specsFromFixtures('controller.bar'));
+	describe('auto', jasmine.fixture.specs('controller.bar'));
+
+	it('should be registered as dataset controller', function() {
+		expect(typeof Chart.controllers.bar).toBe('function');
+		expect(typeof Chart.controllers.horizontalBar).toBe('function');
+	});
 
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
@@ -1254,6 +1259,67 @@ describe('Chart.controllers.bar', function() {
 		});
 	});
 
+	it('should update elements when the scales are stacked and the y axis is logarithmic and data is strings', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					data: ['10', '100', '10', '100'],
+					label: 'dataset1'
+				}, {
+					data: ['100', '10', '0', '100'],
+					label: 'dataset2'
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4']
+			},
+			options: {
+				legend: false,
+				title: false,
+				scales: {
+					xAxes: [{
+						type: 'category',
+						display: false,
+						stacked: true,
+						barPercentage: 1,
+					}],
+					yAxes: [{
+						type: 'logarithmic',
+						display: false,
+						stacked: true
+					}]
+				}
+			}
+		});
+
+		var meta0 = chart.getDatasetMeta(0);
+
+		[
+			{b: 512, w: 102, x: 64, y: 512},
+			{b: 512, w: 102, x: 192, y: 118},
+			{b: 512, w: 102, x: 320, y: 512},
+			{b: 512, w: 102, x: 449, y: 118}
+		].forEach(function(values, i) {
+			expect(meta0.data[i]._model.base).toBeCloseToPixel(values.b);
+			expect(meta0.data[i]._model.width).toBeCloseToPixel(values.w);
+			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
+			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
+		});
+
+		var meta1 = chart.getDatasetMeta(1);
+
+		[
+			{b: 512, w: 102, x: 64, y: 102},
+			{b: 118, w: 102, x: 192, y: 102},
+			{b: 512, w: 102, x: 320, y: 512},
+			{b: 118, w: 102, x: 449, y: 0}
+		].forEach(function(values, i) {
+			expect(meta1.data[i]._model.base).toBeCloseToPixel(values.b);
+			expect(meta1.data[i]._model.width).toBeCloseToPixel(values.w);
+			expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
+			expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
+		});
+	});
+
 	it('should draw all bars', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
@@ -1372,13 +1438,21 @@ describe('Chart.controllers.bar', function() {
 
 		var meta = chart.getDatasetMeta(1);
 		var bar = meta.data[0];
+		var helpers = window.Chart.helpers;
 
 		// Change default
 		chart.options.elements.rectangle.backgroundColor = 'rgb(128, 128, 128)';
 		chart.options.elements.rectangle.borderColor = 'rgb(15, 15, 15)';
 		chart.options.elements.rectangle.borderWidth = 3.14;
 
-		// Remove to defaults
+		chart.update();
+		expect(bar._model.backgroundColor).toBe('rgb(128, 128, 128)');
+		expect(bar._model.borderColor).toBe('rgb(15, 15, 15)');
+		expect(bar._model.borderWidth).toBe(3.14);
+		meta.controller.setHoverStyle(bar);
+		expect(bar._model.backgroundColor).toBe(helpers.getHoverColor('rgb(128, 128, 128)'));
+		expect(bar._model.borderColor).toBe(helpers.getHoverColor('rgb(15, 15, 15)'));
+		expect(bar._model.borderWidth).toBe(3.14);
 		meta.controller.removeHoverStyle(bar);
 		expect(bar._model.backgroundColor).toBe('rgb(128, 128, 128)');
 		expect(bar._model.borderColor).toBe('rgb(15, 15, 15)');
@@ -1389,6 +1463,14 @@ describe('Chart.controllers.bar', function() {
 		chart.data.datasets[1].borderColor = ['rgb(9, 9, 9)', 'rgb(0, 0, 0)'];
 		chart.data.datasets[1].borderWidth = [2.5, 5];
 
+		chart.update();
+		expect(bar._model.backgroundColor).toBe('rgb(255, 255, 255)');
+		expect(bar._model.borderColor).toBe('rgb(9, 9, 9)');
+		expect(bar._model.borderWidth).toBe(2.5);
+		meta.controller.setHoverStyle(bar);
+		expect(bar._model.backgroundColor).toBe(helpers.getHoverColor('rgb(255, 255, 255)'));
+		expect(bar._model.borderColor).toBe(helpers.getHoverColor('rgb(9, 9, 9)'));
+		expect(bar._model.borderWidth).toBe(2.5);
 		meta.controller.removeHoverStyle(bar);
 		expect(bar._model.backgroundColor).toBe('rgb(255, 255, 255)');
 		expect(bar._model.borderColor).toBe('rgb(9, 9, 9)');
@@ -1401,6 +1483,14 @@ describe('Chart.controllers.bar', function() {
 			borderWidth: 1.5
 		};
 
+		chart.update();
+		expect(bar._model.backgroundColor).toBe('rgb(255, 0, 0)');
+		expect(bar._model.borderColor).toBe('rgb(0, 255, 0)');
+		expect(bar._model.borderWidth).toBe(1.5);
+		meta.controller.setHoverStyle(bar);
+		expect(bar._model.backgroundColor).toBe(helpers.getHoverColor('rgb(255, 0, 0)'));
+		expect(bar._model.borderColor).toBe(helpers.getHoverColor('rgb(0, 255, 0)'));
+		expect(bar._model.borderWidth).toBe(1.5);
 		meta.controller.removeHoverStyle(bar);
 		expect(bar._model.backgroundColor).toBe('rgb(255, 0, 0)');
 		expect(bar._model.borderColor).toBe('rgb(0, 255, 0)');

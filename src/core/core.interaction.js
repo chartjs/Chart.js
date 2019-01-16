@@ -243,26 +243,7 @@ module.exports = {
 			var position = getRelativePosition(e, chart);
 			options.axis = options.axis || 'xy';
 			var distanceMetric = getDistanceMetricForAxis(options.axis);
-			var nearestItems = getNearestItems(chart, position, options.intersect, distanceMetric);
-
-			// We have multiple items at the same distance from the event. Now sort by smallest
-			if (nearestItems.length > 1) {
-				nearestItems.sort(function(a, b) {
-					var sizeA = a.getArea();
-					var sizeB = b.getArea();
-					var ret = sizeA - sizeB;
-
-					if (ret === 0) {
-						// if equal sort by dataset index
-						ret = a._datasetIndex - b._datasetIndex;
-					}
-
-					return ret;
-				});
-			}
-
-			// Return only 1 item
-			return nearestItems.slice(0, 1);
+			return getNearestItems(chart, position, options.intersect, distanceMetric);
 		},
 
 		/**

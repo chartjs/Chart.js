@@ -1,4 +1,4 @@
-# http://editorconfig.org
+# https://editorconfig.org
 root = true
 
 [*]
@@ -7,7 +7,7 @@ indent_size = 4
 end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true
-insert_final_newline = false
+insert_final_newline = true
 
 [gulpfile.js]
 indent_style = space

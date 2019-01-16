@@ -1,5 +1,6 @@
 'use strict';
 
+var LineController = require('./controller.line');
 var defaults = require('../core/core.defaults');
 
 defaults._set('scatter', {
@@ -34,9 +35,5 @@ defaults._set('scatter', {
 	}
 });
 
-module.exports = function(Chart) {
-
-	// Scatter charts use line controllers
-	Chart.controllers.scatter = Chart.controllers.line;
-
-};
+// Scatter charts use line controllers
+module.exports = LineController;

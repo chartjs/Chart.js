@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "6"
+  - lts/*
 
 before_install:
   - "export CHROME_BIN=/usr/bin/google-chrome"

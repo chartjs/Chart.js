@@ -21,6 +21,15 @@ describe('Chart.helpers.core', function() {
 			expect(helpers.isArray([42])).toBeTruthy();
 			expect(helpers.isArray(new Array())).toBeTruthy();
 			expect(helpers.isArray(Array.prototype)).toBeTruthy();
+			expect(helpers.isArray(new Int8Array(2))).toBeTruthy();
+			expect(helpers.isArray(new Uint8Array())).toBeTruthy();
+			expect(helpers.isArray(new Uint8ClampedArray([128, 244]))).toBeTruthy();
+			expect(helpers.isArray(new Int16Array())).toBeTruthy();
+			expect(helpers.isArray(new Uint16Array())).toBeTruthy();
+			expect(helpers.isArray(new Int32Array())).toBeTruthy();
+			expect(helpers.isArray(new Uint32Array())).toBeTruthy();
+			expect(helpers.isArray(new Float32Array([1.2]))).toBeTruthy();
+			expect(helpers.isArray(new Float64Array([]))).toBeTruthy();
 		});
 		it('should return false if value is not an array', function() {
 			expect(helpers.isArray()).toBeFalsy();
@@ -53,6 +62,24 @@ describe('Chart.helpers.core', function() {
 			expect(helpers.isObject([42])).toBeFalsy();
 			expect(helpers.isObject(new Array())).toBeFalsy();
 			expect(helpers.isObject(new Date())).toBeFalsy();
+		});
+	});
+
+	describe('isFinite', function() {
+		it('should return true if value is a finite number', function() {
+			expect(helpers.isFinite(0)).toBeTruthy();
+			// eslint-disable-next-line no-new-wrappers
+			expect(helpers.isFinite(new Number(10))).toBeTruthy();
+		});
+
+		it('should return false if the value is infinite', function() {
+			expect(helpers.isFinite(Number.POSITIVE_INFINITY)).toBeFalsy();
+			expect(helpers.isFinite(Number.NEGATIVE_INFINITY)).toBeFalsy();
+		});
+
+		it('should return false if the value is not a number', function() {
+			expect(helpers.isFinite('a')).toBeFalsy();
+			expect(helpers.isFinite({})).toBeFalsy();
 		});
 	});
 

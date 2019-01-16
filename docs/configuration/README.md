@@ -31,4 +31,3 @@ var chartDifferentHoverMode = new Chart(ctx, {
     }
 })
 ```
-

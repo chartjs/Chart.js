@@ -10,7 +10,7 @@ You can download the latest version of Chart.js from the [GitHub releases](https
 
 It's easy to get started with Chart.js. All that's required is the script included in your page along with a single `<canvas>` node to render the chart.
 
-In this example, we create a bar chart for a single dataset and render that in our page. You can see all the ways to use Chart.js in the [usage documentation](./getting-started/usage.md)
+In this example, we create a bar chart for a single dataset and render that in our page. You can see all the ways to use Chart.js in the [usage documentation](./getting-started/usage.md).
 ```html
 <canvas id="myChart" width="400" height="400"></canvas>
 <script>
@@ -58,8 +58,8 @@ var myChart = new Chart(ctx, {
 
 Before submitting an issue or a pull request to the project, please take a moment to look over the [contributing guidelines](https://github.com/chartjs/Chart.js/blob/master/docs/developers/contributing.md) first.
 
-For support using Chart.js, please post questions with the [`chartjs` tag on Stack Overflow](http://stackoverflow.com/questions/tagged/chartjs).
+For support using Chart.js, please post questions with the [`chartjs` tag on Stack Overflow](https://stackoverflow.com/questions/tagged/chartjs).
 
 ## License
 
-Chart.js is available under the [MIT license](http://opensource.org/licenses/MIT).
+Chart.js is available under the [MIT license](https://opensource.org/licenses/MIT).

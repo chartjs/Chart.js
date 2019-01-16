@@ -194,8 +194,12 @@ describe('Core helper tests', function() {
 
 	it('should do a log10 operation', function() {
 		expect(helpers.log10(0)).toBe(-Infinity);
-		expect(helpers.log10(1)).toBe(0);
-		expect(helpers.log10(1000)).toBeCloseTo(3, 1e-9);
+
+		// Check all allowed powers of 10, which should return integer values
+		var maxPowerOf10 = Math.floor(helpers.log10(Number.MAX_VALUE));
+		for (var i = 0; i < maxPowerOf10; i += 1) {
+			expect(helpers.log10(Math.pow(10, i))).toBe(i);
+		}
 	});
 
 	it('should correctly determine if two numbers are essentially equal', function() {
@@ -232,6 +236,17 @@ describe('Core helper tests', function() {
 		expect(helpers.toRadians(90)).toBe(0.5 * Math.PI);
 		expect(helpers.toDegrees(Math.PI)).toBe(180);
 		expect(helpers.toDegrees(Math.PI * 3 / 2)).toBe(270);
+	});
+
+	it('should get the correct number of decimal places', function() {
+		expect(helpers.decimalPlaces(100)).toBe(0);
+		expect(helpers.decimalPlaces(1)).toBe(0);
+		expect(helpers.decimalPlaces(0)).toBe(0);
+		expect(helpers.decimalPlaces(0.01)).toBe(2);
+		expect(helpers.decimalPlaces(-0.01)).toBe(2);
+		expect(helpers.decimalPlaces('1')).toBe(undefined);
+		expect(helpers.decimalPlaces('')).toBe(undefined);
+		expect(helpers.decimalPlaces(undefined)).toBe(undefined);
 	});
 
 	it('should get an angle from a point', function() {
@@ -564,6 +579,31 @@ describe('Core helper tests', function() {
 		document.body.removeChild(div);
 	});
 
+	it ('should get the maximum width and height for a node in a ShadowRoot', function() {
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = '200px';
+		div.style.height = '300px';
+
+		document.body.appendChild(div);
+
+		if (!div.attachShadow) {
+			// Shadow DOM is not natively supported
+			return;
+		}
+
+		var shadow = div.attachShadow({mode: 'closed'});
+
+		// Create the div we want to get the max size for
+		var innerDiv = document.createElement('div');
+		shadow.appendChild(innerDiv);
+
+		expect(helpers.getMaximumWidth(innerDiv)).toBe(200);
+		expect(helpers.getMaximumHeight(innerDiv)).toBe(300);
+
+		document.body.removeChild(div);
+	});
+
 	it ('should get the maximum width of a node that has a max-width style', function() {
 		// Create div with fixed size as a test bed
 		var div = document.createElement('div');
@@ -742,6 +782,36 @@ describe('Core helper tests', function() {
 		expect(canvas.style.width).toBe('400px');
 	});
 
+	it ('Should get padding of parent as number (pixels) when defined as percent (returns incorrectly in IE11)', function() {
+
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = '300px';
+		div.style.height = '300px';
+		document.body.appendChild(div);
+
+		// Inner DIV to have 5% padding of parent
+		var innerDiv = document.createElement('div');
+
+		div.appendChild(innerDiv);
+
+		var canvas = document.createElement('canvas');
+		innerDiv.appendChild(canvas);
+
+		// No padding
+		expect(helpers.getMaximumWidth(canvas)).toBe(300);
+
+		// test with percentage
+		innerDiv.style.padding = '5%';
+		expect(helpers.getMaximumWidth(canvas)).toBe(270);
+
+		// test with pixels
+		innerDiv.style.padding = '10px';
+		expect(helpers.getMaximumWidth(canvas)).toBe(280);
+
+		document.body.removeChild(div);
+	});
+
 	describe('Color helper', function() {
 		function isColorInstance(obj) {
 			return typeof obj === 'object' && obj.hasOwnProperty('values') && obj.values.hasOwnProperty('rgb');
@@ -776,6 +846,13 @@ describe('Core helper tests', function() {
 
 				done();
 			};
+		});
+
+		it('should return a CanvasGradient when called with a CanvasGradient', function() {
+			var context = document.createElement('canvas').getContext('2d');
+			var gradient = context.createLinearGradient(0, 1, 2, 3);
+
+			expect(helpers.getHoverColor(gradient) instanceof CanvasGradient).toBe(true);
 		});
 
 		it('should return a modified version of color when called with a color', function() {

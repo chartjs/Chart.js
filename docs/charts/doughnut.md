@@ -53,14 +53,48 @@ var myDoughnutChart = new Chart(ctx, {
 
 The doughnut/pie chart allows a number of properties to be specified for each dataset. These are used to set display properties for a specific dataset. For example, the colour of a the dataset's arc are generally set this way.
 
-| Name | Type | Description
-| ---- | ---- | -----------
-| `backgroundColor` | `Color[]` | The fill color of the arcs in the dataset. See [Colors](../general/colors.md#colors)
-| `borderColor` | `Color[]` | The border color of the arcs in the dataset. See [Colors](../general/colors.md#colors)
-| `borderWidth` | `Number[]` | The border width of the arcs in the dataset.
-| `hoverBackgroundColor` | `Color[]` | The fill colour of the arcs when hovered.
-| `hoverBorderColor` | `Color[]` | The stroke colour of the arcs when hovered.
-| `hoverBorderWidth` | `Number[]` | The stroke width of the arcs when hovered.
+| Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) | Default
+| ---- | ---- | :----: | :----: | ----
+| [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0,0,0,0.1)'`
+| [`borderAlign`](#border-alignment) | `String` | Yes | Yes | `'center'`
+| [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'#fff'`
+| [`borderWidth`](#styling) | `Number` | Yes | Yes | `2`
+| [`data`](#data-structure) | `Number[]` | - | - | **required**
+| [`hoverBackgroundColor`](#interations) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
+| [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
+| [`hoverBorderWidth`](#interactions) | `Number` | Yes | Yes | `undefined`
+
+### Styling
+
+The style of each arc can be controlled with the following properties:
+
+| Name | Description
+| ---- | ----
+| `backgroundColor` | arc background color.
+| `borderColor` | arc border color.
+| `borderWidth` | arc border width (in pixels).
+
+All these values, if `undefined`, fallback to the associated [`elements.arc.*`](../configuration/elements.md#arc-configuration) options.
+
+### Border Alignment
+
+The following values are supported for `borderAlign`.
+* `'center'` (default)
+* `'inner'`
+
+When `'center'` is set, the borders of arcs next to each other will overlap. When `'inner'` is set, it is guaranteed that all the borders are not overlap.
+
+### Interactions
+
+The interaction with each arc can be controlled with the following properties:
+
+| Name | Description
+| ---- | -----------
+| `hoverBackgroundColor` | arc background color when hovered.
+| `hoverBorderColor` | arc border color when hovered.
+| `hoverBorderWidth` | arc border width when hovered (in pixels).
+
+All these values, if `undefined`, fallback to the associated [`elements.arc.*`](../configuration/elements.md#arc-configuration) options.
 
 ## Config Options
 
@@ -70,7 +104,7 @@ These are the customisation options specific to Pie & Doughnut charts. These opt
 | ---- | ---- | ------- | -----------
 | `cutoutPercentage` | `Number` | `50` - for doughnut, `0` - for pie | The percentage of the chart that is cut out of the middle.
 | `rotation` | `Number` | `-0.5 * Math.PI` | Starting angle to draw arcs from.
-| `circumference` | `Number` | `2 * Math.PI` | Sweep to allow arcs to cover
+| `circumference` | `Number` | `2 * Math.PI` | Sweep to allow arcs to cover.
 | `animation.animateRotate` | `Boolean` | `true` | If true, the chart will animate in with a rotation animation. This property is in the `options.animation` object.
 | `animation.animateScale` | `Boolean` | `false` | If true, will animate scaling the chart from the center outwards.
 
@@ -82,7 +116,7 @@ We can also change these default values for each Doughnut type that is created, 
 
 For a pie chart, datasets need to contain an array of data points. The data points should be a number, Chart.js will total all of the numbers and calculate the relative proportion of each.
 
-You also need to specify an array of labels so that tooltips appear correctly
+You also need to specify an array of labels so that tooltips appear correctly.
 
 ```javascript
 data = {

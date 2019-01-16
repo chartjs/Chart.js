@@ -126,6 +126,9 @@ describe('Arc element tests', function() {
 		arc.draw();
 
 		expect(mockContext.getCalls()).toEqual([{
+			name: 'save',
+			args: []
+		}, {
 			name: 'beginPath',
 			args: []
 		}, {
@@ -138,20 +141,14 @@ describe('Arc element tests', function() {
 			name: 'closePath',
 			args: []
 		}, {
-			name: 'setStrokeStyle',
-			args: ['rgb(255, 0, 0)']
-		}, {
-			name: 'setLineWidth',
-			args: [undefined]
-		}, {
 			name: 'setFillStyle',
 			args: ['rgb(0, 0, 255)']
 		}, {
 			name: 'fill',
 			args: []
 		}, {
-			name: 'setLineJoin',
-			args: ['bevel']
+			name: 'restore',
+			args: []
 		}]);
 	});
 
@@ -182,6 +179,9 @@ describe('Arc element tests', function() {
 		arc.draw();
 
 		expect(mockContext.getCalls()).toEqual([{
+			name: 'save',
+			args: []
+		}, {
 			name: 'beginPath',
 			args: []
 		}, {
@@ -194,11 +194,71 @@ describe('Arc element tests', function() {
 			name: 'closePath',
 			args: []
 		}, {
-			name: 'setStrokeStyle',
-			args: ['rgb(255, 0, 0)']
+			name: 'setFillStyle',
+			args: ['rgb(0, 0, 255)']
+		}, {
+			name: 'fill',
+			args: []
 		}, {
 			name: 'setLineWidth',
 			args: [5]
+		}, {
+			name: 'setLineJoin',
+			args: ['bevel']
+		}, {
+			name: 'setStrokeStyle',
+			args: ['rgb(255, 0, 0)']
+		}, {
+			name: 'stroke',
+			args: []
+		}, {
+			name: 'restore',
+			args: []
+		}]);
+	});
+
+	it ('should draw correctly with an inner border', function() {
+		var mockContext = window.createMockContext();
+		var arc = new Chart.elements.Arc({
+			_datasetIndex: 2,
+			_index: 1,
+			_chart: {
+				ctx: mockContext,
+			}
+		});
+
+		// Mock out the view as if the controller put it there
+		arc._view = {
+			startAngle: 0,
+			endAngle: Math.PI / 2,
+			x: 10,
+			y: 5,
+			innerRadius: 1,
+			outerRadius: 3,
+
+			backgroundColor: 'rgb(0, 0, 255)',
+			borderColor: 'rgb(255, 0, 0)',
+			borderWidth: 5,
+			borderAlign: 'inner'
+		};
+
+		arc.draw();
+
+		expect(mockContext.getCalls()).toEqual([{
+			name: 'save',
+			args: []
+		}, {
+			name: 'beginPath',
+			args: []
+		}, {
+			name: 'arc',
+			args: [10, 5, 2.67, 0, Math.PI / 2]
+		}, {
+			name: 'arc',
+			args: [10, 5, 1, Math.PI / 2, 0, true]
+		}, {
+			name: 'closePath',
+			args: []
 		}, {
 			name: 'setFillStyle',
 			args: ['rgb(0, 0, 255)']
@@ -206,10 +266,46 @@ describe('Arc element tests', function() {
 			name: 'fill',
 			args: []
 		}, {
+			name: 'beginPath',
+			args: []
+		}, {
+			name: 'arc',
+			args: [10, 5, 3, -0.11, Math.PI / 2 + 0.11]
+		}, {
+			name: 'arc',
+			args: [10, 5, 1 - 0.33, Math.PI / 2 + 0.33, -0.33, true]
+		}, {
+			name: 'closePath',
+			args: []
+		}, {
+			name: 'clip',
+			args: []
+		}, {
+			name: 'beginPath',
+			args: []
+		}, {
+			name: 'arc',
+			args: [10, 5, 3, 0, Math.PI / 2]
+		}, {
+			name: 'arc',
+			args: [10, 5, 1, Math.PI / 2, 0, true]
+		}, {
+			name: 'closePath',
+			args: []
+		}, {
+			name: 'setLineWidth',
+			args: [10]
+		}, {
 			name: 'setLineJoin',
-			args: ['bevel']
+			args: ['round']
+		}, {
+			name: 'setStrokeStyle',
+			args: ['rgb(255, 0, 0)']
 		}, {
 			name: 'stroke',
+			args: []
+		}, {
+			name: 'restore',
 			args: []
 		}]);
 	});

@@ -3,11 +3,13 @@
 var defaults = require('../core/core.defaults');
 var Element = require('../core/core.element');
 
+var defaultColor = defaults.global.defaultColor;
+
 defaults._set('global', {
 	elements: {
 		rectangle: {
-			backgroundColor: defaults.global.defaultColor,
-			borderColor: defaults.global.defaultColor,
+			backgroundColor: defaultColor,
+			borderColor: defaultColor,
 			borderSkipped: 'bottom',
 			borderWidth: 0
 		}
