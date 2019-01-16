@@ -176,6 +176,9 @@
 	}, {
 		title: 'Scriptable',
 		items: [{
+			title: 'Bar Chart',
+			path: 'scriptable/bar.html'
+		}, {
 			title: 'Bubble Chart',
 			path: 'scriptable/bubble.html'
 		}]
@@ -184,9 +187,6 @@
 		items: [{
 			title: 'Progress bar',
 			path: 'advanced/progress-bar.html'
-		}, {
-			title: 'Data labelling (plugin)',
-			path: 'advanced/data-labelling.html'
 		}]
 	}];
 

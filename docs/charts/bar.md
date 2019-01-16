@@ -61,54 +61,93 @@ var myBarChart = new Chart(ctx, {
 ```
 
 ## Dataset Properties
-The bar chart allows a number of properties to be specified for each dataset. These are used to set display properties for a specific dataset. For example, the colour of the bars is generally set this way.
 
-Some properties can be specified as an array. If these are set to an array value, the first value applies to the first bar, the second value to the second bar, and so on.
+The bar chart allows a number of properties to be specified for each dataset.
+These are used to set display properties for a specific dataset. For example,
+the color of the bars is generally set this way.
 
-| Name | Type | Description
-| ---- | ---- | -----------
-| `label` | `String` | The label for the dataset which appears in the legend and tooltips.
-| `xAxisID` | `String` | The ID of the x axis to plot this dataset on. If not specified, this defaults to the ID of the first found x axis
-| `yAxisID` | `String` | The ID of the y axis to plot this dataset on. If not specified, this defaults to the ID of the first found y axis.
-| `backgroundColor` | `Color/Color[]` | The fill color of the bar. See [Colors](../general/colors.md#colors)
-| `borderColor` | `Color/Color[]` | The color of the bar border. See [Colors](../general/colors.md#colors)
-| `borderWidth` | `Number/Number[]` | The stroke width of the bar in pixels.
-| `borderSkipped` | `String` | Which edge to skip drawing the border for. [more...](#borderskipped)
-| `hoverBackgroundColor` | `Color/Color[]` | The fill colour of the bars when hovered.
-| `hoverBorderColor` | `Color/Color[]` | The stroke colour of the bars when hovered.
-| `hoverBorderWidth` | `Number/Number[]` | The stroke width of the bars when hovered.
+| Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) |  Default
+| ---- | ---- | :----: | :----: | ----
+| [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0,0,0,0.1)'`
+| [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0,0,0,0.1)'`
+| [`borderSkipped`](#borderskipped) | `String` | Yes | Yes | `'bottom'`
+| [`borderWidth`](#styling) | `Number` | Yes | Yes | `0`
+| [`data`](#data-structure) | `Object[]` | - | - | **required**
+| [`hoverBackgroundColor`](#interactions) | [`Color`](../general/colors.md) | - | Yes | `undefined`
+| [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | - | Yes | `undefined`
+| [`hoverBorderWidth`](#interactions) | `Number` | - | Yes | `1`
+| [`label`](#general) | `String` | - | - | `''`
+| [`xAxisID`](#general) | `String` | - | - | first x axis
+| [`yAxisID`](#general) | `String` | - | - | first y axis
 
-### borderSkipped
-This setting is used to avoid drawing the bar stroke at the base of the fill. In general, this does not need to be changed except when creating chart types that derive from a bar chart.
+### General
+
+| Name | Description
+| ---- | ----
+| `label` | The label for the dataset which appears in the legend and tooltips.
+| `xAxisID` | The ID of the x axis to plot this dataset on.
+| `yAxisID` | The ID of the y axis to plot this dataset on.
+
+### Styling
+
+The style of each bar can be controlled with the following properties:
+
+| Name | Description
+| ---- | ----
+| `backgroundColor` | The bar background color.
+| `borderColor` | The bar border color.
+| [`borderSkipped`](#borderskipped) | The edge to skip when drawing bar.
+| `borderWidth` | The bar border width (in pixels).
+
+All these values, if `undefined`, fallback to the associated [`elements.rectangle.*`](../configuration/elements.md#rectangle-configuration) options.
+
+#### borderSkipped
+
+This setting is used to avoid drawing the bar stroke at the base of the fill.
+In general, this does not need to be changed except when creating chart types
+that derive from a bar chart.
 
 Options are:
-* 'bottom'
-* 'left'
-* 'top'
-* 'right'
-* false - in the case of floating bar chart we need to have all borders, so you can set var to false to draw all borders
 
-## Configuration Options
+* `'bottom'`
+* `'left'`
+* `'top'`
+* `'right'`
 
-The bar chart defines the following configuration options. These options are merged with the global chart configuration options, `Chart.defaults.global`, to form the options passed to the chart.
+### Interactions
+
+The interaction with each bar can be controlled with the following properties:
+
+| Name | Description
+| ---- | -----------
+| `hoverBackgroundColor` | The bar background color when hovered.
+| `hoverBorderColor` | The bar border color when hovered.
+| `hoverBorderWidth` | The bar border width when hovered (in pixels).
+
+All these values, if `undefined`, fallback to the associated [`elements.rectangle.*`](../configuration/elements.md#rectangle-configuration) options.
+
+## Scale Configuration
+The bar chart accepts the following configuration from the associated `scale` options:
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `barPercentage` | `Number` | `0.9` | Percent (0-1) of the available width each bar should be within the category width. 1.0 will take the whole category width and put the bars right next to each other. [more...](#barpercentage-vs-categorypercentage)
 | `categoryPercentage` | `Number` | `0.8` | Percent (0-1) of the available width each category should be within the sample width. [more...](#barpercentage-vs-categorypercentage)
-| `barThickness` | `Number` | | Manually set width of each bar in pixels. If not set, the base sample widths are calculated automatically so that they take the full available widths without overlap. Then, the bars are sized using `barPercentage` and `categoryPercentage`.
+| `barThickness` | `Number/String` | | Manually set width of each bar in pixels. If set to `'flex'`, it computes "optimal" sample widths that globally arrange bars side by side. If not set (default), bars are equally sized based on the smallest interval. [more...](#barthickness)
 | `maxBarThickness` | `Number` | | Set this to ensure that bars are not sized thicker than this.
+| `minBarLength` | `Number` | | Set this to ensure that bars have a minimum length in pixels.
 | `gridLines.offsetGridLines` | `Boolean` | `true` | If true, the bars for a particular data point fall between the grid lines. The grid line will move to the left by one half of the tick interval. If false, the grid line will go right down the middle of the bars. [more...](#offsetgridlines)
 
-### offsetGridLines
-If true, the bars for a particular data point fall between the grid lines. The grid line will move to the left by one half of the tick interval, which is the space between the grid lines. If false, the grid line will go right down the middle of the bars. This is set to true for a bar chart while false for other charts by default.
-
-This setting applies to the axis configuration. If axes are added to the chart, this setting will need to be set for each new axis.
+### Example Usage
 
 ```javascript
 options = {
     scales: {
         xAxes: [{
+            barPercentage: 0.5,
+            barThickness: 6,
+            maxBarThickness: 8,
+            minBarLength: 2,
             gridLines: {
                 offsetGridLines: true
             }
@@ -116,6 +155,15 @@ options = {
     }
 }
 ```
+### barThickness
+If this value is a number, it is applied to the width of each bar, in pixels. When this is enforced, `barPercentage` and `categoryPercentage` are ignored.
+
+If set to `'flex'`, the base sample widths are calculated automatically based on the previous and following samples so that they take the full available widths without overlap. Then, bars are sized using `barPercentage` and `categoryPercentage`. There is no gap when the percentage options are 1. This mode generates bars with different widths when data are not evenly spaced.
+
+If not set (default), the base sample widths are calculated using the smallest interval that prevents bar overlapping, and bars are sized using `barPercentage` and `categoryPercentage`. This mode always generates bars equally sized.
+
+### offsetGridLines
+If true, the bars for a particular data point fall between the grid lines. The grid line will move to the left by one half of the tick interval, which is the space between the grid lines. If false, the grid line will go right down the middle of the bars. This is set to true for a category scale in a bar chart while false for other scales or chart types by default.
 
 ## Default Options
 
@@ -186,7 +234,7 @@ The following dataset properties are specific to stacked bar charts.
 
 | Name | Type | Description
 | ---- | ---- | -----------
-| `stack` | `String` | The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack)
+| `stack` | `String` | The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack).
 
 # Horizontal Bar Chart
 A horizontal bar chart is a variation on a vertical bar chart. It is sometimes used to show trend data, and the comparison of multiple data sets side by side.
@@ -242,6 +290,6 @@ var myBarChart = new Chart(ctx, {
 ```
 
 ## Config Options
-The configuration options for the horizontal bar chart are the same as for the [bar chart](#configuration-options). However, any options specified on the x axis in a bar chart, are applied to the y axis in a horizontal bar chart.
+The configuration options for the horizontal bar chart are the same as for the [bar chart](#scale-configuration). However, any options specified on the x axis in a bar chart, are applied to the y axis in a horizontal bar chart.
 
 The default horizontal bar configuration is specified in `Chart.defaults.horizontalBar`.

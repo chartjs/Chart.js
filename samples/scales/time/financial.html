@@ -4,7 +4,7 @@
 <head>
 	<title>Line Chart</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-	<script src="../../../dist/Chart.js"></script>
+	<script src="../../../dist/Chart.min.js"></script>
 	<script src="../../utils.js"></script>
 	<style>
 		canvas {
@@ -56,12 +56,16 @@
 		var ctx = document.getElementById('chart1').getContext('2d');
 		ctx.canvas.width = 1000;
 		ctx.canvas.height = 300;
+
+		var color = Chart.helpers.color;
 		var cfg = {
 			type: 'bar',
 			data: {
 				labels: labels,
 				datasets: [{
 					label: 'CHRT - Chart.js Corporation',
+					backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+					borderColor: window.chartColors.red,
 					data: data,
 					type: 'line',
 					pointRadius: 0,

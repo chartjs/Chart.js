@@ -11,7 +11,7 @@ window.chartColors = {
 };
 
 (function(global) {
-	var Months = [
+	var MONTHS = [
 		'January',
 		'February',
 		'March',
@@ -106,7 +106,7 @@ window.chartColors = {
 			var i, value;
 
 			for (i = 0; i < count; ++i) {
-				value = Months[Math.ceil(i) % 12];
+				value = MONTHS[Math.ceil(i) % 12];
 				values.push(value.substring(0, section));
 			}
 

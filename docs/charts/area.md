@@ -35,7 +35,7 @@ new Chart(ctx, {
 ## Configuration
 | Option | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| [`plugins.filler.propagate`](#propagate) | `Boolean` | `true` | Fill propagation when target is hidden
+| [`plugins.filler.propagate`](#propagate) | `Boolean` | `true` | Fill propagation when target is hidden.
 
 ### propagate
 Boolean (default: `true`)

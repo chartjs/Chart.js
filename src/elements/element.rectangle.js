@@ -6,6 +6,8 @@ var helpers = require('../helpers/index');
 
 var defaultColor = defaults.global.defaultColor;
 
+var defaultColor = defaults.global.defaultColor;
+
 defaults._set('global', {
 	elements: {
 		rectangle: {

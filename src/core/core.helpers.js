@@ -174,6 +174,26 @@ module.exports = function() {
 	helpers.toDegrees = function(radians) {
 		return radians * (180 / Math.PI);
 	};
+
+	/**
+	 * Returns the number of decimal places
+	 * i.e. the number of digits after the decimal point, of the value of this Number.
+	 * @param {Number} x - A number.
+	 * @returns {Number} The number of decimal places.
+	 */
+	helpers.decimalPlaces = function(x) {
+		if (!helpers.isFinite(x)) {
+			return;
+		}
+		var e = 1;
+		var p = 0;
+		while (Math.round(x * e) / e !== x) {
+			e *= 10;
+			p++;
+		}
+		return p;
+	};
+
 	// Gets the angle from vertical upright to the point about a centre.
 	helpers.getAngleFromPoint = function(centrePoint, anglePoint) {
 		var distanceFromXCenter = anglePoint.x - centrePoint.x;
@@ -194,9 +214,31 @@ module.exports = function() {
 	helpers.distanceBetweenPoints = function(pt1, pt2) {
 		return Math.sqrt(Math.pow(pt2.x - pt1.x, 2) + Math.pow(pt2.y - pt1.y, 2));
 	};
+
+	/**
+	 * Provided for backward compatibility, not available anymore
+	 * @function Chart.helpers.aliasPixel
+	 * @deprecated since version 2.8.0
+	 * @todo remove at version 3
+	 */
 	helpers.aliasPixel = function(pixelWidth) {
 		return (pixelWidth % 2 === 0) ? 0 : 0.5;
 	};
+
+	/**
+	 * Returns the aligned pixel value to avoid anti-aliasing blur
+	 * @param {Chart} chart - The chart instance.
+	 * @param {Number} pixel - A pixel value.
+	 * @param {Number} width - The width of the element.
+	 * @returns {Number} The aligned pixel value.
+	 * @private
+	 */
+	helpers._alignPixel = function(chart, pixel, width) {
+		var devicePixelRatio = chart.currentDevicePixelRatio;
+		var halfWidth = width / 2;
+		return Math.round((pixel - halfWidth) * devicePixelRatio) / devicePixelRatio + halfWidth;
+	};
+
 	helpers.splineCurve = function(firstPoint, middlePoint, afterPoint, t) {
 		// Props to Rob Spencer at scaled innovation for his post on splining between points
 		// http://scaledinnovation.com/analytics/splines/aboutSplines.html
@@ -363,7 +405,7 @@ module.exports = function() {
 
 		return niceFraction * Math.pow(10, exponent);
 	};
-	// Request animation polyfill - http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
+	// Request animation polyfill - https://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
 	helpers.requestAnimFrame = (function() {
 		if (typeof window === 'undefined') {
 			return function(callback) {
@@ -383,7 +425,7 @@ module.exports = function() {
 	helpers.getRelativePosition = function(evt, chart) {
 		var mouseX, mouseY;
 		var e = evt.originalEvent || evt;
-		var canvas = evt.currentTarget || evt.srcElement;
+		var canvas = evt.target || evt.srcElement;
 		var boundingRect = canvas.getBoundingClientRect();
 
 		var touches = e.touches;
@@ -398,7 +440,7 @@ module.exports = function() {
 
 		// Scale mouse coordinates into canvas coordinates
 		// by following the pattern laid out by 'jerryj' in the comments of
-		// http://www.html5canvastutorials.com/advanced/html5-canvas-mouse-coordinates/
+		// https://www.html5canvastutorials.com/advanced/html5-canvas-mouse-coordinates/
 		var paddingLeft = parseFloat(helpers.getStyle(canvas, 'padding-left'));
 		var paddingTop = parseFloat(helpers.getStyle(canvas, 'padding-top'));
 		var paddingRight = parseFloat(helpers.getStyle(canvas, 'padding-right'));
@@ -447,10 +489,10 @@ module.exports = function() {
 	// @param domNode : the node to check the constraint on
 	// @param maxStyle : the style that defines the maximum for the direction we are using (maxWidth / maxHeight)
 	// @param percentageProperty : property of parent to use when calculating width as a percentage
-	// @see http://www.nathanaeljones.com/blog/2013/reading-max-width-cross-browser
+	// @see https://www.nathanaeljones.com/blog/2013/reading-max-width-cross-browser
 	function getConstraintDimension(domNode, maxStyle, percentageProperty) {
 		var view = document.defaultView;
-		var parentNode = domNode.parentNode;
+		var parentNode = helpers._getParentNode(domNode);
 		var constrainedNode = view.getComputedStyle(domNode)[maxStyle];
 		var constrainedContainer = view.getComputedStyle(parentNode)[maxStyle];
 		var hasCNode = isConstrainedValue(constrainedNode);
@@ -479,10 +521,20 @@ module.exports = function() {
 	helpers._calculatePadding = function(container, padding, parentDimension) {
 		padding = helpers.getStyle(container, padding);
 
-		return padding.indexOf('%') > -1 ? parentDimension / parseInt(padding, 10) : parseInt(padding, 10);
+		return padding.indexOf('%') > -1 ? parentDimension * parseInt(padding, 10) / 100 : parseInt(padding, 10);
+	};
+	/**
+	 * @private
+	 */
+	helpers._getParentNode = function(domNode) {
+		var parent = domNode.parentNode;
+		if (parent && parent.toString() === '[object ShadowRoot]') {
+			parent = parent.host;
+		}
+		return parent;
 	};
 	helpers.getMaximumWidth = function(domNode) {
-		var container = domNode.parentNode;
+		var container = helpers._getParentNode(domNode);
 		if (!container) {
 			return domNode.clientWidth;
 		}
@@ -496,7 +548,7 @@ module.exports = function() {
 		return isNaN(cw) ? w : Math.min(w, cw);
 	};
 	helpers.getMaximumHeight = function(domNode) {
-		var container = domNode.parentNode;
+		var container = helpers._getParentNode(domNode);
 		if (!container) {
 			return domNode.clientHeight;
 		}
@@ -617,7 +669,7 @@ module.exports = function() {
 
 	helpers.getHoverColor = function(colorValue) {
 		/* global CanvasPattern */
-		return (colorValue instanceof CanvasPattern) ?
+		return (colorValue instanceof CanvasPattern || colorValue instanceof CanvasGradient) ?
 			colorValue :
 			helpers.color(colorValue).saturate(0.5).darken(0.1).rgbString();
 	};

@@ -238,6 +238,17 @@ describe('Core helper tests', function() {
 		expect(helpers.toDegrees(Math.PI * 3 / 2)).toBe(270);
 	});
 
+	it('should get the correct number of decimal places', function() {
+		expect(helpers.decimalPlaces(100)).toBe(0);
+		expect(helpers.decimalPlaces(1)).toBe(0);
+		expect(helpers.decimalPlaces(0)).toBe(0);
+		expect(helpers.decimalPlaces(0.01)).toBe(2);
+		expect(helpers.decimalPlaces(-0.01)).toBe(2);
+		expect(helpers.decimalPlaces('1')).toBe(undefined);
+		expect(helpers.decimalPlaces('')).toBe(undefined);
+		expect(helpers.decimalPlaces(undefined)).toBe(undefined);
+	});
+
 	it('should get an angle from a point', function() {
 		var center = {
 			x: 0,
@@ -568,6 +579,31 @@ describe('Core helper tests', function() {
 		document.body.removeChild(div);
 	});
 
+	it ('should get the maximum width and height for a node in a ShadowRoot', function() {
+		// Create div with fixed size as a test bed
+		var div = document.createElement('div');
+		div.style.width = '200px';
+		div.style.height = '300px';
+
+		document.body.appendChild(div);
+
+		if (!div.attachShadow) {
+			// Shadow DOM is not natively supported
+			return;
+		}
+
+		var shadow = div.attachShadow({mode: 'closed'});
+
+		// Create the div we want to get the max size for
+		var innerDiv = document.createElement('div');
+		shadow.appendChild(innerDiv);
+
+		expect(helpers.getMaximumWidth(innerDiv)).toBe(200);
+		expect(helpers.getMaximumHeight(innerDiv)).toBe(300);
+
+		document.body.removeChild(div);
+	});
+
 	it ('should get the maximum width of a node that has a max-width style', function() {
 		// Create div with fixed size as a test bed
 		var div = document.createElement('div');
@@ -754,7 +790,7 @@ describe('Core helper tests', function() {
 		div.style.height = '300px';
 		document.body.appendChild(div);
 
-		// Inner DIV to have 10% padding of parent
+		// Inner DIV to have 5% padding of parent
 		var innerDiv = document.createElement('div');
 
 		div.appendChild(innerDiv);
@@ -766,8 +802,8 @@ describe('Core helper tests', function() {
 		expect(helpers.getMaximumWidth(canvas)).toBe(300);
 
 		// test with percentage
-		innerDiv.style.padding = '10%';
-		expect(helpers.getMaximumWidth(canvas)).toBe(240);
+		innerDiv.style.padding = '5%';
+		expect(helpers.getMaximumWidth(canvas)).toBe(270);
 
 		// test with pixels
 		innerDiv.style.padding = '10px';
@@ -810,6 +846,13 @@ describe('Core helper tests', function() {
 
 				done();
 			};
+		});
+
+		it('should return a CanvasGradient when called with a CanvasGradient', function() {
+			var context = document.createElement('canvas').getContext('2d');
+			var gradient = context.createLinearGradient(0, 1, 2, 3);
+
+			expect(helpers.getHoverColor(gradient) instanceof CanvasGradient).toBe(true);
 		});
 
 		it('should return a modified version of color when called with a color', function() {

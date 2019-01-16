@@ -761,16 +761,16 @@ describe('Chart', function() {
 			// then we will reset and see that they moved
 			expect(meta.data[0]._model.y).toBeCloseToPixel(333);
 			expect(meta.data[1]._model.y).toBeCloseToPixel(183);
-			expect(meta.data[2]._model.y).toBe(32);
-			expect(meta.data[3]._model.y).toBe(484);
+			expect(meta.data[2]._model.y).toBeCloseToPixel(32);
+			expect(meta.data[3]._model.y).toBeCloseToPixel(482);
 
 			chart.reset();
 
 			// For a line chart, the animation state is the bottom
-			expect(meta.data[0]._model.y).toBe(484);
-			expect(meta.data[1]._model.y).toBe(484);
-			expect(meta.data[2]._model.y).toBe(484);
-			expect(meta.data[3]._model.y).toBe(484);
+			expect(meta.data[0]._model.y).toBeCloseToPixel(482);
+			expect(meta.data[1]._model.y).toBeCloseToPixel(482);
+			expect(meta.data[2]._model.y).toBeCloseToPixel(482);
+			expect(meta.data[3]._model.y).toBeCloseToPixel(482);
 		});
 	});
 
@@ -949,25 +949,13 @@ describe('Chart', function() {
 			var meta = chart.getDatasetMeta(0);
 			var point = meta.data[1];
 
-			var node = chart.canvas;
-			var rect = node.getBoundingClientRect();
-
-			var evt = new MouseEvent('mousemove', {
-				view: window,
-				bubbles: true,
-				cancelable: true,
-				clientX: rect.left + point._model.x,
-				clientY: 0
-			});
-
-			// Manually trigger rather than having an async test
-			node.dispatchEvent(evt);
+			jasmine.triggerMouseEvent(chart, 'mousemove', point);
 
 			// Check and see if tooltip was displayed
 			var tooltip = chart.tooltip;
 
 			expect(chart.lastActive).toEqual([point]);
-			expect(tooltip._lastActive).toEqual([]);
+			expect(tooltip._lastActive).toEqual([point]);
 
 			// Update and confirm tooltip is reset
 			chart.update();
@@ -1134,7 +1122,7 @@ describe('Chart', function() {
 			expect(this.addAnimationSpy).toHaveBeenCalledWith(
 				this.chart,
 				jasmine.objectContaining({easing: 'linear'}),
-				undefined,
+				500,
 				undefined
 			);
 		});

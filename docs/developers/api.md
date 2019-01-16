@@ -158,7 +158,7 @@ This functionality may be useful for implementing DOM based tooltips, or trigger
 
 ## .getDatasetAtEvent(e)
 
-Looks for the element under the event point, then returns all elements from that dataset. This is used internally for 'dataset' mode highlighting
+Looks for the element under the event point, then returns all elements from that dataset. This is used internally for 'dataset' mode highlighting.
 
 ```javascript
 myLineChart.getDatasetAtEvent(e);

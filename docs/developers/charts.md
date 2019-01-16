@@ -45,7 +45,7 @@ Dataset controllers must implement the following interface.
 }
 ```
 
-The following methods may optionally be overridden by derived dataset controllers
+The following methods may optionally be overridden by derived dataset controllers.
 ```javascript
 {
     // Initializes the controller

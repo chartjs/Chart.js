@@ -1,4 +1,10 @@
 describe('Chart.controllers.radar', function() {
+	describe('auto', jasmine.fixture.specs('controller.radar'));
+
+	it('should be registered as dataset controller', function() {
+		expect(typeof Chart.controllers.radar).toBe('function');
+	});
+
 	it('Should be constructed', function() {
 		var chart = window.acquireChart({
 			type: 'radar',
@@ -125,10 +131,10 @@ describe('Chart.controllers.radar', function() {
 		}));
 
 		[
-			{x: 256, y: 256, cppx: 256, cppy: 256, cpnx: 256, cpny: 256},
-			{x: 256, y: 256, cppx: 256, cppy: 256, cpnx: 256, cpny: 256},
-			{x: 256, y: 256, cppx: 256, cppy: 256, cpnx: 256, cpny: 256},
-			{x: 256, y: 256, cppx: 256, cppy: 256, cpnx: 256, cpny: 256},
+			{x: 256, y: 260, cppx: 256, cppy: 260, cpnx: 256, cpny: 260},
+			{x: 256, y: 260, cppx: 256, cppy: 260, cpnx: 256, cpny: 260},
+			{x: 256, y: 260, cppx: 256, cppy: 260, cpnx: 256, cpny: 260},
+			{x: 256, y: 260, cppx: 256, cppy: 260, cpnx: 256, cpny: 260},
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(expected.y);
@@ -152,10 +158,10 @@ describe('Chart.controllers.radar', function() {
 		meta.controller.update();
 
 		[
-			{x: 256, y: 117, cppx: 246, cppy: 117, cpnx: 272, cpny: 117},
-			{x: 464, y: 256, cppx: 464, cppy: 248, cpnx: 464, cpny: 262},
-			{x: 256, y: 256, cppx: 276.9, cppy: 256, cpnx: 250.4, cpny: 256},
-			{x: 200, y: 256, cppx: 200, cppy: 259, cpnx: 200, cpny: 245},
+			{x: 256, y: 120, cppx: 246, cppy: 120, cpnx: 272, cpny: 120},
+			{x: 464, y: 260, cppx: 464, cppy: 252, cpnx: 464, cpny: 266},
+			{x: 256, y: 260, cppx: 277, cppy: 260, cpnx: 250, cpny: 260},
+			{x: 200, y: 260, cppx: 200, cppy: 264, cpnx: 200, cpny: 250},
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(expected.y);
@@ -209,10 +215,10 @@ describe('Chart.controllers.radar', function() {
 
 		// Since tension is now 0, we don't care about the control points
 		[
-			{x: 256, y: 117},
-			{x: 464, y: 256},
-			{x: 256, y: 256},
-			{x: 200, y: 256},
+			{x: 256, y: 120},
+			{x: 464, y: 260},
+			{x: 256, y: 260},
+			{x: 200, y: 260},
 		].forEach(function(expected, i) {
 			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(expected.y);
@@ -268,11 +274,11 @@ describe('Chart.controllers.radar', function() {
 		}));
 
 		expect(meta.data[0]._model.x).toBeCloseToPixel(256);
-		expect(meta.data[0]._model.y).toBeCloseToPixel(117);
+		expect(meta.data[0]._model.y).toBeCloseToPixel(120);
 		expect(meta.data[0]._model.controlPointPreviousX).toBeCloseToPixel(241);
-		expect(meta.data[0]._model.controlPointPreviousY).toBeCloseToPixel(117);
+		expect(meta.data[0]._model.controlPointPreviousY).toBeCloseToPixel(120);
 		expect(meta.data[0]._model.controlPointNextX).toBeCloseToPixel(281);
-		expect(meta.data[0]._model.controlPointNextY).toBeCloseToPixel(117);
+		expect(meta.data[0]._model.controlPointNextY).toBeCloseToPixel(120);
 		expect(meta.data[0]._model).toEqual(jasmine.objectContaining({
 			radius: 2.2,
 			backgroundColor: 'rgb(0, 1, 3)',
@@ -410,6 +416,7 @@ describe('Chart.controllers.radar', function() {
 		chart.options.elements.point.radius = 1.01;
 
 		meta.controller.removeHoverStyle(point);
+		chart.update();
 		expect(point._model.backgroundColor).toBe('rgb(45, 46, 47)');
 		expect(point._model.borderColor).toBe('rgb(50, 51, 52)');
 		expect(point._model.borderWidth).toBe(10.1);
@@ -422,6 +429,7 @@ describe('Chart.controllers.radar', function() {
 		chart.data.datasets[0].pointBorderWidth = 2.1;
 
 		meta.controller.removeHoverStyle(point);
+		chart.update();
 		expect(point._model.backgroundColor).toBe('rgb(77, 79, 81)');
 		expect(point._model.borderColor).toBe('rgb(123, 125, 127)');
 		expect(point._model.borderWidth).toBe(2.1);
@@ -436,6 +444,7 @@ describe('Chart.controllers.radar', function() {
 		};
 
 		meta.controller.removeHoverStyle(point);
+		chart.update();
 		expect(point._model.backgroundColor).toBe('rgb(0, 0, 0)');
 		expect(point._model.borderColor).toBe('rgb(10, 10, 10)');
 		expect(point._model.borderWidth).toBe(5.5);

@@ -2,7 +2,7 @@
 
 var Element = require('./core.element');
 
-var exports = module.exports = Element.extend({
+var exports = Element.extend({
 	chart: null, // the animation associated chart instance
 	currentStep: 0, // the current animation step
 	numSteps: 60, // default number of steps
@@ -12,6 +12,8 @@ var exports = module.exports = Element.extend({
 	onAnimationProgress: null, // user specified callback to fire on each step of the animation
 	onAnimationComplete: null, // user specified callback to fire when the animation finishes
 });
+
+module.exports = exports;
 
 // DEPRECATIONS
 
