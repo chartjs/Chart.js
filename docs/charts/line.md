@@ -64,7 +64,7 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`pointHoverRadius`](#interactions) | `Number` | Yes | Yes | `undefined`
 | [`pointRadius`](#point-styling) | `Number` | Yes | Yes | `3`
 | [`pointRotation`](#point-styling) | `Number` | Yes | Yes | `1`
-| [`pointStyle`](#point-styling) | `String/Image` | Yes | Yes | `'circle'`
+| [`pointStyle`](#point-styling) | `String/Image/Function` | Yes | Yes | `'circle'`
 | [`showLine`](#general) | `Boolean` | - | - | `undefined`
 | [`spanGaps`](#general) | `Boolean` | - | - | `false`
 | [`steppedLine`](#stepped-line) | `Boolean/String` | - | - | `false`

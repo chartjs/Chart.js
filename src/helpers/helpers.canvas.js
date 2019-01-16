@@ -67,9 +67,9 @@ var exports = {
 		var type, xOffset, yOffset, size, cornerRadius;
 		var rad = (rotation || 0) * RAD_PER_DEG;
 
-		// Add custom style.
+		// Drawing the custom shape.
 		if (style && typeof style === 'function') {
-			style(ctx, radius, x, y);
+			style(ctx, radius, x, y, rad);
 			return;
 		}
 

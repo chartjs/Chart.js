@@ -18,7 +18,7 @@ Global point options: `Chart.defaults.global.elements.point`.
 | Name | Type | Default | Description
 | -----| ---- | --------| -----------
 | `radius` | `Number` | `3` | Point radius.
-| [`pointStyle`](#point-styles) | `String` | `circle` | Point style.
+| [`pointStyle`](#point-styles) | `String/Image/Function` | `circle` | Point style.
 | `rotation` | `Number` | `0` | Point rotation (in degrees).
 | `backgroundColor` | `Color` | `'rgba(0,0,0,0.1)'` | Point fill color.
 | `borderWidth` | `Number` | `1` | Point stroke width.
@@ -41,7 +41,18 @@ The following values are supported:
 - `'star'`
 - `'triangle'`
 
-If the value is an image, that image is drawn on the canvas using [drawImage](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/drawImage).
+If the value is an image, that image is drawn on the canvas using [drawImage](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/drawImage). 
+
+If the value is a function, that mean we can draw custom shape point on canvas.
+Function for drawing will call with parameters (ctx, radius, x, y, rad).
+Where is params:
+ * {CanvasRenderingContext2D} ctx - The canvas 2D Context.
+ * {Number} radius - The rounded amount (in pixels) for the corners.
+ * {Number} x - The x axis of the coordinate for the shape starting point.
+ * {Number} y - The y axis of the coordinate for the shape starting point.
+ * {Number} rad - The calculated radian value (from rotation value).
+	 
+For more information, please, check 'src/helpers/helpers.canvas.js', method 'drawPoint'.
 
 ## Line Configuration
 Line elements are used to represent the line in a line chart.
