@@ -70,7 +70,6 @@ defaults._set('global', {
 				if (label) {
 					label += ': ';
 				}
-
 				label += tooltipItem.yLabel;
 				return label;
 			},
