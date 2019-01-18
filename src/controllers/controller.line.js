@@ -5,8 +5,8 @@ var defaults = require('../core/core.defaults');
 var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
-var valueOrDefault = helpers.valueOrDefault;
-var resolve = helpers.options.resolve;
+var {valueOrDefault} = helpers;
+var {resolve} = helpers.options;
 var isPointInArea = helpers.canvas._isPointInArea;
 
 defaults._set('line', {
@@ -44,7 +44,7 @@ module.exports = DatasetController.extend({
 		var meta = me.getMeta();
 		var line = meta.dataset;
 		var points = meta.data || [];
-		var options = me.chart.options;
+		var {options} = me.chart;
 		var lineElementOptions = options.elements.line;
 		var scale = me.getScaleForId(meta.yAxisID);
 		var i, ilen, custom;
@@ -125,23 +125,24 @@ module.exports = DatasetController.extend({
 		point._options = options;
 		point._datasetIndex = datasetIndex;
 		point._index = index;
+		var {radius, pointStyle, rotation, backgroundColor, borderColor, borderWidth, hitRadius} = options;
 
 		// Desired view properties
 		point._model = {
-			x: x,
-			y: y,
+			x,
+			y,
 			skip: custom.skip || isNaN(x) || isNaN(y),
 			// Appearance
-			radius: options.radius,
-			pointStyle: options.pointStyle,
-			rotation: options.rotation,
-			backgroundColor: options.backgroundColor,
-			borderColor: options.borderColor,
-			borderWidth: options.borderWidth,
+			radius,
+			pointStyle,
+			rotation,
+			backgroundColor,
+			borderColor,
+			borderWidth,
 			tension: meta.dataset._model ? meta.dataset._model.tension : 0,
 			steppedLine: meta.dataset._model ? meta.dataset._model.steppedLine : false,
 			// Tooltip
-			hitRadius: options.hitRadius,
+			hitRadius,
 		};
 	},
 
@@ -150,8 +151,8 @@ module.exports = DatasetController.extend({
 	 */
 	_resolveElementOptions: function(point, index) {
 		var me = this;
-		var chart = me.chart;
-		var datasets = chart.data.datasets;
+		var {chart} = me;
+		var {datasets} = chart.data;
 		var dataset = datasets[me.index];
 		var custom = point.custom || {};
 		var options = chart.options.elements.point;
@@ -160,9 +161,9 @@ module.exports = DatasetController.extend({
 
 		// Scriptable options
 		var context = {
-			chart: chart,
+			chart,
 			dataIndex: index,
-			dataset: dataset,
+			dataset,
 			datasetIndex: me.index
 		};
 
@@ -196,7 +197,7 @@ module.exports = DatasetController.extend({
 
 	calculatePointY: function(value, index, datasetIndex) {
 		var me = this;
-		var chart = me.chart;
+		var {chart} = me;
 		var meta = me.getMeta();
 		var yScale = me.getScaleForId(meta.yAxisID);
 		var sumPos = 0;
@@ -229,7 +230,7 @@ module.exports = DatasetController.extend({
 
 	updateBezierControlPoints: function() {
 		var me = this;
-		var chart = me.chart;
+		var {chart} = me;
 		var meta = me.getMeta();
 		var lineModel = meta.dataset._model;
 		var area = chart.chartArea;
@@ -285,7 +286,7 @@ module.exports = DatasetController.extend({
 
 	draw: function() {
 		var me = this;
-		var chart = me.chart;
+		var {chart} = me;
 		var meta = me.getMeta();
 		var points = meta.data || [];
 		var area = chart.chartArea;
@@ -295,12 +296,13 @@ module.exports = DatasetController.extend({
 
 		if (lineEnabled(me.getDataset(), chart.options)) {
 			halfBorderWidth = (meta.dataset._model.borderWidth || 0) / 2;
+			var {left, right, top, bottom} = area;
 
 			helpers.canvas.clipArea(chart.ctx, {
-				left: area.left,
-				right: area.right,
-				top: area.top - halfBorderWidth,
-				bottom: area.bottom + halfBorderWidth
+				left,
+				right,
+				top: top - halfBorderWidth,
+				bottom: bottom + halfBorderWidth
 			});
 
 			meta.dataset.draw();
@@ -321,17 +323,19 @@ module.exports = DatasetController.extend({
 		var model = point._model;
 		var options = point._options;
 		var getHoverColor = helpers.getHoverColor;
+		var {backgroundColor, borderColor, borderWidth, radius} = model;
+		var {hoverBackgroundColor, hoverBorderColor, hoverBorderWidth, hoverRadius} = options;
 
 		point.$previousStyle = {
-			backgroundColor: model.backgroundColor,
-			borderColor: model.borderColor,
-			borderWidth: model.borderWidth,
-			radius: model.radius
+			backgroundColor,
+			borderColor,
+			borderWidth,
+			radius
 		};
 
-		model.backgroundColor = valueOrDefault(options.hoverBackgroundColor, getHoverColor(options.backgroundColor));
-		model.borderColor = valueOrDefault(options.hoverBorderColor, getHoverColor(options.borderColor));
-		model.borderWidth = valueOrDefault(options.hoverBorderWidth, options.borderWidth);
-		model.radius = valueOrDefault(options.hoverRadius, options.radius);
+		model.backgroundColor = valueOrDefault(hoverBackgroundColor, getHoverColor(options.backgroundColor));
+		model.borderColor = valueOrDefault(hoverBorderColor, getHoverColor(options.borderColor));
+		model.borderWidth = valueOrDefault(hoverBorderWidth, options.borderWidth);
+		model.radius = valueOrDefault(hoverRadius, options.radius);
 	},
 });
