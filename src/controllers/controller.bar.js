@@ -76,7 +76,7 @@ function computeFitCategoryTraits(index, ruler, options) {
 
 	return {
 		chunk: size / count,
-		ratio: ratio,
+		ratio,
 		start: curr - (size / 2)
 	};
 }
@@ -112,7 +112,7 @@ function computeFlexCategoryTraits(index, ruler, options) {
 	return {
 		chunk: size / ruler.stackCount,
 		ratio: options.barPercentage,
-		start: start
+		start
 	};
 }
 
@@ -148,16 +148,17 @@ module.exports = DatasetController.extend({
 		var meta = me.getMeta();
 		var dataset = me.getDataset();
 		var options = me._resolveElementOptions(rectangle, index);
+		var {backgroundColor, borderColor, borderSkipped, borderWidth} = options
 
 		rectangle._xScale = me.getScaleForId(meta.xAxisID);
 		rectangle._yScale = me.getScaleForId(meta.yAxisID);
 		rectangle._datasetIndex = me.index;
 		rectangle._index = index;
 		rectangle._model = {
-			backgroundColor: options.backgroundColor,
-			borderColor: options.borderColor,
-			borderSkipped: options.borderSkipped,
-			borderWidth: options.borderWidth,
+			backgroundColor,
+			borderColor,
+			borderSkipped,
+			borderWidth,
 			datasetLabel: dataset.label,
 			label: me.chart.data.labels[index]
 		};
@@ -265,12 +266,12 @@ module.exports = DatasetController.extend({
 			: -1;
 
 		return {
-			min: min,
-			pixels: pixels,
-			start: start,
-			end: end,
-			stackCount: stackCount,
-			scale: scale
+			min,
+			pixels,
+			start,
+			end,
+			stackCount,
+			scale
 		};
 	},
 
@@ -323,9 +324,9 @@ module.exports = DatasetController.extend({
 		}
 
 		return {
-			size: size,
-			base: base,
-			head: head,
+			size,
+			base,
+			head,
 			center: head + size / 2
 		};
 	},
@@ -349,8 +350,8 @@ module.exports = DatasetController.extend({
 		return {
 			base: center - size / 2,
 			head: center + size / 2,
-			center: center,
-			size: size
+			center,
+			size
 		};
 	},
 
@@ -389,9 +390,9 @@ module.exports = DatasetController.extend({
 
 		// Scriptable options
 		var context = {
-			chart: chart,
+			chart,
 			dataIndex: index,
-			dataset: dataset,
+			dataset,
 			datasetIndex: me.index
 		};
 
