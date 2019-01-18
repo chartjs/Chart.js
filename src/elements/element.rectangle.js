@@ -123,8 +123,13 @@ module.exports = Element.extend({
 		// Find first (starting) corner with fallback to 'bottom'
 		var borders = ['bottom', 'left', 'top', 'right'];
 		var startCorner = borders.indexOf(borderSkipped, 0);
-		if (startCorner === -1) {
+		if (borderSkipped === null) {
 			startCorner = 0;
+		} else {
+			startCorner = borders.indexOf(borderSkipped, 0);
+			if (startCorner === -1) {
+				startCorner = 0;
+			}
 		}
 
 		function cornerAt(index) {
@@ -135,8 +140,9 @@ module.exports = Element.extend({
 		var corner = cornerAt(0);
 		ctx.moveTo(corner[0], corner[1]);
 
-		for (var i = 1; i < 4; i++) {
-			corner = cornerAt(i);
+		var cornersCount = borderSkipped === null ? 4 : 3;
+
+		for (var i = 1; i <= cornersCount; i++) {
 			ctx.lineTo(corner[0], corner[1]);
 		}
 
