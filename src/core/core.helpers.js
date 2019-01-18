@@ -126,7 +126,7 @@ module.exports = function() {
 	};
 	helpers.almostWhole = function(x, epsilon) {
 		var rounded = Math.round(x);
-		return (((rounded - epsilon) < x) && ((rounded + epsilon) > x));
+		return (((rounded - epsilon) <= x) && ((rounded + epsilon) >= x));
 	};
 	helpers.max = function(array) {
 		return array.reduce(function(max, value) {
@@ -185,11 +185,13 @@ module.exports = function() {
 		if (!helpers.isFinite(x)) {
 			return;
 		}
-		var e = 1;
+		x = Math.abs(x);
 		var p = 0;
-		while (Math.round(x * e) / e !== x) {
-			e *= 10;
-			p++;
+		if (x > 0) {
+			while (x < 0.99 || !helpers.almostWhole(x, 1e-6)) {
+				x *= 10;
+				p++;
+			}
 		}
 		return p;
 	};
