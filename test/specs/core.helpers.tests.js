@@ -212,6 +212,8 @@ describe('Core helper tests', function() {
 	it('should correctly determine if a numbers are essentially whole', function() {
 		expect(helpers.almostWhole(0.99999, 0.0001)).toBe(true);
 		expect(helpers.almostWhole(0.9, 0.0001)).toBe(false);
+		expect(helpers.almostWhole(1234567890123, 0.0001)).toBe(true);
+		expect(helpers.almostWhole(1234567890123.001, 0.0001)).toBe(false);
 	});
 
 	it('should generate integer ids', function() {
@@ -244,6 +246,9 @@ describe('Core helper tests', function() {
 		expect(helpers.decimalPlaces(0)).toBe(0);
 		expect(helpers.decimalPlaces(0.01)).toBe(2);
 		expect(helpers.decimalPlaces(-0.01)).toBe(2);
+		expect(helpers.decimalPlaces(0.2 + 0.1)).toBe(1);
+		expect(helpers.decimalPlaces(0.12 + 0.02)).toBe(2);
+		expect(helpers.decimalPlaces(3.1415e-34)).toBe(38);
 		expect(helpers.decimalPlaces('1')).toBe(undefined);
 		expect(helpers.decimalPlaces('')).toBe(undefined);
 		expect(helpers.decimalPlaces(undefined)).toBe(undefined);
