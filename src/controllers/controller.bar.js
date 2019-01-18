@@ -148,7 +148,7 @@ module.exports = DatasetController.extend({
 		var meta = me.getMeta();
 		var dataset = me.getDataset();
 		var options = me._resolveElementOptions(rectangle, index);
-		var {backgroundColor, borderColor, borderSkipped, borderWidth} = options
+		var {backgroundColor, borderColor, borderSkipped, borderWidth} = options;
 
 		rectangle._xScale = me.getScaleForId(meta.xAxisID);
 		rectangle._yScale = me.getScaleForId(meta.yAxisID);
