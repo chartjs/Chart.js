@@ -63,7 +63,7 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | [`hoverBackgroundColor`](#interations) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderWidth`](#interactions) | `Number` | Yes | Yes | `undefined`
-| [`weight`](#styling) | `Number` | No | No | `1`
+| [`weight`](#styling) | `Number` | - | - | `1`
 
 ### Styling
 

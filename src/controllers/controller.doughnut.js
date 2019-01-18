@@ -181,7 +181,7 @@ module.exports = DatasetController.extend({
 		chart.borderWidth = me.getMaxBorderWidth();
 		chart.outerRadius = Math.max((minSize - chart.borderWidth) / 2, 0);
 		chart.innerRadius = Math.max(cutoutPercentage ? (chart.outerRadius / 100) * (cutoutPercentage) : 0, 0);
-		chart.radiusLength = (chart.outerRadius - chart.innerRadius) / me._getVisibleDatasetWeightTotal();
+		chart.radiusLength = (chart.outerRadius - chart.innerRadius) / (me._getVisibleDatasetWeightTotal() || 1);
 		chart.offsetX = offset.x * chart.outerRadius;
 		chart.offsetY = offset.y * chart.outerRadius;
 
@@ -398,10 +398,11 @@ module.exports = DatasetController.extend({
 	 * @private
 	 */
 	_getRingWeight: function(dataSetIndex) {
-		return this.chart.data.datasets[dataSetIndex].weight || 1;
+		return Math.max((this.chart.data.datasets[dataSetIndex].weight === undefined) ? 1 : this.chart.data.datasets[dataSetIndex].weight, 0);
 	},
 
 	/**
+	 * Returns the sum of all visibile data set weights.  This value can be 0.
 	 * @private
 	 */
 	_getVisibleDatasetWeightTotal: function() {
