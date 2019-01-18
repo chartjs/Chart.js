@@ -6,7 +6,7 @@ var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
 var valueOrDefault = helpers.valueOrDefault;
-var resolve = helpers.options.resolve;
+var {resolve} = helpers.options;
 
 defaults._set('bubble', {
 	hover: {
@@ -76,6 +76,7 @@ module.exports = DatasetController.extend({
 
 		var x = reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(typeof data === 'object' ? data : NaN, index, dsIndex);
 		var y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(data, index, dsIndex);
+		var {backgroundColor, borderColor, borderWidth, hitRadius, pointStyle, rotation} = options;
 
 		point._xScale = xScale;
 		point._yScale = yScale;
@@ -83,16 +84,16 @@ module.exports = DatasetController.extend({
 		point._datasetIndex = dsIndex;
 		point._index = index;
 		point._model = {
-			backgroundColor: options.backgroundColor,
-			borderColor: options.borderColor,
-			borderWidth: options.borderWidth,
-			hitRadius: options.hitRadius,
-			pointStyle: options.pointStyle,
-			rotation: options.rotation,
+			backgroundColor,
+			borderColor,
+			borderWidth,
+			hitRadius,
+			pointStyle,
+			rotation,
 			radius: reset ? 0 : options.radius,
 			skip: custom.skip || isNaN(x) || isNaN(y),
-			x: x,
-			y: y,
+			x,
+			y,
 		};
 
 		point.pivot();
@@ -104,19 +105,21 @@ module.exports = DatasetController.extend({
 	setHoverStyle: function(point) {
 		var model = point._model;
 		var options = point._options;
-		var getHoverColor = helpers.getHoverColor;
+		var {getHoverColor} = helpers;
+		var {backgroundColor, borderColor, borderWidth, radius} = model;
+		var {hoverBackgroundColor, hoverBorderColor, hoverBorderWidth, hoverRadius} = options;
 
 		point.$previousStyle = {
-			backgroundColor: model.backgroundColor,
-			borderColor: model.borderColor,
-			borderWidth: model.borderWidth,
-			radius: model.radius
+			backgroundColor,
+			borderColor,
+			borderWidth,
+			radius
 		};
 
-		model.backgroundColor = valueOrDefault(options.hoverBackgroundColor, getHoverColor(options.backgroundColor));
-		model.borderColor = valueOrDefault(options.hoverBorderColor, getHoverColor(options.borderColor));
-		model.borderWidth = valueOrDefault(options.hoverBorderWidth, options.borderWidth);
-		model.radius = options.radius + options.hoverRadius;
+		model.backgroundColor = valueOrDefault(hoverBackgroundColor, getHoverColor(options.backgroundColor));
+		model.borderColor = valueOrDefault(hoverBorderColor, getHoverColor(options.borderColor));
+		model.borderWidth = valueOrDefault(hoverBorderWidth, options.borderWidth);
+		model.radius = options.radius + hoverRadius;
 	},
 
 	/**
@@ -124,8 +127,8 @@ module.exports = DatasetController.extend({
 	 */
 	_resolveElementOptions: function(point, index) {
 		var me = this;
-		var chart = me.chart;
-		var datasets = chart.data.datasets;
+		var {chart} = me;
+		var {datasets} = chart.data;
 		var dataset = datasets[me.index];
 		var custom = point.custom || {};
 		var options = chart.options.elements.point;
@@ -135,9 +138,9 @@ module.exports = DatasetController.extend({
 
 		// Scriptable options
 		var context = {
-			chart: chart,
+			chart,
 			dataIndex: index,
-			dataset: dataset,
+			dataset,
 			datasetIndex: me.index
 		};
 
