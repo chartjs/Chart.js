@@ -19,7 +19,7 @@ defaults._set('line', {
 
 	scales: {
 		xAxes: [{
-			type: 'category',
+			type: 'category', // TODO(v3): consider aligning line and scatter default scale types
 			id: 'x-axis-0'
 		}],
 		yAxes: [{
@@ -44,12 +44,12 @@ module.exports = DatasetController.extend({
 		var meta = me.getMeta();
 		var line = meta.dataset;
 		var points = meta.data || [];
-		var options = me.chart.options;
-		var lineElementOptions = options.elements.line;
 		var scale = me.getScaleForId(meta.yAxisID);
-		var i, ilen, custom;
 		var dataset = me.getDataset();
+		var options = me._options = me._buildOptions();
+		var lineElementOptions = options.elements.line;
 		var showLine = lineEnabled(dataset, options);
+		var i, ilen, custom;
 
 		// Update Line
 		if (showLine) {
@@ -154,7 +154,7 @@ module.exports = DatasetController.extend({
 		var datasets = chart.data.datasets;
 		var dataset = datasets[me.index];
 		var custom = point.custom || {};
-		var options = chart.options.elements.point;
+		var options = me._options.elements.point;
 		var values = {};
 		var i, ilen, key;
 
@@ -266,7 +266,7 @@ module.exports = DatasetController.extend({
 			}
 		}
 
-		if (chart.options.elements.line.capBezierPoints) {
+		if (me._options.elements.line.capBezierPoints) {
 			for (i = 0, ilen = points.length; i < ilen; ++i) {
 				model = points[i]._model;
 				if (isPointInArea(model, area)) {
@@ -293,7 +293,7 @@ module.exports = DatasetController.extend({
 		var halfBorderWidth;
 		var i = 0;
 
-		if (lineEnabled(me.getDataset(), chart.options)) {
+		if (lineEnabled(me.getDataset(), me._options)) {
 			halfBorderWidth = (meta.dataset._model.borderWidth || 0) / 2;
 
 			helpers.canvas.clipArea(chart.ctx, {

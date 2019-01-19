@@ -350,6 +350,45 @@ describe('Chart.helpers.core', function() {
 		});
 	});
 
+	describe('mergeIfUnchanged', function() {
+		it('should update target and return it if unchanged', function() {
+			var target = {a: 1};
+			var result = helpers.mergeIfUnchanged(target, {a: 1}, {a: 2, b: 'foo'});
+			expect(target).toEqual({a: 2, b: 'foo'});
+			expect(target).toBe(result);
+		});
+
+		it('should not update target if changed', function() {
+			var target = {a: 1};
+			var result = helpers.mergeIfUnchanged(target, {a: 2}, {a: 2, b: 'foo'});
+			expect(target).toEqual({a: 1, b: 'foo'});
+			expect(target).toBe(result);
+		});
+
+		it('should recursively overwrite target with source properties if unchanged', function() {
+			expect(helpers.mergeIfUnchanged({a: {b: 1}}, {a: {b: 1}}, {a: {c: 2}})).toEqual({a: {b: 1, c: 2}});
+			expect(helpers.mergeIfUnchanged({a: {b: 1}}, {a: {b: 1}}, {a: {b: 2}})).toEqual({a: {b: 2}});
+			expect(helpers.mergeIfUnchanged({a: [1, 2]}, {a: [1, 2]}, {a: [3, 4]})).toEqual({a: [3, 4]});
+			expect(helpers.mergeIfUnchanged({a: 42}, {a: 42}, {a: {b: 0}})).toEqual({a: {b: 0}});
+			expect(helpers.mergeIfUnchanged({a: {b: 0}}, {a: {b: 0}}, {a: 42})).toEqual({a: 42});
+			expect(helpers.mergeIfUnchanged({a: 42}, {a: 42}, {a: null})).toEqual({a: null});
+			expect(helpers.mergeIfUnchanged({a: 42}, {a: 42}, {a: undefined})).toEqual({a: undefined});
+		});
+
+		it('should deep copy merged values from sources if unchanged', function() {
+			var a0 = ['foo'];
+			var a1 = [1, 2, 3];
+			var o0 = {a: a1, i: 42};
+			var output = helpers.mergeIfUnchanged({}, {}, {a: a0, o: o0});
+
+			expect(output).toEqual({a: a0, o: o0});
+			expect(output.a).not.toBe(a0);
+			expect(output.o).not.toBe(o0);
+			expect(output.o.a).not.toBe(a1);
+		});
+	});
+
+
 	describe('mergeIf', function() {
 		it('should update target and return it', function() {
 			var target = {a: 1};

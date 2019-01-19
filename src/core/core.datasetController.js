@@ -1,5 +1,6 @@
 'use strict';
 
+var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 
 var resolve = helpers.options.resolve;
@@ -100,6 +101,24 @@ helpers.extend(DatasetController.prototype, {
 		me.index = datasetIndex;
 		me.linkScales();
 		me.addElements();
+	},
+
+	/**
+	 * Merges the controller default options with the chart options
+	 * The chart options may have been altered by the user so use the controller
+	 * default options only if the user has not changed the defaults
+	 * @protected
+	 */
+	_buildOptions: function() {
+		var me = this;
+		var chart = me.chart;
+		var chartDefaultOpts = helpers.configMerge(
+			defaults.global,
+			defaults[chart.config.type]);
+		return helpers.mergeIfUnchanged(
+			chart.options,
+			chartDefaultOpts,
+			defaults[me.getDataset().type]);
 	},
 
 	updateIndex: function(datasetIndex) {

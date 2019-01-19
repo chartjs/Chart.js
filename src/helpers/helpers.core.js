@@ -258,6 +258,41 @@ var helpers = {
 	},
 
 	/**
+	 * Recursively deep copies `source` properties into `target` where target is not `original`.
+	 * @param {Object} target - The target object in which all sources are merged into.
+	 * @param {Object} original - The object with which to compare the target.
+	 * @param {Object} source - Object to merge into `target`.
+	 * @returns {Object} The `target` object.
+	 */
+	mergeIfUnchanged: function(target, original, source) {
+		var i, ilen, keys, key, targetVal, originalVal, sourceVal;
+
+		target = helpers.clone(target);
+		if (!helpers.isObject(source)) {
+			return target;
+		}
+
+		keys = Object.keys(source);
+		for (i = 0, ilen = keys.length; i < ilen; ++i) {
+			key = keys[i];
+			targetVal = typeof target === 'undefined' ? undefined : target[key];
+			originalVal = typeof original === 'undefined' ? undefined : original[key];
+			sourceVal = source[key];
+
+			if (helpers.isObject(targetVal) && helpers.isObject(sourceVal)) {
+				helpers.mergeIfUnchanged(
+					targetVal,
+					originalVal,
+					sourceVal);
+			} else if (JSON.stringify(targetVal) === JSON.stringify(originalVal)) {
+				target[key] = helpers.clone(sourceVal);
+			}
+		}
+
+		return target;
+	},
+
+	/**
 	 * Recursively deep copies `source` properties into `target` *only* if not defined in target.
 	 * IMPORTANT: `target` is not cloned and will be updated with `source` properties.
 	 * @param {Object} target - The target object in which all sources are merged into.
