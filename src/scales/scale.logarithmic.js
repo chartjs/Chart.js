@@ -140,7 +140,7 @@ module.exports = Scale.extend({
 					helpers.each(dataset.data, function(rawValue, index) {
 						var value = me._parseValue(rawValue);
 						// invalid, hidden and negative values are ignored
-						if (isNaN(value.val) || meta.data[index].hidden || value.val < 0) {
+						if (isNaN(value.max) || meta.data[index].hidden || value.max < 0) {
 							return;
 						}
 
