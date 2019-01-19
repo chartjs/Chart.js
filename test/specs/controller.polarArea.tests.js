@@ -281,12 +281,12 @@ describe('Chart.controllers.polarArea', function() {
 			var chart = this.chart;
 			var arc = chart.getDatasetMeta(0).data[0];
 
-			jasmine.triggerMouseEvent(chart, 'mousemove', {_model: arc.getCenterPoint()});
+			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
 			expect(arc._model.backgroundColor).toBe('rgb(49, 135, 221)');
 			expect(arc._model.borderColor).toBe('rgb(22, 89, 156)');
 			expect(arc._model.borderWidth).toBe(2);
 
-			jasmine.triggerMouseEvent(chart, 'mouseout', {_model: arc.getCenterPoint()});
+			jasmine.triggerMouseEvent(chart, 'mouseout', arc);
 			expect(arc._model.backgroundColor).toBe('rgb(100, 150, 200)');
 			expect(arc._model.borderColor).toBe('rgb(50, 100, 150)');
 			expect(arc._model.borderWidth).toBe(2);
@@ -304,12 +304,12 @@ describe('Chart.controllers.polarArea', function() {
 
 			chart.update();
 
-			jasmine.triggerMouseEvent(chart, 'mousemove', {_model: arc.getCenterPoint()});
+			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
 			expect(arc._model.backgroundColor).toBe('rgb(200, 100, 150)');
 			expect(arc._model.borderColor).toBe('rgb(150, 50, 100)');
 			expect(arc._model.borderWidth).toBe(8.4);
 
-			jasmine.triggerMouseEvent(chart, 'mouseout', {_model: arc.getCenterPoint()});
+			jasmine.triggerMouseEvent(chart, 'mouseout', arc);
 			expect(arc._model.backgroundColor).toBe('rgb(100, 150, 200)');
 			expect(arc._model.borderColor).toBe('rgb(50, 100, 150)');
 			expect(arc._model.borderWidth).toBe(2);
@@ -327,12 +327,12 @@ describe('Chart.controllers.polarArea', function() {
 
 			chart.update();
 
-			jasmine.triggerMouseEvent(chart, 'mousemove', {_model: arc.getCenterPoint()});
+			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
 			expect(arc._model.backgroundColor).toBe('rgb(200, 100, 150)');
 			expect(arc._model.borderColor).toBe('rgb(150, 50, 100)');
 			expect(arc._model.borderWidth).toBe(8.4);
 
-			jasmine.triggerMouseEvent(chart, 'mouseout', {_model: arc.getCenterPoint()});
+			jasmine.triggerMouseEvent(chart, 'mouseout', arc);
 			expect(arc._model.backgroundColor).toBe('rgb(100, 150, 200)');
 			expect(arc._model.borderColor).toBe('rgb(50, 100, 150)');
 			expect(arc._model.borderWidth).toBe(2);
@@ -350,12 +350,12 @@ describe('Chart.controllers.polarArea', function() {
 
 			chart.update();
 
-			jasmine.triggerMouseEvent(chart, 'mousemove', {_model: arc.getCenterPoint()});
+			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
 			expect(arc._model.backgroundColor).toBe('rgb(200, 100, 150)');
 			expect(arc._model.borderColor).toBe('rgb(150, 50, 100)');
 			expect(arc._model.borderWidth).toBe(8.4);
 
-			jasmine.triggerMouseEvent(chart, 'mouseout', {_model: arc.getCenterPoint()});
+			jasmine.triggerMouseEvent(chart, 'mouseout', arc);
 			expect(arc._model.backgroundColor).toBe('rgb(100, 150, 200)');
 			expect(arc._model.borderColor).toBe('rgb(50, 100, 150)');
 			expect(arc._model.borderWidth).toBe(2);
