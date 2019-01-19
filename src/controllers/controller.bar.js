@@ -149,7 +149,7 @@ module.exports = DatasetController.extend({
 		var dataset = me.getDataset();
 		var options = me._resolveElementOptions(rectangle, index);
 
-		//float-bar support, if y arguments are array lets override rectangles styles, assigning no skippingBorder
+		// float-bar support, if y arguments are array lets override rectangles styles, assigning no skippingBorder
 		if (helpers.isArray(dataset.data[index])) {
 			options.borderSkipped = null;
 		}
@@ -401,7 +401,7 @@ module.exports = DatasetController.extend({
 
 		helpers.canvas.clipArea(chart.ctx, chart.chartArea);
 
-		//float-bar support, if y arguments are array function will use bottom value as bar start point
+		// float-bar support, if y arguments are array function will use bottom value as bar start point
 		for (; i < ilen; ++i) {
 			var val = scale._parseValue(dataset.data[i]);
 			if (!isNaN(val.start) && !isNaN(val.end)) {

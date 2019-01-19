@@ -242,7 +242,7 @@ module.exports = Scale.extend({
 
 	// Get the correct tooltip label
 	getLabelForIndex: function(index, datasetIndex) {
-        return this.getScaleLabel(this.chart.data.datasets[datasetIndex].data[index]);
+		return this.getScaleLabel(this.chart.data.datasets[datasetIndex].data[index]);
 	},
 
 	getPixelForTick: function(index) {

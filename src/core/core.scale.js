@@ -523,7 +523,7 @@ module.exports = Element.extend({
 			return NaN;
 		}
 
-		//Float-bar support. Handling arrays
+		// Float-bar support. Handling arrays
 		if (helpers.isArray(rawValue)) {
 			return [this.getRightValue(rawValue[0]), this.getRightValue(rawValue[1])];
 		}
@@ -565,7 +565,7 @@ module.exports = Element.extend({
 
 	getScaleLabel: function(rawValue) {
 		var v = this._parseValue(rawValue);
-		return v.min == v.max ? v.min : v.min + " ; " + v.max;
+		return v.min === v.max ? v.min : v.min + ' ; ' + v.max;
 	},
 
 	/**
