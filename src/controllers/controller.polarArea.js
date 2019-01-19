@@ -5,7 +5,7 @@ var defaults = require('../core/core.defaults');
 var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
-var resolve = helpers.options.resolve;
+var {resolve} = helpers.options;
 
 defaults._set('polarArea', {
 	scale: {
@@ -33,15 +33,14 @@ defaults._set('polarArea', {
 	startAngle: -0.5 * Math.PI,
 	legendCallback: function(chart) {
 		var text = [];
-		text.push('<ul class="' + chart.id + '-legend">');
+		text.push(`<ul class="${chart.id}-legend">`);
 
-		var data = chart.data;
-		var datasets = data.datasets;
-		var labels = data.labels;
+		var {data} = chart;
+		var {datasets, labels} = data;
 
 		if (datasets.length) {
 			for (var i = 0; i < datasets[0].data.length; ++i) {
-				text.push('<li><span style="background-color:' + datasets[0].backgroundColor[i] + '"></span>');
+				text.push(`<li><span style="background-color:${datasets[0].backgroundColor[i]}"></span>`);
 				if (labels[i]) {
 					text.push(labels[i]);
 				}
@@ -55,7 +54,7 @@ defaults._set('polarArea', {
 	legend: {
 		labels: {
 			generateLabels: function(chart) {
-				var data = chart.data;
+				var {data} = chart;
 				if (data.labels.length && data.datasets.length) {
 					return data.labels.map(function(label, i) {
 						var meta = chart.getDatasetMeta(0);
@@ -84,8 +83,8 @@ defaults._set('polarArea', {
 		},
 
 		onClick: function(e, legendItem) {
-			var index = legendItem.index;
-			var chart = this.chart;
+			var {index} = legendItem;
+			var {chart} = this;
 			var i, ilen, meta;
 
 			for (i = 0, ilen = (chart.data.datasets || []).length; i < ilen; ++i) {
@@ -148,10 +147,11 @@ module.exports = DatasetController.extend({
 	 */
 	_updateRadius: function() {
 		var me = this;
-		var chart = me.chart;
-		var chartArea = chart.chartArea;
+		var {chart} = me;
+		var {chartArea} = chart;
 		var opts = chart.options;
-		var minSize = Math.min(chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
+		var {right, left, bottom, top} = chartArea;
+		var minSize = Math.min(right - left, bottom - top);
 
 		chart.outerRadius = Math.max(minSize / 2, 0);
 		chart.innerRadius = Math.max(opts.cutoutPercentage ? (chart.outerRadius / 100) * (opts.cutoutPercentage) : 1, 0);
@@ -163,12 +163,12 @@ module.exports = DatasetController.extend({
 
 	updateElement: function(arc, index, reset) {
 		var me = this;
-		var chart = me.chart;
+		var {chart} = me;
 		var dataset = me.getDataset();
 		var opts = chart.options;
 		var animationOpts = opts.animation;
-		var scale = chart.scale;
-		var labels = chart.data.labels;
+		var {scale} = chart;
+		var {labels} = chart.data;
 
 		var centerX = scale.xCenter;
 		var centerY = scale.yCenter;
@@ -181,6 +181,8 @@ module.exports = DatasetController.extend({
 
 		var resetRadius = animationOpts.animateScale ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
 		var options = arc._options || {};
+		var {backgroundColor, borderColor, borderWidth, borderAlign} = options;
+		var {animateRotate} = animationOpts;
 
 		helpers.extend(arc, {
 			// Utility
@@ -190,16 +192,16 @@ module.exports = DatasetController.extend({
 
 			// Desired view properties
 			_model: {
-				backgroundColor: options.backgroundColor,
-				borderColor: options.borderColor,
-				borderWidth: options.borderWidth,
-				borderAlign: options.borderAlign,
+				backgroundColor,
+				borderColor,
+				borderWidth,
+				borderAlign,
 				x: centerX,
 				y: centerY,
 				innerRadius: 0,
 				outerRadius: reset ? resetRadius : distance,
-				startAngle: reset && animationOpts.animateRotate ? datasetStartAngle : startAngle,
-				endAngle: reset && animationOpts.animateRotate ? datasetStartAngle : endAngle,
+				startAngle: reset && animateRotate ? datasetStartAngle : startAngle,
+				endAngle: reset && animateRotate ? datasetStartAngle : endAngle,
 				label: helpers.valueAtIndexOrDefault(labels, index, labels[index])
 			}
 		});
@@ -227,18 +229,19 @@ module.exports = DatasetController.extend({
 	setHoverStyle: function(arc) {
 		var model = arc._model;
 		var options = arc._options;
-		var getHoverColor = helpers.getHoverColor;
-		var valueOrDefault = helpers.valueOrDefault;
+		var {getHoverColor, valueOrDefault} = helpers;
+		var {backgroundColor, borderColor, borderWidth} = model;
+		var {hoverBackgroundColor, hoverBorderColor, hoverBorderWidth} = options;
 
 		arc.$previousStyle = {
-			backgroundColor: model.backgroundColor,
-			borderColor: model.borderColor,
-			borderWidth: model.borderWidth,
+			backgroundColor,
+			borderColor,
+			borderWidth,
 		};
 
-		model.backgroundColor = valueOrDefault(options.hoverBackgroundColor, getHoverColor(options.backgroundColor));
-		model.borderColor = valueOrDefault(options.hoverBorderColor, getHoverColor(options.borderColor));
-		model.borderWidth = valueOrDefault(options.hoverBorderWidth, options.borderWidth);
+		model.backgroundColor = valueOrDefault(hoverBackgroundColor, getHoverColor(options.backgroundColor));
+		model.borderColor = valueOrDefault(hoverBorderColor, getHoverColor(options.borderColor));
+		model.borderWidth = valueOrDefault(hoverBorderWidth, options.borderWidth);
 	},
 
 	/**
@@ -246,7 +249,7 @@ module.exports = DatasetController.extend({
 	 */
 	_resolveElementOptions: function(arc, index) {
 		var me = this;
-		var chart = me.chart;
+		var {chart} = me;
 		var dataset = me.getDataset();
 		var custom = arc.custom || {};
 		var options = chart.options.elements.arc;
@@ -255,9 +258,9 @@ module.exports = DatasetController.extend({
 
 		// Scriptable options
 		var context = {
-			chart: chart,
+			chart,
 			dataIndex: index,
-			dataset: dataset,
+			dataset,
 			datasetIndex: me.index
 		};
 
