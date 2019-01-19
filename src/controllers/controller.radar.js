@@ -5,7 +5,7 @@ var defaults = require('../core/core.defaults');
 var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
-var resolve = helpers.options.resolve;
+var {resolve} = helpers.options;
 
 defaults._set('radar', {
 	scale: {
@@ -84,7 +84,7 @@ module.exports = DatasetController.extend({
 		var me = this;
 		var custom = point.custom || {};
 		var dataset = me.getDataset();
-		var scale = me.chart.scale;
+		var {scale} = me.chart;
 		var pointElementOptions = me.chart.options.elements.point;
 		var pointPosition = scale.getPointPositionForValue(index, dataset.data[index]);
 
@@ -159,12 +159,13 @@ module.exports = DatasetController.extend({
 		var index = point._index;
 		var model = point._model;
 		var getHoverColor = helpers.getHoverColor;
+		var {backgroundColor, borderColor, borderWidth, radius} = model;
 
 		point.$previousStyle = {
-			backgroundColor: model.backgroundColor,
-			borderColor: model.borderColor,
-			borderWidth: model.borderWidth,
-			radius: model.radius
+			backgroundColor,
+			borderColor,
+			borderWidth,
+			radius
 		};
 
 		model.radius = resolve([custom.hoverRadius, dataset.pointHoverRadius, this.chart.options.elements.point.hoverRadius], undefined, index);
