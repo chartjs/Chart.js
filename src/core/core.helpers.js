@@ -11,8 +11,17 @@ module.exports = function() {
 
 	// -- Basic js utility methods
 
-	helpers.configMerge = function(/* objects ... */) {
-		return helpers.merge(helpers.clone(arguments[0]), [].slice.call(arguments, 1), {
+	/**
+	 * Recursively deep copies `sourceConfigs` properties into `targetConfig`
+	 * while incorporating default scale options.
+	 * @param {Object} targetConfig - The target config.
+	 * @param {...Object} sourceConfigs - The source configs in order of precedence.
+	 * @returns {Object} A new `targetConfig` object.
+	 */
+	helpers.configMerge = function(targetConfig, sourceConfigs) {
+		targetConfig = helpers.clone(targetConfig);
+		sourceConfigs = [].slice.call(arguments, 1);
+		return helpers.merge(targetConfig, sourceConfigs, {
 			merger: function(key, target, source, options) {
 				var tval = target[key] || {};
 				var sval = source[key];
@@ -30,8 +39,17 @@ module.exports = function() {
 		});
 	};
 
-	helpers.scaleMerge = function(/* objects ... */) {
-		return helpers.merge(helpers.clone(arguments[0]), [].slice.call(arguments, 1), {
+	/**
+	 * Recursively deep copies `sourceScaleOpts` properties into `targetScaleOpts`
+	 * while incorporating default scale options.
+	 * @param {Object} targetScaleOpts - The target scale options.
+	 * @param {...Object} sourceScaleOpts - The source scale options in order of precedence.
+	 * @returns {Object} A new `targetScaleOpts` object.
+	 */
+	helpers.scaleMerge = function(targetScaleOpts, sourceScaleOpts) {
+		targetScaleOpts = helpers.clone(targetScaleOpts);
+		sourceScaleOpts = [].slice.call(arguments, 1);
+		return helpers.merge(targetScaleOpts, sourceScaleOpts, {
 			merger: function(key, target, source, options) {
 				if (key === 'xAxes' || key === 'yAxes') {
 					var slen = source[key].length;
