@@ -106,12 +106,27 @@ function waitForResize(chart, callback) {
 	};
 }
 
+function _resolveElementPoint(el) {
+	var point = {x: 0, y: 0};
+	if (el) {
+		if (typeof el.getCenterPoint === 'function') {
+			point = el.getCenterPoint();
+		} else if (el.x !== undefined && el.y !== undefined) {
+			point = el;
+		} else if (el._model && el._model.x !== undefined && el._model.y !== undefined) {
+			point = el._model;
+		}
+	}
+	return point;
+}
+
 function triggerMouseEvent(chart, type, el) {
 	var node = chart.canvas;
 	var rect = node.getBoundingClientRect();
+	var point = _resolveElementPoint(el);
 	var event = new MouseEvent(type, {
-		clientX: rect.left + el._model.x,
-		clientY: rect.top + el._model.y,
+		clientX: rect.left + point.x,
+		clientY: rect.top + point.y,
 		cancelable: true,
 		bubbles: true,
 		view: window
