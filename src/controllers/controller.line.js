@@ -66,7 +66,7 @@ module.exports = DatasetController.extend({
 			// Data
 			line._children = points;
 			// Model
-			line._model = model = me._resolveLineElementOptions(line);
+			line._model = model = me._resolveLineOptions(line);
 
 			// Appearance
 			// The default behavior of lines is to break at null values, according
@@ -105,7 +105,7 @@ module.exports = DatasetController.extend({
 		var xScale = me.getScaleForId(meta.xAxisID);
 		var x, y;
 
-		var options = me._resolvePointElementOptions(point, index);
+		var options = me._resolvePointOptions(point, index);
 
 		x = xScale.getPixelForValue(typeof value === 'object' ? value : NaN, index, datasetIndex);
 		y = reset ? yScale.getBasePixel() : me.calculatePointY(value, index, datasetIndex);
@@ -139,11 +139,10 @@ module.exports = DatasetController.extend({
 	/**
 	 * @private
 	 */
-	_resolvePointElementOptions: function(element, index) {
+	_resolvePointOptions: function(element, index) {
 		var me = this;
 		var chart = me.chart;
-		var datasets = chart.data.datasets;
-		var dataset = datasets[me.index];
+		var dataset = chart.data.datasets[me.index];
 		var custom = element.custom || {};
 		var options = chart.options.elements.point;
 		var values = {};
@@ -188,17 +187,16 @@ module.exports = DatasetController.extend({
 	/**
 	 * @private
 	 */
-	_resolveLineElementOptions: function(element) {
+	_resolveLineOptions: function(element) {
 		var me = this;
 		var chart = me.chart;
-		var datasets = chart.data.datasets;
-		var dataset = datasets[me.index];
+		var dataset = chart.data.datasets[me.index];
 		var custom = element.custom || {};
 		var options = chart.options.elements.line;
 		var values = {};
 		var i, ilen, key;
 
-		var ELEMENT_OPTIONS = [
+		var keys = [
 			'backgroundColor',
 			'borderWidth',
 			'borderColor',
@@ -210,8 +208,8 @@ module.exports = DatasetController.extend({
 			'cubicInterpolationMode'
 		];
 
-		for (i = 0, ilen = ELEMENT_OPTIONS.length; i < ilen; ++i) {
-			key = ELEMENT_OPTIONS[i];
+		for (i = 0, ilen = keys.length; i < ilen; ++i) {
+			key = keys[i];
 			values[key] = resolve([
 				custom[key],
 				dataset[key],
