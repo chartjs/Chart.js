@@ -39,13 +39,19 @@ defaults._set('global', {
 		callbacks: {
 			// Args are: (tooltipItems, data)
 			beforeTitle: helpers.noop,
-			title: function(tooltipItems) {
+			title: function(tooltipItems, data) {
 				var title = '';
+				var labels = data.labels;
+				var labelCount = labels ? labels.length : 0;
 
 				if (tooltipItems.length > 0) {
 					var item = tooltipItems[0];
-					if (item.indexLabel) {
-						title = item.indexLabel;
+					if (item.label) {
+						title = item.label;
+					} else if (item.xLabel) {
+						title = item.xLabel;
+					} else if (labelCount > 0 && item.index < labelCount) {
+						title = labels[item.index];
 					}
 				}
 
@@ -64,7 +70,11 @@ defaults._set('global', {
 				if (label) {
 					label += ': ';
 				}
-				label += tooltipItem.valueLabel;
+				if (!helpers.isNullOrUndef(tooltipItem.value)) {
+					label += tooltipItem.value;
+				} else {
+					label += tooltipItem.yLabel;
+				}
 				return label;
 			},
 			labelColor: function(tooltipItem, chart) {
@@ -207,8 +217,8 @@ function createTooltipItem(element) {
 	return {
 		xLabel: xScale ? xScale.getLabelForIndex(index, datasetIndex) : '',
 		yLabel: yScale ? yScale.getLabelForIndex(index, datasetIndex) : '',
-		indexLabel: indexScale ? indexScale.getLabelForIndex(index, datasetIndex) : '',
-		valueLabel: valueScale ? valueScale.getLabelForIndex(index, datasetIndex) : '',
+		label: indexScale ? indexScale._getLabel(index, datasetIndex) : '',
+		value: valueScale ? valueScale._getLabel(index, datasetIndex) : '',
 		index: index,
 		datasetIndex: datasetIndex,
 		x: element._model.x,

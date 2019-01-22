@@ -15,8 +15,8 @@ describe('Core.Tooltip', function() {
 			var tooltipItem = {
 				index: 1,
 				datasetIndex: 0,
-				indexLabel: 'Point 2',
-				valueLabel: '20'
+				xLabel: 'Point 2',
+				yLabel: '20'
 			};
 
 			var label = Chart.defaults.global.tooltips.callbacks.label(tooltipItem, data);
