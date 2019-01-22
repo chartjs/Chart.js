@@ -203,6 +203,7 @@ helpers.extend(DatasetController.prototype, {
 		}
 
 		meta.dataset = meta.dataset || me.createMetaDataset();
+		me._parse(0, ilen);
 	},
 
 	addElementAndReset: function(index) {
@@ -314,6 +315,59 @@ helpers.extend(DatasetController.prototype, {
 	insertElements: function(start, count) {
 		for (var i = 0; i < count; ++i) {
 			this.addElementAndReset(start + i);
+		}
+		this._parse(start, count);
+	},
+
+	/**
+	 * @private
+	 * parse data to internal representation utilizing scales
+	 */
+	_parse: function(start, count) {
+		var me = this;
+		var meta = me.getMeta();
+		var data = me.getDataset().data;
+		var xID = meta.xAxisID;
+		var yID = meta.yAxisID;
+		var indexScale = me._getIndexScale();
+		var valueScale = me._getValueScale();
+		var xScale = me.getScaleForId(xID);
+		var yScale = me.getScaleForId(yID);
+		var labels = indexScale._getLabels() || [];
+		var i, ilen, j, jlen, v, key, keys, metaData;
+
+		for (i = start, ilen = start + count; i < ilen; ++i) {
+			metaData = meta.data[i];
+			v = data[i];
+			if (helpers.isArray(v) && v.length === 2) {
+				metaData[xID] = xScale.parse(v[0]);
+				metaData[yID] = yScale.parse(v[1]);
+			} else if (helpers.isObject(v)) {
+				keys = Object.keys(v);
+				metaData[xID] = null;
+				metaData[yID] = null;
+				for (j = 0, jlen = keys.length; j < jlen; ++j) {
+					key = keys[j];
+					if (key === 'x') {
+						metaData[xID] = xScale.parse(v.x);
+					} else if (key === 'y') {
+						metaData[yID] = yScale.parse(v.y);
+					}
+				}
+				if (v.t) {
+					if (metaData[xID] === null) {
+						metaData[xID] = xScale.parse(v.t);
+					}
+					if (metaData[yID] === null) {
+						metaData[yID] = xScale.parse(v.t);
+					}
+				}
+			} else {
+				metaData[valueScale.id] = valueScale.parse(v);
+				if (indexScale !== valueScale && i < labels.length) {
+					metaData[indexScale.id] = indexScale.parse(labels[i]);
+				}
+			}
 		}
 	},
 

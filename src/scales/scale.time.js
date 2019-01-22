@@ -466,6 +466,10 @@ module.exports = Scale.extend({
 		Scale.prototype.initialize.call(this);
 	},
 
+	parse: function(raw) {
+		return toTimestamp(raw, this.options);
+	},
+
 	update: function() {
 		var me = this;
 		var options = me.options;

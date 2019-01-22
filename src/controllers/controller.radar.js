@@ -10,6 +10,7 @@ var resolve = helpers.options.resolve;
 
 defaults._set('radar', {
 	scale: {
+		id: 'radial',
 		type: 'radialLinear'
 	},
 	elements: {
@@ -26,6 +27,14 @@ module.exports = DatasetController.extend({
 	dataElementType: elements.Point,
 
 	linkScales: helpers.noop,
+
+	_getIndexScaleId: function() {
+		return 'radial';
+	},
+
+	_getValueScaleId: function() {
+		return 'radial';
+	},
 
 	update: function(reset) {
 		var me = this;

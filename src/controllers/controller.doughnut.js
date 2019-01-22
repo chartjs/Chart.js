@@ -127,6 +127,8 @@ module.exports = DatasetController.extend({
 
 	linkScales: helpers.noop,
 
+	_parse: helpers.noop,
+
 	// Get index of the dataset in relation to the visible datasets. This allows determining the inner and outer radius correctly
 	getRingIndex: function(datasetIndex) {
 		var ringIndex = 0;

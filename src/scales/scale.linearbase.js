@@ -85,6 +85,10 @@ function generateTicks(generationOptions, dataRange) {
 }
 
 module.exports = Scale.extend({
+	parse: function(raw) {
+		return +raw;
+	},
+
 	getRightValue: function(value) {
 		if (typeof value === 'string') {
 			return +value;

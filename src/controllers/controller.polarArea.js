@@ -9,6 +9,7 @@ var resolve = helpers.options.resolve;
 
 defaults._set('polarArea', {
 	scale: {
+		id: 'radial',
 		type: 'radialLinear',
 		angleLines: {
 			display: false
@@ -115,6 +116,14 @@ module.exports = DatasetController.extend({
 	dataElementType: elements.Arc,
 
 	linkScales: helpers.noop,
+
+	_getIndexScaleId: function() {
+		return 'radial';
+	},
+
+	_getValueScaleId: function() {
+		return 'radial';
+	},
 
 	update: function(reset) {
 		var me = this;

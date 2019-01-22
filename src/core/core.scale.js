@@ -101,6 +101,25 @@ function computeTextSize(context, tick, font) {
 
 module.exports = Element.extend({
 	/**
+	 * Function that parses a supported input value to internal representation.
+	 * @param {*} raw
+	 * @since 2.9
+	 */
+	parse: function(raw) {
+		return raw;
+	},
+
+	/**
+	* Internal function to get the correct labels. If data.xLabels or data.yLabels are defined, use those
+	* else fall back to data.labels
+	* @private
+	*/
+	_getLabels: function() {
+		var data = this.chart.data;
+		return this.options.labels || (this.isHorizontal() ? data.xLabels : data.yLabels) || data.labels;
+	},
+
+	/**
 	 * Get the padding needed for the scale
 	 * @method getPadding
 	 * @private
@@ -536,6 +555,10 @@ module.exports = Element.extend({
 
 		// Value is good, return it
 		return rawValue;
+	},
+
+	_getRawValue: function(index, datasetIndex) {
+		return this.chart.getDatasetMeta(datasetIndex).data[index][this.id];
 	},
 
 	/**

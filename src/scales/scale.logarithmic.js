@@ -68,6 +68,10 @@ function nonNegativeOrDefault(value, defaultValue) {
 }
 
 module.exports = Scale.extend({
+	parse: function(raw) {
+		return +raw;
+	},
+
 	determineDataLimits: function() {
 		var me = this;
 		var opts = me.options;
