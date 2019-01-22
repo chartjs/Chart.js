@@ -47,9 +47,23 @@ module.exports = DatasetController.extend({
 		var options = me.chart.options;
 		var lineElementOptions = options.elements.line;
 		var scale = me.getScaleForId(meta.yAxisID);
-		var i, ilen, custom;
 		var dataset = me.getDataset();
 		var showLine = lineEnabled(dataset, options);
+		var index = me.index;
+		var model, i, ilen, custom;
+
+		var LINE_ELEMENT_OPTIONS = {
+			tension: 'lineTension',
+			backgroundColor: 'backgroundColor',
+			borderColor: 'borderColor',
+			borderWidth: 'borderWidth',
+			borderCapStyle: 'borderCapStyle',
+			borderDash: 'borderDash',
+			borderDashOffset: 'borderDashOffset',
+			borderJoinStyle: 'borderJoinStyle',
+			fill: 'fill',
+			cubicInterpolationMode: 'cubicInterpolationMode'
+		};
 
 		// Update Line
 		if (showLine) {
@@ -62,28 +76,18 @@ module.exports = DatasetController.extend({
 
 			// Utility
 			line._scale = scale;
-			line._datasetIndex = me.index;
+			line._datasetIndex = index;
 			// Data
 			line._children = points;
 			// Model
-			line._model = {
-				// Appearance
-				// The default behavior of lines is to break at null values, according
-				// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158
-				// This option gives lines the ability to span gaps
-				spanGaps: valueOrDefault(dataset.spanGaps, options.spanGaps),
-				tension: resolve([custom.tension, dataset.lineTension, lineElementOptions.tension]),
-				backgroundColor: resolve([custom.backgroundColor, dataset.backgroundColor, lineElementOptions.backgroundColor]),
-				borderWidth: resolve([custom.borderWidth, dataset.borderWidth, lineElementOptions.borderWidth]),
-				borderColor: resolve([custom.borderColor, dataset.borderColor, lineElementOptions.borderColor]),
-				borderCapStyle: resolve([custom.borderCapStyle, dataset.borderCapStyle, lineElementOptions.borderCapStyle]),
-				borderDash: resolve([custom.borderDash, dataset.borderDash, lineElementOptions.borderDash]),
-				borderDashOffset: resolve([custom.borderDashOffset, dataset.borderDashOffset, lineElementOptions.borderDashOffset]),
-				borderJoinStyle: resolve([custom.borderJoinStyle, dataset.borderJoinStyle, lineElementOptions.borderJoinStyle]),
-				fill: resolve([custom.fill, dataset.fill, lineElementOptions.fill]),
-				steppedLine: resolve([custom.steppedLine, dataset.steppedLine, lineElementOptions.stepped]),
-				cubicInterpolationMode: resolve([custom.cubicInterpolationMode, dataset.cubicInterpolationMode, lineElementOptions.cubicInterpolationMode]),
-			};
+			line._model = model = me._resolveElementOptions(line, 'line', LINE_ELEMENT_OPTIONS);
+			// Appearance
+			// The default behavior of lines is to break at null values, according
+			// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158
+			// This option gives lines the ability to span gaps
+			model.spanGaps = valueOrDefault(dataset.spanGaps, options.spanGaps);
+			// Resolve steppedLine separately because the element option name does not match
+			model.steppedLine = resolve([custom.steppedLine, dataset.steppedLine, lineElementOptions.stepped]);
 
 			line.pivot();
 		}
@@ -112,9 +116,22 @@ module.exports = DatasetController.extend({
 		var value = dataset.data[index];
 		var yScale = me.getScaleForId(meta.yAxisID);
 		var xScale = me.getScaleForId(meta.xAxisID);
+		var POINT_ELEMENT_OPTIONS = {
+			backgroundColor: 'pointBackgroundColor',
+			borderColor: 'pointBorderColor',
+			borderWidth: 'pointBorderWidth',
+			hitRadius: 'pointHitRadius',
+			hoverBackgroundColor: 'pointHoverBackgroundColor',
+			hoverBorderColor: 'pointHoverBorderColor',
+			hoverBorderWidth: 'pointHoverBorderWidth',
+			hoverRadius: 'pointHoverRadius',
+			pointStyle: 'pointStyle',
+			radius: 'pointRadius',
+			rotation: 'pointRotation',
+		};
 		var x, y;
 
-		var options = me._resolveElementOptions(point, index);
+		var options = me._resolveElementOptions(point, 'point', POINT_ELEMENT_OPTIONS, index, true);
 
 		x = xScale.getPixelForValue(typeof value === 'object' ? value : NaN, index, datasetIndex);
 		y = reset ? yScale.getBasePixel() : me.calculatePointY(value, index, datasetIndex);
@@ -148,46 +165,33 @@ module.exports = DatasetController.extend({
 	/**
 	 * @private
 	 */
-	_resolveElementOptions: function(point, index) {
+	_resolveElementOptions: function(element, elementName, optionNameMap, index, scriptable) {
 		var me = this;
 		var chart = me.chart;
 		var datasets = chart.data.datasets;
 		var dataset = datasets[me.index];
-		var custom = point.custom || {};
-		var options = chart.options.elements.point;
+		var custom = element.custom || {};
+		var elementOpts = chart.options.elements[elementName];
 		var values = {};
 		var i, ilen, key;
 
 		// Scriptable options
-		var context = {
+		var context = scriptable && {
 			chart: chart,
 			dataIndex: index,
 			dataset: dataset,
 			datasetIndex: me.index
 		};
 
-		var ELEMENT_OPTIONS = {
-			backgroundColor: 'pointBackgroundColor',
-			borderColor: 'pointBorderColor',
-			borderWidth: 'pointBorderWidth',
-			hitRadius: 'pointHitRadius',
-			hoverBackgroundColor: 'pointHoverBackgroundColor',
-			hoverBorderColor: 'pointHoverBorderColor',
-			hoverBorderWidth: 'pointHoverBorderWidth',
-			hoverRadius: 'pointHoverRadius',
-			pointStyle: 'pointStyle',
-			radius: 'pointRadius',
-			rotation: 'pointRotation',
-		};
-		var keys = Object.keys(ELEMENT_OPTIONS);
+		var keys = Object.keys(optionNameMap);
 
 		for (i = 0, ilen = keys.length; i < ilen; ++i) {
 			key = keys[i];
 			values[key] = resolve([
 				custom[key],
-				dataset[ELEMENT_OPTIONS[key]],
+				dataset[optionNameMap[key]],
 				dataset[key],
-				options[key]
+				elementOpts[key]
 			], context, index);
 		}
 
