@@ -189,6 +189,10 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		var canvas = me.canvas;
 		var aspectRatio = (options.maintainAspectRatio && me.aspectRatio) || null;
 
+		if (!canvas) {
+			return;
+		}
+
 		// the canvas render width and height will be casted to integers so make sure that
 		// the canvas display style uses the same integer values to avoid blurring effect.
 

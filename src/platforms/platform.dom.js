@@ -273,7 +273,30 @@ function addResizeListener(node, listener, chart) {
 	// Let's keep track of this added resizer and thus avoid DOM query when removing it.
 	var resizer = expando.resizer = createResizer(throttled(function() {
 		if (expando.resizer) {
-			return listener(createEvent('resize', chart));
+			var aspectRatio = chart.options.maintainAspectRatio && chart.aspectRatio || null;
+			var ret = false;
+			var w, container;
+			if (!aspectRatio) {
+				ret = listener(createEvent('resize', chart));
+			} else {
+				container = node.parentNode;
+				if (container) {
+					w = container.clientWidth;
+					if (expando._width !== w) {
+						ret = listener(createEvent('resize', chart));
+						// Store new size **after** the resize
+						expando._width = container.clientWidth;
+						if (expando._width !== w) {
+							// If the size changed during resize, we can assume scrollbar appeared.
+							// So let's resize again, with the scrollbar visible (and keep that size stored)
+							ret = listener(createEvent('resize', chart));
+						} else {
+							expando._width = 0;
+						}
+					}
+				}
+			}
+			return ret;
 		}
 	}));
 
