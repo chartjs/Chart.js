@@ -26,9 +26,9 @@ defaults._set('global', {
 		bodySpacing: 2,
 		bodyFontColor: '#fff',
 		bodyAlign: 'left',
-		footerFontStyle: 'bold',
 
 		// scriptable, no index, context for all tooltip
+		footerFontStyle: 'bold',
 		footerSpacing: 2,
 		footerMarginTop: 6,
 		footerFontColor: '#fff',
