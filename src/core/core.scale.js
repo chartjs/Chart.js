@@ -7,6 +7,8 @@ var Ticks = require('./core.ticks');
 
 var valueOrDefault = helpers.valueOrDefault;
 var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
+var resolve = helpers.options.resolve;
+var callback = helpers.callback;
 
 defaults._set('scale', {
 	display: true,
@@ -101,6 +103,23 @@ function computeTextSize(context, tick, font) {
 
 module.exports = Element.extend({
 	/**
+	 * @private
+	 */
+	_configure: function() {
+		var me = this;
+		var opts = me.options;
+		var ttOpts = opts.tooltips || {};
+		var tickOpts = opts.ticks;
+		var global = defaults.global;
+
+		me._config = {
+			tooltipFormatter: resolve([ttOpts.formatter, global.tooltips.formatter, opts.formatter, global.formatter]),
+			tickCallback: resolve([tickOpts.callback, tickOpts.userCallback]),
+			tickFormatter: resolve([tickOpts.formatter, opts.formatter, global.formatter]),
+		};
+	},
+
+	/**
 	 * Get the padding needed for the scale
 	 * @method getPadding
 	 * @private
@@ -152,7 +171,7 @@ module.exports = Element.extend({
 		}
 	},
 	beforeUpdate: function() {
-		helpers.callback(this.options.beforeUpdate, [this]);
+		callback(this.options.beforeUpdate, [this]);
 	},
 
 	update: function(maxWidth, maxHeight, margins) {
@@ -172,6 +191,9 @@ module.exports = Element.extend({
 			bottom: 0
 		}, margins);
 		me.longestTextCache = me.longestTextCache || {};
+
+		// resolve configs
+		me._configure();
 
 		// Dimensions
 		me.beforeSetDimensions();
@@ -243,13 +265,13 @@ module.exports = Element.extend({
 
 	},
 	afterUpdate: function() {
-		helpers.callback(this.options.afterUpdate, [this]);
+		callback(this.options.afterUpdate, [this]);
 	},
 
 	//
 
 	beforeSetDimensions: function() {
-		helpers.callback(this.options.beforeSetDimensions, [this]);
+		callback(this.options.beforeSetDimensions, [this]);
 	},
 	setDimensions: function() {
 		var me = this;
@@ -274,51 +296,59 @@ module.exports = Element.extend({
 		me.paddingBottom = 0;
 	},
 	afterSetDimensions: function() {
-		helpers.callback(this.options.afterSetDimensions, [this]);
+		callback(this.options.afterSetDimensions, [this]);
 	},
 
 	// Data limits
 	beforeDataLimits: function() {
-		helpers.callback(this.options.beforeDataLimits, [this]);
+		callback(this.options.beforeDataLimits, [this]);
 	},
 	determineDataLimits: helpers.noop,
 	afterDataLimits: function() {
-		helpers.callback(this.options.afterDataLimits, [this]);
+		callback(this.options.afterDataLimits, [this]);
 	},
 
 	//
 	beforeBuildTicks: function() {
-		helpers.callback(this.options.beforeBuildTicks, [this]);
+		callback(this.options.beforeBuildTicks, [this]);
 	},
 	buildTicks: helpers.noop,
 	afterBuildTicks: function(ticks) {
 		var me = this;
 		// ticks is empty for old axis implementations here
 		if (helpers.isArray(ticks) && ticks.length) {
-			return helpers.callback(me.options.afterBuildTicks, [me, ticks]);
+			return callback(me.options.afterBuildTicks, [me, ticks]);
 		}
 		// Support old implementations (that modified `this.ticks` directly in buildTicks)
-		me.ticks = helpers.callback(me.options.afterBuildTicks, [me, me.ticks]) || me.ticks;
+		// eslint-disable-next-line callback-return
+		me.ticks = callback(me.options.afterBuildTicks, [me, me.ticks]) || me.ticks;
 		return ticks;
 	},
 
 	beforeTickToLabelConversion: function() {
-		helpers.callback(this.options.beforeTickToLabelConversion, [this]);
+		callback(this.options.beforeTickToLabelConversion, [this]);
 	},
 	convertTicksToLabels: function() {
 		var me = this;
-		// Convert ticks to strings
-		var tickOpts = me.options.ticks;
-		me.ticks = me.ticks.map(tickOpts.userCallback || tickOpts.callback, this);
+		var labels = [];
+		var i, ilen;
+
+		me.ticks = me.ticks.map(me._config.tickCallback, me);
+
+		for (i = 0, ilen = me.ticks.length; i < ilen; ++i) {
+			labels.push(me._formatTick(me.ticks[i], i));
+		}
+
+		return labels;
 	},
 	afterTickToLabelConversion: function() {
-		helpers.callback(this.options.afterTickToLabelConversion, [this]);
+		callback(this.options.afterTickToLabelConversion, [this]);
 	},
 
 	//
 
 	beforeCalculateTickRotation: function() {
-		helpers.callback(this.options.beforeCalculateTickRotation, [this]);
+		callback(this.options.beforeCalculateTickRotation, [this]);
 	},
 	calculateTickRotation: function() {
 		var me = this;
@@ -361,13 +391,13 @@ module.exports = Element.extend({
 		me.labelRotation = labelRotation;
 	},
 	afterCalculateTickRotation: function() {
-		helpers.callback(this.options.afterCalculateTickRotation, [this]);
+		callback(this.options.afterCalculateTickRotation, [this]);
 	},
 
 	//
 
 	beforeFit: function() {
-		helpers.callback(this.options.beforeFit, [this]);
+		callback(this.options.beforeFit, [this]);
 	},
 	fit: function() {
 		var me = this;
@@ -501,7 +531,7 @@ module.exports = Element.extend({
 	},
 
 	afterFit: function() {
-		helpers.callback(this.options.afterFit, [this]);
+		callback(this.options.afterFit, [this]);
 	},
 
 	// Shared Methods
@@ -535,6 +565,29 @@ module.exports = Element.extend({
 
 		// Value is good, return it
 		return rawValue;
+	},
+
+	_formatTick: function(value, index) {
+		var me = this;
+		var context = {
+			chart: me.chart,
+			index: index
+		};
+		return valueOrDefault(callback(me._config.tickFormatter, [value, context]), value);
+	},
+	/**
+	 * @private
+	 */
+	_formatTooltip: function(index, datasetIndex) {
+		var me = this;
+		var context = {
+			chart: me.chart,
+			dataIndex: index,
+			dataset: me.chart.data.datasets[datasetIndex],
+			datasetIndex: datasetIndex
+		};
+		var label = me.getLabelForIndex(index, datasetIndex);
+		return '' + valueOrDefault(callback(me._config.tooltipFormatter, [label, context]), label);
 	},
 
 	/**

@@ -368,10 +368,12 @@ module.exports = LinearScaleBase.extend({
 	convertTicksToLabels: function() {
 		var me = this;
 
-		LinearScaleBase.prototype.convertTicksToLabels.call(me);
+		var labels = LinearScaleBase.prototype.convertTicksToLabels.call(me);
 
 		// Point labels
 		me.pointLabels = me.chart.data.labels.map(me.options.pointLabels.callback, me);
+
+		return labels;
 	},
 
 	getLabelForIndex: function(index, datasetIndex) {

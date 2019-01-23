@@ -237,7 +237,7 @@ module.exports = Scale.extend({
 	convertTicksToLabels: function() {
 		this.tickValues = this.ticks.slice();
 
-		Scale.prototype.convertTicksToLabels.call(this);
+		return Scale.prototype.convertTicksToLabels.call(this);
 	},
 
 	// Get the correct tooltip label

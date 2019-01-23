@@ -230,6 +230,6 @@ module.exports = Scale.extend({
 		me.ticksAsNumbers = me.ticks.slice();
 		me.zeroLineIndex = me.ticks.indexOf(0);
 
-		Scale.prototype.convertTicksToLabels.call(me);
+		return Scale.prototype.convertTicksToLabels.call(me);
 	}
 });

@@ -73,6 +73,22 @@ describe('Core.scale', function() {
 
 			expect(lastTick(chart).label).toBeUndefined();
 		});
+
+		it('should display multiline-labels correctly', function() {
+			var chart = getChart({
+				labels: [
+					['January', '2018'], 'February 2018', 'March 2018', 'April 2018',
+					'May 2018', 'June 2018', 'July 2018', 'August 2018',
+					['September', '2018']
+				],
+				datasets: [{
+					data: [12, 19, 3, 5, 2, 3, 7, 8, 9]
+				}]
+			});
+
+			expect(lastTick(chart).label).toEqual(['September', '2018']);
+
+		});
 	});
 
 	var gridLineTests = [{
