@@ -277,13 +277,10 @@ function addResizeListener(node, listener, chart) {
 			var container = aspectRatio && node.parentNode;
 			var w = container ? container.clientWidth : 0;
 			var ret = listener(createEvent('resize', chart));
-			if (container) {
-				expando._width = container.clientWidth;
-				if (expando._width !== w && chart.canvas) {
-					// If the container size changed during chart resize, we can assume scrollbar appeared.
-					// So let's resize again, with the scrollbar visible
-					ret = listener(createEvent('resize', chart));
-				}
+			if (container && container.clientWidth !== w && chart.canvas) {
+				// If the container size changed during chart resize, we can assume scrollbar appeared.
+				// So let's resize again, with the scrollbar visible
+				ret = listener(createEvent('resize', chart));
 			}
 			return ret;
 		}
