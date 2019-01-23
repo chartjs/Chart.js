@@ -584,10 +584,6 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			box.draw(me.chartArea);
 		}, me);
 
-		if (me.scale) {
-			me.scale.draw();
-		}
-
 		me.drawDatasets(easingValue);
 		me._drawTooltip(easingValue);
 
