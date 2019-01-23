@@ -161,10 +161,16 @@ The tooltip items passed to the tooltip callbacks implement the following interf
 
 ```javascript
 {
-    // X Value of the tooltip as a string
+    // Label for the tooltip
+    label: String,
+
+    // Value for the tooltip
+    value: String,
+
+    // (deprecated) X Value of the tooltip
     xLabel: String,
 
-    // Y value of the tooltip as a string
+    // (deprecated) Y value of the tooltip
     yLabel: String,
 
     // Index of the dataset the item comes from
