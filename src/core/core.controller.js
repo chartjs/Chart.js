@@ -189,10 +189,6 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		var canvas = me.canvas;
 		var aspectRatio = (options.maintainAspectRatio && me.aspectRatio) || null;
 
-		if (!canvas) {
-			return;
-		}
-
 		// the canvas render width and height will be casted to integers so make sure that
 		// the canvas display style uses the same integer values to avoid blurring effect.
 
@@ -217,13 +213,13 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			plugins.notify(me, 'resize', [newSize]);
 
 			// Notify of resize
-			if (me.options.onResize) {
-				me.options.onResize(me, newSize);
+			if (options.onResize) {
+				options.onResize(me, newSize);
 			}
 
 			me.stop();
 			me.update({
-				duration: me.options.responsiveAnimationDuration
+				duration: options.responsiveAnimationDuration
 			});
 		}
 	},
