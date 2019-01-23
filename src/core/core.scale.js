@@ -538,19 +538,6 @@ module.exports = Element.extend({
 	},
 
 	/**
-	 * @private
-	 */
-	_getLabel: function(index, datasetIndex) {
-		var me = this;
-		var format = me.options.format;
-		var value = me.getLabelForIndex(index, datasetIndex);
-		if (typeof format === 'function') {
-			value = format(value);
-		}
-		return value;
-	},
-
-	/**
 	 * Used to get the value to display in the tooltip for the data at the given index
 	 * @param index
 	 * @param datasetIndex
