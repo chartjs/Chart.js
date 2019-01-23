@@ -319,9 +319,8 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	onDataPush: function() {
-		var me = this;
 		var count = arguments.length;
-		me.insertElements(me.getDataset().data.length - count, count);
+		this.insertElements(this.getDataset().data.length - count, count);
 	},
 
 	/**
