@@ -91,7 +91,7 @@ defaults._set('global', {
  */
 function getBoxWidth(labelOpts, fontSize) {
 	return labelOpts.usePointStyle ?
-		(labelOpts.circleSize || fontSize * Math.SQRT2) :
+		(labelOpts.pointSize || fontSize * Math.SQRT2) :
 		labelOpts.boxWidth;
 }
 
