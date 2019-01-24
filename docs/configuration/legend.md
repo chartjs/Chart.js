@@ -36,7 +36,8 @@ The legend label configuration is nested below the legend configuration using th
 | `padding` | `Number` | `10` | Padding between rows of colored boxes.
 | `generateLabels` | `Function` | | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See [Legend Item](#legend-item-interface) for details.
 | `filter` | `Function` | `null` | Filters legend items out of the legend. Receives 2 parameters, a [Legend Item](#legend-item-interface) and the chart data.
-| `usePointStyle` | `Boolean` | `false` | Label style will match corresponding point style (size is based on fontSize, boxWidth is not used in this case).
+| `usePointStyle` | `Boolean` | `false` | Label style will match corresponding point style (size is based on fontSize if pointSize is not provided, boxWidth is not used in this case).
+| `pointSize` | `Number` | `null` | Used only when usePointStyle is true. Independently change the size of the legend box (if not given, size will be based on fontSize).
 
 ## Legend Item Interface
 
