@@ -167,10 +167,12 @@ The tooltip items passed to the tooltip callbacks implement the following interf
     // Value for the tooltip
     value: String,
 
-    // (deprecated) X Value of the tooltip
+	// X Value of the tooltip
+	// (deprecated) use `value` or `label` instead
     xLabel: String,
 
-    // (deprecated) Y value of the tooltip
+    // Y value of the tooltip
+	// (deprecated) use `value` or `label` instead
     yLabel: String,
 
     // Index of the dataset the item comes from
