@@ -268,21 +268,19 @@ function unwatchForRender(node) {
 }
 
 function addResizeListener(node, listener, chart) {
-	var expando = node[EXPANDO_KEY] = node[EXPANDO_KEY] || {};
+	var expando = node[EXPANDO_KEY] || (node[EXPANDO_KEY] = {});
 
 	// Let's keep track of this added resizer and thus avoid DOM query when removing it.
 	var resizer = expando.resizer = createResizer(throttled(function() {
 		if (expando.resizer) {
-			var aspectRatio = chart.options.maintainAspectRatio && chart.aspectRatio || null;
-			var container = aspectRatio && node.parentNode;
+			var container = chart.options.maintainAspectRatio && node.parentNode;
 			var w = container ? container.clientWidth : 0;
-			var ret = listener(createEvent('resize', chart));
+			listener(createEvent('resize', chart));
 			if (container && container.clientWidth !== w && chart.canvas) {
 				// If the container size changed during chart resize, we can assume scrollbar appeared.
 				// So let's resize again, with the scrollbar visible
-				ret = listener(createEvent('resize', chart));
+				listener(createEvent('resize', chart));
 			}
-			return ret;
 		}
 	}));
 
