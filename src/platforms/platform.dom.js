@@ -327,11 +327,8 @@ module.exports = {
 	 */
 	_enabled: typeof window !== 'undefined' && typeof document !== 'undefined',
 
-	// The secure CSS provision will fully replace the current CSS injection process with the upcomming major release. This switch is
-	// only intended as a transitional solution, providing for now a CSP-compatible opt-in solution, whitout having a breaking change.
-	// See https://github.com/chartjs/Chart.js/issues/5208
-	useSecureCSS: function(skip) {
-		SKIP_CSS_INJECTION = skip;
+	useSecureCSS: function(optIn) {
+		SKIP_CSS_INJECTION = optIn;
 	},
 
 	initialize: function() {
