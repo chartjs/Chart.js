@@ -12,6 +12,11 @@ var CSS_RENDER_MONITOR = CSS_PREFIX + 'render-monitor';
 var CSS_RENDER_ANIMATION = CSS_PREFIX + 'render-animation';
 var ANIMATION_START_EVENTS = ['animationstart', 'webkitAnimationStart'];
 
+// The secure CSS provision will fully replace the current CSS injection process with the upcomming major release. This switch is
+// only intended as a transitional solution, providing for now a CSP-compatible opt-in solution, whitout having a breaking change.
+// See https://github.com/chartjs/Chart.js/issues/5208
+var useSecureCSS = false;
+
 /**
  * DOM event types -> Chart.js event types.
  * Note: only events with different types are mapped.
@@ -168,7 +173,9 @@ function throttled(fn, thisArg) {
 
 function createDiv(cls, style) {
 	var el = document.createElement('div');
-	el.style.cssText = style || '';
+	if (!useSecureCSS) {
+		el.style.cssText = style || '';
+	}
 	el.className = cls || '';
 	return el;
 }
@@ -324,6 +331,8 @@ module.exports = {
 	 * @private
 	 */
 	_enabled: typeof window !== 'undefined' && typeof document !== 'undefined',
+	
+	useSecureCSS,
 
 	initialize: function() {
 		var keyframes = 'from{opacity:0.99}to{opacity:1}';
