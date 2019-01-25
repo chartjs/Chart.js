@@ -89,9 +89,11 @@ function buildTask() {
 }
 
 function packageTask() {
+  gulp.src(srcDir + 'chartjs.css').pipe(gulp.dest(outDir));
+
   return merge(
       // gather "regular" files landing in the package root
-      gulp.src([outDir + '*.js', 'LICENSE.md']),
+      gulp.src([outDir + '*.js', srcDir + 'chartjs.css', 'LICENSE.md']),
 
       // since we moved the dist files one folder up (package root), we need to rewrite
       // samples src="../dist/ to src="../ and then copy them in the /samples directory.
