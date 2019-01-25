@@ -24,6 +24,10 @@ Chart.Scale = require('./core/core.scale');
 Chart.scaleService = require('./core/core.scaleService');
 Chart.Ticks = require('./core/core.ticks');
 Chart.Tooltip = require('./core/core.tooltip');
+// The secure CSS provision will fully replace the current CSS injection process with the upcomming major release. This switch is
+// only intended as a transitional solution, providing for now a CSP-compatible opt-in solution, whitout having a breaking change.
+// See https://github.com/chartjs/Chart.js/issues/5208
+Chart.useSecureCSS = false;
 
 // Register built-in scales
 var scales = require('./scales');
