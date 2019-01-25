@@ -90,8 +90,8 @@ defaults._set('global', {
  * @return {Number} width of the color box area
  */
 function getBoxWidth(labelOpts, fontSize) {
-	return labelOpts.usePointStyle ?
-		labelOpts.pointSize || fontSize * Math.SQRT2 :
+	return labelOpts.usePointStyle && labelOpts.boxWidth > fontSize ?
+		fontSize * Math.SQRT2 :
 		labelOpts.boxWidth;
 }
 
@@ -369,9 +369,10 @@ var Legend = Element.extend({
 				if (opts.labels && opts.labels.usePointStyle) {
 					// Recalculate x and y for drawPoint() because its expecting
 					// x and y to be center of figure (instead of top left)
-					var radius = boxWidth * Math.SQRT2 / 2;
-					var centerX = x + (fontSize / 2);
-					var centerY = y + (fontSize / 2);
+					var pointWidth = Math.min(boxWidth, fontSize);
+					var radius = pointWidth * Math.SQRT2 / 2;
+					var centerX = x + pointWidth / 2;
+					var centerY = y + fontSize / 2;
 
 					// Draw pointStyle as legend symbol
 					helpers.canvas.drawPoint(ctx, legendItem.pointStyle, radius, centerX, centerY);
