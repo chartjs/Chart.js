@@ -17,6 +17,14 @@ module.exports = helpers.extend({
 	 * @since 2.7.0
 	 */
 	initialize: function() {},
+	
+	/**
+	 * The secure CSS provision will fully replace the current CSS injection process with the upcomming major release. This switch is
+	 * only intended as a transitional solution, providing for now a CSP-compatible opt-in solution, whitout having a breaking change.
+	 * See https://github.com/chartjs/Chart.js/issues/5208
+	 * @param {Boolean} optIn - Activates this feature if true
+	 */
+	useSecureCSS: function() {},
 
 	/**
 	 * Called at chart construction time, returns a context2d instance implementing
