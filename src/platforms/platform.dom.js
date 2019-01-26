@@ -336,7 +336,7 @@ module.exports = {
 	},
     set useSecureCSS(optIn) {
         useExternalStylesheet = optIn;
-	}
+	},
 
 	initialize: function() {
 		var keyframes = 'from{opacity:0.99}to{opacity:1}';
