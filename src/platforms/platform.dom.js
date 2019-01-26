@@ -11,7 +11,9 @@ var CSS_PREFIX = 'chartjs-';
 var CSS_RENDER_MONITOR = CSS_PREFIX + 'render-monitor';
 var CSS_RENDER_ANIMATION = CSS_PREFIX + 'render-animation';
 var ANIMATION_START_EVENTS = ['animationstart', 'webkitAnimationStart'];
-var SKIP_CSS_INJECTION = false;
+
+var useExternalStylesheet = false;
+
 /**
  * DOM event types -> Chart.js event types.
  * Note: only events with different types are mapped.
@@ -168,7 +170,7 @@ function throttled(fn, thisArg) {
 
 function createDiv(cls, style) {
 	var el = document.createElement('div');
-	if (!SKIP_CSS_INJECTION) {
+	if (!useExternalStylesheet) {
 		el.style.cssText = style || '';
 	}
 	el.className = cls || '';
@@ -328,7 +330,7 @@ module.exports = {
 	_enabled: typeof window !== 'undefined' && typeof document !== 'undefined',
 
 	useSecureCSS: function(optIn) {
-		SKIP_CSS_INJECTION = optIn;
+		useExternalStylesheet = optIn;
 	},
 
 	initialize: function() {
