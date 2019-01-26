@@ -332,10 +332,10 @@ module.exports = {
 	_enabled: typeof window !== 'undefined' && typeof document !== 'undefined',
 
 	get useSecureCSS() {
-        return useExternalStylesheet;
+		return useExternalStylesheet;
 	},
-    set useSecureCSS(optIn) {
-        useExternalStylesheet = optIn;
+	set useSecureCSS(optIn) {
+		useExternalStylesheet = optIn;
 	},
 
 	initialize: function() {
