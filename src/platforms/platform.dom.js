@@ -276,9 +276,14 @@ function addResizeListener(node, listener, chart) {
 			var container = chart.options.maintainAspectRatio && node.parentNode;
 			var w = container ? container.clientWidth : 0;
 			listener(createEvent('resize', chart));
-			if (container && container.clientWidth !== w && chart.canvas) {
-				// If the container size changed during chart resize, we can assume scrollbar appeared.
-				// So let's resize again, with the scrollbar visible
+			if (container && container.clientWidth < w && chart.canvas) {
+				// If the container size shrank during chart resize, let's assume
+				// scrollbar appeared. So we resize again with the scrollbar visible -
+				// effectively making chart smaller and the scrollbar hidden again.
+				// Because we are inside `throttled`, and currently `ticking`, scroll
+				// events are ignored during this whole 2 resize process.
+				// If we assumed wrong and something else happened, we are resizing
+				// twice in a frame (potential performance issue)
 				listener(createEvent('resize', chart));
 			}
 		}
