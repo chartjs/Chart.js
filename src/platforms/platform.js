@@ -20,7 +20,7 @@ module.exports = helpers.extend({
 
 	/**
 	 * The secure CSS provision will fully replace the current CSS injection process with the upcomming major release. This switch is
-	 * only intended as a transitional solution, providing for now a CSP-compatible opt-in solution, whitout having a breaking change.
+	 * only intended as a transitional solution, providing for now a CSP-compatible opt-in solution, without having a breaking change.
 	 * See https://github.com/chartjs/Chart.js/issues/5208
 	 * @param {Boolean} optIn - Activates this feature if true
 	 */
