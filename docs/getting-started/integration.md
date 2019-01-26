@@ -37,7 +37,7 @@ require(['path/to/chartjs/dist/Chart.js'], function(Chart){
 
 ## Content Security Policy (CSP)
 
-By default, Chart.js injects CSS directly into the DOM. If your webpage is secured by using [CSP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy), this requires to allow `style-src 'unsafe-inline'`.
+By default, Chart.js injects CSS directly into the DOM. If your webpage is secured by using a [CSP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy), this requires to allow `style-src 'unsafe-inline'`.
 
 For a stricter CSP enviroment, where only `style-src 'self'` is allowed, you need to add the CSS to your webpage
 
