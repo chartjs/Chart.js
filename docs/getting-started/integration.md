@@ -34,3 +34,23 @@ require(['path/to/chartjs/dist/Chart.js'], function(Chart){
 ```
 
 > **Important:** RequireJS [can **not** load CommonJS module as is](http://www.requirejs.org/docs/commonjs.html#intro), so be sure to require one of the built UMD files instead (i.e. `dist/Chart.js`, `dist/Chart.min.js`, etc.).
+
+## Content Security Policy (CSP)
+
+By default, Chart.js injects CSS directly into the DOM. If your webpage is secured by using [CSP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy), this requires to allow `style-src 'unsafe-inline'`.
+
+For a stricter CSP enviroment, where only `style-src 'self'` is allowed, you need to add the CSS to your webpage
+
+```html
+<link rel="stylesheet" type="text/css" href="path/to/chartjs/dist/platforms/platform.dom.css">
+```
+
+and set
+
+```html
+<script>
+    Chart.platform.useExternalStylesheet = true;
+</script>
+```
+
+before invoking `new Chart(...)`.
