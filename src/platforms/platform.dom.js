@@ -309,16 +309,18 @@ function removeResizeListener(node) {
 }
 
 function injectCSS(platform, css) {
-	// https://stackoverflow.com/q/3922139
-	var style = platform._style || document.createElement('style');
-	if (!platform._style) {
-		platform._style = style;
-		css = '/* Chart.js */\n' + css;
-		style.setAttribute('type', 'text/css');
-		document.getElementsByTagName('head')[0].appendChild(style);
-	}
+    if (!useExternalStylesheet) {
+		// https://stackoverflow.com/q/3922139
+		var style = platform._style || document.createElement('style');
+		if (!platform._style) {
+			platform._style = style;
+			css = '/* Chart.js */\n' + css;
+			style.setAttribute('type', 'text/css');
+			document.getElementsByTagName('head')[0].appendChild(style);
+		}
 
-	style.appendChild(document.createTextNode(css));
+		style.appendChild(document.createTextNode(css));
+	}
 }
 
 module.exports = {
