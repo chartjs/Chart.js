@@ -369,9 +369,8 @@ var Legend = Element.extend({
 				if (opts.labels && opts.labels.usePointStyle) {
 					// Recalculate x and y for drawPoint() because its expecting
 					// x and y to be center of figure (instead of top left)
-					var pointWidth = Math.min(boxWidth, fontSize);
-					var radius = pointWidth * Math.SQRT2 / 2;
-					var centerX = x + pointWidth / 2;
+					var radius = boxWidth * Math.SQRT2 / 2;
+					var centerX = x + boxWidth / 2;
 					var centerY = y + fontSize / 2;
 
 					// Draw pointStyle as legend symbol
