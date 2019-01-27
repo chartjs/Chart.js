@@ -21,7 +21,7 @@ function readImageData(url, callback) {
 }
 
 /**
- * Injects a new canvas (and div wrapper) and creates teh associated Chart instance
+ * Injects a new canvas (and div wrapper) and creates the associated Chart instance
  * using the given config. Additional options allow tweaking elements generation.
  * @param {object} config - Chart config.
  * @param {object} options - Chart acquisition options.
