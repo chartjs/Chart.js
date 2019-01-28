@@ -3,7 +3,7 @@
 The layout configuration is passed into the `options.layout` namespace. The global options for the chart layout is defined in `Chart.defaults.global.layout`.
 
 | Name | Type | Default | Description
-| -----| ---- | --------| -----------
+| ---- | ---- | ------- | -----------
 | `padding` | `Number` or `Object` | `0` | The padding to add inside the chart. [more...](#padding)
 
 ## Padding

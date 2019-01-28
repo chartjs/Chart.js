@@ -26,7 +26,7 @@ This type of chart is often useful when we want to show a comparison data simila
                 "rgb(54, 162, 235)"
             ]
         }]
-    },
+    }
 }
 {% endchartjs %}
 

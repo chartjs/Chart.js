@@ -33,7 +33,7 @@ They are also registered under two aliases in the `Chart` core. Other than their
 
 ```javascript
 // For a pie chart
-var myPieChart = new Chart(ctx,{
+var myPieChart = new Chart(ctx, {
     type: 'pie',
     data: data,
     options: options

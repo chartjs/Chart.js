@@ -7,14 +7,15 @@ Chart.js animates charts out of the box. A number of options are provided to con
 The following animation options are available. The global options for are defined in `Chart.defaults.global.animation`.
 
 | Name | Type | Default | Description
-| -----| ---- | --------| -----------
+| ---- | ---- | ------- | -----------
 | `duration` | `Number` | `1000` | The number of milliseconds an animation takes.
 | `easing` | `String` | `'easeOutQuart'` | Easing function to use. [more...](#easing)
 | `onProgress` | `Function` | `null` | Callback called on each step of an animation. [more...](#animation-callbacks)
 | `onComplete` | `Function` | `null` | Callback called at the end of an animation. [more...](#animation-callbacks)
 
 ## Easing
- Available options are:
+
+Available options are:
 * `'linear'`
 * `'easeInQuad'`
 * `'easeOutQuad'`

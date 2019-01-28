@@ -1,6 +1,6 @@
 # New Axes
 
-Axes in Chart.js can be individually extended. Axes should always derive from Chart.Scale but this is not a mandatory requirement.
+Axes in Chart.js can be individually extended. Axes should always derive from `Chart.Scale` but this is not a mandatory requirement.
 
 ```javascript
 let MyScale = Chart.Scale.extend({
@@ -29,7 +29,7 @@ var lineChart = new Chart(ctx, {
             }]
         }
     }
-})
+});
 ```
 
 ## Scale Properties
@@ -50,14 +50,14 @@ Scale instances are given the following properties during the fitting process.
         left: Number,
         right: Number,
         top: Number,
-        bottom: Number,
+        bottom: Number
     },
 
     // Amount of padding on the inside of the bounding box (like CSS)
     paddingLeft: Number,
     paddingRight: Number,
     paddingTop: Number,
-    paddingBottom: Number,
+    paddingBottom: Number
 }
 ```
 
@@ -78,15 +78,13 @@ To work with Chart.js, custom scale types must implement the following interface
 
     // Get the pixel (x coordinate for horizontal axis, y coordinate for vertical axis) for a given value
     // @param index: index into the ticks array
-    // @param includeOffset: if true, get the pixel halfway between the given tick and the next
-    getPixelForTick: function(index, includeOffset) {},
+    getPixelForTick: function(index) {},
 
     // Get the pixel (x coordinate for horizontal axis, y coordinate for vertical axis) for a given value
     // @param value : the value to get the pixel for
     // @param index : index into the data array of the value
     // @param datasetIndex : index of the dataset the value comes from
-    // @param includeOffset : if true, get the pixel halfway between the given tick and the next
-    getPixelForValue: function(value, index, datasetIndex, includeOffset) {}
+    getPixelForValue: function(value, index, datasetIndex) {},
 
     // Get the value for a given pixel (x coordinate for horizontal axis, y coordinate for vertical axis)
     // @param pixel : pixel value
@@ -97,6 +95,7 @@ To work with Chart.js, custom scale types must implement the following interface
 Optionally, the following methods may also be overwritten, but an implementation is already provided by the `Chart.Scale` base class.
 
 ```javascript
+{
     // Transform the ticks array of the scale instance into strings. The default implementation simply calls this.options.ticks.callback(numericalTick, index, ticks);
     convertTicksToLabels: function() {},
 
@@ -112,7 +111,8 @@ Optionally, the following methods may also be overwritten, but an implementation
 
     // Draws the scale onto the canvas. this.(left|right|top|bottom) will have been populated to tell you the area on the canvas to draw in
     // @param chartArea : an object containing four properties: left, right, top, bottom. This is the rectangle that lines, bars, etc will be drawn in. It may be used, for example, to draw grid lines.
-    draw: function(chartArea) {},
+    draw: function(chartArea) {}
+}
 ```
 
 The Core.Scale base class also has some utility functions that you may find useful.
@@ -127,5 +127,8 @@ The Core.Scale base class also has some utility functions that you may find usef
     // Otherwise returns the value.
     // Note that in all cases, the returned value is not guaranteed to be a Number
     getRightValue: function(dataValue) {},
+
+    // Returns the scale tick objects ({label, major})
+    getTicks: function() {}
 }
 ```

@@ -28,7 +28,7 @@ var myChart = new Chart(ctx, {...});
 ## Require JS
 
 ```javascript
-require(['path/to/chartjs/dist/Chart.js'], function(Chart){
+require(['path/to/chartjs/dist/Chart.js'], function(Chart) {
     var myChart = new Chart(ctx, {...});
 });
 ```

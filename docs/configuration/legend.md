@@ -6,7 +6,7 @@ The chart legend displays data about the datasets that are appearing on the char
 The legend configuration is passed into the `options.legend` namespace. The global options for the chart legend is defined in `Chart.defaults.global.legend`.
 
 | Name | Type | Default | Description
-| -----| ---- | --------| -----------
+| ---- | ---- | ------- | -----------
 | `display` | `Boolean` | `true` | Is the legend shown?
 | `position` | `String` | `'top'` | Position of the legend. [more...](#position)
 | `fullWidth` | `Boolean` | `true` | Marks that this box should take the full width of the canvas (pushing down other boxes). This is unlikely to need to be changed in day-to-day use.
@@ -27,7 +27,7 @@ Position of the legend. Options are:
 The legend label configuration is nested below the legend configuration using the `labels` key.
 
 | Name | Type | Default | Description
-| -----| ---- | --------| -----------
+| ---- | ---- | ------- | -----------
 | `boxWidth` | `Number` | `40` | Width of coloured box.
 | `fontSize` | `Number` | `12` | Font size of text.
 | `fontStyle` | `String` | `'normal'` | Font style of text.
@@ -57,7 +57,7 @@ Items passed to the legend `onClick` function are the ones returned from `labels
     lineCap: String,
 
     // For box border. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
-    lineDash: Array[Number],
+    lineDash: Number[],
 
     // For box border. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
     lineDashOffset: Number,
@@ -69,7 +69,7 @@ Items passed to the legend `onClick` function are the ones returned from `labels
     lineWidth: Number,
 
     // Stroke style of the legend box
-    strokeStyle: Color
+    strokeStyle: Color,
 
     // Point style of the legend box (only used if usePointStyle is true)
     pointStyle: String
@@ -91,7 +91,7 @@ var chart = new Chart(ctx, {
                 fontColor: 'rgb(255, 99, 132)'
             }
         }
-}
+    }
 });
 ```
 
@@ -107,7 +107,7 @@ function(e, legendItem) {
     var meta = ci.getDatasetMeta(index);
 
     // See controller.isDatasetVisible comment
-    meta.hidden = meta.hidden === null? !ci.data.datasets[index].hidden : null;
+    meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
 
     // We hid a dataset ... rerender the chart
     ci.update();
@@ -128,7 +128,7 @@ var newLegendClickHandler = function (e, legendItem) {
         let ci = this.chart;
         [ci.getDatasetMeta(0),
          ci.getDatasetMeta(1)].forEach(function(meta) {
-            meta.hidden = meta.hidden === null? !ci.data.datasets[index].hidden : null;
+            meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
         });
         ci.update();
     }
@@ -139,7 +139,7 @@ var chart = new Chart(ctx, {
     data: data,
     options: {
         legend: {
-
+            onClick: newLegendClickHandler
         }
     }
 });

@@ -6,7 +6,7 @@ The chart title defines text to draw at the top of the chart.
 The title configuration is passed into the `options.title` namespace. The global options for the chart title is defined in `Chart.defaults.global.title`.
 
 | Name | Type | Default | Description
-| -----| ---- | --------| -----------
+| ---- | ---- | ------- | -----------
 | `display` | `Boolean` | `false` | Is the title shown?
 | `position` | `String` | `'top'` | Position of title. [more...](#position)
 | `fontSize` | `Number` | `12` | Font size.
@@ -38,5 +38,5 @@ var chart = new Chart(ctx, {
             text: 'Custom Chart Title'
         }
     }
-})
+});
 ```

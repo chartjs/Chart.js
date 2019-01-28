@@ -19,7 +19,7 @@ The axis has configuration properties for ticks, angle lines (line that appear i
 The following options are provided by the linear scale. They are all located in the `ticks` sub options. The [common tick configuration](../styling.md#tick-configuration) options are supported by this axis.
 
 | Name | Type | Default | Description
-| -----| ---- | --------| -----------
+| ---- | ---- | ------- | -----------
 | `backdropColor` | `Color` | `'rgba(255, 255, 255, 0.75)'` | Color of label backdrops.
 | `backdropPaddingX` | `Number` | `2` | Horizontal padding of label backdrop.
 | `backdropPaddingY` | `Number` | `2` | Vertical padding of label backdrop.
@@ -70,7 +70,7 @@ let chart = new Chart(ctx, {
 In contrast to the `suggested*` settings, the `min` and `max` settings set explicit ends to the axes. When these are set, some data points may not be visible.
 
 ## Step Size
- If set, the scale ticks will be enumerated by multiple of stepSize, having one tick per increment. If not set, the ticks are labeled automatically using the nice numbers algorithm.
+If set, the scale ticks will be enumerated by multiple of `stepSize`, having one tick per increment. If not set, the ticks are labeled automatically using the nice numbers algorithm.
 
 This example sets up a chart with a y axis that creates ticks at `0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5`.
 
@@ -91,7 +91,7 @@ let options = {
 The following options are used to configure angled lines that radiate from the center of the chart to the point labels. They can be found in the `angleLines` sub options. Note that these options only apply if `angleLines.display` is true.
 
 | Name | Type | Default | Description
-| -----| ---- | --------| -----------
+| ---- | ---- | ------- | -----------
 | `display` | `Boolean` | `true` | if true, angle lines are shown.
 | `color` | `Color` | `rgba(0, 0, 0, 0.1)` | Color of angled lines.
 | `lineWidth` | `Number` | `1` | Width of angled lines.
@@ -103,7 +103,7 @@ The following options are used to configure angled lines that radiate from the c
 The following options are used to configure the point labels that are shown on the perimeter of the scale. They can be found in the `pointLabels` sub options. Note that these options only apply if `pointLabels.display` is true.
 
 | Name | Type | Default | Description
-| -----| ---- | --------| -----------
+| ---- | ---- | ------- | -----------
 | `callback` | `Function` | | Callback function to transform data labels to point labels. The default implementation simply returns the current string.
 | `fontColor` | `Color/Color[]` | `'#666'` | Font color for point labels.
 | `fontFamily` | `String` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family to use when rendering labels.

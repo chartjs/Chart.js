@@ -20,7 +20,7 @@ This `canvas` element has a text alternative via fallback content.
 
 ```html
 <canvas id="okCanvas2" width="400" height="100">
-  <p>Hello Fallback World</p>
+    <p>Hello Fallback World</p>
 </canvas>
 ```
 

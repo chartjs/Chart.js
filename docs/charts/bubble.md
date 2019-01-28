@@ -27,7 +27,7 @@ A bubble chart is used to display three dimensions of data at the same time. The
 
 ```javascript
 // For a bubble chart
-var myBubbleChart = new Chart(ctx,{
+var myBubbleChart = new Chart(ctx, {
     type: 'bubble',
     data: data,
     options: options
@@ -50,7 +50,7 @@ The bubble chart allows a number of properties to be specified for each dataset.
 | [`hoverRadius`](#interactions) | `Number` | Yes | Yes | `4`
 | [`hitRadius`](#interactions) | `Number` | Yes | Yes | `1`
 | [`label`](#labeling) | `String` | - | - | `undefined`
-| [`pointStyle`](#styling) | `String` | Yes | Yes | `circle`
+| [`pointStyle`](#styling) | `String` | Yes | Yes | `'circle'`
 | [`rotation`](#styling) | `Number` | Yes | Yes | `0`
 | [`radius`](#styling) | `Number` | Yes | Yes | `3`
 

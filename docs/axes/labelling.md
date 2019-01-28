@@ -7,7 +7,7 @@ When creating a chart, you want to tell the viewer what data they are viewing. T
 The scale label configuration is nested under the scale configuration in the `scaleLabel` key. It defines options for the scale title. Note that this only applies to cartesian axes.
 
 | Name | Type | Default | Description
-| -----| ---- | --------| -----------
+| ---- | ---- | ------- | -----------
 | `display` | `Boolean` | `false` | If true, display the axis title.
 | `labelString` | `String` | `''` | The text for the title. (i.e. "# of People" or "Response Choices").
 | `lineHeight` | `Number/String` | `1.2` | Height of an individual line of text (see [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height)).

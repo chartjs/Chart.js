@@ -64,7 +64,7 @@ var myRadarChart = new Chart(ctx, {
 
 The radar chart allows a number of properties to be specified for each dataset. These are used to set display properties for a specific dataset. For example, the colour of a line is generally set this way.
 
-All point* properties can be specified as an array. If these are set to an array value, the first value applies to the first point, the second value to the second point, and so on.
+All `point*` properties can be specified as an array. If these are set to an array value, the first value applies to the first point, the second value to the second point, and so on.
 
 | Name | Type | Description
 | ---- | ---- | -----------
@@ -92,16 +92,16 @@ All point* properties can be specified as an array. If these are set to an array
 
 ### pointStyle
 The style of point. Options are:
-* 'circle'
-* 'cross'
-* 'crossRot'
-* 'dash'.
-* 'line'
-* 'rect'
-* 'rectRounded'
-* 'rectRot'
-* 'star'
-* 'triangle'
+* `'circle'`
+* `'cross'`
+* `'crossRot'`
+* `'dash'.`
+* `'line'`
+* `'rect'`
+* `'rectRounded'`
+* `'rectRot'`
+* `'star'`
+* `'triangle'`
 
 If the option is an image, that image is drawn on the canvas using [drawImage](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/drawImage).
 
@@ -128,7 +128,7 @@ It is common to want to apply a configuration setting to all created radar chart
 
 ## Data Structure
 
-The `data` property of a dataset for a radar chart is specified as a an array of numbers. Each point in the data array corresponds to the label at the same index on the x axis.
+The `data` property of a dataset for a radar chart is specified as an array of numbers. Each point in the data array corresponds to the label at the same index on the x axis.
 
 ```javascript
 data: [20, 10]

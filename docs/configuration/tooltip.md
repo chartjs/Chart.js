@@ -43,13 +43,14 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 | `borderWidth` | `Number` | `0` | Size of the border.
 
 ### Position Modes
- Possible modes are:
-* 'average'
-* 'nearest'
 
-'average' mode will place the tooltip at the average position of the items displayed in the tooltip. 'nearest' will place the tooltip at the position of the element closest to the event position.
+Possible modes are:
+* `'average'`
+* `'nearest'`
 
-New modes can be defined by adding functions to the Chart.Tooltip.positioners map.
+`'average'` mode will place the tooltip at the average position of the items displayed in the tooltip. `'nearest'` will place the tooltip at the position of the element closest to the event position.
+
+New modes can be defined by adding functions to the `Chart.Tooltip.positioners` map.
 
 Example:
 ```javascript
@@ -70,7 +71,7 @@ Chart.Tooltip.positioners.custom = function(elements, eventPosition) {
         x: 0,
         y: 0
     };
-}
+};
 ```
 
 ### Sort Callback
@@ -83,29 +84,29 @@ Allows filtering of [tooltip items](#tooltip-item-interface). Must implement at 
 
 ## Tooltip Callbacks
 
-The tooltip label configuration is nested below the tooltip configuration using the `callbacks` key. The tooltip has the following callbacks for providing text. For all functions, 'this' will be the tooltip object created from the Chart.Tooltip constructor.
+The tooltip label configuration is nested below the tooltip configuration using the `callbacks` key. The tooltip has the following callbacks for providing text. For all functions, `this` will be the tooltip object created from the `Chart.Tooltip` constructor.
 
 All functions are called with the same arguments: a [tooltip item](#tooltip-item-interface) and the data object passed to the chart. All functions must return either a string or an array of strings. Arrays of strings are treated as multiple lines of text.
 
 | Name | Arguments | Description
 | ---- | --------- | -----------
-| `beforeTitle` | `Array[tooltipItem], data` | Returns the text to render before the title.
-| `title` | `Array[tooltipItem], data` | Returns text to render as the title of the tooltip.
-| `afterTitle` | `Array[tooltipItem], data` | Returns text to render after the title.
-| `beforeBody` | `Array[tooltipItem], data` | Returns text to render before the body section.
+| `beforeTitle` | `tooltipItem[], data` | Returns the text to render before the title.
+| `title` | `tooltipItem[], data` | Returns text to render as the title of the tooltip.
+| `afterTitle` | `tooltipItem[], data` | Returns text to render after the title.
+| `beforeBody` | `tooltipItem[], data` | Returns text to render before the body section.
 | `beforeLabel` | `tooltipItem, data` | Returns text to render before an individual label. This will be called for each item in the tooltip.
-| `label` | `tooltipItem, data` | Returns text to render for an individual item in the tooltip.
+| `label` | `tooltipItem, data` | Returns text to render for an individual item in the tooltip. [more...](#label-callback)
 | `labelColor` | `tooltipItem, chart` | Returns the colors to render for the tooltip item. [more...](#label-color-callback)
 | `labelTextColor` | `tooltipItem, chart` | Returns the colors for the text of the label for the tooltip item.
 | `afterLabel` | `tooltipItem, data` | Returns text to render after an individual label.
-| `afterBody` | `Array[tooltipItem], data` | Returns text to render after the body section.
-| `beforeFooter` | `Array[tooltipItem], data` | Returns text to render before the footer section.
-| `footer` | `Array[tooltipItem], data` | Returns text to render as the footer of the tooltip.
-| `afterFooter` | `Array[tooltipItem], data` | Text to render after the footer section.
+| `afterBody` | `tooltipItem[], data` | Returns text to render after the body section.
+| `beforeFooter` | `tooltipItem[], data` | Returns text to render before the footer section.
+| `footer` | `tooltipItem[], data` | Returns text to render as the footer of the tooltip.
+| `afterFooter` | `tooltipItem[], data` | Text to render after the footer section.
 
 ### Label Callback
 
-The label callback can change the text that displays for a given data point. A common example to round data values; the following example rounds the data to two decimal places.
+The `label` callback can change the text that displays for a given data point. A common example to round data values; the following example rounds the data to two decimal places.
 
 ```javascript
 var chart = new Chart(ctx, {
@@ -143,9 +144,9 @@ var chart = new Chart(ctx, {
                     return {
                         borderColor: 'rgb(255, 0, 0)',
                         backgroundColor: 'rgb(255, 0, 0)'
-                    }
+                    };
                 },
-                labelTextColor:function(tooltipItem, chart){
+                labelTextColor: function(tooltipItem, chart) {
                     return '#543453';
                 }
             }
@@ -177,7 +178,7 @@ The tooltip items passed to the tooltip callbacks implement the following interf
     x: Number,
 
     // Y position of matching point
-    y: Number,
+    y: Number
 }
 ```
 
@@ -202,7 +203,7 @@ var myPieChart = new Chart(ctx, {
                 if (!tooltipEl) {
                     tooltipEl = document.createElement('div');
                     tooltipEl.id = 'chartjs-tooltip';
-                    tooltipEl.innerHTML = "<table></table>";
+                    tooltipEl.innerHTML = '<table></table>';
                     document.body.appendChild(tooltipEl);
                 }
 
@@ -336,15 +337,19 @@ The tooltip model contains parameters that can be used to render the tooltip.
 
     // Appearance
     caretSize: Number,
+    caretPadding: Number,
     cornerRadius: Number,
     backgroundColor: Color,
 
     // colors to render for each item in body[]. This is the color of the squares in the tooltip
     labelColors: Color[],
+    labelTextColors: Color[],
 
     // 0 opacity is a hidden tooltip
     opacity: Number,
     legendColorBackground: Color,
     displayColors: Boolean,
+    borderColor: Color,
+    borderWidth: Number
 }
 ```

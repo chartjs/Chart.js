@@ -14,7 +14,7 @@ let chart = new Chart(ctx, {
     data: {
         labels: ['January', 'February', 'March', 'April', 'May', 'June'],
         datasets: ...
-    },
+    }
 });
 ```
 As part of axis definition:
@@ -27,7 +27,7 @@ let chart = new Chart(ctx, {
         scales: {
             xAxes: [{
                 type: 'category',
-                labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+                labels: ['January', 'February', 'March', 'April', 'May', 'June']
             }]
         }
     }
@@ -39,8 +39,8 @@ let chart = new Chart(ctx, {
 The category scale provides the following options for configuring tick marks. They are nested in the `ticks` sub object. These options extend the [common tick configuration](README.md#tick-configuration).
 
 | Name | Type | Default | Description
-| -----| ---- | --------| -----------
-| `labels` | `Array[String]` | - | An array of labels to display.
+| ---- | ---- | ------- | -----------
+| `labels` | `String[]` | - | An array of labels to display.
 | `min` | `String` | | The minimum item to display. [more...](#min-max-configuration)
 | `max` | `String` | | The maximum item to display. [more...](#min-max-configuration)
 
@@ -54,7 +54,7 @@ let chart = new Chart(ctx, {
         datasets: [{
             data: [10, 20, 30, 40, 50, 60]
         }],
-        labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+        labels: ['January', 'February', 'March', 'April', 'May', 'June']
     },
     options: {
         scales: {

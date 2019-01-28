@@ -11,7 +11,7 @@ First, we need to have a canvas in our page.
 Now that we have a canvas we can use, we need to include Chart.js in our page.
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
 ```
 
 Now, we can create a chart. We add a script to our page:
@@ -24,12 +24,12 @@ var chart = new Chart(ctx, {
 
     // The data for our dataset
     data: {
-        labels: ["January", "February", "March", "April", "May", "June", "July"],
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
         datasets: [{
-            label: "My First dataset",
+            label: 'My First dataset',
             backgroundColor: 'rgb(255, 99, 132)',
             borderColor: 'rgb(255, 99, 132)',
-            data: [0, 10, 5, 2, 20, 30, 45],
+            data: [0, 10, 5, 2, 20, 30, 45]
         }]
     },
 

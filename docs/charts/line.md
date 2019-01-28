@@ -47,10 +47,10 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`borderCapStyle`](#line-styling) | `String` | - | - | `'butt'`
 | [`borderColor`](#line-styling) | [`Color`](../general/colors.md) | - | - | `'rgba(0,0,0,0.1)'`
 | [`borderDash`](#line-styling) | `Number[]` | - | - | `[]`
-| [`borderDashOffset`](#line-styling) | `Number` | - | - | `0`
+| [`borderDashOffset`](#line-styling) | `Number` | - | - | `0.0`
 | [`borderJoinStyle`](#line-styling) | `String` | - | - | `'miter'`
-| [`borderWidth`](#line-styling) | `Number` | - | - | `0`
-| [`cubicInterpolationMode`](#cubicInterpolationMode) | `String` | - | - | `''`
+| [`borderWidth`](#line-styling) | `Number` | - | - | `3`
+| [`cubicInterpolationMode`](#cubicinterpolationmode) | `String` | - | - | `''`
 | [`fill`](#line-styling) | `Boolean/String` | - | - | `true`
 | [`label`](#general) | `String` | - | - | `''`
 | [`lineTension`](#line-styling) | `Number` | - | - | `0.4`
@@ -60,13 +60,13 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`pointHitRadius`](#point-styling) | `Number` | Yes | Yes | `1`
 | [`pointHoverBackgroundColor`](#interactions) | `Color` | Yes | Yes | `undefined`
 | [`pointHoverBorderColor`](#interactions) | `Color` | Yes | Yes | `undefined`
-| [`pointHoverBorderWidth`](#interactions) | `Number` | Yes | Yes | `undefined`
-| [`pointHoverRadius`](#interactions) | `Number` | Yes | Yes | `undefined`
+| [`pointHoverBorderWidth`](#interactions) | `Number` | Yes | Yes | `1`
+| [`pointHoverRadius`](#interactions) | `Number` | Yes | Yes | `4`
 | [`pointRadius`](#point-styling) | `Number` | Yes | Yes | `3`
-| [`pointRotation`](#point-styling) | `Number` | Yes | Yes | `1`
+| [`pointRotation`](#point-styling) | `Number` | Yes | Yes | `0`
 | [`pointStyle`](#point-styling) | `String/Image` | Yes | Yes | `'circle'`
-| [`showLine`](#general) | `Boolean` | - | - | `undefined`
-| [`spanGaps`](#general) | `Boolean` | - | - | `false`
+| [`showLine`](#line-styling) | `Boolean` | - | - | `undefined`
+| [`spanGaps`](#line-styling) | `Boolean` | - | - | `undefined`
 | [`steppedLine`](#stepped-line) | `Boolean/String` | - | - | `false`
 | [`xAxisID`](#general) | `String` | - | - | first x axis
 | [`yAxisID`](#general) | `String` | - | - | first y axis
@@ -93,7 +93,7 @@ The style of each point can be controlled with the following properties:
 | `pointRotation` | The rotation of the point in degrees.
 | `pointStyle` | Style of the point. [more...](../configuration/elements#point-styles)
 
-All these values, if `undefined`, fallback first to the dataset options then to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options. 
+All these values, if `undefined`, fallback first to the dataset options then to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options.
 
 ### Line Styling
 
@@ -113,7 +113,7 @@ The style of the line can be controlled with the following properties:
 | `showLine` | If false, the line is not drawn for this dataset.
 | `spanGaps` | If true, lines will be drawn between points with no or null data. If false, points with `NaN` data will create a break in the line.
 
-All these values, if `undefined`, fallback to the associated [`elements.line.*`](../configuration/elements.md#line-configuration) options.
+If the value is `undefined`, `showLine` and `spanGaps` fallback to the associated [chart configuration options](#configuration-options). The rest of values fallback to the associated [`elements.line.*`](../configuration/elements.md#line-configuration) options.
 
 ### Interactions
 
@@ -128,19 +128,19 @@ The interaction with each point can be controlled with the following properties:
 
 ### cubicInterpolationMode
 The following interpolation modes are supported.
-* 'default'
-* 'monotone'
+* `'default'`
+* `'monotone'`
 
-The 'default' algorithm uses a custom weighted cubic interpolation, which produces pleasant curves for all types of datasets.
+The `'default'` algorithm uses a custom weighted cubic interpolation, which produces pleasant curves for all types of datasets.
 
-The 'monotone' algorithm is more suited to `y = f(x)` datasets : it preserves monotonicity (or piecewise monotonicity) of the dataset being interpolated, and ensures local extremums (if any) stay at input data points.
+The `'monotone'` algorithm is more suited to `y = f(x)` datasets : it preserves monotonicity (or piecewise monotonicity) of the dataset being interpolated, and ensures local extremums (if any) stay at input data points.
 
 If left untouched (`undefined`), the global `options.elements.line.cubicInterpolationMode` property is used.
 
 ### Stepped Line
 The following values are supported for `steppedLine`.
 * `false`:  No Step Interpolation (default)
-* `true`: Step-before Interpolation (eq. 'before')
+* `true`: Step-before Interpolation (eq. `'before'`)
 * `'before'`: Step-before Interpolation
 * `'after'`: Step-after Interpolation
 * `'middle'`: Step-middle Interpolation
@@ -180,12 +180,12 @@ When the `data` array is an array of numbers, the x axis is generally a [categor
 
 ```javascript
 data: [{
-        x: 10,
-        y: 20
-    }, {
-        x: 15,
-        y: 10
-    }]
+    x: 10,
+    y: 20
+}, {
+    x: 15,
+    y: 10
+}]
 ```
 
 This alternate is used for sparse datasets, such as those in [scatter charts](./scatter.md#scatter-chart). Each data point is specified using an object containing `x` and `y` properties.
@@ -231,7 +231,7 @@ new Chart(ctx, {
     options: {
         elements: {
             line: {
-                tension: 0, // disables bezier curves
+                tension: 0 // disables bezier curves
             }
         }
     }
@@ -249,11 +249,11 @@ new Chart(ctx, {
     type: 'line',
     data: {
         datasets: [{
-            showLine: false, // disable for a single dataset
+            showLine: false // disable for a single dataset
         }]
     },
     options: {
-        showLines: false, // disable for all datasets
+        showLines: false // disable for all datasets
     }
 });
 ```
@@ -270,12 +270,12 @@ new Chart(ctx, {
     data: data,
     options: {
         animation: {
-            duration: 0, // general animation time
+            duration: 0 // general animation time
         },
         hover: {
-            animationDuration: 0, // duration of animations when hovering an item
+            animationDuration: 0 // duration of animations when hovering an item
         },
-        responsiveAnimationDuration: 0, // animation duration after a resize
+        responsiveAnimationDuration: 0 // animation duration after a resize
     }
 });
 ```

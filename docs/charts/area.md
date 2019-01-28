@@ -29,7 +29,7 @@ new Chart(ctx, {
             {fill: '-2'}           // 4: fill to dataset 2
         ]
     }
-})
+});
 ```
 
 ## Configuration
@@ -61,7 +61,7 @@ new Chart(ctx, {
             }
         }
     }
-})
+});
 ```
 
 `propagate: true`:

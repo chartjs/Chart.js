@@ -152,7 +152,7 @@ options = {
             }
         }]
     }
-}
+};
 ```
 ### barThickness
 If this value is a number, it is applied to the width of each bar, in pixels. When this is enforced, `barPercentage` and `categoryPercentage` are ignored.
@@ -194,7 +194,7 @@ Sample:     |==============|
 
 ## Data Structure
 
-The `data` property of a dataset for a bar chart is specified as a an array of numbers. Each point in the data array corresponds to the label at the same index on the x axis.
+The `data` property of a dataset for a bar chart is specified as an array of numbers. Each point in the data array corresponds to the label at the same index on the x axis.
 
 ```javascript
 data: [20, 10]

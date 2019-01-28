@@ -29,4 +29,3 @@ Built in Chart Types
 | Bubble | &check; | | |
 | Gauges | | &check; | |
 | Maps (Heat/Tree/etc.) | | &check; | |
-

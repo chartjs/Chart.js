@@ -40,8 +40,8 @@ function updateConfigByMutating(chart) {
 function updateConfigAsNewObject(chart) {
     chart.options = {
         responsive: true,
-        title:{
-            display:true,
+        title: {
+            display: true,
             text: 'Chart.js'
         },
         scales: {
