@@ -126,8 +126,10 @@ var newLegendClickHandler = function (e, legendItem) {
         defaultLegendClickHandler(e, legendItem);
     } else {
         let ci = this.chart;
-        [ci.getDatasetMeta(0),
-         ci.getDatasetMeta(1)].forEach(function(meta) {
+        [
+            ci.getDatasetMeta(0),
+            ci.getDatasetMeta(1)
+        ].forEach(function(meta) {
             meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
         });
         ci.update();

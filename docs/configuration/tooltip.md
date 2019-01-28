@@ -5,7 +5,7 @@
 The tooltip configuration is passed into the `options.tooltips` namespace. The global options for the chart tooltips is defined in `Chart.defaults.global.tooltips`.
 
 | Name | Type | Default | Description
-| -----| ---- | --------| -----------
+| ---- | ---- | ------- | -----------
 | `enabled` | `Boolean` | `true` | Are on-canvas tooltips enabled?
 | `custom` | `Function` | `null` | See [custom tooltip](#external-custom-tooltips) section.
 | `mode` | `String` | `'nearest'` | Sets which elements appear in the tooltip. [more...](../general/interactions/modes.md#interaction-modes).

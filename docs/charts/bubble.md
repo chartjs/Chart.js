@@ -19,7 +19,7 @@ A bubble chart is used to display three dimensions of data at the same time. The
             }],
             "backgroundColor": "rgb(255, 99, 132)"
         }]
-    },
+    }
 }
 {% endchartjs %}
 

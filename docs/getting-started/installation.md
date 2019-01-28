@@ -40,7 +40,7 @@ If you download or clone the repository, you must [build](../developers/contribu
 
 # Selecting the Correct Build
 
-Chart.js provides two different builds for you to choose: `Stand-Alone Build`, `Bundled Build`.
+Chart.js provides two different builds for you to choose: **Stand-Alone Build**, **Bundled Build**.
 
 ## Stand-Alone Build
 Files:

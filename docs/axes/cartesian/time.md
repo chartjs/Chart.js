@@ -8,14 +8,15 @@ The time scale is used to display times and dates. When building its ticks, it w
 
 The x-axis data points may additionally be specified via the `t` or `x` attribute when using the time scale.
 
-    data: [{
-        x: new Date(),
-        y: 1
-    }, {
-        t: new Date(),
-        y: 10
-    }]
-
+```javascript
+data: [{
+    x: new Date(),
+    y: 1
+}, {
+    t: new Date(),
+    y: 10
+}]
+```
 
 ### Date Formats
 
