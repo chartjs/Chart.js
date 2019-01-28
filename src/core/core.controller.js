@@ -35,16 +35,70 @@ defaults._set('global', {
 	responsiveAnimationDuration: 0
 });
 
+function mergeScaleConfig(/* objects ... */) {
+	return helpers.merge(helpers.clone(arguments[0]), [].slice.call(arguments, 1), {
+		merger: function(key, target, source, options) {
+			if (key === 'xAxes' || key === 'yAxes') {
+				var slen = source[key].length;
+				var i, type, scale;
+
+				if (!target[key]) {
+					target[key] = [];
+				}
+
+				for (i = 0; i < slen; ++i) {
+					scale = source[key][i];
+					type = helpers.valueOrDefault(scale.type, key === 'xAxes' ? 'category' : 'linear');
+
+					if (i >= target[key].length) {
+						target[key].push({});
+					}
+
+					if (!target[key][i].type || (scale.type && scale.type !== target[key][i].type)) {
+						// new/untyped scale or type changed: let's apply the new defaults
+						// then merge source scale to correctly overwrite the defaults.
+						helpers.merge(target[key][i], [scaleService.getScaleDefaults(type), scale]);
+					} else {
+						// scales type are the same
+						helpers.merge(target[key][i], scale);
+					}
+				}
+			} else {
+				helpers._merger(key, target, source, options);
+			}
+		}
+	});
+}
+
+function mergeConfig(/* objects ... */) {
+	return helpers.merge(helpers.clone(arguments[0]), [].slice.call(arguments, 1), {
+		merger: function(key, target, source, options) {
+			var tval = target[key] || {};
+			var sval = source[key];
+
+			if (key === 'scales') {
+				// scale config merging is complex. Add our own function here for that
+				target[key] = mergeScaleConfig(tval, sval);
+			} else if (key === 'scale') {
+				// used in polar area & radar charts since there is only one scale
+				target[key] = helpers.merge(tval, [scaleService.getScaleDefaults(sval.type), sval]);
+			} else {
+				helpers._merger(key, target, source, options);
+			}
+		}
+	});
+}
+
 function initConfig(config) {
 	config = config || {};
 
-	// Do NOT use configMerge() for the data object because this method merges arrays
+	// Do NOT use mergeConfig for the data object because this method merges arrays
 	// and so would change references to labels and datasets, preventing data updates.
 	var data = config.data = config.data || {};
 	data.datasets = data.datasets || [];
 	data.labels = data.labels || [];
 
-	config.options = helpers.configMerge(
+	config.options = mergeConfig(
 		defaults.global,
 		defaults[config.type],
 		config.options || {});
@@ -59,7 +113,7 @@ function updateConfig(chart) {
 		layouts.removeBox(chart, scale);
 	});
 
-	newOptions = helpers.configMerge(
+	newOptions = mergeConfig(
 		defaults.global,
 		defaults[chart.config.type],
 		newOptions);
@@ -981,3 +1035,21 @@ Chart.Controller = Chart;
  * @private
  */
 Chart.types = {};
+
+/**
+ * Provided for backward compatibility, not available anymore.
+ * @namespace Chart.helpers.configMerge
+ * @deprecated since version 2.8.0
+ * @todo remove at version 3
+ * @private
+ */
+helpers.configMerge = mergeConfig;
+
+/**
+ * Provided for backward compatibility, not available anymore.
+ * @namespace Chart.helpers.scaleMerge
+ * @deprecated since version 2.8.0
+ * @todo remove at version 3
+ * @private
+ */
+helpers.scaleMerge = mergeScaleConfig;
