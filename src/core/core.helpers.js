@@ -5,7 +5,6 @@
 var color = require('chartjs-color');
 var defaults = require('./core.defaults');
 var helpers = require('../helpers/index');
-var scaleService = require('../core/core.scaleService');
 
 module.exports = function() {
 
