@@ -171,7 +171,6 @@ module.exports = {
 		// What we do to find the best sizing, we do the following
 		// 1. Determine the minimum size of the chart area.
 		// 2. Split the remaining width equally between each vertical axis
-		// 3. Split the remaining height equally between each horizontal axis
 		// 4. Give each layout the maximum size it can be. The layout will return it's minimum size
 		// 5. Adjust the sizes of each axis based on it's minimum reported size.
 		// 6. Refit each axis
@@ -183,13 +182,10 @@ module.exports = {
 		var chartWidth = width - leftPadding - rightPadding;
 		var chartHeight = height - topPadding - bottomPadding;
 		var chartAreaWidth = chartWidth / 2; // min 50%
-		var chartAreaHeight = chartHeight / 2; // min 50%
 
 		// Step 2
 		var verticalBoxWidth = (width - chartAreaWidth) / (leftBoxes.length + rightBoxes.length);
 
-		// Step 3
-		var horizontalBoxHeight = (height - chartAreaHeight) / (topBoxes.length + bottomBoxes.length);
 
 		// Step 4
 		var maxChartAreaWidth = chartWidth;
@@ -201,7 +197,7 @@ module.exports = {
 			var isHorizontal = box.isHorizontal();
 
 			if (isHorizontal) {
-				minSize = box.update(box.fullWidth ? chartWidth : maxChartAreaWidth, horizontalBoxHeight);
+				minSize = box.update(box.fullWidth ? chartWidth : maxChartAreaWidth, chartHeight / 2);
 				maxChartAreaHeight -= minSize.height;
 			} else {
 				minSize = box.update(verticalBoxWidth, maxChartAreaHeight);
