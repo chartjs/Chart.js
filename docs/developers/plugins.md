@@ -52,7 +52,7 @@ Chart.plugins.register({
 
 ### Plugin ID
 
-Plugins must define an unique id in order to be configurable.
+Plugins must define a unique id in order to be configurable.
 
 This id should follow the [npm package name convention](https://docs.npmjs.com/files/package.json#name):
 
