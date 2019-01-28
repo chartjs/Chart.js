@@ -11,11 +11,31 @@ Chart.js can be integrated with plain JavaScript or with different module loader
 </script>
 ```
 
-## Webpack
+## Bundlers (Webpack, Rollup, etc.)
 
 ```javascript
 import Chart from 'chart.js';
 var myChart = new Chart(ctx, {...});
+```
+
+**Note:** Moment.js is installed along Chart.js as dependency. If you don't want to use Momemt.js (either because you use a different date adapter or simply because don't need time functionalities), you will have to configure your bundler to exclude this dependency (e.g. using [`externals` for Webpack](https://webpack.js.org/configuration/externals/) or [`external` for Rollup](https://rollupjs.org/guide/en#peer-dependencies)).
+
+```javascript
+// Webpack
+{
+    externals: {
+        moment: 'moment'
+    }
+}
+```
+
+```javascript
+// Rollup
+{
+    external: {
+        ['moment']
+    }
+}
 ```
 
 ## Common JS
