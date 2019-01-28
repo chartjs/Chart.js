@@ -408,21 +408,12 @@ function ticksFromTimestamps(values, majorUnit) {
 /**
  * Return the time format for the label with the most parts (milliseconds, second, etc.)
  */
-function determineLabelFormat(timestamps) {
+function determineLabelFormat(timestamp) {
 	var presets = adapter.presets();
-	var ilen = timestamps.length;
-	var i, ts, hasTime;
-
-	for (i = 0; i < ilen; i++) {
-		ts = timestamps[i];
-		if (ts % INTERVALS.second.size !== 0) {
-			return presets.full;
-		}
-		if (!hasTime && adapter.startOf(ts, 'day') !== ts) {
-			hasTime = true;
-		}
+	if (timestamp % INTERVALS.second.size !== 0) {
+		return presets.full;
 	}
-	if (hasTime) {
+	if (adapter.startOf(timestamp, 'day') !== timestamp) {
 		return presets.time;
 	}
 	return presets.date;
@@ -637,7 +628,6 @@ module.exports = Scale.extend({
 		me._majorUnit = determineMajorUnit(me._unit);
 		me._table = buildLookupTable(me._timestamps.data, min, max, options.distribution);
 		me._offsets = computeOffsets(me._table, ticks, min, max, options);
-		me._labelFormat = determineLabelFormat(me._timestamps.data);
 
 		if (options.ticks.reverse) {
 			ticks.reverse();
@@ -652,6 +642,7 @@ module.exports = Scale.extend({
 		var timeOpts = me.options.time;
 		var label = data.labels && index < data.labels.length ? data.labels[index] : '';
 		var value = data.datasets[datasetIndex].data[index];
+		var ts;
 
 		if (helpers.isObject(value)) {
 			label = me.getRightValue(value);
@@ -663,7 +654,8 @@ module.exports = Scale.extend({
 			return label;
 		}
 
-		return adapter.format(toTimestamp(label, timeOpts), me._labelFormat);
+		ts = toTimestamp(label, timeOpts);
+		return adapter.format(ts, determineLabelFormat(ts));
 	},
 
 	/**
