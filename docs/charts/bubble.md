@@ -42,17 +42,17 @@ The bubble chart allows a number of properties to be specified for each dataset.
 | ---- | ---- | :----: | :----: | ----
 | [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0,0,0,0.1)'`
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0,0,0,0.1)'`
-| [`borderWidth`](#styling) | `Number` | Yes | Yes | `3`
-| [`data`](#data-structure) | `Object[]` | - | - | **required**
+| [`borderWidth`](#styling) | `number` | Yes | Yes | `3`
+| [`data`](#data-structure) | `object[]` | - | - | **required**
 | [`hoverBackgroundColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
-| [`hoverBorderWidth`](#interactions) | `Number` | Yes | Yes | `1`
-| [`hoverRadius`](#interactions) | `Number` | Yes | Yes | `4`
-| [`hitRadius`](#interactions) | `Number` | Yes | Yes | `1`
-| [`label`](#labeling) | `String` | - | - | `undefined`
-| [`pointStyle`](#styling) | `String` | Yes | Yes | `'circle'`
-| [`rotation`](#styling) | `Number` | Yes | Yes | `0`
-| [`radius`](#styling) | `Number` | Yes | Yes | `3`
+| [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `1`
+| [`hoverRadius`](#interactions) | `number` | Yes | Yes | `4`
+| [`hitRadius`](#interactions) | `number` | Yes | Yes | `1`
+| [`label`](#labeling) | `string` | - | - | `undefined`
+| [`pointStyle`](#styling) | `string` | Yes | Yes | `'circle'`
+| [`rotation`](#styling) | `number` | Yes | Yes | `0`
+| [`radius`](#styling) | `number` | Yes | Yes | `3`
 
 ### Labeling
 
@@ -98,13 +98,13 @@ Bubble chart datasets need to contain a `data` array of points, each points repr
 ```javascript
 {
     // X Value
-    x: <Number>,
+    x: number,
 
     // Y Value
-    y: <Number>,
+    y: number,
 
     // Bubble radius in pixels (not scaled).
-    r: <Number>
+    r: number
 }
 ```
 

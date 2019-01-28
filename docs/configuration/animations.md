@@ -8,10 +8,10 @@ The following animation options are available. The global options for are define
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `duration` | `Number` | `1000` | The number of milliseconds an animation takes.
-| `easing` | `String` | `'easeOutQuart'` | Easing function to use. [more...](#easing)
-| `onProgress` | `Function` | `null` | Callback called on each step of an animation. [more...](#animation-callbacks)
-| `onComplete` | `Function` | `null` | Callback called at the end of an animation. [more...](#animation-callbacks)
+| `duration` | `number` | `1000` | The number of milliseconds an animation takes.
+| `easing` | `string` | `'easeOutQuart'` | Easing function to use. [more...](#easing)
+| `onProgress` | `function` | `null` | Callback called on each step of an animation. [more...](#animation-callbacks)
+| `onComplete` | `function` | `null` | Callback called at the end of an animation. [more...](#animation-callbacks)
 
 ## Easing
 
@@ -60,22 +60,22 @@ The `onProgress` and `onComplete` callbacks are useful for synchronizing an exte
     chart: Chart,
 
     // Current Animation frame number
-    currentStep: Number,
+    currentStep: number,
 
     // Number of animation frames
-    numSteps: Number,
+    numSteps: number,
 
     // Animation easing to use
-    easing: String,
+    easing: string,
 
     // Function that renders the chart
-    render: Function,
+    render: function,
 
     // User callback
-    onAnimationProgress: Function,
+    onAnimationProgress: function,
 
     // User callback
-    onAnimationComplete: Function
+    onAnimationComplete: function
 }
 ```
 

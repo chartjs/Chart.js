@@ -8,5 +8,5 @@ The following options are provided by the logarithmic scale. They are all locate
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `min` | `Number` | | User defined minimum number for the scale, overrides minimum value from data.
-| `max` | `Number` | | User defined maximum number for the scale, overrides maximum value from data.
+| `min` | `number` | | User defined minimum number for the scale, overrides minimum value from data.
+| `max` | `number` | | User defined maximum number for the scale, overrides maximum value from data.

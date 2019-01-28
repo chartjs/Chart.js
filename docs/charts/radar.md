@@ -68,27 +68,27 @@ All `point*` properties can be specified as an array. If these are set to an arr
 
 | Name | Type | Description
 | ---- | ---- | -----------
-| `label` | `String` | The label for the dataset which appears in the legend and tooltips.
+| `label` | `string` | The label for the dataset which appears in the legend and tooltips.
 | `backgroundColor` | `Color` | The fill color under the line. See [Colors](../general/colors.md#colors).
 | `borderColor` | `Color` | The color of the line. See [Colors](../general/colors.md#colors).
-| `borderWidth` | `Number` | The width of the line in pixels.
-| `borderDash` | `Number[]` | Length and spacing of dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
-| `borderDashOffset` | `Number` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
-| `borderCapStyle` | `String` | Cap style of the line. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap).
-| `borderJoinStyle` | `String` | Line joint style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
-| `fill` | `Boolean/String` | How to fill the area under the line. See [area charts](area.md).
-| `lineTension` | `Number` | Bezier curve tension of the line. Set to 0 to draw straightlines.
+| `borderWidth` | `number` | The width of the line in pixels.
+| `borderDash` | `number[]` | Length and spacing of dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
+| `borderDashOffset` | `number` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
+| `borderCapStyle` | `string` | Cap style of the line. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap).
+| `borderJoinStyle` | `string` | Line joint style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
+| `fill` | `boolean/string` | How to fill the area under the line. See [area charts](area.md).
+| `lineTension` | `number` | Bezier curve tension of the line. Set to 0 to draw straightlines.
 | `pointBackgroundColor` | `Color/Color[]` | The fill color for points.
 | `pointBorderColor` | `Color/Color[]` | The border color for points.
-| `pointBorderWidth` | `Number/Number[]` | The width of the point border in pixels.
-| `pointRadius` | `Number/Number[]` | The radius of the point shape. If set to 0, the point is not rendered.
-| `pointRotation` | `Number/Number[]` | The rotation of the point in degrees.
-| `pointStyle` | `String/String[]/Image/Image[]` | Style of the point. [more...](#pointstyle)
-| `pointHitRadius` | `Number/Number[]` | The pixel size of the non-displayed point that reacts to mouse events.
+| `pointBorderWidth` | `number/number[]` | The width of the point border in pixels.
+| `pointRadius` | `number/number[]` | The radius of the point shape. If set to 0, the point is not rendered.
+| `pointRotation` | `number/number[]` | The rotation of the point in degrees.
+| `pointStyle` | `string/string[]/Image/Image[]` | Style of the point. [more...](#pointstyle)
+| `pointHitRadius` | `number/number[]` | The pixel size of the non-displayed point that reacts to mouse events.
 | `pointHoverBackgroundColor` | `Color/Color[]` | Point background color when hovered.
 | `pointHoverBorderColor` | `Color/Color[]` | Point border color when hovered.
-| `pointHoverBorderWidth` | `Number/Number[]` | Border width of point when hovered.
-| `pointHoverRadius` | `Number/Number[]` | The radius of the point when hovered.
+| `pointHoverBorderWidth` | `number/number[]` | Border width of point when hovered.
+| `pointHoverRadius` | `number/number[]` | The radius of the point when hovered.
 
 ### pointStyle
 The style of point. Options are:

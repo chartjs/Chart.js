@@ -8,14 +8,14 @@ The scale label configuration is nested under the scale configuration in the `sc
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `display` | `Boolean` | `false` | If true, display the axis title.
-| `labelString` | `String` | `''` | The text for the title. (i.e. "# of People" or "Response Choices").
-| `lineHeight` | `Number/String` | `1.2` | Height of an individual line of text (see [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height)).
+| `display` | `boolean` | `false` | If true, display the axis title.
+| `labelString` | `string` | `''` | The text for the title. (i.e. "# of People" or "Response Choices").
+| `lineHeight` | `number/string` | `1.2` | Height of an individual line of text (see [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height)).
 | `fontColor` | `Color` | `'#666'` | Font color for scale title.
-| `fontFamily` | `String` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family for the scale title, follows CSS font-family options.
-| `fontSize` | `Number` | `12` | Font size for scale title.
-| `fontStyle` | `String` | `'normal'` | Font style for the scale title, follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit).
-| `padding` | `Number/Object` | `4` | Padding to apply around scale labels. Only `top` and `bottom` are implemented.
+| `fontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family for the scale title, follows CSS font-family options.
+| `fontSize` | `number` | `12` | Font size for scale title.
+| `fontStyle` | `string` | `'normal'` | Font style for the scale title, follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit).
+| `padding` | `number/object` | `4` | Padding to apply around scale labels. Only `top` and `bottom` are implemented.
 
 ## Creating Custom Tick Formats
 

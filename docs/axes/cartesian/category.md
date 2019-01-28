@@ -40,9 +40,9 @@ The category scale provides the following options for configuring tick marks. Th
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `labels` | `String[]` | - | An array of labels to display.
-| `min` | `String` | | The minimum item to display. [more...](#min-max-configuration)
-| `max` | `String` | | The maximum item to display. [more...](#min-max-configuration)
+| `labels` | `string[]` | - | An array of labels to display.
+| `min` | `string` | | The minimum item to display. [more...](#min-max-configuration)
+| `max` | `string` | | The maximum item to display. [more...](#min-max-configuration)
 
 ## Min Max Configuration
 For both the `min` and `max` properties, the value must be in the `labels` array. In the example below, the x axis would only display "March" through "June".

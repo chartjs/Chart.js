@@ -17,15 +17,15 @@ Global point options: `Chart.defaults.global.elements.point`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `radius` | `Number` | `3` | Point radius.
-| [`pointStyle`](#point-styles) | `String/Image` | `'circle'` | Point style.
-| `rotation` | `Number` | `0` | Point rotation (in degrees).
+| `radius` | `number` | `3` | Point radius.
+| [`pointStyle`](#point-styles) | `string/Image` | `'circle'` | Point style.
+| `rotation` | `number` | `0` | Point rotation (in degrees).
 | `backgroundColor` | `Color` | `'rgba(0,0,0,0.1)'` | Point fill color.
-| `borderWidth` | `Number` | `1` | Point stroke width.
+| `borderWidth` | `number` | `1` | Point stroke width.
 | `borderColor` | `Color` | `'rgba(0,0,0,0.1)'` | Point stroke color.
-| `hitRadius` | `Number` | `1` | Extra radius added to point radius for hit detection.
-| `hoverRadius` | `Number` | `4` | Point radius when hovered.
-| `hoverBorderWidth` | `Number` | `1` | Stroke width when hovered.
+| `hitRadius` | `number` | `1` | Extra radius added to point radius for hit detection.
+| `hoverRadius` | `number` | `4` | Point radius when hovered.
+| `hoverBorderWidth` | `number` | `1` | Stroke width when hovered.
 
 ### Point Styles
 
@@ -50,17 +50,17 @@ Global line options: `Chart.defaults.global.elements.line`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `tension` | `Number` | `0.4` | Bézier curve tension (`0` for no Bézier curves).
+| `tension` | `number` | `0.4` | Bézier curve tension (`0` for no Bézier curves).
 | `backgroundColor` | `Color` | `'rgba(0,0,0,0.1)'` | Line fill color.
-| `borderWidth` | `Number` | `3` | Line stroke width.
+| `borderWidth` | `number` | `3` | Line stroke width.
 | `borderColor` | `Color` | `'rgba(0,0,0,0.1)'` | Line stroke color.
-| `borderCapStyle` | `String` | `'butt'` | Line cap style. See [MDN](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/lineCap).
-| `borderDash` | `Number[]` | `[]` | Line dash. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
-| `borderDashOffset` | `Number` | `0.0` | Line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
-| `borderJoinStyle` | `String` | `'miter'` | Line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
-| `capBezierPoints` | `Boolean` | `true` | `true` to keep Bézier control inside the chart, `false` for no restriction.
-| `fill` | `Boolean/String` | `true` | Fill location: `'zero'`, `'top'`, `'bottom'`, `true` (eq. `'zero'`) or `false` (no fill).
-| `stepped` | `Boolean` | `false` | `true` to show the line as a stepped line (`tension` will be ignored).
+| `borderCapStyle` | `string` | `'butt'` | Line cap style. See [MDN](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/lineCap).
+| `borderDash` | `number[]` | `[]` | Line dash. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
+| `borderDashOffset` | `number` | `0.0` | Line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
+| `borderJoinStyle` | `string` | `'miter'` | Line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
+| `capBezierPoints` | `boolean` | `true` | `true` to keep Bézier control inside the chart, `false` for no restriction.
+| `fill` | `boolean/string` | `true` | Fill location: `'zero'`, `'top'`, `'bottom'`, `true` (eq. `'zero'`) or `false` (no fill).
+| `stepped` | `boolean` | `false` | `true` to show the line as a stepped line (`tension` will be ignored).
 
 ## Rectangle Configuration
 Rectangle elements are used to represent the bars in a bar chart.
@@ -70,9 +70,9 @@ Global rectangle options: `Chart.defaults.global.elements.rectangle`.
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `backgroundColor` | `Color` | `'rgba(0,0,0,0.1)'` | Bar fill color.
-| `borderWidth` | `Number` | `0` | Bar stroke width.
+| `borderWidth` | `number` | `0` | Bar stroke width.
 | `borderColor` | `Color` | `'rgba(0,0,0,0.1)'` | Bar stroke color.
-| `borderSkipped` | `String` | `'bottom'` | Skipped (excluded) border: `'bottom'`, `'left'`, `'top'` or `'right'`.
+| `borderSkipped` | `string` | `'bottom'` | Skipped (excluded) border: `'bottom'`, `'left'`, `'top'` or `'right'`.
 
 ## Arc Configuration
 Arcs are used in the polar area, doughnut and pie charts.
@@ -82,6 +82,6 @@ Global arc options: `Chart.defaults.global.elements.arc`.
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `backgroundColor` | `Color` | `'rgba(0,0,0,0.1)'` | Arc fill color.
-| `borderAlign` | `String` | `'center'` | Arc stroke alignment.
+| `borderAlign` | `string` | `'center'` | Arc stroke alignment.
 | `borderColor` | `Color` | `'#fff'` | Arc stroke color.
-| `borderWidth`| `Number` | `2` | Arc stroke width.
+| `borderWidth`| `number` | `2` | Arc stroke width.

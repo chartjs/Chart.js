@@ -44,32 +44,32 @@ The line chart allows a number of properties to be specified for each dataset. T
 | Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) |  Default
 | ---- | ---- | :----: | :----: | ----
 | [`backgroundColor`](#line-styling) | [`Color`](../general/colors.md) | - | - | `'rgba(0,0,0,0.1)'`
-| [`borderCapStyle`](#line-styling) | `String` | - | - | `'butt'`
+| [`borderCapStyle`](#line-styling) | `string` | - | - | `'butt'`
 | [`borderColor`](#line-styling) | [`Color`](../general/colors.md) | - | - | `'rgba(0,0,0,0.1)'`
-| [`borderDash`](#line-styling) | `Number[]` | - | - | `[]`
-| [`borderDashOffset`](#line-styling) | `Number` | - | - | `0.0`
-| [`borderJoinStyle`](#line-styling) | `String` | - | - | `'miter'`
-| [`borderWidth`](#line-styling) | `Number` | - | - | `3`
-| [`cubicInterpolationMode`](#cubicinterpolationmode) | `String` | - | - | `''`
-| [`fill`](#line-styling) | `Boolean/String` | - | - | `true`
-| [`label`](#general) | `String` | - | - | `''`
-| [`lineTension`](#line-styling) | `Number` | - | - | `0.4`
+| [`borderDash`](#line-styling) | `number[]` | - | - | `[]`
+| [`borderDashOffset`](#line-styling) | `number` | - | - | `0.0`
+| [`borderJoinStyle`](#line-styling) | `string` | - | - | `'miter'`
+| [`borderWidth`](#line-styling) | `number` | - | - | `3`
+| [`cubicInterpolationMode`](#cubicinterpolationmode) | `string` | - | - | `''`
+| [`fill`](#line-styling) | `boolean/string` | - | - | `true`
+| [`label`](#general) | `string` | - | - | `''`
+| [`lineTension`](#line-styling) | `number` | - | - | `0.4`
 | [`pointBackgroundColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0,0,0,0.1)'`
 | [`pointBorderColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0,0,0,0.1)'`
-| [`pointBorderWidth`](#point-styling) | `Number` | Yes | Yes | `1`
-| [`pointHitRadius`](#point-styling) | `Number` | Yes | Yes | `1`
+| [`pointBorderWidth`](#point-styling) | `number` | Yes | Yes | `1`
+| [`pointHitRadius`](#point-styling) | `number` | Yes | Yes | `1`
 | [`pointHoverBackgroundColor`](#interactions) | `Color` | Yes | Yes | `undefined`
 | [`pointHoverBorderColor`](#interactions) | `Color` | Yes | Yes | `undefined`
-| [`pointHoverBorderWidth`](#interactions) | `Number` | Yes | Yes | `1`
-| [`pointHoverRadius`](#interactions) | `Number` | Yes | Yes | `4`
-| [`pointRadius`](#point-styling) | `Number` | Yes | Yes | `3`
-| [`pointRotation`](#point-styling) | `Number` | Yes | Yes | `0`
-| [`pointStyle`](#point-styling) | `String/Image` | Yes | Yes | `'circle'`
-| [`showLine`](#line-styling) | `Boolean` | - | - | `undefined`
-| [`spanGaps`](#line-styling) | `Boolean` | - | - | `undefined`
-| [`steppedLine`](#stepped-line) | `Boolean/String` | - | - | `false`
-| [`xAxisID`](#general) | `String` | - | - | first x axis
-| [`yAxisID`](#general) | `String` | - | - | first y axis
+| [`pointHoverBorderWidth`](#interactions) | `number` | Yes | Yes | `1`
+| [`pointHoverRadius`](#interactions) | `number` | Yes | Yes | `4`
+| [`pointRadius`](#point-styling) | `number` | Yes | Yes | `3`
+| [`pointRotation`](#point-styling) | `number` | Yes | Yes | `0`
+| [`pointStyle`](#point-styling) | `string/Image` | Yes | Yes | `'circle'`
+| [`showLine`](#line-styling) | `boolean` | - | - | `undefined`
+| [`spanGaps`](#line-styling) | `boolean` | - | - | `undefined`
+| [`steppedLine`](#stepped-line) | `boolean/string` | - | - | `false`
+| [`xAxisID`](#general) | `string` | - | - | first x axis
+| [`yAxisID`](#general) | `string` | - | - | first y axis
 
 ### General
 
@@ -153,8 +153,8 @@ The line chart defines the following configuration options. These options are me
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `showLines` | `Boolean` | `true` | If false, the lines between points are not drawn.
-| `spanGaps` | `Boolean` | `false` | If false, NaN data causes a break in the line.
+| `showLines` | `boolean` | `true` | If false, the lines between points are not drawn.
+| `spanGaps` | `boolean` | `false` | If false, NaN data causes a break in the line.
 
 ## Default Options
 
@@ -169,7 +169,7 @@ Chart.defaults.line.spanGaps = true;
 
 The `data` property of a dataset for a line chart can be passed in two formats.
 
-### Number[]
+### number[]
 ```javascript
 data: [20, 10]
 ```

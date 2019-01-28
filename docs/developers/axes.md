@@ -38,26 +38,26 @@ Scale instances are given the following properties during the fitting process.
 
 ```javascript
 {
-    left: Number, // left edge of the scale bounding box
-    right: Number, // right edge of the bounding box'
-    top: Number,
-    bottom: Number,
-    width: Number, // the same as right - left
-    height: Number, // the same as bottom - top
+    left: number, // left edge of the scale bounding box
+    right: number, // right edge of the bounding box'
+    top: number,
+    bottom: number,
+    width: number, // the same as right - left
+    height: number, // the same as bottom - top
 
     // Margin on each side. Like css, this is outside the bounding box.
     margins: {
-        left: Number,
-        right: Number,
-        top: Number,
-        bottom: Number
+        left: number,
+        right: number,
+        top: number,
+        bottom: number
     },
 
     // Amount of padding on the inside of the bounding box (like CSS)
-    paddingLeft: Number,
-    paddingRight: Number,
-    paddingTop: Number,
-    paddingBottom: Number
+    paddingLeft: number,
+    paddingRight: number,
+    paddingTop: number,
+    paddingBottom: number
 }
 ```
 
@@ -125,7 +125,7 @@ The Core.Scale base class also has some utility functions that you may find usef
     // If dataValue is an object, returns .x or .y depending on the return of isHorizontal()
     // If the value is undefined, returns NaN
     // Otherwise returns the value.
-    // Note that in all cases, the returned value is not guaranteed to be a Number
+    // Note that in all cases, the returned value is not guaranteed to be a number
     getRightValue: function(dataValue) {},
 
     // Returns the scale tick objects ({label, major})

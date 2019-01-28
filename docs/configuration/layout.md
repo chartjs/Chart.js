@@ -4,7 +4,7 @@ The layout configuration is passed into the `options.layout` namespace. The glob
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `padding` | `Number/Object` | `0` | The padding to add inside the chart. [more...](#padding)
+| `padding` | `number/object` | `0` | The padding to add inside the chart. [more...](#padding)
 
 ## Padding
 If this value is a number, it is applied to all sides of the chart (left, top, right, bottom). If this value is an object, the `left` property defines the left padding. Similarly the `right`, `top` and `bottom` properties can also be specified.
