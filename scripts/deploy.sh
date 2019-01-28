@@ -41,6 +41,7 @@ cd $TARGET_DIR
 git checkout $TARGET_BRANCH
 
 # Copy dist files
+deploy_files '../dist/*.css' './dist'
 deploy_files '../dist/*.js' './dist'
 
 # Copy generated documentation

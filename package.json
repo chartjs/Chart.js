@@ -23,6 +23,7 @@
     "url": "https://github.com/chartjs/Chart.js/issues"
   },
   "devDependencies": {
+    "clean-css": "^4.2.1",
     "coveralls": "^3.0.0",
     "eslint": "^5.9.0",
     "eslint-config-chartjs": "^0.1.0",
