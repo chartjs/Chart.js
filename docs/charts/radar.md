@@ -76,19 +76,19 @@ All `point*` properties can be specified as an array. If these are set to an arr
 | `borderDashOffset` | `number` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
 | `borderCapStyle` | `string` | Cap style of the line. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap).
 | `borderJoinStyle` | `string` | Line joint style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
-| `fill` | `boolean/string` | How to fill the area under the line. See [area charts](area.md).
+| `fill` | <code>boolean&#124;string</code> | How to fill the area under the line. See [area charts](area.md).
 | `lineTension` | `number` | Bezier curve tension of the line. Set to 0 to draw straightlines.
-| `pointBackgroundColor` | `Color/Color[]` | The fill color for points.
-| `pointBorderColor` | `Color/Color[]` | The border color for points.
-| `pointBorderWidth` | `number/number[]` | The width of the point border in pixels.
-| `pointRadius` | `number/number[]` | The radius of the point shape. If set to 0, the point is not rendered.
-| `pointRotation` | `number/number[]` | The rotation of the point in degrees.
-| `pointStyle` | `string/string[]/Image/Image[]` | Style of the point. [more...](#pointstyle)
-| `pointHitRadius` | `number/number[]` | The pixel size of the non-displayed point that reacts to mouse events.
-| `pointHoverBackgroundColor` | `Color/Color[]` | Point background color when hovered.
-| `pointHoverBorderColor` | `Color/Color[]` | Point border color when hovered.
-| `pointHoverBorderWidth` | `number/number[]` | Border width of point when hovered.
-| `pointHoverRadius` | `number/number[]` | The radius of the point when hovered.
+| `pointBackgroundColor` | <code>Color&#124;Color[]</code> | The fill color for points.
+| `pointBorderColor` | <code>Color&#124;Color[]</code> | The border color for points.
+| `pointBorderWidth` | <code>number&#124;number[]</code> | The width of the point border in pixels.
+| `pointRadius` | <code>number&#124;number[]</code> | The radius of the point shape. If set to 0, the point is not rendered.
+| `pointRotation` | <code>number&#124;number[]</code> | The rotation of the point in degrees.
+| `pointStyle` | <code>string&#124;string[]&#124;Image&#124;Image[]</code> | Style of the point. [more...](#pointstyle)
+| `pointHitRadius` | <code>number&#124;number[]</code> | The pixel size of the non-displayed point that reacts to mouse events.
+| `pointHoverBackgroundColor` | <code>Color&#124;Color[]</code> | Point background color when hovered.
+| `pointHoverBorderColor` | <code>Color&#124;Color[]</code> | Point border color when hovered.
+| `pointHoverBorderWidth` | <code>number&#124;number[]</code> | Border width of point when hovered.
+| `pointHoverRadius` | <code>number&#124;number[]</code> | The radius of the point when hovered.
 
 ### pointStyle
 The style of point. Options are:

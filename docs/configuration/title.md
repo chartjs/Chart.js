@@ -14,8 +14,8 @@ The title configuration is passed into the `options.title` namespace. The global
 | `fontColor` | `Color` | `'#666'` | Font color.
 | `fontStyle` | `string` | `'bold'` | Font style.
 | `padding` | `number` | `10` | Number of pixels to add above and below the title text.
-| `lineHeight` | `number/string` | `1.2` | Height of an individual line of text. See [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height).
-| `text` | `string/string[]` | `''` | Title text to display. If specified as an array, text is rendered on multiple lines.
+| `lineHeight` | <code>number&#124;string</code> | `1.2` | Height of an individual line of text. See [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height).
+| `text` | <code>string&#124;string[]</code> | `''` | Title text to display. If specified as an array, text is rendered on multiple lines.
 
 ### Position
 Possible title position values are:

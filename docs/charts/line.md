@@ -51,7 +51,7 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`borderJoinStyle`](#line-styling) | `string` | - | - | `'miter'`
 | [`borderWidth`](#line-styling) | `number` | - | - | `3`
 | [`cubicInterpolationMode`](#cubicinterpolationmode) | `string` | - | - | `''`
-| [`fill`](#line-styling) | `boolean/string` | - | - | `true`
+| [`fill`](#line-styling) | <code>boolean&#124;string</code> | - | - | `true`
 | [`label`](#general) | `string` | - | - | `''`
 | [`lineTension`](#line-styling) | `number` | - | - | `0.4`
 | [`pointBackgroundColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0,0,0,0.1)'`
@@ -64,10 +64,10 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`pointHoverRadius`](#interactions) | `number` | Yes | Yes | `4`
 | [`pointRadius`](#point-styling) | `number` | Yes | Yes | `3`
 | [`pointRotation`](#point-styling) | `number` | Yes | Yes | `0`
-| [`pointStyle`](#point-styling) | `string/Image` | Yes | Yes | `'circle'`
+| [`pointStyle`](#point-styling) | <code>string&#124;Image</code> | Yes | Yes | `'circle'`
 | [`showLine`](#line-styling) | `boolean` | - | - | `undefined`
 | [`spanGaps`](#line-styling) | `boolean` | - | - | `undefined`
-| [`steppedLine`](#stepped-line) | `boolean/string` | - | - | `false`
+| [`steppedLine`](#stepped-line) | <code>boolean&#124;string</code> | - | - | `false`
 | [`xAxisID`](#general) | `string` | - | - | first x axis
 | [`yAxisID`](#general) | `string` | - | - | first y axis
 

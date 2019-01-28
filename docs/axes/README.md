@@ -16,7 +16,7 @@ The following properties are common to all axes provided by Chart.js.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `display` | `boolean/string` | `true` | Controls the axis global visibility (visible when `true`, hidden when `false`). When `display: 'auto'`, the axis is visible only if at least one associated dataset is visible.
+| `display` | <code>boolean&#124;string</code> | `true` | Controls the axis global visibility (visible when `true`, hidden when `false`). When `display: 'auto'`, the axis is visible only if at least one associated dataset is visible.
 | `callbacks` | `object` | | Callback functions to hook into the axis lifecycle. [more...](#callbacks)
 | `weight` | `number` | `0` | The weight used to sort the axis. Higher weights are further away from the chart area.
 

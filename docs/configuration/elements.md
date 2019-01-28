@@ -18,7 +18,7 @@ Global point options: `Chart.defaults.global.elements.point`.
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `radius` | `number` | `3` | Point radius.
-| [`pointStyle`](#point-styles) | `string/Image` | `'circle'` | Point style.
+| [`pointStyle`](#point-styles) | <code>string&#124;Image</code> | `'circle'` | Point style.
 | `rotation` | `number` | `0` | Point rotation (in degrees).
 | `backgroundColor` | `Color` | `'rgba(0,0,0,0.1)'` | Point fill color.
 | `borderWidth` | `number` | `1` | Point stroke width.
@@ -59,7 +59,7 @@ Global line options: `Chart.defaults.global.elements.line`.
 | `borderDashOffset` | `number` | `0.0` | Line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
 | `borderJoinStyle` | `string` | `'miter'` | Line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
 | `capBezierPoints` | `boolean` | `true` | `true` to keep Bézier control inside the chart, `false` for no restriction.
-| `fill` | `boolean/string` | `true` | Fill location: `'zero'`, `'top'`, `'bottom'`, `true` (eq. `'zero'`) or `false` (no fill).
+| `fill` | <code>boolean&#124;string</code> | `true` | Fill location: `'zero'`, `'top'`, `'bottom'`, `true` (eq. `'zero'`) or `false` (no fill).
 | `stepped` | `boolean` | `false` | `true` to show the line as a stepped line (`tension` will be ignored).
 
 ## Rectangle Configuration
