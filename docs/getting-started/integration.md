@@ -28,9 +28,9 @@ var myChart = new Chart(ctx, {...});
 ## Require JS
 
 ```javascript
-require(['path/to/chartjs/dist/Chart.js'], function(Chart){
+require(['path/to/chartjs/dist/Chart.js'], function(Chart) {
     var myChart = new Chart(ctx, {...});
 });
 ```
 
-> **Important:** RequireJS [can **not** load CommonJS module as is](http://www.requirejs.org/docs/commonjs.html#intro), so be sure to require one of the built UMD files instead (i.e. `dist/Chart.js`, `dist/Chart.min.js`, etc.).
+> **Important:** RequireJS [can **not** load CommonJS module as is](https://requirejs.org/docs/commonjs.html#intro), so be sure to require one of the built UMD files instead (i.e. `dist/Chart.js`, `dist/Chart.min.js`, etc.).

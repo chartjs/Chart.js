@@ -8,10 +8,10 @@ Both [line](line.md) and [radar](radar.md) charts support a `fill` option on the
 
 | Mode | Type | Values |
 | :--- | :--- | :--- |
-| Absolute dataset index <sup>1</sup> | `Number` | `1`, `2`, `3`, ... |
-| Relative dataset index <sup>1</sup> | `String` | `'-1'`, `'-2'`, `'+1'`, ... |
-| Boundary <sup>2</sup> | `String` | `'start'`, `'end'`, `'origin'` |
-| Disabled <sup>3</sup> | `Boolean` | `false` |
+| Absolute dataset index <sup>1</sup> | `number` | `1`, `2`, `3`, ... |
+| Relative dataset index <sup>1</sup> | `string` | `'-1'`, `'-2'`, `'+1'`, ... |
+| Boundary <sup>2</sup> | `string` | `'start'`, `'end'`, `'origin'` |
+| Disabled <sup>3</sup> | `boolean` | `false` |
 
 > <sup>1</sup> dataset filling modes have been introduced in version 2.6.0<br>
 > <sup>2</sup> prior version 2.6.0, boundary values was `'zero'`, `'top'`, `'bottom'` (deprecated)<br>
@@ -29,16 +29,16 @@ new Chart(ctx, {
             {fill: '-2'}           // 4: fill to dataset 2
         ]
     }
-})
+});
 ```
 
 ## Configuration
 | Option | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| [`plugins.filler.propagate`](#propagate) | `Boolean` | `true` | Fill propagation when target is hidden.
+| [`plugins.filler.propagate`](#propagate) | `boolean` | `true` | Fill propagation when target is hidden.
 
 ### propagate
-Boolean (default: `true`)
+`propagate` takes a `boolean` value (default: `true`).
 
 If `true`, the fill area will be recursively extended to the visible target defined by the `fill` value of hidden dataset targets:
 
@@ -61,7 +61,7 @@ new Chart(ctx, {
             }
         }
     }
-})
+});
 ```
 
 `propagate: true`:
