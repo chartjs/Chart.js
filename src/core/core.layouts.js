@@ -221,7 +221,7 @@ module.exports = {
 
 		// Step 3
 		// TODO re-limit horizontal axis height (this limit has affected only padding calculation since PR 1837)
-		// var horizontalBoxHeight = (height - chartAreaHeight) / (topBoxes.length + bottomBoxes.length);
+		// var horizontalBoxHeight = (height - chartAreaHeight) / horizontalBoxes.length;
 
 		// Step 4
 		var maxChartAreaWidth = chartWidth;
