@@ -41,7 +41,7 @@ Dataset controllers must implement the following interface.
 
     // Update the elements in response to new data
     // @param reset : if true, put the elements into a reset state so they can animate to their final values
-    update: function(reset) {},
+    update: function(reset) {}
 }
 ```
 
@@ -108,7 +108,7 @@ Chart.controllers.derivedBubble = custom;
 new Chart(ctx, {
     type: 'derivedBubble',
     data: data,
-    options: options,
+    options: options
 });
 ```
 
