@@ -84,7 +84,7 @@ var myChart = new Chart(ctx, {
             label: 'Right dataset',
 
             // This binds the dataset to the right y axis
-            yAxisID: 'right-y-axis',
+            yAxisID: 'right-y-axis'
         }],
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
     },

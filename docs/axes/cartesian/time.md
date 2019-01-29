@@ -115,8 +115,8 @@ var chart = new Chart(ctx, {
 
 The `distribution` property controls the data distribution along the scale:
 
-  * `'linear'`: data are spread according to their time (distances can vary)
-  * `'series'`: data are spread at the same distance from each other
+* `'linear'`: data are spread according to their time (distances can vary)
+* `'series'`: data are spread at the same distance from each other
 
 ```javascript
 var chart = new Chart(ctx, {

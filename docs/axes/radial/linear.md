@@ -20,7 +20,7 @@ The following options are provided by the linear scale. They are all located in 
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `backdropColor` | `Color` | `'rgba(255,255,255,0.75)'` | Color of label backdrops.
+| `backdropColor` | `Color` | `'rgba(255, 255, 255, 0.75)'` | Color of label backdrops.
 | `backdropPaddingX` | `number` | `2` | Horizontal padding of label backdrop.
 | `backdropPaddingY` | `number` | `2` | Vertical padding of label backdrop.
 | `beginAtZero` | `boolean` | `false` | if true, scale will include 0 if it is not already included.
@@ -93,7 +93,7 @@ The following options are used to configure angled lines that radiate from the c
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `display` | `boolean` | `true` | if true, angle lines are shown.
-| `color` | `Color` | `'rgba(0,0,0,0.1)'` | Color of angled lines.
+| `color` | `Color` | `'rgba(0, 0, 0, 0.1)'` | Color of angled lines.
 | `lineWidth` | `number` | `1` | Width of angled lines.
 | `borderDash` | `number[]` | `[]` | Length and spacing of dashes on angled lines. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
 | `borderDashOffset` | `number` | `0.0` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).

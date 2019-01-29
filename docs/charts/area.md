@@ -38,7 +38,7 @@ new Chart(ctx, {
 | [`plugins.filler.propagate`](#propagate) | `boolean` | `true` | Fill propagation when target is hidden.
 
 ### propagate
-A boolean value (default: `true`)
+`propagate` takes a `boolean` value (default: `true`).
 
 If `true`, the fill area will be recursively extended to the visible target defined by the `fill` value of hidden dataset targets:
 

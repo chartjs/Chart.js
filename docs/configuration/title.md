@@ -10,7 +10,7 @@ The title configuration is passed into the `options.title` namespace. The global
 | `display` | `boolean` | `false` | Is the title shown?
 | `position` | `string` | `'top'` | Position of title. [more...](#position)
 | `fontSize` | `number` | `12` | Font size.
-| `fontFamily` | `string` |  `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family for the title text.
+| `fontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family for the title text.
 | `fontColor` | `Color` | `'#666'` | Font color.
 | `fontStyle` | `string` | `'bold'` | Font style.
 | `padding` | `number` | `10` | Number of pixels to add above and below the title text.

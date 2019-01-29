@@ -20,9 +20,9 @@ Global point options: `Chart.defaults.global.elements.point`.
 | `radius` | `number` | `3` | Point radius.
 | [`pointStyle`](#point-styles) | <code>string&#124;Image</code> | `'circle'` | Point style.
 | `rotation` | `number` | `0` | Point rotation (in degrees).
-| `backgroundColor` | `Color` | `'rgba(0,0,0,0.1)'` | Point fill color.
+| `backgroundColor` | `Color` | `'rgba(0, 0, 0, 0.1)'` | Point fill color.
 | `borderWidth` | `number` | `1` | Point stroke width.
-| `borderColor` | `Color` | `'rgba(0,0,0,0.1)'` | Point stroke color.
+| `borderColor` | `Color` | `'rgba(0, 0, 0, 0.1)'` | Point stroke color.
 | `hitRadius` | `number` | `1` | Extra radius added to point radius for hit detection.
 | `hoverRadius` | `number` | `4` | Point radius when hovered.
 | `hoverBorderWidth` | `number` | `1` | Stroke width when hovered.
@@ -51,9 +51,9 @@ Global line options: `Chart.defaults.global.elements.line`.
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `tension` | `number` | `0.4` | Bézier curve tension (`0` for no Bézier curves).
-| `backgroundColor` | `Color` | `'rgba(0,0,0,0.1)'` | Line fill color.
+| `backgroundColor` | `Color` | `'rgba(0, 0, 0, 0.1)'` | Line fill color.
 | `borderWidth` | `number` | `3` | Line stroke width.
-| `borderColor` | `Color` | `'rgba(0,0,0,0.1)'` | Line stroke color.
+| `borderColor` | `Color` | `'rgba(0, 0, 0, 0.1)'` | Line stroke color.
 | `borderCapStyle` | `string` | `'butt'` | Line cap style. See [MDN](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/lineCap).
 | `borderDash` | `number[]` | `[]` | Line dash. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
 | `borderDashOffset` | `number` | `0.0` | Line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
@@ -69,9 +69,9 @@ Global rectangle options: `Chart.defaults.global.elements.rectangle`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `backgroundColor` | `Color` | `'rgba(0,0,0,0.1)'` | Bar fill color.
+| `backgroundColor` | `Color` | `'rgba(0, 0, 0, 0.1)'` | Bar fill color.
 | `borderWidth` | `number` | `0` | Bar stroke width.
-| `borderColor` | `Color` | `'rgba(0,0,0,0.1)'` | Bar stroke color.
+| `borderColor` | `Color` | `'rgba(0, 0, 0, 0.1)'` | Bar stroke color.
 | `borderSkipped` | `string` | `'bottom'` | Skipped (excluded) border: `'bottom'`, `'left'`, `'top'` or `'right'`.
 
 ## Arc Configuration
@@ -81,7 +81,7 @@ Global arc options: `Chart.defaults.global.elements.arc`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `backgroundColor` | `Color` | `'rgba(0,0,0,0.1)'` | Arc fill color.
+| `backgroundColor` | `Color` | `'rgba(0, 0, 0, 0.1)'` | Arc fill color.
 | `borderAlign` | `string` | `'center'` | Arc stroke alignment.
 | `borderColor` | `Color` | `'#fff'` | Arc stroke color.
 | `borderWidth`| `number` | `2` | Arc stroke width.

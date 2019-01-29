@@ -14,7 +14,7 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 | `callbacks` | `object` | | See the [callbacks section](#tooltip-callbacks).
 | `itemSort` | `function` | | Sort tooltip items. [more...](#sort-callback)
 | `filter` | `function` | | Filter tooltip items. [more...](#filter-callback)
-| `backgroundColor` | `Color` | `'rgba(0,0,0,0.8)'` | Background color of the tooltip.
+| `backgroundColor` | `Color` | `'rgba(0, 0, 0, 0.8)'` | Background color of the tooltip.
 | `titleFontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Title font.
 | `titleFontSize` | `number` | `12` | Title font size.
 | `titleFontStyle` | `string` | `'bold'` | Title font style.
@@ -39,7 +39,7 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 | `cornerRadius` | `number` | `6` | Radius of tooltip corner curves.
 | `multiKeyBackground` | `Color` | `'#fff'` | Color to draw behind the colored boxes when multiple items are in the tooltip.
 | `displayColors` | `boolean` | `true` | If true, color boxes are shown in the tooltip.
-| `borderColor` | `Color` | `'rgba(0,0,0,0)'` | Color of the border.
+| `borderColor` | `Color` | `'rgba(0, 0, 0, 0)'` | Color of the border.
 | `borderWidth` | `number` | `0` | Size of the border.
 
 ### Position Modes

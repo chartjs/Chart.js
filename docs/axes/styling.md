@@ -10,7 +10,7 @@ The grid line configuration is nested under the scale configuration in the `grid
 | ---- | ---- | ------- | -----------
 | `display` | `boolean` | `true` | If false, do not display grid lines for this axis.
 | `circular` | `boolean` | `false` | If true, gridlines are circular (on radar chart only).
-| `color` | <code>Color&#124;Color[]</code> | `'rgba(0,0,0,0.1)'` | The color of the grid lines. If specified as an array, the first color applies to the first grid line, the second to the second grid line and so on.
+| `color` | <code>Color&#124;Color[]</code> | `'rgba(0, 0, 0, 0.1)'` | The color of the grid lines. If specified as an array, the first color applies to the first grid line, the second to the second grid line and so on.
 | `borderDash` | `number[]` | `[]` | Length and spacing of dashes on grid lines. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
 | `borderDashOffset` | `number` | `0.0` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
 | `lineWidth` | <code>number&#124;number[]</code> | `1` | Stroke width of grid lines.
@@ -19,7 +19,7 @@ The grid line configuration is nested under the scale configuration in the `grid
 | `drawTicks` | `boolean` | `true` | If true, draw lines beside the ticks in the axis area beside the chart.
 | `tickMarkLength` | `number` | `10` | Length in pixels that the grid lines will draw into the axis area.
 | `zeroLineWidth` | `number` | `1` | Stroke width of the grid line for the first index (index 0).
-| `zeroLineColor` | `Color` | `'rgba(0,0,0,0.25)'` | Stroke color of the grid line for the first index (index 0).
+| `zeroLineColor` | `Color` | `'rgba(0, 0, 0, 0.25)'` | Stroke color of the grid line for the first index (index 0).
 | `zeroLineBorderDash` | `number[]` | `[]` | Length and spacing of dashes of the grid line for the first index (index 0). See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
 | `zeroLineBorderDashOffset` | `number` | `0.0` | Offset for line dashes of the grid line for the first index (index 0). See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
 | `offsetGridLines` | `boolean` | `false` | If true, grid lines will be shifted to be between labels. This is set to `true` for a category scale in a bar chart by default.

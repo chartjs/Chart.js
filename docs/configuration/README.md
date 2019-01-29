@@ -14,7 +14,7 @@ The following example would set the hover mode to 'nearest' for all charts where
 Chart.defaults.global.hover.mode = 'nearest';
 
 // Hover mode is set to nearest because it was not overridden here
-var chartHoverModeNearest  = new Chart(ctx, {
+var chartHoverModeNearest = new Chart(ctx, {
     type: 'line',
     data: data
 });

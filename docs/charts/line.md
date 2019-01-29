@@ -41,11 +41,11 @@ var myLineChart = new Chart(ctx, {
 
 The line chart allows a number of properties to be specified for each dataset. These are used to set display properties for a specific dataset. For example, the colour of a line is generally set this way.
 
-| Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) |  Default
+| Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) | Default
 | ---- | ---- | :----: | :----: | ----
-| [`backgroundColor`](#line-styling) | [`Color`](../general/colors.md) | - | - | `'rgba(0,0,0,0.1)'`
+| [`backgroundColor`](#line-styling) | [`Color`](../general/colors.md) | - | - | `'rgba(0, 0, 0, 0.1)'`
 | [`borderCapStyle`](#line-styling) | `string` | - | - | `'butt'`
-| [`borderColor`](#line-styling) | [`Color`](../general/colors.md) | - | - | `'rgba(0,0,0,0.1)'`
+| [`borderColor`](#line-styling) | [`Color`](../general/colors.md) | - | - | `'rgba(0, 0, 0, 0.1)'`
 | [`borderDash`](#line-styling) | `number[]` | - | - | `[]`
 | [`borderDashOffset`](#line-styling) | `number` | - | - | `0.0`
 | [`borderJoinStyle`](#line-styling) | `string` | - | - | `'miter'`
@@ -54,8 +54,8 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`fill`](#line-styling) | <code>boolean&#124;string</code> | - | - | `true`
 | [`label`](#general) | `string` | - | - | `''`
 | [`lineTension`](#line-styling) | `number` | - | - | `0.4`
-| [`pointBackgroundColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0,0,0,0.1)'`
-| [`pointBorderColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0,0,0,0.1)'`
+| [`pointBackgroundColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
+| [`pointBorderColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`pointBorderWidth`](#point-styling) | `number` | Yes | Yes | `1`
 | [`pointHitRadius`](#point-styling) | `number` | Yes | Yes | `1`
 | [`pointHoverBackgroundColor`](#interactions) | `Color` | Yes | Yes | `undefined`
@@ -139,7 +139,7 @@ If left untouched (`undefined`), the global `options.elements.line.cubicInterpol
 
 ### Stepped Line
 The following values are supported for `steppedLine`.
-* `false`:  No Step Interpolation (default)
+* `false`: No Step Interpolation (default)
 * `true`: Step-before Interpolation (eq. `'before'`)
 * `'before'`: Step-before Interpolation
 * `'after'`: Step-after Interpolation

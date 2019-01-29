@@ -39,7 +39,7 @@ Scale instances are given the following properties during the fitting process.
 ```javascript
 {
     left: number, // left edge of the scale bounding box
-    right: number, // right edge of the bounding box'
+    right: number, // right edge of the bounding box
     top: number,
     bottom: number,
     width: number, // the same as right - left

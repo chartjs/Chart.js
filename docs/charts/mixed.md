@@ -38,35 +38,35 @@ At this point we have a chart rendering how we'd like. It's important to note th
 
 {% chartjs %}
 {
-  "type": "bar",
-  "data": {
-    "labels": [
-      "January",
-      "February",
-      "March",
-      "April"
-    ],
-    "datasets": [{
-      "label": "Bar Dataset",
-      "data": [10, 20, 30, 40],
-      "borderColor": "rgb(255, 99, 132)",
-      "backgroundColor": "rgba(255, 99, 132, 0.2)"
-    }, {
-      "label": "Line Dataset",
-      "data": [50, 50, 50, 50],
-      "type": "line",
-      "fill": false,
-      "borderColor": "rgb(54, 162, 235)"
-    }]
-  },
-  "options": {
-    "scales": {
-      "yAxes": [{
-        "ticks": {
-          "beginAtZero": true
+    "type": "bar",
+    "data": {
+        "labels": [
+            "January",
+            "February",
+            "March",
+            "April"
+        ],
+        "datasets": [{
+            "label": "Bar Dataset",
+            "data": [10, 20, 30, 40],
+            "borderColor": "rgb(255, 99, 132)",
+            "backgroundColor": "rgba(255, 99, 132, 0.2)"
+        }, {
+            "label": "Line Dataset",
+            "data": [50, 50, 50, 50],
+            "type": "line",
+            "fill": false,
+            "borderColor": "rgb(54, 162, 235)"
+        }]
+    },
+    "options": {
+        "scales": {
+            "yAxes": [{
+                "ticks": {
+                    "beginAtZero": true
+                }
+            }]
         }
-      }]
     }
-  }
 }
 {% endchartjs %}
