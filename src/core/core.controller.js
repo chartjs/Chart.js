@@ -41,7 +41,7 @@ defaults._set('global', {
  * returns a deep copy of the result, thus doesn't alter inputs.
  */
 function mergeScaleConfig(/* config objects ... */) {
-	return helpers.merge({}, Array.prototype.slice.call(arguments), {
+	return helpers.merge({}, [].slice.call(arguments), {
 		merger: function(key, target, source, options) {
 			if (key === 'xAxes' || key === 'yAxes') {
 				var slen = source[key].length;
@@ -53,7 +53,7 @@ function mergeScaleConfig(/* config objects ... */) {
 
 				for (i = 0; i < slen; ++i) {
 					scale = source[key][i];
-					type = helpers.valueOrDefault(scale.type, key === 'xAxes' ? 'category' : 'linear');
+					type = valueOrDefault(scale.type, key === 'xAxes' ? 'category' : 'linear');
 
 					if (i >= target[key].length) {
 						target[key].push({});
@@ -81,7 +81,7 @@ function mergeScaleConfig(/* config objects ... */) {
  * a deep copy of the result, thus doesn't alter inputs.
  */
 function mergeConfig(/* config objects ... */) {
-	return helpers.merge({}, Array.prototype.slice.call(arguments), {
+	return helpers.merge({}, [].slice.call(arguments), {
 		merger: function(key, target, source, options) {
 			var tval = target[key] || {};
 			var sval = source[key];
