@@ -11,6 +11,13 @@ Chart.js can be integrated with plain JavaScript or with different module loader
 </script>
 ```
 
+## Common JS
+
+```javascript
+var Chart = require('chart.js');
+var myChart = new Chart(ctx, {...});
+```
+
 ## Bundlers (Webpack, Rollup, etc.)
 
 ```javascript
@@ -38,19 +45,42 @@ var myChart = new Chart(ctx, {...});
 }
 ```
 
-## Common JS
-
-```javascript
-var Chart = require('chart.js');
-var myChart = new Chart(ctx, {...});
-```
-
 ## Require JS
 
+**Important:** RequireJS [can **not** load CommonJS module as is](https://requirejs.org/docs/commonjs.html#intro), so be sure to require one of the UMD builds instead (i.e. `dist/Chart.js`, `dist/Chart.min.js`, etc.).
+
 ```javascript
-require(['path/to/chartjs/dist/Chart.js'], function(Chart) {
+require(['path/to/chartjs/dist/Chart.min.js'], function(Chart){
     var myChart = new Chart(ctx, {...});
 });
 ```
 
-> **Important:** RequireJS [can **not** load CommonJS module as is](https://requirejs.org/docs/commonjs.html#intro), so be sure to require one of the built UMD files instead (i.e. `dist/Chart.js`, `dist/Chart.min.js`, etc.).
+**Note:** starting v2.8, Moment.js is now an optional dependency for `Chart.js` and `Chart.min.js`. That means you need to make sure Moment.js is fully loaded **before** requiring Chart.js. You can either use a shim:
+
+```javascript
+require.config({
+    shim: {
+        'chartjs': {
+            deps: ['moment']    // enforce moment to be loaded before chartjs
+        }
+    },
+    paths: {
+        'chartjs': 'path/to/chartjs/dist/Chart.min.js',
+        'moment': 'path/to/moment'
+    }
+});
+
+require(['chartjs'], function(Chart) {
+    new Chart(ctx, {...});
+});
+```
+
+or simply use two nested `require()`:
+
+```javascript
+require(['moment'], function() {
+    require(['chartjs'], function(Chart) {
+        new Chart(ctx, {...});
+    });
+});
+```
