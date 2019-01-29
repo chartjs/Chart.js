@@ -27,17 +27,25 @@ function sortByWeight(array, reverse) {
 }
 
 function findMaxPadding(boxes) {
-	var maxPadding = {top: 0, left: 0, bottom: 0, right: 0};
+	var top = 0;
+	var left = 0;
+	var bottom = 0;
+	var right = 0;
 	helpers.each(boxes, function(box) {
 		if (box.getPadding) {
 			var boxPadding = box.getPadding();
-			maxPadding.left = Math.max(maxPadding.left, boxPadding.left);
-			maxPadding.right = Math.max(maxPadding.right, boxPadding.right);
-			maxPadding.top = Math.max(maxPadding.top, boxPadding.top);
-			maxPadding.bottom = Math.max(maxPadding.bottom, boxPadding.bottom);
+			top = Math.max(top, boxPadding.top);
+			left = Math.max(left, boxPadding.left);
+			bottom = Math.max(bottom, boxPadding.bottom);
+			right = Math.max(right, boxPadding.right);
 		}
 	});
-	return maxPadding;
+	return {
+		top: top,
+		left: left,
+		bottom: bottom,
+		right: right
+	};
 }
 
 function addSizeByPosition(boxes, size) {
