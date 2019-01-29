@@ -6,6 +6,7 @@ var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
 var resolve = helpers.options.resolve;
+var valueOrDefault = helpers.valueOrDefault;
 
 defaults._set('doughnut', {
 	animation: {
@@ -323,7 +324,6 @@ module.exports = DatasetController.extend({
 		var model = arc._model;
 		var options = arc._options;
 		var getHoverColor = helpers.getHoverColor;
-		var valueOrDefault = helpers.valueOrDefault;
 
 		arc.$previousStyle = {
 			backgroundColor: model.backgroundColor,
@@ -398,7 +398,7 @@ module.exports = DatasetController.extend({
 	 * @private
 	 */
 	_getRingWeight: function(dataSetIndex) {
-		return Math.max((this.chart.data.datasets[dataSetIndex].weight === undefined) ? 1 : this.chart.data.datasets[dataSetIndex].weight, 0);
+		return Math.max(valueOrDefault(this.chart.data.datasets[dataSetIndex].weight, 1), 0);
 	},
 
 	/**
