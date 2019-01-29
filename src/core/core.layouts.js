@@ -40,18 +40,11 @@ function findMaxPadding(boxes) {
 	return maxPadding;
 }
 
-function addHeightByPosition(boxes, size) {
+function addSizeByPosition(boxes, size) {
 	helpers.each(boxes, function(box) {
-		size[box.position] += box.height;
+		size[box.position] += box.isHorizontal() ? box.height : box.width;
 	});
 }
-
-function addWidthByPosition(boxes, size) {
-	helpers.each(boxes, function(box) {
-		size[box.position] += box.width;
-	});
-}
-
 
 defaults._set('global', {
 	layout: {
@@ -202,12 +195,12 @@ module.exports = {
 		// What we do to find the best sizing, we do the following
 		// 1. Determine the minimum size of the chart area.
 		// 2. Split the remaining width equally between each vertical axis
-		// 4. Give each layout the maximum size it can be. The layout will return it's minimum size
-		// 5. Adjust the sizes of each axis based on it's minimum reported size.
-		// 6. Refit each axis
-		// 7. Position each axis in the final location
-		// 8. Tell the chart the final location of the chart area
-		// 9. Tell any axes that overlay the chart area the positions of the chart area
+		// 3. Give each layout the maximum size it can be. The layout will return it's minimum size
+		// 4. Adjust the sizes of each axis based on it's minimum reported size.
+		// 5. Refit each axis
+		// 6. Position each axis in the final location
+		// 7. Tell the chart the final location of the chart area
+		// 8. Tell any axes that overlay the chart area the positions of the chart area
 
 		// Step 1
 		var chartWidth = width - leftPadding - rightPadding;
@@ -217,11 +210,12 @@ module.exports = {
 		// Step 2
 		var verticalBoxWidth = (width - chartAreaWidth) / verticalBoxes.length;
 
-
-		// Step 4
+		// Step 3
 		var maxChartAreaWidth = chartWidth;
 		var maxChartAreaHeight = chartHeight;
+		var outerBoxSizes = {top: topPadding, left: leftPadding, bottom: bottomPadding, right: rightPadding};
 		var minBoxSizes = [];
+		var maxPadding;
 
 		function getMinimumBoxSize(box) {
 			var minSize;
@@ -237,7 +231,7 @@ module.exports = {
 
 			minBoxSizes.push({
 				horizontal: isHorizontal,
-				minSize: minSize,
+				width: minSize.width,
 				box: box,
 			});
 		}
@@ -245,12 +239,11 @@ module.exports = {
 		helpers.each(outerBoxes, getMinimumBoxSize);
 
 		// If a horizontal box has padding, we move the left boxes over to avoid ugly charts (see issue #2478)
-		var maxPadding = findMaxPadding(outerBoxes);
+		maxPadding = findMaxPadding(outerBoxes);
 
 		// At this point, maxChartAreaHeight and maxChartAreaWidth are the size the chart area could
 		// be if the axes are drawn at their minimum sizes.
-		// Steps 5 & 6
-		var outerBoxSizes = {top: topPadding, left: leftPadding, bottom: bottomPadding, right: rightPadding};
+		// Steps 4 & 5
 
 		// Function to fit a box
 		function fitBox(box) {
@@ -271,18 +264,18 @@ module.exports = {
 					// on the margin. Sometimes they need to increase in size slightly
 					box.update(box.fullWidth ? chartWidth : maxChartAreaWidth, chartHeight / 2, scaleMargin);
 				} else {
-					box.update(minBoxSize.minSize.width, maxChartAreaHeight);
+					box.update(minBoxSize.width, maxChartAreaHeight);
 				}
 			}
 		}
 
 		// Update, and calculate the left and right margins for the horizontal boxes
 		helpers.each(verticalBoxes, fitBox);
-		addWidthByPosition(verticalBoxes, outerBoxSizes);
+		addSizeByPosition(verticalBoxes, outerBoxSizes);
 
 		// Set the Left and Right margins for the horizontal boxes
 		helpers.each(horizontalBoxes, fitBox);
-		addHeightByPosition(horizontalBoxes, outerBoxSizes);
+		addSizeByPosition(horizontalBoxes, outerBoxSizes);
 
 		function finalFitVerticalBox(box) {
 			var minBoxSize = helpers.findNextWhere(minBoxSizes, function(minSize) {
@@ -297,7 +290,7 @@ module.exports = {
 			};
 
 			if (minBoxSize) {
-				box.update(minBoxSize.minSize.width, maxChartAreaHeight, scaleMargin);
+				box.update(minBoxSize.width, maxChartAreaHeight, scaleMargin);
 			}
 		}
 
@@ -306,8 +299,7 @@ module.exports = {
 
 		// Recalculate because the size of each layout might have changed slightly due to the margins (label rotation for instance)
 		outerBoxSizes = {top: topPadding, left: leftPadding, bottom: bottomPadding, right: rightPadding};
-		addWidthByPosition(verticalBoxes, outerBoxSizes);
-		addHeightByPosition(horizontalBoxes, outerBoxSizes);
+		addSizeByPosition(outerBoxes, outerBoxSizes);
 
 		// We may be adding some padding to account for rotated x axis labels
 		var leftPaddingAddition = Math.max(maxPadding.left - outerBoxSizes.left, 0);
@@ -339,7 +331,7 @@ module.exports = {
 			maxChartAreaWidth = newMaxChartAreaWidth;
 		}
 
-		// Step 7 - Position the boxes
+		// Step 6 - Position the boxes
 		var left = leftPadding + leftPaddingAddition;
 		var top = topPadding + topPaddingAddition;
 
@@ -374,7 +366,7 @@ module.exports = {
 		helpers.each(rightBoxes, placeBox);
 		helpers.each(bottomBoxes, placeBox);
 
-		// Step 8
+		// Step 7
 		chart.chartArea = {
 			left: outerBoxSizes.left,
 			top: outerBoxSizes.top,
@@ -382,7 +374,7 @@ module.exports = {
 			bottom: outerBoxSizes.top + maxChartAreaHeight
 		};
 
-		// Step 9
+		// Step 8
 		helpers.each(chartAreaBoxes, function(box) {
 			box.left = chart.chartArea.left;
 			box.top = chart.chartArea.top;
