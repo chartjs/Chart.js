@@ -16,7 +16,7 @@ var chart = new Chart(ctx, {
             mode: 'point'
         }
     }
-})
+});
 ```
 
 ## nearest
@@ -31,11 +31,11 @@ var chart = new Chart(ctx, {
             mode: 'nearest'
         }
     }
-})
+});
 ```
 
 ## single (deprecated)
-Finds the first item that intersects the point and returns it. Behaves like 'nearest' mode with intersect = true.
+Finds the first item that intersects the point and returns it. Behaves like `'nearest'` mode with `intersect = true`.
 
 ## label (deprecated)
 See `'index'` mode.
@@ -52,7 +52,7 @@ var chart = new Chart(ctx, {
             mode: 'index'
         }
     }
-})
+});
 ```
 
 To use index mode in a chart like the horizontal bar chart, where we search along the y direction, you can use the `axis` setting introduced in v2.7.0. By setting this value to `'y'` on the y direction is used.
@@ -67,7 +67,7 @@ var chart = new Chart(ctx, {
             axis: 'y'
         }
     }
-})
+});
 ```
 
 ## x-axis (deprecated)
@@ -85,7 +85,7 @@ var chart = new Chart(ctx, {
             mode: 'dataset'
         }
     }
-})
+});
 ```
 
 ## x
@@ -100,7 +100,7 @@ var chart = new Chart(ctx, {
             mode: 'x'
         }
     }
-})
+});
 ```
 
 ## y
@@ -115,5 +115,5 @@ var chart = new Chart(ctx, {
             mode: 'y'
         }
     }
-})
+});
 ```

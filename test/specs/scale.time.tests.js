@@ -102,17 +102,7 @@ describe('Time scale tests', function() {
 				isoWeekday: false,
 				displayFormat: false,
 				minUnit: 'millisecond',
-				displayFormats: {
-					millisecond: 'h:mm:ss.SSS a', // 11:20:01.123 AM
-					second: 'h:mm:ss a', // 11:20:01 AM
-					minute: 'h:mm a', // 11:20 AM
-					hour: 'hA', // 5PM
-					day: 'MMM D', // Sep 4
-					week: 'll', // Week 46, or maybe "[W]WW - YYYY" ?
-					month: 'MMM YYYY', // Sept 2015
-					quarter: '[Q]Q - YYYY', // Q3
-					year: 'YYYY' // 2015
-				},
+				displayFormats: {}
 			}
 		});
 
@@ -1520,6 +1510,79 @@ describe('Time scale tests', function() {
 				expect(scale.getPixelForValue('2020')).toBeCloseToPixel(start + slice * (2050 - 2020));
 				expect(scale.getPixelForValue('2025')).toBeCloseToPixel(start + slice * (2050 - 2025));
 				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(start + slice * (2050 - 2042));
+			});
+		});
+	});
+
+	describe('Deprecations', function() {
+		describe('options.time.displayFormats', function() {
+			it('should generate defaults from adapter presets', function() {
+				var chart = window.acquireChart({
+					type: 'line',
+					data: {},
+					options: {
+						scales: {
+							xAxes: [{
+								id: 'x',
+								type: 'time'
+							}]
+						}
+					}
+				});
+
+				// NOTE: built-in adapter uses moment
+				var expected = {
+					millisecond: 'h:mm:ss.SSS a',
+					second: 'h:mm:ss a',
+					minute: 'h:mm a',
+					hour: 'hA',
+					day: 'MMM D',
+					week: 'll',
+					month: 'MMM YYYY',
+					quarter: '[Q]Q - YYYY',
+					year: 'YYYY'
+				};
+
+				expect(chart.scales.x.options.time.displayFormats).toEqual(expected);
+				expect(chart.options.scales.xAxes[0].time.displayFormats).toEqual(expected);
+			});
+
+			it('should merge user formats with adapter presets', function() {
+				var chart = window.acquireChart({
+					type: 'line',
+					data: {},
+					options: {
+						scales: {
+							xAxes: [{
+								id: 'x',
+								type: 'time',
+								time: {
+									displayFormats: {
+										millisecond: 'foo',
+										hour: 'bar',
+										month: 'bla'
+									}
+								}
+							}]
+						}
+					}
+				});
+
+				// NOTE: built-in adapter uses moment
+				var expected = {
+					millisecond: 'foo',
+					second: 'h:mm:ss a',
+					minute: 'h:mm a',
+					hour: 'bar',
+					day: 'MMM D',
+					week: 'll',
+					month: 'bla',
+					quarter: '[Q]Q - YYYY',
+					year: 'YYYY'
+				};
+
+				expect(chart.scales.x.options.time.displayFormats).toEqual(expected);
+				expect(chart.options.scales.xAxes[0].time.displayFormats).toEqual(expected);
 			});
 		});
 	});

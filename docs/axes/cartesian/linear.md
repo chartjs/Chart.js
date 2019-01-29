@@ -7,15 +7,15 @@ The linear scale is use to chart numerical data. It can be placed on either the 
 The following options are provided by the linear scale. They are all located in the `ticks` sub options. These options extend the [common tick configuration](README.md#tick-configuration).
 
 | Name | Type | Default | Description
-| -----| ---- | --------| -----------
-| `beginAtZero` | `Boolean` | | if true, scale will include 0 if it is not already included.
-| `min` | `Number` | | User defined minimum number for the scale, overrides minimum value from data. [more...](#axis-range-settings)
-| `max` | `Number` | | User defined maximum number for the scale, overrides maximum value from data. [more...](#axis-range-settings)
-| `maxTicksLimit` | `Number` | `11` | Maximum number of ticks and gridlines to show.
-| `precision` | `Number` | | if defined and `stepSize` is not specified, the step size will be rounded to this many decimal places.
-| `stepSize` | `Number` | | User defined fixed step size for the scale. [more...](#step-size)
-| `suggestedMax` | `Number` | | Adjustment used when calculating the maximum data value. [more...](#axis-range-settings)
-| `suggestedMin` | `Number` | | Adjustment used when calculating the minimum data value. [more...](#axis-range-settings)
+| ---- | ---- | ------- | -----------
+| `beginAtZero` | `boolean` | | if true, scale will include 0 if it is not already included.
+| `min` | `number` | | User defined minimum number for the scale, overrides minimum value from data. [more...](#axis-range-settings)
+| `max` | `number` | | User defined maximum number for the scale, overrides maximum value from data. [more...](#axis-range-settings)
+| `maxTicksLimit` | `number` | `11` | Maximum number of ticks and gridlines to show.
+| `precision` | `number` | | if defined and `stepSize` is not specified, the step size will be rounded to this many decimal places.
+| `stepSize` | `number` | | User defined fixed step size for the scale. [more...](#step-size)
+| `suggestedMax` | `number` | | Adjustment used when calculating the maximum data value. [more...](#axis-range-settings)
+| `suggestedMin` | `number` | | Adjustment used when calculating the minimum data value. [more...](#axis-range-settings)
 
 ## Axis Range Settings
 
@@ -56,7 +56,7 @@ let chart = new Chart(ctx, {
 In contrast to the `suggested*` settings, the `min` and `max` settings set explicit ends to the axes. When these are set, some data points may not be visible.
 
 ## Step Size
- If set, the scale ticks will be enumerated by multiple of stepSize, having one tick per increment. If not set, the ticks are labeled automatically using the nice numbers algorithm.
+If set, the scale ticks will be enumerated by multiple of `stepSize`, having one tick per increment. If not set, the ticks are labeled automatically using the nice numbers algorithm.
 
 This example sets up a chart with a y axis that creates ticks at `0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5`.
 

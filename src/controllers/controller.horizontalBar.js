@@ -65,14 +65,14 @@ module.exports = BarController.extend({
 	/**
 	 * @private
 	 */
-	getValueScaleId: function() {
+	_getValueScaleId: function() {
 		return this.getMeta().xAxisID;
 	},
 
 	/**
 	 * @private
 	 */
-	getIndexScaleId: function() {
+	_getIndexScaleId: function() {
 		return this.getMeta().yAxisID;
 	}
 });

@@ -131,6 +131,34 @@ helpers.extend(DatasetController.prototype, {
 		return this.chart.scales[scaleID];
 	},
 
+	/**
+	 * @private
+	 */
+	_getValueScaleId: function() {
+		return this.getMeta().yAxisID;
+	},
+
+	/**
+	 * @private
+	 */
+	_getIndexScaleId: function() {
+		return this.getMeta().xAxisID;
+	},
+
+	/**
+	 * @private
+	 */
+	_getValueScale: function() {
+		return this.getScaleForId(this._getValueScaleId());
+	},
+
+	/**
+	 * @private
+	 */
+	_getIndexScale: function() {
+		return this.getScaleForId(this._getIndexScaleId());
+	},
+
 	reset: function() {
 		this.update(true);
 	},
@@ -291,7 +319,8 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	onDataPush: function() {
-		this.insertElements(this.getDataset().data.length - 1, arguments.length);
+		var count = arguments.length;
+		this.insertElements(this.getDataset().data.length - count, count);
 	},
 
 	/**

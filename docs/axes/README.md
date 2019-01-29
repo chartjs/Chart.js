@@ -16,9 +16,9 @@ The following properties are common to all axes provided by Chart.js.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `display` | `Boolean`/`String` | `true` | Controls the axis global visibility (visible when `true`, hidden when `false`). When `display: 'auto'`, the axis is visible only if at least one associated dataset is visible.
-| `callbacks` | `Object` | | Callback functions to hook into the axis lifecycle. [more...](#callbacks)
-| `weight` | `Number` | `0` | The weight used to sort the axis. Higher weights are further away from the chart area.
+| `display` | <code>boolean&#124;string</code> | `true` | Controls the axis global visibility (visible when `true`, hidden when `false`). When `display: 'auto'`, the axis is visible only if at least one associated dataset is visible.
+| `callbacks` | `object` | | Callback functions to hook into the axis lifecycle. [more...](#callbacks)
+| `weight` | `number` | `0` | The weight used to sort the axis. Higher weights are further away from the chart area.
 
 ## Callbacks
 There are a number of config callbacks that can be used to change parameters in the scale at different points in the update process.
@@ -31,7 +31,7 @@ There are a number of config callbacks that can be used to change parameters in 
 | `beforeDataLimits` | `axis` | Callback that runs before data limits are determined.
 | `afterDataLimits` | `axis` | Callback that runs after data limits are determined.
 | `beforeBuildTicks` | `axis` | Callback that runs before ticks are created.
-| `afterBuildTicks` | `axis` | Callback that runs after ticks are created. Useful for filtering ticks.
+| `afterBuildTicks` | `axis`, `ticks` | Callback that runs after ticks are created. Useful for filtering ticks. Should return the filtered ticks.
 | `beforeTickToLabelConversion` | `axis` | Callback that runs before ticks are converted into strings.
 | `afterTickToLabelConversion` | `axis` | Callback that runs after ticks are converted into strings.
 | `beforeCalculateTickRotation` | `axis` | Callback that runs before tick rotation is determined.

@@ -1,6 +1,6 @@
 # Chart Prototype Methods
 
-For each chart, there are a set of global prototype methods on the shared `ChartType` which you may find useful. These are available on all charts created with Chart.js, but for the examples, let's use a line chart we've made.
+For each chart, there are a set of global prototype methods on the shared chart type which you may find useful. These are available on all charts created with Chart.js, but for the examples, let's use a line chart we've made.
 
 ```javascript
 // For example:
@@ -42,7 +42,7 @@ Example:
 myChart.update({
     duration: 800,
     easing: 'easeOutBounce'
-})
+});
 ```
 
 See [Updating Charts](updates.md) for more details.
@@ -65,9 +65,9 @@ See `.update(config)` for more details on the config object.
 // duration is the time for the animation of the redraw in milliseconds
 // lazy is a boolean. if true, the animation can be interrupted by other animations
 myLineChart.render({
-	duration: 800,
-	lazy: false,
-	easing: 'easeOutBounce'
+    duration: 800,
+    lazy: false,
+    easing: 'easeOutBounce'
 });
 ```
 
@@ -148,7 +148,7 @@ Looks for the element under the event point, then returns all elements at the sa
 Calling `getElementsAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the point elements that are at that the same position of that event.
 
 ```javascript
-canvas.onclick = function(evt){
+canvas.onclick = function(evt) {
     var activePoints = myLineChart.getElementsAtEvent(evt);
     // => activePoints is an array of points on the canvas that are at the same position as the click event.
 };
@@ -175,5 +175,5 @@ Extensive examples of usage are available in the [Chart.js tests](https://github
 
 ```javascript
 var meta = myChart.getDatasetMeta(0);
-var x = meta.data[0]._model.x
+var x = meta.data[0]._model.x;
 ```

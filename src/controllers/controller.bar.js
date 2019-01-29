@@ -173,7 +173,7 @@ module.exports = DatasetController.extend({
 	_updateElementGeometry: function(rectangle, index, reset) {
 		var me = this;
 		var model = rectangle._model;
-		var vscale = me.getValueScale();
+		var vscale = me._getValueScale();
 		var base = vscale.getBasePixel();
 		var horizontal = vscale.isHorizontal();
 		var ruler = me._ruler || me.getRuler();
@@ -189,34 +189,6 @@ module.exports = DatasetController.extend({
 	},
 
 	/**
-	 * @private
-	 */
-	getValueScaleId: function() {
-		return this.getMeta().yAxisID;
-	},
-
-	/**
-	 * @private
-	 */
-	getIndexScaleId: function() {
-		return this.getMeta().xAxisID;
-	},
-
-	/**
-	 * @private
-	 */
-	getValueScale: function() {
-		return this.getScaleForId(this.getValueScaleId());
-	},
-
-	/**
-	 * @private
-	 */
-	getIndexScale: function() {
-		return this.getScaleForId(this.getIndexScaleId());
-	},
-
-	/**
 	 * Returns the stacks based on groups and bar visibility.
 	 * @param {Number} [last] - The dataset index
 	 * @returns {Array} The stack list
@@ -225,7 +197,7 @@ module.exports = DatasetController.extend({
 	_getStacks: function(last) {
 		var me = this;
 		var chart = me.chart;
-		var scale = me.getIndexScale();
+		var scale = me._getIndexScale();
 		var stacked = scale.options.stacked;
 		var ilen = last === undefined ? chart.data.datasets.length : last + 1;
 		var stacks = [];
@@ -275,7 +247,7 @@ module.exports = DatasetController.extend({
 	 */
 	getRuler: function() {
 		var me = this;
-		var scale = me.getIndexScale();
+		var scale = me._getIndexScale();
 		var stackCount = me.getStackCount();
 		var datasetIndex = me.index;
 		var isHorizontal = scale.isHorizontal();
@@ -310,7 +282,7 @@ module.exports = DatasetController.extend({
 		var me = this;
 		var chart = me.chart;
 		var meta = me.getMeta();
-		var scale = me.getValueScale();
+		var scale = me._getValueScale();
 		var isHorizontal = scale.isHorizontal();
 		var datasets = chart.data.datasets;
 		var value = +scale.getRightValue(datasets[datasetIndex].data[index]);
@@ -326,7 +298,7 @@ module.exports = DatasetController.extend({
 
 				if (imeta.bar &&
 					imeta.stack === stack &&
-					imeta.controller.getValueScaleId() === scale.id &&
+					imeta.controller._getValueScaleId() === scale.id &&
 					chart.isDatasetVisible(i)) {
 
 					ivalue = +scale.getRightValue(datasets[i].data[index]);
@@ -385,7 +357,7 @@ module.exports = DatasetController.extend({
 	draw: function() {
 		var me = this;
 		var chart = me.chart;
-		var scale = me.getValueScale();
+		var scale = me._getValueScale();
 		var rects = me.getMeta().data;
 		var dataset = me.getDataset();
 		var ilen = rects.length;
