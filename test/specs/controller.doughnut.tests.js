@@ -325,6 +325,83 @@ describe('Chart.controllers.doughnut', function() {
 		expect(controller.innerRadius).toBe(126);
 	});
 
+	it('should create arcs with widths based on the weight value of the dataset', function() {
+		var chart = window.acquireChart({
+			type: 'doughnut',
+			data: {
+				datasets: [{
+					// default weight of 1
+					data: [1, 1],
+					borderWidth: 0
+				}, {
+					// default weight of 1 but hidden
+					data: [2, 1],
+					hidden: true,
+					borderWidth: 0
+				}, {
+					// explicit weight of 3
+					data: [3, 3],
+					weight: 3,
+					borderWidth: 0
+				}, {
+					// explicit weight of 0
+					data: [4, 0],
+					weight: 0,
+					borderWidth: 0
+				}, {
+					// explicit weight of -2 (treated as 0)
+					data: [5, 0],
+					weight: -2,
+					borderWidth: 0
+				}],
+				labels: ['label0', 'label1']
+			},
+			options: {
+				legend: false,
+				title: false
+			}
+		});
+
+		chart.update();
+
+		expect(chart.radiusLength).toBe(32);
+
+		var controller = chart.getDatasetMeta(0).controller;
+		expect(controller._getVisibleDatasetWeightTotal()).toBe(4);
+		expect(controller._getRingWeight(controller.index)).toBe(1);
+		expect(controller._getRingWeightOffset(controller.index)).toBe(0);
+		expect(controller.outerRadius).toBe(256);
+		expect(controller.innerRadius).toBe(224);
+
+		controller = chart.getDatasetMeta(1).controller;
+		expect(controller._getVisibleDatasetWeightTotal()).toBe(4);
+		expect(controller._getRingWeight(controller.index)).toBe(1);
+		expect(controller._getRingWeightOffset(controller.index)).toBe(1);
+		expect(controller.outerRadius).toBe(224);
+		expect(controller.innerRadius).toBe(192);
+
+		controller = chart.getDatasetMeta(2).controller;
+		expect(controller._getVisibleDatasetWeightTotal()).toBe(4);
+		expect(controller._getRingWeight(controller.index)).toBe(3);
+		expect(controller._getRingWeightOffset(controller.index)).toBe(1);
+		expect(controller.outerRadius).toBe(224);
+		expect(controller.innerRadius).toBe(128);
+
+		controller = chart.getDatasetMeta(3).controller;
+		expect(controller._getVisibleDatasetWeightTotal()).toBe(4);
+		expect(controller._getRingWeight(controller.index)).toBe(0);
+		expect(controller._getRingWeightOffset(controller.index)).toBe(4);
+		expect(controller.outerRadius).toBe(128);
+		expect(controller.innerRadius).toBe(128);
+
+		controller = chart.getDatasetMeta(4).controller;
+		expect(controller._getVisibleDatasetWeightTotal()).toBe(4);
+		expect(controller._getRingWeight(controller.index)).toBe(0);
+		expect(controller._getRingWeightOffset(controller.index)).toBe(4);
+		expect(controller.outerRadius).toBe(128);
+		expect(controller.innerRadius).toBe(128);
+	});
+
 	describe('Interactions', function() {
 		beforeEach(function() {
 			this.chart = window.acquireChart({
