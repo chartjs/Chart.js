@@ -36,8 +36,8 @@ defaults._set('global', {
 });
 
 /**
- * Recursively merge the given config objects as the `scales` options by
- * incorporating scale defaults in `xAxes` and `yAxes` array items, then
+ * Recursively merge the given config objects representing the `scales` option
+ * by incorporating scale defaults in `xAxes` and `yAxes` array items, then
  * returns a deep copy of the result, thus doesn't alter inputs.
  */
 function mergeScaleConfig(/* config objects ... */) {
