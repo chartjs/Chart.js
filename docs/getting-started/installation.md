@@ -40,7 +40,7 @@ If you download or clone the repository, you must [build](../developers/contribu
 
 # Selecting the Correct Build
 
-Chart.js provides two different builds for you to choose: `Stand-Alone Build`, `Bundled Build`.
+Chart.js provides two different builds for you to choose: **Stand-Alone Build**, **Bundled Build**.
 
 ## Stand-Alone Build
 Files:
@@ -54,4 +54,4 @@ Files:
 * `dist/Chart.bundle.js`
 * `dist/Chart.bundle.min.js`
 
-The bundled build includes Moment.js in a single file. You should use this version if you require time axes and want to include a single file. You should not use this build if your application already included Moment.js. Otherwise, Moment.js will be included twice which results in increasing page load time and possible version compatability issues. The Moment.js version in the bundled build is private to Chart.js so if you want to use Moment.js yourself, it's better to use Chart.js (non bundled) and import Moment.js manually.
+The bundled build includes Moment.js in a single file. You should use this version if you require time axes and want to include a single file. You should not use this build if your application already included Moment.js. Otherwise, Moment.js will be included twice which results in increasing page load time and possible version compatibility issues. The Moment.js version in the bundled build is private to Chart.js so if you want to use Moment.js yourself, it's better to use Chart.js (non bundled) and import Moment.js manually.

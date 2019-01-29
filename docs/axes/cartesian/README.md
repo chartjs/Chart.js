@@ -12,27 +12,27 @@ Axes that follow a cartesian grid are known as 'Cartesian Axes'. Cartesian axes 
 All of the included cartesian axes support a number of common options.
 
 | Name | Type | Default | Description
-| -----| ---- | --------| -----------
-| `type` | `String` | | Type of scale being employed. Custom scales can be created and registered with a string key. This allows changing the type of an axis for a chart.
-| `position` | `String` | | Position of the axis in the chart. Possible values are: `'top'`, `'left'`, `'bottom'`, `'right'`
-| `offset` | `Boolean` | `false` | If true, extra space is added to the both edges and the axis is scaled to fit into the chart area. This is set to `true` for a category scale in a bar chart by default.
-| `id` | `String` | | The ID is used to link datasets and scale axes together. [more...](#axis-id)
-| `gridLines` | `Object` | | Grid line configuration. [more...](../styling.md#grid-line-configuration)
-| `scaleLabel` | `Object` | | Scale title configuration. [more...](../labelling.md#scale-title-configuration)
-| `ticks` | `Object` | | Tick configuration. [more...](#tick-configuration)
+| ---- | ---- | ------- | -----------
+| `type` | `string` | | Type of scale being employed. Custom scales can be created and registered with a string key. This allows changing the type of an axis for a chart.
+| `position` | `string` | | Position of the axis in the chart. Possible values are: `'top'`, `'left'`, `'bottom'`, `'right'`
+| `offset` | `boolean` | `false` | If true, extra space is added to the both edges and the axis is scaled to fit into the chart area. This is set to `true` for a category scale in a bar chart by default.
+| `id` | `string` | | The ID is used to link datasets and scale axes together. [more...](#axis-id)
+| `gridLines` | `object` | | Grid line configuration. [more...](../styling.md#grid-line-configuration)
+| `scaleLabel` | `object` | | Scale title configuration. [more...](../labelling.md#scale-title-configuration)
+| `ticks` | `object` | | Tick configuration. [more...](#tick-configuration)
 
 ## Tick Configuration
 The following options are common to all cartesian axes but do not apply to other axes.
 
 | Name | Type | Default | Description
-| -----| ---- | --------| -----------
-| `autoSkip` | `Boolean` | `true` | If true, automatically calculates how many labels that can be shown and hides labels accordingly. Turn it off to show all labels no matter what.
-| `autoSkipPadding` | `Number` | `0` | Padding between the ticks on the horizontal axis when `autoSkip` is enabled. *Note: Only applicable to horizontal scales.*
-| `labelOffset` | `Number` | `0` | Distance in pixels to offset the label from the centre point of the tick (in the x direction for the x axis, and the y direction for the y axis). *Note: this can cause labels at the edges to be cropped by the edge of the canvas*
-| `maxRotation` | `Number` | `90` | Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. *Note: Only applicable to horizontal scales.*
-| `minRotation` | `Number` | `0` | Minimum rotation for tick labels. *Note: Only applicable to horizontal scales.*
-| `mirror` | `Boolean` | `false` | Flips tick labels around axis, displaying the labels inside the chart instead of outside. *Note: Only applicable to vertical scales.*
-| `padding` | `Number` | `10` | Padding between the tick label and the axis. When set on a vertical axis, this applies in the horizontal (X) direction. When set on a horizontal axis, this applies in the vertical (Y) direction.
+| ---- | ---- | ------- | -----------
+| `autoSkip` | `boolean` | `true` | If true, automatically calculates how many labels that can be shown and hides labels accordingly. Turn it off to show all labels no matter what.
+| `autoSkipPadding` | `number` | `0` | Padding between the ticks on the horizontal axis when `autoSkip` is enabled. *Note: Only applicable to horizontal scales.*
+| `labelOffset` | `number` | `0` | Distance in pixels to offset the label from the centre point of the tick (in the x direction for the x axis, and the y direction for the y axis). *Note: this can cause labels at the edges to be cropped by the edge of the canvas*
+| `maxRotation` | `number` | `90` | Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. *Note: Only applicable to horizontal scales.*
+| `minRotation` | `number` | `0` | Minimum rotation for tick labels. *Note: Only applicable to horizontal scales.*
+| `mirror` | `boolean` | `false` | Flips tick labels around axis, displaying the labels inside the chart instead of outside. *Note: Only applicable to vertical scales.*
+| `padding` | `number` | `10` | Padding between the tick label and the axis. When set on a vertical axis, this applies in the horizontal (X) direction. When set on a horizontal axis, this applies in the vertical (Y) direction.
 
 ## Axis ID
 The properties `dataset.xAxisID` or `dataset.yAxisID` have to match the scale properties `scales.xAxes.id` or `scales.yAxes.id`. This is especially needed if multi-axes charts are used.
@@ -84,7 +84,7 @@ var myChart = new Chart(ctx, {
             label: 'Right dataset',
 
             // This binds the dataset to the right y axis
-            yAxisID: 'right-y-axis',
+            yAxisID: 'right-y-axis'
         }],
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
     },

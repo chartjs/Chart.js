@@ -7,6 +7,6 @@ The logarithmic scale is use to chart numerical data. It can be placed on either
 The following options are provided by the logarithmic scale. They are all located in the `ticks` sub options. These options extend the [common tick configuration](README.md#tick-configuration).
 
 | Name | Type | Default | Description
-| -----| ---- | --------| -----------
-| `min` | `Number` | | User defined minimum number for the scale, overrides minimum value from data.
-| `max` | `Number` | | User defined maximum number for the scale, overrides maximum value from data.
+| ---- | ---- | ------- | -----------
+| `min` | `number` | | User defined minimum number for the scale, overrides minimum value from data.
+| `max` | `number` | | User defined maximum number for the scale, overrides maximum value from data.

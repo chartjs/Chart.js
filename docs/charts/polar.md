@@ -26,7 +26,7 @@ This type of chart is often useful when we want to show a comparison data simila
                 "rgb(54, 162, 235)"
             ]
         }]
-    },
+    }
 }
 {% endchartjs %}
 
@@ -46,14 +46,14 @@ The following options can be included in a polar area chart dataset to configure
 
 | Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) | Default
 | ---- | ---- | :----: | :----: | ----
-| [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0,0,0,0.1)'`
-| [`borderAlign`](#border-alignment) | `String` | Yes | Yes | `'center'`
+| [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
+| [`borderAlign`](#border-alignment) | `string` | Yes | Yes | `'center'`
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'#fff'`
-| [`borderWidth`](#styling) | `Number` | Yes | Yes | `2`
-| [`data`](#data-structure) | `Number[]` | - | - | **required**
+| [`borderWidth`](#styling) | `number` | Yes | Yes | `2`
+| [`data`](#data-structure) | `number[]` | - | - | **required**
 | [`hoverBackgroundColor`](#interations) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
-| [`hoverBorderWidth`](#interactions) | `Number` | Yes | Yes | `undefined`
+| [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `undefined`
 
 ### Styling
 
@@ -93,9 +93,9 @@ These are the customisation options specific to Polar Area charts. These options
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `startAngle` | `Number` | `-0.5 * Math.PI` | Starting angle to draw arcs for the first item in a dataset.
-| `animation.animateRotate` | `Boolean` | `true` | If true, the chart will animate in with a rotation animation. This property is in the `options.animation` object.
-| `animation.animateScale` | `Boolean` | `true` | If true, will animate scaling the chart from the center outwards.
+| `startAngle` | `number` | `-0.5 * Math.PI` | Starting angle to draw arcs for the first item in a dataset.
+| `animation.animateRotate` | `boolean` | `true` | If true, the chart will animate in with a rotation animation. This property is in the `options.animation` object.
+| `animation.animateScale` | `boolean` | `true` | If true, will animate scaling the chart from the center outwards.
 
 ## Default Options
 
