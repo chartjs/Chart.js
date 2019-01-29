@@ -35,8 +35,13 @@ defaults._set('global', {
 	responsiveAnimationDuration: 0
 });
 
-function mergeScaleConfig(/* objects ... */) {
-	return helpers.merge(helpers.clone(arguments[0]), [].slice.call(arguments, 1), {
+/**
+ * Recursively merge the given config objects as the `scales` options by
+ * incorporating scale defaults in `xAxes` and `yAxes` array items, then
+ * returns a deep copy of the result, thus doesn't alter inputs.
+ */
+function mergeScaleConfig(/* config objects ... */) {
+	return helpers.merge({}, Array.prototype.slice.call(arguments), {
 		merger: function(key, target, source, options) {
 			if (key === 'xAxes' || key === 'yAxes') {
 				var slen = source[key].length;
@@ -70,8 +75,13 @@ function mergeScaleConfig(/* objects ... */) {
 	});
 }
 
-function mergeConfig(/* objects ... */) {
-	return helpers.merge(helpers.clone(arguments[0]), [].slice.call(arguments, 1), {
+/**
+ * Recursively merge the given config objects as the root options by handling
+ * default scale options for the `scales` and `scale` properties, then returns
+ * a deep copy of the result, thus doesn't alter inputs.
+ */
+function mergeConfig(/* config objects ... */) {
+	return helpers.merge({}, Array.prototype.slice.call(arguments), {
 		merger: function(key, target, source, options) {
 			var tval = target[key] || {};
 			var sval = source[key];

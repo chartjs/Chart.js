@@ -271,6 +271,36 @@ describe('Chart', function() {
 					_jasmineCheckE: 'e2'
 				}));
 		});
+
+		it('should not alter defaults when merging config', function() {
+			var chart = acquireChart({
+				type: 'line',
+				options: {
+					_jasmineCheck: 42,
+					scales: {
+						xAxes: [{
+							id: 'foo',
+							type: 'linear',
+							_jasmineCheck: 42,
+						}],
+						yAxes: [{
+							id: 'bar',
+							type: 'category',
+							_jasmineCheck: 42,
+						}]
+					}
+				}
+			});
+
+			expect(chart.options._jasmineCheck).toBeDefined();
+			expect(chart.scales.foo.options._jasmineCheck).toBeDefined();
+			expect(chart.scales.bar.options._jasmineCheck).toBeDefined();
+
+			expect(Chart.defaults.line._jasmineCheck).not.toBeDefined();
+			expect(Chart.defaults.global._jasmineCheck).not.toBeDefined();
+			expect(Chart.scaleService.defaults.linear._jasmineCheck).not.toBeDefined();
+			expect(Chart.scaleService.defaults.category._jasmineCheck).not.toBeDefined();
+		});
 	});
 
 	describe('config.options.responsive: false', function() {
