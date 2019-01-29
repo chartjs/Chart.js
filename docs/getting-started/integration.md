@@ -55,7 +55,7 @@ require(['path/to/chartjs/dist/Chart.min.js'], function(Chart){
 });
 ```
 
-**Note:** starting v2.8, Moment.js is now an optional dependency for `Chart.js` and `Chart.min.js`. That means you need to make sure Moment.js is fully loaded **before** requiring Chart.js. You can either use a shim:
+**Note:** starting v2.8, Moment.js is an optional dependency for `Chart.js` and `Chart.min.js`. In order to use the time scale with Moment.js, you need to make sure Moment.js is fully loaded **before** requiring Chart.js. You can either use a shim:
 
 ```javascript
 require.config({
