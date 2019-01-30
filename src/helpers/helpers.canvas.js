@@ -25,11 +25,11 @@ var exports = {
 	 * Creates a "path" for a rectangle with rounded corners at position (x, y) with a
 	 * given size (width, height) and the same `radius` for all corners.
 	 * @param {CanvasRenderingContext2D} ctx - The canvas 2D Context.
-	 * @param {Number} x - The x axis of the coordinate for the rectangle starting point.
-	 * @param {Number} y - The y axis of the coordinate for the rectangle starting point.
-	 * @param {Number} width - The rectangle's width.
-	 * @param {Number} height - The rectangle's height.
-	 * @param {Number} radius - The rounded amount (in pixels) for the four corners.
+	 * @param {number} x - The x axis of the coordinate for the rectangle starting point.
+	 * @param {number} y - The y axis of the coordinate for the rectangle starting point.
+	 * @param {number} width - The rectangle's width.
+	 * @param {number} height - The rectangle's height.
+	 * @param {number} radius - The rounded amount (in pixels) for the four corners.
 	 * @todo handle `radius` as top-left, top-right, bottom-right, bottom-left array/object?
 	 */
 	roundedRect: function(ctx, x, y, width, height, radius) {
@@ -174,9 +174,9 @@ var exports = {
 
 	/**
 	 * Returns true if the point is inside the rectangle
-	 * @param {Object} point - The point to test
-	 * @param {Object} area - The rectangle
-	 * @returns {Boolean}
+	 * @param {object} point - The point to test
+	 * @param {object} area - The rectangle
+	 * @returns {boolean}
 	 * @private
 	 */
 	_isPointInArea: function(point, area) {

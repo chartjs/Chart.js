@@ -11,7 +11,7 @@ var valueOrDefault = helpers.valueOrDefault;
  * Generate a set of logarithmic ticks
  * @param generationOptions the options used to generate the ticks
  * @param dataRange the range of the data
- * @returns {Array<Number>} array of tick values
+ * @returns {number[]} array of tick values
  */
 function generateTicks(generationOptions, dataRange) {
 	var ticks = [];
@@ -251,8 +251,8 @@ module.exports = Scale.extend({
 
 	/**
 	 * Returns the value of the first tick.
-	 * @param {Number} value - The minimum not zero value.
-	 * @return {Number} The first tick value.
+	 * @param {number} value - The minimum not zero value.
+	 * @return {number} The first tick value.
 	 * @private
 	 */
 	_getFirstTickValue: function(value) {

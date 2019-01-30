@@ -85,9 +85,9 @@ defaults._set('global', {
 
 /**
  * Helper function to get the box width based on the usePointStyle option
- * @param labelopts {Object} the label options on the legend
- * @param fontSize {Number} the label font size
- * @return {Number} width of the color box area
+ * @param labelopts {object} the label options on the legend
+ * @param fontSize {number} the label font size
+ * @return {number} width of the color box area
  */
 function getBoxWidth(labelOpts, fontSize) {
 	return labelOpts.usePointStyle ?
@@ -463,7 +463,7 @@ var Legend = Element.extend({
 	 * Handle an event
 	 * @private
 	 * @param {IEvent} event - The event to handle
-	 * @return {Boolean} true if a change occured
+	 * @return {boolean} true if a change occured
 	 */
 	handleEvent: function(e) {
 		var me = this;

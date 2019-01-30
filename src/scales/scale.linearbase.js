@@ -10,7 +10,7 @@ var isNullOrUndef = helpers.isNullOrUndef;
  * Generate a set of linear ticks
  * @param generationOptions the options used to generate the ticks
  * @param dataRange the range of the data
- * @returns {Array<Number>} array of tick values
+ * @returns {number[]} array of tick values
  */
 function generateTicks(generationOptions, dataRange) {
 	var ticks = [];

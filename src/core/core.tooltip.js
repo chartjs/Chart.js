@@ -190,8 +190,8 @@ function pushOrConcat(base, toPush) {
 
 /**
  * Returns array of strings split by newline
- * @param {String} value - The value to split by newline.
- * @returns {Array} value if newline present - Returned from String split() method
+ * @param {string} value - The value to split by newline.
+ * @returns {string[]} value if newline present - Returned from String split() method
  * @function
  */
 function splitNewlines(str) {
@@ -228,7 +228,7 @@ function createTooltipItem(element) {
 
 /**
  * Helper to get the reset model for the tooltip
- * @param tooltipOpts {Object} the tooltip options
+ * @param tooltipOpts {object} the tooltip options
  */
 function getBaseModel(tooltipOpts) {
 	var globalDefaults = defaults.global;
@@ -953,7 +953,7 @@ var exports = Element.extend({
 	 * Handle an event
 	 * @private
 	 * @param {IEvent} event - The event to handle
-	 * @returns {Boolean} true if the tooltip changed
+	 * @returns {boolean} true if the tooltip changed
 	 */
 	handleEvent: function(e) {
 		var me = this;

@@ -14,3 +14,7 @@ bower.json
 *.log
 *.swp
 *.stackdump
+
+# Eclipse
+.project
+.settings

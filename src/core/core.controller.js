@@ -970,7 +970,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	 * Handle an event
 	 * @private
 	 * @param {IEvent} event the event to handle
-	 * @return {Boolean} true if the chart needs to re-render
+	 * @return {boolean} true if the chart needs to re-render
 	 */
 	handleEvent: function(e) {
 		var me = this;
