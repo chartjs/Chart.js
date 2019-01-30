@@ -277,13 +277,13 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			plugins.notify(me, 'resize', [newSize]);
 
 			// Notify of resize
-			if (me.options.onResize) {
-				me.options.onResize(me, newSize);
+			if (options.onResize) {
+				options.onResize(me, newSize);
 			}
 
 			me.stop();
 			me.update({
-				duration: me.options.responsiveAnimationDuration
+				duration: options.responsiveAnimationDuration
 			});
 		}
 	},
