@@ -89,6 +89,7 @@ module.exports = DatasetController.extend({
 		var dataset = me.getDataset();
 		var datasetIndex = me.index;
 		var value = dataset.data[index];
+		var parsedData = meta.data[index];
 		var yScale = me.getScaleForId(meta.yAxisID);
 		var xScale = me.getScaleForId(meta.xAxisID);
 		var lineModel = meta.dataset._model;
@@ -96,7 +97,7 @@ module.exports = DatasetController.extend({
 
 		var options = me._resolvePointOptions(point, index);
 
-		x = xScale.getPixelForValue(typeof value === 'object' ? value : NaN, index, datasetIndex);
+		x = xScale.getPixelForValue(parsedData[xScale.id], index, datasetIndex);
 		y = reset ? yScale.getBasePixel() : me.calculatePointY(value, index, datasetIndex);
 
 		// Utility
