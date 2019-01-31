@@ -284,8 +284,7 @@ module.exports = DatasetController.extend({
 		var meta = me.getMeta();
 		var scale = me._getValueScale();
 		var isHorizontal = scale.isHorizontal();
-		var datasets = chart.data.datasets;
-		var value = +scale.getRightValue(datasets[datasetIndex].data[index]);
+		var value = me._getParsedValue(index, scale);
 		var minBarLength = scale.options.minBarLength;
 		var stacked = scale.options.stacked;
 		var stack = meta.stack;
@@ -296,12 +295,8 @@ module.exports = DatasetController.extend({
 			for (i = 0; i < datasetIndex; ++i) {
 				imeta = chart.getDatasetMeta(i);
 
-				if (imeta.bar &&
-					imeta.stack === stack &&
-					imeta.controller._getValueScaleId() === scale.id &&
-					chart.isDatasetVisible(i)) {
-
-					ivalue = +scale.getRightValue(datasets[i].data[index]);
+				if (imeta.bar && imeta.stack === stack && chart.isDatasetVisible(i)) {
+					ivalue = imeta.controller._getParsedValue(index, scale);
 					if ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0)) {
 						start += ivalue;
 					}
@@ -359,14 +354,13 @@ module.exports = DatasetController.extend({
 		var chart = me.chart;
 		var scale = me._getValueScale();
 		var rects = me.getMeta().data;
-		var dataset = me.getDataset();
 		var ilen = rects.length;
 		var i = 0;
 
 		helpers.canvas.clipArea(chart.ctx, chart.chartArea);
 
 		for (; i < ilen; ++i) {
-			if (!isNaN(scale.getRightValue(dataset.data[i]))) {
+			if (!isNaN(me._getParsedValue(i, scale))) {
 				rects[i].draw();
 			}
 		}

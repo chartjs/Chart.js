@@ -304,6 +304,7 @@ helpers.extend(DatasetController.prototype, {
 
 		if (numData < numMeta) {
 			meta.data.splice(numData, numMeta - numData);
+			me._parse(0, numData);
 		} else if (numData > numMeta) {
 			me.insertElements(numMeta, numData - numMeta);
 		}
@@ -394,6 +395,17 @@ helpers.extend(DatasetController.prototype, {
 				meta.data[i][indexScale.id] = indexScale._parse(labels[i]);
 			}
 		}
+	},
+
+	/**
+	 * @private
+	 */
+	_getParsedValue: function(index, scale) {
+		var data = this.getMeta().data;
+		if (index < 0 || index >= data.length) {
+			return NaN;
+		}
+		return data[index][scale.id];
 	},
 
 	/**
