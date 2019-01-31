@@ -238,12 +238,12 @@ module.exports = DatasetController.extend({
 			}
 
 			if (value < 0) {
-				return yScale.getPixelForValue(sumNeg + value);
+				return yScale._getPixel(sumNeg + value);
 			}
-			return yScale.getPixelForValue(sumPos + value);
+			return yScale._getPixel(sumPos + value);
 		}
 
-		return yScale.getPixelForValue(value);
+		return yScale._getPixel(value);
 	},
 
 	updateBezierControlPoints: function() {

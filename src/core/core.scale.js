@@ -113,6 +113,7 @@ module.exports = Element.extend({
 	 * Function that parses a object for axis to internal representation.
 	 * @param {object} obj
 	 * @param {string} axis
+	 * @param {number} index
 	 * @since 2.9
 	 */
 	_parseObject: function(obj, axis) {
@@ -574,13 +575,13 @@ module.exports = Element.extend({
 	 * @private
 	 */
 	_getParsedValue: function(index, datasetIndex) {
-		return this.chart.getDatasetMeta(datasetIndex).data[index][this.id];
+		return this.chart.getDatasetMeta(datasetIndex).controller._getParsedValue(index, this);
 	},
 
 	/**
 	 * @private
 	 */
-	_getPixelForParsedValue: helpers.noop,
+	_getPixel: helpers.noop,
 
 	/**
 	 * Used to get the value to display in the tooltip for the data at the given index

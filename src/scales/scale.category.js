@@ -13,6 +13,13 @@ module.exports = Scale.extend({
 		return index === -1 ? null : index;
 	},
 
+	_parseObject: function(obj, axis, index) {
+		if (obj[axis] !== undefined) {
+			return this._parse(obj[axis]) || index;
+		}
+		return null;
+	},
+
 	determineDataLimits: function() {
 		var me = this;
 		var labels = me._getLabels();
@@ -49,7 +56,7 @@ module.exports = Scale.extend({
 		return me.ticks[me._getParsedValue(index, datasetIndex) - me.minIndex];
 	},
 
-	_getPixelForParsedValue: function(value) {
+	_getPixel: function(value) {
 		var me = this;
 		var offset = me.options.offset;
 		// 1 is added because we need the length but we have the indexes
@@ -92,7 +99,7 @@ module.exports = Scale.extend({
 			index = idx !== -1 ? idx : index;
 		}
 
-		return me._getPixelForParsedValue(index);
+		return me._getPixel(index);
 	},
 
 	getPixelForTick: function(index) {

@@ -304,8 +304,8 @@ module.exports = DatasetController.extend({
 			}
 		}
 
-		base = scale.getPixelForValue(start);
-		head = scale.getPixelForValue(start + value);
+		base = scale._getPixel(start);
+		head = scale._getPixel(start + value);
 		size = head - base;
 
 		if (minBarLength !== undefined && Math.abs(size) < minBarLength) {

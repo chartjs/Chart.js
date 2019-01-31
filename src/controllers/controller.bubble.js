@@ -80,8 +80,8 @@ module.exports = DatasetController.extend({
 		var options = me._resolveElementOptions(point, index);
 		var dsIndex = me.index;
 
-		var x = reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(point[xScale.id], index, dsIndex);
-		var y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(point[yScale.id], index, dsIndex);
+		var x = reset ? xScale.getPixelForDecimal(0.5) : xScale._getPixel(point[xScale.id]);
+		var y = reset ? yScale.getBasePixel() : yScale._getPixel(point[yScale.id]);
 
 		point._xScale = xScale;
 		point._yScale = yScale;

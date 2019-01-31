@@ -373,8 +373,8 @@ helpers.extend(DatasetController.prototype, {
 		var yScale = me.getScaleForId(meta.yAxisID);
 		var i, ilen;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
-			meta.data[i][meta.xAxisID] = xScale._parseObject(data[i], 'x');
-			meta.data[i][meta.yAxisID] = yScale._parseObject(data[i], 'y');
+			meta.data[i][meta.xAxisID] = xScale._parseObject(data[i], 'x', i);
+			meta.data[i][meta.yAxisID] = yScale._parseObject(data[i], 'y', i);
 			me._parseCustomObjectData(data[i], meta.data[i]);
 		}
 	},
