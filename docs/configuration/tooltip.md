@@ -163,10 +163,10 @@ The tooltip items passed to the tooltip callbacks implement the following interf
 ```javascript
 {
     // Label for the tooltip
-    label: number | string,
+    label: string,
 
     // Value for the tooltip
-    value: number | string,
+    value: string,
 
     // X Value of the tooltip
     // (deprecated) use `value` or `label` instead
