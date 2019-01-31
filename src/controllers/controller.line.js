@@ -91,6 +91,7 @@ module.exports = DatasetController.extend({
 		var value = dataset.data[index];
 		var yScale = me.getScaleForId(meta.yAxisID);
 		var xScale = me.getScaleForId(meta.xAxisID);
+		var lineModel = meta.dataset._model;
 		var x, y;
 
 		var options = me._resolvePointOptions(point, index);
@@ -117,10 +118,10 @@ module.exports = DatasetController.extend({
 			backgroundColor: options.backgroundColor,
 			borderColor: options.borderColor,
 			borderWidth: options.borderWidth,
-			tension: meta.dataset._model ? meta.dataset._model.tension : 0,
-			steppedLine: meta.dataset._model ? meta.dataset._model.steppedLine : false,
+			tension: lineModel ? lineModel.tension : 0,
+			steppedLine: lineModel ? lineModel.steppedLine : false,
 			// Tooltip
-			hitRadius: options.hitRadius,
+			hitRadius: options.hitRadius
 		};
 	},
 
@@ -256,7 +257,7 @@ module.exports = DatasetController.extend({
 		var lineModel = meta.dataset._model;
 		var area = chart.chartArea;
 		var points = meta.data || [];
-		var i, ilen, point, model, controlPoints;
+		var i, ilen, model, controlPoints;
 
 		// Only consider points that are drawn in case the spanGaps option is used
 		if (lineModel.spanGaps) {
@@ -273,8 +274,7 @@ module.exports = DatasetController.extend({
 			helpers.splineCurveMonotone(points);
 		} else {
 			for (i = 0, ilen = points.length; i < ilen; ++i) {
-				point = points[i];
-				model = point._model;
+				model = points[i]._model;
 				controlPoints = helpers.splineCurve(
 					helpers.previousItem(points, i)._model,
 					model,
