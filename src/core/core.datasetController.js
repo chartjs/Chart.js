@@ -357,6 +357,8 @@ helpers.extend(DatasetController.prototype, {
 		}
 	},
 
+	_parseCustomObjectData: helpers.noop,
+
 	/**
 	 * @private
 	 */
@@ -370,6 +372,7 @@ helpers.extend(DatasetController.prototype, {
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			meta.data[i][meta.xAxisID] = xScale._parseObject(data[i], 'x');
 			meta.data[i][meta.yAxisID] = yScale._parseObject(data[i], 'y');
+			me._parseCustomObjectData(data[i], meta.data[i]);
 		}
 	},
 

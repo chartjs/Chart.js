@@ -43,6 +43,13 @@ defaults._set('bubble', {
 
 module.exports = DatasetController.extend({
 	/**
+	 * @private
+	 */
+	_parseCustomObjectData: function(obj, metaData) {
+		metaData.r = +obj.r;
+	},
+
+	/**
 	 * @protected
 	 */
 	dataElementType: elements.Point,
@@ -71,11 +78,10 @@ module.exports = DatasetController.extend({
 		var xScale = me.getScaleForId(meta.xAxisID);
 		var yScale = me.getScaleForId(meta.yAxisID);
 		var options = me._resolveElementOptions(point, index);
-		var data = me.getDataset().data[index];
 		var dsIndex = me.index;
 
-		var x = reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(typeof data === 'object' ? data : NaN, index, dsIndex);
-		var y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(data, index, dsIndex);
+		var x = reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(point[xScale.id], index, dsIndex);
+		var y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(point[yScale.id], index, dsIndex);
 
 		point._xScale = xScale;
 		point._yScale = yScale;
