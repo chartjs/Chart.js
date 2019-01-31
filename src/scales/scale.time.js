@@ -696,7 +696,7 @@ module.exports = Scale.extend({
 	/**
 	 * @private
 	 */
-	getPixelForOffset: function(time) {
+	_getPixelForParsedValue: function(time) {
 		var me = this;
 		var isReverse = me.options.ticks.reverse;
 		var size = me._horizontal ? me.width : me.height;
@@ -720,14 +720,14 @@ module.exports = Scale.extend({
 		}
 
 		if (time !== null) {
-			return me.getPixelForOffset(time);
+			return me._getPixelForParsedValue(time);
 		}
 	},
 
 	getPixelForTick: function(index) {
 		var ticks = this.getTicks();
 		return index >= 0 && index < ticks.length ?
-			this.getPixelForOffset(ticks[index].value) :
+			this._getPixelForParsedValue(ticks[index].value) :
 			null;
 	},
 

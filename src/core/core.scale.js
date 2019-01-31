@@ -570,9 +570,17 @@ module.exports = Element.extend({
 		return rawValue;
 	},
 
+	/**
+	 * @private
+	 */
 	_getParsedValue: function(index, datasetIndex) {
 		return this.chart.getDatasetMeta(datasetIndex).data[index][this.id];
 	},
+
+	/**
+	 * @private
+	 */
+	_getPixelForParsedValue: helpers.noop,
 
 	/**
 	 * Used to get the value to display in the tooltip for the data at the given index
@@ -582,7 +590,7 @@ module.exports = Element.extend({
 	getLabelForIndex: helpers.noop,
 
 	/**
-	 * Returns the location of the given data point. Value can either be an index or a numerical value
+	 * Returns the location of the given data point. Value can be whatever
 	 * The coordinate (0, 0) is at the upper-left corner of the canvas
 	 * @param value
 	 * @param index

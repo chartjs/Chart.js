@@ -49,12 +49,35 @@ module.exports = Scale.extend({
 		return me.ticks[me._getParsedValue(index, datasetIndex) - me.minIndex];
 	},
 
-	// Used to get data value locations.  Value can either be an index or a numerical value
-	getPixelForValue: function(value, index) {
+	_getPixelForParsedValue: function(value) {
 		var me = this;
 		var offset = me.options.offset;
 		// 1 is added because we need the length but we have the indexes
 		var offsetAmt = Math.max((me.maxIndex + 1 - me.minIndex - (offset ? 0 : 1)), 1);
+
+		if (me.isHorizontal()) {
+			var valueWidth = me.width / offsetAmt;
+			var widthOffset = (valueWidth * (value - me.minIndex));
+
+			if (offset) {
+				widthOffset += (valueWidth / 2);
+			}
+
+			return me.left + widthOffset;
+		}
+		var valueHeight = me.height / offsetAmt;
+		var heightOffset = (valueHeight * (value - me.minIndex));
+
+		if (offset) {
+			heightOffset += (valueHeight / 2);
+		}
+
+		return me.top + heightOffset;
+	},
+
+	// Used to get data value locations.  Value can either be an index or a numerical value
+	getPixelForValue: function(value, index) {
+		var me = this;
 
 		// If value is a data object, then index is the index in the data array,
 		// not the index of the scale. We need to change that.
@@ -69,24 +92,7 @@ module.exports = Scale.extend({
 			index = idx !== -1 ? idx : index;
 		}
 
-		if (me.isHorizontal()) {
-			var valueWidth = me.width / offsetAmt;
-			var widthOffset = (valueWidth * (index - me.minIndex));
-
-			if (offset) {
-				widthOffset += (valueWidth / 2);
-			}
-
-			return me.left + widthOffset;
-		}
-		var valueHeight = me.height / offsetAmt;
-		var heightOffset = (valueHeight * (index - me.minIndex));
-
-		if (offset) {
-			heightOffset += (valueHeight / 2);
-		}
-
-		return me.top + heightOffset;
+		return me._getPixelForParsedValue(index);
 	},
 
 	getPixelForTick: function(index) {
