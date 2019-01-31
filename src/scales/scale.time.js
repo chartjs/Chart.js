@@ -471,7 +471,7 @@ module.exports = Scale.extend({
 	},
 
 	_parseObject: function(obj, axis) {
-		if (obj.t) {
+		if (obj && obj.t) {
 			return this._parse(obj.t);
 		}
 		return Scale.prototype._parseObject.call(obj, axis);

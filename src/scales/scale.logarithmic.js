@@ -69,6 +69,13 @@ function nonNegativeOrDefault(value, defaultValue) {
 
 module.exports = Scale.extend({
 	_parse: function(raw) {
+		if (helpers.isNullOrUndef(raw)) {
+			return NaN;
+		}
+		if ((typeof raw === 'number' || raw instanceof Number) && !isFinite(raw)) {
+			return NaN;
+		}
+
 		return +raw;
 	},
 
@@ -122,7 +129,7 @@ module.exports = Scale.extend({
 
 					helpers.each(dataset.data, function(rawValue, index) {
 						var values = valuesPerStack[key];
-						var value = +me.getRightValue(rawValue);
+						var value = meta.controller._getParsedValue(index, me);
 						// invalid, hidden and negative values are ignored
 						if (isNaN(value) || meta.data[index].hidden || value < 0) {
 							return;
@@ -147,7 +154,7 @@ module.exports = Scale.extend({
 				var meta = chart.getDatasetMeta(datasetIndex);
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 					helpers.each(dataset.data, function(rawValue, index) {
-						var value = +me.getRightValue(rawValue);
+						var value = meta.controller._getParsedValue(index, me);
 						// invalid, hidden and negative values are ignored
 						if (isNaN(value) || meta.data[index].hidden || value < 0) {
 							return;
@@ -251,7 +258,7 @@ module.exports = Scale.extend({
 
 	// Get the correct tooltip label
 	getLabelForIndex: function(index, datasetIndex) {
-		return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
+		return this.chart.getDatasetMeta(datasetIndex).controller._getParsedValue(index, this);
 	},
 
 	getPixelForTick: function(index) {
@@ -280,7 +287,6 @@ module.exports = Scale.extend({
 		var offset = 0;
 		var innerDimension, pixel, start, end, sign;
 
-		value = +me.getRightValue(value);
 		if (reverse) {
 			start = me.end;
 			end = me.start;

@@ -70,7 +70,7 @@ module.exports = LinearScaleBase.extend({
 
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 					helpers.each(dataset.data, function(rawValue, index) {
-						var value = +me.getRightValue(rawValue);
+						var value = meta.controller._getParsedValue(index, me);
 						if (isNaN(value) || meta.data[index].hidden) {
 							return;
 						}
@@ -101,8 +101,8 @@ module.exports = LinearScaleBase.extend({
 			helpers.each(datasets, function(dataset, datasetIndex) {
 				var meta = chart.getDatasetMeta(datasetIndex);
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
-					helpers.each(dataset.data, function(rawValue, index) {
-						var value = +me.getRightValue(rawValue);
+					helpers.each(meta.data, function(metaData, index) {
+						var value = meta.controller._getParsedValue(index, me);
 						if (isNaN(value) || meta.data[index].hidden) {
 							return;
 						}
@@ -151,17 +151,16 @@ module.exports = LinearScaleBase.extend({
 	},
 
 	getLabelForIndex: function(index, datasetIndex) {
-		return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
+		return this.chart.getDatasetMeta(datasetIndex).controller._getParsedValue(index, this);
 	},
 
 	// Utils
-	getPixelForValue: function(value) {
+	getPixelForValue: function(rightValue) {
 		// This must be called after fit has been run so that
 		// this.left, this.top, this.right, and this.bottom have been defined
 		var me = this;
 		var start = me.start;
 
-		var rightValue = +me.getRightValue(value);
 		var pixel;
 		var range = me.end - start;
 

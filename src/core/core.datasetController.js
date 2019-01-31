@@ -307,6 +307,8 @@ helpers.extend(DatasetController.prototype, {
 			me._parse(0, numData);
 		} else if (numData > numMeta) {
 			me.insertElements(numMeta, numData - numMeta);
+		} else {
+			me._parse(0, numData);
 		}
 	},
 

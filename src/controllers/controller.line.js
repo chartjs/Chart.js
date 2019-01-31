@@ -86,10 +86,7 @@ module.exports = DatasetController.extend({
 		var me = this;
 		var meta = me.getMeta();
 		var custom = point.custom || {};
-		var dataset = me.getDataset();
 		var datasetIndex = me.index;
-		var value = dataset.data[index];
-		var parsedData = meta.data[index];
 		var yScale = me.getScaleForId(meta.yAxisID);
 		var xScale = me.getScaleForId(meta.xAxisID);
 		var lineModel = meta.dataset._model;
@@ -97,8 +94,8 @@ module.exports = DatasetController.extend({
 
 		var options = me._resolvePointOptions(point, index);
 
-		x = xScale.getPixelForValue(parsedData[xScale.id], index, datasetIndex);
-		y = reset ? yScale.getBasePixel() : me.calculatePointY(value, index, datasetIndex);
+		x = xScale.getPixelForValue(me._getParsedValue(index, xScale), index, datasetIndex);
+		y = reset ? yScale.getBasePixel() : me.calculatePointY(me._getParsedValue(index, yScale), index, datasetIndex);
 
 		// Utility
 		point._xScale = xScale;
@@ -225,27 +222,25 @@ module.exports = DatasetController.extend({
 		var yScale = me.getScaleForId(meta.yAxisID);
 		var sumPos = 0;
 		var sumNeg = 0;
-		var i, ds, dsMeta;
+		var i, dsMeta;
 
 		if (yScale.options.stacked) {
 			for (i = 0; i < datasetIndex; i++) {
-				ds = chart.data.datasets[i];
 				dsMeta = chart.getDatasetMeta(i);
-				if (dsMeta.type === 'line' && dsMeta.yAxisID === yScale.id && chart.isDatasetVisible(i)) {
-					var stackedRightValue = Number(yScale.getRightValue(ds.data[index]));
+				if (dsMeta.type === 'line' && chart.isDatasetVisible(i)) {
+					var stackedRightValue = dsMeta.controller._getParsedValue(index, yScale);
 					if (stackedRightValue < 0) {
 						sumNeg += stackedRightValue || 0;
-					} else {
+					} else if (stackedRightValue > 0) {
 						sumPos += stackedRightValue || 0;
 					}
 				}
 			}
 
-			var rightValue = Number(yScale.getRightValue(value));
-			if (rightValue < 0) {
-				return yScale.getPixelForValue(sumNeg + rightValue);
+			if (value < 0) {
+				return yScale.getPixelForValue(sumNeg + value);
 			}
-			return yScale.getPixelForValue(sumPos + rightValue);
+			return yScale.getPixelForValue(sumPos + value);
 		}
 
 		return yScale.getPixelForValue(value);

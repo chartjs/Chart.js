@@ -341,8 +341,8 @@ module.exports = LinearScaleBase.extend({
 			if (chart.isDatasetVisible(datasetIndex)) {
 				var meta = chart.getDatasetMeta(datasetIndex);
 
-				helpers.each(dataset.data, function(rawValue, index) {
-					var value = +me.getRightValue(rawValue);
+				helpers.each(meta.data, function(metaData, index) {
+					var value = meta.controller._getParsedValue(index, me);
 					if (isNaN(value) || meta.data[index].hidden) {
 						return;
 					}
@@ -375,7 +375,7 @@ module.exports = LinearScaleBase.extend({
 	},
 
 	getLabelForIndex: function(index, datasetIndex) {
-		return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
+		return this.chart.getDatasetMeta(datasetIndex).controller._getParsedValue(index, this);
 	},
 
 	fit: function() {

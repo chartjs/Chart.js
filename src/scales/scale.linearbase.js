@@ -86,6 +86,13 @@ function generateTicks(generationOptions, dataRange) {
 
 module.exports = Scale.extend({
 	_parse: function(raw) {
+		if (helpers.isNullOrUndef(raw)) {
+			return NaN;
+		}
+		if ((typeof raw === 'number' || raw instanceof Number) && !isFinite(raw)) {
+			return NaN;
+		}
+
 		return +raw;
 	},
 
