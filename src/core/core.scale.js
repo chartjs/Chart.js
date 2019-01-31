@@ -116,7 +116,7 @@ module.exports = Element.extend({
 	 * @since 2.9
 	 */
 	_parseObject: function(obj, axis) {
-		if (obj.hasOwnProperty(axis)) {
+		if (obj[axis] !== undefined) {
 			return this._parse(obj[axis]);
 		}
 		return null;
