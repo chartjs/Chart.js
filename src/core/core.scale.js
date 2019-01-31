@@ -105,8 +105,21 @@ module.exports = Element.extend({
 	 * @param {*} raw
 	 * @since 2.9
 	 */
-	parse: function(raw) {
+	_parse: function(raw) {
 		return raw;
+	},
+
+	/**
+	 * Function that parses a object for axis to internal representation.
+	 * @param {object} obj
+	 * @param {string} axis
+	 * @since 2.9
+	 */
+	_parseObject: function(obj, axis) {
+		if (obj.hasOwnProperty(axis)) {
+			return this._parse(obj[axis]);
+		}
+		return null;
 	},
 
 	/**
@@ -557,7 +570,7 @@ module.exports = Element.extend({
 		return rawValue;
 	},
 
-	_getRawValue: function(index, datasetIndex) {
+	_getParsedValue: function(index, datasetIndex) {
 		return this.chart.getDatasetMeta(datasetIndex).data[index][this.id];
 	},
 

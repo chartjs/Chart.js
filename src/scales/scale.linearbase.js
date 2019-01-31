@@ -85,7 +85,7 @@ function generateTicks(generationOptions, dataRange) {
 }
 
 module.exports = Scale.extend({
-	parse: function(raw) {
+	_parse: function(raw) {
 		return +raw;
 	},
 

@@ -7,7 +7,7 @@ var defaultConfig = {
 };
 
 module.exports = Scale.extend({
-	parse: function(raw) {
+	_parse: function(raw) {
 		var labels = this._getLabels();
 		var index = labels.indexOf(raw);
 		return index === -1 ? null : index;
@@ -46,7 +46,7 @@ module.exports = Scale.extend({
 	getLabelForIndex: function(index, datasetIndex) {
 		var me = this;
 
-		return me.ticks[me._getRawValue(index, datasetIndex) - me.minIndex];
+		return me.ticks[me._getParsedValue(index, datasetIndex) - me.minIndex];
 	},
 
 	// Used to get data value locations.  Value can either be an index or a numerical value

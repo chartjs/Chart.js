@@ -321,52 +321,74 @@ helpers.extend(DatasetController.prototype, {
 
 	/**
 	 * @private
-	 * parse data to internal representation utilizing scales
 	 */
 	_parse: function(start, count) {
+		var me = this;
+		var data = me.getDataset().data;
+
+		if (data && data.length) {
+			if (helpers.isArray(data[0])) {
+				me._parseArrayData(start, count);
+			} else if (helpers.isObject(data[0])) {
+				me._parseObjectData(start, count);
+			} else {
+				me._parsePlainData(start, count);
+			}
+		}
+	},
+
+	/**
+	 * @private
+	 */
+	_parseArrayData: function(start, count) {
 		var me = this;
 		var meta = me.getMeta();
 		var data = me.getDataset().data;
 		var xID = meta.xAxisID;
 		var yID = meta.yAxisID;
-		var indexScale = me._getIndexScale();
-		var valueScale = me._getValueScale();
 		var xScale = me.getScaleForId(xID);
 		var yScale = me.getScaleForId(yID);
-		var labels = indexScale._getLabels() || [];
-		var i, ilen, j, jlen, v, key, keys, metaData;
-
+		var i, ilen, v, metaData;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			metaData = meta.data[i];
 			v = data[i];
-			if (helpers.isArray(v) && v.length === 2) {
-				metaData[xID] = xScale.parse(v[0]);
-				metaData[yID] = yScale.parse(v[1]);
-			} else if (helpers.isObject(v)) {
-				keys = Object.keys(v);
-				metaData[xID] = null;
-				metaData[yID] = null;
-				for (j = 0, jlen = keys.length; j < jlen; ++j) {
-					key = keys[j];
-					if (key === 'x') {
-						metaData[xID] = xScale.parse(v.x);
-					} else if (key === 'y') {
-						metaData[yID] = yScale.parse(v.y);
-					}
-				}
-				if (v.t) {
-					if (metaData[xID] === null) {
-						metaData[xID] = xScale.parse(v.t);
-					}
-					if (metaData[yID] === null) {
-						metaData[yID] = xScale.parse(v.t);
-					}
-				}
-			} else {
-				metaData[valueScale.id] = valueScale.parse(v);
-				if (indexScale !== valueScale && i < labels.length) {
-					metaData[indexScale.id] = indexScale.parse(labels[i]);
-				}
+			metaData[xID] = xScale._parse(v[0]);
+			metaData[yID] = yScale._parse(v[1]);
+		}
+	},
+
+	/**
+	 * @private
+	 */
+	_parseObjectData: function(start, count) {
+		var me = this;
+		var meta = me.getMeta();
+		var data = me.getDataset().data;
+		var xScale = me.getScaleForId(meta.xAxisID);
+		var yScale = me.getScaleForId(meta.yAxisID);
+		var i, ilen;
+		for (i = start, ilen = start + count; i < ilen; ++i) {
+			meta.data[i][meta.xAxisID] = xScale._parseObject(data[i], 'x');
+			meta.data[i][meta.yAxisID] = yScale._parseObject(data[i], 'y');
+		}
+	},
+
+	/**
+	 * @private
+	 */
+	_parsePlainData: function(start, count) {
+		var me = this;
+		var meta = me.getMeta();
+		var data = me.getDataset().data;
+		var indexScale = me._getIndexScale();
+		var valueScale = me._getValueScale();
+		var labels = indexScale._getLabels() || [];
+		var i, ilen;
+
+		for (i = start, ilen = start + count; i < ilen; ++i) {
+			meta.data[i][valueScale.id] = valueScale._parse(data[i]);
+			if (indexScale !== valueScale && i < labels.length) {
+				meta.data[i][indexScale.id] = indexScale._parse(labels[i]);
 			}
 		}
 	},
