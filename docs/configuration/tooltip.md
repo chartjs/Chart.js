@@ -170,11 +170,11 @@ The tooltip items passed to the tooltip callbacks implement the following interf
 
     // X Value of the tooltip
     // (deprecated) use `value` or `label` instead
-    xLabel: string,
+    xLabel: number | string,
 
     // Y value of the tooltip
     // (deprecated) use `value` or `label` instead
-    yLabel: string,
+    yLabel: number | string,
 
     // Index of the dataset the item comes from
     datasetIndex: number,

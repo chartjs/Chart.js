@@ -217,8 +217,8 @@ function createTooltipItem(element) {
 	return {
 		xLabel: xScale ? xScale.getLabelForIndex(index, datasetIndex) : '',
 		yLabel: yScale ? yScale.getLabelForIndex(index, datasetIndex) : '',
-		label: indexScale ? indexScale.getLabelForIndex(index, datasetIndex) : '',
-		value: valueScale ? valueScale.getLabelForIndex(index, datasetIndex) : '',
+		label: indexScale ? '' + indexScale.getLabelForIndex(index, datasetIndex) : '',
+		value: valueScale ? '' + valueScale.getLabelForIndex(index, datasetIndex) : '',
 		index: index,
 		datasetIndex: datasetIndex,
 		x: element._model.x,
