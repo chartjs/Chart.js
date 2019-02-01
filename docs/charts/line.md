@@ -190,7 +190,7 @@ data: [{
 
 This alternate is used for sparse datasets, such as those in [scatter charts](./scatter.md#scatter-chart). Each data point is specified using an object containing `x` and `y` properties.
 
-# Stacked Area Chart
+## Stacked Area Chart
 
 Line charts can be configured into stacked area charts by changing the settings on the y axis to enable stacking. Stacked area charts can be used to show how one data trend is made up of a number of smaller pieces.
 
@@ -208,17 +208,17 @@ var stackedLine = new Chart(ctx, {
 });
 ```
 
-# High Performance Line Charts
+## High Performance Line Charts
 
 When charting a lot of data, the chart render time may start to get quite large. In that case, the following strategies can be used to improve performance.
 
-## Data Decimation
+### Data Decimation
 
 Decimating your data will achieve the best results. When there is a lot of data to display on the graph, it doesn't make sense to show tens of thousands of data points on a graph that is only a few hundred pixels wide.
 
 There are many approaches to data decimation and selection of an algorithm will depend on your data and the results you want to achieve. For instance, [min/max](https://digital.ni.com/public.nsf/allkb/F694FFEEA0ACF282862576020075F784) decimation will preserve peaks in your data but could require up to 4 points for each pixel. This type of decimation would work well for a very noisy signal where you need to see data peaks.
 
-## Disable Bezier Curves
+### Disable Bezier Curves
 
 If you are drawing lines on your chart, disabling bezier curves will improve render times since drawing a straight line is more performant than a bezier curve.
 
@@ -238,7 +238,7 @@ new Chart(ctx, {
 });
 ```
 
-## Disable Line Drawing
+### Disable Line Drawing
 
 If you have a lot of data points, it can be more performant to disable rendering of the line for a dataset and only draw points. Doing this means that there is less to draw on the canvas which will improve render performance.
 
@@ -258,7 +258,7 @@ new Chart(ctx, {
 });
 ```
 
-## Disable Animations
+### Disable Animations
 
 If your charts have long render times, it is a good idea to disable animations. Doing so will mean that the chart needs to only be rendered once during an update instead of multiple times. This will have the effect of reducing CPU usage and improving general page performance.
 
