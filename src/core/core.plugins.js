@@ -29,7 +29,7 @@ module.exports = {
 
 	/**
 	 * Registers the given plugin(s) if not already registered.
-	 * @param {object[]|object} plugins plugin instance(s).
+	 * @param {IPlugin[]|IPlugin} plugins plugin instance(s).
 	 */
 	register: function(plugins) {
 		var p = this._plugins;
@@ -44,7 +44,7 @@ module.exports = {
 
 	/**
 	 * Unregisters the given plugin(s) only if registered.
-	 * @param {object[]|object} plugins plugin instance(s).
+	 * @param {IPlugin[]|IPlugin} plugins plugin instance(s).
 	 */
 	unregister: function(plugins) {
 		var p = this._plugins;
@@ -78,7 +78,7 @@ module.exports = {
 
 	/**
 	 * Returns all registered plugin instances.
-	 * @returns {object[]} array of plugin objects.
+	 * @returns {IPlugin[]} array of plugin objects.
 	 * @since 2.1.5
 	 */
 	getAll: function() {

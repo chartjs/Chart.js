@@ -110,7 +110,7 @@ module.exports = {
 	/**
 	 * Remove a layoutItem from a chart
 	 * @param {Chart} chart - the chart to remove the box from
-	 * @param {object} layoutItem - the item to remove from the layout
+	 * @param {ILayoutItem} layoutItem - the item to remove from the layout
 	 */
 	removeBox: function(chart, layoutItem) {
 		var index = chart.boxes ? chart.boxes.indexOf(layoutItem) : -1;
