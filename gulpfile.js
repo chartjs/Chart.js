@@ -1,7 +1,6 @@
 var gulp = require('gulp');
 var eslint = require('gulp-eslint');
 var file = require('gulp-file');
-var log = require('fancy-log');
 var replace = require('gulp-replace');
 var size = require('gulp-size');
 var streamify = require('gulp-streamify');
@@ -21,10 +20,6 @@ var argv = yargs
 
 var srcDir = './src/';
 var outDir = './dist/';
-
-if (argv.verbose) {
-  log("Gulp running with options: " + JSON.stringify(argv, null, 2));
-}
 
 gulp.task('bower', bowerTask);
 gulp.task('build', buildTask);

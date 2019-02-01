@@ -27,7 +27,6 @@
     "eslint": "^5.9.0",
     "eslint-config-chartjs": "^0.1.0",
     "eslint-plugin-html": "^5.0.0",
-    "fancy-log": "^1.3.3",
     "gitbook-cli": "^2.3.2",
     "gulp": "^4.0.0",
     "gulp-eslint": "^5.0.0",
