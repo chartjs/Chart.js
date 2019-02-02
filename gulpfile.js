@@ -5,7 +5,6 @@ var replace = require('gulp-replace');
 var size = require('gulp-size');
 var streamify = require('gulp-streamify');
 var terser = require('gulp-terser');
-var util = require('gulp-util');
 var zip = require('gulp-zip');
 var exec = require('child_process').exec;
 var karma = require('karma');
@@ -21,10 +20,6 @@ var argv = yargs
 
 var srcDir = './src/';
 var outDir = './dist/';
-
-if (argv.verbose) {
-  util.log("Gulp running with options: " + JSON.stringify(argv, null, 2));
-}
 
 gulp.task('bower', bowerTask);
 gulp.task('build', buildTask);
