@@ -643,7 +643,7 @@ module.exports = Scale.extend({
 			ticks.reverse();
 		}
 
-		return ticksFromTimestamps(ticks, me._majorUnit);
+		return ticksFromTimestamps(ticks, options.ticks.major.enabled ? me._majorUnit : false);
 	},
 
 	getLabelForIndex: function(index, datasetIndex) {
@@ -670,21 +670,16 @@ module.exports = Scale.extend({
 	 * Function to format an individual tick mark
 	 * @private
 	 */
-	tickFormatFunction: function(time, index, ticks, format) {
+	tickFormatFunction: function(tick, index, ticks, format) {
 		var me = this;
 		var options = me.options;
 		var formats = options.time.displayFormats;
-		var minorFormat = formats[me._unit];
-		var majorUnit = me._majorUnit;
-		var majorFormat = formats[majorUnit];
-		var majorTime = +adapter.startOf(time, majorUnit);
-		var majorTickOpts = options.ticks.major;
-		var major = majorTickOpts.enabled && majorUnit && majorFormat && time === majorTime;
-		var label = adapter.format(time, format ? format : major ? majorFormat : minorFormat);
-		var tickOpts = major ? majorTickOpts : options.ticks.minor;
+		var tickOpts = tick.major ? options.ticks.major : options.ticks.minor;
 		var formatter = valueOrDefault(tickOpts.callback, tickOpts.userCallback);
-
-		return formatter ? formatter(label, index, ticks) : label;
+		var timeFormat = format || (tick.major ? formats[me._majorUnit] : formats[me._unit]);
+		var label = adapter.format(tick.value, timeFormat);
+		tick.label = formatter ? formatter(label, index, ticks) : label;
+		return me._formatTick(tick, index);
 	},
 
 	convertTicksToLabels: function(ticks) {
@@ -692,7 +687,7 @@ module.exports = Scale.extend({
 		var i, ilen;
 
 		for (i = 0, ilen = ticks.length; i < ilen; ++i) {
-			labels.push(this.tickFormatFunction(ticks[i].value, i, ticks));
+			labels.push(this.tickFormatFunction(ticks[i], i, ticks));
 		}
 
 		return labels;
@@ -771,7 +766,7 @@ module.exports = Scale.extend({
 
 		// pick the longest format (milliseconds) for guestimation
 		var format = me.options.time.displayFormats.millisecond;
-		var exampleLabel = me.tickFormatFunction(exampleTime, 0, [], format);
+		var exampleLabel = me.tickFormatFunction({value: exampleTime}, 0, [], format);
 		var tickLabelWidth = me.getLabelWidth(exampleLabel);
 		var innerWidth = me.isHorizontal() ? me.width : me.height;
 		var capacity = Math.floor(innerWidth / tickLabelWidth);

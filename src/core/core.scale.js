@@ -9,6 +9,7 @@ var valueOrDefault = helpers.valueOrDefault;
 var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
 var resolve = helpers.options.resolve;
 var callback = helpers.callback;
+var globalDefaults = defaults.global;
 
 defaults._set('scale', {
 	display: true,
@@ -110,12 +111,11 @@ module.exports = Element.extend({
 		var opts = me.options;
 		var ttOpts = opts.tooltips || {};
 		var tickOpts = opts.ticks;
-		var global = defaults.global;
 
 		me._config = {
-			tooltipFormatter: resolve([ttOpts.formatter, global.tooltips.formatter, opts.formatter, global.formatter]),
+			tooltipFormatter: resolve([ttOpts.formatter, globalDefaults.tooltips.formatter, opts.formatter, globalDefaults.formatter]),
 			tickCallback: resolve([tickOpts.callback, tickOpts.userCallback]),
-			tickFormatter: resolve([tickOpts.formatter, opts.formatter, global.formatter]),
+			tickFormatter: resolve([tickOpts.formatter, opts.formatter, globalDefaults.formatter]),
 		};
 	},
 
@@ -328,15 +328,28 @@ module.exports = Element.extend({
 	beforeTickToLabelConversion: function() {
 		callback(this.options.beforeTickToLabelConversion, [this]);
 	},
-	convertTicksToLabels: function() {
+	convertTicksToLabels: function(ticks) {
 		var me = this;
 		var labels = [];
-		var i, ilen;
+		var i, ilen, tick;
 
-		me.ticks = me.ticks.map(me._config.tickCallback, me);
+		if (helpers.isArray(ticks) && ticks.length) {
+			// new scale implementation
+			for (i = 0, ilen = ticks.length; i < ilen; ++i) {
+				labels.push(me._formatTick(ticks[i], i));
+			}
+		} else {
+			// old scale implementation, ticks are plain values
+			ticks = me.ticks;
 
-		for (i = 0, ilen = me.ticks.length; i < ilen; ++i) {
-			labels.push(me._formatTick(me.ticks[i], i));
+			for (i = 0, ilen = ticks.length; i < ilen; ++i) {
+				tick = {
+					value: ticks[i],
+					major: false,
+					label: me._config.tickCallback(ticks[i], i, ticks)
+				};
+				labels.push(me._formatTick(tick, i));
+			}
 		}
 
 		return labels;
@@ -567,13 +580,14 @@ module.exports = Element.extend({
 		return rawValue;
 	},
 
-	_formatTick: function(value, index) {
+	_formatTick: function(tick, index) {
 		var me = this;
 		var context = {
 			chart: me.chart,
-			index: index
+			scale: me,
+			tickIndex: index
 		};
-		return valueOrDefault(callback(me._config.tickFormatter, [value, context]), value);
+		return valueOrDefault(callback(me._config.tickFormatter, [tick, context]), tick.label);
 	},
 	/**
 	 * @private
@@ -780,7 +794,6 @@ module.exports = Element.extend({
 
 		var chart = me.chart;
 		var context = me.ctx;
-		var globalDefaults = defaults.global;
 		var defaultFontColor = globalDefaults.defaultFontColor;
 		var optionTicks = options.ticks.minor;
 		var optionMajorTicks = options.ticks.major || optionTicks;
