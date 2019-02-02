@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "coveralls": "^3.0.0",
-    "eslint": "^5.9.0",
+    "eslint": "5.12.1",
     "eslint-config-chartjs": "^0.1.0",
     "eslint-plugin-html": "^5.0.0",
     "gitbook-cli": "^2.3.2",
