@@ -206,15 +206,10 @@ module.exports = Element.extend({
 
 	getArea: function() {
 		var vm = this._view;
-		var area;
 
-		if (isVertical(this)) {
-			area = vm.width * Math.abs(vm.y - vm.base);
-		} else {
-			area = vm.height * Math.abs(vm.x - vm.base);
-		}
-
-		return area;
+		return isVertical(this)
+			? vm.width * Math.abs(vm.y - vm.base)
+			: vm.height * Math.abs(vm.x - vm.base);
 	},
 
 	tooltipPosition: function() {
