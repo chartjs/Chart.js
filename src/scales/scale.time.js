@@ -405,20 +405,6 @@ function ticksFromTimestamps(values, majorUnit) {
 	return ticks;
 }
 
-/**
- * Return the time format for the label with the most parts (milliseconds, second, etc.)
- */
-function determineLabelFormat(timestamp) {
-	var presets = adapter.presets();
-	if (timestamp % INTERVALS.second.size !== 0) {
-		return presets.full;
-	}
-	if (adapter.startOf(timestamp, 'day') !== timestamp) {
-		return presets.time;
-	}
-	return presets.date;
-}
-
 var defaultConfig = {
 	position: 'bottom',
 
@@ -642,7 +628,6 @@ module.exports = Scale.extend({
 		var timeOpts = me.options.time;
 		var label = data.labels && index < data.labels.length ? data.labels[index] : '';
 		var value = data.datasets[datasetIndex].data[index];
-		var ts;
 
 		if (helpers.isObject(value)) {
 			label = me.getRightValue(value);
@@ -653,9 +638,7 @@ module.exports = Scale.extend({
 		if (typeof label === 'string') {
 			return label;
 		}
-
-		ts = toTimestamp(label, timeOpts);
-		return adapter.format(ts, determineLabelFormat(ts));
+		return adapter.format(toTimestamp(label, timeOpts), timeOpts.displayFormats[me._unit]);
 	},
 
 	/**
