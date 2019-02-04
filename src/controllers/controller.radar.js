@@ -72,12 +72,9 @@ module.exports = DatasetController.extend({
 		var dataset = me.getDataset();
 		var scale = me.chart.scale;
 		var pointPosition = scale.getPointPositionForValue(index, dataset.data[index]);
-		var x, y;
-
 		var options = me._resolvePointOptions(point, index);
-
-		x = reset ? scale.xCenter : pointPosition.x;
-		y = reset ? scale.yCenter : pointPosition.y;
+		var x = reset ? scale.xCenter : pointPosition.x;
+		var y = reset ? scale.yCenter : pointPosition.y;
 
 		// Utility
 		point._scale = scale;
