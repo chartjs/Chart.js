@@ -181,8 +181,6 @@ module.exports = DatasetController.extend({
 			]);
 		}
 
-		values.tension = resolve([custom.tension, dataset.lineTension, options.tension]);
-
 		return values;
 	},
 

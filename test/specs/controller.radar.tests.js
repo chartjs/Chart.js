@@ -127,7 +127,6 @@ describe('Chart.controllers.radar', function() {
 			borderJoinStyle: 'bevel',
 			borderWidth: 1.2,
 			fill: true,
-			tension: 0.1,
 		}));
 
 		[
@@ -210,7 +209,6 @@ describe('Chart.controllers.radar', function() {
 			borderJoinStyle: 'miter',
 			borderWidth: 0.55,
 			fill: false,
-			tension: 0,
 		}));
 
 		// Since tension is now 0, we don't care about the control points
@@ -237,7 +235,6 @@ describe('Chart.controllers.radar', function() {
 
 		// Use custom styles for lines & first point
 		meta.dataset.custom = {
-			tension: 0.25,
 			backgroundColor: 'rgb(55, 55, 54)',
 			borderColor: 'rgb(8, 7, 6)',
 			borderWidth: 0.3,
@@ -270,7 +267,6 @@ describe('Chart.controllers.radar', function() {
 			borderJoinStyle: 'round',
 			borderWidth: 0.3,
 			fill: true,
-			tension: 0.25,
 		}));
 
 		expect(meta.data[0]._model.x).toBeCloseToPixel(256);
