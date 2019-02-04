@@ -624,7 +624,7 @@ describe('Time scale tests', function() {
 
 		var xScale = chart.scales.xScale0;
 		var label = xScale.getLabelForIndex(0, 0);
-		expect(label).toEqual('Jan 8, 2018 5:14:23.234 am');
+		expect(label).toEqual('5AM');
 	});
 
 	it('should get the correct label for a timestamp with time', function() {
@@ -652,7 +652,7 @@ describe('Time scale tests', function() {
 
 		var xScale = chart.scales.xScale0;
 		var label = xScale.getLabelForIndex(0, 0);
-		expect(label).toEqual('Jan 8, 2018 5:14:23 am');
+		expect(label).toEqual('5AM');
 	});
 
 	it('should get the correct label for a timestamp representing a date', function() {
@@ -680,7 +680,7 @@ describe('Time scale tests', function() {
 
 		var xScale = chart.scales.xScale0;
 		var label = xScale.getLabelForIndex(0, 0);
-		expect(label).toEqual('Jan 8, 2018');
+		expect(label).toEqual('12AM');
 	});
 
 	it('should get the correct pixel for only one data in the dataset', function() {
