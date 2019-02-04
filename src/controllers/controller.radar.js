@@ -57,9 +57,8 @@ module.exports = DatasetController.extend({
 			me.updateElement(points[i], i, reset);
 		}
 
-		if (line._model.tension !== 0) {
-			me.updateBezierControlPoints();
-		}
+		// Update bezier control points
+		me.updateBezierControlPoints();
 
 		// Now pivot the point for animation
 		for (i = 0, ilen = points.length; i < ilen; ++i) {
