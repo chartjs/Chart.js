@@ -19,7 +19,7 @@ A bubble chart is used to display three dimensions of data at the same time. The
             }],
             "backgroundColor": "rgb(255, 99, 132)"
         }]
-    },
+    }
 }
 {% endchartjs %}
 
@@ -27,7 +27,7 @@ A bubble chart is used to display three dimensions of data at the same time. The
 
 ```javascript
 // For a bubble chart
-var myBubbleChart = new Chart(ctx,{
+var myBubbleChart = new Chart(ctx, {
     type: 'bubble',
     data: data,
     options: options
@@ -38,21 +38,21 @@ var myBubbleChart = new Chart(ctx,{
 
 The bubble chart allows a number of properties to be specified for each dataset. These are used to set display properties for a specific dataset. For example, the colour of the bubbles is generally set this way.
 
-| Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) |  Default
+| Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) | Default
 | ---- | ---- | :----: | :----: | ----
-| [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0,0,0,0.1)'`
-| [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0,0,0,0.1)'`
-| [`borderWidth`](#styling) | `Number` | Yes | Yes | `3`
-| [`data`](#data-structure) | `Object[]` | - | - | **required**
+| [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
+| [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
+| [`borderWidth`](#styling) | `number` | Yes | Yes | `3`
+| [`data`](#data-structure) | `object[]` | - | - | **required**
 | [`hoverBackgroundColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
-| [`hoverBorderWidth`](#interactions) | `Number` | Yes | Yes | `1`
-| [`hoverRadius`](#interactions) | `Number` | Yes | Yes | `4`
-| [`hitRadius`](#interactions) | `Number` | Yes | Yes | `1`
-| [`label`](#labeling) | `String` | - | - | `undefined`
-| [`pointStyle`](#styling) | `String` | Yes | Yes | `circle`
-| [`rotation`](#styling) | `Number` | Yes | Yes | `0`
-| [`radius`](#styling) | `Number` | Yes | Yes | `3`
+| [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `1`
+| [`hoverRadius`](#interactions) | `number` | Yes | Yes | `4`
+| [`hitRadius`](#interactions) | `number` | Yes | Yes | `1`
+| [`label`](#labeling) | `string` | - | - | `undefined`
+| [`pointStyle`](#styling) | `string` | Yes | Yes | `'circle'`
+| [`rotation`](#styling) | `number` | Yes | Yes | `0`
+| [`radius`](#styling) | `number` | Yes | Yes | `3`
 
 ### Labeling
 
@@ -98,13 +98,13 @@ Bubble chart datasets need to contain a `data` array of points, each points repr
 ```javascript
 {
     // X Value
-    x: <Number>,
+    x: number,
 
     // Y Value
-    y: <Number>,
+    y: number,
 
     // Bubble radius in pixels (not scaled).
-    r: <Number>
+    r: number
 }
 ```
 

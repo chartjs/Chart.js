@@ -206,7 +206,10 @@ module.exports = Element.extend({
 
 	getArea: function() {
 		var vm = this._view;
-		return vm.width * Math.abs(vm.y - vm.base);
+
+		return isVertical(this)
+			? vm.width * Math.abs(vm.y - vm.base)
+			: vm.height * Math.abs(vm.x - vm.base);
 	},
 
 	tooltipPosition: function() {

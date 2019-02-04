@@ -44,17 +44,13 @@ module.exports = DatasetController.extend({
 		var meta = me.getMeta();
 		var line = meta.dataset;
 		var points = meta.data || [];
-		var options = me.chart.options;
-		var lineElementOptions = options.elements.line;
 		var scale = me.getScaleForId(meta.yAxisID);
-		var i, ilen, custom;
 		var dataset = me.getDataset();
-		var showLine = lineEnabled(dataset, options);
+		var showLine = lineEnabled(dataset, me.chart.options);
+		var i, ilen;
 
 		// Update Line
 		if (showLine) {
-			custom = line.custom || {};
-
 			// Compatibility: If the properties are defined with only the old name, use those values
 			if ((dataset.tension !== undefined) && (dataset.lineTension === undefined)) {
 				dataset.lineTension = dataset.tension;
@@ -66,24 +62,7 @@ module.exports = DatasetController.extend({
 			// Data
 			line._children = points;
 			// Model
-			line._model = {
-				// Appearance
-				// The default behavior of lines is to break at null values, according
-				// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158
-				// This option gives lines the ability to span gaps
-				spanGaps: valueOrDefault(dataset.spanGaps, options.spanGaps),
-				tension: resolve([custom.tension, dataset.lineTension, lineElementOptions.tension]),
-				backgroundColor: resolve([custom.backgroundColor, dataset.backgroundColor, lineElementOptions.backgroundColor]),
-				borderWidth: resolve([custom.borderWidth, dataset.borderWidth, lineElementOptions.borderWidth]),
-				borderColor: resolve([custom.borderColor, dataset.borderColor, lineElementOptions.borderColor]),
-				borderCapStyle: resolve([custom.borderCapStyle, dataset.borderCapStyle, lineElementOptions.borderCapStyle]),
-				borderDash: resolve([custom.borderDash, dataset.borderDash, lineElementOptions.borderDash]),
-				borderDashOffset: resolve([custom.borderDashOffset, dataset.borderDashOffset, lineElementOptions.borderDashOffset]),
-				borderJoinStyle: resolve([custom.borderJoinStyle, dataset.borderJoinStyle, lineElementOptions.borderJoinStyle]),
-				fill: resolve([custom.fill, dataset.fill, lineElementOptions.fill]),
-				steppedLine: resolve([custom.steppedLine, dataset.steppedLine, lineElementOptions.stepped]),
-				cubicInterpolationMode: resolve([custom.cubicInterpolationMode, dataset.cubicInterpolationMode, lineElementOptions.cubicInterpolationMode]),
-			};
+			line._model = me._resolveLineOptions(line);
 
 			line.pivot();
 		}
@@ -114,7 +93,7 @@ module.exports = DatasetController.extend({
 		var xScale = me.getScaleForId(meta.xAxisID);
 		var x, y;
 
-		var options = me._resolveElementOptions(point, index);
+		var options = me._resolvePointOptions(point, index);
 
 		x = xScale.getPixelForValue(typeof value === 'object' ? value : NaN, index, datasetIndex);
 		y = reset ? yScale.getBasePixel() : me.calculatePointY(value, index, datasetIndex);
@@ -148,12 +127,11 @@ module.exports = DatasetController.extend({
 	/**
 	 * @private
 	 */
-	_resolveElementOptions: function(point, index) {
+	_resolvePointOptions: function(element, index) {
 		var me = this;
 		var chart = me.chart;
-		var datasets = chart.data.datasets;
-		var dataset = datasets[me.index];
-		var custom = point.custom || {};
+		var dataset = chart.data.datasets[me.index];
+		var custom = element.custom || {};
 		var options = chart.options.elements.point;
 		var values = {};
 		var i, ilen, key;
@@ -190,6 +168,50 @@ module.exports = DatasetController.extend({
 				options[key]
 			], context, index);
 		}
+
+		return values;
+	},
+
+	/**
+	 * @private
+	 */
+	_resolveLineOptions: function(element) {
+		var me = this;
+		var chart = me.chart;
+		var dataset = chart.data.datasets[me.index];
+		var custom = element.custom || {};
+		var options = chart.options;
+		var elementOptions = options.elements.line;
+		var values = {};
+		var i, ilen, key;
+
+		var keys = [
+			'backgroundColor',
+			'borderWidth',
+			'borderColor',
+			'borderCapStyle',
+			'borderDash',
+			'borderDashOffset',
+			'borderJoinStyle',
+			'fill',
+			'cubicInterpolationMode'
+		];
+
+		for (i = 0, ilen = keys.length; i < ilen; ++i) {
+			key = keys[i];
+			values[key] = resolve([
+				custom[key],
+				dataset[key],
+				elementOptions[key]
+			]);
+		}
+
+		// The default behavior of lines is to break at null values, according
+		// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158
+		// This option gives lines the ability to span gaps
+		values.spanGaps = valueOrDefault(dataset.spanGaps, options.spanGaps);
+		values.tension = resolve([custom.tension, dataset.lineTension, elementOptions.tension]);
+		values.steppedLine = resolve([custom.steppedLine, dataset.steppedLine, elementOptions.stepped]);
 
 		return values;
 	},

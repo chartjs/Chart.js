@@ -159,6 +159,150 @@ describe('Chart', function() {
 		});
 	});
 
+	describe('when merging scale options', function() {
+		beforeEach(function() {
+			Chart.helpers.merge(Chart.defaults.scale, {
+				_jasmineCheckA: 'a0',
+				_jasmineCheckB: 'b0',
+				_jasmineCheckC: 'c0'
+			});
+
+			Chart.helpers.merge(Chart.scaleService.defaults.logarithmic, {
+				_jasmineCheckB: 'b1',
+				_jasmineCheckC: 'c1',
+			});
+		});
+
+		afterEach(function() {
+			delete Chart.defaults.scale._jasmineCheckA;
+			delete Chart.defaults.scale._jasmineCheckB;
+			delete Chart.defaults.scale._jasmineCheckC;
+			delete Chart.scaleService.defaults.logarithmic._jasmineCheckB;
+			delete Chart.scaleService.defaults.logarithmic._jasmineCheckC;
+		});
+
+		it('should default to "category" for x scales and "linear" for y scales', function() {
+			var chart = acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						xAxes: [
+							{id: 'foo0'},
+							{id: 'foo1'}
+						],
+						yAxes: [
+							{id: 'bar0'},
+							{id: 'bar1'}
+						]
+					}
+				}
+			});
+
+			expect(chart.scales.foo0.type).toBe('category');
+			expect(chart.scales.foo1.type).toBe('category');
+			expect(chart.scales.bar0.type).toBe('linear');
+			expect(chart.scales.bar1.type).toBe('linear');
+		});
+
+		it('should correctly apply defaults on central scale', function() {
+			var chart = acquireChart({
+				type: 'line',
+				options: {
+					scale: {
+						id: 'foo',
+						type: 'logarithmic',
+						_jasmineCheckC: 'c2',
+						_jasmineCheckD: 'd2'
+					}
+				}
+			});
+
+			// let's check a few values from the user options and defaults
+
+			expect(chart.scales.foo.type).toBe('logarithmic');
+			expect(chart.scales.foo.options).toBe(chart.options.scale);
+			expect(chart.scales.foo.options).toEqual(
+				jasmine.objectContaining({
+					_jasmineCheckA: 'a0',
+					_jasmineCheckB: 'b1',
+					_jasmineCheckC: 'c2',
+					_jasmineCheckD: 'd2'
+				}));
+		});
+
+		it('should correctly apply defaults on xy scales', function() {
+			var chart = acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'foo',
+							type: 'logarithmic',
+							_jasmineCheckC: 'c2',
+							_jasmineCheckD: 'd2'
+						}],
+						yAxes: [{
+							id: 'bar',
+							type: 'time',
+							_jasmineCheckC: 'c2',
+							_jasmineCheckE: 'e2'
+						}]
+					}
+				}
+			});
+
+			expect(chart.scales.foo.type).toBe('logarithmic');
+			expect(chart.scales.foo.options).toBe(chart.options.scales.xAxes[0]);
+			expect(chart.scales.foo.options).toEqual(
+				jasmine.objectContaining({
+					_jasmineCheckA: 'a0',
+					_jasmineCheckB: 'b1',
+					_jasmineCheckC: 'c2',
+					_jasmineCheckD: 'd2'
+				}));
+
+			expect(chart.scales.bar.type).toBe('time');
+			expect(chart.scales.bar.options).toBe(chart.options.scales.yAxes[0]);
+			expect(chart.scales.bar.options).toEqual(
+				jasmine.objectContaining({
+					_jasmineCheckA: 'a0',
+					_jasmineCheckB: 'b0',
+					_jasmineCheckC: 'c2',
+					_jasmineCheckE: 'e2'
+				}));
+		});
+
+		it('should not alter defaults when merging config', function() {
+			var chart = acquireChart({
+				type: 'line',
+				options: {
+					_jasmineCheck: 42,
+					scales: {
+						xAxes: [{
+							id: 'foo',
+							type: 'linear',
+							_jasmineCheck: 42,
+						}],
+						yAxes: [{
+							id: 'bar',
+							type: 'category',
+							_jasmineCheck: 42,
+						}]
+					}
+				}
+			});
+
+			expect(chart.options._jasmineCheck).toBeDefined();
+			expect(chart.scales.foo.options._jasmineCheck).toBeDefined();
+			expect(chart.scales.bar.options._jasmineCheck).toBeDefined();
+
+			expect(Chart.defaults.line._jasmineCheck).not.toBeDefined();
+			expect(Chart.defaults.global._jasmineCheck).not.toBeDefined();
+			expect(Chart.scaleService.defaults.linear._jasmineCheck).not.toBeDefined();
+			expect(Chart.scaleService.defaults.category._jasmineCheck).not.toBeDefined();
+		});
+	});
+
 	describe('config.options.responsive: false', function() {
 		it('should not inject the resizer element', function() {
 			var chart = acquireChart({

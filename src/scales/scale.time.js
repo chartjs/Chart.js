@@ -1,4 +1,3 @@
-/* global window: false */
 'use strict';
 
 var adapter = require('../core/core.adapters')._date;
