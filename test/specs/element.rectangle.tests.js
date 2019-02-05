@@ -221,6 +221,9 @@ describe('Rectangle element tests', function() {
 			args: [1]
 		}, {
 			name: 'moveTo',
+			args: [11.5, 0]
+		}, {
+			name: 'moveTo',
 			args: [8.5, 0]
 		}, {
 			name: 'lineTo',
@@ -232,8 +235,8 @@ describe('Rectangle element tests', function() {
 			name: 'lineTo',
 			args: [11.5, 0]
 		}, {
-			name: 'fill',
-			args: [],
+			name: 'fillRect',
+			args: [8.5, 0, 3, 14.5],
 		}, {
 			name: 'stroke',
 			args: []
@@ -277,6 +280,9 @@ describe('Rectangle element tests', function() {
 			args: [undefined]
 		}, {
 			name: 'moveTo',
+			args: [12, 0]
+		}, {
+			name: 'moveTo',
 			args: [8, 0]
 		}, {
 			name: 'lineTo',
@@ -288,8 +294,8 @@ describe('Rectangle element tests', function() {
 			name: 'lineTo',
 			args: [12, 0]
 		}, {
-			name: 'fill',
-			args: [],
+			name: 'fillRect',
+			args: [8, 0, 4, 15],
 		}]);
 	});
 
@@ -311,12 +317,13 @@ describe('Rectangle element tests', function() {
 
 		rectangle.draw();
 
-		var drawCalls = rectangle._view.ctx.getCalls().splice(4, 4);
+		var drawCalls = rectangle._view.ctx.getCalls().splice(4, 5);
 		expect(drawCalls).toEqual(expectedDrawCalls);
 	}
 
 	it ('should draw correctly respecting "borderSkipped" == "bottom"', function() {
 		testBorderSkipped ('bottom', [
+			{name: 'moveTo', args: [12, 0]},
 			{name: 'moveTo', args: [8, 0]},
 			{name: 'lineTo', args: [8, 15]},
 			{name: 'lineTo', args: [12, 15]},
@@ -326,19 +333,21 @@ describe('Rectangle element tests', function() {
 
 	it ('should draw correctly respecting "borderSkipped" == "left"', function() {
 		testBorderSkipped ('left', [
+			{name: 'moveTo', args: [12, 0]},
+			{name: 'lineTo', args: [8, 0]},
 			{name: 'moveTo', args: [8, 15]},
 			{name: 'lineTo', args: [12, 15]},
 			{name: 'lineTo', args: [12, 0]},
-			{name: 'lineTo', args: [8, 0]},
 		]);
 	});
 
 	it ('should draw correctly respecting "borderSkipped" == "top"', function() {
 		testBorderSkipped ('top', [
-			{name: 'moveTo', args: [12, 15]},
-			{name: 'lineTo', args: [12, 0]},
+			{name: 'moveTo', args: [12, 0]},
 			{name: 'lineTo', args: [8, 0]},
 			{name: 'lineTo', args: [8, 15]},
+			{name: 'moveTo', args: [12, 15]},
+			{name: 'lineTo', args: [12, 0]},
 		]);
 	});
 
@@ -348,7 +357,37 @@ describe('Rectangle element tests', function() {
 			{name: 'lineTo', args: [8, 0]},
 			{name: 'lineTo', args: [8, 15]},
 			{name: 'lineTo', args: [12, 15]},
+			{name: 'moveTo', args: [12, 0]},
 		]);
 	});
 
+	it ('should draw correctly respecting "borderSkipped" == "none"', function() {
+		testBorderSkipped ('none', [
+			{name: 'moveTo', args: [12, 0]},
+			{name: 'lineTo', args: [8, 0]},
+			{name: 'lineTo', args: [8, 15]},
+			{name: 'lineTo', args: [12, 15]},
+			{name: 'lineTo', args: [12, 0]},
+		]);
+	});
+
+	it ('should draw correctly respecting "borderSkipped" == "left right"', function() {
+		testBorderSkipped ('left right', [
+			{name: 'moveTo', args: [12, 0]},
+			{name: 'lineTo', args: [8, 0]},
+			{name: 'moveTo', args: [8, 15]},
+			{name: 'lineTo', args: [12, 15]},
+			{name: 'moveTo', args: [12, 0]},
+		]);
+	});
+
+	it ('should draw correctly respecting "borderSkipped" == "top bottom"', function() {
+		testBorderSkipped ('top bottom', [
+			{name: 'moveTo', args: [12, 0]},
+			{name: 'moveTo', args: [8, 0]},
+			{name: 'lineTo', args: [8, 15]},
+			{name: 'moveTo', args: [12, 15]},
+			{name: 'lineTo', args: [12, 0]},
+		]);
+	});
 });

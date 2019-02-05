@@ -88,21 +88,11 @@ module.exports = Element.extend({
 			var barSize = Math.min(Math.abs(left - right), Math.abs(top - bottom));
 			borderWidth = borderWidth > barSize ? barSize : borderWidth;
 			var halfStroke = borderWidth / 2;
-			// Adjust borderWidth when bar top position is near vm.base(zero).
-			var borderLeft = left + (borderSkipped !== 'left' ? halfStroke * signX : 0);
-			var borderRight = right + (borderSkipped !== 'right' ? -halfStroke * signX : 0);
-			var borderTop = top + (borderSkipped !== 'top' ? halfStroke * signY : 0);
-			var borderBottom = bottom + (borderSkipped !== 'bottom' ? -halfStroke * signY : 0);
-			// not become a vertical line?
-			if (borderLeft !== borderRight) {
-				top = borderTop;
-				bottom = borderBottom;
-			}
-			// not become a horizontal line?
-			if (borderTop !== borderBottom) {
-				left = borderLeft;
-				right = borderRight;
-			}
+			// Adjust coordinates so borders stay inside
+			left = left + (borderSkipped.indexOf('left') < 0 ? halfStroke * signX : 0);
+			right = right + (borderSkipped.indexOf('right') < 0 ? -halfStroke * signX : 0);
+			top = top + (borderSkipped.indexOf('top') < 0 ? halfStroke * signY : 0);
+			bottom = bottom + (borderSkipped.indexOf('bottom') < 0 ? -halfStroke * signY : 0);
 		}
 
 		ctx.beginPath();
@@ -122,25 +112,21 @@ module.exports = Element.extend({
 
 		// Find first (starting) corner with fallback to 'bottom'
 		var borders = ['bottom', 'left', 'top', 'right'];
-		var startCorner = borders.indexOf(borderSkipped, 0);
-		if (startCorner === -1) {
-			startCorner = 0;
-		}
-
-		function cornerAt(index) {
-			return corners[(startCorner + index) % 4];
-		}
 
 		// Draw rectangle from 'startCorner'
-		var corner = cornerAt(0);
+		var corner = corners[3];
 		ctx.moveTo(corner[0], corner[1]);
 
-		for (var i = 1; i < 4; i++) {
-			corner = cornerAt(i);
-			ctx.lineTo(corner[0], corner[1]);
+		for (var i = 0; i < 4; ++i) {
+			corner = corners[i];
+			if (borderSkipped.indexOf(borders[i]) > -1) {
+				ctx.moveTo(corner[0], corner[1]);
+			} else {
+				ctx.lineTo(corner[0], corner[1]);
+			}
 		}
 
-		ctx.fill();
+		ctx.fillRect(left, bottom, right - left, top - bottom);
 		if (borderWidth) {
 			ctx.stroke();
 		}
