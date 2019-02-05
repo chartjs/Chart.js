@@ -206,7 +206,7 @@ You can also specify the dataset as x/y coordinates when using the [time scale](
 data: [{x:'2016-12-25', y:20}, {x:'2016-12-26', y:10}]
 ```
 
-# Stacked Bar Chart
+## Stacked Bar Chart
 
 Bar charts can be configured into stacked bar charts by changing the settings on the X and Y axes to enable stacking. Stacked bar charts can be used to show how one data series is made up of a number of smaller pieces.
 
@@ -227,15 +227,13 @@ var stackedBar = new Chart(ctx, {
 });
 ```
 
-## Dataset Properties
-
 The following dataset properties are specific to stacked bar charts.
 
 | Name | Type | Description
 | ---- | ---- | -----------
 | `stack` | `string` | The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack).
 
-# Horizontal Bar Chart
+## Horizontal Bar Chart
 A horizontal bar chart is a variation on a vertical bar chart. It is sometimes used to show trend data, and the comparison of multiple data sets side by side.
 {% chartjs %}
 {
@@ -288,7 +286,7 @@ var myBarChart = new Chart(ctx, {
 });
 ```
 
-## Config Options
+### Config Options
 The configuration options for the horizontal bar chart are the same as for the [bar chart](#scale-configuration). However, any options specified on the x axis in a bar chart, are applied to the y axis in a horizontal bar chart.
 
 The default horizontal bar configuration is specified in `Chart.defaults.horizontalBar`.

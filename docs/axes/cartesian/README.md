@@ -7,7 +7,7 @@ Axes that follow a cartesian grid are known as 'Cartesian Axes'. Cartesian axes 
 * [category](./category.md#category-cartesian-axis)
 * [time](./time.md#time-cartesian-axis)
 
-# Common Configuration
+## Common Configuration
 
 All of the included cartesian axes support a number of common options.
 
@@ -21,7 +21,7 @@ All of the included cartesian axes support a number of common options.
 | `scaleLabel` | `object` | | Scale title configuration. [more...](../labelling.md#scale-title-configuration)
 | `ticks` | `object` | | Tick configuration. [more...](#tick-configuration)
 
-## Tick Configuration
+### Tick Configuration
 The following options are common to all cartesian axes but do not apply to other axes.
 
 | Name | Type | Default | Description
@@ -34,7 +34,7 @@ The following options are common to all cartesian axes but do not apply to other
 | `mirror` | `boolean` | `false` | Flips tick labels around axis, displaying the labels inside the chart instead of outside. *Note: Only applicable to vertical scales.*
 | `padding` | `number` | `10` | Padding between the tick label and the axis. When set on a vertical axis, this applies in the horizontal (X) direction. When set on a horizontal axis, this applies in the vertical (Y) direction.
 
-## Axis ID
+### Axis ID
 The properties `dataset.xAxisID` or `dataset.yAxisID` have to match the scale properties `scales.xAxes.id` or `scales.yAxes.id`. This is especially needed if multi-axes charts are used.
 
 ```javascript
@@ -63,7 +63,7 @@ var myChart = new Chart(ctx, {
 });
 ```
 
-# Creating Multiple Axes
+## Creating Multiple Axes
 
 With cartesian axes, it is possible to create multiple X and Y axes. To do so, you can add multiple configuration objects to the `xAxes` and `yAxes` properties. When adding new axes, it is important to ensure that you specify the type of the new axes as default types are **not** used in this case.
 

@@ -9,11 +9,11 @@ New contributions to the library are welcome, but we ask that you please follow 
 - Avoid breaking changes unless there is an upcoming major release, which are infrequent. We encourage people to write plugins for most new advanced features, and care a lot about backwards compatibility.
 - We strongly prefer new methods to be added as private whenever possible. A method can be made private either by making a top-level `function` outside of a class or by prefixing it with `_` and adding `@private` JSDoc if inside a class. Public APIs take considerable time to review and become locked once implemented as we have limited ability to change them without breaking backwards compatibility. Private APIs allow the flexibility to address unforeseen cases.
 
-# Joining the project
+## Joining the project
 
 Active committers and contributors are invited to introduce yourself and request commit access to this project. We have a very active Slack community that you can join [here](https://chartjs-slack.herokuapp.com/). If you think you can help, we'd love to have you!
 
-# Building and Testing
+## Building and Testing
 
 Chart.js uses <a href="https://gulpjs.com/" target="_blank">gulp</a> to build the library into a single JavaScript file.
 
@@ -42,7 +42,7 @@ The following commands are now available from the repository root:
 
 More information can be found in [gulpfile.js](https://github.com/chartjs/Chart.js/blob/master/gulpfile.js).
 
-# Bugs and Issues
+## Bugs and Issues
 
 Please report these on the GitHub page - at <a href="https://github.com/chartjs/Chart.js" target="_blank">github.com/chartjs/Chart.js</a>. Please do not use issues for support requests. For help using Chart.js, please take a look at the [`chartjs`](https://stackoverflow.com/questions/tagged/chartjs) tag on Stack Overflow.
 
