@@ -14,7 +14,7 @@ They are also registered under two aliases in the `Chart` core. Other than their
         "labels": [
             "Red",
             "Blue",
-            "Yellow",
+            "Yellow"
         ],
         "datasets": [{
             "label": "My First Dataset",
@@ -22,10 +22,10 @@ They are also registered under two aliases in the `Chart` core. Other than their
             "backgroundColor": [
                 "rgb(255, 99, 132)",
                 "rgb(54, 162, 235)",
-                "rgb(255, 205, 86)",
+                "rgb(255, 205, 86)"
             ]
         }]
-    },
+    }
 }
 {% endchartjs %}
 
@@ -33,7 +33,7 @@ They are also registered under two aliases in the `Chart` core. Other than their
 
 ```javascript
 // For a pie chart
-var myPieChart = new Chart(ctx,{
+var myPieChart = new Chart(ctx, {
     type: 'pie',
     data: data,
     options: options
@@ -55,14 +55,14 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 
 | Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) | Default
 | ---- | ---- | :----: | :----: | ----
-| [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0,0,0,0.1)'`
-| [`borderAlign`](#border-alignment) | `String` | Yes | Yes | `'center'`
+| [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
+| [`borderAlign`](#border-alignment) | `string` | Yes | Yes | `'center'`
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'#fff'`
-| [`borderWidth`](#styling) | `Number` | Yes | Yes | `2`
-| [`data`](#data-structure) | `Number[]` | - | - | **required**
+| [`borderWidth`](#styling) | `number` | Yes | Yes | `2`
+| [`data`](#data-structure) | `number[]` | - | - | **required**
 | [`hoverBackgroundColor`](#interations) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
-| [`hoverBorderWidth`](#interactions) | `Number` | Yes | Yes | `undefined`
+| [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `undefined`
 
 ### Styling
 
@@ -102,11 +102,11 @@ These are the customisation options specific to Pie & Doughnut charts. These opt
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `cutoutPercentage` | `Number` | `50` - for doughnut, `0` - for pie | The percentage of the chart that is cut out of the middle.
-| `rotation` | `Number` | `-0.5 * Math.PI` | Starting angle to draw arcs from.
-| `circumference` | `Number` | `2 * Math.PI` | Sweep to allow arcs to cover.
-| `animation.animateRotate` | `Boolean` | `true` | If true, the chart will animate in with a rotation animation. This property is in the `options.animation` object.
-| `animation.animateScale` | `Boolean` | `false` | If true, will animate scaling the chart from the center outwards.
+| `cutoutPercentage` | `number` | `50` - for doughnut, `0` - for pie | The percentage of the chart that is cut out of the middle.
+| `rotation` | `number` | `-0.5 * Math.PI` | Starting angle to draw arcs from.
+| `circumference` | `number` | `2 * Math.PI` | Sweep to allow arcs to cover.
+| `animation.animateRotate` | `boolean` | `true` | If true, the chart will animate in with a rotation animation. This property is in the `options.animation` object.
+| `animation.animateScale` | `boolean` | `false` | If true, will animate scaling the chart from the center outwards.
 
 ## Default Options
 

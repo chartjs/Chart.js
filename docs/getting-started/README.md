@@ -11,7 +11,7 @@ First, we need to have a canvas in our page.
 Now that we have a canvas we can use, we need to include Chart.js in our page.
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
 ```
 
 Now, we can create a chart. We add a script to our page:
@@ -24,12 +24,12 @@ var chart = new Chart(ctx, {
 
     // The data for our dataset
     data: {
-        labels: ["January", "February", "March", "April", "May", "June", "July"],
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
         datasets: [{
-            label: "My First dataset",
+            label: 'My First dataset',
             backgroundColor: 'rgb(255, 99, 132)',
             borderColor: 'rgb(255, 99, 132)',
-            data: [0, 10, 5, 2, 20, 30, 45],
+            data: [0, 10, 5, 2, 20, 30, 45]
         }]
     },
 
@@ -40,4 +40,4 @@ var chart = new Chart(ctx, {
 
 It's that easy to get started using Chart.js! From here you can explore the many options that can help you customise your charts with scales, tooltips, labels, colors, custom actions, and much more.
 
-There are many examples of Chart.js that are available in the `/samples` folder of `Chart.js.zip` that is attached to every [release](https://github.com/chartjs/Chart.js/releases).
+All our examples are [available online](https://www.chartjs.org/samples/latest/) but you can also download the `Chart.js.zip` archive attached to every [release](https://github.com/chartjs/Chart.js/releases) to experiment with our samples locally from the `/samples` folder.

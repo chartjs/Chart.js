@@ -16,7 +16,6 @@ color: function(context) {
 }
 ```
 
-> **Note:** scriptable options are only supported by a few bubble chart options.
 
 ## Indexable Options
 

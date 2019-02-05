@@ -40,8 +40,8 @@ function updateConfigByMutating(chart) {
 function updateConfigAsNewObject(chart) {
     chart.options = {
         responsive: true,
-        title:{
-            display:true,
+        title: {
+            display: true,
             text: 'Chart.js'
         },
         scales: {
@@ -52,7 +52,7 @@ function updateConfigAsNewObject(chart) {
                 display: true
             }]
         }
-    }
+    };
     chart.update();
 }
 ```
@@ -75,7 +75,7 @@ function updateScales(chart) {
             display: true,
             type: 'logarithmic'
         }]
-    }
+    };
     chart.update();
     // need to update the reference
     xScale = chart.scales['newId'];
@@ -89,7 +89,7 @@ You can also update a specific scale either by specifying its index or id.
 function updateScale(chart) {
     chart.options.scales.yAxes[0] = {
         type: 'logarithmic'
-    }
+    };
     chart.update();
 }
 ```

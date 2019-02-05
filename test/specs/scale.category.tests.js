@@ -156,35 +156,38 @@ describe('Category scale tests', function() {
 		expect(scale.ticks).toEqual(labels);
 	});
 
-	it ('should get the correct label for the index', function() {
-		var scaleID = 'myScale';
-
-		var mockData = {
-			datasets: [{
-				yAxisID: scaleID,
-				data: [10, 5, 0, 25, 78]
-			}],
-			labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']
-		};
-
-		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
-		var Constructor = Chart.scaleService.getScaleConstructor('category');
-		var scale = new Constructor({
-			ctx: {},
-			options: config,
-			chart: {
-				data: mockData
+	it('should get the correct label for the index', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					xAxisID: 'xScale0',
+					yAxisID: 'yScale0',
+					data: [10, 5, 0, 25, 78]
+				}],
+				labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']
 			},
-			id: scaleID
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'xScale0',
+						type: 'category',
+						position: 'bottom'
+					}],
+					yAxes: [{
+						id: 'yScale0',
+						type: 'linear'
+					}]
+				}
+			}
 		});
 
-		scale.determineDataLimits();
-		scale.buildTicks();
+		var scale = chart.scales.xScale0;
 
-		expect(scale.getLabelForIndex(1)).toBe('tick2');
+		expect(scale.getLabelForIndex(1, 0)).toBe('tick2');
 	});
 
-	it ('Should get the correct pixel for a value when horizontal', function() {
+	it('Should get the correct pixel for a value when horizontal', function() {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
@@ -227,7 +230,7 @@ describe('Category scale tests', function() {
 		expect(xScale.getValueForPixel(417)).toBe(4);
 	});
 
-	it ('Should get the correct pixel for a value when there are repeated labels', function() {
+	it('Should get the correct pixel for a value when there are repeated labels', function() {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
@@ -258,7 +261,7 @@ describe('Category scale tests', function() {
 		expect(xScale.getPixelForValue('tick_1', 1, 0)).toBeCloseToPixel(143);
 	});
 
-	it ('Should get the correct pixel for a value when horizontal and zoomed', function() {
+	it('Should get the correct pixel for a value when horizontal and zoomed', function() {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
@@ -299,7 +302,7 @@ describe('Category scale tests', function() {
 		expect(xScale.getPixelForValue(0, 3, 0)).toBeCloseToPixel(429);
 	});
 
-	it ('should get the correct pixel for a value when vertical', function() {
+	it('should get the correct pixel for a value when vertical', function() {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
@@ -344,7 +347,7 @@ describe('Category scale tests', function() {
 		expect(yScale.getValueForPixel(437)).toBe(4);
 	});
 
-	it ('should get the correct pixel for a value when vertical and zoomed', function() {
+	it('should get the correct pixel for a value when vertical and zoomed', function() {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
