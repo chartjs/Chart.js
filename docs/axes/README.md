@@ -10,17 +10,17 @@ Scales in Chart.js >v2.0 are significantly more powerful, but also different tha
 * Scale titles are supported.
 * New scale types can be extended without writing an entirely new chart type.
 
-# Common Configuration
+## Common Configuration
 
 The following properties are common to all axes provided by Chart.js.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `display` | `Boolean`/`String` | `true` | Controls the axis global visibility (visible when `true`, hidden when `false`). When `display: 'auto'`, the axis is visible only if at least one associated dataset is visible.
-| `callbacks` | `Object` | | Callback functions to hook into the axis lifecycle. [more...](#callbacks)
-| `weight` | `Number` | `0` | The weight used to sort the axis. Higher weights are further away from the chart area.
+| `display` | <code>boolean&#124;string</code> | `true` | Controls the axis global visibility (visible when `true`, hidden when `false`). When `display: 'auto'`, the axis is visible only if at least one associated dataset is visible.
+| `callbacks` | `object` | | Callback functions to hook into the axis lifecycle. [more...](#callbacks)
+| `weight` | `number` | `0` | The weight used to sort the axis. Higher weights are further away from the chart area.
 
-## Callbacks
+### Callbacks
 There are a number of config callbacks that can be used to change parameters in the scale at different points in the update process.
 
 | Name | Arguments | Description
@@ -40,7 +40,7 @@ There are a number of config callbacks that can be used to change parameters in 
 | `afterFit` | `axis` | Callback that runs after the scale fits to the canvas.
 | `afterUpdate` | `axis` | Callback that runs at the end of the update process.
 
-## Updating Axis Defaults
+### Updating Axis Defaults
 
 The default configuration for a scale can be easily changed using the scale service. All you need to do is to pass in a partial configuration that will be merged with the current scale default configuration to form the new default.
 

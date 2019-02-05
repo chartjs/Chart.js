@@ -49,12 +49,12 @@ module.exports = Scale.extend({
 
 	getLabelForIndex: function(index, datasetIndex) {
 		var me = this;
-		var data = me.chart.data;
-		var isHorizontal = me.isHorizontal();
+		var chart = me.chart;
 
-		if (data.yLabels && !isHorizontal) {
-			return me.getRightValue(data.datasets[datasetIndex].data[index]);
+		if (chart.getDatasetMeta(datasetIndex).controller._getValueScaleId() === me.id) {
+			return me.getRightValue(chart.data.datasets[datasetIndex].data[index]);
 		}
+
 		return me.ticks[index - me.minIndex];
 	},
 

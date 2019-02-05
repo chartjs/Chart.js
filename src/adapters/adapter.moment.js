@@ -41,7 +41,7 @@ helpers.merge(adapter, moment ? {
 		} else if (!(value instanceof moment)) {
 			value = moment(value);
 		}
-		return value.isValid() ? +value : null;
+		return value.isValid() ? value.valueOf() : null;
 	},
 
 	format: function(time, format) {
@@ -49,7 +49,7 @@ helpers.merge(adapter, moment ? {
 	},
 
 	add: function(time, amount, unit) {
-		return +moment(time).add(amount, unit);
+		return moment(time).add(amount, unit).valueOf();
 	},
 
 	diff: function(max, min, unit) {
@@ -59,13 +59,13 @@ helpers.merge(adapter, moment ? {
 	startOf: function(time, unit, weekday) {
 		time = moment(time);
 		if (unit === 'isoWeek') {
-			return +time.isoWeekday(weekday);
+			return time.isoWeekday(weekday).valueOf();
 		}
-		return +time.startOf(unit);
+		return time.startOf(unit).valueOf();
 	},
 
 	endOf: function(time, unit) {
-		return +moment(time).endOf(unit);
+		return moment(time).endOf(unit).valueOf();
 	},
 
 	// DEPRECATIONS

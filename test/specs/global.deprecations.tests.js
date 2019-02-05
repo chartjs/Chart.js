@@ -42,6 +42,18 @@ describe('Deprecations', function() {
 				expect(Chart.types).toEqual({});
 			});
 		});
+
+		describe('Chart.helpers.configMerge', function() {
+			it('should be defined as a function', function() {
+				expect(typeof Chart.helpers.configMerge).toBe('function');
+			});
+		});
+
+		describe('Chart.helpers.scaleMerge', function() {
+			it('should be defined as a function', function() {
+				expect(typeof Chart.helpers.scaleMerge).toBe('function');
+			});
+		});
 	});
 
 	describe('Version 2.7.3', function() {
