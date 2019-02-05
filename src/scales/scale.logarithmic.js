@@ -144,10 +144,10 @@ module.exports = Scale.extend({
 							return;
 						}
 
-                        if (value.isarr === false) {
-                            value.min = value.end;
-                            value.max = value.end;
-                        }
+						if (value.isarr === false) {
+							value.min = value.end;
+							value.max = value.end;
+						}
 
 						if (me.min === null) {
 							me.min = value.min;

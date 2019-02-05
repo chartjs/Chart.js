@@ -568,7 +568,7 @@ module.exports = Element.extend({
 
 	getScaleLabel: function(rawValue) {
 		var v = this._parseValue(rawValue);
-		if(v.issar === true) {
+		if (v.issar === true) {
 			return v.min === v.max ? v.min : v.min + ' ; ' + v.max;
 		}
 
