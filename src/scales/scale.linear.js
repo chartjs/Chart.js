@@ -113,8 +113,9 @@ module.exports = LinearScaleBase.extend({
 							return;
 						}
 
-						if (value.min === 0 && !opts.ticks.beginAtZero) {
-							value.min = value.max;
+						if (value.isarr === false) {
+							value.min = value.end;
+                            value.max = value.end;
 						}
 
 

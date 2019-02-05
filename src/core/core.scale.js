@@ -545,27 +545,34 @@ module.exports = Element.extend({
 
 	_parseValue: function(raw) {
 		var value = this.getRightValue(raw);
-		var start, end;
+		var start, end, isarr;
 
 		if (helpers.isArray(value)) {
 			start = value[0];
 			end = value[1];
+			isarr = true;
 		} else {
 			start = 0;
 			end = value;
+			isarr = false;
 		}
 
 		return {
 			min: Math.min(start, end),
 			max: Math.max(start, end),
 			start: start,
-			end: end
+			end: end,
+			isarr: isarr
 		};
 	},
 
 	getScaleLabel: function(rawValue) {
 		var v = this._parseValue(rawValue);
-		return v.min === v.max ? v.min : v.min + ' ; ' + v.max;
+		if(v.issar === true) {
+			return v.min === v.max ? v.min : v.min + ' ; ' + v.max;
+		}
+
+		return +this.getRightValue(rawValue);
 	},
 
 	/**

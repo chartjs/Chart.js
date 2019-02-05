@@ -338,7 +338,7 @@ module.exports = DatasetController.extend({
 					yStackValue = scale._parseValue(datasets[i].data[index]);
 					ivalue = yStackValue.min >= 0 && yStackValue.max >= 0 ? yStackValue.max : yStackValue.min;
 
-					if ((value.min < 0 && ivalue < 0) || (value.max >= 0 && ivalue > 0)) {
+					if ((value.min < 0 && ivalue < 0) || (value.max >= 0 && ivalue >= 0)) {
 						start += ivalue;
 					}
 				}
