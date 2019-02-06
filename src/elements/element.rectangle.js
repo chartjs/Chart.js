@@ -74,7 +74,7 @@ module.exports = Element.extend({
 			bottom = vm.base;
 			signX = 1;
 			signY = bottom > top ? 1 : -1;
-			borderSkipped = valueOrDefault(vm.borderSkipped, {bottom: true}) || {};
+			borderSkipped = valueOrDefault(vm.borderSkipped, 'bottom') || '';
 		} else {
 			// horizontal bar
 			left = vm.base;
@@ -83,7 +83,7 @@ module.exports = Element.extend({
 			bottom = vm.y + vm.height / 2;
 			signX = right > left ? 1 : -1;
 			signY = 1;
-			borderSkipped = valueOrDefault(vm.borderSkipped, {left: true}) || {};
+			borderSkipped = valueOrDefault(vm.borderSkipped, 'left') || '';
 		}
 
 		ctx.fillStyle = vm.backgroundColor;
@@ -94,26 +94,21 @@ module.exports = Element.extend({
 			return;
 		}
 
-		if (typeof borderSkipped === 'string') {
-			borderSkipped = {};
-			borderSkipped[vm.borderSkipped] = true;
-		}
-
 		maxWidth = Math.abs(left - right) / 2;
 		maxHeight = Math.abs(top - bottom) / 2;
-		if (!helpers.isObject(borderWidth)) {
-			borderWidth = {
-				bottom: borderSkipped.bottom ? 0 : Math.min(borderWidth, maxHeight),
-				left: borderSkipped.left ? 0 : Math.min(borderWidth, maxWidth),
-				top: borderSkipped.top ? 0 : Math.min(borderWidth, maxHeight),
-				right: borderSkipped.right ? 0 : Math.min(borderWidth, maxWidth)
-			};
-		} else {
+		if (helpers.isObject(borderWidth)) {
 			borderWidth = {
 				bottom: Math.min(borderWidth.bottom || 0, maxHeight),
 				left: Math.min(borderWidth.left || 0, maxWidth),
 				top: Math.min(borderWidth.top || 0, maxHeight),
 				right: Math.min(borderWidth.right || 0, maxWidth)
+			};
+		} else {
+			borderWidth = {
+				bottom: borderSkipped === 'bottom' ? 0 : Math.min(borderWidth, maxHeight),
+				left: borderSkipped === 'left' ? 0 : Math.min(borderWidth, maxWidth),
+				top: borderSkipped === 'top' ? 0 : Math.min(borderWidth, maxHeight),
+				right: borderSkipped === 'right' ? 0 : Math.min(borderWidth, maxWidth)
 			};
 		}
 
@@ -123,13 +118,24 @@ module.exports = Element.extend({
 			right - left - signX * (borderWidth.left + borderWidth.right),
 			top - bottom + signY * (borderWidth.top + borderWidth.bottom));
 
-		function drawBorder(w, x1, y1, x2, y2, x1x, y1x, x2x, y2x) {
+		function drawBorder(w, x1, y1, x2, y2) {
 			prevWidth = width;
 			width = nextWidth;
 			nextWidth = w;
 
 			if (!width) {
 				return;
+			}
+
+			if (lineCount === 0) {
+				ctx.beginPath();
+			}
+
+			var vertical = x1 === x2;
+			var sign1 = vertical ? y1 === top ? -1 : 1 : x1 === left ? 1 : -1;
+			var sign2 = vertical ? y1 > y2 ? 1 : -1 : x1 > x2 ? 1 : -1;
+			if (width === nextWidth) {
+				sign2 /= 2;
 			}
 
 			if (ctx.lineWidth !== width) {
@@ -141,28 +147,27 @@ module.exports = Element.extend({
 				ctx.lineWidth = width;
 			}
 
-			x1 += x1x * signX * width / 2;
-			y1 += y1x * signY * width / 2;
+			if (vertical) {
+				x2 = x1 = x1 + sign1 * signX * width / 2;
+				y2 += sign2 * nextWidth;
+			} else {
+				y1 = y2 = y1 + sign1 * signY * width / 2;
+				x2 += sign2 * nextWidth;
+			}
+
 			if (prevWidth !== width) {
 				ctx.moveTo(x1, y1);
 			}
-			if (width === nextWidth) {
-				x2 = x2x === 0 ? x1 : x2 + x2x * signX * nextWidth / 2;
-				y2 = y2x === 0 ? y1 : y2 + y2x * signY * nextWidth / 2;
-			} else {
-				x2 = x2x === 0 ? x1 : x2 + x2x * signX * nextWidth;
-				y2 = y2x === 0 ? y1 : y2 + y2x * signY * nextWidth;
-			}
+
 			ctx.lineTo(x2, y2);
 			lineCount++;
 		}
 
-		ctx.beginPath();
 		nextWidth = borderWidth.bottom;
-		drawBorder(borderWidth.left, right, bottom, left, bottom, 0, -1, 1, 0);
-		drawBorder(borderWidth.top, left, bottom, left, top, 1, 0, 0, 1);
-		drawBorder(borderWidth.right, left, top, right, top, 0, 1, -1, 0);
-		drawBorder(borderWidth.bottom, right, top, right, bottom, -1, 0, 0, -1);
+		drawBorder(borderWidth.left, right, bottom, left, bottom);
+		drawBorder(borderWidth.top, left, bottom, left, top);
+		drawBorder(borderWidth.right, left, top, right, top);
+		drawBorder(borderWidth.bottom, right, top, right, bottom);
 		if (lineCount) {
 			ctx.stroke();
 		}

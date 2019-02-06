@@ -1,7 +1,7 @@
 // Test the rectangle element
 
 describe('Rectangle element tests', function() {
-	it ('Should be constructed', function() {
+	it('Should be constructed', function() {
 		var rectangle = new Chart.elements.Rectangle({
 			_datasetIndex: 2,
 			_index: 1
@@ -12,7 +12,7 @@ describe('Rectangle element tests', function() {
 		expect(rectangle._index).toBe(1);
 	});
 
-	it ('Should correctly identify as in range', function() {
+	it('Should correctly identify as in range', function() {
 		var rectangle = new Chart.elements.Rectangle({
 			_datasetIndex: 2,
 			_index: 1
@@ -61,7 +61,7 @@ describe('Rectangle element tests', function() {
 		expect(negativeRectangle.inRange(10, -5)).toBe(true);
 	});
 
-	it ('should get the correct height', function() {
+	it('should get the correct height', function() {
 		var rectangle = new Chart.elements.Rectangle({
 			_datasetIndex: 2,
 			_index: 1
@@ -93,7 +93,7 @@ describe('Rectangle element tests', function() {
 		expect(negativeRectangle.height()).toBe(5);
 	});
 
-	it ('should get the correct tooltip position', function() {
+	it('should get the correct tooltip position', function() {
 		var rectangle = new Chart.elements.Rectangle({
 			_datasetIndex: 2,
 			_index: 1
@@ -132,7 +132,7 @@ describe('Rectangle element tests', function() {
 		});
 	});
 
-	it ('should get the correct vertical area', function() {
+	it('should get the correct vertical area', function() {
 		var rectangle = new Chart.elements.Rectangle({
 			_datasetIndex: 2,
 			_index: 1
@@ -149,7 +149,7 @@ describe('Rectangle element tests', function() {
 		expect(rectangle.getArea()).toEqual(60);
 	});
 
-	it ('should get the correct horizontal area', function() {
+	it('should get the correct horizontal area', function() {
 		var rectangle = new Chart.elements.Rectangle({
 			_datasetIndex: 2,
 			_index: 1
@@ -166,7 +166,7 @@ describe('Rectangle element tests', function() {
 		expect(rectangle.getArea()).toEqual(40);
 	});
 
-	it ('should get the center', function() {
+	it('should get the center', function() {
 		var rectangle = new Chart.elements.Rectangle({
 			_datasetIndex: 2,
 			_index: 1
@@ -183,7 +183,7 @@ describe('Rectangle element tests', function() {
 		expect(rectangle.getCenterPoint()).toEqual({x: 10, y: 7.5});
 	});
 
-	it ('should draw correctly', function() {
+	it('should draw correctly', function() {
 		var mockContext = window.createMockContext();
 		var rectangle = new Chart.elements.Rectangle({
 			_datasetIndex: 2,
@@ -240,7 +240,7 @@ describe('Rectangle element tests', function() {
 		}]);
 	});
 
-	it ('should draw correctly with no stroke', function() {
+	it('should draw correctly with no stroke', function() {
 		var mockContext = window.createMockContext();
 		var rectangle = new Chart.elements.Rectangle({
 			_datasetIndex: 2,
@@ -275,6 +275,101 @@ describe('Rectangle element tests', function() {
 		}]);
 	});
 
+	it('should draw borders correctly when horizontal and pointing right', function() {
+		var mockContext = window.createMockContext();
+		var rectangle = new Chart.elements.Rectangle({
+			_chart: {ctx: mockContext}
+		});
+
+		// Attach a view object as if we were the controller
+		rectangle._view = {
+			horizontal: true,
+			borderWidth: 2,
+			borderSkipped: false,
+			ctx: mockContext,
+			base: 0,
+			height: 5,
+			x: 15,
+			y: 10,
+		};
+
+		rectangle.draw();
+
+		var drawCalls = rectangle._view.ctx.getCalls().slice(4);
+		expect(drawCalls).toEqual([
+			{name: 'setLineWidth', args: [2]},
+			{name: 'moveTo', args: [15, 11.5]},
+			{name: 'lineTo', args: [1, 11.5]},
+			{name: 'lineTo', args: [1, 8.5]},
+			{name: 'lineTo', args: [14, 8.5]},
+			{name: 'lineTo', args: [14, 11.5]},
+			{name: 'stroke', args: []},
+		]);
+	});
+
+	it('should draw borders correctly when horizontal and pointing left', function() {
+		var mockContext = window.createMockContext();
+		var rectangle = new Chart.elements.Rectangle({
+			_chart: {ctx: mockContext}
+		});
+
+		// Attach a view object as if we were the controller
+		rectangle._view = {
+			horizontal: true,
+			borderWidth: 2,
+			borderSkipped: false,
+			ctx: mockContext,
+			base: 15,
+			height: 5,
+			x: 0,
+			y: 10,
+		};
+
+		rectangle.draw();
+
+		var drawCalls = rectangle._view.ctx.getCalls().slice(4);
+		expect(drawCalls).toEqual([
+			{name: 'setLineWidth', args: [2]},
+			{name: 'moveTo', args: [0, 11.5]},
+			{name: 'lineTo', args: [14, 11.5]},
+			{name: 'lineTo', args: [14, 8.5]},
+			{name: 'lineTo', args: [1, 8.5]},
+			{name: 'lineTo', args: [1, 11.5]},
+			{name: 'stroke', args: []},
+		]);
+	});
+
+	it('should draw borders correctly when vertical and pointing down', function() {
+		var mockContext = window.createMockContext();
+		var rectangle = new Chart.elements.Rectangle({
+			_chart: {ctx: mockContext}
+		});
+
+		// Attach a view object as if we were the controller
+		rectangle._view = {
+			borderWidth: 2,
+			borderSkipped: false,
+			ctx: mockContext,
+			base: 15,
+			width: 4,
+			x: 10,
+			y: 0,
+		};
+
+		rectangle.draw();
+
+		var drawCalls = rectangle._view.ctx.getCalls().slice(4);
+		expect(drawCalls).toEqual([
+			{name: 'setLineWidth', args: [2]},
+			{name: 'moveTo', args: [12, 14]},
+			{name: 'lineTo', args: [9, 14]},
+			{name: 'lineTo', args: [9, 1]},
+			{name: 'lineTo', args: [11, 1]},
+			{name: 'lineTo', args: [11, 14]},
+			{name: 'stroke', args: []},
+		]);
+	});
+
 	function testBorderSkipped(borderSkipped, expectedDrawCalls) {
 		var mockContext = window.createMockContext();
 		var rectangle = new Chart.elements.Rectangle({
@@ -298,8 +393,8 @@ describe('Rectangle element tests', function() {
 		expect(drawCalls).toEqual(expectedDrawCalls);
 	}
 
-	it ('should draw correctly respecting "borderSkipped" == "bottom"', function() {
-		testBorderSkipped ('bottom', [
+	it('should draw correctly respecting "borderSkipped" == "bottom"', function() {
+		testBorderSkipped('bottom', [
 			{name: 'setLineWidth', args: [2]},
 			{name: 'moveTo', args: [9, 0]},
 			{name: 'lineTo', args: [9, 14]},
@@ -309,8 +404,8 @@ describe('Rectangle element tests', function() {
 		]);
 	});
 
-	it ('should draw correctly respecting "borderSkipped" == "left"', function() {
-		testBorderSkipped ('left', [
+	it('should draw correctly respecting "borderSkipped" == "left"', function() {
+		testBorderSkipped('left', [
 			{name: 'setLineWidth', args: [2]},
 			{name: 'moveTo', args: [12, 1]},
 			{name: 'lineTo', args: [8, 1]},
@@ -321,8 +416,8 @@ describe('Rectangle element tests', function() {
 		]);
 	});
 
-	it ('should draw correctly respecting "borderSkipped" == "top"', function() {
-		testBorderSkipped ('top', [
+	it('should draw correctly respecting "borderSkipped" == "top"', function() {
+		testBorderSkipped('top', [
 			{name: 'setLineWidth', args: [2]},
 			{name: 'moveTo', args: [12, 1]},
 			{name: 'lineTo', args: [9, 1]},
@@ -333,8 +428,8 @@ describe('Rectangle element tests', function() {
 		]);
 	});
 
-	it ('should draw correctly respecting "borderSkipped" == "right"', function() {
-		testBorderSkipped ('right', [
+	it('should draw correctly respecting "borderSkipped" == "right"', function() {
+		testBorderSkipped('right', [
 			{name: 'setLineWidth', args: [2]},
 			{name: 'moveTo', args: [12, 1]},
 			{name: 'lineTo', args: [9, 1]},
@@ -344,36 +439,14 @@ describe('Rectangle element tests', function() {
 		]);
 	});
 
-	it ('should draw correctly respecting "borderSkipped" == "none"', function() {
-		testBorderSkipped ('none', [
+	it('should draw correctly respecting "borderSkipped" == false', function() {
+		testBorderSkipped(false, [
 			{name: 'setLineWidth', args: [2]},
 			{name: 'moveTo', args: [12, 1]},
 			{name: 'lineTo', args: [9, 1]},
 			{name: 'lineTo', args: [9, 14]},
 			{name: 'lineTo', args: [11, 14]},
 			{name: 'lineTo', args: [11, 1]},
-			{name: 'stroke', args: []},
-		]);
-	});
-
-	it ('should draw correctly respecting "borderSkipped" == {left: true, right: true}', function() {
-		testBorderSkipped({left: true, right: true}, [
-			{name: 'setLineWidth', args: [2]},
-			{name: 'moveTo', args: [12, 1]},
-			{name: 'lineTo', args: [8, 1]},
-			{name: 'moveTo', args: [8, 14]},
-			{name: 'lineTo', args: [12, 14]},
-			{name: 'stroke', args: []},
-		]);
-	});
-
-	it ('should draw correctly respecting "borderSkipped" == {top: true, bottom: true}', function() {
-		testBorderSkipped({top: true, bottom: true}, [
-			{name: 'setLineWidth', args: [2]},
-			{name: 'moveTo', args: [9, 0]},
-			{name: 'lineTo', args: [9, 15]},
-			{name: 'moveTo', args: [11, 15]},
-			{name: 'lineTo', args: [11, 0]},
 			{name: 'stroke', args: []},
 		]);
 	});
@@ -400,7 +473,7 @@ describe('Rectangle element tests', function() {
 		expect(drawCalls).toEqual(expectedDrawCalls);
 	}
 
-	it ('should draw correctly respecting "borderWidth" == {left: 2, right: 2}', function() {
+	it('should draw correctly respecting "borderWidth" == {left: 2, right: 2}', function() {
 		testBorderWidth({left: 2, right: 2}, [
 			{name: 'setLineWidth', args: [2]},
 			{name: 'moveTo', args: [9, 0]},
@@ -411,7 +484,7 @@ describe('Rectangle element tests', function() {
 		]);
 	});
 
-	it ('should draw correctly respecting "borderWidth" == {bottom: 4, left: 1, top: 3, right: 2}', function() {
+	it('should draw correctly respecting "borderWidth" == {bottom: 4, left: 1, top: 3, right: 2}', function() {
 		testBorderWidth({bottom: 4, left: 1, top: 3, right: 2}, [
 			{name: 'setLineWidth', args: [4]},
 			{name: 'moveTo', args: [12, 2]},
