@@ -79,8 +79,7 @@ function getNearestItems(chart, position, intersect, distanceMetric) {
 		}
 
 		var center = element.getCenterPoint();
-		var distance = distanceMetric(position, center);
-
+		var distance = distanceMetric(position, center);`
 		if (distance < minDistance) {
 			nearestItems = [element];
 			minDistance = distance;
