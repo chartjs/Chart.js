@@ -61,7 +61,10 @@ module.exports = Element.extend({
 		var ctx = this._chart.ctx;
 		var vm = this._view;
 		var borderWidth = vm.borderWidth;
-		var left, right, top, bottom, signX, signY, borderSkipped, x, y;
+		var lineCount = 0;
+		var width = 0;
+		var left, right, top, bottom, signX, signY, borderSkipped;
+		var maxWidth, maxHeight, prevWidth, nextWidth;
 
 		if (!vm.horizontal) {
 			// bar
@@ -86,96 +89,82 @@ module.exports = Element.extend({
 		ctx.fillStyle = vm.backgroundColor;
 		ctx.strokeStyle = vm.borderColor;
 
-		if (borderWidth) {
-			if (typeof borderSkipped === 'string') {
-				borderSkipped = {};
-				borderSkipped[vm.borderSkipped] = true;
-			}
-
-			var maxWidth = Math.abs(left - right);
-			var maxHeight = Math.abs(top - bottom);
-			if (!helpers.isObject(borderWidth)) {
-				borderWidth = {
-					bottom: borderSkipped.bottom ? 0 : Math.min(borderWidth, maxHeight),
-					left: borderSkipped.left ? 0 : Math.min(borderWidth, maxWidth),
-					top: borderSkipped.top ? 0 : Math.min(borderWidth, maxHeight),
-					right: borderSkipped.right ? 0 : Math.min(borderWidth, maxWidth)
-				};
-			}
-			ctx.fillRect(
-				left + borderWidth.left * signX,
-				bottom - borderWidth.bottom * signY,
-				right - left - signX * (borderWidth.left + borderWidth.right),
-				top - bottom + signY * (borderWidth.top + borderWidth.bottom));
-
-			ctx.beginPath();
-			if (borderWidth.bottom) {
-				y = bottom - signY * borderWidth.bottom / 2;
-				ctx.moveTo(right, y);
-				if (borderWidth.left) {
-					ctx.lineTo(left + signX * borderWidth.left / 2, y);
-				} else {
-					ctx.lineTo(left, y);
-				}
-				if (borderWidth.bottom !== (borderWidth.left || borderWidth.top || borderWidth.right)) {
-					ctx.lineWidth = borderWidth.bottom;
-					ctx.stroke();
-					if (borderWidth.left || borderWidth.top || borderWidth.right) {
-						ctx.beginPath();
-					}
-				}
-			}
-			if (borderWidth.left) {
-				x = left + signX * borderWidth.left / 2;
-				if (borderWidth.left !== borderWidth.bottom) {
-					ctx.moveTo(x, bottom);
-				}
-				if (borderWidth.top) {
-					ctx.lineTo(x, top + signY * borderWidth.top / 2);
-				} else {
-					ctx.lineTo(x, top);
-				}
-				if (borderWidth.left !== (borderWidth.top || borderWidth.right)) {
-					ctx.lineWidth = borderWidth.left;
-					ctx.stroke();
-					if (borderWidth.top || borderWidth.right) {
-						ctx.beginPath();
-					}
-				}
-			}
-			if (borderWidth.top) {
-				y = top + signY * borderWidth.top / 2;
-				if (borderWidth.top !== borderWidth.left) {
-					ctx.moveTo(left, y);
-				}
-				if (borderWidth.right) {
-					ctx.lineTo(right - signX * borderWidth.right / 2, y);
-				} else {
-					ctx.lineTo(right, y);
-				}
-				if (borderWidth.top !== borderWidth.right) {
-					ctx.lineWidth = borderWidth.top;
-					ctx.stroke();
-					if (borderWidth.right) {
-						ctx.beginPath();
-					}
-				}
-			}
-			if (borderWidth.right) {
-				x = right - signX * borderWidth.right / 2;
-				if (borderWidth.right !== borderWidth.top) {
-					ctx.moveTo(x, top);
-				}
-				if (borderWidth.bottom) {
-					ctx.lineTo(x, bottom - signY * borderWidth.bottom / 2);
-				} else {
-					ctx.lineTo(x, bottom);
-				}
-				ctx.lineWidth = borderWidth.right;
-				ctx.stroke();
-			}
-		} else {
+		if (!borderWidth) {
 			ctx.fillRect(left, bottom, right - left, top - bottom);
+			return;
+		}
+
+		if (typeof borderSkipped === 'string') {
+			borderSkipped = {};
+			borderSkipped[vm.borderSkipped] = true;
+		}
+
+		maxWidth = Math.abs(left - right) / 2;
+		maxHeight = Math.abs(top - bottom) / 2;
+		if (!helpers.isObject(borderWidth)) {
+			borderWidth = {
+				bottom: borderSkipped.bottom ? 0 : Math.min(borderWidth, maxHeight),
+				left: borderSkipped.left ? 0 : Math.min(borderWidth, maxWidth),
+				top: borderSkipped.top ? 0 : Math.min(borderWidth, maxHeight),
+				right: borderSkipped.right ? 0 : Math.min(borderWidth, maxWidth)
+			};
+		} else {
+			borderWidth = {
+				bottom: Math.min(borderWidth.bottom || 0, maxHeight),
+				left: Math.min(borderWidth.left || 0, maxWidth),
+				top: Math.min(borderWidth.top || 0, maxHeight),
+				right: Math.min(borderWidth.right || 0, maxWidth)
+			};
+		}
+
+		ctx.fillRect(
+			left + borderWidth.left * signX,
+			bottom - borderWidth.bottom * signY,
+			right - left - signX * (borderWidth.left + borderWidth.right),
+			top - bottom + signY * (borderWidth.top + borderWidth.bottom));
+
+		function drawBorder(w, x1, y1, x2, y2, x1x, y1x, x2x, y2x) {
+			prevWidth = width;
+			width = nextWidth;
+			nextWidth = w;
+
+			if (!width) {
+				return;
+			}
+
+			if (ctx.lineWidth !== width) {
+				if (lineCount) {
+					ctx.stroke();
+					ctx.beginPath();
+					lineCount = 0;
+				}
+				ctx.lineWidth = width;
+			}
+
+			x1 += x1x * signX * width / 2;
+			y1 += y1x * signY * width / 2;
+			if (prevWidth !== width) {
+				ctx.moveTo(x1, y1);
+			}
+			if (width === nextWidth) {
+				x2 = x2x === 0 ? x1 : x2 + x2x * signX * nextWidth / 2;
+				y2 = y2x === 0 ? y1 : y2 + y2x * signY * nextWidth / 2;
+			} else {
+				x2 = x2x === 0 ? x1 : x2 + x2x * signX * nextWidth;
+				y2 = y2x === 0 ? y1 : y2 + y2x * signY * nextWidth;
+			}
+			ctx.lineTo(x2, y2);
+			lineCount++;
+		}
+
+		ctx.beginPath();
+		nextWidth = borderWidth.bottom;
+		drawBorder(borderWidth.left, right, bottom, left, bottom, 0, -1, 1, 0);
+		drawBorder(borderWidth.top, left, bottom, left, top, 1, 0, 0, 1);
+		drawBorder(borderWidth.right, left, top, right, top, 0, 1, -1, 0);
+		drawBorder(borderWidth.bottom, right, top, right, bottom, -1, 0, 0, -1);
+		if (lineCount) {
+			ctx.stroke();
 		}
 	},
 

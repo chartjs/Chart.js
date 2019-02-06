@@ -220,6 +220,9 @@ describe('Rectangle element tests', function() {
 			name: 'beginPath',
 			args: [],
 		}, {
+			name: 'setLineWidth',
+			args: [1]
+		}, {
 			name: 'moveTo',
 			args: [8.5, 0]
 		}, {
@@ -231,9 +234,6 @@ describe('Rectangle element tests', function() {
 		}, {
 			name: 'lineTo',
 			args: [11.5, 0]
-		}, {
-			name: 'setLineWidth',
-			args: [1]
 		}, {
 			name: 'stroke',
 			args: []
@@ -294,77 +294,87 @@ describe('Rectangle element tests', function() {
 
 		rectangle.draw();
 
-		var drawCalls = rectangle._view.ctx.getCalls().splice(4, 5);
+		var drawCalls = rectangle._view.ctx.getCalls().slice(4);
 		expect(drawCalls).toEqual(expectedDrawCalls);
 	}
 
 	it ('should draw correctly respecting "borderSkipped" == "bottom"', function() {
 		testBorderSkipped ('bottom', [
+			{name: 'setLineWidth', args: [2]},
 			{name: 'moveTo', args: [9, 0]},
 			{name: 'lineTo', args: [9, 14]},
 			{name: 'lineTo', args: [11, 14]},
 			{name: 'lineTo', args: [11, 0]},
-			{name: 'setLineWidth', args: [2]},
+			{name: 'stroke', args: []},
 		]);
 	});
 
 	it ('should draw correctly respecting "borderSkipped" == "left"', function() {
 		testBorderSkipped ('left', [
+			{name: 'setLineWidth', args: [2]},
 			{name: 'moveTo', args: [12, 1]},
 			{name: 'lineTo', args: [8, 1]},
 			{name: 'moveTo', args: [8, 14]},
 			{name: 'lineTo', args: [11, 14]},
 			{name: 'lineTo', args: [11, 1]},
+			{name: 'stroke', args: []},
 		]);
 	});
 
 	it ('should draw correctly respecting "borderSkipped" == "top"', function() {
 		testBorderSkipped ('top', [
+			{name: 'setLineWidth', args: [2]},
 			{name: 'moveTo', args: [12, 1]},
 			{name: 'lineTo', args: [9, 1]},
 			{name: 'lineTo', args: [9, 15]},
 			{name: 'moveTo', args: [11, 15]},
 			{name: 'lineTo', args: [11, 1]},
+			{name: 'stroke', args: []},
 		]);
 	});
 
 	it ('should draw correctly respecting "borderSkipped" == "right"', function() {
 		testBorderSkipped ('right', [
+			{name: 'setLineWidth', args: [2]},
 			{name: 'moveTo', args: [12, 1]},
 			{name: 'lineTo', args: [9, 1]},
 			{name: 'lineTo', args: [9, 14]},
 			{name: 'lineTo', args: [12, 14]},
-			{name: 'setLineWidth', args: [2]},
+			{name: 'stroke', args: []},
 		]);
 	});
 
 	it ('should draw correctly respecting "borderSkipped" == "none"', function() {
 		testBorderSkipped ('none', [
+			{name: 'setLineWidth', args: [2]},
 			{name: 'moveTo', args: [12, 1]},
 			{name: 'lineTo', args: [9, 1]},
 			{name: 'lineTo', args: [9, 14]},
 			{name: 'lineTo', args: [11, 14]},
 			{name: 'lineTo', args: [11, 1]},
+			{name: 'stroke', args: []},
 		]);
 	});
 
 	it ('should draw correctly respecting "borderSkipped" == {left: true, right: true}', function() {
 		testBorderSkipped({left: true, right: true}, [
+			{name: 'setLineWidth', args: [2]},
 			{name: 'moveTo', args: [12, 1]},
 			{name: 'lineTo', args: [8, 1]},
 			{name: 'moveTo', args: [8, 14]},
 			{name: 'lineTo', args: [12, 14]},
-			{name: 'setLineWidth', args: [2]},
+			{name: 'stroke', args: []},
 		]);
 	});
 
 	it ('should draw correctly respecting "borderSkipped" == {top: true, bottom: true}', function() {
 		testBorderSkipped({top: true, bottom: true}, [
+			{name: 'setLineWidth', args: [2]},
 			{name: 'moveTo', args: [9, 0]},
 			{name: 'lineTo', args: [9, 15]},
 			{name: 'moveTo', args: [11, 15]},
 			{name: 'lineTo', args: [11, 0]},
-			{name: 'setLineWidth', args: [2]},
+			{name: 'stroke', args: []},
 		]);
 	});
 
@@ -390,26 +400,37 @@ describe('Rectangle element tests', function() {
 		expect(drawCalls).toEqual(expectedDrawCalls);
 	}
 
-	it ('should draw correctly respecting "borderWidth" == {bottom: 4, left: 1, top: 2, right: 3}', function() {
-		testBorderWidth({bottom: 4, left: 1, top: 2, right: 3}, [
-			{name: 'moveTo', args: [12, 2]},
-			{name: 'lineTo', args: [8.5, 2]},
-			{name: 'setLineWidth', args: [4]},
-			{name: 'stroke', args: []},
-			{name: 'beginPath', args: []},
-			{name: 'moveTo', args: [8.5, 0]},
-			{name: 'lineTo', args: [8.5, 14]},
-			{name: 'setLineWidth', args: [1]},
-			{name: 'stroke', args: []},
-			{name: 'beginPath', args: []},
-			{name: 'moveTo', args: [8, 14]},
-			{name: 'lineTo', args: [10.5, 14]},
+	it ('should draw correctly respecting "borderWidth" == {left: 2, right: 2}', function() {
+		testBorderWidth({left: 2, right: 2}, [
 			{name: 'setLineWidth', args: [2]},
+			{name: 'moveTo', args: [9, 0]},
+			{name: 'lineTo', args: [9, 15]},
+			{name: 'moveTo', args: [11, 15]},
+			{name: 'lineTo', args: [11, 0]},
+			{name: 'stroke', args: []},
+		]);
+	});
+
+	it ('should draw correctly respecting "borderWidth" == {bottom: 4, left: 1, top: 3, right: 2}', function() {
+		testBorderWidth({bottom: 4, left: 1, top: 3, right: 2}, [
+			{name: 'setLineWidth', args: [4]},
+			{name: 'moveTo', args: [12, 2]},
+			{name: 'lineTo', args: [9, 2]},
 			{name: 'stroke', args: []},
 			{name: 'beginPath', args: []},
-			{name: 'moveTo', args: [10.5, 15]},
-			{name: 'lineTo', args: [10.5, 2]},
+			{name: 'setLineWidth', args: [1]},
+			{name: 'moveTo', args: [8.5, 0]},
+			{name: 'lineTo', args: [8.5, 12]},
+			{name: 'stroke', args: []},
+			{name: 'beginPath', args: []},
 			{name: 'setLineWidth', args: [3]},
+			{name: 'moveTo', args: [8, 13.5]},
+			{name: 'lineTo', args: [10, 13.5]},
+			{name: 'stroke', args: []},
+			{name: 'beginPath', args: []},
+			{name: 'setLineWidth', args: [2]},
+			{name: 'moveTo', args: [11, 15]},
+			{name: 'lineTo', args: [11, 4]},
 			{name: 'stroke', args: []},
 		]);
 	});
