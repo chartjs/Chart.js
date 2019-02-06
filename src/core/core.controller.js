@@ -738,7 +738,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 
 	/**
 	 * Get the single element that was clicked on
-	 * @return : An object containing the dataset index and element index of the matching element. Also contains the rectangle that was draw
+	 * @return An object containing the dataset index and element index of the matching element. Also contains the rectangle that was draw
 	 */
 	getElementAtEvent: function(e) {
 		return Interaction.modes.single(this, e);
