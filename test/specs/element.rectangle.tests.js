@@ -208,20 +208,17 @@ describe('Rectangle element tests', function() {
 		rectangle.draw();
 
 		expect(mockContext.getCalls()).toEqual([{
-			name: 'beginPath',
-			args: [],
-		}, {
 			name: 'setFillStyle',
 			args: ['rgb(255, 0, 0)']
 		}, {
 			name: 'setStrokeStyle',
 			args: ['rgb(0, 0, 255)'],
 		}, {
-			name: 'setLineWidth',
-			args: [1]
+			name: 'fillRect',
+			args: [9, 0, 2, 14],
 		}, {
-			name: 'moveTo',
-			args: [11.5, 0]
+			name: 'beginPath',
+			args: [],
 		}, {
 			name: 'moveTo',
 			args: [8.5, 0]
@@ -235,8 +232,8 @@ describe('Rectangle element tests', function() {
 			name: 'lineTo',
 			args: [11.5, 0]
 		}, {
-			name: 'fillRect',
-			args: [8.5, 0, 3, 14.5],
+			name: 'setLineWidth',
+			args: [1]
 		}, {
 			name: 'stroke',
 			args: []
@@ -267,32 +264,11 @@ describe('Rectangle element tests', function() {
 		rectangle.draw();
 
 		expect(mockContext.getCalls()).toEqual([{
-			name: 'beginPath',
-			args: [],
-		}, {
 			name: 'setFillStyle',
 			args: ['rgb(255, 0, 0)']
 		}, {
 			name: 'setStrokeStyle',
 			args: ['rgb(0, 0, 255)'],
-		}, {
-			name: 'setLineWidth',
-			args: [undefined]
-		}, {
-			name: 'moveTo',
-			args: [12, 0]
-		}, {
-			name: 'moveTo',
-			args: [8, 0]
-		}, {
-			name: 'lineTo',
-			args: [8, 15]
-		}, {
-			name: 'lineTo',
-			args: [12, 15]
-		}, {
-			name: 'lineTo',
-			args: [12, 0]
 		}, {
 			name: 'fillRect',
 			args: [8, 0, 4, 15],
@@ -307,6 +283,7 @@ describe('Rectangle element tests', function() {
 
 		// Attach a view object as if we were the controller
 		rectangle._view = {
+			borderWidth: 2,
 			borderSkipped: borderSkipped, // set tested 'borderSkipped' parameter
 			ctx: mockContext,
 			base: 0,
@@ -323,71 +300,118 @@ describe('Rectangle element tests', function() {
 
 	it ('should draw correctly respecting "borderSkipped" == "bottom"', function() {
 		testBorderSkipped ('bottom', [
-			{name: 'moveTo', args: [12, 0]},
-			{name: 'moveTo', args: [8, 0]},
-			{name: 'lineTo', args: [8, 15]},
-			{name: 'lineTo', args: [12, 15]},
-			{name: 'lineTo', args: [12, 0]},
+			{name: 'moveTo', args: [9, 0]},
+			{name: 'lineTo', args: [9, 14]},
+			{name: 'lineTo', args: [11, 14]},
+			{name: 'lineTo', args: [11, 0]},
+			{name: 'setLineWidth', args: [2]},
 		]);
 	});
 
 	it ('should draw correctly respecting "borderSkipped" == "left"', function() {
 		testBorderSkipped ('left', [
-			{name: 'moveTo', args: [12, 0]},
-			{name: 'lineTo', args: [8, 0]},
-			{name: 'moveTo', args: [8, 15]},
-			{name: 'lineTo', args: [12, 15]},
-			{name: 'lineTo', args: [12, 0]},
+			{name: 'moveTo', args: [12, 1]},
+			{name: 'lineTo', args: [8, 1]},
+			{name: 'moveTo', args: [8, 14]},
+			{name: 'lineTo', args: [11, 14]},
+			{name: 'lineTo', args: [11, 1]},
 		]);
 	});
 
 	it ('should draw correctly respecting "borderSkipped" == "top"', function() {
 		testBorderSkipped ('top', [
-			{name: 'moveTo', args: [12, 0]},
-			{name: 'lineTo', args: [8, 0]},
-			{name: 'lineTo', args: [8, 15]},
-			{name: 'moveTo', args: [12, 15]},
-			{name: 'lineTo', args: [12, 0]},
+			{name: 'moveTo', args: [12, 1]},
+			{name: 'lineTo', args: [9, 1]},
+			{name: 'lineTo', args: [9, 15]},
+			{name: 'moveTo', args: [11, 15]},
+			{name: 'lineTo', args: [11, 1]},
 		]);
 	});
 
 	it ('should draw correctly respecting "borderSkipped" == "right"', function() {
 		testBorderSkipped ('right', [
-			{name: 'moveTo', args: [12, 0]},
-			{name: 'lineTo', args: [8, 0]},
-			{name: 'lineTo', args: [8, 15]},
-			{name: 'lineTo', args: [12, 15]},
-			{name: 'moveTo', args: [12, 0]},
+			{name: 'moveTo', args: [12, 1]},
+			{name: 'lineTo', args: [9, 1]},
+			{name: 'lineTo', args: [9, 14]},
+			{name: 'lineTo', args: [12, 14]},
+			{name: 'setLineWidth', args: [2]},
 		]);
 	});
 
 	it ('should draw correctly respecting "borderSkipped" == "none"', function() {
 		testBorderSkipped ('none', [
-			{name: 'moveTo', args: [12, 0]},
-			{name: 'lineTo', args: [8, 0]},
-			{name: 'lineTo', args: [8, 15]},
-			{name: 'lineTo', args: [12, 15]},
-			{name: 'lineTo', args: [12, 0]},
+			{name: 'moveTo', args: [12, 1]},
+			{name: 'lineTo', args: [9, 1]},
+			{name: 'lineTo', args: [9, 14]},
+			{name: 'lineTo', args: [11, 14]},
+			{name: 'lineTo', args: [11, 1]},
 		]);
 	});
 
-	it ('should draw correctly respecting "borderSkipped" == "left right"', function() {
-		testBorderSkipped ('left right', [
-			{name: 'moveTo', args: [12, 0]},
-			{name: 'lineTo', args: [8, 0]},
-			{name: 'moveTo', args: [8, 15]},
-			{name: 'lineTo', args: [12, 15]},
-			{name: 'moveTo', args: [12, 0]},
+	it ('should draw correctly respecting "borderSkipped" == {left: true, right: true}', function() {
+		testBorderSkipped({left: true, right: true}, [
+			{name: 'moveTo', args: [12, 1]},
+			{name: 'lineTo', args: [8, 1]},
+			{name: 'moveTo', args: [8, 14]},
+			{name: 'lineTo', args: [12, 14]},
+			{name: 'setLineWidth', args: [2]},
 		]);
 	});
 
-	it ('should draw correctly respecting "borderSkipped" == "top bottom"', function() {
-		testBorderSkipped ('top bottom', [
-			{name: 'moveTo', args: [12, 0]},
-			{name: 'moveTo', args: [8, 0]},
-			{name: 'lineTo', args: [8, 15]},
-			{name: 'moveTo', args: [12, 15]},
-			{name: 'lineTo', args: [12, 0]},
+	it ('should draw correctly respecting "borderSkipped" == {top: true, bottom: true}', function() {
+		testBorderSkipped({top: true, bottom: true}, [
+			{name: 'moveTo', args: [9, 0]},
+			{name: 'lineTo', args: [9, 15]},
+			{name: 'moveTo', args: [11, 15]},
+			{name: 'lineTo', args: [11, 0]},
+			{name: 'setLineWidth', args: [2]},
 		]);
 	});
+
+	function testBorderWidth(borderWidth, expectedDrawCalls) {
+		var mockContext = window.createMockContext();
+		var rectangle = new Chart.elements.Rectangle({
+			_chart: {ctx: mockContext}
+		});
+
+		// Attach a view object as if we were the controller
+		rectangle._view = {
+			borderWidth: borderWidth,
+			ctx: mockContext,
+			base: 0,
+			width: 4,
+			x: 10,
+			y: 15,
+		};
+
+		rectangle.draw();
+
+		var drawCalls = rectangle._view.ctx.getCalls().slice(4);
+		expect(drawCalls).toEqual(expectedDrawCalls);
+	}
+
+	it ('should draw correctly respecting "borderWidth" == {bottom: 4, left: 1, top: 2, right: 3}', function() {
+		testBorderWidth({bottom: 4, left: 1, top: 2, right: 3}, [
+			{name: 'moveTo', args: [12, 2]},
+			{name: 'lineTo', args: [8.5, 2]},
+			{name: 'setLineWidth', args: [4]},
+			{name: 'stroke', args: []},
+			{name: 'beginPath', args: []},
+			{name: 'moveTo', args: [8.5, 0]},
+			{name: 'lineTo', args: [8.5, 14]},
+			{name: 'setLineWidth', args: [1]},
+			{name: 'stroke', args: []},
+			{name: 'beginPath', args: []},
+			{name: 'moveTo', args: [8, 14]},
+			{name: 'lineTo', args: [10.5, 14]},
+			{name: 'setLineWidth', args: [2]},
+			{name: 'stroke', args: []},
+			{name: 'beginPath', args: []},
+			{name: 'moveTo', args: [10.5, 15]},
+			{name: 'lineTo', args: [10.5, 2]},
+			{name: 'setLineWidth', args: [3]},
+			{name: 'stroke', args: []},
+		]);
+	});
+
 });

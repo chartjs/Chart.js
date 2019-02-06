@@ -2,8 +2,10 @@
 
 var defaults = require('../core/core.defaults');
 var Element = require('../core/core.element');
+var helpers = require('../helpers/index');
 
 var defaultColor = defaults.global.defaultColor;
+var valueOrDefault = helpers.valueOrDefault;
 
 defaults._set('global', {
 	elements: {
@@ -58,8 +60,8 @@ module.exports = Element.extend({
 	draw: function() {
 		var ctx = this._chart.ctx;
 		var vm = this._view;
-		var left, right, top, bottom, signX, signY, borderSkipped;
 		var borderWidth = vm.borderWidth;
+		var left, right, top, bottom, signX, signY, borderSkipped, x, y;
 
 		if (!vm.horizontal) {
 			// bar
@@ -69,7 +71,7 @@ module.exports = Element.extend({
 			bottom = vm.base;
 			signX = 1;
 			signY = bottom > top ? 1 : -1;
-			borderSkipped = vm.borderSkipped || 'bottom';
+			borderSkipped = valueOrDefault(vm.borderSkipped, {bottom: true}) || {};
 		} else {
 			// horizontal bar
 			left = vm.base;
@@ -78,57 +80,102 @@ module.exports = Element.extend({
 			bottom = vm.y + vm.height / 2;
 			signX = right > left ? 1 : -1;
 			signY = 1;
-			borderSkipped = vm.borderSkipped || 'left';
+			borderSkipped = valueOrDefault(vm.borderSkipped, {left: true}) || {};
 		}
 
-		// Canvas doesn't allow us to stroke inside the width so we can
-		// adjust the sizes to fit if we're setting a stroke on the line
-		if (borderWidth) {
-			// borderWidth shold be less than bar width and bar height.
-			var barSize = Math.min(Math.abs(left - right), Math.abs(top - bottom));
-			borderWidth = borderWidth > barSize ? barSize : borderWidth;
-			var halfStroke = borderWidth / 2;
-			// Adjust coordinates so borders stay inside
-			left = left + (borderSkipped.indexOf('left') < 0 ? halfStroke * signX : 0);
-			right = right + (borderSkipped.indexOf('right') < 0 ? -halfStroke * signX : 0);
-			top = top + (borderSkipped.indexOf('top') < 0 ? halfStroke * signY : 0);
-			bottom = bottom + (borderSkipped.indexOf('bottom') < 0 ? -halfStroke * signY : 0);
-		}
-
-		ctx.beginPath();
 		ctx.fillStyle = vm.backgroundColor;
 		ctx.strokeStyle = vm.borderColor;
-		ctx.lineWidth = borderWidth;
 
-		// Corner points, from bottom-left to bottom-right clockwise
-		// | 1 2 |
-		// | 0 3 |
-		var corners = [
-			[left, bottom],
-			[left, top],
-			[right, top],
-			[right, bottom]
-		];
-
-		// Find first (starting) corner with fallback to 'bottom'
-		var borders = ['bottom', 'left', 'top', 'right'];
-
-		// Draw rectangle from 'startCorner'
-		var corner = corners[3];
-		ctx.moveTo(corner[0], corner[1]);
-
-		for (var i = 0; i < 4; ++i) {
-			corner = corners[i];
-			if (borderSkipped.indexOf(borders[i]) > -1) {
-				ctx.moveTo(corner[0], corner[1]);
-			} else {
-				ctx.lineTo(corner[0], corner[1]);
-			}
-		}
-
-		ctx.fillRect(left, bottom, right - left, top - bottom);
 		if (borderWidth) {
-			ctx.stroke();
+			if (typeof borderSkipped === 'string') {
+				borderSkipped = {};
+				borderSkipped[vm.borderSkipped] = true;
+			}
+
+			var maxWidth = Math.abs(left - right);
+			var maxHeight = Math.abs(top - bottom);
+			if (!helpers.isObject(borderWidth)) {
+				borderWidth = {
+					bottom: borderSkipped.bottom ? 0 : Math.min(borderWidth, maxHeight),
+					left: borderSkipped.left ? 0 : Math.min(borderWidth, maxWidth),
+					top: borderSkipped.top ? 0 : Math.min(borderWidth, maxHeight),
+					right: borderSkipped.right ? 0 : Math.min(borderWidth, maxWidth)
+				};
+			}
+			ctx.fillRect(
+				left + borderWidth.left * signX,
+				bottom - borderWidth.bottom * signY,
+				right - left - signX * (borderWidth.left + borderWidth.right),
+				top - bottom + signY * (borderWidth.top + borderWidth.bottom));
+
+			ctx.beginPath();
+			if (borderWidth.bottom) {
+				y = bottom - signY * borderWidth.bottom / 2;
+				ctx.moveTo(right, y);
+				if (borderWidth.left) {
+					ctx.lineTo(left + signX * borderWidth.left / 2, y);
+				} else {
+					ctx.lineTo(left, y);
+				}
+				if (borderWidth.bottom !== (borderWidth.left || borderWidth.top || borderWidth.right)) {
+					ctx.lineWidth = borderWidth.bottom;
+					ctx.stroke();
+					if (borderWidth.left || borderWidth.top || borderWidth.right) {
+						ctx.beginPath();
+					}
+				}
+			}
+			if (borderWidth.left) {
+				x = left + signX * borderWidth.left / 2;
+				if (borderWidth.left !== borderWidth.bottom) {
+					ctx.moveTo(x, bottom);
+				}
+				if (borderWidth.top) {
+					ctx.lineTo(x, top + signY * borderWidth.top / 2);
+				} else {
+					ctx.lineTo(x, top);
+				}
+				if (borderWidth.left !== (borderWidth.top || borderWidth.right)) {
+					ctx.lineWidth = borderWidth.left;
+					ctx.stroke();
+					if (borderWidth.top || borderWidth.right) {
+						ctx.beginPath();
+					}
+				}
+			}
+			if (borderWidth.top) {
+				y = top + signY * borderWidth.top / 2;
+				if (borderWidth.top !== borderWidth.left) {
+					ctx.moveTo(left, y);
+				}
+				if (borderWidth.right) {
+					ctx.lineTo(right - signX * borderWidth.right / 2, y);
+				} else {
+					ctx.lineTo(right, y);
+				}
+				if (borderWidth.top !== borderWidth.right) {
+					ctx.lineWidth = borderWidth.top;
+					ctx.stroke();
+					if (borderWidth.right) {
+						ctx.beginPath();
+					}
+				}
+			}
+			if (borderWidth.right) {
+				x = right - signX * borderWidth.right / 2;
+				if (borderWidth.right !== borderWidth.top) {
+					ctx.moveTo(x, top);
+				}
+				if (borderWidth.bottom) {
+					ctx.lineTo(x, bottom - signY * borderWidth.bottom / 2);
+				} else {
+					ctx.lineTo(x, bottom);
+				}
+				ctx.lineWidth = borderWidth.right;
+				ctx.stroke();
+			}
+		} else {
+			ctx.fillRect(left, bottom, right - left, top - bottom);
 		}
 	},
 
