@@ -430,11 +430,13 @@ module.exports = function() {
 		return value !== undefined && value !== null && value !== 'none';
 	}
 
-	// Private helper to get a constraint dimension
-	// @param domNode : the node to check the constraint on
-	// @param maxStyle : the style that defines the maximum for the direction we are using (maxWidth / maxHeight)
-	// @param percentageProperty : property of parent to use when calculating width as a percentage
-	// @see https://www.nathanaeljones.com/blog/2013/reading-max-width-cross-browser
+	/**
+	 * Private helper to get a constraint dimension
+	 * @param domNode : the node to check the constraint on
+	 * @param maxStyle : the style that defines the maximum for the direction we are using (maxWidth / maxHeight)
+	 * @param percentageProperty : property of parent to use when calculating width as a percentage
+	 * @see https://www.nathanaeljones.com/blog/2013/reading-max-width-cross-browser
+	 */
 	function getConstraintDimension(domNode, maxStyle, percentageProperty) {
 		var view = document.defaultView;
 		var parentNode = helpers._getParentNode(domNode);

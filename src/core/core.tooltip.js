@@ -202,9 +202,11 @@ function splitNewlines(str) {
 }
 
 
-// Private helper to create a tooltip item model
-// @param element : the chart element (point, arc, bar) to create the tooltip item for
-// @return : new tooltip item
+/**
+ * Private helper to create a tooltip item model
+ * @param element : the chart element (point, arc, bar) to create the tooltip item for
+ * @return : new tooltip item
+ */
 function createTooltipItem(element) {
 	var xScale = element._xScale;
 	var yScale = element._yScale || element._scale; // handle radar || polarArea charts
