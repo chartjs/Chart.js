@@ -315,7 +315,7 @@ module.exports = {
 	 * to be manually imported to make this library compatible with any CSP.
 	 * See https://github.com/chartjs/Chart.js/issues/5208
 	 */
-	useExternalStylesheet: false,
+	disableCSSInjection: false,
 
 	/**
 	 * This property holds whether this platform is enabled for the current environment.
@@ -335,7 +335,7 @@ module.exports = {
 		this._loaded = true;
 
 		// https://github.com/chartjs/Chart.js/issues/5208
-		if (!this.useExternalStylesheet) {
+		if (!this.disableCSSInjection) {
 			injectCSS(this, stylesheet);
 		}
 	},
@@ -359,7 +359,7 @@ module.exports = {
 		var context = item && item.getContext && item.getContext('2d');
 
 		// Load platform resources on first chart creation, to make possible to change
-		// platform options after importing the library (e.g. `useExternalStylesheet`).
+		// platform options after importing the library (e.g. `disableCSSInjection`).
 		this._ensureLoaded();
 
 		// `instanceof HTMLCanvasElement/CanvasRenderingContext2D` fails when the item is
