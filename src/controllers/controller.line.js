@@ -118,7 +118,7 @@ module.exports = DatasetController.extend({
 			backgroundColor: options.backgroundColor,
 			borderColor: options.borderColor,
 			borderWidth: options.borderWidth,
-			tension: lineModel ? lineModel.tension : 0,
+			tension: valueOrDefault(custom.tension, lineModel ? lineModel.tension : 0),
 			steppedLine: lineModel ? lineModel.steppedLine : false,
 			// Tooltip
 			hitRadius: options.hitRadius
@@ -156,7 +156,7 @@ module.exports = DatasetController.extend({
 			hoverRadius: 'pointHoverRadius',
 			pointStyle: 'pointStyle',
 			radius: 'pointRadius',
-			rotation: 'pointRotation',
+			rotation: 'pointRotation'
 		};
 		var keys = Object.keys(ELEMENT_OPTIONS);
 
@@ -211,7 +211,7 @@ module.exports = DatasetController.extend({
 		// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158
 		// This option gives lines the ability to span gaps
 		values.spanGaps = valueOrDefault(dataset.spanGaps, options.spanGaps);
-		values.tension = resolve([custom.tension, dataset.lineTension, elementOptions.tension]);
+		values.tension = valueOrDefault(dataset.lineTension, elementOptions.tension);
 		values.steppedLine = resolve([custom.steppedLine, dataset.steppedLine, elementOptions.stepped]);
 
 		return values;

@@ -73,6 +73,7 @@ module.exports = DatasetController.extend({
 		var scale = me.chart.scale;
 		var pointPosition = scale.getPointPositionForValue(index, dataset.data[index]);
 		var options = me._resolvePointOptions(point, index);
+		var lineModel = me.getMeta().dataset._model;
 		var x = reset ? scale.xCenter : pointPosition.x;
 		var y = reset ? scale.yCenter : pointPosition.y;
 
@@ -94,7 +95,7 @@ module.exports = DatasetController.extend({
 			backgroundColor: options.backgroundColor,
 			borderColor: options.borderColor,
 			borderWidth: options.borderWidth,
-			tension: resolve([custom.tension, dataset.lineTension, me.chart.options.elements.line.tension]),
+			tension: valueOrDefault(custom.tension, lineModel ? lineModel.tension : 0),
 
 			// Tooltip
 			hitRadius: options.hitRadius
@@ -132,7 +133,7 @@ module.exports = DatasetController.extend({
 			hoverRadius: 'pointHoverRadius',
 			pointStyle: 'pointStyle',
 			radius: 'pointRadius',
-			rotation: 'pointRotation',
+			rotation: 'pointRotation'
 		};
 		var keys = Object.keys(ELEMENT_OPTIONS);
 
@@ -180,6 +181,8 @@ module.exports = DatasetController.extend({
 				options[key]
 			]);
 		}
+
+		values.tension = valueOrDefault(dataset.lineTension, options.tension);
 
 		return values;
 	},
