@@ -104,11 +104,13 @@ module.exports = Element.extend({
 				right: Math.min(borderWidth.right || 0, maxWidth)
 			};
 		} else {
+			maxWidth = Math.min(borderWidth, maxWidth);
+			maxHeight = Math.min(borderWidth, maxHeight);
 			borderWidth = {
-				bottom: borderSkipped === 'bottom' ? 0 : Math.min(borderWidth, maxHeight),
-				left: borderSkipped === 'left' ? 0 : Math.min(borderWidth, maxWidth),
-				top: borderSkipped === 'top' ? 0 : Math.min(borderWidth, maxHeight),
-				right: borderSkipped === 'right' ? 0 : Math.min(borderWidth, maxWidth)
+				bottom: borderSkipped === 'bottom' ? 0 : maxHeight,
+				left: borderSkipped === 'left' ? 0 : maxWidth,
+				top: borderSkipped === 'top' ? 0 : maxHeight,
+				right: borderSkipped === 'right' ? 0 : maxWidth
 			};
 		}
 
