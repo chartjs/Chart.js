@@ -184,6 +184,9 @@
 		}, {
 			title: 'Pie Chart',
 			path: 'scriptable/pie.html'
+		}, {
+			title: 'Line Chart',
+			path: 'scriptable/line.html'
 		}]
 	}, {
 		title: 'Advanced',
