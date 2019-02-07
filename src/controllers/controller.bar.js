@@ -149,11 +149,6 @@ module.exports = DatasetController.extend({
 		var dataset = me.getDataset();
 		var options = me._resolveElementOptions(rectangle, index);
 
-		// float-bar support, if y arguments are array lets override rectangles styles, assigning no skippingBorder
-		if (helpers.isArray(dataset.data[index])) {
-			options.borderSkipped = null;
-		}
-
 		rectangle._xScale = me.getScaleForId(meta.xAxisID);
 		rectangle._yScale = me.getScaleForId(meta.yAxisID);
 		rectangle._datasetIndex = me.index;
@@ -290,13 +285,12 @@ module.exports = DatasetController.extend({
 		var scale = me._getValueScale();
 		var isHorizontal = scale.isHorizontal();
 		var datasets = chart.data.datasets;
-		var value = scale._parseValue(datasets[datasetIndex].data[index]);
+		var value = +scale.getRightValue(datasets[datasetIndex].data[index]);
 		var minBarLength = scale.options.minBarLength;
 		var stacked = scale.options.stacked;
 		var stack = meta.stack;
-		var start = value.max >= 0 && value.min >= 0 ? value.min : value.max;
-		var yValue = value.max >= 0 && value.min >= 0 ? value.max - value.min : value.min - value.max;
-		var i, imeta, ivalue, base, head, size, yStackValue;
+		var start = 0;
+		var i, imeta, ivalue, base, head, size;
 
 		if (stacked || (stacked === undefined && stack !== undefined)) {
 			for (i = 0; i < datasetIndex; ++i) {
@@ -307,10 +301,8 @@ module.exports = DatasetController.extend({
 					imeta.controller._getValueScaleId() === scale.id &&
 					chart.isDatasetVisible(i)) {
 
-					yStackValue = scale._parseValue(datasets[i].data[index]);
-					ivalue = yStackValue.min >= 0 && yStackValue.max >= 0 ? yStackValue.max : yStackValue.min;
-
-					if ((value.min < 0 && ivalue < 0) || (value.max >= 0 && ivalue >= 0)) {
+					ivalue = +scale.getRightValue(datasets[i].data[index]);
+					if ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0)) {
 						start += ivalue;
 					}
 				}
@@ -318,7 +310,7 @@ module.exports = DatasetController.extend({
 		}
 
 		base = scale.getPixelForValue(start);
-		head = scale.getPixelForValue(start + yValue);
+		head = scale.getPixelForValue(start + value);
 		size = head - base;
 
 		if (minBarLength !== undefined && Math.abs(size) < minBarLength) {
@@ -373,10 +365,8 @@ module.exports = DatasetController.extend({
 
 		helpers.canvas.clipArea(chart.ctx, chart.chartArea);
 
-		// float-bar support, if y arguments are array function will use bottom value as bar start point
 		for (; i < ilen; ++i) {
-			var val = scale._parseValue(dataset.data[i]);
-			if (!isNaN(val.start) && !isNaN(val.end)) {
+			if (!isNaN(scale.getRightValue(dataset.data[i]))) {
 				rects[i].draw();
 			}
 		}

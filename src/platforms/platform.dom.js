@@ -124,11 +124,11 @@ var supportsEventListenerOptions = (function() {
 // https://github.com/chartjs/Chart.js/issues/4287
 var eventListenerOptions = supportsEventListenerOptions ? {passive: true} : false;
 
-function addEventListener(node, type, listener) {
+function addListener(node, type, listener) {
 	node.addEventListener(type, listener, eventListenerOptions);
 }
 
-function removeEventListener(node, type, listener) {
+function removeListener(node, type, listener) {
 	node.removeEventListener(type, listener, eventListenerOptions);
 }
 
@@ -223,8 +223,8 @@ function createResizer(handler) {
 		handler();
 	};
 
-	addEventListener(expand, 'scroll', onScroll.bind(expand, 'expand'));
-	addEventListener(shrink, 'scroll', onScroll.bind(shrink, 'shrink'));
+	addListener(expand, 'scroll', onScroll.bind(expand, 'expand'));
+	addListener(shrink, 'scroll', onScroll.bind(shrink, 'shrink'));
 
 	return resizer;
 }
@@ -239,7 +239,7 @@ function watchForRender(node, handler) {
 	};
 
 	helpers.each(ANIMATION_START_EVENTS, function(type) {
-		addEventListener(node, type, proxy);
+		addListener(node, type, proxy);
 	});
 
 	// #4737: Chrome might skip the CSS animation when the CSS_RENDER_MONITOR class
@@ -258,7 +258,7 @@ function unwatchForRender(node) {
 
 	if (proxy) {
 		helpers.each(ANIMATION_START_EVENTS, function(type) {
-			removeEventListener(node, type, proxy);
+			removeListener(node, type, proxy);
 		});
 
 		delete expando.renderProxy;
@@ -429,7 +429,7 @@ module.exports = {
 			listener(fromNativeEvent(event, chart));
 		};
 
-		addEventListener(canvas, type, proxy);
+		addListener(canvas, type, proxy);
 	},
 
 	removeEventListener: function(chart, type, listener) {
@@ -447,7 +447,7 @@ module.exports = {
 			return;
 		}
 
-		removeEventListener(canvas, type, proxy);
+		removeListener(canvas, type, proxy);
 	}
 };
 
@@ -462,7 +462,7 @@ module.exports = {
  * @todo remove at version 3
  * @private
  */
-helpers.addEvent = addEventListener;
+helpers.addEvent = addListener;
 
 /**
  * Provided for backward compatibility, use EventTarget.removeEventListener instead.
@@ -473,4 +473,4 @@ helpers.addEvent = addEventListener;
  * @todo remove at version 3
  * @private
  */
-helpers.removeEvent = removeEventListener;
+helpers.removeEvent = removeListener;

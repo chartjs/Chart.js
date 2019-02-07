@@ -113,13 +113,13 @@ module.exports = Scale.extend({
 
 					helpers.each(dataset.data, function(rawValue, index) {
 						var values = valuesPerStack[key];
-						var value = me._parseValue(rawValue);
+						var value = +me.getRightValue(rawValue);
 						// invalid, hidden and negative values are ignored
-						if (isNaN(value.min) || isNaN(value.max) || meta.data[index].hidden || value.max < 0 || value.max < 0) {
+						if (isNaN(value) || meta.data[index].hidden || value < 0) {
 							return;
 						}
 						values[index] = values[index] || 0;
-						values[index] += value.max;
+						values[index] += value;
 					});
 				}
 			});
@@ -138,31 +138,26 @@ module.exports = Scale.extend({
 				var meta = chart.getDatasetMeta(datasetIndex);
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 					helpers.each(dataset.data, function(rawValue, index) {
-						var value = me._parseValue(rawValue);
+						var value = +me.getRightValue(rawValue);
 						// invalid, hidden and negative values are ignored
-						if (isNaN(value.min) || isNaN(value.max) || meta.data[index].hidden || value.min < 0 || value.max < 0) {
+						if (isNaN(value) || meta.data[index].hidden || value < 0) {
 							return;
 						}
 
-						if (value.isarr === false) {
-							value.min = value.end;
-							value.max = value.end;
-						}
-
 						if (me.min === null) {
-							me.min = value.min;
-						} else if (value.min < me.min) {
-							me.min = value.min;
+							me.min = value;
+						} else if (value < me.min) {
+							me.min = value;
 						}
 
 						if (me.max === null) {
-							me.max = value.max;
-						} else if (value.max > me.max) {
-							me.max = value.max;
+							me.max = value;
+						} else if (value > me.max) {
+							me.max = value;
 						}
 
-						if (value.min !== 0 && (me.minNotZero === null || value.min < me.minNotZero)) {
-							me.minNotZero = value.min;
+						if (value !== 0 && (me.minNotZero === null || value < me.minNotZero)) {
+							me.minNotZero = value;
 						}
 					});
 				}
@@ -247,7 +242,7 @@ module.exports = Scale.extend({
 
 	// Get the correct tooltip label
 	getLabelForIndex: function(index, datasetIndex) {
-		return this.getScaleLabel(this.chart.data.datasets[datasetIndex].data[index]);
+		return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 	},
 
 	getPixelForTick: function(index) {

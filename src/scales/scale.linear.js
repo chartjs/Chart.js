@@ -70,25 +70,20 @@ module.exports = LinearScaleBase.extend({
 
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 					helpers.each(dataset.data, function(rawValue, index) {
-						var value = me._parseValue(rawValue);
-
-						if (isNaN(value.min) || isNaN(value.max) || meta.data[index].hidden) {
+						var value = +me.getRightValue(rawValue);
+						if (isNaN(value) || meta.data[index].hidden) {
 							return;
 						}
 
 						positiveValues[index] = positiveValues[index] || 0;
 						negativeValues[index] = negativeValues[index] || 0;
 
-						if (value.min === 0 && !opts.ticks.beginAtZero) {
-							value.min = value.max;
-						}
-
 						if (opts.relativePoints) {
 							positiveValues[index] = 100;
-						} else if (value.min < 0 || value.max < 0) {
-							negativeValues[index] += value.min;
+						} else if (value < 0) {
+							negativeValues[index] += value;
 						} else {
-							positiveValues[index] += value.max;
+							positiveValues[index] += value;
 						}
 					});
 				}
@@ -107,28 +102,21 @@ module.exports = LinearScaleBase.extend({
 				var meta = chart.getDatasetMeta(datasetIndex);
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 					helpers.each(dataset.data, function(rawValue, index) {
-						var value = me._parseValue(rawValue);
-
-						if (isNaN(value.min) || isNaN(value.max) || meta.data[index].hidden) {
+						var value = +me.getRightValue(rawValue);
+						if (isNaN(value) || meta.data[index].hidden) {
 							return;
 						}
 
-						if (value.isarr === false) {
-							value.min = value.end;
-							value.max = value.end;
-						}
-
-
 						if (me.min === null) {
-							me.min = value.min;
-						} else if (value.min < me.min) {
-							me.min = value.min;
+							me.min = value;
+						} else if (value < me.min) {
+							me.min = value;
 						}
 
 						if (me.max === null) {
-							me.max = value.max;
-						} else if (value.max > me.max) {
-							me.max = value.max;
+							me.max = value;
+						} else if (value > me.max) {
+							me.max = value;
 						}
 					});
 				}
@@ -163,7 +151,7 @@ module.exports = LinearScaleBase.extend({
 	},
 
 	getLabelForIndex: function(index, datasetIndex) {
-		return this.getScaleLabel(this.chart.data.datasets[datasetIndex].data[index]);
+		return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 	},
 
 	// Utils
