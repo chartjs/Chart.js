@@ -149,6 +149,11 @@ module.exports = DatasetController.extend({
 		var dataset = me.getDataset();
 		var options = me._resolveElementOptions(rectangle, index);
 
+		// float-bar support, if y arguments are array lets override rectangles styles, assigning no skippingBorder
+		if (helpers.isArray(dataset.data[index])) {
+			options.borderSkipped = null;
+		}
+
 		rectangle._xScale = me.getScaleForId(meta.xAxisID);
 		rectangle._yScale = me.getScaleForId(meta.yAxisID);
 		rectangle._datasetIndex = me.index;
