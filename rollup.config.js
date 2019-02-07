@@ -29,7 +29,7 @@ module.exports = [
 			}),
 			optional({
 				include: ['moment']
-			}),
+			})
 		],
 		output: {
 			name: 'Chart',

@@ -85,9 +85,9 @@ require(['moment'], function() {
 });
 ```
 
-## Content-Security-Policy
+## Content Security Policy
 
-By default, Chart.js injects CSS directly into the DOM. For webpages secured using [Content-Security-Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy), this requires to allow `style-src 'unsafe-inline'`. For stricter CSP environments, where only `style-src 'self'` is allowed, the following CSS file needs to be manually added to your webpage:
+By default, Chart.js injects CSS directly into the DOM. For webpages secured using [`Content-Security-Policy` (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy), this requires to allow `style-src 'unsafe-inline'`. For stricter CSP environments, where only `style-src 'self'` is allowed, the following CSS file needs to be manually added to your webpage:
 
 ```html
 <link rel="stylesheet" type="text/css" href="path/to/chartjs/dist/Chart.min.css">
