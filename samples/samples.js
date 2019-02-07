@@ -181,6 +181,9 @@
 		}, {
 			title: 'Bubble Chart',
 			path: 'scriptable/bubble.html'
+		}, {
+			title: 'Pie Chart',
+			path: 'scriptable/pie.html'
 		}]
 	}, {
 		title: 'Advanced',
