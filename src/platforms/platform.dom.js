@@ -120,16 +120,15 @@ var supportsEventListenerOptions = (function() {
 	return supports;
 }());
 
-// Default passive to true as expected by Chrome for 'touchstart' and 'touchend' events.
-// https://github.com/chartjs/Chart.js/issues/4287
-var eventListenerOptions = supportsEventListenerOptions ? {passive: true} : false;
 
 function addListener(node, type, listener) {
-	node.addEventListener(type, listener, eventListenerOptions);
+	// Default passive to true as expected by Chrome for 'touchstart' and 'touchend' events.
+	// https://github.com/chartjs/Chart.js/issues/4287
+	node.addEventListener(type, listener, supportsEventListenerOptions ? {passive: true} : false);
 }
 
 function removeListener(node, type, listener) {
-	node.removeEventListener(type, listener, eventListenerOptions);
+	node.removeEventListener(type, listener);
 }
 
 function createEvent(type, chart, x, y, nativeEvent) {
