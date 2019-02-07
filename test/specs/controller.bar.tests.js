@@ -1,5 +1,10 @@
 describe('Chart.controllers.bar', function() {
-	describe('auto', jasmine.specsFromFixtures('controller.bar'));
+	describe('auto', jasmine.fixture.specs('controller.bar'));
+
+	it('should be registered as dataset controller', function() {
+		expect(typeof Chart.controllers.bar).toBe('function');
+		expect(typeof Chart.controllers.horizontalBar).toBe('function');
+	});
 
 	it('should be constructed', function() {
 		var chart = window.acquireChart({
@@ -1202,6 +1207,67 @@ describe('Chart.controllers.bar', function() {
 					label: 'dataset1'
 				}, {
 					data: [100, 10, 0, 100],
+					label: 'dataset2'
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4']
+			},
+			options: {
+				legend: false,
+				title: false,
+				scales: {
+					xAxes: [{
+						type: 'category',
+						display: false,
+						stacked: true,
+						barPercentage: 1,
+					}],
+					yAxes: [{
+						type: 'logarithmic',
+						display: false,
+						stacked: true
+					}]
+				}
+			}
+		});
+
+		var meta0 = chart.getDatasetMeta(0);
+
+		[
+			{b: 512, w: 102, x: 64, y: 512},
+			{b: 512, w: 102, x: 192, y: 118},
+			{b: 512, w: 102, x: 320, y: 512},
+			{b: 512, w: 102, x: 449, y: 118}
+		].forEach(function(values, i) {
+			expect(meta0.data[i]._model.base).toBeCloseToPixel(values.b);
+			expect(meta0.data[i]._model.width).toBeCloseToPixel(values.w);
+			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
+			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
+		});
+
+		var meta1 = chart.getDatasetMeta(1);
+
+		[
+			{b: 512, w: 102, x: 64, y: 102},
+			{b: 118, w: 102, x: 192, y: 102},
+			{b: 512, w: 102, x: 320, y: 512},
+			{b: 118, w: 102, x: 449, y: 0}
+		].forEach(function(values, i) {
+			expect(meta1.data[i]._model.base).toBeCloseToPixel(values.b);
+			expect(meta1.data[i]._model.width).toBeCloseToPixel(values.w);
+			expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
+			expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
+		});
+	});
+
+	it('should update elements when the scales are stacked and the y axis is logarithmic and data is strings', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					data: ['10', '100', '10', '100'],
+					label: 'dataset1'
+				}, {
+					data: ['100', '10', '0', '100'],
 					label: 'dataset2'
 				}],
 				labels: ['label1', 'label2', 'label3', 'label4']

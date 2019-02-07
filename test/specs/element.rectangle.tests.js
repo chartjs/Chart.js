@@ -132,7 +132,7 @@ describe('Rectangle element tests', function() {
 		});
 	});
 
-	it ('should get the correct area', function() {
+	it ('should get the correct vertical area', function() {
 		var rectangle = new Chart.elements.Rectangle({
 			_datasetIndex: 2,
 			_index: 1
@@ -147,6 +147,23 @@ describe('Rectangle element tests', function() {
 		};
 
 		expect(rectangle.getArea()).toEqual(60);
+	});
+
+	it ('should get the correct horizontal area', function() {
+		var rectangle = new Chart.elements.Rectangle({
+			_datasetIndex: 2,
+			_index: 1
+		});
+
+		// Attach a view object as if we were the controller
+		rectangle._view = {
+			base: 0,
+			height: 4,
+			x: 10,
+			y: 15
+		};
+
+		expect(rectangle.getArea()).toEqual(40);
 	});
 
 	it ('should get the center', function() {

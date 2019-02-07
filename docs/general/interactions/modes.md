@@ -16,11 +16,11 @@ var chart = new Chart(ctx, {
             mode: 'point'
         }
     }
-})
+});
 ```
 
 ## nearest
-Gets the item that is nearest to the point. The nearest item is determined based on the distance to the center of the chart item (point, bar). If 2 or more items are at the same distance, the one with the smallest area is used. If `intersect` is true, this is only triggered when the mouse position intersects an item in the graph. This is very useful for combo charts where points are hidden behind bars.
+Gets the items that are at the nearest distance to the point. The nearest item is determined based on the distance to the center of the chart item (point, bar). You can use the `axis` setting to define which directions are used in distance calculation. If `intersect` is true, this is only triggered when the mouse position intersects an item in the graph. This is very useful for combo charts where points are hidden behind bars.
 
 ```javascript
 var chart = new Chart(ctx, {
@@ -31,14 +31,14 @@ var chart = new Chart(ctx, {
             mode: 'nearest'
         }
     }
-})
+});
 ```
 
 ## single (deprecated)
-Finds the first item that intersects the point and returns it. Behaves like 'nearest' mode with intersect = true.
+Finds the first item that intersects the point and returns it. Behaves like `'nearest'` mode with `intersect = true`.
 
 ## label (deprecated)
-See `'index'` mode
+See `'index'` mode.
 
 ## index
 Finds item at the same index. If the `intersect` setting is true, the first intersecting item is used to determine the index in the data. If `intersect` false the nearest item, in the x direction, is used to determine the index.
@@ -52,7 +52,7 @@ var chart = new Chart(ctx, {
             mode: 'index'
         }
     }
-})
+});
 ```
 
 To use index mode in a chart like the horizontal bar chart, where we search along the y direction, you can use the `axis` setting introduced in v2.7.0. By setting this value to `'y'` on the y direction is used.
@@ -67,7 +67,7 @@ var chart = new Chart(ctx, {
             axis: 'y'
         }
     }
-})
+});
 ```
 
 ## x-axis (deprecated)
@@ -85,11 +85,11 @@ var chart = new Chart(ctx, {
             mode: 'dataset'
         }
     }
-})
+});
 ```
 
 ## x
-Returns all items that would intersect based on the `X` coordinate of the position only. Would be useful for a vertical cursor implementation. Note that this only applies to cartesian charts
+Returns all items that would intersect based on the `X` coordinate of the position only. Would be useful for a vertical cursor implementation. Note that this only applies to cartesian charts.
 
 ```javascript
 var chart = new Chart(ctx, {
@@ -100,7 +100,7 @@ var chart = new Chart(ctx, {
             mode: 'x'
         }
     }
-})
+});
 ```
 
 ## y
@@ -115,5 +115,5 @@ var chart = new Chart(ctx, {
             mode: 'y'
         }
     }
-})
+});
 ```

@@ -1,6 +1,6 @@
 # Colors
 
-When supplying colors to Chart options, you can use a number of formats. You can specify the color as a string in hexadecimal, RGB, or HSL notations. If a color is needed, but not specified, Chart.js will use the global default color. This color is stored at `Chart.defaults.global.defaultColor`. It is initially set to `'rgba(0, 0, 0, 0.1)'`
+When supplying colors to Chart options, you can use a number of formats. You can specify the color as a string in hexadecimal, RGB, or HSL notations. If a color is needed, but not specified, Chart.js will use the global default color. This color is stored at `Chart.defaults.global.defaultColor`. It is initially set to `'rgba(0, 0, 0, 0.1)'`.
 
 You can also pass a [CanvasGradient](https://developer.mozilla.org/en-US/docs/Web/API/CanvasGradient) object. You will need to create this before passing to the chart, but using it you can achieve some interesting effects.
 
@@ -25,8 +25,8 @@ img.onload = function() {
                 backgroundColor: fillPattern
             }]
         }
-    })
-}
+    });
+};
 ```
 
 Using pattern fills for data graphics can help viewers with vision deficiencies (e.g. color-blindness or partial sight) to [more easily understand your data](http://betweentwobrackets.com/data-graphics-and-colour-vision/).
@@ -41,7 +41,7 @@ var chartData = {
             pattern.draw('square', '#ff6384'),
             pattern.draw('circle', '#36a2eb'),
             pattern.draw('diamond', '#cc65fe'),
-            pattern.draw('triangle', '#ffce56'),
+            pattern.draw('triangle', '#ffce56')
         ]
     }],
     labels: ['Red', 'Blue', 'Purple', 'Yellow']

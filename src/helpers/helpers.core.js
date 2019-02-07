@@ -32,13 +32,20 @@ var helpers = {
 	},
 
 	/**
-	 * Returns true if `value` is an array, else returns false.
+	 * Returns true if `value` is an array (including typed arrays), else returns false.
 	 * @param {*} value - The value to test.
 	 * @returns {Boolean}
 	 * @function
 	 */
-	isArray: Array.isArray ? Array.isArray : function(value) {
-		return Object.prototype.toString.call(value) === '[object Array]';
+	isArray: function(value) {
+		if (Array.isArray && Array.isArray(value)) {
+			return true;
+		}
+		var type = Object.prototype.toString.call(value);
+		if (type.substr(0, 7) === '[object' && type.substr(-6) === 'Array]') {
+			return true;
+		}
+		return false;
 	},
 
 	/**
@@ -49,6 +56,15 @@ var helpers = {
 	 */
 	isObject: function(value) {
 		return value !== null && Object.prototype.toString.call(value) === '[object Object]';
+	},
+
+	/**
+	 * Returns true if `value` is a finite number, else returns false
+	 * @param {*} value  - The value to test.
+	 * @returns {Boolean}
+	 */
+	isFinite: function(value) {
+		return (typeof value === 'number' || value instanceof Number) && isFinite(value);
 	},
 
 	/**
@@ -119,7 +135,7 @@ var helpers = {
 
 	/**
 	 * Returns true if the `a0` and `a1` arrays have the same content, else returns false.
-	 * @see http://stackoverflow.com/a/14853974
+	 * @see https://stackoverflow.com/a/14853974
 	 * @param {Array} a0 - The array to compare
 	 * @param {Array} a1 - The array to compare
 	 * @returns {Boolean}
@@ -176,7 +192,7 @@ var helpers = {
 
 	/**
 	 * The default merger when Chart.helpers.merge is called without merger option.
-	 * Note(SB): this method is also used by configMerge and scaleMerge as fallback.
+	 * Note(SB): also used by mergeConfig and mergeScaleConfig as fallback.
 	 * @private
 	 */
 	_merger: function(key, target, source, options) {

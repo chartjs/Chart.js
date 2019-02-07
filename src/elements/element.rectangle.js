@@ -3,11 +3,13 @@
 var defaults = require('../core/core.defaults');
 var Element = require('../core/core.element');
 
+var defaultColor = defaults.global.defaultColor;
+
 defaults._set('global', {
 	elements: {
 		rectangle: {
-			backgroundColor: defaults.global.defaultColor,
-			borderColor: defaults.global.defaultColor,
+			backgroundColor: defaultColor,
+			borderColor: defaultColor,
 			borderSkipped: 'bottom',
 			borderWidth: 0
 		}
@@ -204,7 +206,10 @@ module.exports = Element.extend({
 
 	getArea: function() {
 		var vm = this._view;
-		return vm.width * Math.abs(vm.y - vm.base);
+
+		return isVertical(this)
+			? vm.width * Math.abs(vm.y - vm.base)
+			: vm.height * Math.abs(vm.x - vm.base);
 	},
 
 	tooltipPosition: function() {

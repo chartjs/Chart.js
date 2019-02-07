@@ -323,6 +323,8 @@ describe('Chart.plugins', function() {
 
 			expect(plugin.hook).toHaveBeenCalled();
 			expect(plugin.hook.calls.first().args[1]).toEqual({a: 42});
+
+			delete Chart.defaults.global.plugins.a;
 		});
 
 

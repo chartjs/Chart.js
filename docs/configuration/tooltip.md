@@ -5,51 +5,52 @@
 The tooltip configuration is passed into the `options.tooltips` namespace. The global options for the chart tooltips is defined in `Chart.defaults.global.tooltips`.
 
 | Name | Type | Default | Description
-| -----| ---- | --------| -----------
-| `enabled` | `Boolean` | `true` | Are on-canvas tooltips enabled
-| `custom` | `Function` | `null` | See [custom tooltip](#external-custom-tooltips) section.
-| `mode` | `String` | `'nearest'` | Sets which elements appear in the tooltip. [more...](../general/interactions/modes.md#interaction-modes).
-| `intersect` | `Boolean` | `true` | if true, the tooltip mode applies only when the mouse position intersects with an element. If false, the mode will be applied at all times.
-| `position` | `String` | `'average'` | The mode for positioning the tooltip. [more...](#position-modes)
-| `callbacks` | `Object` | | See the [callbacks section](#tooltip-callbacks)
-| `itemSort` | `Function` | | Sort tooltip items. [more...](#sort-callback)
-| `filter` | `Function` | | Filter tooltip items. [more...](#filter-callback)
-| `backgroundColor` | `Color` | `'rgba(0,0,0,0.8)'` | Background color of the tooltip.
-| `titleFontFamily` | `String` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | title font
-| `titleFontSize` | `Number` | `12` | Title font size
-| `titleFontStyle` | `String` | `'bold'` | Title font style
-| `titleFontColor` | `Color` | `'#fff'` | Title font color
-| `titleSpacing` | `Number` | `2` | Spacing to add to top and bottom of each title line.
-| `titleMarginBottom` | `Number` | `6` | Margin to add on bottom of title section.
-| `bodyFontFamily` | `String` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | body line font
-| `bodyFontSize` | `Number` | `12` | Body font size
-| `bodyFontStyle` | `String` | `'normal'` | Body font style
-| `bodyFontColor` | `Color` | `'#fff'` | Body font color
-| `bodySpacing` | `Number` | `2` | Spacing to add to top and bottom of each tooltip item.
-| `footerFontFamily` | `String` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | footer font
-| `footerFontSize` | `Number` | `12` | Footer font size
-| `footerFontStyle` | `String` | `'bold'` | Footer font style
-| `footerFontColor` | `Color` | `'#fff'` | Footer font color
-| `footerSpacing` | `Number` | `2` | Spacing to add to top and bottom of each footer line.
-| `footerMarginTop` | `Number` | `6` | Margin to add before drawing the footer.
-| `xPadding` | `Number` | `6` | Padding to add on left and right of tooltip.
-| `yPadding` | `Number` | `6` | Padding to add on top and bottom of tooltip.
-| `caretPadding` | `Number` | `2` | Extra distance to move the end of the tooltip arrow away from the tooltip point.
-| `caretSize` | `Number` | `5` | Size, in px, of the tooltip arrow.
-| `cornerRadius` | `Number` | `6` | Radius of tooltip corner curves.
-| `multiKeyBackground` | `Color` | `'#fff'` | Color to draw behind the colored boxes when multiple items are in the tooltip
-| `displayColors` | `Boolean` | `true` | if true, color boxes are shown in the tooltip
-| `borderColor` | `Color` | `'rgba(0,0,0,0)'` | Color of the border
-| `borderWidth` | `Number` | `0` | Size of the border
+| ---- | ---- | ------- | -----------
+| `enabled` | `boolean` | `true` | Are on-canvas tooltips enabled?
+| `custom` | `function` | `null` | See [custom tooltip](#external-custom-tooltips) section.
+| `mode` | `string` | `'nearest'` | Sets which elements appear in the tooltip. [more...](../general/interactions/modes.md#interaction-modes).
+| `intersect` | `boolean` | `true` | If true, the tooltip mode applies only when the mouse position intersects with an element. If false, the mode will be applied at all times.
+| `position` | `string` | `'average'` | The mode for positioning the tooltip. [more...](#position-modes)
+| `callbacks` | `object` | | See the [callbacks section](#tooltip-callbacks).
+| `itemSort` | `function` | | Sort tooltip items. [more...](#sort-callback)
+| `filter` | `function` | | Filter tooltip items. [more...](#filter-callback)
+| `backgroundColor` | `Color` | `'rgba(0, 0, 0, 0.8)'` | Background color of the tooltip.
+| `titleFontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Title font.
+| `titleFontSize` | `number` | `12` | Title font size.
+| `titleFontStyle` | `string` | `'bold'` | Title font style.
+| `titleFontColor` | `Color` | `'#fff'` | Title font color.
+| `titleSpacing` | `number` | `2` | Spacing to add to top and bottom of each title line.
+| `titleMarginBottom` | `number` | `6` | Margin to add on bottom of title section.
+| `bodyFontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Body line font.
+| `bodyFontSize` | `number` | `12` | Body font size.
+| `bodyFontStyle` | `string` | `'normal'` | Body font style.
+| `bodyFontColor` | `Color` | `'#fff'` | Body font color.
+| `bodySpacing` | `number` | `2` | Spacing to add to top and bottom of each tooltip item.
+| `footerFontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Footer font.
+| `footerFontSize` | `number` | `12` | Footer font size.
+| `footerFontStyle` | `string` | `'bold'` | Footer font style.
+| `footerFontColor` | `Color` | `'#fff'` | Footer font color.
+| `footerSpacing` | `number` | `2` | Spacing to add to top and bottom of each footer line.
+| `footerMarginTop` | `number` | `6` | Margin to add before drawing the footer.
+| `xPadding` | `number` | `6` | Padding to add on left and right of tooltip.
+| `yPadding` | `number` | `6` | Padding to add on top and bottom of tooltip.
+| `caretPadding` | `number` | `2` | Extra distance to move the end of the tooltip arrow away from the tooltip point.
+| `caretSize` | `number` | `5` | Size, in px, of the tooltip arrow.
+| `cornerRadius` | `number` | `6` | Radius of tooltip corner curves.
+| `multiKeyBackground` | `Color` | `'#fff'` | Color to draw behind the colored boxes when multiple items are in the tooltip.
+| `displayColors` | `boolean` | `true` | If true, color boxes are shown in the tooltip.
+| `borderColor` | `Color` | `'rgba(0, 0, 0, 0)'` | Color of the border.
+| `borderWidth` | `number` | `0` | Size of the border.
 
 ### Position Modes
- Possible modes are:
-* 'average'
-* 'nearest'
 
-'average' mode will place the tooltip at the average position of the items displayed in the tooltip. 'nearest' will place the tooltip at the position of the element closest to the event position.
+Possible modes are:
+* `'average'`
+* `'nearest'`
 
-New modes can be defined by adding functions to the Chart.Tooltip.positioners map.
+`'average'` mode will place the tooltip at the average position of the items displayed in the tooltip. `'nearest'` will place the tooltip at the position of the element closest to the event position.
+
+New modes can be defined by adding functions to the `Chart.Tooltip.positioners` map.
 
 Example:
 ```javascript
@@ -70,12 +71,12 @@ Chart.Tooltip.positioners.custom = function(elements, eventPosition) {
         x: 0,
         y: 0
     };
-}
+};
 ```
 
 ### Sort Callback
 
-Allows sorting of [tooltip items](#tooltip-item-interface). Must implement at minimum a function that can be passed to [Array.prototype.sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort).  This function can also accept a third parameter that is the data object passed to the chart.
+Allows sorting of [tooltip items](#tooltip-item-interface). Must implement at minimum a function that can be passed to [Array.prototype.sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort). This function can also accept a third parameter that is the data object passed to the chart.
 
 ### Filter Callback
 
@@ -83,29 +84,29 @@ Allows filtering of [tooltip items](#tooltip-item-interface). Must implement at 
 
 ## Tooltip Callbacks
 
-The tooltip label configuration is nested below the tooltip configuration using the `callbacks` key. The tooltip has the following callbacks for providing text. For all functions, 'this' will be the tooltip object created from the Chart.Tooltip constructor.
+The tooltip label configuration is nested below the tooltip configuration using the `callbacks` key. The tooltip has the following callbacks for providing text. For all functions, `this` will be the tooltip object created from the `Chart.Tooltip` constructor.
 
-All functions are called with the same arguments: a [tooltip item](#tooltip-item-interface) and the data object passed to the chart. All functions must return either a string or an array of strings. Arrays of strings are treated as multiple lines of text.
+All functions are called with the same arguments: a [tooltip item](#tooltip-item-interface) and the `data` object passed to the chart. All functions must return either a string or an array of strings. Arrays of strings are treated as multiple lines of text.
 
 | Name | Arguments | Description
 | ---- | --------- | -----------
-| `beforeTitle` | `Array[tooltipItem], data` | Returns the text to render before the title.
-| `title` | `Array[tooltipItem], data` | Returns text to render as the title of the tooltip.
-| `afterTitle` | `Array[tooltipItem], data` | Returns text to render after the title.
-| `beforeBody` | `Array[tooltipItem], data` | Returns text to render before the body section.
-| `beforeLabel` | `tooltipItem, data` | Returns text to render before an individual label. This will be called for each item in the tooltip.
-| `label` | `tooltipItem, data` | Returns text to render for an individual item in the tooltip.
-| `labelColor` | `tooltipItem, chart` | Returns the colors to render for the tooltip item. [more...](#label-color-callback)
-| `labelTextColor` | `tooltipItem, chart` | Returns the colors for the text of the label for the tooltip item.
-| `afterLabel` | `tooltipItem, data` | Returns text to render after an individual label.
-| `afterBody` | `Array[tooltipItem], data` | Returns text to render after the body section
-| `beforeFooter` | `Array[tooltipItem], data` | Returns text to render before the footer section.
-| `footer` | `Array[tooltipItem], data` | Returns text to render as the footer of the tooltip.
-| `afterFooter` | `Array[tooltipItem], data` | Text to render after the footer section
+| `beforeTitle` | `TooltipItem[], object` | Returns the text to render before the title.
+| `title` | `TooltipItem[], object` | Returns text to render as the title of the tooltip.
+| `afterTitle` | `TooltipItem[], object` | Returns text to render after the title.
+| `beforeBody` | `TooltipItem[], object` | Returns text to render before the body section.
+| `beforeLabel` | `TooltipItem, object` | Returns text to render before an individual label. This will be called for each item in the tooltip.
+| `label` | `TooltipItem, object` | Returns text to render for an individual item in the tooltip. [more...](#label-callback)
+| `labelColor` | `TooltipItem, Chart` | Returns the colors to render for the tooltip item. [more...](#label-color-callback)
+| `labelTextColor` | `TooltipItem, Chart` | Returns the colors for the text of the label for the tooltip item.
+| `afterLabel` | `TooltipItem, object` | Returns text to render after an individual label.
+| `afterBody` | `TooltipItem[], object` | Returns text to render after the body section.
+| `beforeFooter` | `TooltipItem[], object` | Returns text to render before the footer section.
+| `footer` | `TooltipItem[], object` | Returns text to render as the footer of the tooltip.
+| `afterFooter` | `TooltipItem[], object` | Text to render after the footer section.
 
 ### Label Callback
 
-The label callback can change the text that displays for a given data point. A common example to round data values; the following example rounds the data to two decimal places.
+The `label` callback can change the text that displays for a given data point. A common example to round data values; the following example rounds the data to two decimal places.
 
 ```javascript
 var chart = new Chart(ctx, {
@@ -143,9 +144,9 @@ var chart = new Chart(ctx, {
                     return {
                         borderColor: 'rgb(255, 0, 0)',
                         backgroundColor: 'rgb(255, 0, 0)'
-                    }
+                    };
                 },
-                labelTextColor:function(tooltipItem, chart){
+                labelTextColor: function(tooltipItem, chart) {
                     return '#543453';
                 }
             }
@@ -161,23 +162,31 @@ The tooltip items passed to the tooltip callbacks implement the following interf
 
 ```javascript
 {
-    // X Value of the tooltip as a string
-    xLabel: String,
+    // Label for the tooltip
+    label: string,
 
-    // Y value of the tooltip as a string
-    yLabel: String,
+    // Value for the tooltip
+    value: string,
+
+    // X Value of the tooltip
+    // (deprecated) use `value` or `label` instead
+    xLabel: number | string,
+
+    // Y value of the tooltip
+    // (deprecated) use `value` or `label` instead
+    yLabel: number | string,
 
     // Index of the dataset the item comes from
-    datasetIndex: Number,
+    datasetIndex: number,
 
     // Index of this data item in the dataset
-    index: Number,
+    index: number,
 
     // X position of matching point
-    x: Number,
+    x: number,
 
     // Y position of matching point
-    y: Number,
+    y: number
 }
 ```
 
@@ -202,7 +211,7 @@ var myPieChart = new Chart(ctx, {
                 if (!tooltipEl) {
                     tooltipEl = document.createElement('div');
                     tooltipEl.id = 'chartjs-tooltip';
-                    tooltipEl.innerHTML = "<table></table>";
+                    tooltipEl.innerHTML = '<table></table>';
                     document.body.appendChild(tooltipEl);
                 }
 
@@ -269,7 +278,7 @@ var myPieChart = new Chart(ctx, {
 });
 ```
 
-See [samples](http://www.chartjs.org/samples/) for examples on how to get started with custom tooltips.
+See [samples](https://www.chartjs.org/samples/) for examples on how to get started with custom tooltips.
 
 ## Tooltip Model
 The tooltip model contains parameters that can be used to render the tooltip.
@@ -280,71 +289,75 @@ The tooltip model contains parameters that can be used to render the tooltip.
     dataPoints: TooltipItem[],
 
     // Positioning
-    xPadding: Number,
-    yPadding: Number,
-    xAlign: String,
-    yAlign: String,
+    xPadding: number,
+    yPadding: number,
+    xAlign: string,
+    yAlign: string,
 
     // X and Y properties are the top left of the tooltip
-    x: Number,
-    y: Number,
-    width: Number,
-    height: Number,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
     // Where the tooltip points to
-    caretX: Number,
-    caretY: Number,
+    caretX: number,
+    caretY: number,
 
     // Body
     // The body lines that need to be rendered
     // Each object contains 3 parameters
-    // before: String[] // lines of text before the line with the color square
-    // lines: String[], // lines of text to render as the main item with color square
-    // after: String[], // lines of text to render after the main lines
-    body: Object[],
+    // before: string[] // lines of text before the line with the color square
+    // lines: string[], // lines of text to render as the main item with color square
+    // after: string[], // lines of text to render after the main lines
+    body: object[],
     // lines of text that appear after the title but before the body
-    beforeBody: String[],
+    beforeBody: string[],
     // line of text that appear after the body and before the footer
-    afterBody: String[],
+    afterBody: string[],
     bodyFontColor: Color,
-    _bodyFontFamily: String,
-    _bodyFontStyle: String,
-    _bodyAlign: String,
-    bodyFontSize: Number,
-    bodySpacing: Number,
+    _bodyFontFamily: string,
+    _bodyFontStyle: string,
+    _bodyAlign: string,
+    bodyFontSize: number,
+    bodySpacing: number,
 
     // Title
     // lines of text that form the title
-    title: String[],
+    title: string[],
     titleFontColor: Color,
-    _titleFontFamily: String,
-    _titleFontStyle: String,
-    titleFontSize: Number,
-    _titleAlign: String,
-    titleSpacing: Number,
-    titleMarginBottom: Number,
+    _titleFontFamily: string,
+    _titleFontStyle: string,
+    titleFontSize: number,
+    _titleAlign: string,
+    titleSpacing: number,
+    titleMarginBottom: number,
 
     // Footer
     // lines of text that form the footer
-    footer: String[],
+    footer: string[],
     footerFontColor: Color,
-    _footerFontFamily: String,
-    _footerFontStyle: String,
-    footerFontSize: Number,
-    _footerAlign: String,
-    footerSpacing: Number,
-    footerMarginTop: Number,
+    _footerFontFamily: string,
+    _footerFontStyle: string,
+    footerFontSize: number,
+    _footerAlign: string,
+    footerSpacing: number,
+    footerMarginTop: number,
 
     // Appearance
-    caretSize: Number,
-    cornerRadius: Number,
+    caretSize: number,
+    caretPadding: number,
+    cornerRadius: number,
     backgroundColor: Color,
 
     // colors to render for each item in body[]. This is the color of the squares in the tooltip
     labelColors: Color[],
+    labelTextColors: Color[],
 
     // 0 opacity is a hidden tooltip
-    opacity: Number,
+    opacity: number,
     legendColorBackground: Color,
-    displayColors: Boolean,
+    displayColors: boolean,
+    borderColor: Color,
+    borderWidth: number
 }
 ```

@@ -4,7 +4,7 @@
 <head>
 	<title>Line Chart</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
-	<script src="../../../dist/Chart.js"></script>
+	<script src="../../../dist/Chart.min.js"></script>
 	<script src="../../utils.js"></script>
 	<style>
 		canvas {
@@ -106,7 +106,7 @@
 					xAxes: [{
 						type: 'time',
 						time: {
-							format: timeFormat,
+							parser: timeFormat,
 							// round: 'day'
 							tooltipFormat: 'll HH:mm'
 						},

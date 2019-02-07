@@ -4,23 +4,23 @@ Axes are an integral part of a chart. They are used to determine how data maps t
 
 In a radial chart, such as a radar chart or a polar area chart, there is a single axis that maps points in the angular and radial directions. These are known as ['radial axes'](./radial/README.md#radial-axes).
 
-Scales in Chart.js >V2.0 are significantly more powerful, but also different than those of v1.0.
+Scales in Chart.js >v2.0 are significantly more powerful, but also different than those of v1.0.
 * Multiple X & Y axes are supported.
 * A built-in label auto-skip feature detects would-be overlapping ticks and labels and removes every nth label to keep things displaying normally.
-* Scale titles are supported
-* New scale types can be extended without writing an entirely new chart type
+* Scale titles are supported.
+* New scale types can be extended without writing an entirely new chart type.
 
-# Common Configuration
+## Common Configuration
 
-The following properties are common to all axes provided by Chart.js
+The following properties are common to all axes provided by Chart.js.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `display` | `Boolean` | `true` | If set to `false` the axis is hidden from view. Overrides *gridLines.display*, *scaleLabel.display*, and *ticks.display*.
-| `callbacks` | `Object` | | Callback functions to hook into the axis lifecycle. [more...](#callbacks)
-| `weight` | `Number` | `0` | The weight used to sort the axis. Higher weights are further away from the chart area.
+| `display` | <code>boolean&#124;string</code> | `true` | Controls the axis global visibility (visible when `true`, hidden when `false`). When `display: 'auto'`, the axis is visible only if at least one associated dataset is visible.
+| `callbacks` | `object` | | Callback functions to hook into the axis lifecycle. [more...](#callbacks)
+| `weight` | `number` | `0` | The weight used to sort the axis. Higher weights are further away from the chart area.
 
-## Callbacks
+### Callbacks
 There are a number of config callbacks that can be used to change parameters in the scale at different points in the update process.
 
 | Name | Arguments | Description
@@ -31,7 +31,7 @@ There are a number of config callbacks that can be used to change parameters in 
 | `beforeDataLimits` | `axis` | Callback that runs before data limits are determined.
 | `afterDataLimits` | `axis` | Callback that runs after data limits are determined.
 | `beforeBuildTicks` | `axis` | Callback that runs before ticks are created.
-| `afterBuildTicks` | `axis` | Callback that runs after ticks are created. Useful for filtering ticks.
+| `afterBuildTicks` | `axis`, `ticks` | Callback that runs after ticks are created. Useful for filtering ticks. Should return the filtered ticks.
 | `beforeTickToLabelConversion` | `axis` | Callback that runs before ticks are converted into strings.
 | `afterTickToLabelConversion` | `axis` | Callback that runs after ticks are converted into strings.
 | `beforeCalculateTickRotation` | `axis` | Callback that runs before tick rotation is determined.
@@ -40,7 +40,7 @@ There are a number of config callbacks that can be used to change parameters in 
 | `afterFit` | `axis` | Callback that runs after the scale fits to the canvas.
 | `afterUpdate` | `axis` | Callback that runs at the end of the update process.
 
-## Updating Axis Defaults
+### Updating Axis Defaults
 
 The default configuration for a scale can be easily changed using the scale service. All you need to do is to pass in a partial configuration that will be merged with the current scale default configuration to form the new default.
 
