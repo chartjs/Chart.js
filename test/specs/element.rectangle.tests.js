@@ -302,7 +302,7 @@ describe('Rectangle element tests', function() {
 			{name: 'lineTo', args: [1, 11.5]},
 			{name: 'lineTo', args: [1, 8.5]},
 			{name: 'lineTo', args: [14, 8.5]},
-			{name: 'lineTo', args: [14, 11.5]},
+			{name: 'lineTo', args: [14, 10.5]},
 			{name: 'stroke', args: []},
 		]);
 	});
@@ -334,7 +334,7 @@ describe('Rectangle element tests', function() {
 			{name: 'lineTo', args: [14, 11.5]},
 			{name: 'lineTo', args: [14, 8.5]},
 			{name: 'lineTo', args: [1, 8.5]},
-			{name: 'lineTo', args: [1, 11.5]},
+			{name: 'lineTo', args: [1, 10.5]},
 			{name: 'stroke', args: []},
 		]);
 	});
@@ -365,7 +365,7 @@ describe('Rectangle element tests', function() {
 			{name: 'lineTo', args: [9, 14]},
 			{name: 'lineTo', args: [9, 1]},
 			{name: 'lineTo', args: [11, 1]},
-			{name: 'lineTo', args: [11, 14]},
+			{name: 'lineTo', args: [11, 13]},
 			{name: 'stroke', args: []},
 		]);
 	});
@@ -411,7 +411,7 @@ describe('Rectangle element tests', function() {
 			{name: 'lineTo', args: [8, 1]},
 			{name: 'moveTo', args: [8, 14]},
 			{name: 'lineTo', args: [11, 14]},
-			{name: 'lineTo', args: [11, 1]},
+			{name: 'lineTo', args: [11, 2]},
 			{name: 'stroke', args: []},
 		]);
 	});
@@ -423,7 +423,7 @@ describe('Rectangle element tests', function() {
 			{name: 'lineTo', args: [9, 1]},
 			{name: 'lineTo', args: [9, 15]},
 			{name: 'moveTo', args: [11, 15]},
-			{name: 'lineTo', args: [11, 1]},
+			{name: 'lineTo', args: [11, 2]},
 			{name: 'stroke', args: []},
 		]);
 	});
@@ -446,7 +446,7 @@ describe('Rectangle element tests', function() {
 			{name: 'lineTo', args: [9, 1]},
 			{name: 'lineTo', args: [9, 14]},
 			{name: 'lineTo', args: [11, 14]},
-			{name: 'lineTo', args: [11, 1]},
+			{name: 'lineTo', args: [11, 2]},
 			{name: 'stroke', args: []},
 		]);
 	});

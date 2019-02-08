@@ -56,15 +56,104 @@ function getBarBounds(bar) {
 	};
 }
 
+function drawLines(ctx, lines) {
+	var i = 0;
+	var ilen = lines.length;
+	var line, prevLine;
+
+	for (; i < ilen; ++i) {
+		line = lines[i];
+		if (i === 0 || prevLine.w !== line.w) {
+			if (i > 0) {
+				ctx.stroke();
+			}
+			ctx.beginPath();
+			ctx.lineWidth = line.w;
+		}
+		if (i === 0 || prevLine.x2 !== line.x1 || prevLine.y2 !== line.y1) {
+			ctx.moveTo(line.x1, line.y1);
+		}
+		ctx.lineTo(line.x2, line.y2);
+		prevLine = line;
+	}
+	if (ilen) {
+		ctx.stroke();
+	}
+}
+
+// eslint-disable-next-line complexity
+function buildBorderLines(rect, width, offset) {
+	var lines = [];
+	var halfOffsetLeft = offset.left / 2;
+	var halfOffsetRight = offset.right / 2;
+	var halfOffsetTop = offset.top / 2;
+	var halfOffsetBottom = offset.bottom / 2;
+
+	if (width.bottom) {
+		lines.push({
+			w: width.bottom,
+			x1: rect.right,
+			y1: rect.bottom + halfOffsetBottom,
+			x2: rect.left + (width.bottom === width.left ? halfOffsetLeft : offset.left),
+			y2: rect.bottom + halfOffsetBottom
+		});
+	}
+	if (width.left) {
+		lines.push({
+			w: width.left,
+			x1: rect.left + halfOffsetLeft,
+			y1: rect.bottom + (width.bottom === width.left ? halfOffsetBottom : 0),
+			x2: rect.left + halfOffsetLeft,
+			y2: rect.top + (width.left === width.top ? halfOffsetTop : offset.top)
+		});
+	}
+	if (width.top) {
+		lines.push({
+			w: width.top,
+			x1: rect.left + (width.left === width.top ? halfOffsetLeft : 0),
+			y1: rect.top + halfOffsetTop,
+			x2: rect.right + (width.top === width.right ? halfOffsetRight : offset.right),
+			y2: rect.top + halfOffsetTop
+		});
+	}
+	if (width.right) {
+		lines.push({
+			w: width.right,
+			x1: rect.right + halfOffsetRight,
+			y1: rect.top + (width.top === width.right ? halfOffsetTop : 0),
+			x2: rect.right + halfOffsetRight,
+			y2: rect.bottom + offset.bottom
+		});
+	}
+	return lines;
+}
+
+function parseBorderWidth(borderWidth, borderSkipped, maxWidth, maxHeight) {
+	if (helpers.isObject(borderWidth)) {
+		return {
+			bottom: Math.min(borderWidth.bottom || 0, maxHeight),
+			left: Math.min(borderWidth.left || 0, maxWidth),
+			top: Math.min(borderWidth.top || 0, maxHeight),
+			right: Math.min(borderWidth.right || 0, maxWidth)
+		};
+	}
+
+	maxWidth = Math.min(borderWidth, maxWidth);
+	maxHeight = Math.min(borderWidth, maxHeight);
+	return {
+		bottom: borderSkipped === 'bottom' ? 0 : maxHeight,
+		left: borderSkipped === 'left' ? 0 : maxWidth,
+		top: borderSkipped === 'top' ? 0 : maxHeight,
+		right: borderSkipped === 'right' ? 0 : maxWidth
+	};
+}
+
 module.exports = Element.extend({
 	draw: function() {
 		var ctx = this._chart.ctx;
 		var vm = this._view;
 		var borderWidth = vm.borderWidth;
-		var lineCount = 0;
-		var width = 0;
-		var left, right, top, bottom, signX, signY, borderSkipped;
-		var maxWidth, maxHeight, prevWidth, nextWidth;
+		var left, right, top, bottom, signX, signY, borderSkipped, offset;
 
 		if (!vm.horizontal) {
 			// bar
@@ -94,85 +183,33 @@ module.exports = Element.extend({
 			return;
 		}
 
-		maxWidth = Math.abs(left - right) / 2;
-		maxHeight = Math.abs(top - bottom) / 2;
-		if (helpers.isObject(borderWidth)) {
-			borderWidth = {
-				bottom: Math.min(borderWidth.bottom || 0, maxHeight),
-				left: Math.min(borderWidth.left || 0, maxWidth),
-				top: Math.min(borderWidth.top || 0, maxHeight),
-				right: Math.min(borderWidth.right || 0, maxWidth)
-			};
-		} else {
-			maxWidth = Math.min(borderWidth, maxWidth);
-			maxHeight = Math.min(borderWidth, maxHeight);
-			borderWidth = {
-				bottom: borderSkipped === 'bottom' ? 0 : maxHeight,
-				left: borderSkipped === 'left' ? 0 : maxWidth,
-				top: borderSkipped === 'top' ? 0 : maxHeight,
-				right: borderSkipped === 'right' ? 0 : maxWidth
-			};
-		}
+		borderWidth = parseBorderWidth(
+			borderWidth,
+			borderSkipped,
+			Math.abs(left - right) / 2,
+			Math.abs(top - bottom) / 2);
+
+		offset = {
+			left: borderWidth.left * signX,
+			right: borderWidth.right * -signX,
+			top: borderWidth.top * signY,
+			bottom: borderWidth.bottom * -signY,
+		};
 
 		ctx.fillRect(
-			left + borderWidth.left * signX,
-			bottom - borderWidth.bottom * signY,
-			right - left - signX * (borderWidth.left + borderWidth.right),
-			top - bottom + signY * (borderWidth.top + borderWidth.bottom));
+			left + offset.left,
+			bottom + offset.bottom,
+			right + offset.right - left - offset.left,
+			top + offset.top - bottom - offset.bottom);
 
-		function drawBorder(w, x1, y1, x2, y2) {
-			prevWidth = width;
-			width = nextWidth;
-			nextWidth = w;
-
-			if (!width) {
-				return;
-			}
-
-			if (lineCount === 0) {
-				ctx.beginPath();
-			}
-
-			var vertical = x1 === x2;
-			var sign1 = vertical ? y1 === top ? -1 : 1 : x1 === left ? 1 : -1;
-			var sign2 = vertical ? y1 > y2 ? 1 : -1 : x1 > x2 ? 1 : -1;
-			if (width === nextWidth) {
-				sign2 /= 2;
-			}
-
-			if (ctx.lineWidth !== width) {
-				if (lineCount) {
-					ctx.stroke();
-					ctx.beginPath();
-					lineCount = 0;
-				}
-				ctx.lineWidth = width;
-			}
-
-			if (vertical) {
-				x2 = x1 = x1 + sign1 * signX * width / 2;
-				y2 += sign2 * nextWidth;
-			} else {
-				y1 = y2 = y1 + sign1 * signY * width / 2;
-				x2 += sign2 * nextWidth;
-			}
-
-			if (prevWidth !== width) {
-				ctx.moveTo(x1, y1);
-			}
-
-			ctx.lineTo(x2, y2);
-			lineCount++;
-		}
-
-		nextWidth = borderWidth.bottom;
-		drawBorder(borderWidth.left, right, bottom, left, bottom);
-		drawBorder(borderWidth.top, left, bottom, left, top);
-		drawBorder(borderWidth.right, left, top, right, top);
-		drawBorder(borderWidth.bottom, right, top, right, bottom);
-		if (lineCount) {
-			ctx.stroke();
-		}
+		drawLines(ctx,
+			buildBorderLines({
+				left: left,
+				top: top,
+				right: right,
+				bottom: bottom
+			}, borderWidth, offset)
+		);
 	},
 
 	height: function() {
