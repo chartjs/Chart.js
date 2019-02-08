@@ -91,7 +91,7 @@ The style of each point can be controlled with the following properties:
 | `pointHitRadius` | The pixel size of the non-displayed point that reacts to mouse events.
 | `pointRadius` | The radius of the point shape. If set to 0, the point is not rendered.
 | `pointRotation` | The rotation of the point in degrees.
-| `pointStyle` | Style of the point. [more...](../configuration/elements#point-styles)
+| `pointStyle` | Style of the point. [more...](../configuration/elements.md#point-styles)
 
 All these values, if `undefined`, fallback first to the dataset options then to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options.
 
