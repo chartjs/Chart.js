@@ -544,7 +544,7 @@ module.exports = Element.extend({
 	},
 
 	_parseValue: function(raw) {
-		var value = this.getRightValue(raw);
+		var value = +this.getRightValue(raw);
 		var start, end, isarr;
 
 		if (helpers.isArray(value)) {
