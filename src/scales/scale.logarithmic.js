@@ -152,7 +152,7 @@ module.exports = Scale.extend({
 						if (me.min === null) {
 							me.min = value.min;
 						} else if (value.min < me.min) {
- 							me.min = value.min;
+							me.min = value.min;
 						}
 
 						if (me.max === null) {

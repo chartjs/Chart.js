@@ -564,7 +564,7 @@ module.exports = Element.extend({
 			end: end,
 			isarr: isarr
 		};
-    },
+	},
 
 	getScaleLabel: function(rawValue) {
 		var v = this._parseValue(rawValue);
