@@ -1,6 +1,6 @@
 # Linear Radial Axis
 
-The linear scale is use to chart numerical data. As the name suggests, linear interpolation is used to determine where a value lies in relation the center of the axis.
+The linear scale is used to chart numerical data. As the name suggests, linear interpolation is used to determine where a value lies in relation the center of the axis.
 
 The following additional configuration options are provided by the radial linear scale.
 
