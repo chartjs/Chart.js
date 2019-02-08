@@ -523,6 +523,10 @@ module.exports = Element.extend({
 		if ((typeof rawValue === 'number' || rawValue instanceof Number) && !isFinite(rawValue)) {
 			return NaN;
 		}
+		// Float-bar support. Handling arrays
+		if (helpers.isArray(rawValue)) {
+			return [+this.getRightValue(rawValue[0]), +this.getRightValue(rawValue[1])];
+		}
 		// If it is in fact an object, dive in one more level
 		if (rawValue) {
 			if (this.isHorizontal()) {
@@ -536,6 +540,40 @@ module.exports = Element.extend({
 
 		// Value is good, return it
 		return rawValue;
+	},
+
+	_parseValue: function(raw) {
+		var value, start, end, min, max;
+
+		if (helpers.isArray(raw)) {
+			value = this.getRightValue(raw);
+			start = value[0];
+			end = value[1];
+			min = Math.min(start, end);
+			max = Math.max(start, end);
+		} else {
+			value = +this.getRightValue(raw);
+			start = undefined;
+			end = value;
+			min = value;
+			max = value;
+		}
+
+		return {
+			min: min,
+			max: max,
+			start: start,
+			end: end
+		};
+	},
+
+	getScaleLabel: function(rawValue) {
+		var v = this._parseValue(rawValue);
+		if (v.start !== undefined) {
+			return '[' + v.start + ', ' + v.end + ']';
+		}
+
+		return +this.getRightValue(rawValue);
 	},
 
 	/**
