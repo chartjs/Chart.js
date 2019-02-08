@@ -187,6 +187,9 @@
 		}, {
 			title: 'Line Chart',
 			path: 'scriptable/line.html'
+		}, {
+			title: 'Polar Area Chart',
+			path: 'scriptable/polar.html'
 		}]
 	}, {
 		title: 'Advanced',
