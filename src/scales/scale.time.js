@@ -190,8 +190,8 @@ function toTimestamp(input, options) {
 	// Only parse if its not a timestamp already
 	if (!helpers.isFinite(value)) {
 		value = typeof format === 'string'
-			? adapter.parse(value, format, adapterOptions)
-			: adapter.parse(value, undefined, adapterOptions);
+			? adapter.parse({value: value, format: format}, adapterOptions)
+			: adapter.parse({value: value}, adapterOptions);
 	}
 
 	if (value !== null) {
@@ -205,7 +205,7 @@ function toTimestamp(input, options) {
 
 		// `format` could return something else than a timestamp, if so, parse it
 		if (!helpers.isFinite(value)) {
-			value = adapter.parse(value, undefined, adapterOptions);
+			value = adapter.parse({value: value}, adapterOptions);
 		}
 	}
 
@@ -225,7 +225,7 @@ function parse(input, scale) {
 	}
 
 	if (options.round) {
-		value = +adapter.startOf(value, options.round, undefined, adapterOptions);
+		value = +adapter.startOf({timestamp: value, unit: options.round}, adapterOptions);
 	}
 
 	return value;
@@ -284,7 +284,7 @@ function determineUnitForFormatting(ticks, minUnit, min, max, adapterOptions) {
 
 	for (i = ilen - 1; i >= UNITS.indexOf(minUnit); i--) {
 		unit = UNITS[i];
-		if (INTERVALS[unit].common && adapter.diff(max, min, unit, adapterOptions) >= ticks.length) {
+		if (INTERVALS[unit].common && adapter.diff({max: max, min: min, unit: unit}, adapterOptions) >= ticks.length) {
 			return unit;
 		}
 	}
@@ -325,17 +325,17 @@ function generate(min, max, capacity, options, adapterOptions) {
 
 	// For 'week' unit, handle the first day of week option
 	if (weekday) {
-		first = +adapter.startOf(first, 'isoWeek', weekday, adapterOptions);
-		last = +adapter.startOf(last, 'isoWeek', weekday, adapterOptions);
+		first = +adapter.startOf({timestamp: first, unit: 'isoWeek', weekday: weekday}, adapterOptions);
+		last = +adapter.startOf({timestamp: last, unit: 'isoWeek', weekday: weekday}, adapterOptions);
 	}
 
 	// Align first/last ticks on unit
-	first = +adapter.startOf(first, weekday ? 'day' : minor, undefined, adapterOptions);
-	last = +adapter.startOf(last, weekday ? 'day' : minor, undefined, adapterOptions);
+	first = +adapter.startOf({timestamp: first, unit: weekday ? 'day' : minor}, adapterOptions);
+	last = +adapter.startOf({timestamp: last, unit: weekday ? 'day' : minor}, adapterOptions);
 
 	// Make sure that the last tick include max
 	if (last < max) {
-		last = +adapter.add(last, 1, minor, adapterOptions);
+		last = +adapter.add({timestamp: last, amount: 1, unit: minor}, adapterOptions);
 	}
 
 	time = first;
@@ -344,11 +344,14 @@ function generate(min, max, capacity, options, adapterOptions) {
 		// Align the first tick on the previous `minor` unit aligned on the `major` unit:
 		// we first aligned time on the previous `major` unit then add the number of full
 		// stepSize there is between first and the previous major time.
-		time = +adapter.startOf(time, major, undefined, adapterOptions);
-		time = +adapter.add(time, ~~((first - time) / (interval.size * stepSize)) * stepSize, minor, adapterOptions);
+		time = +adapter.startOf({timestamp: time, unit: major}, adapterOptions);
+		time = +adapter.add({
+			timestamp: time,
+			amount: ~~((first - time) / (interval.size * stepSize)) * stepSize,
+			unit: minor}, adapterOptions);
 	}
 
-	for (; time < last; time = +adapter.add(time, stepSize, minor, adapterOptions)) {
+	for (; time < last; time = +adapter.add({timestamp: time, amount: stepSize, unit: minor}, adapterOptions)) {
 		ticks.push(+time);
 	}
 
@@ -396,7 +399,7 @@ function ticksFromTimestamps(values, majorUnit, adapterOptions) {
 
 	for (i = 0, ilen = values.length; i < ilen; ++i) {
 		value = values[i];
-		major = majorUnit ? value === +adapter.startOf(value, majorUnit, undefined, adapterOptions) : false;
+		major = majorUnit ? value === +adapter.startOf({timestamp: value, unit: majorUnit}, adapterOptions) : false;
 
 		ticks.push({
 			value: value,
@@ -411,7 +414,7 @@ function ticksFromTimestamps(values, majorUnit, adapterOptions) {
  * Return the time format for the label with the most parts (milliseconds, second, etc.)
  */
 function determineLabelFormat(timestamps, adapterOptions) {
-	var presets = adapter.presets(adapterOptions);
+	var presets = adapter.presets({}, adapterOptions);
 	var ilen = timestamps.length;
 	var i, ts, hasTime;
 
@@ -420,7 +423,7 @@ function determineLabelFormat(timestamps, adapterOptions) {
 		if (ts % INTERVALS.second.size !== 0) {
 			return presets.full;
 		}
-		if (!hasTime && adapter.startOf(ts, 'day', undefined, adapterOptions) !== ts) {
+		if (!hasTime && adapter.startOf({timestamp: ts, unit: 'day'}, adapterOptions) !== ts) {
 			hasTime = true;
 		}
 	}
@@ -503,7 +506,7 @@ module.exports = Scale.extend({
 		// supposed to contain *all* unit/string pairs but this can't be resolved
 		// when loading the scale (adapters are loaded afterward), so let's populate
 		// missing formats on update
-		helpers.mergeIf(time.displayFormats, adapter.formats(adapterOptions));
+		helpers.mergeIf(time.displayFormats, adapter.formats({}, adapterOptions));
 
 		return Scale.prototype.update.apply(me, arguments);
 	},
@@ -579,8 +582,8 @@ module.exports = Scale.extend({
 		max = parse(timeOpts.max, me) || max;
 
 		// In case there is no valid min/max, set limits based on unit time option
-		min = min === MAX_INTEGER ? +adapter.startOf(Date.now(), unit, undefined, adapterOptions) : min;
-		max = max === MIN_INTEGER ? +adapter.endOf(Date.now(), unit, adapterOptions) + 1 : max;
+		min = min === MAX_INTEGER ? +adapter.startOf({timestamp: Date.now(), unit: unit}, adapterOptions) : min;
+		max = max === MIN_INTEGER ? +adapter.endOf({timestamp: Date.now(), unit: unit}, adapterOptions) + 1 : max;
 
 		// Make sure that max is strictly higher than min (required by the lookup table)
 		me.min = Math.min(min, max);
@@ -665,13 +668,13 @@ module.exports = Scale.extend({
 			label = me.getRightValue(value);
 		}
 		if (timeOpts.tooltipFormat) {
-			return adapter.format(toTimestamp(label, timeOpts), timeOpts.tooltipFormat, adapterOptions);
+			return adapter.format({timestamp: toTimestamp(label, timeOpts), format: timeOpts.tooltipFormat}, adapterOptions);
 		}
 		if (typeof label === 'string') {
 			return label;
 		}
 
-		return adapter.format(toTimestamp(label, timeOpts), me._labelFormat, adapterOptions);
+		return adapter.format({timestamp: toTimestamp(label, timeOpts), format: me._labelFormat}, adapterOptions);
 	},
 
 	/**
@@ -686,10 +689,10 @@ module.exports = Scale.extend({
 		var majorUnit = me._majorUnit;
 		var majorFormat = formats[majorUnit];
 		var adapterOptions = me._adapterOptions;
-		var majorTime = +adapter.startOf(time, majorUnit, undefined, adapterOptions);
+		var majorTime = +adapter.startOf({timestamp: time, unit: majorUnit}, adapterOptions);
 		var majorTickOpts = options.ticks.major;
 		var major = majorTickOpts.enabled && majorUnit && majorFormat && time === majorTime;
-		var label = adapter.format(time, format ? format : major ? majorFormat : minorFormat, adapterOptions);
+		var label = adapter.format({timestamp: time, format: format ? format : major ? majorFormat : minorFormat}, adapterOptions);
 		var tickOpts = major ? majorTickOpts : options.ticks.minor;
 		var formatter = valueOrDefault(tickOpts.callback, tickOpts.userCallback);
 
@@ -753,7 +756,7 @@ module.exports = Scale.extend({
 		var time = interpolate(me._table, 'pos', pos, 'time');
 
 		// DEPRECATION, we should return time directly
-		return adapter._create(time, me._adapterOptions);
+		return adapter._create(time);
 	},
 
 	/**

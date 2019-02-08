@@ -35,7 +35,9 @@ helpers.merge(adapter, moment ? {
 		return PRESETS;
 	},
 
-	parse: function(value, format) {
+	parse: function(args) {
+		var value = args.value;
+		var format = args.format;
 		if (typeof value === 'string' && typeof format === 'string') {
 			value = moment(value, format);
 		} else if (!(value instanceof moment)) {
@@ -44,28 +46,28 @@ helpers.merge(adapter, moment ? {
 		return value.isValid() ? value.valueOf() : null;
 	},
 
-	format: function(time, format) {
-		return moment(time).format(format);
+	format: function(args) {
+		return moment(args.timestamp).format(args.format);
 	},
 
-	add: function(time, amount, unit) {
-		return moment(time).add(amount, unit).valueOf();
+	add: function(args) {
+		return moment(args.timestamp).add(args.amount, args.unit).valueOf();
 	},
 
-	diff: function(max, min, unit) {
-		return moment.duration(moment(max).diff(moment(min))).as(unit);
+	diff: function(args) {
+		return moment.duration(moment(args.max).diff(moment(args.min))).as(args.unit);
 	},
 
-	startOf: function(time, unit, weekday) {
-		time = moment(time);
-		if (unit === 'isoWeek') {
-			return time.isoWeekday(weekday).valueOf();
+	startOf: function(args) {
+		var time = moment(args.timestamp);
+		if (args.unit === 'isoWeek') {
+			return time.isoWeekday(args.weekday).valueOf();
 		}
-		return time.startOf(unit).valueOf();
+		return time.startOf(args.unit).valueOf();
 	},
 
-	endOf: function(time, unit) {
-		return moment(time).endOf(unit).valueOf();
+	endOf: function(args) {
+		return moment(args.timestamp).endOf(args.unit).valueOf();
 	},
 
 	// DEPRECATIONS
