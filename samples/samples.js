@@ -187,6 +187,9 @@
 		items: [{
 			title: 'Progress bar',
 			path: 'advanced/progress-bar.html'
+		}, {
+			title: 'Content Security Policy',
+			path: 'advanced/content-security-policy.html'
 		}]
 	}];
 

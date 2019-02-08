@@ -1,0 +1,20 @@
+.content {
+	max-width: 640px;
+	margin: auto;
+	padding: 1rem;
+}
+
+.note {
+	font-family: sans-serif;
+	color: #5050a0;
+	line-height: 1.4;
+	margin-bottom: 1rem;
+	padding: 1rem;
+}
+
+code {
+	background-color: #f5f5ff;
+	border: 1px solid #d0d0fa;
+	border-radius: 4px;
+	padding: 0.05rem 0.25rem;
+}
