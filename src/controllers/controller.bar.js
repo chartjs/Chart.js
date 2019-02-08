@@ -299,26 +299,26 @@ module.exports = DatasetController.extend({
 		var i, imeta, ivalue, base, head, size, yStackValue;
 
 		if (stacked || (stacked === undefined && stack !== undefined)) {
-		    for (i = 0; i < datasetIndex; ++i) {
-		        imeta = chart.getDatasetMeta(i);
+			for (i = 0; i < datasetIndex; ++i) {
+				imeta = chart.getDatasetMeta(i);
 
-		        if (imeta.bar &&
-		            imeta.stack === stack &&
-		            imeta.controller._getValueScaleId() === scale.id &&
-		            chart.isDatasetVisible(i)) {
+				if (imeta.bar &&
+					imeta.stack === stack &&
+					imeta.controller._getValueScaleId() === scale.id &&
+					chart.isDatasetVisible(i)) {
 
-		            yStackValue = scale._parseValue(datasets[i].data[index]);
-		            ivalue = yStackValue.min >= 0 && yStackValue.max >= 0 ? yStackValue.max : yStackValue.min;
+					yStackValue = scale._parseValue(datasets[i].data[index]);
+					ivalue = yStackValue.min >= 0 && yStackValue.max >= 0 ? yStackValue.max : yStackValue.min;
 
-		            if ((value.min < 0 && ivalue < 0) || (value.max >= 0 && ivalue >= 0)) {
-		                start += ivalue;
-		            }
-                }
-            }
-        }
+					if ((value.min < 0 && ivalue < 0) || (value.max >= 0 && ivalue >= 0)) {
+						start += ivalue;
+					}
+				}
+			}
+		}
 
-        base = scale.getPixelForValue(start);
-        head = scale.getPixelForValue(start + yValue);
+		base = scale.getPixelForValue(start);
+		head = scale.getPixelForValue(start + yValue);
 		size = head - base;
 
 		if (minBarLength !== undefined && Math.abs(size) < minBarLength) {
