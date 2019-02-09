@@ -64,46 +64,80 @@ var myRadarChart = new Chart(ctx, {
 
 The radar chart allows a number of properties to be specified for each dataset. These are used to set display properties for a specific dataset. For example, the colour of a line is generally set this way.
 
-All `point*` properties can be specified as an array. If these are set to an array value, the first value applies to the first point, the second value to the second point, and so on.
+| Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) | Default
+| ---- | ---- | :----: | :----: | ----
+| [`backgroundColor`](#line-styling) | [`Color`](../general/colors.md) | - | - | `'rgba(0, 0, 0, 0.1)'`
+| [`borderCapStyle`](#line-styling) | `string` | - | - | `'butt'`
+| [`borderColor`](#line-styling) | [`Color`](../general/colors.md) | - | - | `'rgba(0, 0, 0, 0.1)'`
+| [`borderDash`](#line-styling) | `number[]` | - | - | `[]`
+| [`borderDashOffset`](#line-styling) | `number` | - | - | `0.0`
+| [`borderJoinStyle`](#line-styling) | `string` | - | - | `'miter'`
+| [`borderWidth`](#line-styling) | `number` | - | - | `3`
+| [`fill`](#line-styling) | <code>boolean&#124;string</code> | - | - | `true`
+| [`label`](#general) | `string` | - | - | `''`
+| [`lineTension`](#line-styling) | `number` | - | - | `0.4`
+| [`pointBackgroundColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
+| [`pointBorderColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
+| [`pointBorderWidth`](#point-styling) | `number` | Yes | Yes | `1`
+| [`pointHitRadius`](#point-styling) | `number` | Yes | Yes | `1`
+| [`pointHoverBackgroundColor`](#interactions) | `Color` | Yes | Yes | `undefined`
+| [`pointHoverBorderColor`](#interactions) | `Color` | Yes | Yes | `undefined`
+| [`pointHoverBorderWidth`](#interactions) | `number` | Yes | Yes | `1`
+| [`pointHoverRadius`](#interactions) | `number` | Yes | Yes | `4`
+| [`pointRadius`](#point-styling) | `number` | Yes | Yes | `3`
+| [`pointRotation`](#point-styling) | `number` | Yes | Yes | `0`
+| [`pointStyle`](#point-styling) | <code>string&#124;Image</code> | Yes | Yes | `'circle'`
 
-| Name | Type | Description
-| ---- | ---- | -----------
-| `label` | `string` | The label for the dataset which appears in the legend and tooltips.
-| `backgroundColor` | `Color` | The fill color under the line. See [Colors](../general/colors.md#colors).
-| `borderColor` | `Color` | The color of the line. See [Colors](../general/colors.md#colors).
-| `borderWidth` | `number` | The width of the line in pixels.
-| `borderDash` | `number[]` | Length and spacing of dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
-| `borderDashOffset` | `number` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
-| `borderCapStyle` | `string` | Cap style of the line. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap).
-| `borderJoinStyle` | `string` | Line joint style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
-| `fill` | <code>boolean&#124;string</code> | How to fill the area under the line. See [area charts](area.md).
-| `lineTension` | `number` | Bezier curve tension of the line. Set to 0 to draw straightlines.
-| `pointBackgroundColor` | <code>Color&#124;Color[]</code> | The fill color for points.
-| `pointBorderColor` | <code>Color&#124;Color[]</code> | The border color for points.
-| `pointBorderWidth` | <code>number&#124;number[]</code> | The width of the point border in pixels.
-| `pointRadius` | <code>number&#124;number[]</code> | The radius of the point shape. If set to 0, the point is not rendered.
-| `pointRotation` | <code>number&#124;number[]</code> | The rotation of the point in degrees.
-| `pointStyle` | <code>string&#124;string[]&#124;Image&#124;Image[]</code> | Style of the point. [more...](#pointstyle)
-| `pointHitRadius` | <code>number&#124;number[]</code> | The pixel size of the non-displayed point that reacts to mouse events.
-| `pointHoverBackgroundColor` | <code>Color&#124;Color[]</code> | Point background color when hovered.
-| `pointHoverBorderColor` | <code>Color&#124;Color[]</code> | Point border color when hovered.
-| `pointHoverBorderWidth` | <code>number&#124;number[]</code> | Border width of point when hovered.
-| `pointHoverRadius` | <code>number&#124;number[]</code> | The radius of the point when hovered.
+### General
 
-### pointStyle
-The style of point. Options are:
-* `'circle'`
-* `'cross'`
-* `'crossRot'`
-* `'dash'.`
-* `'line'`
-* `'rect'`
-* `'rectRounded'`
-* `'rectRot'`
-* `'star'`
-* `'triangle'`
+| Name | Description
+| ---- | ----
+| `label` | The label for the dataset which appears in the legend and tooltips.
 
-If the option is an image, that image is drawn on the canvas using [drawImage](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/drawImage).
+### Point Styling
+
+The style of each point can be controlled with the following properties:
+
+| Name | Description
+| ---- | ----
+| `pointBackgroundColor` | The fill color for points.
+| `pointBorderColor` | The border color for points.
+| `pointBorderWidth` | The width of the point border in pixels.
+| `pointHitRadius` | The pixel size of the non-displayed point that reacts to mouse events.
+| `pointRadius` | The radius of the point shape. If set to 0, the point is not rendered.
+| `pointRotation` | The rotation of the point in degrees.
+| `pointStyle` | Style of the point. [more...](../configuration/elements#point-styles)
+
+All these values, if `undefined`, fallback first to the dataset options then to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options.
+
+### Line Styling
+
+The style of the line can be controlled with the following properties:
+
+| Name | Description
+| ---- | ----
+| `backgroundColor` | The line fill color.
+| `borderCapStyle` | Cap style of the line. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap).
+| `borderColor` | The line color.
+| `borderDash` | Length and spacing of dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
+| `borderDashOffset` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
+| `borderJoinStyle` | Line joint style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
+| `borderWidth` | The line width (in pixels).
+| `fill` | How to fill the area under the line. See [area charts](area.md).
+| `lineTension` | Bezier curve tension of the line. Set to 0 to draw straightlines.
+
+All these values, if `undefined`, fallback to the associated [`elements.line.*`](../configuration/elements.md#line-configuration) options.
+
+### Interactions
+
+The interaction with each point can be controlled with the following properties:
+
+| Name | Description
+| ---- | -----------
+| `pointHoverBackgroundColor` | Point background color when hovered.
+| `pointHoverBorderColor` | Point border color when hovered.
+| `pointHoverBorderWidth` | Border width of point when hovered.
+| `pointHoverRadius` | The radius of the point when hovered.
 
 ## Configuration Options
 
@@ -128,7 +162,7 @@ It is common to want to apply a configuration setting to all created radar chart
 
 ## Data Structure
 
-The `data` property of a dataset for a radar chart is specified as an array of numbers. Each point in the data array corresponds to the label at the same index on the x axis.
+The `data` property of a dataset for a radar chart is specified as an array of numbers. Each point in the data array corresponds to the label at the same index.
 
 ```javascript
 data: [20, 10]
