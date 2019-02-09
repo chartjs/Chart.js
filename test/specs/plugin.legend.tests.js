@@ -11,6 +11,7 @@ describe('Legend block tests', function() {
 			// a callback that will handle
 			onClick: jasmine.any(Function),
 			onHover: null,
+			onLeave: null,
 
 			labels: {
 				boxWidth: 40,
@@ -651,6 +652,55 @@ describe('Legend block tests', function() {
 			chart.update();
 			expect(chart.legend).not.toBe(undefined);
 			expect(chart.legend.options).toEqual(jasmine.objectContaining(Chart.defaults.global.legend));
+		});
+	});
+
+	describe('callbacks', function() {
+		it('should call onClick, onHover and onLeave at the correct times', function() {
+			var clickItem = null;
+			var hoverItem = null;
+			var leaveItem = null;
+
+			var chart = acquireChart({
+				type: 'line',
+				data: {
+					labels: ['A', 'B', 'C', 'D'],
+					datasets: [{
+						data: [10, 20, 30, 100]
+					}]
+				},
+				options: {
+					legend: {
+						onClick: function(_, item) {
+							clickItem = item;
+						},
+						onHover: function(_, item) {
+							hoverItem = item;
+						},
+						onLeave: function(_, item) {
+							leaveItem = item;
+						}
+					}
+				}
+			});
+
+			var hb = chart.legend.legendHitBoxes[0];
+			var el = {
+				x: hb.left + (hb.width / 2),
+				y: hb.top + (hb.height / 2)
+			};
+
+			jasmine.triggerMouseEvent(chart, 'click', el);
+
+			expect(clickItem).toBe(chart.legend.legendItems[0]);
+
+			jasmine.triggerMouseEvent(chart, 'mousemove', el);
+
+			expect(hoverItem).toBe(chart.legend.legendItems[0]);
+
+			jasmine.triggerMouseEvent(chart, 'mousemove', chart.getDatasetMeta(0).data[0]);
+
+			expect(leaveItem).toBe(chart.legend.legendItems[0]);
 		});
 	});
 });

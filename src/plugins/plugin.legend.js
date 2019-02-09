@@ -30,6 +30,7 @@ defaults._set('global', {
 		},
 
 		onHover: null,
+		onLeave: null,
 
 		labels: {
 			boxWidth: 40,
@@ -105,6 +106,9 @@ var Legend = Element.extend({
 
 		// Contains hit boxes for each dataset (in dataset order)
 		this.legendHitBoxes = [];
+
+		// Contains the currently hovered legend item
+		this.hoveredItem = null;
 
 		// Are we in doughnut mode which has a different data type
 		this.doughnutMode = false;
@@ -471,7 +475,7 @@ var Legend = Element.extend({
 		var changed = false;
 
 		if (type === 'mousemove') {
-			if (!opts.onHover) {
+			if (!opts.onHover && !opts.onLeave) {
 				return;
 			}
 		} else if (type === 'click') {
@@ -485,6 +489,7 @@ var Legend = Element.extend({
 		// Chart event already has relative position in it
 		var x = e.x;
 		var y = e.y;
+		var hoveredItem = null;
 
 		if (x >= me.left && x <= me.right && y >= me.top && y <= me.bottom) {
 			// See if we are touching one of the dataset boxes
@@ -494,19 +499,31 @@ var Legend = Element.extend({
 
 				if (x >= hitBox.left && x <= hitBox.left + hitBox.width && y >= hitBox.top && y <= hitBox.top + hitBox.height) {
 					// Touching an element
+					hoveredItem = me.legendItems[i];
+
 					if (type === 'click') {
 						// use e.native for backwards compatibility
 						opts.onClick.call(me, e.native, me.legendItems[i]);
 						changed = true;
 						break;
 					} else if (type === 'mousemove') {
-						// use e.native for backwards compatibility
-						opts.onHover.call(me, e.native, me.legendItems[i]);
-						changed = true;
+						if (opts.onHover) {
+							// use e.native for backwards compatibility
+							opts.onHover.call(me, e.native, me.legendItems[i]);
+							changed = true;
+						}
 						break;
 					}
 				}
 			}
+		}
+
+		if (type === 'mousemove' && me.hoveredItem !== hoveredItem) {
+			if (me.hoveredItem) {
+				opts.onLeave.call(me, e.native, me.hoveredItem);
+				changed = true;
+			}
+			me.hoveredItem = hoveredItem;
 		}
 
 		return changed;

@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Line Chart</title>
+	<script src="../../../dist/Chart.min.js"></script>
+	<script src="../utils.js"></script>
+	<style>
+		body, html {
+			height: 100%;
+			font-family: sans-serif;
+		}
+		canvas{
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+		}
+
+		#log {
+			position: absolute;
+			right: 0;
+			top: 0;
+			bottom: 0;
+			background-color: #EEE;
+			float: right;
+			width: 20%;
+			padding: 8px;
+			overflow-y: auto;
+			white-space: pre;
+			line-height: 1.5em;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="log"></div>
+	<div style="width:75%;">
+		<canvas id="canvas"></canvas>
+	</div>
+	<script>
+		var logEntry = 1;
+		var logElement = document.getElementById('log');
+
+		function log(text) {
+			logElement.innerText += logEntry + '. ' + text + '\n';
+			logElement.scrollTop = logElement.scrollHeight;
+			logEntry++;
+		}
+
+		var config = {
+			type: 'line',
+			data: {
+				labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+				datasets: [{
+					label: 'My First dataset',
+					backgroundColor: window.chartColors.red,
+					borderColor: window.chartColors.red,
+					data: [
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor()
+					],
+					fill: false,
+				}, {
+					label: 'My Second dataset',
+					fill: false,
+					backgroundColor: window.chartColors.blue,
+					borderColor: window.chartColors.blue,
+					data: [
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor()
+					],
+				}]
+			},
+			options: {
+				legend: {
+					onHover: function(event, legendItem) {
+						log('onHover: ' + legendItem.text);
+					},
+					onLeave: function(event, legendItem) {
+						log('onLeave: ' + legendItem.text);
+					},
+					onClick: function(event, legendItem) {
+						log('onClick:' + legendItem.text);
+					}
+				},
+				responsive: true,
+				title: {
+					display: true,
+					text: 'Chart.js Line Chart'
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Month'
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Value'
+						}
+					}]
+				}
+			}
+		};
+
+		window.onload = function() {
+			var ctx = document.getElementById('canvas').getContext('2d');
+			window.myLine = new Chart(ctx, config);
+		};
+	</script>
+</body>
+
+</html>
