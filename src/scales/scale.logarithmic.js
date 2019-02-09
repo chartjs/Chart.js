@@ -174,8 +174,8 @@ module.exports = Scale.extend({
 		var DEFAULT_MIN = 1;
 		var DEFAULT_MAX = 10;
 
-		me.min = valueOrDefault(tickOpts.min, me.min);
-		me.max = valueOrDefault(tickOpts.max, me.max);
+		me.min = tickOpts.min >= 0 ? tickOpts.min : me.min;
+		me.max = tickOpts.max >= 0 ? tickOpts.max : me.max;
 
 		if (me.min === me.max) {
 			if (me.min !== 0 && me.min !== null) {
@@ -211,8 +211,8 @@ module.exports = Scale.extend({
 		var reverse = !me.isHorizontal();
 
 		var generationOptions = {
-			min: tickOpts.min,
-			max: tickOpts.max
+			min: tickOpts.min >= 0 ? tickOpts.min : undefined,
+			max: tickOpts.max >= 0 ? tickOpts.max : undefined
 		};
 		var ticks = me.ticks = generateTicks(generationOptions, me);
 
