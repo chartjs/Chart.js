@@ -108,7 +108,10 @@ var Legend = Element.extend({
 		this.legendHitBoxes = [];
 
 		// Contains the currently hovered legend item
-		this.hoveredItem = null;
+		/**
+ 		* @private
+ 		*/
+		this._hoveredItem = null;
 
 		// Are we in doughnut mode which has a different data type
 		this.doughnutMode = false;
@@ -518,12 +521,12 @@ var Legend = Element.extend({
 			}
 		}
 
-		if (type === 'mousemove' && me.hoveredItem !== hoveredItem) {
-			if (me.hoveredItem) {
-				opts.onLeave.call(me, e.native, me.hoveredItem);
+		if (opts.onLeave && type === 'mousemove' && me._hoveredItem !== hoveredItem) {
+			if (me._hoveredItem) {
+				opts.onLeave.call(me, e.native, me._hoveredItem);
 				changed = true;
 			}
-			me.hoveredItem = hoveredItem;
+			me._hoveredItem = hoveredItem;
 		}
 
 		return changed;
