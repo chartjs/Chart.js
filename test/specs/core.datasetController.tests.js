@@ -38,23 +38,78 @@ describe('Chart.DatasetController', function() {
 		});
 	});
 
-	it('should handle a frozen data object', function() {
-		function createChart() {
-			var data = Object.freeze([0, 1, 2, 3, 4, 5]);
-			var chart = acquireChart({
-				type: 'line',
-				data: {
-					datasets: [{
-						data: data
-					}]
-				}
-			});
+	describe('inextensible data', function() {
+		it('should handle a frozen data object', function() {
+			function createChart() {
+				var data = Object.freeze([0, 1, 2, 3, 4, 5]);
+				var chart = acquireChart({
+					type: 'line',
+					data: {
+						datasets: [{
+							data: data
+						}]
+					}
+				});
+	
+				chart.data.datasets[0].data = Object.freeze([5, 4, 3, 2, 1, 0]);
+				chart.update();
+	
+				// Tests that the unlisten path also works for frozen objects
+				chart.destroy();
+			}
+	
+			expect(createChart).not.toThrow();
+		});
 
-			// Tests that the unlisten path also works for frozen objects
-			chart.destroy();
-		}
+		it('should handle a sealed data object', function() {
+			function createChart() {
+				var data = [0, 1, 2, 3, 4, 5];
+				Object.seal(data);
+				var chart = acquireChart({
+					type: 'line',
+					data: {
+						datasets: [{
+							data: data
+						}]
+					}
+				});
+	
+				var data2 = [5, 4, 3, 2, 1, 0];
+				Object.seal(data2)
+				chart.data.datasets[0].data = data2;
+				chart.update();
+	
+				// Tests that the unlisten path also works for frozen objects
+				chart.destroy();
+			}
+	
+			expect(createChart).not.toThrow();
+		});
 
-		expect(createChart).not.toThrow();
+		it('should handle an unextendable data object', function() {
+			function createChart() {
+				var data = [0, 1, 2, 3, 4, 5];
+				Object.preventExtensions(data);
+				var chart = acquireChart({
+					type: 'line',
+					data: {
+						datasets: [{
+							data: data
+						}]
+					}
+				});
+	
+				var data2 = [5, 4, 3, 2, 1, 0];
+				Object.preventExtensions(data2)
+				chart.data.datasets[0].data = data2;
+				chart.update();
+	
+				// Tests that the unlisten path also works for frozen objects
+				chart.destroy();
+			}
+	
+			expect(createChart).not.toThrow();
+		});
 	});
 
 	it('should synchronize metadata when data are inserted or removed', function() {
