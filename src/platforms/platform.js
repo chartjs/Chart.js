@@ -46,7 +46,7 @@ module.exports = helpers.extend({
 
 	/**
 	 * Removes the specified listener previously registered with addEventListener.
-	 * @param {Chart} chart -Chart from which to remove the listener
+	 * @param {Chart} chart - Chart from which to remove the listener
 	 * @param {string} type - The ({@link IEvent}) type to remove
 	 * @param {function} listener - The listener function to remove from the event target.
 	 */
