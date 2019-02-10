@@ -336,7 +336,7 @@ module.exports = {
  * the tooltip drawing is cancelled until another `render` is triggered.
  * @param {Chart} chart - The chart instance.
  * @param {object} args - The call arguments.
- * @param {object} args.tooltip - The tooltip.
+ * @param {Tooltip} args.tooltip - The tooltip.
  * @param {number} args.easingValue - The current animation value, between 0.0 and 1.0.
  * @param {object} options - The plugin options.
  * @returns {boolean} `false` to cancel the chart tooltip drawing.
@@ -347,7 +347,7 @@ module.exports = {
  * be called if the tooltip drawing has been previously cancelled.
  * @param {Chart} chart - The chart instance.
  * @param {object} args - The call arguments.
- * @param {object} args.tooltip - The tooltip.
+ * @param {Tooltip} args.tooltip - The tooltip.
  * @param {number} args.easingValue - The current animation value, between 0.0 and 1.0.
  * @param {object} options - The plugin options.
  */
