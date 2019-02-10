@@ -4,7 +4,7 @@ It's pretty common to want to update charts after they've been created. When the
 
 ## Adding or Removing Data
 
-Adding and removing data is supported by changing the data array. To add data, just add data into the data array as seen in this example. However, if `dataset.data` has been frozen using `Object.freeze()`, adding or removing data will not update the chart.
+Adding and removing data is supported by changing the data array. To add data, just add data into the data array as seen in this example.
 
 ```javascript
 function addData(chart, label, data) {
