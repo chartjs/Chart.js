@@ -732,20 +732,8 @@ describe('Core.Tooltip', function() {
 			// Trigger an event over top of the element
 			var pointIndex = 1;
 			var datasetIndex = 0;
-			var meta = chart.getDatasetMeta(datasetIndex);
-			var point = meta.data[pointIndex];
-			var node = chart.canvas;
-			var rect = node.getBoundingClientRect();
-			var evt = new MouseEvent('mousemove', {
-				view: window,
-				bubbles: true,
-				cancelable: true,
-				clientX: Math.round(rect.left + point._model.x),
-				clientY: Math.round(rect.top + point._model.y)
-			});
-
-			// Manually trigger rather than having an async test
-			node.dispatchEvent(evt);
+			var point = chart.getDatasetMeta(datasetIndex).data[pointIndex];
+			jasmine.triggerMouseEvent(chart, 'mousemove', point);
 
 			// Check and see if tooltip was displayed
 			var tooltip = chart.tooltip;
