@@ -190,6 +190,9 @@
 		}, {
 			title: 'Polar Area Chart',
 			path: 'scriptable/polar.html'
+		}, {
+			title: 'Radar Chart',
+			path: 'scriptable/radar.html'
 		}]
 	}, {
 		title: 'Advanced',
