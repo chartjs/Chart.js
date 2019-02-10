@@ -38,6 +38,22 @@ describe('Chart.DatasetController', function() {
 		});
 	});
 
+	it('should handle a frozen data object', function() {
+		function createChart() {
+			var data = Object.freeze([0, 1, 2, 3, 4, 5]);
+			acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						data: data
+					}]
+				}
+			});
+		}
+
+		expect(createChart).not.toThrow();
+	});
+
 	it('should synchronize metadata when data are inserted or removed', function() {
 		var data = [0, 1, 2, 3, 4, 5];
 		var chart = acquireChart({
