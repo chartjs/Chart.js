@@ -41,7 +41,7 @@ describe('Chart.DatasetController', function() {
 	it('should handle a frozen data object', function() {
 		function createChart() {
 			var data = Object.freeze([0, 1, 2, 3, 4, 5]);
-			acquireChart({
+			var chart = acquireChart({
 				type: 'line',
 				data: {
 					datasets: [{
@@ -49,6 +49,9 @@ describe('Chart.DatasetController', function() {
 					}]
 				}
 			});
+
+			// Tests that the unlisten path also works for frozen objects
+			chart.destroy();
 		}
 
 		expect(createChart).not.toThrow();
