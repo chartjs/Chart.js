@@ -280,17 +280,17 @@ function drawBackgroundColors(scale) {
 
 	var opts = scale.options;
 	var outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
+	var ctx = scale.ctx;
+	var i, outerPointPosition, previousOuterPointPosition, nextOuterPointPosition, previousOuterHalfway, nextOuterHalfway;
 
-	for (var i = getValueCount(scale) - 1; i >= 0; i--) {
-		var outerPointPosition = scale.getPointPosition(i, outerDistance);
-		var previousOuterPointPosition = scale.getPointPosition(i === 0 ? getValueCount(scale) - 1 : i - 1, outerDistance);
-		var nextOuterPointPosition = scale.getPointPosition(i === getValueCount(scale) - 1 ? 0 : i + 1, outerDistance);
+	for (i = getValueCount(scale) - 1; i >= 0; i--) {
+		outerPointPosition = scale.getPointPosition(i, outerDistance);
+		previousOuterPointPosition = scale.getPointPosition(i === 0 ? getValueCount(scale) - 1 : i - 1, outerDistance);
+		nextOuterPointPosition = scale.getPointPosition(i === getValueCount(scale) - 1 ? 0 : i + 1, outerDistance);
 
 		// Each color starts from the midpoint of the previous scale entry to the midpoint of the next
-		var previousOuterHalfway = {x: (previousOuterPointPosition.x + outerPointPosition.x) / 2, y: (previousOuterPointPosition.y + outerPointPosition.y) / 2};
-		var nextOuterHalfway = {x: (outerPointPosition.x + nextOuterPointPosition.x) / 2, y: (outerPointPosition.y + nextOuterPointPosition.y) / 2};
-
-		var ctx = scale.ctx;
+		previousOuterHalfway = {x: (previousOuterPointPosition.x + outerPointPosition.x) / 2, y: (previousOuterPointPosition.y + outerPointPosition.y) / 2};
+		nextOuterHalfway = {x: (outerPointPosition.x + nextOuterPointPosition.x) / 2, y: (outerPointPosition.y + nextOuterPointPosition.y) / 2};
 
 		ctx.beginPath();
 		ctx.moveTo(scale.xCenter, scale.yCenter);
