@@ -122,7 +122,7 @@ module.exports = {
 	/**
 	 * Sets (or updates) options on the given `item`.
 	 * @param {Chart} chart - the chart in which the item lives (or will be added to)
-	 * @param {object} item - the item to configure with the given options
+	 * @param {ILayoutItem} item - the item to configure with the given options
 	 * @param {object} options - the new item options.
 	 */
 	configure: function(chart, item, options) {
