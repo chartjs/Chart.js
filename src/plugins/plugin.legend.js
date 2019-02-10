@@ -85,8 +85,8 @@ defaults._set('global', {
 
 /**
  * Helper function to get the box width based on the usePointStyle option
- * @param labelopts {object} the label options on the legend
- * @param fontSize {number} the label font size
+ * @param {object} labelopts - the label options on the legend
+ * @param {number} fontSize - the label font size
  * @return {number} width of the color box area
  */
 function getBoxWidth(labelOpts, fontSize) {
