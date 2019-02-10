@@ -107,7 +107,7 @@ var positioners = {
 	 * Average mode places the tooltip at the average position of the elements shown
 	 * @function Chart.Tooltip.positioners.average
 	 * @param elements {ChartElement[]} the elements being displayed in the tooltip
-	 * @returns {Point} tooltip position
+	 * @returns {object} tooltip position
 	 */
 	average: function(elements) {
 		if (!elements.length) {
@@ -139,8 +139,8 @@ var positioners = {
 	 * Gets the tooltip position nearest of the item nearest to the event position
 	 * @function Chart.Tooltip.positioners.nearest
 	 * @param elements {Chart.Element[]} the tooltip elements
-	 * @param eventPosition {Point} the position of the event in canvas coordinates
-	 * @returns {Point} the tooltip position
+	 * @param eventPosition {object} the position of the event in canvas coordinates
+	 * @returns {object} the tooltip position
 	 */
 	nearest: function(elements, eventPosition) {
 		var x = eventPosition.x;

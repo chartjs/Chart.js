@@ -6,7 +6,7 @@ var helpers = require('../helpers/index');
  * Helper function to get relative position for an event
  * @param {Event|IEvent} event - The event to get the position for
  * @param {Chart} chart - The chart
- * @returns {Point} the event position
+ * @returns {object} the event position
  */
 function getRelativePosition(e, chart) {
 	if (e.native) {
@@ -46,7 +46,7 @@ function parseVisibleItems(chart, handler) {
 /**
  * Helper function to get the items that intersect the event position
  * @param {ChartElement[]} items - elements to filter
- * @param {Point} position - the point to be nearest to
+ * @param {object} position - the point to be nearest to
  * @return {ChartElement[]} the nearest items
  */
 function getIntersectItems(chart, position) {
@@ -64,7 +64,7 @@ function getIntersectItems(chart, position) {
 /**
  * Helper function to get the items nearest to the event position considering all visible items in teh chart
  * @param {Chart} chart - the chart to look at elements from
- * @param {Point} position - the point to be nearest to
+ * @param {object} position - the point to be nearest to
  * @param {boolean} intersect - if true, only consider items that intersect the position
  * @param {function} distanceMetric - function to provide the distance between points
  * @return {ChartElement[]} the nearest items

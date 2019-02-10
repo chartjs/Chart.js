@@ -6,6 +6,56 @@ var color = require('chartjs-color');
 var defaults = require('./core.defaults');
 var helpers = require('../helpers/index');
 
+// Private helper function to convert max-width/max-height values that may be percentages into a number
+function parseMaxStyle(styleValue, node, parentProperty) {
+	var valueInPixels;
+	if (typeof styleValue === 'string') {
+		valueInPixels = parseInt(styleValue, 10);
+
+		if (styleValue.indexOf('%') !== -1) {
+			// percentage * size in dimension
+			valueInPixels = valueInPixels / 100 * node.parentNode[parentProperty];
+		}
+	} else {
+		valueInPixels = styleValue;
+	}
+
+	return valueInPixels;
+}
+
+/**
+ * Returns if the given value contains an effective constraint.
+ * @private
+ */
+function isConstrainedValue(value) {
+	return value !== undefined && value !== null && value !== 'none';
+}
+
+/**
+ * Returns the max width or height of the given DOM node in a cross-browser compatible fashion
+ * @param {HTMLElement} domNode - the node to check the constraint on
+ * @param {string} maxStyle - the style that defines the maximum for the direction we are using ('max-width' / 'max-height')
+ * @param {string} percentageProperty - property of parent to use when calculating width as a percentage
+ * @see {@link https://www.nathanaeljones.com/blog/2013/reading-max-width-cross-browser}
+ */
+function getConstraintDimension(domNode, maxStyle, percentageProperty) {
+	var view = document.defaultView;
+	var parentNode = helpers._getParentNode(domNode);
+	var constrainedNode = view.getComputedStyle(domNode)[maxStyle];
+	var constrainedContainer = view.getComputedStyle(parentNode)[maxStyle];
+	var hasCNode = isConstrainedValue(constrainedNode);
+	var hasCContainer = isConstrainedValue(constrainedContainer);
+	var infinity = Number.POSITIVE_INFINITY;
+
+	if (hasCNode || hasCContainer) {
+		return Math.min(
+			hasCNode ? parseMaxStyle(constrainedNode, domNode, percentageProperty) : infinity,
+			hasCContainer ? parseMaxStyle(constrainedContainer, parentNode, percentageProperty) : infinity);
+	}
+
+	return 'none';
+}
+
 module.exports = function() {
 
 	// -- Basic js utility methods
@@ -405,55 +455,6 @@ module.exports = function() {
 
 	};
 
-	// Private helper function to convert max-width/max-height values that may be percentages into a number
-	function parseMaxStyle(styleValue, node, parentProperty) {
-		var valueInPixels;
-		if (typeof styleValue === 'string') {
-			valueInPixels = parseInt(styleValue, 10);
-
-			if (styleValue.indexOf('%') !== -1) {
-				// percentage * size in dimension
-				valueInPixels = valueInPixels / 100 * node.parentNode[parentProperty];
-			}
-		} else {
-			valueInPixels = styleValue;
-		}
-
-		return valueInPixels;
-	}
-
-	/**
-	 * Returns if the given value contains an effective constraint.
-	 * @private
-	 */
-	function isConstrainedValue(value) {
-		return value !== undefined && value !== null && value !== 'none';
-	}
-
-	/**
-	 * Private helper to get a constraint dimension
-	 * @param domNode - the node to check the constraint on
-	 * @param maxStyle - the style that defines the maximum for the direction we are using (maxWidth / maxHeight)
-	 * @param percentageProperty - property of parent to use when calculating width as a percentage
-	 * @see https://www.nathanaeljones.com/blog/2013/reading-max-width-cross-browser
-	 */
-	function getConstraintDimension(domNode, maxStyle, percentageProperty) {
-		var view = document.defaultView;
-		var parentNode = helpers._getParentNode(domNode);
-		var constrainedNode = view.getComputedStyle(domNode)[maxStyle];
-		var constrainedContainer = view.getComputedStyle(parentNode)[maxStyle];
-		var hasCNode = isConstrainedValue(constrainedNode);
-		var hasCContainer = isConstrainedValue(constrainedContainer);
-		var infinity = Number.POSITIVE_INFINITY;
-
-		if (hasCNode || hasCContainer) {
-			return Math.min(
-				hasCNode ? parseMaxStyle(constrainedNode, domNode, percentageProperty) : infinity,
-				hasCContainer ? parseMaxStyle(constrainedContainer, parentNode, percentageProperty) : infinity);
-		}
-
-		return 'none';
-	}
 	// returns Number or undefined if no constraint
 	helpers.getConstraintWidth = function(domNode) {
 		return getConstraintDimension(domNode, 'max-width', 'clientWidth');
