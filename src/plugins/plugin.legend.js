@@ -107,7 +107,6 @@ var Legend = Element.extend({
 		// Contains hit boxes for each dataset (in dataset order)
 		this.legendHitBoxes = [];
 
-		// Contains the currently hovered legend item
 		/**
  		* @private
  		*/
