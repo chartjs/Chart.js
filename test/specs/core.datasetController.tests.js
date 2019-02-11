@@ -38,6 +38,86 @@ describe('Chart.DatasetController', function() {
 		});
 	});
 
+	describe('inextensible data', function() {
+		it('should handle a frozen data object', function() {
+			function createChart() {
+				var data = Object.freeze([0, 1, 2, 3, 4, 5]);
+				expect(Object.isExtensible(data)).toBeFalsy();
+
+				var chart = acquireChart({
+					type: 'line',
+					data: {
+						datasets: [{
+							data: data
+						}]
+					}
+				});
+
+				var dataset = chart.data.datasets[0];
+				dataset.data = Object.freeze([5, 4, 3, 2, 1, 0]);
+				expect(Object.isExtensible(dataset.data)).toBeFalsy();
+				chart.update();
+
+				// Tests that the unlisten path also works for frozen objects
+				chart.destroy();
+			}
+
+			expect(createChart).not.toThrow();
+		});
+
+		it('should handle a sealed data object', function() {
+			function createChart() {
+				var data = Object.seal([0, 1, 2, 3, 4, 5]);
+				expect(Object.isExtensible(data)).toBeFalsy();
+
+				var chart = acquireChart({
+					type: 'line',
+					data: {
+						datasets: [{
+							data: data
+						}]
+					}
+				});
+
+				var dataset = chart.data.datasets[0];
+				dataset.data = Object.seal([5, 4, 3, 2, 1, 0]);
+				expect(Object.isExtensible(dataset.data)).toBeFalsy();
+				chart.update();
+
+				// Tests that the unlisten path also works for frozen objects
+				chart.destroy();
+			}
+
+			expect(createChart).not.toThrow();
+		});
+
+		it('should handle an unextendable data object', function() {
+			function createChart() {
+				var data = Object.preventExtensions([0, 1, 2, 3, 4, 5]);
+				expect(Object.isExtensible(data)).toBeFalsy();
+
+				var chart = acquireChart({
+					type: 'line',
+					data: {
+						datasets: [{
+							data: data
+						}]
+					}
+				});
+
+				var dataset = chart.data.datasets[0];
+				dataset.data = Object.preventExtensions([5, 4, 3, 2, 1, 0]);
+				expect(Object.isExtensible(dataset.data)).toBeFalsy();
+				chart.update();
+
+				// Tests that the unlisten path also works for frozen objects
+				chart.destroy();
+			}
+
+			expect(createChart).not.toThrow();
+		});
+	});
+
 	it('should synchronize metadata when data are inserted or removed', function() {
 		var data = [0, 1, 2, 3, 4, 5];
 		var chart = acquireChart({

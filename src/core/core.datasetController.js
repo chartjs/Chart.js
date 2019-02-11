@@ -225,7 +225,9 @@ helpers.extend(DatasetController.prototype, {
 				unlistenArrayEvents(me._data, me);
 			}
 
-			listenArrayEvents(data, me);
+			if (data && Object.isExtensible(data)) {
+				listenArrayEvents(data, me);
+			}
 			me._data = data;
 		}
 
