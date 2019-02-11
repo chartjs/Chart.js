@@ -42,6 +42,8 @@ describe('Chart.DatasetController', function() {
 		it('should handle a frozen data object', function() {
 			function createChart() {
 				var data = Object.freeze([0, 1, 2, 3, 4, 5]);
+				expect(Object.isExtensible(data)).toBeFalsy();
+
 				var chart = acquireChart({
 					type: 'line',
 					data: {
@@ -51,7 +53,9 @@ describe('Chart.DatasetController', function() {
 					}
 				});
 
-				chart.data.datasets[0].data = Object.freeze([5, 4, 3, 2, 1, 0]);
+				var dataset = chart.data.datasets[0];
+				dataset.data = Object.freeze([5, 4, 3, 2, 1, 0]);
+				expect(Object.isExtensible(dataset.data)).toBeFalsy();
 				chart.update();
 
 				// Tests that the unlisten path also works for frozen objects
@@ -64,6 +68,8 @@ describe('Chart.DatasetController', function() {
 		it('should handle a sealed data object', function() {
 			function createChart() {
 				var data = Object.seal([0, 1, 2, 3, 4, 5]);
+				expect(Object.isExtensible(data)).toBeFalsy();
+
 				var chart = acquireChart({
 					type: 'line',
 					data: {
@@ -73,7 +79,9 @@ describe('Chart.DatasetController', function() {
 					}
 				});
 
-				chart.data.datasets[0].data = Object.seal([5, 4, 3, 2, 1, 0]);
+				var dataset = chart.data.datasets[0];
+				dataset.data = Object.seal([5, 4, 3, 2, 1, 0]);
+				expect(Object.isExtensible(dataset.data)).toBeFalsy();
 				chart.update();
 
 				// Tests that the unlisten path also works for frozen objects
@@ -86,6 +94,8 @@ describe('Chart.DatasetController', function() {
 		it('should handle an unextendable data object', function() {
 			function createChart() {
 				var data = Object.preventExtensions([0, 1, 2, 3, 4, 5]);
+				expect(Object.isExtensible(data)).toBeFalsy();
+
 				var chart = acquireChart({
 					type: 'line',
 					data: {
@@ -95,7 +105,9 @@ describe('Chart.DatasetController', function() {
 					}
 				});
 
-				chart.data.datasets[0].data = Object.preventExtensions([5, 4, 3, 2, 1, 0]);
+				var dataset = chart.data.datasets[0];
+				dataset.data = Object.preventExtensions([5, 4, 3, 2, 1, 0]);
+				expect(Object.isExtensible(dataset.data)).toBeFalsy();
 				chart.update();
 
 				// Tests that the unlisten path also works for frozen objects
