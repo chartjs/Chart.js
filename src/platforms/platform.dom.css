@@ -19,6 +19,7 @@
 .chartjs-size-monitor-expand,
 .chartjs-size-monitor-shrink {
 	position: absolute;
+	direction: ltr;
 	left: 0;
 	top: 0;
 	right: 0;
