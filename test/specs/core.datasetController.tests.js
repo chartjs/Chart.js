@@ -50,21 +50,20 @@ describe('Chart.DatasetController', function() {
 						}]
 					}
 				});
-	
+
 				chart.data.datasets[0].data = Object.freeze([5, 4, 3, 2, 1, 0]);
 				chart.update();
-	
+
 				// Tests that the unlisten path also works for frozen objects
 				chart.destroy();
 			}
-	
+
 			expect(createChart).not.toThrow();
 		});
 
 		it('should handle a sealed data object', function() {
 			function createChart() {
-				var data = [0, 1, 2, 3, 4, 5];
-				Object.seal(data);
+				var data = Object.seal([0, 1, 2, 3, 4, 5]);
 				var chart = acquireChart({
 					type: 'line',
 					data: {
@@ -73,23 +72,20 @@ describe('Chart.DatasetController', function() {
 						}]
 					}
 				});
-	
-				var data2 = [5, 4, 3, 2, 1, 0];
-				Object.seal(data2)
-				chart.data.datasets[0].data = data2;
+
+				chart.data.datasets[0].data = Object.seal([5, 4, 3, 2, 1, 0]);
 				chart.update();
-	
+
 				// Tests that the unlisten path also works for frozen objects
 				chart.destroy();
 			}
-	
+
 			expect(createChart).not.toThrow();
 		});
 
 		it('should handle an unextendable data object', function() {
 			function createChart() {
-				var data = [0, 1, 2, 3, 4, 5];
-				Object.preventExtensions(data);
+				var data = Object.preventExtensions([0, 1, 2, 3, 4, 5]);
 				var chart = acquireChart({
 					type: 'line',
 					data: {
@@ -98,16 +94,14 @@ describe('Chart.DatasetController', function() {
 						}]
 					}
 				});
-	
-				var data2 = [5, 4, 3, 2, 1, 0];
-				Object.preventExtensions(data2)
-				chart.data.datasets[0].data = data2;
+
+				chart.data.datasets[0].data = Object.preventExtensions([5, 4, 3, 2, 1, 0]);
 				chart.update();
-	
+
 				// Tests that the unlisten path also works for frozen objects
 				chart.destroy();
 			}
-	
+
 			expect(createChart).not.toThrow();
 		});
 	});
