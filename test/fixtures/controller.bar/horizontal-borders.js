@@ -1,4 +1,5 @@
 module.exports = {
+	threshold: 0.01,
 	config: {
 		type: 'horizontalBar',
 		data: {
@@ -22,7 +23,7 @@ module.exports = {
 				rectangle: {
 					backgroundColor: '#AAAAAA80',
 					borderColor: '#80808080',
-					borderWidth: 4
+					borderWidth: {bottom: 6, left: 15, top: 6, right: 15}
 				}
 			},
 			scales: {

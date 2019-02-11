@@ -22,6 +22,11 @@ module.exports = {
 				{
 					// option in element (fallback)
 					data: [0, 5, -10, null],
+				},
+				{
+					// option in dataset
+					data: [0, 5, -10, null],
+					borderSkipped: false
 				}
 			]
 		},
