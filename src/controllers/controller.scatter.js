@@ -21,8 +21,6 @@ defaults._set('scatter', {
 		}]
 	},
 
-	showLines: false,
-
 	tooltips: {
 		callbacks: {
 			title: function() {
@@ -32,6 +30,12 @@ defaults._set('scatter', {
 				return '(' + item.xLabel + ', ' + item.yLabel + ')';
 			}
 		}
+	}
+});
+
+defaults._set('datasets', {
+	scatter: {
+		showLine: false
 	}
 });
 

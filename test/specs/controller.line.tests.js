@@ -573,6 +573,96 @@ describe('Chart.controllers.line', function() {
 		expect(meta.dataset._model.borderWidth).toBe(0.55);
 	});
 
+	describe('dataset defaults', function() {
+		beforeEach(function() {
+			this._defaults = Chart.helpers.clone(Chart.defaults.datasets.line);
+		});
+
+		afterEach(function() {
+			Chart.defaults.datasets.line = this._defaults;
+			delete this._defaults;
+		});
+
+		it('should utilize the dataset default options', function() {
+			Chart.defaults.datasets.line = Chart.defaults.datasets.line || {};
+			var defaults = Chart.defaults.datasets.line;
+			defaults.spanGaps = true;
+			defaults.tension = 0.231;
+			defaults.backgroundColor = '#add';
+			defaults.borderWidth = '#daa';
+			defaults.borderColor = '#dad';
+			defaults.borderCapStyle = 'round';
+			defaults.borderDash = [0];
+			defaults.borderDashOffset = 0.871;
+			defaults.borderJoinStyle = 'miter';
+			defaults.fill = 'start';
+			defaults.cubicInterpolationMode = 'monotone';
+
+			var chart = window.acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						data: [0, 0],
+						label: 'dataset1'
+					}],
+					labels: ['label1', 'label2']
+				}
+			});
+
+			var model = chart.getDatasetMeta(0).dataset._model;
+
+			expect(model.spanGaps).toBe(true);
+			expect(model.tension).toBe(0.231);
+			expect(model.backgroundColor).toBe('#add');
+			expect(model.borderWidth).toBe('#daa');
+			expect(model.borderColor).toBe('#dad');
+			expect(model.borderCapStyle).toBe('round');
+			expect(model.borderDash).toEqual([0]);
+			expect(model.borderDashOffset).toBe(0.871);
+			expect(model.borderJoinStyle).toBe('miter');
+			expect(model.fill).toBe('start');
+			expect(model.cubicInterpolationMode).toBe('monotone');
+		});
+	});
+
+	it('should obey the dataset options', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: [0, 0],
+					label: 'dataset1',
+					spanGaps: true,
+					tension: 0.231,
+					backgroundColor: '#add',
+					borderWidth: '#daa',
+					borderColor: '#dad',
+					borderCapStyle: 'round',
+					borderDash: [0],
+					borderDashOffset: 0.871,
+					borderJoinStyle: 'miter',
+					fill: 'start',
+					cubicInterpolationMode: 'monotone'
+				}],
+				labels: ['label1', 'label2']
+			}
+		});
+
+		var model = chart.getDatasetMeta(0).dataset._model;
+
+		expect(model.spanGaps).toBe(true);
+		expect(model.tension).toBe(0.231);
+		expect(model.backgroundColor).toBe('#add');
+		expect(model.borderWidth).toBe('#daa');
+		expect(model.borderColor).toBe('#dad');
+		expect(model.borderCapStyle).toBe('round');
+		expect(model.borderDash).toEqual([0]);
+		expect(model.borderDashOffset).toBe(0.871);
+		expect(model.borderJoinStyle).toBe('miter');
+		expect(model.fill).toBe('start');
+		expect(model.cubicInterpolationMode).toBe('monotone');
+	});
+
 	it('should handle number of data point changes in update', function() {
 		var chart = window.acquireChart({
 			type: 'line',

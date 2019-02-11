@@ -417,6 +417,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 				meta.controller = new ControllerClass(me, datasetIndex);
 				newControllers.push(meta.controller);
 			}
+			meta.controller._config();
 		}, me);
 
 		return newControllers;

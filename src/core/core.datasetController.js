@@ -1,5 +1,6 @@
 'use strict';
 
+var defaults = require('./core.defaults');
 var helpers = require('../helpers/index');
 
 var resolve = helpers.options.resolve;
@@ -100,6 +101,7 @@ helpers.extend(DatasetController.prototype, {
 		me.index = datasetIndex;
 		me.linkScales();
 		me.addElements();
+		me._type = me.getMeta().type;
 	},
 
 	updateIndex: function(datasetIndex) {
@@ -234,6 +236,27 @@ helpers.extend(DatasetController.prototype, {
 		// Re-sync meta data in case the user replaced the data array or if we missed
 		// any updates and so make sure that we handle number of datapoints changing.
 		me.resyncElements();
+	},
+
+	/**
+	 * Returns the merged user-supplied and default dataset-level options
+	 * @private
+	 */
+	_config: function() {
+		var me = this;
+		var dataset = me.getDataset();
+		var datasetDefaults = defaults.datasets[me._type];
+		var userOpts = {};
+		var keys = Object.keys(dataset);
+		var i, ilen, key;
+		for (i = 0, ilen = keys.length; i < ilen; i++) {
+			key = keys[i];
+			if (key !== '_meta' && key !== 'data') {
+				userOpts[key] = helpers.clone(dataset[key]);
+			}
+		}
+		datasetDefaults = datasetDefaults !== undefined ? helpers.clone(datasetDefaults) : {};
+		me._cfg = helpers.merge(datasetDefaults, userOpts);
 	},
 
 	update: helpers.noop,
