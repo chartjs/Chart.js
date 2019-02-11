@@ -108,8 +108,8 @@ var Legend = Element.extend({
 		this.legendHitBoxes = [];
 
 		/**
- 		* @private
- 		*/
+ 		 * @private
+ 		 */
 		this._hoveredItem = null;
 
 		// Are we in doughnut mode which has a different data type
