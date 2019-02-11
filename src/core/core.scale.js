@@ -717,8 +717,10 @@ module.exports = Element.extend({
 		return false;
 	},
 
-	// Actually draw the scale on the canvas
-	// @param {rectangle} chartArea : the area of the chart to draw full grid lines on
+	/**
+	 * Actually draw the scale on the canvas
+	 * @param {object} chartArea - the area of the chart to draw full grid lines on
+	 */
 	draw: function(chartArea) {
 		var me = this;
 		var options = me.options;

@@ -123,8 +123,8 @@ module.exports = function() {
 	/**
 	 * Returns the number of decimal places
 	 * i.e. the number of digits after the decimal point, of the value of this Number.
-	 * @param {Number} x - A number.
-	 * @returns {Number} The number of decimal places.
+	 * @param {number} x - A number.
+	 * @returns {number} The number of decimal places.
 	 */
 	helpers.decimalPlaces = function(x) {
 		if (!helpers.isFinite(x)) {
@@ -173,9 +173,9 @@ module.exports = function() {
 	/**
 	 * Returns the aligned pixel value to avoid anti-aliasing blur
 	 * @param {Chart} chart - The chart instance.
-	 * @param {Number} pixel - A pixel value.
-	 * @param {Number} width - The width of the element.
-	 * @returns {Number} The aligned pixel value.
+	 * @param {number} pixel - A pixel value.
+	 * @param {number} width - The width of the element.
+	 * @returns {number} The aligned pixel value.
 	 * @private
 	 */
 	helpers._alignPixel = function(chart, pixel, width) {
@@ -430,11 +430,13 @@ module.exports = function() {
 		return value !== undefined && value !== null && value !== 'none';
 	}
 
-	// Private helper to get a constraint dimension
-	// @param domNode : the node to check the constraint on
-	// @param maxStyle : the style that defines the maximum for the direction we are using (maxWidth / maxHeight)
-	// @param percentageProperty : property of parent to use when calculating width as a percentage
-	// @see https://www.nathanaeljones.com/blog/2013/reading-max-width-cross-browser
+	/**
+	 * Returns the max width or height of the given DOM node in a cross-browser compatible fashion
+	 * @param {HTMLElement} domNode - the node to check the constraint on
+	 * @param {string} maxStyle - the style that defines the maximum for the direction we are using ('max-width' / 'max-height')
+	 * @param {string} percentageProperty - property of parent to use when calculating width as a percentage
+	 * @see {@link https://www.nathanaeljones.com/blog/2013/reading-max-width-cross-browser}
+	 */
 	function getConstraintDimension(domNode, maxStyle, percentageProperty) {
 		var view = document.defaultView;
 		var parentNode = helpers._getParentNode(domNode);

@@ -11,7 +11,7 @@ var helpers = {
 
 	/**
 	 * Returns a unique id, sequentially generated from a global variable.
-	 * @returns {Number}
+	 * @returns {number}
 	 * @function
 	 */
 	uid: (function() {
@@ -24,7 +24,7 @@ var helpers = {
 	/**
 	 * Returns true if `value` is neither null nor undefined, else returns false.
 	 * @param {*} value - The value to test.
-	 * @returns {Boolean}
+	 * @returns {boolean}
 	 * @since 2.7.0
 	 */
 	isNullOrUndef: function(value) {
@@ -34,7 +34,7 @@ var helpers = {
 	/**
 	 * Returns true if `value` is an array (including typed arrays), else returns false.
 	 * @param {*} value - The value to test.
-	 * @returns {Boolean}
+	 * @returns {boolean}
 	 * @function
 	 */
 	isArray: function(value) {
@@ -51,7 +51,7 @@ var helpers = {
 	/**
 	 * Returns true if `value` is an object (excluding null), else returns false.
 	 * @param {*} value - The value to test.
-	 * @returns {Boolean}
+	 * @returns {boolean}
 	 * @since 2.7.0
 	 */
 	isObject: function(value) {
@@ -61,7 +61,7 @@ var helpers = {
 	/**
 	 * Returns true if `value` is a finite number, else returns false
 	 * @param {*} value  - The value to test.
-	 * @returns {Boolean}
+	 * @returns {boolean}
 	 */
 	isFinite: function(value) {
 		return (typeof value === 'number' || value instanceof Number) && isFinite(value);
@@ -80,7 +80,7 @@ var helpers = {
 	/**
 	 * Returns value at the given `index` in array if defined, else returns `defaultValue`.
 	 * @param {Array} value - The array to lookup for value at `index`.
-	 * @param {Number} index - The index in `value` to lookup for value.
+	 * @param {number} index - The index in `value` to lookup for value.
 	 * @param {*} defaultValue - The value to return if `value[index]` is undefined.
 	 * @returns {*}
 	 */
@@ -91,9 +91,9 @@ var helpers = {
 	/**
 	 * Calls `fn` with the given `args` in the scope defined by `thisArg` and returns the
 	 * value returned by `fn`. If `fn` is not a function, this method returns undefined.
-	 * @param {Function} fn - The function to call.
+	 * @param {function} fn - The function to call.
 	 * @param {Array|undefined|null} args - The arguments with which `fn` should be called.
-	 * @param {Object} [thisArg] - The value of `this` provided for the call to `fn`.
+	 * @param {object} [thisArg] - The value of `this` provided for the call to `fn`.
 	 * @returns {*}
 	 */
 	callback: function(fn, args, thisArg) {
@@ -106,10 +106,10 @@ var helpers = {
 	 * Note(SB) for performance sake, this method should only be used when loopable type
 	 * is unknown or in none intensive code (not called often and small loopable). Else
 	 * it's preferable to use a regular for() loop and save extra function calls.
-	 * @param {Object|Array} loopable - The object or array to be iterated.
-	 * @param {Function} fn - The function to call for each item.
-	 * @param {Object} [thisArg] - The value of `this` provided for the call to `fn`.
-	 * @param {Boolean} [reverse] - If true, iterates backward on the loopable.
+	 * @param {object|Array} loopable - The object or array to be iterated.
+	 * @param {function} fn - The function to call for each item.
+	 * @param {object} [thisArg] - The value of `this` provided for the call to `fn`.
+	 * @param {boolean} [reverse] - If true, iterates backward on the loopable.
 	 */
 	each: function(loopable, fn, thisArg, reverse) {
 		var i, len, keys;
@@ -138,7 +138,7 @@ var helpers = {
 	 * @see https://stackoverflow.com/a/14853974
 	 * @param {Array} a0 - The array to compare
 	 * @param {Array} a1 - The array to compare
-	 * @returns {Boolean}
+	 * @returns {boolean}
 	 */
 	arrayEquals: function(a0, a1) {
 		var i, ilen, v0, v1;
@@ -224,11 +224,11 @@ var helpers = {
 	/**
 	 * Recursively deep copies `source` properties into `target` with the given `options`.
 	 * IMPORTANT: `target` is not cloned and will be updated with `source` properties.
-	 * @param {Object} target - The target object in which all sources are merged into.
-	 * @param {Object|Array(Object)} source - Object(s) to merge into `target`.
-	 * @param {Object} [options] - Merging options:
-	 * @param {Function} [options.merger] - The merge method (key, target, source, options)
-	 * @returns {Object} The `target` object.
+	 * @param {object} target - The target object in which all sources are merged into.
+	 * @param {object|object[]} source - Object(s) to merge into `target`.
+	 * @param {object} [options] - Merging options:
+	 * @param {function} [options.merger] - The merge method (key, target, source, options)
+	 * @returns {object} The `target` object.
 	 */
 	merge: function(target, source, options) {
 		var sources = helpers.isArray(source) ? source : [source];
@@ -260,9 +260,9 @@ var helpers = {
 	/**
 	 * Recursively deep copies `source` properties into `target` *only* if not defined in target.
 	 * IMPORTANT: `target` is not cloned and will be updated with `source` properties.
-	 * @param {Object} target - The target object in which all sources are merged into.
-	 * @param {Object|Array(Object)} source - Object(s) to merge into `target`.
-	 * @returns {Object} The `target` object.
+	 * @param {object} target - The target object in which all sources are merged into.
+	 * @param {object|object[]} source - Object(s) to merge into `target`.
+	 * @returns {object} The `target` object.
 	 */
 	mergeIf: function(target, source) {
 		return helpers.merge(target, source, {merger: helpers._mergerIf});
@@ -270,10 +270,10 @@ var helpers = {
 
 	/**
 	 * Applies the contents of two or more objects together into the first object.
-	 * @param {Object} target - The target object in which all objects are merged into.
-	 * @param {Object} arg1 - Object containing additional properties to merge in target.
-	 * @param {Object} argN - Additional objects containing properties to merge in target.
-	 * @returns {Object} The `target` object.
+	 * @param {object} target - The target object in which all objects are merged into.
+	 * @param {object} arg1 - Object containing additional properties to merge in target.
+	 * @param {object} argN - Additional objects containing properties to merge in target.
+	 * @returns {object} The `target` object.
 	 */
 	extend: function(target) {
 		var setFn = function(value, key) {

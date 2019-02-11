@@ -107,7 +107,7 @@ var positioners = {
 	 * Average mode places the tooltip at the average position of the elements shown
 	 * @function Chart.Tooltip.positioners.average
 	 * @param elements {ChartElement[]} the elements being displayed in the tooltip
-	 * @returns {Point} tooltip position
+	 * @returns {object} tooltip position
 	 */
 	average: function(elements) {
 		if (!elements.length) {
@@ -139,8 +139,8 @@ var positioners = {
 	 * Gets the tooltip position nearest of the item nearest to the event position
 	 * @function Chart.Tooltip.positioners.nearest
 	 * @param elements {Chart.Element[]} the tooltip elements
-	 * @param eventPosition {Point} the position of the event in canvas coordinates
-	 * @returns {Point} the tooltip position
+	 * @param eventPosition {object} the position of the event in canvas coordinates
+	 * @returns {object} the tooltip position
 	 */
 	nearest: function(elements, eventPosition) {
 		var x = eventPosition.x;
@@ -190,8 +190,8 @@ function pushOrConcat(base, toPush) {
 
 /**
  * Returns array of strings split by newline
- * @param {String} value - The value to split by newline.
- * @returns {Array} value if newline present - Returned from String split() method
+ * @param {string} value - The value to split by newline.
+ * @returns {string[]} value if newline present - Returned from String split() method
  * @function
  */
 function splitNewlines(str) {
@@ -202,9 +202,11 @@ function splitNewlines(str) {
 }
 
 
-// Private helper to create a tooltip item model
-// @param element : the chart element (point, arc, bar) to create the tooltip item for
-// @return : new tooltip item
+/**
+ * Private helper to create a tooltip item model
+ * @param element - the chart element (point, arc, bar) to create the tooltip item for
+ * @return new tooltip item
+ */
 function createTooltipItem(element) {
 	var xScale = element._xScale;
 	var yScale = element._yScale || element._scale; // handle radar || polarArea charts
@@ -228,7 +230,7 @@ function createTooltipItem(element) {
 
 /**
  * Helper to get the reset model for the tooltip
- * @param tooltipOpts {Object} the tooltip options
+ * @param tooltipOpts {object} the tooltip options
  */
 function getBaseModel(tooltipOpts) {
 	var globalDefaults = defaults.global;
@@ -953,7 +955,7 @@ var exports = Element.extend({
 	 * Handle an event
 	 * @private
 	 * @param {IEvent} event - The event to handle
-	 * @returns {Boolean} true if the tooltip changed
+	 * @returns {boolean} true if the tooltip changed
 	 */
 	handleEvent: function(e) {
 		var me = this;

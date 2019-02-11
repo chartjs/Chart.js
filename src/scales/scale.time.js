@@ -88,8 +88,8 @@ function arrayUnique(items) {
  * store pre-computed pixels, but the scale dimensions are not guaranteed at the time we need
  * to create the lookup table. The table ALWAYS contains at least two items: min and max.
  *
- * @param {Number[]} timestamps - timestamps sorted from lowest to highest.
- * @param {String} distribution - If 'linear', timestamps will be spread linearly along the min
+ * @param {number[]} timestamps - timestamps sorted from lowest to highest.
+ * @param {string} distribution - If 'linear', timestamps will be spread linearly along the min
  * and max range, so basically, the table will contains only two items: {min, 0} and {max, 1}.
  * If 'series', timestamps will be positioned at the same distance from each other. In this
  * case, only timestamps that break the time linearity are registered, meaning that in the

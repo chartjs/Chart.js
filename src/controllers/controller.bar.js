@@ -190,8 +190,8 @@ module.exports = DatasetController.extend({
 
 	/**
 	 * Returns the stacks based on groups and bar visibility.
-	 * @param {Number} [last] - The dataset index
-	 * @returns {Array} The stack list
+	 * @param {number} [last] - The dataset index
+	 * @returns {string[]} The list of stack IDs
 	 * @private
 	 */
 	_getStacks: function(last) {
@@ -226,9 +226,9 @@ module.exports = DatasetController.extend({
 
 	/**
 	 * Returns the stack index for the given dataset based on groups and bar visibility.
-	 * @param {Number} [datasetIndex] - The dataset index
-	 * @param {String} [name] - The stack name to find
-	 * @returns {Number} The stack index
+	 * @param {number} [datasetIndex] - The dataset index
+	 * @param {string} [name] - The stack name to find
+	 * @returns {number} The stack index
 	 * @private
 	 */
 	getStackIndex: function(datasetIndex, name) {

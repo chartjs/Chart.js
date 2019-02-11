@@ -6,7 +6,7 @@ var helpers = require('../helpers/index');
  * Helper function to get relative position for an event
  * @param {Event|IEvent} event - The event to get the position for
  * @param {Chart} chart - The chart
- * @returns {Point} the event position
+ * @returns {object} the event position
  */
 function getRelativePosition(e, chart) {
 	if (e.native) {
@@ -21,8 +21,8 @@ function getRelativePosition(e, chart) {
 
 /**
  * Helper function to traverse all of the visible elements in the chart
- * @param chart {chart} the chart
- * @param handler {Function} the callback to execute for each visible item
+ * @param {Chart} chart - the chart
+ * @param {function} handler - the callback to execute for each visible item
  */
 function parseVisibleItems(chart, handler) {
 	var datasets = chart.data.datasets;
@@ -45,8 +45,8 @@ function parseVisibleItems(chart, handler) {
 
 /**
  * Helper function to get the items that intersect the event position
- * @param items {ChartElement[]} elements to filter
- * @param position {Point} the point to be nearest to
+ * @param {ChartElement[]} items - elements to filter
+ * @param {object} position - the point to be nearest to
  * @return {ChartElement[]} the nearest items
  */
 function getIntersectItems(chart, position) {
@@ -63,10 +63,10 @@ function getIntersectItems(chart, position) {
 
 /**
  * Helper function to get the items nearest to the event position considering all visible items in teh chart
- * @param chart {Chart} the chart to look at elements from
- * @param position {Point} the point to be nearest to
- * @param intersect {Boolean} if true, only consider items that intersect the position
- * @param distanceMetric {Function} function to provide the distance between points
+ * @param {Chart} chart - the chart to look at elements from
+ * @param {object} position - the point to be nearest to
+ * @param {boolean} intersect - if true, only consider items that intersect the position
+ * @param {function} distanceMetric - function to provide the distance between points
  * @return {ChartElement[]} the nearest items
  */
 function getNearestItems(chart, position, intersect, distanceMetric) {
@@ -80,7 +80,6 @@ function getNearestItems(chart, position, intersect, distanceMetric) {
 
 		var center = element.getCenterPoint();
 		var distance = distanceMetric(position, center);
-
 		if (distance < minDistance) {
 			nearestItems = [element];
 			minDistance = distance;
@@ -96,7 +95,7 @@ function getNearestItems(chart, position, intersect, distanceMetric) {
 /**
  * Get a distance metric function for two points based on the
  * axis mode setting
- * @param {String} axis the axis mode. x|y|xy
+ * @param {string} axis - the axis mode. x|y|xy
  */
 function getDistanceMetricForAxis(axis) {
 	var useX = axis.indexOf('x') !== -1;
@@ -179,9 +178,9 @@ module.exports = {
 		 * If the options.intersect mode is false, we find the nearest item and return the items at the same index as that item
 		 * @function Chart.Interaction.modes.index
 		 * @since v2.4.0
-		 * @param chart {chart} the chart we are returning items from
-		 * @param e {Event} the event we are find things at
-		 * @param options {IInteractionOptions} options to use during interaction
+		 * @param {Chart} chart - the chart we are returning items from
+		 * @param {Event} e - the event we are find things at
+		 * @param {IInteractionOptions} options - options to use during interaction
 		 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
 		index: indexMode,
@@ -190,9 +189,9 @@ module.exports = {
 		 * Returns items in the same dataset. If the options.intersect parameter is true, we only return items if we intersect something
 		 * If the options.intersect is false, we find the nearest item and return the items in that dataset
 		 * @function Chart.Interaction.modes.dataset
-		 * @param chart {chart} the chart we are returning items from
-		 * @param e {Event} the event we are find things at
-		 * @param options {IInteractionOptions} options to use during interaction
+		 * @param {Chart} chart - the chart we are returning items from
+		 * @param {Event} e - the event we are find things at
+		 * @param {IInteractionOptions} options - options to use during interaction
 		 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
 		dataset: function(chart, e, options) {
@@ -222,8 +221,8 @@ module.exports = {
 		 * Point mode returns all elements that hit test based on the event position
 		 * of the event
 		 * @function Chart.Interaction.modes.intersect
-		 * @param chart {chart} the chart we are returning items from
-		 * @param e {Event} the event we are find things at
+		 * @param {Chart} chart - the chart we are returning items from
+		 * @param {Event} e - the event we are find things at
 		 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
 		point: function(chart, e) {
@@ -234,9 +233,9 @@ module.exports = {
 		/**
 		 * nearest mode returns the element closest to the point
 		 * @function Chart.Interaction.modes.intersect
-		 * @param chart {chart} the chart we are returning items from
-		 * @param e {Event} the event we are find things at
-		 * @param options {IInteractionOptions} options to use
+		 * @param {Chart} chart - the chart we are returning items from
+		 * @param {Event} e - the event we are find things at
+		 * @param {IInteractionOptions} options - options to use
 		 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
 		nearest: function(chart, e, options) {
@@ -249,9 +248,9 @@ module.exports = {
 		/**
 		 * x mode returns the elements that hit-test at the current x coordinate
 		 * @function Chart.Interaction.modes.x
-		 * @param chart {chart} the chart we are returning items from
-		 * @param e {Event} the event we are find things at
-		 * @param options {IInteractionOptions} options to use
+		 * @param {Chart} chart - the chart we are returning items from
+		 * @param {Event} e - the event we are find things at
+		 * @param {IInteractionOptions} options - options to use
 		 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
 		x: function(chart, e, options) {
@@ -280,9 +279,9 @@ module.exports = {
 		/**
 		 * y mode returns the elements that hit-test at the current y coordinate
 		 * @function Chart.Interaction.modes.y
-		 * @param chart {chart} the chart we are returning items from
-		 * @param e {Event} the event we are find things at
-		 * @param options {IInteractionOptions} options to use
+		 * @param {Chart} chart - the chart we are returning items from
+		 * @param {Event} e - the event we are find things at
+		 * @param {IInteractionOptions} options - options to use
 		 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
 		y: function(chart, e, options) {

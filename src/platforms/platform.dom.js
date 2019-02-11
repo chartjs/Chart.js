@@ -38,7 +38,7 @@ var EVENT_TYPES = {
  * `element` has a size relative to its parent and this last one is not yet displayed,
  * for example because of `display: none` on a parent node.
  * @see https://developer.mozilla.org/en-US/docs/Web/CSS/used_value
- * @returns {Number} Size in pixels or undefined if unknown.
+ * @returns {number} Size in pixels or undefined if unknown.
  */
 function readUsedSize(element, property) {
 	var value = helpers.getStyle(element, property);

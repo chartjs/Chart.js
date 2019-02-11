@@ -67,19 +67,19 @@ defaults._set('global', {
 
 /**
  * @interface ILayoutItem
- * @prop {String} position - The position of the item in the chart layout. Possible values are
+ * @prop {string} position - The position of the item in the chart layout. Possible values are
  * 'left', 'top', 'right', 'bottom', and 'chartArea'
- * @prop {Number} weight - The weight used to sort the item. Higher weights are further away from the chart area
- * @prop {Boolean} fullWidth - if true, and the item is horizontal, then push vertical boxes down
- * @prop {Function} isHorizontal - returns true if the layout item is horizontal (ie. top or bottom)
- * @prop {Function} update - Takes two parameters: width and height. Returns size of item
- * @prop {Function} getPadding -  Returns an object with padding on the edges
- * @prop {Number} width - Width of item. Must be valid after update()
- * @prop {Number} height - Height of item. Must be valid after update()
- * @prop {Number} left - Left edge of the item. Set by layout system and cannot be used in update
- * @prop {Number} top - Top edge of the item. Set by layout system and cannot be used in update
- * @prop {Number} right - Right edge of the item. Set by layout system and cannot be used in update
- * @prop {Number} bottom - Bottom edge of the item. Set by layout system and cannot be used in update
+ * @prop {number} weight - The weight used to sort the item. Higher weights are further away from the chart area
+ * @prop {boolean} fullWidth - if true, and the item is horizontal, then push vertical boxes down
+ * @prop {function} isHorizontal - returns true if the layout item is horizontal (ie. top or bottom)
+ * @prop {function} update - Takes two parameters: width and height. Returns size of item
+ * @prop {function} getPadding -  Returns an object with padding on the edges
+ * @prop {number} width - Width of item. Must be valid after update()
+ * @prop {number} height - Height of item. Must be valid after update()
+ * @prop {number} left - Left edge of the item. Set by layout system and cannot be used in update
+ * @prop {number} top - Top edge of the item. Set by layout system and cannot be used in update
+ * @prop {number} right - Right edge of the item. Set by layout system and cannot be used in update
+ * @prop {number} bottom - Bottom edge of the item. Set by layout system and cannot be used in update
  */
 
 // The layout service is very self explanatory.  It's responsible for the layout within a chart.
@@ -110,7 +110,7 @@ module.exports = {
 	/**
 	 * Remove a layoutItem from a chart
 	 * @param {Chart} chart - the chart to remove the box from
-	 * @param {Object} layoutItem - the item to remove from the layout
+	 * @param {ILayoutItem} layoutItem - the item to remove from the layout
 	 */
 	removeBox: function(chart, layoutItem) {
 		var index = chart.boxes ? chart.boxes.indexOf(layoutItem) : -1;
@@ -122,8 +122,8 @@ module.exports = {
 	/**
 	 * Sets (or updates) options on the given `item`.
 	 * @param {Chart} chart - the chart in which the item lives (or will be added to)
-	 * @param {Object} item - the item to configure with the given options
-	 * @param {Object} options - the new item options.
+	 * @param {ILayoutItem} item - the item to configure with the given options
+	 * @param {object} options - the new item options.
 	 */
 	configure: function(chart, item, options) {
 		var props = ['fullWidth', 'position', 'weight'];
@@ -143,8 +143,8 @@ module.exports = {
 	 * Fits boxes of the given chart into the given size by having each box measure itself
 	 * then running a fitting algorithm
 	 * @param {Chart} chart - the chart
-	 * @param {Number} width - the width to fit into
-	 * @param {Number} height - the height to fit into
+	 * @param {number} width - the width to fit into
+	 * @param {number} height - the height to fit into
 	 */
 	update: function(chart, width, height) {
 		if (!chart) {
