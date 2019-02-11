@@ -163,7 +163,7 @@ module.exports = Element.extend({
 			bottom = vm.base;
 			signX = 1;
 			signY = bottom > top ? 1 : -1;
-			borderSkipped = valueOrDefault(vm.borderSkipped, 'bottom') || '';
+			borderSkipped = valueOrDefault(vm.borderSkipped, 'bottom');
 		} else {
 			// horizontal bar
 			left = vm.base;
@@ -172,7 +172,7 @@ module.exports = Element.extend({
 			bottom = vm.y + vm.height / 2;
 			signX = right > left ? 1 : -1;
 			signY = 1;
-			borderSkipped = valueOrDefault(vm.borderSkipped, 'left') || '';
+			borderSkipped = valueOrDefault(vm.borderSkipped, 'left');
 		}
 
 		ctx.fillStyle = vm.backgroundColor;
