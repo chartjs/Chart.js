@@ -417,7 +417,6 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 				meta.controller = new ControllerClass(me, datasetIndex);
 				newControllers.push(meta.controller);
 			}
-			meta.controller._config();
 		}, me);
 
 		return newControllers;
@@ -568,7 +567,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			return;
 		}
 
-		meta.controller.update();
+		meta.controller._update();
 
 		plugins.notify(me, 'afterDatasetUpdate', [args]);
 	},

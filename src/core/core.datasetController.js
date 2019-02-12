@@ -242,7 +242,7 @@ helpers.extend(DatasetController.prototype, {
 	 * Returns the merged user-supplied and default dataset-level options
 	 * @private
 	 */
-	_config: function() {
+	_configure: function() {
 		var me = this;
 		var dataset = me.getDataset();
 		var datasetDefaults = defaults.global.datasets[me._type];
@@ -257,6 +257,12 @@ helpers.extend(DatasetController.prototype, {
 		}
 		datasetDefaults = datasetDefaults !== undefined ? helpers.clone(datasetDefaults) : {};
 		me._cfg = helpers.merge(datasetDefaults, userOpts);
+	},
+
+	_update: function() {
+		var me = this;
+		me._configure();
+		me.update();
 	},
 
 	update: helpers.noop,
