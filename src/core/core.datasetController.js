@@ -245,7 +245,7 @@ helpers.extend(DatasetController.prototype, {
 	_config: function() {
 		var me = this;
 		var dataset = me.getDataset();
-		var datasetDefaults = defaults.datasets[me._type];
+		var datasetDefaults = defaults.global.datasets[me._type];
 		var userOpts = {};
 		var keys = Object.keys(dataset);
 		var i, ilen, key;

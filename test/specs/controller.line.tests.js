@@ -575,17 +575,17 @@ describe('Chart.controllers.line', function() {
 
 	describe('dataset defaults', function() {
 		beforeEach(function() {
-			this._defaults = Chart.helpers.clone(Chart.defaults.datasets.line);
+			this._defaults = Chart.helpers.clone(Chart.defaults.global.datasets.line);
 		});
 
 		afterEach(function() {
-			Chart.defaults.datasets.line = this._defaults;
+			Chart.defaults.global.datasets.line = this._defaults;
 			delete this._defaults;
 		});
 
 		it('should utilize the dataset default options', function() {
-			Chart.defaults.datasets.line = Chart.defaults.datasets.line || {};
-			var defaults = Chart.defaults.datasets.line;
+			Chart.defaults.global.datasets.line = Chart.defaults.global.datasets.line || {};
+			var defaults = Chart.defaults.global.datasets.line;
 			defaults.spanGaps = true;
 			defaults.tension = 0.231;
 			defaults.backgroundColor = '#add';

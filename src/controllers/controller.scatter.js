@@ -33,9 +33,11 @@ defaults._set('scatter', {
 	}
 });
 
-defaults._set('datasets', {
-	scatter: {
-		showLine: false
+defaults._set('global', {
+	datasets: {
+		scatter: {
+			showLine: false
+		}
 	}
 });
 
