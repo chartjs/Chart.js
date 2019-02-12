@@ -61,24 +61,28 @@ function drawLines(ctx, lines) {
 	var ilen = lines.length;
 	var line, prevLine;
 
+	if (!ilen) {
+		return;
+	}
+
+	prevLine = lines[0];
+	ctx.beginPath();
+	ctx.lineWidth = prevLine.w;
+
 	for (; i < ilen; ++i) {
 		line = lines[i];
-		if (i === 0 || prevLine.w !== line.w) {
-			if (i > 0) {
-				ctx.stroke();
-			}
+		if (prevLine.w !== line.w) {
+			ctx.stroke();
 			ctx.beginPath();
 			ctx.lineWidth = line.w;
 		}
-		if (i === 0 || prevLine.x2 !== line.x1 || prevLine.y2 !== line.y1) {
+		if (prevLine.x2 !== line.x1 || prevLine.y2 !== line.y1) {
 			ctx.moveTo(line.x1, line.y1);
 		}
 		ctx.lineTo(line.x2, line.y2);
 		prevLine = line;
 	}
-	if (ilen) {
-		ctx.stroke();
-	}
+	ctx.stroke();
 }
 
 // eslint-disable-next-line complexity
