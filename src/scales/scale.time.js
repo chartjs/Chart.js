@@ -643,7 +643,7 @@ module.exports = Scale.extend({
 			ticks.reverse();
 		}
 
-		return ticksFromTimestamps(ticks, options.ticks.major.enabled ? me._majorUnit : false);
+		return ticksFromTimestamps(ticks, me._majorUnit);
 	},
 
 	getLabelForIndex: function(index, datasetIndex) {
@@ -674,9 +674,11 @@ module.exports = Scale.extend({
 		var me = this;
 		var options = me.options;
 		var formats = options.time.displayFormats;
-		var tickOpts = tick.major ? options.ticks.major : options.ticks.minor;
+		var major = options.ticks.major;
+		var isMajor = major.enabled && tick.major;
+		var tickOpts = isMajor ? major : options.ticks.minor;
 		var formatter = valueOrDefault(tickOpts.callback, tickOpts.userCallback);
-		var timeFormat = format || (tick.major ? formats[me._majorUnit] : formats[me._unit]);
+		var timeFormat = format || (isMajor ? formats[me._majorUnit] : formats[me._unit]);
 		var label = adapter.format(tick.value, timeFormat);
 		tick.label = formatter ? formatter(label, index, ticks) : label;
 		return me._formatTick(tick, index);

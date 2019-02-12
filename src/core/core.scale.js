@@ -580,6 +580,9 @@ module.exports = Element.extend({
 		return rawValue;
 	},
 
+	/**
+	 * @private
+	 */
 	_formatTick: function(tick, index) {
 		var me = this;
 		var context = {
@@ -589,6 +592,7 @@ module.exports = Element.extend({
 		};
 		return valueOrDefault(callback(me._config.tickFormatter, [tick, context]), tick.label);
 	},
+
 	/**
 	 * @private
 	 */
