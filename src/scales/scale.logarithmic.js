@@ -62,6 +62,10 @@ var defaultConfig = {
 	}
 };
 
+function isNonNegative(value) {
+	return typeof(value) === 'number' && value >= 0;
+}
+
 module.exports = Scale.extend({
 	determineDataLimits: function() {
 		var me = this;
@@ -174,8 +178,8 @@ module.exports = Scale.extend({
 		var DEFAULT_MIN = 1;
 		var DEFAULT_MAX = 10;
 
-		me.min = tickOpts.min >= 0 ? tickOpts.min : me.min;
-		me.max = tickOpts.max >= 0 ? tickOpts.max : me.max;
+		me.min = isNonNegative(tickOpts.min) ? tickOpts.min : me.min;
+		me.max = isNonNegative(tickOpts.max) ? tickOpts.max : me.max;
 
 		if (me.min === me.max) {
 			if (me.min !== 0 && me.min !== null) {
@@ -211,8 +215,8 @@ module.exports = Scale.extend({
 		var reverse = !me.isHorizontal();
 
 		var generationOptions = {
-			min: tickOpts.min >= 0 ? tickOpts.min : undefined,
-			max: tickOpts.max >= 0 ? tickOpts.max : undefined
+			min: isNonNegative(tickOpts.min) ? tickOpts.min : undefined,
+			max: isNonNegative(tickOpts.max) ? tickOpts.max : undefined
 		};
 		var ticks = me.ticks = generateTicks(generationOptions, me);
 
