@@ -63,7 +63,7 @@ var defaultConfig = {
 };
 
 function isNonNegative(value) {
-	return typeof(value) === 'number' && value >= 0;
+	return typeof value === 'number' && value >= 0;
 }
 
 module.exports = Scale.extend({
