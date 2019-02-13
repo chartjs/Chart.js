@@ -465,33 +465,13 @@ var Legend = Element.extend({
 	},
 
 	/**
-	 * Handle an event
+	 * Gets the legend item, if any, at a given x,y position.
 	 * @private
-	 * @param {IEvent} event - The event to handle
-	 * @return {boolean} true if a change occured
+	 * @param {number} x - The x coordinate to check
+	 * @param {number} y - The y coordindate to check
 	 */
-	handleEvent: function(e) {
+	getLegendItemAt: function(x, y) {
 		var me = this;
-		var opts = me.options;
-		var type = e.type === 'mouseup' ? 'click' : e.type;
-		var changed = false;
-
-		if (type === 'mousemove') {
-			if (!opts.onHover && !opts.onLeave) {
-				return;
-			}
-		} else if (type === 'click') {
-			if (!opts.onClick) {
-				return;
-			}
-		} else {
-			return;
-		}
-
-		// Chart event already has relative position in it
-		var x = e.x;
-		var y = e.y;
-		var hoveredItem = null;
 
 		if (x >= me.left && x <= me.right && y >= me.top && y <= me.bottom) {
 			// See if we are touching one of the dataset boxes
@@ -501,34 +481,55 @@ var Legend = Element.extend({
 
 				if (x >= hitBox.left && x <= hitBox.left + hitBox.width && y >= hitBox.top && y <= hitBox.top + hitBox.height) {
 					// Touching an element
-					hoveredItem = me.legendItems[i];
-
-					if (type === 'click') {
-						// use e.native for backwards compatibility
-						opts.onClick.call(me, e.native, me.legendItems[i]);
-						changed = true;
-						break;
-					} else if (type === 'mousemove') {
-						if (opts.onHover) {
-							// use e.native for backwards compatibility
-							opts.onHover.call(me, e.native, me.legendItems[i]);
-							changed = true;
-						}
-						break;
-					}
+					return me.legendItems[i];
 				}
 			}
 		}
+	},
 
-		if (opts.onLeave && type === 'mousemove' && me._hoveredItem !== hoveredItem) {
-			if (me._hoveredItem) {
-				opts.onLeave.call(me, e.native, me._hoveredItem);
-				changed = true;
+	/**
+	 * Handle an event
+	 * @private
+	 * @param {IEvent} event - The event to handle
+	 */
+	handleEvent: function(e) {
+		var me = this;
+		var opts = me.options;
+		var type = e.type === 'mouseup' ? 'click' : e.type;
+
+		if (type === 'mousemove') {
+			if (!opts.onHover && !opts.onLeave) {
+				return;
 			}
-			me._hoveredItem = hoveredItem;
+		} else if (type === 'click') {
+			if (!opts.onClick) {
+				return;
+			}
+		}	else {
+			return;
 		}
 
-		return changed;
+		// Chart event already has relative position in it
+		var hoveredItem = me.getLegendItemAt(e.x, e.y);
+
+		if (type === 'click') {
+			if (hoveredItem && opts.onClick) {
+				// use e.native for backwards compatibility
+				opts.onClick.call(me, e.native, hoveredItem);
+			}
+		} else {
+			if (opts.onLeave && hoveredItem !== me._hoveredItem) {
+				if (me._hoveredItem) {
+					opts.onLeave.call(me, e.native, me._hoveredItem);
+				}
+				me._hoveredItem = hoveredItem;
+			}
+
+			if (opts.onHover && hoveredItem) {
+				// use e.native for backwards compatibility
+				opts.onHover.call(me, e.native, hoveredItem);
+			}
+		}
 	}
 });
 
