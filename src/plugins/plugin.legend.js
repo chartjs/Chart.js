@@ -507,7 +507,7 @@ var Legend = Element.extend({
 				return;
 			}
 		} else {
-      return;
+			return;
 		}
 
 		// Chart event already has relative position in it
