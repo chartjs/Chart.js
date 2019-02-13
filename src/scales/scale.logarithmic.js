@@ -64,7 +64,7 @@ var defaultConfig = {
 
 // TODO(v3): change this to isPositive
 function isNonNegative(value) {
-	return typeof value === 'number' && value >= 0;
+	return helpers.isFinite(value) && value >= 0;
 }
 
 module.exports = Scale.extend({
