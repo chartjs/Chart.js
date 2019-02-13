@@ -1,6 +1,5 @@
 <!doctype html>
 <html>
-
 <head>
 	<title>Legend Callbacks</title>
 	<script src="../../dist/Chart.min.js"></script>
@@ -40,6 +39,15 @@
 	<script>
 		var logEntry = 1;
 		var logElement = document.getElementById('log');
+		var utils = Samples.utils;
+		var inputs = {
+			min: 20,
+			max: 80,
+			count: 8,
+			decimals: 2,
+			continuity: 1
+		};
+		var config;
 
 		function log(text) {
 			logElement.innerText += logEntry + '. ' + text + '\n';
@@ -47,38 +55,31 @@
 			logEntry++;
 		}
 
-		var config = {
+		function generateData() {
+			return utils.numbers(inputs);
+		}
+		function generateLabels() {
+			return utils.months({count: inputs.count});
+		}
+
+		utils.srand(42);
+
+		config = {
 			type: 'line',
 			data: {
-				labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+				labels: generateLabels(),
 				datasets: [{
 					label: 'My First dataset',
-					backgroundColor: window.chartColors.red,
-					borderColor: window.chartColors.red,
-					data: [
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor()
-					],
+					backgroundColor: utils.color(0),
+					borderColor: utils.color(0),
+					data: generateData(),
 					fill: false,
 				}, {
 					label: 'My Second dataset',
 					fill: false,
-					backgroundColor: window.chartColors.blue,
-					borderColor: window.chartColors.blue,
-					data: [
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor()
-					],
+					backgroundColor: utils.color(1),
+					borderColor: utils.color(1),
+					data: generateData(),
 				}]
 			},
 			options: {
@@ -93,14 +94,9 @@
 						log('onClick:' + legendItem.text);
 					}
 				},
-				responsive: true,
 				title: {
 					display: true,
 					text: 'Chart.js Line Chart'
-				},
-				hover: {
-					mode: 'nearest',
-					intersect: true
 				},
 				scales: {
 					xAxes: [{
@@ -121,10 +117,7 @@
 			}
 		};
 
-		window.onload = function() {
-			var ctx = document.getElementById('canvas').getContext('2d');
-			window.myLine = new Chart(ctx, config);
-		};
+		new Chart(document.getElementById('canvas'), config);
 	</script>
 </body>
 

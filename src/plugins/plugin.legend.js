@@ -465,20 +465,17 @@ var Legend = Element.extend({
 	},
 
 	/**
-	 * Gets the legend item, if any, at a given x,y position.
 	 * @private
-	 * @param {number} x - The x coordinate to check
-	 * @param {number} y - The y coordindate to check
-	 * @return {?Object} - The legend item found
 	 */
-	getLegendItemAt: function(x, y) {
+	_getLegendItemAt: function(x, y) {
 		var me = this;
+		var i, hitBox, lh;
 
 		if (x >= me.left && x <= me.right && y >= me.top && y <= me.bottom) {
 			// See if we are touching one of the dataset boxes
-			var lh = me.legendHitBoxes;
-			for (var i = 0; i < lh.length; ++i) {
-				var hitBox = lh[i];
+			lh = me.legendHitBoxes;
+			for (i = 0; i < lh.length; ++i) {
+				hitBox = lh[i];
 
 				if (x >= hitBox.left && x <= hitBox.left + hitBox.width && y >= hitBox.top && y <= hitBox.top + hitBox.height) {
 					// Touching an element
@@ -499,6 +496,7 @@ var Legend = Element.extend({
 		var me = this;
 		var opts = me.options;
 		var type = e.type === 'mouseup' ? 'click' : e.type;
+		var hoveredItem;
 
 		if (type === 'mousemove') {
 			if (!opts.onHover && !opts.onLeave) {
@@ -508,12 +506,12 @@ var Legend = Element.extend({
 			if (!opts.onClick) {
 				return;
 			}
-		}	else {
-			return;
+		} else {
+      return;
 		}
 
 		// Chart event already has relative position in it
-		var hoveredItem = me.getLegendItemAt(e.x, e.y);
+		hoveredItem = me._getLegendItemAt(e.x, e.y);
 
 		if (type === 'click') {
 			if (hoveredItem && opts.onClick) {
