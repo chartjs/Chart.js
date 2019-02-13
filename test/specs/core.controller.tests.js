@@ -379,6 +379,46 @@ describe('Chart', function() {
 			});
 		});
 
+		it('should resize the canvas when parent is RTL and width changes', function(done) {
+			var chart = acquireChart({
+				options: {
+					responsive: true,
+					maintainAspectRatio: false
+				}
+			}, {
+				canvas: {
+					style: ''
+				},
+				wrapper: {
+					style: 'width: 300px; height: 350px; position: relative; direction: rtl'
+				}
+			});
+
+			expect(chart).toBeChartOfSize({
+				dw: 300, dh: 350,
+				rw: 300, rh: 350,
+			});
+
+			var wrapper = chart.canvas.parentNode;
+			wrapper.style.width = '455px';
+			waitForResize(chart, function() {
+				expect(chart).toBeChartOfSize({
+					dw: 455, dh: 350,
+					rw: 455, rh: 350,
+				});
+
+				wrapper.style.width = '150px';
+				waitForResize(chart, function() {
+					expect(chart).toBeChartOfSize({
+						dw: 150, dh: 350,
+						rw: 150, rh: 350,
+					});
+
+					done();
+				});
+			});
+		});
+
 		it('should resize the canvas when parent height changes', function(done) {
 			var chart = acquireChart({
 				options: {
