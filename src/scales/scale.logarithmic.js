@@ -62,6 +62,7 @@ var defaultConfig = {
 	}
 };
 
+// TODO(v3): change this to isPositive
 function isNonNegative(value) {
 	return typeof value === 'number' && value >= 0;
 }
