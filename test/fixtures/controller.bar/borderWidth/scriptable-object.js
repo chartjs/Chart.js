@@ -7,6 +7,7 @@ module.exports = {
 				{
 					// option in dataset
 					data: [0, 5, 10, null, -10, -5],
+					borderSkipped: false,
 					borderWidth: function(ctx) {
 						var value = ctx.dataset.data[ctx.dataIndex] || 0;
 						return {top: Math.abs(value)};
@@ -25,6 +26,7 @@ module.exports = {
 				rectangle: {
 					backgroundColor: 'transparent',
 					borderColor: '#80808080',
+					borderSkipped: false,
 					borderWidth: function(ctx) {
 						return {left: ctx.dataIndex * 2};
 					}

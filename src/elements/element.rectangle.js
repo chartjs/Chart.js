@@ -30,22 +30,22 @@ function isVertical(bar) {
  */
 function getBarBounds(bar) {
 	var vm = bar._view;
-	var x1, x2, y1, y2;
+	var x1, x2, y1, y2, half;
 
 	if (isVertical(bar)) {
 		// vertical
-		var halfWidth = vm.width / 2;
-		x1 = vm.x - halfWidth;
-		x2 = vm.x + halfWidth;
+		half = vm.width / 2;
+		x1 = vm.x - half;
+		x2 = vm.x + half;
 		y1 = Math.min(vm.y, vm.base);
 		y2 = Math.max(vm.y, vm.base);
 	} else {
 		// horizontal bar
-		var halfHeight = vm.height / 2;
+		half = vm.height / 2;
 		x1 = Math.min(vm.x, vm.base);
 		x2 = Math.max(vm.x, vm.base);
-		y1 = vm.y - halfHeight;
-		y2 = vm.y + halfHeight;
+		y1 = vm.y - half;
+		y2 = vm.y + half;
 	}
 
 	return {
@@ -86,134 +86,123 @@ function drawLines(ctx, lines) {
 }
 
 // eslint-disable-next-line complexity
-function buildBorderLines(rect, width, offset) {
+function buildBorderLines(rect, width) {
 	var lines = [];
-	var halfOffsetLeft = offset.left / 2;
-	var halfOffsetRight = offset.right / 2;
-	var halfOffsetTop = offset.top / 2;
-	var halfOffsetBottom = offset.bottom / 2;
+	var halfLeft = width.left / 2;
+	var halfRight = width.right / 2;
+	var halfTop = width.top / 2;
+	var halfBottom = width.bottom / 2;
 
 	if (width.bottom) {
 		lines.push({
 			w: width.bottom,
 			x1: rect.right,
-			y1: rect.bottom + halfOffsetBottom,
-			x2: rect.left + (width.bottom === width.left ? halfOffsetLeft : offset.left),
-			y2: rect.bottom + halfOffsetBottom
+			y1: rect.bottom - halfBottom,
+			x2: rect.left + (width.bottom === width.left ? halfLeft : width.left),
+			y2: rect.bottom - halfBottom
 		});
 	}
 	if (width.left) {
 		lines.push({
 			w: width.left,
-			x1: rect.left + halfOffsetLeft,
-			y1: rect.bottom + (width.bottom === width.left ? halfOffsetBottom : 0),
-			x2: rect.left + halfOffsetLeft,
-			y2: rect.top + (width.left === width.top ? halfOffsetTop : offset.top)
+			x1: rect.left + halfLeft,
+			y1: rect.bottom - (width.bottom === width.left ? halfBottom : 0),
+			x2: rect.left + halfLeft,
+			y2: rect.top + (width.left === width.top ? halfTop : width.top)
 		});
 	}
 	if (width.top) {
 		lines.push({
 			w: width.top,
-			x1: rect.left + (width.left === width.top ? halfOffsetLeft : 0),
-			y1: rect.top + halfOffsetTop,
-			x2: rect.right + (width.top === width.right ? halfOffsetRight : offset.right),
-			y2: rect.top + halfOffsetTop
+			x1: rect.left + (width.left === width.top ? halfLeft : 0),
+			y1: rect.top + halfTop,
+			x2: rect.right - (width.top === width.right ? halfRight : width.right),
+			y2: rect.top + halfTop
 		});
 	}
 	if (width.right) {
 		lines.push({
 			w: width.right,
-			x1: rect.right + halfOffsetRight,
-			y1: rect.top + (width.top === width.right ? halfOffsetTop : 0),
-			x2: rect.right + halfOffsetRight,
-			y2: rect.bottom + offset.bottom
+			x1: rect.right - halfRight,
+			y1: rect.top + (width.top === width.right ? halfTop : 0),
+			x2: rect.right - halfRight,
+			y2: rect.bottom - width.bottom
 		});
 	}
 	return lines;
 }
 
-function parseBorderWidth(borderWidth, borderSkipped, maxWidth, maxHeight) {
-	if (helpers.isObject(borderWidth)) {
-		return {
-			bottom: Math.min(borderWidth.bottom || 0, maxHeight),
-			left: Math.min(borderWidth.left || 0, maxWidth),
-			top: Math.min(borderWidth.top || 0, maxHeight),
-			right: Math.min(borderWidth.right || 0, maxWidth)
-		};
+function parseBorderWidth(value, skipped, maxWidth, maxHeight) {
+	var t, r, b, l;
+
+	if (helpers.isObject(value)) {
+		t = +value.top || 0;
+		r = +value.right || 0;
+		b = +value.bottom || 0;
+		l = +value.left || 0;
+	} else {
+		t = r = b = l = +value || 0;
 	}
 
-	maxWidth = Math.min(borderWidth, maxWidth);
-	maxHeight = Math.min(borderWidth, maxHeight);
 	return {
-		bottom: borderSkipped === 'bottom' ? 0 : maxHeight,
-		left: borderSkipped === 'left' ? 0 : maxWidth,
-		top: borderSkipped === 'top' ? 0 : maxHeight,
-		right: borderSkipped === 'right' ? 0 : maxWidth
+		top: Math.min(maxHeight, skipped === 'top' ? 0 : t),
+		right: Math.min(maxWidth, skipped === 'right' ? 0 : r),
+		bottom: Math.min(maxHeight, skipped === 'bottom' ? 0 : b),
+		left: Math.min(maxWidth, skipped === 'left' ? 0 : l)
 	};
+}
+
+function flip(orig, v1, v2) {
+	return orig === v1 ? v2 : orig === v2 ? v1 : orig;
+}
+
+function parseBorderSkipped(bar) {
+	var vm = bar._view;
+	var vertical = isVertical(bar);
+	var borderSkipped = valueOrDefault(vm.borderSkipped, vertical ? 'bottom' : 'left');
+
+	if (vertical && vm.base < vm.y) {
+		borderSkipped = flip(borderSkipped, 'bottom', 'top');
+	}
+	if (!vertical && vm.base > vm.x) {
+		borderSkipped = flip(borderSkipped, 'left', 'right');
+	}
+	return borderSkipped;
 }
 
 module.exports = Element.extend({
 	draw: function() {
-		var ctx = this._chart.ctx;
-		var vm = this._view;
+		var me = this;
+		var ctx = me._chart.ctx;
+		var vm = me._view;
 		var borderWidth = vm.borderWidth;
-		var left, right, top, bottom, signX, signY, borderSkipped, offset;
-
-		if (!vm.horizontal) {
-			// bar
-			left = vm.x - vm.width / 2;
-			right = vm.x + vm.width / 2;
-			top = vm.y;
-			bottom = vm.base;
-			signX = 1;
-			signY = bottom > top ? 1 : -1;
-			borderSkipped = valueOrDefault(vm.borderSkipped, 'bottom');
-		} else {
-			// horizontal bar
-			left = vm.base;
-			right = vm.x;
-			top = vm.y - vm.height / 2;
-			bottom = vm.y + vm.height / 2;
-			signX = right > left ? 1 : -1;
-			signY = 1;
-			borderSkipped = valueOrDefault(vm.borderSkipped, 'left');
-		}
+		var bounds = getBarBounds(me);
+		var left = bounds.left;
+		var top = bounds.top;
+		var width = bounds.right - left;
+		var height = bounds.bottom - top;
 
 		ctx.fillStyle = vm.backgroundColor;
 		ctx.strokeStyle = vm.borderColor;
 
 		if (!borderWidth) {
-			ctx.fillRect(left, bottom, right - left, top - bottom);
+			ctx.fillRect(left, top, width, height);
 			return;
 		}
 
 		borderWidth = parseBorderWidth(
 			borderWidth,
-			borderSkipped,
-			Math.abs(left - right) / 2,
-			Math.abs(top - bottom) / 2);
-
-		offset = {
-			left: borderWidth.left * signX,
-			right: borderWidth.right * -signX,
-			top: borderWidth.top * signY,
-			bottom: borderWidth.bottom * -signY,
-		};
+			parseBorderSkipped(me),
+			width / 2,
+			height / 2);
 
 		ctx.fillRect(
-			left + offset.left,
-			bottom + offset.bottom,
-			right + offset.right - left - offset.left,
-			top + offset.top - bottom - offset.bottom);
+			left + borderWidth.left,
+			top + borderWidth.top,
+			width - borderWidth.left - borderWidth.right,
+			height - borderWidth.top - borderWidth.bottom);
 
-		drawLines(ctx,
-			buildBorderLines({
-				left: left,
-				top: top,
-				right: right,
-				bottom: bottom
-			}, borderWidth, offset)
-		);
+		drawLines(ctx, buildBorderLines(bounds, borderWidth));
 	},
 
 	height: function() {

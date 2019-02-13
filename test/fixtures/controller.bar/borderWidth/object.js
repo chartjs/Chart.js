@@ -7,6 +7,7 @@ module.exports = {
 				{
 					// option in dataset
 					data: [0, 5, 10, null, -10, -5],
+					borderSkipped: false,
 					borderWidth: {bottom: 1, left: 2, top: 3, right: 4}
 				},
 				{
@@ -22,6 +23,7 @@ module.exports = {
 				rectangle: {
 					backgroundColor: 'transparent',
 					borderColor: '#888',
+					borderSkipped: false,
 					borderWidth: {bottom: 4, left: 3, top: 2, right: 1}
 				}
 			},
