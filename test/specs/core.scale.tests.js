@@ -74,7 +74,7 @@ describe('Core.scale', function() {
 			expect(lastTick(chart).label).toBeUndefined();
 		});
 
-		it('should display multiline-labels correctly', function() {
+		it('should display multiline labels correctly', function() {
 			var chart = getChart({
 				labels: [
 					['January', '2018'], 'February 2018', 'March 2018', 'April 2018',
@@ -87,7 +87,6 @@ describe('Core.scale', function() {
 			});
 
 			expect(lastTick(chart).label).toEqual(['September', '2018']);
-
 		});
 	});
 
