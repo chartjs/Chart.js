@@ -107,6 +107,8 @@ This setting is used to avoid drawing the bar stroke at the base of the fill.
 In general, this does not need to be changed except when creating chart types
 that derive from a bar chart.
 
+**Note:** for negative bars in vertical chart, `top` and `bottom` are flipped. Same goes for `left` and `right` in horizontal chart.
+
 Options are:
 * `'bottom'`
 * `'left'`
@@ -116,9 +118,7 @@ Options are:
 
 #### borderWidth
 
-If this value is a number, it is applied to all sides of the rectangle (left, top, right, bottom), except [`borderSkipped`](#borderskipped). If this value is an object, the `left` property defines the left border width. Similarly the `right`, `top` and `bottom` properties can also be specified. Omitted borders are skipped.
-
-**Note:** for negative bars in vertical chart, `top` and `bottom` are flipped. Same goes for `left` and `right` in horizontal chart.
+If this value is a number, it is applied to all sides of the rectangle (left, top, right, bottom), except [`borderSkipped`](#borderskipped). If this value is an object, the `left` property defines the left border width. Similarly the `right`, `top` and `bottom` properties can also be specified. Omitted borders and [`borderSkipped`](#borderskipped) are skipped.
 
 ### Interactions
 
