@@ -469,6 +469,7 @@ var Legend = Element.extend({
 	 * @private
 	 * @param {number} x - The x coordinate to check
 	 * @param {number} y - The y coordindate to check
+	 * @return {?Object} - The legend item found
 	 */
 	getLegendItemAt: function(x, y) {
 		var me = this;
@@ -485,6 +486,8 @@ var Legend = Element.extend({
 				}
 			}
 		}
+
+		return null;
 	},
 
 	/**
