@@ -62,9 +62,9 @@ var defaultConfig = {
 	}
 };
 
-// TODO(v3): change this to isPositive
-function isNonNegative(value) {
-	return helpers.isFinite(value) && value >= 0;
+// TODO(v3): change this to isPositiveOrDefault
+function nonNegativeOrDefault(value, defaultValue) {
+	return helpers.isFinite(value) && value >= 0 ? value : defaultValue;
 }
 
 module.exports = Scale.extend({
@@ -179,8 +179,8 @@ module.exports = Scale.extend({
 		var DEFAULT_MIN = 1;
 		var DEFAULT_MAX = 10;
 
-		me.min = isNonNegative(tickOpts.min) ? tickOpts.min : me.min;
-		me.max = isNonNegative(tickOpts.max) ? tickOpts.max : me.max;
+		me.min = nonNegativeOrDefault(tickOpts.min, me.min);
+		me.max = nonNegativeOrDefault(tickOpts.max, me.max);
 
 		if (me.min === me.max) {
 			if (me.min !== 0 && me.min !== null) {
@@ -216,8 +216,8 @@ module.exports = Scale.extend({
 		var reverse = !me.isHorizontal();
 
 		var generationOptions = {
-			min: isNonNegative(tickOpts.min) ? tickOpts.min : undefined,
-			max: isNonNegative(tickOpts.max) ? tickOpts.max : undefined
+			min: nonNegativeOrDefault(tickOpts.min),
+			max: nonNegativeOrDefault(tickOpts.max)
 		};
 		var ticks = me.ticks = generateTicks(generationOptions, me);
 
