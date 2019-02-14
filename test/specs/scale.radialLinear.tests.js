@@ -19,7 +19,10 @@ describe('Test the radial linear scale', function() {
 				borderDashOffset: 0.0
 			},
 			animate: true,
-			backgroundColors: null,
+			backgroundColors: {
+				display: false,
+				color: []
+			},
 			display: true,
 			gridLines: {
 				circular: false,

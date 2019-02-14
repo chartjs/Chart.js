@@ -24,6 +24,13 @@ var defaultConfig = {
 		borderDashOffset: 0.0
 	},
 
+	backgroundColors: {
+		// Boolean - if true, show background colors
+		display: false,
+		// Array of colors
+		color: []
+	},
+
 	gridLines: {
 		circular: false
 	},
@@ -57,7 +64,6 @@ var defaultConfig = {
 			return label;
 		}
 	},
-	backgroundColors: null
 };
 
 function getValueCount(scale) {
@@ -281,7 +287,7 @@ function drawBackgroundColors(scale) {
 	var opts = scale.options;
 	var outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
 	var ctx = scale.ctx;
-	var i, outerPointPosition, previousOuterPointPosition, nextOuterPointPosition, previousOuterHalfway, nextOuterHalfway;
+	var i, outerPointPosition, previousOuterPointPosition, nextOuterPointPosition, previousOuterHalfway, nextOuterHalfway, backgroundColor;
 
 	for (i = getValueCount(scale) - 1; i >= 0; i--) {
 		outerPointPosition = scale.getPointPosition(i, outerDistance);
@@ -292,12 +298,15 @@ function drawBackgroundColors(scale) {
 		previousOuterHalfway = {x: (previousOuterPointPosition.x + outerPointPosition.x) / 2, y: (previousOuterPointPosition.y + outerPointPosition.y) / 2};
 		nextOuterHalfway = {x: (outerPointPosition.x + nextOuterPointPosition.x) / 2, y: (outerPointPosition.y + nextOuterPointPosition.y) / 2};
 
+		// Set the background color to either be the position in the array or the static color
+		backgroundColor = helpers.isArray(opts.backgroundColors.color) ? opts.backgroundColors.color[i] : opts.backgroundColors.color;
+
 		ctx.beginPath();
 		ctx.moveTo(scale.xCenter, scale.yCenter);
 		ctx.lineTo(previousOuterHalfway.x, previousOuterHalfway.y);
 		ctx.lineTo(outerPointPosition.x, outerPointPosition.y);
 		ctx.lineTo(nextOuterHalfway.x, nextOuterHalfway.y);
-		ctx.fillStyle = opts.backgroundColors[i];
+		ctx.fillStyle = backgroundColor;
 		ctx.fill();
 		ctx.closePath();
 	}
@@ -517,7 +526,8 @@ module.exports = LinearScaleBase.extend({
 				drawPointLabels(me);
 			}
 
-			if (opts.backgroundColors && opts.backgroundColors.length === getValueCount(me)) {
+			if (opts.backgroundColors && opts.backgroundColors.display && opts.backgroundColors.color &&
+				(!helpers.isArray(opts.backgroundColors.color) || opts.backgroundColors.color.length === getValueCount(me))) {
 				drawBackgroundColors(me);
 			}
 

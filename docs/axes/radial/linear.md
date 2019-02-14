@@ -11,6 +11,7 @@ The axis has configuration properties for ticks, angle lines (line that appear i
 | Name | Type | Description
 | ---- | ---- | -----------
 | `angleLines` | `object` | Angle line configuration. [more...](#angle-line-options)
+| `backgroundColors` | `object` | Background color configuration. [more...](#background-color-options)
 | `gridLines` | `object` | Grid line configuration. [more...](../styling.md#grid-line-configuration)
 | `pointLabels` | `object` | Point label configuration. [more...](#point-label-options)
 | `ticks` | `object` | Tick configuration. [more...](#tick-options)
@@ -97,6 +98,15 @@ The following options are used to configure angled lines that radiate from the c
 | `lineWidth` | `number` | `1` | Width of angled lines.
 | `borderDash` | `number[]` | `[]` | Length and spacing of dashes on angled lines. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
 | `borderDashOffset` | `number` | `0.0` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
+
+## Background Color Options
+
+The following options are used to configure background colors that fill the area of the chart from the center to the point labels.  The colors are centered around each of the angle lines in the chart.  They can be found in the `backgroundColors` sub options. Note that these options only apply if `backgroundColors.display` is true.
+
+| Name | Type | Default | Description
+| ---- | ---- | ------- | -----------
+| `display` | `boolean` | `false` | if true, background colors are shown.
+| `color` | <code>Color&#124;Color[]</code> | `[]` | Single color or array of colors for the background.  If an array, this must equal the number of data points in each data set.
 
 ## Point Label Options
 
