@@ -638,7 +638,7 @@ module.exports = Scale.extend({
 		if (typeof label === 'string') {
 			return label;
 		}
-		return adapter.format(toTimestamp(label, timeOpts), timeOpts.displayFormats[me._unit]);
+		return adapter.format(toTimestamp(label, timeOpts), timeOpts.displayFormats.datetime);
 	},
 
 	/**

@@ -36,15 +36,6 @@ module.exports._date = {
 	formats: abstract,
 
 	/**
-	 * Returns a map of date/time formats for the following presets:
-	 * 'full': date + time + millisecond
-	 * 'time': date + time
-	 * 'date': date
-	 * @returns {{string: string}}
-	 */
-	presets: abstract,
-
-	/**
 	 * Parses the given `value` and return the associated timestamp.
 	 * @param {any} value - the value to parse (usually comes from the data)
 	 * @param {string} [format] - the expected data format
