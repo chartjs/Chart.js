@@ -181,6 +181,18 @@
 		}, {
 			title: 'Bubble Chart',
 			path: 'scriptable/bubble.html'
+		}, {
+			title: 'Pie Chart',
+			path: 'scriptable/pie.html'
+		}, {
+			title: 'Line Chart',
+			path: 'scriptable/line.html'
+		}, {
+			title: 'Polar Area Chart',
+			path: 'scriptable/polar.html'
+		}, {
+			title: 'Radar Chart',
+			path: 'scriptable/radar.html'
 		}]
 	}, {
 		title: 'Advanced',
