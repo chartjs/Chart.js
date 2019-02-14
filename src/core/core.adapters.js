@@ -30,7 +30,8 @@ function abstract() {
 /** @lends Chart._adapters._date */
 module.exports._date = {
 	/**
-	 * Returns a map of time formats for the supported units.
+	 * Returns a map of time formats for the supported formatting units.
+	 * This includes all scale tick units defined in Unit as well as 'datetime' used in the tooltip.
 	 * @returns {{string: string}}
 	 */
 	formats: abstract,
