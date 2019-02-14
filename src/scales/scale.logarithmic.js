@@ -62,7 +62,7 @@ var defaultConfig = {
 	}
 };
 
-// TODO(v3): change this to isPositiveOrDefault
+// TODO(v3): change this to positiveOrDefault
 function nonNegativeOrDefault(value, defaultValue) {
 	return helpers.isFinite(value) && value >= 0 ? value : defaultValue;
 }
