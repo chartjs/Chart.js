@@ -228,6 +228,12 @@ module.exports = Element.extend({
 
 		me._ticks = ticks;
 
+		if (me.options.ticks.autoSkip) {
+			// autoSkip expects me.labelRotation to be defined to understand the maximum number of labels to show
+			// We'll calculate the final labelRotation afterwards when we know how many labels are actually being showen
+			me.calculateTickRotation();
+			me._ticks = me._autoSkip(ticks);
+		}
 		// Tick Rotation
 		me.beforeCalculateTickRotation();
 		me.calculateTickRotation();
@@ -324,7 +330,8 @@ module.exports = Element.extend({
 		var me = this;
 		var context = me.ctx;
 		var tickOpts = me.options.ticks;
-		var labels = labelsFromTicks(me._ticks);
+		var ticks = me.getTicks();
+		var labels = labelsFromTicks(ticks);
 
 		// Get the width of each grid by calculating the difference
 		// between x offsets between 0 and 1.
@@ -333,16 +340,23 @@ module.exports = Element.extend({
 
 		var labelRotation = tickOpts.minRotation || 0;
 
-		if (labels.length && me.options.display && me.isHorizontal()) {
+		if (labels.length > 1 && me.options.display && me.isHorizontal()) {
 			var originalLabelWidth = helpers.longestText(context, tickFont.string, labels, me.longestTextCache);
 			var labelWidth = originalLabelWidth;
 			var cosRotation, sinRotation;
 
+			var labelIndices = [];
+			for (var i = 0; i < ticks.length && labelIndices.length < 2; i++) {
+				if (ticks[i].label) {
+					labelIndices.push(i);
+				}
+			}
+
 			// Allow 3 pixels x2 padding either side for label readability
-			var tickWidth = me.getPixelForTick(1) - me.getPixelForTick(0) - 6;
+			var labelSpacing = me.getPixelForTick(labelIndices[1]) - me.getPixelForTick(labelIndices[0]) - 6;
 
 			// Max label rotation can be set or default to 90 - also act as a loop counter
-			while (labelWidth > tickWidth && labelRotation < tickOpts.maxRotation) {
+			while (labelWidth > labelSpacing && labelRotation < tickOpts.maxRotation) {
 				var angleRadians = helpers.toRadians(labelRotation);
 				cosRotation = Math.cos(angleRadians);
 				sinRotation = Math.sin(angleRadians);
@@ -422,12 +436,8 @@ module.exports = Element.extend({
 		// Don't bother fitting the ticks if we are not showing them
 		if (tickOpts.display && display) {
 			var largestTextWidth = helpers.longestText(me.ctx, tickFont.string, labels, me.longestTextCache);
-			var tallestLabelHeightInLines = helpers.numberOfLabelLines(labels);
 			var lineSpace = tickFont.size * 0.5;
 			var tickPadding = me.options.ticks.padding;
-
-			// Store max number of lines used in labels for _autoSkip
-			me._maxLabelLines = tallestLabelHeightInLines;
 
 			if (isHorizontal) {
 				// A horizontal axis is more constrained by the height.
@@ -439,7 +449,7 @@ module.exports = Element.extend({
 
 				// TODO - improve this calculation
 				var labelHeight = (sinRotation * largestTextWidth)
-					+ (tickFont.lineHeight * tallestLabelHeightInLines)
+					+ (tickFont.lineHeight * helpers.numberOfLabelLines(labels))
 					+ lineSpace; // padding
 
 				minSize.height = Math.min(me.maxHeight, minSize.height + labelHeight + tickPadding);
@@ -679,11 +689,13 @@ module.exports = Element.extend({
 		var cos = Math.abs(Math.cos(rot));
 		var sin = Math.abs(Math.sin(rot));
 
-		var padding = optionTicks.autoSkipPadding;
-		var w = me.longestLabelWidth + padding || 0;
-
 		var tickFont = helpers.options._parseFont(optionTicks);
-		var h = me._maxLabelLines * tickFont.lineHeight + padding;
+		var labels = labelsFromTicks(me._ticks);
+		var longestLabelWidth = helpers.longestText(me.ctx, tickFont.string, labels);
+		var padding = optionTicks.autoSkipPadding;
+		var w = longestLabelWidth + padding || 0;
+
+		var h = helpers.numberOfLabelLines(labels) * tickFont.lineHeight + padding;
 
 		// Calculate space needed for 1 tick in axis direction.
 		return isHorizontal
