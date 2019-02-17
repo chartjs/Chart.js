@@ -1,0 +1,25 @@
+{
+    "config": {
+        "type": "radar",
+        "data": {
+            "labels": ["A", "B", "C", "D", "E"]
+        },
+        "options": {
+            "responsive": false,
+            "legend": false,
+            "title": false,
+            "scale": {
+                "backgroundColors": {
+                    "display": true,
+                    "color": "rgba(155, 155, 155, 0.5)"
+                },
+                "pointLabels": {
+                    "display": false
+                },
+                "ticks": {
+                    "display": false
+                }
+            }
+        }
+    }
+}
