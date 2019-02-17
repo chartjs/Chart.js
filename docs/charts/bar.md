@@ -72,6 +72,7 @@ the color of the bars is generally set this way.
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`borderSkipped`](#borderskipped) | `string` | Yes | Yes | `'bottom'`
 | [`borderWidth`](#borderwidth) | <code>number&#124;object</code> | Yes | Yes | `0`
+| [`borderRadius`](#styling) | `number` | Yes | Yes | `0`
 | [`data`](#data-structure) | `object[]` | - | - | **required**
 | [`hoverBackgroundColor`](#interactions) | [`Color`](../general/colors.md) | - | Yes | `undefined`
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | - | Yes | `undefined`
@@ -98,6 +99,7 @@ The style of each bar can be controlled with the following properties:
 | `borderColor` | The bar border color.
 | [`borderSkipped`](#borderskipped) | The edge to skip when drawing bar.
 | [`borderWidth`](#borderwidth) | The bar border width (in pixels).
+| `borderRadius` | Rounding corners of outer border edge.
 
 All these values, if `undefined`, fallback to the associated [`elements.rectangle.*`](../configuration/elements.md#rectangle-configuration) options.
 

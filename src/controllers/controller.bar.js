@@ -158,6 +158,7 @@ module.exports = DatasetController.extend({
 			borderColor: options.borderColor,
 			borderSkipped: options.borderSkipped,
 			borderWidth: options.borderWidth,
+			borderRadius: options.borderRadius,
 			datasetLabel: dataset.label,
 			label: me.chart.data.labels[index]
 		};
@@ -399,7 +400,8 @@ module.exports = DatasetController.extend({
 			'backgroundColor',
 			'borderColor',
 			'borderSkipped',
-			'borderWidth'
+			'borderWidth',
+			'borderRadius'
 		];
 
 		for (i = 0, ilen = keys.length; i < ilen; ++i) {

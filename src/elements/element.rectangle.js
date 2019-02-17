@@ -56,82 +56,6 @@ function getBarBounds(bar) {
 	};
 }
 
-function drawLines(ctx, lines) {
-	var i = 0;
-	var ilen = lines.length;
-	var line, prevLine;
-
-	if (!ilen) {
-		return;
-	}
-
-	prevLine = lines[0];
-	ctx.beginPath();
-	ctx.lineWidth = prevLine.w;
-
-	for (; i < ilen; ++i) {
-		line = lines[i];
-		if (prevLine.w !== line.w) {
-			ctx.stroke();
-			ctx.beginPath();
-			ctx.lineWidth = line.w;
-		}
-		if (prevLine.x2 !== line.x1 || prevLine.y2 !== line.y1) {
-			ctx.moveTo(line.x1, line.y1);
-		}
-		ctx.lineTo(line.x2, line.y2);
-		prevLine = line;
-	}
-	ctx.stroke();
-}
-
-// eslint-disable-next-line complexity
-function buildBorderLines(rect, width) {
-	var lines = [];
-	var halfLeft = width.left / 2;
-	var halfRight = width.right / 2;
-	var halfTop = width.top / 2;
-	var halfBottom = width.bottom / 2;
-
-	if (width.bottom) {
-		lines.push({
-			w: width.bottom,
-			x1: rect.right,
-			y1: rect.bottom - halfBottom,
-			x2: rect.left + (width.bottom === width.left ? halfLeft : width.left),
-			y2: rect.bottom - halfBottom
-		});
-	}
-	if (width.left) {
-		lines.push({
-			w: width.left,
-			x1: rect.left + halfLeft,
-			y1: rect.bottom - (width.bottom === width.left ? halfBottom : 0),
-			x2: rect.left + halfLeft,
-			y2: rect.top + (width.left === width.top ? halfTop : width.top)
-		});
-	}
-	if (width.top) {
-		lines.push({
-			w: width.top,
-			x1: rect.left + (width.left === width.top ? halfLeft : 0),
-			y1: rect.top + halfTop,
-			x2: rect.right - (width.top === width.right ? halfRight : width.right),
-			y2: rect.top + halfTop
-		});
-	}
-	if (width.right) {
-		lines.push({
-			w: width.right,
-			x1: rect.right - halfRight,
-			y1: rect.top + (width.top === width.right ? halfTop : 0),
-			x2: rect.right - halfRight,
-			y2: rect.bottom - width.bottom
-		});
-	}
-	return lines;
-}
-
 function parseBorderWidth(value, skipped, maxWidth, maxHeight) {
 	var t, r, b, l;
 
@@ -170,6 +94,103 @@ function parseBorderSkipped(bar) {
 	return borderSkipped;
 }
 
+function buildBorderSections(bounds, inner, border, radius) {
+	var top = 'top';
+	var left = 'left';
+	var right = 'right';
+	var bottom = 'bottom';
+	var borders = [top, right, bottom, left];
+	var corners = [[left, top], [right, top], [right, bottom], [left, bottom]];
+	var sections = [];
+	var current = [];
+	var count = 0;
+	var startIdx = 0;
+	var i, b, n, p, c1, c2;
+
+	radius = radius || 0;
+
+	for (i = 0; i < 4; ++i) {
+		if (!border[borders[i]]) {
+			startIdx = i;
+			break;
+		}
+	}
+
+	for (i = 0; i < 4; ++i) {
+		b = borders[(i + startIdx) % 4];
+		if (border[b]) {
+			n = borders[(i + startIdx + 1) % 4];
+			p = borders[(i + startIdx + 3) % 4];
+			c1 = corners[(i + startIdx) % 4];
+			c2 = corners[(i + startIdx + 1) % 4];
+			if (i === 0 || !border[p]) {
+				if (current.length) {
+					sections.push({count: count, corners: current});
+					current = [];
+					count = 0;
+				}
+				current.push({x1: bounds[c1[0]], y1: bounds[c1[1]], x2: inner[c1[0]], y2: inner[c1[1]], r: radius});
+			}
+			if (i < 3 || !border[n]) {
+				current.push({x1: bounds[c2[0]], y1: bounds[c2[1]], x2: inner[c2[0]], y2: inner[c2[1]], r: radius});
+			}
+			count++;
+		}
+	}
+	if (current.length) {
+		sections.push({count: count, corners: current});
+	}
+	return sections;
+}
+
+function drawBorderSection(ctx, section) {
+	ctx.beginPath();
+
+	var c = section.corners;
+	var p1 = c[c.length - 1];
+	var p2 = c[0];
+	var r = p2.r;
+	var ilen = section.count === 4 ? 5 : section.count;
+	var i;
+
+	// if all borders are drawn and we have a border radius, move starting point
+	if (section.count === 4 && p2.r) {
+		p2 = {x1: p2.x1, y1: p2.y1, x2: p2.x2, y2: p2.y2, r: p2.r};
+		if (p2.x1 === p1.x1) {
+			p2.x1 += p2.x2 > p2.x1 ? p2.r : -p2.r;
+		}
+		if (p2.y1 === p1.y1) {
+			p2.y1 += p2.y2 > p2.y1 ? p2.r : -p2.r;
+		}
+	}
+
+	ctx.moveTo(p2.x1, p2.y1);
+	for (i = 0; i < ilen; i++) {
+		p1 = p2;
+		p2 = c[(i + 1) % c.length];
+		ctx.arcTo(p1.x1, p1.y1, p2.x1, p2.y1, Math.max(p1.r, r));
+		r = p1.r;
+	}
+	if (section.count < 4) {
+		ctx.lineTo(p2.x1, p2.y1);
+		ctx.lineTo(p2.x2, p2.y2);
+	} else {
+		p1 = p2;
+		p2 = c[0];
+		ctx.closePath();
+		ctx.moveTo(p2.x2, p2.y2);
+	}
+	while (i > 0) {
+		p1 = p2;
+		p2 = c[(i - 1) % 4];
+		ctx.arcTo(p1.x2, p1.y2, p2.x2, p2.y2, 0);
+		i--;
+	}
+	ctx.lineTo(p2.x2, p2.y2);
+	ctx.closePath();
+	ctx.fill('evenodd');
+}
+
 module.exports = Element.extend({
 	draw: function() {
 		var me = this;
@@ -179,11 +200,14 @@ module.exports = Element.extend({
 		var bounds = getBarBounds(me);
 		var left = bounds.left;
 		var top = bounds.top;
-		var width = bounds.right - left;
+		var right = bounds.right;
+		var bottom = bounds.bottom;
+		var width = right - left;
 		var height = bounds.bottom - top;
+		var borderRadius = vm.borderRadius || 0;
+		var inner, i, sections;
 
 		ctx.fillStyle = vm.backgroundColor;
-		ctx.strokeStyle = vm.borderColor;
 
 		if (!borderWidth) {
 			ctx.fillRect(left, top, width, height);
@@ -196,13 +220,20 @@ module.exports = Element.extend({
 			width / 2,
 			height / 2);
 
-		ctx.fillRect(
-			left + borderWidth.left,
-			top + borderWidth.top,
-			width - borderWidth.left - borderWidth.right,
-			height - borderWidth.top - borderWidth.bottom);
+		inner = {
+			left: left + borderWidth.left,
+			top: top + borderWidth.top,
+			right: right - borderWidth.right,
+			bottom: bottom - borderWidth.bottom
+		};
 
-		drawLines(ctx, buildBorderLines(bounds, borderWidth));
+		ctx.fillRect(inner.left, inner.top, inner.right - inner.left, inner.bottom - inner.top);
+
+		ctx.fillStyle = vm.borderColor;
+		sections = buildBorderSections(bounds, inner, borderWidth, borderRadius);
+		for (i = 0; i < sections.length; i++) {
+			drawBorderSection(ctx, sections[i]);
+		}
 	},
 
 	height: function() {
