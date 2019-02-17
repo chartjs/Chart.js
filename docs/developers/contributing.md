@@ -42,6 +42,26 @@ The following commands are now available from the repository root:
 
 More information can be found in [gulpfile.js](https://github.com/chartjs/Chart.js/blob/master/gulpfile.js).
 
+### Image-Based Tests
+
+Some display-related functionality is difficult to test via typical Jasmine unit test asserts. For this functionality, we have image-based tests that assert that the chart is drawn pixel-for-pixel matching an expected image.
+
+Generated charts in image-based tests should be **as minimal as possible** and focus only on tested features to prevent failure if another feature breaks (e.g. disable the title and legend when testing scales).
+
+You can create a new image-based test by following the steps below:
+- Create a JS file ([example](https://github.com/chartjs/Chart.js/blob/f7b671006a86201808402c3b6fe2054fe834fd4a/test/fixtures/controller.bubble/radius-scriptable.js)) or JSON file ([example](/chartjs/Chart.js/blob/4b421a50bfa17f73ac7aa8db7d077e674dbc148d/test/fixtures/plugin.filler/fill-line-dataset.json)) that defines chart config and generation options.
+- Add this file in`test/fixtures/{spec.name}/{feature-name}.json`.
+- Add a [describe line](/chartjs/Chart.js/blob/4b421a50bfa17f73ac7aa8db7d077e674dbc148d/test/specs/plugin.filler.tests.js#L10) to the beginning of `specs/{spec.name}.js`.
+- Set `"debug": true` in the JSON file to prevent the canvas destruction when running tests.
+- Run `gulp unittest --watch --inputs=test/specs/{spec.name}.js`.
+- Click the *"Debug"* button (top/right): a test should fail with the associated canvas visible.
+- Right click on the chart and *"Save image as..."* `test/fixtures/{spec.name}/{feature-name}.png`.
+- Refresh the browser page (`CTRL+R`): test should now pass
+- Verify test relevancy by changing the feature values *slightly* in the JSON file.
+- Remove `debug: true` from the JSON file.
+
+Tests should pass in both browsers. In general, we've hidden the text for all the image tests since it's quite difficult to get them passing between different browsers. As a result, it is recommended to hide all scales in image-based tests. It is also recommended to disable animations in image-based tests. If tests still do not pass, adjust [`tolerance` and/or `threshold`](https://github.com/chartjs/Chart.js/blob/1ca0ffb5d5b6c2072176fd36fa85a58c483aa434/test/jasmine.matchers.js) at the beginning of the JSON file keeping them **as low as possible**.
+
 ## Bugs and Issues
 
 Please report these on the GitHub page - at <a href="https://github.com/chartjs/Chart.js" target="_blank">github.com/chartjs/Chart.js</a>. Please do not use issues for support requests. For help using Chart.js, please take a look at the [`chartjs`](https://stackoverflow.com/questions/tagged/chartjs) tag on Stack Overflow.
