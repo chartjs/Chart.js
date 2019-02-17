@@ -322,28 +322,34 @@ module.exports = Element.extend({
 	},
 	calculateTickRotation: function() {
 		var me = this;
-		var context = me.ctx;
 		var tickOpts = me.options.ticks;
-		var labels = labelsFromTicks(me._ticks);
+		var labelRotation = tickOpts.minRotation || 0;
+		var context = me.ctx;
+		var labels, tickFont, originalLabelWidth, labelWidth, cosRotation, sinRotation, tickWidth, angleRadians;
+
+		// If we can skip ticks instead of rotating them then do that
+		if (tickOpts.autoSkip) {
+			me.labelRotation = labelRotation;
+			return;
+		}
+
+		labels = labelsFromTicks(me._ticks);
 
 		// Get the width of each grid by calculating the difference
 		// between x offsets between 0 and 1.
-		var tickFont = helpers.options._parseFont(tickOpts);
+		tickFont = helpers.options._parseFont(tickOpts);
 		context.font = tickFont.string;
 
-		var labelRotation = tickOpts.minRotation || 0;
-
 		if (labels.length && me.options.display && me.isHorizontal()) {
-			var originalLabelWidth = helpers.longestText(context, tickFont.string, labels, me.longestTextCache);
-			var labelWidth = originalLabelWidth;
-			var cosRotation, sinRotation;
+			originalLabelWidth = helpers.longestText(context, tickFont.string, labels, me.longestTextCache);
+			labelWidth = originalLabelWidth;
 
 			// Allow 3 pixels x2 padding either side for label readability
-			var tickWidth = me.getPixelForTick(1) - me.getPixelForTick(0) - 6;
+			tickWidth = me.getPixelForTick(1) - me.getPixelForTick(0) - 6;
 
 			// Max label rotation can be set or default to 90 - also act as a loop counter
 			while (labelWidth > tickWidth && labelRotation < tickOpts.maxRotation) {
-				var angleRadians = helpers.toRadians(labelRotation);
+				angleRadians = helpers.toRadians(labelRotation);
 				cosRotation = Math.cos(angleRadians);
 				sinRotation = Math.sin(angleRadians);
 
