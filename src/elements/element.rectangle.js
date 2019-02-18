@@ -54,26 +54,6 @@ function getBarBounds(bar) {
 	};
 }
 
-function parseBorderWidth(value, skipped, maxWidth, maxHeight) {
-	var t, r, b, l;
-
-	if (helpers.isObject(value)) {
-		t = +value.top || 0;
-		r = +value.right || 0;
-		b = +value.bottom || 0;
-		l = +value.left || 0;
-	} else {
-		t = r = b = l = +value || 0;
-	}
-
-	return {
-		top: Math.min(maxHeight, skipped === 'top' ? 0 : t),
-		right: Math.min(maxWidth, skipped === 'right' ? 0 : r),
-		bottom: Math.min(maxHeight, skipped === 'bottom' ? 0 : b),
-		left: Math.min(maxWidth, skipped === 'left' ? 0 : l)
-	};
-}
-
 function flip(orig, v1, v2) {
 	return orig === v1 ? v2 : orig === v2 ? v1 : orig;
 }
@@ -92,79 +72,67 @@ function parseBorderSkipped(bar) {
 	return borderSkipped;
 }
 
+function parseBorderWidth(value, bar, maxWidth, maxHeight) {
+	var bound = helpers.bound;
+	var skip = parseBorderSkipped(bar);
+	var t, r, b, l;
+
+	if (helpers.isObject(value)) {
+		t = value.top || 0;
+		r = value.right || 0;
+		b = value.bottom || 0;
+		l = value.left || 0;
+	} else {
+		t = r = b = l = value || 0;
+	}
+
+	return {
+		top: bound(0, skip === 'top' ? 0 : t, maxHeight),
+		right: bound(0, skip === 'right' ? 0 : r, maxWidth),
+		bottom: bound(0, skip === 'bottom' ? 0 : b, maxHeight),
+		left: bound(0, skip === 'left' ? 0 : l, maxWidth)
+	};
+}
+
 module.exports = Element.extend({
 	draw: function() {
 		var me = this;
 		var ctx = me._chart.ctx;
 		var vm = me._view;
-		var borderWidth = vm.borderWidth;
+		var border = vm.borderWidth;
 		var bounds = getBarBounds(me);
 		var left = bounds.left;
 		var top = bounds.top;
-		var right = bounds.right;
-		var bottom = bounds.bottom;
-		var width = right - left;
-		var height = bottom - top;
-		var inner, maxLine, halfLine;
+		var width = bounds.right - left;
+		var height = bounds.bottom - top;
+		var inner, maxBorder, halfBorder;
 
 		ctx.fillStyle = vm.backgroundColor;
 
-		if (!borderWidth) {
-			ctx.fillRect(left, top, width, height);
-			return;
-		}
+		border = parseBorderWidth(border, me, width / 2, height / 2);
+		maxBorder = Math.max(border.left, border.top, border.right, border.bottom);
 
-		borderWidth = parseBorderWidth(
-			borderWidth,
-			parseBorderSkipped(me),
-			width / 2,
-			height / 2);
-
-		maxLine = Math.max(borderWidth.left, borderWidth.top, borderWidth.right, borderWidth.bottom);
-
-		if (!maxLine) {
+		if (!maxBorder) {
 			ctx.fillRect(left, top, width, height);
 			return;
 		}
 
 		inner = {
-			left: left + borderWidth.left,
-			top: top + borderWidth.top,
-			width: width - borderWidth.left - borderWidth.right,
-			height: height - borderWidth.bottom - borderWidth.top
+			left: left + border.left,
+			top: top + border.top,
+			width: width - border.left - border.right,
+			height: height - border.bottom - border.top
 		};
 
 		ctx.fillRect(inner.left, inner.top, inner.width, inner.height);
 
-		ctx.strokeStyle = vm.borderColor;
-
-		// add 1 to max border width, so border is actually 0.5px wider
-		// to hide artifacts
-		ctx.lineWidth = maxLine + 1;
-
-		// move edges 1px where there is no border, to prevent artifacts
-		if (!borderWidth.left) {
-			inner.left -= 1;
-			inner.width += 1;
-		}
-		if (!borderWidth.right) {
-			inner.width += 1;
-		}
-		if (!borderWidth.top) {
-			inner.top -= 1;
-			inner.height += 1;
-		}
-		if (!borderWidth.bottom) {
-			inner.height += 1;
-		}
-
-		halfLine = maxLine / 2;
-		inner = {
-			left: inner.left - halfLine,
-			top: inner.top - halfLine,
-			width: inner.width + maxLine,
-			height: inner.height + maxLine
-		};
+		// offset inner rectanble by half of widest border
+		// move edges additional 1px out, where there is no border, to prevent artifacts
+		halfBorder = maxBorder / 2;
+		inner.left -= halfBorder + (border.left ? 0 : 1);
+		inner.top -= halfBorder + (border.top ? 0 : 1);
+		inner.width += maxBorder + (border.left ? border.right ? 0 : 1 : 2);
+		inner.height += maxBorder + (border.top ? border.bottom ? 0 : 1 : 2);
 
 		ctx.save();
 		ctx.beginPath();
@@ -172,6 +140,8 @@ module.exports = Element.extend({
 		ctx.clip();
 		ctx.beginPath();
 		ctx.rect(inner.left, inner.top, inner.width, inner.height);
+		ctx.lineWidth = maxBorder + 1; // + 1 to prevent artifacts
+		ctx.strokeStyle = vm.borderColor;
 		ctx.stroke();
 		ctx.restore();
 	},

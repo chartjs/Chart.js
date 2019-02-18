@@ -308,6 +308,13 @@ var helpers = {
 
 		ChartElement.__super__ = me.prototype;
 		return ChartElement;
+	},
+
+	/**
+	 * Returns value bounded by min and max. This is equivalent to max(min, min(value, max)).
+	 */
+	bound: function(min, value, max) {
+		return Math.max(min, Math.min(value, max));
 	}
 };
 
