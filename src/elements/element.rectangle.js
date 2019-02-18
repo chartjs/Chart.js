@@ -227,6 +227,14 @@ module.exports = Element.extend({
 			width / 2,
 			height / 2);
 
+		// limit borderRadius to smallest non zero borderWidth
+		borderRadius = Math.min(
+			borderWidth.left || borderRadius,
+			borderWidth.top || borderRadius,
+			borderWidth.right || borderRadius,
+			borderWidth.bottom || borderRadius
+		);
+
 		inner = {
 			left: left + borderWidth.left,
 			top: top + borderWidth.top,
