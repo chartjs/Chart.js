@@ -2,8 +2,10 @@
 
 var defaults = require('../core/core.defaults');
 var Element = require('../core/core.element');
+var helpers = require('../helpers/index');
 
 var defaultColor = defaults.global.defaultColor;
+var valueOrDefault = helpers.valueOrDefault;
 
 defaults._set('global', {
 	elements: {
@@ -28,22 +30,20 @@ function isVertical(bar) {
  */
 function getBarBounds(bar) {
 	var vm = bar._view;
-	var x1, x2, y1, y2;
+	var x1, x2, y1, y2, half;
 
 	if (isVertical(bar)) {
-		// vertical
-		var halfWidth = vm.width / 2;
-		x1 = vm.x - halfWidth;
-		x2 = vm.x + halfWidth;
+		half = vm.width / 2;
+		x1 = vm.x - half;
+		x2 = vm.x + half;
 		y1 = Math.min(vm.y, vm.base);
 		y2 = Math.max(vm.y, vm.base);
 	} else {
-		// horizontal bar
-		var halfHeight = vm.height / 2;
+		half = vm.height / 2;
 		x1 = Math.min(vm.x, vm.base);
 		x2 = Math.max(vm.x, vm.base);
-		y1 = vm.y - halfHeight;
-		y2 = vm.y + halfHeight;
+		y1 = vm.y - half;
+		y2 = vm.y + half;
 	}
 
 	return {
@@ -54,96 +54,96 @@ function getBarBounds(bar) {
 	};
 }
 
+function parseBorderWidth(value, skipped, maxWidth, maxHeight) {
+	var t, r, b, l;
+
+	if (helpers.isObject(value)) {
+		t = +value.top || 0;
+		r = +value.right || 0;
+		b = +value.bottom || 0;
+		l = +value.left || 0;
+	} else {
+		t = r = b = l = +value || 0;
+	}
+
+	return {
+		top: Math.min(maxHeight, skipped === 'top' ? 0 : t),
+		right: Math.min(maxWidth, skipped === 'right' ? 0 : r),
+		bottom: Math.min(maxHeight, skipped === 'bottom' ? 0 : b),
+		left: Math.min(maxWidth, skipped === 'left' ? 0 : l)
+	};
+}
+
+function flip(orig, v1, v2) {
+	return orig === v1 ? v2 : orig === v2 ? v1 : orig;
+}
+
+function parseBorderSkipped(bar) {
+	var vm = bar._view;
+	var vertical = isVertical(bar);
+	var borderSkipped = valueOrDefault(vm.borderSkipped, vertical ? 'bottom' : 'left');
+
+	if (vertical && vm.base < vm.y) {
+		borderSkipped = flip(borderSkipped, 'bottom', 'top');
+	}
+	if (!vertical && vm.base > vm.x) {
+		borderSkipped = flip(borderSkipped, 'left', 'right');
+	}
+	return borderSkipped;
+}
+
 module.exports = Element.extend({
 	draw: function() {
-		var ctx = this._chart.ctx;
-		var vm = this._view;
-		var left, right, top, bottom, signX, signY, borderSkipped;
+		var me = this;
+		var ctx = me._chart.ctx;
+		var vm = me._view;
 		var borderWidth = vm.borderWidth;
+		var bounds = getBarBounds(me);
+		var left = bounds.left;
+		var top = bounds.top;
+		var right = bounds.right;
+		var bottom = bounds.bottom;
+		var width = right - left;
+		var height = bottom - top;
+		var inner, halfLine;
 
-		if (!vm.horizontal) {
-			// bar
-			left = vm.x - vm.width / 2;
-			right = vm.x + vm.width / 2;
-			top = vm.y;
-			bottom = vm.base;
-			signX = 1;
-			signY = bottom > top ? 1 : -1;
-			borderSkipped = vm.borderSkipped || 'bottom';
-		} else {
-			// horizontal bar
-			left = vm.base;
-			right = vm.x;
-			top = vm.y - vm.height / 2;
-			bottom = vm.y + vm.height / 2;
-			signX = right > left ? 1 : -1;
-			signY = 1;
-			borderSkipped = vm.borderSkipped || 'left';
-		}
-
-		// Canvas doesn't allow us to stroke inside the width so we can
-		// adjust the sizes to fit if we're setting a stroke on the line
-		if (borderWidth) {
-			// borderWidth shold be less than bar width and bar height.
-			var barSize = Math.min(Math.abs(left - right), Math.abs(top - bottom));
-			borderWidth = borderWidth > barSize ? barSize : borderWidth;
-			var halfStroke = borderWidth / 2;
-			// Adjust borderWidth when bar top position is near vm.base(zero).
-			var borderLeft = left + (borderSkipped !== 'left' ? halfStroke * signX : 0);
-			var borderRight = right + (borderSkipped !== 'right' ? -halfStroke * signX : 0);
-			var borderTop = top + (borderSkipped !== 'top' ? halfStroke * signY : 0);
-			var borderBottom = bottom + (borderSkipped !== 'bottom' ? -halfStroke * signY : 0);
-			// not become a vertical line?
-			if (borderLeft !== borderRight) {
-				top = borderTop;
-				bottom = borderBottom;
-			}
-			// not become a horizontal line?
-			if (borderTop !== borderBottom) {
-				left = borderLeft;
-				right = borderRight;
-			}
-		}
-
-		ctx.beginPath();
 		ctx.fillStyle = vm.backgroundColor;
+
+		if (!borderWidth) {
+			ctx.fillRect(left, top, width, height);
+			return;
+		}
+
+		borderWidth = parseBorderWidth(
+			borderWidth,
+			parseBorderSkipped(me),
+			width / 2,
+			height / 2);
+
+		inner = {
+			left: left + borderWidth.left,
+			top: top + borderWidth.top,
+			right: right - borderWidth.right,
+			bottom: bottom - borderWidth.bottom
+		};
+
+		ctx.fillRect(inner.left, inner.top, inner.right - inner.left, inner.bottom - inner.top);
+
 		ctx.strokeStyle = vm.borderColor;
-		ctx.lineWidth = borderWidth;
+		ctx.lineWidth = Math.max(borderWidth.left, borderWidth.top, borderWidth.right, borderWidth.bottom);
+		halfLine = ctx.lineWidth / 2;
 
-		// Corner points, from bottom-left to bottom-right clockwise
-		// | 1 2 |
-		// | 0 3 |
-		var corners = [
-			[left, bottom],
-			[left, top],
-			[right, top],
-			[right, bottom]
-		];
-
-		// Find first (starting) corner with fallback to 'bottom'
-		var borders = ['bottom', 'left', 'top', 'right'];
-		var startCorner = borders.indexOf(borderSkipped, 0);
-		if (startCorner === -1) {
-			startCorner = 0;
-		}
-
-		function cornerAt(index) {
-			return corners[(startCorner + index) % 4];
-		}
-
-		// Draw rectangle from 'startCorner'
-		var corner = cornerAt(0);
-		ctx.moveTo(corner[0], corner[1]);
-
-		for (var i = 1; i < 4; i++) {
-			corner = cornerAt(i);
-			ctx.lineTo(corner[0], corner[1]);
-		}
-
-		ctx.fill();
-		if (borderWidth) {
-			ctx.stroke();
-		}
+		ctx.save();
+		ctx.beginPath();
+		ctx.rect(left, top, width, height);
+		ctx.clip();
+		ctx.beginPath();
+		ctx.rect(inner.left - halfLine,
+			inner.top - halfLine,
+			inner.right - inner.left + ctx.lineWidth,
+			inner.bottom - inner.top + ctx.lineWidth);
+		ctx.stroke();
+		ctx.restore();
 	},
 
 	height: function() {
