@@ -33,14 +33,12 @@ function getBarBounds(bar) {
 	var x1, x2, y1, y2, half;
 
 	if (isVertical(bar)) {
-		// vertical
 		half = vm.width / 2;
 		x1 = vm.x - half;
 		x2 = vm.x + half;
 		y1 = Math.min(vm.y, vm.base);
 		y2 = Math.max(vm.y, vm.base);
 	} else {
-		// horizontal bar
 		half = vm.height / 2;
 		x1 = Math.min(vm.x, vm.base);
 		x2 = Math.max(vm.x, vm.base);
@@ -94,99 +92,108 @@ function parseBorderSkipped(bar) {
 	return borderSkipped;
 }
 
-function buildBorderSections(bounds, inner, border, radius) {
+// border can be in 1 or 2 sections. build corners for each border in each section
+function buildBorderSections(bounds, inner, border) {
 	var top = 'top';
 	var left = 'left';
 	var right = 'right';
 	var bottom = 'bottom';
-	var borders = [top, right, bottom, left];
+	var borderKeys = [top, right, bottom, left];
 	var corners = [[left, top], [right, top], [right, bottom], [left, bottom]];
 	var sections = [];
 	var current = [];
-	var count = 0;
+	var borderCount = 0;
 	var startIdx = 0;
-	var i, b, n, p, c1, c2;
+	var i, idx, nextIdx, c1, c2;
 
-	radius = radius || 0;
-
+	// start from a skipped border, so we can close the path
 	for (i = 0; i < 4; ++i) {
-		if (!border[borders[i]]) {
+		if (!border[borderKeys[i]]) {
 			startIdx = i;
 			break;
 		}
 	}
 
 	for (i = 0; i < 4; ++i) {
-		b = borders[(i + startIdx) % 4];
-		if (border[b]) {
-			n = borders[(i + startIdx + 1) % 4];
-			p = borders[(i + startIdx + 3) % 4];
-			c1 = corners[(i + startIdx) % 4];
-			c2 = corners[(i + startIdx + 1) % 4];
-			if (i === 0 || !border[p]) {
+		idx = (i + startIdx) % 4;
+		if (border[borderKeys[idx]]) {
+			nextIdx = (i + startIdx + 1) % 4;
+			c1 = corners[idx];
+			c2 = corners[nextIdx];
+			// if this is first border, or previous border is skipped, add start corner
+			// previous index is found by adding 3 to keep the index positive in all cases
+			if (i === 0 || !border[borderKeys[(i + startIdx + 3) % 4]]) {
 				if (current.length) {
-					sections.push({count: count, corners: current});
+					sections.push({count: borderCount, corners: current});
 					current = [];
-					count = 0;
+					borderCount = 0;
 				}
-				current.push({x1: bounds[c1[0]], y1: bounds[c1[1]], x2: inner[c1[0]], y2: inner[c1[1]], r: radius});
+				current.push({x1: bounds[c1[0]], y1: bounds[c1[1]], x2: inner[c1[0]], y2: inner[c1[1]]});
 			}
-			if (i < 3 || !border[n]) {
-				current.push({x1: bounds[c2[0]], y1: bounds[c2[1]], x2: inner[c2[0]], y2: inner[c2[1]], r: radius});
+			// if this is not last border or next border is skipped, add end corner
+			if (i < 3 || !border[borderKeys[nextIdx]]) {
+				current.push({x1: bounds[c2[0]], y1: bounds[c2[1]], x2: inner[c2[0]], y2: inner[c2[1]]});
 			}
-			count++;
+			borderCount++;
 		}
 	}
 	if (current.length) {
-		sections.push({count: count, corners: current});
+		sections.push({count: borderCount, corners: current});
 	}
 	return sections;
 }
 
-function drawBorderSection(ctx, section) {
+function drawBorderSection(ctx, section, borderRadius) {
 	ctx.beginPath();
 
-	var c = section.corners;
-	var p1 = c[c.length - 1];
-	var p2 = c[0];
-	var r = p2.r;
-	var ilen = section.count === 4 ? 5 : section.count;
+	var corners = section.corners;
+	var borderCount = section.count;
+	var cornerCount = corners.length;
+	var startCorner = corners[corners.length - 1];
+	var endCorner = corners[0];
+	var ilen = borderCount === 4 ? 5 : borderCount;
 	var i;
 
-	// if all borders are drawn and we have a border radius, move starting point
-	if (section.count === 4 && p2.r) {
-		p2 = {x1: p2.x1, y1: p2.y1, x2: p2.x2, y2: p2.y2, r: p2.r};
-		if (p2.x1 === p1.x1) {
-			p2.x1 += p2.x2 > p2.x1 ? p2.r : -p2.r;
+	// if all borders are drawn and we have a border radius,
+	// move starting point out ouf the rounded section
+	if (borderRadius && borderCount === 4) {
+		// clone so original corner stays intact
+		endCorner = {x1: endCorner.x1, y1: endCorner.y1, x2: endCorner.x2, y2: endCorner.y2};
+		if (endCorner.x1 === startCorner.x1) {
+			endCorner.x1 += endCorner.x2 > endCorner.x1 ? borderRadius : -borderRadius;
 		}
-		if (p2.y1 === p1.y1) {
-			p2.y1 += p2.y2 > p2.y1 ? p2.r : -p2.r;
+		if (endCorner.y1 === startCorner.y1) {
+			endCorner.y1 += endCorner.y2 > endCorner.y1 ? borderRadius : -borderRadius;
 		}
 	}
 
-	ctx.moveTo(p2.x1, p2.y1);
+	// draw outer edge first
+	ctx.moveTo(endCorner.x1, endCorner.y1);
 	for (i = 0; i < ilen; i++) {
-		p1 = p2;
-		p2 = c[(i + 1) % c.length];
-		ctx.arcTo(p1.x1, p1.y1, p2.x1, p2.y1, Math.max(p1.r, r));
-		r = p1.r;
+		startCorner = endCorner;
+		endCorner = corners[(i + 1) % cornerCount];
+		ctx.arcTo(startCorner.x1, startCorner.y1, endCorner.x1, endCorner.y1, borderRadius);
 	}
-	if (section.count < 4) {
-		ctx.lineTo(p2.x1, p2.y1);
-		ctx.lineTo(p2.x2, p2.y2);
+
+	// in between edges
+	if (borderCount < 4) {
+		ctx.lineTo(endCorner.x1, endCorner.y1);
+		ctx.lineTo(endCorner.x2, endCorner.y2);
 	} else {
-		p1 = p2;
-		p2 = c[0];
+		// all corners are drawn, close the outer edge
+		startCorner = endCorner;
+		endCorner = corners[0];
 		ctx.closePath();
-		ctx.moveTo(p2.x2, p2.y2);
+		ctx.moveTo(endCorner.x2, endCorner.y2);
 	}
-	while (i > 0) {
-		p1 = p2;
-		p2 = c[(i - 1) % 4];
-		ctx.arcTo(p1.x2, p1.y2, p2.x2, p2.y2, 0);
-		i--;
+
+	// draw the inner edge in reverse direction
+	for (; i > 0; --i) {
+		startCorner = endCorner;
+		endCorner = corners[(i - 1) % cornerCount];
+		ctx.arcTo(startCorner.x2, startCorner.y2, endCorner.x2, endCorner.y2, 0);
 	}
-	ctx.lineTo(p2.x2, p2.y2);
+	ctx.lineTo(endCorner.x2, endCorner.y2);
 	ctx.closePath();
 	ctx.fill('evenodd');
 }
@@ -203,7 +210,7 @@ module.exports = Element.extend({
 		var right = bounds.right;
 		var bottom = bounds.bottom;
 		var width = right - left;
-		var height = bounds.bottom - top;
+		var height = bottom - top;
 		var borderRadius = vm.borderRadius || 0;
 		var inner, i, sections;
 
@@ -230,9 +237,9 @@ module.exports = Element.extend({
 		ctx.fillRect(inner.left, inner.top, inner.right - inner.left, inner.bottom - inner.top);
 
 		ctx.fillStyle = vm.borderColor;
-		sections = buildBorderSections(bounds, inner, borderWidth, borderRadius);
+		sections = buildBorderSections(bounds, inner, borderWidth);
 		for (i = 0; i < sections.length; i++) {
-			drawBorderSection(ctx, sections[i]);
+			drawBorderSection(ctx, sections[i], borderRadius);
 		}
 	},
 
