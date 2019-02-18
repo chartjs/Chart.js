@@ -101,13 +101,17 @@ module.exports = Element.extend({
 		var width = bounds.right - left;
 		var height = bounds.bottom - top;
 		var border = parseBorderWidth(vm.borderWidth, me, width / 2, height / 2);
-		var maxBorder = Math.max(border.left, border.top, border.right, border.bottom);
+		var bLeft = border.left;
+		var bTop = border.top;
+		var bRight = border.right;
+		var bBottom = border.bottom;
+		var maxBorder = Math.max(bLeft, bTop, bRight, bBottom);
 		var halfBorder = maxBorder / 2;
 		var inner = {
-			left: left + border.left,
-			top: top + border.top,
-			width: width - border.left - border.right,
-			height: height - border.bottom - border.top
+			left: left + bLeft,
+			top: top + bTop,
+			width: width - bLeft - bRight,
+			height: height - bBottom - bTop
 		};
 
 		ctx.fillStyle = vm.backgroundColor;
@@ -121,10 +125,10 @@ module.exports = Element.extend({
 
 		// offset inner rectanble by half of widest border
 		// move edges additional 1px out, where there is no border, to prevent artifacts
-		inner.left -= halfBorder + (border.left ? 0 : 1);
-		inner.top -= halfBorder + (border.top ? 0 : 1);
-		inner.width += maxBorder + (border.left ? border.right ? 0 : 1 : 2);
-		inner.height += maxBorder + (border.top ? border.bottom ? 0 : 1 : 2);
+		inner.left -= halfBorder + (bLeft ? 0 : 1);
+		inner.top -= halfBorder + (bTop ? 0 : 1);
+		inner.width += maxBorder + (bLeft && bRight ? 0 : bLeft || bRight ? 1 : 2);
+		inner.height += maxBorder + (bTop && bBottom ? 0 : bTop || bBottom ? 1 : 2);
 
 		ctx.save();
 		ctx.beginPath();
