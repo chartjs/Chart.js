@@ -74,26 +74,19 @@ function parseBorderSkipped(bar) {
 
 function parseBorderWidth(value, bar, maxWidth, maxHeight) {
 	var bound = helpers.bound;
-	var skip = parseBorderSkipped(bar);
-	var t, r, b, l, border;
-
-	if (helpers.isObject(value)) {
-		t = value.top || 0;
-		r = value.right || 0;
-		b = value.bottom || 0;
-		l = value.left || 0;
-	} else {
-		t = r = b = l = value || 0;
-	}
-
-	border = {
-		top: bound(0, t, maxHeight),
-		right: bound(0, r, maxWidth),
-		bottom: bound(0, b, maxHeight),
-		left: bound(0, l, maxWidth)
+	var isObject = helpers.isObject(value);
+	var top = (isObject ? value.top : value) || 0;
+	var left = (isObject ? value.left : value) || 0;
+	var bottom = (isObject ? value.bottom : value) || 0;
+	var right = (isObject ? value.right : value) || 0;
+	var border = {
+		top: bound(0, top, maxHeight),
+		right: bound(0, right, maxWidth),
+		bottom: bound(0, bottom, maxHeight),
+		left: bound(0, left, maxWidth)
 	};
+	var skip = parseBorderSkipped(bar);
 	border[skip] = 0;
-
 	return border;
 }
 
