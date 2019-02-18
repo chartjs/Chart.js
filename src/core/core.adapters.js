@@ -30,19 +30,11 @@ function abstract() {
 /** @lends Chart._adapters._date */
 module.exports._date = {
 	/**
-	 * Returns a map of time formats for the supported units.
+	 * Returns a map of time formats for the supported formatting units defined
+	 * in Unit as well as 'datetime' representing a detailed date/time string.
 	 * @returns {{string: string}}
 	 */
 	formats: abstract,
-
-	/**
-	 * Returns a map of date/time formats for the following presets:
-	 * 'full': date + time + millisecond
-	 * 'time': date + time
-	 * 'date': date
-	 * @returns {{string: string}}
-	 */
-	presets: abstract,
 
 	/**
 	 * Parses the given `value` and return the associated timestamp.

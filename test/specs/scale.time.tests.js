@@ -599,7 +599,7 @@ describe('Time scale tests', function() {
 		expect(xScale.getLabelForIndex(0, 0)).toBe('2015-01-01T20:00:00');
 	});
 
-	it('should get the correct label for a timestamp with milliseconds', function() {
+	it('should get the correct label for a timestamp', function() {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
@@ -624,63 +624,7 @@ describe('Time scale tests', function() {
 
 		var xScale = chart.scales.xScale0;
 		var label = xScale.getLabelForIndex(0, 0);
-		expect(label).toEqual('Jan 8, 2018 5:14:23.234 am');
-	});
-
-	it('should get the correct label for a timestamp with time', function() {
-		var chart = window.acquireChart({
-			type: 'line',
-			data: {
-				datasets: [{
-					xAxisID: 'xScale0',
-					data: [
-						{t: +new Date('2018-01-08 05:14:23'), y: 10},
-						{t: +new Date('2018-01-09 06:17:43'), y: 3}
-					]
-				}],
-			},
-			options: {
-				scales: {
-					xAxes: [{
-						id: 'xScale0',
-						type: 'time',
-						position: 'bottom'
-					}],
-				}
-			}
-		});
-
-		var xScale = chart.scales.xScale0;
-		var label = xScale.getLabelForIndex(0, 0);
-		expect(label).toEqual('Jan 8, 2018 5:14:23 am');
-	});
-
-	it('should get the correct label for a timestamp representing a date', function() {
-		var chart = window.acquireChart({
-			type: 'line',
-			data: {
-				datasets: [{
-					xAxisID: 'xScale0',
-					data: [
-						{t: +new Date('2018-01-08 00:00:00'), y: 10},
-						{t: +new Date('2018-01-09 00:00:00'), y: 3}
-					]
-				}],
-			},
-			options: {
-				scales: {
-					xAxes: [{
-						id: 'xScale0',
-						type: 'time',
-						position: 'bottom'
-					}],
-				}
-			}
-		});
-
-		var xScale = chart.scales.xScale0;
-		var label = xScale.getLabelForIndex(0, 0);
-		expect(label).toEqual('Jan 8, 2018');
+		expect(label).toEqual('Jan 8, 2018, 5:14:23 am');
 	});
 
 	it('should get the correct pixel for only one data in the dataset', function() {
@@ -1532,6 +1476,7 @@ describe('Time scale tests', function() {
 
 				// NOTE: built-in adapter uses moment
 				var expected = {
+					datetime: 'MMM D, YYYY, h:mm:ss a',
 					millisecond: 'h:mm:ss.SSS a',
 					second: 'h:mm:ss a',
 					minute: 'h:mm a',
@@ -1570,6 +1515,7 @@ describe('Time scale tests', function() {
 
 				// NOTE: built-in adapter uses moment
 				var expected = {
+					datetime: 'MMM D, YYYY, h:mm:ss a',
 					millisecond: 'foo',
 					second: 'h:mm:ss a',
 					minute: 'h:mm a',
