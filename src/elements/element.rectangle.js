@@ -75,7 +75,7 @@ function parseBorderSkipped(bar) {
 function parseBorderWidth(value, bar, maxWidth, maxHeight) {
 	var bound = helpers.bound;
 	var skip = parseBorderSkipped(bar);
-	var t, r, b, l;
+	var t, r, b, l, border;
 
 	if (helpers.isObject(value)) {
 		t = value.top || 0;
@@ -86,12 +86,15 @@ function parseBorderWidth(value, bar, maxWidth, maxHeight) {
 		t = r = b = l = value || 0;
 	}
 
-	return {
-		top: bound(0, skip === 'top' ? 0 : t, maxHeight),
-		right: bound(0, skip === 'right' ? 0 : r, maxWidth),
-		bottom: bound(0, skip === 'bottom' ? 0 : b, maxHeight),
-		left: bound(0, skip === 'left' ? 0 : l, maxWidth)
+	border = {
+		top: bound(0, t, maxHeight),
+		right: bound(0, r, maxWidth),
+		bottom: bound(0, b, maxHeight),
+		left: bound(0, l, maxWidth)
 	};
+	border[skip] = 0;
+
+	return border;
 }
 
 module.exports = Element.extend({
@@ -99,36 +102,32 @@ module.exports = Element.extend({
 		var me = this;
 		var ctx = me._chart.ctx;
 		var vm = me._view;
-		var border = vm.borderWidth;
 		var bounds = getBarBounds(me);
 		var left = bounds.left;
 		var top = bounds.top;
 		var width = bounds.right - left;
 		var height = bounds.bottom - top;
-		var inner, maxBorder, halfBorder;
-
-		ctx.fillStyle = vm.backgroundColor;
-
-		border = parseBorderWidth(border, me, width / 2, height / 2);
-		maxBorder = Math.max(border.left, border.top, border.right, border.bottom);
-
-		if (!maxBorder) {
-			ctx.fillRect(left, top, width, height);
-			return;
-		}
-
-		inner = {
+		var border = parseBorderWidth(vm.borderWidth, me, width / 2, height / 2);
+		var maxBorder = Math.max(border.left, border.top, border.right, border.bottom);
+		var halfBorder = maxBorder / 2;
+		var inner = {
 			left: left + border.left,
 			top: top + border.top,
 			width: width - border.left - border.right,
 			height: height - border.bottom - border.top
 		};
 
+		ctx.fillStyle = vm.backgroundColor;
+
+		if (!maxBorder) {
+			ctx.fillRect(left, top, width, height);
+			return;
+		}
+
 		ctx.fillRect(inner.left, inner.top, inner.width, inner.height);
 
 		// offset inner rectanble by half of widest border
 		// move edges additional 1px out, where there is no border, to prevent artifacts
-		halfBorder = maxBorder / 2;
 		inner.left -= halfBorder + (border.left ? 0 : 1);
 		inner.top -= halfBorder + (border.top ? 0 : 1);
 		inner.width += maxBorder + (border.left ? border.right ? 0 : 1 : 2);
