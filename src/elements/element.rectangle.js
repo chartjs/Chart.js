@@ -105,7 +105,7 @@ module.exports = Element.extend({
 		var bottom = bounds.bottom;
 		var width = right - left;
 		var height = bottom - top;
-		var inner, halfLine;
+		var inner, maxLine, halfLine;
 
 		ctx.fillStyle = vm.backgroundColor;
 
@@ -120,28 +120,58 @@ module.exports = Element.extend({
 			width / 2,
 			height / 2);
 
+		maxLine = Math.max(borderWidth.left, borderWidth.top, borderWidth.right, borderWidth.bottom);
+
+		if (!maxLine) {
+			ctx.fillRect(left, top, width, height);
+			return;
+		}
+
 		inner = {
 			left: left + borderWidth.left,
 			top: top + borderWidth.top,
-			right: right - borderWidth.right,
-			bottom: bottom - borderWidth.bottom
+			width: width - borderWidth.left - borderWidth.right,
+			height: height - borderWidth.bottom - borderWidth.top
 		};
 
-		ctx.fillRect(inner.left, inner.top, inner.right - inner.left, inner.bottom - inner.top);
+		ctx.fillRect(inner.left, inner.top, inner.width, inner.height);
 
 		ctx.strokeStyle = vm.borderColor;
-		ctx.lineWidth = Math.max(borderWidth.left, borderWidth.top, borderWidth.right, borderWidth.bottom);
-		halfLine = ctx.lineWidth / 2;
+
+		// add 1 to max border width, so border is actually 0.5px wider
+		// to hide artifacts
+		ctx.lineWidth = maxLine + 1;
+
+		// move edges 1px where there is no border, to prevent artifacts
+		if (!borderWidth.left) {
+			inner.left -= 1;
+			inner.width += 1;
+		}
+		if (!borderWidth.right) {
+			inner.width += 1;
+		}
+		if (!borderWidth.top) {
+			inner.top -= 1;
+			inner.height += 1;
+		}
+		if (!borderWidth.bottom) {
+			inner.height += 1;
+		}
+
+		halfLine = maxLine / 2;
+		inner = {
+			left: inner.left - halfLine,
+			top: inner.top - halfLine,
+			width: inner.width + maxLine,
+			height: inner.height + maxLine
+		};
 
 		ctx.save();
 		ctx.beginPath();
 		ctx.rect(left, top, width, height);
 		ctx.clip();
 		ctx.beginPath();
-		ctx.rect(inner.left - halfLine,
-			inner.top - halfLine,
-			inner.right - inner.left + ctx.lineWidth,
-			inner.bottom - inner.top + ctx.lineWidth);
+		ctx.rect(inner.left, inner.top, inner.width, inner.height);
 		ctx.stroke();
 		ctx.restore();
 	},
