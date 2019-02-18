@@ -279,14 +279,13 @@ function determineUnitForAutoTicks(minUnit, min, max, capacity) {
 /**
  * Figures out what unit to format a set of ticks with
  */
-function determineUnitForFormatting(scale, ticks) {
-	var minUnit = scale.options.time.minUnit;
+function determineUnitForFormatting(scale, ticks, minUnit, min, max) {
 	var ilen = UNITS.length;
 	var i, unit;
 
 	for (i = ilen - 1; i >= UNITS.indexOf(minUnit); i--) {
 		unit = UNITS[i];
-		if (INTERVALS[unit].common && scale._adapter.diff(scale.max, scale.min, unit) >= ticks.length) {
+		if (INTERVALS[unit].common && scale._adapter.diff(max, min, unit) >= ticks.length) {
 			return unit;
 		}
 	}
@@ -308,11 +307,8 @@ function determineMajorUnit(unit) {
  * Important: this method can return ticks outside the min and max range, it's the
  * responsibility of the calling code to clamp values if needed.
  */
-function generate(scale) {
+function generate(scale, min, max, capacity) {
 	var adapter = scale._adapter;
-	var min = scale.min;
-	var max = scale.max;
-	var capacity = scale.getLabelCapacity(min);
 	var options = scale.options;
 	var timeOpts = options.time;
 	var minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, capacity);
@@ -397,8 +393,7 @@ function computeOffsets(table, ticks, min, max, options) {
 	return {start: start, end: end};
 }
 
-function ticksFromTimestamps(scale, values) {
-	var majorUnit = scale._majorUnit;
+function ticksFromTimestamps(scale, values, majorUnit) {
 	var ticks = [];
 	var i, ilen, value, major;
 
@@ -598,7 +593,7 @@ module.exports = Scale.extend({
 			break;
 		case 'auto':
 		default:
-			timestamps = generate(me);
+			timestamps = generate(me, min, max, me.getLabelCapacity(min), options);
 		}
 
 		if (options.bounds === 'ticks' && timestamps.length) {
@@ -622,7 +617,7 @@ module.exports = Scale.extend({
 		me.max = max;
 
 		// PRIVATE
-		me._unit = timeOpts.unit || determineUnitForFormatting(me, ticks);
+		me._unit = timeOpts.unit || determineUnitForFormatting(me, ticks, timeOpts.minUnit, me.min, me.max);
 		me._majorUnit = determineMajorUnit(me._unit);
 		me._table = buildLookupTable(me._timestamps.data, min, max, options.distribution);
 		me._offsets = computeOffsets(me._table, ticks, min, max, options);
@@ -631,7 +626,7 @@ module.exports = Scale.extend({
 			ticks.reverse();
 		}
 
-		return ticksFromTimestamps(me, ticks);
+		return ticksFromTimestamps(me, ticks, me._majorUnit);
 	},
 
 	getLabelForIndex: function(index, datasetIndex) {
