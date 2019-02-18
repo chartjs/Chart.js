@@ -128,7 +128,7 @@ function computeBoundary(source) {
 			return target;
 		}
 
-		if (typeof target === 'number' && isFinite(target)) {
+		if (helpers.isFinite(target)) {
 			horizontal = scale.isHorizontal();
 			return {
 				x: horizontal ? target : null,
@@ -192,6 +192,8 @@ function isDrawable(point) {
 
 function drawArea(ctx, curve0, curve1, len0, len1, mode, area) {
 	var i, above, below;
+	var fillAreaPointsSet = [];
+	var clipAreaPointsSet = [];
 
 	if (!len0 || !len1) {
 		return;
@@ -208,45 +210,44 @@ function drawArea(ctx, curve0, curve1, len0, len1, mode, area) {
 		above = false;
 		below = false;
 	}
+
 	if (below || above) {
-		var clipPath = new Path2D();
 		if (above) {
-			clipPath.moveTo(area.right, area.top);
+			clipAreaPointsSet.push({x: curve1[len1 - 1].x, y: area.top});
 		} else {
-			clipPath.moveTo(area.left, area.top);
-			clipPath.lineTo(curve0[0].x, curve0[0].y);
+			clipAreaPointsSet.push({x: curve0[0].x, y: area.top});
+			clipAreaPointsSet.push(curve0[0]);
 		}
 	}
 
 	// building first area curve (normal)
-	ctx.moveTo(curve0[0].x, curve0[0].y);
+	fillAreaPointsSet.push(curve0[0]);
 	for (i = 1; i < len0; ++i) {
-		helpers.canvas.lineTo(ctx, curve0[i - 1], curve0[i]);
+		fillAreaPointsSet.push(curve0[i]);
 		if (below) {
-			clipPath.lineTo(curve0[i].x, curve0[i].y);
+			clipAreaPointsSet.push(curve0[i]);
 		}
 	}
 
 	// joining the two area curves
-	ctx.lineTo(curve1[len1 - 1].x, curve1[len1 - 1].y);
+	fillAreaPointsSet.push(curve1[len1 - 1]);
 
 	// building opposite area curve (reverse)
 	for (i = len1 - 1; i > 0; --i) {
 		if (above) {
-			clipPath.lineTo(curve1[i].x, curve1[i].y);
+			clipAreaPointsSet.push(curve1[i]);
 		}
-		helpers.canvas.lineTo(ctx, curve1[i], curve1[i - 1], true);
+		fillAreaPointsSet.push(curve1[i - 1]);
 	}
 	if (above || below) {
 		if (above) {
-			clipPath.lineTo(curve1[0].x, curve1[0].y);
-			clipPath.lineTo(area.left, area.top);
+			clipAreaPointsSet.push(curve1[0]);
+			clipAreaPointsSet.push({x: curve1[0].x, y: area.top});
 		} else {
-			clipPath.lineTo(area.right, area.top);
+			clipAreaPointsSet.push({x: curve0[len0 - 1].x, y: area.top});
 		}
-		clipPath.closePath();
-		ctx.clip(clipPath);
 	}
+	return [clipAreaPointsSet, fillAreaPointsSet];
 }
 
 function doFill(ctx, points, mapper, view, color, loop, mode, area) {
@@ -256,8 +257,12 @@ function doFill(ctx, points, mapper, view, color, loop, mode, area) {
 	var curve1 = [];
 	var len0 = 0;
 	var len1 = 0;
-	var i, ilen, index, p0, p1, d0, d1;
+	var fillAreaPointsSets = [];
+	var clipAreaPointsSets = [];
+	var specMode = mode === 'above' || mode === 'below';
+	var i, ilen, index, p0, p1, d0, d1, sets;
 
+	ctx.save();
 	ctx.beginPath();
 
 	for (i = 0, ilen = (count + !!loop); i < ilen; ++i) {
@@ -272,7 +277,11 @@ function doFill(ctx, points, mapper, view, color, loop, mode, area) {
 			len1 = curve1.push(p1);
 		} else if (len0 && len1) {
 			if (!span) {
-				drawArea(ctx, curve0, curve1, len0, len1, mode, area);
+				sets = drawArea(ctx, curve0, curve1, len0, len1, mode, area);
+				if (specMode && sets) {
+					clipAreaPointsSets.push(sets[0]);
+					fillAreaPointsSets.push(sets[1]);
+				}
 				len0 = len1 = 0;
 				curve0 = [];
 				curve1 = [];
@@ -287,11 +296,40 @@ function doFill(ctx, points, mapper, view, color, loop, mode, area) {
 		}
 	}
 
-	drawArea(ctx, curve0, curve1, len0, len1, mode, area);
+	sets = drawArea(ctx, curve0, curve1, len0, len1, mode, area);
+	if (specMode && sets) {
+		clipAreaPointsSets.push(sets[0]);
+		fillAreaPointsSets.push(sets[1]);
+	}
+
+	var j, jlen, set;
+	for (i = 0; i < clipAreaPointsSets.length; i++) {
+		set = clipAreaPointsSets[i];
+		jlen = set.length;
+		// Have edge lines straight
+		ctx.moveTo(set[0].x, set[0].y);
+		ctx.lineTo(set[1].x, set[1].y);
+		for (j = 2; j < jlen - 1; j++) {
+			helpers.canvas.lineTo(ctx, set[j - 1], set[j]);
+		}
+		ctx.lineTo(set[j].x, set[j].y);
+	}
+	ctx.closePath();
+	ctx.clip();
+	ctx.beginPath();
+	for (i = 0; i < fillAreaPointsSets.length; i++) {
+		set = fillAreaPointsSets[i];
+		jlen = set.length;
+		ctx.moveTo(set[0].x, set[0].y);
+		for (j = 1; j < jlen; j++) {
+			helpers.canvas.lineTo(ctx, set[j - 1], set[j], set[j].flip);
+		}
+	}
 
 	ctx.closePath();
 	ctx.fillStyle = color;
 	ctx.fill();
+	ctx.restore();
 }
 
 module.exports = {
