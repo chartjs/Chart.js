@@ -329,9 +329,10 @@ module.exports = Element.extend({
 		// Get the width of each grid by calculating the difference
 		// between x offsets between 0 and 1.
 		var tickFont = helpers.options._parseFont(tickOpts);
-		context.font = tickFont.string;
-
 		var labelRotation = tickOpts.minRotation || 0;
+		var padding = (tickOpts.autoSkip && tickOpts.autoSkipPadding) || 0;
+
+		context.font = tickFont.string;
 
 		if (labels.length && me.options.display && me.isHorizontal()) {
 			var originalLabelWidth = helpers.longestText(context, tickFont.string, labels, me.longestTextCache);
@@ -342,7 +343,7 @@ module.exports = Element.extend({
 			var tickWidth = me.getPixelForTick(1) - me.getPixelForTick(0) - 6;
 
 			// Max label rotation can be set or default to 90 - also act as a loop counter
-			while (labelWidth > tickWidth && labelRotation < tickOpts.maxRotation) {
+			while (labelWidth > (tickWidth + padding) && labelRotation < tickOpts.maxRotation) {
 				var angleRadians = helpers.toRadians(labelRotation);
 				cosRotation = Math.cos(angleRadians);
 				sinRotation = Math.sin(angleRadians);

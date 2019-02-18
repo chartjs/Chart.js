@@ -26,8 +26,8 @@ The following options are common to all cartesian axes but do not apply to other
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `autoSkip` | `boolean` | `true` | If true, automatically calculates how many labels that can be shown and hides labels accordingly. Turn it off to show all labels no matter what.
-| `autoSkipPadding` | `number` | `0` | Padding between the ticks on the horizontal axis when `autoSkip` is enabled. *Note: Only applicable to horizontal scales.*
+| `autoSkip` | `boolean` | `true` | If true, automatically calculates how many labels can be shown and hides labels accordingly. Labels will be rotated up to `maxRotation` before skipping any. Turn `autoSkip` off to show all labels no matter what.
+| `autoSkipPadding` | `number` | `0` | Padding between the ticks on the horizontal axis when `autoSkip` is enabled.
 | `labelOffset` | `number` | `0` | Distance in pixels to offset the label from the centre point of the tick (in the x direction for the x axis, and the y direction for the y axis). *Note: this can cause labels at the edges to be cropped by the edge of the canvas*
 | `maxRotation` | `number` | `90` | Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. *Note: Only applicable to horizontal scales.*
 | `minRotation` | `number` | `0` | Minimum rotation for tick labels. *Note: Only applicable to horizontal scales.*
