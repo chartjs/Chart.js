@@ -25,7 +25,7 @@ import Chart from 'chart.js';
 var myChart = new Chart(ctx, {...});
 ```
 
-**Note:** Moment.js is installed along Chart.js as dependency. If you don't want to use Momemt.js (either because you use a different date adapter or simply because don't need time functionalities), you will have to configure your bundler to exclude this dependency (e.g. using [`externals` for Webpack](https://webpack.js.org/configuration/externals/) or [`external` for Rollup](https://rollupjs.org/guide/en#peer-dependencies)).
+**Note:** Moment.js is installed along Chart.js as dependency. If you don't want to use Moment.js (either because you use a different date adapter or simply because don't need time functionalities), you will have to configure your bundler to exclude this dependency (e.g. using [`externals` for Webpack](https://webpack.js.org/configuration/externals/) or [`external` for Rollup](https://rollupjs.org/guide/en#peer-dependencies)).
 
 ```javascript
 // Webpack
