@@ -54,7 +54,7 @@ function getBarBounds(bar) {
 	};
 }
 
-function flip(orig, v1, v2) {
+function swap(orig, v1, v2) {
 	return orig === v1 ? v2 : orig === v2 ? v1 : orig;
 }
 
@@ -63,11 +63,14 @@ function parseBorderSkipped(bar) {
 	var vertical = isVertical(bar);
 	var borderSkipped = valueOrDefault(vm.borderSkipped, vertical ? 'bottom' : 'left');
 
+	// For backward compatibility, 'bottom' for vertical and 'left' for
+	// horizontal actually mean 'start'. So 'bottom' / 'top'
+	// and 'left' / 'right' are swapped for negative bars.
 	if (vertical && vm.base < vm.y) {
-		borderSkipped = flip(borderSkipped, 'bottom', 'top');
+		borderSkipped = swap(borderSkipped, 'bottom', 'top');
 	}
 	if (!vertical && vm.base > vm.x) {
-		borderSkipped = flip(borderSkipped, 'left', 'right');
+		borderSkipped = swap(borderSkipped, 'left', 'right');
 	}
 	return borderSkipped;
 }
@@ -123,12 +126,12 @@ module.exports = Element.extend({
 
 		ctx.fillRect(inner.left, inner.top, inner.width, inner.height);
 
-		// offset inner rectanble by half of widest border
+		// offset inner rectangle by half of widest border
 		// move edges additional 1px out, where there is no border, to prevent artifacts
 		inner.left -= halfBorder + (bLeft ? 0 : 1);
 		inner.top -= halfBorder + (bTop ? 0 : 1);
-		inner.width += maxBorder + (bLeft && bRight ? 0 : bLeft || bRight ? 1 : 2);
-		inner.height += maxBorder + (bTop && bBottom ? 0 : bTop || bBottom ? 1 : 2);
+		inner.width += maxBorder + (bLeft ? 0 : 1) + (bRight ? 0 : 1);
+		inner.height += maxBorder + (bTop ? 0 : 1) + (bBottom ? 0 : 1);
 
 		ctx.save();
 		ctx.beginPath();
