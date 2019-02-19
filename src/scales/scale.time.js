@@ -469,7 +469,8 @@ module.exports = Scale.extend({
 		var me = this;
 		var options = me.options;
 		var time = options.time || (options.time = {});
-		var adapter = me._adapter = new adapters._date(options.adapters.date);
+		var adapterOptions = options.adapters;
+		var adapter = me._adapter = new adapters._date((adapterOptions && adapterOptions.date) || {});
 
 		// DEPRECATIONS: output a message only one time per update
 		if (time.format) {
