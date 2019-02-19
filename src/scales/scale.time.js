@@ -218,7 +218,6 @@ function parse(scale, input) {
 		return null;
 	}
 
-	var adapter = scale._adapter;
 	var options = scale.options.time;
 	var value = toTimestamp(scale, scale.getRightValue(input));
 	if (value === null) {
@@ -226,7 +225,7 @@ function parse(scale, input) {
 	}
 
 	if (options.round) {
-		value = +adapter.startOf(value, options.round);
+		value = +scale._adapter.startOf(value, options.round);
 	}
 
 	return value;
