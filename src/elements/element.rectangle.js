@@ -17,8 +17,8 @@ defaults._set('global', {
 	}
 });
 
-function isVertical(bar) {
-	return bar._view.width !== undefined;
+function isVertical(vm) {
+	return vm.width !== undefined;
 }
 
 /**
@@ -27,11 +27,10 @@ function isVertical(bar) {
  * @return {Bounds} bounds of the bar
  * @private
  */
-function getBarBounds(bar) {
-	var vm = bar._view;
+function getBarBounds(vm) {
 	var x1, x2, y1, y2, half;
 
-	if (isVertical(bar)) {
+	if (isVertical(vm)) {
 		half = vm.width / 2;
 		x1 = vm.x - half;
 		x2 = vm.x + half;
@@ -57,8 +56,7 @@ function swap(orig, v1, v2) {
 	return orig === v1 ? v2 : orig === v2 ? v1 : orig;
 }
 
-function parseBorderSkipped(bar) {
-	var vm = bar._view;
+function parseBorderSkipped(vm) {
 	var edge = vm.borderSkipped;
 	var res = {};
 
@@ -66,20 +64,21 @@ function parseBorderSkipped(bar) {
 		return res;
 	}
 
-	if (isVertical(bar)) {
-		if (vm.base < vm.y) {
-			edge = swap(edge, 'bottom', 'top');
+	if (vm.horizontal) {
+		if (vm.base > vm.x) {
+			edge = swap(edge, 'left', 'right');
 		}
-	} else if (vm.base > vm.x) {
-		edge = swap(edge, 'left', 'right');
+	} else if (vm.base < vm.y) {
+		edge = swap(edge, 'bottom', 'top');
 	}
 
 	res[edge] = true;
 	return res;
 }
 
-function parseBorderWidth(value, bar, maxWidth, maxHeight) {
-	var _skip = parseBorderSkipped(bar);
+function parseBorderWidth(vm, maxW, maxH) {
+	var value = vm.borderWidth;
+	var _skip = parseBorderSkipped(vm);
 	var t, r, b, l;
 
 	if (helpers.isObject(value)) {
@@ -92,62 +91,57 @@ function parseBorderWidth(value, bar, maxWidth, maxHeight) {
 	}
 
 	return {
-		top: _skip.top || (t < 0) ? 0 : t > maxHeight ? maxHeight : t,
-		right: _skip.right || (r < 0) ? 0 : r > maxWidth ? maxWidth : r,
-		bottom: _skip.bottom || (b < 0) ? 0 : b > maxWidth ? maxWidth : b,
-		left: _skip.left || (l < 0) ? 0 : l > maxWidth ? maxWidth : l
+		t: _skip.top || (t < 0) ? 0 : t > maxH ? maxH : t,
+		r: _skip.right || (r < 0) ? 0 : r > maxW ? maxW : r,
+		b: _skip.bottom || (b < 0) ? 0 : b > maxH ? maxH : b,
+		l: _skip.left || (l < 0) ? 0 : l > maxW ? maxW : l
+	};
+}
+
+function boundingRects(vm) {
+	var bounds = getBarBounds(vm);
+	var width = bounds.right - bounds.left;
+	var height = bounds.bottom - bounds.top;
+	var border = parseBorderWidth(vm, width / 2, height / 2);
+
+	return {
+		outer: {
+			x: bounds.left,
+			y: bounds.top,
+			w: width,
+			h: height
+		},
+		inner: {
+			x: bounds.left + border.l,
+			y: bounds.top + border.t,
+			w: width - border.l - border.r,
+			h: height - border.t - border.b
+		}
 	};
 }
 
 module.exports = Element.extend({
 	draw: function() {
-		var me = this;
-		var ctx = me._chart.ctx;
-		var vm = me._view;
-		var bounds = getBarBounds(me);
-		var left = bounds.left;
-		var top = bounds.top;
-		var width = bounds.right - left;
-		var height = bounds.bottom - top;
-		var border = parseBorderWidth(vm.borderWidth, me, width / 2, height / 2);
-		var bLeft = border.left;
-		var bTop = border.top;
-		var bRight = border.right;
-		var bBottom = border.bottom;
-		var maxBorder = Math.max(bLeft, bTop, bRight, bBottom);
-		var halfBorder = maxBorder / 2;
-		var inner = {
-			left: left + bLeft,
-			top: top + bTop,
-			width: width - bLeft - bRight,
-			height: height - bBottom - bTop
-		};
+		var ctx = this._chart.ctx;
+		var vm = this._view;
+		var rects = boundingRects(vm);
+		var outer = rects.outer;
+		var inner = rects.inner;
 
 		ctx.fillStyle = vm.backgroundColor;
+		ctx.fillRect(outer.x, outer.y, outer.w, outer.h);
 
-		if (!maxBorder) {
-			ctx.fillRect(left, top, width, height);
+		if (outer.w === inner.w && outer.h === inner.h) {
 			return;
 		}
 
-		ctx.fillRect(inner.left, inner.top, inner.width, inner.height);
-
-		// offset inner rectangle by half of widest border
-		// move edges additional 1px out, where there is no border, to prevent artifacts
-		inner.left -= halfBorder + (bLeft ? 0 : 1);
-		inner.top -= halfBorder + (bTop ? 0 : 1);
-		inner.width += maxBorder + (bLeft ? 0 : 1) + (bRight ? 0 : 1);
-		inner.height += maxBorder + (bTop ? 0 : 1) + (bBottom ? 0 : 1);
-
 		ctx.save();
 		ctx.beginPath();
-		ctx.rect(left, top, width, height);
+		ctx.rect(outer.x, outer.y, outer.w, outer.h);
 		ctx.clip();
-		ctx.beginPath();
-		ctx.rect(inner.left, inner.top, inner.width, inner.height);
-		ctx.lineWidth = maxBorder + 1; // + 1 to prevent artifacts
-		ctx.strokeStyle = vm.borderColor;
-		ctx.stroke();
+		ctx.fillStyle = vm.borderColor;
+		ctx.rect(inner.x, inner.y, inner.w, inner.h);
+		ctx.fill('evenodd');
 		ctx.restore();
 	},
 
@@ -158,9 +152,10 @@ module.exports = Element.extend({
 
 	inRange: function(mouseX, mouseY) {
 		var inRange = false;
+		var vm = this._view;
 
-		if (this._view) {
-			var bounds = getBarBounds(this);
+		if (vm) {
+			var bounds = getBarBounds(vm);
 			inRange = mouseX >= bounds.left && mouseX <= bounds.right && mouseY >= bounds.top && mouseY <= bounds.bottom;
 		}
 
@@ -168,15 +163,15 @@ module.exports = Element.extend({
 	},
 
 	inLabelRange: function(mouseX, mouseY) {
-		var me = this;
-		if (!me._view) {
+		var vm = this._view;
+		if (!vm) {
 			return false;
 		}
 
 		var inRange = false;
-		var bounds = getBarBounds(me);
+		var bounds = getBarBounds(vm);
 
-		if (isVertical(me)) {
+		if (isVertical(vm)) {
 			inRange = mouseX >= bounds.left && mouseX <= bounds.right;
 		} else {
 			inRange = mouseY >= bounds.top && mouseY <= bounds.bottom;
@@ -186,19 +181,19 @@ module.exports = Element.extend({
 	},
 
 	inXRange: function(mouseX) {
-		var bounds = getBarBounds(this);
+		var bounds = getBarBounds(this._view);
 		return mouseX >= bounds.left && mouseX <= bounds.right;
 	},
 
 	inYRange: function(mouseY) {
-		var bounds = getBarBounds(this);
+		var bounds = getBarBounds(this._view);
 		return mouseY >= bounds.top && mouseY <= bounds.bottom;
 	},
 
 	getCenterPoint: function() {
 		var vm = this._view;
 		var x, y;
-		if (isVertical(this)) {
+		if (isVertical(vm)) {
 			x = vm.x;
 			y = (vm.y + vm.base) / 2;
 		} else {
@@ -212,7 +207,7 @@ module.exports = Element.extend({
 	getArea: function() {
 		var vm = this._view;
 
-		return isVertical(this)
+		return isVertical(vm)
 			? vm.width * Math.abs(vm.y - vm.base)
 			: vm.height * Math.abs(vm.x - vm.base);
 	},
