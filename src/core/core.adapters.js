@@ -33,7 +33,7 @@ function abstract() {
  * @class
  */
 function DateAdapter(options) {
-	this.options = options;
+	this.options = options || {};
 }
 
 helpers.extend(DateAdapter.prototype, /** @lends DateAdapter */ {

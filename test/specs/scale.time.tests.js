@@ -76,6 +76,9 @@ describe('Time scale tests', function() {
 			scaleLabel: Chart.defaults.scale.scaleLabel,
 			bounds: 'data',
 			distribution: 'linear',
+			adapters: {
+				date: {}
+			},
 			ticks: {
 				beginAtZero: false,
 				minRotation: 0,

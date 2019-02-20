@@ -430,6 +430,9 @@ var defaultConfig = {
 	 */
 	bounds: 'data',
 
+	adapters: {
+		date: {}
+	},
 	time: {
 		parser: false, // false == a pattern string from https://momentjs.com/docs/#/parsing/string-format/ or a custom callback that converts its argument to a moment
 		format: false, // DEPRECATED false == date objects, moment object, callback or a pattern string from https://momentjs.com/docs/#/parsing/string-format/
@@ -469,8 +472,7 @@ module.exports = Scale.extend({
 		var me = this;
 		var options = me.options;
 		var time = options.time || (options.time = {});
-		var adapterOptions = options.adapters;
-		var adapter = me._adapter = new adapters._date((adapterOptions && adapterOptions.date) || {});
+		var adapter = me._adapter = new adapters._date(options.adapters.date);
 
 		// DEPRECATIONS: output a message only one time per update
 		if (time.format) {
