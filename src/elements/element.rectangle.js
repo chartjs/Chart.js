@@ -81,6 +81,7 @@ function parseBorderSkipped(bar) {
 function parseBorderWidth(value, bar, maxWidth, maxHeight) {
 	var _skip = parseBorderSkipped(bar);
 	var t, r, b, l;
+
 	if (helpers.isObject(value)) {
 		t = +value.top || 0;
 		r = +value.right || 0;
