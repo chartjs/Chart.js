@@ -430,9 +430,7 @@ var defaultConfig = {
 	 */
 	bounds: 'data',
 
-	adapters: {
-		date: {}
-	},
+	adapters: {},
 	time: {
 		parser: false, // false == a pattern string from https://momentjs.com/docs/#/parsing/string-format/ or a custom callback that converts its argument to a moment
 		format: false, // DEPRECATED false == date objects, moment object, callback or a pattern string from https://momentjs.com/docs/#/parsing/string-format/
