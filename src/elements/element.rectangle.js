@@ -5,7 +5,6 @@ var Element = require('../core/core.element');
 var helpers = require('../helpers/index');
 
 var defaultColor = defaults.global.defaultColor;
-var valueOrDefault = helpers.valueOrDefault;
 
 defaults._set('global', {
 	elements: {
@@ -60,37 +59,43 @@ function swap(orig, v1, v2) {
 
 function parseBorderSkipped(bar) {
 	var vm = bar._view;
-	var vertical = isVertical(bar);
-	var borderSkipped = valueOrDefault(vm.borderSkipped, vertical ? 'bottom' : 'left');
+	var edge = vm.borderSkipped;
+	var res = {};
 
-	// For backward compatibility, 'bottom' for vertical and 'left' for
-	// horizontal actually mean 'start'. So 'bottom' / 'top'
-	// and 'left' / 'right' are swapped for negative bars.
-	if (vertical && vm.base < vm.y) {
-		borderSkipped = swap(borderSkipped, 'bottom', 'top');
+	if (!edge) {
+		return res;
 	}
-	if (!vertical && vm.base > vm.x) {
-		borderSkipped = swap(borderSkipped, 'left', 'right');
+
+	if (isVertical(bar)) {
+		if (vm.base < vm.y) {
+			edge = swap(edge, 'bottom', 'top');
+		}
+	} else if (vm.base > vm.x) {
+		edge = swap(edge, 'left', 'right');
 	}
-	return borderSkipped;
+
+	res[edge] = true;
+	return res;
 }
 
 function parseBorderWidth(value, bar, maxWidth, maxHeight) {
-	var bound = helpers.bound;
-	var isObject = helpers.isObject(value);
-	var top = (isObject ? value.top : value) || 0;
-	var left = (isObject ? value.left : value) || 0;
-	var bottom = (isObject ? value.bottom : value) || 0;
-	var right = (isObject ? value.right : value) || 0;
-	var border = {
-		top: bound(0, top, maxHeight),
-		right: bound(0, right, maxWidth),
-		bottom: bound(0, bottom, maxHeight),
-		left: bound(0, left, maxWidth)
+	var _skip = parseBorderSkipped(bar);
+	var t, r, b, l;
+	if (helpers.isObject(value)) {
+		t = +value.top || 0;
+		r = +value.right || 0;
+		b = +value.bottom || 0;
+		l = +value.left || 0;
+	} else {
+		t = r = b = l = +value || 0;
+	}
+
+	return {
+		top: _skip.top || (t < 0) ? 0 : t > maxHeight ? maxHeight : t,
+		right: _skip.right || (r < 0) ? 0 : r > maxWidth ? maxWidth : r,
+		bottom: _skip.bottom || (b < 0) ? 0 : b > maxWidth ? maxWidth : b,
+		left: _skip.left || (l < 0) ? 0 : l > maxWidth ? maxWidth : l
 	};
-	var skip = parseBorderSkipped(bar);
-	border[skip] = 0;
-	return border;
 }
 
 module.exports = Element.extend({
