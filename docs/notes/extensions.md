@@ -19,6 +19,7 @@ In addition, many charts can be found on the [npm registry](https://www.npmjs.co
  - <a href="https://github.com/chartjs/chartjs-plugin-datalabels" target="_blank">chartjs-plugin-datalabels</a> - Displays labels on data for any type of charts.
  - <a href="https://github.com/chartjs/chartjs-plugin-deferred" target="_blank">chartjs-plugin-deferred</a> - Defers initial chart update until chart scrolls into viewport.
  - <a href="https://github.com/compwright/chartjs-plugin-draggable" target="_blank">chartjs-plugin-draggable</a> - Makes select chart elements draggable with the mouse.
+ - <a href="https://github.com/nagix/chartjs-plugin-rough" target="_blank">chartjs-plugin-rough</a> - Draws charts in a sketchy, hand-drawn-like style.
  - <a href="https://github.com/y-takey/chartjs-plugin-stacked100" target="_blank">chartjs-plugin-stacked100</a> - Draws 100% stacked bar chart.
  - <a href="https://github.com/nagix/chartjs-plugin-streaming" target="_blank">chartjs-plugin-streaming</a> - Enables to create live streaming charts.
  - <a href="https://github.com/nagix/chartjs-plugin-style" target="_blank">chartjs-plugin-style</a> - Provides more styling options.
