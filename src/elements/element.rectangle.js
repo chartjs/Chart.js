@@ -78,7 +78,7 @@ function parseBorderSkipped(vm) {
 
 function parseBorderWidth(vm, maxW, maxH) {
 	var value = vm.borderWidth;
-	var _skip = parseBorderSkipped(vm);
+	var skip = parseBorderSkipped(vm);
 	var t, r, b, l;
 
 	if (helpers.isObject(value)) {
@@ -91,10 +91,10 @@ function parseBorderWidth(vm, maxW, maxH) {
 	}
 
 	return {
-		t: _skip.top || (t < 0) ? 0 : t > maxH ? maxH : t,
-		r: _skip.right || (r < 0) ? 0 : r > maxW ? maxW : r,
-		b: _skip.bottom || (b < 0) ? 0 : b > maxH ? maxH : b,
-		l: _skip.left || (l < 0) ? 0 : l > maxW ? maxW : l
+		t: skip.top || (t < 0) ? 0 : t > maxH ? maxH : t,
+		r: skip.right || (r < 0) ? 0 : r > maxW ? maxW : r,
+		b: skip.bottom || (b < 0) ? 0 : b > maxH ? maxH : b,
+		l: skip.left || (l < 0) ? 0 : l > maxW ? maxW : l
 	};
 }
 
