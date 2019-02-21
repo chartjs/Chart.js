@@ -44,7 +44,7 @@ More information can be found in [gulpfile.js](https://github.com/chartjs/Chart.
 
 ### Image-Based Tests
 
-Some display-related functionality is difficult to test via typical Jasmine units. For this reason, we introduced image-based tests ([#3988](https://github.com/chartjs/Chart.js/pull/3988) and [#5777](https://github.com/chartjs/Chart.js/pull/5777)) that assert that a chart is drawn pixel-for-pixel matching an expected image.
+Some display-related functionality is difficult to test via typical Jasmine units. For this reason, we introduced image-based tests ([#3988](https://github.com/chartjs/Chart.js/pull/3988) and [#5777](https://github.com/chartjs/Chart.js/pull/5777)) to assert that a chart is drawn pixel-for-pixel matching an expected image.
 
 Generated charts in image-based tests should be **as minimal as possible** and focus only on the tested feature to prevent failure if another feature breaks (e.g. disable the title and legend when testing scales).
 
@@ -60,7 +60,7 @@ You can create a new image-based test by following the steps below:
 - Verify test relevancy by changing the feature values *slightly* in the JSON file.
 - Remove `debug: true` from the JSON file.
 
-Tests should pass in both browsers. In general, we've hidden the text for all the image tests since it's quite difficult to get them passing between different browsers. As a result, it is recommended to hide all scales in image-based tests. It is also recommended to disable animations. If tests still do not pass, adjust [`tolerance` and/or `threshold`](https://github.com/chartjs/Chart.js/blob/1ca0ffb5d5b6c2072176fd36fa85a58c483aa434/test/jasmine.matchers.js) at the beginning of the JSON file keeping them **as low as possible**.
+Tests should pass in both browsers. In general, we've hidden all text in image tests since it's quite difficult to get them passing between different browsers. As a result, it is recommended to hide all scales in image-based tests. It is also recommended to disable animations. If tests still do not pass, adjust [`tolerance` and/or `threshold`](https://github.com/chartjs/Chart.js/blob/1ca0ffb5d5b6c2072176fd36fa85a58c483aa434/test/jasmine.matchers.js) at the beginning of the JSON file keeping them **as low as possible**.
 
 ## Bugs and Issues
 
