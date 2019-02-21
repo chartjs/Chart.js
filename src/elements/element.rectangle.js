@@ -18,7 +18,7 @@ defaults._set('global', {
 });
 
 function isVertical(vm) {
-	return vm.width !== undefined;
+	return vm && vm.width !== undefined;
 }
 
 /**
@@ -120,6 +120,16 @@ function boundingRects(vm) {
 	};
 }
 
+function inRange(vm, x, y) {
+	var skipX = x === null;
+	var skipY = y === null;
+	var bounds = !vm || (skipX && skipY) ? false : getBarBounds(vm);
+
+	return bounds
+		&& (skipX || x >= bounds.left && x <= bounds.right)
+		&& (skipY || y >= bounds.top && y <= bounds.bottom);
+}
+
 module.exports = Element.extend({
 	draw: function() {
 		var ctx = this._chart.ctx;
@@ -151,43 +161,22 @@ module.exports = Element.extend({
 	},
 
 	inRange: function(mouseX, mouseY) {
-		var inRange = false;
-		var vm = this._view;
-
-		if (vm) {
-			var bounds = getBarBounds(vm);
-			inRange = mouseX >= bounds.left && mouseX <= bounds.right && mouseY >= bounds.top && mouseY <= bounds.bottom;
-		}
-
-		return inRange;
+		return inRange(this._view, mouseX, mouseY);
 	},
 
 	inLabelRange: function(mouseX, mouseY) {
 		var vm = this._view;
-		if (!vm) {
-			return false;
-		}
-
-		var inRange = false;
-		var bounds = getBarBounds(vm);
-
-		if (isVertical(vm)) {
-			inRange = mouseX >= bounds.left && mouseX <= bounds.right;
-		} else {
-			inRange = mouseY >= bounds.top && mouseY <= bounds.bottom;
-		}
-
-		return inRange;
+		return isVertical(vm)
+			? inRange(vm, mouseX, null)
+			: inRange(vm, null, mouseY);
 	},
 
 	inXRange: function(mouseX) {
-		var bounds = getBarBounds(this._view);
-		return mouseX >= bounds.left && mouseX <= bounds.right;
+		return inRange(this._view, mouseX, null);
 	},
 
 	inYRange: function(mouseY) {
-		var bounds = getBarBounds(this._view);
-		return mouseY >= bounds.top && mouseY <= bounds.bottom;
+		return inRange(this._view, null, mouseY);
 	},
 
 	getCenterPoint: function() {
