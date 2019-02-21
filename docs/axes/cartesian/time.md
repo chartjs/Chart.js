@@ -28,6 +28,7 @@ The following options are provided by the time scale. You may also set options p
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
+| `adapters.date` | `object` | `{}` | Options for adapter for external date library if that adapter needs or supports options
 | `distribution` | `string` | `'linear'` | How data is plotted. [more...](#scale-distribution)
 | `bounds` | `string` | `'data'` | Determines the scale bounds. [more...](#scale-bounds)
 | `ticks.source` | `string` | `'auto'` | How ticks are generated. [more...](#ticks-source)

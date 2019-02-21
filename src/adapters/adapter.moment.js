@@ -3,8 +3,7 @@
 'use strict';
 
 var moment = require('moment');
-var adapter = require('../core/core.adapters')._date;
-var helpers = require('../helpers/helpers.core');
+var adapters = require('../core/core.adapters');
 
 var FORMATS = {
 	datetime: 'MMM D, YYYY, h:mm:ss a',
@@ -19,7 +18,7 @@ var FORMATS = {
 	year: 'YYYY'
 };
 
-helpers.merge(adapter, moment ? {
+adapters._date.override(moment ? {
 	_id: 'moment', // DEBUG ONLY
 
 	formats: function() {
