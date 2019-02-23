@@ -188,8 +188,8 @@ module.exports = DatasetController.extend({
 
 		meta.total = me.calculateTotal();
 
-		me.outerRadius = chart.outerRadius - (chart.radiusLength * me._getRingWeightOffset(me.index));
-		me.innerRadius = Math.max(me.outerRadius - (chart.radiusLength * chartWeight), 0);
+		me.outerRadius = chart.outerRadius - chart.radiusLength * me._getRingWeightOffset(me.index);
+		me.innerRadius = Math.max(me.outerRadius - chart.radiusLength * chartWeight, 0);
 
 		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
 			me.updateElement(arcs[i], i, reset);
