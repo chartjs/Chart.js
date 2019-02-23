@@ -74,7 +74,7 @@ The style of each arc can be controlled with the following properties:
 | `backgroundColor` | arc background color.
 | `borderColor` | arc border color.
 | `borderWidth` | arc border width (in pixels).
-| `weight` | The relative thickness of the dataset. Providing a value for weight will allow the pie or doughnut dataset to be drawn with a thickness relative to the sum of all the dataset weight values.
+| `weight` | The relative thickness of the dataset. Providing a value for weight will cause the pie or doughnut dataset to be drawn with a thickness relative to the sum of all the dataset weight values.
 
 All these values, if `undefined`, fallback to the associated [`elements.arc.*`](../configuration/elements.md#arc-configuration) options.
 
