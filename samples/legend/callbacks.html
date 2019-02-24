@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+<head>
+	<title>Legend Callbacks</title>
+	<script src="../../dist/Chart.min.js"></script>
+	<script src="../utils.js"></script>
+	<style>
+		body, html {
+			height: 100%;
+			font-family: sans-serif;
+		}
+		canvas{
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+		}
+
+		#log {
+			position: absolute;
+			right: 0;
+			top: 0;
+			bottom: 0;
+			background-color: #EEE;
+			float: right;
+			width: 20%;
+			padding: 8px;
+			overflow-y: auto;
+			white-space: pre;
+			line-height: 1.5em;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="log"></div>
+	<div style="width:75%;">
+		<canvas id="canvas"></canvas>
+	</div>
+	<script>
+		var logEntry = 1;
+		var logElement = document.getElementById('log');
+		var utils = Samples.utils;
+		var inputs = {
+			min: 20,
+			max: 80,
+			count: 8,
+			decimals: 2,
+			continuity: 1
+		};
+		var config;
+
+		function log(text) {
+			logElement.innerText += logEntry + '. ' + text + '\n';
+			logElement.scrollTop = logElement.scrollHeight;
+			logEntry++;
+		}
+
+		function generateData() {
+			return utils.numbers(inputs);
+		}
+		function generateLabels() {
+			return utils.months({count: inputs.count});
+		}
+
+		utils.srand(42);
+
+		config = {
+			type: 'line',
+			data: {
+				labels: generateLabels(),
+				datasets: [{
+					label: 'My First dataset',
+					backgroundColor: utils.color(0),
+					borderColor: utils.color(0),
+					data: generateData(),
+					fill: false,
+				}, {
+					label: 'My Second dataset',
+					fill: false,
+					backgroundColor: utils.color(1),
+					borderColor: utils.color(1),
+					data: generateData(),
+				}]
+			},
+			options: {
+				legend: {
+					onHover: function(event, legendItem) {
+						log('onHover: ' + legendItem.text);
+					},
+					onLeave: function(event, legendItem) {
+						log('onLeave: ' + legendItem.text);
+					},
+					onClick: function(event, legendItem) {
+						log('onClick:' + legendItem.text);
+					}
+				},
+				title: {
+					display: true,
+					text: 'Chart.js Line Chart'
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Month'
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Value'
+						}
+					}]
+				}
+			}
+		};
+
+		new Chart(document.getElementById('canvas'), config);
+	</script>
+</body>
+
+</html>

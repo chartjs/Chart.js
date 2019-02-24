@@ -148,6 +148,9 @@
 		}, {
 			title: 'Point style',
 			path: 'legend/point-style.html'
+		}, {
+			title: 'Callbacks',
+			path: 'legend/callbacks.html'
 		}]
 	}, {
 		title: 'Tooltip',
