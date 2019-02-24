@@ -60,6 +60,8 @@ You can create a new image-based test by following the steps below:
 
 Tests should pass in both browsers. In general, we've hidden all text in image tests since it's quite difficult to get them passing between different browsers. As a result, it is recommended to hide all scales in image-based tests. It is also recommended to disable animations. If tests still do not pass, adjust [`tolerance` and/or `threshold`](https://github.com/chartjs/Chart.js/blob/1ca0ffb5d5b6c2072176fd36fa85a58c483aa434/test/jasmine.matchers.js) at the beginning of the JSON file keeping them **as low as possible**.
 
+When a test fails, the expected and actual images are shown. If you'd like to see the images even when the tests pass, set `"debug": true` in the JSON file.
+
 ## Bugs and Issues
 
 Please report these on the GitHub page - at <a href="https://github.com/chartjs/Chart.js" target="_blank">github.com/chartjs/Chart.js</a>. Please do not use issues for support requests. For help using Chart.js, please take a look at the [`chartjs`](https://stackoverflow.com/questions/tagged/chartjs) tag on Stack Overflow.
