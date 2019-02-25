@@ -2,31 +2,17 @@ module.exports = {
 	config: {
 		type: 'bar',
 		data: {
-			labels: [0, 1, 2, 3],
+			labels: [0, 1, 2, 3, 4, 5],
 			datasets: [
 				{
 					// option in dataset
-					data: [0, 5, -10, null],
-					borderSkipped: 'top'
-				},
-				{
-					// option in dataset
-					data: [0, 5, -10, null],
-					borderSkipped: 'right'
-				},
-				{
-					// option in dataset
-					data: [0, 5, -10, null],
-					borderSkipped: 'bottom'
+					data: [0, 5, 10, null, -10, -5],
+					borderSkipped: false,
+					borderWidth: {bottom: 1, left: 2, top: 3, right: 4}
 				},
 				{
 					// option in element (fallback)
-					data: [0, 5, -10, null],
-				},
-				{
-					// option in dataset
-					data: [0, 5, -10, null],
-					borderSkipped: false
+					data: [0, 5, 10, null, -10, -5],
 				}
 			]
 		},
@@ -37,8 +23,8 @@ module.exports = {
 				rectangle: {
 					backgroundColor: 'transparent',
 					borderColor: '#888',
-					borderSkipped: 'left',
-					borderWidth: 8
+					borderSkipped: false,
+					borderWidth: {bottom: 4, left: 3, top: 2, right: 1}
 				}
 			},
 			scales: {

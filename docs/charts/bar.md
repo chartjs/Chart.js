@@ -71,7 +71,7 @@ the color of the bars is generally set this way.
 | [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`borderSkipped`](#borderskipped) | `string` | Yes | Yes | `'bottom'`
-| [`borderWidth`](#styling) | `number` | Yes | Yes | `0`
+| [`borderWidth`](#borderwidth) | <code>number&#124;object</code> | Yes | Yes | `0`
 | [`data`](#data-structure) | `object[]` | - | - | **required**
 | [`hoverBackgroundColor`](#interactions) | [`Color`](../general/colors.md) | - | Yes | `undefined`
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | - | Yes | `undefined`
@@ -97,7 +97,7 @@ The style of each bar can be controlled with the following properties:
 | `backgroundColor` | The bar background color.
 | `borderColor` | The bar border color.
 | [`borderSkipped`](#borderskipped) | The edge to skip when drawing bar.
-| `borderWidth` | The bar border width (in pixels).
+| [`borderWidth`](#borderwidth) | The bar border width (in pixels).
 
 All these values, if `undefined`, fallback to the associated [`elements.rectangle.*`](../configuration/elements.md#rectangle-configuration) options.
 
@@ -107,11 +107,18 @@ This setting is used to avoid drawing the bar stroke at the base of the fill.
 In general, this does not need to be changed except when creating chart types
 that derive from a bar chart.
 
+**Note:** for negative bars in vertical chart, `top` and `bottom` are flipped. Same goes for `left` and `right` in horizontal chart.
+
 Options are:
 * `'bottom'`
 * `'left'`
 * `'top'`
 * `'right'`
+* `false`
+
+#### borderWidth
+
+If this value is a number, it is applied to all sides of the rectangle (left, top, right, bottom), except [`borderSkipped`](#borderskipped). If this value is an object, the `left` property defines the left border width. Similarly the `right`, `top` and `bottom` properties can also be specified. Omitted borders and [`borderSkipped`](#borderskipped) are skipped.
 
 ### Interactions
 
