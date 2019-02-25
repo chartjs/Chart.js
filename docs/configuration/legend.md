@@ -12,6 +12,7 @@ The legend configuration is passed into the `options.legend` namespace. The glob
 | `fullWidth` | `boolean` | `true` | Marks that this box should take the full width of the canvas (pushing down other boxes). This is unlikely to need to be changed in day-to-day use.
 | `onClick` | `function` | | A callback that is called when a click event is registered on a label item.
 | `onHover` | `function` | | A callback that is called when a 'mousemove' event is registered on top of a label item.
+| `onLeave` | `function` | | A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item.
 | `reverse` | `boolean` | `false` | Legend will show datasets in reverse order.
 | `labels` | `object` | | See the [Legend Label Configuration](#legend-label-configuration) section below.
 
