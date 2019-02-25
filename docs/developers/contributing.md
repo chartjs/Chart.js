@@ -51,7 +51,7 @@ Generated charts in image-based tests should be **as minimal as possible** and f
 You can create a new image-based test by following the steps below:
 - Create a JS file ([example](https://github.com/chartjs/Chart.js/blob/f7b671006a86201808402c3b6fe2054fe834fd4a/test/fixtures/controller.bubble/radius-scriptable.js)) or JSON file ([example](https://github.com/chartjs/Chart.js/blob/4b421a50bfa17f73ac7aa8db7d077e674dbc148d/test/fixtures/plugin.filler/fill-line-dataset.json)) that defines chart config and generation options.
 - Add this file in `test/fixtures/{spec.name}/{feature-name}.json`.
-- Add a [describe line](https://github.com//chartjs/Chart.js/blob/4b421a50bfa17f73ac7aa8db7d077e674dbc148d/test/specs/plugin.filler.tests.js#L10) to the beginning of `specs/{spec.name}.js` if it doesn't exist yet.
+- Add a [describe line](https://github.com/chartjs/Chart.js/blob/4b421a50bfa17f73ac7aa8db7d077e674dbc148d/test/specs/plugin.filler.tests.js#L10) to the beginning of `specs/{spec.name}.tests.js` if it doesn't exist yet.
 - Run `gulp unittest --watch --inputs=test/specs/{spec.name}.tests.js`.
 - Click the *"Debug"* button (top/right): a test should fail with the associated canvas visible.
 - Right click on the chart and *"Save image as..."* `test/fixtures/{spec.name}/{feature-name}.png` making sure not to activate the tooltip or any hover functionality
