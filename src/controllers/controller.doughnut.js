@@ -6,6 +6,7 @@ var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
 var resolve = helpers.options.resolve;
+var valueOrDefault = helpers.valueOrDefault;
 
 defaults._set('doughnut', {
 	animation: {
@@ -152,6 +153,7 @@ module.exports = DatasetController.extend({
 		var arcs = meta.data;
 		var cutoutPercentage = opts.cutoutPercentage;
 		var circumference = opts.circumference;
+		var chartWeight = me._getRingWeight(me.index);
 		var i, ilen;
 
 		// If the chart's circumference isn't a full circle, calculate minSize as a ratio of the width/height of the arc
@@ -180,14 +182,14 @@ module.exports = DatasetController.extend({
 		chart.borderWidth = me.getMaxBorderWidth();
 		chart.outerRadius = Math.max((minSize - chart.borderWidth) / 2, 0);
 		chart.innerRadius = Math.max(cutoutPercentage ? (chart.outerRadius / 100) * (cutoutPercentage) : 0, 0);
-		chart.radiusLength = (chart.outerRadius - chart.innerRadius) / chart.getVisibleDatasetCount();
+		chart.radiusLength = (chart.outerRadius - chart.innerRadius) / (me._getVisibleDatasetWeightTotal() || 1);
 		chart.offsetX = offset.x * chart.outerRadius;
 		chart.offsetY = offset.y * chart.outerRadius;
 
 		meta.total = me.calculateTotal();
 
-		me.outerRadius = chart.outerRadius - (chart.radiusLength * me.getRingIndex(me.index));
-		me.innerRadius = Math.max(me.outerRadius - chart.radiusLength, 0);
+		me.outerRadius = chart.outerRadius - chart.radiusLength * me._getRingWeightOffset(me.index);
+		me.innerRadius = Math.max(me.outerRadius - chart.radiusLength * chartWeight, 0);
 
 		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
 			me.updateElement(arcs[i], i, reset);
@@ -322,7 +324,6 @@ module.exports = DatasetController.extend({
 		var model = arc._model;
 		var options = arc._options;
 		var getHoverColor = helpers.getHoverColor;
-		var valueOrDefault = helpers.valueOrDefault;
 
 		arc.$previousStyle = {
 			backgroundColor: model.backgroundColor,
@@ -375,5 +376,36 @@ module.exports = DatasetController.extend({
 		}
 
 		return values;
+	},
+
+	/**
+	 * Get radius length offset of the dataset in relation to the visible datasets weights. This allows determining the inner and outer radius correctly
+	 * @private
+	 */
+	_getRingWeightOffset: function(datasetIndex) {
+		var ringWeightOffset = 0;
+
+		for (var i = 0; i < datasetIndex; ++i) {
+			if (this.chart.isDatasetVisible(i)) {
+				ringWeightOffset += this._getRingWeight(i);
+			}
+		}
+
+		return ringWeightOffset;
+	},
+
+	/**
+	 * @private
+	 */
+	_getRingWeight: function(dataSetIndex) {
+		return Math.max(valueOrDefault(this.chart.data.datasets[dataSetIndex].weight, 1), 0);
+	},
+
+	/**
+	 * Returns the sum of all visibile data set weights.  This value can be 0.
+	 * @private
+	 */
+	_getVisibleDatasetWeightTotal: function() {
+		return this._getRingWeightOffset(this.chart.data.datasets.length);
 	}
 });
