@@ -51,5 +51,5 @@
   * [Contributing](developers/contributing.md)
 * [Additional Notes](notes/README.md)
   * [Comparison Table](notes/comparison.md)
-  * [Popular Extensions](notes/extensions.md)
+  * [Popular Extensions](https://github.com/chartjs/awesome)
   * [License](notes/license.md)
