@@ -1,6 +1,6 @@
 <p align="center">
     <img src="https://www.chartjs.org/media/logo-title.svg"><br/>
-    Simple HTML5 Charts using the canvas element
+    Simple yet flexible JavaScript charting for designers & developers
 </p>
 
 <p align="center">
@@ -26,11 +26,6 @@
 ## Contributing
 
 Instructions on building and testing Chart.js can be found in [the documentation](https://github.com/chartjs/Chart.js/blob/master/docs/developers/contributing.md#building-and-testing). Before submitting an issue or a pull request, please take a moment to look over the [contributing guidelines](https://github.com/chartjs/Chart.js/blob/master/docs/developers/contributing.md) first. For support, please post questions on [Stack Overflow](https://stackoverflow.com/questions/tagged/chartjs) with the `chartjs` tag.
-
-## Thanks
-
-- [BrowserStack](https://browserstack.com) for allowing our team to test on thousands of browsers.
-- [@n8agrin](https://twitter.com/n8agrin) for the Twitter handle donation.
 
 ## License
 
