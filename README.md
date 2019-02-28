@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="docs/hero-title.svg"><br/>
+    <img src="https://www.chartjs.org/media/logo-title.svg"><br/>
     Simple HTML5 Charts using the canvas element
 </p>
 
