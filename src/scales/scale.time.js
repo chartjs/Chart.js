@@ -80,6 +80,14 @@ function arrayUnique(items) {
 	return out;
 }
 
+function getMin(options) {
+	return helpers.valueOrDefault(options.time.min, options.ticks.min);
+}
+
+function getMax(options) {
+	return helpers.valueOrDefault(options.time.max, options.ticks.max);
+}
+
 /**
  * Returns an array of {time, pos} objects used to interpolate a specific `time` or position
  * (`pos`) on the scale, by searching entries before and after the requested value. `pos` is
@@ -371,7 +379,7 @@ function computeOffsets(table, ticks, min, max, options) {
 	var first, last;
 
 	if (options.offset && ticks.length) {
-		if (!options.time.min) {
+		if (!getMin(options)) {
 			first = interpolate(table, 'time', ticks[0], 'pos');
 			if (ticks.length === 1) {
 				start = 1 - first;
@@ -379,7 +387,7 @@ function computeOffsets(table, ticks, min, max, options) {
 				start = (interpolate(table, 'time', ticks[1], 'pos') - first) / 2;
 			}
 		}
-		if (!options.time.max) {
+		if (!getMax(options)) {
 			last = interpolate(table, 'time', ticks[ticks.length - 1], 'pos');
 			if (ticks.length === 1) {
 				end = last;
@@ -477,6 +485,14 @@ module.exports = Scale.extend({
 			console.warn('options.time.format is deprecated and replaced by options.time.parser.');
 		}
 
+		if (time.min) {
+			console.warn('options.time.min is deprecated. Please use options.ticks.min');
+		}
+
+		if (time.max) {
+			console.warn('options.time.max is deprecated. Please use options.ticks.max');
+		}
+
 		// Backward compatibility: before introducing adapter, `displayFormats` was
 		// supposed to contain *all* unit/string pairs but this can't be resolved
 		// when loading the scale (adapters are loaded afterward), so let's populate
@@ -500,7 +516,8 @@ module.exports = Scale.extend({
 		var me = this;
 		var chart = me.chart;
 		var adapter = me._adapter;
-		var timeOpts = me.options.time;
+		var options = me.options;
+		var timeOpts = options.time;
 		var unit = timeOpts.unit || 'day';
 		var min = MAX_INTEGER;
 		var max = MIN_INTEGER;
@@ -553,8 +570,8 @@ module.exports = Scale.extend({
 			max = Math.max(max, timestamps[timestamps.length - 1]);
 		}
 
-		min = parse(me, timeOpts.min) || min;
-		max = parse(me, timeOpts.max) || max;
+		min = parse(me, getMin(options)) || min;
+		max = parse(me, getMax(options)) || max;
 
 		// In case there is no valid min/max, set limits based on unit time option
 		min = min === MAX_INTEGER ? +adapter.startOf(Date.now(), unit) : min;
@@ -602,8 +619,8 @@ module.exports = Scale.extend({
 		}
 
 		// Enforce limits with user min/max options
-		min = parse(me, timeOpts.min) || min;
-		max = parse(me, timeOpts.max) || max;
+		min = parse(me, getMin(options)) || min;
+		max = parse(me, getMax(options)) || max;
 
 		// Remove ticks outside the min/max range
 		for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
