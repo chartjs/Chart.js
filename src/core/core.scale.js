@@ -744,7 +744,7 @@ module.exports = Element.extend({
 		var isHorizontal = me.isHorizontal();
 
 		var parseFont = helpers.options._parseFont;
-		var ticks = optionTicks.autoSkip ? me._autoSkip(me.getTicks()) : me.getTicks();
+		var ticks = optionTicks.display && optionTicks.autoSkip ? me._autoSkip(me.getTicks()) : me.getTicks();
 		var tickFontColor = valueOrDefault(optionTicks.fontColor, defaultFontColor);
 		var tickFont = parseFont(optionTicks);
 		var lineHeight = tickFont.lineHeight;
