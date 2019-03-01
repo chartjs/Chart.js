@@ -60,6 +60,12 @@ describe('Deprecations', function() {
 				expect(typeof Chart.helpers.scaleMerge).toBe('function');
 			});
 		});
+
+		describe('Chart.Scale.mergeTicksOptions', function() {
+			it('should be defined as a function', function() {
+				expect(typeof Chart.Scale.prototype.mergeTicksOptions).toBe('function');
+			});
+		});
 	});
 
 	describe('Version 2.7.3', function() {
