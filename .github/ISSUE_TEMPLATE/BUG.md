@@ -21,8 +21,10 @@ labels: 'type: bug'
 <!-- Tell us what happens instead of the expected behavior -->
 
 ## Possible Solution
-<!-- Not obligatory, but suggest a fix/reason for the bug,
-     or ideas how to implement the addition or change -->
+<!--
+  Not obligatory, but suggest a fix/reason for the bug,
+  or ideas how to implement the addition or change
+-->
 
 ## Steps to Reproduce (for bugs)
 <!--
