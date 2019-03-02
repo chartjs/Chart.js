@@ -107,9 +107,6 @@ function parseFontOptions(options, nestedOpts) {
 	var family = resolve([nestedOpts.fontFamily, options.fontFamily, globalDefaults.defaultFontFamily]);
 
 	return {
-		size: size,
-		style: style,
-		family: family,
 		string: helpers.fontString(size, style, family),
 		lineHeight: helpers.options.toLineHeight(resolve([nestedOpts.lineHeight, options.lineHeight, globalDefaults.defaultLineHeight]), size),
 		color: resolve([nestedOpts.fontColor, options.fontColor, globalDefaults.defaultFontColor])
