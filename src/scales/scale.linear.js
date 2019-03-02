@@ -74,23 +74,34 @@ module.exports = LinearScaleBase.extend({
 						if (isNaN(value) || meta.data[index].hidden) {
 							return;
 						}
+						var otherScale = meta.controller.getScaleForId(meta.xAxisID === me.id ? meta.yAxisID : meta.xAxisID);
+						var ivalue = otherScale._getParsedValue(index, datasetIndex);
 
-						positiveValues[index] = positiveValues[index] || 0;
-						negativeValues[index] = negativeValues[index] || 0;
+						positiveValues[ivalue] = positiveValues[ivalue] || 0;
+						negativeValues[ivalue] = negativeValues[ivalue] || 0;
 
 						if (opts.relativePoints) {
-							positiveValues[index] = 100;
+							positiveValues[ivalue] = 100;
 						} else if (value < 0) {
-							negativeValues[index] += value;
+							negativeValues[ivalue] += value;
 						} else {
-							positiveValues[index] += value;
+							positiveValues[ivalue] += value;
 						}
 					});
 				}
 			});
 
 			helpers.each(valuesPerStack, function(valuesForType) {
-				var values = valuesForType.positiveValues.concat(valuesForType.negativeValues);
+				var values = [];
+				var i, ilen, keys;
+				keys = Object.keys(valuesForType.positiveValues);
+				for (i = 0, ilen = keys.length; i < ilen; ++i) {
+					values.push(valuesForType.positiveValues[keys[i]]);
+				}
+				keys = Object.keys(valuesForType.negativeValues);
+				for (i = 0, ilen = keys.length; i < ilen; ++i) {
+					values.push(valuesForType.negativeValues[keys[i]]);
+				}
 				var minVal = helpers.min(values);
 				var maxVal = helpers.max(values);
 				me.min = me.min === null ? minVal : Math.min(me.min, minVal);

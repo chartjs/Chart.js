@@ -479,7 +479,10 @@ module.exports = Scale.extend({
 		if (obj && obj.t) {
 			return this._parse(obj.t);
 		}
-		return Scale.prototype._parseObject.call(obj, axis);
+		if (obj[axis] !== undefined) {
+			return this._parse(obj[axis]);
+		}
+		return null;
 	},
 
 	update: function() {

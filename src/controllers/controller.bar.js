@@ -283,11 +283,12 @@ module.exports = DatasetController.extend({
 		var me = this;
 		var chart = me.chart;
 		var meta = me.getMeta();
-		var indexValue = me._getParsedValue(index, me._getIndexScale());
 		var scale = me._getValueScale();
+		var indexScale = me._getIndexScale();
 		var isHorizontal = scale.isHorizontal();
-		var axis = scale._getAxis();
 		var value = me._getParsedValue(index, scale);
+		var indexValue = me._getParsedValue(index, indexScale);
+		var axis = indexScale._getAxis();
 		var minBarLength = scale.options.minBarLength;
 		var stacked = scale.options.stacked;
 		var stack = meta.stack;
@@ -300,7 +301,7 @@ module.exports = DatasetController.extend({
 
 				if (imeta.bar && imeta.stack === stack && chart.isDatasetVisible(i)) {
 					ivalue = imeta.controller._getParsedValueByValue(axis, indexValue);
-					if (ivalue !== undefined && ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0))) {
+					if (((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0))) {
 						start += ivalue;
 					}
 				}
