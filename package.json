@@ -27,7 +27,7 @@
     "composer.json",
     "dist/*.css",
     "dist/*.js",
-    "src"
+    "src/chart.js"
   ],
   "devDependencies": {
     "clean-css": "^4.2.1",
