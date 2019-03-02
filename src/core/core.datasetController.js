@@ -187,7 +187,8 @@ helpers.extend(DatasetController.prototype, {
 		return type && new type({
 			_chart: me.chart,
 			_datasetIndex: me.index,
-			_index: index
+			_index: index,
+			_parsed: {}
 		});
 	},
 
@@ -345,18 +346,26 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	_parseArrayData: function(start, count) {
 		var me = this;
+		var datasetIndex = me.index;
 		var meta = me.getMeta();
+		var xref = meta._xref || (meta._xref = {x: {}, y: {}});
 		var data = me.getDataset().data;
 		var xID = meta.xAxisID;
 		var yID = meta.yAxisID;
 		var xScale = me.getScaleForId(xID);
 		var yScale = me.getScaleForId(yID);
-		var i, ilen, v, metaData;
+		var i, ilen, v, parsed, x, y, xr, yr;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
-			metaData = meta.data[i];
+			parsed = meta.data[i]._parsed;
 			v = data[i];
-			metaData[xID] = xScale._parse(v[0]);
-			metaData[yID] = yScale._parse(v[1]);
+			parsed[xID] = x = xScale._parse(v[0]);
+			parsed[yID] = y = yScale._parse(v[1]);
+
+			// store cross reference values, for stacking
+			xr = xref.x[x] || (xref.x[x] = []);
+			yr = xref.y[y] || (xref.y[y] = []);
+			xr[datasetIndex] = y;
+			yr[datasetIndex] = x;
 		}
 	},
 
@@ -367,15 +376,27 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	_parseObjectData: function(start, count) {
 		var me = this;
+		var datasetIndex = me.index;
 		var meta = me.getMeta();
+		var xref = meta._xref || (meta._xref = {x: {}, y: {}});
 		var data = me.getDataset().data;
+		var xID = meta.xAxisID;
+		var yID = meta.yAxisID;
 		var xScale = me.getScaleForId(meta.xAxisID);
 		var yScale = me.getScaleForId(meta.yAxisID);
-		var i, ilen;
+		var i, ilen, v, parsed, x, y, xr, yr;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
-			meta.data[i][meta.xAxisID] = xScale._parseObject(data[i], 'x', i);
-			meta.data[i][meta.yAxisID] = yScale._parseObject(data[i], 'y', i);
+			parsed = meta.data[i]._parsed;
+			v = data[i];
+			parsed[xID] = x = xScale._parseObject(v, 'x', i);
+			parsed[yID] = y = yScale._parseObject(data[i], 'y', i);
 			me._parseCustomObjectData(data[i], meta.data[i]);
+
+			// store cross reference values, for stacking
+			xr = xref.x[x] || (xref.x[x] = []);
+			yr = xref.y[y] || (xref.y[y] = []);
+			xr[datasetIndex] = y;
+			yr[datasetIndex] = x;
 		}
 	},
 
@@ -384,17 +405,31 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	_parsePlainData: function(start, count) {
 		var me = this;
+		var datasetIndex = me.index;
 		var meta = me.getMeta();
+		var xref = meta._xref || (meta._xref = {x: {}, y: {}});
 		var data = me.getDataset().data;
 		var indexScale = me._getIndexScale();
 		var valueScale = me._getValueScale();
 		var labels = indexScale._getLabels() || [];
-		var i, ilen;
+		var i, ilen, parsed, x, y, xr, yr;
 
 		for (i = start, ilen = start + count; i < ilen; ++i) {
-			meta.data[i][valueScale.id] = valueScale._parse(data[i]);
+			parsed = meta.data[i]._parsed;
+			parsed[valueScale.id] = y = valueScale._parse(data[i]);
 			if (indexScale !== valueScale && i < labels.length) {
-				meta.data[i][indexScale.id] = indexScale._parse(labels[i]);
+				parsed[indexScale.id] = x = indexScale._parse(labels[i]);
+
+				// store cross reference values, for stacking
+				if (indexScale.id === meta.xAxisID) {
+					xr = y;
+					y = x;
+					x = xr;
+				}
+				xr = xref.x[x] || (xref.x[x] = []);
+				yr = xref.y[y] || (xref.y[y] = []);
+				xr[datasetIndex] = y;
+				yr[datasetIndex] = x;
 			}
 		}
 	},
@@ -407,7 +442,17 @@ helpers.extend(DatasetController.prototype, {
 		if (index < 0 || index >= data.length) {
 			return NaN;
 		}
-		return data[index][scale.id];
+		return data[index]._parsed[scale.id];
+	},
+
+	/**
+	 * @private
+	 */
+	_getParsedValueByValue: function(axis, value) {
+		var me = this;
+		var meta = me.getMeta();
+		var xref = meta._xref && meta._xref[axis];
+		return xref && xref[value] && xref[value][me.index];
 	},
 
 	/**

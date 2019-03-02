@@ -100,6 +100,15 @@ function computeTextSize(context, tick, font) {
 }
 
 module.exports = Element.extend({
+
+	/**
+	 * @private
+	 * @since 2.9
+	 */
+	_getAxis: function() {
+		return this.isHorizontal() ? 'x' : 'y';
+	},
+
 	/**
 	 * Function that parses a supported input value to internal representation.
 	 * @param {*} raw
