@@ -462,12 +462,17 @@ var defaultConfig = {
 
 module.exports = Scale.extend({
 	initialize: function() {
-		this.mergeTicksOptions();
-		Scale.prototype.initialize.call(this);
+		var me = this;
+		me.mergeTicksOptions();
+
+		// construct adapter for early parsing
+		me._adapter = new adapters._date(me.options.adapters.date);
+
+		Scale.prototype.initialize.call(me);
 	},
 
 	_parse: function(raw) {
-		return toTimestamp(raw, this.options);
+		return toTimestamp(this, raw);
 	},
 
 	_parseObject: function(obj, axis) {
