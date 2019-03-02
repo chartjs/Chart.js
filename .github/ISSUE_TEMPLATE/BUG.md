@@ -31,7 +31,8 @@ labels: 'type: bug'
 
   If filing a bug against `master`, you may reference the latest code via
   https://www.chartjs.org/dist/master/Chart.min.js (changing the filename to
-  point at the file you need as appropriate).
+  point at the file you need as appropriate). Do not rely on these files for
+  production purposes as they may be removed at any time.
 -->
 
 ## Context
