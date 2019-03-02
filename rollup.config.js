@@ -7,7 +7,7 @@ const optional = require('./rollup.plugins').optional;
 const stylesheet = require('./rollup.plugins').stylesheet;
 const pkg = require('./package.json');
 
-const input = 'src/chart.js';
+const input = 'src/index.js';
 const banner = `/*!
  * Chart.js v${pkg.version}
  * ${pkg.homepage}
