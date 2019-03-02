@@ -26,8 +26,7 @@
     "bower.json",
     "composer.json",
     "dist/*.css",
-    "dist/*.js",
-    "src/chart.js"
+    "dist/*.js"
   ],
   "devDependencies": {
     "clean-css": "^4.2.1",
