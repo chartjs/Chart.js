@@ -93,15 +93,16 @@ module.exports = {
 	 */
 	advance: function() {
 		var animations = this.animations;
-		var animation, chart;
+		var animation, chart, nextStep;
 		var i = 0;
 
 		while (i < animations.length) {
 			animation = animations[i];
 			chart = animation.chart;
 
+			nextStep = (animation.currentStep || 0) + 1;
 			animation.currentStep = Math.floor((Date.now() - animation.startTime) / animation.duration * animation.numSteps);
-			animation.currentStep = Math.min(animation.currentStep, animation.numSteps);
+			animation.currentStep = Math.min(Math.max(nextStep, animation.currentStep), animation.numSteps);
 
 			helpers.callback(animation.render, [chart, animation], chart);
 			helpers.callback(animation.onAnimationProgress, [animation], chart);
