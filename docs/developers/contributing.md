@@ -72,6 +72,6 @@ Guidelines for reporting bugs:
 
  - Check the issue search to see if it has already been reported
  - Isolate the problem to a simple test case
- - Please include a demonstration of the bug on a website such as [JS Bin](https://jsbin.com/), [JS Fiddle](https://jsfiddle.net/), or [Codepen](https://codepen.io/pen/). ([Template](https://codepen.io/pen?template=JXVYzq))
+ - Please include a demonstration of the bug on a website such as [JS Bin](https://jsbin.com/), [JS Fiddle](https://jsfiddle.net/), or [Codepen](https://codepen.io/pen/). ([Template](https://codepen.io/pen?template=JXVYzq)). If filing a bug against `master`, you may reference the latest code via https://www.chartjs.org/dist/master/Chart.min.js (changing the filename to point at the file you need as appropriate). Do not rely on these files for production purposes as they may be removed at any time.
 
 Please provide any additional details associated with the bug, if it's browser or screen density specific, or only happens with a certain configuration or data.

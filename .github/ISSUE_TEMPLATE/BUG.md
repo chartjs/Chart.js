@@ -21,13 +21,20 @@ labels: 'type: bug'
 <!-- Tell us what happens instead of the expected behavior -->
 
 ## Possible Solution
-<!-- Not obligatory, but suggest a fix/reason for the bug, -->
-<!-- or ideas how to implement the addition or change -->
+<!--
+  Not obligatory, but suggest a fix/reason for the bug,
+  or ideas how to implement the addition or change
+-->
 
 ## Steps to Reproduce (for bugs)
 <!--
   Provide a link to a live example. Bug reports MUST be submitted with an
   interactive example (https://codepen.io/pen?template=JXVYzq).
+
+  If filing a bug against `master`, you may reference the latest code via
+  https://www.chartjs.org/dist/master/Chart.min.js (changing the filename to
+  point at the file you need as appropriate). Do not rely on these files for
+  production purposes as they may be removed at any time.
 -->
 
 ## Context
