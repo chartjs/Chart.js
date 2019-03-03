@@ -419,8 +419,11 @@ module.exports = Element.extend({
 			}
 		}
 
-		// Don't bother fitting the ticks if we are not showing them
-		if (tickOpts.display && display) {
+		// Don't bother fitting the ticks if we are not showing the labels
+		if (!tickOpts.display || !display) {
+			me._maxLabelLines = 0;
+			me.longestLabelWidth = 0;
+		} else {
 			var largestTextWidth = helpers.longestText(me.ctx, tickFont.string, labels, me.longestTextCache);
 			var tallestLabelHeightInLines = helpers.numberOfLabelLines(labels);
 			var lineSpace = tickFont.size * 0.5;
@@ -744,7 +747,7 @@ module.exports = Element.extend({
 		var isHorizontal = me.isHorizontal();
 
 		var parseFont = helpers.options._parseFont;
-		var ticks = optionTicks.display && optionTicks.autoSkip ? me._autoSkip(me.getTicks()) : me.getTicks();
+		var ticks = optionTicks.autoSkip ? me._autoSkip(me.getTicks()) : me.getTicks();
 		var tickFontColor = valueOrDefault(optionTicks.fontColor, defaultFontColor);
 		var tickFont = parseFont(optionTicks);
 		var lineHeight = tickFont.lineHeight;
