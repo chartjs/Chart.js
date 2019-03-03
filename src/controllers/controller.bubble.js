@@ -45,8 +45,8 @@ module.exports = DatasetController.extend({
 	/**
 	 * @private
 	 */
-	_parseCustomObjectData: function(obj, metaData) {
-		metaData.r = +obj.r;
+	_parseCustomObjectData: function(obj) {
+		return obj && obj.r && +obj.r;
 	},
 
 	/**
@@ -135,7 +135,6 @@ module.exports = DatasetController.extend({
 		var dataset = datasets[me.index];
 		var custom = point.custom || {};
 		var options = chart.options.elements.point;
-		var data = dataset.data[index];
 		var values = {};
 		var i, ilen, key;
 
@@ -172,7 +171,7 @@ module.exports = DatasetController.extend({
 		// Custom radius resolution
 		values.radius = resolve([
 			custom.radius,
-			data ? data.r : undefined,
+			me._getParsedCustom(index),
 			dataset.radius,
 			options.radius
 		], context, index);

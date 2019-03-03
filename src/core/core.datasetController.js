@@ -75,6 +75,48 @@ function unlistenArrayEvents(array, listener) {
 	delete array._chartjs;
 }
 
+function storeParsedData(meta, index, xid, yid, xvalue, yvalue, custom) {
+	var metaData = meta.data[index];
+	var datasetIndex = metaData._datasetIndex;
+	var parsed = metaData._parsed || (metaData._parsed = {});
+	var crossRef = meta._xref || (meta._xref = {});
+	var xref = crossRef[xid] || (crossRef[xid] = {});
+	var yref = crossRef[yid] || (crossRef[yid] = {});
+	var xvref = xref[xvalue] || (xref[xvalue] = []);
+	var yvref = yref[yvalue] || (yref[yvalue] = []);
+
+	parsed[xid] = xvalue;
+	parsed[yid] = yvalue;
+	parsed._custom = custom;
+
+	xvref[datasetIndex] = yvalue;
+	yvref[datasetIndex] = xvalue;
+}
+
+function loadParsedData(meta, index, scaleId) {
+	var metaData = meta && meta.data || [];
+	return index >= 0
+		&& index < metaData.length
+		&& metaData[index]._parsed
+		&& metaData[index]._parsed[scaleId];
+}
+
+function loadParsedDataByScaleValue(meta, value, scaleId, datasetIndex) {
+	return meta
+		&& meta._xref
+		&& meta._xref[scaleId]
+		&& meta._xref[scaleId][value]
+		&& meta._xref[scaleId][value][datasetIndex];
+}
+
+function loadCustomData(meta, index) {
+	var metaData = meta && meta.data || [];
+	return index >= 0
+		&& index < metaData.length
+		&& metaData[index]._parsed
+		&& metaData[index]._parsed._custom;
+}
+
 // Base class for all dataset controllers (line, bar, etc)
 var DatasetController = function(chart, datasetIndex) {
 	this.initialize(chart, datasetIndex);
@@ -328,15 +370,16 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	_parse: function(start, count) {
 		var me = this;
+		var meta = me.getMeta();
 		var data = me.getDataset().data;
 
 		if (data && data.length) {
 			if (helpers.isArray(data[0])) {
-				me._parseArrayData(start, count);
+				me._parseArrayData(data, meta, start, count);
 			} else if (helpers.isObject(data[0])) {
-				me._parseObjectData(start, count);
+				me._parseObjectData(data, meta, start, count);
 			} else {
-				me._parsePlainData(start, count);
+				me._parsePlainData(data, meta, start, count);
 			}
 		}
 	},
@@ -344,28 +387,17 @@ helpers.extend(DatasetController.prototype, {
 	/**
 	 * @private
 	 */
-	_parseArrayData: function(start, count) {
+	_parseArrayData: function(data, meta, start, count) {
 		var me = this;
-		var datasetIndex = me.index;
-		var meta = me.getMeta();
-		var xref = meta._xref || (meta._xref = {x: {}, y: {}});
-		var data = me.getDataset().data;
 		var xID = meta.xAxisID;
 		var yID = meta.yAxisID;
 		var xScale = me.getScaleForId(xID);
 		var yScale = me.getScaleForId(yID);
-		var i, ilen, v, parsed, x, y, xr, yr;
+		var i, ilen, x, y;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
-			parsed = meta.data[i]._parsed;
-			v = data[i];
-			parsed[xID] = x = xScale._parse(v[0]);
-			parsed[yID] = y = yScale._parse(v[1]);
-
-			// store cross reference values, for stacking
-			xr = xref.x[x] || (xref.x[x] = []);
-			yr = xref.y[y] || (xref.y[y] = []);
-			xr[datasetIndex] = y;
-			yr[datasetIndex] = x;
+			x = xScale._parse(data[i][0]);
+			y = yScale._parse(data[i][1]);
+			storeParsedData(meta, i, xID, yID, x, y);
 		}
 	},
 
@@ -374,63 +406,40 @@ helpers.extend(DatasetController.prototype, {
 	/**
 	 * @private
 	 */
-	_parseObjectData: function(start, count) {
+	_parseObjectData: function(data, meta, start, count) {
 		var me = this;
-		var datasetIndex = me.index;
-		var meta = me.getMeta();
-		var xref = meta._xref || (meta._xref = {x: {}, y: {}});
-		var data = me.getDataset().data;
 		var xID = meta.xAxisID;
 		var yID = meta.yAxisID;
-		var xScale = me.getScaleForId(meta.xAxisID);
-		var yScale = me.getScaleForId(meta.yAxisID);
-		var i, ilen, v, parsed, x, y, xr, yr;
+		var xScale = me.getScaleForId(xID);
+		var yScale = me.getScaleForId(yID);
+		var i, ilen, x, y, c;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
-			parsed = meta.data[i]._parsed;
-			v = data[i];
-			parsed[xID] = x = xScale._parseObject(v, 'x', i);
-			parsed[yID] = y = yScale._parseObject(data[i], 'y', i);
-			me._parseCustomObjectData(data[i], meta.data[i]);
-
-			// store cross reference values, for stacking
-			xr = xref.x[x] || (xref.x[x] = []);
-			yr = xref.y[y] || (xref.y[y] = []);
-			xr[datasetIndex] = y;
-			yr[datasetIndex] = x;
+			x = xScale._parseObject(data[i], 'x', i);
+			y = yScale._parseObject(data[i], 'y', i);
+			c = me._parseCustomObjectData(data[i]);
+			storeParsedData(meta, i, xID, yID, x, y, c);
 		}
 	},
 
 	/**
 	 * @private
 	 */
-	_parsePlainData: function(start, count) {
+	_parsePlainData: function(data, meta, start, count) {
 		var me = this;
-		var datasetIndex = me.index;
-		var meta = me.getMeta();
-		var xref = meta._xref || (meta._xref = {x: {}, y: {}});
-		var data = me.getDataset().data;
-		var indexScale = me._getIndexScale();
-		var valueScale = me._getValueScale();
-		var labels = indexScale._getLabels() || [];
-		var i, ilen, parsed, x, y, xr, yr;
+		var iScale = me._getIndexScale();
+		var vScale = me._getValueScale();
+		var iID = iScale.id;
+		var vID = vScale.id;
+
+		var labels = iScale._getLabels() || [];
+		var i, ilen, iv, v;
 
 		for (i = start, ilen = start + count; i < ilen; ++i) {
-			parsed = meta.data[i]._parsed;
-			parsed[valueScale.id] = y = valueScale._parse(data[i]);
-			if (indexScale !== valueScale && i < labels.length) {
-				parsed[indexScale.id] = x = indexScale._parse(labels[i]);
-
-				// store cross reference values, for stacking
-				if (indexScale.id === meta.xAxisID) {
-					xr = y;
-					y = x;
-					x = xr;
-				}
-				xr = xref.x[x] || (xref.x[x] = []);
-				yr = xref.y[y] || (xref.y[y] = []);
-				xr[datasetIndex] = y;
-				yr[datasetIndex] = x;
-			}
+			v = vScale._parse(data[i]);
+			iv = iScale !== vScale && i < labels.length
+				? iScale._parse(labels[i])
+				: i;
+			storeParsedData(meta, i, iID, vID, iv, v);
 		}
 	},
 
@@ -438,21 +447,21 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_getParsedValue: function(index, scale) {
-		var data = this.getMeta().data;
-		if (index < 0 || index >= data.length) {
-			return NaN;
-		}
-		return data[index]._parsed[scale.id];
+		return loadParsedData(this.getMeta(), index, scale.id);
 	},
 
 	/**
 	 * @private
 	 */
-	_getParsedValueByValue: function(axis, value) {
-		var me = this;
-		var meta = me.getMeta();
-		var xref = meta._xref && meta._xref[axis];
-		return xref && xref[value] && xref[value][me.index];
+	_getParsedCustom: function(index) {
+		return loadCustomData(this.getMeta(), index);
+	},
+
+	/**
+	 * @private
+	 */
+	_getParsedValueByScaleValue: function(value, scale) {
+		return loadParsedDataByScaleValue(this.getMeta(), value, scale.id, this.index);
 	},
 
 	/**

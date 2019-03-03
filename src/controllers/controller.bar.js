@@ -201,16 +201,15 @@ module.exports = DatasetController.extend({
 		var stacked = scale.options.stacked;
 		var ilen = last === undefined ? chart.data.datasets.length : last + 1;
 		var stacks = [];
-		var i, meta, stack;
+		var i, meta;
 
 		for (i = 0; i < ilen; ++i) {
 			meta = chart.getDatasetMeta(i);
-			stack = meta.stack;
 			if (meta.bar && chart.isDatasetVisible(i) &&
 				(stacked === false ||
-				(stacked === true && stacks.indexOf(stack) === -1) ||
-				(stacked === undefined && (stack === undefined || stacks.indexOf(stack) === -1)))) {
-				stacks.push(stack);
+				(stacked === true && stacks.indexOf(meta.stack) === -1) ||
+				(stacked === undefined && (meta.stack === undefined || stacks.indexOf(meta.stack) === -1)))) {
+				stacks.push(meta.stack);
 			}
 		}
 
@@ -288,7 +287,6 @@ module.exports = DatasetController.extend({
 		var isHorizontal = scale.isHorizontal();
 		var value = me._getParsedValue(index, scale);
 		var indexValue = me._getParsedValue(index, indexScale);
-		var axis = indexScale._getAxis();
 		var minBarLength = scale.options.minBarLength;
 		var stacked = scale.options.stacked;
 		var stack = meta.stack;
@@ -300,7 +298,7 @@ module.exports = DatasetController.extend({
 				imeta = chart.getDatasetMeta(i);
 
 				if (imeta.bar && imeta.stack === stack && chart.isDatasetVisible(i)) {
-					ivalue = imeta.controller._getParsedValueByValue(axis, indexValue);
+					ivalue = imeta.controller._getParsedValueByScaleValue(indexValue, indexScale);
 					if (((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0))) {
 						start += ivalue;
 					}
