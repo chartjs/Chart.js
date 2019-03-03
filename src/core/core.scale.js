@@ -682,11 +682,11 @@ module.exports = Element.extend({
 		var cos = Math.abs(Math.cos(rot));
 		var sin = Math.abs(Math.sin(rot));
 
-		var padding = optionTicks.autoSkipPadding;
-		var w = me.longestLabelWidth + padding || 0;
+		var padding = optionTicks.autoSkipPadding || 0;
+		var w = (me.longestLabelWidth + padding) || 0;
 
 		var tickFont = helpers.options._parseFont(optionTicks);
-		var h = me._maxLabelLines * tickFont.lineHeight + padding;
+		var h = (me._maxLabelLines * tickFont.lineHeight + padding) || 0;
 
 		// Calculate space needed for 1 tick in axis direction.
 		return isHorizontal
@@ -747,7 +747,7 @@ module.exports = Element.extend({
 		var isHorizontal = me.isHorizontal();
 
 		var parseFont = helpers.options._parseFont;
-		var ticks = optionTicks.autoSkip ? me._autoSkip(me.getTicks()) : me.getTicks();
+		var ticks = optionTicks.display && optionTicks.autoSkip ? me._autoSkip(me.getTicks()) : me.getTicks();
 		var tickFontColor = valueOrDefault(optionTicks.fontColor, defaultFontColor);
 		var tickFont = parseFont(optionTicks);
 		var lineHeight = tickFont.lineHeight;
