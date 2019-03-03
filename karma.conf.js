@@ -49,12 +49,12 @@ module.exports = function(karma) {
 			{pattern: 'test/fixtures/**/*.png', included: false},
 			'node_modules/moment/min/moment.min.js',
 			'test/index.js',
-			'src/chart.js'
+			'src/index.js'
 		].concat(args.inputs),
 
 		preprocessors: {
 			'test/index.js': ['rollup'],
-			'src/chart.js': ['sources']
+			'src/index.js': ['sources']
 		},
 
 		rollupPreprocessor: {

@@ -764,5 +764,5 @@ module.exports = Scale.extend({
 	}
 });
 
-// INTERNAL: static default options, registered in src/chart.js
+// INTERNAL: static default options, registered in src/index.js
 module.exports._defaults = defaultConfig;

@@ -22,6 +22,12 @@
   "bugs": {
     "url": "https://github.com/chartjs/Chart.js/issues"
   },
+  "files": [
+    "bower.json",
+    "composer.json",
+    "dist/*.css",
+    "dist/*.js"
+  ],
   "devDependencies": {
     "clean-css": "^4.2.1",
     "coveralls": "^3.0.0",
