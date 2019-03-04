@@ -171,6 +171,9 @@ module.exports = Element.extend({
 			top: 0,
 			bottom: 0
 		}, margins);
+
+		me._maxLabelLines = 0;
+		me.longestLabelWidth = 0;
 		me.longestTextCache = me.longestTextCache || {};
 
 		// Dimensions
@@ -419,20 +422,18 @@ module.exports = Element.extend({
 			}
 		}
 
-		// Don't bother fitting the ticks if we are not showing them
+		// Don't bother fitting the ticks if we are not showing the labels
 		if (tickOpts.display && display) {
 			var largestTextWidth = helpers.longestText(me.ctx, tickFont.string, labels, me.longestTextCache);
 			var tallestLabelHeightInLines = helpers.numberOfLabelLines(labels);
 			var lineSpace = tickFont.size * 0.5;
 			var tickPadding = me.options.ticks.padding;
 
-			// Store max number of lines used in labels for _autoSkip
+			// Store max number of lines and widest label for _autoSkip
 			me._maxLabelLines = tallestLabelHeightInLines;
+			me.longestLabelWidth = largestTextWidth;
 
 			if (isHorizontal) {
-				// A horizontal axis is more constrained by the height.
-				me.longestLabelWidth = largestTextWidth;
-
 				var angleRadians = helpers.toRadians(me.labelRotation);
 				var cosRotation = Math.cos(angleRadians);
 				var sinRotation = Math.sin(angleRadians);
@@ -679,11 +680,11 @@ module.exports = Element.extend({
 		var cos = Math.abs(Math.cos(rot));
 		var sin = Math.abs(Math.sin(rot));
 
-		var padding = optionTicks.autoSkipPadding;
-		var w = me.longestLabelWidth + padding || 0;
+		var padding = optionTicks.autoSkipPadding || 0;
+		var w = (me.longestLabelWidth + padding) || 0;
 
 		var tickFont = helpers.options._parseFont(optionTicks);
-		var h = me._maxLabelLines * tickFont.lineHeight + padding;
+		var h = (me._maxLabelLines * tickFont.lineHeight + padding) || 0;
 
 		// Calculate space needed for 1 tick in axis direction.
 		return isHorizontal
@@ -744,7 +745,7 @@ module.exports = Element.extend({
 		var isHorizontal = me.isHorizontal();
 
 		var parseFont = helpers.options._parseFont;
-		var ticks = optionTicks.autoSkip ? me._autoSkip(me.getTicks()) : me.getTicks();
+		var ticks = optionTicks.display && optionTicks.autoSkip ? me._autoSkip(me.getTicks()) : me.getTicks();
 		var tickFontColor = valueOrDefault(optionTicks.fontColor, defaultFontColor);
 		var tickFont = parseFont(optionTicks);
 		var lineHeight = tickFont.lineHeight;
