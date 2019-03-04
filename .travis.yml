@@ -42,13 +42,12 @@ deploy:
     branch: release
 - provider: releases
   api_key: $GITHUB_AUTH_TOKEN
-  file:
-  - "./dist/Chart.bundle.js"
-  - "./dist/Chart.bundle.min.js"
-  - "./dist/Chart.js"
-  - "./dist/Chart.min.js"
-  - "./dist/Chart.js.zip"
   skip_cleanup: true
+  file_glob: true
+  file:
+  - ./dist/*.css
+  - ./dist/*.js
+  - ./dist/*.zip
   on:
     tags: true
 - provider: npm
