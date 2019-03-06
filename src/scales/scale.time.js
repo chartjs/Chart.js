@@ -783,7 +783,7 @@ module.exports = Scale.extend({
 		var exampleLabel = me.tickFormatFunction(exampleTime, 0, [], format);
 		var tickLabelWidth = me.getLabelWidth(exampleLabel);
 		var innerWidth = me.isHorizontal() ? me.width : me.height;
-		var capacity = Math.floor(innerWidth / tickLabelWidth);
+		var capacity = Math.floor(innerWidth / tickLabelWidth) - 1;
 
 		return capacity > 0 ? capacity : 1;
 	}
