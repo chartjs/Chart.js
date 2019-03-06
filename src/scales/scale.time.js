@@ -784,8 +784,8 @@ module.exports = Scale.extend({
 		var exampleLabel = me.tickFormatFunction(exampleTime, 0, [], format);
 		var tickLabelWidth = me.getLabelWidth(exampleLabel);
 
-		// Using marings instead of padding because padding is not calculated
-		// at this point, but margins are provided from previous calculation
+		// Using margins instead of padding because padding is not calculated
+		// at this point (buildTicks). Margins are provided from previous calculation
 		// in layout steps 5/6
 		var innerWidth = me.isHorizontal()
 			? me.width - (margins.left + margins.right)
