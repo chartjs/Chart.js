@@ -24,6 +24,12 @@ describe('Deprecations', function() {
 			});
 		});
 
+		describe('Chart.Chart', function() {
+			it('should be defined as an alias to Chart', function() {
+				expect(Chart.Chart).toBe(Chart);
+			});
+		});
+
 		describe('Chart.helpers.aliasPixel', function() {
 			it('should be defined as a function', function() {
 				expect(typeof Chart.helpers.aliasPixel).toBe('function');

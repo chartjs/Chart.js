@@ -53,6 +53,15 @@ if (typeof window !== 'undefined') {
 
 /**
  * Provided for backward compatibility, not available anymore
+ * @namespace Chart.Chart
+ * @deprecated since version 2.8.0
+ * @todo remove at version 3
+ * @private
+ */
+Chart.Chart = Chart;
+
+/**
+ * Provided for backward compatibility, not available anymore
  * @namespace Chart.Legend
  * @deprecated since version 2.1.5
  * @todo remove at version 3
