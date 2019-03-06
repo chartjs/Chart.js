@@ -776,14 +776,21 @@ module.exports = Scale.extend({
 		var me = this;
 		var timeOpts = me.options.time;
 		var displayFormats = timeOpts.displayFormats;
+		var margins = me.margins;
 
 		// pick the longest format (milliseconds) for guestimation
 		var format = displayFormats[timeOpts.unit] || displayFormats.millisecond;
 
 		var exampleLabel = me.tickFormatFunction(exampleTime, 0, [], format);
 		var tickLabelWidth = me.getLabelWidth(exampleLabel);
-		var innerWidth = me.isHorizontal() ? me.width : me.height;
-		var capacity = Math.floor(innerWidth / tickLabelWidth) - 1;
+
+		// Using marings instead of padding because padding is not calculated
+		// at this point, but margins are provided from previous calculation
+		// in layout steps 5/6
+		var innerWidth = me.isHorizontal()
+			? me.width - (margins.left + margins.right)
+			: me.height - (margins.top + margins.bottom);
+		var capacity = Math.floor(innerWidth / tickLabelWidth);
 
 		return capacity > 0 ? capacity : 1;
 	}
