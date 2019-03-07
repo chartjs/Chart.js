@@ -179,32 +179,44 @@ module.exports = DatasetController.extend({
 	_resolveLineOptions: function(element) {
 		var me = this;
 		var chart = me.chart;
-		var dataset = chart.data.datasets[me.index];
+		var datasetIndex = me.index;
+		var dataset = chart.data.datasets[datasetIndex];
 		var custom = element.custom || {};
 		var options = chart.options;
 		var elementOptions = options.elements.line;
 		var values = {};
 		var i, ilen, key;
 
-		var keys = [
-			'backgroundColor',
-			'borderWidth',
-			'borderColor',
-			'borderCapStyle',
-			'borderDash',
-			'borderDashOffset',
-			'borderJoinStyle',
-			'fill',
-			'cubicInterpolationMode'
-		];
+		// Scriptable options
+		var context = {
+			chart: chart,
+			dataIndex: undefined,
+			dataset: dataset,
+			datasetIndex: datasetIndex
+		};
+
+		var LINE_OPTIONS = {
+			backgroundColor: 'backgroundColor',
+			borderColor: 'borderColor',
+			borderWidth: 'borderWidth',
+			borderCapStyle: 'borderCapStyle',
+			borderDash: 'borderDash',
+			borderDashOffset: 'borderDashOffset',
+			borderJoinStyle: 'borderJoinStyle',
+			fill: 'fill',
+			cubicInterpolationMode: 'cubicInterpolationMode'
+		};
+
+		var keys = Object.keys(LINE_OPTIONS);
 
 		for (i = 0, ilen = keys.length; i < ilen; ++i) {
 			key = keys[i];
 			values[key] = resolve([
 				custom[key],
+				dataset[LINE_OPTIONS[key]],
 				dataset[key],
 				elementOptions[key]
-			]);
+			], context, datasetIndex);
 		}
 
 		// The default behavior of lines is to break at null values, according
