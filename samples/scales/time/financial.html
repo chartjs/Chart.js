@@ -26,29 +26,41 @@
 		<option value="line">Line</option>
 		<option value="bar">Bar</option>
 	</select>
+	<select id="unit">
+		<option value="second">Second</option>
+		<option value="minute">Minute</option>
+		<option value="hour">Hour</option>
+		<option value="day" selected>Day</option>
+		<option value="month">Month</option>
+		<option value="year">Year</option>
+	</select>
 	<button id="update">update</button>
 	<script>
-		function randomNumber(min, max) {
-			return Math.random() * (max - min) + min;
-		}
-
-		function randomBar(date, lastClose) {
-			var open = randomNumber(lastClose * 0.95, lastClose * 1.05).toFixed(2);
-			var close = randomNumber(open * 0.95, open * 1.05).toFixed(2);
-			return {
-				t: date.valueOf(),
-				y: close
-			};
-		}
-
-		var dateFormat = 'MMMM DD YYYY';
-		var date = moment('April 01 2017', dateFormat);
-		var data = [randomBar(date, 30)];
-		while (data.length < 60) {
-			date = date.clone().add(1, 'd');
-			if (date.isoWeekday() <= 5) {
-				data.push(randomBar(date, data[data.length - 1].y));
+		function generateData() {
+			function randomNumber(min, max) {
+				return Math.random() * (max - min) + min;
 			}
+
+			function randomBar(date, lastClose) {
+				var open = randomNumber(lastClose * 0.95, lastClose * 1.05).toFixed(2);
+				var close = randomNumber(open * 0.95, open * 1.05).toFixed(2);
+				return {
+					t: date.valueOf(),
+					y: close
+				};
+			}
+
+			var date = moment('Jan 01 1990', 'MMM DD YYYY');
+			var now = moment();
+			var data = [randomBar(date, 30)];
+			var unit = document.getElementById('unit').value;
+			for (; data.length < 60 && date.isBefore(now); date = date.clone().add(1, unit)) {
+				if (date.isoWeekday() <= 5) {
+					data.push(randomBar(date, data[data.length - 1].y));
+				}
+			}
+
+			return data;
 		}
 
 		var ctx = document.getElementById('chart1').getContext('2d');
@@ -63,7 +75,7 @@
 					label: 'CHRT - Chart.js Corporation',
 					backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
 					borderColor: window.chartColors.red,
-					data: data,
+					data: generateData(),
 					type: 'line',
 					pointRadius: 0,
 					fill: false,
@@ -109,7 +121,9 @@
 
 		document.getElementById('update').addEventListener('click', function() {
 			var type = document.getElementById('type').value;
-			chart.config.data.datasets[0].type = type;
+			var dataset = chart.config.data.datasets[0];
+			dataset.type = type;
+			dataset.data = generateData();
 			chart.update();
 		});
 
