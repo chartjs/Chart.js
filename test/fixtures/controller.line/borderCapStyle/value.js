@@ -7,7 +7,7 @@ module.exports = {
 				{
 					// option in dataset
 					data: [0, 5, 10, null, -10, -5],
-					borderWidth: [2]
+					borderCapStyle: 'round',
 				},
 				{
 					// option in element (fallback)
@@ -20,12 +20,13 @@ module.exports = {
 			title: false,
 			elements: {
 				line: {
-					borderColor: '#0000ff',
-					borderWidth: [2, 10]
-
+					borderColor: '#00ff00',
+					borderCapStyle: 'butt',
+					borderWidth: 10,
+					fill: false,
 				},
 				point: {
-					radius: 10
+					radius: 10,
 				}
 			},
 			scales: {
