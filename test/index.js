@@ -34,7 +34,7 @@ var utils = require('./utils');
 	window.waitForResize = utils.waitForResize;
 	window.createMockContext = createMockContext;
 
-	// some style initialization to limit differences between browsers across different plateforms.
+	// some style initialization to limit differences between browsers across different platforms.
 	utils.injectCSS(
 		'.chartjs-wrapper, .chartjs-wrapper canvas {' +
 			'border: 0;' +
