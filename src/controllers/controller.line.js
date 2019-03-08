@@ -216,7 +216,7 @@ module.exports = DatasetController.extend({
 				dataset[LINE_OPTIONS[key]],
 				dataset[key],
 				elementOptions[key]
-			], context, datasetIndex);
+			], context);
 		}
 
 		// The default behavior of lines is to break at null values, according
