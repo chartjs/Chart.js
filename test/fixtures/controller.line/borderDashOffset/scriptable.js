@@ -6,18 +6,21 @@ module.exports = {
 			datasets: [
 				{
 					// option in dataset
-					data: [4, 5, 10, null, -10, -5],
-					borderColor: '#0000ff',
-					borderWidth: function(ctx) {
+					data: [1, 1, 1, 1, 1, 1],
+					borderColor: '#ff0000',
+					borderDash: [20],
+					borderDashOffset: function(ctx) {
 						var dataTotal = ctx.dataset.data.reduce(function(a, b) {
 							return a + b;
 						});
-						return dataTotal > 0 ? 20 : 10;
+						var offset = dataTotal > 0 ? 5.0 : 0.0;
+
+						return offset;
 					}
 				},
 				{
 					// option in element (fallback)
-					data: [-4, -5, -10, null, 10, 5],
+					data: [-1, -1, -1, -1, -1, -1],
 				}
 			]
 		},
@@ -26,14 +29,17 @@ module.exports = {
 			title: false,
 			elements: {
 				line: {
-					fill: false,
-					borderColor: '#ff0000',
-					borderWidth: function(ctx) {
+					borderColor: '#00ff00',
+					borderDash: [20],
+					borderDashOffset: function(ctx) {
 						var dataTotal = ctx.dataset.data.reduce(function(a, b) {
 							return a + b;
 						});
-						return dataTotal > 0 ? 20 : 2;
+						var offset = dataTotal > 0 ? 5.0 : 0.0;
+
+						return offset;
 					},
+					fill: false,
 				},
 				point: {
 					radius: 10,
@@ -41,14 +47,7 @@ module.exports = {
 			},
 			scales: {
 				xAxes: [{display: false}],
-				yAxes: [
-					{
-						display: false,
-						ticks: {
-							beginAtZero: true
-						}
-					}
-				]
+				yAxes: [{display: false}]
 			}
 		}
 	},

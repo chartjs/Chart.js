@@ -6,12 +6,17 @@ module.exports = {
 			datasets: [
 				{
 					// option in dataset
-					data: [0, 5, 10, null, -10, -5],
-					backgroundColor: '#ff0000'
+					data: [0, 4, 2, 6, 4, 8],
+					borderColor: '#ff0000',
+					cubicInterpolationMode: function(ctx) {
+						var mode = ctx.datasetIndex === 0 ? 'monotone' : 'default';
+
+						return mode;
+					}
 				},
 				{
 					// option in element (fallback)
-					data: [4, -5, -10, null, 10, 5],
+					data: [0, 4, 2, 6, 4, 8],
 				}
 			]
 		},
@@ -20,10 +25,13 @@ module.exports = {
 			title: false,
 			elements: {
 				line: {
-					backgroundColor: '#00ff00'
-				},
-				point: {
-					radius: 10
+					borderColor: '#00ff00',
+					cubicInterpolationMode: function(ctx) {
+						var mode = ctx.datasetIndex === 0 ? 'monotone' : 'default';
+
+						return mode;
+					},
+					fill: false
 				}
 			},
 			scales: {

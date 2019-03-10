@@ -7,12 +7,13 @@ module.exports = {
 				{
 					// option in dataset
 					data: [4, 5, 10, null, -10, -5],
-					borderColor: '#0000ff',
-					borderWidth: function(ctx) {
+					borderDash: function(ctx) {
 						var dataTotal = ctx.dataset.data.reduce(function(a, b) {
 							return a + b;
 						});
-						return dataTotal > 0 ? 20 : 10;
+						var dashLength = dataTotal > 0 ? [5] : [10];
+
+						return dashLength;
 					}
 				},
 				{
@@ -26,14 +27,15 @@ module.exports = {
 			title: false,
 			elements: {
 				line: {
-					fill: false,
-					borderColor: '#ff0000',
-					borderWidth: function(ctx) {
+					borderColor: '#D60000',
+					borderDash: function(ctx) {
 						var dataTotal = ctx.dataset.data.reduce(function(a, b) {
 							return a + b;
 						});
-						return dataTotal > 0 ? 20 : 2;
-					},
+						var dashLength = dataTotal > 0 ? [5] : [10];
+
+						return dashLength;
+					}
 				},
 				point: {
 					radius: 10,

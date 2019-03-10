@@ -6,18 +6,20 @@ module.exports = {
 			datasets: [
 				{
 					// option in dataset
-					data: [4, 5, 10, null, -10, -5],
-					borderColor: '#0000ff',
-					borderWidth: function(ctx) {
+					data: [2, 6, 4, 8, 6, 10],
+					borderColor: '#ff0000',
+					borderJoinStyle: function(ctx) {
 						var dataTotal = ctx.dataset.data.reduce(function(a, b) {
 							return a + b;
 						});
-						return dataTotal > 0 ? 20 : 10;
+						var joinStyle = dataTotal > 25 ? 'round' : 'miter';
+
+						return joinStyle;
 					}
 				},
 				{
 					// option in element (fallback)
-					data: [-4, -5, -10, null, 10, 5],
+					data: [0, 4, 2, 6, 4, 8]
 				}
 			]
 		},
@@ -26,29 +28,23 @@ module.exports = {
 			title: false,
 			elements: {
 				line: {
-					fill: false,
-					borderColor: '#ff0000',
-					borderWidth: function(ctx) {
+					borderColor: '#00ff00',
+					borderJoinStyle: function(ctx) {
 						var dataTotal = ctx.dataset.data.reduce(function(a, b) {
 							return a + b;
 						});
-						return dataTotal > 0 ? 20 : 2;
+						var joinStyle = dataTotal > 25 ? 'round' : 'miter';
+
+						return joinStyle;
 					},
-				},
-				point: {
-					radius: 10,
+					fill: false,
+					borderWidth: 10,
+					tension: 0
 				}
 			},
 			scales: {
 				xAxes: [{display: false}],
-				yAxes: [
-					{
-						display: false,
-						ticks: {
-							beginAtZero: true
-						}
-					}
-				]
+				yAxes: [{display: false}]
 			}
 		}
 	},
