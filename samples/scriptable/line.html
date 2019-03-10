@@ -26,13 +26,18 @@
 
 		utils.srand(110);
 
+		function getLineColor(ctx) {
+			var newColor = utils.color(ctx.datasetIndex);
+			return newColor;
+		}
+
 		function alternatePointStyles(ctx) {
 			var index = ctx.dataIndex;
 			return index % 2 === 0 ? 'circle' : 'rect';
 		}
 
 		function makeHalfAsOpaque(ctx) {
-			var c = ctx.dataset.backgroundColor;
+			var c = getLineColor(ctx);
 			return utils.transparentize(c);
 		}
 
@@ -56,9 +61,7 @@
 		var data = {
 			labels: utils.months({count: DATA_COUNT}),
 			datasets: [{
-				data: generateData(),
-				backgroundColor: '#4dc9f6',
-				borderColor: '#4dc9f6',
+				data: generateData()
 			}]
 		};
 
@@ -68,8 +71,11 @@
 			elements: {
 				line: {
 					fill: false,
+					backgroundColor: getLineColor,
+					borderColor: getLineColor,
 				},
 				point: {
+					backgroundColor: getLineColor,
 					hoverBackgroundColor: makeHalfAsOpaque,
 					radius: adjustRadiusBasedOnData,
 					pointStyle: alternatePointStyles,
@@ -87,12 +93,8 @@
 
 		// eslint-disable-next-line no-unused-vars
 		function addDataset() {
-			var newColor = utils.color(chart.data.datasets.length);
-
 			chart.data.datasets.push({
-				data: generateData(),
-				backgroundColor: newColor,
-				borderColor: newColor
+				data: generateData()
 			});
 			chart.update();
 		}
