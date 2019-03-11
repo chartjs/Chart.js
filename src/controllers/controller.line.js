@@ -195,25 +195,22 @@ module.exports = DatasetController.extend({
 			datasetIndex: datasetIndex
 		};
 
-		var LINE_OPTIONS = {
-			backgroundColor: 'backgroundColor',
-			borderColor: 'borderColor',
-			borderWidth: 'borderWidth',
-			borderCapStyle: 'borderCapStyle',
-			borderDash: 'borderDash',
-			borderDashOffset: 'borderDashOffset',
-			borderJoinStyle: 'borderJoinStyle',
-			fill: 'fill',
-			cubicInterpolationMode: 'cubicInterpolationMode'
-		};
-
-		var keys = Object.keys(LINE_OPTIONS);
+		var keys = [
+			'backgroundColor',
+			'borderColor',
+			'borderWidth',
+			'borderCapStyle',
+			'borderDash',
+			'borderDashOffset',
+			'borderJoinStyle',
+			'fill',
+			'cubicInterpolationMode'
+		];
 
 		for (i = 0, ilen = keys.length; i < ilen; ++i) {
 			key = keys[i];
 			values[key] = resolve([
 				custom[key],
-				dataset[LINE_OPTIONS[key]],
 				dataset[key],
 				elementOptions[key]
 			], context);
