@@ -25,6 +25,7 @@ module.exports = {
 		options: {
 			legend: false,
 			title: false,
+			spanGaps: true,
 			elements: {
 				line: {
 					fill: false,

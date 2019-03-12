@@ -18,6 +18,7 @@ module.exports = {
 		options: {
 			legend: false,
 			title: false,
+			spanGaps: true,
 			elements: {
 				line: {
 					backgroundColor: '#00ff00'
