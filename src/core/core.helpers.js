@@ -125,8 +125,9 @@ module.exports = function() {
 	 * i.e. the number of digits after the decimal point, of the value of this Number.
 	 * @param {number} x - A number.
 	 * @returns {number} The number of decimal places.
+	 * @private
 	 */
-	helpers.decimalPlaces = function(x) {
+	helpers._decimalPlaces = function(x) {
 		if (!helpers.isFinite(x)) {
 			return;
 		}
