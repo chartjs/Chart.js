@@ -60,7 +60,7 @@ Global line options: `Chart.defaults.global.elements.line`.
 | `borderJoinStyle` | `string` | `'miter'` | Line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
 | `capBezierPoints` | `boolean` | `true` | `true` to keep Bézier control inside the chart, `false` for no restriction.
 | `cubicInterpolationMode` | `string` | `''` |  Interpolation mode to apply. [See more...](../charts/line.md#cubicinterpolationmode) 
-| `fill` | <code>boolean&#124;string</code> | `true` | Fill location: `'origin`, `'nofill'`, `'start'`, `'end'`, `true` (eq. `'origin'`) or `false` (no fill). [See more...](../charts/area.md#filling-modes) 
+| `fill` | <code>boolean&#124;string</code> | `true` | How to fill the area under the line. See [area charts](../charts/area.md#filling-modes).
 | `stepped` | `boolean` | `false` | `true` to show the line as a stepped line (`tension` will be ignored).
 
 ## Rectangle Configuration
