@@ -948,7 +948,7 @@ var exports = module.exports = Element.extend({
 		changed = !helpers.arrayEquals(me._active, me._lastActive);
 
 		// Only handle target event on tooltip change
-		if (changed || me._chart.animating) {
+		if (changed) {
 			me._lastActive = me._active;
 
 			if (options.enabled || options.custom) {
