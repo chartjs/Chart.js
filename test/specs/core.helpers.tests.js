@@ -73,14 +73,14 @@ describe('Core helper tests', function() {
 	});
 
 	it('should get the correct number of decimal places', function() {
-		expect(helpers.decimalPlaces(100)).toBe(0);
-		expect(helpers.decimalPlaces(1)).toBe(0);
-		expect(helpers.decimalPlaces(0)).toBe(0);
-		expect(helpers.decimalPlaces(0.01)).toBe(2);
-		expect(helpers.decimalPlaces(-0.01)).toBe(2);
-		expect(helpers.decimalPlaces('1')).toBe(undefined);
-		expect(helpers.decimalPlaces('')).toBe(undefined);
-		expect(helpers.decimalPlaces(undefined)).toBe(undefined);
+		expect(helpers._decimalPlaces(100)).toBe(0);
+		expect(helpers._decimalPlaces(1)).toBe(0);
+		expect(helpers._decimalPlaces(0)).toBe(0);
+		expect(helpers._decimalPlaces(0.01)).toBe(2);
+		expect(helpers._decimalPlaces(-0.01)).toBe(2);
+		expect(helpers._decimalPlaces('1')).toBe(undefined);
+		expect(helpers._decimalPlaces('')).toBe(undefined);
+		expect(helpers._decimalPlaces(undefined)).toBe(undefined);
 	});
 
 	it('should get an angle from a point', function() {
