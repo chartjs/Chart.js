@@ -369,6 +369,16 @@ module.exports = function(Chart) {
 			this.tooltip.initialize();
 		},
 
+		/**
+		 * Refresh the tooltip when the chart is updated
+		 * @private
+		 */
+		_refresh: function() {
+			if (this._lastEvent) {
+				this.eventHandler(this._lastEvent);
+			}
+		},
+
 		update: function(config) {
 			var me = this;
 
@@ -419,6 +429,9 @@ module.exports = function(Chart) {
 			// Last active contains items that were previously in the tooltip.
 			// When we reset the tooltip, we need to clear it
 			me.lastActive = [];
+
+			// Refresh existing tooltip, otherwise the tooltip will flicker at the update
+			me._refresh();
 
 			// Do this before render so that any plugins that need final scale updates can use it
 			plugins.notify(me, 'afterUpdate');
@@ -581,6 +594,7 @@ module.exports = function(Chart) {
 			}
 
 			me.drawDatasets(easingValue);
+
 			me._drawTooltip(easingValue);
 
 			plugins.notify(me, 'afterDraw', [easingValue]);
@@ -599,6 +613,11 @@ module.exports = function(Chart) {
 			}
 
 			me.tooltip.transition(easingValue);
+
+			// Refresh the tooltip on each step of the transition
+			if (easingValue === 1 || me.animating) {
+				me._refresh();
+			}
 		},
 
 		/**
@@ -862,6 +881,12 @@ module.exports = function(Chart) {
 			// Buffer any update calls so that renders do not occur
 			me._bufferedRender = true;
 			me._bufferedRequest = null;
+
+			// Store the last event so we can handle it again when updating the chart
+			// Only do this when the event is not a click to prevent redoing legend clicks etc.
+			if (e.type !== 'click') {
+				me._lastEvent = e;
+			}
 
 			var changed = me.handleEvent(e);
 			// for smooth tooltip animations issue #4989
