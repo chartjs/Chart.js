@@ -2,6 +2,10 @@
 
 The time scale is used to display times and dates. When building its ticks, it will automatically calculate the most comfortable unit base on the size of the scale.
 
+## Date Adapters
+
+The time scale requires both a date library and corresponding adapter to be present. By default, Chart.js includes an adapter for Moment.js. You may wish to [exclude moment](../../getting-started/integration.md) and choose from [other available adapters](https://github.com/chartjs/awesome#adapters) instead.
+
 ## Data Sets
 
 ### Input Data
