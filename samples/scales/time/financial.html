@@ -4,7 +4,7 @@
 <head>
 	<title>Line Chart</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-	<script src="../../../dist/Chart.js"></script>
+	<script src="../../../dist/Chart.min.js"></script>
 	<script src="../../utils.js"></script>
 	<style>
 		canvas {
@@ -33,8 +33,8 @@
 		}
 
 		function randomBar(date, lastClose) {
-			var open = randomNumber(lastClose * 0.95, lastClose * 1.05);
-			var close = randomNumber(open * 0.95, open * 1.05);
+			var open = randomNumber(lastClose * 0.95, lastClose * 1.05).toFixed(2);
+			var close = randomNumber(open * 0.95, open * 1.05).toFixed(2);
 			return {
 				t: date.valueOf(),
 				y: close
@@ -44,12 +44,10 @@
 		var dateFormat = 'MMMM DD YYYY';
 		var date = moment('April 01 2017', dateFormat);
 		var data = [randomBar(date, 30)];
-		var labels = [date];
 		while (data.length < 60) {
 			date = date.clone().add(1, 'd');
 			if (date.isoWeekday() <= 5) {
 				data.push(randomBar(date, data[data.length - 1].y));
-				labels.push(date);
 			}
 		}
 
@@ -61,7 +59,6 @@
 		var cfg = {
 			type: 'bar',
 			data: {
-				labels: labels,
 				datasets: [{
 					label: 'CHRT - Chart.js Corporation',
 					backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
@@ -80,7 +77,8 @@
 						type: 'time',
 						distribution: 'series',
 						ticks: {
-							source: 'labels'
+							source: 'data',
+							autoSkip: true
 						}
 					}],
 					yAxes: [{
@@ -89,9 +87,24 @@
 							labelString: 'Closing price ($)'
 						}
 					}]
+				},
+				tooltips: {
+					intersect: false,
+					mode: 'index',
+					callbacks: {
+						label: function(tooltipItem, myData) {
+							var label = myData.datasets[tooltipItem.datasetIndex].label || '';
+							if (label) {
+								label += ': ';
+							}
+							label += parseFloat(tooltipItem.value).toFixed(2);
+							return label;
+						}
+					}
 				}
 			}
 		};
+
 		var chart = new Chart(ctx, cfg);
 
 		document.getElementById('update').addEventListener('click', function() {

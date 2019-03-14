@@ -69,7 +69,7 @@ Plugin options are located under the `options.plugins` config and are scoped by 
 
 ```javascript
 var chart = new Chart(ctx, {
-    config: {
+    options: {
         foo: { ... },           // chart 'foo' option
         plugins: {
             p1: {
@@ -96,7 +96,7 @@ Chart.plugins.register({
 });
 
 var chart = new Chart(ctx, {
-    config: {
+    options: {
         plugins: {
             p1: false   // disable plugin 'p1' for this instance
         }
@@ -106,27 +106,27 @@ var chart = new Chart(ctx, {
 
 ## Plugin Core API
 
-Available hooks (as of version 2.6):
+Available hooks (as of version 2.7):
 
-* beforeInit
-* afterInit
-* beforeUpdate *(cancellable)*
-* afterUpdate
-* beforeLayout *(cancellable)*
-* afterLayout
-* beforeDatasetsUpdate *(cancellable)*
-* afterDatasetsUpdate
-* beforeDatasetUpdate *(cancellable)*
-* afterDatasetUpdate
-* beforeRender *(cancellable)*
-* afterRender
-* beforeDraw *(cancellable)*
-* afterDraw
-* beforeDatasetsDraw *(cancellable)*
-* afterDatasetsDraw
-* beforeDatasetDraw *(cancellable)*
-* afterDatasetDraw
-* beforeEvent *(cancellable)*
-* afterEvent
-* resize
-* destroy
+* `beforeInit`
+* `afterInit`
+* `beforeUpdate` *(cancellable)*
+* `afterUpdate`
+* `beforeLayout` *(cancellable)*
+* `afterLayout`
+* `beforeDatasetsUpdate` *(cancellable)*
+* `afterDatasetsUpdate`
+* `beforeDatasetUpdate` *(cancellable)*
+* `afterDatasetUpdate`
+* `beforeRender` *(cancellable)*
+* `afterRender`
+* `beforeDraw` *(cancellable)*
+* `afterDraw`
+* `beforeDatasetsDraw` *(cancellable)*
+* `afterDatasetsDraw`
+* `beforeDatasetDraw` *(cancellable)*
+* `afterDatasetDraw`
+* `beforeEvent` *(cancellable)*
+* `afterEvent`
+* `resize`
+* `destroy`

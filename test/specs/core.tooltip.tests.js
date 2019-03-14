@@ -1,5 +1,7 @@
 // Test the rectangle element
 describe('Core.Tooltip', function() {
+	describe('auto', jasmine.fixture.specs('core.tooltip'));
+
 	describe('config', function() {
 		it('should not include the dataset label in the body string if not defined', function() {
 			var data = {
@@ -143,7 +145,7 @@ describe('Core.Tooltip', function() {
 				}]
 			}));
 
-			expect(tooltip._view.x).toBeCloseToPixel(266);
+			expect(tooltip._view.x).toBeCloseToPixel(267);
 			expect(tooltip._view.y).toBeCloseToPixel(155);
 		});
 
@@ -341,7 +343,7 @@ describe('Core.Tooltip', function() {
 			}]
 		}));
 
-		expect(tooltip._view.x).toBeCloseToPixel(266);
+		expect(tooltip._view.x).toBeCloseToPixel(267);
 		expect(tooltip._view.y).toBeCloseToPixel(312);
 	});
 
@@ -574,7 +576,7 @@ describe('Core.Tooltip', function() {
 			}]
 		}));
 
-		expect(tooltip._view.x).toBeCloseToPixel(266);
+		expect(tooltip._view.x).toBeCloseToPixel(267);
 		expect(tooltip._view.y).toBeCloseToPixel(155);
 	});
 
@@ -702,64 +704,61 @@ describe('Core.Tooltip', function() {
 		}));
 	});
 
-	it('Should have dataPoints', function() {
-		var chart = window.acquireChart({
-			type: 'line',
-			data: {
-				datasets: [{
-					label: 'Dataset 1',
-					data: [10, 20, 30],
-					pointHoverBorderColor: 'rgb(255, 0, 0)',
-					pointHoverBackgroundColor: 'rgb(0, 255, 0)'
-				}, {
-					label: 'Dataset 2',
-					data: [40, 40, 40],
-					pointHoverBorderColor: 'rgb(0, 0, 255)',
-					pointHoverBackgroundColor: 'rgb(0, 255, 255)'
-				}],
-				labels: ['Point 1', 'Point 2', 'Point 3']
-			},
-			options: {
-				tooltips: {
-					mode: 'single'
+	['line', 'bar', 'horizontalBar'].forEach(function(type) {
+		it('Should have dataPoints in a ' + type + ' chart', function() {
+			var chart = window.acquireChart({
+				type: type,
+				data: {
+					datasets: [{
+						label: 'Dataset 1',
+						data: [10, 20, 30],
+						pointHoverBorderColor: 'rgb(255, 0, 0)',
+						pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+					}, {
+						label: 'Dataset 2',
+						data: [40, 40, 40],
+						pointHoverBorderColor: 'rgb(0, 0, 255)',
+						pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+					}],
+					labels: ['Point 1', 'Point 2', 'Point 3']
+				},
+				options: {
+					tooltips: {
+						mode: 'single'
+					}
 				}
-			}
+			});
+
+			// Trigger an event over top of the element
+			var pointIndex = 1;
+			var datasetIndex = 0;
+			var point = chart.getDatasetMeta(datasetIndex).data[pointIndex];
+			jasmine.triggerMouseEvent(chart, 'mousemove', point);
+
+			// Check and see if tooltip was displayed
+			var tooltip = chart.tooltip;
+
+			expect(tooltip._view instanceof Object).toBe(true);
+			expect(tooltip._view.dataPoints instanceof Array).toBe(true);
+			expect(tooltip._view.dataPoints.length).toBe(1);
+
+			var tooltipItem = tooltip._view.dataPoints[0];
+
+			expect(tooltipItem.index).toBe(pointIndex);
+			expect(tooltipItem.datasetIndex).toBe(datasetIndex);
+			var indexLabel = type !== 'horizontalBar' ? 'xLabel' : 'yLabel';
+			expect(typeof tooltipItem[indexLabel]).toBe('string');
+			expect(tooltipItem[indexLabel]).toBe(chart.data.labels[pointIndex]);
+			var valueLabel = type !== 'horizontalBar' ? 'yLabel' : 'xLabel';
+			expect(typeof tooltipItem[valueLabel]).toBe('number');
+			expect(tooltipItem[valueLabel]).toBe(chart.data.datasets[datasetIndex].data[pointIndex]);
+			expect(typeof tooltipItem.label).toBe('string');
+			expect(tooltipItem.label).toBe(chart.data.labels[pointIndex]);
+			expect(typeof tooltipItem.value).toBe('string');
+			expect(tooltipItem.value).toBe('' + chart.data.datasets[datasetIndex].data[pointIndex]);
+			expect(tooltipItem.x).toBeCloseToPixel(point._model.x);
+			expect(tooltipItem.y).toBeCloseToPixel(point._model.y);
 		});
-
-		// Trigger an event over top of the
-		var pointIndex = 1;
-		var datasetIndex = 0;
-		var meta = chart.getDatasetMeta(datasetIndex);
-		var point = meta.data[pointIndex];
-		var node = chart.canvas;
-		var rect = node.getBoundingClientRect();
-		var evt = new MouseEvent('mousemove', {
-			view: window,
-			bubbles: true,
-			cancelable: true,
-			clientX: rect.left + point._model.x,
-			clientY: rect.top + point._model.y
-		});
-
-		// Manually trigger rather than having an async test
-		node.dispatchEvent(evt);
-
-		// Check and see if tooltip was displayed
-		var tooltip = chart.tooltip;
-
-		expect(tooltip._view instanceof Object).toBe(true);
-		expect(tooltip._view.dataPoints instanceof Array).toBe(true);
-		expect(tooltip._view.dataPoints.length).toEqual(1);
-		expect(tooltip._view.dataPoints[0].index).toEqual(pointIndex);
-		expect(tooltip._view.dataPoints[0].datasetIndex).toEqual(datasetIndex);
-		expect(tooltip._view.dataPoints[0].xLabel).toEqual(
-			chart.data.labels[pointIndex]
-		);
-		expect(tooltip._view.dataPoints[0].yLabel).toEqual(
-			chart.data.datasets[datasetIndex].data[pointIndex]
-		);
-		expect(tooltip._view.dataPoints[0].x).toBeCloseToPixel(point._model.x);
-		expect(tooltip._view.dataPoints[0].y).toBeCloseToPixel(point._model.y);
 	});
 
 	it('Should not update if active element has not changed', function() {
@@ -941,7 +940,7 @@ describe('Core.Tooltip', function() {
 				if (model.width <= chart.width) {
 					expect(model.x + model.width).toBeLessThanOrEqual(chart.width);
 				}
-				expect(model.caretX).toBe(tooltipPosition.x);
+				expect(model.caretX).toBeCloseToPixel(tooltipPosition.x);
 				// if tooltip is longer than chart area then all tests done
 				if (model.width > chart.width) {
 					break;
@@ -1096,5 +1095,175 @@ describe('Core.Tooltip', function() {
 				backgroundColor: 'rgb(0, 255, 255)'
 			}]
 		}));
+	});
+
+	describe('text align', function() {
+		var globalDefaults = Chart.defaults.global;
+		var makeView = function(title, body, footer) {
+			return {
+				// Positioning
+				x: 100,
+				y: 100,
+				width: 100,
+				height: 100,
+				xPadding: 5,
+				yPadding: 5,
+				xAlign: 'left',
+				yAlign: 'top',
+
+				// Body
+				bodyFontColor: '#fff',
+				_bodyFontFamily: globalDefaults.defaultFontFamily,
+				_bodyFontStyle: globalDefaults.defaultFontStyle,
+				_bodyAlign: body,
+				bodyFontSize: globalDefaults.defaultFontSize,
+				bodySpacing: 2,
+
+				// Title
+				titleFontColor: '#fff',
+				_titleFontFamily: globalDefaults.defaultFontFamily,
+				_titleFontStyle: 'bold',
+				titleFontSize: globalDefaults.defaultFontSize,
+				_titleAlign: title,
+				titleSpacing: 2,
+				titleMarginBottom: 6,
+
+				// Footer
+				footerFontColor: '#fff',
+				_footerFontFamily: globalDefaults.defaultFontFamily,
+				_footerFontStyle: 'bold',
+				footerFontSize: globalDefaults.defaultFontSize,
+				_footerAlign: footer,
+				footerSpacing: 2,
+				footerMarginTop: 6,
+
+				// Appearance
+				caretSize: 5,
+				cornerRadius: 6,
+				borderColor: '#aaa',
+				borderWidth: 1,
+				backgroundColor: 'rgba(0,0,0,0.8)',
+				opacity: 1,
+				legendColorBackground: '#fff',
+
+				// Text
+				title: ['title'],
+				beforeBody: [],
+				body: [{
+					before: [],
+					lines: ['label'],
+					after: []
+				}],
+				afterBody: [],
+				footer: ['footer'],
+				caretPadding: 2,
+				labelTextColors: ['#fff'],
+				labelColors: [{
+					borderColor: 'rgb(255, 0, 0)',
+					backgroundColor: 'rgb(0, 255, 0)'
+				}, {
+					borderColor: 'rgb(0, 0, 255)',
+					backgroundColor: 'rgb(0, 255, 255)'
+				}]
+			};
+		};
+		var drawBody = [
+			{name: 'save', args: []},
+			{name: 'setFillStyle', args: ['rgba(0,0,0,0.8)']},
+			{name: 'setStrokeStyle', args: ['#aaa']},
+			{name: 'setLineWidth', args: [1]},
+			{name: 'beginPath', args: []},
+			{name: 'moveTo', args: [106, 100]},
+			{name: 'lineTo', args: [106, 100]},
+			{name: 'lineTo', args: [111, 95]},
+			{name: 'lineTo', args: [116, 100]},
+			{name: 'lineTo', args: [194, 100]},
+			{name: 'quadraticCurveTo', args: [200, 100, 200, 106]},
+			{name: 'lineTo', args: [200, 194]},
+			{name: 'quadraticCurveTo', args: [200, 200, 194, 200]},
+			{name: 'lineTo', args: [106, 200]},
+			{name: 'quadraticCurveTo', args: [100, 200, 100, 194]},
+			{name: 'lineTo', args: [100, 106]},
+			{name: 'quadraticCurveTo', args: [100, 100, 106, 100]},
+			{name: 'closePath', args: []},
+			{name: 'fill', args: []},
+			{name: 'stroke', args: []}
+		];
+
+		var mockContext = window.createMockContext();
+		var tooltip = new Chart.Tooltip({
+			_options: globalDefaults.tooltips,
+			_chart: {
+				ctx: mockContext,
+			}
+		});
+
+		it('Should go left', function() {
+			mockContext.resetCalls();
+			tooltip._view = makeView('left', 'left', 'left');
+			tooltip.draw();
+
+			expect(mockContext.getCalls()).toEqual(Array.prototype.concat(drawBody, [
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['title', 105, 105]},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['label', 105, 123]},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['footer', 105, 141]},
+				{name: 'restore', args: []}
+			]));
+		});
+
+		it('Should go right', function() {
+			mockContext.resetCalls();
+			tooltip._view = makeView('right', 'right', 'right');
+			tooltip.draw();
+
+			expect(mockContext.getCalls()).toEqual(Array.prototype.concat(drawBody, [
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['title', 195, 105]},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['label', 195, 123]},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['footer', 195, 141]},
+				{name: 'restore', args: []}
+			]));
+		});
+
+		it('Should center', function() {
+			mockContext.resetCalls();
+			tooltip._view = makeView('center', 'center', 'center');
+			tooltip.draw();
+
+			expect(mockContext.getCalls()).toEqual(Array.prototype.concat(drawBody, [
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['title', 150, 105]},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['label', 150, 123]},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['footer', 150, 141]},
+				{name: 'restore', args: []}
+			]));
+		});
+
+		it('Should allow mixed', function() {
+			mockContext.resetCalls();
+			tooltip._view = makeView('right', 'center', 'left');
+			tooltip.draw();
+
+			expect(mockContext.getCalls()).toEqual(Array.prototype.concat(drawBody, [
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['title', 195, 105]},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['label', 150, 123]},
+				{name: 'setFillStyle', args: ['#fff']},
+				{name: 'fillText', args: ['footer', 105, 141]},
+				{name: 'restore', args: []}
+			]));
+		});
 	});
 });

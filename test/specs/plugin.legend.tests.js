@@ -11,6 +11,7 @@ describe('Legend block tests', function() {
 			// a callback that will handle
 			onClick: jasmine.any(Function),
 			onHover: null,
+			onLeave: null,
 
 			labels: {
 				boxWidth: 40,
@@ -176,7 +177,7 @@ describe('Legend block tests', function() {
 		expect(makeChart).not.toThrow();
 	});
 
-	it('should draw correctly', function() {
+	it('should draw correctly when the legend is positioned on the top', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
@@ -205,9 +206,9 @@ describe('Legend block tests', function() {
 		expect(chart.legend.legendHitBoxes.length).toBe(3);
 
 		[
-			{h: 12, l: 101, t: 10, w: 93},
-			{h: 12, l: 205, t: 10, w: 93},
-			{h: 12, l: 308, t: 10, w: 93}
+			{h: 12, l: 106, t: 10, w: 93},
+			{h: 12, l: 209, t: 10, w: 93},
+			{h: 12, l: 312, t: 10, w: 93}
 		].forEach(function(expected, i) {
 			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
 			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
@@ -217,7 +218,7 @@ describe('Legend block tests', function() {
 
 		// NOTE(SB) We should get ride of the following tests and use image diff instead.
 		// For now, as discussed with Evert Timberg, simply comment out.
-		// See http://humblesoftware.github.io/js-imagediff/test.html
+		// See https://humblesoftware.github.io/js-imagediff/test.html
 		/* chart.legend.ctx = window.createMockContext();
 		chart.update();
 
@@ -389,6 +390,182 @@ describe('Legend block tests', function() {
 		}]);*/
 	});
 
+	it('should draw correctly when the legend is positioned on the left', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					label: 'dataset1',
+					backgroundColor: '#f31',
+					borderCapStyle: 'butt',
+					borderDash: [2, 2],
+					borderDashOffset: 5.5,
+					data: []
+				}, {
+					label: 'dataset2',
+					hidden: true,
+					borderJoinStyle: 'miter',
+					data: []
+				}, {
+					label: 'dataset3',
+					borderWidth: 10,
+					borderColor: 'green',
+					data: []
+				}],
+				labels: []
+			},
+			options: {
+				legend: {
+					position: 'left'
+				}
+			}
+		});
+
+		expect(chart.legend.legendHitBoxes.length).toBe(3);
+
+		[
+			{h: 12, l: 10, t: 16, w: 93},
+			{h: 12, l: 10, t: 38, w: 93},
+			{h: 12, l: 10, t: 60, w: 93}
+		].forEach(function(expected, i) {
+			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
+			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
+			expect(chart.legend.legendHitBoxes[i].top).toBeCloseToPixel(expected.t);
+			expect(chart.legend.legendHitBoxes[i].width).toBeCloseToPixel(expected.w);
+		});
+	});
+
+	it('should draw correctly when the legend is positioned on the top and has multiple rows', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: Array.apply(null, Array(9)).map(function() {
+					return {
+						label: ' ',
+						data: []
+					};
+				}),
+				labels: []
+			}
+		});
+
+		expect(chart.legend.left).toBeCloseToPixel(0);
+		expect(chart.legend.top).toBeCloseToPixel(0);
+		expect(chart.legend.width).toBeCloseToPixel(512);
+		expect(chart.legend.height).toBeCloseToPixel(54);
+		expect(chart.legend.legendHitBoxes.length).toBe(9);
+
+		[
+			{h: 12, l: 24, t: 10, w: 49},
+			{h: 12, l: 83, t: 10, w: 49},
+			{h: 12, l: 142, t: 10, w: 49},
+			{h: 12, l: 202, t: 10, w: 49},
+			{h: 12, l: 261, t: 10, w: 49},
+			{h: 12, l: 320, t: 10, w: 49},
+			{h: 12, l: 380, t: 10, w: 49},
+			{h: 12, l: 439, t: 10, w: 49},
+			{h: 12, l: 231, t: 32, w: 49}
+		].forEach(function(expected, i) {
+			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
+			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
+			expect(chart.legend.legendHitBoxes[i].top).toBeCloseToPixel(expected.t);
+			expect(chart.legend.legendHitBoxes[i].width).toBeCloseToPixel(expected.w);
+		});
+	});
+
+	it('should draw correctly when the legend is positioned on the left and has multiple columns', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: Array.apply(null, Array(22)).map(function() {
+					return {
+						label: ' ',
+						data: []
+					};
+				}),
+				labels: []
+			},
+			options: {
+				legend: {
+					position: 'left'
+				}
+			}
+		});
+
+		expect(chart.legend.left).toBeCloseToPixel(0);
+		expect(chart.legend.top).toBeCloseToPixel(6);
+		expect(chart.legend.width).toBeCloseToPixel(128);
+		expect(chart.legend.height).toBeCloseToPixel(476);
+		expect(chart.legend.legendHitBoxes.length).toBe(22);
+
+		[
+			{h: 12, l: 10, t: 16, w: 49},
+			{h: 12, l: 10, t: 38, w: 49},
+			{h: 12, l: 10, t: 60, w: 49},
+			{h: 12, l: 10, t: 82, w: 49},
+			{h: 12, l: 10, t: 104, w: 49},
+			{h: 12, l: 10, t: 126, w: 49},
+			{h: 12, l: 10, t: 148, w: 49},
+			{h: 12, l: 10, t: 170, w: 49},
+			{h: 12, l: 10, t: 192, w: 49},
+			{h: 12, l: 10, t: 214, w: 49},
+			{h: 12, l: 10, t: 236, w: 49},
+			{h: 12, l: 10, t: 258, w: 49},
+			{h: 12, l: 10, t: 280, w: 49},
+			{h: 12, l: 10, t: 302, w: 49},
+			{h: 12, l: 10, t: 324, w: 49},
+			{h: 12, l: 10, t: 346, w: 49},
+			{h: 12, l: 10, t: 368, w: 49},
+			{h: 12, l: 10, t: 390, w: 49},
+			{h: 12, l: 10, t: 412, w: 49},
+			{h: 12, l: 10, t: 434, w: 49},
+			{h: 12, l: 10, t: 456, w: 49},
+			{h: 12, l: 69, t: 16, w: 49}
+		].forEach(function(expected, i) {
+			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
+			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
+			expect(chart.legend.legendHitBoxes[i].top).toBeCloseToPixel(expected.t);
+			expect(chart.legend.legendHitBoxes[i].width).toBeCloseToPixel(expected.w);
+		});
+	});
+
+	it('should not draw legend items outside of the chart bounds', function() {
+		var chart = window.acquireChart(
+			{
+				type: 'line',
+				data: {
+					datasets: [1, 2, 3].map(function(n) {
+						return {
+							label: 'dataset' + n,
+							data: []
+						};
+					}),
+					labels: []
+				},
+				options: {
+					legend: {
+						position: 'right'
+					}
+				}
+			},
+			{
+				canvas: {
+					width: 512,
+					height: 105
+				}
+			}
+		);
+
+		// Check some basic assertions about the test setup
+		expect(chart.width).toBe(512);
+		expect(chart.legend.legendHitBoxes.length).toBe(3);
+
+		// Check whether any legend items reach outside the established bounds
+		chart.legend.legendHitBoxes.forEach(function(item) {
+			expect(item.left + item.width).toBeLessThanOrEqual(chart.width);
+		});
+	});
+
 	describe('config update', function() {
 		it ('should update the options', function() {
 			var chart = acquireChart({
@@ -475,6 +652,55 @@ describe('Legend block tests', function() {
 			chart.update();
 			expect(chart.legend).not.toBe(undefined);
 			expect(chart.legend.options).toEqual(jasmine.objectContaining(Chart.defaults.global.legend));
+		});
+	});
+
+	describe('callbacks', function() {
+		it('should call onClick, onHover and onLeave at the correct times', function() {
+			var clickItem = null;
+			var hoverItem = null;
+			var leaveItem = null;
+
+			var chart = acquireChart({
+				type: 'line',
+				data: {
+					labels: ['A', 'B', 'C', 'D'],
+					datasets: [{
+						data: [10, 20, 30, 100]
+					}]
+				},
+				options: {
+					legend: {
+						onClick: function(_, item) {
+							clickItem = item;
+						},
+						onHover: function(_, item) {
+							hoverItem = item;
+						},
+						onLeave: function(_, item) {
+							leaveItem = item;
+						}
+					}
+				}
+			});
+
+			var hb = chart.legend.legendHitBoxes[0];
+			var el = {
+				x: hb.left + (hb.width / 2),
+				y: hb.top + (hb.height / 2)
+			};
+
+			jasmine.triggerMouseEvent(chart, 'click', el);
+
+			expect(clickItem).toBe(chart.legend.legendItems[0]);
+
+			jasmine.triggerMouseEvent(chart, 'mousemove', el);
+
+			expect(hoverItem).toBe(chart.legend.legendItems[0]);
+
+			jasmine.triggerMouseEvent(chart, 'mousemove', chart.getDatasetMeta(0).data[0]);
+
+			expect(leaveItem).toBe(chart.legend.legendItems[0]);
 		});
 	});
 });

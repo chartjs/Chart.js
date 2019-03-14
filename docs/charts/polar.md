@@ -26,7 +26,7 @@ This type of chart is often useful when we want to show a comparison data simila
                 "rgb(54, 162, 235)"
             ]
         }]
-    },
+    }
 }
 {% endchartjs %}
 
@@ -44,14 +44,48 @@ new Chart(ctx, {
 
 The following options can be included in a polar area chart dataset to configure options for that specific dataset.
 
-| Name | Type | Description
-| ---- | ---- | -----------
-| `backgroundColor` | `Color[]` | The fill color of the arcs in the dataset. See [Colors](../general/colors.md#colors)
-| `borderColor` | `Color[]` | The border color of the arcs in the dataset. See [Colors](../general/colors.md#colors)
-| `borderWidth` | `Number[]` | The border width of the arcs in the dataset.
-| `hoverBackgroundColor` | `Color[]` | The fill colour of the arcs when hovered.
-| `hoverBorderColor` | `Color[]` | The stroke colour of the arcs when hovered.
-| `hoverBorderWidth` | `Number[]` | The stroke width of the arcs when hovered.
+| Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) | Default
+| ---- | ---- | :----: | :----: | ----
+| [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
+| [`borderAlign`](#border-alignment) | `string` | Yes | Yes | `'center'`
+| [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'#fff'`
+| [`borderWidth`](#styling) | `number` | Yes | Yes | `2`
+| [`data`](#data-structure) | `number[]` | - | - | **required**
+| [`hoverBackgroundColor`](#interations) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
+| [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
+| [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `undefined`
+
+### Styling
+
+The style of each arc can be controlled with the following properties:
+
+| Name | Description
+| ---- | ----
+| `backgroundColor` | arc background color.
+| `borderColor` | arc border color.
+| `borderWidth` | arc border width (in pixels).
+
+All these values, if `undefined`, fallback to the associated [`elements.arc.*`](../configuration/elements.md#arc-configuration) options.
+
+### Border Alignment
+
+The following values are supported for `borderAlign`.
+* `'center'` (default)
+* `'inner'`
+
+When `'center'` is set, the borders of arcs next to each other will overlap. When `'inner'` is set, it is guaranteed that all the borders are not overlap.
+
+### Interactions
+
+The interaction with each arc can be controlled with the following properties:
+
+| Name | Description
+| ---- | -----------
+| `hoverBackgroundColor` | arc background color when hovered.
+| `hoverBorderColor` | arc border color when hovered.
+| `hoverBorderWidth` | arc border width when hovered (in pixels).
+
+All these values, if `undefined`, fallback to the associated [`elements.arc.*`](../configuration/elements.md#arc-configuration) options.
 
 ## Config Options
 
@@ -59,9 +93,9 @@ These are the customisation options specific to Polar Area charts. These options
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `startAngle` | `Number` | `-0.5 * Math.PI` | Starting angle to draw arcs for the first item in a dataset.
-| `animation.animateRotate` | `Boolean` | `true` | If true, the chart will animate in with a rotation animation. This property is in the `options.animation` object.
-| `animation.animateScale` | `Boolean` | `true` | If true, will animate scaling the chart from the center outwards.
+| `startAngle` | `number` | `-0.5 * Math.PI` | Starting angle to draw arcs for the first item in a dataset.
+| `animation.animateRotate` | `boolean` | `true` | If true, the chart will animate in with a rotation animation. This property is in the `options.animation` object.
+| `animation.animateScale` | `boolean` | `true` | If true, will animate scaling the chart from the center outwards.
 
 ## Default Options
 

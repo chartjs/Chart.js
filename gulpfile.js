@@ -1,67 +1,57 @@
 var gulp = require('gulp');
-var concat = require('gulp-concat');
-var connect = require('gulp-connect');
 var eslint = require('gulp-eslint');
 var file = require('gulp-file');
-var insert = require('gulp-insert');
 var replace = require('gulp-replace');
 var size = require('gulp-size');
 var streamify = require('gulp-streamify');
-var uglify = require('gulp-uglify');
-var util = require('gulp-util');
+var terser = require('gulp-terser');
 var zip = require('gulp-zip');
-var exec = require('child-process-promise').exec;
+var exec = require('child_process').exec;
 var karma = require('karma');
-var browserify = require('browserify');
-var source = require('vinyl-source-stream');
 var merge = require('merge-stream');
-var collapse = require('bundle-collapser/plugin');
 var yargs = require('yargs');
 var path = require('path');
-var fs = require('fs');
 var htmllint = require('gulp-htmllint');
 var pkg = require('./package.json');
 
 var argv = yargs
-  .option('force-output', {default: false})
-  .option('silent-errors', {default: false})
   .option('verbose', {default: false})
-  .argv
+  .argv;
 
 var srcDir = './src/';
 var outDir = './dist/';
 
-var header = "/*!\n" +
-  " * Chart.js\n" +
-  " * http://chartjs.org/\n" +
-  " * Version: {{ version }}\n" +
-  " *\n" +
-  " * Copyright " + (new Date().getFullYear()) + " Chart.js Contributors\n" +
-  " * Released under the MIT license\n" +
-  " * https://github.com/chartjs/Chart.js/blob/master/LICENSE.md\n" +
-  " */\n";
-
-if (argv.verbose) {
-  util.log("Gulp running with options: " + JSON.stringify(argv, null, 2));
-}
-
 gulp.task('bower', bowerTask);
 gulp.task('build', buildTask);
 gulp.task('package', packageTask);
-gulp.task('watch', watchTask);
-gulp.task('lint', ['lint-html', 'lint-js']);
 gulp.task('lint-html', lintHtmlTask);
 gulp.task('lint-js', lintJsTask);
+gulp.task('lint', gulp.parallel('lint-html', 'lint-js'));
 gulp.task('docs', docsTask);
-gulp.task('test', ['lint', 'unittest']);
-gulp.task('size', ['library-size', 'module-sizes']);
-gulp.task('server', serverTask);
 gulp.task('unittest', unittestTask);
+gulp.task('test', gulp.parallel('lint', 'unittest'));
 gulp.task('library-size', librarySizeTask);
 gulp.task('module-sizes', moduleSizesTask);
-gulp.task('_open', _openTask);
-gulp.task('dev', ['server', 'default']);
-gulp.task('default', ['build', 'watch']);
+gulp.task('size', gulp.parallel('library-size', 'module-sizes'));
+gulp.task('default', gulp.parallel('build'));
+
+function run(bin, args, done) {
+  return new Promise(function(resolve, reject) {
+    var exe = '"' + process.execPath + '"';
+    var src = require.resolve(bin);
+    var ps = exec([exe, src].concat(args || []).join(' '));
+
+    ps.stdout.pipe(process.stdout);
+    ps.stderr.pipe(process.stderr);
+    ps.on('close', function(error) {
+      if (error) {
+        reject(error);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
 
 /**
  * Generates the bower.json manifest file which will be pushed along release tags.
@@ -74,7 +64,7 @@ function bowerTask() {
       homepage: pkg.homepage,
       license: pkg.license,
       version: pkg.version,
-      main: outDir + "Chart.js",
+      main: outDir + 'Chart.js',
       ignore: [
         '.github',
         '.codeclimate.yml',
@@ -90,59 +80,13 @@ function bowerTask() {
 }
 
 function buildTask() {
-
-  var errorHandler = function (err) {
-    if(argv.forceOutput) {
-      var browserError = 'console.error("Gulp: ' + err.toString() + '")';
-      ['Chart', 'Chart.min', 'Chart.bundle', 'Chart.bundle.min'].forEach(function(fileName) {
-        fs.writeFileSync(outDir+fileName+'.js', browserError);
-      });
-    }
-    if(argv.silentErrors) {
-      util.log(util.colors.red('[Error]'), err.toString());
-      this.emit('end');
-    } else {
-      throw err;
-    }
-  }
-
-  var bundled = browserify('./src/chart.js', { standalone: 'Chart' })
-    .plugin(collapse)
-    .bundle()
-    .on('error', errorHandler)
-    .pipe(source('Chart.bundle.js'))
-    .pipe(insert.prepend(header))
-    .pipe(streamify(replace('{{ version }}', pkg.version)))
-    .pipe(gulp.dest(outDir))
-    .pipe(streamify(uglify()))
-    .pipe(insert.prepend(header))
-    .pipe(streamify(replace('{{ version }}', pkg.version)))
-    .pipe(streamify(concat('Chart.bundle.min.js')))
-    .pipe(gulp.dest(outDir));
-
-  var nonBundled = browserify('./src/chart.js', { standalone: 'Chart' })
-    .ignore('moment')
-    .plugin(collapse)
-    .bundle()
-    .on('error', errorHandler)
-    .pipe(source('Chart.js'))
-    .pipe(insert.prepend(header))
-    .pipe(streamify(replace('{{ version }}', pkg.version)))
-    .pipe(gulp.dest(outDir))
-    .pipe(streamify(uglify()))
-    .pipe(insert.prepend(header))
-    .pipe(streamify(replace('{{ version }}', pkg.version)))
-    .pipe(streamify(concat('Chart.min.js')))
-    .pipe(gulp.dest(outDir));
-
-  return merge(bundled, nonBundled);
-
+  return run('rollup/bin/rollup', ['-c', argv.watch ? '--watch' : '']);
 }
 
 function packageTask() {
   return merge(
       // gather "regular" files landing in the package root
-      gulp.src([outDir + '*.js', 'LICENSE.md']),
+      gulp.src([outDir + '*.js', outDir + '*.css', 'LICENSE.md']),
 
       // since we moved the dist files one folder up (package root), we need to rewrite
       // samples src="../dist/ to src="../ and then copy them in the /samples directory.
@@ -185,40 +129,22 @@ function lintHtmlTask() {
     }));
 }
 
-function docsTask(done) {
-  const script = require.resolve('gitbook-cli/bin/gitbook.js');
-  const cmd = process.execPath;
+function docsTask() {
+  var bin = 'gitbook-cli/bin/gitbook.js';
+  var cmd = argv.watch ? 'serve' : 'build';
 
-  exec([cmd, script, 'install', './'].join(' ')).then(() => {
-    return exec([cmd, script, argv.watch ? 'serve' : 'build', './', './dist/docs'].join(' '));
-  }).catch((err) => {
-    console.error(err.stdout);
-  }).then(() => {
-    done();
-  });
-}
-
-function startTest() {
-  return [
-    {pattern: './test/fixtures/**/*.json', included: false},
-    {pattern: './test/fixtures/**/*.png', included: false},
-    './node_modules/moment/min/moment.min.js',
-    './test/jasmine.index.js',
-    './src/**/*.js',
-  ].concat(
-    argv.inputs ?
-      argv.inputs.split(';') :
-      ['./test/specs/**/*.js']
-  );
+  return run(bin, ['install', './'])
+    .then(() => run(bin, [cmd, './', './dist/docs']));
 }
 
 function unittestTask(done) {
   new karma.Server({
     configFile: path.join(__dirname, 'karma.conf.js'),
     singleRun: !argv.watch,
-    files: startTest(),
     args: {
-      coverage: !!argv.coverage
+      coverage: !!argv.coverage,
+      inputs: (argv.inputs || 'test/specs/**/*.js').split(';'),
+      watch: argv.watch
     }
   },
   // https://github.com/karma-runner/gulp-karma/issues/18
@@ -237,29 +163,9 @@ function librarySizeTask() {
 
 function moduleSizesTask() {
   return gulp.src(srcDir + '**/*.js')
-    .pipe(uglify())
+    .pipe(terser())
     .pipe(size({
       showFiles: true,
       gzip: true
     }));
-}
-
-function watchTask() {
-  if (util.env.test) {
-    return gulp.watch('./src/**', ['build', 'unittest', 'unittestWatch']);
-  }
-  return gulp.watch('./src/**', ['build']);
-}
-
-function serverTask() {
-  connect.server({
-    port: 8000
-  });
-}
-
-// Convenience task for opening the project straight from the command line
-
-function _openTask() {
-  exec('open http://localhost:8000');
-  exec('subl .');
 }

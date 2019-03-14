@@ -159,6 +159,150 @@ describe('Chart', function() {
 		});
 	});
 
+	describe('when merging scale options', function() {
+		beforeEach(function() {
+			Chart.helpers.merge(Chart.defaults.scale, {
+				_jasmineCheckA: 'a0',
+				_jasmineCheckB: 'b0',
+				_jasmineCheckC: 'c0'
+			});
+
+			Chart.helpers.merge(Chart.scaleService.defaults.logarithmic, {
+				_jasmineCheckB: 'b1',
+				_jasmineCheckC: 'c1',
+			});
+		});
+
+		afterEach(function() {
+			delete Chart.defaults.scale._jasmineCheckA;
+			delete Chart.defaults.scale._jasmineCheckB;
+			delete Chart.defaults.scale._jasmineCheckC;
+			delete Chart.scaleService.defaults.logarithmic._jasmineCheckB;
+			delete Chart.scaleService.defaults.logarithmic._jasmineCheckC;
+		});
+
+		it('should default to "category" for x scales and "linear" for y scales', function() {
+			var chart = acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						xAxes: [
+							{id: 'foo0'},
+							{id: 'foo1'}
+						],
+						yAxes: [
+							{id: 'bar0'},
+							{id: 'bar1'}
+						]
+					}
+				}
+			});
+
+			expect(chart.scales.foo0.type).toBe('category');
+			expect(chart.scales.foo1.type).toBe('category');
+			expect(chart.scales.bar0.type).toBe('linear');
+			expect(chart.scales.bar1.type).toBe('linear');
+		});
+
+		it('should correctly apply defaults on central scale', function() {
+			var chart = acquireChart({
+				type: 'line',
+				options: {
+					scale: {
+						id: 'foo',
+						type: 'logarithmic',
+						_jasmineCheckC: 'c2',
+						_jasmineCheckD: 'd2'
+					}
+				}
+			});
+
+			// let's check a few values from the user options and defaults
+
+			expect(chart.scales.foo.type).toBe('logarithmic');
+			expect(chart.scales.foo.options).toBe(chart.options.scale);
+			expect(chart.scales.foo.options).toEqual(
+				jasmine.objectContaining({
+					_jasmineCheckA: 'a0',
+					_jasmineCheckB: 'b1',
+					_jasmineCheckC: 'c2',
+					_jasmineCheckD: 'd2'
+				}));
+		});
+
+		it('should correctly apply defaults on xy scales', function() {
+			var chart = acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'foo',
+							type: 'logarithmic',
+							_jasmineCheckC: 'c2',
+							_jasmineCheckD: 'd2'
+						}],
+						yAxes: [{
+							id: 'bar',
+							type: 'time',
+							_jasmineCheckC: 'c2',
+							_jasmineCheckE: 'e2'
+						}]
+					}
+				}
+			});
+
+			expect(chart.scales.foo.type).toBe('logarithmic');
+			expect(chart.scales.foo.options).toBe(chart.options.scales.xAxes[0]);
+			expect(chart.scales.foo.options).toEqual(
+				jasmine.objectContaining({
+					_jasmineCheckA: 'a0',
+					_jasmineCheckB: 'b1',
+					_jasmineCheckC: 'c2',
+					_jasmineCheckD: 'd2'
+				}));
+
+			expect(chart.scales.bar.type).toBe('time');
+			expect(chart.scales.bar.options).toBe(chart.options.scales.yAxes[0]);
+			expect(chart.scales.bar.options).toEqual(
+				jasmine.objectContaining({
+					_jasmineCheckA: 'a0',
+					_jasmineCheckB: 'b0',
+					_jasmineCheckC: 'c2',
+					_jasmineCheckE: 'e2'
+				}));
+		});
+
+		it('should not alter defaults when merging config', function() {
+			var chart = acquireChart({
+				type: 'line',
+				options: {
+					_jasmineCheck: 42,
+					scales: {
+						xAxes: [{
+							id: 'foo',
+							type: 'linear',
+							_jasmineCheck: 42,
+						}],
+						yAxes: [{
+							id: 'bar',
+							type: 'category',
+							_jasmineCheck: 42,
+						}]
+					}
+				}
+			});
+
+			expect(chart.options._jasmineCheck).toBeDefined();
+			expect(chart.scales.foo.options._jasmineCheck).toBeDefined();
+			expect(chart.scales.bar.options._jasmineCheck).toBeDefined();
+
+			expect(Chart.defaults.line._jasmineCheck).not.toBeDefined();
+			expect(Chart.defaults.global._jasmineCheck).not.toBeDefined();
+			expect(Chart.scaleService.defaults.linear._jasmineCheck).not.toBeDefined();
+			expect(Chart.scaleService.defaults.category._jasmineCheck).not.toBeDefined();
+		});
+	});
+
 	describe('config.options.responsive: false', function() {
 		it('should not inject the resizer element', function() {
 			var chart = acquireChart({
@@ -207,6 +351,46 @@ describe('Chart', function() {
 				},
 				wrapper: {
 					style: 'width: 300px; height: 350px; position: relative'
+				}
+			});
+
+			expect(chart).toBeChartOfSize({
+				dw: 300, dh: 350,
+				rw: 300, rh: 350,
+			});
+
+			var wrapper = chart.canvas.parentNode;
+			wrapper.style.width = '455px';
+			waitForResize(chart, function() {
+				expect(chart).toBeChartOfSize({
+					dw: 455, dh: 350,
+					rw: 455, rh: 350,
+				});
+
+				wrapper.style.width = '150px';
+				waitForResize(chart, function() {
+					expect(chart).toBeChartOfSize({
+						dw: 150, dh: 350,
+						rw: 150, rh: 350,
+					});
+
+					done();
+				});
+			});
+		});
+
+		it('should resize the canvas when parent is RTL and width changes', function(done) {
+			var chart = acquireChart({
+				options: {
+					responsive: true,
+					maintainAspectRatio: false
+				}
+			}, {
+				canvas: {
+					style: ''
+				},
+				wrapper: {
+					style: 'width: 300px; height: 350px; position: relative; direction: rtl'
 				}
 			});
 
@@ -761,16 +945,16 @@ describe('Chart', function() {
 			// then we will reset and see that they moved
 			expect(meta.data[0]._model.y).toBeCloseToPixel(333);
 			expect(meta.data[1]._model.y).toBeCloseToPixel(183);
-			expect(meta.data[2]._model.y).toBe(32);
-			expect(meta.data[3]._model.y).toBe(484);
+			expect(meta.data[2]._model.y).toBeCloseToPixel(32);
+			expect(meta.data[3]._model.y).toBeCloseToPixel(482);
 
 			chart.reset();
 
 			// For a line chart, the animation state is the bottom
-			expect(meta.data[0]._model.y).toBe(484);
-			expect(meta.data[1]._model.y).toBe(484);
-			expect(meta.data[2]._model.y).toBe(484);
-			expect(meta.data[3]._model.y).toBe(484);
+			expect(meta.data[0]._model.y).toBeCloseToPixel(482);
+			expect(meta.data[1]._model.y).toBeCloseToPixel(482);
+			expect(meta.data[2]._model.y).toBeCloseToPixel(482);
+			expect(meta.data[3]._model.y).toBeCloseToPixel(482);
 		});
 	});
 
@@ -949,25 +1133,13 @@ describe('Chart', function() {
 			var meta = chart.getDatasetMeta(0);
 			var point = meta.data[1];
 
-			var node = chart.canvas;
-			var rect = node.getBoundingClientRect();
-
-			var evt = new MouseEvent('mousemove', {
-				view: window,
-				bubbles: true,
-				cancelable: true,
-				clientX: rect.left + point._model.x,
-				clientY: 0
-			});
-
-			// Manually trigger rather than having an async test
-			node.dispatchEvent(evt);
+			jasmine.triggerMouseEvent(chart, 'mousemove', point);
 
 			// Check and see if tooltip was displayed
 			var tooltip = chart.tooltip;
 
 			expect(chart.lastActive).toEqual([point]);
-			expect(tooltip._lastActive).toEqual([]);
+			expect(tooltip._lastActive).toEqual([point]);
 
 			// Update and confirm tooltip is reset
 			chart.update();
@@ -1134,7 +1306,7 @@ describe('Chart', function() {
 			expect(this.addAnimationSpy).toHaveBeenCalledWith(
 				this.chart,
 				jasmine.objectContaining({easing: 'linear'}),
-				undefined,
+				500,
 				undefined
 			);
 		});

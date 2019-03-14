@@ -1,4 +1,30 @@
 describe('Chart.controllers.scatter', function() {
+	it('should be registered as dataset controller', function() {
+		expect(typeof Chart.controllers.scatter).toBe('function');
+	});
+
+	it('should test default tooltip callbacks', function() {
+		var chart = window.acquireChart({
+			type: 'scatter',
+			data: {
+				datasets: [{
+					data: [{
+						x: 10,
+						y: 15
+					}],
+					label: 'dataset1'
+				}],
+			},
+			options: {}
+		});
+		var point = chart.getDatasetMeta(0).data[0];
+		jasmine.triggerMouseEvent(chart, 'mousemove', point);
+
+		// Title should be empty
+		expect(chart.tooltip._view.title.length).toBe(0);
+		expect(chart.tooltip._view.body[0].lines).toEqual(['(10, 15)']);
+	});
+
 	describe('showLines option', function() {
 		it('should not draw a line if undefined', function() {
 			var chart = window.acquireChart({

@@ -6,9 +6,9 @@ Creating a mixed chart starts with the initialization of a basic chart.
 
 ```javascript
 var myChart = new Chart(ctx, {
-  type: 'bar',
-  data: data,
-  options: options
+    type: 'bar',
+    data: data,
+    options: options
 });
 ```
 
@@ -16,21 +16,21 @@ At this point we have a standard bar chart. Now we need to convert one of the da
 
 ```javascript
 var mixedChart = new Chart(ctx, {
-  type: 'bar',
-  data: {
-    datasets: [{
-          label: 'Bar Dataset',
-          data: [10, 20, 30, 40]
+    type: 'bar',
+    data: {
+        datasets: [{
+            label: 'Bar Dataset',
+            data: [10, 20, 30, 40]
         }, {
-          label: 'Line Dataset',
-          data: [50, 50, 50, 50],
+            label: 'Line Dataset',
+            data: [50, 50, 50, 50],
 
-          // Changes this dataset to become a line
-          type: 'line'
+            // Changes this dataset to become a line
+            type: 'line'
         }],
-    labels: ['January', 'February', 'March', 'April']
-  },
-  options: options
+        labels: ['January', 'February', 'March', 'April']
+    },
+    options: options
 });
 ```
 
@@ -38,35 +38,35 @@ At this point we have a chart rendering how we'd like. It's important to note th
 
 {% chartjs %}
 {
-  "type": "bar",
-  "data": {
-    "labels": [
-      "January",
-      "February",
-      "March",
-      "April"
-    ],
-    "datasets": [{
-      "label": "Bar Dataset",
-      "data": [10, 20, 30, 40],
-      "borderColor": "rgb(255, 99, 132)",
-      "backgroundColor": "rgba(255, 99, 132, 0.2)"
-    }, {
-      "label": "Line Dataset",
-      "data": [50, 50, 50, 50],
-      "type": "line",
-      "fill": false,
-      "borderColor": "rgb(54, 162, 235)"
-    }]
-  },
-  "options": {
-    "scales": {
-      "yAxes": [{
-        "ticks": {
-          "beginAtZero": true
+    "type": "bar",
+    "data": {
+        "labels": [
+            "January",
+            "February",
+            "March",
+            "April"
+        ],
+        "datasets": [{
+            "label": "Bar Dataset",
+            "data": [10, 20, 30, 40],
+            "borderColor": "rgb(255, 99, 132)",
+            "backgroundColor": "rgba(255, 99, 132, 0.2)"
+        }, {
+            "label": "Line Dataset",
+            "data": [50, 50, 50, 50],
+            "type": "line",
+            "fill": false,
+            "borderColor": "rgb(54, 162, 235)"
+        }]
+    },
+    "options": {
+        "scales": {
+            "yAxes": [{
+                "ticks": {
+                    "beginAtZero": true
+                }
+            }]
         }
-      }]
     }
-  }
 }
 {% endchartjs %}

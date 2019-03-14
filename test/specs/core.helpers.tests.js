@@ -6,172 +6,6 @@ describe('Core helper tests', function() {
 		helpers = window.Chart.helpers;
 	});
 
-	it('should merge a normal config without scales', function() {
-		var baseConfig = {
-			valueProp: 5,
-			arrayProp: [1, 2, 3, 4, 5, 6],
-			objectProp: {
-				prop1: 'abc',
-				prop2: 56
-			}
-		};
-
-		var toMerge = {
-			valueProp2: null,
-			arrayProp: ['a', 'c'],
-			objectProp: {
-				prop1: 'c',
-				prop3: 'prop3'
-			}
-		};
-
-		var merged = helpers.configMerge(baseConfig, toMerge);
-		expect(merged).toEqual({
-			valueProp: 5,
-			valueProp2: null,
-			arrayProp: ['a', 'c'],
-			objectProp: {
-				prop1: 'c',
-				prop2: 56,
-				prop3: 'prop3'
-			}
-		});
-	});
-
-	it('should merge scale configs', function() {
-		var baseConfig = {
-			scales: {
-				prop1: {
-					abc: 123,
-					def: '456'
-				},
-				prop2: 777,
-				yAxes: [{
-					type: 'linear',
-				}, {
-					type: 'log'
-				}]
-			}
-		};
-
-		var toMerge = {
-			scales: {
-				prop1: {
-					def: 'bbb',
-					ghi: 78
-				},
-				prop2: null,
-				yAxes: [{
-					type: 'linear',
-					axisProp: 456
-				}, {
-					// pulls in linear default config since axis type changes
-					type: 'linear',
-					position: 'right'
-				}, {
-					// Pulls in linear default config since axis not in base
-					type: 'linear'
-				}]
-			}
-		};
-
-		var merged = helpers.configMerge(baseConfig, toMerge);
-		expect(merged).toEqual({
-			scales: {
-				prop1: {
-					abc: 123,
-					def: 'bbb',
-					ghi: 78
-				},
-				prop2: null,
-				yAxes: [{
-					type: 'linear',
-					axisProp: 456
-				}, {
-					display: true,
-
-					gridLines: {
-						color: 'rgba(0, 0, 0, 0.1)',
-						drawBorder: true,
-						drawOnChartArea: true,
-						drawTicks: true, // draw ticks extending towards the label
-						tickMarkLength: 10,
-						lineWidth: 1,
-						offsetGridLines: false,
-						display: true,
-						zeroLineColor: 'rgba(0,0,0,0.25)',
-						zeroLineWidth: 1,
-						zeroLineBorderDash: [],
-						zeroLineBorderDashOffset: 0.0,
-						borderDash: [],
-						borderDashOffset: 0.0
-					},
-					position: 'right',
-					offset: false,
-					scaleLabel: Chart.defaults.scale.scaleLabel,
-					ticks: {
-						beginAtZero: false,
-						minRotation: 0,
-						maxRotation: 50,
-						mirror: false,
-						padding: 0,
-						reverse: false,
-						display: true,
-						callback: merged.scales.yAxes[1].ticks.callback, // make it nicer, then check explicitly below
-						autoSkip: true,
-						autoSkipPadding: 0,
-						labelOffset: 0,
-						minor: {},
-						major: {},
-					},
-					type: 'linear'
-				}, {
-					display: true,
-
-					gridLines: {
-						color: 'rgba(0, 0, 0, 0.1)',
-						drawBorder: true,
-						drawOnChartArea: true,
-						drawTicks: true, // draw ticks extending towards the label,
-						tickMarkLength: 10,
-						lineWidth: 1,
-						offsetGridLines: false,
-						display: true,
-						zeroLineColor: 'rgba(0,0,0,0.25)',
-						zeroLineWidth: 1,
-						zeroLineBorderDash: [],
-						zeroLineBorderDashOffset: 0.0,
-						borderDash: [],
-						borderDashOffset: 0.0
-					},
-					position: 'left',
-					offset: false,
-					scaleLabel: Chart.defaults.scale.scaleLabel,
-					ticks: {
-						beginAtZero: false,
-						minRotation: 0,
-						maxRotation: 50,
-						mirror: false,
-						padding: 0,
-						reverse: false,
-						display: true,
-						callback: merged.scales.yAxes[2].ticks.callback, // make it nicer, then check explicitly below
-						autoSkip: true,
-						autoSkipPadding: 0,
-						labelOffset: 0,
-						minor: {},
-						major: {},
-					},
-					type: 'linear'
-				}]
-			}
-		});
-
-		// Are these actually functions
-		expect(merged.scales.yAxes[1].ticks.callback).toEqual(jasmine.any(Function));
-		expect(merged.scales.yAxes[2].ticks.callback).toEqual(jasmine.any(Function));
-	});
-
 	it('should filter an array', function() {
 		var data = [-10, 0, 6, 0, 7];
 		var callback = function(item) {
@@ -236,6 +70,17 @@ describe('Core helper tests', function() {
 		expect(helpers.toRadians(90)).toBe(0.5 * Math.PI);
 		expect(helpers.toDegrees(Math.PI)).toBe(180);
 		expect(helpers.toDegrees(Math.PI * 3 / 2)).toBe(270);
+	});
+
+	it('should get the correct number of decimal places', function() {
+		expect(helpers._decimalPlaces(100)).toBe(0);
+		expect(helpers._decimalPlaces(1)).toBe(0);
+		expect(helpers._decimalPlaces(0)).toBe(0);
+		expect(helpers._decimalPlaces(0.01)).toBe(2);
+		expect(helpers._decimalPlaces(-0.01)).toBe(2);
+		expect(helpers._decimalPlaces('1')).toBe(undefined);
+		expect(helpers._decimalPlaces('')).toBe(undefined);
+		expect(helpers._decimalPlaces(undefined)).toBe(undefined);
 	});
 
 	it('should get an angle from a point', function() {
@@ -779,7 +624,7 @@ describe('Core helper tests', function() {
 		div.style.height = '300px';
 		document.body.appendChild(div);
 
-		// Inner DIV to have 10% padding of parent
+		// Inner DIV to have 5% padding of parent
 		var innerDiv = document.createElement('div');
 
 		div.appendChild(innerDiv);
@@ -791,8 +636,8 @@ describe('Core helper tests', function() {
 		expect(helpers.getMaximumWidth(canvas)).toBe(300);
 
 		// test with percentage
-		innerDiv.style.padding = '10%';
-		expect(helpers.getMaximumWidth(canvas)).toBe(240);
+		innerDiv.style.padding = '5%';
+		expect(helpers.getMaximumWidth(canvas)).toBe(270);
 
 		// test with pixels
 		innerDiv.style.padding = '10px';
@@ -835,6 +680,13 @@ describe('Core helper tests', function() {
 
 				done();
 			};
+		});
+
+		it('should return a CanvasGradient when called with a CanvasGradient', function() {
+			var context = document.createElement('canvas').getContext('2d');
+			var gradient = context.createLinearGradient(0, 1, 2, 3);
+
+			expect(helpers.getHoverColor(gradient) instanceof CanvasGradient).toBe(true);
 		});
 
 		it('should return a modified version of color when called with a color', function() {

@@ -1,5 +1,9 @@
 describe('Chart.controllers.bubble', function() {
-	describe('auto', jasmine.specsFromFixtures('controller.bubble'));
+	describe('auto', jasmine.fixture.specs('controller.bubble'));
+
+	it('should be registered as dataset controller', function() {
+		expect(typeof Chart.controllers.bubble).toBe('function');
+	});
 
 	it('should be constructed', function() {
 		var chart = window.acquireChart({

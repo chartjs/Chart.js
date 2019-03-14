@@ -11,7 +11,7 @@ describe('Chart.layouts', function() {
 
 	// Disable tests which need to be rewritten based on changes introduced by
 	// the following changes: https://github.com/chartjs/Chart.js/pull/2346
-	// using xit marks the test as pending: http://jasmine.github.io/2.0/introduction.html#section-Pending_Specs
+	// using xit marks the test as pending: https://jasmine.github.io/2.0/introduction.html#section-Pending_Specs
 	xit('should fit a simple chart with 2 scales', function() {
 		var chart = window.acquireChart({
 			type: 'bar',

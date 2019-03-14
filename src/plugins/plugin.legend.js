@@ -6,6 +6,7 @@ var helpers = require('../helpers/index');
 var layouts = require('../core/core.layouts');
 
 var noop = helpers.noop;
+var valueOrDefault = helpers.valueOrDefault;
 
 defaults._set('global', {
 	legend: {
@@ -29,6 +30,7 @@ defaults._set('global', {
 		},
 
 		onHover: null,
+		onLeave: null,
 
 		labels: {
 			boxWidth: 40,
@@ -84,13 +86,13 @@ defaults._set('global', {
 
 /**
  * Helper function to get the box width based on the usePointStyle option
- * @param labelopts {Object} the label options on the legend
- * @param fontSize {Number} the label font size
- * @return {Number} width of the color box area
+ * @param {object} labelopts - the label options on the legend
+ * @param {number} fontSize - the label font size
+ * @return {number} width of the color box area
  */
 function getBoxWidth(labelOpts, fontSize) {
-	return labelOpts.usePointStyle ?
-		fontSize * Math.SQRT2 :
+	return labelOpts.usePointStyle && labelOpts.boxWidth > fontSize ?
+		fontSize :
 		labelOpts.boxWidth;
 }
 
@@ -104,6 +106,11 @@ var Legend = Element.extend({
 
 		// Contains hit boxes for each dataset (in dataset order)
 		this.legendHitBoxes = [];
+
+		/**
+ 		 * @private
+ 		 */
+		this._hoveredItem = null;
 
 		// Are we in doughnut mode which has a different data type
 		this.doughnutMode = false;
@@ -211,12 +218,8 @@ var Legend = Element.extend({
 
 		var ctx = me.ctx;
 
-		var globalDefault = defaults.global;
-		var valueOrDefault = helpers.valueOrDefault;
-		var fontSize = valueOrDefault(labelOpts.fontSize, globalDefault.defaultFontSize);
-		var fontStyle = valueOrDefault(labelOpts.fontStyle, globalDefault.defaultFontStyle);
-		var fontFamily = valueOrDefault(labelOpts.fontFamily, globalDefault.defaultFontFamily);
-		var labelFont = helpers.fontString(fontSize, fontStyle, fontFamily);
+		var labelFont = helpers.options._parseFont(labelOpts);
+		var fontSize = labelFont.size;
 
 		// Reset hit boxes
 		var hitboxes = me.legendHitBoxes = [];
@@ -234,14 +237,14 @@ var Legend = Element.extend({
 
 		// Increase sizes here
 		if (display) {
-			ctx.font = labelFont;
+			ctx.font = labelFont.string;
 
 			if (isHorizontal) {
 				// Labels
 
 				// Width of each line of legend boxes. Labels wrap onto multiple lines when there are too many to fit on one
 				var lineWidths = me.lineWidths = [0];
-				var totalHeight = me.legendItems.length ? fontSize + (labelOpts.padding) : 0;
+				var totalHeight = 0;
 
 				ctx.textAlign = 'left';
 				ctx.textBaseline = 'top';
@@ -250,9 +253,9 @@ var Legend = Element.extend({
 					var boxWidth = getBoxWidth(labelOpts, fontSize);
 					var width = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
 
-					if (lineWidths[lineWidths.length - 1] + width + labelOpts.padding >= me.width) {
-						totalHeight += fontSize + (labelOpts.padding);
-						lineWidths[lineWidths.length] = me.left;
+					if (i === 0 || lineWidths[lineWidths.length - 1] + width + labelOpts.padding > minSize.width) {
+						totalHeight += fontSize + labelOpts.padding;
+						lineWidths[lineWidths.length - (i > 0 ? 0 : 1)] = labelOpts.padding;
 					}
 
 					// Store the hitbox width and height here. Final position will be updated in `draw`
@@ -281,7 +284,7 @@ var Legend = Element.extend({
 					var itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
 
 					// If too tall, go to new column
-					if (currentColHeight + itemHeight > minSize.height) {
+					if (i > 0 && currentColHeight + itemHeight > minSize.height - vPadding) {
 						totalWidth += currentColWidth + labelOpts.padding;
 						columnWidths.push(currentColWidth); // previous column width
 
@@ -323,19 +326,17 @@ var Legend = Element.extend({
 		var me = this;
 		var opts = me.options;
 		var labelOpts = opts.labels;
-		var globalDefault = defaults.global;
-		var lineDefault = globalDefault.elements.line;
+		var globalDefaults = defaults.global;
+		var defaultColor = globalDefaults.defaultColor;
+		var lineDefault = globalDefaults.elements.line;
 		var legendWidth = me.width;
 		var lineWidths = me.lineWidths;
 
 		if (opts.display) {
 			var ctx = me.ctx;
-			var valueOrDefault = helpers.valueOrDefault;
-			var fontColor = valueOrDefault(labelOpts.fontColor, globalDefault.defaultFontColor);
-			var fontSize = valueOrDefault(labelOpts.fontSize, globalDefault.defaultFontSize);
-			var fontStyle = valueOrDefault(labelOpts.fontStyle, globalDefault.defaultFontStyle);
-			var fontFamily = valueOrDefault(labelOpts.fontFamily, globalDefault.defaultFontFamily);
-			var labelFont = helpers.fontString(fontSize, fontStyle, fontFamily);
+			var fontColor = valueOrDefault(labelOpts.fontColor, globalDefaults.defaultFontColor);
+			var labelFont = helpers.options._parseFont(labelOpts);
+			var fontSize = labelFont.size;
 			var cursor;
 
 			// Canvas setup
@@ -344,7 +345,7 @@ var Legend = Element.extend({
 			ctx.lineWidth = 0.5;
 			ctx.strokeStyle = fontColor; // for strikethrough effect
 			ctx.fillStyle = fontColor; // render in correct colour
-			ctx.font = labelFont;
+			ctx.font = labelFont.string;
 
 			var boxWidth = getBoxWidth(labelOpts, fontSize);
 			var hitboxes = me.legendHitBoxes;
@@ -358,13 +359,13 @@ var Legend = Element.extend({
 				// Set the ctx for the box
 				ctx.save();
 
-				ctx.fillStyle = valueOrDefault(legendItem.fillStyle, globalDefault.defaultColor);
+				var lineWidth = valueOrDefault(legendItem.lineWidth, lineDefault.borderWidth);
+				ctx.fillStyle = valueOrDefault(legendItem.fillStyle, defaultColor);
 				ctx.lineCap = valueOrDefault(legendItem.lineCap, lineDefault.borderCapStyle);
 				ctx.lineDashOffset = valueOrDefault(legendItem.lineDashOffset, lineDefault.borderDashOffset);
 				ctx.lineJoin = valueOrDefault(legendItem.lineJoin, lineDefault.borderJoinStyle);
-				ctx.lineWidth = valueOrDefault(legendItem.lineWidth, lineDefault.borderWidth);
-				ctx.strokeStyle = valueOrDefault(legendItem.strokeStyle, globalDefault.defaultColor);
-				var isLineWidthZero = (valueOrDefault(legendItem.lineWidth, lineDefault.borderWidth) === 0);
+				ctx.lineWidth = lineWidth;
+				ctx.strokeStyle = valueOrDefault(legendItem.strokeStyle, defaultColor);
 
 				if (ctx.setLineDash) {
 					// IE 9 and 10 do not support line dash
@@ -374,16 +375,15 @@ var Legend = Element.extend({
 				if (opts.labels && opts.labels.usePointStyle) {
 					// Recalculate x and y for drawPoint() because its expecting
 					// x and y to be center of figure (instead of top left)
-					var radius = fontSize * Math.SQRT2 / 2;
-					var offSet = radius / Math.SQRT2;
-					var centerX = x + offSet;
-					var centerY = y + offSet;
+					var radius = boxWidth * Math.SQRT2 / 2;
+					var centerX = x + boxWidth / 2;
+					var centerY = y + fontSize / 2;
 
 					// Draw pointStyle as legend symbol
 					helpers.canvas.drawPoint(ctx, legendItem.pointStyle, radius, centerX, centerY);
 				} else {
 					// Draw box as legend symbol
-					if (!isLineWidthZero) {
+					if (lineWidth !== 0) {
 						ctx.strokeRect(x, y, boxWidth, fontSize);
 					}
 					ctx.fillRect(x, y, boxWidth, fontSize);
@@ -412,7 +412,7 @@ var Legend = Element.extend({
 			var isHorizontal = me.isHorizontal();
 			if (isHorizontal) {
 				cursor = {
-					x: me.left + ((legendWidth - lineWidths[0]) / 2),
+					x: me.left + ((legendWidth - lineWidths[0]) / 2) + labelOpts.padding,
 					y: me.top + labelOpts.padding,
 					line: 0
 				};
@@ -431,13 +431,16 @@ var Legend = Element.extend({
 				var x = cursor.x;
 				var y = cursor.y;
 
+				// Use (me.left + me.minSize.width) and (me.top + me.minSize.height)
+				// instead of me.right and me.bottom because me.width and me.height
+				// may have been changed since me.minSize was calculated
 				if (isHorizontal) {
-					if (x + width >= legendWidth) {
+					if (i > 0 && x + width + labelOpts.padding > me.left + me.minSize.width) {
 						y = cursor.y += itemHeight;
 						cursor.line++;
-						x = cursor.x = me.left + ((legendWidth - lineWidths[cursor.line]) / 2);
+						x = cursor.x = me.left + ((legendWidth - lineWidths[cursor.line]) / 2) + labelOpts.padding;
 					}
-				} else if (y + itemHeight > me.bottom) {
+				} else if (i > 0 && y + itemHeight > me.top + me.minSize.height) {
 					x = cursor.x = x + me.columnWidths[cursor.line] + labelOpts.padding;
 					y = cursor.y = me.top + labelOpts.padding;
 					cursor.line++;
@@ -452,7 +455,7 @@ var Legend = Element.extend({
 				fillText(x, y, legendItem, textWidth);
 
 				if (isHorizontal) {
-					cursor.x += width + (labelOpts.padding);
+					cursor.x += width + labelOpts.padding;
 				} else {
 					cursor.y += itemHeight;
 				}
@@ -462,19 +465,41 @@ var Legend = Element.extend({
 	},
 
 	/**
+	 * @private
+	 */
+	_getLegendItemAt: function(x, y) {
+		var me = this;
+		var i, hitBox, lh;
+
+		if (x >= me.left && x <= me.right && y >= me.top && y <= me.bottom) {
+			// See if we are touching one of the dataset boxes
+			lh = me.legendHitBoxes;
+			for (i = 0; i < lh.length; ++i) {
+				hitBox = lh[i];
+
+				if (x >= hitBox.left && x <= hitBox.left + hitBox.width && y >= hitBox.top && y <= hitBox.top + hitBox.height) {
+					// Touching an element
+					return me.legendItems[i];
+				}
+			}
+		}
+
+		return null;
+	},
+
+	/**
 	 * Handle an event
 	 * @private
 	 * @param {IEvent} event - The event to handle
-	 * @return {Boolean} true if a change occured
 	 */
 	handleEvent: function(e) {
 		var me = this;
 		var opts = me.options;
 		var type = e.type === 'mouseup' ? 'click' : e.type;
-		var changed = false;
+		var hoveredItem;
 
 		if (type === 'mousemove') {
-			if (!opts.onHover) {
+			if (!opts.onHover && !opts.onLeave) {
 				return;
 			}
 		} else if (type === 'click') {
@@ -486,33 +511,26 @@ var Legend = Element.extend({
 		}
 
 		// Chart event already has relative position in it
-		var x = e.x;
-		var y = e.y;
+		hoveredItem = me._getLegendItemAt(e.x, e.y);
 
-		if (x >= me.left && x <= me.right && y >= me.top && y <= me.bottom) {
-			// See if we are touching one of the dataset boxes
-			var lh = me.legendHitBoxes;
-			for (var i = 0; i < lh.length; ++i) {
-				var hitBox = lh[i];
-
-				if (x >= hitBox.left && x <= hitBox.left + hitBox.width && y >= hitBox.top && y <= hitBox.top + hitBox.height) {
-					// Touching an element
-					if (type === 'click') {
-						// use e.native for backwards compatibility
-						opts.onClick.call(me, e.native, me.legendItems[i]);
-						changed = true;
-						break;
-					} else if (type === 'mousemove') {
-						// use e.native for backwards compatibility
-						opts.onHover.call(me, e.native, me.legendItems[i]);
-						changed = true;
-						break;
-					}
+		if (type === 'click') {
+			if (hoveredItem && opts.onClick) {
+				// use e.native for backwards compatibility
+				opts.onClick.call(me, e.native, hoveredItem);
+			}
+		} else {
+			if (opts.onLeave && hoveredItem !== me._hoveredItem) {
+				if (me._hoveredItem) {
+					opts.onLeave.call(me, e.native, me._hoveredItem);
 				}
+				me._hoveredItem = hoveredItem;
+			}
+
+			if (opts.onHover && hoveredItem) {
+				// use e.native for backwards compatibility
+				opts.onHover.call(me, e.native, hoveredItem);
 			}
 		}
-
-		return changed;
 	}
 });
 

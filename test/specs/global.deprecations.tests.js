@@ -1,5 +1,68 @@
 describe('Deprecations', function() {
 	describe('Version 2.8.0', function() {
+		[
+			['Bar', 'bar'],
+			['Bubble', 'bubble'],
+			['Doughnut', 'doughnut'],
+			['Line', 'line'],
+			['PolarArea', 'polarArea'],
+			['Radar', 'radar'],
+			['Scatter', 'scatter']
+		].forEach(function(descriptor) {
+			var klass = descriptor[0];
+			var type = descriptor[1];
+
+			describe('Chart.' + klass, function() {
+				it('should be defined as a function', function() {
+					expect(typeof Chart[klass]).toBe('function');
+				});
+				it('should create a chart of type "' + type + '"', function() {
+					var chart = new Chart[klass]('foo', {data: {}});
+					expect(chart instanceof Chart.Controller).toBeTruthy();
+					expect(chart.config.type).toBe(type);
+				});
+			});
+		});
+
+		describe('Chart.Chart', function() {
+			it('should be defined as an alias to Chart', function() {
+				expect(Chart.Chart).toBe(Chart);
+			});
+		});
+
+		describe('Chart.helpers.aliasPixel', function() {
+			it('should be defined as a function', function() {
+				expect(typeof Chart.helpers.aliasPixel).toBe('function');
+			});
+		});
+
+		describe('Chart.LinearScaleBase', function() {
+			it('should be defined and inherit from Chart.Scale', function() {
+				expect(typeof Chart.LinearScaleBase).toBe('function');
+				expect(Chart.LinearScaleBase.prototype instanceof Chart.Scale).toBeTruthy();
+			});
+		});
+
+		describe('Chart.types', function() {
+			it('should be defined as an empty object', function() {
+				expect(Chart.types).toEqual({});
+			});
+		});
+
+		describe('Chart.helpers.configMerge', function() {
+			it('should be defined as a function', function() {
+				expect(typeof Chart.helpers.configMerge).toBe('function');
+			});
+		});
+
+		describe('Chart.helpers.scaleMerge', function() {
+			it('should be defined as a function', function() {
+				expect(typeof Chart.helpers.scaleMerge).toBe('function');
+			});
+		});
+	});
+
+	describe('Version 2.7.3', function() {
 		describe('Chart.layoutService', function() {
 			it('should be defined and an alias of Chart.layouts', function() {
 				expect(Chart.layoutService).toBeDefined();
@@ -61,7 +124,6 @@ describe('Deprecations', function() {
 
 		describe('Chart.helpers.indexOf', function() {
 			it('should be defined and a function', function() {
-				expect(Chart.helpers.indexOf).toBeDefined();
 				expect(typeof Chart.helpers.indexOf).toBe('function');
 			});
 			it('should returns the correct index', function() {
@@ -102,7 +164,6 @@ describe('Deprecations', function() {
 
 		describe('Chart.helpers.drawRoundedRectangle', function() {
 			it('should be defined and a function', function() {
-				expect(Chart.helpers.drawRoundedRectangle).toBeDefined();
 				expect(typeof Chart.helpers.drawRoundedRectangle).toBe('function');
 			});
 			it('should call Chart.helpers.canvas.roundedRect', function() {
@@ -119,7 +180,6 @@ describe('Deprecations', function() {
 
 		describe('Chart.helpers.addEvent', function() {
 			it('should be defined and a function', function() {
-				expect(Chart.helpers.addEvent).toBeDefined();
 				expect(typeof Chart.helpers.addEvent).toBe('function');
 			});
 			it('should correctly add event listener', function() {
@@ -132,7 +192,6 @@ describe('Deprecations', function() {
 
 		describe('Chart.helpers.removeEvent', function() {
 			it('should be defined and a function', function() {
-				expect(Chart.helpers.removeEvent).toBeDefined();
 				expect(typeof Chart.helpers.removeEvent).toBe('function');
 			});
 			it('should correctly remove event listener', function() {

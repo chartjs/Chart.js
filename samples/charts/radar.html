@@ -3,7 +3,7 @@
 
 <head>
 	<title>Radar Chart</title>
-	<script src="../../dist/Chart.bundle.js"></script>
+	<script src="../../dist/Chart.min.js"></script>
 	<script src="../utils.js"></script>
 	<style>
 		canvas {
@@ -102,7 +102,7 @@
 				label: 'Dataset ' + config.data.datasets.length,
 				borderColor: newColor,
 				backgroundColor: color(newColor).alpha(0.2).rgbString(),
-				pointBorderColor: newColor,
+				pointBackgroundColor: newColor,
 				data: [],
 			};
 

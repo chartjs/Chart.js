@@ -4,6 +4,8 @@ var defaults = require('./core.defaults');
 var Element = require('./core.element');
 var helpers = require('../helpers/index');
 
+var valueOrDefault = helpers.valueOrDefault;
+
 defaults._set('global', {
 	tooltips: {
 		enabled: true,
@@ -38,15 +40,15 @@ defaults._set('global', {
 			// Args are: (tooltipItems, data)
 			beforeTitle: helpers.noop,
 			title: function(tooltipItems, data) {
-				// Pick first xLabel for now
 				var title = '';
 				var labels = data.labels;
 				var labelCount = labels ? labels.length : 0;
 
 				if (tooltipItems.length > 0) {
 					var item = tooltipItems[0];
-
-					if (item.xLabel) {
+					if (item.label) {
+						title = item.label;
+					} else if (item.xLabel) {
 						title = item.xLabel;
 					} else if (labelCount > 0 && item.index < labelCount) {
 						title = labels[item.index];
@@ -68,7 +70,11 @@ defaults._set('global', {
 				if (label) {
 					label += ': ';
 				}
-				label += tooltipItem.yLabel;
+				if (!helpers.isNullOrUndef(tooltipItem.value)) {
+					label += tooltipItem.value;
+				} else {
+					label += tooltipItem.yLabel;
+				}
 				return label;
 			},
 			labelColor: function(tooltipItem, chart) {
@@ -101,7 +107,7 @@ var positioners = {
 	 * Average mode places the tooltip at the average position of the elements shown
 	 * @function Chart.Tooltip.positioners.average
 	 * @param elements {ChartElement[]} the elements being displayed in the tooltip
-	 * @returns {Point} tooltip position
+	 * @returns {object} tooltip position
 	 */
 	average: function(elements) {
 		if (!elements.length) {
@@ -124,8 +130,8 @@ var positioners = {
 		}
 
 		return {
-			x: Math.round(x / count),
-			y: Math.round(y / count)
+			x: x / count,
+			y: y / count
 		};
 	},
 
@@ -133,8 +139,8 @@ var positioners = {
 	 * Gets the tooltip position nearest of the item nearest to the event position
 	 * @function Chart.Tooltip.positioners.nearest
 	 * @param elements {Chart.Element[]} the tooltip elements
-	 * @param eventPosition {Point} the position of the event in canvas coordinates
-	 * @returns {Point} the tooltip position
+	 * @param eventPosition {object} the position of the event in canvas coordinates
+	 * @returns {object} the tooltip position
 	 */
 	nearest: function(elements, eventPosition) {
 		var x = eventPosition.x;
@@ -168,14 +174,6 @@ var positioners = {
 	}
 };
 
-/**
- * Helper method to merge the opacity into a color
- */
-function mergeOpacity(colorString, opacity) {
-	var color = helpers.color(colorString);
-	return color.alpha(opacity * color.alpha()).rgbaString();
-}
-
 // Helper to push or concat based on if the 2nd parameter is an array or not
 function pushOrConcat(base, toPush) {
 	if (toPush) {
@@ -192,8 +190,8 @@ function pushOrConcat(base, toPush) {
 
 /**
  * Returns array of strings split by newline
- * @param {String} value - The value to split by newline.
- * @returns {Array} value if newline present - Returned from String split() method
+ * @param {string} value - The value to split by newline.
+ * @returns {string[]} value if newline present - Returned from String split() method
  * @function
  */
 function splitNewlines(str) {
@@ -204,18 +202,25 @@ function splitNewlines(str) {
 }
 
 
-// Private helper to create a tooltip item model
-// @param element : the chart element (point, arc, bar) to create the tooltip item for
-// @return : new tooltip item
+/**
+ * Private helper to create a tooltip item model
+ * @param element - the chart element (point, arc, bar) to create the tooltip item for
+ * @return new tooltip item
+ */
 function createTooltipItem(element) {
 	var xScale = element._xScale;
 	var yScale = element._yScale || element._scale; // handle radar || polarArea charts
 	var index = element._index;
 	var datasetIndex = element._datasetIndex;
+	var controller = element._chart.getDatasetMeta(datasetIndex).controller;
+	var indexScale = controller._getIndexScale();
+	var valueScale = controller._getValueScale();
 
 	return {
 		xLabel: xScale ? xScale.getLabelForIndex(index, datasetIndex) : '',
 		yLabel: yScale ? yScale.getLabelForIndex(index, datasetIndex) : '',
+		label: indexScale ? '' + indexScale.getLabelForIndex(index, datasetIndex) : '',
+		value: valueScale ? '' + valueScale.getLabelForIndex(index, datasetIndex) : '',
 		index: index,
 		datasetIndex: datasetIndex,
 		x: element._model.x,
@@ -225,11 +230,10 @@ function createTooltipItem(element) {
 
 /**
  * Helper to get the reset model for the tooltip
- * @param tooltipOpts {Object} the tooltip options
+ * @param tooltipOpts {object} the tooltip options
  */
 function getBaseModel(tooltipOpts) {
 	var globalDefaults = defaults.global;
-	var valueOrDefault = helpers.valueOrDefault;
 
 	return {
 		// Positioning
@@ -471,6 +475,14 @@ function getBackgroundPoint(vm, size, alignment, chart) {
 	};
 }
 
+function getAlignedX(vm, align) {
+	return align === 'center'
+		? vm.x + vm.width / 2
+		: align === 'right'
+			? vm.x + vm.width - vm.xPadding
+			: vm.x + vm.xPadding;
+}
+
 /**
  * Helper to build before and after body lines
  */
@@ -478,7 +490,7 @@ function getBeforeAfterBodyLines(callback) {
 	return pushOrConcat([], splitNewlines(callback));
 }
 
-var exports = module.exports = Element.extend({
+var exports = Element.extend({
 	initialize: function() {
 		this._model = getBaseModel(this._options);
 		this._lastActive = [];
@@ -627,8 +639,8 @@ var exports = module.exports = Element.extend({
 			model.footer = me.getFooter(tooltipItems, data);
 
 			// Initial positioning and colors
-			model.x = Math.round(tooltipPosition.x);
-			model.y = Math.round(tooltipPosition.y);
+			model.x = tooltipPosition.x;
+			model.y = tooltipPosition.y;
 			model.caretPadding = opts.caretPadding;
 			model.labelColors = labelColors;
 			model.labelTextColors = labelTextColors;
@@ -734,17 +746,19 @@ var exports = module.exports = Element.extend({
 		return {x1: x1, x2: x2, x3: x3, y1: y1, y2: y2, y3: y3};
 	},
 
-	drawTitle: function(pt, vm, ctx, opacity) {
+	drawTitle: function(pt, vm, ctx) {
 		var title = vm.title;
 
 		if (title.length) {
+			pt.x = getAlignedX(vm, vm._titleAlign);
+
 			ctx.textAlign = vm._titleAlign;
 			ctx.textBaseline = 'top';
 
 			var titleFontSize = vm.titleFontSize;
 			var titleSpacing = vm.titleSpacing;
 
-			ctx.fillStyle = mergeOpacity(vm.titleFontColor, opacity);
+			ctx.fillStyle = vm.titleFontColor;
 			ctx.font = helpers.fontString(titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
 
 			var i, len;
@@ -759,32 +773,40 @@ var exports = module.exports = Element.extend({
 		}
 	},
 
-	drawBody: function(pt, vm, ctx, opacity) {
+	drawBody: function(pt, vm, ctx) {
 		var bodyFontSize = vm.bodyFontSize;
 		var bodySpacing = vm.bodySpacing;
+		var bodyAlign = vm._bodyAlign;
 		var body = vm.body;
+		var drawColorBoxes = vm.displayColors;
+		var labelColors = vm.labelColors;
+		var xLinePadding = 0;
+		var colorX = drawColorBoxes ? getAlignedX(vm, 'left') : 0;
+		var textColor;
 
-		ctx.textAlign = vm._bodyAlign;
+		ctx.textAlign = bodyAlign;
 		ctx.textBaseline = 'top';
 		ctx.font = helpers.fontString(bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
 
+		pt.x = getAlignedX(vm, bodyAlign);
+
 		// Before Body
-		var xLinePadding = 0;
 		var fillLineOfText = function(line) {
 			ctx.fillText(line, pt.x + xLinePadding, pt.y);
 			pt.y += bodyFontSize + bodySpacing;
 		};
 
 		// Before body lines
-		ctx.fillStyle = mergeOpacity(vm.bodyFontColor, opacity);
+		ctx.fillStyle = vm.bodyFontColor;
 		helpers.each(vm.beforeBody, fillLineOfText);
 
-		var drawColorBoxes = vm.displayColors;
-		xLinePadding = drawColorBoxes ? (bodyFontSize + 2) : 0;
+		xLinePadding = drawColorBoxes && bodyAlign !== 'right'
+			? bodyAlign === 'center' ? (bodyFontSize / 2 + 1) : (bodyFontSize + 2)
+			: 0;
 
 		// Draw body lines now
 		helpers.each(body, function(bodyItem, i) {
-			var textColor = mergeOpacity(vm.labelTextColors[i], opacity);
+			textColor = vm.labelTextColors[i];
 			ctx.fillStyle = textColor;
 			helpers.each(bodyItem.before, fillLineOfText);
 
@@ -792,17 +814,17 @@ var exports = module.exports = Element.extend({
 				// Draw Legend-like boxes if needed
 				if (drawColorBoxes) {
 					// Fill a white rect so that colours merge nicely if the opacity is < 1
-					ctx.fillStyle = mergeOpacity(vm.legendColorBackground, opacity);
-					ctx.fillRect(pt.x, pt.y, bodyFontSize, bodyFontSize);
+					ctx.fillStyle = vm.legendColorBackground;
+					ctx.fillRect(colorX, pt.y, bodyFontSize, bodyFontSize);
 
 					// Border
 					ctx.lineWidth = 1;
-					ctx.strokeStyle = mergeOpacity(vm.labelColors[i].borderColor, opacity);
-					ctx.strokeRect(pt.x, pt.y, bodyFontSize, bodyFontSize);
+					ctx.strokeStyle = labelColors[i].borderColor;
+					ctx.strokeRect(colorX, pt.y, bodyFontSize, bodyFontSize);
 
 					// Inner square
-					ctx.fillStyle = mergeOpacity(vm.labelColors[i].backgroundColor, opacity);
-					ctx.fillRect(pt.x + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
+					ctx.fillStyle = labelColors[i].backgroundColor;
+					ctx.fillRect(colorX + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
 					ctx.fillStyle = textColor;
 				}
 
@@ -820,16 +842,17 @@ var exports = module.exports = Element.extend({
 		pt.y -= bodySpacing; // Remove last body spacing
 	},
 
-	drawFooter: function(pt, vm, ctx, opacity) {
+	drawFooter: function(pt, vm, ctx) {
 		var footer = vm.footer;
 
 		if (footer.length) {
+			pt.x = getAlignedX(vm, vm._footerAlign);
 			pt.y += vm.footerMarginTop;
 
 			ctx.textAlign = vm._footerAlign;
 			ctx.textBaseline = 'top';
 
-			ctx.fillStyle = mergeOpacity(vm.footerFontColor, opacity);
+			ctx.fillStyle = vm.footerFontColor;
 			ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
 
 			helpers.each(footer, function(line) {
@@ -839,9 +862,9 @@ var exports = module.exports = Element.extend({
 		}
 	},
 
-	drawBackground: function(pt, vm, ctx, tooltipSize, opacity) {
-		ctx.fillStyle = mergeOpacity(vm.backgroundColor, opacity);
-		ctx.strokeStyle = mergeOpacity(vm.borderColor, opacity);
+	drawBackground: function(pt, vm, ctx, tooltipSize) {
+		ctx.fillStyle = vm.backgroundColor;
+		ctx.strokeStyle = vm.borderColor;
 		ctx.lineWidth = vm.borderWidth;
 		var xAlign = vm.xAlign;
 		var yAlign = vm.yAlign;
@@ -906,21 +929,25 @@ var exports = module.exports = Element.extend({
 		var hasTooltipContent = vm.title.length || vm.beforeBody.length || vm.body.length || vm.afterBody.length || vm.footer.length;
 
 		if (this._options.enabled && hasTooltipContent) {
+			ctx.save();
+			ctx.globalAlpha = opacity;
+
 			// Draw Background
-			this.drawBackground(pt, vm, ctx, tooltipSize, opacity);
+			this.drawBackground(pt, vm, ctx, tooltipSize);
 
 			// Draw Title, Body, and Footer
-			pt.x += vm.xPadding;
 			pt.y += vm.yPadding;
 
 			// Titles
-			this.drawTitle(pt, vm, ctx, opacity);
+			this.drawTitle(pt, vm, ctx);
 
 			// Body
-			this.drawBody(pt, vm, ctx, opacity);
+			this.drawBody(pt, vm, ctx);
 
 			// Footer
-			this.drawFooter(pt, vm, ctx, opacity);
+			this.drawFooter(pt, vm, ctx);
+
+			ctx.restore();
 		}
 	},
 
@@ -928,7 +955,7 @@ var exports = module.exports = Element.extend({
 	 * Handle an event
 	 * @private
 	 * @param {IEvent} event - The event to handle
-	 * @returns {Boolean} true if the tooltip changed
+	 * @returns {boolean} true if the tooltip changed
 	 */
 	handleEvent: function(e) {
 		var me = this;
@@ -971,3 +998,4 @@ var exports = module.exports = Element.extend({
  */
 exports.positioners = positioners;
 
+module.exports = exports;

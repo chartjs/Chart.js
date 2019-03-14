@@ -1,6 +1,8 @@
 'use strict';
 
 describe('Chart.helpers.canvas', function() {
+	describe('auto', jasmine.fixture.specs('helpers.canvas'));
+
 	var helpers = Chart.helpers;
 
 	describe('clear', function() {
@@ -28,15 +30,50 @@ describe('Chart.helpers.canvas', function() {
 			helpers.canvas.roundedRect(context, 10, 20, 30, 40, 5);
 
 			expect(context.getCalls()).toEqual([
-				{name: 'moveTo', args: [15, 20]},
-				{name: 'lineTo', args: [35, 20]},
-				{name: 'arcTo', args: [40, 20, 40, 25, 5]},
-				{name: 'lineTo', args: [40, 55]},
-				{name: 'arcTo', args: [40, 60, 35, 60, 5]},
-				{name: 'lineTo', args: [15, 60]},
-				{name: 'arcTo', args: [10, 60, 10, 55, 5]},
-				{name: 'lineTo', args: [10, 25]},
-				{name: 'arcTo', args: [10, 20, 15, 20, 5]},
+				{name: 'moveTo', args: [10, 25]},
+				{name: 'arc', args: [15, 25, 5, -Math.PI, -Math.PI / 2]},
+				{name: 'arc', args: [35, 25, 5, -Math.PI / 2, 0]},
+				{name: 'arc', args: [35, 55, 5, 0, Math.PI / 2]},
+				{name: 'arc', args: [15, 55, 5, Math.PI / 2, Math.PI]},
+				{name: 'closePath', args: []},
+				{name: 'moveTo', args: [10, 20]}
+			]);
+		});
+		it('should optimize path if radius is exactly half of height', function() {
+			var context = window.createMockContext();
+
+			helpers.canvas.roundedRect(context, 10, 20, 40, 30, 15);
+
+			expect(context.getCalls()).toEqual([
+				{name: 'moveTo', args: [10, 35]},
+				{name: 'moveTo', args: [25, 20]},
+				{name: 'arc', args: [35, 35, 15, -Math.PI / 2, Math.PI / 2]},
+				{name: 'arc', args: [25, 35, 15, Math.PI / 2, Math.PI * 3 / 2]},
+				{name: 'closePath', args: []},
+				{name: 'moveTo', args: [10, 20]}
+			]);
+		});
+		it('should optimize path if radius is exactly half of width', function() {
+			var context = window.createMockContext();
+
+			helpers.canvas.roundedRect(context, 10, 20, 30, 40, 15);
+
+			expect(context.getCalls()).toEqual([
+				{name: 'moveTo', args: [10, 35]},
+				{name: 'arc', args: [25, 35, 15, -Math.PI, 0]},
+				{name: 'arc', args: [25, 45, 15, 0, Math.PI]},
+				{name: 'closePath', args: []},
+				{name: 'moveTo', args: [10, 20]}
+			]);
+		});
+		it('should optimize path if radius is exactly half of width and height', function() {
+			var context = window.createMockContext();
+
+			helpers.canvas.roundedRect(context, 10, 20, 30, 30, 15);
+
+			expect(context.getCalls()).toEqual([
+				{name: 'moveTo', args: [10, 35]},
+				{name: 'arc', args: [25, 35, 15, -Math.PI, Math.PI]},
 				{name: 'closePath', args: []},
 				{name: 'moveTo', args: [10, 20]}
 			]);
@@ -47,6 +84,20 @@ describe('Chart.helpers.canvas', function() {
 			helpers.canvas.roundedRect(context, 10, 20, 30, 40, 0);
 
 			expect(context.getCalls()).toEqual([{name: 'rect', args: [10, 20, 30, 40]}]);
+		});
+	});
+
+	describe('isPointInArea', function() {
+		it('should determine if a point is in the area', function() {
+			var isPointInArea = helpers.canvas._isPointInArea;
+			var area = {left: 0, top: 0, right: 512, bottom: 256};
+
+			expect(isPointInArea({x: 0, y: 0}, area)).toBe(true);
+			expect(isPointInArea({x: -1e-12, y: -1e-12}, area)).toBe(true);
+			expect(isPointInArea({x: 512, y: 256}, area)).toBe(true);
+			expect(isPointInArea({x: 512 + 1e-12, y: 256 + 1e-12}, area)).toBe(true);
+			expect(isPointInArea({x: -1e-3, y: 0}, area)).toBe(false);
+			expect(isPointInArea({x: 0, y: 256 + 1e-3}, area)).toBe(false);
 		});
 	});
 });

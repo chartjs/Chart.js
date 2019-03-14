@@ -1,6 +1,6 @@
 # Responsive Charts
 
-When it comes to change the chart size based on the window size, a major limitation is that the canvas *render* size (`canvas.width` and `.height`) can **not** be expressed with relative values, contrary to the *display* size (`canvas.style.width` and `.height`). Furthermore, these sizes are independent from each other and thus the canvas *render* size does not adjust automatically based on the *display* size, making the rendering inaccurate.
+When it comes to changing the chart size based on the window size, a major limitation is that the canvas *render* size (`canvas.width` and `.height`) can **not** be expressed with relative values, contrary to the *display* size (`canvas.style.width` and `.height`). Furthermore, these sizes are independent from each other and thus the canvas *render* size does not adjust automatically based on the *display* size, making the rendering inaccurate.
 
 The following examples **do not work**:
 
@@ -13,15 +13,15 @@ Chart.js provides a [few options](#configuration-options) to enable responsivene
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `responsive` | `Boolean` | `true` | Resizes the chart canvas when its container does ([important note...](#important-note)).
-| `responsiveAnimationDuration` | `Number` | `0` | Duration in milliseconds it takes to animate to new size after a resize event.
-| `maintainAspectRatio` | `Boolean` | `true` | Maintain the original canvas aspect ratio `(width / height)` when resizing.
-| `aspectRatio` | `Number` | `2` | Canvas aspect ratio (i.e. `width / height`, a value of 1 representing a square canvas). Note that this option is ignored if the height is explicitly defined either as attribute or via the style.
-| `onResize` | `Function` | `null` | Called when a resize occurs. Gets passed two arguments: the chart instance and the new size.
+| `responsive` | `boolean` | `true` | Resizes the chart canvas when its container does ([important note...](#important-note)).
+| `responsiveAnimationDuration` | `number` | `0` | Duration in milliseconds it takes to animate to new size after a resize event.
+| `maintainAspectRatio` | `boolean` | `true` | Maintain the original canvas aspect ratio `(width / height)` when resizing.
+| `aspectRatio` | `number` | `2` | Canvas aspect ratio (i.e. `width / height`, a value of 1 representing a square canvas). Note that this option is ignored if the height is explicitly defined either as attribute or via the style.
+| `onResize` | `function` | `null` | Called when a resize occurs. Gets passed two arguments: the chart instance and the new size.
 
 ## Important Note
 
-Detecting when the canvas size changes can not be done directly from the `CANVAS` element. Chart.js uses its parent container to update the canvas *render* and *display* sizes. However, this method requires the container to be **relatively positioned** and **dedicated to the chart canvas only**. Responsiveness can then be achieved by setting relative values for the container size ([example](https://codepen.io/chartjs/pen/YVWZbz)):
+Detecting when the canvas size changes can not be done directly from the `canvas` element. Chart.js uses its parent container to update the canvas *render* and *display* sizes. However, this method requires the container to be **relatively positioned** and **dedicated to the chart canvas only**. Responsiveness can then be achieved by setting relative values for the container size ([example](https://codepen.io/chartjs/pen/YVWZbz)):
 
 ```html
 <div class="chart-container" style="position: relative; height:40vh; width:80vw">
@@ -33,7 +33,10 @@ The chart can also be programmatically resized by modifying the container size:
 
 ```javascript
 chart.canvas.parentNode.style.height = '128px';
+chart.canvas.parentNode.style.width = '128px';
 ```
+
+Note that in order for the above code to correctly resize the chart height, the [`maintainAspectRatio`](#configuration-options) option must also be set to `false`.
 
 ## Printing Resizeable Charts
 
@@ -41,8 +44,8 @@ CSS media queries allow changing styles when printing a page. The CSS applied fr
 
 ```javascript
 function beforePrintHandler () {
-  for (var id in Chart.instances) {
-    Chart.instances[id].resize()
-  }
+    for (var id in Chart.instances) {
+        Chart.instances[id].resize();
+    }
 }
 ```

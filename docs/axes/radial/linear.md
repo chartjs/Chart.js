@@ -1,6 +1,6 @@
 # Linear Radial Axis
 
-The linear scale is use to chart numerical data. As the name suggests, linear interpolation is used to determine where a value lies in relation the center of the axis.
+The linear scale is used to chart numerical data. As the name suggests, linear interpolation is used to determine where a value lies in relation the center of the axis.
 
 The following additional configuration options are provided by the radial linear scale.
 
@@ -10,28 +10,28 @@ The axis has configuration properties for ticks, angle lines (line that appear i
 
 | Name | Type | Description
 | ---- | ---- | -----------
-| `angleLines` | `Object` | Angle line configuration. [more...](#angle-line-options)
-| `gridLines` | `Object` | Grid line configuration. [more...](../styling.md#grid-line-configuration)
-| `pointLabels` | `Object` | Point label configuration. [more...](#point-label-options)
-| `ticks` | `Object` | Tick configuration. [more...](#tick-options)
+| `angleLines` | `object` | Angle line configuration. [more...](#angle-line-options)
+| `gridLines` | `object` | Grid line configuration. [more...](../styling.md#grid-line-configuration)
+| `pointLabels` | `object` | Point label configuration. [more...](#point-label-options)
+| `ticks` | `object` | Tick configuration. [more...](#tick-options)
 
 ## Tick Options
 The following options are provided by the linear scale. They are all located in the `ticks` sub options. The [common tick configuration](../styling.md#tick-configuration) options are supported by this axis.
 
 | Name | Type | Default | Description
-| -----| ---- | --------| -----------
-| `backdropColor` | `Color` | `'rgba(255, 255, 255, 0.75)'` | Color of label backdrops
-| `backdropPaddingX` | `Number` | `2` | Horizontal padding of label backdrop.
-| `backdropPaddingY` | `Number` | `2` | Vertical padding of label backdrop.
-| `beginAtZero` | `Boolean` | `false` | if true, scale will include 0 if it is not already included.
-| `min` | `Number` | | User defined minimum number for the scale, overrides minimum value from data. [more...](#axis-range-settings)
-| `max` | `Number` | | User defined maximum number for the scale, overrides maximum value from data. [more...](#axis-range-settings)
-| `maxTicksLimit` | `Number` | `11` | Maximum number of ticks and gridlines to show.
-| `precision` | `Number` | | if defined and `stepSize` is not specified, the step size will be rounded to this many decimal places.
-| `stepSize` | `Number` | | User defined fixed step size for the scale. [more...](#step-size)
-| `suggestedMax` | `Number` | | Adjustment used when calculating the maximum data value. [more...](#axis-range-settings)
-| `suggestedMin` | `Number` | | Adjustment used when calculating the minimum data value. [more...](#axis-range-settings)
-| `showLabelBackdrop` | `Boolean` | `true` | If true, draw a background behind the tick labels
+| ---- | ---- | ------- | -----------
+| `backdropColor` | `Color` | `'rgba(255, 255, 255, 0.75)'` | Color of label backdrops.
+| `backdropPaddingX` | `number` | `2` | Horizontal padding of label backdrop.
+| `backdropPaddingY` | `number` | `2` | Vertical padding of label backdrop.
+| `beginAtZero` | `boolean` | `false` | if true, scale will include 0 if it is not already included.
+| `min` | `number` | | User defined minimum number for the scale, overrides minimum value from data. [more...](#axis-range-settings)
+| `max` | `number` | | User defined maximum number for the scale, overrides maximum value from data. [more...](#axis-range-settings)
+| `maxTicksLimit` | `number` | `11` | Maximum number of ticks and gridlines to show.
+| `precision` | `number` | | if defined and `stepSize` is not specified, the step size will be rounded to this many decimal places.
+| `stepSize` | `number` | | User defined fixed step size for the scale. [more...](#step-size)
+| `suggestedMax` | `number` | | Adjustment used when calculating the maximum data value. [more...](#axis-range-settings)
+| `suggestedMin` | `number` | | Adjustment used when calculating the minimum data value. [more...](#axis-range-settings)
+| `showLabelBackdrop` | `boolean` | `true` | If true, draw a background behind the tick labels.
 
 ## Axis Range Settings
 
@@ -70,7 +70,7 @@ let chart = new Chart(ctx, {
 In contrast to the `suggested*` settings, the `min` and `max` settings set explicit ends to the axes. When these are set, some data points may not be visible.
 
 ## Step Size
- If set, the scale ticks will be enumerated by multiple of stepSize, having one tick per increment. If not set, the ticks are labeled automatically using the nice numbers algorithm.
+If set, the scale ticks will be enumerated by multiple of `stepSize`, having one tick per increment. If not set, the ticks are labeled automatically using the nice numbers algorithm.
 
 This example sets up a chart with a y axis that creates ticks at `0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5`.
 
@@ -91,19 +91,22 @@ let options = {
 The following options are used to configure angled lines that radiate from the center of the chart to the point labels. They can be found in the `angleLines` sub options. Note that these options only apply if `angleLines.display` is true.
 
 | Name | Type | Default | Description
-| -----| ---- | --------| -----------
-| `display` | `Boolean` | `true` | if true, angle lines are shown
-| `color` | `Color` | `rgba(0, 0, 0, 0.1)` | Color of angled lines
-| `lineWidth` | `Number` | `1` | Width of angled lines
+| ---- | ---- | ------- | -----------
+| `display` | `boolean` | `true` | if true, angle lines are shown.
+| `color` | `Color` | `'rgba(0, 0, 0, 0.1)'` | Color of angled lines.
+| `lineWidth` | `number` | `1` | Width of angled lines.
+| `borderDash` | `number[]` | `[]` | Length and spacing of dashes on angled lines. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
+| `borderDashOffset` | `number` | `0.0` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
 
 ## Point Label Options
 
 The following options are used to configure the point labels that are shown on the perimeter of the scale. They can be found in the `pointLabels` sub options. Note that these options only apply if `pointLabels.display` is true.
 
 | Name | Type | Default | Description
-| -----| ---- | --------| -----------
-| `callback` | `Function` | | Callback function to transform data labels to point labels. The default implementation simply returns the current string.
-| `fontColor` | `Color/Color[]` | `'#666'` | Font color for point labels.
-| `fontFamily` | `String` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family to use when rendering labels.
-| `fontSize` | `Number` | 10 | font size in pixels
-| `fontStyle` | `String` | `'normal'` | Font style to use when rendering point labels.
+| ---- | ---- | ------- | -----------
+| `callback` | `function` | | Callback function to transform data labels to point labels. The default implementation simply returns the current string.
+| `fontColor` | <code>Color&#124;Color[]</code> | `'#666'` | Font color for point labels.
+| `fontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family to use when rendering labels.
+| `fontSize` | `number` | `10` | font size in pixels.
+| `fontStyle` | `string` | `'normal'` | Font style to use when rendering point labels.
+| `lineHeight` | <code>number&#124;string</code> | `1.2` | Height of an individual line of text (see [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height)).
