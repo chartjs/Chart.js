@@ -25,7 +25,7 @@ module.exports = {
 		options: {
 			legend: false,
 			title: false,
-			spanGaps: true,
+			// spanGaps: true,
 			elements: {
 				line: {
 					backgroundColor: function(ctx) {
