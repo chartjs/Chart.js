@@ -78,9 +78,8 @@ helpers.extend(Element.prototype, {
 		var start = me._start;
 		var view = me._view;
 
-		// No animation -> No Transition
-		if (!model || ease === 1) {
-			me._view = helpers.clone(model);
+		if (!model) {
+			me._view = model;
 			me._start = null;
 			return me;
 		}
@@ -94,6 +93,10 @@ helpers.extend(Element.prototype, {
 		}
 
 		interpolate(start, view, model, ease);
+
+		if (ease === 1) {
+			me._start = null;
+		}
 
 		return me;
 	},
