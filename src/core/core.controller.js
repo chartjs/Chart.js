@@ -62,7 +62,7 @@ function mergeScaleConfig(/* config objects ... */) {
 					if (!target[key][i].type || (scale.type && scale.type !== target[key][i].type)) {
 						// new/untyped scale or type changed: let's apply the new defaults
 						// then merge source scale to correctly overwrite the defaults.
-						helpers.merge(target[key][i], [scaleService.getScaleDefaults(type), scale]);
+						helpers.merge(target[key][i], [scaleService.getScaleDefaults(type), scale, {type: type}]);
 					} else {
 						// scales type are the same
 						helpers.merge(target[key][i], scale);

@@ -198,6 +198,11 @@ describe('Chart', function() {
 				}
 			});
 
+			expect(chart.options.scales.xAxes[0].type).toBe('category');
+			expect(chart.options.scales.xAxes[1].type).toBe('category');
+			expect(chart.options.scales.yAxes[0].type).toBe('linear');
+			expect(chart.options.scales.yAxes[1].type).toBe('linear');
+
 			expect(chart.scales.foo0.type).toBe('category');
 			expect(chart.scales.foo1.type).toBe('category');
 			expect(chart.scales.bar0.type).toBe('linear');
