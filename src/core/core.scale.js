@@ -585,6 +585,13 @@ module.exports = Element.extend({
 	_getPixel: helpers.noop,
 
 	/**
+	 * @private
+	 */
+	_getPixelForIndex: function(index, datasetIndex) {
+		return this._getPixel(this._getParsedValue(index, datasetIndex));
+	},
+
+	/**
 	 * Used to get the value to display in the tooltip for the data at the given index
 	 * @param index
 	 * @param datasetIndex

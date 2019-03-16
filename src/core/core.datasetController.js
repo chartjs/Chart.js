@@ -117,6 +117,21 @@ function loadCustomData(meta, index) {
 		&& metaData[index]._parsed._custom;
 }
 
+function convertObjectDataToArray(data) {
+	var keys = Object.keys(data);
+	var adata = [];
+	var i, ilen, key;
+	for (i = 0, ilen = keys.length; i < ilen; ++i) {
+		key = keys[i];
+		adata.push({
+			x: key,
+			y: data[key]
+		});
+	}
+	return adata;
+}
+
+
 // Base class for all dataset controllers (line, bar, etc)
 var DatasetController = function(chart, datasetIndex) {
 	this.initialize(chart, datasetIndex);
@@ -234,12 +249,43 @@ helpers.extend(DatasetController.prototype, {
 		});
 	},
 
+	_dataCheck: function() {
+		var me = this;
+		var dataset = me.getDataset();
+		var data = dataset.data || (dataset.data = []);
+
+		// In order to correctly handle data addition/deletion animation (an thus simulate
+		// real-time charts), we need to monitor these data modifications and synchronize
+		// the internal meta data accordingly.
+		if (me._data !== data) {
+			if (helpers.isObject(data)) {
+				// Object data is currently monitored for replacement only
+				if (me._objectData !== data) {
+					me._data = convertObjectDataToArray(data);
+					me._objectData = data;
+				}
+			} else {
+				if (me._data) {
+					// This case happens when the user replaced the data array instance.
+					unlistenArrayEvents(me._data, me);
+				}
+
+				if (data && Object.isExtensible(data)) {
+					listenArrayEvents(data, me);
+				}
+				me._data = data;
+			}
+		}
+	},
+
 	addElements: function() {
 		var me = this;
 		var meta = me.getMeta();
-		var data = me.getDataset().data || [];
 		var metaData = meta.data;
-		var i, ilen;
+		var i, ilen, data;
+
+		me._dataCheck();
+		data = me._data;
 
 		for (i = 0, ilen = data.length; i < ilen; ++i) {
 			metaData[i] = metaData[i] || me.createMetaData(i);
@@ -256,28 +302,11 @@ helpers.extend(DatasetController.prototype, {
 	},
 
 	buildOrUpdateElements: function() {
-		var me = this;
-		var dataset = me.getDataset();
-		var data = dataset.data || (dataset.data = []);
-
-		// In order to correctly handle data addition/deletion animation (an thus simulate
-		// real-time charts), we need to monitor these data modifications and synchronize
-		// the internal meta data accordingly.
-		if (me._data !== data) {
-			if (me._data) {
-				// This case happens when the user replaced the data array instance.
-				unlistenArrayEvents(me._data, me);
-			}
-
-			if (data && Object.isExtensible(data)) {
-				listenArrayEvents(data, me);
-			}
-			me._data = data;
-		}
+		this._dataCheck();
 
 		// Re-sync meta data in case the user replaced the data array or if we missed
 		// any updates and so make sure that we handle number of datapoints changing.
-		me.resyncElements();
+		this.resyncElements();
 	},
 
 	update: helpers.noop,
@@ -341,9 +370,8 @@ helpers.extend(DatasetController.prototype, {
 	resyncElements: function() {
 		var me = this;
 		var meta = me.getMeta();
-		var data = me.getDataset().data;
+		var numData = me._data.length;
 		var numMeta = meta.data.length;
-		var numData = data.length;
 
 		if (numData < numMeta) {
 			meta.data.splice(numData, numMeta - numData);
@@ -371,7 +399,7 @@ helpers.extend(DatasetController.prototype, {
 	_parse: function(start, count) {
 		var me = this;
 		var meta = me.getMeta();
-		var data = me.getDataset().data;
+		var data = me._data;
 
 		if (data && data.length) {
 			if (helpers.isArray(data[0])) {

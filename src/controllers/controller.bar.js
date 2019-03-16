@@ -257,7 +257,7 @@ module.exports = DatasetController.extend({
 		var i, ilen, min;
 
 		for (i = 0, ilen = me.getMeta().data.length; i < ilen; ++i) {
-			pixels.push(scale.getPixelForValue(null, i, datasetIndex));
+			pixels.push(scale._getPixelForIndex(i, datasetIndex));
 		}
 
 		min = helpers.isNullOrUndef(scale.options.barThickness)
