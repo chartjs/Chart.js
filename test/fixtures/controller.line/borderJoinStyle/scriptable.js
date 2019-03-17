@@ -11,8 +11,8 @@ module.exports = {
 					borderJoinStyle: function(ctx) {
 						var index = ctx.datasetIndex % 3;
 						return index === 0 ? 'round'
-							:  index === 1 ? 'miter'
-							:  'bevel';
+							: index === 1 ? 'miter'
+							: 'bevel';
 					}
 				},
 				{
@@ -35,8 +35,8 @@ module.exports = {
 					borderJoinStyle: function(ctx) {
 						var index = (ctx.datasetIndex % 3);
 						return index === 0 ? 'round'
-							:  index === 1 ? 'miter'
-							:  'bevel';
+							: index === 1 ? 'miter'
+							: 'bevel';
 					},
 					borderWidth: 25,
 					fill: false,

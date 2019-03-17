@@ -15,7 +15,7 @@ module.exports = {
 				},
 				{
 					// option in element (fallback)
-					data: [0, 0, 0 ,0],
+					data: [0, 0, 0, 0]
 				}
 			]
 		},

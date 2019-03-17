@@ -11,7 +11,7 @@ module.exports = {
 						var index = (ctx.dataIndex === undefined ? ctx.datasetIndex : ctx.dataIndex);
 						return index === 0 ? '#ff0000'
 							: index === 1 ? '#00ff00'
-							: '#ff00ff'
+							: '#ff00ff';
 					}
 				},
 				{
@@ -29,7 +29,7 @@ module.exports = {
 						var index = (ctx.dataIndex === undefined ? ctx.datasetIndex : ctx.dataIndex);
 						return index === 0 ? '#ff0000'
 							: index === 1 ? '#00ff00'
-							: '#ff00ff'
+							: '#ff00ff';
 					}
 				},
 				point: {
